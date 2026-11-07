@@ -31,6 +31,7 @@ const read = (p) => fs.readFileSync(path.join(ROOT, p), "utf8");
 const require = createRequire(import.meta.url);
 const G = require(path.join(ROOT, "components/cot-glance.js"));
 const C = require(path.join(ROOT, "components/cot-chart.js"));
+const K = require(path.join(ROOT, "components/cot-kit.js"));
 const FIX = {
   cot: path.join(ROOT, "test/fixtures/funds/cot-2026-10-27.json"),
   cx: path.join(ROOT, "test/fixtures/funds/cot-analysis-2026-10-27.json"),
@@ -61,18 +62,31 @@ test("the last point is cot.json's net, and the title is that market's brief lin
     assert.equal(m.last.net, COT[k].net, k + ": the latest point equals cot.json");
     assert.equal(m.last.date, "2026-10-27");
     assert.equal(m.headline, G.brief(k, COT, CX).text, k);
-    assert.ok(m.headline.startsWith(G.SHORT[k] + ": funds "), m.headline);
+    assert.ok(/^[A-Z][A-Za-z ]+ funds (cut|added|sold|bought|held)/.test(m.headline), m.headline);
     assert.equal(m.hi.net, Math.max(...m.rows.map((r) => r.net)), k + " high");
     assert.equal(m.lo.net, Math.min(...m.rows.map((r) => r.net)), k + " low");
     assert.equal(m.hi.net, COT[k].max52, k + ": the high agrees with the card's 52-wk range");
     assert.equal(m.lo.net, COT[k].min52, k + ": the low agrees with the card's 52-wk range");
-    assert.ok(m.src.startsWith("CFTC Commitments of Traders, managed money, futures only, as of Oct 27, released Oct 30."), m.src);
+    assert.ok(m.src.startsWith("CFTC Commitments of Traders, managed money, futures only, week to Tue, Oct 27, 2026, released Fri, Oct 30, 2026."), m.src);
+    assert.equal(m.asOf, "Week to Tue, Oct 27, 2026. Released Fri, Oct 30, 2026.");
     assert.ok(!DASH.test(m.src + m.headline + m.priceWhy), "no dashes");
   }
-  assert.equal(C.model("beans", HIST, COT, CX).headline, "Soybeans: funds long, fairly heavy, sold 27,544 this week");
-  assert.equal(C.model("mplswheat", HIST, COT, CX).headline, "MPLS wheat: funds short, moderate, sold 7,906 this week, flipped to short");
-  assert.equal(C.model("soymeal", HIST, COT, CX).headline, "Soybean meal: funds long, heavy, crowded, sold 32,164 this week");
-  assert.equal(C.model("kcwheat", HIST, COT, CX).headline, "KC wheat: funds about even, sold 8,007 this week");
+  // kit v2: what changed first, then where funds stand; buys, sells, flips and shorts each in their own words
+  assert.equal(C.model("corn", HIST, COT, CX).headline, "Corn funds cut their net long by 83,310 contracts. Still net long: 81,113.");
+  assert.equal(C.model("beans", HIST, COT, CX).headline, "Soybean funds cut their net long by 27,544 contracts. Still net long: 193,781.");
+  assert.equal(C.model("wheat", HIST, COT, CX).headline, "Chicago wheat funds added 22,601 contracts to their net short. Still net short: 74,606.");
+  assert.equal(C.model("milk", HIST, COT, CX).headline, "Class III milk funds cut their net short by 1,174 contracts. Still net short: 6,856.");
+  assert.equal(C.model("livecattle", HIST, COT, CX).headline, "Live cattle funds added 5,471 contracts to their net long. Still net long: 56,573.");
+  assert.equal(C.model("mplswheat", HIST, COT, CX).headline, "Minneapolis wheat funds sold 7,906 contracts and flipped to net short. Now net short: 3,713.");
+  assert.equal(C.model("kcwheat", HIST, COT, CX).headline, "KC wheat funds sold 8,007 contracts and flipped to net short. About even: net short 517.");
+  assert.equal(C.model("corn", HIST, COT, CX).headlineHtml, "<b>Corn funds cut their net long by 83,310 contracts.</b> Still net long: 81,113.");
+  // a flip to long, a hold, a measured record (never "crowded" or a weight word)
+  const up = clone(COT); up.corn.prev = -1000; const fl = G.brief("corn", up, null);
+  assert.equal(fl.text, "Corn funds bought 82,113 contracts and flipped to net long. Now net long: 81,113.");
+  const hold = clone(COT); hold.corn.prev = hold.corn.net;
+  assert.equal(G.brief("corn", hold, null).text, "Corn funds held their position. Still net long: 81,113.");
+  assert.equal(G.brief("leanhogs", COT, CX).record, "Largest net short in contracts since 2010");
+  for (const k of G.ORDER) assert.doesNotMatch(G.brief(k, COT, CX).text + G.answer(k, COT, CX).text, /moderate|heavy|light|crowded|this week|today/i, k);
 });
 
 test("no title is claimed when the chart's last week is not the report on the page, or the nets differ", () => {
@@ -81,8 +95,8 @@ test("no title is claimed when the chart's last week is not the report on the pa
   const moved = clone(COT); moved.corn.net += 1;
   assert.equal(C.model("corn", HIST, moved, CX).headline, null, "a different net: no title");
   const m = C.model("corn", HIST, COT, null);
-  assert.equal(m.headline, "Corn: funds long, sold 83,310 this week", "without the analysis: no weight word and no rank");
-  assert.equal(m.src, "CFTC Commitments of Traders, managed money, futures only, as of Oct 27. Price: front-month futures close each report Tuesday (Yahoo Finance), adjusted for contract rolls.", "no release day without the analysis");
+  assert.equal(m.headline, "Corn funds cut their net long by 83,310 contracts. Still net long: 81,113.", "without the analysis: the same facts from cot.json");
+  assert.equal(m.src, "CFTC Commitments of Traders, managed money, futures only, week to Tue, Oct 27, 2026. Price: front-month futures close each report Tuesday (Yahoo Finance), adjusted for contract rolls.", "no release day without the analysis");
 });
 
 test("the price strip is drawn only when every week has a close, and says why when it is not", () => {
@@ -117,13 +131,48 @@ test("the layout marks zero, this week's number and the 52-week high and low, te
     const s = texts.map((i) => i.s);
     assert.ok(texts.every((i) => i.size >= 12), k + ": every label 12 px or more");
     assert.ok(s.includes("0"), k + ": zero labelled");
-    assert.ok(s.some((x) => /^(Funds )?long ↑$/.test(x)) || g.Y(0) - g.T < 22, k + ": the long side named: " + s.join(" | "));
-    assert.ok(s.some((x) => /^(Funds )?short ↓$/.test(x)) || g.netB - g.Y(0) < 22, k + ": the short side named: " + s.join(" | "));
+    assert.ok(s.includes("Net contracts"), k + ": the unit, once");
+    assert.ok(!s.some((x) => /^(long|short) [↑↓]$/.test(x)), k + ": no gutter words beside the tick numbers");
     assert.ok(s.some((x) => x.startsWith(C.netWords(COT[k].net))), k + ": this week's number");
-    assert.ok(s.some((x) => /52-wk high/.test(x)) && s.some((x) => /52-wk low/.test(x)), k + ": high and low");
+    assert.ok(s.includes("Oct 27, 2026"), k + ": the latest date in full, with its year");
+    assert.ok(s.includes("2026") && s.includes("Oct 27"), k + ": the year on the axis, the latest point's date: " + s.join(" | "));
+    const hiS = s.find((x) => /^52-wk high /.test(x)), loS = s.find((x) => /^52-wk low /.test(x));
+    if (m.hi !== m.last) assert.match(hiS || "", /^52-wk high [\d.]+k? (long|short)$/, k + ": the high in words, with its side");
+    if (m.lo !== m.last) assert.match(loS || "", /^52-wk low [\d.]+k? (long|short)$/, k + ": the low in words, never a minus");
+    for (const r of [m.hi, m.lo]) if (r !== m.last) assert.ok(s.includes(K.md(r.date)), k + ": the high and low dated");
     const y0 = g.items.find((i) => i.t === "line" && i.ink === "zero");
     assert.ok(y0 && y0.width >= 1.5, "zero drawn plainly");
+    // round ticks, 3 to 7 of them, the top one at most half a step past the highest week
+    const ticks = texts.filter((i) => i.align === "right" && i.base === "middle" && /^[−]?[\d.]+k?$|^0$/.test(i.s)).map((i) => i.s);
+    assert.ok(ticks.length >= 3 && ticks.length <= 7, k + ": " + ticks);
+    // weeks placed by date: the x of each week grows with its date
+    const xs = m.rows.map((r, i) => g.X(i));
+    for (let i = 1; i < xs.length; i++) assert.ok(xs[i] > xs[i - 1], k + ": by date");
   }
+  // the run bracket: corn sold 6 weeks in a row to Oct 27 (the sheet's run, from the same rows)
+  const cg = C.layout(C.model("corn", HIST, COT, CX), 340, 300, { fs: 12 }).items.filter((i) => i.t === "text").map((i) => i.s);
+  assert.ok(cg.includes("Sold 6 weeks: 333,347"), cg.join(" | "));
+  assert.equal(cg.filter((x) => /^(Sold|Bought) \d+ weeks/.test(x)).length, 1, "one event at most");
+  // the price strip has its own scale (its high and low) and the latest close at the line's end
+  const cm = C.model("corn", HIST, COT, CX), cl = C.layout(cm, 340, 300, { fs: 12 });
+  const ps = cm.rows.map((r) => r.price);
+  const end = cl.items.find((i) => i.t === "text" && i.s === C.px("corn", cm.last.raw));
+  const dot = cl.items.filter((i) => i.t === "dot" && i.ink === "price").at(-1);
+  assert.ok(end && dot && Math.abs(end.x - dot.x) < 10 && Math.abs(end.y - dot.y) < 20, "the price label sits at the line's end");
+  assert.ok(cg.includes(C.px("corn", Math.max(...ps)).replace("/bu", "")) && cg.includes(C.px("corn", Math.min(...ps)).replace("/bu", "")), "the strip's high and low values");
+  // release day: the newest week has a close but no repaired index; the line stops, the label is dated there
+  const rel = clone(HIST); delete rel.history.corn.at(-1).px_adj;
+  const rm = C.model("corn", rel, COT, CX), rl = C.layout(rm, 340, 300, { fs: 12 });
+  const rs = rl.items.filter((i) => i.t === "text").map((i) => i.s);
+  assert.equal(rm.price, true);
+  const rd = rl.items.filter((i) => i.t === "dot" && i.ink === "price").at(-1), rt = rl.items.find((i) => i.t === "text" && /on Oct 20$/.test(i.s));
+  assert.ok(rt && Math.abs(rt.x - rd.x) < 10 && Math.abs(rd.x - rl.X(rm.rows.length - 2)) < 0.5, "the label at the last priced week, dated: " + rs.join(" | "));
+  // the record on the latest point (lean hogs, Oct 27: the largest net short in contracts since 2010)
+  const hs = C.layout(C.model("leanhogs", HIST, COT, CX), 340, 300, { fs: 12 }).items.filter((i) => i.t === "text").map((i) => i.s).join(" ");
+  assert.match(hs, /Largest net short in contracts since 2010/);
+  // the print inks: a dashed price line, a lighter fill
+  const pr = C.layout(cm, 560, 300, { fs: 15, print: true });
+  assert.ok(pr.items.some((i) => i.ink === "price" && i.t === "line" && i.dash), "a dashed price line on paper");
   assert.equal(C.netWords(193781), "193,781 long");
   assert.equal(C.netWords(-74606), "74,606 short");
   assert.equal(C.px("beans", 1229.25), "$12.29¼/bu");
@@ -180,7 +229,7 @@ test("/cot carries one chart, under the verdict and above the market table and t
   assert.ok(!/<canvas id="cot-chart"|id="chart-tabs"|cot-chart-tab/.test(cot), "the old chart lower down is gone");
   assert.ok(!/drawChart|setActiveTab|cot-chart-tab/.test(read("components/cot-page.js")), "and its code");
   const i = (s) => cot.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("cot-glance.js?v=4") > 0 && i("cot-glance.js?v=4") < i("cot-chart.js?v=7") && i("cot-chart.js?v=7") < i("cot-page.js?v=10"));
+  assert.ok(i("cot-glance.js?v=5") > 0 && i("cot-glance.js?v=5") < i("cot-kit.js?v=2") && i("cot-kit.js?v=2") < i("cot-chart.js?v=10") && i("cot-chart.js?v=10") < i("cot-page.js?v=10"));
   assert.match(cot, /\.cc-plot\{[^}]*height:300px/, "the plot's height is held before it draws");
   assert.match(cot, /\.cc-chip\{[^}]*min-height:44px/);
   assert.match(cot, /\.cc-btn\{[^}]*min-height:44px/);
@@ -197,7 +246,7 @@ test("the home card's lines open /cot on their market", () => {
   for (const k of G.ORDER) assert.equal(G.keyOf(G.SLUG[k]), k);
   assert.equal(G.keyOf("nonsense"), null);
   const idx = read("index.html");
-  for (const s of ["components/cot-glance.js?v=4", "components/home.js?v=24", "css/home.css?v=39"]) assert.ok(idx.includes("/" + s + '"'), s);
+  for (const s of ["components/cot-glance.js?v=5", "components/home.js?v=24", "css/home.css?v=39"]) assert.ok(idx.includes("/" + s + '"'), s);
 });
 
 // ---------------------------------------------------------------- in a browser
@@ -238,7 +287,7 @@ async function open(browser, port, url, o = {}) {
   });
   await pg.clock.setFixedTime(new Date("2026-11-04T15:46:20Z"));
   await pg.goto(`http://127.0.0.1:${port}${url}`, { waitUntil: "load" });
-  await pg.waitForFunction(() => { const b = document.getElementById("cot-chart-box"); return b && b.dataset.latest && /: funds /.test(document.getElementById("cc-head").textContent); });
+  await pg.waitForFunction(() => { const b = document.getElementById("cot-chart-box"); return b && b.dataset.latest && / funds /.test(document.getElementById("cc-head").textContent); });
   return pg;
 }
 /* records the chart box's height at first paint, and every layout shift */
@@ -291,8 +340,8 @@ test("/cot?m=soybeans opens on soybeans; a chip changes the market and the link;
     const pg = await open(browser, port, "/cot?m=soybeans", { width: 1280 });
     assert.equal(await pg.$eval("#cot-chart-box", (b) => b.dataset.market), "beans");
     assert.equal(+(await pg.$eval("#cot-chart-box", (b) => b.dataset.latest)), COT.beans.net);
-    assert.equal((await pg.textContent("#cc-head")).trim(), "Soybeans: funds long, fairly heavy, sold 27,544 this week");
-    assert.equal((await pg.textContent("#cc-src")).trim(), "CFTC Commitments of Traders, managed money, futures only, as of Oct 27, released Oct 30. Price: front-month futures close each report Tuesday (Yahoo Finance), adjusted for contract rolls.");
+    assert.equal((await pg.textContent("#cc-head")).trim(), "Soybean funds cut their net long by 27,544 contracts. Still net long: 193,781.");
+    assert.equal((await pg.textContent("#cc-src")).trim(), "CFTC Commitments of Traders, managed money, futures only, week to Tue, Oct 27, 2026, released Fri, Oct 30, 2026. Price: front-month futures close each report Tuesday (Yahoo Finance), adjusted for contract rolls.");
     assert.equal(await pg.$eval("#cot-chart-box", (b) => b.dataset.price), "1");
     // hover: the week's date and net
     const plot = await pg.$("#cc-plot");
@@ -330,13 +379,13 @@ test("Share this chart: the phone's share sheet gets the market's link; a deskto
   };
   try {
     let pg = await open(browser, port, "/cot?m=soybeans", { init: () => { window.__coarse = true; }, touch: true });
-    await pg.addInitScript(stub); await pg.reload(); await pg.waitForFunction(() => document.getElementById("cot-chart-box").dataset.latest && /: funds /.test(document.getElementById("cc-head").textContent));
+    await pg.addInitScript(stub); await pg.reload(); await pg.waitForFunction(() => document.getElementById("cot-chart-box").dataset.latest && / funds /.test(document.getElementById("cc-head").textContent));
     await pg.evaluate(() => { window.__coarse = true; });
     await pg.click("#cc-share");
     const shared = await pg.evaluate(() => window.__shared);
     assert.equal(shared.length, 1);
-    assert.equal(shared[0].url, "https://agsist.com/cot?m=soybeans");
-    assert.equal(shared[0].text, "Soybeans: funds long, fairly heavy, sold 27,544 this week");
+    assert.equal(shared[0].url, "https://agsist.com/cot?m=soybeans&w=2026-10-27&utm_source=share&utm_medium=link&utm_campaign=cot-2026-10-27#soybeans", "the market, the week and the kit's tags");
+    assert.equal(shared[0].text, "Soybean funds cut their net long by 27,544 contracts. Still net long: 193,781.");
     assert.match(shared[0].title, /soybeans/);
     await pg.context().close();
 
@@ -344,28 +393,79 @@ test("Share this chart: the phone's share sheet gets the market's link; a deskto
     await pg.addInitScript(stub); await pg.reload(); await pg.waitForFunction(() => document.getElementById("cot-chart-box").dataset.latest);
     await pg.click("#cc-share");
     await pg.waitForFunction(() => document.getElementById("cc-note").textContent === "Link copied");
-    assert.deepEqual(await pg.evaluate(() => [window.__shared.length, window.__copied]), [0, ["https://agsist.com/cot?m=chicago-wheat"]]);
+    assert.deepEqual(await pg.evaluate(() => [window.__shared.length, window.__copied]), [0, ["https://agsist.com/cot?m=chicago-wheat&w=2026-10-27&utm_source=share&utm_medium=link&utm_campaign=cot-2026-10-27#chicago-wheat"]]);
     await pg.context().close();
   } finally { await browser.close(); srv.close(); }
 });
 
-test("Save image: a 1200x675 PNG with the headline, agsist.com/cot and the report date", { skip, timeout: 120000 }, async () => {
+test("Save picture: pick your market, then a 1200x675 PNG with that market's headline, agsist.com/cot and the report date", { skip, timeout: 120000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const pg = await open(browser, port, "/cot?m=soybeans", { width: 1280 });
-    const [dl] = await Promise.all([pg.waitForEvent("download"), pg.click("#cc-save")]);
+    const pg = await open(browser, port, "/cot", { width: 1280 });
+    await pg.click("#cc-save");
+    assert.ok(await pg.$eval("#cc-pick", (d) => d.open), "Save picture asks which market first");
+    assert.deepEqual(await pg.$$eval("#cc-pick-mk > .cc-dlg-g .cc-pk", (b) => b.map((x) => x.textContent)), ["Corn", "Soybeans", "Wheat", "Cattle", "Hogs"]);
+    assert.equal(await pg.$$eval("#cc-pick .cc-dlg-more .cc-pk", (b) => b.length), 6, "the rest under More markets");
+    const [dl] = await Promise.all([pg.waitForEvent("download"), pg.click('#cc-pick .cc-pk[data-k="beans"]')]);
     assert.equal(dl.suggestedFilename(), "agsist-cot-soybeans-2026-10-27.png");
     const buf = fs.readFileSync(await dl.path());
     assert.equal(buf.subarray(1, 4).toString(), "PNG");
     assert.deepEqual([buf.readUInt32BE(16), buf.readUInt32BE(20)], [1200, 675], "1200x675");
     const im = await pg.evaluate(() => window.AgCotChart.lastImage);
     assert.ok(im.texts.includes("agsist.com/cot"), "carries agsist.com/cot");
-    assert.ok(im.texts.includes("Positions as of Oct 27, 2026, released Oct 30"), "carries the date: " + im.texts.join(" | "));
-    assert.ok(im.texts.some((t) => t.startsWith("Soybeans: funds long, fairly heavy")), "carries the headline");
+    assert.ok(im.texts.includes("Week to Tue, Oct 27, 2026. Released Fri, Oct 30, 2026."), "carries the dates with the year: " + im.texts.join(" | "));
+    assert.ok(im.texts.includes("Soybean funds cut their net long by 27,544 contracts.") && im.texts.includes("Still net long: 193,781."), "carries the headline: what changed, then where they stand");
+    assert.ok(!im.texts.some((t) => /\bthis week\b|\btoday\b/i.test(t)), "no 'this week' or 'today' on a picture");
     assert.ok(im.texts.includes("193,781 long"), "this week's number");
+    assert.ok(im.texts.includes("In bushels: about 140 million sold, about 970 million net long."), "the contracts in bushels: " + im.texts.filter((t) => /bushels/.test(t)));
+    assert.ok(im.texts.some((t) => /exchange contract specifications/.test(t)), "and where the contract size comes from");
+    assert.equal(await pg.$eval("#cc-pv-note", (e) => e.textContent), "Picture saved.");
     assert.ok(im.texts.some((t) => /^Source: CFTC Commitments of Traders/.test(t)), "and its source");
     assert.ok(!im.texts.some((t) => DASH.test(t)), "no dashes");
+    await pg.context().close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("the share fallback: on a phone the picture is made at the pick and sent inside the tap; a refused share downloads it with a note", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const stub = () => {
+    window.__shared = []; window.__ev = [];
+    const mm = window.matchMedia.bind(window);
+    window.matchMedia = (q) => (/pointer:\s*coarse/.test(q) ? { matches: true, media: q, addEventListener() {}, removeEventListener() {} } : mm(q));
+    Object.defineProperty(navigator, "canShare", { configurable: true, value: () => true });
+    Object.defineProperty(navigator, "share", { configurable: true, value: (d) => { window.__shared.push(d); return window.__refuse ? Promise.reject(new DOMException("no activation", "NotAllowedError")) : Promise.resolve(); } });
+  };
+  try {
+    const pg = await open(browser, port, "/cot", { touch: true, init: stub });
+    await pg.click("#cc-save");
+    await pg.click('#cc-pick .cc-pk[data-k="leanhogs"]');
+    await pg.waitForFunction(() => !document.getElementById("cc-pv-send").hidden);
+    assert.equal(await pg.evaluate(() => window.__shared.length), 0, "nothing shared until the reader taps Send");
+    assert.deepEqual(await pg.evaluate(() => [window.AgCotChart.lastImage.w, window.AgCotChart.lastImage.h]), [1080, 1350], "the phone picture");
+    await pg.click("#cc-pv-send");
+    await pg.waitForFunction(() => document.getElementById("cc-pv-note").textContent === "Sent.");
+    const sh = await pg.evaluate(() => ({ n: window.__shared[0].files.length, name: window.__shared[0].files[0].name, text: window.__shared[0].text }));
+    assert.equal(sh.n, 1); assert.equal(sh.name, "agsist-cot-lean-hogs-2026-10-27.png");
+    assert.match(sh.text, /https:\/\/agsist\.com\/cot\?m=lean-hogs&w=2026-10-27&utm_source=share&utm_medium=picture&utm_campaign=cot-2026-10-27#lean-hogs$/);
+    const ev = () => pg.evaluate(() => (window.dataLayer || []).filter((a) => a[0] === "event").map((a) => a[1] + ":" + JSON.stringify(a[2] || {})));
+    assert.ok((await ev()).some((e) => /^share_done:.*"asset":"picture"/.test(e)), "share_done only after the share resolved");
+    await pg.evaluate(() => { window.__refuse = true; });
+    const [dl] = await Promise.all([pg.waitForEvent("download"), pg.click("#cc-pv-send")]);
+    assert.equal(dl.suggestedFilename(), "agsist-cot-lean-hogs-2026-10-27.png", "refused: downloaded instead");
+    assert.match(await pg.$eval("#cc-pv-note", (e) => e.textContent), /did not open sharing, so the picture was saved/);
+    await pg.context().close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("arrivals: a QR visit is counted once and the Funds this week box records where the reader came from", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const pg = await open(browser, port, "/cot?utm_source=print&utm_medium=qr&utm_campaign=cot-2026-10-27");
+    assert.equal(await pg.$eval("#cot-signup", (e) => e.getAttribute("data-source")), "cot-weekly:cot|print-qr");
+    assert.equal(await pg.evaluate(() => (window.dataLayer || []).filter((a) => a[0] === "event" && a[1] === "qr_visit").length), 1);
     await pg.context().close();
   } finally { await browser.close(); srv.close(); }
 });

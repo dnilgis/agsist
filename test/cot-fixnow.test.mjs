@@ -130,7 +130,7 @@ test("8, 9. price figures name their series; save says why when there is no char
   assert.match(PAGE, /price change, contract rolls removed/);
   assert.match(code(MKT), /price change, contract rolls removed/);
   assert.match(read("components/cot-chart.js"), /Futures close/);
-  assert.match(read("components/cot-chart.js"), /if \(!M\) \{ note\('The chart has not loaded/);
+  assert.match(read("components/cot-share.js"), /if \(!m\) \{ note\('The chart has not loaded/);
   // one countdown since Nov 6: the release bar at the top, plain text, its state changes announced apart
   assert.doesNotMatch(HTML, /id="cot-countdown"/);
   assert.match(HTML, /<span class="cot-rel-t" id="cot-rel-t">/);
