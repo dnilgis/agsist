@@ -1500,27 +1500,26 @@ def skb_rows(t, live_b, center, near_pick, snap_ct):
             r = glance_rows(bd).get(c)
             if not r:
                 continue
-            pin = bd.get("pin")
-            d = miles(center[0], center[1], pin[0], pin[1]) if (center and pin) else None
+            # an elevator on this page's own cards is "in" the town (or within NEAR_MI of it): no miles printed
             town = t["name"] if bd.get("how") != "near" else (town_name(bd.get("city")) or t["name"])
-            cand.append(_skb_row(r, head_name(bd, with_town=False), town, t["state"], d, path, snap_ct))
+            cand.append(_skb_row(r, head_name(bd, with_town=False), town, t["state"], None, path, snap_ct))
         for d, b in near_pick:
             r = (b.get("rows") or {}).get(c)
             if r:
                 cand.append(_skb_row(r, b["name"], b["town"], b["state"], d, b["path"], snap_ct))
         cand = [x for x in cand if x]
-        cand.sort(key=lambda x: (-x["v"], -parse_ts(x["p"]).timestamp(), x["mi"] if x["mi"] is not None else 1e9, x["n"]))
+        cand.sort(key=lambda x: (-x["v"], -parse_ts(x["p"]).timestamp(), x["mi"] or 0, x["n"], x["t"]))
         if cand:
             out[c] = cand
     return out
 
 
-def skb_html(rows, place, town, path):
+def skb_html(rows, place, town, path, center=None):
     """The kit's two buttons (they join the share row) and its data, or ("", "") with no corn or soybean row."""
     if not rows:
         return "", ""
     data = {"place": place, "town": town, "url": f"{SITE}{path}", "page": path.strip("/").replace("/", "-"),
-            "n": SKB_N, "rows": rows}
+            "n": SKB_N, "from": center[2] if center else "", "rows": rows}
     btns = ('<button type="button" class="cbt-share-btn" id="skb-pic">Save picture</button>'
             '<button type="button" class="cbt-share-btn" id="skb-print">Print bid sheet</button>'
             '<span class="skb-st" role="status" aria-live="polite"></span>')
@@ -2342,7 +2341,7 @@ def build_town_page(t, ctx):
     share_html = share_bid_html(picks, place, path) if answer else ""
     # the Bids near kit: its buttons join the share row (one row, no new line); its rows are this page's own
     skb_btns, skb_js = skb_html(skb_rows(t, live_b, center, nearby_pick(t, center, ctx.get("live_all"), True), snap_ct),
-                                place, t["name"], path) if indexable else ("", "")
+                                place, t["name"], path, center) if indexable else ("", "")
     if skb_btns:
         share_html = (share_html[:-len("</p>")] + skb_btns + "</p>") if share_html else f'<p class="cbt-share">{skb_btns}</p>'
     # the dated lead paragraph (scripts/stories_bids.py): stable facts only, never a price
