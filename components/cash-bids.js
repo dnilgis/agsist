@@ -1469,6 +1469,25 @@ function renderBestBids(elevators){
   });
 }
 
+/* THE BIDS NEAR KIT (components/bids-kit.js, Nov 7, 2026): the top corn and soybean bids of the search on screen,
+   in the Best price ranking above (rankCands, classGroups, rankCmp), one row per elevator, for its picture and bid
+   sheet. Only what the cards print: a re-marked price, a board not reached or a read time with no posted time is
+   left out, never filled in. */
+window.cbKitData=function(){
+  var zip=((($('cb-zip')||{}).value)||'').trim(),r=parseInt((radiusSel||{}).value,10)||50,rows={};
+  if(!/^\d{5}$/.test(zip)||!currentElevators||!currentElevators.length)return null;
+  ['corn','soybeans'].forEach(function(c){
+    var g=classGroups(rankCands(currentElevators,c)),cands=(g['']||[]).slice().sort(rankCmp);
+    rows[c]=cands.filter(function(x){return !x.rk.remark&&!x.elev.unread&&!x.bid.asOfRead&&x.bid.asOf&&ppu(x.bid.cashPrice)!=null;}).map(function(x){
+      var b=x.bid,bc=b.basis!=null&&!basisUnusual(b)&&basisUnit(b.basis,b)!=='?'?basisCents(b.basis,b):null,del=delShow(b)||'';
+      if(isSpotDelivery(b.deliveryMonth||b.deliveryStart||'',b))del='Spot';
+      return{n:x.elev.facility,t:placeOf(x.elev),s:x.elev.state||'',mi:x.elev.distance!=null?Math.round(x.elev.distance*10)/10:null,
+        c:'$'+fmtPx(ppu(b.cashPrice)),d:del,dl:del,b:bc!=null?AG.px.basis(bc):null,k:bc!=null?contractLabel(b):'',p:b.asOf};
+    });
+  });
+  return{place:'ZIP '+zip,town:'',url:'https://agsist.com/cash-bids?zip='+zip+'&r='+r,page:'cash-bids',n:5,from:'the center of ZIP '+zip,rows:rows};
+};
+
 /* UNDER THIS, AFTER HAULING, THE "WINNER" IS NOT ONE. Three cents a bushel is
    inside the rounding of a fuel estimate and a scale ticket; naming a winner on
    it sends a truck the long way for nothing. */
