@@ -1,0 +1,550 @@
+{
+ "updated": "2026-11-07",
+ "progress": {
+  "corn_harvested": {
+   "date": "2026-11-01",
+   "pct": 74,
+   "prev_week": 60,
+   "prev_year": null,
+   "avg5": 77,
+   "avg5_by": "NASS"
+  },
+  "soybeans_harvested": {
+   "date": "2026-11-01",
+   "pct": 88,
+   "prev_week": 79,
+   "prev_year": null,
+   "avg5": 84,
+   "avg5_by": "NASS"
+  }
+ },
+ "states": {
+  "AL": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 100,
+    "prev_week": 100,
+    "prev_year": null,
+    "avg5": null
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 89,
+    "prev_week": 78,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "CO": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 65,
+    "prev_week": 50,
+    "prev_year": null,
+    "avg5": 65,
+    "avg5_by": "NASS"
+   }
+  },
+  "DE": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 95,
+    "prev_week": 89,
+    "prev_year": null,
+    "avg5": null
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 51,
+    "prev_week": 28,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "IL": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 86,
+    "prev_week": 74,
+    "prev_year": null,
+    "avg5": 83,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 91,
+    "prev_week": 81,
+    "prev_year": null,
+    "avg5": 85,
+    "avg5_by": "NASS"
+   }
+  },
+  "IN": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 75,
+    "prev_week": 61,
+    "prev_year": null,
+    "avg5": 71,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 87,
+    "prev_week": 75,
+    "prev_year": null,
+    "avg5": 81,
+    "avg5_by": "NASS"
+   }
+  },
+  "IA": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 66,
+    "prev_week": 47,
+    "prev_year": null,
+    "avg5": 79,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 90,
+    "prev_week": 78,
+    "prev_year": null,
+    "avg5": 90,
+    "avg5_by": "NASS"
+   }
+  },
+  "KS": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 86,
+    "prev_week": 79,
+    "prev_year": null,
+    "avg5": 87,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 72,
+    "prev_week": 61,
+    "prev_year": null,
+    "avg5": 78,
+    "avg5_by": "NASS"
+   }
+  },
+  "KY": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 93,
+    "prev_week": 91,
+    "prev_year": null,
+    "avg5": 87,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 81,
+    "prev_week": 73,
+    "prev_year": null,
+    "avg5": 67,
+    "avg5_by": "NASS"
+   }
+  },
+  "MD": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 88,
+    "prev_week": 79,
+    "prev_year": null,
+    "avg5": null
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 54,
+    "prev_week": 31,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "MI": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 43,
+    "prev_week": 28,
+    "prev_year": null,
+    "avg5": 54,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 81,
+    "prev_week": 69,
+    "prev_year": null,
+    "avg5": 72,
+    "avg5_by": "NASS"
+   }
+  },
+  "MN": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 82,
+    "prev_week": 65,
+    "prev_year": null,
+    "avg5": 85,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 97,
+    "prev_week": 93,
+    "prev_year": null,
+    "avg5": 98,
+    "avg5_by": "NASS"
+   }
+  },
+  "MO": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 86,
+    "prev_week": 79,
+    "prev_year": null,
+    "avg5": 85,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 79,
+    "prev_week": 65,
+    "prev_year": null,
+    "avg5": 73,
+    "avg5_by": "NASS"
+   }
+  },
+  "MT": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 48,
+    "prev_week": 40,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "NE": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 66,
+    "prev_week": 55,
+    "prev_year": null,
+    "avg5": 75,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 84,
+    "prev_week": 75,
+    "prev_year": null,
+    "avg5": 88,
+    "avg5_by": "NASS"
+   }
+  },
+  "NJ": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 64,
+    "prev_week": 52,
+    "prev_year": null,
+    "avg5": null
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 25,
+    "prev_week": 10,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "NM": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 45,
+    "prev_week": 39,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "NY": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 28,
+    "prev_week": 21,
+    "prev_year": null,
+    "avg5": null
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 53,
+    "prev_week": 44,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "NC": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 98,
+    "prev_week": 96,
+    "prev_year": null,
+    "avg5": 96,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 49,
+    "prev_week": 32,
+    "prev_year": null,
+    "avg5": 42,
+    "avg5_by": "NASS"
+   }
+  },
+  "ND": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 76,
+    "prev_week": 58,
+    "prev_year": null,
+    "avg5": 69,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 96,
+    "prev_week": 88,
+    "prev_year": null,
+    "avg5": 91,
+    "avg5_by": "NASS"
+   }
+  },
+  "OH": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 53,
+    "prev_week": 35,
+    "prev_year": null,
+    "avg5": 60,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 83,
+    "prev_week": 69,
+    "prev_year": null,
+    "avg5": 83,
+    "avg5_by": "NASS"
+   }
+  },
+  "OK": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 95,
+    "prev_week": 93,
+    "prev_year": null,
+    "avg5": null
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 43,
+    "prev_week": 40,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "PA": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 61,
+    "prev_week": 35,
+    "prev_year": null,
+    "avg5": 53,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 52,
+    "prev_week": 45,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "SD": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 63,
+    "prev_week": 44,
+    "prev_year": null,
+    "avg5": 75,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 94,
+    "prev_week": 89,
+    "prev_year": null,
+    "avg5": 92,
+    "avg5_by": "NASS"
+   }
+  },
+  "TN": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 100,
+    "prev_week": 98,
+    "prev_year": null,
+    "avg5": 94,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 88,
+    "prev_week": 81,
+    "prev_year": null,
+    "avg5": 72,
+    "avg5_by": "NASS"
+   }
+  },
+  "TX": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 97,
+    "prev_week": 95,
+    "prev_year": null,
+    "avg5": 96,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 82,
+    "prev_week": 79,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "UT": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 38,
+    "prev_week": 30,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "VA": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 94,
+    "prev_week": 92,
+    "prev_year": null,
+    "avg5": null
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 47,
+    "prev_week": 34,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "WV": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 39,
+    "prev_week": 30,
+    "prev_year": null,
+    "avg5": null
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 35,
+    "prev_week": 28,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "WI": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 61,
+    "prev_week": 42,
+    "prev_year": null,
+    "avg5": 57,
+    "avg5_by": "NASS"
+   },
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 94,
+    "prev_week": 87,
+    "prev_year": null,
+    "avg5": 84,
+    "avg5_by": "NASS"
+   }
+  },
+  "WY": {
+   "corn_harvested": {
+    "date": "2026-11-01",
+    "pct": 37,
+    "prev_week": 28,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "AR": {
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 94,
+    "prev_week": 91,
+    "prev_year": null,
+    "avg5": 87,
+    "avg5_by": "NASS"
+   }
+  },
+  "GA": {
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 64,
+    "prev_week": 56,
+    "prev_year": null,
+    "avg5": null
+   }
+  },
+  "LA": {
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 100,
+    "prev_week": 99,
+    "prev_year": null,
+    "avg5": 97,
+    "avg5_by": "NASS"
+   }
+  },
+  "MS": {
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 99,
+    "prev_week": 98,
+    "prev_year": null,
+    "avg5": 93,
+    "avg5_by": "NASS"
+   }
+  },
+  "SC": {
+   "soybeans_harvested": {
+    "date": "2026-11-01",
+    "pct": 39,
+    "prev_week": 26,
+    "prev_year": null,
+    "avg5": null
+   }
+  }
+ },
+ "progress_method": "5-year average: the one NASS prints in the weekly Crop Progress report where a figure carries avg5_by NASS (the national row and the states in the report; for 2021-2025 NASS used its own estimates for the October 2025 weeks it did not publish). Elsewhere AGSIST's arithmetic on the NASS weekly series, each of the five prior years interpolated to the same calendar date, then averaged; withheld if any year lacks a published week on both sides, and can differ from the NASS-printed average by a point."
+}
