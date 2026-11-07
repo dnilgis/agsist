@@ -15,9 +15,10 @@
  *   - THE PRINT SHEETS: the sheet data and the HTML each kit writes (COT sheet at its three chart heights and the
  *     wall edition, County Print at three chart heights with the locator, the Bin Print and crew sheets), hashed
  *     and held to GOLD the same way.
- *   - In a browser (Chromium): each page's print sheet is the only thing shown in print, with the shared shell CSS
- *     in place of the three copies; any print (beforeprint) builds it. Every outside host is blocked and service
- *     workers are off (BUILD-RULES 58).
+ *   - In a browser: the kits' own browser tests (test/cot-print, test/county-print, test/bin-yard) print each sheet
+ *     through the shared shell (one page on Letter and A4, beforeprint builds it, nothing moves on screen).
+ *   - The shared module itself: the tags and GA names, the dates, the pen, the frame and QR code, the share
+ *     fallback, the print hook, one copy of the shell, and every page loading the core before its kit.
  * Frozen inputs: test/fixtures/funds (the Oct 27 COT report), test/fixtures/share-kit/county.json (two built
  * county pages' figures) and loc-ia.json, test/fixtures/county-print-live.json, and the Bin Print sample yard. */
 import { test } from "node:test";
@@ -194,4 +195,104 @@ test("every picture and every print sheet is the same as before the move (record
   assert.ok(Object.keys(GOLD).length >= 50, "the gold record is in place");
   assert.deepEqual(Object.keys(FP).sort(), Object.keys(GOLD).sort(), "the same set of outputs");
   for (const k of Object.keys(GOLD)) assert.equal(FP[k], GOLD[k], k + " unchanged");
+});
+
+/* ---------------------------------------------------------------- the shared module itself */
+const SK = require(path.join(ROOT, "components/share-kit.js"));
+
+test("one link convention and one set of GA names, the ones the brief lists", () => {
+  assert.equal(SK.tags("print", "qr", "cot-2026-11-03"), "utm_source=print&utm_medium=qr&utm_campaign=cot-2026-11-03");
+  assert.deepEqual(Object.keys(SK.SRC), ["share", "print", "email"]);
+  assert.deepEqual(Object.keys(SK.MED), ["picture", "sheet", "qr", "link"]);
+  assert.deepEqual(Object.values(SK.EV), ["share_open", "share_done", "picture_download", "sheet_print", "qr_visit"]);
+  // the kits build their links with it: COT (cot-kit.js link) and County Print (county-print.js link)
+  const K = require(path.join(ROOT, "components/cot-kit.js"));
+  assert.equal(K.link(["beans"], "2026-11-03", "share", "picture"), "https://agsist.com/cot?m=soybeans&w=2026-11-03&utm_source=share&utm_medium=picture&utm_campaign=cot-2026-11-03#soybeans");
+  assert.equal(CP.link("https://agsist.com/farmland-atlas/iowa/story-county", "print", "qr", "19169", "2026-11-07"),
+    "https://agsist.com/farmland-atlas/iowa/story-county?asof=2026-11-07&utm_source=print&utm_medium=qr&utm_campaign=county-19169");
+  for (const f of ["cot-kit.js", "county-print.js"]) assert.doesNotMatch(read("components/" + f).replace(/\/\*[\s\S]*?\*\//g, ""), /'utm_source='/, f + ": no second copy of the tags");
+});
+
+test("dates carry the year: Central time for the printed day, the device's own clock for Bin Print", () => {
+  assert.equal(SK.mdy("2026-11-07"), "Nov 7, 2026");
+  assert.equal(SK.mdy("nope"), "");
+  assert.equal(SK.dateLine(Date.UTC(2026, 10, 8, 3)), "November 7, 2026", "9 PM Central on Nov 7 is still Nov 7");
+  assert.equal(SK.isoDay(Date.UTC(2026, 10, 8, 3)), "2026-11-07");
+  assert.equal(SK.mdyLocal(new Date(2026, 0, 2, 12)), "Jan 2, 2026");
+  assert.equal(SK.esc(null), "");
+  assert.equal(SK.esc("<a href=\"x\">'&'</a>"), "&lt;a href=&quot;x&quot;&gt;&#39;&amp;&#39;&lt;/a&gt;");
+});
+
+test("the pen wraps, shrinks to fit and records every word; the frame and the QR code paint as before", () => {
+  const r = recorder(), c = r.doc.createElement("canvas"), ctx = c.getContext("2d"), p = SK.pen(ctx, { paras: true });
+  p.font(20, 400);
+  assert.deepEqual(p.wrap("one two\nthree four five", 200), ["one two", "three four five"], "a newline starts a line when paras is set");
+  assert.deepEqual(SK.pen(ctx).wrap("one two\nthree", 2000), ["one two\nthree"], "and is a plain character when it is not");
+  const sz = p.fit("a long headline that will not fit", 60, 36, 800, 400);
+  assert.ok(sz >= 36 && sz < 60 && sz % 2 === 0, "shrinks in steps of 2, never under the floor: " + sz);
+  const y = p.lines("alpha beta gamma delta epsilon zeta", 10, 100, 30, 600, "#fff", 40, 2, 200);
+  assert.equal(p.texts.length, 2, "at most the lines asked for");
+  assert.equal(y, 180);
+  assert.deepEqual(p.sizes, [30, 30]); assert.deepEqual(p.ys, [100, 140]);
+  const r2 = recorder(), c2 = r2.doc.createElement("canvas"), x2 = c2.getContext("2d");
+  SK.frame(x2, 100, 50, 8);
+  assert.deepEqual(r2.log.map((l) => [l[0], l[1].join(",")]), [["fillRect", "0,0,100,50"], ["fillRect", "0,0,100,8"]]);
+  assert.match(r2.log[0][2], /fillStyle=#0a0c0d/); assert.match(r2.log[1][2], /fillStyle=#d4a23f/);
+  assert.equal(SK.qr(x2, [[true, false], [false, true]], 0, 0, 3), 30, "4 modules of quiet zone each side");
+});
+
+test("sharing: the share sheet inside the tap, a download when it refuses, nothing when the reader cancels", async () => {
+  const calls = [];
+  const win = (rej) => ({ navigator: { share: () => (rej ? Promise.reject(rej) : Promise.resolve()), canShare: () => true }, matchMedia: (q) => ({ matches: q === "(pointer: coarse)" }) });
+  await SK.share(win(null), {}, () => calls.push("done"), () => calls.push("fail"));
+  await SK.share(win({ name: "NotAllowedError" }), {}, () => calls.push("done"), () => calls.push("fail"));
+  await SK.share(win({ name: "AbortError" }), {}, () => calls.push("done"), () => calls.push("fail"));
+  await SK.share(win({ name: "NotAllowedError" }), {}, null, null);
+  assert.deepEqual(calls, ["done", "fail"], "resolved: done; refused: the fallback; the reader's cancel: nothing");
+  assert.equal(SK.canShareFile(win(null), {}), true);
+  assert.equal(SK.canShareFile(win(null), null), false, "no file, no share sheet");
+  assert.equal(SK.canShareFile({ navigator: {}, matchMedia: () => ({ matches: true }) }, {}), false, "a browser without canShare downloads");
+  const got = [];
+  SK.copy({ navigator: {} }, "u", () => got.push("ok"), () => got.push("fail"));
+  await SK.copy({ navigator: { clipboard: { writeText: () => Promise.resolve() } } }, "u", () => got.push("ok"), () => got.push("fail"));
+  await new Promise((r) => setTimeout(r, 0));
+  assert.deepEqual(got, ["fail", "ok"]);
+});
+
+test("the print hook: any print gives the sheet; Bin Print keeps to beforeprint and afterprint", () => {
+  const mk = () => { const ev = {}, mq = []; return { ev, mq, addEventListener: (n, f) => { ev[n] = f; }, matchMedia: () => ({ addEventListener: (n, f) => mq.push(f) }) }; };
+  const a = mk(), b = mk();
+  SK.printHook(a, () => {}, () => {});
+  SK.printHook(b, () => {}, () => {}, { mq: false });
+  assert.ok(a.ev.beforeprint && a.ev.afterprint && a.mq.length === 1);
+  assert.ok(b.ev.beforeprint && b.ev.afterprint && b.mq.length === 0);
+  const off = []; SK.printNow({ print: () => { throw new Error("no"); } }, () => off.push(1));
+  assert.deepEqual(off, [1], "a print that cannot start puts the page back");
+  // one copy of the shell: the three kits' stylesheets no longer carry their own
+  for (const f of ["cot-print.css", "county-print.css", "bin-yard.css"]) {
+    const css = read("components/" + f);
+    assert.doesNotMatch(css, /body>\*:not\(#/, f + ": the print isolation is the share kit's");
+    assert.doesNotMatch(css, /-measure\{display:block/, f + ": the off-screen measure is the share kit's");
+  }
+  for (const f of ["cot-print.js", "county-print.js", "bin-yard.js"]) {
+    const js = read("components/" + f);
+    assert.match(js, /\.printHook\(root, /, f + ": the share kit's print hook");
+    assert.match(js, /\.sheet\(doc, '(cotp|cprs|byp)', '\1'\)/, f + ": the share kit's sheet");
+    assert.doesNotMatch(js, /addEventListener\('beforeprint'/, f + ": no second print hook");
+  }
+});
+
+test("every page that runs a kit loads the share kit core first; versions bumped; cot-chart.js under its budget", () => {
+  const cot = read("cot.html"), bin = read("grain-bin-calculator.html");
+  assert.ok(cot.indexOf('/components/share-kit.js?v=1"') > 0 && cot.indexOf('/components/share-kit.js?v=1"') < cot.indexOf('/components/cot-kit.js?v=3"'));
+  assert.ok(cot.includes('<link rel="stylesheet" href="/components/share-kit.css?v=1">'));
+  assert.ok(bin.indexOf('/components/share-kit.js?v=1"') > 0 && bin.indexOf('/components/share-kit.js?v=1"') < bin.indexOf('/components/bin-yard.js?v=2"'));
+  assert.ok(bin.includes('<link rel="stylesheet" href="/components/share-kit.css?v=1">'));
+  // County pages are a generated set: county-print.js (at its own hash) loads the core and its stylesheet itself
+  const cpj = read("components/county-print.js");
+  assert.match(cpj, /SK_CSS = '\/components\/share-kit\.css\?v=1', SK_JS = '\/components\/share-kit\.js\?v=1'/);
+  assert.match(cpj, /CSS = '\/components\/county-print\.css\?v=2'/);
+  assert.match(cpj, /if \(root\.AgShareKit\) start\(\); else load\('script', \{ src: SK_JS, async: true \}\)\.onload = start;/);
+  assert.ok(fs.statSync(path.join(ROOT, "components/cot-chart.js")).size < 50000, "cot-chart.js under 50,000 bytes");
+  assert.doesNotMatch(read("components/share-kit.js") + read("components/share-kit.css"), /—/, "no em dash");
 });
