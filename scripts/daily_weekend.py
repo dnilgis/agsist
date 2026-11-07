@@ -14,8 +14,13 @@ SATURDAY, "The week in review"
                  contract label each locked change carries. A missing price, a different contract or an
                  issue that does not hold that Friday drops the row; nothing is guessed. A close at the
                  contract's 52-week high or low (wk52_hi / wk52_lo in data/prices.json) says so.
-  The reader's own elevator bid for the week needs a week-old bid per reader; the bid files keep 4 days
-  (data/bids-prev, KEEP_DAYS) and the private bid ledger is not built yet, so that line prints nothing.
+  bid_week()     The reader's own line (fx/bid-week, Nov 7 2026): for a reader with a ZIP, the top corn and soybean
+                 boards near them (send_daily load_local_lines, local_bid.top_for_zip) against last Friday:
+                 "Your bid at <elevator>: corn $X, up N cents from last Friday (posted <time>)". This Friday is
+                 that board's entry for Friday in data/bids-prev rows; last Friday is its `fri` slot (scripts/
+                 build_bids_prev.py). Both must be dated exactly those Fridays for the same place, crop and
+                 delivery period (the board key), the board read at send time must still show Friday's price
+                 (so the posted time is Friday's price's), and the posted time must be known; else no line.
 
 SUNDAY, "The week ahead"
   week_ahead()   Reports this week, Monday to Saturday: Crop Progress and Export Sales (with their holiday
@@ -25,8 +30,8 @@ SUNDAY, "The week ahead"
 BOTH
   infographic()  The Infographic of the Week slot: nothing until data/infographics/ exists.
 
-Pure functions over the data handed in; tests hand in fixtures. It imports only usda_dates, cot_calendar and
-pricefmt: never a reader of the moved COT history (test/raw-readers.test.mjs).
+Pure functions over the data handed in; tests hand in fixtures. It imports only usda_dates, cot_calendar,
+pricefmt and build_bids_prev (for the board key): never a reader of the moved COT history (test/raw-readers.test.mjs).
 """
 import json
 import os
@@ -34,6 +39,7 @@ import re
 from datetime import date, datetime, timedelta, timezone
 from decimal import Decimal, ROUND_HALF_UP
 
+import build_bids_prev
 import cot_calendar
 import pricefmt
 import usda_dates
@@ -48,6 +54,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 ARCHIVE = os.path.join(REPO, "data", "daily-archive")
 INFOGRAPHICS = os.path.join(REPO, "data", "infographics")
+BIDS_PREV = os.path.join(REPO, "data", "bids-prev")
+BID_NOTE = "Each elevator's own posted board, last read each Friday. Not a contract. Call before you haul."
 
 ROWS = (("corn", "Corn"), ("beans", "Soybeans"), ("wheat", "Chicago wheat"),
         ("cattle", "Live cattle"), ("feeders", "Feeder cattle"), ("hogs", "Lean hogs"))
@@ -254,6 +262,62 @@ def week_review(today, prices, archive_dir=None):
     return {"title": REVIEW_TITLE, "head": REVIEW_HEAD, "stamp": stamp, "friday": fri.isoformat(),
             "prior": pf.isoformat(), "rows": rows, "lines": lines, "notes": [],
             "source": "CME futures via Yahoo Finance, delayed", "closes": now}
+
+
+# ── Saturday: the reader's own bid, Friday vs last Friday ───────────────
+def _ct_date(stamp):
+    try:
+        return datetime.fromisoformat(str(stamp).replace("Z", "+00:00")).astimezone(CT).date()
+    except Exception:
+        return None
+
+
+def _shard(st, prev_dir, cache):
+    if st not in cache:
+        cache[st] = _load(os.path.join(prev_dir, st + ".json")) if re.match(r"^[A-Z]{2}$", st) else None
+    return cache[st] if isinstance(cache[st], dict) else {}
+
+
+def _cents(v):
+    return round(float(v) * 100, 4) if _num(v) else None
+
+
+def bid_week(today, top, prev_dir=None, cache=None):
+    """{"lines", "note"} for one reader's ZIP on a Saturday, or None. `top` is local_bid.top_for_zip's
+    answer; each crop entry carries its board (place, crop, period, state). A line only when this
+    Friday's and last Friday's entries both exist for that exact board, the board still shows Friday's
+    price at send time, and that price's posted time is known and no later than Friday."""
+    if not isinstance(today, date) or today.weekday() != 5 or not isinstance(top, dict) or top.get("status") != "ok":
+        return None
+    fri = today - timedelta(days=1)
+    fi, pfi = fri.isoformat(), (fri - timedelta(days=7)).isoformat()
+    pdir, cache = prev_dir or BIDS_PREV, {} if cache is None else cache
+    lines = []
+    for crop, word in (("corn", "corn"), ("soybeans", "soybeans")):
+        x = top.get(crop)
+        bd = (x or {}).get("board") or {}
+        if not all(isinstance(bd.get(k), str) and bd.get(k) for k in ("place", "crop", "period", "state")):
+            continue
+        sh = _shard(bd["state"].strip().upper(), pdir, cache)
+        key = build_bids_prev.fnv(bd["place"] + "|" + bd["crop"] + "|" + bd["period"])
+        now = next((e for e in (sh.get("rows") or {}).get(key) or [] if isinstance(e, list) and e and e[0] == fi), None)
+        prev = (sh.get("fri") or {}).get(key)
+        if not now or not isinstance(prev, list) or not prev or prev[0] != pfi:
+            continue        # a missing Friday or a new delivery period (a new key): no line
+        nc, pc, live = _cents(now[1]), _cents(prev[1]), _cents(x.get("cash"))
+        if nc is None or pc is None or live is None or abs(live - nc) > 1e-6:
+            continue        # the board moved after Friday: its posted time is not Friday's price's
+        posted = _ct_date(x.get("posted"))
+        if posted is None or posted > fri:
+            continue        # no posted time, or a time that is not Friday's price's: withheld
+        who = ", ".join(t for t in (x.get("name"), x.get("town")) if t) or "your elevator"
+        mo = (" for %s delivery" % x["month"].split(" ")[0]) if x.get("month") else ""
+        ch = _change("corn", nc, pc)
+        lines.append("Your bid at %s: %s %s%s, %s from last Friday (posted %s, %s)"
+                     % (who, word, _price("corn", nc), mo, ch, _day(posted), _clock(x["posted"])))
+    if not lines:
+        return None
+    return {"lines": lines, "note": BID_NOTE}
 
 
 # ── Sunday: reports this week ──────────────────────────────────────────

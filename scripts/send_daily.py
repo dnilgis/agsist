@@ -319,10 +319,19 @@ def fetch_subscribers():
 LOCAL_LINES = {}
 
 
-def load_local_lines(subs, how, bids_data=None):
-    """Group by ZIP, compute each ZIP once, and return (address -> block, counts)."""
+def load_local_lines(subs, how, bids_data=None, day=None):
+    """Group by ZIP, compute each ZIP once, and return (address -> block, counts).
+    On a Saturday issue (`day`), a block may also carry "week": the reader's top boards
+    against last Friday (daily_weekend.bid_week), printed in The week in review."""
     import local_bid
     counts = {"local": 0, "none_within": 0, "ask_zip": 0, "plain": 0, "no_centroid": 0, "unreadable": 0}
+    try:
+        sat = date.fromisoformat(str(day)[:10]) if day else None
+    except ValueError:
+        sat = None
+    if sat is not None and sat.weekday() != 5:
+        sat = None
+    prev_cache, week_n = {}, 0
     out = {}
     if how != "json":
         counts["plain"] = len(subs)
@@ -351,11 +360,23 @@ def load_local_lines(subs, how, bids_data=None):
             counts["no_centroid" if top.get("status") == "nozip" else "unreadable"] += len(emails)
             continue
         block = {"head": lines["head"], "detail": lines["detail"], "note": LOCAL_NOTE if lines["status"] == "ok" else ""}
+        if sat is not None:
+            try:
+                import daily_weekend
+                wk = daily_weekend.bid_week(sat, top, cache=prev_cache)
+            except Exception as ex:
+                print("weekly bid line for a ZIP skipped (%s)" % type(ex).__name__)
+                wk = None
+            if wk:
+                block["week"] = wk
+                week_n += len(emails)
         for em in emails:
             out[em] = block
         counts["local" if lines["status"] == "ok" else "none_within"] += len(emails)
     print("local bid: %d zip(s) computed once each; %s" % (len([z for z in by_zip if z]),
           ", ".join("%s %d" % (k, v) for k, v in counts.items() if v)))
+    if sat is not None:
+        print("weekly bid line (Friday vs last Friday): %d reader(s)" % week_n)
     return out, counts
 
 
@@ -848,7 +869,7 @@ def main():
     tally.waiting = len(recipients)
     ELEVATOR_LINES.update(load_elevator_lines(subs, how))
     try:
-        _ll, _counts = load_local_lines(subs, how)
+        _ll, _counts = load_local_lines(subs, how, day=day)
     except Exception as ex:
         # The local line is an extra. Anything wrong with it sends the
         # briefing exactly as it went before, never no briefing.

@@ -682,7 +682,8 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     cw = county_block(county)
     stories = top_stories(daily, items)
     slots = {"today": len(items), "only_here": len(here), "print": bool(pod), "fact": bool(fact), "county": bool(cw),
-             "top_stories": len(stories), "funds": bool(funds), "weekend": bool(weekend_block(daily))}
+             "top_stories": len(stories), "funds": bool(funds), "weekend": bool(weekend_block(daily)),
+             "bid_week": bool(own_week(daily, local))}
     ask = county_ask_link(county_ask)
     html = _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain, local, elevators,
                       site_href, unsub_url, forward_url, today, county=cw, county_ask=ask, stories=stories, funds=funds)
@@ -875,7 +876,16 @@ def weekend_block(daily):
     return None
 
 
-def _weekend_html(blk):
+def own_week(daily, local):
+    """The reader's own Friday vs last Friday bid lines (daily_weekend.bid_week, carried on the
+    local block by send_daily) when today's block is The week in review; else None."""
+    blk, wk = weekend_block(daily), (local or {}).get("week") if isinstance(local, dict) else None
+    if not blk or blk is not daily.get("week_review") or not isinstance(wk, dict) or not wk.get("lines"):
+        return None
+    return wk
+
+
+def _weekend_html(blk, own=None):
     if not blk:
         return []
     b = [_rule(), _label(blk.get("title") or "", pad=14)]
@@ -888,10 +898,16 @@ def _weekend_html(blk):
     if blk.get("source"):
         b.append('<tr><td class="mute" style="padding:4px 0 0;font-family:%s;font-size:12px;color:%s">Source: %s.</td></tr>'
                  % (SANS, MUTE, e(blk["source"])))
+    if own:
+        for t in own["lines"]:
+            b.append(_row(e(t), pad="8px 0 0", size=14))
+        if own.get("note"):
+            b.append('<tr><td class="mute" style="padding:4px 0 0;font-family:%s;font-size:12px;color:%s">%s</td></tr>'
+                     % (SANS, MUTE, e(own["note"])))
     return b
 
 
-def _weekend_text(blk):
+def _weekend_text(blk, own=None):
     if not blk:
         return []
     head = (blk.get("head") or "") + ((" (%s)" % blk["stamp"]) if blk.get("stamp") else "")
@@ -899,6 +915,10 @@ def _weekend_text(blk):
     L += [t for t in blk.get("notes") or []]
     if blk.get("source"):
         L.append("Source: %s." % blk["source"])
+    if own:
+        L += ["  " + t for t in own["lines"]]
+        if own.get("note"):
+            L.append(own["note"])
     return L
 
 
@@ -955,7 +975,7 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
     if mine:
         b.append(mine)
     b += _stories_html(stories)
-    b += _weekend_html(weekend_block(daily))
+    b += _weekend_html(weekend_block(daily), own_week(daily, local))
     # Only here
     if here or county:
         b.append(_rule())
@@ -1070,7 +1090,7 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
                 L.append("  " + st["body"])
             if st.get("link"):
                 L.append("  " + st["link"])
-    L += _weekend_text(weekend_block(daily))
+    L += _weekend_text(weekend_block(daily), own_week(daily, local))
     if here or county:
         L += ["", "ONLY HERE"] + ["- %s %s" % (x["text"], BE.utm(SITE + x["url"], "onlyhere-" + x["kind"], camp)) for x in here]
         if county:
