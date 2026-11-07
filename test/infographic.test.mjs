@@ -38,7 +38,7 @@ const NAMES = { IA: "Iowa", SD: "South Dakota", MI: "Michigan", NE: "Nebraska", 
 test("harvest-gap: every number recomputed from the Crop Progress file (week ending Nov 1, 2026)", () => {
   const cp = fx("crop-progress.json"), s = spec("harvest-gap", "2026-11-06");
   const nat = cp.progress.corn_harvested, soy = cp.progress.soybeans_harvested;
-  assert.equal(nat.date, "2026-11-01");
+  assert.equal(nat.date, "2026-11-01");  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   assert.deepEqual([nat.pct, nat.avg5, soy.pct, soy.avg5], [74, 77, 88, 84], "the example: corn 74% vs 77%, soybeans 88% vs 84%");
   // the states with a NASS-printed average, furthest behind first
   for (const [i, crop] of ["corn_harvested", "soybeans_harvested"].entries()) {
@@ -56,14 +56,14 @@ test("harvest-gap: every number recomputed from the Crop Progress file (week end
   assert.equal(far.key, "IA");
   assert.equal(s.title, `Iowa corn harvest ${ia.avg5 - ia.pct} points behind its 5-year average`);
   assert.ok(s.title.length <= 60);
-  assert.deepEqual(s.big, { value: ia.pct, unit: "%", label: `Iowa corn harvested by Nov 1 (5-year average ${ia.avg5}%)` });
+  assert.deepEqual(s.big, { value: ia.pct, unit: "%", label: `Iowa corn harvested by Nov 1 (5-year average ${ia.avg5}%)` });  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   assert.deepEqual(s.chart.highlight, ["IA"]);
   assert.equal(s.facts[0].text, `U.S. corn harvest: ${nat.pct}% done, ${nat.avg5 - nat.pct} points behind the 5-year average of ${nat.avg5}%.`);
   assert.equal(s.facts[1].text, `U.S. soybean harvest: ${soy.pct}% done, ${soy.pct - soy.avg5} points ahead of the 5-year average of ${soy.avg5}%.`);
   const behind = corn.filter((r) => r.values[0] < r.values[1]).length;
   assert.equal(s.facts[2].text, `${behind} of the ${corn.length} corn states NASS prints an average for are behind it.`);
-  for (const f of s.facts) { assert.equal(f.date, "2026-11-01"); assert.equal(f.source, "USDA NASS Crop Progress, week ending Nov 1, 2026"); }
-  assert.deepEqual(s.sources.map((x) => x.period), ["Week ending Nov 1, 2026"]);
+  for (const f of s.facts) { assert.equal(f.date, "2026-11-01"); assert.equal(f.source, "USDA NASS Crop Progress, week ending Nov 1, 2026"); }  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
+  assert.deepEqual(s.sources.map((x) => x.period), ["Week ending Nov 1, 2026"]);  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   assert.equal(s.related_page, "/conditions");
   assert.doesNotMatch(JSON.stringify(s), DASH);
 });
@@ -81,13 +81,13 @@ test("funds-corn: the net, its run and the long/short split recomputed from the 
   const total = last.net - path_[0].net;
   assert.equal(s.title, `Funds' corn net down ${num(total)} contracts in ${n} weeks`);
   assert.ok(s.title.length <= 60);
-  assert.deepEqual(s.big, { value: last.net, unit: "contracts net long", label: "Managed money in corn futures, positions Nov 3, 2026" });
+  assert.deepEqual(s.big, { value: last.net, unit: "contracts net long", label: "Managed money in corn futures, positions Nov 3, 2026" });  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   const dl = last.long - prev.long, ds = last.short - prev.short;
   assert.deepEqual([dl, ds], [an.commodities.corn.card.how.long_change, an.commodities.corn.card.how.short_change], "the split agrees with the history rows");
   assert.equal(s.facts[0].text, `This week: net down ${num(last.net - prev.net)} contracts to ${num(last.net)} long.`);
   assert.equal(s.facts[1].text, `Longs \u2212${num(dl)}, shorts +${num(ds)}: ${an.commodities.corn.card.how.label}.`);
-  assert.equal(s.facts[2].text, `${n} straight weekly cuts: ${num(path_[0].net)} net long on Sep 15, ${num(last.net)} long on Nov 3.`);
-  for (const f of s.facts) { assert.equal(f.date, last.date); assert.match(f.source, /^CFTC Commitments of Traders, Disaggregated Futures-Only, positions Nov 3, 2026, released Nov 6, 2026$/); }
+  assert.equal(s.facts[2].text, `${n} straight weekly cuts: ${num(path_[0].net)} net long on Sep 15, ${num(last.net)} long on Nov 3.`);  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
+  for (const f of s.facts) { assert.equal(f.date, last.date); assert.match(f.source, /^CFTC Commitments of Traders, Disaggregated Futures-Only, positions Nov 3, 2026, released Nov 6, 2026$/); }  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   assert.deepEqual(s.chart.split, { long_change: dl, short_change: ds, label: an.commodities.corn.card.how.label });
   assert.equal(s.related_page, "/cot");
 });
@@ -133,22 +133,22 @@ test("the infographic page: hook as title and H1, JSON-LD, og:image the card, th
   assert.ok(h.includes(`<title>${s.title} | AGSIST</title>`));
   assert.equal((h.match(/<h1[ >]/g) || []).length, 1);
   assert.ok(h.includes(`<h1>${s.title}</h1>`));
-  assert.match(h, /<link rel="canonical" href="https:\/\/agsist\.com\/infographic\/2026-11-06">/);
+  assert.match(h, /<link rel="canonical" href="https:\/\/agsist\.com\/infographic\/2026-11-06">/);  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   const og = h.match(/<meta property="og:image" content="([^"]+)">/)[1];
-  assert.match(og, /^https:\/\/agsist\.com\/infographic\/og\/2026-11-06\.jpg\?v=[0-9a-f]{8}$/);
-  assert.ok(fs.statSync(path.join(TMP, "infographic/og/2026-11-06.jpg")).size < 120 * 1024, "the card under 120 KB");
+  assert.match(og, /^https:\/\/agsist\.com\/infographic\/og\/2026-11-06\.jpg\?v=[0-9a-f]{8}$/);  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
+  assert.ok(fs.statSync(path.join(TMP, "infographic/og/2026-11-06.jpg")).size < 120 * 1024, "the card under 120 KB");  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   const lds = [...h.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)].map((m) => JSON.parse(m[1]));
   const types = lds.map((j) => j["@type"]);
   assert.deepEqual(types, ["ImageObject", "Dataset", "BreadcrumbList"]);
   assert.equal(lds[0].contentUrl, og.split("?")[0]);
-  assert.equal(lds[1].distribution[0].contentUrl, "https://agsist.com/data/infographics/2026-11-06.json");
+  assert.equal(lds[1].distribution[0].contentUrl, "https://agsist.com/data/infographics/2026-11-06.json");  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   for (const f of s.facts) assert.ok(h.includes(f.text.replace(/'/g, "&#x27;")), f.text);
-  assert.ok(h.includes("<small>USDA NASS Crop Progress, week ending Nov 1, 2026.</small>"), "each fact's source and date");
-  assert.match(h, /<img class="ig-img" src="\/infographic\/og\/2026-11-06\.jpg\?v=[0-9a-f]{8}" width="1200" height="630"/);
+  assert.ok(h.includes("<small>USDA NASS Crop Progress, week ending Nov 1, 2026.</small>"), "each fact's source and date");  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
+  assert.match(h, /<img class="ig-img" src="\/infographic\/og\/2026-11-06\.jpg\?v=[0-9a-f]{8}" width="1200" height="630"/);  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   assert.match(h, /<details><summary>Sources<\/summary>/, "sources collapsed by default");
   assert.ok(!/<a [^>]*href="https?:\/\/(www\.)?(nass|cftc)/.test(h), "sources in plain text, no link to a data source");
   assert.ok(h.includes('href="/conditions"'), "the related page");
-  assert.ok(h.includes('href="/infographic/2026-10-30"') && h.includes('href="/infographic/"'), "the recent ones and the archive");
+  assert.ok(h.includes('href="/infographic/2026-10-30"') && h.includes('href="/infographic/"'), "the recent ones and the archive");  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   const inl = JSON.parse(h.match(/<script type="application\/json" id="ig-spec">([\s\S]*?)<\/script>/)[1]);
   assert.deepEqual(inl, s, "the page carries the spec as it is");
   assert.match(h, /<script src="\/components\/share-kit\.js\?v=\d+" defer><\/script>\s*<script src="\/components\/qr\.js\?v=\d+" defer><\/script>\s*<script src="\/components\/infographic\.js\?v=1" defer><\/script>/);
@@ -166,9 +166,9 @@ test("the infographic page: hook as title and H1, JSON-LD, og:image the card, th
 test("the archive: newest first, indexable once there is one; empty, it says so and is noindex", () => {
   const a = fs.readFileSync(path.join(TMP, "infographic/index.html"), "utf8");
   const order = [...a.matchAll(/<li><a href="\/infographic\/(\d{4}-\d{2}-\d{2})">/g)].map((m) => m[1]);
-  assert.deepEqual(order, ["2026-11-06", "2026-10-30"]);
+  assert.deepEqual(order, ["2026-11-06", "2026-10-30"]);  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   assert.match(a, /<meta name="robots" content="index,follow">/);
-  assert.equal(fs.readFileSync(path.join(TMP, "infographic/_indexable.txt"), "utf8"), "/infographic/2026-11-06\n/infographic/2026-10-30\n/infographic/\n");
+  assert.equal(fs.readFileSync(path.join(TMP, "infographic/_indexable.txt"), "utf8"), "/infographic/2026-11-06\n/infographic/2026-10-30\n/infographic/\n");  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   const e = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), "infog0-"));
   execFileSync("python3", ["scripts/build_infographic_pages.py", "--root", e, "--out", path.join(e, "infographic"), "--no-images"], { cwd: ROOT });
   const z = fs.readFileSync(path.join(e, "infographic/index.html"), "utf8");

@@ -1,7 +1,5 @@
 name: Infographic pages
-# The Infographic of the Week pages (/infographic/<date> and the archive), rebuilt on main from the specs in
-# data/infographics/ (scripts/build_infographic.py writes them) whenever a spec or the builder changes.
-# No schedule: a page changes only when a spec does.
+# Infographic pages.
 
 on:
   push:
