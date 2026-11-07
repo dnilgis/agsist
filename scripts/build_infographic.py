@@ -297,7 +297,7 @@ def harvest_poster(cp, week, rows, far):
     prog = cp.get("progress") or {}
     st = cp.get("states") or {}
     wk, y = mdy(week), int(week[:4])
-    src = "%s, week ending %s." % (NASS, wk)
+    src = "Source: %s, week ending %s." % (NASS, wk)
     n = len(rows)
     behind = [r for r in rows if r["gap"] < 0]
     even = [r for r in rows if r["gap"] == 0]
@@ -332,7 +332,7 @@ def harvest_poster(cp, week, rows, far):
     panels = [hook,
               {"id": "map", "title": "Corn harvest vs the 5-year average", "date": week,
                "hint": "Each tile is a state. Number = points ahead (+) or behind (−) its own 5-year pace.",
-               "source": "%s, week ending %s. Only the %d states with a NASS-printed 5-yr avg are colored." % (NASS, wk, n),
+               "source": "Source: %s, week ending %s. Only the %d states with a NASS-printed 5-yr avg are colored." % (NASS, wk, n),
                "tiles": [{"key": r["key"], "gap": r["gap"]} for r in rows],
                "bins": [{"lo": None, "hi": -6, "label": "6 or more behind", "c": "b2"},
                         {"lo": -5, "hi": -1, "label": "1 to 5 behind", "c": "b1"},
@@ -340,14 +340,14 @@ def harvest_poster(cp, week, rows, far):
                         {"lo": 1, "hi": 5, "label": "1 to 5 ahead", "c": "a1"},
                         {"lo": 6, "hi": None, "label": "6 or more ahead", "c": "a2"}],
                "legend_title": "Points vs avg"},
-              {"id": "count", "title": "Behind, even, ahead", "date": week, "source": "%s, wk ending %s." % (NASS, wk),
+              {"id": "count", "title": "Behind, even, ahead", "date": week, "source": "Source: %s, wk ending %s." % (NASS, wk),
                "n": n, "behind": len(behind), "even": len(even), "ahead": len(ahead),
                "big": "%d of %d" % (len(behind), n), "line": "states are behind on corn",
                "sub": "%d ahead, %d even%s" % (len(ahead), len(even), (" (%s)" % names(r["label"] for r in even)) if 0 < len(even) <= 3 else ""),
                "icons": [{"key": r["key"], "side": (r["gap"] > 0) - (r["gap"] < 0)} for r in rows]}]
     if corn and soy:
         panels.append({"id": "crops", "title": "Corn vs soybeans, U.S.", "date": week,
-                       "source": "%s, U.S. rows, wk ending %s." % (NASS, wk),
+                       "source": "Source: %s, U.S. rows, wk ending %s." % (NASS, wk),
                        "crops": [dict(corn, name="Corn", icon="corn", words=pace_words(corn["gap"])),
                                  dict(soy, name="Soybeans", icon="bean", words=pace_words(soy["gap"]))],
                        "key": "Tick = 5-year average for this week"})
@@ -355,7 +355,7 @@ def harvest_poster(cp, week, rows, far):
     la, ta = top_list(rows, 1)
     row = lambda r: {"key": r["key"], "label": r["label"], "gap": r["gap"], "pct": r["values"][0], "avg": r["values"][1]}
     panels.append({"id": "lists", "title": "Furthest behind, furthest ahead", "date": week,
-                   "source": "%s, week ending %s. Points = %% harvested minus 5-yr avg." % (NASS, wk),
+                   "source": "Source: %s, week ending %s. Points = %% harvested minus 5-yr avg." % (NASS, wk),
                    "scale": max(abs(r["gap"]) for r in rows) or 1,
                    "cols": [{"head": "Most behind (corn, pts)", "side": -1, "rows": [row(r) for r in lb], "tie": tb},
                             {"head": "Most ahead (corn, pts)", "side": 1, "rows": [row(r) for r in la], "tie": ta}]})
@@ -371,7 +371,7 @@ def harvest_poster(cp, week, rows, far):
 def funds_poster(hist_rows, path, an, how, rel):
     last, prev, first = path[-1], hist_rows[-2], path[0]
     week = last["date"]
-    src = "%s, positions %s, released %s." % ("CFTC Commitments of Traders", mdy(week), mdy(rel))
+    src = "Source: CFTC Commitments of Traders, positions %s, released %s." % (mdy(week), mdy(rel))
     side = lambda v: "long" if v >= 0 else "short"
     total, chg = last["net"] - first["net"], last["net"] - prev["net"]
     span = len(path) - 1

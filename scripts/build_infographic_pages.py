@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
-"""build_infographic_pages.py: the Infographic of the Week pages, from the specs in data/infographics/.
+"""build_infographic_pages.py: the Friday Chart pages (subtitle "Infographic of the Week"; Sig Nov 7), from the specs
+in data/infographics/. The URLs stay /infographic/ for now.
 
 OFFLINE. Reads committed files only. MACHINE-OWNED: edit this script, never infographic/*.html. Built on main
 (infographic-pages.yml when a spec lands; scripts/generated_sets.py set "infographic"); a pull request carries
@@ -10,7 +11,7 @@ READS   data/infographics/<yyyy-mm-dd>.json   one spec each (scripts/build_infog
                                               QR), so these pages load the same copies
 WRITES  infographic/<yyyy-mm-dd>.html         the hook as title and H1, the big number, the link preview picture,
                                               the chart as a table, the facts with source and date, the sources
-                                              (collapsed), the share and print buttons (components/infographic.js),
+                                              (collapsed), the poster, share and print buttons (components/infographic.js),
                                               links to the related page and the last 4 infographics; ImageObject,
                                               Dataset and BreadcrumbList JSON-LD; og:image = the link preview card
         infographic/og/<yyyy-mm-dd>.jpg       that card, 1200 x 630 (scripts/share_cards.py, look C)
@@ -41,8 +42,8 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://agsist.com"
 SPECS = os.path.join("data", "infographics")
 OUT = "infographic"
-JS_V = "1"          # components/infographic.js?v=
-CSS_V = "1"         # infographic/infographic.css?v=
+JS_V = "2"          # components/infographic.js?v=
+CSS_V = "2"         # infographic/infographic.css?v=
 LAST_N = 4
 DATE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})\.json$")
 PAGE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}\.html$")
@@ -142,7 +143,7 @@ def card(spec):
         pic = ("line", {"values": [p["y"] for p in pts], "big": big, "big_label": b["unit"],
                         "start_label": pts[0]["label"], "end_label": pts[-1]["label"]})
         cap = ch["title"]
-    meta = "Source: %s  \u00b7  Infographic of the Week, %s" % (spec["sources"][0]["name"], mdy(spec["date"]))
+    meta = "Source: %s  \u00b7  Friday Chart, Infographic of the Week, %s" % (spec["sources"][0]["name"], mdy(spec["date"]))
     return SC.card_c([(spec["title"], False)], meta, cap, pic)
 
 
@@ -244,7 +245,7 @@ def jsonld(spec, og, path):
                            "contentUrl": "%s/data/infographics/%s.json" % (SITE, spec["date"])}]},
         {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": SITE + "/"},
-            {"@type": "ListItem", "position": 2, "name": "Infographic of the Week", "item": SITE + "/infographic/"},
+            {"@type": "ListItem", "position": 2, "name": "Friday Chart", "item": SITE + "/infographic/"},
             {"@type": "ListItem", "position": 3, "name": spec["title"], "item": url}]},
     ]
 
@@ -270,14 +271,17 @@ def page(spec, specs, og, v, parts):
 <body>
 <div id="site-header">{hdr}</div>
 <main class="ig-wrap" id="main">
-  <p class="ig-sub" style="margin-top:14px"><a href="/infographic/" style="color:var(--text-muted)">Infographic of the Week</a> &rsaquo; <b style="color:var(--text)">{esc(mdy(spec["date"]))}</b></p>
+  <p class="ig-sub" style="margin-top:14px"><a href="/infographic/" style="color:var(--text-muted)">Friday Chart</a> <span>&middot; Infographic of the Week</span> &rsaquo; <b style="color:var(--text)">{esc(mdy(spec["date"]))}</b></p>
   <h1>{esc(spec["title"])}</h1>
   <div class="ig-big"><b>{big}</b><span>{esc(b["label"])}</span></div>
   <img class="ig-img" src="{esc(og[len(SITE):])}" width="1200" height="630" alt="{esc(spec["title"])}: {esc(b["label"])}">
   <div class="ig-tools" id="ig-tools" hidden>
+    <button type="button" id="ig-poster" class="ig-main">Save the poster</button>
+    <button type="button" id="ig-poster-17">Print the poster, 11 x 17</button>
+    <button type="button" id="ig-poster-letter">Print the poster, Letter</button>
     <button type="button" id="ig-pic">Save the phone picture</button>
     <button type="button" id="ig-wide">Save the wide picture</button>
-    <button type="button" id="ig-print">Print the sheet</button>
+    <button type="button" id="ig-print">Print the one-page sheet</button>
     <button type="button" id="ig-link">Copy link</button>
   </div>
   <p class="ig-st" id="ig-st" aria-live="polite"></p>
@@ -285,8 +289,8 @@ def page(spec, specs, og, v, parts):
   <ul class="ig-facts">{facts}</ul>
   {chart_html(spec)}
   <details><summary>Sources</summary><ul>{srcs}</ul><p>Facts from the sources above and plain arithmetic on them, not advice.</p></details>
-  <p class="ig-links ig-sub">Related: <a href="{esc(rel)}">{esc(RELATED.get(rel, rel))}</a> &middot; <a href="/infographic/">Every infographic</a></p>
-  {('<h2>Recent infographics</h2><ul class="ig-list">' + more + '</ul>') if more else ''}
+  <p class="ig-links ig-sub">Related: <a href="{esc(rel)}">{esc(RELATED.get(rel, rel))}</a> &middot; <a href="/infographic/">Every Friday Chart</a></p>
+  {('<h2>Recent Friday Charts</h2><ul class="ig-list">' + more + '</ul>') if more else ''}
 </main>
 <div id="site-footer">{ftr}</div>
 <script type="application/json" id="ig-spec">{spec_json}</script>
@@ -297,14 +301,14 @@ def page(spec, specs, og, v, parts):
 </body>
 </html>
 """
-    return head(spec["title"] + " | AGSIST", desc, path, og, spec["title"], jsonld(spec, og, path), True, v, fonts, extra) + body
+    return head(spec["title"] + " | Friday Chart | AGSIST", desc, path, og, spec["title"], jsonld(spec, og, path), True, v, fonts, extra) + body
 
 
 def archive(specs, ogs, v, parts):
     hdr, ftr, fonts = parts
     path = "/infographic/"
-    title = "Infographic of the Week: farm numbers in one picture | AGSIST"
-    desc = "One farm number a week in one picture, from USDA, CFTC and other public sources, with the source and date on every fact. Save it, send it or print it."
+    title = "Friday Chart: Infographic of the Week, farm numbers in one picture | AGSIST"
+    desc = "Friday Chart, the Infographic of the Week: one farm number a week in one picture, from USDA, CFTC and other public sources, with the source and date on every fact. Save it, send it or print it."
     if specs:
         items = "".join(
             '<li><a href="/infographic/%s">%s</a><time datetime="%s">%s</time></li>' % (s["date"], esc(s["title"]), s["date"], mdy(s["date"]))
@@ -313,18 +317,18 @@ def archive(specs, ogs, v, parts):
         og = ogs[specs[0]["date"]]
         alt = specs[0]["title"]
     else:
-        lst = '<p class="ig-sub">No infographic is posted yet.</p>'
+        lst = '<p class="ig-sub">No Friday Chart is posted yet.</p>'
         og = SITE + "/img/og/agsist.jpg"
         alt = "AGSIST"
-    ld = [{"@context": "https://schema.org", "@type": "CollectionPage", "name": "Infographic of the Week", "url": SITE + path,
+    ld = [{"@context": "https://schema.org", "@type": "CollectionPage", "name": "Friday Chart: Infographic of the Week", "url": SITE + path,
            "description": desc, "hasPart": [{"@type": "CreativeWork", "name": s["title"], "url": SITE + "/infographic/" + s["date"],
                                              "datePublished": s["date"]} for s in specs[:20]]}]
     body = f"""
 <body>
 <div id="site-header">{hdr}</div>
 <main class="ig-wrap" id="main">
-  <h1>Infographic of the Week</h1>
-  <p class="ig-sub">One farm number a week in one picture. Every fact carries its source and date. Newest first.</p>
+  <h1>Friday Chart</h1>
+  <p class="ig-sub"><b>Infographic of the Week.</b> One farm number a week in one picture, as a poster to save or print. Every fact carries its source and date. Newest first.</p>
   {lst}
 </main>
 <div id="site-footer">{ftr}</div>
@@ -405,7 +409,7 @@ def selftest():
     specs, wrote, _ = build_all(d, images=False, parts=("", "", ""))
     ck("two pages, newest first", [s["date"] for s in specs] == ["2026-11-13", "2026-11-06"])
     pg = open(os.path.join(d, OUT, "2026-11-06.html"), encoding="utf-8").read()
-    ck("title is the hook", "<title>Funds&#x27; corn net down 450 contracts in 4 weeks | AGSIST</title>" in pg)
+    ck("title is the hook", "<title>Funds&#x27; corn net down 450 contracts in 4 weeks | Friday Chart | AGSIST</title>" in pg)
     ck("one H1", pg.count("<h1>") == 1)
     ck("links the newer one", 'href="/infographic/2026-11-13"' in pg)
     ck("ImageObject and Dataset", '"@type": "ImageObject"' in pg and '"@type": "Dataset"' in pg)
