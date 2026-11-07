@@ -1,10 +1,6 @@
 {
  "about": "Pointer pages for retired pages: path, where it sends readers, and the date retired.",
  "pointers": {
-  "rain/alabama/barbour-county.html": {
-   "to": "/rain/alabama",
-   "since": "2026-11-05"
-  },
   "rain/alabama/houston-county.html": {
    "to": "/rain/alabama",
    "since": "2026-10-14"
@@ -20,10 +16,6 @@
   "rain/arkansas/bradley-county.html": {
    "to": "/rain/arkansas",
    "since": "2026-10-14"
-  },
-  "rain/arkansas/crawford-county.html": {
-   "to": "/rain/arkansas",
-   "since": "2026-11-01"
   },
   "rain/arkansas/desha-county.html": {
    "to": "/rain/arkansas",
@@ -80,6 +72,10 @@
   "rain/louisiana/catahoula-parish.html": {
    "to": "/rain/louisiana",
    "since": "2026-11-02"
+  },
+  "rain/louisiana/evangeline-parish.html": {
+   "to": "/rain/louisiana",
+   "since": "2026-11-07"
   },
   "rain/louisiana/franklin-parish.html": {
    "to": "/rain/louisiana",
@@ -141,9 +137,9 @@
    "to": "/rain/new-york",
    "since": "2026-10-15"
   },
-  "rain/oklahoma/love-county.html": {
-   "to": "/rain/oklahoma",
-   "since": "2026-10-14"
+  "rain/ohio/auglaize-county.html": {
+   "to": "/rain/ohio",
+   "since": "2026-11-07"
   },
   "rain/south-carolina/allendale-county.html": {
    "to": "/rain/south-carolina",
@@ -164,10 +160,6 @@
   "rain/south-dakota/dewey-county.html": {
    "to": "/rain/south-dakota",
    "since": "2026-10-15"
-  },
-  "rain/south-dakota/turner-county.html": {
-   "to": "/rain/south-dakota",
-   "since": "2026-11-05"
   },
   "rain/tennessee/overton-county.html": {
    "to": "/rain/tennessee",
@@ -200,10 +192,6 @@
   "rain/texas/san-augustine-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
-  },
-  "rain/virginia/franklin-city.html": {
-   "to": "/rain/virginia",
-   "since": "2026-11-02"
   },
   "rain/virginia/richmond-county.html": {
    "to": "/rain/virginia",
