@@ -64,7 +64,7 @@ test("each label, both sides the same way, and the withheld cases", () => {
 print(json.dumps([A.how_changed(*a) for a in json.loads(sys.argv[1])]))`, JSON.stringify(cases.map((c) => c[0]).concat([[null, 50, 90, 40], [100, 50, 90, null]]))));
   cases.forEach(([, want], i) => assert.equal(got[i].label, want, JSON.stringify(got[i])));
   assert.ok(got[6].withheld && !got[6].line && got[7].withheld && !got[7].line, "a week without a long or a short: withheld");
-  for (const g of got.slice(0, 6)) assert.doesNotMatch(g.line, /%|think|bearish|bullish|because|—|–/, g.line);
+  for (const g of got.slice(0, 6)) assert.doesNotMatch(g.line, /%|think|bearish|bullish|because|\u2014|\u2013/, g.line);
 });
 
 test("the page helper prints the analysis card's line as it stands, and withholds when the files disagree", () => {
