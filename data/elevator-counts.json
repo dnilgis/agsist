@@ -3,8 +3,8 @@
  "generated": "2026-11-07T16:16:37Z",
  "note": "Elevators with a current bid on a cash bids page, and boards read on the latest coverage pass.",
  "bids": {
-  "elevators": 2038,
-  "towns": 1610
+  "elevators": 2028,
+  "towns": 1601
  },
  "states": {
   "AL": {
@@ -24,16 +24,16 @@
    "towns": 2
   },
   "IA": {
-   "elevators": 428,
-   "towns": 313
+   "elevators": 420,
+   "towns": 306
   },
   "IL": {
    "elevators": 254,
    "towns": 188
   },
   "IN": {
-   "elevators": 85,
-   "towns": 67
+   "elevators": 84,
+   "towns": 66
   },
   "KS": {
    "elevators": 253,
@@ -52,8 +52,8 @@
    "towns": 24
   },
   "MN": {
-   "elevators": 162,
-   "towns": 135
+   "elevators": 161,
+   "towns": 134
   },
   "MO": {
    "elevators": 39,
