@@ -37,7 +37,7 @@ test("cot.html: the Print sheet button beside Save picture (a 44 px .cc-btn), th
   assert.match(HTML, /\.cc-btn\{[^}]*min-height:44px/);
   assert.ok(HTML.includes('<link rel="stylesheet" href="/components/cot-print.css?v=5">'));
   const i = (s) => HTML.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("cot-kit.js?v=2") > 0 && i("cot-kit.js?v=2") < i("cot-chart.js?v=10") && i("cot-chart.js?v=10") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=4") && i("cot-print.js?v=4") < i("cot-share.js?v=1"), "kit, chart, QR encoder, then the sheet");
+  assert.ok(i("cot-kit.js?v=2") > 0 && i("cot-kit.js?v=2") < i("cot-chart.js?v=11") && i("cot-chart.js?v=11") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=4") && i("cot-print.js?v=4") < i("cot-share.js?v=1"), "kit, chart, QR encoder, then the sheet");
   assert.match(read("components/cot-chart.js"), /dispatchEvent\(new CustomEvent\('cot:chart-data'/, "the chart hands its files over");
   assert.doesNotMatch(JS, /fetch\(|XMLHttpRequest/, "the sheet fetches nothing");
 });

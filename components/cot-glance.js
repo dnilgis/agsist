@@ -333,6 +333,15 @@
     return { did: did, when: when, rank: [rec, rank].filter(Boolean).join(' '), next: next, text: did + (next ? ' ' + next : '') };
   }
 
+  /* How the net changed, split into longs and shorts (Nov 7): the line scripts/cot_analysis.py how_changed() wrote
+     into the analysis card (card.how.line), printed as it stands, never worked out here. '' unless the analysis is
+     for the same week as cot.json and its long and short counts are cot.json's.
+     "Longs -20,010, shorts +52,308: mostly new short selling." */
+  function how(key, cot, cx) {
+    var a = cxFor(key, cot, cx), c = cot && cot[key], h = a && a.card && a.card.how;
+    return h && typeof h.line === 'string' && c && a.mm_long === c.long && a.mm_short === c.short ? h.line : '';
+  }
+
   /* "a, b and c" */
   function and(a) { return a.length < 2 ? a.join('') : a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1]; }
 
@@ -359,7 +368,7 @@
   }
 
   var api = { NAMES: NAMES, ORDER: ORDER, SLUG: SLUG, SHORT: SHORT, keyOf: keyOf, href: href, headline: headline, iso: iso,
-    facts: facts, brief: brief, answer: answer, weekLine: weekLine, release: release, rankWords: rankWords, etInstant: etInstant, etDay: etDay, when: when, left: left, row: row, rows: rows, verdict: verdict, asOfShort: asOfShort, degree: degree, line: line, lines: lines, asOf: asOf, cxFor: cxFor, ord: ord, crowdedLine: crowdedLine, MINUS: MINUS };
+    facts: facts, brief: brief, answer: answer, weekLine: weekLine, release: release, rankWords: rankWords, etInstant: etInstant, etDay: etDay, when: when, left: left, row: row, rows: rows, verdict: verdict, asOfShort: asOfShort, degree: degree, line: line, lines: lines, asOf: asOf, cxFor: cxFor, ord: ord, crowdedLine: crowdedLine, how: how, MINUS: MINUS };
   if (typeof module === 'object' && module.exports) module.exports = api;
   else root.AgCotGlance = api;
 })(typeof window !== 'undefined' ? window : this);

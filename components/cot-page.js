@@ -255,18 +255,19 @@ function renderInsight(key){
   /* Direction of the NET, said as such. "Funds cut 8k" under a net short that
      had just grown by 8k read as the opposite of what happened. */
   var dirWord=k.chg<0?'<span class="dn">fell</span>':k.chg>0?'<span class="up">rose</span>':'was unchanged';
-  var sharp='', driveTxt='';
+  var sharp='';
   /* A move smaller than this market's typical week (the median absolute weekly
      change over the same window) gets no adjective. */
   if(k.significant_move){
     if(k.largest_in_window) sharp=', the largest weekly '+(k.chg<0?'fall':'rise')+' in net in the last '+k.weeks+' weeks';
     else if(k.weeks_since_larger>=4) sharp=', sharpest '+(k.chg<0?'fall':'rise')+' in net in '+k.weeks_since_larger+' weeks';
-    driveTxt=', driven by <b>'+esc(k.driver)+'</b>';
   }
   var f=(k.flips&&k.flips[0])||null, flipTxt='';
   if(f&&f.weeks_ago<=6){ flipTxt=' Funds flipped <b class="'+(f.to==='long'?'up':'dn')+'">net '+f.to+'</b> '+(f.weeks_ago===0?'this week':f.weeks_ago+' week'+(f.weeks_ago>1?'s':'')+' ago')+'.'; }
-  var html='Net '+dirWord+(k.chg?' <b>'+fmtMagK(k.chg)+'</b> contract'+(Math.abs(k.chg)===1?'':'s'):'')+' this week'+sharp+driveTxt
-    +'.'+flipTxt;
+  /* longs and shorts (Nov 7): the analysis card's own line (AgCotGlance.how), never figured here */
+  var hw=window.AgCotGlance&&window.AgCotGlance.how?window.AgCotGlance.how(key,COT_SUMMARY,CX_A):'';
+  var html='Net '+dirWord+(k.chg?' <b>'+fmtMagK(k.chg)+'</b> contract'+(Math.abs(k.chg)===1?'':'s'):'')+' this week'+sharp
+    +'.'+(hw?' '+esc(hw):'')+flipTxt;
   if(k.divergence){
     var dvCls=(k.divergence==='bearish'||k.divergence==='confirmed-down')?'dn':'up';
     /* Said once: "net and price both fell (price −5.0%)", not the rising/falling
