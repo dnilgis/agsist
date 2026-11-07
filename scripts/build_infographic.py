@@ -23,7 +23,17 @@ RULES (honest numbers)
 SPEC (data/infographics/<yyyy-mm-dd>.json)
   {date, slug, kind, title (the hook, at most 60 characters), big {value, unit, label}, chart {type: bars|line,
    title, unit, axis {x, y}, series, panels [{title, rows [{key, label, values}]}] | points [{x, label, y}],
-   highlight}, facts [{text, source, date}], sources [{name, url, period}], topic, related_page, data_date}
+   highlight}, facts [{text, source, date}], sources [{name, url, period}], topic, related_page, data_date,
+   poster {kicker, headline {lead, em, tail}, lede [{s, b}], panels [{id, title, source, date, ...}], data_line}}
+
+POSTER (the Friday Chart poster, Sig Nov 7: dark for phones, paper for an 11 x 17 print; components/infographic.js
+draws it): 5 or 6 panels, every number computed here from the same files, each panel with its source and date.
+  harvest-gap   hook (the furthest state, its week's gain), map (every state's points vs its own average),
+                count (behind, even, ahead), crops (U.S. corn vs soybeans), lists (most behind and most ahead; a tie
+                at the fifth place is shown, not broken), means (what it means and does not)
+  funds-corn    hook (the net now and where the run started), line (the weekly net), split (longs and shorts at
+                the run's start and now), changes (each week's move), rank (where the net sits in the record, as a
+                share of open interest, when data/cot-analysis.json carries it for the same week), means
 
   python3 scripts/build_infographic.py harvest-gap 2026-11-06            write data/infographics/2026-11-06.json
   python3 scripts/build_infographic.py funds-corn 2026-11-06 --print     print the spec, write nothing
@@ -168,6 +178,7 @@ def harvest_gap(root, issue):
         "facts": facts,
         "sources": [{"name": NASS, "url": NASS_URL, "period": "Week ending %s" % mdy(week)}],
         "data_date": week,
+        "poster": harvest_poster(cp, week, corn, far),
     }
 
 
@@ -243,7 +254,172 @@ def funds_corn(root, issue):
         "facts": facts,
         "sources": [{"name": CFTC, "url": CFTC_URL, "period": "Positions %s, released %s" % (mdy(week), mdy(rel))}],
         "data_date": week,
+        "poster": funds_poster(rows, path, an, how, rel),
     }
+
+
+# ── the poster (Friday Chart) ──────────────────────────────────────────────
+LIST_N = 5          # rows in each poster list before ties at the last place
+LIST_MAX = 8        # more than this with the ties: the tied rows are named in a line, not drawn
+
+
+def pts(n):
+    return "%d pt%s" % (abs(n), "" if abs(n) == 1 else "s")
+
+
+def pace_words(gap):
+    return "even with average" if gap == 0 else "%s %s" % (pts(gap), "behind" if gap < 0 else "ahead")
+
+
+def names(xs):
+    xs = list(xs)
+    return xs[0] if len(xs) == 1 else ", ".join(xs[:-1]) + " and " + xs[-1]
+
+
+def top_list(rows, sign):
+    """the LIST_N rows furthest behind (sign -1) or ahead (+1), with every row tied at the last place kept.
+    -> (rows drawn, tie line or '')"""
+    side = sorted([r for r in rows if r["gap"] * sign > 0], key=lambda r: (-abs(r["gap"]), r["label"]))
+    if len(side) <= LIST_N:
+        return side, ""
+    cut = side[LIST_N - 1]["gap"]
+    keep = [r for r in side if abs(r["gap"]) >= abs(cut)]
+    tied = [r["label"] for r in keep if r["gap"] == cut]
+    if len(keep) > LIST_MAX:
+        above = [r for r in keep if r["gap"] != cut]
+        return above, "%d states tie at %s: %s." % (len(tied), signed(cut), names(tied))
+    if len(keep) > LIST_N and len(tied) > 1:
+        return keep, "%s tie at %s." % (names(tied), signed(cut))
+    return keep, ""
+
+
+def harvest_poster(cp, week, rows, far):
+    prog = cp.get("progress") or {}
+    st = cp.get("states") or {}
+    wk, y = mdy(week), int(week[:4])
+    src = "%s, week ending %s." % (NASS, wk)
+    n = len(rows)
+    behind = [r for r in rows if r["gap"] < 0]
+    even = [r for r in rows if r["gap"] == 0]
+    ahead = [r for r in rows if r["gap"] > 0]
+    widest = [r for r in rows if abs(r["gap"]) == abs(far["gap"])]
+    who = far["label"]
+    g = far["gap"]
+    head = {"lead": "%s corn is " % who, "em": ("%d point%s" % (abs(g), "" if abs(g) == 1 else "s")) if g else "even",
+            "tail": (" behind pace" if g < 0 else " ahead of pace") if g else " with its pace"}
+
+    def nat(key):
+        x = prog.get(key) or {}
+        if x.get("date") != week or x.get("avg5_by") != "NASS" or x.get("pct") is None or x.get("avg5") is None:
+            return None
+        pw = x.get("prev_week")
+        return {"pct": x["pct"], "avg5": x["avg5"], "gap": x["pct"] - x["avg5"],
+                "week_gain": (x["pct"] - pw) if isinstance(pw, (int, float)) else None, "prev_week": pw}
+
+    corn, soy = nat("corn_harvested"), nat("soybeans_harvested")
+    lede = [{"s": "Of the %d states with a NASS average, %s %s the widest corn gap." % (
+        n, names(r["label"] for r in widest), "has" if len(widest) == 1 else "share")}]
+    if corn and soy:
+        lede += [{"s": " Nationally, corn is "}, {"s": pace_words(corn["gap"]), "b": 1},
+                 {"s": (" average" if corn["gap"] else "") + " and soybeans are "}, {"s": pace_words(soy["gap"]), "b": 1}, {"s": "."}]
+    fx = (st.get(far["key"]) or {}).get("corn_harvested") or {}
+    pw = fx.get("prev_week")
+    hook = {"id": "hook", "title": "", "source": src + " 5-yr avg = %d-%d average printed by NASS." % (y - 5, y - 1), "date": week,
+            "big": {"value": far["values"][0], "unit": "%", "vs": far["values"][1],
+                    "label": ["%s corn harvested" % who, "vs 5-year average"]},
+            "note": ({"value": "%s pts" % signed(far["values"][0] - pw), "label": ["harvested in one week", "(%d%% to %d%%)" % (pw, far["values"][0])]}
+                     if isinstance(pw, (int, float)) else None)}
+    panels = [hook,
+              {"id": "map", "title": "Corn harvest vs the 5-year average", "date": week,
+               "hint": "Each tile is a state. Number = points ahead (+) or behind (−) its own 5-year pace.",
+               "source": "%s, week ending %s. Only the %d states with a NASS-printed 5-yr avg are colored." % (NASS, wk, n),
+               "tiles": [{"key": r["key"], "gap": r["gap"]} for r in rows],
+               "bins": [{"lo": None, "hi": -6, "label": "6 or more behind", "c": "b2"},
+                        {"lo": -5, "hi": -1, "label": "1 to 5 behind", "c": "b1"},
+                        {"lo": 0, "hi": 0, "label": "Even", "c": "even"},
+                        {"lo": 1, "hi": 5, "label": "1 to 5 ahead", "c": "a1"},
+                        {"lo": 6, "hi": None, "label": "6 or more ahead", "c": "a2"}],
+               "legend_title": "Points vs avg"},
+              {"id": "count", "title": "Behind, even, ahead", "date": week, "source": "%s, wk ending %s." % (NASS, wk),
+               "n": n, "behind": len(behind), "even": len(even), "ahead": len(ahead),
+               "big": "%d of %d" % (len(behind), n), "line": "states are behind on corn",
+               "sub": "%d ahead, %d even%s" % (len(ahead), len(even), (" (%s)" % names(r["label"] for r in even)) if 0 < len(even) <= 3 else ""),
+               "icons": [{"key": r["key"], "side": (r["gap"] > 0) - (r["gap"] < 0)} for r in rows]}]
+    if corn and soy:
+        panels.append({"id": "crops", "title": "Corn vs soybeans, U.S.", "date": week,
+                       "source": "%s, U.S. rows, wk ending %s." % (NASS, wk),
+                       "crops": [dict(corn, name="Corn", icon="corn", words=pace_words(corn["gap"])),
+                                 dict(soy, name="Soybeans", icon="bean", words=pace_words(soy["gap"]))],
+                       "key": "Tick = 5-year average for this week"})
+    lb, tb = top_list(rows, -1)
+    la, ta = top_list(rows, 1)
+    row = lambda r: {"key": r["key"], "label": r["label"], "gap": r["gap"], "pct": r["values"][0], "avg": r["values"][1]}
+    panels.append({"id": "lists", "title": "Furthest behind, furthest ahead", "date": week,
+                   "source": "%s, week ending %s. Points = %% harvested minus 5-yr avg." % (NASS, wk),
+                   "scale": max(abs(r["gap"]) for r in rows) or 1,
+                   "cols": [{"head": "Most behind (corn, pts)", "side": -1, "rows": [row(r) for r in lb], "tie": tb},
+                            {"head": "Most ahead (corn, pts)", "side": 1, "rows": [row(r) for r in la], "tie": ta}]})
+    panels.append({"id": "means", "title": "What it means, what it doesn't", "date": week,
+                   "source": "Definitions: %s; 5-yr avg as NASS prints it." % NASS,
+                   "yes": ["Behind average means slower than the %d-%d pace for this week." % (y - 5, y - 1),
+                           "Each state is compared with its own average, not with other states."],
+                   "no": ["It does not say yields are lower.", "It is not a forecast of when harvest will finish."]})
+    return {"kicker": "Harvest", "headline": head, "lede": lede, "panels": panels,
+            "data_line": "Data: %s (week ending %s), percent of crop harvested and NASS 5-year average (%d-%d)." % (NASS, wk, y - 5, y - 1)}
+
+
+def funds_poster(hist_rows, path, an, how, rel):
+    last, prev, first = path[-1], hist_rows[-2], path[0]
+    week = last["date"]
+    src = "%s, positions %s, released %s." % ("CFTC Commitments of Traders", mdy(week), mdy(rel))
+    side = lambda v: "long" if v >= 0 else "short"
+    total, chg = last["net"] - first["net"], last["net"] - prev["net"]
+    span = len(path) - 1
+    head = {"lead": "Funds' corn net is %s " % ("down" if total < 0 else "up"), "em": "%s contracts" % num(abs(total)),
+            "tail": " in %d week%s" % (span, "" if span == 1 else "s")}
+    label = how.get("label") or ""
+    lede = [{"s": "Managed money held "}, {"s": "%s net %s" % (num(abs(first["net"])), side(first["net"])), "b": 1},
+            {"s": " on %s and " % md(first["date"])}, {"s": "%s net %s" % (num(abs(last["net"])), side(last["net"])), "b": 1},
+            {"s": " on %s." % md(week)}]
+    if label:
+        lede.append({"s": " This week: %s." % label})
+    panels = [
+        {"id": "hook", "title": "", "source": src, "date": week,
+         "big": {"value": last["net"], "unit": "", "vs": first["net"],
+                 "label": ["contracts net %s, %s" % (side(last["net"]), md(week)),
+                           "vs %s, %d week%s earlier" % (md(first["date"]), span, "" if span == 1 else "s")]},
+         "note": {"value": signed(chg), "label": ["contracts this week", "(%s to %s)" % (num(prev["net"]) if prev["net"] >= 0 else signed(prev["net"]),
+                                                                                         num(last["net"]) if last["net"] >= 0 else signed(last["net"]))]}},
+        {"id": "line", "title": "Net position, week by week", "date": week, "source": src,
+         "points": [{"x": r["date"], "label": md(r["date"]), "y": r["net"]} for r in path],
+         "hint": "Contracts long minus contracts short, managed money, corn futures."},
+        {"id": "split", "title": "Longs and shorts", "date": week, "source": src,
+         "weeks": [{"x": r["date"], "label": md(r["date"]), "long": r["long"], "short": r["short"]} for r in (first, last)],
+         "change": {"long": last["long"] - prev["long"], "short": last["short"] - prev["short"], "label": label}},
+        {"id": "changes", "title": "Each week's move", "date": week, "source": src,
+         "rows": [{"x": b["date"], "label": md(b["date"]), "chg": b["net"] - a["net"]} for a, b in zip(path, path[1:])][-LIST_MAX:],
+         "of": span},
+    ]
+    c = ((an.get("commodities") or {}).get("corn") or {})
+    p = (c.get("pctl") or {}).get("net_oi_all")
+    if isinstance(p, (int, float)) and c.get("weeks_of_history") and c.get("first_week") and isinstance(c.get("net_oi"), (int, float)):
+        if c.get("date") != week or c.get("net") != last["net"]:
+            raise Refuse("data/cot-analysis.json corn (%s, %s) disagrees with cot-history (%s, %s)" % (c.get("date"), c.get("net"), week, last["net"]))
+        pp = c.get("pctl_prev")
+        panels.append({"id": "rank", "title": "Where it sits in the record", "date": week, "source": src,
+                       "pctl": p, "pctl_prev": pp if isinstance(pp, (int, float)) else None,
+                       "net_oi": c["net_oi"], "weeks": c["weeks_of_history"], "since": c["first_week"],
+                       "line": "%d%% of the %s weeks since %s were at or below this week, as a share of open interest." % (
+                           round(p), num(c["weeks_of_history"]), c["first_week"][:4]),
+                       "sub": "Net %s = %.1f%% of all open contracts.%s" % (side(last["net"]), abs(c["net_oi"]),
+                                                                          (" Last week: %d%%." % round(pp)) if isinstance(pp, (int, float)) else "")})
+    panels.append({"id": "means", "title": "What it means, what it doesn't", "date": week,
+                   "source": "Definitions: %s." % CFTC,
+                   "yes": ["Net = contracts betting on higher prices minus contracts betting on lower prices.",
+                           "Positions are as of Tuesday; the CFTC releases them on Friday."],
+                   "no": ["It is not a price forecast.", "It does not say what any one trader holds or why."]})
+    return {"kicker": "Funds", "headline": head, "lede": lede, "panels": panels,
+            "data_line": "Data: %s, managed money in corn futures, positions %s, released %s." % (CFTC, mdy(week), mdy(rel))}
 
 
 BUILDERS = {"harvest-gap": harvest_gap, "funds-corn": funds_corn}
