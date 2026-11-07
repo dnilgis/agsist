@@ -283,7 +283,7 @@ def week_ahead(today):
         day = []   # (sort minutes, text)
         hol = usda_dates.federal_holiday_name(d)
         if hol and d.weekday() < 5:
-            day.append((0, "%s: federal offices closed" % hol))
+            day.append((0, "%s (federal offices closed)" % hol))
         for name, t, moved in usda_dates.weekly_releases(d):
             nm = name.replace("USDA ", "").replace("Weekly ", "")
             txt = "%s, %s" % (nm, t)

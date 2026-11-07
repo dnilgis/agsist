@@ -78,7 +78,7 @@ test("Sunday Nov 8: reports this week, Veterans Day and the COT move said plainl
   assert.deepEqual(b.lines, [
     "Mon Nov 9: Crop Progress, 3:00 PM CT",
     "Tue Nov 10: WASDE and Crop Production, 11:00 AM CT",
-    "Wed Nov 11: Veterans Day: federal offices closed",
+    "Wed Nov 11: Veterans Day (federal offices closed)",
     "Thu Nov 12: Export Sales, 7:30 AM CT",
   ]);
   assert.deepEqual(b.notes, ["The COT report for Nov 10 moves to Mon Nov 16, 2:30 PM CT, because of Veterans Day."]);
