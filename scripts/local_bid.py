@@ -639,6 +639,11 @@ def top_entry(elevators, cat, now=None):
                          "posted": str(ho["e"]["pricedAt"]) if (ho["e"].get("fromNetwork") and ho["e"].get("pricedAt")) else None}
                         if ho else None),
         "ageUnknown": bool(best["fr"]["ageUnknown"]),
+        # the board's data/bids-prev key parts (place|crop|period, scripts/build_bids_prev.py), for the
+        # Saturday Daily's Friday vs last Friday line (daily_weekend.bid_week); not on the hero
+        "board": ({"place": b["place"], "crop": b["netCrop"], "period": b["deliveryStart"],
+                   "state": str(b.get("state") or e.get("state") or "")}
+                  if b.get("source") == "network" and b.get("place") and b.get("netCrop") and b.get("deliveryStart") else None),
     }
 
 

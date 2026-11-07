@@ -34,6 +34,21 @@ A key changes when a place's nearest open period rolls (Oct to Nov), so a new
 period starts with no history. That is correct: October's price is not
 November's.
 
+THE FRIDAY SLOT (fx/bid-week, Nov 2026)
+
+    fri:  { key: [date, cash, basisCents] }
+
+One extra entry per key: the key's entry for the Friday that closed the
+PREVIOUS week (the Friday before this Monday), the same last-value-of-the-day
+entry `rows` held for that Friday. It is set on the first run of a week, while
+`rows` still holds that Friday, and kept until the next week starts, when the
+Friday just gone replaces it. So on a Saturday `rows` holds this Friday and
+`fri` holds last Friday: the Saturday Daily's "Friday vs last Friday" line for a
+reader's own elevator (scripts/daily_weekend.py bid_week). A key not seen that
+Friday has no slot; a slot is never an older day standing in for the Friday.
+Kept out of `rows` so every reader of `rows` sees exactly what it saw before;
+about one entry more per key than KEEP_DAYS, instead of doubling KEEP_DAYS.
+
 Usage:
     python3 scripts/build_bids_prev.py                  # fetch the live index, update
     python3 scripts/build_bids_prev.py --index FILE     # read a local index
@@ -94,6 +109,28 @@ def sightings(index):
     return out
 
 
+def last_week_friday(day):
+    """The Friday that closed the week before `day`'s week (Mon to Sun)."""
+    d = dt.date.fromisoformat(day)
+    return (d - dt.timedelta(days=d.weekday() + 3)).isoformat()
+
+
+def fold(shards, fri, seen, day):
+    """Fold one run's sightings into (rows shards, friday slots) for `day`. Pure."""
+    out = update(shards, seen, day)
+    want = last_week_friday(day)
+    slots = {}
+    for st, rows in out.items():
+        old = (fri or {}).get(st) or {}
+        for k, hist in rows.items():
+            got = next((list(e) for e in hist if e[0] == want), None)
+            if got is None and isinstance(old.get(k), list) and old[k] and old[k][0] == want:
+                got = list(old[k])
+            if got is not None:
+                slots.setdefault(st, {})[k] = got
+    return out, slots
+
+
 def update(shards, seen, day):
     """Fold one run's sightings into the shards for `day`. Pure; returns new shards."""
     out = {st: {k: [list(e) for e in v] for k, v in rows.items()} for st, rows in shards.items()}
@@ -114,32 +151,39 @@ def update(shards, seen, day):
     return out
 
 
-def load_shards():
-    shards = {}
+def load_shards(with_fri=False):
+    shards, fri = {}, {}
     for fp in glob.glob(os.path.join(OUT_DIR, "*.json")):
         st = os.path.basename(fp)[:-5]
         try:
             with open(fp) as f:
-                shards[st] = json.load(f).get("rows") or {}
+                doc = json.load(f)
+            shards[st] = doc.get("rows") or {}
+            if isinstance(doc.get("fri"), dict):
+                fri[st] = doc["fri"]
         except Exception as e:  # noqa: BLE001 -- a broken shard starts over, loudly
             print(f"::warning title=bids-prev::{fp} unreadable ({e}); starting that state over")
-    return shards
+    return (shards, fri) if with_fri else shards
 
 
-def write_shards(shards, stamp):
+def write_shards(shards, stamp, fri=None):
     os.makedirs(OUT_DIR, exist_ok=True)
     wrote = 0
     for st, rows in sorted(shards.items()):
         doc = {"schema": SCHEMA, "generated": stamp, "tz": "America/Chicago",
                "note": 'Recent daily cash and basis by place, crop and delivery period, in cents, Central time. Weekends are not recorded.',
                "rows": {k: rows[k] for k in sorted(rows)}}
+        slots = (fri or {}).get(st) or {}
+        if slots:
+            doc["note"] += " fri: each key's entry for the Friday that closed the previous week."
+            doc["fri"] = {k: slots[k] for k in sorted(slots)}
         fp = os.path.join(OUT_DIR, st + ".json")
         body = json.dumps(doc, separators=(",", ":"), ensure_ascii=False)
         old = None
         if os.path.exists(fp):
             with open(fp) as f:
                 old = json.load(f)
-        if old and old.get("rows") == doc["rows"]:
+        if old and old.get("rows") == doc["rows"] and old.get("fri") == doc.get("fri"):
             continue
         with open(fp, "w") as f:
             f.write(body)
@@ -176,6 +220,21 @@ def selftest():
     s = update(s, {}, "2026-10-16")                         # not seen for 11 days: dropped
     assert s == {}, s
     assert is_weekend("2026-10-03") and is_weekend("2026-10-04") and not is_weekend("2026-10-05")
+    # the Friday slot: last week's Friday, set while rows still hold it, kept after rows let it go
+    assert last_week_friday("2026-11-02") == "2026-10-30" and last_week_friday("2026-11-06") == "2026-10-30"
+    assert last_week_friday("2026-11-07") == "2026-10-30" and last_week_friday("2026-11-09") == "2026-11-06"
+    r, f = {}, {}
+    for d, c in (("2026-10-29", 4.10), ("2026-10-30", 4.12), ("2026-11-02", 4.15), ("2026-11-03", 4.16),
+                 ("2026-11-04", 4.17), ("2026-11-05", 4.18), ("2026-11-06", 4.20)):
+        r, f = fold(r, f, {"KS": {k: (c, -30)}}, d)
+    assert [e[0] for e in r["KS"][k]] == ["2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06"], r
+    assert f["KS"][k] == ["2026-10-30", 4.12, -30], f        # Saturday: rows hold this Friday, fri last Friday
+    r, f = fold(r, f, {"KS": {k: (4.25, -28)}}, "2026-11-09")
+    assert f["KS"][k] == ["2026-11-06", 4.20, -30], f        # the new week: the Friday just gone
+    r2, f2 = fold({}, {}, {"KS": {k: (4.0, -30)}}, "2026-11-05")
+    assert f2 == {}, f2                                       # no entry that Friday: no slot, nothing older
+    _, f3 = fold(r, f, {}, "2026-11-23")
+    assert f3 == {}, f3                                       # key dropped from rows: its slot goes too
     print("build_bids_prev selftest: ok")
 
 
@@ -209,9 +268,10 @@ def main():
         # going quiet. Recording it would cost nothing (old keys stay), but
         # say so.
         print(f"::warning title=bids-prev::only {n} priced rows in the index; recorded anyway")
-    shards = update(load_shards(), seen, day)
+    old, old_fri = load_shards(with_fri=True)
+    shards, fri = fold(old, old_fri, seen, day)
     stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    wrote = write_shards(shards, stamp)
+    wrote = write_shards(shards, stamp, fri)
     print(f"[bids-prev] {day}: {n} rows seen in {len(seen)} states; {wrote} shard(s) changed")
 
 
