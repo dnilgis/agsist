@@ -18,7 +18,8 @@
   var ORDER = G.ORDER;
   var CHIP = G.SHORT;
   var K = root.AgCotKit || (typeof require === 'function' ? require('./cot-kit.js') : null);
-  var SK = root.AgShareKit || (typeof require === 'function' ? require('./share-kit.js') : null);
+  /* the share kit core, read only when a picture is drawn: without it the chart and the page work as ever */
+  function kit() { return root.AgShareKit || (typeof require === 'function' ? require('./share-kit.js') : null); }
   var SITE = 'https://agsist.com';
   var ASK = 'Free every Friday: agsist.com/cot';
   function full(d) { return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dt(d).getDay()] + ', ' + mdy(d); }
@@ -313,8 +314,8 @@
   var PNG_INK = { net: '#d4a23f', netFill: 'rgba(212,162,63,.16)', price: '#8fa6b2', grid: 'rgba(132,160,168,.18)', zero: 'rgba(233,237,235,.85)',
     axis: 'rgba(233,237,235,.72)', text: '#e9edeb', muted: 'rgba(233,237,235,.74)', surface: '#101415', none: '',
     c0: '#d4a23f', c1: '#62aee0', c2: '#e07a9a' };
-  var FONT = SK.FONT;
   function paint(ctx, g, ox, oy) {
+    var SK = kit(), FONT = SK.FONT;
     ctx.save(); ctx.translate(ox, oy);
     g.items.forEach(function (it) {
       if (it.t === 'line' || it.t === 'area') {
@@ -351,7 +352,7 @@
   function image(m, doc, o) {
     o = o || {};
     var ph = !!o.phone, W = ph ? 1080 : 1200, H = ph ? 1350 : 675, P = ph ? 60 : 56;
-    var c = SK.canvas(doc, W, H), ctx = c.getContext('2d'), p = SK.pen(ctx), text = p.text;
+    var SK = kit(), c = SK.canvas(doc, W, H), ctx = c.getContext('2d'), p = SK.pen(ctx), text = p.text;
     function wrapped(s, size, weight, max) { p.font(size, weight); return p.wrap(s, W - 2 * P).slice(0, max); }
     SK.frame(ctx, W, H, ph ? 12 : 8);
     var head = m.cmp ? m.headline : m.head || ('Managed money in ' + m.name.toLowerCase() + ': ' + netWords(m.last.net) + ' contracts.');

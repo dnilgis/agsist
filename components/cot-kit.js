@@ -7,7 +7,7 @@
   'use strict';
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var MINUS = '−';
-  /* the share kit core (components/share-kit.js): the link tags every kit shares */
+  /* the share kit core (components/share-kit.js): the link tags every kit shares; without it a link has no tags */
   function SK() { return root.AgShareKit || (typeof require === 'function' ? require('./share-kit.js') : null); }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function commas(n) { return Math.abs(Math.round(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
@@ -158,7 +158,7 @@
     var q = [];
     if (ks) q.push('m=' + ks);
     if (ks && /^\d{4}-\d{2}-\d{2}$/.test(week || '')) q.push('w=' + week);   /* a market's preview, per week */
-    if (src) q.push(SK().tags(src, med, 'cot' + (week ? '-' + week : '')));
+    if (src && SK()) q.push(SK().tags(src, med, 'cot' + (week ? '-' + week : '')));
     return 'https://agsist.com/cot' + (q.length ? '?' + q.join('&') : '') + (hash === undefined ? (ks && ks.indexOf(',') < 0 ? '#' + ks : '') : hash);
   }
 

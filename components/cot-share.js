@@ -22,8 +22,14 @@
   'use strict';
   var doc = root.document;
   var K = root.AgCotKit, G = root.AgCotGlance, C = root.AgCotChart, SK = root.AgShareKit;
-  if (!doc || !K || !G || !C || !SK) return;
   function $(id) { return doc.getElementById(id); }
+  /* without the share kit core (blocked or not loaded) the chart works as ever; the three buttons say they are
+     unavailable instead of doing nothing */
+  if (doc && !SK) ['cc-share', 'cc-save', 'cc-print'].forEach(function (id) {
+    var b = $(id); if (!b) return;
+    b.disabled = true; b.setAttribute('aria-disabled', 'true'); b.title = 'Not available right now. Reload the page to try again.';
+  });
+  if (!doc || !K || !G || !C || !SK) return;
   var ga = SK.ga, EV = SK.EV, KEY = 'agsist_cot_from';
 
   /* ---- arrivals: where the reader came from, for the signup's source ---- */

@@ -292,7 +292,90 @@ test("every page that runs a kit loads the share kit core first; versions bumped
   const cpj = read("components/county-print.js");
   assert.match(cpj, /SK_CSS = '\/components\/share-kit\.css\?v=1', SK_JS = '\/components\/share-kit\.js\?v=1'/);
   assert.match(cpj, /CSS = '\/components\/county-print\.css\?v=2'/);
-  assert.match(cpj, /if \(root\.AgShareKit\) start\(\); else load\('script', \{ src: SK_JS, async: true \}\)\.onload = start;/);
+  assert.match(cpj, /if \(root\.AgShareKit\) start\(\); else \{ var sk = load\('script', \{ src: SK_JS, async: true \}\); sk\.onload = [^;]*start\(\);[^}]*\}; sk\.onerror = noKit; \}/);
   assert.ok(fs.statSync(path.join(ROOT, "components/cot-chart.js")).size < 50000, "cot-chart.js under 50,000 bytes");
   assert.doesNotMatch(read("components/share-kit.js") + read("components/share-kit.css"), /—/, "no em dash");
+});
+
+/* ---------------------------------------------------------------- without the share kit (blocked, 404, offline) */
+test("without share-kit.js the COT chart, its links and the Bin yard math still load (no require, no kit)", () => {
+  const w = {};
+  const c = { window: w };
+  vm.createContext(c);
+  for (const f of ["cot-glance.js", "cot-kit.js", "cot-chart.js", "grain-bin.js", "grain-shrink.js", "bin-yard.js", "county-print.js"]) vm.runInContext(read("components/" + f), c);
+  assert.ok(w.AgCotChart && w.AgCotChart.layout && w.AgCotKit && w.AgBinYard && w.AgCountyPrint, "every kit file defines its API without the core");
+  assert.equal(w.AgCotKit.link(["corn"], "2026-10-27", "share", "picture"), "https://agsist.com/cot?m=corn&w=2026-10-27#corn", "a plain link, no tags");
+  const m = w.AgCotChart.model("corn", FX.hist, FX.cot, FX.cx);
+  assert.ok(w.AgCotChart.toSvg(w.AgCotChart.layout(m, 600, 300, { fs: 13 })).includes("<path"), "the chart lays out and draws");
+  assert.match(w.AgBinYard.sheetTitle({ name: "Yard", items: [] }, new Date(NOW)), /^Bin Print: Yard, Nov 7, 2026$/);
+});
+
+const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
+const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
+let chromium = null;
+try { if (fs.existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
+const skip = !chromium || !fs.existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
+
+test("in a browser with share-kit.js blocked: /cot chart draws, Bin Print yard works, County Print falls back; no errors", { skip, timeout: 180000 }, async () => {
+  const { createServer } = await import("node:http");
+  const { spawnSync } = await import("node:child_process");
+  const { mkdtempSync, rmSync } = fs;
+  const os = await import("node:os");
+  const OUT = mkdtempSync(path.join(os.tmpdir(), "sk-nokit-"));
+  try {
+    const b = spawnSync("python3", [path.join(ROOT, "scripts/build_atlas_pages.py"), "--root", ROOT, "--out", OUT, "--only", "19169"], { cwd: ROOT, encoding: "utf8" });
+    assert.equal(b.status, 0, "the county page builds: " + (b.stderr || "").slice(-300));
+    const OWN = { "/data/cot.json": "test/fixtures/funds/cot-2026-10-27.json", "/data/cot-analysis.json": "test/fixtures/funds/cot-analysis-2026-10-27.json", "/data/cot-history.json": "test/fixtures/funds/cot-history-2026-10-27.json" };
+    const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml" };
+    const srv = createServer((req, res) => {
+      let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
+      if (!path.extname(p)) p += ".html";
+      const rel = p.slice(1), cands = OWN[p] ? [path.join(ROOT, OWN[p])] : [path.join(OUT, rel), path.join(ROOT, rel)];
+      const f = cands.find((x) => fs.existsSync(x) && !fs.statSync(x).isDirectory());
+      if (!f) { res.writeHead(404); res.end(); return; }
+      res.writeHead(200, { "content-type": types[path.extname(f)] || "application/octet-stream" });
+      res.end(fs.readFileSync(f));
+    });
+    await new Promise((ok) => srv.listen(0, "127.0.0.1", ok));
+    const port = srv.address().port, browser = await chromium.launch({ executablePath: CHROME });
+    try {
+      const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1200, height: 900 } });
+      const errors = [];
+      const open = async (url) => {
+        const pg = await ctx.newPage();
+        pg.on("pageerror", (e) => errors.push(url + ": " + e.message));
+        await pg.route("**/*", (r) => {
+          const u = new URL(r.request().url());
+          if (u.origin !== `http://127.0.0.1:${port}`) return r.abort();
+          if (/\/components\/share-kit\.(js|css)$/.test(u.pathname)) return r.fulfill({ status: 404, body: "" });   // the kit is blocked
+          return r.continue();
+        });
+        await pg.clock.setFixedTime(new Date(NOW));
+        await pg.goto(`http://127.0.0.1:${port}${url}`, { waitUntil: "load" });
+        return pg;
+      };
+      // /cot: the chart draws and picks markets; the kit's three buttons say they are unavailable
+      const cot = await open("/cot");
+      await cot.waitForFunction(() => window.AgCotChart && document.querySelector("#cot-chart-box svg path"), null, { timeout: 15000 });
+      await cot.click('.cc-chip[data-k="beans"]');
+      assert.equal(await cot.evaluate(() => window.AgCotChart.current()), "beans", "the chips still pick a market");
+      assert.match(await cot.evaluate(() => window.AgCotKit.link(["corn"], "2026-10-27", "share", "link")), /^https:\/\/agsist\.com\/cot\?m=corn/);
+      for (const id of ["cc-share", "cc-save", "cc-print"]) assert.ok(await cot.$eval("#" + id, (e) => e.disabled && e.getAttribute("aria-disabled") === "true"), id + " marked unavailable");
+      // Bin Print: the yard planner draws, adds a bin, totals it; only the print, picture and link buttons are off
+      const bin = await open("/grain-bin-calculator");
+      await bin.waitForFunction(() => window.AgBinYard && window.AgBinYard.state && document.querySelector("#by-tbody tr"), null, { timeout: 15000 });
+      const n0 = await bin.evaluate(() => window.AgBinYard.state().items.length);
+      await bin.click('#by-root [data-add="round"]');
+      assert.equal(await bin.evaluate(() => window.AgBinYard.state().items.length), n0 + 1, "a bin is added");
+      for (const id of ["by-print", "by-pic", "by-link", "by-crewprint", "by-send"]) assert.ok(await bin.$eval("#" + id, (e) => e.disabled), id + " marked unavailable");
+      assert.ok(!(await bin.$eval("#by-export", (e) => e.disabled)), "the yard file export still works");
+      // County Print: Print keeps its link to the shared sheet; Save picture and Copy link are marked unavailable
+      const cty = await open("/farmland-atlas/iowa/story-county");
+      await cty.waitForFunction(() => document.getElementById("cpr-pic").disabled, null, { timeout: 15000 });
+      assert.ok(await cty.$eval("#cpr-link", (e) => e.disabled && e.getAttribute("aria-disabled") === "true"));
+      assert.equal(await cty.$eval("#cpr-print", (e) => e.getAttribute("href")), "/farmland-atlas/sheet#19169", "Print opens the shared sheet page");
+      assert.match(await cty.$eval(".cpr-st", (e) => e.textContent), /not available right now/);
+      assert.deepEqual(errors, [], "no script errors on any page");
+    } finally { await browser.close(); srv.close(); }
+  } finally { rmSync(OUT, { recursive: true, force: true }); }
 });

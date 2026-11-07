@@ -447,5 +447,16 @@
     });
   }
   /* the share kit core first (cached after the first county page), then everything above starts */
-  if (root.AgShareKit) start(); else load('script', { src: SK_JS, async: true }).onload = start;
+  /* if it never loads (blocked, offline): Print still opens the shared sheet page (its own link), and Save picture
+     and Copy link say they are unavailable instead of doing nothing */
+  function noKit() {
+    if (K) return;
+    ['cpr-pic', 'cpr-link'].forEach(function (id) {
+      var b = $(id); if (!b) return;
+      b.disabled = true; b.setAttribute('aria-disabled', 'true'); b.title = 'Not available right now. Reload the page to try again.';
+    });
+    var st = doc.querySelector('.cpr-st');
+    if (st) st.textContent = 'Save picture and Copy link are not available right now.';
+  }
+  if (root.AgShareKit) start(); else { var sk = load('script', { src: SK_JS, async: true }); sk.onload = function () { start(); if (!K) noKit(); }; sk.onerror = noKit; }
 })(typeof window !== 'undefined' ? window : this);
