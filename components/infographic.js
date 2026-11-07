@@ -18,7 +18,7 @@
 
   function SK() { return root.AgShareKit || (typeof require === 'function' ? require('./share-kit.js') : null); }
   function fmt(n) { return Math.abs(Math.round(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
-  function bigText(b) { return (b.value < 0 ? '−' : '') + fmt(b.value); }
+  function bigText(b) { return (b.value < 0 ? '\u2212' : '') + fmt(b.value); }
   function unitText(b) { return b.unit === '%' ? '%' : ' ' + b.unit; }
   function pageUrl(spec) { return SITE + '/infographic/' + spec.date; }
   function shown(spec) { return 'agsist.com/infographic/' + spec.date; }

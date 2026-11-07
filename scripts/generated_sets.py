@@ -144,6 +144,13 @@ SETS = [
      # its page copies the site menu, fonts and early scripts from grain-emc.html (cash_bid_index._nav_blocks)
      "code": ["scripts/cash_bid_index.py"], "inputs": ["grain-emc.html"],
      "dependents": ["feeds", "llms"]},
+    # the Infographic of the Week (Nov 7, 2026): one page per spec in data/infographics/ (scripts/build_infographic.py
+    # writes the specs from our data files), the archive and one link card per page; infographic.css is written by hand
+    {"id": "infographic", "offline": True, "workflow": "infographic-pages.yml",
+     "build": [[PY, "scripts/build_infographic_pages.py"]], "check": None,
+     "outputs": ["infographic/**", "!infographic/infographic.css"],
+     "writes": [], "code": ["scripts/build_infographic_pages.py"], "inputs": [],
+     "dependents": []},
 ]
 
 # Summary files: committed files whose builder reads what a set writes (BUILD-RULES 61). A set lists the ones it

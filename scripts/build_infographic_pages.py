@@ -91,7 +91,7 @@ def check(spec, fname):
         raise BadSpec("%s: its date is %s" % (fname, spec["date"]))
     if not spec["title"] or len(spec["title"]) > 60:
         raise BadSpec("%s: the hook must be 1 to 60 characters" % fname)
-    if "—" in json.dumps(spec, ensure_ascii=False):
+    if "\u2014" in json.dumps(spec, ensure_ascii=False):
         raise BadSpec("%s: an em dash" % fname)
     if not spec["facts"] or any(not f.get("source") or not f.get("date") or not f.get("text") for f in spec["facts"]):
         raise BadSpec("%s: every fact needs text, a source and a date" % fname)
@@ -282,7 +282,7 @@ def page(spec, specs, og, v, parts):
   <h2>The facts</h2>
   <ul class="ig-facts">{facts}</ul>
   {chart_html(spec)}
-  <details><summary>Sources</summary><ul>{srcs}</ul><p>Facts from the sources above and plain arithmetic on them; no forecast and no advice.</p></details>
+  <details><summary>Sources</summary><ul>{srcs}</ul><p>Facts from the sources above and plain arithmetic on them, not advice.</p></details>
   <p class="ig-links ig-sub">Related: <a href="{esc(rel)}">{esc(RELATED.get(rel, rel))}</a> &middot; <a href="/infographic/">Every infographic</a></p>
   {('<h2>Recent infographics</h2><ul class="ig-list">' + more + '</ul>') if more else ''}
 </main>
@@ -407,7 +407,7 @@ def selftest():
     ck("one H1", pg.count("<h1>") == 1)
     ck("links the newer one", 'href="/infographic/2026-11-13"' in pg)
     ck("ImageObject and Dataset", '"@type": "ImageObject"' in pg and '"@type": "Dataset"' in pg)
-    ck("no em dash", "—" not in pg)
+    ck("no em dash", "\u2014" not in pg)
     os.remove(os.path.join(d, SPECS, "2026-11-13.json"))
     _, _, removed = build_all(d, images=False, parts=("", "", ""))
     ck("a page whose spec is gone is removed", removed == ["2026-11-13.html"])

@@ -1,0 +1,64 @@
+name: Infographic pages
+# The Infographic of the Week pages (/infographic/<date> and the archive), rebuilt on main from the specs in
+# data/infographics/ (scripts/build_infographic.py writes them) whenever a spec or the builder changes.
+# No schedule: a page changes only when a spec does.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "data/infographics/**"
+      - "scripts/build_infographic_pages.py"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    concurrency:
+      group: infographic-pages
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Pillow
+        run: pip install --quiet pillow==12.3.0
+      - name: Build /infographic
+        run: |
+          python scripts/build_infographic_pages.py --selftest
+          python scripts/build_infographic_pages.py
+      - name: Commit if changed
+        run: |
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          stage() {
+            if [ -s infographic/_indexable.txt ]; then
+              python scripts/update_sitemap.py --add $(cat infographic/_indexable.txt) --priority 0.6 --changefreq weekly
+            fi
+            git add -A infographic sitemap.xml
+            python scripts/generated_sets.py dependents infographic --stage || true
+          }
+          stage
+          if git diff --staged --quiet; then echo "no change"; exit 0; fi
+          git commit -m "pages: rebuild /infographic"
+          for i in 1 2 3 4; do
+            if python3 scripts/generated_sets.py pull-rebase infographic && git push origin HEAD:main; then echo "pushed on attempt $i"; exit 0; fi
+            git rebase --abort 2>/dev/null || true
+            git fetch -q origin main
+            git reset -q --hard origin/main
+            python scripts/build_infographic_pages.py
+            stage
+            if git diff --staged --quiet; then echo "no change on the new main"; exit 0; fi
+            git commit -q -m "pages: rebuild /infographic"
+            sleep $((10 * i))
+          done
+          echo "push failed after 4 attempts"; exit 1

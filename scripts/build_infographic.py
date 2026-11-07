@@ -260,7 +260,7 @@ def build(kind, iso, root=ROOT):
     if len(out["title"]) > TITLE_MAX:
         raise Refuse("the hook is %d characters, over %d: %s" % (len(out["title"]), TITLE_MAX, out["title"]))
     text = json.dumps(out, ensure_ascii=False)
-    if "—" in text:
+    if "\u2014" in text:
         raise Refuse("an em dash in the spec")
     return out
 
