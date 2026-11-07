@@ -9,6 +9,7 @@ handed in everywhere; nothing reads today's date or the network, and no real rea
 """
 import json
 import os
+import shutil
 import sys
 import tempfile
 from datetime import date, datetime, timezone
@@ -137,4 +138,10 @@ def main(case):
 
 
 if __name__ == "__main__":
-    print(json.dumps(main(sys.argv[1])))
+    _tmp0 = set(os.listdir(tempfile.gettempdir()))
+    try:
+        print(json.dumps(main(sys.argv[1])))
+    finally:
+        for n in set(os.listdir(tempfile.gettempdir())) - _tmp0:
+            if n.startswith("bidweek-"):
+                shutil.rmtree(os.path.join(tempfile.gettempdir(), n), ignore_errors=True)
