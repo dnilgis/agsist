@@ -16,7 +16,7 @@ document.getElementById('dl').addEventListener('click',function(){
   document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
 });
 var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){
+if(cp)cp.addEventListener('click',function(){
   var u=location.origin+location.pathname;
   var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
