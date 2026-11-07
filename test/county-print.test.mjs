@@ -48,9 +48,11 @@ const row = (fips) => INDEX.find((x) => x[0] === fips);
 const page = (fips) => read(row(fips)[2].slice(1) + ".html");
 const cpData = (h) => { const m = h.match(/<script type="application\/json" id="cp-data">([^<]*)<\/script>/); return m && JSON.parse(m[1]); };
 const canon = (h) => h.match(/<link rel="canonical" href="([^"]+)">/)[1];
+const NOW = Date.UTC(2026, 10, 7, 18), DAY = CP.isoDay(NOW), MADE = CP.dateLine(NOW);
+const FX = J("test/fixtures/county-print-live.json");
 const ctxOf = (h, fips) => {
   const t = h.match(/<h1>([^<]*)<\/h1>/)[1].replace(/&amp;/g, "&").split(", ");
-  return { name: t.slice(0, -1).join(", "), state: t[t.length - 1], url: canon(h), fips, now: Date.UTC(2026, 10, 7, 18) };
+  return { name: t.slice(0, -1).join(", "), state: t[t.length - 1], url: canon(h), fips, now: NOW };
 };
 /* what a reader sees: the page without its scripts, styles and tags */
 const visible = (h) => h.replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<style[\s\S]*?<\/style>/g, " ").replace(/<[^>]+>/g, " ")
@@ -126,28 +128,22 @@ test("every yearly figure on the sheet is one the page prints; the chart is the 
   assert.ok(sold.some((r) => r.head === "Value estimates, not sales"), "estimates sit apart from transfers, labelled");
   assert.match(sold[0].text, /recorded transfer/, "the first answer to what has sold is the recorded transfers (or that there are none)");
   for (const b of s.blocks) for (const r of b.rows) if (!r.head && r.big) assert.ok(r.src && /\d{4}/.test(r.src), `${b.key}: "${r.text}" carries its source and period`);
-  assert.equal(s.title, "Story County, Iowa: County Print, November 7, 2026");
-  assert.equal(s.qr, canon(h) + "?asof=2026-11-07&utm_source=print&utm_medium=qr&utm_campaign=county-19169", "the QR code dates the sheet");
-  assert.match(s.made, /^Made November 7, 2026 from data as of /);
+  assert.equal(s.title, `Story County, Iowa: County Print, ${MADE}`);
+  assert.equal(s.qr, `${canon(h)}?asof=${DAY}&utm_source=print&utm_medium=qr&utm_campaign=county-19169`, "the QR code dates the sheet");
+  assert.ok(s.made.startsWith(`Made ${MADE} from data as of `));
 });
 
 test("the daily rows are the rows county-home.js drew; a short-list bid and a missing row are left out; no field name", () => {
   const h = page("19169"), c = ctxOf(h, "19169");
-  const live = {
-    "corn-bid": { label: "Corn bid", value: "$4.12", date: "2026-11-06", ctx: "8 mi from your field “Home 80”, December delivery. Best of 23 within 50 mi. Nearest: $4.05 at 2 mi.", paper: "Posted elevator bids" },
-    "soy-bid": { label: "Soybean bid", value: "$10.80", date: "2026-11-06", ctx: "3 mi from the county middle. From the short list.", partial: true, paper: "Posted elevator bids, short list" },
-    "corn-basis": { value: "38¢ under Dec '26", date: "2026-11-07", ctx: "Iowa bids: median of 362 elevators. USDA Iowa region: 16¢ weaker than its 5-year normal for the week of Oct 30.", paper: "Posted elevator bids; USDA AgTransport" },
-    rain: { value: "37.90 in", date: "2026-11-05", ctx: "128% of the 1991–2020 normal (29.60 in) for the same days. November so far: 0.20 in.", paper: "NOAA daily station record" },
-    drought: { value: null, why: "no row" },
-  };
+  const live = FX.live, mdy = (iso) => new Date(iso + "T12:00:00Z").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
   const s = CP.sheet(cpData(h), live, c), g = s.blocks.find((b) => b.key === "earn"), w = s.blocks.find((b) => b.key === "risk");
   const lr = g.rows.filter((r) => r.live);
-  assert.deepEqual(lr.map((r) => r.big), ["$4.12", "38¢ under Dec '26"], "the page's own values; the short-list soybean bid is left out");
-  assert.equal(lr[0].text, "Best corn bid within 50 mi. 8 mi from your saved field, December delivery. Best of 23 within 50 mi.");
-  assert.equal(lr[0].src, "Posted elevator bids, Nov 6, 2026");
+  assert.deepEqual(lr.map((r) => r.big), [live["corn-bid"].value, live["corn-basis"].value], "the page's own values; the short-list soybean bid is left out");
+  assert.equal(lr[0].text, FX.want.bidText);
+  assert.equal(lr[0].src, live["corn-bid"].paper + ", " + mdy(live["corn-bid"].date));
   const yt = cpData(h).yt, gross = g.rows.find((r) => /^Rough gross/.test(r.text || ""));
   if (yt) assert.equal(gross.text, `Rough gross: ${yt[0]} bu trend × $4.12 best bid = about $${(Math.round(+yt[0] * 4.12 / 5) * 5).toLocaleString("en-US")} an acre, before any cost. Not an appraisal.`);
-  assert.equal(w.rows[0].text, "Rain since Jan 1. 128% of the 1991–2020 normal (29.60 in) for the same days.", "a decimal never splits a sentence");
+  assert.equal(w.rows[0].text, FX.want.rainText, "a decimal never splits a sentence");
   assert.ok(!w.rows.some((r) => /Drought/.test(r.text)), "a row that did not load is left out");
   assert.doesNotMatch(sheetText(s), /Home 80|your field “/, "the reader's field name never prints");
   for (const w of ["Posted elevator bids", "USDA AgTransport", "NOAA daily station record"]) assert.equal(s.src.split(w).length, 2, "credited once: " + w);
@@ -177,8 +173,8 @@ test("the QR code reads back to the county page with the print tags", (t) => {
       assert.equal(r && r.data, u, fips + " reads back");
       assert.ok((m.length - 17) / 4 <= 8, `${fips}: version ${(m.length - 17) / 4}, small enough to scan at 1.25 in`);
     }
-    assert.equal(s.qr, canon(h) + `?asof=2026-11-07&utm_source=print&utm_medium=qr&utm_campaign=county-${fips}`);
-    assert.equal(s.pic, canon(h) + `?asof=2026-11-07&utm_source=share&utm_medium=picture&utm_campaign=county-${fips}`);
+    assert.equal(s.qr, `${canon(h)}?asof=${DAY}&utm_source=print&utm_medium=qr&utm_campaign=county-${fips}`);
+    assert.equal(s.pic, `${canon(h)}?asof=${DAY}&utm_source=share&utm_medium=picture&utm_campaign=county-${fips}`);
   }
 });
 
@@ -229,7 +225,8 @@ test("in a browser: one page on Letter and A4, full and sparse; Ctrl+P prints it
       assert.equal(info.shown, "none", fips + ": hidden on screen");
       // one page always; a long day (every bid and basis row in) may scale the sheet a little, never below 85%
       assert.ok(info.fit === "1" || +info.zoom >= 0.85, `${fips}: fits (scaled to ${info.zoom})`);
-      assert.match(info.title, /^.+, .+: County Print, (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, 20\d\d$/);
+      const today = await pg.evaluate(() => window.AgCountyPrint.dateLine());
+      assert.ok(info.title.endsWith(": County Print, " + today) && /, 20\d\d$/.test(today), "the title carries the date with its year");
       assert.ok(info.qr, fips + ": QR code");
       assert.match(info.text, /Scan for this county’s live page/);
       assert.match(info.text, /Not advice/);
