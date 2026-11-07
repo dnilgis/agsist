@@ -69,8 +69,8 @@
   }
  ],
  "status": {
-  "ok": false,
-  "checked": "2026-11-06T20:25:32Z",
-  "note": "report dated 2026-10-12 is older than the one on file (2026-10-30)"
+  "ok": true,
+  "checked": "2026-11-07T01:24:41Z",
+  "note": null
  }
 }
