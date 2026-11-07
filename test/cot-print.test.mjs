@@ -35,26 +35,31 @@ const DASH = /[–—]|&mdash;|&ndash;/;
 test("cot.html: the Print sheet button beside Save picture (a 44 px .cc-btn), the stylesheet and scripts at their versions", () => {
   assert.match(HTML, /<button type="button" class="cc-btn" id="cc-save" aria-haspopup="dialog">Save picture<\/button>\s*<button type="button" class="cc-btn" id="cc-print" aria-haspopup="dialog">Print sheet<\/button>/);
   assert.match(HTML, /\.cc-btn\{[^}]*min-height:44px/);
-  assert.ok(HTML.includes('<link rel="stylesheet" href="/components/cot-print.css?v=5">'));
+  assert.ok(HTML.includes('<link rel="stylesheet" href="/components/share-kit.css?v=1">\n<link rel="stylesheet" href="/components/cot-print.css?v=6">'), "the share kit shell, then the sheet's own look");
   const i = (s) => HTML.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("cot-kit.js?v=2") > 0 && i("cot-kit.js?v=2") < i("cot-chart.js?v=11") && i("cot-chart.js?v=11") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=4") && i("cot-print.js?v=4") < i("cot-share.js?v=1"), "kit, chart, QR encoder, then the sheet");
+  assert.ok(i("share-kit.js?v=1") > 0 && i("share-kit.js?v=1") < i("cot-kit.js?v=3") && i("cot-kit.js?v=3") < i("cot-chart.js?v=12") && i("cot-chart.js?v=12") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=5") && i("cot-print.js?v=5") < i("cot-share.js?v=2"), "share kit core, kit, chart, QR encoder, then the sheet");
   assert.match(read("components/cot-chart.js"), /dispatchEvent\(new CustomEvent\('cot:chart-data'/, "the chart hands its files over");
   assert.doesNotMatch(JS, /fetch\(|XMLHttpRequest/, "the sheet fetches nothing");
 });
 
-test("print stylesheet: hidden on screen; with html.cotp-on, everything but the sheet (nav, footer, sponsor slots, buttons) is hidden", () => {
-  const scr = CSS.replace(/@media print\{[\s\S]*?\n\}/, "");
-  assert.match(scr, /^\.cotp\{display:none\}$/m, "hidden on screen");
-  const pr = CSS.match(/@media print\{([\s\S]*?)\n\}/)[1];
-  assert.match(pr, /html\.cotp-on body>\*:not\(#cotp\)\{display:none!important\}/);
-  assert.match(pr, /html\.cotp-on #cotp\{display:block!important\}/);
+test("print stylesheet: hidden on screen; with html.sk-on (set with html.cotp-on), everything but the sheet (nav, footer, sponsor slots, buttons) is hidden", () => {
+  /* the shell is the share kit core's (components/share-kit.css): the sheet is made with class sk-sheet */
+  const SKC = read("components/share-kit.css"), SKC_JS = read("components/share-kit.js");
+  const scr = SKC.replace(/@media print\{[\s\S]*?\n\}/, "");
+  assert.match(scr, /^\.sk-sheet\{display:none\}$/m, "hidden on screen");
+  const pr = SKC.match(/@media print\{([\s\S]*?)\n\}/)[1];
+  assert.match(pr, /html\.sk-on body>\*:not\(\.sk-sheet\):not\(#sk-0\)\{display:none!important\}/);
+  assert.match(pr, /html\.sk-on body>\.sk-sheet:not\(#sk-0\)\{display:block!important\}/);
+  assert.match(JS, /SK\.sheet\(doc, 'cotp', 'cotp'\)/, "the sheet is made by the share kit (class sk-sheet)");
+  assert.doesNotMatch(CSS, /^\.cotp\{display:none\}$/m, "one copy of the shell");
   assert.match(CSS, /\.cotp-m\{break-inside:avoid;page-break-inside:avoid/, "no page break inside a market");
   // a true black-and-white palette: the screen gold (2.3:1 on white) never on paper; the dark gold (5.3:1) as the accent
   assert.doesNotMatch(CSS.replace(/\/\*[\s\S]*?\*\//g, ""), /#d4a23f/i, "no #d4a23f on white");
   assert.match(CSS, /\.cotp\{--chart-1:#8a6514;/, "the net line in dark gold on paper");
   // any browser print gives the one-page sheet: beforeprint and matchMedia('print') set what the button sets
-  assert.match(JS, /addEventListener\('beforeprint', on\)/);
-  assert.match(JS, /matchMedia\('print'\)/);
+  assert.match(JS, /SK\.printHook\(root, on, off\);/, "the share kit core's print hook");
+  assert.match(SKC_JS, /win\.addEventListener\('beforeprint', on\)/);
+  assert.match(SKC_JS, /win\.matchMedia\('print'\)/);
   assert.doesNotMatch(CSS + JS, DASH);
 });
 
@@ -224,7 +229,7 @@ test("Print this week: the sheet alone on paper, the page's sentences, 11 pt or 
     assert.equal(vis.ask, "Every Friday by email: agsist.com/cot", "the Funds this week ask, right under the QR code");
     await pg.emulateMedia({ media: null });   // page.pdf prints with print media unless screen is emulated
     for (const format of ["Letter", "A4"]) {
-      await pg.evaluate(() => document.documentElement.classList.add("cotp-on"));
+      await pg.evaluate(() => document.documentElement.classList.add("cotp-on", "sk-on"));
       const buf = await pg.pdf({ format });
       assert.equal(pages(buf), 1, format + ": exactly 1 page");
       if (process.env.COT_PRINT_OUT && format === "Letter") fs.writeFileSync(process.env.COT_PRINT_OUT, buf);

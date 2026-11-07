@@ -14,7 +14,9 @@
    title block (the state with the county marked, the name, the date, the QR code "Scan for this county's live
    page"), a summary row of the headline numbers, then four questions: what does land rent for, what has sold, what
    can farming here earn, what could disrupt that income; the corn yield chart with its trend; the address, the
-   source line, the made-on line and "Not advice". Ctrl+P (beforeprint) prints it too.
+   source line, the made-on line and "Not advice". Ctrl+P (beforeprint) prints it too. The card, the pen, the QR
+   code on the picture, the sheet shell, the print hook and sharing come from the share kit core
+   (components/share-kit.js, loaded by this file on a county page).
    The picture: 1080 x 1350 for a phone, the four biggest numbers and the chart. Links: the county page with
    utm_source print|share, utm_medium qr|picture|link, utm_campaign county-<fips>.
 
@@ -23,30 +25,24 @@
    Exports window.AgCountyPrint (module.exports for the tests: sheet, html, chartModel, chartItems, toSvg, link). */
 (function (root) {
   'use strict';
-  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  var MONTHS = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  /* the share kit core (components/share-kit.js): dates, the link tags, the picture's card and pen, the QR code on
+     it, the sheet shell, the print hook and sharing. On a county page this file loads it (SK_JS) before it starts. */
+  function SK() { return root.AgShareKit || (typeof require === 'function' ? require('./share-kit.js') : null); }
   var NASS_NOTICE = 'This product uses the NASS API but is not endorsed or certified by NASS.';
   var CALC = 'Averages, trends and ratios are calculations by AGSIST.';
   var QR_CAP = 'Scan for this county’s live page';
-  var CSS = '/components/county-print.css?v=1', QR_JS = '/components/qr.js?v=11';
+  var CSS = '/components/county-print.css?v=2', QR_JS = '/components/qr.js?v=11';
+  var SK_CSS = '/components/share-kit.css?v=1', SK_JS = '/components/share-kit.js?v=1';
 
-  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
-  function mdy(iso) { var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || '')); return m ? MON[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : ''; }
+  function esc(s) { return SK().esc(s); }
+  function mdy(iso) { return SK().mdy(iso); }
   /* the printed date, in the Central time the site's day runs on: "November 7, 2026" */
-  function dateLine(now) {
-    var d = new Date(now == null ? Date.now() : now), iso;
-    try { iso = d.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }); } catch (e) { iso = d.toISOString().slice(0, 10); }
-    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
-    return MONTHS[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1];
-  }
-  function isoDay(now) {
-    var d = new Date(now == null ? Date.now() : now);
-    try { return d.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }).slice(0, 10); } catch (e) { return d.toISOString().slice(0, 10); }
-  }
+  function dateLine(now) { return SK().dateLine(now); }
+  function isoDay(now) { return SK().isoDay(now); }
   /* the county page, dated, with the kit's tags (a printed sheet dates itself; the page shows today's figures):
      (https://agsist.com/farmland-atlas/iowa/story-county, 'print', 'qr', '19169', '2026-11-07') */
   function link(url, src, med, fips, asof) {
-    return url + '?' + (asof ? 'asof=' + asof + '&' : '') + 'utm_source=' + src + '&utm_medium=' + med + '&utm_campaign=county-' + fips;
+    return url + '?' + (asof ? 'asof=' + asof + '&' : '') + SK().tags(src, med, 'county-' + fips);
   }
   /* sentences of a live row's context, first n */
   function sentences(s, n) {
@@ -218,7 +214,6 @@
   }
   var PAPER = { bar: '#c9c9c9', barKey: '#6e6e6e', trend: '#8a6514', grid: '#dddddd', axis: '#000', text: '#000', muted: '#333', surface: '#fff' };
   var DARK = { bar: 'rgba(233,237,235,.30)', barKey: 'rgba(233,237,235,.62)', trend: '#d4a23f', grid: 'rgba(233,237,235,.14)', axis: 'rgba(233,237,235,.5)', text: '#e9edeb', muted: 'rgba(233,237,235,.78)', surface: '#0a0c0d' };
-  var FONT = "Inter, 'Inter Fallback', system-ui, sans-serif";
   function r1(v) { return Math.round(v * 10) / 10; }
   function toSvg(g, label) {
     var s = '';
@@ -239,7 +234,7 @@
       if (it.t === 'rect') { ctx.fillStyle = DARK[it.ink]; ctx.fillRect(it.x, it.y, it.w, it.h); }
       else if (it.t === 'line') { ctx.strokeStyle = DARK[it.ink]; ctx.lineWidth = it.width; ctx.beginPath(); it.pts.forEach(function (p, i) { if (i) ctx.lineTo(p[0], p[1]); else ctx.moveTo(p[0], p[1]); }); ctx.stroke(); }
       else {
-        ctx.font = (it.weight || 400) + ' ' + it.size + 'px ' + FONT; ctx.textAlign = it.align || 'left';
+        ctx.font = (it.weight || 400) + ' ' + it.size + 'px ' + SK().FONT; ctx.textAlign = it.align || 'left';
         ctx.textBaseline = it.base === 'top' ? 'top' : it.base === 'middle' ? 'middle' : 'alphabetic';
         if (it.halo) { ctx.lineWidth = 6; ctx.lineJoin = 'round'; ctx.strokeStyle = DARK.surface; ctx.strokeText(it.s, it.x, it.y); }
         ctx.fillStyle = DARK[it.ink]; ctx.fillText(it.s, it.x, it.y);
@@ -307,17 +302,11 @@
      s.pic) or null. -> {canvas, texts, sizes} */
   function image(s, doc, o) {
     o = o || {};
-    var W = 1080, H = 1350, P = 60, c = doc.createElement('canvas'); c.width = W; c.height = H;
-    var ctx = c.getContext('2d'), texts = [], sizes = [];
-    var INK = '#e9edeb', DIM = 'rgba(233,237,235,.82)', GOLD = '#d4a23f';
-    function wrap(t, max) { var out = [], cur = ''; String(t).split(' ').forEach(function (w) { var x = cur ? cur + ' ' + w : w; if (ctx.measureText(x).width > max && cur) { out.push(cur); cur = w; } else cur = x; }); if (cur) out.push(cur); return out; }
-    function text(t, x, y, size, weight, ink, al) { ctx.font = weight + ' ' + size + 'px ' + FONT; ctx.fillStyle = ink; ctx.textAlign = al || 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillText(t, x, y); texts.push(t); sizes.push(size); }
-    function lines(t, x, y, size, weight, ink, lh, max, width) { ctx.font = weight + ' ' + size + 'px ' + FONT; wrap(t, width).slice(0, max).forEach(function (l) { text(l, x, y, size, weight, ink); y += lh; }); return y; }
-    function fit(t, size, min, weight, width) { ctx.font = weight + ' ' + size + 'px ' + FONT; while (size > min && ctx.measureText(t).width > width) { size -= 2; ctx.font = weight + ' ' + size + 'px ' + FONT; } return size; }
-    ctx.fillStyle = '#0a0c0d'; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = GOLD; ctx.fillRect(0, 0, W, 12);
-    text('agsist.com', P, 84, 36, 800, GOLD);
-    text('County Print, ' + s.date, P, 132, 28, 600, DIM);
+    var K = SK(), W = 1080, H = 1350, P = 60, c = K.canvas(doc, W, H);
+    var ctx = c.getContext('2d'), p = K.pen(ctx), FONT = K.FONT, INK = K.INK, DIM = K.DIM, GOLD = K.GOLD;
+    var wrap = p.wrap, text = p.text, lines = p.lines, fit = p.fit;
+    K.frame(ctx, W, H, 12);
+    K.head(p, P, 'agsist.com', 'County Print, ' + s.date);
     var y = lines((s.name || '') + (s.state ? ', ' + s.state : ''), P, 214, 60, 800, INK, 70, 2, W - 2 * P) + 4;
     /* the four numbers, two by two; the second row starts under the taller of the first two */
     var cw = (W - 2 * P - 40) / 2, top = y, bottom = y;
@@ -343,18 +332,16 @@
       if (gh >= 200) {
         var g = chartItems(s.chart, W - 2 * P, gh, 26);
         paint(ctx, g, P, gTop + 44);
-        g.items.forEach(function (it) { if (it.t === 'text') { texts.push(it.s); sizes.push(it.size); } });
+        p.keep(g.items);
       }
     }
     if (m) {
-      var qx = W - P - qs, qy = H - 40 - qs;
-      ctx.fillStyle = '#fff'; ctx.fillRect(qx, qy, qs, qs); ctx.fillStyle = '#000';
-      m.forEach(function (row, r) { row.forEach(function (v, k) { if (v) ctx.fillRect(qx + (k + 4) * mod, qy + (r + 4) * mod, mod, mod); }); });
+      K.qr(ctx, m, W - P - qs, H - 40 - qs, mod);
       text(QR_CAP, P, capY, 28, 700, GOLD);
     }
     text(s.shown, P, capY + 12 + addrSz + 4, addrSz, 700, INK);
     srcL.forEach(function (l, i) { text(l, P, foot + i * 26, 20, 400, DIM); });
-    return { canvas: c, texts: texts, sizes: sizes };
+    return { canvas: c, texts: p.texts, sizes: p.sizes };
   }
 
   var api = { sheet: sheet, html: html, isoDay: isoDay, locSvg: locSvg, image: image, chartModel: chartModel, chartItems: chartItems, toSvg: toSvg, link: link, dateLine: dateLine,
@@ -372,8 +359,10 @@
   var parts = h1 ? h1.textContent.split(', ') : [], NAME = parts.length > 1 ? parts.slice(0, -1).join(', ') : (parts[0] || ''), STATE = parts.length > 1 ? parts[parts.length - 1] : '';
   /* the printed area with half-inch margins: Letter 7.5 x 10 in, A4 7.27 x 10.69 in; the sheet must fit both */
   var PAPERS = [[7.5, 10], [7.27, 10.69]], LOC = null, $ = function (id) { return doc.getElementById(id); };
-  function ga(n, p) { try { if (typeof root.gtag === 'function') root.gtag('event', n, p); } catch (e) {} }
+  var K = null;   /* the share kit core, once it is on the page */
+  function ga(n, p) { if (K) K.ga(n, p); }
   function load(tag, attrs) { var el = doc.createElement(tag); Object.keys(attrs).forEach(function (k) { el[k] = attrs[k]; }); doc.head.appendChild(el); return el; }
+  if (!doc.querySelector('link[href^="/components/share-kit.css"]')) load('link', { rel: 'stylesheet', href: SK_CSS });
   if (!doc.querySelector('link[href^="/components/county-print.css"]')) load('link', { rel: 'stylesheet', href: CSS });
   if (!root.AgQR) load('script', { src: QR_JS, async: true }).onload = function () { soon(); };
   var ST = (live && live.getAttribute('data-st')) || '';
@@ -385,15 +374,13 @@
   function qrSvg(s) { try { return root.AgQR ? root.AgQR.svg(s.qr, QR_CAP + ': ' + s.shown, 10) : ''; } catch (e) { return ''; } }
   /* the share of the page the sheet takes on the tighter paper (1 or less fits) */
   function measure(el) {
-    el.classList.add('cprs-measure');
-    var r = Math.max.apply(null, PAPERS.map(function (p) { el.style.width = p[0] + 'in'; return el.offsetHeight / (p[1] * 96 - 8); }));
-    el.style.width = ''; el.classList.remove('cprs-measure');
+    var r = K.measure(el, function () { return Math.max.apply(null, PAPERS.map(function (p) { el.style.width = p[0] + 'in'; return el.offsetHeight / (p[1] * 96 - 8); })); });
+    el.style.width = '';
     return r;
   }
   /* one page whatever the county carries: a shorter chart, then tighter spacing, then (only past that) scaled */
   function build() {
-    var s = current(), el = $('cprs');
-    if (!el) { el = doc.createElement('div'); el.id = 'cprs'; el.className = 'cprs'; el.setAttribute('aria-hidden', 'true'); doc.body.appendChild(el); }
+    var s = current(), el = K.sheet(doc, 'cprs', 'cprs');
     var code = qrSvg(s), fits = false;
     el.style.zoom = '';
     /* the tallest chart that keeps the page to one sheet (the chart's column is often the shorter one), then the
@@ -411,65 +398,65 @@
   api.build = build;
   api.current = current;
   var t = null;
-  function soon() { clearTimeout(t); t = setTimeout(function () { try { build(); } catch (e) {} }, 250); }
-  doc.addEventListener('county:fact', soon);
-  if (doc.readyState === 'complete') soon(); else root.addEventListener('load', soon);
-  /* any browser print (Ctrl+P, the menu, a phone's Print) gives the County Print, the same as the button */
-  function on() {
-    if (!doc.documentElement.classList.contains('cprs-on')) { build(); doc.documentElement.classList.add('cprs-on'); }
-    ga('county_print', { kind: 'sheet', fips: FIPS });
-  }
-  function off() { doc.documentElement.classList.remove('cprs-on'); }
-  root.addEventListener('beforeprint', on);
-  root.addEventListener('afterprint', off);
-  try {
-    var mq = root.matchMedia && root.matchMedia('print'), ch = function (e) { if (e.matches) on(); else off(); };
-    if (mq && mq.addEventListener) mq.addEventListener('change', ch); else if (mq && mq.addListener) mq.addListener(ch);
-  } catch (e) {}
-  var stEl = doc.querySelector('.cpr-st');
-  function say(btn, words, back) {
-    if (stEl) stEl.textContent = words;
-    if (btn) { btn.textContent = words.replace(/\.$/, ''); setTimeout(function () { btn.textContent = back; }, 2200); }
-  }
-  var pb = $('cpr-print');
-  if (pb) pb.addEventListener('click', function (e) {
-    e.preventDefault();
-    build(); doc.documentElement.classList.add('cprs-on');
-    try { root.print(); } catch (x) { off(); }
-  });
-  function coarse() { return !!(root.matchMedia && root.matchMedia('(pointer: coarse)').matches); }
-  function download(blob, name) {
-    var a = doc.createElement('a'), u = URL.createObjectURL(blob);
-    a.href = u; a.download = name; doc.body.appendChild(a); a.click(); doc.body.removeChild(a);
-    setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
-  }
-  var pic = $('cpr-pic');
-  if (pic) pic.addEventListener('click', function () {
-    var ready = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
-    ready.then(function () {
-      var s = current(), m = null;
-      try { m = root.AgQR ? root.AgQR.matrix(s.pic, null, null, 10) : null; } catch (e) { m = null; }
-      var im = image(s, doc, { qr: m });
-      api.lastImage = { w: im.canvas.width, h: im.canvas.height, texts: im.texts, sizes: im.sizes, qr: m ? s.pic : null };
-      im.canvas.toBlob(function (blob) {
-        if (!blob) { say(pic, 'Could not draw the picture here.', 'Save picture'); return; }
-        var name = 'agsist-county-print-' + FIPS + '.png', file = null;
-        ga('county_print', { kind: 'picture', fips: FIPS });
-        try { file = new File([blob], name, { type: 'image/png' }); } catch (e) {}
-        if (file && coarse() && root.navigator.canShare && root.navigator.canShare({ files: [file] })) {
-          root.navigator.share({ files: [file], title: s.title, text: s.pic }).catch(function (e) { if (!e || e.name !== 'AbortError') { download(blob, name); say(pic, 'Picture saved.', 'Save picture'); } });
-          return;
-        }
-        download(blob, name); say(pic, 'Picture saved.', 'Save picture');
-      }, 'image/png');
+  function soon() { if (!K) return; clearTimeout(t); t = setTimeout(function () { try { build(); } catch (e) {} }, 250); }
+  function start() {
+    if (K || !(K = root.AgShareKit)) return;
+    doc.addEventListener('county:fact', soon);
+    if (doc.readyState === 'complete') soon(); else root.addEventListener('load', soon);
+    /* any browser print (Ctrl+P, the menu, a phone's Print) gives the County Print, the same as the button */
+    function on() {
+      if (!doc.documentElement.classList.contains('cprs-on')) { build(); K.show(doc, 'cprs-on', true); }
+      ga('county_print', { kind: 'sheet', fips: FIPS });
+    }
+    function off() { K.show(doc, 'cprs-on', false); }
+    K.printHook(root, on, off);
+    var stEl = doc.querySelector('.cpr-st');
+    function say(btn, words, back) {
+      if (stEl) stEl.textContent = words;
+      if (btn) { btn.textContent = words.replace(/\.$/, ''); setTimeout(function () { btn.textContent = back; }, 2200); }
+    }
+    var pb = $('cpr-print');
+    if (pb) pb.addEventListener('click', function (e) {
+      e.preventDefault();
+      build(); K.show(doc, 'cprs-on', true);
+      K.printNow(root, off);
     });
-  });
-  var lb = $('cpr-link');
-  if (lb) lb.addEventListener('click', function () {
-    var u = current().share, nav = root.navigator;
-    ga('county_print', { kind: 'link', fips: FIPS });
-    function copied() { say(lb, 'Link copied.', 'Copy link'); }
-    if (nav.clipboard && nav.clipboard.writeText) nav.clipboard.writeText(u).then(copied, function () { root.prompt('Copy this link', u); });
-    else root.prompt('Copy this link', u);
-  });
+    var pic = $('cpr-pic');
+    if (pic) pic.addEventListener('click', function () {
+      var ready = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
+      ready.then(function () {
+        var s = current(), m = null;
+        try { m = root.AgQR ? root.AgQR.matrix(s.pic, null, null, 10) : null; } catch (e) { m = null; }
+        var im = image(s, doc, { qr: m });
+        api.lastImage = { w: im.canvas.width, h: im.canvas.height, texts: im.texts, sizes: im.sizes, qr: m ? s.pic : null };
+        im.canvas.toBlob(function (blob) {
+          if (!blob) { say(pic, 'Could not draw the picture here.', 'Save picture'); return; }
+          var name = 'agsist-county-print-' + FIPS + '.png', file = K.file(blob, name);
+          ga('county_print', { kind: 'picture', fips: FIPS });
+          function saved() { K.download(doc, blob, name); say(pic, 'Picture saved.', 'Save picture'); }
+          if (K.canShareFile(root, file)) { K.share(root, { files: [file], title: s.title, text: s.pic }, null, saved); return; }
+          saved();
+        }, 'image/png');
+      });
+    });
+    var lb = $('cpr-link');
+    if (lb) lb.addEventListener('click', function () {
+      var u = current().share;
+      ga('county_print', { kind: 'link', fips: FIPS });
+      K.copy(root, u, function () { say(lb, 'Link copied.', 'Copy link'); }, function () { root.prompt('Copy this link', u); });
+    });
+  }
+  /* the share kit core first (cached after the first county page), then everything above starts */
+  /* if it never loads (blocked, offline): Print still opens the shared sheet page (its own link), and Save picture
+     and Copy link say they are unavailable instead of doing nothing */
+  function noKit() {
+    if (K) return;
+    ['cpr-pic', 'cpr-link'].forEach(function (id) {
+      var b = $(id); if (!b) return;
+      b.disabled = true; b.setAttribute('aria-disabled', 'true'); b.title = 'Not available right now. Reload the page to try again.';
+    });
+    var st = doc.querySelector('.cpr-st');
+    if (st) st.textContent = 'Save picture and Copy link are not available right now.';
+  }
+  if (root.AgShareKit) start(); else { var sk = load('script', { src: SK_JS, async: true }); sk.onload = function () { start(); if (!K) noKit(); }; sk.onerror = noKit; }
 })(typeof window !== 'undefined' ? window : this);

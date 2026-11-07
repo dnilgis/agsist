@@ -4,14 +4,11 @@
    title block with the state and the county marked, a summary row, the four questions with the figures in one
    aligned column, the chart and the QR code, the sources. Black and white: black ink does the work; the one
    accent is the dark gold #8a6514 (5.3:1 on white), never the screen gold. Body 9.5 pt or more, sources 8.5 pt. */
-.cprs{display:none}
-/* measured off screen by county-print.js at the printed width of Letter and of A4, never seen */
-.cprs.cprs-measure{display:block;position:absolute;left:0;top:0;width:7.27in;visibility:hidden;pointer-events:none;contain:layout}
+/* hidden on screen, measured off screen (county-print.js sets the width of Letter and of A4; 7.27 in otherwise), alone
+   on paper: the shared shell in components/share-kit.css (class sk-sheet, html.sk-on, sk-measure) */
+.cprs{--sk-w:7.27in}
 @media print{
   @page{margin:.5in}
-  html.cprs-on,html.cprs-on body{background:#fff!important;color:#000!important;margin:0!important;padding:0!important}
-  html.cprs-on body>*:not(#cprs){display:none!important}
-  html.cprs-on #cprs{display:block!important}
 }
 .cprs{color:#000;background:#fff;font:9.5pt/1.3 Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-variant-numeric:tabular-nums}
 .cprs *{box-shadow:none;text-shadow:none}

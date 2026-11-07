@@ -20,10 +20,15 @@
    which browsers never send to a server. No field asks for an address or a phone number. GA events carry
    counts only, never typed text. There is no dollar line: this page has no local bid for the reader.
 
+   The picture's card, pen and QR code, the sheet shell, the print hook and sharing come from the share kit core
+   (components/share-kit.js, loaded just before this file).
    Exports window.AgBinYard (and module.exports in node). The page half runs only with a document. */
 (function (root) {
   'use strict';
   function GB() { return root.AgGrainBin || (typeof require === 'function' ? require('./grain-bin.js').AgGrainBin : null); }
+  /* the share kit core (components/share-kit.js): dates, the picture's card, pen and QR code, the sheet shell,
+     the print hook and sharing */
+  function SK() { return root.AgShareKit || (typeof require === 'function' ? require('./share-kit.js') : null); }
 
   var YARD_W = 200, YARD_H = 140, GRID = 5, MAX_ITEMS = 40, NAME_MAX = 30, NOTE_MAX = 60, YARD_MAX = 40, CREW_MAX = 300;
   var URL_SHOWN = 'agsist.com/grain-bin-calculator', URL_BASE = 'https://agsist.com/grain-bin-calculator';
@@ -37,10 +42,10 @@
   var CROP_BY_K = {}, ST_BY_K = {}, TYPE_BY_K = {};
   Object.keys(CROPS).forEach(function (c) { CROP_BY_K[CROPS[c].k] = c; });
   Object.keys(STATUS).forEach(function (c) { ST_BY_K[STATUS[c][0]] = c; });
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var TYPES = { round: 'R', hopper: 'K', flat: 'F', dryer: 'D', leg: 'L', drive: 'W', unload: 'U', entry: 'E' };
   Object.keys(TYPES).forEach(function (t) { TYPE_BY_K[TYPES[t]] = t; });
   var MARKER = { dryer: 'Dryer', leg: 'Leg', drive: 'Driveway', unload: 'Unload', entry: 'Entry' };
-  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
   function isBin(it) { return !!it && (it.t === 'round' || it.t === 'hopper' || it.t === 'flat'); }
   function fin(v) { return typeof v === 'number' && isFinite(v); }
@@ -399,19 +404,15 @@
   /* ----------------------------------------------------------- the pictures
      1080 x 1350, the dark card. Every word 26 px or more except one 20 px source line. o.crew: the crew picture
      (names, crop, status, notes for drivers). -> {canvas, texts, sizes} */
-  var FONT = "Inter, 'Inter Fallback', system-ui, sans-serif";
   function image(y, doc, o) {
     o = o || {};
-    var items = y.items, W = 1080, H = 1350, P = 60, c = doc.createElement('canvas'); c.width = W; c.height = H;
-    var ctx = c.getContext('2d'), texts = [], sizes = [], t = totals(items), names = labels(items);
-    function wrap(s, max) { var out = []; String(s).split('\n').forEach(function (para) { var cur = ''; para.split(' ').forEach(function (w) { var x = cur ? cur + ' ' + w : w; if (ctx.measureText(x).width > max && cur) { out.push(cur); cur = w; } else cur = x; }); if (cur) out.push(cur); }); return out; }
-    function text(s, x, yy, size, weight, ink, al) { ctx.font = weight + ' ' + size + 'px ' + FONT; ctx.fillStyle = ink; ctx.textAlign = al || 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillText(s, x, yy); texts.push(s); sizes.push(size); }
-    function lines(s, yy, size, weight, ink, lh, max) { ctx.font = weight + ' ' + size + 'px ' + FONT; wrap(s, W - 2 * P).slice(0, max || 9).forEach(function (l) { text(l, P, yy, size, weight, ink); yy += lh; }); return yy; }
-    var INK = '#e9edeb', DIM = 'rgba(233,237,235,.82)', GOLD = '#d4a23f';
-    ctx.fillStyle = '#0a0c0d'; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = GOLD; ctx.fillRect(0, 0, W, 12);
-    text(URL_SHOWN, P, 84, 36, 800, GOLD);
-    text((o.crew ? 'Crew sheet, ' : 'Bin Print, ') + dateLine(o.now), P, 132, 28, 600, DIM);
+    var K = SK(), FONT = K.FONT, items = y.items, W = 1080, H = 1350, P = 60, c = K.canvas(doc, W, H);
+    var ctx = c.getContext('2d'), p = K.pen(ctx, { paras: true }), t = totals(items), names = labels(items);
+    var wrap = p.wrap, text = p.text;
+    function lines(s, yy, size, weight, ink, lh, max) { return p.lines(s, P, yy, size, weight, ink, lh, max || 9, W - 2 * P); }
+    var INK = K.INK, DIM = K.DIM, GOLD = K.GOLD;
+    K.frame(ctx, W, H, 12);
+    K.head(p, P, URL_SHOWN, (o.crew ? 'Crew sheet, ' : 'Bin Print, ') + dateLine(o.now));
     var yy = lines(y.name || 'My bin yard', 214, 60, 800, INK, 70, 2) + 2;
     var rows = items.map(function (it, i) { return isBin(it) ? i : -1; }).filter(function (i) { return i >= 0; });
     var list = [];
@@ -459,9 +460,7 @@
     if (list.length > maxList) { text('and ' + (list.length - maxList) + ' more', P, yy, 26, 500, DIM); yy += 40; }
     if (crewL.length) { yy += 12; crewL.forEach(function (l) { text(l, P, yy, 28, 600, GOLD); yy += 38; }); }
     if (plan) {
-      var qx = W - P - qs, qy = H - 40 - qs;
-      ctx.fillStyle = '#fff'; ctx.fillRect(qx, qy, qs, qs); ctx.fillStyle = '#000';
-      plan.matrix.forEach(function (row, r) { row.forEach(function (v, cI) { if (v) ctx.fillRect(qx + (cI + 4) * mod, qy + (r + 4) * mod, mod, mod); }); });
+      K.qr(ctx, plan.matrix, W - P - qs, H - 40 - qs, mod);
       ctx.font = '700 28px ' + FONT;
       var cl = wrap(plan.level === 'tool' ? 'Scan for the tool on your phone' : plan.caption, LW).slice(0, 4);
       cl.forEach(function (l, i) { text(l, P, FT + 34 + i * 36, 28, 700, GOLD); });
@@ -471,7 +470,7 @@
       ctx.font = '400 20px ' + FONT;
       wrap(src, LW).slice(0, 4).forEach(function (l, i, a) { text(l, P, H - 40 - (a.length - 1 - i) * 26, 20, 400, DIM); });
     } else if (!plan) text('Open the map: ' + URL_SHOWN, P, H - 40, 28, 700, GOLD);
-    return { canvas: c, texts: texts, sizes: sizes, plan: plan };
+    return { canvas: c, texts: p.texts, sizes: p.sizes, plan: plan };
   }
 
   var api = { YARD_W: YARD_W, YARD_H: YARD_H, GRID: GRID, CROPS: CROPS, STATUS: STATUS, CREW_PT: CREW_PT, defaults: defaults,
@@ -482,7 +481,9 @@
   root.AgBinYard = api;
 
   /* ================================================================ the page */
-  var doc = root.document, rootEl = doc && doc.getElementById('by-root');
+  /* K: the share kit core. Without it (blocked or not loaded) the yard planner works as ever; only Bin Print's
+     print, picture and link buttons are marked unavailable. */
+  var doc = root.document, rootEl = doc && doc.getElementById('by-root'), K = root.AgShareKit || null;
   if (!rootEl) return;
   /* Three ways in. 'mine': the reader's own yard (LS). 'view': a yard someone sent (#yard=...), shown read-only
      as the crew view, so a driver cannot change anything by accident. 'copy': "Edit a copy" of a sent yard, saved
@@ -492,7 +493,7 @@
   var view = { x: 0, y: 0, w: YARD_W, h: YARD_H };
 
   /* GA gets event names and counts only: never a name, a note or anything else typed */
-  function ga(ev, p) { try { if (typeof root.gtag === 'function') root.gtag('event', ev, p || {}); } catch (e) {} }
+  function ga(ev, p) { if (K) K.ga(ev, p || {}); else try { if (typeof root.gtag === 'function') root.gtag('event', ev, p || {}); } catch (e) {} }
   function bins() { return { bins: totals(S.items).bins }; }
   function save() {
     if (mode === 'view') return;
@@ -858,17 +859,8 @@
     try { $('bin-print').scrollIntoView({ block: 'start' }); } catch (x) {}
   });
 
-  /* ------------------------------------------------------ share kit */
-  function copyLink(url, msg) {
-    var ok = function () { note(msg); };
-    var fb = function () { var t = doc.createElement('textarea'); t.value = url; doc.body.appendChild(t); t.select(); var r = false; try { r = doc.execCommand('copy'); } catch (e) {} doc.body.removeChild(t); if (r) ok(); else note('Copy this link: ' + url); };
-    if (root.navigator.clipboard && root.navigator.clipboard.writeText) root.navigator.clipboard.writeText(url).then(ok, fb); else fb();
-  }
-  $('by-link').addEventListener('click', function () {
-    ga('bin_print_link', bins());
-    copyLink(shareUrl(cur()), 'Bin Print link copied. Names and notes are inside it.');
-  });
   function download(blob, name) {
+    if (K) { K.download(doc, blob, name); return; }
     var a = doc.createElement('a'), u = URL.createObjectURL(blob);
     a.href = u; a.download = name; doc.body.appendChild(a); a.click(); doc.body.removeChild(a);
     setTimeout(function () { URL.revokeObjectURL(u); }, 4000);
@@ -895,78 +887,92 @@
     rd.readAsText(f);
   });
 
-  /* the sheets: hidden at the end of <body>; print shows only the one chosen while html.byp-on is set */
-  var MAX_PX = 10.2 * 96 - 8, chosen = '';
-  function buildSheet(kind) {
-    var el = $('byp');
-    if (!el) { el = doc.createElement('div'); el.id = 'byp'; el.className = 'byp'; el.setAttribute('aria-hidden', 'true'); doc.body.appendChild(el); }
-    var y = cur(), plan = qrPlan(y), fits = false, crew = kind === 'crew';
-    api.lastPlan = plan;
-    el.style.zoom = ''; el.classList.toggle('byp-crew', crew); el.setAttribute('data-kind', crew ? 'crew' : 'full');
-    (crew ? [5.4, 4.6, 3.8, 3.2, 2.8] : [3.4, 2.7, 2.1, 1.7]).some(function (h, i, a) {
-      el.innerHTML = crew ? crewHtml(y, { plan: plan, mapH: h }) : sheetHtml(y, { plan: plan, mapH: h });
-      el.classList.toggle('byp-tight', i === a.length - 1);
-      el.classList.add('byp-measure'); fits = el.offsetHeight <= MAX_PX; el.classList.remove('byp-measure');
-      return fits;
-    });
-    if (!fits) { el.classList.add('byp-measure'); var z = Math.floor(MAX_PX / el.offsetHeight * 100) / 100; el.classList.remove('byp-measure'); el.style.zoom = String(z); }
-    el.setAttribute('data-fit', fits ? '1' : '0');
-    return el;
-  }
-  api.buildSheet = buildSheet;
-  function inSection() {
-    var s = $('bin-print'), a = doc.activeElement;
-    if (a && s.contains(a)) return true;
-    var r = s.getBoundingClientRect(), m = (root.innerHeight || 800) / 2;
-    return r.top < m && r.bottom > m;
-  }
-  /* Ctrl+P: the sheet the reader last chose with a button, while they are in this section; else the page's own
-     printed record, as before */
-  root.addEventListener('beforeprint', function () {
-    if (doc.documentElement.classList.contains('byp-on')) return;
-    if (chosen && inSection()) { buildSheet(chosen); doc.documentElement.classList.add('byp-on'); }
+  /* Without the share kit: the five Bin Print buttons say they are unavailable instead of doing nothing */
+  if (!K) ['by-print', 'by-pic', 'by-link', 'by-crewprint', 'by-send'].forEach(function (id) {
+    var b = $(id); if (!b) return;
+    b.disabled = true; b.setAttribute('aria-disabled', 'true'); b.title = 'Not available right now. Reload the page to try again.';
   });
-  root.addEventListener('afterprint', function () { doc.documentElement.classList.remove('byp-on'); });
-  function printSheet(kind) {
-    chosen = kind; buildSheet(kind); doc.documentElement.classList.add('byp-on');
-    ga(kind === 'crew' ? 'bin_print_crew_print' : 'bin_print_print', bins());
-    try { root.print(); } catch (e) { doc.documentElement.classList.remove('byp-on'); }
-  }
-  $('by-print').addEventListener('click', function () { printSheet('full'); });
-  $('by-crewprint').addEventListener('click', function () { printSheet('crew'); });
-  function picture(crew, then) {
-    var ready = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
-    ready.then(function () {
-      var im = image(cur(), doc, { crew: crew });
-      api.lastImage = { w: im.canvas.width, h: im.canvas.height, texts: im.texts, sizes: im.sizes, crew: !!crew, url: im.plan && im.plan.url };
-      im.canvas.toBlob(function (blob) { then(blob, 'agsist-bin-print-' + (crew ? 'crew-' : '') + stamp() + '.png'); }, 'image/png');
+  else {
+    /* ------------------------------------------------------ share kit */
+    function copyLink(url, msg) {
+      var ok = function () { note(msg); };
+      K.copy(root, url, ok, function () { if (K.execCopy(doc, url)) ok(); else note('Copy this link: ' + url); });
+    }
+    $('by-link').addEventListener('click', function () {
+      ga('bin_print_link', bins());
+      copyLink(shareUrl(cur()), 'Bin Print link copied. Names and notes are inside it.');
+    });
+    /* the sheets: hidden at the end of <body>; print shows only the one chosen while html.byp-on is set */
+    var MAX_PX = 10.2 * 96 - 8, chosen = '';
+    function buildSheet(kind) {
+      var el = K.sheet(doc, 'byp', 'byp');
+      var y = cur(), plan = qrPlan(y), fits = false, crew = kind === 'crew';
+      api.lastPlan = plan;
+      el.style.zoom = ''; el.classList.toggle('byp-crew', crew); el.setAttribute('data-kind', crew ? 'crew' : 'full');
+      (crew ? [5.4, 4.6, 3.8, 3.2, 2.8] : [3.4, 2.7, 2.1, 1.7]).some(function (h, i, a) {
+        el.innerHTML = crew ? crewHtml(y, { plan: plan, mapH: h }) : sheetHtml(y, { plan: plan, mapH: h });
+        el.classList.toggle('byp-tight', i === a.length - 1);
+        fits = K.measure(el) <= MAX_PX;
+        return fits;
+      });
+      if (!fits) { var z = Math.floor(MAX_PX / K.measure(el) * 100) / 100; el.style.zoom = String(z); }
+      el.setAttribute('data-fit', fits ? '1' : '0');
+      return el;
+    }
+    api.buildSheet = buildSheet;
+    function inSection() {
+      var s = $('bin-print'), a = doc.activeElement;
+      if (a && s.contains(a)) return true;
+      var r = s.getBoundingClientRect(), m = (root.innerHeight || 800) / 2;
+      return r.top < m && r.bottom > m;
+    }
+    /* Ctrl+P: the sheet the reader last chose with a button, while they are in this section; else the page's own
+       printed record, as before */
+    function sheetOff() { K.show(doc, 'byp-on', false); }
+    K.printHook(root, function () {
+      if (doc.documentElement.classList.contains('byp-on')) return;
+      if (chosen && inSection()) { buildSheet(chosen); K.show(doc, 'byp-on', true); }
+    }, sheetOff, { mq: false });
+    function printSheet(kind) {
+      chosen = kind; buildSheet(kind); K.show(doc, 'byp-on', true);
+      ga(kind === 'crew' ? 'bin_print_crew_print' : 'bin_print_print', bins());
+      K.printNow(root, sheetOff);
+    }
+    $('by-print').addEventListener('click', function () { printSheet('full'); });
+    $('by-crewprint').addEventListener('click', function () { printSheet('crew'); });
+    function picture(crew, then) {
+      var ready = doc.fonts && doc.fonts.ready ? doc.fonts.ready : Promise.resolve();
+      ready.then(function () {
+        var im = image(cur(), doc, { crew: crew });
+        api.lastImage = { w: im.canvas.width, h: im.canvas.height, texts: im.texts, sizes: im.sizes, crew: !!crew, url: im.plan && im.plan.url };
+        im.canvas.toBlob(function (blob) { then(blob, 'agsist-bin-print-' + (crew ? 'crew-' : '') + stamp() + '.png'); }, 'image/png');
+      });
+    }
+    $('by-pic').addEventListener('click', function () {
+      picture(false, function (blob, name) {
+        if (!blob) { note('Could not draw the picture here.'); return; }
+        ga('bin_print_picture', bins());
+        var file = K.file(blob, name);
+        if (K.canShareFile(root, file)) { K.share(root, { files: [file], title: 'Bin Print' }); return; }
+        download(blob, name); note('Picture saved');
+      });
+    });
+    /* Send to crew: the phone's share sheet with the link and the crew picture; else the link alone; else copy it */
+    $('by-send').addEventListener('click', function () {
+      var url = shareUrl(cur()), nav = root.navigator;
+      ga('bin_print_send', bins());
+      picture(true, function (blob, name) {
+        var file = blob ? K.file(blob, name) : null;
+        var data = { title: 'Bin Print crew sheet', text: 'Our bin yard map, open on your phone:', url: url };
+        if (nav.share) {
+          if (file && nav.canShare && nav.canShare({ files: [file] })) data.files = [file];
+          K.share(root, data, null, function () { copyLink(url, 'Link copied. Names and notes are inside it.'); });
+          return;
+        }
+        copyLink(url, 'This browser has no share sheet, so the link is copied. Names and notes are inside it.');
+      });
     });
   }
-  function coarse() { return !!(root.matchMedia && root.matchMedia('(pointer: coarse)').matches); }
-  $('by-pic').addEventListener('click', function () {
-    picture(false, function (blob, name) {
-      if (!blob) { note('Could not draw the picture here.'); return; }
-      ga('bin_print_picture', bins());
-      var file = null; try { file = new File([blob], name, { type: 'image/png' }); } catch (e) {}
-      if (file && coarse() && root.navigator.canShare && root.navigator.canShare({ files: [file] })) { root.navigator.share({ files: [file], title: 'Bin Print' }).catch(function () {}); return; }
-      download(blob, name); note('Picture saved');
-    });
-  });
-  /* Send to crew: the phone's share sheet with the link and the crew picture; else the link alone; else copy it */
-  $('by-send').addEventListener('click', function () {
-    var url = shareUrl(cur()), nav = root.navigator;
-    ga('bin_print_send', bins());
-    picture(true, function (blob, name) {
-      var file = null; try { if (blob) file = new File([blob], name, { type: 'image/png' }); } catch (e) {}
-      var data = { title: 'Bin Print crew sheet', text: 'Our bin yard map, open on your phone:', url: url };
-      if (nav.share) {
-        if (file && nav.canShare && nav.canShare({ files: [file] })) data.files = [file];
-        nav.share(data).catch(function (e) { if (!e || e.name !== 'AbortError') copyLink(url, 'Link copied. Names and notes are inside it.'); });
-        return;
-      }
-      copyLink(url, 'This browser has no share sheet, so the link is copied. Names and notes are inside it.');
-    });
-  });
   function fillKit() { $('by-name').value = S.name; $('by-crew').value = S.crew; $('by-crewbu').checked = S.crewBu; }
 
   api.state = function () { return S; };

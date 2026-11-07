@@ -109,14 +109,11 @@ html.sa-subbed #bin-print .gb-ask{min-height:0}
 @media (max-width:500px){.by{padding:10px}.by-eg{grid-template-columns:minmax(0,1fr)}.by-tg b{font-size:.9rem}.by-btn{padding:8px 10px}}
 
 /* ------------------------------------------------------------ the sheets */
-.byp{display:none}
-.byp.byp-measure{display:block;position:absolute;left:0;top:0;width:7.47in;visibility:hidden;pointer-events:none;contain:layout}
+/* hidden on screen, measured off screen at A4's printed width, alone on paper: the shared shell in
+   components/share-kit.css (class sk-sheet, html.sk-on, sk-measure); the page's own printed record stays off */
 @media print{
   @page{margin:.4in}
-  html.byp-on,html.byp-on body{background:#fff!important;color:#000!important;margin:0!important;padding:0!important}
-  html.byp-on body>*:not(#byp){display:none!important}
   html.byp-on body>#print-record-wrap{display:none!important}
-  html.byp-on body>#byp{display:block!important}
 }
 .byp{color:#000;background:#fff;font:10.5pt/1.3 Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
 .byp p,.byp h1,.byp h2,.byp ul{margin:0}

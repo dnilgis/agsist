@@ -1,0 +1,14 @@
+/* components/share-kit.css: the print sheet shell of the share kit core (components/share-kit.js, Nov 7, 2026).
+   One copy for every kit's printed sheet (COT, County Print, Bin Print): the sheet (class sk-sheet, made by
+   AgShareKit.sheet at the end of <body>) is hidden on screen, so it never moves anything; measured off screen
+   while sk-measure is set (at A4's printed width unless the kit sets --sk-w); and in print, while html.sk-on is
+   set (the kit's Print button, or any browser print through the beforeprint hook), it is the only thing on paper,
+   black on white. Each kit's own stylesheet keeps its @page margins and the sheet's look. The :not(#sk-0) adds an
+   id's weight, so the shell outranks a page's own print rule for one element, as each kit's #id rule did. */
+.sk-sheet{display:none}
+.sk-sheet.sk-measure{display:block;position:absolute;left:0;top:0;width:var(--sk-w,7.47in);visibility:hidden;pointer-events:none;contain:layout}
+@media print{
+  html.sk-on,html.sk-on body{background:#fff!important;color:#000!important;margin:0!important;padding:0!important}
+  html.sk-on body>*:not(.sk-sheet):not(#sk-0){display:none!important}
+  html.sk-on body>.sk-sheet:not(#sk-0){display:block!important}
+}
