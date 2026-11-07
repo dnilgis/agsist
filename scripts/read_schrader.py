@@ -28,7 +28,14 @@ writes nothing and exits 1.
 
   python3 scripts/read_schrader.py --latest              # newest folder under land/schrader/capture
   python3 scripts/read_schrader.py --capture <folder>    # one folder
+  python3 scripts/read_schrader.py --latest --out <file>  # write elsewhere (the capture job's facts-only file)
+  python3 scripts/read_schrader.py --merge <file>        # check every record of that file, merge it in
   python3 scripts/read_schrader.py --selftest            # fixtures in test/fixtures/schrader
+
+In Actions the capture job (read-only, no stored credentials) reads its fresh capture into a
+facts-only file; the commit job checks every record of that file against the shape above and the
+county join, merges it under the same guard and commits data/land/auctions/schrader.json. The raw
+pages never leave the capture job except to the private raw branch.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
@@ -56,6 +63,7 @@ MONTHS = {m: i for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", 
 
 ACRES_RE = re.compile(r"(\d[\d,]*(?:\.\d+)?|\.\d+)\s*\+/-\s*ACRES?\b", re.I)
 MONEY_RE = re.compile(r"^\$\s*(\d[\d,]*)$")
+COUNTY_NAME = re.compile(r"[A-Za-z .'-]{2,30}")
 PER_ACRE_RE = re.compile(r"^\$\s*(\d[\d,]*)\s*/\s*acre$", re.I)
 
 
@@ -112,17 +120,20 @@ def fact(page, label):
 
 
 def place(page):
-    """(county name, state abbreviation) from the where line, else the page title."""
+    """(county name, state abbreviation) from the where line ("<address> - <Name> County, <State>"),
+    else the page title ("... IN <NAME> COUNTY, <STATE>"). A candidate that is not a plain county-name
+    shape is no answer: the where line also holds the street address and the owner, and none of that
+    may ever reach the output (parse_page also requires the FIPS join to match)."""
     m = re.search(r'<p class="where">(.*?)</p>', page, re.S)
     if m:
-        w = text(m.group(1)).split(" · ")[0]
-        c = re.search(r"(?:^|\s-\s)([^-]+?)\s+County,\s*([A-Za-z][A-Za-z ]*?)\s*$", w)
-        if c and c.group(2).lower() in ABBR:
+        w = text(m.group(1)).split(" \u00b7 ")[0]
+        c = re.search(r"\s-\s([^-]+?)\s+County,\s*([A-Za-z][A-Za-z ]*?)\s*$", w)
+        if c and c.group(2).lower() in ABBR and COUNTY_NAME.fullmatch(c.group(1).strip()):
             return c.group(1).strip(), ABBR[c.group(2).lower()]
     h = re.search(r"<h1>(.*?)</h1>", page, re.S)
     if h:
         c = re.search(r"\bIN\s+([A-Z][A-Z .'-]*?)\s+COUNTY,\s*([A-Z][A-Z ]*?)\s*$", text(h.group(1)))
-        if c and c.group(2).lower() in ABBR:
+        if c and c.group(2).lower() in ABBR and COUNTY_NAME.fullmatch(c.group(1).strip()):
             return c.group(1).title(), ABBR[c.group(2).lower()]
     return None, None
 
@@ -157,11 +168,12 @@ def parse_page(page, auction_id, feed_item=None, idx=None):
         a = re.match(r"(\d[\d,]*(?:\.\d+)?)", fact(page, "Acres"))
         acres = float(a.group(1).replace(",", "")) if a else acres_in(title)
     county, st = place(page)
-    fips = None
-    if county and idx is not None:
-        fips = idx.get((st, norm_name(county)))
-        if fips is None:
-            print(f"read_schrader: {auction_id}: county {county!r}, {st} has no FIPS match; left blank")
+    fips = idx.get((st, norm_name(county))) if county and idx is not None else None
+    if fips is None:
+        # county text is shown only when it joined to a real county; the record is then dropped
+        # (read_capture counts it). The text itself is never printed: job logs are public.
+        county = st = None
+        print(f"read_schrader: {auction_id}: no county matched; the record is dropped")
     return {
         "source": "schrader",
         "auction_id": str(auction_id),
@@ -195,7 +207,7 @@ def read_capture(folder, idx=None):
         with open(mp, encoding="utf-8") as fh:
             captured = (json.load(fh).get("captured_utc") or "")[:10] or None
     captured = captured or (os.path.basename(os.path.normpath(folder)) if re.fullmatch(r"\d{4}-\d{2}-\d{2}", os.path.basename(os.path.normpath(folder))) else None)
-    kept, n = [], {"pages": 0, "kept": 0, "dropped_not_farmland": 0, "no_result": 0, "dropped_future_date": 0}
+    kept, n = [], {"pages": 0, "kept": 0, "dropped_not_farmland": 0, "no_result": 0, "dropped_future_date": 0, "dropped_no_county": 0}
     adir = os.path.join(folder, "auctions")
     for f in sorted(os.listdir(adir)) if os.path.isdir(adir) else []:
         m = re.fullmatch(r"(\d{1,7})\.html", f)
@@ -208,6 +220,8 @@ def read_capture(folder, idx=None):
             n["no_result"] += 1
         elif not is_farmland(rec):
             n["dropped_not_farmland"] += 1
+        elif rec["county_fips"] is None:
+            n["dropped_no_county"] += 1
         elif captured and rec["date"] and rec["date"] > captured:
             n["dropped_future_date"] += 1  # a result dated after the capture is not a result yet
         else:
@@ -232,6 +246,14 @@ def build(folder, out=OUT, idx=None):
     """Read one capture folder and merge it into `out`. Returns an exit code."""
     idx = idx if idx is not None else county_index()
     new, counts, captured = read_capture(folder, idx)
+    code = write_merged(out, new, dict(counts, captured=captured), captured)
+    print(f"read_schrader: {counts['pages']} page(s), {counts['kept']} kept, {counts['dropped_not_farmland']} not farmland, "
+          f"{counts['dropped_no_county']} with no county match, {counts['no_result']} with no result table")
+    return code
+
+
+def write_merged(out, new, last_run, checked):
+    """Merge `new` records into the file at `out` under the guard. Returns an exit code."""
     old = {}
     if os.path.exists(out):
         with open(out, encoding="utf-8") as fh:
@@ -242,17 +264,62 @@ def build(folder, out=OUT, idx=None):
         print(f"read_schrader: refusing to write {len(recs)} record(s) over {len(prev)}")
         return 1
     doc = {"source": "schrader", "credit": CREDIT, "credit_url": CREDIT_URL,
-           "checked": max(filter(None, [captured, old.get("checked")]), default=None),
-           "last_run": dict(counts, captured=captured), "records": recs}
-    os.makedirs(os.path.dirname(out), exist_ok=True)
+           "checked": max(filter(None, [checked, old.get("checked")]), default=None),
+           "last_run": last_run, "records": recs}
+    os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     tmp = out + ".tmp"
     with open(tmp, "w", encoding="utf-8") as fh:
         json.dump(doc, fh, indent=1, sort_keys=True)
         fh.write("\n")
     os.replace(tmp, out)
-    print(f"read_schrader: {counts['pages']} page(s), {counts['kept']} kept, {counts['dropped_not_farmland']} not farmland, "
-          f"{counts['no_result']} with no result table; {len(recs)} record(s) in {os.path.relpath(out, ROOT)}")
+    print(f"read_schrader: {len(recs)} record(s) in {os.path.relpath(out, ROOT)}")
     return 0
+
+
+KEYS = {"source", "auction_id", "url", "date", "state", "county", "county_fips", "headline_acres",
+        "total_sold", "tracts", "kind", "credit"}
+LAST_RUN_KEYS = {"pages", "kept", "dropped_not_farmland", "no_result", "dropped_future_date", "dropped_no_county", "captured"}
+
+
+def valid(rec, idx):
+    """True when a record has exactly the reader's shape: the commit job checks every record it
+    takes from the capture job's file, so nothing but these facts can reach main."""
+    try:
+        num = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)
+        ok = (isinstance(rec, dict) and set(rec) == KEYS and rec["source"] == "schrader" and rec["kind"] == "auction"
+              and rec["credit"] == CREDIT and re.fullmatch(r"\d{1,7}", rec["auction_id"])
+              and rec["url"] == f"{BASE}/auctions/{rec['auction_id']}"
+              and re.fullmatch(r"\d{4}-\d{2}-\d{2}", rec["date"]) and rec["state"] in STATES
+              and COUNTY_NAME.fullmatch(rec["county"]) and idx.get((rec["state"], norm_name(rec["county"]))) == rec["county_fips"]
+              and (rec["headline_acres"] is None or num(rec["headline_acres"]))
+              and (rec["total_sold"] is None or isinstance(rec["total_sold"], int))
+              and isinstance(rec["tracts"], list) and rec["tracts"]
+              and all(isinstance(x, dict) and set(x) == {"tracts", "sold", "per_acre"}
+                      and re.fullmatch(r"\d+[A-Za-z]?(?:\+\d+[A-Za-z]?)*", x["tracts"]) and isinstance(x["sold"], int)
+                      and (x["per_acre"] is None or isinstance(x["per_acre"], int)) for x in rec["tracts"])
+              and is_farmland(rec))
+        return bool(ok)
+    except (KeyError, TypeError, AttributeError):
+        return False
+
+
+def merge_file(src, out=OUT, idx=None):
+    """--merge: take the records of a file the capture job wrote, check each, and merge them into `out`."""
+    idx = idx if idx is not None else county_index()
+    with open(src, encoding="utf-8") as fh:
+        doc = json.load(fh)
+    recs = doc.get("records") if isinstance(doc, dict) else None
+    if not isinstance(recs, list):
+        print("read_schrader: the file to merge has no records list")
+        return 1
+    good = [r for r in recs if valid(r, idx)]
+    if len(good) != len(recs):
+        print(f"read_schrader: {len(recs) - len(good)} record(s) in the file to merge are not in the reader's shape; nothing written")
+        return 1
+    lr = doc.get("last_run") if isinstance(doc.get("last_run"), dict) else {}
+    lr = {k: v for k, v in lr.items() if k in LAST_RUN_KEYS and (isinstance(v, int) or (k == "captured" and isinstance(v, str)
+          and re.fullmatch(r"\d{4}-\d{2}-\d{2}", v)))}
+    return write_merged(out, good, lr, lr.get("captured"))
 
 
 def latest(base=CAPTURES):
@@ -359,6 +426,45 @@ def selftest():
             globals()["merge"] = real_merge
         check(merge([dict(old, auction_id="1")], [dict(old, auction_id="1"), dict(old, auction_id="2")]).__len__() == 2,
               "deduped by auction_id")
+        # the where line also carries the street address and the owner: none of it may leak (checker, PR #412)
+        raw_bits = ("1234", "Elm", "46000", "Jane", "Example", "Town")
+        for where in ("1234 Elm Rd, Town, IN 46000 Wayne County, Indiana",
+                      "Jane Example Farm, Wayne County, Indiana",
+                      "Jane Example - 1234 Elm Rd Wayne County, Indiana",
+                      "[street address] - Jane Example Farm County, Indiana"):
+            mp = re.sub(r'<p class="where">.*?</p>', f'<p class="where">{where} &middot; Owner: [owner]</p>', page, flags=re.S)
+            r3 = parse_page(mp, "1", None, idx)
+            dump = json.dumps(r3)
+            check(not any(b in dump for b in raw_bits) and r3["county"] in ("Wayne", None),
+                  "no raw where-line text leaks: " + where.replace("Jane Example", "[name]"))
+            r4 = parse_page(re.sub(r"<h1>.*?</h1>", "<h1>LAND AUCTION</h1>", mp, flags=re.S), "1", None, idx)
+            check(r4["county"] is None and r4["county_fips"] is None and not any(b in json.dumps(r4) for b in raw_bits),
+                  "no title to fall back on: county left out: " + where.replace("Jane Example", "[name]"))
+        bad_cap = os.path.join(tmp, "bad", "2026-11-07")
+        os.makedirs(os.path.join(bad_cap, "auctions"))
+        with open(os.path.join(bad_cap, "auctions", "9630.html"), "w", encoding="utf-8") as fh:
+            fh.write(re.sub(r"<h1>.*?</h1>", "<h1>LAND AUCTION</h1>", re.sub(
+                r'<p class="where">.*?</p>', '<p class="where">Jane Example Farm, Wayne County, Indiana</p>', page, flags=re.S), flags=re.S))
+        recs3, n3, _ = read_capture(bad_cap, idx)
+        check(recs3 == [] and n3["dropped_no_county"] == 1, "a record with no county match is dropped and counted")
+
+        # --merge: the commit job takes only records in the reader's exact shape
+        side = os.path.join(tmp, "side.json")
+        check(build(cap, side, idx) == 0, "--out writes a facts-only file")
+        tgt = os.path.join(tmp, "tgt.json")
+        check(merge_file(side, tgt, idx) == 0 and len(json.load(open(tgt))["records"]) == len(json.load(open(side))["records"]),
+              "--merge takes a clean file")
+        good_doc = json.load(open(side))
+        for label, mutate in (("an extra field", lambda r: r.update(buyer="x")),
+                              ("county text that is not a county", lambda r: r.update(county="1234 Elm Rd")),
+                              ("a county that does not match its FIPS", lambda r: r.update(county="Knox")),
+                              ("a link off Schrader", lambda r: r.update(url="https://example.com/")),
+                              ("a tract row with text", lambda r: r["tracts"][0].update(tracts="sold to [name]"))):
+            d = json.loads(json.dumps(good_doc))
+            mutate(d["records"][0])
+            json.dump(d, open(side, "w"))
+            before = open(tgt).read()
+            check(merge_file(side, tgt, idx) == 1 and open(tgt).read() == before, "--merge refuses " + label)
         check(latest(tmp) == cap and latest(os.path.join(tmp, "none")) is None, "--latest picks the newest dated folder")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
@@ -370,18 +476,27 @@ def selftest():
 def main(argv):
     if "--selftest" in argv:
         return selftest()
+    def arg(flag):
+        i = argv.index(flag)
+        return argv[i + 1] if i + 1 < len(argv) else None
+    out = arg("--out") if "--out" in argv else OUT
+    if "--merge" in argv:
+        src = arg("--merge")
+        if not src or not os.path.isfile(src):
+            print(f"read_schrader: no file to merge ({src})")
+            return 1
+        return merge_file(src, out)
     if "--capture" in argv:
-        i = argv.index("--capture")
-        folder = argv[i + 1] if i + 1 < len(argv) else None
+        folder = arg("--capture")
     elif "--latest" in argv:
         folder = latest()
     else:
-        print("read_schrader: give --latest, --capture <folder> or --selftest")
+        print("read_schrader: give --latest, --capture <folder>, --merge <file> or --selftest")
         return 2
     if not folder or not os.path.isdir(folder):
         print(f"read_schrader: no capture folder ({folder})")
         return 1
-    return build(folder)
+    return build(folder, out)
 
 
 if __name__ == "__main__":

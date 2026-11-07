@@ -5,6 +5,7 @@
  "last_run": {
   "captured": "2026-11-07",
   "dropped_future_date": 0,
+  "dropped_no_county": 0,
   "dropped_not_farmland": 3,
   "kept": 2,
   "no_result": 0,
