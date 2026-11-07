@@ -228,11 +228,18 @@ test("390 px: the bar and the answer line are on the first screen, scripts on an
     const tap = await pg.$eval("#cot-rel-a", (a) => a.getBoundingClientRect().height);
     assert.ok(tap >= 44, "tap target " + tap);
     assert.equal(await pg.textContent("#cot-rel-live"), "", "the first paint is not announced");
-    // a minute later: new text, no announcement; past the release: one announcement
-    await pg.clock.runFor(61000);
+    // a minute later: new text, no announcement; at the release itself: one announcement.
+    // The clock stops here (pauseAt), so each step below lands on an exact instant however long the page took to
+    // load: the bar must turn over at 3:30:00, not on whatever second a once-a-minute refresh happened to fall.
+    const due = G.etInstant(FX.cot.next_release, "15:30");
+    await pg.clock.pauseAt(new Date(due - 134.5 * 60000 + 61000));
     assert.match(await pg.textContent("#cot-rel-t"), /^New report in 2 h 13 m/);
     assert.equal(await pg.textContent("#cot-rel-live"), "", "minutes are not announced");
-    await pg.clock.runFor(134 * 60000);
+    await pg.clock.pauseAt(new Date(due - 1000));
+    assert.equal(await pg.textContent("#cot-rel-t"), "New report in under 1 m · today 3:30 PM ET");
+    await pg.clock.runFor(999);
+    assert.equal(await pg.getAttribute("#cot-rel", "data-state"), "countdown", "not before the release");
+    await pg.clock.runFor(1);
     assert.equal(await pg.textContent("#cot-rel-t"), "New report out at 3:30 PM ET, updating");
     assert.equal(await pg.getAttribute("#cot-rel", "data-state"), "due");
     assert.equal(await pg.textContent("#cot-rel-live"), "New report out at 3:30 PM ET, updating");

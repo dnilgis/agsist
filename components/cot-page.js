@@ -586,8 +586,26 @@ function cotStopPolling(){ if (COT_POLL) { clearInterval(COT_POLL); COT_POLL = n
    changes and is NOT a live region; #cot-rel-live announces the state changes only (countdown to due, due to
    updated, and so on), never the minutes. */
 var COT_REL_STATE = '';
+/* THE BAR TURNS OVER AT 3:30, NOT UP TO A MINUTE AFTER (Nov 7). It used to refresh every 60 s counted from whenever
+   the script started, so a reader watching the countdown saw "under 1 m" for up to a minute past the release before
+   "out at 3:30 PM ET, updating", and the minutes changed at a different second on every load. Each refresh now sets
+   the next one for the moment the words change: the next whole minute counted from the release time, and the
+   release instant itself. The late mark (three hours on) and midnight ET fall on those minutes too. */
+var COT_TICK = null;
+function cotTickNext(due){
+  if (COT_TICK) clearTimeout(COT_TICK);
+  var d = due ? due - Date.now() : NaN, wait = 60000;
+  if (d >= 60000) wait = d % 60000 + 1;         /* the countdown shows whole minutes left, rounded down */
+  else if (d > 0) wait = d;                     /* the last minute: wake at the release itself */
+  else if (d <= 0) wait = 60000 - (-d % 60000); /* past it: on the minute, counted from the release */
+  COT_TICK = setTimeout(cotTick, wait);
+}
+/* a tab put away and brought back can have had its timers held back by the browser: catch up at once */
+document.addEventListener('visibilitychange', function(){ if (!document.hidden) cotTick(); });
 function cotTick(){
   var G = window.AgCotGlance, bar = document.getElementById('cot-rel'), el = document.getElementById('cot-rel-t');
+  cotTickNext(COT_SUMMARY && G && G.etInstant && /^\d{4}-\d{2}-\d{2}$/.test(COT_SUMMARY.next_release || '')
+    ? G.etInstant(COT_SUMMARY.next_release, COT_SUMMARY.next_release_time_et || '15:30') : 0);
   if (!COT_LOADED || !COT_SUMMARY) {
     /* NO REPORT ON SCREEN IS NOT THE SAME AS NOTHING TO DO: keep asking for the file. The bar keeps its baked
        date and time. */
@@ -613,7 +631,7 @@ function cotTick(){
     if (window.AgCotChart && window.AgCotChart.answerLine) window.AgCotChart.answerLine();
   }
 }
-cotTick(); setInterval(cotTick, 60000);
+cotTick();
 
 /* THE SIGNUP BOX ON ARRIVAL (Sig, Nov 6: grow the Funds this week list). The release bar's "Get it in your inbox
    Friday", the print sheet's QR code, the email's forward line and the homepage's "Email me Fridays" all land on
