@@ -529,9 +529,11 @@ def apply_report(national: dict, states: dict, report: dict) -> list[str]:
         took = 0
         for loc, row in tbl["rows"].items():
             sm = nat if loc == "US" else (states.get(loc) or {}).get(key)
-            if sm is None or sm.get("date") != tw_d or sm.get("pct") != row["pct"]:
+            if sm is None:
+                continue        # no Quick Stats row to check it against: left out
+            if sm.get("date") != tw_d or sm.get("pct") != row["pct"]:
                 print(f"    report {key} {loc}: {row['pct']} vs Quick Stats "
-                      f"{sm and (sm.get('date'), sm.get('pct'))}; not used", flush=True)
+                      f"{sm.get('date')} {sm.get('pct')}; not used", flush=True)
                 continue
             sm["avg5"] = row["avg5"]
             sm["avg5_by"] = "NASS"
@@ -943,6 +945,72 @@ def selftest():
     check(st.get("KS", {}).get("winter_wheat_planted", {}).get("pct") == 41, "Kansas wheat planted 41 kept")
     check("AR" not in st, "a state week eight weeks old is not shown as this week", st.get("AR"))
     check(st["KS"]["winter_wheat_planted"]["avg5"] is None, "no history -> 5-year avg withheld (None)")
+
+    print("\nTHE NASS-PRINTED 5-YEAR AVERAGE FROM THE WEEKLY REPORT (Nov 7, 2026)")
+    # the real report of Oct 5, 2026 (week ending Oct 4), pdftotext -layout, saved copy
+    rtxt = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test", "fixtures",
+                             "crop-progress-report-2026-10-04.txt"), encoding="utf-8").read()
+    rep = parse_report(rtxt)
+    check(sorted(rep) == sorted(REPORT_TABLES.values()), "all eight progress tables read", sorted(rep))
+    ch = rep.get("corn_harvested", {})
+    check(ch.get("dates") == ("2025-10-04", "2026-09-27", "2026-10-04") and ch.get("avg_years") == (2021, 2025),
+          "corn harvested header: Oct 4 2025, Sep 27 2026, Oct 4 2026; 2021-2025 average", ch.get("dates"))  # pin-ok: fixture
+    check(ch["rows"]["US"] == {"prev_year": None, "prev_week": 18, "pct": 23, "avg5": 27},
+          "18 States row: 23% harvested, 18% the week before, last year (NA) -> None, average 27", ch["rows"]["US"])  # pin-ok: fixture
+    check(ch["rows"]["IA"] == {"prev_year": None, "prev_week": 5, "pct": 7, "avg5": 20}, "Iowa corn 7%, average 20",
+          ch["rows"]["IA"])  # pin-ok: fixture
+    check(len(ch["rows"]) == 19 and ch["rows"]["CO"]["prev_week"] == 0 and ch["rows"]["PA"]["prev_week"] == 0,
+          "18 states and the total; '-' (represents zero) is 0", ch["rows"].get("CO"))  # pin-ok: fixture
+    check(rep["soybeans_harvested"]["rows"]["US"]["avg5"] == 33 and rep["soybeans_harvested"]["rows"]["IA"]["avg5"] == 38,
+          "soybeans: US average 33, Iowa 38")  # pin-ok: fixture
+    check(rep["winter_wheat_planted"]["rows"]["US"]["pct"] == 36 and rep["winter_wheat_planted"]["rows"]["US"]["avg5"] == 46,
+          "winter wheat planted 36%, average 46")  # pin-ok: fixture
+    check(rep["cotton_harvested"]["rows"]["US"]["avg5"] == 21 and len(rep["cotton_harvested"]["rows"]) == 16,
+          "cotton: 15 states and the total, average 21")  # pin-ok: fixture
+    check(parse_report(rtxt.replace("2021-2025", "")) == {}, "no average span in the header: every table left out")
+    check(parse_report("Corn Harvested – Selected States\nIowa ........ 1 2 3\n") == {},
+          "a table without its header is left out, never guessed")
+
+    # Quick Stats summaries for the same week: national corn from the saved series
+    # (the fall 2025 gap leaves our own average None), Iowa and a non-report state
+    qs_nat = {"corn_harvested": summarize({d: v for d, v in corn.items() if d <= D("2026-10-04")}),
+              "soybeans_harvested": {"date": "2026-10-04", "pct": 25, "prev_week": 17, "prev_year": None, "avg5": None},
+              "winter_wheat_planted": {"date": "2026-10-04", "pct": 36, "prev_week": 27, "prev_year": None, "avg5": None}}
+    check(qs_nat["corn_harvested"]["pct"] == 23 and qs_nat["corn_harvested"]["avg5"] is None,
+          "before: Quick Stats corn 23% on Oct 4, our average withheld (2025 gap)", qs_nat["corn_harvested"])
+    qs_st = {"IA": {"corn_harvested": {"date": "2026-10-04", "pct": 7, "prev_week": 5, "prev_year": None, "avg5": None},
+                    "soybeans_harvested": {"date": "2026-10-04", "pct": 6, "prev_week": 3, "prev_year": None, "avg5": None}},
+             "NY": {"corn_harvested": {"date": "2026-10-04", "pct": 4, "prev_week": 2, "prev_year": None, "avg5": None}}}
+    res = {"corn": {"harvest_pct": 23, "harvest_date": "2026-10-04", "harvest_prev_year": None},
+           "soybeans": {"harvest_pct": 25, "harvest_date": "2026-10-04", "harvest_prev_year": None}}
+    used = merge_report(res, qs_nat, qs_st, lambda wk: {k: t for k, t in rep.items() if t["dates"][2] == wk})
+    check(res["corn"]["harvest_5yr_avg"] == 27 and res["soybeans"]["harvest_5yr_avg"] == 33,
+          "after: corn harvest_5yr_avg 27, soybeans 33 (NASS-printed)", res)  # pin-ok: fixture
+    check(res["corn"]["harvest_prev_year"] is None, "last year stays None: NASS printed (NA) for the cancelled week")
+    check(res["progress"]["corn_harvested"]["avg5_by"] == "NASS" and res["progress"]["winter_wheat_planted"]["avg5"] == 46,
+          "national rows marked avg5_by NASS; winter wheat planted average 46")  # pin-ok: fixture
+    check(qs_st["IA"]["corn_harvested"]["avg5"] == 20 and qs_st["IA"]["corn_harvested"]["avg5_by"] == "NASS",
+          "Iowa corn takes the printed 20", qs_st["IA"]["corn_harvested"])  # pin-ok: fixture
+    check(qs_st["IA"]["soybeans_harvested"]["avg5"] is None and "avg5_by" not in qs_st["IA"]["soybeans_harvested"],
+          "Iowa soybeans 6% in Quick Stats vs 5% in the report: not used", qs_st["IA"]["soybeans_harvested"])
+    check("avg5_by" not in qs_st["NY"]["corn_harvested"], "a state not in the report keeps our arithmetic")
+    check("cotton_harvested" not in used and "corn_harvested" in used, "a table with no Quick Stats week is skipped", used)
+    check(res["progress_method"] == PROGRESS_METHOD and "NASS prints" in PROGRESS_METHOD, "method says whose average")
+    # a report for another week, or the wrong average span, is never applied
+    n2 = {"corn_harvested": {"date": "2026-10-11", "pct": 23, "prev_week": 18, "prev_year": None, "avg5": None}}
+    check(apply_report(n2, {}, {"corn_harvested": rep["corn_harvested"]}) == [] and n2["corn_harvested"]["avg5"] is None,
+          "report week Oct 4 against a Quick Stats week of Oct 11: not used")
+    n3 = {"corn_harvested": {"date": "2026-10-04", "pct": 23, "prev_week": 18, "prev_year": None, "avg5": None}}
+    bad = dict(rep["corn_harvested"], avg_years=(2020, 2024))
+    check(apply_report(n3, {}, {"corn_harvested": bad}) == [] and n3["corn_harvested"]["avg5"] is None,
+          "an average over 2020-2024 for a 2026 week: not used")
+    res2 = {"corn": {"harvest_pct": 23, "harvest_date": "2026-10-04"}}
+    n4 = {"corn_harvested": {"date": "2026-10-04", "pct": 23, "prev_week": 18, "prev_year": None, "avg5": None}}
+    def boom(wk):
+        raise RuntimeError("simulated outage")
+    merge_report(res2, n4, {}, boom)
+    check(res2["corn"]["harvest_5yr_avg"] is None and res2["progress"] is n4, "report outage: our figures stand, no crash")
+    check(report_numbers("2026-10-04")[0] == 40, "week ending Oct 4, 2026 -> prog4026 first", report_numbers("2026-10-04"))
 
     print("HOLD THE LAST GOOD CONDITION READ (Oct 27, 2026: a later run wrote nulls)")
     import tempfile
