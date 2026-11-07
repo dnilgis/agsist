@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 386;  // v386 2026-11-07: cot bar refresh at release (386, next after main's 385). The /cot release bar turns over at the release instant and on the minute (cot-page.js?v=12).
+var CACHE_VERSION = 388;  // v388 2026-11-07: fx/friday-chart-poster (388, next after main's 386 and fx/share-kit-home's 387). Friday Chart poster: dark phone poster to save and a paper poster to print on 11 x 17 or Letter on each infographic page (components/infographic.js?v=2, infographic/infographic.css?v=2).
+// var CACHE_VERSION = 386;  // v386 2026-11-07: cot bar refresh at release (386, next after main's 385). The /cot release bar turns over at the release instant and on the minute (cot-page.js?v=12).
 // var CACHE_VERSION = 385;  // v385 2026-11-07: infographic. Infographic of the Week pages and their pictures and print sheet (new components/infographic.js?v=1, infographic/infographic.css?v=1).
 // var CACHE_VERSION = 384;  // v384 2026-11-07: share kit bids. "Bids near <town>" picture (phone and wide) and a one-page town bid sheet on /cash-bids and every cash bid town page (new components/bids-kit.js?v=1, bids-kit.css?v=1; cash-bids.js?v=19, cash-bid-town.css?v=3).
 // var CACHE_VERSION = 383;  // v383 2026-11-07: share kit core. One shared module for pictures and print sheets (new components/share-kit.js?v=1, share-kit.css?v=1); COT, Bin Print and County Print moved onto it with the same output (cot-kit.js?v=3, cot-chart.js?v=12, cot-print.js?v=5, cot-share.js?v=2, cot-print.css?v=6, bin-yard.js?v=2, bin-yard.css?v=2, county-print.css?v=2; county-print.js at its hash).

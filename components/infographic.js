@@ -1,4 +1,4 @@
-/* components/infographic.js: the Infographic of the Week, drawn from its spec (data/infographics/<date>.json,
+/* components/infographic.js: the Friday Chart (subtitle "Infographic of the Week", Sig Nov 7), drawn from its spec (data/infographics/<date>.json,
    made by scripts/build_infographic.py from our own data files; the page carries the same spec inline as
    <script type="application/json" id="ig-spec">). Nov 7, 2026.
 
@@ -6,9 +6,11 @@
    the sheet, the print hook, sharing):
    - the phone picture, 1080 x 1350: the hook, the big number, the chart, the facts, the source and a QR code;
    - the link preview picture, 1200 x 630: the hook, the big number and the chart;
-   - the one-page print sheet (Letter, fits A4), black on white, with a QR code back to the page.
+   - the one-page print sheet (Letter, fits A4), black on white, with a QR code back to the page;
+   - the Friday Chart poster from spec.poster (Nov 7): dark, 1080 x 2400, a canvas picture to save or share; and
+     paper, an SVG print sheet on 11 x 17 (Letter as the fallback), each with a QR code (see "the poster" below).
    Chart types: bars (each row: this year's value as a bar, the 5-year average as a tick) and line (weekly points).
-   Fails soft: without share-kit.js the buttons stay hidden and the page (its picture, chart and facts are plain
+   Fails soft: without share-kit.js the buttons stay hidden (a spec without a poster block hides the poster buttons) and the page (its picture, chart and facts are plain
    HTML) is whole. Every number drawn comes from the spec; nothing is computed here but positions.
    Exports window.AgInfographic (and module.exports for the tests). */
 (function (root) {
