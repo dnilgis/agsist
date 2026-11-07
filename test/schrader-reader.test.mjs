@@ -98,7 +98,7 @@ test('the data file: facts only, credited, linked, farmland only, never a figure
   assert.deepEqual(doc.records.map((r) => r.auction_id), sorted.map((r) => r.auction_id), 'sorted by date');
   const r = doc.records.find((x) => x.auction_id === '9630');
   assert.equal(r.tracts[1].per_acre, null, 'the house tract keeps no per acre');
-  assert.doesNotMatch(read('data/land/auctions/schrader.json'), /buyer|purchaser|owner|—/i);
+  assert.doesNotMatch(read('data/land/auctions/schrader.json'), /buyer|purchaser|owner|\u2014/i);
 });
 
 test('the capture workflow builds the file after the capture and runs weekly on Monday', () => {
