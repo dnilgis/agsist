@@ -81,7 +81,7 @@
       rent.push({ big: cp.r[0], unit: '/ac', short: (cp.r[2] === 'irr' ? 'Irrigated' : 'Non-irrigated') + ' cash rent, ' + cp.r[1] + ' county average',
         text: (cp.r[2] === 'irr' ? 'Irrigated' : 'Non-irrigated') + ' cash rent, county average: what tenants paid, not a quote for a new lease.', src: rsrc });
       if (cp.nr) rent.push({ big: cp.nr[0] + ' to ' + cp.nr[1], unit: '/ac', text: 'Next-door counties\u2019 dry rent, the same survey year: median ' + cp.nr[2] + '.', src: rsrc });
-      if (cp.rb && cp.yt) rent.push({ big: cp.rb, unit: '/bu', text: 'Rent per bushel: ' + cp.r[0] + ' \u00f7 ' + cp.yt[0] + ' bu, the corn ' + cp.yt[1] + '.', src: 'AGSIST arithmetic on the USDA NASS rent and yields' });
+      if (cp.rb && cp.yt) rent.push({ big: cp.rb, unit: '/bu', text: 'Rent per bushel: ' + cp.r[0] + ' \u00f7 ' + cp.yt[0] + ' bu, the corn ' + cp.yt[1] + '.', src: 'AGSIST arithmetic on the ' + cp.r[1] + ' USDA NASS rent and the county yields' });
     }
     block('rent', 'What does land rent for?', rent);
     /* 2. What has sold? Recorded transfers first; then the estimates, labelled as estimates */
@@ -104,7 +104,7 @@
     block('sold', 'What has sold?', sold);
     /* 3. What can farming here earn? */
     var earn = [];
-    if (cp.yt) earn.push({ big: cp.yt[0], unit: ' bu/ac', short: 'Corn, ' + cp.yt[1] + (cp.yt[2] ? ', ' + cp.yt[2] : ''), text: 'Corn, ' + cp.yt[1] + (cp.yt[2] ? ', ' + cp.yt[2] : '') + '.', src: credit('USDA NASS county yields') + ', fitted by AGSIST' });
+    if (cp.yt) earn.push({ big: cp.yt[0], unit: ' bu/ac', short: 'Corn, ' + cp.yt[1] + (cp.yt[2] ? ', ' + cp.yt[2] : ''), text: 'Corn, ' + cp.yt[1] + (cp.yt[2] ? ', ' + cp.yt[2] : '') + '.', src: credit('USDA NASS county yields') + ', ' + cp.yt[1] + ', fitted by AGSIST' });
     if (cp.yl) earn.push({ big: cp.yl[1], unit: ' bu/ac', short: 'Corn, ' + cp.yl[0] + ' county yield', text: 'Corn, last county yield, all practices.', src: credit('USDA NASS county yields') + ', ' + cp.yl[0] });
     var cb = lv('corn-bid', 'Best corn bid within 50 mi', 2);
     earn.push(cb, lv('soy-bid', 'Best soybean bid within 50 mi', 1), lv('corn-basis', 'Corn basis', 3), lv('soy-basis', 'Soybean basis', 0));
