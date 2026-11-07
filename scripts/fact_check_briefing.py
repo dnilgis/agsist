@@ -74,7 +74,7 @@ SEVERITIES = ["high", "medium", "low"]
 # Fields the generator's code writes from data, not the model. They are sent as
 # source data; the findings are about what the model wrote.
 MACHINE_FIELDS = {"locked_prices", "locked_changes", "board", "harvest_clock", "edge",
-                  "chart_series", "chart_dates", "chart_window", "quote_strip", "price_windows", "ag_weather", "sponsor",
+                  "chart_series", "chart_dates", "chart_window", "quote_strip", "price_windows", "week_review", "week_ahead", "ag_weather", "sponsor",
                   "issue_number", "generated_at", "generator_version", "surprise_count",
                   "surprises", "price_validation_clean", "market_closed",
                   "market_status_reason", "meta", "critic_pass", "cca_note",

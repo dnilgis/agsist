@@ -1,0 +1,50 @@
+{
+ "date": "Saturday, October 31, 2026",
+ "market_closed": true,
+ "locked_prices": {
+  "corn": 4.475,
+  "beans": 12.215,
+  "wheat": 6.0325,
+  "cattle": 224.0,
+  "feeders": 337.475,
+  "hogs": 59.0
+ },
+ "locked_changes": {
+  "corn": {
+   "kind": "last",
+   "date": "2026-10-30",
+   "at": "2026-10-30T18:20:00Z",
+   "contract": "Dec '26"
+  },
+  "beans": {
+   "kind": "last",
+   "date": "2026-10-30",
+   "at": "2026-10-30T18:20:00Z",
+   "contract": "Nov '26"
+  },
+  "wheat": {
+   "kind": "last",
+   "date": "2026-10-30",
+   "at": "2026-10-30T18:20:00Z",
+   "contract": "Dec '26"
+  },
+  "cattle": {
+   "kind": "last",
+   "date": "2026-10-30",
+   "at": "2026-10-30T19:05:00Z",
+   "contract": "Oct '26"
+  },
+  "feeders": {
+   "kind": "last",
+   "date": "2026-10-30",
+   "at": "2026-10-30T19:05:00Z",
+   "contract": "Nov '26"
+  },
+  "hogs": {
+   "kind": "last",
+   "date": "2026-10-30",
+   "at": "2026-10-30T19:05:00Z",
+   "contract": "Dec '26"
+  }
+ }
+}

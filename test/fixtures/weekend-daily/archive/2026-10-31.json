@@ -1,0 +1,63 @@
+{
+ "date": "Saturday, October 31, 2026",
+ "market_closed": true,
+ "week_review": {
+  "friday": "2026-10-30",
+  "closes": {
+   "corn-dec26": {
+    "root": "corn",
+    "name": "Corn",
+    "contract": "Dec '26",
+    "date": "2026-10-30",
+    "px": 447.5,
+    "kind": "last",
+    "at": "2026-10-30T18:20:00Z"
+   },
+   "beans-nov26": {
+    "root": "beans",
+    "name": "Soybeans",
+    "contract": "Nov '26",
+    "date": "2026-10-30",
+    "px": 1221.5,
+    "kind": "last",
+    "at": "2026-10-30T18:20:00Z"
+   },
+   "wheat-dec26": {
+    "root": "wheat",
+    "name": "Chicago wheat",
+    "contract": "Dec '26",
+    "date": "2026-10-30",
+    "px": 603.25,
+    "kind": "last",
+    "at": "2026-10-30T18:20:00Z"
+   },
+   "cattle-dec26": {
+    "root": "cattle",
+    "name": "Live cattle",
+    "contract": "Dec '26",
+    "date": "2026-10-30",
+    "px": 220.775,
+    "kind": "last",
+    "at": "2026-10-30T19:05:00Z"
+   },
+   "feeders-nov26": {
+    "root": "feeders",
+    "name": "Feeder cattle",
+    "contract": "Nov '26",
+    "date": "2026-10-30",
+    "px": 337.475,
+    "kind": "last",
+    "at": "2026-10-30T19:05:00Z"
+   },
+   "hogs-dec26": {
+    "root": "hogs",
+    "name": "Lean hogs",
+    "contract": "Dec '26",
+    "date": "2026-10-30",
+    "px": 59.0,
+    "kind": "last",
+    "at": "2026-10-30T19:05:00Z"
+   }
+  }
+ }
+}

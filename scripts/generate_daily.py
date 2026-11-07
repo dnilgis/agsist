@@ -1294,6 +1294,14 @@ def render_adds_html(briefing):
     for w in (briefing.get("price_windows") or []):
         its = ", ".join(f"{html_esc(i['name'])} {html_esc(i['text'])}" for i in w.get("items") or [])
         if its: rows.append(f"<div><strong>{html_esc(w['label'])}:</strong> {its}</div>")
+    for wk in ("week_review", "week_ahead"):
+        blk = briefing.get(wk) or {}
+        if blk.get("lines") or blk.get("notes"):
+            st = f" ({html_esc(blk['stamp'])})" if blk.get("stamp") else ""
+            rows.append(f"<div class=\"dv3-wk\"><strong>{html_esc(blk.get('head') or '')}</strong>{st}</div>")
+            rows += [f"<div>{html_esc(t)}</div>" for t in (blk.get("lines") or []) + (blk.get("notes") or [])]
+            if blk.get("source"):
+                rows.append(f"<div><span class=\"dv3-adds-src\">Source: {html_esc(blk['source'])}.</span></div>")
     aw = briefing.get("ag_weather") or {}
     if aw.get("text"):
         rows.append(f"<div><strong>USDA weather:</strong> {html_esc(aw['text'])} "
@@ -2274,6 +2282,9 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
                 "reference to ongoing geopolitical or macro threads (Iran tensions, Hormuz, Fed "
                 "pivot, trade negotiations, etc.) needs a one-clause anchor establishing what "
                 "the event is and roughly when it began.\n"
+                "WEEK IN REVIEW TABLE: when the price table below carries a CODE-BUILT WEEK IN REVIEW TABLE, the "
+                "issue prints it (Friday vs last Friday: corn, soybeans, Chicago wheat, live cattle, feeder cattle, "
+                "lean hogs). Never restate its numbers differently and do not repeat the table.\n"
             )
         elif reason == "weekend" and "Sunday" in day:
             weekend_instructions = (
@@ -2288,6 +2299,9 @@ def build_system_prompt(market_status, past_tmyk_topics, yesterdays_call=None, w
                 "RULE 18 ON SUNDAYS: macro-event anchoring is critical. The Sunday Preview "
                 "frames the week's macro context. First references to ongoing geopolitical or "
                 "macro threads need a one-clause anchor (what + roughly when).\n"
+                "WEEK AHEAD CALENDAR: when the price table below carries a CODE-BUILT WEEK AHEAD CALENDAR, the issue "
+                "prints it (Reports this week: USDA reports, federal holidays, the COT release). Never give a report "
+                "a different day or time and do not repeat the list.\n"
             )
         else:
             weekend_instructions = (
@@ -5771,6 +5785,22 @@ def main():
                                             for s_ in _streaks.values()))
     except Exception as _e:
         print(f"  [warn] streak counts skipped ({type(_e).__name__}: {_e})")
+    # 2026-11-07 (fx/weekend-daily): Saturday's Friday vs last Friday table and Sunday's
+    # reports-this-week list are built by code (scripts/daily_weekend.py). The writer is
+    # handed them so the prose never states their numbers differently; the block itself
+    # is stored on the issue below. Any error: no block, the issue goes out as before.
+    _wk_field, _wk_block = None, None
+    try:
+        import daily_weekend as _dwk
+        _wk_field, _wk_block = _dwk.for_issue(datetime.now().date())
+        _wl = _dwk.prompt_lines(_wk_field, _wk_block)
+        if _wl and isinstance(price_data, dict) and price_data.get("price_block"):
+            price_data["price_block"] += "\n\n" + _wl
+        if _wk_field:
+            print(f"  Weekend block ({_wk_field}): " + (f"{len(_wk_block.get('lines') or [])} line(s)" if _wk_block else "none"))
+    except Exception as _e:
+        _wk_field, _wk_block = None, None
+        print(f"  [warn] weekend block skipped ({type(_e).__name__}: {_e})")
     if market_status["is_closed"]:
         surprises = []
         print("  Weekend/holiday: surprise detection suppressed")
@@ -6261,6 +6291,8 @@ def main():
             print("  Price windows: " + " | ".join(daily_adds.windows_text(_pw)))
     except Exception as _e:
         print(f"  [warn] price windows skipped ({type(_e).__name__}: {_e})")
+    if _wk_field and _wk_block:
+        briefing[_wk_field] = _wk_block
     try:
         _aw = daily_adds.ag_weather(http_get, today_iso=datetime.now().strftime("%Y-%m-%d"))
         if _aw:
