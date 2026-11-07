@@ -283,6 +283,10 @@
     var chart = s.chart ? '<figure class="cprs-chart">' + toSvg(chartItems(s.chart, 380, chartH || 190, 13), chartLabel(s)) + '<figcaption>' + esc(chartCaption(s)) + '</figcaption></figure>' : '';
     /* the QR code sits in the title block, as on a report's cover; the address prints in full at the foot */
     var side = qr ? '<div class="cprs-side"><div class="cprs-qr">' + qr + '</div><p class="cprs-scan">' + esc(QR_CAP) + '</p></div>' : '';
+    /* a county with no rent and no yields (a city) puts its sales at the left and its risks at the right */
+    var has = function (k) { return s.blocks.some(function (b) { return b.key === k; }); };
+    var L = ['rent', 'earn'], R = ['sold', 'risk'];
+    if (!L.some(has)) { L = ['sold']; R = ['risk']; } else if (!R.some(has)) { L = ['rent']; R = ['earn']; }
     var map = locSvg(loc, s.fips, (s.name || 'The county') + ' within ' + (s.state || 'its state'));
     var sum = s.big4.map(function (b) {
       return '<div class="cprs-k"><p class="cprs-kl">' + esc(b.text) + '</p><p class="cprs-kv">' + esc(b.big) + (b.unit ? '<small>' + esc(b.unit) + '</small>' : '') + '</p>'
@@ -292,8 +296,8 @@
       + '<div class="cprs-ttl"><p class="cprs-kick">County Print</p><h1 class="cprs-h1">' + esc((s.name || '') + (s.state ? ', ' + s.state : '')) + '</h1>'
       + '<p class="cprs-date">' + esc(s.date) + (s.fips ? ' · FIPS ' + esc(s.fips) : '') + '</p></div>'
       + '<div class="cprs-brand"><img class="cprs-logo" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="86" height="40"><p class="cprs-url">agsist.com</p></div>' + side + '</header>'
-      + (sum ? '<div class="cprs-sum">' + sum + '</div>' : '')
-      + '<div class="cprs-grid">' + col(['rent', 'earn'], chart) + col(['sold', 'risk']) + '</div>'
+      + (sum ? '<div class="cprs-sum" style="grid-template-columns:repeat(' + s.big4.length + ',1fr)">' + sum + '</div>' : '')
+      + '<div class="cprs-grid">' + col(L, chart) + col(R) + '</div>'
       + '<p class="cprs-live">This county\u2019s live page: <b>' + esc(s.shown) + '</b></p><p class="cprs-src">' + esc(s.src) + '</p><p class="cprs-na">' + esc(s.made) + ' ' + esc(s.notice) + '</p>';
   }
 
