@@ -27,7 +27,7 @@
   function SK() { return root.AgShareKit || (typeof require === 'function' ? require('./share-kit.js') : null); }
   var URL0 = 'https://agsist.com/';
   var ASK = 'Free every morning: the AGSIST Daily at agsist.com';
-  var SRC = 'Futures: Yahoo Finance, delayed; a settle as the exchange posted it.', SRC_BID = ' Cash bid as the elevator posted it.', SRC_TZ = ' Times Central.';
+  var SRC = 'Futures: Yahoo Finance, delayed.', SRC_BID = ' Cash bid as the elevator posted it.', SRC_TZ = ' Times Central.';
   var QR_JS = '/components/qr.js?v=11', SK_JS = '/components/share-kit.js?v=1';
   var UP = '#5fd38a', DN = '#ff8a7a';
   /* the five markets on the board: key in the price file, name on the picture, the board element that holds the price */
@@ -139,7 +139,9 @@
     function bid(bd, x, y, w, s) {
       one(bd.label, x, y, s.l, 20, 700, GOLD, w);
       one(bd.cash + '  ' + bd.name, x, y + s.g1, s.v, 20, 800, INK, w);
-      one([bd.town, bd.month ? bd.month + ' delivery' : '', 'posted ' + bd.posted].filter(Boolean).join(' · '), x, y + s.g1 + s.g2, s.s, 20, 500, DIM, w);
+      var where = [bd.town, bd.month ? bd.month + ' delivery' : ''].filter(Boolean).join(' · ');
+      if (s.split) { one(where, x, y + s.g1 + s.g2, s.s, 20, 500, DIM, w); one('posted ' + bd.posted, x, y + s.g1 + 2 * s.g2, s.s, 20, 500, DIM, w); }
+      else one([where, 'posted ' + bd.posted].filter(Boolean).join(' · '), x, y + s.g1 + s.g2, s.s, 20, 500, DIM, w);
     }
     if (wide) {
       var LW = 660, RX = P + LW + 44, RW = W - P - RX;
@@ -152,7 +154,7 @@
       m.rows.forEach(function (r, i) { if (i) rule(P, y - 34, LW); row(r, P, y, LW, { n: 25, m: 20, p: 28, u: 20, c: 22, g: 30 }); y += 76; });
       if (q) K.qr(ctx, q, W - P - qs, 30, qmod);
       var ry = 30 + qs + 46;
-      m.bids.slice(0, 2).forEach(function (bd) { bid(bd, RX, ry, RW, { l: 21, v: 24, s: 20, g1: 32, g2: 28 }); ry += 104; });
+      m.bids.slice(0, 2).forEach(function (bd) { bid(bd, RX, ry, RW, { l: 21, v: 24, s: 20, g1: 32, g2: 27, split: true }); ry += 126; });
       if (m.report) { ry = Math.max(ry, H - 214); one(m.report.big ? 'This week' : 'Next report', RX, ry, 21, 20, 700, GOLD, RW); one(m.report.name, RX, ry + 32, 24, 20, 800, INK, RW); one(m.report.when, RX, ry + 62, 22, 20, 600, INK, RW); }
       if (q) { one('Scan for', RX, 30 + qs - 34, 20, 20, 600, DIM, RW - qs - 16); one('live prices', RX, 30 + qs - 8, 20, 20, 600, DIM, RW - qs - 16); }
       one(m.ask, P, H - 50, 24, 20, 800, INK, W - 2 * P);
