@@ -626,11 +626,12 @@ def funds_offer(today, cot=None):
         return None
     try:
         import cot_calendar
-        import send_cot_weekly as CW
         if cot is None:
-            cot = CW.load(os.path.join(os.path.dirname(HERE), "data", "cot.json"))
-        as_of = CW.as_of_date(cot)
-        if not as_of or cot_calendar.release_unknown(as_of):
+            with open(os.path.join(os.path.dirname(HERE), "data", "cot.json"), encoding="utf-8") as f:
+                cot = json.load(f)
+        # data/cot.json writes "November 3, 2026" (as send_cot_weekly.as_of_date reads it)
+        as_of = datetime.strptime(str((cot or {}).get("report_date") or ""), "%B %d, %Y").date()
+        if cot_calendar.release_unknown(as_of):
             return None
         rel = cot_calendar.release_date(as_of)
     except Exception:
