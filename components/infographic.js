@@ -589,7 +589,7 @@
         g.text(String(step++), ix + 19, iy + 26, 20, 800, T.bg, 'center');
         var icon = PANEL_ICON[P.id], iconW = icon === 'combine' ? 58 : icon ? 34 : 0;
         var tw = iw - 50 - (iconW ? iconW + 10 : 0), tsz = g.fit(P.title, 30, 26, 800, tw, T.serif), tl = g.wrap(P.title, tsz, 800, tw, T.serif), ty = iy + 29;
-        if (tl.length > 1) ty = iy + 19 - (tl.length * 34) / 2 + 26;
+        if (tl.length > 1) ty = iy + 26;
         tl.forEach(function (l, k) { g.text(l, ix + 50, ty + k * 34, tsz, 800, T.ink, 'left', T.serif); });
         if (icon) ICON[icon](g, ix + iw - iconW, iy + (icon === 'combine' ? -2 : 2), iconW, T.gold, T.panel);
         var by = iy + Math.max(38, tl.length * 34) + 12;
