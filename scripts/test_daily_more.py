@@ -153,6 +153,29 @@ def main():
     bad = fixture_copy(lambda d: _edit(d, "cot-history.json", lambda x: [v.pop() for v in x["history"].values()]))
     ok("do not agree" in run("2026-11-02", "2026-11-02T12:00:00Z", bad)["funds"].get("withheld", ""), "COT files that disagree: withheld")
 
+    # ── how the net changed (Nov 7): the line data/cot-analysis.json carries (card.how), printed as it stands
+    # pin-ok: fixture. Corn, week to Oct 27, 2026: longs 297,797 -> 249,351, shorts 133,374 -> 168,238.
+    HOW = "Longs -48,446, shorts +34,864: mostly selling longs they held."
+
+    def with_ana(d, how=None, mm_long=249351, date_="2026-10-27"):
+        ana = {"report_date": date_, "commodities": {"corn": {
+            "date": date_, "net": 81113, "mm_long": mm_long, "mm_short": 168238,
+            "card": {"how": how or {"long_change": -48446, "short_change": 34864,
+                                    "label": "mostly selling longs they held", "line": HOW}}}}}
+        json.dump(ana, open(os.path.join(d, "data", "cot-analysis.json"), "w"))
+    fl = run("2026-11-02", "2026-11-02T12:00:00Z", fixture_copy(with_ana))["funds"].get("lines") or []
+    corn = [x for x in fl if x.startswith("Corn:")]
+    ok(len(fl) == 4 and len(corn) == 1 and corn[0].endswith(" " + HOW), "the corn fund line carries the how line: %r" % fl)
+    ok(sum(HOW in x for x in fl) == 1 and not any("Longs " in x for x in fl if not x.startswith("Corn:")),
+       "a market without the analysis field gets no how line: %r" % fl)
+    ok(HOW in M.prompt_block(run("2026-11-02", "2026-11-02T12:00:00Z", fixture_copy(with_ana))), "the writer's block carries it")
+    for why, edit in (("disagree", lambda d: with_ana(d, mm_long=249352)),
+                      ("another week", lambda d: with_ana(d, date_="2026-10-20")),
+                      ("withheld upstream", lambda d: with_ana(d, how={"withheld": "a week without both long and short counts"})),
+                      ("no long count", lambda d: (with_ana(d), _edit(d, "cot-history.json", lambda x: x["history"]["corn"][-2].pop("long"))))):
+        fl = run("2026-11-02", "2026-11-02T12:00:00Z", fixture_copy(edit))["funds"].get("lines") or []
+        ok(len(fl) == 4 and not any("Longs " in x for x in fl), "how line withheld (%s): %r" % (why, fl))
+
     # ── holiday weeks: Columbus Day Monday, Veterans Day Wednesday
     cal = joined(run("2026-10-12", "2026-10-12T12:00:00Z")["calendar"])
     ok("Today (Monday, Oct 12): no USDA report on the calendar." in cal, "Columbus Day: nothing Monday: " + cal)

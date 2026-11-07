@@ -39,7 +39,7 @@ export const MOVED = {
 
 // Scripts that import a reader module but never read a moved file (read by hand, Nov 4).
 const NOT_READING = {
-  'daily_more.py': 'send_cot_weekly.load, as_of_date and rows_for, on data/cot.json and data/cot-history.json only',
+  'daily_more.py': 'send_cot_weekly.load, as_of_date and rows_for, on data/cot.json, data/cot-history.json and data/cot-analysis.json only',
   'fetch_cot.py': 'side_of, flat_band and FLAT_OI_PCT from cot_analysis',
   'enrich_cot_prices.py': 'UNREPAIRED_ROLL from cot_analysis',
   'gsc_index_check.py': 'the Google auth helpers from site_usage_report',
