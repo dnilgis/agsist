@@ -103,7 +103,7 @@
         paintBars(ctx, p, spec, pan, cx, 214, cw, H - 214 - 60, { maxRows: 8, labelW: 170, valW: 110, font: 24, rowMax: 44 });
       } else paintLine(ctx, p, spec, cx, 170, cw, H - 170 - 60, { font: 22, endRoom: 110 });
       p.text(srcLine(spec).replace(/ Facts only, not advice\.$/, ''), P, H - 26, p.fit(srcLine(spec), 20, 16, 400, W - 2 * P), 400, K.DIM);
-      return { canvas: c, texts: p.texts, sizes: p.sizes, w: W, h: H };
+      return { canvas: c, texts: p.texts, sizes: p.sizes, ys: p.ys, w: W, h: H };
     }
     y = hook(p, spec.title, P, 218, [62, 56, 50, 44], W - 2 * P, 3);
     /* the big number, its unit and label in a column at its right (under it when the number is wide) */
@@ -126,12 +126,13 @@
     var facts = (spec.facts || []).slice(0, 3), factH = 0;
     ctx.font = '500 26px ' + K.FONT;
     facts.forEach(function (f) { factH += Math.min(2, p.wrap(f.text, W - 2 * P - 30).length) * 32 + 12; });
-    var chartTop = y + 6, chartBot = footTop - factH - 30;
+    /* a line chart's date labels sit under its plot: 28 px more air between them and the first fact */
+    var gap = spec.chart.type === 'line' ? 28 : 0, chartTop = y + 6, chartBot = footTop - factH - 30 - gap;
     p.text(spec.chart.type === 'bars' ? spec.chart.panels[0].title + ' (bar: ' + spec.chart.series[0] + ', tick: ' + spec.chart.series[1].toLowerCase() + ')' : spec.chart.title,
       P, chartTop + 26, p.fit(spec.chart.type === 'bars' ? spec.chart.panels[0].title + ' (bar: ' + spec.chart.series[0] + ', tick: ' + spec.chart.series[1].toLowerCase() + ')' : spec.chart.title, 26, 20, 600, W - 2 * P), 600, K.DIM);
     if (spec.chart.type === 'bars') paintBars(ctx, p, spec, spec.chart.panels[0], P, chartTop + 46, W - 2 * P, chartBot - chartTop - 46, { font: 26 });
     else paintLine(ctx, p, spec, P, chartTop + 30, W - 2 * P, chartBot - chartTop - 30, { font: 26 });
-    var fy = chartBot + 34;
+    var fy = chartBot + 34 + gap;
     facts.forEach(function (f) {
       ctx.fillStyle = K.GOLD; ctx.fillRect(P, fy - 20, 8, 22);
       fy = p.lines(f.text, P + 30, fy, 26, 500, K.INK, 32, 2, W - 2 * P - 30) + 12;
@@ -140,7 +141,7 @@
     var ay = H - 40 - (sl.length - 1) * 26 - 34;
     p.text(shown(spec), P, ay, p.fit(shown(spec), 28, 20, 700, LW), 700, K.GOLD);
     sl.forEach(function (l, i) { p.text(l, P, H - 40 - (sl.length - 1 - i) * 26, 20, 400, K.DIM); });
-    return { canvas: c, texts: p.texts, sizes: p.sizes, w: W, h: H };
+    return { canvas: c, texts: p.texts, sizes: p.sizes, ys: p.ys, w: W, h: H };
   }
 
   /* ---------------------------------------------------------------- the print sheet */

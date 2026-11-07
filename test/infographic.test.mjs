@@ -239,7 +239,7 @@ test("in a browser: the phone and link pictures from the spec, the print sheet o
           const spec = JSON.parse(document.getElementById("ig-spec").textContent);
           const m = shape === "phone" ? window.AgQR.matrix(window.AgInfographic.tagged(spec, "share", "qr"), null, null, 10) : null;
           const im = window.AgInfographic.picture(spec, document, shape, { qr: m });
-          return { w: im.canvas.width, h: im.canvas.height, texts: im.texts, sizes: im.sizes, png: im.canvas.toDataURL("image/png") };
+          return { w: im.canvas.width, h: im.canvas.height, texts: im.texts, sizes: im.sizes, ys: im.ys, png: im.canvas.toDataURL("image/png") };
         }, shape);
         assert.deepEqual([r.w, r.h], shape === "phone" ? [1080, 1350] : [1200, 630], d + " " + shape);
         const all = r.texts.join(" ");
@@ -247,6 +247,10 @@ test("in a browser: the phone and link pictures from the spec, the print sheet o
         assert.ok(r.texts.some((t) => t === s.big.value.toLocaleString("en-US") || t === s.big.value + "%"), d + " " + shape + ": the big number " + r.texts.join(" | "));
         assert.ok(all.includes(s.sources[0].name), "the source on the picture");
         assert.ok(Math.min(...r.sizes) >= 16, "no word under 16 px");
+        if (shape === "phone" && s.chart.type === "line") {
+          const lab = r.texts.lastIndexOf(s.chart.points[s.chart.points.length - 1].label), fact = r.texts.findIndex((t) => t.startsWith(s.facts[0].text.split(" ").slice(0, 3).join(" ")));
+          assert.ok(r.ys[fact] - r.ys[lab] >= 60, d + ": room between the date labels and the first fact (" + (r.ys[fact] - r.ys[lab]) + " px)");
+        }
         if (shape === "phone") for (const f of s.facts) assert.ok(all.includes(f.text.split(" ").slice(0, 3).join(" ")), "fact on the phone picture: " + f.text);
         assert.doesNotMatch(all, DASH);
         if (OUTD) fs.writeFileSync(path.join(OUTD, `${d}-${shape}.png`), Buffer.from(r.png.split(",")[1], "base64"));

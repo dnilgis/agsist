@@ -16,7 +16,7 @@ jobs:
   build:
     runs-on: ubuntu-24.04
     concurrency:
-      group: infographic-pages
+      group: sitemap-write
       cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
@@ -35,6 +35,7 @@ jobs:
           python scripts/build_infographic_pages.py --selftest
           python scripts/build_infographic_pages.py
       - name: Commit if changed
+        id: commit
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
@@ -49,7 +50,7 @@ jobs:
           if git diff --staged --quiet; then echo "no change"; exit 0; fi
           git commit -m "pages: rebuild /infographic"
           for i in 1 2 3 4; do
-            if python3 scripts/generated_sets.py pull-rebase infographic && git push origin HEAD:main; then echo "pushed on attempt $i"; exit 0; fi
+            if python3 scripts/generated_sets.py pull-rebase infographic && git push origin HEAD:main; then echo "pushed on attempt $i"; echo "changed=1" >> "$GITHUB_OUTPUT"; exit 0; fi
             git rebase --abort 2>/dev/null || true
             git fetch -q origin main
             git reset -q --hard origin/main
@@ -60,3 +61,14 @@ jobs:
             sleep $((10 * i))
           done
           echo "push failed after 4 attempts"; exit 1
+
+      - name: IndexNow ping (best-effort)
+        if: steps.commit.outputs.changed == '1' && hashFiles('infographic/_indexable.txt') != ''
+        continue-on-error: true
+        run: |
+          if [ ! -s infographic/_indexable.txt ]; then echo "no infographic yet"; exit 0; fi
+          body=$(python3 -c 'import json; u=["https://agsist.com"+l.strip() for l in open("infographic/_indexable.txt") if l.strip()]; print(json.dumps({"host":"agsist.com","key":"f4a81c26db974e0f92c35b7a6e10d8c4","keyLocation":"https://agsist.com/f4a81c26db974e0f92c35b7a6e10d8c4.txt","urlList":sorted(set([u[0], u[-1]]))}))')
+          curl -s -X POST "https://api.indexnow.org/indexnow" \
+            -H "Content-Type: application/json; charset=utf-8" \
+            -d "$body" \
+            || echo "IndexNow ping failed - harmless"
