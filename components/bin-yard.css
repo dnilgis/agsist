@@ -1,0 +1,174 @@
+/* components/bin-yard.css: Bin Print on /grain-bin-calculator (components/bin-yard.js). The screen tool, then the
+   two printed sheets (full Bin Print and crew sheet): hidden on screen; in print, while html.byp-on is set, the
+   chosen sheet is the only thing on paper. One page, US Letter portrait, fits A4: black on white, gold bar. */
+.by{max-width:1100px;margin:0 auto 18px;padding:14px;background:var(--surface);border:var(--card-bw,1px) solid var(--border);border-radius:10px}
+.by [hidden]{display:none!important}
+.by-h2{font-family:var(--font-display);font-size:1.2rem;font-weight:700;color:var(--text);margin:0 0 4px}
+.by-lede{font-size:.92rem;color:var(--text-dim);line-height:1.5;margin:0 0 10px}
+.by-h3{font-size:.95rem;font-weight:700;color:var(--text);margin:14px 0 8px}
+.by-sr{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.by-status{min-height:1.3em;margin:0 0 4px;font-size:.85rem;color:var(--gold);font-weight:600}
+.by-main{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:16px;align-items:start}
+.by-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.by-tools{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.by-btn{min-height:44px;min-width:44px;padding:8px 12px;font:600 .9rem/1.2 var(--font-body,Inter,system-ui,sans-serif);color:var(--text);background:var(--bg);border:1px solid var(--border-2,var(--border));border-radius:8px;cursor:pointer;touch-action:manipulation}
+.by-btn:hover{border-color:var(--gold)}
+.by-pri{background:#d4a23f;color:#0a0c0d;border-color:#d4a23f}
+.by-pick{appearance:auto;font-size:1rem}
+.by-del{color:#e05c5c}
+.by-yn{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;margin:0 0 10px;font-size:.85rem;color:var(--text-dim)}
+.by-yn .by-in{flex:1 1 220px;max-width:360px}
+.by-in{box-sizing:border-box;width:100%;min-height:44px;padding:8px 10px;font:1rem 'JetBrains Mono',monospace;color:var(--text);background:var(--bg);border:1px solid var(--border-2,var(--border));border-radius:6px}
+.by-in[aria-invalid=true]{border-color:#e05c5c}
+.by-in-s{display:inline-block;width:7.5rem;vertical-align:middle}
+.by-ta{font-family:var(--font-body,Inter,system-ui,sans-serif);min-height:80px;resize:vertical}
+.by-f{display:block;font-size:.8rem;color:var(--text-dim)}
+.by-f>span{display:block;margin:0 0 3px}
+.by-wide{grid-column:1/-1}
+.by-chk{display:flex;align-items:center;gap:8px;min-height:44px;font-size:.88rem;color:var(--text)}
+.by-chk input{width:22px;height:22px}
+.by-fine{font-size:.8rem;color:var(--text-dim);line-height:1.45;margin:6px 0}
+.by-hint{font-size:.8rem;color:var(--text-dim);margin:6px 0 0;line-height:1.45}
+/* the map: its box is fixed by the yard's shape, so nothing moves when it draws */
+.by-mapwrap{position:relative;aspect-ratio:200/140;border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--bg)}
+.by-map{display:block;width:100%;height:100%;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.by-map.by-zoomed{touch-action:none}
+.by-yard{fill:var(--bg)}
+.by-grid{stroke:var(--border);stroke-width:1px;vector-effect:non-scaling-stroke}
+.by-hit{fill:transparent}
+.by-it{cursor:grab;touch-action:none}
+.by-it:focus{outline:none}
+.by-shape,.by-cone,.by-fill{vector-effect:non-scaling-stroke}
+.by-shape{fill:var(--surface);stroke:var(--gold);stroke-width:2px}
+.by-cone{fill:none;stroke:var(--gold);stroke-width:1px;stroke-dasharray:3 3}
+.by-fill{fill:none;stroke:var(--gold);stroke-width:5px;opacity:.75}
+.by-dryer .by-shape,.by-leg .by-shape,.by-unload .by-shape,.by-entry .by-shape{stroke:var(--text-dim);fill:var(--surface)}
+.by-leg .by-cone{stroke:var(--text-dim);stroke-dasharray:none}
+.by-unload .by-shape,.by-entry .by-shape{fill:var(--text-dim)}
+.by-drive .by-shape{fill:var(--bg2,var(--surface));stroke:var(--text-dim);stroke-dasharray:6 4}
+.by-dnu .by-shape{stroke-dasharray:4 3}
+.by-vmap .by-st-full .by-shape{fill:rgba(var(--gold-rgb,212,162,63),.45)}
+.by-vmap .by-st-filling .by-shape{fill:rgba(var(--gold-rgb,212,162,63),.2)}
+.by-sel .by-shape,.by-it:focus-visible .by-shape{stroke:var(--text);stroke-width:4px}
+.by-t{text-anchor:middle;fill:var(--text);font-family:var(--font-body,Inter,system-ui,sans-serif);paint-order:stroke;stroke:var(--bg);stroke-width:.24em;stroke-linejoin:round;pointer-events:none}
+.by-l1{font-weight:800}
+.by-l2{font-weight:700;fill:var(--gold)}
+.by-zoom{position:absolute;right:6px;top:6px;display:flex;gap:4px}
+.by-zb{width:44px;height:44px;font:700 1.1rem/1 var(--font-body,Inter,sans-serif);color:var(--text);background:var(--surface);border:1px solid var(--border-2,var(--border));border-radius:8px;cursor:pointer;opacity:.92}
+.by-zfit{font-size:.8rem}
+/* the editor */
+.by-ed{margin:10px 0 0;padding:12px;border:1px solid var(--gold);border-radius:8px;background:var(--bg)}
+.by-edh{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.by-edh .by-h3{margin:0}
+.by-eg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:8px}
+.by-sub{display:contents}
+/* the table and totals */
+.by-tabwrap{overflow-x:auto}
+.by-tab{width:100%;border-collapse:collapse;font:.8rem 'JetBrains Mono',monospace}
+.by-tab th,.by-tab td{padding:4px 6px;border-bottom:1px solid var(--border);text-align:right;vertical-align:top}
+.by-tab thead th{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-dim)}
+.by-tab th[scope=row],.by-tab thead th:first-child{text-align:left}
+.by-rsel{background:rgba(var(--gold-rgb,212,162,63),.10)}
+.by-rb{display:block;min-height:44px;padding:0;margin:0;font:700 .85rem var(--font-body,Inter,sans-serif);color:var(--gold);background:none;border:0;cursor:pointer;text-align:left;text-decoration:underline;text-underline-offset:2px}
+.by-sz{display:block;font-size:.7rem;color:var(--text-dim);font-weight:400}
+.by-empty{text-align:left!important;color:var(--text-dim)}
+.by-tot{margin:10px 0 0}
+.by-tg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.by-tg>div{padding:8px;border:1px solid var(--border);border-radius:8px;background:var(--bg)}
+.by-k{display:block;font-size:.72rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.04em}
+.by-tg b{font:700 1rem 'JetBrains Mono',monospace;color:var(--text)}
+.by-cw{font-size:.82rem;color:var(--text-dim);margin:6px 0 0;line-height:1.45}
+.by-samp{color:var(--gold)}
+/* the Daily ask under the totals: its height is held before signup-ask.js draws it (no layout shift) */
+#bin-print .gb-ask{margin:12px 0 0;min-height:210px}
+@media (min-width:821px){#bin-print .gb-ask{min-height:226px}}
+html.sa-subbed #bin-print .gb-ask{min-height:0}
+.by-tips ul{margin:0;padding-left:18px}
+.by-tl li{font-size:.86rem;color:var(--text-dim);line-height:1.5;margin:0 0 8px}
+.by-tl b{color:var(--text)}
+.by-tl a,.by-view a{color:var(--green)}
+.by-kit{border-top:1px solid var(--border);margin-top:12px}
+.by-open{align-items:flex-end}
+.by-open .by-f{flex:1 1 260px}
+.by-bar{margin:0 0 10px;padding:10px 12px;border:1px solid var(--gold);border-radius:8px;font-size:.88rem;color:var(--text)}
+.by-bar p{margin:0}
+/* the crew view (a sent link): read-only, big type */
+.by-viewing .by-yn,.by-viewing .by-main,.by-viewing .by-tips,.by-viewing .by-kit{display:none}
+.by-vk{font-size:.85rem;color:var(--gold);font-weight:600;margin:0 0 6px}
+.by-vh{font-family:var(--font-display);font-size:1.5rem;font-weight:800;margin:0 0 8px;color:var(--text)}
+.by-vmap{display:block;width:100%;height:auto;border:1px solid var(--border);border-radius:8px;background:var(--bg)}
+.by-vl{list-style:none;padding:0;margin:12px 0}
+.by-vl li{font-size:1.1rem;line-height:1.4;padding:8px 0;border-bottom:1px solid var(--border);color:var(--text)}
+.by-vl li span{color:var(--text-dim)}
+.by-vl .by-vn{display:block;font-size:1rem;color:var(--text)}
+.by-vdnu b{text-decoration:line-through}
+.by-vnotes{border-left:4px solid #d4a23f;padding:6px 12px;margin:10px 0}
+.by-vnotes h4{margin:0 0 4px;font-size:.85rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-dim)}
+.by-vnotes p{margin:0;font-size:1.15rem;line-height:1.45;color:var(--text)}
+@media (max-width:820px){.by-main{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:500px){.by{padding:10px}.by-eg{grid-template-columns:minmax(0,1fr)}.by-tg b{font-size:.9rem}.by-btn{padding:8px 10px}}
+
+/* ------------------------------------------------------------ the sheets */
+.byp{display:none}
+.byp.byp-measure{display:block;position:absolute;left:0;top:0;width:7.47in;visibility:hidden;pointer-events:none;contain:layout}
+@media print{
+  @page{margin:.4in}
+  html.byp-on,html.byp-on body{background:#fff!important;color:#000!important;margin:0!important;padding:0!important}
+  html.byp-on body>*:not(#byp){display:none!important}
+  html.byp-on body>#print-record-wrap{display:none!important}
+  html.byp-on body>#byp{display:block!important}
+}
+.byp{color:#000;background:#fff;font:10.5pt/1.3 Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.byp p,.byp h1,.byp h2,.byp ul{margin:0}
+.byp-top{display:flex;justify-content:space-between;align-items:flex-end;gap:.2in;border-bottom:4pt solid #d4a23f;padding-bottom:.05in}
+.byp-h1{font-size:19pt;font-weight:800;line-height:1.1;letter-spacing:-.01em}
+.byp-sum{font-size:11pt;font-weight:600;margin-top:.03in!important}
+.byp-brand{text-align:right;flex:none}
+.byp-logo{height:.34in;width:auto;display:block;margin:0 0 .03in auto;filter:brightness(0)}
+.byp-url{font:800 13pt/1 "JetBrains Mono",ui-monospace,monospace}
+.byp-map{display:block;width:100%;margin:.08in 0;border:1pt solid #000}
+.byp .by-shape,.byp .by-cone,.byp .by-fill{vector-effect:non-scaling-stroke}
+.byp .by-shape{fill:#fff;stroke:#000;stroke-width:1.5pt}
+.byp .by-cone{fill:none;stroke:#000;stroke-width:.75pt;stroke-dasharray:3 2}
+.byp .by-fill{fill:none;stroke:#888;stroke-width:4pt}
+.byp .by-drive .by-shape{fill:#eee;stroke-dasharray:6 4}
+.byp .by-unload .by-shape,.byp .by-entry .by-shape{fill:#000}
+.byp .by-dnu .by-shape{stroke-dasharray:5 3;stroke-width:2.5pt}
+.byp .by-t{text-anchor:middle;fill:#000;paint-order:stroke;stroke:#fff;stroke-width:.22em;stroke-linejoin:round;font-family:Inter,system-ui,sans-serif}
+.byp .by-l1{font-weight:800}
+.byp .by-l2{font-weight:700;fill:#000}
+.byp-tab{width:100%;border-collapse:collapse;font-size:9.5pt;font-variant-numeric:tabular-nums}
+.byp-tab th{font-size:8.5pt;text-transform:uppercase;letter-spacing:.05em;text-align:left;border-bottom:1.5pt solid #000;padding:2pt 4pt}
+.byp-tab td{border-bottom:.75pt solid #999;padding:1.5pt 4pt;vertical-align:top;line-height:1.2}
+.byp-tot td{border-top:1.5pt solid #000;font-weight:700}
+.byp-note{display:block;font-size:9pt;font-style:italic}
+.byp-crops{font-size:10pt;margin-top:.05in!important}
+.byp-low{display:grid;grid-template-columns:1fr 1.9in;gap:.2in;align-items:start;margin-top:.08in;border-top:1.5pt solid #000;padding-top:.05in;break-inside:avoid}
+.byp-h2{font-size:11pt;font-weight:800;margin-bottom:.03in!important}
+.byp-q{padding-left:.16in;font-size:9.5pt;line-height:1.3;columns:2;column-gap:.25in}
+.byp-q li{break-inside:avoid}
+.byp-side{text-align:center}
+.byp-qr svg{width:1.55in;height:1.55in;display:block;margin:0 auto}
+.byp-open{font-size:10.5pt;font-weight:700;line-height:1.25;margin-top:.03in!important}
+.byp-code{font:8pt/1.2 "JetBrains Mono",monospace;word-break:break-all;text-align:left;margin-top:.03in!important}
+.byp-date{font-size:9.5pt;margin-top:.04in!important}
+.byp-big{display:block;font:800 9.5pt/1.3 "JetBrains Mono",ui-monospace,monospace}
+.byp-src{font-size:8.5pt;line-height:1.25;margin-top:.06in!important;border-top:1pt solid #000;padding-top:.04in}
+.byp-tight .byp-tab td{padding:1pt 4pt}
+.byp-tight .byp-q{line-height:1.2}
+/* crew sheet: big type for a truck cab */
+.byc-h1{font-size:26pt}
+.byc-date{font-size:16pt}
+.byc-tab{font-size:12.5pt}
+.byc-tab th{font-size:11pt}
+.byc-tab td{padding:1.5pt 5pt}
+.byc-dnu td{font-weight:700}
+.byc-dnu td:first-child b{text-decoration:line-through}
+.byc-low{grid-template-columns:1fr 1.9in}
+.byp-crew .by-st-full .by-shape{fill:#bdbdbd}
+.byp-crew .by-st-filling .by-shape{fill:#e8e8e8}
+.byc-key{font-size:11pt;margin:-.04in 0 .06in!important;display:flex;align-items:center;gap:.06in;flex-wrap:wrap}
+.byc-k{display:inline-block;width:12pt;height:12pt;border:1.5pt solid #000;border-radius:50%;background:#fff;margin-left:.08in}
+.byc-kfull{background:#bdbdbd}.byc-kfill{background:#e8e8e8}.byc-kdnu{border-style:dashed}
+.byc-nt{font-size:14pt;line-height:1.3;min-height:.9in;border:1.5pt solid #000;padding:.06in .1in}
+.byc-blank{background:repeating-linear-gradient(#fff 0,#fff .36in,#999 .36in,#999 .375in)}

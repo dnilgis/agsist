@@ -206,6 +206,11 @@ test('every top-level page compacts: no inline script left as written, each stil
   assert.ok(process.env.TERSER_PATH, 'TERSER_PATH is set in CI (pr-checks.yml installs terser)');
   const tmp = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), 'compact-'));
   const rels = fs.readdirSync(root).filter((f) => f.endsWith('.html'));
+  // the pages' state before this test: CI may already have built a branch's What's new note into index.html and
+  // changelog.html (Nov 7, #401), so "unchanged" means unchanged by this test, not clean against the commit
+  const status = () => spawnSync('git', ['status', '--porcelain', '--', ...rels], { cwd: root, encoding: 'utf8' }).stdout.trim();
+  const hash = () => spawnSync('git', ['hash-object', '--', ...rels], { cwd: root, encoding: 'utf8' }).stdout.trim();
+  const before = { st: status(), h: hash() };
   const code = [
     'import sys, json; sys.path.insert(0, "scripts")',
     'import pages_publish as P',
@@ -226,7 +231,7 @@ test('every top-level page compacts: no inline script left as written, each stil
       assert.doesNotThrow(() => new vm.Script(body), `${rel}: an inline script no longer parses`);
     }
   }
-  const st = spawnSync('git', ['status', '--porcelain', '--', ...rels], { cwd: root, encoding: 'utf8' });
-  assert.equal(st.stdout.trim(), '', 'the repository pages changed');
+  assert.equal(status(), before.st, 'the repository pages changed');
+  assert.equal(hash(), before.h, 'the repository pages changed');
   fs.rmSync(tmp, { recursive: true, force: true });
 });
