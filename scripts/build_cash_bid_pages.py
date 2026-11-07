@@ -4213,6 +4213,7 @@ def selftest():
     _selftest_county()
     _selftest_share()
     _selftest_sharebid()
+    _selftest_skb()
     _selftest_best()
     _selftest_restricted()
     _selftest_pasted()
@@ -4729,6 +4730,27 @@ def _selftest_sharebid():
     # no answer line, no button and no script
     assert share_bid_html({}, "Nevada, IA", "/cash-bids/iowa/nevada") == ""
     assert "share-bid.js" not in page_end("") and "share-bid.js" in page_end("", share=True)
+
+
+def _selftest_skb():
+    """The Bids near kit (share kit wave 1, Nov 7, 2026), from the frozen story-ia fixture: Nevada, IA carries the two
+    buttons in its share row and its rows; each crop's rows are every elevator on the page once, highest first, each
+    with its posted time; a town with no corn or soybean row gets no kit and no script."""
+    import tempfile as _tf
+    fxp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test", "fixtures", "share-kit-bids", "story-ia.json")
+    with _tf.TemporaryDirectory() as td:
+        build_fixture_town(fxp, os.path.join(td, "cash-bids"), root=td)
+        pg = open(os.path.join(td, "cash-bids", "iowa", "nevada.html")).read()
+    assert 'id="skb-pic">Save picture</button>' in pg and 'id="skb-print">Print bid sheet</button>' in pg
+    d = json.loads(re.search(r'<script type="application/json" id="skb-data">(.*?)</script>', pg).group(1).replace("<\\/", "</"))
+    for c in SKB_CROPS:
+        rows = d["rows"][c]
+        assert len(rows) >= SKB_N and all(r["p"] and r["c"].startswith("$") for r in rows), c
+        assert [r["v"] for r in rows] == sorted((r["v"] for r in rows), reverse=True), c
+        assert len({(r["n"], r["t"]) for r in rows}) == len(rows), "each elevator once"
+    assert pg.index("bids-kit.js") < pg.index("cb-signup.js")
+    assert skb_html({}, "X, IA", "X", "/cash-bids/iowa/x") == ("", "")
+    assert "bids-kit.js" not in page_end("") and "bids-kit.js" in page_end("", skb=True)
 
 
 def _selftest_share():
