@@ -47,7 +47,7 @@ const P = build(["schrader.json"]);
 test("Wayne IN: auction 9630 with its three tract groups, the total and the link", () => {
   const s = section(P.wayne);
   assert.ok(s, "Wayne has an Auction results card");
-  assert.match(s, /<h2 id="c-auc">Auction results /);
+  assert.match(s, /<h2 id="c-auc">Auction results<\/h2>/);
   assert.match(s, /<b>Nov 5, 2026<\/b>: 296\.5 acres, \$2,905,000 total sold\./);
   const rows = [...s.matchAll(/<li>(Tracts? [^<]*)<\/li>/g)].map((m) => m[1]);
   assert.deepEqual(rows, [

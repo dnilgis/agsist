@@ -1721,14 +1721,14 @@ def auction_section(recs):
             "s" if "+" in t["tracts"] else "", esc(t["tracts"]), money(t["sold"]),
             (", %s/acre, as reported" % money(t["per_acre"])) if t["per_acre"] is not None else ", no per-acre figure published")
             for t in a["tracts"])
-        rows.append('<li><b>%s</b>: %s acres, %s total sold.%s %s</li>' % (
+        rows.append('<li style="margin:0 0 .5rem"><b>%s</b>: %s acres, %s total sold.%s %s</li>' % (
             esc(_sday(a["date"])), _auc_acres(a["acres"]), money(a["total"]),
-            ('<ul>%s</ul>' % tl) if tl else "",
+            ('<ul style="margin:.15rem 0 .25rem;padding-left:1.1rem;list-style:disc">%s</ul>' % tl) if tl else "",
             SL.link(a["url"], esc("%s auction #%s" % (firm[0], a["id"])), ' rel="noopener"')))
     firms = sorted({AUC_FIRMS[a["source"]][1] for a in recs})
     credit = "Sold and auction results reported by %s. %s" % (" and ".join(firms).rstrip("."), AUC_NOTE)   # "Co." ends it once
-    return ('<section class="card" aria-labelledby="c-auc"><h2 id="c-auc">Auction results <small>reported by the auction firm</small></h2>'
-            '<ul class="auc">%s</ul><p class="note">%s</p></section>' % ("".join(rows), esc(credit)))
+    return ('<section class="card" aria-labelledby="c-auc"><h2 id="c-auc">Auction results</h2>'
+            '<ul class="auc" style="list-style:none;margin:0;padding:0">%s</ul><p class="note">%s</p></section>' % ("".join(rows), esc(credit)))
 
 
 def watch_form(f, lab, stn):
