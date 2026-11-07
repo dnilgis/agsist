@@ -14,7 +14,7 @@ SATURDAY, "The week in review"
                  contract label each locked change carries. A missing price, a different contract or an
                  issue that does not hold that Friday drops the row; nothing is guessed. A close at the
                  contract's 52-week high or low (wk52_hi / wk52_lo in data/prices.json) says so.
-  bid_week()     The reader's own line (fx/bid-week): for a reader with a ZIP, the top corn and soybean
+  bid_week()     The reader's own line (fx/bid-week, Nov 7 2026): for a reader with a ZIP, the top corn and soybean
                  boards near them (send_daily load_local_lines, local_bid.top_for_zip) against last Friday:
                  "Your bid at <elevator>: corn $X, up N cents from last Friday (posted <time>)". This Friday is
                  that board's entry for Friday in data/bids-prev rows; last Friday is its `fri` slot (scripts/
@@ -55,7 +55,7 @@ REPO = os.path.dirname(HERE)
 ARCHIVE = os.path.join(REPO, "data", "daily-archive")
 INFOGRAPHICS = os.path.join(REPO, "data", "infographics")
 BIDS_PREV = os.path.join(REPO, "data", "bids-prev")
-BID_NOTE = "Each elevator's own posted board as read at Friday's close. Not a contract. Call before you haul."
+BID_NOTE = "Each elevator's own posted board, last read each Friday. Not a contract. Call before you haul."
 
 ROWS = (("corn", "Corn"), ("beans", "Soybeans"), ("wheat", "Chicago wheat"),
         ("cattle", "Live cattle"), ("feeders", "Feeder cattle"), ("hogs", "Lean hogs"))
