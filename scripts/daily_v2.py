@@ -610,8 +610,37 @@ def _a(url, text, camp=None, content=None, cls="link", color=GOLD):
 
 
 # ── the email ────────────────────────────────────────────────────────────
+# 2026-11-07 (Sig, Nov 6: grow the Funds this week list): the issue the morning
+# after a COT release (Saturday, or Tuesday after a Monday release in a holiday
+# week) carries one line offering Funds this week, linked to the one signup box
+# on /cot (#cot-signup). Release from scripts/cot_calendar.py; no report date,
+# a shutdown report or any error means no line. No number in it.
+FUNDS_URL = "https://agsist.com/cot#cot-signup"
+FUNDS_LINE = ("Funds this week: where the big funds sit in corn, soybeans, wheat and cattle, "
+              "one short free email after each COT report.")
+
+
+def funds_offer(today, cot=None):
+    """(line, url) on the day after the latest COT release, else None."""
+    if not isinstance(today, date):
+        return None
+    try:
+        import cot_calendar
+        if cot is None:
+            with open(os.path.join(os.path.dirname(HERE), "data", "cot.json"), encoding="utf-8") as f:
+                cot = json.load(f)
+        # data/cot.json writes "November 3, 2026" (as send_cot_weekly.as_of_date reads it)
+        as_of = datetime.strptime(str((cot or {}).get("report_date") or ""), "%B %d, %Y").date()
+        if cot_calendar.release_unknown(as_of):
+            return None
+        rel = cot_calendar.release_date(as_of)
+    except Exception:
+        return None
+    return (FUNDS_LINE, FUNDS_URL) if (today - rel).days == 1 else None
+
+
 def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_url=None, today=None,
-          rain=None, pod=None, fact=None, loc=None, county=None, county_ask=None, group=None):
+          rain=None, pod=None, fact=None, loc=None, county=None, county_ask=None, group=None, cot=None):
     """{"subject", "subject_from", "subject_field", "preheader", "html", "text", "slots"}."""
     camp = BE.campaign_of(daily)
     iso = _iso_day(daily)
@@ -649,15 +678,16 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
             fact = None
     pod = pod if (isinstance(pod, dict) and pod.get("image_url") and pod.get("why") and pod.get("make_url")) else None
     offer = BE.rain_print_offer(rain, today)
+    funds = funds_offer(today, cot)
     cw = county_block(county)
     stories = top_stories(daily, items)
     slots = {"today": len(items), "only_here": len(here), "print": bool(pod), "fact": bool(fact), "county": bool(cw),
-             "top_stories": len(stories)}
+             "top_stories": len(stories), "funds": bool(funds)}
     ask = county_ask_link(county_ask)
     html = _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain, local, elevators,
-                      site_href, unsub_url, forward_url, today, county=cw, county_ask=ask, stories=stories)
+                      site_href, unsub_url, forward_url, today, county=cw, county_ask=ask, stories=stories, funds=funds)
     text = _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, elevators,
-                      site_href, unsub_url, forward_url, today, county=cw, county_ask=ask, stories=stories)
+                      site_href, unsub_url, forward_url, today, county=cw, county_ask=ask, stories=stories, funds=funds)
     html, text = tag_group(html, group, True), tag_group(text, group, False)
     return {"subject": subj, "subject_from": sfrom, "subject_field": sfield, "preheader": pre,
             "html": html, "text": text, "slots": slots, "items": items}
@@ -853,7 +883,7 @@ def fact_source_text(fact):
 
 
 def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain, local, elevators,
-               site_href, unsub_url, forward_url, today, county=None, county_ask=None, stories=None):
+               site_href, unsub_url, forward_url, today, county=None, county_ask=None, stories=None, funds=None):
     date_display = BE.strip_md(daily.get("date")) or iso
     b = ['<div class="mute" style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;'
          'font-size:1px;line-height:1px">%s%s</div>' % (e(pre), PRE_PAD),
@@ -910,6 +940,8 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
             b.append('<tr><td class="mute" style="padding:3px 0 0;font-family:%s;font-size:13px;line-height:1.45;color:%s">%s</td></tr>' % (SANS, MUTE, e(xl)))
     elif offer:
         b.append(_row(_a(offer[1], offer[0], camp, "rainprint", cls="link"), pad="14px 0 0", size=14))
+    if funds:
+        b.append(_row(_a(funds[1], funds[0], camp, "funds", cls="link"), pad="14px 0 0", size=14))
     # Oh, that’s interesting (FACT_LABEL)
     if fact:
         b.append(_rule())
@@ -973,7 +1005,7 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
 
 
 def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, elevators,
-               site_href, unsub_url, forward_url, today, county=None, county_ask=None, stories=None):
+               site_href, unsub_url, forward_url, today, county=None, county_ask=None, stories=None, funds=None):
     L = ["AGSIST DAILY, " + (BE.strip_md(daily.get("date")) or iso), "", "TODAY"]
     for x in items:
         if x.get("external"):
@@ -1008,6 +1040,8 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
             L.append(xmas_line(today))
     elif offer:
         L += ["", offer[0] + " " + BE.utm(offer[1], "rainprint", camp)]
+    if funds:
+        L += ["", funds[0] + " " + BE.utm(funds[1], "funds", camp)]
     if fact:
         L += ["", FACT_LABEL.upper(), fact["text"],
               "Source: " + ((fact["source"] + " " + fact["url"]) if fact_link(fact) else fact_source_text(fact))]

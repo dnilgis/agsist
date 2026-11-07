@@ -25,6 +25,7 @@ Run by test/daily-email-v2.test.mjs; no network, nothing is sent.
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
 import glob
+from datetime import date
 import json
 import os
 import re
@@ -272,6 +273,21 @@ def main():
     one = V.build(json.load(open(os.path.join(REPO, "data", "daily-archive", "2026-10-21.json"), encoding="utf-8")),
                   "https://agsist.com/daily/2026-10-21.html")
     ok(one["slots"]["top_stories"] == 0 and "Top stories" not in one["html"], "an old one-story issue has no block")
+    # Funds this week line (2026-11-07): only the morning after a COT release
+    cot = {"report_date": "November 3, 2026"}   # released Fri Nov 6  # pin-ok: fixture
+    d21 = load("2026-10-21")
+    sat = V.build(d21, "https://agsist.com/daily/x.html", today=date(2026, 11, 7), cot=cot)  # pin-ok: fixture
+    ok(sat["slots"]["funds"] and "Funds this week" in sat["html"] and "Funds this week" in sat["text"],
+       "the Saturday after a release carries the Funds this week line")
+    ok("agsist.com/cot?" in sat["text"] and "utm_content=funds" in sat["text"] and sat["text"].count("#cot-signup") == 1,
+       "the line links to the one signup box on /cot, tagged: %s" % [u for u in re.findall(r"https?://\S+", sat["text"]) if "/cot" in u])
+    for day in (date(2026, 11, 6), date(2026, 11, 8), date(2026, 11, 9)):  # pin-ok: fixture
+        o = V.build(d21, "https://agsist.com/daily/x.html", today=day, cot=cot)
+        ok(not o["slots"]["funds"] and "Funds this week" not in o["html"], "no Funds this week line on %s" % day)
+    ok(V.funds_offer(date(2026, 11, 7), {"report_date": ""}) is None and V.funds_offer(None, cot) is None,  # pin-ok: fixture
+       "no report date or no day: no line")
+    ok(V.funds_offer(date(2026, 11, 7), cot) == V.funds_offer(date(2026, 11, 7), dict(cot)) and "—" not in V.FUNDS_LINE,  # pin-ok: fixture
+       "the line is plain and steady")
     # contrast
     for name, col in V.DARK_COLORS.items():
         ok(contrast(col, V.DARK_CARD) >= 4.5, "dark %s %s on %s: %.2f" % (name, col, V.DARK_CARD, contrast(col, V.DARK_CARD)))
