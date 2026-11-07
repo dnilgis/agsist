@@ -682,7 +682,7 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     cw = county_block(county)
     stories = top_stories(daily, items)
     slots = {"today": len(items), "only_here": len(here), "print": bool(pod), "fact": bool(fact), "county": bool(cw),
-             "top_stories": len(stories), "funds": bool(funds)}
+             "top_stories": len(stories), "funds": bool(funds), "weekend": bool(weekend_block(daily))}
     ask = county_ask_link(county_ask)
     html = _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain, local, elevators,
                       site_href, unsub_url, forward_url, today, county=cw, county_ask=ask, stories=stories, funds=funds)
@@ -861,6 +861,47 @@ def _stories_html(stories):
     return b
 
 
+# 2026-11-07 (fx/weekend-daily): Saturday's "The week in review" (Friday vs last Friday) and Sunday's
+# "The week ahead" (Reports this week) are built by code (scripts/daily_weekend.py) and stored on the
+# issue; the email prints the stored lines as they are. A weekday issue carries neither field.
+WEEKEND_FIELDS = ("week_review", "week_ahead")
+
+
+def weekend_block(daily):
+    for f in WEEKEND_FIELDS:
+        blk = daily.get(f)
+        if isinstance(blk, dict) and (blk.get("lines") or blk.get("notes")):
+            return blk
+    return None
+
+
+def _weekend_html(blk):
+    if not blk:
+        return []
+    b = [_rule(), _label(blk.get("title") or "", pad=14)]
+    head = e(blk.get("head") or "") + ((" (%s)" % e(blk["stamp"])) if blk.get("stamp") else "")
+    b.append('<tr><td class="mute" style="padding:0 0 4px;font-family:%s;font-size:13px;color:%s">%s</td></tr>' % (SANS, MUTE, head))
+    for t in blk.get("lines") or []:
+        b.append(_row(e(t), pad="3px 0 0", size=14))
+    for t in blk.get("notes") or []:
+        b.append(_row(e(t), pad="6px 0 0", size=14))
+    if blk.get("source"):
+        b.append('<tr><td class="mute" style="padding:4px 0 0;font-family:%s;font-size:12px;color:%s">Source: %s.</td></tr>'
+                 % (SANS, MUTE, e(blk["source"])))
+    return b
+
+
+def _weekend_text(blk):
+    if not blk:
+        return []
+    head = (blk.get("head") or "") + ((" (%s)" % blk["stamp"]) if blk.get("stamp") else "")
+    L = ["", (blk.get("title") or "").upper(), head] + ["  " + t for t in blk.get("lines") or []]
+    L += [t for t in blk.get("notes") or []]
+    if blk.get("source"):
+        L.append("Source: %s." % blk["source"])
+    return L
+
+
 def fact_link(fact):
     """The fact's url when the email may link it, else None. Sig, Nov 2 2026: a fact whose
     url is a data file (source_links.is_data_source: ERS data products, PDFs, esmis .txt)
@@ -914,6 +955,7 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
     if mine:
         b.append(mine)
     b += _stories_html(stories)
+    b += _weekend_html(weekend_block(daily))
     # Only here
     if here or county:
         b.append(_rule())
@@ -1028,6 +1070,7 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
                 L.append("  " + st["body"])
             if st.get("link"):
                 L.append("  " + st["link"])
+    L += _weekend_text(weekend_block(daily))
     if here or county:
         L += ["", "ONLY HERE"] + ["- %s %s" % (x["text"], BE.utm(SITE + x["url"], "onlyhere-" + x["kind"], camp)) for x in here]
         if county:

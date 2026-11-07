@@ -1340,6 +1340,12 @@ function renderToday(data,why){
       var its=(w.items||[]).map(function(i){return escHtml(i.name)+' '+escHtml(i.text);}).join(', ');
       if(its)rows.push('<div><strong>'+escHtml(w.label)+':</strong> '+its+'</div>');
     });
+    ['week_review','week_ahead'].forEach(function(wk){
+      var b=data[wk];if(!b||!((b.lines||[]).length||(b.notes||[]).length))return;
+      rows.push('<div class="dv3-wk"><strong>'+escHtml(b.head||'')+'</strong>'+(b.stamp?' ('+escHtml(b.stamp)+')':'')+'</div>');
+      (b.lines||[]).concat(b.notes||[]).forEach(function(t){rows.push('<div>'+escHtml(t)+'</div>');});
+      if(b.source)rows.push('<div><span class="dv3-adds-src">Source: '+escHtml(b.source)+'.</span></div>');
+    });
     var aw=data.ag_weather;
     if(aw&&aw.text)rows.push('<div><strong>USDA weather:</strong> '+escHtml(aw.text)+' <span class="dv3-adds-src">Source: '+escHtml(aw.source||'USDA')+'.</span></div>');
     if(rows.length)addsHtml='<div class="dv3-adds">'+rows.join('')+'</div>';

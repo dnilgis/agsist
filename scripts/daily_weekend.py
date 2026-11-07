@@ -25,8 +25,8 @@ SUNDAY, "The week ahead"
 BOTH
   infographic()  The Infographic of the Week slot: nothing until data/infographics/ exists.
 
-Pure functions over the data handed in; tests hand in fixtures. This module must not import a reader of
-data/cot-deep.json (test/raw-readers.test.mjs): only usda_dates, cot_calendar and pricefmt.
+Pure functions over the data handed in; tests hand in fixtures. It imports only usda_dates, cot_calendar and
+pricefmt: never a reader of the moved COT history (test/raw-readers.test.mjs).
 """
 import json
 import os
