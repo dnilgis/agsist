@@ -62,7 +62,8 @@
         rows.push({ name: r.n, town: r.t || '', st: r.s || '', mi: r.mi, cash: r.c, mon: r.d || '', del: r.dl || r.d || '',
           basis: r.b || '', fut: r.b ? (r.k || '') : '', posted: posted(r.p), at: r.p });
       });
-      return { key: c[0], label: c[1], rows: rows };
+      var mon = rows.length && rows.every(function (r) { return r.mon === rows[0].mon; }) ? rows[0].mon : '';
+      return { key: c[0], label: c[1], rows: rows, mon: mon };
     });
     var url = d.url || '';
     return { place: d.place || '', title: 'Bids near ' + (d.place || 'you'), date: K.dateLine(now), asof: asof, crops: crops, held: held,
@@ -70,8 +71,8 @@
       qr: link(url, 'print', 'qr', camp), pic: link(url, 'share', 'picture', camp), campaign: camp, page: d.page || '',
       src: SRC, notice: NOTICE };
   }
-  function where(r) { return r.town + (r.st ? ', ' + r.st : '') + (r.mi != null ? ', ' + (r.mi < 1 ? 'under 1' : Math.round(r.mi)) + ' mi' : ''); }
-  function basisText(r) { return r.basis ? r.basis + (r.fut ? ' ' + r.fut : '') : 'basis not posted'; }
+  function where(r, st) { return r.town + (r.st && r.st !== st ? ', ' + r.st : '') + (r.mi != null ? ', ' + (r.mi < 1 ? 'under 1' : Math.round(r.mi)) + ' mi' : ''); }
+  function basisText(r, vs) { return r.basis ? (vs ? 'basis ' : '') + r.basis + (r.fut ? (vs ? ' vs ' : ' ') + r.fut : '') : 'basis not posted'; }
   function madeLine(m) {
     return 'Made ' + m.date + '. Each crop: the highest bid at each elevator on the page for its earliest delivery, highest first'
       + (m.from ? '; miles are straight-line from ' + m.from : '') + '. Basis is cash minus the futures month named.'
@@ -110,7 +111,6 @@
     var K = SK(), wide = !!o.wide, W = wide ? 1200 : 1080, H = wide ? 630 : 1350, P = wide ? 48 : 60;
     var c = K.canvas(doc, W, H), ctx = c.getContext('2d'), p = K.pen(ctx), INK = K.INK, DIM = K.DIM, GOLD = K.GOLD;
     K.frame(ctx, W, H, wide ? 10 : 12);
-    K.head(p, P, 'agsist.com', 'Cash bids, ' + m.date);
     var q = o.qr, qn = q ? q.length + 8 : 0;
     /* one line: the text, shrunk to fit and cut with an ellipsis only past the smallest size */
     function one(s, x, y, size, min, weight, ink, width, al) {
@@ -120,35 +120,43 @@
       p.text(s, al === 'right' ? x + width : x, y, sz, weight, ink, al);
       return sz;
     }
-    /* a row: elevator and cash on the first line; town, miles and posted time, then delivery and basis, under it */
-    function row(r, x, y, w, big, small) {
+    /* a row: the elevator and its cash on the first line; under it the town and miles, the posted time, then the
+       delivery month (in the crop's heading when every row shares it) and the basis at the right */
+    function row(r, cr, x, y, w, big, small, o2) {
+      o2 = o2 || {};
       p.font(big + 6, 800);
       var cw = ctx.measureText(r.cash).width;
       p.text(r.cash, x + w, y, big + 6, 800, INK, 'right');
       one(r.name, x, y, big, small + 2, 700, INK, w - cw - 18);
-      var right = r.mon + ', ' + basisText(r);
+      var right = (cr.mon ? '' : r.mon + ' \u00b7 ') + basisText(r, !o2.short), y2 = y + small + (o2.short ? 11 : 8);
       p.font(small, 500);
-      var rw = Math.min(ctx.measureText(right).width, w * 0.45);
-      one(right, x + w - rw, y + small + 12, small, 20, 500, DIM, rw, 'right');
-      one(where(r) + ', posted ' + r.posted, x, y + small + 12, small, 20, 500, DIM, w - rw - 16);
+      var rw = Math.min(ctx.measureText(right).width, w * 0.42);
+      one(right, x + w - rw, y2, small, 20, 500, DIM, rw, 'right');
+      one(where(r, o2.st) + (o2.short ? ' \u00b7 ' : ' \u00b7 posted ') + r.posted, x, y2, small, 20, 500, DIM, w - rw - 16);
     }
+    function heading(cr) { return cr.label + (cr.rows.length ? ', top ' + cr.rows.length : '') + (cr.mon ? ', ' + cr.mon + ' delivery' : ''); }
+    function rule(x, y, w) { ctx.fillStyle = 'rgba(233,237,235,.14)'; ctx.fillRect(x, y, w, 1); }
     function none(cr, x, y, w, size) { one('No current ' + cr.label.toLowerCase() + ' bid near ' + m.place + ' right now.', x, y, size, 20, 500, DIM, w); }
     if (wide) {
-      var qs = q ? qn * Math.max(2, Math.floor(150 / qn)) : 0, qmod = q ? Math.max(2, Math.floor(150 / qn)) : 0;
-      if (q) K.qr(ctx, q, W - P - qs, 28, qmod);
-      one(m.title, P, 196, 46, 30, 800, INK, W - 2 * P - qs - 24);
-      var cw2 = (W - 2 * P - 48) / 2, top = 250, rh = 60;
+      var qmod = q ? Math.max(2, Math.floor(132 / qn)) : 0, qs = qn * qmod, st = (/, ([A-Z]{2})$/.exec(m.place) || [])[1];
+      if (q) K.qr(ctx, q, W - P - qs, 26, qmod);
+      one(m.title, P, 84, 50, 32, 800, INK, W - 2 * P - qs - 24);
+      p.text('agsist.com', P, 128, 26, 800, GOLD);
+      p.font(26, 800);
+      one('Cash bids, ' + m.date + ', posted times Central', P + ctx.measureText('agsist.com').width + 16, 128, 24, 20, 600, DIM, W - 2 * P - qs - 190);
+      var cw2 = (W - 2 * P - 40) / 2, top = 190, rh = 70;
       m.crops.forEach(function (cr, i) {
-        var x = P + i * (cw2 + 48);
-        p.text(cr.label + (cr.rows.length ? ', top ' + cr.rows.length : ''), x, top, 28, 800, GOLD);
-        if (!cr.rows.length) none(cr, x, top + 44, cw2, 22);
-        cr.rows.forEach(function (r, k) { row(r, x, top + 44 + k * rh, cw2, 24, 20); });
+        var x = P + i * (cw2 + 40);
+        one(heading(cr), x, top, 26, 20, 800, GOLD, cw2);
+        if (!cr.rows.length) none(cr, x, top + 40, cw2, 22);
+        cr.rows.forEach(function (r, k) { if (k) rule(x, top + 18 + k * rh, cw2); row(r, cr, x, top + 46 + k * rh, cw2, 23, 20, { short: true, st: st }); });
       });
-      one(m.shown + (q ? '  ·  ' + QR_CAP : ''), P, H - 50, 22, 20, 700, INK, W - 2 * P);
-      one(m.notice + ' ' + m.src, P, H - 20, 20, 20, 500, DIM, W - 2 * P);
+      one(m.shown + (q ? '  \u00b7  ' + QR_CAP : '') + '  \u00b7  ' + m.notice, P, H - 46, 22, 20, 700, INK, W - 2 * P);
+      one(m.src, P, H - 18, 20, 20, 500, DIM, W - 2 * P);
       return { canvas: c, texts: p.texts, sizes: p.sizes };
     }
-    var y = p.lines(m.title, P, 214, 60, 800, INK, 70, 2, W - 2 * P) - 10;
+    K.head(p, P, 'agsist.com', 'Cash bids, ' + m.date);
+    var y = p.lines(m.title, P, 214, 60, 800, INK, 70, 2, W - 2 * P) - 40;
     /* the footer first: the QR code at the bottom right, its words, the address, the notice and the source at the left */
     var mod = q ? Math.max(3, Math.floor(200 / qn)) : 0, qs1 = qn * mod, LW = W - 2 * P - (q ? qs1 + 30 : 0);
     ctx.font = '400 20px ' + K.FONT;
@@ -158,10 +166,10 @@
     var rh1 = Math.max(64, Math.min(86, Math.floor((footTop - y - m.crops.length * 66) / nRows)));
     m.crops.forEach(function (cr) {
       y += 52;
-      p.text(cr.label + (cr.rows.length ? ', top ' + cr.rows.length : ''), P, y, 34, 800, GOLD);
+      one(heading(cr), P, y, 34, 24, 800, GOLD, W - 2 * P);
       y += 14;
       if (!cr.rows.length) { none(cr, P, y + 36, W - 2 * P, 26); y += rh1; }
-      cr.rows.forEach(function (r) { row(r, P, y + 36, W - 2 * P, 30, 22); y += rh1; });
+      cr.rows.forEach(function (r, k) { if (k) rule(P, y + 9, W - 2 * P); row(r, cr, P, y + 40, W - 2 * P, 30, 22); y += rh1; });
     });
     if (q) { K.qr(ctx, q, W - P - qs1, H - 36 - qs1, mod); p.text(QR_CAP, P, foot - 26 - 34 - 36 - 8, 28, 700, GOLD); }
     one(m.notice, P, foot - 26 - 34, 30, 22, 800, INK, LW);

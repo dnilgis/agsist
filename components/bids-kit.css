@@ -39,3 +39,8 @@
 .skbs-live b{font:700 10pt/1.2 "JetBrains Mono",ui-monospace,monospace}
 .skbs-src{font-size:8.5pt;line-height:1.25;margin-top:.04in!important}
 .skbs-na{font-size:8.5pt;line-height:1.25;margin-top:.03in!important}
+/* the same columns for corn and soybeans */
+.skbs-t{table-layout:fixed}
+.skbs-t th:nth-child(1){width:.22in}.skbs-t th:nth-child(2){width:1.75in}.skbs-t th:nth-child(3){width:1.3in}.skbs-t th:nth-child(4){width:1.15in}
+.skbs-t th:nth-child(5){width:.9in}.skbs-t th:nth-child(6){width:.8in}.skbs-t th:nth-child(7){width:1.08in}
+.skbs-t td:nth-child(7){white-space:nowrap}
