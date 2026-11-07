@@ -1,6 +1,6 @@
 {
  "schema": "agsist-state-grain-ams/1",
- "generated": "2026-11-06T23:28:00Z",
+ "generated": "2026-11-07T14:54:58Z",
  "method": "USDA AMS state daily grain reports through My Market News. Country elevator bids only. Basis is USDA's reported figure, withheld where USDA's rows disagree or too few regions report.",
  "states": {
   "IA": {
