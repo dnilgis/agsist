@@ -31,6 +31,9 @@ const FIX = join(ROOT, "test/fixtures/share-kit-bids/story-ia.json");
 const BIDS = join(ROOT, "test/fixtures/chaosbids/");
 const fx = JSON.parse(readFileSync(FIX, "utf8"));
 const NOW = Date.parse(fx.now);
+/* the fixture's own day, in the Central time the site's day runs on: "2026-11-04" and "November 4, 2026" */
+const DAY = new Date(NOW).toLocaleDateString("en-CA", { timeZone: "America/Chicago" });
+const LONG = new Date(NOW).toLocaleDateString("en-US", { timeZone: "America/Chicago", month: "long", day: "numeric", year: "numeric" });
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
@@ -118,7 +121,7 @@ test("the rows are the page's own top bids: each elevator once, at its printed p
 test("the model takes the first five that still count; no posted time or past its window is withheld; times are Central", () => {
   const m = KIT.model(DATA, NOW);
   assert.equal(m.title, "Bids near Nevada, IA");
-  assert.equal(m.date, "November 4, 2026");
+  assert.equal(m.date, LONG);
   for (const c of m.crops) {
     const want = DATA.rows[c.key].slice(0, 5);
     assert.deepEqual(c.rows.map((r) => [r.name, r.cash, r.at]), want.map((r) => [r.n, r.c, r.p]), `${c.key}: the page's top five`);
@@ -153,11 +156,11 @@ test("the sheet carries every row with its posted time, the notice, the address 
 
 test("the QR code and the picture link read back to the page with the kit's tags", (t) => {
   const m = KIT.model(DATA, NOW);
-  assert.equal(m.qr, "https://agsist.com/cash-bids/iowa/nevada?utm_source=print&utm_medium=qr&utm_campaign=cash-bids-iowa-nevada-2026-11-04");
-  assert.equal(m.pic, "https://agsist.com/cash-bids/iowa/nevada?utm_source=share&utm_medium=picture&utm_campaign=cash-bids-iowa-nevada-2026-11-04");
+  assert.equal(m.qr, `https://agsist.com/cash-bids/iowa/nevada?utm_source=print&utm_medium=qr&utm_campaign=cash-bids-iowa-nevada-${DAY}`);
+  assert.equal(m.pic, `https://agsist.com/cash-bids/iowa/nevada?utm_source=share&utm_medium=picture&utm_campaign=cash-bids-iowa-nevada-${DAY}`);
   const jsQR = jsqr();
   if (!jsQR) return t.skip("jsqr is not installed (npm i jsqr@1.4.0, or set JSQR_PATH)");
-  for (const u of [m.qr, m.pic, "https://agsist.com/cash-bids?zip=50010&r=50&utm_source=print&utm_medium=qr&utm_campaign=cash-bids-2026-11-05"]) {
+  for (const u of [m.qr, m.pic, `https://agsist.com/cash-bids?zip=50010&r=50&utm_source=print&utm_medium=qr&utm_campaign=cash-bids-${DAY}`]) {
     const q = Q.matrix(u, null, null, 10), k = 6, n = (q.length + 8) * k, px = new Uint8ClampedArray(n * n * 4).fill(255);
     q.forEach((r, y) => r.forEach((v, x) => {
       if (!v) return;
@@ -247,7 +250,7 @@ test("in a browser: the town page's picture (phone and wide) and its one-page sh
       assert.deepEqual(info.rows, want, "the sheet's rows are the page's top five per crop, with posted times");
       for (const c of want) for (const [n, cash, posted] of c) assert.ok(info.text.includes(posted) && info.text.includes(cash) && info.text.includes(n), `${n} ${cash} ${posted} on the sheet`);
       assert.match(info.text, /Not a contract\. Call before you haul\./);
-      assert.match(info.text, /November 4, 2026/);
+      assert.ok(info.text.includes(LONG), "the date block: " + LONG);
       // any browser print gives the sheet, one page on Letter and on A4
       await pg.evaluate(() => window.dispatchEvent(new Event("beforeprint")));
       assert.ok(await pg.evaluate(() => document.documentElement.classList.contains("skbs-on")), "Ctrl+P switches print to the sheet");
@@ -268,12 +271,12 @@ test("in a browser: the town page's picture (phone and wide) and its one-page sh
         assert.ok(im.min >= 20, `smallest word ${im.min} px`);
         const all = im.texts.join("\n");
         for (const c of want) for (const [n, cash, posted] of c) assert.ok(im.texts.includes(cash) && all.includes(posted) && all.includes(n), `${W}: ${n} ${cash} ${posted}`);
-        assert.ok(all.includes("Bids near Nevada, IA") && all.includes("Not a contract. Call before you haul.") && all.includes("November 4, 2026"));
+        assert.ok(all.includes("Bids near Nevada, IA") && all.includes("Not a contract. Call before you haul.") && all.includes(LONG));
       }
       // Save picture: a PNG download on a desktop (picture_download), never a navigation
       if (w === 1280) {
         const [dl] = await Promise.all([pg.waitForEvent("download", { timeout: 15000 }), pg.click("#skb-pic")]);
-        assert.equal(dl.suggestedFilename(), "agsist-cash-bids-iowa-nevada-2026-11-04.png");
+        assert.equal(dl.suggestedFilename(), `agsist-cash-bids-iowa-nevada-${DAY}.png`);
         const lim = await pg.evaluate(() => window.AgBidsKit.lastImage);
         assert.deepEqual([lim.w, lim.h], [1200, 630], "the wide picture on a desktop");
         const ga = (await pg.evaluate(() => window.__ga)).map(([n]) => n);
@@ -306,7 +309,7 @@ test("in a browser: an arrival from the sheet's QR code marks the Daily box's so
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const { ctx, pg } = await open(browser, port, "/cash-bids/iowa/nevada?utm_source=print&utm_medium=qr&utm_campaign=cash-bids-iowa-nevada-2026-11-04", 390, NOW + 30 * 60e3);
+    const { ctx, pg } = await open(browser, port, "/cash-bids/iowa/nevada?utm_source=print&utm_medium=qr&utm_campaign=cash-bids-iowa-nevada-" + DAY, 390, NOW + 30 * 60e3);
     await pg.waitForFunction(() => window.AgShareKit && document.querySelector("#bid-email[data-cbs-ready]"), null, { timeout: 20000 }).catch(() => {});
     const r = await pg.evaluate(() => ({ src: document.getElementById("bid-email").getAttribute("data-source"), ga: window.__ga.filter(([n]) => n === "qr_visit").length }));
     assert.equal(r.src, "town:iowa/nevada|print-qr");
