@@ -20,8 +20,10 @@ How you work:
    `git push origin fx/<name>`. Never push main, never force. The container can restart at any time.
 4. Test while building with `TMPDIR=/tmp/x/<name> bash scripts/dev/verify.sh` (quick.sh plus the record the stop gate
    reads). A skipped test is not a pass. Never weaken a test. Never run the full checks.sh while another full run goes.
-5. Before you report: the brief's checks, `python3 scripts/check_site_budget.py`, and `python3 scripts/build_feeds.py &&
-   python3 scripts/test_feeds.py`. Then open a pull request to main with a plain title (GitHub MCP create_pull_request)
+5. Before you report: the brief's checks, `python3 scripts/check_site_budget.py`, `python3 scripts/build_feeds.py &&
+   python3 scripts/test_feeds.py`, and the global guards quick.sh does not pick for your files:
+   `node --test test/no-live-date-pins.test.mjs test/r8fix.test.mjs test/raw-readers.test.mjs` (date pins, the
+   170-character What's new line, raw readers). Then open a pull request to main with a plain title (GitHub MCP create_pull_request)
    and wait for nothing: the PR checks are the gate and the lead merges.
 6. Report: what changed, the PR link, what you ran and its pass, fail and skipped counts, and anything still open.
 
