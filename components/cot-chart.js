@@ -147,8 +147,9 @@
       if (!b) b = bsize(mk, ax, up ? y - mo - bh : y + mo, al);
       block(mk, ax, b[1], al); boxes.push(b);
     }
-    if (hiI !== li) mark(hiI, '52-wk high', true);
-    if (loI !== li && loI !== hiI) mark(loI, '52-wk low', false);
+    var mk0 = items.length, bx0 = boxes.length;
+    function marks2() { if (hiI !== li) mark(hiI, '52-wk high', true); if (loI !== li && loI !== hiI) mark(loI, '52-wk low', false); }
+    marks2();
     /* the latest point (placed after the marks, clear of their labels): its number (and "52-wk high" when it is one), its date, and a measured record */
     var lx = xs[li], ly = Y(m.last.net), lfs = Math.round(fs * 1.12), dr = big ? 8 : 5.5;
     var ls = [{ s: netWords(m.last.net) + (li === hiI ? ' (52-wk high)' : li === loI ? ' (52-wk low)' : ''), size: lfs, weight: 800, ink: 'text' },
@@ -159,16 +160,24 @@
       else ls.push({ s: rec, size: fs, weight: 700, ink: 'text' });
     }
     var lh = ls.reduce(function (a, l) { return a + l.size * 1.2; }, 0), lxr = lx - dr - 2;
-    var tries = li === loI || ly - T < lh + off ? [false, true] : [true, false], lb = null;
-    tries.some(function (up) {
-      var b = bsize(ls, lxr, up ? ly - off - lh : ly + off, 'right');
-      if (b[1] >= T - fs * 0.6 && b[3] <= netB + (evH ? 0 : fs * 0.3) && !covers(b) && !hits(b)) { lb = b; return true; }
-      return false;
-    });
-    if (!lb) lb = bsize(ls, lxr, tries[0] ? ly - off - lh : ly + off, 'right');
+    var tries = li === loI || ly - T < lh + off ? [false, true] : [true, false], lb = null, sx0 = lx - dr - fs * 0.5;
+    /* above or below the dot, then on its left; no clear spot beside the marks (a 52-week high a few weeks back,
+       Nov 7): the latest label goes first and the marks find room around it, so no two labels touch */
+    function fit() {
+      var r = null;
+      tries.concat([null]).some(function (up) {
+        var x = up === null ? sx0 : lxr, b = bsize(ls, x, up === null ? ly - lh / 2 : up ? ly - off - lh : ly + off, 'right');
+        if (b[0] >= 0 && b[1] >= T - fs * 0.6 && b[3] <= netB + (evH ? 0 : fs * 0.3) && !covers(b) && !hits(b)) { r = b; lxr = x; return true; }
+        return false;
+      });
+      return r;
+    }
+    lb = fit();
+    var redo = !lb;
+    if (redo) { items.length = mk0; boxes.length = bx0; lb = fit() || bsize(ls, lxr, tries[0] ? ly - off - lh : ly + off, 'right'); boxes.push(lb); marks2(); }
     items.push({ t: 'dot', x: lx, y: ly, r: dr, ink: 'net', ring: 'surface' });
     if (m.record) items.push({ t: 'dot', x: lx, y: ly, r: dr + (big ? 6 : 4), ink: 'none', ring: 'text', rw: 2 });
-    block(ls, lxr, lb[1], 'right'); boxes.push(lb);
+    block(ls, lxr, lb[1], 'right'); if (!redo) boxes.push(lb);
     /* one event at most: the run of buying or selling that ends on this report, bracketed on its own row under
        the run's weeks, its label to the left ("Sold 7 weeks: 405,665") */
     if (evH) {
