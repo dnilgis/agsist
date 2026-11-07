@@ -43,8 +43,7 @@
   }
   /* sentences of a live row's context, first n */
   function sentences(s, n) {
-    var parts = String(s || '').match(/[^.]+(?:\.(?!\d)[^.]*)*?(?:\.(?=\s|$)|$)/g) || [];
-    return parts.map(function (x) { return x.trim(); }).filter(Boolean).slice(0, n).join(' ');
+    return String(s || '').replace(/\.\s+(?=[A-Z0-9$])/g, '.\u0001').split('\u0001').map(function (x) { return x.trim(); }).filter(Boolean).slice(0, n).join(' ');
   }
   /* a reader's own field name never goes on paper or a picture */
   function noNames(s) { return String(s || '').replace(/your field “[^”]*”/g, 'your saved field'); }
@@ -63,43 +62,42 @@
       if (!f) return null;
       credit(f.paper || (f.src && f.src[0]));
       var d = mdy(f.date) || f.date || '';
-      return { big: f.value, cred: f.paper || (f.src && f.src[0]), text: noNames(label + (d ? ', ' + d : '') + (f.ctx && n ? '. ' + sentences(f.ctx, n) : '')).replace(/\.\./g, '.'), size: size, live: k };
+      return { big: f.value, short: label + (d ? ', ' + d : ''), cred: f.paper || (f.src && f.src[0]), text: noNames(label + (d ? ', ' + d : '') + (f.ctx && n ? '. ' + sentences(f.ctx, n) : '')).replace(/\.\./g, '.'), size: size, live: k };
     }
     var st = c.state || '';
     /* 1. land */
     var land = [];
-    if (cp.v) { credit('USDA NASS Census of Agriculture'); land.push({ big: cp.v[0], unit: '/ac', text: 'Land and buildings, ' + cp.v[1] + ' census: operators’ own estimate, not a sale price' + (cp.v[2] ? '; ' + cp.v[2] : '') + '.' }); }
-    if (cp.ss) { credit('USDA NASS Land Values'); land.push({ big: cp.ss[0], unit: '/ac', text: st + ' farm real estate, ' + cp.ss[1] + ' state survey: land and buildings, state average.' }); }
-    if (cp.sl) { credit('recorded deeds (' + cp.sl[3] + ')'); land.push({ big: cp.sl[1], unit: '/ac', text: 'Median of ' + cp.sl[0] + ' recorded bare farmland sale' + (cp.sl[0] === 1 ? '' : 's') + ', ' + cp.sl[2] + '. No buyer or seller named.' }); }
+    if (cp.v) { credit('USDA NASS Census of Agriculture'); land.push({ big: cp.v[0], unit: '/ac', short: 'Land and buildings, ' + cp.v[1] + ' census', text: 'Land and buildings, ' + cp.v[1] + ' census: operators’ own estimate, not a sale price' + (cp.v[2] ? '; ' + cp.v[2] : '') + '.' }); }
+    if (cp.ss) { credit('USDA NASS Land Values'); land.push({ big: cp.ss[0], unit: '/ac', short: st + ' farm real estate, ' + cp.ss[1] + ' state survey', text: st + ' farm real estate, ' + cp.ss[1] + ' state survey: land and buildings, state average.' }); }
+    if (cp.sl) { credit('recorded deeds: ' + cp.sl[3]); land.push({ big: cp.sl[1], unit: '/ac', short: 'Median recorded farmland sale, ' + cp.sl[2], text: 'Median of ' + cp.sl[0] + ' recorded bare farmland sale' + (cp.sl[0] === 1 ? '' : 's') + ', ' + cp.sl[2] + '. No buyer or seller named.' }); }
     block('land', 'Land', land);
     /* 2. rent */
     var rent = [];
-    if (cp.r) { credit('USDA NASS Cash Rents Survey'); rent.push({ big: cp.r[0], unit: '/ac', text: (cp.r[2] === 'irr' ? 'Irrigated' : 'Non-irrigated') + ' cash rent, ' + cp.r[1] + ' county average.' }); }
+    if (cp.r) { credit('USDA NASS Cash Rents Survey'); rent.push({ big: cp.r[0], unit: '/ac', short: (cp.r[2] === 'irr' ? 'Irrigated' : 'Cash') + ' rent, ' + cp.r[1] + ' county average', text: (cp.r[2] === 'irr' ? 'Irrigated' : 'Non-irrigated') + ' cash rent, ' + cp.r[1] + ' county average.' }); }
     if (cp.rb && cp.yt && cp.r) rent.push({ big: cp.rb, unit: '/bu', text: 'Rent per bushel: ' + cp.r[0] + ' ÷ ' + cp.yt[0] + ' bu, the corn ' + cp.yt[1] + '.' });
     block('rent', 'Rent', rent);
     /* 3. crops */
     var crops = [];
-    if (cp.yt) { credit('USDA NASS county yields'); crops.push({ big: cp.yt[0], unit: ' bu/ac', text: 'Corn, ' + cp.yt[1] + (cp.yt[2] ? ', ' + cp.yt[2] : '') + '.' }); }
-    if (cp.yl) { credit('USDA NASS county yields'); crops.push({ big: cp.yl[1], unit: ' bu/ac', text: 'Corn, ' + cp.yl[0] + ' county yield, all practices.' }); }
+    if (cp.yt) { credit('USDA NASS county yields'); crops.push({ big: cp.yt[0], unit: ' bu/ac', short: 'Corn, ' + cp.yt[1], text: 'Corn, ' + cp.yt[1] + (cp.yt[2] ? ', ' + cp.yt[2] : '') + '.' }); }
+    if (cp.yl) { credit('USDA NASS county yields'); crops.push({ big: cp.yl[1], unit: ' bu/ac', short: 'Corn, ' + cp.yl[0] + ' county yield', text: 'Corn, ' + cp.yl[0] + ' county yield, all practices.' }); }
     block('crops', 'Crops', crops);
     /* 4. grain: today's rows, as the page drew them */
     block('grain', 'Grain', [lv('corn-bid', 'Best corn bid within 50 mi', 2), lv('soy-bid', 'Best soybean bid within 50 mi', 1),
       lv('corn-basis', 'Corn basis', 3), lv('soy-basis', 'Soybean basis', 0)]);
     /* 5. weather */
     var wx = [lv('rain', 'Rain since Jan 1', 1), lv('drought', 'Drought this week', 1), lv('hail', 'Hail reports, last 30 days', 2)];
-    if (cp.hd) { credit('NOAA Storm Events'); wx.push({ big: cp.hd[0], unit: ' a year', text: 'Days with hail 1 inch or larger, reports ' + cp.hd[1] + '; a zero is no report, not proof of no hail.' }); }
+    if (cp.hd) { credit('NOAA Storm Events'); wx.push({ big: cp.hd[0], unit: ' a year', short: 'Days with hail 1 inch or larger', text: 'Days with hail 1 inch or larger, reports ' + cp.hd[1] + '; a zero is no report, not proof of no hail.' }); }
     block('weather', 'Weather', wx);
     /* 6. risk */
     var risk = [];
-    if (cp.lr) { credit('USDA RMA'); risk.push({ big: cp.lr[0], text: 'Crop insurance loss ratio, ' + cp.lr[1] + ': claims ÷ total premium, ' + cp.lr[2] + ' paid.' }); }
+    if (cp.lr) { credit('USDA RMA'); risk.push({ big: cp.lr[0], short: 'Crop insurance loss ratio, ' + cp.lr[1], text: 'Crop insurance loss ratio, ' + cp.lr[1] + ': claims ÷ total premium, ' + cp.lr[2] + ' paid.' }); }
     if (cp.ov) risk.push({ big: cp.ov[0] + ' of ' + cp.ov[1], text: 'Crop years claims exceeded premium.' });
-    if (cp.cc) { credit('USDA RMA'); risk.push({ big: cp.cc[0], text: 'Claims paid per $100 of coverage, ' + cp.cc[1] + '.' }); }
     if (cp.lc) { credit('USDA RMA'); risk.push({ text: 'Largest causes of loss, ' + cp.lc[1] + ': ' + cp.lc[0] + ', share of dollars paid.' }); }
     block('risk', 'Risk', risk);
     var m = chartModel(cp);
     if (m) credit('USDA NASS county yields');
     /* the four biggest numbers for the picture: land, rent, corn, then today's corn bid or the loss ratio */
-    var big4 = [], pick = function (b, k) { var r = b && b.rows.filter(function (x) { return x.big; })[0]; if (r && big4.length < 4) big4.push({ key: k, big: r.big + (r.unit && r.unit.charAt(0) === '/' ? r.unit : ''), text: r.text, cred: r.cred }); };
+    var big4 = [], pick = function (b, k) { var r = b && b.rows.filter(function (x) { return x.big; })[0]; if (r && big4.length < 4) big4.push({ key: k, big: r.big, unit: r.unit || '', text: r.short || r.text, cred: r.cred }); };
     var by = {}; blocks.forEach(function (b) { by[b.key] = b; });
     pick(by.land, 'land'); pick(by.rent, 'rent'); pick(by.crops, 'crops');
     if (by.grain && by.grain.rows[0].live === 'corn-bid') pick(by.grain, 'grain'); else pick(by.risk, 'risk');
@@ -111,7 +109,7 @@
     var picSrc = 'Sources: ' + (pic.join('; ') || 'public records') + '. ' + (pic.indexOf('USDA NASS') >= 0 ? NASS_NOTICE : '');
     var title = (c.name || 'This county') + (st ? ', ' + st : '') + ': County Print, ' + dateLine(c.now);
     var srcLine = 'Sources: ' + (src.length ? src.join('; ') : 'public records') + '. ' + (nass ? NASS_NOTICE + ' ' : '') + CALC;
-    return { title: title, name: c.name, state: st, date: dateLine(c.now), blocks: blocks, big4: big4, chart: m,
+    return { title: title, sub: (c.fips ? 'FIPS ' + c.fips + '. ' : '') + 'County figures from public records, each with its year and source.', name: c.name, state: st, date: dateLine(c.now), blocks: blocks, big4: big4, chart: m,
       url: c.url, shown: String(c.url || '').replace(/^https?:\/\//, ''), qr: link(c.url, 'print', 'qr', c.fips), pic: link(c.url, 'share', 'picture', c.fips),
       src: srcLine, picSrc: picSrc.trim(), notice: 'Not advice and not an appraisal of any farm. County figures from public records, each with its year; today’s rows are as of the date shown. Bids are posted prices, not a contract: call before you haul.' };
   }
@@ -121,7 +119,7 @@
   function chartModel(cp) {
     if (!cp || !cp.y) return null;
     var y0 = cp.y[0], vals = String(cp.y[1]).split(','), pts = [];
-    vals.forEach(function (v, i) { if (v !== '') pts.push({ yr: y0 + i, v: +v, s: v }); });
+    vals.forEach(function (v, i) { if (v !== '') pts.push({ yr: y0 + i, v: +v, s: (+v).toFixed(1) }); });
     if (pts.length < 3) return null;
     var hi = pts[0], lo = pts[0];
     pts.forEach(function (p) { if (p.v > hi.v) hi = p; if (p.v < lo.v) lo = p; });
@@ -144,7 +142,7 @@
   function chartItems(m, W, H, fs) {
     var items = [], tw = function (s) { return String(s).length * fs * 0.56; };
     var top = m.trend ? Math.max(m.hi.v, m.trend.at(m.y0), m.trend.at(m.y1)) : m.hi.v;
-    var step = niceStep(top * 1.12, 4), yMax = Math.ceil(top * 1.12 / step) * step;
+    var step = niceStep(top * 1.12, 5), yMax = Math.ceil(top * 1.12 / step) * step;
     var L = tw(String(yMax)) + fs * 0.6, T = fs * 1.6, B = H - fs * 1.9, R = W - fs * 0.4, n = m.y1 - m.y0 + 1;
     var slot = (R - L) / n, bw = Math.max(2, slot * 0.68);
     function X(yr) { return L + (yr - m.y0 + 0.5) * slot; }
@@ -168,7 +166,9 @@
     /* the high and the low, each over its own bar, kept inside the plot */
     [[m.hi, 'High '], [m.lo, 'Low ']].forEach(function (a) {
       var p = a[0], s = a[1] + p.yr + ': ' + p.s, w = tw(s) * 1.02, x = Math.min(Math.max(X(p.yr), L + w / 2), R - w / 2);
-      items.push({ t: 'text', x: x, y: Y(p.v) - fs * 0.35, s: s, ink: 'text', size: fs, weight: 800, align: 'center', base: 'bottom', halo: true });
+      /* above its bar, and above the trend line where the line passes over the bar */
+      var ty = Math.min(Y(p.v), m.trend ? Y(m.trend.at(p.yr)) - fs * 0.25 : 1e9);
+      items.push({ t: 'text', x: x, y: Math.max(ty - fs * 0.35, fs * 1.05), s: s, ink: 'text', size: fs, weight: 800, align: 'center', base: 'bottom', halo: true });
     });
     return { items: items, w: W, h: H };
   }
@@ -215,17 +215,17 @@
     if (!s) return '';
     var grid = s.blocks.map(function (b) {
       return '<section class="cprs-b cprs-' + b.key + '"><h2 class="cprs-h">' + esc(b.h) + '</h2>' + b.rows.map(function (r, i) {
-        return '<div class="cprs-r' + (i ? '' : ' cprs-lead') + (r.big ? '' : ' cprs-t') + '">' + (r.big ? '<b>' + esc(r.big) + (r.unit ? '<small>' + esc(r.unit) + '</small>' : '') + '</b>' : '')
+        return '<div class="cprs-r' + (i ? '' : ' cprs-lead') + (r.big ? '' : ' cprs-t') + (r.big && String(r.big).length > 9 ? ' cprs-long' : '') + '">' + (r.big ? '<b>' + esc(r.big) + (r.unit ? '<small>' + esc(r.unit) + '</small>' : '') + '</b>' : '')
           + '<span>' + esc(r.text) + '</span></div>';
       }).join('') + '</section>';
     }).join('');
-    var chart = s.chart ? '<figure class="cprs-chart">' + toSvg(chartItems(s.chart, 560, chartH || 230, 15), chartLabel(s)) + '<figcaption>' + esc(chartCaption(s)) + '</figcaption></figure>' : '<div></div>';
+    var chart = s.chart ? '<figure class="cprs-chart">' + toSvg(chartItems(s.chart, 560, chartH || 230, 15), chartLabel(s)) + '<figcaption>' + esc(chartCaption(s)) + '</figcaption></figure>' : '';
     return '<div class="cprs-bar"></div><header class="cprs-top"><div><h1 class="cprs-h1">' + esc(s.title) + '</h1>'
-      + '<p class="cprs-sub">One county on one page: land, rent, crops, grain, weather and risk.</p></div>'
+      + '<p class="cprs-sub">' + esc(s.sub) + '</p></div>'
       + '<div class="cprs-brand"><img class="cprs-logo" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="86" height="40"><p class="cprs-url">agsist.com</p></div></header>'
       + '<div class="cprs-grid">' + grid + '</div>'
-      + '<div class="cprs-low">' + chart + '<aside class="cprs-side">' + (qr ? '<div class="cprs-qr">' + qr + '</div>' : '')
-      + '<p class="cprs-scan">' + esc(QR_CAP) + '</p><p class="cprs-addr">' + esc(s.shown) + '</p></aside></div>'
+      + '<div class="cprs-low' + (chart ? '' : ' cprs-nochart') + '">' + chart + '<aside class="cprs-side">' + (qr ? '<div class="cprs-qr">' + qr + '</div>' : '')
+      + '<p class="cprs-scan">' + esc(QR_CAP) + '</p><p class="cprs-addr">' + esc(s.shown).replace(/\//g, '/<wbr>') + '</p></aside></div>'
       + '<p class="cprs-src">' + esc(s.src) + '</p><p class="cprs-na">' + esc(s.notice) + '</p>';
   }
 
@@ -251,8 +251,11 @@
     var cw = (W - 2 * P - 40) / 2, top = y, bottom = y;
     s.big4.forEach(function (b, i) {
       if (i === 2) top = bottom;
-      var x = P + (i % 2) * (cw + 40), sz = fit(b.big, 60, 40, 800, cw);
+      var x = P + (i % 2) * (cw + 40), u = b.unit ? b.unit.replace(/^ /, '') : '', uw = 0, sz;
+      ctx.font = '700 30px ' + FONT; uw = u ? ctx.measureText(' ' + u).width : 0;
+      sz = fit(b.big, 60, 36, 800, cw - uw);
       text(b.big, x, top + 56, sz, 800, INK);
+      if (u) { ctx.font = sz + 'px ' + FONT; ctx.font = '800 ' + sz + 'px ' + FONT; var bw = ctx.measureText(b.big).width; text((b.unit.charAt(0) === ' ' ? ' ' : '') + u, x + bw + 2, top + 56, 30, 700, DIM); }
       bottom = Math.max(bottom, lines(b.text.replace(/\.$/, ''), x, top + 94, 26, 500, DIM, 32, 2, cw) + 14);
     });
     /* the footer: the QR code at the right, its words and the source at the left */
@@ -309,9 +312,9 @@
     if (!el) { el = doc.createElement('div'); el.id = 'cprs'; el.className = 'cprs'; el.setAttribute('aria-hidden', 'true'); doc.body.appendChild(el); }
     var code = qrSvg(s), fits = false;
     el.style.zoom = '';
-    [230, 195, 165].some(function (h, i) {
+    [260, 230, 195, 165].some(function (h, i) {
       el.innerHTML = html(s, code, h);
-      el.classList.toggle('cprs-tight', i === 2);
+      el.classList.toggle('cprs-tight', i === 3);
       fits = measure(el) <= MAX_PX;
       return fits;
     });

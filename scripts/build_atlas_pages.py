@@ -2127,7 +2127,7 @@ def cp_v(root):
     return ch_v(root, CP_JS)
 
 
-def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfacts, lc):
+def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfacts):
     """The County Print's yearly figures (Sig, Nov 7, 2026), as this page prints them: the same values through
     the same formatters as the key tiles and the cards, so the sheet can never disagree with the page. Short keys,
     a few hundred bytes a page; a figure the page withholds is left out (the sheet drops its row, never a guess).
@@ -2137,8 +2137,9 @@ def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfac
       r  [cash rent $/ac, year, "irr" for an irrigated-only rent]   rb rent per bushel of the corn trend
       yt [corn trend bu/ac, its label, practice]   yl [last county yield year, bu/ac]
       lr [loss ratio, years, dollars paid]   ov [years claims exceeded premium, of years]   lc [top causes, years]
-      cc [claims per $100 of coverage, years]   hd [hail 1 in+ days a year, years]
-      y  [first year, "v,v,,v" county corn yields, all practices] with ys [slope, "+3.1", window] when the page
+      hd [hail 1 in+ days a year, years]
+      y  [first year, "v,v,,v" county corn yields, all practices, the page's one-decimal figures with a ".0"
+         left off] with ys [slope, "+3.1", window] when the page
          prints the yearly trend"""
     V, Y, S, Lo, Sm = d.get("value") or {}, d.get("yield") or {}, d.get("sob") or {}, d.get("loss") or {}, d.get("storms") or {}
     RL = W.rent_latest
@@ -2165,8 +2166,6 @@ def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfac
             o["lr"] = [rh(S["loss_ratio_all"], 2), "%s–%s" % (S["first_year"], S["last_year"]), musd(S["total_indemnity"])]
         if S.get("years_over_one") is not None:
             o["ov"] = [S["years_over_one"], S["years_with_ratio"]]
-        if lc is not None:
-            o["cc"] = [usd2(lc), "%d–%d" % (S["last10"]["from"], S["last10"]["to"])]
     if ok(Lo) and Lo.get("share_all") and any(Lo["share_all"].values()):
         top = sorted((k for k, v in Lo["share_all"].items() if v), key=lambda k: -Lo["share_all"][k])[:3]
         o["lc"] = [" · ".join("%s %s" % (CAUSE.get(k, k), share_words(Lo["share_all"][k])) for k in top), "%s–%s" % (Lo["first_year"], Lo["last_year"])]
@@ -2176,7 +2175,7 @@ def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfac
         hist = {int(k): v for k, v in Y["hist"].items() if v is not None}
         if len(hist) >= 3:
             y0, y1 = min(hist), max(hist)
-            o["y"] = [y0, ",".join(f1(hist[y]) if y in hist else "" for y in range(y0, y1 + 1))]
+            o["y"] = [y0, ",".join(re.sub(r"\.0$", "", f1(hist[y])) if y in hist else "" for y in range(y0, y1 + 1))]
             if Y.get("slope") is not None and not CY.ends_early(Y.get("last_year"), RL):
                 o["ys"] = [round(Y["slope"], 4), sgn(Y["slope"], 1), str(Y.get("window") or "").replace("-", "–")]
     return o
@@ -2851,7 +2850,7 @@ def county_page(W, f, d, stamp):
     # County Print (Sig, Nov 7, 2026): the one-page sheet, the phone picture and the share link, drawn in the
     # browser by components/county-print.js from the figures this page prints (cp below) and the live rows
     # county-home.js fills. Print falls back to the shared sheet before the script runs.
-    cpd = county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfacts, lc)
+    cpd = county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfacts)
     btns = ('<div class="ch-btns"><div class="cpr" role="group" aria-label="County Print">'
             '<a class="pri" id="cpr-print" href="/farmland-atlas/sheet#%s">Print County Print</a>'
             '<button type="button" id="cpr-pic">Save picture</button><button type="button" id="cpr-link">Copy link</button>'

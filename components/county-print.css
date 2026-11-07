@@ -39,10 +39,15 @@
 .cprs-side{text-align:center;border-left:4pt solid #8a6514;padding-left:.1in}
 .cprs-qr svg{width:1.25in;height:1.25in;display:block;margin:0 auto}
 .cprs-scan{font-size:11pt;font-weight:800;line-height:1.2;margin-top:.04in!important}
-.cprs-addr{font:700 9pt/1.25 "JetBrains Mono",ui-monospace,monospace;word-break:break-all;margin-top:.03in!important}
+.cprs-addr{font:700 9pt/1.25 "JetBrains Mono",ui-monospace,monospace;overflow-wrap:normal;word-break:normal;margin-top:.03in!important}
 .cprs-src{font-size:8.5pt;line-height:1.25;margin-top:.08in!important;border-top:1pt solid #000;padding-top:.04in}
 .cprs-na{font-size:8.5pt;line-height:1.25;margin-top:.03in!important;font-weight:600}
 .cprs-tight .cprs-grid{row-gap:.04in}
 .cprs-tight .cprs-r{margin-top:.03in}
 .cprs-tight .cprs-lead b{font-size:21pt}
 .cprs-tight .cprs-qr svg{width:1in;height:1in}
+.cprs-long b{font-size:15pt}
+.cprs-lead.cprs-long b{font-size:18pt}
+.cprs-nochart{grid-template-columns:2.4in}
+.cprs-nochart .cprs-side{text-align:left}
+.cprs-nochart .cprs-qr svg{margin:0}
