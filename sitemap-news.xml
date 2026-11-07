@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- AGSIST Daily issues from the last two days, for Google News. Written by scripts/generate_daily.py on every publish; an empty list is normal on a quiet weekend. -->
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">
+  <url><loc>https://agsist.com/daily/2026-11-07</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-11-07T05:55:40-06:00</news:publication_date><news:title>Corn, beans and wheat all fell this week; hogs sank</news:title></news:news></url>
   <url><loc>https://agsist.com/daily/2026-11-06</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-11-06T05:48:06-06:00</news:publication_date><news:title>Hog futures fall 4.3% to $55.10; cattle slip 1.7% Thursday</news:title></news:news></url>
-  <url><loc>https://agsist.com/daily/2026-11-05</loc><news:news><news:publication><news:name>AGSIST</news:name><news:language>en</news:language></news:publication><news:publication_date>2026-11-05T05:48:20-06:00</news:publication_date><news:title>Midterms hand Democrats Congress; Dec corn is at $4.47¼ overnight</news:title></news:news></url>
 </urlset>

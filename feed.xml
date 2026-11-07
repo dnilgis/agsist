@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 06 Nov 2026 11:49:04 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 07 Nov 2026 11:56:36 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn, beans and wheat all fell this week; hogs sank</title>
+      <link>https://agsist.com/daily/2026-11-07</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-07</guid>
+      <pubDate>Sat, 07 Nov 2026 11:55:40 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Corn and soybeans bounced a little Friday after a rough week of fund selling. Hogs did not bounce. December hogs closed at $53.525, down 2.9% and near the bottom of their 52-week range.
+• Corn and beans bounce, wheat slips
+• Hogs lead livestock lower
+Read more: https://agsist.com/daily/2026-11-07</description>
+    </item>
     <item>
       <title>Hog futures fall 4.3% to $55.10; cattle slip 1.7% Thursday</title>
       <link>https://agsist.com/daily/2026-11-06</link>
@@ -350,18 +361,6 @@ Read more: https://agsist.com/daily/2026-10-10</description>
 • Beans firm, meal leads the complex
 • Crude gives a little back
 Read more: https://agsist.com/daily/2026-10-09</description>
-    </item>
-    <item>
-      <title>Crude runs 5% on Hormuz, soy oil breaks hard</title>
-      <link>https://agsist.com/daily/2026-10-08</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-08</guid>
-      <pubDate>Thu, 08 Oct 2026 10:47:19 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>WTI's at $92.61 overnight, up 4.9% after another tanker took fire off Qatar, the first deep-Gulf hit since fighting flared there back in September. Soybean oil got hit the other way, down 3.1% as meal took over the complex's weight. That split already moved crush margins before a single export sales number hit the tape.
-• Crude Runs On Fresh Tanker Hit
-• Soy Oil Breaks, Meal Takes Over
-• Corn Grinds At The Round Number
-Read more: https://agsist.com/daily/2026-10-08</description>
     </item>
   </channel>
 </rss>

@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-07",
+      "date_display": "Saturday, November 7, 2026",
+      "headline": "Corn, beans and wheat all fell this week; hogs sank",
+      "teaser": "A rough week for grain and livestock ended with a small Friday bounce in corn and beans and another drop in hogs.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-07",
+      "market_closed": true
+    },
+    {
       "date": "2026-11-06",
       "date_display": "Friday, November 6, 2026",
       "headline": "Hog futures fall 4.3% to $55.10; cattle slip 1.7% Thursday",
@@ -2723,6 +2734,6 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-06T11:48:15.618084+00:00",
-  "count": 238
+  "updated": "2026-11-07T11:55:46.726902+00:00",
+  "count": 239
 }
