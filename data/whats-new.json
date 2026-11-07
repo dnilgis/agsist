@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-07-cothow",
+   "date": "2026-11-07",
+   "title": "Fund positions: longs and shorts, not just the net",
+   "line": "The COT page, the Funds this week email and the Daily now say how the funds' net changed: longs sold, new shorts, new buying or shorts bought back.",
+   "link": "/cot"
+  },
+  {
    "id": "2026-11-07-cpavg",
    "date": "2026-11-07",
    "title": "Harvest pace against USDA's five-year average again",
