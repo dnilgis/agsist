@@ -37,7 +37,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 380;  // v380 2026-11-07: fx/bin-yard (380 set by the lead; was 379). Bin Print on /grain-bin-calculator: bin-yard.js?v=1, bin-yard.css?v=1.
+var CACHE_VERSION = 381;  // v381 2026-11-07: fx/county-print (381 set by the lead; was 380). County Print on Farmland Atlas county pages: county-print.js?v=1, county-print.css?v=1, county-home.js bumped.
 // var CACHE_VERSION = 369;  // v369 2026-11-05: fx/rootlotpop (369 assigned by the lead; was 365; 366 is fx/fsrr on main, 367 fx/cotcompare, 368 fx/tarspot1). Every paid sponsor ad has the site's ad orange on its outline and button with a quiet panel (components/sponsor-ad.css?v=3 on index.html, daily.html, sponsor-report.html and new Daily pages). The Root Lot state sponsor card: its own logo, a larger headline, a line of facts and the whole card tappable (components/geo-sponsor.js?v=2 from loader.js, new components/geo-sponsor.css?v=1); on rain pages it sits higher, still below the first screen.
 // var CACHE_VERSION = 367;  // v367 2026-11-05: fx/cotcompare merged after fx/fsrr (367 set by the lead). Compare up to three markets on the 52-week funds chart (components/cot-chart.js?v=2; cot.html).
 // var CACHE_VERSION = 366;  // v366 2026-11-05: fx/fsrr (366 assigned by the lead; 363 to 365 are other open branches). Field Scout's sale detail panel has a line for every return-detail column the county files carry (field-scout-land.js?v=15, field-scout-read.js?v=21, field-scout.js?v=35).
