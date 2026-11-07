@@ -2,47 +2,11 @@ name: schrader-capture
 # schrader-capture.
 
 on:
-  schedule:
-    - cron: "43 19 * * 1"
-  # cron above, by either trigger, do the work within 360 minutes
-  workflow_run:
-    workflows: ["Fetch Grain Bids"]
-    types: [completed]
   workflow_dispatch:
 permissions:
   contents: read
 jobs:
-  gate:
-    runs-on: ubuntu-latest
-    permissions:
-      actions: read
-      contents: read
-    outputs:
-      go: ${{ steps.g.outputs.go }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-          sparse-checkout: |
-            scripts/cron_gate.py
-            /.github/actions/engine/
-            /.github/engine-paths
-          sparse-checkout-cone-mode: false
-      - name: Engine checkout
-        uses: ./.github/actions/engine
-        with:
-          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
-          mode: ${{ vars.ENGINE_MODE }}
-      - id: g
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: >-
-          python3 scripts/cron_gate.py tick --workflow schrader-capture.yml --max-lag 360
-          --cron "43 19 * * 1"
-
   capture:
-    needs: gate
-    if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
@@ -78,8 +42,7 @@ jobs:
           if-no-files-found: error
 
   commit:
-    needs: [gate, capture]
-    if: needs.gate.outputs.go == '1'
+    needs: capture
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:

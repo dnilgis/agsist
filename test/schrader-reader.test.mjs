@@ -8,7 +8,8 @@
  *   - the fixtures are scrubbed: no phone number, no email, no "sold to" or "buyer" followed by a name
  *   - the data file carries facts only: no buyer, owner or name field, the credit and a link on every record,
  *     a per-acre figure only where Schrader printed one, farmland only
- *   - the capture workflow builds the file right after the capture, on a weekly gated Monday tick
+ *   - the capture workflow: a read-only capture job, then a commit job that merges only the checked facts file;
+ *     run by hand until Sig approves a schedule
  *
  *   node --test test/schrader-reader.test.mjs
  */
@@ -112,14 +113,11 @@ test('the data file: facts only, credited, linked, farmland only, never a figure
   assert.doesNotMatch(read('data/land/auctions/schrader.json'), /buyer|purchaser|owner|\u2014/i);
 });
 
-test('the capture workflow: weekly on Monday, a read-only capture job, a commit job that only merges the facts file', () => {
+test('the capture workflow: by hand only until Sig approves a schedule, a read-only capture job, a commit job that only merges the facts file', () => {
   const wf = read('.github/workflows/schrader-capture.yml');
-  const cron = /- cron: "(\d+) (\d+) \* \* 1"/.exec(wf);
-  assert.ok(cron, 'a Monday schedule');
-  assert.notEqual(Number(cron[1]), 0, 'not on the hour');
-  // outside 6 to 9 AM Pacific in both PST (UTC-8) and PDT (UTC-7): 13:00 to 17:00 UTC is out
-  const h = Number(cron[2]);
-  assert.ok(h < 13 || h >= 17, `hour ${h} UTC falls in 6 to 9 AM Pacific`);
+  // a new schedule is Sig's decision (test/history-collect.test.mjs); the weekly Monday run waits for it
+  assert.doesNotMatch(wf, /^\s*-?\s*cron:/m, 'no schedule until Sig approves one');
+  assert.match(wf, /\non:\n  workflow_dispatch:\n/);
   assert.match(wf, /\npermissions:\n  contents: read\n/, 'read-only by default');
 
   const job = (name) => {
@@ -151,7 +149,7 @@ test('the capture workflow: weekly on Monday, a read-only capture job, a commit 
   assert.doesNotMatch(up[1], /land\/schrader/);
 
   const com = job('commit');
-  assert.match(com, /\n    needs: \[gate, capture\]\n/, 'the commit job runs after the capture');
+  assert.match(com, /\n    needs: capture\n/, 'the commit job runs after the capture');
   assert.match(com, /\n    permissions:\n      contents: write\n/);
   assert.match(com, /uses: actions\/download-artifact@v4\n        with:\n          name: schrader-results\n/);
   const runs = [...com.matchAll(/run: (?:\|\n([\s\S]*?)(?=\n      - |\n?$)|(.*))/g)].map((m) => (m[1] || m[2] || '').trim());

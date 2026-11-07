@@ -123,8 +123,6 @@ MANUAL_DOES_NOT_SERVE = {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.
     "whats-priced-in.yml",
     # gated Nov 4, 2026 (BUILD-RULES 59)
     "main-checks.yml",
-    # gated Nov 7, 2026: the weekly Schrader auction results capture
-    "schrader-capture.yml",
 }
 # Gated rows whose gate runs on a denser clock than GitHub's fallback cron, on purpose.
 DENSER_GATE = {"news.yml", "cron-health.yml"}
@@ -217,7 +215,6 @@ CHECKS = [
     ("drought-county-week.yml", None, 60, False, "chained, gated: the drought county week, Thursday and a Friday backstop"),
     ("fertilizer-ams.yml", None, 60, False, "chained, gated: USDA AMS fertilizer series, Friday, Friday evening and Monday"),
     ("fetch-fsa-arcplc.yml", None, 60, False, "chained, gated: FSA ARC/PLC program files, Mondays"),
-    ("schrader-capture.yml", None, 60, False, "chained, gated: Schrader auction results capture and read, Mondays"),
     ("prf.yml", None, 60, False, "chained, gated: the PRF rainfall index data, Wednesdays"),
     ("prf-outlook.yml", None, 60, False, "chained, gated: the PRF long-range outlook, Thursdays and Fridays"),
     ("transport.yml", None, 60, False, "chained, gated: AgTransport for /basis and /bushel-journey, Fridays"),
