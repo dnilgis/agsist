@@ -31,7 +31,9 @@ THE BLOCKS (prompt_block() joins the ones that are on, each with its source and 
              Tuesday issue after a Monday release in a holiday week): managed
              money's net position and its change, futures only, for corn,
              soybeans, Chicago wheat and live cattle, from data/cot.json and
-             data/cot-history.json through scripts/send_cot_weekly.rows_for
+             data/cot-history.json through scripts/send_cot_weekly.rows_for,
+             plus how the net changed (longs and shorts), the line
+             data/cot-analysis.json carries (card.how)
              (the same rows "Funds this week" and /cot print, never worked out
              a second way). Release day from scripts/cot_calendar.py, 3:30 PM
              ET; withheld before it, after FUND_MAX_DAYS, or when the files do
@@ -323,13 +325,18 @@ def fund_facts(today, now, repo=REPO):
     if not 1 <= days <= FUND_MAX_DAYS:
         return {"withheld": "the latest report (released %s) is not this weekend's" % rel.isoformat()}
     hist = CW.load(os.path.join(repo, "data", "cot-history.json"))
-    rows = [r for r in CW.rows_for(cot, hist, None, as_of) if r["key"] in FUND_MARKETS]
+    # the analysis file only for its card.how line (how the net changed, longs and shorts), the line /cot and the
+    # email print; rows_for withholds it when that file is missing, on another week or disagrees with the history
+    ana = CW.load(os.path.join(repo, "data", "cot-analysis.json"))
+    rows = [r for r in CW.rows_for(cot, hist, None, as_of, ana) if r["key"] in FUND_MARKETS]
     if not rows:
         return {"withheld": "the COT files do not agree on this report"}
     lines = []
     for r in rows:
         s = CW.sentence(r)
         s = s.replace("Managed money is", "%s: managed money is" % r["name"], 1)
+        if r.get("how"):
+            s += " " + r["how"]
         lines.append(s)
     return {"lines": lines, "as_of": as_of.isoformat(), "released": rel.isoformat(),
             "source": ("CFTC Commitments of Traders, disaggregated, futures only, managed money; positions as of "
@@ -345,7 +352,8 @@ RULES = {
                 "Never write a 5-year average or a last-year figure this block does not carry, and never call "
                 "it this week's progress."),
     "funds": ("Use it in a section body as positioning as of the Tuesday named here, released Friday. Contracts, "
-              "never a percent; never call it this week's trading or say funds bought or sold today."),
+              "never a percent; never call it this week's trading or say funds bought or sold today. 'Longs ..., shorts ...' is how "
+              "the net changed: use those words as written and never give a reason or say what funds think."),
 }
 TITLES = {"calendar": "FARM CALENDAR", "harvest": "HARVEST PACE (last week)", "funds": "FUND POSITIONS (CFTC)"}
 

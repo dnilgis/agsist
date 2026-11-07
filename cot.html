@@ -514,6 +514,8 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 .cc-chip:focus-visible,.cc-btn:focus-visible,.cc-plot:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .cc-head{display:flex;flex-direction:column;justify-content:flex-end;font-family:var(--font-body);font-size:1rem;font-weight:500;line-height:1.4;color:var(--text);margin:.1rem 0 .3rem;min-height:4.2em;letter-spacing:0}
 /* The answer line (2026-11-06): what managed money did, the rank in words, the Tuesday and the next report. Baked for JS-off. */
+.cc-how{margin:0 0 .35rem;font-size:.92rem;line-height:1.45;color:var(--text)}
+.cc-how:empty{display:none}
 .cc-answer{margin:0 0 .55rem;font-size:.92rem;line-height:1.5;color:var(--text);min-height:7.5em}
 @media(min-width:701px){.cc-answer{min-height:3em}}
 /* The release bar (2026-11-06, Sig: "a clear indicator or countdown until the release that you can't miss"). */
@@ -771,6 +773,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
       <div class="cc-chips" id="cc-chips" role="group" aria-label="Pick a market"><button type="button" class="cc-cmp" id="cc-cmp" aria-pressed="false">Compare</button><button type="button" class="cc-chip" data-k="corn" aria-pressed="true">Corn</button><button type="button" class="cc-chip" data-k="beans" aria-pressed="false">Soybeans</button><button type="button" class="cc-chip" data-k="wheat" aria-pressed="false">Chicago wheat</button><button type="button" class="cc-chip" data-k="kcwheat" aria-pressed="false">KC wheat</button><button type="button" class="cc-chip" data-k="mplswheat" aria-pressed="false">MPLS wheat</button><button type="button" class="cc-chip" data-k="soymeal" aria-pressed="false">Soybean meal</button><button type="button" class="cc-chip" data-k="soyoil" aria-pressed="false">Soybean oil</button><button type="button" class="cc-chip" data-k="livecattle" aria-pressed="false">Live cattle</button><button type="button" class="cc-chip" data-k="feedercattle" aria-pressed="false">Feeder cattle</button><button type="button" class="cc-chip" data-k="leanhogs" aria-pressed="false">Lean hogs</button><button type="button" class="cc-chip" data-k="milk" aria-pressed="false">Class III milk</button></div>
       <p class="cc-kind">Futures</p>
       <h3 class="cc-head" id="cc-head"><span><!-- PRERENDER:cot-head --><b>Corn funds cut their net long by 72,318 contracts.</b> About even: net long 8,795.<!-- /PRERENDER:cot-head --></span></h3>
+      <p class="cc-how" id="cc-how"><!-- PRERENDER:cot-how --><!-- /PRERENDER:cot-how --></p>
       <p class="cc-answer" id="cc-answer"><!-- PRERENDER:cot-answer -->Week to Tue, Nov 3, 2026. Released Fri, Nov 6, 2026. Rank: higher than 41% of weeks since 2010 (share of open interest). Next report: Monday Nov 16, 3:30 PM ET (holiday week).<!-- /PRERENDER:cot-answer --></p>
       <div class="cc-plot" id="cc-plot" tabindex="0" aria-describedby="cc-hint">
         <svg class="cc-svg" id="cc-svg" role="img" aria-label="52-week chart of managed money net position" preserveAspectRatio="none"></svg>
@@ -1001,10 +1004,10 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
 </div>
 <script src="/components/loader.js?v=19"></script>
 
-<script src="/components/cot-glance.js?v=5"></script>
+<script src="/components/cot-glance.js?v=6"></script>
 <script src="/components/cot-kit.js?v=2"></script>
-<script src="/components/cot-chart.js?v=10"></script>
-<script src="/components/cot-page.js?v=10"></script>
+<script src="/components/cot-chart.js?v=11"></script>
+<script src="/components/cot-page.js?v=11"></script>
 <script src="/components/qr.js?v=11"></script>
 <script src="/components/cot-print.js?v=4"></script>
 <script src="/components/cot-share.js?v=1"></script>

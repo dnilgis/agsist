@@ -703,12 +703,9 @@ def card_stats(s, d, px_adj, i):
         else:
             break
     dL, dS = mm_l[i] - mm_l[i - 1], mm_s[i] - mm_s[i - 1]
-    if cur < 0:
-        driver = "long liquidation" if abs(dL) >= abs(dS) else "new short selling"
-    elif cur > 0:
-        driver = "new long buying" if abs(dL) >= abs(dS) else "short covering"
-    else:
-        driver = "no net change"
+    how = how_changed(mm_l[i - 1], mm_s[i - 1], mm_l[i], mm_s[i])
+    if "withheld" not in how and net[i] - net[i - 1] != how["long_change"] - how["short_change"]:
+        how = {"withheld": "the long and short counts do not add up to the net"}
 
     # Side changes inside the window, newest first. A side is long, short or
     # flat (side_of: |net| under FLAT_OI_PCT of open interest), and a flip is
@@ -731,7 +728,7 @@ def card_stats(s, d, px_adj, i):
         "weeks": len(nets), "changes": len(chgs),
         "pct": percentile_rank(nets, net[i]),
         "z": zscore(nets, net[i]),
-        "chg": cur, "chg_long": dL, "chg_short": dS, "driver": driver,
+        "chg": cur, "chg_long": dL, "chg_short": dS, "how": how,
         "largest_in_window": since is None and cur != 0,
         "weeks_since_larger": since,
         "streak": streak,
@@ -758,6 +755,44 @@ def card_stats(s, d, px_adj, i):
 
 def _signed(v):
     return f"{'+' if v >= 0 else '−'}{abs(v):,}"
+
+
+def _contracts(v):
+    """+52,308 / -20,010 / 0, plain hyphen, for the how-it-changed line."""
+    return "0" if v == 0 else f"{'+' if v > 0 else '-'}{abs(v):,}"
+
+
+def how_changed(long_prev, short_prev, long_now, short_now):
+    """HOW THE NET CHANGED, SPLIT INTO ITS TWO SIDES (Nov 7, 2026). The ONE place
+    this is figured: written into each card as card["how"], and /cot, the Funds this
+    week email and the Daily's fund block print its `line` as it stands, never
+    working it out again.
+
+    Positions only, never a motive (CFTC does not know why anyone traded), in
+    contracts, never a percent:
+      net down: "mostly selling longs they held" when the long drop is at least the
+                short rise, else "mostly new short selling"
+      net up:   "mostly new buying" when the long rise is at least the short drop,
+                else "mostly buying back shorts"
+      both sides the same way: "longs and shorts both cut" / "longs and shorts both added"
+    -> {long_change, short_change, label, line}, or {"withheld": why} when either
+    week lacks a long or a short count."""
+    vals = (long_prev, short_prev, long_now, short_now)
+    if not all(isinstance(v, int) and not isinstance(v, bool) and v >= 0 for v in vals):
+        return {"withheld": "a week without both long and short counts"}
+    dl, ds = long_now - long_prev, short_now - short_prev
+    if dl == 0 and ds == 0:
+        label = "no change on either side"
+    elif dl > 0 and ds > 0:
+        label = "longs and shorts both added"
+    elif dl < 0 and ds < 0:
+        label = "longs and shorts both cut"
+    elif dl - ds < 0:
+        label = "mostly selling longs they held" if -dl >= ds else "mostly new short selling"
+    else:
+        label = "mostly new buying" if dl >= -ds else "mostly buying back shorts"
+    return {"long_change": dl, "short_change": ds, "label": label,
+            "line": f"Longs {_contracts(dl)}, shorts {_contracts(ds)}: {label}."}
 
 
 def _fmt_pct_signed(v):
@@ -905,15 +940,15 @@ def build_the_read(out):
         size = (f"the largest weekly {'fall' if fall else 'rise'} in net in the last {k['weeks']} weeks"
                 if k["largest_in_window"] else
                 f"the sharpest {'fall' if fall else 'rise'} in net in {k['weeks_since_larger']} weeks")
-        mech = {"long liquidation": " Existing longs left, rather than new shorts arriving.",
-                "short covering": " Existing shorts left, rather than new longs arriving."}.get(k["driver"], "")
+        hw = k.get("how") or {}
+        mech = f" {hw['label'][0].upper()}{hw['label'][1:]}." if hw.get("label") else ""
         # Said toward the side the position is on: a net short that falls has GROWN.
         grew = (best["net"] > 0) != fall
         what = f"net {'long' if best['net'] > 0 else 'short'} {'grew' if grew else 'shrank'}"
         return say(best, "move",
                    f"funds' {what} by {abs(k['chg']):,} contracts this week, "
                    f"{size} (longs {_signed(k['chg_long'])}, shorts {_signed(k['chg_short'])}), from a position "
-                   f"{where}. The move was driven by {k['driver']}.{mech}",
+                   f"{where}.{mech}",
                    "an unusually large weekly move")
     if cr:
         return say(best, "crowded",
@@ -1721,6 +1756,39 @@ def selftest():
     ck("card percentile of the window low is 100/n, not 0", cs["pct"], round(100 / 52, 1))
     ckt("no price, no divergence", cs["divergence"] is None and cs["price4"] is None)
 
+    # ── how the net changed, split into longs and shorts (Nov 7) ──
+    # pin-ok: fixture. Corn, week to Nov 3, 2026: longs 249,351 -> 229,341, shorts 168,238 -> 220,546.
+    hc = how_changed(249351, 168238, 229341, 220546)
+    ckt("corn Nov 3: the line", hc == {"long_change": -20010, "short_change": 52308, "label": "mostly new short selling",
+        "line": "Longs -20,010, shorts +52,308: mostly new short selling."}, hc)
+    for args, want in (((100, 50, 60, 60), "mostly selling longs they held"),
+                       ((100, 50, 80, 70), "mostly selling longs they held"),    # a tie goes to the long side
+                       ((100, 50, 90, 80), "mostly new short selling"),
+                       ((100, 50, 140, 40), "mostly new buying"),
+                       ((100, 50, 120, 30), "mostly new buying"),                # a tie goes to the long side
+                       ((100, 50, 105, 20), "mostly buying back shorts"),
+                       ((100, 50, 90, 40), "longs and shorts both cut"),
+                       ((100, 50, 130, 60), "longs and shorts both added"),
+                       ((100, 50, 100, 50), "no change on either side")):
+        got = how_changed(*args)
+        ckt(f"how {args}: {want}", got.get("label") == want, got)
+    ckt("how: both cut, said with both numbers",
+        how_changed(100, 50, 90, 40)["line"] == "Longs -10, shorts -10: longs and shorts both cut.")
+    for bad in ((None, 50, 90, 40), (100, None, 90, 40), (100, 50, None, 40), (100, 50, 90, "40"), (100, 50, -1, 40), (True, 50, 90, 40)):
+        ckt(f"how withheld {bad}", "withheld" in how_changed(*bad) and "line" not in how_changed(*bad))
+    import re
+    _txt = " ".join(how_changed(*a)["line"] for a in ((1, 1, 0, 2), (1, 1, 2, 0), (1, 1, 0, 0), (1, 1, 2, 2), (5, 5, 3, 4), (5, 5, 6, 3)))
+    ckt("how: positions only, contracts only", not re.search(r"%|think|bearish|bullish|because|\u2014", _txt), _txt)
+    nn3 = 10
+    blk3 = {"dates": [(date(2025, 1, 7) + timedelta(weeks=j)).isoformat() for j in range(nn3)],
+            "oi": [1918622] * nn3, "mm_long": [249351] * (nn3 - 1) + [229341],
+            "mm_short": [168238] * (nn3 - 1) + [220546]}
+    cs3 = card_stats(series_for(blk3), blk3["dates"], [None] * nn3, nn3 - 1)
+    ckt("the card carries the line", cs3["how"]["line"] == "Longs -20,010, shorts +52,308: mostly new short selling.", cs3["how"])
+    s3 = series_for(blk3)
+    s3["net"][nn3 - 1] += 1
+    ckt("a net that is not longs minus shorts: withheld", "withheld" in card_stats(s3, blk3["dates"], [None] * nn3, nn3 - 1)["how"])
+
     # ── the Feeder Cattle case (2026-09-29): net -270 = longs +1,321, shorts +1,591 ──
     fc = {"key": "feedercattle", "label": "Feeder Cattle", "net": 8166, "side": "long",
           "crowded": None, "z": {"net_oi_3y": -0.4}, "chg_z": 0.1, "first_week": "2010-01-05",
@@ -1729,7 +1797,7 @@ def selftest():
                    "price4": 5.0, "move_floor": 797, "flips": [], "n_flips": 0, "weeks": 52,
                    "significant_move": False, "largest_in_window": False,
                    "weeks_since_larger": 1, "chg": 161, "chg_long": 0, "chg_short": 0,
-                   "driver": "short covering"}}
+                   "how": how_changed(1000, 1161, 1000, 1000)}}
     ckt("a 270-contract four-week move under a 797 typical week is not a Read",
         build_the_read({"feedercattle": fc}) is None)
     txt = _divergence_read(fc)

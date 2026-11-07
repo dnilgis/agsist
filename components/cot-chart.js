@@ -504,6 +504,7 @@
     M = model(cur, D.hist, D.cot, D.cx);
     $('cc-head').innerHTML = '<span>' + (M && M.headlineHtml ? M.headlineHtml : esc(CHIP[cur]) + ': managed money net position, last 52 weeks') + '</span>';
     answerLine(cur);
+    howLine(cur);
     if (!M) {
       svg.innerHTML = ''; msg.hidden = false; msg.textContent = 'No 52-week record for ' + CHIP[cur] + ' in this report.';
       $('cc-src').textContent = ''; geo = null; box.removeAttribute('data-latest'); return;
@@ -535,6 +536,7 @@
     geo = layout(M, w, h, { fs: 12 });
     $('cc-head').innerHTML = '<span>' + esc(M.headline) + '</span>';
     answerLine(sel[0]);
+    howLine(null);
     svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
     svg.setAttribute('aria-label', M.headline + '. ' + M.series.map(function (s) { var v = s.vals[s.vals.length - 1]; return s.name + ' ' + (v === null ? 'no report' : 'higher than ' + shown(v) + '% of weeks'); }).join(', ') + ' on ' + mdy(M.last.date) + '.');
     svg.innerHTML = toSvg(geo) + '<line id="cc-rule" x1="0" x2="0" y1="' + geo.T + '" y2="' + geo.pB + '" stroke="var(--text-muted)" stroke-width="1" visibility="hidden"/>'
@@ -560,6 +562,13 @@
     if (!el || !D.cot || !D.cx || G.iso(D.cx.report_date) !== G.iso(D.cot.report_date)) return;
     var a = G.answer(k, D.cot, D.cx, Date.now());
     if (a && el.textContent !== a.text) el.textContent = a.text;
+  }
+  /* Longs and shorts under the headline (G.how: the analysis card's line); same-week files only, else the baked line stays */
+  function howLine(k) {
+    var el = $('cc-how');
+    if (!el || (k && (!D.cot || !D.cx || G.iso(D.cx.report_date) !== G.iso(D.cot.report_date)))) return;
+    var t = k ? G.how(k, D.cot, D.cx) : '';
+    if (el.textContent !== t) el.textContent = t;
   }
   api.answerLine = function () { answerLine(cmp ? sel[0] : cur); };
   /* the numbers, for screen readers and anyone who wants them */

@@ -219,8 +219,31 @@ def rows_for(cot, hist, deep, as_of, ana=None, gaps=None):
             run, j = run + 1, j - 1
         row["streak"], row["streak_open"] = run, (run > 0 and j == 0)
         row["rank"], row["rank_why"] = rank_of(key, c["net"], iso, ana, deep)
+        row["how"], row["how_why"] = how_of(key, iso, ana, h)
         out.append(row)
     return out
+
+
+def how_of(key, iso, ana, h):
+    """(line, why). How the net changed, split into longs and shorts: the line
+    scripts/cot_analysis.py how_changed() wrote into data/cot-analysis.json
+    (commodities.<key>.card.how), the field /cot prints, never worked out a
+    second way here. Withheld, with the reason, when that file is not on this
+    report, when either week in data/cot-history.json lacks a long or a short
+    count, or when the two files disagree on either side's change."""
+    a = ((ana or {}).get("commodities") or {}).get(key) or {}
+    hw = (a.get("card") or {}).get("how") or {}
+    if a.get("date") != iso:
+        return None, "the long and short split is not up to this report yet"
+    if not hw.get("line"):
+        return None, hw.get("withheld") or "no long and short split for this report"
+    if len(h) < 2 or not all(n0(r.get(x)) for r in h[-2:] for x in ("long", "short")):
+        return None, "a week without both long and short counts"
+    if (h[-1]["long"] - h[-2]["long"] != hw.get("long_change") or h[-1]["short"] - h[-2]["short"] != hw.get("short_change")
+            or a.get("mm_long") != h[-1]["long"] or a.get("mm_short") != h[-1]["short"]):
+        print("%s: the long and short split does not match data/cot-history.json; withheld" % key)
+        return None, "the weekly files disagree on the long and short split"
+    return hw["line"], None
 
 
 def recount(deep, key, iso):
@@ -476,7 +499,7 @@ def compose(as_of, released, rows, gaps=(), preview=False):
     L = [kick, ""] + ev + ([""] if ev else []) + ([ld, ""] if ld else []) + [when, intro]
     for r in rows:
         L += ["", r["name"].upper(), market_line(r)]
-        L += [x for x in (streak_line(r), range_line(r)) if x]
+        L += [x for x in (r.get("how"), streak_line(r), range_line(r)) if x]
     for name, why in gaps:
         L += ["", name.upper(), "No reading for this report: %s." % why]
     L += ["", src] + ([nr] if nr else []) + ["Every market, the history and how it is figured: " + PAGE]
@@ -516,6 +539,8 @@ def compose(as_of, released, rows, gaps=(), preview=False):
                           + esc(r["name"].upper()) + "</span>"))
         parts.append(P % ("0 0 6px", "800 26px/1.2 " + SANS, INK, esc(held_words(r)) + chip))
         parts.append(P % ("0 0 4px", "16px/1.5 " + SANS, INK, esc(market_line(r))))
+        if r.get("how"):
+            parts.append(P % ("0 0 4px", "15px/1.5 " + SANS, INK, esc(r["how"])))
         sl = streak_line(r)
         if sl:
             parts.append(P % ("0 0 4px", "700 15px/1.45 " + SANS, color, esc(sl)))
@@ -906,7 +931,8 @@ def fixtures():
     for key, s in (("corn", corn), ("beans", beans), ("livecattle", cattle), ("leanhogs", hogs)):
         deep["commodities"][key] = {"dates": dates, "mm_long": [max(v, 0) + 1000 for v in s],
                                     "mm_short": [max(-v, 0) + 1000 for v in s], "oi": [1000000] * len(dates)}
-        hist["history"][key] = [{"date": d, "net": v, "oi": 1000000} for d, v in zip(dates[-52:], s[-52:])]
+        hist["history"][key] = [{"date": d, "net": v, "long": max(v, 0) + 1000, "short": max(-v, 0) + 1000, "oi": 1000000}
+                                for d, v in zip(dates[-52:], s[-52:])]
         cot[key] = {"net": s[-1], "prev": s[-2]}
     # wheat: in cot.json, but its history ends a week early -> no reading, said so
     cot["wheat"] = {"net": -5, "prev": -4}
@@ -914,7 +940,10 @@ def fixtures():
     # feeder cattle: not in cot.json at all -> no reading, said so
 
     def a(key, net, pctl, shown, word, crowded):
+        import cot_analysis    # the card's long and short split, from the one function that figures it
+        L, S = deep["commodities"][key]["mm_long"], deep["commodities"][key]["mm_short"]
         return {"date": as_of.isoformat(), "net": net, "first_week": dates[0], "weeks_of_history": 171,
+                "mm_long": L[-1], "mm_short": S[-1], "card": {"how": cot_analysis.how_changed(L[-2], S[-2], L[-1], S[-1])},
                 "is_record_high": False, "is_record_low": False, "pctl": {"net_oi_all": pctl},
                 "crowd": {"pctl": pctl, "shown": shown, "word": word, "crowded": crowded, "since": dates[0][:4],
                           "weeks": 171, "held": False, "tested": TESTED,
@@ -1276,6 +1305,27 @@ def _selftest():
         ok(rc == 0 and len(sent) == 1, "a preview still renders without it")
     finally:
         globals()["DEEP"], globals()["TALLY"] = keep_deep, None
+    # how the net changed (Nov 7): the analysis file's card.how line, checked against cot-history, never refigured
+    ok(c.get("how") == "Longs -60,000, shorts 0: mostly selling longs they held."
+       == ana["commodities"]["corn"]["card"]["how"]["line"] and c.get("how_why") is None, "corn how %r" % c.get("how"))
+    ok(bn.get("how") == "Longs 0, shorts -5,000: mostly buying back shorts.", "beans how %r" % bn.get("how"))
+    _s, _t, _h = compose(as_of, date(2026, 10, 16), rows)
+    for r in rows:
+        ok(r.get("how") and r["how"] in _t and esc_h(r["how"]) in _h, "%s: the email prints the computed line as it is" % r["key"])
+    import copy
+    h2 = copy.deepcopy(hist)
+    h2["history"]["corn"][-2]["long"] += 1
+    ok(how_of("corn", iso, ana, h2["history"]["corn"]) == (None, "the weekly files disagree on the long and short split"),
+       "files that disagree: withheld")
+    h2 = copy.deepcopy(hist)
+    del h2["history"]["corn"][-2]["short"]
+    ok(how_of("corn", iso, ana, h2["history"]["corn"]) == (None, "a week without both long and short counts"),
+       "a week without a short count: withheld")
+    a2 = copy.deepcopy(ana)
+    a2["commodities"]["corn"]["card"]["how"] = {"withheld": "a week without both long and short counts"}
+    ok(how_of("corn", iso, a2, hist["history"]["corn"])[0] is None, "the analysis withheld it: withheld here too")
+    a2["commodities"]["corn"]["date"] = "2026-10-06"
+    ok(how_of("corn", iso, a2, hist["history"]["corn"])[0] is None, "an analysis for another week: withheld")
     ok(re.match(r"^[\w:.-]{1,64}$", flag_key(as_of)) and flag_key(as_of) == "cot:2026-10-13", "flag key fits the worker's pattern")
     if fails:
         for f in fails:

@@ -1050,6 +1050,23 @@ def cot_head(d, cx, key="corn"):
     return f"<b>{esc(head)}</b>" + (f" {esc(stand)}" if stand else "")
 
 
+def cot_how(d, cx, key="corn"):
+    """Longs and shorts under the headline, the same as components/cot-glance.js how(): the line
+    scripts/cot_analysis.py how_changed() wrote into the analysis card (card.how.line), as it stands. Empty unless the
+    analysis is for the report on the page and its long and short counts are data/cot.json's."""
+    c = d.get(key) if isinstance(d.get(key), dict) else {}
+    try:
+        rd = datetime.strptime(d.get("report_date", ""), "%B %d, %Y").date().isoformat()
+    except ValueError:
+        return ""
+    a = ((cx or {}).get("commodities") or {}).get(key) or {}
+    h = (a.get("card") or {}).get("how") or {}
+    if a.get("date") != rd or not isinstance(h.get("line"), str) or a.get("mm_long") != c.get("long") \
+            or a.get("mm_short") != c.get("short") or c.get("long") is None:
+        return ""
+    return esc(h["line"])
+
+
 def _cot_full(dd):
     return f"{_DAYS[dd.weekday()][:3]}, {_MON3[dd.month - 1]} {dd.day}, {dd.year}"
 
@@ -1143,6 +1160,7 @@ def bake_cot():
     src = replace_region(src, "cot-release", cot_release_html(d), COT_HTML)
     src = replace_region(src, "cot-head", cot_head(d, cx), COT_HTML)
     src = replace_region(src, "cot-answer", cot_answer(d, cx), COT_HTML)
+    src = replace_region(src, "cot-how", cot_how(d, cx), COT_HTML)
     src = replace_region(src, "cot-qa", cot_qa(d, cx), COT_HTML)
     return orig, src, COT_HTML
 
