@@ -3,13 +3,13 @@
  "generated": "2026-11-07",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 2171,
-  "with_parent": 133,
+  "live_boards": 2207,
+  "with_parent": 123,
   "with_dest": 114,
   "parent_by_rule": {
    "board-page": 1,
    "change": 4,
-   "chs-brand": 128
+   "chs-brand": 118
   },
   "dest_by_brand": {
    "ADM": 26,
@@ -525,56 +525,6 @@
   },
   "chsholdrege-smithfield": {
    "elevId": "e2zzeywtyh",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
-  "chsillinois-annawan": {
-   "elevId": "ejvw8akx83",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
-  "chsillinois-carrolltonwhitehal": {
-   "elevId": "ev5jffjyax",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
-  "chsillinois-davenport": {
-   "elevId": "es9p1vse66",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
-  "chsillinois-lowder": {
-   "elevId": "eszv3k3vmb",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
-  "chsillinois-morris": {
-   "elevId": "ej5r94np7a",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
-  "chsillinois-newark": {
-   "elevId": "epekprmc9g",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
-  "chsillinois-rochelle": {
-   "elevId": "e3bvqgkqsq",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
-  "chsillinois-seneca": {
-   "elevId": "eec2jchx67",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
-  "chsillinois-shipman": {
-   "elevId": "e2c8d9p9s2",
-   "parent": "CHS Inc.",
-   "pv": "chs-brand"
-  },
-  "chsillinois-steward": {
-   "elevId": "e5tdnjsnhz",
    "parent": "CHS Inc.",
    "pv": "chs-brand"
   },
