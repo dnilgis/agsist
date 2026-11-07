@@ -60,3 +60,6 @@ h3{font-size:.98rem;margin:16px 0 4px;color:var(--text)}
 .cbt-share-more[hidden]{display:none}
 .cbt-share-more input{flex:1 1 220px;min-width:0;font:inherit;font-size:.85rem;padding:.35rem .5rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text)}
 .cbt-share-msg{color:var(--text-muted);font-size:.85rem}
+/* the Bids near kit (components/bids-kit.js): Save picture and Print bid sheet share the row above; unavailable says so */
+.cbt-share-btn[disabled]{opacity:.55;cursor:not-allowed;background:transparent}
+.skb-st{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

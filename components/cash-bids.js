@@ -1469,6 +1469,46 @@ function renderBestBids(elevators){
   });
 }
 
+/* THE BIDS NEAR KIT (components/bids-kit.js, Nov 7, 2026): the corn and soybean bids of the search on screen, one
+   row per elevator (the Best price pick: rankCands, classGroups), for its picture and bid sheet; the kit orders them
+   by the price it prints. Each row is the price as the elevator posted it, to the cent as the town pages print it
+   (kitCash: half up, scripts/build_cash_bid_pages.py cash_c), with its posted time and the moment it stops counting
+   (kitUntil). A board not reached, or a read time with no posted time, is left out, never filled in. */
+function kitCash(v){var r=Math.round(Math.abs(v)*100+1e-7)/100;return '$'+fmtPx(v<0?-r:r);}
+/* The town builder's share_until(), for a row here: the earliest of the freshness window from its posted time (72 h,
+   a hand-pasted board 168 h), the end of its delivery month, the 15th for a first-half bid and a day its label names,
+   each to the end of that day in Central time (taken as 05:00 UTC the next day: never later than the Central day's end).
+   -> ISO, or '' with no posted time. */
+var KIT_MON=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+function kitUntil(b){
+  var t=Date.parse(b.asOf||'');if(!isFinite(t))return '';
+  var ends=[t+(b.pasted?168:72)*36e5],pm=/^(\d{4})-(\d{2})/.exec(String(b.deliveryPeriod||''));
+  function dayEnd(y,m,d){return Date.UTC(y,m-1,d+1,5);}
+  if(pm){
+    var y=+pm[1],m=+pm[2],lab=String(b.deliveryMonth||'');
+    ends.push(dayEnd(y,m,new Date(Date.UTC(y,m,0)).getUTCDate()));
+    if(/\b(?:fh|1h|first\s+half)\b/i.test(lab))ends.push(dayEnd(y,m,15));
+    var re=/(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})(?:st|nd|rd|th)?(?:\s*(?:-|–|to|thru|through)\s*(\d{1,2})(?:st|nd|rd|th)?)?/gi,h,last=null;
+    while((h=re.exec(lab)))if(!/\w/.test(lab.charAt(h.index+h[0].length)))last=h;
+    if(last){var mm=KIT_MON.indexOf(last[1].toLowerCase())+1,dd=+(last[3]||last[2]);if(dd>=1&&dd<=31)ends.push(dayEnd(y+(mm<m-6?1:0),mm,dd));}
+  }
+  return new Date(Math.min.apply(null,ends)).toISOString();
+}
+window.cbKitData=function(){
+  var zip=((($('cb-zip')||{}).value)||'').trim(),r=parseInt((radiusSel||{}).value,10)||50,rows={};
+  if(!/^\d{5}$/.test(zip)||!currentElevators||!currentElevators.length)return null;
+  ['corn','soybeans'].forEach(function(c){
+    var g=classGroups(rankCands(currentElevators,c)),cands=(g['']||[]).slice().sort(rankCmp);
+    rows[c]=cands.filter(function(x){return !x.elev.unread&&!x.bid.asOfRead&&x.bid.asOf&&ppu(x.bid.cashPrice)!=null;}).map(function(x){
+      var b=x.bid,bc=b.basis!=null&&!basisUnusual(b)&&basisUnit(b.basis,b)!=='?'?basisCents(b.basis,b):null,del=delShow(b)||'',px=ppu(b.cashPrice);
+      if(isSpotDelivery(b.deliveryMonth||b.deliveryStart||'',b))del='Spot';
+      return{n:x.elev.facility,t:placeOf(x.elev),s:x.elev.state||'',mi:x.elev.distance!=null?Math.round(x.elev.distance*10)/10:null,
+        c:kitCash(px),v:px,d:del,dl:del,b:bc!=null?AG.px.basis(bc):null,k:bc!=null?contractLabel(b):'',p:b.asOf,u:kitUntil(b)};
+    });
+  });
+  return{place:'ZIP '+zip,town:'',url:'https://agsist.com/cash-bids?zip='+zip+'&r='+r,page:'cash-bids',n:5,from:'the center of ZIP '+zip,rows:rows};
+};
+
 /* UNDER THIS, AFTER HAULING, THE "WINNER" IS NOT ONE. Three cents a bushel is
    inside the rounding of a fuel estimate and a scale ticket; naming a winner on
    it sends a truck the long way for nothing. */
