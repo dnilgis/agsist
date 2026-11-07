@@ -2133,7 +2133,10 @@ def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfac
     a few hundred bytes a page; a figure the page withholds is left out (the sheet drops its row, never a guess).
     The daily rows (bids, basis, rain, drought, hail) come from county-home.js in the browser, not from here.
       v  [census land and buildings $/ac, year, read-with-care words or omitted]
-      ss [state farm real estate $/ac, survey year]          sl [sales n, median $/ac, span, record]
+      ss [state farm real estate $/ac, survey year]
+      sl [transfers n, median $/ac, span, record, dated through, min acres]   sk [count under the minimum, span, the
+         minimum, min acres, record]   cov [states with recorded transfers on this site, when the county has none]
+      nr [next-door dry rent low, high, median, counties], same survey year
       r  [cash rent $/ac, year, "irr" for an irrigated-only rent]   rb rent per bushel of the corn trend
       yt [corn trend bu/ac, its label, practice]   yl [last county yield year, bu/ac]
       lr [loss ratio, years, dollars paid]   ov [years claims exceeded premium, of years]   lc [top causes, years]
@@ -2149,14 +2152,32 @@ def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfac
         o["v"] = [money(V["latest"]), V.get("latest_year")] + (["read with care: " + flag_words(fl, True)] if fl else [])
     if ss and ss.get("real_estate"):
         o["ss"] = [money(ss["real_estate"]), ss["year"]]
+    # recorded transfers (the benchmark, Nov 7: "what has sold?", always named transfers, never comps): the tile's
+    # median and count, its window and "dated through"; under the tile's minimum, the count it prints; none on file,
+    # the states this site reads deeds for (so "none here" is never read as "none sold")
     if sfacts:
-        o["sl"] = [sfacts["n"], money(sfacts["med"]), sfacts["span"], sfacts["record"]]
+        o["sl"] = [sfacts["n"], money(sfacts["med"]), sfacts["span"], sfacts["record"], _sday(sfacts["through"], sfacts.get("dm")), sfacts["min_acres"]]
+    else:
+        stl = sales_tile(W, f, st)
+        sm = sales_summary(W, st) if stl else None
+        c_ = ((sm or {}).get("counties") or {}).get(f)
+        if stl and c_ and not c_.get("med"):
+            o["sk"] = [c_.get("k12") or 0, _sspan(sm["windows"]["cur"]), sm.get("min_n") or 5, sm.get("min_acres") or 20, sm.get("record") or SALES_SOURCES[st]["record"]]
+        else:
+            o["cov"] = ", ".join(sorted(k for k in SALES_SOURCES if has_sales(W, k)))
     if rv and not rv_old:
         o["r"] = [money(rv["value"]), rv["year"]]
     elif ri and not (RL and ri.get("year") and ri["year"] < RL - 3):
         o["r"] = [money(ri["value"]), ri["year"], "irr"]
     if rpb is not None and not rv_old:
         o["rb"] = usd2(rpb)
+    # the next-door dry rents of the same survey year, as the Next door table prints them: low, high, median, count
+    if "r" in o and len(o["r"]) == 2:
+        nv = sorted(W.m("rent", g) for g in W.NB.get(f, []) if g in W.C and W.m("rent", g) is not None and get(W.C[g], "rent", "nonirr", "year") == RL)
+        if len(nv) >= 2:
+            n_ = len(nv)
+            md = nv[(n_ - 1) // 2] if n_ % 2 else (nv[n_ // 2 - 1] + nv[n_ // 2]) / 2
+            o["nr"] = [money(nv[0]), money(nv[-1]), money(md), n_]
     if ytv is not None:
         o["yt"] = [f1(ytv), CY.label_trend(yt["ty"]), CY.PRACTICE_WORDS.get(yt.get("b"), "")]
     if ylast and ylast[1] is not None:

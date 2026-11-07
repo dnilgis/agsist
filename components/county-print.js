@@ -37,81 +37,120 @@
     var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
     return MONTHS[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1];
   }
-  /* the county page with the kit's tags: (https://agsist.com/farmland-atlas/iowa/story-county, 'print', 'qr', '19169') */
-  function link(url, src, med, fips) {
-    return url + '?utm_source=' + src + '&utm_medium=' + med + '&utm_campaign=county-' + fips;
+  function isoDay(now) {
+    var d = new Date(now == null ? Date.now() : now);
+    try { return d.toLocaleDateString('en-CA', { timeZone: 'America/Chicago' }).slice(0, 10); } catch (e) { return d.toISOString().slice(0, 10); }
+  }
+  /* the county page, dated, with the kit's tags (a printed sheet dates itself; the page shows today's figures):
+     (https://agsist.com/farmland-atlas/iowa/story-county, 'print', 'qr', '19169', '2026-11-07') */
+  function link(url, src, med, fips, asof) {
+    return url + '?' + (asof ? 'asof=' + asof + '&' : '') + 'utm_source=' + src + '&utm_medium=' + med + '&utm_campaign=county-' + fips;
   }
   /* sentences of a live row's context, first n */
   function sentences(s, n) {
     return String(s || '').replace(/\.\s+(?=[A-Z0-9$])/g, '.\u0001').split('\u0001').map(function (x) { return x.trim(); }).filter(Boolean).slice(0, n).join(' ');
   }
   /* a reader's own field name never goes on paper or a picture */
-  function noNames(s) { return String(s || '').replace(/your field “[^”]*”/g, 'your saved field'); }
+  function noNames(s) { return String(s || '').replace(/your field \u201c[^\u201d]*\u201d/g, 'your saved field'); }
 
   /* ---------------------------------------------------------------- the sheet, as data
+     Four questions (the Atlas benchmark, Nov 7, 2026), in this order: what does land rent for, what has sold, what
+     can farming here earn, what could disrupt that income. The kinds of land value stay apart and labelled: the
+     rent survey, recorded transfers, the census county value and the state survey, never one blended "value".
+     Every row carries its source and period in small print.
      cp: the page's yearly figures (cp-data). live: {key: row} as county-home.js drew them. c: {name, state, url,
-     fips, now}. -> {title, blocks: [{key, h, rows: [{big, unit, text, size}]}], big4, chart, qr, url, src, notice} */
+     fips, now, asOf}. -> {title, blocks: [{key, h, rows: [{big, unit, text, src} | {head}]}], big4, chart, qr, ...} */
   function liveRow(f) { return f && f.value != null && !f.partial ? f : null; }
   function sheet(cp, live, c) {
     cp = cp || {}; live = live || {};
     var src = [], blocks = [], nass = false;
-    function credit(s) { if (s && src.indexOf(s) < 0) src.push(s); if (/NASS/.test(s || '')) nass = true; }
-    function block(key, h, rows) { rows = rows.filter(Boolean); if (rows.length) blocks.push({ key: key, h: h, rows: rows }); }
-    function lv(k, label, n, size) {
+    function credit(s) { if (s && src.indexOf(s) < 0) src.push(s); if (/NASS/.test(s || '')) nass = true; return s; }
+    function block(key, h, rows) { rows = rows.filter(Boolean); if (rows.some(function (r) { return !r.head; })) blocks.push({ key: key, h: h, rows: rows }); }
+    function lv(k, label, n) {
       var f = liveRow(live[k]);
       if (!f) return null;
-      credit(f.paper || (f.src && f.src[0]));
-      var d = mdy(f.date) || f.date || '';
-      return { big: f.value, short: label + (d ? ', ' + d : ''), cred: f.paper || (f.src && f.src[0]), text: noNames(label + (d ? ', ' + d : '') + (f.ctx && n ? '. ' + sentences(f.ctx, n) : '')).replace(/\.\./g, '.'), size: size, live: k };
+      var who = credit(f.paper || (f.src && f.src[0])), d = mdy(f.date) || f.date || '';
+      return { big: f.value, short: label + (d ? ', ' + d : ''), cred: who, live: k,
+        text: noNames(label + (f.ctx && n ? '. ' + sentences(f.ctx, n) : '.')).replace(/\.\./g, '.'), src: who + (d ? ', ' + d : '') };
     }
     var st = c.state || '';
-    /* 1. land */
-    var land = [];
-    if (cp.v) { credit('USDA NASS Census of Agriculture'); land.push({ big: cp.v[0], unit: '/ac', short: 'Land and buildings, ' + cp.v[1] + ' census', text: 'Land and buildings, ' + cp.v[1] + ' census: operators’ own estimate, not a sale price' + (cp.v[2] ? '; ' + cp.v[2] : '') + '.' }); }
-    if (cp.ss) { credit('USDA NASS Land Values'); land.push({ big: cp.ss[0], unit: '/ac', short: st + ' farm real estate, ' + cp.ss[1] + ' state survey', text: st + ' farm real estate, ' + cp.ss[1] + ' state survey: land and buildings, state average.' }); }
-    if (cp.sl) { credit('recorded deeds: ' + cp.sl[3]); land.push({ big: cp.sl[1], unit: '/ac', short: 'Median recorded farmland sale, ' + cp.sl[2], text: 'Median of ' + cp.sl[0] + ' recorded bare farmland sale' + (cp.sl[0] === 1 ? '' : 's') + ', ' + cp.sl[2] + '. No buyer or seller named.' }); }
-    block('land', 'Land', land);
-    /* 2. rent */
-    var rent = [];
-    if (cp.r) { credit('USDA NASS Cash Rents Survey'); rent.push({ big: cp.r[0], unit: '/ac', short: (cp.r[2] === 'irr' ? 'Irrigated' : 'Cash') + ' rent, ' + cp.r[1] + ' county average', text: (cp.r[2] === 'irr' ? 'Irrigated' : 'Non-irrigated') + ' cash rent, ' + cp.r[1] + ' county average.' }); }
-    if (cp.rb && cp.yt && cp.r) rent.push({ big: cp.rb, unit: '/bu', text: 'Rent per bushel: ' + cp.r[0] + ' ÷ ' + cp.yt[0] + ' bu, the corn ' + cp.yt[1] + '.' });
-    block('rent', 'Rent', rent);
-    /* 3. crops */
-    var crops = [];
-    if (cp.yt) { credit('USDA NASS county yields'); crops.push({ big: cp.yt[0], unit: ' bu/ac', short: 'Corn, ' + cp.yt[1], text: 'Corn, ' + cp.yt[1] + (cp.yt[2] ? ', ' + cp.yt[2] : '') + '.' }); }
-    if (cp.yl) { credit('USDA NASS county yields'); crops.push({ big: cp.yl[1], unit: ' bu/ac', short: 'Corn, ' + cp.yl[0] + ' county yield', text: 'Corn, ' + cp.yl[0] + ' county yield, all practices.' }); }
-    block('crops', 'Crops', crops);
-    /* 4. grain: today's rows, as the page drew them */
-    block('grain', 'Grain', [lv('corn-bid', 'Best corn bid within 50 mi', 2), lv('soy-bid', 'Best soybean bid within 50 mi', 1),
-      lv('corn-basis', 'Corn basis', 3), lv('soy-basis', 'Soybean basis', 0)]);
-    /* 5. weather */
-    var wx = [lv('rain', 'Rain since Jan 1', 1), lv('drought', 'Drought this week', 1), lv('hail', 'Hail reports, last 30 days', 2)];
-    if (cp.hd) { credit('NOAA Storm Events'); wx.push({ big: cp.hd[0], unit: ' a year', short: 'Days with hail 1 inch or larger', text: 'Days with hail 1 inch or larger, reports ' + cp.hd[1] + '; a zero is no report, not proof of no hail.' }); }
-    block('weather', 'Weather', wx);
-    /* 6. risk */
-    var risk = [];
-    if (cp.lr) { credit('USDA RMA'); risk.push({ big: cp.lr[0], short: 'Crop insurance loss ratio, ' + cp.lr[1], text: 'Crop insurance loss ratio, ' + cp.lr[1] + ': claims ÷ total premium, ' + cp.lr[2] + ' paid.' }); }
-    if (cp.ov) risk.push({ big: cp.ov[0] + ' of ' + cp.ov[1], text: 'Crop years claims exceeded premium.' });
-    if (cp.lc) { credit('USDA RMA'); risk.push({ text: 'Largest causes of loss, ' + cp.lc[1] + ': ' + cp.lc[0] + ', share of dollars paid.' }); }
-    block('risk', 'Risk', risk);
+    /* 1. What does land rent for? */
+    var rent = [], rsrc;
+    if (cp.r) {
+      rsrc = credit('USDA NASS Cash Rents Survey') + ', ' + cp.r[1];
+      rent.push({ big: cp.r[0], unit: '/ac', short: (cp.r[2] === 'irr' ? 'Irrigated' : 'Cash') + ' rent, ' + cp.r[1] + ' county average',
+        text: (cp.r[2] === 'irr' ? 'Irrigated' : 'Non-irrigated') + ' cash rent, county average: what tenants paid, not a quote for a new lease.', src: rsrc });
+      if (cp.nr) rent.push({ big: cp.nr[0] + ' to ' + cp.nr[1], unit: '/ac', text: 'Next-door counties\u2019 dry rent, the same survey year: median ' + cp.nr[2] + ', ' + cp.nr[3] + ' counties.', src: rsrc });
+      if (cp.rb && cp.yt) rent.push({ big: cp.rb, unit: '/bu', text: 'Rent per bushel: ' + cp.r[0] + ' \u00f7 ' + cp.yt[0] + ' bu, the corn ' + cp.yt[1] + '.', src: 'AGSIST arithmetic on the USDA NASS rent and yields' });
+    }
+    block('rent', 'What does land rent for?', rent);
+    /* 2. What has sold? Recorded transfers first; then the estimates, labelled as estimates */
+    var sold = [];
+    if (cp.sl) {
+      sold.push({ big: cp.sl[1], unit: '/ac', short: 'Median recorded transfer, ' + cp.sl[2],
+        text: 'Median of ' + cp.sl[0] + ' recorded transfer' + (cp.sl[0] === 1 ? '' : 's') + ' of bare farmland, ' + cp.sl[5] + '+ acres, ' + cp.sl[2] + '. No buyer or seller named.',
+        src: credit('Recorded deeds: ' + cp.sl[3]) + ', dated through ' + cp.sl[4] });
+    } else if (cp.sk) {
+      sold.push({ text: cp.sk[0] + ' recorded transfer' + (cp.sk[0] === 1 ? '' : 's') + ' of bare farmland, ' + cp.sk[3] + '+ acres, ' + cp.sk[1] + '. A median needs ' + cp.sk[2] + ', so none is shown.',
+        src: credit('Recorded deeds: ' + cp.sk[4]) + ', ' + cp.sk[1] });
+    } else {
+      sold.push({ text: 'No recorded transfers in our data for this county.' + (cp.cov ? ' This site reads county deed records in ' + cp.cov + ' so far.' : '') });
+    }
+    if (cp.v || cp.ss) sold.push({ head: 'Value estimates, not sales' });
+    if (cp.v) sold.push({ big: cp.v[0], unit: '/ac', short: 'Land and buildings, ' + cp.v[1] + ' census',
+      text: 'This county\u2019s land and buildings, farm operators\u2019 own estimate' + (cp.v[2] ? '; ' + cp.v[2] : '') + '.', src: credit('USDA Census of Agriculture') + ', ' + cp.v[1] });
+    if (cp.ss) sold.push({ big: cp.ss[0], unit: '/ac', short: st + ' farm real estate, ' + cp.ss[1] + ' state survey',
+      text: st + ' farm real estate (land and buildings), state average, not this county.', src: credit('USDA NASS Land Values survey') + ', ' + cp.ss[1] });
+    block('sold', 'What has sold?', sold);
+    /* 3. What can farming here earn? */
+    var earn = [];
+    if (cp.yt) earn.push({ big: cp.yt[0], unit: ' bu/ac', short: 'Corn, ' + cp.yt[1], text: 'Corn, ' + cp.yt[1] + (cp.yt[2] ? ', ' + cp.yt[2] : '') + '.', src: credit('USDA NASS county yields') + ', fitted by AGSIST' });
+    if (cp.yl) earn.push({ big: cp.yl[1], unit: ' bu/ac', short: 'Corn, ' + cp.yl[0] + ' county yield', text: 'Corn, last county yield, all practices.', src: credit('USDA NASS county yields') + ', ' + cp.yl[0] });
+    var cb = lv('corn-bid', 'Best corn bid within 50 mi', 2);
+    earn.push(cb, lv('soy-bid', 'Best soybean bid within 50 mi', 1), lv('corn-basis', 'Corn basis', 3), lv('soy-basis', 'Soybean basis', 0));
+    var bid = cb && /^\$(\d+\.\d+)$/.exec(cb.big), gross = bid && cp.yt ? Math.round(+cp.yt[0] * +bid[1] / 5) * 5 : null;
+    if (gross) earn.push({ text: 'Rough gross: ' + cp.yt[0] + ' bu trend \u00d7 ' + cb.big + ' best bid = about $' + String(gross).replace(/\B(?=(\d{3})+(?!\d))/g, ',') + ' an acre, before any cost. Not an appraisal.',
+      src: 'AGSIST arithmetic on the two rows above' });
+    block('earn', 'What can farming here earn?', earn);
+    /* 4. What could disrupt that income? */
+    var dr = lv('drought', 'Drought this week', live.drought && live.drought.value === 'None' ? 0 : 1);
+    var hl = lv('hail', 'Hail reports, last 30 days', 1);
+    /* storms: today's hail row, with the county's hail record beside it (each with its own source and period) */
+    if (cp.hd) {
+      var rec = 'Days with hail 1 inch or larger: ' + cp.hd[0] + ' a year (a zero is no report, not proof of no hail).', rs = credit('NOAA Storm Events') + ' reports, ' + cp.hd[1];
+      if (hl) { hl.text = hl.text.replace(/ A missing report is not proof of no hail\./, '') + ' ' + rec; hl.src += '; ' + rs; }
+      else hl = { big: cp.hd[0], unit: ' a year', short: 'Days with hail 1 inch or larger', text: rec.replace(/: [\d.]+ a year/, ''), src: rs };
+    }
+    var risk = [lv('rain', 'Rain since Jan 1', 1), dr, hl];
+    if (cp.lr) risk.push({ big: cp.lr[0], short: 'Crop insurance loss ratio, ' + cp.lr[1], text: 'Crop insurance loss ratio: claims \u00f7 total premium, ' + cp.lr[2] + ' paid' + (cp.ov ? '; claims topped premium in ' + cp.ov[0] + ' of ' + cp.ov[1] + ' crop years' : '') + '.'
+      + (cp.lc ? ' Largest causes of loss' + (cp.lc[1] !== cp.lr[1] ? ', ' + cp.lc[1] : '') + ': ' + cp.lc[0] + ', share of dollars paid.' : ''),
+      src: credit('USDA RMA Summary of Business') + (cp.lc ? ' and cause of loss' : '') + ', ' + cp.lr[1] });
+    else if (cp.lc) risk.push({ text: 'Largest causes of loss: ' + cp.lc[0] + ', share of dollars paid.', src: credit('USDA RMA cause of loss') + ', ' + cp.lc[1] });
+    block('risk', 'What could disrupt that income?', risk);
     var m = chartModel(cp);
     if (m) credit('USDA NASS county yields');
-    /* the four biggest numbers for the picture: land, rent, corn, then today's corn bid or the loss ratio */
-    var big4 = [], pick = function (b, k) { var r = b && b.rows.filter(function (x) { return x.big; })[0]; if (r && big4.length < 4) big4.push({ key: k, big: r.big, unit: r.unit || '', text: r.short || r.text, cred: r.cred }); };
+    /* the four biggest numbers for the picture: rent, land (a transfer median, else the census value), corn, then
+       today's corn bid or the loss ratio */
+    var big4 = [], add = function (r, k) { if (r && r.big && big4.length < 4) big4.push({ key: k, big: r.big, unit: r.unit || '', text: r.short || r.text, cred: r.cred }); };
     var by = {}; blocks.forEach(function (b) { by[b.key] = b; });
-    pick(by.land, 'land'); pick(by.rent, 'rent'); pick(by.crops, 'crops');
-    if (by.grain && by.grain.rows[0].live === 'corn-bid') pick(by.grain, 'grain'); else pick(by.risk, 'risk');
-    if (big4.length < 4) pick(by.weather, 'weather');
+    function first(k) { return by[k] ? by[k].rows.filter(function (x) { return x.big; })[0] : null; }
+    add(first('rent'), 'rent'); add(first('sold'), 'sold'); add(first('earn'), 'earn');
+    if (cb) add(cb, 'bid'); else add(by.risk && by.risk.rows.filter(function (x) { return x.big && /loss ratio/.test(x.short || ''); })[0], 'risk');
+    if (big4.length < 4) add(first('risk'), 'risk');
     /* the picture's source line: the sources of what it shows (the four numbers and the chart), short */
     var pic = [];
-    big4.forEach(function (b) { var k = { land: 'USDA NASS', rent: 'USDA NASS', crops: 'USDA NASS', risk: 'USDA RMA' }[b.key] || b.cred; if (k && pic.indexOf(k) < 0) pic.push(k); });
+    big4.forEach(function (b) { var k = b.cred || { rent: 'USDA NASS', earn: 'USDA NASS', risk: 'USDA RMA' }[b.key] || (/census/.test(b.text) ? 'USDA Census of Agriculture' : /survey/.test(b.text) ? 'USDA NASS' : 'recorded deeds'); if (pic.indexOf(k) < 0) pic.push(k); });
     if (m && pic.indexOf('USDA NASS') < 0) pic.push('USDA NASS');
-    var picSrc = 'Sources: ' + (pic.join('; ') || 'public records') + '. ' + (pic.indexOf('USDA NASS') >= 0 ? NASS_NOTICE : '');
-    var title = (c.name || 'This county') + (st ? ', ' + st : '') + ': County Print, ' + dateLine(c.now);
-    var srcLine = 'Sources: ' + (src.length ? src.join('; ') : 'public records') + '. ' + (nass ? NASS_NOTICE + ' ' : '') + CALC;
-    return { title: title, sub: (c.fips ? 'FIPS ' + c.fips + '. ' : '') + 'County figures from public records, each with its year and source.', name: c.name, state: st, date: dateLine(c.now), blocks: blocks, big4: big4, chart: m,
-      url: c.url, shown: String(c.url || '').replace(/^https?:\/\//, ''), qr: link(c.url, 'print', 'qr', c.fips), pic: link(c.url, 'share', 'picture', c.fips),
-      src: srcLine, picSrc: picSrc.trim(), notice: 'Not advice and not an appraisal of any farm. County figures from public records, each with its year; today’s rows are as of the date shown. Bids are posted prices, not a contract: call before you haul.' };
+    var picSrc = 'Sources: ' + (pic.join('; ') || 'public records') + '. ' + (pic.some(function (x) { return /NASS|Census/.test(x); }) ? NASS_NOTICE : '');
+    var asof = isoDay(c.now), made = dateLine(c.now);
+    var title = (c.name || 'This county') + (st ? ', ' + st : '') + ': County Print, ' + made;
+    var srcLine = 'Sources: ' + (src.length ? src.join('; ') : 'public records') + '. ' + (nass || src.some(function (x) { return /Census/.test(x); }) ? NASS_NOTICE + ' ' : '') + CALC;
+    return { title: title, sub: (c.fips ? 'FIPS ' + c.fips + '. ' : '') + 'Four questions from public records, each figure with its source and period.', name: c.name, state: st, date: made, asof: asof,
+      blocks: blocks, big4: big4, chart: m, url: c.url, shown: String(c.url || '').replace(/^https?:\/\//, ''),
+      qr: link(c.url, 'print', 'qr', c.fips, asof), pic: link(c.url, 'share', 'picture', c.fips, asof), share: link(c.url, 'share', 'link', c.fips, asof),
+      src: srcLine, picSrc: picSrc.trim(),
+      made: 'Made ' + made + ' from data as of ' + (c.asOf ? c.asOf + ' for the yearly figures (each with its year)' : 'the periods shown') + ' and the dates on today\u2019s rows.',
+      notice: 'Not advice and not an appraisal of any farm. Bids are posted prices, not a contract: call before you haul.' };
   }
 
   /* ---------------------------------------------------------------- the chart
@@ -213,20 +252,27 @@
   /* ---------------------------------------------------------------- the sheet, as HTML */
   function html(s, qr, chartH) {
     if (!s) return '';
-    var grid = s.blocks.map(function (b) {
-      return '<section class="cprs-b cprs-' + b.key + '"><h2 class="cprs-h">' + esc(b.h) + '</h2>' + b.rows.map(function (r, i) {
-        return '<div class="cprs-r' + (i ? '' : ' cprs-lead') + (r.big ? '' : ' cprs-t') + (r.big && String(r.big).length > 9 ? ' cprs-long' : '') + '">' + (r.big ? '<b>' + esc(r.big) + (r.unit ? '<small>' + esc(r.unit) + '</small>' : '') + '</b>' : '')
-          + '<span>' + esc(r.text) + '</span></div>';
+    function one(b) {
+      var lead = true;
+      return '<section class="cprs-b cprs-' + b.key + '"><h2 class="cprs-h">' + esc(b.h) + '</h2>' + b.rows.map(function (r) {
+        if (r.head) return '<h3 class="cprs-sh">' + esc(r.head) + '</h3>';
+        var L = lead && r.big; if (r.big) lead = false;
+        return '<div class="cprs-r' + (L ? ' cprs-lead' : '') + (r.big ? '' : ' cprs-t') + (r.big && String(r.big).length > 9 ? ' cprs-long' : '') + '">'
+          + (r.big ? '<b>' + esc(r.big) + (r.unit ? '<small>' + esc(r.unit) + '</small>' : '') + '</b>' : '')
+          + '<span>' + esc(r.text) + '</span>' + (r.src ? '<i>' + esc(r.src) + '</i>' : '') + '</div>';
       }).join('') + '</section>';
-    }).join('');
-    var chart = s.chart ? '<figure class="cprs-chart">' + toSvg(chartItems(s.chart, 560, chartH || 230, 15), chartLabel(s)) + '<figcaption>' + esc(chartCaption(s)) + '</figcaption></figure>' : '';
+    }
+    /* two columns that fill on their own: rent, earnings and the yield chart at the left; sales, risks and the QR
+       code at the right */
+    var col = function (ks, tail) { return '<div class="cprs-col">' + s.blocks.filter(function (b) { return ks.indexOf(b.key) >= 0; }).map(one).join('') + (tail || '') + '</div>'; };
+    var chart = s.chart ? '<figure class="cprs-chart">' + toSvg(chartItems(s.chart, 380, chartH || 190, 13), chartLabel(s)) + '<figcaption>' + esc(chartCaption(s)) + '</figcaption></figure>' : '';
+    var side = '<aside class="cprs-side">' + (qr ? '<div class="cprs-qr">' + qr + '</div>' : '')
+      + '<div><p class="cprs-scan">' + esc(QR_CAP) + '</p><p class="cprs-addr">' + esc(s.shown).replace(/\//g, '/<wbr>') + '</p></div></aside>';
     return '<div class="cprs-bar"></div><header class="cprs-top"><div><h1 class="cprs-h1">' + esc(s.title) + '</h1>'
       + '<p class="cprs-sub">' + esc(s.sub) + '</p></div>'
       + '<div class="cprs-brand"><img class="cprs-logo" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="86" height="40"><p class="cprs-url">agsist.com</p></div></header>'
-      + '<div class="cprs-grid">' + grid + '</div>'
-      + '<div class="cprs-low' + (chart ? '' : ' cprs-nochart') + '">' + chart + '<aside class="cprs-side">' + (qr ? '<div class="cprs-qr">' + qr + '</div>' : '')
-      + '<p class="cprs-scan">' + esc(QR_CAP) + '</p><p class="cprs-addr">' + esc(s.shown).replace(/\//g, '/<wbr>') + '</p></aside></div>'
-      + '<p class="cprs-src">' + esc(s.src) + '</p><p class="cprs-na">' + esc(s.notice) + '</p>';
+      + '<div class="cprs-grid">' + col(['rent', 'earn'], chart) + col(['sold', 'risk'], side) + '</div>'
+      + '<p class="cprs-src">' + esc(s.src) + '</p><p class="cprs-na">' + esc(s.made) + ' ' + esc(s.notice) + '</p>';
   }
 
   /* ---------------------------------------------------------------- the picture
@@ -285,7 +331,7 @@
     return { canvas: c, texts: texts, sizes: sizes };
   }
 
-  var api = { sheet: sheet, html: html, image: image, chartModel: chartModel, chartItems: chartItems, toSvg: toSvg, link: link, dateLine: dateLine,
+  var api = { sheet: sheet, html: html, isoDay: isoDay, image: image, chartModel: chartModel, chartItems: chartItems, toSvg: toSvg, link: link, dateLine: dateLine,
     sentences: sentences, noNames: noNames, QR_CAP: QR_CAP, PAPER: PAPER };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgCountyPrint = api;
@@ -303,7 +349,9 @@
   function load(tag, attrs) { var el = doc.createElement(tag); Object.keys(attrs).forEach(function (k) { el[k] = attrs[k]; }); doc.head.appendChild(el); return el; }
   if (!doc.querySelector('link[href^="/components/county-print.css"]')) load('link', { rel: 'stylesheet', href: CSS });
   if (!root.AgQR) load('script', { src: QR_JS, async: true }).onload = function () { soon(); };
-  function current() { return sheet(CP, root.AgCountyFacts || {}, { name: NAME, state: STATE, url: URL_, fips: FIPS, now: Date.now() }); }
+  /* the page's own "Figures as of" date, for the sheet's footer */
+  var AS_OF = (((doc.querySelector('main') || doc.body).textContent.match(/Figures as of ([A-Z][a-z]{2} \d{1,2}, \d{4})/)) || [])[1] || '';
+  function current() { return sheet(CP, root.AgCountyFacts || {}, { name: NAME, state: STATE, url: URL_, fips: FIPS, now: Date.now(), asOf: AS_OF }); }
   function qrSvg(s) { try { return root.AgQR ? root.AgQR.svg(s.qr, QR_CAP + ': ' + s.shown, 10) : ''; } catch (e) { return ''; } }
   function measure(el) { el.classList.add('cprs-measure'); var h = el.offsetHeight; el.classList.remove('cprs-measure'); return h; }
   /* one page whatever the county carries: a shorter chart, then tighter spacing, then (only past that) scaled */
@@ -312,12 +360,12 @@
     if (!el) { el = doc.createElement('div'); el.id = 'cprs'; el.className = 'cprs'; el.setAttribute('aria-hidden', 'true'); doc.body.appendChild(el); }
     var code = qrSvg(s), fits = false;
     el.style.zoom = '';
-    [260, 230, 195, 165].some(function (h, i) {
-      el.innerHTML = html(s, code, h);
-      el.classList.toggle('cprs-tight', i === 3);
-      fits = measure(el) <= MAX_PX;
-      return fits;
-    });
+    /* the tallest chart that keeps the page to one sheet (the chart's column is often the shorter one), then the
+       tight spacing with the shortest chart */
+    var HS = [300, 260, 230, 200, 175, 150, 130, 115];
+    el.classList.remove('cprs-tight');
+    HS.some(function (h) { el.innerHTML = html(s, code, h); fits = measure(el) <= MAX_PX; return fits; });
+    if (!fits) { el.classList.add('cprs-tight'); el.innerHTML = html(s, code, HS[HS.length - 1]); fits = measure(el) <= MAX_PX; }
     if (!fits) { var z = Math.floor(MAX_PX / measure(el) * 100) / 100; el.style.zoom = String(z); el.setAttribute('data-zoom', String(z)); }
     else el.removeAttribute('data-zoom');
     el.setAttribute('data-fit', fits ? '1' : '0');
@@ -382,7 +430,7 @@
   });
   var lb = $('cpr-link');
   if (lb) lb.addEventListener('click', function () {
-    var u = link(URL_, 'share', 'link', FIPS), nav = root.navigator;
+    var u = current().share, nav = root.navigator;
     ga('county_print', { kind: 'link', fips: FIPS });
     function copied() { say(lb, 'Link copied.', 'Copy link'); }
     if (nav.clipboard && nav.clipboard.writeText) nav.clipboard.writeText(u).then(copied, function () { root.prompt('Copy this link', u); });
