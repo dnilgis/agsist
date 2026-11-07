@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-07-cpavg",
+   "date": "2026-11-07",
+   "title": "Harvest pace against USDA's five-year average again",
+   "line": "Harvest by state shows the five-year average USDA prints in its weekly Crop Progress report again, filling the gaps the 2025 shutdown left.",
+   "link": "/conditions#harvest"
+  },
+  {
    "id": "2026-11-07-binprint",
    "date": "2026-11-07",
    "title": "Bin Print: map your bin yard",
