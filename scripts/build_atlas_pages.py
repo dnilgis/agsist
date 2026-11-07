@@ -1635,6 +1635,102 @@ def land_first_rent(rv, ri, rv_old, R):
     return '<div class="lf-r"><span class="l">Rent</span><span class="r"><b>%s</b><span class="lc"> %s</span></span></div>' % (esc(v), esc(sub))
 
 
+# ---- auction results (Sig, Nov 7, 2026): the sold and auction results land auction firms publish on their
+# own sites, read into data/land/auctions/<firm>.json (scripts/read_schrader.py). A fourth kind of land figure,
+# kept apart from recorded transfers, surveys and assessments: its own card after the Land card, the firm's
+# own figures as printed (its per-acre figure where it printed one; a tract without one gets none, never a
+# division of a house tract), credit and a link to the firm's page on every row, no names at all (the
+# renderer reads only the fields below). A county with no records gets no card.
+AUC_DIR = "data/land/auctions"
+# source -> (short name for the link, full name for the credit line, the only pages a row may link to)
+AUC_FIRMS = {"schrader": ("Schrader", "Schrader Real Estate and Auction Co.", "https://www.schraderauction.com/auctions/")}
+AUC_NOTE = "Not recorded transfers; not every sale is listed. Figures as published by the auction firm."
+_AUC_ISO = re.compile(r"^\d{4}-\d{2}-\d{2}$")
+_AUC_TRACTS = re.compile(r"^[0-9A-Za-z]{1,4}(?:\+[0-9A-Za-z]{1,4}){0,19}$")
+
+
+def _auc_num(x):
+    return isinstance(x, (int, float)) and not isinstance(x, bool) and math.isfinite(x) and x > 0
+
+
+def auction_record(r, today):
+    """One record in the shape the page prints, or None (a record with anything unexpected is left out,
+    never guessed at). Only these fields are read; a name in the file can never reach the page."""
+    if not isinstance(r, dict) or r.get("source") not in AUC_FIRMS:
+        return None
+    firm = AUC_FIRMS[r["source"]]
+    f, d, aid, url = str(r.get("county_fips") or ""), str(r.get("date") or ""), str(r.get("auction_id") or ""), str(r.get("url") or "")
+    if not re.match(r"^\d{5}$", f) or not _AUC_ISO.match(d) or not re.match(r"^[0-9A-Za-z-]{1,12}$", aid):
+        return None
+    try:
+        datetime.date.fromisoformat(d)
+    except ValueError:
+        return None
+    if d > today or url != firm[2] + aid or not _auc_num(r.get("headline_acres")) or not _auc_num(r.get("total_sold")):
+        return None
+    if r.get("kind", "auction") != "auction":
+        return None
+    tr = []
+    for t in r.get("tracts") or []:
+        if not isinstance(t, dict) or not _AUC_TRACTS.match(str(t.get("tracts") or "")) or not _auc_num(t.get("sold")):
+            return None
+        pa = t.get("per_acre")
+        if pa is not None and not _auc_num(pa):
+            return None
+        tr.append({"tracts": str(t["tracts"]), "sold": t["sold"], "per_acre": pa})
+    return {"source": r["source"], "fips": f, "date": d, "id": aid, "url": url,
+            "acres": r["headline_acres"], "total": r["total_sold"], "tracts": tr}
+
+
+def load_auctions(root=".", today=None, paths=None):
+    """county FIPS -> records, newest first, from every data/land/auctions/*.json (or these paths)."""
+    today = today or datetime.date.today().isoformat()
+    out = {}
+    for p in sorted(paths if paths else glob.glob(os.path.join(root, AUC_DIR, "*.json"))):
+        try:
+            J = json.load(open(p, encoding="utf-8"))
+        except Exception:
+            continue
+        for r in ((J.get("records") or []) if isinstance(J, dict) else []):
+            a = auction_record(r, today)
+            if a:
+                out.setdefault(a["fips"], []).append(a)
+    for f in out:
+        # one row per auction; newest first, then the firm and auction number so the order never wobbles
+        seen, rows = set(), []
+        for a in sorted(out[f], key=lambda a: (a["date"], a["source"], a["id"]), reverse=True):
+            if (a["source"], a["id"]) not in seen:
+                seen.add((a["source"], a["id"]))
+                rows.append(a)
+        out[f] = rows
+    return out
+
+
+def _auc_acres(x):
+    return fmt(x, 1) if x != int(x) else fmt(x, 0)
+
+
+def auction_section(recs):
+    """The "Auction results" card for one county, or "" when it has no records."""
+    if not recs:
+        return ""
+    rows = []
+    for a in recs:
+        firm = AUC_FIRMS[a["source"]]
+        tl = "".join('<li>Tract%s %s: %s%s</li>' % (
+            "s" if "+" in t["tracts"] else "", esc(t["tracts"]), money(t["sold"]),
+            (", %s/acre, as reported" % money(t["per_acre"])) if t["per_acre"] is not None else ", no per-acre figure published")
+            for t in a["tracts"])
+        rows.append('<li style="margin:0 0 .5rem"><b>%s</b>: %s acres, %s total sold.%s %s</li>' % (
+            esc(_sday(a["date"])), _auc_acres(a["acres"]), money(a["total"]),
+            ('<ul style="margin:.15rem 0 .25rem;padding-left:1.1rem;list-style:disc">%s</ul>' % tl) if tl else "",
+            SL.link(a["url"], esc("%s auction #%s" % (firm[0], a["id"])), ' rel="noopener"')))
+    firms = sorted({AUC_FIRMS[a["source"]][1] for a in recs})
+    credit = "Sold and auction results reported by %s. %s" % (" and ".join(firms).rstrip("."), AUC_NOTE)   # "Co." ends it once
+    return ('<section class="card" aria-labelledby="c-auc"><h2 id="c-auc">Auction results</h2>'
+            '<ul class="auc" style="list-style:none;margin:0;padding:0">%s</ul><p class="note">%s</p></section>' % ("".join(rows), esc(credit)))
+
+
 def watch_form(f, lab, stn):
     """Watch-a-county signup. The worker stores it as pending; a confirmation email comes first."""
     return (f'<form class="watch" data-fips="{esc(f)}" aria-label="Watch {esc(lab)}">'
@@ -2894,6 +2990,8 @@ def county_page(W, f, d, stamp):
     in_ask = ('<div data-land-alert data-source="%s"></div>' % esc(("page:%s/%s" % (OUT, W.slug[f]))[:60])) if lf_html and st == "IN" else ""
     C_LAND = ('<section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2>'
               + S1 + S2 + sales_block(W, f, lab, st, bool(lf_html)) + in_ask + sales_faq_html + land_sales_line(W, f, lab, st) + "</section>")
+    # auction results: their own card right after the Land card, never inside it (Sig, Nov 7, 2026)
+    C_AUC = auction_section(getattr(W, "auctions", {}).get(f))
     arc_link = ('<p class="note">Benchmarks, payments and the choice for each crop: <a href="%s">ARC or PLC in %s</a>.</p>' % (arc_url, esc(lab))) if arc_url else (
         ('<p class="note">No county ARC or PLC estimate here. <a href="/arc-plc/%s">ARC or PLC in %s</a>.</p>' % (slugify(stn), esc(stn)))
         if os.path.exists(os.path.join(W.root, "arc-plc", slugify(stn) + ".html")) else "")
@@ -2939,7 +3037,7 @@ def county_page(W, f, d, stamp):
 </div>
 {read_html}
 <section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
-<div class="chg">{C_GRAIN}{C_WX}{C_CROPS}{C_LAND}{C_PROG}{C_FARMS}</div>
+<div class="chg">{C_GRAIN}{C_WX}{C_CROPS}{C_LAND}{C_AUC}{C_PROG}{C_FARMS}</div>
 <div id="watch">{watch_form(f, lab, stn)}</div>
 {ND}
 {gaps_html(W, f, d, st)}
@@ -3272,10 +3370,12 @@ def human_day(iso):
     return "%s %d, %d" % (d.strftime("%b"), d.day, d.year)
 
 
-def build(root=".", out_root=None, only=None, quiet=False, today=None):
-    """Writes everything. Returns (urls, problems)."""
+def build(root=".", out_root=None, only=None, quiet=False, today=None, auctions=None):
+    """Writes everything. Returns (urls, problems). auctions: auction result files to read in place of
+    data/land/auctions/*.json (tests)."""
     W = World(root)
     day = build_day(today)
+    W.auctions = load_auctions(root, day, auctions)
     import stories_core as SK
     import stories_atlas as SA
     W.stories = SK.load(SA, os.path.join(root, SA.STORE))
@@ -3323,6 +3423,9 @@ def build(root=".", out_root=None, only=None, quiet=False, today=None):
             # head counts, this year's drought weeks, the season rain mean, the stands-out tiles
             fig["farm_facts"] = [d.get("frost"), d.get("livestock"), get(d, "drought", "partial_year"),
                                  get(d, "climate", "gs_recent", "mean_in"), stands_out(W, f, d), price_lines(W, f, d)]
+            # the auction results card is a figure on the page too (Nov 7, 2026)
+            if W.auctions.get(f):
+                fig["auctions"] = W.auctions[f]
             h = hashlib.sha1(json.dumps(fig, sort_keys=True,
                                         default=str).encode("utf-8")).hexdigest()[:12]
             date = page_day(prev.get(f), h, day, W.built)
@@ -3406,10 +3509,11 @@ def main():
     ap.add_argument("--only", nargs="*", default=None, help="build only these FIPS (no state, hub or data pages)")
     ap.add_argument("--root", default=".")
     ap.add_argument("--out", default=None)
+    ap.add_argument("--auctions", nargs="*", default=None, help="auction result files in place of data/land/auctions/*.json")
     a = ap.parse_args()
     if a.selftest:
         return selftest()
-    urls, problems, W = build(a.root, a.out, set(a.only) if a.only else None)
+    urls, problems, W = build(a.root, a.out, set(a.only) if a.only else None, auctions=a.auctions)
     if a.print_urls:
         print("\n".join(urls))
     # a run that wrote almost nothing is a failure, not a green build
@@ -3669,6 +3773,18 @@ def selftest():
         check("reader text never prints an ISO day", not re.search(r"Figures as of \d{4}-", t19))
         import shutil
         shutil.rmtree(tmp, ignore_errors=True)
+    # auction results (Nov 7, 2026): the firm's own figures, only from its own page, never a later date, never a name
+    ar = {"source": "schrader", "auction_id": "9630", "county_fips": "18177", "date": "2026-11-05", "headline_acres": 296.5,
+          "total_sold": 2905000, "url": "https://www.schraderauction.com/auctions/9630", "buyer": "[buyer]",
+          "tracts": [{"tracts": "1+2", "sold": 1660000, "per_acre": 9459}, {"tracts": "3", "sold": 245000, "per_acre": None}]}
+    a_ = auction_record(ar, "2026-11-07")
+    check("auction record kept, name dropped", a_ is not None and "buyer" not in a_ and a_["tracts"][1]["per_acre"] is None)
+    check("auction after the build day left out", auction_record(ar, "2026-11-04") is None)
+    check("auction linking elsewhere left out", auction_record(dict(ar, url="https://example.com/auctions/9630"), "2026-11-07") is None)
+    check("auction with a bad tract left out", auction_record(dict(ar, tracts=[{"tracts": "1", "sold": -5}]), "2026-11-07") is None)
+    sec_ = auction_section([a_])
+    check("auction card", "Tracts 1+2: $1,660,000, $9,459/acre, as reported" in sec_ and "Tract 3: $245,000, no per-acre figure published" in sec_
+          and "Schrader auction #9630" in sec_ and "Co.." not in sec_ and "\u2014" not in sec_ and auction_section([]) == "")
     print("selftest: %s" % ("FAIL (%d)" % len(fails) if fails else "ok"))
     return 1 if fails else 0
 

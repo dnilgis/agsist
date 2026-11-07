@@ -1,0 +1,19 @@
+{
+ "note": "Made-up records for test/atlas-auctions.test.mjs only; not real auctions. Each one checks a rule.",
+ "source": "schrader",
+ "records": [
+  {"auction_id": "9001", "county": "Wayne", "county_fips": "18177", "date": "2025-03-04", "headline_acres": 80, "kind": "auction",
+   "source": "schrader", "state": "IN", "total_sold": 640000, "tracts": [{"per_acre": 8000, "sold": 640000, "tracts": "1"}],
+   "url": "https://www.schraderauction.com/auctions/9001",
+   "buyer": "[buyer]", "owner_name": "[owner]", "seller": "[seller]", "phone": "[phone]"},
+  {"auction_id": "9002", "county": "Wayne", "county_fips": "18177", "date": "2026-12-01", "headline_acres": 50, "kind": "auction",
+   "source": "schrader", "state": "IN", "total_sold": 777000, "tracts": [{"per_acre": 15540, "sold": 777000, "tracts": "1"}],
+   "url": "https://www.schraderauction.com/auctions/9002"},
+  {"auction_id": "9003", "county": "Wayne", "county_fips": "18177", "date": "2026-06-01", "headline_acres": 60, "kind": "auction",
+   "source": "schrader", "state": "IN", "total_sold": 888000, "tracts": [{"per_acre": 14800, "sold": 888000, "tracts": "1"}],
+   "url": "https://example.com/auctions/9003"},
+  {"auction_id": "9004", "county": "Wayne", "county_fips": "18177", "date": "2026-06-02", "headline_acres": 70, "kind": "auction",
+   "source": "otherfirm", "state": "IN", "total_sold": 999000, "tracts": [],
+   "url": "https://www.schraderauction.com/auctions/9004"}
+ ]
+}
