@@ -1471,14 +1471,15 @@ function renderBestBids(elevators){
 
 /* THE BIDS NEAR KIT (components/bids-kit.js, Nov 7, 2026): the top corn and soybean bids of the search on screen,
    in the Best price ranking above (rankCands, classGroups, rankCmp), one row per elevator, for its picture and bid
-   sheet. Only what the cards print: a re-marked price, a board not reached or a read time with no posted time is
-   left out, never filled in. */
+   sheet. Each row is the price as the elevator posted it, with its posted time (a card that re-marks a day-old price
+   on today's futures prints that posted price too); a board not reached, or a read time with no posted time, is left
+   out, never filled in. */
 window.cbKitData=function(){
   var zip=((($('cb-zip')||{}).value)||'').trim(),r=parseInt((radiusSel||{}).value,10)||50,rows={};
   if(!/^\d{5}$/.test(zip)||!currentElevators||!currentElevators.length)return null;
   ['corn','soybeans'].forEach(function(c){
     var g=classGroups(rankCands(currentElevators,c)),cands=(g['']||[]).slice().sort(rankCmp);
-    rows[c]=cands.filter(function(x){return !x.rk.remark&&!x.elev.unread&&!x.bid.asOfRead&&x.bid.asOf&&ppu(x.bid.cashPrice)!=null;}).map(function(x){
+    rows[c]=cands.filter(function(x){return !x.elev.unread&&!x.bid.asOfRead&&x.bid.asOf&&ppu(x.bid.cashPrice)!=null;}).map(function(x){
       var b=x.bid,bc=b.basis!=null&&!basisUnusual(b)&&basisUnit(b.basis,b)!=='?'?basisCents(b.basis,b):null,del=delShow(b)||'';
       if(isSpotDelivery(b.deliveryMonth||b.deliveryStart||'',b))del='Spot';
       return{n:x.elev.facility,t:placeOf(x.elev),s:x.elev.state||'',mi:x.elev.distance!=null?Math.round(x.elev.distance*10)/10:null,

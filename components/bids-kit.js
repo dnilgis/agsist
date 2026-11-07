@@ -59,7 +59,7 @@
         if (rows.length >= n) return;
         var p = Date.parse(r && r.p || ''), u = r && r.u ? Date.parse(r.u) : NaN;
         if (!r || !r.c || !r.n || !isFinite(p) || p > now + 36e5 || (isFinite(u) && now > u)) { held++; return; }
-        rows.push({ name: r.n, town: r.t || '', st: r.s || '', mi: r.mi, cash: r.c, mon: r.d || '', del: r.dl || r.d || '',
+        rows.push({ name: r.n, town: r.t || '', st: r.s || '', mi: r.mi, cash: r.c, mon: shortMon(r.d), del: r.dl || r.d || '',
           basis: r.b || '', fut: r.b ? (r.k || '') : '', posted: posted(r.p), at: r.p });
       });
       var mon = rows.length && rows.every(function (r) { return r.mon === rows[0].mon; }) ? rows[0].mon : '';
@@ -70,6 +70,13 @@
       any: crops.some(function (c) { return c.rows.length; }), from: d.from || '', url: url, shown: url.replace(/^https?:\/\//, ''),
       qr: link(url, 'print', 'qr', camp), pic: link(url, 'share', 'picture', camp), campaign: camp, page: d.page || '',
       src: SRC, notice: NOTICE };
+  }
+  /* a delivery as a month for the picture: "NOV 2026 (01 Nov 2026 to 30 Nov 2026)" -> "Nov", "LH Nov 2026" -> "LH Nov" */
+  function shortMon(s) {
+    s = String(s || '').trim();
+    if (s.length <= 8) return s;
+    var m = /\b(FH|LH|1H|2H)?\s*(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\b/i.exec(s);
+    return m ? (m[1] ? m[1].toUpperCase() + ' ' : '') + m[2].charAt(0).toUpperCase() + m[2].slice(1, 3).toLowerCase() : s.slice(0, 8);
   }
   function where(r, st) { return r.town + (r.st && r.st !== st ? ', ' + r.st : '') + (r.mi != null ? ', ' + (r.mi < 1 ? 'under 1' : Math.round(r.mi)) + ' mi' : ''); }
   function basisText(r, vs) { return r.basis ? (vs ? 'basis ' : '') + r.basis + (r.fut ? (vs ? ' vs ' : ' ') + r.fut : '') : 'basis not posted'; }
