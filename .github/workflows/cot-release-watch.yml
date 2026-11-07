@@ -227,15 +227,21 @@ jobs:
         run: |
           git config user.name  "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          for f in data/cot.json data/cot-history.json data/cot-analysis.json data/cot-options.json data/cot-questions.json cot.html data/whats-priced-in.json usda-calendar.html; do
+          for f in data/cot.json data/cot-history.json data/cot-analysis.json data/cot-options.json data/cot-questions.json data/whats-priced-in.json; do
             mkdir -p "/tmp/keep/$(dirname "$f")"; cp "$f" "/tmp/keep/$f" 2>/dev/null || true
           done
           for i in 1 2 3 4 5; do
             git fetch origin main
             git reset --hard origin/main
-            for f in data/cot.json data/cot-history.json data/cot-analysis.json data/cot-options.json data/cot-questions.json cot.html data/whats-priced-in.json usda-calendar.html; do
+            for f in data/cot.json data/cot-history.json data/cot-analysis.json data/cot-options.json data/cot-questions.json data/whats-priced-in.json; do
               [ -f "/tmp/keep/$f" ] && cp "/tmp/keep/$f" "$f"
             done
+            if ! python scripts/bake_seo.py --page cot.html >/dev/null || ! python -c "import sys; sys.path.insert(0, 'scripts'); import prerender_wpi_scorecard as p; o, n, f = p.bake_cot(); n != o and open(f, 'w', encoding='utf-8').write(n)"; then
+              git checkout -- cot.html; echo "::warning::re-baking cot.html on the new main failed; cot.html left as it is on main"
+            fi
+            if ! python -c "import sys; sys.path.insert(0, 'scripts'); import prerender_wpi_scorecard as p; o, n, f = p.bake_wpi(); n != o and open(f, 'w', encoding='utf-8').write(n)"; then
+              git checkout -- usda-calendar.html; echo "::warning::re-baking usda-calendar.html on the new main failed; left as it is on main"
+            fi
             git add data/cot.json data/cot-history.json cot.html
             git add data/whats-priced-in.json usda-calendar.html 2>/dev/null || true
             git add data/cot-analysis.json 2>/dev/null || true
