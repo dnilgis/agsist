@@ -306,6 +306,8 @@
     return fetch(u, { cache: 'no-cache' }).then(function (r) { return r.ok ? (kind === 'text' ? r.text() : r.json()) : null; }).catch(function () { return null; });
   }
   var D = {}, ev = [], sig = '', timer = 0, polled = 0;
+  /* the releases the rows are drawn from, for the home kit's picture (components/home-kit.js) */
+  api.events = function () { return ev.slice(); };
   function load() {
     return Promise.all([get('/data/cot.json'), get('/data/cot-history.json'), get('/data/wasde.json'), get('/data/crop-progress.json'), get('/data/cot-questions.json')])
       .then(function (a) { D.cot = a[0]; D.hist = a[1]; D.wasde = a[2]; D.cp = a[3]; D.q = a[4]; polled = Date.now(); });
