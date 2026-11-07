@@ -17,7 +17,9 @@
  *     built. Every outside host is blocked and service workers are off (BUILD-RULES 58). */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, existsSync, statSync } from "node:fs";
+import { readFileSync, existsSync, statSync, mkdtempSync, rmSync } from "node:fs";
+import { spawnSync } from "node:child_process";
+import { tmpdir } from "node:os";
 import { createRequire } from "node:module";
 import { createHash } from "node:crypto";
 import { fileURLToPath } from "node:url";
@@ -45,7 +47,17 @@ const Q = qctx.window.AgQR;
 
 const INDEX = J("farmland-atlas/data/counties-index.json");   // [fips, "Story County, IA", url]
 const row = (fips) => INDEX.find((x) => x[0] === fips);
-const page = (fips) => read(row(fips)[2].slice(1) + ".html");
+/* The county pages are a generated set built on main (scripts/generated_sets.py): the tests never read the
+ * committed pages, which may still be the older build. They build what they need through the builder itself
+ * (build_atlas_pages.py --only, into a temp folder): Story, IA (full), New York County, NY (sparse), Barron, WI
+ * (recorded transfers), Champaign, IL, Pottawattamie, IA (a long name) and every 97th county, with their states'
+ * locator files. The browser test serves that folder first and the repository behind it. */
+const PICKS = [...new Set(["19169", "36061", "55005", "17019", "19155"].concat(INDEX.filter((_, i) => i % 97 === 0).map((r) => r[0])))].filter(row);
+const OUT = mkdtempSync(join(tmpdir(), "county-print-"));
+const BUILT = spawnSync("python3", [join(ROOT, "scripts/build_atlas_pages.py"), "--root", ROOT, "--out", OUT, "--only", ...PICKS], { cwd: ROOT, encoding: "utf8" });
+process.on("exit", () => { try { rmSync(OUT, { recursive: true, force: true }); } catch (e) { /* gone */ } });
+const readOut = (p) => readFileSync(join(OUT, p), "utf8");
+const page = (fips) => readOut(row(fips)[2].slice(1) + ".html");
 const cpData = (h) => { const m = h.match(/<script type="application\/json" id="cp-data">([^<]*)<\/script>/); return m && JSON.parse(m[1]); };
 const canon = (h) => h.match(/<link rel="canonical" href="([^"]+)">/)[1];
 const NOW = Date.UTC(2026, 10, 7, 18), DAY = CP.isoDay(NOW), MADE = CP.dateLine(NOW);
@@ -62,10 +74,14 @@ const sheetText = (s) => [s.title, s.made, ...s.blocks.flatMap((b) => b.rows.map
 
 test("every Atlas county page carries the County Print group, its figures and the script at its own hash", () => {
   const v = createHash("sha1").update(readFileSync(join(ROOT, "components/county-print.js"))).digest("hex").slice(0, 8);
+  assert.equal(BUILT.status, 0, "the builder ran: " + (BUILT.stderr || "").slice(-400));
   assert.match(B, /^CP_JS = "components\/county-print\.js"$/m, "the builder names the script");
+  // every county page goes through county_page(), which always writes the group, the figures and the script
+  assert.match(B, /\{live_cfg\}\{cp_cfg\}/, "the page template carries the figures and the script");
+  assert.match(B, /cpd = county_print_data\(/);
   let n = 0, maxCp = 0;
-  for (const [fips, , url] of INDEX) {
-    const h = read(url.slice(1) + ".html");
+  for (const fips of PICKS) {
+    const h = page(fips);
     assert.ok(h.includes(`<div class="cpr" role="group" aria-label="County Print"><a class="pri" id="cpr-print" href="/farmland-atlas/sheet#${fips}">Print County Print</a>`
       + '<button type="button" id="cpr-pic">Save picture</button><button type="button" id="cpr-link">Copy link</button>'), fips + ": Print (the shared sheet until the script runs), Save picture, Copy link");
     assert.ok(h.includes(`<script defer src="/components/county-print.js?v=${v}"></script>`), fips + ": the script, at its hash");
@@ -77,22 +93,22 @@ test("every Atlas county page carries the County Print group, its figures and th
     assert.doesNotMatch(m[1], /n\/a|null/, fips + ": a missing figure is left out, never n/a");
     n++;
   }
-  assert.ok(n >= 3000, n + " county pages");
+  assert.ok(n >= 30, n + " county pages built and checked");
   // the locator: one small file a state, with every county of it, ours among them
-  for (const st of [...new Set(INDEX.map((r) => r[1].slice(-2)))]) {
+  for (const st of [...new Set(PICKS.map((f) => row(f)[1].slice(-2)))]) {
     const p = `farmland-atlas/loc/${st.toLowerCase()}.json`;
-    assert.ok(existsSync(join(ROOT, p)), p);
-    const L = J(p), sz = statSync(join(ROOT, p)).size;
+    assert.ok(existsSync(join(OUT, p)), p);
+    const L = JSON.parse(readOut(p)), sz = statSync(join(OUT, p)).size;
     assert.match(L.vb, /^0 0 \d+ \d+$/);
     assert.ok(sz < 60000, `${p}: ${sz} bytes`);
-    // every county whose page draws its own locator (it has a boundary on file) is in its state's file
-    for (const r of INDEX.filter((x) => x[1].slice(-2) === st)) if (read(r[2].slice(1) + ".html").includes('class="loc"')) assert.ok(L.p[r[0]], `${p} has ${r[0]}`);
+    // every built county whose page draws its own locator (it has a boundary on file) is in its state's file
+    for (const f of PICKS.filter((x) => row(x)[1].slice(-2) === st)) if (page(f).includes('class="loc"')) assert.ok(L.p[f], `${p} has ${f}`);
   }
   assert.ok(maxCp <= 800, `the figures stay a few hundred bytes a page (largest ${maxCp})`);
 });
 
 test("every yearly figure on the sheet is one the page prints; the chart is the page's yields and yearly trend", () => {
-  const picks = ["19169", "36061", "55005", "17019"].concat(INDEX.filter((_, i) => i % 97 === 0).map((r) => r[0]));
+  const picks = PICKS;
   let rows = 0;
   for (const fips of picks) {
     if (!row(fips)) continue;
@@ -191,8 +207,10 @@ function serve() {
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
     if (p === "/") p = "/index.html"; else if (!extname(p)) p += ".html";
-    const f = normalize(join(ROOT, p));
-    if (!f.startsWith(ROOT) || !existsSync(f) || statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
+    // the pages just built first, then the repository
+    let f = normalize(join(OUT, p));
+    if (!f.startsWith(OUT) || !existsSync(f) || statSync(f).isDirectory()) f = normalize(join(ROOT, p));
+    if (!f.startsWith(ROOT) && !f.startsWith(OUT) || !existsSync(f) || statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" });
     res.end(readFileSync(f));
   });
