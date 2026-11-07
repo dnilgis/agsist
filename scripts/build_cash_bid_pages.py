@@ -2343,7 +2343,7 @@ def build_town_page(t, ctx):
     skb_btns, skb_js = skb_html(skb_rows(t, live_b, center, nearby_pick(t, center, ctx.get("live_all"), True), snap_ct),
                                 place, t["name"], path, center) if indexable else ("", "")
     if skb_btns:
-        share_html = (share_html[:-len("</p>")] + skb_btns + "</p>") if share_html else f'<p class="cbt-share">{skb_btns}</p>'
+        share_html = ((share_html[:-len("</p>")] + skb_btns + "</p>") if share_html else f'<p class="cbt-share">{skb_btns}</p>') + skb_js
     # the dated lead paragraph (scripts/stories_bids.py): stable facts only, never a price
     story_facts, story_html = None, ""
     if indexable:
@@ -2391,7 +2391,7 @@ def build_town_page(t, ctx):
   <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/{ssl}/" style="color:var(--text-muted)">{esc(sname)}</a> &rsaquo; <b style="color:var(--text)">{esc(t['name'])}</b></p>
   <h1>Cash grain bids in {esc(place)} today</h1>
   {answer_html}
-  {share_html}{skb_js}
+  {share_html}
   {story_html}{intro}
   {'' if indexable else near_html}
   {jump}
