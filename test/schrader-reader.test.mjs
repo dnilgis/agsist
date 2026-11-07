@@ -3,13 +3,14 @@
  *
  * scripts/read_schrader.py reads one capture folder (the sold feed and the result pages) into
  * data/land/auctions/schrader.json. This file holds:
- *   - the reader's own selftest passes on the scrubbed fixtures
+ *   - the reader's own selftest passes on the scrubbed fixtures, including --merge never rewriting a saved
+ *     record's values and bool never counting as a sold price or per-acre figure
  *   - auction 9630 gives Schrader's three printed rows and the $2,905,000 total
  *   - the fixtures are scrubbed: no phone number, no email, no "sold to" or "buyer" followed by a name
  *   - the data file carries facts only: no buyer, owner or name field, the credit and a link on every record,
  *     a per-acre figure only where Schrader printed one, farmland only
- *   - the capture workflow: a read-only capture job, then a commit job that merges only the checked facts file;
- *     run by hand until Sig approves a schedule
+ *   - the capture workflow builds the file right after the capture, on a weekly gated Monday tick at 19:43 UTC
+ *     (Sig approved that schedule in chat, Nov 7, 2026; STANDING-DECISIONS)
  *
  *   node --test test/schrader-reader.test.mjs
  */
@@ -37,6 +38,15 @@ test('the reader selftest passes on the scrubbed fixtures', () => {
   const out = execFileSync('python3', ['scripts/read_schrader.py', '--selftest'], { cwd: root, encoding: 'utf8' });
   assert.match(out, /read_schrader selftest: 0 failure\(s\)/);
   assert.doesNotMatch(out, /^FAIL /m);
+  // checker items from PR #412: --merge never rewrites a saved record's values, and a bool is not a number
+  for (const name of ['--merge refuses a sold price that is a bool', '--merge refuses a per acre that is a bool',
+    '--merge refuses a total that is a bool', '--merge keeps the saved record over a changed sold price',
+    '--merge keeps the saved record over a changed per acre', '--merge keeps the saved record over rows that differ plus a new row',
+    '--merge keeps the saved record over fewer rows', '--merge keeps the saved record over a changed total',
+    'a refused overwrite is counted',
+    'identical rows plus a new row replace the saved record; a new auction_id is added']) {
+    assert.ok(out.includes('ok   ' + name), 'selftest ran: ' + name);
+  }
 });
 
 test('9630: the three rows as Schrader printed them, total $2,905,000', () => {
@@ -113,11 +123,11 @@ test('the data file: facts only, credited, linked, farmland only, never a figure
   assert.doesNotMatch(read('data/land/auctions/schrader.json'), /buyer|purchaser|owner|\u2014/i);
 });
 
-test('the capture workflow: by hand only until Sig approves a schedule, a read-only capture job, a commit job that only merges the facts file', () => {
+test('the capture workflow: weekly on Monday at 19:43 UTC behind the house gate, a read-only capture job, a commit job that only merges the facts file', () => {
   const wf = read('.github/workflows/schrader-capture.yml');
-  // a new schedule is Sig's decision (test/history-collect.test.mjs); the weekly Monday run waits for it
-  assert.doesNotMatch(wf, /^\s*-?\s*cron:/m, 'no schedule until Sig approves one');
-  assert.match(wf, /\non:\n  workflow_dispatch:\n/);
+  // exactly the one schedule Sig approved (Nov 7, 2026): Mondays 19:43 UTC, 1:43 PM Central
+  const crons = [...wf.matchAll(/^\s*-?\s*cron:\s*(?:(['"])(.+?)\1|(\S[^#\n]*?))\s*$/gm)].map((m) => m[2] || m[3]);
+  assert.deepEqual(crons, ['43 19 * * 1'], 'the one approved cron line, exactly');
   assert.match(wf, /\npermissions:\n  contents: read\n/, 'read-only by default');
 
   const job = (name) => {
@@ -129,7 +139,15 @@ test('the capture workflow: by hand only until Sig approves a schedule, a read-o
   };
   const steps = (j) => j.split(/\n      - /).slice(1);
 
+  const gate = job('gate');
+  assert.match(gate, /\n    permissions:\n      actions: read\n      contents: read\n/, 'the gate job only reads');
+  assert.match(gate, /\n    outputs:\n      go: \$\{\{ steps\.g\.outputs\.go \}\}\n/);
+  assert.match(gate, /python3 scripts\/cron_gate\.py tick --workflow schrader-capture\.yml --max-lag 360\n\s+--cron "43 19 \* \* 1"\n/,
+    'the house gate ticks on the approved cron');
+  assert.doesNotMatch(gate, /contents: write|git (add|commit|push)/);
+
   const cap = job('capture');
+  assert.match(cap, /\n    needs: gate\n    if: needs\.gate\.outputs\.go == '1'\n/, 'the capture job runs only on a gate tick');
   assert.match(cap, /\n    permissions:\n      contents: read\n/, 'the capture job cannot write to the repo');
   assert.doesNotMatch(cap, /contents: write/);
   assert.match(cap, /uses: actions\/checkout@v4\n        with:\n          persist-credentials: false\n/, 'no stored credentials while it fetches pages');
@@ -149,7 +167,7 @@ test('the capture workflow: by hand only until Sig approves a schedule, a read-o
   assert.doesNotMatch(up[1], /land\/schrader/);
 
   const com = job('commit');
-  assert.match(com, /\n    needs: capture\n/, 'the commit job runs after the capture');
+  assert.match(com, /\n    needs: \[gate, capture\]\n    if: needs\.gate\.outputs\.go == '1'\n/, 'the commit job runs after the capture, on a gate tick');
   assert.match(com, /\n    permissions:\n      contents: write\n/);
   assert.match(com, /uses: actions\/download-artifact@v4\n        with:\n          name: schrader-results\n/);
   const runs = [...com.matchAll(/run: (?:\|\n([\s\S]*?)(?=\n      - |\n?$)|(.*))/g)].map((m) => (m[1] || m[2] || '').trim());

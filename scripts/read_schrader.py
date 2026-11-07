@@ -22,8 +22,9 @@ stored. headline_acres comes from the feed title when it gives one, else the pag
 Acres fact, else the page title.
 
 The output keeps history: records already in the file stay (the feed only ever
-shows the newest five sales), a record seen again is replaced only by a parse with
-at least as many rows, and a run that would leave fewer records than the file had
+shows the newest five sales), a record seen again replaces the saved one only when
+every saved value comes back unchanged and only new tract rows are added (any other
+difference is refused, logged and counted), and a run that would leave fewer records than the file had
 writes nothing and exits 1.
 
   python3 scripts/read_schrader.py --latest              # newest folder under land/schrader/capture
@@ -230,15 +231,30 @@ def read_capture(folder, idx=None):
     return kept, n, captured
 
 
-def merge(old, new):
-    """Old records stay; a record seen again is replaced only by one with at least as many rows."""
+def merge(old, new, stats=None):
+    """Old records stay. A new auction_id is added. A record seen again replaces the saved one only when
+    every other field is the same and the saved tract rows come back unchanged, in order, with new rows
+    after them; any other difference is refused and counted, so a later parse never rewrites history."""
     by = {r["auction_id"]: r for r in old}
+    refused = 0
     for r in new:
         prev = by.get(r["auction_id"])
-        if prev is None or len(r["tracts"]) >= len(prev["tracts"]):
+        if prev is None:
+            by[r["auction_id"]] = r
+            continue
+        if r == prev:
+            continue
+        same_rest = {k: v for k, v in r.items() if k != "tracts"} == {k: v for k, v in prev.items() if k != "tracts"}
+        pt, nt = prev["tracts"], r["tracts"]
+        if same_rest and len(nt) > len(pt) and nt[:len(pt)] == pt:
             by[r["auction_id"]] = r
         else:
-            print(f"read_schrader: {r['auction_id']}: new parse has fewer rows than the saved one; kept the saved one")
+            refused += 1
+            print(f"read_schrader: {r['auction_id']}: the new parse differs from the saved record; kept the saved one")
+    if refused:
+        print(f"read_schrader: refused {refused} overwrite(s) of saved records")
+    if stats is not None:
+        stats["refused_overwrites"] = refused
     return sorted(by.values(), key=lambda r: (r["date"] or "", int(r["auction_id"])))
 
 
@@ -292,11 +308,11 @@ def valid(rec, idx):
               and re.fullmatch(r"\d{4}-\d{2}-\d{2}", rec["date"]) and rec["state"] in STATES
               and COUNTY_NAME.fullmatch(rec["county"]) and idx.get((rec["state"], norm_name(rec["county"]))) == rec["county_fips"]
               and (rec["headline_acres"] is None or num(rec["headline_acres"]))
-              and (rec["total_sold"] is None or isinstance(rec["total_sold"], int))
+              and (rec["total_sold"] is None or type(rec["total_sold"]) is int)
               and isinstance(rec["tracts"], list) and rec["tracts"]
               and all(isinstance(x, dict) and set(x) == {"tracts", "sold", "per_acre"}
-                      and re.fullmatch(r"\d+[A-Za-z]?(?:\+\d+[A-Za-z]?)*", x["tracts"]) and isinstance(x["sold"], int)
-                      and (x["per_acre"] is None or isinstance(x["per_acre"], int)) for x in rec["tracts"])
+                      and re.fullmatch(r"\d+[A-Za-z]?(?:\+\d+[A-Za-z]?)*", x["tracts"]) and type(x["sold"]) is int
+                      and (x["per_acre"] is None or type(x["per_acre"]) is int) for x in rec["tracts"])
               and is_farmland(rec))
         return bool(ok)
     except (KeyError, TypeError, AttributeError):
@@ -459,12 +475,49 @@ def selftest():
                               ("county text that is not a county", lambda r: r.update(county="1234 Elm Rd")),
                               ("a county that does not match its FIPS", lambda r: r.update(county="Knox")),
                               ("a link off Schrader", lambda r: r.update(url="https://example.com/")),
-                              ("a tract row with text", lambda r: r["tracts"][0].update(tracts="sold to [name]"))):
+                              ("a tract row with text", lambda r: r["tracts"][0].update(tracts="sold to [name]")),
+                              ("a sold price that is a bool", lambda r: r["tracts"][0].update(sold=True)),
+                              ("a per acre that is a bool", lambda r: r["tracts"][0].update(per_acre=False)),
+                              ("a total that is a bool", lambda r: r.update(total_sold=True))):
             d = json.loads(json.dumps(good_doc))
             mutate(d["records"][0])
             json.dump(d, open(side, "w"))
             before = open(tgt).read()
             check(merge_file(side, tgt, idx) == 1 and open(tgt).read() == before, "--merge refuses " + label)
+        # --merge never rewrites a saved record's values (checker, PR #412)
+        json.dump(good_doc, open(side, "w"))
+        tgt2 = os.path.join(tmp, "tgt2.json")
+        check(merge_file(side, tgt2, idx) == 0, "--merge seeds an empty target")
+        saved = open(tgt2).read()
+        rid = good_doc["records"][0]["auction_id"]
+        for label, mutate in (("a changed sold price", lambda r: r["tracts"][0].update(sold=r["tracts"][0]["sold"] + 1)),
+                              ("a changed per acre", lambda r: r["tracts"][0].update(per_acre=(r["tracts"][0]["per_acre"] or 0) + 1)),
+                              ("rows that differ plus a new row", lambda r: r["tracts"].__setitem__(0, dict(r["tracts"][0], sold=1))
+                               or r["tracts"].append({"tracts": "99", "sold": 5, "per_acre": None})),
+                              ("fewer rows", lambda r: r["tracts"].pop()),
+                              ("a changed total", lambda r: r.update(total_sold=(r["total_sold"] or 0) + 1))):
+            d = json.loads(json.dumps(good_doc))
+            mutate(d["records"][0])
+            json.dump(d, open(side, "w"))
+            check(valid(d["records"][0], idx), "the changed record is still well formed: " + label)
+            check(merge_file(side, tgt2, idx) == 0 and json.load(open(tgt2))["records"] == json.loads(saved)["records"],
+                  "--merge keeps the saved record over " + label)
+        st = {}
+        d = json.loads(json.dumps(good_doc))
+        d["records"][0]["tracts"][0]["sold"] += 1
+        merge(json.loads(saved)["records"], d["records"], st)
+        check(st == {"refused_overwrites": 1}, "a refused overwrite is counted")
+        d = json.loads(json.dumps(good_doc))
+        d["records"][0]["tracts"].append({"tracts": "99", "sold": 5, "per_acre": None})
+        d["records"].append(dict(d["records"][0], auction_id="8999", url=BASE + "/auctions/8999"))
+        json.dump(d, open(side, "w"))
+        check(merge_file(side, tgt2, idx) == 0, "--merge takes identical rows plus a new row and a new auction")
+        got = {r["auction_id"]: r for r in json.load(open(tgt2))["records"]}
+        check(got[rid]["tracts"][-1] == {"tracts": "99", "sold": 5, "per_acre": None} and "8999" in got,
+              "identical rows plus a new row replace the saved record; a new auction_id is added")
+        st = {}
+        merge(list(got.values()), list(got.values()), st)
+        check(st == {"refused_overwrites": 0}, "the same records again change nothing and refuse nothing")
         check(latest(tmp) == cap and latest(os.path.join(tmp, "none")) is None, "--latest picks the newest dated folder")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
