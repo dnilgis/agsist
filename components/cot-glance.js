@@ -336,7 +336,7 @@
   /* How the net changed, split into longs and shorts (Nov 7): the line scripts/cot_analysis.py how_changed() wrote
      into the analysis card (card.how.line), printed as it stands, never worked out here. '' unless the analysis is
      for the same week as cot.json and its long and short counts are cot.json's.
-     "Longs -20,010, shorts +52,308: mostly new short selling." */
+     "Longs -20,010, shorts +52,308: <the label>." */
   function how(key, cot, cx) {
     var a = cxFor(key, cot, cx), c = cot && cot[key], h = a && a.card && a.card.how;
     return h && typeof h.line === 'string' && c && a.mm_long === c.long && a.mm_short === c.short ? h.line : '';
