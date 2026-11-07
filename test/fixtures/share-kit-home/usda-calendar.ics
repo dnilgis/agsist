@@ -1,0 +1,103 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//AGSIST//USDA Report Calendar//EN
+CALSCALE:GREGORIAN
+METHOD:PUBLISH
+X-WR-CALNAME:USDA Reports - AGSIST
+X-WR-CALDESC:WASDE\, Crop Production\, Grain Stocks\, livestock and dairy (
+ Cattle on Feed\, Milk Production\, Cold Storage\, Hogs and Pigs) and inter
+ national report dates\, plus FSA ARC/PLC signup dates. Weekly Crop Progres
+ s and Export Sales are not included. Built from the list on agsist.com/usd
+ a-calendar
+X-PUBLISHED-TTL:PT48H
+REFRESH-INTERVAL;VALUE=DURATION:PT48H
+BEGIN:VEVENT
+UID:2026-11-02-arc-plc-2027-signup-opens@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART;VALUE=DATE:20261102
+SUMMARY:2027 ARC/PLC signup opens (FSA)
+DESCRIPTION:Signup opens at your county FSA (Farm Service Agency) office fo
+ r the 2027 crop year. This is where you choose ARC or PLC\, the two progra
+ ms that can pay when crop prices or revenue fall. It runs to Mar 15\, 2027
+ .\nCompare ARC and PLC for your county: https://agsist.com/arc-plc\nSource
+ : https://www.fsa.usda.gov/news-events/news/09-15-2026/usda-announces-2026
+ -2027-enrollment-key-price-revenue-safety-net\nWhat the market priced in: 
+ https://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/d
+ aily?utm_source=ics
+URL:https://agsist.com/arc-plc
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-10-crop-production@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20261110T170000Z
+DTEND:20261110T180000Z
+SUMMARY:Crop Production
+DESCRIPTION:November 2026 crop production estimates\nWhat the market priced
+  in: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.
+ com/daily?utm_source=ics
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-10-wasde-report@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20261110T170000Z
+DTEND:20261110T180000Z
+SUMMARY:WASDE
+DESCRIPTION:Monthly world supply/demand estimates\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-17-arc-plc-decision-webinar-umn-extension@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20261117T170000Z
+DTEND:20261117T180000Z
+SUMMARY:ARC/PLC decision webinar (UMN Extension) (FSA)
+DESCRIPTION:Free University of Minnesota Extension webinar\, "2026 Farm Bil
+ l decision": choosing ARC or PLC for 2026. 11 a.m. to 12:30 p.m. Central. 
+ Register on the UMN Extension event page to get the link.\nCompare ARC and
+  PLC for your county: https://agsist.com/arc-plc\nSource: https://www.fsa.
+ usda.gov/news-events/news/09-15-2026/usda-announces-2026-2027-enrollment-k
+ ey-price-revenue-safety-net\nWhat the market priced in: https://agsist.com
+ /usda-calendar. Free morning Daily: https://agsist.com/daily?utm_source=ic
+ s
+URL:https://agsist.com/arc-plc
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-20-cattle-on-feed@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20261120T200000Z
+DTEND:20261120T210000Z
+SUMMARY:Cattle on Feed
+DESCRIPTION:Cattle in feedlots\, placements and marketings\, NASS\nCattle f
+ utures: https://agsist.com/cattle-futures-prices\nWhat the market priced i
+ n: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.co
+ m/daily?utm_source=ics
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-20-milk-production@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20261120T200000Z
+DTEND:20261120T210000Z
+SUMMARY:Milk Production
+DESCRIPTION:Monthly milk cows\, milk per cow and total milk output\, NASS\n
+ Milk prices: https://agsist.com/milk-prices\nWhat the market priced in: ht
+ tps://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/dai
+ ly?utm_source=ics
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+BEGIN:VEVENT
+UID:2026-11-24-cold-storage@agsist.com
+DTSTAMP:20261027T120000Z
+DTSTART:20261124T200000Z
+DTEND:20261124T210000Z
+SUMMARY:Cold Storage
+DESCRIPTION:Month-end stocks of beef\, pork\, poultry\, butter and cheese i
+ n cold storage\, NASS\nMilk prices: https://agsist.com/milk-prices\nWhat t
+ he market priced in: https://agsist.com/usda-calendar. Free morning Daily:
+  https://agsist.com/daily?utm_source=ics
+URL:https://agsist.com/usda-calendar
+END:VEVENT
+END:VCALENDAR
