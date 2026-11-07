@@ -23,6 +23,14 @@ const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 const FX = 'test/fixtures/schrader';
 const CREDIT = 'Sold/auction results reported by Schrader Real Estate and Auction Co.';
+// a buyer-ish word, in any case, followed by a name-like word (a placeholder in brackets is not one)
+const BUYERISH = /\b(?:sold\s+to|buyers?|purchasers?|owners?)\b\s*(?:is\s+|was\s+|[:,-]\s*)?[a-z][a-z'.]+/i;
+// street addresses: house number and street word, county roads, and the Indiana grid style (1490 S 200 E)
+const STREET = [
+  /\b\d{1,6}\s+(?:[NSEW]\.?\s+)?[A-Za-z]+(?:\s+[A-Za-z]+)*\s+(?:Rd|Road|St|Street|Ave|Avenue|Dr|Drive|Ln|Lane|Hwy|Highway|Pike|Blvd|Ct|Court|Way|Trl|Trail|Pl)\b/i,
+  /\b(?:County\s+Road|Co\.?\s*Rd\.?|C\.?R\.?)\s*\d+/i,
+  /\b\d{1,6}\s+[NSEW]\.?\s+\d{1,5}\s+[NSEW]\b/i,
+];
 
 test('the reader selftest passes on the scrubbed fixtures', () => {
   const out = execFileSync('python3', ['scripts/read_schrader.py', '--selftest'], { cwd: root, encoding: 'utf8' });
@@ -61,16 +69,19 @@ test('the fixtures are scrubbed copies: no phone, no email, no buyer named', () 
     assert.doesNotMatch(t, /tel:/i, `${f}: a phone link`);
     assert.doesNotMatch(t, /[\w.+-]+@[\w-]+\.[\w.]+/, `${f}: an email address`);
     assert.doesNotMatch(t, /mailto:/i, `${f}: a mail link`);
-    assert.doesNotMatch(t, /(?:[Ss]old [Tt]o|SOLD TO|[Bb]uyers?|BUYERS?|[Pp]urchasers?|PURCHASERS?)\W{0,3}(?:is\s+|was\s+|:\s*)?[A-Z][a-z]+/, `${f}: a buyer named`);
+    assert.doesNotMatch(t, BUYERISH, `${f}: a buyer, purchaser or owner named`);
     assert.doesNotMatch(t, /\/buyers\//i, `${f}: a buyer profile link`);
-    assert.doesNotMatch(t, /Owner:(?!\s*\[owner\])/, `${f}: an owner named`);
-    // a street address: a house number and a street word
-    assert.doesNotMatch(t, /\b\d{1,6}\s+(?:[NSEW]\.?\s+)?[A-Z][a-z]+(?:\s+[A-Z][a-z]+)*\s+(?:Rd|Road|St|Street|Ave|Avenue|Dr|Drive|Ln|Lane|Hwy|Pike|Blvd|Ct|Way)\b/,
-      `${f}: a street address`);
+    for (const re of STREET) assert.doesNotMatch(t, re, `${f}: a street address`);
   }
   // the guard itself catches what it is for
-  const hit = (s) => /(?:[Ss]old [Tt]o|SOLD TO|[Bb]uyers?|BUYERS?|[Pp]urchasers?|PURCHASERS?)\W{0,3}(?:is\s+|was\s+|:\s*)?[A-Z][a-z]+/.test(s);
-  assert.ok(hit('Sold to Jane Example') && hit('Buyer: Example Farms') && !hit('2027 CROP RIGHT TO BUYER'));
+  const hit = (s) => BUYERISH.test(s);
+  assert.ok(hit('Sold to Jane Example') && hit('SOLD TO JANE EXAMPLE') && hit('Buyer: Example Farms') && hit('purchaser was Jane')
+    && hit('Owner: Jane Example') && hit('OWNER JANE'));
+  assert.ok(!hit('2027 CROP RIGHT TO BUYER') && !hit('Owner: [owner]'));
+  const street = (s) => STREET.some((re) => re.test(s));
+  assert.ok(street('1234 Elm Rd') && street('4600 New Garden Rd') && street('County Road 400 N') && street('CR 250')
+    && street('1490 S 200 E') && street('co. rd. 12'));
+  assert.ok(!street('331+/-ACRES OFFERED IN 3 TRACTS') && !street('[street address], [town], ST [zip]'));
 });
 
 test('the data file: facts only, credited, linked, farmland only, never a figured per acre', () => {
@@ -101,7 +112,7 @@ test('the data file: facts only, credited, linked, farmland only, never a figure
   assert.doesNotMatch(read('data/land/auctions/schrader.json'), /buyer|purchaser|owner|\u2014/i);
 });
 
-test('the capture workflow builds the file after the capture and runs weekly on Monday', () => {
+test('the capture workflow: weekly on Monday, a read-only capture job, a commit job that only merges the facts file', () => {
   const wf = read('.github/workflows/schrader-capture.yml');
   const cron = /- cron: "(\d+) (\d+) \* \* 1"/.exec(wf);
   assert.ok(cron, 'a Monday schedule');
@@ -109,13 +120,45 @@ test('the capture workflow builds the file after the capture and runs weekly on 
   // outside 6 to 9 AM Pacific in both PST (UTC-8) and PDT (UTC-7): 13:00 to 17:00 UTC is out
   const h = Number(cron[2]);
   assert.ok(h < 13 || h >= 17, `hour ${h} UTC falls in 6 to 9 AM Pacific`);
-  const cap = wf.indexOf('python3 scripts/capture_schrader.py\n');
-  const save = wf.indexOf('scripts/push_raw.sh "schrader capture" land/schrader/capture');
-  const rd = wf.indexOf('python3 scripts/read_schrader.py --latest');
-  assert.ok(cap > 0 && save > cap && rd > save, 'read after the capture and its save to raw');
-  assert.ok(wf.indexOf('python3 scripts/read_schrader.py --selftest') > 0);
-  const commit = wf.slice(rd);
-  assert.match(commit, /git add data\/land\/auctions\/schrader\.json/);
-  assert.match(commit, /\[skip ci\]/);
+  assert.match(wf, /\npermissions:\n  contents: read\n/, 'read-only by default');
+
+  const job = (name) => {
+    const i = wf.indexOf(`\n  ${name}:\n`);
+    assert.ok(i > 0, `job ${name}`);
+    const rest = wf.slice(i + 1);
+    const next = rest.slice(1).search(/\n  [a-z][\w-]*:\n/);
+    return next < 0 ? rest : rest.slice(0, next + 1);
+  };
+  const steps = (j) => j.split(/\n      - /).slice(1);
+
+  const cap = job('capture');
+  assert.match(cap, /\n    permissions:\n      contents: read\n/, 'the capture job cannot write to the repo');
+  assert.doesNotMatch(cap, /contents: write/);
+  assert.match(cap, /uses: actions\/checkout@v4\n        with:\n          persist-credentials: false\n/, 'no stored credentials while it fetches pages');
+  assert.doesNotMatch(cap, /git (add|commit|push)/, 'the capture job commits nothing');
+  const c = cap.indexOf('python3 scripts/capture_schrader.py\n');
+  const save = cap.indexOf('scripts/push_raw.sh "schrader capture" land/schrader/capture');
+  const rd = cap.indexOf('python3 scripts/read_schrader.py --latest --out results/schrader-new.json');
+  assert.ok(c > 0 && save > c && rd > save, 'capture, save to raw, then read into the facts-only file');
+  assert.ok(cap.indexOf('python3 scripts/read_schrader.py --selftest') > 0);
+  for (const s of steps(cap)) {
+    if (!/PRIVATE_REPO_TOKEN/.test(s)) continue;
+    assert.ok(/scripts\/push_raw\.sh/.test(s) || /name: Engine checkout/.test(s), 'the private token only on the raw save (and the engine checkout): ' + s.split('\n')[0]);
+  }
+  const up = /uses: actions\/upload-artifact@v4\n        with:\n([\s\S]*?)(?:\n\n|\n  [a-z]|$)/.exec(cap);
+  assert.ok(up, 'the capture job uploads an artifact');
+  assert.match(up[1], /path: results\/schrader-new\.json\n/, 'only the facts-only file, never the raw pages');
+  assert.doesNotMatch(up[1], /land\/schrader/);
+
+  const com = job('commit');
+  assert.match(com, /\n    needs: \[gate, capture\]\n/, 'the commit job runs after the capture');
+  assert.match(com, /\n    permissions:\n      contents: write\n/);
+  assert.match(com, /uses: actions\/download-artifact@v4\n        with:\n          name: schrader-results\n/);
+  const runs = [...com.matchAll(/run: (?:\|\n([\s\S]*?)(?=\n      - |\n?$)|(.*))/g)].map((m) => (m[1] || m[2] || '').trim());
+  assert.ok(runs.includes('python3 scripts/read_schrader.py --merge results/schrader-new.json'), 'the commit job checks and merges the file');
+  assert.ok(!/capture_schrader|push_raw|--capture|--latest/.test(com), 'the commit job reads no capture');
+  const adds = [...com.matchAll(/git add ([^\n]+)/g)].map((m) => m[1].trim());
+  assert.deepEqual(adds, ['data/land/auctions/schrader.json'], 'the commit job adds only the data file');
+  assert.match(com, /\[skip ci\]/);
   assert.doesNotMatch(wf, /git add[^\n]*land\/schrader/, 'the raw capture never goes to main');
 });
