@@ -21,7 +21,7 @@ test("both Fridays on the same board: one line a crop, the change and the posted
   assert.deepEqual(r.fri_dates, ["2026-10-30"], "on Saturday the slot holds last Friday"); // pin-ok: fixture
   assert.equal(r.rows_dates.at(-1), "2026-11-06", "and rows hold this Friday"); // pin-ok: fixture
   assert.ok(!r.rows_dates.includes("2026-10-30"), "rows alone (4 days) no longer reach last Friday"); // pin-ok: fixture
-  assert.deepEqual(r.week.lines, [
+  assert.deepEqual(r.week.lines, [ // pin-ok: fixture (test/fixtures/bid-week/helper.py), a fixed Saturday, no live data
     "Your bid at Fixture Test Co-op, Plainsburg, KS: corn $4.15 1/4 for Nov delivery, up 5 1/4 cents from last Friday (posted Fri Nov 6, 1:15 PM CT)", // pin-ok: fixture
     "Your bid at Fixture Test Co-op, Plainsburg, KS: soybeans $10.18 for Nov delivery, down 7 cents from last Friday (posted Fri Nov 6, 1:15 PM CT)", // pin-ok: fixture
   ]);
