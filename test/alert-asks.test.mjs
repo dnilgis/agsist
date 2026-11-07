@@ -328,7 +328,8 @@ test("break-even, grain bin and yield pages: the ask sits under the answer, once
   const gba = asksIn(gb).filter((t) => !/data-source="(footer|menu-[a-z]+)"/.test(t));
   assert.equal(gba.length, 1);
   assert.equal(attr(gba[0], "data-source"), "page:grain-bin-calculator");
-  assert.ok(gb.indexOf('id="rWeight"') < gb.indexOf("data-signup-ask") && gb.indexOf("data-signup-ask") < gb.indexOf("Show volume breakdown"), "right under the bushels and weight");
+  // Nov 6, 2026: the one ask moved under the Bin Print yard totals (components/bin-yard.js puts it in #by-askslot)
+  assert.ok(gb.indexOf('id="by-root"') < gb.indexOf("data-signup-ask") && gb.indexOf("data-signup-ask") < gb.indexOf("</section>", gb.indexOf('id="bin-print"')), "in the Bin Print section, under its totals");
   const yea = asksIn(ye).filter((t) => !/data-source="(footer|menu-[a-z]+)"/.test(t));
   assert.equal(yea.length, 2, "one under each tab's answer (one tab shows at a time)");
   for (const t of yea) assert.equal(attr(t, "data-source"), "page:yield-estimator");

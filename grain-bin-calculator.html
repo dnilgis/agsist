@@ -156,6 +156,7 @@
 </style>
 <script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
 <link rel="stylesheet" href="/components/src-fold.css?v=1">
+<link rel="stylesheet" href="/components/bin-yard.css?v=1">
 <script src="/components/src-fold.js?v=1" defer></script>
 </head>
 <body>
@@ -209,7 +210,18 @@
     <nav class="breadcrumb"><a href="/">Home</a> &rarr; <a href="/tools">Tools</a> → Grain bin calculator</nav>
     <div class="calc-title"><h1>Grain bin calculator</h1></div>
     <p class="gb-byline">Updated <time datetime="2026-10-16">Oct 16, 2026</time></p>
-    <p class="gb-intro" style="font-size:.95rem;color:var(--text-dim);line-height:1.5;margin:.2rem 0 .8rem">Free grain bin calculator: type how wide your bin is (diameter) and how tall the wall is up to where the roof starts (eave height). It shows how many bushels the bin holds and what they weigh, and with a price, what the grain is worth after drying shrink. It starts with a 30 by 24 ft bin.</p>
+    <p class="gb-intro" style="font-size:.95rem;color:var(--text-dim);line-height:1.5;margin:.2rem 0 .8rem">Free grain bin calculator: type how wide your bin is (diameter) and how tall the wall is up to where the roof starts (eave height). It shows how many bushels the bin holds and what they weigh, and with a price, what the grain is worth after drying shrink. It starts with a 30 by 24 ft bin. Bin Print, first below, maps your whole bin yard: every bin&rsquo;s bushels, what is in it now and a sheet to print for you or your crew.</p>
+    <!-- Bin Print: the bin yard tool (components/bin-yard.js). bin-yard.js runs right after this section, before
+         anything below is parsed, and draws the whole tool at once, so nothing on the page moves. -->
+    <section id="bin-print" class="by" aria-labelledby="by-h">
+      <h2 class="by-h2" id="by-h">Bin Print: map your bin yard</h2>
+      <p class="by-lede">Put your bins on a map: each one&rsquo;s bushels, bushels per foot of grain, what is in it now and market bushels, and the yard&rsquo;s total and open space. Print it, or send a crew sheet to your drivers.</p>
+      <div id="by-root" class="by-root"><noscript><p class="by-fine">Bin Print needs JavaScript turned on.</p></noscript></div>
+      <div class="gb-ask" aria-live="off" aria-atomic="false"><div data-stack data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:grain-bin-calculator"></div></div>
+    </section>
+    <script src="/components/grain-bin.js?v=3"></script>
+    <script src="/components/grain-shrink.js?v=4"></script>
+    <script src="/components/bin-yard.js?v=1"></script>
     <div class="grid-2">
 
       <!-- INPUT PANEL -->
@@ -446,7 +458,6 @@
           <div class="field-hint" id="room-note"></div>
           <div class="result-row"><span class="result-label" id="rMktLabel">Market bushels (56 lb)</span><span class="result-value" id="rMktBu">-</span></div>
           <div class="result-row"><span class="result-label">Weight</span><span class="result-value" id="rWeight">-</span></div>
-          <div class="gb-ask" aria-live="off" aria-atomic="false"><div data-stack data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:grain-bin-calculator"></div></div>
 
           <button class="vol-toggle" onclick="toggleVol(this)" aria-expanded="false">&#9654; Show volume breakdown</button>
           <div class="vol-detail" id="vol-detail">
@@ -527,6 +538,10 @@
       </div>
 <!--BINCHART:END-->
 
+      <h2 id="bushels-per-foot">Bushels per foot in a grain bin</h2>
+      <p>One foot of grain on a round bin&rsquo;s straight wall is the floor area times 1 ft, times 0.8036 bushels per cubic foot (1 bu = 1.2445 cu ft): &pi; &times; radius&sup2; &times; 1 ft &times; 0.8036. A 30 ft bin holds about 568 bu per foot (706.9 sq ft &times; 0.8036), so 1 inch of grain is about 47 bu. A 36 ft bin is about 818 bu per foot and a 48 ft bin about 1,454. Counted like a dealer chart, with 6% pack, add 6%. Bin Print above shows the number for each of your bins and prints inches-to-bushels lines for each one.</p>
+      <h2 id="bin-inventory">Grain bin inventory: what is in your bins now</h2>
+      <p>To count a bin, measure the grain depth at the wall, or tape from the eave down to the grain and take that off the eave height; a measured depth beats a ring count, since raised floors and offsets change it. Then figure the bushels at that depth with the surface level, peaked or cored. Bin Print keeps that count for every bin in the yard, with market bushels at your test weight, the room left and a dated one-page sheet. It is an estimate from sizes, not a scale ticket.</p>
       <h2>Why a dealer chart reads higher</h2>
       <p>Dealer charts like GSI&rsquo;s count a 28&deg; peak and 6% pack, and GSI counts grain from the top of a 12 in aeration floor. This page&rsquo;s plain setting counts a 25&deg; peak and no pack, so a chart reads about 5 to 6.5% higher for the same bin. Pick &ldquo;Match my dealer&rsquo;s chart&rdquo; and put in the floor height to count it their way. Here are three real bins.</p>
       <details class="gb-check" id="dealer-check">
@@ -630,8 +645,7 @@
 <!-- /static-nav:footer -->
 </div>
   <script src="/components/loader.js?v=19"></script>
-  <script src="/components/grain-bin.js?v=3"></script>
-  <script src="/components/grain-shrink.js?v=4"></script>
+  <script src="/components/qr.js?v=11" defer></script>
   <script>
   var G=window.AgGrainBin;   // all the math lives in components/grain-bin.js
   var CROPS={
