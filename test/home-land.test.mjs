@@ -151,7 +151,11 @@ const skip = !chromium || !fs.existsSync(CHROME) ? "Playwright or Chromium not f
 
 const TYPES = { ".html": "text/html", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml",
   ".woff2": "font/woff2", ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".ico": "image/x-icon", ".xml": "application/xml" };
-function serve(leadBody) {
+/* split: the home page is sent in two parts, the second PAUSE ms later, so the browser can paint between them the way a
+   loaded runner's parser yields between chunks (Nov 7: the 3.9e-7 and 5.37e-6 shifts were the block's chevrons jumping
+   when its second half arrived after such a paint). */
+const PAUSE = 400;
+function serve(leadBody, split) {
   return new Promise((resolve) => {
     const srv = createServer((req, res) => {
       let u = decodeURIComponent(new URL(req.url, "http://x").pathname);
@@ -165,6 +169,10 @@ function serve(leadBody) {
       if (!fs.existsSync(f) && fs.existsSync(f + ".html")) f += ".html";
       if (!fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
       res.writeHead(200, { "content-type": TYPES[path.extname(f)] || "application/octet-stream" });
+      if (split && u === "/index.html") {
+        const buf = fs.readFileSync(f); res.write(buf.subarray(0, split));
+        setTimeout(() => res.end(buf.subarray(split)), PAUSE); return;
+      }
       fs.createReadStream(f).pipe(res);
     });
     srv.listen(0, "127.0.0.1", () => resolve(srv));
@@ -176,9 +184,13 @@ async function look(browser, port, width, place) {
   await ctx.route(PLACES_ROUTE, (r) => r.abort());
   if (place) await ctx.addInitScript((s) => { try { localStorage.setItem("agsist-wx-loc", s); } catch (e) {} }, JSON.stringify(place));
   await ctx.addInitScript(() => {
-    window.__shift = 0;
+    window.__shift = 0; window.__moved = [];
     try {
       new PerformanceObserver((l) => { for (const e of l.getEntries()) {
+        /* any shift with a source in the block, whatever its size: Chrome 141 (CI) and 153 attribute a pseudo-element's
+           shift differently, so the parse-split test below counts every one */
+        if (!e.hadRecentInput && e.sources.some((s) => s.node && s.node.closest && s.node.closest("#job-land")))
+          window.__moved.push(e.value + " " + e.sources.map((s) => s.node && (s.node.id || s.node.nodeName)).join(","));
         /* a line of the block that changed size: the block's own shift (a block pushed down whole by the bids
            above it answering late is the near column's business, test/home-front) */
         if (!e.hadRecentInput && e.sources.some((s) => s.node && s.node.closest && s.node.closest("#job-land")
@@ -197,7 +209,7 @@ async function look(browser, port, width, place) {
     const field = document.querySelector(".job-field").getBoundingClientRect(), fut = document.querySelector(".hb-futh").getBoundingClientRect();
     return { field: { top: field.top, bottom: field.bottom }, futTop: fut.top, block: box(b), v: v.textContent, k: document.getElementById("hl-k").textContent, s: document.getElementById("hl-s").textContent,
       href: document.getElementById("hl-sale").getAttribute("href"), all: all.textContent.trim(), allHref: all.getAttribute("href"),
-      text: b.textContent, shift: window.__shift, vh: innerHeight, why: getComputedStyle(document.getElementById("hl-why")).visibility,
+      text: b.textContent, shift: window.__shift, moved: window.__moved, vh: innerHeight, why: getComputedStyle(document.getElementById("hl-why")).visibility,
       cut: ["hl-k", "hl-v", "hl-s"].filter((id) => { const e = document.getElementById(id); return e.scrollHeight > e.clientHeight + 1 || e.scrollWidth > e.clientWidth + 1; }) };
   });
   await ctx.close();
@@ -269,3 +281,31 @@ test("in Chromium: the longest real words fit, nothing is cut, the height holds"
   } finally { await browser.close(); without.close(); }
 });
 
+
+
+/* A paint between two parts of the page never moves the block (Nov 7, CI flake on loaded runners): the page is cut
+   inside each of the block's lines and links and the rest sent 400 ms later. Before the fix the chevrons (centred over
+   rows not yet parsed) jumped 3 to 50px when the rest came; index.html now holds the first paint (link rel=expect)
+   until the element after the block has opened. */
+test("in Chromium: a paint between two parts of the page moves nothing in the block", { skip, timeout: 240000 }, async () => {
+  const home = read("index.html");
+  assert.match(home.slice(0, home.indexOf("</head>")), /<link rel="expect" href="#hb-plain" blocking="render">/, "the first paint waits for the block");
+  const land = home.indexOf('id="job-land"'), after = home.indexOf('id="hb-plain"');
+  assert.ok(land > 0 && after > home.indexOf("</ul>", land), "the expected element comes after the whole block");
+  const cuts = ['<span class="hl-k"', '<span class="hl-v"', '<span class="hl-s"', "</a>\n        <details", 'id="hl-all-l">', 'id="hl-ask-l">', "</ul>"]
+    .map((m) => { const i = home.indexOf(m, land); assert.ok(i > land && i < after, "cut point " + m); return Buffer.byteLength(home.slice(0, i + m.length)); });
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const width of [1280, 390]) {
+      for (const cut of cuts) {
+        const srv = await serve(JSON.stringify(FIX), cut);
+        try {
+          const r = await look(browser, srv.address().port, width, { zip: "61761", state: "IL", county: "McLean", label: "Normal, IL", lat: 40.51, lon: -88.99 });
+          assert.equal(r.v, "$21,000 an acre", `${width} cut ${cut}: the sale is drawn`);
+          assert.deepEqual(r.moved, [], `${width} cut ${cut}: no layout shift with a source in the block`);
+          assert.equal(r.shift, 0);
+        } finally { srv.close(); }
+      }
+    }
+  } finally { await browser.close(); }
+});
