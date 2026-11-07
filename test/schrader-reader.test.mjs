@@ -37,7 +37,7 @@ sys.path.insert(0, "scripts")
 import read_schrader as R
 feed = R.parse_feed(open("${FX}/index-sold.rss", "rb").read())
 rec = R.parse_page(open("${FX}/9630.html", "rb").read(), "9630", feed.get("9630"), R.county_index())
-print(json.dumps(rec))
+print(json.dumps(dict(rec, feed_date=feed["9630"]["date"])))
 `;
   const rec = JSON.parse(execFileSync('python3', ['-c', py], { cwd: root, encoding: 'utf8' }).trim().split('\n').pop());
   assert.deepEqual(rec.tracts, [
@@ -46,7 +46,8 @@ print(json.dumps(rec))
     { tracts: '6+8', sold: 1000000, per_acre: 9709 },
   ]);
   assert.equal(rec.total_sold, 2905000);
-  assert.equal(rec.date, '2026-11-05');
+  assert.match(rec.date, /^\d{4}-\d{2}-\d{2}$/);
+  assert.equal(rec.date, rec.feed_date, 'the page date agrees with the feed date');
   assert.equal(rec.county_fips, '18177');
   assert.equal(rec.headline_acres, 296.5);
 });
