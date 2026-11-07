@@ -69,8 +69,6 @@ jobs:
         with:
           python-version: '3.12'
 
-      # pdftotext reads the weekly report PDF for the NASS-printed 5-year average.
-      # Without it the fetch still runs and keeps its own arithmetic.
       - name: Install poppler (pdftotext)
         continue-on-error: true
         timeout-minutes: 5

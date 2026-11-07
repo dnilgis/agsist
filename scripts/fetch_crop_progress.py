@@ -428,8 +428,8 @@ STATE_ALPHA = {
 
 import re as _re
 
-_TITLE_RE = _re.compile(r"^\s*(%s)\s+[–—-]\s+Selected States\s*$" % "|".join(REPORT_TABLES))
-_ANY_TITLE_RE = _re.compile(r"[–—-]\s+Selected States")
+_TITLE_RE = _re.compile(r"^\s*(%s)\s+[\u2013\u2014-]\s+Selected States\s*$" % "|".join(REPORT_TABLES))
+_ANY_TITLE_RE = _re.compile(r"[\u2013\u2014-]\s+Selected States")
 _ROW_RE = _re.compile(r"^\s*([A-Z][A-Za-z ]*?|\d+ States)\s*\.{2,}\s+(.+?)\s*$")
 _HDR_DATE_RE = _re.compile(r"([A-Z][a-z]+ \d{1,2}),")
 _AVG_YEARS_RE = _re.compile(r"\b(\d{4})-(\d{4})\b")
