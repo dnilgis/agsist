@@ -64,7 +64,7 @@
   function sheet(cp, live, c) {
     cp = cp || {}; live = live || {};
     var src = [], blocks = [], nass = false;
-    function credit(s) { if (s && src.indexOf(s) < 0) src.push(s); if (/NASS/.test(s || '')) nass = true; return s; }
+    function credit(s) { String(s || '').split('; ').forEach(function (x) { if (x && src.indexOf(x) < 0) src.push(x); }); if (/NASS/.test(s || '')) nass = true; return s; }
     function block(key, h, rows) { rows = rows.filter(Boolean); if (rows.some(function (r) { return !r.head; })) blocks.push({ key: key, h: h, rows: rows }); }
     function lv(k, label, n) {
       var f = liveRow(live[k]);
@@ -80,7 +80,7 @@
       rsrc = credit('USDA NASS Cash Rents Survey') + ', ' + cp.r[1];
       rent.push({ big: cp.r[0], unit: '/ac', short: (cp.r[2] === 'irr' ? 'Irrigated' : 'Non-irrigated') + ' cash rent, ' + cp.r[1] + ' county average',
         text: (cp.r[2] === 'irr' ? 'Irrigated' : 'Non-irrigated') + ' cash rent, county average: what tenants paid, not a quote for a new lease.', src: rsrc });
-      if (cp.nr) rent.push({ big: cp.nr[0] + ' to ' + cp.nr[1], unit: '/ac', text: 'Next-door counties\u2019 dry rent, the same survey year: median ' + cp.nr[2] + ', ' + cp.nr[3] + ' counties.', src: rsrc });
+      if (cp.nr) rent.push({ big: cp.nr[0] + ' to ' + cp.nr[1], unit: '/ac', text: 'Next-door counties\u2019 dry rent, the same survey year: median ' + cp.nr[2] + '.', src: rsrc });
       if (cp.rb && cp.yt) rent.push({ big: cp.rb, unit: '/bu', text: 'Rent per bushel: ' + cp.r[0] + ' \u00f7 ' + cp.yt[0] + ' bu, the corn ' + cp.yt[1] + '.', src: 'AGSIST arithmetic on the USDA NASS rent and yields' });
     }
     block('rent', 'What does land rent for?', rent);
@@ -113,6 +113,7 @@
       src: 'AGSIST arithmetic on the two rows above' });
     block('earn', 'What can farming here earn?', earn);
     /* 4. What could disrupt that income? */
+    var rn = lv('rain', 'Rain since Jan 1', 1);
     var dr = lv('drought', 'Drought this week', live.drought && live.drought.value === 'None' ? 0 : 1);
     var hl = lv('hail', 'Hail reports, last 30 days', 1);
     /* storms: today's hail row, with the county's hail record beside it (each with its own source and period) */
@@ -121,7 +122,7 @@
       if (hl) { hl.text = hl.text.replace(/ A missing report is not proof of no hail\./, '') + ' ' + rec; hl.src += '; ' + rs; }
       else hl = { big: cp.hd[0], unit: ' a year', short: 'Days with hail 1 inch or larger', text: rec.replace(/: [\d.]+ a year/, ''), src: rs };
     }
-    var risk = [lv('rain', 'Rain since Jan 1', 1), dr, hl];
+    var risk = [rn, dr, hl];
     if (cp.lr) risk.push({ big: cp.lr[0], short: 'Crop insurance loss ratio, ' + cp.lr[1], text: 'Crop insurance loss ratio: claims \u00f7 total premium, ' + cp.lr[2] + ' paid' + (cp.ov ? '; claims topped premium in ' + cp.ov[0] + ' of ' + cp.ov[1] + ' crop years' : '') + '.'
       + (cp.lc ? ' Largest causes of loss' + (cp.lc[1] !== cp.lr[1] ? ', ' + cp.lc[1] : '') + ': ' + cp.lc[0] + ', share of dollars paid.' : ''),
       src: credit('USDA RMA Summary of Business') + (cp.lc ? ' and cause of loss' : '') + ', ' + cp.lr[1] });

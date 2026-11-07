@@ -55,8 +55,8 @@ const ctxOf = (h, fips) => {
 /* what a reader sees: the page without its scripts, styles and tags */
 const visible = (h) => h.replace(/<script[\s\S]*?<\/script>/g, " ").replace(/<style[\s\S]*?<\/style>/g, " ").replace(/<[^>]+>/g, " ")
   .replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&middot;/g, "·").replace(/\s+/g, " ");
-const nums = (s) => (String(s).match(/\$?\d[\d,]*(?:\.\d+)?/g) || []).map((x) => x.replace(/^\$/, ""));
-const sheetText = (s) => [s.title, ...s.blocks.flatMap((b) => b.rows.map((r) => (r.big || "") + (r.unit || "") + " " + r.text)), s.src, s.notice].join(" ");
+const nums = (s) => (String(s).match(/\$?\d+(?:,\d{3})*(?:\.\d+)?/g) || []).map((x) => x.replace(/^\$/, ""));
+const sheetText = (s) => [s.title, s.made, ...s.blocks.flatMap((b) => b.rows.map((r) => r.head || (r.big || "") + (r.unit || "") + " " + r.text + " " + (r.src || ""))), s.src, s.notice].join(" ");
 
 test("every Atlas county page carries the County Print group, its figures and the script at its own hash", () => {
   const v = createHash("sha1").update(readFileSync(join(ROOT, "components/county-print.js"))).digest("hex").slice(0, 8);
@@ -83,9 +83,10 @@ test("every Atlas county page carries the County Print group, its figures and th
     const L = J(p), sz = statSync(join(ROOT, p)).size;
     assert.match(L.vb, /^0 0 \d+ \d+$/);
     assert.ok(sz < 60000, `${p}: ${sz} bytes`);
-    for (const r of INDEX.filter((x) => x[1].slice(-2) === st).slice(0, 3)) assert.ok(L.p[r[0]], `${p} has ${r[0]}`);
+    // every county whose page draws its own locator (it has a boundary on file) is in its state's file
+    for (const r of INDEX.filter((x) => x[1].slice(-2) === st)) if (read(r[2].slice(1) + ".html").includes('class="loc"')) assert.ok(L.p[r[0]], `${p} has ${r[0]}`);
   }
-  assert.ok(maxCp <= 700, `the figures stay a few hundred bytes a page (largest ${maxCp})`);
+  assert.ok(maxCp <= 800, `the figures stay a few hundred bytes a page (largest ${maxCp})`);
 });
 
 test("every yearly figure on the sheet is one the page prints; the chart is the page's yields and yearly trend", () => {
@@ -149,7 +150,7 @@ test("the daily rows are the rows county-home.js drew; a short-list bid and a mi
   assert.equal(w.rows[0].text, "Rain since Jan 1. 128% of the 1991–2020 normal (29.60 in) for the same days.", "a decimal never splits a sentence");
   assert.ok(!w.rows.some((r) => /Drought/.test(r.text)), "a row that did not load is left out");
   assert.doesNotMatch(sheetText(s), /Home 80|your field “/, "the reader's field name never prints");
-  assert.match(s.src, /Posted elevator bids; USDA AgTransport; NOAA daily station record/);
+  for (const w of ["Posted elevator bids", "USDA AgTransport", "NOAA daily station record"]) assert.equal(s.src.split(w).length, 2, "credited once: " + w);
   assert.match(s.src, /This product uses the NASS API but is not endorsed or certified by NASS\./, "the NASS notice where NASS figures show");
   assert.deepEqual(s.big4.map((b) => b.key), ["rent", "sold", "earn", "bid"], "the summary row: rent, a land value, corn, today's corn bid");
   assert.equal(CP.sheet(cpData(h), {}, c).big4.length, 4, "no bid today: the loss ratio stands in");

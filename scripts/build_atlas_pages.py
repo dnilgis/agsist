@@ -2175,7 +2175,7 @@ def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfac
       ss [state farm real estate $/ac, survey year]
       sl [transfers n, median $/ac, span, record, dated through, min acres]   sk [count under the minimum, span, the
          minimum, min acres, record]   cov [states with recorded transfers on this site, when the county has none]
-      nr [next-door dry rent low, high, median, counties], same survey year
+      nr [next-door dry rent low, high, median], same survey year (the Next door table's)
       r  [cash rent $/ac, year, "irr" for an irrigated-only rent]   rb rent per bushel of the corn trend
       yt [corn trend bu/ac, its label, practice]   yl [last county yield year, bu/ac]
       lr [loss ratio, years, dollars paid]   ov [years claims exceeded premium, of years]   lc [top causes, years]
@@ -2210,13 +2210,13 @@ def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfac
         o["r"] = [money(ri["value"]), ri["year"], "irr"]
     if rpb is not None and not rv_old:
         o["rb"] = usd2(rpb)
-    # the next-door dry rents of the same survey year, as the Next door table prints them: low, high, median, count
+    # the next-door dry rents of the same survey year, as the Next door table prints them: low, high, median
     if "r" in o and len(o["r"]) == 2:
         nv = sorted(W.m("rent", g) for g in W.NB.get(f, []) if g in W.C and W.m("rent", g) is not None and get(W.C[g], "rent", "nonirr", "year") == RL)
         if len(nv) >= 2:
             n_ = len(nv)
             md = nv[(n_ - 1) // 2] if n_ % 2 else (nv[n_ // 2 - 1] + nv[n_ // 2]) / 2
-            o["nr"] = [money(nv[0]), money(nv[-1]), money(md), n_]
+            o["nr"] = [money(nv[0]), money(nv[-1]), money(md)]
     if ytv is not None:
         o["yt"] = [f1(ytv), CY.label_trend(yt["ty"]), CY.PRACTICE_WORDS.get(yt.get("b"), "")]
     if ylast and ylast[1] is not None:
