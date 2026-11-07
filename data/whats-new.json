@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-07-bidweek",
+   "date": "2026-11-07",
+   "title": "Saturday Daily: your local bid against last Friday",
+   "line": "With your ZIP on file, the Saturday Daily now shows the top corn and soybean bid near you against that elevator's bid last Friday, with when it was posted.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-07-cothow",
    "date": "2026-11-07",
    "title": "Fund positions: longs and shorts, not just the net",
