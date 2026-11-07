@@ -1,0 +1,17 @@
+{
+ "report_date": "2026-11-03",
+ "release_date": "2026-11-06",
+ "commodities": {
+  "corn": {
+   "card": {
+    "how": {
+     "long_change": -20010,
+     "short_change": 52308,
+     "label": "mostly new short selling",
+     "line": "Longs -20,010, shorts +52,308: mostly new short selling."
+    },
+    "streak": 7
+   }
+  }
+ }
+}
