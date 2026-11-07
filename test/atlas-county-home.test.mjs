@@ -4,7 +4,7 @@
  *   node --test test/atlas-county-home.test.mjs
  *
  * What it holds the shipped pages to:
- *   - the page is named County farm facts, prints through the one shared sheet, and links the
+ *   - the page is named County farm facts, prints the County Print (test/county-print.test.mjs), and links the
  *     county's rain, PRF and ARC pages and Fast Facts for an exact place;
  *   - one definition per measure: the only rain percent is the gauge's year to date (loaded live),
  *     the only drought week count is "half the county or more in D2 or worse", and the live drought
@@ -37,13 +37,16 @@ const CODE = JS.replace(/\/\*[\s\S]*?\*\//g, "");   // the script without its co
 const B = read("scripts/build_atlas_pages.py");
 const HEADS = { milk: "milk_cows", feeders: "beef_cows", cattle: "on_feed", hogs: "hogs" };
 
-test("Barron, Story and Champaign: named County farm facts, print through the sheet, link the county's other pages", () => {
+test("Barron, Story and Champaign: named County farm facts, print the County Print, link the county's other pages", () => {
   for (const [fips, slug] of [["55005", "wisconsin/barron-county"], ["19169", "iowa/story-county"], ["17019", "illinois/champaign-county"]]) {
     const h = page(fips);
     assert.ok(h, fips + " page on disk");
     assert.match(h, /<div class="kick">County farm facts<\/div>/, fips);
     assert.match(h, /<title>[^<]*Farm Facts · Cash Rent 20\d\d: \$[\d,]+\/Acre/, fips + ": the name and the rent in the title");
-    assert.ok(h.includes(`<a class="pri" href="/farmland-atlas/sheet#${fips}">Print this sheet</a>`), fips + ": prints through the one shared sheet");
+    // County Print (Sig, Nov 7, 2026): Print opens the shared sheet until the County Print script runs. The pages are
+    // built on main, so a committed page may be the build before or after it; the new group is held to the builder's
+    // output in test/county-print.test.mjs
+    assert.match(h, new RegExp(`<a class="pri"(?: id="cpr-print")? href="/farmland-atlas/sheet#${fips}">(?:Print this sheet|Print County Print)</a>`), fips + ": prints through the shared sheet or the County Print");
     assert.ok(h.includes(`href="/fast-facts?fips=${fips}">My place (Fast Facts)</a>`), fips + ": Fast Facts for an exact place");
     assert.ok(h.includes('<a href="#watch">Email me what changes</a>') && h.includes('<div id="watch"><form class="watch"'), fips + ": the email button opens the watch form");
     assert.ok(h.includes(`data-xl="rain" href="/rain/${slug}"`), fips + ": the county rain page (the marked link cross_links.py stamps)");

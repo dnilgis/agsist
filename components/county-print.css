@@ -1,0 +1,66 @@
+/* components/county-print.css: the County Print sheet (components/county-print.js, Nov 7, 2026). Hidden on screen;
+   in print, when html.cprs-on is set (the Print button, or any browser print through beforeprint), it is the only
+   thing on paper. One page, US Letter portrait with half-inch margins, fits A4. Laid out like a land report: the
+   title block with the state and the county marked, a summary row, the four questions with the figures in one
+   aligned column, the chart and the QR code, the sources. Black and white: black ink does the work; the one
+   accent is the dark gold #8a6514 (5.3:1 on white), never the screen gold. Body 9.5 pt or more, sources 8.5 pt. */
+.cprs{display:none}
+/* measured off screen by county-print.js at the printed width of Letter and of A4, never seen */
+.cprs.cprs-measure{display:block;position:absolute;left:0;top:0;width:7.27in;visibility:hidden;pointer-events:none;contain:layout}
+@media print{
+  @page{margin:.5in}
+  html.cprs-on,html.cprs-on body{background:#fff!important;color:#000!important;margin:0!important;padding:0!important}
+  html.cprs-on body>*:not(#cprs){display:none!important}
+  html.cprs-on #cprs{display:block!important}
+}
+.cprs{color:#000;background:#fff;font:9.5pt/1.3 Inter,system-ui,-apple-system,"Segoe UI",Arial,sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact;font-variant-numeric:tabular-nums}
+.cprs *{box-shadow:none;text-shadow:none}
+.cprs p,.cprs h1,.cprs h2,.cprs h3,.cprs figure{margin:0}
+.cprs-bar{height:5pt;background:#8a6514}
+/* the title block */
+.cprs-top{display:flex;align-items:center;gap:.18in;padding:.07in 0 .06in;border-bottom:2.5pt solid #000}
+.cprs-map{flex:none;width:1.05in}
+.cprs-map svg{display:block;width:100%;height:auto;max-height:.95in}
+.cprs-ttl{flex:1;min-width:0}
+.cprs-kick{font-size:9pt;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#8a6514}
+.cprs-h1{font-size:24pt;font-weight:800;line-height:1.05;letter-spacing:-.02em;margin:.02in 0 .03in!important}
+.cprs-date{font-size:10.5pt;font-weight:600}
+.cprs-brand{flex:none;text-align:right;align-self:flex-start;padding-right:.04in}
+.cprs-logo{height:.34in;display:block;margin:0 0 .03in auto;width:auto;filter:brightness(0)}
+.cprs-url{font:800 11pt/1 "JetBrains Mono",ui-monospace,monospace}
+/* the summary row: the headline numbers, each with its label, period and source */
+.cprs-sum{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1pt solid #000}
+.cprs-k{padding:.07in .1in .07in 0;break-inside:avoid}
+.cprs-k+.cprs-k{border-left:.75pt solid #bbb;padding-left:.1in}
+.cprs-kl{font-size:8.5pt;font-weight:700;line-height:1.2;min-height:2.4em}
+.cprs-kv{font-size:20pt;font-weight:800;line-height:1.1;letter-spacing:-.015em;margin-top:.02in!important;white-space:nowrap}
+.cprs-kv small{font-size:10pt;font-weight:700;letter-spacing:0}
+.cprs-ks{font-size:7.5pt;line-height:1.2;color:#333;margin-top:.02in!important}
+/* the four questions, two across; the figures in one aligned column */
+.cprs-grid{display:grid;grid-template-columns:1fr 1fr;column-gap:.28in;margin-top:.1in;align-items:start}
+.cprs-col>*+*{margin-top:.1in}
+.cprs-b{break-inside:avoid;page-break-inside:avoid}
+.cprs-h{font-size:12.5pt;font-weight:800;line-height:1.2;padding-bottom:.03in;border-bottom:1.5pt solid #000}
+.cprs-sh{font-size:7.5pt;font-weight:800;text-transform:uppercase;letter-spacing:.1em;color:#333;margin:.06in 0 0!important;padding-top:.03in;border-top:.75pt solid #bbb}
+.cprs-r{display:grid;grid-template-columns:1.02in 1fr;column-gap:.08in;align-items:baseline;padding:.045in 0;border-bottom:.5pt solid #e0e0e0}
+.cprs-r:last-child{border-bottom:0}
+.cprs-r b{font-size:12pt;font-weight:800;line-height:1.12;letter-spacing:-.01em;text-align:right}
+.cprs-r b small{font-size:8.5pt;font-weight:700;letter-spacing:0}
+.cprs-r p span{display:block;line-height:1.25}
+.cprs-r p i{display:block;font-style:normal;font-size:7.5pt;line-height:1.2;color:#333;margin-top:.01in}
+.cprs-t{grid-template-columns:1fr}
+.cprs-t p{padding-left:1.1in}
+/* the chart (left column) and the QR code (right column) */
+.cprs-chart{break-inside:avoid;border-top:1.5pt solid #000;padding-top:.05in}
+.cprs-chart svg{display:block;width:100%;height:auto}
+.cprs-chart figcaption{font-size:8.5pt;line-height:1.22;margin-top:.03in}
+.cprs-side{flex:none;width:1in;text-align:center;align-self:center}
+.cprs-qr svg{width:.84in;height:.84in;display:block;margin:0 auto}
+.cprs-scan{font-size:7.5pt;font-weight:800;line-height:1.15;margin-top:.02in!important}
+.cprs-live{font-size:9pt;margin-top:.1in!important;border-top:1pt solid #000;padding-top:.04in}
+.cprs-live b{font:700 9pt/1.2 "JetBrains Mono",ui-monospace,monospace}
+.cprs-src{font-size:8.5pt;line-height:1.25;margin-top:.03in!important}
+.cprs-na{font-size:8.5pt;line-height:1.25;margin-top:.03in!important;font-weight:600}
+.cprs-tight .cprs-col>*+*{margin-top:.05in}
+.cprs-tight .cprs-r{padding:.03in 0}
+.cprs-tight .cprs-kv{font-size:18pt}

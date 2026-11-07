@@ -82,7 +82,12 @@
     if (f.value == null) return '<span class="lvv na">Not in right now.</span> <span class="lc">' + esc(cap(f.why || 'the file did not load')) + '.</span>' + s;
     return '<span class="lvv">' + esc(f.value) + '</span>' + (f.ctx ? ' <span class="lc">' + esc(f.ctx) + '</span>' : '') + s;
   }
+  /* County Print (Nov 7, 2026): components/county-print.js prints these same rows, so each one is kept as
+     drawn (window.AgCountyFacts) and announced ('county:fact'); the sheet never works out a figure of its own */
+  var FACTS = window.AgCountyFacts = window.AgCountyFacts || {};
   function fill(k, f) {
+    FACTS[k] = f;
+    try { document.dispatchEvent(new CustomEvent('county:fact', { detail: { k: k, f: f } })); } catch (e) {}
     var els = rows(k);
     for (var i = 0; i < els.length; i++) {
       var el = els[i], r = el.querySelector('.r'), l = el.querySelector('.l');

@@ -1109,6 +1109,45 @@ def locator_svg(W, f, w=260, h=190):
     return '<svg viewBox="0 0 %d %d" role="img" aria-label="%s on the map with the counties that border it" class="loc">%s</svg>' % (w, h, esc(W.label[f]), "".join(s))
 
 
+LOC_DIR = "loc"
+
+
+def state_locator(W, st, w=240, h=200):
+    """The County Print's locator (Nov 7, 2026): every mapped county of the state, projected the way locator_svg
+    projects, fitted to a w x h box, rounded to whole units with repeated points dropped (a few KB a state, fetched
+    by components/county-print.js, which outlines them all and fills the one county). -> {"vb", "p": {fips: d}}"""
+    ids = [g for g in W.by_state.get(st, []) if g in W.geo]
+    if not ids:
+        return None
+
+    def rings(g):
+        geom = W.geo[g]
+        polys = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
+        return [[((x - 360) if (st == "AK" and x > 0) else x, y) for x, y in ring] for poly in polys for ring in poly]
+
+    R = {g: rings(g) for g in ids}
+    xs = [p[0] for g in ids for r in R[g] for p in r]
+    ys = [p[1] for g in ids for r in R[g] for p in r]
+    k = math.cos(math.radians((min(ys) + max(ys)) / 2))
+    x0, x1, y0, y1 = min(xs) * k, max(xs) * k, min(ys), max(ys)
+    sc = min((w - 4) / max(1e-9, x1 - x0), (h - 4) / max(1e-9, y1 - y0))
+    W_, H_ = int(math.ceil((x1 - x0) * sc + 4)), int(math.ceil((y1 - y0) * sc + 4))
+    out = {}
+    for g in ids:
+        d = ""
+        for r in R[g]:
+            pts = []
+            for x, y in r:
+                q = (int(round(2 + (x * k - x0) * sc)), int(round(2 + (y1 - y) * sc)))
+                if not pts or pts[-1] != q:
+                    pts.append(q)
+            if len(pts) >= 3:
+                d += "M" + "L".join("%d %d" % q for q in pts) + "Z"
+        if d:
+            out[g] = d
+    return {"vb": "0 0 %d %d" % (W_, H_), "p": out}
+
+
 # ------------------------------------------------------------------ CSS/JS
 CSS = """
 .ap{max-width:1040px;margin:0 auto;padding:0 1rem 3rem}
@@ -1186,6 +1225,10 @@ CSS = """
 .ap .ch-btns a{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border-radius:10px;border:1px solid var(--border);background:var(--surface,#12161a);color:var(--text);font-weight:700;font-size:.9rem;text-decoration:none}
 .ap .ch-btns a:hover{border-color:var(--gold);color:var(--gold)}
 .ap .ch-btns a.pri{background:var(--gold);border-color:var(--gold);color:#111}.ap .ch-btns a.pri:hover{color:#111;filter:brightness(1.06)}
+.ap .cpr{display:flex;flex-wrap:wrap;gap:.5rem;flex:1 1 100%}
+.ap .cpr button{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 1rem;border-radius:10px;border:1px solid var(--border);background:var(--surface,#12161a);color:var(--text);font:inherit;font-weight:700;font-size:.9rem;cursor:pointer}
+.ap .cpr button:hover{border-color:var(--gold);color:var(--gold)}
+.ap .cpr-st{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .ap .so h2{margin-top:.6rem}
 .ap .so-g{display:grid;grid-template-columns:minmax(0,1fr);gap:.6rem;margin:0 0 1rem}
 @media(min-width:760px){.ap .so-g{grid-template-columns:repeat(3,minmax(0,1fr))}}
@@ -1233,7 +1276,7 @@ CSS = """
 .ap .lf .lv{min-height:5.6em}.ap .lf .lv .ls{display:inline;margin:0 0 0 .35em}
 .ap .lf-btns{margin:.45rem 0 .3rem}
 .ap .lf-dis{margin:0;font-size:.82rem;font-weight:600;color:var(--text)}.ap .lf-fine{margin:.1rem 0 0;font-size:.74rem;color:var(--text-muted)}
-@media (max-width:640px){.ap{padding:0 12px 3rem}.ap .card{padding:10px 12px}.ap .ch-btns a{flex:1 1 auto;justify-content:center}}
+@media (max-width:640px){.ap{padding:0 12px 3rem}.ap .card{padding:10px 12px}.ap .ch-btns a,.ap .cpr button{flex:1 1 auto;justify-content:center}}
 @media print{.ap .ch-btns,.ap .gaps{display:none}.ap .card{break-inside:avoid}}
 """
 POSTAL = "AGSIST, PO Box 243, Chetek, WI 54728"
@@ -1624,7 +1667,7 @@ document.getElementById('dl').addEventListener('click',function(){
   document.body.appendChild(a);a.click();a.remove();try{gaEvent('atlas_county_csv',{fips:rec.fips});}catch(e){}
 });
 var cp=document.getElementById('cp');
-cp.addEventListener('click',function(){
+if(cp)cp.addEventListener('click',function(){
   var u=location.origin+location.pathname;
   var done=function(){cp.textContent='Link copied';setTimeout(function(){cp.textContent='Copy link';},1800);};
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(u).then(done,function(){window.prompt('Copy this link',u);});}
@@ -2108,14 +2151,94 @@ def county_desc(lede_text):
 HEAD_MIN = 1000
 LIVESTOCK_LINES = (("milk", "milk_cows"), ("feeders", "beef_cows"), ("cattle", "on_feed"), ("hogs", "hogs"))
 CH_JS = "components/county-home.js"
+CP_JS = "components/county-print.js"
 
 
-def ch_v(root):
-    p = os.path.join(root, CH_JS)
+def ch_v(root, js=CH_JS):
+    p = os.path.join(root, js)
     try:
         return hashlib.sha1(open(p, "rb").read()).hexdigest()[:8]
     except OSError:
         return "0"
+
+
+def cp_v(root):
+    return ch_v(root, CP_JS)
+
+
+def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfacts):
+    """The County Print's yearly figures (Sig, Nov 7, 2026), as this page prints them: the same values through
+    the same formatters as the key tiles and the cards, so the sheet can never disagree with the page. Short keys,
+    a few hundred bytes a page; a figure the page withholds is left out (the sheet drops its row, never a guess).
+    The daily rows (bids, basis, rain, drought, hail) come from county-home.js in the browser, not from here.
+      v  [census land and buildings $/ac, year, read-with-care words or omitted]
+      ss [state farm real estate $/ac, survey year]
+      sl [transfers n, median $/ac, span, record, dated through, min acres]   sk [count under the minimum, span, the
+         minimum, min acres, record]   cov [states with recorded transfers on this site, when the county has none]
+      nr [next-door dry rent low, high, median], same survey year (the Next door table's)
+      r  [cash rent $/ac, year, "irr" for an irrigated-only rent]   rb rent per bushel of the corn trend
+      yt [corn trend bu/ac, its label, practice]   yl [last county yield year, bu/ac]
+      lr [loss ratio, years, dollars paid]   ov [years claims exceeded premium, of years]   lc [top causes, years]
+      hd [hail 1 in+ days a year, years]
+      y  [first year, "v,v,,v" county corn yields, all practices, the page's one-decimal figures with a ".0"
+         left off] with ys [slope, "+3.1", window] when the page
+         prints the yearly trend"""
+    V, Y, S, Lo, Sm = d.get("value") or {}, d.get("yield") or {}, d.get("sob") or {}, d.get("loss") or {}, d.get("storms") or {}
+    RL = W.rent_latest
+    o = {}
+    if ok(V) and V.get("latest") is not None:
+        fl = V.get("flag")
+        o["v"] = [money(V["latest"]), V.get("latest_year")] + (["read with care: " + flag_words(fl, True)] if fl else [])
+    if ss and ss.get("real_estate"):
+        o["ss"] = [money(ss["real_estate"]), ss["year"]]
+    # recorded transfers (the benchmark, Nov 7: "what has sold?", always named transfers, never comps): the tile's
+    # median and count, its window and "dated through"; under the tile's minimum, the count it prints; none on file,
+    # the states this site reads deeds for (so "none here" is never read as "none sold")
+    if sfacts:
+        o["sl"] = [sfacts["n"], money(sfacts["med"]), sfacts["span"], sfacts["record"], _sday(sfacts["through"], sfacts.get("dm")), sfacts["min_acres"]]
+    else:
+        stl = sales_tile(W, f, st)
+        sm = sales_summary(W, st) if stl else None
+        c_ = ((sm or {}).get("counties") or {}).get(f)
+        if stl and c_ and not c_.get("med"):
+            o["sk"] = [c_.get("k12") or 0, _sspan(sm["windows"]["cur"]), sm.get("min_n") or 5, sm.get("min_acres") or 20, sm.get("record") or SALES_SOURCES[st]["record"]]
+        else:
+            o["cov"] = ", ".join(sorted(k for k in SALES_SOURCES if has_sales(W, k)))
+    if rv and not rv_old:
+        o["r"] = [money(rv["value"]), rv["year"]]
+    elif ri and not (RL and ri.get("year") and ri["year"] < RL - 3):
+        o["r"] = [money(ri["value"]), ri["year"], "irr"]
+    if rpb is not None and not rv_old:
+        o["rb"] = usd2(rpb)
+    # the next-door dry rents of the same survey year, as the Next door table prints them: low, high, median
+    if "r" in o and len(o["r"]) == 2:
+        nv = sorted(W.m("rent", g) for g in W.NB.get(f, []) if g in W.C and W.m("rent", g) is not None and get(W.C[g], "rent", "nonirr", "year") == RL)
+        if len(nv) >= 2:
+            n_ = len(nv)
+            md = nv[(n_ - 1) // 2] if n_ % 2 else (nv[n_ // 2 - 1] + nv[n_ // 2]) / 2
+            o["nr"] = [money(nv[0]), money(nv[-1]), money(md)]
+    if ytv is not None:
+        o["yt"] = [f1(ytv), CY.label_trend(yt["ty"]), CY.PRACTICE_WORDS.get(yt.get("b"), "")]
+    if ylast and ylast[1] is not None:
+        o["yl"] = [ylast[0], f1(ylast[1])]
+    if ok(S):
+        if S.get("loss_ratio_all") is not None:
+            o["lr"] = [rh(S["loss_ratio_all"], 2), "%s–%s" % (S["first_year"], S["last_year"]), musd(S["total_indemnity"])]
+        if S.get("years_over_one") is not None:
+            o["ov"] = [S["years_over_one"], S["years_with_ratio"]]
+    if ok(Lo) and Lo.get("share_all") and any(Lo["share_all"].values()):
+        top = sorted((k for k, v in Lo["share_all"].items() if v), key=lambda k: -Lo["share_all"][k])[:3]
+        o["lc"] = [" · ".join("%s %s" % (CAUSE.get(k, k), share_words(Lo["share_all"][k])) for k in top), "%s–%s" % (Lo["first_year"], Lo["last_year"])]
+    if ok(Sm) and Sm.get("hail_1in_days_per_year") is not None:
+        o["hd"] = [f1(Sm["hail_1in_days_per_year"]), "%s–%s" % (Sm["from"], Sm["to"])]
+    if ok(Y) and Y.get("hist"):
+        hist = {int(k): v for k, v in Y["hist"].items() if v is not None}
+        if len(hist) >= 3:
+            y0, y1 = min(hist), max(hist)
+            o["y"] = [y0, ",".join(re.sub(r"\.0$", "", f1(hist[y])) if y in hist else "" for y in range(y0, y1 + 1))]
+            if Y.get("slope") is not None and not CY.ends_early(Y.get("last_year"), RL):
+                o["ys"] = [round(Y["slope"], 4), sgn(Y["slope"], 1), str(Y.get("window") or "").replace("-", "–")]
+    return o
 
 
 def head_count(d, k):
@@ -2784,8 +2907,17 @@ def county_page(W, f, d, stamp):
                     esc(f), esc(st), esc(lab), (' data-lat="%s" data-lng="%s"' % (ctr[0], ctr[1])) if ctr else "",
                     (' data-ring="%s"' % county_ring(W, f)) if county_ring(W, f) else "", ' data-ls-done="1"' if lf_html else "", ",".join(lines), heads,
                     esc(re.search(r'href="([^"]+)"', rain_note).group(1)) if rain_note else "", esc(arc_url or "/arc-plc"), CH_JS, ch_v(W.root)))
-    btns = ('<div class="ch-btns"><a class="pri" href="/farmland-atlas/sheet#%s">Print this sheet</a>'
+    # County Print (Sig, Nov 7, 2026): the one-page sheet, the phone picture and the share link, drawn in the
+    # browser by components/county-print.js from the figures this page prints (cp below) and the live rows
+    # county-home.js fills. Print falls back to the shared sheet before the script runs.
+    cpd = county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfacts)
+    btns = ('<div class="ch-btns"><div class="cpr" role="group" aria-label="County Print">'
+            '<a class="pri" id="cpr-print" href="/farmland-atlas/sheet#%s">Print County Print</a>'
+            '<button type="button" id="cpr-pic">Save picture</button><button type="button" id="cpr-link">Copy link</button>'
+            '<span class="cpr-st" role="status" aria-live="polite"></span></div>'
             '<a href="/fast-facts?fips=%s">My place (Fast Facts)</a><a href="#watch">Email me what changes</a></div>' % (esc(f), esc(f)))
+    cp_cfg = ('<script type="application/json" id="cp-data">%s</script><script defer src="/%s?v=%s"></script>'
+              % (json.dumps(cpd, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/"), CP_JS, cp_v(W.root)))
 
     cite = ("AGSIST Farmland Atlas. %s, %s. Figures as of %s, from USDA NASS, USDA RMA, USDA FSA, the U.S. Drought Monitor and NOAA. %s"
             % (lab, stn, stamp_h, url))
@@ -2804,7 +2936,6 @@ def county_page(W, f, d, stamp):
   <a href="/farmland-atlas#{esc(f)}">Open on the map</a>
   <a href="/farmland-atlas/compare#{esc(f)}">Compare</a>{act_rent}
   <button type="button" id="dl">Download CSV</button>
-  <button type="button" id="cp">Copy link</button>
 </div>
 {read_html}
 <section class="card cw" id="c-week" hidden aria-labelledby="c-week-h"></section>
@@ -2812,7 +2943,7 @@ def county_page(W, f, d, stamp):
 <div id="watch">{watch_form(f, lab, stn)}</div>
 {ND}
 {gaps_html(W, f, d, st)}
-{live_cfg}
+{live_cfg}{cp_cfg}
 <h2>Cite this page</h2>
 <div class="cite"><code>{esc(cite)}</code><br>Every figure is a county average from the sources named below. Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); other ranks count counties with 10,000 acres or more in farms. Methods: <a href="/farmland-atlas/methods">how each figure is built</a>. Downloads: <a href="/farmland-atlas/data">all counties, CSV</a>.</div>
 <details><summary>Sources, dates and arithmetic</summary>
@@ -3160,6 +3291,10 @@ def build(root=".", out_root=None, only=None, quiet=False, today=None):
     write(os.path.join(out_root, OUT, CSS_FILE), CSS)
     write(os.path.join(out_root, OUT, "watch.js"), WATCH_JS)
     write(os.path.join(out_root, OUT, "county.js"), COUNTY_JS)
+    for st_ in sorted({W.C[f]["state"] for f in W.C if not only or f in only}):
+        loc = state_locator(W, st_)
+        if loc:
+            write(os.path.join(out_root, OUT, LOC_DIR, st_.lower() + ".json"), json.dumps(loc, separators=(",", ":")))
     for f in sorted(W.C):
         if only and f not in only:
             continue
@@ -3450,6 +3585,13 @@ def selftest():
         # the button's script is farmland-atlas/county.js since Oct 29, 2026 (one cached file, not 3,148 inline copies)
         check("story calculator button", 'id="rc-open"' in st_ and ('/farmland-atlas/county.js?v=' + COUNTY_JS_V) in st_
               and "/components/rent-calc.js" in COUNTY_JS and "AgRentCalc" not in st_.split("<script>")[0])
+        # County Print (Nov 7, 2026): the button group, the page's own figures and the script at its hash
+        cpm = re.search(r'<script type="application/json" id="cp-data">([^<]*)</script>', st_)
+        cpj = json.loads(cpm.group(1)) if cpm else {}
+        check("story County Print group", 'id="cpr-print" href="/farmland-atlas/sheet#' in st_ and 'id="cpr-pic"' in st_ and 'id="cpr-link"' in st_
+              and st_.count(">Copy link<") == 1 and ("/%s?v=%s" % (CP_JS, cp_v(W.root))) in st_)
+        check("story County Print figures are the page's", bool(cpj) and len(cpm.group(1).encode()) <= 700 and "n/a" not in cpm.group(1)
+              and all((v[0] if isinstance(v, list) else v) in st_.split('id="cp-data"')[0] for k, v in cpj.items() if k in ("v", "ss", "r", "rb", "yt", "lr")))
         seen_ = 0
         for f in list(W.C)[:600]:
             p_ = os.path.join(tmp, W.path(f))

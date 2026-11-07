@@ -113,7 +113,9 @@ SETS = [
      "outputs": ["farmland-atlas/**", "!farmland-atlas/compare.html",
                  "!farmland-atlas/methods.html", "!farmland-atlas/sheet.html", "!farmland-atlas/qr.js", "sitemap-atlas.xml"],
      # data/share-host.json: where the share cards are served (scripts/share_host.py; the seed job writes it)
-     "writes": ["data/pointers"], "code": ["scripts/build_atlas_pages.py"], "inputs": ["data/share-host.json", "data/land-sales/coverage.json"],
+     # the county pages load county-home.js and county-print.js at their own hash (?v=), so a change to either is a rebuild
+     "writes": ["data/pointers"], "code": ["scripts/build_atlas_pages.py", "components/county-home.js", "components/county-print.js"],
+     "inputs": ["data/share-host.json", "data/land-sales/coverage.json"],
      "dependents": ["search", "llms"]},
     {"id": "rent", "offline": True, "workflow": "state-rent-pages.yml",
      "build": [[PY, "scripts/build_state_rent_pages.py"]], "check": None,
