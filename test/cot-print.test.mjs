@@ -37,7 +37,7 @@ test("cot.html: the Print sheet button beside Save picture (a 44 px .cc-btn), th
   assert.match(HTML, /\.cc-btn\{[^}]*min-height:44px/);
   assert.ok(HTML.includes('<link rel="stylesheet" href="/components/share-kit.css?v=1">\n<link rel="stylesheet" href="/components/cot-print.css?v=6">'), "the share kit shell, then the sheet's own look");
   const i = (s) => HTML.indexOf(`<script src="/components/${s}"></script>`);
-  assert.ok(i("share-kit.js?v=1") > 0 && i("share-kit.js?v=1") < i("cot-kit.js?v=3") && i("cot-kit.js?v=3") < i("cot-chart.js?v=12") && i("cot-chart.js?v=12") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=5") && i("cot-print.js?v=5") < i("cot-share.js?v=2"), "share kit core, kit, chart, QR encoder, then the sheet");
+  assert.ok(i("share-kit.js?v=1") > 0 && i("share-kit.js?v=1") < i("cot-kit.js?v=3") && i("cot-kit.js?v=3") < i("cot-chart.js?v=13") && i("cot-chart.js?v=13") < i("qr.js?v=11") && i("qr.js?v=11") < i("cot-print.js?v=5") && i("cot-print.js?v=5") < i("cot-share.js?v=2"), "share kit core, kit, chart, QR encoder, then the sheet");
   assert.match(read("components/cot-chart.js"), /dispatchEvent\(new CustomEvent\('cot:chart-data'/, "the chart hands its files over");
   assert.doesNotMatch(JS, /fetch\(|XMLHttpRequest/, "the sheet fetches nothing");
 });

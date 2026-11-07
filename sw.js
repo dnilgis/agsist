@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 388;  // v388 2026-11-07: friday chart poster (388, next after main's 387). Friday Chart poster: dark phone poster to save and a paper poster to print on 11 x 17 or Letter on each infographic page (components/infographic.js?v=2, infographic/infographic.css?v=2).
+var CACHE_VERSION = 389;  // v389 2026-11-07: cot chart labels never overlap (cot-chart.js?v=13)
+// var CACHE_VERSION = 388;  // v388 2026-11-07: friday chart poster (388, next after main's 387). Friday Chart poster: dark phone poster to save and a paper poster to print on 11 x 17 or Letter on each infographic page (components/infographic.js?v=2, infographic/infographic.css?v=2).
 // var CACHE_VERSION = 387;  // v387 2026-11-07: share kit home. Save picture on the homepage: a Today's markets picture from the futures board (new components/home-kit.js?v=1, happening.js?v=4).
 // var CACHE_VERSION = 386;  // v386 2026-11-07: cot bar refresh at release (386, next after main's 385). The /cot release bar turns over at the release instant and on the minute (cot-page.js?v=12).
 // var CACHE_VERSION = 385;  // v385 2026-11-07: infographic. Infographic of the Week pages and their pictures and print sheet (new components/infographic.js?v=1, infographic/infographic.css?v=1).
