@@ -399,7 +399,13 @@ def build_progress(fetch, year: int, report_date: str | None):
 # printed average then replaces ours for that place, marked avg5_by "NASS";
 # places not in the report keep our arithmetic (or None).
 
-REPORT_URL = "https://www.nass.usda.gov/Publications/Todays_Reports/reports/prog{ww:02d}{yy:02d}.pdf"
+# Checked Nov 7, 2026: the release page links release.nass.usda.gov/reports/progWWYY.pdf (the old
+# www.nass.usda.gov/Publications/Todays_Reports path is a 404). The ESMIS archive keeps each release
+# at a dated page whose PDF path carries an opaque id (and sometimes a suffix, prog4625_2.pdf), so it
+# is found by reading that page's links, never built from the date.
+REPORT_URL = "https://release.nass.usda.gov/reports/prog{ww:02d}{yy:02d}.pdf"
+ESMIS_PAGE = "https://esmis.nal.usda.gov/publication/crop-progress/{day}"
+_ESMIS_PDF_RE = __import__("re").compile(r'href="((?:https://esmis\.nal\.usda\.gov)?/sites/default/release-files/[^"]+/prog\d{4}[^"/]*\.pdf)"')
 
 # report table title -> PROGRESS_SERIES key
 REPORT_TABLES = {
@@ -562,6 +568,41 @@ def report_numbers(week_end: str) -> list[int]:
     return out
 
 
+def esmis_pdf_links(html: str) -> list[str]:
+    """The Crop Progress PDF links on an ESMIS release page, absolute, in page order."""
+    out = []
+    for h in _ESMIS_PDF_RE.findall(html or ""):
+        u = h if h.startswith("http") else "https://esmis.nal.usda.gov" + h
+        if u not in out:
+            out.append(u)
+    return out
+
+
+def report_urls(week_end: str, get_page=None):
+    """Candidate PDF urls, in order: the release site by report number, then the
+    PDF linked from the ESMIS page of the Monday (or Tuesday, after a Monday
+    holiday) release. A generator, so the ESMIS page is read only when needed."""
+    d = datetime.strptime(week_end, "%Y-%m-%d")
+    for ww in report_numbers(week_end):
+        yield REPORT_URL.format(ww=ww, yy=d.year % 100)
+    if get_page is None:
+        def get_page(u):
+            req = urllib.request.Request(u, headers={"User-Agent": "AGSIST/1.0"})
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                return resp.read().decode("utf-8", "replace")
+    for k in (1, 2):
+        page = ESMIS_PAGE.format(day=(d + timedelta(days=k)).strftime("%Y-%m-%d"))
+        try:
+            links = esmis_pdf_links(get_page(page))
+        except Exception as e:
+            print(f"  ESMIS {page}: not read ({e})", flush=True)
+            continue
+        for u in links:
+            yield u
+        if links:
+            return
+
+
 def fetch_report(week_end: str) -> dict:
     """Downloads and parses the report for week_end. {} on any failure
     (no pdftotext, no file, no table for that week): the caller keeps its
@@ -572,9 +613,7 @@ def fetch_report(week_end: str) -> dict:
     if not shutil.which("pdftotext"):
         print("  report: pdftotext not found; NASS average not read", flush=True)
         return {}
-    yy = int(week_end[2:4])
-    for ww in report_numbers(week_end):
-        url = REPORT_URL.format(ww=ww, yy=yy)
+    for url in report_urls(week_end):
         print(f"  GET {url}", flush=True)
         try:
             req = urllib.request.Request(url, headers={"User-Agent": "AGSIST/1.0"})
@@ -1011,6 +1050,15 @@ def selftest():
     merge_report(res2, n4, {}, boom)
     check(res2["corn"]["harvest_5yr_avg"] is None and res2["progress"] is n4, "report outage: our figures stand, no crash")
     check(report_numbers("2026-10-04")[0] == 40, "week ending Oct 4, 2026 -> prog4026 first", report_numbers("2026-10-04"))
+    # Nov 7, 2026 check: the week ending Nov 1, 2026 is prog4426 on release.nass.usda.gov; ESMIS by dated page
+    _u = list(report_urls("2026-11-01", get_page=lambda u: (  # pin-ok: fixture
+        '<a href="/sites/default/release-files/796135/prog4426.pdf">PDF</a>' if u.endswith("2026-11-02") else "")))  # pin-ok: fixture
+    check(_u[0] == "https://release.nass.usda.gov/reports/prog4426.pdf", "first url is the release site, prog4426", _u[:1])
+    check(_u[-1] == "https://esmis.nal.usda.gov/sites/default/release-files/796135/prog4426.pdf",
+          "then the PDF linked on the ESMIS page of Mon Nov 2", _u[-1:])
+    _v = list(report_urls("2025-11-16", get_page=lambda u: (  # pin-ok: fixture
+        '<a href="https://esmis.nal.usda.gov/sites/default/release-files/795651/prog4625_2.pdf">' if u.endswith("2025-11-17") else "")))  # pin-ok: fixture
+    check(_v[0].endswith("prog4625.pdf") and _v[-1].endswith("/795651/prog4625_2.pdf"), "a suffixed ESMIS file is taken as linked", _v)
 
     print("HOLD THE LAST GOOD CONDITION READ (Oct 27, 2026: a later run wrote nulls)")
     import tempfile
