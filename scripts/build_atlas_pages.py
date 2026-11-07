@@ -1109,6 +1109,45 @@ def locator_svg(W, f, w=260, h=190):
     return '<svg viewBox="0 0 %d %d" role="img" aria-label="%s on the map with the counties that border it" class="loc">%s</svg>' % (w, h, esc(W.label[f]), "".join(s))
 
 
+LOC_DIR = "loc"
+
+
+def state_locator(W, st, w=240, h=200):
+    """The County Print's locator (Nov 7, 2026): every mapped county of the state, projected the way locator_svg
+    projects, fitted to a w x h box, rounded to whole units with repeated points dropped (a few KB a state, fetched
+    by components/county-print.js, which outlines them all and fills the one county). -> {"vb", "p": {fips: d}}"""
+    ids = [g for g in W.by_state.get(st, []) if g in W.geo]
+    if not ids:
+        return None
+
+    def rings(g):
+        geom = W.geo[g]
+        polys = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
+        return [[((x - 360) if (st == "AK" and x > 0) else x, y) for x, y in ring] for poly in polys for ring in poly]
+
+    R = {g: rings(g) for g in ids}
+    xs = [p[0] for g in ids for r in R[g] for p in r]
+    ys = [p[1] for g in ids for r in R[g] for p in r]
+    k = math.cos(math.radians((min(ys) + max(ys)) / 2))
+    x0, x1, y0, y1 = min(xs) * k, max(xs) * k, min(ys), max(ys)
+    sc = min((w - 4) / max(1e-9, x1 - x0), (h - 4) / max(1e-9, y1 - y0))
+    W_, H_ = int(math.ceil((x1 - x0) * sc + 4)), int(math.ceil((y1 - y0) * sc + 4))
+    out = {}
+    for g in ids:
+        d = ""
+        for r in R[g]:
+            pts = []
+            for x, y in r:
+                q = (int(round(2 + (x * k - x0) * sc)), int(round(2 + (y1 - y) * sc)))
+                if not pts or pts[-1] != q:
+                    pts.append(q)
+            if len(pts) >= 3:
+                d += "M" + "L".join("%d %d" % q for q in pts) + "Z"
+        if d:
+            out[g] = d
+    return {"vb": "0 0 %d %d" % (W_, H_), "p": out}
+
+
 # ------------------------------------------------------------------ CSS/JS
 CSS = """
 .ap{max-width:1040px;margin:0 auto;padding:0 1rem 3rem}
@@ -3252,6 +3291,10 @@ def build(root=".", out_root=None, only=None, quiet=False, today=None):
     write(os.path.join(out_root, OUT, CSS_FILE), CSS)
     write(os.path.join(out_root, OUT, "watch.js"), WATCH_JS)
     write(os.path.join(out_root, OUT, "county.js"), COUNTY_JS)
+    for st_ in sorted({W.C[f]["state"] for f in W.C if not only or f in only}):
+        loc = state_locator(W, st_)
+        if loc:
+            write(os.path.join(out_root, OUT, LOC_DIR, st_.lower() + ".json"), json.dumps(loc, separators=(",", ":")))
     for f in sorted(W.C):
         if only and f not in only:
             continue

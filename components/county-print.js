@@ -78,7 +78,7 @@
     var rent = [], rsrc;
     if (cp.r) {
       rsrc = credit('USDA NASS Cash Rents Survey') + ', ' + cp.r[1];
-      rent.push({ big: cp.r[0], unit: '/ac', short: (cp.r[2] === 'irr' ? 'Irrigated' : 'Cash') + ' rent, ' + cp.r[1] + ' county average',
+      rent.push({ big: cp.r[0], unit: '/ac', short: (cp.r[2] === 'irr' ? 'Irrigated' : 'Non-irrigated') + ' cash rent, ' + cp.r[1] + ' county average',
         text: (cp.r[2] === 'irr' ? 'Irrigated' : 'Non-irrigated') + ' cash rent, county average: what tenants paid, not a quote for a new lease.', src: rsrc });
       if (cp.nr) rent.push({ big: cp.nr[0] + ' to ' + cp.nr[1], unit: '/ac', text: 'Next-door counties\u2019 dry rent, the same survey year: median ' + cp.nr[2] + ', ' + cp.nr[3] + ' counties.', src: rsrc });
       if (cp.rb && cp.yt) rent.push({ big: cp.rb, unit: '/bu', text: 'Rent per bushel: ' + cp.r[0] + ' \u00f7 ' + cp.yt[0] + ' bu, the corn ' + cp.yt[1] + '.', src: 'AGSIST arithmetic on the USDA NASS rent and yields' });
@@ -104,7 +104,7 @@
     block('sold', 'What has sold?', sold);
     /* 3. What can farming here earn? */
     var earn = [];
-    if (cp.yt) earn.push({ big: cp.yt[0], unit: ' bu/ac', short: 'Corn, ' + cp.yt[1], text: 'Corn, ' + cp.yt[1] + (cp.yt[2] ? ', ' + cp.yt[2] : '') + '.', src: credit('USDA NASS county yields') + ', fitted by AGSIST' });
+    if (cp.yt) earn.push({ big: cp.yt[0], unit: ' bu/ac', short: 'Corn, ' + cp.yt[1] + (cp.yt[2] ? ', ' + cp.yt[2] : ''), text: 'Corn, ' + cp.yt[1] + (cp.yt[2] ? ', ' + cp.yt[2] : '') + '.', src: credit('USDA NASS county yields') + ', fitted by AGSIST' });
     if (cp.yl) earn.push({ big: cp.yl[1], unit: ' bu/ac', short: 'Corn, ' + cp.yl[0] + ' county yield', text: 'Corn, last county yield, all practices.', src: credit('USDA NASS county yields') + ', ' + cp.yl[0] });
     var cb = lv('corn-bid', 'Best corn bid within 50 mi', 2);
     earn.push(cb, lv('soy-bid', 'Best soybean bid within 50 mi', 1), lv('corn-basis', 'Corn basis', 3), lv('soy-basis', 'Soybean basis', 0));
@@ -131,10 +131,12 @@
     if (m) credit('USDA NASS county yields');
     /* the four biggest numbers for the picture: rent, land (a transfer median, else the census value), corn, then
        today's corn bid or the loss ratio */
-    var big4 = [], add = function (r, k) { if (r && r.big && big4.length < 4) big4.push({ key: k, big: r.big, unit: r.unit || '', text: r.short || r.text, cred: r.cred }); };
+    var big4 = [], add = function (r, k) { if (r && r.big && big4.length < 4) big4.push({ key: k, big: r.big, unit: r.unit || '', text: r.short || r.text, cred: r.cred, src: r.src }); };
     var by = {}; blocks.forEach(function (b) { by[b.key] = b; });
     function first(k) { return by[k] ? by[k].rows.filter(function (x) { return x.big; })[0] : null; }
     add(first('rent'), 'rent'); add(first('sold'), 'sold'); add(first('earn'), 'earn');
+    /* the rent and the corn yield read in full in the summary row; their section rows would only repeat them */
+    ['rent', 'earn'].forEach(function (k) { var r = first(k); if (r && by[k].rows.filter(function (x) { return !x.head; }).length > 1) r.sum = true; });
     if (cb) add(cb, 'bid'); else add(by.risk && by.risk.rows.filter(function (x) { return x.big && /loss ratio/.test(x.short || ''); })[0], 'risk');
     if (big4.length < 4) add(first('risk'), 'risk');
     /* the picture's source line: the sources of what it shows (the four numbers and the chart), short */
@@ -145,7 +147,7 @@
     var asof = isoDay(c.now), made = dateLine(c.now);
     var title = (c.name || 'This county') + (st ? ', ' + st : '') + ': County Print, ' + made;
     var srcLine = 'Sources: ' + (src.length ? src.join('; ') : 'public records') + '. ' + (nass || src.some(function (x) { return /Census/.test(x); }) ? NASS_NOTICE + ' ' : '') + CALC;
-    return { title: title, sub: (c.fips ? 'FIPS ' + c.fips + '. ' : '') + 'Four questions from public records, each figure with its source and period.', name: c.name, state: st, date: made, asof: asof,
+    return { title: title, fips: c.fips, sub: (c.fips ? 'FIPS ' + c.fips + '. ' : '') + 'Four questions from public records, each figure with its source and period.', name: c.name, state: st, date: made, asof: asof,
       blocks: blocks, big4: big4, chart: m, url: c.url, shown: String(c.url || '').replace(/^https?:\/\//, ''),
       qr: link(c.url, 'print', 'qr', c.fips, asof), pic: link(c.url, 'share', 'picture', c.fips, asof), share: link(c.url, 'share', 'link', c.fips, asof),
       src: srcLine, picSrc: picSrc.trim(),
@@ -250,28 +252,45 @@
   }
 
   /* ---------------------------------------------------------------- the sheet, as HTML */
-  function html(s, qr, chartH) {
+  /* The state with the county filled (loc: {vb, p: {fips: d}}, farmland-atlas/loc/<st>.json from the builder) */
+  function locSvg(loc, fips, label) {
+    if (!loc || !loc.p || !loc.p[fips]) return '';
+    var o = '';
+    Object.keys(loc.p).forEach(function (k) { if (k !== fips) o += loc.p[k]; });
+    return '<svg viewBox="' + esc(loc.vb) + '" role="img" aria-label="' + esc(label) + '" xmlns="http://www.w3.org/2000/svg">'
+      + '<path d="' + o + '" fill="#fff" stroke="#9a9a9a" stroke-width=".6" stroke-linejoin="round"/>'
+      + '<path d="' + loc.p[fips] + '" fill="#000" stroke="#000" stroke-width=".8" stroke-linejoin="round"/></svg>';
+  }
+  /* ---------------------------------------------------------------- the sheet, as HTML
+     A report's layout: the title block (the state with the county marked, the name, the date), a summary row of the
+     headline numbers, the four questions in two columns with the figures in one aligned column, the yield chart and
+     the QR code, then the sources and the made-on line. */
+  function html(s, qr, chartH, loc) {
     if (!s) return '';
     function one(b) {
-      var lead = true;
-      return '<section class="cprs-b cprs-' + b.key + '"><h2 class="cprs-h">' + esc(b.h) + '</h2>' + b.rows.map(function (r) {
+      return '<section class="cprs-b cprs-' + b.key + '"><h2 class="cprs-h">' + esc(b.h) + '</h2>' + b.rows.filter(function (r) { return !r.sum; }).map(function (r) {
         if (r.head) return '<h3 class="cprs-sh">' + esc(r.head) + '</h3>';
-        var L = lead && r.big; if (r.big) lead = false;
-        return '<div class="cprs-r' + (L ? ' cprs-lead' : '') + (r.big ? '' : ' cprs-t') + (r.big && String(r.big).length > 9 ? ' cprs-long' : '') + '">'
-          + (r.big ? '<b>' + esc(r.big) + (r.unit ? '<small>' + esc(r.unit) + '</small>' : '') + '</b>' : '')
-          + '<span>' + esc(r.text) + '</span>' + (r.src ? '<i>' + esc(r.src) + '</i>' : '') + '</div>';
+        return '<div class="cprs-r' + (r.big ? '' : ' cprs-t') + '">' + (r.big ? '<b>' + esc(r.big) + (r.unit ? '<small>' + esc(r.unit) + '</small>' : '') + '</b>' : '')
+          + '<p><span>' + esc(r.text) + '</span>' + (r.src ? '<i>' + esc(r.src) + '</i>' : '') + '</p></div>';
       }).join('') + '</section>';
     }
-    /* two columns that fill on their own: rent, earnings and the yield chart at the left; sales, risks and the QR
-       code at the right */
+    /* two columns that fill on their own: rent, earnings, the yield chart and the QR code at the left (the chart
+       takes the height the right column leaves); sales and risks at the right */
     var col = function (ks, tail) { return '<div class="cprs-col">' + s.blocks.filter(function (b) { return ks.indexOf(b.key) >= 0; }).map(one).join('') + (tail || '') + '</div>'; };
     var chart = s.chart ? '<figure class="cprs-chart">' + toSvg(chartItems(s.chart, 380, chartH || 190, 13), chartLabel(s)) + '<figcaption>' + esc(chartCaption(s)) + '</figcaption></figure>' : '';
     var side = '<aside class="cprs-side">' + (qr ? '<div class="cprs-qr">' + qr + '</div>' : '')
       + '<div><p class="cprs-scan">' + esc(QR_CAP) + '</p><p class="cprs-addr">' + esc(s.shown).replace(/\//g, '/<wbr>') + '</p></div></aside>';
-    return '<div class="cprs-bar"></div><header class="cprs-top"><div><h1 class="cprs-h1">' + esc(s.title) + '</h1>'
-      + '<p class="cprs-sub">' + esc(s.sub) + '</p></div>'
+    var map = locSvg(loc, s.fips, (s.name || 'The county') + ' within ' + (s.state || 'its state'));
+    var sum = s.big4.map(function (b) {
+      return '<div class="cprs-k"><p class="cprs-kl">' + esc(b.text) + '</p><p class="cprs-kv">' + esc(b.big) + (b.unit ? '<small>' + esc(b.unit) + '</small>' : '') + '</p>'
+        + (b.src ? '<p class="cprs-ks">' + esc(b.src) + '</p>' : '') + '</div>';
+    }).join('');
+    return '<div class="cprs-bar"></div><header class="cprs-top">' + (map ? '<div class="cprs-map">' + map + '</div>' : '')
+      + '<div class="cprs-ttl"><p class="cprs-kick">County Print</p><h1 class="cprs-h1">' + esc((s.name || '') + (s.state ? ', ' + s.state : '')) + '</h1>'
+      + '<p class="cprs-date">' + esc(s.date) + (s.fips ? ' · FIPS ' + esc(s.fips) : '') + '</p></div>'
       + '<div class="cprs-brand"><img class="cprs-logo" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="86" height="40"><p class="cprs-url">agsist.com</p></div></header>'
-      + '<div class="cprs-grid">' + col(['rent', 'earn'], chart) + col(['sold', 'risk'], side) + '</div>'
+      + (sum ? '<div class="cprs-sum">' + sum + '</div>' : '')
+      + '<div class="cprs-grid">' + col(['rent', 'earn'], chart + side) + col(['sold', 'risk']) + '</div>'
       + '<p class="cprs-src">' + esc(s.src) + '</p><p class="cprs-na">' + esc(s.made) + ' ' + esc(s.notice) + '</p>';
   }
 
@@ -331,7 +350,7 @@
     return { canvas: c, texts: texts, sizes: sizes };
   }
 
-  var api = { sheet: sheet, html: html, isoDay: isoDay, image: image, chartModel: chartModel, chartItems: chartItems, toSvg: toSvg, link: link, dateLine: dateLine,
+  var api = { sheet: sheet, html: html, isoDay: isoDay, locSvg: locSvg, image: image, chartModel: chartModel, chartItems: chartItems, toSvg: toSvg, link: link, dateLine: dateLine,
     sentences: sentences, noNames: noNames, QR_CAP: QR_CAP, PAPER: PAPER };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgCountyPrint = api;
@@ -344,11 +363,14 @@
   var live = doc.getElementById('ch-live'), canon = doc.querySelector('link[rel="canonical"]'), h1 = doc.querySelector('main h1');
   var FIPS = (live && live.getAttribute('data-fips')) || '', URL_ = canon ? canon.href : root.location.origin + root.location.pathname;
   var parts = h1 ? h1.textContent.split(', ') : [], NAME = parts.length > 1 ? parts.slice(0, -1).join(', ') : (parts[0] || ''), STATE = parts.length > 1 ? parts[parts.length - 1] : '';
-  var MAX_PX = 10.2 * 96 - 8, $ = function (id) { return doc.getElementById(id); };
+  var MAX_PX = 10 * 96 - 8, LOC = null, $ = function (id) { return doc.getElementById(id); };
   function ga(n, p) { try { if (typeof root.gtag === 'function') root.gtag('event', n, p); } catch (e) {} }
   function load(tag, attrs) { var el = doc.createElement(tag); Object.keys(attrs).forEach(function (k) { el[k] = attrs[k]; }); doc.head.appendChild(el); return el; }
   if (!doc.querySelector('link[href^="/components/county-print.css"]')) load('link', { rel: 'stylesheet', href: CSS });
   if (!root.AgQR) load('script', { src: QR_JS, async: true }).onload = function () { soon(); };
+  var ST = (live && live.getAttribute('data-st')) || '';
+  if (/^[A-Z]{2}$/.test(ST) && root.fetch) root.fetch('/farmland-atlas/loc/' + ST.toLowerCase() + '.json').then(function (r) { return r.ok ? r.json() : null; })
+    .then(function (j) { LOC = j; soon(); }, function () {});
   /* the page's own "Figures as of" date, for the sheet's footer */
   var AS_OF = (((doc.querySelector('main') || doc.body).textContent.match(/Figures as of ([A-Z][a-z]{2} \d{1,2}, \d{4})/)) || [])[1] || '';
   function current() { return sheet(CP, root.AgCountyFacts || {}, { name: NAME, state: STATE, url: URL_, fips: FIPS, now: Date.now(), asOf: AS_OF }); }
@@ -364,8 +386,8 @@
        tight spacing with the shortest chart */
     var HS = [300, 260, 230, 200, 175, 150, 130, 115];
     el.classList.remove('cprs-tight');
-    HS.some(function (h) { el.innerHTML = html(s, code, h); fits = measure(el) <= MAX_PX; return fits; });
-    if (!fits) { el.classList.add('cprs-tight'); el.innerHTML = html(s, code, HS[HS.length - 1]); fits = measure(el) <= MAX_PX; }
+    HS.some(function (h) { el.innerHTML = html(s, code, h, LOC); fits = measure(el) <= MAX_PX; return fits; });
+    if (!fits) { el.classList.add('cprs-tight'); el.innerHTML = html(s, code, HS[HS.length - 1], LOC); fits = measure(el) <= MAX_PX; }
     if (!fits) { var z = Math.floor(MAX_PX / measure(el) * 100) / 100; el.style.zoom = String(z); el.setAttribute('data-zoom', String(z)); }
     else el.removeAttribute('data-zoom');
     el.setAttribute('data-fit', fits ? '1' : '0');

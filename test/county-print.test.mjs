@@ -76,6 +76,15 @@ test("every Atlas county page carries the County Print group, its figures and th
     n++;
   }
   assert.ok(n >= 3000, n + " county pages");
+  // the locator: one small file a state, with every county of it, ours among them
+  for (const st of [...new Set(INDEX.map((r) => r[1].slice(-2)))]) {
+    const p = `farmland-atlas/loc/${st.toLowerCase()}.json`;
+    assert.ok(existsSync(join(ROOT, p)), p);
+    const L = J(p), sz = statSync(join(ROOT, p)).size;
+    assert.match(L.vb, /^0 0 \d+ \d+$/);
+    assert.ok(sz < 60000, `${p}: ${sz} bytes`);
+    for (const r of INDEX.filter((x) => x[1].slice(-2) === st).slice(0, 3)) assert.ok(L.p[r[0]], `${p} has ${r[0]}`);
+  }
   assert.ok(maxCp <= 700, `the figures stay a few hundred bytes a page (largest ${maxCp})`);
 });
 
@@ -107,12 +116,18 @@ test("every yearly figure on the sheet is one the page prints; the chart is the 
   assert.ok(rows > 40, rows + " rows checked");
   // Story County: the six blocks in order, the land, rent and crops figures as the tiles print them
   const h = page("19169"), s = CP.sheet(cpData(h), {}, ctxOf(h, "19169"));
-  const order = ["land", "rent", "crops", "grain", "weather", "risk"], keys = s.blocks.map((b) => b.key);
-  assert.ok(!keys.includes("grain"), "no daily rows given: grain is left out, not n/a");
-  assert.deepEqual(keys, order.filter((k) => keys.includes(k)), "the blocks in sheet order");
-  assert.ok(keys.includes("land") && keys.includes("rent") && keys.includes("crops"), "a farm county leads with land, rent and crops");
+  const keys = s.blocks.map((b) => b.key), Q = { rent: "What does land rent for?", sold: "What has sold?", earn: "What can farming here earn?", risk: "What could disrupt that income?" };
+  assert.deepEqual(keys, ["rent", "sold", "earn", "risk"].filter((k) => keys.includes(k)), "the four questions, in order");
+  for (const b of s.blocks) assert.equal(b.h, Q[b.key]);
+  assert.ok(keys.includes("rent") && keys.includes("sold") && keys.includes("earn"), "a farm county answers rent, sales and earnings");
+  assert.ok(!s.blocks.find((b) => b.key === "earn").rows.some((r) => r.live), "no daily rows given: no bid row, not n/a");
+  const sold = s.blocks.find((b) => b.key === "sold").rows;
+  assert.ok(sold.some((r) => r.head === "Value estimates, not sales"), "estimates sit apart from transfers, labelled");
+  assert.match(sold[0].text, /recorded transfer/, "the first answer to what has sold is the recorded transfers (or that there are none)");
+  for (const b of s.blocks) for (const r of b.rows) if (!r.head && r.big) assert.ok(r.src && /\d{4}/.test(r.src), `${b.key}: "${r.text}" carries its source and period`);
   assert.equal(s.title, "Story County, Iowa: County Print, November 7, 2026");
-  assert.ok(s.qr.startsWith(canon(h) + "?utm_source=print&utm_medium=qr&utm_campaign=county-19169"));
+  assert.equal(s.qr, canon(h) + "?asof=2026-11-07&utm_source=print&utm_medium=qr&utm_campaign=county-19169", "the QR code dates the sheet");
+  assert.match(s.made, /^Made November 7, 2026 from data as of /);
 });
 
 test("the daily rows are the rows county-home.js drew; a short-list bid and a missing row are left out; no field name", () => {
@@ -124,15 +139,20 @@ test("the daily rows are the rows county-home.js drew; a short-list bid and a mi
     rain: { value: "37.90 in", date: "2026-11-05", ctx: "128% of the 1991–2020 normal (29.60 in) for the same days. November so far: 0.20 in.", paper: "NOAA daily station record" },
     drought: { value: null, why: "no row" },
   };
-  const s = CP.sheet(cpData(h), live, c), g = s.blocks.find((b) => b.key === "grain"), w = s.blocks.find((b) => b.key === "weather");
-  assert.deepEqual(g.rows.map((r) => r.big), ["$4.12", "38¢ under Dec '26"], "the page's own values; the short-list soybean bid is left out");
-  assert.equal(g.rows[0].text, "Best corn bid within 50 mi, Nov 6, 2026. 8 mi from your saved field, December delivery. Best of 23 within 50 mi.");
-  assert.equal(w.rows[0].text, "Rain since Jan 1, Nov 5, 2026. 128% of the 1991–2020 normal (29.60 in) for the same days.", "a decimal never splits a sentence");
+  const s = CP.sheet(cpData(h), live, c), g = s.blocks.find((b) => b.key === "earn"), w = s.blocks.find((b) => b.key === "risk");
+  const lr = g.rows.filter((r) => r.live);
+  assert.deepEqual(lr.map((r) => r.big), ["$4.12", "38¢ under Dec '26"], "the page's own values; the short-list soybean bid is left out");
+  assert.equal(lr[0].text, "Best corn bid within 50 mi. 8 mi from your saved field, December delivery. Best of 23 within 50 mi.");
+  assert.equal(lr[0].src, "Posted elevator bids, Nov 6, 2026");
+  const yt = cpData(h).yt, gross = g.rows.find((r) => /^Rough gross/.test(r.text || ""));
+  if (yt) assert.equal(gross.text, `Rough gross: ${yt[0]} bu trend × $4.12 best bid = about $${(Math.round(+yt[0] * 4.12 / 5) * 5).toLocaleString("en-US")} an acre, before any cost. Not an appraisal.`);
+  assert.equal(w.rows[0].text, "Rain since Jan 1. 128% of the 1991–2020 normal (29.60 in) for the same days.", "a decimal never splits a sentence");
   assert.ok(!w.rows.some((r) => /Drought/.test(r.text)), "a row that did not load is left out");
   assert.doesNotMatch(sheetText(s), /Home 80|your field “/, "the reader's field name never prints");
   assert.match(s.src, /Posted elevator bids; USDA AgTransport; NOAA daily station record/);
   assert.match(s.src, /This product uses the NASS API but is not endorsed or certified by NASS\./, "the NASS notice where NASS figures show");
-  assert.deepEqual(s.big4.map((b) => b.key), ["land", "rent", "crops", "grain"], "the picture's four: land, rent, corn, today's corn bid");
+  assert.deepEqual(s.big4.map((b) => b.key), ["rent", "sold", "earn", "bid"], "the summary row: rent, a land value, corn, today's corn bid");
+  assert.equal(CP.sheet(cpData(h), {}, c).big4.length, 4, "no bid today: the loss ratio stands in");
   // county-home.js keeps each row as drawn and announces it; the sheet reads only that
   const H = read("components/county-home.js");
   assert.match(H, /var FACTS = window\.AgCountyFacts = window\.AgCountyFacts \|\| \{\};\s*function fill\(k, f\) \{\s*FACTS\[k\] = f;/);
@@ -156,8 +176,8 @@ test("the QR code reads back to the county page with the print tags", (t) => {
       assert.equal(r && r.data, u, fips + " reads back");
       assert.ok((m.length - 17) / 4 <= 8, `${fips}: version ${(m.length - 17) / 4}, small enough to scan at 1.25 in`);
     }
-    assert.equal(s.qr, canon(h) + `?utm_source=print&utm_medium=qr&utm_campaign=county-${fips}`);
-    assert.equal(s.pic, canon(h) + `?utm_source=share&utm_medium=picture&utm_campaign=county-${fips}`);
+    assert.equal(s.qr, canon(h) + `?asof=2026-11-07&utm_source=print&utm_medium=qr&utm_campaign=county-${fips}`);
+    assert.equal(s.pic, canon(h) + `?asof=2026-11-07&utm_source=share&utm_medium=picture&utm_campaign=county-${fips}`);
   }
 });
 
@@ -194,13 +214,13 @@ test("in a browser: one page on Letter and A4, full and sparse; Ctrl+P prints it
       const pg = await ctx.newPage();
       await pg.goto(`http://127.0.0.1:${port}${row(fips)[2]}`);
       await pg.waitForFunction(() => [...document.querySelectorAll(".lv .r")].every((r) => r.textContent.trim()), null, { timeout: 60000 });
-      await pg.waitForFunction(() => window.AgQR && window.AgCountyPrint && document.getElementById("cprs"), null, { timeout: 20000 });
+      await pg.waitForFunction(() => window.AgQR && window.AgCountyPrint && document.querySelector("#cprs .cprs-map svg path[fill='#000']"), null, { timeout: 20000 });
       // nothing on the page moves when the sheet is built (it sits hidden at the end of the body)
       const before = await pg.evaluate(() => [document.querySelector("main").getBoundingClientRect().height, document.documentElement.scrollHeight]);
       const info = await pg.evaluate(() => {
         const el = window.AgCountyPrint.build(), s = window.AgCountyPrint.last, F = window.AgCountyFacts || {};
         return { fit: el.dataset.fit, zoom: el.dataset.zoom || null, shown: getComputedStyle(el).display, text: el.innerText, title: s.title,
-          qr: !!el.querySelector(".cprs-qr svg"), src: getComputedStyle(el.querySelector(".cprs-src")).fontSize,
+          qr: !!el.querySelector(".cprs-qr svg"), map: !!el.querySelector(".cprs-map svg"), src: getComputedStyle(el.querySelector(".cprs-src")).fontSize,
           live: Object.keys(F).filter((k) => F[k] && F[k].value != null && !F[k].partial && ["corn-bid", "soy-bid", "corn-basis", "soy-basis", "rain", "drought", "hail"].includes(k)).map((k) => F[k].value) };
       });
       const after = await pg.evaluate(() => [document.querySelector("main").getBoundingClientRect().height, document.documentElement.scrollHeight]);
@@ -215,7 +235,8 @@ test("in a browser: one page on Letter and A4, full and sparse; Ctrl+P prints it
       for (const v of info.live) assert.ok(info.text.includes(v), `${fips}: the page's live value ${v} is on the sheet`);
       for (const nm of names) assert.ok(!info.text.includes(nm), `${fips}: no buyer name (${nm})`);
       assert.doesNotMatch(info.text, /\bn\/a\b|undefined|NaN/);
-      if (full) for (const w of ["LAND", "RENT", "CROPS", "WEATHER", "RISK", "High ", "Low "]) assert.ok(info.text.toUpperCase().includes(w.toUpperCase()), fips + " shows " + w);
+      if (full) for (const w of ["What does land rent for?", "What has sold?", "What can farming here earn?", "What could disrupt that income?", "High ", "Low "]) assert.ok(info.text.includes(w), fips + " shows " + w);
+      assert.ok(info.map, fips + ": the state with the county marked");
       // one page on Letter and on A4, printed through any browser print (beforeprint)
       await pg.evaluate(() => window.dispatchEvent(new Event("beforeprint")));
       assert.ok(await pg.evaluate(() => document.documentElement.classList.contains("cprs-on")), "Ctrl+P switches print to the sheet");
@@ -236,7 +257,7 @@ test("in a browser: one page on Letter and A4, full and sparse; Ctrl+P prints it
       // Copy link: the county page with the share tags
       await ctx.grantPermissions(["clipboard-read", "clipboard-write"]);
       await pg.click("#cpr-link");
-      assert.equal(await pg.evaluate(() => navigator.clipboard.readText()), await pg.evaluate((f) => document.querySelector('link[rel="canonical"]').href + `?utm_source=share&utm_medium=link&utm_campaign=county-${f}`, fips));
+      assert.equal(await pg.evaluate(() => navigator.clipboard.readText()), await pg.evaluate((f) => document.querySelector('link[rel="canonical"]').href + `?asof=${window.AgCountyPrint.isoDay()}&utm_source=share&utm_medium=link&utm_campaign=county-${f}`, fips));
       await ctx.close();
     }
   } finally { await browser.close(); srv.close(); }
