@@ -94,6 +94,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .cb-status-loc{font-size:.85rem;color:var(--text-dim);display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
 .cb-status-meta{font-size:0.775rem;color:var(--text-muted);font-family:'JetBrains Mono',monospace;display:inline-flex;align-items:center;gap:.4rem}
 .cb-count{font-family:'JetBrains Mono',monospace;font-size:0.77rem;padding:.18rem .55rem;border-radius:20px;background:var(--surface2);color:var(--text-muted);border:1px solid var(--border)}
+.cb-kit{display:flex;flex-wrap:wrap;gap:8px 12px;margin:10px 0 4px}.cb-kit-btn{display:inline-flex;align-items:center;min-height:44px;box-sizing:border-box;padding:.4rem .9rem;border:1px solid var(--gold);border-radius:8px;color:var(--gold);background:transparent;font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}.cb-kit-btn:hover,.cb-kit-btn:focus-visible{background:var(--surface)}.cb-kit-btn[disabled]{opacity:.55;cursor:not-allowed}.skb-st{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .share-btn{display:inline-flex;align-items:center;justify-content:center;background:none;border:1px solid var(--border);border-radius:50%;color:var(--text-muted);font-size:.92rem;cursor:pointer;transition:all .15s;min-height:44px;min-width:44px;padding:0}
 .share-btn:hover{border-color:var(--gold);color:var(--gold)}
 .earnings-callout{background:linear-gradient(135deg,rgba(58,139,60,.14) 0%,rgba(58,139,60,.05) 100%);border:2px solid rgba(58,139,60,.38);border-radius:12px;padding:.9rem 1.1rem;margin-bottom:1.1rem;display:flex;align-items:flex-start;gap:.75rem}
@@ -627,6 +628,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
       </div>
       <p id="cb-vs-state" class="cb-vs" hidden></p>
       <p id="cb-confirm-note" style="display:none">Prices as the elevator posted them. Call to confirm before you haul. <a href="mailto:sig@agsist.com?subject=Cash%20bids%20correction">Report error</a></p>
+      <p class="cb-kit"><button type="button" class="cb-kit-btn" id="skb-pic">Save picture</button><button type="button" class="cb-kit-btn" id="skb-print">Print bid sheet</button><span class="skb-st" role="status" aria-live="polite"></span></p>
     </div>
     <div data-bid-alerts data-zip-input="cb-zip" data-source="page:cash-bids" data-crops="corn soybeans wheat sorghum oats"></div>
     <div id="cb-toolbar" class="cb-toolbar" style="display:none" role="toolbar" aria-label="Delivery and sort">
@@ -807,6 +809,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 <script src="/components/geo.js?v=36" defer></script>
 <script src="/components/storesell.js?v=9"></script><script src="/components/cb-glance.js?v=4"></script>
 <link rel="stylesheet" href="/components/cb-alerts.css?v=2">
+<script src="/components/bids-kit.js?v=1" defer></script>
 <script src="/components/cb-signup.js?v=2" defer></script>
 <script src="/components/cb-alerts.js?v=5" defer></script>
 <link rel="stylesheet" href="/components/cb-myelev.css?v=2">
@@ -814,7 +817,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 <script src="/components/cb-rank.js?v=5"></script>
 <script src="/components/cb-vs-state.js?v=3"></script>
 <script src="/components/cb-sample.js?v=6" defer></script>
-<script src="/components/bids-fallback.js?v=1"></script><script src="/components/cash-bids.js?v=18"></script>
+<script src="/components/bids-fallback.js?v=1"></script><script src="/components/cash-bids.js?v=19"></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>
