@@ -2,7 +2,7 @@
 "schema": "agsist-elevators/1",
 "generated": "2026-11-07",
 "note": "One record per physical facility.",
-"counts": {"facilities": 3749, "with_fips": 3312, "with_point": 3344, "maybe_records": 192, "matched_2plus_sources": 3195, "ambiguous_keys": 219, "with_schedules": 267, "agsist_ids": 442, "bids_repo_ids": 3307, "fips_differs_from_bids_repo": 3, "retired_ids": 146, "stale_ids": 0, "with_ownership_change": 18, "by_source": {"basis": 3143, "bids": 242, "bids_repo": 3307, "directory": 725}, "keys_by_rule": {"kept": 4564}},
+"counts": {"facilities": 3749, "with_fips": 3312, "with_point": 3344, "maybe_records": 192, "matched_2plus_sources": 3195, "ambiguous_keys": 219, "with_schedules": 267, "agsist_ids": 442, "bids_repo_ids": 3307, "fips_differs_from_bids_repo": 3, "retired_ids": 146, "stale_ids": 0, "with_ownership_change": 18, "by_source": {"basis": 3143, "bids": 241, "bids_repo": 3307, "directory": 725}, "keys_by_rule": {"kept": 4563}},
 "elevators": [
 {"id":"a00001","name":"Agrex Inc","company":"Agrex Inc","city":"Montgomery","st":"AL","fips":null,"aliases":["AGREX INC"],"sources":{"basis":["AL|AGREX INC|MONTGOMERY"]},"maybe":["ebwks7pd6k","en061m4d0g"]},
 {"id":"a00002","name":"Riceland Co-Op","company":"Riceland Co-Op","city":"Des Arc","st":"AR","fips":null,"aliases":["RICELAND CO-OP"],"sources":{"basis":["AR|RICELAND CO-OP|DES ARC"]}},
@@ -935,7 +935,7 @@
 {"id":"e4mngf512r","name":"AgMark LLC.","company":"AgMark LLC.","city":"Scranton","st":"KS","fips":"20139","lat":38.788,"lng":-95.748,"aliases":["AGMARK LLC.","AGMARK LLC"],"sources":{"basis":["KS|AGMARK LLC.|SCRANTON","KS|AGMARK LLC|SCRANTON"],"bids_repo":["agmarkresp-scranton"]}},
 {"id":"e4mq4z8p6j","name":"Premier Cooperative - IL","company":"Premier Cooperative - IL","city":"Farmer City","st":"IL","fips":"17039","lat":40.2516,"lng":-88.6457,"aliases":["PREMIER COOPERATIVE - IL"],"sources":{"basis":["IL|PREMIER COOPERATIVE - IL|FARMER CITY"],"bids_repo":["premiercooperative1-farmercity"]}},
 {"id":"e4nhpp16rf","name":"FS Grain","company":"FS Grain","city":"Buda","st":"IL","fips":"17011","lat":41.314,"lng":-89.6795,"sources":{"bids_repo":["northerngrainmarketing-buda"]}},
-{"id":"e4nyfacaf8","name":"ADM","company":"ADM","city":"Lacon","st":"IL","fips":"17123","lat":41.0306,"lng":-89.4071,"aliases":["ADM GRAIN"],"sources":{"basis":["IL|ADM GRAIN|LACON","IL|ADM|LACON"],"bids":["ADM||Lacon|IL"],"bids_repo":["adm-laconil"]}},
+{"id":"e4nyfacaf8","name":"ADM","company":"ADM","city":"Lacon","st":"IL","fips":"17123","lat":41.0306,"lng":-89.4071,"aliases":["ADM GRAIN"],"sources":{"basis":["IL|ADM GRAIN|LACON","IL|ADM|LACON"],"bids_repo":["adm-laconil"]}},
 {"id":"e4p851dkax","name":"Premier Cooperative - IL","company":"Premier Cooperative - IL","city":"Rising","st":"IL","fips":"17019","lat":40.1565,"lng":-88.3335,"aliases":["PREMIER COOPERATIVE - IL"],"sources":{"basis":["IL|PREMIER COOPERATIVE - IL|RISING"],"bids_repo":["premiercooperative1-rising"]}},
 {"id":"e4p9wvctf5","name":"Ellsworth Farmers Exchange","company":"Ellsworth Farmers Exchange","city":"CE, LLC - call to verify bids","st":"MI","fips":"26009","lat":45.1652,"lng":-85.2448,"sources":{"bids_repo":["known:1836"],"directory":["9337"]}},
 {"id":"e4pjabjx3f","name":"The Mennel Milling Company","company":"The Mennel Milling Company","city":"Mexico","st":"IN","fips":"18103","lat":40.8224,"lng":-86.1162,"aliases":["THE MENNEL MILLING COMPANY"],"sources":{"basis":["IN|THE MENNEL MILLING COMPANY|MEXICO"],"bids_repo":["known:The Mennel Milling Company|Mexico - IN|Mexico|IN"]}},
