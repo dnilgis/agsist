@@ -1067,7 +1067,7 @@ def trim(rows):
 # page, about 8 MB across the folder). The link sits where the <style> was, at
 # the end of the head, so the cascade and first paint are unchanged. Bump ?v=
 # here on any change to that file.
-CSS_LINK = '<link rel="stylesheet" href="/components/cash-bid-town.css?v=2">'
+CSS_LINK = '<link rel="stylesheet" href="/components/cash-bid-town.css?v=3">'
 
 
 def share_tags(h):
@@ -1251,12 +1251,14 @@ def sponsor_slot(ssl):
     return f'<aside class="ag-sponsor-ribbon" data-slot="cash-bids-{ssl}"></aside>'
 
 
-def page_end(ftr, table=False, signup=False, hist=False, promo=False, buyers=False, share=False):
+def page_end(ftr, table=False, signup=False, hist=False, promo=False, buyers=False, share=False, skb=False):
+    # the Bids near kit runs before the signup box script: an arrival from its picture, sheet or QR code is marked
+    # on the box's source before the box reads it
     return f"""</main>
 {ftr}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/asof.js?v=1" defer></script>
-{TABLE_JS if table else ''}{SIGNUP_JS if signup else ''}{HIST_JS if hist else ''}{RP_PROMO_JS if promo else ''}{BUY.BUYERS_JS if buyers else ''}{SHARE_JS if share else ''}</body>
+{TABLE_JS if table else ''}{SKB_JS if skb else ''}{SIGNUP_JS if signup else ''}{HIST_JS if hist else ''}{RP_PROMO_JS if promo else ''}{BUY.BUYERS_JS if buyers else ''}{SHARE_JS if share else ''}</body>
 </html>
 """
 
@@ -1352,10 +1354,10 @@ NEAREST_N = 5                 # a town with none: the nearest this many ...
 NEAREST_MAX_MI = 100          # ... no farther than this
 
 
-def board_glance(bd):
-    """{crop: (cash, 'YYYY-MM', posted)} for one board: per crop, the commodity
-    it posts most (a #2 yellow and a non-GMO bid are never mixed), its earliest
-    delivery period (nearest_rows), the highest cash there."""
+def glance_rows(bd):
+    """{crop: row} for one board: per crop, the commodity it posts most (a #2
+    yellow and a non-GMO bid are never mixed), its earliest delivery period
+    (nearest_rows), the highest cash there."""
     out = {}
     for c in CROPS:
         rs = [r for r in bd["rows"] if r["crop"] == c and not r.get("odd") and not restricted(r)]
@@ -1363,9 +1365,13 @@ def board_glance(bd):
             continue
         com = Counter(r["commodity"].lower() for r in rs).most_common(1)[0][0]
         rs = [r for r in rs if r["commodity"].lower() == com]
-        best = max(nearest_rows(rs), key=lambda r: (r["cash"], r["priced"]))
-        out[c] = (best["cash"], best["dm"], best["priced"])
+        out[c] = max(nearest_rows(rs), key=lambda r: (r["cash"], r["priced"]))
     return out
+
+
+def board_glance(bd):
+    """{crop: (cash, 'YYYY-MM', posted)} for one board, from glance_rows()."""
+    return {c: (r["cash"], r["dm"], r["priced"]) for c, r in glance_rows(bd).items()}
 
 
 def live_board_list(towns):
@@ -1381,7 +1387,7 @@ def live_board_list(towns):
             out.append({"town_key": (st, slug), "pin": bd["pin"], "name": head_name(bd, with_town=False),
                         "town": t["name"], "state": st,
                         "path": f"/cash-bids/{url_slug(STATE_NAMES[st])}/{slug}", "glance": g,
-                        "posted": max(v[2] for v in g.values())})
+                        "rows": glance_rows(bd), "posted": max(v[2] for v in g.values())})
     out.sort(key=lambda b: (b["state"], b["town"], b["name"]))
     return out
 
@@ -1450,6 +1456,78 @@ def nearby_section(t, center, live_all, snap_ct, has_own):
             f'<p class="cbt-sub">Straight-line miles from {esc(what)}. Each price is that elevator&rsquo;s highest '
             f'posted cash for its earliest delivery period, posted in the last {FRESH_HOURS} hours. '
             f'Call to confirm before you haul.</p>')
+
+
+# ---------------------------------------------------------------- the Bids near kit
+# Share kit wave 1 (Nov 7, 2026): a "Bids near <town>" picture (phone 1080 x 1350, wide 1200 x 630) and a one-page
+# town bid sheet, drawn in the browser by components/bids-kit.js from <script id="skb-data"> below. THE ROWS ARE THE
+# PAGE'S OWN: per crop (corn, soybeans), each elevator on this page (its cards, and the "Other elevators within 40
+# miles" list) once, at the price the page prints for it (its highest cash for its earliest delivery period, the
+# same pick as the nearby list), highest first; on a tie the newer posting, then the nearer. Every row carries its
+# posted time and the moment it stops counting (share_until()); the kit takes the first SKB_N that still count, so
+# an old price never prints as today's. A row with no posted time never gets here. Basis is the board's own, with
+# its futures month; no elevator-level normal basis is in the page's data, so none is printed.
+SKB_N = 5
+SKB_CROPS = ("corn", "soybeans")
+SKB_JS = '<script src="/components/bids-kit.js?v=1" defer></script>\n'
+
+
+def _skb_mon(dm, snap_ct):
+    y, m = int(dm[:4]), int(dm[5:7])
+    return MONTH_ABBR[m - 1] + ("" if y == snap_ct.year else f" '{y % 100:02d}")
+
+
+def _skb_row(r, name, town, st, d, path, snap_ct):
+    if r.get("priced") is None or r.get("cash") is None:
+        return None
+    bas = None if r.get("basis") is None else re.sub(r"<[^>]+>", "", money_basis(r["basis"]))
+    return {"n": name, "t": town, "s": st, "mi": None if d is None else round(d, 1), "c": cash_c(r["cash"]),
+            "v": r["cash"], "d": _skb_mon(r["dm"], snap_ct), "dl": re.sub(r"\s+", " ", str(r.get("label") or "")).strip(),
+            "b": bas, "k": con_label(r["contract"]) if (bas and r.get("contract")) else "",
+            "p": r["priced"].astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "u": share_until(r).strftime("%Y-%m-%dT%H:%M:%SZ"), "h": path}
+
+
+def skb_rows(t, live_b, center, near_pick, snap_ct):
+    """{crop: [row]} for the Bids near kit: this page's own elevators and its nearby list, one row each, the price
+    the page prints for it, highest printed price first (ties: newer posting, nearer, name). Every candidate is kept (a few dozen
+    at most): the kit drops the ones past their window and takes the first SKB_N."""
+    path = f"/cash-bids/{url_slug(STATE_NAMES[t['state']])}/{t['slug']}"
+    out = {}
+    for c in SKB_CROPS:
+        cand = []
+        for bd in live_b:
+            r = glance_rows(bd).get(c)
+            if not r:
+                continue
+            # an elevator on this page's own cards is "in" the town (or within NEAR_MI of it): no miles printed
+            town = t["name"] if bd.get("how") != "near" else (town_name(bd.get("city")) or t["name"])
+            cand.append(_skb_row(r, head_name(bd, with_town=False), town, t["state"], None, path, snap_ct))
+        for d, b in near_pick:
+            r = (b.get("rows") or {}).get(c)
+            if r:
+                cand.append(_skb_row(r, b["name"], b["town"], b["state"], d, b["path"], snap_ct))
+        cand = [x for x in cand if x]
+        # highest PRINTED price first (cash_c, to the cent), as the kit orders them (components/bids-kit.js)
+        cand.sort(key=lambda x: (-pricefmt._js_round(x["v"] * 100 + 1e-7), -parse_ts(x["p"]).timestamp(), x["mi"] or 0,
+                                 x["n"], x["t"]))
+        if cand:
+            out[c] = cand
+    return out
+
+
+def skb_html(rows, place, town, path, center=None):
+    """The kit's two buttons (they join the share row) and its data, or ("", "") with no corn or soybean row."""
+    if not rows:
+        return "", ""
+    data = {"place": place, "town": town, "url": f"{SITE}{path}", "page": path.strip("/").replace("/", "-"),
+            "n": SKB_N, "from": center[2] if center else "", "rows": rows}
+    btns = ('<button type="button" class="cbt-share-btn" id="skb-pic">Save picture</button>'
+            '<button type="button" class="cbt-share-btn" id="skb-print">Print bid sheet</button>'
+            '<span class="skb-st" role="status" aria-live="polite"></span>')
+    js = ('<script type="application/json" id="skb-data">'
+          + json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + '</script>')
+    return btns, js
 
 
 def top_holds(held, ss):
@@ -2263,6 +2341,11 @@ def build_town_page(t, ctx):
     answer_html = f'<p class="cbt-answer">{esc(answer)}</p>' if answer else ""
     # the share button sends the answer line's own pick, so it shows only under an answer line
     share_html = share_bid_html(picks, place, path) if answer else ""
+    # the Bids near kit: its buttons join the share row (one row, no new line); its rows are this page's own
+    skb_btns, skb_js = skb_html(skb_rows(t, live_b, center, nearby_pick(t, center, ctx.get("live_all"), True), snap_ct),
+                                place, t["name"], path, center) if indexable else ("", "")
+    if skb_btns:
+        share_html = ((share_html[:-len("</p>")] + skb_btns + "</p>") if share_html else f'<p class="cbt-share">{skb_btns}</p>') + skb_js
     # the dated lead paragraph (scripts/stories_bids.py): stable facts only, never a price
     story_facts, story_html = None, ""
     if indexable:
@@ -2348,7 +2431,8 @@ def build_town_page(t, ctx):
         assert sheet in h, "head() changed shape; update build_town_page()"
         h = h.replace(sheet, sheet + SIGNUP_CSS, 1)
     return h + body + page_end(ftr, signup=bool(box), hist=bool(hist_html), promo=bool(promo_html),
-                               buyers=bool(buyers_html), share=bool(share_html)), meta
+                               buyers=bool(buyers_html), share=bool(share_html) and "data-share-bid" in share_html,
+                               skb=bool(skb_js)), meta
 
 
 # ---------------------------------------------------------------- state basis (merged from /basis/<state>)
@@ -4131,6 +4215,7 @@ def selftest():
     _selftest_county()
     _selftest_share()
     _selftest_sharebid()
+    _selftest_skb()
     _selftest_best()
     _selftest_restricted()
     _selftest_pasted()
@@ -4647,6 +4732,28 @@ def _selftest_sharebid():
     # no answer line, no button and no script
     assert share_bid_html({}, "Nevada, IA", "/cash-bids/iowa/nevada") == ""
     assert "share-bid.js" not in page_end("") and "share-bid.js" in page_end("", share=True)
+
+
+def _selftest_skb():
+    """The Bids near kit (share kit wave 1, Nov 7, 2026), from the frozen story-ia fixture: Nevada, IA carries the two
+    buttons in its share row and its rows; each crop's rows are every elevator on the page once, highest first, each
+    with its posted time; a town with no corn or soybean row gets no kit and no script."""
+    import tempfile as _tf
+    fxp = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test", "fixtures", "share-kit-bids", "story-ia.json")
+    with _tf.TemporaryDirectory() as td:
+        build_fixture_town(fxp, os.path.join(td, "cash-bids"), root=td)
+        pg = open(os.path.join(td, "cash-bids", "iowa", "nevada.html")).read()
+    assert 'id="skb-pic">Save picture</button>' in pg and 'id="skb-print">Print bid sheet</button>' in pg
+    d = json.loads(re.search(r'<script type="application/json" id="skb-data">(.*?)</script>', pg).group(1).replace("<\\/", "</"))
+    for c in SKB_CROPS:
+        rows = d["rows"][c]
+        assert len(rows) >= SKB_N and all(r["p"] and r["c"].startswith("$") for r in rows), c
+        cents = [pricefmt._js_round(r["v"] * 100 + 1e-7) for r in rows]
+        assert cents == sorted(cents, reverse=True), c
+        assert len({(r["n"], r["t"]) for r in rows}) == len(rows), "each elevator once"
+    assert pg.index("bids-kit.js") < pg.index("cb-signup.js")
+    assert skb_html({}, "X, IA", "X", "/cash-bids/iowa/x") == ("", "")
+    assert "bids-kit.js" not in page_end("") and "bids-kit.js" in page_end("", skb=True)
 
 
 def _selftest_share():
