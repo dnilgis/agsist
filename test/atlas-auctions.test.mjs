@@ -21,7 +21,7 @@ import os from "node:os";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const FX = "test/fixtures/atlas-auctions/";
-const EM = /—/;
+const EM = /\u2014/;
 
 function build(files) {
   const out = mkdtempSync(join(os.tmpdir(), "atlas-auc-"));
