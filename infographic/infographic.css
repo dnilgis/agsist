@@ -1,4 +1,4 @@
-/* infographic/infographic.css: the Infographic of the Week pages (/infographic/<date> and the archive, built on
+/* infographic/infographic.css: the Friday Chart (Infographic of the Week) pages (/infographic/<date> and the archive, built on
    main by scripts/build_infographic_pages.py) and their print sheet (components/infographic.js). Written by hand;
    not part of the generated set. The sheet: hidden on screen, alone on paper while html.igs-on is set (the shell
    is components/share-kit.css); one page, Letter portrait with half-inch margins, fits A4; black on white with
@@ -18,6 +18,8 @@
 .ig-tools[hidden]{display:none}
 .ig-tools button{font:inherit;font-size:.88rem;padding:8px 14px;border-radius:8px;border:1px solid var(--border);background:var(--surface);color:var(--text);cursor:pointer;min-height:40px}
 .ig-tools button:hover{border-color:var(--gold)}
+.ig-tools button[hidden]{display:none}
+.ig-tools .ig-main{border-color:var(--gold);color:var(--gold);font-weight:700}
 .ig-st{min-height:1.2em;color:var(--text-muted);font-size:.85rem;margin:0}
 .ig-scroll{overflow-x:auto;max-width:100%}
 table.ig-t{width:100%;border-collapse:collapse;font-size:.85rem;margin:8px 0}
@@ -62,3 +64,22 @@ table.ig-t{width:100%;border-collapse:collapse;font-size:.85rem;margin:8px 0}
 .igs-live{font-size:10pt;margin-top:.04in!important}
 .igs-qr{flex:none;width:1.1in;text-align:center;font-size:8pt}
 .igs-qr svg{display:block;width:100%;height:auto}
+
+/* the Friday Chart print poster (components/infographic.js posterSvg, Sig Nov 7): the paper poster as one SVG alone on
+   one sheet, 11 x 17 (class igp-17) or Letter (igp-letter), set by the poster's Print buttons with html.igp-on. The
+   one-page sheet (#igs) hides while it prints, and the poster hides on any other print. Fraunces is our own serif
+   (the Rain Print font) for the paper poster's titles. */
+@font-face{font-family:'Fraunces';font-style:normal;font-weight:300 600;font-display:swap;src:url('/fonts/rp-fraunces-opsz.woff2') format('woff2')}
+.igp{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+.igp-page{margin:0;padding:0}
+.igp-svg{display:block;width:auto;max-width:100%;margin:0 auto}
+.igp-17 .igp-svg{height:16.3in}
+.igp-letter .igp-svg{height:10.3in}
+.igp-17{page:igp17}
+.igp-letter{page:igpletter}
+@page igp17{size:11in 17in;margin:.3in}
+@page igpletter{size:8.5in 11in;margin:.3in}
+@media print{
+  html.igp-on body>div#igs.sk-sheet{display:none!important}
+  html.sk-on:not(.igp-on) body>div#igp.sk-sheet{display:none!important}
+}
