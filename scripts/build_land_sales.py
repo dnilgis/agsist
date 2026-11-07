@@ -720,6 +720,24 @@ def names_note(d, states):
     return out
 
 
+# Method text never sits at the top (Sig, Nov 7, on /land-sales/2026-09: "way too much info ... needs to be on the bottom
+# of page and collapsed unless someone wants to read it"; STANDING-DECISIONS Nov 7). The market rule and each state's
+# method note move, word for word, into one closed details block at the bottom, each state under its own small heading.
+# The ls-src class is the page's own collapsed source table (coverage_html); ls-dh is its small heading. No new CSS.
+STATE_NOTES = (("IN", IN_NOTE), ("VT", VT_NOTE), ("NJ", NJ_NOTE), ("FL", FL_NOTE))
+METHOD_SUMMARY = "How these sales are counted (sources and rules by state)"
+
+
+def method_html(states):
+    h = ['<details class="ls-src" id="how-counted"><summary>%s</summary>' % METHOD_SUMMARY,
+         '<h3 class="ls-dh">Every state</h3>', '<p class="ls-fine">%s</p>' % e(RULE)]
+    for st, note in STATE_NOTES:
+        if st in states:
+            h.append('<h3 class="ls-dh">%s</h3><p class="ls-fine">%s</p>' % (e(NAME[st]), e(note)))
+    h.append("</details>")
+    return "\n".join(h)
+
+
 NAMES_NOTE = ("Buyer and seller names are public record on the state's transfer return. They load only when you tap, and are not "
               "shown to search engines. If one is yours and you want it off this site, tap Remove my name beside it.")
 
@@ -764,19 +782,15 @@ def month_page(d, M, early, coverage, archive):
     b.append('<p class="ls-ans">%d farm sales of %d acres or more were recorded in %s: %s. %s</p>'
              % (M["n"], LIST_MIN_ACRES, e(lab), e(", ".join(lead)),
                 lead_big(M)))
+    # one caveat line under the answer, at most (the method notes are in method_html at the bottom)
+    cav = []
     if any(M["per_state"][s]["basis"] == "sale date" for s in M["states"]):
-        b.append('<p class="ls-fine">* %s sales are dated by the deed for now, so a sale signed late in the month may still be filed after this was read and show up next month.</p>'
-                 % and_list([NAME[s] for s in M["states"] if M["per_state"][s]["basis"] == "sale date"]))
-    if "IN" in M["states"]:
-        b.append('<p class="ls-fine">%s</p>' % e(IN_NOTE))
-    if "VT" in M["states"]:
-        b.append('<p class="ls-fine">%s</p>' % e(VT_NOTE))
-    if "NJ" in M["states"]:
-        b.append('<p class="ls-fine">%s</p>' % e(NJ_NOTE))
-    if "FL" in M["states"]:
-        b.append('<p class="ls-fine">%s</p>' % e(FL_NOTE))
+        cav.append("* %s sales are dated by the deed for now, so a sale signed late in the month may still be filed after this was read and show up next month."
+                   % e(and_list([NAME[s] for s in M["states"] if M["per_state"][s]["basis"] == "sale date"])))
     for st, to in sorted((M.get("later") or {}).items()):
-        b.append('<p class="ls-fine">%s is not in this month yet: its files hold sales through %s.</p>' % (e(NAME[st]), e(LA.month_text(to))))
+        cav.append("%s is not in this month yet: its files hold sales through %s." % (e(NAME[st]), e(LA.month_text(to))))
+    if cav:
+        b.append('<p class="ls-fine ls-cav">%s</p>' % " ".join(cav))
     b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales-month"></div></div>')
     # buyers
     b.append('<h2 id="buyers">Biggest buyers</h2>')
@@ -826,8 +840,9 @@ def month_page(d, M, early, coverage, archive):
         b.append(sale_table(M["best"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl, win=M["window"], d=d))
     else:
         b.append('<p class="ls-held">Not shown this month: %s.</p>' % e(M["best_why"]))
-    b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s %s</p>' % (e(names_note(d, M["states"])), e(RULE), e(src_line(d, M["states"]))))
+    b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s</p>' % (e(names_note(d, M["states"])), e(src_line(d, M["states"]))))
     b.append(coverage_html(coverage, d))
+    b.append(method_html(M["states"]))
     if archive:
         b.append('<h2 id="earlier">Other months</h2><p>%s</p>' % " &middot; ".join('<a href="/land-sales/%s">%s</a>' % (k, e(v)) for k, v in archive if k != key))
     b.append('<p><a href="/land-sales/">Farmland sales by county</a> &middot; <a href="/comp-report">Comparable sales report</a> &middot; <a href="/field-scout">Field Scout</a></p>')
@@ -970,14 +985,6 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     if latest and latest.get("month"):
         b.append('<p>All of %s together: <a href="/land-sales/%s">the %s update</a>, with the biggest buyers and unusual prices.</p>'
                  % (e(and_list([NAME[x] for x in latest["states"]])), latest["month"], e(latest["label"])))
-    if st == "IN":
-        b.append('<p class="ls-fine">%s</p>' % e(IN_NOTE))
-    if st == "VT":
-        b.append('<p class="ls-fine">%s</p>' % e(VT_NOTE))
-    if st == "NJ":
-        b.append('<p class="ls-fine">%s</p>' % e(NJ_NOTE))
-    if st == "FL":
-        b.append('<p class="ls-fine">%s</p>' % e(FL_NOTE))
     if st in EMAIL_STATES:
         b.append('<div class="ls-ask"><div data-land-alert data-source="page:land-sales-county"></div></div>')
     b.append('<h2 id="every-sale">Every recorded sale</h2>')
@@ -1009,7 +1016,8 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
                      % (e(UP_WHY), e(DOWN_WHY)))
     else:
         b.append('<p class="ls-held">No recorded sales on file for this county yet.</p>')
-    b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s %s</p>' % (e(names_note(d, [st])), e(RULE), e(src_line(d, [st]))))
+    b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s</p>' % (e(names_note(d, [st])), e(src_line(d, [st]))))
+    b.append(method_html([st]))
     links = []
     if has_atlas:
         links.append('<a href="%s">%s in the Farmland Atlas</a>' % (atlas, e(c["name"] + " County")))
@@ -1115,7 +1123,8 @@ def index_page(d, latest, counties, early, coverage, archive, ix=None):
     b.append(coverage_html(coverage, d))
     if archive:
         b.append('<h2 id="months">Monthly updates</h2><p>%s</p>' % " &middot; ".join('<a href="/land-sales/%s">%s</a>' % (k, e(v)) for k, v in archive))
-    b.append('<p class="ls-fine">%s %s</p></div>' % (e(RULE), e(src_line(d, d.states))))
+    b.append('<p class="ls-fine">%s</p>' % e(src_line(d, d.states)))
+    b.append(method_html(d.states) + "</div>")
     foot = FOOT.replace("</main>", "</main>\n<script>%s</script>" % ix["js"], 1) if ix else FOOT
     return "\n".join(b) + "\n" + foot
 
