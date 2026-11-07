@@ -44,7 +44,7 @@ table.ig-t{width:100%;border-collapse:collapse;font-size:.85rem;margin:8px 0}
 .igs-kick{font-size:9pt;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#8a6514}
 .igs-h1{font-size:22pt;font-weight:800;line-height:1.08;margin:.03in 0!important}
 .igs-date{font-size:10.5pt;font-weight:600}
-.igs-url{font:800 11pt/1 "JetBrains Mono",ui-monospace,monospace}
+.igs-url{flex:none;white-space:nowrap;font:800 11pt/1 "JetBrains Mono",ui-monospace,monospace}
 .igs-big{display:flex;align-items:baseline;gap:.15in;padding:.08in 0;border-bottom:1pt solid #000}
 .igs-big b{font-size:34pt;font-weight:800;line-height:1}
 .igs-big small{font-size:14pt;font-weight:700;margin-left:2pt}

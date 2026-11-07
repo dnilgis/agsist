@@ -51,8 +51,10 @@
     var lo = Math.min.apply(null, ys.concat([0])), hi = Math.max.apply(null, ys.concat([0])), pad = (hi - lo) * 0.08 || 1;
     lo -= pad; hi += pad;
     var top = y + 50, bot = y + h - 40, fs = o.font || 24;
-    function px(i) { return x + 20 + (w - 40) * (pts.length === 1 ? 0.5 : i / (pts.length - 1)); }
+    var room = o.endRoom || 150;
+    function px(i) { return x + 20 + (w - 40 - room) * (pts.length === 1 ? 0.5 : i / (pts.length - 1)); }
     function py(v) { return bot - (bot - top) * (v - lo) / (hi - lo); }
+    var step = pts.length > 1 ? (w - 40 - room) / (pts.length - 1) : 1e9;
     ctx.strokeStyle = 'rgba(233,237,235,.35)'; ctx.lineWidth = 2; ctx.setLineDash([8, 8]);
     ctx.beginPath(); ctx.moveTo(x, py(0)); ctx.lineTo(x + w, py(0)); ctx.stroke(); ctx.setLineDash([]);
     p.text('0', x, py(0) - 8, 20, 600, K.DIM);
@@ -60,12 +62,23 @@
     pts.forEach(function (q, i) { if (i) ctx.lineTo(px(i), py(q.y)); else ctx.moveTo(px(i), py(q.y)); }); ctx.stroke();
     pts.forEach(function (q, i) {
       ctx.fillStyle = K.GOLD; ctx.beginPath(); ctx.arc(px(i), py(q.y), 9, 0, Math.PI * 2); ctx.fill();
-      p.text(q.label, px(i), bot + 32, fs - 4, 500, K.DIM, i === 0 ? 'left' : i === pts.length - 1 ? 'right' : 'center');
+      /* every week's date when they fit, else the first and the last */
+      if (step >= 96 || i === 0 || i === pts.length - 1) p.text(q.label, px(i), bot + 32, fs - 4, 500, K.DIM, 'center');
     });
     var f = pts[0], l = pts[pts.length - 1];
     p.text(fmt(f.y), px(0), py(f.y) - 22, fs + 4, 800, K.INK, 'left');
-    p.text(fmt(l.y), px(pts.length - 1), py(l.y) - 22, fs + 4, 800, K.INK, 'right');
+    p.text(fmt(l.y), px(pts.length - 1) + 18, py(l.y) + 9, fs + 4, 800, K.INK, 'left');
     return y + h;
+  }
+
+  /* the hook at the largest size (from sizes) that fits in maxLines; -> the last line's baseline */
+  function hook(p, s, x, y, sizes, width, maxLines) {
+    var sz = sizes[sizes.length - 1];
+    for (var i = 0; i < sizes.length; i++) { p.font(sizes[i], 800); if (p.wrap(s, width).length <= maxLines) { sz = sizes[i]; break; } }
+    var lh = Math.round(sz * 1.12);
+    p.lines(s, x, y, sz, 800, SK().INK, lh, maxLines, width);
+    p.font(sz, 800);
+    return y + (Math.min(maxLines, p.wrap(s, width).length) - 1) * lh;
   }
 
   /* ---------------------------------------------------------------- the pictures
@@ -79,27 +92,32 @@
     K.head(p, P, 'agsist.com', 'Infographic of the Week, ' + K.mdy(spec.date));
     var b = spec.big, big = bigText(b), u = unitText(b), y;
     if (shape === 'link') {
-      y = p.lines(spec.title, P, 206, 46, 800, K.INK, 54, 2, 560) + 20;
-      var bs = p.fit(big + u, 96, 48, 800, 560);
-      p.text(big, P, y + bs * 0.9, bs, 800, K.GOLD);
-      ctx.font = '800 ' + bs + 'px ' + K.FONT;
-      p.text(u, P + ctx.measureText(big).width + 4, y + bs * 0.9, Math.round(bs * 0.42), 700, K.GOLD);
-      p.lines(b.label, P, y + bs + 34, 24, 500, K.DIM, 30, 2, 560);
+      y = hook(p, spec.title, P, 200, [46, 42, 38, 34], 560, 3) + 22;
+      var lp = b.unit === '%', lt = big + (lp ? '%' : ''), bs = p.fit(lt, 96, 48, 800, 560);
+      p.text(lt, P, y + bs * 0.9, bs, 800, K.GOLD);
+      p.lines((lp ? '' : b.unit.charAt(0).toUpperCase() + b.unit.slice(1) + '. ') + b.label, P, y + bs + 34, 24, 500, K.DIM, 30, 3, 560);
       var cx = 660, cw = W - cx - P;
       if (spec.chart.type === 'bars') {
         var pan = spec.chart.panels[0];
         p.text(pan.title.replace(/ by state, week ending.*$/, ', this year vs average'), cx, 196, 22, 600, K.DIM);
         paintBars(ctx, p, spec, pan, cx, 214, cw, H - 214 - 60, { maxRows: 8, labelW: 170, valW: 110, font: 24, rowMax: 44 });
-      } else paintLine(ctx, p, spec, cx, 170, cw, H - 170 - 60, { font: 22 });
+      } else paintLine(ctx, p, spec, cx, 170, cw, H - 170 - 60, { font: 22, endRoom: 110 });
       p.text(srcLine(spec).replace(/ Facts only, not advice\.$/, ''), P, H - 26, p.fit(srcLine(spec), 20, 16, 400, W - 2 * P), 400, K.DIM);
       return { canvas: c, texts: p.texts, sizes: p.sizes, w: W, h: H };
     }
-    y = p.lines(spec.title, P, 222, 62, 800, K.INK, 70, 3, W - 2 * P) + 16;
-    var bsz = p.fit(big + u, 120, 60, 800, W - 2 * P);
-    p.text(big, P, y + bsz * 0.88, bsz, 800, K.GOLD);
-    ctx.font = '800 ' + bsz + 'px ' + K.FONT;
-    p.text(u, P + ctx.measureText(big).width + 6, y + bsz * 0.88, Math.round(bsz * 0.4), 700, K.GOLD);
-    y = p.lines(b.label, P, y + bsz + 30, 28, 500, K.DIM, 34, 2, W - 2 * P) + 10;
+    y = hook(p, spec.title, P, 218, [62, 56, 50, 44], W - 2 * P, 3);
+    /* the big number, its unit and label in a column at its right (under it when the number is wide) */
+    var pct = b.unit === '%', bt = big + (pct ? '%' : ''), bsz = p.fit(bt, 120, 60, 800, W - 2 * P), bw;
+    var base = y + 30 + Math.round(bsz * 0.8);
+    p.text(bt, P, base, bsz, 800, K.GOLD);
+    ctx.font = '800 ' + bsz + 'px ' + K.FONT; bw = ctx.measureText(bt).width;
+    var side = (pct ? '' : b.unit.charAt(0).toUpperCase() + b.unit.slice(1) + '. ') + b.label, cx0 = P + bw + 36, cw0 = W - P - cx0;
+    ctx.font = '500 28px ' + K.FONT;
+    if (cw0 >= 360 && p.wrap(side, cw0).length <= 3) {
+      var nl = p.wrap(side, cw0).length;
+      p.lines(side, cx0, base - Math.round(bsz * 0.4) - (nl - 1) * 17 + 10, 28, 500, K.DIM, 34, 3, cw0);
+      y = base + 26;
+    } else y = p.lines(side, P, base + 44, 28, 500, K.DIM, 34, 2, W - 2 * P) - 8;
     /* the footer first (the QR code and the source), then the chart fills what is left above the facts */
     var m = o.qr, qn = m ? m.length + 8 : 0, mod = m ? Math.max(3, Math.floor(170 / qn)) : 0, qs = qn * mod;
     var LW = W - 2 * P - (m ? qs + 30 : 0);
@@ -128,15 +146,15 @@
   /* ---------------------------------------------------------------- the print sheet */
   function esc(s) { return SK().esc(s); }
   function barsSvg(spec, panel) {
-    var rows = panel.rows, hi = {}, rh = 17, lw = 118, vw = 62, w = 560, bw = w - lw - vw, h = rows.length * rh + 4, out = [];
+    var rows = panel.rows, hi = {}, rh = 18, lw = 96, vw = 62, w = 340, bw = w - lw - vw, h = rows.length * rh + 4, out = [];
     (spec.chart.highlight || []).forEach(function (k) { hi[k] = 1; });
     rows.forEach(function (r, i) {
       var y = i * rh + 2, on = hi[r.key], v = Math.max(0, Math.min(100, r.values[0])), a = Math.max(0, Math.min(100, r.values[1]));
-      out.push('<text x="0" y="' + (y + 12) + '" font-size="10.5"' + (on ? ' font-weight="800"' : '') + '>' + esc(r.label) + '</text>'
+      out.push('<text x="0" y="' + (y + 12) + '" font-size="11.5"' + (on ? ' font-weight="800"' : '') + '>' + esc(r.label) + '</text>'
         + '<rect x="' + lw + '" y="' + (y + 3) + '" width="' + bw + '" height="10" fill="#eee"/>'
         + '<rect x="' + lw + '" y="' + (y + 3) + '" width="' + (bw * v / 100).toFixed(1) + '" height="10" fill="' + (on ? '#8a6514' : '#555') + '"/>'
         + '<rect x="' + (lw + bw * a / 100 - 1).toFixed(1) + '" y="' + (y + 0.5) + '" width="2" height="15" fill="#000"/>'
-        + '<text x="' + w + '" y="' + (y + 12) + '" font-size="10.5" text-anchor="end"' + (on ? ' font-weight="800"' : '') + '>' + r.values[0] + ' vs ' + r.values[1] + '</text>');
+        + '<text x="' + w + '" y="' + (y + 12) + '" font-size="11.5" text-anchor="end"' + (on ? ' font-weight="800"' : '') + '>' + r.values[0] + ' vs ' + r.values[1] + '</text>');
     });
     return '<svg class="igs-svg" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + esc(panel.title) + '">' + out.join('') + '</svg>';
   }

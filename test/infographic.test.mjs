@@ -143,7 +143,8 @@ test("the infographic page: hook as title and H1, JSON-LD, og:image the card, th
   assert.equal(lds[0].contentUrl, og.split("?")[0]);
   assert.equal(lds[1].distribution[0].contentUrl, "https://agsist.com/data/infographics/2026-11-06.json");
   for (const f of s.facts) assert.ok(h.includes(f.text.replace(/'/g, "&#x27;")), f.text);
-  assert.ok(h.includes("USDA NASS Crop Progress, week ending Nov 1, 2026, Nov 1, 2026."), "each fact's source and date");
+  assert.ok(h.includes("<small>USDA NASS Crop Progress, week ending Nov 1, 2026.</small>"), "each fact's source and date");
+  assert.match(h, /<img class="ig-img" src="\/infographic\/og\/2026-11-06\.jpg\?v=[0-9a-f]{8}" width="1200" height="630"/);
   assert.match(h, /<details><summary>Sources<\/summary>/, "sources collapsed by default");
   assert.ok(!/<a [^>]*href="https?:\/\/(www\.)?(nass|cftc)/.test(h), "sources in plain text, no link to a data source");
   assert.ok(h.includes('href="/conditions"'), "the related page");
@@ -243,7 +244,7 @@ test("in a browser: the phone and link pictures from the spec, the print sheet o
         assert.deepEqual([r.w, r.h], shape === "phone" ? [1080, 1350] : [1200, 630], d + " " + shape);
         const all = r.texts.join(" ");
         assert.ok(all.includes(s.title.split(" ").slice(0, 3).join(" ")), d + " " + shape + ": the hook");
-        assert.ok(r.texts.includes(s.big.value.toLocaleString("en-US")), d + " " + shape + ": the big number " + r.texts.join(" | "));
+        assert.ok(r.texts.some((t) => t === s.big.value.toLocaleString("en-US") || t === s.big.value + "%"), d + " " + shape + ": the big number " + r.texts.join(" | "));
         assert.ok(all.includes(s.sources[0].name), "the source on the picture");
         assert.ok(Math.min(...r.sizes) >= 16, "no word under 16 px");
         if (shape === "phone") for (const f of s.facts) assert.ok(all.includes(f.text.split(" ").slice(0, 3).join(" ")), "fact on the phone picture: " + f.text);

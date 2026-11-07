@@ -257,7 +257,9 @@ def page(spec, specs, og, v, parts):
     desc = "%s, %s. %s" % (spec["title"], mdy(spec["date"]), " ".join(f["text"] for f in spec["facts"][:2]))
     if len(desc) > 300:
         desc = desc[:297].rsplit(" ", 1)[0] + "..."
-    facts = "".join("<li>%s <small>%s, %s.</small></li>" % (esc(f["text"]), esc(f["source"]), esc(mdy(f["date"]))) for f in spec["facts"])
+    # each fact's source and date (most sources name the date already)
+    facts = "".join("<li>%s <small>%s.</small></li>" % (esc(f["text"]), esc(f["source"] if mdy(f["date"]) in f["source"] else "%s, %s" % (f["source"], mdy(f["date"]))))
+                    for f in spec["facts"])
     srcs = "".join("<li>%s: %s.</li>" % (esc(s["name"]), esc(s["period"])) for s in spec["sources"])
     others = [s for s in specs if s["date"] != spec["date"]][:LAST_N]
     more = "".join('<li><a href="/infographic/%s">%s</a><time datetime="%s">%s</time></li>' % (s["date"], esc(s["title"]), s["date"], mdy(s["date"])) for s in others)
@@ -271,7 +273,7 @@ def page(spec, specs, og, v, parts):
   <p class="ig-sub" style="margin-top:14px"><a href="/infographic/" style="color:var(--text-muted)">Infographic of the Week</a> &rsaquo; <b style="color:var(--text)">{esc(mdy(spec["date"]))}</b></p>
   <h1>{esc(spec["title"])}</h1>
   <div class="ig-big"><b>{big}</b><span>{esc(b["label"])}</span></div>
-  <img class="ig-img" src="{esc(og)}" width="1200" height="630" alt="{esc(spec["title"])}: {esc(b["label"])}">
+  <img class="ig-img" src="{esc(og[len(SITE):])}" width="1200" height="630" alt="{esc(spec["title"])}: {esc(b["label"])}">
   <div class="ig-tools" id="ig-tools" hidden>
     <button type="button" id="ig-pic">Save the phone picture</button>
     <button type="button" id="ig-wide">Save the wide picture</button>
