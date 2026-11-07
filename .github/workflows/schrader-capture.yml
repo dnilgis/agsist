@@ -1,0 +1,74 @@
+name: schrader-capture
+# schrader-capture.
+
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    concurrency:
+      group: schrader-capture
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - name: Selftest
+        run: python3 scripts/capture_schrader.py --selftest && python3 scripts/read_schrader.py --selftest
+      - name: Capture the sold feed and result pages
+        run: python3 scripts/capture_schrader.py
+      - name: Save to the raw branch
+        if: ${{ !cancelled() }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/push_raw.sh "schrader capture" land/schrader/capture
+      - name: Read the auction results into a facts-only file
+        run: python3 scripts/read_schrader.py --latest --out results/schrader-new.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: schrader-results
+          path: results/schrader-new.json
+          retention-days: 1
+          if-no-files-found: error
+
+  commit:
+    needs: capture
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    concurrency:
+      group: schrader-commit
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: schrader-results
+          path: results
+      - name: Check and merge the auction results
+        run: python3 scripts/read_schrader.py --merge results/schrader-new.json
+      - name: Commit the auction results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/land/auctions/schrader.json
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: Schrader auction results $(date -u +%F) [skip ci]"
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}"

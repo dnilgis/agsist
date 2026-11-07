@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+	<channel>
+	<atom:link href="https://www.schraderauction.com/index.rss" rel="self" type="application/rss+xml" />
+	<title>Schrader Real Estate and Auction Co., Inc.</title>
+	<link>https://www.schraderauction.com</link>
+	<description>Upcoming auctions hosted by Schrader Real Estate and Auction Co., Inc.</description>
+	<category>Real Estate</category>
+	<category>Auction</category>
+	<lastBuildDate>Sat, 07 Nov 2026 00:00:00 EST</lastBuildDate>
+	<language>en-us</language>
+	<copyright>Copyright Schrader Real Estate and Auction Co., Inc.</copyright>
+	
+		<item>
+		<title>SOLD for $2,905,000: FARMLAND AUCTION - 296.5+/-ACRES OFFERED IN 8 TRACTS IN WAYNE COUNTY, INDIANA</title>
+		<link>https://www.schraderauction.com/auctions/9630</link>
+		<guid>https://www.schraderauction.com/auctions/9630</guid>
+		<pubDate>Thu, 05 Nov 2026 18:00:00 EST</pubDate>
+		<description>Thu, Nov  5,  6:00 PM - [street address], [town], ST [zip] - Wayne County, Indiana</description>
+		<enclosure url="https://www.schraderauction.com/images/schrader_596034_250.jpg" length="78645" type="image/jpeg" />
+		</item>    	
+	
+		<item>
+		<title>SOLD for $106,000: TIMED ONLINE ONLY REAL ESTATE AUCTION -.15+/-ACRE OFFERED IN 1 TRACT IN ALLEN COUNTY, INDIANA</title>
+		<link>https://www.schraderauction.com/auctions/9629</link>
+		<guid>https://www.schraderauction.com/auctions/9629</guid>
+		<pubDate>Thu, 29 Oct 2026 18:00:00 EST</pubDate>
+		<description>Thu, Oct 29,  6:00 PM - [street address], [town], ST [zip] - Allen County, Indiana</description>
+		<enclosure url="https://www.schraderauction.com/images/schrader_597564_250.jpg" length="78645" type="image/jpeg" />
+		</item>    	
+	
+		<item>
+		<title>SOLD for $250,000: TIMED ONLINE ONLY REAL ESTATE AUCTION IN WHITLEY COUNTY, INDIANA</title>
+		<link>https://www.schraderauction.com/auctions/9636</link>
+		<guid>https://www.schraderauction.com/auctions/9636</guid>
+		<pubDate>Wed, 28 Oct 2026 18:00:00 EST</pubDate>
+		<description>Wed, Oct 28,  6:00 PM - [street address], [town], ST [zip] - Whitley County, Indiana</description>
+		<enclosure url="https://www.schraderauction.com/images/schrader_596076_250.jpg" length="78645" type="image/jpeg" />
+		</item>    	
+	
+		<item>
+		<title>SOLD for $1,820,000: LAND AUCTION - 331+/-ACRES OFFERED IN 3 TRACTS IN KNOX COUNTY, INDIANA</title>
+		<link>https://www.schraderauction.com/auctions/9580</link>
+		<guid>https://www.schraderauction.com/auctions/9580</guid>
+		<pubDate>Tue, 27 Oct 2026 18:00:00 EST</pubDate>
+		<description>Tue, Oct 27,  6:00 PM - [street address], [town], ST [zip] - Knox County, Indiana</description>
+		<enclosure url="https://www.schraderauction.com/images/schrader_593575_250.jpg" length="78645" type="image/jpeg" />
+		</item>    	
+	
+		<item>
+		<title>SOLD for $231,750: PHONE BID ONLY REAL ESTATE AUCTION IN LAGRANGE COUNTY, INDIANA</title>
+		<link>https://www.schraderauction.com/auctions/9632</link>
+		<guid>https://www.schraderauction.com/auctions/9632</guid>
+		<pubDate>Tue, 27 Oct 2026 17:30:00 EST</pubDate>
+		<description>Tue, Oct 27,  5:30 PM - [street address], [town], ST [zip] - LaGrange County, Indiana</description>
+		<enclosure url="https://www.schraderauction.com/images/schrader_595707_250.jpg" length="78645" type="image/jpeg" />
+		</item>    	
+	    	
+	</channel>
+</rss>

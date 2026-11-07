@@ -178,8 +178,9 @@ test('publishing jobs save softly; build inputs, paid batch records and the FSA 
   // history did not land); the 30-minute saves inside the run are soft and retried by that last one.
   // Nov 4 (fx/datasplit): site-usage.yml and cot-deep-rebuild.yml, the same reason: the saved file is the
   // job's only product (site usage moved off main; the rebuilt COT history), so a failed save is a red run.
+  // Nov 7 (fx/schrader-capture): schrader-capture.yml, the same reason: the raw capture is the job's only product.
   const HARD = new Set(['accuracy-pass.yml', 'api-jobs.yml', 'fetch-fsa-arcplc.yml', 'fetch-fsa-files.yml', 'history-backfill.yml',
-    'site-usage.yml', 'cot-deep-rebuild.yml']);
+    'site-usage.yml', 'cot-deep-rebuild.yml', 'schrader-capture.yml']);
   // One step, not a whole job (Nov 4, fx/sponsorfix): a new sponsor's link token is saved to private-data
   // BEFORE anything uses it, so a failed save must stop the run; a soft save would hand out a link the
   // private copy does not hold. The same job's reports save stays soft.
