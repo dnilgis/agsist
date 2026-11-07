@@ -9,10 +9,12 @@
    on the chart is the page's own yearly trend (its slope through the middle of the published years, which is the
    least-squares line the page states).
 
-   The sheet: US Letter portrait, fits A4 (measured at A4's printed width against Letter's printed height; a long
-   county gets a shorter chart, then tighter spacing, and only past that is the whole sheet scaled). Six blocks:
-   land, rent, crops, grain, weather, risk; the corn yield chart with its trend; the QR code ("Scan for this
-   county's live page") and the address; the source line and "Not advice". Ctrl+P (beforeprint) prints it too.
+   The sheet: US Letter portrait, fits A4 (measured at each paper's printed area; the yield chart takes the height
+   the page leaves, then tighter spacing, and only past that is the whole sheet scaled). A report's layout: the
+   title block (the state with the county marked, the name, the date, the QR code "Scan for this county's live
+   page"), a summary row of the headline numbers, then four questions: what does land rent for, what has sold, what
+   can farming here earn, what could disrupt that income; the corn yield chart with its trend; the address, the
+   source line, the made-on line and "Not advice". Ctrl+P (beforeprint) prints it too.
    The picture: 1080 x 1350 for a phone, the four biggest numbers and the chart. Links: the county page with
    utm_source print|share, utm_medium qr|picture|link, utm_campaign county-<fips>.
 
@@ -275,12 +277,12 @@
           + '<p><span>' + esc(r.text) + '</span>' + (r.src ? '<i>' + esc(r.src) + '</i>' : '') + '</p></div>';
       }).join('') + '</section>';
     }
-    /* two columns that fill on their own: rent, earnings, the yield chart and the QR code at the left (the chart
-       takes the height the right column leaves); sales and risks at the right */
+    /* two columns that fill on their own: rent, earnings and the yield chart at the left (the chart takes the
+       height the right column leaves); sales and risks at the right */
     var col = function (ks, tail) { return '<div class="cprs-col">' + s.blocks.filter(function (b) { return ks.indexOf(b.key) >= 0; }).map(one).join('') + (tail || '') + '</div>'; };
     var chart = s.chart ? '<figure class="cprs-chart">' + toSvg(chartItems(s.chart, 380, chartH || 190, 13), chartLabel(s)) + '<figcaption>' + esc(chartCaption(s)) + '</figcaption></figure>' : '';
-    var side = '<aside class="cprs-side">' + (qr ? '<div class="cprs-qr">' + qr + '</div>' : '')
-      + '<div><p class="cprs-scan">' + esc(QR_CAP) + '</p><p class="cprs-addr">' + esc(s.shown).replace(/\//g, '/<wbr>') + '</p></div></aside>';
+    /* the QR code sits in the title block, as on a report's cover; the address prints in full at the foot */
+    var side = qr ? '<div class="cprs-side"><div class="cprs-qr">' + qr + '</div><p class="cprs-scan">' + esc(QR_CAP) + '</p></div>' : '';
     var map = locSvg(loc, s.fips, (s.name || 'The county') + ' within ' + (s.state || 'its state'));
     var sum = s.big4.map(function (b) {
       return '<div class="cprs-k"><p class="cprs-kl">' + esc(b.text) + '</p><p class="cprs-kv">' + esc(b.big) + (b.unit ? '<small>' + esc(b.unit) + '</small>' : '') + '</p>'
@@ -289,10 +291,10 @@
     return '<div class="cprs-bar"></div><header class="cprs-top">' + (map ? '<div class="cprs-map">' + map + '</div>' : '')
       + '<div class="cprs-ttl"><p class="cprs-kick">County Print</p><h1 class="cprs-h1">' + esc((s.name || '') + (s.state ? ', ' + s.state : '')) + '</h1>'
       + '<p class="cprs-date">' + esc(s.date) + (s.fips ? ' · FIPS ' + esc(s.fips) : '') + '</p></div>'
-      + '<div class="cprs-brand"><img class="cprs-logo" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="86" height="40"><p class="cprs-url">agsist.com</p></div></header>'
+      + '<div class="cprs-brand"><img class="cprs-logo" src="/img/logo-agsist-onlight.svg" alt="AGSIST" width="86" height="40"><p class="cprs-url">agsist.com</p></div>' + side + '</header>'
       + (sum ? '<div class="cprs-sum">' + sum + '</div>' : '')
-      + '<div class="cprs-grid">' + col(['rent', 'earn'], chart + side) + col(['sold', 'risk']) + '</div>'
-      + '<p class="cprs-src">' + esc(s.src) + '</p><p class="cprs-na">' + esc(s.made) + ' ' + esc(s.notice) + '</p>';
+      + '<div class="cprs-grid">' + col(['rent', 'earn'], chart) + col(['sold', 'risk']) + '</div>'
+      + '<p class="cprs-live">This county\u2019s live page: <b>' + esc(s.shown) + '</b></p><p class="cprs-src">' + esc(s.src) + '</p><p class="cprs-na">' + esc(s.made) + ' ' + esc(s.notice) + '</p>';
   }
 
   /* ---------------------------------------------------------------- the picture
@@ -364,7 +366,8 @@
   var live = doc.getElementById('ch-live'), canon = doc.querySelector('link[rel="canonical"]'), h1 = doc.querySelector('main h1');
   var FIPS = (live && live.getAttribute('data-fips')) || '', URL_ = canon ? canon.href : root.location.origin + root.location.pathname;
   var parts = h1 ? h1.textContent.split(', ') : [], NAME = parts.length > 1 ? parts.slice(0, -1).join(', ') : (parts[0] || ''), STATE = parts.length > 1 ? parts[parts.length - 1] : '';
-  var MAX_PX = 10 * 96 - 8, LOC = null, $ = function (id) { return doc.getElementById(id); };
+  /* the printed area with half-inch margins: Letter 7.5 x 10 in, A4 7.27 x 10.69 in; the sheet must fit both */
+  var PAPERS = [[7.5, 10], [7.27, 10.69]], LOC = null, $ = function (id) { return doc.getElementById(id); };
   function ga(n, p) { try { if (typeof root.gtag === 'function') root.gtag('event', n, p); } catch (e) {} }
   function load(tag, attrs) { var el = doc.createElement(tag); Object.keys(attrs).forEach(function (k) { el[k] = attrs[k]; }); doc.head.appendChild(el); return el; }
   if (!doc.querySelector('link[href^="/components/county-print.css"]')) load('link', { rel: 'stylesheet', href: CSS });
@@ -376,7 +379,13 @@
   var AS_OF = (((doc.querySelector('main') || doc.body).textContent.match(/Figures as of ([A-Z][a-z]{2} \d{1,2}, \d{4})/)) || [])[1] || '';
   function current() { return sheet(CP, root.AgCountyFacts || {}, { name: NAME, state: STATE, url: URL_, fips: FIPS, now: Date.now(), asOf: AS_OF }); }
   function qrSvg(s) { try { return root.AgQR ? root.AgQR.svg(s.qr, QR_CAP + ': ' + s.shown, 10) : ''; } catch (e) { return ''; } }
-  function measure(el) { el.classList.add('cprs-measure'); var h = el.offsetHeight; el.classList.remove('cprs-measure'); return h; }
+  /* the share of the page the sheet takes on the tighter paper (1 or less fits) */
+  function measure(el) {
+    el.classList.add('cprs-measure');
+    var r = Math.max.apply(null, PAPERS.map(function (p) { el.style.width = p[0] + 'in'; return el.offsetHeight / (p[1] * 96 - 8); }));
+    el.style.width = ''; el.classList.remove('cprs-measure');
+    return r;
+  }
   /* one page whatever the county carries: a shorter chart, then tighter spacing, then (only past that) scaled */
   function build() {
     var s = current(), el = $('cprs');
@@ -387,9 +396,9 @@
        tight spacing with the shortest chart */
     var HS = [300, 260, 230, 200, 175, 150, 130, 115];
     el.classList.remove('cprs-tight');
-    HS.some(function (h) { el.innerHTML = html(s, code, h, LOC); fits = measure(el) <= MAX_PX; return fits; });
-    if (!fits) { el.classList.add('cprs-tight'); el.innerHTML = html(s, code, HS[HS.length - 1], LOC); fits = measure(el) <= MAX_PX; }
-    if (!fits) { var z = Math.floor(MAX_PX / measure(el) * 100) / 100; el.style.zoom = String(z); el.setAttribute('data-zoom', String(z)); }
+    HS.some(function (h) { el.innerHTML = html(s, code, h, LOC); fits = measure(el) <= 1; return fits; });
+    if (!fits) { el.classList.add('cprs-tight'); el.innerHTML = html(s, code, HS[HS.length - 1], LOC); fits = measure(el) <= 1; }
+    if (!fits) { var z = Math.floor(100 / measure(el)) / 100; el.style.zoom = String(z); el.setAttribute('data-zoom', String(z)); }
     else el.removeAttribute('data-zoom');
     el.setAttribute('data-fit', fits ? '1' : '0');
     api.last = s;

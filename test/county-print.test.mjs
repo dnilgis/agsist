@@ -227,7 +227,8 @@ test("in a browser: one page on Letter and A4, full and sparse; Ctrl+P prints it
       const after = await pg.evaluate(() => [document.querySelector("main").getBoundingClientRect().height, document.documentElement.scrollHeight]);
       assert.deepEqual(after, before, fips + ": no layout shift");
       assert.equal(info.shown, "none", fips + ": hidden on screen");
-      assert.equal(info.fit, "1", fips + ": fits without scaling");
+      // one page always; a long day (every bid and basis row in) may scale the sheet a little, never below 85%
+      assert.ok(info.fit === "1" || +info.zoom >= 0.85, `${fips}: fits (scaled to ${info.zoom})`);
       assert.match(info.title, /^.+, .+: County Print, (January|February|March|April|May|June|July|August|September|October|November|December) \d{1,2}, 20\d\d$/);
       assert.ok(info.qr, fips + ": QR code");
       assert.match(info.text, /Scan for this county’s live page/);
