@@ -7,6 +7,8 @@
   'use strict';
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var MINUS = '−';
+  /* the share kit core (components/share-kit.js): the link tags every kit shares */
+  function SK() { return root.AgShareKit || (typeof require === 'function' ? require('./share-kit.js') : null); }
   function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function commas(n) { return Math.abs(Math.round(n)).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ','); }
   /* 193781 -> "193,781 long"; -74606 -> "74,606 short"; 0 -> "0" */
@@ -146,7 +148,7 @@
     return 'In ' + s[1] + ': ' + parts.join(', ') + '.';
   }
 
-  /* One link convention for every kit asset (kit v2 part 2, the growth seat): the market and the report week in the
+  /* One link convention for every kit asset (kit v2 part 2, the growth seat; the tags from AgShareKit.tags): the market and the report week in the
      address (Facebook keeps one preview per address), and utm_source share|print|email, utm_medium
      picture|sheet|qr|forward|link, utm_campaign cot-<report date>; the hash opens the chart on that market.
      (key, '2026-11-03', 'share', 'picture') -> https://agsist.com/cot?m=soybeans&w=2026-11-03&utm_source=share&... */
@@ -156,7 +158,7 @@
     var q = [];
     if (ks) q.push('m=' + ks);
     if (ks && /^\d{4}-\d{2}-\d{2}$/.test(week || '')) q.push('w=' + week);   /* a market's preview, per week */
-    if (src) q.push('utm_source=' + src, 'utm_medium=' + med, 'utm_campaign=cot' + (week ? '-' + week : ''));
+    if (src) q.push(SK().tags(src, med, 'cot' + (week ? '-' + week : '')));
     return 'https://agsist.com/cot' + (q.length ? '?' + q.join('&') : '') + (hash === undefined ? (ks && ks.indexOf(',') < 0 ? '#' + ks : '') : hash);
   }
 

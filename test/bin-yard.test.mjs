@@ -21,7 +21,7 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (f) => readFileSync(ROOT + f, "utf8");
 const ctx = { window: {} };
 vm.createContext(ctx);
-for (const f of ["grain-bin.js", "grain-shrink.js", "qr.js", "bin-yard.js"]) vm.runInContext(read("components/" + f), ctx);
+for (const f of ["grain-bin.js", "grain-shrink.js", "qr.js", "share-kit.js", "bin-yard.js"]) vm.runInContext(read("components/" + f), ctx);
 const G = ctx.window.AgGrainBin, Y = ctx.window.AgBinYard, Q = ctx.window.AgQR;
 const PAGE = read("grain-bin-calculator.html"), JS = read("components/bin-yard.js"), CSS = read("components/bin-yard.css");
 const near = (a, b, msg, tol = 1e-6) => assert.ok(Math.abs(a - b) <= tol, `${msg}: ${a} vs ${b}`);
@@ -160,10 +160,10 @@ test("the page: Bin Print near the top, one ask under its totals, sheets and tip
   assert.match(PAGE, /<h1>Grain bin calculator<\/h1>/);
   assert.match(PAGE, /Bin Print: map your bin yard/);
   assert.equal((PAGE.match(/data-signup-ask=/g) || []).length, 1, "one signup path");
-  assert.ok(PAGE.indexOf("<script src=\"/components/bin-yard.js?v=1\"></script>") > sec, "bin-yard.js runs right after the section (blocking, so it draws before paint)");
+  assert.ok(PAGE.indexOf("<script src=\"/components/share-kit.js?v=1\"></script>\n    <script src=\"/components/bin-yard.js?v=2\"></script>") > sec, "bin-yard.js runs right after the section (blocking, so it draws before paint)");
   assert.ok(PAGE.indexOf('src="/components/grain-bin.js?v=') < PAGE.indexOf('src="/components/bin-yard.js?v='));
   assert.equal((PAGE.match(/src="\/components\/grain-bin\.js/g) || []).length, 1, "loaded once");
-  assert.match(PAGE, /<link rel="stylesheet" href="\/components\/bin-yard\.css\?v=1">/);
+  assert.match(PAGE, /<link rel="stylesheet" href="\/components\/share-kit\.css\?v=1">\n<link rel="stylesheet" href="\/components\/bin-yard\.css\?v=2">/);
   assert.match(PAGE, /<script src="\/components\/qr\.js\?v=\d+" defer><\/script>/);
   for (const s of ["Print my Bin Print", "Save Bin Print picture", "Copy Bin Print link", "Print crew sheet", "Send to crew", "Edit a copy", "Names and notes travel inside the link to whoever gets it"]) assert.ok(JS.includes(s), s);
   for (const u of ["crops.extension.iastate.edu/encyclopedia/core-each-grain-bin-fall", "crops.extension.iastate.edu/post/2021-stored-grain-management",
@@ -299,10 +299,10 @@ test("both printed sheets are one page on Letter and A4, sample and 12-bin yards
       for (const [btn, kind] of [["#by-print", "full"], ["#by-crewprint", "crew"]]) {
         await pg.click(btn);
         const s = await pg.evaluate(() => {
-          const el = document.getElementById("byp"); el.classList.add("byp-measure");
+          const el = document.getElementById("byp"); el.classList.add("sk-measure");
           const svg = el.querySelector(".byp-map"), vb = svg.viewBox.baseVal, r = svg.getBoundingClientRect(), k = Math.min(r.width / vb.width, r.height / vb.height);
           const fs = [...svg.querySelectorAll("text.by-l1, text.by-l2")].map((t) => parseFloat(t.getAttribute("font-size")) * k * 0.75);
-          el.classList.remove("byp-measure");
+          el.classList.remove("sk-measure");
           return { fit: el.getAttribute("data-fit"), kind: el.getAttribute("data-kind"), on: document.documentElement.classList.contains("byp-on"), minPt: Math.min(...fs), text: el.textContent, printed: window.__printed };
         });
         assert.equal(s.kind, kind); assert.ok(s.on, "print shows only the sheet"); assert.equal(s.fit, "1", `${label} ${kind}: fits without scaling`);

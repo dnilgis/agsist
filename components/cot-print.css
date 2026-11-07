@@ -3,14 +3,10 @@
    on paper. One page, US Letter portrait, fits A4. Kit v2 (Nov 6): a true black-and-white palette. Black ink does the
    work; the one accent is the dark gold #8a6514 (5.3:1 on white), never the screen gold #d4a23f (2.3:1). Body 11 pt
    or more, the scoreboard figures 32 pt, readable from 6 feet. */
-.cotp{display:none}
-/* measured off screen by cot-print.js: A4's printed width, never seen */
-.cotp.cotp-measure{display:block;position:absolute;left:0;top:0;width:7.47in;visibility:hidden;pointer-events:none;contain:layout}
+/* hidden on screen, measured off screen at A4's printed width, alone on paper: the shared shell in
+   components/share-kit.css (class sk-sheet, html.sk-on, sk-measure) */
 @media print{
   @page{margin:.4in}
-  html.cotp-on,html.cotp-on body{background:#fff!important;color:#000!important;margin:0!important;padding:0!important}
-  html.cotp-on body>*:not(#cotp){display:none!important}
-  html.cotp-on #cotp{display:block!important}
 }
 /* the sheet (only ever drawn in print, or measured) */
 .cotp{--chart-1:#8a6514;--chart-2:#9a9a9a;--chart-grid:#c8c8c8;--chart-text:#000;--text:#000;--text-muted:#333;--surface:#fff;
@@ -59,7 +55,7 @@
    about 0.4 in, readable across a room), the scoreboard figures 38 pt, nothing under 11 pt but the source line. */
 @page cotw{size:letter landscape;margin:.4in}
 .cotp.cotp-wall{page:cotw}
-.cotp.cotp-wall.cotp-measure{width:10.2in}
+.cotp.cotp-wall.sk-measure{width:10.2in}
 .cotw-top{display:flex;justify-content:space-between;align-items:baseline;border-bottom:4pt solid #000;padding-bottom:.04in}
 .cotw-wk{font-size:16pt;font-weight:800}
 .cotw-url{font:800 20pt/1 "JetBrains Mono",ui-monospace,monospace}

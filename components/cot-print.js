@@ -13,7 +13,8 @@
    Nothing here fetches: the chart hands over the files cot-page.js loaded ('cot:chart-data'). The sheet sits at
    the end of <body>, hidden on screen (no layout shift). "Print this week" and any browser print (Ctrl+P, the
    menu, a phone's Print: beforeprint and matchMedia('print')) switch print to it (html.cotp-on,
-   components/cot-print.css). Exports window.AgCotPrint (and module.exports for the tests: sheet, html, run, lead). */
+   components/cot-print.css). The sheet element, the off-screen measure, the print hook and the html.sk-on shell
+   (components/share-kit.css) come from the share kit core (components/share-kit.js). Exports window.AgCotPrint (and module.exports for the tests: sheet, html, run, lead). */
 (function (root) {
   'use strict';
   var G = root.AgCotGlance || (typeof require === 'function' ? require('./cot-glance.js') : null);
@@ -160,17 +161,16 @@
   root.AgCotPrint = api;
 
   /* ---------------------------------------------------------------- the page */
-  var doc = root.document, D = null, MAX_PX = 10.2 * 96 - 8, PICK = { key: null, wall: false };
-  if (!doc) return;
+  var doc = root.document, SK = root.AgShareKit, D = null, MAX_PX = 10.2 * 96 - 8, PICK = { key: null, wall: false };
+  if (!doc || !SK) return;
   function qr(u) { try { return root.AgQR ? root.AgQR.svg(u || URL_FULL, 'QR code to the Funds this week signup at agsist.com/cot') : ''; } catch (e) { return ''; } }
   function chartKey() { try { return root.AgCotChart && root.AgCotChart.current ? root.AgCotChart.current() : null; } catch (e) { return null; } }
-  function measure(el) { el.classList.add('cotp-measure'); var h = el.offsetHeight; el.classList.remove('cotp-measure'); return h; }
+  function measure(el) { return SK.measure(el); }
   function build() {
     if (!D && root.AgCotChart && root.AgCotChart.data) D = root.AgCotChart.data();
     var s = D && sheet(D.cot, D.cx, D.hist, Date.now(), PICK.key || chartKey());
     if (!s) return null;
-    var el = doc.getElementById('cotp');
-    if (!el) { el = doc.createElement('div'); el.id = 'cotp'; el.className = 'cotp'; el.setAttribute('aria-hidden', 'true'); doc.body.appendChild(el); }
+    var el = SK.sheet(doc, 'cotp', 'cotp');
     el.setAttribute('data-market', s.key);
     el.classList.toggle('cotp-wall', !!PICK.wall);
     el.style.zoom = '';
@@ -193,29 +193,22 @@
   }
   api.build = build;
   doc.addEventListener('cot:chart-data', function (e) { D = e.detail || D; build(); });
-  function ga(name, p) { try { if (typeof root.gtag === 'function') root.gtag('event', name, p); } catch (e) {} }
   /* any browser print (Ctrl+P, the menu, a phone's Print) gives the one-page sheet, the same state the button sets;
      GA4 sheet_print counts the print itself (beforeprint), whatever started it */
   function on() {
     var el = doc.getElementById('cotp');
-    if (!doc.documentElement.classList.contains('cotp-on') && (el = build())) doc.documentElement.classList.add('cotp-on');
-    if (el) ga('sheet_print', { kind: PICK.wall ? 'wall' : 'sheet', market: el.getAttribute('data-market') || '' });
+    if (!doc.documentElement.classList.contains('cotp-on') && (el = build())) SK.show(doc, 'cotp-on', true);
+    if (el) SK.ga(SK.EV.print, { kind: PICK.wall ? 'wall' : 'sheet', market: el.getAttribute('data-market') || '' });
   }
-  function off() { doc.documentElement.classList.remove('cotp-on'); PICK.key = null; PICK.wall = false; }
-  root.addEventListener('beforeprint', on);
-  root.addEventListener('afterprint', off);
-  try {
-    var mq = root.matchMedia && root.matchMedia('print');
-    var ch = function (e) { if (e.matches) on(); else off(); };
-    if (mq && mq.addEventListener) mq.addEventListener('change', ch); else if (mq && mq.addListener) mq.addListener(ch);
-  } catch (e) {}
+  function off() { SK.show(doc, 'cotp-on', false); PICK.key = null; PICK.wall = false; }
+  SK.printHook(root, on, off);
   /* Print sheet, after the reader picks a market (components/cot-share.js): key, or wall for the pin-up edition.
      -> false while the data is still loading */
   api.print = function (key, isWall) {
     PICK.key = key || null; PICK.wall = !!isWall;
     if (!build()) { PICK.key = null; PICK.wall = false; return false; }
-    doc.documentElement.classList.add('cotp-on');
-    try { root.print(); } catch (e) { off(); }
+    SK.show(doc, 'cotp-on', true);
+    SK.printNow(root, off);
     return true;
   };
 })(typeof window !== 'undefined' ? window : this);

@@ -6,7 +6,8 @@
    on release day it runs to the last repaired week, dated. Kit v2 (Nov 6, the share kit panel): weeks placed by
    date with months and the year, round ticks with a unit, the 52-week high and low and the latest point labelled
    with value, side and date, one run bracket at most; the headline says what changed, then where funds stand
-   (AgCotGlance.brief); every asset carries absolute dates with the year. Shared helpers: components/cot-kit.js.
+   (AgCotGlance.brief); every asset carries absolute dates with the year. Shared helpers: components/cot-kit.js; the picture's
+   card, pen and fonts from components/share-kit.js (the share kit core).
    One layout feeds the inline SVG on the page, the saved pictures (1080x1350 on a phone, 1200x675 on a desktop)
    and the printed sheet (cot-print.js). Compare mode: up to three markets on the pipeline's 0 to 100 rank (`rk`).
    cot-page.js hands this file the data it fetched (AgCotChart.update); nothing here fetches.
@@ -17,6 +18,7 @@
   var ORDER = G.ORDER;
   var CHIP = G.SHORT;
   var K = root.AgCotKit || (typeof require === 'function' ? require('./cot-kit.js') : null);
+  var SK = root.AgShareKit || (typeof require === 'function' ? require('./share-kit.js') : null);
   var SITE = 'https://agsist.com';
   var ASK = 'Free every Friday: agsist.com/cot';
   function full(d) { return ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'][dt(d).getDay()] + ', ' + mdy(d); }
@@ -311,7 +313,7 @@
   var PNG_INK = { net: '#d4a23f', netFill: 'rgba(212,162,63,.16)', price: '#8fa6b2', grid: 'rgba(132,160,168,.18)', zero: 'rgba(233,237,235,.85)',
     axis: 'rgba(233,237,235,.72)', text: '#e9edeb', muted: 'rgba(233,237,235,.74)', surface: '#101415', none: '',
     c0: '#d4a23f', c1: '#62aee0', c2: '#e07a9a' };
-  var FONT = "Inter, 'Inter Fallback', system-ui, sans-serif";
+  var FONT = SK.FONT;
   function paint(ctx, g, ox, oy) {
     ctx.save(); ctx.translate(ox, oy);
     g.items.forEach(function (it) {
@@ -330,7 +332,7 @@
         ctx.fillStyle = PNG_INK[it.ink]; ctx.font = (it.weight || 400) + ' ' + it.size + 'px ' + FONT;
         ctx.textAlign = it.align || 'left'; ctx.textBaseline = it.base === 'top' ? 'top' : it.base === 'middle' ? 'middle' : 'alphabetic';
         var ty = it.base === 'bottom' || !it.base ? it.y - 2 : it.y;
-        var ls = it.wrap ? wrapLines(ctx, it.s, it.wrap) : [it.s];
+        var ls = it.wrap ? SK.wrap(ctx, it.s, it.wrap) : [it.s];
         ls.forEach(function (t, i) {
           var yy = ty + (i - (ls.length - 1) / 2) * it.size * 1.3;
           ctx.lineWidth = 5; ctx.lineJoin = 'round'; ctx.strokeStyle = PNG_INK.surface; ctx.strokeText(t, it.x, yy);
@@ -339,13 +341,6 @@
       }
     });
     ctx.restore();
-  }
-  /* wrap text to a width with the canvas's own measure */
-  function wrapLines(ctx, s, max) {
-    var out = [], cur = '';
-    String(s).split(' ').forEach(function (w) { var t = cur ? cur + ' ' + w : w; if (ctx.measureText(t).width > max && cur) { out.push(cur); cur = w; } else cur = t; });
-    if (cur) out.push(cur);
-    return out;
   }
   /* The saved picture. o.phone: 1080x1350 (4:5, the default on a phone): headline 60 px, every other word 26 px
      or more, so it reads at 390 px wide; else 1200x675 (desktop). Both: agsist.com/cot, the headline, the answer
@@ -356,26 +351,22 @@
   function image(m, doc, o) {
     o = o || {};
     var ph = !!o.phone, W = ph ? 1080 : 1200, H = ph ? 1350 : 675, P = ph ? 60 : 56;
-    var c = (doc || document).createElement('canvas'); c.width = W; c.height = H;
-    var ctx = c.getContext('2d'), texts = [], sizes = [], ys = [];
-    function text(s, x, y, size, weight, ink, al) { ctx.font = weight + ' ' + size + 'px ' + FONT; ctx.fillStyle = ink; ctx.textAlign = al || 'left'; ctx.textBaseline = 'alphabetic'; ctx.fillText(s, x, y); texts.push(s); sizes.push(size); ys.push(y); }
-    function wrapped(s, size, weight, max) { ctx.font = weight + ' ' + size + 'px ' + FONT; return wrapLines(ctx, s, W - 2 * P).slice(0, max); }
-    ctx.fillStyle = '#0a0c0d'; ctx.fillRect(0, 0, W, H);
-    ctx.fillStyle = '#d4a23f'; ctx.fillRect(0, 0, W, ph ? 12 : 8);
+    var c = SK.canvas(doc, W, H), ctx = c.getContext('2d'), p = SK.pen(ctx), text = p.text;
+    function wrapped(s, size, weight, max) { p.font(size, weight); return p.wrap(s, W - 2 * P).slice(0, max); }
+    SK.frame(ctx, W, H, ph ? 12 : 8);
     var head = m.cmp ? m.headline : m.head || ('Managed money in ' + m.name.toLowerCase() + ': ' + netWords(m.last.net) + ' contracts.');
     var stand = m.cmp ? '' : m.stand || '';
     var sub = m.cmp ? m.axis : 'Managed money net position, ' + m.name.toLowerCase() + ', each week since ' + mdy(m.rows[0].date);
     var rs = m.rows, ql = m.cmp ? '' : K.qtyLine(m.key, m.last.net, rs.length > 1 ? m.last.net - rs[rs.length - 2].net : null);
-    var src = 'Source: ' + m.src + (ql ? ' ' + K.SPEC_SRC : ''), y, g, gh;
+    var src = 'Source: ' + m.src + (ql ? ' ' + K.SPEC_SRC : ''), y, g, gh, GOLD = SK.GOLD, INK = SK.INK;
     if (ph) {
-      text('agsist.com/cot', P, 84, 40, 800, '#d4a23f');
-      text(m.asOf, P, 132, 28, 600, 'rgba(233,237,235,.86)');
+      SK.head(p, P, 'agsist.com/cot', m.asOf, { size: 40, ink: 'rgba(233,237,235,.86)' });
       y = 210;
-      wrapped(head, 60, 800, 3).forEach(function (s) { text(s, P, y, 60, 800, '#e9edeb'); y += 72; });
-      if (stand) { text(stand, P, y + 2, 44, 700, '#d4a23f'); y += 58; }
-      if (ql) { wrapped(ql, 28, 600, 2).forEach(function (s) { text(s, P, y, 28, 600, '#e9edeb'); y += 38; }); }
+      wrapped(head, 60, 800, 3).forEach(function (s) { text(s, P, y, 60, 800, INK); y += 72; });
+      if (stand) { text(stand, P, y + 2, 44, 700, GOLD); y += 58; }
+      if (ql) { wrapped(ql, 28, 600, 2).forEach(function (s) { text(s, P, y, 28, 600, INK); y += 38; }); }
       y += 4;
-      if (m.answer) { wrapped(m.answer, 30, 500, 4).forEach(function (s) { text(s, P, y, 30, 500, '#e9edeb'); y += 41; }); y += 8; }
+      if (m.answer) { wrapped(m.answer, 30, 500, 4).forEach(function (s) { text(s, P, y, 30, 500, INK); y += 41; }); y += 8; }
       wrapped(sub, 26, 600, 2).forEach(function (s) { text(s, P, y, 26, 600, 'rgba(233,237,235,.80)'); y += 34; });
       /* the ask on its own last line, a gap above it so the source line is not crowded (Sig, Nov 6) */
       var srcL = wrapped(src, 20, 400, 4), foot = H - 40 - 50 - (srcL.length - 1) * 26;
@@ -383,23 +374,23 @@
       g = layout(m, W - 2 * P, gh, { fs: 26, big: true });
       paint(ctx, g, P, y + 6);
       srcL.forEach(function (s, i) { text(s, P, foot + i * 26, 20, 400, 'rgba(233,237,235,.72)'); });
-      text(ASK, P, H - 40, 28, 700, '#d4a23f');
+      text(ASK, P, H - 40, 28, 700, GOLD);
     } else {
-      text('agsist.com/cot', P, 62, 26, 800, '#d4a23f');
+      text('agsist.com/cot', P, 62, 26, 800, GOLD);
       text(m.asOf, W - P, 62, 22, 600, 'rgba(233,237,235,.80)', 'right');
       var hl = wrapped(head, 38, 800, 2);
-      hl.forEach(function (s, i) { text(s, P, 122 + i * 48, 38, 800, '#e9edeb'); });
+      hl.forEach(function (s, i) { text(s, P, 122 + i * 48, 38, 800, INK); });
       var top = 122 + (hl.length - 1) * 48 + 30;
-      if (stand) { text(stand, P, top + 6, 26, 700, '#d4a23f'); top += 36; }
-      if (ql) { text(ql, P, top + 2, 20, 600, '#e9edeb'); top += 30; }
+      if (stand) { text(stand, P, top + 6, 26, 700, GOLD); top += 36; }
+      if (ql) { text(ql, P, top + 2, 20, 600, INK); top += 30; }
       text(sub, P, top + 4, 20, 600, 'rgba(233,237,235,.74)');
       gh = H - top - 124; g = layout(m, W - 2 * P, gh, { fs: 19, big: true });
       paint(ctx, g, P, top + 18);
       wrapped(src, 14, 400, 2).forEach(function (s, i) { text(s, P, H - 70 + i * 18, 14, 400, 'rgba(233,237,235,.68)'); });
-      text(ASK, P, H - 20, 19, 700, '#d4a23f');
+      text(ASK, P, H - 20, 19, 700, GOLD);
     }
-    g.items.forEach(function (it) { if (it.t === 'text') { texts.push(it.s); sizes.push(it.size); } });
-    return { canvas: c, texts: texts, sizes: sizes, ys: ys };
+    p.keep(g.items);
+    return { canvas: c, texts: p.texts, sizes: p.sizes, ys: p.ys };
   }
 
   /* ---------------------------------------------------------------- the page */
