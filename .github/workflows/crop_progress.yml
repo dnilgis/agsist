@@ -69,6 +69,11 @@ jobs:
         with:
           python-version: '3.12'
 
+      - name: Install poppler (pdftotext)
+        continue-on-error: true
+        timeout-minutes: 5
+        uses: ./.github/actions/pdftotext
+
       - name: Selftest (5-year average, state rows)
         run: python scripts/fetch_crop_progress.py --selftest
 

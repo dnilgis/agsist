@@ -378,6 +378,298 @@ def build_progress(fetch, year: int, report_date: str | None):
     return national, states
 
 
+# ── The NASS-printed 5-year average and last year (Nov 7, 2026) ────────────
+#
+# Why the file carried avg5 null all fall: Quick Stats has no average column,
+# so the average above is computed from the weekly series, and NASS published
+# no Crop Progress for the weeks ending Oct 5 to Nov 9, 2025 (the shutdown).
+# Every Oct to mid-Nov 2026 week has one of its five years in that gap, so
+# five_year_avg() withholds it (rightly: a straight line across 49 days is
+# not a week). The weekly report itself still prints a 2021-2025 average for
+# every progress table, nationally and for each state in the report; NASS
+# says it uses its published weeks for 2021-2024 and its own imputed weeks
+# for 2025 (Special Note, report of Oct 5, 2026). Its last-year column reads
+# (NA) for the cancelled weeks, the same gap Quick Stats has.
+#
+# So the report is read as well: the PDF, through pdftotext -layout, one
+# table per crop and stage. A table is used only when its own header names
+# this week and the week before, its average spans the five years before
+# this one, and a place's this-week figure equals the Quick Stats figure for
+# the same place and week (a different file or week can never slip in). The
+# printed average then replaces ours for that place, marked avg5_by "NASS";
+# places not in the report keep our arithmetic (or None).
+
+# Checked Nov 7, 2026: the release page links release.nass.usda.gov/reports/progWWYY.pdf (the old
+# www.nass.usda.gov/Publications/Todays_Reports path is a 404). The ESMIS archive keeps each release
+# at a dated page whose PDF path carries an opaque id (and sometimes a suffix, prog4625_2.pdf), so it
+# is found by reading that page's links, never built from the date.
+REPORT_URL = "https://release.nass.usda.gov/reports/prog{ww:02d}{yy:02d}.pdf"
+ESMIS_PAGE = "https://esmis.nal.usda.gov/publication/crop-progress/{day}"
+_ESMIS_PDF_RE = __import__("re").compile(r'href="((?:https://esmis\.nal\.usda\.gov)?/sites/default/release-files/[^"]+/prog\d{4}[^"/]*\.pdf)"')
+
+# report table title -> PROGRESS_SERIES key
+REPORT_TABLES = {
+    "Corn Harvested": "corn_harvested",
+    "Soybeans Harvested": "soybeans_harvested",
+    "Winter Wheat Planted": "winter_wheat_planted",
+    "Winter Wheat Emerged": "winter_wheat_emerged",
+    "Cotton Harvested": "cotton_harvested",
+    "Rice Harvested": "rice_harvested",
+    "Peanuts Harvested": "peanuts_harvested",
+    "Sorghum Harvested": "sorghum_harvested",
+}
+
+STATE_ALPHA = {
+    "Alabama": "AL", "Alaska": "AK", "Arizona": "AZ", "Arkansas": "AR", "California": "CA", "Colorado": "CO",
+    "Connecticut": "CT", "Delaware": "DE", "Florida": "FL", "Georgia": "GA", "Hawaii": "HI", "Idaho": "ID",
+    "Illinois": "IL", "Indiana": "IN", "Iowa": "IA", "Kansas": "KS", "Kentucky": "KY", "Louisiana": "LA",
+    "Maine": "ME", "Maryland": "MD", "Massachusetts": "MA", "Michigan": "MI", "Minnesota": "MN",
+    "Mississippi": "MS", "Missouri": "MO", "Montana": "MT", "Nebraska": "NE", "Nevada": "NV",
+    "New Hampshire": "NH", "New Jersey": "NJ", "New Mexico": "NM", "New York": "NY", "North Carolina": "NC",
+    "North Dakota": "ND", "Ohio": "OH", "Oklahoma": "OK", "Oregon": "OR", "Pennsylvania": "PA",
+    "Rhode Island": "RI", "South Carolina": "SC", "South Dakota": "SD", "Tennessee": "TN", "Texas": "TX",
+    "Utah": "UT", "Vermont": "VT", "Virginia": "VA", "Washington": "WA", "West Virginia": "WV",
+    "Wisconsin": "WI", "Wyoming": "WY",
+}
+
+import re as _re
+
+_TITLE_RE = _re.compile(r"^\s*(%s)\s+[\u2013\u2014-]\s+Selected States\s*$" % "|".join(REPORT_TABLES))
+_ANY_TITLE_RE = _re.compile(r"[\u2013\u2014-]\s+Selected States")
+_ROW_RE = _re.compile(r"^\s*([A-Z][A-Za-z ]*?|\d+ States)\s*\.{2,}\s+(.+?)\s*$")
+_HDR_DATE_RE = _re.compile(r"([A-Z][a-z]+ \d{1,2}),")
+_AVG_YEARS_RE = _re.compile(r"\b(\d{4})-(\d{4})\b")
+
+
+def _cell(tok: str):
+    """A report cell: a whole percent, '-' (NASS: represents zero), or a
+    marker such as (NA), (X), (D), (Z) -> None. Anything else: not a cell."""
+    if tok == "-":
+        return 0
+    if _re.fullmatch(r"\d{1,3}", tok):
+        return int(tok)
+    if _re.fullmatch(r"\([A-Z]{1,2}\)", tok):
+        return None
+    raise ValueError(tok)
+
+
+def parse_report(text: str) -> dict:
+    """pdftotext -layout text of a weekly Crop Progress report ->
+    {key: {"dates": (last_year, week_before, this_week) as YYYY-MM-DD,
+           "avg_years": (first, last),
+           "rows": {"US" or ST: {"prev_year", "prev_week", "pct", "avg5"}}}}
+    Only the tables in REPORT_TABLES. A table whose header cannot be read
+    (three dates, an average span) is left out, never guessed."""
+    lines = text.splitlines()
+    out: dict = {}
+    i = 0
+    while i < len(lines):
+        m = _TITLE_RE.match(lines[i])
+        if not m:
+            i += 1
+            continue
+        key = REPORT_TABLES[m.group(1)]
+        dates, avg_years, rows = None, None, {}
+        j = i + 1
+        while j < len(lines) and not _ANY_TITLE_RE.search(lines[j]):
+            ln = lines[j]
+            if avg_years is None:
+                ay = _AVG_YEARS_RE.search(ln)
+                if ay and "State" not in ln:
+                    avg_years = (int(ay.group(1)), int(ay.group(2)))
+            if dates is None and _re.match(r"^\s*State\b", ln) and "Average" in ln:
+                md = _HDR_DATE_RE.findall(ln)
+                yrs = _re.findall(r"\b(\d{4})\b", lines[j + 1]) if j + 1 < len(lines) else []
+                if len(md) == 3 and len(yrs) == 3:
+                    try:
+                        dates = tuple(datetime.strptime(f"{a} {y}", "%B %d %Y").strftime("%Y-%m-%d")
+                                      for a, y in zip(md, yrs))
+                    except ValueError:
+                        dates = None
+            r = _ROW_RE.match(ln)
+            if r:
+                name, toks = r.group(1).strip(), r.group(2).split()
+                loc = "US" if name.endswith(" States") else STATE_ALPHA.get(name)
+                if loc and len(toks) == 4:
+                    try:
+                        ly, pw, tw, av = (_cell(t) for t in toks)
+                    except ValueError:
+                        ly = pw = tw = av = None
+                        loc = None
+                    if loc and tw is not None:
+                        rows[loc] = {"prev_year": ly, "prev_week": pw, "pct": tw, "avg5": av}
+                if loc == "US":
+                    j += 1
+                    break
+            j += 1
+        if dates and avg_years and rows:
+            out[key] = {"dates": dates, "avg_years": avg_years, "rows": rows}
+        else:
+            print(f"    report table {m.group(1)!r}: header or rows not read; left out", flush=True)
+        i = j
+    return out
+
+
+def apply_report(national: dict, states: dict, report: dict) -> list[str]:
+    """Puts the NASS-printed 5-year average and last year into the summaries
+    from build_progress, in place. Per table: its this-week date must be the
+    national summary's date, the week before 7 days earlier, the average
+    span the five years before this one. Per place: the report's this-week
+    figure must equal the Quick Stats figure, else that place is skipped and
+    logged. Returns the keys that took the report."""
+    used = []
+    for key, tbl in report.items():
+        nat = national.get(key)
+        ly_d, pw_d, tw_d = tbl["dates"]
+        try:
+            tw = datetime.strptime(tw_d, "%Y-%m-%d")
+            ok = (nat is not None and nat["date"] == tw_d
+                  and (tw - datetime.strptime(pw_d, "%Y-%m-%d")).days == 7
+                  and tbl["avg_years"] == (tw.year - 5, tw.year - 1))
+        except ValueError:
+            ok = False
+        if not ok:
+            print(f"    report {key}: week {tw_d}, average {tbl['avg_years']} does not match "
+                  f"this week ({nat and nat['date']}); not used", flush=True)
+            continue
+        took = 0
+        for loc, row in tbl["rows"].items():
+            sm = nat if loc == "US" else (states.get(loc) or {}).get(key)
+            if sm is None:
+                continue        # no Quick Stats row to check it against: left out
+            if sm.get("date") != tw_d or sm.get("pct") != row["pct"]:
+                print(f"    report {key} {loc}: {row['pct']} vs Quick Stats "
+                      f"{sm.get('date')} {sm.get('pct')}; not used", flush=True)
+                continue
+            sm["avg5"] = row["avg5"]
+            sm["avg5_by"] = "NASS"
+            if row["prev_year"] is not None:
+                sm["prev_year"] = row["prev_year"]
+            if row["prev_week"] is not None:
+                sm["prev_week"] = row["prev_week"]
+            took += 1
+        if took:
+            used.append(key)
+        print(f"    report {key}: NASS average for {took} of {len(tbl['rows'])} places", flush=True)
+    return used
+
+
+def report_numbers(week_end: str) -> list[int]:
+    """Candidate report numbers for a week: NASS names the file progWWYY.pdf,
+    WW the week of the year (the Oct 5, 2026 report, week ending Oct 4, is
+    prog4026). The week-ending Sunday's ISO week first, then the neighbours;
+    the content check in apply_report decides, never the name."""
+    d = datetime.strptime(week_end, "%Y-%m-%d")
+    w = d.isocalendar()[1]
+    out = []
+    for n in (w, int((d + timedelta(days=1)).strftime("%U")), w + 1, w - 1):
+        if 1 <= n <= 53 and n not in out:
+            out.append(n)
+    return out
+
+
+def esmis_pdf_links(html: str) -> list[str]:
+    """The Crop Progress PDF links on an ESMIS release page, absolute, in page order."""
+    out = []
+    for h in _ESMIS_PDF_RE.findall(html or ""):
+        u = h if h.startswith("http") else "https://esmis.nal.usda.gov" + h
+        if u not in out:
+            out.append(u)
+    return out
+
+
+def report_urls(week_end: str, get_page=None):
+    """Candidate PDF urls, in order: the release site by report number, then the
+    PDF linked from the ESMIS page of the Monday (or Tuesday, after a Monday
+    holiday) release. A generator, so the ESMIS page is read only when needed."""
+    d = datetime.strptime(week_end, "%Y-%m-%d")
+    for ww in report_numbers(week_end):
+        yield REPORT_URL.format(ww=ww, yy=d.year % 100)
+    if get_page is None:
+        def get_page(u):
+            req = urllib.request.Request(u, headers={"User-Agent": "AGSIST/1.0"})
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                return resp.read().decode("utf-8", "replace")
+    for k in (1, 2):
+        page = ESMIS_PAGE.format(day=(d + timedelta(days=k)).strftime("%Y-%m-%d"))
+        try:
+            links = esmis_pdf_links(get_page(page))
+        except Exception as e:
+            print(f"  ESMIS {page}: not read ({e})", flush=True)
+            continue
+        for u in links:
+            yield u
+        if links:
+            return
+
+
+def fetch_report(week_end: str) -> dict:
+    """Downloads and parses the report for week_end. {} on any failure
+    (no pdftotext, no file, no table for that week): the caller keeps its
+    own arithmetic."""
+    import shutil
+    import subprocess
+    import tempfile
+    if not shutil.which("pdftotext"):
+        print("  report: pdftotext not found; NASS average not read", flush=True)
+        return {}
+    for url in report_urls(week_end):
+        print(f"  GET {url}", flush=True)
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": "AGSIST/1.0"})
+            with urllib.request.urlopen(req, timeout=60) as resp:
+                pdf = resp.read()
+            with tempfile.NamedTemporaryFile(suffix=".pdf") as tf:
+                tf.write(pdf)
+                tf.flush()
+                txt = subprocess.run(["pdftotext", "-layout", "-enc", "UTF-8", tf.name, "-"],
+                                     capture_output=True, text=True, timeout=120).stdout
+        except Exception as e:
+            print(f"    not read: {e}", flush=True)
+            continue
+        rep = parse_report(txt)
+        weeks = {t["dates"][2] for t in rep.values()}
+        if week_end in weeks:
+            print(f"    {len(rep)} tables for the week ending {week_end}", flush=True)
+            return {k: t for k, t in rep.items() if t["dates"][2] == week_end}
+        print(f"    tables are for {sorted(weeks)}, not {week_end}", flush=True)
+    return {}
+
+
+PROGRESS_METHOD = (
+    "5-year average: the one NASS prints in the weekly Crop Progress report where a "
+    "figure carries avg5_by NASS (the national row and the states in the report; for "
+    "2021-2025 NASS used its own estimates for the October 2025 weeks it did not "
+    "publish). Elsewhere AGSIST's arithmetic on the NASS weekly series, each of the "
+    "five prior years interpolated to the same calendar date, then averaged; withheld "
+    "if any year lacks a published week on both sides, and can differ from the "
+    "NASS-printed average by a point.")
+
+
+def merge_report(result: dict, national: dict, states: dict, get_report) -> list[str]:
+    """Reads the report for the newest national week through get_report
+    (injectable for the selftest), applies it, and copies the national corn
+    and soybean figures onto result[crop] (harvest_5yr_avg, and
+    harvest_prev_year when Quick Stats had none). Fail-soft."""
+    used = []
+    weeks = sorted({sm["date"] for sm in national.values()})
+    if weeks:
+        try:
+            used = apply_report(national, states, get_report(weeks[-1]) or {})
+        except Exception as e:
+            print(f"  report read failed (non-fatal): {e}", flush=True)
+    for crop in ("corn", "soybeans"):
+        sm = national.get(crop + "_harvested")
+        if result.get(crop) and sm and sm["date"] == result[crop].get("harvest_date"):
+            result[crop]["harvest_5yr_avg"] = sm["avg5"]
+            if result[crop].get("harvest_prev_year") is None and sm.get("prev_year") is not None:
+                result[crop]["harvest_prev_year"] = sm["prev_year"]
+    result["progress"] = national
+    result["states"] = states
+    result["progress_method"] = PROGRESS_METHOD
+    return used
+
+
 def is_in_season() -> bool:
     """Crop Progress runs April through November."""
     m = datetime.now().month
@@ -560,17 +852,7 @@ def main():
     # condition write above.
     try:
         national, states = build_progress(fetch_progress_all, year, result.get("report_date"))
-        for crop in ("corn", "soybeans"):
-            sm = national.get(crop + "_harvested")
-            if result.get(crop) and sm and sm["date"] == result[crop].get("harvest_date"):
-                result[crop]["harvest_5yr_avg"] = sm["avg5"]
-        result["progress"] = national
-        result["states"] = states
-        result["progress_method"] = (
-            "5-year average: AGSIST's arithmetic on the NASS weekly series, each of "
-            "the five prior years interpolated to the same calendar date, then "
-            "averaged; withheld if any year lacks a published week on both sides. "
-            "Can differ from the NASS-printed average by a point.")
+        merge_report(result, national, states, fetch_report)
     except Exception as e:
         print(f"  progress build failed (non-fatal): {e}", flush=True)
 
@@ -587,8 +869,9 @@ def main():
 
     hold_last_condition(result, OUT_FILE)
 
+    # compact: with every state row the indented file passed 30 KB (Nov 7, 2026)
     with open(OUT_FILE, "w") as f:
-        json.dump(result, f, indent=2)
+        json.dump(result, f, separators=(",", ":"))
     print(f"\nWritten {OUT_FILE}")
 
 
@@ -701,6 +984,81 @@ def selftest():
     check(st.get("KS", {}).get("winter_wheat_planted", {}).get("pct") == 41, "Kansas wheat planted 41 kept")
     check("AR" not in st, "a state week eight weeks old is not shown as this week", st.get("AR"))
     check(st["KS"]["winter_wheat_planted"]["avg5"] is None, "no history -> 5-year avg withheld (None)")
+
+    print("\nTHE NASS-PRINTED 5-YEAR AVERAGE FROM THE WEEKLY REPORT (Nov 7, 2026)")
+    # the real report of Oct 5, 2026 (week ending Oct 4), pdftotext -layout, saved copy
+    rtxt = open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "test", "fixtures",
+                             "crop-progress-report-2026-10-04.txt"), encoding="utf-8").read()
+    rep = parse_report(rtxt)
+    check(sorted(rep) == sorted(REPORT_TABLES.values()), "all eight progress tables read", sorted(rep))
+    ch = rep.get("corn_harvested", {})
+    check(ch.get("dates") == ("2025-10-04", "2026-09-27", "2026-10-04") and ch.get("avg_years") == (2021, 2025),
+          "corn harvested header: Oct 4 2025, Sep 27 2026, Oct 4 2026; 2021-2025 average", ch.get("dates"))  # pin-ok: fixture
+    check(ch["rows"]["US"] == {"prev_year": None, "prev_week": 18, "pct": 23, "avg5": 27},
+          "18 States row: 23% harvested, 18% the week before, last year (NA) -> None, average 27", ch["rows"]["US"])  # pin-ok: fixture
+    check(ch["rows"]["IA"] == {"prev_year": None, "prev_week": 5, "pct": 7, "avg5": 20}, "Iowa corn 7%, average 20",
+          ch["rows"]["IA"])  # pin-ok: fixture
+    check(len(ch["rows"]) == 19 and ch["rows"]["CO"]["prev_week"] == 0 and ch["rows"]["PA"]["prev_week"] == 0,
+          "18 states and the total; '-' (represents zero) is 0", ch["rows"].get("CO"))  # pin-ok: fixture
+    check(rep["soybeans_harvested"]["rows"]["US"]["avg5"] == 33 and rep["soybeans_harvested"]["rows"]["IA"]["avg5"] == 38,
+          "soybeans: US average 33, Iowa 38")  # pin-ok: fixture
+    check(rep["winter_wheat_planted"]["rows"]["US"]["pct"] == 36 and rep["winter_wheat_planted"]["rows"]["US"]["avg5"] == 46,
+          "winter wheat planted 36%, average 46")  # pin-ok: fixture
+    check(rep["cotton_harvested"]["rows"]["US"]["avg5"] == 21 and len(rep["cotton_harvested"]["rows"]) == 16,
+          "cotton: 15 states and the total, average 21")  # pin-ok: fixture
+    check(parse_report(rtxt.replace("2021-2025", "")) == {}, "no average span in the header: every table left out")
+    check(parse_report("Corn Harvested – Selected States\nIowa ........ 1 2 3\n") == {},
+          "a table without its header is left out, never guessed")
+
+    # Quick Stats summaries for the same week: national corn from the saved series
+    # (the fall 2025 gap leaves our own average None), Iowa and a non-report state
+    qs_nat = {"corn_harvested": summarize({d: v for d, v in corn.items() if d <= D("2026-10-04")}),
+              "soybeans_harvested": {"date": "2026-10-04", "pct": 25, "prev_week": 17, "prev_year": None, "avg5": None},
+              "winter_wheat_planted": {"date": "2026-10-04", "pct": 36, "prev_week": 27, "prev_year": None, "avg5": None}}
+    check(qs_nat["corn_harvested"]["pct"] == 23 and qs_nat["corn_harvested"]["avg5"] is None,
+          "before: Quick Stats corn 23% on Oct 4, our average withheld (2025 gap)", qs_nat["corn_harvested"])
+    qs_st = {"IA": {"corn_harvested": {"date": "2026-10-04", "pct": 7, "prev_week": 5, "prev_year": None, "avg5": None},
+                    "soybeans_harvested": {"date": "2026-10-04", "pct": 6, "prev_week": 3, "prev_year": None, "avg5": None}},
+             "NY": {"corn_harvested": {"date": "2026-10-04", "pct": 4, "prev_week": 2, "prev_year": None, "avg5": None}}}
+    res = {"corn": {"harvest_pct": 23, "harvest_date": "2026-10-04", "harvest_prev_year": None},
+           "soybeans": {"harvest_pct": 25, "harvest_date": "2026-10-04", "harvest_prev_year": None}}
+    used = merge_report(res, qs_nat, qs_st, lambda wk: {k: t for k, t in rep.items() if t["dates"][2] == wk})
+    check(res["corn"]["harvest_5yr_avg"] == 27 and res["soybeans"]["harvest_5yr_avg"] == 33,
+          "after: corn harvest_5yr_avg 27, soybeans 33 (NASS-printed)", res)  # pin-ok: fixture
+    check(res["corn"]["harvest_prev_year"] is None, "last year stays None: NASS printed (NA) for the cancelled week")
+    check(res["progress"]["corn_harvested"]["avg5_by"] == "NASS" and res["progress"]["winter_wheat_planted"]["avg5"] == 46,
+          "national rows marked avg5_by NASS; winter wheat planted average 46")  # pin-ok: fixture
+    check(qs_st["IA"]["corn_harvested"]["avg5"] == 20 and qs_st["IA"]["corn_harvested"]["avg5_by"] == "NASS",
+          "Iowa corn takes the printed 20", qs_st["IA"]["corn_harvested"])  # pin-ok: fixture
+    check(qs_st["IA"]["soybeans_harvested"]["avg5"] is None and "avg5_by" not in qs_st["IA"]["soybeans_harvested"],
+          "Iowa soybeans 6% in Quick Stats vs 5% in the report: not used", qs_st["IA"]["soybeans_harvested"])
+    check("avg5_by" not in qs_st["NY"]["corn_harvested"], "a state not in the report keeps our arithmetic")
+    check("cotton_harvested" not in used and "corn_harvested" in used, "a table with no Quick Stats week is skipped", used)
+    check(res["progress_method"] == PROGRESS_METHOD and "NASS prints" in PROGRESS_METHOD, "method says whose average")
+    # a report for another week, or the wrong average span, is never applied
+    n2 = {"corn_harvested": {"date": "2026-10-11", "pct": 23, "prev_week": 18, "prev_year": None, "avg5": None}}
+    check(apply_report(n2, {}, {"corn_harvested": rep["corn_harvested"]}) == [] and n2["corn_harvested"]["avg5"] is None,
+          "report week Oct 4 against a Quick Stats week of Oct 11: not used")
+    n3 = {"corn_harvested": {"date": "2026-10-04", "pct": 23, "prev_week": 18, "prev_year": None, "avg5": None}}
+    bad = dict(rep["corn_harvested"], avg_years=(2020, 2024))
+    check(apply_report(n3, {}, {"corn_harvested": bad}) == [] and n3["corn_harvested"]["avg5"] is None,
+          "an average over 2020-2024 for a 2026 week: not used")
+    res2 = {"corn": {"harvest_pct": 23, "harvest_date": "2026-10-04"}}
+    n4 = {"corn_harvested": {"date": "2026-10-04", "pct": 23, "prev_week": 18, "prev_year": None, "avg5": None}}
+    def boom(wk):
+        raise RuntimeError("simulated outage")
+    merge_report(res2, n4, {}, boom)
+    check(res2["corn"]["harvest_5yr_avg"] is None and res2["progress"] is n4, "report outage: our figures stand, no crash")
+    check(report_numbers("2026-10-04")[0] == 40, "week ending Oct 4, 2026 -> prog4026 first", report_numbers("2026-10-04"))
+    # Nov 7, 2026 check: the week ending Nov 1, 2026 is prog4426 on release.nass.usda.gov; ESMIS by dated page
+    _u = list(report_urls("2026-11-01", get_page=lambda u: (  # pin-ok: fixture
+        '<a href="/sites/default/release-files/796135/prog4426.pdf">PDF</a>' if u.endswith("2026-11-02") else "")))  # pin-ok: fixture
+    check(_u[0] == "https://release.nass.usda.gov/reports/prog4426.pdf", "first url is the release site, prog4426", _u[:1])
+    check(_u[-1] == "https://esmis.nal.usda.gov/sites/default/release-files/796135/prog4426.pdf",
+          "then the PDF linked on the ESMIS page of Mon Nov 2", _u[-1:])
+    _v = list(report_urls("2025-11-16", get_page=lambda u: (  # pin-ok: fixture
+        '<a href="https://esmis.nal.usda.gov/sites/default/release-files/795651/prog4625_2.pdf">' if u.endswith("2025-11-17") else "")))  # pin-ok: fixture
+    check(_v[0].endswith("prog4625.pdf") and _v[-1].endswith("/795651/prog4625_2.pdf"), "a suffixed ESMIS file is taken as linked", _v)
 
     print("HOLD THE LAST GOOD CONDITION READ (Oct 27, 2026: a later run wrote nulls)")
     import tempfile
