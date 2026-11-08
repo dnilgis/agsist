@@ -60,7 +60,7 @@ test("the old GDU and 30-day precip boxes, their PRISM history and the fold are 
   assert.match(c, /<section class="wx-season"[^>]*><h3 class="wxs-h" id="wxs-h">Season so far, against normal<\/h3>\s*<div id="wx-season">/);
   assert.ok(!/AgPRISM|prism\.js/.test(read("components/home-planting.js").replace(/\/\*[\s\S]*?\*\//g, "")), "home-planting.js reads no PRISM history");
   assert.ok(!/components\/prism\.js/.test(HTML), "the home page loads no prism.js");
-  assert.match(HTML, /<script src="\/components\/season-wx\.js\?v=1" defer><\/script>/);
+  assert.match(HTML, /<script src="\/components\/season-wx\.js\?v=2" defer><\/script>/);
   assert.ok(!/wx-fold-btn/.test(read("components/home.js")), "no phone fold for the GDU tile");
 });
 
@@ -77,12 +77,12 @@ test("summer: every figure from the files, with its dates; departures by hand", 
   const h = A.html(m, "2026-11-04"), t = text(h);
   for (const x of ["Rain, Jan 1 to Nov 3 55.03 in +20.43 in (159%)", "Rain, Oct 5 to Nov 3 2.71 in −0.09 in (97%)",
     "GDDs, May 1 to Nov 3 2,912 GDDs +153 (106%)", "GDDs, Oct 5 to Nov 3 312 GDDs +22 (108%)"]) assert.ok(t.includes(x), x + "\n" + t);
-  assert.match(t, /Stations and sources Rain: the volunteer gauge Gilbert, 0\.2 mi W, 10\.8 mi from the middle of Story County/, "the station is named on tap");
-  assert.match(t, /weather station 8 miles west-southwest of Ames, 10 mi from the rain gauge/);
-  assert.match(t, /NOAA daily records through RCC-ACIS\. Volunteer gauge data: CoCoRaHS\./, "sources named in plain text, CoCoRaHS credited");
+  // Nov 8 (Sig crossed it out): no stations and sources paragraph on the home card; the county rain page keeps its method text
+  assert.doesNotMatch(t, /Stations and sources|Gilbert|RCC-ACIS|CoCoRaHS|weather station 8 miles/, "no source text on the home card");
+  assert.doesNotMatch(h, /<details|wxs-src/, "no sources fold");
   assert.doesNotMatch(h, /<a\b/, "no link to a data source");
-  assert.doesNotMatch(h + A.chart(m), /—/, "no em dash");
-  assert.match(h, /<details class="wxs-src"><summary>Stations and sources<\/summary>/);
+  assert.doesNotMatch(h + A.chart(m) + A.chartGdd(m), /—/, "no em dash");
+  assert.ok(!/\.wxs-src/.test(read("css/home.css")), "the fold's CSS went with it");
   const ch = A.chart(m);
   assert.match(ch, /<title>Nov 1\.61 in<\/title>/, "the month chart is the county page's month table");
   assert.match(ch, /<title>Jan 1\.41 in, 1 day not reported<\/title>/);
@@ -101,7 +101,7 @@ test("winter: no season yet, last season's GDDs with their year; withheld figure
   assert.ok(t.includes("GDDs, 2026 season, May 1 to Dec 31 2,950 GDDs +110 (104%)"), "off season: last season's total, 2,950 - 2,840 = +110\n" + t);
   assert.ok(t.includes("GDDs, Feb 13 to Mar 14 9 GDDs −21"), "a 30-day figure with no percent under 50 GDDs of normal: 9 - 30 = -21\n" + t);
   assert.ok(!/GDDs, Feb 13 to Mar 14 9 GDDs −21 \(/.test(t), "no percent on a tiny normal");
-  assert.match(t, /Last season's GDDs: 8 miles west-southwest of Ames, 10 mi off\./);
+  assert.doesNotMatch(t, /Last season's GDDs: |mi off/, "no station line on the home card (Nov 8)");
   // the county page's rule, not the card's: a row in the file is shown. 7 of 73 missing (9.6%, past 5% but inside
   // county_rain.MIN_SHARE 0.90) shows its total on the page, so on the card too
   c.missing = 7; c.total = 1.2;
@@ -134,6 +134,83 @@ test("no weather file yet (before the fetch has run): the rain shows, the GDDs s
   const old = clone(FX);
   delete old.counties["19169"].r30;
   assert.ok(text(A.html(A.model(old, WX, "19169"), "2026-11-04")).includes("Rain, last 30 days Not loaded yet"), "a rain file from before r30: not loaded, never a guess");
+});
+
+/* ---------- the month charts (Sig, Nov 8: "add back the gdu by month chart like the precip chart"; "make sure the
+   month by month chart is perfect and readable clickable and shareable") ---------- */
+const bars = (svg, cls) => [...svg.matchAll(new RegExp('<rect x="[\\d.]+" y="([\\d.]+)" width="[\\d.]+" height="([\\d.]+)" class="' + cls + '(?: wxs-part)?"><title>([^<]+)</title>', "g"))].map((x) => ({ y: +x[1], h: +x[2], t: x[3] }));
+test("GDDs by month, summer: a second button beside Rain by month, the same drawing, readouts worked by hand", () => {
+  const m = A.model(FX, WX, "19169"), h = A.html(m, "2026-11-04");
+  assert.match(h, /<div class="wxs-foot"><button type="button" class="wxs-b" id="wxs-chart-b" aria-expanded="false" aria-controls="wxs-chart">Rain by month<\/button><button type="button" class="wxs-b" id="wxs-gchart-b" aria-expanded="false" aria-controls="wxs-gchart">GDDs by month<\/button><\/div>/);
+  assert.match(h, /<div class="wxs-chart" id="wxs-gchart" data-kind="gdd" hidden><\/div>/, "a hidden panel, drawn when opened");
+  const g = A.spec(m, "gdd"), r = A.spec(m, "rain");
+  // the fixture's months add to its season: May to Nov 352 + 640 + 712 + 655 + 420 + 125 + 8 = 2,912 against 2,759
+  assert.equal(m.gmonths.slice(4).reduce((a, x) => a + x[0], 0), m.gdd.value);
+  assert.equal(A.readout(g, 6), "Jul: 712 GDDs, usual 680, +32 (105%)", "712 - 680 = 32; 712 / 680 = 104.7%");
+  assert.equal(A.readout(g, 7), "Aug: 655 GDDs, usual 640, +15 (102%), 1 day not reported", "655 / 640 = 102.3%; 30 of 31 days");
+  assert.equal(A.readout(g, 0), "Jan: 0 GDDs, usual 4, −4", "no percent on a usual under 50 GDDs");
+  assert.equal(A.readout(g, 10), "Nov 1 to 3, so far: 8 GDDs, usual 7, +1", "the month still running is named so far");
+  assert.equal(A.readout(g, 11), "Dec: still to come");
+  // rain from the county page's month table: Sep 5.96 against 3.63 = +2.33, 164%; Jan 1.41 against 0.95, 30 of 31 days
+  assert.equal(A.readout(r, 8), "Sep: 5.96 in, usual 3.63 in, +2.33 in (164%)");
+  assert.equal(A.readout(r, 0), "Jan: 1.41 in, usual 0.95 in, +0.46 in, 1 day not reported", "no percent on a usual under 1.00 in (county_rain.PCT_MIN_NORMAL, as the rain tiles)");
+  assert.equal(A.readout(r, 10), "Nov 1 to 3, so far: 1.61 in, usual 0.24 in, +1.37 in", "no percent on a usual under 1.00 in");
+  assert.equal(A.readout(r, 1), "Feb: 0.73 in, usual 1.23 in, \u22120.50 in (59%)", "a usual of 1.00 in or more keeps its percent: 0.73 / 1.23 = 59.3%");
+  const ch = A.chartGdd(m, 340);
+  assert.match(ch, /<title>Jul 712 GDDs<\/title>/);
+  assert.match(ch, /<title>Jul usual 680 GDDs<\/title>/);
+  assert.match(ch, /<title>Aug 655 GDDs, 1 day not reported<\/title>/);
+  assert.match(ch, /Usual <span class="wxs-sw wxs-cy"><\/span>2026, Jan 1 to Nov 3 <span class="wxs-sw wxs-cy wxs-part"><\/span>Nov so far<\/p>/, "legend with the as-of day and the month so far");
+  // the scale: top 800 (next of 1, 2, 4, 6, 8 x 100 over 712), a middle gridline at 400; rain top 10 in, middle 5
+  assert.match(ch, />800 GDDs<\/text>/);
+  assert.match(ch, />400<\/text>/);
+  assert.match(A.chart(m, 340), />10 in<\/text>[\s\S]*>5<\/text>/);
+  // bar heights: value / 800 x 124 px of plot (156 high, 10 at the top, 22 under the bars)
+  const yb = bars(ch, "wxs-cy"), ub = bars(ch, "wxs-cu");
+  assert.equal(yb.length, 11);
+  m.gmonths.forEach((x, i) => {
+    assert.equal(yb[i].h, +((x[0] / 800) * 124).toFixed(1), M(i) + " height");
+    assert.equal(ub[i].h, +((x[1] / 800) * 124).toFixed(1), M(i) + " usual height");
+    assert.ok(Math.abs(yb[i].y + yb[i].h - 134) < 0.11, "bars stand on the baseline");
+  });
+  assert.equal(yb[6].h, 110.4, "July by hand: 712 / 800 x 124 = 110.36");
+  assert.match(ch, /class="wxs-cy wxs-part"><title>Nov 8 GDDs/, "November drawn lighter");
+  assert.equal((ch.match(/<g class="wxs-m"/g) || []).length, 11, "one tap target a month with data");
+  assert.match(ch, /<g class="wxs-m" data-i="10" tabindex="0" role="button" aria-label="Nov 1 to 3, so far: 8 GDDs, usual 7, \+1"><rect class="wxs-hit" x="[\d.]+" y="0" width="22\.8" height="156"\/>/, "the target is the full column, the latest month in the tab order");
+  assert.match(ch, /<p class="wxs-read" id="wxs-gread" aria-live="polite">/);
+  assert.match(ch, /<button type="button" class="wxs-b wxs-pic" data-kind="gdd">Save picture<\/button>/);
+  assert.match(ch, /<svg class="wxs-svg" width="340" height="156" viewBox="0 0 340 156"/, "drawn at the panel's width, so 12px text stays 12px");
+});
+function M(i) { return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][i]; }
+
+test("GDDs by month, winter: the new year's few GDDs, a withheld month, a station with no normals; old files show no button", () => {
+  const r = clone(FX), w = clone(WX), c = r.counties["19169"];
+  r.year = 2027; c.as_of = "2027-03-14"; c.months = [[1.1, 0.9, 31, 31], [0.8, 1.0, 28, 28], [0.5, 0.6, 14, 14]];
+  w.year = 2027; w.edate = "2027-03-14";
+  w.counties["19169"] = { a: 314, g30: [9, 0, 30, 30, null], gm: [[2, 4, 31, 31], null, [12, 9, 13, 14]] };
+  const m = A.model(r, w, "19169"), g = A.spec(m, "gdd");
+  assert.match(A.html(m, "2027-03-15"), /id="wxs-gchart-b"/);
+  assert.equal(A.readout(g, 1), "Feb: not enough days reported", "a month the builder withheld");
+  assert.equal(A.readout(g, 2), "Mar 1 to 14, so far: 12 GDDs, usual 9, +3, 1 day not reported");
+  const ch = A.chartGdd(m, 340);
+  assert.match(ch, />20 GDDs<\/text>/, "top 20 over the tallest 12");
+  assert.match(ch, />10<\/text>/);
+  assert.equal(bars(ch, "wxs-cy").length, 2, "no bar for the withheld month");
+  assert.match(ch, /<g class="wxs-m" data-i="1" tabindex="-1" role="button" aria-label="Feb: not enough days reported">/, "but it can still be read");
+  assert.equal(bars(ch, "wxs-cy")[1].h, +((12 / 20) * 124).toFixed(1));
+  assert.match(ch, /2027, Jan 1 to Mar 14 <span class="wxs-sw wxs-cy wxs-part"><\/span>Mar so far/);
+  // no normals cached for the station: the figure alone, no usual bar
+  w.counties["19169"].gm = [[2, null, 31, 31], [5, null, 28, 28], [12, null, 14, 14]];
+  const g2 = A.spec(A.model(r, w, "19169"), "gdd"), ch2 = A.chartGdd(A.model(r, w, "19169"), 340);
+  assert.equal(A.readout(g2, 0), "Jan: 2 GDDs, no normal for this station");
+  assert.equal(bars(ch2, "wxs-cu").length, 0);
+  // a weather file from before gm: no GDD button, the rain chart as before
+  const h = A.html(A.model(FX, (() => { const o = clone(WX); delete o.counties["19169"].gm; return o; })(), "19169"), "2026-11-04");
+  assert.ok(!/wxs-gchart/.test(h) && /id="wxs-chart-b"/.test(h), "no GDD button without gm");
+  assert.equal(A.chartGdd(A.model(FX, null, "19169")), "");
+  // nothing at all: no buttons, no empty foot
+  const bare = clone(FX); delete bare.counties["19169"].months;
+  assert.ok(!/wxs-foot/.test(A.html(A.model(bare, null, "19169"), "2026-11-04")));
 });
 
 /* ---------- the same numbers as the county rain page ---------- */
@@ -269,14 +346,186 @@ test("on the page: Season so far fills from the files, no spray table, 30% short
       assert.ok(got.season <= got.min + 1, `Season so far fills inside its held space (${got.season}px, held ${got.min}px)`);
       const shifts = await pg.evaluate(() => window.__shifts.filter((x) => x.s.includes("card")));
       assert.deepEqual(shifts, [], "nothing in the card moves the page");
-      // the chart and the stations open on tap, in place
+      // the month charts open on tap, in place, one at a time; no sources fold (Nov 8)
+      assert.equal(await pg.$(".wxs-src"), null, "no stations and sources fold");
       await pg.click("#wxs-chart-b");
       assert.equal(await pg.getAttribute("#wxs-chart-b", "aria-expanded"), "true");
       assert.ok(await pg.isVisible("#wxs-chart svg"));
-      await pg.click(".wxs-src > summary");
-      assert.match(await pg.textContent(".wxs-src p"), /Gilbert, 0\.2 mi W/);
+      await pg.click("#wxs-gchart-b");
+      assert.equal(await pg.getAttribute("#wxs-gchart-b", "aria-expanded"), "true");
+      assert.equal(await pg.getAttribute("#wxs-chart-b", "aria-expanded"), "false", "opening one closes the other");
+      assert.ok(await pg.isHidden("#wxs-chart") && await pg.isVisible("#wxs-gchart svg"));
+      await pg.click("#wxs-gchart-b");
+      assert.ok(await pg.isHidden("#wxs-gchart"), "and it closes again");
+      await pg.click("#wxs-gchart-b");
       assert.deepEqual(errors, []);
       await ctx.close();
     }
+  } finally { await browser.close(); srv.close(); }
+});
+
+/* the month charts on the page: readable at 390 in both themes, read on tap and by keyboard, a picture to share */
+async function openCard(browser, port, o) {
+  o = o || {};
+  const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: o.width || 390, height: 900 }, colorScheme: o.theme === "light" ? "light" : "dark" });
+  await ctx.addInitScript((th) => { try { localStorage.setItem("agsist-theme", th); localStorage.setItem("agsist-wx-loc", JSON.stringify({ zip: "50010", lat: 42.03, lon: -93.62, label: "Ames, IA", city: "Ames, IA", state: "IA" })); } catch (e) {} }, o.theme || "dark");
+  const pg = await ctx.newPage(), errors = [];
+  pg.on("pageerror", (e) => errors.push(String(e)));
+  await pg.route("**/*", (r) => {
+    const u = r.request().url();
+    if (o.noKit && /\/components\/share-kit\.js/.test(u)) return r.abort();
+    if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
+    if (/^https:\/\/api\.weather\.gov\//.test(u)) { const a = nwsAnswer(u, {}); return r.fulfill({ status: a.status, contentType: "application/geo+json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify(a.body) }); }
+    return r.abort();
+  });
+  await pg.goto(`http://127.0.0.1:${port}/`);
+  await pg.waitForSelector("#wxs-gchart-b", { timeout: 20000 });
+  return { ctx, pg, errors };
+}
+
+test("month charts at 390, light and dark: 12px text, gridlines with values, bars that stand out, the month so far marked", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const theme of ["dark", "light"]) for (const id of ["wxs-chart", "wxs-gchart"]) {
+      const { ctx, pg, errors } = await openCard(browser, port, { theme });
+      await pg.click("#" + id + "-b");
+      await pg.waitForSelector("#" + id + " svg");
+      await pg.locator("#" + id + " .wxs-cleg").scrollIntoViewIfNeeded();
+      const got = await pg.evaluate((id) => {
+        const p = document.getElementById(id), svg = p.querySelector("svg"), r = svg.getBoundingClientRect();
+        const rgb = (s) => { const m = /rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?\)/.exec(s); return m ? [+m[1], +m[2], +m[3], m[4] == null ? 1 : +m[4]] : null; };
+        let bg = null;
+        for (let el = p; el && !bg; el = el.parentElement) { const c = rgb(getComputedStyle(el).backgroundColor); if (c && c[3] > 0.9) bg = c; }
+        if (!bg) bg = rgb(getComputedStyle(document.body).backgroundColor);
+        const lum = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
+        const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+        const fill = (sel) => rgb(getComputedStyle(p.querySelector(sel)).fill);
+        const texts = [...p.querySelectorAll("text")].map((t) => ({ s: t.textContent, px: t.getBoundingClientRect().height, fs: parseFloat(getComputedStyle(t).fontSize) }));
+        const leg = p.querySelector(".wxs-cleg").getBoundingClientRect();
+        const rects = [...p.querySelectorAll("text")].map((t) => t.getBoundingClientRect());
+        let overlap = 0;
+        for (let i = 0; i < rects.length; i++) for (let j = i + 1; j < rects.length; j++) { const a = rects[i], b = rects[j]; if (a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5) overlap++; }
+        return { w: r.width, attr: +svg.getAttribute("width"), right: r.right, vw: document.documentElement.clientWidth, scrollW: document.documentElement.scrollWidth,
+          u: ratio(fill(".wxs-cu:not(.wxs-part)"), bg), y: ratio(fill(".wxs-cy:not(.wxs-part)"), bg), part: ratio(rgb(getComputedStyle(p.querySelector("rect.wxs-cy.wxs-part")).stroke), bg),
+          minFs: Math.min(...texts.map((t) => t.fs)), labels: texts.map((t) => t.s), grid: p.querySelectorAll(".wxs-gl").length, legBottom: leg.bottom, svgTop: r.top, vh: window.innerHeight, overlap,
+          readFs: parseFloat(getComputedStyle(p.querySelector(".wxs-read")).fontSize), so: p.querySelector(".wxs-cleg").textContent };
+      }, id);
+      const tag = theme + " " + id;
+      assert.equal(got.w, got.attr, tag + ": drawn at its own width, not shrunk (" + got.w + ")");
+      assert.ok(got.right <= got.vw && got.scrollW <= got.vw, tag + ": no sideways scroll");
+      assert.ok(got.minFs >= 12 && got.readFs >= 12, tag + ": text 12px or more (" + got.minFs + ")");
+      assert.equal(got.grid, 3, tag + ": top and middle gridlines and the baseline");
+      assert.ok(got.labels.includes(id === "wxs-gchart" ? "800 GDDs" : "10 in") && got.labels.includes(id === "wxs-gchart" ? "400" : "5"), tag + ": " + got.labels.join(" "));
+      for (const k of ["J", "F", "M", "A", "S", "O", "N", "D"]) assert.ok(got.labels.includes(k), tag + ": month label " + k);
+      assert.equal(got.overlap, 0, tag + ": no labels overlap");
+      assert.ok(got.u >= 3 && got.y >= 3 && got.part >= 3, `${tag}: bars 3:1 or more against the card (usual ${got.u.toFixed(2)}, year ${got.y.toFixed(2)}, so far edge ${got.part.toFixed(2)})`);
+      assert.match(got.so, /Nov so far/, tag);
+      assert.ok(got.legBottom <= got.vh && got.svgTop >= 0, tag + ": the legend in view together with the whole chart");
+      assert.deepEqual(errors, []);
+      await ctx.close();
+    }
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("month charts: a tap or the keyboard reads a month in the line under the chart; Save picture is there", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { ctx, pg, errors } = await openCard(browser, port, {});
+    await pg.click("#wxs-gchart-b");
+    await pg.waitForSelector("#wxs-gchart svg");
+    assert.equal(await pg.getAttribute("#wxs-gread", "aria-live"), "polite");
+    assert.equal(await pg.textContent("#wxs-gread"), "Tap a month to read it.");
+    // a tap anywhere in July's column, well above its bars
+    const box = await pg.locator('#wxs-gchart .wxs-m[data-i="6"] .wxs-hit').boundingBox();
+    assert.ok(box.height >= 150, "the target is the full column high: " + box.height);
+    await pg.locator('#wxs-gchart .wxs-m[data-i="6"] .wxs-hit').click({ position: { x: box.width / 2, y: 6 } });
+    assert.equal(await pg.textContent("#wxs-gread"), "Jul: 712 GDDs, usual 680, +32 (105%)");
+    // the keyboard: arrows move the month and its readout, Home and End jump
+    await pg.keyboard.press("ArrowRight");
+    assert.equal(await pg.textContent("#wxs-gread"), "Aug: 655 GDDs, usual 640, +15 (102%), 1 day not reported");
+    assert.equal(await pg.evaluate(() => document.activeElement.getAttribute("data-i")), "7");
+    await pg.keyboard.press("End");
+    assert.equal(await pg.textContent("#wxs-gread"), "Nov 1 to 3, so far: 8 GDDs, usual 7, +1");
+    await pg.keyboard.press("ArrowRight");
+    assert.equal(await pg.evaluate(() => document.activeElement.getAttribute("data-i")), "10", "no step past the last month");
+    await pg.keyboard.press("Home");
+    assert.equal(await pg.textContent("#wxs-gread"), "Jan: 0 GDDs, usual 4, −4");
+    assert.equal(await pg.evaluate(() => [...document.querySelectorAll("#wxs-gchart .wxs-m")].filter((g) => g.getAttribute("tabindex") === "0").length), 1, "one month in the tab order");
+    // Tab past the two buttons lands on a month of the open chart and reads it
+    await pg.click("#wxs-chart-b");
+    await pg.focus("#wxs-gchart-b");
+    await pg.keyboard.press("Tab");
+    assert.equal(await pg.textContent("#wxs-rread"), "Nov 1 to 3, so far: 1.61 in, usual 0.24 in, +1.37 in");
+    await pg.keyboard.press("ArrowLeft");
+    assert.equal(await pg.textContent("#wxs-rread"), "Oct: 7.27 in, usual 2.75 in, +4.52 in (264%)");
+    // the share button, with the kit loaded
+    await pg.waitForFunction(() => !!window.AgShareKit, null, { timeout: 10000 });
+    assert.equal(await pg.isEnabled("#wxs-chart .wxs-pic"), true);
+    const dl = pg.waitForEvent("download", { timeout: 10000 });
+    await pg.click("#wxs-chart .wxs-pic");
+    assert.match((await dl).suggestedFilename(), /^agsist-rain-by-month-story-county-2026-11-03\.png$/);
+    const li = await pg.evaluate(() => window.AgSeason.lastImage);
+    assert.deepEqual(li && [li.w, li.h], [1080, 1350], "the phone picture at a 390 px width");
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("without share-kit.js the charts work as ever and the button says the picture is unavailable", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { ctx, pg, errors } = await openCard(browser, port, { noKit: true });
+    await pg.click("#wxs-gchart-b");
+    await pg.waitForSelector("#wxs-gchart svg");
+    await pg.click('#wxs-gchart .wxs-m[data-i="8"]');
+    assert.equal(await pg.textContent("#wxs-gread"), "Sep: 420 GDDs, usual 400, +20 (105%)");
+    await pg.waitForFunction(() => document.querySelector("#wxs-gchart .wxs-pic").disabled, null, { timeout: 10000 });
+    assert.equal(await pg.textContent("#wxs-gchart .wxs-pic"), "Picture not available right now");
+    assert.equal(await pg.evaluate(() => !!window.AgShareKit), false);
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("the share picture at 1080 x 1350 and 1200 x 630: title, place, dates, source and agsist.com; nothing overlaps; 20px or more", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { ctx, pg, errors } = await openCard(browser, port, {});
+    await pg.waitForFunction(() => !!window.AgShareKit, null, { timeout: 10000 });
+    const got = await pg.evaluate(async () => {
+      const A = window.AgSeason;
+      const [r, w] = await Promise.all(["/data/rain/ia.json", "/data/rain/wx/ia.json"].map((u) => fetch(u).then((x) => x.json())));
+      const m = A.model(r, w, "19169"), out = [];
+      for (const kind of ["rain", "gdd"]) for (const wide of [false, true]) {
+        const im = A.image(A.spec(m, kind), document, { wide });
+        let ov = [];
+        const b = im.boxes;
+        for (let i = 0; i < b.length; i++) for (let j = i + 1; j < b.length; j++) if (b[i].x0 < b[j].x1 && b[j].x0 < b[i].x1 && b[i].y0 < b[j].y1 && b[j].y0 < b[i].y1) ov.push(b[i].s + " / " + b[j].s);
+        const off = b.filter((x) => x.x0 < 0 || x.x1 > im.w || x.y0 < 0 || x.y1 > im.h).map((x) => x.s);
+        out.push({ kind, wide, w: im.w, h: im.h, texts: im.texts, min: Math.min(...im.sizes), ov, off });
+      }
+      return out;
+    });
+    for (const g of got) {
+      const tag = g.kind + (g.wide ? " wide" : " phone");
+      assert.deepEqual([g.w, g.h], g.wide ? [1200, 630] : [1080, 1350], tag);
+      assert.ok(g.texts.includes(g.kind === "rain" ? "Rain by month" : "GDDs by month"), tag);
+      assert.ok(g.texts.includes("agsist.com"), tag);
+      assert.ok(g.texts.includes("Story County, IA · 2026, Jan 1 to Nov 3"), tag + ": " + g.texts.slice(0, 4).join(" | "));
+      assert.ok(g.texts.some((t) => /^NOAA daily records via RCC-ACIS\./.test(t)), tag + ": the source");
+      assert.equal(g.kind === "rain", g.texts.some((t) => /CoCoRaHS/.test(t)), tag + ": the volunteer gauge credited on the rain picture");
+      assert.ok(g.texts.includes(g.kind === "rain" ? "9.03" : "712"), tag + ": July's figure over its bar");
+      assert.ok(g.texts.includes("Nov so far"), tag);
+      assert.ok(g.min >= 20, tag + ": every word 20px or more (" + g.min + ")");
+      assert.deepEqual(g.ov, [], tag + ": no words overlap");
+      assert.deepEqual(g.off, [], tag + ": every word on the card");
+      assert.ok(!g.texts.some((t) => /—/.test(t)), tag + ": no em dash");
+    }
+    assert.deepEqual(errors, []);
+    await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
