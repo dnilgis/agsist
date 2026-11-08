@@ -49,6 +49,10 @@
    "to": "/rain/idaho",
    "since": "2026-10-19"
   },
+  "rain/indiana/orange-county.html": {
+   "to": "/rain/indiana",
+   "since": "2026-11-08"
+  },
   "rain/iowa/buena-vista-county.html": {
    "to": "/rain/iowa",
    "since": "2026-11-06"
@@ -137,10 +141,6 @@
    "to": "/rain/new-york",
    "since": "2026-10-15"
   },
-  "rain/ohio/auglaize-county.html": {
-   "to": "/rain/ohio",
-   "since": "2026-11-07"
-  },
   "rain/south-carolina/allendale-county.html": {
    "to": "/rain/south-carolina",
    "since": "2026-10-14"
@@ -192,6 +192,10 @@
   "rain/texas/san-augustine-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
+  },
+  "rain/virginia/appomattox-county.html": {
+   "to": "/rain/virginia",
+   "since": "2026-11-08"
   },
   "rain/virginia/richmond-county.html": {
    "to": "/rain/virginia",
