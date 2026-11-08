@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 391;  // v391 2026-11-08: phone padding. Phones use the width: a 12px page gutter, card text 12px inside its edge, no side padding for a card inside a card, at 480px and under (components/styles.css phone block, css/home.css?v=41).
+var CACHE_VERSION = 392;  // v392 2026-11-08: real US map. The state tile grids on the farmland sales hub, rent hub, crop conditions and farmland atlas are one real map of the states, Alaska and Hawaii as insets (components/usmap.js?v=1, atlas-foreign.js?v=2, data/us-states-map.svg).
+// var CACHE_VERSION = 391;  // v391 2026-11-08: phone padding. Phones use the width: a 12px page gutter, card text 12px inside its edge, no side padding for a card inside a card, at 480px and under (components/styles.css phone block, css/home.css?v=41).
 // var CACHE_VERSION = 390;  // v390 2026-11-08: gdd month. GDDs by month back on the home weather card beside Rain by month; both month charts read on tap or keyboard and save as a picture; no stations and sources fold on the card (season-wx.js?v=2, home.css?v=40).
 // var CACHE_VERSION = 389;  // v389 2026-11-07: cot chart labels never overlap (cot-chart.js?v=13)
 // var CACHE_VERSION = 388;  // v388 2026-11-07: friday chart poster (388, next after main's 387). Friday Chart poster: dark phone poster to save and a paper poster to print on 11 x 17 or Letter on each infographic page (components/infographic.js?v=2, infographic/infographic.css?v=2).

@@ -5,9 +5,9 @@
    two tables. Loaded only when a reader opens the fold. Reads /data/afida/county.json and national.json.
    Mount: AgForeign.load() once the fold's markup is on the page. */
 (function(){
-  var TILE={"AK":[1,1],"ME":[12,1],"VT":[11,2],"NH":[12,2],"WA":[2,3],"MT":[3,3],"ND":[4,3],"SD":[5,3],"MN":[6,3],"WI":[7,3],"MI":[8,3],"NY":[10,3],"MA":[11,3],"RI":[12,3],"OR":[2,4],"ID":[3,4],"WY":[4,4],"NE":[5,4],"IA":[6,4],"IL":[7,4],"IN":[8,4],"OH":[9,4],"PA":[10,4],"NJ":[11,4],"CT":[12,4],"CA":[2,5],"NV":[3,5],"UT":[4,5],"CO":[5,5],"KS":[6,5],"MO":[7,5],"KY":[8,5],"WV":[9,5],"VA":[10,5],"MD":[11,5],"DE":[12,5],"AZ":[3,6],"NM":[4,6],"OK":[5,6],"AR":[6,6],"TN":[7,6],"NC":[8,6],"SC":[9,6],"TX":[5,7],"LA":[6,7],"MS":[7,7],"AL":[8,7],"GA":[9,7],"HI":[1,8],"FL":[10,8]}, F2A={"alaska":"AK","alabama":"AL","arkansas":"AR","arizona":"AZ","california":"CA","colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA","hawaii":"HI","iowa":"IA","idaho":"ID","illinois":"IL","indiana":"IN","kansas":"KS","kentucky":"KY","louisiana":"LA","massachusetts":"MA","maryland":"MD","maine":"ME","michigan":"MI","minnesota":"MN","missouri":"MO","mississippi":"MS","montana":"MT","north carolina":"NC","north dakota":"ND","nebraska":"NE","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","nevada":"NV","new york":"NY","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN","texas":"TX","utah":"UT","virginia":"VA","vermont":"VT","washington":"WA","wisconsin":"WI","west virginia":"WV","wyoming":"WY"};
+  var F2A={"alaska":"AK","alabama":"AL","arkansas":"AR","arizona":"AZ","california":"CA","colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA","hawaii":"HI","iowa":"IA","idaho":"ID","illinois":"IL","indiana":"IN","kansas":"KS","kentucky":"KY","louisiana":"LA","massachusetts":"MA","maryland":"MD","maine":"ME","michigan":"MI","minnesota":"MN","missouri":"MO","mississippi":"MS","montana":"MT","north carolina":"NC","north dakota":"ND","nebraska":"NE","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","nevada":"NV","new york":"NY","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN","texas":"TX","utah":"UT","virginia":"VA","vermont":"VT","washington":"WA","wisconsin":"WI","west virginia":"WV","wyoming":"WY"};
   window.__A2F={"AK":"Alaska","AL":"Alabama","AR":"Arkansas","AZ":"Arizona","CA":"California","CO":"Colorado","CT":"Connecticut","DE":"Delaware","FL":"Florida","GA":"Georgia","HI":"Hawaii","IA":"Iowa","ID":"Idaho","IL":"Illinois","IN":"Indiana","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","MA":"Massachusetts","MD":"Maryland","ME":"Maine","MI":"Michigan","MN":"Minnesota","MO":"Missouri","MS":"Mississippi","MT":"Montana","NC":"North Carolina","ND":"North Dakota","NE":"Nebraska","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico","NV":"Nevada","NY":"New York","OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","RI":"Rhode Island","SC":"South Carolina","SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VA":"Virginia","VT":"Vermont","WA":"Washington","WI":"Wisconsin","WV":"West Virginia","WY":"Wyoming"};
-  var picked=null, geoNote='', VD=null;
+  var vpMap=null, picked=null, geoNote='', VD=null;
   var el=function(id){return document.getElementById(id);};
   function geoPick(av){ try{ var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');
     var ab=F2A[String(l.state||'').toLowerCase()]||(String(l.state||'').length===2?String(l.state).toUpperCase():null);
@@ -25,15 +25,11 @@
     el('vp-word').textContent=d.word; el('vp-word').style.color=d.col;
     el('vp-sent').innerHTML=d.sent;
     var g=el('vp-grid');
-    if(g){ var h='';
-      Object.keys(TILE).forEach(function(ab){ var t=TILE[ab], s=VD[ab];
-        if(s){ h+='<div class="vp-tile'+(ab===picked?' sel':'')+'" data-st="'+ab+'" role="button" tabindex="0" aria-pressed="'+(ab===picked)+'" aria-label="'+(__A2F[ab]||ab)+', '+s.tval+' acres" style="--gc:'+t[0]+';--gr:'+t[1]+';background:'+s.tile+'"><div class="vp-tst">'+ab+'</div><div class="vp-tge">'+s.tval+'</div></div>'; }
-        else { h+='<div class="vp-tile dim" style="--gc:'+t[0]+';--gr:'+t[1]+'"><div class="vp-tst">'+ab+'</div></div>'; } });
-      g.innerHTML=h; }
+    if(g&&window.AgUSMap){ var m={}; Object.keys(VD).forEach(function(ab){ m[ab]={fill:VD[ab].tile,text:VD[ab].tval+' acres'}; });
+      if(!vpMap) vpMap=AgUSMap.mount(g,{states:m,selected:picked,hint:'Tap a state.',name:'Map of foreign-held agricultural acres by state',
+        onPick:function(ab){ picked=ab; geoNote=''; render(); try{gaEvent('verdict_tap',{st:picked,page:location.pathname});}catch(x){} }});
+      else vpMap.update(m,picked); }
   }
-  document.addEventListener('click',function(e){ var t=e.target.closest('.vp-tile[data-st]');
-    if(t){ picked=t.dataset.st; geoNote=''; render(); try{gaEvent('verdict_tap',{st:picked,page:location.pathname});}catch(x){} } });
-  document.addEventListener('keydown',function(e){ if(e.key!=='Enter'&&e.key!==' ')return; var t=e.target.closest&&e.target.closest('.vp-tile[data-st]'); if(!t)return; e.preventDefault(); picked=t.dataset.st; geoNote=''; render(); var n=document.querySelector('.vp-tile[data-st="'+picked+'"]'); if(n)n.focus(); });
   document.addEventListener('change',function(e){ if(e.target&&e.target.id==='vp-sel'){ picked=e.target.value; geoNote=''; render(); } });
   // AFIDA counts leases of 10 years or more as holdings, and this file does not
   // split owned from leased. Iowa: Iowa State CARD (2025, on 2023 filings) finds

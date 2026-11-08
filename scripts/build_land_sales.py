@@ -911,18 +911,24 @@ def month_page(d, M, early, coverage, archive):
     return "\n".join(b) + "\n" + FOOT
 
 
+# The coverage map is the shared real US map (components/usmap.js, data/us-states-map.svg); the colors are the legend's.
+MAP_FILL = {"live": "#2e7d4f", "held": "#8fbf9f", "request": "#d9b45a", "county": "#e6d6a8", "nondisclosure": "#9a7d8f", "unchecked": ""}
+MAP_JS = ('<script src="/components/usmap.js?v=1" defer></script><script>document.addEventListener("DOMContentLoaded",function(){'
+          'var h=document.getElementById("ls-map");if(!h||!window.AgUSMap)return;var d=JSON.parse(h.getAttribute("data-map")),F=%s,s={};'
+          'for(var k in d)s[k]={fill:F[d[k][0]]||"",text:d[k][1].split(": ").slice(1).join(": ")};'
+          'AgUSMap.mount(h,{states:s,hint:"Tap a state to see where it stands.",name:"Map of states by whether their farm sales are on this site"});});</script>'
+          % json.dumps(MAP_FILL, separators=(",", ":")))
+
+
 def coverage_html(cov, d):
     rows = cov.get("states") or []
     n = sum(1 for r in rows if r.get("status") == "live")
     live = [r["name"] for r in rows if r.get("status") == "live"]
     h = ['<h2 id="coverage">Where the sales come from</h2>',
          '<p class="ls-cov-n">Sales reported for %d states: %s. The goal is every state; below is where each one stands.</p>' % (n, e(and_list(live))),
-         '<div class="ls-map" role="img" aria-label="Map of states by whether their farm sales are on this site">']
-    for r in rows:
-        if r.get("tile"):
-            h.append('<span class="ls-s ls-st-%s" style="grid-column:%d;grid-row:%d" title="%s">%s</span>'
-                     % (e(r["status"]), r["tile"][0], r["tile"][1], e(r["name"] + ": " + cov["labels"].get(r["status"], r["status"])), e(r["st"])))
-    h.append("</div>")
+         '<div class="ls-usmap" id="ls-map" data-map="%s"><noscript><p>The map needs JavaScript. The source table below lists every state.</p></noscript></div>' % e(json.dumps(
+             {r["st"]: [r["status"], r["name"] + ": " + cov["labels"].get(r["status"], r["status"])] for r in rows}, separators=(",", ":")))]
+    h.append(MAP_JS)
     h.append('<p class="ls-key">' + " ".join('<span class="ls-k ls-st-%s"></span> %s' % (k, e(v)) for k, v in cov["labels"].items()) + "</p>")
     h.append(survey_html(d))
     h.append('<details class="ls-src"><summary>The source table, state by state</summary><div class="ls-tw"><table class="ls-t' + lay_class(STACK_LAYOUTS["source"][0]) + '"><thead><tr>'
@@ -1475,6 +1481,9 @@ def selftest():
            and re.search(r"data-ls-c='\[\"WI\",\"55999\",[^']*,0\]'", texts["land-sales/wisconsin/testa-county.html"]) is not None)
         ck("every page carries the GA config, not only the guard (Nov 4: no land page view reached GA)",
            all("gtag('config','G-TEST1234')" in v and "agsist-ga-guard" in v for k, v in texts.items() if k.endswith(".html")))
+        ck("the hub and the monthly page draw the shared US map, with every state's status in the HTML, not a tile grid",
+           all('id="ls-map"' in texts[k] and "/components/usmap.js" in texts[k] and "ls-s ls-st-" not in texts[k]
+               and "&quot;IL&quot;:[&quot;live&quot;" in texts[k] for k in ("land-sales/index.html", "land-sales/2026-09.html")))
         lat = json.loads(texts["data/land-sales/latest.json"])
         ck("latest.json names no one", not any(n in texts["data/land-sales/latest.json"] for n in allnames))
         # one sale, linked (Nov 3): every row of the county table has id="s-<sale id>", the same on a rebuild

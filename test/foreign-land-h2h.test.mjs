@@ -100,9 +100,9 @@ test("in Chromium with every outside host blocked, the fold draws the national p
     pg.on("pageerror", (e) => errors.push(String(e)));
     await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
     await pg.goto(`http://127.0.0.1:${port}/farmland-atlas#19153&foreign`);
-    await pg.waitForFunction(() => document.querySelectorAll("#fl-nat-chart circle").length > 5 && /Polk County/.test(document.getElementById("fl-dt-name").textContent), null, { timeout: 30000 });
+    await pg.waitForFunction(() => document.querySelectorAll("#fl-nat-chart circle").length > 5 && document.querySelectorAll("#vp-grid .usm-s").length > 40 && /Polk County/.test(document.getElementById("fl-dt-name").textContent), null, { timeout: 30000 });
     assert.match(await pg.textContent("#fl-top-countries"), /Canada/);
-    assert.ok(await pg.$$eval(".vp-tile[data-st]", (a) => a.length) > 40, "every state on the picker");
+    assert.ok(await pg.$$eval("#vp-grid .usm-s[tabindex]", (a) => a.length) > 40, "every state on the picker, from the shared map");
     assert.ok(await pg.isVisible("#fl-detail"), "the county's own record shows");
     assert.deepEqual(errors, []);
     await ctx.close();

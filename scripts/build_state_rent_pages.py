@@ -189,7 +189,6 @@ def notice_faq(st, name):
 
 
 
-TILE = {"AK":(1,1),"ME":(12,1),"VT":(11,2),"NH":(12,2),"WA":(2,3),"MT":(3,3),"ND":(4,3),"SD":(5,3),"MN":(6,3),"WI":(7,3),"MI":(8,3),"NY":(10,3),"MA":(11,3),"RI":(12,3),"OR":(2,4),"ID":(3,4),"WY":(4,4),"NE":(5,4),"IA":(6,4),"IL":(7,4),"IN":(8,4),"OH":(9,4),"PA":(10,4),"NJ":(11,4),"CT":(12,4),"CA":(2,5),"NV":(3,5),"UT":(4,5),"CO":(5,5),"KS":(6,5),"MO":(7,5),"KY":(8,5),"WV":(9,5),"VA":(10,5),"MD":(11,5),"DE":(12,5),"AZ":(3,6),"NM":(4,6),"OK":(5,6),"AR":(6,6),"TN":(7,6),"NC":(8,6),"SC":(9,6),"TX":(5,7),"LA":(6,7),"MS":(7,7),"AL":(8,7),"GA":(9,7),"HI":(1,8),"FL":(10,8)}
 
 def rent_verdict(yoy):
     if yoy is None:  return ("NOT ENOUGH MATCHED COUNTIES", "#8a948f")
@@ -531,7 +530,7 @@ def head(title, desc, path, jsonld):
     .rs-wrap{{max-width:1060px;margin:0 auto;padding:0 16px}}
     .rs-hero{{display:flex;flex-wrap:wrap;gap:14px;margin:14px 0}}
     /* 2026-10-06: these panels stay dark in light mode; gold inside them stays bright */
-    [data-theme="light"] .rs-stat,[data-theme="light"] .rs-note,[data-theme="light"] .rh-tile,[data-theme="light"] div[style*="background:#101415"]{{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f}}
+    [data-theme="light"] .rs-stat,[data-theme="light"] .rs-note,[data-theme="light"] div[style*="background:#101415"]{{--gold:#d4a23f;--gold-fill:#d4a23f;--brand:#d4a23f;--brand-fill:#d4a23f}}
     .rs-stat{{background:#101415;border:1px solid #1a1f20;border-radius:10px;padding:12px 16px;min-width:150px;flex:1}}
     .rs-stat .v{{font-family:'JetBrains Mono',monospace;font-size:1.45rem;color:#e6ebe9}}
     .rs-stat .l{{font-size:.72rem;color:#8a948f;letter-spacing:.05em;text-transform:uppercase;margin-top:2px}}
@@ -573,19 +572,8 @@ def head(title, desc, path, jsonld):
     .rs-cloud a:hover{{color:var(--gold)}}
     /* the sponsor ribbon is styled once, in components/styles.css */
     h1{{font-size:1.55rem;margin:14px 0 4px}} h2{{font-size:1.12rem;margin:26px 0 6px}}
-    .rh-grid{{position:relative;width:840px;height:560px;margin:0 auto;max-width:100%}}
-    .rh-tile{{position:absolute;width:64px;height:64px;border-radius:9px;padding:9px;box-sizing:border-box;text-decoration:none;display:block;left:calc(var(--gc)*70px - 70px);top:calc(var(--gr)*70px - 70px)}}
-    .rh-tile:hover{{outline:2px solid #d4a23f;transform:scale(1.1);z-index:2}}
-    .rh-tile.dim{{background:#101415;border:1px dashed #1a1f20;opacity:.45}}
-    .rh-tst{{display:block;font-family:'JetBrains Mono',monospace;font-weight:800;font-size:.92rem;color:#e6ebe9}}
-    .rh-tge{{display:block;font-family:'JetBrains Mono',monospace;font-size:.85rem;font-weight:700;margin-top:3px;color:#e6ebe9}}
-    @media (max-width:900px){{
-      .rh-grid{{width:100%;height:auto;display:grid;grid-template-columns:repeat(12,1fr);gap:3px}}
-      .rh-tile{{position:static;width:auto;height:auto;aspect-ratio:1;padding:0;border-radius:5px;display:flex;align-items:center;justify-content:center}}
-      .rh-tile{{grid-column:var(--gc);grid-row:var(--gr)}}
-      .rh-tge{{display:none}}
-      .rh-tst{{font-size:.56rem}}
-    }}
+    /* the map is the shared one: components/usmap.js, data/us-states-map.svg */
+    .rh-map{{margin:0 auto;max-width:100%}}
     .sub{{color:var(--text-muted);font-size:.9rem;line-height:1.6}}
     .sub b{{color:var(--text)}}
     .rs-t td:first-child a{{color:var(--text);text-decoration:underline dotted var(--border-2);text-underline-offset:3px}}
@@ -1195,12 +1183,14 @@ RH_STYLE = """<style>
     .rh-sw button.on{{background:#a8823c;color:#fff}}
     .rh-pcap{{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:16px 0 10px}}
   </style>""".replace("{{", "{").replace("}}", "}")
-RH_SCRIPT = ("(function(){var sw=document.querySelector('.rh-sw');if(!sw)return;var cc=document.querySelector('.rh-ccap'),pc=document.querySelector('.rh-pcap');"
-             "sw.addEventListener('click',function(e){var b=e.target.closest('button[data-rh]');if(!b)return;var p=b.getAttribute('data-rh')==='p';"
+RH_SCRIPT = ("document.addEventListener('DOMContentLoaded',function(){var h=document.getElementById('rh-map');if(!h||!window.AgUSMap)return;var d=JSON.parse(h.getAttribute('data-map')),p=false,m;"
+             "function st(){var o={};for(var k in d){var x=d[k];o[k]=p?{fill:x.pc||'',text:x.pv==='n/a'?'no pasture rent published':x.pv+' an acre, pasture',href:x.h}"
+             ":{fill:x.c,text:x.v+' an acre, cropland',href:x.h};}return o;}"
+             "m=AgUSMap.mount(h,{states:st(),hint:'Tap a state for every county.',name:'Map of median county cash rent by state'});"
+             "var sw=document.querySelector('.rh-sw');if(!sw)return;var cc=document.querySelector('.rh-ccap'),pc=document.querySelector('.rh-pcap');"
+             "sw.addEventListener('click',function(e){var b=e.target.closest('button[data-rh]');if(!b)return;p=b.getAttribute('data-rh')==='p';"
              "Array.prototype.forEach.call(sw.querySelectorAll('button'),function(x){var on=x===b;x.classList.toggle('on',on);x.setAttribute('aria-pressed',on?'true':'false');});"
-             "if(cc)cc.hidden=p;if(pc)pc.hidden=!p;"
-             "Array.prototype.forEach.call(document.querySelectorAll('.rh-tile[data-cv]'),function(t){t.style.background=t.getAttribute(p?'data-pbg':'data-cbg');"
-             "var v=t.querySelector('.rh-tge');if(v)v.textContent=t.getAttribute(p?'data-pv':'data-cv');});});})();")
+             "if(cc)cc.hidden=p;if(pc)pc.hidden=!p;m.update(st());});});")
 
 
 def hub_view(s):
@@ -1241,29 +1231,27 @@ def build_hub(states, stats, generated):
     def pcolor(v):
         i = sum(1 for m in pvals if m < v) / max(1, len(pvals))
         return "#af3a32" if i >= .8 else ("#9c4b3d" if i >= .6 else ("#a8823c" if i >= .4 else ("#5a656a" if i >= .2 else "#396d4f")))
-    tiles = []
-
     def whole(x):
         """Half up, like the table and the state pages: $50.50 is $51 (round() gave $50, 2026-10-18)."""
         return int(x + 0.5) if x >= 0 else -int(-x + 0.5)
-    for ab, (c, r) in TILE.items():
+    mp = {}
+    for ab in sorted(stats):
         if ab in stats:
             hk, hm = hub_view(stats[ab])[:2]
             pv = pmed(stats[ab])
-            # a 64px tile fits "$9.80" or "$65", not "$65.25": whole dollars from $10 up (the table keeps cents)
-            pt = (f"${whole(pv):,}" if pv >= 10 else f"${pv:.2f}") if pv is not None else "n/a"
-            pa = (f' data-pv="{pt}" data-pbg="{pcolor(pv)}"' if pv is not None else ' data-pv="n/a" data-pbg="#2a3133"')
-            tiles.append(f'<a class="rh-tile" href="/rent/{slug(STATE_NAMES[ab])}" style="--gc:{c};--gr:{r};background:{quint_color(hm, hk)}"'
-                         f' data-cv="${whole(hm):,}" data-cbg="{quint_color(hm, hk)}"{pa}><span class="rh-tst">{ab}</span><span class="rh-tge">${whole(hm):,}</span></a>')
-        else:
-            tiles.append(f'<div class="rh-tile dim" style="--gc:{c};--gr:{r}"><span class="rh-tst">{ab}</span></div>')
+            mp[ab] = {"h": "/rent/" + slug(STATE_NAMES[ab]), "c": quint_color(hm, hk), "v": f"${whole(hm):,}",
+                      "pc": pcolor(pv) if pv is not None else "",
+                      # whole dollars from $10 up (the table keeps cents)
+                      "pv": (f"${whole(pv):,}" if pv >= 10 else f"${pv:.2f}") if pv is not None else "n/a"}
+
     tile_html = ('<div class="rh-sw" role="group" aria-label="Land type on the map"><button type="button" class="on" aria-pressed="true" data-rh="c">Cropland</button>'
         '<button type="button" aria-pressed="false" data-rh="p">Pasture</button></div>'
         f'<div class="rh-pcap" hidden>Median county rent per acre, {yr}, permanent pasture, colored against the other states&rsquo; pasture. '
         f'Tap a state for every county&rsquo;s pasture rate.</div>'
         '<div class="rh-ccap" style="font-family:\'JetBrains Mono\',monospace;font-size:.66rem;letter-spacing:.1em;color:var(--text-muted);text-transform:uppercase;margin:16px 0 10px">'
-        f'Median county rent per acre, {yr}, non-irrigated cropland. Tap a state for every county. ' + ('No dryland rent published for ' + ', '.join(STATE_NAMES[x] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if not stats[x]["dry"]) + ', so the tile shows ' + '; '.join(STATE_NAMES[x] + ' ' + TYPE_LABEL[stats[x]["primary"]] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if not stats[x]["dry"]) + ', not colored against the rest' if any(not s2["dry"] for s2 in stats.values()) else '') + '</div>'
-        '<div class="rh-grid">' + "".join(tiles) + '</div>'
+        f'Median county rent per acre, {yr}, non-irrigated cropland. Tap a state for every county. ' + ('No dryland rent published for ' + ', '.join(STATE_NAMES[x] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if not stats[x]["dry"]) + ', so the map shows ' + '; '.join(STATE_NAMES[x] + ' ' + TYPE_LABEL[stats[x]["primary"]] for x in sorted(stats, key=lambda x: STATE_NAMES[x]) if not stats[x]["dry"]) + ', not colored against the rest' if any(not s2["dry"] for s2 in stats.values()) else '') + '</div>'
+        '<div class="rh-map" id="rh-map" data-map="' + html.escape(json.dumps(mp, separators=(",", ":")), quote=True) + '"><noscript><p>The map needs JavaScript. '
+        'The table below lists every state.</p></noscript></div>'
         '<div style="display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:.74rem;color:var(--text-muted);flex-wrap:wrap">'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#af3a32"></b>priciest fifth</span>'
         '<span><b style="display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px;background:#a8823c"></b>middle</span>'
@@ -1373,6 +1361,7 @@ def build_hub(states, stats, generated):
 </main>
 {explore_nav()}
 <div id="site-footer"></div>
+<script src="/components/usmap.js?v=1" defer></script>
 <script>{RH_SCRIPT}</script>
 <script src="/components/loader.js?v=19"></script>
 {SORT_JS}
