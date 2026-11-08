@@ -263,7 +263,7 @@
                 <div class="input-wrap"><label style="font-size:0.787rem" for="co-co">County</label><select id="co-co" disabled><option value="">Pick a state first</option></select></div>
               </div>
               <div class="co-note" id="co-note" role="status" hidden></div>
-              <p class="co-src" style="font-size:.76rem;color:var(--text-muted);line-height:1.5;margin:.5rem 0 0">County rent and trend yield: USDA NASS. This product uses the NASS API but is not endorsed or certified by NASS. The trend yield and ARC/PLC estimate are calculations by AGSIST.</p>
+              <p class="co-src" style="font-size:.76rem;color:var(--text-muted);line-height:1.5;margin:.5rem 0 0">County rent and trend yield: USDA NASS.</p>
             </div>
             <div class="input-grid-2" style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px"><div class="input-wrap"><label style="font-size:0.787rem" for="price">Futures Price ($/bu) <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="price" value="" placeholder="enter a price" step="0.0025" min="0" max="100" inputmode="decimal"></div><div class="input-wrap"><label style="font-size:0.787rem" for="basis">Your local basis ($/bu) <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="basis" value="0" step="0.05" placeholder="-0.35"><span class="ln-src" id="src-basis" hidden></span><span class="ln-src" id="basis-why" hidden></span></div></div>
           </div>
@@ -356,6 +356,9 @@
     </div>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="breakeven"></aside>
   <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
+<details class="hp-terms" style="max-width:1100px;margin:1.2rem auto;padding:0 12px;font-size:.78rem;line-height:1.6;color:var(--text-muted)"><summary style="cursor:pointer;color:var(--text-dim);min-height:44px;display:flex;align-items:center">Sources and terms</summary>
+<p style="margin:.4rem 0 0">Estimates from your inputs, for planning only, not financial or marketing advice. Verify against your own records and your lender or agent.</p><p style="margin:.4rem 0 0">County rent and trend yield: USDA NASS. This product uses the NASS API but is not endorsed or certified by NASS. The trend yield and ARC/PLC estimate are calculations by AGSIST.</p>
+</details>
 </main>
 
   <div style="max-width:1200px;margin:0 auto;padding:0 1.5rem">
@@ -368,7 +371,6 @@
       <a href="/rent/" style="display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 .8rem;color:var(--gold)">County cash rent</a>
       <a href="/fertilizer" style="display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 .8rem;color:var(--gold)">Fertilizer prices</a>
     </nav>
-    <p style="font-size:.8rem;color:var(--text-muted);line-height:1.6;margin:0 0 1.2rem">Estimates from your inputs, for planning only, not financial or marketing advice. Verify against your own records and your lender or agent.</p>
   </div>
   <div class="be-faq">
     <h2 class="be-faq-hd" style="margin:0"><svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-help"/></svg> Break-even calculator: common questions</h2>
