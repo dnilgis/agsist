@@ -54,6 +54,11 @@ build/shots/
 /data/land-raw/
 # Schrader capture (schrader-capture.yml): raw feed and result pages, saved to the raw branch only.
 /land/schrader/
+# Land auction firms capture (schrader-capture.yml, firms jobs): raw results pages, raw branch only.
+/land/wieman/
+/land/younger/
+/land/horning/
+/land/martins/
 # FSA's ARC/PLC program files (xlsx/pdf, 34 MB, Oct 20): read only by
 # scripts/build_arc_plc.py, linked by no page. They live on raw at the same
 # path; arc-plc-refresh.yml and scripts/dev/checks.sh unpack them with
