@@ -32,10 +32,26 @@ between requests is the larger of 2 seconds and robots.txt's Crawl-delay; over 3
 seconds, no auction page is fetched. Redirects are never followed blindly: one hop
 at most, and only to the same host, outside /buyers/, where robots.txt allows it.
 
+Backfill (--backfill; Sig approved one manual run Nov 8, 2026, no schedule; only the
+workflow_dispatch input "backfill" runs it): walks Schrader's recent_auctions archive,
+filtered by state, for IA NE OH MI KY AR MS TX OK CO WA GA, collects the auction ids,
+skips ids captured before (weekly capture pages in this checkout, the saved data file,
+pages an earlier backfill run saved) and saves each auction page. Same manners: robots.txt
+first and obeyed, 2 s apart (or the Crawl-delay), /buyers/ never fetched, buyer links
+blanked. Paging follows the archive page's own pager links (/recent_auctions/<per>/<offset>);
+a page with no pager link past it ends the walk, and so does a page that adds no new id.
+At most 2,500 requests and 120 minutes per run. Everything goes to land/schrader/backfill/:
+  robots.txt, archive/<ST>/<offset>.html, auctions/<NNNN>.html, runs/<stamp>.json, and
+  state.json, the resume point (each state's walk, ids saved, ids that failed; a page that
+  failed twice is not asked for again). The workflow restores state.json from the raw branch
+  first, so a second run goes on where the first stopped. No parsing here either.
+
 Exit: 0 when the feed was saved (page misses are listed in the manifest), 1 when
-the feed itself could not be fetched.
+the feed itself could not be fetched. Backfill: 1 when robots.txt said no or could not
+be read, or no archive page ever answered; 0 otherwise (a cap reached is a clean stop).
 
   python3 scripts/capture_schrader.py              # one capture run
+  python3 scripts/capture_schrader.py --backfill   # the archive backfill (dispatch input only)
   python3 scripts/capture_schrader.py --selftest   # offline tests, made-up feed
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
@@ -148,6 +164,65 @@ class Polite:
         return self.get(url)
 
 
+def why_not(rp, u):
+    """Why u may not be fetched, or "" when it may: Schrader's host only, never /buyers/, robots.txt obeyed."""
+    p = urlsplit(u)
+    if p.scheme not in ("http", "https") or (p.hostname or "").lower() not in (HOST, "schraderauction.com"):
+        return "not on schraderauction.com"
+    if is_buyer_path(p.path):
+        return "buyers path"
+    if not rp.can_fetch(UA, u):
+        return "robots.txt disallows"
+    return ""
+
+
+def get_follow(fetch, rp, u):
+    """(status, final url, body, why): a 3xx is followed one hop, only where why_not() allows it."""
+    st, loc, body = fetch(u)
+    if 300 <= st < 400:
+        if not loc:
+            return st, u, b"", f"redirect {st} with no Location; not followed"
+        nxt = urljoin(u, loc)
+        why = why_not(rp, nxt)
+        if why:
+            return st, nxt, b"", f"redirect to {nxt} not followed ({why})"
+        st, loc, body = fetch(nxt)
+        if 300 <= st < 400:
+            return st, nxt, b"", "a second redirect; not followed"
+        return st, nxt, body, ""
+    return st, u, body, ""
+
+
+def read_robots(fetch):
+    """Fetch robots.txt first. Returns (parser, pages_ok, body to save or None, skipped notes) and sets
+    fetch.delay to the larger of 2 s and the Crawl-delay (fetch.crawl_delay records the latter).
+    pages_ok is False when robots.txt could not be read (other than a 404) or asks for over 30 s."""
+    st, _, body = fetch(ROBOTS)
+    rp = urllib.robotparser.RobotFileParser()
+    pages_ok, saved, notes = True, None, []
+    if st == 200 and len(body) <= MAX_BYTES:
+        saved = body
+        rp.parse(body.decode("utf-8", "replace").splitlines())
+    elif st in (404, 410):
+        rp.parse([])
+    else:
+        rp.parse([])
+        pages_ok = False
+        notes.append({"url": ROBOTS, "why": f"robots.txt unreadable (status {st}); no auction pages fetched"})
+    cd = rp.crawl_delay(UA)
+    if cd is not None:
+        try:
+            cd = float(cd)
+        except (TypeError, ValueError):
+            cd = None
+    fetch.crawl_delay = cd
+    fetch.delay = max(DELAY_S, cd or 0.0)
+    if fetch.delay > MAX_DELAY_S:
+        pages_ok = False
+        notes.append({"url": ROBOTS, "why": f"Crawl-delay {cd:g} s is over {MAX_DELAY_S:g} s; no auction pages fetched"})
+    return rp, pages_ok, saved, notes
+
+
 def capture(out_root=ROOT, get=http_get, sleep=time.sleep, now=None):
     now = now or datetime.now(timezone.utc)
     day = now.strftime("%Y-%m-%d")
@@ -168,56 +243,17 @@ def capture(out_root=ROOT, get=http_get, sleep=time.sleep, now=None):
                              "fetched_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), **extra})
 
     def allowed(u):
-        """Why u may not be fetched, or "" when it may."""
-        p = urlsplit(u)
-        if p.scheme not in ("http", "https") or (p.hostname or "").lower() not in (HOST, "schraderauction.com"):
-            return "not on schraderauction.com"
-        if is_buyer_path(p.path):
-            return "buyers path"
-        if not rp.can_fetch(UA, u):
-            return "robots.txt disallows"
-        return ""
+        return why_not(rp, u)
 
     def get_one(u):
-        """(status, final url, body, why): a 3xx is followed one hop, only where allowed()."""
-        st, loc, body = fetch(u)
-        if 300 <= st < 400:
-            if not loc:
-                return st, u, b"", f"redirect {st} with no Location; not followed"
-            nxt = urljoin(u, loc)
-            why = allowed(nxt)
-            if why:
-                return st, nxt, b"", f"redirect to {nxt} not followed ({why})"
-            st, loc, body = fetch(nxt)
-            if 300 <= st < 400:
-                return st, nxt, b"", "a second redirect; not followed"
-            return st, nxt, body, ""
-        return st, u, body, ""
+        return get_follow(fetch, rp, u)
 
-    st, _, body = fetch(ROBOTS)
-    rp = urllib.robotparser.RobotFileParser()
-    pages_ok = True
-    if st == 200 and len(body) <= MAX_BYTES:
-        save("robots.txt", ROBOTS, st, body)
-        rp.parse(body.decode("utf-8", "replace").splitlines())
-    elif st in (404, 410):
-        rp.parse([])
-    else:
-        rp.parse([])
-        pages_ok = False
-        man["skipped"].append({"url": ROBOTS, "why": f"robots.txt unreadable (status {st}); no auction pages fetched"})
-    cd = rp.crawl_delay(UA)
-    if cd is not None:
-        try:
-            cd = float(cd)
-        except (TypeError, ValueError):
-            cd = None
-    man["crawl_delay"] = cd
-    fetch.delay = max(DELAY_S, cd or 0.0)
+    rp, pages_ok, robots_body, notes = read_robots(fetch)
+    if robots_body is not None:
+        save("robots.txt", ROBOTS, 200, robots_body)
+    man["skipped"] += notes
+    man["crawl_delay"] = fetch.crawl_delay
     man["delay_s"] = fetch.delay
-    if fetch.delay > MAX_DELAY_S:
-        pages_ok = False
-        man["skipped"].append({"url": ROBOTS, "why": f"Crawl-delay {cd:g} s is over {MAX_DELAY_S:g} s; no auction pages fetched"})
 
     why = allowed(FEED)
     if why:
@@ -266,6 +302,257 @@ def write_manifest(out, man):
     with open(os.path.join(out, "manifest.json"), "w", encoding="utf-8") as fh:
         json.dump(man, fh, indent=1, sort_keys=True)
         fh.write("\n")
+
+
+# ---------------------------------------------------------------- backfill (workflow_dispatch input only)
+
+BACKFILL_STATES = ("IA", "NE", "OH", "MI", "KY", "AR", "MS", "TX", "OK", "CO", "WA", "GA")
+ARCHIVE = BASE + "/auctions/recent_auctions"
+PER_PAGE = 20
+MAX_REQUESTS = 2500
+MAX_MINUTES = 120
+MAX_ARCHIVE_PAGES = 150   # per state: 3,000 rows, past the whole national archive (about 1,730)
+MAX_TRIES = 2             # an auction page that failed twice is not asked for again
+BACKFILL_BASE = os.path.join("land", "schrader", "backfill")
+SAVED_DATA = os.path.join("data", "land", "auctions", "schrader.json")
+PAGER = re.compile(r"/auctions/recent_auctions/(\d{1,3})/(\d{1,6})(?:[/?#]|$)")
+HREF = re.compile(r"""\bhref\s*=\s*["']?([^"'\s>]+)""", re.I)
+ARCHIVE_ITEM = re.compile(r"^/auctions/(\d{1,7})(?:/[^/]*)?/?$")
+
+
+def archive_url(state, per=PER_PAGE, offset=0):
+    if not offset:
+        return f"{ARCHIVE}?state={state}"
+    return f"{ARCHIVE}/{per}/{offset}?state={state}"
+
+
+def archive_links(page_bytes, base=ARCHIVE):
+    """(auction ids in page order, pager (per, offset) pairs, other recent_auctions links) from one
+    archive page; relative links resolve against `base`, the page's own URL. Only links on Schrader's
+    host; /buyers/ links are never taken. The other links (at most 10) are kept in the run file so a
+    pager of another shape shows up there."""
+    text = page_bytes.decode("latin-1")
+    ids, pager, other = [], set(), []
+    for raw in HREF.findall(text):
+        u = urljoin(base, html_unescape(raw))
+        p = urlsplit(u)
+        if (p.hostname or "").lower() not in (HOST, "schraderauction.com") or is_buyer_path(p.path):
+            continue
+        m = ARCHIVE_ITEM.match(p.path)
+        if m and m.group(1) not in ids:
+            ids.append(m.group(1))
+            continue
+        g = PAGER.search(p.path)
+        if g:
+            pager.add((int(g.group(1)), int(g.group(2))))
+        elif "recent_auctions" in p.path and len(other) < 10 and u not in other:
+            other.append(u)
+    return ids, sorted(pager), other
+
+
+def html_unescape(s):
+    return s.replace("&amp;", "&")
+
+
+def next_offset(offset, page_ids, pager):
+    """The next archive page as (per, offset), or None. The page's own pager wins: the smallest pager
+    offset past this one. With no pager link past this one, a full page (PER_PAGE ids or more) is
+    followed by offset + PER_PAGE; the walk still stops at the first page that adds no new id."""
+    ahead = [(per, off) for per, off in pager if off > offset]
+    if ahead:
+        return min(ahead, key=lambda x: x[1])
+    if pager:
+        return None  # a pager with nothing past this page: the last page
+    if len(page_ids) >= PER_PAGE:
+        return (PER_PAGE, offset + PER_PAGE)
+    return None
+
+
+def known_ids(out_root):
+    """Auction ids captured before: weekly capture pages and the saved data file (both in this checkout)."""
+    ids = set()
+    cap = os.path.join(out_root, OUT_BASE)
+    for d in sorted(os.listdir(cap)) if os.path.isdir(cap) else []:
+        ad = os.path.join(cap, d, "auctions")
+        for f in os.listdir(ad) if os.path.isdir(ad) else []:
+            m = re.fullmatch(r"(\d{1,7})\.html", f)
+            if m:
+                ids.add(m.group(1))
+    try:
+        with open(os.path.join(out_root, SAVED_DATA), encoding="utf-8") as fh:
+            ids |= {str(r.get("auction_id")) for r in json.load(fh).get("records") or []}
+    except (OSError, ValueError, AttributeError):
+        pass
+    return ids
+
+
+def load_state(path, states):
+    try:
+        with open(path, encoding="utf-8") as fh:
+            st = json.load(fh)
+    except (OSError, ValueError):
+        st = {}
+    st.setdefault("states", {})
+    for s in states:
+        st["states"].setdefault(s, {"done": False, "next": [0, 0], "pages": 0, "ids": [], "stop": ""})
+    st.setdefault("saved", [])
+    st.setdefault("failed", {})
+    st.setdefault("runs", [])
+    return st
+
+
+def write_json(path, doc):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    tmp = path + ".tmp"
+    with open(tmp, "w", encoding="utf-8") as fh:
+        json.dump(doc, fh, indent=1, sort_keys=True)
+        fh.write("\n")
+    os.replace(tmp, path)
+
+
+def backfill(out_root=ROOT, get=http_get, sleep=time.sleep, now=None, clock=time.monotonic,
+             states=BACKFILL_STATES, max_requests=MAX_REQUESTS, max_minutes=MAX_MINUTES):
+    """Walk Schrader's recent_auctions archive for each state, then save every auction page not captured
+    before. Everything lands under land/schrader/backfill/ (state.json carries the resume point, saved to
+    the raw branch with the pages, so a second run goes on where the first stopped). Returns (code, man)."""
+    now = now or datetime.now(timezone.utc)
+    out = os.path.join(out_root, BACKFILL_BASE)
+    os.makedirs(out, exist_ok=True)
+    spath = os.path.join(out, "state.json")
+    st = load_state(spath, states)
+    fetch = Polite(get, sleep)
+    t0 = clock()
+    stamp = now.strftime("%Y-%m-%dT%H%M%SZ")
+    man = {"source": "Schrader Real Estate and Auction Company", "archive": ARCHIVE, "user_agent": UA,
+           "started_utc": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "max_requests": max_requests,
+           "max_minutes": max_minutes, "archive_pages": [], "files": [], "skipped": [],
+           "buyer_links_blanked": 0, "stopped": ""}
+
+    def budget():
+        """Why no further request may start, or ""."""
+        if fetch.n >= max_requests:
+            return f"request cap {max_requests} reached"
+        if clock() - t0 >= max_minutes * 60:
+            return f"time budget {max_minutes} min reached"
+        return ""
+
+    def finish(code, why=""):
+        man["stopped"] = man["stopped"] or why
+        man["requests"] = fetch.n
+        man["delay_s"] = fetch.delay
+        man["saved_pages"] = sum(1 for f in man["files"] if f["file"].startswith("auctions/"))
+        pending = queue_ids() - set(st["saved"]) - done_failed() - known_ids(out_root)
+        man["pending_after"] = len(pending)
+        man["states_done"] = sorted(s for s in states if st["states"][s]["done"])
+        st["runs"].append({k: man[k] for k in ("started_utc", "requests", "saved_pages", "pending_after", "stopped")})
+        write_json(os.path.join(out, "runs", stamp + ".json"), man)
+        write_json(spath, st)
+        print(f"backfill: {fetch.n} request(s), {man['saved_pages']} auction page(s) saved, "
+              f"{len(man['archive_pages'])} archive page(s), {man['pending_after']} still to fetch, "
+              f"states done {len(man['states_done'])}/{len(states)}; {man['stopped'] or 'all done'}")
+        return code, man
+
+    def queue_ids():
+        q = set()
+        for s in states:
+            q |= set(st["states"][s]["ids"])
+        return q
+
+    def done_failed():
+        return {i for i, n in st["failed"].items() if n >= MAX_TRIES}
+
+    rp, pages_ok, robots_body, notes = read_robots(fetch)
+    man["skipped"] += notes
+    man["crawl_delay"] = fetch.crawl_delay
+    if robots_body is not None:
+        with open(os.path.join(out, "robots.txt"), "wb") as fh:
+            fh.write(robots_body)
+    if not pages_ok:
+        return finish(1, "robots.txt said no or could not be read; nothing fetched")
+
+    # 1. the archive, state by state; a state finished in an earlier run is not walked again
+    for s in states:
+        ss = st["states"][s]
+        while not ss["done"]:
+            why = budget()
+            if why:
+                return finish(0, why)
+            per, off = ss["next"]
+            u = archive_url(s, per or PER_PAGE, off)
+            no = why_not(rp, u)
+            if no:
+                ss.update(done=True, stop=f"archive page not fetched ({no})")
+                man["skipped"].append({"url": u, "why": no})
+                break
+            code, final, body, no = get_follow(fetch, rp, u)
+            if no or code != 200 or not body or len(body) > MAX_BYTES:
+                why = no or f"archive page status {code}"
+                man["skipped"].append({"url": u, "why": why})
+                ss["tries"] = ss.get("tries", 0) + 1
+                if no or 400 <= code < 500 or ss["tries"] >= MAX_TRIES:
+                    ss.update(done=True, stop=why)
+                break  # a miss with no answer or a server error: the next run tries this page again
+            body, nb = blank_buyer_links(body)
+            man["buyer_links_blanked"] += nb
+            name = f"archive/{s}/{off}.html"
+            path = os.path.join(out, name)
+            os.makedirs(os.path.dirname(path), exist_ok=True)
+            with open(path, "wb") as fh:
+                fh.write(body)
+            ids, pager, other = archive_links(body, final)
+            new = [i for i in ids if i not in ss["ids"]]
+            ss["ids"] += new
+            ss["pages"] += 1
+            man["archive_pages"].append({"file": name, "url": u, "final_url": final, "status": code,
+                                         "ids": len(ids), "new_ids": len(new), "pager": [list(x) for x in pager], "other_links": other})
+            nxt = next_offset(off, ids, pager)
+            if not new:
+                ss.update(done=True, stop="a page with no new auction")
+            elif nxt is None:
+                ss.update(done=True, stop="last page")
+            elif ss["pages"] >= MAX_ARCHIVE_PAGES:
+                ss.update(done=True, stop=f"{MAX_ARCHIVE_PAGES} archive pages")
+            else:
+                ss["next"] = list(nxt)
+
+    # 2. each auction page not captured before, oldest id first
+    have = known_ids(out_root) | set(st["saved"])
+    adir = os.path.join(out, "auctions")
+    if os.path.isdir(adir):
+        have |= {f[:-5] for f in os.listdir(adir) if re.fullmatch(r"\d{1,7}\.html", f)}
+    skip = have | done_failed()
+    man["already_captured"] = len(queue_ids() & have)
+    for i in sorted(queue_ids() - skip, key=int):
+        why = budget()
+        if why:
+            return finish(0, why)
+        u = f"{BASE}/auctions/{i}"
+        no = why_not(rp, u)
+        if no:
+            st["failed"][i] = MAX_TRIES
+            man["skipped"].append({"url": u, "why": no})
+            continue
+        code, final, page, no = get_follow(fetch, rp, u)
+        if no or code != 200 or not page or len(page) > MAX_BYTES:
+            st["failed"][i] = st["failed"].get(i, 0) + 1
+            man["skipped"].append({"url": u, "why": no or f"status {code}, {len(page)} bytes; not saved"})
+            continue
+        page, nb = blank_buyer_links(page)
+        man["buyer_links_blanked"] += nb
+        name = f"auctions/{i}.html"
+        os.makedirs(adir, exist_ok=True)
+        with open(os.path.join(out, name), "wb") as fh:
+            fh.write(page)
+        st["saved"].append(i)
+        st["failed"].pop(i, None)
+        man["files"].append({"file": name, "url": u, "final_url": final, "status": code, "bytes": len(page),
+                             "buyer_links_blanked": nb,
+                             "buyer_text_markers": len(MARKERS.findall(page.decode("latin-1")))})
+        if len(man["files"]) % 25 == 0:
+            write_json(spath, st)  # a run cut off mid-way still keeps its place on disk
+    if not man["archive_pages"] and not any(st["states"][s]["pages"] for s in states):
+        return finish(1, "no archive page answered")
+    return finish(0, "")
 
 
 # ---------------------------------------------------------------- selftest
@@ -413,13 +700,139 @@ def selftest():
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
+    backfill_selftest(check)
     print(f"capture_schrader selftest: {len(fails)} failure(s)")
     return 1 if fails else 0
+
+
+def _archive_page(ids, pager_hrefs=(), extra=""):
+    rows = "".join(f'<tr><td><a href="/auctions/{i}">Auction {i}</a></td><td>SOLD</td></tr>' for i in ids)
+    pager = "".join(f'<a href="{h}">page</a>' for h in pager_hrefs)
+    return (f"<html><body><table>{rows}</table><div class=pager>{pager}</div>{extra}"
+            f'<a href="/buyers/profile/5">A Buyer</a></body></html>').encode()
+
+
+def backfill_selftest(check):
+    """Offline: a made-up archive for three states, two runs (cap, then resume), robots, /buyers/, budgets."""
+    import shutil
+    import tempfile
+    oh = [str(3001 + n) for n in range(45)]
+    ia = [str(4001 + n) for n in range(20)]
+    site = {
+        archive_url("OH"): _archive_page(oh[:20], ["recent_auctions/20/20?state=OH", "/auctions/recent_auctions/20/40?state=OH"]),
+        archive_url("OH", 20, 20): _archive_page(oh[20:40], ["/auctions/recent_auctions/20/0?state=OH", "40?state=OH"]),
+        archive_url("OH", 20, 40): _archive_page(oh[40:] + ["3001"], ["/auctions/recent_auctions/20/0?state=OH",
+                                                                    "/auctions/recent_auctions/20/20?state=OH"],
+                                                 '<a href="/auctions/recent_auctions?state=OH&amp;sort=date">sort</a>'),
+        archive_url("IA"): _archive_page(ia),          # no pager: a full page is followed by offset + 20
+        archive_url("IA", 20, 20): _archive_page(ia),  # the same rows again: the walk stops there
+    }
+    robots = b"User-agent: *\nDisallow: /buyers/profile/\nDisallow: /auctions/3005\n"
+    calls, sleeps = [], []
+    flaky = {"archive": 0}
+
+    def get(url):
+        calls.append(url)
+        if url == ROBOTS:
+            return 200, "", robots
+        if url in site:
+            return 200, "", site[url]
+        if url == archive_url("GA"):
+            return 404, "", b""
+        if url == archive_url("MS"):
+            flaky["archive"] += 1
+            return (503, "", b"") if flaky["archive"] == 1 else (200, "", _archive_page(["5001"]))
+        if url.endswith("/auctions/3010"):
+            return 500, "", b""
+        m = re.search(r"/auctions/(\d+)$", url)
+        if m:
+            return 200, "", PAGE.replace(b"Auction 1001", b"Auction " + m.group(1).encode())
+        return 404, "", b""
+
+    tmp = tempfile.mkdtemp(prefix="schrader-bf-")
+    try:
+        os.makedirs(os.path.join(tmp, OUT_BASE, "2026-11-07", "auctions"))
+        open(os.path.join(tmp, OUT_BASE, "2026-11-07", "auctions", "3002.html"), "w").close()
+        os.makedirs(os.path.dirname(os.path.join(tmp, SAVED_DATA)))
+        with open(os.path.join(tmp, SAVED_DATA), "w", encoding="utf-8") as fh:
+            json.dump({"records": [{"auction_id": "3003"}]}, fh)
+        now = datetime(2026, 11, 9, 20, 0, tzinfo=timezone.utc)
+        states = ("OH", "IA", "GA", "MS")
+
+        ids, pager, other = archive_links(site[archive_url("OH")], archive_url("OH"))
+        check(ids == oh[:20] and pager == [(20, 20), (20, 40)], "archive page: auction ids in order, relative pager links read")
+        check(not any("buyers" in u for u in other), "archive page: no /buyers/ link taken")
+        check(next_offset(0, ids, pager) == (20, 20) and next_offset(40, ids, [(20, 0), (20, 20)]) is None
+              and next_offset(0, ia, []) == (20, 20) and next_offset(0, ["1"], []) is None,
+              "next page: the pager's next offset; none past the last; a full page with no pager goes on by 20")
+
+        code, man = backfill(tmp, get, sleeps.append, now, lambda: 0.0, states, max_requests=30)
+        out = os.path.join(tmp, BACKFILL_BASE)
+        st = json.load(open(os.path.join(out, "state.json"), encoding="utf-8"))
+        check(code == 0 and calls[0] == ROBOTS and calls.count(ROBOTS) == 1, "backfill: robots.txt first, once")
+        check(len(calls) == 30 and "request cap 30" in man["stopped"], f"backfill: stops at the request cap ({len(calls)} requests)")
+        check(all(x == DELAY_S for x in sleeps) and len(sleeps) == len(calls) - 1, "backfill: 2 s before every request after the first")
+        check(not any("/buyers/" in c.lower() for c in calls), "backfill: no request to a /buyers/ path")
+        check(archive_url("OH", 20, 20) in calls and archive_url("OH", 20, 40) in calls and archive_url("OH", 20, 60) not in calls,
+              "backfill: OH walked over its three pages, not past the last")
+        check(st["states"]["OH"]["ids"] == oh and st["states"]["OH"]["stop"] == "last page", "backfill: 45 OH ids, stopped at the last page")
+        check(st["states"]["IA"]["stop"] == "a page with no new auction" and len(st["states"]["IA"]["ids"]) == 20,
+              "backfill: a page with no new id ends the walk")
+        check(st["states"]["GA"]["done"] and "404" in st["states"]["GA"]["stop"], "backfill: a state with no archive page (404) is done")
+        check(not st["states"]["MS"]["done"] and st["states"]["MS"]["tries"] == 1, "backfill: a server error leaves the state for the next run")
+        check(f"{BASE}/auctions/3002" not in calls and f"{BASE}/auctions/3003" not in calls,
+              "backfill: ids already captured (weekly pages, the data file) are skipped")
+        check(f"{BASE}/auctions/3005" not in calls, "backfill: robots.txt Disallow obeyed for an auction page")
+        first = [c for c in calls if re.search(r"/auctions/\d+$", c)]
+        check(first == sorted(first, key=lambda u: int(u.rsplit("/", 1)[1])), "backfill: oldest id first")
+        saved = sorted(os.listdir(os.path.join(out, "auctions")))
+        with open(os.path.join(out, "auctions", saved[0]), "rb") as fh:
+            check(b"Buyer Name" not in fh.read(), "backfill: saved pages carry no buyer link")
+        with open(os.path.join(out, "archive", "OH", "0.html"), "rb") as fh:
+            check(b"A Buyer" not in fh.read(), "backfill: archive pages saved raw with buyer links blanked")
+        check(os.listdir(os.path.join(out, "runs")) == ["2026-11-09T200000Z.json"], "backfill: one run file per run")
+        check(any(p["other_links"] for p in man["archive_pages"]), "backfill: a recent_auctions link of another shape is listed")
+
+        calls.clear(); sleeps.clear()
+        code, man2 = backfill(tmp, get, sleeps.append, datetime(2026, 11, 9, 23, 0, tzinfo=timezone.utc), lambda: 0.0, states)
+        again = [c for c in calls if c in first and not c.endswith("/3010")]
+        check(code == 0 and not again, "resume: no auction page fetched twice across runs")
+        check(not any(c in site for c in calls), "resume: a state walked to its end is not walked again")
+        check(archive_url("MS") in calls, "resume: the state left by a server error is tried again")
+        st = json.load(open(os.path.join(out, "state.json"), encoding="utf-8"))
+        want = sorted(set(oh + ia + ["5001"]) - {"3002", "3003", "3005", "3010"}, key=int)
+        check(sorted(st["saved"], key=int) == want, f"resume: every id saved once over the two runs ({len(st['saved'])})")
+        check(st["failed"].get("3010") == MAX_TRIES and man2["pending_after"] == 0 and man2["stopped"] == "",
+              "resume: a page that failed twice is given up, nothing left")
+        check(len(st["runs"]) == 2, "resume: both runs logged in state.json")
+        calls.clear()
+        code, man3 = backfill(tmp, get, lambda x: None, datetime(2026, 11, 10, 1, 0, tzinfo=timezone.utc), lambda: 0.0, states)
+        check(code == 0 and calls == [ROBOTS], "a third run with nothing left asks for robots.txt only")
+
+        shutil.rmtree(out)
+        calls.clear()
+        t = iter(range(0, 100000, 61))
+        code, man = backfill(tmp, get, lambda x: None, now, lambda: float(next(t)), states, max_minutes=2)
+        check(code == 0 and "time budget 2 min" in man["stopped"] and len(calls) <= 3, "backfill: stops at the time budget")
+        shutil.rmtree(out)
+        calls.clear()
+        robots = b""
+        code, man = backfill(tmp, lambda u: (calls.append(u), (500, "", b""))[1], lambda x: None, now, lambda: 0.0, states)
+        check(code == 1 and calls == [ROBOTS], "backfill: robots.txt unreadable, nothing else fetched, exit 1")
+        shutil.rmtree(out)
+        calls.clear()
+        code, _ = backfill(tmp, lambda u: (calls.append(u), (200, "", b"User-agent: *\nDisallow: /auctions/\n") if u == ROBOTS else (200, "", b""))[1],
+                           lambda x: None, now, lambda: 0.0, states)
+        check(calls == [ROBOTS] and code == 1, "backfill: robots.txt disallowing the archive stops the walk before any request")
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
 
 
 def main(argv):
     if "--selftest" in argv:
         return selftest()
+    if "--backfill" in argv:
+        return backfill()[0]
     code, _, _ = capture()
     return code
 
