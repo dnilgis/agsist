@@ -9,6 +9,11 @@ on:
     workflows: ["Fetch Grain Bids"]
     types: [completed]
   workflow_dispatch:
+    inputs:
+      backfill:
+        description: "Also walk the state archive and save older auction pages (one-time, resumes)"
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -44,7 +49,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: ${{ inputs.backfill && 150 || 10 }}
     permissions:
       contents: read
     concurrency:
@@ -76,6 +81,25 @@ jobs:
           path: results/schrader-new.json
           retention-days: 1
           if-no-files-found: error
+      - name: Backfill older auction pages from the archive
+        if: ${{ inputs.backfill == true }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          rc=0
+          out=$(bash scripts/pull_raw.sh land/schrader/backfill/state.json 2>&1) || rc=$?
+          echo "$out"
+          if [ "$rc" -ne 0 ]; then
+            if printf '%s' "$out" | grep -q "is not on the raw branch"; then
+              echo "first backfill run: starting fresh"
+            else
+              echo "::error::could not read the raw branch; not starting"; exit 1
+            fi
+          fi
+          rc=0
+          python3 scripts/capture_schrader.py --backfill || rc=$?
+          bash scripts/push_raw.sh "schrader backfill" land/schrader/backfill || rc=1
+          exit "$rc"
 
   commit:
     needs: [gate, capture]
