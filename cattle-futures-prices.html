@@ -341,7 +341,7 @@ details.fold[hidden]{display:none}
         <div class="ct-read" id="cash-cut-meta"></div>
       </div>
     </div>
-    <div class="method-note"><b>What these are</b> &middot; Fed steers: USDA AMS 5-area weekly weighted average for steers sold live, all grades (LM_CT150). Cutout: the USDA value of a Choice carcass, 600 to 900 lb, from boxed beef sales (LM_XB403, afternoon), per cwt of carcass, not live weight. Each is dated by its own report. These are cash prices, not futures.</div>
+    <div class="method-note">USDA AMS cash prices, each dated by its own report. The cutout is per cwt of carcass, not live weight. Not futures.</div>
   </section>
   <aside class="ya" data-your-state="cattle" data-v="2" hidden></aside><script src="/components/your-state.js?v=1" defer></script>
   <div class="fx-pair"><section class="fx" data-feeder="index" id="feeder-index" hidden aria-label="AGSIST USDA feeder steer index"></section>
@@ -399,7 +399,7 @@ details.fold[hidden]{display:none}
       <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Futures price by contract month, loading"></svg>
       <div class="fwd-empty" id="fwd-empty" style="display:none">Deferred contracts not available right now.</div>
       <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
-      <div class="method-note"><b>Method</b> &middot; Each live cattle contract from this month on, <span id="fwd-kind">the settle after the close, the latest delayed trade in session</span>, in $/cwt (hundredweight, 100 lb live), five contracts in all, this month first. The per-month figure is the peak contract minus the first, divided by the months between them. A futures curve, not a cash forecast. &middot; <b>Sources</b> &middot; CME live cattle futures via Yahoo Finance, delayed. &middot; Reviewed by Sigurd Lindquist, CCA</div>
+      <div class="method-note">CME live cattle futures via Yahoo Finance, <span id="fwd-kind">the settle after the close, the latest delayed trade in session</span>, in $/cwt, five contracts in all, this month first. A futures curve, not a cash forecast.</div>
     </section>
     </div>
   </details>
@@ -640,7 +640,9 @@ details.fold[hidden]{display:none}
   </div>
   <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
 
-  <div class="disc">Prices from Yahoo Finance (delayed about 15 min): the exchange settle after the close, the latest delayed trade in session. 5-year percentile from Yahoo weekly closes of the continuous front-month LE=F and GF=F series (not roll-adjusted). Quoted in $/cwt. Decision-support only, not financial advice. Verify with your broker before making marketing decisions.</div>
+  <details class="hp-terms" style="max-width:1100px;margin:1.2rem auto;padding:0 12px;font-size:.78rem;line-height:1.6;color:var(--text-muted)"><summary style="cursor:pointer;color:var(--text-dim);min-height:44px;display:flex;align-items:center">Sources and terms</summary>
+<p style="margin:.4rem 0 0">Prices from Yahoo Finance (delayed about 15 min): the exchange settle after the close, the latest delayed trade in session. 5-year percentile from Yahoo weekly closes of the continuous front-month series (not roll-adjusted). Quoted in $/cwt. Decision-support only, not financial advice. Verify with your broker before making marketing decisions.</p><p style="margin:.4rem 0 0">Reviewed by Sigurd Lindquist, CCA.</p>
+</details>
 <script>/* fold: open the analysis folds on wide screens before first paint; phones get the short page */try{if(window.matchMedia&&matchMedia('(min-width:900px)').matches)document.querySelectorAll('details.fold[data-wide-open]').forEach(function(d){d.open=true;});}catch(e){}</script>
 </main>
 <div id="site-footer">

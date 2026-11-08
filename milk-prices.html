@@ -562,7 +562,7 @@
     <span class="dp-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-milk"/></svg> Dairy Markets</span>
     <h1 class="dp-h1">Milk prices and your milk check</h1>
     <p class="dp-lede page-lede">This month first, the rest folded below. Every number carries its month and its source.</p>
-    <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">Data: USDA AMS mailbox and class prices, USDA NASS all-milk prices, CME Class III futures. This product uses the NASS API but is not endorsed or certified by NASS. Averages, trends, ranks and estimates are calculations by AGSIST.</p>
+    <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">Data: USDA AMS, USDA NASS and CME. Sources and terms are at the bottom.</p>
   </header>
 
   <section class="dp-now" id="dp-now" aria-labelledby="dp-now-h">
@@ -1115,10 +1115,13 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
   </section>
 
   <!-- SOURCES -->
+  <details class="hp-terms" style="margin:1.2rem 0;font-size:.78rem;line-height:1.6;color:var(--text-muted)"><summary style="cursor:pointer;color:var(--text-dim);min-height:44px;display:flex;align-items:center">Sources and terms</summary>
   <footer class="dp-sources">
     <strong>Sources:</strong> USDA AMS Dairy Market News (daily CME spot closes, weekly Dairy Market at a Glance, mailbox prices), National Dairy Products Sales Report (NDPSR), USDA Announcement of Class &amp; Component Prices and Advanced Prices, USDA Economic Research Service Price Spreads from Farm to Consumer and Food Dollar series, NASS Agricultural Prices (Dairy Margin Coverage), CME Group dairy futures &amp; spot markets, and the CFTC Commitments of Traders report. Federal formula changes per USDA AMS Final Rule (90 FR 6600, Jan 2025).
     <div class="dp-disclaim">These are federal <strong>minimum</strong> prices and market benchmarks, shown to explain how the pay system works. Your mailbox price will differ with your order, components, hauling, and co-op. This page is market information, not financial advice, and not a substitute for your milk check or your cooperative's field staff.</div>
   </footer>
+<p style="margin:.4rem 0 0">USDA NASS data: This product uses the NASS API but is not endorsed or certified by NASS. Averages, trends, ranks and estimates are calculations by AGSIST.</p>
+</details>
 
  </div>
 <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
