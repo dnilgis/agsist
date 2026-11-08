@@ -177,17 +177,20 @@ test("/cot: the line under the chart headline and on the market card is the fiel
 });
 
 /* A paint between two parts of the page moves nothing above the fold (Nov 8, CI flake on a loaded runner): the page is
-   cut inside the release bar, the hero and the chart's head and the rest sent 400 ms later. Before the fix the bar was
-   painted without its 44px link, so its centred clock icon dropped 11px (5.78e-6 at 1280) and a link cut mid-tag slid
-   sideways (1.35e-3); cot.html now holds the first paint (link rel=expect) until the bar's last child has opened. */
+   cut inside the release bar, the hero, the market chips and the chart's head and the rest sent 400 ms later. Before the
+   fix the bar was painted without its 44px link, so its centred clock icon dropped 11px (5.78e-6 at 1280, 3.21e-5 at
+   390), the link cut mid-tag slid sideways (1.35e-3, 1.19e-2) and the last chip cut mid-tag sat on the first row until
+   its words wrapped it (3.66e-3 at 1280); cot.html now holds the first paint (link rel=expect) until the chart headline,
+   the first element after the chips, has opened. */
 test("/cot: a paint between two parts of the page moves nothing", { skip, timeout: 300000 }, async () => {
   assert.ok(BAKED, "cot.html baked from the fixtures");
   const html = fs.readFileSync(BAKED, "utf8");
-  assert.match(html.slice(0, html.indexOf("</head>")), /<link rel="expect" href="#cot-rel-live" blocking="render">/, "the first paint waits for the release bar");
-  const bar = html.indexOf('id="cot-rel"'), live = html.indexOf('id="cot-rel-live"'), end = html.indexOf('id="cot-qa"');
-  assert.ok(bar > 0 && live > html.indexOf("</a>", bar) && live < html.indexOf("</div>", bar), "the expected element is the bar's last child");
+  assert.match(html.slice(0, html.indexOf("</head>")), /<link rel="expect" href="#cc-head" blocking="render">/, "the first paint waits for the release bar and the chips");
+  const bar = html.indexOf('id="cot-rel"'), chips = html.indexOf('id="cc-chips"'), head = html.indexOf('id="cc-head"'), end = html.indexOf('id="cot-qa"');
+  assert.ok(bar > 0 && chips > bar && head > html.indexOf("</div>", chips) && head < end, "the expected element comes after the bar and the whole chip row");
   const cuts = ['focusable="false">', '<path d="M12 7v5l3 2"/>', '<span class="cot-rel-t" id="cot-rel-t">', 'href="#cot-signup">', 'class="cot-hero">',
-    '<h1 class="cot-page-title">', 'id="cot-chart-box" aria-labelledby="cc-head">', '<h3 class="cc-head" id="cc-head">', '<p class="cc-how" id="cc-how">', 'id="cc-msg">']
+    '<h1 class="cot-page-title">', 'id="cot-chart-box" aria-labelledby="cc-head">', 'data-k="beans" aria-pressed="false">',
+    'data-k="soyoil" aria-pressed="false">', 'data-k="milk" aria-pressed="false">', '<p class="cc-kind">', '<h3 class="cc-head" id="cc-head">', '<p class="cc-how" id="cc-how">', 'id="cc-msg">']
     .map((m) => { const i = html.indexOf(m, bar); assert.ok(i > bar && i < end, "cut point " + m); return Buffer.byteLength(html.slice(0, i + m.length)); });
   const browser = await chromium.launch({ executablePath: CHROME });
   try {

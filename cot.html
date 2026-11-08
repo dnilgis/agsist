@@ -12,11 +12,12 @@
 <link rel="stylesheet" href="/components/styles.css?v=28">
 <link rel="stylesheet" href="/components/share-kit.css?v=1">
 <link rel="stylesheet" href="/components/cot-print.css?v=6">
-<!-- Nov 8: no first paint until the release bar is parsed whole (Chrome lifts the block when the expected element opens,
-     so it names the bar's last child). A paint between two parser chunks drew the bar before its 44px link: the bar was
-     22px tall, and its centred clock icon dropped 11px when the link came (the 5.78e-6 shift test/cot-how.test.mjs saw
-     on a loaded runner); a paint inside the link moved the link sideways as its words arrived. -->
-<link rel="expect" href="#cot-rel-live" blocking="render">
+<!-- Nov 8: no first paint until the release bar and the market chips are parsed whole (Chrome lifts the block when
+     the expected element opens, so it names the chart headline, the first element after the chips). A paint between two
+     parser chunks drew the bar before its 44px link: the bar was 22px tall and its centred clock icon dropped 11px when
+     the link came (the 5.78e-6 shift test/cot-how.test.mjs saw on a loaded runner); a paint inside the link slid it
+     sideways, and a paint inside the last chip let it sit on the first row before its words wrapped it to the next. -->
+<link rel="expect" href="#cc-head" blocking="render">
   <script src="/components/util.js?v=17"></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
