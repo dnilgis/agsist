@@ -73,7 +73,9 @@ test("layout(): no label box meets another or leaves the chart (page, pictures, 
   for (const h of [300, 260, 230]) check(corn, 560, h, { fs: 15, print: true }, "print " + h);
   /* every market: the page widths (300 px tall to 700 px, 340 above), the chart heights the pictures give
      (phone 410 to 516, wide 285 to 344 for these reports) and the print sheet's two taller heights. The shortest
-     print chart (230) is left to corn: three two-line labels cannot always share its 53 px band. */
+     print chart (230) is left to corn: three two-line labels cannot always share its 53 px band. Known overlaps
+     left at that one size (they were there before this fix too): feeder cattle and class III milk, Nov 3, 2026, where
+     the 52-week high, low and latest labels crowd each other. Page and pictures are clear for every market. */
   for (const [d, R] of [["Nov 3", NOV3], ["Oct 27", OCT27]]) {
     for (const k of Object.keys(R.hist.history)) {
       const m = C.model(k, R.hist, R.cot, R.cx);
