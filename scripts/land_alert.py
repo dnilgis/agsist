@@ -90,7 +90,8 @@ IN_NOTE = ("Indiana sales carry the sale date from the state's sales disclosure 
            "the parcel's mailing town, placed at the middle of its ZIP code rather than a township, so distances to them are rougher.")
 # The New Jersey method note (build_land_sales.NJ_NOTE uses this one): how the state's codes map onto the market rule.
 NJ_NOTE = ("A farm sale is a deed whose lot is classed farm, either the farmhouse lot or farmland-assessed land; acres are today's lot "
-           "on the 2026 assessment list, which may not be the lot as it sold. Left out: gifts and family sales, sales between related "
+           "on the 2026 assessment list, which may not be the lot as it sold, and a deed whose lot is not on the list has no acres "
+           "and is kept out of the middle. Left out: gifts and family sales, sales between related "
            "companies, part interests, tax liens, sheriff, bankruptcy and short sales, quit claims, government and charity transfers, "
            "deeds tied to a foreclosure, exchanges, token-price sales and sales that were not between a willing buyer and seller. "
            "The state's file names no buyer or seller.")

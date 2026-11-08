@@ -808,9 +808,10 @@ def lead_big(M):
 def unusual_def(M):
     """What 'unusual' means, in one plain sentence for the fold (the month page keeps one short line by the table)."""
     return ("A sale of %d acres or more is marked unusual when its price per acre is far above or below the usual for its county, "
-            "which is the middle half of that county's sales of that size over the two years to %s. "
+            "which is the middle half of that county's sales of that size over the two years from %s to %s. "
             "Possible reasons above the usual: %s. Possible reasons below: %s. The return does not say which, and a price is not wrong because it is unusual."
-            % (COMP_MIN_ACRES, LA.short_day(M["window"][1]) + ", " + M["window"][1][:4], UP_WHY, DOWN_WHY))
+            % (COMP_MIN_ACRES, LA.short_day(M["window"][0]) + ", " + M["window"][0][:4],
+               LA.short_day(M["window"][1]) + ", " + M["window"][1][:4], UP_WHY, DOWN_WHY))
 
 
 def best_def():

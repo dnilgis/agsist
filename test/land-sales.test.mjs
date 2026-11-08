@@ -181,11 +181,11 @@ test("the pages: the tap and the remove link, plain words, withheld sections say
   }
   const m = read(month.sort().pop());
   for (const h of ["Biggest buyers", "Biggest sales", "Unusual prices", "Best value per acre"]) assert.ok(m.includes(">" + h + "</h2>"), "month section " + h);
-  assert.match(m, /possible reasons:<\/b> a house or buildings, timber/, "plain possible reasons above the usual");
-  assert.match(m, /family or neighbor sale, a part interest/, "plain possible reasons below the usual");
+  assert.match(m, /Possible reasons above the usual: a house or buildings, timber/, "plain possible reasons above the usual, in the fold");
+  assert.match(m, /Possible reasons below: a family or neighbor sale, a part interest/, "plain possible reasons below the usual, in the fold");
   assert.match(m, /County usual \$\/acre/, "the county usual is shown");
   assert.match(m, /\d+ sales\)/, "with its count (n)");
-  assert.match(m, /over Oct 1, 2024 to Sep 30, 2026|over [A-Z][a-z]{2} \d+, \d{4} to [A-Z][a-z]{2} \d+, \d{4}/, "and its window");
+  assert.match(m, /over the two years from Oct 1, 2024 to Sep 30, 2026|over the two years from [A-Z][a-z]{2} \d+, \d{4} to [A-Z][a-z]{2} \d+, \d{4}/, "and its window");
   assert.match(m, /Sales reported for \d+ states: /, "the coverage line");
   assert.match(m, /data-land-alert/, "the monthly email ask on the update page");
   // a withheld section says so (builder selftest covers the case with few sales)
@@ -218,13 +218,13 @@ test("the coverage table: every state, honest statuses, the live count matches t
   assert.deepEqual(liveNames.filter((n) => !named.includes(n)).filter((n) => n !== "Florida"), [], "only Florida may wait for the next land-data run");
   // Vermont (Oct 29): the method note maps the return onto the shared rule; current use is a fact per sale; the ask shows
   const vtPage = read("land-sales/vermont/addison-county.html");
-  assert.match(vtPage, /Vermont sales come from the property transfer tax return\. A return is a farm sale here when the land&#x27;s use before or after the sale is an operating farm or timberland, or open land enrolled in current use\./);
-  assert.match(vtPage, /related to the seller[^<]*transfer tax exemption[^<]*without pay, by divorce or by foreclosure[^<]*less than the whole interest/);
+  assert.match(vtPage, /Vermont Department of Taxes[^<]*\. A farm sale is a return where the land&#x27;s use before or after the sale is an operating farm or timberland, or open land enrolled in current use\./);
+  assert.match(vtPage, /related to the seller[^<]*transfer tax exemption[^<]*without pay, by divorce or by foreclosure[^<]*part interests/);
   assert.match(vtPage, /<td>Enrolled in current use<\/td>/, "current use enrollment shown on the sale");
   assert.match(vtPage, /data-land-alert/, "the monthly email covers Vermont");
   // Indiana's records differ from IL and WI: the pages say what they carry; the email covers Indiana too (Oct 27), so the ask shows
   const inPage = read("land-sales/indiana/adams-county.html");
-  assert.match(inPage, /Indiana&#x27;s sales disclosure forms carry the sale date, not a recording date, and the town is the parcel&#x27;s mailing town/);
+  assert.match(inPage, /The date is the sale date on the disclosure form, and the town is the parcel&#x27;s mailing town/);
   assert.match(inPage, /data-land-alert/, "the monthly email covers Indiana: the ask on an Indiana county page");
   assert.match(read("land-sales/illinois/adams-county.html"), /data-land-alert/);
 });
