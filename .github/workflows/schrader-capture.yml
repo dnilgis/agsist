@@ -241,9 +241,6 @@ jobs:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/push_raw.sh "land firms capture" land/wieman land/younger land/horning land/martins
 
-  # Land auction firms, step 2 (Sig, Nov 8, 2026): the saved pages are read into facts-only files (no write
-  # token), then checked and committed. Every saved folder is read each week, so the archive pages saved on the
-  # first run reach the data files too; a record already saved only ever gains tract rows.
   firms-read:
     needs: [gate, firms-save]
     if: needs.gate.outputs.go == '1' && (!cancelled())
