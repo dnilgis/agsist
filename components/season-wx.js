@@ -281,7 +281,7 @@
       var aw = put("agsist.com", P, 102, 24, 800, GOLD);
       fit([place, when].filter(Boolean).join(" · "), P + aw + 16, 102, 24, 20, 600, DIM, W - 2 * P - aw - 16);
       fit(sub, P, 136, 20, 20, 500, DIM, W - 2 * P);
-      L = { x: P, x1: W - P, top: 192, bot: 518, fs: 22, ml: 22, vl: 20, leg: 584, legs: 22, src: 616, srcs: 20 };
+      L = { x: P, x1: W - P, top: 192, bot: 506, fs: 22, ml: 22, vl: 20, leg: 584, legs: 22, src: 616, srcs: 20 };
     } else {
       put("agsist.com", P, 84, 36, 800, GOLD);
       fit([place, when].filter(Boolean).join(" · "), P, 132, 28, 20, 600, DIM, W - 2 * P);
