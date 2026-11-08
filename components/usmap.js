@@ -98,6 +98,7 @@
     }
     load().then(function (g) {
       var svg = el('svg', { viewBox: g.vb, role: 'group', 'aria-label': o.name || 'Map of the United States by state', focusable: 'false' });
+      var leads = [];
       g.list.forEach(function (x) {
         var path = el('path', { d: x.d });
         var chip = null, lead = null, tx, ty;
@@ -108,12 +109,14 @@
         } else { tx = x.c[0]; ty = x.c[1]; }
         var text = el('text', { x: tx, y: ty }); if (chip) text.setAttribute('class', 'usm-ct'); text.textContent = x.st;
         var g1 = el('g', { 'class': 'usm-s', 'data-st': x.st }, [path]);
-        if (lead) g1.insertBefore(lead, path);
+        if (lead) leads.push(lead);
         if (chip) { var cg = el('g', { 'class': 'usm-chip' }, [chip]); g1.appendChild(cg); }
         g1.appendChild(text);
         nodes[x.st] = { g: g1, path: path, chip: chip, text: text, name: x.name, code: x.st };
         svg.appendChild(g1);
       });
+      /* the lines go on top of every state, so each one can be followed to its chip */
+      svg.appendChild(el('g', { 'aria-hidden': 'true' }, leads));
       box.textContent = ''; box.appendChild(svg);
       /* a state with a link is a plain element that navigates on tap or Enter: one handler for both kinds */
       svg.addEventListener('click', function (e) {
