@@ -114,7 +114,11 @@ o, n, f = p.bake_cot(); open(sys.argv[3], "w", encoding="utf-8").write(n)`, FIX.
   } catch (e) { return null; }
 })();
 
-function serve() {
+/* split: the page is sent in two parts, the second PAUSE ms later, so the browser can paint between them the way a loaded
+   runner's parser yields between chunks (Nov 8: the 5.78e-6 shift at 1280 was the release bar's clock icon dropping 11px
+   when the bar's link arrived after such a paint; test/home-land.test.mjs has the same harness). */
+const PAUSE = 400;
+function serve(split) {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
@@ -123,7 +127,9 @@ function serve() {
     const f = p === "/cot.html" ? BAKED : path.normalize(path.join(ROOT, p));
     if (!f || (f !== BAKED && !f.startsWith(ROOT)) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[path.extname(f)] || "application/octet-stream" });
-    res.end(fs.readFileSync(f));
+    const buf = fs.readFileSync(f);
+    if (split && f === BAKED) { res.write(buf.subarray(0, split)); setTimeout(() => res.end(buf.subarray(split)), PAUSE); return; }
+    res.end(buf);
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
@@ -168,6 +174,51 @@ test("/cot: the line under the chart headline and on the market card is the fiel
       await ctx.close();
     }
   } finally { await browser.close(); srv.close(); }
+});
+
+/* A paint between two parts of the page moves nothing above the fold (Nov 8, CI flake on a loaded runner): the page is
+   cut inside the release bar, the hero and the chart's head and the rest sent 400 ms later. Before the fix the bar was
+   painted without its 44px link, so its centred clock icon dropped 11px (5.78e-6 at 1280) and a link cut mid-tag slid
+   sideways (1.35e-3); cot.html now holds the first paint (link rel=expect) until the bar's last child has opened. */
+test("/cot: a paint between two parts of the page moves nothing", { skip, timeout: 300000 }, async () => {
+  assert.ok(BAKED, "cot.html baked from the fixtures");
+  const html = fs.readFileSync(BAKED, "utf8");
+  assert.match(html.slice(0, html.indexOf("</head>")), /<link rel="expect" href="#cot-rel-live" blocking="render">/, "the first paint waits for the release bar");
+  const bar = html.indexOf('id="cot-rel"'), live = html.indexOf('id="cot-rel-live"'), end = html.indexOf('id="cot-qa"');
+  assert.ok(bar > 0 && live > html.indexOf("</a>", bar) && live < html.indexOf("</div>", bar), "the expected element is the bar's last child");
+  const cuts = ['focusable="false">', '<path d="M12 7v5l3 2"/>', '<span class="cot-rel-t" id="cot-rel-t">', 'href="#cot-signup">', 'class="cot-hero">',
+    '<h1 class="cot-page-title">', 'id="cot-chart-box" aria-labelledby="cc-head">', '<h3 class="cc-head" id="cc-head">', '<p class="cc-how" id="cc-how">', 'id="cc-msg">']
+    .map((m) => { const i = html.indexOf(m, bar); assert.ok(i > bar && i < end, "cut point " + m); return Buffer.byteLength(html.slice(0, i + m.length)); });
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const width of [1280, 390]) {
+      for (const cut of cuts) {
+        const srv = await serve(cut), port = srv.address().port;
+        try {
+          const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 844 } });
+          const pg = await ctx.newPage();
+          await pg.addInitScript(() => { window.__moved = []; new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput)
+            window.__moved.push(e.value + " " + e.sources.map((s) => s.node ? (s.node.id || s.node.nodeName) + " " + Math.round(s.previousRect.y) + "->" + Math.round(s.currentRect.y) : "?").join(",")); })
+            .observe({ type: "layout-shift", buffered: true }); });
+          const own = { "/data/cot.json": fs.readFileSync(FIX.cot), "/data/cot-analysis.json": fs.readFileSync(CXP), "/data/cot-history.json": fs.readFileSync(FIX.hist) };
+          await pg.route("**/*", (r) => {
+            const u = new URL(r.request().url());
+            if (u.origin === `http://127.0.0.1:${port}`) return own[u.pathname] ? r.fulfill({ status: 200, contentType: "application/json", body: own[u.pathname] }) : r.continue();
+            if (u.origin === "https://agsist-api.dnilgis.workers.dev")
+              return r.fulfill({ status: 200, contentType: "application/json", headers: { "Access-Control-Allow-Origin": "*" }, body: JSON.stringify({ ok: true }) });
+            return r.abort();
+          });
+          await pg.clock.setFixedTime(new Date("2026-11-04T15:46:20Z"));
+          await pg.goto(`http://127.0.0.1:${port}/cot`, { waitUntil: "load" });
+          await pg.waitForFunction(() => /Longs/.test((document.getElementById("insight-corn") || {}).textContent || ""));
+          const r = await pg.evaluate(() => ({ how: document.getElementById("cc-how").textContent, moved: window.__moved }));
+          assert.equal(r.how, LINE("corn"), `${width} cut ${cut}: the corn line is drawn`);
+          assert.deepEqual(r.moved, [], `${width} cut ${cut}: no layout shift`);
+          await ctx.close();
+        } finally { srv.close(); }
+      }
+    }
+  } finally { await browser.close(); }
 });
 
 test("the old wording is gone: one function, one set of words", () => {
