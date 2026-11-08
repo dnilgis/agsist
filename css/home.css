@@ -2586,3 +2586,14 @@ rect.wxs-cy.wxs-part{stroke:var(--wxs-y)}
   .hap-list{min-height:127px}
   #hero-band.hb-nozip .hb-grid--fut{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.5fr)}
 }
+/* Phones use the width (Sig, Nov 8, 2026: "use the space we have, phone screens are already small and we are making
+   them smaller"; STANDING-DECISIONS Oct 22: about 12px gutter). At 480px and under: a 12px page gutter, a section
+   band's text 12px in from its edge (11px padding plus the 1px line), and a card inside a band adds no side padding
+   of its own. The tokens --gutter and --card-pad-x come from components/styles.css. Wide screens are unchanged.
+   test/phone-padding.test.mjs holds the home weather card's text column to 342px or more at 390. */
+@media (max-width:480px){
+#main.main{padding-left:max(var(--gutter,12px),env(safe-area-inset-left))!important;padding-right:max(var(--gutter,12px),env(safe-area-inset-right))!important}
+html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,.m-fold--alert,#f-rail-scorecard-teaser){padding-left:var(--card-pad-x,11px)!important;padding-right:var(--card-pad-x,11px)!important}
+html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--calc)>summary.m-fold-sum,html[data-look="bands"] :is(#s7-month>.s7-head,#wire-band>.wr-summary){margin-left:calc(-1 * var(--card-pad-x,11px))!important;margin-right:calc(-1 * var(--card-pad-x,11px))!important;padding-left:var(--card-pad-x,11px)!important;padding-right:var(--card-pad-x,11px)!important}
+.wx-card.wx-tight .card-body{padding-left:0!important;padding-right:0!important}
+}
