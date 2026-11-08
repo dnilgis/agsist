@@ -91,6 +91,7 @@ test("home at 390 and 360: the weather card's text column is 342px (360: 312px) 
     for (const [width, min] of [[390, 342], [360, 312]]) {
       const { ctx, pg } = await open(browser, port, "/", width);
       await pg.waitForFunction(() => document.querySelector("#wx-season .wxs-t .wxs-v"), null, { timeout: 20000 });
+      await pg.waitForFunction(() => { const t = document.getElementById("wx-temp"); return t && /\d/.test(t.textContent); }, null, { timeout: 20000 });
       const band = await box(pg, "#f2"), season = await box(pg, "#wx-season"), grid = await box(pg, ".wx-card .wx-grid");
       assert.ok(Math.abs(band.edge - 12) <= 0.5, `${width}: the weather band starts ${band.edge}px from the edge, 12 wanted`);
       for (const [k, b] of [["Season so far", season], ["the figures", grid]]) {
