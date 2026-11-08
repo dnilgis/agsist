@@ -16,6 +16,13 @@
    "link": "/cot"
   },
   {
+   "id": "2026-11-07-cot-labels",
+   "date": "2026-11-07",
+   "title": "Funds chart labels stay apart",
+   "line": "On the funds chart and its saved pictures, the 52-week high, low and latest labels no longer land on top of each other.",
+   "link": "/cot"
+  },
+  {
    "id": "2026-11-07-cothow",
    "date": "2026-11-07",
    "title": "Fund positions: longs and shorts, not just the net",
