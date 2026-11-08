@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-08-land-firms-results",
+   "date": "2026-11-08",
+   "title": "More auction results on county pages",
+   "line": "Farmland Atlas county pages now list sold results from four more auction firms, in South Dakota, Missouri, Iowa, Kansas and Pennsylvania, with a link to each firm's page.",
+   "link": "/farmland-atlas"
+  },
+  {
    "id": "2026-11-08-phone-padding",
    "date": "2026-11-08",
    "title": "More room on your phone",
