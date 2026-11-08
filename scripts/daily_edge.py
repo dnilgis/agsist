@@ -655,7 +655,56 @@ def build_from_files(repo=REPO, bids_base=None, now=None):
     index = local_bid.BidsData(bids_base).index()
     prev, prev_gen = load_prev(repo)
     bs = load_json(os.path.join(repo, "data", "basis-states.json"))
-    return freeze(build(index, prev, prev_gen, bs, now), load_published(repo))
+    return quiet_repeats(freeze(build(index, prev, prev_gen, bs, now), load_published(repo)), last_printed(repo, now))
+
+
+# ── no repeat of a standing fact (Sig, Nov 8 2026) ─────────────────────────
+# The corn basis spread printed the same line seven days running ("55 over in
+# Texas to 90 under in North Dakota"): a standing fact read as news. A spread
+# fact now prints only when it changed since the last issue that printed it:
+# another strongest or weakest state, or the gap moved REPEAT_MOVE_C cents or more.
+REPEAT_KINDS = ("basis_spread",)
+REPEAT_MOVE_C = 5
+
+
+def _ends(sentence):
+    """The state names at both ends of a spread sentence, without its date and clock."""
+    m = re.search(r" in (.+?) to .+? in (.+?), state medians", sentence or "")
+    return (m.group(1), m.group(2)) if m else None
+
+
+def last_printed(repo=REPO, now=None):
+    """{fact id: fact} as the newest published issue BEFORE today (CT) printed it."""
+    today = ct_date(now or datetime.now(timezone.utc)).isoformat()
+    out = {}
+    for fp in sorted(glob.glob(os.path.join(repo, "data", "daily-archive", "20??-??-??.json"))):
+        if os.path.basename(fp)[:-5] >= today:
+            continue
+        j = load_json(fp)
+        edge = (j or {}).get("edge") if isinstance(j, dict) else None
+        for f in (edge or {}).get("facts") or []:
+            if isinstance(f, dict) and f.get("kind") in REPEAT_KINDS and f.get("id"):
+                out[f["id"]] = f
+    return out
+
+
+def quiet_repeats(block, last):
+    """Withhold a standing fact that says what the last issue already said."""
+    keep, held = [], list(block.get("withheld") or [])
+    for f in block.get("facts") or []:
+        was = (last or {}).get(f.get("id"))
+        if f.get("kind") in REPEAT_KINDS and was:
+            same_ends = _ends(f.get("sentence")) == _ends(was.get("sentence")) and _ends(f.get("sentence"))
+            try:
+                moved = abs(float(f.get("value")) - float(was.get("value"))) >= REPEAT_MOVE_C
+            except (TypeError, ValueError):
+                moved = True
+            if same_ends and not moved:
+                held.append({"id": f["id"], "why": "unchanged",
+                             "detail": f"same states, gap within {REPEAT_MOVE_C} cents of the {was.get('as_of')} issue"})
+                continue
+        keep.append(f)
+    return dict(block, facts=keep, withheld=held)
 
 
 # ── one count per past day (2026-10-20, panel F2) ─────────────────────────
@@ -901,6 +950,20 @@ def _selftest():
         ok(cca_note("2026-10-16", os.path.join(td, "missing.json")) is None, "cca note missing file")
     shipped = load_json(CCA_NOTE_PATH)
     ok(isinstance(shipped, dict) and not str(shipped.get("text") or "").strip(), "data/cca-note.json ships empty")
+
+    # Sig Nov 8: a spread fact that says what the last printed issue said is withheld
+    tx = "Corn basis on Nov 7 ran from 55\u00a2 over December futures in Texas to 90\u00a2 under in North Dakota, state medians of the elevators AGSIST read at 4:18 a.m. CT."
+    tx6 = tx.replace("Nov 7", "Nov 6").replace("4:18", "4:16")
+    sp = {"id": "basis_spread_corn", "kind": "basis_spread", "sentence": tx, "value": 145.0, "url": "/basis"}
+    blk = {"facts": [sp, {"id": "cash_change_corn", "kind": "cash_change", "sentence": "x", "url": "/"}], "withheld": []}
+    q = quiet_repeats(blk, {"basis_spread_corn": dict(sp, sentence=tx6, value=146.0, as_of="2026-11-06")})
+    ok([f["id"] for f in q["facts"]] == ["cash_change_corn"] and q["withheld"][-1]["why"] == "unchanged", f"repeat kept {q}")
+    q = quiet_repeats(blk, {"basis_spread_corn": dict(sp, sentence=tx6, value=139.0, as_of="2026-11-06")})
+    ok(len(q["facts"]) == 2, "a 6 cent move prints")
+    q = quiet_repeats(blk, {"basis_spread_corn": dict(sp, sentence=tx6.replace("North Dakota", "Minnesota"), as_of="2026-11-06")})
+    ok(len(q["facts"]) == 2, "another weakest state prints")
+    ok(len(quiet_repeats(blk, {})["facts"]) == 2, "never printed before: prints")
+    ok(_ends(tx) == ("Texas", "North Dakota"), f"ends {_ends(tx)}")
 
     for b in bad:
         print("FAIL", b)
