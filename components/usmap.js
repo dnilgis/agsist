@@ -23,9 +23,9 @@
     '.usm-box noscript,.usm-fail{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.82rem;color:var(--text-muted,#9aa5a2);padding:0 12px}' +
     '.usm-s{cursor:pointer;outline:none}.usm-s.usm-off{cursor:default}' +
     '.usm-s path{fill:var(--usm-none,color-mix(in srgb,var(--text,#e9edeb) 16%,var(--bg,#0a0c0d)));stroke:var(--bg,#0a0c0d);stroke-width:.9;stroke-linejoin:round;transition:opacity .1s}' +
-    '.usm-s.usm-dim path{stroke:var(--bg,#0a0c0d)}' +
+    '.usm-s.usm-dim path{fill:var(--surface2,#161b1c);stroke:color-mix(in srgb,var(--text,#e9edeb) 38%,var(--bg,#0a0c0d));stroke-width:.8}' +
     '.usm-s text{fill:var(--text,#e9edeb);font:700 17px/1 "JetBrains Mono",ui-monospace,monospace;text-anchor:middle;dominant-baseline:central;pointer-events:none;letter-spacing:.02em}' +
-    '.usm-s.usm-dim text{fill:var(--text-muted,#9aa5a2)}' +
+    '.usm-s.usm-dim text{fill:var(--text-muted,#9aa5a2)}.usm-s.usm-dim .usm-chip rect{fill:var(--surface2,#161b1c);stroke:color-mix(in srgb,var(--text,#e9edeb) 38%,var(--bg,#0a0c0d));stroke-width:1}' +
     '.usm-chip rect{fill:var(--usm-none,color-mix(in srgb,var(--text,#e9edeb) 16%,var(--bg,#0a0c0d)));stroke:var(--bg,#0a0c0d);stroke-width:1}' +
     '.usm-s .usm-ct{font-size:26px}' +
     '.usm-lead{stroke:var(--text-muted,#9aa5a2);stroke-width:1.3;fill:none;opacity:.8;pointer-events:none}' +

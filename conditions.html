@@ -95,24 +95,9 @@
     .cd-vsent{font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:520px}
     .cd-vgeo{font-size:0.77rem;color:#5a6467;font-family:'JetBrains Mono',monospace;margin-top:6px}
     .cd-maplab{font-family:'JetBrains Mono',monospace;font-size:0.765rem;letter-spacing:.1em;color:#8a948f;text-transform:uppercase;margin:16px 0 10px}
-    .cd-grid{position:relative;width:840px;height:560px;margin:0 auto;max-width:100%}
-    .cd-tile{position:absolute;width:64px;height:64px;border-radius:9px;padding:10px 9px;box-sizing:border-box;cursor:pointer;transition:transform .08s;left:calc(var(--gc)*70px - 70px);top:calc(var(--gr)*70px - 70px)}
-    .cd-tile:hover{transform:scale(1.12);z-index:2;outline:2px solid #d4a23f}
-    .cd-tile.sel{outline:2px solid #d4a23f}
-    .cd-tile.dim{background:#101415;border:1px dashed #1a1f20;opacity:.45;cursor:default}
-    .cd-tst{font-family:'JetBrains Mono',monospace;font-weight:800;font-size:.92rem;color:#e6ebe9}
-    .cd-tile[style*="#a8823c"] .cd-tst,.cd-tile[style*="#a8823c"] .cd-tge,.cd-tile[style*="#2f9963"] .cd-tst,.cd-tile[style*="#2f9963"] .cd-tge{color:#0a0c0d}
-    .cd-tile.dim{opacity:1}.cd-tile.dim .cd-tst{color:#8a948f}
-    .cd-tge{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:700;margin-top:2px;color:#e6ebe9}
-    .cd-trk{font-size:0.745rem;color:rgba(230,235,233,.72);font-family:'JetBrains Mono',monospace;margin-top:1px;white-space:nowrap;overflow:hidden}
     .cd-leg{display:flex;gap:14px;justify-content:center;margin:12px 0 0;font-size:0.785rem;color:#8a948f;flex-wrap:wrap}
     .cd-leg span b{display:inline-block;width:13px;height:13px;border-radius:3px;vertical-align:-2px;margin-right:5px}
     @media (max-width:900px){
-      .cd-grid{width:100%;height:auto;display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
-      .cd-tile{position:static;width:auto;height:auto;aspect-ratio:1;padding:0;border-radius:5px;display:flex;align-items:center;justify-content:center;grid-column:var(--gc);grid-row:var(--gr)}
-      .cd-tile .cd-tge,.cd-tile .cd-trk{display:none}
-      .cd-tile .cd-tst{font-size:0.74rem}
-      .cd-tile:hover{transform:none}
       .cd-ver{display:block;padding:16px 18px}
       .cd-vbig{font-size:3.2rem;display:inline-block;vertical-align:middle;margin-right:12px}
       .cd-vword{font-size:1.05rem;display:inline-block;vertical-align:middle}
@@ -166,16 +151,11 @@ html[data-theme="light"] .cd-ver select{background:var(--surface2);border:1px so
 html[data-theme="light"] .cd-vsent{color:var(--text)}
 html[data-theme="light"] .cd-vgeo{color:var(--text-muted)}
 html[data-theme="light"] .cd-maplab{color:var(--text-muted)}
-html[data-theme="light"] .cd-tile.dim{background:var(--card,var(--surface));border:1px dashed var(--border)}
-html[data-theme="light"] .cd-trk{color:var(--text-dim)}
 html[data-theme="light"] .cd-leg{color:var(--text-muted)}
 html[data-theme="light"] .vp-ver{background:var(--card,var(--surface));border-color:var(--border-2)}
 html[data-theme="light"] .vp-ver select{background:var(--surface2);border-color:var(--border-2);color:var(--text)}
 html[data-theme="light"] .vp-sent{color:var(--text)}
 html[data-theme="light"] .vp-geo,html[data-theme="light"] .vp-maplab,html[data-theme="light"] .vp-leg{color:var(--text-muted)}
-html[data-theme="light"] .vp-tile:hover,html[data-theme="light"] .vp-tile.sel{outline-color:var(--text)}
-html[data-theme="light"] .vp-tile.dim{background:var(--surface2);border-color:var(--border-2)}
-html[data-theme="light"] .vp-tile.dim .vp-tst{color:var(--text-muted)}
 html[data-theme="light"] main [style^="color:#e6ebe9"],html[data-theme="light"] main [style*=";color:#e6ebe9"],html[data-theme="light"] main [style*="; color:#e6ebe9"],html[data-theme="light"] main [style^="color: rgb(230, 235, 233)"],html[data-theme="light"] main [style*="; color: rgb(230, 235, 233)"],html[data-theme="light"] main [style^="color:#e9edeb"],html[data-theme="light"] main [style*=";color:#e9edeb"],html[data-theme="light"] main [style*="; color:#e9edeb"],html[data-theme="light"] main [style^="color: rgb(233, 237, 235)"],html[data-theme="light"] main [style*="; color: rgb(233, 237, 235)"],html[data-theme="light"] main [style^="color:#e7ece8"],html[data-theme="light"] main [style*=";color:#e7ece8"],html[data-theme="light"] main [style*="; color:#e7ece8"],html[data-theme="light"] main [style^="color: rgb(231, 236, 232)"],html[data-theme="light"] main [style*="; color: rgb(231, 236, 232)"]{color:var(--text)!important}
 html[data-theme="light"] main [style^="color:#c9d1cd"],html[data-theme="light"] main [style*=";color:#c9d1cd"],html[data-theme="light"] main [style*="; color:#c9d1cd"],html[data-theme="light"] main [style^="color: rgb(201, 209, 205)"],html[data-theme="light"] main [style*="; color: rgb(201, 209, 205)"],html[data-theme="light"] main [style^="color:#b9c2bd"],html[data-theme="light"] main [style*=";color:#b9c2bd"],html[data-theme="light"] main [style*="; color:#b9c2bd"],html[data-theme="light"] main [style^="color: rgb(185, 194, 189)"],html[data-theme="light"] main [style*="; color: rgb(185, 194, 189)"],html[data-theme="light"] main [style^="color:#cfd6d3"],html[data-theme="light"] main [style*=";color:#cfd6d3"],html[data-theme="light"] main [style*="; color:#cfd6d3"],html[data-theme="light"] main [style^="color: rgb(207, 214, 211)"],html[data-theme="light"] main [style*="; color: rgb(207, 214, 211)"]{color:var(--text-dim)!important}
 html[data-theme="light"] main [style^="color:#8a948f"],html[data-theme="light"] main [style*=";color:#8a948f"],html[data-theme="light"] main [style*="; color:#8a948f"],html[data-theme="light"] main [style^="color: rgb(138, 148, 143)"],html[data-theme="light"] main [style*="; color: rgb(138, 148, 143)"],html[data-theme="light"] main [style^="color:#9bb0a3"],html[data-theme="light"] main [style*=";color:#9bb0a3"],html[data-theme="light"] main [style*="; color:#9bb0a3"],html[data-theme="light"] main [style^="color: rgb(155, 176, 163)"],html[data-theme="light"] main [style*="; color: rgb(155, 176, 163)"],html[data-theme="light"] main [style^="color:#7d8a8e"],html[data-theme="light"] main [style*=";color:#7d8a8e"],html[data-theme="light"] main [style*="; color:#7d8a8e"],html[data-theme="light"] main [style^="color: rgb(125, 138, 142)"],html[data-theme="light"] main [style*="; color: rgb(125, 138, 142)"],html[data-theme="light"] main [style^="color:#5a6467"],html[data-theme="light"] main [style*=";color:#5a6467"],html[data-theme="light"] main [style*="; color:#5a6467"],html[data-theme="light"] main [style^="color: rgb(90, 100, 103)"],html[data-theme="light"] main [style*="; color: rgb(90, 100, 103)"],html[data-theme="light"] main [style^="color:#525957"],html[data-theme="light"] main [style*=";color:#525957"],html[data-theme="light"] main [style*="; color:#525957"],html[data-theme="light"] main [style^="color: rgb(82, 89, 87)"],html[data-theme="light"] main [style*="; color: rgb(82, 89, 87)"],html[data-theme="light"] main [style^="color:#3a4144"],html[data-theme="light"] main [style*=";color:#3a4144"],html[data-theme="light"] main [style*="; color:#3a4144"],html[data-theme="light"] main [style^="color: rgb(58, 65, 68)"],html[data-theme="light"] main [style*="; color: rgb(58, 65, 68)"],html[data-theme="light"] main [style^="color:#3a4345"],html[data-theme="light"] main [style*=";color:#3a4345"],html[data-theme="light"] main [style*="; color:#3a4345"],html[data-theme="light"] main [style^="color: rgb(58, 67, 69)"],html[data-theme="light"] main [style*="; color: rgb(58, 67, 69)"]{color:var(--text-muted)!important}
@@ -194,7 +174,6 @@ html[data-theme="light"] main [style^="background:#0d1112"],html[data-theme="lig
 html[data-theme="light"] main [style^="background:#1d2425"],html[data-theme="light"] main [style*=";background:#1d2425"],html[data-theme="light"] main [style*="background: rgb(29, 36, 37)"],html[data-theme="light"] main [style^="background:#1a1f20"],html[data-theme="light"] main [style*=";background:#1a1f20"],html[data-theme="light"] main [style*="background: rgb(26, 31, 32)"],html[data-theme="light"] main [style^="background:#1d2324"],html[data-theme="light"] main [style*=";background:#1d2324"],html[data-theme="light"] main [style*="background: rgb(29, 35, 36)"]{background:var(--surface3)!important}
 html[data-theme="light"] main [style*="border:1px solid #1a1f20"],html[data-theme="light"] main [style*="border-top:1px solid #1a1f20"],html[data-theme="light"] main [style*="border-bottom:1px solid #1a1f20"],html[data-theme="light"] main [style*="border:1px dashed #1a1f20"],html[data-theme="light"] main [style*="solid rgb(26, 31, 32)"],html[data-theme="light"] main [style*="border:1px solid #14181a"],html[data-theme="light"] main [style*="border-top:1px solid #14181a"],html[data-theme="light"] main [style*="border-bottom:1px solid #14181a"],html[data-theme="light"] main [style*="border:1px dashed #14181a"],html[data-theme="light"] main [style*="solid rgb(20, 24, 26)"],html[data-theme="light"] main [style*="border:1px solid #1d2324"],html[data-theme="light"] main [style*="border-top:1px solid #1d2324"],html[data-theme="light"] main [style*="border-bottom:1px solid #1d2324"],html[data-theme="light"] main [style*="border:1px dashed #1d2324"],html[data-theme="light"] main [style*="solid rgb(29, 35, 36)"],html[data-theme="light"] main [style*="border:1px solid #161b1c"],html[data-theme="light"] main [style*="border-top:1px solid #161b1c"],html[data-theme="light"] main [style*="border-bottom:1px solid #161b1c"],html[data-theme="light"] main [style*="border:1px dashed #161b1c"],html[data-theme="light"] main [style*="solid rgb(22, 27, 28)"],html[data-theme="light"] main [style*="border:1px solid #171c1d"],html[data-theme="light"] main [style*="border-top:1px solid #171c1d"],html[data-theme="light"] main [style*="border-bottom:1px solid #171c1d"],html[data-theme="light"] main [style*="border:1px dashed #171c1d"],html[data-theme="light"] main [style*="solid rgb(23, 28, 29)"]{border-color:var(--border)!important}
 html[data-theme="light"] main [style*="border:1px solid #2a3133"],html[data-theme="light"] main [style*="border-top:1px solid #2a3133"],html[data-theme="light"] main [style*="border-bottom:1px solid #2a3133"],html[data-theme="light"] main [style*="border:1px dashed #2a3133"],html[data-theme="light"] main [style*="solid rgb(42, 49, 51)"],html[data-theme="light"] main [style*="border:1px solid #3a4345"],html[data-theme="light"] main [style*="border-top:1px solid #3a4345"],html[data-theme="light"] main [style*="border-bottom:1px solid #3a4345"],html[data-theme="light"] main [style*="border:1px dashed #3a4345"],html[data-theme="light"] main [style*="solid rgb(58, 67, 69)"],html[data-theme="light"] main [style*="border:1px solid #2a2f31"],html[data-theme="light"] main [style*="border-top:1px solid #2a2f31"],html[data-theme="light"] main [style*="border-bottom:1px solid #2a2f31"],html[data-theme="light"] main [style*="border:1px dashed #2a2f31"],html[data-theme="light"] main [style*="solid rgb(42, 47, 49)"],html[data-theme="light"] main [style*="border:1px solid #1d2425"],html[data-theme="light"] main [style*="border-top:1px solid #1d2425"],html[data-theme="light"] main [style*="border-bottom:1px solid #1d2425"],html[data-theme="light"] main [style*="border:1px dashed #1d2425"],html[data-theme="light"] main [style*="solid rgb(29, 36, 37)"],html[data-theme="light"] main [style*="border:1px solid #3a4144"],html[data-theme="light"] main [style*="border-top:1px solid #3a4144"],html[data-theme="light"] main [style*="border-bottom:1px solid #3a4144"],html[data-theme="light"] main [style*="border:1px dashed #3a4144"],html[data-theme="light"] main [style*="solid rgb(58, 65, 68)"]{border-color:var(--border-2)!important}
-html[data-theme="light"] .cd-tile.dim .cd-tst{color:var(--text-muted)}
 
 /* phones: 40px tap targets, 16px form text (no iOS zoom) */
 @media(max-width:640px){.cd-tab{min-height:40px}}
@@ -220,7 +199,6 @@ html[data-theme="light"] .cd-faq .lt-faq-a{color:var(--text-muted)}
 #crop-size .lt-bar .b{height:13px;border-radius:3px;min-width:2px}
 #crop-size .lt-bar .v{color:#e6ebe9}
 #crop-size #cy-seed::first-letter{text-transform:uppercase}
-#crop-size .vp-tile:focus-visible,#crop-size .rs-t th:focus-visible{outline:2px solid #d4a23f;outline-offset:2px}
 #crop-size .lt-bar .mut2{color:#7d8a8e;font-size:0.775rem}
 #crop-size table.rs-t{width:100%;border-collapse:collapse;font-size:.85rem;margin:10px 0}
 #crop-size .rs-t th{text-align:right;color:#8a948f;font-size:0.77rem;letter-spacing:.07em;text-transform:uppercase;padding:7px 9px;border-bottom:1px solid #1a1f20;cursor:pointer;white-space:nowrap;user-select:none}
@@ -239,12 +217,7 @@ html[data-theme="light"] .cd-faq .lt-faq-a{color:var(--text-muted)}
 #crop-size summary{cursor:pointer;color:#e6ebe9;font-size:1rem}
 @media(max-width:640px){#crop-size summary{padding:.4rem 0}}
 #crop-size .lt-faq-a{color:#8a948f;font-size:1rem;line-height:1.65;padding-top:8px}
-@media (max-width:900px){#crop-size .vp-grid{width:100%;height:auto;display:grid;grid-template-columns:repeat(12,1fr);gap:3px}
-#crop-size .vp-tile{position:static;width:auto;height:auto;aspect-ratio:1;padding:0;border-radius:5px;display:flex;align-items:center;justify-content:center;grid-column:var(--gc);grid-row:var(--gr)}
-#crop-size .vp-tile .vp-tge{display:none}
-#crop-size .vp-tile .vp-tst{font-size:0.74rem}
-#crop-size .vp-tile:hover{transform:none}
-#crop-size .vp-ver{display:block;padding:16px 18px}
+@media (max-width:900px){#crop-size .vp-ver{display:block;padding:16px 18px}
 #crop-size .vp-big{font-size:3.1rem;display:inline-block;vertical-align:middle;margin-right:12px}
 #crop-size .vp-word{font-size:1.02rem;display:inline-block;vertical-align:middle}
 #crop-size .vp-sent{font-size:.9rem;margin-top:10px}
@@ -275,9 +248,6 @@ html[data-theme="light"] #crop-size .vp-ver{background:var(--card,var(--surface)
 html[data-theme="light"] #crop-size .vp-ver select{background:var(--surface2);border-color:var(--border-2);color:var(--text)}
 html[data-theme="light"] #crop-size .vp-sent{color:var(--text)}
 html[data-theme="light"] #crop-size .vp-geo,html[data-theme="light"] #crop-size .vp-maplab,html[data-theme="light"] #crop-size .vp-leg{color:var(--text-muted)}
-html[data-theme="light"] #crop-size .vp-tile:hover,html[data-theme="light"] #crop-size .vp-tile.sel{outline-color:var(--text)}
-html[data-theme="light"] #crop-size .vp-tile.dim{background:var(--surface2);border-color:var(--border-2)}
-html[data-theme="light"] #crop-size .vp-tile.dim .vp-tst{color:var(--text-muted)}
 html[data-theme="light"] #crop-size [style^="color:#e6ebe9"],html[data-theme="light"] #crop-size [style*=";color:#e6ebe9"],html[data-theme="light"] #crop-size [style*="; color:#e6ebe9"],html[data-theme="light"] #crop-size [style^="color: rgb(230,#crop-size 235,#crop-size 233)"],html[data-theme="light"] #crop-size [style*="; color: rgb(230,#crop-size 235,#crop-size 233)"],html[data-theme="light"] #crop-size [style^="color:#e9edeb"],html[data-theme="light"] #crop-size [style*=";color:#e9edeb"],html[data-theme="light"] #crop-size [style*="; color:#e9edeb"],html[data-theme="light"] #crop-size [style^="color: rgb(233,#crop-size 237,#crop-size 235)"],html[data-theme="light"] #crop-size [style*="; color: rgb(233,#crop-size 237,#crop-size 235)"],html[data-theme="light"] #crop-size [style^="color:#e7ece8"],html[data-theme="light"] #crop-size [style*=";color:#e7ece8"],html[data-theme="light"] #crop-size [style*="; color:#e7ece8"],html[data-theme="light"] #crop-size [style^="color: rgb(231,#crop-size 236,#crop-size 232)"],html[data-theme="light"] #crop-size [style*="; color: rgb(231,#crop-size 236,#crop-size 232)"]{color:var(--text)!important}
 html[data-theme="light"] #crop-size [style^="color:#c9d1cd"],html[data-theme="light"] #crop-size [style*=";color:#c9d1cd"],html[data-theme="light"] #crop-size [style*="; color:#c9d1cd"],html[data-theme="light"] #crop-size [style^="color: rgb(201,#crop-size 209,#crop-size 205)"],html[data-theme="light"] #crop-size [style*="; color: rgb(201,#crop-size 209,#crop-size 205)"],html[data-theme="light"] #crop-size [style^="color:#b9c2bd"],html[data-theme="light"] #crop-size [style*=";color:#b9c2bd"],html[data-theme="light"] #crop-size [style*="; color:#b9c2bd"],html[data-theme="light"] #crop-size [style^="color: rgb(185,#crop-size 194,#crop-size 189)"],html[data-theme="light"] #crop-size [style*="; color: rgb(185,#crop-size 194,#crop-size 189)"],html[data-theme="light"] #crop-size [style^="color:#cfd6d3"],html[data-theme="light"] #crop-size [style*=";color:#cfd6d3"],html[data-theme="light"] #crop-size [style*="; color:#cfd6d3"],html[data-theme="light"] #crop-size [style^="color: rgb(207,#crop-size 214,#crop-size 211)"],html[data-theme="light"] #crop-size [style*="; color: rgb(207,#crop-size 214,#crop-size 211)"]{color:var(--text-dim)!important}
 html[data-theme="light"] #crop-size [style^="color:#8a948f"],html[data-theme="light"] #crop-size [style*=";color:#8a948f"],html[data-theme="light"] #crop-size [style*="; color:#8a948f"],html[data-theme="light"] #crop-size [style^="color: rgb(138,#crop-size 148,#crop-size 143)"],html[data-theme="light"] #crop-size [style*="; color: rgb(138,#crop-size 148,#crop-size 143)"],html[data-theme="light"] #crop-size [style^="color:#9bb0a3"],html[data-theme="light"] #crop-size [style*=";color:#9bb0a3"],html[data-theme="light"] #crop-size [style*="; color:#9bb0a3"],html[data-theme="light"] #crop-size [style^="color: rgb(155,#crop-size 176,#crop-size 163)"],html[data-theme="light"] #crop-size [style*="; color: rgb(155,#crop-size 176,#crop-size 163)"],html[data-theme="light"] #crop-size [style^="color:#7d8a8e"],html[data-theme="light"] #crop-size [style*=";color:#7d8a8e"],html[data-theme="light"] #crop-size [style*="; color:#7d8a8e"],html[data-theme="light"] #crop-size [style^="color: rgb(125,#crop-size 138,#crop-size 142)"],html[data-theme="light"] #crop-size [style*="; color: rgb(125,#crop-size 138,#crop-size 142)"],html[data-theme="light"] #crop-size [style^="color:#5a6467"],html[data-theme="light"] #crop-size [style*=";color:#5a6467"],html[data-theme="light"] #crop-size [style*="; color:#5a6467"],html[data-theme="light"] #crop-size [style^="color: rgb(90,#crop-size 100,#crop-size 103)"],html[data-theme="light"] #crop-size [style*="; color: rgb(90,#crop-size 100,#crop-size 103)"],html[data-theme="light"] #crop-size [style^="color:#525957"],html[data-theme="light"] #crop-size [style*=";color:#525957"],html[data-theme="light"] #crop-size [style*="; color:#525957"],html[data-theme="light"] #crop-size [style^="color: rgb(82,#crop-size 89,#crop-size 87)"],html[data-theme="light"] #crop-size [style*="; color: rgb(82,#crop-size 89,#crop-size 87)"],html[data-theme="light"] #crop-size [style^="color:#3a4144"],html[data-theme="light"] #crop-size [style*=";color:#3a4144"],html[data-theme="light"] #crop-size [style*="; color:#3a4144"],html[data-theme="light"] #crop-size [style^="color: rgb(58,#crop-size 65,#crop-size 68)"],html[data-theme="light"] #crop-size [style*="; color: rgb(58,#crop-size 65,#crop-size 68)"],html[data-theme="light"] #crop-size [style^="color:#3a4345"],html[data-theme="light"] #crop-size [style*=";color:#3a4345"],html[data-theme="light"] #crop-size [style*="; color:#3a4345"],html[data-theme="light"] #crop-size [style^="color: rgb(58,#crop-size 67,#crop-size 69)"],html[data-theme="light"] #crop-size [style*="; color: rgb(58,#crop-size 67,#crop-size 69)"]{color:var(--text-muted)!important}
@@ -364,7 +334,7 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
   </section>
 
   <div class="cd-maplab">Every state&rsquo;s crop, judged against its own history. Tap a state</div>
-  <div class="cd-grid" id="cd-grid"></div>
+  <div class="cd-map" id="cd-grid"><noscript><p>The map needs JavaScript.</p></noscript></div>
   <div class="cd-leg">
     <span><b style="background:#af3a32"></b>worst on record</span>
     <span><b style="background:#a8823c"></b>below normal</span>
@@ -440,7 +410,7 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
     <div><div class="vp-word" id="vp-word"></div><div class="vp-sent" id="vp-sent">Loading&hellip;</div></div>
   </section>
   <div class="vp-maplab" id="vp-maplab">How much this week&rsquo;s corn rating is worth, by state. Tap a state</div>
-  <div class="vp-grid" id="vp-grid"></div>
+  <div class="vp-map" id="vp-grid"><noscript><p>The map needs JavaScript.</p></noscript></div>
   <div class="vp-leg"><span><b style="background:#9c4b3d"></b>mostly noise</span><span><b style="background:#a8823c"></b>weak</span><span><b style="background:#396d4f"></b>meaningful</span><span><b style="background:#2f9963"></b>strong</span><span><b style="background:#14181a;border:1px dashed #2a3133"></b>no fit</span></div>
 
   <p class="sub" style="font-size:0.787rem;margin:4px 0 0">Every R&sup2; on this page is an in-sample fit over each state&rsquo;s own paired years (the count is shown as n or Years). A peak is the best of the weeks tested, so it is flattered by the choice.</p>
@@ -528,6 +498,7 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
 </div>
 <script src="/components/loader.js?v=19"></script>
 <script src="/components/rain-print-promo.js?v=6" defer></script>
+<script src="/components/usmap.js?v=1"></script>
 <script>
 (function(){
   'use strict';
@@ -552,9 +523,8 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
   }
 
 
-  var TILE={"AK":[1,1],"ME":[12,1],"VT":[11,2],"NH":[12,2],"WA":[2,3],"MT":[3,3],"ND":[4,3],"SD":[5,3],"MN":[6,3],"WI":[7,3],"MI":[8,3],"NY":[10,3],"MA":[11,3],"RI":[12,3],"OR":[2,4],"ID":[3,4],"WY":[4,4],"NE":[5,4],"IA":[6,4],"IL":[7,4],"IN":[8,4],"OH":[9,4],"PA":[10,4],"NJ":[11,4],"CT":[12,4],"CA":[2,5],"NV":[3,5],"UT":[4,5],"CO":[5,5],"KS":[6,5],"MO":[7,5],"KY":[8,5],"WV":[9,5],"VA":[10,5],"MD":[11,5],"DE":[12,5],"AZ":[3,6],"NM":[4,6],"OK":[5,6],"AR":[6,6],"TN":[7,6],"NC":[8,6],"SC":[9,6],"TX":[5,7],"LA":[6,7],"MS":[7,7],"AL":[8,7],"GA":[9,7],"HI":[1,8],"FL":[10,8]};
   var FULL2AB={"alaska":"AK","alabama":"AL","arkansas":"AR","arizona":"AZ","california":"CA","colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA","hawaii":"HI","iowa":"IA","idaho":"ID","illinois":"IL","indiana":"IN","kansas":"KS","kentucky":"KY","louisiana":"LA","massachusetts":"MA","maryland":"MD","maine":"ME","michigan":"MI","minnesota":"MN","missouri":"MO","mississippi":"MS","montana":"MT","north carolina":"NC","north dakota":"ND","nebraska":"NE","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","nevada":"NV","new york":"NY","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN","texas":"TX","utah":"UT","virginia":"VA","vermont":"VT","washington":"WA","wisconsin":"WI","west virginia":"WV","wyoming":"WY"};
-  var pickedState=null, geoNote='';
+  var pickedState=null, geoNote='', cdMap=null;
   // WORST and BEST come from the RANK, not the percentile. With 26 prior
   // years one lower year still rounds pctile to 4, and NC corn at 14% (rank 2
   // of 27) was printed "WORST ON RECORD". Record claims need the record:
@@ -621,22 +591,12 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
     var beats=st.rank_from_worst-1, yrs=st.of-1;
     $('cd-vsent').innerHTML=pickedState+' '+cname+' is rated <b style="color:'+vv[1]+'">'+Math.round(st.ge)+'% good or better</b> for the week ending '+niceDate(pkg.week_ending)+': a better rating than <b style="color:'+vv[1]+'">'+beats+' of the last '+yrs+' years</b> at this same week. Average for this week: '+Math.round(st.avg)+'%. Worst on record for this week: '+Math.round(st.worst)+'%. Best: '+Math.round(st.best)+'%.'
       +'<div class="cd-vmiss">'+missNote(st, pkg.week_ending)+'</div>';
-    var g=$('cd-grid'), h='';
-    Object.keys(TILE).forEach(function(ab){
-      var t=TILE[ab], st2=states[ab];
-      if(st2){
-        h+='<div class="cd-tile'+(ab===pickedState?' sel':'')+'" data-st="'+ab+'" style="--gc:'+t[0]+';--gr:'+t[1]+';background:'+tileColor(st2)+'">'
-          +'<div class="cd-tst">'+ab+'</div><div class="cd-tge">'+Math.round(st2.ge)+'%</div></div>';
-      } else {
-        h+='<div class="cd-tile dim" style="--gc:'+t[0]+';--gr:'+t[1]+'"><div class="cd-tst">'+ab+'</div></div>';
-      }
-    });
-    g.innerHTML=h;
+    var m={};
+    Object.keys(states).forEach(function(ab){ var s2=states[ab]; m[ab]={fill:tileColor(s2),text:Math.round(s2.ge)+'% good or better, '+verdictOf(s2)[0].toLowerCase()}; });
+    if(!cdMap&&window.AgUSMap) cdMap=AgUSMap.mount($('cd-grid'),{states:m,selected:pickedState,hint:'Tap a state.',name:'Map of crop condition by state',
+      onPick:function(ab){ pickedState=ab; geoNote=''; renderVerdict(); gaEvent('cond_verdict',{st:pickedState,crop:crop}); }});
+    else if(cdMap) cdMap.update(m,pickedState);
   }
-  document.addEventListener('click',function(e){
-    var t=e.target.closest('.cd-tile[data-st]');
-    if(t){ pickedState=t.dataset.st; geoNote=''; renderVerdict(); gaEvent('cond_verdict',{st:pickedState,crop:crop}); }
-  });
   document.addEventListener('change',function(e){
     if(e.target&&e.target.id==='cd-stsel'){ pickedState=e.target.value; geoNote=''; renderVerdict(); }
   });
@@ -810,9 +770,9 @@ var cyFit=(function(){var p=null,q=[];
 <script>
 
 (function(){
-  var TILE={"AK":[1,1],"ME":[12,1],"VT":[11,2],"NH":[12,2],"WA":[2,3],"MT":[3,3],"ND":[4,3],"SD":[5,3],"MN":[6,3],"WI":[7,3],"MI":[8,3],"NY":[10,3],"MA":[11,3],"RI":[12,3],"OR":[2,4],"ID":[3,4],"WY":[4,4],"NE":[5,4],"IA":[6,4],"IL":[7,4],"IN":[8,4],"OH":[9,4],"PA":[10,4],"NJ":[11,4],"CT":[12,4],"CA":[2,5],"NV":[3,5],"UT":[4,5],"CO":[5,5],"KS":[6,5],"MO":[7,5],"KY":[8,5],"WV":[9,5],"VA":[10,5],"MD":[11,5],"DE":[12,5],"AZ":[3,6],"NM":[4,6],"OK":[5,6],"AR":[6,6],"TN":[7,6],"NC":[8,6],"SC":[9,6],"TX":[5,7],"LA":[6,7],"MS":[7,7],"AL":[8,7],"GA":[9,7],"HI":[1,8],"FL":[10,8]}, F2A={"alaska":"AK","alabama":"AL","arkansas":"AR","arizona":"AZ","california":"CA","colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA","hawaii":"HI","iowa":"IA","idaho":"ID","illinois":"IL","indiana":"IN","kansas":"KS","kentucky":"KY","louisiana":"LA","massachusetts":"MA","maryland":"MD","maine":"ME","michigan":"MI","minnesota":"MN","missouri":"MO","mississippi":"MS","montana":"MT","north carolina":"NC","north dakota":"ND","nebraska":"NE","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","nevada":"NV","new york":"NY","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN","texas":"TX","utah":"UT","virginia":"VA","vermont":"VT","washington":"WA","wisconsin":"WI","west virginia":"WV","wyoming":"WY"};
+  var F2A={"alaska":"AK","alabama":"AL","arkansas":"AR","arizona":"AZ","california":"CA","colorado":"CO","connecticut":"CT","delaware":"DE","florida":"FL","georgia":"GA","hawaii":"HI","iowa":"IA","idaho":"ID","illinois":"IL","indiana":"IN","kansas":"KS","kentucky":"KY","louisiana":"LA","massachusetts":"MA","maryland":"MD","maine":"ME","michigan":"MI","minnesota":"MN","missouri":"MO","mississippi":"MS","montana":"MT","north carolina":"NC","north dakota":"ND","nebraska":"NE","new hampshire":"NH","new jersey":"NJ","new mexico":"NM","nevada":"NV","new york":"NY","ohio":"OH","oklahoma":"OK","oregon":"OR","pennsylvania":"PA","rhode island":"RI","south carolina":"SC","south dakota":"SD","tennessee":"TN","texas":"TX","utah":"UT","virginia":"VA","vermont":"VT","washington":"WA","wisconsin":"WI","west virginia":"WV","wyoming":"WY"};
   window.__A2F={"AL":"Alabama","AR":"Arkansas","AZ":"Arizona","CA":"California","CO":"Colorado","CT":"Connecticut","DE":"Delaware","FL":"Florida","GA":"Georgia","IA":"Iowa","ID":"Idaho","IL":"Illinois","IN":"Indiana","KS":"Kansas","KY":"Kentucky","LA":"Louisiana","MA":"Massachusetts","MD":"Maryland","ME":"Maine","MI":"Michigan","MN":"Minnesota","MO":"Missouri","MS":"Mississippi","MT":"Montana","NC":"North Carolina","ND":"North Dakota","NE":"Nebraska","NH":"New Hampshire","NJ":"New Jersey","NM":"New Mexico","NV":"Nevada","NY":"New York","OH":"Ohio","OK":"Oklahoma","OR":"Oregon","PA":"Pennsylvania","SC":"South Carolina","SD":"South Dakota","TN":"Tennessee","TX":"Texas","UT":"Utah","VA":"Virginia","VT":"Vermont","WA":"Washington","WI":"Wisconsin","WV":"West Virginia","WY":"Wyoming"};
-  var picked=null, geoNote='', VD=null;
+  var vpMap=null, picked=null, geoNote='', VD=null;
   function geoPick(av){ try{ var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');
     var ab=F2A[String(l.state||'').toLowerCase()]||(String(l.state||'').length===2?String(l.state).toUpperCase():null);
     if(ab&&av[ab]){ geoNote='auto-set from your location'; return ab; } }catch(e){}
@@ -829,20 +789,11 @@ var cyFit=(function(){var p=null,q=[];
     el('vp-word').textContent=d.word; el('vp-word').style.color=d.col;
     el('vp-sent').innerHTML=d.sent;
     var g=el('vp-grid');
-    if(g){ var h='';
-      Object.keys(TILE).forEach(function(ab){ var t=TILE[ab], s=VD[ab];
-        if(s){ h+='<div class="vp-tile'+(ab===picked?' sel':'')+'" data-st="'+ab+'" role="button" tabindex="0" aria-pressed="'+(ab===picked)+'" aria-label="'+(__A2F[ab]||ab)+', '+s.tval+'" style="--gc:'+t[0]+';--gr:'+t[1]+';background:'+s.tile+'"><div class="vp-tst">'+ab+'</div><div class="vp-tge">'+s.tval+'</div></div>'; }
-        else { h+='<div class="vp-tile dim" style="--gc:'+t[0]+';--gr:'+t[1]+'"><div class="vp-tst">'+ab+'</div></div>'; } });
-      g.innerHTML=h; }
+    if(g&&window.AgUSMap){ var m={}; Object.keys(VD).forEach(function(ab){ m[ab]={fill:VD[ab].tile,text:'R\u00b2 '+VD[ab].tval}; });
+      if(!vpMap) vpMap=AgUSMap.mount(g,{states:m,selected:picked,hint:'Tap a state.',name:'Map of what the corn rating is worth, by state',
+        onPick:function(ab){ picked=ab; geoNote=''; render(); try{gaEvent('verdict_tap',{st:picked,page:location.pathname});}catch(x){} }});
+      else vpMap.update(m,picked); }
   }
-  document.addEventListener('click',function(e){ var t=e.target.closest('.vp-tile[data-st]');
-    if(t){ picked=t.dataset.st; geoNote=''; render(); try{gaEvent('verdict_tap',{st:picked,page:location.pathname});}catch(x){} } });
-  document.addEventListener('keydown',function(e){
-    if(e.key!=='Enter'&&e.key!==' ')return;
-    var t=e.target.closest&&e.target.closest('.vp-tile[data-st]'); if(!t)return;
-    e.preventDefault(); picked=t.dataset.st; geoNote=''; render();
-    var n=document.querySelector('.vp-tile[data-st="'+picked+'"]'); if(n)n.focus();
-    try{gaEvent('verdict_tap',{st:picked,page:location.pathname});}catch(x){} });
   document.addEventListener('change',function(e){ if(e.target&&e.target.id==='vp-sel'){ picked=e.target.value; geoNote=''; render(); } });
   function buildVerdicts(j){
     var out={}, sts=(j.crops.corn||{}).states||{};
