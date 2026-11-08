@@ -108,3 +108,23 @@ test("the builder reads only the fields it prints: no name field anywhere in its
   assert.doesNotMatch(code, /\[["'](?:buyer|owner|seller|purchaser|name)["']\]|get\(["'](?:buyer|owner|seller|purchaser|name)["']/);
   assert.doesNotMatch(code, EM);
 });
+
+test("tract ranges from the archive pages ('1-3+9') are kept, and read as 'Tracts'", () => {
+  const py = `
+import sys, json
+sys.path.insert(0, "scripts")
+import build_atlas_pages as B
+r = {"source": "schrader", "auction_id": "ohio-land-auction-180-acres-offered-in-6-tracts-2013", "county_fips": "39129", "date": "2013-08-28",
+     "headline_acres": 179.8, "total_sold": 1270000, "kind": "auction",
+     "url": "https://www.schraderauction.com/auctions/ohio-land-auction-180-acres-offered-in-6-tracts-2013",
+     "tracts": [{"tracts": "1-3+9", "sold": 850000, "per_acre": 7162}, {"tracts": "4", "sold": 120000, "per_acre": None}]}
+a = B.auction_record(r, "2026-11-08")
+bad = dict(r, tracts=[{"tracts": "1-3; sold to X", "sold": 5, "per_acre": None}])
+print(json.dumps({"kept": a is not None, "bad": B.auction_record(bad, "2026-11-08") is None, "html": B.auction_section([a])}))
+`;
+  const o = JSON.parse(execFileSync("python3", ["-c", py], { cwd: ROOT, encoding: "utf8" }).trim().split("\n").pop());
+  assert.ok(o.kept, "a range is a tract label");
+  assert.ok(o.bad, "text in a tract label is still refused");
+  assert.match(o.html, /<li>Tracts 1-3\+9: \$850,000, \$7,162\/acre, as reported<\/li>/);
+  assert.match(o.html, /<li>Tract 4: \$120,000, no per-acre figure published<\/li>/);
+});

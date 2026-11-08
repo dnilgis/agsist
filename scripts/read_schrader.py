@@ -22,12 +22,20 @@ headline acres are 20 or more. The rest are counted (dropped_not_farmland), neve
 stored. headline_acres comes from the feed title when it gives one, else the page's
 Acres fact, else the page title.
 
+Archive pages (the slug-named backfill, 2012 on) come in older layouts: the where line is free text
+("Allegan County, Michigan", "Cecil, Ohio - Paulding County, Crane Township"), tract rows may be
+ranges ("1-3+9"), and the auction date can follow "Real estate". A county is taken only when exactly
+one is named and one state; several counties, no county (a town is never turned into one), two states,
+or a slug that names another county are withheld and counted by reason. A printed per-acre figure
+above $1,000,000 is a typo on the page and is left out. Numbered weekly pages keep the strict reading.
+
 The output keeps history: records already in the file stay (the feed only ever
 shows the newest five sales), a record seen again replaces the saved one only when
 every saved value comes back unchanged and only new tract rows are added (any other
 difference is refused, logged and counted), and a run that would leave fewer records than the file had
 writes nothing and exits 1.
 
+  python3 scripts/read_schrader.py --capture land/schrader/backfill --out <file>  # the saved archive pages
   python3 scripts/read_schrader.py --latest              # newest folder under land/schrader/capture
   python3 scripts/read_schrader.py --capture <folder>    # one folder
   python3 scripts/read_schrader.py --latest --out <file>  # write elsewhere (the capture job's facts-only file)
@@ -46,7 +54,7 @@ import json
 import os
 import re
 import sys
-from datetime import datetime
+from datetime import datetime, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from atlas_common import county_index, norm_name  # noqa: E402  the repo's one county name to FIPS join
@@ -56,6 +64,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CAPTURES = os.path.join(ROOT, "land", "schrader", "capture")
 OUT = os.path.join(ROOT, "data", "land", "auctions", "schrader.json")
 FIXTURES = os.path.join(ROOT, "test", "fixtures", "schrader")
+FIXTURES_BACKFILL = os.path.join(ROOT, "test", "fixtures", "schrader-backfill")  # scrubbed archive pages, named by slug
 BASE = "https://www.schraderauction.com"
 # An auction id is Schrader's number or, for an archive page that has none, its slug (the page's
 # canonical link, "williams-county-ohio-land-auction-63-acres-march-2026"). Numeric ids and urls are
@@ -77,6 +86,7 @@ def id_key(i):
 CREDIT = "Sold/auction results reported by Schrader Real Estate and Auction Co."
 CREDIT_URL = BASE + "/auctions/recent_auctions"
 MIN_ACRES = 20
+MAX_PER_ACRE = 1000000  # a printed figure above this is a typo on the page (one read $10,800,000): withheld, the row kept
 ABBR = {v.lower(): k for k, v in STATES.items()}
 MONTHS = {m: i for i, m in enumerate(["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"], 1)}
 
@@ -157,8 +167,83 @@ def place(page):
     return None, None
 
 
-def parse_page(page, auction_id, feed_item=None, idx=None):
-    """One record, or None when the page carries no result table."""
+# ---- the older archive layouts (2012 to 2025). The where line is free text there: "Allegan County,
+# Michigan", "Cecil, Ohio - Paulding County, Crane Township", "Dowagiac, MI - Cass County", with
+# or without a street address, several counties, or no county at all. A county is taken only when
+# exactly one is named and exactly one state is named; the page's own slug (Schrader's canonical
+# address, "payne-county-oklahoma-land-auction-...") may add it and must never disagree. Anything
+# else is withheld and counted with its reason; a county is never worked out from a town.
+STATE_NAMES = sorted(ABBR, key=len, reverse=True)  # "west virginia" before "virginia"
+STATE_WORD = re.compile(r"\b(" + "|".join(re.escape(s) for s in STATE_NAMES) + r")\b(?!\s+(?:count|co\b|court|twp|township))", re.I)
+STATE_ABBR = re.compile(r",\s*(" + "|".join(STATES) + r")\b(?!\.?\w)")
+COUNTY_WORD = re.compile(r"((?:[A-Za-z][A-Za-z.'\u2019]*\s+){0,2}[A-Za-z][A-Za-z.'\u2019]*)\s+(?:County|Co)\b", re.I)
+PLURAL = re.compile(r"\bcounties\b", re.I)
+SLUG_COUNTY = re.compile(r"^((?:[a-z]+-){1,2}?)county-((?:new-|north-|south-|west-)?[a-z]+)-")
+SLUG_STATES = {s.replace(" ", "-"): a for s, a in ABBR.items()}
+LEAD_WORDS = {"east", "west", "north", "south", "near", "in", "of", "and", "the", "at", "near"}
+
+
+def county_mentions(s):
+    """({normalized name: shown name}, plural) for the counties named in one piece of where-line text."""
+    found, plural = {}, bool(PLURAL.search(s))
+    for m in COUNTY_WORD.finditer(s):
+        words = m.group(1).split()
+        if len(words) > 1 and words[0].lower() in LEAD_WORDS:
+            words = words[1:]
+        name = " ".join(words)
+        if re.search(r"(?:&|\band)\s*$", s[:m.start(1)], re.I) or "and" in [x.lower() for x in words]:
+            plural = True  # "Cass & Van Buren Co."
+        if COUNTY_NAME.fullmatch(name):
+            found[norm_name(name)] = name.title()
+    return found, plural
+
+
+def states_in(s):
+    out = {ABBR[m.group(1).lower()] for m in STATE_WORD.finditer(s)}
+    return out | {m.group(1) for m in STATE_ABBR.finditer(s)}
+
+
+def place_archive(page, slug=""):
+    """(county, state, reason) for the older layouts. reason is None when a county and state were read."""
+    m = re.search(r'<p class="where">(.*?)</p>', page, re.S)
+    w = text(m.group(1)).split(" \u00b7 ")[0] if m else ""
+    found, plural = county_mentions(w)
+    keys = set(found)
+    sts = states_in(w)
+    sc = SLUG_COUNTY.match(slug or "")
+    s_county = s_state = None
+    if sc:
+        s_county = sc.group(1).rstrip("-").replace("-", " ")
+        s_state = SLUG_STATES.get(sc.group(2))
+        if re.search(r"-county-[a-z-]*?-county-", slug):
+            plural = True
+    if re.match(r"(?:[a-z]+-){1,3}counties-", slug or "") or (slug or "").startswith("multi-county-"):
+        plural = True
+    slug_states = {SLUG_STATES[k] for k in SLUG_STATES if re.search(r"(?:^|-)" + re.escape(k) + r"(?:-|$)", slug or "")}
+    if plural or len(keys) > 1:
+        return None, None, "multi_county"
+    if not keys:
+        if s_county and s_state and s_state in slug_states and len(slug_states) == 1 and not w_has_county_word(w):
+            return s_county.title(), s_state, None
+        return None, None, "no_county_named"
+    sts = sts or ({s_state} if s_state else set()) or slug_states
+    if len(sts) != 1:
+        return None, None, "state_unclear"
+    st = next(iter(sts))
+    if s_county and not any(norm_name(s_county).endswith(k) for k in keys):
+        return None, None, "conflict"  # the slug may carry a lead word ("excellent-noble-county")
+    if s_state and s_state != st:
+        return None, None, "conflict"
+    return found[next(iter(keys))], st, None
+
+
+def w_has_county_word(w):
+    return bool(re.search(r"\bcount(?:y|ies)\b|\bco\b", w, re.I))
+
+
+def parse_page(page, auction_id, feed_item=None, idx=None, why=None):
+    """One record, or None when the page carries no result table. why, when a dict, gets "reason" set when
+    the county could not be read (the record then has no county and the caller drops it)."""
     if isinstance(page, bytes):
         page = page.decode("utf-8", "replace")
     box = re.search(r'<div class="sold-box">(.*?)</table>', page, re.S)
@@ -173,10 +258,11 @@ def parse_page(page, auction_id, feed_item=None, idx=None):
             continue
         sold = money(tds[1])
         tracts = re.sub(r"\s+", "", text(tds[0]))
-        if sold is None or not re.fullmatch(r"\d+[A-Za-z]?(?:\+\d+[A-Za-z]?)*", tracts):
+        if sold is None or not re.fullmatch(r"\d+[A-Za-z]?(?:[+-]\d+[A-Za-z]?)*", tracts):
             continue
         pa = PER_ACRE_RE.match(text(tds[2])) if len(tds) > 2 else None
-        rows.append({"tracts": tracts, "sold": sold, "per_acre": int(pa.group(1).replace(",", "")) if pa else None})
+        per = int(pa.group(1).replace(",", "")) if pa else None
+        rows.append({"tracts": tracts, "sold": sold, "per_acre": per if per is None or per <= MAX_PER_ACRE else None})
     if not rows:
         return None
     h1 = re.search(r"<h1>(.*?)</h1>", page, re.S)
@@ -187,8 +273,22 @@ def parse_page(page, auction_id, feed_item=None, idx=None):
         a = re.match(r"(\d[\d,]*(?:\.\d+)?)", fact(page, "Acres"))
         acres = float(a.group(1).replace(",", "")) if a else acres_in(title)
     county, st = place(page)
+    reason = None
     fips = idx.get((st, norm_name(county))) if county and idx is not None else None
+    if fips is None and not str(auction_id).isdigit():
+        # archive pages (slug ids) only: the older layouts, or a county text that does not join (a typo in
+        # the title). A numbered weekly page keeps the strict reading above (checker, PR #412).
+        c2, s2, reason = place_archive(page, str(auction_id))
+        f2 = idx.get((s2, norm_name(c2))) if c2 and idx is not None else None
+        if f2 is not None:
+            county, st, fips = c2, s2, f2
+        elif county is None:
+            county, st = c2, s2
     if fips is None:
+        if reason is None and county:
+            reason = "not_a_county_there"
+        if why is not None:
+            why["reason"] = reason or "no_county_named"
         # county text is shown only when it joined to a real county; the record is then dropped
         # (read_capture counts it). The text itself is never printed: job logs are public.
         county = st = None
@@ -213,8 +313,9 @@ def is_farmland(rec):
     return any(r["per_acre"] is not None for r in rec["tracts"]) or (rec["headline_acres"] or 0) >= MIN_ACRES
 
 
-def read_capture(folder, idx=None):
-    """(kept records, counts) for one capture folder."""
+def read_capture(folder, idx=None, skipped=None):
+    """(kept records, counts) for one capture folder. skipped, when a dict, collects {reason: [auction ids]}
+    for the farmland pages that were withheld because no single county could be read."""
     feed = {}
     fp = os.path.join(folder, "index-sold.rss")
     if os.path.exists(fp):
@@ -226,6 +327,7 @@ def read_capture(folder, idx=None):
         with open(mp, encoding="utf-8") as fh:
             captured = (json.load(fh).get("captured_utc") or "")[:10] or None
     captured = captured or (os.path.basename(os.path.normpath(folder)) if re.fullmatch(r"\d{4}-\d{2}-\d{2}", os.path.basename(os.path.normpath(folder))) else None)
+    captured = captured or datetime.now(timezone.utc).strftime("%Y-%m-%d")  # the backfill folder has no date of its own
     kept, n = [], {"pages": 0, "kept": 0, "dropped_not_farmland": 0, "no_result": 0, "dropped_future_date": 0, "dropped_no_county": 0}
     adir = os.path.join(folder, "auctions")
     for f in sorted(os.listdir(adir)) if os.path.isdir(adir) else []:
@@ -237,13 +339,16 @@ def read_capture(folder, idx=None):
             raw = fh.read()
         if not aid.isdigit():
             aid = canonical_slug(raw) or aid  # no number on the page: the canonical slug is the id
-        rec = parse_page(raw, aid, feed.get(aid), idx)
+        why = {}
+        rec = parse_page(raw, aid, feed.get(aid), idx, why)
         if rec is None:
             n["no_result"] += 1
         elif not is_farmland(rec):
             n["dropped_not_farmland"] += 1
         elif rec["county_fips"] is None:
             n["dropped_no_county"] += 1
+            if skipped is not None:
+                skipped.setdefault(why.get("reason") or "no_county_named", []).append(aid)
         elif captured and rec["date"] and rec["date"] > captured:
             n["dropped_future_date"] += 1  # a result dated after the capture is not a result yet
         else:
@@ -291,8 +396,12 @@ def merge(old, new, stats=None):
 def build(folder, out=OUT, idx=None):
     """Read one capture folder and merge it into `out`. Returns an exit code."""
     idx = idx if idx is not None else county_index()
-    new, counts, captured = read_capture(folder, idx)
+    skipped = {}
+    new, counts, captured = read_capture(folder, idx, skipped)
     code = write_merged(out, new, dict(counts, captured=captured), captured)
+    if skipped:
+        print("read_schrader: farmland pages with no single county, withheld: "
+              + ", ".join(f"{k} {len(v)}" for k, v in sorted(skipped.items())))
     print(f"read_schrader: {counts['pages']} page(s), {counts['kept']} kept, {counts['dropped_not_farmland']} not farmland, "
           f"{counts['dropped_no_county']} with no county match, {counts['no_result']} with no result table")
     return code
@@ -341,7 +450,7 @@ def valid(rec, idx):
               and (rec["total_sold"] is None or type(rec["total_sold"]) is int)
               and isinstance(rec["tracts"], list) and rec["tracts"]
               and all(isinstance(x, dict) and set(x) == {"tracts", "sold", "per_acre"}
-                      and re.fullmatch(r"\d+[A-Za-z]?(?:\+\d+[A-Za-z]?)*", x["tracts"]) and type(x["sold"]) is int
+                      and re.fullmatch(r"\d+[A-Za-z]?(?:[+-]\d+[A-Za-z]?)*", x["tracts"]) and type(x["sold"]) is int
                       and (x["per_acre"] is None or type(x["per_acre"]) is int) for x in rec["tracts"])
               and is_farmland(rec))
         return bool(ok)
@@ -564,6 +673,52 @@ def selftest():
         merge(list(got.values()), list(got.values()), st)
         check(st == {"refused_overwrites": 0}, "the same records again change nothing and refuse nothing")
         check(latest(tmp) == cap and latest(os.path.join(tmp, "none")) is None, "--latest picks the newest dated folder")
+
+        # the older archive layouts (2012 to 2025): scrubbed real pages, named by slug
+        bcap = os.path.join(tmp, "backfill-cap")
+        os.makedirs(os.path.join(bcap, "auctions"))
+        for f in os.listdir(FIXTURES_BACKFILL):
+            shutil.copy(os.path.join(FIXTURES_BACKFILL, f), os.path.join(bcap, "auctions", f))
+        sk = {}
+        b_recs, b_n, _ = read_capture(bcap, idx, sk)
+        bb = {r["auction_id"]: r for r in b_recs}
+        check(b_n["pages"] == 4 and b_n["kept"] == 3 and b_n["no_result"] == 0 and b_n["dropped_no_county"] == 1
+              and {k: len(v) for k, v in sk.items()} == {"multi_county": 1},
+              f"backfill fixtures: three read, the two-county page withheld and counted ({b_n}, {sk})")
+        r = bb.get("ohio-land-auction-180-acres-offered-in-6-tracts-2013") or {}
+        check(r.get("county_fips") == "39129" and r.get("state") == "OH" and r.get("date") == "2013-08-28"
+              and [x["tracts"] for x in r.get("tracts", [])] == ["1-3", "4", "5+6"] and r.get("total_sold") == 1270000
+              and valid(r, idx), "2013 page: Pickaway County, OH from 'Circleville, Ohio - Pickaway County'; tract range '1-3' kept")
+        r = bb.get("payne-county-oklahoma-land-auction-80-acres-september-2020") or {}
+        check(r.get("county_fips") == "40119" and r.get("headline_acres") == 80 and r.get("total_sold") == 254800
+              and r.get("url") == BASE + "/auctions/payne-county-oklahoma-land-auction-80-acres-september-2020",
+              "2020 page: where line 'Payne County, Oklahoma' with no dash")
+        r = bb.get("10-acres-offered-in-2-tracts-real-estate-and-personal-2012") or {}
+        check(r.get("county_fips") == "26027" and r.get("date") == "2012-08-25" and r.get("state") == "MI",
+              "2012 page: 'Dowagiac, MI - Cass County', the date after 'Real estate' read")
+        bad = {k for rec in b_recs for k in rec} & {"buyer", "buyers", "purchaser", "owner", "name", "bidder"}
+        check(not bad and all(valid(x, idx) for x in b_recs), "backfill records: no buyer field, every one in the reader's shape")
+
+        def pa(where, slug=""):
+            return place_archive('<p class="where">' + where + '</p>', slug)
+        check(pa("Marcellus, Michigan, Cass County")[:2] == ("Cass", "MI"), "where: 'Town, State, X County'")
+        check(pa("Washington Court House - Fayette County - Union Township", "fayette-county-ohio-land-auction-154-acres-june-2022")[:2] == ("Fayette", "OH"),
+              "where: no state in the line, the slug's state; 'Washington' before Court House is not the state")
+        check(pa("Guymon, Oklahoma - Texas County")[:2] == ("Texas", "OK"), "where: 'Texas County, Oklahoma' is not Texas the state")
+        check(pa("Cass & Van Buren Co. Michigan")[2] == "multi_county" and pa("Lea County New Mexico & Cochran County, Texas")[2] == "multi_county"
+              and pa("Cameron, Willacy, & Hidalgo Counties, TX")[2] == "multi_county", "two or more counties: withheld")
+        check(pa("Stillwater, OK")[2] == "no_county_named" and pa("Allegan, Michigan")[2] == "no_county_named",
+              "a town is never turned into a county")
+        check(pa("Stillwater, OK", "payne-county-oklahoma-land-auction-8-acres-december-2025")[:2] == ("Payne", "OK"),
+              "no county in the line: the page's own slug names it")
+        check(pa("Van Buren County, Antwerp Township, Southwestern Michigan", "kalamazoo-county-michigan-land-auction-58-acres-april-2014")[2] == "conflict",
+              "the line and the slug name different counties: withheld")
+        check(pa("Southwestern Michigan, Cass County, 1 Mile North of Indiana Line")[2] == "state_unclear", "two states named: withheld")
+        check(pa("Noble County, OK", "excellent-noble-county-ok-farmland-auction-235-acres-2025")[:2] == ("Noble", "OK"),
+              "a lead word in the slug is not a conflict")
+        check(pa("UNION TWP, AUGLAIZE CO - 5 MILES EAST OF WAPAKONETA, OH")[:2] == ("Auglaize", "OH"), "where: all caps, 'CO' for County")
+        rec = parse_page(open(os.path.join(FIXTURES, "9630.html"), encoding="utf-8").read().replace("$9,709/acre", "$10,800,000/acre"), "1", None, idx)
+        check(rec["tracts"][2]["per_acre"] is None and rec["tracts"][2]["sold"] == 1000000, "a per-acre figure above $1,000,000 is a typo on the page: withheld")
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 

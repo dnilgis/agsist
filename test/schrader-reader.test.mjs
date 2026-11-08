@@ -24,6 +24,7 @@ import { fileURLToPath } from 'node:url';
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
 const FX = 'test/fixtures/schrader';
+const FXB = 'test/fixtures/schrader-backfill'; // scrubbed archive pages (Nov 8), named by slug
 const CREDIT = 'Sold/auction results reported by Schrader Real Estate and Auction Co.';
 // a buyer-ish word, in any case, followed by a name-like word (a placeholder in brackets is not one)
 const BUYERISH = /\b(?:sold\s+to|buyers?|purchasers?|owners?)\b\s*(?:is\s+|was\s+|[:,-]\s*)?[a-z][a-z'.]+/i;
@@ -43,7 +44,8 @@ test('the reader selftest passes on the scrubbed fixtures', () => {
     '--merge refuses a total that is a bool', '--merge keeps the saved record over a changed sold price',
     '--merge keeps the saved record over a changed per acre', '--merge keeps the saved record over rows that differ plus a new row',
     '--merge keeps the saved record over fewer rows', '--merge keeps the saved record over a changed total',
-    'a refused overwrite is counted',
+    'a refused overwrite is counted', 'no county in the line: the page\'s own slug names it',
+    'two or more counties: withheld', 'a per-acre figure above $1,000,000 is a typo on the page: withheld',
     'identical rows plus a new row replace the saved record; a new auction_id is added']) {
     assert.ok(out.includes('ok   ' + name), 'selftest ran: ' + name);
   }
@@ -72,10 +74,11 @@ print(json.dumps(dict(rec, feed_date=feed["9630"]["date"])))
 });
 
 test('the fixtures are scrubbed copies: no phone, no email, no buyer named', () => {
-  const files = fs.readdirSync(path.join(root, FX));
-  assert.ok(files.length >= 6, 'five pages and the feed');
+  const files = [...fs.readdirSync(path.join(root, FX)).map((f) => `${FX}/${f}`),
+    ...fs.readdirSync(path.join(root, FXB)).map((f) => `${FXB}/${f}`)];
+  assert.ok(files.length >= 10, 'five pages and the feed, four archive pages');
   for (const f of files) {
-    const t = read(`${FX}/${f}`);
+    const t = read(f);
     assert.doesNotMatch(t, /\(?\b\d{3}\)?[-. ]\d{3}[-.]\d{4}\b/, `${f}: a phone number`);
     assert.doesNotMatch(t, /tel:/i, `${f}: a phone link`);
     assert.doesNotMatch(t, /[\w.+-]+@[\w-]+\.[\w.]+/, `${f}: an email address`);
@@ -159,7 +162,7 @@ test('the capture workflow: weekly on Monday at 19:43 UTC behind the house gate,
   assert.ok(cap.indexOf('python3 scripts/read_schrader.py --selftest') > 0);
   for (const s of steps(cap)) {
     if (!/PRIVATE_REPO_TOKEN/.test(s)) continue;
-    assert.ok(/scripts\/push_raw\.sh/.test(s) || /name: Engine checkout/.test(s), 'the private token only on the raw save (and the engine checkout): ' + s.split('\n')[0]);
+    assert.ok(/scripts\/push_raw\.sh/.test(s) || /scripts\/pull_raw\.sh land\/schrader\/backfill\/auctions/.test(s) || /name: Engine checkout/.test(s), 'the private token only on the raw save, the backfill read from raw (and the engine checkout): ' + s.split('\n')[0]);
   }
   const up = /uses: actions\/upload-artifact@v4\n        with:\n([\s\S]*?)(?:\n\n|\n      - |\n  [a-z]|$)/.exec(cap);  // the upload step's own lines (a later step may follow, Nov 8)
   assert.ok(up, 'the capture job uploads an artifact');
@@ -171,10 +174,27 @@ test('the capture workflow: weekly on Monday at 19:43 UTC behind the house gate,
   assert.match(com, /\n    permissions:\n      contents: write\n/);
   assert.match(com, /uses: actions\/download-artifact@v4\n        with:\n          name: schrader-results\n/);
   const runs = [...com.matchAll(/run: (?:\|\n([\s\S]*?)(?=\n      - |\n?$)|(.*))/g)].map((m) => (m[1] || m[2] || '').trim());
-  assert.ok(runs.includes('python3 scripts/read_schrader.py --merge results/schrader-new.json'), 'the commit job checks and merges the file');
+  const lines = runs.flatMap((r) => r.split('\n').map((l) => l.trim()));
+  assert.ok(lines.includes('python3 scripts/read_schrader.py --merge results/schrader-new.json'), 'the commit job checks and merges the file');
+  // the backfill pages (Nov 8): read from raw in the capture job into their own facts-only file, merged first so the weekly run's note wins
+  assert.ok(lines.some((l) => l.includes('python3 scripts/read_schrader.py --merge results/schrader-backfill.json')), 'the commit job also merges the backfill file');
+  assert.ok(lines.findIndex((l) => l.includes('schrader-backfill.json')) < lines.indexOf('python3 scripts/read_schrader.py --merge results/schrader-new.json'),
+    'the backfill file is merged before the weekly one');
   assert.ok(!/capture_schrader|push_raw|--capture|--latest/.test(com), 'the commit job reads no capture');
   const adds = [...com.matchAll(/git add ([^\n]+)/g)].map((m) => m[1].trim());
   assert.deepEqual(adds, ['data/land/auctions/schrader.json'], 'the commit job adds only the data file');
   assert.match(com, /\[skip ci\]/);
   assert.doesNotMatch(wf, /git add[^\n]*land\/schrader/, 'the raw capture never goes to main');
+});
+
+test('the backfill pages: the workflow reads them from raw into their own facts-only file', () => {
+  const wf = read('.github/workflows/schrader-capture.yml');
+  const i = wf.indexOf('Read the saved backfill pages into a facts-only file');
+  assert.ok(i > wf.indexOf('Backfill older auction pages from the archive'), 'the backfill read comes after the backfill walk');
+  const step = wf.slice(i, wf.indexOf('\n  commit:', i));
+  assert.match(step, /continue-on-error: true/, 'a failed backfill read never blocks the weekly merge');
+  assert.match(step, /bash scripts\/pull_raw\.sh land\/schrader\/backfill\/auctions\n/);
+  assert.match(step, /python3 scripts\/read_schrader\.py --capture land\/schrader\/backfill --out results\/schrader-backfill\.json\n/);
+  assert.match(step, /name: schrader-backfill-results\n\s+path: results\/schrader-backfill\.json\n/, 'only the facts-only file leaves the job');
+  assert.doesNotMatch(step, /push_raw|git (add|commit|push)/);
 });
