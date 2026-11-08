@@ -2082,7 +2082,6 @@ def method_html(D):
     irrigated answer is labeled as using it. Where it is above a practice&rsquo;s benchmark, no typical answer is given for that practice. The county page&rsquo;s Lower and Higher
     buttons use 85% and 115% of it.</li>
   </ul>
-  <div class="method-note"><b>Sources</b> &middot; FSA ARC/PLC program data (county benchmark yields and prices, PLC yields), NASS final season-average prices, USDA WASDE, USDA RMA price discovery. {CR.NASS_NOTICE} Estimates and probabilities are calculations by AGSIST. &middot; Reviewed by Sigurd Lindquist, CCA</div>
   <h3>Scenario prices ({len(yrs)} years)</h3>
   <div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th>{''.join(f'<th class="num">{y} {D["years"][y]["crops"][k]["label"].lower()}</th>' for y, k in cols)}</tr></thead><tbody>{rat}</tbody></table></div>
   <p class="ap-small">Season-average price used in each scenario year, $/bu.</p>
@@ -2254,7 +2253,6 @@ def build_main(D, ch):
   <p class="ap-states">{state_links}</p>
   </div>
 
-  {method_html(D)}
 
   <h2 id="faq">Questions farmers ask</h2>
   <div class="ap-faq">{faq_html}</div>
@@ -2263,7 +2261,7 @@ def build_main(D, ch):
   Read FSA&rsquo;s <a href="{FSA_PAGE}" rel="noopener">ARC/PLC page</a>, its <a href="{FSA_DATA}" rel="noopener">program data</a>,
   or <a href="{OFFICE}" rel="noopener">find your county FSA office</a>. Dollars are before the 5.7% sequestration cut.
   Run an extension office or co-op site? <a href="/developer#arc-plc">Embed the calculator</a>.</p>
-  <details class="ap-det"><summary>Sources</summary><ul class="ap-src">{srcs}<li><a href="https://quickstats.nass.usda.gov/" rel="noopener">USDA NASS Quick Stats</a> (season-average prices). {CR.NASS_NOTICE} The estimates are calculations by AGSIST.</li></ul></details>
+  <details class="ap-det" id="terms"><summary>Sources and terms</summary>{method_html(D)}<p class="ap-small"><b>Sources.</b> FSA ARC/PLC program data (county benchmark yields and prices, PLC yields), NASS final season-average prices, USDA WASDE, USDA RMA price discovery. {CR.NASS_NOTICE} Estimates and probabilities are calculations by AGSIST. Reviewed by Sigurd Lindquist, CCA.</p><ul class="ap-src">{srcs}<li><a href="https://quickstats.nass.usda.gov/" rel="noopener">USDA NASS Quick Stats</a> (season-average prices). {CR.NASS_NOTICE} The estimates are calculations by AGSIST.</li></ul></details>
   <p class="ap-small">Related: <a href="/farm-bill">Farm bill tracker</a> &middot; <a href="/breakeven">Break-even calculator</a> &middot; <a href="/harvest-price-tracker">Harvest price and pre-sell</a></p>
   <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
 </main>
@@ -3653,7 +3651,7 @@ def county_page(st, S, c, D, ch):
   {f'<div class="ap-faq ap-noprint"><h2>Questions about {esc(cname)}</h2>{faq_html}</div>' if faqs else ''}
   {RP_SEE}
   <p class="ap-disc">An estimate, not a USDA determination. Source: <a href="{FSA_DATA}" rel="noopener">FSA ARC/PLC program data</a>. <a href="{OFFICE}" rel="noopener">Find your county office</a>.</p>
-  <div class="method-note"><b>Method</b> &middot; Each program&rsquo;s expected payment per base acre across past years&rsquo; price and county yield swings, centered on USDA&rsquo;s 2026/27 price; <a href="/arc-plc#method">the full method</a>. &middot; Reviewed by Sigurd Lindquist, CCA</div>
+  <div class="method-note">An estimate by AGSIST from FSA program data and USDA prices. <a href="/arc-plc#method">How this is figured</a>. &middot; Reviewed by Sigurd Lindquist, CCA</div>
   <p class="ap-small ap-noprint">Related: {' &middot; '.join(rel)}</p>
   <p class="ap-printonly ap-small">Printed from {share}</p>
 </main>
