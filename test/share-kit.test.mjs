@@ -127,22 +127,24 @@ function fingerprints() {
   return out;
 }
 
+/* Nov 7 (fx/cot-label-collide): the seven entries marked below were re-recorded. In each of those records the
+   chart drew the latest label over the 52-week high's label (or the event line); layout() now finds them clear spots. */
 const GOLD = {
-  "cot.image.corn.phone": "4a7f66e3a5b334b2",
-  "cot.image.corn.wide": "bdc646f748a7714e",
+  "cot.image.corn.phone": "b998a01ac9a88042",  // Nov 7: chart labels no longer overlap (test/cot-labels)
+  "cot.image.corn.wide": "3537805e8e346203",  // Nov 7: chart labels no longer overlap (test/cot-labels)
   "cot.image.leanhogs.phone": "9855d275b008cd11",
   "cot.image.leanhogs.wide": "345ffff5d97a5c16",
   "cot.image.cmp.phone": "a3f1c3d88dfa49b3",
   "cot.image.cmp.wide": "7c370a1e958b1415",
-  "cot.sheet.corn.data": "28025c03e8b1d020",
-  "cot.sheet.corn.html300": "2603ea7ef0d3f77d",
-  "cot.sheet.corn.html260": "2dfb251ed880db82",
-  "cot.sheet.corn.html230": "ee200d088ab60551",
+  "cot.sheet.corn.data": "b97c88e769c96996",  // Nov 7: chart labels no longer overlap (test/cot-labels)
+  "cot.sheet.corn.html300": "ab786573f6ad92df",  // Nov 7: chart labels no longer overlap (test/cot-labels)
+  "cot.sheet.corn.html260": "9e30093af38c9cf2",  // Nov 7: chart labels no longer overlap (test/cot-labels)
+  "cot.sheet.corn.html230": "91bcf600a4803d1a",  // Nov 7: chart labels no longer overlap (test/cot-labels)
   "cot.sheet.corn.wall": "0630a55da75c9caa",
   "cot.sheet.beans.data": "3166d534bdf1fe75",
   "cot.sheet.beans.html300": "243e0abc9a4cd400",
   "cot.sheet.beans.html260": "b66957cfb624a197",
-  "cot.sheet.beans.html230": "e58cce92fba2232e",
+  "cot.sheet.beans.html230": "3f96aedababfdbe6",  // Nov 7: chart labels no longer overlap (test/cot-labels)
   "cot.sheet.beans.wall": "68a1dc4e4dd25532",
   "county.19169.live.data": "fc7cc5dd6dbddc8e",
   "county.19169.live.html300": "f62e0f9e4dbe3400",

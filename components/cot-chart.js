@@ -130,25 +130,46 @@
     var hiI = rows.indexOf(m.hi), loI = rows.indexOf(m.lo), off = big ? 16 : 10, mo = big ? 13 : 8;
     var marks = [hiI, loI].filter(function (i) { return i !== li; }).map(function (i) { return [xs[i], Y(nets[i])]; });
     function covers(b) { return marks.some(function (p) { return p[0] > b[0] - 6 && p[0] < b[2] + 6 && p[1] > b[1] - 6 && p[1] < b[3] + 6; }); }
+    /* the free bw x bh spot nearest (x, y), clear of every label, ring and the latest dot, with a thin line to it (Nov 7) */
+    function near(bw, bh, x, y, yM) {
+      for (var gy = 0, bd = 1e9, r = null; gy + bh <= yM; gy += fs / 2) for (var gx = L; gx + bw <= w; gx += fs / 2) {
+        var c = [gx, gy, gx + bw, gy + bh], px = Math.min(Math.max(x, gx), gx + bw), py = Math.min(Math.max(y, gy), gy + bh), d = (px - x) * (px - x) + (py - y) * (py - y);
+        if (d < bd && !hits(c) && !covers(c) && !(lx > gx - 9 && lx < gx + bw + 9 && ly > gy - 9 && ly < gy + bh + 9)) { bd = d; r = [c, [px, py]]; }
+      }
+      if (r) items.push({ t: 'line', pts: [[x, y], r[1]], ink: 'muted', width: 1 });
+      return r;
+    }
     /* the 52-week high and low: a ring, then "52-wk high 414.5k long" over its date */
     function mark(i, word, up) {
       var x = xs[i], y = Y(nets[i]), mk = [{ s: word + ' ' + K.kWords(nets[i]), size: fs, weight: 700, ink: 'text' }, { s: md(rows[i].date), size: fs, weight: 400, ink: 'muted' }];
       items.push({ t: 'dot', x: x, y: y, r: big ? 6 : 4, ink: 'surface', ring: 'net' });
       var bw = Math.max(tw(mk[0].s, fs), tw(mk[1].s, fs)), bh = fs * 2.4;
       var al = x - bw / 2 < L ? 'left' : x + bw / 2 > w - R ? 'right' : 'center', ax = al === 'left' ? x - fs * 0.3 : al === 'right' ? x + fs * 0.3 : x;
-      var b = null;
-      /* above or below, centred; then hung to either side of the ring (kit v2 part 2: a label never lands on another) */
-      var qs = [[up, al], [!up, al], [up, 'right'], [up, 'left'], [!up, 'right'], [!up, 'left']];
-      qs.concat(qs.slice(0, 2)).some(function (q, k) {
-        var qx = q[1] === al ? ax : q[1] === 'left' ? x - fs * 0.3 : x + fs * 0.3, c = bsize(mk, qx, q[0] ? y - mo - bh : y + mo, q[1]);
-        if (c[0] >= 0 && c[2] <= w && c[1] >= 0 && c[3] <= netB + fs * 0.2 && (k > 5 || !hits(c))) { b = c; al = q[1]; ax = qx; return true; }
-        return false;
+      var b = null, ok = false, rr = (big ? 6 : 4) + 4;
+      /* above or below, centred; then hung to either side of the ring; then level with it on either side; then slid
+         along above or below, still over the ring (kit v2 part 2: a label never lands on another). -> false when it
+         had to land on one */
+      var Q = [[up, al], [!up, al], [up, 'right'], [up, 'left'], [!up, 'right'], [!up, 'left'], [null, 'right'], [null, 'left']].map(function (q) {
+        return [q[0] === null ? (q[1] === 'left' ? x + rr : x - rr) : q[1] === al ? ax : q[1] === 'left' ? x - fs * 0.3 : x + fs * 0.3, q[0] === null ? y - bh / 2 : q[0] ? y - mo - bh : y + mo, q[1]];
       });
+      [up, !up].forEach(function (u) { for (var sx = x - bw; sx <= x; sx += fs / 2) Q.push([sx, u ? y - mo - bh : y + mo, 'left']); });
+      function tq(l, force) {
+        return l.some(function (q) {
+          var c = bsize(mk, q[0], q[1], q[2]);
+          if (c[0] >= 0 && c[2] <= w && c[1] >= 0 && c[3] <= netB + fs * 0.2 && (force || !hits(c))) { b = c; ax = q[0]; al = q[2]; return true; }
+        });
+      }
+      ok = tq(Q);
+      var n2 = ok ? null : near(bw, bh, x, y, netB + fs * 0.2);
+      if (n2) { b = n2[0]; ax = b[0]; al = 'left'; }
+      if (!b) tq(Q.slice(0, 2), true);
       if (!b) b = bsize(mk, ax, up ? y - mo - bh : y + mo, al);
       block(mk, ax, b[1], al); boxes.push(b);
+      return ok;
     }
-    if (hiI !== li) mark(hiI, '52-wk high', true);
-    if (loI !== li && loI !== hiI) mark(loI, '52-wk low', false);
+    var mk0 = items.length, bx0 = boxes.length;
+    function marks2() { var a = hiI === li || mark(hiI, '52-wk high', true); return (loI === li || loI === hiI || mark(loI, '52-wk low', false)) && a; }
+    var mOk = marks2();
     /* the latest point (placed after the marks, clear of their labels): its number (and "52-wk high" when it is one), its date, and a measured record */
     var lx = xs[li], ly = Y(m.last.net), lfs = Math.round(fs * 1.12), dr = big ? 8 : 5.5;
     var ls = [{ s: netWords(m.last.net) + (li === hiI ? ' (52-wk high)' : li === loI ? ' (52-wk low)' : ''), size: lfs, weight: 800, ink: 'text' },
@@ -159,16 +180,37 @@
       else ls.push({ s: rec, size: fs, weight: 700, ink: 'text' });
     }
     var lh = ls.reduce(function (a, l) { return a + l.size * 1.2; }, 0), lxr = lx - dr - 2;
-    var tries = li === loI || ly - T < lh + off ? [false, true] : [true, false], lb = null;
-    tries.some(function (up) {
-      var b = bsize(ls, lxr, up ? ly - off - lh : ly + off, 'right');
-      if (b[1] >= T - fs * 0.6 && b[3] <= netB + (evH ? 0 : fs * 0.3) && !covers(b) && !hits(b)) { lb = b; return true; }
-      return false;
-    });
-    if (!lb) lb = bsize(ls, lxr, tries[0] ? ly - off - lh : ly + off, 'right');
+    var tries = li === loI || ly - T < lh + off ? [false, true] : [true, false], lx0 = lxr;
+    var lB = netB + (evH ? 0 : fs * 0.3), lT = T - fs * 0.6, Z = tries.map(function (up) { return [lx0, up ? ly - off - lh : ly + off]; });
+    /* above or below the dot, then level with it on its left, then further up or down -> [box, try] for the first
+       clear one from try k0 */
+    var sX = lx - dr - fs * 0.5;
+    Z.push([sX, Math.max(lT, Math.min(ly - lh / 2, lB - lh))]);
+    for (var s = fs / 2; s < h; s += fs / 2) Z.push([lx0, ly - off - lh - s], [lx0, ly + off + s], [sX, ly - lh / 2 - s], [sX, ly - lh / 2 + s]);
+    function fit(k0) {
+      for (var k = k0; k < Z.length; k++) {
+        var b = bsize(ls, Z[k][0], Z[k][1], 'right');
+        if (b[0] >= 0 && b[1] >= lT && b[3] <= lB && !covers(b) && !hits(b)) { lxr = Z[k][0]; return [b, k]; }
+      }
+      return null;
+    }
+    var f = fit(0), lb = f && f[0], redo = !lb || !mOk;
+    /* no clear spot for every label (a 52-week high a few weeks back, Nov 7): the latest label goes first, each of
+       its spots in turn, until the marks find room around it, so no two labels touch */
+    for (var k = 0, end = false; redo;) {
+      items.length = mk0; boxes.length = bx0; f = fit(k);
+      if (!f && k) { f = fit(0); end = true; }   /* none worked: its first clear spot */
+      if (!f) lxr = lx0;
+      var n3 = f ? null : near(Math.max.apply(null, ls.map(function (l) { return tw(l.s, l.size); })), lh, lx, ly, lB);
+      if (n3) lxr = n3[0][2];
+      lb = f ? f[0] : n3 ? n3[0] : bsize(ls, lx0, tries[0] ? ly - off - lh : ly + off, 'right');
+      boxes.push(lb);
+      if (marks2() || !f || end) break;
+      k = f[1] + 1;
+    }
     items.push({ t: 'dot', x: lx, y: ly, r: dr, ink: 'net', ring: 'surface' });
     if (m.record) items.push({ t: 'dot', x: lx, y: ly, r: dr + (big ? 6 : 4), ink: 'none', ring: 'text', rw: 2 });
-    block(ls, lxr, lb[1], 'right'); boxes.push(lb);
+    block(ls, lxr, lb[1], 'right'); if (!redo) boxes.push(lb);
     /* one event at most: the run of buying or selling that ends on this report, bracketed on its own row under
        the run's weeks, its label to the left ("Sold 7 weeks: 405,665") */
     if (evH) {
