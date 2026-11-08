@@ -1643,7 +1643,15 @@ def land_first_rent(rv, ri, rv_old, R):
 # renderer reads only the fields below). A county with no records gets no card.
 AUC_DIR = "data/land/auctions"
 # source -> (short name for the link, full name for the credit line, the only pages a row may link to)
-AUC_FIRMS = {"schrader": ("Schrader", "Schrader Real Estate and Auction Co.", "https://www.schraderauction.com/auctions/")}
+# Schrader's link is exactly <prefix><auction id>; the four firms read by scripts/read_land_firms.py link to the page of
+# their own site the result was read from (the prefix, then URL characters only). Credit sentence per firm.
+AUC_FIRMS = {"schrader": ("Schrader", "Schrader Real Estate and Auction Co.", "https://www.schraderauction.com/auctions/"),
+             "wieman": ("Wieman", "Wieman Land & Auction", "https://www.wiemanauction.com/land-auction-results.php"),
+             "younger": ("Younger", "Younger Auction Company", "https://www.youngerauction.com/land-auction-results.html"),
+             "horning": ("Horning", "Horning Farm Agency", "https://www.horningfarmagency.com/auction/"),
+             "martins": ("Martin's", "Martin's Auction Service", "https://martinsauctionservice.com/product/")}
+AUC_CREDIT = {"schrader": "Sold and auction results reported by Schrader Real Estate and Auction Co."}
+_AUC_URL = re.compile(r"^https://[A-Za-z0-9.-]+/[A-Za-z0-9._~:/?=&%-]*$")
 AUC_NOTE = "Not recorded transfers; not every sale is listed. Figures as published by the auction firm."
 _AUC_ISO = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 _AUC_TRACTS = re.compile(r"^[0-9A-Za-z]{1,4}(?:[+-][0-9A-Za-z]{1,4}){0,39}$")  # "1-3+9": the archive pages print ranges
@@ -1666,20 +1674,28 @@ def auction_record(r, today):
         datetime.date.fromisoformat(d)
     except ValueError:
         return None
-    if d > today or url != firm[2] + aid or not _auc_num(r.get("headline_acres")) or not _auc_num(r.get("total_sold")):
+    if r["source"] == "schrader":
+        url_ok = url == firm[2] + aid
+    else:
+        url_ok = url.startswith(firm[2]) and bool(_AUC_URL.match(url)) and len(url) <= 300
+    tot = r.get("total_sold")
+    if d > today or not url_ok or not _auc_num(r.get("headline_acres")) or not (_auc_num(tot) or (tot is None and r["source"] != "schrader")):
         return None
     if r.get("kind", "auction") != "auction":
         return None
     tr = []
     for t in r.get("tracts") or []:
-        if not isinstance(t, dict) or not _AUC_TRACTS.match(str(t.get("tracts") or "")) or not _auc_num(t.get("sold")):
-            return None
         pa = t.get("per_acre")
+        if not isinstance(t, dict) or not _AUC_TRACTS.match(str(t.get("tracts") or "")):
+            return None
+        # a price is required, except where the firm printed only a per-acre figure (Younger): then no price is made up
+        if not _auc_num(t.get("sold")) and not (t.get("sold") is None and _auc_num(pa) and r["source"] != "schrader"):
+            return None
         if pa is not None and not _auc_num(pa):
             return None
         tr.append({"tracts": str(t["tracts"]), "sold": t["sold"], "per_acre": pa})
     return {"source": r["source"], "fips": f, "date": d, "id": aid, "url": url,
-            "acres": r["headline_acres"], "total": r["total_sold"], "tracts": tr}
+            "acres": r["headline_acres"], "total": tot, "tracts": tr}
 
 
 def load_auctions(root=".", today=None, paths=None):
@@ -1710,6 +1726,11 @@ def _auc_acres(x):
     return fmt(x, 1) if x != int(x) else fmt(x, 0)
 
 
+def _auc_label(short, aid):
+    """'Schrader auction #9630' for a numbered auction; a slug or date id is not a number a reader can use."""
+    return "%s auction #%s" % (short, aid) if re.fullmatch(r"\d{1,7}", aid) else "%s auction page" % short
+
+
 def auction_section(recs):
     """The "Auction results" card for one county, or "" when it has no records."""
     if not recs:
@@ -1717,16 +1738,16 @@ def auction_section(recs):
     rows = []
     for a in recs:
         firm = AUC_FIRMS[a["source"]]
-        tl = "".join('<li>Tract%s %s: %s%s</li>' % (
-            "s" if re.search(r"[+-]", t["tracts"]) else "", esc(t["tracts"]), money(t["sold"]),
-            (", %s/acre, as reported" % money(t["per_acre"])) if t["per_acre"] is not None else ", no per-acre figure published")
+        tl = "".join('<li>Tract%s %s: %s</li>' % (
+            "s" if re.search(r"[+-]", t["tracts"]) else "", esc(t["tracts"]),
+            ("%s%s" % (money(t["sold"]), (", %s/acre, as reported" % money(t["per_acre"])) if t["per_acre"] is not None else ", no per-acre figure published"))
+            if t["sold"] is not None else "%s/acre, as reported" % money(t["per_acre"]))
             for t in a["tracts"])
-        rows.append('<li style="margin:0 0 .5rem"><b>%s</b>: %s acres, %s total sold.%s %s</li>' % (
-            esc(_sday(a["date"])), _auc_acres(a["acres"]), money(a["total"]),
+        rows.append('<li style="margin:0 0 .5rem"><b>%s</b>: %s acres%s.%s %s</li>' % (
+            esc(_sday(a["date"])), _auc_acres(a["acres"]), (", %s total sold" % money(a["total"])) if a["total"] is not None else "",
             ('<ul style="margin:.15rem 0 .25rem;padding-left:1.1rem;list-style:disc">%s</ul>' % tl) if tl else "",
-            SL.link(a["url"], esc("%s auction #%s" % (firm[0], a["id"])), ' rel="noopener"')))
-    firms = sorted({AUC_FIRMS[a["source"]][1] for a in recs})
-    credit = "Sold and auction results reported by %s. %s" % (" and ".join(firms).rstrip("."), AUC_NOTE)   # "Co." ends it once
+            SL.link(a["url"], esc(_auc_label(firm[0], a["id"])), ' rel="noopener"')))
+    credit = " ".join(sorted({AUC_CREDIT.get(a["source"], "Results reported by %s." % AUC_FIRMS[a["source"]][1].rstrip(".")) for a in recs})) + " " + AUC_NOTE
     return ('<section class="card" aria-labelledby="c-auc"><h2 id="c-auc">Auction results</h2>'
             '<ul class="auc" style="list-style:none;margin:0;padding:0">%s</ul><p class="note">%s</p></section>' % ("".join(rows), esc(credit)))
 
@@ -3785,6 +3806,22 @@ def selftest():
     sec_ = auction_section([a_])
     check("auction card", "Tracts 1+2: $1,660,000, $9,459/acre, as reported" in sec_ and "Tract 3: $245,000, no per-acre figure published" in sec_
           and "Schrader auction #9630" in sec_ and "Co.." not in sec_ and "\u2014" not in sec_ and auction_section([]) == "")
+    sl_ = auction_section([auction_record(dict(ar, auction_id="paulding-county-ohio-land-auction-83-acres-june-2026",
+                           url="https://www.schraderauction.com/auctions/paulding-county-ohio-land-auction-83-acres-june-2026"), "2026-11-07")])
+    check("a slug id reads 'Schrader auction page', never '#slug'", "Schrader auction page" in sl_ and "auction #paulding" not in sl_)
+    wr = {"source": "wieman", "auction_id": "2026-10-30-1", "county_fips": "46003", "date": "2026-10-30", "headline_acres": 358.88,
+          "total_sold": 2946973, "url": "https://www.wiemanauction.com/land-auction-results.php?year=2026", "buyer": "[buyer]",
+          "tracts": [{"tracts": "1", "sold": 1325433, "per_acre": 9250}]}
+    yr = {"source": "younger", "auction_id": "2026-03-24-1", "county_fips": "29147", "date": "2026-03-24", "headline_acres": 166,
+          "total_sold": None, "url": "https://www.youngerauction.com/land-auction-results.html",
+          "tracts": [{"tracts": "1", "sold": None, "per_acre": 6500}]}
+    sf_ = auction_section([auction_record(wr, "2026-11-08"), auction_record(yr, "2026-11-08")])
+    check("firm cards: own link and credit, per acre with no price made up", "Wieman auction page" in sf_ and "Younger auction page" in sf_
+          and "Tract 1: $6,500/acre, as reported" in sf_ and "166 acres." in sf_ and "Results reported by Wieman Land &amp; Auction." in sf_
+          and "Results reported by Younger Auction Company." in sf_ and "buyer" not in sf_)
+    check("a null total is refused for Schrader, a link off the firm for the others",
+          auction_record(dict(ar, total_sold=None), "2026-11-07") is None
+          and auction_record(dict(wr, url="https://example.com/land-auction-results.php"), "2026-11-08") is None)
     print("selftest: %s" % ("FAIL (%d)" % len(fails) if fails else "ok"))
     return 1 if fails else 0
 

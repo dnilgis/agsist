@@ -240,3 +240,67 @@ jobs:
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/push_raw.sh "land firms capture" land/wieman land/younger land/horning land/martins
+
+  firms-read:
+    needs: [gate, firms-save]
+    if: needs.gate.outputs.go == '1' && (!cancelled())
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - name: Selftest
+        run: python3 scripts/read_land_firms.py --selftest > /dev/null
+      - name: Pull the saved pages from the raw branch
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/pull_raw.sh land/wieman land/younger land/horning land/martins
+      - name: Read the results into facts-only files
+        run: python3 scripts/read_land_firms.py --all --out-dir results/firms
+      - uses: actions/upload-artifact@v4
+        with:
+          name: land-firms-results
+          path: results/firms
+          retention-days: 1
+          if-no-files-found: error
+
+  firms-commit:
+    needs: [gate, firms-read]
+    if: needs.gate.outputs.go == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    concurrency:
+      group: land-firms-commit
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/download-artifact@v4
+        with:
+          name: land-firms-results
+          path: results/firms
+      - name: Check and merge the firms' auction results
+        run: python3 scripts/read_land_firms.py --merge-dir results/firms
+      - name: Commit the firms' auction results
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add data/land/auctions/
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "data: land auction firms results $(date -u +%F) [skip ci]"
+          git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
+          git push origin "HEAD:${GITHUB_REF_NAME}"
