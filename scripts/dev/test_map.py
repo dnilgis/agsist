@@ -59,11 +59,13 @@ SHARED = [
     ".github/actions/", ".github/engine-paths",
 ]
 # always run in a pull request: the homepage, the menu, the engine and email rules, the
-# workflow itself, and a smoke render of the top pages (budget and feeds are in "other checks")
+# workflow itself, a smoke render of the top pages and no merge conflict markers (Nov 8, #424)
+# (budget and feeds are in "other checks")
 CORE = [
     "test/engine.test.mjs", "test/ses-ready.test.mjs", "test/email-links.test.mjs",
     "test/pr-checks.test.mjs", "test/main-build.test.mjs", "test/home-front.test.mjs",
     "test/nav-full-oct18.test.mjs", "test/nav-fixes-oct18.test.mjs", "test/smoke-top-pages.test.mjs",
+    "test/no-conflict-markers.test.mjs",
 ]
 ROOT_NAMES = {"ROOT", "root", "REPO", "repo", "ROOT_DIR", "REPO_ROOT", "ROOTDIR", "__dirname", "HERE", "TOP", "SITE", "BASE_DIR", "cwd"}
 CODE_EXT = (".py", ".mjs", ".js", ".cjs", ".sh", ".html")
