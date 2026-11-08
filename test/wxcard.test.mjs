@@ -60,7 +60,7 @@ test("the old GDU and 30-day precip boxes, their PRISM history and the fold are 
   assert.match(c, /<section class="wx-season"[^>]*><h3 class="wxs-h" id="wxs-h">Season so far, against normal<\/h3>\s*<div id="wx-season">/);
   assert.ok(!/AgPRISM|prism\.js/.test(read("components/home-planting.js").replace(/\/\*[\s\S]*?\*\//g, "")), "home-planting.js reads no PRISM history");
   assert.ok(!/components\/prism\.js/.test(HTML), "the home page loads no prism.js");
-  assert.match(HTML, /<script src="\/components\/season-wx\.js\?v=1" defer><\/script>/);
+  assert.match(HTML, /<script src="\/components\/season-wx\.js\?v=2" defer><\/script>/);
   assert.ok(!/wx-fold-btn/.test(read("components/home.js")), "no phone fold for the GDU tile");
 });
 
@@ -77,12 +77,12 @@ test("summer: every figure from the files, with its dates; departures by hand", 
   const h = A.html(m, "2026-11-04"), t = text(h);
   for (const x of ["Rain, Jan 1 to Nov 3 55.03 in +20.43 in (159%)", "Rain, Oct 5 to Nov 3 2.71 in −0.09 in (97%)",
     "GDDs, May 1 to Nov 3 2,912 GDDs +153 (106%)", "GDDs, Oct 5 to Nov 3 312 GDDs +22 (108%)"]) assert.ok(t.includes(x), x + "\n" + t);
-  assert.match(t, /Stations and sources Rain: the volunteer gauge Gilbert, 0\.2 mi W, 10\.8 mi from the middle of Story County/, "the station is named on tap");
-  assert.match(t, /weather station 8 miles west-southwest of Ames, 10 mi from the rain gauge/);
-  assert.match(t, /NOAA daily records through RCC-ACIS\. Volunteer gauge data: CoCoRaHS\./, "sources named in plain text, CoCoRaHS credited");
+  // Nov 8 (Sig crossed it out): no stations and sources paragraph on the home card; the county rain page keeps its method text
+  assert.doesNotMatch(t, /Stations and sources|Gilbert|RCC-ACIS|CoCoRaHS|weather station 8 miles/, "no source text on the home card");
+  assert.doesNotMatch(h, /<details|wxs-src/, "no sources fold");
   assert.doesNotMatch(h, /<a\b/, "no link to a data source");
-  assert.doesNotMatch(h + A.chart(m), /—/, "no em dash");
-  assert.match(h, /<details class="wxs-src"><summary>Stations and sources<\/summary>/);
+  assert.doesNotMatch(h + A.chart(m) + A.chartGdd(m), /—/, "no em dash");
+  assert.ok(!/\.wxs-src/.test(read("css/home.css")), "the fold's CSS went with it");
   const ch = A.chart(m);
   assert.match(ch, /<title>Nov 1\.61 in<\/title>/, "the month chart is the county page's month table");
   assert.match(ch, /<title>Jan 1\.41 in, 1 day not reported<\/title>/);
@@ -101,7 +101,7 @@ test("winter: no season yet, last season's GDDs with their year; withheld figure
   assert.ok(t.includes("GDDs, 2026 season, May 1 to Dec 31 2,950 GDDs +110 (104%)"), "off season: last season's total, 2,950 - 2,840 = +110\n" + t);
   assert.ok(t.includes("GDDs, Feb 13 to Mar 14 9 GDDs −21"), "a 30-day figure with no percent under 50 GDDs of normal: 9 - 30 = -21\n" + t);
   assert.ok(!/GDDs, Feb 13 to Mar 14 9 GDDs −21 \(/.test(t), "no percent on a tiny normal");
-  assert.match(t, /Last season's GDDs: 8 miles west-southwest of Ames, 10 mi off\./);
+  assert.doesNotMatch(t, /Last season's GDDs: |mi off/, "no station line on the home card (Nov 8)");
   // the county page's rule, not the card's: a row in the file is shown. 7 of 73 missing (9.6%, past 5% but inside
   // county_rain.MIN_SHARE 0.90) shows its total on the page, so on the card too
   c.missing = 7; c.total = 1.2;
@@ -134,6 +134,82 @@ test("no weather file yet (before the fetch has run): the rain shows, the GDDs s
   const old = clone(FX);
   delete old.counties["19169"].r30;
   assert.ok(text(A.html(A.model(old, WX, "19169"), "2026-11-04")).includes("Rain, last 30 days Not loaded yet"), "a rain file from before r30: not loaded, never a guess");
+});
+
+/* ---------- the month charts (Sig, Nov 8: "add back the gdu by month chart like the precip chart"; "make sure the
+   month by month chart is perfect and readable clickable and shareable") ---------- */
+const bars = (svg, cls) => [...svg.matchAll(new RegExp('<rect x="[\\d.]+" y="([\\d.]+)" width="[\\d.]+" height="([\\d.]+)" class="' + cls + '(?: wxs-part)?"><title>([^<]+)</title>', "g"))].map((x) => ({ y: +x[1], h: +x[2], t: x[3] }));
+test("GDDs by month, summer: a second button beside Rain by month, the same drawing, readouts worked by hand", () => {
+  const m = A.model(FX, WX, "19169"), h = A.html(m, "2026-11-04");
+  assert.match(h, /<div class="wxs-foot"><button type="button" class="wxs-b" id="wxs-chart-b" aria-expanded="false" aria-controls="wxs-chart">Rain by month<\/button><button type="button" class="wxs-b" id="wxs-gchart-b" aria-expanded="false" aria-controls="wxs-gchart">GDDs by month<\/button><\/div>/);
+  assert.match(h, /<div class="wxs-chart" id="wxs-gchart" data-kind="gdd" hidden><\/div>/, "a hidden panel, drawn when opened");
+  const g = A.spec(m, "gdd"), r = A.spec(m, "rain");
+  // the fixture's months add to its season: May to Nov 352 + 640 + 712 + 655 + 420 + 125 + 8 = 2,912 against 2,759
+  assert.equal(m.gmonths.slice(4).reduce((a, x) => a + x[0], 0), m.gdd.value);
+  assert.equal(A.readout(g, 6), "Jul: 712 GDDs, usual 680, +32 (105%)", "712 - 680 = 32; 712 / 680 = 104.7%");
+  assert.equal(A.readout(g, 7), "Aug: 655 GDDs, usual 640, +15 (102%), 1 day not reported", "655 / 640 = 102.3%; 30 of 31 days");
+  assert.equal(A.readout(g, 0), "Jan: 0 GDDs, usual 4, −4", "no percent on a usual under 50 GDDs");
+  assert.equal(A.readout(g, 10), "Nov 1 to 3, so far: 8 GDDs, usual 7, +1", "the month still running is named so far");
+  assert.equal(A.readout(g, 11), "Dec: still to come");
+  // rain from the county page's month table: Sep 5.96 against 3.63 = +2.33, 164%; Jan 1.41 against 0.95, 30 of 31 days
+  assert.equal(A.readout(r, 8), "Sep: 5.96 in, usual 3.63 in, +2.33 in (164%)");
+  assert.equal(A.readout(r, 0), "Jan: 1.41 in, usual 0.95 in, +0.46 in (148%), 1 day not reported");
+  assert.equal(A.readout(r, 10), "Nov 1 to 3, so far: 1.61 in, usual 0.24 in, +1.37 in", "no percent on a usual under 0.50 in");
+  const ch = A.chartGdd(m, 340);
+  assert.match(ch, /<title>Jul 712 GDDs<\/title>/);
+  assert.match(ch, /<title>Jul usual 680 GDDs<\/title>/);
+  assert.match(ch, /<title>Aug 655 GDDs, 1 day not reported<\/title>/);
+  assert.match(ch, /Usual <span class="wxs-sw wxs-cy"><\/span>2026, Jan 1 to Nov 3 <span class="wxs-sw wxs-cy wxs-part"><\/span>Nov so far<\/p>/, "legend with the as-of day and the month so far");
+  // the scale: top 800 (next of 1, 2, 4, 6, 8 x 100 over 712), a middle gridline at 400; rain top 10 in, middle 5
+  assert.match(ch, />800 GDDs<\/text>/);
+  assert.match(ch, />400<\/text>/);
+  assert.match(A.chart(m, 340), />10 in<\/text>[\s\S]*>5<\/text>/);
+  // bar heights: value / 800 x 124 px of plot (156 high, 10 at the top, 22 under the bars)
+  const yb = bars(ch, "wxs-cy"), ub = bars(ch, "wxs-cu");
+  assert.equal(yb.length, 11);
+  m.gmonths.forEach((x, i) => {
+    assert.equal(yb[i].h, +((x[0] / 800) * 124).toFixed(1), M(i) + " height");
+    assert.equal(ub[i].h, +((x[1] / 800) * 124).toFixed(1), M(i) + " usual height");
+    assert.ok(Math.abs(yb[i].y + yb[i].h - 134) < 0.11, "bars stand on the baseline");
+  });
+  assert.equal(yb[6].h, 110.4, "July by hand: 712 / 800 x 124 = 110.36");
+  assert.match(ch, /class="wxs-cy wxs-part"><title>Nov 8 GDDs/, "November drawn lighter");
+  assert.equal((ch.match(/<g class="wxs-m"/g) || []).length, 11, "one tap target a month with data");
+  assert.match(ch, /<g class="wxs-m" data-i="10" tabindex="0" role="button" aria-label="Nov 1 to 3, so far: 8 GDDs, usual 7, \+1"><rect class="wxs-hit" x="[\d.]+" y="0" width="22\.8" height="156"\/>/, "the target is the full column, the latest month in the tab order");
+  assert.match(ch, /<p class="wxs-read" id="wxs-gread" aria-live="polite">/);
+  assert.match(ch, /<button type="button" class="wxs-b wxs-pic" data-kind="gdd">Save picture<\/button>/);
+  assert.match(ch, /<svg class="wxs-svg" width="340" height="156" viewBox="0 0 340 156"/, "drawn at the panel's width, so 12px text stays 12px");
+});
+function M(i) { return ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][i]; }
+
+test("GDDs by month, winter: the new year's few GDDs, a withheld month, a station with no normals; old files show no button", () => {
+  const r = clone(FX), w = clone(WX), c = r.counties["19169"];
+  r.year = 2027; c.as_of = "2027-03-14"; c.months = [[1.1, 0.9, 31, 31], [0.8, 1.0, 28, 28], [0.5, 0.6, 14, 14]];
+  w.year = 2027; w.edate = "2027-03-14";
+  w.counties["19169"] = { a: 314, g30: [9, 0, 30, 30, null], gm: [[2, 4, 31, 31], null, [12, 9, 13, 14]] };
+  const m = A.model(r, w, "19169"), g = A.spec(m, "gdd");
+  assert.match(A.html(m, "2027-03-15"), /id="wxs-gchart-b"/);
+  assert.equal(A.readout(g, 1), "Feb: not enough days reported", "a month the builder withheld");
+  assert.equal(A.readout(g, 2), "Mar 1 to 14, so far: 12 GDDs, usual 9, +3, 1 day not reported");
+  const ch = A.chartGdd(m, 340);
+  assert.match(ch, />20 GDDs<\/text>/, "top 20 over the tallest 12");
+  assert.match(ch, />10<\/text>/);
+  assert.equal(bars(ch, "wxs-cy").length, 2, "no bar for the withheld month");
+  assert.match(ch, /<g class="wxs-m" data-i="1" tabindex="-1" role="button" aria-label="Feb: not enough days reported">/, "but it can still be read");
+  assert.equal(bars(ch, "wxs-cy")[1].h, +((12 / 20) * 124).toFixed(1));
+  assert.match(ch, /2027, Jan 1 to Mar 14 <span class="wxs-sw wxs-cy wxs-part"><\/span>Mar so far/);
+  // no normals cached for the station: the figure alone, no usual bar
+  w.counties["19169"].gm = [[2, null, 31, 31], [5, null, 28, 28], [12, null, 14, 14]];
+  const g2 = A.spec(A.model(r, w, "19169"), "gdd"), ch2 = A.chartGdd(A.model(r, w, "19169"), 340);
+  assert.equal(A.readout(g2, 0), "Jan: 2 GDDs, no normal for this station");
+  assert.equal(bars(ch2, "wxs-cu").length, 0);
+  // a weather file from before gm: no GDD button, the rain chart as before
+  const h = A.html(A.model(FX, (() => { const o = clone(WX); delete o.counties["19169"].gm; return o; })(), "19169"), "2026-11-04");
+  assert.ok(!/wxs-gchart/.test(h) && /id="wxs-chart-b"/.test(h), "no GDD button without gm");
+  assert.equal(A.chartGdd(A.model(FX, null, "19169")), "");
+  // nothing at all: no buttons, no empty foot
+  const bare = clone(FX); delete bare.counties["19169"].months;
+  assert.ok(!/wxs-foot/.test(A.html(A.model(bare, null, "19169"), "2026-11-04")));
 });
 
 /* ---------- the same numbers as the county rain page ---------- */
