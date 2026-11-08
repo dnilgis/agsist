@@ -17,7 +17,7 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const DASH = /[–—]|&mdash;|&ndash;/;
-const SUMMARY = "How these sales are counted (sources and rules by state)";
+const SUMMARY = "Sources and terms";
 const ent = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#x27;");
 
 const pyOut = (code) => {
