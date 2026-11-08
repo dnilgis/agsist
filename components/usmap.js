@@ -17,7 +17,7 @@
 (function () {
   if (window.AgUSMap) return;
   var SRC = '/data/us-states-map.svg?v=1', NS = 'http://www.w3.org/2000/svg', geo = null, pending = null;
-  var CSS = '.usm{position:relative;width:100%;max-width:980px;margin:0 auto}' +
+  var CSS = '.usm{position:relative;width:100%;max-width:780px;margin:0 auto}' +
     '.usm-box{position:relative;width:100%;aspect-ratio:920.5/676}' +
     '.usm-box svg{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}' +
     '.usm-box noscript,.usm-fail{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.82rem;color:var(--text-muted,#9aa5a2);padding:0 12px}' +
