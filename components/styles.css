@@ -846,4 +846,44 @@ html :is(.breadcrumb, .bc, .hm-bc, .fs-bc, .pb-bc, .cal-bc, .qs-bc) a { color: v
 .tbl td { font-size: var(--fs-sm) }
 .tbl :is(th, td).num, .num { text-align: right; font-variant-numeric: tabular-nums }
 .price { font-family: var(--font-mono); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.01em }
-@media (max-width: 640px) { p.by-end, nav.next-links:not([style*="width"]) { padding-left: max(0px, calc(16px - (100vw - 100%) / 2)); padding-right: max(0px, calc(16px - (100vw - 100%) / 2)) } }
+@media (max-width: 640px) { p.by-end, nav.next-links:not([style*="width"]) { padding-left: max(0px, calc(var(--gutter, 16px) - (100vw - 100%) / 2)); padding-right: max(0px, calc(var(--gutter, 16px) - (100vw - 100%) / 2)) } }
+/* Phones (Sig, Nov 8): 12px gutter, card text 12px inside its edge, no padding for a card in a card; why: test/phone-padding.test.mjs */
+@media (max-width: 480px) {
+  :root { --gutter: 12px; --card-in: 12px; --card-pad-x: 11px }
+  html:not([data-look]) body:not(#_) :is(main, main > :is(.ls-w, .prf, .rc, .rg, .sos, .pg, .le, .hb, .wrap, article), .cb-wrap, .info-page, .legal-page, .hs-wrap, .he-wrap, #cp, .ct-wrap, #lrp, .sp-page, .dev-page, .section-inner, .cl-wrap, .cal-main, .qs-main, .hm-wrap, .fs-wrap, .dp-wrap, .dv3-page) {
+    padding-left: max(0px, env(safe-area-inset-left), calc(var(--gutter) - (100vw - 100%) / 2));
+    padding-right: max(0px, env(safe-area-inset-right), calc(var(--gutter) - (100vw - 100%) / 2)) }
+  html:not([data-look]) body:not(#_) :is(.card-body, a.nx-c, .sa-ask, section.faq, aside.ya, aside.rpx, aside.nc, aside.dl, .tldr, .la-ask, .snap-card, .qa, .faq-item, .fa-rk,
+    .bs-note, .author-block, .bs-panel-b, .cd-panel-b, .cl-panel-b, .dv3-allarc-b, .fold-body, .info-card, .prf-card, .pd-crop, .dm-card,
+    .gdu-card, .pd-card, .gt-panel, .pq-card, #feeder-index, a.nw-item, a.dv3-arc-card, .dv3-edge, .dv3-sec, .dv3-watch, .dv3-otp, .dv3-otp-item,
+    .dv3-one-number, .dv3-forward, li.cu, .cq-i, #cot-chart-box, #co-mkt, #cm-detail, #cot-signup, #cot-read, #cot-verdict-banner, .cx-panel,
+    .cx-big, #cx-deep, #internal-links-block, .li-ans, section.crh, #answer, #quote, #cr-notice, .cbt-el, .ap-dead, #your-ground, #mystate,
+    .tier, #rain-print, .hw-box, .hb-rules, #emc-manual, #fa-tenure, #pick, #example, #ps-preview, #rr-answer, .sp-tier, #signup-card, .ye-method,
+    .spa-deal, .o1-card, #tok-box, section.card, #calculator, .yl-stat, #lease-form, .cl-item, #cot-card, #key-figures, #hm-alerts,
+    .fx-card, .fx-ask, .wp-card, .wp-farmbox, .cal-exp-card, .vp-ver, .fl-panel, .rat-card, .fwd-card, .dp-card, .edu-wrap, details.ap-det, #oct1) {
+    padding-left: max(8px, calc(var(--gutter) + var(--card-in) - var(--card-bl, 1px) - (100vw - 100%) / 2));
+    padding-right: max(8px, calc(var(--gutter) + var(--card-in) - var(--card-br, 1px) - (100vw - 100%) / 2)) }
+  html:not([data-look]) body:not(#_) :is(.card-body, .bs-panel-b, .cd-panel-b, .cl-panel-b, .dv3-allarc-b, .fold-body) { --card-bl: 0px; --card-br: 0px }
+  html:not([data-look]) body:not(#_) :is(aside.ya, aside.rpx, aside.nc, aside.dl, .sa-ask, li.cu, .cq-i, #cot-signup, .dv3-otp) { --card-bl: 3px }
+  html:not([data-look]) body:not(#_) :is(.li-ans, .dv3-edge) { --card-bl: 4px }
+  html:not([data-look]) body:not(#_) :is(.dv3-one-number, .dv3-sec, .dv3-watch, a.nw-item) { --card-bl: 2px; --card-br: 2px }
+  html:not([data-look]) body:not(#_) :is(.card-body, a.nx-c, .sa-ask, section.faq, aside.ya, aside.rpx, aside.nc, aside.dl, .tldr, .la-ask, .snap-card, .qa, .faq-item, .fa-rk,
+    .bs-note, .author-block, .bs-panel-b, .cd-panel-b, .cl-panel-b, .dv3-allarc-b, .fold-body, .info-card, .prf-card, .pd-crop, .dm-card,
+    .gdu-card, .pd-card, .gt-panel, .pq-card, #feeder-index, a.nw-item, a.dv3-arc-card, .dv3-edge, .dv3-sec, .dv3-watch, .dv3-otp, .dv3-otp-item,
+    .dv3-one-number, .dv3-forward, li.cu, .cq-i, #cot-chart-box, #co-mkt, #cm-detail, #cot-signup, #cot-read, #cot-verdict-banner, .cx-panel,
+    .cx-big, #cx-deep, #internal-links-block, .li-ans, section.crh, #answer, #quote, #cr-notice, .cbt-el, .ap-dead, #your-ground, #mystate,
+    .tier, #rain-print, .hw-box, .hb-rules, #emc-manual, #fa-tenure, #pick, #example, #ps-preview, #rr-answer, .sp-tier, #signup-card, .ye-method,
+    .spa-deal, .o1-card, #tok-box, section.card, #calculator, .yl-stat, #lease-form, .cl-item, #cot-card, #key-figures, #hm-alerts,
+    .fx-card, .fx-ask, .wp-card, .wp-farmbox, .cal-exp-card, .vp-ver, .fl-panel, .rat-card, .fwd-card, .dp-card, .edu-wrap, details.ap-det, #oct1) :is(.card-body, a.nx-c, .sa-ask, section.faq, aside.ya, aside.rpx, aside.nc, aside.dl, .tldr, .la-ask, .snap-card, .qa, .faq-item, .fa-rk,
+    .bs-note, .author-block, .bs-panel-b, .cd-panel-b, .cl-panel-b, .dv3-allarc-b, .fold-body, .info-card, .prf-card, .pd-crop, .dm-card,
+    .gdu-card, .pd-card, .gt-panel, .pq-card, #feeder-index, a.nw-item, a.dv3-arc-card, .dv3-edge, .dv3-sec, .dv3-watch, .dv3-otp, .dv3-otp-item,
+    .dv3-one-number, .dv3-forward, li.cu, .cq-i, #cot-chart-box, #co-mkt, #cm-detail, #cot-signup, #cot-read, #cot-verdict-banner, .cx-panel,
+    .cx-big, #cx-deep, #internal-links-block, .li-ans, section.crh, #answer, #quote, #cr-notice, .cbt-el, .ap-dead, #your-ground, #mystate,
+    .tier, #rain-print, .hw-box, .hb-rules, #emc-manual, #fa-tenure, #pick, #example, #ps-preview, #rr-answer, .sp-tier, #signup-card, .ye-method,
+    .spa-deal, .o1-card, #tok-box, section.card, #calculator, .yl-stat, #lease-form, .cl-item, #cot-card, #key-figures, #hm-alerts,
+    .fx-card, .fx-ask, .wp-card, .wp-farmbox, .cal-exp-card, .vp-ver, .fl-panel, .rat-card, .fwd-card, .dp-card, .edu-wrap, details.ap-det, #oct1) {
+    border-left-width: 0; border-right-width: 0; border-radius: 0;
+    padding-left: max(0px, calc(var(--gutter) + var(--card-in) - (100vw - 100%) / 2));
+    padding-right: max(0px, calc(var(--gutter) + var(--card-in) - (100vw - 100%) / 2)) }
+  html:not([data-look]) body:not(#_) #dv3-today { padding-left: 0; padding-right: 0; border-left-width: 0; border-right-width: 0; border-radius: 0 }
+}
