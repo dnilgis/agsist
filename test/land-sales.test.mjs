@@ -160,6 +160,21 @@ test("the builder: selftest, a fresh build matches the committed files, and it r
   assert.match(src, /REFUSED: a buyer or seller name would be written outside data\/land\//, "main() refuses to write a leak");
 });
 
+// The month page read above can be the committed copy (the builder carries it when a hosted state's files are not in the
+// checkout), so the plain wording of the fold is checked where it is written: the builder's own text for a month.
+test("the month page fold text: plain possible reasons, the window, the best value rule in plain words", () => {
+  const o = JSON.parse(py(["-c", "import json,sys; sys.path.insert(0,'scripts'); import build_land_sales as B; "
+    + "M={'window':['2024-10-01','2026-09-30']}; print(json.dumps({'u':B.unusual_def(M),'b':B.best_def()}))"]).trim().split("\n").pop());
+  assert.match(o.u, /Possible reasons above the usual: a house or buildings, timber/, "plain possible reasons above the usual");
+  assert.match(o.u, /Possible reasons below: a family or neighbor sale, a part interest/, "plain possible reasons below the usual");
+  assert.match(o.u, /over the two years from Oct 1, 2024 to Sep 30, 2026\./, "the window");
+  assert.doesNotMatch(o.u + o.b, ACCUSE);
+  assert.doesNotMatch(o.b, /middle[- ]half/, "best value: no jargon");
+  assert.doesNotMatch(o.u + o.b, /one and a half|\(\d+\)/, "no threshold or number in brackets");
+  assert.match(o.b, /lowest price per acre against their county's usual/);
+  assert.match(o.b, /no soil, tillable acres, buildings or drainage/);
+});
+
 test("the pages: the tap and the remove link, plain words, withheld sections say why, small", () => {
   assert.ok(PAGES.length > 260, "a page per IL, WI and IN county, the hub and the month: " + PAGES.length);
   const month = PAGES.filter((p) => /land-sales\/\d{4}-\d{2}\.html$/.test(p));
@@ -181,11 +196,8 @@ test("the pages: the tap and the remove link, plain words, withheld sections say
   }
   const m = read(month.sort().pop());
   for (const h of ["Biggest buyers", "Biggest sales", "Unusual prices", "Best value per acre"]) assert.ok(m.includes(">" + h + "</h2>"), "month section " + h);
-  assert.match(m, /Possible reasons above the usual: a house or buildings, timber/, "plain possible reasons above the usual, in the fold");
-  assert.match(m, /Possible reasons below: a family or neighbor sale, a part interest/, "plain possible reasons below the usual, in the fold");
   assert.match(m, /County usual \$\/acre/, "the county usual is shown");
   assert.match(m, /\d+ sales\)/, "with its count (n)");
-  assert.match(m, /over the two years from Oct 1, 2024 to Sep 30, 2026|over the two years from [A-Z][a-z]{2} \d+, \d{4} to [A-Z][a-z]{2} \d+, \d{4}/, "and its window");
   assert.match(m, /Sales reported for \d+ states: /, "the coverage line");
   assert.match(m, /data-land-alert/, "the monthly email ask on the update page");
   // a withheld section says so (builder selftest covers the case with few sales)
