@@ -2597,4 +2597,6 @@ html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m
 html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--calc)>summary.m-fold-sum,html[data-look="bands"] :is(#s7-month>.s7-head,#wire-band>.wr-summary){margin-left:calc(-1 * var(--card-pad-x,11px))!important;margin-right:calc(-1 * var(--card-pad-x,11px))!important;padding-left:var(--card-pad-x,11px)!important;padding-right:var(--card-pad-x,11px)!important}
 .wx-card.wx-tight .card-body{padding-left:0!important;padding-right:0!important}
 #main a.nx-c{padding-left:var(--card-pad-x,11px);padding-right:var(--card-pad-x,11px)}
+/* the top band reached the old 16px gutter's 12px with -4px margins; the gutter is 12px now */
+.hero-band{margin-left:0;margin-right:0}
 }

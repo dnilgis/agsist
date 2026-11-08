@@ -8,7 +8,7 @@
  * Pages whose own column is padded had them at 15 to 17px.
  *
  * The fix is one rule in components/styles.css: under 640px each gets side
- * padding that tops its gutter up to 16px. The padding reads its parent's
+ * padding that tops its gutter up to 16px (12px at 480px and under since Nov 8: --gutter, test/phone-padding.test.mjs). The padding reads its parent's
  * width (100%) against the screen (100vw), so a parent that already has a
  * 16px gutter adds nothing (no double gutter) and one with 12px adds 4px. A
  * Next block that next-links.js lined up with the block above (inline width)
@@ -33,7 +33,7 @@ const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not foun
 
 test("styles.css carries the one phone gutter rule for p.by-end and nav.next-links", () => {
   const css = read("components/styles.css");
-  assert.ok(css.includes('@media (max-width: 640px) { p.by-end, nav.next-links:not([style*="width"]) { padding-left: max(0px, calc(16px - (100vw - 100%) / 2)); padding-right: max(0px, calc(16px - (100vw - 100%) / 2)) } }'));
+  assert.ok(css.includes('@media (max-width: 640px) { p.by-end, nav.next-links:not([style*="width"]) { padding-left: max(0px, calc(var(--gutter, 16px) - (100vw - 100%) / 2)); padding-right: max(0px, calc(var(--gutter, 16px) - (100vw - 100%) / 2)) } }'));
   assert.ok(read("index.html").includes("/components/styles.css?v=28"), "styles.css ?v moved with the rule");
 });
 
