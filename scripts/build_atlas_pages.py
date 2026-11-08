@@ -1646,7 +1646,7 @@ AUC_DIR = "data/land/auctions"
 AUC_FIRMS = {"schrader": ("Schrader", "Schrader Real Estate and Auction Co.", "https://www.schraderauction.com/auctions/")}
 AUC_NOTE = "Not recorded transfers; not every sale is listed. Figures as published by the auction firm."
 _AUC_ISO = re.compile(r"^\d{4}-\d{2}-\d{2}$")
-_AUC_TRACTS = re.compile(r"^[0-9A-Za-z]{1,4}(?:\+[0-9A-Za-z]{1,4}){0,19}$")
+_AUC_TRACTS = re.compile(r"^[0-9A-Za-z]{1,4}(?:[+-][0-9A-Za-z]{1,4}){0,39}$")  # "1-3+9": the archive pages print ranges
 
 
 def _auc_num(x):
@@ -1718,7 +1718,7 @@ def auction_section(recs):
     for a in recs:
         firm = AUC_FIRMS[a["source"]]
         tl = "".join('<li>Tract%s %s: %s%s</li>' % (
-            "s" if "+" in t["tracts"] else "", esc(t["tracts"]), money(t["sold"]),
+            "s" if re.search(r"[+-]", t["tracts"]) else "", esc(t["tracts"]), money(t["sold"]),
             (", %s/acre, as reported" % money(t["per_acre"])) if t["per_acre"] is not None else ", no per-acre figure published")
             for t in a["tracts"])
         rows.append('<li style="margin:0 0 .5rem"><b>%s</b>: %s acres, %s total sold.%s %s</li>' % (
