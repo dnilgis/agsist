@@ -42,17 +42,35 @@ test("each of the 50 states and DC is in it once, with its name and a label poin
   assert.equal(svg.match(/id="/g).length, 51, "nothing else carries an id");
 });
 
-test("the nine small eastern states have a leader label out in the water, inside the picture, 24 px tall at 390 px", () => {
+test("the nine small eastern states have a leader label out in the water, inside the picture, 24 px or more tall at 390 px", () => {
   const withO = paths.filter((m) => m[5]).map((m) => m[1]).sort();
   assert.deepEqual(withO, [...SMALL].sort());
   const chips = paths.filter((m) => m[5]).map((m) => ({ st: m[1], x: +m[5], y: +m[6] }));
-  for (const c of chips) assert.ok(c.x - 33 >= 0 && c.x + 33 <= vb[0] && c.y - 29 >= 0 && c.y + 29 <= vb[1], c.st + " chip inside the viewBox");
+  for (const c of chips) assert.ok(c.x - 30 >= 0 && c.x + 30 <= vb[0] && c.y - 30.5 >= 0 && c.y + 30.5 <= vb[1], c.st + " chip inside the viewBox");
   for (let i = 0; i < chips.length; i++) for (let j = i + 1; j < chips.length; j++) {
     const a = chips[i], b = chips[j];
-    assert.ok(Math.abs(a.x - b.x) >= 66 || Math.abs(a.y - b.y) >= 58, `${a.st} and ${b.st} chips do not overlap`);
+    assert.ok(Math.abs(a.x - b.x) >= 60 || Math.abs(a.y - b.y) >= 61, `${a.st} and ${b.st} chips do not overlap`);
   }
   const phone = (390 - 24) / vb[0];                 // a 12 px gutter each side
-  assert.ok(58 * phone >= 21, "a chip is about 22 px tall on a phone, a thumb can land on it");
+  assert.ok(61 * phone >= 24, "a chip is 24 px or more tall on a phone, a thumb can land on it");
+});
+
+test("the picture is trimmed to its shapes: lower 48 fills the width, the insets and chips are inside, no empty margin", () => {
+  const nums = [...svg.matchAll(/ d="([^"]+)"/g)].map((m) => m[1]);
+  let maxx = 0, maxy = 0, minx = 1e9, miny = 1e9;
+  for (const d of nums) for (const sub of d.split("M").slice(1)) {
+    let [x, y] = sub.split("l")[0].split(" ").map(Number);
+    for (const seg of sub.split("l").slice(1)) { const [dx, dy] = seg.replace("z", "").split(" ").map(Number); x += dx; y += dy; maxx = Math.max(maxx, x); maxy = Math.max(maxy, y); minx = Math.min(minx, x); miny = Math.min(miny, y); }
+    maxx = Math.max(maxx, x); maxy = Math.max(maxy, y); minx = Math.min(minx, x); miny = Math.min(miny, y);
+  }
+  assert.ok(minx >= 0 && miny >= 0 && maxx <= vb[0] && maxy <= vb[1], "every shape inside the viewBox");
+  assert.ok(minx < 8 && miny < 8, "no margin left or top");
+  const chipRight = Math.max(...paths.filter((m) => m[5]).map((m) => +m[5] + 30));
+  assert.ok(vb[0] - Math.max(maxx, chipRight) < 8, "no margin on the right");
+  assert.ok(chipRight - maxx < 60, "the chips sit in the Atlantic, inside the shapes' width, not in a strip beside them (" + (chipRight - maxx).toFixed(0) + ")");
+  const chipBottom = Math.max(...paths.filter((m) => m[5]).map((m) => +m[6] + 30.5));
+  assert.ok(vb[1] - Math.max(maxy, chipBottom) < 8, "no margin below");
+  assert.ok(vb[0] / vb[1] < 1.7, "tall enough that a phone map is big (" + (vb[0] / vb[1]).toFixed(2) + ")");
 });
 
 test("the component reserves the picture's shape before the file arrives", () => {
@@ -136,7 +154,7 @@ for (const [w, theme] of [[390, "dark"], [390, "light"], [1280, "dark"], [1280, 
       assert.ok(r.doc <= 0, "no element wider than the screen (" + r.doc + ")");
       for (const [st, s] of Object.entries(r.small)) {
         assert.ok(s.l >= 0 && s.r <= w, st + " label inside the viewport");
-        assert.ok(s.h >= 22 || w > 390, st + " chip is tall enough to tap (" + s.h.toFixed(1) + ")");
+        assert.ok(s.h >= 24 || w > 390, st + " chip is tall enough to tap (" + s.h.toFixed(1) + ")");
       }
       assert.ok(r.fs >= 9, "a leader label is readable (" + r.fs.toFixed(1) + " px)");
       assert.ok(ratio(rgbOf(r.ink), rgbOf(r.fill)) >= 4.5, "label contrast on a state, " + theme);

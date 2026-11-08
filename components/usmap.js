@@ -17,8 +17,8 @@
 (function () {
   if (window.AgUSMap) return;
   var SRC = '/data/us-states-map.svg?v=1', NS = 'http://www.w3.org/2000/svg', geo = null, pending = null;
-  var CSS = '.usm{position:relative;width:100%;max-width:780px;margin:0 auto}' +
-    '.usm-box{position:relative;width:100%;aspect-ratio:920.5/676}' +
+  var CSS = '.usm{position:relative;width:100%;max-width:900px;margin:0 auto}' +
+    '.usm-box{position:relative;width:100%;aspect-ratio:866.9/553.2}' +
     '.usm-box svg{position:absolute;inset:0;width:100%;height:100%;display:block;overflow:visible}' +
     '.usm-box noscript,.usm-fail{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;font-size:.82rem;color:var(--text-muted,#9aa5a2);padding:0 12px}' +
     '.usm-s{cursor:pointer;outline:none}.usm-s.usm-off{cursor:default}' +
@@ -103,8 +103,8 @@
         var path = el('path', { d: x.d });
         var chip = null, lead = null, tx, ty;
         if (x.o) {
-          lead = el('path', { d: 'M' + x.c[0] + ' ' + x.c[1] + 'L' + (x.o[0] - 33) + ' ' + x.o[1], 'class': 'usm-lead' });
-          chip = el('rect', { x: x.o[0] - 33, y: x.o[1] - 29, width: 66, height: 58, rx: 8 });
+          lead = el('path', { d: 'M' + x.c[0] + ' ' + x.c[1] + 'L' + (x.o[0] - 30) + ' ' + x.o[1], 'class': 'usm-lead' });
+          chip = el('rect', { x: x.o[0] - 30, y: x.o[1] - 30.5, width: 60, height: 61, rx: 8 });
           tx = x.o[0]; ty = x.o[1];
         } else { tx = x.c[0]; ty = x.c[1]; }
         var text = el('text', { x: tx, y: ty }); if (chip) text.setAttribute('class', 'usm-ct'); text.textContent = x.st;

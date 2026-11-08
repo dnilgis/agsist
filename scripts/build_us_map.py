@@ -69,8 +69,8 @@ def projections():
     k, x, y = 1070.0, 480.0, 250.0
     return {
         "lower": conic(29.5, 45.5, 96, (-0.6, 38.7), k, x, y),
-        "AK": conic(55, 65, 154, (-2, 58.5), k * 0.35, x - 0.307 * k, y + 0.201 * k),
-        "HI": conic(8, 18, 157, (-3, 19.9), k, x - 0.205 * k, y + 0.212 * k),
+        "AK": conic(55, 65, 154, (-2, 58.5), k * 0.42, x - 0.307 * k, y + 0.201 * k),
+        "HI": conic(8, 18, 157, (-3, 19.9), k * 1.6, x - 0.205 * k, y + 0.212 * k),
     }
 
 
@@ -220,26 +220,32 @@ def main():
     xs = [p[0] for s in states.values() for r in s["rings"] for p in r[0]]
     ys = [p[1] for s in states.values() for r in s["rings"] for p in r[0]]
     x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
-    pad = 6
-    # Make room on the right for the leader-line labels of the small states.
-    gutter = 136
+    pad = 3
     ox, oy = pad - x0, pad - y0
-    W = (x1 - x0) + 2 * pad + gutter
-    H = (y1 - y0) + 2 * pad
     lab = {}
     for st, s in states.items():
         s["rings"] = [([(x + ox, y + oy) for x, y in o], [[(x + ox, y + oy) for x, y in h] for h in hs]) for o, hs in s["rings"]]
         lab[st] = label_point(s["rings"])
-    # Out-of-map labels, two columns in the water: New England north to south in the outer one (right of Maine),
-    # the mid-Atlantic four in the inner one below it. Rows are 66 apart so a chip is about 24 px on a 390 px phone.
-    step = 66
-    xo, xi = W - pad - 34, W - pad - 118
+    # The nine small eastern states are tapped from chips out in the water (CW x CH map units: 24 px tall at 390 px).
+    # Two staggered columns off the coast, inside the box: New England (north to south) in the outer one right of Maine
+    # and Long Island, the mid-Atlantic four in the inner one below Cape Hatteras, where the coast falls away.
+    CW, CH, STEP = 60, 61, 63
+    land = [p for st, s in states.items() if st not in ("AK", "HI") for r in s["rings"] for p in r[0]]
+
+    def coast(ya, yb):
+        return max(x for x, y in land if ya <= y <= yb)
+    hat = max((x, y) for x, y in land if y > lab["VA"][1])[1]          # the y of the coast's easternmost point south of Virginia
+    yo0 = lab["NH"][1] + 55
+    yi0 = hat + CH / 2 + 36
+    xi = coast(yi0 - CH / 2, yi0 + 3 * STEP + CH / 2) + 14 + CW / 2
+    xo = max(xi + CW + 2, coast(yo0 - CH / 2, yo0 + 4 * STEP + CH / 2) + 14 + CW / 2)
     out = {}
     for i, st in enumerate(["VT", "NH", "MA", "RI", "CT"]):
-        out[st] = (xo, 40 + i * step)
+        out[st] = (xo, yo0 + i * STEP)
     for i, st in enumerate(["NJ", "DE", "MD", "DC"]):
-        out[st] = (xi, 40 + 5 * step + 8 + i * step)
-    H = max(H, 40 + 9 * step + 8 + 34)
+        out[st] = (xi, yi0 + i * STEP)
+    W = max(max(p[0] for p in land), xo + CW / 2) + pad
+    H = max(max(y for s in states.values() for r in s["rings"] for _, y in r[0]), yi0 + 3 * STEP + CH / 2) + pad
     parts = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %s %s" width="%s" height="%s">' % (fmt(W), fmt(H), fmt(W), fmt(H))]
     for st in sorted(states):
         a = 'id="%s" data-n="%s" data-c="%s,%s"' % (st, NAMES[st], fmt(lab[st][0]), fmt(lab[st][1]))
