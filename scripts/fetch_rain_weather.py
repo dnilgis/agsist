@@ -372,6 +372,7 @@ def county_row(meta, hi, lo, mi, year, same, norm, recs):
     g30 = gdd_recent(hi, lo, dates, norm)
     if g30 is not None:
         row["g30"] = g30
+    row["gm"] = gdd_months(hi, lo, dates, norm)
     row["mh"], row["ml"], row["n"] = mh, ml, n
     row["h"] = WITHHELD if withheld(mh, n) else extreme(hi, dates, max)
     row["l"] = WITHHELD if withheld(ml, n) else extreme(lo, dates, min)
@@ -488,6 +489,36 @@ def gdd_recent(hi, lo, dates, norm, days=RECENT_DAYS):
             nv = sum(m for m, _ in nd) / 10.0
             g += [int(round(nv)), ny, int(round(100 * tot / nv)) if nv >= GDD30_PCT_MIN else None]
     return g
+
+
+def gdd_months(hi, lo, dates, norm):
+    """Corn GDDs by calendar month, Jan to the as-of month ("gm", the home card's GDDs by month chart, drawn
+    like the county page's rain by month): one entry a month, [total, normal or None, days reported, days so
+    far], the same daily 86/50 GDD as "g" and the normal summed over the same reported days from the station's
+    own 1991 to 2020 cache (norm_day, as "g30": a missing day counts on neither side). The normal is None when
+    the cache lacks a reported day or has under MIN_YEARS years for one. A month with more than 5% of its days
+    so far missing is None (withheld, the rule of "g"); nothing is filled."""
+    out = []
+    for m in range(1, int(dates[-1][5:7]) + 1 if dates else 1):
+        tot, rep, miss = 0.0, [], 0
+        for h, l, d in zip(hi, lo, dates):
+            if int(d[5:7]) != m:
+                continue
+            if h is None or l is None:
+                miss += 1
+                continue
+            tot += R.corn_gdd(h, l)
+            rep.append(doy((int(d[5:7]), int(d[8:10]))))
+        days = len(rep) + miss
+        if withheld(miss, days):
+            out.append(None)
+            continue
+        nd = [norm_day(norm, k) for k in rep]
+        nv = None
+        if rep and all(nd) and min(c for _, c in nd) >= MIN_YEARS:
+            nv = int(round(sum(x for x, _ in nd) / 10.0))
+        out.append([int(round(tot)), nv, len(rep), days])
+    return out
 
 
 def carry_season(prev, res):
@@ -742,6 +773,13 @@ def problems(res):
         g3 = c.get("g30")
         if g3 not in (None, WITHHELD) and not (isinstance(g3, list) and len(g3) in (2, 5) and 0 <= g3[0] <= 36 * RECENT_DAYS):
             bad.append(f"{w}: gdd 30 days {g3}")
+        gm = c.get("gm")
+        if gm is not None and not (isinstance(gm, list) and 1 <= len(gm) <= 12 and len(gm) == c["a"] // 100 and all(
+                x is None or (isinstance(x, list) and len(x) == 4 and isinstance(x[0], int) and 0 <= x[0] <= 36 * 31
+                              and (x[1] is None or (isinstance(x[1], int) and 0 <= x[1] <= 36 * 31))
+                              and isinstance(x[2], int) and isinstance(x[3], int) and 0 <= x[2] <= x[3] <= 31
+                              and (i + 1 < len(gm) or x[3] == c["a"] % 100)) for i, x in enumerate(gm))):
+            bad.append(f"{w}: gdd by month {gm}")
         gp = c.get("gp")
         if gp is not None and not (isinstance(gp, dict) and isinstance(gp.get("y"), int) and _is_date(gp.get("a"))
                                    and (gp.get("g") == WITHHELD or (isinstance(gp.get("g"), list) and len(gp["g"]) in (2, 5)))):
@@ -801,6 +839,29 @@ def selftest():
     ok(county_row({"name": "X", "sids": ["1 2"]}, hi30, lo, 0, year, True, norm, [])["g30"] == WITHHELD, "30-day GDD withheld over 5% missing")
     hi30[-2] = 80.0                            # 1 of 30: 3.3%, left out of both sides
     ok(county_row({"name": "X", "sids": ["1 2"]}, hi30, lo, 0, year, True, norm, [])["g30"] == [570, 1, 522, 30, 109], "one missing day counts on neither side")
+    # GDDs by month ("gm"), worked by hand on the same made-up year: 40/20 before May (0 a day), 80/60 from May 1
+    # (20 a day), Jul 21 at 97 (high held at 86: (86 + 60) / 2 - 50 = 23), Oct 12 and Oct 20 lows held at 50 (15 each)
+    gm = row["gm"]
+    ok(len(gm) == 11 and gm[0] == [0, None, 31, 31] and gm[1] == [0, None, 28, 28], f"Jan and Feb with no Jan to Apr normal cached: {gm[:2]}")
+    ok(gm[5] == [600, 540, 30, 30], f"a full month, June: 30 x 20 = 600 against 30 x 18 = 540: {gm[5]}")
+    ok(gm[6] == [623, 558, 31, 31], f"July: 30 x 20 + 23 = 623 against 31 x 18 = 558: {gm[6]}")
+    ok(gm[9] == [610, 558, 31, 31], f"October: 29 x 20 + 2 x 15 = 610: {gm[9]}")
+    ok(gm[10] == [60, 54, 3, 3], f"November so far, 3 days: 60 against 54: {gm[10]}")
+    ok(abs(sum(x[0] for x in gm[4:]) - g[0]) <= 4, f"the months from May add to the season's GDDs: {sum(x[0] for x in gm[4:])} vs {g[0]}")
+    ne = dict(norm, e={"m": [10] * (GDD_DOY0 - 1), "c": [[30, GDD_DOY0 - 1]]})
+    ok(county_row({"name": "X", "sids": ["1 2"]}, hi, lo, 0, year, True, ne, [])["gm"][0] == [0, 31, 31, 31], "January against the Jan to Apr normal: 31 x 1.0")
+    hgm = list(hi)
+    hgm[dates.index("2026-08-10")] = None       # 1 of 31 August days missing: 3.2%, left out of both sides
+    ok(county_row({"name": "X", "sids": ["1 2"]}, hgm, lo, 0, year, True, norm, [])["gm"][7] == [600, 540, 30, 31], "a month with one missing day")
+    hgm[dates.index("2026-08-11")] = None       # 2 of 31: 6.5%, withheld
+    rgm = county_row({"name": "X", "sids": ["1 2"]}, hgm, lo, 0, year, True, norm, [])
+    ok(rgm["gm"][7] is None and rgm["gm"][6] == [623, 558, 31, 31], f"a month over 5% missing is withheld, the others stay: {rgm['gm'][6:8]}")
+    ok(county_row({"name": "X", "sids": ["1 2"]}, hi, lo, 0, year, True, None, [])["gm"][5] == [600, None, 30, 30], "no normals cached: the figure alone")
+    rth = county_row({"name": "X", "sids": ["1 2"]}, hi, lo, 0, year, True,
+                     {"g": {"m": [180] * GDD_DAYS, "c": [[30, 100], [19, GDD_DAYS - 100]]}}, [])["gm"]
+    ok(rth[5] == [600, 540, 30, 30] and rth[7] == [620, None, 31, 31], f"a normal under 20 years for some days: no normal that month: {rth[7]}")
+    ok(problems({"counties": {"1": rgm}}) == [] and problems({"counties": {"1": dict(row, gm=gm[:10])}})
+       and problems({"counties": {"1": dict(row, gm=gm[:10] + [[60, 54, 4, 3]])}}), "the months are checked: one a month to the as-of day")
     # winter: Feb 14 to Mar 15 needs the Jan 1 to Apr 30 normal ("e"); a small normal prints no percent
     nw = 74
     hw, lw = [55.0] * nw, [45.0] * nw          # 2.5 GDD a day
