@@ -808,7 +808,16 @@ def lead_big(M):
 def unusual_def(M):
     """What 'unusual' means, in one plain sentence for the fold (the month page keeps one short line by the table)."""
     return ("A sale of %d acres or more is marked unusual when its price per acre is far above or below the usual for its county, "
-            "which is the middle half of that county's sales of that size over the two years to %s." % (COMP_MIN_ACRES, LA.short_day(M["window"][1]) + ", " + M["window"][1][:4]))
+            "which is the middle half of that county's sales of that size over the two years to %s. "
+            "Possible reasons above the usual: %s. Possible reasons below: %s. The return does not say which, and a price is not wrong because it is unusual."
+            % (COMP_MIN_ACRES, LA.short_day(M["window"][1]) + ", " + M["window"][1][:4], UP_WHY, DOWN_WHY))
+
+
+def best_def():
+    """What 'best value' means, in plain words, for the fold."""
+    return ("Best value lists sales of %d acres or more with the lowest price per acre against their county's usual, leaving out the unusual "
+            "prices and anything well under the usual range. The record has no soil, tillable acres, buildings or drainage, so a low price "
+            "can just mean poorer ground." % BEST_MIN_ACRES)
 
 
 def month_page(d, M, early, coverage, archive):
@@ -874,8 +883,6 @@ def month_page(d, M, early, coverage, archive):
                  % (COMP_MIN_ACRES, M["n_unusual"], M["n_judged"]))
         if M["unusual"]:
             b.append(sale_table(M["unusual"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl, win=M["window"], d=d))
-            b.append('<p class="ls-why"><b>Above the usual, possible reasons:</b> %s. <b>Below, possible reasons:</b> %s. '
-                     "The return does not say which, and a price is not wrong because it is unusual.</p>" % (e(UP_WHY), e(DOWN_WHY)))
         else:
             b.append("<p>None this month.</p>")
     else:
@@ -883,15 +890,16 @@ def month_page(d, M, early, coverage, archive):
     # best value
     b.append('<h2 id="value">Best value per acre</h2>')
     if M.get("best"):
-        b.append("<p>Sales of %d acres or more priced lowest against their county's middle price, leaving out the unusual prices above and anything "
-                 "more than half a middle-half under the county's middle half. "
-                 "The record has no soil, tillable acres, buildings or drainage, so a low price can just mean poorer ground.</p>" % BEST_MIN_ACRES)
+        b.append("<p>Sales of %d acres or more with the lowest price per acre against their county's usual. A low price can just mean poorer ground.</p>"
+                 % BEST_MIN_ACRES)
         b.append(sale_table(M["best"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl, win=M["window"], d=d))
     else:
         b.append('<p class="ls-held">Not shown this month: %s.</p>' % e(M["best_why"]))
     b.append('<p class="ls-fine">%s</p>' % e(src_line(d, M["states"])))
     b.append(coverage_html(coverage, d))
     extra = [("Unusual prices", unusual_def(M))] if M.get("unusual") is not None else []
+    if M.get("best"):
+        extra.append(("Best value per acre", best_def()))
     if star:
         extra.append(("Dates", star))
     b.append(method_html(M["states"], d, extra))

@@ -92,8 +92,17 @@ test("Unusual prices: the heading, one short line and the table; the definition 
     assert.doesNotMatch(sec, /middle-half|middle half|one and a half/, "no definition by the table");
     const m = /<h3 class="ls-dh">Unusual prices<\/h3><p class="ls-fine">([^<]*)<\/p>/.exec(body);
     assert.ok(m, "the definition is in the fold");
-    assert.equal((m[1].match(/\. /g) || []).length, 0, "one sentence");
-    assert.match(m[1], /far above or below the usual for its county/);
+    assert.match(m[1], /^A sale of \d+ acres or more is marked unusual when its price per acre is far above or below the usual for its county, [^.]*\. /);
+    assert.match(m[1], /Possible reasons above the usual: [^.]*\. Possible reasons below: [^.]*\./, "the reasons are folded too");
+    assert.ok((m[1].match(/\. /g) || []).length <= 3, "a few plain sentences");
+    assert.doesNotMatch(sec, /ls-why|Possible reasons/, "the reasons are not by the table");
+  }
+  const vi = h.indexOf('<h2 id="value">');
+  const intro = /<h2 id="value">Best value per acre<\/h2>\s*<p>([^<]*)<\/p>/.exec(h.slice(vi));
+  if (intro && /^Sales of \d+ acres or more/.test(intro[1])) {
+    assert.ok(intro && intro[1].length < 160 && !/middle[- ]half/.test(intro[1]), "one short visible line, no definition: " + (intro && intro[1]));
+    assert.match(body, /<h3 class="ls-dh">Best value per acre<\/h3><p class="ls-fine">Best value lists sales of \d+ acres or more[^<]*usual range/, "the definition is in the fold");
+    assert.doesNotMatch(body.slice(body.indexOf("Best value per acre")), /middle[- ]half/);
   }
 });
 
