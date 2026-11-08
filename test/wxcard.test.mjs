@@ -390,6 +390,7 @@ test("month charts at 390, light and dark: 12px text, gridlines with values, bar
       const { ctx, pg, errors } = await openCard(browser, port, { theme });
       await pg.click("#" + id + "-b");
       await pg.waitForSelector("#" + id + " svg");
+      await pg.locator("#" + id + " .wxs-cleg").scrollIntoViewIfNeeded();
       const got = await pg.evaluate((id) => {
         const p = document.getElementById(id), svg = p.querySelector("svg"), r = svg.getBoundingClientRect();
         const rgb = (s) => { const m = /rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?\)/.exec(s); return m ? [+m[1], +m[2], +m[3], m[4] == null ? 1 : +m[4]] : null; };
@@ -406,7 +407,7 @@ test("month charts at 390, light and dark: 12px text, gridlines with values, bar
         for (let i = 0; i < rects.length; i++) for (let j = i + 1; j < rects.length; j++) { const a = rects[i], b = rects[j]; if (a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5) overlap++; }
         return { w: r.width, attr: +svg.getAttribute("width"), right: r.right, vw: document.documentElement.clientWidth, scrollW: document.documentElement.scrollWidth,
           u: ratio(fill(".wxs-cu:not(.wxs-part)"), bg), y: ratio(fill(".wxs-cy:not(.wxs-part)"), bg), part: ratio(rgb(getComputedStyle(p.querySelector("rect.wxs-cy.wxs-part")).stroke), bg),
-          minFs: Math.min(...texts.map((t) => t.fs)), labels: texts.map((t) => t.s), grid: p.querySelectorAll(".wxs-gl").length, legBottom: leg.bottom, legH: leg.height, overlap,
+          minFs: Math.min(...texts.map((t) => t.fs)), labels: texts.map((t) => t.s), grid: p.querySelectorAll(".wxs-gl").length, legBottom: leg.bottom, svgTop: r.top, vh: window.innerHeight, overlap,
           readFs: parseFloat(getComputedStyle(p.querySelector(".wxs-read")).fontSize), so: p.querySelector(".wxs-cleg").textContent };
       }, id);
       const tag = theme + " " + id;
@@ -419,7 +420,7 @@ test("month charts at 390, light and dark: 12px text, gridlines with values, bar
       assert.equal(got.overlap, 0, tag + ": no labels overlap");
       assert.ok(got.u >= 3 && got.y >= 3 && got.part >= 3, `${tag}: bars 3:1 or more against the card (usual ${got.u.toFixed(2)}, year ${got.y.toFixed(2)}, so far edge ${got.part.toFixed(2)})`);
       assert.match(got.so, /Nov so far/, tag);
-      assert.ok(got.legBottom <= 900, tag + ": legend in view with the chart");
+      assert.ok(got.legBottom <= got.vh && got.svgTop >= 0, tag + ": the legend in view together with the whole chart");
       assert.deepEqual(errors, []);
       await ctx.close();
     }
@@ -438,7 +439,7 @@ test("month charts: a tap or the keyboard reads a month in the line under the ch
     // a tap anywhere in July's column, well above its bars
     const box = await pg.locator('#wxs-gchart .wxs-m[data-i="6"] .wxs-hit').boundingBox();
     assert.ok(box.height >= 150, "the target is the full column high: " + box.height);
-    await pg.mouse.click(box.x + box.width / 2, box.y + 6);
+    await pg.locator('#wxs-gchart .wxs-m[data-i="6"] .wxs-hit').click({ position: { x: box.width / 2, y: 6 } });
     assert.equal(await pg.textContent("#wxs-gread"), "Jul: 712 GDDs, usual 680, +32 (105%)");
     // the keyboard: arrows move the month and its readout, Home and End jump
     await pg.keyboard.press("ArrowRight");
