@@ -1660,7 +1660,7 @@ def auction_record(r, today):
         return None
     firm = AUC_FIRMS[r["source"]]
     f, d, aid, url = str(r.get("county_fips") or ""), str(r.get("date") or ""), str(r.get("auction_id") or ""), str(r.get("url") or "")
-    if not re.match(r"^\d{5}$", f) or not _AUC_ISO.match(d) or not re.match(r"^[0-9A-Za-z-]{1,12}$", aid):
+    if not re.match(r"^\d{5}$", f) or not _AUC_ISO.match(d) or not re.match(r"^(?:[0-9A-Za-z-]{1,12}|[0-9a-z]+(?:-[0-9a-z]+){1,20})$", aid) or len(aid) > 160:
         return None
     try:
         datetime.date.fromisoformat(d)

@@ -317,7 +317,27 @@ BACKFILL_BASE = os.path.join("land", "schrader", "backfill")
 SAVED_DATA = os.path.join("data", "land", "auctions", "schrader.json")
 PAGER = re.compile(r"/auctions/recent_auctions/(\d{1,3})/(\d{1,6})(?:[/?#]|$)")
 HREF = re.compile(r"""\bhref\s*=\s*["']?([^"'\s>]+)""", re.I)
-ARCHIVE_ITEM = re.compile(r"^/auctions/(\d{1,7})(?:/[^/]*)?/?$")
+# An archive item links by slug ("/auctions/williams-county-ohio-land-auction-63-acres-march-2026"), a
+# numeric page by number. A slug has a hyphen and a digit, so /auctions/recent_auctions, /auctions/all
+# and the like are never taken. The slug is the key of a backfilled page; a numeric page carries it as
+# its <link rel="canonical">.
+SLUG = r"(?=[^/]*\d)[a-z0-9]+(?:-[a-z0-9]+)+"
+ARCHIVE_ITEM = re.compile(r"^/auctions/(\d{1,7}(?:/[^/]*)?|" + SLUG + r"/?)/?$")
+ID_FILE = re.compile(r"(?:\d{1,7}|" + SLUG + r")\.html")
+CANONICAL = re.compile(r"""<link\b[^>]*\brel\s*=\s*["']canonical["'][^>]*>""", re.I)
+CANON_SLUG = re.compile(r"""\bhref\s*=\s*["']https?://[^"'/]*schraderauction\.com/auctions/(""" + SLUG + r""")/?["']""", re.I)
+
+
+def id_order(i):
+    """Numbers first (oldest number first), then slugs in name order."""
+    return (0, int(i), "") if i.isdigit() else (1, 0, i)
+
+
+def canonical_slug(page_bytes):
+    """The slug in a page's <link rel="canonical"> ("" when there is none)."""
+    m = CANONICAL.search(page_bytes.decode("latin-1"))
+    g = CANON_SLUG.search(m.group(0)) if m else None
+    return g.group(1).lower() if g else ""
 
 
 def archive_url(state, per=PER_PAGE, offset=0):
@@ -339,8 +359,10 @@ def archive_links(page_bytes, base=ARCHIVE):
         if (p.hostname or "").lower() not in (HOST, "schraderauction.com") or is_buyer_path(p.path):
             continue
         m = ARCHIVE_ITEM.match(p.path)
-        if m and m.group(1) not in ids:
-            ids.append(m.group(1))
+        if m:
+            i = m.group(1).split("/")[0]
+            if i not in ids:
+                ids.append(i)
             continue
         g = PAGER.search(p.path)
         if g:
@@ -369,15 +391,23 @@ def next_offset(offset, page_ids, pager):
 
 
 def known_ids(out_root):
-    """Auction ids captured before: weekly capture pages and the saved data file (both in this checkout)."""
+    """Auction ids captured before: weekly capture pages (the number and, from the page's canonical link,
+    the slug) and the saved data file (both in this checkout)."""
     ids = set()
     cap = os.path.join(out_root, OUT_BASE)
     for d in sorted(os.listdir(cap)) if os.path.isdir(cap) else []:
         ad = os.path.join(cap, d, "auctions")
         for f in os.listdir(ad) if os.path.isdir(ad) else []:
-            m = re.fullmatch(r"(\d{1,7})\.html", f)
-            if m:
-                ids.add(m.group(1))
+            if ID_FILE.fullmatch(f):
+                ids.add(f[:-5])
+                if f[:-5].isdigit():
+                    try:
+                        with open(os.path.join(ad, f), "rb") as fh:
+                            slug = canonical_slug(fh.read(200000))
+                    except OSError:
+                        slug = ""
+                    if slug:
+                        ids.add(slug)
     try:
         with open(os.path.join(out_root, SAVED_DATA), encoding="utf-8") as fh:
             ids |= {str(r.get("auction_id")) for r in json.load(fh).get("records") or []}
@@ -426,7 +456,7 @@ def backfill(out_root=ROOT, get=http_get, sleep=time.sleep, now=None, clock=time
     man = {"source": "Schrader Real Estate and Auction Company", "archive": ARCHIVE, "user_agent": UA,
            "started_utc": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "max_requests": max_requests,
            "max_minutes": max_minutes, "archive_pages": [], "files": [], "skipped": [],
-           "buyer_links_blanked": 0, "stopped": ""}
+           "buyer_links_blanked": 0, "stopped": "", "empty_archive_pages": []}
 
     def budget():
         """Why no further request may start, or ""."""
@@ -437,6 +467,9 @@ def backfill(out_root=ROOT, get=http_get, sleep=time.sleep, now=None, clock=time
         return ""
 
     def finish(code, why=""):
+        if man["empty_archive_pages"]:
+            code = 1
+            why = why or "archive page(s) with 0 auction links: " + ", ".join(man["empty_archive_pages"])
         man["stopped"] = man["stopped"] or why
         man["requests"] = fetch.n
         man["delay_s"] = fetch.delay
@@ -500,6 +533,13 @@ def backfill(out_root=ROOT, get=http_get, sleep=time.sleep, now=None, clock=time
             with open(path, "wb") as fh:
                 fh.write(body)
             ids, pager, other = archive_links(body, final)
+            if not ids and not (off and not pager):
+                # a page with no auction link is a changed page shape, not an end: say so, keep the state
+                # open for the next run and make the run fail
+                man["empty_archive_pages"].append(name)
+                man["skipped"].append({"url": u, "why": "archive page with 0 auction links"})
+                print(f"backfill: FAIL {name} yielded 0 auction links; the page shape may have changed")
+                break
             new = [i for i in ids if i not in ss["ids"]]
             ss["ids"] += new
             ss["pages"] += 1
@@ -519,10 +559,10 @@ def backfill(out_root=ROOT, get=http_get, sleep=time.sleep, now=None, clock=time
     have = known_ids(out_root) | set(st["saved"])
     adir = os.path.join(out, "auctions")
     if os.path.isdir(adir):
-        have |= {f[:-5] for f in os.listdir(adir) if re.fullmatch(r"\d{1,7}\.html", f)}
+        have |= {f[:-5] for f in os.listdir(adir) if ID_FILE.fullmatch(f)}
     skip = have | done_failed()
     man["already_captured"] = len(queue_ids() & have)
-    for i in sorted(queue_ids() - skip, key=int):
+    for i in sorted(queue_ids() - skip, key=id_order):
         why = budget()
         if why:
             return finish(0, why)
@@ -792,6 +832,51 @@ def backfill_selftest(check):
             check(b"A Buyer" not in fh.read(), "backfill: archive pages saved raw with buyer links blanked")
         check(os.listdir(os.path.join(out, "runs")) == ["2026-11-09T200000Z.json"], "backfill: one run file per run")
         check(any(p["other_links"] for p in man["archive_pages"]), "backfill: a recent_auctions link of another shape is listed")
+
+        # slug-keyed archive (Nov 8: the real archive links by slug, not number)
+        real = open(os.path.join(ROOT, "test", "fixtures", "schrader-archive", "OH-0.html"), "rb").read()
+        slugs, pg, _ = archive_links(real, archive_url("OH"))
+        check(slugs == ["defiance-county-ohio-land-auction-124-acres-october-2026",
+                        "williams-county-ohio-land-auction-39-acres-september-2026",
+                        "williams-county-ohio-dekalb-county-indiana-land-auction-404-acres-september-2026"]
+              and pg == [(20, 20), (20, 140)], "real OH archive page: three slugs in order, no menu or pager link taken as an auction")
+        check(archive_links(b'<a href="/auctions/9580">x</a><a href="/auctions/all">y</a><a href="/auctions/past-auctions">z</a>')[0] == ["9580"],
+              "archive links: a number is taken, a menu path or a slug with no digit is not")
+        canon = open(os.path.join(ROOT, "test", "fixtures", "schrader", "9580.html"), "rb").read()
+        check(canonical_slug(canon) == "knox-county-indiana-land-auction-331-acres-october-2026" and canonical_slug(b"<html></html>") == "",
+              "a numeric page's canonical link gives its slug")
+        sdir = tempfile.mkdtemp(prefix="schrader-slug-")
+        try:
+            os.makedirs(os.path.join(sdir, OUT_BASE, "2026-11-07", "auctions"))
+            with open(os.path.join(sdir, OUT_BASE, "2026-11-07", "auctions", "9580.html"), "wb") as fh:
+                fh.write(canon)
+            check({"9580", "knox-county-indiana-land-auction-331-acres-october-2026"} <= known_ids(sdir),
+                  "known ids: a captured numeric page also counts under its canonical slug")
+            walked = []
+
+            def sget(url):
+                if url == ROBOTS:
+                    return 200, "", b""
+                if url == archive_url("OH"):
+                    return 200, "", real
+                if url == archive_url("IA"):
+                    return 200, "", b"<html><body>changed shape</body></html>"
+                if "recent_auctions" in url:
+                    return 404, "", b""
+                walked.append(url)
+                return 200, "", canon
+            code, man = backfill(sdir, sget, lambda x: None, now, lambda: 0.0, ("OH",), max_requests=20)
+            files = sorted(os.listdir(os.path.join(sdir, BACKFILL_BASE, "auctions")))
+            check(code == 0 and len(walked) == 3 and files == sorted(x + ".html" for x in slugs), "backfill by slug: each slug fetched and saved as <slug>.html")
+            walked.clear()
+            code, man = backfill(sdir, sget, lambda x: None, now, lambda: 0.0, ("OH",), max_requests=20)
+            check(code == 0 and not walked, "backfill by slug: a second run fetches nothing twice")
+            code, man = backfill(sdir, sget, lambda x: None, now, lambda: 0.0, ("IA",), max_requests=20)
+            st2 = json.load(open(os.path.join(sdir, BACKFILL_BASE, "state.json"), encoding="utf-8"))
+            check(code == 1 and man["empty_archive_pages"] == ["archive/IA/0.html"] and not st2["states"]["IA"]["done"],
+                  "an archive page with 0 items fails the run loudly and the state stays open")
+        finally:
+            shutil.rmtree(sdir, ignore_errors=True)
 
         calls.clear(); sleeps.clear()
         code, man2 = backfill(tmp, get, sleeps.append, datetime(2026, 11, 9, 23, 0, tzinfo=timezone.utc), lambda: 0.0, states)
