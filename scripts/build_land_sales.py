@@ -646,6 +646,45 @@ def ctx_data(st, fips, county, u, w24, ok=0):
     return jdump([st, fips, county, usual_list(u), w24, ok])
 
 
+# Phones (Sig, Nov 8, 2026: the Unusual prices table was cut off at 390 px): every table this builder makes becomes one
+# block per row, each value under a small label, so no number is cut and the page never scrolls sideways. The labels are
+# CSS (td:nth-child), so the rows components/land-sales.js draws later read the same. Inline, so no shared file changes.
+SALE_COLS = {"when": "Date", "where": "Where", "acres": "Acres", "price": "Price", "ppa": "$/acre", "note": "Note",
+             "usual": "County usual", "kind": "Type"}
+STACK_LAYOUTS = {
+    "sales": [("when", "where", "acres", "ppa", "usual", "note"), ("when", "where", "acres", "price", "ppa", "note"),
+              ("when", "where", "acres", "price", "ppa", "kind", "note")],
+    "buyers": [("Rank", "State", "Counties", "Sales", "Acres", "Dollars")],
+    "source": [("State", "On this site", "Source", "Names in the source", "How often", "Terms")],
+}
+
+
+def stack_css():
+    r = ["@media(max-width:560px){"
+         ".ls-st thead{display:none}"
+         ".ls-st,.ls-st tbody{display:block}"
+         ".ls-st tr{display:block;border-top:1px solid var(--border);padding:.45rem 0}"
+         ".ls-st tr:first-child{border-top:0}"
+         ".ls-st td{display:block;border:0;padding:.1rem 0 .1rem 6.8rem;position:relative;text-align:left;overflow-wrap:anywhere}"
+         ".ls-st td.n{text-align:left;white-space:normal}"
+         ".ls-st td:empty{display:none}"
+         ".ls-st td::before{position:absolute;left:0;width:6.4rem;color:var(--text-muted);font-size:.8rem;font-weight:600}"
+         ".ls-st tr.ls-dr>td{padding-left:0}"
+         ".ls-st tr.ls-dr>td::before{content:none}"]
+    for name, lays in STACK_LAYOUTS.items():
+        for lay in lays:
+            labs = [SALE_COLS.get(c, c) for c in lay]
+            cls = ".ls-l-" + "-".join(c.replace(" ", "_") for c in lay)
+            for i, lab in enumerate(labs, 1):
+                r.append(".ls-st%s tr:not(.ls-dr)>td:nth-child(%d)::before{content:\"%s\"}" % (cls, i, lab))
+    r.append("}")
+    return "".join(r)
+
+
+def lay_class(cols):
+    return " ls-st ls-l-" + "-".join(str(c).replace(" ", "_") for c in cols)
+
+
 def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa", "note"), caption=None, county_link=None, tid=None, anchors=False,
                ctx=None, win=None, d=None):
     """anchors: each row gets id="s-<sale id>" (the county page; the land sale email links to it).
@@ -654,7 +693,7 @@ def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa",
     th = {"when": "Date", "where": "Where", "acres": "Acres", "price": "Recorded price", "ppa": "$/acre", "note": "Note", "usual": "County usual $/acre",
           "kind": "Type"}
     num = {"acres", "price", "ppa", "usual"}
-    h = ['<div class="ls-tw"><table class="ls-t"%s%s>' % (' id="%s"' % e(tid) if tid else "", ' data-ls-c=%s' % sq(ctx) if ctx else "")]
+    h = ['<div class="ls-tw"><table class="ls-t%s"%s%s>' % (lay_class(cols), ' id="%s"' % e(tid) if tid else "", ' data-ls-c=%s' % sq(ctx) if ctx else "")]
     if caption:
         h.append("<caption>%s</caption>" % e(caption))
     h.append("<thead><tr>" + "".join('<th scope="col"%s>%s</th>' % (' class="n"' if c in num else "", th[c]) for c in cols)
@@ -785,7 +824,7 @@ def month_page(d, M, early, coverage, archive):
           {"@context": "https://schema.org", "@type": "Article", "headline": "Farmland sales, " + lab, "url": url,
            "datePublished": max(d.fetched.values()), "author": {"@type": "Person", "name": "Sigurd Lindquist", "url": ORIGIN + "/about"}}]
     cl = county_link_fn(d.repo)
-    b = [head(title, desc, url, ld, early), '<div class="ls-w">',
+    b = [head(title, desc, url, ld, early, stack_css()), '<div class="ls-w">',
          '<nav class="ls-bc" aria-label="Breadcrumb"><a href="/land-sales/">Farmland sales</a> / %s</nav>' % e(lab),
          "<h1>Farmland sales, %s</h1>" % e(lab)]
     lead = []
@@ -810,7 +849,7 @@ def month_page(d, M, early, coverage, archive):
     if M.get("buyers_acres"):
         b.append("<p>Buyers named on the month's sales, all their purchases added up within a state. Names load when you tap.</p>")
         for k, cap in (("buyers_acres", "Most acres bought"), ("buyers_dollars", "Most dollars spent")):
-            h = ['<div class="ls-tw"><table class="ls-t"><caption>%s</caption><thead><tr><th scope="col">#</th><th scope="col">State</th>'
+            h = ['<div class="ls-tw"><table class="ls-t' + lay_class(STACK_LAYOUTS["buyers"][0]) + '"><caption>%s</caption><thead><tr><th scope="col">#</th><th scope="col">State</th>'
                  '<th scope="col">Counties</th><th scope="col" class="n">Sales</th><th scope="col" class="n">Acres</th>'
                  '<th scope="col" class="n">Dollars</th><th scope="col">Buyer</th></tr></thead><tbody>' % cap]
             for i, x in enumerate(M[k], 1):
@@ -877,7 +916,7 @@ def coverage_html(cov, d):
     h.append("</div>")
     h.append('<p class="ls-key">' + " ".join('<span class="ls-k ls-st-%s"></span> %s' % (k, e(v)) for k, v in cov["labels"].items()) + "</p>")
     h.append(survey_html(d))
-    h.append('<details class="ls-src"><summary>The source table, state by state</summary><div class="ls-tw"><table class="ls-t"><thead><tr>'
+    h.append('<details class="ls-src"><summary>The source table, state by state</summary><div class="ls-tw"><table class="ls-t' + lay_class(STACK_LAYOUTS["source"][0]) + '"><thead><tr>'
              '<th scope="col">State</th><th scope="col">On this site</th><th scope="col">Source</th><th scope="col">Names in the source</th>'
              '<th scope="col">How often</th><th scope="col">Terms</th></tr></thead><tbody>')
     for r in rows:
@@ -979,7 +1018,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     atlas = "/farmland-atlas/%s/%s" % (s, slug)
     has_atlas = (d.repo / "farmland-atlas" / s / (slug + ".html")).exists()
     page = allp[:COUNTY_ROWS]
-    b = [head(title, desc[:300], url, ld, early, SALE_CSS), '<div class="ls-w">',
+    b = [head(title, desc[:300], url, ld, early, SALE_CSS + stack_css()), '<div class="ls-w">',
          '<nav class="ls-bc" aria-label="Breadcrumb"><a href="/land-sales/">Farmland sales</a> / %s</nav>' % e(NAME[st]),
          "<h1>Farmland sales in %s</h1>" % e(cn),
          '<p class="ls-ans">%d recorded sales in the last 12 months, any size (%d of %d acres or more).</p>' % (n12all, n12, LIST_MIN_ACRES),
@@ -1116,7 +1155,7 @@ def index_page(d, latest, counties, early, coverage, archive, ix=None):
                 "Illinois farmland sale index, a monthly update of the biggest buyers and sales, and where every state's sales come "
                 "from." % and_list(sorted(NAME[x] for x in d.states)))
     ld = [crumbs([("AGSIST", ORIGIN + "/"), ("Farmland sales", url)])] + (ix["ld"] if ix else [])
-    b = [head(title, desc, url, ld, early, ix["css"] if ix else ""), '<div class="ls-w">', "<h1>Farmland sales</h1>"]
+    b = [head(title, desc, url, ld, early, (ix["css"] if ix else "") + stack_css()), '<div class="ls-w">', "<h1>Farmland sales</h1>"]
     if latest:
         big = latest.get("top") or []
         b.append('<p class="ls-ans">The %s update: %d farm sales of %d acres or more in %s.%s <a href="/land-sales/%s">See the biggest buyers, sales and unusual prices</a>.</p>'
