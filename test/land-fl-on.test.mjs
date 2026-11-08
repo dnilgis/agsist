@@ -139,7 +139,7 @@ test("the land-sales pages and their files show every Florida sale as a month, w
   assert.doesNotMatch(table, /\*/, "no deed-date mark on a sale month");
   assert.match(cp, /4 sales on file, Jun 2021 to Aug 2025/);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
   assert.match(cp, /No market middle: 2 bare farmland sales of 20 acres or more at \$500 an acre or more, Feb 2024 to Jan 2026, and it takes 5\./);   // pin-ok: synthetic fixture site (test/fixtures/land-fl), not live data
-  assert.match(cp, /Florida sales come from the Department of Revenue/);
+  assert.match(cp, /Florida Department of Revenue, sale data files[^<]*\. A farm sale is land the assessment roll codes agricultural/);
   assert.doesNotMatch(cp, /data-land-alert/, "the email ask waits for Florida");
   const body = cp.replace(/<script[\s\S]*?<\/script>/g, "").replace(/read [A-Za-z]{3} \d{1,2}, \d{4}/g, "");
   assert.doesNotMatch(body, DAY, "no day anywhere on the Florida county page but the date the files were read");

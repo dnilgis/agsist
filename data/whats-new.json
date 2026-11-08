@@ -9,6 +9,13 @@
    "link": "/farmland-atlas"
   },
   {
+   "id": "2026-11-08-land-month-fold",
+   "date": "2026-11-08",
+   "title": "Farm sales read cleaner on a phone",
+   "line": "Farm sale tables now stack one sale at a time on a phone with nothing cut off, and the fine print sits in one closed Sources and terms line at the bottom.",
+   "link": "/land-sales/"
+  },
+  {
    "id": "2026-11-08-phone-padding",
    "date": "2026-11-08",
    "title": "More room on your phone",
