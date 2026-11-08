@@ -85,7 +85,7 @@ test("the hub still compares dryland with dryland, whatever a state page leads w
   const hub = read("rent/index.html");
   // California's hub row is its dryland median, not the irrigated figure its page leads with
   assert.match(hub, /<a href="\/rent\/california" >California<\/a><\/td><td data-v="34\.75">\$34\.75<\/td>/);
-  assert.match(hub, /No dryland rent published for Arizona, Nevada, so the tile shows Arizona irrigated cropland; Nevada irrigated cropland/);
+  assert.match(hub, /No dryland rent published for Arizona, Nevada, so the map shows Arizona irrigated cropland; Nevada irrigated cropland/);
 });
 
 test("no em dashes in the rent pages", () => {

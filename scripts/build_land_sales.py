@@ -118,7 +118,7 @@ MIN_LISTED = 3                          # biggest sales withheld under this many
 MIN_BUYERS = 5                          # buyers withheld under this many distinct buyers
 MIN_JUDGED = 10                         # unusual and best value withheld under this many judged sales
 BEST_MIN_ACRES = 40
-CSS = '<link rel="stylesheet" href="/components/land-sales.css?v=3">'
+CSS = '<link rel="stylesheet" href="/components/land-sales.css?v=2">'
 JS = '<script src="/components/land-sales.js?v=6" defer></script>'
 KIND_WORDS = {"farm": "farmland", "bldg": "with buildings", "forest": "forest", "small": "small parcel"}
 KIND_CODE = {"farm": "f", "bldg": "b", "forest": "w", "small": "s"}   # the list file's type column
@@ -865,7 +865,7 @@ def coverage_html(cov, d):
     live = [r["name"] for r in rows if r.get("status") == "live"]
     h = ['<h2 id="coverage">Where the sales come from</h2>',
          '<p class="ls-cov-n">Sales reported for %d states: %s. The goal is every state; below is where each one stands.</p>' % (n, e(and_list(live))),
-         '<div class="ls-map" id="ls-map" data-map="%s"><noscript><p>The map needs JavaScript. The source table below lists every state.</p></noscript></div>' % e(json.dumps(
+         '<div class="ls-usmap" id="ls-map" data-map="%s"><noscript><p>The map needs JavaScript. The source table below lists every state.</p></noscript></div>' % e(json.dumps(
              {r["st"]: [r["status"], r["name"] + ": " + cov["labels"].get(r["status"], r["status"])] for r in rows}, separators=(",", ":")))]
     h.append(MAP_JS)
     h.append('<p class="ls-key">' + " ".join('<span class="ls-k ls-st-%s"></span> %s' % (k, e(v)) for k, v in cov["labels"].items()) + "</p>")
@@ -1420,6 +1420,9 @@ def selftest():
            and re.search(r"data-ls-c='\[\"WI\",\"55999\",[^']*,0\]'", texts["land-sales/wisconsin/testa-county.html"]) is not None)
         ck("every page carries the GA config, not only the guard (Nov 4: no land page view reached GA)",
            all("gtag('config','G-TEST1234')" in v and "agsist-ga-guard" in v for k, v in texts.items() if k.endswith(".html")))
+        ck("the hub and the monthly page draw the shared US map, with every state's status in the HTML, not a tile grid",
+           all('id="ls-map"' in texts[k] and "/components/usmap.js" in texts[k] and "ls-s ls-st-" not in texts[k]
+               and "&quot;IL&quot;:[&quot;live&quot;" in texts[k] for k in ("land-sales/index.html", "land-sales/2026-09.html")))
         lat = json.loads(texts["data/land-sales/latest.json"])
         ck("latest.json names no one", not any(n in texts["data/land-sales/latest.json"] for n in allnames))
         # one sale, linked (Nov 3): every row of the county table has id="s-<sale id>", the same on a rebuild

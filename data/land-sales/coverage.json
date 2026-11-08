@@ -17,11 +17,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "AL",
-   "name": "Alabama",
-   "tile": [
-    8,
-    7
-   ]
+   "name": "Alabama"
   },
   {
    "status": "nondisclosure",
@@ -30,11 +26,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "AK",
-   "name": "Alaska",
-   "tile": [
-    1,
-    1
-   ]
+   "name": "Alaska"
   },
   {
    "status": "unchecked",
@@ -43,11 +35,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "AZ",
-   "name": "Arizona",
-   "tile": [
-    3,
-    6
-   ]
+   "name": "Arizona"
   },
   {
    "status": "unchecked",
@@ -56,11 +44,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "AR",
-   "name": "Arkansas",
-   "tile": [
-    6,
-    6
-   ]
+   "name": "Arkansas"
   },
   {
    "status": "unchecked",
@@ -69,11 +53,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "CA",
-   "name": "California",
-   "tile": [
-    2,
-    5
-   ]
+   "name": "California"
   },
   {
    "status": "unchecked",
@@ -82,11 +62,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "CO",
-   "name": "Colorado",
-   "tile": [
-    4,
-    5
-   ]
+   "name": "Colorado"
   },
   {
    "status": "unchecked",
@@ -95,11 +71,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "CT",
-   "name": "Connecticut",
-   "tile": [
-    11,
-    4
-   ]
+   "name": "Connecticut"
   },
   {
    "status": "unchecked",
@@ -108,11 +80,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "DE",
-   "name": "Delaware",
-   "tile": [
-    11,
-    5
-   ]
+   "name": "Delaware"
   },
   {
    "status": "live",
@@ -121,11 +89,7 @@
    "cadence": "State posts sale files; the newest months arrive late",
    "terms": "Public record, free state download",
    "st": "FL",
-   "name": "Florida",
-   "tile": [
-    10,
-    8
-   ]
+   "name": "Florida"
   },
   {
    "status": "unchecked",
@@ -134,11 +98,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "GA",
-   "name": "Georgia",
-   "tile": [
-    9,
-    7
-   ]
+   "name": "Georgia"
   },
   {
    "status": "unchecked",
@@ -147,11 +107,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "HI",
-   "name": "Hawaii",
-   "tile": [
-    1,
-    8
-   ]
+   "name": "Hawaii"
   },
   {
    "status": "nondisclosure",
@@ -160,11 +116,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "ID",
-   "name": "Idaho",
-   "tile": [
-    3,
-    3
-   ]
+   "name": "Idaho"
   },
   {
    "status": "live",
@@ -173,11 +125,7 @@
    "cadence": "State posts weekly; read here monthly",
    "terms": "Public record, state open data",
    "st": "IL",
-   "name": "Illinois",
-   "tile": [
-    7,
-    3
-   ]
+   "name": "Illinois"
   },
   {
    "status": "live",
@@ -186,11 +134,7 @@
    "cadence": "State posts weekly in season; read here monthly",
    "terms": "Public record, free download",
    "st": "IN",
-   "name": "Indiana",
-   "tile": [
-    7,
-    4
-   ]
+   "name": "Indiana"
   },
   {
    "status": "county",
@@ -199,11 +143,7 @@
    "cadence": "Varies by county",
    "terms": "Varies by county",
    "st": "IA",
-   "name": "Iowa",
-   "tile": [
-    6,
-    4
-   ]
+   "name": "Iowa"
   },
   {
    "status": "nondisclosure",
@@ -212,11 +152,7 @@
    "cadence": "Auction results as posted",
    "terms": "Prices not public record",
    "st": "KS",
-   "name": "Kansas",
-   "tile": [
-    5,
-    6
-   ]
+   "name": "Kansas"
   },
   {
    "status": "unchecked",
@@ -225,11 +161,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "KY",
-   "name": "Kentucky",
-   "tile": [
-    7,
-    5
-   ]
+   "name": "Kentucky"
   },
   {
    "status": "nondisclosure",
@@ -238,11 +170,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "LA",
-   "name": "Louisiana",
-   "tile": [
-    6,
-    7
-   ]
+   "name": "Louisiana"
   },
   {
    "status": "unchecked",
@@ -251,11 +179,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "ME",
-   "name": "Maine",
-   "tile": [
-    12,
-    1
-   ]
+   "name": "Maine"
   },
   {
    "status": "unchecked",
@@ -264,11 +188,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "MD",
-   "name": "Maryland",
-   "tile": [
-    10,
-    5
-   ]
+   "name": "Maryland"
   },
   {
    "status": "unchecked",
@@ -277,11 +197,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "MA",
-   "name": "Massachusetts",
-   "tile": [
-    11,
-    3
-   ]
+   "name": "Massachusetts"
   },
   {
    "status": "county",
@@ -290,11 +206,7 @@
    "cadence": "Varies",
    "terms": "Varies",
    "st": "MI",
-   "name": "Michigan",
-   "tile": [
-    8,
-    3
-   ]
+   "name": "Michigan"
   },
   {
    "status": "request",
@@ -303,11 +215,7 @@
    "cadence": "Weekly extract",
    "terms": "Bulk copy on request",
    "st": "MN",
-   "name": "Minnesota",
-   "tile": [
-    6,
-    3
-   ]
+   "name": "Minnesota"
   },
   {
    "status": "nondisclosure",
@@ -316,11 +224,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "MS",
-   "name": "Mississippi",
-   "tile": [
-    7,
-    7
-   ]
+   "name": "Mississippi"
   },
   {
    "status": "nondisclosure",
@@ -329,11 +233,7 @@
    "cadence": "Auction results as posted",
    "terms": "Prices not public record in most counties",
    "st": "MO",
-   "name": "Missouri",
-   "tile": [
-    6,
-    5
-   ]
+   "name": "Missouri"
   },
   {
    "status": "nondisclosure",
@@ -342,11 +242,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "MT",
-   "name": "Montana",
-   "tile": [
-    4,
-    3
-   ]
+   "name": "Montana"
   },
   {
    "status": "request",
@@ -355,11 +251,7 @@
    "cadence": "By request",
    "terms": "Fee",
    "st": "NE",
-   "name": "Nebraska",
-   "tile": [
-    5,
-    5
-   ]
+   "name": "Nebraska"
   },
   {
    "status": "unchecked",
@@ -368,11 +260,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "NV",
-   "name": "Nevada",
-   "tile": [
-    3,
-    4
-   ]
+   "name": "Nevada"
   },
   {
    "status": "unchecked",
@@ -381,11 +269,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "NH",
-   "name": "New Hampshire",
-   "tile": [
-    12,
-    2
-   ]
+   "name": "New Hampshire"
   },
   {
    "status": "live",
@@ -394,11 +278,7 @@
    "cadence": "State posts yearly files and a year-to-date file; read here monthly",
    "terms": "Public record, free state download",
    "st": "NJ",
-   "name": "New Jersey",
-   "tile": [
-    10,
-    4
-   ]
+   "name": "New Jersey"
   },
   {
    "status": "nondisclosure",
@@ -407,11 +287,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "NM",
-   "name": "New Mexico",
-   "tile": [
-    4,
-    6
-   ]
+   "name": "New Mexico"
   },
   {
    "status": "unchecked",
@@ -420,11 +296,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "NY",
-   "name": "New York",
-   "tile": [
-    10,
-    3
-   ]
+   "name": "New York"
   },
   {
    "status": "unchecked",
@@ -433,11 +305,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "NC",
-   "name": "North Carolina",
-   "tile": [
-    8,
-    6
-   ]
+   "name": "North Carolina"
   },
   {
    "status": "nondisclosure",
@@ -446,11 +314,7 @@
    "cadence": "Auction results as posted",
    "terms": "To check",
    "st": "ND",
-   "name": "North Dakota",
-   "tile": [
-    5,
-    3
-   ]
+   "name": "North Dakota"
   },
   {
    "status": "county",
@@ -459,11 +323,7 @@
    "cadence": "Varies by county",
    "terms": "Varies by county",
    "st": "OH",
-   "name": "Ohio",
-   "tile": [
-    8,
-    4
-   ]
+   "name": "Ohio"
   },
   {
    "status": "unchecked",
@@ -472,11 +332,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "OK",
-   "name": "Oklahoma",
-   "tile": [
-    5,
-    7
-   ]
+   "name": "Oklahoma"
   },
   {
    "status": "unchecked",
@@ -485,11 +341,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "OR",
-   "name": "Oregon",
-   "tile": [
-    2,
-    4
-   ]
+   "name": "Oregon"
   },
   {
    "status": "unchecked",
@@ -498,11 +350,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "PA",
-   "name": "Pennsylvania",
-   "tile": [
-    9,
-    4
-   ]
+   "name": "Pennsylvania"
   },
   {
    "status": "unchecked",
@@ -511,11 +359,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "RI",
-   "name": "Rhode Island",
-   "tile": [
-    12,
-    4
-   ]
+   "name": "Rhode Island"
   },
   {
    "status": "unchecked",
@@ -524,11 +368,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "SC",
-   "name": "South Carolina",
-   "tile": [
-    9,
-    6
-   ]
+   "name": "South Carolina"
   },
   {
    "status": "county",
@@ -537,11 +377,7 @@
    "cadence": "Yearly where posted",
    "terms": "Varies by county",
    "st": "SD",
-   "name": "South Dakota",
-   "tile": [
-    5,
-    4
-   ]
+   "name": "South Dakota"
   },
   {
    "status": "unchecked",
@@ -550,11 +386,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "TN",
-   "name": "Tennessee",
-   "tile": [
-    7,
-    6
-   ]
+   "name": "Tennessee"
   },
   {
    "status": "nondisclosure",
@@ -563,11 +395,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "TX",
-   "name": "Texas",
-   "tile": [
-    5,
-    8
-   ]
+   "name": "Texas"
   },
   {
    "status": "nondisclosure",
@@ -576,11 +404,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "UT",
-   "name": "Utah",
-   "tile": [
-    3,
-    5
-   ]
+   "name": "Utah"
   },
   {
    "status": "live",
@@ -589,11 +413,7 @@
    "cadence": "State posts weekly; read here monthly",
    "terms": "Public record, free state open data",
    "st": "VT",
-   "name": "Vermont",
-   "tile": [
-    11,
-    2
-   ]
+   "name": "Vermont"
   },
   {
    "status": "unchecked",
@@ -602,11 +422,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "VA",
-   "name": "Virginia",
-   "tile": [
-    9,
-    5
-   ]
+   "name": "Virginia"
   },
   {
    "status": "unchecked",
@@ -615,11 +431,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "WA",
-   "name": "Washington",
-   "tile": [
-    2,
-    3
-   ]
+   "name": "Washington"
   },
   {
    "status": "unchecked",
@@ -628,11 +440,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "WV",
-   "name": "West Virginia",
-   "tile": [
-    8,
-    5
-   ]
+   "name": "West Virginia"
   },
   {
    "status": "live",
@@ -641,11 +449,7 @@
    "cadence": "State posts monthly; read here monthly",
    "terms": "Public record, free state download",
    "st": "WI",
-   "name": "Wisconsin",
-   "tile": [
-    7,
-    2
-   ]
+   "name": "Wisconsin"
   },
   {
    "status": "nondisclosure",
@@ -654,11 +458,7 @@
    "cadence": "",
    "terms": "To check",
    "st": "WY",
-   "name": "Wyoming",
-   "tile": [
-    4,
-    4
-   ]
+   "name": "Wyoming"
   }
  ]
 }

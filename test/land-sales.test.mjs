@@ -199,7 +199,7 @@ test("the coverage table: every state, honest statuses, the live count matches t
   assert.deepEqual(live, ["FL", "IL", "IN", "NJ", "VT", "WI"], "Indiana turned on (Sig, Oct 27), Vermont and New Jersey Oct 29, Florida Nov 5");
   for (const s of cov.states) {
     assert.ok(cov.labels[s.status], `${s.st}: a status with a label`);
-    assert.ok(s.tile && s.tile.length === 2, `${s.st}: a map tile`);
+    assert.equal(s.tile, undefined, `${s.st}: the tile grid position is gone, the shared map draws every state (test/us-map.test.mjs)`);
     assert.ok(s.source && !DASH.test(JSON.stringify(s)), `${s.st}: a source line, no dashes`);
   }
   for (const st of ["AK", "ID", "KS", "LA", "MS", "MO", "MT", "NM", "ND", "TX", "UT", "WY"])
