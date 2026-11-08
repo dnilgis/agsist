@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-08-phone-padding",
+   "date": "2026-11-08",
+   "title": "More room on your phone",
+   "line": "On a phone, pages and cards now use more of the screen: narrower side margins and no double padding, so the numbers get the width.",
+   "link": "/"
+  },
+  {
    "id": "2026-11-08-gdd-month",
    "date": "2026-11-08",
    "title": "GDDs by month is back on the home weather card",
