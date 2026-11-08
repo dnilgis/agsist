@@ -1,6 +1,6 @@
 /**
- * Land auction firms capture, phase 1 (Sig approved Nov 8, 2026: Wieman, Younger, Horning, Martin's and
- * Iowa Land Company join the weekly Monday land capture).
+ * Land auction firms capture, phase 1 (Sig approved Nov 8, 2026: Wieman, Younger, Horning and Martin's join the
+ * weekly Monday land capture; Iowa Land Company dropped Nov 8: it answers direct requests with 403).
  *
  * scripts/capture_land_firms.py saves each firm's results pages raw (robots.txt first and obeyed, 2 s or the
  * firm's Crawl-delay apart, per-firm caps). This file holds:
@@ -41,8 +41,9 @@ test('capture_land_firms.py selftest passes', () => {
   assert.doesNotMatch(out, /::warning::/, 'made-up misses raise no annotation');
 });
 
-test('the five firms Sig approved, and no other', () => {
-  assert.deepEqual(firms.all, ['wieman', 'younger', 'horning', 'martins', 'iowalandco']);
+test('the four firms, and no other (a site that turns us away is not read)', () => {
+  assert.deepEqual(firms.all, ['wieman', 'younger', 'horning', 'martins']);
+  assert.doesNotMatch(read('scripts/capture_land_firms.py') + wf, /iowalandcompany/);
   assert.deepEqual(firms.archive, ['wieman', 'horning', 'martins']);
 });
 

@@ -195,4 +195,4 @@ jobs:
       - name: Save to the raw branch
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-        run: bash scripts/push_raw.sh "land firms capture" land/wieman land/younger land/horning land/martins land/iowalandco
+        run: bash scripts/push_raw.sh "land firms capture" land/wieman land/younger land/horning land/martins

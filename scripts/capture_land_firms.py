@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-AGSIST -- capture five land auction firms' published results pages, raw.
+AGSIST -- capture four land auction firms' published results pages, raw.
 
 Phase 1 of the firm results readers (Sig, Nov 7 and 8, 2026): real pages before any
 parser is written. Nothing here parses a price, writes a data/ file on main or
@@ -12,7 +12,6 @@ facts only later, credit and link, taken down the same day on an objection):
   younger     Younger Auction Company (MO)    land-auction-results.html (one page)
   horning     Horning Farm Agency (PA)        /auctions/past-auctions/, archive /page/N/
   martins     Martin's Auction Service (PA)   results highlights page and its RSS feed, archive /page/N/
-  iowalandco  Iowa Land Company (IA)          /notabale-sales/ (one page)
 
 What one run fetches, per firm, one firm after another, nothing in parallel
 (User-Agent "AGSIST/1.0 (+https://agsist.com)"):
@@ -92,9 +91,6 @@ FIRMS = [
      "current": [("current.html", "/product-category/auction-results-highlights/"),
                  ("feed.xml", "/product-category/auction-results-highlights/feed/")],
      "archive": "/product-category/auction-results-highlights/page/{n}/"},
-    {"slug": "iowalandco", "name": "Iowa Land Company", "state": "IA",
-     "base": "https://iowalandcompany.com", "hosts": ("iowalandcompany.com", "www.iowalandcompany.com"),
-     "current": [("current.html", "/notabale-sales/")], "archive": None},
 ]
 BY_SLUG = {f["slug"]: f for f in FIRMS}
 ARCHIVE_FIRMS = [f["slug"] for f in FIRMS if f["archive"]]
@@ -431,7 +427,7 @@ def selftest():
     # robots.txt reading
     r = Robots("User-agent: *\nContent-Signal: search=yes,ai-train=no,use=reference\nAllow: /\n"
                "User-agent: GPTBot\nDisallow: /\nUser-agent: *\nDisallow: */page/\n")
-    check(not r.allows("https://iowalandcompany.com/blog/page/2/") and r.allows("https://iowalandcompany.com/notabale-sales/"),
+    check(not r.allows("https://h/blog/page/2/") and r.allows("https://h/sales/"),
           "every '*' group counts (a second '*' group's */page/ is obeyed)")
     check(r.content_signal == ["search=yes,ai-train=no,use=reference"], "Content-Signal kept as it stands")
     r = Robots("User-agent: *\nDisallow: /*?add-to-cart=\nDisallow: /wp-admin/\nAllow: /wp-admin/admin-ajax.php\nCrawl-delay: 10\n"
@@ -489,7 +485,6 @@ def selftest():
             (200, "", b"<?xml version='1.0'?><rss><channel><item><title>49 acres</title></item></channel></rss>"),
         "https://martinsauctionservice.com/product-category/auction-results-highlights/page/2/": (200, "", b"<p>p2</p>"),
         "https://martinsauctionservice.com/product-category/auction-results-highlights/page/3/": (404, "", b""),
-        "https://iowalandcompany.com/robots.txt": (403, "", b""),
     }
 
     def fake(table, calls):
@@ -504,7 +499,7 @@ def selftest():
         code, rep = capture((), tmp, fake(sites, calls), sleeps.append, lambda: 0.0, now)
         check(code == 0, "weekly run: exit 0 when some firm's current page was saved")
         week = [c for c in calls if not c.endswith("/robots.txt")]
-        check(len([c for c in calls if c.endswith("/robots.txt")]) == 5 and calls[0].endswith("wiemanauction.com/robots.txt"),
+        check(len([c for c in calls if c.endswith("/robots.txt")]) == len(FIRMS) and calls[0].endswith("wiemanauction.com/robots.txt"),
               "robots.txt first, once per firm")
         check(week == ["https://www.wiemanauction.com/land-auction-results.php",
                        "https://www.youngerauction.com/land-auction-results.html",
@@ -512,9 +507,7 @@ def selftest():
                        "https://martinsauctionservice.com/product-category/auction-results-highlights/",
                        "https://martinsauctionservice.com/product-category/auction-results-highlights/feed/"],
               f"weekly run: the current pages only, no archive ({len(calls)} requests)")
-        check(len(calls) == 10, "weekly run: 10 requests for the five firms")
-        check(not any("iowalandcompany.com/notabale" in c for c in calls), "robots.txt refused (403): nothing else fetched")
-        check(any("robots.txt unreadable" in s["why"] for s in rep["iowalandco"]["skipped"]), "and the reason is recorded")
+        check(len(calls) == 9, "weekly run: 9 requests for the four firms")
         check(sorted(set(sleeps)) == [2.0, 5.0, 10.0], f"waits: 2 s, or the firm's Crawl-delay (5, 10) ({sorted(set(sleeps))})")
         check(rep["martins"]["delay_s"] == 10.0 and rep["horning"]["crawl_delay"] == 5.0, "Crawl-delay recorded")
         out = os.path.join(tmp, "land", "younger", "capture", "2026-11-09")
@@ -554,6 +547,7 @@ def selftest():
         t2["https://www.horningfarmagency.com/robots.txt"] = (200, "", b"User-agent: *\nDisallow: /auctions/past-auctions/page/\n")
         t2["https://martinsauctionservice.com/product-category/auction-results-highlights/"] = (302, "https://example.com/x", b"")
         t2["https://www.youngerauction.com/robots.txt"] = (200, "", b"User-agent: *\nCrawl-delay: 60\n")
+        t2["https://www.wiemanauction.com/robots.txt"] = (403, "", b"")
         calls.clear()
         code, rep = capture(("horning", "martins"), tmp, fake(t2, calls), lambda x: None, lambda: 0.0, now)
         check(not any("/past-auctions/page/" in c for c in calls) and rep["horning"]["archive"] == "complete",
@@ -562,6 +556,9 @@ def selftest():
               "an off-site redirect is not followed; no archive without the current page")
         check(not any("youngerauction.com/land" in c for c in calls) and any("Crawl-delay 60" in s["why"] for s in rep["younger"]["skipped"]),
               "Crawl-delay over 30 s: nothing past robots.txt")
+        check(calls.count("https://www.wiemanauction.com/robots.txt") == 1 and not any("wiemanauction.com/land" in c for c in calls)
+              and any("robots.txt unreadable" in s["why"] for s in rep["wieman"]["skipped"]),
+              "robots.txt refused (403): nothing else fetched from that firm, reason recorded")
 
         shutil.rmtree(os.path.join(tmp, "land"))
         calls.clear()
@@ -573,7 +570,7 @@ def selftest():
               "walk with every page failing (500): capped, archive partial")
         calls.clear()
         code, rep = capture(("horning",), tmp, lambda u: (calls.append(u), (0, "", b""))[1], lambda x: None, lambda: 0.0, now)
-        check(code == 1 and len(calls) == 5, "no firm answers: exit 1, one request each (robots.txt unreadable)")
+        check(code == 1 and len(calls) == len(FIRMS), "no firm answers: exit 1, one request each (robots.txt unreadable)")
         t = iter(range(0, 10 ** 6, 100))
         calls.clear()
         code, rep = capture(("horning",), tmp, fake({"https://www.horningfarmagency.com/robots.txt": (404, "", b""),
