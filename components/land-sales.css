@@ -26,11 +26,11 @@
 .ls-cos li { break-inside: avoid; padding: .12rem 0; }
 .ls-cos span { color: var(--text-muted); font-size: .8rem; }
 .ls-cov-n { font-weight: 600; }
-.ls-map { display: grid; grid-template-columns: repeat(12, minmax(0, 2.6rem)); grid-auto-rows: 2.1rem; gap: 3px; margin: .4rem 0 .6rem; max-width: 100%; }
-.ls-s { display: flex; align-items: center; justify-content: center; font-size: .72rem; font-weight: 700; border-radius: 3px; color: var(--text); background: var(--surface); border: 1px solid var(--border); }
+/* the coverage map is the shared one (components/usmap.js); its box reserves its own shape */
+.ls-map { margin: .4rem 0 .6rem; max-width: 100%; }
 .ls-k { display: inline-block; width: .9rem; height: .9rem; border-radius: 2px; vertical-align: -.12rem; border: 1px solid var(--border); margin-left: .5rem; }
 .ls-key { font-size: .82rem; color: var(--text-muted); }
-/* map tiles by status */
+/* the legend swatches, by status */
 .ls-st-live { background: #2e7d4f; color: #fff; border-color: #2e7d4f; }
 .ls-st-held { background: #8fbf9f; color: #10261a; border-color: #8fbf9f; }
 .ls-st-request { background: #d9b45a; color: #2a1f00; border-color: #d9b45a; }
@@ -38,8 +38,6 @@
 .ls-st-nondisclosure { background: #9a7d8f; color: #fff; border-color: #9a7d8f; }
 .ls-src summary { cursor: pointer; font-weight: 600; margin: .4rem 0; }
 .ls-src td { font-size: .84rem; }
-@media (max-width: 520px) { .ls-map { grid-template-columns: repeat(12, minmax(0, 1fr)); grid-auto-rows: 1.6rem; } .ls-s { font-size: .6rem; } }
-/* the blocks on other pages */
 .ls-feat { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 1rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md, 8px); padding: .9rem 1rem; margin: 1rem 0; }
 .ls-feat h2 { margin: 0 0 .4rem; font-size: 1.1rem; }
 .ls-feat p { margin: .4rem 0 0; }

@@ -222,7 +222,7 @@ def main():
     x0, x1, y0, y1 = min(xs), max(xs), min(ys), max(ys)
     pad = 6
     # Make room on the right for the leader-line labels of the small states.
-    gutter = 150
+    gutter = 136
     ox, oy = pad - x0, pad - y0
     W = (x1 - x0) + 2 * pad + gutter
     H = (y1 - y0) + 2 * pad
@@ -231,15 +231,15 @@ def main():
         s["rings"] = [([(x + ox, y + oy) for x, y in o], [[(x + ox, y + oy) for x, y in h] for h in hs]) for o, hs in s["rings"]]
         lab[st] = label_point(s["rings"])
     # Out-of-map labels, two columns in the water: New England north to south in the outer one (right of Maine),
-    # the mid-Atlantic four in the inner one below it. Rows are 62 apart so a chip is about 24 px on a 390 px phone.
-    step = 62
-    xo, xi = W - pad - 30, W - pad - 112
+    # the mid-Atlantic four in the inner one below it. Rows are 66 apart so a chip is about 24 px on a 390 px phone.
+    step = 66
+    xo, xi = W - pad - 34, W - pad - 118
     out = {}
     for i, st in enumerate(["VT", "NH", "MA", "RI", "CT"]):
         out[st] = (xo, 40 + i * step)
     for i, st in enumerate(["NJ", "DE", "MD", "DC"]):
         out[st] = (xi, 40 + 5 * step + 8 + i * step)
-    H = max(H, 40 + 9 * step + 8 + 30)
+    H = max(H, 40 + 9 * step + 8 + 34)
     parts = ['<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 %s %s" width="%s" height="%s">' % (fmt(W), fmt(H), fmt(W), fmt(H))]
     for st in sorted(states):
         a = 'id="%s" data-n="%s" data-c="%s,%s"' % (st, NAMES[st], fmt(lab[st][0]), fmt(lab[st][1]))

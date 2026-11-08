@@ -118,7 +118,7 @@ MIN_LISTED = 3                          # biggest sales withheld under this many
 MIN_BUYERS = 5                          # buyers withheld under this many distinct buyers
 MIN_JUDGED = 10                         # unusual and best value withheld under this many judged sales
 BEST_MIN_ACRES = 40
-CSS = '<link rel="stylesheet" href="/components/land-sales.css?v=2">'
+CSS = '<link rel="stylesheet" href="/components/land-sales.css?v=3">'
 JS = '<script src="/components/land-sales.js?v=6" defer></script>'
 KIND_WORDS = {"farm": "farmland", "bldg": "with buildings", "forest": "forest", "small": "small parcel"}
 KIND_CODE = {"farm": "f", "bldg": "b", "forest": "w", "small": "s"}   # the list file's type column
@@ -850,18 +850,24 @@ def month_page(d, M, early, coverage, archive):
     return "\n".join(b) + "\n" + FOOT
 
 
+# The coverage map is the shared real US map (components/usmap.js, data/us-states-map.svg); the colors are the legend's.
+MAP_FILL = {"live": "#2e7d4f", "held": "#8fbf9f", "request": "#d9b45a", "county": "#e6d6a8", "nondisclosure": "#9a7d8f", "unchecked": ""}
+MAP_JS = ('<script src="/components/usmap.js?v=1" defer></script><script>document.addEventListener("DOMContentLoaded",function(){'
+          'var h=document.getElementById("ls-map");if(!h||!window.AgUSMap)return;var d=JSON.parse(h.getAttribute("data-map")),F=%s,s={};'
+          'for(var k in d)s[k]={fill:F[d[k][0]]||"",text:d[k][1].split(": ").slice(1).join(": ")};'
+          'AgUSMap.mount(h,{states:s,hint:"Tap a state to see where it stands.",name:"Map of states by whether their farm sales are on this site"});});</script>'
+          % json.dumps(MAP_FILL, separators=(",", ":")))
+
+
 def coverage_html(cov, d):
     rows = cov.get("states") or []
     n = sum(1 for r in rows if r.get("status") == "live")
     live = [r["name"] for r in rows if r.get("status") == "live"]
     h = ['<h2 id="coverage">Where the sales come from</h2>',
          '<p class="ls-cov-n">Sales reported for %d states: %s. The goal is every state; below is where each one stands.</p>' % (n, e(and_list(live))),
-         '<div class="ls-map" role="img" aria-label="Map of states by whether their farm sales are on this site">']
-    for r in rows:
-        if r.get("tile"):
-            h.append('<span class="ls-s ls-st-%s" style="grid-column:%d;grid-row:%d" title="%s">%s</span>'
-                     % (e(r["status"]), r["tile"][0], r["tile"][1], e(r["name"] + ": " + cov["labels"].get(r["status"], r["status"])), e(r["st"])))
-    h.append("</div>")
+         '<div class="ls-map" id="ls-map" data-map="%s"><noscript><p>The map needs JavaScript. The source table below lists every state.</p></noscript></div>' % e(json.dumps(
+             {r["st"]: [r["status"], r["name"] + ": " + cov["labels"].get(r["status"], r["status"])] for r in rows}, separators=(",", ":")))]
+    h.append(MAP_JS)
     h.append('<p class="ls-key">' + " ".join('<span class="ls-k ls-st-%s"></span> %s' % (k, e(v)) for k, v in cov["labels"].items()) + "</p>")
     h.append(survey_html(d))
     h.append('<details class="ls-src"><summary>The source table, state by state</summary><div class="ls-tw"><table class="ls-t"><thead><tr>'
