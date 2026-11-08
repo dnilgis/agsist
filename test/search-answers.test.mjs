@@ -164,14 +164,15 @@ test("rent hub: a state picker for county rates on top, and pasture on the map",
   const n = Number(/(\d+) states &middot;/.exec(h)[1]);
   assert.equal(opts.length, n);
   for (const o of opts) assert.ok(existsSync(ROOT + o.slice(1) + ".html"), o);
-  assert.ok(h.indexOf('class="rh-find"') < h.indexOf('class="rh-grid"'), "picker before the map");
-  const tiles = [...h.matchAll(/<a class="rh-tile"[^>]*>/g)].map((x) => x[0]);
-  assert.ok(tiles.length === n && tiles.every((t) => /data-pv="(\$[\d,.]+|n\/a)"/.test(t)));
+  assert.ok(h.indexOf('class="rh-find"') < h.indexOf('id="rh-map"'), "picker before the map");
+  // the map's data (shared US map, components/usmap.js): one entry per state, each with a pasture figure or n/a
+  const md = JSON.parse(/id="rh-map" data-map="([^"]*)"/.exec(h)[1].replace(/&quot;/g, '"').replace(/&amp;/g, "&"));
+  assert.ok(Object.keys(md).length === n && Object.values(md).every((t) => /^(\$[\d,.]+|n\/a)$/.test(t.pv)));
   // Iowa's pasture tile is the Pasture column's Iowa median, to the dollar
   const ia = /<td><a href="\/rent\/iowa" >Iowa<\/a><\/td>(?:<td[^>]*>[^<]*<\/td>){4}<td data-v="([\d.]+)">/.exec(h);
   assert.ok(ia, "Iowa pasture cell");
-  const tile = /<a class="rh-tile" href="\/rent\/iowa"[^>]*data-pv="\$([\d,.]+)"/.exec(h)[1];
-  const v = Number(ia[1]);   // 65.25 on the 2026 file -> "$65" (a 64px tile; the table keeps cents)
+  const tile = md.IA.pv.slice(1);
+  const v = Number(ia[1]);   // 65.25 on the 2026 file -> "$65" (whole dollars on the map; the table keeps cents)
   assert.equal(tile, v >= 10 ? String(Math.round(v)) : v.toFixed(2));
   assert.match(h, /<button type="button" aria-pressed="false" data-rh="p">Pasture<\/button>/);
 });
