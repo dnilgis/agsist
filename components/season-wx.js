@@ -22,8 +22,8 @@
  * Drawn at the panel's own width (1 unit = 1 px, so 12 px text is 12 px), a gridline at the top and the middle with
  * their values, the month still running drawn lighter and named "so far". Each month is a tap target the full column
  * high; a tap, or keyboard focus (arrow keys, Home, End), writes the month's numbers in the readout line under the
- * chart (aria-live). A percent is printed only on a usual of 0.50 in or 50 GDDs or more (a tiny normal makes a wild
- * percent; GDD30_PCT_MIN in fetch_rain_weather.py). "Save picture" draws the chart on the share kit's card
+ * chart (aria-live). A percent is printed only on a usual of 1.00 in or 50 GDDs or more (a tiny normal makes a wild
+ * percent; county_rain.PCT_MIN_NORMAL, as the rain tiles, and GDD30_PCT_MIN in fetch_rain_weather.py). "Save picture" draws the chart on the share kit's card
  * (components/share-kit.js); without the kit the chart works as ever and the button says it is unavailable.
  *
  *   AgSeason.fipsFor(rainFile, countyName)        the county's FIPS in a state rain file, or null
@@ -165,7 +165,7 @@
   function trim(v) { return String(+v.toFixed(2)); }
   var KIND = {
     rain: { title: "Rain by month", v: function (x) { return inch(x) + " in"; }, d: function (x) { return inch(x) + " in"; },
-      bar: inch, eps: 0.004, pmin: 0.5, least: 0.1, ax: trim, axTop: function (v) { return trim(v) + " in"; } },
+      bar: inch, eps: 0.004, pmin: 1.0, least: 0.1, ax: trim, axTop: function (v) { return trim(v) + " in"; } },
     gdd: { title: "GDDs by month", v: function (x) { return num(x) + " GDDs"; }, d: num,
       bar: num, eps: 0, pmin: 50, least: 10, ax: num, axTop: function (v) { return num(v) + " GDDs"; } }
   };

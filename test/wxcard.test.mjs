@@ -153,8 +153,9 @@ test("GDDs by month, summer: a second button beside Rain by month, the same draw
   assert.equal(A.readout(g, 11), "Dec: still to come");
   // rain from the county page's month table: Sep 5.96 against 3.63 = +2.33, 164%; Jan 1.41 against 0.95, 30 of 31 days
   assert.equal(A.readout(r, 8), "Sep: 5.96 in, usual 3.63 in, +2.33 in (164%)");
-  assert.equal(A.readout(r, 0), "Jan: 1.41 in, usual 0.95 in, +0.46 in (148%), 1 day not reported");
-  assert.equal(A.readout(r, 10), "Nov 1 to 3, so far: 1.61 in, usual 0.24 in, +1.37 in", "no percent on a usual under 0.50 in");
+  assert.equal(A.readout(r, 0), "Jan: 1.41 in, usual 0.95 in, +0.46 in, 1 day not reported", "no percent on a usual under 1.00 in (county_rain.PCT_MIN_NORMAL, as the rain tiles)");
+  assert.equal(A.readout(r, 10), "Nov 1 to 3, so far: 1.61 in, usual 0.24 in, +1.37 in", "no percent on a usual under 1.00 in");
+  assert.equal(A.readout(r, 1), "Feb: 0.73 in, usual 1.23 in, \u22120.50 in (59%)", "a usual of 1.00 in or more keeps its percent: 0.73 / 1.23 = 59.3%");
   const ch = A.chartGdd(m, 340);
   assert.match(ch, /<title>Jul 712 GDDs<\/title>/);
   assert.match(ch, /<title>Jul usual 680 GDDs<\/title>/);
