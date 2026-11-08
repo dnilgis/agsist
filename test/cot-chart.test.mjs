@@ -246,7 +246,7 @@ test("the home card's lines open /cot on their market", () => {
   for (const k of G.ORDER) assert.equal(G.keyOf(G.SLUG[k]), k);
   assert.equal(G.keyOf("nonsense"), null);
   const idx = read("index.html");
-  for (const s of ["components/cot-glance.js?v=6", "components/home.js?v=24", "css/home.css?v=40"]) assert.ok(idx.includes("/" + s + '"'), s);
+  for (const s of ["components/cot-glance.js?v=6", "components/home.js?v=24", "css/home.css?v=41"]) assert.ok(idx.includes("/" + s + '"'), s);
 });
 
 // ---------------------------------------------------------------- in a browser
