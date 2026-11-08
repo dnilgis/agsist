@@ -342,7 +342,7 @@ def plan(entry, runs, now, crons=None, truncated=False):
 
 
 def step_states(jobs, steps):
-    """{step name: "ran" | "skipped" | "no_job"} for one run's jobs. A step name matches exactly
+    """{step name: "ran" | "skipped" | "no_job" | "unrecorded"} for one run's jobs. A step name matches exactly
     or with the "(...)" a workflow expression adds ("Monthly county rain (scheduled)").
     "skipped": its job ran and the step did not (an earlier step failed, or its own `if:` said no).
     "no_job": no job that ran lists the step (the job was skipped by its `if:`, or never made)."""
@@ -355,6 +355,11 @@ def step_states(jobs, steps):
                 if n != key and not n.startswith(key + " ("):
                     continue
                 c = s.get("conclusion")
+                if c is None and j.get("conclusion") == "success" and s.get("status") in ("pending", "in_progress", "queued"):
+                    # GitHub lost the step record (the job finished, its steps still read pending): unknown, not a miss
+                    if state != "ran":
+                        state = "unrecorded"
+                    continue
                 if c in ("success", "failure") or (c == "cancelled" and s.get("started_at") and s.get("completed_at")
                                                    and s["started_at"] != s["completed_at"]):
                     state = "ran"
@@ -501,6 +506,10 @@ def classify(entry, runs, runs_total, state, dispatch_runs=None, evidence=None, 
             r = by_id.get(t["run"])
             if r is None:
                 n_unread += 1
+                continue
+            lost = [k for k, v in sorted(r["steps"].items()) if v == "unrecorded"]
+            if lost:
+                notes.append("the %s tick: run %s finished but GitHub kept no record of step '%s'" % (t["tick"], r["id"], lost[0]))
                 continue
             missed = [k for k, v in sorted(r["steps"].items()) if v != "ran"]
             if missed and not may_skip:
@@ -767,6 +776,12 @@ def selftest():
     L = lambda s, sent, wait, dry, **x: dict({"sender": s, "sent_readers": sent, "waiting": wait, "dry": dry}, **x)
     R = lambda i, ev, *lines: {"id": i, "event": ev, "lines": list(lines)}
     ON, OFF = ("on", "X is '1'"), ("off", "X is '0'")
+
+    # a finished job whose steps GitHub left at pending (Nov 8 run 42442512244) is unrecorded, never a miss
+    lostjob = [{"name": "run", "conclusion": "success", "steps": [{"name": "Run", "status": "pending", "conclusion": None}]}]
+    ck("a step GitHub left pending in a finished job is unrecorded", step_states(lostjob, ["Run"]) == {"Run": "unrecorded"})
+    ck("a pending step in a failed job is still skipped",
+       step_states([dict(lostjob[0], conclusion="failure")], ["Run"]) == {"Run": "skipped"})
 
     # switch states
     ck("repo switch on at 1", switch_state(E["land-alert.yml"], {"LANDSALES_MONTHLY_LIVE": "1"})[0] == "on")
