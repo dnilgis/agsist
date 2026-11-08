@@ -1,0 +1,270 @@
+{
+ "checked": "2026-11-08",
+ "credit": "Results reported by Younger Auction Company",
+ "credit_url": "https://www.youngerauction.com/land-auction-results.html",
+ "last_run": {
+  "captured": "2026-11-08",
+  "kept": 9,
+  "no_date": 1,
+  "no_per_acre_row": 13,
+  "pages": 1,
+  "records_seen": 42,
+  "row_not_read": 36,
+  "withheld_no_county_named": 2,
+  "withheld_no_state_named": 16,
+  "withheld_state_unclear": 1
+ },
+ "records": [
+  {
+   "auction_id": "2022-04-12-1",
+   "county": "Taylor",
+   "county_fips": "19173",
+   "credit": "Results reported by Younger Auction Company",
+   "date": "2022-04-12",
+   "headline_acres": 170,
+   "kind": "auction",
+   "source": "younger",
+   "state": "IA",
+   "total_sold": null,
+   "tracts": [
+    {
+     "per_acre": 6600,
+     "sold": null,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.youngerauction.com/land-auction-results.html"
+  },
+  {
+   "auction_id": "2022-12-01-1",
+   "county": "Brown",
+   "county_fips": "20013",
+   "credit": "Results reported by Younger Auction Company",
+   "date": "2022-12-01",
+   "headline_acres": 937,
+   "kind": "auction",
+   "source": "younger",
+   "state": "KS",
+   "total_sold": null,
+   "tracts": [
+    {
+     "per_acre": 6000,
+     "sold": null,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 8600,
+     "sold": null,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 8900,
+     "sold": null,
+     "tracts": "3"
+    },
+    {
+     "per_acre": 11700,
+     "sold": null,
+     "tracts": "4"
+    },
+    {
+     "per_acre": 12500,
+     "sold": null,
+     "tracts": "5"
+    },
+    {
+     "per_acre": 9400,
+     "sold": null,
+     "tracts": "6"
+    },
+    {
+     "per_acre": 7200,
+     "sold": null,
+     "tracts": "7"
+    }
+   ],
+   "url": "https://www.youngerauction.com/land-auction-results.html"
+  },
+  {
+   "auction_id": "2023-10-12-1",
+   "county": "Gentry",
+   "county_fips": "29075",
+   "credit": "Results reported by Younger Auction Company",
+   "date": "2023-10-12",
+   "headline_acres": 297,
+   "kind": "auction",
+   "source": "younger",
+   "state": "MO",
+   "total_sold": null,
+   "tracts": [
+    {
+     "per_acre": 11250,
+     "sold": null,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 6400,
+     "sold": null,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 5400,
+     "sold": null,
+     "tracts": "3"
+    },
+    {
+     "per_acre": 4200,
+     "sold": null,
+     "tracts": "4"
+    },
+    {
+     "per_acre": 5500,
+     "sold": null,
+     "tracts": "5"
+    },
+    {
+     "per_acre": 5600,
+     "sold": null,
+     "tracts": "6"
+    }
+   ],
+   "url": "https://www.youngerauction.com/land-auction-results.html"
+  },
+  {
+   "auction_id": "2023-12-07-1",
+   "county": "Gentry",
+   "county_fips": "29075",
+   "credit": "Results reported by Younger Auction Company",
+   "date": "2023-12-07",
+   "headline_acres": 148,
+   "kind": "auction",
+   "source": "younger",
+   "state": "MO",
+   "total_sold": null,
+   "tracts": [
+    {
+     "per_acre": 8650,
+     "sold": null,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.youngerauction.com/land-auction-results.html"
+  },
+  {
+   "auction_id": "2025-09-20-1",
+   "county": "Atchison",
+   "county_fips": "29005",
+   "credit": "Results reported by Younger Auction Company",
+   "date": "2025-09-20",
+   "headline_acres": 52,
+   "kind": "auction",
+   "source": "younger",
+   "state": "MO",
+   "total_sold": null,
+   "tracts": [
+    {
+     "per_acre": 4000,
+     "sold": null,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.youngerauction.com/land-auction-results.html"
+  },
+  {
+   "auction_id": "2025-09-25-1",
+   "county": "Nodaway",
+   "county_fips": "29147",
+   "credit": "Results reported by Younger Auction Company",
+   "date": "2025-09-25",
+   "headline_acres": 60,
+   "kind": "auction",
+   "source": "younger",
+   "state": "MO",
+   "total_sold": null,
+   "tracts": [
+    {
+     "per_acre": 4225,
+     "sold": null,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.youngerauction.com/land-auction-results.html"
+  },
+  {
+   "auction_id": "2026-03-24-1",
+   "county": "Nodaway",
+   "county_fips": "29147",
+   "credit": "Results reported by Younger Auction Company",
+   "date": "2026-03-24",
+   "headline_acres": 166,
+   "kind": "auction",
+   "source": "younger",
+   "state": "MO",
+   "total_sold": null,
+   "tracts": [
+    {
+     "per_acre": 6500,
+     "sold": null,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 7025,
+     "sold": null,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 7400,
+     "sold": null,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.youngerauction.com/land-auction-results.html"
+  },
+  {
+   "auction_id": "2026-03-26-1",
+   "county": "Nodaway",
+   "county_fips": "29147",
+   "credit": "Results reported by Younger Auction Company",
+   "date": "2026-03-26",
+   "headline_acres": 140,
+   "kind": "auction",
+   "source": "younger",
+   "state": "MO",
+   "total_sold": null,
+   "tracts": [
+    {
+     "per_acre": 11200,
+     "sold": null,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5500,
+     "sold": null,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.youngerauction.com/land-auction-results.html"
+  },
+  {
+   "auction_id": "2026-09-30-1",
+   "county": "Page",
+   "county_fips": "19145",
+   "credit": "Results reported by Younger Auction Company",
+   "date": "2026-09-30",
+   "headline_acres": 61,
+   "kind": "auction",
+   "source": "younger",
+   "state": "IA",
+   "total_sold": null,
+   "tracts": [
+    {
+     "per_acre": 5800,
+     "sold": null,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.youngerauction.com/land-auction-results.html"
+  }
+ ],
+ "source": "younger"
+}

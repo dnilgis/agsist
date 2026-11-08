@@ -1,0 +1,59 @@
+{
+ "checked": "2026-11-08",
+ "credit": "Results reported by Horning Farm Agency",
+ "credit_url": "https://www.horningfarmagency.com/auctions/past-auctions",
+ "last_run": {
+  "acres_unclear": 6,
+  "captured": "2026-11-08",
+  "kept": 2,
+  "no_plain_sold_price": 238,
+  "not_a_farm_or_land_entry": 106,
+  "not_farmland": 18,
+  "pages": 19,
+  "records_seen": 380,
+  "withheld_no_county_named": 10
+ },
+ "records": [
+  {
+   "auction_id": "compass-road-red-rose-lane-honey-brook",
+   "county": "Chester",
+   "county_fips": "42029",
+   "credit": "Results reported by Horning Farm Agency",
+   "date": "2018-10-18",
+   "headline_acres": 31.75,
+   "kind": "auction",
+   "source": "horning",
+   "state": "PA",
+   "total_sold": 450000,
+   "tracts": [
+    {
+     "per_acre": null,
+     "sold": 450000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.horningfarmagency.com/auction/land/compass-road-red-rose-lane-honey-brook"
+  },
+  {
+   "auction_id": "87-acre-horse-livestock-farm",
+   "county": "Berks",
+   "county_fips": "42011",
+   "credit": "Results reported by Horning Farm Agency",
+   "date": "2022-05-26",
+   "headline_acres": 87,
+   "kind": "auction",
+   "source": "horning",
+   "state": "PA",
+   "total_sold": 1400000,
+   "tracts": [
+    {
+     "per_acre": null,
+     "sold": 1400000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.horningfarmagency.com/auction/farm/87-acre-horse-livestock-farm"
+  }
+ ],
+ "source": "horning"
+}

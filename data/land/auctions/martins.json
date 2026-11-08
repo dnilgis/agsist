@@ -1,0 +1,57 @@
+{
+ "checked": "2026-11-08",
+ "credit": "Results reported by Martin's Auction Service",
+ "credit_url": "https://martinsauctionservice.com/product-category/auction-results-highlights/",
+ "last_run": {
+  "acres_unclear": 17,
+  "captured": "2026-11-08",
+  "kept": 2,
+  "not_farmland": 6,
+  "pages": 4,
+  "records_seen": 26,
+  "withheld_no_county_named": 1
+ },
+ "records": [
+  {
+   "auction_id": "poultry-farm-auction-on-25-acres-newburg-pa-tue-january-27-2026-100-pm",
+   "county": "Cumberland",
+   "county_fips": "42041",
+   "credit": "Results reported by Martin's Auction Service",
+   "date": "2026-01-27",
+   "headline_acres": 25,
+   "kind": "auction",
+   "source": "martins",
+   "state": "PA",
+   "total_sold": 960000,
+   "tracts": [
+    {
+     "per_acre": null,
+     "sold": 960000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://martinsauctionservice.com/product/poultry-farm-auction-on-25-acres-newburg-pa-tue-january-27-2026-100-pm/"
+  },
+  {
+   "auction_id": "33-acre-farm-auction-mt-pleasant-mills-pa-tue-june-30-2026-600-pm",
+   "county": "Snyder",
+   "county_fips": "42109",
+   "credit": "Results reported by Martin's Auction Service",
+   "date": "2026-06-30",
+   "headline_acres": 33,
+   "kind": "auction",
+   "source": "martins",
+   "state": "PA",
+   "total_sold": 965000,
+   "tracts": [
+    {
+     "per_acre": null,
+     "sold": 965000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://martinsauctionservice.com/product/33-acre-farm-auction-mt-pleasant-mills-pa-tue-june-30-2026-600-pm/"
+  }
+ ],
+ "source": "martins"
+}

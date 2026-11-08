@@ -1,0 +1,5126 @@
+{
+ "checked": "2026-11-08",
+ "credit": "Results reported by Wieman Land & Auction",
+ "credit_url": "https://www.wiemanauction.com/land-auction-results.php",
+ "last_run": {
+  "captured": "2026-11-08",
+  "kept": 225,
+  "lease_not_a_sale": 2,
+  "no_priced_row": 22,
+  "not_farmland": 28,
+  "pages": 14,
+  "placeholder_row": 43,
+  "records_seen": 299,
+  "withheld_multi_county": 13,
+  "withheld_no_county_named": 8,
+  "withheld_state_unclear": 1
+ },
+ "records": [
+  {
+   "auction_id": "2013-02-22-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-02-22",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 300000,
+   "tracts": [
+    {
+     "per_acre": 3750,
+     "sold": 300000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-02-22-2",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-02-22",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 604000,
+   "tracts": [
+    {
+     "per_acre": 7550,
+     "sold": 604000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-02-27-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-02-27",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 600000,
+   "tracts": [
+    {
+     "per_acre": 7500,
+     "sold": 600000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-08-29-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-08-29",
+   "headline_acres": 150.62,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 911251,
+   "tracts": [
+    {
+     "per_acre": 6050,
+     "sold": 911251,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-09-10-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-09-10",
+   "headline_acres": 234.68,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 844848,
+   "tracts": [
+    {
+     "per_acre": 3600,
+     "sold": 762408,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 3600,
+     "sold": 82440,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-09-16-1",
+   "county": "Mc Cook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-09-16",
+   "headline_acres": 90,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 585000,
+   "tracts": [
+    {
+     "per_acre": 6500,
+     "sold": 585000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-09-16-2",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-09-16",
+   "headline_acres": 38.01,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 261053,
+   "tracts": [
+    {
+     "per_acre": 6868,
+     "sold": 261053,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-10-01-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-10-01",
+   "headline_acres": 154.97,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1084790,
+   "tracts": [
+    {
+     "per_acre": 7000,
+     "sold": 1084790,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-10-04-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-10-04",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1168000,
+   "tracts": [
+    {
+     "per_acre": 7300,
+     "sold": 1168000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-10-11-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-10-11",
+   "headline_acres": 199,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 741275,
+   "tracts": [
+    {
+     "per_acre": 3725,
+     "sold": 596000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 3725,
+     "sold": 145275,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-10-16-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-10-16",
+   "headline_acres": 107.4,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 777177,
+   "tracts": [
+    {
+     "per_acre": 7500,
+     "sold": 648150,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 6150,
+     "sold": 129027,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-10-17-1",
+   "county": "Beadle",
+   "county_fips": "46005",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-10-17",
+   "headline_acres": 79.79,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 458793,
+   "tracts": [
+    {
+     "per_acre": 5750,
+     "sold": 458793,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-10-22-1",
+   "county": "Charles Mix",
+   "county_fips": "46023",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-10-22",
+   "headline_acres": 79.19,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 223712,
+   "tracts": [
+    {
+     "per_acre": 2825,
+     "sold": 223712,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-10-25-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-10-25",
+   "headline_acres": 107,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 449400,
+   "tracts": [
+    {
+     "per_acre": 4200,
+     "sold": 449400,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-10-29-1",
+   "county": "Hanson",
+   "county_fips": "46061",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-10-29",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1072000,
+   "tracts": [
+    {
+     "per_acre": 6700,
+     "sold": 1072000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-10-30-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-10-30",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1381759,
+   "tracts": [
+    {
+     "per_acre": 8100,
+     "sold": 1266759,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 31856,
+     "sold": 115000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-11-07-1",
+   "county": "Lincoln",
+   "county_fips": "46083",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-11-07",
+   "headline_acres": 116.29,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 988465,
+   "tracts": [
+    {
+     "per_acre": 8500,
+     "sold": 988465,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-11-15-1",
+   "county": "Brule",
+   "county_fips": "46015",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-11-15",
+   "headline_acres": 638.43,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 3447522,
+   "tracts": [
+    {
+     "per_acre": 5400,
+     "sold": 1727622,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5400,
+     "sold": 864000,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 5400,
+     "sold": 855900,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-12-06-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-12-06",
+   "headline_acres": 240,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1440000,
+   "tracts": [
+    {
+     "per_acre": 5950,
+     "sold": 952000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 6100,
+     "sold": 488000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2013-12-13-1",
+   "county": "Charles Mix",
+   "county_fips": "46023",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2013-12-13",
+   "headline_acres": 155.99,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 670757,
+   "tracts": [
+    {
+     "per_acre": 4300,
+     "sold": 335400,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4300,
+     "sold": 335357,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2013"
+  },
+  {
+   "auction_id": "2014-02-07-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-02-07",
+   "headline_acres": 79.75,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 641988,
+   "tracts": [
+    {
+     "per_acre": 8050,
+     "sold": 641988,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-02-21-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-02-21",
+   "headline_acres": 111.45,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 607403,
+   "tracts": [
+    {
+     "per_acre": 5450,
+     "sold": 607403,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-08-01-1",
+   "county": "Mc Cook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-08-01",
+   "headline_acres": 22.78,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 124151,
+   "tracts": [
+    {
+     "per_acre": 5450,
+     "sold": 124151,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-10-01-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-10-01",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 368000,
+   "tracts": [
+    {
+     "per_acre": 4600,
+     "sold": 368000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-10-02-1",
+   "county": "Brule",
+   "county_fips": "46015",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-10-02",
+   "headline_acres": 800.07,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 4093048,
+   "tracts": [
+    {
+     "per_acre": 5045,
+     "sold": 815625,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5045,
+     "sold": 778040,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 5045,
+     "sold": 803063,
+     "tracts": "3"
+    },
+    {
+     "per_acre": 5040,
+     "sold": 821520,
+     "tracts": "5"
+    },
+    {
+     "per_acre": 5400,
+     "sold": 874800,
+     "tracts": "6"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-10-08-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-10-08",
+   "headline_acres": 133.24,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 679524,
+   "tracts": [
+    {
+     "per_acre": 5100,
+     "sold": 679524,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-10-22-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-10-22",
+   "headline_acres": 149.51,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 717648,
+   "tracts": [
+    {
+     "per_acre": 4800,
+     "sold": 717648,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-10-23-1",
+   "county": "Lake",
+   "county_fips": "46079",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-10-23",
+   "headline_acres": 394.9,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1500620,
+   "tracts": [
+    {
+     "per_acre": 3800,
+     "sold": 304000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 3800,
+     "sold": 588620,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 3800,
+     "sold": 608000,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-10-30-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-10-30",
+   "headline_acres": 397.18,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2128432,
+   "tracts": [
+    {
+     "per_acre": 5700,
+     "sold": 901683,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5100,
+     "sold": 815949,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5200,
+     "sold": 410800,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-10-31-1",
+   "county": "Brule",
+   "county_fips": "46015",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-10-31",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 560000,
+   "tracts": [
+    {
+     "per_acre": 3500,
+     "sold": 560000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-11-03-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-11-03",
+   "headline_acres": 75.9,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 103983,
+   "tracts": [
+    {
+     "per_acre": 1370,
+     "sold": 103983,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-11-05-1",
+   "county": "Mc Cook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-11-05",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 521200,
+   "tracts": [
+    {
+     "per_acre": 6515,
+     "sold": 521200,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-11-07-1",
+   "county": "Lincoln",
+   "county_fips": "46083",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-11-07",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1096000,
+   "tracts": [
+    {
+     "per_acre": 6850,
+     "sold": 1096000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-11-13-1",
+   "county": "Minnehaha",
+   "county_fips": "46099",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-11-13",
+   "headline_acres": 75.53,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 457712,
+   "tracts": [
+    {
+     "per_acre": 6060,
+     "sold": 457712,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-11-14-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-11-14",
+   "headline_acres": 299.6,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1580390,
+   "tracts": [
+    {
+     "per_acre": 5275,
+     "sold": 793360,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5275,
+     "sold": 787030,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2014-12-15-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2014-12-15",
+   "headline_acres": 302.34,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2164680,
+   "tracts": [
+    {
+     "per_acre": 9000,
+     "sold": 1330110,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5400,
+     "sold": 834570,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2014"
+  },
+  {
+   "auction_id": "2015-03-12-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-03-12",
+   "headline_acres": 126.63,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 848421,
+   "tracts": [
+    {
+     "per_acre": 6700,
+     "sold": 848421,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2015-03-27-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-03-27",
+   "headline_acres": 290.68,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1911810,
+   "tracts": [
+    {
+     "per_acre": 7325,
+     "sold": 647677,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 7325,
+     "sold": 293000,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 7325,
+     "sold": 940677,
+     "tracts": "3"
+    },
+    {
+     "per_acre": 900,
+     "sold": 30456,
+     "tracts": "4"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2015-06-15-1",
+   "county": "Hanson",
+   "county_fips": "46061",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-06-15",
+   "headline_acres": 40,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 192000,
+   "tracts": [
+    {
+     "per_acre": 4800,
+     "sold": 192000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2015-09-03-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-09-03",
+   "headline_acres": 79.75,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 564231,
+   "tracts": [
+    {
+     "per_acre": 7075,
+     "sold": 564231,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2015-09-14-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-09-14",
+   "headline_acres": 80.67,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 431585,
+   "tracts": [
+    {
+     "per_acre": 5350,
+     "sold": 431585,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2015-09-15-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-09-15",
+   "headline_acres": 325,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1579125,
+   "tracts": [
+    {
+     "per_acre": 6750,
+     "sold": 1080000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 3025,
+     "sold": 499125,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2015-09-21-1",
+   "county": "Lincoln",
+   "county_fips": "46083",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-09-21",
+   "headline_acres": 131.31,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 656550,
+   "tracts": [
+    {
+     "per_acre": 5000,
+     "sold": 656550,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2015-10-23-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-10-23",
+   "headline_acres": 164.97,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1263648,
+   "tracts": [
+    {
+     "per_acre": 7750,
+     "sold": 620000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 7575,
+     "sold": 643648,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2015-11-05-1",
+   "county": "Lake",
+   "county_fips": "46079",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-11-05",
+   "headline_acres": 45.8,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 299990,
+   "tracts": [
+    {
+     "per_acre": 6550,
+     "sold": 299990,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2015-11-10-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-11-10",
+   "headline_acres": 79.57,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 616668,
+   "tracts": [
+    {
+     "per_acre": 7750,
+     "sold": 616668,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2015-11-11-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-11-11",
+   "headline_acres": 400,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1978000,
+   "tracts": [
+    {
+     "per_acre": 4525,
+     "sold": 362000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5000,
+     "sold": 800000,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 5100,
+     "sold": 816000,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2015-11-12-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-11-12",
+   "headline_acres": 198.76,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 804978,
+   "tracts": [
+    {
+     "per_acre": 4050,
+     "sold": 480978,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4050,
+     "sold": 324000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2015-12-29-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2015-12-29",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1048000,
+   "tracts": [
+    {
+     "per_acre": 6550,
+     "sold": 524000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 6550,
+     "sold": 524000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2015"
+  },
+  {
+   "auction_id": "2016-01-19-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2016-01-19",
+   "headline_acres": 117.5,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 799000,
+   "tracts": [
+    {
+     "per_acre": 6800,
+     "sold": 799000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2016"
+  },
+  {
+   "auction_id": "2016-02-18-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2016-02-18",
+   "headline_acres": 184.13,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 991636,
+   "tracts": [
+    {
+     "per_acre": 6400,
+     "sold": 475200,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4700,
+     "sold": 516436,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2016"
+  },
+  {
+   "auction_id": "2016-04-06-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2016-04-06",
+   "headline_acres": 79,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 701125,
+   "tracts": [
+    {
+     "per_acre": 8875,
+     "sold": 701125,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2016"
+  },
+  {
+   "auction_id": "2016-04-21-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2016-04-21",
+   "headline_acres": 84.28,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 412972,
+   "tracts": [
+    {
+     "per_acre": 4900,
+     "sold": 412972,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2016"
+  },
+  {
+   "auction_id": "2016-10-06-1",
+   "county": "Minnehaha",
+   "county_fips": "46099",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2016-10-06",
+   "headline_acres": 39.5,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 197500,
+   "tracts": [
+    {
+     "per_acre": 5000,
+     "sold": 197500,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2016"
+  },
+  {
+   "auction_id": "2016-11-02-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2016-11-02",
+   "headline_acres": 142.49,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 873220,
+   "tracts": [
+    {
+     "per_acre": 6400,
+     "sold": 503360,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5000,
+     "sold": 200000,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 7125,
+     "sold": 169860,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2016"
+  },
+  {
+   "auction_id": "2016-11-10-1",
+   "county": "Charles Mix",
+   "county_fips": "46023",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2016-11-10",
+   "headline_acres": 474.89,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1978538,
+   "tracts": [
+    {
+     "per_acre": 4200,
+     "sold": 1326780,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4000,
+     "sold": 320000,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 4200,
+     "sold": 331758,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2016"
+  },
+  {
+   "auction_id": "2016-11-11-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2016-11-11",
+   "headline_acres": 228.7,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1031384,
+   "tracts": [
+    {
+     "per_acre": 5100,
+     "sold": 656421,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 3750,
+     "sold": 374963,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2016"
+  },
+  {
+   "auction_id": "2016-11-16-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2016-11-16",
+   "headline_acres": 79.51,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 560546,
+   "tracts": [
+    {
+     "per_acre": 7050,
+     "sold": 560546,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2016"
+  },
+  {
+   "auction_id": "2016-11-28-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2016-11-28",
+   "headline_acres": 168,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 688800,
+   "tracts": [
+    {
+     "per_acre": 4100,
+     "sold": 688800,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2016"
+  },
+  {
+   "auction_id": "2016-12-08-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2016-12-08",
+   "headline_acres": 128.18,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 581888,
+   "tracts": [
+    {
+     "per_acre": 4250,
+     "sold": 404260,
+     "tracts": "1"
+    },
+    {
+     "per_acre": null,
+     "sold": 52000,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 3800,
+     "sold": 125628,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2016"
+  },
+  {
+   "auction_id": "2017-01-12-1",
+   "county": "Minnehaha",
+   "county_fips": "46099",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-01-12",
+   "headline_acres": 307.29,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2581236,
+   "tracts": [
+    {
+     "per_acre": 8400,
+     "sold": 1340472,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 8400,
+     "sold": 1240764,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-01-17-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-01-17",
+   "headline_acres": 49.35,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 207510,
+   "tracts": [
+    {
+     "per_acre": 4600,
+     "sold": 181010,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 2650,
+     "sold": 26500,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-02-09-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-02-09",
+   "headline_acres": 75.19,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 548887,
+   "tracts": [
+    {
+     "per_acre": 7300,
+     "sold": 548887,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-03-01-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-03-01",
+   "headline_acres": 76.89,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 376761,
+   "tracts": [
+    {
+     "per_acre": 4900,
+     "sold": 376761,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-03-15-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-03-15",
+   "headline_acres": 128.52,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 494802,
+   "tracts": [
+    {
+     "per_acre": 3850,
+     "sold": 494802,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-04-07-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-04-07",
+   "headline_acres": 278.98,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1772758,
+   "tracts": [
+    {
+     "per_acre": 7100,
+     "sold": 844758,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5800,
+     "sold": 928000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-04-20-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-04-20",
+   "headline_acres": 31,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 139500,
+   "tracts": [
+    {
+     "per_acre": 4500,
+     "sold": 139500,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-09-27-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-09-27",
+   "headline_acres": 158,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 464520,
+   "tracts": [
+    {
+     "per_acre": 2940,
+     "sold": 464520,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-10-12-1",
+   "county": "Miner",
+   "county_fips": "46097",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-10-12",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 539200,
+   "tracts": [
+    {
+     "per_acre": 3370,
+     "sold": 539200,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-10-19-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-10-19",
+   "headline_acres": 133,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 625100,
+   "tracts": [
+    {
+     "per_acre": 4700,
+     "sold": 540500,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4700,
+     "sold": 84600,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-10-24-1",
+   "county": "Charles Mix",
+   "county_fips": "46023",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-10-24",
+   "headline_acres": 239.72,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 621321,
+   "tracts": [
+    {
+     "per_acre": 4250,
+     "sold": 170000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 2200,
+     "sold": 176770,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 2300,
+     "sold": 274551,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-11-01-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-11-01",
+   "headline_acres": 39.49,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 315920,
+   "tracts": [
+    {
+     "per_acre": 8000,
+     "sold": 315920,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-11-02-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-11-02",
+   "headline_acres": 183.08,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 760819,
+   "tracts": [
+    {
+     "per_acre": 4450,
+     "sold": 281819,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4000,
+     "sold": 479000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-11-09-1",
+   "county": "Bon Homme",
+   "county_fips": "46009",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-11-09",
+   "headline_acres": 472.48,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1361477,
+   "tracts": [
+    {
+     "per_acre": 3320,
+     "sold": 523099,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 2750,
+     "sold": 359068,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 2600,
+     "sold": 479310,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-11-10-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-11-10",
+   "headline_acres": 262.99,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1680035,
+   "tracts": [
+    {
+     "per_acre": 6300,
+     "sold": 453600,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 6300,
+     "sold": 472500,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 6500,
+     "sold": 753935,
+     "tracts": "4"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2017-12-07-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2017-12-07",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 880000,
+   "tracts": [
+    {
+     "per_acre": 5500,
+     "sold": 880000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2017"
+  },
+  {
+   "auction_id": "2018-01-09-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-01-09",
+   "headline_acres": 286,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1415200,
+   "tracts": [
+    {
+     "per_acre": 5650,
+     "sold": 452000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5200,
+     "sold": 696800,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 3700,
+     "sold": 266400,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-01-19-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-01-19",
+   "headline_acres": 156,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 491400,
+   "tracts": [
+    {
+     "per_acre": 3150,
+     "sold": 491400,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-02-28-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-02-28",
+   "headline_acres": 276.48,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1748736,
+   "tracts": [
+    {
+     "per_acre": 6325,
+     "sold": 1748736,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-04-18-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-04-18",
+   "headline_acres": 60,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 318000,
+   "tracts": [
+    {
+     "per_acre": 5300,
+     "sold": 318000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-04-20-1",
+   "county": "Brule",
+   "county_fips": "46015",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-04-20",
+   "headline_acres": 356.22,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1201149,
+   "tracts": [
+    {
+     "per_acre": 3550,
+     "sold": 1014377,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 2650,
+     "sold": 186772,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-04-25-1",
+   "county": "Clay",
+   "county_fips": "46027",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-04-25",
+   "headline_acres": 381.74,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1717830,
+   "tracts": [
+    {
+     "per_acre": 4500,
+     "sold": 633555,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4500,
+     "sold": 544950,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 4500,
+     "sold": 539325,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-05-30-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-05-30",
+   "headline_acres": 91.8,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 413100,
+   "tracts": [
+    {
+     "per_acre": 4500,
+     "sold": 413100,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-09-06-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-09-06",
+   "headline_acres": 118.04,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 442650,
+   "tracts": [
+    {
+     "per_acre": 3750,
+     "sold": 442650,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-10-03-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-10-03",
+   "headline_acres": 320,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 963200,
+   "tracts": [
+    {
+     "per_acre": 3010,
+     "sold": 481600,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 3010,
+     "sold": 481600,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-10-18-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-10-18",
+   "headline_acres": 239.34,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1723248,
+   "tracts": [
+    {
+     "per_acre": 7200,
+     "sold": 127800,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 7200,
+     "sold": 448272,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 7200,
+     "sold": 1147176,
+     "tracts": "4"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-10-19-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-10-19",
+   "headline_acres": 38,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 172900,
+   "tracts": [
+    {
+     "per_acre": 4550,
+     "sold": 172900,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-10-24-1",
+   "county": "Kingsbury",
+   "county_fips": "46077",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-10-24",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 880000,
+   "tracts": [
+    {
+     "per_acre": 5500,
+     "sold": 880000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-10-29-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-10-29",
+   "headline_acres": 73.79,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 276713,
+   "tracts": [
+    {
+     "per_acre": 3750,
+     "sold": 276713,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-10-30-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-10-30",
+   "headline_acres": 309.47,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1392615,
+   "tracts": [
+    {
+     "per_acre": 4500,
+     "sold": 672615,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4500,
+     "sold": 720000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-11-16-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-11-16",
+   "headline_acres": 319.74,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1401882,
+   "tracts": [
+    {
+     "per_acre": 4475,
+     "sold": 547158,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4525,
+     "sold": 352950,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 4200,
+     "sold": 501774,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2018-12-06-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2018-12-06",
+   "headline_acres": 40.27,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 205999,
+   "tracts": [
+    {
+     "per_acre": 5150,
+     "sold": 64015,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5100,
+     "sold": 141984,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2018"
+  },
+  {
+   "auction_id": "2019-01-15-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-01-15",
+   "headline_acres": 39.49,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 240889,
+   "tracts": [
+    {
+     "per_acre": 6100,
+     "sold": 240889,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-03-01-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-03-01",
+   "headline_acres": 27.87,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 142137,
+   "tracts": [
+    {
+     "per_acre": 5100,
+     "sold": 142137,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-03-20-1",
+   "county": "Tripp",
+   "county_fips": "46123",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-03-20",
+   "headline_acres": 1827.55,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2154663,
+   "tracts": [
+    {
+     "per_acre": 1975,
+     "sold": 1264000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 750,
+     "sold": 890663,
+     "tracts": "4"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-04-08-1",
+   "county": "Charles Mix",
+   "county_fips": "46023",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-04-08",
+   "headline_acres": 516.27,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1192584,
+   "tracts": [
+    {
+     "per_acre": 2310,
+     "sold": 369600,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 2310,
+     "sold": 277200,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 2310,
+     "sold": 386856,
+     "tracts": "3"
+    },
+    {
+     "per_acre": 2310,
+     "sold": 158928,
+     "tracts": "5"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-05-23-1",
+   "county": "Brule",
+   "county_fips": "46015",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-05-23",
+   "headline_acres": 159,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 604200,
+   "tracts": [
+    {
+     "per_acre": 3800,
+     "sold": 604200,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-10-11-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-10-11",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 500000,
+   "tracts": [
+    {
+     "per_acre": 3125,
+     "sold": 500000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-10-16-1",
+   "county": "Davison",
+   "county_fips": "46035",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-10-16",
+   "headline_acres": 307.72,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1477056,
+   "tracts": [
+    {
+     "per_acre": 4800,
+     "sold": 711072,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4800,
+     "sold": 765984,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-10-30-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-10-30",
+   "headline_acres": 78,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 468000,
+   "tracts": [
+    {
+     "per_acre": 6000,
+     "sold": 468000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-10-30-2",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-10-30",
+   "headline_acres": 60,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 258000,
+   "tracts": [
+    {
+     "per_acre": 4300,
+     "sold": 258000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-11-14-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-11-14",
+   "headline_acres": 78.03,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 518900,
+   "tracts": [
+    {
+     "per_acre": 6650,
+     "sold": 518900,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-11-20-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-11-20",
+   "headline_acres": 69,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 213900,
+   "tracts": [
+    {
+     "per_acre": 3100,
+     "sold": 213900,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-11-25-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-11-25",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 642720,
+   "tracts": [
+    {
+     "per_acre": 4017,
+     "sold": 642720,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-12-03-2",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-12-03",
+   "headline_acres": 75,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 457500,
+   "tracts": [
+    {
+     "per_acre": 6100,
+     "sold": 457500,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2019-12-19-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2019-12-19",
+   "headline_acres": 68.44,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 651768,
+   "tracts": [
+    {
+     "per_acre": null,
+     "sold": 159000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 7200,
+     "sold": 492768,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2019"
+  },
+  {
+   "auction_id": "2020-02-05-1",
+   "county": "Miner",
+   "county_fips": "46097",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-02-05",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 608000,
+   "tracts": [
+    {
+     "per_acre": 3800,
+     "sold": 608000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-03-17-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-03-17",
+   "headline_acres": 191.12,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 800924,
+   "tracts": [
+    {
+     "per_acre": 5100,
+     "sold": 204000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 3950,
+     "sold": 596924,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-03-18-1",
+   "county": "Lincoln",
+   "county_fips": "46083",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-03-18",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 576000,
+   "tracts": [
+    {
+     "per_acre": 3600,
+     "sold": 576000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-03-19-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-03-19",
+   "headline_acres": 100,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 415000,
+   "tracts": [
+    {
+     "per_acre": 4150,
+     "sold": 415000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-03-20-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-03-20",
+   "headline_acres": 120,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 536000,
+   "tracts": [
+    {
+     "per_acre": 6800,
+     "sold": 272000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 3300,
+     "sold": 264000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-10-14-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-10-14",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 784000,
+   "tracts": [
+    {
+     "per_acre": 4900,
+     "sold": 784000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-10-23-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-10-23",
+   "headline_acres": 155.9,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 732730,
+   "tracts": [
+    {
+     "per_acre": 4700,
+     "sold": 732730,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-11-06-1",
+   "county": "Hanson",
+   "county_fips": "46061",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-11-06",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 736000,
+   "tracts": [
+    {
+     "per_acre": 4600,
+     "sold": 736000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-11-10-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-11-10",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 524000,
+   "tracts": [
+    {
+     "per_acre": 3275,
+     "sold": 524000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-11-11-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-11-11",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1200400,
+   "tracts": [
+    {
+     "per_acre": 7575,
+     "sold": 606000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 7430,
+     "sold": 594400,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-11-12-1",
+   "county": "Aurora",
+   "county_fips": "46003",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-11-12",
+   "headline_acres": 710.54,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1721042,
+   "tracts": [
+    {
+     "per_acre": 2700,
+     "sold": 585900,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 2300,
+     "sold": 1135142,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-11-18-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-11-18",
+   "headline_acres": 79.49,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 357705,
+   "tracts": [
+    {
+     "per_acre": 4500,
+     "sold": 357705,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-11-24-2",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-11-24",
+   "headline_acres": 40,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 219000,
+   "tracts": [
+    {
+     "per_acre": 5475,
+     "sold": 219000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-11-25-1",
+   "county": "Davison",
+   "county_fips": "46035",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-11-25",
+   "headline_acres": 230,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1615750,
+   "tracts": [
+    {
+     "per_acre": 7025,
+     "sold": 1615750,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2020-12-01-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2020-12-01",
+   "headline_acres": 79,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 458200,
+   "tracts": [
+    {
+     "per_acre": 5800,
+     "sold": 458200,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2020"
+  },
+  {
+   "auction_id": "2021-02-10-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-02-10",
+   "headline_acres": 79.79,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 650289,
+   "tracts": [
+    {
+     "per_acre": 8150,
+     "sold": 650289,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-02-26-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-02-26",
+   "headline_acres": 168.79,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 776434,
+   "tracts": [
+    {
+     "per_acre": 4600,
+     "sold": 776434,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-03-03-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-03-03",
+   "headline_acres": 139.78,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1397800,
+   "tracts": [
+    {
+     "per_acre": 10000,
+     "sold": 1397800,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-06-03-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-06-03",
+   "headline_acres": 37.39,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 339987,
+   "tracts": [
+    {
+     "per_acre": 9093,
+     "sold": 339987,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-10-29-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-10-29",
+   "headline_acres": 119.48,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 649333,
+   "tracts": [
+    {
+     "per_acre": 4600,
+     "sold": 366114,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 7100,
+     "sold": 283219,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-11-03-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-11-03",
+   "headline_acres": 153.58,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1159529,
+   "tracts": [
+    {
+     "per_acre": 7550,
+     "sold": 1159529,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-11-05-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-11-05",
+   "headline_acres": 74.06,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 374003,
+   "tracts": [
+    {
+     "per_acre": 5050,
+     "sold": 374003,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-11-09-1",
+   "county": "Miner",
+   "county_fips": "46097",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-11-09",
+   "headline_acres": 314,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1240300,
+   "tracts": [
+    {
+     "per_acre": 3950,
+     "sold": 1240300,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-11-10-1",
+   "county": "Hanson",
+   "county_fips": "46061",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-11-10",
+   "headline_acres": 156.4,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1180820,
+   "tracts": [
+    {
+     "per_acre": 7550,
+     "sold": 1180820,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-11-17-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-11-17",
+   "headline_acres": 313.93,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1255720,
+   "tracts": [
+    {
+     "per_acre": 4000,
+     "sold": 1255720,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-11-18-1",
+   "county": "Hyde",
+   "county_fips": "46069",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-11-18",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 483200,
+   "tracts": [
+    {
+     "per_acre": 3020,
+     "sold": 483200,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-11-19-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-11-19",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 678000,
+   "tracts": [
+    {
+     "per_acre": 8475,
+     "sold": 678000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-11-19-2",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-11-19",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 736000,
+   "tracts": [
+    {
+     "per_acre": 9200,
+     "sold": 736000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-11-22-1",
+   "county": "Lincoln",
+   "county_fips": "46083",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-11-22",
+   "headline_acres": 75.8,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 737155,
+   "tracts": [
+    {
+     "per_acre": 9725,
+     "sold": 737155,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-11-23-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-11-23",
+   "headline_acres": 343.77,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2818914,
+   "tracts": [
+    {
+     "per_acre": 8200,
+     "sold": 2818914,
+     "tracts": "4"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2021-12-03-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2021-12-03",
+   "headline_acres": 185.72,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1634336,
+   "tracts": [
+    {
+     "per_acre": 8800,
+     "sold": 1634336,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2021"
+  },
+  {
+   "auction_id": "2022-01-20-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-01-20",
+   "headline_acres": 40,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 389000,
+   "tracts": [
+    {
+     "per_acre": 9725,
+     "sold": 389000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-01-21-1",
+   "county": "Hanson",
+   "county_fips": "46061",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-01-21",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1760000,
+   "tracts": [
+    {
+     "per_acre": 11000,
+     "sold": 1760000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-02-15-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-02-15",
+   "headline_acres": 158.41,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1425690,
+   "tracts": [
+    {
+     "per_acre": 9000,
+     "sold": 1425690,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-03-22-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-03-22",
+   "headline_acres": 153,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1392300,
+   "tracts": [
+    {
+     "per_acre": 9100,
+     "sold": 1392300,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-03-28-1",
+   "county": "Codington",
+   "county_fips": "46029",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-03-28",
+   "headline_acres": 145.56,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 582240,
+   "tracts": [
+    {
+     "per_acre": 4000,
+     "sold": 582240,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-03-31-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-03-31",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 760000,
+   "tracts": [
+    {
+     "per_acre": 4750,
+     "sold": 760000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-04-25-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-04-25",
+   "headline_acres": 219,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1944000,
+   "tracts": [
+    {
+     "per_acre": 8625,
+     "sold": 621000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 9000,
+     "sold": 1323000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-06-07-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-06-07",
+   "headline_acres": 320,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 3344000,
+   "tracts": [
+    {
+     "per_acre": 11200,
+     "sold": 1792000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 9700,
+     "sold": 1552000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-07-06-1",
+   "county": "Hand",
+   "county_fips": "46059",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-07-06",
+   "headline_acres": 320,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1164000,
+   "tracts": [
+    {
+     "per_acre": 3500,
+     "sold": 560000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 3775,
+     "sold": 604000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-08-05-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-08-05",
+   "headline_acres": 303.64,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2826404,
+   "tracts": [
+    {
+     "per_acre": 11100,
+     "sold": 1594404,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 7700,
+     "sold": 1232000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-08-23-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-08-23",
+   "headline_acres": 230.93,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2088067,
+   "tracts": [
+    {
+     "per_acre": 11900,
+     "sold": 1320067,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 6400,
+     "sold": 768000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-08-31-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-08-31",
+   "headline_acres": 152.15,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 912900,
+   "tracts": [
+    {
+     "per_acre": 6000,
+     "sold": 912900,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-10-03-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-10-03",
+   "headline_acres": 151.28,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1350174,
+   "tracts": [
+    {
+     "per_acre": 8925,
+     "sold": 1350174,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-10-04-1",
+   "county": "Clay",
+   "county_fips": "46027",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-10-04",
+   "headline_acres": 575.05,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 4215525,
+   "tracts": [
+    {
+     "per_acre": 10600,
+     "sold": 1689004,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 6700,
+     "sold": 500088,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 11200,
+     "sold": 705600,
+     "tracts": "3"
+    },
+    {
+     "per_acre": 4750,
+     "sold": 1320833,
+     "tracts": "4"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-10-13-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-10-13",
+   "headline_acres": 217.48,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1546242,
+   "tracts": [
+    {
+     "per_acre": 8250,
+     "sold": 1295250,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4150,
+     "sold": 250992,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-10-13-2",
+   "county": "Clay",
+   "county_fips": "46027",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-10-13",
+   "headline_acres": 162.27,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1444203,
+   "tracts": [
+    {
+     "per_acre": 8900,
+     "sold": 1444203,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-10-17-1",
+   "county": "Hanson",
+   "county_fips": "46061",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-10-17",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 824000,
+   "tracts": [
+    {
+     "per_acre": 10300,
+     "sold": 824000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-10-20-1",
+   "county": "Charles Mix",
+   "county_fips": "46023",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-10-20",
+   "headline_acres": 320,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1920000,
+   "tracts": [
+    {
+     "per_acre": 6000,
+     "sold": 1920000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-10-28-1",
+   "county": "Davison",
+   "county_fips": "46035",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-10-28",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 856000,
+   "tracts": [
+    {
+     "per_acre": 5350,
+     "sold": 856000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-11-01-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-11-01",
+   "headline_acres": 350.14,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2395104,
+   "tracts": [
+    {
+     "per_acre": 8000,
+     "sold": 997120,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 6400,
+     "sold": 960896,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 5800,
+     "sold": 437088,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-11-02-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-11-02",
+   "headline_acres": 240,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2173000,
+   "tracts": [
+    {
+     "per_acre": 8700,
+     "sold": 1261500,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 28500,
+     "sold": 427500,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 6050,
+     "sold": 484000,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-11-11-1",
+   "county": "Charles Mix",
+   "county_fips": "46023",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-11-11",
+   "headline_acres": 523.71,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2944191,
+   "tracts": [
+    {
+     "per_acre": 6000,
+     "sold": 897060,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 6650,
+     "sold": 532000,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 5150,
+     "sold": 729498,
+     "tracts": "3"
+    },
+    {
+     "per_acre": 5150,
+     "sold": 785633,
+     "tracts": "4"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-11-15-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-11-15",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 992000,
+   "tracts": [
+    {
+     "per_acre": 12400,
+     "sold": 992000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-11-17-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-11-17",
+   "headline_acres": 451.58,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2668664,
+   "tracts": [
+    {
+     "per_acre": 6600,
+     "sold": 955746,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 6400,
+     "sold": 1020608,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 4700,
+     "sold": 692310,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-11-29-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-11-29",
+   "headline_acres": 130.41,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1369305,
+   "tracts": [
+    {
+     "per_acre": 10500,
+     "sold": 1369305,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-12-01-1",
+   "county": "Lincoln",
+   "county_fips": "46083",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-12-01",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1040000,
+   "tracts": [
+    {
+     "per_acre": 13000,
+     "sold": 1040000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2022-12-15-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2022-12-15",
+   "headline_acres": 120,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 504000,
+   "tracts": [
+    {
+     "per_acre": 4200,
+     "sold": 504000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2022"
+  },
+  {
+   "auction_id": "2023-01-05-1",
+   "county": "Davison",
+   "county_fips": "46035",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-01-05",
+   "headline_acres": 278.2,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1856985,
+   "tracts": [
+    {
+     "per_acre": 6675,
+     "sold": 1856985,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-01-06-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-01-06",
+   "headline_acres": 78.7,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 393500,
+   "tracts": [
+    {
+     "per_acre": 5000,
+     "sold": 393500,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-03-29-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-03-29",
+   "headline_acres": 199.15,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1005708,
+   "tracts": [
+    {
+     "per_acre": 5050,
+     "sold": 1005708,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-04-06-1",
+   "county": "Hyde",
+   "county_fips": "46069",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-04-06",
+   "headline_acres": 159,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 787050,
+   "tracts": [
+    {
+     "per_acre": 4950,
+     "sold": 787050,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-04-21-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-04-21",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 880000,
+   "tracts": [
+    {
+     "per_acre": 11000,
+     "sold": 880000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-10-24-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-10-24",
+   "headline_acres": 161,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1610000,
+   "tracts": [
+    {
+     "per_acre": 10000,
+     "sold": 1610000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-10-25-1",
+   "county": "Minnehaha",
+   "county_fips": "46099",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-10-25",
+   "headline_acres": 95.11,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1570886,
+   "tracts": [
+    {
+     "per_acre": null,
+     "sold": 372500,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 12600,
+     "sold": 1198386,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-11-02-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-11-02",
+   "headline_acres": 40,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 395000,
+   "tracts": [
+    {
+     "per_acre": 9875,
+     "sold": 395000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-11-10-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-11-10",
+   "headline_acres": 159.49,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1738441,
+   "tracts": [
+    {
+     "per_acre": 10900,
+     "sold": 1738441,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-11-15-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-11-15",
+   "headline_acres": 200,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1670000,
+   "tracts": [
+    {
+     "per_acre": 8350,
+     "sold": 1670000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-11-30-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-11-30",
+   "headline_acres": 38.65,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 216440,
+   "tracts": [
+    {
+     "per_acre": 5600,
+     "sold": 216440,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-12-08-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-12-08",
+   "headline_acres": 154,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1370600,
+   "tracts": [
+    {
+     "per_acre": 8900,
+     "sold": 1370600,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-12-19-1",
+   "county": "Brule",
+   "county_fips": "46015",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-12-19",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 964000,
+   "tracts": [
+    {
+     "per_acre": 6025,
+     "sold": 964000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2023-12-22-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2023-12-22",
+   "headline_acres": 76.1,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 722950,
+   "tracts": [
+    {
+     "per_acre": 9500,
+     "sold": 722950,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2023"
+  },
+  {
+   "auction_id": "2024-02-06-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2024-02-06",
+   "headline_acres": 126.41,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1570262,
+   "tracts": [
+    {
+     "per_acre": 13200,
+     "sold": 1149324,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 10700,
+     "sold": 420938,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2024"
+  },
+  {
+   "auction_id": "2024-02-23-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2024-02-23",
+   "headline_acres": 489.74,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 3663844,
+   "tracts": [
+    {
+     "per_acre": 7650,
+     "sold": 2773584,
+     "tracts": "4"
+    },
+    {
+     "per_acre": 7000,
+     "sold": 890260,
+     "tracts": "5"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2024"
+  },
+  {
+   "auction_id": "2024-03-27-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2024-03-27",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 960000,
+   "tracts": [
+    {
+     "per_acre": 6000,
+     "sold": 960000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2024"
+  },
+  {
+   "auction_id": "2024-04-17-1",
+   "county": "Hanson",
+   "county_fips": "46061",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2024-04-17",
+   "headline_acres": 137.17,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1584314,
+   "tracts": [
+    {
+     "per_acre": 11550,
+     "sold": 1584314,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2024"
+  },
+  {
+   "auction_id": "2024-06-14-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2024-06-14",
+   "headline_acres": 155,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 992000,
+   "tracts": [
+    {
+     "per_acre": 6400,
+     "sold": 992000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2024"
+  },
+  {
+   "auction_id": "2024-08-21-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2024-08-21",
+   "headline_acres": 543.95,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 4617180,
+   "tracts": [
+    {
+     "per_acre": 8400,
+     "sold": 3225180,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 8700,
+     "sold": 1392000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2024"
+  },
+  {
+   "auction_id": "2024-10-01-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2024-10-01",
+   "headline_acres": 99,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 537075,
+   "tracts": [
+    {
+     "per_acre": 5425,
+     "sold": 537075,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2024"
+  },
+  {
+   "auction_id": "2024-10-22-1",
+   "county": "Charles Mix",
+   "county_fips": "46023",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2024-10-22",
+   "headline_acres": 159,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 834750,
+   "tracts": [
+    {
+     "per_acre": 5250,
+     "sold": 834750,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2024"
+  },
+  {
+   "auction_id": "2024-10-29-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2024-10-29",
+   "headline_acres": 149.54,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1525308,
+   "tracts": [
+    {
+     "per_acre": 10200,
+     "sold": 1525308,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2024"
+  },
+  {
+   "auction_id": "2024-10-30-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2024-10-30",
+   "headline_acres": 146.18,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1330238,
+   "tracts": [
+    {
+     "per_acre": 9100,
+     "sold": 1330238,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2024"
+  },
+  {
+   "auction_id": "2024-11-18-1",
+   "county": "Beadle",
+   "county_fips": "46005",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2024-11-18",
+   "headline_acres": 312.9,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1564500,
+   "tracts": [
+    {
+     "per_acre": 5000,
+     "sold": 1564500,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2024"
+  },
+  {
+   "auction_id": "2024-11-27-1",
+   "county": "Jerauld",
+   "county_fips": "46073",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2024-11-27",
+   "headline_acres": 330.68,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 763871,
+   "tracts": [
+    {
+     "per_acre": 2310,
+     "sold": 763871,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2024"
+  },
+  {
+   "auction_id": "2025-01-10-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-01-10",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1548000,
+   "tracts": [
+    {
+     "per_acre": 9675,
+     "sold": 1548000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-01-15-1",
+   "county": "Miner",
+   "county_fips": "46097",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-01-15",
+   "headline_acres": 465.95,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 3104473,
+   "tracts": [
+    {
+     "per_acre": 6550,
+     "sold": 2069473,
+     "tracts": "4"
+    },
+    {
+     "per_acre": 6900,
+     "sold": 1035000,
+     "tracts": "5"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-01-28-1",
+   "county": "Yankton",
+   "county_fips": "46135",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-01-28",
+   "headline_acres": 144.14,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1458063,
+   "tracts": [
+    {
+     "per_acre": 9600,
+     "sold": 364800,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 13100,
+     "sold": 900756,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 5150,
+     "sold": 192507,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-02-28-1",
+   "county": "Bon Homme",
+   "county_fips": "46009",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-02-28",
+   "headline_acres": 97.5,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 599625,
+   "tracts": [
+    {
+     "per_acre": 6150,
+     "sold": 599625,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-03-14-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-03-14",
+   "headline_acres": 80,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 448000,
+   "tracts": [
+    {
+     "per_acre": 5600,
+     "sold": 448000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-03-25-1",
+   "county": "Gregory",
+   "county_fips": "46053",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-03-25",
+   "headline_acres": 360,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1764000,
+   "tracts": [
+    {
+     "per_acre": 9500,
+     "sold": 380000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4325,
+     "sold": 1384000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-04-17-1",
+   "county": "Davison",
+   "county_fips": "46035",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-04-17",
+   "headline_acres": 158.71,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1285551,
+   "tracts": [
+    {
+     "per_acre": 8100,
+     "sold": 1285551,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-09-03-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-09-03",
+   "headline_acres": 161.32,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1193768,
+   "tracts": [
+    {
+     "per_acre": 7400,
+     "sold": 1193768,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-10-22-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-10-22",
+   "headline_acres": 78.68,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 900886,
+   "tracts": [
+    {
+     "per_acre": 11450,
+     "sold": 900886,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-10-24-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-10-24",
+   "headline_acres": 312.29,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1374076,
+   "tracts": [
+    {
+     "per_acre": 4400,
+     "sold": 1374076,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-10-27-1",
+   "county": "Jerauld",
+   "county_fips": "46073",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-10-27",
+   "headline_acres": 436.77,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1724403,
+   "tracts": [
+    {
+     "per_acre": 3975,
+     "sold": 1113000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 3900,
+     "sold": 611403,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-10-30-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-10-30",
+   "headline_acres": 299.63,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 3454764,
+   "tracts": [
+    {
+     "per_acre": 11600,
+     "sold": 1856000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 11450,
+     "sold": 1598764,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-10-31-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-10-31",
+   "headline_acres": 276.34,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 3378651,
+   "tracts": [
+    {
+     "per_acre": 12250,
+     "sold": 1789235,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 12200,
+     "sold": 1589416,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-11-03-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-11-03",
+   "headline_acres": 160,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1056000,
+   "tracts": [
+    {
+     "per_acre": 6600,
+     "sold": 1056000,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-11-05-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-11-05",
+   "headline_acres": 477.95,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 5066270,
+   "tracts": [
+    {
+     "per_acre": 10600,
+     "sold": 2538594,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 10600,
+     "sold": 2527676,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-11-06-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-11-06",
+   "headline_acres": 290.84,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2824289,
+   "tracts": [
+    {
+     "per_acre": 9600,
+     "sold": 1270464,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 10150,
+     "sold": 812000,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 9450,
+     "sold": 741825,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-11-07-1",
+   "county": "Charles Mix",
+   "county_fips": "46023",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-11-07",
+   "headline_acres": 98.24,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 316824,
+   "tracts": [
+    {
+     "per_acre": 3225,
+     "sold": 316824,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-11-10-1",
+   "county": "Douglas",
+   "county_fips": "46043",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-11-10",
+   "headline_acres": 240.08,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1463264,
+   "tracts": [
+    {
+     "per_acre": 7650,
+     "sold": 521118,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 5800,
+     "sold": 522870,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 5125,
+     "sold": 419276,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-11-11-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-11-11",
+   "headline_acres": 259.9,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1522395,
+   "tracts": [
+    {
+     "per_acre": 6050,
+     "sold": 1330395,
+     "tracts": "3"
+    },
+    {
+     "per_acre": 4800,
+     "sold": 192000,
+     "tracts": "4"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-11-14-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-11-14",
+   "headline_acres": 71.24,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 557453,
+   "tracts": [
+    {
+     "per_acre": 7825,
+     "sold": 557453,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-11-18-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-11-18",
+   "headline_acres": 280.66,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2463895,
+   "tracts": [
+    {
+     "per_acre": 9000,
+     "sold": 1409130,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 8500,
+     "sold": 1054765,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-12-05-1",
+   "county": "Charles Mix",
+   "county_fips": "46023",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-12-05",
+   "headline_acres": 310.75,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1928500,
+   "tracts": [
+    {
+     "per_acre": 6000,
+     "sold": 904500,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 6400,
+     "sold": 1024000,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-12-11-1",
+   "county": "Gregory",
+   "county_fips": "46053",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-12-11",
+   "headline_acres": 800,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 3280000,
+   "tracts": [
+    {
+     "per_acre": 5050,
+     "sold": 808000,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 4900,
+     "sold": 784000,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 4250,
+     "sold": 680000,
+     "tracts": "4"
+    },
+    {
+     "per_acre": 3150,
+     "sold": 1008000,
+     "tracts": "5"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2025-12-15-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2025-12-15",
+   "headline_acres": 320,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2516000,
+   "tracts": [
+    {
+     "per_acre": 9000,
+     "sold": 1440000,
+     "tracts": "3"
+    },
+    {
+     "per_acre": 6725,
+     "sold": 1076000,
+     "tracts": "4"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2025"
+  },
+  {
+   "auction_id": "2026-01-15-1",
+   "county": "Davison",
+   "county_fips": "46035",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2026-01-15",
+   "headline_acres": 158.66,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1848389,
+   "tracts": [
+    {
+     "per_acre": 11650,
+     "sold": 1848389,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2026"
+  },
+  {
+   "auction_id": "2026-01-21-1",
+   "county": "Hanson",
+   "county_fips": "46061",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2026-01-21",
+   "headline_acres": 199.77,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1987712,
+   "tracts": [
+    {
+     "per_acre": 9950,
+     "sold": 1987712,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2026"
+  },
+  {
+   "auction_id": "2026-02-09-1",
+   "county": "Jerauld",
+   "county_fips": "46073",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2026-02-09",
+   "headline_acres": 425.96,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1469562,
+   "tracts": [
+    {
+     "per_acre": 3450,
+     "sold": 1469562,
+     "tracts": "4"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2026"
+  },
+  {
+   "auction_id": "2026-02-27-1",
+   "county": "Mccook",
+   "county_fips": "46087",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2026-02-27",
+   "headline_acres": 264.65,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2153525,
+   "tracts": [
+    {
+     "per_acre": 8500,
+     "sold": 1229525,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 7700,
+     "sold": 924000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2026"
+  },
+  {
+   "auction_id": "2026-03-30-1",
+   "county": "Davison",
+   "county_fips": "46035",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2026-03-30",
+   "headline_acres": 273.38,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2077688,
+   "tracts": [
+    {
+     "per_acre": 7600,
+     "sold": 2077688,
+     "tracts": "4"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2026"
+  },
+  {
+   "auction_id": "2026-10-27-1",
+   "county": "Turner",
+   "county_fips": "46125",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2026-10-27",
+   "headline_acres": 132.41,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 1324100,
+   "tracts": [
+    {
+     "per_acre": 10000,
+     "sold": 1324100,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2026"
+  },
+  {
+   "auction_id": "2026-10-28-1",
+   "county": "Walworth",
+   "county_fips": "46129",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2026-10-28",
+   "headline_acres": 558,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2019500,
+   "tracts": [
+    {
+     "per_acre": 5250,
+     "sold": 829500,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 3275,
+     "sold": 262000,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 2900,
+     "sold": 928000,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2026"
+  },
+  {
+   "auction_id": "2026-10-30-1",
+   "county": "Aurora",
+   "county_fips": "46003",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2026-10-30",
+   "headline_acres": 1104.01,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 7683638,
+   "tracts": [
+    {
+     "per_acre": 9250,
+     "sold": 1325433,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 6000,
+     "sold": 333540,
+     "tracts": "2"
+    },
+    {
+     "per_acre": 6500,
+     "sold": 690885,
+     "tracts": "3"
+    },
+    {
+     "per_acre": 8050,
+     "sold": 1288000,
+     "tracts": "4"
+    },
+    {
+     "per_acre": 7300,
+     "sold": 1156393,
+     "tracts": "5"
+    },
+    {
+     "per_acre": 5550,
+     "sold": 845987,
+     "tracts": "6"
+    },
+    {
+     "per_acre": 6650,
+     "sold": 771400,
+     "tracts": "8"
+    },
+    {
+     "per_acre": 6000,
+     "sold": 1272000,
+     "tracts": "9"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2026"
+  },
+  {
+   "auction_id": "2026-11-04-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2026-11-04",
+   "headline_acres": 78.04,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 671144,
+   "tracts": [
+    {
+     "per_acre": 8600,
+     "sold": 671144,
+     "tracts": "1"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2026"
+  },
+  {
+   "auction_id": "2026-11-04-2",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2026-11-04",
+   "headline_acres": 106.52,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 745640,
+   "tracts": [
+    {
+     "per_acre": 7000,
+     "sold": 745640,
+     "tracts": "3"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2026"
+  },
+  {
+   "auction_id": "2026-11-05-1",
+   "county": "Hutchinson",
+   "county_fips": "46067",
+   "credit": "Results reported by Wieman Land & Auction",
+   "date": "2026-11-05",
+   "headline_acres": 318.7,
+   "kind": "auction",
+   "source": "wieman",
+   "state": "SD",
+   "total_sold": 2604040,
+   "tracts": [
+    {
+     "per_acre": 9200,
+     "sold": 1460040,
+     "tracts": "1"
+    },
+    {
+     "per_acre": 7150,
+     "sold": 1144000,
+     "tracts": "2"
+    }
+   ],
+   "url": "https://www.wiemanauction.com/land-auction-results.php?year=2026"
+  }
+ ],
+ "source": "wieman"
+}
