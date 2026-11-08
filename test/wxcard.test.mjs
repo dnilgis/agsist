@@ -345,14 +345,185 @@ test("on the page: Season so far fills from the files, no spray table, 30% short
       assert.ok(got.season <= got.min + 1, `Season so far fills inside its held space (${got.season}px, held ${got.min}px)`);
       const shifts = await pg.evaluate(() => window.__shifts.filter((x) => x.s.includes("card")));
       assert.deepEqual(shifts, [], "nothing in the card moves the page");
-      // the chart and the stations open on tap, in place
+      // the month charts open on tap, in place, one at a time; no sources fold (Nov 8)
+      assert.equal(await pg.$(".wxs-src"), null, "no stations and sources fold");
       await pg.click("#wxs-chart-b");
       assert.equal(await pg.getAttribute("#wxs-chart-b", "aria-expanded"), "true");
       assert.ok(await pg.isVisible("#wxs-chart svg"));
-      await pg.click(".wxs-src > summary");
-      assert.match(await pg.textContent(".wxs-src p"), /Gilbert, 0\.2 mi W/);
+      await pg.click("#wxs-gchart-b");
+      assert.equal(await pg.getAttribute("#wxs-gchart-b", "aria-expanded"), "true");
+      assert.equal(await pg.getAttribute("#wxs-chart-b", "aria-expanded"), "false", "opening one closes the other");
+      assert.ok(await pg.isHidden("#wxs-chart") && await pg.isVisible("#wxs-gchart svg"));
+      await pg.click("#wxs-gchart-b");
+      assert.ok(await pg.isHidden("#wxs-gchart"), "and it closes again");
+      await pg.click("#wxs-gchart-b");
       assert.deepEqual(errors, []);
       await ctx.close();
     }
+  } finally { await browser.close(); srv.close(); }
+});
+
+/* the month charts on the page: readable at 390 in both themes, read on tap and by keyboard, a picture to share */
+async function openCard(browser, port, o) {
+  o = o || {};
+  const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: o.width || 390, height: 900 }, colorScheme: o.theme === "light" ? "light" : "dark" });
+  await ctx.addInitScript((th) => { try { localStorage.setItem("agsist-theme", th); localStorage.setItem("agsist-wx-loc", JSON.stringify({ zip: "50010", lat: 42.03, lon: -93.62, label: "Ames, IA", city: "Ames, IA", state: "IA" })); } catch (e) {} }, o.theme || "dark");
+  const pg = await ctx.newPage(), errors = [];
+  pg.on("pageerror", (e) => errors.push(String(e)));
+  await pg.route("**/*", (r) => {
+    const u = r.request().url();
+    if (o.noKit && /\/components\/share-kit\.js/.test(u)) return r.abort();
+    if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
+    if (/^https:\/\/api\.weather\.gov\//.test(u)) { const a = nwsAnswer(u, {}); return r.fulfill({ status: a.status, contentType: "application/geo+json", headers: { "access-control-allow-origin": "*" }, body: JSON.stringify(a.body) }); }
+    return r.abort();
+  });
+  await pg.goto(`http://127.0.0.1:${port}/`);
+  await pg.waitForSelector("#wxs-gchart-b", { timeout: 20000 });
+  return { ctx, pg, errors };
+}
+
+test("month charts at 390, light and dark: 12px text, gridlines with values, bars that stand out, the month so far marked", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const theme of ["dark", "light"]) for (const id of ["wxs-chart", "wxs-gchart"]) {
+      const { ctx, pg, errors } = await openCard(browser, port, { theme });
+      await pg.click("#" + id + "-b");
+      await pg.waitForSelector("#" + id + " svg");
+      const got = await pg.evaluate((id) => {
+        const p = document.getElementById(id), svg = p.querySelector("svg"), r = svg.getBoundingClientRect();
+        const rgb = (s) => { const m = /rgba?\(([\d.]+), ([\d.]+), ([\d.]+)(?:, ([\d.]+))?\)/.exec(s); return m ? [+m[1], +m[2], +m[3], m[4] == null ? 1 : +m[4]] : null; };
+        let bg = null;
+        for (let el = p; el && !bg; el = el.parentElement) { const c = rgb(getComputedStyle(el).backgroundColor); if (c && c[3] > 0.9) bg = c; }
+        if (!bg) bg = rgb(getComputedStyle(document.body).backgroundColor);
+        const lum = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
+        const ratio = (a, b) => { const x = lum(a), y = lum(b); return (Math.max(x, y) + 0.05) / (Math.min(x, y) + 0.05); };
+        const fill = (sel) => rgb(getComputedStyle(p.querySelector(sel)).fill);
+        const texts = [...p.querySelectorAll("text")].map((t) => ({ s: t.textContent, px: t.getBoundingClientRect().height, fs: parseFloat(getComputedStyle(t).fontSize) }));
+        const leg = p.querySelector(".wxs-cleg").getBoundingClientRect();
+        const rects = [...p.querySelectorAll("text")].map((t) => t.getBoundingClientRect());
+        let overlap = 0;
+        for (let i = 0; i < rects.length; i++) for (let j = i + 1; j < rects.length; j++) { const a = rects[i], b = rects[j]; if (a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5) overlap++; }
+        return { w: r.width, attr: +svg.getAttribute("width"), right: r.right, vw: document.documentElement.clientWidth, scrollW: document.documentElement.scrollWidth,
+          u: ratio(fill(".wxs-cu:not(.wxs-part)"), bg), y: ratio(fill(".wxs-cy:not(.wxs-part)"), bg), part: ratio(rgb(getComputedStyle(p.querySelector("rect.wxs-cy.wxs-part")).stroke), bg),
+          minFs: Math.min(...texts.map((t) => t.fs)), labels: texts.map((t) => t.s), grid: p.querySelectorAll(".wxs-gl").length, legBottom: leg.bottom, legH: leg.height, overlap,
+          readFs: parseFloat(getComputedStyle(p.querySelector(".wxs-read")).fontSize), so: p.querySelector(".wxs-cleg").textContent };
+      }, id);
+      const tag = theme + " " + id;
+      assert.equal(got.w, got.attr, tag + ": drawn at its own width, not shrunk (" + got.w + ")");
+      assert.ok(got.right <= got.vw && got.scrollW <= got.vw, tag + ": no sideways scroll");
+      assert.ok(got.minFs >= 12 && got.readFs >= 12, tag + ": text 12px or more (" + got.minFs + ")");
+      assert.equal(got.grid, 3, tag + ": top and middle gridlines and the baseline");
+      assert.ok(got.labels.includes(id === "wxs-gchart" ? "800 GDDs" : "10 in") && got.labels.includes(id === "wxs-gchart" ? "400" : "5"), tag + ": " + got.labels.join(" "));
+      for (const k of ["J", "F", "M", "A", "S", "O", "N", "D"]) assert.ok(got.labels.includes(k), tag + ": month label " + k);
+      assert.equal(got.overlap, 0, tag + ": no labels overlap");
+      assert.ok(got.u >= 3 && got.y >= 3 && got.part >= 3, `${tag}: bars 3:1 or more against the card (usual ${got.u.toFixed(2)}, year ${got.y.toFixed(2)}, so far edge ${got.part.toFixed(2)})`);
+      assert.match(got.so, /Nov so far/, tag);
+      assert.ok(got.legBottom <= 900, tag + ": legend in view with the chart");
+      assert.deepEqual(errors, []);
+      await ctx.close();
+    }
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("month charts: a tap or the keyboard reads a month in the line under the chart; Save picture is there", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { ctx, pg, errors } = await openCard(browser, port, {});
+    await pg.click("#wxs-gchart-b");
+    await pg.waitForSelector("#wxs-gchart svg");
+    assert.equal(await pg.getAttribute("#wxs-gread", "aria-live"), "polite");
+    assert.equal(await pg.textContent("#wxs-gread"), "Tap a month to read it.");
+    // a tap anywhere in July's column, well above its bars
+    const box = await pg.locator('#wxs-gchart .wxs-m[data-i="6"] .wxs-hit').boundingBox();
+    assert.ok(box.height >= 150, "the target is the full column high: " + box.height);
+    await pg.mouse.click(box.x + box.width / 2, box.y + 6);
+    assert.equal(await pg.textContent("#wxs-gread"), "Jul: 712 GDDs, usual 680, +32 (105%)");
+    // the keyboard: arrows move the month and its readout, Home and End jump
+    await pg.keyboard.press("ArrowRight");
+    assert.equal(await pg.textContent("#wxs-gread"), "Aug: 655 GDDs, usual 640, +15 (102%), 1 day not reported");
+    assert.equal(await pg.evaluate(() => document.activeElement.getAttribute("data-i")), "7");
+    await pg.keyboard.press("End");
+    assert.equal(await pg.textContent("#wxs-gread"), "Nov 1 to 3, so far: 8 GDDs, usual 7, +1");
+    await pg.keyboard.press("ArrowRight");
+    assert.equal(await pg.evaluate(() => document.activeElement.getAttribute("data-i")), "10", "no step past the last month");
+    await pg.keyboard.press("Home");
+    assert.equal(await pg.textContent("#wxs-gread"), "Jan: 0 GDDs, usual 4, −4");
+    assert.equal(await pg.evaluate(() => [...document.querySelectorAll("#wxs-gchart .wxs-m")].filter((g) => g.getAttribute("tabindex") === "0").length), 1, "one month in the tab order");
+    // Tab past the two buttons lands on a month of the open chart and reads it
+    await pg.click("#wxs-chart-b");
+    await pg.focus("#wxs-gchart-b");
+    await pg.keyboard.press("Tab");
+    assert.equal(await pg.textContent("#wxs-rread"), "Nov 1 to 3, so far: 1.61 in, usual 0.24 in, +1.37 in");
+    await pg.keyboard.press("ArrowLeft");
+    assert.equal(await pg.textContent("#wxs-rread"), "Oct: 7.27 in, usual 2.75 in, +4.52 in (264%)");
+    // the share button, with the kit loaded
+    await pg.waitForFunction(() => !!window.AgShareKit, null, { timeout: 10000 });
+    assert.equal(await pg.isEnabled("#wxs-chart .wxs-pic"), true);
+    const dl = pg.waitForEvent("download", { timeout: 10000 });
+    await pg.click("#wxs-chart .wxs-pic");
+    assert.match((await dl).suggestedFilename(), /^agsist-rain-by-month-story-county-2026-11-03\.png$/);
+    const li = await pg.evaluate(() => window.AgSeason.lastImage);
+    assert.deepEqual(li && [li.w, li.h], [1080, 1350], "the phone picture at a 390 px width");
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("without share-kit.js the charts work as ever and the button says the picture is unavailable", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { ctx, pg, errors } = await openCard(browser, port, { noKit: true });
+    await pg.click("#wxs-gchart-b");
+    await pg.waitForSelector("#wxs-gchart svg");
+    await pg.click('#wxs-gchart .wxs-m[data-i="8"]');
+    assert.equal(await pg.textContent("#wxs-gread"), "Sep: 420 GDDs, usual 400, +20 (105%)");
+    await pg.waitForFunction(() => document.querySelector("#wxs-gchart .wxs-pic").disabled, null, { timeout: 10000 });
+    assert.equal(await pg.textContent("#wxs-gchart .wxs-pic"), "Picture not available right now");
+    assert.equal(await pg.evaluate(() => !!window.AgShareKit), false);
+    assert.deepEqual(errors, []);
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("the share picture at 1080 x 1350 and 1200 x 630: title, place, dates, source and agsist.com; nothing overlaps; 20px or more", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const { ctx, pg, errors } = await openCard(browser, port, {});
+    await pg.waitForFunction(() => !!window.AgShareKit, null, { timeout: 10000 });
+    const got = await pg.evaluate(async () => {
+      const A = window.AgSeason;
+      const [r, w] = await Promise.all(["/data/rain/ia.json", "/data/rain/wx/ia.json"].map((u) => fetch(u).then((x) => x.json())));
+      const m = A.model(r, w, "19169"), out = [];
+      for (const kind of ["rain", "gdd"]) for (const wide of [false, true]) {
+        const im = A.image(A.spec(m, kind), document, { wide });
+        let ov = [];
+        const b = im.boxes;
+        for (let i = 0; i < b.length; i++) for (let j = i + 1; j < b.length; j++) if (b[i].x0 < b[j].x1 && b[j].x0 < b[i].x1 && b[i].y0 < b[j].y1 && b[j].y0 < b[i].y1) ov.push(b[i].s + " / " + b[j].s);
+        const off = b.filter((x) => x.x0 < 0 || x.x1 > im.w || x.y0 < 0 || x.y1 > im.h).map((x) => x.s);
+        out.push({ kind, wide, w: im.w, h: im.h, texts: im.texts, min: Math.min(...im.sizes), ov, off });
+      }
+      return out;
+    });
+    for (const g of got) {
+      const tag = g.kind + (g.wide ? " wide" : " phone");
+      assert.deepEqual([g.w, g.h], g.wide ? [1200, 630] : [1080, 1350], tag);
+      assert.ok(g.texts.includes(g.kind === "rain" ? "Rain by month" : "GDDs by month"), tag);
+      assert.ok(g.texts.includes("agsist.com"), tag);
+      assert.ok(g.texts.includes("Story County, IA · 2026, Jan 1 to Nov 3"), tag + ": " + g.texts.slice(0, 4).join(" | "));
+      assert.ok(g.texts.some((t) => /^NOAA daily records via RCC-ACIS\./.test(t)), tag + ": the source");
+      assert.equal(g.kind === "rain", g.texts.some((t) => /CoCoRaHS/.test(t)), tag + ": the volunteer gauge credited on the rain picture");
+      assert.ok(g.texts.includes(g.kind === "rain" ? "9.03" : "712"), tag + ": July's figure over its bar");
+      assert.ok(g.texts.includes("Nov so far"), tag);
+      assert.ok(g.min >= 20, tag + ": every word 20px or more (" + g.min + ")");
+      assert.deepEqual(g.ov, [], tag + ": no words overlap");
+      assert.deepEqual(g.off, [], tag + ": every word on the card");
+      assert.ok(!g.texts.some((t) => /—/.test(t)), tag + ": no em dash");
+    }
+    assert.deepEqual(errors, []);
+    await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
