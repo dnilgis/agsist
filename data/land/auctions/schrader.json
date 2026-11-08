@@ -1,9 +1,9 @@
 {
- "checked": "2026-11-07",
+ "checked": "2026-11-08",
  "credit": "Sold/auction results reported by Schrader Real Estate and Auction Co.",
  "credit_url": "https://www.schraderauction.com/auctions/recent_auctions",
  "last_run": {
-  "captured": "2026-11-07",
+  "captured": "2026-11-08",
   "dropped_future_date": 0,
   "dropped_no_county": 0,
   "dropped_not_farmland": 3,

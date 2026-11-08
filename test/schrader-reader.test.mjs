@@ -161,7 +161,7 @@ test('the capture workflow: weekly on Monday at 19:43 UTC behind the house gate,
     if (!/PRIVATE_REPO_TOKEN/.test(s)) continue;
     assert.ok(/scripts\/push_raw\.sh/.test(s) || /name: Engine checkout/.test(s), 'the private token only on the raw save (and the engine checkout): ' + s.split('\n')[0]);
   }
-  const up = /uses: actions\/upload-artifact@v4\n        with:\n([\s\S]*?)(?:\n\n|\n  [a-z]|$)/.exec(cap);
+  const up = /uses: actions\/upload-artifact@v4\n        with:\n([\s\S]*?)(?:\n\n|\n      - |\n  [a-z]|$)/.exec(cap);  // the upload step's own lines (a later step may follow, Nov 8)
   assert.ok(up, 'the capture job uploads an artifact');
   assert.match(up[1], /path: results\/schrader-new\.json\n/, 'only the facts-only file, never the raw pages');
   assert.doesNotMatch(up[1], /land\/schrader/);
