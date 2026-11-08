@@ -91,17 +91,13 @@ SOURCES = dict(LA.SOURCES, IN="Indiana Department of Local Government Finance, s
 # newest months late, so a Florida reader would mostly get no email; the email itself reads Florida (land_alert.STATES)
 ASK_HELD = ("FL",)
 EMAIL_STATES = tuple(st for st in LA.STATES if st not in ASK_HELD)
-IN_NOTE = ("Indiana's sales disclosure forms carry the sale date, not a recording date, and the town is the parcel's mailing town, "
-           "placed at the middle of its ZIP code rather than a township. Our Indiana copy starts with 2021 forms.")
-# Vermont's return, mapped onto the shared market-sale rule (fetch_land_sales.vt_table, vt_class): the method note
-# on every Vermont page and in any month with a Vermont sale.
-VT_NOTE = ("Vermont sales come from the property transfer tax return. A return is a farm sale here when the land's use before or "
-           "after the sale is an operating farm or timberland, or open land enrolled in current use. Left out of the market rule: a buyer "
-           "the return marks as related to the seller (family, the seller's own trust or another relation), a return that claims a transfer tax exemption, a transfer the land gains tax return says "
-           "was without pay, by divorce or by foreclosure, and anything less than the whole interest (a share, a life estate, a lease or an "
-           "easement). Buildings come from the return's buildings boxes; timberland with no operating farm and no buildings is forest. "
-           "Current use enrollment is shown on each sale; Vermont enrolls both farm and forest land, so open land in current use is counted "
-           "as farmland and may include some woods. Our Vermont copy starts with the returns posted in 2019.")
+IN_NOTE = ("A farm sale is a sale of land the county classes as farm. Left out: gifts, family and related-party sales and anything less "
+           "than the whole interest. The date is the sale date on the disclosure form, and the town is the parcel's mailing town, "
+           "placed at the middle of its ZIP code.")
+# Vermont's return, mapped onto the shared market-sale rule (fetch_land_sales.vt_table, vt_class).
+VT_NOTE = ("A farm sale is a return where the land's use before or after the sale is an operating farm or timberland, or open land "
+           "enrolled in current use. Left out: a buyer related to the seller, a return that claims a transfer tax exemption, transfers "
+           "without pay, by divorce or by foreclosure, and part interests such as a share, a life estate, a lease or an easement.")
 # New Jersey's deeds, mapped onto the same rule (fetch_land_sales.nj_table, NJ_NU): the method note on every New Jersey
 # page and in any month with a New Jersey sale. The acres are today's lot, said here and on every page.
 NJ_NOTE = LA.NJ_NOTE
@@ -650,6 +646,45 @@ def ctx_data(st, fips, county, u, w24, ok=0):
     return jdump([st, fips, county, usual_list(u), w24, ok])
 
 
+# Phones (Sig, Nov 8, 2026: the Unusual prices table was cut off at 390 px): every table this builder makes becomes one
+# block per row, each value under a small label, so no number is cut and the page never scrolls sideways. The labels are
+# CSS (td:nth-child), so the rows components/land-sales.js draws later read the same. Inline, so no shared file changes.
+SALE_COLS = {"when": "Date", "where": "Where", "acres": "Acres", "price": "Price", "ppa": "$/acre", "note": "Note",
+             "usual": "County usual", "kind": "Type"}
+STACK_LAYOUTS = {
+    "sales": [("when", "where", "acres", "ppa", "usual", "note"), ("when", "where", "acres", "price", "ppa", "note"),
+              ("when", "where", "acres", "price", "ppa", "kind", "note")],
+    "buyers": [("Rank", "State", "Counties", "Sales", "Acres", "Dollars")],
+    "source": [("State", "On this site", "Source", "Names in the source", "How often", "Terms")],
+}
+
+
+def stack_css():
+    r = ["@media(max-width:560px){"
+         ".ls-st thead{display:none}"
+         ".ls-st,.ls-st tbody{display:block}"
+         ".ls-st tr{display:block;border-top:1px solid var(--border);padding:.45rem 0}"
+         ".ls-st tr:first-child{border-top:0}"
+         ".ls-st td{display:block;border:0;padding:.1rem 0 .1rem 6.8rem;position:relative;text-align:left;overflow-wrap:anywhere}"
+         ".ls-st td.n{text-align:left;white-space:normal}"
+         ".ls-st td:empty{display:none}"
+         ".ls-st td::before{position:absolute;left:0;width:6.4rem;color:var(--text-muted);font-size:.8rem;font-weight:600}"
+         ".ls-st tr.ls-dr>td{padding-left:0}"
+         ".ls-st tr.ls-dr>td::before{content:none}"]
+    for name, lays in STACK_LAYOUTS.items():
+        for lay in lays:
+            labs = [SALE_COLS.get(c, c) for c in lay]
+            cls = ".ls-l-" + "-".join(c.replace(" ", "_") for c in lay)
+            for i, lab in enumerate(labs, 1):
+                r.append(".ls-st%s tr:not(.ls-dr)>td:nth-child(%d)::before{content:\"%s\"}" % (cls, i, lab))
+    r.append("}")
+    return "".join(r)
+
+
+def lay_class(cols):
+    return " ls-st ls-l-" + "-".join(str(c).replace(" ", "_") for c in cols)
+
+
 def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa", "note"), caption=None, county_link=None, tid=None, anchors=False,
                ctx=None, win=None, d=None):
     """anchors: each row gets id="s-<sale id>" (the county page; the land sale email links to it).
@@ -658,7 +693,7 @@ def sale_table(rows, names_file, cols=("when", "where", "acres", "price", "ppa",
     th = {"when": "Date", "where": "Where", "acres": "Acres", "price": "Recorded price", "ppa": "$/acre", "note": "Note", "usual": "County usual $/acre",
           "kind": "Type"}
     num = {"acres", "price", "ppa", "usual"}
-    h = ['<div class="ls-tw"><table class="ls-t"%s%s>' % (' id="%s"' % e(tid) if tid else "", ' data-ls-c=%s' % sq(ctx) if ctx else "")]
+    h = ['<div class="ls-tw"><table class="ls-t%s"%s%s>' % (lay_class(cols), ' id="%s"' % e(tid) if tid else "", ' data-ls-c=%s' % sq(ctx) if ctx else "")]
     if caption:
         h.append("<caption>%s</caption>" % e(caption))
     h.append("<thead><tr>" + "".join('<th scope="col"%s>%s</th>' % (' class="n"' if c in num else "", th[c]) for c in cols)
@@ -724,16 +759,27 @@ def names_note(d, states):
 # of page and collapsed unless someone wants to read it"; STANDING-DECISIONS Nov 7). The market rule and each state's
 # method note move, word for word, into one closed details block at the bottom, each state under its own small heading.
 # The ls-src class is the page's own collapsed source table (coverage_html); ls-dh is its small heading. No new CSS.
-STATE_NOTES = (("IN", IN_NOTE), ("VT", VT_NOTE), ("NJ", NJ_NOTE), ("FL", FL_NOTE))
-METHOD_SUMMARY = "How these sales are counted (sources and rules by state)"
+IL_NOTE = ("A farm sale is a farm parcel on a MyDec transfer declaration. Left out: gifts, family and related-party sales and anything "
+           "less than the whole interest.")
+WI_NOTE = ("A farm sale is a transfer return for land in the farm or forest classes. Left out: gifts, family and related-party sales and "
+           "anything less than the whole interest.")
+STATE_NOTES = (("IL", IL_NOTE), ("WI", WI_NOTE), ("IN", IN_NOTE), ("VT", VT_NOTE), ("NJ", NJ_NOTE), ("FL", FL_NOTE))
+METHOD_SUMMARY = "Sources and terms"
 
 
-def method_html(states):
+def method_html(states, d=None, extra=()):
+    """The one closed fold at the bottom: the rule, then extra [(heading, text)] (the unusual price definition and the
+    date note on a month page), then the names line (when d is given), then each state's note."""
     h = ['<details class="ls-src" id="how-counted"><summary>%s</summary>' % METHOD_SUMMARY,
          '<h3 class="ls-dh">Every state</h3>', '<p class="ls-fine">%s</p>' % e(RULE)]
+    for head_, text in extra:
+        h.append('<h3 class="ls-dh">%s</h3><p class="ls-fine">%s</p>' % (e(head_), e(text)))
+    if d is not None:
+        h.append('<h3 class="ls-dh">Names</h3><p class="ls-fine">%s</p>' % e(names_note(d, states)))
     for st, note in STATE_NOTES:
         if st in states:
-            h.append('<h3 class="ls-dh">%s</h3><p class="ls-fine">%s</p>' % (e(NAME[st]), e(note)))
+            src = ("%s, read %s. " % (SOURCES[st], day(d.fetched[st]))) if d is not None and d.fetched.get(st) else ""
+            h.append('<h3 class="ls-dh">%s</h3><p class="ls-fine">%s%s</p>' % (e(NAME[st]), e(src), e(note)))
     h.append("</details>")
     return "\n".join(h)
 
@@ -759,6 +805,22 @@ def lead_big(M):
     return "The largest by acres: %s acres in %s County, %s, for %s." % (acres(b["acres"]), e(b["county"]), b["st"], money(b["price"]))
 
 
+def unusual_def(M):
+    """What 'unusual' means, in one plain sentence for the fold (the month page keeps one short line by the table)."""
+    return ("A sale of %d acres or more is marked unusual when its price per acre is far above or below the usual for its county, "
+            "which is the middle half of that county's sales of that size over the two years from %s to %s. "
+            "Possible reasons above the usual: %s. Possible reasons below: %s. The return does not say which, and a price is not wrong because it is unusual."
+            % (COMP_MIN_ACRES, LA.short_day(M["window"][0]) + ", " + M["window"][0][:4],
+               LA.short_day(M["window"][1]) + ", " + M["window"][1][:4], UP_WHY, DOWN_WHY))
+
+
+def best_def():
+    """What 'best value' means, in plain words, for the fold."""
+    return ("Best value lists sales of %d acres or more with the lowest price per acre against their county's usual, leaving out the unusual "
+            "prices and anything well under the usual range. The record has no soil, tillable acres, buildings or drainage, so a low price "
+            "can just mean poorer ground." % BEST_MIN_ACRES)
+
+
 def month_page(d, M, early, coverage, archive):
     key, lab = M["month"], M["label"]
     url = "%s/land-sales/%s" % (ORIGIN, key)
@@ -772,7 +834,7 @@ def month_page(d, M, early, coverage, archive):
           {"@context": "https://schema.org", "@type": "Article", "headline": "Farmland sales, " + lab, "url": url,
            "datePublished": max(d.fetched.values()), "author": {"@type": "Person", "name": "Sigurd Lindquist", "url": ORIGIN + "/about"}}]
     cl = county_link_fn(d.repo)
-    b = [head(title, desc, url, ld, early), '<div class="ls-w">',
+    b = [head(title, desc, url, ld, early, stack_css()), '<div class="ls-w">',
          '<nav class="ls-bc" aria-label="Breadcrumb"><a href="/land-sales/">Farmland sales</a> / %s</nav>' % e(lab),
          "<h1>Farmland sales, %s</h1>" % e(lab)]
     lead = []
@@ -784,9 +846,9 @@ def month_page(d, M, early, coverage, archive):
                 lead_big(M)))
     # one caveat line under the answer, at most (the method notes are in method_html at the bottom)
     cav = []
-    if any(M["per_state"][s]["basis"] == "sale date" for s in M["states"]):
-        cav.append("* %s sales are dated by the deed for now, so a sale signed late in the month may still be filed after this was read and show up next month."
-                   % e(and_list([NAME[s] for s in M["states"] if M["per_state"][s]["basis"] == "sale date"])))
+    dated = [NAME[s] for s in M["states"] if M["per_state"][s]["basis"] == "sale date"]
+    star = ("* %s sales are dated by the deed for now, so a sale signed late in the month may still be filed after this was read and show up next month."
+            % and_list(dated)) if dated else None
     for st, to in sorted((M.get("later") or {}).items()):
         cav.append("%s is not in this month yet: its files hold sales through %s." % (e(NAME[st]), e(LA.month_text(to))))
     if cav:
@@ -797,7 +859,7 @@ def month_page(d, M, early, coverage, archive):
     if M.get("buyers_acres"):
         b.append("<p>Buyers named on the month's sales, all their purchases added up within a state. Names load when you tap.</p>")
         for k, cap in (("buyers_acres", "Most acres bought"), ("buyers_dollars", "Most dollars spent")):
-            h = ['<div class="ls-tw"><table class="ls-t"><caption>%s</caption><thead><tr><th scope="col">#</th><th scope="col">State</th>'
+            h = ['<div class="ls-tw"><table class="ls-t' + lay_class(STACK_LAYOUTS["buyers"][0]) + '"><caption>%s</caption><thead><tr><th scope="col">#</th><th scope="col">State</th>'
                  '<th scope="col">Counties</th><th scope="col" class="n">Sales</th><th scope="col" class="n">Acres</th>'
                  '<th scope="col" class="n">Dollars</th><th scope="col">Buyer</th></tr></thead><tbody>' % cap]
             for i, x in enumerate(M[k], 1):
@@ -818,15 +880,10 @@ def month_page(d, M, early, coverage, archive):
     # unusual
     b.append('<h2 id="unusual">Unusual prices</h2>')
     if M.get("unusual") is not None:
-        b.append("<p>Sales of %d acres or more whose price per acre sits well outside what land usually brings in that county: more than one and a half "
-                 "middle-halves above or below the middle half of the county's sales of %d acres or more over %s to %s. The county usual and its "
-                 "count are shown on each row. %d of %d sales that could be judged this month were outside.</p>"
-                 % (COMP_MIN_ACRES, COMP_MIN_ACRES, e(LA.short_day(M["window"][0]) + ", " + M["window"][0][:4]),
-                    e(LA.short_day(M["window"][1]) + ", " + M["window"][1][:4]), M["n_unusual"], M["n_judged"]))
+        b.append("<p>Sales of %d acres or more priced far from the county's usual. %d of %d sales that could be compared this month.</p>"
+                 % (COMP_MIN_ACRES, M["n_unusual"], M["n_judged"]))
         if M["unusual"]:
             b.append(sale_table(M["unusual"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl, win=M["window"], d=d))
-            b.append('<p class="ls-why"><b>Above the usual, possible reasons:</b> %s. <b>Below, possible reasons:</b> %s. '
-                     "The return does not say which, and a price is not wrong because it is unusual.</p>" % (e(UP_WHY), e(DOWN_WHY)))
         else:
             b.append("<p>None this month.</p>")
     else:
@@ -834,15 +891,19 @@ def month_page(d, M, early, coverage, archive):
     # best value
     b.append('<h2 id="value">Best value per acre</h2>')
     if M.get("best"):
-        b.append("<p>Sales of %d acres or more priced lowest against their county's middle price, leaving out the unusual prices above and anything "
-                 "more than half a middle-half under the county's middle half. "
-                 "The record has no soil, tillable acres, buildings or drainage, so a low price can just mean poorer ground.</p>" % BEST_MIN_ACRES)
+        b.append("<p>Sales of %d acres or more with the lowest price per acre against their county's usual. A low price can just mean poorer ground.</p>"
+                 % BEST_MIN_ACRES)
         b.append(sale_table(M["best"], nf, cols=("when", "where", "acres", "ppa", "usual", "note"), county_link=cl, win=M["window"], d=d))
     else:
         b.append('<p class="ls-held">Not shown this month: %s.</p>' % e(M["best_why"]))
-    b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s</p>' % (e(names_note(d, M["states"])), e(src_line(d, M["states"]))))
+    b.append('<p class="ls-fine">%s</p>' % e(src_line(d, M["states"])))
     b.append(coverage_html(coverage, d))
-    b.append(method_html(M["states"]))
+    extra = [("Unusual prices", unusual_def(M))] if M.get("unusual") is not None else []
+    if M.get("best"):
+        extra.append(("Best value per acre", best_def()))
+    if star:
+        extra.append(("Dates", star))
+    b.append(method_html(M["states"], d, extra))
     if archive:
         b.append('<h2 id="earlier">Other months</h2><p>%s</p>' % " &middot; ".join('<a href="/land-sales/%s">%s</a>' % (k, e(v)) for k, v in archive if k != key))
     b.append('<p><a href="/land-sales/">Farmland sales by county</a> &middot; <a href="/comp-report">Comparable sales report</a> &middot; <a href="/field-scout">Field Scout</a></p>')
@@ -864,7 +925,7 @@ def coverage_html(cov, d):
     h.append("</div>")
     h.append('<p class="ls-key">' + " ".join('<span class="ls-k ls-st-%s"></span> %s' % (k, e(v)) for k, v in cov["labels"].items()) + "</p>")
     h.append(survey_html(d))
-    h.append('<details class="ls-src"><summary>The source table, state by state</summary><div class="ls-tw"><table class="ls-t"><thead><tr>'
+    h.append('<details class="ls-src"><summary>The source table, state by state</summary><div class="ls-tw"><table class="ls-t' + lay_class(STACK_LAYOUTS["source"][0]) + '"><thead><tr>'
              '<th scope="col">State</th><th scope="col">On this site</th><th scope="col">Source</th><th scope="col">Names in the source</th>'
              '<th scope="col">How often</th><th scope="col">Terms</th></tr></thead><tbody>')
     for r in rows:
@@ -966,7 +1027,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     atlas = "/farmland-atlas/%s/%s" % (s, slug)
     has_atlas = (d.repo / "farmland-atlas" / s / (slug + ".html")).exists()
     page = allp[:COUNTY_ROWS]
-    b = [head(title, desc[:300], url, ld, early, SALE_CSS), '<div class="ls-w">',
+    b = [head(title, desc[:300], url, ld, early, SALE_CSS + stack_css()), '<div class="ls-w">',
          '<nav class="ls-bc" aria-label="Breadcrumb"><a href="/land-sales/">Farmland sales</a> / %s</nav>' % e(NAME[st]),
          "<h1>Farmland sales in %s</h1>" % e(cn),
          '<p class="ls-ans">%d recorded sales in the last 12 months, any size (%d of %d acres or more).</p>' % (n12all, n12, LIST_MIN_ACRES),
@@ -1016,8 +1077,8 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
                      % (e(UP_WHY), e(DOWN_WHY)))
     else:
         b.append('<p class="ls-held">No recorded sales on file for this county yet.</p>')
-    b.append('<p class="ls-fine">%s</p><p class="ls-fine">%s</p>' % (e(names_note(d, [st])), e(src_line(d, [st]))))
-    b.append(method_html([st]))
+    b.append('<p class="ls-fine">%s</p>' % e(src_line(d, [st])))
+    b.append(method_html([st], d))
     links = []
     if has_atlas:
         links.append('<a href="%s">%s in the Farmland Atlas</a>' % (atlas, e(c["name"] + " County")))
@@ -1103,7 +1164,7 @@ def index_page(d, latest, counties, early, coverage, archive, ix=None):
                 "Illinois farmland sale index, a monthly update of the biggest buyers and sales, and where every state's sales come "
                 "from." % and_list(sorted(NAME[x] for x in d.states)))
     ld = [crumbs([("AGSIST", ORIGIN + "/"), ("Farmland sales", url)])] + (ix["ld"] if ix else [])
-    b = [head(title, desc, url, ld, early, ix["css"] if ix else ""), '<div class="ls-w">', "<h1>Farmland sales</h1>"]
+    b = [head(title, desc, url, ld, early, (ix["css"] if ix else "") + stack_css()), '<div class="ls-w">', "<h1>Farmland sales</h1>"]
     if latest:
         big = latest.get("top") or []
         b.append('<p class="ls-ans">The %s update: %d farm sales of %d acres or more in %s.%s <a href="/land-sales/%s">See the biggest buyers, sales and unusual prices</a>.</p>'

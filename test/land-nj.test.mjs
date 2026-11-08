@@ -139,7 +139,7 @@ test("no New Jersey buyer or seller name anywhere: the state's public file leave
     n += f.rows.length;
   }
   assert.ok(n > 1000, "sales checked: " + n);
-  assert.match(read("land-sales/new-jersey/salem-county.html"), /The state&#x27;s public deed file leaves the buyer and seller blank, so no names show here; the deed at the county clerk has them\./);
+  assert.match(read("land-sales/new-jersey/salem-county.html"), /The state&#x27;s file names no buyer or seller\./);
 });
 
 test("every New Jersey sale in a county file is on its county page's list, any acreage", () => {
@@ -159,13 +159,14 @@ test("every New Jersey sale in a county file is on its county page's list, any a
   assert.ok(n > 200, "listed: " + n);
 });
 
-test("the method note: acres are today's lot, the join is said, the code mapping is listed", () => {
+test("the method note: acres are today's lot, the join is said, the deed kinds left out are in plain words, no code list", () => {
   const p = read("land-sales/new-jersey/salem-county.html");
   assert.match(p, /SR-1A deed abstracts/);
-  assert.match(p, /today&#x27;s lot, which may not be the lot as it sold/);
-  assert.match(p, /A deed whose lot is not on the list has no acres; it is listed and kept out of the middle/);
-  assert.match(p, /Kept, since they only keep a deed out of the state&#x27;s assessment study: 5, 7, 10 \(estate sales\), 19, 24, 27, 29, 30, 32, 33 \(farmland assessment\), 34 and 36\./);
-  assert.match(p, /out are family \(1\)[^<]*leasebacks \(28\), and any deed exempt from the realty transfer fee/);
+  assert.match(p, /acres are today&#x27;s lot on the 2026 assessment list, which may not be the lot as it sold/);
+  assert.match(p, /a deed whose lot is not on the list has no acres and is kept out of the middle/);
+  assert.match(p, /Left out: gifts and family sales[^<]*quit claims[^<]*foreclosure[^<]*willing buyer and seller\./);
+  assert.doesNotMatch(p, /Kept, since they only keep|family \(1\)|leasebacks \(28\)|non-usable codes/, "no deed-code number list on the page");
+  assert.doesNotMatch(p.replace(/<(script|style)[\s\S]*?<\/\1>/g, ""), /\(\d{1,2}\)/, "no numbered code in brackets");
   assert.match(p, /Source: .*New Jersey Division of Taxation/);
   assert.match(p, /data-land-alert/, "the monthly email covers New Jersey");
   for (const s of ["salem-county", "hunterdon-county"]) assert.ok(fs.existsSync(path.join(ROOT, "land-sales/new-jersey", s + ".html")), s);

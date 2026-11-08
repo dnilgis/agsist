@@ -89,20 +89,12 @@ STATE_SLUGS = {"IL": "illinois", "WI": "wisconsin", "IN": "indiana", "VT": "verm
 IN_NOTE = ("Indiana sales carry the sale date from the state's sales disclosure form, not a recording date, and the town is "
            "the parcel's mailing town, placed at the middle of its ZIP code rather than a township, so distances to them are rougher.")
 # The New Jersey method note (build_land_sales.NJ_NOTE uses this one): how the state's codes map onto the market rule.
-NJ_NOTE = ("New Jersey sales come from the SR-1A deed abstracts that county tax boards send the state Division of Taxation. "
-           "A deed is a farm sale here when its lot is classed farm, 3A (the farmhouse lot) or 3B (farmland-assessed land), when it "
-           "sold or on the 2026 assessment list. Acres are the lot's calculated acreage on that 2026 list: today's lot, which may not "
-           "be the lot as it sold. A deed whose lot is not on the list has no acres; it is listed and kept out of the middle. "
-           "A 3A lot holds the farmhouse, so the sale is with buildings; 3B alone is bare land. How the state's non-usable codes map "
-           "onto the market rule: out are family (1), love and affection (2), related companies (3), correction deeds (4), part "
-           "interests (8) and less than full rights such as a preservation restriction (35), tax liens (9), partition, sheriff, "
-           "bankruptcy and short sales (11 to 13), quit claims (14), government (15) and charity (17) transfers, deeds in lieu of "
-           "foreclosure (18) and the first sale after one (31), rights of way (20), affordable housing (21), exchanges (22), "
-           "businesses sold with equipment (23), $100 or less (25), not a willing buyer and seller (26) and leasebacks (28), and any "
-           "deed exempt from the realty transfer fee. Part of a lot (6) or a lot in two districts (16): listed, no acres. Kept, since "
-           "they only keep a deed out of the state's assessment study: 5, 7, 10 (estate sales), 19, 24, 27, 29, 30, 32, 33 "
-           "(farmland assessment), 34 and 36. The state's public deed file leaves the buyer and seller blank, so no names show "
-           "here; the deed at the county clerk has them. Our New Jersey copy starts with deeds recorded in 2018.")
+NJ_NOTE = ("A farm sale is a deed whose lot is classed farm, either the farmhouse lot or farmland-assessed land; acres are today's lot "
+           "on the 2026 assessment list, which may not be the lot as it sold, and a deed whose lot is not on the list has no acres "
+           "and is kept out of the middle. Left out: gifts and family sales, sales between related "
+           "companies, part interests, tax liens, sheriff, bankruptcy and short sales, quit claims, government and charity transfers, "
+           "deeds tied to a foreclosure, exchanges, token-price sales and sales that were not between a willing buyer and seller. "
+           "The state's file names no buyer or seller.")
 MILES = (10, 25, 50)
 DEFAULT_MILES = 25
 EARTH_MI = 3958.8
@@ -124,11 +116,8 @@ SOURCES = {
     "FL": "Florida Department of Revenue, sale data files joined to the assessment roll, agricultural land (sale months, not days)",
 }
 # Florida's method note (build_land_sales.FL_NOTE uses this one)
-FL_NOTE = ("Florida sales come from the Department of Revenue's sale data files, joined to the assessment roll of the same year: "
-           "land the roll codes agricultural (use codes 50 to 69, timberland 54 to 59 included). The files give the month of each "
-           "sale, not the day, so Florida sales show a month. Only the sales the county property appraiser marked qualified (codes 01 "
-           "and 02) count as market sales; every other deed is listed and kept out of the middles, and a deed with minimum stamps "
-           "has no sale price. The files carry no buyer or seller names.")
+FL_NOTE = ("A farm sale is land the assessment roll codes agricultural, timberland included. Left out: any deed the county property "
+           "appraiser did not mark as a qualified sale. The files give the month of each sale, not the day, and name no buyer or seller.")
 
 
 def miles(a, b):
