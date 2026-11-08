@@ -3,7 +3,8 @@
 AGSIST -- read Schrader Real Estate and Auction Co.'s result pages into auction records.
 
 Step 2 of the auction results reader. Input is one capture folder written by
-scripts/capture_schrader.py (index-sold.rss plus auctions/<NNNN>.html); output is
+scripts/capture_schrader.py (index-sold.rss plus auctions/<NNNN>.html, and for the archive
+backfill auctions/<slug>.html); output is
 data/land/auctions/schrader.json.
 
 One record per auction, one tract entry per row of Schrader's result table:
@@ -56,6 +57,23 @@ CAPTURES = os.path.join(ROOT, "land", "schrader", "capture")
 OUT = os.path.join(ROOT, "data", "land", "auctions", "schrader.json")
 FIXTURES = os.path.join(ROOT, "test", "fixtures", "schrader")
 BASE = "https://www.schraderauction.com"
+# An auction id is Schrader's number or, for an archive page that has none, its slug (the page's
+# canonical link, "williams-county-ohio-land-auction-63-acres-march-2026"). Numeric ids and urls are
+# unchanged for every saved record.
+SLUG = r"(?=[^/]*\d)[a-z0-9]+(?:-[a-z0-9]+)+"
+ID_RE = r"(?:\d{1,7}|" + SLUG + r")"
+CANONICAL = re.compile(r"""<link\b[^>]*\brel\s*=\s*["']canonical["'][^>]*>""", re.I)
+CANON_SLUG = re.compile(r"""\bhref\s*=\s*["']https?://[^"'/]*schraderauction\.com/auctions/(""" + SLUG + r""")/?["']""", re.I)
+
+
+def canonical_slug(page):
+    m = CANONICAL.search(page if isinstance(page, str) else page.decode("latin-1"))
+    g = CANON_SLUG.search(m.group(0)) if m else None
+    return g.group(1).lower() if g else ""
+
+
+def id_key(i):
+    return (0, int(i), "") if i.isdigit() else (1, 0, i)
 CREDIT = "Sold/auction results reported by Schrader Real Estate and Auction Co."
 CREDIT_URL = BASE + "/auctions/recent_auctions"
 MIN_ACRES = 20
@@ -211,12 +229,15 @@ def read_capture(folder, idx=None):
     kept, n = [], {"pages": 0, "kept": 0, "dropped_not_farmland": 0, "no_result": 0, "dropped_future_date": 0, "dropped_no_county": 0}
     adir = os.path.join(folder, "auctions")
     for f in sorted(os.listdir(adir)) if os.path.isdir(adir) else []:
-        m = re.fullmatch(r"(\d{1,7})\.html", f)
-        if not m:
+        if not re.fullmatch(ID_RE + r"\.html", f):
             continue
         n["pages"] += 1
+        aid = f[:-5]
         with open(os.path.join(adir, f), "rb") as fh:
-            rec = parse_page(fh.read(), m.group(1), feed.get(m.group(1)), idx)
+            raw = fh.read()
+        if not aid.isdigit():
+            aid = canonical_slug(raw) or aid  # no number on the page: the canonical slug is the id
+        rec = parse_page(raw, aid, feed.get(aid), idx)
         if rec is None:
             n["no_result"] += 1
         elif not is_farmland(rec):
@@ -231,16 +252,25 @@ def read_capture(folder, idx=None):
     return kept, n, captured
 
 
+def _same_sale(r):
+    return json.dumps([r.get("county_fips"), r.get("date"), r.get("total_sold"), r.get("tracts")], sort_keys=True)
+
+
 def merge(old, new, stats=None):
     """Old records stay. A new auction_id is added. A record seen again replaces the saved one only when
     every other field is the same and the saved tract rows come back unchanged, in order, with new rows
     after them; any other difference is refused and counted, so a later parse never rewrites history."""
     by = {r["auction_id"]: r for r in old}
     refused = 0
+    seen = {_same_sale(r): r["auction_id"] for r in old}
     for r in new:
         prev = by.get(r["auction_id"])
         if prev is None:
+            twin = seen.get(_same_sale(r))
+            if twin is not None and twin.isdigit() != r["auction_id"].isdigit():
+                continue  # the same sale under its number and its slug: one record, the one saved first
             by[r["auction_id"]] = r
+            seen[_same_sale(r)] = r["auction_id"]
             continue
         if r == prev:
             continue
@@ -255,7 +285,7 @@ def merge(old, new, stats=None):
         print(f"read_schrader: refused {refused} overwrite(s) of saved records")
     if stats is not None:
         stats["refused_overwrites"] = refused
-    return sorted(by.values(), key=lambda r: (r["date"] or "", int(r["auction_id"])))
+    return sorted(by.values(), key=lambda r: (r["date"] or "", id_key(r["auction_id"])))
 
 
 def build(folder, out=OUT, idx=None):
@@ -303,7 +333,7 @@ def valid(rec, idx):
     try:
         num = lambda v: isinstance(v, (int, float)) and not isinstance(v, bool)
         ok = (isinstance(rec, dict) and set(rec) == KEYS and rec["source"] == "schrader" and rec["kind"] == "auction"
-              and rec["credit"] == CREDIT and re.fullmatch(r"\d{1,7}", rec["auction_id"])
+              and rec["credit"] == CREDIT and re.fullmatch(ID_RE, rec["auction_id"])
               and rec["url"] == f"{BASE}/auctions/{rec['auction_id']}"
               and re.fullmatch(r"\d{4}-\d{2}-\d{2}", rec["date"]) and rec["state"] in STATES
               and COUNTY_NAME.fullmatch(rec["county"]) and idx.get((rec["state"], norm_name(rec["county"]))) == rec["county_fips"]
@@ -381,6 +411,21 @@ def selftest():
               and [x["per_acre"] for x in r.get("tracts", [])] == [7030, 3976], "9580: Knox County, 331 acres, both rows per acre")
         bad = {k for rec in recs for k in rec} & {"buyer", "buyers", "purchaser", "owner", "name", "bidder"}
         check(not bad, "no buyer, owner or name field in any record")
+
+        slug = "knox-county-indiana-land-auction-331-acres-october-2026"
+        shutil.copy(os.path.join(FIXTURES, "9580.html"), os.path.join(cap, "auctions", slug + ".html"))
+        s_recs, s_n, _ = read_capture(cap, idx)
+        check(s_n["pages"] == sum(f.endswith(".html") for f in os.listdir(FIXTURES)) + 1 and s_n["kept"] == len(recs) + 1, "a slug-named page is read beside the numeric ones")
+        sr = next(r for r in s_recs if r["auction_id"] == slug)
+        check(sr["url"] == f"{BASE}/auctions/{slug}" and valid(sr, idx) and sr["total_sold"] == 1820000,
+              "slug page: auction_id and url from the canonical slug, a valid record")
+        num = next(r for r in recs if r["auction_id"] == "9580")
+        check(num["url"] == f"{BASE}/auctions/9580" and set(num) == set(sr), "numeric record: id, url and keys unchanged")
+        check([r["auction_id"] for r in merge([num], [sr])] == ["9580"] and [r["auction_id"] for r in merge([sr], [num])] == [slug],
+              "the same sale under its number and its slug is one record")
+        check([r["auction_id"] for r in merge([dict(num, auction_id="9", date="2020-01-01", url=BASE + "/auctions/9")], [sr])] == ["9", slug],
+              "a different sale with a slug is added, numbers sort before slugs")
+        os.remove(os.path.join(cap, "auctions", slug + ".html"))
 
         page = open(os.path.join(FIXTURES, "9630.html"), encoding="utf-8").read()
         check(parse_page(page.replace('<div class="sold-box">', '<div class="x">'), "1", None, idx) is None,

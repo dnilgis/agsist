@@ -75,3 +75,25 @@ test('the workflow: the backfill runs only on the dispatch input, resumes from t
   assert.ok(steps.indexOf(s) > steps.findIndex((x) => /upload-artifact/.test(x)), 'after the weekly facts file is uploaded');
   assert.doesNotMatch(cap, /git (add|commit|push)/);
 });
+
+test('slug keys (Nov 8): the real archive page gives three slugs, an empty archive page fails loudly, numbers and slugs both read', () => {
+  const cap = execFileSync('python3', ['scripts/capture_schrader.py', '--selftest'], { cwd: root, encoding: 'utf8' });
+  const rd = execFileSync('python3', ['scripts/read_schrader.py', '--selftest'], { cwd: root, encoding: 'utf8' });
+  assert.doesNotMatch(cap + rd, /^FAIL /m);
+  for (const name of ['real OH archive page: three slugs in order', 'known ids: a captured numeric page also counts under its canonical slug',
+    'backfill by slug: each slug fetched and saved as <slug>.html', 'backfill by slug: a second run fetches nothing twice',
+    'an archive page with 0 items fails the run loudly']) {
+    assert.ok(cap.includes(name), `selftest line missing: ${name}`);
+  }
+  for (const name of ['slug page: auction_id and url from the canonical slug', 'numeric record: id, url and keys unchanged',
+    'the same sale under its number and its slug is one record']) {
+    assert.ok(rd.includes(name), `reader selftest line missing: ${name}`);
+  }
+});
+
+test('the archive fixture is a stripped copy: result blocks only, no buyer', () => {
+  const page = read('test/fixtures/schrader-archive/OH-0.html');
+  assert.ok(page.length < 20000);
+  assert.equal((page.match(/<article class="result">/g) || []).length, 3);
+  assert.doesNotMatch(page, /buyer/i);
+});
