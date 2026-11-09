@@ -32,8 +32,10 @@ button,.btn{font:inherit;font-weight:600;min-height:44px;padding:0 1rem;border-r
 button.quiet,.btn.quiet{background:none;color:var(--accent)}
 :root[data-theme="dark"] button:not(.quiet){color:#10151a}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button:not(.quiet){color:#10151a}}
-.tok-row{display:flex;gap:8px;align-items:center}
-.tok-row input{flex:1;min-width:0}
+.tok-row{display:grid;grid-template-columns:minmax(0,1fr) 9.5em 4.45em;gap:8px;align-items:center}
+.tok-row input{min-width:0}
+/* fixed button columns, so a button does not slide when the next one (or its words) arrives while the page streams in */
+.tok-row button{white-space:nowrap;justify-content:center;min-width:0}
 #tok-state{font-size:.9rem;margin:12px 0 0}
 .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
 @media(min-width:760px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}

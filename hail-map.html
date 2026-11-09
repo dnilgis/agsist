@@ -310,6 +310,11 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     /* The now card fills in after the map code runs (a first line, then the answer). Its room is held from the first paint
        on a plain /hail-map (class set before paint, removed when a year or the swaths open), so the map under it does not drop. */
     .hm-now{min-height:205px}
+    /* floors for boxes the map code fills or shows later (test/cls-reserved.test.mjs) */
+    #hm-meshnav{min-height:3.4rem}
+    #hm-mesh-date{font-variant-numeric:tabular-nums}
+    #hm-play{min-height:34px}
+    #hm-yearbadge{min-height:1.2em}
     .hm-hold .hm-now[hidden]{display:block!important;visibility:hidden}
     @media(min-width:641px){.hm-now{min-height:160px}}
     .hm-now p{margin:0}

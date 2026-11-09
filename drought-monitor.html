@@ -95,6 +95,13 @@ button,a,[role="button"] { touch-action: manipulation; }
 .dm-answer { font-size: 1.05rem; line-height: 1.5; color: var(--text); margin: .2rem 0 .5rem; max-width: 640px; }
 /* The filled headline (data/drought/summary.json) is 3 to 9 lines by width; the room is held from the first paint so the page below does not drop when it arrives. */
 .dm-answer { min-height: 12.8em; }
+/* boxes the page's scripts fill or show after the first paint keep their floor up front (test/cls-reserved.test.mjs) */
+#dm-auto-state-name { display: inline-block; min-height: 1.2em; }
+#dm-county-list { min-height: 2rem; }
+#dm-county-out { min-height: 1.55em; }
+#dm-map-label { min-height: 1.5rem; }
+#dm-next-update { min-height: 1.75rem; }
+#dm-valid { min-height: 1.2em; }
 @media (min-width: 392px) { .dm-answer { min-height: 11.2em; } }
 @media (min-width: 412px) { .dm-answer { min-height: 9.7em; } }
 @media (min-width: 482px) { .dm-answer { min-height: 8.1em; } }
