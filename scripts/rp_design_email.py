@@ -44,13 +44,18 @@ on a new ask (GH_DISPATCH_TOKEN), which also sends any reminder already due.
                 the buyer email is live, RP_BUYER_EMAIL_LIVE = "1"), or Sig's
                 own order alert not sent. It starts rp-buyer-email.yml, the
                 same dispatch the subs worker makes (GH_TOKEN, the run's own
-                Actions token), at most once a run, while the oldest is under
-                ACT_MAX_H hours. This script never emails a buyer: the buyer
-                job marks each order mailed before its send and skips a mailed
-                order, so a second start can never send twice. When the start
-                fails (no token, "HTTP 401", a network error), Sig gets one
-                plain email, once per order: only from the run in the order's
-                first hour past STUCK_MIN. The DELIVERY line carries
+                Actions token), at most once a run, for orders under ACT_MAX_H
+                hours. Once per order: the run marks each order guarded on its
+                record (rp-order/guarded) before the start and never acts on a
+                guarded order again, so cron jitter or a run by hand gives one
+                start or alert, not zero or two. This script never emails a
+                buyer: the buyer job marks each order mailed before its send
+                and skips a mailed order. When the start fails (no token,
+                "HTTP 401", a network error), Sig gets one plain email about
+                the orders just marked. A dry run (DRY_RUN=1, which the
+                workflow sets unless RP_DESIGN_EMAIL_LIVE is 1 or a by-hand run
+                says live) only counts: no mark, no start, no email to Sig.
+                The DELIVERY line carries
                 unmailed_late (orders waiting over LATE_MIN minutes), which
                 scripts/delivery_check.py reads for its "paid, unmailed over 2
                 hours" row. Counts only in the log.
@@ -79,6 +84,7 @@ import urllib.parse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import email_links  # noqa: E402  (links go to the agsist.com front door; the worker host is never in an email)
+from rp_buyer_email import URL_RE  # noqa: E402  (the buyer job's own test of a design link, so both agree on which orders it mails)
 import urllib.error
 import urllib.request
 from email.message import EmailMessage
@@ -107,7 +113,7 @@ GIVE_UP_H = 72
 NOW_MAX_H = 24   # Nov 3: an ask never answered within a day is closed, not mailed late (the first live run met a week of dry-run asks)
 DRY_FRESH_H = 2
 STUCK_MIN = 60      # Nov 9 (Sig): a paid order unmailed this long after payment: start the buyer job, or tell Sig
-ACT_MAX_H = 24      # past a day the hourly start stops; Sig was told in the first hour and delivery_check shows it
+ACT_MAX_H = 24      # an order first found past a day is not started or alerted; delivery_check shows it
 LATE_MIN = 120      # delivery_check's "paid, unmailed over 2 hours" row reads this count (unmailed_late)
 BUYER_JOB = "rp-buyer-email.yml"
 GH_API = "https://api.github.com"
@@ -316,7 +322,7 @@ def stuck_orders(orders, now_ms, buyer_live):
         mins = (now_ms - at) / 60e3
         if mins < STUCK_MIN:
             continue
-        unmailed = buyer_live and not o.get("mailed") and not o.get("no_press") and str(o.get("design_url") or "").startswith("https://agsist.com/")
+        unmailed = buyer_live and not o.get("mailed") and not o.get("no_press") and bool(URL_RE.match(str(o.get("design_url") or "")))
         if unmailed or not o.get("alerted"):
             out.append((o, mins))
     return out
@@ -337,7 +343,7 @@ def alert_sig(stuck, job, sig_to, now_ms):
     lines += ["",
               "Start it by hand: Actions, Rain Print buyer email, Run workflow. It never mails an order twice.",
               "\"HTTP 401\" on the worker's start means GH_DISPATCH_TOKEN on the subs worker has expired: renew it.",
-              "", "Sent once per order, from the run in its first hour past " + str(STUCK_MIN) + " minutes."]
+              "", "Sent once per order, from the first hourly run that finds it " + str(STUCK_MIN) + " minutes past payment."]
     m = EmailMessage()
     m["Subject"] = "Rain Print: %d paid order%s with no email after an hour" % (len(stuck), "" if len(stuck) == 1 else "s")
     m["To"] = sig_to
@@ -347,29 +353,44 @@ def alert_sig(stuck, job, sig_to, now_ms):
     return m
 
 
-def check_paid(src, orders, now_ms, send, sig_to, buyer_live, tally=None):
-    """The paid-but-unmailed guard (see the top of this file). -> (counts, failed)."""
-    c = {"paid, unmailed": 0, "buyer job started": 0, "start failed": 0, "Sig told": 0}
+def check_paid(src, orders, now_ms, send, sig_to, buyer_live, tally=None, dry=False):
+    """The paid-but-unmailed guard (see the top of this file). -> (counts, failed).
+    Once per order: each order acted on is marked guarded on its record (rp-order/guarded) before
+    the start, and a guarded order is never acted on again, whichever run sees it first. A dry run
+    (DRY_RUN=1) only counts: no mark, no start, no email to Sig."""
+    c = {"paid, unmailed": 0, "would act": 0, "buyer job started": 0, "start failed": 0, "Sig told": 0, "mark failed": 0}
     if orders is None:
         return c, False
     stuck = stuck_orders(orders, now_ms, buyer_live)
     c["paid, unmailed"] = len(stuck)
     if tally:
         tally.extra["unmailed_late"] = sum(1 for _o, mins in stuck if mins >= LATE_MIN)
-    act = [(o, m) for o, m in stuck if m < ACT_MAX_H * 60]
+    act = [(o, m) for o, m in stuck if m < ACT_MAX_H * 60 and not o.get("guarded") and isinstance(o.get("key"), str)]
     if not act:
+        return c, False
+    if dry:
+        c["would act"] = len(act)
+        return c, False
+    marked = []
+    for o, m in act:
+        try:
+            r = src.worker("rp-order/guarded", body={"key": o["key"]})
+        except Exception:                                  # noqa: BLE001
+            r = None
+        if r and r.get("ok") and not r.get("already"):
+            marked.append((o, m))
+        elif not (r and r.get("ok")):
+            c["mark failed"] += 1                          # not marked: the next run tries again
+    if not marked:
         return c, False
     job = src.start_buyer_job(buyer_live)
     if job == "started":
         c["buyer job started"] = 1
         return c, False
     c["start failed"] = 1
-    first = [(o, m) for o, m in act if m < STUCK_MIN + 60]   # one hourly run falls in each order's first hour
-    if not first:
-        return c, False
     try:
-        send(alert_sig(first, job, sig_to, now_ms))
-        c["Sig told"] = len(first)
+        send(alert_sig(marked, job, sig_to, now_ms))
+        c["Sig told"] = len(marked)
         return c, False
     except Exception:                                      # noqa: BLE001
         return c, True
@@ -397,7 +418,7 @@ def run(src, dry, send, sig_to, now_ms=None, today=None, tally=None, buyer_live=
     try:
         d = src.worker("rp-remind/list")
     except Exception as e:                                 # noqa: BLE001
-        pc, pfail = check_paid(src, read_orders(src), now_ms, send, sig_to, buyer_live, tally)
+        pc, pfail = check_paid(src, read_orders(src), now_ms, send, sig_to, buyer_live, tally, dry)
         return (1 if pfail else 0), ["Design asks could not be read (%s); nothing sent." % type(e).__name__, paid_log(pc)]
     rows = [r for r in d.get("rows") or [] if isinstance(r, dict) and isinstance(r.get("key"), str)
             and CODE_RE.match(str(r.get("code") or "")) and EMAIL_RE.match(str(r.get("email") or ""))
@@ -479,7 +500,7 @@ def run(src, dry, send, sig_to, now_ms=None, today=None, tally=None, buyer_live=
                 handled.add(row["key"])
     if tally and "asks" in tally.extra:
         tally.extra["asks"] = max(0, tally.extra["asks"] - len(handled))
-    pc, pfail = check_paid(src, orders, now_ms, send, sig_to, buyer_live, tally)
+    pc, pfail = check_paid(src, orders, now_ms, send, sig_to, buyer_live, tally, dry)
     log = ["Design asks: %d." % len(rows), paid_log(pc), "; ".join("%s: %d" % (k, v) for k, v in c.items()) + "."]
     return (1 if c["marked, send failed"] or pfail else 0), log
 
@@ -527,7 +548,7 @@ class Fake(Sources):
         super().__init__("https://subs.example/x", "tok")
         self.rows, self.orders, self.buyers, self.orders_fail = rows, orders, buyers or {}, orders_fail
         self.marks, self.buyer_calls = [], 0
-        self.starts, self.job = [], "started"
+        self.starts, self.job, self.guard_fail = [], "started", False
 
     def worker(self, path, body=None, **q):
         if path == "rp-remind/list":
@@ -544,6 +565,17 @@ class Fake(Sources):
                     if r.get(st) or (st == "reminded" and r.get("done")):
                         return {"ok": True, "already": True}
                     r[st] = {"at": "now"}
+                    return {"ok": True, "already": False}
+            return {"ok": False}
+        if path == "rp-order/guarded":
+            self.marks.append((body["key"], "guarded", None))
+            if self.guard_fail:
+                raise OSError("down")
+            for o in self.orders or []:
+                if o.get("key") == body["key"]:
+                    if o.get("guarded"):
+                        return {"ok": True, "already": True}
+                    o["guarded"] = {"at": "now"}
                     return {"ok": True, "already": False}
             return {"ok": False}
         raise AssertionError(path)
@@ -704,7 +736,7 @@ def selftest():
         return f, code_, log, t
     f, code_, log, t = at(61, [porder(1)])
     ck("paid T, 401: at T+61 min the buyer job starts", f.starts == [True] and not sent and code_ == 0, str((f.starts, log)))
-    ck("paid T+61: the log counts it, no address", "paid, unmailed: 1; buyer job started: 1" in log[1] and not any("@" in x for x in log), str(log))
+    ck("paid T+61: the log counts it, no address", "paid, unmailed: 1;" in log[1] and "buyer job started: 1" in log[1] and not any("@" in x for x in log), str(log))
     f, code_, log, t = at(59, [porder(1)])
     ck("paid T, 401: at T+59 min nothing yet", f.starts == [] and not sent, str((f.starts, log)))
     f, code_, log, t = at(61, [porder(1), porder(2)])
@@ -715,7 +747,7 @@ def selftest():
     f, code_, log, t = at(600, [porder(3, mailed={"at": "x"}, alerted={"at": "x"})], job="HTTP 401")
     ck("mailed, hours later, token dead: still nothing", f.starts == [] and not sent and t.extra.get("unmailed_late") == 0)
     # the script itself never emails a buyer and never marks an order: only the buyer job does
-    ck("the guard never marks an order", not [m for m in f.marks if m[0].startswith("rpo:")])
+    ck("the guard never marks an order mailed", not [m for m in f.marks if m[0].startswith("rpo:") and m[1] != "guarded"])
     # an expired token: the start fails, Sig is told once, in the order's first hour
     f, code_, log, t = at(61, [porder(4)], job="HTTP 401")
     ck("expired token: Sig is told", len(sent) == 1 and sent[0]["To"] == "sig@agsist.com" and "HTTP 401" in sent[0].get_content()
@@ -723,8 +755,54 @@ def selftest():
     ck("expired token: subject", sent and sent[0]["Subject"] == "Rain Print: 1 paid order with no email after an hour", str([m["Subject"] for m in sent]))
     ck("expired token: no address, no em dash", sent and "@" not in sent[0].get_content() and "\u2014" not in sent[0].get_content())
     ck("expired token: counted", "start failed: 1; Sig told: 1" in log[1], str(log))
-    f, code_, log, t = at(121, [porder(4)], job="HTTP 401")
-    ck("expired token: the next hour does not email Sig again", not sent and f.starts == [True] and t.extra["unmailed_late"] == 1, str((log, t.extra)))
+    o4 = [porder(4)]
+    at(61, o4, job="HTTP 401")
+    f, code_, log, t = at(121, o4, job="HTTP 401")
+    ck("expired token: the next hour does not email Sig again", not sent and f.starts == [] and t.extra["unmailed_late"] == 1, str((log, t.extra)))
+    # checker, Nov 9: alert once by a mark on the order, not by which run lands in a window
+    for job in ("started", "HTTP 401"):
+        o20, acts = [porder(20)], []
+        for mins in (61, 130):
+            f, code_, log, t = at(mins, o20, job=job)
+            acts += f.starts + [m["Subject"] for m in sent]
+        ck("once (%s): runs at 61 and 130 min give one start%s" % (job, "" if job == "started" else " and one alert"),
+           len([a for a in acts if a is True]) == 1 and len([a for a in acts if isinstance(a, str)]) == (0 if job == "started" else 1)
+           and o20[0].get("guarded"), str(acts))
+        o21 = [porder(21)]
+        f, code_, log, t = at(200, o21, job=job)
+        ck("once (%s): a first run at 200 min still acts" % job, f.starts == [True] and len(sent) == (0 if job == "started" else 1), str(log))
+        f, code_, log, t = at(201, o21, job=job)
+        ck("once (%s): and a manual run a minute later does not" % job, f.starts == [] and not sent, str(log))
+    o22 = [porder(22)]
+    f = Fake([], o22); f.guard_fail = True; f.job = "HTTP 401"; sent.clear()
+    run(f, False, send, "sig@agsist.com", now_ms=T + 61 * 60e3, today="2026-11-09", buyer_live=True)
+    ck("mark fails: no start, no alert, the next run tries again", f.starts == [] and not sent and not o22[0].get("guarded"))
+    f, code_, log, t = at(62, o22, job="HTTP 401")
+    ck("mark fails: the next run acts once", f.starts == [True] and len(sent) == 1)
+    f, code_, log, t = at(130, [porder(23, guarded={"at": "x"})], job="HTTP 401")
+    ck("guarded on the record (an earlier run): nothing, still counted late", f.starts == [] and not sent and t.extra["unmailed_late"] == 1)
+    # checker, Nov 9: a dry run never starts the buyer job or emails Sig, even with GH_TOKEN set
+    import unittest.mock as um0
+    net = []
+    class DryFake(Fake):
+        start_buyer_job = Sources.start_buyer_job          # the real start, so a call would reach urlopen
+    def no_net(*a, **k):
+        net.append(a)
+        raise AssertionError("network")
+    with um0.patch.dict(os.environ, {"GH_TOKEN": "t0k", "DRY_RUN": "1"}), um0.patch("urllib.request.urlopen", no_net):
+        sent.clear()
+        o24 = [porder(24), porder(25)]
+        f = DryFake([], o24)
+        t = delivery_line.Tally("rp-design", dry=True)
+        code_, log = run(f, env("DRY_RUN") == "1", send, "sig@agsist.com", now_ms=T + 130 * 60e3, today="2026-11-09", tally=t, buyer_live=True)
+    ck("dry: zero network calls, no mark, no email, counted", not net and not sent and not f.marks and code_ == 0
+       and "would act: 2; buyer job started: 0" in log[1] and t.extra["unmailed_late"] == 2 and not o24[0].get("guarded"), str((net, log, f.marks)))
+    # checker, Nov 9: the guard reads a design link exactly as the buyer job does (rp_buyer_email.URL_RE)
+    import rp_buyer_email
+    for u in ("https://agsist.com/rain-print?d=x", "https://www.agsist.com/rain-print?d=x", "https://agsist.com/other?d=x"):
+        buyer_takes = bool(rp_buyer_email.URL_RE.match(u))
+        mine = bool(stuck_orders([porder(26, design_url=u, alerted={"at": "x"})], T + 61 * 60e3, True))
+        ck("design link %s: the guard and the buyer job agree (%s)" % (u.split("/")[2], buyer_takes), mine == buyer_takes, u)
     f, code_, log, t = at(61, [porder(5)], job="no token")
     ck("no token: Sig is told", len(sent) == 1 and "no token" in sent[0].get_content())
     f, code_, log, t = at(25 * 60, [porder(6)], job="HTTP 401")

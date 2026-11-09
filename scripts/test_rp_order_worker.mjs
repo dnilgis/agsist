@@ -304,6 +304,13 @@ console.log('rp-order worker checks: ' + n + ' passed');
   let m = await admin('/rp-order/alerted', 'POST', { key: pressKey }); let mj = await m.json();
   A(mj.ok && mj.already === false && mj.alerted.session === 'cs_live_a1B2c3', 'alerted: marked');
   m = await admin('/rp-order/alerted', 'POST', { key: pressKey }); A((await m.json()).already === true, 'alerted: once');
+  // v5.66: the hourly guard's once-per-order mark
+  m = await admin('/rp-order/guarded', 'POST', { key: pressKey }); mj = await m.json();
+  A(mj.ok && mj.already === false && mj.guarded.session === 'cs_live_a1B2c3', 'v5.66 guarded: marked');
+  m = await admin('/rp-order/guarded', 'POST', { key: pressKey }); A((await m.json()).already === true, 'v5.66 guarded: once');
+  const LG = await (await admin('/rp-order/list')).json();
+  A(LG.orders.some(o => o.key === pressKey && o.guarded && o.guarded.session === 'cs_live_a1B2c3'), 'v5.66 guarded: on /rp-order/list');
+  m = await admin('/rp-order/guarded', 'POST', { key: 'nope' }); A(m.status === 400, 'v5.66 guarded: a bad key is refused');
   globalThis.fetch = realFetch;
   console.log('rp-order webhook checks: ' + n + ' passed');
 }

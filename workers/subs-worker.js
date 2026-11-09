@@ -10,7 +10,9 @@
  *   rp-buyer-email.yml ("started", "no token", "HTTP 401", "failed"), and /rp-order/list
  *   carries it. Before, the result went only into the 200 answer: an expired GH_DISPATCH_TOKEN
  *   lost every order's email with no trace. The hourly rp-design-email run now starts the job
- *   for a paid order unmailed after 60 minutes, or emails Sig. Every route answers as before.
+ *   for a paid order unmailed after 60 minutes, or emails Sig, once per order: POST
+ *   /rp-order/guarded {key} marks the order (guarded {at, session}) before it acts, like
+ *   /rp-order/alerted, and /rp-order/list carries it. Every other route answers as before.
  * v5.65 (2026-11-04): PRIVATE SPONSOR REPORTS (Sig, Nov 4: "move the codes to feedbag").
  *   GET /sponsor-report?r=<slug>-<token> answers that sponsor's report from KV
  *   (spr:<slug>), compared in constant time; a retired token answers 410
@@ -2923,6 +2925,7 @@ async function rpoList(env, days) {
       dedication: r.dedication, gift: !!r.gift, frame_color: rpoFrame(r), status: r.paid ? "paid" : "pay pressed", paid: r.paid || null, mailed: r.mailed || null, alerted: r.alerted || null, no_press: !!r.no_press,
       approved: r.approved || null, approved_alerted: r.approved_alerted || null, approve_t: toks[r.key] || null,
       dispatch: r.dispatch || null,   // v5.66: the last start of the email job for this order {at, job}
+      guarded: r.guarded || null,     // v5.66: the hourly guard acted on it once (POST /rp-order/guarded)
       delivered: r.delivered || null,   // v5.38: the digital files went out (rp_buyer_email.py)
       // v5.40: the gift card issued for this order (never the code here) and the buyer's card email
       gift_card: r.gift_card ? { no: r.gift_card.no, last4: r.gift_card.last4, at: r.gift_card.at } : null, gift_mailed: r.gift_mailed || null,
@@ -4902,8 +4905,9 @@ async function handle(req, env) {
     // v5.36: Sig's order alert went out for this paid record (scripts/rp_buyer_email.py), once.
     // v5.37: /rp-order/approved-alerted, the same for his "approved, make it" alert.
     // v5.40: /rp-order/gift-mailed, the buyer's gift card email (only once the card is on the record).
-    if ((path === "/rp-order/mailed" || path === "/rp-order/alerted" || path === "/rp-order/approved-alerted" || path === "/rp-order/gift-mailed") && req.method === "POST") {
-      const what = { "/rp-order/mailed": "mailed", "/rp-order/alerted": "alerted", "/rp-order/approved-alerted": "approved_alerted", "/rp-order/gift-mailed": "gift_mailed" }[path];
+    // v5.66: /rp-order/guarded, the hourly paid-unmailed guard acted on this order (scripts/rp_design_email.py), once.
+    if ((path === "/rp-order/mailed" || path === "/rp-order/alerted" || path === "/rp-order/approved-alerted" || path === "/rp-order/gift-mailed" || path === "/rp-order/guarded") && req.method === "POST") {
+      const what = { "/rp-order/mailed": "mailed", "/rp-order/alerted": "alerted", "/rp-order/approved-alerted": "approved_alerted", "/rp-order/gift-mailed": "gift_mailed", "/rp-order/guarded": "guarded" }[path];
       if (!sig) return json({ ok: false }, 403, ac);
       let b = null;
       try { b = await req.json(); } catch (e) { b = null; }
