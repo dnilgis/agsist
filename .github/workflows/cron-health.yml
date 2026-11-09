@@ -190,22 +190,6 @@ jobs:
           RAW_SOFT: '1'
         run: bash scripts/push_raw.sh "cron health" private/data/cron-health.json
 
-      - name: Tell Sig when Brevo nears its daily limit
-        if: ${{ !cancelled() && steps.h.outcome == 'success' }}
-        continue-on-error: true
-        env:
-          SEND_DAILY_CAP:     ${{ vars.SEND_DAILY_CAP }}
-          LIST_URL:           ${{ secrets.LIST_URL }}
-          LIST_TOKEN:         ${{ secrets.LIST_TOKEN }}
-          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-          OWNER_TO:           ${{ secrets.SIG_TO }}
-          SMTP_HOST:          ${{ secrets.SMTP_HOST }}
-          SMTP_PORT:          ${{ secrets.SMTP_PORT }}
-          SMTP_USER:          ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
-          SMTP_PASS:          ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
-          FROM_ADDR:          ${{ secrets.FROM_ADDR }}
-        run: python3 scripts/send_cap.py --remind private/data/cron-health.json
-
       - name: Late
         if: steps.h.outputs.red == '1'
         run: |

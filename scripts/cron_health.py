@@ -1080,15 +1080,15 @@ def selftest():
                                        environ={}, fake_api=_Api())
     d = build(T("2026-11-20 12:00"), rows, late)
     vol = next((r for r in rows if r["workflow"] == "send-volume"), {})
-    check(vol.get("status") == "warn" and "send-volume" not in d["late_critical"], "a reused pass: 245 of 300 is a warning")
+    check(vol.get("status") == "ok" and "send-volume" not in d["late_critical"], "a reused pass: 245 in a day is information, not a warning")
     prev_doc["workflows"][1] = _tl(290)
     rows, late, at = add_delivery_rows(T("2026-11-20 12:00"), [], [], "o/r", "t", "https://api", prev_doc,
                                        environ={}, fake_api=_Api())
-    check("send-volume" in build(T("2026-11-20 12:00"), rows, late)["late_critical"], "290 of 300 is a late critical row")
+    check("send-volume" not in build(T("2026-11-20 12:00"), rows, late)["late_critical"], "290 in a day is not late (no daily cap on Starter)")
     rows, late, at = add_delivery_rows(T("2026-11-20 12:00"), [], [], "o/r", "t", "https://api", prev_doc,
                                        environ={"SEND_DAILY_CAP": "10000"}, fake_api=_Api())
     check(not late and next(r for r in rows if r["workflow"] == "send-volume")["status"] == "ok",
-          "with SEND_DAILY_CAP=10000 the reused 290 is ok, no new pass needed")
+          "and a variable no longer changes that")
     rows, late, at = add_delivery_rows(T("2026-11-20 12:00"), [], [], "o/r", "", "https://api", None, environ={})
     check(rows[0]["status"] == "unknown" and not late and at is None, "no token: one unknown row, nothing late")
 
