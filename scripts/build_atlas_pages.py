@@ -77,6 +77,8 @@ OUT = "farmland-atlas"
 CARD_V = "1"          # bump when the share-card design changes; every card URL changes with it
 LICENSE_URL = "https://creativecommons.org/licenses/by/4.0/"
 CREDIT = "AGSIST Farmland Atlas, agsist.com/farmland-atlas"
+RANK_SENTENCE = ("Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); "
+                 "other ranks count counties with 10,000 acres or more in farms.")   # test/priceatlas.test.mjs A6: the sheet prints the same sentence
 # the Christmas Rain Print line (components/rp-xmas.js, Sig 2026-10-30), county pages only. A plain script tag on
 # purpose: it writes the line before the first paint, so nothing moves.
 XMAS_JS = '<script src="/components/rp-xmas.js?v=1"></script>'
@@ -2666,10 +2668,9 @@ def county_page(W, f, d, stamp):
     elif rr and rr.get("pw"):
         S1 += fwith("Rent as a share of corn gross", "%s (%s)" % (rr["pw"], rr["pwy"]))
     if rr:
-        S1 += ('<p class="note">Share of gross is a past year, all observed: that year\'s rent, that year\'s county corn yield of the same practice and the '
-               'state price received, USDA NASS. %s</p>' % (
-                   ("Rent per bushel uses this year\'s rent over the %s. The calculator below starts from that trend and lets you put in your own yield and price." % CY.label_trend(yt["ty"]).split(" (")[0])
-                   if ytv is not None else "Rent per bushel is withheld here: it needs the county trend, and the trend is withheld (see the corn yield section). The calculator below takes your own yield and price."))
+        S1 += ('<p class="note">Share of gross is a past year, from that year\'s rent, county corn yield and state price, USDA NASS. %s</p>' % (
+                   ("Rent per bushel uses this year\'s rent over the %s. The calculator below takes your own yield and price." % CY.label_trend(yt["ty"]).split(" (")[0])
+                   if ytv is not None else "Rent per bushel is withheld here for lack of a county corn yield history. The calculator below takes your own yield and price."))
     if f in W.rent_fips:
         S1 += ('<div class="act rcw"><button type="button" id="rc-open" data-st="%s" data-fips="%s" aria-expanded="false">Rent share calculator and history</button></div>'
                '<div id="rc-box" hidden></div>' % (esc(W.rent_st.get(f, st)), esc(f)))
@@ -2731,9 +2732,8 @@ def county_page(W, f, d, stamp):
         per = {int(k): v for k, v in (S.get("per_year") or {}).items() if v.get("ratio") is not None}
         closed = {y: v["ratio"] for y, v in per.items() if not per[y].get("partial")}
         S4 += bars_svg(closed, "Loss ratio by crop year: claims paid over total premium", lambda v: rh(v, 2), ref=1.0, ref_label="1.00: claims equal premium", every=5)
-        S4 += ('<p class="note">Claims paid divided by total premium (the farmer share plus the federal subsidy), each closed crop year since %s '
-               'with at least %s of premium; a year under that has no bar and no ratio. '
-               'Above the dashed line, the county\'s insurance book paid out more than it took in.%s</p>' % (
+        S4 += ('<p class="note">Claims paid over total premium, each closed crop year since %s; a year with under %s of premium has no bar. '
+               'Above the dashed line, claims were more than premium.%s</p>' % (
                    min(closed) if closed else S.get("first_year"), SOB_GATE, (" %s, still open, is left out." % S["partial_year"]) if S.get("partial_year") else ""))
         if lc is not None:
             S4 += fact("Claims paid per $100 of coverage, %d–%d" % (S["last10"]["from"], S["last10"]["to"]), usd2(lc))
@@ -2910,8 +2910,8 @@ def county_page(W, f, d, stamp):
             md = v[(n - 1) // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2
             med += "<td>%s%s</td>" % (esc(k[2](md)), (" <small>%d co.</small>" % n) if n < 3 else "")
         ND += '<tr class="med"><td>Median next door</td>%s</tr></tbody></table></div>' % med
-        ND += '<p class="note">Counties that share a stretch of boundary. A rent from an older survey year carries its year and stays out of the median; one more than three survey years old shows n/a.%s</p>' % (
-            " The corn median here needs %d published years, so a county with fewer shows n/a even where its own page gives a median." % YLD_MIN_N if any(k[1] == "yld" for k in cols) else "")
+        ND += '<p class="note">Counties that share a stretch of boundary. A rent from an older survey year carries its year; one more than three survey years old shows n/a.%s</p>' % (
+            " A corn median shows n/a for a county with too few published years." if any(k[1] == "yld" for k in cols) else "")
 
     # ---- assemble
     read_html = ""
@@ -3033,12 +3033,12 @@ def county_page(W, f, d, stamp):
 {gaps_html(W, f, d, st)}
 {live_cfg}{cp_cfg}
 <h2>Cite this page</h2>
-<div class="cite"><code>{esc(cite)}</code><br>Every figure is a county average from the sources named below. Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); other ranks count counties with 10,000 acres or more in farms. Methods: <a href="/farmland-atlas/methods">how each figure is built</a>. Downloads: <a href="/farmland-atlas/data">all counties, CSV</a>.</div>
-<details><summary>Sources, dates and arithmetic</summary>
-<p>"Figures as of" is the date this page's numbers last changed; it moves only when a figure on the page does. Source files and their retrieval dates are listed on the <a href="/farmland-atlas/data">data page</a>.</p>
-<p>{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p>
-<p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: NASS county corn yields. The headline trend, the one rent per bushel uses, is fitted here over the published years in the 15 years ending this year; the yearly trend card uses every published year since 2008. Loss ratio: claims (indemnity) divided by total premium, USDA RMA Summary of Business, 1989 on, open crop year left out. Claims paid per $100 of coverage: claims divided by liability (the insured value), times 100, same source. Drought: U.S. Drought Monitor, weeks with half the county or more in D2 or worse. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
+<div class="cite"><code>{esc(cite)}</code></div>
 {prev_next}
+<details><summary>Sources and terms</summary>
+<p>Every figure is a county average from the sources below, not an appraisal of any farm. "Figures as of" is the date this page's numbers last changed. {RANK_SENTENCE} Downloads: <a href="/farmland-atlas/data">all counties, CSV</a>.</p>
+<p>{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p>
+<p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: USDA NASS county corn yields. Loss ratio and claims: USDA RMA Summary of Business. Drought: U.S. Drought Monitor. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
 </main>
 <script type="application/json" id="{csv_id}">{rec_json}</script>
 <script src="/farmland-atlas/county.js?v={COUNTY_JS_V}"></script>
