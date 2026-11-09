@@ -102,7 +102,8 @@ test("shipped page: condition parts name the condition week, harvest parts the h
   const named = weeksNamed(html);
   for (const w of named) assert.ok(w === rd || w === we || w === hd, `stray week ${w}`);
   const alt = html.match(/<meta property="og:image:alt" content="([^"]*)"/);
-  if (alt && /week ending/.test(alt[1])) assert.ok(alt[1].includes(nice(rd)), "share image alt");
+  // since #465 the card leads with harvest (and its week) once the rating is past the page's limit
+  if (alt && /week ending/.test(alt[1])) assert.ok(alt[1].includes(nice(/harvest/i.test(alt[1]) ? hd : rd)), "share image alt");
 });
 
 test("builder: with both files on one week, every seeded line names that week", () => {
