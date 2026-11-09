@@ -226,7 +226,10 @@ def test_frozen_counts():
     newday = {"facts": [{"id": "cash_change_corn", "kind": "cash_change", "as_of": nxt, "key": "x", "n": 1}]}
     check(de.freeze(newday, pub)["facts"][0].get("frozen_from") is None, "a day no issue has printed is counted fresh")
     src = open(os.path.join(HERE, "daily_edge.py")).read()
-    check("return freeze(build(" in src, "build_from_files freezes before writing daily-edge.json")
+    # Nov 8: build_from_files also drops a repeated standing line (quiet_repeats) after freezing; the freeze still
+    # comes before the file is written
+    check(re.search(r"return (?:quiet_repeats\()?freeze\(build\(", src) is not None,
+          "build_from_files freezes before writing daily-edge.json")
 
     print("3b. streak words come from the settles")
     import streak_words as sw
