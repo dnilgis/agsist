@@ -69,6 +69,8 @@ SELFTESTS = [
     ("GATE 2h headline fix selftest", ["scripts/headline_fix.py", "--selftest"], NO_KEY),
     ("GATE 2c cause fix selftest", ["scripts/cause_fix.py", "--selftest"], {}),
     ("Only on AGSIST facts selftest", ["scripts/daily_edge.py", "--selftest"], {}),
+    # Nov 10 2026: a ZIP reader's land line and rain record words, through the one memory (real Nov 5 to 9 repeats)
+    ("Daily ZIP lines memory", ["scripts/test_daily_zip_lines.py"], {}),
 ]
 STEP_NAME = "Code self-tests (report only, never hold the send)"
 TIMEOUT_S = 240
