@@ -1077,8 +1077,18 @@ def patch_ld_image(h, img_rel, url):
 
 
 def clean_alt(s):
+    """Alt text for og:image:alt, 300 characters at most. Nov 9, 2026: a hard cut left the conditions card's alt
+    ending "...an average of 75%; Michigan". A long alt now ends at the last whole sentence (or clause) that fits."""
     s = s.replace("—", ", ").replace("–", "-").replace('"', "'")
-    return re.sub(r"\s+", " ", s).strip()[:300]
+    s = re.sub(r"\s+", " ", s).strip()
+    if len(s) <= 300:
+        return s
+    head = s[:300]
+    for mark in (". ", "; "):
+        i = head.rfind(mark)
+        if i > 120:
+            return head[:i].rstrip(";,") + "."
+    return head[:head.rfind(" ")].rstrip(",;") + "."
 
 
 # ------------------------------------------------------------------ build
@@ -1424,6 +1434,11 @@ def selftest():
         assert card_conditions(today=date(2026, 11, 9))["kind"] == "A", "harvest done: the harvest card"
     finally:
         globals()["js"] = _js
+    # alt text ends on a whole sentence, never mid-list (Nov 9, 2026 conditions card)
+    long_alt = clean_alt("A US map, week ending Nov 1, 2026. Iowa is 13 points behind normal. Illinois is 3 ahead. "
+                         "Iowa 66% harvested against an average of 79%; South Dakota 63% harvested against an average of 75%; "
+                         "Michigan 43% harvested against an average of 54%; and more words to push this past the limit here.")
+    assert len(long_alt) <= 300 and long_alt.endswith(".") and not long_alt.endswith("Michigan."), long_alt
     print("[share] selftest ok")
 
 
