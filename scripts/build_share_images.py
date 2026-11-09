@@ -1377,12 +1377,32 @@ def selftest():
     assert cot_card_parts({"corn": {"net": 1000, "prev": 400}})[0] == "Funds added 600 on the week."
     assert cot_card_parts({"corn": {"net": 400, "prev": 1000}})[0] == "Funds cut 600 on the week."
     # Nov 9, 2026: a rating past the page's 14-day limit is not drawn; the card leads with harvest, dated by its own week
+    # Nov 9, 2026: the Crop Progress hook, from the Nov 1 state rows (NASS 5-year averages only)
+    def _h(pct, avg, by="NASS", dt="2026-11-01"):
+        return {"corn_harvested": {"date": dt, "pct": pct, "avg5": avg, "avg5_by": by}}
+    nov1 = {"IA": _h(66, 79), "IL": _h(86, 83), "NE": _h(66, 75), "MN": _h(82, 85), "IN": _h(75, 71),
+            "SD": _h(63, 75), "OH": _h(53, 60), "WI": _h(61, 57), "MO": _h(86, 85), "KS": _h(86, 87),
+            "ND": _h(76, 69), "MI": _h(43, 54), "AL": _h(100, None, None), "CO": _h(65, 65),
+            "MT": _h(48, 40, "AGSIST"), "PA": _h(61, 53, "NASS", "2026-10-25")}
+    gaps = harvest_gaps(nov1, "2026-11-01")
+    assert "AL" not in gaps and "MT" not in gaps and "PA" not in gaps, gaps   # no avg, not NASS's, another week
+    assert gaps["IA"] == (66, 79, -13) and gaps["CO"] == (65, 65, 0), gaps
+    head, line, rows = progress_hook(gaps)
+    assert line == "Iowa's corn harvest is 13 points behind normal. Illinois is 3 ahead.", line
+    assert ("13 points behind", True) in head, head
+    assert rows == [("Iowa", 66, 79, -13), ("South Dakota", 63, 75, -12), ("Michigan", 43, 54, -11)], rows
+    assert "\u2014" not in line
+    allup = {st: (50, 50 - i % 3, i % 3) for i, st in enumerate(TOP_CORN)}
+    assert progress_hook(allup)[1] == "The corn harvest is at or ahead of normal in every top corn state.", progress_hook(allup)
+    assert progress_hook({"IA": (60, 61, -1)})[1] == "Iowa's corn harvest is 1 point behind normal.", progress_hook({"IA": (60, 61, -1)})
+    assert progress_hook({"CO": (65, 65, 0)}) is None, "no top corn state: no hook"
     _js = globals()["js"]
+    _states = [{}, 74]
     def _fake(path, _real=_js):
         if path == "data/crop-progress.json":
-            return {"in_season": True, "report_date": "2026-10-25",
+            return {"in_season": True, "report_date": "2026-10-25", "states": _states[0],
                     "corn": {"good_excellent": 56, "good_excellent_prev_week": 56, "report_date": "2026-10-25",
-                             "harvest_pct": 74, "harvest_date": "2026-11-01", "harvest_5yr_avg": 77},
+                             "harvest_pct": _states[1], "harvest_date": "2026-11-01", "harvest_5yr_avg": 77},
                     "soybeans": {"good_excellent": 57, "report_date": "2026-10-11", "harvest_pct": 88, "harvest_date": "2026-11-01"}}
         return _real(path)
     globals()["js"] = _fake
@@ -1393,6 +1413,15 @@ def selftest():
         assert "3 points behind the 5-year average of 77%" in (old["args"].get("ctx") or ""), old
         new = card_conditions(today=date(2026, 10, 27))
         assert "good to excellent" in new["alt"] and "Oct 25, 2026" in new["args"]["foot"], new
+        _states[0] = nov1
+        hook = card_conditions(today=date(2026, 11, 9))
+        assert hook["kind"] == "C" and hook["args"]["pic"][0] == "progress", hook
+        assert "Iowa's corn harvest is 13 points behind normal. Illinois is 3 ahead." in hook["alt"], hook["alt"]
+        assert hook["args"]["meta"].startswith("USDA Crop Progress, week ending Nov 1, 2026") and "agsist.com/conditions" in hook["args"]["meta"]
+        assert "AL" not in hook["args"]["pic"][1]["gaps"], "no NASS average: drawn grey"
+        assert card_conditions(today=date(2026, 10, 27))["kind"] == "A", "a fresh rating keeps the rating card"
+        _states[1] = 100
+        assert card_conditions(today=date(2026, 11, 9))["kind"] == "A", "harvest done: the harvest card"
     finally:
         globals()["js"] = _js
     print("[share] selftest ok")
