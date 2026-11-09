@@ -302,9 +302,7 @@
       (pend.length ? cap1j(pend) + ' wait on USDA&rsquo;s closing 2025 price, which sets the 2027 reference price.' : '') + '</p>\n' +
       '  <p><b>Typical farm.</b> FSA&rsquo;s county average PLC yield (' + plcs + ') and FSA&rsquo;s official benchmark. &ldquo;Lower&rdquo; and &ldquo;Higher&rdquo; mean 15% under or over the\n' +
       '  county average. Payments are per base acre and count FSA&rsquo;s 85% payment acres, before sequestration and payment limits.</p>\n' +
-      '  <p><b>How we call it.</b> <b>Clear pick</b> when one program averages at least ' + g.gap + ' more per base acre, the gap is more than t times its standard error\n' +
-      '  (2.26 for 10 years, 2.23 for 11), and it paid more in at least ' + g.wins + ' of the years. <b>Leans</b> when the gap is at least ' + g.lean + ' and one standard error, and it paid more in\n' +
-      '  at least ' + g.wins + ' years. <b>Close</b> otherwise. When both round to $0: neither expected to pay.</p>\n' +
+      '  <p><b>How we call it.</b> The program expected to pay more per base acre across the scenario years gets the call. When the two are too close, it says so. When both round to $0: neither expected to pay.</p>\n' +
       '  <div class="ap-scroll"><table class="tbl ap-t"><caption class="ap-small">Average payment per base acre over the scenario years, typical farm (about the same PLC yield).</caption>\n' +
       '  <thead><tr><th scope="col">Crop</th><th scope="col">Practice</th><th scope="col">Year</th><th scope="col" class="num">PLC</th><th scope="col" class="num">ARC-CO</th><th scope="col">Answer</th></tr></thead>\n' +
       '  <tbody>' + rows.join('') + '</tbody></table></div>\n' +

@@ -62,7 +62,7 @@ test("arc-plc: 10-acre rule, peanut limit, Childress title, trigger at the bench
   const h = read("arc-plc.html");
   assert.match(h, /added to the base on the other farms where you hold an enrolled share, come to 10 acres or less \(7 CFR 1412\.51\)/);
   assert.match(h, /Peanuts carry a separate limit of their own\./);
-  assert.match(h, /wheat 41\.\d\d bu, weighted by enrolled base/);
+  assert.ok(!/weighted by/.test((m => m.slice(m.indexOf("def method_html"), m.indexOf("def build_main")))(read("scripts/build_arc_plc.py"))), "the method text carries no weights (Nov 8: cut it)");
   const c = read("arc-plc/texas/childress-county.html");
   assert.match(c, /<title>Childress Co\., TX ARC or PLC 2026: Irrigated wheat/);
   assert.match(c, /comes in under <b>41\.6 bu<\/b> at USDA&rsquo;s price outlook, \$5\.70\. That is above the 41\.0 bu benchmark/);  // the benchmark to a tenth, as the title prints it (Oct 19, 2026; was 41.00)

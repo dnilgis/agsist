@@ -53,6 +53,9 @@ const newWords = (h, ly) => h
     (_m, lab, mid) => `<p class="ap-small"><b>${lab}, ${ly}:</b> ${mid} Across PLC yields of 60% to 100% of the benchmark: depends on your PLC yield. Run your own PLC yield in the calculator below.</p>`)
   .replace(/No typical-farm answer: FSA&rsquo;s county average PLC yield is above this benchmark yield\. Run your own PLC yield\./g,
     "No one typical farm: FSA&rsquo;s county average PLC yield is above this benchmark yield. Across PLC yields of 60% to 100% of the benchmark: depends on your PLC yield. Run your own PLC yield in the calculator below.")
+  // Nov 8, 2026 ("Cut it"): the call paragraph lost its cutoffs, t statistic and standard error
+  .replace(/<p><b>How we call it\.<\/b> <b>Clear pick<\/b>.*?neither expected to pay\.<\/p>/s,
+    "<p><b>How we call it.</b> The program expected to pay more per base acre across the scenario years gets the call. When the two are too close, it says so. When both round to $0: neither expected to pay.</p>")
   .replace(/Ask FSA/g, "Depends on your PLC yield")
   // fx/trust (Oct 27, 2026): a firm call names the program expected to pay more, on the stated assumptions
   .replace(/Pick (PLC|ARC-CO) \(/g, "$1 expected to pay more on these assumptions (")
