@@ -155,8 +155,6 @@ def last_year_words(c, L, year):
     return out[0].upper() + out[1:]
 
 
-# S, then M days, then an A total is one accumulation (Nov 9, 2026: county_rain.close_runs, the engine's closeOpenS):
-# the page's print and this page's figures count those days the same way, never as gaps.
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = R.SNOW_MISS_OK  # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
