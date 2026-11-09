@@ -123,8 +123,8 @@ test("rain-county-print.js mounts any figure; the county page mounts its own; ve
   const js = read("components/rain-county-print.js");
   assert.match(js, /mount: mount/);
   assert.match(js, /var own = doc && doc\.getElementById\('rc-print'\);\s*if \(own\) mount\(own\);/);
-  assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=47'/);
-  assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=47/);
+  assert.match(read("components/here.js"), /RCP = '\/components\/rain-county-print\.js\?v=48'/);
+  assert.match(read("scripts/build_county_rain.py"), /rain-county-print\.js\?v=48/);
   // the county pages are a generated set, rebuilt on main from the builder (#300). The pull request checks
   // rebuild the set first (AGSIST_PREBUILD=1), so there the page carries the builder's version; a local run
   // without the prebuild reads the committed page, one bump behind until main's rebuild lands. The bound is
