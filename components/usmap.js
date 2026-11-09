@@ -6,6 +6,7 @@
        states: { IL: { fill:'#2e7d4f', text:'Live', href:'/land-sales/il' (optional), } },
        selected: 'IA',                         // optional, outlined
        onPick: function (st) {},               // optional, a tap or Enter on a state without href
+       plain: true,                            // optional: a state with no entry says only its name, not "no data"
        hint: 'Tap a state.',                   // what the readout says before any state is touched
        name: 'Farmland sales coverage by state'
      }) -> { update(states, selected) }
@@ -80,7 +81,7 @@
     var st = o.states || {}, sel = o.selected || null, nodes = {}, api = {};
     function say(code) {
       var g = geo && geo.list.filter(function (x) { return x.st === code; })[0], s = st[code];
-      read.textContent = g ? (g.name + (s ? ': ' + s.text : ': no data')) : (o.hint || '');
+      read.textContent = g ? (g.name + (s ? ': ' + s.text : (o.plain ? '' : ': no data'))) : (o.hint || '');
     }
     function paint() {
       Object.keys(nodes).forEach(function (code) {
@@ -89,7 +90,7 @@
         var fill = on ? s.fill : null, c = on ? ink(fill) : null;
         n.path.style.fill = fill || ''; n.chip && (n.chip.style.fill = fill || '');
         n.text.style.fill = c || '';
-        n.g.setAttribute('aria-label', n.name + (on ? ', ' + s.text : ', no data'));
+        n.g.setAttribute('aria-label', n.name + (on ? ', ' + s.text : (o.plain ? '' : ', no data')));
         if (on) { n.g.setAttribute('tabindex', '0'); n.g.removeAttribute('aria-disabled'); }
         else { n.g.removeAttribute('tabindex'); n.g.setAttribute('aria-disabled', 'true'); }
         n.g.setAttribute('role', on && s.href ? 'link' : 'button');
