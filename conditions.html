@@ -277,6 +277,8 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
 #crop-size .cy-fold[open] .cy-fold-t::after{content:" \2212"}
 #crop-size .cy-fold-h{font-size:.82rem;color:var(--text-dim,#8a948f)}
 #crop-size .cy-fold-b{padding-bottom:12px}
+/* phone width: nested cards add no extra side padding (narrow cards, Nov 9) */
+@media(max-width:480px){#cy-nowcast{padding-left:12px!important;padding-right:12px!important}#cy-nowcast [id^="cyn-"]{padding-left:10px!important;padding-right:10px!important}}
 </style>
 </head>
 <body>
