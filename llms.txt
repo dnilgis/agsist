@@ -26,7 +26,7 @@ Each figure below is read from the same file the site's pages read and carries t
 
 - Cash bids: 23,492 bid prices (crop and delivery period) on the last read of the elevator boards, Nov 9, 2026, 00:22 UTC (https://agsist.com/cash-bids).
 - Elevators with a current bid: 2,080, in 1,641 towns, counted Nov 9, 2026, 00:07 UTC (https://agsist.com/cash-bids).
-- AGSIST Daily: latest issue Nov 8, 2026, at https://agsist.com/daily/2026-11-08 (the newest is always at https://agsist.com/daily).
+- AGSIST Daily: latest issue Nov 9, 2026, at https://agsist.com/daily/2026-11-09 (the newest is always at https://agsist.com/daily).
 - County rain: 2026 totals for each county page, from NOAA daily station records, through Nov 7, 2026 (https://agsist.com/rain).
 - AGSIST USDA feeder steer index, not the CME index: $351.58 per cwt for the week Oct 26 to Nov 1, 2026, from USDA AMS auction reports; first count, late reports can still change it (https://agsist.com/cattle-auction-prices).
 - Milk: Class III $15.16 and Class IV $20.54 per cwt for October 2026, as announced by USDA AMS; all-milk price $19.50 for September 2026, USDA NASS (https://agsist.com/milk-prices).
