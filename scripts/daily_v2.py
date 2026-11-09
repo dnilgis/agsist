@@ -873,6 +873,18 @@ def today_items(daily, today=None, fresh=None, report=None, funds=None):
     return items[:TODAY_MAX]
 
 
+def quiet_preheader(daily, subj):
+    """The preheader on a day with nothing else to say (a quiet Today, Nov 9 2026): the day's top
+    news headline, else the top story's title, else the teaser; never the subject again when
+    anything else is there, and never empty."""
+    cands = [sentence(daily.get("headline"))]
+    cands += [sentence(it.get("title")) for it in (daily.get("outside_the_pit") or []) if isinstance(it, dict)]
+    cands += [sentence(daily.get("teaser"))]
+    cands = [c.rstrip(".") for c in cands if c and not ELEVATOR.search(c)]
+    other = [c for c in cands if c != subj.rstrip(".") and not c.startswith(subj.rstrip("."))]
+    return (other or cands or ["The AGSIST Daily for %s" % (_wday(_iso_day(daily)) or "today")])[0]
+
+
 def preheader(local, items, subj, sfield=None):
     if isinstance(local, dict) and local.get("head"):
         return BE.strip_md(local["head"])
@@ -1036,7 +1048,7 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     # North Dakota basis line held since Nov 2, the reader's state first; on a quiet week
     # nothing takes it. The generator decided whether it prints (basis_wow on the issue).
     items = promote_wow(items, wow_item(daily, reader_state(rain, loc)), cap)
-    pre = preheader(local, items, subj, sfield)
+    pre = preheader(local, items, subj, sfield) or quiet_preheader(daily, subj)
     if unsub_url and shared_host(unsub_url):
         unsub_url = None          # BUILD-RULES 11: nothing a reader clicks on a shared host
     if isinstance(elevators, dict) and elevators.get("add_url") and shared_host(elevators["add_url"]):
@@ -1332,7 +1344,8 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
          '<tr><td class="mute" style="font-family:%s;font-size:11px;font-weight:700;letter-spacing:.14em;'
          'text-transform:uppercase;color:%s">AGSIST Daily &middot; %s</td></tr>' % (MONO, MUTE, e(date_display))]
     # Today
-    b.append(_label("Today", pad=14))
+    if items:       # a quiet day prints no empty Today heading
+        b.append(_label("Today", pad=14))
     for x in items:
         if x.get("external"):        # a publisher's link: no tracking added
             tail = " " + _a(x["url"], x.get("link") or "Source", None, None, cls="mute link", color=MUTE)
@@ -1449,7 +1462,7 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
 
 def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, elevators,
                site_href, unsub_url, forward_url, today, county=None, county_ask=None, stories=None, funds=None):
-    L = ["AGSIST DAILY, " + (BE.strip_md(daily.get("date")) or iso), "", "TODAY"]
+    L = ["AGSIST DAILY, " + (BE.strip_md(daily.get("date")) or iso)] + (["", "TODAY"] if items else [])
     for x in items:
         if x.get("external"):
             L.append("- " + x["text"] + " " + x["url"])

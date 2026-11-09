@@ -664,7 +664,8 @@ def still_news(fact, mem, today):
     """(True, why) when the fact may print today; (False, why) when it says what the
     issue that last printed it already said. mem: memory() entries, oldest first."""
     kind, key = fact.get("kind"), fact.get("key")
-    past = [m for m in mem or [] if m.get("kind") == kind and m.get("key") == key and str(m.get("date")) < today.isoformat()]
+    past = [m for m in mem or [] if isinstance(m, dict) and m.get("kind") == kind and m.get("key") == key
+            and m.get("date") and str(m["date"]) < today.isoformat()]
     last = past[-1] if past else None
     if kind == "funds":
         if today.weekday() != FUNDS_WEEKDAY:
@@ -718,9 +719,13 @@ def wow_should_print(rows, last):
 
 def issue_facts(issue):
     """[fact] an archived or sent issue printed: the sent email's own list when it carries
-    one, plus the day's number and the state basis line from the issue itself."""
-    out = list((issue or {}).get("printed") or [])
-    b = (issue or {}).get("briefing") if isinstance((issue or {}).get("briefing"), dict) else issue
+    one, plus the day's number, the state basis line and every settle on its board from the
+    issue itself. Anything that is not an issue gives nothing."""
+    if not isinstance(issue, dict):
+        return []
+    pr = issue.get("printed")
+    out = [f for f in pr if isinstance(f, dict)] if isinstance(pr, list) else []
+    b = issue.get("briefing") if isinstance(issue.get("briefing"), dict) else issue
     if not isinstance(b, dict):
         return out
     f = number_fact(b.get("one_number"))
@@ -729,8 +734,16 @@ def issue_facts(issue):
     bw = b.get("basis_wow")
     if isinstance(bw, dict) and bw.get("print"):
         for r in bw.get("rows") or []:
-            out.append({"kind": "basis_wow", "key": "%s:%s" % (r.get("st"), r.get("crop")), "value": r.get("wow"),
-                        "text": ""})
+            if isinstance(r, dict) and r.get("st") and r.get("crop"):
+                out.append({"kind": "basis_wow", "key": "%s:%s" % (r["st"], r["crop"]), "value": r.get("wow"),
+                            "text": ""})
+    # a settle on the issue's board was told that day (Nov 9 2026: Friday's hog drop, on Saturday's board and in
+    # its headline "hogs sank", came back as Monday's subject)
+    lc = b.get("locked_changes")
+    if isinstance(lc, dict):
+        for k, ch in lc.items():
+            if isinstance(ch, dict) and ch.get("kind") == "settle" and ch.get("date"):
+                out.append({"kind": "move", "key": k, "value": str(ch["date"])[:10], "text": ""})
     return out
 
 
@@ -746,6 +759,8 @@ def memory(today, sent_dir=SENT_DIR, archive_dir=ARCHIVE, days=MEMORY_DAYS):
                     issue = json.load(fh)
             except (OSError, ValueError):
                 continue
+            if not isinstance(issue, dict):
+                continue        # a list or null in one file skips that file, never the whole memory
             for f in issue_facts(issue):
                 if not isinstance(f, dict) or not f.get("kind"):
                     continue
@@ -761,6 +776,8 @@ def memory_from(rec):
     """memory() built from issues already loaded (recent()'s list, each with its _date)."""
     out = []
     for b in rec or []:
+        if not isinstance(b, dict):
+            continue
         for f in issue_facts(b):
             out.append(dict(f, date=b.get("_date")))
     return out
@@ -768,10 +785,12 @@ def memory_from(rec):
 
 def last_set(mem, kind, today):
     """{key: value} of the newest day before today that printed any fact of this kind."""
-    days = sorted({m["date"] for m in mem or [] if m.get("kind") == kind and str(m.get("date")) < today.isoformat()})
+    mine = [m for m in mem or [] if isinstance(m, dict) and m.get("kind") == kind and m.get("key")
+            and m.get("date") and str(m["date"]) < today.isoformat()]
+    days = sorted({str(m["date"]) for m in mine})
     if not days:
         return {}
-    return {m["key"]: m.get("value") for m in mem if m.get("kind") == kind and m.get("date") == days[-1]}
+    return {m["key"]: m.get("value") for m in mine if str(m["date"]) == days[-1]}
 
 
 # ── replay and selftest ─────────────────────────────────────────────────────
