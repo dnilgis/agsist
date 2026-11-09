@@ -1119,9 +1119,7 @@ def records_html(recs):
     more = (f'\n    <details class="rc-more"><summary>See all {len(order)} record counties</summary><ul class="rc-list">{"".join(li(o) for o in rest)}</ul></details>'
             if rest else "")
     return (f'    <h2 id="records">Records right now</h2>\n'
-            f'    <p>Counties whose station has had its {"wettest or driest" if len({o["side"] for o in recs}) > 1 else recs[0]["side"]} '
-            f'year to date on record, longest records first. Only years the station reported fully are counted. A record where the station and the county '
-            f'average differ by 25 points or more is left off: that is one gauge, not the county.</p>\n'
+            f'    <p>Counties at their {"wettest or driest" if len({o["side"] for o in recs}) > 1 else recs[0]["side"]} year to date on record, longest records first.</p>\n'
             f'    <ul class="rc-list">{"".join(li(o) for o in top)}</ul>{more}\n')
 
 
@@ -1167,13 +1165,12 @@ def hub_page(files, built, recs=None):
     <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.{" The counties having a record year are below the states." if recs else ""}</p>
     <form class="rc-pick" id="rc-pick" aria-label="Find your state"><label for="rc-pick-st">State</label><div class="rc-pr"><select id="rc-pick-st" name="st"><option value="">Choose your state</option>{pick_opts}</select><button type="submit">Show counties</button></div><noscript><p class="rc-fine">Without JavaScript, use All states at the bottom of the page.</p></noscript></form>
     <script>{PICK_JS}</script>
-{records_html(recs)}    <h2>How the numbers are counted</h2>
-    <ul class="rc-list">
-      <li>Each county page uses one weather station inside that county, and only a station that reported at least 90% of the days {"in " + yw if done else "this year"}. Counties without one are listed on the state page with the nearest county that has one.</li>
-      <li>A day the station did not report is unknown, not dry. It adds nothing to the total and nothing to the usual year either.</li>
-      <li>Usual is NOAA&rsquo;s daily normal for that station, added up over the same days it reported.</li>
-      <li>Every page says the latest day its station has reported. NOAA&rsquo;s daily numbers come in a few days late, so the pages are updated every day and each one says the day its numbers run through.</li>
-    </ul>
+{records_html(recs)}    <details class="rc-more rc-how"><summary>How the numbers are counted</summary><ul class="rc-list">
+      <li>One weather station inside each county, reporting at least 90% of the days {"in " + yw if done else "this year"}. A county without one points to the nearest that has one.</li>
+      <li>A day not reported is unknown, not dry: it adds to neither the total nor the usual year.</li>
+      <li>Usual is NOAA&rsquo;s daily normal for the station, over the same days. NOAA&rsquo;s numbers come in a few days late, so the pages are updated every day and each one says the day its numbers run through.</li>
+      <li>Records count only full years. A station 25 points or more from its county average is left off: one gauge, not the county.</li>
+    </ul></details>
     <details class="rc-all" id="all-states"><summary>All states</summary><ul class="rc-states">{''.join(rows)}</ul></details>
     <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws it from the same NOAA records.</p>
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through RCC-ACIS.</p>
@@ -1839,6 +1836,13 @@ def selftest():
         ok('id="rc-pick"' in hub and ('id="records"' not in hub or hub.index('id="rc-pick"') < hub.index('id="records"')), "hub: state picker above the records")
         ok(re.search(r'<details class="rc-all" id="all-states">', hub) and hub.index('id="all-states"') > hub.index('How the numbers are counted')
            and hub.count('href="/rain/iowa"') == 1 and hub.count('value="/rain/iowa"') == 1, "hub: every state link once, in the closed All states fold at the bottom")
+        # Sig, Nov 9: method text sits at the bottom, closed and short; the records list opens with one line
+        ok('<details class="rc-more rc-how"><summary>How the numbers are counted</summary>' in hub and "<h2>How the numbers are counted</h2>" not in hub
+           and "rc-how\" open" not in hub, "hub: how the numbers are counted is a closed fold")
+        recs_html = records_html([{"first": 1895, "side": "wettest", "county": "Story County", "state": "IA", "url": "/rain/iowa/story-county",
+                                   "as_of": "2026-10-12", "years": 131, "total": 41.2, "pct": 131}])
+        ok("25 points" not in recs_html and "reported fully" not in recs_html and "wettest year to date on record" in recs_html,
+           "records list: one line above it, its rules in the fold")
         # a county that leaves the data leaves a pointer to its state page, and comes back cleanly
         gp = os.path.join(site, "rain", "iowa", "gone-county.html")
         os.makedirs(os.path.dirname(gp), exist_ok=True)
