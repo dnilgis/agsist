@@ -94,11 +94,7 @@ test("shipped page: condition parts name the condition week, harvest parts the h
     assert.ok(seed(html, "condtable").includes(`<caption>Corn, week ending ${nice(we)}`), "rank table caption");
     assert.equal(seed(html, "condfresh"), `week ending ${we}`, "table header");
   }
-  // Monday afternoons NASS posts the national harvest line before the state rows: the builder then says so for
-  // the same week (seed_static condharvtable). Either honest answer names the harvest week.
-  const harvTab = seed(html, "condharvtable");
-  assert.ok(harvTab.includes(`harvested, week ending ${nice(hd)}`) || harvTab.includes(`No state harvest numbers for the week ending ${nice(hd)}`),
-    "harvest caption on the harvest week: " + harvTab.slice(0, 160));
+  assert.ok(seed(html, "condharvtable").includes(`harvested, week ending ${nice(hd)}`), "harvest caption on the harvest week");
   for (const tag of ["condvsent", "condstats", "condtable", "condfresh"])
     for (const w of weeksNamed(seed(html, tag))) assert.ok(w === rd || w === we, `${tag}: ${w} is not the condition week`);
   for (const tag of ["condharvline", "condharvtable", "condharvlead"])
