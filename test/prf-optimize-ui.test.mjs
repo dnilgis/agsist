@@ -141,7 +141,7 @@ test("the panel, with no outlook file: verdict first, legal pick, both scores, t
     }
     /* the curtain (Sig, Nov 5 and Nov 8): no script path, no model names, no pipeline status */
     assert.ok(!/scripts\/|\.py\b|\.mjs\b|not tested yet|run so far|promised|CFSv2|SPEAR|GEOS|CESM|CanSIPS|ECMWF|Met Office|M[ée]t[ée]o-France|DWD|CMCC|Japan Meteorological/.test(testedText), "pipeline detail in What we tested");
-    assert.ok(testedText.includes("Seasonal forecasts made in November, from five weather models and their average"), "the forecast models are one line with their numbers");
+    assert.ok(testedText.includes("Seasonal forecasts made in November, from five weather models and their average"), "the forecast models are one line with their numbers");  // pin-ok: the month is the panel code's own wording, not data
     assert.ok(!text.includes("—"), "no em dash");
     assert.ok(!/NaN|undefined|\bnull\b/.test(text), "no broken number");
 
@@ -177,12 +177,12 @@ test("the panel with NOAA's outlook and CPC's El Nino status: status printed, th
   try {
     const { page, errors } = await open(browser, port, "dark", 1100);
     const text = await page.$eval("#prf-optimize", (s) => s.innerText);
-    assert.ok(text.includes("NOAA’s Climate Prediction Center: El Nino Advisory, Oct 8."), "the CPC status from the real file shape is printed");
+    assert.ok(text.includes("NOAA’s Climate Prediction Center: El Nino Advisory, Oct 8."), "the CPC status from the real file shape is printed");  // pin-ok: inline OUTLOOK fixture above
     assert.ok(text.includes("found no edge from El Niño or La Niña, so it does not move the pick"), "and says it does not move the pick");
     assert.ok(!text.includes("Not set"), "no 'Not set' beside an advisory");
     assert.ok(!text.includes("This fall reads"), "ENSO never weights the pick (Sig, Nov 9)");
     assert.equal(await page.$$eval("#prf-opt-enso", (x) => x.length), 0, "no reader-set El Nino or La Nina choice (Sig, Nov 9)");
-    assert.ok(text.includes("issued 2026-10-15"));
+    assert.ok(text.includes("issued 2026-10-15"));  // pin-ok: inline OUTLOOK fixture above
     assert.ok(/could not be tested, because past outlooks are not in the data/.test(text), "says the monthly outlook is untested");
     assert.ok(/The outlook (moved \d+% of the policy|did not change the pick)/.test(text));
     assert.ok(text.includes("With the outlook"), "the table shows the outlook pick beside the record alone");

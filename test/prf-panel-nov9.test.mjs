@@ -23,7 +23,7 @@ const INPUT = { index: FX.index, rates: FX.rates[90], coverage: 90, subsidy: FX.
 test("fix 1: the real outlook.json shape ({status, issued}) prints CPC's status, and the 28914 pick does not move", () => {
   const real = { enso: { status: "El Nino Advisory", issued: "2026-10-08" } };
   const line = U.ensoLine(real.enso, OPT);
-  assert.equal(line, "NOAA’s Climate Prediction Center: El Nino Advisory, Oct 8. Our test across grids found no edge from El Niño or La Niña, so it does not move the pick.");
+  assert.equal(line, "NOAA’s Climate Prediction Center: El Nino Advisory, Oct 8. Our test across grids found no edge from El Niño or La Niña, so it does not move the pick.");  // pin-ok: inline fixture `real` two lines up
   assert.equal(OPT.predictors.enso.kept, false, "the published test rejects ENSO; if that changes, this wording must change");
   const o = O.outlookFor(real, FX.grid);
   assert.equal(o.enso, null, "a status is never turned into a phase that tilts the pick");
