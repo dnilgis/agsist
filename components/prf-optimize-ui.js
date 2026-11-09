@@ -69,6 +69,30 @@
     return out;
   }
   var GRASS_LINE = 'The pick follows the record’s dollars; it does not know when your grass grows.';
+  var NOTE = 'This is what the history and the rates point to, not advice. RMA rates already price most of this in.';
+
+  function shortDay(iso) {
+    var m = /^(\d{4})-(\d{2})-(\d{2})/.exec(String(iso || ''));
+    return m ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) : '';
+  }
+  /* The ENSO row: CPC's status as data/prf/outlook.json holds it ({status,
+     issued}), and what the published test said about weighting by it. */
+  function ensoLine(ensoInfo, opt) {
+    var p = opt && opt.predictors && opt.predictors.enso;
+    var verdict = p && p.tested && !p.kept ? 'Our test across grids found no edge from El Niño or La Niña, so it does not move the pick.'
+      : 'It does not move the pick.';
+    var st = ensoInfo && ensoInfo.status ? String(ensoInfo.status) : '';
+    if (!st) return 'NOAA’s El Niño status did not load. ' + verdict;
+    var day = shortDay(ensoInfo.issued);
+    return 'NOAA’s Climate Prediction Center: ' + st + (day ? ', ' + day : '') + '. ' + verdict;
+  }
+  /* The steadier option beside the pick shown on the card (the forecast pick
+     when there is one, else the record's), never beside a pick not shown. */
+  function steadierWords(pick, st) {
+    var gap = 100 * (pick.record.mean - st.record.mean);
+    return { paid: 'Paid in ' + st.record.paidYears + ' of ' + st.record.n + ' years here, against ' + pick.record.paidYears + ' for the pick.',
+             gap: gap >= 0 ? per100(gap) + ' less' : per100(-gap) + ' more' };
+  }
 
   function css() {
     if (document.getElementById('prf-opt-css')) return;
@@ -152,7 +176,7 @@
     var b = sec.querySelector('[data-opt-body]');
     if (!b) {
       if (!sec.querySelector('h2')) {
-        sec.insertAdjacentHTML('afterbegin', '<h2 id="prf-opt-h">What the numbers would pick</h2><p class="po-note">This is what the history and current outlook point to, not advice. RMA rates already price most of this in.</p>');
+        sec.insertAdjacentHTML('afterbegin', '<h2 id="prf-opt-h">What the numbers would pick</h2><p class="po-note">' + NOTE + '</p>');
       }
       b = document.createElement('div'); b.setAttribute('data-opt-body', ''); sec.appendChild(b);
     }
@@ -191,8 +215,10 @@
   function compute(ctx) {
     var mm = ctx.limits || {};
     var outl = state.outlookJson ? O.outlookFor(state.outlookJson, ctx.grid) : { outlook: null, enso: null };
-    state.ensoFromFile = outl.enso;
-    var enso = state.enso === 'none' ? null : (state.enso || outl.enso || null);
+    /* El Nino or La Nina never moves the pick: the published test found no
+       edge after adjustment (Sig, Nov 9: the reader-set option is gone). The
+       CPC status is printed as a status line only (ensoLine). */
+    var enso = null;
     var valid = validWith(mm.valid, state.monOn, state.months);
     var key = [ctx.grid, ctx.cov, JSON.stringify(mm.min), JSON.stringify(mm.max), JSON.stringify(valid), state.objective, enso, outl.outlook ? JSON.stringify(outl.outlook) : '', ctx.lastComplete, (state.kept || []).join(',')].join('|');
     if (state.cache.key === key) return state.cache.res;
@@ -274,11 +300,10 @@
     var steadyMore = '';
     if (res.steadier) {
       var st = res.steadier, rk = state.opt.risk.byCoverage, rr = rk[String(ctx.cov)] || rk[ctx.cov >= 80 ? '90' : '70'];
-      var gap = 100 * (res.rec.record.mean - st.record.mean);
-      h += '<p class="po-fine po-steady"><b>Steadier option:</b> ' + esc(splitWords(st.split)) + '. Paid in ' + st.record.paidYears + ' of ' + st.record.n
-        + ' years here, against ' + res.rec.record.paidYears + ' for the pick. It steadies the check; it does not earn more.</p>'
+      var sw = steadierWords(pk, st);
+      h += '<p class="po-fine po-steady"><b>Steadier option:</b> ' + esc(splitWords(st.split)) + '. ' + sw.paid + ' It steadies the check; it does not earn more.</p>'
         + (behind ? '' : '<button type="button" class="po-use" data-opt-use="' + st.split.join('.') + '">Use the steadier setup instead</button>');
-      steadyMore = '<p class="po-fine"><b>About the steadier option.</b> On this grid’s record it averages ' + (gap >= 0 ? per100(gap) + ' less' : per100(-gap) + ' more') + ' a year per $100 of protection than the pick. '
+      steadyMore = '<p class="po-fine"><b>About the steadier option.</b> On this grid’s record it averages ' + sw.gap + ' a year per $100 of protection than the pick. '
         + (state.monOn ? 'The test across grids picked steadier splits from every month, so it is not quoted for your months.</p>'
         : 'In the test across grids, picked each fall from the years before, splits like this cut the years with no payment from ' + rr.noPaymentPct.plain + '% to ' + rr.noPaymentPct.steadier
         + '% and ' + (rr.mean.meanDiff <= 0 ? 'gave up ' + per100(-rr.mean.meanDiff) : 'added ' + per100(rr.mean.meanDiff)) + ' a year per $100 of protection.</p>');
@@ -342,15 +367,12 @@
 
     /* the outlook */
     var om = res.outlookMeta || {};
-    var ensoNow = state.enso === 'none' ? 'Left out' : state.enso ? O.PHASE_NAME[state.enso].replace(/^n/, 'N') : (om.enso ? 'From NOAA: ' + O.PHASE_NAME[om.enso] : 'Not set');
-    var ensoIn = '<div class="po-row"><label for="prf-opt-enso">This fall’s reading</label><select id="prf-opt-enso">'
-      + [['', om.enso ? 'From NOAA (' + O.PHASE_NAME[om.enso] + ')' : 'Not set'], ['el-nino', 'El Niño'], ['neutral', 'Neutral'], ['la-nina', 'La Niña'], ['none', 'Leave it out']].map(function (o) {
-        var on = (state.enso || '') === o[0];
-        return '<option value="' + o[0] + '"' + (on ? ' selected' : '') + '>' + esc(o[1]) + '</option>';
-      }).join('') + '</select></div>';
-    ensoIn += '<p class="po-fine">' + (res.forecast ? esc(res.forecast.notes.join(' ')) : 'With no outlook set, the pick uses the record and the rates alone.' + (res.tiltNotes && res.tiltNotes.length ? ' ' + esc(res.tiltNotes.join(' ')) : ''))
-      + ' The El Niño and La Niña weighting was tested above; NOAA’s monthly outlook could not be, because past outlooks are not in the data.</p>';
-    h += det('enso', 'El Niño or La Niña this fall', esc(ensoNow) + '. ' + (om.outlook ? 'NOAA’s seasonal precipitation outlook' + (om.issued ? ' issued ' + esc(om.issued) : '') + ' is in.' : 'NOAA’s seasonal precipitation outlook is not loaded, so no month is tilted by it.'), ensoIn);
+    var ensoTxt = ensoLine(om.ensoInfo, state.opt);
+    var ensoIn = '<p class="po-fine">' + esc(ensoTxt) + ' '
+      + (res.forecast ? esc(res.forecast.notes.join(' ')) : 'The pick uses the record and the rates alone.' + (res.tiltNotes && res.tiltNotes.length ? ' ' + esc(res.tiltNotes.join(' ')) : ''))
+      + (om.outlook ? ' NOAA’s seasonal precipitation outlook' + (om.issued ? ' issued ' + esc(om.issued) : '') + ' tilts the pick above; it could not be tested, because past outlooks are not in the data.</p>'
+        : ' NOAA’s seasonal outlook is shown under Long-range outlook; it is not part of the pick, because past outlooks are not in the data to test it.</p>');
+    h += det('enso', 'El Niño or La Niña this fall', esc(ensoTxt), ensoIn);
 
     h += tested();
     h += det('math', 'Show the arithmetic', '', '<div class="po-fine">'
@@ -374,10 +396,10 @@
     if (!pr || !fam) return det('tested', 'What we tested', '', h + '<p>The test across grids did not load, so the list of what was tried is not shown. Without it, nothing but the record and the rates moves the pick.</p></div>');
     var kept = state.kept || [];
     h += '<p>Other ideas, each tried on the pick above and scored the same way: picked each fall from the years before, then scored on the next year, across '
-      + o.sample.grids.toLocaleString('en-US') + ' grids, 1981 to ' + o.last_complete + '. ' + fam.size + ' comparisons were promised and are counted together (' + fam.run
-      + ' run so far); by luck alone about ' + fam.expectedByChanceAt5pct + ' of them would look like a find, so each is judged after that count. '
+      + o.sample.grids.toLocaleString('en-US') + ' grids, 1981 to ' + o.last_complete + '. All ' + fam.size + ' comparisons are counted together; by luck alone about '
+      + fam.expectedByChanceAt5pct + ' of them would look like a find, so each is judged after that count. '
       + (kept.length ? 'Only what held up after the count moves the pick.' : 'None held up after the count, so none of these moves the pick.') + '</p><ul class="po-why">';
-    Object.keys(pr).forEach(function (id) { h += '<li>' + esc(pr[id].line) + '</li>'; });
+    h += testedLines(pr).map(function (t) { return '<li>' + esc(t) + '</li>'; }).join('');
     h += '</ul>';
     if (o.risk || o.productivity) {
       h += '<p>Not about earning more, so judged on their own:</p><ul class="po-why">';
@@ -386,6 +408,34 @@
       h += '</ul>';
     }
     return det('tested', 'What we tested', '', h + '</div>');
+  }
+  /* One plain line per idea that was tested. Ideas not run (no past data) are
+     left off; the seasonal forecast models are one line with their numbers,
+     no model names (Sig, Nov 8: no pipeline detail on public pages). */
+  function testedLines(pr) {
+    var out = [], fc = [], fcAvg = null;
+    Object.keys(pr).forEach(function (id) {
+      var p = pr[id];
+      if (!p || /not tested yet/i.test(p.line || '')) return;
+      if (/^fc-/.test(id)) {
+        if (!p.tested || !p.byCoverage || !p.byCoverage['90']) return;
+        if (id === 'fc-mmm') fcAvg = p; else fc.push(p);
+        return;
+      }
+      out.push(id === 'enso' ? String(p.line).replace(/ \(already in the panel[^)]*\)/, '') : p.line);
+    });
+    if (fc.length) {
+      var all = fc.concat(fcAvg ? [fcAvg] : []), kept = all.some(function (p) { return p.kept; });
+      var d90 = all.map(function (p) { return p.byCoverage['90'].meanDiff; }), d70 = all.map(function (p) { return p.byCoverage['70'] ? p.byCoverage['70'].meanDiff : null; }).filter(function (x) { return x != null; });
+      var yb = all.map(function (p) { return p.byCoverage['90'].yearsBetter; }), ny = all[0].byCoverage['90'].years;
+      var worse = d90.every(function (x) { return x < 0; });
+      var mon = function (x) { return (x < 0 ? '-$' : '+$') + Math.abs(x).toFixed(2); };
+      var rng = function (a) { var lo = Math.min.apply(null, a), hi = Math.max.apply(null, a); return lo === hi ? mon(lo) : mon(lo) + ' to ' + mon(hi); };
+      out.push('Seasonal forecasts made in November, from ' + (['no', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine'][fc.length] || fc.length) + ' weather models' + (fcAvg ? ' and their average' : '') + ', where each has shown skill: '
+        + (kept ? 'see the pick above.' : 'no edge' + (worse ? '; each did worse than the plain pick' : '') + ' (' + rng(d90) + ' per $100 of protection a year at 90% coverage'
+        + (d70.length ? ', ' + rng(d70) + ' at 70%' : '') + '; better in ' + Math.min.apply(null, yb) + ' to ' + Math.max.apply(null, yb) + ' of ' + ny + ' years at 90%).'));
+    }
+    return out;
   }
 
   function monthsUi() {
@@ -410,7 +460,6 @@
     try { if (typeof root.gtag === 'function') root.gtag('event', 'prf_opt_use', { objective: state.objective }); } catch (er2) {}
   }
   function onChange(e) {
-    if (e.target && e.target.id === 'prf-opt-enso') { state.enso = e.target.value || null; draw(); }
     if (e.target && e.target.id === 'prf-opt-mon-on') { state.monOn = !!e.target.checked; draw(); var cb = document.getElementById('prf-opt-mon-on'); if (cb) cb.focus(); }
   }
   var wired = false;
@@ -435,7 +484,7 @@
     draw();
   }
 
-  root.AgPrfOptUI = { update: update, _state: state, monthMask: monthMask, validWith: validWith, GRASS_LINE: GRASS_LINE };
+  root.AgPrfOptUI = { update: update, _state: state, monthMask: monthMask, validWith: validWith, GRASS_LINE: GRASS_LINE, NOTE: NOTE, ensoLine: ensoLine, steadierWords: steadierWords, testedLines: testedLines };
   /* prf.js may have rendered a grid before this file loaded; take its last context. */
   var pending = root.AgPrf && root.AgPrf.optCtx;
   if (pending && typeof document !== 'undefined') update(pending);
