@@ -108,17 +108,21 @@ test("the two long sections are folded on a phone, open on a wide screen, and op
     const folds = (pg) => pg.$$eval("details.prf-fold", (ds) => ds.map((d) => [d.id, d.open]));
     let { pg, ctx } = await page(browser, port, "/prf", 390);
     await pg.waitForSelector("#prf-app[data-ready]");
-    assert.deepEqual(await folds(pg), [["payback-d", false], ["new-d", false]]);
+    assert.deepEqual(await folds(pg), [["payback-d", false], ["new-d", false], ["terms", false]]);
     const summary = await pg.$eval("#new-d > summary", (s) => s.textContent);
     assert.ok(summary.startsWith("New for 2027"), "the heading stays visible: " + summary);
     await ctx.close();
     ({ pg, ctx } = await page(browser, port, "/prf#new", 390));
     await pg.waitForSelector("#prf-app[data-ready]");
-    assert.deepEqual(await folds(pg), [["payback-d", false], ["new-d", true]]);
+    assert.deepEqual(await folds(pg), [["payback-d", false], ["new-d", true], ["terms", false]]);
     await ctx.close();
     ({ pg, ctx } = await page(browser, port, "/prf", 1280));
     await pg.waitForSelector("#prf-app[data-ready]");
-    assert.deepEqual(await folds(pg), [["payback-d", true], ["new-d", true]]);
+    assert.deepEqual(await folds(pg), [["payback-d", true], ["new-d", true], ["terms", false]], "Sources and terms stays closed on a wide screen (Sig, Nov 8)");
+    await ctx.close();
+    ({ pg, ctx } = await page(browser, port, "/prf#method", 390));   /* old links to the method section land in the fold, opened */
+    await pg.waitForSelector("#prf-app[data-ready]");
+    assert.deepEqual(await folds(pg), [["payback-d", false], ["new-d", false], ["terms", true]]);
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });

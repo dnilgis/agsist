@@ -90,3 +90,25 @@ test("browser: /prf on a fresh visit shifts under 0.05, at 390 (with and without
     }
   } finally { await browser.close(); srv.close(); }
 });
+
+test("browser: the example grid opens on non-irrigated haying, and grazing can still be picked (Sig, Nov 9)", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(0), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 844 } });
+    const pg = await ctx.newPage();
+    await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
+    await pg.goto(`http://127.0.0.1:${port}/prf`);
+    await pg.waitForSelector("#prf-app[data-ready]");
+    await pg.click("#prf-eg");
+    await pg.waitForSelector("#prf-answer .prf-figs", { state: "attached", timeout: 20000 });
+    const use = await pg.$eval("#prf-use", (s) => ({ v: s.value, t: s.options[s.selectedIndex].text, all: [...s.options].map((o) => o.text) }));
+    assert.equal(use.t, "Haying, non-irrigated", JSON.stringify(use));
+    assert.ok(use.all.includes("Grazing"), "grazing is still offered");
+    await pg.click("#prf-setup-sum");   /* on a phone the setup sits behind "Change" */
+    await pg.selectOption("#prf-use", { label: "Grazing" });
+    await pg.waitForFunction(() => /\$150 /.test(document.querySelector("#prf-answer .prf-figs dd").textContent));
+    assert.equal(await pg.$eval("#prf-use", (s) => s.options[s.selectedIndex].text), "Grazing");
+    await ctx.close();
+  } finally { await browser.close(); srv.close(); }
+});
