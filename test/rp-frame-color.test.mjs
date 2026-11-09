@@ -16,7 +16,7 @@ import { readFileSync, readdirSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 import { checkout } from "./fixtures/rp-checkout.mjs";
-import { mocks, serve } from "./fixtures/rp-site-mock.mjs";
+import { mocks, serve, LIVE } from "./fixtures/rp-site-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(ROOT + p, "utf8");
@@ -112,7 +112,7 @@ async function withPage(fn, opts = {}) {
     const page = await ctx.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(String(e)));
-    await fn(page, `http://127.0.0.1:${port}`, errors, log);
+    await fn(page, opts.live ? LIVE : `http://127.0.0.1:${port}`, errors, log);
   } finally { await browser.close(); srv.close(); }
 }
 const drawn = (page) => page.waitForFunction(() => document.querySelector("#rp-art svg") && !document.getElementById("rp-go").disabled && !document.getElementById("rp-art").getAttribute("aria-busy"), null, { timeout: 30000 });
@@ -211,7 +211,7 @@ test("in a browser, the worker out: a framed order's color goes to Sig by the ba
     assert.equal(fs.product, "framed12x18");
     assert.ok(!/@/.test(JSON.stringify(fs)), "nothing about the buyer");
     assert.deepEqual(errors, []);
-  }, { worker: "blocked" });
+  }, { worker: "blocked", live: true });
   await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?" + q(SIG_Q));
     await drawn(page);
@@ -223,7 +223,7 @@ test("in a browser, the worker out: a framed order's color goes to Sig by the ba
     assert.equal(left.length, 1, "kept in this browser");
     assert.equal(left[0].fields.frame_color, "oak");
     assert.deepEqual(errors, []);
-  }, { worker: "blocked", formspree: "fail" });
+  }, { worker: "blocked", formspree: "fail", live: true });
   // a print with the worker out sends nothing extra (only a long design or a framed one needs the backup)
   await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?" + q(SIG_Q));

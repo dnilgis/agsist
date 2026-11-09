@@ -15,11 +15,11 @@
     var HOSTS = { 'agsist-api.dnilgis.workers.dev': 1, 'agsist-subs.dnilgis.workers.dev': 1 };
     var LISTS = { '/subscribe': 'AGSIST Daily', '/notice': 'notice', '/alert-subscribe': 'hail alert',
       '/watch-subscribe': 'farmland watch', '/elevator-watch-subscribe': 'elevator alert', '/price-watch-subscribe': 'price alert' };
-    var FORMSPREE = 'https://formspree.io/f/xnjbwepn', LIVE = { 'agsist.com': 1, 'www.agsist.com': 1 };
+    var FORMSPREE = 'https://formspree.io/f/xnjbwepn';
     var QUEUED = "Got it. You'll be added within a day.";
     var real = window.fetch;
     function routeOf(u) {
-      try { var x = new URL(String(u), location.href); return HOSTS[x.host] === 1 && LISTS[x.pathname] ? x.pathname : ''; }
+      try { var x = new URL(String(u), location.href); return HOSTS[x.host] === 1 && LISTS[x.pathname] && /^(www\.)?agsist\.com$/.test(location.hostname) ? x.pathname : ''; }
       catch (e) { return ''; }
     }
     function fields(body) {
@@ -50,7 +50,6 @@
       } catch (e) {}
     }
     function queue(route, init, orig, err) {
-      if (!LIVE[String(location.hostname).toLowerCase()]) return orig ? Promise.resolve(orig) : Promise.reject(err || new Error('not sent'));
       var f = fields(init && init.body), fd = new FormData(), extra = {};
       var list = LISTS[route] + (f.topic ? ' (' + String(f.topic).slice(0, 60) + ')' : '');
       Object.keys(f).forEach(function (k) {
@@ -139,7 +138,6 @@
       })
       .catch(function () {});
   }
-  /* menu_click {group, label, menu} for a live menu link (Oct 29, 2026); nothing else is sent */
   function initMenuClicks() {
     var txt = function (el) { return el ? String(el.textContent || '').replace(/[\u2192]/g, '').replace(/\s+/g, ' ').trim().slice(0, 100) : ''; };
     function send(a, menu, group) {
@@ -388,7 +386,6 @@
   function saveZip(z, done) {
     var prior = null;
     try { prior = JSON.parse(lsGet('agsist-wx-loc') || 'null'); } catch (e) { prior = null; }
-    // our own ZIP table, [lat, lon, town, state code, county] (2026-10-29: no outside geocoder)
     fetch('/data/places/zip/' + z.slice(0, 2) + '.json')
       .then(function (r) { if (r.status === 404) return null; if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (t) {
@@ -573,7 +570,6 @@
   }
   window.AgsistSlots = { ribbon: function (sp, id) { return ribbonInner(sp, id, false); }, supporter: supporterInner };
   var OPEN_SLOT_LINE = true;
-  // Oct 29 rate card: state cash bids and rent ribbons are the State Sponsor; others are retired, no link.
   function openSlotTier(id) { return id === 'cash-bids' ? 'cashbids' : /^(cash-bids-[a-z]+(-[a-z]+)*|rent-[a-z]{2})$/.test(id) ? 'state' : ''; }
   function openSlotLine(rib, id) {
     var tier = openSlotTier(id);

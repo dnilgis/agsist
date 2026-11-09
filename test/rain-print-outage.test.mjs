@@ -27,7 +27,7 @@ import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
 import { checkout, refOf } from "./fixtures/rp-checkout.mjs";
-import { mocks, serve } from "./fixtures/rp-site-mock.mjs";
+import { mocks, serve, LIVE } from "./fixtures/rp-site-mock.mjs";
 import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./fixtures/places-mock.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -75,7 +75,7 @@ async function withPage(fn, opts = {}) {
     const page = await ctx.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(String(e)));
-    await fn(page, `http://127.0.0.1:${port}`, errors, log, ctx);
+    await fn(page, opts.live ? LIVE : `http://127.0.0.1:${port}`, errors, log, ctx);
   } finally { await browser.close(); srv.close(); }
 }
 const drawn = (page) => page.waitForFunction(() => document.querySelector("#rp-art svg") && !document.getElementById("rp-go").disabled && !document.getElementById("rp-art").getAttribute("aria-busy"), null, { timeout: 30000 });
@@ -120,11 +120,39 @@ test("worker blocked: a long design goes to Stripe as RPH-<hash>, and the whole 
     // sent, so nothing is left waiting in this browser
     assert.equal(await page.evaluate(() => { try { return JSON.parse(localStorage.getItem("agsist-rp-outbox") || "[]").length; } catch (e) { return -1; } }), 0);
     assert.deepEqual(errors, []);
-  }, { worker: "blocked" });
+  }, { worker: "blocked", live: true });
+});
+
+/* The real case (Oct 30 2026): a local copy on 127.0.0.1, where the worker refuses the Origin with 403, sent a
+   made-up order to the real backup form. Off agsist.com nothing goes to Formspree: the record waits in this
+   browser, the next visit tries again and still sends nothing, and the buyer still reaches Stripe. */
+test("on 127.0.0.1 with the worker answering 403: nothing goes to formspree.io, the record stays in this browser", { skip, timeout: 90000 }, async () => {
+  const hits = [];
+  await withPage(async (page, base, errors, log) => {
+    assert.match(base, /^http:\/\/127\.0\.0\.1:/);
+    await page.goto(base + "/rain-print.html?d=" + RP.encodeCode(LONG));
+    await drawn(page);
+    const r = await checkout(page, "framed12x18");
+    assert.equal(r.stage, "stripe", JSON.stringify(r));
+    const ref = refOf(r.url);
+    assert.ok(log.worker.length >= 1, "the worker was asked and refused");
+    await page.goto(base + "/rain-print.html");
+    await page.waitForTimeout(2500);
+    const left = await page.evaluate(() => JSON.parse(localStorage.getItem("agsist-rp-outbox") || "[]"));
+    assert.equal(left.length, 1, "kept in this browser");
+    assert.equal(left[0].fields.ref, ref);
+    assert.equal(await page.evaluate(() => window.agsistFormPost.liveHost()), false);
+    assert.deepEqual(log.formspree, [], "nothing reached the backup form");
+    assert.deepEqual(hits, [], "no request to formspree.io at all");
+    assert.deepEqual(errors, []);
+  }, { worker: "blocked", extra: async (ctx) => {
+    // ahead of the shared mocks: every formspree.io request is counted and aborted, never answered
+    await ctx.route(/^https?:\/\/([^/]+\.)?formspree\.io\//, (rt) => { hits.push(rt.request().url()); return rt.abort(); });
+  } });
 });
 
 test("worker and backup form both out: a long design still pays; the record waits in this browser and goes on the next visit", { skip, timeout: 90000 }, async () => {
-  const opts = { worker: "blocked", formspree: "fail" };
+  const opts = { worker: "blocked", formspree: "fail", live: true };
   await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?d=" + RP.encodeCode(LONG));
     await drawn(page);
@@ -200,7 +228,7 @@ test("worker blocked: a gift from the review sheet goes by the backup form, then
     assert.equal(g.design_code, RP.encodeCode(SIG));
     assert.ok(log.worker.includes("POST /form"), "the worker was tried first");
     assert.deepEqual(errors, []);
-  }, { worker: "blocked" });
+  }, { worker: "blocked", live: true });
 });
 
 // Qu'Appelle, SK 2024 from the saved NOAA GHCN copy (test/fixtures/rp-canada), as rp-canada.test.mjs reads it

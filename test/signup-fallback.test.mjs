@@ -41,7 +41,7 @@ function page(worker, formspree = () => new Response(JSON.stringify({ ok: true }
   };
   const el = () => ({ style: {}, setAttribute() {}, appendChild() {}, addEventListener() {}, remove() {}, parentNode: null });
   const win = {
-    fetch: realFetch, location: { href: "https://agsist.com/cash-bids", pathname: "/cash-bids" },
+    fetch: realFetch, location: { href: "https://agsist.com/cash-bids", hostname: "agsist.com", pathname: "/cash-bids" },
     dispatchEvent: (e) => events.push(e.type), CustomEvent: class { constructor(t, d) { this.type = t; this.detail = d && d.detail; } },
   };
   const ctx = {

@@ -4,6 +4,7 @@
 import { readFileSync, existsSync } from "node:fs";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
+import { fileURLToPath } from "node:url";
 import { stripePage } from "./rp-checkout.mjs";
 import { PLACES_ROUTE, isPlaces, placesKey, placesBody } from "./places-mock.mjs";
 
@@ -23,13 +24,25 @@ function series(y, upto) {
  *   route answers Cloudflare's 403 phishing page as HTML, with no CORS headers,
  *   so the browser's fetch rejects), 'down' (the connection fails), 'hang'
  *   (never answers). Every call is logged in log.worker.
- * opts.formspree: 'ok' (the default) or 'fail'; posts are logged in log.formspree. */
+ * opts.formspree: 'ok' (the default) or 'fail'; posts are logged in log.formspree.
+ * LIVE (https://agsist.com) is this checkout too, answered here and never fetched: form-post.js only
+ *   uses the backup form on the live host (Nov 9 2026), so a test of that fallback opens LIVE + path. */
 export const BLOCK_PAGE = "<!DOCTYPE html><html><head><title>Suspected phishing site | Cloudflare</title></head><body><h1>Warning: Suspected Phishing</h1></body></html>";
+export const LIVE = "https://agsist.com";
+const SITE_ROOT = fileURLToPath(new URL("../../", import.meta.url));
+const SITE_TYPES = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".woff2": "font/woff2", ".html": "text/html", ".svg": "image/svg+xml", ".jpg": "image/jpeg", ".png": "image/png" };
+function siteFile(u) {
+  let p = normalize(join(SITE_ROOT, decodeURIComponent(u.pathname)));
+  if (!extname(p) && existsSync(p + ".html")) p += ".html";
+  if (!p.startsWith(SITE_ROOT) || !existsSync(p)) return null;
+  return { status: 200, contentType: SITE_TYPES[extname(p)] || "application/octet-stream", body: readFileSync(p) };
+}
 export async function mocks(ctx, opts, log) {
   const h = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "*" };
   const upto = "2026-10-09";
   await ctx.route(PLACES_ROUTE, async (r) => {
     const req = r.request(), u = new URL(req.url());
+    if (u.protocol === "https:" && u.host === "agsist.com" && !isPlaces(u)) return r.fulfill(siteFile(u) || { status: 404, body: "" });
     if (u.host === "agsist-api.dnilgis.workers.dev" && opts.worker) {
       (log.worker = log.worker || []).push(req.method() + " " + u.pathname);
       if (opts.worker === "hang") return;
