@@ -49,7 +49,12 @@
     .fn-pick{display:flex;flex-wrap:wrap;gap:.6rem 1.2rem;align-items:flex-end;margin:0 0 .4rem}
     .fn-row{display:flex;flex-wrap:nowrap;gap:.5rem;align-items:flex-end;min-width:0}
     .fn-row label{min-width:0}
-    .fn-pick[hidden]{display:none}
+    /* 2026-11-09: the pickers keep their room while the readings load (hidden, not removed), so the table does not drop when they appear */
+    #fn-live{min-height:39rem}
+    @media(max-width:699px){#fn-live{min-height:46rem}}  /* the static table's room, held in CSS (the script also sets the measured height) */
+    #fn-live{display:flow-root}  /* the first line's margin stays inside, so swapping the static lede for the live heading does not move the block */
+    .fn-pick[hidden]{display:flex!important;visibility:hidden}
+    .fn details.fn-all[hidden]{display:block!important;visibility:hidden}
     .fn-pick label{display:flex;flex-direction:column;gap:.2rem;font-size:.8rem;color:var(--text-muted);font-weight:600}
     .fn-pick input,.fn-pick select{min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:1rem}
     .fn-pick input{width:7rem;font-family:'JetBrains Mono',monospace}
@@ -378,6 +383,7 @@ function fnSpark(t, last, w, h) {
   }
   var CW = 640;
   function render() {
+    if (!live.style.minHeight) live.style.minHeight = live.offsetHeight + 'px';  // the static table's height: the live block never ends shorter, so what follows does not rise
     CW = Math.max(280, Math.min(720, Math.round((live.clientWidth || 640) - 34)));
     var h = '';
     if (PLACE) {
@@ -463,7 +469,7 @@ function fnSpark(t, last, w, h) {
   var rz = null;
   window.addEventListener('resize', function () {
     clearTimeout(rz);
-    rz = setTimeout(function () { if (DATA && PLACE && Math.abs((live.clientWidth || 0) - 34 - CW) > 40) render(); }, 200);
+    rz = setTimeout(function () { live.style.minHeight = ''; if (DATA && PLACE && Math.abs((live.clientWidth || 0) - 34 - CW) > 40) render(); }, 200);
   });
   fetch('/data/fall-nitrogen.json', {cache: 'no-cache'}).then(function (r) { return r.ok ? r.json() : null; }).then(function (d) {
     if (!d || !d.stations || !d.stations.length) return;
