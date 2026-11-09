@@ -79,13 +79,7 @@
      keeps its own source. */
   var GENERIC = { hero: 1, bar: 1, 'signup-band': 1, footer: 1 };
 
-  /* ---------- flags ----------
-     Signed up (2026-10-20, Sig): the Daily asks come back after a year. The
-     cookie lasts 365 days; localStorage keeps agsist_subscribed = '1' (the
-     inline head checks on the cash bid and futures pages read that) and
-     agsist_subscribed_at = when. A flag with no date (set before this, or by
-     an older copy of the setter) starts its year the first time it is read
-     here. Past a year both are cleared and the asks show again. */
+  /* ---------- flags ---------- */
   var SIGNED_DAYS = 365, SIGNED_AT = 'agsist_subscribed_at';
   function hasCookie() { try { return /(^|;\s*)agsist_subscribed=/.test(document.cookie); } catch (e) { return false; } }
   function isSignedUp() {
@@ -623,25 +617,7 @@
   }
   function dismissed(id, how) { track('ask_dismissed', { ask_id: id, how: how }); }
 
-  /* ---------- "One more?" (2026-10-20, Sig) ----------
-     After any signup that went through, one quiet panel in the same place
-     offers up to three more emails that fit what the reader gave. Each is an
-     unticked box; one button, "Add these". Only topics with a sender:
-       daily     AGSIST Daily (scripts/send_daily.py), when not on it yet;
-       zip       a cash price alert within 25 mi of their ZIP, double opt-in
-                 (POST /elevator-watch-subscribe, scripts/send_zip_alert.py),
-                 the body components/cb-signup.js sends;
-       rainyear  their county's full-year rain total, one email in January
-                 (after a monthly county rain signup too, rain-month:<fips>)
-                 (rainyear:<year>:<fips>, scripts/send_rain_year.py), when
-                 data/rain has the county and its year is still going;
-       rent      their state's next county cash rent release (rent:<st>,
-                 scripts/send_rent_notice.py), for the states with a /rent page.
-     The ZIP is the one they typed, the page's, or the saved one. The county
-     comes only from the page or the topic; the state from those, the page
-     address, or the ZIP's first three digits. Never geolocation. Nothing
-     shows when nothing fits. GA4: onemore_shown and onemore_added with the
-     topics, never the address. */
+  /* ---------- "One more?" (2026-10-20, Sig) ---------- */
   var WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var ST_NAMES = {};
   ('AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming')
@@ -697,41 +673,7 @@
         return { topic: 'rainyear:' + y + ':' + fips, name: c.name, year: y };
       });
   }
-  /* 2026-10-20 (Sig), "One more?" after the alert signups too, and the extras
-     that fit the page after a Daily signup:
-       hail      a hail alert, 10 mi around the spot (POST /alert-subscribe,
-                 scripts/check_alerts.py), on hail and rain pages: the hail
-                 map's last spot (window.AGSIST_HAIL_SPOT) or their ZIP's
-                 center (the bids network's data/zips, as cb-alerts.js);
-       price     a futures price alert, double opt-in (POST
-                 /price-watch-subscribe, scripts/send_price_watch.py), the
-                 body index.html sends, on the futures and report pages;
-       reports   the "USDA vs the trade" report-day emails
-                 (scripts/send_report_day.py), on report and futures pages,
-                 only when the Daily was just taken without them (the menu
-                 asks send reports:false). A Daily signup anywhere else
-                 already gets them, so it is never offered there.
-     2026-10-21 (Sig), the two standing lists (worker v5.44, POST /notice):
-       wasde     the WASDE summary alone (topic reports, the same email),
-                 on report and futures pages, after a notice or alert signup
-                 by a reader not on the Daily (a Daily reader already gets it);
-       cot       Funds this week (topic cot, scripts/send_cot_weekly.py), on
-                 /cot, /markets and the futures and cattle pages; since
-                 2026-11-04 also after a Daily signup anywhere, last in line,
-                 and never pushed off: it takes the third row when needed.
-     After a hail alert, the Daily row carries an optional ZIP box filled
-     from the ZIP they searched, else the ZIP nearest the spot (agsist's
-     data/zip-grid.json picks the ZIP files, the bids network's data/zips
-     gives the centers; nothing within 15 mi leaves it blank). Source tags
-     onemore:<what they gave>, with onemore:hail-alert and
-     onemore:elevator-watch for the hail alert and the elevator alerts.
-     2026-10-23 (Sig, Oct 23 promo asks):
-       gauge     the rain gauge waitlist (topic rain-gauge, the list /rain-gauge
-                 keeps; Sig writes to it when the first batch is ready), after
-                 a county rain notice (rainyear: or rain-month:) or a hail alert,
-                 never twice. Its words are data/rain-print.json gauge_hook (line,
-                 then link) when set, else GAUGE_HOOK. The waitlist's own One more?
-                 is rain-gauge.html's (only: the Daily). */
+  /* 2026-10-20 (Sig), "One more?" after the alert signups too, and the extras */
   var GAUGE_HOOK = 'The rain gauge waitlist: a better gauge is in the works, and the list hears first';
   function gaugeHook() {
     return getJ('/data/rain-print.json').then(function (c) {
@@ -1029,19 +971,7 @@
       document.body.style.paddingBottom = show ? h + 'px' : '';
     });
   }
-  /* 2026-10-20 (Sig):
-     - the bar shows at most once a browser session (agsist_bar_seen, set
-       the first time it is on screen); before this it came back on every
-       page of a visit until it was closed;
-     - a first visit gets it too, but only after the reader has used the
-       page: on a phone past half the page or 40 seconds on it, on a wider
-       screen 40 seconds (time the tab is hidden does not count). A second
-       visit or later gets it as before;
-     - one Daily ask a page: where the page shows its own ask (a page ask,
-       the homepage hero line, the cash bid box, a rent, rain year or ARC/PLC
-       notice ask) the bar stays away. The footer band and the menu box do
-       not count. The PRF grid notice does not count either: PRF pages keep
-       the bar (Sig, Oct 20). */
+  /* 2026-10-20 (Sig): */
   var BAR_SEEN = 'agsist_bar_seen', ENGAGE_S = 40;
   /* /cash-bids (Sig, 2026-11-09): the bar is back on this page, but only once the results have shown, and with
      its own source tag, bar-cash-bids, so the signups can be compared with the box's page:cash-bids over two weeks.
@@ -1072,12 +1002,7 @@
   }
   function barOk() {
     var p = location.pathname.replace(/\/+$/, '') || '/';
-    /* No sticky bar where it covers the work or is the wrong ask: the briefing
-       and its archive (/daily/2026-10-11), the field tools and print sheets,
-       the sponsor pages, the store-or-sell worksheet (2026-10-11), and /prf
-       itself (2026-10-12; its county pages keep it, Sig Oct 20). Fast Facts
-       (2026-10-23): its one ask is the inline Daily ask under the first card,
-       drawn only once a place is open, so the bar never stands in for it. */
+    /* No sticky bar where it covers the work or is the wrong ask: the briefing */
     if (/^\/(daily|field-scout|fast-facts|rain-print|sponsor|sponsor-kit|sponsor-apply|sponsor-report|store-or-sell|prf)(\.html)?$/.test(p)
         || /^\/daily\/[^/]+$/.test(p)) return false;
     /* Page types with one page-matched ask (Sig, 2026-10-23: the bar opened 0.5% of the time it
