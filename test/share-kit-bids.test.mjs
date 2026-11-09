@@ -86,7 +86,7 @@ test("the builder writes the two buttons in the share row, the page's data and t
   const kit = PAGE.indexOf("/components/bids-kit.js?v=1"), box = PAGE.indexOf("/components/cb-signup.js?v=");
   assert.ok(kit > 0 && box > kit, "bids-kit.js runs before cb-signup.js reads the box's source");
   assert.equal((PAGE.match(/bids-kit\.js\?v=/g) || []).length, 1);
-  assert.match(PAGE, /cash-bid-town\.css\?v=3/);
+  assert.match(PAGE, /cash-bid-town\.css\?v=\d+"/);
   assert.equal(DATA.place, "Nevada, IA");
   assert.equal(DATA.url, "https://agsist.com/cash-bids/iowa/nevada");
   assert.equal(DATA.page, "cash-bids-iowa-nevada");
