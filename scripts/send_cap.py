@@ -38,26 +38,21 @@ Three parts:
    today (the send-volume row cron_health.py saved in the private repo, a floor: see 3; one HTTPS read
    of that file, HEALTH_SECONDS in all, no retries, else used=unknown) plus this list, plus the
    report-day email on a report day (its Daily readers and its own list, as send_report_day.py merges
-   them), would pass the cap. A ::warning:: and the marker print, and the send still goes: the cap can
-   be out of date after an upgrade, and a reader is better served by a send that may stop partway
-   than by none. The marker makes the send-volume row red early; a raised cap clears it.
+   them). Since Nov 9 it only prints that count as information (no warning, no marker).
 
 3. The send-volume row (cron_health.py, built in delivery_check.delivery_rows from the run logs it
    already reads; no extra API calls). Per UTC day, the sum over every DELIVERY line read of smtp=
-   (or sent_readers= from a line without it), against the cap. It is a floor: delivery_check reads
+   (or sent_readers= from a line without it). It is a floor: delivery_check reads
    at most LOGS_PER_WF logs per workflow, so a sender that mails on many runs (report-day, the
    alert senders) is sampled, and the Sig-only workflows (morning report, audit and the rest) print
-   no line. The row says which senders were sampled. Warning at WARN_PCT of the cap, red at RED_PCT,
-   and red on any SEND-CAP marker in the runs read.
+   no line. The row says which senders were sampled. Since Nov 9 it is not judged against a cap;
+   it is red only on a SEND-CAP refusal marker in the runs read.
 
-4. Sig's reminder to upgrade (Sig, Nov 4: "remind me to upgrade Brevo as we get closer to the daily
-   limit"). cron-health.yml, after the check, runs --remind on the saved file: 80% of the cap on a UTC
-   day mails Sig once that day, 95% once more marked urgent, and the Daily's own average over the last
-   7 whole days at 70% a gentler heads-up once a week. Through log_safe.owner_mail, the path the
-   daily-late check uses; deduped by the send flags. None once SEND_DAILY_CAP is above the day's count.
+4. (Nov 9: Sig upgraded to Brevo Starter, which has no daily cap. The send-volume row is information only,
+   the preflight only prints the count, the upgrade reminders are gone, and scripts/mail_budget.py judges the
+   monthly allowance. Only a real refusal from the mail server still turns the row red.)
 
     python3 scripts/send_cap.py --selftest
-    python3 scripts/send_cap.py --remind private/data/cron-health.json
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
@@ -356,17 +351,10 @@ def preflight(tally, later=0, later_what="", now=None, doc=None, environ=None, s
     total = (used or 0) + size + int(later or 0)
     out = {"used": used, "size": size, "later": int(later or 0), "cap": c, "total": total, "over": total > c}
     shown = "unknown" if used is None else str(used)
-    _out("send cap: %s already counted today (UTC), this send %d%s, cap %d%s"
-         % (shown, size, (", %s later today %d" % (later_what or "a send", later)) if later else "", c,
+    _out("send count: %s already counted today (UTC), this send %d%s (information; no daily cap on Brevo Starter)%s"
+         % (shown, size, (", %s later today %d" % (later_what or "a send", later)) if later else "",
             ("; " + why) if why else ""))
-    if out["over"]:
-        _out("::warning title=Mail plan daily cap::%d%s emails projected today (UTC) against a cap of %d: "
-             "%s counted already, %d in this send%s. The send goes on; past the cap the mail server stops it "
-             "partway. Raise the plan (and the SEND_DAILY_CAP variable) or move a send."
-             % (total, " or more" if used is None else "", c, shown, size,
-                (", %d from %s later today" % (later, later_what or "a send")) if later else ""))
-        _out(marker(tally.sender, "preflight", used="unknown" if used is None else used, size=size,
-                    later=int(later or 0), cap=c))
+    out["over"] = False      # Brevo Starter has no daily cap: the line above is information, never a warning or a marker
     return out
 
 
@@ -407,39 +395,32 @@ def judge(days, by, markers, c, now, logs=None, sampled=(), unread=(), daily7=No
            "top": {d: sorted(s.items(), key=lambda kv: (-kv[1], kv[0]))[:5] for d, s in sorted(by.items())},
            "markers": markers[:10], "logs": int(logs or 0), "sampled": sorted(sampled), "unread": sorted(unread),
            "daily7": dict(sorted((daily7 or {}).items())[-HIST_DAYS:]),
-           "clock": "emails per UTC day under the mail plan's cap (SEND_DAILY_CAP, default %d); warns at %d%%, red at %d%%"
-                    % (DEFAULT_CAP, int(WARN_PCT * 100), int(RED_PCT * 100))}
+           "clock": "emails per UTC day, shown for information (Brevo Starter has no daily cap; brevo-month judges the monthly "
+                    "allowance); red only when the mail server refuses a send like a cap"}
     today = now.strftime("%Y-%m-%d")
     parts = []
     for d in sorted(days, reverse=True)[:2]:
         top = ", ".join("%s %d" % kv for kv in row["top"].get(d, [])[:3])
-        parts.append("%s%s: at least %d of %d (%d%%)%s" % (d, " so far" if d == today else "", days[d], c,
-                                                        int(100 * days[d] / c), (": " + top) if top else ""))
+        parts.append("%s%s: at least %d%s" % (d, " so far" if d == today else "", days[d], (": " + top) if top else ""))
     refused = [m for m in markers if m["kind"] == "refused"]
     pre = [m for m in markers if m["kind"] == "preflight"]
     notes = []
     if refused:
         notes.append("the mail server refused a send like a cap or rate limit: %s"
                      % ", ".join("%s on %s (code %s)" % (m["sender"], m["day"], m.get("code", "?")) for m in refused[:3]))
-    if pre:
-        notes.append("projected past the cap before sending: %s"
-                     % ", ".join("%s on %s (%s counted + %s + %s later, cap %s)" % (
-                         m["sender"], m["day"], m.get("used", "?"), m.get("size", "?"), m.get("later", 0), m.get("cap", c))
-                                 for m in pre[:3]))
     tail = ["counted from %d run log(s) read" % (logs or 0)]
     if sampled:
         tail.append("sampled, more may have gone: %s" % ", ".join(sorted(sampled)))
     if unread:
         tail.append("not read this pass: %s" % ", ".join(sorted(unread)))
     tail.append("Sig-only mail (morning report, audit and the like) prints no count")
+    tail.append("information only: Brevo Starter has no daily cap, the brevo-month row judges the monthly allowance")
     peak = max(days.values()) if days else 0
     if not logs and not markers:
         status = "unknown"
         parts = ["no run log was read, so nothing was counted"]
-    elif refused or pre or peak >= RED_PCT * c:
-        status = "late"
-    elif peak >= WARN_PCT * c:
-        status = "warn"
+    elif refused:
+        status = "late"        # the server really refused a send; the count alone is never judged (no daily cap on Starter)
     else:
         status = "ok"
     if not parts:
@@ -475,98 +456,6 @@ def daily_history(prev_row, by):
     return dict(sorted(h.items())[-HIST_DAYS:])
 
 
-# ───────────────────────────── 4. remind Sig to upgrade (Sig, Nov 4) ─────────────────────────────
-# "remind me to upgrade Brevo as we get closer to the daily limit." The path is the one cron-health's
-# daily-late check already uses to tell Sig things: log_safe.owner_mail (the job's SMTP secrets, to
-# SIG_TO). Once per level per UTC day, deduped through the send flags (list_source.flag_is_set /
-# flag_set: the subs worker, else the private repo); a flag that cannot be read sends nothing, so a
-# reminder never repeats every half hour. Counts only.
-
-def _pct(n, c):
-    return int(100 * n / c) if c else 0
-
-
-def reminders(doc, now, environ=None):
-    """[(flag key, subject, lines)] due from a cron-health doc. Pure: no network, no flags read.
-    80% of the cap on a UTC day: a reminder; 95%: an urgent one (the 80% one is then not sent). The
-    cap is the one in force now, so raising SEND_DAILY_CAP above the day's count stops them. Below
-    80% on every day, the Daily's own average over the last 7 whole UTC days at EARLY_PCT or more
-    is a gentler heads-up, once per ISO week."""
-    row = next((r for r in (doc or {}).get("workflows") or [] if r.get("workflow") == ROW), None)
-    if not row:
-        return []
-    c = cap(environ, row.get("cap") if isinstance(row.get("cap"), int) else None)
-    today = now.strftime("%Y-%m-%d")
-    out, near = [], False
-    for d, n in sorted((row.get("days") or {}).items()):
-        if not isinstance(n, int) or n < WARN_PCT * c:
-            continue
-        near = True
-        when = "today" if d == today else "on %s (UTC)" % d
-        urgent = n >= RED_PCT * c
-        text = ("AGSIST sent %d of your %d Brevo emails %s (%d%%). Time to upgrade Brevo (Starter removes the "
-                "daily cap), then set the repo variable SEND_DAILY_CAP to the new limit." % (n, c, when, _pct(n, c)))
-        lines = [("Urgent: " + text) if urgent else text, "",
-                 "Past the cap Brevo stops the sends partway down the list, and the readers at the end get nothing.",
-                 "The count is read from the senders' run logs and is a floor: the real number can be higher."]
-        out.append(("sendcap-%d:%s" % (95 if urgent else 80, d),
-                    "%sAGSIST: %d of %d Brevo emails %s" % ("URGENT: " if urgent else "", n, c, when), lines))
-    if near:
-        return out
-    hist = {d: n for d, n in (row.get("daily7") or {}).items() if d < today and isinstance(n, int)}
-    last = sorted(hist)[-7:]
-    if len(last) >= EARLY_MIN_DAYS:
-        avg = sum(hist[d] for d in last) / len(last)
-        if avg >= EARLY_PCT * c:
-            y, w, _ = now.isocalendar()
-            out.append(("sendcap-70:%d-W%02d" % (y, w), "AGSIST: the Daily is near the Brevo daily limit",
-                        ["Heads up: the AGSIST Daily averaged %d emails a day over the last %d days, %d%% of your %d "
-                         "Brevo emails a day. Nothing has stopped yet. Upgrading Brevo (Starter removes the daily cap) "
-                         "before the list grows past it, then setting the repo variable SEND_DAILY_CAP to the new limit, "
-                         "keeps every send whole." % (int(avg + 0.5), len(last), _pct(avg, c), c), "",
-                         "This heads-up comes at most once a week."]))
-    return out
-
-
-def remind(doc, now, environ=None, is_set=None, set_flag=None, mail=None):
-    """Send each due reminder whose flag is not set, then set it. -> the keys mailed."""
-    if is_set is None or set_flag is None:
-        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-        import list_source
-        is_set, set_flag = is_set or list_source.flag_is_set, set_flag or list_source.flag_set
-    if mail is None:
-        import log_safe
-        mail = log_safe.owner_mail
-    sent = []
-    for key, subject, lines in reminders(doc, now, environ):
-        try:
-            seen = is_set(key)
-        except Exception as ex:                            # noqa: BLE001  no dedupe, no email
-            print("brevo reminder %s: the flag could not be read (%s); not sending" % (key, type(ex).__name__))
-            continue
-        if seen:
-            print("brevo reminder %s: already sent" % key)
-            continue
-        # The flag first (checker, PR 331): a flag that does not take sends nothing, so a failing flag
-        # store can cost one reminder but never mail Sig on every run.
-        try:
-            took = set_flag(key)
-        except Exception as ex:                            # noqa: BLE001
-            took = False
-            print("brevo reminder %s: the flag could not be set (%s); not sending" % (key, type(ex).__name__))
-        if not took:
-            print("brevo reminder %s: the flag did not take; not sending" % key)
-            continue
-        if mail(subject, lines):
-            sent.append(key)
-            print("brevo reminder %s: mailed to Sig" % key)
-        else:
-            print("brevo reminder %s: NOT mailed (see above); the flag is set, so it is not retried today" % key)
-    if not sent:
-        print("brevo reminder: nothing to send")
-    return sent
-
-
 # ───────────────────────────── selftest (fixtures only: no network, no clock) ─────────────────────────────
 
 def selftest():
@@ -595,23 +484,23 @@ def selftest():
     real = {"daily.yml": [run("2026-11-04", L("daily", 209))], "form-digest.yml": [run("2026-11-04", L("form-digest", 2), rid=2)]}
     r = row_for(real)
     ck("Nov 4: 209 + 2 against 300 is ok", r["status"] == "ok" and r["days"] == {"2026-11-04": 211}, r)
-    ck("the row names today's count, the cap and the top senders",
-       "at least 211 of 300" in r["why"] and "daily 209" in r["why"] and "form-digest 2" in r["why"], r["why"])
+    ck("the row names today's count and the top senders, with no cap",
+       "at least 211:" in r["why"] and " of 300" not in r["why"] and "daily 209" in r["why"] and "form-digest 2" in r["why"], r["why"])
     ck("the row is critical", r["critical"] is True)
     r = row_for({"daily.yml": [run("2026-11-04", L("daily", 245))]})
-    ck("245 of 300 is a warning", r["status"] == "warn", r)
+    ck("245 in a day is information, not a warning (no daily cap)", r["status"] == "ok", r)
     r = row_for({"daily.yml": [run("2026-11-04", L("daily", 285))]})
-    ck("285 of 300 (95%) is red", r["status"] == "late", r)
+    ck("285 in a day is not red either", r["status"] == "ok", r)
     r = row_for({"daily.yml": [run("2026-11-04", L("daily", 285))]}, c=10000)
     ck("with the cap at 10000, 285 is ok", r["status"] == "ok", r)
     r = row_for({"daily.yml": [run("2026-11-04", L("daily", 3), caps=[{"sender": "daily", "kind": "refused", "code": 421}])]})
     ck("a quota refusal is red, whatever the count", r["status"] == "late" and "refused" in r["why"], r)
     r = row_for({"daily.yml": [run("2026-11-04", L("daily", 2), caps=[{"sender": "daily", "kind": "preflight", "used": 5, "size": 209, "later": 200, "cap": 300}])]})
-    ck("a preflight marker is red (projected past the cap)", r["status"] == "late" and "projected past the cap" in r["why"], r)
+    ck("a preflight marker (an old log line) no longer judges", r["status"] == "ok" and "projected past" not in r["why"], r)
     r = row_for({"daily.yml": [run("2026-11-04", L("daily", 0, smtp=1))]})
     ck("smtp= counts Sig's test copy (sent_readers 0)", r["days"] == {"2026-11-04": 1}, r)
     r = row_for({"daily.yml": [run("2026-11-03", L("daily", 250), rid=1), run("2026-11-04", L("daily", 3), rid=2)]})
-    ck("the busiest UTC day in the window is judged", r["status"] == "warn" and r["days"] == {"2026-11-03": 250, "2026-11-04": 3}, r)
+    ck("both UTC days in the window are shown, neither judged", r["status"] == "ok" and r["days"] == {"2026-11-03": 250, "2026-11-04": 3}, r)
     r = row_for({"daily.yml": [{"id": 1, "created_at": "2026-11-04T11:00:00Z", "lines": None}]})
     ck("no log read is unknown, not ok", r["status"] == "unknown", r)
     r = row_for(real, sampled=["report-day.yml"])
@@ -624,8 +513,7 @@ def selftest():
     pre_row = row_for({"daily.yml": [run("2026-11-04", L("daily", 2), caps=[
         {"sender": "daily", "kind": "preflight", "used": 5, "size": 209, "later": 200, "cap": 300}])]})
     rr = rejudge(dict(pre_row), now, {"SEND_DAILY_CAP": "20000"})
-    ck("a raised cap clears a stale preflight marker", pre_row["status"] == "late" and rr["status"] == "ok"
-       and not rr["markers"], rr)
+    ck("a stale preflight marker is ignored before and after a rejudge", pre_row["status"] == "ok" and rr["status"] == "ok", rr)
     ref_row = row_for({"daily.yml": [run("2026-11-04", L("daily", 2), caps=[{"sender": "daily", "kind": "refused", "code": 550}])]})
     rr = rejudge(dict(ref_row), now, {"SEND_DAILY_CAP": "20000"})
     ck("a refusal stays red for the window, even with a raised cap", rr["status"] == "late", rr)
@@ -768,15 +656,15 @@ def selftest():
     res, out = pf(209)
     ck("Nov 4: 2 counted + 209 is under 300: no warning", res["over"] is False and "::warning" not in out and "SEND-CAP" not in out, out)
     res, out = pf(209, later=200)
-    ck("a report day (209 + 200 later) warns and prints the marker",
-       res["over"] and "::warning" in out and "SEND-CAP sender=daily kind=preflight cap=300 later=200 size=209 used=2" in out, out)
+    ck("a report day (209 + 200 later) prints the count as information: no warning, no marker",
+       res["over"] is False and "::warning" not in out and "SEND-CAP" not in out and "later today 200" in out and "no daily cap" in out, out)
     res, out = pf(209, later=200, env={"SEND_DAILY_CAP": "10000"})
     ck("with SEND_DAILY_CAP=10000 nothing warns", res["over"] is False and "::warning" not in out, out)
     res, out = pf(209, later=200, d={"workflows": [{"workflow": ROW, "cap": 10000, "days": {}}]})
     ck("no variable in the sender's step: the saved row's cap is used", res["cap"] == 10000 and not res["over"], res)
     res, out = pf(305, d=None)
-    ck("no saved count: this send alone is still judged", res["over"] and res["used"] is None and "could not be read" in out, out)
-    ck("no saved count: the marker says used=unknown, not 0", "kind=preflight cap=300 later=0 size=305 used=unknown" in out, out)
+    ck("no saved count: said as unknown, never a warning", res["over"] is False and res["used"] is None and "could not be read" in out
+       and "SEND-CAP" not in out and "::warning" not in out, out)
     ck("used=unknown parses", parse(marker("daily", "preflight", used="unknown", size=305))
        == [{"sender": "daily", "kind": "preflight", "size": 305, "used": "unknown"}])
 
@@ -814,77 +702,6 @@ def selftest():
     daily = [{"email": "A@x.y"}, {"email": "b@x.y", "reports": False}, {"email": "c@x.y", "reports": True}]
     ck("the report-day projection adds the report-only list, each reader once",
        report_day_count(daily, [{"email": "a@x.y"}, {"email": "d@x.y"}, "e@x.y", {"email": "nope"}]) == 4)
-    # reminders to Sig (Nov 4): once a day per level, again at 95% marked urgent, none once the cap is raised
-    def vdoc(days, daily7=None, c=300):
-        return {"workflows": [{"workflow": ROW, "cap": c, "days": days, "daily7": daily7 or {}}]}
-    flags, mailed = set(), []
-
-    def go(doc, env=None, at=now):
-        b = io.StringIO()
-        with contextlib.redirect_stdout(b):
-            keys = remind(doc, at, env or {}, is_set=lambda k: k in flags, set_flag=lambda k: flags.add(k) or True,
-                          mail=lambda subj, lines: mailed.append((subj, lines)) or True)
-        return keys
-    ck("Nov 4: 211 of 300 sends no reminder", go(vdoc({"2026-11-04": 211})) == [] and not mailed)
-    k1 = go(vdoc({"2026-11-04": 245}))
-    ck("245 of 300 (81%) mails one reminder", k1 == ["sendcap-80:2026-11-04"] and len(mailed) == 1, (k1, mailed))
-    ck("the reminder text names the count, the cap and the variable",
-       mailed and mailed[0][1][0] == "AGSIST sent 245 of your 300 Brevo emails today (81%). Time to upgrade Brevo "
-       "(Starter removes the daily cap), then set the repo variable SEND_DAILY_CAP to the new limit.", mailed[:1])
-    ck("the same day again: once a day, no second mail", go(vdoc({"2026-11-04": 260})) == [] and len(mailed) == 1)
-    k2 = go(vdoc({"2026-11-04": 290}))
-    ck("95% the same day: one urgent reminder", k2 == ["sendcap-95:2026-11-04"] and len(mailed) == 2
-       and mailed[1][0].startswith("URGENT") and mailed[1][1][0].startswith("Urgent: AGSIST sent 290 of your 300"), (k2, mailed[-1:]))
-    ck("95% again: no repeat that day", go(vdoc({"2026-11-04": 299})) == [] and len(mailed) == 2)
-    ck("the next day at 81%: a new reminder", go(vdoc({"2026-11-05": 245}), at=datetime(2026, 11, 5, 21, tzinfo=UTC))
-       == ["sendcap-80:2026-11-05"])
-    flags.clear()
-    ck("SEND_DAILY_CAP raised above the day's count: no reminder",
-       go(vdoc({"2026-11-04": 290}), {"SEND_DAILY_CAP": "20000"}) == [])
-    ck("straight to 95%: the urgent one only", go(vdoc({"2026-11-04": 290})) == ["sendcap-95:2026-11-04"])
-    flags.clear()
-    del mailed[:]
-
-    def fail_read(k):
-        raise RuntimeError("down")
-    b = io.StringIO()
-    with contextlib.redirect_stdout(b):
-        ks = remind(vdoc({"2026-11-04": 290}), now, {}, is_set=fail_read, set_flag=lambda k: flags.add(k) or True,
-                    mail=lambda s_, l_: mailed.append(1) or True)
-    ck("a flag that cannot be read sends nothing", ks == [] and not mailed, b.getvalue())
-    order = []
-    b = io.StringIO()
-    with contextlib.redirect_stdout(b):
-        ks = remind(vdoc({"2026-11-04": 245}), now, {}, is_set=lambda k: False,
-                    set_flag=lambda k: order.append("flag") or True, mail=lambda s_, l_: order.append("mail") or True)
-    ck("the flag is set before the mail", order == ["flag", "mail"] and ks == ["sendcap-80:2026-11-04"], order)
-    b = io.StringIO()
-    with contextlib.redirect_stdout(b):
-        ks = remind(vdoc({"2026-11-04": 245}), now, {}, is_set=lambda k: False,
-                    set_flag=lambda k: False, mail=lambda s_, l_: mailed.append(1) or True)
-    ck("a flag that does not take sends nothing (no mail every run)", ks == [] and not mailed, b.getvalue())
-
-    def boom(k):
-        raise RuntimeError("store down")
-    b = io.StringIO()
-    with contextlib.redirect_stdout(b):
-        ks = remind(vdoc({"2026-11-04": 245}), now, {}, is_set=lambda k: False, set_flag=boom,
-                    mail=lambda s_, l_: mailed.append(1) or True)
-    ck("a flag store that raises sends nothing", ks == [] and not mailed, b.getvalue())
-    week = {"2026-10-29": 212, "2026-10-30": 214, "2026-10-31": 213, "2026-11-01": 215, "2026-11-02": 216,
-            "2026-11-03": 217, "2026-11-04": 3}
-    ke = go(vdoc({"2026-11-04": 3}, week))
-    ck("the Daily's 7-day average at 71% of 300: a gentle heads-up", ke == ["sendcap-70:2026-W45"]
-       and mailed[-1][1][0].startswith("Heads up: the AGSIST Daily averaged 215 emails a day over the last 6 days, 71%"),
-       (ke, mailed[-1:]))
-    ck("the heads-up comes once a week", go(vdoc({"2026-11-04": 3}, week), at=datetime(2026, 11, 6, 9, tzinfo=UTC)) == [])
-    week2 = dict(week, **{"2026-11-04": 218, "2026-11-05": 219})
-    ck("the next week it can come again", go(vdoc({"2026-11-09": 3}, week2), at=datetime(2026, 11, 9, 9, tzinfo=UTC))
-       == ["sendcap-70:2026-W46"])
-    ck("209 a day (70% of 300 is 210) is no heads-up",
-       go(vdoc({}, {d: 209 for d in week}), at=datetime(2026, 11, 20, 9, tzinfo=UTC)) == [])
-    ck("two days are not an average", reminders(vdoc({}, {"2026-11-02": 250, "2026-11-03": 250}), now) == [])
-    ck("no address in a reminder", "@" not in json.dumps(mailed))
     ck("the history keeps the larger count per day and %d days" % HIST_DAYS,
        daily_history({"daily7": {"2026-11-03": 209, "2026-10-20": 1}}, {"2026-11-03": [["daily", 150]], "2026-11-04": {"daily": 7}})
        == {"2026-10-20": 1, "2026-11-03": 209, "2026-11-04": 7})
@@ -898,16 +715,6 @@ def selftest():
 def main(argv):
     if "--selftest" in argv:
         return selftest()
-    if "--remind" in argv:
-        i = argv.index("--remind")
-        path = argv[i + 1] if i + 1 < len(argv) else HEALTH_PATH
-        try:
-            with open(path, encoding="utf-8") as fh:
-                doc = json.load(fh)
-        except Exception as ex:                            # noqa: BLE001
-            print("brevo reminder: no cron-health file (%s); nothing to send" % type(ex).__name__)
-            return 0
-        remind(doc, datetime.now(UTC))
     return 0
 
 
