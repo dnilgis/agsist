@@ -213,7 +213,8 @@ def main():
     # ── 5. ratio and percentile: a band cross or a real move since last printed ──
     mp = [{"kind": "percentile", "key": "feeders", "value": 74, "date": "2026-11-07"}]
     pf = {"kind": "percentile", "key": "feeders", "value": 74}
-    ok(F.still_news(pf, [], D("2026-11-07"))[0], "Nov 7: feeders 74th, not printed before: prints")
+    ok(not F.still_news(pf, [], D("2026-11-07"))[0], "Nov 7: feeders 74th, middle band and never printed: a standing fact, cut")
+    ok(F.still_news(dict(pf, value=93), [], D("2026-11-07"))[0], "a never-printed 93rd percentile (top tenth) prints")
     for d in ("2026-11-08", "2026-11-09"):
         ok(not F.still_news(pf, mp, D(d))[0], "%s: feeders 74th again is cut" % d)
     ok(F.still_news(dict(pf, value=80), mp, D("2026-11-09"))[0], "feeders 74th to 80th (6 points) prints")
@@ -227,8 +228,11 @@ def main():
     ok(F.still_news(dict(f8, value=2.51), rmem, D("2026-11-08"))[0], "2.48 to 2.51 crosses 2.5: prints")
     fill = build(n9, "2026-11-09", memory=mem)
     ok(sum(1 for x in fill["items"] if x["kind"] == "rank") <= V.RANK_FILL, "at most one percentile fills a short list")
-    ok(not any(x["kind"] == "rank" and "Feeders" in x["text"] for x in build(n9, "2026-11-09", memory=mp)["items"]),
-       "Nov 9 email with Nov 7's print in memory: no feeders percentile")
+    for d in ("2026-11-07", "2026-11-08", "2026-11-09"):
+        ok(not any(x["kind"] == "rank" for x in build(sent(d)["briefing"], d, memory=mp)["items"]),
+           "%s email: no middle-band percentile fills Today (feeders 74th, cattle 71st)" % d)
+    sub8 = build(sent("2026-11-08")["briefing"], "2026-11-08")["subject"]
+    ok(sub8 == "Mexico's record corn sale and Monday's crop report lead", "Nov 8: a hard cut never ends on a little word: %r" % sub8)
 
     # ── 6. cash count: a new trading day with a full sample ─────────────────
     pub = E.load_published(REPO)

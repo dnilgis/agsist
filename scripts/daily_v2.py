@@ -775,6 +775,9 @@ def wow_item(daily, state=None):
 
 
 # ── the inbox row ─────────────────────────────────────────────────────────
+DANGLING = {"the", "a", "an", "and", "or", "of", "to", "in", "on", "for", "with", "as", "at", "by", "from", "its"}
+
+
 def clip(s, room=SUBJECT_MAX, hard=SUBJECT_HARD):
     s = s.rstrip(" .")
     if len(s) <= room:
@@ -787,7 +790,13 @@ def clip(s, room=SUBJECT_MAX, hard=SUBJECT_HARD):
         if len(s) <= lim:
             return s
     cut = s.rfind(" ", 0, hard)
-    return (s[:cut] if cut >= 20 else s[:hard]).rstrip(" ,;:")
+    out = (s[:cut] if cut >= 20 else s[:hard]).rstrip(" ,;:")
+    # never end on a little word (Nov 8 2026 would have read "... crop report lead the")
+    while True:
+        head, _sp, last = out.rpartition(" ")
+        if not head or len(head) < 20 or last.lower() not in DANGLING:
+            return out
+        out = head.rstrip(" ,;:")
 
 
 def subject(daily, news=None, today=None, fresh=None, report=None):

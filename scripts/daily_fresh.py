@@ -605,7 +605,8 @@ def stamp(found, tries):
 # and prints only when that fact changed since the issue that last printed it:
 #   funds        once per CFTC release, Saturday only: none printed in the 6 days before
 #   ratio        a band cross (RATIO_BANDS) or a move of RATIO_MOVE or more
-#   percentile   a band cross (PCT_BANDS) or a move of PCT_MOVE points or more
+#   percentile   a band cross (PCT_BANDS) or a move of PCT_MOVE points or more; never printed, only
+#                from the bottom or top tenth (the middle band is a standing fact)
 #   basis_wow    a state enters, leaves or moves WOW_MOVE cents (wow_should_print)
 #   anything else  a new value (the same key with the same value is a repeat)
 # The memory is what went out: data/daily-sent/<day>.json (its "printed" list,
@@ -672,6 +673,10 @@ def still_news(fact, mem, today):
             return False, "this release's fund position already printed %s" % last["date"]
         return True, "the Saturday after the release"
     if last is None:
+        if kind == "percentile" and _band(float(fact.get("value") or 0), PCT_BANDS) == 1:
+            # never printed and in the middle band: a standing fact, not news (Nov 8 2026 rule); measured from
+            # the middle, a first print is a band cross only from the bottom or top tenth
+            return False, "%s at the %s percentile sits in the middle band and was not printed before" % (key, fact.get("value"))
         return True, "not printed in the last %d days" % MEMORY_DAYS
     try:
         v, lv = fact.get("value"), last.get("value")
