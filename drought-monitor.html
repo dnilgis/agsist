@@ -93,6 +93,12 @@ button,a,[role="button"] { touch-action: manipulation; }
 #main .dm-hero p.dm-lede { font-size: .88rem; margin-top: .1rem; }
 .dm-hero p { color: var(--text-dim); font-size: .85rem; line-height: 1.6; max-width: 600px; margin: 0; }
 .dm-answer { font-size: 1.05rem; line-height: 1.5; color: var(--text); margin: .2rem 0 .5rem; max-width: 640px; }
+/* The filled headline (data/drought/summary.json) is 3 to 9 lines by width; the room is held from the first paint so the page below does not drop when it arrives. */
+.dm-answer { min-height: 12.8em; }
+@media (min-width: 392px) { .dm-answer { min-height: 11.2em; } }
+@media (min-width: 412px) { .dm-answer { min-height: 9.7em; } }
+@media (min-width: 482px) { .dm-answer { min-height: 8.1em; } }
+@media (min-width: 642px) { .dm-answer { min-height: 6.5em; } }
 .dm-answer strong { color: var(--gold); font-weight: 800; }
 .dm-up { color: #e0703a; } .dm-down { color: var(--green); }
 [data-theme="light"] .dm-up { color: #a8461b; } [data-theme="light"] .dm-down { color: #256b42; }
@@ -101,7 +107,7 @@ button,a,[role="button"] { touch-action: manipulation; }
 .dm-state-line:empty { display: none; }
 .dm-eyebrow { font-size:0.755rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); margin-bottom: .3rem; }
 .dm-hero-meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-top: .6rem; }
-.dm-updated { font-family: 'JetBrains Mono', monospace; font-size:0.763rem; color: var(--text-muted); }
+.dm-updated { font-family: 'JetBrains Mono', monospace; font-size:0.763rem; color: var(--text-muted); min-width: min(100%, 84ch); } /* the whole line (monospace, 83 characters with the map date) is held, so the next-update badge does not move when the date arrives */
 .dm-next-update { font-family: 'JetBrains Mono', monospace; font-size:0.763rem; color: var(--green); background: rgba(58,139,60,.08); border: 1px solid rgba(58,139,60,.2); padding: .15rem .5rem; border-radius: 4px; }
 [data-theme="light"] .dm-next-update { color: #256b42; } /* was 4.26:1 on its tint */
 
