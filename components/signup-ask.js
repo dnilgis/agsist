@@ -1043,12 +1043,27 @@
        not count. The PRF grid notice does not count either: PRF pages keep
        the bar (Sig, Oct 20). */
   var BAR_SEEN = 'agsist_bar_seen', ENGAGE_S = 40;
+  /* /cash-bids (Sig, 2026-11-09): the bar is back on this page, but only once the results have shown, and with
+     its own source tag, bar-cash-bids, so the signups can be compared with the box's page:cash-bids over two weeks.
+     The page's one-line box does not count as "the page's own ask" here. */
+  function cashBidsPage() { return /^\/cash-bids(\.html)?\/?$/.test(location.pathname); }
+  function resultsShown() {
+    var b = document.getElementById('best-bids-section');
+    try { return !!b && window.getComputedStyle(b).display !== 'none'; } catch (e) { return false; }
+  }
+  function whenResults(fn) {
+    var b = document.getElementById('best-bids-section');
+    if (!b || !window.MutationObserver) return;
+    var mo = new MutationObserver(function () { if (resultsShown()) { mo.disconnect(); fn(); } });
+    mo.observe(b, { attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
+  }
   function ownAsk() {
     var a = document.querySelectorAll('[data-signup-ask],[data-bid-alerts]');
     for (var i = 0; i < a.length; i++) {
       var el = a[i];
+      if (cashBidsPage() && el.hasAttribute('data-bid-alerts')) continue;
       if (el.closest('#sa-bar,footer,#topnav,#drawer,[data-signup-hide],[data-prf-notice]')) continue;
-      if (/^(footer|menu-desk|menu-phone|bar)$/.test(el.getAttribute('data-source') || '')) continue;
+      if (/^(footer|menu-desk|menu-phone|bar|bar-cash-bids)$/.test(el.getAttribute('data-source') || '')) continue;
       if (/^prf:/.test(el.getAttribute('data-topic') || '')) continue;
       if (el.hidden || el.closest('[hidden]')) continue;
       return true;
@@ -1075,6 +1090,7 @@
     try { if (Date.now() < +(localStorage.getItem('agsist_bar_snooze') || 0)) return false; } catch (e) {}
     try { if (sessionStorage.getItem(BAR_SEEN) === '1') return false; } catch (e) {}
     if (document.getElementById('sa-bar')) return false;
+    if (cashBidsPage() && !resultsShown()) return false;
     return !ownAsk();
   }
   function engaged(fn) {
@@ -1088,6 +1104,7 @@
     if (phone) window.addEventListener('scroll', sc, { passive: true });
   }
   function bar() {
+    if (cashBidsPage() && !resultsShown()) { whenResults(bar); return; }
     if (!barOk()) return;
     if (visits() >= 2) openBar();
     else engaged(function () { if (barOk()) openBar(); });
@@ -1098,7 +1115,7 @@
     var b = document.createElement('aside');
     b.id = 'sa-bar'; b.className = 'sa-bar is-off';
     b.setAttribute('aria-label', 'AGSIST Daily signup');
-    b.innerHTML = '<div class="sa-bar-in"><div data-signup-ask="' + esc(BAR_TEXT) + '" data-source="bar" data-variant="bar"></div>'
+    b.innerHTML = '<div class="sa-bar-in"><div data-signup-ask="' + esc(BAR_TEXT) + '" data-source="' + (cashBidsPage() ? 'bar-cash-bids' : 'bar') + '" data-variant="bar"></div>'
       + '<button type="button" class="sa-x" aria-label="Close the AGSIST Daily signup">✕</button></div>';
     document.body.appendChild(b);
     barEl = b;
