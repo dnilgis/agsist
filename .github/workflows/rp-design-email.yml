@@ -55,8 +55,6 @@ jobs:
       group: rp-design-email
       cancel-in-progress: false
     timeout-minutes: 10
-    # actions: write starts rp-buyer-email.yml for a paid order still unmailed after 60 minutes
-    # (Sig, Nov 9 2026; the same dispatch the subs worker makes). No new schedule.
     permissions:
       actions: write
       contents: read
