@@ -201,7 +201,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=28" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/prf.css?v=9">
+  <link rel="stylesheet" href="/components/prf.css?v=10">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -244,12 +244,11 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
       <div><dt>January to February cap</dt><dd>{jf_txt}</dd></div>
       <div><dt>Sign-up deadline</dt><dd>{sales}</dd></div>
     </dl>
-    <p class="prf-fine">The first figure is the middle county; the small ones are the lowest and highest. Protection per acre is the county value times your coverage level times a productivity factor of 60 to 150.</p>
     {sod}
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
-    <p>At 90% coverage, across the {n_grid:,} grids that touch a {e(name)} county with PRF. The premium is the full rate per $100 of protection; USDA pays {subrow}. Each figure is the middle of the grids for that pair of months, so a row&rsquo;s middle can be a different grid from the next row&rsquo;s.</p>
-    <div class="prf-scroll" tabindex="0" role="region" aria-label="Each pair of months, scrolls sideways"><table class="prf-sub-t prf-iv-t"><caption class="prf-sr">Each pair of months in {e(name)} at 90% coverage, middle of the grids for each pair</caption><thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation, middle grid for the pair</th><th scope="col">Premium per $100, middle grid for the pair</th><th scope="col">Years under 90% of normal, of {ny}, middle grid for the pair</th><th scope="col">Grids offered</th></tr></thead><tbody>{iv}</tbody></table></div>
+    <p>At 90% coverage, across the {n_grid:,} grids that touch a {e(name)} county with PRF. The premium is the full rate per $100 of protection; USDA pays {subrow}.</p>
+    <div class="prf-scroll" tabindex="0" role="region" aria-label="Each pair of months, scrolls sideways"><table class="prf-sub-t prf-iv-t"><caption class="prf-sr">Each pair of months in {e(name)} at 90% coverage, middle of the grids for each pair</caption><thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation</th><th scope="col">Premium per $100</th><th scope="col">Years under 90% of normal, of {ny}</th><th scope="col">Grids offered</th></tr></thead><tbody>{iv}</tbody></table></div>
     <p>Across {e(name)}&rsquo;s grids, $1 of full premium at 90% coverage would have paid back a middle ${f['payback_mid_90']:.2f} over {y0} to {y1} at {cy} rates ({f['payback_n_90']:,} grid and month pairs), close to the national middle of $0.87. On the full premium, no month or grid stands out. The months to insure are the ones when a dry spell costs you grass or hay.</p>
     </div>
 
@@ -277,9 +276,10 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     <div class="prf-faq">{faq_html}</div>
     </div>
 
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here.</p>
     <nav class="prf-links prf-st-links" aria-label="PRF in other states"><a href="/prf">PRF calculator</a> {others}</nav>
     <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
+    {terms(f"Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}. In the top figures, the first is the middle county and the small ones the lowest and highest. In the months table each figure is the middle grid for that pair, and a row&rsquo;s middle grid can differ from the next row&rsquo;s. Protection per acre is the county value times your coverage level times a productivity factor of 60 to 150.")}
   </div>
   </main>
   <div id="site-footer"></div>
@@ -288,6 +288,11 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
 </body>
 </html>
 """
+
+
+def terms(body):
+    """The one closed "Sources and terms" fold, the last thing in main (Sig, Nov 8)."""
+    return f'<details class="prf-terms"><summary>Sources and terms</summary><p>{body}</p></details>'
 
 
 def dollars(x):
@@ -318,7 +323,7 @@ def guide(meta, facts, states, BOOT):
     dear = max(ivs, key=lambda r: r["mid_rate_per_100"])
     n_grids, n_co = meta["counts"]["grids"], meta["counts"]["counties"]
     url = f"https://agsist.com/prf/{GUIDE_SLUG}"
-    title = f"How PRF Insurance Works: Intervals, Coverage, Productivity Factor ({cy}) | AGSIST"
+    title = "How PRF Insurance Works: Intervals, Coverage, Productivity Factor"
     desc = (f"How Pasture, Rangeland, Forage (PRF) insurance works for {cy}, in plain words: the grid, the eleven intervals, coverage, "
             f"productivity factor, USDA's share and what the record says.")
     if len(desc) > 160:
@@ -367,7 +372,7 @@ def guide(meta, facts, states, BOOT):
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=28" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/prf.css?v=9">
+  <link rel="stylesheet" href="/components/prf.css?v=10">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -431,13 +436,14 @@ def guide(meta, facts, states, BOOT):
       <li><b>{acre}</b>: acreage report, with any lease signed and in hand.</li>
       <li><b>{bill}</b>: premium billed, no earlier than this.</li>
     </ul>
-    <p>From {cy}, grazing acres need livestock you have an interest in, equal to at least 25% of the stocking rate, or no payment is due and the premium is still owed. USDA&rsquo;s share needs form AD-1026 on file with the Farm Service Agency. <a href="/prf#before">Before you sign</a> &middot; <a href="/prf#prf-not">What PRF does not do</a> &middot; <a href="/prf#method">How the calculator figures it</a></p>
+    <p>From {cy}, grazing acres need livestock you have an interest in, equal to at least 25% of the stocking rate, or no payment is due and the premium is still owed. USDA&rsquo;s share needs form AD-1026 on file with the Farm Service Agency. <a href="/prf#before">Before you sign</a> &middot; <a href="/prf#prf-not">What PRF does not do</a> &middot; <a href="/prf#terms">How the calculator figures it</a></p>
 
     <h2 id="faq">Questions</h2>
     <div class="prf-faq">{faq_html}</div>
     </div>
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. </p>
     <nav class="prf-links prf-st-links" aria-label="PRF by state"><a href="/prf">PRF calculator</a> {st_links}</nav>
+    {terms(f"Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.")}
   </div>
   </main>
   <div id="site-footer"></div>

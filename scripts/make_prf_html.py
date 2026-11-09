@@ -26,7 +26,7 @@ HTML = f"""<!DOCTYPE html>
   <meta name="theme-color" content="#0a0c0d">
   <link rel="preload" href="/components/styles.css?v=28" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/prf.css?v=9">
+  <link rel="stylesheet" href="/components/prf.css?v=10">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
@@ -64,21 +64,20 @@ HTML = f"""<!DOCTYPE html>
     <h1>PRF insurance calculator: what your grid would have paid, every year since {mk("y0")}</h1>
     <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. Find your grid to see the {mk("crop_year")} premium, USDA&rsquo;s share of it, and what the policy would have paid in each of the {mk("nyears")} years from {mk("y0")} to {mk("y1")}. Free, no sign-up, all {mk("grids")} grids in {mk("states")} states.</p>
 
-    <p class="prf-status" id="prf-status" role="status"></p>
-    <noscript><p class="prf-status is-bad">The calculator needs JavaScript. The dates, the rules, the worked example and the method below do not.</p></noscript>
+    <noscript><p class="prf-status is-bad">The calculator needs JavaScript. The dates, the rules and the worked example below do not.</p><style>#prf-app{{display:none}}</style></noscript>
 
-    <div id="prf-app" hidden>
+    <div id="prf-app">
       <section class="prf-card prf-step-find" aria-labelledby="prf-find-h">
         <h2 class="prf-step-h" id="prf-find-h"><span class="prf-n" aria-hidden="true">1</span>Find your grid</h2>
         <form class="prf-find" id="prf-find" autocomplete="off" role="search" aria-labelledby="prf-find-h">
           <label class="prf-find-l" for="prf-q">ZIP, town and state, coordinates, or grid ID</label>
           <div class="prf-find-row">
             <input id="prf-q" type="text" inputmode="text" enterkeyhint="search" placeholder="54728, or Chetek WI" aria-describedby="prf-find-msg">
-            <button type="submit" class="btn btn-primary prf-btn-go"><span>Find<span class="prf-find-x"> the grid</span></span></button>
+            <button type="submit" class="btn btn-primary prf-btn-go" disabled data-wait><span>Find<span class="prf-find-x"> the grid</span></span></button>
           </div>
         </form>
         <div class="prf-find-alt">
-          <button type="button" class="prf-alt" id="prf-loc">Use my location</button>
+          <button type="button" class="prf-alt" id="prf-loc" disabled data-wait>Use my location</button>
           <details class="prf-browse"><summary class="prf-alt">Pick by state and county</summary>
             <div class="prf-browse-g">
               <div class="field"><label for="prf-b-st">State</label><select id="prf-b-st"></select></div>
@@ -86,9 +85,9 @@ HTML = f"""<!DOCTYPE html>
             </div>
             <div class="prf-b-grids" id="prf-b-grids"></div>
           </details>
-          <span class="prf-start" id="prf-start"><button type="button" class="prf-alt" id="prf-eg">Open an example: grid 30454, Barron County, Wisconsin</button></span>
+          <span class="prf-start" id="prf-start"><button type="button" class="prf-alt" id="prf-eg" disabled data-wait>Open an example: grid 30454, Barron County, Wisconsin</button></span>
         </div>
-        <p class="prf-find-msg" id="prf-find-msg" role="status" aria-live="polite"></p>
+        <p class="prf-find-msg prf-hold" id="prf-find-msg" role="status" aria-live="polite">Loading the rain record…</p>
       </section>
       <button type="button" class="prf-live" id="prf-bar" data-jump="prf-answer-h" hidden></button>
       <p class="prf-sr" id="prf-say" aria-live="polite" aria-atomic="true"></p>
@@ -197,7 +196,7 @@ HTML = f"""<!DOCTYPE html>
               <div class="prf-outlook-body" id="prf-outlook-body"></div>
             </section></div></details>
           <details class="prf-d" id="prf-years-d"><summary><span class="prf-d-t">Every year, in numbers<span class="prf-d-x">What it would have paid each year, interval by interval</span></span></summary><div id="prf-years"></div></details>
-          <section id="prf-optimize" class="prf-block" aria-labelledby="prf-opt-h"><h2 id="prf-opt-h">What the numbers would pick</h2><p class="po-note">This is what the history and current outlook point to, not advice. RMA rates already price most of this in.</p><div data-opt-body></div></section>
+          <section id="prf-optimize" class="prf-block" aria-labelledby="prf-opt-h"><h2 id="prf-opt-h">What the numbers would pick</h2><p class="po-note">This is what the history and the rates point to, not advice. RMA rates already price most of this in.</p><div data-opt-body></div></section>
           <details class="prf-d" id="prf-pol-d"><summary><span class="prf-d-t">The policy, interval by interval<span class="prf-d-x">Protection, premium and USDA&rsquo;s share on each line, as an insurer lists them</span></span></summary><div id="prf-pol"></div></details>
           <details class="prf-d" id="prf-rec-d"><summary><span class="prf-d-t">Each pair of months on its own<span class="prf-d-x">Normal precipitation, the trigger and how often each interval paid</span></span></summary><div><div id="prf-rec"></div>
             <p class="prf-fine">RMA&rsquo;s handbook: choosing intervals &ldquo;when precipitation is not needed for the insured crop or when precipitation does not normally occur is not an effective use&rdquo; of the policy. A study of two Nebraska sites found PRF lowered income risk when growing-season months were insured, and that winter months raised it (<a href="https://doi.org/10.1108/AFR-10-2017-0097" rel="noopener">Westerhold and others, 2018</a>).</p></div></details>
@@ -206,7 +205,7 @@ HTML = f"""<!DOCTYPE html>
           <details class="prf-d" id="prf-nb-d"><summary><span class="prf-d-t">The grids next door, same policy<span class="prf-d-x">The eight grids around this one, north up</span></span></summary><div id="prf-nb"></div></details>
           </section>
     <div class="prf-pbot">
-    <p class="prf-printfoot"><b>Dates, crop year {mk("crop_year")}:</b> sales closing {mk("sales_long")}, the last day to sign up or change; acreage report due {mk("acreage_long")}; premium billed no earlier than {mk("billing_long")}. <b>Conditions:</b> USDA&rsquo;s share needs form AD-1026 on file with the Farm Service Agency by the billing date. Grazing acres need livestock you have an interest in, at least 25% of the stocking rate (2027 Crop Provisions, section 4(j)). PRF pays on a precipitation index for the grid, not on your production (Basic Provisions, section 13). Not included here: the native sod rule and the administrative fee. Your insurer&rsquo;s quote is what counts. <span id="prf-psrc"></span> <span class="prf-made"><b>Made by AGSIST</b> (agsist.com): Sigurd Lindquist, CCA, who owns a licensed crop insurance agency. This sheet sells nothing and refers no one; a sponsor has no say over any figure. {mk("check")}</span></p>
+    <p class="prf-printfoot"><b>Dates, crop year {mk("crop_year")}:</b> sales closing {mk("sales_long")}, the last day to sign up or change; acreage report due {mk("acreage_long")}; premium billed no earlier than {mk("billing_long")}. <b>Conditions:</b> USDA&rsquo;s share needs form AD-1026 on file with the Farm Service Agency by the billing date. Grazing acres need livestock you have an interest in, at least 25% of the stocking rate (2027 Crop Provisions, section 4(j)). PRF pays on a precipitation index for the grid, not on your production (Basic Provisions, section 13). Not included here: the native sod rule, the administrative fee and the extra share for beginning farmers. Your insurer&rsquo;s quote is what counts. <span id="prf-psrc"></span> <span class="prf-made"><b>Made by AGSIST</b> (agsist.com): Sigurd Lindquist, CCA, who owns a licensed crop insurance agency. This sheet sells nothing and refers no one; a sponsor has no say over any figure. {mk("check")}</span></p>
     </div>
     <div class="prf-spon-p" id="prf-spon-p" hidden></div>
         </div>
@@ -216,7 +215,7 @@ HTML = f"""<!DOCTYPE html>
       <aside class="prf-spon-band prf-spon-offer" aria-label="For businesses"><span class="prf-spon-tag">For businesses</span> <span class="prf-spon-t">Sponsor PRF in your states.<span class="prf-spon-x"> One business per state, on the state page and every county page in it.</span> Price on request.</span> <a href="/prf-sponsor" data-prf-offer data-out="prf-sponsor">See your block and ask &rarr;</a></aside>
     </div>
 
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells nothing and refers no one; a labeled sponsor box may be an insurance agency, which has no say over any figure. Its one email box sends your grid&rsquo;s final index when USDA posts it. {mk("built")}. {mk("check")}</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells nothing and refers no one; a labeled sponsor box may be an insurance agency, which has no say over any figure. Its one email box sends your grid&rsquo;s final index when USDA posts it. {mk("built")}.</p>
 
     <div class="prf-prose">
     <h2 id="example">What PRF costs: a worked example</h2>
@@ -225,6 +224,7 @@ HTML = f"""<!DOCTYPE html>
     <h2 id="dates">PRF sign-up and billing dates for {mk("crop_year")}</h2>
     <ul class="prf-dates">
       <li><span class="d">{mk("sales_long")}</span><span>Sales closing date. New policies, and changes to coverage level, months, acres or productivity factor on an existing one, are due at your agent.</span></li>
+      <li><span class="d">{mk("cancel_long")}</span><span>Cancellation date. To drop the policy or stop it renewing, tell your agent by this date.</span></li>
       <li><span class="d">{mk("acreage_long")}</span><span>Acreage report due, with any lease signed and in hand. Without a report there is no coverage for the year.</span></li>
       <li><span class="d">Jan 1 to Dec 31</span><span>The coverage year. Each pair of months you insure stands on its own.</span></li>
       <li><span class="d">{mk("billing_long")}</span><span>Premium billing date. The premium is earned when the acreage is reported and billed no earlier than this. Premium you owe is taken out of any payment due you, even one paid before this date.</span></li>
@@ -233,9 +233,9 @@ HTML = f"""<!DOCTYPE html>
     <p>A payment, when one is owed, is issued &ldquo;not later than 60 days following the date RMA publishes the final grid index&rdquo; for that interval (Rainfall Index Basic Provisions, section 8(d)). No claim is filed. The dates above are read from USDA&rsquo;s {mk("crop_year")} actuarial files.</p>
 
     <h2 id="cost">USDA&rsquo;s share of the premium</h2>
-    <p>USDA pays {mk("subsidy_sentence")}. You pay the rest, plus an administrative fee per crop and county that this page leaves out.</p>
+    <p>USDA pays {mk("subsidy_sentence")}. You pay the rest, plus an administrative fee of $30 per crop per county for buy-up coverage, which beginning and veteran farmers and ranchers do not pay. The calculator leaves the fee out.</p>
     <table class="prf-sub-t"><caption class="prf-sr">USDA&rsquo;s share of the premium by coverage level</caption><thead><tr><th scope="col">Coverage level</th><th scope="col">USDA pays</th><th scope="col">You pay</th></tr></thead><tbody>{mk("subsidy_rows")}</tbody></table>
-    <p>The share is not automatic. It needs form AD-1026 on file with the Farm Service Agency by the premium billing date (Basic Provisions, section 11(h)). Beginning and veteran farmers and ranchers get a larger share. In six states, native sod broken in recent years gets 50 points less (see below). The premium rate itself is different for every grid, every interval and every coverage level.</p>
+    <p>The share is not automatic. It needs form AD-1026 on file with the Farm Service Agency by the premium billing date (Basic Provisions, section 11(h)). Beginning farmers and ranchers get more of it: 15 more points in their first two crop years, 13 in the third, 11 in the fourth and 10 in years five through ten, from the 2027 crop year for PRF. The calculator does not add these points; check with your agent for your policy. In six states, native sod broken in recent years gets 50 points less (see below). The premium rate itself is different for every grid, every interval and every coverage level.</p>
 
     <details class="prf-fold" id="payback-d"><summary><h2 id="payback">How payouts compare with the premium</h2><span class="prf-fold-x">$1 of full premium would have paid back a middle ${mk("lr_mid")}, about the same on every grid and month. Open for the table by month.</span></summary>
     <p>On the full premium, no grid, month or coverage level stands out. Run every rate USDA publishes for {mk("crop_year")} over {mk("y0")} to {mk("y1")}, and $1 of full premium would have paid back a middle <b>${mk("lr_mid")}</b>. Nine in ten of the {mk("lr_n")} grid, interval and coverage combinations fall between ${mk("lr_lo")} and ${mk("lr_hi")}.</p>
@@ -274,23 +274,6 @@ HTML = f"""<!DOCTYPE html>
       <li>Native sod: in Iowa, Minnesota, Montana, Nebraska, North Dakota and South Dakota, native sod broken in recent years gets 65% of the protection and 50 points less of USDA&rsquo;s share (Crop Provisions, section 4(g)). The calculator does not apply this. It shows a note in those states.</li>
     </ul>
 
-    <h2 id="method">How this page figures it</h2>
-    <p>The inputs are USDA&rsquo;s own, copied unchanged: premium rates, county base values, interval limits, subsidy rates and dates from the {mk("crop_year")} Actuarial Data Master, and each grid&rsquo;s index history from the service behind RMA&rsquo;s PRF tool. The arithmetic is the policy&rsquo;s:</p>
-    <pre class="prf-math" tabindex="0" aria-label="The arithmetic">protection per acre  = county base value x coverage level
-                       x productivity factor
-interval protection  = protection per acre x acres x share
-                       x part of the policy in the interval
-interval premium     = interval protection x premium rate
-you pay              = interval premium - USDA's share
-payment              = interval protection
-                       x (coverage x 100 - index) / (coverage x 100)
-                       when the index is under coverage x 100</pre>
-    <p>Dollars are rounded the way RMA&rsquo;s own calculator rounds them: protection per acre to the cent, each line to the dollar. An insurer&rsquo;s figure can differ by a dollar or two. {mk("check")}</p>
-    <p>What the history is: this year&rsquo;s rates, this year&rsquo;s county values and this year&rsquo;s precipitation record, run over each past year. RMA&rsquo;s own calculator does the same. It is not a record of what PRF paid. Rates, values and the data source were different then, and the average each year is measured against moves every crop year.</p>
-    <p>Which county a point is in comes from the Census Bureau&rsquo;s county lines. Within about a mile of a county line the page asks instead of guessing, because the county sets the dollars. {mk("multi_grids")} of the {mk("grids")} grids lie across more than one county.</p>
-    <p>What it leaves out: Hawaii, which has its own program and grids. The administrative fee. The native sod rule. Any year USDA has not finished publishing is listed and kept out of every total.</p>
-    <p>A ZIP or town you type is found in the place list this site keeps (towns from GeoNames, CC BY 4.0); only its first two letters or digits leave the page, to fetch that part of the list. The page counts visits and which grids are opened with Google Analytics, unless your browser asks not to be tracked. Nothing you type is stored anywhere but your own browser. Any crop insurance agent can write PRF: <a href="https://www.rma.usda.gov/tools-reports/agent-locator" rel="noopener" data-out="agent-locator">USDA&rsquo;s agent locator</a>. For the official grid for your land, use <a href="https://public-rma.fpac.usda.gov/apps/PRF" rel="noopener" data-out="rma-tool">USDA&rsquo;s grid locator</a>. Your policy and your agent&rsquo;s quote are what count.</p>
-
     <h2 id="faq">Questions ranchers and hay growers ask</h2>
     <div class="prf-faq">
     <!--prf:faq-->
@@ -323,6 +306,14 @@ payment              = interval protection
       <a href="/harvest-price-tracker">Harvest price tracker</a>
       <a href="/arc-plc">ARC or PLC</a>
     </nav>
+    <details class="prf-fold prf-terms" id="terms"><summary><h2 id="method">Sources and terms</h2></summary>
+    <p>The inputs are USDA&rsquo;s own, copied unchanged: premium rates, county base values, interval limits, subsidy rates and dates from the {mk("crop_year")} Actuarial Data Master, and each grid&rsquo;s index history from the service behind RMA&rsquo;s PRF tool. The arithmetic is the policy&rsquo;s: an interval pays when its index ends under the coverage level, in proportion to how far under, on that interval&rsquo;s share of the protection; you pay the premium less USDA&rsquo;s share.</p>
+    <p>Dollars are rounded the way RMA&rsquo;s own calculator rounds them: protection per acre to the cent, each line to the dollar. An insurer&rsquo;s figure can differ by a dollar or two. {mk("check")}</p>
+    <p>What the history is: this year&rsquo;s rates, this year&rsquo;s county values and this year&rsquo;s precipitation record, run over each past year. RMA&rsquo;s own calculator does the same. It is not a record of what PRF paid. Rates, values and the data source were different then, and the average each year is measured against moves every crop year.</p>
+    <p>Which county a point is in comes from the Census Bureau&rsquo;s county lines. Within about a mile of a county line the page asks instead of guessing, because the county sets the dollars. {mk("multi_grids")} of the {mk("grids")} grids lie across more than one county.</p>
+    <p>What it leaves out: Hawaii, which has its own program and grids. The administrative fee and the extra share for beginning and veteran farmers and ranchers (RMA&rsquo;s summaries of changes to the 2026 Basic Provisions and the Area Risk Protection Insurance Basic Provisions, and its beginning and veteran farmer and rancher questions). The native sod rule. Any year USDA has not finished publishing is listed and kept out of every total.</p>
+    <p>A ZIP or town you type is found in the place list this site keeps (towns from GeoNames, CC BY 4.0); only its first two letters or digits leave the page, to fetch that part of the list. The page counts visits and which grids are opened with Google Analytics, unless your browser asks not to be tracked. Nothing you type is stored anywhere but your own browser. Any crop insurance agent can write PRF: <a href="https://www.rma.usda.gov/tools-reports/agent-locator" rel="noopener" data-out="agent-locator">USDA&rsquo;s agent locator</a>. For the official grid for your land, use <a href="https://public-rma.fpac.usda.gov/apps/PRF" rel="noopener" data-out="rma-tool">USDA&rsquo;s grid locator</a>. Your policy and your agent&rsquo;s quote are what count.</p>
+    </details>
     </div>
   </div>
   </main>
@@ -331,12 +322,12 @@ payment              = interval protection
   <script src="/components/prf-sponsor.js?v=5" defer></script>
   <script src="/components/prf-math.js?v=3" defer></script>
   <script src="/components/qr.js?v=11" defer></script>
-  <script src="/components/prf.js?v=9" defer></script>
+  <script src="/components/prf.js?v=10" defer></script>
   <script src="/components/prf-outlook.js?v=4" defer></script>
-  <script src="/components/prf-now.js?v=4" defer></script>
+  <script src="/components/prf-now.js?v=5" defer></script>
   <script src="/components/prf-notice.js?v=2" defer></script>
-  <script src="/components/prf-optimize.js?v=5" defer></script>
-  <script src="/components/prf-optimize-ui.js?v=7" defer></script>
+  <script src="/components/prf-optimize.js?v=6" defer></script>
+  <script src="/components/prf-optimize-ui.js?v=8" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

@@ -12,7 +12,7 @@ const fails = []; const ok = (c, what) => { if (!c) { fails.push(what); console.
 const clean = (errs) => errs.filter(e => !/net::|504|Failed to load/.test(e));
 for (const W of [390, 1280]) {
   const { browser, page, errs, BASE, shot } = await open({ width: W, height: 844, geocode });
-  await page.goto(BASE + '/prf.html'); await page.waitForSelector('#prf-app:not([hidden])');
+  await page.goto(BASE + '/prf.html'); await page.waitForSelector('#prf-app[data-ready]');
   await page.fill('#prf-q', '54728'); await page.click('#prf-find button[type=submit]');
   await page.waitForSelector('.prf-figs');
   await page.waitForSelector('#prf-optimize .po-split', { timeout: 10000 }).catch(() => {});

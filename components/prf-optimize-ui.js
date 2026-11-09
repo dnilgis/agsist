@@ -243,7 +243,7 @@
     if (!rec) return '<tr><td><b>' + esc(label) + '</b></td><td colspan="5" class="po-wide">' + esc(note || 'not available in this county') + '</td></tr>';
     var r = rec.record;
     return '<tr><td><b>' + esc(label) + '</b><br><span class="po-fine">' + esc(splitWords(rec.split)) + '</span></td>'
-      + '<td data-l="You pay a year">' + usd(r.premium * prot) + '</td><td data-l="Average after premium">' + signed(r.mean * prot) + '</td><td data-l="Middle year">' + signed(r.mid * prot) + '</td>'
+      + '<td data-l="You pay a year">' + usd(r.premium * prot) + '</td><td data-l="Average after premium, in the years the pick was chosen from">' + signed(r.mean * prot) + '</td><td data-l="Middle year">' + signed(r.mid * prot) + '</td>'
       + '<td data-l="Years it paid">' + r.paidYears + ' of ' + r.n + '</td>'
       + '<td data-l="Worst and best year" class="po-wide">' + signed(r.worst.net * prot) + ' (' + r.worst.year + '), ' + signed(r.best.net * prot) + ' (' + r.best.year + ')</td></tr>';
   }
@@ -322,7 +322,7 @@
     if (prot) {
       cmp += '<p class="po-fine">About, for ' + esc(ctx.acres.toLocaleString('en-US')) + ' acres at ' + ctx.cov + '% coverage and productivity factor ' + ctx.pf
         + ', every year ' + res.years.first + ' to ' + res.years.last + ' at 2027 rates. The calculator above gives the exact dollars.</p>'
-        + '<div class="po-wrap"><table aria-label="The pick beside other setups"><thead><tr><th scope="col">Setup</th><th scope="col">You pay a year</th><th scope="col">Average after premium</th><th scope="col">Middle year</th><th scope="col">Years it paid</th><th scope="col">Worst and best year</th></tr></thead><tbody>';
+        + '<div class="po-wrap"><table aria-label="The pick beside other setups"><thead><tr><th scope="col">Setup</th><th scope="col">You pay a year</th><th scope="col">Average after premium, in the years the pick was chosen from</th><th scope="col">Middle year</th><th scope="col">Years it paid</th><th scope="col">Worst and best year</th></tr></thead><tbody>';
       if (res.forecast) cmp += row(tiltOnly ? 'With what held up' : 'With the outlook', res.forecast, prot);
       cmp += row(res.forecast ? 'Record alone' : 'This pick', res.rec, prot);
       if (res.steadier) cmp += row('Steadier option', res.steadier, prot);

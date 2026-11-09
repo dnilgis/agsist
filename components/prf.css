@@ -88,6 +88,8 @@ main.main { padding-top: 12px; }
 .prf-b-map .prf-chip { min-width: 0; padding: 0 .3rem; }
 .prf-find-msg { margin: 0; font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.5; }
 .prf-find-msg:not(:empty) { margin-top: .4rem; }
+.prf-find-msg.prf-hold { margin-top: .4rem; min-height: 1.5em; }
+.prf-find [disabled], .prf-find-alt [disabled] { opacity: .6; cursor: progress; }
 .prf-find-msg.is-bad { color: var(--text); border-left: 3px solid var(--red); padding-left: .6rem; }
 .prf-find-msg .prf-chip { margin: .3rem .3rem 0 0; font-family: inherit; }
 .prf-chip { min-height: 44px; min-width: 60px; padding: 0 .55rem; border: 1px solid var(--prf-ctl); border-radius: var(--r-sm); background: transparent; color: var(--text); font-family: var(--font-mono); font-size: .85rem; cursor: pointer; }
@@ -538,3 +540,6 @@ html:not([data-theme="light"]) .prf-spon-band .prf-spon-tag { color: var(--ad-or
 .prf details.prf-fold > summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .prf-fold-x { display: block; color: var(--text-muted); font-size: var(--fs-sm); line-height: 1.5; }
 .prf details.prf-fold[open] .prf-fold-x { display: none; }
+/* the one closed "Sources and terms" fold at the bottom of the state pages and how-prf-works (Sig, Nov 8) */
+.prf details.prf-terms:not(.prf-fold) { border-top: 1px solid var(--border-2); margin: 1.6rem 0 0; font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.6; }
+.prf details.prf-terms:not(.prf-fold) > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--text-dim); }
