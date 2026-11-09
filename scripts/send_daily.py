@@ -116,17 +116,25 @@ def keep_sent_copy(day, b, from_name, from_addr, reply_to):
     finally:
         if LINK_IDS.get("reader@example.com") == email_links.SAMPLE_LID:
             LINK_IDS.pop("reader@example.com", None)
+    # the facts the email printed (daily_v2 build "printed", as a reader with no ZIP reads it): the
+    # memory the next issues read (daily_fresh.memory, Nov 9 2026). No reader's line is in it.
+    printed = None
+    if daily_format() == "v2":
+        try:
+            printed = v2_parts(b, "reader@example.com", None, None, None, None).get("printed")
+        except Exception as ex:
+            print("sent copy: printed facts not read (" + type(ex).__name__ + ")")
     real_flag = globals()["flag"]
 
     def flag_and_keep(d, set_it=False):
         out = real_flag(d, set_it=set_it)
         if set_it:
-            save_sent_copy(d, b, subject, daily_format())
+            save_sent_copy(d, b, subject, daily_format(), printed=printed)
         return out
     globals()["flag"] = flag_and_keep
 
 
-def save_sent_copy(day, b, subject, fmt, sent_dir=None):
+def save_sent_copy(day, b, subject, fmt, sent_dir=None, printed=None):
     """Keep the briefing exactly as it was emailed, with its subject. Written
     once per day (the morning send); a later run of the same day leaves it as
     is. No reader's address, ZIP, count or link: the issue only. Never fails
@@ -143,6 +151,8 @@ def save_sent_copy(day, b, subject, fmt, sent_dir=None):
                "format": fmt, "subject": subject,
                "note": "The Daily as emailed. The page at /daily/" + day + " may have been updated later the same day.",
                "briefing": b}
+        if isinstance(printed, list):
+            rec["printed"] = printed
         tmp = path.with_suffix(".tmp")
         with open(tmp, "w", encoding="utf-8") as fh:
             json.dump(rec, fh, indent=2, ensure_ascii=False)

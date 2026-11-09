@@ -27,8 +27,8 @@ THE BLOCKS (prompt_block() joins the ones that are on, each with its source and 
              CT, or the next business day after a Monday federal holiday. An
              older week (a missed fetch, the season over) or a newer one
              (look-ahead) is withheld, as is a file that says out of season.
-  funds      Saturday and Monday issues after the Friday CFTC release (or the
-             Tuesday issue after a Monday release in a holiday week): managed
+  funds      the Saturday issue after the CFTC release, once per release (Sig,
+             Nov 9 2026; was Saturday and Monday, Nov 2): managed
              money's net position and its change, futures only, for corn,
              soybeans, Chicago wheat and live cattle, from data/cot.json and
              data/cot-history.json through scripts/send_cot_weekly.rows_for,
@@ -78,8 +78,8 @@ WASDE_DAYS = 35            # the next WASDE is named when it is this close (alwa
 HARVEST_DAYS = (0, 1)      # Monday and Tuesday issues
 CROP_PROGRESS_HOUR_CT = 15
 FUND_MARKETS = ("corn", "beans", "wheat", "livecattle")
-FUND_DAYS = (5, 0)         # Saturday and Monday issues
-FUND_MAX_DAYS = 3
+FUND_DAYS = (5,)           # Saturday only, once per release (Sig, Nov 9 2026)
+FUND_MAX_DAYS = 6          # a Friday release is 1 day back; a Monday release in a holiday week, 5
 
 
 def _md(d):
@@ -319,9 +319,8 @@ def fund_facts(today, now, repo=REPO):
     if rel_at > now:
         return {"withheld": "the %s report was not out when this issue was written" % as_of.isoformat()}
     days = (today - rel).days
-    holiday_tuesday = rel.weekday() == 0 and today.weekday() == 1 and days == 1
-    if not (today.weekday() in FUND_DAYS or holiday_tuesday):
-        return {"withheld": "fund positions run on the Saturday and Monday issues after the release"}
+    if today.weekday() not in FUND_DAYS:
+        return {"withheld": "fund positions run on the Saturday issue after the release"}
     if not 1 <= days <= FUND_MAX_DAYS:
         return {"withheld": "the latest report (released %s) is not this weekend's" % rel.isoformat()}
     hist = CW.load(os.path.join(repo, "data", "cot-history.json"))

@@ -127,9 +127,16 @@ def main():
     b19 = build(load("2026-10-19"))
     ok("India" not in b19["subject"] and "crude import" not in b19["subject"] and b19["subject_from"] != "news",
        "Oct 19: India's crude import bill is not the subject: %s" % b19["subject"])
+    # Sig, Nov 9 2026: a bare number with no verb never leads. Oct 20's day's number ("$8 billion emergency
+    # diesel relief for farmers") is a value and a noun phrase, so it no longer leads; with a verb it may.
     b20s = build(load("2026-10-20"))
-    ok(b20s["subject"] == "$8 billion emergency diesel relief for farmers" and b20s["subject_from"] == "news",
-       "Oct 20: the diesel relief item can still be the subject: %s" % b20s["subject"])
+    ok(b20s["subject_from"] != "news" and "$8 billion" not in b20s["subject"],
+       "Oct 20: the bare $8 billion number does not lead: %s" % b20s["subject"])
+    d20v = load("2026-10-20")
+    d20v["one_number"] = dict(d20v["one_number"], unit="emergency diesel relief approved for farmers")
+    b20v = build(d20v)
+    ok(b20v["subject"] == "$8 billion emergency diesel relief approved for farmers" and b20v["subject_from"] == "news",
+       "Oct 20 with a verb: the diesel relief item can still be the subject: %s" % b20v["subject"])
     ok(any("India" in x["text"] for x in b19["items"]), "Oct 19: the item still sits in Today")
     ok("India" not in b19["preheader"], "Oct 19: nor the preheader: %s" % b19["preheader"])
     ok(not b19["preheader"].startswith("Corn has settled lower"), "the preheader is not the subject's story again: %s" % b19["preheader"])
@@ -157,10 +164,11 @@ def main():
         json.dump({"findings": [{"severity": "high", "verified": True, "kind": "unsourced_number", "field": "sections[0].body", "quote": "x", "expected": ""}]}, f)
     bad, _ = V.check(d20, build(d20), fc)
     ok(not bad, "a finding outside subject, headline and lead stays report-only")
-    b20 = build(d20)
+    d20n = dict(d20, one_number=dict(d20["one_number"], unit="emergency diesel relief approved for farmers"))
+    b20 = build(d20n)   # a day's number that may lead (it has a verb, Nov 9 2026 rule)
     with open(fc, "w") as f:
         json.dump({"findings": [{"severity": "high", "verified": True, "kind": "mismatch", "field": "one_number.value", "quote": "$8 billion", "expected": "$9 billion"}]}, f)
-    bad, _ = V.check(d20, b20, fc)
+    bad, _ = V.check(d20n, b20, fc)
     ok(b20["subject_field"] == "one_number.value" and len(bad) == 1, "a wrong number in the field the subject came from blocks")
     # the print slot
     b = build(d21, pod=None)

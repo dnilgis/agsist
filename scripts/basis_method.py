@@ -258,7 +258,9 @@ def headline_json(st):
     if "median" in st:
         rec.update({"median": round(st["median"], 4), "lo": st["lo"], "hi": st["hi"]})
         if "wow_median" in st:
-            rec.update({"wow": st["wow_median"], "wow_n": st["wow_n"]})
+            # wow_up / wow_dn (Nov 9 2026): the Daily's state basis line prints the share of bids that moved,
+            # since a median reads 0 when most boards did not reprice (the state pages already print them)
+            rec.update({"wow": st["wow_median"], "wow_n": st["wow_n"], "wow_up": st["wow_up"], "wow_dn": st["wow_dn"]})
     return rec
 
 
@@ -299,7 +301,7 @@ def selftest():
     w = state_basis([row(i, v) for i, v in enumerate(vals)], prev)["corn"]["contracts"][0]
     assert w["wow_median"] == 5.0 and w["wow_n"] == 6, w
     j = headline_json(w)
-    assert j["contract"] == "ZCZ26" and j["label"] == "Dec '26" and j["n"] == 9 and j["outliers"] == 1 and j["wow_n"] == 6
+    assert j["contract"] == "ZCZ26" and j["label"] == "Dec '26" and j["n"] == 9 and j["outliers"] == 1 and j["wow_n"] == 6 and j["wow_up"] == w["wow_up"] and j["wow_dn"] == w["wow_dn"]
     # relative_outlier: Riceville IA soybeans +1.40 against neighbors near -0.70
     nb = [-0.70, -0.68, -0.72, -0.75, -0.65, -0.70]
     o = relative_outlier(1.40, nb)

@@ -6254,6 +6254,18 @@ def main():
     briefing = report_day.apply(briefing, datetime.now().date(), datetime.now(timezone.utc))
     if briefing.get("report_day"):
         print(f"  Report day: {', '.join(briefing['report_day']['reports'])}; fixed watch line in place")
+    # 2026-11-09 (Daily panel, Sig "all"): What to watch names the WASDE only the day before and
+    # the day of (Nov 3 to 9 it ran seven issues straight). The report-day line stays (report_day).
+    try:
+        import daily_v2 as _v2w
+        _wl = briefing.get("watch_list") or []
+        _keep = [w for w in _wl if not isinstance(w, dict) or w.get("fixed")
+                 or _v2w.wasde_watch_ok(w.get("time"), w.get("desc"), datetime.now().date())]
+        if len(_keep) < len(_wl):
+            print(f"  [watch] {len(_wl) - len(_keep)} WASDE line(s) left out: the WASDE is more than a day away")
+            briefing["watch_list"] = _keep
+    except Exception as _e:
+        print(f"  [warn] WASDE watch rule skipped ({type(_e).__name__}: {_e})")
     _wc_total = briefing_cut.word_count(briefing)
     print(f"  Word count: {_wc_total} (target {briefing_cut.TARGET_WORDS}, ceiling {briefing_cut.HARD_CEILING})")
 
@@ -6334,6 +6346,36 @@ def main():
                 print("  Only on AGSIST: " + _f["sentence"])
         else:
             print("  Only on AGSIST: none (data/daily-edge.json missing, stale or empty)")
+        # 2026-11-09 (Daily panel, Sig "all"): the state week-over-week basis line, gated in
+        # only_here.wow_rows and through the one memory (daily_fresh.wow_should_print): it prints only
+        # when a state enters, leaves or moves another 5 cents since the issue that last printed it.
+        # The rows ride on the issue (basis_wow) for the email; the web block gets the line.
+        try:
+            import only_here as _oh
+            import daily_fresh as _dfw
+            _bs = _de.load_json(os.path.join(REPO_ROOT, "data", "basis-states.json"))
+            _rows, _why = _oh.wow_rows(_bs, datetime.now(timezone.utc))
+            _today_w = datetime.now().date()
+            _last = _dfw.last_set(_dfw.memory(_today_w), "basis_wow", _today_w)
+            _go, _gwhy = _dfw.wow_should_print({"%s:%s" % (r["st"], r["crop"]): r["wow"] for r in _rows}, _last)
+            briefing["basis_wow"] = {"print": bool(_go), "rows": _rows, "why": _gwhy if _rows else _why,
+                                     "snapshot": (_bs or {}).get("generated")}
+            print(f"  State basis line: {'prints' if _go else 'quiet'} ({briefing['basis_wow']['why']})")
+            if _go:
+                _wl_text = _oh.wow_text(_rows)
+                _wf = {"id": "basis_wow", "kind": "basis_wow", "sentence": _wl_text, "key": _wl_text.split(":")[0],
+                       "detail": ("Each state's middle change in a week, across bids matched with the same elevator's "
+                                  "same delivery and futures month; states with %d or more such bids from %d or more "
+                                  "companies." % (_oh.WOW_MIN_N, _oh.WOW_MIN_COS)),
+                       "url": "/basis", "link_text": "Basis by state", "as_of": _today_w.isoformat()}
+                _e2 = briefing.get("edge") or {"label": "Only on AGSIST",
+                                               "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+                                               "facts": []}
+                _e2["facts"] = [_wf] + [f for f in _e2.get("facts") or [] if f.get("id") != "basis_wow"]
+                briefing["edge"] = _e2
+                print("  Only on AGSIST: " + _wl_text)
+        except Exception as _e:
+            print(f"  [warn] state basis line skipped ({type(_e).__name__}: {_e})")
         _note = _de.cca_note(datetime.now().date().isoformat())
         if _note:
             briefing["cca_note"] = _note
