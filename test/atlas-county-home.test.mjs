@@ -54,7 +54,7 @@ test("Barron, Story and Champaign: named County farm facts, print the County Pri
     assert.ok(h.includes(`href="/arc-plc/${slug}"`), fips + ": the county ARC/PLC page");
     for (const id of ["c-grain", "c-wx", "c-crops", "c-land", "c-prog", "c-farms"]) assert.ok(h.includes(`id="${id}"`), fips + " card " + id);
     // what the Atlas page carried is still there
-    for (const w of ["Key figures", "Open on the map", "Compare", "Download CSV", "Copy link", "Next door", "Cite this page", "Sources, dates and arithmetic", "Rent share calculator"])
+    for (const w of ["Key figures", "Open on the map", "Compare", "Download CSV", "Copy link", "Next door", "Cite this page", "Sources and terms", "Rent share calculator"])
       assert.ok(h.includes(w), fips + " keeps " + w);
   }
 });

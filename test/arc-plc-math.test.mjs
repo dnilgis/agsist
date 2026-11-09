@@ -47,8 +47,21 @@ const sheetTbody = (doc, f) => M.sheetRows(doc, f).map((r) => {
    Oct 20, 2026). The fixture's data has no range words (packs ["mismatch"]), so the browser writes its default
    ("depends on your PLC yield"); newWords() puts exactly those words into the old output, and everything else must
    still match to the character. The live-tree test below holds the real range words to the build's. */
+/* Nov 9, 2026 (curtain): the fixture holds the old words about a crop with too little price history of its own
+   (its price swings "borrowed from corn's"). The build and the browser now say one plain line; the old sentences are
+   moved to it on the fixture side, and the live-tree tests hold every page to the new line. */
+const RSQ = "(?:&rsquo;|’)";
+const BOR_LINE = "This crop has too little price history of its own, so the call stops at Leans and no dollar figure is printed.";
+const plainBorrow = (h) => h
+  .replace(new RegExp("the expected payments are not printed\\. [A-Z][^.<>]*? (?:has|have) (?:too few years of (?:its|their) own prices in FSA" + RSQ + "s tables, so (?:its|their) price swings are corn" + RSQ + "s|no October futures history of (?:its|their) own on file, so (?:its|their) price swings are borrowed from corn" + RSQ + "s), and the expected dollars would rest on them\\. We do not print them\\.", "g"), "the expected payments are not printed: too little price history of its own.")
+  .replace(new RegExp("[A-Z][^.<>]*? (?:has|have) (?:too few years of (?:its|their) own prices in FSA" + RSQ + "s tables, so (?:its|their) price swings are corn" + RSQ + "s|no October futures history of (?:its|their) own on file, so (?:its|their) price swings are borrowed from corn" + RSQ + "s), and the expected dollars would rest on them\\. We do not print them\\.(?: So it stops at Leans\\.)?", "g"), BOR_LINE)
+  .replace(new RegExp("[A-Z][a-z][^.<>]*? borrows? corn" + RSQ + "s price swings, so (?:they stop|it stops) at Leans\\.", "g"), BOR_LINE)
+  .replace(new RegExp("no dollar figure, because the price swings are borrowed from corn" + RSQ + "s\\)", "g"), "no dollar figure for this crop)")
+  .replace(new RegExp(" Capped at Leans: this crop borrows corn" + RSQ + "s price swings\\.", "g"), " Capped at Leans: too little price history of its own.")
+  .replace(new RegExp(" have no October futures history of their own, so they borrow corn" + RSQ + "s October swings \\(wheat its own price changes, scaled to corn" + RSQ + "s size\\) and stop at Leans\\.", "g"), " stop at Leans and print no dollar figure: too little price history of their own.")
+  .replace(new RegExp(" No dollar figure: price swings borrowed from corn\\.", "g"), " No dollar figure: too little price history.");
 const ASK = /Ask FSA|ask your FSA office/;
-const newWords = (h, ly) => h
+const newWords = (h, ly) => plainBorrow(h)
   .replace(/<p class="ap-small"><b>([^<]+):<\/b> no typical-farm verdict\. (FSA&rsquo;s average PLC yield for the county \([^)]*\) covers all practices and is above this benchmark \([^)]*\), so it does not describe a typical farm here\.) Run your own PLC yield below\.<\/p>/g,
     (_m, lab, mid) => `<p class="ap-small"><b>${lab}, ${ly}:</b> ${mid} Across PLC yields of 60% to 100% of the benchmark: depends on your PLC yield. Run your own PLC yield in the calculator below.</p>`)
   .replace(/No typical-farm answer: FSA&rsquo;s county average PLC yield is above this benchmark yield\. Run your own PLC yield\./g,
