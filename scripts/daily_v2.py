@@ -68,6 +68,7 @@ REPO = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 import brief_email as BE   # noqa: E402  link tags, text hygiene, the shared blocks
 import pricefmt            # noqa: E402  the site's grain price text
+import contract_calendar  # noqa: E402  first notice day: when Nov beans hand over to Jan
 import source_links       # noqa: E402  one rule for "is this url a data file"
 
 try:
@@ -283,8 +284,38 @@ def _q(daily, key):
         return None
     prev = ch.get("prev") if isinstance(ch.get("prev"), (int, float)) else None
     return {"key": key, "last": float(v), "prev": prev, "kind": ch.get("kind"), "at": ch.get("at"),
-            "date": ch.get("date"), "prev_date": ch.get("prev_date"),
+            "date": ch.get("date"), "prev_date": ch.get("prev_date"), "contract": ch.get("contract"),
             "pct": ch.get("pct") if isinstance(ch.get("pct"), (int, float)) else None}
+
+
+HARVEST_KEYS = (("corn", "corn-dec"), ("beans", "beans-nov"))
+
+
+def past_notice(daily, key):
+    """True when the dated harvest key (corn-dec, beans-nov) is on or past its
+    first notice day on the issue's date. From then the issue quotes the next
+    month (the nearby key, which fetch_prices rolls at first notice): Nov 9
+    2026 printed Friday's Nov bean settle as an overnight move."""
+    try:
+        day = date.fromisoformat(_iso_day(daily)[:10])
+    except ValueError:
+        return False
+    return contract_calendar.past_first_notice(key, day)
+
+
+def locked_settles(daily, key):
+    """{session date: settle} the issue's own lock holds for this key: the prior
+    settle, and the price itself when it is a settle. The exchange settle beats
+    a harvest-file close (Oct 30: the file's Oct 29 close was 12.205, the settle
+    12.1975, and the subject printed $12.20½)."""
+    ch = (daily.get("locked_changes") or {}).get(key) or {}
+    out = {}
+    if isinstance(ch.get("prev"), (int, float)) and ch.get("prev_date"):
+        out[str(ch["prev_date"])[:10]] = float(ch["prev"])
+    v = (daily.get("locked_prices") or {}).get(key)
+    if ch.get("kind") == "settle" and ch.get("date") and isinstance(v, (int, float)):
+        out[str(ch["date"])[:10]] = float(v)
+    return out
 
 
 def px(key, v):
@@ -315,6 +346,9 @@ def contract_of(daily, key):
 
 
 def board_rows(daily):
+    """One row per contract. A row whose lock names its month carries it
+    (Nov 1 2026: live cattle rolled from Oct to Dec over a weekend and both
+    Fridays read "October"; Nov 9: Jan beans sat beside Nov beans unnamed)."""
     rows = []
     for a, b in BOARD:
         qa, qb = _q(daily, a), (_q(daily, b) if b else None)
@@ -324,8 +358,20 @@ def board_rows(daily):
             continue
         for q in (qa, qb):
             if q:
-                rows.append(dict(q, label=LABEL[q["key"]]))
+                lab = LABEL[q["key"]]
+                if q.get("contract") and "," not in lab:
+                    lab += ", " + q["contract"]
+                rows.append(dict(q, label=lab))
     return rows
+
+
+def kind_note(r, main):
+    """The row's own clock when it differs from the board's stamp."""
+    if main and r.get("kind") and r.get("kind") != main:
+        if r["kind"] == "settle":
+            return (_wday(r.get("date"))[:3] + " settle").strip() if r.get("date") else "settle"
+        return "last trade"
+    return ""
 
 
 def board_stamp(daily, rows):
@@ -342,25 +388,29 @@ def board_stamp(daily, rows):
     return "%s's settle, change from %s's settle" % (_wday(day) or "The last", wd or "the session before"), main
 
 
-def settles(crop, before, path=HARVEST_PRICES):
+def settles(crop, before, path=None, locked=None):
     """[(date, settle)] for Dec corn or Nov beans from the harvest price file,
-    dated strictly before `before` (what a reader could know that morning)."""
+    dated strictly before `before` (what a reader could know that morning).
+    `locked` {date: settle} from the issue's own lock replaces the file's value
+    on those dates (locked_settles)."""
     try:
-        with open(path, encoding="utf-8") as f:
+        with open(path or HARVEST_PRICES, encoding="utf-8") as f:
             d = json.load(f)
     except (OSError, ValueError):
         return []
+    lk = locked or {}
     for c in d.get("commodities") or []:
         if str(c.get("label") or "").lower() == crop:
             ser = ((c.get("harvest") or {}).get("series") or [])
-            return [(x["d"], float(x["s"])) for x in ser if isinstance(x.get("s"), (int, float)) and str(x.get("d")) < before]
+            return [(x["d"], lk.get(str(x["d"]), float(x["s"]))) for x in ser
+                    if isinstance(x.get("s"), (int, float)) and str(x.get("d")) < before]
     return []
 
 
-def streak(crop, before, path=HARVEST_PRICES):
+def streak(crop, before, path=None, locked=None):
     """(n, "lower"/"higher", last settle, its date) or None: the run of settles
     each below (above) the one before, ending at the last settle before `before`."""
-    s = settles(crop, before, path)
+    s = settles(crop, before, path, locked)
     if len(s) < 3:
         return None
     way = "lower" if s[-1][1] < s[-2][1] else ("higher" if s[-1][1] > s[-2][1] else None)
@@ -375,10 +425,54 @@ def streak(crop, before, path=HARVEST_PRICES):
     return n, way, s[-1][1], s[-1][0]
 
 
+def harvest_streak(daily, crop, key):
+    """streak() for the issue: the lock's settles win, and none that ends on a
+    settle from the harvest month's delivery period (first notice on; the file
+    holds only that month, and the issue quotes the next one by then)."""
+    s = streak(crop, _iso_day(daily), locked=locked_settles(daily, key))
+    if s and contract_calendar.past_first_notice(key, date.fromisoformat(str(s[3])[:10])):
+        return None
+    return s
+
+
+def crop_row(daily, rows, base, dated):
+    """The board row a crop's Today line quotes: the harvest month (Dec corn,
+    Nov beans) until its first notice day, then the nearby month."""
+    if dated in rows and not past_notice(daily, dated):
+        return rows[dated]
+    return rows.get(base) or rows.get(dated)
+
+
+def _month_word(r):
+    """"Jan " for a nearby row that stands in for a harvest month past first notice."""
+    c = str(r.get("contract") or "")
+    return (c.split(" ")[0] + " ") if r.get("key") in ("corn", "beans") and c else ""
+
+
+def overnight_line(c, b):
+    """One line for corn and beans, each with its own clock (Nov 9 2026: "beans
+    $11.89 (+8¢) at 5:45 a.m. CT" was Friday's settle move)."""
+    def bit(name, r):
+        return "%s%s %s (%s)" % (_month_word(r), name, px(r["key"], r["last"]), mv(r["key"], r))
+    if c.get("kind") == "last" and b.get("kind") == "last":
+        return ("Overnight: %s, %s at %s vs %s's settle."
+                % (bit("corn", c), bit("beans", b), _clock(c.get("at")) or "this morning",
+                   _wday(c.get("prev_date")) or "the last"))
+    if c.get("kind") == "settle" and b.get("kind") == "settle" and _wday(c.get("date")) and c.get("date") == b.get("date"):
+        return "%s's settle: %s, %s." % (_wday(c.get("date")), bit("corn", c), bit("beans", b))
+    if {c.get("kind"), b.get("kind")} == {"last", "settle"}:
+        la, se = (c, b) if c.get("kind") == "last" else (b, c)
+        ln, sn = ("corn", "beans") if la is c else ("beans", "corn")
+        if _wday(se.get("date")):
+            return ("Overnight: %s at %s vs %s's settle. %s's settle: %s."
+                    % (bit(ln, la), _clock(la.get("at")) or "this morning", _wday(la.get("prev_date")) or "the last",
+                       _wday(se.get("date")), bit(sn, se)))
+    return "Board: %s, %s." % (bit("corn", c), bit("beans", b))
+
+
 def market_items(daily):
-    iso = _iso_day(daily)
     items = []
-    st = {c: streak(c, iso) for c in ("corn", "soybeans")}
+    st = {"corn": harvest_streak(daily, "corn", "corn-dec"), "soybeans": harvest_streak(daily, "soybeans", "beans-nov")}
     bits = []
     for crop, key, name in (("corn", "corn-dec", "Corn"), ("soybeans", "beans-nov", "beans")):
         s = st.get(crop)
@@ -386,27 +480,17 @@ def market_items(daily):
             bits.append((name, s, key))
     if bits:
         name, s0, key = bits[0]
-        txt = "%s has settled %s %d days running, %s %s" % (name, s0[1], s0[0], px(key, s0[2]), _wday(s0[3]) or "")
+        txt = "%s %s settled %s %d days running, %s %s" % (name, "has" if name == "Corn" else "have", s0[1], s0[0],
+                                                            px(key, s0[2]), _wday(s0[3]) or "")
         for name, s1, key in bits[1:]:
             txt = txt.strip() + "; %s %d%s, %s" % (name, s1[0], "" if s1[1] == s0[1] else " " + s1[1], px(key, s1[2]))
         txt = txt.strip()
         items.append({"text": txt[0].upper() + txt[1:] + ".", "kind": "market", "field": "harvest-prices"})
     rows = {r["key"]: r for r in board_rows(daily)}
-    c = rows.get("corn-dec") or rows.get("corn")
-    b = rows.get("beans-nov") or rows.get("beans")
+    c = crop_row(daily, rows, "corn", "corn-dec")
+    b = crop_row(daily, rows, "beans", "beans-nov")
     if c and b and c.get("prev") is not None and b.get("prev") is not None:
-        if c.get("kind") == "last":
-            txt = ("Overnight: corn %s (%s), beans %s (%s) at %s vs %s's settle."
-                   % (px(c["key"], c["last"]), mv(c["key"], c), px(b["key"], b["last"]), mv(b["key"], b),
-                      _clock(c.get("at")) or "this morning", _wday(c.get("prev_date")) or "the last"))
-        elif c.get("kind") == "settle" and _wday(c.get("date")):
-            txt = ("%s's settle: corn %s (%s), beans %s (%s)."
-                   % (_wday(c.get("date")), px(c["key"], c["last"]), mv(c["key"], c),
-                      px(b["key"], b["last"]), mv(b["key"], b)))
-        else:
-            txt = ("Board: corn %s (%s), beans %s (%s)."
-                   % (px(c["key"], c["last"]), mv(c["key"], c), px(b["key"], b["last"]), mv(b["key"], b)))
-        items.append({"text": txt, "kind": "market", "field": "locked_changes"})
+        items.append({"text": overnight_line(c, b), "kind": "market", "field": "locked_changes"})
     return items, st
 
 
@@ -415,7 +499,7 @@ def big_move(daily):
     best = None
     for key in ("corn-dec", "corn", "beans-nov", "beans", "wheat", "cattle", "feeders", "hogs", "crude"):
         q = _q(daily, key)
-        if not q or q.get("pct") is None:
+        if not q or q.get("pct") is None or past_notice(daily, key):
             continue
         need = 4.0 if key == "crude" else 2.0
         if abs(q["pct"]) >= need and (best is None or abs(q["pct"]) > abs(best[1])):
@@ -457,7 +541,13 @@ def clock_item(daily, today=None):
                                                   px("corn", c["harvest"]), "+" if c["pct"] >= 0 else "−", abs(c["pct"]))
              for c in crops]
     left = crops[0].get("days_left")
-    txt = "Harvest price so far: " + "; ".join(parts) + ((". %d trading days left." % left) if isinstance(left, int) else ".")
+    if isinstance(left, int):
+        left = max(0, left)   # the clock stops at 0 (Oct 31 2026 printed "0 trading days left")
+        tail = (". Last trading day done." if left == 0 else ". 1 trading day left." if left == 1
+                else ". %d trading days left." % left)
+    else:
+        tail = "."
+    txt = "Harvest price so far: " + "; ".join(parts) + tail
     top = crops[0]
     return {"text": txt, "kind": "clock", "field": "harvest_clock", "url": BE.CLOCK_URL, "link": "Tracker",
             "subject": "%s harvest price %.1f%% %s projected" % ("Bean" if top["crop"].lower().startswith("soy") else "Corn",
@@ -488,7 +578,7 @@ def subject(daily, news=None, today=None):
             return clip(x["text"]), "news", x["field"]
     iso = _iso_day(daily)
     for crop, key, name in (("corn", "corn-dec", "Corn"), ("soybeans", "beans-nov", "Beans")):
-        s = streak(crop, iso)
+        s = harvest_streak(daily, crop, key)
         if s and s[0] >= 4:
             return clip("%s%s %s %s close in a row: %s" % (name, "'s" if name == "Corn" else "'", ordinal(s[0]), s[1],
                                                            px(key, s[2]))), "market", "harvest-prices"
@@ -793,8 +883,8 @@ def _board_html(daily):
         ch = mv(r["key"], r)
         up = (r["last"] - r["prev"]) if r.get("prev") is not None else 0
         cls, col = ("up", UP) if up > 1e-9 else (("down", DOWN) if up < -1e-9 else ("mute", MUTE))
-        note = (' <span class="mute" style="color:%s;font-size:12px">%s</span>'
-                % (MUTE, "settle" if r.get("kind") == "settle" else "last trade")) if (main and r.get("kind") and r.get("kind") != main) else ""
+        kn = kind_note(r, main)
+        note = (' <span class="mute" style="color:%s;font-size:12px">%s</span>' % (MUTE, e(kn))) if kn else ""
         trs.append('<tr><td class="ink cell" style="padding:4px 0;font-family:%s;font-size:14px;color:%s;border-bottom:1px solid %s">%s%s</td>'
                    '<td align="right" class="ink cell" style="padding:4px 0;font-family:%s;font-size:14px;font-weight:700;color:%s;border-bottom:1px solid %s;white-space:nowrap">%s</td>'
                    '<td align="right" class="%s cell" style="padding:4px 0 4px 12px;font-family:%s;font-size:13px;color:%s;border-bottom:1px solid %s;white-space:nowrap">%s</td></tr>'
@@ -1113,7 +1203,8 @@ def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, ele
         stamp, _m = board_stamp(daily, rows)
         L += ["", "THE BOARD" + (" (" + stamp + ")" if stamp else "")]
         for r in rows:
-            L.append("  %s %s %s" % (r["label"], px(r["key"], r["last"]), mv(r["key"], r)))
+            kn = kind_note(r, _m)
+            L.append("  %s %s %s%s" % (r["label"], px(r["key"], r["last"]), mv(r["key"], r), (" (" + kn + ")") if kn else ""))
         L += _adds_text(daily)
     w = _watch(daily)
     if w:
@@ -1196,6 +1287,24 @@ def code_check(daily, fields):
     return bad
 
 
+def subject_settle_check(daily, subj, sfield):
+    """A run-of-settles subject must print the locked settle (Oct 30 2026: the
+    subject said $12.20½ from a provisional harvest-file close; the settle was
+    $12.19¾)."""
+    if sfield != "harvest-prices":
+        return []
+    bad = []
+    for key, v, sent in price_claims(subj):
+        if key not in ("corn-dec", "beans-nov"):
+            continue
+        lk = locked_settles(daily, key)
+        if lk and not any(abs(v - x) < 1e-6 for x in lk.values()):
+            bad.append({"field": "subject", "quote": sent.strip(" ."),
+                        "why": "%s is not a locked settle; the lock holds %s"
+                               % (px(key, v), ", ".join("%s %s" % (_wday(d)[:3], px(key, x)) for d, x in sorted(lk.items())))})
+    return bad
+
+
 def saved_findings(path=None):
     path = path or os.environ.get("FACT_CHECK_JSON") or os.path.join(os.environ.get("RUNNER_TEMP") or "/nonexistent", "fact-check.json")
     try:
@@ -1208,7 +1317,7 @@ def saved_findings(path=None):
 def check(daily, built, fact_check_path=None):
     """(blocking failures, notes). Subject, headline and lead only."""
     fields = {"subject": built["subject"], "headline": BE.strip_md(daily.get("headline")), "lead": BE.strip_md(daily.get("lead"))}
-    bad = code_check(daily, fields)
+    bad = code_check(daily, fields) + subject_settle_check(daily, built["subject"], built.get("subject_field"))
     watch = {"headline", "lead"}
     sf = built.get("subject_field") or ""
     if sf.startswith("outside_the_pit["):
