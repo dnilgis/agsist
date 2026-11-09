@@ -83,7 +83,14 @@ test("usda-quick-stats and crop-tour ask for the WASDE summary, which send_repor
   assert.ok(s.includes("its corn and soybean yields arrive as\n    the WASDE rows"), "the WASDE email carries the yields");
   const h = read("crop-tour.html");
   assert.ok(h.indexOf("data-signup-ask") < h.indexOf("<!--FAQ:START-->"), "outside the FAQ block");
-  assert.ok(h.lastIndexOf("<!-- /CT:") < h.indexOf("data-signup-ask"), "after every baked region");
+  // curtain round 2: the baked source list moved into the "Sources and terms" fold at the very bottom, below the ask,
+  // so the rule is now that the ask sits inside no baked region (the baker rewrites only between its markers)
+  const ask = h.indexOf("data-signup-ask");
+  for (const m of h.matchAll(/<!-- CT:(\w+) -->/g)) {
+    const end = h.indexOf(`<!-- /CT:${m[1]} -->`, m.index);
+    assert.ok(ask < m.index || ask > end, "outside the baked region " + m[1]);
+  }
+  assert.ok(h.lastIndexOf("<!-- /CT:") > ask && h.lastIndexOf("<!-- /CT:") > h.indexOf("<summary>Sources and terms</summary>"), "only the source list, in the fold, comes after it");
 });
 
 test("pages left without an ask, and why", () => {
