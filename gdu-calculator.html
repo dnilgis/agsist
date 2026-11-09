@@ -78,6 +78,14 @@
 .f-select { background:var(--bg); border:2px solid var(--border); border-radius:6px; color:var(--text); font-size:1rem; padding:.42rem .6rem; width:100%; outline:none; cursor:pointer; box-sizing:border-box; }
 .f-select:focus { border-color:var(--gold); }
 .f-hint { font-size:0.755rem; color:var(--text-muted); margin-top:.25rem; line-height:1.5; }
+/* 2026-11-09: the maturity note is empty until the first calculation fills it with the example's two (three on a phone)
+   lines; keep that room so the buttons and gauge below it do not move when it fills. */
+#r-mat-note { min-height:3.15em; }
+@media(max-width:699px){ #r-mat-note { min-height:4.72em; } }
+/* The stage list is empty until the first calculation fills it (the example is the soybean list: 406 px wide-screen, 581 px phone). */
+#milestones { min-height:400px; }
+@media(max-width:699px){ #milestones { min-height:570px; } }
+@media(max-width:699px){ #r-source { min-height:3.44em; } }
 .f-2col { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.65rem; }
 
 /* Crop switcher pills */
@@ -446,6 +454,23 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
     </div>
   </div>
 </div>
+<script>
+/* 2026-11-09: this runs right after the results markup, not at the end of the page, so the card is
+   already moved when the first paint happens (it moved the results column when the page painted in two parts).
+   2026-10-16 audit: September to November the questions are "is it at black
+   layer?" and "will frost beat it?", so the maturity card, with black layer
+   and frost on its first lines, comes before the season gauge, and the lede
+   says so. The rest of the year the page is as written. */
+(function(){
+  var m=new Date().getMonth(); if(m<8||m>10) return;
+  var card=document.getElementById('gdu-mat-card'), gauge=document.querySelector('.gauge-wrap');
+  if(card&&gauge&&gauge.parentNode===card.parentNode) gauge.parentNode.insertBefore(card,gauge);
+  var grid=card&&card.querySelector('.mat-grid'), mat=document.getElementById('r-mat-row'), fr=document.getElementById('r-frost-row');
+  if(grid&&mat&&fr){ card.insertBefore(mat,grid); card.insertBefore(fr,grid); mat.style.marginTop='0'; fr.style.marginBottom='.6rem'; }
+  var ld=document.querySelector('.gdu-hero .page-lede');
+  if(ld) ld.textContent='Is it at black layer, and will frost beat it? Black layer date and frost risk first, then heat units since planting and crop stage, from real daily weather at your ZIP.';
+})();
+</script>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="gdu"></aside>
 
 <div class="ref-layout">
@@ -585,21 +610,6 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
   Built by <a href="/about">Sigurd Lindquist</a> &middot; <a href="tel:+17157972428">715-797-2428</a>
 </div>
 
-<script>
-/* 2026-10-16 audit: September to November the questions are "is it at black
-   layer?" and "will frost beat it?", so the maturity card, with black layer
-   and frost on its first lines, comes before the season gauge, and the lede
-   says so. The rest of the year the page is as written. */
-(function(){
-  var m=new Date().getMonth(); if(m<8||m>10) return;
-  var card=document.getElementById('gdu-mat-card'), gauge=document.querySelector('.gauge-wrap');
-  if(card&&gauge&&gauge.parentNode===card.parentNode) gauge.parentNode.insertBefore(card,gauge);
-  var grid=card&&card.querySelector('.mat-grid'), mat=document.getElementById('r-mat-row'), fr=document.getElementById('r-frost-row');
-  if(grid&&mat&&fr){ card.insertBefore(mat,grid); card.insertBefore(fr,grid); mat.style.marginTop='0'; fr.style.marginBottom='.6rem'; }
-  var ld=document.querySelector('.gdu-hero .page-lede');
-  if(ld) ld.textContent='Is it at black layer, and will frost beat it? Black layer date and frost risk first, then heat units since planting and crop stage, from real daily weather at your ZIP.';
-})();
-</script>
 </main>
 <div id="site-footer">
 <!-- static-nav:footer -->
