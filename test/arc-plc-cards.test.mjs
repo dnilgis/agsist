@@ -48,6 +48,19 @@ const ASK = /Ask FSA|ask your FSA office/;
    call across PLC yields of 60% to 100% of the benchmark (arcfix, Sig Oct 20, 2026). Those pieces are cut from
    both sides before the exact comparison, and the new side must not say "Ask FSA"; the live-page test below holds
    the new words to the build's on every card. */
+/* Nov 9, 2026 (curtain): the fixture holds the old words about a crop with too little price history of its own
+   (its price swings "borrowed from corn's"). The build and the browser now say one plain line; the old sentences are
+   moved to it on the fixture side, and the live-tree tests hold every page to the new line. */
+const RSQ = "(?:&rsquo;|’)";
+const BOR_LINE = "This crop has too little price history of its own, so the call stops at Leans and no dollar figure is printed.";
+const plainBorrow = (h) => h
+  .replace(new RegExp("the expected payments are not printed\\. [A-Z][^.<>]*? (?:has|have) (?:too few years of (?:its|their) own prices in FSA" + RSQ + "s tables, so (?:its|their) price swings are corn" + RSQ + "s|no October futures history of (?:its|their) own on file, so (?:its|their) price swings are borrowed from corn" + RSQ + "s), and the expected dollars would rest on them\\. We do not print them\\.", "g"), "the expected payments are not printed: too little price history of its own.")
+  .replace(new RegExp("[A-Z][^.<>]*? (?:has|have) (?:too few years of (?:its|their) own prices in FSA" + RSQ + "s tables, so (?:its|their) price swings are corn" + RSQ + "s|no October futures history of (?:its|their) own on file, so (?:its|their) price swings are borrowed from corn" + RSQ + "s), and the expected dollars would rest on them\\. We do not print them\\.(?: So it stops at Leans\\.)?", "g"), BOR_LINE)
+  .replace(new RegExp("[A-Z][a-z][^.<>]*? borrows? corn" + RSQ + "s price swings, so (?:they stop|it stops) at Leans\\.", "g"), BOR_LINE)
+  .replace(new RegExp("no dollar figure, because the price swings are borrowed from corn" + RSQ + "s\\)", "g"), "no dollar figure for this crop)")
+  .replace(new RegExp(" Capped at Leans: this crop borrows corn" + RSQ + "s price swings\\.", "g"), " Capped at Leans: too little price history of its own.")
+  .replace(new RegExp(" have no October futures history of their own, so they borrow corn" + RSQ + "s October swings \\(wheat its own price changes, scaled to corn" + RSQ + "s size\\) and stop at Leans\\.", "g"), " stop at Leans and print no dollar figure: too little price history of their own.")
+  .replace(new RegExp(" No dollar figure: price swings borrowed from corn\\.", "g"), " No dollar figure: too little price history.");
 const cutMismatch = (h, P) => {
   let x = h;
   if (P.w === "mismatch") x = x.replace(/^<div class="ap-ans">.*?<\/div><p>.*?<\/p>/, "");
@@ -71,9 +84,9 @@ test("Lower, About the same and Higher: the browser writes the words the old pag
   let cut = 0;
   for (const [card, pack, sameW, html, where] of FX) {
     const P = C.unpack(pack), got = C.level(card, pack, sameW);
-    if (P.w !== "mismatch" && P.wo !== "mismatch" && P.w7 !== "mismatch") { assert.equal(got, html, `${where} ${pack}`); continue; }
+    if (P.w !== "mismatch" && P.wo !== "mismatch" && P.w7 !== "mismatch") { assert.equal(got, plainBorrow(html), `${where} ${pack}`); continue; }
     assert.ok(!ASK.test(got), `${where} ${pack}: no "Ask FSA"`);
-    assert.equal(cutMismatch(got, P), cutMismatch(html, P), `${where} ${pack}: the rest of the card`);
+    assert.equal(cutMismatch(got, P), cutMismatch(plainBorrow(html), P), `${where} ${pack}: the rest of the card`);
     cut++;
   }
   assert.ok(cut >= 50, `${cut} mismatch cases checked`);

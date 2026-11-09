@@ -38,9 +38,10 @@ test("2: no claim about the order of sequestration and the payment limit", () =>
 
 test("3: Sumner Co., KS 2026 wheat keeps its call and prints no expected dollars, with the reason", () => {
   const h = read("arc-plc/kansas/sumner-county.html"), t = text(h);
-  assert.match(t, /Wheat · non-irrigated Either one Close Too close to call\. Wheat has no October futures history of its own on file, so its price swings are borrowed from corn’s, and the expected dollars would rest on them\. We do not print them\./);
+  assert.match(t, /Wheat · non-irrigated Either one Close Too close to call\. This crop has too little price history of its own, so the call stops at Leans and no dollar figure is printed\./);
   assert.doesNotMatch(h, /\$6\.76|\$6\.64/, "the borrowed-spread dollars are gone from the page, FAQ and JSON-LD");
-  assert.match(t, /Close, either one: too small or too uncertain to call \(PLC paid more in 3 of 11 past-year scenarios, ARC-CO in 3; no dollar figure, because the price swings are borrowed from corn’s\)/);
+  assert.doesNotMatch(h, /borrow|corn(’|&rsquo;|')s (price swings|October)/i, "the curtain: no word of where the swings come from, in the page, FAQ or JSON-LD");
+  assert.match(t, /Close, either one: too small or too uncertain to call \(PLC paid more in 3 of 11 past-year scenarios, ARC-CO in 3; no dollar figure for this crop\)/);
   // what does not rest on the spread stays: the PLC price line and the trigger yield
   assert.match(t, /PLC only pays if wheat averages under \$6\.35 a bushel for 2026\./);
   assert.match(t, /ARC-CO pays here for 2026 if the county yield comes in under 43 bu at USDA’s price outlook, \$6\.30\./);
@@ -58,7 +59,7 @@ test("3: every borrowed 2026 spread is withheld: Cass Co., ND barley (too few ye
      Barley borrows corn's price swings, so it stops at Leans." Barley has too few years in FSA's tables, so it ran on corn's
      October swings outright (scen kind corn_oct). */
   const h = read("arc-plc/north-dakota/cass-county.html"), t = text(h);
-  assert.match(t, /Barley ARC-CO Leans ARC-CO leads across the 11 price years we ran, but that swings from year to year\. PLC did not come out ahead in any of them\. Barley has too few years of its own prices in FSA’s tables, so its price swings are corn’s, and the expected dollars would rest on them\. We do not print them\. So it stops at Leans\./);
+  assert.match(t, /Barley ARC-CO Leans ARC-CO leads across the 11 price years we ran, but that swings from year to year\. PLC did not come out ahead in any of them\. This crop has too little price history of its own, so the call stops at Leans and no dollar figure is printed\./);
   assert.doesNotMatch(t, /about \$11 more per base acre/);
   const card = /<article class="ap-crop" id="crop-barley"([^>]*)>[\s\S]*?data-t="([^"]+)" data-lv="same" data-p="([^"]+)"/.exec(h);
   assert.ok(card, "barley card");
@@ -85,7 +86,7 @@ test("3: the browser's words drop the dollars on the mark", () => {
   // [verdict, PLC cents, ARC cents, PLC wins, ARC wins, n, |gap| cents, years ARC paid, flags (1 borrowed, 4 under $1, 8 nousd), whole]
   const v = M.unpack(["close", 676, 664, 3, 3, 11, 12, 6, 1 | 4 | 8, 0]);
   const line = M.verdictLine(v, { min_scen: 8 });
-  assert.equal(line, "Close, either one: too small or too uncertain to call (PLC paid more in 3 of 11 past-year scenarios, ARC-CO in 3; no dollar figure, because the price swings are borrowed from corn&rsquo;s).");
+  assert.equal(line, "Close, either one: too small or too uncertain to call (PLC paid more in 3 of 11 past-year scenarios, ARC-CO in 3; no dollar figure for this crop).");
   assert.match(M.verdictLine(M.unpack(["close", 676, 664, 3, 3, 11, 12, 6, 1 | 4, 0]), { min_scen: 8 }), /expected \$6\.76 PLC vs \$6\.64 ARC-CO/, "without the mark the dollars print");
   // the packs as the build now writes them: null cents
   assert.doesNotMatch(M.verdictLine(M.unpack(["lean_arc", null, null, 0, 8, 11, null, 8, 1 | 8 | 16, null]), { min_scen: 8 }), /\$|null|NaN/);
