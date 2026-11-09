@@ -91,6 +91,7 @@ OPTIONAL_TOP_LEVEL = [
     "edge",                # 2026-10-17: {label, generated, facts[]} "Only on AGSIST", computed by scripts/daily_edge.py
     "cca_note",            # 2026-10-17: {date, text} Sig's own note from data/cca-note.json, only on the date he set
     "freshness",           # 2026-11-01: {window, tries, hits[]} the repeat check vs the last 7 issues (scripts/daily_fresh.py)
+    "basis_wow",           # 2026-11-09: {print, rows[], why, snapshot} the state basis line (only_here.wow_rows, daily_fresh memory)
 ]
 
 _SHARED = ("workers.dev", "github.io", "vercel.app", "pages.dev", "netlify.app", "herokuapp.com")
