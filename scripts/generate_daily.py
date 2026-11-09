@@ -1081,7 +1081,8 @@ def load_past_dailies(num_days=3):
     return header + "\n\n".join(blocks), past_tmyk_topics
 
 
-def build_chart_series(today_locked_prices, today_market_closed=False, num_days=9):
+def build_chart_series(today_locked_prices, today_market_closed=False, num_days=9,
+                       today_locked_changes=None, archive_dir=None, today_iso=None):
     """The last briefing-morning locks, one point per TRADING day, one CONTRACT
     per series, full precision — plus the dates, so the window can be printed.
 
@@ -1105,50 +1106,73 @@ def build_chart_series(today_locked_prices, today_market_closed=False, num_days=
     series stay the same length and aligned — a renderer that assumes equal
     spacing cannot be handed a silently shifted series.
 
+    - SETTLES ONLY, ON THEIR OWN DATE (2026-11-09 panel). Each point is an
+      exchange settle dated by the session it settled: an issue's prior settle
+      (locked_changes prev / prev_date) and its own price only when that is a
+      settle. The morning lock is an overnight trade and is never a point:
+      the Nov 5 series put the 5:46 a.m. trade 4.4725 on Nov 5 (that day
+      settled 4.40) and Nov 4's trade 4.405 where it settled 4.4425.
+    - ONE CONTRACT. From first notice the harvest month hands over to the
+      nearby (Jan beans after Oct 30 2026); a nearby key is charted only on
+      issues whose lock names the same month.
+
     Returns (series, dates): series maps name -> [floats], dates is ISO per
-    point, shared by all series. ({}, []) when fewer than 2 points survive.
+    point (a settle session), shared by all series. ({}, []) when fewer than
+    2 points survive.
     """
-    archive_dir = REPO_ROOT / "data" / "daily-archive"
+    archive_dir = Path(archive_dir) if archive_dir else REPO_ROOT / "data" / "daily-archive"
     index_path = archive_dir / "index.json"
-    if not index_path.exists(): return {}, []
+    today_iso = today_iso or datetime.now().strftime("%Y-%m-%d")
+    lp_today = today_locked_prices or {}
+    lc_today = today_locked_changes or {}
+    key_map, want = {}, {}
+    for name, base, mon in (("corn", "corn", 12), ("soybeans", "beans", 11)):
+        dated = sorted(k for k in lp_today if k.startswith(base + "-") and lp_today.get(k))
+        if not dated: continue
+        c = (lc_today.get(base) or {}).get("contract")
+        if past_notice_on(dated[0], today_iso) and lp_today.get(base) and c:
+            key_map[name], want[name] = base, ("lock", c)   # the strip's rule (build_quote_strip)
+            continue
+        try:
+            yy = next_live_year(mon, datetime.strptime(today_iso, "%Y-%m-%d").date()) % 100
+            want[name] = ("strip", f"{_CME_MONTH_CODE['FGHJKMNQUVXZ'[mon - 1]]} '{yy:02d}")
+        except Exception:
+            want[name] = ("strip", None)
+        key_map[name] = dated[0]
+    if not key_map: return {}, []
     try:
         with open(index_path) as f: idx = json.load(f)
-    except Exception: return {}, []
-    key_map = {}
-    for name, base in (("corn", "corn"), ("soybeans", "beans")):
-        dated = sorted(k for k in (today_locked_prices or {})
-                       if k.startswith(base + "-") and today_locked_prices.get(k))
-        if dated: key_map[name] = dated[0]
-    if not key_map: return {}, []
-    entries = idx.get("briefings", [])
-    today_iso = datetime.now().strftime("%Y-%m-%d")
-    # Strictly BEFORE today, not merely != today: this also keeps a re-run on a
-    # later day (or a skewed clock) from charting the same lock twice.
-    past = sorted([e for e in entries if e.get("date") and e["date"] < today_iso],
-                  key=lambda e: e["date"])
-    rows = []
-    for entry in reversed(past):
-        if len(rows) >= num_days: break
-        json_path = archive_dir / f"{entry.get('date', '')}.json"
-        if not json_path.exists(): continue
+        days = sorted({e["date"] for e in idx.get("briefings", []) if e.get("date") and e["date"] < today_iso})
+    except Exception:
+        days = []
+    # Strictly BEFORE today, not merely != today: a re-run on a later day (or a
+    # skewed clock) never reads its own issue twice.
+    days = days[-(num_days * 2 + 6):]
+    pts = {}                               # settle date -> {name: settle}
+
+    def take(lp, lc, strip_c):
+        for name, key in key_map.items():
+            ch = lc.get(key) or {}
+            how, c = want[name]
+            if how == "lock" and ch.get("contract") != c: continue
+            if how == "strip" and c and strip_c.get(key) not in (None, c): continue
+            if isinstance(ch.get("prev"), (int, float)) and ch["prev"] > 0 and ch.get("prev_date"):
+                pts.setdefault(str(ch["prev_date"])[:10], {})[name] = float(ch["prev"])
+            v = lp.get(key)
+            if ch.get("kind") == "settle" and ch.get("date") and not ch.get("stale") \
+                    and isinstance(v, (int, float)) and v > 0:
+                pts.setdefault(str(ch["date"])[:10], {})[name] = float(v)
+
+    for d in days:
+        json_path = archive_dir / f"{d}.json"
         try:
             with open(json_path) as f: b = json.load(f)
         except Exception: continue
-        if b.get("market_closed") is True: continue
-        lp = b.get("locked_prices") or {}
-        vals = {}
-        for name, key in key_map.items():
-            v = lp.get(key)
-            if isinstance(v, (int, float)) and v > 0: vals[name] = float(v)
-        if len(vals) == len(key_map): rows.append((entry["date"], vals))
-    rows.reverse()
-    if rows and rows[-1][0] >= today_iso: rows.pop()  # belt to the guard above
-    if not today_market_closed:
-        vals = {}
-        for name, key in key_map.items():
-            v = (today_locked_prices or {}).get(key)
-            if isinstance(v, (int, float)) and v > 0: vals[name] = float(v)
-        if len(vals) == len(key_map): rows.append((today_iso, vals))
+        strip_c = {q.get("key"): q.get("contract") for q in ((b.get("quote_strip") or {}).get("quotes") or [])}
+        take(b.get("locked_prices") or {}, b.get("locked_changes") or {}, strip_c)
+    take(lp_today, lc_today, {})
+    rows = [(d, v) for d, v in sorted(pts.items()) if d < today_iso or (d == today_iso and not today_market_closed)]
+    rows = [(d, v) for d, v in rows if len(v) == len(key_map)][-(num_days + 1):]
     if len(rows) < 2: return {}, []
     return ({name: [v[name] for _, v in rows] for name in key_map},
             [d for d, _ in rows])
@@ -1167,6 +1191,16 @@ def _chart_window_label(dates):
 
 STRIP_DISPLAY = {"corn": "Corn", "beans": "Soybeans", "wheat": "Wheat"}
 
+def past_notice_on(key, when):
+    """True when a dated grain key (corn-dec, beans-nov) is on or past its first
+    notice day on the date of `when` (an ISO date or stamp). False when unsure."""
+    try:
+        import contract_calendar as _cc
+        return _cc.past_first_notice(key, datetime.strptime(str(when)[:10], "%Y-%m-%d").date())
+    except Exception:
+        return False
+
+
 def build_quote_strip(locked_prices, locked_changes, board):
     """The market strip both pages render: the DAY move, against the prior
     settle, with the contract named — never an unlabeled multi-day percent.
@@ -1184,9 +1218,17 @@ def build_quote_strip(locked_prices, locked_changes, board):
     """
     lp = locked_prices or {}
     lc = locked_changes or {}
+    b = board or {}
     quotes = []
     for base in ("corn", "beans", "wheat"):
         dated = sorted(k for k in lp if k.startswith(base + "-") and lp.get(k))
+        # 2026-11-09: from first notice the harvest month is in delivery; the
+        # strip shows the nearby month (rolled at first notice by fetch_prices,
+        # its month in locked_changes), never Friday's Nov bean settle beside
+        # Monday's overnight corn and wheat.
+        if dated and past_notice_on(dated[0], b.get("quote_session") or b.get("fetched")) \
+                and lp.get(base) and (lc.get(base) or {}).get("contract"):
+            dated = []
         key = dated[0] if dated else base
         last = lp.get(key)
         ch = lc.get(key) or {}
@@ -1200,7 +1242,7 @@ def build_quote_strip(locked_prices, locked_changes, board):
             parts = label.rsplit(" ", 2)
             contract = f"{parts[1]} {parts[2]}" if len(parts) == 3 else key.split("-", 1)[1].capitalize()
         else:
-            contract = "nearby"
+            contract = ch.get("contract") if base in ("corn", "beans") and ch.get("contract") else "nearby"
         q = {"key": key, "name": name, "contract": contract,
              "last": last, "prev": prev, "pct": pct}
         # 2026-10-17: the strip says settle or last trade per quote (fetch_prices
@@ -1209,9 +1251,11 @@ def build_quote_strip(locked_prices, locked_changes, board):
         if ch.get("kind") in ("settle", "last"):
             q["kind"] = ch["kind"]
             if ch["kind"] == "last" and ch.get("at"): q["at"] = ch["at"]
+            # the session a settle belongs to, so the note under the strip
+            # names it (Nov 9: "Exchange settles, Mon Nov 9" over Friday's)
+            if ch["kind"] == "settle" and ch.get("date"): q["date"] = str(ch["date"])[:10]
         quotes.append(q)
     if not quotes: return None
-    b = board or {}
     return {"asof": b.get("fetched") or None,
             "session": b.get("quote_session") or None,
             "vs_session": b.get("prev_close_session") or None,
@@ -1341,7 +1385,14 @@ def quote_strip_note(strip):
         return " · ".join(bits)
     st = [q["name"] for q in qs if q.get("kind") == "settle"]
     la = [q for q in qs if q.get("kind") != "settle"]
-    when = _session_words(strip.get("session")) if strip.get("session") else ""
+    # 2026-11-09: the settles' own session, never the board's session before it
+    # settled ("Exchange settles, Mon Nov 9" over Friday's Nov bean settle).
+    # A strip whose settles carry no date (before Nov 9) keeps its old words.
+    sdays = {q.get("date") for q in qs if q.get("kind") == "settle"}
+    if sdays and None not in sdays:
+        when = _session_words(sdays.pop()) if len(sdays) == 1 else ""
+    else:
+        when = _session_words(strip.get("session")) if strip.get("session") else ""
     at = next((q.get("at") for q in la if q.get("at")), None) or strip.get("asof")
     at_s = _ct_stamp(at) if at else ""
     if not la:
@@ -1357,14 +1408,21 @@ def quote_strip_note(strip):
     return " · ".join(bits)
 
 
-def load_issue_number():
-    """Total briefing count from archive index. Returns 0 if missing."""
-    index_path = REPO_ROOT / "data" / "daily-archive" / "index.json"
+def load_issue_number(today_iso=None, index_path=None):
+    """How many issues came BEFORE today: the archive's distinct dates earlier
+    than today. 0 if the index is missing.
+
+    2026-11-09 panel: this was the index's count, which already holds today's
+    entry on a second run the same day, so a re-run took the next number and
+    the day after repeated it (Oct 16 and 17 both #218; 228, 230, 230 for Oct
+    27 to 29; 234, 236, 236 for Nov 2 to 4). Counting dates before today gives
+    every issue its place: a re-run keeps its number and the next day is +1."""
+    index_path = Path(index_path) if index_path else REPO_ROOT / "data" / "daily-archive" / "index.json"
+    today_iso = today_iso or datetime.now().strftime("%Y-%m-%d")
     if not index_path.exists(): return 0
     try:
         with open(index_path) as f: idx = json.load(f)
-        if isinstance(idx.get("count"), int): return idx["count"]
-        return len(idx.get("briefings", []))
+        return len({b["date"] for b in idx.get("briefings", []) if b.get("date") and b["date"] < today_iso})
     except Exception: return 0
 
 
@@ -6271,7 +6329,7 @@ def main():
     except Exception as _e:
         print(f"  [warn] Only on AGSIST skipped ({type(_e).__name__}: {_e})")
     chart_series, chart_dates = build_chart_series(
-        locked_prices, briefing.get("market_closed") is True)
+        locked_prices, briefing.get("market_closed") is True, today_locked_changes=briefing["locked_changes"])
     if chart_series:
         briefing["chart_series"] = chart_series
         briefing["chart_dates"] = chart_dates

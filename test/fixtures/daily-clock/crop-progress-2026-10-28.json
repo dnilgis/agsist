@@ -1,0 +1,21 @@
+{
+ "_note": "data/crop-progress.json as the Oct 28 2026 Daily read it (git b31fc48f3143); harvest rows only",
+ "updated": "2026-10-27",
+ "report_date": "2026-10-25",
+ "progress": {
+  "corn_harvested": {
+   "date": "2026-10-25",
+   "pct": 60,
+   "prev_week": 44,
+   "prev_year": null,
+   "avg5": 66
+  },
+  "soybeans_harvested": {
+   "date": "2026-10-25",
+   "pct": 79,
+   "prev_week": 64,
+   "prev_year": null,
+   "avg5": 77
+  }
+ }
+}

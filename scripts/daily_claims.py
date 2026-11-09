@@ -54,6 +54,7 @@ PROMPT_RULES = """CLAIM LIMITS (a machine checks every sentence after you finish
 - A futures move is not a cash price. Never say what a bushel in the bin, a farmer's corn, a hog or steer sold, or a cash bid is worth, brought, gained or lost from futures alone; that needs a posted bid or a cash trade report.
 - No planting or acreage advice from this year's contracts or the nearby ratio. "Favors beans" needs next year's contracts (Nov and Dec of next year) and costs, or it is left out.
 - No cause sentence ("because", "follows", "driven by", "due to") unless the same sentence says who reported it ("USDA said", "Reuters reported"). Otherwise give the two facts side by side and let the reader judge.
+- Call the harvest fast or slow only when USDA crop progress shows that crop ahead of or behind its 5-year average; with no crop named, corn and soybeans must both agree.
 - In the headline and teaser, a futures move says futures: "Hog futures fall 5.5% to $58.60", "December hogs settled at $58.60", never "Hogs fall 5.5% to $58.60", which reads as what hogs sold for."""
 
 # commodity words -> family (the prefix of the dated keys in prices.json), grain?
@@ -185,14 +186,31 @@ def issue_date(briefing, today=None):
     return today or date.today()
 
 
-def context(prices, day, quote_strip=None):
+def harvest_pace(progress, day):
+    """{"corn"|"beans": (pct harvested, 5-year average, report date)} from
+    data/crop-progress.json, only reports dated on or before the issue."""
+    out = {}
+    pr = (progress or {}).get("progress") or {}
+    for crop, key in (("corn", "corn_harvested"), ("beans", "soybeans_harvested")):
+        r = pr.get(key) or {}
+        try:
+            rd = date.fromisoformat(str(r.get("date"))[:10])
+        except ValueError:
+            continue
+        if isinstance(r.get("pct"), (int, float)) and isinstance(r.get("avg5"), (int, float)) and rd <= day:
+            out[crop] = (r["pct"], r["avg5"], rd)
+    return out
+
+
+def context(prices, day, quote_strip=None, progress=None):
     """What the rules read. prices: data/prices.json as loaded. day: the
-    issue's date. quote_strip: the issue's own strip, when it has one."""
+    issue's date. quote_strip: the issue's own strip, when it has one.
+    progress: data/crop-progress.json as loaded, when the caller has it."""
     quotes = (prices or {}).get("quotes") or {}
     pr = (prices or {}).get("planting_ratio") or {}
     ctx = {"day": day, "dated": {}, "trades": {}, "settles": {},
            "crop_year": int(pr.get("crop_year") or (day.year + 1 if day.month >= 8 else day.year)),
-           "planting_ratio": pr.get("value")}
+           "planting_ratio": pr.get("value"), "harvest": harvest_pace(progress, day)}
     now = datetime(day.year, day.month, day.day, 12, tzinfo=timezone.utc)
     for key, q in quotes.items():
         if not isinstance(q, dict):
@@ -229,13 +247,21 @@ def context(prices, day, quote_strip=None):
     return ctx
 
 
+def load_progress(repo=REPO):
+    try:
+        with open(os.path.join(repo, "data", "crop-progress.json")) as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
 def from_files(briefing, repo=REPO, today=None):
     try:
         with open(os.path.join(repo, "data", "prices.json")) as f:
             prices = json.load(f)
     except (OSError, ValueError):
         prices = {}
-    return context(prices, issue_date(briefing, today), (briefing or {}).get("quote_strip"))
+    return context(prices, issue_date(briefing, today), (briefing or {}).get("quote_strip"), load_progress(repo))
 
 
 def _prices_with_family(sent):
@@ -498,6 +524,31 @@ def r_cause_without_source(sent, ctx):
     return not _CITED.search(sent)
 
 
+_FAST = r"fast(?:er|est)?|quick(?:er)?|rapid|speedy|brisk|swift"
+_SLOW = r"slow(?:er|est)?|sluggish|lagging|delayed"
+_PACE_ADJ = re.compile(r"\b(%s|%s)(?:-paced)?\s+(?:(?:corn|soybean|bean|fall|u\.?s\.?)\s+)?harvests?\b" % (_FAST, _SLOW), re.I)
+_PACE_PRED = re.compile(r"\bharvests?\b[^.;]{0,40}?\b(?:is|was|has been|remains|stays|running|moving|going|ran|runs|moved)\s+"
+                        r"(?:(?:well|far|still|very|so)\s+)?(%s|%s|ahead of|behind)\b" % (_FAST, _SLOW), re.I)
+_AHEAD = re.compile(r"\b(?:%s|ahead of)\b" % _FAST, re.I)
+
+
+def r_harvest_pace(sent, ctx):
+    """A harvest called fast or slow against the USDA 5-year average it does
+    not match (Oct 28 2026: "A fast harvest has been the weight on grain" with
+    corn 60% harvested against a 66% average). A crop named is checked alone;
+    no crop named, every crop on file must agree."""
+    hp = ctx.get("harvest") or {}
+    if not hp:
+        return False
+    m = _PACE_ADJ.search(sent) or _PACE_PRED.search(sent)
+    if not m:
+        return False
+    fast = bool(_AHEAD.fullmatch(m.group(1)))
+    crops = [c for c, pat in (("corn", r"\bcorn\b"), ("beans", r"\b(?:soy)?beans?\b|\bsoybeans?\b")) if re.search(pat, sent, re.I)]
+    crops = [c for c in (crops or list(hp)) if c in hp]
+    return any((hp[c][0] <= hp[c][1]) if fast else (hp[c][0] >= hp[c][1]) for c in crops)
+
+
 RULES = [
     ("expired-contract", r_expired),
     ("close-before-settle", r_close_before_settle),
@@ -506,6 +557,7 @@ RULES = [
     ("planting-from-nearby", r_planting_from_nearby),
     ("cause-without-source", r_cause_without_source),
     ("month-mismatch", r_month_mismatch),
+    ("harvest-pace", r_harvest_pace),
 ]
 # read only on the headline-type fields (HEAD_LOCS); a wording rule, so it WARNs
 HEAD_RULES = [
@@ -514,6 +566,7 @@ HEAD_RULES = [
 
 
 # read against the data, so briefing_gate blocks on them; the rest WARN there
+# harvest-pace (Nov 9 2026) reads data but finds the claim by wording, so strip cuts it and the gate WARNs
 BLOCKING = ("expired-contract", "close-before-settle", "future-as-past", "month-mismatch")
 
 
@@ -938,6 +991,20 @@ def _selftest():
     expect("month-mismatch", "Live cattle fell 2.4% to $220.95.", c_n1, False)
     expect("month-mismatch", "October feeders settled at $337.775.", c_n1, True)
     expect("month-mismatch", "December corn is at $4.51.", c_n1, False)
+
+    # Oct 28: "A fast harvest" with corn 60% harvested vs a 66% average (beans 79% vs 77%);
+    # data/crop-progress.json as that issue read it (week ending Oct 25), test/fixtures/daily-clock
+    _cp = json.load(open(os.path.join(REPO, "test", "fixtures", "daily-clock", "crop-progress-2026-10-28.json")))
+    c28 = context({}, date(2026, 10, 28), None, _cp)
+    expect("harvest-pace", "A fast harvest has been the weight on grain, and one overnight bounce does not change that.", c28, True)
+    expect("harvest-pace", "A fast harvest keeps supply in front of the market.", c28, True)
+    expect("harvest-pace", "The corn harvest is running behind average, 60% done against 66%.", c28, False)
+    expect("harvest-pace", "A slow corn harvest is holding back supply.", c28, False)
+    expect("harvest-pace", "A fast soybean harvest is putting beans in front of buyers.", c28, False)
+    expect("harvest-pace", "The soybean harvest is running behind.", c28, True)
+    expect("harvest-pace", "Harvest is 60% done for corn.", c28, False)
+    expect("harvest-pace", "A fast harvest has been the weight on grain.", context({}, date(2026, 10, 28)), False)
+    expect("harvest-pace", "A fast harvest has been the weight on grain.", context({}, date(2026, 10, 24), None, _cp), False)
 
     # Nov 2 audit: the steer and fat-cattle forms of the same claim
     expect("cash-from-futures", "Every steer sold Friday brought less than a week ago.", c29, True)
