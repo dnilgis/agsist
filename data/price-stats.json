@@ -1,14 +1,14 @@
 {
-  "updated": "2026-11-06T21:54:41Z",
+  "updated": "2026-11-09T21:53:10Z",
   "corn": {
-    "pct": 32,
-    "cur": 4.4225,
+    "pct": 29,
+    "cur": 4.3875,
     "lo": 3.6775,
     "hi": 8.1825,
-    "median": 4.6475,
-    "n": 261,
+    "median": 4.6463,
+    "n": 262,
     "years": 5,
-    "read": "At the 32nd percentile of the last 5 years \u2014 below the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
+    "read": "At the 29th percentile of the last 5 years \u2014 below the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       5.7725,
       5.7075,
@@ -269,10 +269,11 @@
       4.7975,
       4.7425,
       4.56,
-      4.4775
+      4.4775,
+      4.415
     ],
     "hist_from": "2021-11-08",
-    "hist_to": "2026-11-02",
+    "hist_to": "2026-11-09",
     "seasonality": [
       79,
       80,
@@ -295,14 +296,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "soybean": {
-    "pct": 47,
-    "cur": 11.945,
+    "pct": 45,
+    "cur": 11.87,
     "lo": 9.3875,
     "hi": 17.455,
-    "median": 12.0575,
-    "n": 261,
+    "median": 12.0538,
+    "n": 262,
     "years": 5,
-    "read": "At the 47th percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
+    "read": "At the 45th percentile of the last 5 years \u2014 right around the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       12.34,
       12.6325,
@@ -563,10 +564,11 @@
       12.92,
       12.6125,
       12.565,
-      12.2225
+      12.2225,
+      11.89
     ],
     "hist_from": "2021-11-08",
-    "hist_to": "2026-11-02",
+    "hist_to": "2026-11-09",
     "seasonality": [
       78,
       91,
@@ -589,14 +591,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "wheat": {
-    "pct": 44,
-    "cur": 5.905,
+    "pct": 43,
+    "cur": 5.875,
     "lo": 4.985,
     "hi": 13.48,
-    "median": 6.05,
-    "n": 261,
+    "median": 6.0463,
+    "n": 262,
     "years": 5,
-    "read": "At the 44th percentile of the last 5 years \u2014 below the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
+    "read": "At the 43rd percentile of the last 5 years \u2014 below the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       8.17,
       8.23,
@@ -857,10 +859,11 @@
       6.71,
       6.605,
       6.25,
-      6.035
+      6.035,
+      5.9125
     ],
     "hist_from": "2021-11-08",
-    "hist_to": "2026-11-02",
+    "hist_to": "2026-11-09",
     "seasonality": [
       58,
       86,
@@ -883,14 +886,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "cattle": {
-    "pct": 71,
-    "cur": 214.175,
+    "pct": 74,
+    "cur": 216.325,
     "lo": 131.575,
     "hi": 257.45,
-    "median": 184.0,
-    "n": 261,
+    "median": 184.05,
+    "n": 262,
     "years": 5,
-    "read": "At the 71st percentile of the last 5 years \u2014 above the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
+    "read": "At the 74th percentile of the last 5 years \u2014 above the 5-year midpoint (n = 262 weekly closes, continuous front-month).",
     "hist": [
       132.125,
       133.525,
@@ -1151,10 +1154,11 @@
       224.975,
       227.55,
       229.875,
-      224.0
+      224.0,
+      214.05
     ],
     "hist_from": "2021-11-08",
-    "hist_to": "2026-11-02",
+    "hist_to": "2026-11-09",
     "seasonality": [
       0,
       19,
@@ -1177,14 +1181,14 @@
     "seasonality_method": "calendar-year-detrended"
   },
   "feeders": {
-    "pct": 74,
-    "cur": 322.425,
+    "pct": 76,
+    "cur": 328.825,
     "lo": 153.125,
     "hi": 375.5,
-    "median": 249.2,
-    "n": 261,
+    "median": 249.2375,
+    "n": 262,
     "years": 5,
-    "read": "At the 74th percentile of the last 5 years \u2014 above the 5-year midpoint (n = 261 weekly closes, continuous front-month).",
+    "read": "At the 76th percentile of the last 5 years \u2014 historically high \u2014 above most of the last 5 years (n = 262 weekly closes, continuous front-month).",
     "hist": [
       156.25,
       160.925,
@@ -1445,10 +1449,11 @@
       343.85,
       343.625,
       348.325,
-      337.775
+      337.775,
+      322.325
     ],
     "hist_from": "2021-11-08",
-    "hist_to": "2026-11-02",
+    "hist_to": "2026-11-09",
     "seasonality": [
       0,
       10,
