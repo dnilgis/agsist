@@ -11,6 +11,8 @@
   <!-- /static-nav:fonts -->
   <link rel="preload" href="/components/styles.css?v=28" as="style">
   <link rel="stylesheet" href="/components/styles.css?v=28">
+  <script>/* agsist-inter-gate: font-display:optional as the page's own rule. If Inter is not ready in 100 ms, the page keeps the stand-in for the whole visit, so a slow file cannot swap in later and rewrap the text (CLS 0.05 at 1280 when the file took seconds). Fails soft: no document.fonts, the font swaps as before. */
+try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('inter-late');},100);d.fonts.load('400 1em Inter').then(function(){clearTimeout(t);},function(){});})(document);}catch(_){}</script>
   <script src="/components/util.js?v=17"></script>
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -95,6 +97,7 @@
   /* the countdown is recounted on the reader's clock after paint: same-width figures, so "51 days" to "50 days" moves nothing */
   #dp-dmc-words,#dp-dmc-lever{font-variant-numeric:tabular-nums;}
   #dp-now-per,#dp-now-signup{font-variant-numeric:tabular-nums;}
+  html.inter-late{--font-body:'Inter Fallback','Inter Fallback R',system-ui,sans-serif;--font-display:'Inter Fallback','Inter Fallback R',system-ui,sans-serif;}
   .dp-dmc-src{font-size:.85rem;color:var(--text-dim);}
   .dp-dmc-fb{margin:.5rem 0 0;padding-left:1.1rem;color:var(--text-dim);font-size:.93rem;line-height:1.5;}
   .dp-dmc-fb li{margin:.2rem 0;}
