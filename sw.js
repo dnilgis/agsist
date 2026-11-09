@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 395;  // v395 2026-11-09: rain hub phone. The rain hub opens with a state picker; the state list folds at the bottom (components/rain-county.css?v=8).
+var CACHE_VERSION = 397;  // v397 2026-11-09: rain hub phone (397, next after main's 396). rain hub phone. The rain hub opens with a state picker; the state list folds at the bottom (components/rain-county.css?v=8).
+// var CACHE_VERSION = 396;  // v396 2026-11-09: briefing teaser. On a stale line the home Daily teaser says "Latest briefing", never "Today's" for an old issue (home-season.js?v=11).
 // var CACHE_VERSION = 394;  // v394 2026-11-09: land hub phone. The farmland sales hub opens with the map, stand-out sales and a state/county picker; lists fold (components/land-sales.css?v=3, usmap.js?v=2 plain option).
 // var CACHE_VERSION = 393;  // v393 2026-11-09: real map pictures. The share image and the Friday Chart poster draw the real US map, not a tile grid (components/infographic.js?v=3).
 // var CACHE_VERSION = 392;  // v392 2026-11-08: real US map. The state tile grids on the farmland sales hub, rent hub, crop conditions and farmland atlas are one real map of the states, Alaska and Hawaii as insets (components/usmap.js?v=1, atlas-foreign.js?v=2, data/us-states-map.svg).

@@ -63,9 +63,26 @@ test("/markets source line follows close_kind, and the page script and the build
   assert.equal(js(cases[1]), "Exchange settles, except the latest delayed trade for Crude WTI. Quotes from Yahoo Finance, refreshed every 15 minutes in session.");
   assert.equal(js(cases[3]), "Every card shows the latest delayed trade, not the exchange settle. Quotes from Yahoo Finance, refreshed every 15 minutes in session.");
   assert.equal(js(cases[4]), "Latest delayed trades, except the exchange settle for Live cattle. Quotes from Yahoo Finance, refreshed every 15 minutes in session.");
-  // the baked line is the build's words for the file on disk
+  // the baked line is the build's words for the file on disk. The build and the
+  // page both swap in each card's shown contract first (the -nearby alias, the
+  // next harvest month, the nearest dated month), so the raw aliases are not
+  // what the cards show: Nov 9, beans-nov was a settle while its card showed
+  // Jan '27, a last trade.
+  const shown = JSON.parse(py(`import json, seed_static as s
+q = dict(json.load(open("../data/prices.json"))["quotes"])
+for c in ("corn", "beans", "wheat"):
+    nb = q.get(c + "-nearby")
+    if nb and nb.get("close") is not None: q[c] = nb
+for c, dk in (("corn", "corn-dec"), ("beans", "beans-nov")):
+    h = s.harvest_of(q, c)
+    if h: q[dk] = h[1]
+    else: q.pop(dk, None)
+for root, _ in s.MK_CHIPS:
+    r = s.nearby_of(q, root)
+    if r: q[root] = r[0]
+print(json.dumps(q))`));
   const baked = read("markets.html").match(/<!--SEED:mk:src-->([\s\S]*?)<!--\/SEED-->/)[1].replace(/&amp;/g, "&");
-  assert.equal(baked, js(prices.quotes));
+  assert.equal(baked, js(shown));
 });
 
 test("cattle curve method note says settle or last trade from the file", () => {

@@ -125,7 +125,8 @@ test("section rules: no em dash, no name in it, no sponsor slot, Dataset and FAQ
   for (const id of ["years", "counties", "buyers", "quarters", "method", "faq", "sources", "li-counties"]) assert.ok(PAGE.includes(`id="${id}"`), "#" + id);
   assert.match(PAGE, /<svg class="li-chart"/);
   assert.match(HUB, /fetch\('\/data\/land\/index\.json\?v=\d+'\)/, "the county table loads from the data file");
-  assert.match(HUB, /<a href="#illinois-index">Illinois sale index<\/a>/, "the jump row reaches it");
+  // since the phone redesign (#445) the section sits in its own fold, named on the summary, not behind a jump row
+  assert.match(HUB, /<details[^>]*>\s*<summary[^>]*>Illinois farmland sale index<\/summary>\s*<section class="li" id="illinois-index"/, "the fold reaches it");
   assert.match(read("sitemap-land-sales.xml"), /<loc>https:\/\/agsist\.com\/land-sales\/<\/loc>/);
   assert.doesNotMatch(read("sitemap.xml"), /agsist\.com\/farmland-index/);
   assert.match(read("llms.txt"), /\/land-sales\/#illinois-index/);

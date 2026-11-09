@@ -73,13 +73,27 @@ test("shipped page: condition parts name the condition week, harvest parts the h
   const desc = html.match(/<meta name="description" content="([^"]*)"/)[1];
   assert.match(desc, new RegExp(`(US c|C)orn is ${ge}% good to excellent`), "meta description too");
   if (harvest) assert.match(desc, new RegExp(`US corn is ${hp}% harvested`), "and the harvest");
+  // The page withholds a rating once its week is older than the builder's conditions limit
+  // (seed_static.STALE_DAYS); USDA stops rating corn in late October, so by mid-November the
+  // top lines say "No current ... rating" and still name the last week on file. The harvest
+  // parts keep their own week and freshness.
+  const limit = Number(execFileSync("python3", ["-c", "import sys; sys.path.insert(0, 'scripts'); import seed_static as s; print(s.STALE_DAYS['conditions'])"], { cwd: ROOT, encoding: "utf8" }));
+  const age = (iso) => Math.floor((Date.now() - Date.parse(iso + "T00:00:00Z")) / 864e5);
+  const ratingStale = age(rd) > limit, tableStale = age(we) > limit;
   for (const tag of ["condweek", "condvsent", "condstats"]) {
-    assert.ok(seed(html, tag).toLowerCase().includes(`week ending ${nice(rd)}`.toLowerCase()), `${tag} names ${nice(rd)}`);
-    assert.ok(seed(html, tag).includes(`${ge}%`), `${tag} carries ${ge}%`);
+    const t = seed(html, tag);
+    assert.ok(t.toLowerCase().includes(`week ending ${nice(rd)}`.toLowerCase()), `${tag} names ${nice(rd)}`);
+    if (ratingStale) assert.match(t, /^No current (national )?rating/, `${tag} withholds a rating that is ${age(rd)} days old`);
+    else assert.ok(t.includes(`${ge}%`), `${tag} carries ${ge}%`);
   }
   assert.ok(seed(html, "condharvline").includes(`week ending ${nice(hd)}`), `condharvline names the harvest week ${nice(hd)}`);
-  assert.ok(seed(html, "condtable").includes(`<caption>Corn, week ending ${nice(we)}`), "rank table caption");
-  assert.equal(seed(html, "condfresh"), `week ending ${we}`, "table header");
+  if (tableStale) {
+    assert.ok(seed(html, "condtable").includes(`No current state ratings: latest state file is the week ending ${nice(we)}`), "rank table withheld, names its week");
+    assert.equal(seed(html, "condfresh"), "-", "table header withheld");
+  } else {
+    assert.ok(seed(html, "condtable").includes(`<caption>Corn, week ending ${nice(we)}`), "rank table caption");
+    assert.equal(seed(html, "condfresh"), `week ending ${we}`, "table header");
+  }
   assert.ok(seed(html, "condharvtable").includes(`harvested, week ending ${nice(hd)}`), "harvest caption on the harvest week");
   for (const tag of ["condvsent", "condstats", "condtable", "condfresh"])
     for (const w of weeksNamed(seed(html, tag))) assert.ok(w === rd || w === we, `${tag}: ${w} is not the condition week`);
