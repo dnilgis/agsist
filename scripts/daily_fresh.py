@@ -460,6 +460,13 @@ def hits(briefing, rec, today=None, archive_dir=ARCHIVE, locked_prices=None, loc
                 found.append(("number", "one_number.value", "%s (%s) was the number on %s already; pick a fresh one"
                               % (n[0], n[1], _day(b))))
                 break
+        else:
+            # the same FACT with a new value (Nov 9 2026: -72,318 then 8,795 off one CFTC release)
+            nf = number_fact(briefing.get("one_number"))
+            if nf:
+                go, why = still_news(nf, memory_from(rec), today)
+                if not go:
+                    found.append(("number", "one_number.value", "%s (%s): %s; pick another number" % (n[0], n[1], why)))
     for i, it in enumerate(_stories(briefing)):
         best = None
         for b in rec:
@@ -586,6 +593,180 @@ def stamp(found, tries):
     """What the generator records in briefing["freshness"] (the gate checks any
     issue that carries it)."""
     return {"window": WINDOW, "tries": tries, "hits": [{"kind": k, "loc": l, "why": w} for k, l, w in found]}
+
+
+# ── one memory for the lines the code writes (Daily panel, Nov 9 2026) ───────
+# The checks above read the writer's prose and compare VALUES, so the same fact
+# with a new value passed: funds' corn position -72,318 (Sat Nov 7) then 8,795
+# (Mon Nov 9) off one CFTC release; the new-crop ratio 2.48 (Oct 31, Nov 1) then
+# 2.43 (Nov 8); feeders at the 74th percentile Nov 7, 8 and 9; and the builder's
+# own lines (the Today list, Only here, the web page's Only on AGSIST) never met
+# a check at all. Now every recurring line is a FACT, {kind, key, value, text},
+# and prints only when that fact changed since the issue that last printed it:
+#   funds        once per CFTC release, Saturday only: none printed in the 6 days before
+#   ratio        a band cross (RATIO_BANDS) or a move of RATIO_MOVE or more
+#   percentile   a band cross (PCT_BANDS) or a move of PCT_MOVE points or more
+#   basis_wow    a state enters, leaves or moves WOW_MOVE cents (wow_should_print)
+#   anything else  a new value (the same key with the same value is a repeat)
+# The memory is what went out: data/daily-sent/<day>.json (its "printed" list,
+# written by send_daily from the email as built; before Nov 10 2026, the
+# briefing's own day's number) and the published page's data/daily-archive/<day>.json
+# (the day's number, the state basis line). A line with no fact (a news title,
+# the reader's own rain) is judged by the prose checks above, or not at all.
+MEMORY_DAYS = 21
+SENT_DIR = os.path.join(REPO, "data", "daily-sent")
+RATIO_MOVE = 0.05
+RATIO_BANDS = (2.2, 2.5)        # the usual corn-or-beans rule of thumb: under 2.2 favors corn, over 2.5 beans
+PCT_MOVE = 5
+PCT_BANDS = (10, 90)            # the bottom and top tenth of five years
+WOW_MOVE = 5.0
+FUNDS_WEEKDAY = 5               # Saturday
+_COMMOD = re.compile(r"\b(corn|soybeans?|beans|wheat|live cattle|feeder cattle|feeders|cattle|lean hogs|hogs|crude)\b", re.I)
+
+
+def _commodity(s):
+    m = _COMMOD.search(str(s or ""))
+    if not m:
+        return ""
+    w = m.group(1).lower()
+    return {"soybean": "soybeans", "beans": "soybeans", "feeder cattle": "feeders", "lean hogs": "hogs",
+            "live cattle": "cattle"}.get(w, w)
+
+
+def number_fact(on):
+    """The day's number (one_number) as a fact, or None when it is no recurring kind:
+    a fund position, a price ratio or a percentile."""
+    if not isinstance(on, dict) or not on.get("value"):
+        return None
+    v, u = str(on.get("value")).strip(), str(on.get("unit") or "").strip()
+    lu = u.lower()
+    text = ("%s %s" % (v, u)).strip()
+    if re.search(r"\bcontracts?\b", lu) and re.search(r"\bfunds?\b|managed money|speculat", lu):
+        return {"kind": "funds", "key": _commodity(lu) or "funds", "value": norm_value(v), "text": text}
+    if re.search(r"\bratio\b", lu):
+        try:
+            return {"kind": "ratio", "key": re.sub(r"\s+", " ", lu).strip(), "value": float(norm_value(v)), "text": text}
+        except ValueError:
+            return None
+    if re.search(r"percentile", lu + " " + v.lower()):
+        m = re.search(r"\d+", v)
+        if m:
+            return {"kind": "percentile", "key": _commodity(lu) or lu, "value": int(m.group(0)), "text": text}
+    return None
+
+
+def _band(v, bands):
+    return sum(1 for b in bands if v >= b)
+
+
+def still_news(fact, mem, today):
+    """(True, why) when the fact may print today; (False, why) when it says what the
+    issue that last printed it already said. mem: memory() entries, oldest first."""
+    kind, key = fact.get("kind"), fact.get("key")
+    past = [m for m in mem or [] if m.get("kind") == kind and m.get("key") == key and str(m.get("date")) < today.isoformat()]
+    last = past[-1] if past else None
+    if kind == "funds":
+        if today.weekday() != FUNDS_WEEKDAY:
+            return False, "fund positions print once per CFTC release, on Saturday"
+        if any((today - dt.date.fromisoformat(str(m["date"]))).days <= 6 for m in past):
+            return False, "this release's fund position already printed %s" % last["date"]
+        return True, "the Saturday after the release"
+    if last is None:
+        return True, "not printed in the last %d days" % MEMORY_DAYS
+    try:
+        v, lv = fact.get("value"), last.get("value")
+        if kind == "ratio":
+            if _band(float(v), RATIO_BANDS) != _band(float(lv), RATIO_BANDS):
+                return True, "crossed a band since %s" % last["date"]
+            if round(abs(float(v) - float(lv)) * 100) >= round(RATIO_MOVE * 100):
+                return True, "moved %.2f since %s" % (abs(float(v) - float(lv)), last["date"])
+            return False, "%s was %s on %s; moved under %.2f" % (key, lv, last["date"], RATIO_MOVE)
+        if kind == "percentile":
+            if _band(float(v), PCT_BANDS) != _band(float(lv), PCT_BANDS):
+                return True, "crossed a band since %s" % last["date"]
+            if abs(float(v) - float(lv)) >= PCT_MOVE:
+                return True, "moved %d points since %s" % (abs(float(v) - float(lv)), last["date"])
+            return False, "%s was at the %s percentile on %s; moved under %d points" % (key, lv, last["date"], PCT_MOVE)
+    except (TypeError, ValueError):
+        return True, "unreadable earlier value"
+    if json.dumps(fact.get("value"), sort_keys=True) == json.dumps(last.get("value"), sort_keys=True):
+        return False, "the same %s (%s) printed %s" % (kind, key, last["date"])
+    return True, "changed since %s" % last["date"]
+
+
+def wow_should_print(rows, last):
+    """The state basis line: (print, why). rows/last: {key: wow cents}. Prints when a
+    state enters, leaves or moves WOW_MOVE cents since the issue that last printed it."""
+    if not rows:
+        return False, "no state passed the gates (a quiet week)"
+    if not last:
+        return True, "first print"
+    enters = sorted(set(rows) - set(last))
+    leaves = sorted(set(last) - set(rows))
+    moved = sorted(k for k in set(rows) & set(last) if abs(float(rows[k]) - float(last[k])) >= WOW_MOVE)
+    if enters or leaves or moved:
+        return True, "; ".join(x for x in ("entered " + ", ".join(enters) if enters else "",
+                                            "left " + ", ".join(leaves) if leaves else "",
+                                            "moved " + ", ".join(moved) if moved else "") if x)
+    return False, "the same states within %d cents of the last print" % WOW_MOVE
+
+
+def issue_facts(issue):
+    """[fact] an archived or sent issue printed: the sent email's own list when it carries
+    one, plus the day's number and the state basis line from the issue itself."""
+    out = list((issue or {}).get("printed") or [])
+    b = (issue or {}).get("briefing") if isinstance((issue or {}).get("briefing"), dict) else issue
+    if not isinstance(b, dict):
+        return out
+    f = number_fact(b.get("one_number"))
+    if f:
+        out.append(f)
+    bw = b.get("basis_wow")
+    if isinstance(bw, dict) and bw.get("print"):
+        for r in bw.get("rows") or []:
+            out.append({"kind": "basis_wow", "key": "%s:%s" % (r.get("st"), r.get("crop")), "value": r.get("wow"),
+                        "text": ""})
+    return out
+
+
+def memory(today, sent_dir=SENT_DIR, archive_dir=ARCHIVE, days=MEMORY_DAYS):
+    """Every fact printed in the `days` before today, oldest first, each with its "date"."""
+    out = []
+    for i in range(days, 0, -1):
+        d = (today - dt.timedelta(days=i)).isoformat()
+        seen = set()
+        for path in (os.path.join(sent_dir, d + ".json"), os.path.join(archive_dir, d + ".json")):
+            try:
+                with open(path, encoding="utf-8") as fh:
+                    issue = json.load(fh)
+            except (OSError, ValueError):
+                continue
+            for f in issue_facts(issue):
+                if not isinstance(f, dict) or not f.get("kind"):
+                    continue
+                sig = (f.get("kind"), f.get("key"), json.dumps(f.get("value"), sort_keys=True))
+                if sig in seen:
+                    continue
+                seen.add(sig)
+                out.append(dict(f, date=d))
+    return out
+
+
+def memory_from(rec):
+    """memory() built from issues already loaded (recent()'s list, each with its _date)."""
+    out = []
+    for b in rec or []:
+        for f in issue_facts(b):
+            out.append(dict(f, date=b.get("_date")))
+    return out
+
+
+def last_set(mem, kind, today):
+    """{key: value} of the newest day before today that printed any fact of this kind."""
+    days = sorted({m["date"] for m in mem or [] if m.get("kind") == kind and str(m.get("date")) < today.isoformat()})
+    if not days:
+        return {}
+    return {m["key"]: m.get("value") for m in mem if m.get("kind") == kind and m.get("date") == days[-1]}
 
 
 # ── replay and selftest ─────────────────────────────────────────────────────
