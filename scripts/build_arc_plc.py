@@ -2045,7 +2045,7 @@ def method_html(D):
                 f'<p class="ap-small">Payments are FSA&rsquo;s own rates times 85% of base acres, before sequestration and limits.'
                 + (f' Not in our files: {", ".join(str(y) for y in miss)}.' if miss else "") + '</p>')
     return f"""{head}
-  <p>The verdict compares what ARC-CO and PLC are each expected to pay per base acre on your county and crop, across past years ({yrs[0]} to {yrs[-1]}, each with a final USDA price), not one guess. The program expected to pay more gets the call; when they are too close, it says so.</p>
+  <p>The verdict compares what ARC-CO and PLC are each expected to pay per base acre on your county and crop, across past years ({yrs[0]} to {yrs[-1]}, each with a final USDA price), not one guess. The program expected to pay more gets the call; when they are too close, it says so. USDA puts out county yields months after harvest, so until then every scenario year assumes a normal crop: the county&rsquo;s FSA benchmark yield.</p>
   {rec}
   {btab}"""
 
