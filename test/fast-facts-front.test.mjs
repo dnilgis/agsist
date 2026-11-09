@@ -103,7 +103,9 @@ test("one number, one builder: each row builder is called from one place; the St
   assert.doesNotMatch(HJS, /drawState|drawUS|'s-corn|'u-corn/);
   // the harvest row carries the state and the US together, and says whose average it is
   const h = P.factProgress(J("data/crop-progress.json"), "WI", "corn");
-  assert.match(h.value, /^\d+% WI, \d+% US$/);
+  // a week USDA leaves the state out (Nov 9: Wisconsin) the row carries the US number alone and h.ctx says so
+  assert.match(h.value, /^\d+% WI, \d+% US$|^\d+% US$/);
+  if (/^\d+% US$/.test(h.value)) assert.match(h.ctx, /does not report Wisconsin/);
   // with a 5-year average it says whose average it is; when the average is withheld (a year with a publishing
   // gap, the fall 2025 shutdown, agsist #252) it gives last week instead
   assert.match(h.ctx, /Week ending [A-Z][a-z]{2} \d+\. (The 5-year average is our average of the NASS weeks\.|$)|a week earlier\. .*Week ending [A-Z][a-z]{2} \d+\.$/);
@@ -326,7 +328,8 @@ test("in Chromium: every row answers with a date and a source or says why; no na
     assert.equal(await pg.evaluate(() => document.querySelector(":target") && document.querySelector(":target").id), "f-rain");
     // what the State and US tabs carried is in My place now: wheat futures, both harvest rows with the state and the US
     assert.match(await pg.textContent("#f-wheat-fut .fx-w"), /^\$\d+\.\d/);
-    assert.match(await pg.textContent("#f-soy-progress .fx-w"), /^\d+% WI, \d+% US|^Not available/);
+    // Nov 9: USDA left Wisconsin soybeans out of the week; the row says so and gives the US number
+    assert.match(await pg.textContent("#f-soy-progress .fx-w"), /^\d+% WI, \d+% US|^\d+% US\. USDA does not report Wisconsin this week\.|^Not available/);
     // the futures rows say how they moved; the Daily row carries no price of its own
     assert.match(await pg.textContent("#f-corn-fut .fx-w"), /(Up|Down) [\d¼½¾⅛⅜⅝⅞]+¢ from the [A-Z][a-z]{2} \d+ settle\.|Unchanged from the/);
     assert.doesNotMatch(await pg.textContent("#f-daily .fx-b"), /\$\d{1,2}\.\d{2}/, "no grain price in the Daily row");
