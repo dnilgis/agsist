@@ -97,9 +97,8 @@
     .moist-card { background: var(--bg); padding: 10px; border-radius: 8px; border: 2px solid var(--border); }
     .moist-card-label { font-size:0.77rem; color: var(--text-dim); }
     .moist-card-val { font-family: 'JetBrains Mono', monospace; font-size: 1.05rem; font-weight: 700; color: var(--gold); }
-    .formula-note { margin-top: 16px; padding: 12px; background: var(--bg); border-radius: 8px; border-left: 3px solid var(--green); font-size:1rem; color: var(--text-dim); }
-    .formula-note strong { color: var(--text); }
-    .formula-note code { font-family:var(--font-body,'Inter',system-ui,sans-serif); font-size:1rem; color: var(--gold); }
+    .read-note { margin-top: 16px; padding: 12px; background: var(--bg); border-radius: 8px; border-left: 3px solid var(--green); font-size:1rem; color: var(--text-dim); }
+    .read-note strong { color: var(--text); }
     .ref-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size:0.78rem; }
     .ref-table th { background: var(--bg); padding: 7px 8px; text-align: center; color: var(--text-dim); font-size:0.755rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; border: 1px solid var(--border); }
     .ref-table td { padding: 7px 8px; text-align: center; border: 1px solid var(--border); }
@@ -495,18 +494,9 @@
             <p style="font-size:.86rem;margin:.4rem 0 0">Selling wet or overdry grain? <a href="/grain-shrink">See what shrink, drying charges or delivering too dry cost you at your bid</a>.</p>
           </div>
 
-          <div class="formula-note">
-            <strong>Formulas Used</strong><br>
-            <code>Cylinder = &pi; &times; r&sup2; &times; h</code><br>
-            <code>Peaked cone = &frac13; &times; &pi; &times; r&sup2; &times; (r &times; tan 25&deg; or 28&deg;)</code><br>
-            <code>Hopper cone = &frac13; &times; &pi; &times; r&sup2; &times; (r &times; tan &theta;)</code><br>
-            <code>Bin bu = ft&sup3; &times; 0.8036 &times; (1 + pack%)</code><br>
-            <code>Market bu = Bin bu &times; test weight &divide; standard lb</code><br>
-            <code>Shrink % = (Moist In &minus; Target) &times; shrink per point</code><br>
-            <code>Water shrink % = (Moist In &minus; Target) &times; 100 &divide; (100 &minus; Target)</code><br>
-            <code>Dry Bu = Wet market Bu &times; (1 &minus; Shrink%)</code><br>
-            <code>Drying Cost = Pts to dry &times; $/pt &times; Wet market Bu</code><br>
-            <span style="font-size:0.77rem;margin-top:4px;display:inline-block">Plain setting: 25&deg; peak, no pack. Dealer setting: 28&deg; peak, 6% pack. Grain depth is eave height minus the aeration floor. Shrink per point starts at 1.4 for corn and 1.3 for other grains.</span>
+          <div class="read-note">
+            <strong>How to read this</strong><br>
+            <span style="font-size:0.9rem">Bin bushels are what the bin holds as grain; market bushels adjust that to your test weight; net value is after shrink and drying. Plain setting: level fill with a modest peak, no pack. Dealer setting: counted the way bin makers&rsquo; charts do.</span>
           </div>
         </div>
       </div><!-- /results panel -->
@@ -519,10 +509,10 @@
 
 <!--BINCHART:START-->
       <h2 id="size-chart">Grain bin size chart: bushels by diameter and eave height</h2>
-      <p>Level full, flat floor, no pack, grain all the way to the eave, rounded to 10 bu. These are this page&rsquo;s own formula (&pi; &times; r&sup2; &times; height &times; 0.8036 bu per ft&sup3;). A peak adds more, and a dealer chart reads higher still (see below). If your bin has a raised aeration floor, use the eave height minus the floor (12 in on the GSI bins below).</p>
+      <p>Level full, flat floor, no pack, grain all the way to the eave, rounded to 10 bu. A peak adds more, and a dealer chart reads higher still (see below). If your bin has a raised aeration floor, use the eave height minus the floor (12 in on the GSI bins below).</p>
       <div style="overflow-x:auto">
         <table class="ref-table">
-          <caption class="gb-small" style="caption-side:bottom;text-align:left">Bushels (volume bushels of 1.2445 ft&sup3;). Type your own bin into the calculator above for peaked, hopper and partial fills.</caption>
+          <caption class="gb-small" style="caption-side:bottom;text-align:left">Bushels, level full. Type your own bin into the calculator above for peaked, hopper and partial fills.</caption>
           <thead><tr><th>Diameter</th><th>16 ft eave</th><th>20 ft eave</th><th>24 ft eave</th><th>28 ft eave</th><th>32 ft eave</th></tr></thead>
           <tbody>
 <tr><td>15 ft</td><td>2,270</td><td>2,840</td><td>3,410</td><td>3,980</td><td>4,540</td></tr>
@@ -541,11 +531,11 @@
 <!--BINCHART:END-->
 
       <h2 id="bushels-per-foot">Bushels per foot in a grain bin</h2>
-      <p>One foot of grain on a round bin&rsquo;s straight wall is the floor area times 1 ft, times 0.8036 bushels per cubic foot (1 bu = 1.2445 cu ft): &pi; &times; radius&sup2; &times; 1 ft &times; 0.8036. A 30 ft bin holds about 568 bu per foot (706.9 sq ft &times; 0.8036), so 1 inch of grain is about 47 bu. A 36 ft bin is about 818 bu per foot and a 48 ft bin about 1,454. Counted like a dealer chart, with 6% pack, add 6%. Bin Print above shows the number for each of your bins and prints inches-to-bushels lines for each one.</p>
+      <p>One foot of grain on a round bin&rsquo;s straight wall holds a fixed number of bushels for its diameter. A 30 ft bin holds about 568 bu per foot, so 1 inch of grain is about 47 bu. A 36 ft bin is about 818 bu per foot and a 48 ft bin about 1,454. Counted like a dealer chart, add about 6%. Bin Print above shows the number for each of your bins and prints inches-to-bushels lines for each one.</p>
       <h2 id="bin-inventory">Grain bin inventory: what is in your bins now</h2>
       <p>To count a bin, measure the grain depth at the wall, or tape from the eave down to the grain and take that off the eave height; a measured depth beats a ring count, since raised floors and offsets change it. Then figure the bushels at that depth with the surface level, peaked or cored. Bin Print keeps that count for every bin in the yard, with market bushels at your test weight, the room left and a dated one-page sheet. It is an estimate from sizes, not a scale ticket.</p>
       <h2>Why a dealer chart reads higher</h2>
-      <p>Dealer charts like GSI&rsquo;s count a 28&deg; peak and 6% pack, and GSI counts grain from the top of a 12 in aeration floor. This page&rsquo;s plain setting counts a 25&deg; peak and no pack, so a chart reads about 5 to 6.5% higher for the same bin. Pick &ldquo;Match my dealer&rsquo;s chart&rdquo; and put in the floor height to count it their way. Here are three real bins.</p>
+      <p>Dealer charts like GSI&rsquo;s count a taller peak and packed grain, and GSI counts grain from the top of a raised aeration floor. This page&rsquo;s plain setting counts a level fill with a modest peak and no pack, so a chart reads about 5 to 6.5% higher for the same bin. Pick &ldquo;Match my dealer&rsquo;s chart&rdquo; and put in the floor height to count it their way. Here are three real bins.</p>
       <details class="gb-check" id="dealer-check">
         <summary>Check three real bins against the dealer charts</summary>
         <div style="overflow-x:auto">
@@ -558,11 +548,11 @@
             </tbody>
           </table>
         </div>
-        <p class="gb-small">The GSI bushels and eave heights are as printed in GSI&rsquo;s 40-Series producer brochure (model 4002 table, 12 in plenum, &ldquo;28 degree angle of repose and 6% compaction factor&rdquo;; read Oct 15, 2026). The Brock row is model 7-04808 from Brock&rsquo;s BR-2286 capacity chart (Jan 2022; read Oct 16, 2026), which says its peak is 28&deg;, &ldquo;starting one inch (25 mm) below the eave,&rdquo; with 6% compaction. The dealer column starts the peak an inch down the same way; the plain column fills to the eave. The other two columns are this page&rsquo;s formula on the same bins, peaked. With the dealer setting it lands within 2% of all three. The charts don&rsquo;t say exactly how they trim the peak or round the pack, so expect a small gap.</p>
+        <p class="gb-small">The GSI bushels and eave heights are as printed in GSI&rsquo;s 40-Series producer brochure (model 4002 table, 12 in plenum, &ldquo;28 degree angle of repose and 6% compaction factor&rdquo;; read Oct 15, 2026). The Brock row is model 7-04808 from Brock&rsquo;s BR-2286 capacity chart (Jan 2022; read Oct 16, 2026), which says its peak is 28&deg;, &ldquo;starting one inch (25 mm) below the eave,&rdquo; with 6% compaction. The dealer column starts the peak an inch down the same way; the plain column fills to the eave. The other two columns are this page&rsquo;s own count on the same bins, peaked. With the dealer setting it lands within 2% of all three. The charts don&rsquo;t say exactly how they trim the peak or round the pack, so expect a small gap.</p>
       </details>
 
       <h2>How moisture shrink works</h2>
-      <p>Grain delivered above standard moisture loses weight, and value, when it is dried. The usual shrink formula is <strong>(Moisture In &minus; Target Moisture) &times; shrink per point</strong>, where the target defaults to the crop&rsquo;s standard moisture. Part of that is water and part is handling loss. Water alone is 100 &divide; (100 &minus; target) per point, 1.183 at 15.5% (Purdue NCH-61). At 1.4 a point, the figure this page and the <a href="/grain-shrink">grain shrink calculator</a> both start corn at, corn at 18% going into a 15.5% market shrinks 3.5%, 105 bushels on 3,000 bushels (about three semi loads). Of the 3.5%, 2.96% is water and 0.54% is handling. Drying is charged on the wet bushels you bring in, so enter your cost per point per wet bushel to see the net value after shrink and drying. <a href="/cash-bids">Check local cash bids &rarr;</a></p>
+      <p>Grain delivered above standard moisture loses weight, and value, when it is dried. Part of that is water and part is handling loss, and the calculator shows both. At 1.4 a point, the figure this page and the <a href="/grain-shrink">grain shrink calculator</a> both start corn at, corn at 18% going into a 15.5% market shrinks 3.5%, 105 bushels on 3,000 bushels (about three semi loads). Drying is charged on the wet bushels you bring in, so enter your cost per point per wet bushel to see the net value after shrink and drying. <a href="/cash-bids">Check local cash bids &rarr;</a></p>
 
       <h2>Common Questions</h2>
       <dl class="faq-grid">
@@ -600,7 +590,8 @@
         </div>
       </dl>
 
-      <details class="src-fold"><summary><h2>Sources</h2></summary>
+      <details class="src-fold"><summary><h2>Sources and terms</h2></summary>
+      <p class="gb-small">The calculator is an estimate from the sizes you enter, not a scale ticket. The plain setting counts a level fill with a modest peak and no pack; the dealer setting counts the way bin makers&rsquo; charts do, as cited below. Grain depth starts above the aeration floor. Shrink per point starts at the usual figure for the crop and can be edited. Values are estimates, not financial advice.</p>
       <ul class="gb-sources">
         <li>Dealer basis: GSI 40-Series bin capacity chart, &ldquo;based on 28 degree angle of repose and 6% compaction factor,&rdquo; capacities with a 12 in plenum. GSI 40-Series producer brochure, model 4002 table: 30 ft, 9 rings, 15,337 bu at 24 ft 2 in; 36 ft, 12 rings, 29,404 bu at 32 ft 2 in. Brock: BR-2286 on-farm storage capacities (Jan 2022), narrow corrugation bins: 48 ft, 8 rings (7-04808), 39,053 bu at 21 ft 6 in; 48 ft, 11 rings (7-04811), 51,241 bu at 29 ft 6 in. Its footnote: &ldquo;28&deg; angle of repose, starting one inch (25 mm) below the eave,&rdquo; ASAE S413.1, &ldquo;compaction factor of 6%.&rdquo;</li>
         <li>Pack: ASABE EP413.2, the WPACKING method. Bhadra, Turner, Casada and others, &ldquo;Pack factor measurements for corn in grain storage bins,&rdquo; Transactions of the ASABE 58(3), 2015, 51 bins, 0.90% average absolute difference. <a href="https://doi.org/10.13031/trans.58.11033" rel="noopener">doi:10.13031/trans.58.11033</a>. Same authors, soybeans, sorghum, oats, barley and wheat, Transactions of the ASABE 61(2), 2018 (names EP413.2 as the home of WPACKING). <a href="https://doi.org/10.13031/trans.12645" rel="noopener">doi:10.13031/trans.12645</a></li>

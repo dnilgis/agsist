@@ -9,6 +9,13 @@
    "link": "/arc-plc"
   },
   {
+   "id": "2026-11-09-arcplc-plain-words",
+   "date": "2026-11-09",
+   "title": "Plainer ARC or PLC notes",
+   "line": "Where a crop has little price history, ARC or PLC pages now say so in one plain line, and the crop pages fold their notices.",
+   "link": "/arc-plc"
+  },
+  {
    "id": "2026-11-09-arcplc-terms-fold",
    "date": "2026-11-09",
    "title": "Tidier ARC or PLC county pages",
@@ -21,13 +28,6 @@
    "title": "Tidier Farmland Atlas county pages",
    "line": "Farmland Atlas county pages keep their sources and terms in one short fold at the bottom.",
    "link": "/farmland-atlas"
-  },
-  {
-   "id": "2026-11-09-cash-bids-panel",
-   "date": "2026-11-09",
-   "title": "Cash bids: your state first, one-line email",
-   "line": "Cash bids now shows your own state first before you type a ZIP, labels the table as estimates, and asks for your email in one line.",
-   "link": "/cash-bids"
   },
   {
    "id": "2026-11-09-rain-terms-fold",

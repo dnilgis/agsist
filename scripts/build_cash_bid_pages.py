@@ -3147,10 +3147,8 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
     if qs:
         jsonld["@graph"].append(faq_jsonld(qs))
     pg = ctx.get("prev_generated")
-    wow_note = (f" Change in a week compares each bid with the same elevator&rsquo;s same delivery and futures month "
-                f"in the network snapshot of {fmt_day(pg)}." if pg else
-                " No change in a week is shown: no network snapshot from about seven days back was available to this "
-                "build.")
+    wow_note = (" Change in a week compares each bid with the same elevator&rsquo;s same delivery and futures month a week earlier."
+                if pg else " No change in a week is shown on this page.")
     body = f"""
 <body>
 {hdr}
@@ -3168,16 +3166,12 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   {lst}
   {quiet_html}
   {ctx.get("storage_note", {}).get(st) or ""}
-  <div class="cbt-note"><b>How these numbers are made.</b> Source: each elevator&rsquo;s own posted bid board,
-  read by AGSIST; no third-party bid feed is used on this page. A bid counts only if its board was read
-  successfully in the last {SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, and its price was posted within {FRESH_HOURS} hours, long enough that a board unchanged
-  over a weekend still counts on Monday. Specialty bids (white, organic, non-GMO, high-oleic, identity-preserved)
-  are left out of the basis. A middle number needs at least {BM.MIN_STAT} elevators on the same futures month.{wow_note}
-  Prices move through the day; call the elevator before you haul.</div>
   {sponsor_slot(ssl)}
   <p class="cbt-sub" style="margin-top:18px"><a href="/cash-bids">Cash bids by ZIP</a> &middot; <a href="/basis#by-state">Basis in every state, and USDA regions vs normal</a></p>
   <h2>Other states</h2>
   <p class="cbt-cloud">{others}</p>
+  <details class="cbt-note cbt-terms"><summary>Sources and terms</summary>
+  <p>Bids come from each elevator&rsquo;s own posted bid board, read in the last {SB.HELD_SKIP_HOURS} hours, with the price posted in the last {FRESH_HOURS} hours. Specialty bids (white, organic, non-GMO, high-oleic, identity-preserved) are left out of the basis, and a middle number shows only when enough elevators post the same futures month.{wow_note} Prices move through the day; always call the elevator to confirm before you haul.</p></details>
 """
     return head(title, desc, path, jsonld, indexable, share) + body + page_end(ftr, table=bool(near)), {
         "state": st, "path": path, "indexable": indexable, "towns": len(live), "quiet": len(quiet),
@@ -3875,6 +3869,8 @@ def selftest():
         assert set(m) == {("NE", "fremont"), ("NE", "hooper"), ("IA", "redfield"), ("IA", "ackworth")}, set(m)
         assert m[("NE", "fremont")]["indexable"] and m[("NE", "hooper")]["elevators"] == 1
         fr = open(os.path.join(out, "nebraska", "fremont.html")).read()
+        if os.environ.get("CBT_FIXTURE_DIR"):   # test/cash-bid-terms-fold.test.mjs reads the fixture town pages from here
+            shutil.copytree(out, os.environ["CBT_FIXTURE_DIR"], dirs_exist_ok=True)
         for leak in ("$1.1", "3.71", "3.72", "3.73", "5.55", "7.77", "777", "Oct 3", "New Crop 2025", "30.00"):
             assert leak not in fr, f"an excluded value leaked: {leak}"
         # Op n0: Oct $3.90, Nov $3.91 (1 month): +1c, less 3.5c storage and 2.3c interest = -5c

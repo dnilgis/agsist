@@ -701,10 +701,6 @@ def hub_page(B, D, k, ch):
                        f'<p class="ap-states ap-hubl"></p><p class="ap-small"><a href="/arc-plc/{S["slug"]}">{esc(S["n"])}: every crop by county</a></p></details>')
     faq_html = "".join(f"<details><summary>{esc(qq)}</summary><p>{esc(a)}</p></details>" for qq, a in faq)
     others = " &middot; ".join(f'<a href="{hub_path(j)}">{esc(XCROPS[j]["label"])}</a>' for j in D.get("_hubs", []) if j != k)
-    srcs = "".join(f'<li><a href="{esc(v[1])}" rel="noopener">{esc(v[0])}</a></li>' for v in TABLE_URLS.values())
-    srcs += f'<li><a href="{esc(B.FSA_DATA)}" rel="noopener">{esc(B.SRC["FSADATA"][0])}</a></li><li>{B.src_link("FR26")}</li><li>{B.src_link("CFR")}</li>'
-    if sc and sc.get("usda_src", "").startswith("USDA WASDE"):
-        srcs += f"<li>{B.src_link('WASDE')}</li>"
     math7 = erp_math_x(c7, 2027) if c7 else f'<p class="ap-math"><b>2027.</b> {pend7}</p>'
     body = f"""
 <body>
@@ -732,9 +728,7 @@ def hub_page(B, D, k, ch):
   {''.join(st_html)}
   <h2 id="faq">Questions about {esc(x['lc'])}</h2>
   <div class="ap-faq">{faq_html}</div>
-  <p class="ap-disc"><b>This is an estimate, not a USDA determination.</b> <a href="{B.FSA_PAGE}" rel="noopener">FSA ARC/PLC</a> &middot;
-  <a href="{B.FSA_DATA}" rel="noopener">FSA program data</a> &middot; <a href="{B.OFFICE}" rel="noopener">Find your county office</a>. Dollars are before the 5.7% sequestration cut.</p>
-  <details class="ap-det"><summary>Sources</summary><ul class="ap-src">{srcs}</ul></details>
+  {B.terms_fold(f'An estimate by AGSIST, not a USDA determination. <a href="{B.FSA_PAGE}" rel="noopener">FSA ARC/PLC</a> &middot; <a href="{B.OFFICE}" rel="noopener">Find your county office</a>. Dollars are before the 5.7% sequestration cut.')}
   <h2>Other crops</h2>
   <p class="ap-states"><a href="/arc-plc">Corn, soybeans and wheat</a> &middot; {others}</p>
 {B.BY_END}
