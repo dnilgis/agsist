@@ -38,6 +38,8 @@
   <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
   <script src="/components/util.js?v=17"></script>
+  <script>/* agsist-hail-hold: a plain /hail-map opens on the now card, so its room is held before paint (see .hm-hold). Cleared when a year or the swaths open, or after 15 s if the card never comes. */
+try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.get('view')||'').toLowerCase();['year','swath','swaths','lat','lon','day','mi'].forEach(function(k){if(q.has(k))h=false;});if(v&&v!=='now')h=false;if(h){d.documentElement.classList.add('hm-hold');setTimeout(function(){d.documentElement.classList.remove('hm-hold');},15000);}})(document);}catch(_){}</script>
 
   <link rel="stylesheet" href="/vendor/leaflet-1.9.4/leaflet.css">
 
@@ -232,6 +234,12 @@
     .hm-controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.9rem 0 .4rem}
     .hm-mapstack{display:flex;flex-direction:column}
     .hm-controls:empty{display:none}
+    @media(min-width:641px){
+      /* the view buttons sit above the map here and are written by the map code; one row is held (two rows from 641 to 1060px) */
+      .hm-mapstack .hm-controls{min-height:44px}
+      .hm-mapstack .hm-controls:empty{display:flex;visibility:hidden}
+    }
+    @media(min-width:641px) and (max-width:1060px){.hm-mapstack .hm-controls{min-height:97px}}
     .hm-mapstack .hm-controls{margin:.5rem 0 .6rem}
     @media(max-width:640px){
       /* DOM order is controls-then-map so the tab sequence runs down the
@@ -299,6 +307,11 @@
        and it never sits under the sticky control bar or over the storms. */
     .hm-now{margin:.6rem 0 .2rem;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--brand,var(--gold));border-radius:10px;color:var(--text);font-size:1rem;line-height:1.5;padding:.65rem .8rem}
     .hm-now[hidden]{display:none}
+    /* The now card fills in after the map code runs (a first line, then the answer). Its room is held from the first paint
+       on a plain /hail-map (class set before paint, removed when a year or the swaths open), so the map under it does not drop. */
+    .hm-now{min-height:205px}
+    .hm-hold .hm-now[hidden]{display:block!important;visibility:hidden}
+    @media(min-width:641px){.hm-now{min-height:160px}}
     .hm-now p{margin:0}
     .hm-now small{display:block;color:var(--text-dim);font-size:.85rem;margin-top:.3rem}
     .hm-now-acts{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.55rem}
@@ -2427,6 +2440,7 @@
     }
     function leaveNow(){
       var box=document.getElementById('hm-now'); if(box){ box.hidden=true; }
+      document.documentElement.classList.remove('hm-hold');
       if(current!=='now') return;
       if(meshLayer){ map.removeLayer(meshLayer); meshLayer=null; }
       if(nowAuto){ nowAuto=false; warnSet(false); }
