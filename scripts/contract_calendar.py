@@ -272,6 +272,42 @@ def next_live_year(mon, now=None, rule="GRAIN"):
     return d.year + (1 if d >= dead_from(d.year, mon, rule) else 0)
 
 
+def first_notice_day(yr, mon):
+    """CBOT first notice day for a grain contract month: the last business day
+    of the month BEFORE delivery. Dec 2026 -> Mon Nov 30 2026. Business day is
+    is_trading_day, the one definition of a session, so an exchange holiday on
+    the last weekday pushes it a day earlier. (Moved here from fetch_prices so
+    the Daily can ask the same question without loading the price fetcher.)"""
+    d = date(yr, mon, 1) - timedelta(days=1)
+    while not is_trading_day(d):
+        d -= timedelta(days=1)
+    return d
+
+
+def past_first_notice(key, day):
+    """True when a grain key is on or past its CBOT first notice day on `day`.
+    Takes a dated key ('beans-nov26') or a rolling benchmark ('beans-nov',
+    'corn-dec': the year is the contract live on `day`, next_live_year).
+    From first notice the month is in delivery and thin, so the Daily quotes
+    the next month (Nov 9 2026: Friday's Nov bean settle sat beside Monday's
+    overnight corn under one "overnight" label). Non-grain and undated keys: False."""
+    if rule_for(key) != "GRAIN":
+        return False
+    suffix = str(key).split("-")[-1] if "-" in str(key) else ""
+    mon = month_num(suffix[:3]) if suffix else None
+    if mon is None:
+        return False
+    d = _as_date(day)
+    yy = suffix[3:]
+    if yy:
+        if not (yy.isdigit() and len(yy) == 2):
+            return False
+        yr = 2000 + int(yy)
+    else:
+        yr = next_live_year(mon, d)
+    return d >= first_notice_day(yr, mon)
+
+
 def front_key(keys, now=None):
     """First non-expired key, in the order given. None if all are expired.
 
@@ -467,6 +503,18 @@ def _selftest():
     chk(next_live_year(11, T(2026, 11, 14)) == 2026, "Nov benchmark on Nov 14 2026 is still Nov '26")
     chk(next_live_year(11, T(2026, 11, 15)) == 2027, "Nov benchmark rolls to Nov '27 on Nov 15 2026")
     chk(next_live_year(12, date(2027, 1, 2)) == 2027, "a plain date works too")
+
+    # --- first notice (Nov 9 2026: the Daily kept quoting Nov beans after first notice) ---
+    chk(first_notice_day(2026, 11) == date(2026, 10, 30), "FND Nov 2026 beans = Fri Oct 30 2026")
+    chk(past_first_notice("beans-nov", date(2026, 10, 29)) is False, "beans-nov live on Oct 29 2026")
+    chk(past_first_notice("beans-nov", date(2026, 10, 30)) is True, "beans-nov past first notice on Oct 30 2026")
+    chk(past_first_notice("beans-nov", date(2026, 11, 9)) is True, "beans-nov past first notice on Nov 9 2026")
+    chk(past_first_notice("beans-nov", date(2026, 11, 16)) is False, "beans-nov is Nov '27 after expiry")
+    chk(past_first_notice("corn-dec", date(2026, 11, 9)) is False, "corn-dec live on Nov 9 2026")
+    chk(past_first_notice("corn-dec", date(2026, 11, 30)) is True, "corn-dec past first notice Nov 30 2026")
+    chk(past_first_notice("beans-nov26", date(2026, 11, 9)) is True, "dated key works")
+    chk(past_first_notice("cattle-dec26", date(2026, 12, 31)) is False, "livestock has no first notice here")
+    chk(past_first_notice("beans", date(2026, 11, 9)) is False, "undated key is never past first notice")
 
     # --- per-product rules: the 2026-08-08 finding ---------------------------
     # cattle: CME Rule 10102.H, last business day of the contract month.

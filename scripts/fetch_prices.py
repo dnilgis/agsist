@@ -128,6 +128,7 @@ def _num(v):
 
 
 from contract_calendar import is_expired, recent_expiry, expiry_date, month_num, dead_from, next_live_year, rule_for  # ONE definition of contract expiry
+from contract_calendar import first_notice_day  # noqa: F401  moved there Nov 9 2026; test_class_spreads imports it from here
 
 # A transient yfinance hiccup clears within hours; a quote that cannot be
 # fetched for this many days is almost certainly an expired/rolled contract
@@ -430,19 +431,6 @@ def _past_first_notice(key, today):
     if mon is None or not suffix[3:].isdigit():
         return False
     return today >= first_notice_day(2000 + int(suffix[3:]), mon)
-
-
-def first_notice_day(yr, mon):
-    """CBOT first notice day for a grain contract month: the last business day
-    of the month BEFORE delivery. Dec 2026 -> Mon Nov 30 2026. Business day is
-    contract_calendar.is_trading_day, the one definition of a session, so an
-    exchange holiday on the last weekday pushes it a day earlier."""
-    from datetime import date, timedelta
-    from contract_calendar import is_trading_day
-    d = date(yr, mon, 1) - timedelta(days=1)
-    while not is_trading_day(d):
-        d -= timedelta(days=1)
-    return d
 
 
 def class_spreads(quotes, now=None):
