@@ -635,13 +635,40 @@ def bars_html(hist):
     return '<div class="rs-bars">' + "".join(rows) + "</div>"
 
 
+TERMS_SUMMARY = "Sources and terms"
+
+
+def state_terms(yr, generated):
+    """The one closed fold at the bottom of a state page: source and date, what the number is,
+    the survey caveat and the notices NASS asks for. No formulas, weights or pipeline words."""
+    return (f'<details class="rs-terms" id="sources-terms"><summary>{TERMS_SUMMARY}</summary>\n'
+            f'  <p>Source: USDA NASS Cash Rents Survey, {yr} county estimates, and NASS county yield '
+            f'estimates. Data as of {esc(generated)}.</p>\n'
+            f'  <p>These are the {yr} county rents, the newest NASS has put out'
+            + (f" (released {COUNTY_RENT_RELEASED[yr]})" if yr in COUNTY_RENT_RELEASED else "")
+            + f'. NASS says county rents come out in late August every year, and they have every year since 2019; the {yr + 1} date is not on its calendar yet.</p>\n'
+            '  <p><b>What this can&rsquo;t tell you.</b> These are county <b>means from a voluntary USDA survey</b>. '
+            'Rents vary widely inside a county, driven by soil, drainage, field size and how badly a neighbor wants the '
+            'ground. Year-over-year stats compare only counties published in both years.</p>\n'
+            f'  <p>{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p></details>')
+
+
+def hub_terms(generated):
+    return (f'<details class="rs-terms" id="sources-terms"><summary>{TERMS_SUMMARY}</summary>\n'
+            '  <p>Source: USDA NASS Cash Rents Survey county estimates, a survey of roughly 280,000 farms and ranches every year '
+            'in every state but Alaska. NASS publishes a mean rate for every county with at least 20,000 acres of cropland plus '
+            'pasture, each August. Results are not revised afterward. The county corn trend is AGSIST&rsquo;s, from NASS county '
+            f'yield estimates. Data as of {esc(generated)}.</p>\n'
+            '  <p>A county mean is a survey reference point, not a rate card.</p>\n'
+            f'  <p>{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p></details>')
+
+
 def county_table(st, s, aslug=None):
     yr = s["yr"]
     cols = [(t, TYPE_LABEL[t]) for t in ("nonirr", "irr", "pasture") if t in s["have_types"]]
     thead = "<th>County</th>" + "".join(
         f'<th title="{lab}, $/acre">{TYPE_SHORT[t]} {yr}</th>' for t, lab in cols)
-    thead += ('<th>YoY</th><th title="county corn yield, 14-year least-squares trend projected to %s, fitted on the same '
-              'practice as the rent (dryland, or all practices where NASS shows no irrigation)">Corn trend %s</th>' % (s["ty"], s["ty"]))
+    thead += ('<th>YoY</th><th title="county corn trend yield, bu/ac, for %s">Corn trend %s</th>' % (s["ty"], s["ty"]))
     body, seen = [], set()
     for c in sorted(s["counties"], key=lambda c: c["name"]):
         a = (aslug or {}).get(c.get("fips"))
@@ -823,13 +850,12 @@ def ground_panel(st, d, s, aslug=None):
   <label>Your corn yield, bu/ac <input id="gr-y" type="number" inputmode="decimal" min="1" max="400" step="1"></label>
   <p class="rs-gr-out" id="gr-out" aria-live="polite">Pick a {unit.lower()} and type your yield.</p>
   <p class="sub" id="gr-math" style="color:var(--text)"></p>
-  <p class="sub">Derived by AGSIST, not a NASS number: the {unit.lower()}&rsquo;s {yr} NASS dryland rent divided by its {s['ty']} corn
-  trend yield (our 14-yr trend, same practice as the rent), times your yield. It assumes rent moves in step with yield,
+  <p class="sub">Derived by AGSIST, not a NASS number. It assumes rent moves in step with yield,
   which real leases only roughly do. Use your APH or a typical year, not your best one. {len(g)} of {s['n']} {name}
   {plural} have both numbers; for the rest the Corn trend column below says why there is none.</p>
   <details><summary>Two more ways to figure a fair rent</summary>
   <div class="m"><p><b>Share of gross.</b> Your bushels times a price, and the share of that the rent takes. The share starts at the
-  {unit.lower()}&rsquo;s own: its {yr} rent as a share of its trend-yield gross at this price.</p>
+  {unit.lower()}&rsquo;s own at this price.</p>
   <label>Corn price, $/bu <input id="gr-p" type="number" inputmode="decimal" min="0" step="0.05" value="{f'{pv:.2f}' if pv else ''}"></label>
   <label>Share of gross, % <input id="gr-s" type="number" inputmode="decimal" min="0" max="99" step="0.5"></label>
   <p class="sub">{plab}</p>
@@ -952,8 +978,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
               "(and the county has at least 20,000 acres of cropland plus pasture). If your county is missing, "
               "NASS did not publish a rate for it."},
         {"q": "When is county cash rent data released?",
-         "a": "USDA NASS releases county cash rent estimates each August for the current crop year. "
-              "This page rebuilds automatically when new data lands."},
+         "a": "USDA NASS releases county cash rent estimates each August for the current crop year."},
     ]
     if pas:
         pv = sorted(((c["rent"]["pasture"][str(yr)], c["name"]) for c in s["counties"]
@@ -1022,7 +1047,6 @@ def build_state_page(st, d, s, all_states, aslug=None):
     <div>
       <div style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:800;letter-spacing:.05em;color:{vc}">{vw}</div>
       <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median {name} county paid <b style="color:{vc}">{money(s['median'])} an acre</b> for {plabel} in {yr}.{f" Across the same {s['yoy_n']} counties the state median went from {money(s['yoy_med'][0])} to {money(s['yoy_med'][1])}, <b style='color:{vc}'>{'+' if s['yoy']>=0 else ''}{s['yoy']}&#37; vs {yr-1}</b>: the change in the median, not in a typical county." if s['yoy'] is not None else ""} Highest county: {esc(s['hi'][0][0])} at {money(s['hi'][0][1])}.{other_crop_line(name, yr, s)} Every county is in the table below.</div>{sa_line}
-      <div class="rs-rel">These are the {yr} county rents, the newest NASS has put out{f" (released {COUNTY_RENT_RELEASED[yr]})" if yr in COUNTY_RENT_RELEASED else ""}. NASS says county rents come out in late August every year, and they have every year since 2019; the {yr + 1} date is not on its calendar yet.</div>
     </div>
   </div>
   {rent_ask(st, name, yr)}
@@ -1049,19 +1073,12 @@ def build_state_page(st, d, s, all_states, aslug=None):
   <h2 id="counties" style="scroll-margin-top:80px">Every published county, {yr}</h2>
   <p class="sub">Tap a column heading to sort. Greyed values are the county&rsquo;s most recent published year where {yr}
   wasn&rsquo;t published.{other_types} Each county name opens its Farmland Atlas record (land value, yield, insurance
-  and drought). Corn trend is the county&rsquo;s 14-yr trend yield (projected {s['ty']}) from NASS county estimates,
-  fitted on the same practice as the rent: the figure the Atlas county page divides rent by for rent per bushel, and the
-  one its rent share calculator starts from.</p>
+  and drought). Corn trend is a county yield trend from NASS county estimates.</p>
   {county_table(st, s, aslug)}
   <h2>{name} median county rent by year</h2>
   <p class="sub">Median of counties published each year ({plabel}). Years with no survey
   are left blank.</p>
   {bars_html(s['hist'])}
-  <div class="rs-note"><b>What this can&rsquo;t tell you.</b> These are county <b>means from a voluntary USDA survey</b>.
-  Rents vary widely inside a county, driven by soil, drainage, field size and how badly a neighbor wants the
-  ground. Year-over-year stats above compare only counties published in both years, so a county dropping out
-  of the survey can&rsquo;t fake a trend.</div>
-  <p class="sub">{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p>
   <div class="rs-note rs-links" style="border-left-color:#5fc28a">Open a county in the table for its Farmland Atlas page and the <b>rent share calculator</b> (rent as a share of
   what the acre can actually gross, year by year) &middot; put a number in a <a href="/cash-lease?st={st}">printable {name} cash lease</a>{notice_note(st)} &middot;
   check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price{prf_rel}.</div>
@@ -1069,9 +1086,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   {RP_LAND}
   <h2>Other states</h2>
   {state_cloud(all_states, exclude=st)}
-  <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA NASS Quick Stats, Cash Rents Survey county
-  estimates (released each August) and county yield estimates. Page rebuilt automatically from data refreshed
-  {esc(d.get('generated', ''))}.</p>
+  {state_terms(yr, d.get("generated", ""))}
 </main>
 {explore_nav()}
 <div id="site-footer"></div>
@@ -1092,16 +1107,15 @@ HUB_DATASET = {
     "@type": "Dataset", "@id": f"{SITE}/rent/#dataset", "name": "US County Cash Rent and Trend Yield",
     "description": ("County-level cash rental rates for non-irrigated cropland, irrigated cropland, and permanent pasture, "
                     "as published annually by USDA NASS under the 2008 Farm Bill mandate, paired with county trend yields "
-                    "for corn and soybeans fitted from NASS county yield estimates."),
+                    "for corn and soybeans from NASS county yield estimates."),
     "url": f"{SITE}/rent/", "license": "https://www.usa.gov/government-works", "isAccessibleForFree": True,
     "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
     "temporalCoverage": "2008/..", "spatialCoverage": {"@type": "Place", "name": "United States"},
-    "measurementTechnique": "USDA NASS Cash Rents Survey county estimates; ordinary least squares trend fit on NASS county yield estimates",
+    "measurementTechnique": "USDA NASS Cash Rents Survey county estimates",
     "variableMeasured": [{"@type": "PropertyValue", "name": "Cash rent, non-irrigated cropland", "unitText": "USD per acre per year"},
                          {"@type": "PropertyValue", "name": "Cash rent, irrigated cropland", "unitText": "USD per acre per year"},
                          {"@type": "PropertyValue", "name": "Cash rent, permanent pasture", "unitText": "USD per acre per year"},
                          {"@type": "PropertyValue", "name": "Trend yield", "unitText": "bushels per acre"}],
-    "distribution": [{"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": f"{SITE}/data/cash-rent/national.json"}],
 }
 HUB_FAQ = [
     {"q": "What is the average cash rent per acre in my county?",
@@ -1145,17 +1159,6 @@ HUB_EXPLAIN = """<h2>How to read rent</h2>
   <p><b>There is no magic percentage.</b> Anyone quoting you one number for the whole country is guessing, or selling. What the rest of
   the gross has to cover (seed, fertilizer, chemical, iron, labor, interest, living) is wildly different between two operations on the
   same road. The useful comparison is your county against its own history, which is why the calculator&rsquo;s chart goes back to 2008.</p></details>
-  <details class="rs-faq"><summary>Where these numbers come from</summary>
-  <p>The rent is USDA NASS&rsquo;s county estimate from the Cash Rents Survey, a survey of roughly 280,000 farms and ranches run every year
-  in every state but Alaska. The 2008 Farm Bill requires NASS to publish a mean rate for every county with at least 20,000 acres of
-  cropland plus pasture. Results land each August and are not revised afterward. The Farm Service Agency uses these same county estimates
-  to set market-based rates for programs like CRP.</p>
-  <p>The trend yield is ours, not USDA&rsquo;s: an ordinary least-squares fit through the county&rsquo;s NASS yield estimates over the
-  last fifteen years, projected to the current year. It is fitted on the same practice as the rent it is divided by: dryland
-  (non-irrigated) yields for dryland rent, irrigated yields for irrigated rent. The all-practice county yield is used only where NASS
-  reports no irrigation in the county; anywhere else it is mostly pivot corn and would make dryland rent look cheap, so the trend is
-  withheld and the page says why. Where a county has fewer than six real years of yield on record, or its series stopped more than three
-  years ago, no trend is shown at all.</p></details>
   <details class="rs-faq"><summary>Three things this data will not do</summary>
   <p><b>It will not fill in your county if NASS didn&rsquo;t.</b> Counties with too few survey responses are withheld. Where that happens
   you get a blank and a note that NASS did not publish, never a neighbor&rsquo;s number.</p>
@@ -1356,8 +1359,7 @@ def build_hub(states, stats, generated):
   grid&rsquo;s premium and what it would have paid each year since 1951, with a page for each state.</p>
   {HUB_EXPLAIN}
   {faq_html(hub_faq)}
-  <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA NASS Cash Rents Survey county estimates.
-  Pages rebuild automatically when NASS publishes (each August). Data refreshed {esc(generated)}.</p>
+  {hub_terms(generated)}
 </main>
 {explore_nav()}
 <div id="site-footer"></div>

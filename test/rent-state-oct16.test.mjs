@@ -4,7 +4,7 @@
  *     NASS state average $264 -> $261 (farmdoc daily, Sep 15, 2026, saved on the references branch)
  *   - the release line says what NASS says (county estimates late August every year; 2026 came
  *     out Aug 21, 2026 per the NASS release calendar), not "usually August 2027"
- *   - one label for the trend: "14-yr trend" (TREND_WINDOW 15 holds at most 14 published years)
+ *   - the trend label is "Corn trend"; how it is fitted is not published (curtain round 2)
  *   - one rounding, so both fair-rent methods agree on the same ground. Clayton County, IA by hand:
  *       per bushel   266 / 224.2 = 1.1864 $/bu; x 224 bu = 265.76 -> $266
  *       share        266 / (224.2 x 4.10) = 28.937% -> 28.94%; 224 x 4.10 = 918.40; x 0.2894 = 265.79 -> $266
@@ -66,8 +66,11 @@ test("every built state page: the release line says what NASS says, and one tren
     const h = read("rent/" + f);
     assert.doesNotMatch(h, /usually come out in August/, f);
     assert.doesNotMatch(h, /15-year fit/, f);
-    assert.match(h, /NASS says county rents come out in late August every year/, f);
-    if (h.includes('id="your-ground"')) assert.match(h, /our 14-yr trend, same practice as the rent/, f);
+    const fold = h.slice(h.indexOf('<details class="rs-terms"'));
+    assert.match(fold, /NASS says county rents come out in late August every year/, f);
+    // curtain round 2: the trend method is not published, only that it is AGSIST's number
+    assert.doesNotMatch(h, /14-yr trend|least.squares/i, f);
+    if (h.includes('id="your-ground"')) assert.match(h, /Derived by AGSIST, not a NASS number/, f);
     assert.ok(Buffer.byteLength(h) < 150 * 1024, `${f} over the 150 KB cap`);
   }
   // the claim "every year since 2019" holds in the data: no survey gap after 2018
