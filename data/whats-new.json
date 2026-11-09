@@ -9,6 +9,13 @@
    "link": "/land-sales/"
   },
   {
+   "id": "2026-11-09-rain-hub-phone",
+   "date": "2026-11-09",
+   "title": "Rain page, made for phones",
+   "line": "The rain page opens with a state picker and the records now; the full state list sits in a fold at the bottom.",
+   "link": "/rain"
+  },
+  {
    "id": "2026-11-09-real-map-pictures",
    "date": "2026-11-09",
    "title": "Real maps on shared pictures",
