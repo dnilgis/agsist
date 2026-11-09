@@ -446,24 +446,122 @@ def card_cot():
                   ctx=ctx, table=rows, table_title="Net, contracts")
 
 
-def card_conditions():
+RATING_STALE_DAYS = 14   # same limit as the conditions page (scripts/seed_static.py STALE_DAYS["conditions"])
+
+
+# The top corn states in production order (fixed: the card never ranks by a number it would have to invent).
+TOP_CORN = ["IA", "IL", "NE", "MN", "IN", "SD", "OH", "WI", "MO", "KS", "ND", "MI"]
+CORN_NAMES = {"IA": "Iowa", "IL": "Illinois", "NE": "Nebraska", "MN": "Minnesota", "IN": "Indiana",
+              "SD": "South Dakota", "OH": "Ohio", "WI": "Wisconsin", "MO": "Missouri", "KS": "Kansas",
+              "ND": "North Dakota", "MI": "Michigan"}
+
+
+def harvest_gaps(states, week):
+    """{ST: (pct, avg5, gap)} for the states whose corn_harvested row is for `week` and carries the 5-year
+    average NASS prints (avg5_by NASS). Any other state has no gap: it is drawn grey, never guessed."""
+    out = {}
+    for st, row in (states or {}).items():
+        h = (row or {}).get("corn_harvested") or {}
+        if h.get("date") != week or h.get("pct") is None or h.get("avg5") is None or h.get("avg5_by") != "NASS":
+            continue
+        out[st] = (h["pct"], h["avg5"], round(h["pct"] - h["avg5"]))
+    return out
+
+
+def _pts(n):
+    return "%d point%s" % (n, "" if n == 1 else "s")
+
+
+def progress_hook(gaps):
+    """The headline and side list from the top corn states' gaps: (head segments, plain headline, rows).
+    Leads with the top state furthest behind (production order breaks a tie), adds the first top state that
+    is ahead as the contrast; if none is behind, says so. rows: the 3 biggest gaps among the top states."""
+    top = [(st, gaps[st]) for st in TOP_CORN if st in gaps]
+    if not top:
+        return None
+    behind = [t for t in top if t[1][2] < 0]
+    ahead = [t for t in top if t[1][2] > 0]
+    if behind:
+        st, (_, _, g) = min(behind, key=lambda t: t[1][2])   # min keeps the first in production order on a tie
+        head = [(f"{CORN_NAMES[st]}'s corn harvest is ", False), (f"{_pts(-g)} behind", True), (" normal.", False)]
+        if ahead:
+            a, (_, _, ga) = ahead[0]
+            head.append((f" {CORN_NAMES[a]} is {ga} ahead.", False))
+    else:
+        head = [("The corn harvest is ", False), ("at or ahead of normal", True), (" in every top corn state.", False)]
+    rows = sorted(top, key=lambda t: -abs(t[1][2]))[:3]
+    rows = [(CORN_NAMES[st], pct, avg, g) for st, (pct, avg, g) in rows]
+    return head, "".join(t for t, _ in head), rows
+
+
+def card_progress(d):
+    """The weekly Crop Progress hook (Sig, Nov 9 2026: the conditions card gave no reason to share): a US map
+    shading each state by corn harvest points behind or ahead of its own NASS 5-year average. None when the
+    week has no top corn state with a NASS average."""
+    corn = d.get("corn") or {}
+    week = corn.get("harvest_date")
+    if not week:
+        return None
+    gaps = harvest_gaps(d.get("states"), week)
+    hook = progress_hook(gaps)
+    if not hook:
+        return None
+    head, line, rows = hook
+    when = mdy(d_iso(week))
+    alt = (f"A US map shading each state by how far its corn harvest is behind or ahead of its 5-year average, "
+           f"week ending {when}. {line} "
+           + "; ".join(f"{n} {p}% harvested against an average of {a}%" for n, p, a, _ in rows) + ".")
+    return {"kind": "C", "args": dict(
+        head=head,
+        meta=f"USDA Crop Progress, week ending {when}  ·  agsist.com/conditions",
+        caption="Corn harvested vs. 5-year average",
+        pic=("progress", {"gaps": {st: g for st, (_, _, g) in gaps.items()},
+                          "label": set(TOP_CORN), "rows": rows, "rows_title": "Biggest gaps, top corn states"})),
+        "alt": alt}
+
+
+def card_conditions(today=None):
+    """The /conditions card. Nov 9, 2026: it led with the Oct 25 corn rating that the page itself withholds as
+    stale, and dated the Nov 1 harvest rows "week ending Oct 25". A rating past the page's limit is not drawn;
+    the card then leads with corn harvest, dated by the harvest week."""
     d = js("data/crop-progress.json")
     if not d.get("in_season"):
         return title_card("conditions")
+    today = today or central_today()
     corn, soy = d["corn"], d.get("soybeans") or {}
-    rep = d_iso(corn.get("report_date") or d["report_date"])
+    def fresh(c):
+        r = d_iso(c.get("report_date")) if c.get("report_date") else None
+        return c.get("good_excellent") is not None and r is not None and (today - r).days <= RATING_STALE_DAYS
+    rating = fresh(corn)
     rows = []
     for lab, c in (("Corn", corn), ("Soybeans", soy)):
-        if c.get("good_excellent") is not None:
+        if fresh(c):
             rows.append((lab + ", good-excellent", f"{c['good_excellent']:g}%", None))
         if c.get("harvest_pct") is not None:
             rows.append((lab + ", harvested", f"{c['harvest_pct']:g}%", None))
+    if rating:
+        rep = d_iso(corn.get("report_date") or d["report_date"])
+        ctx = f"{corn['good_excellent_prev_week']:g}% the week before." if corn.get("good_excellent_prev_week") is not None else None
+        return a_card("conditions", "Crop conditions", f"USDA, week ending {mdy(rep)}",
+                      f"US corn is {corn['good_excellent']:g}% good to excellent, week ending {mdy(rep)}.",
+                      big=f"{corn['good_excellent']:g}%", unit="of US corn rated good to excellent",
+                      ctx=ctx, table=rows, table_title="US crop")
+    if corn.get("harvest_pct") is None or not corn.get("harvest_date"):
+        return title_card("conditions")
+    if 0 < corn["harvest_pct"] < 100:   # harvest under way: the map of who is behind is the hook
+        card = card_progress(d)
+        if card:
+            return card
+    hrep = d_iso(corn["harvest_date"])
+    avg = corn.get("harvest_5yr_avg")
     ctx = None
-    if corn.get("good_excellent_prev_week") is not None:
-        ctx = f"{corn['good_excellent_prev_week']:g}% the week before."
-    return a_card("conditions", "Crop conditions", f"USDA, week ending {mdy(rep)}",
-                  f"US corn is {corn['good_excellent']:g}% good to excellent, week ending {mdy(rep)}.",
-                  big=f"{corn['good_excellent']:g}%", unit="of US corn rated good to excellent",
+    if avg is not None:
+        gap = corn["harvest_pct"] - avg
+        ctx = (f"{abs(gap):g} points {'ahead of' if gap > 0 else 'behind'} the 5-year average of {avg:g}%." if gap
+               else f"Even with the 5-year average of {avg:g}%.")
+    return a_card("conditions", "Crop progress", f"USDA, week ending {mdy(hrep)}",
+                  f"US corn is {corn['harvest_pct']:g}% harvested, week ending {mdy(hrep)}.",
+                  big=f"{corn['harvest_pct']:g}%", unit="of US corn harvested",
                   ctx=ctx, table=rows, table_title="US crop")
 
 
@@ -1278,6 +1376,54 @@ def selftest():
     assert cot_card_parts({"corn": {"net": -1000, "prev": -1500}})[0] == "Funds cut 500 on the week."
     assert cot_card_parts({"corn": {"net": 1000, "prev": 400}})[0] == "Funds added 600 on the week."
     assert cot_card_parts({"corn": {"net": 400, "prev": 1000}})[0] == "Funds cut 600 on the week."
+    # Nov 9, 2026: a rating past the page's 14-day limit is not drawn; the card leads with harvest, dated by its own week
+    # Nov 9, 2026: the Crop Progress hook, from the Nov 1 state rows (NASS 5-year averages only)
+    def _h(pct, avg, by="NASS", dt="2026-11-01"):
+        return {"corn_harvested": {"date": dt, "pct": pct, "avg5": avg, "avg5_by": by}}
+    nov1 = {"IA": _h(66, 79), "IL": _h(86, 83), "NE": _h(66, 75), "MN": _h(82, 85), "IN": _h(75, 71),
+            "SD": _h(63, 75), "OH": _h(53, 60), "WI": _h(61, 57), "MO": _h(86, 85), "KS": _h(86, 87),
+            "ND": _h(76, 69), "MI": _h(43, 54), "AL": _h(100, None, None), "CO": _h(65, 65),
+            "MT": _h(48, 40, "AGSIST"), "PA": _h(61, 53, "NASS", "2026-10-25")}
+    gaps = harvest_gaps(nov1, "2026-11-01")
+    assert "AL" not in gaps and "MT" not in gaps and "PA" not in gaps, gaps   # no avg, not NASS's, another week
+    assert gaps["IA"] == (66, 79, -13) and gaps["CO"] == (65, 65, 0), gaps
+    head, line, rows = progress_hook(gaps)
+    assert line == "Iowa's corn harvest is 13 points behind normal. Illinois is 3 ahead.", line
+    assert ("13 points behind", True) in head, head
+    assert rows == [("Iowa", 66, 79, -13), ("South Dakota", 63, 75, -12), ("Michigan", 43, 54, -11)], rows
+    assert "\u2014" not in line
+    allup = {st: (50, 50 - i % 3, i % 3) for i, st in enumerate(TOP_CORN)}
+    assert progress_hook(allup)[1] == "The corn harvest is at or ahead of normal in every top corn state.", progress_hook(allup)
+    assert progress_hook({"IA": (60, 61, -1)})[1] == "Iowa's corn harvest is 1 point behind normal.", progress_hook({"IA": (60, 61, -1)})
+    assert progress_hook({"CO": (65, 65, 0)}) is None, "no top corn state: no hook"
+    _js = globals()["js"]
+    _states = [{}, 74]
+    def _fake(path, _real=_js):
+        if path == "data/crop-progress.json":
+            return {"in_season": True, "report_date": "2026-10-25", "states": _states[0],
+                    "corn": {"good_excellent": 56, "good_excellent_prev_week": 56, "report_date": "2026-10-25",
+                             "harvest_pct": _states[1], "harvest_date": "2026-11-01", "harvest_5yr_avg": 77},
+                    "soybeans": {"good_excellent": 57, "report_date": "2026-10-11", "harvest_pct": 88, "harvest_date": "2026-11-01"}}
+        return _real(path)
+    globals()["js"] = _fake
+    try:
+        old = card_conditions(today=date(2026, 11, 9))
+        assert "harvested" in old["alt"] and "good to excellent" not in old["alt"] and "Nov 1, 2026" in old["args"]["foot"], old
+        assert not any("good-excellent" in r[0] for r in old["args"]["table"]), old["args"]["table"]
+        assert "3 points behind the 5-year average of 77%" in (old["args"].get("ctx") or ""), old
+        new = card_conditions(today=date(2026, 10, 27))
+        assert "good to excellent" in new["alt"] and "Oct 25, 2026" in new["args"]["foot"], new
+        _states[0] = nov1
+        hook = card_conditions(today=date(2026, 11, 9))
+        assert hook["kind"] == "C" and hook["args"]["pic"][0] == "progress", hook
+        assert "Iowa's corn harvest is 13 points behind normal. Illinois is 3 ahead." in hook["alt"], hook["alt"]
+        assert hook["args"]["meta"].startswith("USDA Crop Progress, week ending Nov 1, 2026") and "agsist.com/conditions" in hook["args"]["meta"]
+        assert "AL" not in hook["args"]["pic"][1]["gaps"], "no NASS average: drawn grey"
+        assert card_conditions(today=date(2026, 10, 27))["kind"] == "A", "a fresh rating keeps the rating card"
+        _states[1] = 100
+        assert card_conditions(today=date(2026, 11, 9))["kind"] == "A", "harvest done: the harvest card"
+    finally:
+        globals()["js"] = _js
     print("[share] selftest ok")
 
 

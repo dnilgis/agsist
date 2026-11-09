@@ -318,7 +318,7 @@ def card_c(head, meta, caption, pic):
     meta     one quiet line under it (date, source, address).
     caption  what the picture is, top left.
     pic      (kind, dict) drawn in the top 430 px: 'line', 'hbars', 'strip',
-             'tiles', 'yearbars' or 'number'.
+             'tiles', 'yearbars', 'number' or 'progress'.
     """
     c = Canvas(PAPER)
     c.rect(0, 430, W, H, GREEN)
@@ -326,7 +326,7 @@ def card_c(head, meta, caption, pic):
         c.text(60, 50, caption.upper(), font("mono", 20, 700), GOLD, track=2.4)
     kind, p = pic
     {"line": _pic_line, "hbars": _pic_hbars, "strip": _pic_strip, "tiles": _pic_tiles,
-     "yearbars": _pic_yearbars, "number": _pic_number}[kind](c, p)
+     "yearbars": _pic_yearbars, "number": _pic_number, "progress": _pic_progress}[kind](c, p)
     segs = [(t, GOLD_LT if hi else CREAM) for t, hi in head]
     for sz in (52, 48, 44, 40, 36):
         f = font("inter", sz, 800)
@@ -489,6 +489,75 @@ def _pic_tiles(c, p):
     c.text(60, 196, p["big"], font("inter", 128, 800), GREEN)
     for i, ln in enumerate(p["lines"]):
         c.text(62, 252 + i * 38, ln, font("inter", 28, 400), INK)
+
+
+HARV_BEHIND = (196, 96, 36)     # points behind the 5-year average: warm
+HARV_EVEN = (241, 233, 211)
+HARV_AHEAD = (39, 107, 67)      # points ahead: green
+HARV_NONE = (220, 219, 213)     # no NASS 5-year average (or no report row): neutral grey
+HARV_CAP = 15                   # a gap of 15 points or more gets the full color
+
+
+def harvest_color(gap):
+    """Points ahead (+) or behind (-) the state's own 5-year average to a fill; None is neutral grey."""
+    if gap is None:
+        return HARV_NONE
+    t = min(1.0, abs(gap) / HARV_CAP) ** 0.8
+    end = HARV_AHEAD if gap > 0 else HARV_BEHIND
+    return tuple(round(HARV_EVEN[i] + (end[i] - HARV_EVEN[i]) * t) for i in range(3))
+
+
+def _pic_progress(c, p):
+    """p: gaps {ST: points vs 5-year average (int) or None}, label {ST} states to name with their gap,
+    rows [(state name, pct, avg5, gap)] up to 3, rows_title. The real US map shaded by harvest gap."""
+    gaps = p["gaps"]
+    shapes, vw, vh = us_map()
+    mw = 640.0
+    k = mw / vw
+    ox, oy = 520, 24
+    for sh in shapes:
+        g = gaps.get(sh["st"])
+        sh["bg"] = harvest_color(g)
+        lum = sum(sh["bg"]) / 3
+        sh["fg"] = CREAM if lum < 150 else INK
+        for ring in sh["poly"]:
+            pts = [(ox + x * k, oy + y * k) for x, y in ring]
+            c.d.polygon([(x * S, y * S) for x, y in pts], fill=sh["bg"])
+            c.d.line([(x * S, y * S) for x, y in pts + pts[:1]], fill=PAPER, width=max(1, int(0.9 * S)), joint="curve")
+    p["_shapes"] = len(shapes)
+    fs, fg = font("inter", 15, 700), font("mono", 15, 700)
+    for sh in shapes:
+        g = gaps.get(sh["st"])
+        if g is None or sh["o"]:
+            continue
+        cx, cy = sh["c"]
+        x, y = ox + cx * k, oy + cy * k
+        if sh["st"] in p.get("label", ()):
+            c.text(x, y - 3, sh["st"], fs, sh["fg"], anchor="ms")
+            c.text(x, y + 14, ("+%d" % g) if g > 0 else ("%d" % g if g else "0"), fg, sh["fg"], anchor="ms")
+        else:
+            c.text(x, y + 1, sh["st"], font("inter", 13, 700), sh["fg"], anchor="mm")
+    # the three biggest gaps among the top corn states
+    x0, x1 = 60, 470
+    y = 96
+    c.text(x0, y, p.get("rows_title", "").upper(), font("inter", 19, 700), MUTED, track=1.2)
+    y += 14
+    for name, pct, avg, gap in p["rows"][:3]:
+        y += 74
+        col = HARV_BEHIND if gap < 0 else (HARV_AHEAD if gap > 0 else INK)
+        c.text(x0, y - 28, name, font("inter", 30, 700), INK)
+        c.text(x0, y + 2, "%d%% harvested, average %d%%" % (pct, avg), font("inter", 22, 400), BODY)
+        word = ("%d behind" % -gap) if gap < 0 else (("%d ahead" % gap) if gap > 0 else "even")
+        c.text(x1, y - 28, word, font("mono", 26, 700), col, anchor="rs")
+        c.rect(x0, y + 16, x1, y + 17, RULE)
+    # legend, small
+    ly = 390
+    fl = font("inter", 17, 500)
+    xx = x0
+    for fill, lab in ((HARV_BEHIND, "behind its 5-yr average"), (HARV_AHEAD, "ahead"), (HARV_NONE, "no average")):
+        c.rect(xx, ly - 13, xx + 16, ly + 1, fill, r=2)
+        c.text(xx + 22, ly, lab, fl, BODY)
+        xx += 22 + c.width(lab, fl) + 22
 
 
 def _pic_yearbars(c, p):
