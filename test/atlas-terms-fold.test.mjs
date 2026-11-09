@@ -15,7 +15,7 @@ for (const st of readdirSync(ROOT + "farmland-atlas", { withFileTypes: true }))
     for (const f of readdirSync(ROOT + "farmland-atlas/" + st.name)) if (f.endsWith(".html") && f !== "index.html") pages.push(`farmland-atlas/${st.name}/${f}`);
 const live = pages.filter((p) => { const h = readFileSync(ROOT + p, "utf8"); return !h.includes('http-equiv="refresh"') && h.includes('class="ap ch"'); });
 const FOLD_BANNED = /\bfitted\b|least.squares|divided by|\bD2\b|15 years|since 2008|\.json|\.py\b|workflow/i;   // the fold names sources, never how a figure is computed
-const BANNED = /least.squares|divided by|15 years ending|needs \d+ published years|Rent per bushel is withheld here: it needs|Sources, dates and arithmetic|\.json|\.py\b|workflow/i;
+const BANNED = /\bfitted\b|least.squares|divided by|15 years ending|needs \d+ published years|Rent per bushel is withheld here: it needs|Sources, dates and arithmetic|\.json|\.py\b|workflow/i;
 
 test("every Atlas county page: one closed Sources and terms fold, last in the page body, notices inside", () => {
   assert.ok(live.length > 3000, "county pages: " + live.length);
@@ -42,5 +42,13 @@ test("no fit, formula, threshold or file wording on a county page", () => {
     const text = h.slice(h.indexOf("<body")).replace(/<script(?![^>]*ld\+json)[\s\S]*?<\/script>/g, "").replace(/<!--[\s\S]*?-->/g, "").replace(/<noscript>[\s\S]*?<\/noscript>/g, "").replace(/<[^>]+>/g, " ");
     const m = text.match(BANNED);
     assert.equal(m, null, p + ": " + (m && m[0]));
+  }
+});
+
+test("no link to a data file on a county page (Oct 29 rule: name the source in plain text)", () => {
+  for (const p of live) {
+    const h = readFileSync(ROOT + p, "utf8");
+    const main = h.slice(h.indexOf("<main"), h.indexOf("</main>"));
+    assert.ok(!/href="\/data\//.test(main.replace(/<script[\s\S]*?<\/script>/g, "")), p + ": links a data file");
   }
 });

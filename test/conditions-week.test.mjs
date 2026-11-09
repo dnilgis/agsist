@@ -94,7 +94,11 @@ test("shipped page: condition parts name the condition week, harvest parts the h
     assert.ok(seed(html, "condtable").includes(`<caption>Corn, week ending ${nice(we)}`), "rank table caption");
     assert.equal(seed(html, "condfresh"), `week ending ${we}`, "table header");
   }
-  assert.ok(seed(html, "condharvtable").includes(`harvested, week ending ${nice(hd)}`), "harvest caption on the harvest week");
+  // The state harvest table names the harvest week whether it shows numbers or withholds them
+  // (Nov 9: NASS posted the national corn number before the state rows, so the table said
+  // "No state harvest numbers for the week ending Nov 8, 2026" for a while). Both are honest.
+  const ht = seed(html, "condharvtable");
+  assert.ok(ht.includes(`harvested, week ending ${nice(hd)}`) || ht.includes(`No state harvest numbers for the week ending ${nice(hd)}`), "harvest caption on the harvest week");
   for (const tag of ["condvsent", "condstats", "condtable", "condfresh"])
     for (const w of weeksNamed(seed(html, tag))) assert.ok(w === rd || w === we, `${tag}: ${w} is not the condition week`);
   for (const tag of ["condharvline", "condharvtable", "condharvlead"])
