@@ -48,16 +48,8 @@
   function cents(x) { return Math.floor(x * 100 + 0.5); }
   function usd(v, k) { return '$' + fmt(v, k == null ? 2 : k); }
   function usdC(c) { return c === 0 ? '$0' : usd(c / 100); }   /* the build's usd_pay, from cents it figured */
-  /* the build's BOR_NOTE and bor_why(): no dollars for a 2026 crop whose price spread is borrowed (nousd); few: too few
-     years of its own prices, so it runs on corn's swings outright */
-  var BOR_NOTE = 'no dollar figure, because the price swings are borrowed from corn&rsquo;s';
-  function borWhy(lc, few) {
-    var pl = /s$/.test(lc);
-    if (few) return lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'have' : 'has') + ' too few years of ' + (pl ? 'their' : 'its') + ' own prices in FSA&rsquo;s tables, so ' +
-      (pl ? 'their' : 'its') + ' price swings are corn&rsquo;s, and the expected dollars would rest on them. We do not print them.';
-    return lc.charAt(0).toUpperCase() + lc.slice(1) + ' ' + (pl ? 'have' : 'has') + ' no October futures history of ' + (pl ? 'their' : 'its') + ' own on file, so ' +
-      (pl ? 'their' : 'its') + ' price swings are borrowed from corn&rsquo;s, and the expected dollars would rest on them. We do not print them.';
-  }
+  /* the build's BOR_NOTE: no dollars for a 2026 crop with too little price history of its own (nousd) */
+  var BOR_NOTE = 'no dollar figure for this crop';
   var UNIT = { bu: { short: 'bu', word: 'bushel', per: '/bu' }, lb: { short: 'lb', word: 'pound', per: '/lb' } };
   function yf(cd, v, k) { return fmt(v, k == null ? 2 : k) + ' ' + UNIT[cd.u || 'bu'].short; }
   /* a benchmark yield as the page title prints it: a tenth of a bushel, a whole pound
@@ -116,8 +108,7 @@
     if (w_ === 'noprice') return 'No 2027 price yet: there is no 2027 price outlook for this crop we can check against past years, so no call. ' +
       'Type a price in the calculator to see the dollars.';
     if (w_ === 'pending') return 'Waiting on USDA&rsquo;s closing 2025 season-average price, which sets the 2027 reference price.';
-    /* a borrowed spread (nousd): the call and the year counts, no dollars
-       (verdict_line_borrowed in the build script, money audit 3, 2026-10-19) */
+    /* no dollars (nousd): the call and the year counts only (verdict_line_borrowed in the build script) */
     var B = v.nousd;
     var nums = B ? 'PLC paid more in ' + v.plc_wins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arc_wins + '; ' + BOR_NOTE :
       'expected ' + usdC(v.plc) + ' PLC vs ' + usdC(v.arc) + ' ARC-CO per base acre; PLC paid more in ' + v.plc_wins + ' of ' +
@@ -125,7 +116,7 @@
     if (w_ === 'none') return 'Neither expected to pay (' + nums + ').';
     if (w_ === 'close') return B ? 'Close, either one: too small or too uncertain to call (' + nums + ').' :
       'Close, either one: about ' + usd(v.diff / 100) + ' apart, too small or too uncertain to call (' + nums + ').';
-    var note = (v.borrowed && w_.indexOf('lean_') === 0 ? ' Capped at Leans: this crop borrows corn&rsquo;s price swings.' : '') +
+    var note = (v.borrowed && w_.indexOf('lean_') === 0 ? ' Capped at Leans: too little price history of its own.' : '') +
       (v.alt_down ? ' Not a clear pick: a futures-based price start gives a different call.' : '');
     if (w_.indexOf('lean_') === 0) {
       var side = w_.slice(5), other = side === 'plc' ? 'arc' : 'plc', ow = side === 'plc' ? v.arc_wins : v.plc_wins;
@@ -142,7 +133,7 @@
     return 'PLC pays on any season-average price below ' + pf(cd, cy.erp) + ', up to ' + usd(maxPlc) + ' per base acre at the ' + pf(cd, cy.loan) + ' loan rate, so it ' +
       'protects against a deep price drop. ARC-CO is capped at ' + usd(maxArc) + ' per base acre but also pays when the county&rsquo;s ' +
       'yield is short; it paid something in ' + v.short + ' of the ' + v.n + ' past-year scenarios. With prices centered at ' + pf(cd, cy.cen) + ', ' +
-      (v.nousd ? 'the expected payments are not printed. ' + borWhy(cd.lab.toLowerCase(), v.few) :
+      (v.nousd ? 'the expected payments are not printed: too little price history of its own.' :
         'PLC is expected to pay ' + usdC(v.plc) + ' and ARC-CO ' + usdC(v.arc) + ' per base acre.');
   }
   function shortWord(v) {
@@ -295,7 +286,7 @@
     });
     return '<p><b>' + LY + '.</b> County yields come out months after harvest, so until then each scenario assumes a normal ' + esc(cname) + ' crop (FSA&rsquo;s 2026 benchmark yield) and only the price moves.\n' +
       '  Prices start from USDA&rsquo;s projected 2026/27 season-average prices (' + cen + '). Around that price we ran each past year with a final USDA price: how far that year&rsquo;s final season-average\n' +
-      '  price ended from October futures, for corn and soybeans.' + (bor.length ? ' ' + cap1j(bor) + ' have no October futures history of their own, so they borrow corn&rsquo;s October swings (wheat its own price changes, scaled to corn&rsquo;s size) and stop at Leans.' : '') + '</p>\n' +
+      '  price ended from October futures, for corn and soybeans.' + (bor.length ? ' ' + cap1j(bor) + ' stop at Leans and print no dollar figure: too little price history of their own.' : '') + '</p>\n' +
       '  ' + (alts.length ? '<p><b>Two price starts.</b> ' + alts.join(' ') + ' Where the two disagree on which program leads, or on a clear pick, a clear pick drops to Leans.</p>' : '') + '\n' +
       '  <p><b>' + OY + '.</b> ' + (c7.length ? 'Corn and soybeans start from futures: ' + c7.join('; ') + '. Each scenario year also moves the county yield the way it moved that year. ' : '') +
       (nop.length ? cap1j(nop) + ': no ' + OY + ' price outlook we can check against past years, so no ' + OY + ' answer. ' : '') +
@@ -339,7 +330,7 @@
     var w_ = v.verdict, cy = cd.y[y] || cd.y['2026'];
     var erp = ' PLC pays under ' + (cd.u === 'lb' ? sayPrice(cd, cy.erp) : pf(cd, cy.erp)) + '.';
     if (v.nousd && (w_ === 'plc' || w_ === 'arc' || w_ === 'close' || w_.indexOf('lean_') === 0))
-      return (w_ === 'close' ? 'Too close to call for ' + y + '.' : WORD[w_.replace('lean_', '')] + ' leads for ' + y + '.') + ' No dollar figure: price swings borrowed from corn.' + erp;
+      return (w_ === 'close' ? 'Too close to call for ' + y + '.' : WORD[w_.replace('lean_', '')] + ' leads for ' + y + '.') + ' No dollar figure: too little price history.' + erp;
     if (w_ === 'plc' || w_ === 'arc' || w_.indexOf('lean_') === 0) return WORD[w_.replace('lean_', '')] + ' about $' + v.whole + ' more per base acre for ' + y + '.' + erp;
     if (w_ === 'close') return (v.under1 ? 'Under $1 apart for ' + y + '.' : 'About $' + v.whole + ' apart for ' + y + '.') + erp;
     if (w_ === 'none') { var cen = cy.cen; return cen ? 'At USDA&rsquo;s ' + pf(cd, cen) + ', neither pays for ' + y + '.' : 'Neither pays for ' + y + '.'; }
