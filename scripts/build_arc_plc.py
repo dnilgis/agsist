@@ -168,7 +168,7 @@ LOADER_V = "19"
 ASOF_V = "1"
 QR_V = "11"   # components/qr.js on its own (10: an alphanumeric mode for the Rain Print standard code, 2026-10-14; 11: mixed mode and versions to 40 for the printed report QRs, 2026-10-19)
 SAVED_PLACE_V = "1"   # components/saved-place.js, the one saved-place reader (Nov 4, 2026)
-CALC_V = "16"   # 16: wave1b (Nov 4, 2026): the calculator starts at the saved place (arc-plc.js); 15: fx/trust (Oct 27, 2026): the two firm verdicts read "PLC expected to pay more" / "ARC-CO expected to pay more", with the assumptions beside the calculator answer (arc-plc.js, arc-plc-math.js); 14: arcfix (Oct 20, 2026): no "Ask FSA" (range answers in arc-plc-simple.js and arc-plc-math.js), the 2025 and 50-cent lines (arc-plc-simple.css), the landlord line on the counter sheet (arc-plc-sheet.js), "at your price only" (arc-plc.js), the main page's first line (arc-plc.css); 13: both 12s together (fx/nightmoney + fx/nightseo, 2026-10-19); 12 (nightseo): one rounding for the benchmark yield (byf, night audit Oct 19, 2026); 12 (nightmoney): no expected dollars where the price swings are borrowed from corn, county-yield wording (money audit 3); 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
+CALC_V = "17"   # 17: plain method (Nov 9, 2026): no cutoffs or t statistic in the call text (arc-plc.js, arc-plc-math.js); 16: wave1b (Nov 4, 2026): the calculator starts at the saved place (arc-plc.js); 15: fx/trust (Oct 27, 2026): the two firm verdicts read "PLC expected to pay more" / "ARC-CO expected to pay more", with the assumptions beside the calculator answer (arc-plc.js, arc-plc-math.js); 14: arcfix (Oct 20, 2026): no "Ask FSA" (range answers in arc-plc-simple.js and arc-plc-math.js), the 2025 and 50-cent lines (arc-plc-simple.css), the landlord line on the counter sheet (arc-plc-sheet.js), "at your price only" (arc-plc.js), the main page's first line (arc-plc.css); 13: both 12s together (fx/nightmoney + fx/nightseo, 2026-10-19); 12 (nightseo): one rounding for the benchmark yield (byf, night audit Oct 19, 2026); 12 (nightmoney): no expected dollars where the price swings are borrowed from corn, county-yield wording (money audit 3); 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap, at least 1 SE, and MIN_WINS winning years
@@ -2014,22 +2014,17 @@ def dy_source_text(D):
 
 
 def method_html(D):
-    """How the verdict is figured, the scenario inputs, the county tally, and the back-test."""
-    y6, y7 = D["years"]["2026"]["crops"], D["years"]["2027"]["crops"]
-    if not all(y6[k].get("scen") for k in CROPS) or not all(y7[k].get("scen") for k in ("corn", "soybeans")):
-        return ('<h2 id="method">How the ARC or PLC verdict is figured</h2><p>Not available: the price inputs for the scenarios are not loaded.</p>')
+    """How the verdict is figured, in plain words (Sig, Nov 8, 2026: "Cut it"): what it compares and how the past years came out.
+    No call rules, no test statistics, no weights; the track-record table stays. Every number here is computed from the data."""
+    y6 = D["years"]["2026"]["crops"]
+    head = '<h2 id="method">How the ARC or PLC verdict is figured</h2>'
+    if not all(y6[k].get("scen") for k in CROPS):
+        return head + '<p>Not available: the price inputs for the scenarios are not loaded.</p>'
     cols = [(y, k) for y in ("2026", "2027") for k in CROPS if D["years"][y]["crops"][k]["scen"].get("center")]
     yrs = sorted({int(t) for y, k in cols for t in D["years"][y]["crops"][k]["scen"]["ratios"]})
-    def cell(y, k, t):
-        sc = D["years"][y]["crops"][k]["scen"]
-        r = sc["ratios"].get(t, sc["ratios"].get(str(t)))
-        return f'<td class="num">{usd(sc["center"] * r) if r is not None else "n/a"}</td>'
-    rat = "".join(f'<tr><th scope="row">{t}</th>' + "".join(cell(y, k, t) for y, k in cols) + "</tr>" for t in yrs)
-    tally = tallies(D)
-    tl = "".join(f'<tr><th scope="row">{y} {D["years"][y]["crops"][k]["label"].lower()}</th>' + "".join(f'<td class="num">{tally.get((y, k), {}).get(w, 0):,}</td>' for w in TIERS) + "</tr>"
-                 for y in ("2026", "2027") for k in CROPS)
     bt = D.get("_backtest")
     btab = ""
+    rec = ""
     if bt:
         have = sorted({r["y"] for r in bt["rows"] if r["arc"] is not None})
         miss = [y for y in BACKTEST_YEARS if y not in have]
@@ -2037,57 +2032,21 @@ def method_html(D):
             f'<tr><td>{r["y"]}</td><td>{y6[r["k"]]["label"]}</td><td class="num">{usd(r["erp"])}</td><td class="num">{usd(r["mya"])}</td>'
             f'<td class="num">{usd(r["rate"]) if r["rate"] else "none"}</td><td class="num">{usd(r["plc"]) if r["plc"] else "none"}</td>'
             f'<td class="num">{(usd(r["arc"]) if r["arc"] else "none") if r["arc"] is not None else "not in our files"}</td></tr>' for r in bt["rows"])
+        done = [r for r in bt["rows"] if r["arc"] is not None]
+        n_plc = sum(1 for r in done if (r["plc"] or 0) > (r["arc"] or 0))
+        n_arc = sum(1 for r in done if (r["arc"] or 0) > (r["plc"] or 0))
+        if done:
+            rec = (f'<p>Looking back, over {len(done)} crop years from {have[0]} to {have[-1]}, ARC-CO paid more in {n_arc}, PLC paid more in {n_plc}'
+                   f'{"" if n_arc + n_plc == len(done) else ", and the two came out even in " + str(len(done) - n_arc - n_plc)}. '
+                   f'National averages hide wide county differences, so your county can differ.</p>')
         btab = (f'<h3 id="backtest">What each program paid, nationally, per base acre</h3>'
                 f'<div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th><th>Crop</th><th class="num">ERP</th><th class="num">Final MYA</th>'
                 f'<th class="num">PLC rate</th><th class="num">PLC $/base ac</th><th class="num">ARC-CO $/base ac</th></tr></thead><tbody>{rows}</tbody></table></div>'
-                f'<p class="ap-small">PLC: ERP minus the final season-average price (NASS), never below the loan rate, times FSA&rsquo;s {bt["plc_py"]} national average PLC yield '
-                f'(corn {bt["nat_py"]["corn"]:.2f}, soybeans {bt["nat_py"]["soybeans"]:.2f}, wheat {bt["nat_py"]["wheat"]:.2f} bu, weighted by enrolled base) times 85%. 2019 to 2024 use the '
-                f'2018 law (statutory $3.70, $8.40, $5.50; 85% escalator); 2025 the 2025 law. ARC-CO: FSA&rsquo;s county payment rates from its program year files '
-                f'({", ".join(str(y) for y in have)}), irrigated and non-irrigated averaged equally where FSA splits a county, weighted by each county&rsquo;s enrolled base, times 85%. '
-                f'Every county rate in those files was recomputed from the file&rsquo;s own yields and prices and matched FSA&rsquo;s to the cent '
-                f'({sum((D.get("_paid_checked") or {}).values()):,} rows).'
-                + (f' Not in our files: {", ".join(str(y) for y in miss)}.' if miss else "") + ' National averages hide wide county differences.</p>')
-    c6, s6, c7, s7, w6 = y6["corn"]["scen"], y6["soybeans"]["scen"], y7["corn"]["scen"], y7["soybeans"]["scen"], y6["wheat"]["scen"]
-    corn_sd = sd1(v for v in c6["ratios"].values()) if c6.get("ratios") else None
-    def altp(sc):
-        return (f'{usd(sc["alt"])} ({esc(sc.get("alt_contract") or "")} October average{(" through " + nice_date(sc["alt_date"], False)) if sc.get("alt_date") else " so far"}, {usd(sc["alt_fut"])} over {sc.get("alt_days")} of {sc.get("alt_of")} trading days, '
-                f'times {sc["oct_mean"]:.3f}: from {yrs[0]} to {yrs[-1]}, the years with FSA county yields that the scenarios use, the final season-average price averaged '
-                f'{sc["oct_mean"]:.3f} times that year&rsquo;s October average of the harvest contract, RMA&rsquo;s harvest price)') if sc.get("alt") else "not available"
-    return f"""<h2 id="method">How the ARC or PLC verdict is figured</h2>
-  <p>The verdict compares what each program is expected to pay per base acre across past years ({yrs[0]} to {yrs[-1]}, each year with a final USDA price), not one guess.</p>
-  <ul class="ap-list">
-    <li><b>2026 price, every crop.</b> Start: USDA&rsquo;s projected 2026/27 season-average price ({c6.get('usda_src', 'USDA WASDE')}): {usd(c6['center'])} corn,
-    {usd(s6['center'])} soybeans, {usd(w6['center'])} wheat. Corn and soybean spread: how far each past year&rsquo;s final season-average price (NASS) ended from that
-    October&rsquo;s futures average (RMA&rsquo;s harvest price, on our <a href="/harvest-price-tracker#history">price tracker</a>), scaled to average 1: the uncertainty left in October.</li>
-    <li><b>Second start, as a check.</b> Corn {altp(c6)}; soybeans {altp(s6)}. Where USDA&rsquo;s start and this one disagree on which program leads, or on a clear pick,
-    a clear pick drops to Leans. A study of corn found WASDE and futures-based forecasts about equally accurate ({src_link('HOFF15')}).</li>
-    <li><b>2026 spread for wheat and the smaller crops.</b> None of them has its own October futures history on file. Wheat uses its own year-to-year price changes,
-    scaled to average 1 and then to the size of corn&rsquo;s October swings (standard deviation {corn_sd * 100:.1f}%). The smaller crops have too few years in FSA&rsquo;s
-    price tables, so they use corn&rsquo;s October swings. Because the spread is borrowed, their call stops at Leans and their expected dollars are not printed:
-    near the reference price most of an expected payment comes from the spread, and this one is not the crop&rsquo;s own (wheat&rsquo;s marketing year also began June 1,
-    so less of its price is still open in October than corn&rsquo;s swings imply). Type a price in the calculator to see the dollars at that price.</li>
-    <li><b>2026 county yield.</b> USDA puts out county yields months after harvest, so until then every scenario year assumes a normal crop: the county&rsquo;s FSA benchmark yield. Only the price moves.
-    In the calculator, type the county yield if you know it and the 2026 call uses it.</li>
-    <li><b>2027 price, corn and soybeans.</b> Start: {c7['center_label']}: {usd(c7['center'])} corn; soybeans {s7['center_label']}: {usd(s7['center'])}. Spread: each past year&rsquo;s change in the
-    final season-average price, scaled to average 1, because 2027 is a whole year out.</li>
-    <li><b>2027, wheat and every other crop.</b> No 2027 price we can check against past years (no futures history on file for them), so no 2027 call. Reusing the 2026 price
-    would only repeat the 2026 answer. Type a 2027 price in the calculator to see the dollars.</li>
-    <li><b>2027 county yield.</b> For the same year as the price, the county&rsquo;s yield against its benchmark, from FSA&rsquo;s own files. {dy_source_text(D)}.
-    A county with fewer than {MIN_SCEN} years uses its state&rsquo;s average for that crop and practice (at least {MIN_STATE_N} counties a year).</li>
-    <li><b>The call.</b> With at least {MIN_SCEN} years: <b>Expected to pay more</b> when the expected gap is more than t times its standard error (t from Student&rsquo;s t for the number of years,
-    2.26 for 10 and 2.23 for 11), at least {usd(MIN_GAP)} per base acre, and the leading program paid more in at least {MIN_WINS} of the years; <b>Leans</b> when the gap is at least
-    {usd(LEAN_GAP)} and at least one standard error, and the leader paid more in at least {MIN_WINS} years; otherwise <b>close, either one</b>. When both expected payments round
-    to $0: <b>neither expected to pay</b>. Expected dollars are shown beside the call, except for the 2026 crops whose spread is borrowed (above): there the call stands and the dollars are not printed.</li>
-    <li><b>Typical farm</b> (county pages): FSA&rsquo;s county average PLC yield and FSA&rsquo;s official benchmark. That PLC yield covers all practices, irrigated and not, so the
-    irrigated answer is labeled as using it. Where it is above a practice&rsquo;s benchmark, no typical answer is given for that practice. The county page&rsquo;s Lower and Higher
-    buttons use 85% and 115% of it.</li>
-  </ul>
-  <h3>Scenario prices ({len(yrs)} years)</h3>
-  <div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year</th>{''.join(f'<th class="num">{y} {D["years"][y]["crops"][k]["label"].lower()}</th>' for y, k in cols)}</tr></thead><tbody>{rat}</tbody></table></div>
-  <p class="ap-small">Season-average price used in each scenario year, $/bu.</p>
-  <h3>Typical-farm verdicts, all counties</h3>
-  <div class="ap-scroll"><table class="tbl ap-t"><thead><tr><th>Year, crop</th>{''.join(f'<th class="num">{TIER_HEAD[w]}</th>' for w in TIERS)}</tr></thead><tbody>{tl}</tbody></table></div>
-  <p class="ap-small">County and practice combinations. Your own PLC yield moves the answer; run it.</p>
+                f'<p class="ap-small">Payments are FSA&rsquo;s own rates times 85% of base acres, before sequestration and limits.'
+                + (f' Not in our files: {", ".join(str(y) for y in miss)}.' if miss else "") + '</p>')
+    return f"""{head}
+  <p>The verdict compares what ARC-CO and PLC are each expected to pay per base acre on your county and crop, across past years ({yrs[0]} to {yrs[-1]}, each with a final USDA price), not one guess. The program expected to pay more gets the call; when they are too close, it says so. USDA puts out county yields months after harvest, so until then every scenario year assumes a normal crop: the county&rsquo;s FSA benchmark yield.</p>
+  {rec}
   {btab}"""
 
 

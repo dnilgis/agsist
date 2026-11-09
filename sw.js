@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 399;  // v399 2026-11-09: cash-bids layout (399; 398 is an open PR). The results area keeps its height so a saved-ZIP load no longer jumps.
+var CACHE_VERSION = 400;  // v400 2026-11-09: arc-plc plain (400, next after main's 399). The ARC/PLC call text has no cutoffs or t statistic (arc-plc.js, arc-plc-math.js at CALC_V 17).
+// var CACHE_VERSION = 399;  // v399 2026-11-09: cash-bids layout (399; 398 is an open PR). The results area keeps its height so a saved-ZIP load no longer jumps.
 // var CACHE_VERSION = 397;  // v397 2026-11-09: rain hub phone (397, next after main's 396). rain hub phone. The rain hub opens with a state picker; the state list folds at the bottom (components/rain-county.css?v=8).
 // var CACHE_VERSION = 396;  // v396 2026-11-09: briefing teaser. On a stale line the home Daily teaser says "Latest briefing", never "Today's" for an old issue (home-season.js?v=11).
 // var CACHE_VERSION = 394;  // v394 2026-11-09: land hub phone. The farmland sales hub opens with the map, stand-out sales and a state/county picker; lists fold (components/land-sales.css?v=3, usmap.js?v=2 plain option).
