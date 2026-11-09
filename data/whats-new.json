@@ -16,6 +16,13 @@
    "link": "/arc-plc"
   },
   {
+   "id": "2026-11-09-rent-terms-fold",
+   "date": "2026-11-09",
+   "title": "Shorter cash rent pages",
+   "line": "Cash rent pages put sources and terms in one fold at the bottom, so the county table comes sooner.",
+   "link": "/rent/"
+  },
+  {
    "id": "2026-11-09-town-page-steady",
    "date": "2026-11-09",
    "title": "Steadier cash bid town pages",
