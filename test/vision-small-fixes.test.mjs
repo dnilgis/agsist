@@ -56,9 +56,9 @@ test("spray: conditions are estimated for your location, not measured at your fi
 
 test("rain hub: pick your state comes before the records list", () => {
   const h = read("rain.html");
-  const st = h.indexOf('<ul class="rc-states">'), rec = h.indexOf('id="records"');
-  assert.ok(st > 0, "state list present");
-  assert.ok(rec < 0 || st < rec, "state list above the records");
+  const st = h.indexOf('id="rc-pick"'), rec = h.indexOf('id="records"');
+  assert.ok(st > 0, "state picker present");
+  assert.ok(rec < 0 || st < rec, "state picker above the records");
   assert.match(h, /<p class="rc-answer">Pick your state, then your county\./);
 });
 
