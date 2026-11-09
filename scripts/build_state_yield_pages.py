@@ -251,6 +251,10 @@ CSS = """
     .yl-stat ul b{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:600}
     .yl-note{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:12px 15px;font-size:.85rem;line-height:1.65;color:var(--text-muted);margin:14px 0}
     .yl-note b{color:var(--text)}
+    .yl-terms{margin:18px 0 0;border:1px solid var(--border);border-radius:8px;padding:2px 15px}
+    .yl-terms summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700;font-size:.9rem;color:var(--text)}
+    .yl-terms p{font-size:.8rem;line-height:1.65;color:var(--text-muted);margin:0 0 10px}
+    .yl-terms a{color:var(--gold)}
     .yl-fc{font-size:1rem;line-height:1.55;color:var(--text);margin:6px 0 10px}
     .yl-fc b{color:var(--gold)}
     .yl-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
@@ -378,19 +382,19 @@ def stat_card(c, s, unit="bu/ac"):
     def avg_li(a, w):
         rng = yrs(a["from"], a["to"])
         if a["value"] is None and a.get("before_pull"):
-            return (f"<li>{w}-year average ({rng}): {dash('window starts before the data')}. The NASS pull on this "
+            return (f"<li>{w}-year average ({rng}): {dash('window starts before the data')}. The data on this "
                     f"page starts in {a['pull_start']}, so no full {w}-year window ends in {a['to']}</li>")
         if a["value"] is None:
-            return (f"<li>{w}-year average ({rng}): {dash('fewer published years than the minimum')}. "
+            return (f"<li>{w}-year average ({rng}): {dash('too few published years')}. "
                     f"Only {a['n']} of {a['of']} years published, too few to average</li>")
         return f"<li>{w}-year average ({rng}): <b>{r(a['value'])}</b> {unit}, n&nbsp;=&nbsp;{a['n']} of {a['of']} years</li>"
     if tr["slope"] is None:
         tli = (f"<li>Trend: {dash('too few published years')}. {tr['n']} published years, "
-               f"fewer than the {MIN_TREND_N} needed to fit a line</li>")
+               f"too few to show a trend</li>")
     else:
         sgn = "+" if tr["slope"] > 0 else ("&minus;" if tr["slope"] < 0 else "")
         tli = (f"<li>Trend ({yrs(tr['from'], tr['to'])}): <b>{sgn}{r(abs(tr['slope']), 2)}</b> {unit} per year, "
-               f"n&nbsp;=&nbsp;{tr['n']} years (least-squares line, not projected)</li>")
+               f"n&nbsp;=&nbsp;{tr['n']} years (not projected)</li>")
     return (f'<div class="yl-stat"><div class="l">{CROP_LABEL[c]} &middot; {s["last"]} USDA NASS</div>'
             f'<div class="v">{num(s["latest"])} <span style="font-size:.8rem;color:var(--text-muted)">{unit}</span></div><ul>'
             f'<li>Highest ({yrs(s["first"], s["last"])}): <b>{num(s["hi"])}</b> in {yl(s["hi_years"])}</li>'
@@ -537,7 +541,7 @@ def build_state_page(name, inp, ctx):
                          + ", ".join(f"{CROP_LC[c]} {yrs_plain(stats[c]['first'], stats[c]['last'])}, n={stats[c]['n']}" for c in crops)
                          + "), final estimates only, "
                          + ("with " + " and ".join(CROP_LC[c] for c in crops if c in ACRES and name in inp["acres"][c]["rows"]) + " planted acres, " if has_acres else "")
-                         + "highest and lowest years, 5- and 10-year averages and a least-squares trend."),
+                         + "highest and lowest years, 5- and 10-year averages and a trend."),
          "url": f"{SITE}{path}", "isAccessibleForFree": True,
          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
          "isBasedOn": "https://quickstats.nass.usda.gov/",
@@ -561,7 +565,7 @@ def build_state_page(name, inp, ctx):
             vals = "; ".join(f"{CROP_LC[c]} <b>{num(v)}</b> bu/ac" for c, v in items)
             sbits.append(f"<li>{vals} (<i>{esc(meta)}</i>)</li>")
         season_html = (f'<div class="yl-note"><b>Current season, kept out of the table above.</b> '
-                       f'USDA NASS figures from AGSIST&rsquo;s state crop file (data/state-stats.json), with that file&rsquo;s own label:'
+                       f'USDA NASS figures, with their own label:'
                        f'<ul style="margin:6px 0 0 18px;padding:0">{"".join(sbits)}</ul>'
                        f'A forecast changes month to month and is not comparable with the annual estimates in the table.</div>')
     else:
@@ -580,7 +584,7 @@ def build_state_page(name, inp, ctx):
     wheat_note = ""
     if "wheat" in crops:
         wheat_note = (" Wheat here is <b>winter wheat</b> only (NASS &ldquo;WHEAT, WINTER&rdquo;); spring wheat and durum "
-                      "are not included. AGSIST&rsquo;s NASS pull carries no state winter wheat planted-acres series, so no wheat acres column is shown.")
+                      "are not included, and no wheat acres column is shown.")
 
     links = ['<a href="/usda-quick-stats">corn &amp; soybean yields for every state (USDA Quick Stats)</a>']
     if os.path.exists(os.path.join(root, "farmland-atlas", sl, "index.html")):
@@ -593,7 +597,7 @@ def build_state_page(name, inp, ctx):
         links.append(f'<a href="/arc-plc/{sl}">{name} ARC or PLC by county</a>')
     cloud = " &middot; ".join(f'<a href="/yield/{slug(o)}">{esc(o)}</a>' for o in ctx["all_states"] if o != name)
     hdr, ftr, _fonts = ctx["chrome"]
-    intro_crops = ", ".join(f"{CROP_LC[c]} ({lrng[c]}, n&nbsp;=&nbsp;{stats[c]['n']})" for c in crops)
+    intro_crops = ", ".join(f"{CROP_LC[c]} ({lrng[c]})" for c in crops)
 
     body = f"""
 <body>
@@ -602,27 +606,26 @@ def build_state_page(name, inp, ctx):
   <p class="yl-sub" style="margin-top:14px"><a href="/usda-quick-stats" style="color:var(--text-muted)">USDA Quick Stats</a> &rsaquo; <b style="color:var(--text)">{esc(name)} yield by year</b></p>
   <h1>{esc(name)} {crops_phrase(crops).lower()} yield by year</h1>
   {forecast_line(inp["state_stats"].get(st), seasons)}
-  <p class="yl-sub">USDA NASS state yield estimates for {esc(name)}, annual (end-of-season) figures only: {intro_crops}.
-  Every figure below is a USDA NASS number for the year shown; nothing is estimated or filled in by AGSIST.
-  Source files updated {fmt_date(updated)}.</p>
+  <p class="yl-sub">USDA NASS annual state yield estimates for {esc(name)}: {intro_crops}.
+  Every figure below is a USDA NASS number for the year shown; none is estimated or filled in by AGSIST.
+  Updated {fmt_date(updated)}.</p>
   <div class="yl-hero">{cards}</div>
   {season_html}
   <h2 id="by-year">{esc(name)} yield by year</h2>
   <p class="yl-sub">Newest first. Bushels per acre{"; planted acres in millions" if has_acres else ""}. Source: USDA NASS Quick Stats, state level.
-  n/a means NASS published no figure for that year; &ldquo;pending&rdquo; means NASS has not yet released that
-  crop year&rsquo;s annual estimate (corn and soybeans come out in January).</p>
+  n/a: NASS published no figure for that year. Pending: not yet released (corn and soybeans come out in January).</p>
   {year_table(st, name, inp, crops, y0, y1t)}
   {cty_html}
-  <div class="yl-note"><b>How these numbers are made.</b> Yields{" and planted acres" if has_acres else ""} are USDA NASS Quick Stats state
-  estimates, pulled with the reference period pinned to the full year, so in-season monthly forecasts never enter
-  the table. Highest and lowest are over the published years shown, not all-time records. Averages are plain means
-  of the published years in the stated window, printed with how many years they rest on (withheld below
-  {MIN_AVG_N[5]} of 5 or {MIN_AVG_N[10]} of 10). The trend is an ordinary least-squares line through every published
-  year (at least {MIN_TREND_N}); it describes the past window and is not a forecast.{cty_note}{gap_txt}{wheat_note}</div>
-  <p class="yl-sub yl-credit">{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p>
   <p class="yl-links yl-sub">Related: {' &middot; '.join(links)}.</p>
   <h2>Yield by year in other states</h2>
   <p class="yl-cloud">{cloud}</p>
+  <details class="yl-terms" id="terms"><summary>Sources and terms</summary>
+  <p>Yields{" and planted acres" if has_acres else ""} are USDA NASS Quick Stats state estimates, final annual figures only: in-season forecasts never enter the table.
+  Highest and lowest are over the published years shown, not all-time records. Averages are plain means of the published years in
+  the stated window, printed with how many years they rest on, and withheld when too few years are published. The trend describes the
+  past window and is not a forecast.{cty_note}{gap_txt}{wheat_note}</p>
+  <p class="yl-credit">{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p>
+  </details>
 </main>
 {ftr}
 <script src="/components/loader.js?v=19" defer></script>

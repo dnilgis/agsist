@@ -168,7 +168,7 @@ LOADER_V = "19"
 ASOF_V = "1"
 QR_V = "11"   # components/qr.js on its own (10: an alphanumeric mode for the Rain Print standard code, 2026-10-14; 11: mixed mode and versions to 40 for the printed report QRs, 2026-10-19)
 SAVED_PLACE_V = "1"   # components/saved-place.js, the one saved-place reader (Nov 4, 2026)
-CALC_V = "17"   # 17: plain method (Nov 9, 2026): no cutoffs or t statistic in the call text (arc-plc.js, arc-plc-math.js); 16: wave1b (Nov 4, 2026): the calculator starts at the saved place (arc-plc.js); 15: fx/trust (Oct 27, 2026): the two firm verdicts read "PLC expected to pay more" / "ARC-CO expected to pay more", with the assumptions beside the calculator answer (arc-plc.js, arc-plc-math.js); 14: arcfix (Oct 20, 2026): no "Ask FSA" (range answers in arc-plc-simple.js and arc-plc-math.js), the 2025 and 50-cent lines (arc-plc-simple.css), the landlord line on the counter sheet (arc-plc-sheet.js), "at your price only" (arc-plc.js), the main page's first line (arc-plc.css); 13: both 12s together (fx/nightmoney + fx/nightseo, 2026-10-19); 12 (nightseo): one rounding for the benchmark yield (byf, night audit Oct 19, 2026); 12 (nightmoney): no expected dollars where the price swings are borrowed from corn, county-yield wording (money audit 3); 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
+CALC_V = "18"   # 18: plain words (Nov 9, 2026): one plain line where a crop has too little price history, no corn-swing method text (arc-plc.js, arc-plc-math.js, arc-plc-simple.js, build_arc_plc.py); 17: plain method (Nov 9, 2026): no cutoffs or t statistic in the call text (arc-plc.js, arc-plc-math.js); 16: wave1b (Nov 4, 2026): the calculator starts at the saved place (arc-plc.js); 15: fx/trust (Oct 27, 2026): the two firm verdicts read "PLC expected to pay more" / "ARC-CO expected to pay more", with the assumptions beside the calculator answer (arc-plc.js, arc-plc-math.js); 14: arcfix (Oct 20, 2026): no "Ask FSA" (range answers in arc-plc-simple.js and arc-plc-math.js), the 2025 and 50-cent lines (arc-plc-simple.css), the landlord line on the counter sheet (arc-plc-sheet.js), "at your price only" (arc-plc.js), the main page's first line (arc-plc.css); 13: both 12s together (fx/nightmoney + fx/nightseo, 2026-10-19); 12 (nightseo): one rounding for the benchmark yield (byf, night audit Oct 19, 2026); 12 (nightmoney): no expected dollars where the price swings are borrowed from corn, county-yield wording (money audit 3); 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
 LEAN_GAP = 3.00       # $/base acre: "Leans X" needs at least this expected gap, at least 1 SE, and MIN_WINS winning years
@@ -509,7 +509,7 @@ def verdict_line(v):
         return f"Neither expected to pay ({nums})."
     if w_ == "close":
         return f"Close, either one: about {usd(abs(v['diff']))} apart, too small or too uncertain to call ({nums})."
-    note = (" Capped at Leans: this crop borrows corn&rsquo;s price swings." if v.get("borrowed") and w_.startswith("lean_") else "") + \
+    note = (" Capped at Leans: too little price history of its own." if v.get("borrowed") and w_.startswith("lean_") else "") + \
            (" Not a clear pick: a futures-based price start gives a different call." if v.get("alt_down") else "")
     if w_.startswith("lean_"):
         side = w_[5:]
@@ -531,19 +531,14 @@ def verdict_line(v):
 # Higher packs and the math file carry no cents for them), and the call, the
 # year counts, the trigger yield and the PLC price line stay. A typed price is
 # the reader's own and shows its dollars as before.
-BOR_NOTE = "no dollar figure, because the price swings are borrowed from corn&rsquo;s"
+BOR_NOTE = "no dollar figure for this crop"
+BOR_LINE = "This crop has too little price history of its own, so the call stops at Leans and no dollar figure is printed."
 
 
 def bor_why(lc, few=False):
     """The plain reason the dollars are not printed, for crop lc. few: too few years of the crop's own
     prices, so it runs on corn's swings outright (corn_oct); else its own changes sized to corn's."""
-    pl = lc.endswith("s")
-    its, has = ("their", "have") if pl else ("its", "has")
-    if few:
-        return (f"{lc[0].upper() + lc[1:]} {has} too few years of {its} own prices in FSA&rsquo;s tables, so {its} price swings are corn&rsquo;s, "
-                f"and the expected dollars would rest on them. We do not print them.")
-    return (f"{lc[0].upper() + lc[1:]} {has} no October futures history of {its} own on file, so "
-            f"{its} price swings are borrowed from corn&rsquo;s, and the expected dollars would rest on them. We do not print them.")
+    return BOR_LINE
 
 
 def verdict_line_borrowed(v):
@@ -554,7 +549,7 @@ def verdict_line_borrowed(v):
         return f"Neither expected to pay ({nums})."
     if w_ == "close":
         return f"Close, either one: too small or too uncertain to call ({nums})."
-    note = (" Capped at Leans: this crop borrows corn&rsquo;s price swings." if w_.startswith("lean_") else "") + \
+    note = (" Capped at Leans: too little price history of its own." if w_.startswith("lean_") else "") + \
            (" Not a clear pick: a futures-based price start gives a different call." if v.get("alt_down") else "")
     if w_.startswith("lean_"):
         side = w_[5:]
@@ -2480,7 +2475,7 @@ def why_text(v, cd, by, py):
     return (f"PLC pays on any season-average price below {XC.pf(cd, erp)}, up to {usd(max_plc)} per base acre at the {XC.pf(cd, loan)} loan rate, so it "
             f"protects against a deep price drop. ARC-CO is capped at {usd(max_arc)} per base acre but also pays when the county&rsquo;s "
             f"yield is short; it paid something in {short} of the {v['n']} past-year scenarios. With prices centered at {XC.pf(cd, center)}, "
-            + (f"the expected payments are not printed. {bor_why(cd['label'].lower(), (cd.get('scen') or {}).get('kind') == 'corn_oct')}"
+            + ("the expected payments are not printed: too little price history of its own."
                if v.get("nousd") else f"PLC is expected to pay {usd_pay(v['plc'])} and ARC-CO {usd_pay(v['arc'])} per base acre."))
 
 
@@ -2661,7 +2656,7 @@ def gap_line(v, lc, y, cd, by=None):
         t = f"{WORD[side]} leads across the {v['n']} price years we ran, but that swings from year to year."
         if ow == 0:
             t += f" {WORD[other]} did not come out ahead in any of them."
-        t += " " + bor_why(lc, v.get("bor_few")) + (" So it stops at Leans." if w.startswith("lean_") else "")
+        t += " " + bor_why(lc, v.get("bor_few"))
         if v.get("alt_down"):
             t += " A futures-based price start gives a different answer, so it stops at Leans."
         return t
@@ -2675,7 +2670,7 @@ def gap_line(v, lc, y, cd, by=None):
         if ow == 0:
             t += f" {WORD[other]} did not come out ahead in any of the {v['n']} price years we ran."
         if v.get("borrowed"):
-            t += f" {lc[0].upper() + lc[1:]} {'borrow' if lc.endswith('s') else 'borrows'} corn&rsquo;s price swings, so {'they stop' if lc.endswith('s') else 'it stops'} at Leans."
+            t += " " + BOR_LINE
         if v.get("alt_down"):
             t += " A futures-based price start gives a different answer, so it stops at Leans."
         return t
@@ -4101,22 +4096,21 @@ def selftest():
     ck("borrowed spread caps a Pick at Leans", scen_call(10, 0, 10, 1, 8, 0, 10, borrowed=True) == "lean_plc")
     # money audit 3 (2026-10-19), Sumner Co., KS non-irrigated wheat 2026 as the build had it: expected $6.76 PLC vs
     # $6.64 ARC-CO on a spread borrowed from corn ($1.56 PLC with no spread at all). The call stays, the dollars go.
+    LINE9 = "This crop has too little price history of its own, so the call stops at Leans and no dollar figure is printed."
     sv = {"verdict": "close", "plc": 6.7625, "arc": 6.6431, "diff": 0.1194, "plc_wins": 3, "arc_wins": 3, "n": 11, "borrowed": True,
           "nousd": True, "rows": [{"arc": 1}] * 6 + [{"arc": 0}] * 5}
     ck("borrowed: verdict line keeps the call and year counts, prints no dollars",
        verdict_line(sv) == ("Close, either one: too small or too uncertain to call (PLC paid more in 3 of 11 past-year scenarios, ARC-CO in 3; "
-                            "no dollar figure, because the price swings are borrowed from corn&rsquo;s).") and "$" not in verdict_line(sv))
+                            "no dollar figure for this crop).") and "$" not in verdict_line(sv))
     ck("borrowed: the card gives the reason, no dollars",
-       gap_line(sv, "wheat", "2026", {}) == ("Too close to call. Wheat has no October futures history of its own on file, so its price swings are "
-                                             "borrowed from corn&rsquo;s, and the expected dollars would rest on them. We do not print them."))
+       gap_line(sv, "wheat", "2026", {}) == "Too close to call. " + LINE9)
     sl = dict(sv, verdict="lean_plc", diff=4.2, plc_wins=7, arc_wins=0)
     ck("an unmarked verdict prints dollars", "$" in verdict_line(dict(sv, nousd=False)))
-    ck("too few years: the reason says corn's swings outright",
-       gap_line(dict(sv, bor_few=True), "barley", "2026", {}) == ("Too close to call. Barley has too few years of its own prices in FSA&rsquo;s tables, "
-                                                                 "so its price swings are corn&rsquo;s, and the expected dollars would rest on them. We do not print them."))
+    ck("too few years: the same one plain line, no method",
+       gap_line(dict(sv, bor_few=True), "barley", "2026", {}) == "Too close to call. " + LINE9 and "corn" not in LINE9.lower() and "borrow" not in LINE9.lower())
     ck("borrowed lean: leader named, no dollars, stops at Leans",
-       "$" not in gap_line(sl, "dry peas", "2026", {}) and "Dry peas have no October futures history of their own" in gap_line(sl, "dry peas", "2026", {})
-       and gap_line(sl, "dry peas", "2026", {}).endswith("So it stops at Leans.") and "$" not in verdict_line(sl))
+       "$" not in gap_line(sl, "dry peas", "2026", {}) and LINE9 in gap_line(sl, "dry peas", "2026", {})
+       and gap_line(sl, "dry peas", "2026", {}).endswith(LINE9) and "$" not in verdict_line(sl))
     own = dict(sv, borrowed=False, nousd=False)
     ck("a crop's own spread still prints its dollars", "$6.76 PLC vs $6.64 ARC-CO" in verdict_line(own)
        and gap_line(own, "wheat", "2026", {}) == "They come out less than $1 apart per base acre.")
