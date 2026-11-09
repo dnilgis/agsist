@@ -524,7 +524,10 @@ def seo_quick_stats(c):
     title = (f"Corn & Soybean Yield per Acre by State: "
              f"{kind.replace('forecast', 'Forecast').replace('final', 'Final')}{SUFFIX}")
     if len(title) > TITLE_MAX:
-        title = f"Corn & Soybean Yield per Acre by State: USDA {ia.get('year')}{SUFFIX}"
+        # Nov 9 2026 panel: the short form dropped "Forecast" and called the
+        # October forecast "USDA 2026". It keeps the vintage word.
+        title = (f"Corn & Soybean Yield per Acre by State: {ia.get('year')} "
+                 f"{'Forecast' if ia.get('forecast') else 'Final'}{SUFFIX}")
     corn = _qs_top(ss, ia, "corn", 3)
     # 2026-10-17: three soybean states, not one. Search Console, Jul 15 to Oct 14:
     # "average soybean yield per acre by state" drew 406 impressions at position
@@ -572,6 +575,76 @@ def body_quick_stats(c):
     if beans:
         out += "; soybeans " + ", ".join(f"{nm} {v:g}" for nm, v in beans) + " bu/ac"
     return out + "."
+
+
+def _qs_combined(k, v):
+    return bool(v.get("combined")) or str(v.get("name") or k).strip().lower() in ("other states", "other", "ot")
+
+
+def body_qs_top10(c):
+    """The corn rows of the Top producing states list, as the page script
+    draws them (rankStates in usda-quick-stats.html), so a reader without
+    JavaScript and a crawler see the yields. The script redraws the list."""
+    ss = ((c["state_stats"] or {}).get("stateStats")) or {}
+    rows = [dict(name=v.get("name") or k, prod=v.get("corn_prod"), yld=v.get("corn_yield"), year=v.get("year"),
+                 fc=bool(v.get("forecast")), fm=v.get("forecast_month"))
+            for k, v in ss.items() if isinstance(v, dict) and not _qs_combined(k, v)]
+    rows = [r for r in rows if r["prod"] is not None and r["prod"] > 0]
+    rows.sort(key=lambda r: -r["prod"])
+    rows = rows[:10]
+    if not rows:
+        raise ValueError("no corn production in state-stats.json")
+    yc = {}
+    for r in rows:
+        if r["year"]:
+            yc[r["year"]] = yc.get(r["year"], 0) + 1
+    modal = max(yc, key=lambda y: yc[y]) if yc else None
+    top = rows[0]["prod"]
+    out = []
+    for i, r in enumerate(rows):
+        pct = max(2, r["prod"] / top * 100)
+        y = f' <small class="ts-y">{r["yld"]:g} bu/ac</small>' if r["yld"] is not None else ""
+        if r["fc"]:
+            what = f"USDA NASS {r['fm']} forecast" if r["fm"] else "USDA NASS in-season forecast"
+            f = f' <small class="ts-fc" title="{what}, not a final estimate">{r["year"] or ""} est.</small>'
+        elif r["year"] and modal and r["year"] != modal:
+            f = f' <small class="ts-fc" title="A different crop year from most states in this list">{r["year"]} final</small>'
+        else:
+            f = ""
+        out.append(f'<div class="ts-row"><div class="ts-rank"><span>{i + 1}</span><b>{esc(str(r["name"]))}</b>{f}</div>'
+                   f'<div class="ts-bar-track"><div class="ts-bar" style="width:{pct:.1f}%"></div></div>'
+                   f'<div class="ts-val">{r["prod"]:,.0f} <small>M bu</small>{y}</div></div>')
+    return "".join(out)
+
+
+def qs_coverage(c):
+    """JSON-LD temporalCoverage for /usda-quick-stats: the first year of the
+    finals series to the newest crop year the page shows (a 2026 forecast
+    counts: the page prints it, labelled)."""
+    ny = c.get("nass_years")
+    ss = ((c["state_stats"] or {}).get("stateStats")) or {}
+    ys = [y for v in ss.values() if isinstance(v, dict) for y in (v.get("year"), v.get("wheat_year"))
+          if isinstance(y, int)]
+    if not ny or not ys:
+        return None
+    return f"{ny[0]}/{max(max(ys), ny[1])}"
+
+
+_COV = re.compile(r'("temporalCoverage"\s*:\s*")(\d{4})/(\d{4})(")')
+
+
+def stamp_coverage(text, cov):
+    """(text, n): temporalCoverage set to cov; the end year only moves forward."""
+    n = 0
+
+    def sub(m):
+        nonlocal n
+        a, b = cov.split("/")
+        if int(b) <= int(m.group(3)):
+            return m.group(0)
+        n += 1
+        return m.group(1) + a + "/" + b + m.group(4)
+    return _COV.sub(sub, text), n
 
 
 def seo_cond_yield(c):
@@ -1327,7 +1400,7 @@ BODY = {
     "wheat-futures-prices.html": ("futures-h1", body_h1(H1_WHEAT)),
     CATTLE_PAGE: ("cattle-h1", body_h1(H1_CATTLE)),
     "usda-calendar.html": ("next-wasde", body_usda_calendar),
-    "usda-quick-stats.html": ("state-yields", body_quick_stats),
+    "usda-quick-stats.html": [("state-yields", body_quick_stats), ("state-top10", body_qs_top10)],
     "fertilizer.html": ("fert-bar", body_fertilizer),
     "breakeven.html": [("be-example", body_breakeven), ("be-faq", body_be_faq), ("be-total", body_be_total),
                        ("be-cpb", body_be_cpb, True)],
@@ -1520,6 +1593,12 @@ def run(today, dry=False, only=None):
                 print(f"  faq   {q}")
             if bad:
                 skipped.append((page, bad)); continue
+        if page == "usda-quick-stats.html":
+            cov = qs_coverage(ctx)
+            if cov:
+                out, k = stamp_coverage(out, cov)
+                if k:
+                    print(f"  temporalCoverage -> {cov}")
         if page in DATE_MODIFIED:
             iso = DATE_MODIFIED[page](ctx)
             if iso:
@@ -1901,6 +1980,41 @@ def selftest():
     ck("usda-quick-stats.html JSON-LD has a dateModified to stamp", _DM.search(_qp) is not None)
     ck("usda-quick-stats.html carries the state-yields markers",
        bake_body(_qp, "state-yields", "x")[1])
+    # Nov 9 2026 panel, the real case: Iowa on the USDA October 2026 forecast.
+    # "USDA October 2026 Forecast" runs over the cap, and the short title
+    # used to read "USDA 2026", dropping the word Forecast.
+    _oct = {"stateStats": {"IA": {"name": "Iowa", "corn_yield": 219.0, "corn_prod": 2803, "bean_yield": 63.0,
+                                  "bean_prod": 613, "year": 2026, "forecast": True, "forecast_month": "October"},
+                           "IL": {"name": "Illinois", "corn_yield": 208.0, "corn_prod": 2278, "bean_yield": 68.0,
+                                  "bean_prod": 709, "year": 2026, "forecast": True, "forecast_month": "October"},
+                           "NJ": {"name": "New Jersey", "corn_yield": None, "corn_prod": None, "year": 2025},
+                           "OT": {"name": "Other States", "corn_prod": 50, "year": 2026, "combined": True},
+                           "PA": {"name": "Pennsylvania", "corn_yield": 150.0, "corn_prod": 140, "year": 2025,
+                                  "forecast": False},
+                           "KS": {"name": "Kansas", "corn_prod": 819, "corn_yield": 125.0, "year": 2026,
+                                  "forecast": True, "forecast_month": "October", "wheat_year": 2026}}}
+    _to = seo_quick_stats(dict(ctx, state_stats=_oct))[0]
+    ck("the short quick stats title keeps Forecast",
+       _to == "Corn & Soybean Yield per Acre by State: 2026 Forecast | AGSIST" and len(_to) <= TITLE_MAX, _to)
+    _tf = seo_quick_stats(dict(ctx, state_stats={"stateStats": {"IA": dict(_oct["stateStats"]["IA"], year=2026,
+                                                                         forecast=False, forecast_month=None)}}))[0]
+    ck("a final keeps Final", _tf.endswith("2026 Final | AGSIST") and "Forecast" not in _tf, _tf)
+    _t10 = body_qs_top10(dict(ctx, state_stats=_oct))
+    ck("top-10 rows: by production, yields shown, forecasts marked, the group and empty states left out",
+       _t10.count('class="ts-row"') == 4 and _t10.index("Iowa") < _t10.index("Illinois") < _t10.index("Kansas")
+       < _t10.index("Pennsylvania") and '<small class="ts-y">219 bu/ac</small>' in _t10
+       and "2026 est." in _t10 and "USDA NASS October forecast" in _t10 and "2025 final" in _t10
+       and "Other States" not in _t10 and "New Jersey" not in _t10 and "2,803 <small>M bu</small>" in _t10, _t10)
+    ck("usda-quick-stats.html carries the state-top10 markers inside the list",
+       bake_body(_qp, "state-top10", "x")[1] and re.search(r'id="ts-list">\s*<!--BAKE:state-top10-->', _qp) is not None)
+    ck("coverage runs to the newest crop year shown",
+       qs_coverage(dict(ctx, nass_years=(2010, 2025), state_stats=_oct)) == "2010/2026")
+    _ld = '"temporalCoverage":"2010/2025"'
+    ck("coverage stamps forward and never back",
+       stamp_coverage(_ld, "2010/2026") == ('"temporalCoverage":"2010/2026"', 1)
+       and stamp_coverage('"temporalCoverage":"2010/2027"', "2010/2026")[1] == 0)
+    ck("quick stats JSON-LD has no distribution (the CSV is built in the browser)",
+       '"distribution"' not in _qp and _COV.search(_qp) is not None)
 
     # THE 2026-08-17 BUG. Day one of the tour, nothing announced yet, and the
     # title said "Night 1 Results". Every assertion below is on the state that
