@@ -1451,23 +1451,13 @@ def sales_state(W, st):
 
 
 # The land sales door (Sig, Oct 29, 2026: "the farmland sale page should be easy to find"). One
-# line in every county's Land card. A state with sales on /land-sales/ links the county's own page
-# there, only when that page is on disk (scripts/build_land_sales.py writes one per county with
-# sales; the county comes from data/land-sales/<st>.json by FIPS, never guessed from the name). Any
-# other state says where it stands, in the words of data/land-sales/coverage.json (kept by hand),
-# and links the state table on /land-sales/#coverage. test/land-nav.test.mjs checks every page.
+# line in the county's Land card, only where it helps. A state with sales on /land-sales/ links the
+# county's own page there, only when that page is on disk (scripts/build_land_sales.py writes one per
+# county with sales; the county comes from data/land-sales/<st>.json by FIPS, never guessed from the
+# name). A county in such a state with no sale of its own gets one neutral line to the farm sales
+# page. A state without sales prints nothing: no research status on a public page (Sig, Nov 8, 2026),
+# so data/land-sales/coverage.json is not read here. test/land-nav.test.mjs checks every page.
 LS_DIR = "land-sales"
-
-
-def land_sales_cov(W):
-    cache = W.__dict__.setdefault("_ls_cov", {})
-    if "rows" not in cache:
-        try:
-            cov = json.load(open(os.path.join(W.root, "data", LS_DIR, "coverage.json"), encoding="utf-8"))
-            cache["rows"] = {r["st"]: r for r in cov.get("states") or [] if r.get("st")}
-        except Exception:
-            cache["rows"] = None
-    return cache["rows"]
 
 
 def land_sales_file(W, st):
@@ -1492,34 +1482,13 @@ def land_sales_county(W, f, st):
     return "/%s/%s/%s" % (LS_DIR, ssl, c["slug"])
 
 
-def land_sales_words(row, stn):
-    """Plain words for a state without sales on the site, from its coverage row. The common lists
-    are not our own reading of the state law, so those states say "commonly listed"."""
-    s = (row or {}).get("status") or "unchecked"
-    src = (row or {}).get("source") or ""
-    if s == "nondisclosure":
-        if src.startswith("Commonly listed"):
-            return "%s is commonly listed as a state that does not make farm sale prices public record." % stn
-        return "No free public file of %s farm sale prices found." % stn
-    if s == "county":
-        return "%s sale records are public county by county; not on this site yet." % stn
-    if s == "request":
-        return "%s sale records come on request or for a fee; not on this site yet." % stn
-    if s in ("live", "held"):
-        return "%s sales are on file; none for this county yet." % stn
-    return "%s sale records: not checked yet." % stn
-
-
 def _land_sales_door(W, f, lab, st):
-    stn = STATE_NAMES.get(st, st)
     href = land_sales_county(W, f, st)
     if href:
         return '<p class="note" data-ls-door="county">Land sales: <a href="%s">Recorded sales in %s</a>, sale by sale.</p>' % (href, esc(lab))
-    rows = land_sales_cov(W)
-    if rows is None or not os.path.isfile(os.path.join(W.root, LS_DIR, "index.html")):
+    if not land_sales_file(W, st).get("counties") or not os.path.isfile(os.path.join(W.root, LS_DIR, "index.html")):
         return ""
-    return ('<p class="note" data-ls-door="state">Land sales: %s <a href="/%s/#coverage">Where each state stands</a>.</p>'
-            % (esc(land_sales_words(rows.get(st), stn)), LS_DIR))
+    return '<p class="note" data-ls-door="state">Farm sales by county: see the <a href="/%s/">farm sales page</a>.</p>' % LS_DIR
 
 
 # Land first (Sig, Oct 29, 2026: the property view is top priority; panel record
