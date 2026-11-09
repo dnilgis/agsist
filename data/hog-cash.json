@@ -1,20 +1,21 @@
 {
  "hogs": {
-  "report_date": "2026-11-06",
+  "report_date": "2026-11-09",
   "slaughter_dates": [
-   "2026-11-05"
+   "2026-11-06",
+   "2026-11-07"
   ],
   "negotiated": {
-   "head": 4529,
-   "base": 58.0,
-   "net": 56.2,
-   "carcass_wt": 226.15
+   "head": 11090,
+   "base": 53.91,
+   "net": 52.2,
+   "carcass_wt": 220.81
   },
   "total": {
-   "head": 241760,
-   "base": 64.02,
-   "net": 64.88,
-   "carcass_wt": 221.2
+   "head": 344251,
+   "base": 62.55,
+   "net": 63.71,
+   "carcass_wt": 222.22
   },
   "source": "USDA AMS, National Daily Direct Hog Prior Day Report - Slaughtered Swine (LM_HG201)"
  },
@@ -22,29 +23,29 @@
   "hogs": {
    "ok": true,
    "note": "",
-   "checked": "2026-11-09T15:26:09Z"
+   "checked": "2026-11-09T22:00:48Z"
   },
   "cutout": {
    "ok": true,
    "note": "",
-   "checked": "2026-11-09T15:26:09Z"
+   "checked": "2026-11-09T22:00:48Z"
   }
  },
  "cutout": {
-  "date": "2026-11-06",
-  "carcass": 70.65,
-  "loads": 292.4,
-  "change": 1.66,
+  "date": "2026-11-09",
+  "carcass": 70.81,
+  "loads": 335.96,
+  "change": 0.16,
   "primals": {
-   "loin": 71.77,
-   "butt": 98.57,
-   "picnic": 59.41,
-   "rib": 123.84,
-   "ham": 64.65,
-   "belly": 66.34
+   "loin": 75.49,
+   "butt": 96.32,
+   "picnic": 55.04,
+   "rib": 126.57,
+   "ham": 64.08,
+   "belly": 66.19
   },
   "source": "USDA AMS, National Daily Pork Report FOB Plant - Negotiated Sales - Afternoon (LM_PK602)"
  },
- "daily_line": "National negotiated cash hogs $58.00/cwt carcass base on 4,529 head (killed Nov 5); pork cutout $70.65/cwt on Nov 6. USDA AMS.",
- "updated": "2026-11-09T15:26:09Z"
+ "daily_line": "National negotiated cash hogs $53.91/cwt carcass base on 11,090 head (killed Nov 6-7); pork cutout $70.81/cwt on Nov 9. USDA AMS.",
+ "updated": "2026-11-09T22:00:48Z"
 }

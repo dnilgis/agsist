@@ -71,7 +71,7 @@ test("arc-plc: 10-acre rule, peanut limit, Childress title, trigger at the bench
 test("cash bids: Hold-to note says how the month is picked; Alabama listed; top-bid heading", () => {
   const b = read("scripts/build_cash_bid_pages.py");
   assert.ok(!b.includes("best later posted bid minus its nearest one"));
-  assert.match(b, /names the later month this elevator posts that comes out best once/);
+  assert.match(b, /names the later month that pays best once "\n\s+"storage and interest are taken off, net of /);   // curtain round 2: the carry arithmetic is cut; the pick is still explained, in the closed fold
   assert.match(b, /bids at the nearest delivery, starting \{ym_\}/);
   assert.match(read("cash-bids.html"), /<a href="\/cash-bids\/alabama\/">Alabama<\/a>/);
 });
