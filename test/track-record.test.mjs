@@ -128,14 +128,14 @@ test("in Chromium at 390 and 1280 px: the cards fit, no sideways scroll, Sources
         const box = document.getElementById("forecast-record").getBoundingClientRect();
         const cards = [...document.querySelectorAll("#forecast-record .tr-c")].map((c) => c.getBoundingClientRect());
         return { h: box.height, vis: document.querySelector("#forecast-record .tr-c").offsetHeight, vw: document.documentElement.clientWidth, sw: document.documentElement.scrollWidth, left: box.left, right: box.right,
-          cards: cards.map((r) => [r.left, r.right]), open: document.querySelector("#forecast-record details").open,
+          cards: cards.map((r) => [r.left, r.right]), open: ([...document.querySelectorAll("details")].find((d) => /^\s*Sources and terms\s*$/.test(d.querySelector("summary")?.textContent || "")) || {}).open,
           font: parseFloat(getComputedStyle(document.querySelector("#forecast-record .tr-c dd")).fontSize) };
       });
       assert.ok(m.h > 300 && m.vis > 80, `${width}px: the block is on screen (${m.h}, ${m.vis})`);
       assert.ok(m.sw <= m.vw, `${width}px: page scrolls sideways (${m.sw} > ${m.vw})`);
       for (const [l, r] of m.cards) assert.ok(l >= 0 && r <= m.vw, `${width}px: a card leaves the screen (${l}, ${r})`);
       if (width === 390) assert.ok(m.left >= 12 && m.vw - m.right >= 12, "a side gutter on the phone");
-      assert.equal(m.open, false);
+      assert.equal(m.open, false, "the page's one Sources and terms fold is there and closed");
       assert.ok(m.font >= 13, "readable on the phone");
       if (shots) {
         fs.mkdirSync(shots, { recursive: true });
