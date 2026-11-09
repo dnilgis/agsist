@@ -178,6 +178,8 @@ jobs:
           RP_BUYER_EMAIL_LIVE: ${{ vars.RP_BUYER_EMAIL_LIVE }}
           RP_DESIGN_EMAIL_LIVE: ${{ vars.RP_DESIGN_EMAIL_LIVE }}
           SEND_DAILY_CAP: ${{ vars.SEND_DAILY_CAP }}
+          BREVO_MONTHLY: ${{ vars.BREVO_MONTHLY }}
+          BREVO_RENEW_DAY: ${{ vars.BREVO_RENEW_DAY }}
         run: python3 scripts/cron_health.py --out private/data/cron-health.json
 
       - name: Save

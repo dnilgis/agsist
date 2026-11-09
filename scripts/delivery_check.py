@@ -75,6 +75,7 @@ from datetime import datetime, timedelta, timezone
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import delivery_line  # noqa: E402
 import send_cap  # noqa: E402  (the mail plan's daily cap: the send-volume row)
+import mail_budget  # noqa: E402  (the Brevo monthly allowance: the brevo-month row)
 from cron_gate import NOT_A_RUN  # noqa: E402
 
 UTC = timezone.utc
@@ -687,7 +688,9 @@ def delivery_rows(now, repo, token, api_url, environ=None, prev=None, api=None):
         if old and now - at < timedelta(hours=DELIVERY_EVERY_HOURS):
             vol = [send_cap.rejudge(w, now, environ) for w in (prev or {}).get("workflows") or []
                    if w.get("workflow") == send_cap.ROW]   # the cap variable may have changed since
-            return old + vol, prev["delivery_checked_at"]
+            mon = [mail_budget.rejudge_month(w, now, environ) for w in (prev or {}).get("workflows") or []
+                   if w.get("workflow") == mail_budget.MONTH_ROW]   # the allowance may have changed, and the clock moves
+            return old + vol + mon, prev["delivery_checked_at"]
     except Exception:                                      # noqa: BLE001
         pass
     if api is None:
@@ -724,6 +727,7 @@ def delivery_rows(now, repo, token, api_url, environ=None, prev=None, api=None):
             rows.append({"workflow": "delivery:" + wf, "critical": True, "clock": "reader email delivered",
                          "status": "unknown", "why": "could not read runs: %s" % str(ex)[:160]})
     rows.append(volume_row(now, read_cache, environ, prev))
+    rows.append(month_row(now, read_cache, environ, prev))
     return rows, now.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
@@ -751,6 +755,17 @@ def volume_row(now, read_cache, environ, prev=None):
                               daily7=send_cap.daily_history(prev_row, by))
     except Exception as ex:                                # noqa: BLE001
         return {"workflow": send_cap.ROW, "critical": True, "clock": "emails per UTC day under the mail plan's cap",
+                "status": "unknown", "why": "could not count: %s" % str(ex)[:160]}
+
+
+def month_row(now, read_cache, environ, prev=None):
+    """brevo-month (scripts/mail_budget.py): the Brevo monthly allowance, from the run lists this pass
+    already read and the days kept in the saved row. No API call of its own."""
+    try:
+        prev_row = next((w for w in (prev or {}).get("workflows") or [] if w.get("workflow") == mail_budget.MONTH_ROW), None)
+        return mail_budget.month_row(now, {wf: v[0] for wf, v in read_cache.items()}, environ, prev_row)
+    except Exception as ex:                                # noqa: BLE001
+        return {"workflow": mail_budget.MONTH_ROW, "critical": False, "clock": "emails since the renewal against the monthly allowance",
                 "status": "unknown", "why": "could not count: %s" % str(ex)[:160]}
 
 
@@ -1208,8 +1223,9 @@ def selftest():
     fa = FakeApi()
     rows, at = delivery_rows(now, "o/r", "t", "https://api", {"RP_DESIGN_EMAIL_LIVE": "1"}, api=fa)
     by = {r["workflow"]: r for r in rows}
-    ck("delivery_rows: one row per sender workflow, and the send-volume row",
-       len([r for r in rows if r["workflow"].startswith("delivery:")]) == len(SENDERS) and len(rows) == len(SENDERS) + 1
+    ck("delivery_rows: one row per sender workflow, the send-volume row and the brevo-month row",
+       len([r for r in rows if r["workflow"].startswith("delivery:")]) == len(SENDERS) and len(rows) == len(SENDERS) + 2
+       and mail_budget.MONTH_ROW in by
        and at == "2026-11-20T12:00:00Z", len(rows))
     vol = by.get(send_cap.ROW) or {}
     ck("send-volume: counted from the log read, a dry run counts 0, ok",
@@ -1236,7 +1252,9 @@ def selftest():
     prev = {"delivery_checked_at": at, "workflows": rows}
     fb = FakeApi()
     again, at2 = delivery_rows(now + timedelta(hours=2), "o/r", "t", "https://api", {}, prev=prev, api=fb)
-    ck("a pass two hours old is reused, no call made", again == rows and at2 == at and not fb.calls, fb.calls)
+    ck("a pass two hours old is reused, no call made",
+       [r for r in again if r["workflow"] != mail_budget.MONTH_ROW] == [r for r in rows if r["workflow"] != mail_budget.MONTH_ROW]
+       and any(r["workflow"] == mail_budget.MONTH_ROW for r in again) and at2 == at and not fb.calls, fb.calls)
     again, at3 = delivery_rows(now + timedelta(hours=DELIVERY_EVERY_HOURS), "o/r", "t", "https://api", {}, prev=prev, api=fb)
     ck("a pass six hours old is redone", fb.calls and at3 != at)
     ck("no token: one unknown row, not critical", delivery_rows(now, "o/r", "", "https://api", {})[0][0]["status"] == "unknown")

@@ -875,6 +875,22 @@ def add_delivery_rows(now, rows, late, repo, token, api, prev, environ=None, fak
     return rows, late, at
 
 
+def add_pending_row(now, rows, late, prev, token, fake=None):
+    """signups-waiting (scripts/mail_budget.py): backup-form signups left 'pending' over 24 h. Fail soft."""
+    rows, late = list(rows), list(late)
+    prev_row = next((w for w in (prev or {}).get("workflows") or [] if w.get("workflow") == "signups-waiting"), None)
+    try:
+        import mail_budget
+        row = mail_budget.pending_row(now, token, prev_row, **(fake or {}))
+    except Exception as e:
+        row = {"workflow": "signups-waiting", "critical": False, "clock": "backup-form signups not left pending",
+               "status": "unknown", "why": "check could not run: %s" % type(e).__name__}
+    rows.append(row)
+    if row.get("status") == "late":
+        late.append(row["workflow"])
+    return rows, late
+
+
 def should_commit(prev, doc, now):
     if not prev:
         return True
@@ -887,6 +903,10 @@ def should_commit(prev, doc, now):
         return True    # when each engine file started to differ is kept, so the 2 h clock runs from then
     if doc.get("delivery_checked_at") != prev.get("delivery_checked_at"):
         return True    # a new pass over the run logs is kept, so the next runs reuse it
+    kept = lambda d: [(r.get("workflow"), r.get("days") if r.get("workflow") == "brevo-month" else r.get("checked_at"))
+                      for r in d.get("workflows", []) if r.get("workflow") in ("brevo-month", "signups-waiting")]
+    if kept(doc) != kept(prev):
+        return True    # the month's day counts and the pending-signups pass are kept, so the next runs build on them
     share = lambda d: next((r.get("checked_at") for r in d.get("workflows", []) if r.get("workflow") == "agsist-data-images"), None)
     if share(doc) != share(prev):
         return True    # the day's share image check is kept, so it runs once a day
@@ -914,6 +934,7 @@ def main(argv):
     except Exception:
         prev = None
     rows, late, checked_at = add_delivery_rows(now, rows, late, repo, token, api, prev)
+    rows, late = add_pending_row(now, rows, late, prev, os.environ.get("PRIVATE_REPO_TOKEN", ""))
     rows, late = add_drift_row(now, rows, late, prev)
     rows, late = add_share_row(now, rows, late, prev)
     rows, late = add_prediction_row(now, rows, late)
@@ -1047,6 +1068,7 @@ def selftest():
     check(len([r for r in rows if r["workflow"].startswith("delivery:")]) == len(DC.SENDERS) and at,
           "one delivery row per sender workflow, and the pass time kept")
     check("delivery:price-watch.yml" not in late, "a sender with nothing read is not late")
+    first_rows = rows
     vol = next((r for r in rows if r["workflow"] == "send-volume"), {})
     check(vol.get("status") == "ok" and vol.get("cap") == 300 and "send-volume" not in late,
           "send-volume: one row, the cap defaults to 300, a dry run counts nothing (%s)" % vol.get("why"))
@@ -1069,6 +1091,33 @@ def selftest():
           "with SEND_DAILY_CAP=10000 the reused 290 is ok, no new pass needed")
     rows, late, at = add_delivery_rows(T("2026-11-20 12:00"), [], [], "o/r", "", "https://api", None, environ={})
     check(rows[0]["status"] == "unknown" and not late and at is None, "no token: one unknown row, nothing late")
+
+    # Nov 9: the Brevo monthly allowance and the backup-form signups waiting (scripts/mail_budget.py holds the cases)
+    import mail_budget as MB
+    check(MB.selftest() == 0, "mail_budget selftest passes")
+    mon = next((r for r in first_rows if r["workflow"] == "brevo-month"), {})
+    check(mon.get("allowance") == 5000 and mon.get("renew_day") == 9 and mon.get("status") in ("ok", "unknown"),
+          "a pass adds one brevo-month row on the defaults, 5000 and the 9th (%s)" % mon.get("why"))
+    prev_m = {"delivery_checked_at": "2026-11-11T22:00:00Z", "workflows": [{"workflow": "delivery:daily.yml", "status": "ok"},
+              MB.judge_month({"2026-11-09": 160, "2026-11-10": 160, "2026-11-11": 160}, "2026-11-09", T("2026-11-12 00:00"), 5000, 9, logs=3)]}
+    rows, late, at = add_delivery_rows(T("2026-11-12 00:00"), [], [], "o/r", "t", "https://api", prev_m, environ={}, fake_api=_Api())
+    check(next(r for r in rows if r["workflow"] == "brevo-month")["status"] == "late" and "brevo-month" in late,
+          "a reused pass: 480 in 3 days projects 96%, red and in the late list")
+    rows, late, at = add_delivery_rows(T("2026-11-12 00:00"), [], [], "o/r", "t", "https://api", prev_m, environ={"BREVO_MONTHLY": "25000"}, fake_api=_Api())
+    check(next(r for r in rows if r["workflow"] == "brevo-month")["status"] == "ok" and not late, "BREVO_MONTHLY=25000 clears it")
+    sg = {"get_json": lambda u, t: [{"type": "file", "name": "pending-signups.jsonl", "sha": "s"}],
+          "get_raw": lambda u, t: '{"status": "pending", "ts": "2026-11-18T09:00:00Z"}\n'}
+    rows, late = add_pending_row(T("2026-11-20 12:00"), [], [], None, "k", sg)
+    check(rows[0]["workflow"] == "signups-waiting" and rows[0]["status"] == "warn" and not late and rows[0]["pending"] == 1,
+          "add_pending_row: a pending record over 24 h warns and is not critical (%s)" % rows[0].get("why"))
+    rows, late = add_pending_row(T("2026-11-20 12:00"), [], [], None, "", None)
+    check(rows[0]["status"] == "unknown" and not late, "no key: unknown, nothing late")
+    doc0 = build(T("2026-11-20 12:00"), [{"workflow": "signups-waiting", "status": "ok", "checked_at": "2026-11-20T06:00:00Z"}], [])
+    doc1 = build(T("2026-11-20 12:30"), [{"workflow": "signups-waiting", "status": "ok", "checked_at": "2026-11-20T12:00:00Z"}], [])
+    check(should_commit(doc0, doc1, T("2026-11-20 12:30")), "a new pending-signups pass is kept so the next runs reuse it")
+    m0 = build(T("2026-11-20 12:00"), [{"workflow": "brevo-month", "status": "ok", "days": {"2026-11-20": 5}}], [])
+    m1 = build(T("2026-11-20 12:30"), [{"workflow": "brevo-month", "status": "ok", "days": {"2026-11-20": 9}}], [])
+    check(should_commit(m0, m1, T("2026-11-20 12:30")), "a changed day count is kept")
 
     # every gated workflow in CHECKS has a gate step this can read
     for wf in sorted(GATED):
