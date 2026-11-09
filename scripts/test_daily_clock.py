@@ -92,8 +92,9 @@ def main():
        "a 4-4 tie of clocks goes to corn's, every run: %r" % board[:80])
     s9 = strip(n9)
     ok([(q["key"], q["contract"], q.get("kind")) for q in s9["quotes"]]
-       == [("corn-dec", "Dec '26", "last"), ("beans", "Jan '27", "last"), ("wheat", "nearby", "last")],
-       "Nov 9 strip shows Jan beans, a last trade: %s" % s9["quotes"])
+       == [("corn-dec", "Dec '26", "last"), ("beans", "Jan '27", "last"), ("wheat", "Dec '26", "last")],
+       "Nov 9 strip shows Jan beans, a last trade, and names wheat's month as the board does: %s" % s9["quotes"])
+    ok("Wheat, Dec '26" in board, "the email board names the same wheat month as the strip")
     # the Oct 30 issue (first notice day, nearby not yet named in the lock) keeps one Nov '26 row
     s30 = strip(load("2026-10-30"))
     ok([q["key"] for q in s30["quotes"]] == ["corn-dec", "beans-nov", "wheat"], "no month named: the strip keeps Nov beans")
@@ -107,10 +108,20 @@ def main():
     ok(4.4725 not in ser["corn"] and 4.405 not in ser["corn"], "no overnight trade in the chart: %s" % ser["corn"])
     ok(n5["chart_dates"][-1] == "2026-11-05" and n5["chart_series"]["corn"][-1] == 4.4725,
        "fixture: the published Nov 5 chart put the trade on Nov 5")
-    ser9, days9 = G.build_chart_series(n9["locked_prices"], False, today_locked_changes=n9["locked_changes"],
-                                       archive_dir=os.path.join(REPO, "data", "daily-archive"), today_iso="2026-11-09")
-    ok(days9[-1] == "2026-11-06" and ser9["soybeans"][-1] == 11.9375 and ser9["corn"][-1] == 4.415,
-       "Nov 9 chart: Friday's settles, Jan beans: %s %s" % (days9, ser9))
+    ser9, days9, own9 = G.build_chart_series(n9["locked_prices"], False, today_locked_changes=n9["locked_changes"],
+                                             archive_dir=os.path.join(REPO, "data", "daily-archive"), today_iso="2026-11-09",
+                                             with_dates=True)
+    ok(own9["corn"][-1] == own9["soybeans"][-1] == "2026-11-06" and ser9["soybeans"][-1] == 11.9375 and ser9["corn"][-1] == 4.415,
+       "Nov 9 chart: Friday's settles, Jan beans: %s %s" % (own9, ser9))
+    ok(len(ser9["corn"]) >= 8 and days9 == own9["corn"],
+       "a short Jan bean history never cuts corn's Dec history: corn %d points" % len(ser9["corn"]))
+    ok(own9["soybeans"][0] >= "2026-11-03" and len(ser9["soybeans"]) == len(own9["soybeans"]),
+       "beans plot only Jan settles (the lock named Jan from the Nov 4 issue): %s" % own9["soybeans"])
+    for d in ("2026-11-04", "2026-11-05"):
+        dd = load(d)
+        sd, _dd = G.build_chart_series(dd["locked_prices"], False, today_locked_changes=dd["locked_changes"],
+                                       archive_dir=os.path.join(REPO, "data", "daily-archive"), today_iso=d)
+        ok(len(sd.get("corn", [])) >= 8, "%s chart keeps corn's history: %d points" % (d, len(sd.get("corn", []))))
     pw = A.windows_text(A.price_windows("2026-11-09", s9["quotes"], n9["locked_changes"],
                                         os.path.join(REPO, "data", "daily-archive")))
     ok(pw == ["Month to date: Corn −6 1/4¢ (−1.40%)"],

@@ -1082,7 +1082,7 @@ def load_past_dailies(num_days=3):
 
 
 def build_chart_series(today_locked_prices, today_market_closed=False, num_days=9,
-                       today_locked_changes=None, archive_dir=None, today_iso=None):
+                       today_locked_changes=None, archive_dir=None, today_iso=None, with_dates=False):
     """The last briefing-morning locks, one point per TRADING day, one CONTRACT
     per series, full precision — plus the dates, so the window can be printed.
 
@@ -1116,9 +1116,14 @@ def build_chart_series(today_locked_prices, today_market_closed=False, num_days=
       nearby (Jan beans after Oct 30 2026); a nearby key is charted only on
       issues whose lock names the same month.
 
-    Returns (series, dates): series maps name -> [floats], dates is ISO per
-    point (a settle session), shared by all series. ({}, []) when fewer than
-    2 points survive.
+    - EACH SERIES ON ITS OWN DATES (2026-11-09 checker). A short Jan bean
+      history never cuts corn's Dec history: each series keeps every settle
+      of its own contract, so the two may differ in length.
+
+    Returns (series, dates): series maps name -> [floats]; dates is the ISO
+    settle date per point of the longest series (the window label). With
+    with_dates=True a third value maps name -> its own dates. A series with
+    fewer than 2 points is left out; ({}, []) when none has 2.
     """
     archive_dir = Path(archive_dir) if archive_dir else REPO_ROOT / "data" / "daily-archive"
     index_path = archive_dir / "index.json"
@@ -1172,10 +1177,16 @@ def build_chart_series(today_locked_prices, today_market_closed=False, num_days=
         take(b.get("locked_prices") or {}, b.get("locked_changes") or {}, strip_c)
     take(lp_today, lc_today, {})
     rows = [(d, v) for d, v in sorted(pts.items()) if d < today_iso or (d == today_iso and not today_market_closed)]
-    rows = [(d, v) for d, v in rows if len(v) == len(key_map)][-(num_days + 1):]
-    if len(rows) < 2: return {}, []
-    return ({name: [v[name] for _, v in rows] for name in key_map},
-            [d for d, _ in rows])
+    series, own = {}, {}
+    for name in key_map:
+        mine = [(d, v[name]) for d, v in rows if name in v][-(num_days + 1):]
+        if len(mine) >= 2:
+            series[name] = [x for _, x in mine]
+            own[name] = [d for d, _ in mine]
+    if not series:
+        return ({}, [], {}) if with_dates else ({}, [])
+    dates = max(own.values(), key=len)
+    return (series, dates, own) if with_dates else (series, dates)
 
 
 def _chart_window_label(dates):
@@ -1242,7 +1253,8 @@ def build_quote_strip(locked_prices, locked_changes, board):
             parts = label.rsplit(" ", 2)
             contract = f"{parts[1]} {parts[2]}" if len(parts) == 3 else key.split("-", 1)[1].capitalize()
         else:
-            contract = ch.get("contract") if base in ("corn", "beans") and ch.get("contract") else "nearby"
+            # the lock's own month for the nearby (wheat Dec '26), as the email board names it
+            contract = ch.get("contract") or "nearby"
         q = {"key": key, "name": name, "contract": contract,
              "last": last, "prev": prev, "pct": pct}
         # 2026-10-17: the strip says settle or last trade per quote (fetch_prices
@@ -6328,11 +6340,13 @@ def main():
             print("  From Sig: note in place")
     except Exception as _e:
         print(f"  [warn] Only on AGSIST skipped ({type(_e).__name__}: {_e})")
-    chart_series, chart_dates = build_chart_series(
-        locked_prices, briefing.get("market_closed") is True, today_locked_changes=briefing["locked_changes"])
+    chart_series, chart_dates, chart_series_dates = build_chart_series(
+        locked_prices, briefing.get("market_closed") is True, today_locked_changes=briefing["locked_changes"],
+        with_dates=True)
     if chart_series:
         briefing["chart_series"] = chart_series
         briefing["chart_dates"] = chart_dates
+        briefing["chart_series_dates"] = chart_series_dates
         briefing["chart_window"] = _chart_window_label(chart_dates)
         print(f"  Chart series: { {k: len(v) for k, v in chart_series.items()} }"
               f" over {briefing['chart_window']} ({len(chart_dates)} trading days)")
