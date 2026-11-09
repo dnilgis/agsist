@@ -1,6 +1,6 @@
 {
  "schema": "agsist-daily-edge/1",
- "generated": "2026-11-08T11:54:56Z",
+ "generated": "2026-11-09T11:47:32Z",
  "label": "Only on AGSIST",
  "note": "From the elevator boards AGSIST reads.",
  "facts": [
@@ -41,58 +41,69 @@
    "frozen_from": "2026-11-07"
   },
   {
-   "id": "basis_spread_corn",
+   "id": "over_futures_corn",
    "crop": "corn",
-   "kind": "basis_spread",
-   "sentence": "Corn basis on Nov 8 ran from 55¢ over December futures in Texas to 90¢ under in North Dakota, state medians of the elevators AGSIST read at 4:17 a.m. CT.",
-   "key": "55¢ over December futures",
-   "detail": "Median of 17 elevators in Texas, 49 in North Dakota. 15 states with 15 or more. USDA's North Dakota average on Nov 6: 88 under Dec (USDA AMS, North Dakota Daily Grain Bids, Nov 6, 2026).",
-   "value": 145.0,
-   "unit": "cents per bushel between the strongest and weakest state median",
-   "comparison": "state median basis against ZCZ26, states with 15+ elevators",
-   "n": 1667,
-   "states_n": 15,
-   "high": [
+   "kind": "over_futures",
+   "sentence": "Of 1,763 elevators AGSIST reads with a fresh corn bid on Nov 9, 171 were paying over futures, most of them in Kansas (34).",
+   "key": "171 were paying over futures",
+   "detail": "1,564 under futures, 28 even. Each board against the futures month it names.",
+   "value": 171,
+   "unit": "elevators bidding over futures",
+   "comparison": "basis now on each board's nearest open delivery, boards posted within 36 hours",
+   "n": 1763,
+   "over": 171,
+   "under": 1564,
+   "even": 28,
+   "states": [
+    {
+     "state": "KS",
+     "name": "Kansas",
+     "n": 34
+    },
+    {
+     "state": "CO",
+     "name": "Colorado",
+     "n": 25
+    },
+    {
+     "state": "NE",
+     "name": "Nebraska",
+     "n": 21
+    },
     {
      "state": "TX",
      "name": "Texas",
-     "median": 0.55,
      "n": 17
-    }
-   ],
-   "low": [
+    },
     {
-     "state": "ND",
-     "name": "North Dakota",
-     "median": -0.9,
-     "n": 49
+     "state": "IN",
+     "name": "Indiana",
+     "n": 15
     }
    ],
-   "contract": "ZCZ26",
-   "as_of": "2026-11-08",
-   "snapshot": "2026-11-08T10:17:58Z",
-   "source": "AGSIST elevator network, state median basis (scripts/basis_method.py, data/basis-states.json)",
-   "url": "/basis",
-   "link_text": "Basis by state"
+   "as_of": "2026-11-09",
+   "source": "AGSIST elevator network, live board basis (merged-index.json)",
+   "url": "/cash-bids",
+   "link_text": "Cash bids near you"
   },
   {
    "id": "basis_spread_soybeans",
    "crop": "soybeans",
    "kind": "basis_spread",
-   "sentence": "Soybean basis on Nov 8 ran from 24¢ under January futures in Missouri to 95¢ under in North Dakota and Wisconsin, state medians of the elevators AGSIST read at 4:17 a.m. CT.",
-   "key": "24¢ under January futures",
-   "detail": "Median of 24 elevators in Missouri, 62 in North Dakota, 76 in Wisconsin. 13 states with 15 or more. USDA's Missouri average on Nov 6: 52 under Jan (USDA AMS, Missouri Daily Grain Bids, Nov 6, 2026). USDA's North Dakota average on Nov 6: 91 under Jan (USDA AMS, North Dakota Daily Grain Bids, Nov 6, 2026).",
-   "value": 71.0,
+   "sentence": "Soybean basis on Nov 9 ran from 28¢ under January futures in Missouri to 95¢ under in North Dakota and Wisconsin, state medians of the elevators AGSIST read at 4:17 a.m. CT.",
+   "key": "28¢ under January futures",
+   "detail": "Median of 23 elevators in Missouri, 61 in North Dakota, 76 in Wisconsin. 13 states with 15 or more. USDA's Missouri average on Nov 6: 52 under Jan (USDA AMS, Missouri Daily Grain Bids, Nov 6, 2026). USDA's North Dakota average on Nov 6: 91 under Jan (USDA AMS, North Dakota Daily Grain Bids, Nov 6, 2026).",
+   "value": 67.0,
    "unit": "cents per bushel between the strongest and weakest state median",
    "comparison": "state median basis against ZSF27, states with 15+ elevators",
-   "n": 1402,
+   "n": 1410,
    "states_n": 13,
    "high": [
     {
      "state": "MO",
      "name": "Missouri",
-     "median": -0.24,
-     "n": 24
+     "median": -0.28,
+     "n": 23
     }
    ],
    "low": [
@@ -100,7 +111,7 @@
      "state": "ND",
      "name": "North Dakota",
      "median": -0.95,
-     "n": 62
+     "n": 61
     },
     {
      "state": "WI",
@@ -110,8 +121,8 @@
     }
    ],
    "contract": "ZSF27",
-   "as_of": "2026-11-08",
-   "snapshot": "2026-11-08T10:17:58Z",
+   "as_of": "2026-11-09",
+   "snapshot": "2026-11-09T10:17:40Z",
    "source": "AGSIST elevator network, state median basis (scripts/basis_method.py, data/basis-states.json)",
    "url": "/basis",
    "link_text": "Basis by state"
@@ -119,9 +130,9 @@
  ],
  "withheld": [
   {
-   "id": "over_futures_corn",
-   "why": "sample",
-   "detail": "156 fresh boards, need 200"
+   "id": "basis_spread_corn",
+   "why": "unchanged",
+   "detail": "same states, gap within 5 cents of the 2026-11-08 issue"
   }
  ]
 }
