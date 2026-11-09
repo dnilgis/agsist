@@ -220,14 +220,14 @@ test("the coverage table: every state, honest statuses, the live count matches t
   assert.equal(fs.readdirSync(path.join(ROOT, "land-sales", "vermont")).length, 14, "a page for each of Vermont's 14 counties");
   assert.equal(fs.readdirSync(path.join(ROOT, "land-sales", "new-jersey")).length >= 15, true, "a page for each New Jersey county with farm sales");
   // the hub is a CROSS page (build_land_sales.carry): a build without the hosted Florida copy keeps it as committed, so it
-  // names Florida only after the next land-data run. It must count exactly the states it names, all of them live.
-  const hub = read("land-sales/index.html").match(/Sales reported for (\d+) states: ([^.]+)\./);
-  assert.ok(hub, "the hub counts the live states");
-  const named = hub[2].split(/, | and /);
-  assert.equal(named.length, Number(hub[1]), "the count matches the names");
-  const liveNames = cov.states.filter((s) => s.status === "live").map((s) => s.name);
-  assert.ok(named.every((n) => liveNames.includes(n)), "every named state is live");
-  assert.deepEqual(liveNames.filter((n) => !named.includes(n)).filter((n) => n !== "Florida"), [], "only Florida may wait for the next land-data run");
+  // marks Florida only after the next land-data run. Since #445 the hub draws the live states on the real map
+  // (data-map), not in a sentence: every state it marks live is live in the table, and only Florida may wait.
+  const dm = read("land-sales/index.html").match(/data-map="([^"]*)"/);
+  assert.ok(dm, "the hub map lists its states");
+  const marked = [...dm[1].replace(/&quot;/g, '"').matchAll(/"([A-Z]{2})":\["live"/g)].map((m) => m[1]).sort();
+  assert.ok(marked.length >= 5, "the hub marks the live states");
+  assert.ok(marked.every((st) => live.includes(st)), "every state marked on the map is live");
+  assert.deepEqual(live.filter((st) => !marked.includes(st)).filter((st) => st !== "FL"), [], "only Florida may wait for the next land-data run");
   // Vermont (Oct 29): the method note maps the return onto the shared rule; current use is a fact per sale; the ask shows
   const vtPage = read("land-sales/vermont/addison-county.html");
   assert.match(vtPage, /Vermont Department of Taxes[^<]*\. A farm sale is a return where the land&#x27;s use before or after the sale is an operating farm or timberland, or open land enrolled in current use\./);
