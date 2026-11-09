@@ -25,7 +25,7 @@ import assert from "node:assert/strict";
 import { readFileSync, existsSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
-import { PW, CHROME, serve, mocks, acisRows } from "./fixtures/rp-chetek-oct21.mjs";
+import { PW, CHROME, serve, mocks, acisRows, AMES, AMES_META } from "./fixtures/rp-chetek-oct21.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const ctx = { TextEncoder, TextDecoder, URLSearchParams, btoa, atob };
@@ -107,13 +107,13 @@ try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chrom
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 const SHOTS = process.env.RP_SHOTS || null;
 
-async function withPage(fn, { width = 1280, scheme = "dark", delay = 0 } = {}) {
+async function withPage(fn, { width = 1280, scheme = "dark", delay = 0, meta, town } = {}) {
   const srv = await serve(ROOT), base = "http://127.0.0.1:" + srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const context = await browser.newContext({ viewport: { width, height: width > 500 ? 900 : 844 }, colorScheme: scheme, serviceWorkers: "block" });
     await context.clock.setFixedTime(new Date("2026-10-21T15:00:00Z"));
-    const log = await mocks(context, { delay });
+    const log = await mocks(context, { delay, meta, town });
     const page = await context.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(String(e)));
@@ -211,4 +211,25 @@ test("browser: ZIP 54728 with the worker blocked: the town is found, no page err
     assert.equal(await page.$eval("#rp-status", (el) => el.classList.contains("rp-bad")), false);
     assert.deepEqual(errors, []);
   }, { width: 390, scheme: "light" });
+});
+
+/* Nov 9 2026 (Sig, Rain Print panel): the Oct 15 rule wins over every year behind. Ames 2012 picked Ames 5 SE (6.4 mi,
+   rain only) for its long record and lost its snow; now the 2.0 mi gauge with rain AND snowfall draws, the threads are
+   off (it has under 30 full years) and the options panel says so with the one-tap way to the long record. */
+test("browser: Ames 2012 keeps the near gauge with rain and snowfall; the threads are off and say why; the long record is one tap", { skip }, async () => {
+  await withPage(async (page, base, log, errors) => {
+    await page.goto(base + "/rain-print.html?place=Ames%2C+IA&year=2012&style=r1&hist=1");
+    await drawnFrom(page, /volunteer gauge US1IASR0018/);
+    assert.equal(await page.inputValue("#rp-station"), "US1IASR0018 6", "the 2.0 mi gauge, not Ames 5 SE");
+    assert.ok(await page.isChecked("#rp-hist"), "the switch stays as the reader set it");
+    await page.waitForFunction(() => /has \d+ full years; it takes 30\./.test(document.getElementById("rp-hist-why").textContent), null, { timeout: 20000 });
+    assert.match(await text(page, "rp-hist-why"), /^Ames, 2\.0 mi SW has 1[67] full years; it takes 30\. Use the nearest station with 30 full years$/);
+    assert.ok(!/data-rp="hist"/.test(await page.$eval("#rp-art", (e) => e.innerHTML)), "no gray lines under 30 years");
+    assert.ok(!log.acis.includes("por 130203 2") || log.acis.indexOf("year 130203 2") >= 0, "the long record is not what picked the station");
+    // the reader's own choice: the long record, said plainly
+    await page.click("#rp-hist-long");
+    await drawnFrom(page, /Weather from Ames, 5 SE, 6\.4 mi: the nearest station with 30\+ years of records/);
+    assert.equal(await page.inputValue("#rp-station"), "130203 2");
+    assert.deepEqual(errors, []);
+  }, { meta: AMES_META, town: AMES, width: 390, scheme: "light" });
 });
