@@ -51,6 +51,7 @@ import daily_adds as A      # noqa: E402
 import daily_edge as E      # noqa: E402
 import daily_more as M      # noqa: E402
 import only_here as OH      # noqa: E402
+import basis_method as BM   # noqa: E402
 
 FAILS = []
 
@@ -92,11 +93,48 @@ def today_texts(built):
 NOV9_WOW_ROWS = None
 
 
+ROOT = {"corn": "ZC", "soybeans": "ZS"}
+MON = {m: i for i, m in enumerate(["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"])}
+
+
+def recompute_state(doc):
+    """{crop: headline record} for one state, recomputed with scripts/basis_method.py (state_basis, then
+    headline_json, which carries wow_up and wow_dn) from data/state-basis/<ST>.json as committed: each
+    row's basis, futures month, delivery and week change (prev = basis - week change)."""
+    import re
+    ci = {c: i for i, c in enumerate(doc["cols"])}
+    rows, prev = [], {}
+    for k, x in enumerate(doc["rows"]):
+        g = x[ci["crop"]]
+        m = re.match(r"([A-Z][a-z]{2}) '(\d\d)$", x[ci["vs"]] or "")
+        r = {"source": "r%d" % k, "group": g, "crop": g, "commodity": g, "period": x[ci["delivery"]],
+             "contract": (ROOT[g], MON[m.group(1)], 2000 + int(m.group(2))) if m else None,
+             "basis": x[ci["basis"]], "cash": x[ci["cash"]], "priced": x[ci["priced"]], "city": x[ci["town"]],
+             "operator": x[ci["elevator"]], "fut_off": x[ci["flag"]] == "suspect"}
+        rows.append(r)
+        if x[ci["wow_cents"]] is not None:
+            prev[BM.match_key(r)] = r["basis"] - x[ci["wow_cents"]] / 100.0
+    return {g: BM.headline_json(v["contracts"][0]) for g, v in BM.state_basis(rows, prev).items() if v["contracts"]}
+
+
+def nov9_basis_states():
+    """basis-states.json for the Nov 9 send, rebuilt by code: every headline number recomputed from the
+    committed rows; companies (which need the board-parents file) as committed."""
+    head = fix("basis-states-2026-11-09.json")
+    out = {"generated": head["generated"], "prev": head["prev"], "states": {}}
+    for st, v in head["states"].items():
+        got = recompute_state(fix("state-basis-2026-11-09/%s.json" % st))
+        crops = {}
+        for c, h in got.items():
+            crops[c] = dict(h, companies=v["crops"][c].get("companies"))
+        out["states"][st] = {"name": v["name"], "crops": crops}
+    return out, head
+
+
 def nov9_rows():
     global NOV9_WOW_ROWS
     if NOV9_WOW_ROWS is None:
-        NOV9_WOW_ROWS = OH.wow_rows(fix("basis-states-2026-11-09.json"),
-                                    datetime(2026, 11, 9, 10, 50, tzinfo=timezone.utc))[0]
+        NOV9_WOW_ROWS = OH.wow_rows(nov9_basis_states()[0], datetime(2026, 11, 9, 10, 50, tzinfo=timezone.utc))[0]
     return NOV9_WOW_ROWS
 
 
@@ -136,6 +174,15 @@ def main():
        "build returns the facts it printed: %r" % b9.get("printed"))
 
     # ── 2 and 10. the state basis line ──────────────────────────────────────
+    built_bs, head = nov9_basis_states()
+    for st, v in head["states"].items():
+        for c, f in v["crops"].items():
+            g = built_bs["states"][st]["crops"].get(c) or {}
+            ok(all(g.get(k) == f.get(k) for k in ("contract", "n", "median", "wow", "wow_n")),
+               "%s %s: basis_method on the committed rows gives the committed headline: %r vs %r" % (st, c, g, f))
+    oh = built_bs["states"]["OH"]["crops"]
+    ok((oh["corn"]["wow_up"], oh["corn"]["wow_dn"]) == (41, 2) and (oh["soybeans"]["wow_up"], oh["soybeans"]["wow_dn"]) == (34, 2),
+       "up and down counted per crop: Ohio corn 41/2 of 50, soybeans 34/2 of 45: %r" % oh)
     rows = nov9_rows()
     keys = {"%s:%s" % (r["st"], r["crop"]): r for r in rows}
     ok(set(keys) == {"OH:corn", "OH:soybeans", "IN:corn", "IN:soybeans", "NE:soybeans", "KS:soybeans"},
@@ -293,6 +340,56 @@ def main():
     ok(dl and dl["text"].startswith("USDA WASDE"), "Dec 10 is a WASDE day: the report first")
     dl = V.report_item(D("2026-12-11"), events=[{"date": D("2026-12-11"), "summary": "2026 ARC/PLC signup deadline (FSA)"}])
     ok(dl and dl["text"] == "FSA: 2026 ARC/PLC signup deadline is today, Fri Dec 11.", "a deadline day: %r" % (dl and dl["text"]))
+
+    # ── checker, Nov 9: a settle move already told does not lead again ───────
+    s9m = build(n9, "2026-11-09", memory=mem)
+    ok("hogs" not in s9m["subject"].lower() and s9m["subject"].startswith("Crude slips 2.9%"),
+       "Nov 9: Friday's hog drop was on Saturday's board (and its headline): it does not lead Monday: %r" % s9m["subject"])
+    ok(any(m["kind"] == "move" and m["key"] == "hogs" and m["value"] == "2026-11-06" for m in mem),
+       "the memory holds Friday's hog settle from Saturday's issue")
+    fresh_mv = build(n9, "2026-11-09", memory=[m for m in mem if m["kind"] != "move"])
+    ok(fresh_mv["subject"].startswith("Lean hogs down 2.9%"), "a settle move no earlier issue carried may still lead: %r" % fresh_mv["subject"])
+
+    # ── checker, Nov 9: a quiet Today has no heading and the preheader is never empty ──
+    for d in ("2026-11-09", "2026-11-01", "2026-11-03"):
+        bq2 = build(sent(d)["briefing"], d, memory=F.memory(D(d)))
+        ok(bq2["preheader"].strip(), "%s: the preheader is not empty: %r" % (d, bq2["preheader"]))
+        if not bq2["items"]:
+            ok("\nTODAY\n" not in bq2["text"] and ">Today<" not in bq2["html"], "%s: no empty Today heading" % d)
+        else:
+            ok("\nTODAY\n" in bq2["text"] and ">Today<" in bq2["html"], "%s: Today heading over its lines" % d)
+    empty = build(dict(n9, outside_the_pit=[]), "2026-11-09", memory=mem)
+    ok(not empty["items"] and "\nTODAY\n" not in empty["text"] and ">Today<" not in empty["html"],
+       "Nov 9 no-ZIP with nothing for Today: no heading in the text or the HTML")
+    ok(empty["preheader"].strip() and empty["preheader"] != empty["subject"],
+       "and the preheader is not empty and not the subject again (the teaser here): %r" % empty["preheader"])
+    ok(V.quiet_preheader(n9, "Something else") == "Crude slips 2.9% to $88.18 as Trump signals no new Iran strikes",
+       "the fallback is the day's top news headline")
+    ok(V.quiet_preheader(n9, n9["headline"]) == "Iraq strikes U.S. deal to ship more oil past Hormuz",
+       "never the subject twice: the top story when the headline is the subject")
+
+    # ── checker, Nov 9: one bad file never blanks the memory ────────────────
+    with tempfile.TemporaryDirectory() as td:
+        sd, ad = os.path.join(td, "sent"), os.path.join(td, "arch")
+        os.makedirs(sd)
+        os.makedirs(ad)
+        json.dump([1, 2], open(os.path.join(sd, "2026-11-06.json"), "w"))
+        json.dump(None, open(os.path.join(ad, "2026-11-06.json"), "w"))
+        json.dump({"briefing": None, "printed": "x"}, open(os.path.join(sd, "2026-11-05.json"), "w"))
+        json.dump({"date": "2026-11-07", "printed": [{"kind": "percentile", "key": "feeders", "value": 74}, 5]},
+                  open(os.path.join(sd, "2026-11-07.json"), "w"))
+        try:
+            m = F.memory(D("2026-11-08"), sd, ad)
+            ok([(x["kind"], x["date"]) for x in m] == [("percentile", "2026-11-07")], "bad files are skipped, the good one read: %r" % m)
+        except Exception as ex:
+            ok(False, "memory raised on a bad file: %r" % ex)
+    try:
+        ls = F.last_set([{"kind": "basis_wow", "date": "2026-11-09", "value": 10.0},
+                         {"kind": "basis_wow", "key": "OH:corn", "date": "2026-11-09", "value": 10.0}], "basis_wow", D("2026-11-10"))
+        ok(ls == {"OH:corn": 10.0}, "last_set skips a basis_wow fact with no key: %r" % ls)
+    except Exception as ex:
+        ok(False, "last_set raised on a fact with no key: %r" % ex)
+    ok(F.issue_facts({"basis_wow": {"print": True, "rows": [{"wow": 5.0}, None]}}) == [], "rows with no state make no fact")
 
     # ── no em dash in anything new ──────────────────────────────────────────
     for t in (txt, fl and fl["text"], rp and rp["text"], ro and ro["text"]):
