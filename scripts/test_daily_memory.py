@@ -343,7 +343,7 @@ def main():
 
     # ── checker, Nov 9: a settle move already told does not lead again ───────
     s9m = build(n9, "2026-11-09", memory=mem)
-    ok("hogs" not in s9m["subject"].lower() and s9m["subject"].startswith("Crude slips 2.9%"),
+    ok("hogs" not in s9m["subject"].lower() and s9m["subject"] == "Crude slips 2.9% to $88.18",
        "Nov 9: Friday's hog drop was on Saturday's board (and its headline): it does not lead Monday: %r" % s9m["subject"])
     ok(any(m["kind"] == "move" and m["key"] == "hogs" and m["value"] == "2026-11-06" for m in mem),
        "the memory holds Friday's hog settle from Saturday's issue")

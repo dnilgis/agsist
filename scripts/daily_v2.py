@@ -775,6 +775,7 @@ def wow_item(daily, state=None):
 
 
 # ── the inbox row ─────────────────────────────────────────────────────────
+CONNECTIVES = (" as ", " after ", " amid ", " while ", " ahead of ", " before ", " despite ", " but ")
 DANGLING = {"the", "a", "an", "and", "or", "of", "to", "in", "on", "for", "with", "as", "at", "by", "from", "its"}
 
 
@@ -789,6 +790,11 @@ def clip(s, room=SUBJECT_MAX, hard=SUBJECT_HARD):
                 return s[:cut]
         if len(s) <= lim:
             return s
+    # no clause mark: cut before a connective (Nov 9 2026: "Crude slips 2.9% to $88.18 as Trump signals no
+    # new Iran strikes" cut at 62 read "... no new Iran"; before "as" it reads "Crude slips 2.9% to $88.18")
+    best = max((s.rfind(w, 0, hard + 1) for w in CONNECTIVES), default=-1)
+    if best >= 20:
+        return s[:best].rstrip(" ,;:")
     cut = s.rfind(" ", 0, hard)
     out = (s[:cut] if cut >= 20 else s[:hard]).rstrip(" ,;:")
     # never end on a little word (Nov 8 2026 would have read "... crop report lead the")
