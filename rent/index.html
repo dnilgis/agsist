@@ -55,7 +55,7 @@
    "@type": "Dataset",
    "@id": "https://agsist.com/rent/#dataset",
    "name": "US County Cash Rent and Trend Yield",
-   "description": "County-level cash rental rates for non-irrigated cropland, irrigated cropland, and permanent pasture, as published annually by USDA NASS under the 2008 Farm Bill mandate, paired with county trend yields for corn and soybeans fitted from NASS county yield estimates.",
+   "description": "County-level cash rental rates for non-irrigated cropland, irrigated cropland, and permanent pasture, as published annually by USDA NASS under the 2008 Farm Bill mandate, paired with county trend yields for corn and soybeans from NASS county yield estimates.",
    "url": "https://agsist.com/rent/",
    "license": "https://www.usa.gov/government-works",
    "isAccessibleForFree": true,
@@ -69,7 +69,7 @@
     "@type": "Place",
     "name": "United States"
    },
-   "measurementTechnique": "USDA NASS Cash Rents Survey county estimates; ordinary least squares trend fit on NASS county yield estimates",
+   "measurementTechnique": "USDA NASS Cash Rents Survey county estimates",
    "variableMeasured": [
     {
      "@type": "PropertyValue",
@@ -90,13 +90,6 @@
      "@type": "PropertyValue",
      "name": "Trend yield",
      "unitText": "bushels per acre"
-    }
-   ],
-   "distribution": [
-    {
-     "@type": "DataDownload",
-     "encodingFormat": "application/json",
-     "contentUrl": "https://agsist.com/data/cash-rent/national.json"
     }
    ],
    "dateModified": "2026-10-06"
@@ -318,17 +311,6 @@
   <p><b>There is no magic percentage.</b> Anyone quoting you one number for the whole country is guessing, or selling. What the rest of
   the gross has to cover (seed, fertilizer, chemical, iron, labor, interest, living) is wildly different between two operations on the
   same road. The useful comparison is your county against its own history, which is why the calculator&rsquo;s chart goes back to 2008.</p></details>
-  <details class="rs-faq"><summary>Where these numbers come from</summary>
-  <p>The rent is USDA NASS&rsquo;s county estimate from the Cash Rents Survey, a survey of roughly 280,000 farms and ranches run every year
-  in every state but Alaska. The 2008 Farm Bill requires NASS to publish a mean rate for every county with at least 20,000 acres of
-  cropland plus pasture. Results land each August and are not revised afterward. The Farm Service Agency uses these same county estimates
-  to set market-based rates for programs like CRP.</p>
-  <p>The trend yield is ours, not USDA&rsquo;s: an ordinary least-squares fit through the county&rsquo;s NASS yield estimates over the
-  last fifteen years, projected to the current year. It is fitted on the same practice as the rent it is divided by: dryland
-  (non-irrigated) yields for dryland rent, irrigated yields for irrigated rent. The all-practice county yield is used only where NASS
-  reports no irrigation in the county; anywhere else it is mostly pivot corn and would make dryland rent look cheap, so the trend is
-  withheld and the page says why. Where a county has fewer than six real years of yield on record, or its series stopped more than three
-  years ago, no trend is shown at all.</p></details>
   <details class="rs-faq"><summary>Three things this data will not do</summary>
   <p><b>It will not fill in your county if NASS didn&rsquo;t.</b> Counties with too few survey responses are withheld. Where that happens
   you get a blank and a note that NASS did not publish, never a neighbor&rsquo;s number.</p>
@@ -345,8 +327,10 @@
   on paper with the free <a href="/cash-lease" style="color:var(--gold)">AGSIST cash farm lease</a>.</p></details>
   <h2 id="faq">Questions</h2>
   <details class="rs-faq"><summary>What is the average cash rent per acre in my county?</summary><p>USDA NASS publishes a mean cash rental rate for every county with at least 20,000 acres of cropland plus pasture, separately for non-irrigated cropland, irrigated cropland, and permanent pasture. Pick your state above to see every published county rate and its history. If your county is not listed, it is under the 20,000-acre line, or NASS held the rate back because too few farms answered or a figure could identify one farm.</p></details><details class="rs-faq"><summary>How much does farmland rent for per acre per month?</summary><p>Farmland cash rent is quoted per acre per year, not per month. Divided by 12, the 2026 USDA dryland cropland rents run from $266 an acre a year in Iowa (about $22.17 a month) to $19 in New Mexico (about $1.58 a month). The middle of the 45 state medians is $66 a year, about $5.50 a month. These are state medians of county averages; pick your state above for your county&#x27;s rate.</p></details><details class="rs-faq"><summary>What are pasture rental rates by county?</summary><p>USDA NASS publishes a separate cash rent for permanent pasture in each county where enough pasture leases come back in the survey. In 2026 the state medians of those county rates ran from $3 an acre in New Mexico to $65.25 in Iowa, across 40 states. The Pasture column above has each state&#x27;s median; open a state for every county&#x27;s pasture rate and its history.</p></details><details class="rs-faq"><summary>When is county cash rent data released?</summary><p>USDA NASS releases county cash rent estimates each August, from a survey of roughly 280,000 farms and ranches conducted earlier the same year. The rate published in a given August describes that same crop year. Rates are not revised after publication.</p></details><details class="rs-faq"><summary>Why is there no 2015 or 2018 cash rent data?</summary><p>NASS did not conduct the county Cash Rents Survey in 2015 or 2018, so no county estimates exist for those years. County data runs 2008 to 2014, 2016 to 2017, and 2019 forward. These pages leave those years blank.</p></details><details class="rs-faq"><summary>What percent of gross revenue should cash rent be?</summary><p>There is no single correct figure. Rent as a share of gross revenue is useful because it moves when yields and prices move, while the rent itself is fixed for the season. Comparing the ratio to your own county&#x27;s history is more informative than comparing it to a national rule of thumb. What the remaining share has to cover (seed, fertilizer, chemical, machinery, labor, interest) varies enormously between operations.</p></details><details class="rs-faq"><summary>How has cash rent changed as a share of revenue over time?</summary><p>The rent share calculator on each Farmland Atlas county page charts it for every county with the data. For each year it divides that year&#x27;s published county rent by that year&#x27;s actual county yield for the same practice times that year&#x27;s state average price received: dryland rent over the dryland yield, irrigated rent over the irrigated yield. Where the only county yield mixes irrigated and dryland acres, that year is withheld and marked. Every term is a USDA figure published after the fact, so the line shows what happened, not a projection. The pattern in most Corn Belt counties is that rent takes a far larger share of the gross in low-price years than in high-price years, even when the rent itself barely moves.</p></details><details class="rs-faq"><summary>Does this use futures prices or what farmers actually got?</summary><p>The historical chart uses the USDA NASS marketing-year average price received by farmers in your state, which reflects actual sales and therefore already includes local basis. The calculator uses a board price plus a basis you enter yourself, because it is looking forward at a crop you have not sold. The two answer different questions: what happened, and what might.</p></details><details class="rs-faq"><summary>Is NASS cash rent the same as what I should pay?</summary><p>No. It is a county mean from a voluntary survey. Rents vary widely within a county and even between farms on the same road, driven by soil type, drainage, field size, yield history, and how badly a neighbor wants the ground. Treat the county mean as a reference point for a conversation, not as a rate card.</p></details>
-  <p class="sub" style="font-size:.75rem;margin:18px 0">Source: USDA NASS Cash Rents Survey county estimates.
-  Pages rebuild automatically when NASS publishes (each August). Data refreshed 2026-10-06.</p>
+  <details class="rs-terms" id="sources-terms"><summary>Sources and terms</summary>
+  <p>Source: USDA NASS Cash Rents Survey county estimates, a survey of roughly 280,000 farms and ranches every year in every state but Alaska. NASS publishes a mean rate for every county with at least 20,000 acres of cropland plus pasture, each August. Results are not revised afterward. The county corn trend is AGSIST&rsquo;s, from NASS county yield estimates. Data as of 2026-10-06.</p>
+  <p>A county mean is a survey reference point, not a rate card.</p>
+  <p>This product uses the NASS API but is not endorsed or certified by NASS. Averages, trends, ranks and estimates are calculations by AGSIST.</p></details>
 </main>
 <nav aria-label="Explore AGSIST" style="max-width:1060px;margin:26px auto 8px;padding:0 16px;font-size:12.5px;line-height:2.1"><span style="color:var(--text-dim);font-weight:700">Land:</span> <a href="/farmland-atlas" style="color:var(--text-muted);text-decoration:none">Farmland Atlas</a> &middot; <a href="/rent/" style="color:var(--text-muted);text-decoration:none">Cash Rent by State</a> &middot; <a href="/cash-lease" style="color:var(--text-muted);text-decoration:none">Cash Farm Lease</a> &middot; <a href="/farmland-atlas#foreign" style="color:var(--text-muted);text-decoration:none">Foreign-Owned Land</a><br><span style="color:var(--text-dim);font-weight:700">Markets:</span> <a href="/markets" style="color:var(--text-muted);text-decoration:none">Futures</a> &middot; <a href="/cash-bids" style="color:var(--text-muted);text-decoration:none">Cash Bids</a> &middot; <a href="/basis" style="color:var(--text-muted);text-decoration:none">Basis vs Normal</a> &middot; <a href="/usda-calendar#priced-in" style="color:var(--text-muted);text-decoration:none">What&rsquo;s Priced In</a> &middot; <a href="/cot" style="color:var(--text-muted);text-decoration:none">COT</a><br><span style="color:var(--text-dim);font-weight:700">Field:</span> <a href="/conditions" style="color:var(--text-muted);text-decoration:none">Crop Conditions Rank</a> &middot; <a href="/drought-monitor" style="color:var(--text-muted);text-decoration:none">Drought Monitor</a> &middot; <a href="/hail-map" style="color:var(--text-muted);text-decoration:none">Hail Map</a> &middot; <a href="/breakeven" style="color:var(--text-muted);text-decoration:none">Break-Even</a> &middot; <a href="/daily" style="color:var(--text-muted);text-decoration:none">Daily Briefing</a></nav>
 <div id="site-footer"></div>
