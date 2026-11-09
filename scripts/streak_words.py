@@ -306,7 +306,7 @@ def fix_text(text, st):
 def apply(briefing, st):
     """Every prose string in the briefing, streak words checked. (briefing, log)."""
     log = []
-    skip = {"locked_prices", "locked_changes", "chart_series", "edge", "board", "harvest_clock", "meta",
+    skip = {"locked_prices", "locked_changes", "chart_series", "edge", "board", "harvest_clock", "basis_wow", "meta",
             "daily_quote", "cca_note"}
 
     def walk(v, path):

@@ -5,18 +5,12 @@ findings only AGSIST can make, from our own data, each with its number and its
 sample, never the workings. Not a raw count of elevators (Sig, Oct 22: "1,749
 of 1,810 elevators cut bids" is not an insight); a comparison against history.
 
-  basis_line   basis against its own history, for the reader's state (from the
-               ZIP) or, with no ZIP, the farm state whose basis sits furthest
-               from its own record. From data/basis-sparklines/<ST>.json: the
-               basis change-points of every bid we read since June, misreads
-               already screened out (scripts/build_basis_sparklines.py). Each
-               bid (one elevator, crop, contract and delivery month, for a
-               delivery month not yet past) is compared with ITS OWN earlier
-               basis: how many sit at their weakest (or strongest) since the
-               record began, and how far the typical one is from its own
-               average. Only points dated before the issue are read (no
-               look-ahead). Withheld under MIN_BIDS bids or when the record
-               is shorter than MIN_SPAN_DAYS.
+  wow_rows     the state basis line (Nov 9 2026, replacing the North Dakota
+  wow_text     basis-history line): each state's week-over-week basis change
+               from data/basis-states.json with the share of bids that moved,
+               the reader's state first. The generator decides whether it
+               prints (daily_fresh.wow_should_print) and keeps it on the issue
+               (basis_wow); this file only computes and words it.
   rain_line    the reader's own rain against normal: the nearest county
                station we read (MAX_RAIN_MI of the ZIP), this year so far vs
                the 1991 to 2020 normal (data/rain/<st>.json), with the same
@@ -35,7 +29,6 @@ import json
 import math
 import os
 import re
-import statistics
 import sys
 from datetime import date, timedelta
 from functools import lru_cache
@@ -44,14 +37,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 REPO = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
 
-MIN_BIDS = 40
-MIN_HIST_POINTS = 2
-MIN_SPAN_DAYS = 45
 MAX_RAIN_MI = 30.0
 MAX_MISSING = 10
-FARM_STATES = ("IA", "IL", "IN", "OH", "MN", "NE", "SD", "ND", "WI", "MO", "KS", "MI", "KY")
-CROP_WORD = {"corn": "corn", "soybeans": "soybean"}
-_MON = {m: i for i, m in enumerate(("JAN", "FEB", "MAR", "APR", "MAY", "JUN", "JUL", "AUG", "SEP", "OCT", "NOV", "DEC"), 1)}
 
 
 def _states():
@@ -64,94 +51,82 @@ def _md(iso):
     return d.strftime("%b ") + str(d.day)
 
 
-def _month_name(iso):
-    return date.fromisoformat(iso).strftime("%B")
+# ── the state basis line (Daily panel, Nov 9 2026; Sig "all") ──────────────
+# Replaces the North Dakota basis-history line (basis_line, cut Nov 9: in the
+# email 15 of 15 issues, it moved only at a month roll, so it could not carry
+# news). From data/basis-states.json: each state's week-over-week basis change
+# (the median of every bid matched with the same elevator's same delivery and
+# futures month a week earlier) with the share of those bids that moved, since
+# a median reads 0 when most boards did not reprice. A state prints only with
+# |change| >= WOW_MIN_C, WOW_MIN_N matched bids and WOW_MIN_COS companies; the
+# reader's state first; at most WOW_MAX states. Whether it prints at all is the
+# memory's call (daily_fresh.wow_should_print): nothing on a quiet week.
+WOW_MIN_C = 5.0
+WOW_MIN_N = 30
+WOW_MIN_COS = 8
+WOW_MAX = 3
+WOW_STALE_H = 36
+WOW_PREV_DAYS = (5, 9)           # the week-ago snapshot must be about a week back
+WOW_CROPS = (("corn", "corn"), ("soybeans", "soybeans"))
 
 
-def cents(c):
-    import pricefmt
-    return pricefmt.move(abs(c), cent=True)
-
-
-@lru_cache(maxsize=64)
-def _spark(st, repo=REPO):
+def _iso_dt(s):
+    from datetime import datetime
     try:
-        with open(os.path.join(repo, "data", "basis-sparklines", st + ".json"), encoding="utf-8") as f:
-            return json.load(f)
-    except (OSError, ValueError):
+        return datetime.fromisoformat(str(s).replace("Z", "+00:00"))
+    except ValueError:
         return None
 
 
-@lru_cache(maxsize=256)
-def basis_stats(st, crop, before, repo=REPO):
-    """Each live bid's basis now against its own earlier basis, or None."""
-    d = _spark(st, repo)
-    if not d:
-        return None
-    y, m = int(before[:4]), int(before[5:7])
-    rows, first = [], None
-    for k, pts in (d.get("series") or {}).items():
-        p = k.split("|")
-        if len(p) < 6 or p[3] != crop:
-            continue
-        mm = re.match(r"([A-Z]{3})(\d\d)$", p[5])
-        if not mm or (2000 + int(mm.group(2)), _MON.get(mm.group(1), 0)) < (y, m):
-            continue          # a delivery month already past: not a live bid
-        pts = [x for x in pts if str(x.get("date")) < before and isinstance(x.get("cents"), (int, float))]
-        if len(pts) < MIN_HIST_POINTS + 1:
-            continue
-        hist = [x["cents"] for x in pts[:-1]]
-        cur = pts[-1]["cents"]
-        rows.append((cur, min(hist), max(hist), statistics.mean(hist)))
-        first = min(first or pts[0]["date"], pts[0]["date"])
-    if len(rows) < MIN_BIDS or not first:
-        return None
-    if (date.fromisoformat(before) - date.fromisoformat(first)).days < MIN_SPAN_DAYS:
-        return None
-    return {"st": st, "crop": crop, "n": len(rows), "since": first,
-            "weakest": sum(1 for r in rows if r[0] <= r[1]), "strongest": sum(1 for r in rows if r[0] >= r[2]),
-            "vs_avg": statistics.median([r[0] - r[3] for r in rows])}
+def wow_rows(bs, at):
+    """([row], why): the states that pass the gates, from basis-states.json as it stood at `at` (an aware
+    datetime, the issue's time). A file written after `at` (look-ahead), older than WOW_STALE_H hours, or
+    whose week-ago snapshot is not about a week back gives no rows. A row without its up and down counts
+    is left out: its share cannot be printed."""
+    if not isinstance(bs, dict):
+        return [], "no basis-states file"
+    gen, prev = _iso_dt(bs.get("generated")), _iso_dt(bs.get("prev"))
+    if gen is None or prev is None:
+        return [], "no snapshot times"
+    if gen > at or (at - gen).total_seconds() > WOW_STALE_H * 3600:
+        return [], "snapshot %s is not before and within %d hours of the issue" % (bs.get("generated"), WOW_STALE_H)
+    if not WOW_PREV_DAYS[0] <= (gen - prev).days <= WOW_PREV_DAYS[1]:
+        return [], "week-ago snapshot %s is not about a week back" % bs.get("prev")
+    out = []
+    for st, v in sorted((bs.get("states") or {}).items()):
+        for crop, word in WOW_CROPS:
+            x = ((v or {}).get("crops") or {}).get(crop)
+            if not isinstance(x, dict):
+                continue
+            w, n, cos = x.get("wow"), x.get("wow_n") or 0, x.get("companies") or 0
+            up, dn = x.get("wow_up"), x.get("wow_dn")
+            if not isinstance(w, (int, float)) or abs(w) < WOW_MIN_C or n < WOW_MIN_N or cos < WOW_MIN_COS:
+                continue
+            if not isinstance(up, int) or not isinstance(dn, int) or up + dn > n:
+                continue
+            out.append({"st": st, "name": (v or {}).get("name") or _states().get(st, st), "crop": crop,
+                        "wow": float(w), "n": int(n), "moved": up + dn, "companies": int(cos)})
+    return out, ("%d state rows pass" % len(out)) if out else "no state passed the gates (a quiet week)"
 
 
-def basis_text(s):
-    name = _states().get(s["st"], s["st"])
-    diff = s["vs_avg"]
-    if abs(diff) < 0.5:
-        typ = "the typical bid is right at its own average since then"
-    else:
-        typ = "the typical bid is %s %s its own average since then" % (cents(diff), "under" if diff < 0 else "over")
-    if s["weakest"] >= s["strongest"]:
-        lead = "%d of the %d %s basis bids we track there are at their weakest since %s" % (
-            s["weakest"], s["n"], CROP_WORD[s["crop"]], _month_name(s["since"]))
-    else:
-        lead = "%d of the %d %s basis bids we track there are at their strongest since %s" % (
-            s["strongest"], s["n"], CROP_WORD[s["crop"]], _month_name(s["since"]))
-    return "%s: %s; %s." % (name, lead, typ)
+def _signed(c):
+    import pricefmt
+    return ("+" if c > 0 else "\u2212") + pricefmt.move(abs(c), cent=True)
 
 
-@lru_cache(maxsize=64)
-def basis_line(before, state=None, repo=REPO):
-    """For the reader's state when it has enough bids, else the farm state whose
-    basis is furthest from its own record. {"text", "url", "link", "kind", "n"} or None."""
-    cands = []
-    for st in ([state] if state else []) + [s for s in FARM_STATES if s != state]:
-        for crop in ("corn", "soybeans"):
-            s = basis_stats(st, crop, before, repo)
-            if s:
-                cands.append(s)
-        if state and st == state and cands:
-            break
-    if not cands:
-        return None
-    if not (state and cands[0]["st"] == state):
-        cands.sort(key=lambda s: -abs(s["vs_avg"]))
-    else:
-        cands = [c for c in cands if c["st"] == state]
-        cands.sort(key=lambda s: -max(s["weakest"], s["strongest"]) / s["n"])
-    s = cands[0]
-    slug = re.sub(r"[^a-z0-9]+", "-", _states().get(s["st"], s["st"]).lower()).strip("-")
-    return {"text": basis_text(s), "kind": "basis_history", "n": s["n"], "st": s["st"],
-            "url": "/cash-bids/%s/#basis" % slug, "link": "Basis in " + _states().get(s["st"], s["st"])}
+def wow_text(rows, state=None):
+    """One line, the reader's state first, then the biggest moves; no buyer names."""
+    if not rows:
+        return ""
+    pick = sorted(rows, key=lambda r: (r["st"] != state, -abs(r["wow"]), -r["n"], r["st"], r["crop"]))[:WOW_MAX]
+    parts = []
+    for i, r in enumerate(pick):
+        tail = "%d of %d bids moved" % (r["moved"], r["n"]) if i == 0 else "%d of %d" % (r["moved"], r["n"])
+        parts.append("%s %s %s (%s)" % (r["name"], r["crop"], _signed(r["wow"]), tail))
+    ups, downs = all(r["wow"] > 0 for r in pick), all(r["wow"] < 0 for r in pick)
+    head = "Basis firmed this week" if ups else ("Basis weakened this week" if downs else "Basis this week")
+    body = ", ".join(parts[:-1]) + (" and " if len(parts) > 1 else "") + parts[-1]
+    return "%s: %s." % (head, body)
 
 
 _BIDS = []
@@ -260,7 +235,8 @@ def records_line(before, repo=REPO):
             % (len(wet), "county is" if len(wet) == 1 else "counties are", len(dry)))
     oldest = min(rs, key=lambda o: o["first"])
     text += " The longest of those records, %s, %s, goes back to %d (%s)." % (oldest["county"], oldest["state"], oldest["first"], oldest["side"])
-    return {"text": text, "kind": "rain_records", "url": "/rain#records", "link": "Every record county", "n": len(rs)}
+    return {"text": text, "kind": "rain_records", "url": "/rain#records", "link": "Every record county", "n": len(rs),
+            "fact": {"kind": "rain_records", "key": "us", "value": [len(wet), len(dry)], "text": text}}
 
 
 def for_reader(before, z=None, repo=REPO, loc=None):
@@ -271,12 +247,6 @@ def for_reader(before, z=None, repo=REPO, loc=None):
     if z and loc is None:
         loc = where(z)
     st = loc[2] if loc else None
-    try:
-        b = basis_line(before, st, repo)
-        if b:
-            out.append(b)
-    except Exception as ex:
-        print("only here: basis skipped (%s)" % type(ex).__name__)
     if loc:
         try:
             rl = rain_line(loc[:2], before, repo)
@@ -314,20 +284,31 @@ def _selftest():
         if not c:
             bad.append(m)
             print("FAIL", m)
-    s = basis_stats("IA", "corn", "2026-10-21")
-    ok(s and s["n"] >= MIN_BIDS and s["since"] >= "2026-06-01", "Iowa corn has a record")
-    ok(basis_stats("IA", "corn", "2026-06-20") is None, "withheld when the record is short (no look-ahead)")
+    ok("basis_line" not in globals() and "basis_stats" not in globals(), "the North Dakota basis line is gone (Nov 9)")
+    bs = {"generated": "2026-11-09T10:17:40Z", "prev": "2026-11-02T10:16:18Z", "states": {
+        "OH": {"name": "Ohio", "crops": {"corn": {"wow": 10.0, "wow_n": 50, "companies": 18, "wow_up": 41, "wow_dn": 2}}},
+        "IN": {"name": "Indiana", "crops": {"corn": {"wow": 6.0, "wow_n": 49, "companies": 21, "wow_up": 30, "wow_dn": 4}}},
+        "CO": {"name": "Colorado", "crops": {"corn": {"wow": 5.0, "wow_n": 6, "companies": 5, "wow_up": 3, "wow_dn": 0}}}}}
+    from datetime import datetime, timezone
+    at = datetime(2026, 11, 9, 10, 50, tzinfo=timezone.utc)
+    rows, _w = wow_rows(bs, at)
+    ok([r["st"] for r in rows] == ["IN", "OH"], "gates: 30 bids and 8 companies (Colorado has 6): %s" % rows)
+    ok(wow_text(rows) == "Basis firmed this week: Ohio corn +10\u00a2 (43 of 50 bids moved) and Indiana corn +6\u00a2 (34 of 49).",
+       "words: %r" % wow_text(rows))
+    ok(wow_text(rows, "IN").startswith("Basis firmed this week: Indiana corn"), "the reader's state first")
+    ok(wow_rows(bs, datetime(2026, 11, 9, 10, 0, tzinfo=timezone.utc))[0] == [], "a snapshot written after the issue is not read")
     locs = {"54728": (45.317, -91.6542, "WI"), "50010": (42.0379, -93.6003, "IA"), None: None}
+    # the rain data moves every day: ask as of its newest day (a fixed date ages out once every station reports past it)
+    on = max(max(str(c.get("as_of") or "") for _, _, _, c in _stations(REPO)), "2026-10-21")
     for z in ("54728", "50010", None):
-        lines = for_reader("2026-10-21", z, loc=locs[z])
-        ok(lines, "a line for %s" % z)
+        lines = for_reader(on, z, loc=locs[z])
+        ok(lines or z is None, "a line for %s" % z)
         for x in lines:
             ok(re.search(r"\d", x["text"]) and not COUNT_LINE.search(x["text"]) and "—" not in x["text"], "insight, not a count: " + x["text"])
     # the rain data moves every day: ask as of its newest day, so the check never ages out (2026-10-24: a fixed
     # "2026-10-21" failed once every station had reported past it)
     newest = max(str(c.get("as_of") or "") for _, _, _, c in _stations(REPO))
     one = for_reader(max(newest, "2026-10-21"), "50010", loc=locs["50010"])
-    ok(one and one[0]["st"] == "IA", "the reader's own state")
     ok(any(x["kind"] == "rain_vs_normal" and "% of normal" in x["text"] for x in one), "the reader's own rain")
     # near a record: the rank rides on the rain line (2026-10-24); a stale context adds nothing
     import tempfile
@@ -346,11 +327,12 @@ def _selftest():
         ok(rl and "record" not in rl["text"], "a stale context adds nothing")
     rr = records_line("2026-10-25")
     ok(rr is None or (rr["kind"] == "rain_records" and re.search(r"\d", rr["text"]) and "—" not in rr["text"]), "records line: %s" % (rr and rr["text"]))
-    # no ZIP: the basis line, then (2026-10-24) the national rain records line when there is one; never the reader's rain
+    # no ZIP: (2026-10-24) the national rain records line when there is one; never the reader's rain, and since
+    # Nov 9 2026 no basis line here (the state basis line is the generator's, on the issue)
     nz = for_reader("2026-10-21", None)
-    ok(nz and nz[0]["kind"] != "rain_vs_normal" and [x["kind"] for x in nz[1:]] in ([], ["rain_records"]), "no ZIP: basis, then records: %s" % [x["kind"] for x in nz])
-    wi = for_reader("2026-10-21", "54728", loc=locs["54728"])
-    ok(wi and wi[0]["st"] != "WI", "a state with too few bids (Wisconsin) falls back to a farm state with a record")
+    ok([x["kind"] for x in nz] in ([], ["rain_records"]), "no ZIP: records only: %s" % [x["kind"] for x in nz])
+    wi = for_reader(on, "54728", loc=locs["54728"])
+    ok(wi and all(x["kind"] != "basis_history" for x in wi), "no basis-history line for a ZIP reader either")
     print("only_here selftest " + ("FAILED" if bad else "ok"))
     return 1 if bad else 0
 

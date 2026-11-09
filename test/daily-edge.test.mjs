@@ -73,7 +73,7 @@ test("wiring: workflow, schema, email, /daily", () => {
   assert.match(em, /L \+= edge_text\(daily\)/);
   assert.match(em, /_edge = edge_html\(daily\)/);
   const d = read("daily.html");
-  assert.match(d, /\/components\/daily-edge\.js\?v=1/);
+  assert.match(d, /\/components\/daily-edge\.js\?v=2/);
   assert.match(d, /lead\+edgeH\+hclock/);
   const note = JSON.parse(read("data/cca-note.json"));
   assert.equal(note.text, "", "the note ships empty: the slot stays hidden until Sig writes one");

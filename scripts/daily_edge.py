@@ -27,16 +27,19 @@ THE FACTS (in the order the block shows them; the block shows at most 3)
                        median of matched pairs (same board, crop and delivery
                        period on both of the last two trading days), how many
                        moved, and how many boards changed basis.
-  basis_spread_<crop>  strongest and weakest state median basis against the
-                       contract most states price against.
   over_futures_corn    how many boards with a fresh corn bid pay over futures.
+  (basis_spread_<crop>, the strongest and weakest state median basis, was cut
+  Nov 9 2026. Since then the counts stay in data/daily-edge.json and off the
+  Daily page (for_issue, COUNT_KINDS); the page's block carries the state basis
+  line the generator adds, scripts/only_here.py wow_rows.)
 
 WHEN A FACT IS WITHHELD (it goes in `withheld` with the reason, never printed)
   stale    the source file is more than STALE_H (36) hours old, or is dated
            after `now` (no look-ahead), or the last trading day is missing
-  sample   fewer than MIN_PAIRS matched boards (cash change), fewer than
-           MIN_STATES states with MIN_STATE_N boards each (basis spread), fewer
-           than MIN_FRESH fresh boards (over futures)
+  sample   fewer than MIN_PAIRS matched boards (cash change), under FULL_SHARE
+           of the last FULL_DAYS days' median (cash change, quiet_repeats),
+           fewer than MIN_FRESH fresh boards (over futures)
+  reprint  a cash count an earlier issue already printed (quiet_repeats)
   outlier  more than MAX_DROP_SHARE of the pairs sit outside the outlier
            filter (OUTLIER_K robust standard deviations, never less than the
            crop's floor), or the median move is beyond what futures can do in
@@ -329,98 +332,6 @@ def cash_change(crop, index, prev, prev_generated, now):
     }, None
 
 
-# ── fact: state basis spread ───────────────────────────────────────────────
-def contract_words(sym, label=""):
-    m = re.match(r"^Z[CSW]([FGHJKMNQUVXZ])\d{2}$", str(sym or ""))
-    if m:
-        return f"{MONTH_CODE[m.group(1)]} futures"
-    return f"{label} futures".strip() if label else "futures"
-
-
-def basis_words(dollars):
-    c = round(dollars * 100 * 4) / 4
-    if abs(c) < 0.125:
-        return "even with"
-    return f"{qc(c)}¢ {'over' if c > 0 else 'under'}"
-
-
-def basis_spread(crop, bs, now):
-    fid = f"basis_spread_{crop}"
-    if not isinstance(bs, dict) or not fresh(bs.get("generated"), now):
-        return None, {"id": fid, "why": "stale", "detail": f"basis-states generated {(bs or {}).get('generated')}"}
-    rows = []
-    for st, v in (bs.get("states") or {}).items():
-        x = ((v or {}).get("crops") or {}).get(crop)
-        if st not in US_STATES or not isinstance(x, dict):
-            continue
-        m = x.get("median")
-        if not isinstance(m, (int, float)) or isinstance(m, bool) or not math.isfinite(m) or abs(m) > 2:
-            continue
-        if (x.get("n") or 0) < MIN_STATE_N:
-            continue
-        rows.append({"state": st, "name": US_STATES[st], "n": int(x["n"]), "median": float(m),
-                     "contract": x.get("contract"), "label": x.get("label") or "",
-                     "path": v.get("path") or "", "usda": usda_line(x.get("usda"))})
-    if not rows:
-        return None, {"id": fid, "why": "sample", "detail": "no state qualifies"}
-    counts = {}
-    for r in rows:
-        counts[r["contract"]] = counts.get(r["contract"], 0) + 1
-    main = sorted(counts.items(), key=lambda kv: (-kv[1], str(kv[0])))[0][0]
-    rows = [r for r in rows if r["contract"] == main]
-    if len(rows) < MIN_STATES:
-        return None, {"id": fid, "why": "sample", "detail": f"{len(rows)} states with {MIN_STATE_N}+ elevators on {main}, need {MIN_STATES}"}
-    hi = max(r["median"] for r in rows)
-    lo = min(r["median"] for r in rows)
-    if hi == lo:
-        return None, {"id": fid, "why": "sample", "detail": "every state has the same median"}
-    top = sorted([r for r in rows if r["median"] == hi], key=lambda r: r["name"])
-    bot = sorted([r for r in rows if r["median"] == lo], key=lambda r: r["name"])
-    asof = ct_date(parse_iso(bs["generated"]))
-    cw = contract_words(main, top[0]["label"])
-    hiw, low = basis_words(hi), basis_words(lo)
-    sentence = (f"{CROP_NAME[crop]} basis on {short(asof)} ran from {hiw} {cw} in {join_names([r['name'] for r in top])} "
-                f"to {low} in {join_names([r['name'] for r in bot])}, state medians of the elevators AGSIST "
-                f"read at {ct_clock(parse_iso(bs['generated']))}.")
-    # 2026-10-17 audit (N4): /basis is rebuilt every two hours from a newer
-    # snapshot, so a state's median and count can move a cent or an elevator
-    # after the Daily is written. The sentence names its snapshot, and the
-    # fact carries it (snapshot) so scripts/check_number_consistency.py can
-    # compare like with like.
-    # Sig, Nov 3 2026: each state number is labelled the median of N elevators,
-    # and USDA AMS's own state average sits beside it when the page shows it
-    # (crops[crop].usda in data/basis-states.json, scripts/build_cash_bid_pages.py
-    # usda_beside: same futures month, not stale, dated by USDA).
-    detail = ("Median of " + ", ".join(f"{num(r['n'])} {'elevator' if r['n'] == 1 else 'elevators'} in {r['name']}"
-                                       if i == 0 else f"{num(r['n'])} in {r['name']}"
-                                       for i, r in enumerate(top + bot)) +
-              f". {len(rows)} states with {MIN_STATE_N} or more." +
-              "".join(" " + r["usda"] for r in top + bot if r["usda"]))
-    return {
-        "id": fid, "crop": crop, "kind": "basis_spread",
-        "sentence": sentence, "key": f"{hiw} {cw}", "detail": detail,
-        "value": round((hi - lo) * 100, 2), "unit": "cents per bushel between the strongest and weakest state median",
-        "comparison": f"state median basis against {main}, states with {MIN_STATE_N}+ elevators",
-        "n": sum(r["n"] for r in rows), "states_n": len(rows),
-        "high": [{"state": r["state"], "name": r["name"], "median": r["median"], "n": r["n"]} for r in top],
-        "low": [{"state": r["state"], "name": r["name"], "median": r["median"], "n": r["n"]} for r in bot],
-        "contract": main, "as_of": asof.isoformat(), "snapshot": bs["generated"],
-        "source": "AGSIST elevator network, state median basis (scripts/basis_method.py, data/basis-states.json)",
-        "url": "/basis", "link_text": "Basis by state",
-    }, None
-
-
-def usda_line(u):
-    """USDA's state average line as the state page prints it, or None. Only a
-    plain sentence that names USDA AMS and a date is passed through."""
-    if not isinstance(u, dict):
-        return None
-    line = u.get("line")
-    if not isinstance(line, str) or not line.startswith("USDA's ") or "(USDA AMS, " not in line or len(line) > 200:
-        return None
-    return line if re.search(r", \d{4}\)\.$", line) and "<" not in line else None
-
-
 # ── fact: boards paying over futures ───────────────────────────────────────
 def over_futures(crop, index, now):
     fid = f"over_futures_{crop}"
@@ -475,17 +386,16 @@ def over_futures(crop, index, now):
 
 
 # ── the whole block ────────────────────────────────────────────────────────
-ORDER = ("cash_change_corn", "cash_change_soybeans", "basis_spread_corn", "over_futures_corn", "basis_spread_soybeans")
+ORDER = ("cash_change_corn", "cash_change_soybeans", "over_futures_corn")
 
 
 def build(index, prev, prev_generated, basis_states, now):
-    """Pure. All facts that pass, in ORDER, and every refusal with its reason."""
+    """Pure. All facts that pass, in ORDER, and every refusal with its reason. basis_states is no longer
+    read (the state basis spread was cut Nov 9 2026; the state basis line is only_here.wow_rows)."""
     facts, withheld = [], []
     for fn in (lambda: cash_change("corn", index, prev, prev_generated, now),
                lambda: cash_change("soybeans", index, prev, prev_generated, now),
-               lambda: basis_spread("corn", basis_states, now),
-               lambda: over_futures("corn", index, now),
-               lambda: basis_spread("soybeans", basis_states, now)):
+               lambda: over_futures("corn", index, now)):
         try:
             f, w = fn()
         except Exception as ex:  # noqa: BLE001 -- a broken input withholds one fact, never the issue
@@ -513,13 +423,18 @@ def shown(block, limit=MAX_SHOWN):
     return out[:limit]
 
 
+COUNT_KINDS = ("cash_change", "over_futures")
+
+
 def for_issue(block, now=None):
     """The block to attach to an issue: only when it was built within STALE_H
     hours before `now` and carries at least one fact; else None."""
     now = now or datetime.now(timezone.utc)
     if not isinstance(block, dict) or block.get("schema") != SCHEMA or not fresh(block.get("generated"), now):
         return None
-    facts = shown(block)
+    # Sig, Nov 9 2026: raw elevator counts leave the Daily's "Only on AGSIST" (they live on /cash-bids);
+    # daily-edge.json keeps them
+    facts = [f for f in shown(block, limit=len(block.get("facts") or [])) if f.get("kind") not in COUNT_KINDS][:MAX_SHOWN]
     if not facts:
         return None
     keep = ("id", "kind", "crop", "sentence", "key", "detail", "value", "unit", "n", "as_of", "source", "url", "link_text")
@@ -589,8 +504,8 @@ def render_html(edge, date_iso=""):
             f'<h2 class="dv3-edge-label" id="dv3-edge-h">{_esc(edge.get("label") or "Only on AGSIST")}</h2>'
             f'<ol class="dv3-edge-list">{items}</ol>'
             '<p class="dv3-edge-note">Counted by code from the elevator boards AGSIST reads itself, '
-            'not by the writer of this briefing. A day\'s change is each board\'s last posted bid against '
-            f'its own on the trading day before, same delivery period.{cite} <a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>'
+            'not by the writer of this briefing. A week\'s change is each bid against '
+            f'the same elevator\'s same delivery and futures month a week before.{cite} <a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>'
             ' &middot; <a href="/cash-bid-index">Monthly: AGSIST Cash Bid Index</a></p>'
             '</section>')
 
@@ -654,54 +569,38 @@ def build_from_files(repo=REPO, bids_base=None, now=None):
     now = now or datetime.now(timezone.utc)
     index = local_bid.BidsData(bids_base).index()
     prev, prev_gen = load_prev(repo)
-    bs = load_json(os.path.join(repo, "data", "basis-states.json"))
-    return quiet_repeats(freeze(build(index, prev, prev_gen, bs, now), load_published(repo)), last_printed(repo, now))
+    pub = load_published(repo)
+    return quiet_repeats(freeze(build(index, prev, prev_gen, None, now), pub), pub)
 
 
-# ── no repeat of a standing fact (Sig, Nov 8 2026) ─────────────────────────
-# The corn basis spread printed the same line seven days running ("55 over in
-# Texas to 90 under in North Dakota"): a standing fact read as news. A spread
-# fact now prints only when it changed since the last issue that printed it:
-# another strongest or weakest state, or the gap moved REPEAT_MOVE_C cents or more.
-REPEAT_KINDS = ("basis_spread",)
-REPEAT_MOVE_C = 5
+# ── a count only for a new trading day with a full sample (Daily panel, Nov 9 2026) ──
+# freeze() below stopped a recount of the same day from printing new numbers (Oct 20), but the
+# frozen count still printed again: Friday Oct 30's count on Oct 31, Nov 1 and Nov 2; Friday Nov 6's
+# on Nov 7, 8 and 9. A day's count now goes out once: a fact an earlier issue printed is withheld.
+# And a thin day is withheld: Monday Nov 2's count rested on 293 corn boards (a month roll) against
+# about 1,800 on the days before. A count needs FULL_SHARE of the median of the last FULL_DAYS
+# trading days' counts. (The Nov 8 spread rule that used to live here went with the spread.)
+FULL_SHARE = 0.8
+FULL_DAYS = 5
+FULL_MIN_HISTORY = 3
 
 
-def _ends(sentence):
-    """The state names at both ends of a spread sentence, without its date and clock."""
-    m = re.search(r" in (.+?) to .+? in (.+?), state medians", sentence or "")
-    return (m.group(1), m.group(2)) if m else None
-
-
-def last_printed(repo=REPO, now=None):
-    """{fact id: fact} as the newest published issue BEFORE today (CT) printed it."""
-    today = ct_date(now or datetime.now(timezone.utc)).isoformat()
-    out = {}
-    for fp in sorted(glob.glob(os.path.join(repo, "data", "daily-archive", "20??-??-??.json"))):
-        if os.path.basename(fp)[:-5] >= today:
-            continue
-        j = load_json(fp)
-        edge = (j or {}).get("edge") if isinstance(j, dict) else None
-        for f in (edge or {}).get("facts") or []:
-            if isinstance(f, dict) and f.get("kind") in REPEAT_KINDS and f.get("id"):
-                out[f["id"]] = f
-    return out
-
-
-def quiet_repeats(block, last):
-    """Withhold a standing fact that says what the last issue already said."""
+def quiet_repeats(block, published):
+    """Withhold a cash count an earlier issue already printed (frozen_from) or that rests on a thin
+    sample (n under FULL_SHARE of the median of the last FULL_DAYS days' n)."""
     keep, held = [], list(block.get("withheld") or [])
     for f in block.get("facts") or []:
-        was = (last or {}).get(f.get("id"))
-        if f.get("kind") in REPEAT_KINDS and was:
-            same_ends = _ends(f.get("sentence")) == _ends(was.get("sentence")) and _ends(f.get("sentence"))
-            try:
-                moved = abs(float(f.get("value")) - float(was.get("value"))) >= REPEAT_MOVE_C
-            except (TypeError, ValueError):
-                moved = True
-            if same_ends and not moved:
-                held.append({"id": f["id"], "why": "unchanged",
-                             "detail": f"same states, gap within {REPEAT_MOVE_C} cents of the {was.get('as_of')} issue"})
+        if f.get("kind") in FROZEN_KINDS:
+            if f.get("frozen_from"):
+                held.append({"id": f["id"], "why": "reprint",
+                             "detail": f"the {f.get('as_of')} count already printed in the {f['frozen_from']} issue"})
+                continue
+            past = sorted((k[1], v[1].get("n")) for k, v in (published or {}).items()
+                          if k[0] == f.get("id") and str(k[1]) < str(f.get("as_of")) and isinstance(v[1].get("n"), int))
+            ns = [n for _d, n in past[-FULL_DAYS:]]
+            if len(ns) >= FULL_MIN_HISTORY and isinstance(f.get("n"), int) and f["n"] < FULL_SHARE * statistics.median(ns):
+                held.append({"id": f["id"], "why": "sample",
+                             "detail": f"{f['n']} boards, under {FULL_SHARE:.0%} of the {len(ns)}-day median {statistics.median(ns):g}"})
                 continue
         keep.append(f)
     return dict(block, facts=keep, withheld=held)
@@ -861,42 +760,9 @@ def _selftest():
     f, _ = cash_change("corn", idx, prev, "2026-10-16T09:30:00Z", now)
     ok(f and f["n"] == 118, "special grade / CAD")
 
-    # basis spread, hand-worked: CO +0.11 (26), ND and SD -0.80 (37, 89), MI too small
-    bs = {"generated": "2026-10-16T00:37:10Z", "states": {
-        "CO": {"crops": {"corn": {"contract": "ZCZ26", "label": "Dec '26", "n": 26, "median": 0.11}}},
-        "IA": {"crops": {"corn": {"contract": "ZCZ26", "label": "Dec '26", "n": 277, "median": -0.40}}},
-        "IL": {"crops": {"corn": {"contract": "ZCZ26", "label": "Dec '26", "n": 185, "median": -0.31}}},
-        "ND": {"crops": {"corn": {"contract": "ZCZ26", "label": "Dec '26", "n": 37, "median": -0.80}}},
-        "SD": {"crops": {"corn": {"contract": "ZCZ26", "label": "Dec '26", "n": 89, "median": -0.80}}},
-        "MI": {"crops": {"corn": {"contract": "ZCZ26", "label": "Dec '26", "n": 14, "median": 0.90}}},
-        "TX": {"crops": {"corn": {"contract": "ZCH27", "label": "Mar '27", "n": 17, "median": 0.55}}},
-    }}
+    # Nov 9 2026: the state basis spread is cut for good
+    ok("basis_spread" not in globals() and not any("basis_spread" in x for x in ORDER), "no state basis spread")
     now = datetime(2026, 10, 16, 10, 40, tzinfo=timezone.utc)
-    f, w = basis_spread("corn", bs, now)
-    ok(f is not None, f"spread refused {w}")
-    if f:
-        want = ("Corn basis on Oct 15 ran from 11¢ over December futures in Colorado to 80¢ under in "
-                "North Dakota and South Dakota, state medians of the elevators AGSIST read at 7:37 p.m. CT.")
-        ok(f["sentence"] == want, f"spread sentence {f['sentence']!r}")
-        ok(f["snapshot"] == "2026-10-16T00:37:10Z", f"spread snapshot {f.get('snapshot')}")
-        ok(f["value"] == 91.0 and f["states_n"] == 5, f"spread value {f['value']} {f['states_n']}")
-        ok(f["detail"] == "Median of 26 elevators in Colorado, 37 in North Dakota, 89 in South Dakota. "
-                          "5 states with 15 or more.", f"spread detail {f['detail']!r}")
-    # USDA AMS's own North Dakota average beside ours (Nov 2, 2026 real data: ours -90, USDA -89 vs Dec)
-    nd = "USDA's North Dakota average that day: 89 under Dec (USDA AMS, North Dakota Daily Grain Bids, Nov 2, 2026)."
-    bsu = json.loads(json.dumps(bs))
-    bsu["states"]["ND"]["crops"]["corn"]["usda"] = {"basis": -89, "line": nd}
-    bsu["states"]["IA"]["crops"]["corn"]["usda"] = {"basis": -41, "line": nd.replace("North Dakota", "Iowa")}
-    bsu["states"]["SD"]["crops"]["corn"]["usda"] = {"basis": -73, "line": "<b>x</b>"}
-    f, w = basis_spread("corn", bsu, now)
-    ok(f and f["detail"].endswith("5 states with 15 or more. " + nd), f"usda in detail {f and f['detail']!r}")
-    ok(f and "Iowa" not in f["detail"] and "<b>" not in f["detail"], "only the named states' USDA line, plain text")
-    bs4 = json.loads(json.dumps(bs))
-    del bs4["states"]["IL"]
-    f, w = basis_spread("corn", bs4, now)
-    ok(f is None and w["why"] == "sample", f"4 states {w}")
-    f, w = basis_spread("corn", dict(bs, generated="2026-10-14T20:00:00Z"), now)
-    ok(f is None and w["why"] == "stale", f"stale spread {w}")
 
     # over futures, hand-worked: 210 fresh boards, 3 over in CO, 2 over in TX, 1 even
     places = []
@@ -914,21 +780,24 @@ def _selftest():
     f, w = over_futures("corn", {"generated": idx["generated"], "places": places[:150]}, now)
     ok(f is None and w["why"] == "sample", f"over sample {w}")
 
-    # the block: order, the 3-fact cap, and for_issue's freshness
+    # the block: order, the 3-fact cap, and for_issue's freshness; raw counts stay off the Daily (Nov 9)
     idx, prev, now = _fixture()
-    blk = build(idx, prev, "2026-10-16T09:30:00Z", bs, now)
+    blk = build(idx, prev, "2026-10-16T09:30:00Z", None, now)
     ids = [f["id"] for f in blk["facts"]]
-    ok(ids == ["cash_change_corn", "basis_spread_corn"], f"ids {ids}")
-    ok({w["id"] for w in blk["withheld"]} == {"cash_change_soybeans", "over_futures_corn", "basis_spread_soybeans"}, blk["withheld"])
-    e = for_issue(blk, now)
-    ok(e and len(e["facts"]) == 2 and e["label"] == "Only on AGSIST", "for_issue")
-    ok(for_issue(blk, now + timedelta(hours=37)) is None, "for_issue stale")
+    ok(ids == ["cash_change_corn"], f"ids {ids}")
+    ok({w["id"] for w in blk["withheld"]} == {"cash_change_soybeans", "over_futures_corn"}, blk["withheld"])
+    ok(for_issue(blk, now) is None, "for_issue: a block of counts puts nothing on the Daily page")
+    other = dict(blk, facts=blk["facts"] + [{"id": "x", "kind": "other", "sentence": "A line with 5 in it.", "key": "5",
+                                             "url": "/basis"}])
+    e = for_issue(other, now)
+    ok(e and [f["id"] for f in e["facts"]] == ["x"] and e["label"] == "Only on AGSIST", "for_issue keeps a line that is not a count")
+    ok(for_issue(other, now + timedelta(hours=37)) is None, "for_issue stale")
     ok(for_issue({"schema": SCHEMA, "generated": blk["generated"], "facts": []}, now) is None, "for_issue empty")
     for f in blk["facts"]:
         ok(f["key"] in f["sentence"], f"key not in sentence: {f['key']!r}")
     many = dict(blk, facts=blk["facts"] * 3)
     ok(len(shown(many)) == 3, "cap 3")
-    ok(jsonld_tail(e).startswith("On Thursday, Oct 15, all 120 elevators"), "jsonld tail")
+    ok(jsonld_tail({"facts": blk["facts"]}).startswith("On Thursday, Oct 15, all 120 elevators"), "jsonld tail")
     for f in blk["facts"]:
         for k in ("sentence", "detail"):
             ok("\u2014" not in f[k] and "first" not in f[k].lower() and "record" not in f[k].lower(), f"words in {k}")
@@ -951,19 +820,18 @@ def _selftest():
     shipped = load_json(CCA_NOTE_PATH)
     ok(isinstance(shipped, dict) and not str(shipped.get("text") or "").strip(), "data/cca-note.json ships empty")
 
-    # Sig Nov 8: a spread fact that says what the last printed issue said is withheld
-    tx = "Corn basis on Nov 7 ran from 55\u00a2 over December futures in Texas to 90\u00a2 under in North Dakota, state medians of the elevators AGSIST read at 4:18 a.m. CT."
-    tx6 = tx.replace("Nov 7", "Nov 6").replace("4:18", "4:16")
-    sp = {"id": "basis_spread_corn", "kind": "basis_spread", "sentence": tx, "value": 145.0, "url": "/basis"}
-    blk = {"facts": [sp, {"id": "cash_change_corn", "kind": "cash_change", "sentence": "x", "url": "/"}], "withheld": []}
-    q = quiet_repeats(blk, {"basis_spread_corn": dict(sp, sentence=tx6, value=146.0, as_of="2026-11-06")})
-    ok([f["id"] for f in q["facts"]] == ["cash_change_corn"] and q["withheld"][-1]["why"] == "unchanged", f"repeat kept {q}")
-    q = quiet_repeats(blk, {"basis_spread_corn": dict(sp, sentence=tx6, value=139.0, as_of="2026-11-06")})
-    ok(len(q["facts"]) == 2, "a 6 cent move prints")
-    q = quiet_repeats(blk, {"basis_spread_corn": dict(sp, sentence=tx6.replace("North Dakota", "Minnesota"), as_of="2026-11-06")})
-    ok(len(q["facts"]) == 2, "another weakest state prints")
-    ok(len(quiet_repeats(blk, {})["facts"]) == 2, "never printed before: prints")
-    ok(_ends(tx) == ("Texas", "North Dakota"), f"ends {_ends(tx)}")
+    # Nov 9 2026: a count goes out once, and only on a full sample (the real counts, data/daily-archive)
+    hist = {("cash_change_corn", d): ("i", {"n": n}) for d, n in (("2026-10-26", 1798), ("2026-10-27", 1747),
+            ("2026-10-28", 1843), ("2026-10-29", 1818), ("2026-10-30", 1778))}
+    thin = {"id": "cash_change_corn", "kind": "cash_change", "as_of": "2026-11-02", "n": 293, "sentence": "x", "url": "/"}
+    q = quiet_repeats({"facts": [thin], "withheld": []}, hist)
+    ok(not q["facts"] and q["withheld"][-1]["why"] == "sample", f"Nov 3 issue: Monday Nov 2 on 293 boards is withheld {q}")
+    full = dict(thin, as_of="2026-11-03", n=1783)
+    ok(quiet_repeats({"facts": [full]}, hist)["facts"] == [full], "Nov 4 issue: Tuesday Nov 3 on 1,783 boards prints")
+    again = dict(full, as_of="2026-10-30", n=1778, frozen_from="2026-10-31")
+    q = quiet_repeats({"facts": [again]}, hist)
+    ok(not q["facts"] and q["withheld"][-1]["why"] == "reprint", "Nov 1 and Nov 2 issues: Friday Oct 30's count is not printed again")
+    ok(quiet_repeats({"facts": [full]}, {})["facts"] == [full], "no history: the share check does not guess")
 
     for b in bad:
         print("FAIL", b)

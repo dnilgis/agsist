@@ -70,6 +70,8 @@ import brief_email as BE   # noqa: E402  link tags, text hygiene, the shared blo
 import pricefmt            # noqa: E402  the site's grain price text
 import contract_calendar  # noqa: E402  first notice day: when Nov beans hand over to Jan
 import source_links       # noqa: E402  one rule for "is this url a data file"
+import daily_fresh        # noqa: E402  the one memory: a recurring line prints only when its fact changed
+import usda_dates         # noqa: E402  report days and the WASDE dates
 
 try:
     from zoneinfo import ZoneInfo
@@ -169,6 +171,18 @@ def has_number(s):
     return bool(re.search(NUM_WORDS, s, re.I))
 
 
+# Sig, Nov 9 2026 (subject ranking): a bare number with no verb never leads ("8,795 contracts,
+# funds' net long in corn"). The day's number is a value and a noun phrase by design; it may lead
+# only when its words carry a verb ("88% soybeans harvested").
+VERB = re.compile(r"\b(\w{3,}ed|is|are|was|were|has|have|had|hits?|tops?|sets?|falls?|rises?|gains?|drops?|"
+                  r"jumps?|climbs?|slips?|sinks?|surges?|cuts?|adds?|pays?|buys?|sells?|holds?|reaches|leads?|"
+                  r"wins?|loses?|ends?|starts?|opens?|closes?)\b", re.I)
+
+
+def has_verb(s):
+    return bool(VERB.search(str(s or "")))
+
+
 def _iso_day(daily):
     return BE.campaign_of(daily) or str(daily.get("date") or "")[:10]
 
@@ -228,7 +242,10 @@ def news_items(daily):
     if isinstance(on, dict) and on.get("value") and on.get("unit"):
         t = sentence("%s %s" % (BE.strip_md(on["value"]), BE.strip_md(on["unit"])))
         if has_number(t) and not MARKETISH.search(t) and not is_event({"title": t, "body": on.get("context")}):
-            out.append({"text": t, "field": "one_number.value", "kind": "news", "nums": _nums(t)})
+            fact = daily_fresh.number_fact(on) or {"kind": "number", "key": BE.strip_md(on["unit"]).strip().lower(),
+                                                     "value": daily_fresh.norm_value(on["value"]), "text": t}
+            out.append({"text": t, "field": "one_number.value", "kind": "news", "nums": _nums(t), "fact": fact,
+                        "bare": not has_verb(BE.strip_md(on["unit"]))})
     keep = []
     for x in out:
         big = {n for n in x["nums"] if re.search(r"billion|million|%|\$", n)}
@@ -488,12 +505,15 @@ def market_items(daily):
         for name, s1, key in bits[1:]:
             txt = txt.strip() + "; %s %d%s, %s" % (name, s1[0], "" if s1[1] == s0[1] else " " + s1[1], px(key, s1[2]))
         txt = txt.strip()
-        items.append({"text": txt[0].upper() + txt[1:] + ".", "kind": "market", "field": "harvest-prices"})
+        items.append({"text": txt[0].upper() + txt[1:] + ".", "kind": "market", "field": "harvest-prices",
+                      "fact": {"kind": "streak", "key": "harvest", "value": [[b[0], b[1][0], b[1][1], str(b[1][3])] for b in bits]}})
     rows = {r["key"]: r for r in board_rows(daily)}
     c = crop_row(daily, rows, "corn", "corn-dec")
     b = crop_row(daily, rows, "beans", "beans-nov")
     if c and b and c.get("prev") is not None and b.get("prev") is not None:
-        items.append({"text": overnight_line(c, b), "kind": "market", "field": "locked_changes"})
+        items.append({"text": overnight_line(c, b), "kind": "market", "field": "locked_changes", "overnight": True,
+                      "moves_c": [abs(r["last"] - r["prev"]) * 100 for r in (c, b)],
+                      "fact": {"kind": "overnight", "key": "corn-beans", "value": _iso_day(daily)}})
     return items, st
 
 
@@ -527,7 +547,8 @@ def rank_items(daily, path=PRICE_STATS):
         if isinstance(r.get("pct"), (int, float)) and r.get("n"):
             out.append({"text": "%s at the %s percentile of %s years of weekly closes (%d weeks)."
                         % (name, ordinal(r["pct"]), r.get("years") or 5, r["n"]),
-                        "kind": "rank", "pct": r["pct"], "name": name, "field": "price-stats"})
+                        "kind": "rank", "pct": r["pct"], "name": name, "field": "price-stats",
+                        "fact": {"kind": "percentile", "key": name.lower(), "value": int(r["pct"])}})
     return out
 
 
@@ -553,11 +574,211 @@ def clock_item(daily, today=None):
     txt = "Harvest price so far: " + "; ".join(parts) + tail
     top = crops[0]
     return {"text": txt, "kind": "clock", "field": "harvest_clock", "url": BE.CLOCK_URL, "link": "Tracker",
+            "fact": {"kind": "clock", "key": "harvest", "value": [[c["crop"], round(c["pct"], 1)] for c in crops] + [left]},
             "subject": "%s harvest price %.1f%% %s projected" % ("Bean" if top["crop"].lower().startswith("soy") else "Corn",
                                                                 abs(top["pct"]), "over" if top["pct"] >= 0 else "under")}
 
 
+# ── recurring lines, each with its own rule (Daily panel, Nov 9 2026; Sig "all") ──
+RANK_FILL = 1
+OVERNIGHT_MIN_C = 5.0      # the overnight line prints on a move of 5 cents or more, never on a weekend
+
+
+def overnight_news(daily, x, today):
+    """The overnight (or settle) line is news only on a weekday with a move of OVERNIGHT_MIN_C cents
+    or more in corn or beans. Nov 7 and 8 2026 (a Saturday and Sunday) printed Friday's settle again;
+    Nov 9's line was corn +1½¢ and beans +1¢."""
+    if not isinstance(today, date) or today.weekday() >= 5:
+        return False
+    return max(x.get("moves_c") or [0]) >= OVERNIGHT_MIN_C - 1e-9
+
+
+FUND_KEYS = (("corn", "corn"), ("beans", "soybeans"), ("wheat", "wheat"), ("livecattle", "live cattle"))
+
+
+def _md_short(iso):
+    d = date.fromisoformat(str(iso)[:10])
+    return "%s %d" % (MON3[d.month - 1], d.day)
+
+
+def fund_streak(hist_rows):
+    """(weeks, total change, start date) of the run of weekly net changes of one sign that ends
+    at the newest week, or None."""
+    rows = [r for r in hist_rows or [] if isinstance(r.get("net"), (int, float)) and r.get("date")]
+    if len(rows) < 2:
+        return None
+    d = [rows[i]["net"] - rows[i - 1]["net"] for i in range(1, len(rows))]
+    if d[-1] == 0:
+        return None
+    sign = d[-1] > 0
+    n = 0
+    for x in reversed(d):
+        if x != 0 and (x > 0) == sign:
+            n += 1
+        else:
+            break
+    return n, rows[-1]["net"] - rows[-1 - n]["net"], rows[-1 - n]["date"]
+
+
+def funds_item(today, cot=None, hist=None, repo=REPO):
+    """Saturday only, once per CFTC release (Sig, Nov 9 2026), told as the streak: the
+    market with the longest run of weekly net changes of one sign, its weeks and the
+    contracts since the turn (Nov 7 2026: seven weeks, 414,460 to 8,795). None on any
+    other day, before the release, or when the files do not agree on the week."""
+    if not isinstance(today, date) or today.weekday() != daily_fresh.FUNDS_WEEKDAY:
+        return None
+    try:
+        import cot_calendar
+        if cot is None:
+            with open(os.path.join(repo, "data", "cot.json"), encoding="utf-8") as f:
+                cot = json.load(f)
+        if hist is None:
+            with open(os.path.join(repo, "data", "cot-history.json"), encoding="utf-8") as f:
+                hist = json.load(f)
+        as_of = datetime.strptime(str((cot or {}).get("report_date") or ""), "%B %d, %Y").date()
+        if cot_calendar.release_unknown(as_of):
+            return None
+        rel = cot_calendar.release_date(as_of)
+    except Exception:
+        return None
+    if not 1 <= (today - rel).days <= 6:
+        return None
+    best = None
+    for key, name in FUND_KEYS:
+        rows = ((hist or {}).get("history") or {}).get(key) or []
+        if not rows or str(rows[-1].get("date")) != as_of.isoformat():
+            continue
+        net_now = ((cot or {}).get(key) or {}).get("net")
+        if net_now is not None and net_now != rows[-1]["net"]:
+            continue        # the two files disagree on the week: say nothing
+        st = fund_streak(rows)
+        # corn first when it has a run of two weeks or more (the market most readers sell); else the longest run
+        if st and (best is None or (best[0] != "corn" or best[1][0] < 2) and st[0] > best[1][0]):
+            best = (name, st, rows[-1]["net"])
+    if not best:
+        return None
+    name, (n, total, since), net = best
+    side = "long" if net >= 0 else "short"
+    verb = "bought" if total > 0 else "sold"
+    if n == 1:
+        txt = ("Funds turned and %s %s in the week to %s: net %s contracts %s, %s %s on the week (CFTC)."
+               % (verb, name, _md_short(as_of), "{:,}".format(abs(net)), side, "up" if total > 0 else "down",
+                  "{:,}".format(abs(total))))
+    else:
+        txt = ("Funds have %s %s %d weeks running: net %s contracts %s as of %s, %s %s since %s (CFTC)."
+               % (verb, name, n, "{:,}".format(abs(net)), side, _md_short(as_of), "up" if total > 0 else "down",
+                  "{:,}".format(abs(total)), _md_short(since)))
+    key = _commodity_key(name)
+    return {"text": txt, "kind": "funds", "field": "cot",
+            "fact": {"kind": "funds", "key": key, "value": as_of.isoformat(), "text": txt}}
+
+
+def _commodity_key(name):
+    return {"soybeans": "soybeans", "live cattle": "cattle"}.get(name, name)
+
+
+REPORT_TIME = "11 a.m. CT"
+BEAT = (("corn_yield_2627", "Corn yield", "bu", "%.1f"), ("soy_yield_2627", "Soybean yield", "bu", "%.1f"),
+        ("corn_2627", "Corn ending stocks", "billion bu", "%.3f"), ("soy_2627", "Soybean ending stocks", "million bu", "%d"))
+
+
+def number_to_beat(today, est=None, wasde=None, repo=REPO):
+    """"Corn yield trade range 173.2 to 182.1 bu (average 177.8); USDA said 181.2 in October." for a report
+    dated today, from data/analyst-estimates.json (a range published before the report) and
+    data/wasde.json (last release's figure). "" when no range is in hand: withheld, never guessed."""
+    try:
+        if est is None:
+            with open(os.path.join(repo, "data", "analyst-estimates.json"), encoding="utf-8") as f:
+                est = json.load(f)
+        if wasde is None:
+            with open(os.path.join(repo, "data", "wasde.json"), encoding="utf-8") as f:
+                wasde = json.load(f)
+    except (OSError, ValueError):
+        return ""
+    rep = next((r for r in (est or {}).get("reports") or [] if r.get("date") == today.isoformat()), None)
+    if not rep:
+        return ""
+    ms = {m.get("key"): m for m in rep.get("metrics") or []}
+    for key, label, unit, fmt in BEAT:
+        m = ms.get(key)
+        rng = (m or {}).get("consensus_range") or []
+        if not m or len(rng) != 2 or not all(isinstance(x, (int, float)) for x in rng):
+            continue
+        src = str(m.get("consensus_source_date") or "")
+        if not src or src >= today.isoformat():
+            continue        # a survey from the report day itself may be later than this email
+        txt = "%s trade range %s to %s %s" % (label, fmt % rng[0], fmt % rng[1], unit)
+        if isinstance(m.get("consensus"), (int, float)):
+            txt += " (average %s)" % (fmt % m["consensus"])
+        prev = next((w for w in (wasde or {}).get("metrics") or [] if w.get("key") == key), None)
+        rel = str((wasde or {}).get("release") or "")
+        if prev and isinstance(prev.get("value"), (int, float)) and rel and rel < today.isoformat():
+            txt += "; USDA said %s in %s" % (fmt % prev["value"], date.fromisoformat(rel).strftime("%B"))
+        return txt + "."
+    return ""
+
+
+def report_item(today, repo=REPO, est=None, wasde=None, events=None):
+    """The report day or deadline line (Sig, Nov 9 2026: it outranks the day's number). A USDA
+    report that moves grain today (usda_dates.major_reports) with the number to beat when a trade
+    range is in hand; else an FSA deadline today or tomorrow (usda-calendar.ics). None otherwise."""
+    if not isinstance(today, date):
+        return None
+    reps = usda_dates.major_reports(today)
+    if reps:
+        names = reps[0] if len(reps) == 1 else ", ".join(reps[:-1]) + " and " + reps[-1]
+        txt = "USDA %s today, %s." % (names, REPORT_TIME)
+        beat = number_to_beat(today, est, wasde, repo)
+        if beat:
+            txt += " " + beat
+        return {"text": txt, "kind": "report", "field": "report-day",
+                "fact": {"kind": "report", "key": names, "value": today.isoformat(), "text": txt}}
+    try:
+        import daily_more
+        evs = events if events is not None else daily_more.read_ics(os.path.join(repo, "usda-calendar.ics"))
+    except Exception:
+        return None
+    for ev in sorted(evs or [], key=lambda e: e["date"]):
+        n = (ev["date"] - today).days
+        if ev["summary"].endswith("(FSA)") and "deadline" in ev["summary"].lower() and n in (0, 1):
+            name = re.sub(r"\s*\(FSA\)$", "", ev["summary"])
+            txt = "FSA: %s is %s, %s %s." % (name, "today" if n == 0 else "tomorrow", ev["date"].strftime("%a"),
+                                             _md_short(ev["date"].isoformat()))
+            return {"text": txt, "kind": "report", "field": "report-day",
+                    "fact": {"kind": "report", "key": name, "value": ev["date"].isoformat(), "text": txt}}
+    return None
+
+
+def wasde_watch_ok(when, desc, today):
+    """What to watch names the WASDE only the day before and the day of (Nov 3 to 9 2026: seven
+    issues running, "1.849" three times)."""
+    if not re.search(r"\bWASDE\b", "%s %s" % (when or "", desc or "")):
+        return True
+    if not isinstance(today, date):
+        return True
+    nw = usda_dates.next_wasde(today)
+    return bool(nw) and (nw - today).days in (0, 1)
+
+
+def wow_item(daily, state=None):
+    """The state basis line for this reader (the generator decided it prints today and kept the
+    rows on the issue as basis_wow), the reader's state first; None on a quiet week."""
+    import only_here as OH
+    bw = daily.get("basis_wow")
+    if not isinstance(bw, dict) or not bw.get("print") or not bw.get("rows"):
+        return None
+    txt = OH.wow_text(bw["rows"], state)
+    if not txt:
+        return None
+    return {"text": txt, "kind": "basis_wow", "field": "basis_wow", "url": SITE + "/basis", "link": "Basis by state",
+            "only_here": True}
+
+
 # ── the inbox row ─────────────────────────────────────────────────────────
+CONNECTIVES = (" as ", " after ", " amid ", " while ", " ahead of ", " before ", " despite ", " but ")
+DANGLING = {"the", "a", "an", "and", "or", "of", "to", "in", "on", "for", "with", "as", "at", "by", "from", "its"}
+
+
 def clip(s, room=SUBJECT_MAX, hard=SUBJECT_HARD):
     s = s.rstrip(" .")
     if len(s) <= room:
@@ -569,33 +790,57 @@ def clip(s, room=SUBJECT_MAX, hard=SUBJECT_HARD):
                 return s[:cut]
         if len(s) <= lim:
             return s
+    # no clause mark: cut before a connective (Nov 9 2026: "Crude slips 2.9% to $88.18 as Trump signals no
+    # new Iran strikes" cut at 62 read "... no new Iran"; before "as" it reads "Crude slips 2.9% to $88.18")
+    best = max((s.rfind(w, 0, hard + 1) for w in CONNECTIVES), default=-1)
+    if best >= 20:
+        return s[:best].rstrip(" ,;:")
     cut = s.rfind(" ", 0, hard)
-    return (s[:cut] if cut >= 20 else s[:hard]).rstrip(" ,;:")
+    out = (s[:cut] if cut >= 20 else s[:hard]).rstrip(" ,;:")
+    # never end on a little word (Nov 8 2026 would have read "... crop report lead the")
+    while True:
+        head, _sp, last = out.rpartition(" ")
+        if not head or len(head) < 20 or last.lower() not in DANGLING:
+            return out
+        out = head.rstrip(" ,;:")
 
 
-def subject(daily, news=None, today=None):
-    """(subject, where it came from, the field it rests on)."""
+def subject(daily, news=None, today=None, fresh=None, report=None):
+    """(subject, where it came from, the field it rests on). Sig, Nov 9 2026: a report day or
+    deadline outranks the day's number, and a bare number with no verb never leads. `fresh`
+    (a line -> bool) is the memory: a line that may not print in Today does not lead either."""
+    fresh = fresh or (lambda x: True)
     news = news_items(daily) if news is None else news
+    if report is None:
+        report = report_item(today)
+    if report and fresh(report):
+        return clip(report["text"]), "report", report["field"]
     for x in news:
+        if x.get("bare") or not fresh(x):
+            continue
         if not ELEVATOR.search(x["text"]) and farm_story(x, daily):
             return clip(x["text"]), "news", x["field"]
     iso = _iso_day(daily)
+    mk = market_items(daily)[0]
+    streak_ok = all(fresh(x) for x in mk if x.get("field") == "harvest-prices")
     for crop, key, name in (("corn", "corn-dec", "Corn"), ("soybeans", "beans-nov", "Beans")):
         s = harvest_streak(daily, crop, key)
-        if s and s[0] >= 4:
+        if s and s[0] >= 4 and streak_ok:
             return clip("%s%s %s %s close in a row: %s" % (name, "'s" if name == "Corn" else "'", ordinal(s[0]), s[1],
                                                            px(key, s[2]))), "market", "harvest-prices"
     bm = big_move(daily)
-    if bm:
+    if bm and (bm[2].get("kind") == "last" or (isinstance(today, date) and today.weekday() < 5)) \
+            and fresh({"fact": {"kind": "move", "key": bm[2]["key"], "value": str(bm[2].get("date") or iso)}}):
+        # a settle move never leads a weekend issue (Nov 7 and 8 2026 would have led with Friday's hogs)
         label, p, q = bm
         when = ("overnight" if q.get("kind") == "last" else (_wday(q.get("date")) or "")).strip()
         txt = "%s %s %.1f%% %s to %s" % (label, "up" if p > 0 else "down", abs(p), when, px(q["key"], q["last"]))
         return clip(txt.replace("  ", " ")), "market", "locked_changes"
-    ranks = [r for r in rank_items(daily) if r["pct"] <= 5 or r["pct"] >= 95]
+    ranks = [r for r in rank_items(daily) if (r["pct"] <= 5 or r["pct"] >= 95) and fresh(r)]
     if ranks:
         return clip(ranks[0]["text"].split(" (")[0]), "rank", "price-stats"
     ck = clock_item(daily, today)
-    if ck:
+    if ck and fresh(ck):
         return clip(ck["subject"]), "clock", "harvest_clock"
     head = sentence(daily.get("headline"))
     if head and not ELEVATOR.search(head):
@@ -603,19 +848,47 @@ def subject(daily, news=None, today=None):
     return "The Daily for %s" % (_wday(iso) or "today"), "date", None
 
 
-def today_items(daily, today=None):
-    """4 to 6 lines, each with its number, the subject's story first."""
+def today_items(daily, today=None, fresh=None, report=None, funds=None):
+    """4 to 6 lines, each with its number, the subject's story first. Each recurring line passes
+    its own rule (overnight_news) and the memory (`fresh`); a quiet day gives a shorter list,
+    never a repeat."""
+    fresh = fresh or (lambda x: True)
+    if report is None:
+        report = report_item(today)
+    if funds is None:
+        funds = funds_item(today)
     news = news_items(daily)
+    if funds:       # one fund line per release: the streak, not also the writer's number off the same report
+        news = [x for x in news if (x.get("fact") or {}).get("kind") != "funds"]
     mk, _st = market_items(daily)
+    mk = [x for x in mk if not x.get("overnight") or overnight_news(daily, x, today)]
     ck = clock_item(daily, today)
-    items = list(news) + mk + ([ck] if ck else [])
+    items = ([report] if report else []) + list(news) + ([funds] if funds else []) + mk + ([ck] if ck else [])
+    items = [x for x in items if fresh(x)]
     if len(items) < TODAY_MIN:
+        # at most RANK_FILL percentile lines fill a short list: a quiet Daily is fine, a list of
+        # standing percentiles is not news (Nov 9 2026)
+        fill = 0
         for r in sorted(rank_items(daily), key=lambda r: -abs(r["pct"] - 50)):
-            if len(items) >= TODAY_MIN:
+            if len(items) >= TODAY_MIN or fill >= RANK_FILL:
                 break
-            items.append(r)
+            if fresh(r):
+                items.append(r)
+                fill += 1
     items = [x for x in items if has_number(x["text"]) and not ELEVATOR.search(x["text"]) and not COUNT_LINE.search(x["text"])]
     return items[:TODAY_MAX]
+
+
+def quiet_preheader(daily, subj):
+    """The preheader on a day with nothing else to say (a quiet Today, Nov 9 2026): the day's top
+    news headline, else the top story's title, else the teaser; never the subject again when
+    anything else is there, and never empty."""
+    cands = [sentence(daily.get("headline"))]
+    cands += [sentence(it.get("title")) for it in (daily.get("outside_the_pit") or []) if isinstance(it, dict)]
+    cands += [sentence(daily.get("teaser"))]
+    cands = [c.rstrip(".") for c in cands if c and not ELEVATOR.search(c)]
+    other = [c for c in cands if c != subj.rstrip(".") and not c.startswith(subj.rstrip("."))]
+    return (other or cands or ["The AGSIST Daily for %s" % (_wday(_iso_day(daily)) or "today")])[0]
 
 
 def preheader(local, items, subj, sfield=None):
@@ -646,15 +919,28 @@ def only_here(daily, rain=None, loc=None):
     return [x for x in lines if not COUNT_LINE.search(x["text"])]
 
 
-def promote_basis(items, here, cap):
-    """(items, here) with the Only here basis line moved to second in Today,
-    tagged only_here. Nothing changes when there is no basis line."""
-    b = next((x for x in here if x.get("kind") == "basis_history"), None)
-    if not b or not has_number(b.get("text") or "") or COUNT_LINE.search(b["text"]):
-        return items, here
-    line = dict(b, url=SITE + b["url"] if str(b.get("url") or "").startswith("/") else b.get("url"), only_here=True)
+def reader_state(rain=None, loc=None):
+    """The reader's two-letter state from the saved place (loc) or the ZIP's town, else None."""
+    if isinstance(loc, (tuple, list)) and len(loc) > 2 and loc[2]:
+        return loc[2]
+    z = (rain or {}).get("zip") if isinstance(rain, dict) else None
+    if not z:
+        return None
+    try:
+        import only_here as OH
+        w = OH.where(z)
+        return w[2] if w else None
+    except Exception:
+        return None
+
+
+def promote_wow(items, line, cap):
+    """Items with the state basis line second (Sig, Nov 9 2026: it takes the Today slot the North
+    Dakota basis line held, Nov 2 #258). No line on a quiet week: nothing takes the slot."""
+    if not line or not has_number(line.get("text") or "") or COUNT_LINE.search(line["text"]):
+        return items
     pos = 1 if items else 0
-    return (items[:pos] + [line] + items[pos:])[:cap], [x for x in here if x is not b]
+    return (items[:pos] + [line] + items[pos:])[:cap]
 
 
 # ── links ────────────────────────────────────────────────────────────────
@@ -733,7 +1019,7 @@ def funds_offer(today, cot=None):
 
 
 def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_url=None, today=None,
-          rain=None, pod=None, fact=None, loc=None, county=None, county_ask=None, group=None, cot=None):
+          rain=None, pod=None, fact=None, loc=None, county=None, county_ask=None, group=None, cot=None, memory=None):
     """{"subject", "subject_from", "subject_field", "preheader", "html", "text", "slots"}."""
     camp = BE.campaign_of(daily)
     iso = _iso_day(daily)
@@ -742,22 +1028,33 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
             today = date.fromisoformat(iso)
         except ValueError:
             today = None
+    # the one memory (scripts/daily_fresh.py): what the last issues printed, by fact
+    if memory is None:
+        try:
+            memory = daily_fresh.memory(today) if isinstance(today, date) else []
+        except Exception as ex:
+            print("memory skipped (%s); every line judged on its own rule" % type(ex).__name__)
+            memory = []
+
+    def fresh(x):
+        f = x.get("fact")
+        return not f or not isinstance(today, date) or daily_fresh.still_news(f, memory, today)[0]
+    report = report_item(today)
+    funds_l = funds_item(today)
     news = news_items(daily)
-    subj, sfrom, sfield = subject(daily, news, today)
-    items = today_items(daily, today)
+    subj, sfrom, sfield = subject(daily, news, today, fresh, report)
+    items = today_items(daily, today, fresh, report, funds_l)
     # the subject's story leads the Today list
     lead = [x for x in items if x.get("field") == sfield or (sfrom == "market" and x.get("field") == sfield)]
     items = lead[:1] + [x for x in items if x not in lead[:1]]
     cap = TODAY_WITH_STORIES if top_stories(daily, items) else TODAY_MAX
     items = items[:cap]
-    here = only_here(daily, rain, loc)
-    # 2026-11-02 (fx/dailymore): the basis line (a state's basis against its own
-    # record, with its sample) is the one thing a DTN reader cannot get, so it
-    # rides second in Today instead of down in Only here. The line moves, it is
-    # not added: Today keeps its length (the last line gives way) and Only here
-    # loses the line.
-    items, here = promote_basis(items, here, cap)
-    pre = preheader(local, items, subj, sfield)
+    here = [x for x in only_here(daily, rain, loc) if fresh(x)]
+    # 2026-11-09 (Sig, "all"): the state week-over-week basis line takes the Today slot the
+    # North Dakota basis line held since Nov 2, the reader's state first; on a quiet week
+    # nothing takes it. The generator decided whether it prints (basis_wow on the issue).
+    items = promote_wow(items, wow_item(daily, reader_state(rain, loc)), cap)
+    pre = preheader(local, items, subj, sfield) or quiet_preheader(daily, subj)
     if unsub_url and shared_host(unsub_url):
         unsub_url = None          # BUILD-RULES 11: nothing a reader clicks on a shared host
     if isinstance(elevators, dict) and elevators.get("add_url") and shared_host(elevators["add_url"]):
@@ -783,8 +1080,12 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     text = _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, elevators,
                       site_href, unsub_url, forward_url, today, county=cw, county_ask=ask, stories=stories, funds=funds)
     html, text = tag_group(html, group, True), tag_group(text, group, False)
+    printed = [dict(x["fact"], text=x["text"]) for x in items + here if x.get("fact")]
+    if sfrom == "market" and sfield == "locked_changes" and big_move(daily):
+        q = big_move(daily)[2]
+        printed.append({"kind": "move", "key": q["key"], "value": str(q.get("date") or iso), "text": subj})
     return {"subject": subj, "subject_from": sfrom, "subject_field": sfield, "preheader": pre,
-            "html": html, "text": text, "slots": slots, "items": items}
+            "html": html, "text": text, "slots": slots, "items": items, "printed": printed}
 
 
 # ── Your county this week (Sig, Oct 27 2026: inside the existing slots, Thursdays) ──
@@ -922,7 +1223,12 @@ def _adds_text(daily):
 
 def _watch(daily):
     out = []
-    for w in (daily.get("watch_list") or [])[:2]:
+    today = None
+    try:
+        today = date.fromisoformat(_iso_day(daily)[:10])
+    except ValueError:
+        pass
+    for w in [w for w in (daily.get("watch_list") or []) if wasde_watch_ok(w.get("time"), w.get("desc"), today)][:2]:
         when, desc = BE.strip_md(w.get("time")), BE.strip_md(w.get("desc"))
         if desc:
             out.append((when, desc))
@@ -1044,7 +1350,8 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
          '<tr><td class="mute" style="font-family:%s;font-size:11px;font-weight:700;letter-spacing:.14em;'
          'text-transform:uppercase;color:%s">AGSIST Daily &middot; %s</td></tr>' % (MONO, MUTE, e(date_display))]
     # Today
-    b.append(_label("Today", pad=14))
+    if items:       # a quiet day prints no empty Today heading
+        b.append(_label("Today", pad=14))
     for x in items:
         if x.get("external"):        # a publisher's link: no tracking added
             tail = " " + _a(x["url"], x.get("link") or "Source", None, None, cls="mute link", color=MUTE)
@@ -1161,7 +1468,7 @@ def _html_body(daily, camp, iso, subj, pre, items, here, pod, fact, offer, rain,
 
 def _text_body(daily, camp, iso, items, here, pod, fact, offer, rain, local, elevators,
                site_href, unsub_url, forward_url, today, county=None, county_ask=None, stories=None, funds=None):
-    L = ["AGSIST DAILY, " + (BE.strip_md(daily.get("date")) or iso), "", "TODAY"]
+    L = ["AGSIST DAILY, " + (BE.strip_md(daily.get("date")) or iso)] + (["", "TODAY"] if items else [])
     for x in items:
         if x.get("external"):
             L.append("- " + x["text"] + " " + x["url"])
