@@ -70,6 +70,7 @@ OPTIONAL_TOP_LEVEL = [
     "market_status_reason",
     "prices",
     "chart_series",        # v3.6: {corn, soybeans, wheat} rolling arrays
+    "chart_series_dates",  # 2026-11-09: {corn, soybeans} each series' own settle dates (generate_daily.build_chart_series)
     "locked_prices",       # v3.6: {corn, beans, wheat, ...} today's closes
     # v3.9
     "sponsor",             # {advertiser, headline, body, cta_text, cta_url, is_house_ad}

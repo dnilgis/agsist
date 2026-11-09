@@ -1056,7 +1056,8 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
     # saying) WARN, per the rule that prose heuristics never hard-block.
     try:
         import daily_claims
-        _ctx = daily_claims.context(prices or {}, daily_claims.issue_date(daily, today), daily.get('quote_strip'))
+        _ctx = daily_claims.context(prices or {}, daily_claims.issue_date(daily, today), daily.get('quote_strip'),
+                                    daily_claims.load_progress())
         for _rule, _loc, _s in daily_claims.lint(daily, _ctx):
             _m = '%s: %r' % (_loc, _s[:160])
             # a headline cannot be cut, but it is never sent failing (Sig, Oct 27):

@@ -44,16 +44,26 @@ def _load(path):
         return None
 
 
-def _baseline(rows, key, start):
+# corn and beans read without a month are the nearby, which rolls at first notice
+# (Jan beans from Oct 30 2026): a baseline counts only when its lock names the same month.
+NEARBY_NEEDS_MONTH = ("corn", "beans")
+
+
+def _baseline(rows, key, start, contract=None):
     """The close just before `start`, taken from the first issue on or after it.
     rows: [(date, locked_changes)] oldest first. None unless that issue's own
-    prior close is dated before `start` and within 6 days of it (no gap)."""
+    prior close is dated before `start` and within 6 days of it (no gap), and
+    is the same contract as today's (`contract`, the month today's lock names)."""
     for dt, lc in rows:
         if dt < start:
             continue
         ch = (lc or {}).get(key) or {}
         prev, pd = ch.get("prev"), _d(ch.get("prev_date"))
         if key == "wheat" and dt.isoformat() < WHEAT_ONE_CONTRACT_FROM:
+            return None
+        if contract and ch.get("contract") and ch["contract"] != contract:
+            return None
+        if key in NEARBY_NEEDS_MONTH and (not contract or ch.get("contract") != contract):
             return None
         if not isinstance(prev, (int, float)) or prev <= 0 or pd is None:
             return None
@@ -64,8 +74,15 @@ def _baseline(rows, key, start):
 
 
 def price_windows(today_iso, quotes, today_changes, archive_dir=None):
-    """quotes: the strip's quote dicts (key, name, contract, last). today_changes:
-    today's locked_changes. Returns [{label, items:[{name, text}]}], possibly []."""
+    """quotes: the strip's quote dicts (key, name, contract, last, kind, prev).
+    today_changes: today's locked_changes. Returns [{label, items:[{name, text}]}],
+    possibly [].
+
+    Settles only (2026-11-09 panel): a quote that is this morning's last trade
+    is measured at its prior settle, the last settle a reader can know, so the
+    window never sets an overnight trade against a settle (Nov 9 month to date:
+    Monday's 5:45 a.m. corn trade against Oct 30's settle, beside Friday's Nov
+    bean settle). A window with no settle inside it yet is left out."""
     today = _d(today_iso)
     if today is None:
         return []
@@ -87,10 +104,15 @@ def price_windows(today_iso, quotes, today_changes, archive_dir=None):
             key, last = q.get("key"), q.get("last")
             if not key or not isinstance(last, (int, float)):
                 continue
+            ch = (today_changes or {}).get(key) or {}
+            if q.get("kind") == "last":
+                last, upto = q.get("prev"), _d(ch.get("prev_date"))
+                if not isinstance(last, (int, float)) or upto is None or upto < starts[wk]:
+                    continue  # no settle inside the window yet
             first = next((r for r in rows if r[0] >= starts[wk]), None)
             if first is None or first[0] == today and wk == "week":
                 continue  # the first issue of the week: the day move already says it
-            base = _baseline(rows, key, starts[wk])
+            base = _baseline(rows, key, starts[wk], ch.get("contract"))
             if base is None:
                 continue
             cents = (last - base) * 100

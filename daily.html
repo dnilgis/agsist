@@ -1325,6 +1325,8 @@ function renderToday(data,why){
     function and(xs){return xs.length===1?xs[0]:xs.slice(0,-1).join(', ')+' and '+xs[xs.length-1];}
     var st=qs.filter(function(q){return q.kind==='settle';}),la=qs.filter(function(q){return q.kind!=='settle';});
     var vs=strip.vs_session?wd(strip.vs_session):'',when=strip.session?sess(strip.session):'';
+    var sd={},nd=0,miss=false;st.forEach(function(q){if(q.date){if(!sd[q.date]){sd[q.date]=1;nd++;}}else miss=true;});
+    if(st.length&&!miss)when=nd===1?sess(Object.keys(sd)[0]):'';
     var at=null;la.forEach(function(q){if(!at&&q.at)at=q.at;});at=at||strip.asof;var atS=at?ct(at):'';
     var head;
     if(!la.length)head='Exchange settles'+(when?', '+when:'');
