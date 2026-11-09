@@ -114,7 +114,7 @@ MIN_LISTED = 3                          # biggest sales withheld under this many
 MIN_BUYERS = 5                          # buyers withheld under this many distinct buyers
 MIN_JUDGED = 10                         # unusual and best value withheld under this many judged sales
 BEST_MIN_ACRES = 40
-CSS = '<link rel="stylesheet" href="/components/land-sales.css?v=2">'
+CSS = '<link rel="stylesheet" href="/components/land-sales.css?v=3">'
 JS = '<script src="/components/land-sales.js?v=6" defer></script>'
 KIND_WORDS = {"farm": "farmland", "bldg": "with buildings", "forest": "forest", "small": "small parcel"}
 KIND_CODE = {"farm": "f", "bldg": "b", "forest": "w", "small": "s"}   # the list file's type column
@@ -449,12 +449,55 @@ def month_build(d, year, m0):
         out["unusual_why"] = out["best_why"] = ("only %d sales of %d acres or more could be set against a county's usual price "
                                                 "(a county needs %d comparable sales in 24 months); this needs %d"
                                                 % (len(judged), COMP_MIN_ACRES, MIN_COMPS, MIN_JUDGED))
+    out["stand"] = stand_out(listed, by_acres)
     used = {p["id"] for k in ("biggest", "biggest_acres", "unusual", "best") for p in (out.get(k) or [])}
     names = {"month": key, "sales": {i: names_s[i] for i in sorted(used)},
              "buyers": {b["id"]: names_b[b["id"]] for k in ("buyers_acres", "buyers_dollars") for b in (out.get(k) or [])}}
     if any(i in legals_s for i in used):
         names["legals"] = {i: legals_s[i] for i in sorted(used) if i in legals_s}
     return out, names
+
+
+# ---------------------------------------------------------------- the hub's stand-out sales (Sig, Nov 8)
+# "The map and any stand-out sales top and center." Up to four cards, each a different sale of the latest month: the
+# largest by acres; the highest and the lowest price per acre against the county's usual (bare farmland of
+# BEST_MIN_ACRES or more in a county with a usual, the same "usual" the month page uses); the newest. A card that has no
+# honest candidate is not drawn. A sale is never on two cards. No names; the link is the county page row.
+STAND_COLS = ("id", "st", "county", "place", "when", "basis", "acres", "price", "ppa")
+
+
+def stand_out(listed, by_acres):
+    used = set()
+    cards = []
+
+    def add(kind, p):
+        if p is None or p["id"] in used:
+            return
+        used.add(p["id"])
+        c = {k: p[k] for k in STAND_COLS}
+        c["kind"] = kind
+        u = p.get("usual")
+        c["med"] = u["med"] if u else None
+        c["flag"] = p.get("flag") or 0
+        cards.append(c)
+
+    if by_acres and (by_acres[0]["acres"] or 0) > 0:
+        add("acres", by_acres[0])
+    judged = [p for p in listed if p.get("usual") and p["usual"]["med"] and p["kind"] == "farm" and (p["acres"] or 0) >= BEST_MIN_ACRES and p["ppa"]
+              and p.get("flag") == 0]     # inside the county's usual range: the far-off prices (family sales, buildings, timber) are on the month page
+    ratio = lambda p: p["ppa"] / p["usual"]["med"]
+    mid = {}
+    for st in {p["st"] for p in judged}:
+        v = sorted(p["ppa"] for p in judged if p["st"] == st)
+        mid[st] = v[len(v) // 2]
+    # town and development ground (a price over LEAD_FARM_X times the state's middle) is not a farm stand-out
+    hi = sorted((p for p in judged if ratio(p) > 1 and p["id"] not in used and p["ppa"] <= LEAD_FARM_X * mid[p["st"]]), key=lambda p: (-ratio(p), p["id"]))
+    lo = sorted((p for p in judged if ratio(p) < 1 and p["id"] not in used), key=lambda p: (ratio(p), p["id"]))
+    add("high", hi[0] if hi else None)
+    add("low", next((p for p in lo if p["id"] not in used), None))
+    new = sorted((p for p in listed if p["when"] and p["id"] not in used), key=lambda p: (p["when"], p["price"], p["id"]), reverse=True)
+    add("new", new[0] if new else None)
+    return cards
 
 
 # ---------------------------------------------------------------- the home page's one sale
@@ -911,41 +954,22 @@ def month_page(d, M, early, coverage, archive):
     return "\n".join(b) + "\n" + FOOT
 
 
-# The coverage map is the shared real US map (components/usmap.js, data/us-states-map.svg); the colors are the legend's.
-MAP_FILL = {"live": "#2e7d4f", "held": "#8fbf9f", "request": "#d9b45a", "county": "#e6d6a8", "nondisclosure": "#9a7d8f", "unchecked": ""}
-MAP_JS = ('<script src="/components/usmap.js?v=1" defer></script><script>document.addEventListener("DOMContentLoaded",function(){'
+# The map is the shared real US map (components/usmap.js, data/us-states-map.svg). It shows only what a reader can use
+# (Sig, Nov 8): the states with sales on these pages (each links to its county list) and the states where the Farmland
+# Atlas has other county land values (each links to its Atlas page). Every other state is drawn neutral with its name and
+# nothing else. data/land-sales/coverage.json (our own research status, kept by hand) feeds no page and no public file.
+MAP_FILL = {"live": "#2e7d4f", "atlas": "#e6d6a8"}
+MAP_WORDS = {"live": "Sales on these pages", "atlas": "Other county land values"}
+MAP_JS = ('<script src="/components/usmap.js?v=2" defer></script><script>document.addEventListener("DOMContentLoaded",function(){'
           'var h=document.getElementById("ls-map");if(!h||!window.AgUSMap)return;var d=JSON.parse(h.getAttribute("data-map")),F=%s,s={};'
-          'for(var k in d)s[k]={fill:F[d[k][0]]||"",text:d[k][1].split(": ").slice(1).join(": ")};'
-          'AgUSMap.mount(h,{states:s,hint:"Tap a state to see where it stands.",name:"Map of states by whether their farm sales are on this site"});});</script>'
+          'for(var k in d)s[k]={fill:F[d[k][0]]||"",text:d[k][1],href:d[k][2]};'
+          'AgUSMap.mount(h,{states:s,plain:true,hint:"Tap a state.",name:"Map of the states with farmland sales on this site"});});</script>'
           % json.dumps(MAP_FILL, separators=(",", ":")))
 
 
-def coverage_html(cov, d):
-    rows = cov.get("states") or []
-    n = sum(1 for r in rows if r.get("status") == "live")
-    live = [r["name"] for r in rows if r.get("status") == "live"]
-    h = ['<h2 id="coverage">Where the sales come from</h2>',
-         '<p class="ls-cov-n">Sales reported for %d states: %s. The goal is every state; below is where each one stands.</p>' % (n, e(and_list(live))),
-         '<div class="ls-usmap" id="ls-map" data-map="%s"><noscript><p>The map needs JavaScript. The source table below lists every state.</p></noscript></div>' % e(json.dumps(
-             {r["st"]: [r["status"], r["name"] + ": " + cov["labels"].get(r["status"], r["status"])] for r in rows}, separators=(",", ":")))]
-    h.append(MAP_JS)
-    h.append('<p class="ls-key">' + " ".join('<span class="ls-k ls-st-%s"></span> %s' % (k, e(v)) for k, v in cov["labels"].items()) + "</p>")
-    h.append(survey_html(d))
-    h.append('<details class="ls-src"><summary>The source table, state by state</summary><div class="ls-tw"><table class="ls-t' + lay_class(STACK_LAYOUTS["source"][0]) + '"><thead><tr>'
-             '<th scope="col">State</th><th scope="col">On this site</th><th scope="col">Source</th><th scope="col">Names in the source</th>'
-             '<th scope="col">How often</th><th scope="col">Terms</th></tr></thead><tbody>')
-    for r in rows:
-        h.append("<tr><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>"
-                 % (e(r["name"]), e(cov["labels"].get(r["status"], r["status"])), e(r.get("source") or ""), e(r.get("names") or ""),
-                    e(r.get("cadence") or ""), e(r.get("terms") or "")))
-    h.append("</tbody></table></div><p class=\"ls-fine\">%s</p></details>" % e(cov.get("note") or ""))
-    return "\n".join(h)
-
-
 # Where sale prices are not public record, the county land values two other sources publish
-# (data/land/<st>/survey.json, scripts/build_land_survey.py): named by evidence type and year,
-# counted by county, linked to the Atlas county pages that show them. Never a recorded sale and
-# never in the middles above. test/land-survey.test.mjs checks the counts against the files.
+# (data/land/<st>/survey.json, scripts/build_land_survey.py): counted by county, linked to the Atlas county pages that
+# show them. Never a recorded sale and never in the middles above. test/land-survey.test.mjs checks the counts against the files.
 SURVEY_STATES = (("ND", "North Dakota", "north-dakota"), ("KS", "Kansas", "kansas"))
 
 
@@ -958,28 +982,48 @@ def survey_counts(S):
     return vals, len(S.get("counties") or {})
 
 
-def survey_html(d):
-    rows = []
+def survey_states(d):
+    """[(st, name, slug, counties, data-file)] for the states whose Atlas pages show other county land values."""
+    out = []
     for st, name, slug in SURVEY_STATES:
         try:
             S = json.load(open(d.repo / "data" / "land" / st.lower() / "survey.json", encoding="utf-8"))
         except (OSError, ValueError):
             continue
-        src = S.get("source") or {}
         n, _ = survey_counts(S)
-        if not n:
-            continue
-        if st == "ND":
-            what = "price of rented land and cash rent, %s, %d" % (S.get("evidence"), S.get("year"))
-        else:
-            what = "%s, %d (sales %s)" % (S.get("evidence"), S.get("year"), S.get("period"))
-        rows.append('<li><b>%s:</b> %s, %d counties, from %s. On each <a href="/farmland-atlas/%s/">%s county page</a> in the Farmland Atlas.</li>'
-                    % (e(name), e(what), n, SL.link(src.get("page") or src.get("url") or "", e(src.get("org") or ""), ' rel="noopener"'), slug, e(name)))
+        if n:
+            out.append((st, name, slug, n, S))
+    return out
+
+
+def map_html(d, live_href="#%s"):
+    """The map and its two-key legend. live_href: where a state with sales goes (% the state's slug)."""
+    data = {}
+    for st in d.states:
+        data[st] = ["live", MAP_WORDS["live"], live_href % SLUG[st]]
+    for st, name, slug, n, S in survey_states(d):
+        data[st] = ["atlas", MAP_WORDS["atlas"], "/farmland-atlas/%s/" % slug]
+    return ('<div class="ls-usmap" id="ls-map" data-map="%s"><noscript><p>The map needs JavaScript. Every state with sales is in the list below.</p></noscript></div>'
+            % e(json.dumps(data, separators=(",", ":")))
+            + MAP_JS
+            + '<p class="ls-key"><span class="ls-k ls-st-live"></span> %s <span class="ls-k ls-st-county"></span> %s</p>' % (MAP_WORDS["live"], MAP_WORDS["atlas"]))
+
+
+def survey_html(d):
+    """One short line and links: where sale prices are private, the Atlas shows county land values."""
+    rows = survey_states(d)
     if not rows:
         return ""
-    return ('<div class="ls-surv" id="other-evidence"><p><b>Where sale prices are private: other county land values</b></p><ul>%s</ul>'
-            '<p class="ls-fine">Not recorded sales. These are labeled by where they come from and never mixed into the sale middles on these pages.</p></div>'
-            % "".join(rows))
+    links = " and ".join('<a href="/farmland-atlas/%s/">%s</a> (%d counties)' % (slug, e(name), n) for st, name, slug, n, S in rows)
+    return ('<p class="ls-surv" id="other-evidence">Other county land values, not recorded sales: %s in the Farmland Atlas.</p>' % links)
+
+
+def coverage_html(cov, d):
+    """The month page's block: the map with the states that have sales."""
+    live = [NAME[st] for st in d.states]
+    return "\n".join(['<h2 id="coverage">Where the sales come from</h2>',
+                      '<p class="ls-cov-n">Sales reported for %d states: %s.</p>' % (len(live), e(and_list(live))),
+                      map_html(d, "/land-sales/#%s"), survey_html(d)])
 
 
 MONTH_STATES = ("FL",)     # files with sale months, not days (fetch_land_sales STATES[st]["dates"]): their pages say months only
@@ -1129,7 +1173,7 @@ JUMP_JS = ("(function(){function go(){try{var w=JSON.parse(localStorage.getItem(
            "var S={IL:'illinois',WI:'wisconsin',IN:'indiana',VT:'vermont',NJ:'new-jersey',FL:'florida',ILLINOIS:'illinois',WISCONSIN:'wisconsin',INDIANA:'indiana',VERMONT:'vermont','NEW JERSEY':'new-jersey',FLORIDA:'florida'},"
            "st=S[String(w.state).toUpperCase()],el=document.getElementById('ls-mine');if(!el)return;"
            "var n=function(x){return String(x||'').toLowerCase().replace(/\\s+(county|parish)$/,'').replace(/[^a-z]/g,'')};"
-           "if(!st){el.innerHTML='Your state is not on these pages yet: <a href=\"#coverage\">where each state stands</a>.';el.hidden=false;return;}"
+           "if(!st){el.innerHTML='Your state is not on these pages yet: <a href=\"#coverage\">the map</a>.';el.hidden=false;return;}"
            "var a=null,c=n(w.county);if(c){var L=document.querySelectorAll('#'+st+' + ul a');"
            "for(var i=0;i<L.length;i++){if(n(L[i].textContent)===c){a=L[i];break;}}}"
            "var h=document.getElementById(st).textContent;"
@@ -1138,12 +1182,34 @@ JUMP_JS = ("(function(){function go(){try{var w=JSON.parse(localStorage.getItem(
            "if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();")
 
 
-def jump_row(d, index=False):
-    links = " &middot; ".join('<a href="#%s">%s</a>' % (SLUG[st], e(NAME[st])) for st in d.states)
-    if index:
-        links += ' &middot; <a href="#illinois-index">Illinois sale index</a>'
-    return ('<p class="ls-jump">Jump to: %s &middot; <a href="#coverage">Other states</a></p>'
-            '<p class="ls-mine" id="ls-mine" hidden></p><script>%s</script>' % (links, JUMP_JS))
+def mine_row():
+    """The saved-place line (JUMP_JS): hidden until this device has a saved county."""
+    return '<p class="ls-mine" id="ls-mine" hidden></p><script>%s</script>' % JUMP_JS
+
+
+STAND_TAG = {"acres": "Largest by acres", "high": "Highest price per acre", "low": "Lowest price per acre", "new": "Newest sale"}
+OPEN_JS = ("(function(){function o(){var h=location.hash.slice(1),t=h&&document.getElementById(decodeURIComponent(h));if(!t)return;"
+           "for(var n=t.parentElement;n;n=n.parentElement)if(n.tagName==='DETAILS')n.open=true;t.scrollIntoView();}"
+           "addEventListener('hashchange',o);if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',o);else o();})();")
+PICK_JS = ("(function(){var f=document.getElementById('ls-pick');if(!f)return;var S=f.elements.st,C=f.elements.co;"
+           "function fill(){var id=S.value;C.length=1;C.disabled=!id;if(!id)return;"
+           "var L=document.querySelectorAll('#'+id+' + ul a');for(var i=0;i<L.length;i++){var o=new Option(L[i].textContent.replace(/ County$/,''),L[i].getAttribute('href'));C.add(o);}}"
+           "S.addEventListener('change',fill);"
+           "f.addEventListener('submit',function(e){e.preventDefault();var v=C.value||(S.value?'#'+S.value:'');if(!v)return;"
+           "if(v.charAt(0)==='#'){location.hash=v;}else location.href=v;});})();")
+
+
+def stand_card(c):
+    """One stand-out sale: what it is, where, acres, price, $/acre, date; the whole card is the link."""
+    where = ("%s, " % e(str(c["place"]).strip(" ,")) if str(c.get("place") or "").strip(" ,") else "") + "%s County, %s" % (e(c["county"]), e(c["st"]))
+    sub = ""
+    if c["kind"] in ("high", "low") and c.get("med"):
+        pct = round(abs(c["ppa"] / c["med"] - 1) * 100)
+        sub = '<span class="ls-d">%d%% %s the county usual of %s</span>' % (pct, "above" if c["kind"] == "high" else "below", money(c["med"]))
+    return ('<li><a class="ls-card" href="/land-sales/%s/%s#s-%s"><span class="ls-tag">%s</span><b>%s acres in %s</b>'
+            '<span class="ls-fig">%s &middot; %s an acre</span><span class="ls-d">%s</span>%s</a></li>'
+            % (SLUG[c["st"]], county_slug(c["county"]), e(c["id"]), STAND_TAG[c["kind"]], acres(c["acres"]), where,
+               money(c["price"]), money(c["ppa"]), e(when_text(c)), sub))
 
 
 def index_section(repo):
@@ -1163,35 +1229,49 @@ def index_page(d, latest, counties, early, coverage, archive, ix=None):
     url = ORIGIN + "/land-sales/"
     # Nov 4 (Sig: "my buddy didn't know that farm land sales were on agsist"): the words people search for first
     title = "Farmland Sales Prices by County | AGSIST"     # 60 characters or fewer; the states are in the description
-    desc = ("What farmland sold for in %s: every recorded farm sale by county with acres, price and price per acre, a monthly "
-            "update of the biggest buyers and sales, and where every state's sales come from." % and_list(sorted(NAME[x] for x in d.states)))
+    desc = ("What farmland sold for in %s: every recorded farm sale by county with acres, price and price per acre, and a monthly "
+            "update of the biggest buyers and sales." % and_list(sorted(NAME[x] for x in d.states)))
     if ix:
         desc = ("What farmland sold for in %s: every recorded farm sale by county with acres, price and price per acre, the "
-                "Illinois farmland sale index, a monthly update of the biggest buyers and sales, and where every state's sales come "
-                "from." % and_list(sorted(NAME[x] for x in d.states)))
+                "Illinois farmland sale index and a monthly update of the biggest buyers and sales." % and_list(sorted(NAME[x] for x in d.states)))
     ld = [crumbs([("AGSIST", ORIGIN + "/"), ("Farmland sales", url)])] + (ix["ld"] if ix else [])
-    b = [head(title, desc, url, ld, early, (ix["css"] if ix else "") + stack_css()), '<div class="ls-w">', "<h1>Farmland sales</h1>"]
+    b = [head(title, desc, url, ld, early, (ix["css"] if ix else "") + stack_css()), '<div class="ls-w ls-hub">', "<h1>Farmland sales</h1>"]
+    # top: one sentence, the map, the stand-out sales, the picker (Sig, Nov 8, on a phone: the map and the stand-out sales top and center)
     if latest:
-        big = latest.get("top") or []
-        b.append('<p class="ls-ans">The %s update: %d farm sales of %d acres or more in %s.%s <a href="/land-sales/%s">See the biggest buyers, sales and unusual prices</a>.</p>'
-                 % (e(latest["label"]), latest["n"], LIST_MIN_ACRES, e(and_list([NAME[s] for s in latest["states"]])),
-                    (" The largest by acres: %s acres in %s County, %s, for %s." % (acres(big[0]["acres"]), e(big[0]["county"]), big[0]["st"], money(big[0]["price"]))) if big else "",
-                    latest["month"]))
-    b.append(jump_row(d, bool(ix)))
-    b.append('<div class="ls-ask" id="email"><div data-land-alert data-source="page:land-sales"></div></div>')
+        b.append('<p class="ls-ans">%d farm sales in %s. Tap a state, or see the biggest <a href="/land-sales/%s">buyers and sales of the month</a>.</p>'
+                 % (latest["n"], e(latest["label"]), latest["month"]))
+    else:
+        b.append('<p class="ls-ans">What farmland sold for, county by county. Tap a state.</p>')
+    b.append('<div id="coverage">%s</div>' % map_html(d))
+    stand = (latest or {}).get("stand") or []
+    if stand:
+        b.append('<h2 id="stand-out">Stand-out sales, %s</h2><ul class="ls-cards">%s</ul>' % (e(latest["label"]), "".join(stand_card(c) for c in stand)))
+    b.append('<form class="ls-pick" id="ls-pick" aria-label="Find your state or county"><h2>Find your state or county</h2><div class="ls-pr">'
+             '<label>State<select name="st"><option value="">Choose</option>%s</select></label>'
+             '<label>County<select name="co" disabled><option value="">Choose</option></select></label>'
+             '<button type="submit">Go</button></div><noscript><p class="ls-fine">The full list is in All states and counties, below.</p></noscript></form>'
+             % "".join('<option value="%s">%s</option>' % (SLUG[st], e(NAME[st])) for st in d.states))
+    b.append(mine_row())
+    b.append("<script>%s</script>" % PICK_JS)
+    # below: the latest months, other values, the email ask, the Illinois index, the full lists, sources
+    if archive:
+        b.append('<h2 id="months">Latest months</h2><p class="ls-mo">%s</p>' % " &middot; ".join('<a href="/land-sales/%s">%s</a>' % (k, e(v)) for k, v in archive[:6]))
+    sv = survey_html(d)
+    if sv:
+        b.append(sv)
+    if ix:
+        b.append('<details class="ls-all ls-ixf" id="ix-fold"><summary>Illinois farmland sale index</summary>%s</details>' % ix["html"])
+    b.append('<details class="ls-all" id="all-states"><summary>All states and counties</summary>')
     for st in d.states:
-        b.append('<h2 id="%s">%s</h2><ul class="ls-cos">' % (SLUG[st], e(NAME[st])))
+        b.append('<h3 id="%s">%s</h3><ul class="ls-cos">' % (SLUG[st], e(NAME[st])))
         for name, slug, n in counties[st]:
             b.append('<li><a href="/land-sales/%s/%s">%s County</a> <span>%d</span></li>' % (SLUG[st], slug, e(name), n))
         b.append("</ul>")
-    b.append('<p class="ls-fine">The number beside each county: sales of %d acres or more in the last 12 months.</p>' % LIST_MIN_ACRES)
-    if ix:
-        b.append(ix["html"])
-    b.append(coverage_html(coverage, d))
-    if archive:
-        b.append('<h2 id="months">Monthly updates</h2><p>%s</p>' % " &middot; ".join('<a href="/land-sales/%s">%s</a>' % (k, e(v)) for k, v in archive))
+    b.append('<p class="ls-fine">The number beside each county: sales of %d acres or more in the last 12 months.</p></details>' % LIST_MIN_ACRES)
+    b.append('<div class="ls-ask" id="email"><div data-land-alert data-source="page:land-sales"></div></div>')
     b.append('<p class="ls-fine">%s</p>' % e(src_line(d, d.states)))
     b.append(method_html(d.states) + "</div>")
+    b.append("<script>%s</script>" % OPEN_JS)
     foot = FOOT.replace("</main>", "</main>\n<script>%s</script>" % ix["js"], 1) if ix else FOOT
     return "\n".join(b) + "\n" + foot
 
@@ -1231,7 +1311,7 @@ def build(repo=REPO):
     if M["fresh"] and M["n"]:
         top = [{k: p[k] for k in ("id", "st", "county", "place", "when", "basis", "acres", "price", "ppa")} for p in (M.get("biggest_acres") or [])[:3]]
         latest = {"month": key, "label": M["label"], "url": "/land-sales/" + key, "published": pub, "states": M["states"],
-                  "n": M["n"], "per_state": {s: M["per_state"][s]["n"] for s in M["states"]}, "top": top,
+                  "n": M["n"], "per_state": {s: M["per_state"][s]["n"] for s in M["states"]}, "top": top, "stand": M.get("stand") or [],
                   "n_unusual": M["n_unusual"], "n_buyers": M["n_buyers"],
                   "top_state": {st: next(({k: p[k] for k in ("id", "st", "county", "place", "when", "basis", "acres", "price", "ppa")}
                                           for p in (M.get("biggest_acres_all") or []) if p["st"] == st), None) for st in M["states"]},
@@ -1481,9 +1561,25 @@ def selftest():
            and re.search(r"data-ls-c='\[\"WI\",\"55999\",[^']*,0\]'", texts["land-sales/wisconsin/testa-county.html"]) is not None)
         ck("every page carries the GA config, not only the guard (Nov 4: no land page view reached GA)",
            all("gtag('config','G-TEST1234')" in v and "agsist-ga-guard" in v for k, v in texts.items() if k.endswith(".html")))
-        ck("the hub and the monthly page draw the shared US map, with every state's status in the HTML, not a tile grid",
+        ck("the hub and the monthly page draw the shared US map, not a tile grid, with only states a reader can use",
            all('id="ls-map"' in texts[k] and "/components/usmap.js" in texts[k] and "ls-s ls-st-" not in texts[k]
-               and "&quot;IL&quot;:[&quot;live&quot;" in texts[k] for k in ("land-sales/index.html", "land-sales/2026-09.html")))
+               and "&quot;WI&quot;:[&quot;live&quot;" in texts[k] and "&quot;IL&quot;" not in texts[k] for k in ("land-sales/index.html", "land-sales/2026-09.html")))
+        hub = texts["land-sales/index.html"]
+        ck("no internal research status on the hub or month page (Nov 8): no 'on request', 'not built yet', 'not checked', 'not public record', no source table",
+           not re.search(r"on request|for a fee|not built yet|not checked|not public record|No public source|Where each state stands|source table|The goal is every state|nondisclosure|unchecked",
+                         hub + texts["land-sales/2026-09.html"], re.I) and "Kansas" not in hub)
+        ck("hub order: one title, the map, the stand-out sales, the picker, then the months and the folds",
+           [hub.find(x) for x in ('<h1>', 'id="ls-map"', 'id="stand-out"', 'id="ls-pick"', 'id="months"', 'id="all-states"', 'id="how-counted"')]
+           == sorted(hub.find(x) for x in ('<h1>', 'id="ls-map"', 'id="stand-out"', 'id="ls-pick"', 'id="months"', 'id="all-states"', 'id="how-counted"'))
+           and -1 not in [hub.find(x) for x in ('id="stand-out"', 'id="ls-pick"', 'id="months"')])
+        ck("hub: the stand-out cards are distinct sales, each with acres, price, $/acre, date and a link to the county row",
+           len(re.findall(r'class="ls-card" href="/land-sales/wisconsin/testa-county#s-[0-9a-f]{10}"', hub)) >= 3
+           and len(set(re.findall(r'#s-([0-9a-f]{10})"', hub))) == len(re.findall(r'class="ls-card"', hub))
+           and "Largest by acres" in hub and "Newest sale" in hub and re.search(r"an acre</span>", hub))
+        ck("hub: every county link is in the closed All states and counties fold exactly once",
+           hub.count('href="/land-sales/wisconsin/testa-county"') == 1
+           and hub.index('id="all-states"') < hub.index('href="/land-sales/wisconsin/testa-county"') and '<details class="ls-all" id="all-states">' in hub)
+        ck("the fixture has no private values, so the hub says nothing about them", 'id="other-evidence"' not in hub)
         lat = json.loads(texts["data/land-sales/latest.json"])
         ck("latest.json names no one", not any(n in texts["data/land-sales/latest.json"] for n in allnames))
         # one sale, linked (Nov 3): every row of the county table has id="s-<sale id>", the same on a rebuild

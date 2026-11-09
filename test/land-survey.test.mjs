@@ -122,14 +122,19 @@ test("neither source reaches the recorded-sale files", () => {
   assert.doesNotMatch(src, /survey\.json/, "the sale builders do not read the survey files outside the labeled hub block");
 });
 
-test("the land sales hub names both, with the county counts from the files", () => {
-  const html = rd("land-sales/index.html");
-  const block = (html.match(/<div class="ls-surv" id="other-evidence">([\s\S]*?)<\/div>/) || [])[1] || "";
-  assert.ok(block, "the block is on the hub");
+test("the land sales hub (built here, not the carried file) names both in one short line, with the county counts from the files", () => {
+  const out = execFileSync("python3", ["-c", [
+    "import sys,json,pathlib", "sys.path.insert(0, 'scripts')", "import build_land_sales as B",
+    "class D: repo = pathlib.Path('.'); states = ['IL']",
+    "print(json.dumps(B.survey_html(D)))"].join("\n")], { cwd: ROOT, encoding: "utf8" });
+  const html = JSON.parse(out.trim().split("\n").pop());
+  const block = (html.match(/<p class="ls-surv" id="other-evidence">([\s\S]*?)<\/p>/) || [])[1] || "";
+  assert.ok(block, "the line is built");
   for (const [st, slug, S] of STATES) {
     const n = Object.values(S.counties).filter((c) => Object.values(c).some((v) => v && typeof v === "object" && (v.value != null || v.avg != null))).length;
-    assert.match(block, new RegExp(`${S.evidence.replace(/[.,]/g, "\\$&")}, ${S.year}[^<]*?, ${n} counties`), `${st}: ${n} counties`);
+    assert.match(block, new RegExp(`\\(${n} counties\\)`), `${st}: ${n} counties`);
     assert.ok(block.includes(`href="/farmland-atlas/${slug}/"`), `${st}: links the Atlas state`);
   }
-  assert.match(block, /Not recorded sales/);
+  assert.match(block, /not recorded sales/);
+  assert.ok(block.length < 400 && !/PDF|Trust Lands|K-State|source|request|fee/i.test(block), "short, no source-acquisition detail");
 });

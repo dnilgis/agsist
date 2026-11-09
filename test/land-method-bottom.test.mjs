@@ -92,7 +92,7 @@ test("county pages and the hub: the same block at the bottom, nothing of it at t
   for (const p of ["land-sales/florida/hardee-county.html", "land-sales/wisconsin/testc-county.html", "land-sales/index.html"]) {
     const h = body(rd(p));
     const { a, blk } = oneClosedBlock(h, p);
-    const first = p.endsWith("index.html") ? h.indexOf('<h2 id="wisconsin">') : h.indexOf('<h2 id="every-sale">');
+    const first = p.endsWith("index.html") ? h.indexOf('<details class="ls-all" id="all-states">') : h.indexOf('<h2 id="every-sale">');
     assert.ok(first > 0 && a > first, `${p}: below the sales`);
     if (!p.endsWith("index.html")) assert.ok(a > h.lastIndexOf("</table>", a) && h.lastIndexOf("</table>", a) > first, `${p}: after the sale table`);
     assert.ok(!h.slice(0, first).includes(ent(T.rule)), `${p}: the rule is not at the top`);

@@ -73,3 +73,29 @@
 .ls-dp p { margin: .2rem 0; }
 @media (max-width: 560px) { .ls-dl { grid-template-columns: 1fr; gap: 0; } .ls-dl dd { margin-bottom: .35rem; } }
 @media print { .ls-nm, .ls-rm, .ls-feat .ls-feat-r, .ls-dtc { display: none !important; } }
+/* the hub on a phone (Nov 8, 2026): map and stand-out sales first, one column, 12 px gutters */
+.ls-hub h1 { margin-bottom: .3rem; }
+.ls-hub .ls-ans { font-size: 1rem; margin-bottom: .6rem; }
+.ls-hub .ls-usmap { margin: 0 -4px; }
+.ls-hub .ls-key { margin: .4rem 0 0; }
+.ls-hub .ls-key .ls-k:first-child { margin-left: 0; }
+.ls-hub h2 { font-size: 1.15rem; margin: 1.3rem 0 .5rem; }
+.ls-cards { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: .5rem; }
+.ls-card { display: block; text-decoration: none; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md, 8px); padding: .6rem .75rem; color: var(--text); line-height: 1.4; }
+.ls-hub .ls-card { color: var(--text); }
+.ls-card:hover { border-color: var(--brand, var(--gold)); }
+.ls-card:focus-visible, .ls-pick button:focus-visible, .ls-pick select:focus-visible { outline: 2px solid var(--brand, var(--gold)); outline-offset: 2px; }
+.ls-card > span, .ls-card > b { display: block; }
+.ls-tag { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+.ls-fig { font-variant-numeric: tabular-nums; }
+.ls-vs { font-size: .8rem; }
+@media (min-width: 640px) { .ls-cards { grid-template-columns: 1fr 1fr; } }
+.ls-pick h2 { margin-top: 1.3rem; }
+.ls-pr { display: grid; grid-template-columns: 1fr 1fr auto; gap: .5rem; align-items: end; }
+.ls-pick label { display: block; font-size: .8rem; color: var(--text-muted); min-width: 0; }
+.ls-pick select, .ls-pick button { font: inherit; font-size: 1rem; box-sizing: border-box; width: 100%; height: 2.75rem; margin-top: .2rem; border-radius: var(--r-md, 8px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .5rem; }
+.ls-pick button { width: auto; padding: 0 1rem; margin: 0; font-weight: 700; cursor: pointer; color: var(--brand, var(--gold)); border-color: var(--brand, var(--gold)); }
+.ls-mo, .ls-surv { margin: 0 0 .6rem; }
+.ls-all summary { cursor: pointer; font-weight: 600; padding: .6rem 0; margin: .4rem 0; display: list-item; }
+.ls-all h3 { font-size: 1rem; margin: .8rem 0 .3rem; scroll-margin-top: 4.5rem; }
+.ls-all .ls-cos { columns: 2 9em; }
