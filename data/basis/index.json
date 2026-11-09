@@ -1,5 +1,5 @@
 {
- "generated":"2026-11-08",
+ "generated":"2026-11-09",
  "units":"integer cents per bushel",
  "note":"Basis history by elevator, commodity and delivery month.",
  "states":{
@@ -59,9 +59,9 @@
    "kb":101.8
   },
   "KS":{
-   "rows":9316,
+   "rows":9314,
    "facilities":441,
-   "kb":407.2
+   "kb":407.4
   },
   "KY":{
    "rows":139,
@@ -101,12 +101,12 @@
   "ND":{
    "rows":10515,
    "facilities":128,
-   "kb":457.9
+   "kb":458.7
   },
   "NE":{
    "rows":13983,
    "facilities":345,
-   "kb":623.9
+   "kb":624.6
   },
   "NY":{
    "rows":10,
@@ -121,7 +121,7 @@
   "OK":{
    "rows":3789,
    "facilities":94,
-   "kb":162.4
+   "kb":162.8
   },
   "ON":{
    "rows":25,
