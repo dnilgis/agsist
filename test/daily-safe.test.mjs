@@ -77,7 +77,8 @@ test("daily.yml: every code self-test runs in one report-only step; none is a ha
                    '"scripts/voice_lint.py", "--selftest"', '"scripts/report_day.py", "--selftest"', '"scripts/usda_dates.py", "--selftest"',
                    "scripts/test_daily_trust.py", '"scripts/watch_dates.py", "--selftest"', '"scripts/streak_words.py", "--selftest"',
                    "scripts/test_daily_numbers.py", '"scripts/daily_claims.py", "--selftest"', "scripts/test_fact_check.py",
-                   '"scripts/headline_fix.py", "--selftest"', '"scripts/cause_fix.py", "--selftest"', '"scripts/daily_edge.py", "--selftest"']) assert.ok(list.includes(c), `still run: ${c}`);
+                   '"scripts/headline_fix.py", "--selftest"', '"scripts/cause_fix.py", "--selftest"', '"scripts/daily_edge.py", "--selftest"',
+                   "scripts/test_daily_clock.py", "scripts/test_daily_memory.py"]) assert.ok(list.includes(c), `still run: ${c}`);
   // the one exception: the send-loop guard stays a hard step right before the send (it stops a double or mass send)
   assert.ok(!list.includes('["scripts/test_send_loops.py"]'), "the send-loop guard is not report-only");
   const sl = steps(gen).find((x) => x.startsWith("- name: Neither send loop can re-mail the whole list"));
