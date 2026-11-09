@@ -14,7 +14,10 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const dir = mkdtempSync(tmpdir() + "/cbt-");
 const r = spawnSync("python3", ["scripts/build_cash_bid_pages.py", "--selftest"], { cwd: ROOT, env: { ...process.env, CBT_FIXTURE_DIR: dir }, encoding: "utf8" });
 const pages = [];
+// company/ holds the elevator company pages (#475); they are not town pages and have their own fold test
+// (test/cash-bid-state-terms-fold.test.mjs).
 for (const st of existsSync(dir) ? readdirSync(dir) : []) {
+  if (st === "company") continue;
   const d = `${dir}/${st}`;
   try { for (const f of readdirSync(d)) if (f.endsWith(".html") && f !== "index.html") pages.push(`${d}/${f}`); } catch {}
 }
