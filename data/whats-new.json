@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-09-cash-bids-steady",
+   "date": "2026-11-09",
+   "title": "Cash bids holds still while it loads",
+   "line": "The cash bids page no longer jumps while your saved ZIP's bids come in, so the email box and links below stay put.",
+   "link": "/cash-bids"
+  },
+  {
    "id": "2026-11-09-land-hub-phone",
    "date": "2026-11-09",
    "title": "Farm sales page, made for phones",
