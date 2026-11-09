@@ -446,24 +446,47 @@ def card_cot():
                   ctx=ctx, table=rows, table_title="Net, contracts")
 
 
-def card_conditions():
+RATING_STALE_DAYS = 14   # same limit as the conditions page (scripts/seed_static.py STALE_DAYS["conditions"])
+
+
+def card_conditions(today=None):
+    """The /conditions card. Nov 9, 2026: it led with the Oct 25 corn rating that the page itself withholds as
+    stale, and dated the Nov 1 harvest rows "week ending Oct 25". A rating past the page's limit is not drawn;
+    the card then leads with corn harvest, dated by the harvest week."""
     d = js("data/crop-progress.json")
     if not d.get("in_season"):
         return title_card("conditions")
+    today = today or central_today()
     corn, soy = d["corn"], d.get("soybeans") or {}
-    rep = d_iso(corn.get("report_date") or d["report_date"])
+    def fresh(c):
+        r = d_iso(c.get("report_date")) if c.get("report_date") else None
+        return c.get("good_excellent") is not None and r is not None and (today - r).days <= RATING_STALE_DAYS
+    rating = fresh(corn)
     rows = []
     for lab, c in (("Corn", corn), ("Soybeans", soy)):
-        if c.get("good_excellent") is not None:
+        if fresh(c):
             rows.append((lab + ", good-excellent", f"{c['good_excellent']:g}%", None))
         if c.get("harvest_pct") is not None:
             rows.append((lab + ", harvested", f"{c['harvest_pct']:g}%", None))
+    if rating:
+        rep = d_iso(corn.get("report_date") or d["report_date"])
+        ctx = f"{corn['good_excellent_prev_week']:g}% the week before." if corn.get("good_excellent_prev_week") is not None else None
+        return a_card("conditions", "Crop conditions", f"USDA, week ending {mdy(rep)}",
+                      f"US corn is {corn['good_excellent']:g}% good to excellent, week ending {mdy(rep)}.",
+                      big=f"{corn['good_excellent']:g}%", unit="of US corn rated good to excellent",
+                      ctx=ctx, table=rows, table_title="US crop")
+    if corn.get("harvest_pct") is None or not corn.get("harvest_date"):
+        return title_card("conditions")
+    hrep = d_iso(corn["harvest_date"])
+    avg = corn.get("harvest_5yr_avg")
     ctx = None
-    if corn.get("good_excellent_prev_week") is not None:
-        ctx = f"{corn['good_excellent_prev_week']:g}% the week before."
-    return a_card("conditions", "Crop conditions", f"USDA, week ending {mdy(rep)}",
-                  f"US corn is {corn['good_excellent']:g}% good to excellent, week ending {mdy(rep)}.",
-                  big=f"{corn['good_excellent']:g}%", unit="of US corn rated good to excellent",
+    if avg is not None:
+        gap = corn["harvest_pct"] - avg
+        ctx = (f"{abs(gap):g} points {'ahead of' if gap > 0 else 'behind'} the 5-year average of {avg:g}%." if gap
+               else f"Even with the 5-year average of {avg:g}%.")
+    return a_card("conditions", "Crop progress", f"USDA, week ending {mdy(hrep)}",
+                  f"US corn is {corn['harvest_pct']:g}% harvested, week ending {mdy(hrep)}.",
+                  big=f"{corn['harvest_pct']:g}%", unit="of US corn harvested",
                   ctx=ctx, table=rows, table_title="US crop")
 
 
@@ -1278,6 +1301,25 @@ def selftest():
     assert cot_card_parts({"corn": {"net": -1000, "prev": -1500}})[0] == "Funds cut 500 on the week."
     assert cot_card_parts({"corn": {"net": 1000, "prev": 400}})[0] == "Funds added 600 on the week."
     assert cot_card_parts({"corn": {"net": 400, "prev": 1000}})[0] == "Funds cut 600 on the week."
+    # Nov 9, 2026: a rating past the page's 14-day limit is not drawn; the card leads with harvest, dated by its own week
+    _js = globals()["js"]
+    def _fake(path, _real=_js):
+        if path == "data/crop-progress.json":
+            return {"in_season": True, "report_date": "2026-10-25",
+                    "corn": {"good_excellent": 56, "good_excellent_prev_week": 56, "report_date": "2026-10-25",
+                             "harvest_pct": 74, "harvest_date": "2026-11-01", "harvest_5yr_avg": 77},
+                    "soybeans": {"good_excellent": 57, "report_date": "2026-10-11", "harvest_pct": 88, "harvest_date": "2026-11-01"}}
+        return _real(path)
+    globals()["js"] = _fake
+    try:
+        old = card_conditions(today=date(2026, 11, 9))
+        assert "harvested" in old["alt"] and "good to excellent" not in old["alt"] and "Nov 1, 2026" in old["args"]["foot"], old
+        assert not any("good-excellent" in r[0] for r in old["args"]["table"]), old["args"]["table"]
+        assert "3 points behind the 5-year average of 77%" in (old["args"].get("ctx") or ""), old
+        new = card_conditions(today=date(2026, 10, 27))
+        assert "good to excellent" in new["alt"] and "Oct 25, 2026" in new["args"]["foot"], new
+    finally:
+        globals()["js"] = _js
     print("[share] selftest ok")
 
 
