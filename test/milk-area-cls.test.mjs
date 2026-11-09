@@ -418,3 +418,45 @@ test('a paint while the parser is inside the DMC signup line moves nothing', { s
     }
   } finally { await browser.close(); }
 });
+
+// Nov 9 (CI, shard 7, 1280 light split state, 0.0246 at 152 ms): the herd line ("On 100 cows ... is -$600.") sits
+// at the edge of its row, and a paint that landed while the parser was just past a closing tag (before the full
+// stop that follows) wrapped it one line differently from the finished line: " is " and "-$600" moved 30px up.
+// The line is held unseen, its space kept, until its own script has run. Pausing the page at every tag edge
+// of the line, on a CPU slowed 4 times, gave 0.0246 at the stop after the first -$600 on the old page.
+test('a paint while the parser is inside the herd line moves nothing, on a slowed CPU', { skip, timeout: 90000 }, async () => {
+  const s = fs.readFileSync(join(ROOT, 'milk-prices.html')).toString('latin1');
+  const line = s.indexOf('<p class="dp-now-herd"');
+  assert.ok(line > 0, 'the herd line is on the page');
+  const end = s.indexOf('</p>', line);
+  const stops = [];
+  for (const m of s.slice(line, end).matchAll(/<\/(?:b|span)>/g)) stops.push(line + m.index + m[0].length);
+  assert.ok(stops.length >= 4, 'the line has its closing tags');
+  assert.match(page, /\.dp-herd-pend #dp-now-herd\{visibility:hidden;\}/, 'unseen, its space kept');
+  assert.match(page, /classList\.add\('dp-herd-pend'\)[\s\S]*?\},3000\)/, 'let go after 3 s regardless');
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const w of [390, 1280]) for (const stop of stops) {
+      const srv = await serve(0, stop), port = srv.address().port;
+      const ctx = await browser.newContext({ serviceWorkers: 'block', viewport: { width: w, height: 900 }, colorScheme: 'light' });
+      try {
+        await ctx.route('**/*', (r) => (new URL(r.request().url()).hostname !== '127.0.0.1' ? r.abort() : r.continue()));
+        await ctx.addInitScript(() => {
+          try { localStorage.setItem('agsist-theme', 'light'); localStorage.setItem('agsist-wx-loc', JSON.stringify({ state: 'PA' })); } catch (e) {}
+          window.__cls = 0; window.__shifts = [];
+          new PerformanceObserver((l) => { for (const e of l.getEntries()) { if (e.hadRecentInput) continue; window.__cls += e.value;
+            window.__shifts.push(e.value.toFixed(4) + ' ' + (e.sources || []).map((x) => (x.node ? (x.node.parentElement ? x.node.parentElement.id || x.node.parentElement.className : '') + '>' + x.node.nodeName + ' y' + Math.round(x.previousRect.y) + ' to ' + Math.round(x.currentRect.y) : '?')).join(',')); } })
+            .observe({ type: 'layout-shift', buffered: true });
+        });
+        const pg = await ctx.newPage();
+        const cdp = await ctx.newCDPSession(pg);
+        await cdp.send('Emulation.setCPUThrottlingRate', { rate: 4 });
+        await pg.goto(`http://127.0.0.1:${port}/milk-prices`, { waitUntil: 'load' });
+        await pg.waitForTimeout(500);
+        const r = await pg.evaluate(() => ({ cls: window.__cls, shifts: window.__shifts, hold: document.documentElement.classList.contains('dp-herd-pend') }));
+        assert.ok(r.cls < 0.001, `${w}, paused at byte ${stop}: layout shift ${r.cls} (${r.shifts.join(' | ')})`);
+        assert.equal(r.hold, false, `${w}, paused at byte ${stop}: the line is let go`);
+      } finally { await ctx.close(); srv.close(); }
+    }
+  } finally { await browser.close(); }
+});

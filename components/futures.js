@@ -2085,6 +2085,7 @@ AG.json('/data/prices.json')
     var psd=document.querySelector('.ps-dot');
     if(psd)psd.style.animation='none';
     heroFresh(null,null,true);
+    var __sf=document.querySelector('.seed-tbl-wrap');if(__sf)__sf.style.display='block'; /* the seeded table is the only price left, so it shows (CSS keeps it away until the live cards land) */
     var st=document.getElementById('status');
     (function(f){f();if(!window.AgStates)(window.AgStatesQ=window.AgStatesQ||[]).push(f);})(function(){if(st){if(window.AgStates)AgStates.error(st,{inline:true,msg:'Live prices didn\u2019t load. Showing the last close below.',retry:loadPrices});else st.textContent='Live update failed, showing last close (see note below).';}});
     /* the market read is built from live prices: say so rather than shimmer */

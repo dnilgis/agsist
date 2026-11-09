@@ -57,6 +57,7 @@
 .js .sk{color:var(--text-dim);animation:blink 1.4s ease-in-out infinite}
 .benchline{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim);margin:.3rem 0 0;line-height:1.5}
 .benchline strong{color:var(--text)}
+/* with script on, the live cards replace this table, so it never takes room at first paint (hiding it later moved the page up 113 px, CLS 0.28 at 1280 px); a failed load shows it again (futures.js) */.js .seed-tbl-wrap{display:none}
 .seed-tbl-wrap table{width:100%;border-collapse:collapse;font-size:.85rem;margin:.4rem 0}.seed-tbl-wrap caption{font-size:1rem;color:var(--text-dim);text-align:left;padding:.2rem 0}.seed-tbl-wrap td,.seed-tbl-wrap th{padding:.25rem .5rem;border-bottom:1px solid var(--border,rgba(128,128,128,.25));text-align:left}
 .cot-classes{display:flex;flex-direction:column;gap:2px;margin-bottom:12px}
 .cot-cls-row{display:flex;justify-content:space-between;align-items:baseline;gap:8px;font-size:0.785rem;color:var(--text-dim);border-bottom:1px solid rgba(255,255,255,.04);padding:4px 0;flex-wrap:wrap}
@@ -88,7 +89,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 @media(max-width:640px){.snap-link{display:inline-flex;align-items:center;min-height:40px}}
 .cg{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:8px;margin-bottom:14px}
 .cc{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-align:center;transition:border-color .2s}.cc:hover{border-color:var(--border-g)}.cc.hi{border-color:var(--gold);background:rgba(230,176,66,.04)}
-.cc-lbl{font-size:0.755rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}.cc-p{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--text)}.cc-u{font-size:0.755rem;color:var(--text-dim)}.cc-c{font-size:0.78rem;font-weight:600;margin-top:2px}
+.cc-lbl{font-size:0.755rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;min-height:2lh;display:flex;align-items:center;justify-content:center}/* two lines held: the live label ('Soybeans Jan 27 (ZS)') wraps where the seed's did not, which grew the card row */.cc-p{font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:700;color:var(--text)}.cc-u{font-size:0.755rem;color:var(--text-dim)}.cc-p.sk{display:block;max-width:none;min-width:0;border-radius:0;background:linear-gradient(rgba(132,160,168,.13),rgba(132,160,168,.13)) center/3.2ch 100% no-repeat}/* the price cell is a full-width block from the first paint, so its box does not widen when the quote lands */.cc-c{font-size:0.78rem;font-weight:600;margin-top:2px;min-height:1lh}
 .rng{margin-bottom:14px;padding:10px 14px;background:var(--surface);border:1px solid var(--border);border-radius:8px}
 .rng-lbl{font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px}
 .rng-bar{position:relative;height:6px;background:var(--surface2);border-radius:3px;margin-bottom:4px}
@@ -98,7 +99,7 @@ h2.snap-lbl,h2.basis-title,h2.crop-title{margin:0;display:inline-block}
 .rat-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:14px}
 .rat-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:13px 14px}
 .rat-lbl{font-size:0.755rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;font-weight:700;margin-bottom:8px}
-.rat-val{font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:700;color:var(--text);line-height:1;margin-bottom:10px}
+.rat-val.sk{display:block;max-width:none;min-width:0;border-radius:0;background:linear-gradient(rgba(132,160,168,.13),rgba(132,160,168,.13)) left/3.2ch 100% no-repeat}.rat-val{font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:700;color:var(--text);line-height:1;margin-bottom:10px}
 .rat-gauge-bar{position:relative;height:8px;background:linear-gradient(to right,#5a9b3c 0%,var(--gold) 35%,var(--gold) 65%,var(--red) 100%);border-radius:4px;margin-bottom:5px}
 .rat-gauge-dot{position:absolute;top:-4px;width:16px;height:16px;border-radius:50%;background:var(--surface);border:3px solid #fff;transition:left .5s;box-shadow:0 0 0 2px var(--gold)}
 .rat-gauge-labels{display:flex;justify-content:space-between;font-size:0.755rem;color:var(--text-dim);line-height:1.3;margin-bottom:8px}
@@ -159,6 +160,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .ra:hover{border-color:var(--border-g)}.ra-i{font-size:1.2rem;margin-bottom:3px}.ra-n{font-size:.8rem;font-weight:600;color:var(--text)}.ra-d{font-size:0.763rem;color:var(--text-dim);margin-top:1px}
 .disc{font-size:0.77rem;color:var(--text-dim);text-align:center;padding:8px;border-top:1px solid var(--border);margin-top:14px}
 @media(max-width:520px){.ph{padding:.9rem 1rem;display:block}.ph-price{margin:.65rem 0 0;text-align:left;display:flex;align-items:baseline;flex-wrap:wrap;column-gap:.55rem}.ph-val{font-size:1.9rem}.ph-unit{order:2}.ph-chg{order:3;flex-basis:100%;margin-top:4px}.cg{grid-template-columns:repeat(2,minmax(0,1fr))}.rat-row{grid-template-columns:1fr}}
+/* the hero price box keeps one size when the live quote lands: the delayed line is 'Quotes delayed' in the seed and 'Delayed' live (width), and the skeleton price sat inline (6 px of line box) */@media(min-width:521px){.ph-price{min-width:14rem}.ph-val{display:block;width:fit-content;margin-left:auto}.ph-chg{display:block}.ph-chg.sk{width:auto;margin-left:0;max-width:none;border-radius:0;background:linear-gradient(rgba(132,160,168,.13),rgba(132,160,168,.13)) right/10ch 100% no-repeat}}
 .ph-fresh{font-size:.78rem;line-height:1.35;min-height:1.35em;margin-top:3px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.ph-fresh.is-stale{color:var(--gold,#d4a23f);font-weight:600}@media(max-width:520px){.ph-fresh{order:4;flex-basis:100%}}
 
 /* NEW v11: daily briefing strip */
@@ -253,6 +255,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .session-badge.overnight .dot{background:var(--gold-fill,var(--gold))}
 .session-badge.closed{background:var(--surface2);color:var(--text-muted);border:1px solid var(--border)}
 .session-badge.closed .dot{background:var(--text-muted)}
+/* the badge keeps one box before and after futures.js writes it (the longest state fits in 24rem), so it no longer slides 8 to 16 px when the label lands */@media(min-width:561px){.session-badge{box-sizing:border-box;width:24rem;max-width:100%;justify-content:center}}
 .session-sub{font-size:0.77rem;color:var(--text-dim);font-weight:500;text-transform:none;letter-spacing:0;margin-left:4px}@media(max-width:560px){.session-badge{flex-wrap:wrap;row-gap:2px;white-space:normal}.session-badge>.session-sub{flex-basis:100%;margin-left:0}}
 
 /* NEW v13: Sectioned Market Read */
@@ -889,7 +892,7 @@ details.fold[hidden]{display:none}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=36" defer></script>
 <script>window.AGSIST_FUTURES='wheat'</script>
-<script src="/components/storesell.js?v=9"></script><script src="/components/price-local.js?v=10"></script><script src="/components/bid-filter.js?v=1"></script><script src="/components/futures.js?v=30"></script>
+<script src="/components/storesell.js?v=9"></script><script src="/components/price-local.js?v=10"></script><script src="/components/bid-filter.js?v=1"></script><script src="/components/futures.js?v=31"></script>
 
   <script src="/components/next-links.js?v=3" defer></script>
 </body>

@@ -23,6 +23,13 @@
    "link": "/cash-bids"
   },
   {
+   "id": "2026-11-09-daily-one-clock",
+   "date": "2026-11-09",
+   "title": "The Daily on one clock",
+   "line": "The Daily labels each price as overnight or settle, quotes Jan beans once Nov is in delivery, and builds month to date from settles of one contract.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-09-land-hub-phone",
    "date": "2026-11-09",
    "title": "Farm sales page, made for phones",
