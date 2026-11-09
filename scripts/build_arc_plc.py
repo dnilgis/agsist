@@ -2455,10 +2455,10 @@ def state_page(st, S, D, ch, nav_states):
   <p>Wheat:</p>
   {crossover_table(y6['wheat'])}
   <p class="ap-small">Per base acre, both programs on 85% of base. Your PLC yield is on the FSA-156EZ. A county yield below benchmark favors ARC-CO.</p>
-  <p class="ap-disc">An estimate, not a USDA determination. <a href="{FSA_PAGE}" rel="noopener">FSA ARC/PLC</a> &middot; <a href="{FSA_DATA}" rel="noopener">FSA program data</a> &middot; <a href="{OFFICE}" rel="noopener">Find your county office</a></p>
   <p class="ap-small">Related: {' &middot; '.join(rel)}</p>
   <h2>Other states</h2>
   <p class="ap-states">{others}</p>
+  {terms_fold(f'An estimate by AGSIST, not a USDA determination. <a href="{FSA_PAGE}" rel="noopener">FSA ARC/PLC</a> &middot; <a href="{OFFICE}" rel="noopener">Find your county office</a>.')}
 {BY_END}
 </main>
 """
@@ -2990,8 +2990,16 @@ def trigger_html(cd, e, LY):
     if lb and _t > e["by"] and n <= int(rnd(e["by"], 0)):
         over = f" That is about the {XC.byf(cd, e['by'])} benchmark, so at that price it pays even on a normal crop."
     return (f'<p class="ap-trig">ARC-CO pays here for {LY} if the county yield comes in under <b>{ns} {u}</b> {at}.{over}</p>'
-            f'<p class="ap-small ap-trig-m">90% of the {XC.byf(cd, e["by"])} benchmark &times; the {XC.pf(cd, cd["bp"]["value"])} benchmark price, '
-            f'divided by {XC.pf(cd, p)}.</p>')
+)
+
+
+def terms_fold(first):
+    """The one closed "Sources and terms" fold at the bottom of a county or state page (curtain round 2, Nov 9):
+    the estimate disclaimer, the sources in plain text, the notices the sources ask for. No formulas or file names."""
+    return (f'<details class="ap-det" id="terms"><summary>Sources and terms</summary>'
+            f'<p class="ap-disc">{first}</p>'
+            f'<p class="ap-small">Sources: FSA ARC/PLC program data (county benchmark yields and prices, PLC yields), NASS final season-average prices, USDA WASDE. '
+            f'{CR.NASS_NOTICE} {CR.AGSIST_CALC} Reviewed by Sigurd Lindquist, CCA.</p></details>')
 
 
 def crop_card(c, k, D, LY, OY):
@@ -3233,8 +3241,7 @@ def math_json(D):
     return out
 
 
-MATH_BOX = ('<div class="ap-mathb"><noscript><p class="ap-small">The working is built in the browser from '
-            '<a href="/' + OUT_MATH + '/{st}.json">this state&rsquo;s data file</a>. <a href="/arc-plc#method">How this is figured</a>.</p></noscript></div>')
+MATH_BOX = ('<div class="ap-mathb"><noscript><p class="ap-small">The working shows when JavaScript is on.</p></noscript></div>')
 
 
 def key_numbers_html(c, D, cname):
@@ -3609,9 +3616,8 @@ def county_page(st, S, c, D, ch):
   </details>
   {f'<div class="ap-faq ap-noprint"><h2>Questions about {esc(cname)}</h2>{faq_html}</div>' if faqs else ''}
   {RP_SEE}
-  <p class="ap-disc">An estimate, not a USDA determination. Source: <a href="{FSA_DATA}" rel="noopener">FSA ARC/PLC program data</a>. <a href="{OFFICE}" rel="noopener">Find your county office</a>.</p>
-  <div class="method-note">An estimate by AGSIST from FSA program data and USDA prices. <a href="/arc-plc#method">How this is figured</a>. &middot; Reviewed by Sigurd Lindquist, CCA</div>
   <p class="ap-small ap-noprint">Related: {' &middot; '.join(rel)}</p>
+  {terms_fold(f'An estimate by AGSIST, not a USDA determination. <a href="{OFFICE}" rel="noopener">Find your county office</a>.')}
   <p class="ap-printonly ap-small">Printed from {share}</p>
 </main>
 <script>document.addEventListener('click',function(e){{var a=e.target.closest&&e.target.closest('[data-share]');if(!a||!navigator.share)return;e.preventDefault();navigator.share({{title:a.getAttribute('data-title'),url:a.getAttribute('data-share')}}).catch(function(){{}});}});</script>
@@ -4216,7 +4222,7 @@ def selftest():
     _cd = {"unit": "bu", "dp": 2, "bp": {"value": 6.43}, "loan": 2.2, "scen": {"center": 5.70, "kind": "wasde"}}
     _h = trigger_html(_cd, {"by": 52.13}, "2026")     # 0.9 x 52.13 x 6.43 / 5.70 = 52.93
     ck("trigger over the benchmark prints its tenth, never 'under 52 ... above 52.13'", "<b>52.9 bu</b>" in _h and "above the 52.1 bu benchmark" in _h
-       and "90% of the 52.1 bu benchmark" in _h, _h)
+       and "90% of" not in _h and "divided by" not in _h, _h)   # the working is not printed (curtain round 2)
     # night audit, Oct 19, 2026: the benchmark prints one way everywhere, the title's (Gooding Co., ID corn:
     # title 215.2 bu, body 215.15 bu): a tenth of a bushel, a whole pound
     ck("benchmark yield prints as the title does", XC.byf({"unit": "bu"}, 215.15) == "215.2 bu"

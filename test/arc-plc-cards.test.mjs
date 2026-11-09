@@ -39,7 +39,7 @@ function countyPages() {
   return out;
 }
 // after the trigger line: the 50-cents-under line and the 2025 line (arcfix, Oct 20, 2026), groups 8 and 9
-const CARD = /<article class="ap-crop" id="crop-([a-z_]+)"([^>]*)><h3>[^<]*<\/h3><div class="ap-lv" data-k="[a-z_]+" data-e="([^"]+)" data-py="[\d.]+" data-t="([^"]+)" data-lv="same" data-p="([^"]*)">(.*?)<\/div>(<p class="ap-trig">.*?<\/p><p class="ap-small ap-trig-m">.*?<\/p>)?(<p class="ap-at50">.*?<\/p>)?(<p class="ap-y25">.*?<\/p>)?<\/article>/g;
+const CARD = /<article class="ap-crop" id="crop-([a-z_]+)"([^>]*)><h3>[^<]*<\/h3><div class="ap-lv" data-k="[a-z_]+" data-e="([^"]+)" data-py="[\d.]+" data-t="([^"]+)" data-lv="same" data-p="([^"]*)">(.*?)<\/div>(<p class="ap-trig">.*?<\/p>)?(<p class="ap-at50">.*?<\/p>)?(<p class="ap-y25">.*?<\/p>)?<\/article>/g;
 const attrs = (a) => Object.fromEntries([...a.matchAll(/data-([a-z]+)="([^"]*)"/g)].map((m) => [m[1], unesc(m[2])]));
 // data-rng is single-quoted JSON (rng_words in the build): the answers for a PLC yield with no one typical farm
 const rngOf = (a) => { const m = /data-rng='([^']*)'/.exec(a); return m ? JSON.parse(unesc(m[1])) : null; };
@@ -133,7 +133,8 @@ test("trigger line, by hand: Story County, IA corn pays under 215 bu at $4.70", 
   assert.equal(D.years["2026"].crops.corn.scen.center, 4.7);
   assert.ok(corn[7].includes("comes in under <b>215 bu</b> at USDA&rsquo;s price outlook, $4.70."), corn[7]);
   // the benchmark prints as the title does, to a tenth (Oct 19, 2026; was "223.82 bu")
-  assert.ok(corn[7].includes("90% of the 223.8 bu benchmark &times; the $5.03 benchmark price, divided by $4.70."), corn[7]);
+  // curtain round 2 (Nov 9): the working behind the trigger is not printed on the card
+  assert.ok(!/90% of the|divided by/.test(corn[7]), corn[7]);
 });
 
 test("trigger line on every card with a price outlook: floor(90% x benchmark x benchmark price / price), from the state file", () => {
