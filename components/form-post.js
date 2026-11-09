@@ -35,11 +35,24 @@
  * and the post goes to the worker on the next visit after it is back. Still
  * never to Formspree. Without outbox.js (or with storage blocked) it rejects
  * as before.
+ *
+ * LIVE HOST ONLY (2026-11-09, BUILD-RULES 58): nothing goes to Formspree
+ * unless the page is on agsist.com or www.agsist.com. From a local copy
+ * (127.0.0.1, localhost, a preview host) the worker refuses the Origin with
+ * 403, and that used to send a test post to the real backup form (a made-up
+ * Rain Print order reached Sig on Oct 30). Off the live host the Formspree
+ * step rejects with 'not sent' (.offsite true), so the page shows its own
+ * "nothing was sent" line and an outbox keeps the item.
+ * agsistFormPost.liveHost() says which it is.
  */
 (function () {
   'use strict';
   var WORKER = 'https://agsist-api.dnilgis.workers.dev/form';
   var FORMSPREE = 'https://formspree.io/f/xnjbwepn';
+  var LIVE_HOSTS = { 'agsist.com': 1, 'www.agsist.com': 1 };
+  function liveHost() {
+    try { return LIVE_HOSTS[String(window.location.hostname).toLowerCase()] === 1; } catch (e) { return false; }
+  }
   var FALLBACK = { 403: 1, 404: 1, 405: 1 };
   // kinds with a customer list (rain-print-business: the towns box, names and addresses); see WORKER_ONLY above
   var WORKER_ONLY = { 'rain-print-business': 1 };
@@ -90,6 +103,7 @@
      left the button on "Sending..." for good. */
   var FORMSPREE_MS = 15000, SLOW_TAG = ' (sent after the site form was slow; may repeat)';
   function toFormspree(fields, slow) {
+    if (!liveHost()) { var off = new Error('not sent'); off.offsite = true; return Promise.reject(off); }
     var fd = new FormData();
     Object.keys(fields || {}).forEach(function (k) {
       if (fields[k] !== undefined && fields[k] !== null) fd.append(k, k === '_subject' && slow ? fields[k] + SLOW_TAG : fields[k]);
@@ -125,6 +139,7 @@
     });
   }
   post.WORKER_ONLY = WORKER_ONLY;
+  post.liveHost = liveHost;
   /* Straight to the backup form, for what the worker never takes (a Rain
      Print order record when the worker is out, 2026-10-22). Resolves
      {ok:true, via:'formspree'}, rejects when it didn't go. */

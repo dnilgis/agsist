@@ -15,7 +15,7 @@
     var HOSTS = { 'agsist-api.dnilgis.workers.dev': 1, 'agsist-subs.dnilgis.workers.dev': 1 };
     var LISTS = { '/subscribe': 'AGSIST Daily', '/notice': 'notice', '/alert-subscribe': 'hail alert',
       '/watch-subscribe': 'farmland watch', '/elevator-watch-subscribe': 'elevator alert', '/price-watch-subscribe': 'price alert' };
-    var FORMSPREE = 'https://formspree.io/f/xnjbwepn';
+    var FORMSPREE = 'https://formspree.io/f/xnjbwepn', LIVE = { 'agsist.com': 1, 'www.agsist.com': 1 };
     var QUEUED = "Got it. You'll be added within a day.";
     var real = window.fetch;
     function routeOf(u) {
@@ -50,6 +50,7 @@
       } catch (e) {}
     }
     function queue(route, init, orig, err) {
+      if (!LIVE[String(location.hostname).toLowerCase()]) return orig ? Promise.resolve(orig) : Promise.reject(err || new Error('not sent'));
       var f = fields(init && init.body), fd = new FormData(), extra = {};
       var list = LISTS[route] + (f.topic ? ' (' + String(f.topic).slice(0, 60) + ')' : '');
       Object.keys(f).forEach(function (k) {
