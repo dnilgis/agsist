@@ -28,10 +28,28 @@ test("week and month windows use the close just before the window", () => {
   });
   const out = run(dir, "2026-11-04", { "corn-dec": C(4.48, "2026-11-03"), "beans-nov": C(12.0, "2026-11-03"), wheat: C(6.0, "2026-11-03") });
   const w = Object.fromEntries(out.map((x) => [x.label, x.items]));
-  assert.deepEqual(Object.keys(w), ["Week so far", "Month to date"], "no year window: the archive does not reach back");
+  // no year window: the archive does not reach back. No month row either: November began on a Sunday, so month to
+  // date equals week so far and is left out (Daily panel, Nov 9 2026: Nov 7 and 8 printed both rows the same)
+  assert.deepEqual(Object.keys(w), ["Week so far"], "no year window, and no month row equal to the week row");
   assert.equal(w["Week so far"].find((i) => i.name === "Corn").text, "+10¢ (+2.27%)");
   assert.ok(w["Week so far"].find((i) => i.name === "Soybeans").text.startsWith("−10¢"));
   assert.ok(!w["Week so far"].some((i) => i.name === "Wheat"), "wheat is held back until its stored closes are one contract");
+});
+
+test("month to date prints when it differs from week so far", () => {
+  const dir = archive({
+    "2026-11-09": { "corn-dec": C(4.4, "2026-11-06") },
+    "2026-11-10": { "corn-dec": C(4.45, "2026-11-09") },
+  });
+  const out = run(dir, "2026-11-11", { "corn-dec": C(4.48, "2026-11-10") }).map((x) => x.label);
+  assert.deepEqual(out, ["Week so far"], "the archive does not reach back to Oct 30, so no month baseline");
+  const dir2 = archive({
+    "2026-11-02": { "corn-dec": C(4.3, "2026-10-30") },
+    "2026-11-09": { "corn-dec": C(4.4, "2026-11-06") },
+    "2026-11-10": { "corn-dec": C(4.45, "2026-11-09") },
+  });
+  const out2 = run(dir2, "2026-11-11", { "corn-dec": C(4.48, "2026-11-10") });
+  assert.deepEqual(out2.map((x) => x.label), ["Week so far", "Month to date"], "different baselines: both rows print");
 });
 
 test("a gap in the stored issues leaves the window out", () => {
