@@ -483,9 +483,15 @@ def stand_out(listed, by_acres):
 
     if by_acres and (by_acres[0]["acres"] or 0) > 0:
         add("acres", by_acres[0])
-    judged = [p for p in listed if p.get("usual") and p["usual"]["med"] and p["kind"] == "farm" and (p["acres"] or 0) >= BEST_MIN_ACRES and p["ppa"]]
+    judged = [p for p in listed if p.get("usual") and p["usual"]["med"] and p["kind"] == "farm" and (p["acres"] or 0) >= BEST_MIN_ACRES and p["ppa"]
+              and p.get("flag") == 0]     # inside the county's usual range: the far-off prices (family sales, buildings, timber) are on the month page
     ratio = lambda p: p["ppa"] / p["usual"]["med"]
-    hi = sorted((p for p in judged if ratio(p) > 1 and p["id"] not in used), key=lambda p: (-ratio(p), p["id"]))
+    mid = {}
+    for st in {p["st"] for p in judged}:
+        v = sorted(p["ppa"] for p in judged if p["st"] == st)
+        mid[st] = v[len(v) // 2]
+    # town and development ground (a price over LEAD_FARM_X times the state's middle) is not a farm stand-out
+    hi = sorted((p for p in judged if ratio(p) > 1 and p["id"] not in used and p["ppa"] <= LEAD_FARM_X * mid[p["st"]]), key=lambda p: (-ratio(p), p["id"]))
     lo = sorted((p for p in judged if ratio(p) < 1 and p["id"] not in used), key=lambda p: (ratio(p), p["id"]))
     add("high", hi[0] if hi else None)
     add("low", next((p for p in lo if p["id"] not in used), None))
@@ -961,6 +967,21 @@ MAP_JS = ('<script src="/components/usmap.js?v=2" defer></script><script>documen
           % json.dumps(MAP_FILL, separators=(",", ":")))
 
 
+# Where sale prices are not public record, the county land values two other sources publish
+# (data/land/<st>/survey.json, scripts/build_land_survey.py): counted by county, linked to the Atlas county pages that
+# show them. Never a recorded sale and never in the middles above. test/land-survey.test.mjs checks the counts against the files.
+SURVEY_STATES = (("ND", "North Dakota", "north-dakota"), ("KS", "Kansas", "kansas"))
+
+
+def survey_counts(S):
+    """(counties with at least one dollar value, counties in the file)."""
+    vals = 0
+    for c in (S.get("counties") or {}).values():
+        if any(isinstance(v, dict) and (v.get("value") is not None or v.get("avg") is not None) for v in c.values()):
+            vals += 1
+    return vals, len(S.get("counties") or {})
+
+
 def survey_states(d):
     """[(st, name, slug, counties, data-file)] for the states whose Atlas pages show other county land values."""
     out = []
@@ -1003,21 +1024,6 @@ def coverage_html(cov, d):
     return "\n".join(['<h2 id="coverage">Where the sales come from</h2>',
                       '<p class="ls-cov-n">Sales reported for %d states: %s.</p>' % (len(live), e(and_list(live))),
                       map_html(d, "/land-sales/#%s"), survey_html(d)])
-
-
-# Where sale prices are not public record, the county land values two other sources publish
-# (data/land/<st>/survey.json, scripts/build_land_survey.py): counted by county, linked to the Atlas county pages that
-# show them. Never a recorded sale and never in the middles above. test/land-survey.test.mjs checks the counts against the files.
-SURVEY_STATES = (("ND", "North Dakota", "north-dakota"), ("KS", "Kansas", "kansas"))
-
-
-def survey_counts(S):
-    """(counties with at least one dollar value, counties in the file)."""
-    vals = 0
-    for c in (S.get("counties") or {}).values():
-        if any(isinstance(v, dict) and (v.get("value") is not None or v.get("avg") is not None) for v in c.values()):
-            vals += 1
-    return vals, len(S.get("counties") or {})
 
 
 MONTH_STATES = ("FL",)     # files with sale months, not days (fetch_land_sales STATES[st]["dates"]): their pages say months only
@@ -1195,14 +1201,13 @@ PICK_JS = ("(function(){var f=document.getElementById('ls-pick');if(!f)return;va
 
 def stand_card(c):
     """One stand-out sale: what it is, where, acres, price, $/acre, date; the whole card is the link."""
-    where = ("%s, " % e(c["place"]) if c.get("place") else "") + "%s County, %s" % (e(c["county"]), e(c["st"]))
+    where = ("%s, " % e(str(c["place"]).strip(" ,")) if str(c.get("place") or "").strip(" ,") else "") + "%s County, %s" % (e(c["county"]), e(c["st"]))
     sub = ""
     if c["kind"] in ("high", "low") and c.get("med"):
         pct = round(abs(c["ppa"] / c["med"] - 1) * 100)
-        sub = ' <span class="ls-vs">%d%% %s the county usual of %s%s</span>' % (pct, "above" if c["kind"] == "high" else "below", money(c["med"]),
-                                                                              ", an unusual price" if c.get("flag") else "")
+        sub = '<span class="ls-d">%d%% %s the county usual of %s</span>' % (pct, "above" if c["kind"] == "high" else "below", money(c["med"]))
     return ('<li><a class="ls-card" href="/land-sales/%s/%s#s-%s"><span class="ls-tag">%s</span><b>%s acres in %s</b>'
-            '<span class="ls-fig">%s &middot; %s an acre</span><span class="ls-d">%s%s</span></a></li>'
+            '<span class="ls-fig">%s &middot; %s an acre</span><span class="ls-d">%s</span>%s</a></li>'
             % (SLUG[c["st"]], county_slug(c["county"]), e(c["id"]), STAND_TAG[c["kind"]], acres(c["acres"]), where,
                money(c["price"]), money(c["ppa"]), e(when_text(c)), sub))
 
@@ -1254,9 +1259,8 @@ def index_page(d, latest, counties, early, coverage, archive, ix=None):
     sv = survey_html(d)
     if sv:
         b.append(sv)
-    b.append('<div class="ls-ask" id="email"><div data-land-alert data-source="page:land-sales"></div></div>')
     if ix:
-        b.append(ix["html"])
+        b.append('<details class="ls-all ls-ixf" id="ix-fold"><summary>Illinois farmland sale index</summary>%s</details>' % ix["html"])
     b.append('<details class="ls-all" id="all-states"><summary>All states and counties</summary>')
     for st in d.states:
         b.append('<h3 id="%s">%s</h3><ul class="ls-cos">' % (SLUG[st], e(NAME[st])))
@@ -1264,6 +1268,7 @@ def index_page(d, latest, counties, early, coverage, archive, ix=None):
             b.append('<li><a href="/land-sales/%s/%s">%s County</a> <span>%d</span></li>' % (SLUG[st], slug, e(name), n))
         b.append("</ul>")
     b.append('<p class="ls-fine">The number beside each county: sales of %d acres or more in the last 12 months.</p></details>' % LIST_MIN_ACRES)
+    b.append('<div class="ls-ask" id="email"><div data-land-alert data-source="page:land-sales"></div></div>')
     b.append('<p class="ls-fine">%s</p>' % e(src_line(d, d.states)))
     b.append(method_html(d.states) + "</div>")
     b.append("<script>%s</script>" % OPEN_JS)

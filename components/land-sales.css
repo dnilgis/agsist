@@ -94,8 +94,8 @@
 .ls-pr { display: grid; grid-template-columns: 1fr 1fr auto; gap: .5rem; align-items: end; }
 .ls-pick label { display: block; font-size: .8rem; color: var(--text-muted); min-width: 0; }
 .ls-pick select, .ls-pick button { font: inherit; font-size: 1rem; box-sizing: border-box; width: 100%; height: 2.75rem; margin-top: .2rem; border-radius: var(--r-md, 8px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .5rem; }
-.ls-pick button { width: auto; padding: 0 1rem; margin: 0; font-weight: 700; cursor: pointer; background: var(--brand, var(--gold)); color: #10140f; border-color: transparent; }
+.ls-pick button { width: auto; padding: 0 1rem; margin: 0; font-weight: 700; cursor: pointer; color: var(--brand, var(--gold)); border-color: var(--brand, var(--gold)); }
 .ls-mo, .ls-surv { margin: 0 0 .6rem; }
-.ls-all summary { cursor: pointer; font-weight: 600; margin: 1rem 0 .4rem; min-height: 2.75rem; display: flex; align-items: center; }
+.ls-all summary { cursor: pointer; font-weight: 600; padding: .6rem 0; margin: .4rem 0; display: list-item; }
 .ls-all h3 { font-size: 1rem; margin: .8rem 0 .3rem; scroll-margin-top: 4.5rem; }
 .ls-all .ls-cos { columns: 2 9em; }

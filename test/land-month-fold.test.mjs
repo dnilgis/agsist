@@ -153,7 +153,7 @@ test("in Chromium at 390 px: no table is cut off, no element is wider than the s
         document.querySelectorAll(".ls-tw").forEach((w) => { if (w.scrollWidth > w.clientWidth + 1) o.cut.push(w.textContent.slice(0, 30)); });
         return o;
       });
-      assert.ok(r.tables > 0, `${p}: has tables`);
+      if (!p.endsWith("land-sales/index.html")) assert.ok(r.tables > 0, `${p}: has tables`);   // the hub holds no table since Nov 8: map, cards, picker, link lists
       assert.equal(r.doc, r.vw, `${p}: the page does not scroll sideways`);
       assert.deepEqual(r.wide, [], `${p}: nothing wider than 390 px`);
       assert.deepEqual(r.cut, [], `${p}: no table scrolls inside its box`);
