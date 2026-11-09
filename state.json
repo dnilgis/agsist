@@ -6958,10 +6958,10 @@
   "2027_ADMLivestockLrp_Daily_20261103.zip": 1445403,
   "2027_ADMLivestockLrp_Daily_20261104.zip": 1442692,
   "2027_ADMLivestockLrp_Daily_20261105.zip": 1324789,
-  "2027_ADMLivestockLrp_Daily_20261106.zip": 1476990
+  "2027_ADMLivestockLrp_Daily_20261106.zip": 1476990,
+  "2027_ADMLivestockLrp_Daily_20261109.zip": 1448347
  },
  "listed": {
-  "2026_ADMLivestockLrp_Daily_20251021.zip": "2025-10-21T14:22",
   "2026_ADMLivestockLrp_Daily_20251022.zip": "2025-10-22T14:22",
   "2026_ADMLivestockLrp_Daily_20251023.zip": "2025-10-23T14:22",
   "2026_ADMLivestockLrp_Daily_20251024.zip": "2025-10-24T15:07",
@@ -7360,7 +7360,8 @@
   "2027_ADMLivestockLrp_Daily_20261103.zip": "2026-11-03T14:18",
   "2027_ADMLivestockLrp_Daily_20261104.zip": "2026-11-04T14:18",
   "2027_ADMLivestockLrp_Daily_20261105.zip": "2026-11-05T15:29",
-  "2027_ADMLivestockLrp_Daily_20261106.zip": "2026-11-06T14:18"
+  "2027_ADMLivestockLrp_Daily_20261106.zip": "2026-11-06T14:18",
+  "2027_ADMLivestockLrp_Daily_20261109.zip": "2026-11-09T14:18"
  },
  "sob": {
   "lrp_2003.zip": {
@@ -7440,20 +7441,20 @@
    "size": 428950
   },
   "lrp_2022.zip": {
-   "fetched": "2026-11-02",
-   "size": 910509
+   "fetched": "2026-11-09",
+   "size": 910385
   },
   "lrp_2023.zip": {
-   "fetched": "2026-11-02",
-   "size": 1727617
+   "fetched": "2026-11-09",
+   "size": 1726982
   },
   "lrp_2024.zip": {
-   "fetched": "2026-11-02",
-   "size": 2478448
+   "fetched": "2026-11-09",
+   "size": 2479886
   },
   "lrp_2025.zip": {
-   "fetched": "2026-11-02",
-   "size": 3059019
+   "fetched": "2026-11-09",
+   "size": 3058891
   },
   "lrp_2026.zip": {
    "fetched": "2026-10-15",
@@ -7472,18 +7473,18 @@
    "failed": 0,
    "left": 0,
    "read": 1,
-   "seconds": 2,
+   "seconds": 1,
    "stopped_for_time": false,
    "unreadable": 0
   },
-  "offer_days_written": 3326,
+  "offer_days_written": 3327,
   "offers_restated": 1,
   "rate_blank": 0,
   "rate_blank_examples": [],
   "rate_cost_off": 37,
   "rate_deleted": 0,
   "rate_price_off": 425998,
-  "rate_rows": 2347952
+  "rate_rows": 2349952
  },
  "unreadable": {
   "2025_ADMLivestockLrp_Daily_20260325.zip": {
@@ -7495,5 +7496,5 @@
    "tries": 3
   }
  },
- "updated": "2026-11-06T20:25:54Z"
+ "updated": "2026-11-09T20:26:19Z"
 }
