@@ -8,7 +8,7 @@ Two looks, picked by Sig on 2026-10-15:
      context, an optional short table from the page's own data, and a green
      footer with the date and the page's address.
   C, picture from the data: the top of the card is a chart drawn from the
-     page's data (a line, bars, a strip or a state tile map), and the answer
+     page's data (a line, bars, a strip or the real US map), and the answer
      sits in a green band under it with the logo.
 
 Pillow only, no browser: these run inside the data workflows. Fonts are the
@@ -24,6 +24,7 @@ build_prf_card.py for the daily and PRF cards).
 """
 import io
 import os
+import re
 
 from PIL import Image, ImageDraw, ImageFont
 
@@ -409,37 +410,82 @@ def _pic_strip(c, p):
         c.text(870 + c.width(num + " ", font("mono", 23, 700)), yy, lab, font("inter", 23, 400), INK)
 
 
-TILE_GRID = {
-    "AK": (0, 0), "ME": (10, 0), "WI": (5, 1), "VT": (9, 1), "NH": (10, 1),
-    "WA": (0, 2), "ID": (1, 2), "MT": (2, 2), "ND": (3, 2), "MN": (4, 2), "IL": (5, 2), "MI": (6, 2),
-    "NY": (8, 2), "MA": (9, 2),
-    "OR": (0, 3), "NV": (1, 3), "WY": (2, 3), "SD": (3, 3), "IA": (4, 3), "IN": (5, 3), "OH": (6, 3),
-    "PA": (7, 3), "NJ": (8, 3), "CT": (9, 3), "RI": (10, 3),
-    "CA": (0, 4), "UT": (1, 4), "CO": (2, 4), "NE": (3, 4), "MO": (4, 4), "KY": (5, 4), "WV": (6, 4),
-    "VA": (7, 4), "MD": (8, 4), "DE": (9, 4),
-    "AZ": (1, 5), "NM": (2, 5), "KS": (3, 5), "AR": (4, 5), "TN": (5, 5), "NC": (6, 5), "SC": (7, 5),
-    "OK": (3, 6), "LA": (4, 6), "MS": (5, 6), "AL": (6, 6), "GA": (7, 6),
-    "HI": (0, 7), "TX": (3, 7), "FL": (8, 7),
-}
+_MAP = None
+
+
+def us_map():
+    """The 51 shapes of data/us-states-map.svg (the one shared real map, scripts/build_us_map.py):
+    [{st, poly: [[(x, y), ...], ...], c: (x, y), o: (x, y) or None}] and the map's (width, height)."""
+    global _MAP
+    if _MAP is None:
+        txt = open(os.path.join(ROOT, "data", "us-states-map.svg"), encoding="utf-8").read()
+        vw, vh = (float(v) for v in re.search(r'viewBox="0 0 ([\d.]+) ([\d.]+)"', txt).groups())
+        out = []
+        for m in re.finditer(r'<path id="([A-Z]{2})"([^>]*?) d="([^"]+)"', txt):
+            attrs = m.group(2)
+            c = re.search(r'data-c="([\d.]+),([\d.]+)"', attrs)
+            o = re.search(r'data-o="([\d.]+),([\d.]+)"', attrs)
+            polys, cur, x, y = [], [], 0.0, 0.0
+            for cmd, args in re.findall(r"([MlLz])([^MlLz]*)", m.group(3)):
+                nums = [float(v) for v in re.findall(r"-?[\d.]+", args)]
+                if cmd == "z":
+                    if cur:
+                        polys.append(cur)
+                    cur = []
+                elif cmd == "M":
+                    x, y = nums[0], nums[1]
+                    cur = [(x, y)]
+                else:
+                    for i in range(0, len(nums), 2):
+                        x, y = (x + nums[i], y + nums[i + 1]) if cmd == "l" else (nums[i], nums[i + 1])
+                        cur.append((x, y))
+            if cur:
+                polys.append(cur)
+            out.append({"st": m.group(1), "poly": polys, "c": (float(c.group(1)), float(c.group(2))),
+                        "o": (float(o.group(1)), float(o.group(2))) if o else None})
+        _MAP = (out, vw, vh)
+    return _MAP
 
 
 def _pic_tiles(c, p):
-    """p: counts {ST: n}, big, lines [str], tile scale max."""
+    """p: counts {ST: n}, big, lines [str]. The real US map (Albers USA, Alaska and Hawaii in their insets), a
+    state shaded by its count; the nine small eastern states are labelled in boxes out in the water."""
     counts = p["counts"]
     mx = max(counts.values()) if counts else 1
-    tile, gap, ox, oy = 46, 4, 560, 22
+    shapes, vw, vh = us_map()
+    mw = 590.0
+    k = mw / vw
+    ox, oy = 556, 30
     a, b = GOLD_LT, GREEN
-    for st, (col, row) in TILE_GRID.items():
-        n = counts.get(st, 0)
+    drawn = 0
+    for sh in shapes:
+        n = counts.get(sh["st"], 0)
         if n <= 0:
             bg, fg = (228, 226, 218), GREY
         else:
             t = min(1.0, (n / mx) ** 0.5)
             bg = tuple(round(a[i] + (b[i] - a[i]) * t) for i in range(3))
             fg = CREAM if t > 0.45 else GREEN
-        x0, y0 = ox + col * (tile + gap), oy + row * (tile + gap)
-        c.rect(x0, y0, x0 + tile, y0 + tile, bg, r=3)
-        c.text(x0 + tile / 2, y0 + tile / 2 + 1, st, font("inter", 16, 700), fg, anchor="mm")
+        sh["bg"], sh["fg"] = bg, fg
+        for ring in sh["poly"]:
+            pts = [(ox + x * k, oy + y * k) for x, y in ring]
+            c.d.polygon([(x * S, y * S) for x, y in pts], fill=bg)
+            c.d.line([(x * S, y * S) for x, y in pts + pts[:1]], fill=PAPER, width=max(1, int(0.9 * S)), joint="curve")
+        drawn += 1
+    p["_shapes"] = drawn
+    lf = font("inter", 17, 700)
+    for sh in shapes:
+        if sh["o"]:
+            (cx, cy), (qx, qy) = sh["c"], sh["o"]
+            c.line([(ox + cx * k, oy + cy * k), (ox + (qx - 30) * k, oy + qy * k)], GREY, 1.2)
+    for sh in shapes:
+        if sh["o"]:
+            qx, qy = sh["o"]
+            c.rect(ox + (qx - 30) * k, oy + (qy - 30.5) * k, ox + (qx + 30) * k, oy + (qy + 30.5) * k, sh["bg"], r=4)
+            c.text(ox + qx * k, oy + qy * k + 1, sh["st"], font("inter", 20, 700), sh["fg"], anchor="mm")
+        else:
+            cx, cy = sh["c"]
+            c.text(ox + cx * k, oy + cy * k + 1, sh["st"], lf, sh["fg"], anchor="mm")
     c.text(60, 196, p["big"], font("inter", 128, 800), GREEN)
     for i, ln in enumerate(p["lines"]):
         c.text(62, 252 + i * 38, ln, font("inter", 28, 400), INK)
