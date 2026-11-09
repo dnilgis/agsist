@@ -211,11 +211,34 @@
     phone: { W: 1080, H: 2400, pad: 44, gap: 14, hgap: 16, title: 92, tile: 55 },
     print: { W: 1320, H: 0, minH: 2040, pad: 44, gap: 16, hgap: 18, title: 78, tile: 58 }
   };
-  var GRID = { VT: [1, 9], NH: [1, 10], ME: [1, 11], WA: [2, 0], ID: [2, 1], MT: [2, 2], ND: [2, 3], MN: [2, 4], WI: [2, 5], MI: [2, 6],
-    NY: [2, 8], MA: [2, 9], RI: [2, 10], OR: [3, 0], NV: [3, 1], WY: [3, 2], SD: [3, 3], IA: [3, 4], IL: [3, 5], IN: [3, 6], OH: [3, 7],
-    PA: [3, 8], NJ: [3, 9], CT: [3, 10], CA: [4, 0], UT: [4, 1], CO: [4, 2], NE: [4, 3], MO: [4, 4], KY: [4, 5], WV: [4, 6], VA: [4, 7],
-    MD: [4, 8], DE: [4, 9], AZ: [5, 1], NM: [5, 2], KS: [5, 3], AR: [5, 4], TN: [5, 5], NC: [5, 6], SC: [5, 7], OK: [6, 3], LA: [6, 4],
-    MS: [6, 5], AL: [6, 6], GA: [6, 7], AK: [7, 0], HI: [7, 1], TX: [7, 3], FL: [7, 8] };
+  /* the shapes: data/us-states-map.svg, the one shared real map (components/usmap.js, scripts/build_us_map.py), read once.
+     GEO = {vw, vh, list: [{st, d, c: [x, y], o: [x, y] or null, bb: [x0, y0, x1, y1]}]}; null until posterFonts has loaded it. */
+  var GEO = null, GEO_P = null, MAP_SRC = '/data/us-states-map.svg?v=1';
+  function bbox(d) {
+    var x = 0, y = 0, b = [1e9, 1e9, -1e9, -1e9];
+    (d.match(/[Ml][^Ml]*/g) || []).forEach(function (seg) {
+      var n = seg.slice(1).trim().split(/[\s,]+/).map(Number), rel = seg.charAt(0) === 'l';
+      for (var i = 0; i + 1 < n.length; i += 2) {
+        x = rel ? x + n[i] : n[i]; y = rel ? y + n[i + 1] : n[i + 1];
+        if (x < b[0]) b[0] = x; if (y < b[1]) b[1] = y; if (x > b[2]) b[2] = x; if (y > b[3]) b[3] = y;
+      }
+    });
+    return b;
+  }
+  function setMap(txt) {
+    var vb = /viewBox="0 0 ([\d.]+) ([\d.]+)"/.exec(txt), out = { vw: +vb[1], vh: +vb[2], list: [] }, re = /<path id="([A-Z]{2})"([^>]*?) d="([^"]+)"/g, m;
+    while ((m = re.exec(txt))) {
+      var c = /data-c="([\d.]+),([\d.]+)"/.exec(m[2]), o = /data-o="([\d.]+),([\d.]+)"/.exec(m[2]);
+      out.list.push({ st: m[1], d: m[3], c: [+c[1], +c[2]], o: o ? [+o[1], +o[2]] : null, bb: bbox(m[3]) });
+    }
+    GEO = out;
+    return out;
+  }
+  function loadMap() {
+    if (GEO) return Promise.resolve(GEO);
+    if (!GEO_P) GEO_P = (root.fetch ? root.fetch(MAP_SRC) : Promise.reject()).then(function (r) { if (!r.ok) throw 0; return r.text(); }).then(setMap).catch(function () { GEO_P = null; return null; });
+    return GEO_P;
+  }
   /* our own icons, drawn in a 48 (64 for the combine, 32 for the small ones) unit box */
   var ICON = {
     corn: function (g, x, y, s, fill, kern) {
@@ -243,10 +266,10 @@
       var k = s / 32;
       g.circle(x + 16 * k, y + 16 * k, 15 * k, c); g.rect(x + 14 * k, y + 13 * k, 4 * k, 12 * k, 2 * k, bg); g.circle(x + 16 * k, y + 8.5 * k, 2.4 * k, bg);
     },
-    tiles: function (g, x, y, s, c) {
+    map: function (g, x, y, s, c) {
       var k = s / 32;
-      g.rect(x + 2 * k, y + 2 * k, 12 * k, 12 * k, 2 * k, c); g.rect(x + 18 * k, y + 2 * k, 12 * k, 12 * k, 2 * k, c, 0.5);
-      g.rect(x + 2 * k, y + 18 * k, 12 * k, 12 * k, 2 * k, c, 0.5); g.rect(x + 18 * k, y + 18 * k, 12 * k, 12 * k, 2 * k, c);
+      g.path('M3 8l8-3 10 3 8-3v19l-8 3-10-3-8 3z', x, y, k, c, 0.5);
+      g.path('M11 5v19M21 8v19', x, y, k, null, 1, c, 2);
     },
     chart: function (g, x, y, s, c) {
       var k = s / 32;
@@ -324,22 +347,55 @@
   /* ---- the panels: each draws its body at (x, y), inner width w, and returns the y under it */
   var PANEL = {};
   PANEL.map = function (g, T, P, x, y, w, L) {
-    y = g.lines(P.hint, x, y + 14, 18, 500, T.dim, 24, w) - 6;
+    y = g.lines(String(P.hint).replace('Each tile is a state.', 'Each state is colored by its gap.'), x, y + 14, 18, 500, T.dim, 24, w) - 6;
     var legW = 0;
     P.bins.concat([{ label: 'No NASS average' }]).forEach(function (b) { legW = Math.max(legW, 34 + g.w(b.label, 17, 600)); });
     legW = Math.max(legW, g.w(P.legend_title.toUpperCase(), 15, 800, false, 1.5));
-    var tile = Math.min(L.tile, Math.floor((w - legW - 22 + 5) / 12) - 5), step = tile + 5, mw = 12 * step - 5, mh = 7 * step - 5;
-    var by = {};
+    /* the real map, as wide as the room beside the legend allows and no taller than the tile grid it replaced was (about 415 px) */
+    var mapW = Math.min(w - legW - 22, 400 * (GEO ? GEO.vw / GEO.vh : 1.57)), k = GEO ? mapW / GEO.vw : 1, mw = mapW, mh = GEO ? GEO.vh * k : 0, by = {};
     P.tiles.forEach(function (t) { by[t.key] = t; });
-    Object.keys(GRID).forEach(function (st) {
-      var r = GRID[st][0], c = GRID[st][1], tx = x + c * step, ty = y + (r - 1) * step, t = by[st];
-      if (!t) { g.rect(tx, ty, tile, tile, tile / 8, T.none); g.text(st, tx + tile / 2, ty + tile / 2 + tile * 0.1, Math.round(tile * 0.24), 600, T.nonel, 'center'); return; }
+    function shade(st) {
+      var t = by[st];
+      if (!t) return null;
       var bin = P.bins.filter(function (b) { return (b.lo == null || t.gap >= b.lo) && (b.hi == null || t.gap <= b.hi); })[0] || { c: 'even' };
-      var ink = bin.c === 'b1' || bin.c === 'a1' ? T.tilesoft : T.tileink;
-      g.rect(tx, ty, tile, tile, tile / 8, T[bin.c]);
-      g.text(st, tx + tile / 2, ty + tile * 0.42, Math.round(tile * 0.27), 800, ink, 'center');
-      g.text(t.gap ? sgn(t.gap) : '0', tx + tile / 2, ty + tile * 0.8, Math.round(tile * 0.3), 800, ink, 'center');
-    });
+      return { fill: T[bin.c], ink: bin.c === 'b1' || bin.c === 'a1' ? T.tilesoft : T.tileink, gap: t.gap };
+    }
+    if (GEO) {
+      /* states with no number first, outlined; the colored ones on top, so a colored state keeps its whole edge */
+      [false, true].forEach(function (on) {
+        GEO.list.forEach(function (s) {
+          var sh = shade(s.st);
+          if (!!sh !== on) return;
+          g.path(s.d, x, y, k, sh ? sh.fill : T.none, 1, sh ? T.panel : T.nonel, sh ? 1.2 : 0.9);
+          g.ops[g.ops.length - 1].st = s.st;
+        });
+      });
+      GEO.list.forEach(function (s) {
+        if (s.o) g.line(x + s.c[0] * k, y + s.c[1] * k, x + (s.o[0] - 30) * k, y + s.o[1] * k, T.nonel, 1.3);
+      });
+      GEO.list.forEach(function (s) {
+        var sh = shade(s.st), sz = Math.max(13, Math.round(17 * k)), gz = Math.max(13, Math.round(15 * k)), cx, cy;
+        if (s.o) {
+          cx = x + s.o[0] * k; cy = y + s.o[1] * k;
+          g.rect(cx - 30 * k, cy - 30.5 * k, 60 * k, 61 * k, 7, sh ? sh.fill : T.none);
+          if (!sh) { g.text(s.st, cx, cy + sz * 0.35, sz, 700, T.nonel, 'center'); return; }
+          g.text(s.st, cx, cy - 3, sz, 800, sh.ink, 'center');
+          g.text(sh.gap ? sgn(sh.gap) : '0', cx, cy + gz + 1, gz, 800, sh.ink, 'center');
+          return;
+        }
+        cx = x + s.c[0] * k; cy = y + s.c[1] * k;
+        var bw = (s.bb[2] - s.bb[0]) * k, bh = (s.bb[3] - s.bb[1]) * k, gt = sh ? (sh.gap ? sgn(sh.gap) : '0') : '';
+        if (!sh) { if (bw > g.w(s.st, sz, 600) + 8 && bh > sz + 6) g.text(s.st, cx, cy + sz * 0.35, sz, 600, T.nonel, 'center'); return; }
+        /* the code and the gap under it when the state is big enough for both; the code alone when it is not */
+        if (bw >= g.w(gt, gz, 800) + 10 && bh >= sz + gz + 12) {
+          g.text(s.st, cx, cy - 1, sz, 800, sh.ink, 'center');
+          g.text(gt, cx, cy + gz, gz, 800, sh.ink, 'center');
+        } else g.text(s.st, cx, cy + sz * 0.35, sz, 800, sh.ink, 'center');
+      });
+    } else {
+      g.lines('The map did not load here.', x, y + 20, 18, 500, T.dim, 24, w);
+      mh = 60; mw = w - legW - 22;
+    }
     var lx = x + mw + 22, rows = P.bins.length + 1, lh = 33, ly = y + Math.max(0, (mh - (rows * lh + 26)) / 2);
     g.text(P.legend_title.toUpperCase(), lx, ly + 15, 15, 800, T.ink, 'left', false, 1.5);
     P.bins.concat([{ label: 'No NASS average', c: 'none' }]).forEach(function (b, i) {
@@ -435,7 +491,7 @@
     return bottom;
   };
   PANEL.line = function (g, T, P, x, y, w, L) {
-    y = g.lines(P.hint, x, y + 14, 18, 500, T.dim, 24, w) - 6;
+    y = g.lines(String(P.hint).replace('Each tile is a state.', 'Each state is colored by its gap.'), x, y + 14, 18, 500, T.dim, 24, w) - 6;
     var pts = P.points, ys = pts.map(function (q) { return q.y; }), lo = Math.min.apply(null, ys.concat([0])), hi = Math.max.apply(null, ys.concat([0]));
     var span = hi - lo || 1, stepv = Math.pow(10, Math.floor(Math.log(span / 3) / Math.LN10)), k;
     [1, 2, 2.5, 5, 10].some(function (m) { k = m * stepv; return span / k <= 5; });
@@ -520,7 +576,7 @@
     g.text('Highest', gx + gw, y + (P.pctl_prev != null ? 82 : 60), 13, 600, T.dim, 'right');
     return y + (P.pctl_prev != null ? 88 : 66);
   };
-  var PANEL_ICON = { map: 'tiles', crops: 'combine', means: 'info', line: 'chart' };
+  var PANEL_ICON = { map: 'map', crops: 'combine', means: 'info', line: 'chart' };
 
   function posterRows(spec, layout) {
     var have = {};
@@ -715,12 +771,12 @@
     out.push('</svg>');
     return out.join('');
   }
-  /* the fonts the poster draws with, loaded before it is measured (the page's own fonts are optional) */
+  /* the fonts and the map shapes the poster draws with, loaded before it is measured (the page's own fonts are optional) */
   function posterFonts(doc, theme) {
     var f = doc && doc.fonts, want = ['900 40px Inter', '800 40px Inter', '700 40px Inter', '600 40px Inter', '500 40px Inter'];
     if (theme === 'paper') want.push('600 40px Fraunces');
-    if (!f || !f.load) return Promise.resolve();
-    return Promise.all(want.map(function (w) { return f.load(w).catch(function () { return null; }); })).then(function () { return f.ready; });
+    if (!f || !f.load) return loadMap().then(function () {});
+    return Promise.all(want.map(function (w) { return f.load(w).catch(function () { return null; }); }).concat([loadMap()])).then(function () { return f.ready; });
   }
   /* the dark phone poster as a canvas (o.theme, o.layout to draw another; o.qr: the QR matrix) -> {canvas, layout} */
   function posterCanvas(spec, doc, o) {
@@ -741,7 +797,7 @@
   }
 
   var api = { PHONE: PHONE, LINK: LINK, picture: picture, sheetHtml: sheetHtml, srcLine: srcLine, pageUrl: pageUrl, tagged: tagged, bigText: bigText,
-    THEMES: THEMES, LAYOUTS: LAYOUTS, poster: poster, posterCanvas: posterCanvas, posterSvg: posterSvg, posterFonts: posterFonts, posterSheetHtml: posterSheetHtml };
+    THEMES: THEMES, LAYOUTS: LAYOUTS, poster: poster, posterCanvas: posterCanvas, posterSvg: posterSvg, posterFonts: posterFonts, loadMap: loadMap, setMap: setMap, posterSheetHtml: posterSheetHtml };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgInfographic = api;
 
