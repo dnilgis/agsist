@@ -4022,6 +4022,43 @@ def moved_seed(page, today):
                          _load_json("data/harvest-prices.json"), _load_json("data/crop-progress.json"), tdate)
 
 
+def seed_wheat_cards(t, prices):
+    """The wheat page's KC, Minneapolis and deferred cards from the price file.
+    They started display:none and components/futures.js revealed them after
+    paint, so the card row reflowed sideways (CLS about 0.056, 2026-11-09).
+    A card whose quote is on file is written visible with its label and price
+    (the script writes the same text, so nothing moves); one with no quote
+    stays hidden in the file. Returns (text, changed)."""
+    quotes = prices.get("quotes") or {}
+    cards = []
+    for cls, cid, pid, nm, sym in (("kcwheat", "cc-kcwheat", "p-kcwheat", "KC HRW", "KE"),
+                                   ("mplswheat", "cc-mplswheat", "p-mplswheat", "Minneapolis HRS", "MWE")):
+        cq, cl = wheat_class_quote(prices, cls)
+        cards.append((cid, pid, cq, nm + " " + (cl or "most-active") + " (" + sym + ")", None))
+    dk, dq = wheat_deferred(quotes)
+    cards.append(("cc-wheat-def", "p-wheat-def", dq, None, (_ticker_label(dq, "Deferred") + " (deferred)") if dq else None))
+    changed = False
+    for cid, pid, q, label, dlabel in cards:
+        usd = grain_dollars(q) if q else None
+        pat = re.compile(r'(<div class="cc" id="' + cid + r'")( style="display:none")?(>)(.*?)(<div class="cc-p" id="' + pid + r'">)(.*?)(</div>)', re.S)
+        m = pat.search(t)
+        if not m:
+            continue
+        inner = m.group(4)
+        if usd:
+            if label:
+                inner = re.sub(r'(<div class="cc-lbl">)(.*?)(</div>)', lambda x: x.group(1) + label + x.group(3), inner, count=1)
+            else:
+                inner = re.sub(r'(<div class="cc-lbl" id="l-wheat-def">)(.*?)(</div>)', lambda x: x.group(1) + dlabel + x.group(3), inner, count=1)
+            new = m.group(1) + m.group(3) + inner + m.group(5) + "$" + usd + m.group(7)
+        else:
+            new = m.group(1) + ' style="display:none"' + m.group(3) + m.group(4) + m.group(5) + "-" + m.group(7)
+        if new != m.group(0):
+            t = t[:m.start()] + new + t[m.end():]
+            changed = True
+    return t, changed
+
+
 def seed_futures_pages(prices, today):
     """The four futures pages: price seed, note, last-close/last-trade table and
     (grains) meta description. Callable on its own so the futures seeds can be
@@ -4111,6 +4148,9 @@ def seed_futures_pages(prices, today):
         # the dated "latest from USDA" line under the hero (scripts/moved_line.py)
         t, c7 = seed_between(t, "moved", moved_seed(page, today))
         changed = changed or c7
+        if page.startswith("wheat"):
+            t, c8 = seed_wheat_cards(t, prices)
+            changed = changed or c8
         t, c3 = stamp_datemodified(t, today)
         if changed or c3:
             open(page, "w", encoding="utf-8").write(t)
