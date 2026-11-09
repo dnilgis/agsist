@@ -637,7 +637,7 @@
       }
       var stale=staleIn(txt);
       if(stale){
-        el.innerHTML=(stamp?'<span class="s7-stamp">'+stamp+'</span>':'')+'Today’s briefing. Tap to read it.';
+        el.innerHTML=(stamp?'<span class="s7-stamp">'+stamp+'</span>':'')+'Latest briefing. Tap to read it.';
         el.setAttribute('data-s7','hidden-stale');
       } else {
         el.innerHTML=(stamp?'<span class="s7-stamp">'+(/\bPM\b/.test(stamp)?'Snapshot, ':'Morning snapshot, ')+stamp+'</span>':'')+esc(txt);

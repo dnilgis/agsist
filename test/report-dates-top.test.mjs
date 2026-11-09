@@ -44,8 +44,18 @@ test("Crop conditions: the top line names the week ending and the release day", 
   const cp = JSON.parse(read("data/crop-progress.json"));
   if (!cp.in_season) return;
   const h = read("conditions.html");
-  const m = /<!--SEED:condweek-->Week ending ([A-Z][a-z]{2} \d{1,2}, \d{4}), released ([A-Z][a-z]{2}), ([A-Z][a-z]{2} \d{1,2}) \(USDA NASS\)/.exec(h);
-  assert.ok(m, "the dated top line");
+  // Once the rating is older than the builder's conditions limit the top line withholds it and
+  // still names the last week on file (USDA stops rating corn in late October).
+  const rd = cp.corn.report_date || cp.report_date;
+  const limit = Number(py("import seed_static as s; print(s.STALE_DAYS['conditions'])"));
+  const age = Math.floor((Date.now() - Date.parse(rd + "T00:00:00Z")) / 864e5);
+  if (age > limit) {
+    const w = /<!--SEED:condweek-->No current national rating: the latest national report on file is the week ending ([A-Z][a-z]{2} \d{1,2}, \d{4})\./.exec(h);
+    assert.ok(w, "the withheld top line names the last week on file");
+  } else {
+    const m = /<!--SEED:condweek-->Week ending ([A-Z][a-z]{2} \d{1,2}, \d{4}), released ([A-Z][a-z]{2}), ([A-Z][a-z]{2} \d{1,2}) \(USDA NASS\)/.exec(h);
+    assert.ok(m, "the dated top line");
+  }
   assert.equal(py("import seed_static as s, datetime; print(s._cp_released(datetime.date(2026,10,25)))"), ", released Mon, Oct 26");
   assert.equal(py("import seed_static as s, datetime; print(s._cp_released(datetime.date(2026,9,6)))"), ", released Tue, Sep 8", "Labor Day moves it to Tuesday");
 });
