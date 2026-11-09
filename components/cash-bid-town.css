@@ -9,6 +9,8 @@ h1{font-size:1.5rem;margin:14px 0 4px;line-height:1.25} h2{font-size:1.1rem;marg
 .cbt-el h2{margin:0 0 2px;font-size:1.05rem;color:var(--text)}
 .cbt-el .loc{color:var(--text-muted);font-size:.85rem}
 .cbt-posted{font-size:.85rem;color:var(--text-muted);margin:4px 0 6px}
+.cbt-posted time.asof{display:block;min-height:1.4em}  /* the stamp is rewritten after load (components/asof.js, shorter or longer): its own line, so nothing below moves */
+.cbt-sep{display:none}
 .cbt-posted b{color:var(--text);font-weight:600}
 .cbt-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table.cbt-t{width:100%;border-collapse:collapse;font-size:.88rem}

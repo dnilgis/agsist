@@ -1067,7 +1067,7 @@ def trim(rows):
 # page, about 8 MB across the folder). The link sits where the <style> was, at
 # the end of the head, so the cascade and first paint are unchanged. Bump ?v=
 # here on any change to that file.
-CSS_LINK = '<link rel="stylesheet" href="/components/cash-bid-town.css?v=3">'
+CSS_LINK = '<link rel="stylesheet" href="/components/cash-bid-town.css?v=4">'
 
 
 def share_tags(h):
@@ -1607,7 +1607,7 @@ def board_section(bd, snap_ct):
     return (f'<section class="cbt-el"><h2>{esc(name)}</h2>'
             + (f'<div class="loc">{esc(loc)}</div>' if loc else "") + co
             + portal_html(pi, snap_ct)
-            + f'<p class="cbt-posted" title="Posted {esc(posted)}">{asof_time(lo)} &middot; {call}</p>'
+            + f'<p class="cbt-posted" title="Posted {esc(posted)}">{asof_time(lo)}<span class="cbt-sep"> &middot; </span>{call}</p>'
             + pasted_mark(rows, snap_ct) +
             f'<div class="cbt-scroll"><table class="cbt-t"><thead><tr><th>Crop</th><th>Delivery</th>'
             f'<th class="n">Cash</th><th class="n">Basis</th></tr></thead><tbody>{"".join(trs)}</tbody></table></div>'
