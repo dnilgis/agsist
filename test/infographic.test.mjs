@@ -253,7 +253,7 @@ test("the infographic page: hook as title and H1, JSON-LD, og:image the card, th
   assert.ok(h.includes('href="/infographic/2026-10-30"') && h.includes('href="/infographic/"'), "the recent ones and the archive");  // pin-ok: the frozen fixtures in test/fixtures/infographic, not live data
   const inl = JSON.parse(h.match(/<script type="application\/json" id="ig-spec">([\s\S]*?)<\/script>/)[1]);
   assert.deepEqual(inl, s, "the page carries the spec as it is");
-  assert.match(h, /<script src="\/components\/share-kit\.js\?v=\d+" defer><\/script>\s*<script src="\/components\/qr\.js\?v=\d+" defer><\/script>\s*<script src="\/components\/infographic\.js\?v=2" defer><\/script>/);
+  assert.match(h, /<script src="\/components\/share-kit\.js\?v=\d+" defer><\/script>\s*<script src="\/components\/qr\.js\?v=\d+" defer><\/script>\s*<script src="\/components\/infographic\.js\?v=3" defer><\/script>/);
   assert.match(h, /<div class="ig-tools" id="ig-tools" hidden>/, "the buttons hidden until the kit is there");
   const v = (n) => (read("cot.html").match(new RegExp(`/components/${n.replace(".", "\\.")}\\?v=(\\w+)`)) || [])[1];
   for (const n of ["styles.css", "share-kit.js", "qr.js", "loader.js"]) assert.ok(h.includes(`/components/${n}?v=${v(n)}`), n + " at the version cot.html loads");
@@ -399,7 +399,7 @@ test("in a browser: the Friday Chart poster, dark 1080 x 2400 and paper for prin
           const A = window.AgInfographic, spec = JSON.parse(document.getElementById("ig-spec").textContent);
           await A.posterFonts(document, theme);
           const c = A.posterCanvas(spec, document, { theme, layout, qr: window.AgQR.matrix(A.tagged(spec, "share", "qr"), null, null, 10) }), L = c.layout;
-          return { w: c.canvas.width, h: c.canvas.height, bottom: L.bottom, fits: L.fits, boxes: L.boxes, texts: L.texts, qr: L.ops.some((q) => q.t === "qr"),
+          return { w: c.canvas.width, h: c.canvas.height, bottom: L.bottom, fits: L.fits, boxes: L.boxes, texts: L.texts, qr: L.ops.some((q) => q.t === "qr"), shapes: L.ops.filter((q) => q.t === "path" && q.st).map((q) => q.st),
             png: theme === "dark" && layout === "phone" ? c.canvas.toDataURL("image/png") : null };
         }, [theme, layout]);
         const tag = `${d} ${theme} ${layout}`;
@@ -430,7 +430,8 @@ test("in a browser: the Friday Chart poster, dark 1080 x 2400 and paper for prin
         for (const p of s.poster.panels) for (const w of p.source.split(" ").slice(0, 4)) assert.ok(all.includes(w), `${tag}: the ${p.id} source`);
         if (s.kind === "harvest-gap") {
           for (const x of [P.count.big, P.hook.note.value, P.lists.cols[1].tie, P.crops.crops[0].pct + "%", P.crops.crops[1].words]) assert.ok(all.includes(x), `${tag}: ${x}`);
-          for (const t of P.map.tiles) assert.ok(r.texts.some((q) => q.s === t.key), tag + " tile " + t.key);
+          for (const t of P.map.tiles) assert.ok(r.texts.some((q) => q.s === t.key), tag + " state " + t.key);
+          assert.equal(new Set(r.shapes).size, 51, tag + ": the real map draws 51 shapes, each once");
           assert.equal(r.boxes.map((b) => b.id).join(","), layout === "phone" ? "head,map,count,crops,lists,means,foot" : "head,map,count,crops,lists,means,foot");
         } else {
           for (const x of P.changes.rows.map((q) => (q.chg < 0 ? "−" : "+") + Math.abs(q.chg).toLocaleString("en-US")).concat([P.rank.line.split(" ").slice(0, 4).join(" ")])) assert.ok(all.includes(x.split(" ")[0]), `${tag}: ${x}`);
