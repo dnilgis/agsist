@@ -55,6 +55,8 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .cb-hero-sub{font-size:.92rem;color:var(--text-dim);line-height:1.65;max-width:40rem;margin:0 auto .85rem;text-wrap:balance}
 .cb-sample{margin:1.1rem auto 0;max-width:34rem;text-align:left}
 .cb-sample-wait{min-height:390px}@media(max-width:480px){.cb-sample-wait{min-height:480px}}@media(max-width:360px){.cb-sample-wait{min-height:600px}}
+/* The results area keeps the height of the empty state (heading, line, held table) whatever lands in it: the skeleton, a saved-ZIP search that removes the held table, a short error. Nothing below it moves. */
+#cb-results{min-height:760px}@media(max-width:480px){#cb-results{min-height:830px}}@media(max-width:360px){#cb-results{min-height:960px}}
 .cbs-h{font-size:.95rem;font-weight:700;color:var(--text);margin:0 0 .4rem;text-align:center}
 .cbs-t{width:100%;border-collapse:collapse;font-size:.9rem}
 .cbs-t th,.cbs-t td{padding:.4rem .45rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
