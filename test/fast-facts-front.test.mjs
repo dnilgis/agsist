@@ -305,7 +305,11 @@ test("in Chromium: every row answers with a date and a source or says why; no na
     const bid = await pg.textContent("#f-corn-bid .fx-w");
     // every outside host is blocked here, so the bids network did not answer and the row comes from the short committed
     // list: it says so, and never "Best of N within 50 mi" (Nov 4, 2026 site panel; test/bids-fallback.test.mjs)
-    assert.match(bid, /^\$\d+\.\d{2}, \d+ mi from ZIP 54728, ([A-Za-z]+ )?delivery\. From the short list of bids the price pages use; the full elevator network was too slow to read this time\./, bid);
+    // the short list is live data: on Nov 9 its one corn elevator within 50 mi of 54728 dropped out, and the row
+    // rightly withheld. Expect whichever answer the committed file supports.
+    const shortCorn = J("data/bids.json").bids.some((b) => b.lat != null && /corn/i.test(b.commodity || "") && b.cashPrice != null && P.miles(45.31413, -91.651, b.lat, b.lon) <= 50);
+    if (shortCorn) assert.match(bid, /^\$\d+\.\d{2}, \d+ mi from ZIP 54728, ([A-Za-z]+ )?delivery\. From the short list of bids the price pages use; the full elevator network was too slow to read this time\./, bid);
+    else assert.equal(bid.split("See the")[0], "Not available. The elevator network did not answer in time, so the bids near ZIP 54728 are not known right now.", bid);
     assert.doesNotMatch(bid, /Best of|within 50 mi/, bid);
     assert.equal(await pg.$eval("#f-corn-bid .fx-s a", (a) => [a.textContent, a.getAttribute("href")].join(" ")), "See the bids near here /cash-bids?zip=54728");
     // no elevator in the bid file within 50 miles is named anywhere on the page
