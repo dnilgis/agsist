@@ -1644,8 +1644,8 @@ def quiet_line(bd):
 # answer; it carries its posted date and is rewritten on every build.
 ANSWER_CROPS = 2              # crops named in the answer sentence
 DESC_MAX = 160
-HIST_NOTE = (" The &ldquo;Basis since&rdquo; box reads AGSIST&rsquo;s daily basis log, which keeps the day each "
-             "elevator&rsquo;s basis changed; until Oct 11, 2026 that log also drew on a licensed bid feed.")
+HIST_NOTE = (" The &ldquo;Basis since&rdquo; box shows the day each elevator&rsquo;s basis last changed; before Oct 11, 2026 "
+             "it also drew on a licensed bid feed.")
 HIST_JS = '<script src="/components/cb-basis-hist.js?v=3" defer></script>\n'
 
 
@@ -2355,9 +2355,8 @@ def build_town_page(t, ctx):
                                      snap_ct, near_text, head_name)
         story_html = SBX.TOWN.story_html((ctx.get("stories") or {}).get("town"), f"{st.lower()}/{t['slug']}", story_facts)
     if any_hold:
-        hold_note = (" A &ldquo;Hold to&rdquo; line names the later month this elevator posts that comes out best once "
-                     "storage and interest are taken off: its posted carry (that month&rsquo;s bid minus the nearest one), "
-                     "net of " + esc(storesell.cost_note(storesell.with_defaults({}), None)[:-1]) +
+        hold_note = (" A &ldquo;Hold to&rdquo; line names the later month that pays best once "
+                     "storage and interest are taken off, net of " + esc(storesell.cost_note(storesell.with_defaults({}), None)[:-1]) +
                      f"; put in your own costs on <a href=\"{ss}\">Store or sell</a>.")
     if qs:
         jsonld["@graph"].append(faq_jsonld(qs))
@@ -2411,14 +2410,12 @@ def build_town_page(t, ctx):
   {ask}
   {quiet_html}
   {known_html}
-  <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each elevator&rsquo;s
-  posted bid board directly; no third-party bid feed is used for the bids on this page. A bid shows only if the board was
-  read successfully in the last {SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, the price was posted in the last {FRESH_HOURS} hours, and its delivery period
-  has not ended. This page is a snapshot and is rebuilt through the day; the <a href="{esc(live)}">live page</a>
-  has the newest board and nearby elevators. Basis is cash minus the futures contract named under it.{near_note}{hold_note}{HIST_NOTE if hist_html else ''}</div>
   {sponsor_slot(ssl)}
   {county_line(t, center, ctx)}
   <p class="cbt-sub">{' &middot; '.join(links)}</p>
+  <details class="cbt-note cbt-terms"><summary>Sources and terms</summary>
+  <p>Bids come from each elevator&rsquo;s own posted bid board, read in the last {SB.HELD_SKIP_HOURS} hours, with the price posted in the last {FRESH_HOURS} hours and the delivery period still open. This page is a snapshot rebuilt through the day; the <a href="{esc(live)}">live page</a>
+  has the newest bids and nearby elevators. Always call the elevator to confirm before you haul. Basis is cash minus the futures contract named under it.{near_note}{hold_note}{HIST_NOTE if hist_html else ''}</p></details>
 """
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
             "elevators": len(live_b), "quiet": len(quiet), "rows": nrows, "crops": crops,
@@ -3875,6 +3872,8 @@ def selftest():
         assert set(m) == {("NE", "fremont"), ("NE", "hooper"), ("IA", "redfield"), ("IA", "ackworth")}, set(m)
         assert m[("NE", "fremont")]["indexable"] and m[("NE", "hooper")]["elevators"] == 1
         fr = open(os.path.join(out, "nebraska", "fremont.html")).read()
+        if os.environ.get("CBT_FIXTURE_DIR"):   # test/cash-bid-terms-fold.test.mjs reads the fixture town pages from here
+            shutil.copytree(out, os.environ["CBT_FIXTURE_DIR"], dirs_exist_ok=True)
         for leak in ("$1.1", "3.71", "3.72", "3.73", "5.55", "7.77", "777", "Oct 3", "New Crop 2025", "30.00"):
             assert leak not in fr, f"an excluded value leaked: {leak}"
         # Op n0: Oct $3.90, Nov $3.91 (1 month): +1c, less 3.5c storage and 2.3c interest = -5c
@@ -3890,7 +3889,7 @@ def selftest():
         # elevator's table, its script and sheet once each, and no second ask below
         assert 'id="bid-email" data-bid-alerts data-place="Fremont" data-zip="68025" data-source="town:nebraska/fremont"' in fr, \
             "a town page asks for an email with its own ZIP"
-        assert fr.index("</table>") < fr.index('id="bid-email"') < fr.index("Where these come from"), \
+        assert fr.index("</table>") < fr.index('id="bid-email"') < fr.index("Sources and terms"), \
             "the bid email box sits under the first elevator's table"
         assert re.search(r'data-bid-alerts [^>]*data-top="corn:\d+\.\d\d', fr), "the price field's hint is the page's own top bid"
         assert fr.count('/components/cb-signup.js?v=') == 1 and fr.count('/components/cb-signup.css?v=') == 1
@@ -4393,7 +4392,7 @@ def _selftest_answer():
     assert box and json.loads(html_unescape(box.group(1))) == [["Op n0", ["Fremont"]]], \
         "Op n1's only key names no month it can draw, so it is not offered"
     assert "-31" not in fr and "\u221231\u00a2" not in fr.split("Nebraska middle")[0].split("cbt-hist")[-1]
-    assert fr.count('/components/cb-basis-hist.js?v=3') == 1 and "&ldquo;Basis since&rdquo; box reads" in fr
+    assert fr.count('/components/cb-basis-hist.js?v=3') == 1 and "&ldquo;Basis since&rdquo; box shows" in fr.split("<summary>Sources and terms</summary>")[1]
     assert "<summary>Basis since Sep 1</summary>" in fr and "since June" not in fr, "the heading is the first logged date"
     assert fr.index("cbt-hist\"") > fr.index('id="bid-email"'), "after the email box, with the other cards"
     assert "cb-basis-hist.js" not in ia and "Basis since" not in ia, "no logged change in the state: no box"
