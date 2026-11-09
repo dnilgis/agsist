@@ -1,0 +1,188 @@
+{
+ "_note": "data/basis-states.json as the Nov 9 2026 send read it (generated 10:17 UTC, the 10:27 UTC commit cfa42fab), trimmed to seven states and corn and soybeans. wow_up and wow_dn were not in the file then; they are copied from the same commit's state pages (cash-bids/<state>/index.html: 'N up, M down').",
+ "generated": "2026-11-09T10:17:40Z",
+ "prev": "2026-11-02T10:16:18Z",
+ "states": {
+  "OH": {
+   "name": "Ohio",
+   "crops": {
+    "corn": {
+     "contract": "ZCZ26",
+     "label": "Dec '26",
+     "n": 55,
+     "companies": 18,
+     "median": -0.24,
+     "wow": 10.0,
+     "wow_n": 50,
+     "wow_up": 41,
+     "wow_dn": 2
+    },
+    "soybeans": {
+     "contract": "ZSF27",
+     "label": "Jan '27",
+     "n": 63,
+     "companies": 18,
+     "median": -0.37,
+     "wow": 15.0,
+     "wow_n": 45,
+     "wow_up": 34,
+     "wow_dn": 2
+    }
+   }
+  },
+  "IN": {
+   "name": "Indiana",
+   "crops": {
+    "corn": {
+     "contract": "ZCZ26",
+     "label": "Dec '26",
+     "n": 63,
+     "companies": 21,
+     "median": -0.06,
+     "wow": 6.0,
+     "wow_n": 49,
+     "wow_up": 38,
+     "wow_dn": 0
+    },
+    "soybeans": {
+     "contract": "ZSF27",
+     "label": "Jan '27",
+     "n": 46,
+     "companies": 16,
+     "median": -0.31,
+     "wow": 10.0,
+     "wow_n": 30,
+     "wow_up": 23,
+     "wow_dn": 4
+    }
+   }
+  },
+  "NE": {
+   "name": "Nebraska",
+   "crops": {
+    "corn": {
+     "contract": "ZCZ26",
+     "label": "Dec '26",
+     "n": 244,
+     "companies": 29,
+     "median": -0.35,
+     "wow": 2.0,
+     "wow_n": 233,
+     "wow_up": 163,
+     "wow_dn": 2
+    },
+    "soybeans": {
+     "contract": "ZSF27",
+     "label": "Jan '27",
+     "n": 193,
+     "companies": 21,
+     "median": -0.78,
+     "wow": 7.0,
+     "wow_n": 163,
+     "wow_up": 106,
+     "wow_dn": 0
+    }
+   }
+  },
+  "KS": {
+   "name": "Kansas",
+   "crops": {
+    "corn": {
+     "contract": "ZCZ26",
+     "label": "Dec '26",
+     "n": 211,
+     "companies": 25,
+     "median": -0.35,
+     "wow": 0.0,
+     "wow_n": 206,
+     "wow_up": 31,
+     "wow_dn": 0
+    },
+    "soybeans": {
+     "contract": "ZSF27",
+     "label": "Jan '27",
+     "n": 168,
+     "companies": 22,
+     "median": -0.7,
+     "wow": 5.0,
+     "wow_n": 103,
+     "wow_up": 74,
+     "wow_dn": 0
+    }
+   }
+  },
+  "IL": {
+   "name": "Illinois",
+   "crops": {
+    "corn": {
+     "contract": "ZCZ26",
+     "label": "Dec '26",
+     "n": 219,
+     "companies": 43,
+     "median": -0.2,
+     "wow": 0.0,
+     "wow_n": 143,
+     "wow_up": 58,
+     "wow_dn": 19
+    },
+    "soybeans": {
+     "contract": "ZSF27",
+     "label": "Jan '27",
+     "n": 181,
+     "companies": 36,
+     "median": -0.3,
+     "wow": 3.0,
+     "wow_n": 57,
+     "wow_up": 32,
+     "wow_dn": 2
+    }
+   }
+  },
+  "CO": {
+   "name": "Colorado",
+   "crops": {
+    "corn": {
+     "contract": "ZCZ26",
+     "label": "Dec '26",
+     "n": 25,
+     "companies": 5,
+     "median": 0.2,
+     "wow": 5.0,
+     "wow_n": 6,
+     "wow_up": 4,
+     "wow_dn": 0
+    },
+    "soybeans": {
+     "contract": "ZSF27",
+     "label": "Jan '27",
+     "n": 5,
+     "companies": 1,
+     "median": -1.05
+    }
+   }
+  },
+  "ND": {
+   "name": "North Dakota",
+   "crops": {
+    "corn": {
+     "contract": "ZCZ26",
+     "label": "Dec '26",
+     "n": 48,
+     "companies": 18,
+     "median": -0.9,
+     "wow": 0.0,
+     "wow_n": 42
+    },
+    "soybeans": {
+     "contract": "ZSF27",
+     "label": "Jan '27",
+     "n": 61,
+     "companies": 19,
+     "median": -0.95,
+     "wow": 0.0,
+     "wow_n": 44
+    }
+   }
+  }
+ }
+}
