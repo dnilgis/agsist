@@ -73,6 +73,7 @@ from datetime import date, datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_atlas_drought import parse  # noqa: E402  one parser for both USDM readers
+from released_at import stamp as released  # noqa: E402  when the map was public
 
 API = "https://usdmdataservices.unl.edu/api/CountyStatistics/GetDroughtSeverityStatisticsByAreaPercent"
 API_US = "https://usdmdataservices.unl.edu/api/USStatistics/GetDroughtSeverityStatisticsByAreaPercent"
@@ -228,8 +229,11 @@ def build(rows, today, expected):
     doc = {
         "source": "U.S. Drought Monitor county statistics (NDMC, University of Nebraska-Lincoln), cumulative percent of county area",
         "url": API,
-        "fetched": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "valid": latest.isoformat(), "prev": prev.isoformat(), "prev4": prev4.isoformat(),
+        "fetched": (fetched := datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")),
+        "valid": latest.isoformat(),
+        # when the map was public (valid Tuesday, out Thursday 8:30 am ET): what a test may know by a date
+        **released("usdm", latest, fetched),
+        "prev": prev.isoformat(), "prev4": prev4.isoformat(),
         "cols": ["d0", "d1", "d2", "d3", "d4"],
         "note": 'Percent of area in each drought category or worse, from the U.S. Drought Monitor.',
         "streak_maps": STREAK_MAPS,
@@ -320,8 +324,9 @@ def build_summary(us_rows, st_rows, latest, states):
     return {
         "source": "U.S. Drought Monitor statistics (NDMC, University of Nebraska-Lincoln), cumulative percent of area",
         "url_us": API_US + "?aoi=conus", "url_states": API_ST,
-        "fetched": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "fetched": (fetched := datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")),
         "valid": latest.isoformat(),
+        **released("usdm", latest, fetched),
         "dates": [(latest - timedelta(days=d)).isoformat() for d in (0, 7, 28, 364)],
         "note": 'Percent of area in each drought category or worse, from the U.S. Drought Monitor.',
         "conus": four(us, latest),
@@ -421,6 +426,8 @@ def selftest():
     assert doc["valid"] == "2026-10-13" and doc["prev"] == "2026-10-06" and doc["prev4"] == "2026-09-15"
     assert doc["c"]["19169"] == [[40.0, 25.5, 10.0, 0.0, 0.0], [30.0, 20.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0]], doc["c"]["19169"]
     assert doc["zero"] == ["19001"] and doc["c"]["40139"] == [[100.0, 100.0, 80.2, 33.3, 0.0], None, None], doc
+    # released_at: the Oct 13 map (a Tuesday) was out Thursday Oct 15, 8:30 am EDT
+    assert doc["released_at"] == "2026-10-15T12:30:00Z" and doc["released_basis"] == "schedule", doc["released_at"]
     # refusals
     assert check_row(mk("19169", "20261013", "60", "40", "45", "0", "0", "0"))[1] == "not cumulative"
     assert check_row(mk("19169", "20261013", "50", "40", "0", "0", "0", "0"))[1] == "none+d0"
@@ -459,6 +466,7 @@ def selftest():
     assert not sp, sp
     assert sdoc["conus"][0] == [70, 53.7, 30.1, 10, 2] and sdoc["conus"][1] == [69, 52.5, 29, 9, 2] and sdoc["conus"][2] is None
     assert sdoc["states"]["IA"][0] == [10, 2.5, 0, 0, 0] and sdoc["dates"] == ["2026-10-13", "2026-10-06", "2026-09-15", "2025-10-14"]
+    assert sdoc["released_at"] == "2026-10-15T12:30:00Z", sdoc["released_at"]
     assert build_summary(parse_any(csv_us), {"IA": parse_any(js_ia)}, date(2026, 10, 20), ["IA"])[0] is None   # not on the county map's date
     badus = parse_any(csv_us.replace(b"53.73", b"80.00"))                                                        # D1 above D0
     assert build_summary(badus, {"IA": parse_any(js_ia)}, L, ["IA"])[0] is None

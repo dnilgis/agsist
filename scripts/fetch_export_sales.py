@@ -45,7 +45,7 @@ import json
 import os
 import sys
 import logging
-from datetime import date
+from datetime import date, datetime, timezone
 from pathlib import Path
 
 import requests
@@ -466,6 +466,22 @@ def retire_stale(out: dict, today: date):
     return retired
 
 
+def stamp_release(out: dict, fetched=None) -> None:
+    """released_at beside each report_date (FAS's week ending Thursday): the report is out the next
+    Thursday 8:30 am ET, Friday when that Thursday is a federal holiday (scripts/released_at.py), so a test
+    knows what was public on a date. `fetched` is when this run read FAS. Called on the live path only: a
+    preserved commodity keeps the released_at it was read with."""
+    from released_at import stamp
+    fetched = fetched or datetime.now(timezone.utc).strftime('%Y-%m-%dT%H:%M:%SZ')
+    out['fetched'] = fetched
+    if out.get('report_date'):
+        out.update(stamp('export_sales', out['report_date'], fetched))
+    for comm in ('corn', 'soybeans', 'wheat'):
+        row = out.get(comm)
+        if isinstance(row, dict) and row.get('report_date') and not row.get('released_at'):
+            row['released_at'] = stamp('export_sales', row['report_date'], fetched)['released_at']
+
+
 def preserve(existing: dict, today: date):
     """On any live-data failure, keep the last good numbers and only bump the
     fetch timestamp — never overwrite with empty/partial data."""
@@ -494,6 +510,19 @@ def selftest():
         print(("  ok    " if cond else "  FAIL  ") + label + ("" if cond else "  -- " + detail))
         if not cond:
             fails.append(label)
+
+    print("RELEASED_AT: WHEN THE WEEK WAS PUBLIC")
+    rel = {'report_date': '2026-10-29', 'corn': {'report_date': '2026-10-29'},
+           'wheat': {'report_date': '2026-10-22', 'released_at': '2026-10-29T12:30:00Z'}}
+    stamp_release(rel, '2026-11-06T11:00:00Z')
+    check(rel['released_at'] == '2026-11-05T13:30:00Z' and rel['released_basis'] == 'schedule',
+          "the week ending Thu Oct 29 was out Thu Nov 5, 8:30 am EST (the real file's week)", str(rel))
+    check(rel['corn']['released_at'] == '2026-11-05T13:30:00Z' and rel['fetched'] == '2026-11-06T11:00:00Z',
+          "each commodity carries its own", str(rel['corn']))
+    check(rel['wheat']['released_at'] == '2026-10-29T12:30:00Z', "a preserved row keeps the time it was read with")
+    tg = {'report_date': '2026-11-19'}
+    stamp_release(tg, '2026-12-01T00:00:00Z')
+    check(tg['released_at'] == '2026-11-27T13:30:00Z', "Thanksgiving Thursday: out Friday", tg['released_at'])
 
     print("THE MARKETING YEAR IS DERIVED, NOT TYPED")
     check(marketing_year('corn', date(2026, 8, 31))[0] == '2025/26',
@@ -785,6 +814,7 @@ def main():
 
     retire_stale(out, today)
     out['report_date'] = max(report_dates) if report_dates else today.isoformat()
+    stamp_release(out)
 
     OUT_FILE.parent.mkdir(parents=True, exist_ok=True)
     OUT_FILE.write_text(json.dumps(out, indent=2))
