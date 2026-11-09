@@ -76,6 +76,21 @@
     return 'other';
   }
 
+  /* The name printed for an elevator. An archived copy's marks ("zShawnee Feed Old") and a page title's
+     tail ("American Plains Co-op - Cash Bid Include") never reach the card. /cash-bids cleans names with
+     cbRank.displayName (components/cb-rank.js), and that is used when it is on the page. The home page does
+     not load cb-rank.js (26 KB and two more data files for one name rule), so its three general rules are
+     mirrored here; test/home-bid-names.test.mjs holds them equal to cb-rank.js. Keys and alert ids keep the
+     raw name: only what is printed changes. */
+  var OP_HEAD = /^\s*(?:cash\s+bid\s+)?(?:jsi\s+site|iframe|current\s+grain\s+bids)\s*-\s*/i;
+  var OP_TAIL = /\s*-\s*cash\s+bid\s+include\s*$/i;
+  var OP_ARCHIVED = /^z(?=[A-Z])|\s*\.?\b(?:OLD|Old)$/g;
+  function displayName(op){
+    var raw = String(op || '').trim();
+    try { if(window.cbRank && typeof window.cbRank.displayName === 'function') return window.cbRank.displayName(raw) || raw; } catch(e){}
+    var s = raw.replace(OP_HEAD, '').replace(OP_TAIL, '').trim().replace(/,+$/, '').trim();
+    return s.replace(OP_ARCHIVED, '').trim() || raw;
+  }
   function escHtml(s){
     if(!s) return '';
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -468,7 +483,7 @@
 
     // The row
     html += '<button type="button" class="bh-head" data-board-key="' + escHtml(boardKey(elev)) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + xid + '">';
-    html += '<span class="bh-id"><span class="bh-l1"><span class="bh-name">' + escHtml(elev.facility) + '</span>'
+    html += '<span class="bh-id"><span class="bh-l1"><span class="bh-name">' + escHtml(displayName(elev.facility)) + '</span>'
       + (topLabel ? '<span class="bh-topk">' + escHtml(topLabel) + '</span>' : '')
       + '<span class="bh-type"></span></span>';
     /* PANEL6 U12: the date tag sits on the town line, so every name line is
@@ -590,7 +605,7 @@
     var hasCorn = !!(cornBids && cornBids.length);
     if((hasCorn || opts.length) && elev.state && elev.facility){
       var wid = hasCorn ? widFor(elev.state, elev.facility, elev.city, 'corn') : '';
-      var name = elev.facility + (townOf(elev) ? ', ' + townOf(elev) + (elev.state ? ', ' + elev.state : '') : '');
+      var name = displayName(elev.facility) + (townOf(elev) ? ', ' + townOf(elev) + (elev.state ? ', ' + elev.state : '') : '');
       var label = escHtml(name + ', corn');
       html += '<div class="watch-elevator-wrap" data-wid="' + wid + '" data-label="' + label + '" data-name="' + escHtml(name) + '"'
         + (opts.length ? ' data-opts="' + escHtml(JSON.stringify(opts)) + '"' : '') + '>'
@@ -863,7 +878,7 @@
       /* the nearest month, then the earliest tier in it (periodRank), then the higher cash */
       if(o && (o.monthKey < k || (o.monthKey === k && (o.tier < t || (o.tier === t && o.rawCash >= b.cashPrice))))) return;
       by[id] = { id: id, crop: b.category, cropName: COMM_NAMES[b.category] + (b.category === 'wheat' && wheatClass(b) ? ' ' + wheatClass(b) : ''),
-        where: (b.facility || '') + (b.branch ? ' \u00b7 ' + b.branch : ''),
+        where: displayName(b.facility) + (b.branch ? ' \u00b7 ' + b.branch : ''),
         city: townOf(b) + (b.state ? ', ' + b.state : ''),
         miles: b.distance == null ? null : b.distance,
         cash: ppu(b.cashPrice), rawCash: b.cashPrice, tier: t, monthKey: k, monthLabel: shortMon(k),
@@ -954,7 +969,7 @@
         cash: best.cashPrice,
         basis: (best.basis == null ? null : basisCents(best.basis) / 100),
         monthKey: bestMonthKey,
-        where: (best.facility || '') + (best.branch ? ' \u00b7 ' + best.branch : ''),
+        where: displayName(best.facility) + (best.branch ? ' \u00b7 ' + best.branch : ''),
         city: townOf(best) + (best.state ? ', ' + best.state : ''),
         miles: (best.distance == null ? null : best.distance),
         avgBasis: avgBasis,
@@ -1191,7 +1206,8 @@
   }
   window.__agsistHomeBidsInternals = { rowKey: rowKey, fromNetwork: fromNetwork, widFor: widFor, publishSummary: publishSummary,
     rowMonthKey: function(r){ return rowMonthKey(r); }, rowExpired: function(r){ return rowExpired(r); }, topEntry: function(e, c){ return topEntry(e, c); },
-    storeOptions: function(bids, best){ return storeOptions(bids, best); }, periodRank: periodRank };
+    storeOptions: function(bids, best){ return storeOptions(bids, best); }, periodRank: periodRank,
+    displayName: displayName, groupByElevator: groupByElevator, renderElevatorHTML: renderElevatorHTML };
 
   // ── WAVE1-A: the day's change, filled after the card draws ──────────
   // data/bids-prev/<ST>.json is written by scripts/build_bids_prev.py in the
@@ -1559,7 +1575,7 @@
       cash: Math.round(pp * 10000) / 10000,
       basis: bc == null ? null : Math.round(bc * 100) / 10000,
       ref: ref,
-      name: e.facility || '',
+      name: displayName(e.facility),
       town: townOf(e) + (townOf(e) && e.state ? ', ' : '') + (e.state || ''),
       mi: e.distance == null ? null : Math.round(e.distance * 10) / 10,
       posted: e.fromNetwork && e.pricedAt ? String(e.pricedAt) : null,
