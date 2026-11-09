@@ -449,6 +449,77 @@ def card_cot():
 RATING_STALE_DAYS = 14   # same limit as the conditions page (scripts/seed_static.py STALE_DAYS["conditions"])
 
 
+# The top corn states in production order (fixed: the card never ranks by a number it would have to invent).
+TOP_CORN = ["IA", "IL", "NE", "MN", "IN", "SD", "OH", "WI", "MO", "KS", "ND", "MI"]
+CORN_NAMES = {"IA": "Iowa", "IL": "Illinois", "NE": "Nebraska", "MN": "Minnesota", "IN": "Indiana",
+              "SD": "South Dakota", "OH": "Ohio", "WI": "Wisconsin", "MO": "Missouri", "KS": "Kansas",
+              "ND": "North Dakota", "MI": "Michigan"}
+
+
+def harvest_gaps(states, week):
+    """{ST: (pct, avg5, gap)} for the states whose corn_harvested row is for `week` and carries the 5-year
+    average NASS prints (avg5_by NASS). Any other state has no gap: it is drawn grey, never guessed."""
+    out = {}
+    for st, row in (states or {}).items():
+        h = (row or {}).get("corn_harvested") or {}
+        if h.get("date") != week or h.get("pct") is None or h.get("avg5") is None or h.get("avg5_by") != "NASS":
+            continue
+        out[st] = (h["pct"], h["avg5"], round(h["pct"] - h["avg5"]))
+    return out
+
+
+def _pts(n):
+    return "%d point%s" % (n, "" if n == 1 else "s")
+
+
+def progress_hook(gaps):
+    """The headline and side list from the top corn states' gaps: (head segments, plain headline, rows).
+    Leads with the top state furthest behind (production order breaks a tie), adds the first top state that
+    is ahead as the contrast; if none is behind, says so. rows: the 3 biggest gaps among the top states."""
+    top = [(st, gaps[st]) for st in TOP_CORN if st in gaps]
+    if not top:
+        return None
+    behind = [t for t in top if t[1][2] < 0]
+    ahead = [t for t in top if t[1][2] > 0]
+    if behind:
+        st, (_, _, g) = min(behind, key=lambda t: t[1][2])   # min keeps the first in production order on a tie
+        head = [(f"{CORN_NAMES[st]}'s corn harvest is ", False), (f"{_pts(-g)} behind", True), (" normal.", False)]
+        if ahead:
+            a, (_, _, ga) = ahead[0]
+            head.append((f" {CORN_NAMES[a]} is {ga} ahead.", False))
+    else:
+        head = [("The corn harvest is ", False), ("at or ahead of normal", True), (" in every top corn state.", False)]
+    rows = sorted(top, key=lambda t: -abs(t[1][2]))[:3]
+    rows = [(CORN_NAMES[st], pct, avg, g) for st, (pct, avg, g) in rows]
+    return head, "".join(t for t, _ in head), rows
+
+
+def card_progress(d):
+    """The weekly Crop Progress hook (Sig, Nov 9 2026: the conditions card gave no reason to share): a US map
+    shading each state by corn harvest points behind or ahead of its own NASS 5-year average. None when the
+    week has no top corn state with a NASS average."""
+    corn = d.get("corn") or {}
+    week = corn.get("harvest_date")
+    if not week:
+        return None
+    gaps = harvest_gaps(d.get("states"), week)
+    hook = progress_hook(gaps)
+    if not hook:
+        return None
+    head, line, rows = hook
+    when = mdy(d_iso(week))
+    alt = (f"A US map shading each state by how far its corn harvest is behind or ahead of its 5-year average, "
+           f"week ending {when}. {line} "
+           + "; ".join(f"{n} {p}% harvested against an average of {a}%" for n, p, a, _ in rows) + ".")
+    return {"kind": "C", "args": dict(
+        head=head,
+        meta=f"USDA Crop Progress, week ending {when}  ·  agsist.com/conditions",
+        caption="Corn harvested vs. 5-year average",
+        pic=("progress", {"gaps": {st: g for st, (_, _, g) in gaps.items()},
+                          "label": set(TOP_CORN), "rows": rows, "rows_title": "Biggest gaps, top corn states"})),
+        "alt": alt}
+
+
 def card_conditions(today=None):
     """The /conditions card. Nov 9, 2026: it led with the Oct 25 corn rating that the page itself withholds as
     stale, and dated the Nov 1 harvest rows "week ending Oct 25". A rating past the page's limit is not drawn;
@@ -477,6 +548,10 @@ def card_conditions(today=None):
                       ctx=ctx, table=rows, table_title="US crop")
     if corn.get("harvest_pct") is None or not corn.get("harvest_date"):
         return title_card("conditions")
+    if 0 < corn["harvest_pct"] < 100:   # harvest under way: the map of who is behind is the hook
+        card = card_progress(d)
+        if card:
+            return card
     hrep = d_iso(corn["harvest_date"])
     avg = corn.get("harvest_5yr_avg")
     ctx = None
