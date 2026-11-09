@@ -1436,8 +1436,8 @@ def sales_block(W, f, lab, st, lf=False):
     src = SALES_SOURCES[st]
     return ('<section class="as" data-atlas-sales="county" data-st="%s" data-fips="%s"%s aria-label="Recorded farm sales"><h2>Recorded farm sales</h2>'
             '<div class="as-body"><p class="note">Sale counts and the median price buyers paid per acre in %s, from %s (%s), load here.</p>'
-            '<noscript><p class="note">This part needs JavaScript. The figures are in <a href="/data/land/%s/summary.json">the county summary file</a>.</p></noscript></div></section>'
-            '<script defer src="/%s?v=%s"></script>' % (st, esc(f), ' data-ls-done="1"' if lf else "", esc(lab), esc(src["record"]), esc(src["who"]), st.lower(), SALES_JS, sales_v(W.root)))
+            '<noscript><p class="note">This part needs JavaScript to show the sale counts and prices.</p></noscript></div></section>'
+            '<script defer src="/%s?v=%s"></script>' % (st, esc(f), ' data-ls-done="1"' if lf else "", esc(lab), esc(src["record"]), esc(src["who"]), SALES_JS, sales_v(W.root)))
 
 
 def sales_state(W, st):
