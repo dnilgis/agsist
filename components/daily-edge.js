@@ -39,8 +39,8 @@
       '<h2 class="dv3-edge-label" id="dv3-edge-h">' + esc(edge.label || 'Only on AGSIST') + '</h2>' +
       '<ol class="dv3-edge-list">' + items + '</ol>' +
       '<p class="dv3-edge-note">Counted by code from the elevator boards AGSIST reads itself, ' +
-      'not by the writer of this briefing. A day\'s change is each board\'s last posted bid against ' +
-      'its own on the trading day before, same delivery period.' + cite + ' <a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>' +
+      'not by the writer of this briefing. A week\'s change is each bid against ' +
+      'the same elevator\'s same delivery and futures month a week before.' + cite + ' <a href="/editorial-standards#how-the-daily-is-made">How this briefing is made</a>' +
       ' &middot; <a href="/cash-bid-index">Monthly: AGSIST Cash Bid Index</a></p>' +
       '</section>';
   }
