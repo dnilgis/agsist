@@ -236,18 +236,19 @@ test("a worker-started job reads its asks or orders from a sender that prints th
   }
 });
 
-test("the mail plan's daily cap: send-volume row, SEND-CAP marker and preflight (Nov 4 real case)", () => {
-  // Brevo free: 300 emails a day across every sender, reset 00:00 UTC. Nov 4: 211 used (the Daily's 209 + 2).
+test("the daily send count is information only (Brevo Starter, Nov 9): send-volume row, SEND-CAP refusal marker and preflight", () => {
+  // Brevo free had 300 emails a day (Nov 4: 211 used, the Daily's 209 + 2). Starter (Nov 9) has no daily cap: the count is
+  // shown, never warned on; a real refusal from the mail server is still red; brevo-month judges the monthly allowance.
   const out = py("scripts/send_cap.py", "--selftest");
   assert.match(out, /send_cap selftest: 0 failed/);
   assert.doesNotMatch(out, /^FAIL /m);
   for (const name of [
     "Nov 4: 209 + 2 against 300 is ok",
-    "245 of 300 is a warning",
+    "245 in a day is information, not a warning (no daily cap)",
+    "285 in a day is not red either",
     "a quota refusal is red, whatever the count",
-    "with the cap at 10000, 285 is ok",
-    "with SEND_DAILY_CAP=10000 nothing warns",
-    "a report day (209 + 200 later) warns and prints the marker",
+    "a preflight marker (an old log line) no longer judges",
+    "a report day (209 + 200 later) prints the count as information: no warning, no marker",
     "the marker prints once per run",
   ]) assert.match(out, new RegExp(`^ok   ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "m"), name);
   const dc = py("scripts/delivery_check.py", "--selftest");
@@ -260,31 +261,15 @@ test("the mail plan's daily cap: send-volume row, SEND-CAP marker and preflight 
   assert.match(fs.readFileSync(path.join(SCRIPTS, "send_daily.py"), "utf8"), /send_cap\.preflight\(tally/);
 });
 
-test("Sig's reminder to upgrade Brevo: once a day at 80%, again at 95% marked urgent, a weekly heads-up at 70%", () => {
-  // Sig, Nov 4: "remind me to upgrade Brevo as we get closer to the daily limit."
-  const out = py("scripts/send_cap.py", "--selftest");
-  for (const name of [
-    "Nov 4: 211 of 300 sends no reminder",
-    "245 of 300 (81%) mails one reminder",
-    "the reminder text names the count, the cap and the variable",
-    "the same day again: once a day, no second mail",
-    "95% the same day: one urgent reminder",
-    "95% again: no repeat that day",
-    "SEND_DAILY_CAP raised above the day's count: no reminder",
-    "a flag that cannot be read sends nothing",
-    "the Daily's 7-day average at 71% of 300: a gentle heads-up",
-    "the heads-up comes once a week",
-    "no address in a reminder",
-  ]) assert.match(out, new RegExp(`^ok   ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "m"), name);
-  // the path that already tells Sig things: the job's SMTP secrets to SIG_TO (log_safe.owner_mail)
+test("no daily-limit upgrade reminder (Brevo Starter has no daily cap); the monthly row judges", () => {
   const ch = readWf("cron-health.yml");
-  const step = steps(ch).find((s) => /name: Tell Sig when Brevo nears its daily limit/.test(s));
-  assert.ok(step, "cron-health.yml has the Brevo reminder step");
-  assert.match(step, /python3 scripts\/send_cap\.py --remind private\/data\/cron-health\.json/);
-  assert.match(step, /OWNER_TO: +\$\{\{ secrets\.SIG_TO \}\}/);
-  assert.match(step, /SEND_DAILY_CAP: +\$\{\{ vars\.SEND_DAILY_CAP \}\}/);
-  assert.match(step, /continue-on-error: true/);
-  assert.match(fs.readFileSync(path.join(SCRIPTS, "send_cap.py"), "utf8"), /mail = log_safe\.owner_mail/);
+  assert.doesNotMatch(ch, /send_cap\.py --remind/, "the daily-limit reminder step is gone");
+  const src = fs.readFileSync(path.join(SCRIPTS, "send_cap.py"), "utf8");
+  assert.doesNotMatch(src, /def remind|Time to upgrade Brevo/);
+  // the monthly allowance and renewal day are repository variables, so a plan change changes no code
+  assert.match(ch, /BREVO_MONTHLY: \$\{\{ vars\.BREVO_MONTHLY \}\}/);
+  assert.match(ch, /BREVO_RENEW_DAY: \$\{\{ vars\.BREVO_RENEW_DAY \}\}/);
+  assert.match(py("scripts/mail_budget.py", "--selftest"), /mail_budget selftest: 0 failed/);
 });
 
 test("a sender run as the program really wraps smtplib: counts, the cap marker, no address (runtime, not a grep)", async () => {
@@ -345,11 +330,11 @@ c.quit()
   assert.doesNotMatch(out, /@/, "no address in the output");
 });
 
-test("checker, PR 331: never slow a send, no false reds, never raise, stale markers clear, flag before mail", () => {
+test("checker, PR 331: never slow a send, no false reds, never raise, stale markers ignored", () => {
   const out = py("scripts/send_cap.py", "--selftest");
   for (const name of [
     "a dead remote adds under 6 s, says unknown, and the send proceeds",
-    "no saved count: the marker says used=unknown, not 0",
+    "no saved count: said as unknown, never a warning",
     "mailbox over quota is not the cap",
     "a message size limit is not the cap",
     "the cap text on DATA is the cap",
@@ -358,10 +343,8 @@ test("checker, PR 331: never slow a send, no false reds, never raise, stale mark
     "a second 421 in one run is the cap",
     "a tally whose extra is None: the wrapper raises nothing of its own",
     "note_refusal never raises",
-    "a raised cap clears a stale preflight marker",
+    "a stale preflight marker is ignored before and after a rejudge",
     "a refusal stays red for the window, even with a raised cap",
-    "the flag is set before the mail",
-    "a flag that does not take sends nothing (no mail every run)",
     "the report-day projection adds the report-only list, each reader once",
   ]) assert.match(out, new RegExp(`^ok   ${name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")}$`, "m"), name);
   // the preflight runs only in the Daily, before it connects; the wrapper reads nothing over the network
