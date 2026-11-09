@@ -5,6 +5,12 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.66 (2026-11-09): A FAILED EMAIL JOB START IS KEPT ON THE ORDER. The Stripe webhook and
+ *   /rp-order/approve write dispatch {at, job} on the order record after starting
+ *   rp-buyer-email.yml ("started", "no token", "HTTP 401", "failed"), and /rp-order/list
+ *   carries it. Before, the result went only into the 200 answer: an expired GH_DISPATCH_TOKEN
+ *   lost every order's email with no trace. The hourly rp-design-email run now starts the job
+ *   for a paid order unmailed after 60 minutes, or emails Sig. Every route answers as before.
  * v5.65 (2026-11-04): PRIVATE SPONSOR REPORTS (Sig, Nov 4: "move the codes to feedbag").
  *   GET /sponsor-report?r=<slug>-<token> answers that sponsor's report from KV
  *   (spr:<slug>), compared in constant time; a retired token answers 410
@@ -2916,6 +2922,7 @@ async function rpoList(env, days) {
       design_url: r.design_url, place: r.place, year: r.year, style: r.style, name: r.name, markers: r.markers,
       dedication: r.dedication, gift: !!r.gift, frame_color: rpoFrame(r), status: r.paid ? "paid" : "pay pressed", paid: r.paid || null, mailed: r.mailed || null, alerted: r.alerted || null, no_press: !!r.no_press,
       approved: r.approved || null, approved_alerted: r.approved_alerted || null, approve_t: toks[r.key] || null,
+      dispatch: r.dispatch || null,   // v5.66: the last start of the email job for this order {at, job}
       delivered: r.delivered || null,   // v5.38: the digital files went out (rp_buyer_email.py)
       // v5.40: the gift card issued for this order (never the code here) and the buyer's card email
       gift_card: r.gift_card ? { no: r.gift_card.no, last4: r.gift_card.last4, at: r.gift_card.at } : null, gift_mailed: r.gift_mailed || null,
@@ -3005,9 +3012,13 @@ async function rpoWebhookSession(env, x) {
   return { key: k };
 }
 // Starts .github/workflows/rp-buyer-email.yml (Sig's alert and the buyer email) at once.
-// Needs GH_DISPATCH_TOKEN (a fine-grained token on dnilgis/agsist, Actions read and write);
-// without it the job waits for its next run. RP_BUYER_EMAIL_LIVE = "1" lets buyer emails go
-// to buyers; anything else is a dry run (every email to Sig only).
+// Needs GH_DISPATCH_TOKEN (a fine-grained token on dnilgis/agsist, Actions read and write).
+// That workflow has no schedule: without a token, or when GitHub refuses it (an expired token
+// answers "HTTP 401"), nothing starts the job here. v5.66: the result is kept on the order record
+// (dispatch {at, job}), and the hourly rp-design-email run (scripts/rp_design_email.py) starts the
+// job for a paid order still unmailed after 60 minutes, or emails Sig when it cannot.
+// RP_BUYER_EMAIL_LIVE = "1" lets buyer emails go to buyers; anything else is a dry run (every
+// email to Sig only).
 async function rpoDispatch(env) {
   if (typeof env.GH_DISPATCH_TOKEN !== "string" || !env.GH_DISPATCH_TOKEN) return "no token";
   try {
@@ -3018,6 +3029,17 @@ async function rpoDispatch(env) {
     });
     return r.status === 204 ? "started" : "HTTP " + r.status;
   } catch (e) { return "failed"; }
+}
+// v5.66: the last dispatch for this order, kept on its record (never a token or an address), so a
+// failed start ("HTTP 401", "no token", "failed") shows on /rp-order/list instead of only in a 200
+// answer Stripe never reads again. A write that fails leaves the order as it was.
+async function rpoKeepDispatch(env, k, job) {
+  try {
+    const r = JSON.parse(await env.SUBS.get(k));
+    if (!r) return;
+    r.dispatch = { at: new Date().toISOString(), job: String(job || "failed").slice(0, 40) };
+    await rpoPut(env, k, r);
+  } catch (e) { /* the order stands; the hourly check still sees it unmailed */ }
 }
 
 // ---------- v5.43: Email me this design ----------
@@ -4853,7 +4875,9 @@ async function handle(req, env) {
       const done = await rpoWebhookSession(env, x);
       if (done.error) return json({ ok: false, error: done.error }, 400);
       if (done.already) return json({ ok: true, already: true }, 200);
-      return json({ ok: true, job: await rpoDispatch(env) }, 200);
+      const job = await rpoDispatch(env);
+      if (done.key) await rpoKeepDispatch(env, done.key, job);
+      return json({ ok: true, job }, 200);
     }
     // v5.37: the buyer approves the proof (rain-print-approve.html posts {k, t}). publicGate has run.
     // Idempotent: a second approve answers already with the first time.
@@ -4872,6 +4896,7 @@ async function handle(req, env) {
       r.approved = { at: new Date().toISOString() };
       await rpoPut(env, k, r);
       const job = await rpoDispatch(env);   // Sig's "approved" alert goes out from the same email job
+      await rpoKeepDispatch(env, k, job);
       return json({ ok: true, already: false, at: r.approved.at, product: r.product, job: job === "started" ? "started" : "later" }, 200, c);
     }
     // v5.36: Sig's order alert went out for this paid record (scripts/rp_buyer_email.py), once.
