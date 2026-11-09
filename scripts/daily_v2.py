@@ -378,8 +378,11 @@ def board_stamp(daily, rows):
     kinds = [r.get("kind") for r in rows if r.get("kind")]
     if not kinds:
         return "", None
-    main = max(set(kinds), key=kinds.count)
-    against = (daily.get("board") or {}).get("prev_close_session") or next((r.get("prev_date") for r in rows if r.get("prev_date")), "")
+    # the most rows; a tie goes to the first row's clock (corn), never to set
+    # order: Nov 9 2026 had four of each and the stamp could come out either way
+    main = max(kinds, key=lambda k: (kinds.count(k), -kinds.index(k)))
+    against = ((daily.get("board") or {}).get("prev_close_session") if main == "last" else "") \
+        or next((r.get("prev_date") for r in rows if r.get("kind") == main and r.get("prev_date")), "")
     wd = _wday(against)
     if main == "last":
         at = next((r.get("at") for r in rows if r.get("kind") == "last" and r.get("at")), "")
