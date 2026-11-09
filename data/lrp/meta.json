@@ -268,22 +268,22 @@
    "failed": 0,
    "left": 0,
    "read": 1,
-   "seconds": 2,
+   "seconds": 1,
    "stopped_for_time": false,
    "unreadable": 0
   },
-  "offer_days_written": 3326,
+  "offer_days_written": 3327,
   "offers_restated": 1,
   "rate_blank": 0,
   "rate_blank_examples": [],
   "rate_cost_off": 37,
   "rate_deleted": 0,
   "rate_price_off": 425998,
-  "rate_rows": 2347952
+  "rate_rows": 2349952
  },
- "files_read": 6958,
+ "files_read": 6959,
  "first_sales_date": "20130701",
- "last_sales_date": "20261106",
+ "last_sales_date": "20261109",
  "offer_days_by_reinsurance_year": {
   "2014": 238,
   "2015": 249,
@@ -298,7 +298,7 @@
   "2024": 248,
   "2025": 250,
   "2026": 251,
-  "2027": 91
+  "2027": 92
  },
  "products": {
   "0801": "Feeder Cattle",
