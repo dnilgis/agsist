@@ -60,7 +60,7 @@ import county_stories as CS  # noqa: E402
 
 ROOT = R.ROOT
 MAX_KB = 25
-CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=7">'
+CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=8">'
 ORIGIN = "https://agsist.com"
 M3, ML = R.MONTHS, R.MONTHS_LONG
 
@@ -1125,6 +1125,10 @@ def records_html(recs):
             f'    <ul class="rc-list">{"".join(li(o) for o in top)}</ul>{more}\n')
 
 
+PICK_JS = ("(function(){var f=document.getElementById('rc-pick');if(!f)return;"
+           "f.addEventListener('submit',function(e){e.preventDefault();var v=f.elements.st.value;if(v)location.href=v;});})();")
+
+
 def hub_page(files, built, recs=None):
     url = f"{ORIGIN}/rain"
     years = sorted({d["year"] for d in files.values()})
@@ -1140,6 +1144,8 @@ def hub_page(files, built, recs=None):
         u1, un = unit(st)
         rows.append(f'<li><a href="/rain/{R.slug(R.STATES[st])}">{e(R.STATES[st])}</a> <small>{len(d["counties"])} {un if len(d["counties"]) != 1 else u1}'
                     + (f", typical {u1} {mid:g}% of usual" if mid is not None else "") + f", {d['year']} through {short_date(last)}</small></li>")
+    pick_opts = "".join(f'<option value="/rain/{R.slug(R.STATES[st])}">{e(R.STATES[st])}</option>'
+                        for st, d in sorted(files.items(), key=lambda kv: R.STATES[kv[0]]) if d["counties"])
     title = f"How Much Rain Did Your County Get in {yw}? | AGSIST" if done else "How Much Rain Has Your County Had This Year? | AGSIST"
     sofar = "" if done else "so far "
     yin = "in " + yw if yw[0].isdigit() else yw
@@ -1159,7 +1165,8 @@ def hub_page(files, built, recs=None):
     {XMAS_JS}
     <h1>{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h1>
     <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.{" The counties having a record year are below the states." if recs else ""}</p>
-    <ul class="rc-states">{''.join(rows)}</ul>
+    <form class="rc-pick" id="rc-pick" aria-label="Find your state"><label for="rc-pick-st">State</label><div class="rc-pr"><select id="rc-pick-st" name="st"><option value="">Choose your state</option>{pick_opts}</select><button type="submit">Show counties</button></div><noscript><p class="rc-fine">Without JavaScript, use All states at the bottom of the page.</p></noscript></form>
+    <script>{PICK_JS}</script>
 {records_html(recs)}    <h2>How the numbers are counted</h2>
     <ul class="rc-list">
       <li>Each county page uses one weather station inside that county, and only a station that reported at least 90% of the days {"in " + yw if done else "this year"}. Counties without one are listed on the state page with the nearest county that has one.</li>
@@ -1167,6 +1174,7 @@ def hub_page(files, built, recs=None):
       <li>Usual is NOAA&rsquo;s daily normal for that station, added up over the same days it reported.</li>
       <li>Every page says the latest day its station has reported. NOAA&rsquo;s daily numbers come in a few days late, so the pages are updated every day and each one says the day its numbers run through.</li>
     </ul>
+    <details class="rc-all" id="all-states"><summary>All states</summary><ul class="rc-states">{''.join(rows)}</ul></details>
     <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws it from the same NOAA records.</p>
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through RCC-ACIS.</p>
   </div>
@@ -1828,7 +1836,9 @@ def selftest():
         hub = want["rain.html"]
         ok("static-nav:header" in hub, "hub carries the static nav")
         # vision panel Oct 25, fix 4: the state finder comes before the records list
-        ok('class="rc-states"' in hub and ('id="records"' not in hub or hub.index('class="rc-states"') < hub.index('id="records"')), "hub: state finder above the records")
+        ok('id="rc-pick"' in hub and ('id="records"' not in hub or hub.index('id="rc-pick"') < hub.index('id="records"')), "hub: state picker above the records")
+        ok(re.search(r'<details class="rc-all" id="all-states">', hub) and hub.index('id="all-states"') > hub.index('How the numbers are counted')
+           and hub.count('href="/rain/iowa"') == 1 and hub.count('value="/rain/iowa"') == 1, "hub: every state link once, in the closed All states fold at the bottom")
         # a county that leaves the data leaves a pointer to its state page, and comes back cleanly
         gp = os.path.join(site, "rain", "iowa", "gone-county.html")
         os.makedirs(os.path.dirname(gp), exist_ok=True)

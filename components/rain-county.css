@@ -63,6 +63,14 @@
 .rc-states { columns: 3 14em; padding: 0; list-style: none; }
 .rc-states li { break-inside: avoid; padding: .3rem 0; }
 .rc-states small { color: var(--text-muted); }
+.rc-pick { margin: 0 0 1rem; }
+.rc-pick label { display: block; font-size: var(--fs-sm); color: var(--text-muted); }
+.rc-pr { display: flex; gap: .5rem; margin-top: .2rem; max-width: 30rem; }
+.rc-pick select, .rc-pick button { font: inherit; font-size: 1rem; box-sizing: border-box; height: 2.75rem; border-radius: var(--r-md, 8px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .5rem; }
+.rc-pick select { flex: 1; min-width: 0; }
+.rc-pick button { font-weight: 700; cursor: pointer; color: var(--brand); border-color: var(--brand); white-space: nowrap; padding: 0 1rem; }
+.rc-pick select:focus-visible, .rc-pick button:focus-visible, .rc-all summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.rc-all summary { cursor: pointer; font-weight: 600; padding: .6rem 0; margin: .4rem 0; display: list-item; }
 .rc-byline { font-size: var(--fs-xs); color: var(--text-muted); margin: 1.8rem 0 0; padding-top: .9rem; border-top: 1px solid var(--border); max-width: 60em; }
 @media (max-width: 560px) {
   .rc-answer { font-size: 1.06rem; }
