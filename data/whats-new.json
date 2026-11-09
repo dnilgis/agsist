@@ -23,11 +23,39 @@
    "link": "/arc-plc"
   },
   {
+   "id": "2026-11-09-atlas-plain-words",
+   "date": "2026-11-09",
+   "title": "Plainer Farmland Atlas county text",
+   "line": "Farmland Atlas county reads say trend in plain words, and the sales note no longer points at a data file.",
+   "link": "/farmland-atlas"
+  },
+  {
    "id": "2026-11-09-atlas-terms-fold",
    "date": "2026-11-09",
    "title": "Tidier Farmland Atlas county pages",
    "line": "Farmland Atlas county pages keep their sources and terms in one short fold at the bottom.",
    "link": "/farmland-atlas"
+  },
+  {
+   "id": "2026-11-09-bin-terms-fold",
+   "date": "2026-11-09",
+   "title": "A tidier grain bin calculator",
+   "line": "The grain bin calculator page is tidier: the formula list is gone and sources sit in one closed note at the bottom.",
+   "link": "/grain-bin-calculator"
+  },
+  {
+   "id": "2026-11-09-cashbid-terms-fold",
+   "date": "2026-11-09",
+   "title": "Shorter cash bid town pages",
+   "line": "Cash bid town pages put where the bids come from in one short fold at the bottom.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-09-cbstate-terms-fold",
+   "date": "2026-11-09",
+   "title": "Shorter cash bid state and company pages",
+   "line": "Cash bid state and elevator company pages keep where the bids come from in one short fold at the bottom.",
+   "link": "/cash-bids"
   },
   {
    "id": "2026-11-09-rain-terms-fold",
@@ -49,6 +77,13 @@
    "title": "Steadier cash bid town pages",
    "line": "Cash bid town pages no longer jump while they load; the bid table stays where it is.",
    "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-09-yield-terms-fold",
+   "date": "2026-11-09",
+   "title": "Shorter state yield pages",
+   "line": "State yield pages put sources and terms in one closed note at the bottom, so the yield table comes sooner.",
+   "link": "/usda-quick-stats"
   },
   {
    "id": "2026-11-09-cash-bids-steady",
