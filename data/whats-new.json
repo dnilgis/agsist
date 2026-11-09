@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-09-land-hub-phone",
+   "date": "2026-11-09",
+   "title": "Farm sales page, made for phones",
+   "line": "The farm sales page now opens with the map and the month's stand-out sales; the state and county lists sit in a fold below.",
+   "link": "/land-sales/"
+  },
+  {
    "id": "2026-11-09-real-map-pictures",
    "date": "2026-11-09",
    "title": "Real maps on shared pictures",
