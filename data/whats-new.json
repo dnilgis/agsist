@@ -9,6 +9,13 @@
    "link": "/arc-plc"
   },
   {
+   "id": "2026-11-09-arcplc-terms-fold",
+   "date": "2026-11-09",
+   "title": "Tidier ARC or PLC county pages",
+   "line": "ARC or PLC county and state pages gather the estimate notice and sources in one fold at the bottom.",
+   "link": "/arc-plc"
+  },
+  {
    "id": "2026-11-09-town-page-steady",
    "date": "2026-11-09",
    "title": "Steadier cash bid town pages",
@@ -21,6 +28,13 @@
    "title": "Cash bids holds still while it loads",
    "line": "The cash bids page no longer jumps while your saved ZIP's bids come in, so the email box and links below stay put.",
    "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-09-daily-memory",
+   "date": "2026-11-09",
+   "title": "The Daily says a thing once",
+   "line": "A Daily line prints only when its number changed. New: a state basis line on weeks a state moves 5 cents, and fund positions on Saturday as the streak.",
+   "link": "/daily"
   },
   {
    "id": "2026-11-09-daily-one-clock",
