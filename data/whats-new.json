@@ -9,6 +9,13 @@
    "link": "/arc-plc"
   },
   {
+   "id": "2026-11-09-town-page-steady",
+   "date": "2026-11-09",
+   "title": "Steadier cash bid town pages",
+   "line": "Cash bid town pages no longer jump while they load; the bid table stays where it is.",
+   "link": "/cash-bids"
+  },
+  {
    "id": "2026-11-09-cash-bids-steady",
    "date": "2026-11-09",
    "title": "Cash bids holds still while it loads",
