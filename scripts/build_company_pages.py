@@ -50,6 +50,7 @@ except ImportError: pass
 import json
 import os
 import re
+import shutil
 import sys
 from collections import Counter
 from urllib.parse import urlparse
@@ -458,13 +459,9 @@ def build_page(co, ctx):
   {''.join(secs)}
   {box}
   {CB.faq_html(qs, short)}
-  <div class="cbt-note"><b>Where these come from.</b> The AGSIST elevator network reads each {esc(short)} location&rsquo;s
-  posted bid board directly; no third-party bid feed is used. A bid shows only if the board was read successfully in the
-  last {CB.SB.HELD_SKIP_HOURS} hours and did not fail on the latest pass, the price was posted in the last {CB.FRESH_HOURS} hours, and its delivery period has not ended. Each price is the
-  location&rsquo;s earliest delivery period for the grade it posts most; the town page has every month and the futures
-  contract each basis is quoted against. A basis far off the elevators around it is left out here and flagged on the town
-  page. This page is a snapshot rebuilt through the day.</div>
   <p class="cbt-sub">{links}</p>
+  <details class="cbt-note cbt-terms"><summary>Sources and terms</summary>
+  <p>Bids come from each {esc(short)} location&rsquo;s own posted bid board, read in the last {CB.SB.HELD_SKIP_HOURS} hours, with the price posted in the last {CB.FRESH_HOURS} hours and the delivery period still open. Each price is the location&rsquo;s earliest delivery period for the grade it posts most; the town page has every month and the futures contract each basis is quoted against. A basis far off the elevators around it is left out here. This page is a snapshot rebuilt through the day; always call the elevator to confirm before you haul.</p></details>
 """
     h = CB.head(title, desc, path, jsonld, indexable)
     h = with_extra_css(h)
@@ -597,6 +594,8 @@ def selftest():
         d = os.path.join(out, SUBDIR)
         assert sorted(os.listdir(d)) == ["acme-co-op.html", "index.html"], os.listdir(d)
         p = open(os.path.join(d, "acme-co-op.html"), encoding="utf-8").read()
+        if os.environ.get("CBT_FIXTURE_DIR"):   # test/cash-bid-state-terms-fold.test.mjs reads the fixture pages from here
+            shutil.copytree(out, os.environ["CBT_FIXTURE_DIR"], dirs_exist_ok=True)
         # the answer: corn over three current locations, nearest month, #2 corn not the non-GMO bid
         assert ('<p class="cbt-answer">Acme Co-op cash bids today: corn $3.80 to $3.90 at 3 locations, '
                 'soybeans $9.75 to $9.85 at 2 locations, posted Oct 6 to 7.</p>') in p, \
