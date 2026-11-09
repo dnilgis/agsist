@@ -81,6 +81,15 @@
 /* 2026-11-09: the maturity note is empty until the first calculation fills it with the example's two (three on a phone)
    lines; keep that room so the buttons and gauge below it do not move when it fills. */
 #r-mat-note { min-height:3.15em; }
+/* held up front for scripts that write them after the first paint (test/cls-reserved.test.mjs) */
+#g-frost { min-height:42px; }
+#g-frost-hint { min-height:6em; }
+#g-loc-display { min-height:1.5em; }
+#g-share-status { min-height:1.5em; }
+#gdu-mat-card { min-height:25rem; }
+#ms-title, #r-days-left-sub, #rm-lbl { min-height:1.6em; }
+#r-frost-verdict { min-height:1.6em; }
+#rm-hint { min-height:3em; }
 @media(max-width:699px){ #r-mat-note { min-height:4.72em; } }
 /* The stage list is empty until the first calculation fills it (the example is the soybean list: 406 px wide-screen, 581 px phone). */
 #milestones { min-height:400px; }

@@ -50,6 +50,8 @@
     .fn-row{display:flex;flex-wrap:nowrap;gap:.5rem;align-items:flex-end;min-width:0}
     .fn-row label{min-width:0}
     /* 2026-11-09: the pickers keep their room while the readings load (hidden, not removed), so the table does not drop when they appear */
+    #fn-live{min-height:39rem}
+    @media(max-width:699px){#fn-live{min-height:46rem}}  /* the static table's room, held in CSS (the script also sets the measured height) */
     #fn-live{display:flow-root}  /* the first line's margin stays inside, so swapping the static lede for the live heading does not move the block */
     .fn-pick[hidden]{display:flex!important;visibility:hidden}
     .fn details.fn-all[hidden]{display:block!important;visibility:hidden}
