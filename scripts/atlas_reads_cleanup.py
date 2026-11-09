@@ -255,6 +255,16 @@ def _opener(t, key):
     return head + t[m.end():]
 
 
+def plain_trend(t):
+    """Curtain round 2 (Nov 9): a read says "trend", never "fitted trend" (no method word on a county page).
+    Numbers and years are untouched; only the words go."""
+    t = re.sub(r"\bon (?:the )?fitted trend (?=(?:over|through|from) )", "", t)
+    t = re.sub(r"\b(across|over) the fitted trend (?=\d{4})", "over ", t)
+    t = re.sub(r"\bon the fitted trend\b", "on the trend", t)
+    t = re.sub(r"\bfitted trend\b", "trend", t)
+    return t
+
+
 def clean_text(text, key="", opener=True):
     """Safe rewrites only. Never changes a number token (checked by the caller
     and by the selftest). Idempotent: clean_text(clean_text(x)) == clean_text(x)."""
@@ -287,6 +297,7 @@ def clean_text(text, key="", opener=True):
     t = re.sub(r"\bLand value carries the same climb, ", "Land value climbed as well, ", t)
     t = _moved_f(t)
     t = _chain_to(t)
+    t = plain_trend(t)
     t = re.sub(r",\s*,", ",", t)
     t = re.sub(r",\s*\.", ".", t)
     t = re.sub(r"  +", " ", t).strip()
@@ -454,6 +465,13 @@ def selftest():
         # left alone: direction words carry information, "ran" can be plural
         ("Heat and drought's share rose from 9 percent in 1989-1999 to 33 percent in 2020-2025.", None),
         ("Severe drought weeks ran 77 in 2021-2025.", None),
+        ("Corn yields have climbed 1.7 bushels per acre a year on fitted trend over 2008-2025, with a median of 175.4 bushels.",
+         "Corn yields have climbed 1.7 bushels per acre a year over 2008-2025, with a median of 175.4 bushels."),
+        ("Corn here yields 146.2 bushels per acre on the fitted trend, and that trend is up 2.1 bushels.",
+         "Corn here yields 146.2 bushels per acre on the trend, and that trend is up 2.1 bushels."),
+        ("Corn is rising at 4.3 bushels per acre a year across the fitted trend 2008-2024, with a median of 149 bushels.",
+         "Corn is rising at 4.3 bushels per acre a year over 2008-2024, with a median of 149 bushels."),
+        ("The county's fitted trend is 4.1 bushels per acre a year.", "The county's trend is 4.1 bushels per acre a year."),
     ]
     for src, want in cases:
         got = clean_text(src, "19169")
