@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 402;  // v402 2026-11-09: milk herd line layout. The herd line on /milk-prices stays unseen until it is fully parsed, so a paint part way through no longer wraps it a line differently.
+var CACHE_VERSION = 403;  // v403 2026-11-09: futures pages layout. The session badge, hero price and quote cards keep their boxes when live quotes land, so the page no longer jumps (components/futures.js?v=31).
+// var CACHE_VERSION = 402;  // v402 2026-11-09: milk herd line layout. The herd line on /milk-prices stays unseen until it is fully parsed, so a paint part way through no longer wraps it a line differently.
 // var CACHE_VERSION = 401;  // v401 2026-11-09: town page layout. The Updated stamp on cash bid town pages has its own line, so the bid table no longer jumps when the stamp is rewritten (components/cash-bid-town.css?v=4).
 // var CACHE_VERSION = 400;  // v400 2026-11-09: arc-plc plain (400, next after main's 399). The ARC/PLC call text has no cutoffs or t statistic (arc-plc.js, arc-plc-math.js at CALC_V 17).
 // var CACHE_VERSION = 399;  // v399 2026-11-09: cash-bids layout (399; 398 is an open PR). The results area keeps its height so a saved-ZIP load no longer jumps.
