@@ -53,7 +53,9 @@ test("What's Priced In has one grading definition and no empty-state text beside
   const h = read("usda-calendar.html"), pj = read("components/priced-in.js");
   assert.ok(!/edges of the trade range|ends of the trade range/.test(pj), "a second, range-edge definition in the script");
   assert.ok(!/edges of the trade range|ends of the trade range/.test(h), "a second, range-edge definition of the thresholds");
-  assert.match(h, /surprise thresholds<\/b> on the report card are the trade average minus and plus that same band/);
+  const fold = h.slice(h.indexOf('<summary>Sources and terms</summary>'));
+  assert.match(fold, /How a report is graded\.<\/b> Each figure is compared with the pre-report trade average\./);   // the one grading definition, in the one fold
+  assert.equal(h.split("How a report is graded").length, 2, "one grading definition");
   assert.match(h, /<div class="wp-sample" id="wp-sample"><\/div>/, "the sample box is empty in the page text");
   const visible = h.replace(/<script[\s\S]*?<\/script>/g, "");
   assert.ok(!/No report data yet/.test(visible), "No report data yet is in the page text");

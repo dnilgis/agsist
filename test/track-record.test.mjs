@@ -68,14 +68,14 @@ test("from a synthetic record: shown rates, withheld rates, baselines beside eac
   for (const w of ["signal", "percentile", "trend", "weight", "feature", "crowded", "threshold", "model v"])
     assert.ok(!b.replace(/<style>[\s\S]*?<\/style>/, "").toLowerCase().includes(w), "no method word: " + w);
   assert.match(b, /Record as of Sep 5, 2026\./);
-  assert.match(b, /The baselines were fixed Nov 6, 2026 and are never changed\./);
+  assert.ok(!/baselines were fixed/.test(b), "the baseline sentence lives in the page's one fold (test/calendar-terms-fold.test.mjs)");
   assert.ok(!/before any grade/i.test(b));
   // a direction call with no baseline fixed in advance: said so, plus one comparison labelled after the fact; a tie is left out
   assert.match(card("dirz"), /<dt>Simple baseline<\/dt><dd>No baseline fixed in advance<\/dd>/);
   assert.match(card("dirz"), /<dt>For comparison, after the fact<\/dt><dd>Prices rose in 7 of 13; always saying up would have been right 54%\.<\/dd>/);
   assert.match(card("dirz"), /7 of 13 right, 54%/);
   assert.match(card("dirz"), /Locked \/ graded with an outcome<\/dt><dd>14 \/ 14</);
-  assert.match(b, /counts as neither right nor wrong and is left out of the direction count/);
+  assert.ok(!b.includes("<details"), "no fold inside the record: the one Sources and terms fold is at the bottom of the page");
   // "no change" is never shown as a direction call's baseline, and nothing claims a "best" baseline
   for (const fc of ["dirx", "diry", "dirz"]) assert.ok(!/No change/.test(card(fc)), fc + " shows no no-change direction baseline");
   assert.ok(!/best baseline|Best simple/i.test(b));

@@ -141,7 +141,8 @@ test("spray, urea, conditions, cot, scout, pod counts: corrected wording", () =>
 test("what's priced in: finishing order rule, Oct 9 corn, sources, closest", () => {
   const w = read("usda-calendar.html");   // What's priced in is a section of the calendar since Oct 22, 2026
   assert.ok(!w.includes("A ranking needs at least two forecasters"));
-  assert.match(w, /A finishing order needs at least two forecasters with/);
+  assert.match(w, /Too few scored calls to rank forecasters yet, so this board shows records, not places\./);
+  assert.ok(!w.includes("A finishing order needs at least two forecasters with"));
   assert.match(w, /corn ending stocks landed 10\.3% over the average and read in line on a day December corn fell 20&frac12;&cent;/);
   const d = JSON.parse(read("data/whats-priced-in.json"));
   assert.match(d.latest_result.biggest_surprise.reaction, /20½¢ lower/);
