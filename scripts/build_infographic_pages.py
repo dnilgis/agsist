@@ -42,7 +42,7 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = "https://agsist.com"
 SPECS = os.path.join("data", "infographics")
 OUT = "infographic"
-JS_V = "2"          # components/infographic.js?v=
+JS_V = "3"          # components/infographic.js?v=
 CSS_V = "2"         # infographic/infographic.css?v=
 LAST_N = 4
 DATE_RE = re.compile(r"^(\d{4}-\d{2}-\d{2})\.json$")

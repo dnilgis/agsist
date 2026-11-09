@@ -331,7 +331,7 @@ def harvest_poster(cp, week, rows, far):
                      if isinstance(pw, (int, float)) else None)}
     panels = [hook,
               {"id": "map", "title": "Corn harvest vs the 5-year average", "date": week,
-               "hint": "Each tile is a state. Number = points ahead (+) or behind (−) its own 5-year pace.",
+               "hint": "Each state is colored by its gap. Number = points ahead (+) or behind (−) its own 5-year pace.",
                "source": "Source: %s, week ending %s. Only the %d states with a NASS-printed 5-yr avg are colored." % (NASS, wk, n),
                "tiles": [{"key": r["key"], "gap": r["gap"]} for r in rows],
                "bins": [{"lo": None, "hi": -6, "label": "6 or more behind", "c": "b2"},
