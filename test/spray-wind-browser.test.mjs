@@ -142,6 +142,10 @@ test("a shared field link at 390 and 1280: map, flow, windows, credits, the shar
       await pg.$eval("#sw-slider", (e) => { e.value = "0"; e.dispatchEvent(new Event("input", { bubbles: true })); });
       assert.match(await pg.$eval("#sw-slider", (e) => e.getAttribute("aria-valuetext")), /mph at the boom/);
       await pg.$eval("#sw-slider", (e, i) => { e.value = String(i); e.dispatchEvent(new Event("input", { bubbles: true })); }, IDX8);
+      // the share button sits below the map, so the click scrolled the map off screen, where the page rightly pauses
+      // the drawing; a resize while it was paused left a blank canvas (main run 42454535447, Nov 8: "trail pixels: 0").
+      // Read the trails where a reader would, with the map in view.
+      await pg.$eval("#sw-wrap", (e) => e.scrollIntoView({ block: "center" }));
       await pg.waitForTimeout(1500);
       // the trails build up frame by frame: on a loaded machine 1.5 s can be too few frames, so give the drawing up to 15 s to reach the same 2000 pixels
       await pg.waitForFunction(() => { const c = document.getElementById("sw-cv"), d = c.getContext("2d").getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 40) n++; return n > 2000; }, null, { timeout: 15000, polling: 250 }).catch(() => {});
