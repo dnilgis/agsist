@@ -120,6 +120,10 @@ def price_windows(today_iso, quotes, today_changes, archive_dir=None):
             items.append({"name": q.get("name") or key, "text": text})
         if items:
             out.append({"label": label, "items": items})
+    # Month to date is left out when it says what week so far says (Nov 7 and 8 2026: the month began
+    # on a weekend, and both rows read the same -6 1/4 and -33 1/4 cents).
+    wk = next((w["items"] for w in out if w["label"] == "Week so far"), None)
+    out = [w for w in out if not (w["label"] == "Month to date" and wk is not None and w["items"] == wk)]
     return out
 
 
