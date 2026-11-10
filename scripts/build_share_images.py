@@ -245,7 +245,7 @@ IMAGE_ONLY = {
 BORROW = {
     "R": "rain-print", "r": "rain-print", "rp-gift": "rain-print",
     "comp-report": "field-scout", "field-report": "field-scout",
-    "sponsor-kit": "sponsor", "prf-sponsor-kit": "prf-sponsor",
+    "sponsor-kit": "sponsor", "sponsor-rates": "sponsor", "prf-sponsor-kit": "prf-sponsor",
 }
 NO_OG_URL = {"R", "r", "rp-gift", "comp-report", "field-report"}
 # Pages whose image and meta tags another builder owns.
