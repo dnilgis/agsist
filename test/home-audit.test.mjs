@@ -179,3 +179,33 @@ test("RMA dates: the card runs through the latest final planting date in the fil
   const hit = Object.values(rma.counties).filter((c) => c.soybeans === lastTxt || c.corn === lastTxt);
   assert.ok(hit.length >= 28, "counties on the latest date: " + hit.length);
 });
+
+test("rent card: the rent page's land type, named, and no rent more than three survey years old shown as current", () => {
+  const rentPick = fns("components/home-season.js", ["rentLead", "rentPick"], "rentPick");
+  const CA = fx("cash-rent-CA.json"), CO = fx("cash-rent-CO.json"); // the NASS files /rent/california and /rent/colorado were built from, Nov 10
+  // Fresno CA: the rent page leads with irrigated, so the card shows irrigated $305, not dryland $22
+  const fr = rentPick(CA, "Fresno County");
+  assert.equal(fr.lead.kind, "irr");
+  assert.deepEqual([fr.main.word, fr.main.value, fr.main.old], ["irrigated", 305, false]);
+  // Colusa CA: dryland was last published 2021; the card leads with its current irrigated rent, never "$28, 2021"
+  const co = rentPick(CA, "Colusa County");
+  assert.deepEqual([co.main.word, co.main.value, co.main.old], ["irrigated", 375, false]);
+  assert.ok(co.other.old && co.other.value === 28, "the 2021 dryland rent is old, so it is not printed beside it");
+  // Otero CO: dryland $35 is from 2009; irrigated (Colorado's lead) $155
+  const ot = rentPick(CO, "Otero County");
+  assert.equal(ot.lead.kind, "irr");
+  assert.deepEqual([ot.main.value, ot.main.old, ot.other.value, ot.other.old], [155, false, 35, true]);
+  // a lead-kind rent more than three survey years old is n/a with its year: Tuolumne CA irrigated, last 2011
+  const tu = rentPick(CA, "Tuolumne");
+  assert.equal(tu.main.old, true);
+  assert.equal(tu.main.year, tu.lead.year - 15);
+  // the California state fallback is the irrigated median the rent page leads with ($437), not dryland $34.75
+  const none = rentPick(CA, "Nowhere");
+  assert.equal(none.main, null);
+  assert.equal(none.word, "irrigated");
+  assert.equal(none.lead.median, 437);
+  // the card's words: every rent line names its land type, an old one says n/a
+  const src = read("components/home-season.js");
+  assert.match(src, /'n\/a <small>'\+r\.word\+', last published '\+r\.year/);
+  assert.doesNotMatch(src.slice(src.indexOf("function rent()"), src.indexOf("function prf()")), /cards\.json/, "the card no longer reads the Atlas dryland field");
+});

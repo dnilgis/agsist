@@ -543,17 +543,49 @@
     });
   }
 
-  /* ---------- rent ---------- */
+  /* ---------- rent ----------
+     Nov 10 rent audit (item 3): the card read the Atlas card file's dryland rent of
+     any age, unlabeled: Colusa CA "$28 per acre, 2021" and Otero CO "$35, 2009" read as
+     the rent, and Fresno CA showed dryland $22 where its rent page leads with
+     irrigated $305. It now reads the state's NASS file (data/cash-rent/<ST>.json, the
+     file /rent/<state> is built from), leads with the same land type as that page
+     (lead_kind in scripts/build_state_rent_pages.py: the cropland kind NASS
+     published for more counties in the latest year, a tie to non-irrigated; three
+     counties needed, else the kind with the most), names it, and a rent more than
+     three survey years old shows n/a with its last year (Sig, Oct 19). */
+  function rentLead(d){
+    var cs=(d&&d.counties)||[],yl=0,cov={nonirr:0,irr:0,pasture:0};
+    (d&&d.years||[]).forEach(function(y){if(+y>yl)yl=+y;});
+    cs.forEach(function(c){['nonirr','irr','pasture'].forEach(function(t){if(c.rent&&c.rent[t]&&c.rent[t][yl]!=null)cov[t]++;});});
+    var crop=['nonirr','irr'].filter(function(t){return cov[t]>=3;}),kind;
+    if(crop.length)kind=(crop.indexOf('irr')>=0&&cov.irr>cov.nonirr)?'irr':crop[0];
+    else kind=cov.pasture>cov.irr?'pasture':'irr';
+    var v=cs.map(function(c){return c.rent&&c.rent[kind]&&c.rent[kind][yl];}).filter(function(x){return typeof x==='number';}).sort(function(a,b){return a-b;});
+    var m=v.length?(v.length%2?v[(v.length-1)/2]:(v[v.length/2-1]+v[v.length/2])/2):null;
+    return {kind:kind,year:yl,median:m,n:v.length};
+  }
+  function rentPick(d,county){
+    var L=rentLead(d),key=String(county||'').replace(/\s+(County|Parish)$/i,'').toLowerCase(),c=null;
+    ((d&&d.counties)||[]).forEach(function(x){if(String(x.name||'').replace(/\s+(County|Parish)$/i,'').toLowerCase()===key)c=x;});
+    var KW={nonirr:'non-irrigated',irr:'irrigated',pasture:'pasture'};
+    var one=function(t){var h=c&&c.rent&&c.rent[t],ys=h?Object.keys(h).map(Number).filter(function(y){return h[y]!=null;}):[];if(!ys.length)return null;
+      var y=Math.max.apply(null,ys);return {kind:t,word:KW[t],value:h[y],year:y,old:y<L.year-3};};
+    return {lead:L,word:KW[L.kind],county:c,main:c?one(L.kind):null,other:c?one(L.kind==='irr'?'nonirr':'irr'):null};
+  }
   function rent(){
     if(!cells.rent)return;
     var l=loc();if(!l||!l.state){needZip('rent');return;}
-    get('/farmland-atlas/data/cards.json').then(function(d){
-      if(!d||!d.counties){put('rent',NL(),'Farmland Atlas');return;}
-      var st=l.state,cty=String(l.county||'').replace(/\s+County$/i,'').toLowerCase(),hit=null;
-      for(var k in d.counties){var c=d.counties[k];if(c.st===st&&String(c.n||'').replace(/\s+County$/i,'').toLowerCase()===cty){hit=c;break;}}
-      if(hit&&hit.r!=null)put('rent','$'+Math.round(hit.r)+' <small>per acre'+(hit.ry?', '+hit.ry:'')+'</small>',esc(hit.n+', '+hit.st+'. USDA NASS county cash rent.'));
-      else if(d.states&&d.states[st]&&d.states[st].r!=null)put('rent','$'+Math.round(d.states[st].r)+' <small>per acre, state median of counties</small>',esc((d.states[st].n||st)+'. USDA NASS county cash rent survey.'));
-      else put('rent',NL(),'Farmland Atlas');
+    var st=String(l.state).toUpperCase();
+    if(!/^[A-Z]{2}$/.test(st)){put('rent',NL(),'USDA NASS county cash rent');return;}
+    get('/data/cash-rent/'+st+'.json').then(function(d){
+      if(!d||!d.counties){put('rent',NL(),'USDA NASS county cash rent');return;}
+      var P=rentPick(d,l.county),m=P.main,o=P.other,nm=P.county?P.county.name+', '+st:st;
+      var line=function(r){return r.old?'n/a <small>'+r.word+', last published '+r.year+'</small>':'$'+Math.round(r.value)+' <small>per acre, '+r.word+', '+r.year+'</small>';};
+      if(m){
+        var sub=o&&!o.old&&o.kind!==m.kind?' '+(o.word.charAt(0).toUpperCase()+o.word.slice(1))+' $'+Math.round(o.value)+', '+o.year+'.':'';
+        put('rent',line(m),esc(nm+'. USDA NASS county cash rent, '+m.word+' cropland'+(m.old?', more than three survey years old':'')+'.'+sub));
+      }else if(P.lead.median!=null)put('rent','$'+Math.round(P.lead.median)+' <small>per acre, '+P.word+', state median of '+P.lead.n+' counties, '+P.lead.year+'</small>',esc((P.county?P.county.name+': NASS published no '+P.word+' rent. ':'')+st+'. USDA NASS county cash rent survey.'));
+      else put('rent',NL(),'USDA NASS county cash rent');
     });
   }
 
