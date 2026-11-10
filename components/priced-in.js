@@ -12,7 +12,9 @@
      it is used. Kept byte-identical to the other so the baked port can mirror
      one rule; test/wpi-numbers-strip.test.mjs holds them together. */
   
-  function num(n,u){return (n==null)?'-':(n+(u?(' '+u):''));}
+  /* stocks and production in billion bushels read like USDA prints them: 1.840, not 1.84 */
+  function d3(n,u){return (u==='bil bu'&&typeof n==='number'&&isFinite(n))?n.toFixed(3):n;}
+  function num(n,u){return (n==null)?'-':(d3(n,u)+(u?(' '+u):''));}
   /* THE STRIP. Renders what the pipeline decided and decides nothing itself.
      A missing figure prints an em dash and the reason the pipeline gave, never
      a blank cell and never a zero. */
@@ -21,9 +23,9 @@
     var DASH='n/a';
     var body=rows.map(function(r){
       var u=r.unit?(' '+r.unit):'';
-      var exp=(r.expected==null)?(DASH+(r.expected_why?('<div style="font-size:.72rem;color:var(--wp-mut)">'+esc(r.expected_why)+'</div>'):'')):(r.expected+u+(r.source_date_unknown?'<div style="font-size:.72rem;color:var(--wp-mut)">source date unknown</div>':''));
-      var rng=(r.low!=null&&r.high!=null)?('<div style="font-size:.72rem;color:var(--wp-mut)">range '+r.low+' to '+r.high+'</div>'):'';
-      var now=(r.usda_current==null)?DASH:(r.usda_current+u);
+      var exp=(r.expected==null)?(DASH+(r.expected_why?('<div style="font-size:.72rem;color:var(--wp-mut)">'+esc(r.expected_why)+'</div>'):'')):(d3(r.expected,r.unit)+u+(r.source_date_unknown?'<div style="font-size:.72rem;color:var(--wp-mut)">source date unknown</div>':''));
+      var rng=(r.low!=null&&r.high!=null)?('<div style="font-size:.72rem;color:var(--wp-mut)">range '+d3(r.low,r.unit)+' to '+d3(r.high,r.unit)+'</div>'):'';
+      var now=(r.usda_current==null)?DASH:(d3(r.usda_current,r.unit)+u);
       var printed,tag='';
       if(r.actual==null){ printed='<td class="wait">'+esc(r.why||'not printed yet')+'</td>'; }
       else{
@@ -33,7 +35,7 @@
         else tag='<span class="v flat" title="'+esc(r.why||'')+'">no call</span>';
         /* Where it sat against the survey's own low and high, worded by the pipeline (report_bands.range_context). */
         var ctx=r.context?('<div style="font-size:.72rem;color:var(--wp-mut)">'+esc(r.context)+'</div>'):'';
-        printed='<td class="n"><b>'+r.actual+u+'</b>'+tag+ctx+'</td>';
+        printed='<td class="n"><b>'+d3(r.actual,r.unit)+u+'</b>'+tag+ctx+'</td>';
       }
       return '<tr><td>'+esc(r.label)+rng+'</td><td class="n">'+exp+'</td><td class="n">'+now+'</td>'+printed+'</tr>';
     }).join('');
@@ -59,7 +61,7 @@
     var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var p=String(tb.date||'').split('-'),md=(p.length===3)?(MO[+p[1]-1]+' '+(+p[2])):esc(tb.date);
     var body=tb.rows.map(function(r){
-      return '<tr><td>'+esc(r.label)+'</td><td class="n"><b>'+esc(r.value)+' '+esc(r.unit)+'</b></td></tr>';
+      return '<tr><td>'+esc(r.label)+'</td><td class="n"><b>'+esc(d3(r.value,r.unit))+' '+esc(r.unit)+'</b></td></tr>';
     }).join('');
     return '<div class="wp-nums wp-beat"><div class="nh"><b>The number to beat</b><span>USDA\u2019s '+esc(tb.report)+' ('+md+'), standing until the '+esc(nextReport||'next report')+'</span></div>'
       +'<table><thead><tr><th>Number</th><th>USDA now</th></tr></thead><tbody>'+body+'</tbody></table>'
@@ -156,7 +158,7 @@
          survey's own low-high range is the pipeline's context line. */
       var inNote='';
       if(b.context&&b.low!=null&&b.high!=null){
-        inNote=b.context.charAt(0).toUpperCase()+b.context.slice(1)+' ('+b.low+' to '+b.high+').';
+        inNote=b.context.charAt(0).toUpperCase()+b.context.slice(1)+' ('+d3(b.low,b.unit)+' to '+d3(b.high,b.unit)+').';
       }
       big='<div class="wp-res-big">'
         +'<div class="wp-res-row"><span class="wp-res-metric">'+b.metric+'</span>'
@@ -175,7 +177,7 @@
       +'<div class="wp-res-sum">'+sum+'</div>'+big+numbersEl(lr.numbers)
       +'<div class="wp-res-foot">Every figure, scored, in the <a href="#track-record">track record</a> below.</div></div>';
   }
-  function fmtNum(n,u){return (n==null)?'n/a':(n+(u?('\u00a0'+u):''));}
+  function fmtNum(n,u){return (n==null)?'n/a':(d3(n,u)+(u?('\u00a0'+u):''));}
   /* AN EMPTY SURPRISE IS NOT "IN LINE". Both builders used to return "in line"
      when there was no consensus to compare against, and the page rendered
      `r.surprise||'in line'` on top of that, so a metric nobody had filed an
