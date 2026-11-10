@@ -143,15 +143,9 @@ try {
      "No market crowded" while meal, hogs or milk is crowded. */
   /* Nov 10 audit: Sig dropped the crowding verdict everywhere on Nov 6; the home
      badge no longer prints one (G.crowdedLine stays for /cot until it follows). */
-  var COT_VERDICT=false;
-  function verdict(el,lv,data){
-    if(!el)return;if(lv)lv.hidden=true;
-    var G=window.AgCotGlance,v=COT_VERDICT&&G&&G.crowdedLine(data,COT_CX);
-    if(!v){el.hidden=true;return;}
-    el.hidden=false;
-    el.title='Crowded: net as a share of open interest in the top or bottom tenth of every week since 2010, on the side the position is on (the COT page\u2019s measure), across all '+v.markets+' markets.';
-    el.className='cot-verdict '+(v.state==='none'?'mixed':v.state);
-    el.textContent=v.text;
+  function verdict(el,lv){
+    /* no crowding verdict on home (Sig, Nov 6): the badge stays hidden */
+    if(lv)lv.hidden=true;if(el)el.hidden=true;
   }
   function rankRows(data){
     COT_ROWS.forEach(function(r){
@@ -166,7 +160,7 @@ try {
   /* The crowding badges and rank lines: drawn again once cot-analysis.json
      arrives (it loads when the COT card comes near the screen; see below). */
   function cxPaint(data){
-    verdict(document.getElementById('cot-verdict'),document.getElementById('cot-verdict-lv'),data);
+    verdict(document.getElementById('cot-verdict'),document.getElementById('cot-verdict-lv'));
     if(data)COT_ROWS.forEach(function(row){if(data[row.k])renderCOTRow(row.id,data[row.k]);});
     rankRows(data);
     glance(data);

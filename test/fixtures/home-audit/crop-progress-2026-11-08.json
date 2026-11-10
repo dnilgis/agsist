@@ -1,0 +1,22 @@
+{
+ "report_date": "2026-10-25",
+ "updated": "2026-11-09",
+ "corn": {
+  "report_date": "2026-10-25",
+  "harvest_date": "2026-11-08",
+  "good_excellent": 56,
+  "good_excellent_prev_year": null,
+  "harvest_pct": 81,
+  "harvest_prev_year": null,
+  "harvest_5yr_avg": 86
+ },
+ "soybeans": {
+  "report_date": "2026-10-11",
+  "harvest_date": "2026-11-08",
+  "good_excellent": 57,
+  "good_excellent_prev_year": null,
+  "harvest_pct": 92,
+  "harvest_prev_year": null,
+  "harvest_5yr_avg": 91
+ }
+}

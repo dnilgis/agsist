@@ -109,3 +109,73 @@ test("when the board's file cannot be read, an inferred month says so and rolls 
   assert.equal(H.refCandidate("soybeans", "2026-10", "2026-10-30").key, "beans-jan27"); // pin-ok: inline, first notice day
   assert.equal(H.refCandidate("corn", "2026-11", "2026-11-30").key, "corn-mar27"); // pin-ok: inline
 });
+
+/* ---------- checker on #504: the pure rules, taken from the shipped files ---------- */
+// one named function's source, brace matched, so the test runs the code the page runs
+function fnSrc(file, name) {
+  const s = read(file), i = s.indexOf("function " + name + "(");
+  assert.ok(i >= 0, name + " is in " + file);
+  let d = 0, j = s.indexOf("{", i);
+  for (; j < s.length; j++) { if (s[j] === "{") d++; else if (s[j] === "}" && --d === 0) break; }
+  return s.slice(i, j + 1);
+}
+const fns = (file, names, ret) => new Function(names.map((n) => fnSrc(file, n)).join("\n") + "\nreturn " + ret + ";")();
+
+test("conditions are not printed under the Nov 8 harvest week (corn rated Oct 25, soybeans Oct 11)", () => {
+  const geUnderHarvest = fns("components/home-season.js", ["rateWeek", "geUnderHarvest"], "geUnderHarvest");
+  const cp = fx("crop-progress-2026-11-08.json"); // the NASS file the page read Nov 9
+  const hd = cp.corn.harvest_date;
+  assert.equal(hd, "2026-11-08"); // pin-ok: fixture copy
+  assert.deepEqual(geUnderHarvest(cp, hd), [], "neither rating is from the harvest week");
+  // the same file in a week NASS rated corn: only corn prints
+  const rated = { ...cp, corn: { ...cp.corn, report_date: hd } };
+  assert.deepEqual(geUnderHarvest(rated, hd), ["Corn 56%"]);
+  // no harvest week: each crop's own week, both print
+  assert.deepEqual(geUnderHarvest(cp, null), ["Corn 56%", "soybeans 57%"]);
+});
+
+test("one CT stamp: a last trade is stamped from its close_time, not the file's read time", () => {
+  const stampAt = fns("components/home-yield.js", ["stampAt"], "stampAt");
+  const px = fx("prices.json"), F = new Date(px.fetched), cq = px.quotes["corn-nearby"] || px.quotes.corn;
+  const ct = (d) => new Intl.DateTimeFormat("en-US", { timeZone: "America/Chicago", hour: "numeric", minute: "2-digit" }).format(d);
+  assert.equal(ct(F), "1:46 PM", "the file was read at 1:46 PM CT");
+  assert.equal(ct(stampAt(cq, F)), "1:20 PM", "the ticker names the 1:20 PM CT last trade, the cards' time");
+  assert.equal(stampAt({ ...cq, close_kind: "settle" }, F), F, "a settle keeps the file's own path");
+  assert.equal(stampAt({ ...cq, close_time: "bad" }, F), F, "an unreadable close_time falls back to the read time");
+});
+
+test("the nowcast: ratings 15 days old are shown, 16 days withheld (week ending Oct 4)", () => {
+  const ncWithheld = fns("components/home-yield.js", ["ncWithheld"], "ncWithheld");
+  const we = "2026-10-04"; // pin-ok: inline, the corn week_ending in the Nov 9 nowcast file
+  const at = (day, h) => Date.UTC(2026, 9, day, h); // October
+  assert.equal(ncWithheld(we, at(19, 23)), false, "15 days and 23 hours: shown");
+  assert.equal(ncWithheld(we, at(20, 0)), true, "16 days: withheld");
+  assert.equal(ncWithheld(we, Date.UTC(2026, 10, 9, 12)), true, "Nov 9, the audited page: withheld");
+  assert.equal(ncWithheld("", at(5, 0)), true, "no week: withheld");
+});
+
+test("RMA dates: the card runs through the latest final planting date in the file (28 Northeast soybean counties) and stops after it", () => {
+  const src = read("components/home-planting.js");
+  const last = JSON.parse(src.match(/var RMA_LAST=(\[\d+,\d+\])/)[1]);
+  const rmaPast = new Function("var RMA_LAST=" + JSON.stringify(last) + ";\n" + fnSrc("components/home-planting.js", "rmaPast") + "\nreturn rmaPast;")();
+  const MO = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const rma = JSON.parse(read("data/rma-planting-dates.json"));
+  let max = [0, 0];
+  for (const c of Object.values(rma.counties)) for (const k of ["corn", "soybeans"]) {
+    const m = /^([A-Z][a-z]{2}) (\d+)$/.exec(c[k] || ""); if (!m) continue;
+    const v = [MO.indexOf(m[1]) + 1, +m[2]];
+    if (v[0] > max[0] || (v[0] === max[0] && v[1] > max[1])) max = v;
+  }
+  assert.deepEqual(last, max, "RMA_LAST is the latest date in data/rma-planting-dates.json");
+  // noon CT on the latest date: still shown; the next day: past
+  const noonCT = (m, d) => new Date(Date.UTC(2026, m - 1, d, 17));
+  assert.equal(rmaPast(noonCT(max[0], max[1])), false, "the latest date itself is shown");
+  assert.equal(rmaPast(noonCT(max[0], 1)), false, "the first of that month is shown");
+  assert.equal(rmaPast(noonCT(max[0], max[1] + 1)), true, "the day after: not fetched");
+  assert.equal(rmaPast(noonCT(12, 1)), true);
+  assert.equal(rmaPast(noonCT(6, 30)), false);
+  // the real case: 28 counties' soybean date (16 Maine, 10 New Hampshire, 2 Virginia) was hidden Jul 1 to 5 by a July cutoff
+  const lastTxt = MO[max[0] - 1] + " " + max[1];
+  const hit = Object.values(rma.counties).filter((c) => c.soybeans === lastTxt || c.corn === lastTxt);
+  assert.ok(hit.length >= 28, "counties on the latest date: " + hit.length);
+});

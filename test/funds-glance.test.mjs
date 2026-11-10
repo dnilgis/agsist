@@ -112,7 +112,8 @@ test("the crowded verdict reads every market: never 'No market crowded' while an
   assert.equal(G.crowdedLine(COT, calm).text, "No market crowded");
   assert.equal(G.crowdedLine(COT, null), null, "no analysis for this report: nothing claimed");
   const h = read("components/home.js");
-  assert.ok(h.includes("G.crowdedLine(data,COT_CX)") && !/label\+': none crowded'/.test(h), "the home card uses the shared verdict, not the four-row badges");
+  // Nov 10 home audit: Sig dropped crowding Nov 6; the home card has no verdict code left (no "Crowded:" title)
+  assert.ok(!/crowdedLine|COT_VERDICT|Crowded:/.test(h) && !/label\+': none crowded'/.test(h), "the home card prints no crowding verdict");
 });
 
 test("the counts file keeps the standing lists, Funds this week at zero included", () => {

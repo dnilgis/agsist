@@ -6,6 +6,10 @@
      USDA_TREND in scripts/bake_crop_size.py (/conditions-yield); change both.
      No soybean figure until one is checked at the source. */
   var USDA_TREND={corn:183.0};
+  /* Nov 10 audit: withheld once the ratings week ended 16 or more days ago (15 is still shown). */
+  function ncWithheld(we,now){var w=/^\d{4}-\d{2}-\d{2}$/.test(String(we))?Date.UTC(+we.slice(0,4),+we.slice(5,7)-1,+we.slice(8,10)):NaN;return isNaN(w)||(now-w)/864e5>=16;}
+  /* Nov 10 audit: the time a futures stamp names. A last trade carries its own close_time; anything else, the file's read time F. */
+  function stampAt(cq,F){return cq&&cq.close_kind==='last'&&cq.close_time&&!isNaN(Date.parse(cq.close_time))?new Date(cq.close_time):F;}
   function loadYieldNowcast(){
     fetch('/data/yield-nowcast.json').then(function(r){if(!r.ok)throw new Error('no-nowcast');return r.json();}).then(function(d){
       if(!d||!d.crops)throw new Error('no-nowcast');
@@ -14,7 +18,7 @@
          withheld, not headed "Near USDA" (Oct 4 ratings were still shown Nov 9).
          A fresh week is 2 to 9 days old when it posts; 16 days means two missed. */
       var _we=d.crops.corn&&d.crops.corn.week_ending,_wd=/^\d{4}-\d{2}-\d{2}$/.test(String(_we))?Date.UTC(+_we.slice(0,4),+_we.slice(5,7)-1,+_we.slice(8,10)):NaN;
-      if(isNaN(_wd)||(Date.now()-_wd)/864e5>=16){
+      if(ncWithheld(_we,Date.now())){
         var _mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],_wt=isNaN(_wd)?'':_mo[+_we.slice(5,7)-1]+' '+(+_we.slice(8,10));
         Object.keys(map).forEach(function(crop){
           var el=document.getElementById(map[crop]),bd=document.getElementById(map[crop]+'-band'),vs=document.getElementById(map[crop]+'-vs');
@@ -452,7 +456,7 @@
                1:46 PM CT" (the file's read time) over cards saying "Last trade as
                of 1:20 pm CT"; a last trade is stamped with its own close_time,
                the same words as the cards (AgPxStamp.clock, components/price-local.js). */
-            var LT=cq.close_kind==='last'&&cq.close_time&&!isNaN(Date.parse(cq.close_time))?new Date(cq.close_time):F;
+            var LT=stampAt(cq,F);
             function hmT(){return window.AgPxStamp&&AgPxStamp.clock?AgPxStamp.clock(LT.toISOString()):hm(LT);}
             /* 2026-10-19 (P1): the settle check comes before the session
                check. Sunday 7:31 PM CT is inside the overnight session, but the

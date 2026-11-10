@@ -455,6 +455,8 @@
   }
   /* The week a crop's condition rating is on: its own report_date, else the file's. */
   function rateWeek(o,d){return String((o&&o.report_date)||(d&&d.report_date)||'').slice(0,10);}
+  /* The good-or-excellent figures printed under the harvest week hd: only a crop rated that same week. */
+  function geUnderHarvest(d,hd){var ge=[];if(!d)return ge;[['Corn',d.corn],['soybeans',d.soybeans]].forEach(function(x){if(x[1]&&x[1].good_excellent!=null&&rateWeek(x[1],d)===(hd?String(hd).slice(0,10):rateWeek(x[1],d)))ge.push(x[0]+' '+x[1].good_excellent+'%');});return ge;}
   function cropModules(){
     if(!cells.harvest&&!cells.condition&&!cells.planting)return;
     progress().then(function(d){
@@ -504,7 +506,7 @@
            older week (NASS stops rating a crop in late October but keeps counting
            harvest: corn Oct 25, soybeans Oct 11 under "week ending Nov 8") is
            dropped, same rule as /conditions' harvest week. */
-        var ge=[];if(!cells.condition&&d){[['Corn',d.corn],['soybeans',d.soybeans]].forEach(function(x){if(x[1]&&x[1].good_excellent!=null&&rateWeek(x[1],d)===(hd?String(hd).slice(0,10):rateWeek(x[1],d)))ge.push(x[0]+' '+x[1].good_excellent+'%');});}
+        var ge=cells.condition?[]:geUnderHarvest(d,hd);
         var gel=ge.length?'<span class="s7-line">Good or excellent <small>'+ge.join(' \u00b7 ')+'</small></span>':'';
         if(a||b)put('harvest',[a,b].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join('')+gel,esc(hd?'US, USDA week ending '+isoDay(hd)+'.'+avgWhy:asof)+cpSt,stTxt,mt);
         else put('harvest',NL(),esc('Harvested share is not in our crop progress feed yet'+(d&&d.report_date?' (latest week: '+isoDay(d.report_date)+')':'')+'.'),stTxt);
