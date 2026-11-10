@@ -273,7 +273,7 @@ test("the gate passes over runs by hand for these, the land email retries after 
   const out = execFileSync("python3", ["scripts/cron_gate.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
   assert.match(out, /all cron_gate checks passed/);
   for (const name of [
-    "the four mail and rain workflows and the 52 gated since Nov 3, and only those, ignore runs by hand",
+    "the four mail and rain workflows and the 53 gated since Nov 3, and only those, ignore runs by hand",
     "land email: the first chained run after late land data goes once more",
     "land email: only one retry per land data commit",
     "land email: the land data landed before the tick's run, no retry",

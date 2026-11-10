@@ -604,8 +604,8 @@ def selftest():
     check(decide_tick("workflow_run", rm, T("2026-11-03 14:52"), 75, [], 360, manual_serves=False)[0] == 0,
           "mail workflow: the next day is no tick")
     check(MAIL_AND_RAIN == {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.yml", "county-rain.yml"}
-          and MANUAL_DOES_NOT_SERVE == MAIL_AND_RAIN | GATED_NOV3 and len(GATED_NOV3) == 52,
-          "the four mail and rain workflows and the 52 gated since Nov 3, and only those, ignore runs by hand")
+          and MANUAL_DOES_NOT_SERVE == MAIL_AND_RAIN | GATED_NOV3 and len(GATED_NOV3) == 53,
+          "the four mail and rain workflows and the 53 gated since Nov 3, and only those, ignore runs by hand")
     # The land sale email waits for the land data (Nov 3, 2026). Tick 15:47 on the 3rd; the 15:52
     # chained run served it while the land run was still going.
     la = ["47 15 3 * *"]
