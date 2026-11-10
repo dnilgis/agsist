@@ -177,6 +177,13 @@
    "link": "/drought-monitor"
   },
   {
+   "id": "2026-11-09-prf-panel",
+   "date": "2026-11-09",
+   "title": "PRF calculator fixes",
+   "line": "The PRF calculator opens on hay ground, prints the cancellation date and the $30 fee, and no longer jumps while it loads.",
+   "link": "/prf"
+  },
+  {
    "id": "2026-11-09-rain-print-fixes",
    "date": "2026-11-09",
    "title": "Rain Print fixes",
