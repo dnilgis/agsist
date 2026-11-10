@@ -3478,7 +3478,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
                                       f"elevator network read from their own bid boards, priced within "
                                       f"the last two trading sessions before the snapshot. A sample of elevators, not every "
                                       f"elevator in the state."),
-                      "url": f"{SITE}{path}", "isAccessibleForFree": True,
+                      "url": f"{SITE}{path}", "isAccessibleForFree": True, "license": f"{SITE}/terms",
                       "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
                       "dateModified": ctx["snap_iso"], "temporalCoverage": ctx["snap_iso"][:10],
                       "spatialCoverage": {"@type": "Place", "name": f"{sname}, United States"},
@@ -4346,6 +4346,8 @@ def selftest():
         ne = open(os.path.join(out, "nebraska", "index.html")).read()
         nb = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', ne, re.S)]
         nfaq = next(g for g in nb[0]["@graph"] if g["@type"] == "FAQPage")["mainEntity"]
+        nds = next(g for g in nb[0]["@graph"] if g["@type"] == "Dataset")
+        assert nds.get("license") == "https://agsist.com/terms", "the state Dataset names its license"
         assert [q["name"] for q in nfaq] == ["What are the best corn and soybean bids in Nebraska today?",
                                             "What is the corn basis in Nebraska?",
                                             "How many Nebraska elevators does AGSIST read?"], [q["name"] for q in nfaq]

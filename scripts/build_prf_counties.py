@@ -178,7 +178,9 @@ def page(ctx):
     title = CAPS.fit([f"PRF Insurance in {full}: {cy} Grids and Rates{CAPS.SUFFIX}",
                       f"PRF Insurance in {full}: {cy} Grids and Rates",
                       f"PRF Insurance in {full}: {cy} Grids",
-                      f"PRF Insurance, {full}: {cy}"])
+                      f"PRF Insurance, {full}: {cy}",
+                      f"PRF Insurance, {name}, {stc}: {cy}",
+                      f"PRF, {name}, {stc}: {cy}"])
     desc = (f"PRF insurance in {full} for {cy}: {ng} {'grid' if ng == 1 else 'grids'} ({g_short}), "
             f"county values {money2(gz)} grazing and {money2(hy) if hy is not None else 'no'} hay per acre, rates by month, history since {y0}.")
     if len(desc) > CAPS.DESC_MAX:

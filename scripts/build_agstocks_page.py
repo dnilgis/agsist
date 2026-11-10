@@ -421,7 +421,7 @@ def render(u, latest, ix, sec, plants, early, raises=None):
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#111a0a">
-  <title>{esc(TITLE)} | AGSIST</title>
+  <title>{esc(TITLE)}</title>
   <meta name="description" content="{esc(DESC)}">
   <meta name="author" content="Sigurd Lindquist">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">

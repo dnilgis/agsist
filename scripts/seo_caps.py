@@ -16,9 +16,20 @@ SUFFIX = " | AGSIST"
 
 
 def fit(cands, cap=TITLE_MAX):
-    """The first candidate that fits the cap, else the shortest one."""
+    """The first candidate that fits the cap. When none does, the shortest one
+    cut at a word boundary to fit: never longer than the cap. The brand
+    (SUFFIX) stays only if it still fits whole; otherwise it goes first."""
     cands = [c for c in cands if c]
     for c in cands:
         if len(c) <= cap:
             return c
-    return min(cands, key=len) if cands else ""
+    if not cands:
+        return ""
+    c = min(cands, key=len)
+    core = c[:-len(SUFFIX)] if c.endswith(SUFFIX) else c
+    if len(core) <= cap:
+        return core
+    cut = core[:cap + 1]
+    sp = cut.rfind(" ")
+    cut = cut[:sp] if sp > 0 else core[:cap]
+    return cut.rstrip(" ,;:|-(&/").rstrip() or core[:cap]

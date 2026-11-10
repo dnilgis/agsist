@@ -58,6 +58,7 @@ from urllib.parse import urlparse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import build_cash_bid_pages as CB  # noqa: E402
 import source_links as SL  # noqa: E402  no direct links to data sources
+import seo_caps as SEO  # noqa: E402  the site's title and description caps
 from build_state_basis_pages import CT, MONTH_ABBR, SITE, STATE_NAMES, esc, money_basis  # noqa: E402
 
 COMPANY_MIN = 3           # boards placed in a town before a company gets a page
@@ -216,6 +217,52 @@ def answer(co, cells):
         return "", []
     d, one = _days(used)
     return f"{co['short']} cash bids today: {', '.join(parts)}, {'as of' if one else 'posted'} {d}.", used
+
+
+def company_title(short, n_live, crops):
+    """"{Company} Grain Bids Today: {n} Locations, Corn and Soybeans", fitted to
+    the site's title cap (scripts/seo_caps.py). {n} is the number of locations
+    with a current bid on the page (n_live, the count the FAQ answer gives), not
+    every location read: a title that says "today" counts only bids posted now.
+    The crops named are the ones the page shows a current bid for, never a crop
+    it does not; no price, no date. With no current bid, no count."""
+    named = [CB.CROP_LABEL[c] for c in ("corn", "soybeans") if c in crops] or [CB.CROP_LABEL[c] for c in crops]
+    cands = []
+    if n_live:
+        locs = f"{n_live} Location{'s' if n_live != 1 else ''}"
+        if named:
+            cands.append(f"{short} Grain Bids Today: {locs}, {' and '.join(named)}")
+        cands += [f"{short} Grain Bids Today: {locs}", f"{short} Grain Bids Today"]
+    cands.append(f"{short} Grain Bids")
+    return SEO.fit(cands)
+
+
+def company_desc(short, n_loc, st_txt, posted, n_live=None):
+    """The meta description: never a price (a snippet outlives the bid it quotes).
+    With bids posted it counts the locations with a current bid (n_live), out of
+    every location read when some have none."""
+    when = f", posted {posted}" if posted else ""
+    locs = f"{n_loc} location{'s' if n_loc != 1 else ''}"
+    if posted and n_live is not None and n_live < n_loc:
+        locs = f"{n_live} of its {n_loc} locations"
+    if posted:
+        cands = [f"{short} grain bids today at {locs} in {st_txt}: cash price, basis and delivery month by town{when}. "
+                 f"Read from {short}'s public bid board.",
+                 f"{short} grain bids today at {locs} in {st_txt}: cash price, basis and delivery month by town{when}.",
+                 f"{short} grain bids today at {locs}: cash price, basis and delivery month by town{when}. Call to confirm.",
+                 f"{short} grain bids today at {locs}: cash price and basis by town{when}."]
+    else:
+        cands = [f"{short} grain bids: no current bid from the {locs} the AGSIST network reads. "
+                 f"Each shows when its board was last read.",
+                 f"{short} grain bids: no current bid from the {locs} the AGSIST network reads."]
+    return SEO.fit(cands, SEO.DESC_MAX)[:SEO.DESC_MAX]
+
+
+def ld_faq(qs):
+    """The FAQ questions that go in the JSON-LD: those whose answer quotes no dollar
+    figure (a structured answer outlives the bid it quotes). Every one is also on the
+    page, word for word; the price answers stay on the page only."""
+    return [(q, a) for q, a in qs if "$" not in a]
 
 
 def faq(co, cells, n_loc, n_live, states):
@@ -387,23 +434,9 @@ def build_page(co, ctx):
     n_loc = len(co["locs"])
     indexable = bool(cells)
     ans, used = answer(co, cells)
-    title = f"{short} Cash Bids Today | AGSIST"
-    if len(title) > 60:
-        title = f"{short} Cash Bids Today"
-    if len(title) > 60:
-        title = f"{short} Cash Bids"
-    if ans:
-        desc = f"{ans} Read from {short}'s public bid board. Call to confirm."
-        if len(desc) > CB.DESC_MAX:
-            desc = ans
-        if len(desc) > CB.DESC_MAX:
-            d, _ = _days(used)
-            desc = f"{short} cash bids at {n_loc} locations: cash and basis by town, posted {d}. Call to confirm."
-    else:
-        desc = (f"{short} cash bids: no current bid from the {n_loc} {short} locations the AGSIST network reads. "
-                f"Each shows when its board was last read.")
-    desc = desc[:CB.DESC_MAX]
     st_txt = ", ".join(STATE_NAMES[s] for s in states[:-1]) + (" and " if len(states) > 1 else "") + STATE_NAMES[states[-1]]
+    title = company_title(short, n_live, [c for c in SHOW_CROPS if any(c in g for g in cells)])
+    desc = company_desc(short, n_loc, st_txt, _days(used)[0] if used else "", n_live)
     site = (f' (<a href="{esc(co["site"])}" rel="noopener">{esc(co["host"])}</a>)' if co.get("site") else "")
     intro = (f'<p class="cbt-sub">{esc(co["name"])} posts bids at <b>{n_loc}</b> location{"s" if n_loc != 1 else ""} '
              f'in {esc(st_txt)} that the AGSIST elevator network reads. The bids are read from {esc(short)}&rsquo;s '
@@ -422,8 +455,8 @@ def build_page(co, ctx):
         {"@type": "WebPage", "@id": f"{SITE}{path}", "url": f"{SITE}{path}", "name": title,
          "about": {"@type": "Organization", "name": co["name"], **({"url": co["site"]} if co.get("site") else {})},
          "publisher": {"@type": "Organization", "name": "AGSIST", "url": f"{SITE}/"}}]}
-    if qs:
-        jsonld["@graph"].append(CB.faq_jsonld(qs))
+    if ld_faq(qs):
+        jsonld["@graph"].append(CB.faq_jsonld(ld_faq(qs)))
     hdr, ftr = ctx["chrome"]
     # the dated lead paragraph (scripts/stories_bids.py): stable facts only, never a price
     story_facts, story_html = None, ""
@@ -612,7 +645,14 @@ def selftest():
         assert "AGSIST is not affiliated with Acme Co-op" in p and "public bid board" in p
         assert '<a href="https://www.acmecoop.example/bids" rel="noopener">acmecoop.example</a>' in p
         assert '<link rel="canonical" href="https://agsist.com/cash-bids/company/acme-co-op">' in p
-        assert 'content="index,follow"' in p and "<title>Acme Co-op Cash Bids Today | AGSIST</title>" in p
+        assert 'content="index,follow"' in p
+        # the title counts the 3 locations with a current bid, not all 4 read
+        assert "<title>Acme Co-op Grain Bids Today: 3 Locations, Corn and Soybeans</title>" in p, \
+            re.findall(r"<title>.*?</title>", p)
+        # the meta description and og/twitter descriptions quote no price
+        mds = re.findall(r'<meta (?:name|property)="(?:description|og:description|twitter:description)" content="([^"]*)"', p)
+        assert mds and not any("$" in m for m in mds), mds
+        assert mds[0].startswith("Acme Co-op grain bids today at 3 of its 4 locations in Nebraska and Iowa: cash price, basis"), mds
         assert "ga-guard" in p and 'id="site-header"' in p, "same head and static chrome as the town pages"
         assert "\u2014" not in p, "no em dashes"
         # 2026-11-04: the basis names the futures month it is against, never the delivery month
@@ -629,8 +669,13 @@ def selftest():
         types = [g["@type"] for g in ld[0]["@graph"]]
         assert types == ["BreadcrumbList", "WebPage", "FAQPage"], types
         faqs = {q["name"]: q["acceptedAnswer"]["text"] for q in ld[0]["@graph"][2]["mainEntity"]}
-        assert faqs["What is Acme Co-op paying for corn today?"].startswith(
-            "The Acme Co-op corn bids we read run from $3.80 a bushel at Hooper to $3.90 at Fremont, across 3 locations")
+        # the price answers stay on the page only; the JSON-LD carries no dollar figure
+        assert "What is Acme Co-op paying for corn today?" not in faqs and not any("$" in a for a in faqs.values()), faqs
+        assert ("The Acme Co-op corn bids we read run from $3.80 a bushel at Hooper to $3.90 at Fremont, across 3 locations"
+                in p), "the visible FAQ keeps the price answer"
+        # every JSON-LD question and answer is on the page, word for word
+        for q, a in faqs.items():
+            assert f"<h3>{esc(q)}</h3><p>{esc(a)}</p>" in p, q
         assert faqs["How many Acme Co-op locations does AGSIST read?"].startswith(
             "4 Acme Co-op locations in Nebraska and Iowa. 3 of them have a current bid")
         assert faqs["Is AGSIST part of Acme Co-op?"].startswith("No. AGSIST is not affiliated with Acme Co-op.")

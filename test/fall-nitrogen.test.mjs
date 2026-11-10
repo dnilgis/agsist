@@ -42,7 +42,7 @@ const D = {
 };
 
 test('head, byline and structured data', () => {
-  assert.match(page, /<title>Is it cold enough for fall anhydrous\? Soil temperature by county \| AGSIST<\/title>/);
+  assert.match(page, /<title>Is it cold enough for fall anhydrous\? Soil temperature by county<\/title>/);
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/fall-nitrogen">/);
   assert.match(page, /<h1>Is it cold enough for fall anhydrous\?<\/h1>/);
   assert.match(page, /Sigurd Lindquist, CCA/);

@@ -1394,6 +1394,8 @@ def body_h1(text):
     return lambda c: text
 
 
+AI_ANSWER_PAGES = ("usda-calendar.html",)   # pages whose ai-answer blocks bake_seo re-bakes (build_ai_answers.py)
+
 BODY = {
     "corn-futures-prices.html": ("futures-h1", body_h1(H1_CORN)),
     "soybean-futures-prices.html": ("futures-h1", body_h1(H1_BEANS)),
@@ -1599,6 +1601,13 @@ def run(today, dry=False, only=None):
                 out, k = stamp_coverage(out, cov)
                 if k:
                     print(f"  temporalCoverage -> {cov}")
+        if page in AI_ANSWER_PAGES:
+            # answers written from data (build_ai_answers.py, "from"): the wasde job's bake of this page
+            # brings the crop report answer up to the report it just read, the same bytes --check expects
+            import build_ai_answers as BA
+            out, miss = BA.bake_text(out, [a for a in BA.load()["answers"] if a["page"] == page])
+            if miss:
+                skipped.append((page, f"no ai-answer markers for {', '.join(miss)}; refusing to half-update")); continue
         if page in DATE_MODIFIED:
             iso = DATE_MODIFIED[page](ctx)
             if iso:
