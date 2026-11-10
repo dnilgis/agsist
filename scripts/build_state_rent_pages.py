@@ -708,9 +708,9 @@ def state_terms(yr, generated):
             f'estimates. Data as of {esc(generated)}.</p>\n'
             f'  <p>These are the {yr} county rents, the newest NASS has put out'
             + (f" (released {COUNTY_RENT_RELEASED[yr]})" if yr in COUNTY_RENT_RELEASED else "")
-            + f'. NASS puts county rents out in late August of a survey year; there was no survey in '
+            + f'. NASS puts county rents out in late August of each survey year (it ran no survey in '
             + " or ".join(str(y) for y in sorted(NO_SURVEY_YEARS))
-            + f', and the {yr + 1} date is not on its calendar yet.</p>\n'
+            + f'); the {yr + 1} date is not on its calendar yet.</p>\n'
             '  <p><b>What this can&rsquo;t tell you.</b> These are county <b>means from a voluntary USDA survey</b>. '
             'Rents vary widely inside a county, driven by soil, drainage, field size and how badly a neighbor wants the '
             'ground. Year-over-year stats compare only counties published in both years.</p>\n'
