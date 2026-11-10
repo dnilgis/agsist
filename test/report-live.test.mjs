@@ -1,12 +1,13 @@
 /* Report day: the graded USDA result on the page and in the email within a minute of the release.
  *
- *   - the worker route (subs worker v5.67): a signed result in the fixed shape is kept and served;
- *     no signature, a wrong one, an old timestamp, markup, an unknown field, a live result for
- *     another month and an older copy of the same release are refused; the rehearsal's record is
+ *   - the worker route (subs worker v5.67): a result from the report-day job in the fixed shape is
+ *     kept and served; anything else, markup, an unknown field, a live result for another month, an
+ *     older copy or release, and a copy with fewer figures that is not newer and complete are
+ *     refused; the rehearsal's record is
  *     separate from the live one; no secret on the worker means 503, never an open door.
  *   - the worker and scripts/report_live.py validate() agree on the same cases.
  *   - the whole path on a fixture: last month's PDF appears after two misses, the job reads it,
- *     grades it, signs it, the worker (run here) keeps it, serves it, and the report-day email
+ *     grades it, the worker (run here) keeps it, serves it, and the report-day email
  *     renders from it as a dry run. From "file appears" to "live value served": under 30 s.
  *   - the workflow: start ticks cover every report day on file, five minutes ahead; a watchdog at
  *     release + 3 and + 10; the rehearsal the day before; the push loop commits once; the email
@@ -48,7 +49,7 @@ const KEY = hmac(SECRET, "report-live|v1");
 const today = () => new Date().toISOString().slice(0, 10);
 const daysAgo = (n) => new Date(Date.now() - n * 864e5).toISOString().slice(0, 10);
 function good(over = {}) {
-  return Object.assign({ v: 1, test: false, release: today(), report: "December WASDE", generated: new Date().toISOString().slice(0, 19) + "Z",
+  return Object.assign({ v: 1, test: false, complete: true, release: today(), report: "December WASDE", generated: new Date().toISOString().slice(0, 19) + "Z",
     counts: { metrics: 1, in_line: 0, ungraded: 0 }, big: "corn_2627",
     rows: [{ key: "corn_2627", label: "2026/27 corn ending stocks", unit: "bil bu", actual: 2.1, expected: 1.9, low: 1.8, high: 2.0,
       usda_current: 1.95, surprise: "bearish", gap_pct: 10.5, context: "above the range" }],
@@ -61,7 +62,7 @@ function post(w, env, body, { ts = Math.floor(Date.now() / 1000), key = KEY, sig
 }
 const getLive = async (w, env, q = "") => (await (await w.fetch(new Request("https://x.dev/report-live" + q, { headers: { Origin: "https://agsist.com" } }), env)).json()).live;
 
-test("the worker keeps a signed result and serves it; the rehearsal's record is its own", async () => {
+test("the worker keeps the job's result and serves it; the rehearsal's record is its own", async () => {
   const { w, env } = await loadWorker();
   assert.equal(await getLive(w, env), null, "nothing before the first result");
   const p = good();
@@ -79,16 +80,16 @@ test("the worker keeps a signed result and serves it; the rehearsal's record is 
   assert.equal((await getLive(w, env)).release, p.release, "and never the live one");
 });
 
-test("the worker refuses what is not a signed result in the fixed shape", async () => {
+test("the worker refuses what is not the job's result in the fixed shape", async () => {
   const { w, env } = await loadWorker();
   const p = good();
   const raw = JSON.stringify(p);
   const now = Math.floor(Date.now() / 1000);
-  assert.equal((await w.fetch(new Request("https://x.dev/report-live", { method: "POST", body: raw }), env)).status, 403, "no signature");
+  assert.equal((await w.fetch(new Request("https://x.dev/report-live", { method: "POST", body: raw }), env)).status, 403, "no route header");
   assert.equal((await post(w, env, p, { key: "wrong" })).status, 403, "a wrong key");
-  assert.equal((await post(w, env, p, { key: SECRET })).status, 403, "the root secret itself does not sign this route");
+  assert.equal((await post(w, env, p, { key: SECRET })).status, 403, "another key is refused");
   assert.equal((await post(w, env, p, { ts: now - 900 })).status, 403, "an old timestamp");
-  assert.equal((await post(w, env, p, { sig: hmac(KEY, now + "." + raw + " ") })).status, 403, "a signature over other bytes");
+  assert.equal((await post(w, env, p, { sig: hmac(KEY, now + "." + raw + " ") })).status, 403, "a header over other bytes");
   const cases = [
     [Object.assign(good(), { extra: 1 }), "shape"],
     [good({ report: "<b>x</b>" }), "report"],
@@ -109,6 +110,17 @@ test("the worker refuses what is not a signed result in the fixed shape", async 
   assert.equal((await post(w, env, p)).status, 200);
   const older = good({ generated: "2000-01-01T00:00:00Z" });
   assert.equal((await post(w, env, older)).status, 409, "an older copy of the same release never replaces a newer one");
+  // fewer figures: only a newer AND complete copy may replace the kept one
+  const two = good({ rows: [good().rows[0], Object.assign({}, good().rows[0], { key: "soy_2627", label: "2026/27 soybean ending stocks" })], complete: false });
+  assert.equal((await post(w, env, two)).status, 200);
+  const later = (s) => new Date(Date.now() + s * 1000).toISOString().slice(0, 19) + "Z";
+  assert.equal((await post(w, env, good({ generated: later(5), complete: false }))).status, 409, "fewer figures, partial: refused");
+  let r409 = await post(w, env, good({ generated: later(5), complete: false }));
+  assert.equal((await r409.json()).error, "fewer");
+  assert.equal((await post(w, env, good({ generated: later(6), complete: true }))).status, 200, "fewer figures, newer and complete: kept");
+  assert.equal((await post(w, env, good({ release: daysAgo(1), generated: later(7) }))).status, 409, "a live release older than the kept one is refused");
+  for (const bad of [good({ release: 20261210 }), good({ rows: [Object.assign({}, good().rows[0], { key: ["corn_2627"] })] }), good({ complete: "yes" })])
+    assert.equal((await post(w, env, bad)).status, 400, "non-string release or row key, or no complete flag");
   assert.equal((await w.fetch(new Request("https://x.dev/report-live", { method: "PUT" }), env)).status, 405);
   delete env.UNSUB_SECRET;
   assert.equal((await post(w, env, p)).status, 503, "no secret on the worker: nothing is kept");
@@ -128,7 +140,7 @@ print(json.dumps([r.validate(c) for c in json.load(sys.stdin)]))`], { cwd: ROOT,
   for (let i = 0; i < cases.length; i++) {
     const r = await post(w, env, cases[i]);
     const js = r.status === 200 ? "" : (await r.json()).error;
-    assert.equal(js === "" || js === "older", py[i] === "", `case ${i}: worker ${js || "ok"}, python ${py[i] || "ok"}`);
+    assert.equal(js === "" || js === "older" || js === "fewer", py[i] === "", `case ${i}: worker ${js || "ok"}, python ${py[i] || "ok"}`);
   }
 });
 
@@ -196,7 +208,14 @@ print(json.dumps([[d.isoformat(), r.release_at(d).isoformat()] for d in r.report
   }
   assert.match(job("watchdog"), /report_live\.py watchdog --release/);
   assert.match(read("scripts/report_live.py"), /WATCH_MIN = \(3, 10\)/);
-  assert.match(job("rehearse"), /report_live\.py rehearse --release "\$\{\{ needs\.gate\.outputs\.source \}\}" --fast --notify/);
+  assert.match(job("rehearse"), /report_live\.py rehearse --release "\$\{\{ needs\.gate\.outputs\.source \}\}" --fast --no-nass --notify/);
+  assert.match(job("rehearse"), /DRY_RUN: '1'/, "the rehearsal runs dry");
+  assert.doesNotMatch(job("rehearse"), /NASS_API_KEY/, "the rehearsal step reaches no outside data source");
+  assert.match(job("gate"), /report_live\.py gate --one-run/, "one live run per report day");
+  assert.match(job("gate"), /actions: read/);
+  for (const j of ["live", "watchdog"]) assert.match(job(j), /group: report-day-(live|watchdog)-\$\{\{ needs\.gate\.outputs\.release \}\}/, j + ": one per report day");
+  const st2 = execFileSync("python3", ["scripts/report_live.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
+  assert.match(st2, /ok {3}the day before, the four start ticks do nothing: one rehearsal only/);
 });
 
 test("the workflow: no write token where USDA is read, one email queue, a commit once with the push loop", () => {
@@ -208,7 +227,13 @@ test("the workflow: no write token where USDA is read, one email queue, a commit
   assert.match(pollStep, /REPORT_KEY_FILE/);
   assert.match(job("email"), /group: report-day-email/, "the same queue as report-day.yml's sender");
   assert.match(read(".github/workflows/report-day.yml"), /group: report-day-email/);
-  assert.match(job("email"), /needs: \[gate, email-wait\]/, "the email starts on the live result, not on the commit");
+  const em = job("email");
+  assert.ok(!WF.includes("email-wait:"), "one runner: the email job waits itself");
+  assert.ok(em.indexOf("report_live.py wait-live") > em.indexOf("Test the sender") && em.indexOf("wait-live") < em.indexOf("send_report_day.py\n"),
+    "the email sets up, waits for the complete result, then sends");
+  assert.match(em, /if: steps\.w\.outputs\.live == '1'/, "no complete result, no send from this path");
+  assert.match(read("scripts/report_live.py"), /rec\.get\("complete"\) is True/, "the email waits for the complete result");
+  assert.match(read("scripts/send_report_day.py"), /if rec\.get\("complete"\) is not True:/, "the sender never sends from a partial result");
   const c = job("commit");
   assert.match(c, /contents: write/);
   const commit = c.indexOf('git commit -m "report day: graded'), loop = c.indexOf("for i in 1 2 3 4 5; do");
@@ -216,8 +241,8 @@ test("the workflow: no write token where USDA is read, one email queue, a commit
   assert.match(c, /git pull --rebase --autostash origin "\$\{GITHUB_REF_NAME:-main\}" \|\| \{ echo "Rebase failed\."; exit 1; \}/);
   assert.match(c, /Failed to push after 5 attempts\."; exit 1/);
   for (const j of ["live", "email", "watchdog"]) assert.match(job(j), /DRY_RUN: +\$\{\{ \(github\.event_name == 'workflow_dispatch' && inputs\.dry_run\) && '1' \|\| '' \}\}/, j + " honours DRY_RUN");
-  assert.match(read("scripts/report_live.py"), /def issue\(title, body, close=False\):\n[\s\S]{0,400}if os\.environ\.get\("DRY_RUN"\) == "1":/, "the issue honours DRY_RUN");
-  assert.match(read("scripts/report_live.py"), /def notify\(subject, lines\):\n[\s\S]{0,200}if os\.environ\.get\("DRY_RUN"\) == "1":/, "the notice honours DRY_RUN");
+  assert.match(read("scripts/report_live.py"), /def issue\(title, body, close=False, force=False\):\n[\s\S]{0,400}if os\.environ\.get\("DRY_RUN"\) == "1" and not force:/, "the issue honours DRY_RUN");
+  assert.match(read("scripts/report_live.py"), /def notify\(subject, lines, force=False\):\n[\s\S]{0,200}if os\.environ\.get\("DRY_RUN"\) == "1" and not force:/, "the notice honours DRY_RUN");
   assert.match(read(".github/workflows/wasde-watch.yml"), /WASDE watch/, "the backup stays");
 });
 

@@ -94,6 +94,7 @@ WPI = REPO / "data" / "whats-priced-in.json"
 WASDE = REPO / "data" / "wasde.json"
 PRICES_REL = "data/prices.json"
 PAGE = "https://agsist.com/usda-calendar?utm_source=report_email&utm_medium=email#priced-in"
+FUTURES_LINE = "Futures reaction: agsist.com/usda-calendar"
 # Tagged like PAGE, so GA4 splits this email from the Daily (2026-10-19). The
 # site still reads ?ref= for the sign-up source.
 FORWARD_URL = "https://agsist.com/?ref=email-forward&utm_source=report_email&utm_medium=email"
@@ -171,6 +172,10 @@ def live_record(day, opener=None):
         return None
     if not isinstance(rec, dict) or rec.get("release") != day.isoformat() or bool(rec.get("test")) != test:
         return None
+    if rec.get("complete") is not True:
+        print("live result: still partial (%d figure(s)); never sent from, the committed files are the source"
+              % len(rec.get("rows") or []))
+        return None
     return rec
 
 
@@ -186,11 +191,13 @@ def live_rows(rec):
 # ── what today's data says ────────────────────────────────────────────────
 def todays_reports(day, wpi=None, wasde=None, live=None):
     """{report name: [rows]} for rows dated `day` with a USDA figure. The live
-    result (live_record) first, the committed files when it has nothing."""
-    if live and live.get("release") == day.isoformat() and live.get("report"):
-        rows = live_rows(live)
-        if rows:
-            return {str(live["report"]): rows}
+    result (live_record) first for its report, the committed files for it when
+    it has nothing and for any other report out the same day."""
+    lrows = live_rows(live) if (live and live.get("release") == day.isoformat() and live.get("report")) else []
+    if lrows:
+        out = {k: v for k, v in todays_reports(day, wpi, wasde).items() if kind_of(k) != kind_of(live["report"])}
+        out[str(live["report"])] = lrows
+        return out
     if wpi is None:
         try:
             wpi = json.load(open(WPI))
@@ -599,6 +606,9 @@ def main(argv=()):
     now_j = json.load(open(REPO / PRICES_REL))
     moves = price_moves(now_j, prices_before(rel), rel)
     balance = balance_lines(day, live=live) if any(kind_of(n) == "WASDE" for n in reports) else []
+    if live and not moves:
+        # the fast email goes out before a price after the release is on file: no move is printed, only where it will be
+        moves = [FUTURES_LINE]
     b = compose(day, reports, moves, balance)
 
     base, token = env("LIST_URL"), env("LIST_TOKEN")
@@ -747,7 +757,7 @@ def _selftest():
     rr = todays_reports(date(2026, 10, 9), {"history": []}, w)
     ok(list(rr) == ["October WASDE"] and "Trade average 179" in row_line(rr["October WASDE"][0]), "wasde.json alone fills WASDE")
     # the live result (scripts/report_live.py) comes first and fills the same rows and balance lines
-    lv = {"v": 1, "test": False, "release": "2026-12-10", "report": "December WASDE", "generated": "2026-12-10T17:00:31Z",
+    lv = {"v": 1, "test": False, "complete": True, "release": "2026-12-10", "report": "December WASDE", "generated": "2026-12-10T17:00:31Z",
           "counts": {"metrics": 1, "in_line": 0, "ungraded": 0}, "big": "corn_2627",
           "rows": [{"key": "corn_2627", "label": "2026/27 corn ending stocks", "unit": "bil bu", "actual": 2.1,
                     "expected": 1.9, "low": 1.8, "high": 2.0, "usda_current": 1.95, "surprise": "bearish",
@@ -758,6 +768,12 @@ def _selftest():
     ok(list(rl) == ["December WASDE"] and "USDA 2.1 bil bu. Trade average 1.9, range 1.8 to 2." in row_line(rl["December WASDE"][0])
        and "Graded bearish, above the range." in row_line(rl["December WASDE"][0]), "the live result fills the rows")
     ok(todays_reports(date(2026, 12, 11), wpi={}, wasde={}, live=lv) == {}, "a live result for another day is not today's")
+    gs = {"history": [{"date": "2026-12-10", "report": "December Grain Stocks", "metric": "Dec 1 corn stocks", "actual": 11.2,
+                       "expected": 11.0, "unit": "bil bu"},
+                      {"date": "2026-12-10", "report": "December WASDE", "metric": "old row", "actual": 1, "expected": 1}]}
+    rm = todays_reports(date(2026, 12, 10), wpi=gs, wasde={}, live=lv)
+    ok(sorted(rm) == ["December Grain Stocks", "December WASDE"] and rm["December WASDE"][0]["metric"] == "2026/27 corn ending stocks",
+       "another report the same day keeps its committed rows beside the live one: %r" % sorted(rm))
     bl = balance_lines(date(2026, 12, 10), wasde={}, live=lv)
     ok(bl == ["2026/27 Corn: ending stocks 2,100 million bushels, up 150 million from November; average farm price $4.10 a bushel, down 10 cents."],
        "the live result's balance line reads as the PDF's: %r" % bl)
@@ -772,6 +788,10 @@ def _selftest():
     os.environ["REPORT_LIVE_URL"] = "https://api.example.com"
     ok(live_record(date(2026, 12, 10), opener=_op) == lv and seen[-1] == "https://api.example.com/report-live", "live_record reads the worker")
     ok(live_record(date(2026, 12, 11), opener=_op) is None, "and only today's record counts")
+    lv_part = dict(lv, complete=False)
+    def _op2(req, timeout=None):
+        return _R(json.dumps({"ok": True, "live": lv_part}).encode())
+    ok(live_record(date(2026, 12, 10), opener=_op2) is None, "a partial live result is never sent from")
     def _down(req, timeout=None):
         raise OSError("down")
     ok(live_record(date(2026, 12, 10), opener=_down) is None, "a worker that does not answer means the committed files")

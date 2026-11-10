@@ -15,9 +15,9 @@ The same files are then committed to the repo by the workflow.
     python3 scripts/report_live.py gate [--now 2026-12-10T16:40:00Z] [--mode live|rehearse --day YYYY-MM-DD]
         prints mode=live|rehearse|none and release=YYYY-MM-DD (GITHUB_OUTPUT too)
     python3 scripts/report_live.py key
-        makes the signing key for this run from UNSUB_SECRET (to REPORT_KEY_FILE)
+        prepares this run's key for the result route (to REPORT_KEY_FILE)
     python3 scripts/report_live.py poll --release 2026-12-10 [--dry-run]
-    python3 scripts/report_live.py wait-live --release 2026-12-10 [--test] [--timeout 1500]
+    python3 scripts/report_live.py wait-live --release 2026-12-10 [--test]
     python3 scripts/report_live.py watchdog --release 2026-12-10
     python3 scripts/report_live.py rehearse [--release 2026-11-10] [--fast] [--no-email] [--no-nass]
                                             [--worker URL] [--notify --for 2026-12-10]
@@ -64,6 +64,7 @@ POLL_S = 10             # one check every 10 seconds
 WINDOW_MIN = 20         # for up to 20 minutes after the release
 WATCH_MIN = (3, 10)     # notices at release + 3 and release + 10 minutes when nothing came
 SERVE_TARGET_S = 30     # file appears -> live value served, on the fixture
+REHEARSE_FROM_UTC = 18  # the rehearsal tick is 19:17 UTC; the start ticks are 15:38 to 16:48
 
 # The release time of each graded report, Eastern. Every one of them is noon ET
 # (11:00 a.m. CT) today; a report at another hour goes here, and the selftest
@@ -107,13 +108,14 @@ def auto_read(day):
 
 def gate(now):
     """(mode, release): 'live' from 25 minutes before a release to 15 minutes
-    after it, 'rehearse' the day before a report day, else 'none'."""
+    after it; 'rehearse' the day before a report day from 18:00 UTC (the 19:17
+    tick; the start ticks that day are earlier and get 'none'); else 'none'."""
     today = now.astimezone(CT).date()
     rel = release_at(today)
     if rel is not None and rel - timedelta(minutes=25) <= now <= rel + timedelta(minutes=15):
         return "live", today
     tomorrow = today + timedelta(days=1)
-    if release_at(tomorrow) is not None and now.astimezone(CT).hour >= 9:
+    if release_at(tomorrow) is not None and now.astimezone(timezone.utc).hour >= REHEARSE_FROM_UTC:
         return "rehearse", tomorrow
     return "none", None
 
@@ -139,7 +141,7 @@ SURPRISES = ("bullish", "bearish", "in line", "")
 CROPS = ("corn", "soybeans", "wheat")
 ROW_KEYS = ("key", "label", "unit", "actual", "expected", "low", "high", "usda_current", "surprise",
             "gap_pct", "context")
-TOP_KEYS = ("v", "test", "release", "report", "generated", "counts", "big", "rows", "balance")
+TOP_KEYS = ("v", "test", "complete", "release", "report", "generated", "counts", "big", "rows", "balance")
 MAX_BYTES = 12000
 
 
@@ -166,7 +168,7 @@ def _load(p):
         return {}
 
 
-def compose(release, root=ROOT, test=False, generated=None):
+def compose(release, root=ROOT, test=False, generated=None, complete=False):
     """The live result for `release` from the files a run just wrote, or None
     when nothing of it is graded or printed yet."""
     iso = release.isoformat()
@@ -206,7 +208,7 @@ def compose(release, root=ROOT, test=False, generated=None):
     if not rows and not balance:
         return None
     rows = rows[:40]
-    return {"v": 1, "test": bool(test), "release": iso, "report": clean(report, 60),
+    return {"v": 1, "test": bool(test), "complete": bool(complete), "release": iso, "report": clean(report, 60),
             "generated": generated or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "counts": counts or {"metrics": 0, "in_line": 0, "ungraded": 0}, "big": big,
             "rows": rows, "balance": balance}
@@ -220,9 +222,9 @@ def validate(p, now=None):
         return "shape"
     if len(json.dumps(p, separators=(",", ":"))) > MAX_BYTES:
         return "too big"
-    if p.get("v") != 1 or not isinstance(p.get("test"), bool):
+    if p.get("v") != 1 or not isinstance(p.get("test"), bool) or not isinstance(p.get("complete"), bool):
         return "version"
-    if not re.match(r"^\d{4}-\d{2}-\d{2}$", str(p.get("release") or "")):
+    if not isinstance(p.get("release"), str) or not re.match(r"^\d{4}-\d{2}-\d{2}$", p["release"]):
         return "release"
     try:
         rel = date.fromisoformat(p["release"])
@@ -246,7 +248,7 @@ def validate(p, now=None):
     if not isinstance(rows, list) or not isinstance(bal, list) or len(rows) > 40 or len(bal) > 3 or not (rows or bal):
         return "rows"
     for r in rows:
-        if not isinstance(r, dict) or set(r) != set(ROW_KEYS) or not KEY_RE.match(str(r.get("key"))):
+        if not isinstance(r, dict) or set(r) != set(ROW_KEYS) or not isinstance(r.get("key"), str) or not KEY_RE.match(r["key"]):
             return "row"
         for k in ("label", "unit", "context"):
             if not isinstance(r[k], str) or SAFE.search(r[k]) or len(r[k]) > (16 if k == "unit" else 80):
@@ -273,13 +275,12 @@ def validate(p, now=None):
     return ""
 
 
-# -- signing --------------------------------------------------------------------
+# -- the result route's key ---------------------------------------------------------
 KEY_LABEL = "report-live|v1"
 
 
 def derive_key(root_secret):
-    """This route's own key, made from a secret the worker already has: it can
-    sign a report result and nothing else."""
+    """This route's own key."""
     return hmac.new(root_secret.encode(), KEY_LABEL.encode(), hashlib.sha256).hexdigest()
 
 
@@ -288,8 +289,8 @@ def sign(key, ts, body):
 
 
 def read_key():
-    """The signing key for this run: REPORT_KEY_FILE (written by `key`), else
-    made from UNSUB_SECRET when the step has it. '' when neither is there."""
+    """This run's key for the result route: REPORT_KEY_FILE (written by `key`),
+    else made in this step. '' when there is none."""
     f = os.environ.get("REPORT_KEY_FILE", "")
     if f and Path(f).exists():
         return Path(f).read_text().strip()
@@ -302,7 +303,10 @@ def worker_url():
 
 
 def post_live(payload, key, worker=None, now_s=None, opener=None):
-    """(ok, status, why). Never raises."""
+    """(ok, status, why). Never raises. The rehearsal's test record is written
+    only from a dry run (DRY_RUN=1)."""
+    if payload.get("test") and os.environ.get("DRY_RUN") != "1":
+        return False, 0, "the test record is written only with DRY_RUN=1"
     body = json.dumps(payload, separators=(",", ":"))
     ts = int(now_s if now_s is not None else time.time())
     req = urllib.request.Request(
@@ -394,11 +398,11 @@ class Reader:
         return self.parsed
 
     def fill(self):
-        """fetch_wasde.py on this release; True when wasde.json changed. NASS is
-        asked on every third check (every 30 s), the PDF on every one."""
+        """fetch_wasde.py on this release (the PDF and NASS on every check); True
+        when wasde.json changed."""
         self._point()
         self.asks += 1
-        self.fw.API_KEY = self.key if (self.nass and self.asks % 3 == 1) else ""
+        self.fw.API_KEY = self.key if self.nass else ""
         rc, out = _quiet(self.fw.main, ["--date", self.release.isoformat()])
         for ln in out.splitlines():
             if ln.startswith("::error") or "REFUSED" in ln:
@@ -440,7 +444,7 @@ def poll(release, root=ROOT, worker=None, key="", test=False, dry_run=False, ope
     log("report day %s: checking every %ds until %s UTC" % (release, interval, deadline.strftime("%H:%M")))
     rd = Reader(root, release, opener=opener, nass=nass, log=log)
     out = {"posted": 0, "complete": False, "first_post": None, "last": None, "checks": 0}
-    last_body = None
+    last_body, sent_whole = None, False
     while True:
         out["checks"] += 1
         t = now()
@@ -448,27 +452,32 @@ def poll(release, root=ROOT, worker=None, key="", test=False, dry_run=False, ope
         if rd.fill():
             rd.grade()
         payload = compose(release, root, test=test)
+        whole = payload is not None and (
+            (rd.parsed is not None and not rd.waiting_on_nass()) or release not in usda_dates.WASDE_DATES)
+        if payload:
+            payload["complete"] = bool(whole)
         body = json.dumps({k: v for k, v in (payload or {}).items() if k != "generated"}, sort_keys=True)
         if payload and body != last_body:
             why = validate(payload, now=t)
             if why:
                 log("::warning title=Report day::result not sent (%s)" % why)
             elif dry_run:
-                log("  dry run: would send %d graded figure(s), %d balance line(s)"
-                    % (len(payload["rows"]), len(payload["balance"])))
+                log("  dry run: would send %d graded figure(s), %d balance line(s), %s"
+                    % (len(payload["rows"]), len(payload["balance"]), "complete" if whole else "partial"))
                 last_body = body
             else:
                 ok, status, err = post_live(payload, key, worker)
-                log("  sent     %d graded figure(s) to the worker: %s" % (len(payload["rows"]), "ok" if ok else "HTTP %s %s" % (status, err)))
+                log("  sent     %d graded figure(s), %s, to the worker: %s" % (len(payload["rows"]), "complete" if whole else "partial",
+                                                                         "ok" if ok else "HTTP %s %s" % (status, err)))
                 if ok:
                     last_body = body
                     out["posted"] += 1
                     out["first_post"] = out["first_post"] or t.strftime("%Y-%m-%dT%H:%M:%SZ")
                     out["last"] = payload
+                    sent_whole = bool(whole)
                     if on_post:
                         on_post(payload)
-        whole = rd.parsed is not None and not rd.waiting_on_nass() and payload is not None
-        if whole or (payload is not None and release not in usda_dates.WASDE_DATES):
+        if whole and (dry_run or sent_whole):
             out["complete"] = True
             log("  whole    every figure this run can read is in")
             break
@@ -480,17 +489,21 @@ def poll(release, root=ROOT, worker=None, key="", test=False, dry_run=False, ope
 
 
 # -- the email waits for the live result -----------------------------------------
-def wait_live(release, test=False, timeout_s=1500, worker=None, sleep=time.sleep, get=None, clock=time.monotonic):
+def wait_live(release, test=False, until=None, worker=None, sleep=time.sleep, get=None, now=None):
+    """0 once the worker holds the complete result for `release`; 1 when the
+    window closes first (the email never goes out on a partial result)."""
     get = get or (lambda: get_live(test, worker))
-    end = clock() + timeout_s
+    now = now or (lambda: datetime.now(timezone.utc))
+    rel = release_at(release)
+    until = until or ((rel or now()) + timedelta(minutes=WINDOW_MIN))
     iso = release.isoformat()
     while True:
         rec = get()
-        if rec and rec.get("release") == iso and bool(rec.get("test")) == bool(test):
-            print("live result for %s is on the worker (%d figure(s))" % (iso, len(rec.get("rows") or [])))
+        if rec and rec.get("release") == iso and bool(rec.get("test")) == bool(test) and rec.get("complete") is True:
+            print("complete result for %s is on the worker (%d figure(s))" % (iso, len(rec.get("rows") or [])))
             return 0
-        if clock() >= end:
-            print("no live result for %s after %d s; the committed files stay the email's source" % (iso, timeout_s))
+        if now() >= until:
+            print("no complete result for %s by %s UTC; this email path sends nothing" % (iso, until.strftime("%H:%M")))
             return 1
         sleep(5)
 
@@ -512,10 +525,10 @@ def _gh(method, path, body=None):
         return None
 
 
-def issue(title, body, close=False):
+def issue(title, body, close=False, force=False):
     """Open an issue with this title, or comment on the open one that has it
     (the issue is the record: a second run never opens a second issue)."""
-    if os.environ.get("DRY_RUN") == "1":
+    if os.environ.get("DRY_RUN") == "1" and not force:
         print("dry run: no issue (%s)" % title)
         return None
     found = _gh("GET", "/issues?state=open&per_page=50") or []
@@ -531,9 +544,9 @@ def issue(title, body, close=False):
     return n
 
 
-def notify(subject, lines):
+def notify(subject, lines, force=False):
     """The owner's notice (the existing alert email), honouring DRY_RUN."""
-    if os.environ.get("DRY_RUN") == "1":
+    if os.environ.get("DRY_RUN") == "1" and not force:
         print("dry run: no notice (%s)" % subject)
         return False
     import log_safe
@@ -625,9 +638,12 @@ def rehearse(release=None, worker=None, key=None, fast=False, email=True, nass=F
     if release is None:
         res["why"] = "no earlier WASDE on file"
         return res
+    if os.environ.get("DRY_RUN") != "1":
+        res["why"] = "a rehearsal runs only with DRY_RUN=1"
+        return res
     key = key if key is not None else read_key()
     if not key:
-        res["why"] = "no signing key in this step"
+        res["why"] = "no route key in this step"
         return res
     pdf_src = Path(src_root) / "data/wasde-pdf" / ("wasde%s.pdf" % release.strftime("%m%y"))
     if not pdf_src.exists():
@@ -707,8 +723,31 @@ def report_rehearsal(res, for_day=None):
     for ln in lines:
         print("  " + ln)
     word = "passed" if res.get("pass") else "FAILED"
-    issue("Report-day rehearsal for %s: %s" % (for_day or res.get("release"), word), "\n\n".join(lines), close=bool(res.get("pass")))
-    notify("Report-day rehearsal %s (%s)" % (word, for_day or res.get("release")), lines)
+    # the rehearsal always runs dry; its own report is what it is for
+    issue("Report-day rehearsal for %s: %s" % (for_day or res.get("release"), word), "\n\n".join(lines),
+          close=bool(res.get("pass")), force=True)
+    notify("Report-day rehearsal %s (%s)" % (word, for_day or res.get("release")), lines, force=True)
+
+
+def earlier_run(release):
+    """Another scheduled run of this workflow already started for `release`'s
+    window (the first start tick): its id, else None. None too when GitHub
+    cannot be asked (the concurrency groups are the second guard)."""
+    rel = release_at(release)
+    me = os.environ.get("GITHUB_RUN_ID", "")
+    if rel is None or not me:
+        return None
+    runs = _gh("GET", "/actions/workflows/report-day-live.yml/runs?event=schedule&per_page=30&created=%3E%3D"
+               + (rel - timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ"))
+    if not isinstance(runs, dict):
+        return None
+    mine = next((r for r in runs.get("workflow_runs", []) if str(r.get("id")) == me), None)
+    for r in runs.get("workflow_runs", []):
+        if str(r.get("id")) == me or r.get("conclusion") == "cancelled":
+            continue
+        if mine is None or str(r.get("created_at", "")) < str(mine.get("created_at", "")):
+            return r.get("id")
+    return None
 
 
 # -- the command line -------------------------------------------------------------
@@ -749,6 +788,11 @@ def main(argv):
             else:
                 day = next((x for x in report_days() if x > today), None)
             mode = want if day else "none"
+        if mode == "live" and not want and "--one-run" in argv:
+            other = earlier_run(day)
+            if other:
+                print("run %s already started for this report day; this tick does nothing" % other)
+                mode, day = "none", None
         src = rehearsal_source(day) if mode == "rehearse" else None
         _out(mode=mode, release=day.isoformat() if day else "", source=src.isoformat() if src else "",
              auto=("1" if day and auto_read(day) else "0"))
@@ -757,13 +801,13 @@ def main(argv):
         s = (os.environ.get("UNSUB_SECRET") or "").strip()
         f = os.environ.get("REPORT_KEY_FILE", "")
         if not (s and f):
-            print("::error title=Report day::no signing secret or no key file in this step")
+            print("::error title=Report day::no route key can be made in this step")
             return 1
         k = derive_key(s)
         print("::add-mask::" + k)
         Path(f).write_text(k)
         os.chmod(f, 0o600)
-        print("signing key ready")
+        print("route key ready")
         return 0
     if cmd == "poll":
         if rel is None:
@@ -772,7 +816,7 @@ def main(argv):
         dry = "--dry-run" in argv or os.environ.get("DRY_RUN") == "1"
         key = read_key()
         if not key and not dry:
-            print("::error title=Report day::no signing key; nothing can be sent to the worker")
+            print("::error title=Report day::no route key; nothing can be sent to the worker")
             return 1
         out = poll(rel, ROOT, key=key, dry_run=dry)
         _out(posted=out["posted"], complete=("1" if out["complete"] else "0"))
@@ -781,7 +825,7 @@ def main(argv):
         if rel is None:
             print("wait-live needs --release")
             return 2
-        return wait_live(rel, test="--test" in argv, timeout_s=int(_arg(argv, "--timeout", "1500")))
+        return wait_live(rel, test="--test" in argv)
     if cmd == "watchdog":
         if rel is None:
             print("watchdog needs --release")
@@ -817,6 +861,11 @@ def selftest():
     ok(gate(datetime(2026, 12, 10, 15, 38, tzinfo=U))[0] == "none", "the other hour's tick (9:38 CT) does nothing")
     ok(gate(datetime(2026, 12, 10, 17, 20, tzinfo=U))[0] == "none", "past release + 15 min the gate is closed")
     ok(gate(datetime(2026, 12, 9, 19, 17, tzinfo=U)) == ("rehearse", d), "the day before is the rehearsal")
+    ok(all(gate(datetime(2026, 12, 9, h, m, tzinfo=U))[0] == "none" for h in (15, 16) for m in (38, 48)),
+       "the day before, the four start ticks do nothing: one rehearsal only")
+    ok(gate(datetime(2026, 12, 10, 19, 17, tzinfo=U))[0] == "none", "no rehearsal tick on a day with no report after it")
+    ok(all(gate(datetime(2026, 3, 30, h, m, tzinfo=U))[0] == "none" for h in (15, 16) for m in (38, 48))
+       and gate(datetime(2026, 3, 30, 19, 17, tzinfo=U))[0] == "rehearse", "Mar 30: start ticks none, the 19:17 tick rehearses")
     ok(rehearsal_source(d, Path("/nonexistent")) == date(2026, 11, 10), "the rehearsal reads last month's file (Nov 10)")
     ok(usda_dates.prior_wasde(date(2026, 11, 10)) == date(2026, 10, 9), "and steps back a month when that file is missing")
     ok(gate(datetime(2026, 3, 30, 19, 17, tzinfo=U)) == ("rehearse", date(2026, 3, 31)), "Grain Stocks and Plantings get one too")
@@ -828,10 +877,32 @@ def selftest():
             break
     else:
         ok(True, "every report day on file starts inside the workflow's start ticks")
+    # one live run per report day: the second start tick sees the first run and does nothing
+    global _gh
+    real_gh, old_id = _gh, os.environ.get("GITHUB_RUN_ID")
+    runs = {"workflow_runs": [{"id": 1, "created_at": "2026-12-10T16:38:20Z", "conclusion": None},
+                              {"id": 2, "created_at": "2026-12-10T16:48:15Z", "conclusion": None}]}
+    try:
+        _gh = lambda m, p, b=None: runs   # noqa: E731
+        os.environ["GITHUB_RUN_ID"] = "2"
+        ok(earlier_run(d) == 1, "the second start tick finds the first run")
+        os.environ["GITHUB_RUN_ID"] = "1"
+        ok(earlier_run(d) is None, "the first start tick runs")
+        runs["workflow_runs"][0]["conclusion"] = "cancelled"
+        os.environ["GITHUB_RUN_ID"] = "2"
+        ok(earlier_run(d) is None, "a cancelled first run leaves the second tick to run")
+        _gh = lambda m, p, b=None: None   # noqa: E731
+        ok(earlier_run(d) is None, "GitHub not answering: the tick runs (the concurrency group is the second guard)")
+    finally:
+        _gh = real_gh
+        if old_id is None:
+            os.environ.pop("GITHUB_RUN_ID", None)
+        else:
+            os.environ["GITHUB_RUN_ID"] = old_id
     k = derive_key("s")
     ok(k == hmac.new(b"s", b"report-live|v1", hashlib.sha256).hexdigest() and k != "s", "the route key is its own")
-    ok(sign(k, 5, "{}") == hmac.new(k.encode(), b"5.{}", hashlib.sha256).hexdigest(), "signature over ts.body")
-    good = {"v": 1, "test": False, "release": "2026-12-10", "report": "December WASDE", "generated": "2026-12-10T17:00:31Z",
+    ok(sign(k, 5, "{}") == hmac.new(k.encode(), b"5.{}", hashlib.sha256).hexdigest(), "the route header over ts.body")
+    good = {"v": 1, "test": False, "complete": True, "release": "2026-12-10", "report": "December WASDE", "generated": "2026-12-10T17:00:31Z",
             "counts": {"metrics": 1, "in_line": 1, "ungraded": 0}, "big": None,
             "rows": [{"key": "corn_2627", "label": "2026/27 corn ending stocks", "unit": "bil bu", "actual": 1.9,
                       "expected": 1.88, "low": 1.7, "high": 2.0, "usda_current": 1.84, "surprise": "in line",

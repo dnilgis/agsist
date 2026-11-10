@@ -35,6 +35,9 @@ jobs:
   gate:
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
     outputs:
       mode: ${{ steps.g.outputs.mode }}
       release: ${{ steps.g.outputs.release }}
@@ -51,13 +54,15 @@ jobs:
       - id: g
         env:
           EVENT: ${{ github.event_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           IN_MODE: ${{ inputs.mode }}
           IN_DATE: ${{ inputs.date }}
         run: |
           if [ "$EVENT" = "workflow_dispatch" ]; then
             python3 scripts/report_live.py gate --mode "$IN_MODE" --day "${IN_DATE:-}"
           else
-            python3 scripts/report_live.py gate
+            # one live run per report day: a later start tick does nothing once an earlier one started
+            python3 scripts/report_live.py gate --one-run
           fi
 
   live:
@@ -66,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 50
     concurrency:
-      group: report-day-live
+      group: report-day-live-${{ needs.gate.outputs.release }}
       cancel-in-progress: false
     outputs:
       posted: ${{ steps.poll.outputs.posted }}
@@ -92,7 +97,7 @@ jobs:
           python scripts/read_wasde_pdf.py --selftest
           python scripts/fetch_wasde.py --selftest
           python scripts/usda_dates.py --selftest
-      - name: Make this run's signing key
+      - name: Prepare this run's route key
         env:
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           REPORT_KEY_FILE: ${{ runner.temp }}/report.key
@@ -127,34 +132,11 @@ jobs:
             data/wasde-pdf/
           retention-days: 3
 
-  email-wait:
+  email:
     needs: gate
     if: needs.gate.outputs.mode == 'live' && !(github.event_name == 'workflow_dispatch' && inputs.dry_run)
     runs-on: ubuntu-latest
-    timeout-minutes: 50
-    outputs:
-      live: ${{ steps.w.outputs.live }}
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-      - name: Engine checkout
-        uses: ./.github/actions/engine
-        with:
-          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
-          mode: ${{ vars.ENGINE_MODE }}
-      - name: Wait for the live result
-        id: w
-        run: |
-          if python3 scripts/report_live.py wait-live --release "${{ needs.gate.outputs.release }}" --timeout 2400; then
-            echo "live=1" >> "$GITHUB_OUTPUT"
-          fi
-
-  email:
-    needs: [gate, email-wait]
-    if: needs.email-wait.outputs.live == '1'
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     # The same queue as report-day.yml's sender: two senders never run at once.
     concurrency:
       group: report-day-email
@@ -179,7 +161,14 @@ jobs:
           python scripts/send_report_day.py --selftest
           python scripts/gmail_limit.py --selftest
           python3 scripts/test_send_loops.py
+      - name: Wait for the complete result (until the window closes)
+        id: w
+        run: |
+          if python scripts/report_live.py wait-live --release "${{ needs.gate.outputs.release }}"; then
+            echo "live=1" >> "$GITHUB_OUTPUT"
+          fi
       - name: Send the report-day email from the live result
+        if: steps.w.outputs.live == '1'
         env:
           TZ: America/Chicago
           SMTP_HOST:    ${{ secrets.SMTP_HOST }}
@@ -247,6 +236,9 @@ jobs:
     if: needs.gate.outputs.mode == 'live'
     runs-on: ubuntu-latest
     timeout-minutes: 45
+    concurrency:
+      group: report-day-watchdog-${{ needs.gate.outputs.release }}
+      cancel-in-progress: false
     permissions:
       contents: read
       issues: write
@@ -299,14 +291,13 @@ jobs:
       - name: Install pdftotext
         timeout-minutes: 5
         uses: ./.github/actions/pdftotext
-      - name: Make this run's signing key
+      - name: Prepare this run's route key
         env:
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
           REPORT_KEY_FILE: ${{ runner.temp }}/report.key
         run: python scripts/report_live.py key
       - name: Rehearse the whole path on last month's file (test record, dry-run email)
         env:
-          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
           REPORT_KEY_FILE: ${{ runner.temp }}/report.key
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SMTP_HOST:    ${{ secrets.SMTP_HOST }}
@@ -315,8 +306,9 @@ jobs:
           SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
           FROM_ADDR:    ${{ secrets.FROM_ADDR }}
           REPLY_TO:     ${{ secrets.REPLY_TO }}
+          DRY_RUN: '1'
         run: |
           rc=0
-          python scripts/report_live.py rehearse --release "${{ needs.gate.outputs.source }}" --fast --notify --for "${{ needs.gate.outputs.release }}" || rc=$?
+          python scripts/report_live.py rehearse --release "${{ needs.gate.outputs.source }}" --fast --no-nass --notify --for "${{ needs.gate.outputs.release }}" || rc=$?
           rm -f "${{ runner.temp }}/report.key"
           exit $rc

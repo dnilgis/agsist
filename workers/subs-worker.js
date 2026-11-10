@@ -6,9 +6,9 @@
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
  * v5.67 (2026-11-10): REPORT-DAY RESULT. POST /report-live takes the graded result of a USDA
- *   report from the report-day job (.github/workflows/report-day-live.yml, scripts/report_live.py),
- *   signed by that job, in one fixed shape (rows of USDA's figure against the trade, counts, the
- *   WASDE balance lines) and nothing else; a rehearsal writes a separate test record. GET
+ *   report from the report-day job (.github/workflows/report-day-live.yml, scripts/report_live.py)
+ *   in one fixed shape (rows of USDA's figure against the trade, counts, the WASDE balance lines,
+ *   whether the result is complete) and nothing else; a rehearsal writes a separate test record. GET
  *   /report-live (?test=1 for the rehearsal's) answers {ok, live} for /usda-calendar, the homepage
  *   card and the report-day email, so they show the result before the commit reaches the site.
  *   No new binding or secret. Every other route answers as before.
@@ -2975,7 +2975,7 @@ const RLIVE_MAX_BYTES = 12000;
 const RLIVE_SKEW_S = 300;
 const RLIVE_SAFE = /^[A-Za-z0-9 .,\/()%+:&'$-]*$/;
 const RLIVE_KEY = /^[a-z0-9_]{1,40}$/;
-const RLIVE_TOP = ["v", "test", "release", "report", "generated", "counts", "big", "rows", "balance"];
+const RLIVE_TOP = ["v", "test", "complete", "release", "report", "generated", "counts", "big", "rows", "balance"];
 const RLIVE_ROW = ["key", "label", "unit", "actual", "expected", "low", "high", "usda_current", "surprise", "gap_pct", "context"];
 const RLIVE_BAL = ["crop", "my", "prev_month", "stocks", "stocks_prev", "price", "price_prev"];
 const RLIVE_GRADES = ["bullish", "bearish", "in line", ""];
@@ -2986,8 +2986,8 @@ const rliveText = (v, n) => typeof v === "string" && v.length <= n && RLIVE_SAFE
 // -> "" when the record is one this route keeps, else why not
 function rliveProblem(p, nowMs) {
   if (!p || typeof p !== "object" || Array.isArray(p) || Object.keys(p).some((k) => !RLIVE_TOP.includes(k))) return "shape";
-  if (p.v !== 1 || typeof p.test !== "boolean") return "version";
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(p.release))) return "release";
+  if (p.v !== 1 || typeof p.test !== "boolean" || typeof p.complete !== "boolean") return "version";
+  if (typeof p.release !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(p.release)) return "release";
   const rel = Date.parse(p.release + "T00:00:00Z");
   if (!Number.isFinite(rel)) return "release";
   const today = Date.parse(new Date(nowMs).toISOString().slice(0, 10) + "T00:00:00Z");
@@ -2999,7 +2999,7 @@ function rliveProblem(p, nowMs) {
   if (!rliveKeys(c, ["metrics", "in_line", "ungraded"]) || !Object.values(c).every((n) => Number.isInteger(n) && n >= 0 && n <= 60)) return "counts";
   if (!Array.isArray(p.rows) || !Array.isArray(p.balance) || p.rows.length > 40 || p.balance.length > 3 || !(p.rows.length || p.balance.length)) return "rows";
   for (const r of p.rows) {
-    if (!rliveKeys(r, RLIVE_ROW) || !RLIVE_KEY.test(String(r.key))) return "row";
+    if (!rliveKeys(r, RLIVE_ROW) || typeof r.key !== "string" || !RLIVE_KEY.test(r.key)) return "row";
     if (!rliveText(r.label, 80) || !rliveText(r.unit, 16) || !rliveText(r.context, 80)) return "row text";
     if (!RLIVE_GRADES.includes(r.surprise)) return "row grade";
     if (!["actual", "expected", "low", "high", "usda_current", "gap_pct"].every((k) => rliveNum(r[k])) || r.actual === null) return "row number";
@@ -3029,7 +3029,13 @@ async function rlivePost(env, req) {
   if (why) return json({ ok: false, error: why }, 400, h);
   const k = p.test ? "rlive:test" : "rlive:live";
   const old = await env.SUBS.get(k, "json").catch(() => null);
-  if (old && old.release === p.release && String(old.generated) > p.generated) return json({ ok: false, error: "older" }, 409, h);
+  if (old && !p.test && typeof old.release === "string" && old.release > p.release) return json({ ok: false, error: "older" }, 409, h);
+  if (old && old.release === p.release) {
+    if (String(old.generated) > p.generated) return json({ ok: false, error: "older" }, 409, h);
+    // a copy with fewer figures replaces the kept one only when it is newer and complete
+    const fewer = Array.isArray(old.rows) && p.rows.length < old.rows.length;
+    if (fewer && !(p.complete && String(old.generated) < p.generated)) return json({ ok: false, error: "fewer" }, 409, h);
+  }
   const rec = Object.assign({}, p, { received: new Date(nowMs).toISOString().slice(0, 19) + "Z" });
   await env.SUBS.put(k, JSON.stringify(rec), { expirationTtl: (p.test ? 14 : 60) * 86400 });
   return json({ ok: true, release: p.release, rows: p.rows.length }, 200, h);
@@ -3505,7 +3511,7 @@ async function handle(req, env) {
         region_code: String(cf.regionCode || "").slice(0, 3), lat: Math.round(lat * 100) / 100, lon: Math.round(lon * 100) / 100 }, 200, h);
     }
 
-    // v5.67: the report-day result (scripts/report_live.py). Public read, signed write.
+    // v5.67: the report-day result (scripts/report_live.py).
     if (path === "/report-live") {
       if (req.method === "GET") return rliveGet(env, url, req);
       if (req.method === "POST") return rlivePost(env, req);
