@@ -58,7 +58,8 @@ from collections import Counter, defaultdict
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-from build_cash_bid_pages import op_key as _op_key, town_key  # noqa: E402  (the cash-bid pages' own keys)
+from build_cash_bid_pages import town_key  # noqa: E402  (the cash-bid pages' own keys)
+from elevator_names import trade_key as _op_key  # noqa: E402  (the one elevator name key)
 from build_state_basis_pages import STATE_NAMES, town_text  # noqa: E402
 from elevator_names import display_name  # noqa: E402
 

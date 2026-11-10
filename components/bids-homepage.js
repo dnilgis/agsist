@@ -992,19 +992,8 @@
   // Names that differ by a real word ("ADM Grain" / "ADM") are merged only by
   // isTwin() below, under much stricter conditions: a repeated elevator is
   // visible and fixable, a wrong merge hides a real one.
-  var LEGAL = {llc:1,lc:1,inc:1,incorporated:1,co:1,corp:1,corporation:1,ltd:1,limited:1,lp:1,llp:1,company:1};
-  function normOperator(name){
-    var t = String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ')
-      .replace(/co op/g, 'coop').replace(/co operative/g, 'cooperative')
-      .split(' ').filter(function(x){ return x; });
-    while(t.length && LEGAL[t[t.length - 1]]) t.pop();
-    t = t.map(function(x){ return (x === 'cooperative' || x === 'coops') ? 'coop' : x; });
-    var FOLD = {bros:'brother',brothers:'brother',brother:'brother',st:'saint',mt:'mount',ft:'fort',
-                farmers:'farmer',assn:'association',assoc:'association',elev:'elevator',elevators:'elevator'};
-    t = t.map(function(x){ return FOLD[x] || x; });
-    t = t.map(function(x){ return (x.length > 3 && x.charAt(x.length - 1) === 's') ? x.slice(0, -1) : x; });
-    return t.join('');
-  }
+  /* elevNames.mergeKey (components/elev-names.js), twin of scripts/elevator_names.merge_key. */
+  function normOperator(name){ return window.elevNames.mergeKey(name); }
   function plain(x){ return String(x || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
   function rowKey(r){ return normOperator(r.facility) + '|' + plain(r.city) + '|' + plain(r.state); }
 

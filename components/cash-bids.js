@@ -582,8 +582,10 @@ function contractStrip(bids){
    page waits for it or depends on it. */
 var _bhFetch={},_bhMap={};
 function bhNorm(v){return String(v==null?'':v).trim().toUpperCase().replace(/\s+/g,' ');}
+/* The facility is keyed by the one name key (elevNames.basisName, components/elev-names.js):
+   an archived copy ("zFarmers Cooperative Elevator Co.OLD") finds the elevator's history. */
 function bhKeyOf(fac,city,st,cat,sym,month){
-  return [bhNorm(fac),bhNorm(city),bhNorm(st),bhNorm(cat),bhNorm(sym),bhNorm(month)].join('|');
+  return [window.elevNames.basisName(fac),bhNorm(city),bhNorm(st),bhNorm(cat),bhNorm(sym),bhNorm(month)].join('|');
 }
 function bhLoadState(st){
   if(_bhFetch[st])return _bhFetch[st];

@@ -252,6 +252,7 @@
     return '';
   }
 
+  /* Town, state and contract fields; the facility goes through elevNames.basisName (components/elev-names.js). */
   function bhNorm(v){ return String(v == null ? '' : v).trim().toUpperCase().replace(/\s+/g, ' '); }
 
   /* The day's change: bids-homepage.js fillChanges(), same file, same rule. */
@@ -274,7 +275,7 @@
     var when = function(i){ return (i == null || i >= d.length) ? null : d[i]; };
     sh.r.forEach(function(r){
       var fc = String(f[r[0]] || '').split('|');
-      m[[bhNorm(fc[0]), bhNorm(fc[1]), bhNorm(sh.state), bhNorm(c[r[1]]), bhNorm(r[2]), bhNorm(r[3])].join('|')] =
+      m[[window.elevNames.basisName(fc[0]), bhNorm(fc[1]), bhNorm(sh.state), bhNorm(c[r[1]]), bhNorm(r[2]), bhNorm(r[3])].join('|')] =
         { cur:r[4], prev:r[5], since:when(r[6]), first:when(r[7]), last:when(r[8]) };
     });
     return m;
@@ -314,7 +315,7 @@
         });
         if(row && row.stale === true) stale = true;
         if(row && bm){
-          var h = bm[[bhNorm(p.operator), bhNorm(p.city), bhNorm(st), bhNorm(CAT[c.crop]), bhNorm(row.futuresMonth || ''), bhNorm(row.delivery || '')].join('|')];
+          var h = bm[[window.elevNames.basisName(p.operator), bhNorm(p.city), bhNorm(st), bhNorm(CAT[c.crop]), bhNorm(row.futuresMonth || ''), bhNorm(row.delivery || '')].join('|')];
           var f = basisFact(h, c.basis);
           if(f){ f.crop = c.crop; facts.push(f); }
         }

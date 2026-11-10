@@ -99,7 +99,8 @@ import pricefmt  # noqa: E402  (cash as posted: twin of components/util.js AG.px
 import phone_corrections  # noqa: E402  (numbers checked on the buyer's own site: data/phone-corrections.json)
 import storesell  # noqa: E402  (the site's one store-or-sell calculation, twin of components/storesell.js)
 import build_buyers as BUY  # noqa: E402  (where the big buyers are: data/buyers.json)
-from elevator_names import clean_place, display_name  # noqa: E402  (page-title names fixed, twin of cb-rank.js)
+from elevator_names import clean_place, display_name  # noqa: E402  (page-title names fixed, twin of elev-names.js)
+from elevator_names import fac_key, trade_key  # noqa: E402  (the one elevator name key)
 from build_state_basis_pages import (  # noqa: E402
     CT, MONTH_ABBR, SITE, STATE_NAMES, contract_label, esc, money_basis, parse_contract, parse_ts)
 
@@ -770,22 +771,15 @@ def town_of(b, src, towns_by_state, fit=None, rejected=None):
 KNOWN_MAX = 6         # unread elevators named on one town page; the rest are counted
 LISTING_PAGE = "/list-your-elevator"
 DIR_ID_RE = re.compile(r'^(known|reg):[^<>"`\\]{1,190}$')   # the worker's and the form's dir_id rule
-OP_NOISE = re.compile(r"\b(inc|llc|l\s?l\s?c|co|company|corp|corporation|cooperative|coop|co-op|the|of|grain|"
-                      r"elevator|elevators|farmers)\b")
-TOWN_ALT = {"saint": "st", "mount": "mt", "fort": "ft", "sainte": "ste"}
 
 
 def op_key(name, town=""):
     """An operator name with the legal and trade words, and the town's own
-    name, taken out: "Bartlett Grain Company- St. Joseph" and "Bartlett Grain
-    Company, LLC" in Saint Joseph are one operator there. For telling an unread
-    roster entry apart from another one, or from a board already on the page."""
-    # "Co-op" first: OP_NOISE's "co" would leave "op" ("Heartland Co-op" vs "Heartland Coop")
-    s = OP_NOISE.sub(" ", re.sub(r"\bco\s?-?\s?op\b", "coop", (name or "").lower()))
-    for w in re.findall(r"[a-z0-9]+", (town or "").lower()):
-        for v in {w, TOWN_ALT.get(w, w)}:
-            s = re.sub(rf"\b{v}\b", " ", s)
-    return re.sub(r"[^a-z0-9]", "", s)
+    name, taken out (elevator_names.trade_key): "Bartlett Grain Company- St.
+    Joseph" and "Bartlett Grain Company, LLC" in Saint Joseph are one operator
+    there. For telling an unread roster entry apart from another one, or from a
+    board already on the page."""
+    return trade_key(name, town)
 
 
 def known_by_town(directory, towns_by_state):
@@ -1644,7 +1638,7 @@ ANSWER_CROPS = 2              # crops named in the answer sentence
 DESC_MAX = 160
 HIST_NOTE = (" The &ldquo;Basis since&rdquo; box shows the day each elevator&rsquo;s basis last changed; before Oct 11, 2026 "
              "it also drew on a licensed bid feed.")
-HIST_JS = '<script src="/components/cb-basis-hist.js?v=3" defer></script>\n'
+HIST_JS = '<script src="/components/elev-names.js?v=1" defer></script><script src="/components/cb-basis-hist.js?v=4" defer></script>\n'
 
 
 def head_name(bd, with_town=True):
@@ -1977,18 +1971,12 @@ def faq_jsonld(qs):
         {"@type": "Question", "name": q, "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in qs]}
 
 
-FAC_TAIL = {"LLC", "LC", "INC", "INCORPORATED", "CO", "CORP", "CORPORATION", "LTD", "LIMITED", "LP", "LLP",
-            "COMPANY", "COOP", "COOPERATIVE", "ASSN", "ASSOCIATION"}
-
-
 def norm_fac(s):
-    """Twin of normFac() in components/cb-basis-hist.js (and homepage-extras.js):
-    "CDR FARMS, LLC" and "CDR Farms LLC" are one elevator."""
-    t = re.sub(r"\bCO[\s.-]*OP\b", "COOP", str(s or "").upper().replace("&", " AND "))
-    t = [x for x in re.sub(r"[^A-Z0-9]+", " ", t).strip().split(" ") if x]
-    while len(t) > 1 and t[-1] in FAC_TAIL:
-        t.pop()
-    return "".join(t)
+    """One elevator across spellings (elevator_names.fac_key, twin of
+    elevNames.facKey that components/cb-basis-hist.js uses): "CDR FARMS, LLC"
+    and "CDR Farms LLC" are one elevator, and an archived copy
+    ("zFarmers Cooperative Elevator Co.OLD") is the elevator."""
+    return fac_key(s)
 
 
 def norm_town(s):
@@ -4384,7 +4372,7 @@ def _selftest_answer():
     assert box and json.loads(html_unescape(box.group(1))) == [["Op n0", ["Fremont"]]], \
         "Op n1's only key names no month it can draw, so it is not offered"
     assert "-31" not in fr and "\u221231\u00a2" not in fr.split("Nebraska middle")[0].split("cbt-hist")[-1]
-    assert fr.count('/components/cb-basis-hist.js?v=3') == 1 and "&ldquo;Basis since&rdquo; box shows" in fr.split("<summary>Sources and terms</summary>")[1]
+    assert fr.count('/components/cb-basis-hist.js?v=4') == 1 and fr.count('/components/elev-names.js?v=1') == 1 and "&ldquo;Basis since&rdquo; box shows" in fr.split("<summary>Sources and terms</summary>")[1]
     assert "<summary>Basis since Sep 1</summary>" in fr and "since June" not in fr, "the heading is the first logged date"
     assert fr.index("cbt-hist\"") > fr.index('id="bid-email"'), "after the email box, with the other cards"
     assert "cb-basis-hist.js" not in ia and "Basis since" not in ia, "no logged change in the state: no box"
