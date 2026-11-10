@@ -58,10 +58,14 @@ test("the number to beat renders the same live and baked, and the baked page car
   const tb = D.upcoming && D.upcoming.to_beat;
   const sample = tb || { report: "October WASDE", date: "2026-10-09", wasde_no: "WASDE-676",
     source: "https://www.usda.gov/oce/commodity/wasde", rows: [{ key: "k", label: "a \"q\" & <b>", value: 1534.0, unit: "mil bu" }] };
-  const js = jsBeat(sample, "November WASDE");
-  assert.equal(pyBeat(sample, "November WASDE"), js);
+  // the next report and the standing one come from the data when a number to beat is on file
+  const next = (tb && D.upcoming.report) || "November WASDE";
+  const js = jsBeat(sample, next);
+  assert.equal(pyBeat(sample, next), js);
   assert.match(js, /The number to beat/);
-  assert.match(js, /USDA’s October WASDE \(Oct 9\), standing until the November WASDE/);
+  const MO3 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+  const [, mm, dd] = sample.date.split("-").map(Number);
+  assert.ok(js.includes(`USDA’s ${sample.report} (${MO3[mm - 1]} ${dd}), standing until the ${next}`), "names the standing report, its date and the next one");
   assert.ok(!js.includes("—"));
   assert.equal(jsBeat(null, "x"), "");
   if (tb) assert.ok(PAGE.includes(js), "baked into the next-report card");
