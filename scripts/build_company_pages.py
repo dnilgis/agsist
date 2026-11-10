@@ -104,6 +104,11 @@ def site_of(boards, srcs):
         w = ((srcs.get(bd["source"]) or {}).get("website") or "").strip()
         if re.match(r"^https?://[^\s\"<>]+$", w):
             c[w] += 1
+    if not c:           # a roster card (CB.roster_rows) carries the co-op's own bids page
+        for bd in boards:
+            w = (bd.get("bids_url") or "").strip()
+            if re.match(r"^https?://[^\s\"<>]+$", w):
+                c[w] += 1
     if not c:
         return None, None
     url = c.most_common(1)[0][0]
@@ -237,7 +242,7 @@ def company_title(short, n_live, crops):
     return SEO.fit(cands)
 
 
-def company_desc(short, n_loc, st_txt, posted, n_live=None):
+def company_desc(short, n_loc, st_txt, posted, n_live=None, all_roster=False):
     """The meta description: never a price (a snippet outlives the bid it quotes).
     With bids posted it counts the locations with a current bid (n_live), out of
     every location read when some have none."""
@@ -251,6 +256,10 @@ def company_desc(short, n_loc, st_txt, posted, n_live=None):
                  f"{short} grain bids today at {locs} in {st_txt}: cash price, basis and delivery month by town{when}.",
                  f"{short} grain bids today at {locs}: cash price, basis and delivery month by town{when}. Call to confirm.",
                  f"{short} grain bids today at {locs}: cash price and basis by town{when}."]
+    elif all_roster:
+        cands = [f"{short} grain bids: every one of its {locs} listed, with its own bids page and phone. "
+                 f"Bids are not online for us right now.",
+                 f"{short} grain bids at {locs}: bids not online right now, with each location's own bids page."]
     else:
         cands = [f"{short} grain bids: no current bid from the {locs} the AGSIST network reads. "
                  f"Each shows when its board was last read.",
@@ -357,6 +366,9 @@ def why_none(co):
             c[k] += n
     short = esc(co["short"])
     top = next((k for k, _ in c.most_common() if k in CB.WHY), None)
+    if top == "coop_bids_not_online":
+        return (f"{short}&rsquo;s bids are not online for us right now, so no {short} price is shown as a posted bid. "
+                f"Each location below links to {short}&rsquo;s own bids page and gives its phone where we have one.")
     if top in ("stale_or_unconfirmed", "board_not_live"):
         return (f"{short} posts its bids online, but its bid board did not answer our latest reads, so we have no "
                 f"{short} bid we can stand behind right now. We check again through the day and the prices come "
@@ -421,6 +433,10 @@ def build_page(co, ctx):
                 n_live += 1
                 trs.append(f'<tr><td class="l">{lab}</td><td class="q" colspan="{len(crops)}">Bids posted with an '
                            f'unusual basis; see the town page.</td></tr>')
+            elif bd.get("roster"):
+                trs.append(f'<tr><td class="l">{lab}</td><td class="q" colspan="{len(crops)}">'
+                           f'{esc(CB.WHY["coop_bids_not_online"])}.{CB.est_html(CB.est_for(bd, ctx, t["state"]))}'
+                           f'{CB.coop_links(bd)}</td></tr>')
             else:
                 why = next((CB.WHY[k] for k, _ in bd["why"].most_common() if k in CB.WHY), "no current bid")
                 seen = f", last read {CB.fmt_day(bd['checked'])}" if bd.get("checked") else ""
@@ -436,7 +452,8 @@ def build_page(co, ctx):
     ans, used = answer(co, cells)
     st_txt = ", ".join(STATE_NAMES[s] for s in states[:-1]) + (" and " if len(states) > 1 else "") + STATE_NAMES[states[-1]]
     title = company_title(short, n_live, [c for c in SHOW_CROPS if any(c in g for g in cells)])
-    desc = company_desc(short, n_loc, st_txt, _days(used)[0] if used else "", n_live)
+    desc = company_desc(short, n_loc, st_txt, _days(used)[0] if used else "", n_live,
+                        all(bd.get("roster") for _, bd in co["locs"]))
     site = (f' (<a href="{esc(co["site"])}" rel="noopener">{esc(co["host"])}</a>)' if co.get("site") else "")
     intro = (f'<p class="cbt-sub">{esc(co["name"])} posts bids at <b>{n_loc}</b> location{"s" if n_loc != 1 else ""} '
              f'in {esc(st_txt)} that the AGSIST elevator network reads. The bids are read from {esc(short)}&rsquo;s '
@@ -445,8 +462,9 @@ def build_page(co, ctx):
     near_html = ""
     if not indexable:
         near_html = nearby_html(co, ctx, crops)
-        intro += (f'<div class="cbt-note"><b>No current {esc(short)} bid.</b> {why_none(co)} Each location below '
-                  f'says when it was last read.' + (' <a href="#nearby">Elevators nearby with a bid today</a>.'
+        all_roster = all(bd.get("roster") for _, bd in co["locs"])
+        intro += (f'<div class="cbt-note"><b>No current {esc(short)} bid.</b> {why_none(co)}'
+                  + ("" if all_roster else " Each location below says when it was last read.") + (' <a href="#nearby">Elevators nearby with a bid today</a>.'
                                                      if near_html else '') + '</div>')
     qs = faq(co, named, n_loc, n_live, states) if indexable else []
     jsonld = {"@context": "https://schema.org", "@graph": [

@@ -523,19 +523,23 @@ def branch_name(b, src, town, known):
     return city
 
 
-def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed=None, moved=None, prev=None):
+def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed=None, moved=None, prev=None,
+           roster=None):
     """-> (towns, drops, unplaced). towns: {(ST, town_key): {...}} with every
     board that has posted rows in that town and, per board, the rows that may
     print. A place town_of() cannot name is tried by place_fallbacks().
     moved: a dict to fill with {(ST, slug of the town its name says): (town it
     went to, operator, branch)} for every board whose name names a town its
-    ZIP or pin does not fit (name_fit()), so that page can point to the right one."""
+    ZIP or pin does not fit (name_fit()), so that page can point to the right one.
+    roster: load_roster()'s facilities of the co-ops whose boards cannot be read;
+    each one with no card yet gets a card with no rows (roster_rows())."""
     gen = parse_ts(merged.get("generated"))
     snap_ct = gen.astimezone(CT)
     srcs = {s["id"]: s for s in (index.get("sources") or []) if s.get("id")}
     fit = name_fit(town_zips(zip_towns), zip_coord)
     rows = [b for b in merged.get("bids") or [] if isinstance(b, dict)]
     rows += held_rows(rows, srcs, gen, prev)     # boards off the feed that keep their page, placed like the rest
+    rows += roster_rows(rows, srcs, roster, towns_by_state)   # every location of the co-ops we cannot read
     fallback = place_fallbacks({"bids": rows}, srcs, towns_by_state, zip_towns, zip_coord, fit=fit)
     if placed is not None:
         placed.update(fallback)
@@ -558,7 +562,11 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             "precision": "street" if ovr else b.get("precision"),
             # hours, contact, note and closed-until of an elevator that posts
             # its own bids through agsist.com/post; None for every other board
-            "portal": portal_info(src.get("portal"))}
+            "portal": portal_info(src.get("portal")),
+            # a roster card (roster_rows): the co-op's own bids page and the basis log's key for the
+            # estimate; no row, so no count, median or ranking ever sees it
+            "roster": bool(b.get("_roster")), "bids_url": src.get("website") if b.get("_roster") else "",
+            "basis_key": b.get("_basis_key")}
 
     for b in rows:
         sid = b.get("source")
@@ -605,7 +613,7 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             bd["why"][k] += 1
 
         if b.get("_held"):
-            no("board_off_feed_page_kept")
+            no("coop_bids_not_online" if b.get("_roster") else "board_off_feed_page_kept")
             continue
 
         held = SB.held_skip(b, src, gen)   # skipped this pass, read within HELD_SKIP_HOURS
@@ -730,6 +738,107 @@ def held_rows(rows, srcs, gen, prev=None):
         places.add((st, b["place"]))
         out.append(dict(b, source=sid, via="scrape", _held=True, pricedAt=src.get("pricedAt"),
                         checkedAt=src.get("checkedAt"), stale=True, sourceStatus=src.get("status")))
+    return out
+
+
+# EVERY LOCATION OF A CO-OP WHOSE BOARD WE CANNOT READ STAYS ON THE SITE (2026-11-10).
+# NEW Cooperative and Central United post their bids on sites that put a bot
+# check in front of the reader. The bids network's last good copy is old (NEW
+# Oct 22, Central United Oct 3) and past it neither company had a town page. The
+# facility roster (data/ids/elevators.json, one record per physical facility)
+# still lists every location, so each one that has no board on its town page gets
+# a card with no posted bid: "Bids not online right now", the estimate from its
+# last posted basis (labelled, with the basis date) where the basis log has one,
+# a link to the co-op's own bids page and its phone where one is filed. These
+# cards carry no rows, so no median, ranking, best bid or count of posted bids
+# ever sees them. Nothing here reads, or tries to get past, the companies' sites.
+BLOCKED_COOPS = {
+    "NEW Cooperative, Inc.": "https://newcoop.com/cash-bids",
+    "Central United Coop": None,      # its own site, from data/ids/companies.json
+}
+ROSTER_ESTIMATE_DAYS = 90    # an estimate from a roster card's last posted basis is shown this long after that basis
+ESTIMATE_OLD_DAYS = 21       # a basis older than this says so beside the estimate
+ROSTER_PATH = os.path.join("data", "ids", "elevators.json")
+COMPANIES_PATH = os.path.join("data", "ids", "companies.json")
+DIRECTORY_PATH = os.path.join("data", "elevator-directory.json")
+
+
+def _read_json(path):
+    try:
+        with open(path, encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return None
+
+
+def load_roster(root="."):
+    """[{id, company, city, state, lat, lon, bids_url, phone, basis_key}] for every facility of a
+    BLOCKED_COOPS company in data/ids/elevators.json that is a place (a point or a county on file:
+    "To Buy for HCP" is a board label, not a location). basis_key is (ST, FACILITY, CITY) as the
+    basis log files it. bids_url: the co-op's bids page (BLOCKED_COOPS, else the website
+    data/ids/companies.json names). phone: the one number the elevator directory files for that
+    facility and town, after the checked corrections; "" when it files none or several."""
+    els = (_read_json(os.path.join(root, ROSTER_PATH)) or {}).get("elevators") or []
+    cos = (_read_json(os.path.join(root, COMPANIES_PATH)) or {}).get("companies") or {}
+    site = {}
+    for c in cos.values():
+        for kind, host in c.get("links") or []:
+            if kind == "website" and host:
+                site.setdefault(c.get("name"), "https://" + re.sub(r"^https?://", "", str(host)).rstrip("/"))
+    phones = defaultdict(set)
+    for e in (_read_json(os.path.join(root, DIRECTORY_PATH)) or {}).get("elevators") or []:
+        if e.get("facility") in BLOCKED_COOPS and tel(e.get("phone")):
+            phones[(e["facility"], (e.get("state") or "").upper(), town_key(e.get("city")))].add(tel(e["phone"]))
+    out = []
+    for e in els:
+        co = e.get("company")
+        st = (e.get("st") or "").upper()
+        src = e.get("sources") or {}
+        ids = src.get("bids_repo") or []
+        if co not in BLOCKED_COOPS or st not in STATE_NAMES or not ids or not (e.get("lat") or e.get("fips")):
+            continue
+        key = None
+        for k in src.get("basis") or []:
+            parts = str(k).split("|")
+            if len(parts) == 3 and parts[0] == st:
+                key = (st, parts[1], parts[2])
+                break
+        ph = phones.get((co, st, town_key(re.sub(r"\s+\d+$", "", e.get("city") or ""))))
+        ph = next(iter(ph)) if ph and len(ph) == 1 else ""
+        ph = phone_corrections.for_directory(st, e.get("city") or "", co, ph) if ph else ""
+        out.append({"id": ids[0], "company": co, "city": (e.get("city") or "").strip(), "state": st,
+                    "lat": e.get("lat"), "lon": e.get("lng"), "bids_url": BLOCKED_COOPS[co] or site.get(co) or "",
+                    "phone": ph, "basis_key": key})
+    return out
+
+
+def roster_rows(rows, srcs, roster, towns_by_state):
+    """One placeholder row per roster facility with no card yet, flagged _held and _roster (never
+    priced), and its stand-in entry in `srcs`. A facility is left to an earlier board when its id is
+    already a board in `rows`, or a board of the same company names the same city and state
+    (numbers kept: "Creston 1" is not "Creston 2"). The town is the roster's own city, spelt as the
+    ZIP table spells it when that has it, without a trailing number."""
+    have = {b.get("source") for b in rows}
+    seen = {((b.get("state") or "").upper(), trade_key(b.get("operator") or ""), town_key(b.get("city")))
+            for b in rows}
+    places = {((b.get("state") or "").upper(), b.get("place")) for b in rows}
+    out = []
+    for f in roster or []:
+        st, city = f["state"], f["city"]
+        if f["id"] in have or (st, trade_key(f["company"]), town_key(city)) in seen:
+            continue
+        place = f"{f['company']}||{city}|{st}"
+        if (st, place) in places:
+            continue
+        places.add((st, place))
+        base = re.sub(r"\s+\d+$", "", city).strip()
+        town = (towns_by_state.get(st) or {}).get(town_key(base)) or town_name(base)
+        srcs[f["id"]] = dict(srcs.get(f["id"]) or {}, id=f["id"], operator=f["company"], location=city, usState=st,
+                             phone=f["phone"], website=f["bids_url"], rows=0)
+        out.append({"place": place, "operator": f["company"], "city": city, "town": town, "state": st, "zip": None,
+                    "lat": f["lat"], "lon": f["lon"], "precision": "town", "currency": "USD", "source": f["id"],
+                    "via": "scrape", "_held": True, "_roster": True, "_basis_key": f["basis_key"],
+                    "pricedAt": None, "checkedAt": None, "stale": True, "sourceStatus": "blocked"})
     return out
 
 
@@ -1827,7 +1936,8 @@ def board_section(bd, snap_ct):
             f'{more_html}{bd.get("storage_html") or ""}</section>'), rows, times, holds
 
 
-WHY = {"stale_or_unconfirmed": "board not confirmed on the latest read",
+WHY = {"coop_bids_not_online": "Bids not online right now",
+       "stale_or_unconfirmed": "board not confirmed on the latest read",
        "board_off_feed_page_kept": "board could not be read on recent passes",
        "board_not_live": "board not confirmed on the latest read",
        "price_older_than_cutoff": "no recent price",
@@ -1846,6 +1956,40 @@ def company_link(bd):
     return f'<a href="{esc(bd["company_path"])}">{esc(words)}</a>'
 
 
+def est_html(ests):
+    """The labelled estimate lines of a card with no current bid. The basis day is always printed; a
+    basis older than ESTIMATE_OLD_DAYS says so ("basis from Oct 3, may be out of date")."""
+    return "".join(f'<br><span class="cbt-est">{esc(CROP_LABEL[e["crop"]])} {cash_c(e["cash"])} '
+                   f'<span class="mut">{esc(e["label"])}. Estimate, not a posted bid: last posted basis '
+                   f'({esc(e["basis_day"])}) + {esc(e["con"])} futures ({esc(e["close_day"])} close)'
+                   + (f'; basis from {esc(e["basis_day"])}, may be out of date' if e.get("age", 0) > ESTIMATE_OLD_DAYS else "")
+                   + '</span></span>'
+                   for e in ests)
+
+
+def coop_links(bd):
+    """'Check the real bid' links of a roster card: the co-op's own bids page and its phone, where held.
+    '' for any other card."""
+    if not bd.get("roster"):
+        return ""
+    name = bd.get("company_short") or bd.get("operator") or "the co-op"
+    ph = tel(bd.get("phone"))
+    parts = []
+    if bd.get("bids_url"):
+        parts.append(f'<a href="{esc(bd["bids_url"])}" rel="noopener">See the real bid on {esc(name)}&rsquo;s own bids page</a>')
+    if ph:
+        parts.append(f'call <a href="tel:+1{ph}">{ph[:3]}-{ph[3:6]}-{ph[6:]}</a>')
+    return f'<br><span class="mut">{" &middot; ".join(parts)}</span>' if parts else ""
+
+
+def est_for(bd, ctx, st):
+    """estimates() for a card with no current bid, from the state's basis log. A roster card reaches
+    further back (ROSTER_ESTIMATE_DAYS) and says when its basis is old."""
+    shard = ctx["shard"](shard_state(bd, st)) if ctx.get("shard") else {}
+    return estimates(bd, shard, ctx.get("fut") or {}, ctx["snap_ct"],
+                     days=ROSTER_ESTIMATE_DAYS if bd.get("roster") else ESTIMATE_DAYS)
+
+
 def quiet_line(bd, ests=()):
     why = next((WHY[k] for k, _ in bd["why"].most_common() if k in WHY), "no current bid")
     seen = f", last read {fmt_day(bd['checked'])}" if bd["checked"] else ""
@@ -1853,12 +1997,10 @@ def quiet_line(bd, ests=()):
     where = near_text(bd)
     if where:
         name += f" ({where})"
-    est = "".join(f'<br><span class="cbt-est">{esc(CROP_LABEL[e["crop"]])} {cash_c(e["cash"])} '
-                  f'<span class="mut">{esc(e["label"])}. Estimate, not a posted bid: last posted basis '
-                  f'({esc(e["basis_day"])}) + {esc(e["con"])} futures ({esc(e["close_day"])} close)</span></span>'
-                  for e in ests)
+    elif bd.get("roster") and bd.get("city") and town_key(bd["city"]) != town_key(bd.get("town")):
+        name += f" ({bd['city']})"       # "Creston 1": the facility the roster names
     co = f" &middot; {company_link(bd)}" if bd.get("company_path") else ""
-    return f"<li>{esc(name)}: {esc(why)}{seen}{co}{est}</li>"
+    return f"<li>{esc(name)}: {esc(why)}{seen}{co}{est_html(ests)}{coop_links(bd)}</li>"
 
 
 FUT_LETTERS = "FGHJKMNQUVXZ"
@@ -1916,8 +2058,16 @@ def basis_shard(basis_dir, st):
 
 
 def shard_key(bd):
-    """The basis log's (FACILITY, CITY) for a board: elevator_names.basis_name and the raw town."""
+    """The basis log's (FACILITY, CITY) for a board: elevator_names.basis_name and the raw town.
+    A roster card (roster_rows) carries the key the facility roster files it under."""
+    if bd.get("basis_key"):
+        return tuple(bd["basis_key"][1:])
     return (basis_name(bd.get("operator") or ""), " ".join(str(bd.get("raw_city") or "").strip().upper().split()))
+
+
+def shard_state(bd, st):
+    """The state file of the basis log a board's rows are in: the roster's key says, else the town's state."""
+    return bd["basis_key"][0] if bd.get("basis_key") else st
 
 
 def basis_since(bd, shard, snap_ct):
@@ -1945,7 +2095,7 @@ def basis_since(bd, shard, snap_ct):
 
 
 def estimates(bd, shard, fut, snap_ct, days=ESTIMATE_DAYS):
-    """[{crop, cash, label, basis_day, con, close_day}] for a board with no current bid:
+    """[{crop, cash, label, basis_day, con, close_day, age}] for a board with no current bid:
     per crop (corn, soybeans), its last posted basis for the nearest delivery
     month still open, logged within `days` of the snapshot, plus the latest close
     of that same futures contract. Never a posted bid and never ranked; nothing
@@ -1976,7 +2126,8 @@ def estimates(bd, shard, fut, snap_ct, days=ESTIMATE_DAYS):
             out.append({"crop": crop, "cash": round(price + cents / 100, 4),
                         "label": f"{MONTH_ABBR[int(dm[5:7]) - 1]} {dm[:4]}",
                         "basis_day": f"{MONTH_ABBR[d0.month - 1]} {d0.day}", "con": con_label(con),
-                        "close_day": f"{MONTH_ABBR[d1.month - 1]} {d1.day}"})
+                        "close_day": f"{MONTH_ABBR[d1.month - 1]} {d1.day}",
+                        "age": (snap_ct.date() - d0).days})
     return out
 
 
@@ -2660,8 +2811,7 @@ def build_town_page(t, ctx):
                  f'{esc(place)} has a bid we could confirm right now. The nearest ones that do are below.</div>')
     quiet_html = ""
     if quiet:
-        shard = ctx["shard"](st) if ctx.get("shard") else {}
-        ests = {id(b): estimates(b, shard, ctx.get("fut") or {}, snap_ct) for b in quiet}
+        ests = {id(b): est_for(b, ctx, st) for b in quiet}
         any_est = any(ests.values())
         quiet_html = (f'<h2>Also in {esc(t["name"])}, no current bid</h2><ul class="cbt-list">'
                       + "".join(quiet_line(b, ests[id(b)]) for b in quiet) + "</ul>"
@@ -3830,13 +3980,14 @@ def attach_storage(towns, ctx, root="."):
 
 def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None, now=None, check_age=True,
               min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None, hist_dir=None,
-              companies_out=None, basis_dir=None):
+              companies_out=None, basis_dir=None, roster=None):
     """data_dir: where data/state-basis/<ST>.json and data/basis-states.json
     go (None = not written). hub: /basis page to bake the state ranking into.
     directory: the bids network's data/directory.json, for the unread
     elevators on each town page (None = that section is left out).
     hist_dir: data/basis-sparklines, to know which elevators have a logged
-    basis change for the "Basis since June" box (None = no box)."""
+    basis change for the "Basis since June" box (None = no box).
+    roster: load_roster(), the facilities of the co-ops whose boards cannot be read (None = none)."""
     now = now or dt.datetime.now(dt.timezone.utc)
     gen = parse_ts(merged.get("generated"))
     if gen is None:
@@ -3850,7 +4001,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
         raise SystemExit("[cash-bid-pages] geocodes/zip-towns.json missing or short; refusing to build "
                          "(every town page would be dropped)")
     placed, moved = {}, {}
-    towns, drops, unplaced = select(merged, index, tbs, zip_towns, zip_coord, placed, moved, prev=prev_doc)
+    towns, drops, unplaced = select(merged, index, tbs, zip_towns, zip_coord, placed, moved, prev=prev_doc, roster=roster)
     how = Counter(v["how"] for v in placed.values())
     drop_misreads(towns, drops)
     infer_contracts(towns)
@@ -5498,7 +5649,7 @@ def _selftest_town_fixes():
         mv = {"operator": "Farmers Cooperative Elevator Co", "raw_city": "Montevideo"}
         e = estimates(mv, sh, fut, dt.datetime(2026, 11, 10, 9, tzinfo=CT))
         assert e == [{"crop": "corn", "cash": 3.6675, "label": "Nov 2026", "basis_day": "Nov 6", "con": "Dec '26",
-                      "close_day": "Nov 9"}], e
+                      "close_day": "Nov 9", "age": 4}], e
         # soybeans: Nov '26 is past first notice; the Jan '27 row was last posted Sep 20, 51 days back: no estimate
         assert estimates(mv, sh, fut, dt.datetime(2026, 12, 15, 9, tzinfo=CT)) == [], "past 30 days: no estimate"
         # the cash was posted Nov 9, the basis (-72c vs Dec '26, Nov delivery) last changed Nov 3: said so
@@ -5633,7 +5784,7 @@ def main():
                                       data_dir=os.path.join(a.root, "data"), hub=os.path.join(a.root, HUB_PAGE),
                                       directory=directory, hist_dir=os.path.join(a.root, "data", "basis-sparklines"),
                                       basis_dir=os.path.join(a.root, "data", "basis"),
-                                      companies_out=cos)
+                                      companies_out=cos, roster=load_roster(a.root))
     try:
         with open(os.path.join(a.root, "data", COUNTS_FILE), encoding="utf-8") as f:
             counts = json.load(f)
