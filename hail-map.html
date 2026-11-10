@@ -38,6 +38,8 @@
   <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
   <script src="/components/util.js?v=17"></script>
+  <script>/* agsist-hail-hold: a plain /hail-map opens on the now card, so its room is held before paint (see .hm-hold). Cleared when a year or the swaths open, or after 15 s if the card never comes. */
+try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.get('view')||'').toLowerCase();['year','swath','swaths','lat','lon','day','mi'].forEach(function(k){if(q.has(k))h=false;});if(v&&v!=='now')h=false;if(h){d.documentElement.classList.add('hm-hold');setTimeout(function(){d.documentElement.classList.remove('hm-hold');},15000);}})(document);}catch(_){}</script>
 
   <link rel="stylesheet" href="/vendor/leaflet-1.9.4/leaflet.css">
 
@@ -232,6 +234,12 @@
     .hm-controls{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.9rem 0 .4rem}
     .hm-mapstack{display:flex;flex-direction:column}
     .hm-controls:empty{display:none}
+    @media(min-width:641px){
+      /* the view buttons sit above the map here and are written by the map code; one row is held (two rows from 641 to 1060px) */
+      .hm-mapstack .hm-controls{min-height:44px}
+      .hm-mapstack .hm-controls:empty{display:flex;visibility:hidden}
+    }
+    @media(min-width:641px) and (max-width:1060px){.hm-mapstack .hm-controls{min-height:97px}}
     .hm-mapstack .hm-controls{margin:.5rem 0 .6rem}
     @media(max-width:640px){
       /* DOM order is controls-then-map so the tab sequence runs down the
@@ -302,10 +310,29 @@
        and it never sits under the sticky control bar or over the storms. */
     .hm-now{margin:.6rem 0 .2rem;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--brand,var(--gold));border-radius:10px;color:var(--text);font-size:1rem;line-height:1.5;padding:.65rem .8rem}
     .hm-now[hidden]{display:none}
+    /* The now card fills in after the map code runs. Its room is held from the first paint on a plain /hail-map (class
+       set before paint, removed when a year or the swaths open), so the map under it does not drop.
+       The card's height does not depend on the data: the headline is held at two lines and clamped there (the whole
+       line stays in the page text and in its title), the buttons keep one 44px row, and the notes sit in the closed box
+       under the card. Border, padding, two lines, the gap and the button row: */
+    .hm-now{box-sizing:border-box;min-height:calc(2px + 1.3rem + 3em + .55rem + 44px)}
+    .hm-now .hm-now-head{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;overflow:hidden;height:3em}
+    .hm-now-more{margin:0 0 .2rem;font-size:.88rem;color:var(--text-dim)}
+    .hm-now-more[hidden]{display:none}
+    .hm-now-more summary{min-height:44px;line-height:44px;cursor:pointer;color:var(--text)}
+    .hm-now-more p{margin:0 0 .5rem;line-height:1.5}
+    .hm-hold .hm-now-more[hidden]{display:block!important;visibility:hidden}
+    /* the notes are written while the box is closed, where they take no room; said here so the space check reads it */
+    .hm-now-more:not([open]) #hm-now-notes{visibility:hidden}
+    /* floors for boxes the map code fills or shows later (test/cls-reserved.test.mjs) */
+    #hm-meshnav{min-height:3.4rem}
+    #hm-mesh-date{font-variant-numeric:tabular-nums}
+    #hm-play{min-height:34px}
+    #hm-yearbadge{min-height:1.2em}
+    .hm-hold .hm-now[hidden]{display:block!important;visibility:hidden}
     .hm-now p{margin:0}
-    .hm-now small{display:block;color:var(--text-dim);font-size:.85rem;margin-top:.3rem}
-    .hm-now-acts{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.55rem}
-    .hm-now-acts button{min-height:44px;font-family:inherit;font-size:.88rem;font-weight:600;border-radius:999px;padding:.35rem .9rem;cursor:pointer;background:none;color:var(--text);border:1px solid var(--border)}
+    .hm-now-acts{display:flex;flex-wrap:nowrap;height:44px;gap:.45rem;margin-top:.55rem}
+    .hm-now-acts button{min-height:44px;height:44px;line-height:1.15;flex:0 1 auto;min-width:0;font-family:inherit;font-size:.88rem;font-weight:600;border-radius:999px;padding:.35rem .9rem;cursor:pointer;background:none;color:var(--text);border:1px solid var(--border)}
     .hm-now-acts button.pri{background:var(--brand-fill,var(--brand,var(--gold)));color:#1a1206;border-color:var(--brand,var(--gold))}
     .hm-dot{display:inline-block;width:11px;height:11px;border-radius:50%;vertical-align:-1px;margin:0 .25rem 0 .6rem}
     .hm-legend-size{gap:.15rem}
@@ -453,6 +480,7 @@
       <!--SEED:stormdays--><nav class="hm-days" aria-labelledby="hm-days-h"><h2 id="hm-days-h" class="hm-days-h">Recent storm days</h2><ul><li><a href="/hail/2026-11-09"><b>Nov 9</b> radar swath</a></li><li><a href="/hail/2026-11-08"><b>Nov 8</b> radar swath</a></li><li><a href="/hail/2026-11-07"><b>Nov 7</b> radar swath</a></li><li><a href="/hail/2026-11-06"><b>Nov 6</b> radar swath</a></li><li><a href="/hail/2026-11-04"><b>Nov 4</b> 1 report</a></li></ul><a class="hm-days-all" href="#history">Every storm day &rarr;</a></nav><!--/SEED:stormdays-->
 
       <div class="hm-now" id="hm-now" role="status" aria-live="polite" hidden></div>
+      <details class="hm-now-more" id="hm-now-more" hidden><summary>About the last 24 hours</summary><p id="hm-now-notes">Ground reports post as spotters call them in, often hours after a storm.</p></details>
       <div class="hm-mapstack">
       <div class="hm-controls" id="hm-controls" role="group" aria-label="Select view"></div>
       <div class="hm-mapwrap">
@@ -2284,39 +2312,42 @@
     function plural(n, one, many){ return n+' '+(n===1?one:many); }
     /* The words of the now line, from what each source said. Pure, so the
        tests can feed it every case. null = still asking; 'err' = no answer. */
+    /* The card is one headline (at most two lines, the rest in its title) and its buttons; everything else goes in
+       the closed "About the last 24 hours" box under it, so the card is the same height whatever the feeds said. */
+    var NOW_BASE='Ground reports post as spotters call them in, often hours after a storm.';
+    function nowList(a){ return a.length<2 ? a.join('') : a.slice(0,-1).join(', ')+' or '+a[a.length-1]; }
     function nowLine(S){
       if(S.st) return nowLineState(S);
       var pending = S.warn===null || S.radar===null || S.pins===null;
       var warnHit = S.warn>0, radarHit = (S.radar==='fresh'||S.radar==='old') && S.radarN>0, pinHit = S.pins>0;
       var parts=[], notes=[], acts=[];
+      function out(o){ o.notes=notes.concat(NOW_BASE); o.html='<p class="hm-now-head">'+o.head+'</p>'; return o; }
       if(warnHit || radarHit || pinHit){
         if(warnHit) parts.push('<b>'+plural(S.warn,'hail warning','hail warnings')+' in effect now</b>'+(S.warnStates?' ('+esc(S.warnStates)+')':''));
         if(radarHit) parts.push('radar hail'+(S.radarWhere?' in '+esc(S.radarWhere):'')+(S.radar==='old'?' (radar as of '+esc(S.radarAsof)+')':''));
         if(pinHit) parts.push('<b>'+plural(S.pins,'ground report','ground reports')+'</b> of hail'+(S.pinStates?' in '+esc(S.pinStates):''));
-        var html='<p>Last 24 hours: '+parts.join('; ')+'.</p>';
-        if(S.warn==='err') notes.push('The NWS warning feed did not answer.');
-        if(S.pins==='err') notes.push('Ground reports did not load.');
-        if(S.radar==='none') notes.push('The 24-hour radar layer is not posted right now.');
+        if(S.warn==='err') notes.push('Warnings are not shown right now.');
+        if(S.pins==='err') notes.push('Ground reports are not shown right now.');
+        if(S.radar==='none') notes.push('The 24-hour radar layer is not posted yet. It updates four times a day in hail season.');
         acts.push(['zoom','Zoom to the storms',1]);
         acts.push(['all','5-year map',0]);
-        return { quiet:false, pending:pending, html:html+(notes.length?'<small>'+notes.join(' ')+'</small>':''), acts:acts };
+        return out({ quiet:false, pending:pending, head:'Last 24 hours: '+parts.join('; ')+'.', acts:acts });
       }
-      if(pending) return { quiet:false, pending:true, html:'<p>Checking for hail in the last 24 hours…</p>', acts:[['all','5-year map',0]] };
-      var no=[];
+      if(pending) return out({ quiet:false, pending:true, head:'Checking for hail in the last 24 hours…', acts:[['all','5-year map',0]] });
+      var no=[], lines=[];
       if(S.warn===0) no.push('hail warnings');
       if(S.radar==='fresh') no.push('radar hail');
-      var lines=[];
-      if(no.length) lines.push('No '+no.join(' or ')+' in the last 24 hours.');
-      if(S.pins===0) lines.push(no.length?'No ground reports of hail either.':'No ground reports of hail in the last 24 hours.');
-      if(S.warn==='err') notes.push('The NWS warning feed did not answer, so warnings are not shown.');
-      if(S.pins==='err') notes.push('Ground reports did not load.');
+      if(S.pins===0) no.push('ground reports of hail');
+      if(no.length===3) lines.push('No hail in the last 24 hours.');
+      else if(no.length) lines.push('No '+nowList(no)+' in the last 24 hours.');
+      if(S.warn==='err') notes.push('Warnings are not shown right now.');
+      if(S.pins==='err') notes.push('Ground reports are not shown right now.');
       if(S.radar==='old') notes.push('The radar layer last updated '+esc(S.radarAsof)+', so storms since then are not on it yet.');
-      if(S.radar==='none') notes.push('The 24-hour radar layer is not posted right now; it updates four times a day in hail season.');
+      if(S.radar==='none') notes.push('The 24-hour radar layer is not posted yet. It updates four times a day in hail season.');
       if(S.latest) lines.push('Latest radar hail: <b>'+esc(S.latestDay)+'</b>'+(S.latest.where?', '+esc(S.latest.where):'')+'.');
-      notes.push('Ground reports post as spotters call them in, often hours after a storm.');
       if(S.latest) acts.push(['day','See '+esc(S.latestShort),1]);
       acts.push(['all','5-year map',S.latest?0:1]);
-      return { quiet:true, pending:false, html:'<p>'+lines.join(' ')+'</p><small>'+notes.join(' ')+'</small>', acts:acts };
+      return out({ quiet:true, pending:false, head:lines.join(' '), acts:acts });
     }
     /* The same line for one state. Its 5 years are the first button when it
        is quiet and always one tap away: the state pages link here, and a
@@ -2328,39 +2359,40 @@
       var warnHit = S.warn>0 && S.sWarn>0, radarHit = radarOk && S.sRadarN>0, pinHit = S.pins>0 && S.sPins>0;
       var hist=['all', nm+': 5 years of hail'];
       var notes=[], acts=[];
-      function errNotes(quiet){
-        if(S.warn==='err') notes.push(quiet?'The NWS warning feed did not answer, so warnings are not shown.':'The NWS warning feed did not answer.');
-        if(S.pins==='err') notes.push('Ground reports did not load.');
-        if(radarUp && S.sRadarN==='unk') notes.push('The radar layer could not be matched to '+nm+' right now.');
+      function out(o){ o.notes=notes.concat(NOW_BASE); o.html='<p class="hm-now-head">'+o.head+'</p>'; return o; }
+      function errNotes(){
+        if(S.warn==='err') notes.push('Warnings are not shown right now.');
+        if(S.pins==='err') notes.push('Ground reports are not shown right now.');
+        if(radarUp && S.sRadarN==='unk') notes.push('Radar hail in '+nm+' is not shown right now.');
       }
       if(warnHit || radarHit || pinHit){
         var parts=[];
         if(warnHit) parts.push('<b>'+plural(S.sWarn,'hail warning','hail warnings')+' in effect now</b>');
         if(radarHit) parts.push('radar hail'+(S.radar==='old'?' (radar as of '+esc(S.radarAsof)+')':''));
         if(pinHit) parts.push('<b>'+plural(S.sPins,'ground report','ground reports')+'</b> of hail');
-        errNotes(false);
-        if(S.radar==='none') notes.push('The 24-hour radar layer is not posted right now.');
         if(S.elsewhere) notes.push('Also hail in the last 24 hours: '+esc(S.elsewhere)+'.');
+        errNotes();
+        if(S.radar==='none') notes.push('The 24-hour radar layer is not posted yet. It updates four times a day in hail season.');
         acts.push(hist.concat(0));
-        return { quiet:false, pending:pending, html:'<p>Last 24 hours in <b>'+nm+'</b>: '+parts.join('; ')+'.</p>'+(notes.length?'<small>'+notes.join(' ')+'</small>':''), acts:acts };
+        return out({ quiet:false, pending:pending, head:'Last 24 hours in <b>'+nm+'</b>: '+parts.join('; ')+'.', acts:acts });
       }
-      if(pending) return { quiet:false, pending:true, html:'<p>Checking for hail in '+nm+' in the last 24 hours…</p>', acts:[hist.concat(1)] };
+      if(pending) return out({ quiet:false, pending:true, head:'Checking for hail in '+nm+' in the last 24 hours…', acts:[hist.concat(1)] });
       var no=[], lines=[];
       if(S.warn===0 || S.warn>0) no.push('hail warnings');
       if(S.radar==='fresh' && radarOk) no.push('radar hail');
-      if(no.length) lines.push('No '+no.join(' or ')+' in '+nm+' in the last 24 hours.');
-      if(typeof S.pins==='number') lines.push(no.length?'No ground reports of hail either.':'No ground reports of hail in '+nm+' in the last 24 hours.');
-      errNotes(true);
+      if(typeof S.pins==='number') no.push('ground reports of hail');
+      if(no.length===3) lines.push('No hail in '+nm+' in the last 24 hours.');
+      else if(no.length) lines.push('No '+nowList(no)+' in '+nm+' in the last 24 hours.');
+      if(S.elsewhere) notes.push('Elsewhere in the last 24 hours: '+esc(S.elsewhere)+'.');
+      errNotes();
       if(S.radar==='old') notes.push('The radar layer last updated '+esc(S.radarAsof)+', so storms since then are not on it yet.');
-      if(S.radar==='none') notes.push('The 24-hour radar layer is not posted right now; it updates four times a day in hail season.');
+      if(S.radar==='none') notes.push('The 24-hour radar layer is not posted yet. It updates four times a day in hail season.');
       var L=S.sLatest;
       if(L && L.d) lines.push('Latest radar hail in '+nm+': <b>'+esc(S.sLatestDay)+'</b>.');
       else if(L && L.none) lines.push('No radar hail in '+nm+' in the '+L.none+' days of radar on file since '+esc(S.sFrom)+'.');
-      if(S.elsewhere) notes.push('Elsewhere in the last 24 hours: '+esc(S.elsewhere)+'.');
-      notes.push('Ground reports post as spotters call them in, often hours after a storm.');
       acts.push(hist.concat(1));
       if(L && L.d) acts.push(['day','See '+esc(S.sLatestShort),0]);
-      return { quiet:true, pending:false, html:'<p>'+lines.join(' ')+'</p><small>'+notes.join(' ')+'</small>', acts:acts };
+      return out({ quiet:true, pending:false, head:lines.join(' '), acts:acts });
     }
     function nowPaint(){
       if(current!=='now') return;
@@ -2378,13 +2410,17 @@
         S.elsewhere=elseNames(st);
       }
       var r=nowLine(S);
-      var html=r.html+'<div class="hm-now-acts">'+r.acts.map(function(a){
+      var full=r.head.replace(/<[^>]+>/g,'').replace(/&amp;/g,'&').replace(/&lt;/g,'<');
+      var html='<p class="hm-now-head" title="'+full.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;')+'">'+r.head+'</p>'+'<div class="hm-now-acts">'+r.acts.map(function(a){
         return '<button type="button" data-now="'+a[0]+'"'+(a[2]?' class="pri"':'')+'>'+a[1]+'</button>'; }).join('')+'</div>';
       /* Rewrite only on change: the polls run every 90 s, and a rewrite would
          re-announce the line and drop focus from a button mid-tap. */
       if(box.getAttribute('data-html')!==html){ box.setAttribute('data-html', html); box.innerHTML=html; }
       box.hidden=false;
       box.classList.toggle('quiet', !!r.quiet);
+      var more=document.getElementById('hm-now-more'), nt=document.getElementById('hm-now-notes');
+      if(nt){ var nh=r.notes.join(' '); if(nt.getAttribute('data-html')!==nh){ nt.setAttribute('data-html', nh); nt.innerHTML=nh; } }
+      if(more) more.hidden=false;
       var cnt=document.getElementById('hm-count'), sc=document.getElementById('hm-scope');
       if(cnt) cnt.textContent = typeof NOW.pins==='number' ? (st?S.sPins:NOW.pins).toLocaleString() : (NOW.pins==='err'?'–':'…');
       if(sc) sc.textContent='on the ground'+(st?' in '+S.stName:'')+' in the last 24 hours';
@@ -2425,6 +2461,8 @@
     }
     function leaveNow(){
       var box=document.getElementById('hm-now'); if(box){ box.hidden=true; }
+      var more=document.getElementById('hm-now-more'); if(more){ more.hidden=true; }
+      document.documentElement.classList.remove('hm-hold');
       if(current!=='now') return;
       if(meshLayer){ map.removeLayer(meshLayer); meshLayer=null; }
       if(nowAuto){ nowAuto=false; warnSet(false); }

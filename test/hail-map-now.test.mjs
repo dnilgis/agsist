@@ -40,16 +40,22 @@ function lift(src, name) {
   throw new Error(name + " never closes");
 }
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;");
-const nowLine = Function("esc", lift(HTML, "plural") + "\n" + lift(HTML, "nowLineState") + "\n" + lift(HTML, "nowLine") + "\nreturn nowLine;")(esc);
+const NOW_BASE = HTML.match(/var NOW_BASE='([^']+)';/)[1];
+const nowLine = Function("esc", "NOW_BASE", lift(HTML, "plural") + "\n" + lift(HTML, "nowList") + "\n" + lift(HTML, "nowLineState") + "\n" + lift(HTML, "nowLine") + "\nreturn nowLine;")(esc, NOW_BASE);
 const base = { warn: 0, warnStates: "", radar: "fresh", radarN: 0, radarWhere: "", radarAsof: "", pins: 0, pinStates: "",
   latest: { d: "2026-10-13", where: "Texas and Kansas" }, latestDay: "Oct 13, 2026", latestShort: "Oct 13" };
 const text = (h) => h.replace(/<[^>]+>/g, "");
+const notes = (r) => r.notes.join(" ");
+/* Pipeline status never reaches a reader: a feed that failed is said as what the reader does not see. */
+const IA0 = { st: "IA", stName: "Iowa", sWarn: 0, sPins: 0, sRadarN: 0, elsewhere: "", sLatest: { d: "2026-10-08" }, sLatestDay: "Oct 8, 2026", sLatestShort: "Oct 8" };
+const NO_STATUS = /did not answer|did not load|feed|could not be matched/i;
 
 test("a quiet day says so in one line, with the latest radar hail day, where, and two buttons", () => {
   const r = nowLine(base);
   assert.equal(r.quiet, true);
-  assert.match(text(r.html), /^No hail warnings or radar hail in the last 24 hours\. No ground reports of hail either\. Latest radar hail: Oct 13, 2026, Texas and Kansas\./);
-  assert.match(text(r.html), /Ground reports post as spotters call them in/);
+  assert.equal(text(r.html), "No hail in the last 24 hours. Latest radar hail: Oct 13, 2026, Texas and Kansas.");
+  assert.doesNotMatch(r.html, /spotters/, "the notes are not in the card");
+  assert.match(notes(r), /Ground reports post as spotters call them in/);
   assert.deepEqual(r.acts.map((a) => a[0]), ["day", "all"]);
   assert.equal(r.acts[0][1], "See Oct 13");
   assert.ok(!/—/.test(r.html), "no em dashes");
@@ -58,21 +64,38 @@ test("a quiet day says so in one line, with the latest radar hail day, where, an
 test("never says 'no radar hail' when the radar layer is old or missing", () => {
   const old = nowLine({ ...base, radar: "old", radarAsof: "Oct 19, 7:05 PM" });
   assert.doesNotMatch(old.html, /radar hail in the last 24/);
-  assert.match(text(old.html), /^No hail warnings in the last 24 hours\./);
-  assert.match(text(old.html), /The radar layer last updated Oct 19, 7:05 PM, so storms since then are not on it yet\./);
+  assert.match(text(old.html), /^No hail warnings or ground reports of hail in the last 24 hours\./);
+  assert.match(notes(old), /The radar layer last updated Oct 19, 7:05 PM, so storms since then are not on it yet\./);
   const none = nowLine({ ...base, radar: "none" });
   assert.doesNotMatch(none.html, /radar hail in the last 24/);
-  assert.match(text(none.html), /The 24-hour radar layer is not posted right now/);
+  assert.match(notes(none), /The 24-hour radar layer is not posted yet\./);
 });
 
 test("a dead warning feed is said, never read as no warnings", () => {
   const r = nowLine({ ...base, warn: "err" });
-  assert.doesNotMatch(r.html, /No hail warnings/);
-  assert.match(text(r.html), /^No radar hail in the last 24 hours\./);
-  assert.match(r.html, /The NWS warning feed did not answer/);
+  assert.doesNotMatch(r.html, /No hail warnings|No hail in/);
+  assert.match(text(r.html), /^No radar hail or ground reports of hail in the last 24 hours\./);
+  assert.match(notes(r), /Warnings are not shown right now\./);
   const p = nowLine({ ...base, pins: "err" });
-  assert.doesNotMatch(p.html, /No ground reports/);
-  assert.match(p.html, /Ground reports did not load/);
+  assert.doesNotMatch(p.html, /ground reports|No hail in/);
+  assert.match(notes(p), /Ground reports are not shown right now\./);
+});
+
+test("every feed failing, with a long state list: the card keeps one headline and two buttons, the rest goes in the box, and no pipeline status", () => {
+  const long = { ...base, warn: "err", pins: "err", radar: "none",
+    latest: { d: "2026-10-13", where: "Texas, Oklahoma, Kansas, Nebraska, South Dakota, North Dakota, Minnesota and Iowa" } };
+  const r = nowLine(long);
+  assert.equal(r.quiet, true);
+  assert.equal(text(r.html), `Latest radar hail: ${long.latestDay}, ${long.latest.where}.`, "no claim about the 24 hours when no feed answered");
+  assert.equal(notes(r), "Warnings are not shown right now. Ground reports are not shown right now. The 24-hour radar layer is not posted yet. It updates four times a day in hail season. " + NOW_BASE);
+  assert.equal(r.acts.length, 2);
+  for (const c of [r, nowLine({ ...long, warn: 2, warnStates: "Kansas" }), nowLine({ ...base, ...IA0, warn: "err", pins: "err", radar: "none" }),
+    nowLine({ ...base, ...IA0, sRadarN: "unk", warn: "err", pins: "err" }), nowLine({ ...base, warn: null })]) {
+    assert.doesNotMatch(c.html + " " + notes(c), NO_STATUS);
+    assert.ok(!/—/.test(c.html + notes(c)), "no em dashes");
+    assert.ok(c.acts.length <= 2, "two buttons at most");
+    assert.ok(c.notes.length >= 1, "the box under the card is never empty");
+  }
 });
 
 test("active storms lead with what is happening and offer the zoom", () => {
@@ -97,7 +120,7 @@ const ia = { ...base, st: "IA", stName: "Iowa", sWarn: 0, sPins: 0, sRadarN: 0, 
 test("a state, quiet: says so for that state, names its latest radar day, and its 5 years are the first button", () => {
   const r = nowLine(ia);
   assert.equal(r.quiet, true);
-  assert.match(text(r.html), /^No hail warnings or radar hail in Iowa in the last 24 hours\. No ground reports of hail either\. Latest radar hail in Iowa: Oct 8, 2026\./);
+  assert.equal(text(r.html), "No hail in Iowa in the last 24 hours. Latest radar hail in Iowa: Oct 8, 2026.");
   assert.deepEqual(r.acts.map((a) => [a[0], a[1], a[2]]), [["all", "Iowa: 5 years of hail", 1], ["day", "See Oct 8", 0]]);
   assert.ok(!/—/.test(r.html), "no em dashes");
 });
@@ -105,26 +128,26 @@ test("a state, quiet: says so for that state, names its latest radar day, and it
 test("a state, quiet, with storms elsewhere: says Iowa is quiet and names where the hail is", () => {
   const r = nowLine({ ...ia, warn: 2, warnStates: "Kansas", pins: 1, radarN: 1, elsewhere: "Kansas" });
   assert.equal(r.quiet, true);
-  assert.match(text(r.html), /^No hail warnings or radar hail in Iowa in the last 24 hours\./);
-  assert.match(text(r.html), /Elsewhere in the last 24 hours: Kansas\./);
+  assert.match(text(r.html), /^No hail in Iowa in the last 24 hours\./);
+  assert.match(notes(r), /Elsewhere in the last 24 hours: Kansas\./);
 });
 
 test("a state with hail: counts only that state's warnings and reports, and keeps the 5 years one tap away", () => {
   const r = nowLine({ ...ia, warn: 3, sWarn: 1, radarN: 4, sRadarN: 2, pins: 5, sPins: 2, elsewhere: "Kansas" });
   assert.equal(r.quiet, false);
-  assert.equal(text(r.html).split("Also")[0], "Last 24 hours in Iowa: 1 hail warning in effect now; radar hail; 2 ground reports of hail.");
-  assert.match(text(r.html), /Also hail in the last 24 hours: Kansas\./);
+  assert.equal(text(r.html), "Last 24 hours in Iowa: 1 hail warning in effect now; radar hail; 2 ground reports of hail.");
+  assert.match(notes(r), /Also hail in the last 24 hours: Kansas\./);
   assert.deepEqual(r.acts.map((a) => a[1]), ["Iowa: 5 years of hail"]);
 });
 
 test("a state never says 'no radar hail' when the radar cannot be placed, is old, or is missing", () => {
   const unk = nowLine({ ...ia, sRadarN: "unk" });
   assert.doesNotMatch(unk.html, /radar hail in Iowa in the last 24/);
-  assert.match(text(unk.html), /^No hail warnings in Iowa in the last 24 hours\./);
-  assert.match(unk.html, /could not be matched to Iowa/);
+  assert.match(text(unk.html), /^No hail warnings or ground reports of hail in Iowa in the last 24 hours\./);
+  assert.match(notes(unk), /Radar hail in Iowa is not shown right now\./);
   const old = nowLine({ ...ia, radar: "old", radarAsof: "Oct 19, 7:05 PM" });
   assert.doesNotMatch(old.html, /radar hail in Iowa in the last 24/);
-  assert.match(old.html, /last updated Oct 19, 7:05 PM/);
+  assert.match(notes(old), /last updated Oct 19, 7:05 PM/);
   // the outline is still loading: no verdict yet
   assert.equal(nowLine({ ...ia, sRadarN: null }).pending, true);
   assert.doesNotMatch(nowLine({ ...ia, sRadarN: null }).html, /No hail/);
@@ -237,7 +260,10 @@ test("a bare /hail-map opens on now: a quiet day gets the one line, both buttons
     const { pg, ctx, errors, ext } = await open(browser, port, "/hail-map", "quiet");
     await pg.waitForFunction(() => /Latest radar hail:/.test((document.getElementById("hm-now") || {}).textContent || ""), null, { timeout: 30000 });
     const t = await pg.evaluate(nowText);
-    assert.match(t, /^No hail warnings or radar hail in the last 24 hours\. No ground reports of hail either\. Latest radar hail: /);
+    assert.match(t, /^No hail in the last 24 hours\. Latest radar hail: /);
+    assert.equal(await pg.isHidden("#hm-now-more"), false, "the box under the card is up");
+    assert.equal(await pg.getAttribute("#hm-now-more", "open"), null, "and closed");
+    assert.match(await pg.textContent("#hm-now-notes"), /spotters call them in/);
     assert.equal(await pg.getAttribute('#hm-controls [data-key="now"]', "aria-pressed"), "true");
     assert.equal(await pg.textContent("#hm-count"), "0");
     assert.ok(ext.filter((u) => /api\.weather\.gov/.test(u)).length === 1, "the NWS is asked once on load: " + ext.join(" "));
@@ -252,6 +278,7 @@ test("a bare /hail-map opens on now: a quiet day gets the one line, both buttons
     await pg.click('#hm-now [data-now="day"]');
     await pg.waitForFunction((d) => document.getElementById("hm-mesh-date").textContent === d, latest, { timeout: 15000 });
     assert.equal(await pg.isHidden("#hm-now"), true, "the line goes with the view");
+    assert.equal(await pg.isHidden("#hm-now-more"), true, "and its box");
     await pg.click('#hm-controls [data-key="now"]');
     await pg.waitForFunction(() => /Latest radar hail:/.test(document.getElementById("hm-now").textContent));
     assert.equal(new URL(pg.url()).search, "", "back on now, the swath date leaves the address");
@@ -293,7 +320,7 @@ test("a state link opens on now zoomed to the state, says that state's 24 hours,
       RPX_DAY = "";
       await pg.waitForFunction(() => /Latest radar hail in Iowa:|days of radar on file/.test((document.getElementById("hm-now") || {}).textContent || ""), null, { timeout: 30000 });
       const t = await pg.evaluate(nowText);
-      assert.match(t, /^No hail warnings or radar hail in Iowa in the last 24 hours\. No ground reports of hail either\./, width + ": " + t);
+      assert.match(t, /^No hail in Iowa in the last 24 hours\./, width + ": " + t);
       assert.equal(await pg.getAttribute('#hm-controls [data-key="now"]', "aria-pressed"), "true");
       assert.equal(await pg.textContent('#hm-now [data-now="all"]'), "Iowa: 5 years of hail");
       // zoomed to Iowa: the county table follows the map's centre
@@ -331,14 +358,14 @@ test("a state with storms: counts only what is in the state; a swath across the 
     await pg.waitForFunction(() => /ground report/.test((document.getElementById("hm-now") || {}).textContent || ""), null, { timeout: 30000 });
     let t = await pg.evaluate(nowText);
     assert.match(t, /^Last 24 hours in Iowa: 1 hail warning in effect now; radar hail; 1 ground report of hail\./, t);
-    assert.match(t, /Also hail in the last 24 hours: Kansas\./);
+    assert.match(await pg.textContent("#hm-now-notes"), /Also hail in the last 24 hours: Kansas\./);
     assert.equal(await pg.textContent("#hm-count"), "1");
     await pg.waitForTimeout(500);
     assert.equal(await pg.evaluate(() => document.getElementById("hm-cty-select").value), "IA", "the storms in Kansas do not pull the map away");
     assert.deepEqual(errors, []);
     await ctx.close();
     ({ pg, ctx, errors } = await open(browser, port, "/hail-map?state=IA", "nebraska", 1280));
-    await pg.waitForFunction(() => /No hail warnings or radar hail in Iowa/.test((document.getElementById("hm-now") || {}).textContent || ""), null, { timeout: 30000 });
+    await pg.waitForFunction(() => /No hail in Iowa/.test((document.getElementById("hm-now") || {}).textContent || ""), null, { timeout: 30000 });
     assert.deepEqual(errors, []);
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
