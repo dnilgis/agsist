@@ -456,6 +456,20 @@ def lookup(h, q, lat, lon):
 
 # ---------------------------------------------------------------- the county gauges
 
+def morning_gauge(s):
+    """True for a county station the radar can be checked against: a NOAA
+    co-op gauge (ACIS sid type 2) or a CoCoRaHS gauge, both read in the
+    morning. Airport stations (type 1) close their day at midnight, and SNOTEL
+    mountain sites share the CoCoRaHS sid type but carry net "noaa"; both stay
+    out. Story County IA heads its page with the Gilbert CoCoRaHS gauge, which
+    a co-op-only rule dropped in favor of the farther Boone gauge."""
+    s = s or {}
+    sid = str(s.get("sid", ""))
+    if not s.get("ll"):
+        return False
+    return sid.endswith(" 2") or s.get("net") == "cocorahs"
+
+
 def gauge_days(st, end_day, n=GAUGE_DAYS):
     """{fips: {name, sid, net, ll, mi, county, days: {date: 'value'}}} for the
     state's county rain stations (morning readers only: CoCoRaHS and NOAA
@@ -472,7 +486,7 @@ def gauge_days(st, end_day, n=GAUGE_DAYS):
     for fips, c in d.get("counties", {}).items():
         s = c.get("station") or {}
         sid = str(s.get("sid", ""))
-        if not s.get("ll") or not (sid.endswith(" 2") or sid.endswith(" 10")):
+        if not morning_gauge(s):
             continue
         rec = dd["counties"].get(fips)
         if not rec:
@@ -806,6 +820,15 @@ def selftest():
 
     # 5. gauge strings
     ok([gauge_value(v) for v in ("1.50", "T", "M", "S", "0.40A", "0.00")] == [150, 0, None, None, None, 0], "gauge values")
+
+    # 6. which county stations the radar is checked against (real records)
+    gilbert = {"ll": [-93.6511, 42.1079], "name": "Gilbert, 0.2 mi W", "net": "cocorahs", "sid": "US1IASR0019 6"}
+    boone = {"ll": [-93.8909, 42.0417], "name": "Boone", "net": "noaa", "sid": "130807 2"}
+    airport = {"ll": [-92.4013, 42.5544], "name": "Waterloo Municipal Airport", "net": "noaa", "sid": "94910 1"}
+    snotel = {"ll": [-113.33, 48.3], "name": "Pike Creek", "net": "noaa", "sid": "USS0013A26S 6"}
+    ok(morning_gauge(gilbert) and morning_gauge(boone), "Story County's Gilbert CoCoRaHS gauge and a co-op gauge are kept")
+    ok(not morning_gauge(airport) and not morning_gauge(snotel), "an airport and a SNOTEL site stay out")
+    ok(not morning_gauge(dict(gilbert, ll=None)) and not morning_gauge(None), "no location, no gauge")
 
     for f in fails:
         print("FAIL", f)
