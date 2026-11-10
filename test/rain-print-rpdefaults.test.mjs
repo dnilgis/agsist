@@ -70,13 +70,19 @@ test("a new visit opens with every layer on, all seven; no crop layers", { skip 
     await drawn(page);
     const a = await page.$eval("#rp-art", (e) => e.innerHTML);
     assert.match(a, /data-rp="ribbon"/, "the daily temperature stripes are on the print");
-    assert.match(a, /data-rp="hist"/, "every year behind yours is on the print");
+    // Nov 9 (Sig: the Oct 15 rule wins): the switch is on, but the near station with snowfall has under 30 full years,
+    // so the threads are off and the panel says why; the long record is one tap
+    assert.ok(!/data-rp="hist"/.test(a), "no threads from a station with under 30 full years");
     assert.match(a, /data-rp="frost:0"/, "the frost marks");
-    assert.match(await page.$eval("#rp-lcount", (e) => e.textContent), /^7 in all, 7 on$/, "every layer on");
+    assert.match(await page.$eval("#rp-lcount", (e) => e.textContent), /^7 in all, [67] on$/, "every layer on that can draw");
     assert.ok(!/data-rp="crop"/.test(a), "no crop on the print");
     assert.match(page.url(), /hist=1&frost=1&heat=1&ribbon=1/, "the link carries what is on");
-    // the 30-year station stays the default (Sig, Oct 22), said in one short line with a tap back to the nearer gauge
-    assert.match(await page.textContent("#rp-source"), /^Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\. /);
+    assert.match(await page.textContent("#rp-source"), /^Weather station: Chetek, WI, 11 mi from Chetek \(volunteer gauge US1WIRS0008\)\. Picked over a gauge 1\.9 mi away because it records snowfall too\./);
+    await page.waitForFunction(() => /has 0 full years; it takes 30\./.test(document.getElementById("rp-hist-why").textContent), null, { timeout: 20000 });
+    // the long record by the reader's tap, said in one short line with a tap back to the nearer gauge (Sig, Oct 22)
+    await page.click("#rp-hist-long");
+    await page.waitForFunction(() => /^Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\. /.test(document.getElementById("rp-source").textContent) && !document.getElementById("rp-go").disabled, null, { timeout: 30000 });
+    assert.match(await page.$eval("#rp-art", (e) => e.innerHTML), /data-rp="hist"/, "every year behind yours, from the long record");
     await page.waitForFunction(() => (document.getElementById("rp-near") || {}).textContent === "Use the nearer Chetek gauge (11 mi)", null, { timeout: 20000 });
     assert.ok((await page.$eval("#rp-near", (b) => b.getBoundingClientRect().height)) >= 44, "a finger-sized tap");
     await page.click("#rp-near");

@@ -67,8 +67,18 @@ ROW_COLS = ["commodity", "category", "delivery", "start", "end", "cash", "basis"
 # skips it and the next run that day tries again; from LAST_TRY_CT on it is saved marked
 # partial "thin", so a short day is kept and flagged, never passed off as a full one.
 # `gaps` lists every weekday missing, thin or slim. BID_SNAPSHOT_MIN_LOCS overrides the floor.
-MIN_LOCS = 500
+# Nov 10: raised from 500 to 1,500. Full days hold 1,850 to 2,150 locations (Oct 19 to Nov 9);
+# Oct 30 held 807 and passed the old floor unflagged.
+MIN_LOCS = 1500
 LAST_TRY_CT = (16, 0)
+# BOARDS (Nov 10): the bids network's own record of every board this pass (data/index.json): the
+# board id (the locs' "board"), where it is read from, when it was last tried, checked and priced,
+# and its status and health, so a day's prices carry the evidence of where and when each was read.
+# Contact fields (phone, email, website) are never copied. A text that looks like an email address
+# or phone number is blanked (counted in "withheld").
+INDEX_URL = os.environ.get("BIDS_NETWORK_BASE", "https://dnilgis.github.io/bids/").rstrip("/") + "/data/index.json"
+BOARD_COLS = ["id", "platform", "url", "provenance", "inMerge", "status", "health", "reason", "fails",
+              "rows", "attemptedAt", "checkedAt", "pricedAt"]
 FIRST_POPULATED = "2026-06-09"     # data/bids.json carried no rows before this (build_basis_history.py)
 SLIM_FROM = "2026-08-19"           # from this day main held only the slim file
 
@@ -142,7 +152,51 @@ def num(v, nd=4):
 
 
 # ------------------------------------------------------------------ build
-def build(doc, day, ids=None, partial=None, origin=None):
+def boards_block(index, fetched=None):
+    """The snapshot's "boards" block from the network's data/index.json (None: not read)."""
+    if not isinstance(index, dict) or not isinstance(index.get("sources"), list):
+        return {"generated": None, "fetched": fetched, "error": "data/index.json not read", "cols": BOARD_COLS, "rows": []}
+    rows, withheld, health = [], 0, {}
+    for src in index["sources"]:
+        if not isinstance(src, dict) or not src.get("id"):
+            continue
+        r = []
+        for c in BOARD_COLS:
+            v = src.get(c)
+            if isinstance(v, str) and (EMAIL.search(v) or PHONE.search(v)):
+                v, withheld = None, withheld + 1
+            r.append(v if isinstance(v, (str, int, float, bool)) or v is None else None)
+        rows.append(r)
+        h = str(src.get("health") or "unknown")
+        health[h] = health.get(h, 0) + 1
+    rows.sort(key=lambda r: str(r[0]))
+    return {"generated": index.get("generated"), "fetched": fetched, "cols": BOARD_COLS, "rows": rows,
+            "health": dict(sorted(health.items())), "withheld": withheld}
+
+
+def load_index(timeout=60):
+    """data/index.json from the bids network -> (doc or None, fetched_utc, error or None).
+    BID_SNAPSHOT_INDEX: a local file instead (tests, a by-hand build); "none" skips it."""
+    when = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    local = os.environ.get("BID_SNAPSHOT_INDEX")
+    try:
+        if local == "none":
+            return None, None, "skipped"
+        if local:
+            with open(local, encoding="utf-8") as f:
+                return json.load(f), when, None
+        import urllib.request
+        req = urllib.request.Request(INDEX_URL, headers={"User-Agent": "agsist-bid-snapshots", "Accept-Encoding": "gzip"})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            body = r.read()
+            if r.headers.get("Content-Encoding") == "gzip":
+                body = gzip.decompress(body)
+        return json.loads(body), when, None
+    except Exception as e:  # noqa: BLE001  the snapshot never waits on this
+        return None, when, f"{type(e).__name__}: {str(e)[:120]}"
+
+
+def build(doc, day, ids=None, partial=None, origin=None, index=None, index_fetched=None):
     """The snapshot dict for one day from a bids file (full or slim)."""
     keys, boards = ids if ids is not None else load_ids()
     retired_into = {k[8:]: v for k, v in keys.items() if k.startswith("retired:")}
@@ -213,13 +267,17 @@ def build(doc, day, ids=None, partial=None, origin=None):
                  "(rowCols) is one commodity and delivery at that location. cash and basis in dollars per bushel as posted; futuresPrice as the elevator "
                  "quoted it, null when not given (never derived). posted = the board time the bids feed gives (pricedAt); "
                  "it is often a read or batch time, not when the elevator changed the bid. flags: how many rows fail "
-                 "scripts/bid_flags.py, kept as posted; the rows are listed in the flags file named there."),
+                 "scripts/bid_flags.py, kept as posted; the rows are listed in the flags file named there. "
+                 "boards (from Nov 10): the network's board index for the pass (boards.cols; id = the locs' board, "
+                 "url read, status, health, last tried, checked and priced times), no contact fields."),
         "locCols": LOC_COLS, "rowCols": ROW_COLS,
         "counts": {"locs": len(locs), "rows": len(rows), "locsWithId": joined, "dupesDropped": dupes},
         "locs": nested,
     }
     if origin:
         snap["origin"] = origin
+    if index is not None:
+        snap["boards"] = boards_block(index, index_fetched)
     snap["flags"] = flag_summary(snap)
     return snap
 
@@ -504,7 +562,30 @@ def selftest():
     ck("thin at 15:07 CT: wait for the next run", floor_gate(small, at(15, 7), 500)[0] == "wait")
     g = floor_gate(small, at(16, 7), 500)
     ck("thin at 16:07 CT: saved, marked thin", g[0] == "thin" and g[1].startswith("thin: 2 locations, under the floor of 500"))
-    ck("the floor is 500 and the slim record would fail it", MIN_LOCS == 500 and 340 < MIN_LOCS < 835)
+    ck("the floor is 1,500: the Oct 30 day (807) is under it, every full day since Oct 19 (1,856 up) is over it",
+       MIN_LOCS == 1500 and 807 < MIN_LOCS < 1856)
+    # boards (Nov 10): the network's index rides along; contact fields never do
+    idx = {"generated": "2026-11-06T20:56:14Z", "sources": [
+        {"id": "b-two", "operator": "Two Coop", "phone": "309-244-7154", "email": "x@example.com", "website": "https://two.example/",
+         "url": "https://bids.example/widget?id=23103", "platform": "cih", "status": "ok", "health": "live", "fails": 0,
+         "rows": 9, "attemptedAt": "2026-11-06T20:50:00Z", "checkedAt": "2026-11-06T20:50:00Z", "pricedAt": "2026-11-06T19:30:00Z",
+         "reason": "price moved", "provenance": "scraped", "inMerge": True},
+        {"id": "a-one", "url": "https://bids.example/a", "status": "refused", "health": "broken", "fails": 3,
+         "reason": "call 715-555-0100 for bids", "attemptedAt": "2026-11-06T20:51:00Z"},
+        {"operator": "no id: left out"}]}
+    sb = build(doc, "2026-11-06", ids=ids, index=idx, index_fetched="2026-11-06T21:07:44Z")
+    bb = sb["boards"]
+    ck("boards: one row per board id, sorted, with url, status, health and the read times",
+       [r[0] for r in bb["rows"]] == ["a-one", "b-two"] and bb["cols"] == BOARD_COLS
+       and dict(zip(BOARD_COLS, bb["rows"][1]))["url"] == "https://bids.example/widget?id=23103"
+       and dict(zip(BOARD_COLS, bb["rows"][1]))["checkedAt"] == "2026-11-06T20:50:00Z"
+       and bb["generated"] == "2026-11-06T20:56:14Z" and bb["fetched"] == "2026-11-06T21:07:44Z")
+    ck("boards: health counted; a phone number in a reason is blanked and counted; no contact field copied",
+       bb["health"] == {"broken": 1, "live": 1} and bb["withheld"] == 1 and privacy_problems(sb) == []
+       and "two.example" not in json.dumps(sb))
+    ck("boards: an index that could not be read says so; none asked leaves no block",
+       build(doc, "2026-11-06", ids=ids, index={})["boards"]["error"] == "data/index.json not read" and "boards" not in snap)
+    ck("boards: the rows of the day are unchanged by the block", rows_of(sb) == rows_of(build(doc, "2026-11-06", ids=ids)))
     gp = gaps({"2026-10-19": (2017, None), "2026-10-20": (40, None), "2026-10-16": (235, "slim: main held only the bids")},
               "2026-10-16", "2026-10-21")
     ck("gaps: slim, thin and missing weekdays listed, weekend skipped",
@@ -575,7 +656,11 @@ def main(argv=None):
         with open(a.src, encoding="utf-8") as f:
             doc = json.load(f)
         day = a.day or ct_now().date().isoformat()
-        snap = build(doc, day, partial=None if doc.get("full") else "slim: built from the browser file, not the full set")
+        index, index_at, index_err = load_index()
+        if index_err and index_err != "skipped":
+            print(f"::warning::bid snapshot for {day}: the network's board index was not read ({index_err}); saved without it")
+        snap = build(doc, day, partial=None if doc.get("full") else "slim: built from the browser file, not the full set",
+                     index=index if index is not None else ({} if index_err != "skipped" else None), index_fetched=index_at)
         bad = privacy_problems(snap)
         if bad:
             print(f"::warning::bid snapshot: possible personal data, not written: {bad[:3]}")

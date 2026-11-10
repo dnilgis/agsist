@@ -851,10 +851,23 @@
      as a ZIP code (the ZIP table names its town); the town found is what the
      print and the order then name. */
   function placeLabel(x) { return x.name + ', ' + (abbrFor(String(x.admin1 || '').toLowerCase()) || x.admin1 || ''); }
+  /* A state written the old way (2026-11-09, Rain Print panel: "Lennox, S.D." said Couldn't find "Lennox" in S.D..):
+     periods and spaces dropped, then the postal code, the full name, or the newspaper abbreviation. -> 'sd' or ''. */
+  var OLD_ST = { ala: 'al', ariz: 'az', ark: 'ar', calif: 'ca', cal: 'ca', colo: 'co', conn: 'ct', del: 'de', fla: 'fl', ill: 'il', ind: 'in',
+    kan: 'ks', kans: 'ks', mass: 'ma', mich: 'mi', minn: 'mn', miss: 'ms', mont: 'mt', neb: 'ne', nebr: 'ne', nev: 'nv', okla: 'ok', ore: 'or',
+    oreg: 'or', penn: 'pa', tenn: 'tn', tex: 'tx', wash: 'wa', wis: 'wi', wisc: 'wi', wyo: 'wy', sdak: 'sd', ndak: 'nd', wva: 'wv' };
+  function stKey(x) {
+    var raw = String(x || '').trim().toLowerCase(), k = raw.replace(/[.\s]/g, '');
+    if (!k) return '';
+    if (/^[a-z]{2}$/.test(k) && STATE[k] && (k === raw || /\./.test(raw))) return k;
+    for (var c in STATE) if (STATE[c] === raw.replace(/\.$/, '').replace(/\s+/g, ' ')) return c;
+    return OLD_ST[k] || '';
+  }
   function geocodeQuery(q) {
     q = String(q || '');
     var zip = /^\s*(\d{5})(?:-\d{4})?\s*$/.exec(q);
     var parts = q.split(','), town = zip ? zip[1] : parts[0].trim(), st = zip ? '' : (parts[1] || '').trim().toLowerCase();
+    if (st && stKey(st)) st = stKey(st);
     // no comma: a trailing state name or postal code is the state ("Ames Iowa", "Ames IA", "Springfield IL", 2026-10-15)
     if (!zip && parts.length === 1) { var t = trailingState(town); if (t) { town = t.town; st = t.st; } }
     return { zip: zip ? zip[1] : '', town: town, st: st };
@@ -865,6 +878,8 @@
       var tail = w.slice(w.length - n).join(' ').toLowerCase().replace(/\.$/, ''), head = w.slice(0, w.length - n).join(' ');
       if (n === 1 && /^[a-z]{2}$/.test(tail) && STATE[tail]) return { town: head, st: tail };
       for (var k in STATE) if (STATE[k] === tail) return { town: head, st: k };
+      // "Lennox S.D.", "Lennox S. Dak." (2026-11-09): only with a period, so a town's own last word is never read as a state
+      if (n <= 2 && /\./.test(w.slice(w.length - n).join(' ')) && stKey(tail + '.')) return { town: head, st: stKey(tail + '.') };
     }
     return null;
   }
@@ -1232,7 +1247,7 @@
      towns, CC BY 4.0, and the ZIP table the bids repo uses), loaded the first time a town is typed.
      It replaced Open-Meteo's geocoder, whose terms count an ad-supported site as commercial use.
      A file that is not there (no town starts with those letters) is an empty answer, not an outage. */
-  var PLACES_JS = '/components/places.js?v=1', PLACES_P = null;
+  var PLACES_JS = '/components/places.js?v=2', PLACES_P = null;
   function placesLib() {
     if (root.AGSIST_PLACES) return Promise.resolve(root.AGSIST_PLACES);
     if (typeof document === 'undefined') {
@@ -1251,13 +1266,27 @@
   function placesGet(u) { return safeFetch(u).then(null, function (e) { if (e && e.status === 404) return { ok: false, status: 404 }; throw e; }); }
   function geoAsk(q) {
     if (CA() && CA().isCanadian(q)) return placesLib().then(function (PL) { return CA().geoAsk(q, placesGet, GEO_LANG, PL); });
-    var g = geocodeQuery(q);
-    return placesLib().then(function (PL) { return PL.search(g.zip || g.town, { country: 'US', count: 10, get: placesGet }); }).then(function (j) {
+    var g = geocodeQuery(q), lib = null;
+    return placesLib().then(function (PL) { lib = PL; return PL.search(g.zip || g.town, { country: 'US', count: 10, get: placesGet }); }).then(function (j) {
       var r = geoPick(q, j && j.results);
+      if (r.error && !g.zip && lib && lib.near) {
+        // the nearest spellings in the same state (2026-11-09: "Lenox, SD" offers Lennox, SD)
+        return lib.near(g.town, { country: 'US', st: g.st && STATE[g.st] ? g.st : '', get: placesGet }).then(function (n) {
+          var e = new Error(suggestWords(r.error, n && n.results));
+          if (n && n.results && n.results.length) e.suggest = n.results;
+          throw e;
+        }, function (x) { if (x && x.suggest !== undefined) throw x; throw new Error(r.error); });
+      }
       if (r.error) throw new Error(r.error);
       if (r.pick) { var e = new Error('pick'); e.pick = r.pick; throw e; }
       return r.hit;
     });
+  }
+  // "Couldn't find "Lenox" in South Dakota. Did you mean Lennox, SD?" (the choices also show as buttons)
+  function suggestWords(msg, list) {
+    if (!list || !list.length) return msg;
+    var names = list.map(placeLabel);
+    return msg.replace(/ Check the spelling[^.]*\.$/, '') + ' Did you mean ' + (names.length === 1 ? names[0] : names.slice(0, -1).join(', ') + ' or ' + names[names.length - 1]) + '?';
   }
   function isoMinusDays(iso, n) { return new Date(Date.parse(iso + 'T00:00:00Z') - n * 86400000).toISOString().slice(0, 10); }
   function lastDayOf(year) { return year === CURRENT_YEAR ? TODAY : year + '-12-31'; }
@@ -1680,7 +1709,7 @@
   function histInput(full, year) {
     var X = X_();
     if (!X || !full || full.length < HIST_MIN) return null;
-    var others = full.filter(function (f) { return f.year !== +year; }), rk = X.rank(full, year);
+    var others = full.filter(function (f) { return f.year !== +year; }), rk = X.rank(full, year, { upTo: true, min: HIST_MIN });
     return { threads: others.map(function (f) { return { year: f.year, cum: f.cum }; }), labels: X.remarkableYears(full, year), note: rk ? rk.text : '',
       foot: 'Gray lines: the other ' + others.length + ' full years this station kept, ' + full[0].year + ' to ' + full[full.length - 1].year + ' (the nearest station with ' + HIST_MIN + ' or more)' };
   }
@@ -1900,7 +1929,7 @@
     chicagoToday: chicagoToday, yearMode: yearMode, lastRecorded: lastRecorded, cutoffNote: cutoffNote, GIFT_PREFIX: GIFT_PREFIX,
     bizCutoffNote: bizCutoffNote, bizChristmasLine: bizChristmasLine, bizTownCheck: bizTownCheck, uspsHolidays: uspsHolidays, holidaysFor: holidaysFor, christmasCutoff: christmasCutoff, arriveBy: arriveBy, arriveText: arriveText, addBizDays: addBizDays, shortDate: shortDate, bizRows: bizRows, bizRowFor: bizRowFor, bizRange: bizRange, bizQuote: bizQuote, bizQuoteMax: function (j) { return bizQuoteMax(j, bizTiers(j && j.business_tiers)); }, BIZ_MIN: BIZ_MIN, BIZ_MAX: BIZ_MAX,
     printable: printable, hasUnprintable: hasUnprintable, dateProblems: dateProblems, dayProblem: dayProblem, LABEL_PRESETS: LABEL_PRESETS, checkoutRef: checkoutRef, hashRef: hashRef, orderRecord: orderRecord, frameColor: frameColor, frameOf: frameOf, shortRefOf: shortRefOf, cutLabels: cutLabels, linkProblem: linkProblem, sidPlain: sidPlain, stationName: stationName, stationParts: stationParts, stationLabel: stationLabel, milesText: milesText, geoPick: geoPick, geocodeQuery: geocodeQuery, shorterPlaces: shorterPlaces, placeLabel: placeLabel,
-    parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, pngWithDpi: pngWithDpi, jpegWithDpi: jpegWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, placeShown: placeShown, missRank: missRank, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
+    parsePcpn: parsePcpn, snowTraceRaw: snowTraceRaw, derive: derive, previewArt: previewArt, paidText: paidText, paidFromUrl: paidFromUrl, dayWords: dayWords, markersOn: markersOn, placeLongOf: placeLongOf, cmpNoteFor: cmpNoteFor, closeOpenS: closeOpenS, notTwice: notTwice, thinWords: thinWords, againWords: againWords, priceDateFor: priceDateFor, ldPriceDates: ldPriceDates, suggestWords: suggestWords, stKey: stKey, pngWithDpi: pngWithDpi, jpegWithDpi: jpegWithDpi, showDry: showDry, DRY_MIN: DRY_MIN, stuckRun: stuckRun, STUCK_DAYS: STUCK_DAYS, STUCK_USUAL: STUCK_USUAL, stationNormal: stationNormal, stationExtremes: stationExtremes, pickStation: pickStation, placeShown: placeShown, missRank: missRank, snowStateOf: snowStateOf, snowCount: snowCount, snowCountry: snowCountry, snowLimitKm: snowLimitKm, pickWhy: pickWhy, snowWord: snowWord, SNOW_SLACK_MI: SNOW_SLACK_MI, overlayDaily: overlayDaily, stairPath: stairPath, riserSpan: riserSpan, locOf: locOf, isCanada: isCanada, orderPrices: orderPrices, daily: daily, stations: stations, geoFind: geoFind,
     cropInput: cropInput, orderCrop: orderCrop, tempInput: tempInput, histInput: histInput, withoutTemp: withoutTemp, tempStationOk: tempStationOk, tempWords: tempWords, TEMP_KINDS: TEMP_KINDS, HIST_MIN: HIST_MIN, TEMP_GAP_OK: TEMP_GAP_OK, OPT_FLAGS: OPT_FLAGS };
   root.RainPrint = api;
   if (!root.document || !root.document.getElementById('rp-form')) return;
@@ -1972,6 +2001,26 @@
   var HELP_HTML = 'Questions or trouble? Call or text Sig: <a href="tel:+17157972428">715-797-2428</a> or email <a href="mailto:' + ORDER_TO + '">' + ORDER_TO + '</a>.';
   function helpLine(on) { var h = $('rp-help'); if (h) h.hidden = !on; }
 
+  /* THE OFFERS' PRICE DATE (2026-11-09, Rain Print panel: priceValidUntil was a fixed "2026-12-31", in the past
+     from Jan 1). The prices hold through the end of the year they are seen in: a date already past becomes Dec 31
+     of today's year (a later date stands). Pure, with today handed in, so a test runs it on any clock. */
+  function priceDateFor(today, have) {
+    var end = String(today).slice(0, 4) + '-12-31';
+    return /^\d{4}-\d\d-\d\d$/.test(String(have || '')) && have >= today ? have : end;
+  }
+  function ldPriceDates(text, today) {
+    var ld;
+    try { ld = JSON.parse(text); } catch (e) { return text; }
+    var n = 0;
+    (ld['@graph'] || [ld]).forEach(function (g) {
+      if (g && g['@type'] === 'Product') (g.offers || []).forEach(function (o) { var d = priceDateFor(today, o.priceValidUntil); if (d !== o.priceValidUntil) { o.priceValidUntil = d; n++; } });
+    });
+    return n ? JSON.stringify(ld) : text;
+  }
+  try {
+    var ldEl = doc.querySelector('script[type="application/ld+json"]');
+    if (ldEl) { var ldNew = ldPriceDates(ldEl.textContent, TODAY); if (ldNew !== ldEl.textContent) ldEl.textContent = ldNew; }
+  } catch (e) { /* the page works without it */ }
   var ST = fromParams(root.location.search);
   var EXT_WAIT = false, NORM_WAIT = false, BUY_NOTE_CODE = '', XMAS_OFF = true;
   /* A NOAA ask that failed or timed out (its error carries retry), keyed
@@ -2199,7 +2248,7 @@
     if (RECS_P) return RECS_P;
     RECS_P = new Promise(function (res) {
       var sc = doc.createElement('script');
-      sc.src = '/components/rain-print-records.js?v=4';
+      sc.src = '/components/rain-print-records.js?v=5';
       sc.onload = function () { res(!!root.AgRainRecords); };
       sc.onerror = function () { RECS_P = null; res(false); };
       doc.head.appendChild(sc);
@@ -2216,8 +2265,18 @@
           dailyElems: ['pcpn', 'avgt', 'snow', 'maxt', 'mint'], porElems: ['pcpn', 'avgt'] }, {});
       } catch (e) { RECS = []; }
     }
+    var recs = notTwice(RECS, wantHist() && META ? FULL_CACHE.get(META.sid) : null, META && META.year);
     // a Canadian print: its remarkable days in its units and language (components/rp-canada.js)
-    return CA() && META && META.ca ? CA().localizeRecords(RECS, LOC()) : RECS;
+    return CA() && META && META.ca ? CA().localizeRecords(recs, LOC()) : recs;
+  }
+  /* The same fact once (2026-11-09, Rain Print panel: Fresno 1983 printed "The wettest of the 78 full years"
+     and "Wettest year in this station's record, back to 1948"). When the gray lines' rank already says the
+     year is the wettest (or driest) of the full years up to it, the remarkable year mark for that end goes. */
+  function notTwice(recs, full, year) {
+    var X = X_(), rk = X && full && full.length >= HIST_MIN ? X.rank(full, year, { upTo: true, min: HIST_MIN }) : null;
+    if (!rk || rk.rank !== 1 || rk.tied) return recs;
+    var drop = rk.dir === 'wettest' ? 'wetYear' : 'dryYear';
+    return (recs || []).filter(function (r) { return r.kind !== drop; });
   }
 
   // ---------------------------------------------------------------- the 2026-10-17 options
@@ -2225,7 +2284,7 @@
      or {none: why}. Read after the print draws (extrasLoad), never holding it up; the print draws again when
      it is in. The gauge's own highs and lows are used when it keeps them; else the nearest station that does
      (StnMeta maxt over the same box), up to three read, nearest first. */
-  var TEMP = null, TEMP_KEY = '', TEMP_P = null, HIST_WHY = '', FULL_CACHE = new Map(), EXTRAS_P = null;
+  var TEMP = null, TEMP_KEY = '', TEMP_P = null, HIST_WHY = '', FULL_CACHE = new Map(), EXTRAS_P = null, LONG_ASK = false;
   // the maker's files wait for the options' data, so the file Sig prints shows what the buyer saw
   function extrasGate() { return Promise.resolve(EXTRAS_P).then(function () { return true; }, function () { return true; }); }
   var TEMP_ELEMS = ['pcpn', 'avgt', 'snow', 'maxt', 'mint'];
@@ -2234,7 +2293,7 @@
   function extrasReady() {
     if (root.AgRainExtras && root.AgGduStages) return Promise.resolve(true);
     var one = function (src, ok) { return ok() ? Promise.resolve(true) : new Promise(function (res) { var sc = doc.createElement('script'); sc.src = src; sc.onload = function () { res(ok()); }; sc.onerror = function () { res(false); }; doc.head.appendChild(sc); }); };
-    return one('/components/gdu-stages.js?v=1', function () { return !!root.AgGduStages; }).then(function () { return one('/components/rain-print-extras.js?v=2', function () { return !!root.AgRainExtras; }); });
+    return one('/components/gdu-stages.js?v=1', function () { return !!root.AgGduStages; }).then(function () { return one('/components/rain-print-extras.js?v=3', function () { return !!root.AgRainExtras; }); });
   }
   function tempNormal(sid, year) {
     // a Canadian station has no ACIS normals: none, and the print says so
@@ -3350,6 +3409,21 @@
       }).observe(el, { attributes: true, attributeFilter: ['data-sa-done'] });
     });
   }
+  /* A THIN YEAR (2026-11-09, Rain Print panel: a wedding year in Lennox, SD, 1994, 38 days missing, ended on
+     "or another year", and a wedding year cannot change). The words name the exact-spot estimate when it covers
+     the year (1981 on, lower 48), leave out "another year" when a day is marked on the print (o.marked: the year
+     is the point), and the page shows the call-or-text help line beside them. Pure: the tests run it.
+     o: {picked: a station picked by hand, n: stations in the list, spot: the spot estimate is offered, marked} */
+  function thinWords(name, missing, year, town, o) {
+    o = o || {};
+    var head = name + ' has ' + missing + ' unrecorded days in ' + year + '. They would print as dry spells that may not have been dry. ';
+    var why = o.picked && o.n > 1 ? 'Pick another station under Weather station'
+      : Math.min(3, o.n || 1) === 1 ? 'The only station near ' + town + ' doesn\u2019t have enough of ' + year + ' on record'
+      : 'None of the ' + Math.min(3, o.n) + ' nearest stations has enough of ' + year + ' on record';
+    var spot = o.spot ? 'Under Weather station, the last choice, ' + SPOT_NAME + ', is an estimate for ' + town + ' itself from nearby gauges, rain only, ' + SPOT_FIRST + ' on.' : '';
+    if (o.marked) return head + why + '. ' + (spot || 'A bigger town nearby may have a station that kept it.');
+    return head + why + (o.picked && o.n > 1 ? ', or another year.' : '. Try another year, or a bigger town nearby.') + (spot ? ' ' + spot : '');
+  }
   function blockPrint(msg) {
     yearAskOff();
     BLOCKED = msg;
@@ -3401,6 +3475,7 @@
     setStatus(againWords(keepWords(want, ST, err)), !(err && err.retry));
     $('rp-retry-row').hidden = !(err && err.retry);
     helpLine(true);
+    if (err && err.suggest) showPick(err.suggest);
   }
   function failDraw(err) {
     DATA = null; META = null; PREVIEW = null; SETTLE = false; NOART = ''; EXT = null; NORM30 = null;
@@ -3421,12 +3496,19 @@
     setStatus(againWords(err && err.message ? err.message : 'The print didn\u2019t draw. Try again. If it fails twice, try another town or year.'), !(err && err.retry));
     $('rp-retry-row').hidden = !(err && err.retry);
     helpLine(true);
+    if (err && err.suggest) showPick(err.suggest);
   }
   /* The same failure again (2026-10-17, money panel: after a town lookup 504,
      a second Draw looked like it did nothing, because the same words came
      back). Draw does ask again; the line says so and counts the tries. */
-  var FAIL_LAST = '', FAIL_N = 0;
-  function againWords(msg) {
+  /* An automatic draw (the page drew on its own when the year or the town box changed) is not one of the
+     reader's tries (2026-11-09, Rain Print panel: a first typo, "Lenox, SD", then a year, then Draw, said
+     "Asked again just now (2 tries)" on the reader's first press). It is remembered, so the reader's next
+     press of the same failure reads as their first. */
+  var FAIL_LAST = '', FAIL_N = 0, RUN_AUTO = false;
+  function againWords(msg, auto) {
+    if (auto === undefined) auto = RUN_AUTO;
+    if (auto) { FAIL_LAST = msg; FAIL_N = 0; return msg; }
     FAIL_N = msg === FAIL_LAST ? FAIL_N + 1 : 1; FAIL_LAST = msg;
     return FAIL_N > 1 ? 'Asked again just now (' + FAIL_N + ' tries). ' + msg : msg;
   }
@@ -3474,6 +3556,7 @@
   var reqToken = 0;
   function run(e, preset) {
     if (e && !e.auto) fontsSoon();   // the reader's own draw; the sample waits for the page's load
+    RUN_AUTO = !!(e && e.auto);
     if (e) e.preventDefault();
     var next;
     if (preset) next = preset;
@@ -3646,8 +3729,12 @@
         STATIONS = [chosen].concat(list);
         picked = d; seen[linked] = snowStateOf(d.days);
       }).catch(function (err) { if (err === 'stale') throw err; return instead(); });
-      // every year behind your year: the nearest station with HIST_MIN full years, drawn from that station (Staircase)
-      if (wantHist()) return nearestLong();
+      /* Every year behind your year no longer moves the pick (Sig, Nov 9 2026: the Oct 15 rule wins, the nearest
+         station with a full record of BOTH rain and snowfall). The threads draw from that station when it has
+         HIST_MIN full years; under that they are off, and the options panel says so with a one-tap way to the
+         nearest long record (LONG_ASK, the reader's own choice: nearestLong). */
+      var askLong = LONG_ASK; LONG_ASK = false;
+      if (wantHist() && askLong) return nearestLong();
       return nearest('');
       /* Nearest first; take the first of three with a near-complete year, else the most complete,
          then trade a few miles for a snowfall record where snow is normal (pickStation). skip: a station that just failed.
@@ -3702,10 +3789,9 @@
       syncCa();
       if (picked.d.missing > MISS_BLOCK) {
         DATA = null;
-        blockPrint(stationName(META.name) + ' has ' + picked.d.missing + ' unrecorded days in ' + ST.year + '. They would print as dry spells that may not have been dry. ' +
-          (!autoPick && STATIONS.length > 1 ? 'Pick another station under Weather station, or another year.'
-            : Math.min(3, STATIONS.length) === 1 ? 'The only station near ' + g.name + ' doesn\u2019t have enough of ' + ST.year + ' on record. Try another year, or a bigger town nearby.'
-            : 'None of the ' + Math.min(3, STATIONS.length) + ' nearest stations has enough of ' + ST.year + ' on record. Try another year, or a bigger town nearby.'));
+        blockPrint(thinWords(stationName(META.name), picked.d.missing, ST.year, g.name, { picked: !autoPick, n: STATIONS.filter(function (s) { return !isSpot(s.sid); }).length,
+          spot: !!spotHere && chosen.sid !== spotHere, marked: !!(ST.markers && ST.markers.length) }));
+        helpLine(true);
         throw 'blocked';
       }
       if (ST.gift && picked.days.length < GIFT_MIN_DAYS) {
@@ -5614,7 +5700,7 @@
   });
   $('rp-hist-why').addEventListener('click', function (e) {
     if (!e.target || e.target.id !== 'rp-hist-long') return;
-    $('rp-hist').checked = true; histStation();
+    LONG_ASK = true; $('rp-hist').checked = true; histStation();
   });
   // the logo: a file in, the color switch, remove
   $('rp-logo-file').addEventListener('change', function () { var f = $('rp-logo-file').files; if (f && f[0]) logoReady().then(function (ok) { if (ok) pickLogo(f[0]); else logoMsg('The logo tool didn\u2019t load. Check the connection and choose the file again.'); }); });
