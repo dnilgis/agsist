@@ -58,6 +58,13 @@
    "link": "/cash-bids"
   },
   {
+   "id": "2026-11-09-hail-terms-fold",
+   "date": "2026-11-09",
+   "title": "Shorter hail map pages",
+   "line": "The hail map and the state hail pages put sources and terms in one closed note at the bottom, so the map comes sooner.",
+   "link": "/hail-map"
+  },
+  {
    "id": "2026-11-09-rain-terms-fold",
    "date": "2026-11-09",
    "title": "Shorter county rain pages",
