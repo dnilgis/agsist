@@ -28,7 +28,7 @@ Use, in a send loop:
     pace = send_pace.Pacer(recipients, sleep=time.sleep)
     for i, r in enumerate(pace):
         try:
-            conn.send_message(...)
+            conn.send(...)                 # the sender's own send
         except Exception as ex:
             if not pace.defer(ex):         # True: tried once more at the end of the list
                 failed.append(...)

@@ -66,7 +66,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: python3 scripts/list_hygiene.py --selftest
-      - run: python3 scripts/list_hygiene.py ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
+      - name: Clean the lists
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
@@ -85,3 +85,4 @@ jobs:
           # the bounce ledger (private repo): two hard bounces and an address is left out of every list
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUPPRESS: ${{ github.event_name == 'workflow_dispatch' && secrets.LIST_UNSUPPRESS || '' }}
+        run: python3 scripts/list_hygiene.py ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
