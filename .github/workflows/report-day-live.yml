@@ -1,17 +1,11 @@
-# Report day: the graded USDA result on the page and in the email within a minute of the release.
-# scripts/report_live.py: the gate, the checks every 10 s, the worker write, the watchdog and the
-# rehearsal. wasde-watch.yml stays as the backup and report-day.yml as the email's second path.
+# Report day live: graded result within a minute.
 
 name: "Report day live: graded result within a minute"
 
 on:
   schedule:
-    # Start ticks on report days: the job books its runner early and starts checking USDA five
-    # minutes before the release (10:55 a.m. CT for the 11:00 a.m. CT reports). Two ticks, so one
-    # dropped by the scheduler still starts it; both hours cover CST and CDT. The gate decides.
     - cron: "38 15,16 8-12,30,31 * *"
     - cron: "48 15,16 8-12,30,31 * *"
-    # The rehearsal, the day before each report day.
     - cron: "17 19 7-11,29,30 * *"
   workflow_dispatch:
     inputs:
@@ -61,7 +55,6 @@ jobs:
           if [ "$EVENT" = "workflow_dispatch" ]; then
             python3 scripts/report_live.py gate --mode "$IN_MODE" --day "${IN_DATE:-}"
           else
-            # one live run per report day: a later start tick does nothing once an earlier one started
             python3 scripts/report_live.py gate --one-run
           fi
 
@@ -137,7 +130,6 @@ jobs:
     if: needs.gate.outputs.mode == 'live' && !(github.event_name == 'workflow_dispatch' && inputs.dry_run)
     runs-on: ubuntu-latest
     timeout-minutes: 60
-    # The same queue as report-day.yml's sender: two senders never run at once.
     concurrency:
       group: report-day-email
       cancel-in-progress: false
