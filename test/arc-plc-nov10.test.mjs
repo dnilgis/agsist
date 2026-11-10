@@ -1,18 +1,21 @@
 /* ARC or PLC fixes, Nov 10, 2026. Each case is the real page that showed the problem.
  *
- *   1. Story Co., IA wheat (Close) said "no dollar figure is printed" above the printed example-price line, gave the
- *      wrong reason ("too little price history": wheat has no October futures spread of its own and borrows corn's)
- *      and "stops at Leans" on a Close card. Now: why the expected payments are not printed, per crop; "held at Leans"
- *      only where the borrowed swings lowered a clear pick; the example-price line labelled as an example.
+ *   1. Story Co., IA wheat (Close) said "no dollar figure is printed" above the printed example-price line and "stops at
+ *      Leans" on a Close card. Now: the expected payments are not printed, with one plain reason and no method (the
+ *      curtain, test/money-audit-oct19.test.mjs); "shown as Leans" only where too little price history lowered a clear
+ *      pick; the example-price line labelled as an example.
  *   2. The main page said "No pick is given for these crops yet" while the crop pages (oats hub) give one.
  *   3. Source clauses and FSA file dates sat in the reading path; the 2025-payments block sat mid-page.
  *   5. Sumner Co., KS soybeans led with the irrigated answer in a dryland county; an irrigated entry figured with the
  *      all-practice PLC yield (irrigated corn: 86.5 bu on a 200.64 bu benchmark) got a typical-farm answer. Now the card
- *      leads with the main practice, and a PLC yield under 60% of the benchmark has no typical-farm answer.
+ *      leads with the main practice. A PLC yield under 60% of the benchmark keeps its call only where the call is the same
+ *      at that PLC yield and across 60% to 100% of the benchmark (Clarke Co., IA corn); else no typical-farm answer.
  *   7. The main page's top repeated corn with a tier count.
  *   9. Formulas, the worked example and the benchmark-yield method move into the closed fold.
- *   c. The tiers step down evenly: Pick from $3, Leans from $2; no gap can be Pick or Close but never Leans.
- *   f. The track-record line says it counts how often ARC-CO paid more.
+ *   c. The tiers step down evenly; no gap can be Pick or Close but never Leans. The fold names the three answers in plain
+ *      words, no cutoffs.
+ *   f. The track-record line says it counts how often ARC-CO paid more, in crop-year results.
+ *   l. The main page's lead sentence says how many combinations have no typical-farm answer.
  *   4, 6. The calculator adds the farm total once base acres are typed, and the 2027 assumption line describes the
  *      2027 run (browser, below).
  *
@@ -21,7 +24,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, existsSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
@@ -104,7 +107,7 @@ test("3: no source clause or FSA file date in the reading path; the 2025-payment
   assert.ok(pay > m.indexOf('<h2 id="faq">') && pay < foldAt(m), "the 2025-payments block sits after the questions, before the fold");
 });
 
-test("5: Sumner Co., KS: soybeans lead with the dryland answer; irrigated soybeans and corn have no typical-farm answer", () => {
+test("5: Sumner Co., KS: soybeans lead with the dryland answer; irrigated entries under 60% keep a call only where it holds", () => {
   const h = read("arc-plc/kansas/sumner-county.html"), soy = card(h, "soybeans");
   assert.match(soy, /<h3>Soybeans &middot; non-irrigated<\/h3>/);
   assert.match(soy, /data-e="non"/);
@@ -114,15 +117,53 @@ test("5: Sumner Co., KS: soybeans lead with the dryland answer; irrigated soybea
     assert.ok(i >= 0 && r.py[k] < 0.6 * r.e[k][i].by, `${k}: PLC yield ${r.py[k]} under 60% of the irrigated ${r.e[k][i].by}`);
     for (const y of ["2026", "2027"]) {
       const p = r.v[k][i][y];
-      assert.equal(p[0], "mismatch", `${k} irrigated ${y}: no typical-farm answer`);
-      assert.equal(p[3], 1, `${k} irrigated ${y}: marked under 60% of the benchmark`);
+      // a call (the same at this PLC yield and across 60% to 100% of the benchmark), or no typical-farm answer, marked
+      if (p[0] === "mismatch") assert.equal(p[3], 1, `${k} irrigated ${y}: marked under 60% of the benchmark`);
+      else assert.ok(["plc", "arc", "lean_plc", "lean_arc", "close", "none", "noprice"].includes(p[0]), `${k} irrigated ${y}: ${p[0]}`);
     }
     assert.equal(r.e[k][r.ci[k]].d, "non", `${k}: the card and the counter sheet lead with non-irrigated`);
   }
-  assert.match(text(card(h, "corn")), /Irrigated ground: (?!leans|ARC-CO\.|PLC\.)/, "the irrigated line gives the range answer, not a call");
+  const ci = r.e.corn.findIndex((e) => e.d === "irr"), w = r.v.corn[ci]["2026"][0];
+  const irr = /Irrigated ground: ([^.]*)\./.exec(text(card(h, "corn")));
+  assert.ok(irr, "the irrigated line");
+  if (w === "mismatch") assert.doesNotMatch(irr[1], /^(leans|ARC-CO$|PLC$)/, "a withheld irrigated entry gives the range answer, not a call");
+  else assert.match(irr[1], /^(leans (ARC-CO|PLC)|ARC-CO|PLC|either one|neither pays)/, "a kept irrigated call is printed as a call: " + irr[1]);
 });
 
-test("5: every county: a PLC yield under 60% of an entry's benchmark gets no typical-farm answer, and says why", () => {
+test("5 (60% rule): Clarke Co., IA corn at 59.9% of its benchmark keeps its call; its 2027 call changes across the range and is withheld", () => {
+  /* Before: every entry under 60% of its benchmark read "No typical-farm answer", Clarke Co., IA corn among them
+     (110.5 bu on 184.52), although the call was Leans ARC-CO at that PLC yield and at every PLC yield from 60% to 100%
+     of the benchmark, and the card printed that call beside "no one typical farm here". Now the call stays when it is
+     the same everywhere it was run (low_call() in the build; its fixture tests are in --selftest), and only a call
+     that changes is withheld. Built Nov 10, 2026: 2026 Leans ARC-CO, 2027 depends on the PLC yield. */
+  const r = JSON.parse(read("data/arc-plc/math/IA.json")).c["19039"], i = r.ci.corn, e = r.e.corn[i];
+  assert.ok(r.py.corn < 0.6 * e.by, `${r.py.corn} on ${e.by}`);
+  const p6 = r.v.corn[i]["2026"], p7 = r.v.corn[i]["2027"];
+  assert.notEqual(p6[0], "mismatch", "2026 keeps its call");
+  assert.ok(["plc", "arc", "lean_plc", "lean_arc", "close", "none"].includes(p6[0]), p6[0]);
+  const c = text(card(read("arc-plc/iowa/clarke-county.html"), "corn"));
+  assert.doesNotMatch(c.slice(0, c.indexOf("2027:")), /no one typical farm|No typical-farm answer|under 60% of/, "no withheld words beside the kept call: " + c);
+  if (p6[0] === "lean_arc") assert.match(c, /^ Corn ARC-CO Leans ARC-CO comes out about \$\d+ more per base acre/, c);
+  // the withheld case: a call that changes across the range, marked under 60%, and the card says it depends
+  if (p7[0] === "mismatch") {
+    assert.equal(p7[3], 1, "2027 marked under 60%");
+    if (p7[1] === "mismatch") assert.match(c, /2027: depends on your PLC yield/, c);
+  }
+  // the whole set: kept and withheld both occur, each marked the way the cards read it
+  let kept = 0, held = 0;
+  for (const f of readdirSync(ROOT + "data/arc-plc/math").filter((x) => /^[A-Z]{2}\.json$/.test(x))) {
+    for (const rec of Object.values(JSON.parse(read("data/arc-plc/math/" + f)).c)) {
+      for (const [k, es] of Object.entries(rec.e)) es.forEach((en, j) => {
+        const row = ((rec.v || {})[k] || [])[j];
+        if (!row || !row["2026"] || !en.by || !rec.py[k] || !(Math.round(rec.py[k] * 10) / 10 < 0.6 * en.by)) return;
+        if (row["2026"][0] === "mismatch") held++; else kept++;
+      });
+    }
+  }
+  assert.ok(kept >= 1 && held >= 1, `kept ${kept}, withheld ${held}`);
+});
+
+test("5: every county: a PLC yield under 60% of an entry's benchmark gets a call that holds, or no typical-farm answer and says why", () => {
   const nav = JSON.parse(read("data/arc-plc/nav.json"));
   let low = 0;
   for (const st of Object.keys(nav.s)) {
@@ -136,8 +177,8 @@ test("5: every county: a PLC yield under 60% of an entry's benchmark gets no typ
           const row = (r.v[k] || [])[i];
           if (!e.by || !row || !row["2026"]) return;
           if (Math.round(py * 10) / 10 < 0.6 * e.by) {
-            assert.equal(row["2026"][0], "mismatch", `${st} ${fips} ${k} ${e.d}: ${py} on ${e.by}`);
-            assert.equal(row["2026"][3], 1, `${st} ${fips} ${k} ${e.d}: under-60% mark`);
+            if (row["2026"][0] === "mismatch") assert.equal(row["2026"][3], 1, `${st} ${fips} ${k} ${e.d}: under-60% mark`);
+            else assert.ok(["plc", "arc", "lean_plc", "lean_arc", "close", "none", "withheld"].includes(row["2026"][0]), `${st} ${fips} ${k} ${e.d}: ${row["2026"][0]}`);
             low++;
           }
         });
@@ -154,8 +195,11 @@ test("5: every county: a PLC yield under 60% of an entry's benchmark gets no typ
   vm.runInNewContext(read("components/arc-plc-simple.js"), sctx);
   const C = sctx.window.AgArcCard;
   const cardCfg = { lc: "corn", cen: "$4.70", pu: "$4.42 a bushel", oth: "", irr: true, ly: "2026", oy: "2027", rng: { ly: ["ARC-CO", "lean_arc", "ARC-CO at any PLC yield.", "200.6 bu"] } };
-  assert.match(C.level(cardCfg, "mismatch,0,256,0,mismatch,", "lean_arc"), /A PLC yield that low is under 60% of the 200\.6 bu benchmark\. ARC-CO at any PLC yield\./);
-  assert.match(C.level(cardCfg, "mismatch,0,256,0,mismatch,", "mismatch"), /ARC-CO at any PLC yield\. The county average PLC yield is under 60% of this 200\.6 bu benchmark/);
+  // one call across the range, but not at the PLC yield itself: the card says so (mm_why held in the build)
+  assert.match(C.level(cardCfg, "mismatch,0,256,0,mismatch,", "lean_arc"), /A PLC yield that low is under 60% of the 200\.6 bu benchmark, and the call there is not the same\. ARC-CO at any PLC yield\./);
+  assert.match(C.level(cardCfg, "mismatch,0,256,0,mismatch,", "mismatch"), /ARC-CO at any PLC yield\. The county average PLC yield is under 60% of this 200\.6 bu benchmark, and the call there is not the same, so there is no one typical farm here\./);
+  const dep = { ...cardCfg, rng: { ly: ["Depends on your PLC yield", "mismatch", "Depends on your PLC yield.", "200.6 bu"] } };
+  assert.match(C.level(dep, "mismatch,0,256,0,mismatch,", "mismatch"), /Depends on your PLC yield\. The county average PLC yield is under 60% of this 200\.6 bu benchmark, so there is no one typical farm here\./);
   assert.match(C.level(cardCfg, "mismatch,0,0,0,mismatch,", "lean_arc"), /A PLC yield that high is above the 200\.6 bu benchmark\./);
 });
 
@@ -177,6 +221,20 @@ test("7, 9, c, f: the main page's top, the fold, the tiers and the track-record 
   assert.match(fold, /How often ARC-CO paid more, not how often a verdict was right: nationally, over \d+ crop-year results \([a-z, ]+, \d{4} to \d{4}\), ARC-CO paid more than PLC in \d+ and PLC paid more in \d+/);
   assert.match(m, /id="ap-y-hint">County average, not your farm\. Left at the benchmark yield, it is a normal crop\.</, "the county yield hint agrees with normal crop = benchmark");
   assert.doesNotMatch(m + read("components/arc-plc-form.js"), /a bit above this/);
+});
+
+test("4 (lead): the corn lead sentence says how many combinations have no typical-farm answer", () => {
+  const m = read("arc-plc.html");
+  const lead = /<p class="ap-lead"><b>For 2026, on a typical farm\.<\/b> Corn: ([^.]*)\./.exec(m);
+  assert.ok(lead, "the lead sentence");
+  let mm = 0;
+  for (const f of readdirSync(ROOT + "data/arc-plc/math").filter((x) => /^[A-Z]{2}\.json$/.test(x))) {
+    for (const rec of Object.values(JSON.parse(read("data/arc-plc/math/" + f)).c)) {
+      for (const row of (rec.v || {}).corn || []) if (row && row["2026"] && row["2026"][0] === "mismatch") mm++;
+    }
+  }
+  if (mm) assert.match(lead[1], new RegExp(`county and practice combinations; no typical-farm answer in ${mm.toLocaleString("en-US")}$`), lead[1]);
+  else assert.doesNotMatch(lead[1], /no typical-farm answer/);
 });
 
 test("c: the calculator's call steps down evenly, the same as the build's", () => {

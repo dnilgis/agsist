@@ -133,8 +133,11 @@
          same answer is a mismatch too, it is on the same side, so one flag serves both sentences */
       var lo = v.f & 256;
       big = ly[0]; tw = ly[1];
-      g = !ly[3] ? ly[2] : sameW === 'mismatch' ? ly[2] + ' The county average PLC yield is ' + (lo ? 'under 60% of' : 'above') + ' this ' + ly[3] + ' benchmark, so there is no one typical farm here.' :
-        (lo ? 'A PLC yield that low is under 60% of the ' : 'A PLC yield that high is above the ') + ly[3] + ' benchmark. ' + ly[2];
+      /* under 60% with one call across the range (ly[1] is a call): that call is not the same at the PLC yield itself (mm_why held) */
+      var held = lo && ly[1] !== 'mismatch';
+      g = !ly[3] ? ly[2] : sameW === 'mismatch' ? ly[2] + ' The county average PLC yield is ' + (lo ? 'under 60% of' : 'above') + ' this ' + ly[3] + ' benchmark' +
+        (held ? ', and the call there is not the same' : '') + ', so there is no one typical farm here.' :
+        (lo ? 'A PLC yield that low is under 60% of the ' : 'A PLC yield that high is above the ') + ly[3] + ' benchmark' + (held ? ', and the call there is not the same' : '') + '. ' + ly[2];
     }
     var oth = '';
     if (c.oth && v.wo) oth = '<p class="ap-oth"><b>' + c.oth + ' ground:</b> ' + (v.wo !== 'mismatch' ? low1(shortWord(v.wo)) : (R.ot || 'depends on your PLC yield')) + '.' + (c.oth === 'Irrigated' ? ' ' + IRR_NOTE : '') + '</p>';

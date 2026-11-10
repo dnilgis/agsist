@@ -169,7 +169,7 @@ LOADER_V = "19"
 ASOF_V = "1"
 QR_V = "11"   # components/qr.js on its own (10: an alphanumeric mode for the Rain Print standard code, 2026-10-14; 11: mixed mode and versions to 40 for the printed report QRs, 2026-10-19)
 SAVED_PLACE_V = "1"   # components/saved-place.js, the one saved-place reader (Nov 4, 2026)
-CALC_V = "19"   # 19: ARC/PLC fixes (Nov 10, 2026): tiers step down evenly (Pick $3, Leans $2), no typical farm under 60% of the benchmark, the reason expected dollars are withheld, the farm total with base acres, the 2027 assumption line (arc-plc.js, arc-plc-math.js, arc-plc-simple.js, build_arc_plc.py); 18: plain words (Nov 9, 2026): one plain line where a crop has too little price history, no corn-swing method text (arc-plc.js, arc-plc-math.js, arc-plc-simple.js, build_arc_plc.py); 17: plain method (Nov 9, 2026): no cutoffs or t statistic in the call text (arc-plc.js, arc-plc-math.js); 16: wave1b (Nov 4, 2026): the calculator starts at the saved place (arc-plc.js); 15: fx/trust (Oct 27, 2026): the two firm verdicts read "PLC expected to pay more" / "ARC-CO expected to pay more", with the assumptions beside the calculator answer (arc-plc.js, arc-plc-math.js); 14: arcfix (Oct 20, 2026): no "Ask FSA" (range answers in arc-plc-simple.js and arc-plc-math.js), the 2025 and 50-cent lines (arc-plc-simple.css), the landlord line on the counter sheet (arc-plc-sheet.js), "at your price only" (arc-plc.js), the main page's first line (arc-plc.css); 13: both 12s together (fx/nightmoney + fx/nightseo, 2026-10-19); 12 (nightseo): one rounding for the benchmark yield (byf, night audit Oct 19, 2026); 12 (nightmoney): no expected dollars where the price swings are borrowed from corn, county-yield wording (money audit 3); 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
+CALC_V = "19"   # 19: ARC/PLC fixes (Nov 10, 2026): tiers step down evenly, a call under 60% of the benchmark only where it holds across the range, one plain reason expected dollars are withheld, the farm total with base acres, the 2027 assumption line (arc-plc.js, arc-plc-math.js, arc-plc-simple.js, build_arc_plc.py); 18: plain words (Nov 9, 2026): one plain line where a crop has too little price history, no corn-swing method text (arc-plc.js, arc-plc-math.js, arc-plc-simple.js, build_arc_plc.py); 17: plain method (Nov 9, 2026): no cutoffs or t statistic in the call text (arc-plc.js, arc-plc-math.js); 16: wave1b (Nov 4, 2026): the calculator starts at the saved place (arc-plc.js); 15: fx/trust (Oct 27, 2026): the two firm verdicts read "PLC expected to pay more" / "ARC-CO expected to pay more", with the assumptions beside the calculator answer (arc-plc.js, arc-plc-math.js); 14: arcfix (Oct 20, 2026): no "Ask FSA" (range answers in arc-plc-simple.js and arc-plc-math.js), the 2025 and 50-cent lines (arc-plc-simple.css), the landlord line on the counter sheet (arc-plc-sheet.js), "at your price only" (arc-plc.js), the main page's first line (arc-plc.css); 13: both 12s together (fx/nightmoney + fx/nightseo, 2026-10-19); 12 (nightseo): one rounding for the benchmark yield (byf, night audit Oct 19, 2026); 12 (nightmoney): no expected dollars where the price swings are borrowed from corn, county-yield wording (money audit 3); 11: nav.json fetched once, the math file only on intent to open; 10: Lower/Higher written from card data, trigger line (arc-plc-simple.js, arc-plc-simple.css); 9: method notes; 8: Show the math built on open, one shared counter sheet, slimmer pages
 MIN_STATE_COUNTIES = 3
 SCEN_YEARS = list(range(2015, 2026))   # years with both an FSA county yield and a price change; 2025 counts once its final MYA is out
 LEAN_GAP = 2.00       # $/base acre: "Leans X" needs at least this expected gap, at least 1 SE, and MIN_WINS winning years
@@ -500,11 +500,17 @@ def mm_rel(v):
     return "under 60% of" if (v or {}).get("low") else "above"
 
 
-def mm_why(by_t, low=False, cross=False):
+def mm_why(by_t, low=False, cross=False, held=False):
     """Why a card has no one typical farm. cross: a Lower or Higher button lands outside the range (the
-    county average itself is inside); else the county average PLC yield is outside it."""
+    county average itself is inside); else the county average PLC yield is outside it. held (under 60% only): the
+    call is the same across 60% to 100% of the benchmark but not at the PLC yield itself (low_call()), so the
+    sentence says so instead of reading as if the range answer were withheld for no reason."""
     if cross:
-        return (f"A PLC yield that low is under 60% of the {by_t} benchmark." if low else f"A PLC yield that high is above the {by_t} benchmark.")
+        if low:
+            return f"A PLC yield that low is under 60% of the {by_t} benchmark" + (", and the call there is not the same." if held else ".")
+        return f"A PLC yield that high is above the {by_t} benchmark."
+    if low and held:
+        return f"The county average PLC yield is under 60% of this {by_t} benchmark, and the call there is not the same, so there is no one typical farm here."
     return (f"The county average PLC yield is {'under 60% of' if low else 'above'} this {by_t} benchmark, so there is no one typical farm here.")
 
 
@@ -2775,7 +2781,8 @@ def rng_words(r, cd, e, lc, y, low=False):
     w0 = (r or {}).get("w")
     by_t = XC.byf(cd, e["by"])
     span = f"PLC yields of 60% to 100% of the benchmark ({XC.yf(cd, r['lo'], 0)} to {XC.yf(cd, r['hi'], 0)})" if r else ""
-    why, why2, why2l = mm_why(by_t, low), mm_why(by_t, False, True), mm_why(by_t, True, True)
+    held = w0 is not None
+    why, why2, why2l = mm_why(by_t, low, held=held), mm_why(by_t, False, True), mm_why(by_t, True, True, held)
 
     def out(b, t, a, s_):
         return {"b": b, "t": t, "g": f"{a} {why}", "g2": f"{why2} {a}", "g2l": f"{why2l} {a}", "a": a, "y": by_t, "s": s_, "low": low}
@@ -4398,6 +4405,11 @@ def selftest():
     ck("60% rule: the same call at that PLC yield and across the range stays; a call that changes is withheld, marked low",
        _keep["verdict"] == "lean_plc" and not _keep.get("low") and _drop["verdict"] == "mismatch" and _drop.get("low")
        and _chg["verdict"] == "mismatch" and _chg.get("low"), (_keep["verdict"], _drop["verdict"], _chg["verdict"]))
+    _wl = rng_words(_r, _cdp, _e, "peanuts", "2026", low=True)
+    _wd = rng_words(dict(_r, w=None), _cdp, _e, "peanuts", "2026", low=True)
+    ck("60% rule: a range call withheld at the PLC yield itself says the call there is not the same; a changing one does not",
+       _wl["g"].endswith("and the call there is not the same, so there is no one typical farm here.") and "not the same" in _wl["g2l"]
+       and "not the same" not in _wd["g"] and _wd["g"].endswith("so there is no one typical farm here."), (_wl["g"], _wd["g"]))
     _w = rng_words(_r, _cdp, _e, "peanuts", "2026")
     ck("range: the words name the program and the PLC yield, never 'Ask FSA'",
        _w["b"] == "PLC" and f"PLC at any PLC yield over {_r['x']:,} lb." in _w["g"] and "Ask FSA" not in json.dumps(_w), _w["g"])

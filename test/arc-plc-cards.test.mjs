@@ -49,14 +49,14 @@ const ASK = /Ask FSA|ask your FSA office/;
    both sides before the exact comparison, and the new side must not say "Ask FSA"; the live-page test below holds
    the new words to the build's on every card. */
 /* Nov 9, 2026 (curtain) and Nov 10, 2026: the fixture holds the old words about a crop whose price swings are borrowed
-   from corn ("borrows corn's price swings, so it stops at Leans"). Since Nov 10 a card says why the expected payments are
+   from corn ("borrows corn's price swings, so it stops at Leans"). Since Nov 10 a card says, in one plain line, why the expected payments are
    not printed, per crop (flag 128: too few years of its own prices), and "held at Leans" only where the borrowed swings
    lowered a clear pick (flag 512, which no fixture pack carries). So on the fixture side the old sentence becomes the
    new reason where the pack withholds the dollars (flag 64) and goes where it does not; the live-tree tests hold every
    page to the build's words. */
 const RSQ = "(?:&rsquo;|’)";
-const BOR_WHY = ["Expected payments are not printed for this crop; its price swings are borrowed from corn.",
-  "Expected payments are not printed for this crop; it has too few years of its own prices, so its price swings are corn&rsquo;s."];
+// one plain reason for every withheld crop, no method (Nov 10, 2026)
+const BOR_WHY = ["Expected payments are not printed for this crop: it does not have enough of its own price history.", "Expected payments are not printed for this crop: it does not have enough of its own price history."];
 const OLD_BOR = [
   "[A-Z][^.<>]*? (?:has|have) (?:too few years of (?:its|their) own prices in FSA" + RSQ + "s tables, so (?:its|their) price swings are corn" + RSQ + "s|no October futures history of (?:its|their) own on file, so (?:its|their) price swings are borrowed from corn" + RSQ + "s), and the expected dollars would rest on them\\. We do not print them\\.(?: So it stops at Leans\\.)?",
   "[A-Z][a-z][^.<>]*? borrows? corn" + RSQ + "s price swings, so (?:they stop|it stops) at Leans\\.",

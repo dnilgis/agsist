@@ -48,18 +48,18 @@ const sheetTbody = (doc, f) => M.sheetRows(doc, f).map((r) => {
    ("depends on your PLC yield"); newWords() puts exactly those words into the old output, and everything else must
    still match to the character. The live-tree test below holds the real range words to the build's. */
 /* Nov 9, 2026 (curtain) and Nov 10, 2026: the fixture holds the old words about a crop whose price swings are borrowed
-   from corn. Since Nov 10 the build and the browser say why the expected payments are not printed (the price swings are
-   borrowed from corn), and "held at Leans" only where that lowered a clear pick (flag 32, which no fixture record carries,
+   from corn. Since Nov 10 the build and the browser say the expected payments are not printed, with one plain reason (too
+   little price history of its own, no method), and "shown as Leans" only where that lowered a clear pick (flag 32, none in the fixture,
    so the old "Capped at Leans" notes go). The old sentences are moved to the new ones on the fixture side, and the
    live-tree tests hold every page to the build's words. */
 const RSQ = "(?:&rsquo;|’)";
 const OLDWHY = "(?:too few years of (?:its|their) own prices in FSA" + RSQ + "s tables, so (?:its|their) price swings are corn" + RSQ + "s|no October futures history of (?:its|their) own on file, so (?:its|their) price swings are borrowed from corn" + RSQ + "s)";
 const plainBorrow = (h) => h
-  .replace(new RegExp("the expected payments are not printed\\. [A-Z][^.<>]*? (?:has|have) " + OLDWHY + ", and the expected dollars would rest on them\\. We do not print them\\.", "g"), "the expected payments are not printed: its price swings are borrowed from corn.")
-  .replace(new RegExp("no dollar figure, because the price swings are borrowed from corn" + RSQ + "s\\)", "g"), "expected payments not printed, price swings borrowed from corn)")
+  .replace(new RegExp("the expected payments are not printed\\. [A-Z][^.<>]*? (?:has|have) " + OLDWHY + ", and the expected dollars would rest on them\\. We do not print them\\.", "g"), "the expected payments are not printed: this crop does not have enough of its own price history.")
+  .replace(new RegExp("no dollar figure, because the price swings are borrowed from corn" + RSQ + "s\\)", "g"), "expected payments not printed, not enough price history of its own)")
   .replace(new RegExp(" Capped at Leans: this crop borrows corn" + RSQ + "s price swings\\.", "g"), "")
-  .replace(new RegExp(" have no October futures history of their own, so they borrow corn" + RSQ + "s October swings \\(wheat its own price changes, scaled to corn" + RSQ + "s size\\) and stop at Leans\\.", "g"), ": expected payments are not printed, because their price swings are borrowed from corn; for the same reason their call goes no higher than Leans.")
-  .replace(new RegExp(" No dollar figure: price swings borrowed from corn\\.", "g"), " No expected dollars: price swings borrowed from corn.");
+  .replace(new RegExp(" have no October futures history of their own, so they borrow corn" + RSQ + "s October swings \\(wheat its own price changes, scaled to corn" + RSQ + "s size\\) and stop at Leans\\.", "g"), ": expected payments are not printed and the call goes no higher than Leans, because they do not have enough of their own price history.")
+  .replace(new RegExp(" No dollar figure: price swings borrowed from corn\\.", "g"), " No expected dollars: too little price history.");
 const ASK = /Ask FSA|ask your FSA office/;
 const newWords = (h, ly) => plainBorrow(h)
   .replace(/<p class="ap-small"><b>([^<]+):<\/b> no typical-farm verdict\. (FSA&rsquo;s average PLC yield for the county \([^)]*\) covers all practices and is above this benchmark \([^)]*\), so it does not describe a typical farm here\.) Run your own PLC yield below\.<\/p>/g,
