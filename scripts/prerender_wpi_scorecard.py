@@ -961,7 +961,7 @@ def _top_card(r, before_word):
     label = (f"USDA {_top_n(v, ru)} {u}, trade range {_top_n(lo, ru)} to {_top_n(hi, ru)}, trade average {_top_n(avg, ru)}"
              if lo is not None and hi is not None else "")
     return (f'<li class="ct-c"><div class="ct-k">{esc(name)}{tag}</div>'
-            f'<div class="ct-v"><b class="ct-big">{_top_n(v, ru)}</b> <span class="ct-u">{esc(u)}</span></div>'
+            f'<div class="ct-v"><b class="ct-big">{_top_n(v, ru)}</b><span class="ct-u"> {esc(u)}</span></div>'
             f'<div class="ct-vs">Trade <b>{_top_n(avg, ru)}</b>{prev}</div>'
             f'{_top_bar(v, avg, lo, hi, label, ru)}</li>')
 
@@ -981,7 +981,7 @@ def _top_next_card(r):
     if big is None:
         return ""
     return (f'<li class="ct-c"><div class="ct-k">{esc(name)}</div>'
-            f'<div class="ct-v"><b class="ct-big">{_top_n(big, ru)}</b> <span class="ct-u">{esc(u)}</span></div>'
+            f'<div class="ct-v"><b class="ct-big">{_top_n(big, ru)}</b><span class="ct-u"> {esc(u)}</span></div>'
             f'<div class="ct-vs">{vs}</div>{bar}</li>')
 
 
