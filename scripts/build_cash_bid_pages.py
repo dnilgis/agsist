@@ -1382,8 +1382,26 @@ def share_prices(tops, n=3):
 
 
 def breadcrumb(items):
-    return {"@type": "BreadcrumbList", "itemListElement": [
-        {"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(items)]}
+    import cross_links as XL  # the one trail: JSON-LD and the visible nav from the same list
+    return XL.crumbs_jsonld(items)
+
+
+def same_state_row(ssl, sname):
+    """the shared same-state row (cross_links) on a state page"""
+    import cross_links as XL
+    return XL.same_state_row(".", ssl, esc(sname), "cash-bids")
+
+
+def trail(items):
+    """the visible breadcrumb for the same items breadcrumb() is given"""
+    import cross_links as XL
+    return XL.crumbs_html(items)
+
+
+def trail_of(ld):
+    """the visible breadcrumb read back from a page's JSON-LD (company pages)"""
+    import cross_links as XL
+    return XL.crumbs_html_of(ld)
 
 
 # 2026-10-11: no house ask in the footer's sponsor slot any more. An unsold
@@ -2654,9 +2672,9 @@ def build_town_page(t, ctx):
     known_html = known_section(t, (ctx.get("known") or {}).get((st, t["slug"]), []), z)
     links = [f'<a href="/cash-bids/{ssl}/">Every {esc(sname)} town</a>',
              f'<a href="/cash-bids/{ssl}/#basis">{esc(sname)} basis today</a>']
-    jsonld = {"@context": "https://schema.org", "@graph": [breadcrumb([
-        ("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"),
-        (sname, f"{SITE}/cash-bids/{ssl}/"), (t["name"], f"{SITE}{path}")])]}
+    crumb_items = [("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"),
+                   (sname, f"{SITE}/cash-bids/{ssl}/"), (t["name"], f"{SITE}{path}")]
+    jsonld = {"@context": "https://schema.org", "@graph": [breadcrumb(crumb_items)]}
     hows = {b["how"] for b in t["boards"].values()}
     near_note = ""
     if "zip" in hows:
@@ -2736,7 +2754,7 @@ def build_town_page(t, ctx):
 <body>
 {hdr}
 <main class="cbt-wrap" id="main">
-  <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/{ssl}/" style="color:var(--text-muted)">{esc(sname)}</a> &rsaquo; <b style="color:var(--text)">{esc(t['name'])}</b></p>
+  {trail(crumb_items)}
   <h1>Cash grain bids in {esc(place)} today</h1>
   {answer_html}
   {share_html}
@@ -3449,7 +3467,8 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
                        'page.</p><ul class="cbt-list">' + "".join(lis) + "</ul>")
     others = " &middot; ".join(f'<a href="/cash-bids/{url_slug(STATE_NAMES[o])}/">{STATE_NAMES[o]}</a>'
                                for o in ctx["states"] if o != st)
-    crumbs = breadcrumb([("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"), (sname, f"{SITE}{path}")])
+    crumb_items = [("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"), (sname, f"{SITE}{path}")]
+    crumbs = breadcrumb(crumb_items)
     graph = [crumbs]
     if near:
         graph.append({"@type": "Dataset", "@id": f"{SITE}{path}#dataset",
@@ -3501,7 +3520,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
 <body>
 {hdr}
 <main class="cbt-wrap" id="main">
-  <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <b style="color:var(--text)">{esc(sname)}</b></p>
+  {trail(crumb_items)}
   <h1>{esc(sname)} cash grain bids and basis today</h1>
   <p class="cbt-sub">Bids and basis from elevators in the AGSIST network, read directly from each
   elevator&rsquo;s own bid board. This is the network&rsquo;s sample, not every elevator in {esc(sname)}; the
@@ -3516,6 +3535,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   {ctx.get("storage_note", {}).get(st) or ""}
   {sponsor_slot(ssl)}
   <p class="cbt-sub" style="margin-top:18px"><a href="/cash-bids">Cash bids by ZIP</a> &middot; <a href="/basis#by-state">Basis in every state, and USDA regions vs normal</a></p>
+  {same_state_row(ssl, sname)}
   <h2>Other states</h2>
   <p class="cbt-cloud">{others}</p>
   <details class="cbt-note cbt-terms"><summary>Sources and terms</summary>
@@ -3574,6 +3594,18 @@ LIVE_SHARE_GENERIC = {
                            "Free, and every bid shows when it was posted."}
 
 
+LIVE_OPEN = re.compile(r"(<!--CB-OPEN-->)(.*?)(<!--/CB-OPEN-->)", re.S)
+
+
+def open_line(share_text):
+    """/cash-bids' visible opening sentence, from the share text (one source for both)."""
+    m = re.search(r"current bids from ([\d,]+ elevators?) across ([\d,]+ towns?), by ZIP, free\. Updated (.+?) CT\.$",
+                  share_text)
+    if not m:
+        return ""
+    return f"AGSIST shows current cash bids from {m.group(1)} in {m.group(2)}, updated {m.group(3)} CT. "
+
+
 def stamp_live_page(path, metas, counts=None):
     """Put the network's current counts and time in /cash-bids' link-preview
     description (og: and twitter: only; its <title>, meta description and
@@ -3597,6 +3629,10 @@ def stamp_live_page(path, metas, counts=None):
                 f"elevator{'s' if n_el != 1 else ''} across {n_tw:,} town{'s' if n_tw != 1 else ''}, by ZIP, free. "
                 f"Updated {fmt_share_time(max(m['latest'] for m in live))} CT.")   # time zone named (2026-10-17 audit N11)
     out = html
+    # the visible opening line under the heading says the same counts and time (Nov 10, 2026: a quotable
+    # first sentence); with nothing priced the line is emptied, never left on an old count
+    if LIVE_OPEN.search(out):
+        out = LIVE_OPEN.sub(lambda m: m.group(1) + (esc(open_line(text)) if text else "") + m.group(3), out, count=1)
     for key, generic in LIVE_SHARE_GENERIC.items():
         attr = "property" if key.startswith("og:") else "name"
         pat = re.compile(rf'(<meta {attr}="{re.escape(key)}" content=")[^"]*(">)')
@@ -4300,6 +4336,10 @@ def selftest():
         # the FAQPage JSON-LD say the same words
         blks = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', fr, re.S)]
         assert [sorted(g["@type"] for g in b["@graph"]) for b in blks] == [["BreadcrumbList", "FAQPage", "WebPage"]], blks
+        import cross_links as XL   # the visible trail names the same steps as the BreadcrumbList, town and state
+        assert '<nav class="breadcrumb"' in fr and XL.trail_matches(fr) is None, XL.trail_matches(fr)
+        _ne = open(os.path.join(out, "nebraska", "index.html")).read()
+        assert '<nav class="breadcrumb"' in _ne and XL.trail_matches(_ne) is None, XL.trail_matches(_ne)
         # Oct 19, 2026: the town page's dateModified is its sitemap lastmod, never the build
         # time (now is 19:00Z, the newest bid posted 17:00Z), and the publisher is AGSIST
         # Oct 19, 2026: the state page answers three questions from its own cards and counts
@@ -4447,6 +4487,17 @@ def selftest():
         assert txt.endswith("Updated Oct 7, 12:00 pm CT.") and live_html.count(esc(txt)) == 2, live_html
         assert stamp_live_page(lp, [x for x in metas if not x["indexable"]]) == LIVE_SHARE_GENERIC["og:description"]
         assert open(lp).read() == f"<head>{gen_tags}</head>"
+        # the visible opening line: the same counts and time as the share text, emptied when nothing is priced
+        with open(lp, "w") as f:
+            f.write(f"<head>{gen_tags}</head><p><!--CB-OPEN-->old count<!--/CB-OPEN-->Free cash bids by ZIP.</p>")
+        txt = stamp_live_page(lp, metas)
+        live_html = open(lp).read()
+        mo = re.search(r"current bids from ([\d,]+) elevators? across ([\d,]+) towns?.*Updated (.+) CT", txt)
+        want_open = f"AGSIST shows current cash bids from {mo.group(1)} elevator"
+        assert want_open in live_html and f"in {mo.group(2)} town" in live_html and f"updated {mo.group(3)} CT. <!--/CB-OPEN-->" in live_html, live_html
+        assert "old count" not in live_html
+        stamp_live_page(lp, [x for x in metas if not x["indexable"]])
+        assert "<!--CB-OPEN--><!--/CB-OPEN-->Free cash bids" in open(lp).read()
         assert stamp_live_page(os.path.join(td, "missing.html"), metas) is None
         # the companies line and the "my elevator" answer (stamp_live_coverage)
         cos_t = [{"slug": "adm", "path": "/cash-bids/company/adm", "short": "ADM", "live": 9, "locations": 9},
