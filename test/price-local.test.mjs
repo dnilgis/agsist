@@ -52,7 +52,7 @@ test("stamps: settle, last trade with Central time, no kind", () => {
   // crude after its 4 pm halt: a last trade, delayed, with no minutes (energy can lag longer than grain)
   assert.equal(P.stamp(PR.quotes.crude, PR.fetched, NOW), "Last trade Oct 16, 4:00 pm CT; delayed quote");
   // a grain trade after the bell: the bell, never the time the file was read
-  assert.equal(P.stamp(PR.quotes["kc-dec"], PR.fetched, NOW), "Last trade at the Oct 16, 1:20 pm CT bell; settle not posted yet");
+  assert.equal(P.stamp(PR.quotes["kc-dec"], PR.fetched, NOW), "Last trade at the Oct 16, 1:20 pm CT bell; settle not posted yet"); // pin-ok: inline PR fixture and fixed NOW above
   // in session close_time IS the read: say read, and the one delay statement
   assert.equal(P.stamp({ ticker: "ZCZ26.CBT", close: 1, close_kind: "last", close_time: "2026-10-16T18:05:00Z" }, "2026-10-16T18:05:00Z", Date.parse("2026-10-16T19:00:00Z")), "Read 1:05 pm CT; quotes delayed 10 to 25 min");
   assert.equal(P.stamp({ ticker: "LEZ26.CME", close: 1, close_kind: "last", close_time: "2026-10-16T17:46:00Z" }, "2026-10-16T17:46:12Z", Date.parse("2026-10-16T19:00:00Z")), "Read 12:46 pm CT; quotes delayed 10 to 25 min");
