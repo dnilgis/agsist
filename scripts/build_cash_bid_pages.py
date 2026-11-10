@@ -2220,16 +2220,20 @@ def state_compare(picks, summ, sname, snap_ct=None):
     out = []
     for c in ("corn", "soybeans"):
         g = (summ or {}).get(c)
-        # a middle resting on fewer than MIN_CMP_COMPANIES companies, or on a contract past its first
-        # notice day (Nov '26 soybeans after Oct 30), is withheld, never compared
-        stats = [x for x in (g or {}).get("contracts", []) if "median" in x
-                 and (x.get("companies") is None or x["companies"] >= MIN_CMP_COMPANIES)
+        # a middle resting on fewer than MIN_CMP_COMPANIES companies, on an unknown number of companies
+        # (a record with no "companies" field), or on a contract past its first notice day (Nov '26
+        # soybeans after Oct 30), is withheld, never compared
+        allst = [x for x in (g or {}).get("contracts", []) if "median" in x]
+        stats = [x for x in allst if isinstance(x.get("companies"), int) and x["companies"] >= MIN_CMP_COMPANIES
                  and not in_delivery(x.get("contract"), snap_ct)]
         if c not in picks or not stats or picks[c][0]["basis"] is None:
             continue
         r, name = picks[c]
         if in_delivery(r["contract"], snap_ct):
             continue
+        if r["contract"] and any(x.get("contract") == r["contract"] for x in allst) \
+                and not any(x["contract"] == r["contract"] for x in stats):
+            continue    # the state has a middle on this month but it is withheld: say nothing, not "too few use"
         same = next((x for x in stats if r["contract"] and x["contract"] == r["contract"]), None)
         if same is None:
             head = stats[0]
@@ -4716,13 +4720,21 @@ def _selftest_answer():
     assert answer_sentence(pk2, snap).endswith("posted Oct 6 to 7."), answer_sentence(pk2, snap)
     sen, dsc = answer_and_desc(pk, snap, "Longname Township Junction, WI")
     assert dsc == "" and sen == answer_sentence(pk, snap), "the answer is never cut; the description carries no price"
-    summ = {"corn": {"contracts": [{"contract": dec, "n": 9, "median": -0.55}]},
-            "soybeans": {"contracts": [{"contract": nov, "n": 4, "median": -0.80}]}}
+    summ = {"corn": {"contracts": [{"contract": dec, "n": 9, "companies": 5, "median": -0.55}]},
+            "soybeans": {"contracts": [{"contract": nov, "n": 4, "companies": 3, "median": -0.80}]}}
     out, lines = state_compare(pk, summ, "Wisconsin")
     assert lines == ["Corn basis at Beta Co-op, \u221258\u00a2 vs Dec '26, is 3\u00a2 weaker than the Wisconsin middle "
-                     "(\u221255\u00a2 vs Dec '26, median of 9 elevators).",
+                     "(\u221255\u00a2 vs Dec '26, median of 9 elevators, 5 companies).",
                      "Beta Co-op posts no futures month with its basis, so it is not compared with the Wisconsin middle "
-                     "(soybean \u221280\u00a2 vs Nov '26, median of 4 elevators)."], lines
+                     "(soybean \u221280\u00a2 vs Nov '26, median of 4 elevators, 3 companies)."], lines
+    # a middle that does not say how many companies it rests on is withheld, never compared
+    nocos = {c: {"contracts": [{k: v for k, v in x.items() if k != "companies"} for x in g["contracts"]]}
+             for c, g in summ.items()}
+    assert state_compare(pk, nocos, "Wisconsin") == ([], []), "no companies field: withheld"
+    mixed = {"corn": {"contracts": [{"contract": dec, "n": 9, "median": -0.55},
+                                    {"contract": ("ZC", 2, 2027), "n": 9, "companies": 5, "median": -0.50}]}}
+    assert state_compare(pk, mixed, "Wisconsin") == ([], []), \
+        "its own month's middle withheld: no 'a month too few use' line about another month"
     pk3 = dict(pk, corn=(dict(pk["corn"][0], contract=("ZC", 2, 2027)), "Beta Co-op"))
     assert "a month too few Wisconsin elevators use" in state_compare(pk3, summ, "Wisconsin")[1][0]
     assert state_compare(pk, {"corn": {"contracts": [{"contract": dec, "n": 2}]}}, "Wisconsin") == ([], []), \
