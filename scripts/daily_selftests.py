@@ -69,6 +69,9 @@ SELFTESTS = [
     ("GATE 2h headline fix selftest", ["scripts/headline_fix.py", "--selftest"], NO_KEY),
     ("GATE 2c cause fix selftest", ["scripts/cause_fix.py", "--selftest"], {}),
     ("Only on AGSIST facts selftest", ["scripts/daily_edge.py", "--selftest"], {}),
+    # The one clock (#455) and the one fact-keyed memory (#458): frozen fixtures, no network, no live date.
+    ("Daily one clock", ["scripts/test_daily_clock.py"], {}),
+    ("Daily one memory", ["scripts/test_daily_memory.py"], {}),
 ]
 STEP_NAME = "Code self-tests (report only, never hold the send)"
 TIMEOUT_S = 240

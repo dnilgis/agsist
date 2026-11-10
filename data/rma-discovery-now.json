@@ -1,7 +1,7 @@
 {
  "_note": "Open and upcoming price discovery windows from the RMA prices file.",
- "updated": "2026-11-08T22:36:53Z",
- "as_of": "2026-11-08",
+ "updated": "2026-11-09T22:52:32Z",
+ "as_of": "2026-11-09",
  "crop_year": 2026,
  "open": [
   {
@@ -25,7 +25,7 @@
    "contract": [
     "December"
    ],
-   "day": 8,
+   "day": 9,
    "span": 30,
    "in_days": null
   },
@@ -49,7 +49,7 @@
    "contract": [
     "December"
    ],
-   "day": 8,
+   "day": 9,
    "span": 30,
    "in_days": null
   },
@@ -71,7 +71,7 @@
    "contract": [
     "December"
    ],
-   "day": 8,
+   "day": 9,
    "span": 30,
    "in_days": null
   },
@@ -102,7 +102,7 @@
    "contract": [
     "January"
    ],
-   "day": 8,
+   "day": 9,
    "span": 30,
    "in_days": null
   }
