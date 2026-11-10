@@ -77,6 +77,7 @@
     #mini-bar{display:none;}
     @media(max-width:768px){#mini-bar{position:fixed;left:0;right:0;bottom:0;z-index:60;display:flex;justify-content:space-between;align-items:center;gap:1rem;background:var(--card,#161b14);border-top:1px solid var(--border,#2a3324);padding:.55rem max(1rem,env(safe-area-inset-left)) calc(.55rem + env(safe-area-inset-bottom));font-family:'JetBrains Mono',monospace;font-size:.85rem;color:var(--text-dim);}#mini-bar b{color:var(--gold,#d4a23f);}body{padding-bottom:52px;}}
     @media print{#mini-bar{display:none!important;}}
+    #mb-be,#mb-profit{font-variant-numeric:tabular-nums;}
     body.agsb-open #mini-bar{display:none!important;}
     @media(prefers-reduced-motion:reduce){.live-dot{animation:none;}.hint-popup{animation:none;}.cost-bar-seg,.profit-gauge-fill,.profit-gauge-marker,.be-faq-a{transition:none;}}
     /* 2026-10-17 (field audit): the button itself is the 40 x 40 tap target, so the hit area is real

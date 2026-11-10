@@ -149,6 +149,15 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 @media (max-width: 760px) { .tsb-label { min-height: 2.1em; } .tsb-note { min-height: 4.65em; } }
 @media (max-width: 440px) { .tsb-label { min-height: 3.2em; } .tsb-note { min-height: 6.2em; } .tariff-stale { min-height: 4.5em; } }
 @media (max-width: 374px) { .tsb-note { min-height: 7.75em; } .tariff-stale { min-height: 6em; } }
+/* the banner as a whole, at the heights those lines make (so a guard reading the banner sees its hold), the icon's box,
+   and the table's as-of line */
+#tariff-status-banner { min-height: 190px; }
+@media (max-width: 880px) { #tariff-status-banner { min-height: 210px; } }
+@media (max-width: 760px) { #tariff-status-banner { min-height: 255px; } }
+@media (max-width: 440px) { #tariff-status-banner { min-height: 322px; } }
+@media (max-width: 374px) { #tariff-status-banner { min-height: 369px; } }
+#tsb-icon { width: 1.5rem; }
+#tariff-updated { display: inline-block; min-height: 1.3em; }
 
 /* Rate table */
 .tariff-section { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1.1rem; overflow: hidden; }
