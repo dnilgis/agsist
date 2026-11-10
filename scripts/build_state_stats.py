@@ -125,11 +125,18 @@ SMALL_GRAIN_FINAL = (10, 1)             # Oct 1 of the crop year, a day after th
 
 
 def finals_possible(year, today=None, small_grain=False):
-    """Could USDA have published a FINAL for this crop year by today?"""
-    today = today or date.today()
+    """Could USDA have published a FINAL for this crop year by today?
+
+    today: a date, or an aware datetime (None: now). Corn and soybeans are final
+    from the January annual's real release (usda_dates.annual_final_out, Nov 9
+    2026 panel); a fixed Jan 10 would have called the November forecast a final
+    on Jan 10 and 11, 2027. FINAL_MONTH and FINAL_DAY are no longer read."""
     if small_grain:
-        return (today.year, today.month, today.day) >= (year, *SMALL_GRAIN_FINAL)
-    return (today.year, today.month, today.day) >= (year + 1, FINAL_MONTH, FINAL_DAY)
+        d = today or date.today()
+        return (d.year, d.month, d.day) >= (year, *SMALL_GRAIN_FINAL)
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import usda_dates
+    return usda_dates.annual_final_out(year, today or datetime.datetime.now(datetime.timezone.utc))
 
 
 def is_forecast(ref, year=None, today=None, small_grain=False):
@@ -174,7 +181,7 @@ def forecast_month(ref, load_time=None):
         try:
             sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
             import usda_dates
-            if d in usda_dates.CROP_PRODUCTION_2026:
+            if d in usda_dates.CROP_PRODUCTION_DATES:
                 return d.strftime("%B")
         except ImportError:
             return None
@@ -432,18 +439,23 @@ def release_day_gate(stats_doc, now_utc):
     """Run on a Crop Production release day? (state-stats.yml chains off the
     WASDE watch, which completes every 15 minutes.)
 
-    Yes on a release day (usda_dates.CROP_PRODUCTION_2026) from 16:00 UTC,
-    until the file carries that month's forecast, and no more than once every
-    two hours so a release whose state rows load late is retried without a
-    commit every fifteen minutes."""
+    Yes on a release day (usda_dates.CROP_PRODUCTION_DATES) from the noon
+    Eastern print (16:00 UTC in daylight time, 17:00 in standard), until the
+    file carries that month's forecast, and no more than once every two hours
+    so a release whose state rows load late is retried without a commit every
+    fifteen minutes. The January annual carries no forecast: that day is done
+    once a state shows a final for the crop year it closes."""
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
     import usda_dates
     day = now_utc.date()
-    if day not in usda_dates.CROP_PRODUCTION_2026 or now_utc.hour < 16:
+    if day not in usda_dates.CROP_PRODUCTION_DATES or now_utc < usda_dates.release_instant(day):
         return False
     ss = (stats_doc or {}).get("stateStats") or {}
-    month = day.strftime("%B")
-    if any(r.get("forecast_month") == month for r in ss.values()):
+    annual = next((y for y, d in usda_dates.ANNUAL_CROP_PRODUCTION.items() if d == day), None)
+    if annual is not None:
+        if any(r.get("year") == annual and r.get("forecast") is False for r in ss.values()):
+            return False
+    elif any(r.get("forecast_month") == day.strftime("%B") for r in ss.values()):
         return False
     try:
         upd = datetime.datetime.strptime((stats_doc or {}).get("updated", ""), "%Y-%m-%dT%H:%M:%SZ")
@@ -565,9 +577,11 @@ def selftest():
     assert status_label(2026, "YEAR - AUG FORECAST", T) == \
         "2026 crop \u00b7 USDA NASS August forecast"
     assert status_label(2025, "YEAR", T) == "2025 crop year \u00b7 USDA NASS final"
-    # the boundary: USDA's Annual Crop Production summary, ~Jan 10
+    # the boundary: USDA's Annual Crop Production summary, Jan 12 2027 at noon
+    # Eastern (usda_dates.ANNUAL_CROP_PRODUCTION; was a fixed Jan 10)
     assert not finals_possible(2026, date(2027, 1, 9))
-    assert finals_possible(2026, date(2027, 1, 10))
+    assert not finals_possible(2026, date(2027, 1, 10)) and not finals_possible(2026, date(2027, 1, 12))
+    assert finals_possible(2026, date(2027, 1, 13))
     assert finals_possible(2025, T)
 
     # ---- same-vintage resolution + coherence gate -----------------------
@@ -648,7 +662,7 @@ def selftest():
     assert _bs["IA"][2026]["YEAR"] == 219 and _l["IA"][2026]["YEAR"].startswith("2026-10-09"), \
         "two rows under one period name: the one NASS loaded last is published"
     _st = assemble(None, 2026, by_state={"corn_yield": _bs}, loads={"corn_yield": _l})
-    if date.today() < date(2027, 1, 10):
+    if not finals_possible(2026):
         assert _st["IA"]["meta"] == "2026 crop \u00b7 USDA NASS October forecast", _st["IA"]["meta"]
         assert _st["IA"]["forecast_month"] == "October"
     assert _st["IA"]["nass_reference_period"] == "YEAR" and _st["IA"]["nass_load_time"].startswith("2026-10-09")
@@ -663,6 +677,28 @@ def selftest():
                                 datetime.datetime(2026, 10, 9, 16, 20, tzinfo=_utc)), "ran 15 minutes ago: wait"
     assert not release_day_gate({"updated": "2026-10-09T16:05:00Z", "stateStats": {"IA": {"forecast_month": "October"}}},
                                 datetime.datetime(2026, 10, 9, 19, 0, tzinfo=_utc)), "already has October: done"
+    # THE JANUARY ANNUAL on a fake clock (Nov 9 2026 panel): released Jan 12,
+    # 2027 at noon Eastern (17:00 UTC). Before it the 2026 crop is a forecast,
+    # whatever NASS tags it; after it, final; the gate stops once finals land.
+    for _when, _fc in ((datetime.datetime(2027, 1, 11, 20, 0, tzinfo=_utc), True),
+                       (datetime.datetime(2027, 1, 12, 16, 5, tzinfo=_utc), True),
+                       (datetime.datetime(2027, 1, 12, 17, 5, tzinfo=_utc), False)):
+        assert is_forecast("YEAR", 2026, _when) is _fc, (_when, _fc)
+        assert ("final" in status_label(2026, "YEAR", _when)) is (not _fc), status_label(2026, "YEAR", _when)
+    assert is_forecast("YEAR", 2026, date(2027, 1, 10)), "the old Jan 10 gate: still a forecast"
+    _nov = {"updated": "2026-11-10T17:05:00Z",
+            "stateStats": {"IA": {"year": 2026, "forecast": True, "forecast_month": "November"}}}
+    assert not release_day_gate(_nov, datetime.datetime(2027, 1, 11, 18, 0, tzinfo=_utc)), "Jan 11: no release"
+    assert not release_day_gate(_nov, datetime.datetime(2027, 1, 12, 16, 5, tzinfo=_utc)), "Jan 12 before noon Eastern: wait"
+    assert release_day_gate(_nov, datetime.datetime(2027, 1, 12, 17, 5, tzinfo=_utc)), "Jan 12 after the print: run"
+    _fin = {"updated": "2027-01-12T17:10:00Z",
+            "stateStats": {"IA": {"year": 2026, "forecast": False, "forecast_month": None}}}
+    assert not release_day_gate(dict(_fin, updated="2027-01-12T15:00:00Z"), datetime.datetime(2027, 1, 12, 21, 0, tzinfo=_utc)), \
+        "finals landed: the annual day is done (no retry every 2 hours)"
+    assert release_day_gate(dict(_nov, updated="2027-01-12T17:10:00Z"), datetime.datetime(2027, 1, 12, 19, 15, tzinfo=_utc)), \
+        "finals not in yet: retry two hours on"
+    assert not release_day_gate(_doc, datetime.datetime(2026, 11, 10, 16, 30, tzinfo=_utc)), "Nov 10 (EST): noon Eastern is 17:00 UTC"
+    assert release_day_gate(_doc, datetime.datetime(2026, 11, 10, 17, 5, tzinfo=_utc)), "Nov 10 after the print: run"
 
     print("selftest OK:", json.dumps(stats["IA"], separators=(",", ":")))
     print("  forecast label:", st["IA"]["meta"])
