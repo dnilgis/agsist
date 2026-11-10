@@ -1061,14 +1061,14 @@ def state_map(W, st, recs):
         old_r = r["rent_dry_usd_ac"] if (r["rent_dry_usd_ac"] is not None and f not in rent) else None
         # rent_age.py: a rent more than three survey years old carries only its year (ox, ix) and prints
         # "n/a, last published YYYY" in the county table, sorted as no value
-        ox = r["rent_dry_year"] if old_r is not None and RA.too_old(r["rent_dry_year"], W.rent_latest) else None
-        old_r = None if ox else old_r
+        dry_ox = r["rent_dry_year"] if old_r is not None and RA.too_old(r["rent_dry_year"], W.rent_latest) else None
+        old_r = None if dry_ox else old_r
         irr_old = r["rent_irr_usd_ac"] is not None and RA.too_old(r["rent_irr_year"], W.rent_latest)
         for code, v in (("r", rent.get(f)), ("v", None if r["value_flag"] else r["value_usd_ac"]), ("y", r["corn_yield_median_bu_ac"]),
                         ("c", r["claims_per_100_usd"]), ("d", r["d2_week_share_pct"]),
                         # for the county table, which the page builds from these paths
                         ("i", None if irr_old else r["rent_irr_usd_ac"]), ("ix", r["rent_irr_year"] if irr_old else None),
-                        ("o", old_r), ("oy", r["rent_dry_year"] if old_r is not None else None), ("ox", ox),
+                        ("o", old_r), ("oy", r["rent_dry_year"] if old_r is not None else None), ("ox", dry_ox),
                         ("vs", r["value_usd_ac"] if r["value_flag"] else None)):
             if v is not None:
                 at += ' data-%s="%s"' % (code, v)
