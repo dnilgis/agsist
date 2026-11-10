@@ -16,6 +16,13 @@
    "link": "/usda-calendar"
   },
   {
+   "id": "2026-11-10-daily-onlyhere-repeats",
+   "date": "2026-11-10",
+   "title": "Only here lines skip a repeat",
+   "line": "The Daily's Only here lines now come back only when something changed: new rain record counts, or a new rain report at your county's station.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-10-daily-zip-repeats",
    "date": "2026-11-10",
    "title": "No repeat lines for ZIP readers",
