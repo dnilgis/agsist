@@ -5,8 +5,16 @@
     <link>https://agsist.com/daily</link>
     <description>Dated grain and livestock market events the moment they are measurable: USDA report surprises, one-year positioning extremes, 52-week highs and lows, crop rating swings. Measured, not aggregated.</description>
     <language>en-us</language>
-    <lastBuildDate>Fri, 30 Oct 2026 19:39:51 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 10 Nov 2026 17:57:38 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/news.xml" rel="self" type="application/rss+xml"/>
+    <item>
+      <title>November WASDE: 2026/27 soybean ending stocks came in bullish</title>
+      <link>https://agsist.com/usda-calendar#priced-in</link>
+      <description>Trade looked for 331 mil bu; USDA printed 300 mil bu, -9.4% versus the survey average, inside the range, near the bottom. 5 of 7 graded figures in line.</description>
+      <guid isPermaLink="false">agsist-news-wasde:2026-11-10:2026/27 soybean ending stocks</guid>
+      <pubDate>Tue, 10 Nov 2026 12:00:00 +0000</pubDate>
+      <source url="https://agsist.com/news.xml">USDA, graded against the pre-report survey</source>
+    </item>
     <item>
       <title>Managed money flipped net short in kc wheat</title>
       <link>https://agsist.com/cot</link>
