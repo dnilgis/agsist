@@ -31,9 +31,10 @@ const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (f) => readFileSync(ROOT + f, "utf8");
 const text = (h) => h.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/g, "").replace(/<[^>]+>/g, " ")
   .replace(/&rsquo;/g, "’").replace(/&middot;/g, "·").replace(/&amp;/g, "&").replace(/\s+/g, " ");
-const WHY = "Expected payments are not printed for this crop; its price swings are borrowed from corn.";
-const WHY_FEW = "Expected payments are not printed for this crop; it has too few years of its own prices, so its price swings are corn’s.";
-const CAP = "Borrowed price swings hold the call at Leans.";
+// one plain reason for every withheld crop, wheat and the small crops alike, with no word of whose price swings
+const WHY = "Expected payments are not printed for this crop: it does not have enough of its own price history.";
+const WHY_FEW = WHY;
+const CAP = "Too little price history for a clear pick: shown as Leans.";
 const card = (h, k) => { const m = new RegExp(`<article class="ap-crop" id="crop-${k}"[\\s\\S]*?</article>`).exec(h); return m ? m[0] : null; };
 // the new-base source line as the build writes it (NEWBASE_SRC), read from the builder, not typed here
 const NEWBASE = /^NEWBASE_SRC = "([^"]+)"/m.exec(read("scripts/build_arc_plc.py"))[1];
@@ -170,8 +171,10 @@ test("7, 9, c, f: the main page's top, the fold, the tiers and the track-record 
   }
   assert.ok(!/<details class="ap-det" id="terms"[^>]*\bopen\b/.test(m), "the fold is closed");
   const fold = text(m.slice(at));
-  assert.match(fold, /A clear pick needs the leading program ahead by \$3 or more per base acre on average.* Leans needs \$2 or more.* Anything less is Close/);
-  assert.match(fold, /How often ARC-CO paid more, not how often a verdict was right: nationally, over \d+ crop years from \d{4} to \d{4}, ARC-CO paid more than PLC in \d+ and PLC paid more in \d+/);
+  // the tiers in plain words only: no dollar or year cutoffs (test/arc-plc-method-plain.test.mjs reads the fold for them)
+  assert.match(fold, /Each answer is one of three: a clear pick, a lean toward one program, or too close to call\./);
+  assert.doesNotMatch(fold, /\$\d+ or more|ahead in at least/);
+  assert.match(fold, /How often ARC-CO paid more, not how often a verdict was right: nationally, over \d+ crop-year results \([a-z, ]+, \d{4} to \d{4}\), ARC-CO paid more than PLC in \d+ and PLC paid more in \d+/);
   assert.match(m, /id="ap-y-hint">County average, not your farm\. Left at the benchmark yield, it is a normal crop\.</, "the county yield hint agrees with normal crop = benchmark");
   assert.doesNotMatch(m + read("components/arc-plc-form.js"), /a bit above this/);
 });
@@ -235,6 +238,7 @@ test("4, 6: base acres give the farm total beside each call; the 2027 assumption
     await pg.waitForFunction(() => document.querySelectorAll(".ap-decide .ap-verdict").length >= 1, null, { timeout: 30000 });
     const w = await pg.$eval(".ap-decide .ap-verdict", (e) => e.textContent.replace(/\s+/g, " ").trim());
     assert.doesNotMatch(w, /On 200 base acres/, w);
-    assert.match(w, /Expected payments are not printed for this crop; its price swings are borrowed from corn\./, w);
+    assert.ok(w.includes(WHY), w);
+    assert.doesNotMatch(w, /borrow|corn’s (price swings|October)/i, w);
   } finally { await browser.close(); srv.close(); }
 });

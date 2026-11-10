@@ -747,7 +747,7 @@ def hub_json(D, k):
 # what the county and crop pages do for these crops, in one sentence (Nov 10, 2026: the main page said "no pick"
 # while the county pages gave one)
 SMALL_CALL = ("For 2026 each county page gives these crops a call for a typical farm. FSA&rsquo;s price table starts with 2020/21, too few years "
-              "of their own prices, so their price swings are corn&rsquo;s: the call goes no higher than Leans and expected payments are not printed. "
+              "of their own prices: the call goes no higher than Leans and expected payments are not printed. "
               "There is no 2027 call for them yet.")
 
 

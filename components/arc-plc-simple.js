@@ -61,9 +61,8 @@
   var WORD = { plc: 'PLC', arc: 'ARC-CO' };
   var TIER = { pick: 'Clear pick', lean: 'Leans', close: 'Close', ask: 'No answer yet' };
   var RS = '&rsquo;';
-  var BOR_WHY = ['Expected payments are not printed for this crop; its price swings are borrowed from corn.',
-    'Expected payments are not printed for this crop; it has too few years of its own prices, so its price swings are corn' + RS + 's.'];
-  var CAP_LINE = 'Borrowed price swings hold the call at Leans.';
+  var BOR_WHY = ['Expected payments are not printed for this crop: it does not have enough of its own price history.', 'Expected payments are not printed for this crop: it does not have enough of its own price history.'];
+  var CAP_LINE = 'Too little price history for a clear pick: shown as Leans.';
   var IRR_NOTE = 'Figured with the county' + RS + 's all-practice PLC yield; an irrigated farm' + RS + 's own is often higher.';
   function unpackLv(p) {
     var a = String(p).split(',');

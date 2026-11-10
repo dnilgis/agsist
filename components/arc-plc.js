@@ -544,8 +544,7 @@
     function vcls(v) { return 'ap-w-' + (VC[v] || 'withheld'); }
     var why = '';
     /* the build's BOR_WHY: why the expected dollars are not printed (1: too few years of the crop's own prices) */
-    var BOR_WHY = ['Expected payments are not printed for this crop; its price swings are borrowed from corn.',
-      'Expected payments are not printed for this crop; it has too few years of its own prices, so its price swings are corn&rsquo;s.'];
+    var BOR_WHY = ['Expected payments are not printed for this crop: it does not have enough of its own price history.', 'Expected payments are not printed for this crop: it does not have enough of its own price history.'];
     /* one plain sentence, numbers beside the call; mirrors verdict_line in the build script */
     function vline(Y, v) {
       if (v.verdict === 'withheld') return '<b>' + Y + ': not enough history to say.</b> ' + v.n + ' past years with both a price and a county yield; we need ' + MIN_SCEN + '.' + (why ? ' ' + why : '');
@@ -556,7 +555,7 @@
         'Expected ' + pay$(v.plc) + ' PLC vs ' + pay$(v.arc) + ' ARC-CO per base acre; PLC paid more in ' + v.plcWins + ' of ' + v.n + ' past-year scenarios, ARC-CO in ' + v.arcWins + '.';
       if (v.verdict === 'none') return '<b>' + Y + ': neither expected to pay.</b> ' + nums;
       if (v.verdict === 'close') return '<b>' + Y + ': close, either one.</b> ' + (B ? 'Too small or too uncertain to call. ' : 'About ' + money(Math.abs(v.diff)) + ' apart, too small or too uncertain to call. ') + nums;
-      var note = (v.capped && v.verdict.indexOf('lean_') === 0 ? ' Borrowed price swings hold the call at Leans.' : '') +
+      var note = (v.capped && v.verdict.indexOf('lean_') === 0 ? ' Too little price history for a clear pick: shown as Leans.' : '') +
         (v.altDown ? ' Not a clear pick: a futures-based price start gives a different call.' : '');
       if (v.verdict.indexOf('lean_') === 0) {
         var side = v.verdict.slice(5), other = side === 'plc' ? 'arc' : 'plc', ow = side === 'plc' ? v.arcWins : v.plcWins;
@@ -608,7 +607,7 @@
         var paid = v.rows.filter(function (r) { return r.arc > 0; }).length;
         h += '<p><b>Why.</b> PLC pays on any season-average price below ' + pm(cy.erp) + ', up to ' + money(maxP) + ' per base acre at the ' + pm(cy.loan) +
           ' loan rate, so it protects against a deep price drop. ARC-CO is capped at ' + money(maxA) + ' per base acre but also pays when the county&rsquo;s yield is short; it paid something in ' +
-          paid + ' of the ' + v.n + ' past-year scenarios. With prices centered at ' + pm(sc.center) + ', ' + (v.nousd ? 'the expected payments are not printed: its price swings are borrowed from corn.' : 'PLC is expected to pay ' + pay$(v.plc) + ' and ARC-CO ' + pay$(v.arc) + ' per base acre.') + '</p>';
+          paid + ' of the ' + v.n + ' past-year scenarios. With prices centered at ' + pm(sc.center) + ', ' + (v.nousd ? 'the expected payments are not printed: this crop does not have enough of its own price history.' : 'PLC is expected to pay ' + pay$(v.plc) + ' and ARC-CO ' + pay$(v.arc) + ' per base acre.') + '</p>';
         if (c.price != null) {
           var u = scenarios(cy, sc.center, sc.ratios, c.price);
           /* one price held all year: not the call above, which spreads the price (arcfix item 7) */

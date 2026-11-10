@@ -554,11 +554,10 @@ def verdict_line(v):
 # Nov 10, 2026: the words say what is withheld (the expected payments, not every
 # dollar figure: the example-price line prints some) and why, per crop; "held at
 # Leans" only where the borrowed swings really lowered a clear pick (v["capped"]).
-BOR_NOTE = "expected payments not printed, price swings borrowed from corn"
-BOR_WHY = {False: "Expected payments are not printed for this crop; its price swings are borrowed from corn.",
-           True: "Expected payments are not printed for this crop; it has too few years of its own prices, so its price swings are corn&rsquo;s."}
+BOR_NOTE = "expected payments not printed, not enough price history of its own"
+BOR_WHY = {False: "Expected payments are not printed for this crop: it does not have enough of its own price history.", True: "Expected payments are not printed for this crop: it does not have enough of its own price history."}   # one plain reason on the reading path, no method (Nov 10, 2026)
 BOR_LINE = BOR_WHY[False]
-CAP_LINE = "Borrowed price swings hold the call at Leans."
+CAP_LINE = "Too little price history for a clear pick: shown as Leans."
 
 
 def bor_why(lc, few=False):
@@ -1384,7 +1383,7 @@ def compute(inp):
                     continue
                 for y in years:
                     cd = years[y]["crops"].get(k)
-                    lv = {}
+                    lv, rc = {}, None
                     for nm, f_ in LEVELS:
                         py_l = rnd(pyv * f_, 1)
                         if not cd:
@@ -1395,8 +1394,13 @@ def compute(inp):
                             v = {"verdict": "mismatch", "py": py_l, "by": e["by"], "n": 0}
                         elif py_l < LOW_PLC * e["by"]:
                             # nor far under it (Nov 10, 2026): the all-practice average against an
-                            # irrigated benchmark (Sumner Co., KS irrigated soybeans: 25.8 bu on 54.4)
-                            v = {"verdict": "mismatch", "py": py_l, "by": e["by"], "n": 0, "low": True}
+                            # irrigated benchmark (Sumner Co., KS irrigated soybeans: 25.8 bu on 54.4).
+                            # The call stays when it is the same at this PLC yield and at every PLC yield
+                            # from 60% to 100% of the benchmark (Clarke Co., IA corn at 59.9%: Leans
+                            # ARC-CO every time); only a call that changes across them is withheld.
+                            if rc is None:
+                                rc = range_call(cd, e)
+                            v = low_call(cd, e, py_l, rc)
                         else:
                             v = typical_eval(cd, py_l, e)
                         if v is None:
@@ -1409,7 +1413,7 @@ def compute(inp):
                         if cd and any(v_["verdict"] == "mismatch" for v_ in lv.values()):
                             # no one typical farm at this PLC yield: the call across PLC yields of 60% to 100% of
                             # the benchmark instead of "Ask FSA" (arcfix item 2, Oct 20, 2026)
-                            c.setdefault("rng", {})[(k, i, y)] = range_call(cd, e)
+                            c.setdefault("rng", {})[(k, i, y)] = rc if rc is not None else range_call(cd, e)
     plc = inp["plc_county"]
     for c in counties.values():
         c["lead"] = lead_crop(c, plc)
@@ -1445,6 +1449,17 @@ def compute(inp):
 
 
 RNG = (0.60, 1.00)   # the PLC yields, as a share of the practice's benchmark, a mismatched row is run across
+
+
+def low_call(cd, e, py, rc):
+    """A PLC yield under LOW_PLC of entry e's benchmark (Nov 10, 2026): the typical-farm call stays when it is the
+    same at py and at every PLC yield range_call() ran (60% to 100% of the benchmark), so the answer does not hang on
+    which PLC yield a farm here carries (Clarke Co., IA corn, 59.9%: Leans ARC-CO every time). A call that changes
+    is withheld: no typical-farm answer, marked low."""
+    v = typical_eval(cd, py, e)
+    if v and (rc or {}).get("w") is not None and v["verdict"] == rc["w"]:
+        return v
+    return {"verdict": "mismatch", "py": py, "by": e["by"], "n": 0, "low": True}
 
 
 def range_call(cd, e):
@@ -1999,7 +2014,8 @@ LEAD_WORD = {"plc": "pick PLC", "arc": "pick ARC-CO", "lean_plc": "leans PLC", "
 
 def lead_sentence(D):
     """The main page's first words: for 2026, each main crop's most common typical-farm answer and its count, out of
-    the county and practice combinations that have an answer. Counted from the same verdicts the county pages show."""
+    the county and practice combinations that have an answer, and how many have no typical-farm answer. Counted from
+    the same verdicts the county pages show."""
     t = tallies(D)
     y6 = D["years"]["2026"]["crops"]
     bits = []
@@ -2012,7 +2028,10 @@ def lead_sentence(D):
         cen = (y6[k].get("scen") or {}).get("center")
         at = f" at USDA&rsquo;s {XC.pf(y6[k], cen)}," if w == "none" and cen else ("," if w == "close" else "")
         cnt = f"all {n:,}" if d_[w] == n else f"{d_[w]:,} of {n:,}"
-        bits.append(f"{y6[k]['label']}: {LEAD_WORD[w]}{at} in {cnt}" + (" county and practice combinations" if not bits else "") + ".")
+        # how many have no typical-farm answer, so the share above is not read as a share of all of them (Nov 10, 2026)
+        mm = d_.get("mismatch", 0)
+        bits.append(f"{y6[k]['label']}: {LEAD_WORD[w]}{at} in {cnt}" + (" county and practice combinations" if not bits else "")
+                    + (f"; no typical-farm answer in {mm:,}" if mm else "") + ".")
     if not bits:
         return ""
     return f'<p class="ap-lead"><b>For 2026, on a typical farm.</b> {" ".join(bits)} Your county&rsquo;s own answer is one pick below.</p>'
@@ -2050,12 +2069,10 @@ def formulas_html(D):
 
 
 def tier_rules():
-    """The verdict tiers in plain words, from the constants (Nov 10, 2026: the tiers step down evenly, documented in the fold)."""
-    return (f"<p>How the tiers step down. A clear pick needs the leading program ahead by {usd(MIN_GAP, 0)} or more per base acre on average, ahead in at "
-            f"least {MIN_WINS} of the past years, and far enough ahead that the year-to-year swing is unlikely to flip it. Leans needs {usd(LEAN_GAP, 0)} or "
-            f"more, ahead in at least {MIN_WINS} years, and a gap at least as big as its usual swing. Anything less is Close; when both round to $0 it is "
-            f"Neither. Where a crop&rsquo;s price swings are borrowed from corn, or a futures-based price start gives a different answer, a clear pick "
-            f"drops to Leans.</p>")
+    """The verdict tiers in plain words: what each answer means, no cutoffs (Nov 10, 2026)."""
+    return ("<p>Each answer is one of three: a clear pick, a lean toward one program, or too close to call. When neither program is "
+            "expected to pay, it says that instead. For 2026, some crops have too little price history of their own and use another crop&rsquo;s "
+            "price swings; for them a clear pick is shown as Leans and expected payments are not printed.</p>")
 
 
 def method_html(D):
@@ -2082,7 +2099,9 @@ def method_html(D):
         n_arc = sum(1 for r in done if (r["arc"] or 0) > (r["plc"] or 0))
         if done:
             # what the line is (Nov 10, 2026): how often each program paid more nationally, not how often a verdict was right
-            rec = (f'<p>How often ARC-CO paid more, not how often a verdict was right: nationally, over {len(done)} crop years from {have[0]} to {have[-1]}, '
+            bcrops = [y6[k]["label"].lower() for k in CROPS if any(r["k"] == k for r in done)]
+            bc = bcrops[0] if len(bcrops) == 1 else ", ".join(bcrops[:-1]) + " and " + bcrops[-1]
+            rec = (f'<p>How often ARC-CO paid more, not how often a verdict was right: nationally, over {len(done)} crop-year results ({bc}, {have[0]} to {have[-1]}), '
                    f'ARC-CO paid more than PLC in {n_arc} and PLC paid more in {n_plc}'
                    f'{"" if n_arc + n_plc == len(done) else ", and the two came out even in " + str(len(done) - n_arc - n_plc)}. '
                    f'National averages hide wide county differences, so your county can differ.</p>')
@@ -2520,7 +2539,7 @@ def why_text(v, cd, by, py):
     return (f"PLC pays on any season-average price below {XC.pf(cd, erp)}, up to {usd(max_plc)} per base acre at the {XC.pf(cd, loan)} loan rate, so it "
             f"protects against a deep price drop. ARC-CO is capped at {usd(max_arc)} per base acre but also pays when the county&rsquo;s "
             f"yield is short; it paid something in {short} of the {v['n']} past-year scenarios. With prices centered at {XC.pf(cd, center)}, "
-            + ("the expected payments are not printed: its price swings are borrowed from corn."
+            + ("the expected payments are not printed: this crop does not have enough of its own price history."
                if v.get("nousd") else f"PLC is expected to pay {usd_pay(v['plc'])} and ARC-CO {usd_pay(v['arc'])} per base acre."))
 
 
@@ -4189,13 +4208,13 @@ def selftest():
        and _vl["verdict"] == "lean_plc" and not _vl.get("capped"), (_vc["verdict"], _vn["verdict"], _vl["verdict"]))
     # money audit 3 (2026-10-19), Sumner Co., KS non-irrigated wheat 2026 as the build had it: expected $6.76 PLC vs
     # $6.64 ARC-CO on a spread borrowed from corn ($1.56 PLC with no spread at all). The call stays, the dollars go.
-    LINE9 = "Expected payments are not printed for this crop; its price swings are borrowed from corn."
-    LINE9F = "Expected payments are not printed for this crop; it has too few years of its own prices, so its price swings are corn&rsquo;s."
+    LINE9 = "Expected payments are not printed for this crop: it does not have enough of its own price history."
+    LINE9F = LINE9
     sv = {"verdict": "close", "plc": 6.7625, "arc": 6.6431, "diff": 0.1194, "plc_wins": 3, "arc_wins": 3, "n": 11, "borrowed": True,
           "nousd": True, "rows": [{"arc": 1}] * 6 + [{"arc": 0}] * 5}
     ck("borrowed: verdict line keeps the call and year counts, prints no dollars",
        verdict_line(sv) == ("Close, either one: too small or too uncertain to call (PLC paid more in 3 of 11 past-year scenarios, ARC-CO in 3; "
-                            "expected payments not printed, price swings borrowed from corn).") and "$" not in verdict_line(sv)
+                            "expected payments not printed, not enough price history of its own).") and "$" not in verdict_line(sv)
        and "Leans" not in verdict_line(sv))
     ck("borrowed: the card gives the reason, no dollars, no Leans on a Close card (Story Co., IA wheat)",
        gap_line(sv, "wheat", "2026", {}) == "Too close to call. " + LINE9 and "Leans" not in gap_line(sv, "wheat", "2026", {}))
@@ -4371,6 +4390,14 @@ def selftest():
     _at = lambda py: typical_eval(_cdp, py, _e)["verdict"]
     ck("range: one call across 60% to 100% of the benchmark is printed with its crossover",
        _r["w"] == "lean_plc" and _r["dir"] == "over" and 0 < _r["x"] < 0.6 * 2430 and _at(_r["x"]) == "lean_plc" and _at(_r["x"] - 1) != "lean_plc", str(_r))
+    # the 60% rule (Nov 10, 2026): under 60% of the benchmark the call stays when it is the same at that PLC yield and
+    # across 60% to 100% (Clarke Co., IA corn at 59.9%, Leans ARC-CO every time); below the crossover it changes: withheld
+    _keep = low_call(_cdp, _e, float(_r["x"] + 10), _r)
+    _drop = low_call(_cdp, _e, float(_r["x"] - 10), _r)
+    _chg = low_call(_cdp, _e, 0.59 * 2430, dict(_r, w=None))
+    ck("60% rule: the same call at that PLC yield and across the range stays; a call that changes is withheld, marked low",
+       _keep["verdict"] == "lean_plc" and not _keep.get("low") and _drop["verdict"] == "mismatch" and _drop.get("low")
+       and _chg["verdict"] == "mismatch" and _chg.get("low"), (_keep["verdict"], _drop["verdict"], _chg["verdict"]))
     _w = rng_words(_r, _cdp, _e, "peanuts", "2026")
     ck("range: the words name the program and the PLC yield, never 'Ask FSA'",
        _w["b"] == "PLC" and f"PLC at any PLC yield over {_r['x']:,} lb." in _w["g"] and "Ask FSA" not in json.dumps(_w), _w["g"])

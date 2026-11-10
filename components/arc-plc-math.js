@@ -50,8 +50,8 @@
   function usdC(c) { return c === 0 ? '$0' : usd(c / 100); }   /* the build's usd_pay, from cents it figured */
   /* the build's BOR_NOTE and CAP_LINE: no expected dollars for a 2026 crop whose price swings are borrowed from corn
      (nousd); "held at Leans" only where that lowered a clear pick (capped) */
-  var BOR_NOTE = 'expected payments not printed, price swings borrowed from corn';
-  var CAP_LINE = 'Borrowed price swings hold the call at Leans.';
+  var BOR_NOTE = 'expected payments not printed, not enough price history of its own';
+  var CAP_LINE = 'Too little price history for a clear pick: shown as Leans.';
   var UNIT = { bu: { short: 'bu', word: 'bushel', per: '/bu' }, lb: { short: 'lb', word: 'pound', per: '/lb' } };
   function yf(cd, v, k) { return fmt(v, k == null ? 2 : k) + ' ' + UNIT[cd.u || 'bu'].short; }
   /* a benchmark yield as the page title prints it: a tenth of a bushel, a whole pound
@@ -135,7 +135,7 @@
     return 'PLC pays on any season-average price below ' + pf(cd, cy.erp) + ', up to ' + usd(maxPlc) + ' per base acre at the ' + pf(cd, cy.loan) + ' loan rate, so it ' +
       'protects against a deep price drop. ARC-CO is capped at ' + usd(maxArc) + ' per base acre but also pays when the county&rsquo;s ' +
       'yield is short; it paid something in ' + v.short + ' of the ' + v.n + ' past-year scenarios. With prices centered at ' + pf(cd, cy.cen) + ', ' +
-      (v.nousd ? 'the expected payments are not printed: its price swings are borrowed from corn.' :
+      (v.nousd ? 'the expected payments are not printed: this crop does not have enough of its own price history.' :
         'PLC is expected to pay ' + usdC(v.plc) + ' and ARC-CO ' + usdC(v.arc) + ' per base acre.');
   }
   function shortWord(v) {
@@ -288,7 +288,7 @@
     });
     return '<p><b>' + LY + '.</b> County yields come out months after harvest, so until then each scenario assumes a normal ' + esc(cname) + ' crop (FSA&rsquo;s 2026 benchmark yield) and only the price moves.\n' +
       '  Prices start from USDA&rsquo;s projected 2026/27 season-average prices (' + cen + '). Around that price we ran each past year with a final USDA price: how far that year&rsquo;s final season-average\n' +
-      '  price ended from October futures, for corn and soybeans.' + (bor.length ? ' ' + cap1j(bor) + ': expected payments are not printed, because their price swings are borrowed from corn; for the same reason their call goes no higher than Leans.' : '') + '</p>\n' +
+      '  price ended from October futures, for corn and soybeans.' + (bor.length ? ' ' + cap1j(bor) + ': expected payments are not printed and the call goes no higher than Leans, because they do not have enough of their own price history.' : '') + '</p>\n' +
       '  ' + (alts.length ? '<p><b>Two price starts.</b> ' + alts.join(' ') + ' Where the two disagree on which program leads, or on a clear pick, a clear pick drops to Leans.</p>' : '') + '\n' +
       '  <p><b>' + OY + '.</b> ' + (c7.length ? 'Corn and soybeans start from futures: ' + c7.join('; ') + '. Each scenario year also moves the county yield the way it moved that year. ' : '') +
       (nop.length ? cap1j(nop) + ': no ' + OY + ' price outlook we can check against past years, so no ' + OY + ' answer. ' : '') +
@@ -332,7 +332,7 @@
     var w_ = v.verdict, cy = cd.y[y] || cd.y['2026'];
     var erp = ' PLC pays under ' + (cd.u === 'lb' ? sayPrice(cd, cy.erp) : pf(cd, cy.erp)) + '.';
     if (v.nousd && (w_ === 'plc' || w_ === 'arc' || w_ === 'close' || w_.indexOf('lean_') === 0))
-      return (w_ === 'close' ? 'Too close to call for ' + y + '.' : WORD[w_.replace('lean_', '')] + ' leads for ' + y + '.') + ' No expected dollars: price swings borrowed from corn.' + erp;
+      return (w_ === 'close' ? 'Too close to call for ' + y + '.' : WORD[w_.replace('lean_', '')] + ' leads for ' + y + '.') + ' No expected dollars: too little price history.' + erp;
     if (w_ === 'plc' || w_ === 'arc' || w_.indexOf('lean_') === 0) return WORD[w_.replace('lean_', '')] + ' about $' + v.whole + ' more per base acre for ' + y + '.' + erp;
     if (w_ === 'close') return (v.under1 ? 'Under $1 apart for ' + y + '.' : 'About $' + v.whole + ' apart for ' + y + '.') + erp;
     if (w_ === 'none') { var cen = cy.cen; return cen ? 'At USDA&rsquo;s ' + pf(cd, cen) + ', neither pays for ' + y + '.' : 'Neither pays for ' + y + '.'; }
