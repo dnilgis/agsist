@@ -26,6 +26,9 @@ import json
 import os
 import re
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import seo_caps  # noqa: E402  the site title cap
 from datetime import datetime, timezone
 
 SC = "data/hail/state-counties.json"
@@ -327,7 +330,9 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
 
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n"
         "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
-        "<title>Hail Map " + esc(name) + ": Worst Hail Counties &amp; Hail Season | AGSIST</title>\n"
+        "<title>" + esc(seo_caps.fit(["Hail Map " + name + ": Worst Hail Counties & Hail Season | AGSIST",
+                                      "Hail Map " + name + ": Worst Hail Counties & Hail Season",
+                                      "Hail Map " + name + ": Worst Hail Counties"])) + "</title>\n"
         "<meta name=\"description\" content=\"Where it hails in " + esc(name) + ": " + str(n_yrs) + " years of NWS hail reports ranked by county, peak months, and " + share_word(dmg_in) + ", with an interactive map and address lookup.\">\n"
         "<link rel=\"canonical\" href=\"" + canonical + "\">\n"
         "<meta property=\"og:title\" content=\"Hail Map " + esc(name) + ": Worst Hail Counties | AGSIST\">\n"

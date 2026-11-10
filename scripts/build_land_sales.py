@@ -79,6 +79,7 @@ import build_land_summary as BLS   # noqa: E402
 import land_alert as LA             # noqa: E402
 import source_links as SL           # noqa: E402  no direct links to data sources
 import land_names                   # noqa: E402  names apart from the county files (Nov 4, 2026)
+import seo_caps as SEO              # noqa: E402  the site's title cap
 
 ORIGIN = "https://agsist.com"
 # Vermont and New Jersey since Oct 29, 2026 (Sig: next land states); Florida since Nov 5 (sale months, not days; its county
@@ -864,12 +865,45 @@ def best_def():
             "can just mean poorer ground." % BEST_MIN_ACRES)
 
 
+def month_title(lab, states):
+    """The month page title within the site cap (scripts/seo_caps.py): the states by name
+    when they fit, else how many, else none."""
+    sts = and_list([NAME[s] for s in states]) if states else ""
+    return SEO.fit(["Farmland sales, %s: biggest buyers and sales in %s" % (lab, sts) if sts else "",
+                    "Farmland sales, %s: biggest buyers in %d states" % (lab, len(states)) if len(states) > 1 else "",
+                    "Farmland sales, %s: biggest buyers and sales" % lab])
+
+
+def refit_title(text):
+    """A page this build does not write again (an earlier month's page, written only in its
+    own month, or a county page carried while the state's files are not in this copy): a
+    title from before the cap is refitted in place, <title> and og:title only. Anything
+    else on the page stays as it was committed."""
+    m = re.search(r"<title>([^<]*)</title>", text)
+    if not m or len(html.unescape(m.group(1))) <= SEO.TITLE_MAX:
+        return text
+    t = html.unescape(m.group(1))
+    mm = re.match(r"Farmland sales, (\w+ \d{4}): biggest buyers and sales in (.+?)(?: \| AGSIST)?$", t)
+    mc = re.match(r"Farmland Sales in (.+) County, (.+?): ", t)
+    if mm:
+        names = re.split(r", | and ", mm.group(2))
+        codes = [k for n in names for k, v in NAME.items() if v == n]
+        new = month_title(mm.group(1), codes if len(codes) == len(names) else [])
+    elif mc and any(v == mc.group(2) for v in NAME.values()):
+        new = county_title(mc.group(1), next(k for k, v in NAME.items() if v == mc.group(2)))
+    else:
+        return text
+    old_og = '<meta property="og:title" content="%s">' % m.group(1).replace(" | AGSIST", "")
+    out = text.replace(m.group(0), "<title>%s</title>" % e(new), 1)
+    return out.replace(old_og, '<meta property="og:title" content="%s">' % e(new), 1)
+
+
 def month_page(d, M, early, coverage, archive):
     key, lab = M["month"], M["label"]
     url = "%s/land-sales/%s" % (ORIGIN, key)
     nf = "/data/land/names/%s.json" % key
     sts = and_list([NAME[s] for s in M["states"]])
-    title = "Farmland sales, %s: biggest buyers and sales in %s | AGSIST" % (lab, sts)
+    title = month_title(lab, M["states"])
     big = M.get("biggest") or []
     desc = ("%d farm sales of %d acres or more in %s, %s: the biggest buyers and sales, unusual prices and the best value per acre, "
             "from the state transfer records." % (M["n"], LIST_MIN_ACRES, sts, lab))
@@ -1062,6 +1096,35 @@ def kind_counts(rows):
     return n
 
 
+def county_title(name, st):
+    """"{County}, {ST} Farmland Sales: Price per Acre, Last 12 Months", within the site's
+    title cap (scripts/seo_caps.py); a long county name drops the tail first."""
+    base = "%s County, %s Farmland Sales" % (name, st)
+    return SEO.fit([base + ": Price per Acre, Last 12 Months", base + ": Price per Acre", base,
+                    "%s, %s Farmland Sales" % (name, st)])
+
+
+def county_ld(d, st, c, cn, url, title, desc, allp, lf):
+    """WebPage and Dataset for a county page. No buyer or seller name goes in it (names live
+    apart, data/land/names, behind a tap); the Dataset points at the sale file, which has none."""
+    days = sorted(p["when"] for p in allp)
+    ds = {"@type": "Dataset", "name": "Recorded farmland sales, %s" % cn,
+          "description": ("Farm sales recorded in %s: sale date, township or town, acres, price, price per acre and type, "
+                          "read from the state's transfer records." % cn),
+          "url": url, "isAccessibleForFree": True, "license": ORIGIN + "/terms",
+          "spatialCoverage": {"@type": "Place", "name": cn},
+          "variableMeasured": ["sale date", "acres", "price", "price per acre", "type"],
+          "isBasedOn": SOURCES[st],
+          "creator": {"@type": "Organization", "name": "AGSIST", "url": ORIGIN + "/"},
+          "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": ORIGIN + lf}}
+    if days:
+        ds["temporalCoverage"] = "%s/%s" % (days[0][:10], days[-1][:10])
+    page = {"@type": "WebPage", "@id": url, "url": url, "name": title, "description": desc, "inLanguage": "en-US",
+            "dateModified": d.fetched[st],
+            "publisher": {"@type": "Organization", "name": "AGSIST", "url": ORIGIN + "/"}}
+    return {"@context": "https://schema.org", "@graph": [page, ds]}
+
+
 def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     s = SLUG[st]
     slug = county_slug(c["name"])
@@ -1069,11 +1132,12 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     nf = "/data/land/names/%s/%s.json" % (st.lower(), c["fips"]) if d.named.get(st, True) else ""
     lf = "/data/land-sales/%s/%s.json" % (st.lower(), c["fips"])
     cn = "%s County, %s" % (c["name"], NAME[st])
-    title = "Farmland Sales in %s: Every Recorded Sale and Price per Acre | AGSIST" % cn
+    title = county_title(c["name"], st)
     mid = middle_words(st, u, k24, W["w24"])
     desc = ("Every recorded farm sale in %s: date, township, acres, price, price per acre and type. %d sales in the last 12 months. %s"
             % (cn, n12all, ("Market middle %s an acre on %d bare farmland sales of %d+ acres over 24 months." % (money(u["med"]), u["n"], COMP_MIN_ACRES)) if u else ""))
-    ld = [crumbs([("AGSIST", ORIGIN + "/"), ("Farmland sales", ORIGIN + "/land-sales/"), (NAME[st], ORIGIN + "/land-sales/#" + s), (cn, url)])]
+    ld = [crumbs([("AGSIST", ORIGIN + "/"), ("Farmland sales", ORIGIN + "/land-sales/"), (NAME[st], ORIGIN + "/land-sales/#" + s), (cn, url)]),
+          county_ld(d, st, c, cn, url, title, desc[:300], allp, lf)]
     atlas = "/farmland-atlas/%s/%s" % (s, slug)
     has_atlas = (d.repo / "farmland-atlas" / s / (slug + ".html")).exists()
     page = allp[:COUNTY_ROWS]
@@ -1306,6 +1370,10 @@ def build(repo=REPO):
     if M["fresh"] and M["n"]:
         arch[key] = M["label"]
     archive = sorted(arch.items(), reverse=True)
+    for k, lab in archive:
+        f = Path(repo) / "land-sales" / ("%s.html" % k)
+        if not (k == key and M["fresh"] and M["n"]) and f.exists():
+            out["land-sales/%s.html" % k] = refit_title(f.read_text(encoding="utf-8"))
     pub = max(d.fetched.values())
     latest = None
     if M["fresh"] and M["n"]:
@@ -1400,12 +1468,14 @@ def carry(repo, d, out):
     for st in gone:
         for folder, pat in (("land-sales/" + SLUG[st], "*.html"), ("data/land-sales/" + st.lower(), "*.json"), ("data/land/names/" + st.lower(), "*.json")):
             for p in sorted((repo / folder).glob(pat)):
-                out["%s/%s" % (folder, p.name)] = p.read_text(encoding="utf-8")
+                out["%s/%s" % (folder, p.name)] = refit_title(p.read_text(encoding="utf-8")) if pat == "*.html" else p.read_text(encoding="utf-8")
         out["data/land-sales/%s.json" % st.lower()] = (repo / "data" / "land-sales" / ("%s.json" % st.lower())).read_text(encoding="utf-8")
     month = re.compile(r"(land-sales|data/land/names)/\d{4}-\d{2}\.(html|json)$")
     for k in [k for k in out if k in CROSS or month.fullmatch(k)]:
         if (repo / k).is_file():
             out[k] = (repo / k).read_text(encoding="utf-8")
+            if k.endswith(".html") and month.fullmatch(k):
+                out[k] = refit_title(out[k])
         else:
             del out[k]
     return out
@@ -1540,6 +1610,27 @@ def selftest():
         ck("month page written for September 2026", "land-sales/2026-09.html" in texts)
         ck("county page written", "land-sales/wisconsin/testa-county.html" in texts)
         ck("no name outside data/land/", not leaks(texts))
+        cp = texts["land-sales/wisconsin/testa-county.html"]
+        ck("county title: '{County}, {ST} Farmland Sales: Price per Acre, Last 12 Months'",
+           "<title>Testa County, WI Farmland Sales: Price per Acre, Last 12 Months</title>" in cp)
+        cld = [json.loads(x.replace("<\\/", "</")) for x in re.findall(r'<script type="application/ld\+json">(.*?)</script>', cp)]
+        cg = next((x["@graph"] for x in cld if "@graph" in x), [])
+        ck("county page carries WebPage and Dataset", [g["@type"] for g in cg] == ["WebPage", "Dataset"])
+        ck("the Dataset has a license and names no buyer or seller",
+           cg and cg[1].get("license") == ORIGIN + "/terms" and not leaks({"x.html": json.dumps(cg)}))
+        ck("every land title within the cap", all(len(html.unescape(re.search(r"<title>([^<]*)</title>", t).group(1))) <= SEO.TITLE_MAX
+                                                  for k, t in texts.items() if k.endswith(".html")))
+        ck("a long county name drops the tail, never past the cap",
+           county_title("Lower Connecticut River Valley Planning", "CT") == "Lower Connecticut River Valley Planning County, CT Farmland Sales")
+        old_t = ('<title>Farmland Sales in Testa County, Wisconsin: Every Recorded Sale and Price per Acre | AGSIST</title>\n'
+                 '<meta property="og:title" content="Farmland Sales in Testa County, Wisconsin: Every Recorded Sale and Price per Acre">')
+        ck("a carried county page's old title is refitted, og:title too",
+           refit_title(old_t) == ('<title>Testa County, WI Farmland Sales: Price per Acre, Last 12 Months</title>\n'
+                                  '<meta property="og:title" content="Testa County, WI Farmland Sales: Price per Acre, Last 12 Months">'))
+        ck("an old month title is refitted",
+           "<title>Farmland sales, September 2026: biggest buyers in 6 states</title>" in refit_title(
+               "<title>Farmland sales, September 2026: biggest buyers and sales in Illinois, Wisconsin, Indiana, Vermont, New Jersey and Florida | AGSIST</title>"))
+        ck("a title within the cap is left alone", refit_title("<title>Farmland Sales Prices by County | AGSIST</title>x") == "<title>Farmland Sales Prices by County | AGSIST</title>x")
         ck("a county government as a party is not a private name", public_body("Testa County", {"TESTA"}) and public_body("COUNTY OF TESTA", {"TESTA"}) and public_body("Testa County, Wisconsin", {"TESTA"})
            and not public_body("Testa County Farms LLC", {"TESTA"}) and not public_body("Smith County", {"TESTA"}))
         allnames = names_in(texts)

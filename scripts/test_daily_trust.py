@@ -195,6 +195,11 @@ check(b["sections"][0]["title"] == "Corn after the WASDE", "section title", b["s
 check(b["outside_the_pit"][0]["title"] == "NOAA winter outlook", "outside the pit title", b["outside_the_pit"][0]["title"])
 check(g.daily_page_title({"headline": "Corn takes the brunt of wasde"}, "2026-10-11").startswith(
     "Corn takes the brunt of WASDE"), "the page title too")
+_long = {"headline": "Corn settled lower 6 days straight, $4.62 on Oct 20; beans 7 days, $12.48\u00bc"}
+_t = g.daily_page_title(_long, "2026-10-21")
+check(len(_t) <= 68 and _t.endswith(" | Oct 21, 2026") and _t.startswith("Corn settled lower 6 days straight"),
+      "a long headline: the title fits the 68 cap, keeps the date, starts with the headline", _t)
+check(g.news_headline(_long).endswith("$12.48\u00bc"), "the H1 headline itself is never cut", g.news_headline(_long))
 
 print("\n5. The 2026-10-12 cents and the USDA direction\n")
 # Shipped: corn "up a quarter cent" (board +1.25c), beans "slipped seven
