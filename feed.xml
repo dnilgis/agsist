@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Mon, 09 Nov 2026 11:48:54 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 10 Nov 2026 11:49:20 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>WASDE prints at 11 CT; Dec corn is at $4.41½ overnight</title>
+      <link>https://agsist.com/daily/2026-11-10</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-10</guid>
+      <pubDate>Tue, 10 Nov 2026 11:48:30 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>USDA's WASDE and Crop Production come out at 11:00 a.m. CT today. Dec corn closed Monday at $4.39¼, and the 11:00 a.m. CT USDA report is the first number that can move it. Overnight trade added only 2¼ cents, which is a small move for a report day. That's what a market standing still looks like.
+• Grains wait on USDA
+• Hogs bounce, cattle gain
+• Crude slips on Iran signal
+Read more: https://agsist.com/daily/2026-11-10</description>
+    </item>
     <item>
       <title>Crude slips 2.9% to $88.18 as Trump signals no new Iran strikes</title>
       <link>https://agsist.com/daily/2026-11-09</link>
@@ -348,18 +360,6 @@ Read more: https://agsist.com/daily/2026-10-13</description>
 • Cattle and feeders keep climbing
 • Crude firms as tankers take more hits
 Read more: https://agsist.com/daily/2026-10-12</description>
-    </item>
-    <item>
-      <title>Corn's 4.1% WASDE drop closes out a mixed week</title>
-      <link>https://agsist.com/daily/2026-10-11</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-11</guid>
-      <pubDate>Sun, 11 Oct 2026 10:54:40 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Corn settled Friday at $4.80, down 4.1% after WASDE came in heavier than the trade wanted. Cattle shrugged it off, closing the week at $224.60, up 1.2%, with feeders up 1.7% to $343.90. December corn futures settled 20½ cents below Thursday. What that means for corn in the bin depends on your local bid and basis. (Corrected Oct 27, see the note below.)
-• Corn takes the brunt of wasde
-• Cattle and feeders close the week firm
-• Diesel politics move to the front
-Read more: https://agsist.com/daily/2026-10-11</description>
     </item>
   </channel>
 </rss>
