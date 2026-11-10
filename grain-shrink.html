@@ -25,6 +25,7 @@
   <meta name="twitter:description" content="Grain shrink calculator: what wet corn, soybeans, wheat or sorghum nets at the elevator after shrink and drying charges, and what overdry beans give away.">
 
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+  <script>/* the form opens at 20% moisture, over every crop's base, so the wet-side boxes (.w-only) show from the first paint instead of when grain-shrink-ui.js runs; a ?m= link is left to the script */try{if(!new URLSearchParams(location.search).has('m'))document.documentElement.setAttribute('data-gs','wet')}catch(e){}</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
   <!-- static-nav:fonts -->
@@ -60,6 +61,8 @@
     .gs-btn.go{background:var(--gold-fill);color:#111;border-color:var(--gold-fill)}
     .gs-btn.sm{min-height:36px;padding:0 .7rem;font-size:.85rem;font-weight:600}
     .gs-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:0 12px 12px 0;padding:.85rem 1rem .9rem;margin:0 0 .7rem}
+    /* the answer holds its filled height (verdict, line, the four figures, fine print) before the script fills it */
+    .gs-answer{min-height:250px}@media(max-width:480px){.gs-answer{min-height:321px}}
     .gs-answer.v-wet{border-left-color:var(--gold)} .gs-answer.v-dry{border-left-color:var(--red)} .gs-answer.v-ok{border-left-color:var(--green)}
     .gs-v{display:block;font-size:clamp(1.35rem,6vw,1.9rem);font-weight:800;line-height:1.15;color:var(--text);margin:0 0 .4rem}
     .gs-answer p{margin:.3rem 0 0;font-size:.94rem;line-height:1.5;color:var(--text)}
