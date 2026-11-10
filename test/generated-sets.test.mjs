@@ -152,12 +152,70 @@ test("main-checks.yml: a set whose builder changed is rebuilt on main before the
   const out = py(`import generated_sets as G
 ch = [(100, ["data/bids.json", "rain/iowa/x.html"]), (200, ["scripts/build_county_rain.py"]), (300, ["scripts/cross_links.py"]), (400, ["scripts/build_cash_bid_pages.py"])]
 p = G.pending(ch)
-print(json.dumps({"rain": p.get("rain"), "cash": p.get("cash-bids"), "prf": p.get("prf"), "land": p.get("land-sales"), "none": G.pending([(9, ["rain/a.html", "data/x.json"])])}))`);
-  assert.deepEqual(JSON.parse(out), { rain: 300, cash: 400, prf: 300, land: null, none: {} },
+print(json.dumps({"rain": p.get("rain"), "cash": p.get("cash-bids"), "prf": p.get("prf"), "land": p.get("land-sales"), "info": p.get("infographic"), "none": G.pending([(9, ["rain/a.html", "data/x.json"])])}))`);
+  // land sales imports cross_links since its county pages carry the same-state row (Nov 10, 2026); the
+  // infographic set imports neither changed module
+  assert.deepEqual(JSON.parse(out), { rain: 300, cash: 400, prf: 300, land: 300, info: null, none: {} },
     "a builder or a module it imports changed: pending from that commit; data and page commits never");
   const r = spawnSync("python3", ["scripts/generated_sets.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /all generated_sets checks passed/);
+});
+
+test("main-checks: a network set's run cancelled by its workflow's concurrency group counts the newer run that replaced it", () => {
+  // Nov 10: the dispatched cash-bid-pages run was cancelled when a newer run queued; main-checks went red although
+  // the newer run rebuilt the pages. Fake run lists: the watched run by hand, then what came after it.
+  const out = py(`import generated_sets as G
+S = next(s for s in G.SETS if s["id"] == "cash-bids")
+GONE = {"id": 1, "event": "workflow_dispatch", "status": "completed", "conclusion": "cancelled", "head_branch": "main", "created_at": "2026-11-10T02:29:41Z"}
+def run(i, t, c, st="completed", ev="workflow_run"):
+    return {"id": i, "event": ev, "status": st, "conclusion": c, "head_branch": "main", "created_at": t}
+class Fake:
+    repo = "o/r"
+    def __init__(self, seq, jobs=None):
+        self.seq, self.jobs, self.posts = list(seq), jobs or {}, 0
+    def call(self, m, path, body=None):
+        if m == "POST":
+            self.posts += 1
+            return None
+        if "/jobs" in path:
+            rid = int(path.split("/runs/")[1].split("/")[0])
+            return {"jobs": [{"name": "gate", "conclusion": "success"}, {"name": "build", "conclusion": self.jobs.get(rid, "success")}]}
+        if "event=workflow_dispatch" in path:
+            return {"workflow_runs": [GONE]}
+        rs = self.seq.pop(0) if len(self.seq) > 1 else self.seq[0]
+        return {"workflow_runs": [GONE, run(0, "2026-11-10T02:00:00Z", "failure")] + rs}
+class Clock:
+    t = 0.0
+    def __call__(self): return self.t
+    def sleep(self, n): self.t += n
+def go(seq, jobs=None, wait=30):
+    c = Clock(); g = Fake(seq, jobs)
+    r = G.await_network(g, S, G._ts("2026-11-10T02:20:00Z"), wait_min=wait, sleep=c.sleep, clock=c)
+    return [r, g.posts]
+ok = run(2, "2026-11-10T02:30:10Z", "success")
+print(json.dumps({
+  "then_success": go([[ok]]),
+  "none_newer": go([[]]),
+  "then_failure": go([[run(2, "2026-11-10T02:30:10Z", "failure")]]),
+  "gate_skipped": go([[ok]], {2: "skipped"}),
+  "gate_skipped_then_built": go([[ok, run(3, "2026-11-10T04:30:00Z", "success")]], {2: "skipped"}),
+  "chain": go([[run(2, "2026-11-10T02:30:10Z", "cancelled"), run(3, "2026-11-10T02:31:00Z", "success")]]),
+  "waits": go([[run(2, "2026-11-10T02:30:10Z", None, "in_progress")], [run(2, "2026-11-10T02:30:10Z", "success")]]),
+  "times_out": go([[run(2, "2026-11-10T02:30:10Z", None, "in_progress")]], wait=5),
+}))`);
+  const r = JSON.parse(out.trim().split("\n").pop());
+  assert.deepEqual(r.then_success, ["success", 0], "cancelled, then a newer run that rebuilt: pass");
+  assert.deepEqual(r.none_newer, ["cancelled (no newer run)", 0], "cancelled with no newer run: fail");
+  assert.deepEqual(r.then_failure, ["newer run 2 failure", 0], "cancelled, then a newer run that failed: fail");
+  assert.deepEqual(r.gate_skipped, ["cancelled (no newer run rebuilt the pages)", 0], "a newer run whose build job its gate skipped did not rebuild");
+  assert.deepEqual(r.gate_skipped_then_built, ["success", 0]);
+  assert.deepEqual(r.chain, ["success", 0], "a newer run cancelled in turn passes the wait on to the one after it");
+  assert.deepEqual(r.waits, ["success", 0], "a newer run still going is waited for");
+  assert.deepEqual(r.times_out, ["timed out", 0], "the wait is bounded");
+  const wf = read(".github/workflows/cash-bid-pages.yml");
+  const S = T.sets.find((s) => s.id === "cash-bids");
+  assert.ok(new RegExp(`\\n  ${S.build_job}:\\n`).test(wf), `cash-bid-pages.yml has the job the wait checks (${S.build_job})`);
 });
 
 test("merge-when-green: no merge on checks run against an older main", () => {

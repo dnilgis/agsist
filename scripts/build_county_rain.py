@@ -1232,6 +1232,7 @@ def state_page(st, d, pages, none_rows, recs=None, ctxs=None):
     {none_html}
     {GAUGE_SLOT}
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. <a href="/rain">Every state</a> &middot; <a href="/rain-print">Rain Print</a></p>
+    {XL.same_state_row(ROOT, st_slug, e(stn), "rain")}
     {terms_fold(f"Daily NOAA records through {ACIS_LINK}, read {long_date(d['fetched'][:10])}; updated daily.", f"Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each {u1} page has the month by month table.")}
   </div>
 {FOOT_GAUGE}"""

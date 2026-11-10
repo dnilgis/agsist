@@ -1,10 +1,6 @@
 {
  "about": "Pointer pages for retired pages: path, where it sends readers, and the date retired.",
  "pointers": {
-  "cash-bids/company/agrowstar.html": {
-   "to": "/cash-bids/company/",
-   "since": "2026-11-07"
-  },
   "cash-bids/company/farmers-cooperative-elevator-company.html": {
    "to": "/cash-bids/company/",
    "since": "2026-10-28"
@@ -12,30 +8,6 @@
   "cash-bids/company/new-cooperative.html": {
    "to": "/cash-bids/company/",
    "since": "2026-10-29"
-  },
-  "cash-bids/georgia/bonaire.html": {
-   "to": "/cash-bids/georgia/",
-   "since": "2026-11-07"
-  },
-  "cash-bids/georgia/calhoun.html": {
-   "to": "/cash-bids/georgia/",
-   "since": "2026-11-07"
-  },
-  "cash-bids/georgia/davisboro.html": {
-   "to": "/cash-bids/georgia/",
-   "since": "2026-11-07"
-  },
-  "cash-bids/georgia/louisville.html": {
-   "to": "/cash-bids/georgia/",
-   "since": "2026-11-07"
-  },
-  "cash-bids/georgia/sylvania.html": {
-   "to": "/cash-bids/georgia/",
-   "since": "2026-11-07"
-  },
-  "cash-bids/georgia/wrens.html": {
-   "to": "/cash-bids/georgia/",
-   "since": "2026-11-07"
   },
   "cash-bids/indiana/ladoga.html": {
    "to": "/cash-bids/indiana/",
@@ -308,18 +280,6 @@
   "cash-bids/ohio/saint-marys.html": {
    "to": "/cash-bids/ohio/",
    "since": "2026-10-15"
-  },
-  "cash-bids/south-carolina/conway.html": {
-   "to": "/cash-bids/south-carolina/",
-   "since": "2026-11-07"
-  },
-  "cash-bids/south-carolina/kingstree.html": {
-   "to": "/cash-bids/south-carolina/",
-   "since": "2026-11-07"
-  },
-  "cash-bids/south-carolina/lynchburg.html": {
-   "to": "/cash-bids/south-carolina/",
-   "since": "2026-11-07"
   },
   "cash-bids/texas/morton.html": {
    "to": "/cash-bids/texas/dumas",
