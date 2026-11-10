@@ -74,12 +74,13 @@ test("the measured network is found by exact state name, last part first", () =>
   assert.equal(R.invKey(undefined), "");
   for (const s of ["Iowa", "Indiana", "Kansas", "Michigan", "Missouri", "North Dakota", "Minnesota", "South Dakota", "Oklahoma"]) {
     const n = R.INV_NETS[s];
-    assert.ok(n && /^https?:\/\//.test(n.u) && n.n, s);
+    // named in plain text, no address to send the reader to (Oct 29 no-data-links rule; Nov 10)
+    assert.ok(n && n.n && n.u === undefined, s);
   }
-  // Illinois and Kentucky were "Coming Soon" on the MRCC list: no link until they are live.
+  // Illinois and Kentucky were "Coming Soon" on the MRCC list: not named until they are live.
   assert.equal(R.INV_NETS.Illinois, undefined);
   assert.equal(R.INV_NETS.Kentucky, undefined);
-  assert.equal(R.INV_NETS.Minnesota.u, R.INV_NETS["North Dakota"].u);
+  assert.equal(R.INV_NETS.Minnesota.n, R.INV_NETS["North Dakota"].n);
 });
 
 test("page copy: no em dashes in the new lines, the cutoff is explained in the dicamba rules", () => {
@@ -125,7 +126,7 @@ test("in the browser: a saved Kansas field shows the Kansas Mesonet link under t
     await pg.waitForFunction(() => { const e = document.getElementById("fc-inv-net"); return e && !e.hidden; });
     const t = await pg.$eval("#fc-inv-net", (e) => e.textContent);
     assert.match(t, /Measured inversion near you: Kansas Mesonet/);
-    assert.equal(await pg.$eval("#fc-inv-net a", (a) => a.href), "https://mesonet.k-state.edu/agriculture/inversion/");
+    assert.equal(await pg.$$eval("#fc-inv-net a", (a) => a.length), 0, "the network is named, not linked");
     await pg.evaluate(() => localStorage.setItem("agsist-spray-net", ""));
     await pg.reload();
     await pg.waitForTimeout(300);
