@@ -190,7 +190,12 @@ test("the live price file gives a P and a K price with a source and date", () =>
 });
 
 test("page: head, byline, canonical, sources and honest empty states", () => {
-  assert.match(html, /<title>[^<]*Nutrient Removal[^<]*\| AGSIST<\/title>/);
+  assert.match(html, /<title>[^<]*Nutrient Removal[^<]*<\/title>/);
+  // the site title rule (scripts/seo_caps.py): at most 68 characters, and " | AGSIST" gives way
+  // first when the whole title would not fit with it
+  const tt = html.match(/<title>([^<]*)<\/title>/)[1].replace(/&amp;/g, "&");
+  assert.ok(tt.length <= 68, `title ${tt.length} chars: ${tt}`);
+  assert.ok(tt.endsWith(" | AGSIST") || (tt + " | AGSIST").length > 68, `the brand fits and is missing: ${tt}`);
   assert.match(html, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/nutrient-removal">/);
   assert.match(html, /Sigurd Lindquist, CCA/);
   assert.equal((html.match(/<h1\b/g) || []).length, 1);
