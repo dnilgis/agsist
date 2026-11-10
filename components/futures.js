@@ -496,7 +496,7 @@ function renderCropProgress(data){
       pace.style.display='block';
     }else if(pace){pace.style.display='none';}
   }else if(plantSec){plantSec.style.display='none';}
-  /* Harvest (futures audit 8, Nov 10 2026): the card read the condition week (Oct 11) while the
+  /* Harvest (Nov 10 2026): the card read the condition week (Oct 11) while the
      hero read the newest week in the same file (Nov 1, harvest). In harvest the newest week is
      the harvest week, shown in the progress bar, and the condition says the week it was rated. */
   var hv=cropHarvestWeek(d);
@@ -807,7 +807,7 @@ function loadWasde(){
         if(p.length!==3)return false;
         var dt=new Date(parseInt(p[0],10),parseInt(p[1],10)-1,parseInt(p[2],10));
         if(isNaN(dt.getTime()))return false;
-        /* today and tomorrow by the Central calendar, not the reader's clock (futures audit 9, Nov 10 2026) */
+        /* today and tomorrow by the Central calendar, not the reader's clock (Nov 10 2026) */
         var tc=ctISODate(new Date()).split('-'),dd=Math.round((Date.UTC(+p[0],+p[1]-1,+p[2])-Date.UTC(+tc[0],+tc[1]-1,+tc[2]))/86400000);
         if(dd<0)return false;
         wEl.textContent=name+' · '+MN[dt.getMonth()]+' '+dt.getDate()+' · '+(dd===0?'today':dd===1?'tomorrow':'in '+dd+' days');

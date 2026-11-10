@@ -1,4 +1,4 @@
-/* Futures pages audit, Nov 10 2026 (notes/audits/futures-audit-2026-11-10.md), from the real cases:
+/* Futures pages wording, Nov 10 2026, from the real cases:
  *   1. delayed quotes called "live" or "real-time" (soybean crush FAQ "from real-time soy complex
  *      prices", cattle JSON-LD "Live CME ... futures", the cattle fallback "Live CME futures").
  *   2. the delay said three ways ("delayed about 15 min", "a 10-minute exchange delay", "10 to 25
@@ -49,10 +49,15 @@ test("no delayed quote is called live or real-time: pages, JSON-LD, meta, fallba
   assert.doesNotMatch(cat, /Live prices unavailable/);
 });
 
-test("one delay statement: delayed 10 to 25 min, never 'about 15' or 'a 10-minute delay'", () => {
+test("one delay statement: delayed 10 to 25 min, never 'a 10-minute delay'; 'about 15' only in the footer source line", () => {
   let n = 0;
   for (const f of PAGES) {
-    const h = read(f);
+    // the grain pages' footer source line keeps main's words, "Prices from Yahoo Finance (delayed
+    // about 15 min)", with no chart-site link; that one line is the only "about 15" a page may carry
+    const raw = read(f);
+    assert.ok((raw.match(/Prices from Yahoo Finance \(delayed about 15 min\)/g) || []).length <= 1, f);
+    assert.doesNotMatch(raw, /TradingView link/, f);
+    const h = raw.replace(/Prices from Yahoo Finance \(delayed about 15 min\)/, "");
     assert.doesNotMatch(h, /delayed about 15|delayed ~15|10-minute exchange delay|delayed about 10 to 25/i, f);
     n += (h.match(/delayed 10 to 25 min/g) || []).length;
   }

@@ -213,7 +213,7 @@ test('each page carries its box and the component; credits and the not-the-index
       const i = html.indexOf('data-feeder="' + k + '"');
       assert.doesNotMatch(html.slice(i, html.indexOf('</section>', i)), /\$\d/, p + ': no number baked into the ' + k + ' box');
     }
-    // Sig, Nov 10 2026: RMA's value (with its RMA-minus-futures line) is its own section, never
+    // Nov 10 2026: RMA's value (with its RMA-minus-futures line) is its own section, never
     // paired with our index, so the two do not read as a comparison. Something else always sits between.
     assert.doesNotMatch(html, /class="fx-pair"/, p + ': no pair box');
     const ix = html.indexOf('data-feeder="index"'), rm = html.indexOf('data-feeder="rma"');

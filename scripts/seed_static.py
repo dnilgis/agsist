@@ -66,7 +66,7 @@ PAGES = {
 }
 
 # The description, with no number (2026-10-17 for a file with no settle; every
-# day from Nov 10 2026, Sig: prices out of titles and descriptions).
+# day from Nov 10 2026: prices out of titles and descriptions).
 DESC_PLAIN = {
     "corn-futures-prices.html": "Chicago Board of Trade (CBOT) corn futures, quotes delayed 10 to 25 min "
                                 "in session. December new-crop, basis, daily read.",
@@ -405,7 +405,7 @@ def quote_when(q, fetched):
     settle "refreshed" in session, on a Sunday."""
     live, label = quote_state(q, fetched, "grain")
     noun = "Overnight trade" if live is True and overnight_trade(q) else state_words(live)[1]
-    # 2026-11-10 (futures audit 2): in session close_time IS the fetch, so the
+    # 2026-11-10: in session close_time IS the fetch, so the
     # time is when the site read the quote, not "last trade" at it. After the
     # bell close_time is the bell and "Last trade" stays. Twin: price-local.js stampParts.
     if noun == "Last trade" and (q or {}).get("close_kind") == "last":
@@ -4094,7 +4094,7 @@ def seed_futures_pages(prices, today):
                 t, c4 = seed_between(t, "pxtable", tbl)
                 changed = changed or c4
 
-            # meta description: no price (Sig, Nov 10 2026). A snippet sits in
+            # meta description: no price (Nov 10 2026). A snippet sits in
             # search for days and lagged the body every weekday afternoon (the
             # 20:35Z bake cannot see the settle); the price lives in the body.
             if page in DESC_PLAIN:
@@ -4139,7 +4139,7 @@ def seed_futures_pages(prices, today):
             note = ("Live cattle " + state_words(live)[0] + (" at" if live is False else " near") + " <strong>$" + lc + "</strong>" + stale
                     + ((" &middot; feeders near $" + gf) if gf else "")
                     + " &middot; $/cwt &middot; as of " + flabel + ".")
-            # the source and the delay are the page's one data line under it (futures audit, Nov 10 2026)
+            # the source and the delay are the page's one data line under it (Nov 10 2026)
             t, c2 = seed_between(t, "note", note)
             changed = c1 or c2
         else:

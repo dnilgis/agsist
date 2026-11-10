@@ -90,7 +90,7 @@ test("futures pages: Brazil's export share, the July Cattle report, the ratio se
   }
   const c = read("cattle-futures-prices.html");
   assert.equal((c.match(/released in January and again in July \(USDA skipped the July report in 2024 only\)/g) || []).length, 2);
-  // Nov 10 2026 (futures audit 4): the count comes from the contracts drawn, never a typed "five" (test/futures-wording)
+  // Nov 10 2026: the count comes from the contracts drawn, never a typed "five" (test/futures-wording)
   assert.match(c, /<span id="fwd-n">the nearest contracts<\/span>, nearest first\./);
 });
 

@@ -242,7 +242,7 @@ function loadGrainPrices(){
     else if(hc){CORN.fut=CORN.nearby;CORN.label='nearby';CORN.date=hc.q.close_date||'';}
     fillCorn();
     var ebp=document.getElementById('eco-bean-price');if(hb&&ebp){ebp.textContent=fmtGrain(hb.q.close);unit('eco-bean-price',hb);} /* key is 'beans' in prices.json: 'soybeans' never existed, tile sat at "-" (fixed 2026-07-20) */
-    var hw=hd('wheat'),ewp=document.getElementById('eco-wheat-price');if(hw&&ewp){ewp.textContent=fmtGrain(hw.q.close);unit('eco-wheat-price',hw);} /* the nearby month, named, not ZW=F (futures audit 7) */
+    var hw=hd('wheat'),ewp=document.getElementById('eco-wheat-price');if(hw&&ewp){ewp.textContent=fmtGrain(hw.q.close);unit('eco-wheat-price',hw);} /* the nearby month, named, not ZW=F */
     updateEcoCosts();
   }).catch(function(){calcNC();});
 }
@@ -322,7 +322,7 @@ function fillCorn(){
     var q=pj&&pj.quotes?pj.quotes:{};
     function g(id){return document.getElementById(id);}
     function dollarsBu(v){return v!=null?'$'+(parseFloat(v)/100).toFixed(2):null;}
-    /* 2026-11-10 (futures audit 7): each tile reads its nearby contract and names
+    /* 2026-11-10: each tile reads its nearby contract and names
        the month. The bare key is Yahoo's continuous series: quotes.beans carried the
        Jan '27 close beside the Nov '26 settle past first notice. */
     var PS=window.AgPxStamp,near=function(c){var h=PS&&PS.headline?PS.headline(pj,c):null;if(h&&h.q&&h.q.close&&h.label)return h;var n=q[c+'-nearby'],lab=n&&n.ticker&&PS&&PS.label?PS.label(n.ticker):'';return n&&n.close&&lab?{q:n,label:lab}:null;};

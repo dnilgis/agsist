@@ -798,7 +798,7 @@ def seo_breakeven(c):
     # ask for a number: "break even price for corn" 35 impressions, "corn
     # break even price" 10. The description gives the calculator's own
     # opening example, labeled as an example.
-    # 2026-11-10 (Sig): no futures price and no date in the title or the
+    # 2026-11-10: no futures price and no date in the title or the
     # description. A snippet sits in search for days; the board price is on
     # the page, beside the calculator. The example is the calculator's own
     # cost and yield, which do not move with the market.
@@ -916,17 +916,17 @@ FUTURES = {
 # "feeder cattle futures", 3,665 impressions at position 6.5, so that phrase
 # goes in whole and both animals are named.
 CATTLE_PAGE = "cattle-futures-prices.html"
-# 2026-11-10 (Sig): "Feeder and Live Cattle Futures Prices", no CME brand in
+# 2026-11-10: "Feeder and Live Cattle Futures Prices", no CME brand in
 # the title (the source credit, CME Group futures via Yahoo Finance, delayed,
 # is in the page body and its Sources fold) and no price or date.
-# Nov 10 (lead, search-matched): "Today" added; still no CME, no price, no date.
+# Nov 10 (search-matched): "Today" added; still no CME, no price, no date.
 CATTLE_TITLE = "Feeder and Live Cattle Futures Prices Today" + SUFFIX
 CATTLE_DESC = ("Feeder and live cattle futures, quotes delayed 10 to 25 min in session, "
                "with 5-year ranges, the feeder-to-live ratio and a cost-of-gain calculator.")
 
 
 def seo_cattle(c):
-    """Fixed words (Sig, Nov 10 2026: prices and dates out of titles and
+    """Fixed words (Nov 10 2026: prices and dates out of titles and
     descriptions). The title and description lagged the body every weekday
     from the 1:05 p.m. CT close until the settle posted near 11 p.m. CT, and
     search kept the old price for days. The price lives in the page body."""
@@ -982,14 +982,14 @@ def _known_trade(q):
 # impressions at 9.2 and "c bot live" 99 at 7.0, no clicks, while the title
 # was a date line ("Ag Markets Oct 16") with no CBOT in it. The description
 # says delayed, never "live": quotes are 10 to 25 minutes behind (data-sources).
-# 2026-11-10 (Sig): this is the markets title every day, no price, no date.
-# Nov 10 (lead): the search-matched words, "Grain Futures Prices Today".
+# 2026-11-10: this is the markets title every day, no price, no date.
+# Nov 10: the search-matched words, "Grain Futures Prices Today".
 MARKETS_PLAIN = ("Grain Futures Prices Today: Corn, Soybeans, Wheat" + SUFFIX,
                  "Corn, soybean, wheat, cattle and crude futures on one board, quotes delayed "
                  "10 to 25 min in session, with settles, cash bids and USDA dates. Free.")
 
 
-# Nov 10 2026 (lead): search-matched titles, each under the 68-character cap.
+# Nov 10 2026: search-matched titles, each under the 68-character cap.
 FUTURES_TITLES = {
     "corn-futures-prices.html": "Corn Prices Today: CBOT Corn Futures Quotes",
     "soybean-futures-prices.html": "Soybean Prices Today: CBOT Soybean Futures per Bushel",
@@ -999,7 +999,7 @@ FUTURES_TITLES = {
 
 def futures_title(page):
     """'Corn Prices Today: CBOT Corn Futures Quotes | AGSIST': what the page is,
-    in the words people search, with no price and no date (Sig, Nov 10 2026).
+    in the words people search, with no price and no date (Nov 10 2026).
     From the 1:20 p.m. CT close until Yahoo posts the settle near 11 p.m. CT a
     priced title held the session before, a day behind the body, and search
     caches it."""
@@ -1038,7 +1038,7 @@ def _usd(v):
 
 
 def seo_markets(c):
-    """Fixed words (Sig, Nov 10 2026): no price and no date in the markets
+    """Fixed words (Nov 10 2026): no price and no date in the markets
     title or description. The board's settles are on the page."""
     return MARKETS_PLAIN
 
@@ -2005,7 +2005,7 @@ def selftest():
     ck("breakeven.html carries the be-example markers", bake_body(_bp, "be-example", "x")[1])
     ck("the cost lines' crop year is read from the page", _be_budget_year("var BUDGETS={year:2027,src:'x'") == 2027
        and _be_budget_year("nothing") is None)
-    ck("the break-even snippet carries no board price (Sig, Nov 10 2026)",
+    ck("the break-even snippet carries no board price (Nov 10 2026)",
        "futures are near" not in _bd and "$4.74" not in seo_breakeven(dict(ctx, prices={"quotes": {"corn": {"close": 474.25}}}))[1])
 
     print("\nusda calendar rolls at the print")
@@ -2069,7 +2069,7 @@ def selftest():
             ck(f"crop tour '{label}' within caps", False, str(exc))
 
     print("\nfutures, cattle, markets and breakeven: no price and no date in a title or description")
-    # Sig, Nov 10 2026. The real cases they replace: "CBOT Soybean Futures Price: Aug '26 $11.76"
+    # Nov 10 2026. The real cases they replace: "CBOT Soybean Futures Price: Aug '26 $11.76"
     # (Sep's price under Aug's name, 2026-08-16), "CBOT Corn Futures Price: Dec '26 $4.74 1/4
     # (Oct 16)" beside a body at $4.66 3/4 on the evening of Oct 19, and "CME Feeder Cattle
     # Futures $343.625 & Live Cattle $227.55 (Oct 16)", a day behind every weekday evening.
@@ -2113,7 +2113,7 @@ def selftest():
        and PAGES["soybean-futures-prices.html"][0](ctx)[0] == "Soybean Prices Today: CBOT Soybean Futures per Bushel | AGSIST"
        and PAGES["wheat-futures-prices.html"][0](ctx)[0] == "Wheat Prices Today: Chicago and KC Wheat Futures | AGSIST",
        [PAGES[_p][0](ctx)[0] for _p in FUTURES])
-    ck("the cattle title is Sig's words, no CME brand",
+    ck("the cattle title has no CME brand",
        PAGES[CATTLE_PAGE][0](ctx)[0] == "Feeder and Live Cattle Futures Prices Today | AGSIST"
        and "CME" not in "".join(PAGES[CATTLE_PAGE][0](ctx)), PAGES[CATTLE_PAGE][0](ctx))
     ck("the grain futures pages write no description here (seed_static owns it)",

@@ -118,7 +118,7 @@ test('the pages that say settled read the settle fields', () => {
   assert.match(gs, /close_kind === 'settle'/);
   const bh = fs.readFileSync(path.join(root, 'components/bids-homepage.js'), 'utf8');
   assert.match(bh, /x\.d === day && !x\.p/, 'a provisional evening day is not a settle');
-  // the baked descriptions carry no price since Nov 10 2026 (Sig), and nothing bakes "closed"
+  // the baked descriptions carry no price since Nov 10 2026, and nothing bakes "closed"
   const ss = fs.readFileSync(path.join(root, 'scripts/seed_static.py'), 'utf8');
   assert.match(ss, /DESC_PLAIN = \{/);
   assert.doesNotMatch(ss, /\{mon\} settled \$\{px\}/);

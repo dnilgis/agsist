@@ -48,7 +48,7 @@ s.seed_futures_pages(json.loads(sys.argv[1]), '2026-10-14')
   execFileSync('python3', ['-c', py, JSON.stringify(prices)], { stdio: 'pipe' });
   const out = fs.readFileSync(path.join(dir, 'soybean-futures-prices.html'), 'utf8');
   const desc = /<meta name="description" content="([^"]*)"/.exec(out)[1];
-  // Sig, Nov 10 2026: no price and no date in the description at all (the 8:31 a.m. trade case above can no longer reach it)
+  // Nov 10 2026: no price and no date in the description at all (the 8:31 a.m. trade case above can no longer reach it)
   assert.equal(desc, 'Chicago Board of Trade (CBOT) soybean futures, quotes delayed 10 to 25 min in session. Crush spread, cash bids.');
   assert.doesNotMatch(desc, /\$|%|a\.m\.|p\.m\.|12\.8|Oct/, desc);
 });

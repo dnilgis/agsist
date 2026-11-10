@@ -2,7 +2,7 @@
  * /cash-bid-index and the Field Scout land card (2026-10-17, re-score 7).
  *
  * Stamps: a settle says "Oct 16 settle", a trade in session "Read <time> CT; quotes delayed 10 to 25 min"
- * (the time the site read it, futures audit Nov 10 2026), a trade after the bell "Last trade at the <bell> bell".
+ * (the time the site read it, Nov 10 2026), a trade after the bell "Last trade at the <bell> bell".
  * State line: only for a saved state, from data/basis-states.json, hand-worked:
  *   Illinois corn, Oct 17 file: median basis -0.31 on ZCZ26, 186 elevators.
  *   Dec '26 corn settled 474.25 on Oct 16. 474.25 - 31 = 443.25 cents -> "about $4.43".

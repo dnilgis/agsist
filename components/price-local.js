@@ -219,7 +219,7 @@
       (o.hero ? 'at ' + esc(at) + '. ' : trade + ' at ' + esc(at) + '. ') + ref + '.</span>';
   }
 
-  /* The one delay statement (futures audit Nov 10, 2026): Yahoo lists CBOT and
+  /* The one delay statement (Nov 10, 2026): Yahoo lists CBOT and
      CME futures about 10 minutes behind and the site reads them about every
      15 minutes, so a grain or livestock quote is 10 to 25 minutes old in
      session (editorial-standards, terms). Energy, metals and the dollar can

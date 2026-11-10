@@ -1,4 +1,4 @@
-/* CLS sweep, Nov 10 2026 (notes/audits/cls-sweep-2026-11-10.md, rows 8 and 15-17): with a saved ZIP
+/* Layout shift, Nov 10 2026: with a saved ZIP
  * (Chetek WI 54728) /markets shifted 0.122 at 390 and the corn, soybean and wheat futures pages about
  * 0.07, because the state bid line (p.pl-line[data-state-bid]) was written hidden and shown 3 to 5 s
  * later with no space held. The homepage holds it with AgPxStamp.reserve (price-local.js placeholder,

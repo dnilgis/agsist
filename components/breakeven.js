@@ -407,7 +407,7 @@
       var md = cd.slice(5).split('-'), when = MON[+md[0] - 1] + ' ' + (+md[1]);
       return { chg: ch, prev: prev, text: when + ' settle' + (ch != null && q.prev_date ? ', change from ' + day(q.prev_date).replace(/, \d{4}$/, '') : '') };
     }
-    /* 2026-11-10 (futures audit 2): when the site read the quote, in Central time, and the one
+    /* 2026-11-10: when the site read the quote, in Central time, and the one
        delay statement (AgPxStamp.stamp), not "last trade as of" the viewer's clock */
     var P = W.AgPxStamp, s = P && P.stamp && q.close_kind === 'last' ? P.stamp(q, _pricesFetched) : '';
     if (!s && P && P.clock && _pricesFetched) s = 'Read ' + P.clock(_pricesFetched) + '; ' + P.DELAY;
@@ -452,7 +452,7 @@
      corn from Nov 30). The page printed Nov '26 against a basis line on Jan '27. */
   function thisCropKey(c) {
     var k = CROP_PRICE_KEY[c], P = W.AgPxStamp;
-    /* wheat: the nearby dated contract, named, never the continuous ZW=F (futures audit 7) */
+    /* wheat: the nearby dated contract, named, never the continuous ZW=F */
     if (c === 'wheat') { var wn = _livePrices && _livePrices['wheat-nearby']; return wn && wn.close != null && tickerYM('wheat-nearby') ? 'wheat-nearby' : k; }
     if (!P || !P.headline || !_livePrices) return k;
     /* only the file's own headline (<crop>-nearby): with none on file the harvest month stands */
