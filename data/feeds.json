@@ -62,7 +62,7 @@
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "1 launch every day at about 6am Central, and more on set days of each month",
+   "cadence": "5 launches every day at about 6am, 10am, 2pm Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -936,7 +936,7 @@
     "Build State Stats (USDA NASS)",
     "yield-panel"
    ],
-   "cadence": "1 launch on a fixed schedule at about 9am Central, and more on set days of each month",
+   "cadence": "5 launches on a fixed schedule at about 9am, 10am, 11am, 4pm Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -967,7 +967,7 @@
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Fetch Prices"
    ],
-   "cadence": "1 launch on a fixed schedule at about 9am Central, and more on set days of each month",
+   "cadence": "5 launches on a fixed schedule at about 9am, 10am, 11am, 4pm Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -1465,7 +1465,7 @@
    "touched_by": [
     "Hay prices"
    ],
-   "cadence": "1 launch monthly, on days 1 and 2 at about 9am Central, and more on set days of each month",
+   "cadence": "2 launches every day at about 9am, 3pm Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2884,7 +2884,7 @@
     "Build What's Priced In",
     "yield-panel"
    ],
-   "cadence": "2 launches every day at about 4am, 11pm Central, and more on set days of each month",
+   "cadence": "7 launches every day at about 4am, 10am, 2pm, 8pm Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2946,7 +2946,7 @@
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "2 launches on a fixed schedule at about 6am Central, and more on set days of each month",
+   "cadence": "6 launches on a fixed schedule at about 6am, 10am, 2pm Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2978,7 +2978,7 @@
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "4 launches on set days of each month at about 10am, 11am, 2pm Central",
+   "cadence": "4 launches every day at about 10am, 2pm Central",
    "curated": false,
    "planned": false,
    "external": false,
