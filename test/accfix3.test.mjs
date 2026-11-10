@@ -70,7 +70,12 @@ test("arc-plc: 10-acre rule, peanut limit, Childress title, trigger at the bench
   const tx = JSON.parse(read("data/arc-plc/math/TX.json")).c["48075"], wi = tx.e.wheat.findIndex((e) => e.d === "irr");
   if (tx.v.wheat[wi]["2026"][0] !== "mismatch") assert.match(c, /<title>Childress (?:County|Co\.), TX ARC or PLC 2026: Irrigated wheat (?:Benchmark )?36\.5 bu/);
   else assert.match(c, /<title>Childress (?:County|Co\.), TX ARC or PLC 2026: Non-irrigated wheat (?:Benchmark )?17\.9 bu/);
-  assert.match(c, /comes in under <b>41\.6 bu<\/b> at USDA&rsquo;s price outlook, \$5\.70\. That is above the 41\.0 bu benchmark/);  // the benchmark to a tenth, as the title prints it (Oct 19, 2026; was 41.00)
+  // the barley benchmark to a tenth, as the title prints it (Oct 19, 2026; was 41.00). The trigger yield and the price
+  // move with each WASDE, so they are read off the line and checked against each other, the benchmark from the data.
+  const bb = Number(tx.e.barley[0].by).toFixed(1);
+  const bl = c.match(new RegExp(`comes in under <b>(\\d+\\.\\d) bu</b> at USDA&rsquo;s price outlook, \\$(\\d+\\.\\d{2})\\. That is (above|below) the ${bb.replace(".", "\\.")} bu benchmark`));
+  assert.ok(bl, `the barley line names its trigger to a tenth and the ${bb} bu benchmark`);
+  assert.equal(bl[3], Number(bl[1]) > Number(bb) ? "above" : "below", "above or below agrees with the numbers");
 });
 
 test("cash bids: Hold-to note says how the month is picked; Alabama listed; top-bid heading", () => {
@@ -90,7 +95,8 @@ test("futures pages: Brazil's export share, the July Cattle report, the ratio se
   }
   const c = read("cattle-futures-prices.html");
   assert.equal((c.match(/released in January and again in July \(USDA skipped the July report in 2024 only\)/g) || []).length, 2);
-  assert.match(c, /five contracts in all, this month first\./);
+  // Nov 10 2026: the count comes from the contracts drawn, never a typed "five" (test/futures-wording)
+  assert.match(c, /<span id="fwd-n">the nearest contracts<\/span>, nearest first\./);
 });
 
 test("hail: averages and words use the same 4.8-year span; 1-inch severe share; NSSL fall speeds", () => {
@@ -146,11 +152,31 @@ test("spray, urea, conditions, cot, scout, pod counts: corrected wording", () =>
 test("what's priced in: finishing order rule, Oct 9 corn, sources, closest", () => {
   const w = read("usda-calendar.html");   // What's priced in is a section of the calendar since Oct 22, 2026
   assert.ok(!w.includes("A ranking needs at least two forecasters"));
-  assert.match(w, /Too few scored calls to rank forecasters yet, so this board shows records, not places\./);
+  // The board's lead follows the scored record (one ranked row, two or more with no places, or none), so the
+  // expected line is worked out from data/analyst-scorecard.json the way the bake does, and the page must carry it.
+  const lead = (args) => py(`
+import json, sys, re
+sys.path.insert(0, "scripts")
+import prerender_wpi_scorecard as m
+a = json.load(open("data/analyst-scorecard.json", encoding="utf-8"))
+${args}
+h = m.board_tbl(rows, a.get("building"), a.get("min_n"), cls, a.get("ordinal_min_n"))
+x = re.match(r'<div class="as-err"[^>]*>(.*?)</div>', h)
+print(x.group(1) if x else "")`);
+  const live = lead(`rows = a.get("leaderboard"); cls = m.primary_class(a)`);
+  if (live) assert.ok(w.includes(live), "the page carries the lead its data calls for: " + live);
+  // with one ranked forecaster the finishing-order rule says records, not places
+  const one = lead(`rows = (a.get("leaderboard") or a.get("building"))[:1]; cls = None`);
+  assert.equal(one, "Too few scored calls to rank forecasters yet, so this board shows records, not places.");
   assert.ok(!w.includes("A finishing order needs at least two forecasters with"));
   assert.match(w, /corn ending stocks landed 10\.3% over the average and read in line on a day December corn fell 20&frac12;&cent;/);
   const d = JSON.parse(read("data/whats-priced-in.json"));
-  assert.match(d.latest_result.biggest_surprise.reaction, /20½¢ lower/);
+  // the Oct 9 corn reaction stays on its own record: the latest result while that report was the last one, the
+  // track record after the next report is graded (it moved there with the November grade)
+  const oct9 = [d.latest_result && d.latest_result.biggest_surprise, ...(d.history || [])]
+    .find((r) => r && r.report === "October WASDE" && /corn ending stocks/.test(r.metric || "") && r.reaction_from === "settles");
+  assert.ok(oct9, "the October corn ending stocks record with its settles note is on file");
+  assert.match(oct9.reaction, /20½¢ lower/);
   assert.ok(!w.includes("since August"));
   assert.ok(!w.includes("actuals from USDA NASS Quick Stats."));
   assert.match(w, /A midpoint we worked out from a published range does not count\./);

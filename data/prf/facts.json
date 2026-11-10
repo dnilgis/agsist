@@ -140,63 +140,63 @@
    "grids": 13307,
    "mid_rate_per_100": 16,
    "mid_years_below": 35,
-   "mid_normal_in": 3.44
+   "mid_normal_in": 3.47
   },
   {
    "interval": "Mar-Apr",
    "grids": 13307,
    "mid_rate_per_100": 14.64,
    "mid_years_below": 34,
-   "mid_normal_in": 4.53
+   "mid_normal_in": 4.56
   },
   {
    "interval": "Apr-May",
    "grids": 13150,
    "mid_rate_per_100": 14.43,
    "mid_years_below": 34,
-   "mid_normal_in": 5.77
+   "mid_normal_in": 5.87
   },
   {
    "interval": "May-Jun",
    "grids": 12896,
    "mid_rate_per_100": 13.66,
    "mid_years_below": 34,
-   "mid_normal_in": 6.57
+   "mid_normal_in": 6.79
   },
   {
    "interval": "Jun-Jul",
    "grids": 12913,
    "mid_rate_per_100": 13.79,
    "mid_years_below": 33,
-   "mid_normal_in": 5.98
+   "mid_normal_in": 6.24
   },
   {
    "interval": "Jul-Aug",
    "grids": 12809,
    "mid_rate_per_100": 13.59,
    "mid_years_below": 33,
-   "mid_normal_in": 5.42
+   "mid_normal_in": 5.71
   },
   {
    "interval": "Aug-Sep",
    "grids": 12860,
    "mid_rate_per_100": 15.99,
    "mid_years_below": 35,
-   "mid_normal_in": 5.15
+   "mid_normal_in": 5.43
   },
   {
    "interval": "Sep-Oct",
    "grids": 13150,
    "mid_rate_per_100": 19.11,
    "mid_years_below": 36,
-   "mid_normal_in": 4.93
+   "mid_normal_in": 5.08
   },
   {
    "interval": "Oct-Nov",
    "grids": 13256,
    "mid_rate_per_100": 18.3,
    "mid_years_below": 36,
-   "mid_normal_in": 4.22
+   "mid_normal_in": 4.31
   },
   {
    "interval": "Nov-Dec",
@@ -782,14 +782,14 @@
      "grids": 438,
      "mid_rate_per_100": 32.47,
      "mid_years_below": 41,
-     "mid_normal_in": 0.78
+     "mid_normal_in": 0.84
     },
     {
      "interval": "May-Jun",
      "grids": 377,
      "mid_rate_per_100": 34.7,
      "mid_years_below": 41,
-     "mid_normal_in": 0.63
+     "mid_normal_in": 0.7
     },
     {
      "interval": "Jun-Jul",
@@ -965,63 +965,63 @@
      "grids": 643,
      "mid_rate_per_100": 24.35,
      "mid_years_below": 37,
-     "mid_normal_in": 5.37
+     "mid_normal_in": 6.14
     },
     {
      "interval": "Mar-Apr",
      "grids": 643,
      "mid_rate_per_100": 24.77,
      "mid_years_below": 40,
-     "mid_normal_in": 3.76
+     "mid_normal_in": 4.21
     },
     {
      "interval": "Apr-May",
      "grids": 535,
      "mid_rate_per_100": 27.19,
      "mid_years_below": 40,
-     "mid_normal_in": 1.78
+     "mid_normal_in": 2.47
     },
     {
      "interval": "May-Jun",
      "grids": 362,
      "mid_rate_per_100": 29.56,
      "mid_years_below": 42,
-     "mid_normal_in": 0.59
+     "mid_normal_in": 2.09
     },
     {
      "interval": "Jun-Jul",
      "grids": 249,
      "mid_rate_per_100": 32.47,
      "mid_years_below": 42,
-     "mid_normal_in": 0.36
+     "mid_normal_in": 1.08
     },
     {
      "interval": "Jul-Aug",
      "grids": 145,
      "mid_rate_per_100": 33.15,
      "mid_years_below": 41,
-     "mid_normal_in": 0.4
+     "mid_normal_in": 0.8
     },
     {
      "interval": "Aug-Sep",
      "grids": 196,
      "mid_rate_per_100": 35.45,
      "mid_years_below": 41,
-     "mid_normal_in": 0.64
+     "mid_normal_in": 1.08
     },
     {
      "interval": "Sep-Oct",
      "grids": 486,
      "mid_rate_per_100": 33.91,
      "mid_years_below": 42,
-     "mid_normal_in": 1.02
+     "mid_normal_in": 1.75
     },
     {
      "interval": "Oct-Nov",
      "grids": 592,
      "mid_rate_per_100": 25.48,
      "mid_years_below": 39,
-     "mid_normal_in": 2.51
+     "mid_normal_in": 3.22
     },
     {
      "interval": "Nov-Dec",
@@ -3208,7 +3208,7 @@
      "grids": 485,
      "mid_rate_per_100": 27.27,
      "mid_years_below": 40,
-     "mid_normal_in": 1.6
+     "mid_normal_in": 1.68
     },
     {
      "interval": "Jun-Jul",

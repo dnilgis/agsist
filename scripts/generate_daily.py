@@ -249,6 +249,12 @@ def save_briefing_inputs(user_message, system_prompt):
         print(f"  [warn] briefing inputs not saved for the fact check ({type(_e).__name__}: {_e})")
 
 
+def write_usage_summary(summary_path=None):
+    """Every briefing call of this run: token counts and estimated dollars."""
+    return claude_models.write_usage_summary(
+        "Daily briefing writer", [("briefing", m, u, False) for m, u in USAGE_LOG], summary_path)
+
+
 def briefing_payload(model, system_prompt, user_message):
     """The request body for one briefing. Kept apart so a test can check its
     shape (model, thinking word, cache marker, max_tokens) without a key."""
@@ -3114,6 +3120,10 @@ Apply all 16 IMPACT RULES. Voice samples are NON-NEGOTIABLE: plain and calm, no 
     if result is None:
         raise last_err if last_err else RuntimeError("API call failed with no error captured")
     if result.get("usage"):
+        if not USAGE_LOG:
+            # the run's token counts and dollars on the job summary, however it ends
+            import atexit
+            atexit.register(write_usage_summary)
         USAGE_LOG.append((payload["model"], result["usage"]))
         print("  " + claude_models.usage_line(payload["model"], result["usage"]), flush=True)
         _tot = sum(claude_models.cost_usd(m, u) or 0 for m, u in USAGE_LOG)

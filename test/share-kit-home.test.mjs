@@ -68,7 +68,7 @@ test("the model: a current quote carries the page's stamp; a stale, old, unmarke
   // a last trade is stamped with its time
   const last = { ...quote("corn"), close_kind: "last", close_time: "2026-11-09T19:20:00Z" };
   const ml = KIT.model({ fetched: "2026-11-09T19:31:00Z", rows: [row("corn", { q: last })] }, PX, Date.parse("2026-11-09T19:40:00Z"));
-  assert.equal(ml.rows[0].when.replace(/\s/g, " "), "Last trade as of 1:20 pm CT");
+  assert.equal(ml.rows[0].when.replace(/\s/g, " "), "Last trade at the 1:20 pm CT bell; settle not posted yet");
   assert.equal(m.pic, PIC);
   assert.equal(m.date, LONG);
 });
@@ -95,7 +95,7 @@ test("the model: this week's big report from the page's calendar, in Central tim
 test("the page: the button sits in the Market Prices heading row in the HTML; the kit loads deferred; no em dash in the kit", () => {
   assert.match(HOME, /<span id="prices-age"[^>]*>[^<]*<\/span><button type="button" class="sec-all hk-pic" id="hk-pic" style="[^"]+">Save picture<\/button><a href="\/markets" class="sec-all">All markets<\/a><\/div><\/div>/);
   assert.match(HOME, /<script src="\/components\/home-kit\.js\?v=1" defer><\/script>/);
-  assert.match(HOME, /<script src="\/components\/happening\.js\?v=4" defer><\/script>/);
+  assert.match(HOME, /<script src="\/components\/happening\.js\?v=5" defer><\/script>/);
   assert.ok(HOME.indexOf("/components/happening.js?v=") < HOME.indexOf("/components/home-kit.js?v="));
   for (const f of ["components/home-kit.js", "test/share-kit-home.test.mjs"]) assert.ok(!read(f).includes("\u2014"), f + ": no em dash");
   assert.match(JS, /var ASK = 'Free every morning: the AGSIST Daily at agsist\.com';/);

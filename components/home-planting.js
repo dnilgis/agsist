@@ -1,6 +1,12 @@
 /* Homepage: final planting dates (RMA, county or nothing) and the Local Conditions weather extras (forecast, hourly). Moved out of index.html (2026-10-11), loaded as a plain script in the same place, same order. */
 (function(){
 'use strict';
+var RMA_LAST=[7,5];   /* month, day: the latest final planting date in data/rma-planting-dates.json */
+function rmaPast(d){
+  var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',month:'numeric',day:'numeric'}).formatToParts(d).forEach(function(x){p[x.type]=+x.value;});
+  return p.month>RMA_LAST[0]||(p.month===RMA_LAST[0]&&p.day>RMA_LAST[1]);
+}
+window.__agsistRmaPast=rmaPast;window.__agsistRmaLast=RMA_LAST;
 /* FINAL PLANTING DATES -- COUNTY OR NOTHING.
    This used to hold one date per state scraped from 2025 farm-magazine
    articles, plus a "national Corn Belt" pair for the 35 states its bounding
@@ -20,6 +26,12 @@ var _rmaWatching=false;
        the old guard meant the widget never appeared on the call that does not
        pass coordinates -- caught by rendering it, not by reading it. */
     if(_rmaWatching)return null; _rmaWatching=true;
+    /* Nov 10: once the latest final planting date in the RMA file has
+       passed, the RMA file (360 KB) is not fetched and nothing polls. The latest
+       is Jul 5 (soybeans in 28 counties: 16 Maine, 10 New Hampshire, 2 Virginia), so Jul 1 to 5 still shows it
+       (a July cutoff hid it). RMA_LAST must equal the latest
+       date in data/rma-planting-dates.json (test/home-audit.test.mjs reads both). */
+    if(rmaPast(new Date()))return null;
     /* The county can arrive late (permission prompt + fix + reverse-geocode)
        and can CHANGE -- geo.js publishes a cached county first and corrects it
        when the real one resolves. Latching the first value showed a grower in
@@ -30,7 +42,10 @@ var _rmaWatching=false;
       var w=window.AGSIST_STATE&&window.AGSIST_STATE.weather;
       var key=w&&w.state&&w.county?(w.state+'|'+w.county):'';
       if(key&&key!==_rmaSeen){ _rmaSeen=key; renderForCounty(w.state,w.county); }
-      setTimeout(watch,400);
+      /* Nov 10: it polled every 400 ms forever. Quick while the county
+         is still arriving, then once every 5 s (a changed ZIP), and not at
+         all while the tab is hidden. */
+      setTimeout(watch,document.visibilityState==='hidden'?5000:(key?5000:400));
     })();
     return null;
   }

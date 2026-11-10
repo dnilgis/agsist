@@ -548,11 +548,19 @@ def _entry(text, sha, block, model, hits):
 
 
 USAGE = {}   # summed usage of every answer this run, for the cost line
+USAGE_ROWS = []   # each answer's usage, for the table on the job summary
 
 
 def _add_usage(u):
     for k in ("input_tokens", "output_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"):
         USAGE[k] = USAGE.get(k, 0) + int((u or {}).get(k) or 0)
+    USAGE_ROWS.append(dict(u or {}))
+
+
+def usage_summary(batch, summary_path=None):
+    """Token counts and estimated dollars of this run on the job summary."""
+    return claude_models.write_usage_summary(
+        "Farmland Atlas county reads", [("county reads", MODEL, u, batch) for u in USAGE_ROWS], summary_path)
 
 
 def parse_results(jsonl_bytes):
@@ -764,6 +772,15 @@ def selftest():
     assert _rp['max_tokens'] == 400 and _rp['system'][0]['text'] == SYSTEM
     assert _rp['system'][0].get('cache_control') == {'type': 'ephemeral'}, 'the shared prompt is cached'
     assert 'temperature' not in _rp, 'Haiku 5.5 and Sonnet 5.5 400 on a non-default temperature'
+    assert 'fallbacks' not in _rp, 'the Batches API rejects the server fallback, and Haiku 5.5 has none'
+    # the job summary table: one row per answer, counted, batch prices
+    import tempfile
+    _keep_rows = list(USAGE_ROWS)
+    USAGE_ROWS[:] = [{"input_tokens": 100, "cache_read_input_tokens": 900, "output_tokens": 150}] * 2
+    _sp = os.path.join(tempfile.mkdtemp(), "s.md")
+    _md = usage_summary(True, _sp)
+    assert f"| county reads | {MODEL} (batch) | 2 | 200 | 0 | 1800 | 300 |" in _md and _md in open(_sp).read(), _md
+    USAGE_ROWS[:] = _keep_rows
     rec = {"name": "Adams", "state": "NE", "sha": "abc",
            "rent": {"status": "ok", "nonirr": {"year": 2025, "value": 138.0},
                     "nonirr_change10": {"from_year": 2014, "to_year": 2025, "pct": 7.8}, "irr": {"year": 2025, "value": 289.0}},
@@ -1268,6 +1285,7 @@ def main():
         print(f"::error title=County reads stopped::{type(e).__name__}: {str(e)[:300]}", flush=True)
         log(f"STOPPED: {type(e).__name__}: {e}")
         log(f"  {written} entries written before the stop; every other county keeps the entry it had.")
+        usage_summary(mode == "batch")
         sys.exit(1)
 
     reads["generated"] = _now()
@@ -1278,6 +1296,7 @@ def main():
     n_wh = len(reads["counties"]) - n_ok
     log(f"wrote {OUT}: {n_ok} current reads, {n_wh} without one, {written} written this run, "
         f"{carried} carried forward, {kept_old} kept as they were after an API error")
+    usage_summary(mode == "batch")
 
 if __name__ == "__main__":
     main()

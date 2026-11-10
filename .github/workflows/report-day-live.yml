@@ -1,0 +1,306 @@
+# Report day live: graded result within a minute.
+
+name: "Report day live: graded result within a minute"
+
+on:
+  schedule:
+    - cron: "38 15,16 8-12,30,31 * *"
+    - cron: "48 15,16 8-12,30,31 * *"
+    - cron: "17 19 7-11,29,30 * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "live (a report day) or rehearse (the whole path on last month's file, test record only)"
+        type: choice
+        options: [rehearse, live]
+        default: rehearse
+      date:
+        description: "The report day, YYYY-MM-DD. Blank = today (live) or the next report day (rehearse)."
+        default: ""
+      dry_run:
+        description: "Live mode: read and grade, send nothing to the worker, no email, no commit"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      actions: read
+    outputs:
+      mode: ${{ steps.g.outputs.mode }}
+      release: ${{ steps.g.outputs.release }}
+      source: ${{ steps.g.outputs.source }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          EVENT: ${{ github.event_name }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          IN_MODE: ${{ inputs.mode }}
+          IN_DATE: ${{ inputs.date }}
+        run: |
+          if [ "$EVENT" = "workflow_dispatch" ]; then
+            python3 scripts/report_live.py gate --mode "$IN_MODE" --day "${IN_DATE:-}"
+          else
+            python3 scripts/report_live.py gate --one-run
+          fi
+
+  live:
+    needs: gate
+    if: needs.gate.outputs.mode == 'live'
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    concurrency:
+      group: report-day-live-${{ needs.gate.outputs.release }}
+      cancel-in-progress: false
+    outputs:
+      posted: ${{ steps.poll.outputs.posted }}
+      changed: ${{ steps.files.outputs.changed }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pdftotext
+        timeout-minutes: 5
+        uses: ./.github/actions/pdftotext
+      - name: Test the readers this run is about to use
+        run: |
+          python scripts/report_live.py --selftest
+          python scripts/read_wasde_pdf.py --selftest
+          python scripts/fetch_wasde.py --selftest
+          python scripts/usda_dates.py --selftest
+      - name: Prepare this run's route key
+        env:
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          REPORT_KEY_FILE: ${{ runner.temp }}/report.key
+        run: python scripts/report_live.py key
+      - name: Check USDA every 10 seconds, grade, send to the worker
+        id: poll
+        env:
+          NASS_API_KEY: ${{ secrets.NASS_API_KEY }}
+          REPORT_KEY_FILE: ${{ runner.temp }}/report.key
+          DRY_RUN: ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '1' || '' }}
+        run: python scripts/report_live.py poll --release "${{ needs.gate.outputs.release }}"
+      - name: What changed
+        id: files
+        if: always()
+        env:
+          DRY_RUN: ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '1' || '' }}
+        run: |
+          rm -f "${{ runner.temp }}/report.key"
+          git status --porcelain -- data/analyst-estimates.json data/wpi-history.json data/wasde.json data/whats-priced-in.json data/wasde-pdf
+          if [ "${DRY_RUN:-}" != "1" ] && [ -n "$(git status --porcelain -- data/analyst-estimates.json data/wpi-history.json data/wasde.json data/whats-priced-in.json data/wasde-pdf)" ]; then
+            echo "changed=1" >> "$GITHUB_OUTPUT"
+          fi
+      - uses: actions/upload-artifact@v4
+        if: always() && steps.files.outputs.changed == '1'
+        with:
+          name: report-day-data
+          path: |
+            data/analyst-estimates.json
+            data/wpi-history.json
+            data/wasde.json
+            data/whats-priced-in.json
+            data/wasde-pdf/
+          retention-days: 3
+
+  email:
+    needs: gate
+    if: needs.gate.outputs.mode == 'live' && !(github.event_name == 'workflow_dispatch' && inputs.dry_run)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    concurrency:
+      group: report-day-email
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          ref: main
+          fetch-depth: 0
+          filter: blob:none
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Test the sender and its loop
+        run: |
+          python scripts/send_report_day.py --selftest
+          python scripts/gmail_limit.py --selftest
+          python3 scripts/test_send_loops.py
+      - name: Wait for the complete result (until the window closes)
+        id: w
+        run: |
+          if python scripts/report_live.py wait-live --release "${{ needs.gate.outputs.release }}"; then
+            echo "live=1" >> "$GITHUB_OUTPUT"
+          fi
+      - name: Send the report-day email from the live result
+        if: steps.w.outputs.live == '1'
+        env:
+          TZ: America/Chicago
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+          REPLY_TO:     ${{ secrets.REPLY_TO }}
+          LIST_URL:     ${{ secrets.LIST_URL }}
+          LIST_TOKEN:   ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SEND_DAILY_CAP: ${{ vars.SEND_DAILY_CAP }}
+          DRY_RUN:      ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '1' || '' }}
+        run: python scripts/send_report_day.py
+
+  commit:
+    needs: [gate, live]
+    if: always() && needs.live.outputs.changed == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/download-artifact@v4
+        with:
+          name: report-day-data
+          path: data
+      - name: Rebuild the page's data
+        run: |
+          python scripts/nowcast_direction.py --grade
+          python scripts/build_analyst_scorecard.py
+          python scripts/build_whats_priced_in.py
+          python scripts/prerender_wpi_scorecard.py || true
+          python scripts/bake_seo.py --page usda-calendar.html || true
+      - name: Commit
+        run: |
+          set -e
+          git config user.name "AGSIST Bot"
+          git config user.email "bot@agsist.com"
+          git add data/analyst-estimates.json data/wpi-history.json data/wasde.json data/wasde-pdf data/nowcast-direction.json \
+                  data/analyst-scorecard.json data/whats-priced-in.json \
+                  cot.html index.html usda-calendar.html 2>/dev/null || true
+          if git diff --staged --quiet; then echo "No change (the backup check already committed it)."; exit 0; fi
+          git commit -m "report day: graded the ${{ needs.gate.outputs.release }} print"
+          for i in 1 2 3 4 5; do
+            if git push; then echo "Pushed on attempt $i."; exit 0; fi
+            echo "Push race on attempt $i; rebasing..."
+            git pull --rebase --autostash origin "${GITHUB_REF_NAME:-main}" || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
+          done
+          echo "Failed to push after 5 attempts."; exit 1
+
+  watchdog:
+    needs: gate
+    if: needs.gate.outputs.mode == 'live'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    concurrency:
+      group: report-day-watchdog-${{ needs.gate.outputs.release }}
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - name: Notice at release + 3 and + 10 minutes when no result is live
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+          REPLY_TO:     ${{ secrets.REPLY_TO }}
+          DRY_RUN:      ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '1' || '' }}
+        run: python3 scripts/report_live.py watchdog --release "${{ needs.gate.outputs.release }}"
+
+  rehearse:
+    needs: gate
+    if: needs.gate.outputs.mode == 'rehearse'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    concurrency:
+      group: report-day-rehearsal
+      cancel-in-progress: false
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          filter: blob:none
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install pdftotext
+        timeout-minutes: 5
+        uses: ./.github/actions/pdftotext
+      - name: Prepare this run's route key
+        env:
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          REPORT_KEY_FILE: ${{ runner.temp }}/report.key
+        run: python scripts/report_live.py key
+      - name: Rehearse the whole path on last month's file (test record, dry-run email)
+        env:
+          REPORT_KEY_FILE: ${{ runner.temp }}/report.key
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          SMTP_HOST:    ${{ secrets.SMTP_HOST }}
+          SMTP_PORT:    ${{ secrets.SMTP_PORT }}
+          SMTP_USER:    ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS:    ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR:    ${{ secrets.FROM_ADDR }}
+          REPLY_TO:     ${{ secrets.REPLY_TO }}
+          DRY_RUN: '1'
+        run: |
+          rc=0
+          python scripts/report_live.py rehearse --release "${{ needs.gate.outputs.source }}" --fast --no-nass --notify --for "${{ needs.gate.outputs.release }}" || rc=$?
+          rm -f "${{ runner.temp }}/report.key"
+          exit $rc

@@ -126,13 +126,15 @@ class StaleBackup(Unavailable):
 
 
 STATE = {"mode": None, "why": "", "kv": None, "taken": None, "stops": None, "fetched": False,
-         "journal": [], "remote_journal": {}, "said": False, "replayed": set(), "flags": {}}
+         "journal": [], "remote_journal": {}, "said": False, "replayed": set(), "flags": {},
+         "suppress": None, "sup_keys": None, "dropped": set()}
 
 
 def reset():
     """Forget everything (the selftests run several 'jobs' in one process)."""
     STATE.update({"mode": None, "why": "", "kv": None, "taken": None, "stops": None, "fetched": False,
-                  "journal": [], "remote_journal": {}, "said": False, "replayed": set(), "flags": {}})
+                  "journal": [], "remote_journal": {}, "said": False, "replayed": set(), "flags": {},
+                  "suppress": None, "sup_keys": None, "dropped": set()})
     _set_links(False)
 
 
@@ -223,7 +225,85 @@ def _switch(why):
 
 
 def request(method, url, body=None, headers=None, timeout=30):
-    """Parsed JSON, from the worker or, when it is blocked, the copy."""
+    """Parsed JSON, from the worker or, when it is blocked, the copy. A list read by a sender
+    leaves out the addresses suppressed after hard bounces on two days (drop_suppressed)."""
+    data = _request(method, url, body, headers, timeout)
+    route = _route(url)[0]
+    if method.upper() == "GET" and route in LIST_ROUTES:
+        data = drop_suppressed(data, optin=(route == "/notice-list"))
+    return data
+
+
+# ---------------------------------------------------------------- suppressed addresses
+# Nov 10, 2026 (scripts/bounces.py): an address with two hard bounces is left out of every list a
+# sender reads, in worker mode and backup mode alike. It is a flag in the private repo, never a
+# delete. Only a sender that asked (delivery_line.start, when the sender is the program run) is
+# filtered; counts, reports and the list cleanup read the lists as they are. When the private repo
+# cannot be read, nobody is left out and one warning says so. Counts only, never an address.
+def suppress_for(tally):
+    """Filter this run's list reads; the count goes on the tally's DELIVERY line (suppressed=N)."""
+    STATE["suppress"] = tally
+
+
+def _suppressed():
+    """The suppressed keys, read once per run; None when they cannot be read."""
+    if STATE["sup_keys"] is None:
+        try:
+            import bounces
+            STATE["sup_keys"] = bounces.suppressed_keys(bounces.read_ledger())
+            _note_suppressed()
+        except Exception as ex:                             # noqa: BLE001  never stop a send over this
+            if type(ex).__name__ == "KeyMismatch":
+                print("::error title=Bounce ledger key::the bounce ledger was keyed with another secret (changed or "
+                      "missing); nobody is left out this run")
+            else:
+                print("::warning::the suppressed-address list was not read (%s); nobody is left out this run"
+                      % type(ex).__name__)
+            STATE["sup_keys"] = False
+    return STATE["sup_keys"] if STATE["sup_keys"] is not False else None
+
+
+def _note_suppressed():
+    t = STATE["suppress"]
+    if t is not None and isinstance(getattr(t, "extra", None), dict):
+        t.extra["suppressed"] = len(STATE["dropped"])
+
+
+def drop_suppressed(rows, keys=None, optin=False):
+    """rows (records with "email", or addresses) without the suppressed ones. keys: {bounces.key(): last
+    bounce day} (or a set, in tests); else this run's, when a sender asked (suppress_for). A row whose
+    signup time is after the last bounce day is kept when optin is set: only a notice row, whose time
+    the worker sets when that topic is signed up. A Daily row keeps its first signup time on a repeat
+    signup, so it is never read as a new opt-in."""
+    if not isinstance(rows, list) or not rows:
+        return rows
+    if keys is None:
+        if STATE["suppress"] is None:
+            return rows
+        keys = _suppressed()
+        if not keys:
+            return rows
+    import bounces
+    out = []
+    for r in rows:
+        e = r.get("email") if isinstance(r, dict) else (r if isinstance(r, str) else None)
+        try:
+            k = bounces.key(e) if e else None
+        except bounces.NoKey:
+            return rows
+        if k and k in keys:
+            # a fresh signup or confirmation after the last bounce is a new opt-in: it goes out
+            last = keys.get(k) if isinstance(keys, dict) else ""
+            ts = r.get("ts") if (optin and isinstance(r, dict)) else None
+            if not (last and bounces.opted_in_after({"ids": {"x": {"day": last}}}, ts)):
+                STATE["dropped"].add(k)
+                continue
+        out.append(r)
+    _note_suppressed()
+    return out
+
+
+def _request(method, url, body=None, headers=None, timeout=30):
     route, q = _route(url)
     method = method.upper()
     if STATE["mode"] != "backup" and forced() != "backup":

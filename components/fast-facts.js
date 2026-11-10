@@ -242,7 +242,7 @@ function loadGrainPrices(){
     else if(hc){CORN.fut=CORN.nearby;CORN.label='nearby';CORN.date=hc.q.close_date||'';}
     fillCorn();
     var ebp=document.getElementById('eco-bean-price');if(hb&&ebp){ebp.textContent=fmtGrain(hb.q.close);unit('eco-bean-price',hb);} /* key is 'beans' in prices.json: 'soybeans' never existed, tile sat at "-" (fixed 2026-07-20) */
-    var ewp=document.getElementById('eco-wheat-price');if(q.wheat&&q.wheat.close&&ewp)ewp.textContent=fmtGrain(q.wheat.close);
+    var hw=hd('wheat'),ewp=document.getElementById('eco-wheat-price');if(hw&&ewp){ewp.textContent=fmtGrain(hw.q.close);unit('eco-wheat-price',hw);} /* the nearby month, named, not ZW=F */
     updateEcoCosts();
   }).catch(function(){calcNC();});
 }
@@ -322,15 +322,14 @@ function fillCorn(){
     var q=pj&&pj.quotes?pj.quotes:{};
     function g(id){return document.getElementById(id);}
     function dollarsBu(v){return v!=null?'$'+(parseFloat(v)/100).toFixed(2):null;}
-    var corn=q.corn&&q.corn.close?parseFloat(q.corn.close)/100:null;
-    var beans=q.beans&&q.beans.close?dollarsBu(q.beans.close):null;
-    var wheat=q.wheat&&q.wheat.close?dollarsBu(q.wheat.close):null;
-    if(corn||beans||wheat){
-      if(corn) g('fft-corn').textContent='$'+corn.toFixed(2);
-      if(beans) g('fft-beans').textContent=beans;
-      if(wheat) g('fft-wheat').textContent=wheat;
-      g('ff-strip').hidden=false;
-    }
+    /* 2026-11-10: each tile reads its nearby contract and names
+       the month. The bare key is Yahoo's continuous series: quotes.beans carried the
+       Jan '27 close beside the Nov '26 settle past first notice. */
+    var PS=window.AgPxStamp,near=function(c){var h=PS&&PS.headline?PS.headline(pj,c):null;if(h&&h.q&&h.q.close&&h.label)return h;var n=q[c+'-nearby'],lab=n&&n.ticker&&PS&&PS.label?PS.label(n.ticker):'';return n&&n.close&&lab?{q:n,label:lab}:null;};
+    var hc=near('corn'),hb=near('beans'),hw=near('wheat');
+    function tile(id,h){var e=g(id);if(!e||!h)return false;e.textContent=dollarsBu(h.q.close);var n=e.parentNode&&e.parentNode.querySelector('.n');if(n)n.textContent='CBOT '+h.label+', delayed';return true;}
+    var any=[tile('fft-corn',hc),tile('fft-beans',hb),tile('fft-wheat',hw)].some(Boolean);
+    if(any) g('ff-strip').hidden=false;
     // week card: what most of the Corn Belt is doing, hedged
     var wk=isoWeekNow();
     var W={

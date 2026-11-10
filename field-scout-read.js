@@ -1173,7 +1173,7 @@ window.__fsRead = function (FSX) {
     return new Promise(function(resolve){
       if(window.AGSIST_BIDS_NET) return resolve(window.AGSIST_BIDS_NET);
       var done=false; function fin(){ if(!done){ done=true; resolve(window.AGSIST_BIDS_NET||null); } }
-      try{ var sc=document.createElement('script'); sc.src='/components/bids-network.js?v=8'; sc.async=true; sc.onload=fin; sc.onerror=fin; document.head.appendChild(sc); }catch(e){ return fin(); }
+      try{ var sc=document.createElement('script'); sc.src='/components/bids-network.js?v=9'; sc.async=true; sc.onload=fin; sc.onerror=fin; document.head.appendChild(sc); }catch(e){ return fin(); }
       setTimeout(fin, 3000);
     });
   }
@@ -1181,7 +1181,7 @@ window.__fsRead = function (FSX) {
     return new Promise(function(resolve){
       if(window.AGSIST_BIDS_NET) return resolve(window.AGSIST_BIDS_NET);
       var done=false; function fin(){ if(!done){ done=true; resolve(window.AGSIST_BIDS_NET||null); } }
-      try{ var sc=document.createElement('script'); sc.src='/components/bids-network.js?v=8'; sc.async=true; sc.onload=fin; sc.onerror=fin; document.head.appendChild(sc); }catch(e){ return fin(); }
+      try{ var sc=document.createElement('script'); sc.src='/components/bids-network.js?v=9'; sc.async=true; sc.onload=fin; sc.onerror=fin; document.head.appendChild(sc); }catch(e){ return fin(); }
       setTimeout(fin, 3000);
     });
   }

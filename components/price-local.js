@@ -2,9 +2,10 @@
    futures price (corn, soybean, wheat and cattle futures, /markets, home).
 
    1. AgPxStamp: what the price stamp says. A quote the price file marks a
-      settle (close_kind "settle") reads "Oct 16 settle"; a last trade reads
-      "Last trade as of 1:46 pm CT" (close_time, else the time the file was
-      read). A quote with no close_kind says "Updated <time> CT". Always
+      settle (close_kind "settle") reads "Oct 16 settle"; a trade reads
+      "Read 1:46 pm CT; quotes delayed 10 to 25 min" (when the site read it),
+      or "Last trade at the 1:20 pm CT bell; settle not posted yet" after the
+      close. A quote with no close_kind says "Updated <time> CT". Always
       Central time, always named.
 
    2. The state line under the price. Only for a reader whose state the site
@@ -218,14 +219,44 @@
       (o.hero ? 'at ' + esc(at) + '. ' : trade + ' at ' + esc(at) + '. ') + ref + '.</span>';
   }
 
-  /* The stamp for one quote: "Oct 16 settle" | "Last trade as of 1:46 pm CT" |
-     "Overnight trade as of 11:45 pm CT" (overnight() hero) | "Updated 1:46 am CT" */
-  function stamp(q, fetched, now) {
+  /* The one delay statement (Nov 10, 2026): Yahoo lists CBOT and
+     CME futures about 10 minutes behind and the site reads them about every
+     15 minutes, so a grain or livestock quote is 10 to 25 minutes old in
+     session (editorial-standards, terms). Energy, metals and the dollar can
+     lag longer: those say "delayed" with no minutes. */
+  var DELAY = 'quotes delayed 10 to 25 min';
+  var DELAY_ROOTS = /^(ZC|ZS|ZW|KE|MW|ZO|ZM|ZL|ZR|LE|GF|HE)/;
+  function delayWords(q) { return DELAY_ROOTS.test(String((q && q.ticker) || '')) ? DELAY : 'delayed quote'; }
+  /* When a trade price is from (stampParts): the time the site READ it, never
+     "last trade as of" that time (2026-11-10: close_time is the fetch in
+     session, fetch_prices.py). After the bell close_time is the bell itself,
+     earlier than the read: that is the day session's last trade.
+       {kind:'settle', at:'Oct 16'} | {kind:'read', at:'1:05 pm CT'} |
+       {kind:'overnight', at:'11:45 pm CT'} | {kind:'bell', at:'1:20 pm CT'} |
+       {kind:'updated', at:'1:46 am CT'} | null */
+  function stampParts(q, fetched, now) {
     var k = q && q.close_kind;
-    if (k === 'settle') { var d = isoDay(q.settle_date || q.close_date, now); if (d) return d + ' settle'; }
-    if (k === 'last') { var t = clock(q.close_time || fetched, now); if (t) return (overnight(q) && overnight(q).hero ? 'Overnight trade as of ' : 'Last trade as of ') + t; }
+    if (k === 'settle') { var d = isoDay(q.settle_date || q.close_date, now); if (d) return { kind: 'settle', at: d }; }
+    if (k === 'last') {
+      var ov = overnight(q), rd = fetched || q.close_time, ctm = q.close_time ? Date.parse(q.close_time) : NaN, ftm = fetched ? Date.parse(fetched) : NaN;
+      if (ov && ov.hero) { var o = clock(rd, now); if (o) return { kind: 'overnight', at: o }; }
+      else if (isFinite(ctm) && isFinite(ftm) && ctm < ftm - 60000) { var b = clock(q.close_time, now); if (b) return { kind: 'bell', at: b }; }
+      else { var r = clock(rd, now); if (r) return { kind: 'read', at: r }; }
+    }
     var u = fetched ? clock(fetched, now) : '';
-    return u ? 'Updated ' + u : '';
+    return u ? { kind: 'updated', at: u } : null;
+  }
+  /* The stamp for one quote: "Oct 16 settle" | "Read 1:05 pm CT; quotes delayed 10 to 25 min" |
+     "Overnight trade read 11:45 pm CT; quotes delayed 10 to 25 min" (overnight() hero) |
+     "Last trade at the 1:20 pm CT bell; settle not posted yet" | "Updated 1:46 am CT" */
+  function stamp(q, fetched, now) {
+    var s = stampParts(q, fetched, now);
+    if (!s) return '';
+    if (s.kind === 'settle') return s.at + ' settle';
+    if (s.kind === 'read') return 'Read ' + s.at + '; ' + delayWords(q);
+    if (s.kind === 'overnight') return 'Overnight trade read ' + s.at + '; ' + delayWords(q);
+    if (s.kind === 'bell') return DELAY_ROOTS.test(String(q.ticker || '')) ? 'Last trade at the ' + s.at + ' bell; settle not posted yet' : 'Last trade ' + s.at + '; delayed quote';
+    return 'Updated ' + s.at;
   }
   /* A whole board: "Oct 16 settle where posted, latest delayed trade otherwise. Read 1:46 am CT" */
   /* 2026-10-20: cards on different settle dates show the range ("Oct 16 to
@@ -247,17 +278,29 @@
     else out = 'Latest delayed trades';
     return out + (read ? '. Read ' + read : '');
   }
-  /* Markup: a <time> (no data-asof, so asof.js leaves the words alone) with the full time as its title. */
-  function html(q, fetched, now) {
-    var s = stamp(q, fetched, now);
+  /* The same moment in the few words a small box holds (a card, the hero, a status line): the
+     old "Last trade as of 1:46 pm CT" length, so the line does not wrap where it did not before.
+     The full sentence, with the delay in minutes, is the title. */
+  function shortStamp(q, fetched, now) {
+    var s = stampParts(q, fetched, now);
     if (!s) return '';
-    var t = (q && q.close_kind === 'last' && q.close_time) || fetched || '';
+    if (s.kind === 'settle') return s.at + ' settle';
+    if (s.kind === 'read') return 'Read ' + s.at + ', delayed';
+    if (s.kind === 'overnight') return 'Overnight, read ' + s.at;
+    if (s.kind === 'bell') return 'Last trade, ' + s.at + ' bell';
+    return 'Updated ' + s.at;
+  }
+  /* Markup: a <time> (no data-asof, so asof.js leaves the words alone), the short words, the full stamp as its title. */
+  function html(q, fetched, now) {
+    var s = shortStamp(q, fetched, now), full = stamp(q, fetched, now);
+    if (!s) return '';
+    var sp = stampParts(q, fetched, now), t = sp && sp.kind === 'bell' ? q.close_time : (fetched || (q && q.close_time) || '');
     var dt = (q && q.close_kind === 'settle' && (q.settle_date || q.close_date)) || t;
     /* a settle the file should have moved past says how old it is; past
        OLD_SESSIONS it is greyed like any stale stamp (asof.css is-stale) */
     var a = q && q.close_kind === 'settle' ? settleAge(q.settle_date || q.close_date, now) : null;
     return '<time class="px-stamp' + (a && a.old ? ' is-stale' : '') + '" datetime="' + esc(dt) + '"' + (a && a.old ? ' data-stale=""' : '') +
-      (fetched ? ' title="Price file read ' + esc(clock(fetched, now)) + '"' : '') + '>' + esc(s) + (a && a.stale ? '<span class="asof-note"> &middot; ' + esc(a.note) + '</span>' : '') + '</time>';
+      ' title="' + esc(full) + (fetched && q && q.close_kind === 'settle' ? '. Price file read ' + esc(clock(fetched, now)) : '') + '">' + esc(s) + (a && a.stale ? '<span class="asof-note"> &middot; ' + esc(a.note) + '</span>' : '') + '</time>';
   }
   /* The age of a whole board: its OLDEST settle (2026-10-19, P4). The newest
      one let a board with one card days behind look current. Adds oldest and
@@ -342,12 +385,13 @@
   /* The line's shape before its numbers: the same words with typical-width
      figures, for a reader with a saved state, so the page holds the space
      the line will take (2026-10-19 phone audit: the homepage moved down
-     70 to 170px when it arrived). The page shows it hidden (.pl-wait). */
+     70 to 170px when it arrived). The page shows it hidden (.pl-wait). The longest
+     common shape: "the latest delayed trade" and the company count (Nov 10 2026). */
   function placeholder(st, crops) {
     var l = [];
     (crops || []).forEach(function (crop) {
       var c = (CROPS[crop] || [])[0];
-      if (c && NAMES[st]) l.push('<b>' + esc(NAMES[st]) + ' ' + c[1] + ':</b> basis <b>00¢ under</b> ' + (crop === 'soybeans' ? 'Nov' : 'Dec') + " '00 futures, about <b>$0.00</b> cash on the Oct 00 settle. <span class=\"pl-s\">The median of 000 elevators, Oct 00.</span>");
+      if (c && NAMES[st]) l.push('<b>' + esc(NAMES[st]) + ' ' + c[1] + ':</b> basis <b>00¢ under</b> ' + (crop === 'soybeans' ? 'Nov' : 'Dec') + " '00 futures, about <b>$0.00</b> cash on the latest delayed trade. <span class=\"pl-s\">The median of 000 elevators, 00 companies, Oct 00.</span>");
     });
     return l.length ? l.join('<br>') + ' <a href="/cash-bids" tabindex="-1">Bids near you &rarr;</a>' : '';
   }
@@ -409,7 +453,7 @@
     return { key: key, q: d, label: label(d.ticker) || null };
   }
 
-  var api = { headline: headline, harvest: harvest, stamp: stamp, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
+  var api = { headline: headline, harvest: harvest, stamp: stamp, stampParts: stampParts, shortStamp: shortStamp, DELAY: DELAY, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
     deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, label: label, cell: cell, lines: lines, build: build, nearLine: nearLine, placeholder: placeholder, NAMES: NAMES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgPxStamp = api;
@@ -424,6 +468,9 @@
     el.innerHTML = h; el.className += ' pl-wait'; el.setAttribute('aria-hidden', 'true'); el.hidden = false;
   };
   function settle(el, h) {
+    /* the line keeps at least the box it held, so a shorter line (a settle instead of "the latest
+       delayed trade") never pulls the page up (CLS sweep, Nov 10 2026) */
+    if (el.classList.contains('pl-wait') && h) { var hh = el.getBoundingClientRect().height; if (hh > 0) el.style.minHeight = hh + 'px'; }
     el.classList.remove('pl-wait'); el.removeAttribute('aria-hidden');
     if (h) { el.innerHTML = h; el.hidden = false; } else { el.hidden = true; el.innerHTML = ''; }
   }
@@ -494,7 +541,7 @@
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', folds); else folds();
 
   var css = doc.createElement('style');
-  css.textContent = '.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:6px;font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}' +
+  css.textContent = '.pl-line.pl-wait{visibility:hidden}.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:6px;font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}' +
     '.ph-ovn{margin:4px 0 0 auto;max-width:26rem}.pc-ovn{margin-top:3px}.pc-ovn[hidden],.ph-ovn[hidden]{display:none}.ph-price .ph-ovn{order:4;flex-basis:100%}.px-ovn{display:block;font-size:.85em;line-height:1.4;color:var(--text-muted,#666)}.px-ovn-k{font-weight:600;color:var(--text,inherit)}.px-ovn b{color:var(--text,inherit)}.px-stamp.is-stale{color:var(--text-muted)}.px-stamp .asof-note{font-weight:600;white-space:nowrap}.px-old{filter:grayscale(1);opacity:.75}';
   (doc.head || doc.documentElement).appendChild(css);
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', boot); else boot();

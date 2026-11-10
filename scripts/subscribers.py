@@ -82,6 +82,13 @@ def _get(u):
 
 
 def fetch(base, token):
+    """(records, how). An address suppressed after two hard bounces (scripts/bounces.py) is left
+    out when the running sender asked for that (list_source.drop_suppressed, Nov 10, 2026)."""
+    recs, how = _fetch(base, token)
+    return list_source.drop_suppressed(recs), how
+
+
+def _fetch(base, token):
     root = base.rstrip("/") + "/list?token=" + urllib.parse.quote(token)
     try:
         if list_source.mode() == "backup":

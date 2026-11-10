@@ -37,6 +37,13 @@
    "link": "/cash-bids"
   },
   {
+   "id": "2026-11-10-home-audit",
+   "date": "2026-11-10",
+   "title": "Home page bids name the right futures month",
+   "line": "Home bid card shows the futures month the elevator posts (Jan, not Nov, for soybeans now), and how-it-works notes move to the bottom.",
+   "link": "/"
+  },
+  {
    "id": "2026-11-10-pages-hold-still",
    "date": "2026-11-10",
    "title": "Thirteen pages hold still while they load",
@@ -65,6 +72,13 @@
    "link": "/rent/"
   },
   {
+   "id": "2026-11-10-report-day-speed",
+   "date": "2026-11-10",
+   "title": "USDA report results, faster",
+   "line": "On WASDE and crop report days, USDA's numbers graded against the trade reach the USDA calendar, the homepage and the report email as soon as they are read.",
+   "link": "/usda-calendar#priced-in"
+  },
+  {
    "id": "2026-11-10-same-state-links",
    "date": "2026-11-10",
    "title": "One state, every page",
@@ -77,6 +91,13 @@
    "title": "Town bid pages, clearer",
    "line": "Town pages name corn and soybeans every time, keep elevators whose board went quiet with a labelled estimate, and mark boards that repeat another's bids.",
    "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-10-usda-results-first",
+   "date": "2026-11-10",
+   "title": "USDA calendar: results first",
+   "line": "The USDA calendar opens on what USDA printed against the trade, one card per number, then the next 5 reports. The full schedule and the details fold away.",
+   "link": "/usda-calendar"
   },
   {
    "id": "2026-11-09-rain-print-several-days",
@@ -175,6 +196,13 @@
    "title": "Steadier drought, hail and milk pages",
    "line": "The Drought Monitor, Hail Map, Milk Prices and Desk pages no longer jump while they load.",
    "link": "/drought-monitor"
+  },
+  {
+   "id": "2026-11-09-prf-panel",
+   "date": "2026-11-09",
+   "title": "PRF calculator fixes",
+   "line": "The PRF calculator opens on hay ground, prints the cancellation date and the $30 fee, and no longer jumps while it loads.",
+   "link": "/prf"
   },
   {
    "id": "2026-11-09-rain-print-fixes",

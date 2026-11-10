@@ -38,8 +38,8 @@ test('evening file, settle not posted: the overnight trade under the day session
   assert.equal(text(P.overnightHtml(q, fmt, move, now(EVE))),
     'Overnight electronic trade $4.65½ (−1¼¢) at 7:45 pm CT. Oct 19 settle not posted yet.');
   assert.equal(text(P.overnightHtml(q, fmt, move, now(EVE), { short: true })), 'Overnight $4.65½ (−1¼¢), 7:45 pm CT');
-  // the main price stays the day's last trade, called that
-  assert.equal(text(P.stamp(q, EVE.fetched, now(EVE))), 'Last trade as of 1:20 pm CT');
+  // the main price stays the day's last trade, called that: the bell, not the time the file was read
+  assert.equal(text(P.stamp(q, EVE.fetched, now(EVE))), 'Last trade at the 1:20 pm CT bell; settle not posted yet');
   for (const k of ['beans-nov', 'wheat', 'kcwheat', 'oats', 'corn-dec27']) assert.ok(P.overnight(EVE.quotes[k]), k);
 });
 
@@ -48,7 +48,7 @@ test('overnight file, settle posted: the overnight trade is the price, the settl
   const o = P.overnight(q);
   assert.deepEqual(o, { px: 465, net: -2, at: '2026-10-20T04:45:54Z', hero: true,
     ref: { px: 467, date: '2026-10-19', kind: 'settle' } });
-  assert.equal(text(P.stamp(q, NIGHT.fetched, now(NIGHT))), 'Overnight trade as of 11:45 pm CT');
+  assert.equal(text(P.stamp(q, NIGHT.fetched, now(NIGHT))), 'Overnight trade read 11:46 pm CT; quotes delayed 10 to 25 min');
   assert.equal(text(P.overnightHtml(q, fmt, move, now(NIGHT))), 'Overnight electronic trade at 11:45 pm CT. Oct 19 settle $4.67.');
   assert.equal(text(P.overnightHtml(q, fmt, move, now(NIGHT), { short: true })), 'Overnight at 11:45 pm CT · Oct 19 settle $4.67');
   assert.match(text(P.overnightHtml(NIGHT.quotes['beans-nov'], fmt, move, now(NIGHT))), /Oct 19 settle \$12\.53½\.$/);
@@ -70,17 +70,17 @@ test('every page that leads with a grain price draws the overnight line', () => 
   const fut = read('components/futures.js');
   assert.match(fut, /heroOvernight\(front\);/);
   assert.match(fut, /function heroOvernight\(q\)\{[\s\S]{0,400}AgPxStamp\.overnightHtml\(q,grain\$/);
-  assert.match(fut, /\/\^\(Last\|Overnight\) trade\//, 'the hero line takes the overnight stamp');
+  assert.match(fut, /if\(k==='overnight'\)return 'Overnight trade read '\+p\.at;/, 'the hero line takes the overnight stamp');
   assert.match(read('markets.html'), /AgPxStamp\.overnightHtml\(d,/);
   assert.match(read('index.html'), /AgPxStamp\.overnightHtml\(x,[\s\S]{0,200}\{short:true\}/);
   assert.match(read('components/geo.js'), /meta\.grain && meta\.priceEl && q && window\.AgPxStamp && AgPxStamp\.overnightHtml/);
   assert.match(read('components/home-yield.js'), /AgPxStamp\.overnightHtml\(fq,/, 'the swapped deferred card shows its own contract');
-  for (const p of ['corn', 'soybean', 'wheat']) assert.match(read(`${p}-futures-prices.html`), /price-local\.js\?v=10[\s\S]*futures\.js\?v=31/, p);
+  for (const p of ['corn', 'soybean', 'wheat']) assert.match(read(`${p}-futures-prices.html`), /price-local\.js\?v=\d+[\s\S]*futures\.js\?v=\d+/, p);
   // the line's box is reserved from the first paint in the overnight hours (no layout shift, test/futures-seed-note-cls)
   for (const p of ['corn', 'soybean', 'wheat']) assert.match(read(`${p}-futures-prices.html`), /id="hero-chg">[\s\S]{0,120}<\/div><div class="ph-ovn" id="hero-ovn" hidden><\/div><script>[^<]*m>=1140&&d!=='Fri'&&d!=='Sat'\)\|\|\(m<465&&d!=='Sat'&&d!=='Sun'\)/, p);
-  for (const p of ['index.html', 'markets.html']) assert.match(read(p), /price-local\.js\?v=10/, p);
-  assert.match(read('index.html'), /geo\.js\?v=36/);
-  assert.match(read('index.html'), /home-yield\.js\?v=12/);
+  for (const p of ['index.html', 'markets.html']) assert.match(read(p), /price-local\.js\?v=\d+/, p);
+  assert.match(read('index.html'), /geo\.js\?v=37/);
+  assert.match(read('index.html'), /home-yield\.js\?v=14/);
 });
 
 test('the bake calls an overnight price an overnight trade and titles the settle', () => {

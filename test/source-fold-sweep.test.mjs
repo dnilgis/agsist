@@ -36,7 +36,7 @@ test("pages that gained the fold hold it once, with their credit line short and 
   for (const c of ["corn", "soybean", "wheat", "cattle"]) {
     const h = read(`${c}-futures-prices.html`), f = folds(h)[0].body;
     assert.match(f, /Not financial advice|not financial advice/, `${c}: the not-financial-advice line is in the fold`);
-    assert.match(f, /Prices from Yahoo Finance/, `${c}: the price source is in the fold`);
+    assert.match(f, /Prices from Yahoo Finance|futures via Yahoo Finance/, `${c}: the price source is in the fold`);
     assert.ok(!/<div class="disc">/.test(h), `${c}: no loose disclaimer block`);
   }
   assert.match(read("usda-quick-stats.html"), /<p class="qs-by">Numbers from USDA NASS\.<\/p>/);
