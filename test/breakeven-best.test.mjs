@@ -266,14 +266,14 @@ test("the price box says settle only for a recorded settle, else last trade", { 
     srv.settled = false;
     ({ pg, errors, ctx } = await open(browser, port));
     const t2 = await txt(pg, "#live-chg-val");
-    assert.match(t2, /^last trade as of /, t2);
+    assert.match(t2, /^(read [^;]+ CT; quotes delayed 10 to 25 min|last trade at the [^;]+ bell; settle not posted yet)$/, t2);
     assert.doesNotMatch(t2, /close|%/, "no settle claim and no change with no settles to measure it from");
     assert.doesNotMatch(JS, /last close/);
     await ctx.close();
     /* the file's own mark (fetch_prices v3.7): close_kind "last" is a last trade even when a settle sits in settles */
     srv.kind = "last";
     ({ pg, errors, ctx } = await open(browser, port));
-    assert.match(await txt(pg, "#live-chg-val"), /^last trade as of /);
+    assert.match(await txt(pg, "#live-chg-val"), /^(read [^;]+ CT; quotes delayed 10 to 25 min|last trade at the [^;]+ bell; settle not posted yet)$/);
     await ctx.close();
     srv.kind = "settle";
     ({ pg, errors, ctx } = await open(browser, port));

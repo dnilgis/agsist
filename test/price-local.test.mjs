@@ -1,7 +1,8 @@
 /* components/price-local.js and the phone layout of the futures pages, /markets,
  * /cash-bid-index and the Field Scout land card (2026-10-17, re-score 7).
  *
- * Stamps: a settle says "Oct 16 settle", a last trade "Last trade as of <time> CT".
+ * Stamps: a settle says "Oct 16 settle", a trade in session "Read <time> CT; quotes delayed 10 to 25 min"
+ * (the time the site read it, Nov 10 2026), a trade after the bell "Last trade at the <bell> bell".
  * State line: only for a saved state, from data/basis-states.json, hand-worked:
  *   Illinois corn, Oct 17 file: median basis -0.31 on ZCZ26, 186 elevators.
  *   Dec '26 corn settled 474.25 on Oct 16. 474.25 - 31 = 443.25 cents -> "about $4.43".
@@ -48,11 +49,18 @@ const PR = {
 
 test("stamps: settle, last trade with Central time, no kind", () => {
   assert.equal(P.stamp(PR.quotes["corn-nearby"], PR.fetched, NOW), "Oct 16 settle");
-  assert.equal(P.stamp(PR.quotes.crude, PR.fetched, NOW), "Last trade as of Oct 16, 4:00 pm CT");
+  // crude after its 4 pm halt: a last trade, delayed, with no minutes (energy can lag longer than grain)
+  assert.equal(P.stamp(PR.quotes.crude, PR.fetched, NOW), "Last trade Oct 16, 4:00 pm CT; delayed quote");
+  // a grain trade after the bell: the bell, never the time the file was read
+  assert.equal(P.stamp(PR.quotes["kc-dec"], PR.fetched, NOW), "Last trade at the Oct 16, 1:20 pm CT bell; settle not posted yet"); // pin-ok: inline PR fixture and fixed NOW above
+  // in session close_time IS the read: say read, and the one delay statement
+  assert.equal(P.stamp({ ticker: "ZCZ26.CBT", close: 1, close_kind: "last", close_time: "2026-10-16T18:05:00Z" }, "2026-10-16T18:05:00Z", Date.parse("2026-10-16T19:00:00Z")), "Read 1:05 pm CT; quotes delayed 10 to 25 min");
+  assert.equal(P.stamp({ ticker: "LEZ26.CME", close: 1, close_kind: "last", close_time: "2026-10-16T17:46:00Z" }, "2026-10-16T17:46:12Z", Date.parse("2026-10-16T19:00:00Z")), "Read 12:46 pm CT; quotes delayed 10 to 25 min");
+  assert.doesNotMatch(P.stamp(PR.quotes["kc-dec"], PR.fetched, NOW), /as of/);
   // same Central day: the time alone, still named CT
-  assert.equal(P.stamp({ close: 1, close_kind: "last", close_time: "2026-10-16T14:15:00Z" }, PR.fetched, Date.parse("2026-10-16T20:00:00Z")), "Last trade as of 9:15 am CT");
+  assert.equal(P.stamp({ close: 1, close_kind: "last", close_time: "2026-10-16T14:15:00Z" }, "2026-10-16T14:15:00Z", Date.parse("2026-10-16T20:00:00Z")), "Read 9:15 am CT; delayed quote");
   // a last trade with no close_time falls back to when the file was read
-  assert.equal(P.stamp({ close: 1, close_kind: "last" }, PR.fetched, NOW), "Last trade as of 1:46 am CT");
+  assert.equal(P.stamp({ close: 1, close_kind: "last" }, PR.fetched, NOW), "Read 1:46 am CT; delayed quote");
   assert.equal(P.stamp(PR.quotes.dollar, PR.fetched, NOW), "Updated 1:46 am CT");
   assert.equal(P.stamp(null, "", NOW), "");
   const h = P.html(PR.quotes["corn-nearby"], PR.fetched, NOW);
@@ -138,7 +146,7 @@ test("grain futures pages: key table up, labeled folds, FAQ kept, scripts in ord
     const ld = JSON.parse(/<script type="application\/ld\+json">(\{"@context": "https:\/\/schema.org", "@graph".*?)<\/script>/.exec(h)[1]);
     const faq = ld["@graph"].find((x) => x["@type"] === "FAQPage");
     for (const q of faq.mainEntity) assert.ok(h.includes(q.name.replace(/&/g, "&amp;")) || h.includes(q.name), page + " FAQ: " + q.name);
-    assert.ok(h.indexOf("components/price-local.js?v=10") > 0 && h.indexOf("components/price-local.js?v=10") < h.indexOf("components/futures.js?v=31"), page + ": stamp helper before futures.js");
+    assert.ok(h.indexOf("components/price-local.js?v=13") > 0 && h.indexOf("components/price-local.js?v=13") < h.indexOf("components/futures.js?v="), page + ": stamp helper before futures.js");
     assert.ok(!h.includes("futures.js?v=13") && !h.includes("futures.js?v=14") && !h.includes("futures.js?v=15") && !h.includes("futures.js?v=16") && !h.includes("futures.js?v=17") && !h.includes("futures.js?v=18") && !h.includes("futures.js?v=19") && !h.includes("futures.js?v=20") && !h.includes("futures.js?v=21") && !h.includes("futures.js?v=22") && !h.includes("futures.js?v=23") && !h.includes("futures.js?v=24") && !h.includes("futures.js?v=25") && !h.includes("futures.js?v=26") && !h.includes("price-local.js?v=6") && !h.includes("price-local.js?v=2"));
     assert.match(h, /matchMedia\('\(min-width:900px\)'\)\.matches\)document\.querySelectorAll\('details\.fold\[data-wide-open\]'\)/);
   }

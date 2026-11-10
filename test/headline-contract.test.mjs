@@ -161,7 +161,7 @@ test("no headline reads the harvest aliases: every 'corn-dec' / 'beans-nov' lite
   assert.match(hero, /nearby_of\(q, crop\)/);
   assert.doesNotMatch(hero, /"beans-nov"|"corn-dec"/);
   // every page that calls the helper loads it first
-  assert.ok(read("breakeven.html").indexOf("price-local.js?v=10") < read("breakeven.html").indexOf("breakeven.js?v="));
+  assert.ok(read("breakeven.html").search(/price-local\.js\?v=\d+/) < read("breakeven.html").indexOf("breakeven.js?v="));
 });
 
 /* PR #320 checker: the merge of main put markets.html back on price-local.js?v=9 while the page
@@ -172,8 +172,10 @@ test("every page and script that loads price-local.js asks for the same version"
     .concat(readdirSync(join(ROOT, "components")).filter((f) => f.endsWith(".js")).map((f) => "components/" + f));
   const seen = {};
   for (const f of files) for (const m of read(f).matchAll(/components\/price-local\.js\?v=(\d+)/g)) (seen[m[1]] = seen[m[1]] || []).push(f);
-  assert.deepEqual(Object.keys(seen), ["10"], "price-local.js versions: " + JSON.stringify(seen));
-  for (const f of ["index.html", "markets.html", "breakeven.html", "fast-facts.html"]) assert.ok(seen["10"].includes(f), f + " loads price-local.js");
+  // one version everywhere; the exact number is owned by test/price-local.test.mjs
+  assert.equal(Object.keys(seen).length, 1, "price-local.js versions: " + JSON.stringify(seen));
+  const v = Object.keys(seen)[0];
+  for (const f of ["index.html", "markets.html", "breakeven.html", "fast-facts.html"]) assert.ok(seen[v].includes(f), f + " loads price-local.js");
 });
 
 /* ---------------------------------------------------------------- browser */
