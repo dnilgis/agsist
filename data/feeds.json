@@ -51,22 +51,27 @@
    ],
    "written_by": [
     "Build Analyst Scorecard",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands"
    ],
    "touched_by": [
     "Build Analyst Scorecard",
     "Generate Daily Briefing",
     "Rebuild Call Scorecard",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "2 launches every day at about 6am Central",
+   "cadence": "5 launches every day at about 6am, 10am, 2pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
     "25 11 * * *",
+    "38 15,16 8-12,30,31 * *",
+    "48 15,16 8-12,30,31 * *",
+    "17 19 7-11,29,30 * *",
     "*/5 16-17 9-12 * *"
    ],
    "max_gap_hours": 24.0,
@@ -506,6 +511,7 @@
     "Fetch COT Data",
     "Generate Daily Briefing",
     "Rebuild Call Scorecard",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
@@ -673,6 +679,7 @@
     "Rebuild Feed Manifest",
     "Rebuild Call Scorecard",
     "refs",
+    "Report day live: graded result within a minute",
     "RMA price discovery",
     "Rain Print Canada stations",
     "Rain Print design email",
@@ -1425,6 +1432,7 @@
     "Fetch Prices",
     "Monthly county rain email",
     "Rebuild Feed Manifest",
+    "Report day live: graded result within a minute",
     "Share images",
     "Build State Stats (USDA NASS)",
     "Tools hub dates",
@@ -2383,6 +2391,7 @@
     "Build Price Stats (5-year percentile)",
     "Fetch Prices",
     "Rebuild Feed Manifest",
+    "Report day live: graded result within a minute",
     "Report day \u2014 USDA vs the trade email",
     "Tools hub dates"
    ],
@@ -2855,6 +2864,7 @@
    ],
    "written_by": [
     "bake crop tour",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
     "yield-panel"
    ],
@@ -2866,11 +2876,12 @@
     "Dairy prices",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Fetch Prices",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In",
     "yield-panel"
    ],
-   "cadence": "4 launches every day at about 4am, 8pm, 11pm Central",
+   "cadence": "7 launches every day at about 4am, 10am, 2pm, 8pm Central",
    "curated": false,
    "planned": false,
    "external": false,
@@ -2878,6 +2889,9 @@
    "crons": [
     "20 9 * * *",
     "30 1 17-22 8 *",
+    "38 15,16 8-12,30,31 * *",
+    "48 15,16 8-12,30,31 * *",
+    "17 19 7-11,29,30 * *",
     "*/5 16-17 9-12 * *",
     "24 4 * * *"
    ],
@@ -2911,6 +2925,7 @@
    ],
    "written_by": [
     "COT Release Watch",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
@@ -2924,16 +2939,20 @@
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
     "Fetch Prices",
     "Rebuild Call Scorecard",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "3 launches on a fixed schedule at about 6am Central",
+   "cadence": "6 launches on a fixed schedule at about 6am, 10am, 2pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
     "13,43 19-21 * * 1-5",
+    "38 15,16 8-12,30,31 * *",
+    "48 15,16 8-12,30,31 * *",
+    "17 19 7-11,29,30 * *",
     "*/5 16-17 9-12 * *",
     "20 11 * * *"
    ],
@@ -2947,19 +2966,24 @@
     "index.html"
    ],
    "written_by": [
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands"
    ],
    "touched_by": [
     "COT Release Watch",
+    "Report day live: graded result within a minute",
     "WASDE watch \u2014 grade the report as it lands",
     "Build What's Priced In"
    ],
-   "cadence": "1 launch every day Central",
+   "cadence": "4 launches every day at about 10am, 2pm Central",
    "curated": false,
    "planned": false,
    "external": false,
    "url": null,
    "crons": [
+    "38 15,16 8-12,30,31 * *",
+    "48 15,16 8-12,30,31 * *",
+    "17 19 7-11,29,30 * *",
     "*/5 16-17 9-12 * *"
    ],
    "max_gap_hours": null,
