@@ -379,12 +379,15 @@ def unpack_days(s):
     return out
 
 
-def close_s(parsed):
-    """An S run must end in the A value that carries its rain. A run that ends
-    in anything else (a plain value, a trace, a gap) has lost that rain, so its
-    days are gaps (M), not reported days. A run at the very end is left alone:
-    its A has not come in yet (summarize() stops before it)."""
-    out = list(parsed)
+def close_runs(pp, keep_tail=False):
+    """The engine's closeOpenS (components/rain-print.js), on (value, flag) pairs. An S run
+    closed by an A value is that A's accumulation; S, then M days, then an A value (Nov 9,
+    2026: Chetek 2.0 SE, Jul 21 S, Jul 22-24 M, Jul 25 0.98A) is one accumulation too, so the
+    M days inside it become S days (0.0, "S"): their rain is in the A total. An S run closed
+    by anything else (a plain value, a trace, M days then no A) has lost its rain: its days
+    are gaps (None, "M"). keep_tail: an S run (and the M days after it) running to the very
+    end is left alone, its A has not come in yet (summarize() stops before it)."""
+    out = list(pp)
     i = 0
     while i < len(out):
         if out[i][1] != "S":
@@ -393,11 +396,25 @@ def close_s(parsed):
         j = i
         while j < len(out) and out[j][1] == "S":
             j += 1
-        if j < len(out) and out[j][1] != "A":
+        a = j
+        while a < len(out) and out[a][0] is None and out[a][1] != "S":
+            a += 1
+        if a < len(out) and out[a][1] == "A":
+            for k in range(j, a):
+                out[k] = (0.0, "S")
+            i = a
+            continue
+        if not (keep_tail and a >= len(out)):
             for k in range(i, j):
                 out[k] = (None, "M")
         i = j
     return out
+
+
+def close_s(parsed):
+    """An S run must end in the A value that carries its rain (close_runs). A run at the very
+    end is left alone: its A has not come in yet (summarize() stops before it)."""
+    return close_runs(parsed, keep_tail=True)
 
 
 def last_days(vals, n, nv=None):
@@ -733,17 +750,7 @@ def snow_state(vals, snows, year):
     pp = [parse_pcpn(x) for x in vals]
     last = max((i for i, (v, f) in enumerate(pp) if v is not None and f != "S"), default=-1)
     pp = pp[:last + 1]
-    i = 0
-    while i < len(pp):                     # an S run not closed by an A day is missing days
-        if pp[i][1] != "S":
-            i += 1
-            continue
-        j = i
-        while j < len(pp) and pp[j][1] == "S":
-            j += 1
-        if not (j < len(pp) and pp[j][1] == "A"):
-            pp[i:j] = [(None, "M")] * (j - i)
-        i = j
+    pp = close_runs(pp)                    # an S run not closed by an A day is missing days (the engine's closeOpenS)
     end = len(pp)
     if dt.date(int(year), 1, 1) + dt.timedelta(days=len(pp) - 1) != dt.date(int(year), 12, 31):
         has = [k for k in range(min(len(pp), len(sv))) if sv[k] is not None]
@@ -786,17 +793,7 @@ def snow_trace_days(vals, snows, year):
     pp = [parse_pcpn(x) for x in vals]
     last = max((i for i, (v, f) in enumerate(pp) if v is not None and f != "S"), default=-1)
     pp = pp[:last + 1]
-    i = 0
-    while i < len(pp):                     # as snow_state: an S run not closed by an A day is missing days
-        if pp[i][1] != "S":
-            i += 1
-            continue
-        j = i
-        while j < len(pp) and pp[j][1] == "S":
-            j += 1
-        if not (j < len(pp) and pp[j][1] == "A"):
-            pp[i:j] = [(None, "M")] * (j - i)
-        i = j
+    pp = close_runs(pp)                    # as snow_state: the engine's closeOpenS
     end = len(pp)
     if dt.date(int(year), 1, 1) + dt.timedelta(days=len(pp) - 1) != dt.date(int(year), 12, 31):
         has = [k for k in range(min(len(pp), len(sv))) if sv[k] is not None]
