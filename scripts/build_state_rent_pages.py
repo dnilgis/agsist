@@ -1406,6 +1406,8 @@ def selftest():
         assert s["primary"] == "nonirr", "IA primary type wrong"
         assert money(s["median"]) in ia, "IA median not baked into page"
         assert "SEED:rentstate" in ia and "FAQPage" in ia and "canonical" in ia
+        import cross_links as XL   # the visible trail names the same steps as the BreadcrumbList
+        assert '<nav class="breadcrumb"' in ia and XL.trail_matches(ia) is None, XL.trail_matches(ia)
         # the one signup ask: under the hero figures, before the county table, topic rent:ia
         assert ia.count("data-signup-ask") == 1 and 'data-topic="rent:ia"' in ia, "IA rent ask"
         assert ia.index("The median Iowa county paid") < ia.index("data-signup-ask") < ia.index('class="rs-hero"'), "rent ask sits right under the median card"

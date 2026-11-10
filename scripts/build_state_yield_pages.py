@@ -751,6 +751,7 @@ def selftest():
         lds = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', ia, re.S)]
         types = {g["@type"] for d in lds for g in d["@graph"]}
         ck("JSON-LD parses: Dataset + BreadcrumbList, no FAQ", types == {"Dataset", "BreadcrumbList"}, types)
+        ck("visible trail = BreadcrumbList", '<nav class="breadcrumb"' in ia and XL.trail_matches(ia) is None, XL.trail_matches(ia))
         ck("gap year is n/a + reason", re.search(r"<tr><td>2014</td><td class=\"n\"><span class=\"mut\" "
                                                      r"title=\"NASS published no figure\">n/a", ia) is not None)
         ck("acres missing -> n/a, present -> value", "<td class=\"n\">13.6</td>" in ia)

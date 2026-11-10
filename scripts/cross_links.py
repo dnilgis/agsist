@@ -159,6 +159,29 @@ def crumbs_html_of(ld):
     return crumbs_html([(x["name"], x["item"]) for x in bl["itemListElement"]]) if bl else ""
 
 
+def trail_matches(page):
+    """None when the page's visible trail names the same steps, in order, as its BreadcrumbList JSON-LD;
+    else what differs. A page with neither passes; one with only one of the two fails."""
+    import html as H
+    import json
+    lds = []
+    for m in re.finditer(r'<script type="application/ld\+json">(.*?)</script>', page, re.S):
+        try:
+            d = json.loads(m.group(1))
+        except ValueError:
+            continue
+        for g in (d if isinstance(d, list) else d.get("@graph", [d])):
+            if isinstance(g, dict) and g.get("@type") == "BreadcrumbList":
+                lds.append([x["name"] for x in g["itemListElement"]])
+    nav = re.search(r'<nav class="breadcrumb" aria-label="Breadcrumb"[^>]*>(.*?)</nav>', page, re.S)
+    if not lds and not nav:
+        return None
+    if not nav or not lds:
+        return "trail without JSON-LD" if nav else "JSON-LD without a visible trail"
+    seen = [H.unescape(re.sub(r"<[^>]+>", "", s)).strip() for s in nav.group(1).split("&rsaquo;")]
+    return None if seen == lds[0] else f"visible {seen} vs JSON-LD {lds[0]}"
+
+
 def crumbs(items):
     """-> (visible html, BreadcrumbList dict) from one list."""
     return crumbs_html(items), crumbs_jsonld(items)
@@ -337,6 +360,9 @@ def selftest():
         got = open(os.path.join(d, "arc-plc/iowa/story-county.html")).read()
         ok(nb in got, got)
         ok(restamp_near(got, d) == (got, False), "stamping twice changes nothing")
+        ld = '<script type="application/ld+json">{"@graph": [%s]}</script>' % _j.dumps(j)
+        ok(trail_matches(ld + v) is None, trail_matches(ld + v))
+        ok(trail_matches(ld + v.replace(">Iowa<", ">Ohio<")) is not None and trail_matches(ld) is not None, "a mismatch is caught")
         ok("&amp;" in crumbs_html([("A", "/"), ("Corn & beans", "/x")]), "names are escaped")
     if fails:
         print("SELFTEST FAILED:\n  " + "\n  ".join(fails))

@@ -3241,6 +3241,18 @@ LIVE_SHARE_GENERIC = {
                            "Free, and every bid shows when it was posted."}
 
 
+LIVE_OPEN = re.compile(r"(<!--CB-OPEN-->)(.*?)(<!--/CB-OPEN-->)", re.S)
+
+
+def open_line(share_text):
+    """/cash-bids' visible opening sentence, from the share text (one source for both)."""
+    m = re.search(r"current bids from ([\d,]+ elevators?) across ([\d,]+ towns?), by ZIP, free\. Updated (.+?) CT\.$",
+                  share_text)
+    if not m:
+        return ""
+    return f"AGSIST shows current cash bids from {m.group(1)} in {m.group(2)}, updated {m.group(3)} CT. "
+
+
 def stamp_live_page(path, metas, counts=None):
     """Put the network's current counts and time in /cash-bids' link-preview
     description (og: and twitter: only; its <title>, meta description and
@@ -3264,6 +3276,10 @@ def stamp_live_page(path, metas, counts=None):
                 f"elevator{'s' if n_el != 1 else ''} across {n_tw:,} town{'s' if n_tw != 1 else ''}, by ZIP, free. "
                 f"Updated {fmt_share_time(max(m['latest'] for m in live))} CT.")   # time zone named (2026-10-17 audit N11)
     out = html
+    # the visible opening line under the heading says the same counts and time (Nov 10, 2026: a quotable
+    # first sentence); with nothing priced the line is emptied, never left on an old count
+    if LIVE_OPEN.search(out):
+        out = LIVE_OPEN.sub(lambda m: m.group(1) + (esc(open_line(text)) if text else "") + m.group(3), out, count=1)
     for key, generic in LIVE_SHARE_GENERIC.items():
         attr = "property" if key.startswith("og:") else "name"
         pat = re.compile(rf'(<meta {attr}="{re.escape(key)}" content=")[^"]*(">)')
@@ -3958,6 +3974,10 @@ def selftest():
         # the FAQPage JSON-LD say the same words
         blks = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', fr, re.S)]
         assert [sorted(g["@type"] for g in b["@graph"]) for b in blks] == [["BreadcrumbList", "FAQPage", "WebPage"]], blks
+        import cross_links as XL   # the visible trail names the same steps as the BreadcrumbList, town and state
+        assert '<nav class="breadcrumb"' in fr and XL.trail_matches(fr) is None, XL.trail_matches(fr)
+        _ne = open(os.path.join(out, "nebraska", "index.html")).read()
+        assert '<nav class="breadcrumb"' in _ne and XL.trail_matches(_ne) is None, XL.trail_matches(_ne)
         # Oct 19, 2026: the town page's dateModified is its sitemap lastmod, never the build
         # time (now is 19:00Z, the newest bid posted 17:00Z), and the publisher is AGSIST
         # Oct 19, 2026: the state page answers three questions from its own cards and counts
@@ -4101,6 +4121,17 @@ def selftest():
         assert txt.endswith("Updated Oct 7, 12:00 pm CT.") and live_html.count(esc(txt)) == 2, live_html
         assert stamp_live_page(lp, [x for x in metas if not x["indexable"]]) == LIVE_SHARE_GENERIC["og:description"]
         assert open(lp).read() == f"<head>{gen_tags}</head>"
+        # the visible opening line: the same counts and time as the share text, emptied when nothing is priced
+        with open(lp, "w") as f:
+            f.write(f"<head>{gen_tags}</head><p><!--CB-OPEN-->old count<!--/CB-OPEN-->Free cash bids by ZIP.</p>")
+        txt = stamp_live_page(lp, metas)
+        live_html = open(lp).read()
+        mo = re.search(r"current bids from ([\d,]+) elevators? across ([\d,]+) towns?.*Updated (.+) CT", txt)
+        want_open = f"AGSIST shows current cash bids from {mo.group(1)} elevator"
+        assert want_open in live_html and f"in {mo.group(2)} town" in live_html and f"updated {mo.group(3)} CT. <!--/CB-OPEN-->" in live_html, live_html
+        assert "old count" not in live_html
+        stamp_live_page(lp, [x for x in metas if not x["indexable"]])
+        assert "<!--CB-OPEN--><!--/CB-OPEN-->Free cash bids" in open(lp).read()
         assert stamp_live_page(os.path.join(td, "missing.html"), metas) is None
         # the companies line and the "my elevator" answer (stamp_live_coverage)
         cos_t = [{"slug": "adm", "path": "/cash-bids/company/adm", "short": "ADM", "live": 9, "locations": 9},

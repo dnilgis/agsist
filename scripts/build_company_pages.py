@@ -679,6 +679,9 @@ def selftest():
                          now=CB.parse_ts("2026-10-07T19:00:00Z"))
             p = open(os.path.join(out, SUBDIR, "acme-co-op.html"), encoding="utf-8").read()
             assert ("$3.80" in p) == shows, (status, ck)
+            # the visible trail names the same steps as the BreadcrumbList (cross_links.trail_matches)
+            import cross_links as XL
+            assert XL.trail_matches(p) is None and '<nav class="breadcrumb"' in p, XL.trail_matches(p)
     assert SB.HELD_SKIP_HOURS == 6
     print("build_company_pages selftest ok")
 
