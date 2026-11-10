@@ -101,7 +101,7 @@ import phone_corrections  # noqa: E402  (numbers checked on the buyer's own site
 import storesell  # noqa: E402  (the site's one store-or-sell calculation, twin of components/storesell.js)
 import build_buyers as BUY  # noqa: E402  (where the big buyers are: data/buyers.json)
 from elevator_names import clean_place, display_name  # noqa: E402  (page-title names fixed, twin of elev-names.js)
-from elevator_names import fac_key, fac_words, trade_key, basis_name  # noqa: E402  (the one elevator name key)
+from elevator_names import fac_key, trade_key, basis_name, fac_words  # noqa: E402  (the one elevator name key)
 from build_state_basis_pages import (  # noqa: E402
     CT, MONTH_ABBR, SITE, STATE_NAMES, contract_label, esc, money_basis, parse_contract, parse_ts)
 
