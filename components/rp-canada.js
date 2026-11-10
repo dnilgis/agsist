@@ -579,7 +579,7 @@
           return (b.tied ? 'À égalité : ' : '') + head + ' en ' + b.of + ' années complètes : ' + val;
         }
         var word = { wetMonth: 'wettest', dryMonth: 'driest', warmMonth: 'warmest', coldMonth: 'coldest' }[r.kind];
-        var s2 = (b.tied ? 'tied for ' : '') + (b.rank > 1 ? ord(b.rank) + ' ' : '') + word + ' ' + MONTH_EN[m] + ' of ' + b.of + ' full years: ' + val;
+        var s2 = (b.tied ? 'tied for ' : '') + (b.rank > 1 ? ord(b.rank) + ' ' : '') + word + ' ' + MONTH_EN[m] + ' of ' + b.of + ' full ' + (['Januaries', 'Februaries', 'Marches'][m] || MONTH_EN[m] + 's') + ': ' + val;   // as rain-print-records.js (2026-11-09)
         return s2.charAt(0).toUpperCase() + s2.slice(1);
       }
     }

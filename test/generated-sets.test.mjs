@@ -333,6 +333,60 @@ print(json.dumps(bad))`, "fail_sum.py").trim().split("\n").at(-1));
   fs.rmSync(d, { recursive: true, force: true });
 });
 
+// Nov 10, 2026: a pull request changed a module every set builder imports (scripts/source_links.py). The PR
+// prebuild rebuilt arc-plc ("its code changed") but not build_breakeven_data.py, its dependent, so
+// data/breakeven read stale against the new arc-plc data and other checks failed. The fixture: a shared import,
+// a set that imports it, a summary that reads the set (as breakeven reads arc-plc) and a summary that reads
+// that summary (transitive).
+const depFixture = () => {
+  const d = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), "gendep-"));
+  const g = (...x) => execFileSync("git", ["-C", d, "-c", "user.name=t", "-c", "user.email=t@t", ...x], { encoding: "utf8" });
+  g("init", "-q", "-b", "main");
+  const w = (f, body) => { fs.mkdirSync(path.dirname(path.join(d, f)), { recursive: true }); fs.writeFileSync(path.join(d, f), body); };
+  w("scripts/shared_links.py", "LABEL = 'old'\n");
+  w("scripts/build_set.py", "from shared_links import LABEL\nimport os\nos.makedirs('data/set', exist_ok=True)\nopen('data/set/a.json', 'w').write(LABEL + '\\n')\n");
+  const sum = (src, out) => `import sys, os\nbody = 'from ' + open(${JSON.stringify(src)}).read()\nif '--check' in sys.argv:\n    sys.exit(0 if os.path.exists(${JSON.stringify(out)}) and open(${JSON.stringify(out)}).read() == body else 1)\nos.makedirs(os.path.dirname(${JSON.stringify(out)}), exist_ok=True)\nopen(${JSON.stringify(out)}, 'w').write(body)\n`;
+  w("scripts/build_sum.py", sum("data/set/a.json", "data/sum/a.json"));
+  w("scripts/build_sum2.py", sum("data/sum/a.json", "data/sum2/a.json"));
+  for (const b of ["build_set.py", "build_sum.py", "build_sum2.py"]) execFileSync("python3", ["scripts/" + b], { cwd: d });
+  g("add", "-A"); g("commit", "-qm", "main");
+  w("scripts/shared_links.py", "LABEL = 'new label'\n");  // another length: a .pyc from the same second is not reused
+  g("add", "-A"); g("commit", "-qm", "pull request: the shared import changes");
+  return d;
+};
+const prebuildFake = (root) => pyBare(`import generated_sets as G
+G.ROOT = G.GIT_ROOT = ${JSON.stringify(root)}
+G.SUMMARIES = [{"id": "sum", "build": ["python3", "scripts/build_sum.py"], "trace": ["--check"], "files": ["data/sum"], "dependents": ["sum2"]},
+               {"id": "sum2", "build": ["python3", "scripts/build_sum2.py"], "trace": ["--check"], "files": ["data/sum2"]}]
+G.SUMMARY = {x["id"]: x for x in G.SUMMARIES}
+G.SETS = [{"id": "base-set", "offline": True, "workflow": "x.yml", "build": [["python3", "scripts/build_set.py"]],
+           "check": None, "outputs": ["data/set/**"], "writes": [], "code": ["scripts/build_set.py"], "inputs": [],
+           "dependents": ["sum"]}]
+print("RC=%d" % G.cmd_prebuild("HEAD^1"))`);
+
+test("prebuild: a set rebuilt because a shared import changed gets its dependents rebuilt too, transitively, in order", () => {
+  const d = depFixture();
+  const out = prebuildFake(d);
+  assert.match(out, /prebuild: base-set \(its code changed\)/, out);
+  assert.match(out, /RC=0/, out);
+  assert.equal(fs.readFileSync(d + "/data/set/a.json", "utf8"), "new label\n", "the set is rebuilt with the new import");
+  for (const b of ["build_sum.py", "build_sum2.py"]) {
+    const r = spawnSync("python3", ["scripts/" + b, "--check"], { cwd: d, encoding: "utf8" });
+    assert.equal(r.status, 0, `${b} --check reads fresh after the prebuild:\n${out}`);
+  }
+  assert.equal(fs.readFileSync(d + "/data/sum2/a.json", "utf8"), "from from new label\n", "the summary of the summary, after it");
+  assert.ok(out.indexOf("build_sum.py") < out.indexOf("build_sum2.py"), "dependency order");
+  fs.rmSync(d, { recursive: true, force: true });
+});
+
+test("prebuild: the real table lists breakeven as an arc-plc dependent, and a shared import change rebuilds both", () => {
+  assert.ok(T.sets.find((s) => s.id === "arc-plc").dependents.includes("breakeven"));
+  const r = JSON.parse(py(`import generated_sets as G
+print(json.dumps({"touched": G.touched(G.SETS, ["scripts/source_links.py"], G.ROOT), "closure": G.summary_closure(["breakeven"])}))`).trim().split("\n").at(-1));
+  if (fs.existsSync(path.join(ROOT, "scripts/source_links.py"))) assert.ok(r.touched.includes("arc-plc"), "arc-plc imports source_links: " + r.touched);
+  assert.deepEqual(r.closure.slice(0, 1), ["breakeven"]);
+});
+
 test("rule 61: pull-rebase rebuilds a summary that conflicts, never keeping either side; another conflict aborts", () => {
   const { d, a, b, g } = sumFixture();
   // main moves on: another job adds a page and rebuilds the summary
