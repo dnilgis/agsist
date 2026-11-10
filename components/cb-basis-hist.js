@@ -31,13 +31,23 @@
   var cache = {};
   var REF_YEAR = String(new Date().getFullYear());   /* set to the log's own year on render */
 
-  var FAC_TAIL = { LLC: 1, LC: 1, INC: 1, INCORPORATED: 1, CO: 1, CORP: 1, CORPORATION: 1, LTD: 1, LIMITED: 1, LP: 1, LLP: 1, COMPANY: 1, COOP: 1, COOPERATIVE: 1, ASSN: 1, ASSOCIATION: 1 };
-  function normFac(s) {
-    var t = String(s || '').toUpperCase().replace(/&/g, ' AND ').replace(/\bCO[\s.-]*OP\b/g, 'COOP')
-      .replace(/[^A-Z0-9]+/g, ' ').trim().split(' ').filter(function (x) { return x; });
-    while (t.length > 1 && FAC_TAIL[t[t.length - 1]]) t.pop();
-    return t.join('');
+  /* One elevator across spellings: elevNames.facKey (components/elev-names.js, twin of
+     scripts/elevator_names.fac_key that the town builder keys the box with). Older town pages do
+     not load elev-names.js themselves, so it is fetched once here when missing. */
+  var namesReady = null;
+  function needNames() {
+    if (names()) return Promise.resolve(names());
+    if (!namesReady) namesReady = new Promise(function (ok) {
+      var sc = document.createElement('script');
+      sc.src = '/components/elev-names.js?v=1';
+      sc.onload = function () { ok(window.elevNames || null); };
+      sc.onerror = function () { ok(null); };
+      document.head.appendChild(sc);
+    });
+    return namesReady;
   }
+  function names() { return (typeof window !== 'undefined' && window.elevNames) || (typeof require === 'function' ? require('./elev-names.js') : null); }
+  function normFac(s) { return names().facKey(s); }
   /* Twin of norm_town() in scripts/build_cash_bid_pages.py: "St. Ansgar" = "SAINT ANSGAR". */
   function normKey(s) {
     return String(s || '').toUpperCase().trim().replace(/^(STE?)\b\.?/, function (m, a) { return a === 'ST' ? 'SAINT' : 'SAINTE'; })
@@ -249,7 +259,7 @@
     if (!/^[A-Z]{2}$/.test(st)) return;
     box.querySelector('.cbt-hist-body').innerHTML = '<p class="cbt-sub">Loading the basis log&hellip;</p>';
     if (!cache[st]) cache[st] = fetch('/data/basis-sparklines/' + st + '.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
-    cache[st].then(function (d) { render(box, d); });
+    Promise.all([cache[st], needNames()]).then(function (r) { render(box, r[1] ? r[0] : null); });
   }
 
   var css = '.cbh-crop{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--border)}' +

@@ -48,13 +48,9 @@
     s = String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim();
     return n ? s.slice(0, n).trim() : s;
   }
-  /* Registry names come in capitals ("PINE BLUFFS"): shown as people write them. */
-  function niceCase(s) {
-    s = clean(s);
-    if (!s || !(s === s.toUpperCase() || s === s.toLowerCase()) || !/[a-z]/i.test(s)) return s;
-    return s.toLowerCase().replace(/(^|[\s\-'(/.])([a-z])/g, function (m, a, b) { return a + b.toUpperCase(); })
-      .replace(/\b(Llc|Inc|Co-op|Coop)\b/g, function (w) { return { Llc: 'LLC', Inc: 'Inc', 'Co-op': 'Co-op', Coop: 'Coop' }[w]; });
-  }
+  /* Registry names come in capitals ("PINE BLUFFS"): elevNames.niceCase (components/elev-names.js). */
+  function niceCase(s) { return EN().niceCase(clean(s)); }
+  function EN() { return (typeof window !== 'undefined' && window.elevNames) || (typeof require === 'function' ? require('./elev-names.js') : null); }
   /* A town written "ALBIN, WY" by the directory: the town part only. */
   function townOnly(s, st) {
     s = clean(s);
