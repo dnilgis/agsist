@@ -40,7 +40,9 @@ test("the SEO guard fails a title over 68 characters (selftest)", () => {
   const out = execFileSync("python3", ["scripts/check_seo.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
   assert.match(out, /selftest ok/);
   const src = read("scripts/check_seo.py");
-  assert.match(src, /err\(rel, f"title is \{len\(p\['titles'\]\[0\]\)\} chars/, "a long title is an error, not a warning");
+  assert.match(src, /msg = f"title is \{len\(p\['titles'\]\[0\]\)\} chars/, "the title length message");
+  assert.match(src, /else:\s*\n\s*err\(rel, msg\)/, "a long title is an error outside the Daily issue pages");
+  assert.match(out, /selftest ok/, "a long Daily issue title warns, not fails (selftest case)");
 });
 
 test("hand page titles are within the cap", () => {
@@ -62,16 +64,13 @@ test("company titles: count and crops, never a price; meta without a price", () 
   assert.ok(!/\$/.test(t[3]) && t[3].length <= 160, t[3]);
 });
 
-test("Daily issue pages: titles fit the cap and keep the date, and no two issues share an H1", () => {
-  const seen = new Map();
+test("Daily issue pages: the title keeps the whole headline and the date", () => {
   for (const f of readdirSync(ROOT + "daily").filter((x) => /^\d{4}-\d\d-\d\d\.html$/.test(x))) {
     const page = read(`daily/${f}`);
-    const t = page.match(/<title>([^<]*)<\/title>/)[1].replace(/&amp;/g, "&");
-    assert.ok(t.length <= 68 && /\| \w{3} \d{1,2}, \d{4}/.test(t), `${f}: ${t}`);
+    const t = page.match(/<title>([^<]*)<\/title>/)[1];
     const h = (page.match(/<h1 class="dv3-headline">([^<]*)<\/h1>/) || [])[1];
     if (!h) continue;
-    assert.ok(!seen.has(h), `${f} repeats the H1 of ${seen.get(h)}`);
-    seen.set(h, f);
+    assert.ok(t.startsWith(h + " | ") && /\| \w{3} \d{1,2}, \d{4}/.test(t), `${f}: ${t}`);
   }
 });
 

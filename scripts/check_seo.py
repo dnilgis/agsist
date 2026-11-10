@@ -8,7 +8,8 @@ quietly cost search traffic when a generator or a hand edit gets them wrong:
 Hard errors (exit 1):
   * a page has no <title>, an empty one, or more than one in <head>
   * an indexable page's title is longer than TITLE_MAX (68, scripts/seo_caps.py),
-    in every page family (a warning until Nov 10, 2026)
+    in every page family but Daily issue pages, which warn (the title keeps the
+    whole published headline; see the comment in check())
   * an indexable page has no canonical link, or one that is not absolute
     https://agsist.com/..., or one that points somewhere other than the page's
     own clean URL (the site serves /x for x.html and /x/ for x/index.html)
@@ -65,6 +66,7 @@ EXCEPTIONS = {
 }
 
 
+RE_DAILY_ISSUE = re.compile(r"^daily/\d{4}-\d\d-\d\d\.html$")
 RE_HEAD = re.compile(rb"</head\s*>", re.I)
 RE_TITLE = re.compile(r"<title\b[^>]*>(.*?)</title\s*>", re.I | re.S)
 RE_META = re.compile(r"<meta\b[^>]*>", re.I)
@@ -278,7 +280,16 @@ def check(root=ROOT):
         if p["titles"] and p["titles"][0]:
             titles.setdefault(p["titles"][0], []).append(rel)
             if len(p["titles"][0]) > TITLE_MAX:
-                err(rel, f"title is {len(p['titles'][0])} chars (cap {TITLE_MAX}, scripts/seo_caps.py)")
+                msg = f"title is {len(p['titles'][0])} chars (cap {TITLE_MAX}, scripts/seo_caps.py)"
+                # Daily issue pages (daily/YYYY-MM-DD.html) only warn: their <title>
+                # keeps the whole headline because Google News and Top stories compare
+                # the title with the H1 and the NewsArticle headline, and an issue's
+                # headline is the published record (data/daily-archive), never cut
+                # after the fact (scripts/generate_daily.py daily_page_title).
+                if RE_DAILY_ISSUE.match(rel.replace(os.sep, "/")):
+                    warnings.append(f"{rel}: {msg}")
+                else:
+                    err(rel, msg)
         want = clean_url(rel)
         if not p["canon"]:
             err(rel, "has no canonical link")
@@ -387,6 +398,12 @@ def selftest():
         w("ok68.html", page("T" * TITLE_MAX, "https://agsist.com/ok68"))
         ok("ok68.html" not in "\n".join(check(d)["errors"]), "a title at the cap passes")
         os.remove(os.path.join(d, "ok68.html"))
+        os.makedirs(os.path.join(d, "daily"), exist_ok=True)
+        w("daily/2026-10-21.html", page("D" * (TITLE_MAX + 1), "https://agsist.com/daily/2026-10-21"))  # pin-ok: inline fixture path
+        r3 = check(d)
+        ok("daily/2026-10-21.html" not in "\n".join(r3["errors"])
+           and "daily/2026-10-21.html: title is" in "\n".join(r3["warnings"]), "a long Daily issue title warns, not fails")
+        os.remove(os.path.join(d, "daily", "2026-10-21.html"))
         ok(f"long.html: meta description is {DESC_MAX + 1} chars" in ws2 and DESC_MAX == 160, "description warns past 160")
         os.remove(os.path.join(d, "long.html"))
         ok("c.html: no meta description" in ws, "missing description warns")

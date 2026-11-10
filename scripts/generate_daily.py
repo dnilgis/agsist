@@ -3905,6 +3905,7 @@ def _nav_date_label(d):
 # whole sentence or a word boundary with an ellipsis — never mid-word.
 # rebuild_daily_heads.py-style backfills import these same functions, so the
 # head a page was published with and the head a backfill writes cannot drift.
+DAILY_TITLE_MAX = 66
 DAILY_DESC_MIN, DAILY_DESC_MAX = 120, 160
 DAILY_AUTHOR = {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)",
                 "url": "https://agsist.com/about"}
@@ -4068,18 +4069,21 @@ def _trim_words(text, limit, ellipsis="…"):
 
 def daily_page_title(briefing, date_iso):
     """'Corn holds $5 as grain stocks come in heavy | Oct 6, 2026 | AGSIST'.
-    Plain text (escape it for HTML). Never past the site's title cap
-    (scripts/seo_caps.py, 68): the brand gives way first, then the end of the
-    headline, cut at a word boundary. The date always stays, so two issues
-    with the same headline never share a title. The H1, og:title and the
-    NewsArticle headline keep the whole headline (news_headline); the <title>
-    starts with the same words."""
-    import seo_caps
+    Plain text (escape it for HTML). The brand goes first when the whole
+    thing would pass DAILY_TITLE_MAX; the headline is never trimmed."""
     hl = news_headline(briefing)
     dated = f" | {_short_date(date_iso)}"
-    cap = seo_caps.TITLE_MAX
-    return seo_caps.fit([hl + dated + " | AGSIST", hl + dated,
-                         _trim_words(hl, cap - len(dated)) + dated], cap)
+    brand = " | AGSIST"
+    # Headline first; the brand is the first thing to give way (Google shows
+    # the site name above the result anyway), the headline the last.
+    if len(hl) + len(dated) + len(brand) <= DAILY_TITLE_MAX:
+        return hl + dated + brand
+    # 2026-10-16: the headline is never cut. Google News and Top stories
+    # compare the <title> with the H1 and the NewsArticle headline; a title
+    # that stops mid-headline reads as a different story. A long title is
+    # shortened by Google on screen, not here. The date stays: two issues
+    # with the same headline must not share a title.
+    return hl + dated
 
 
 def _plain(s):
