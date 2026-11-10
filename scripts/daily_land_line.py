@@ -31,10 +31,8 @@ def latest(repo=REPO):
         return None
 
 
-def line(at, before, repo=REPO, land=None):
-    """at = (lat, lon) of the reader's ZIP; before = the issue's day (ISO). A dict for only_here, or None."""
-    if not at:
-        return None
+def _fresh(before, repo=REPO):
+    """latest.json when its month is inside the DAYS window of the issue for `before`, else None."""
     L = latest(repo)
     if not L or not L.get("month") or not L.get("published"):
         return None
@@ -42,7 +40,35 @@ def line(at, before, repo=REPO, land=None):
         age = (datetime.date.fromisoformat(before[:10]) - datetime.date.fromisoformat(L["published"][:10])).days
     except ValueError:
         return None
-    if age < 0 or age > DAYS:
+    return L if 0 <= age <= DAYS else None
+
+
+def state_fact(L, st):
+    """One state's month as a fact for the Daily's memory (scripts/daily_fresh.py): keyed by the month and the
+    state, valued by that state's count of sales for the month. It moves when the month turns or the state's
+    files add sales, never on a re-read that adds nothing (latest.json's "published" rolls with every read:
+    Florida's Nov 5, 8 and 9 2026 kept the September line inside its window from Oct 18 on)."""
+    n = (L.get("per_state") or {}).get(st)
+    if not isinstance(n, int) or n <= 0:
+        return None
+    return {"kind": "land_sales", "key": "%s:%s" % (L["month"], st), "value": n, "text": ""}
+
+
+def issue_facts(before, repo=REPO):
+    """[fact] of every state whose month a ZIP reader's land line could carry in the issue for `before`: the
+    issue's own record (per state, never per reader), so the next issues know the month was told."""
+    L = _fresh(before, repo)
+    if not L:
+        return []
+    return [f for f in (state_fact(L, st) for st in sorted(L.get("per_state") or {})) if f]
+
+
+def line(at, before, repo=REPO, land=None):
+    """at = (lat, lon) of the reader's ZIP; before = the issue's day (ISO). A dict for only_here, or None."""
+    if not at:
+        return None
+    L = _fresh(before, repo)
+    if not L:
         return None
     import land_alert as LA
     if land is None:
@@ -61,7 +87,10 @@ def line(at, before, repo=REPO, land=None):
         text = ("Farm sales near you: 1 of 10 acres or more recorded within %d miles in %s, %s acres in %s County, %s, at %s an acre."
                 % (MILES, LA.MONTHS[m0], LA.acres_text(big["acres"]), big["county"], big["st"],
                    LA.money(big["ppa"]) if big.get("ppa") is not None else "a price not figured per acre"))
-    return {"text": text, "kind": "land_sales", "url": "/land-sales/" + L["month"], "link": "The month's biggest buyers and sales", "n": n}
+    # the states its sales come from: the line prints when any of them is news (daily_v2, daily_fresh.still_news)
+    facts = [f for f in (state_fact(L, st) for st in sorted({r.get("st") for r in rep["rows"] if r.get("st")})) if f]
+    return {"text": text, "kind": "land_sales", "url": "/land-sales/" + L["month"], "link": "The month's biggest buyers and sales", "n": n,
+            "facts": facts}
 
 
 def _selftest():

@@ -39,6 +39,7 @@ import tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
+from county_fold import resolve  # noqa: E402
 
 LOSSY = {"part", "office", "split"}
 OUTSIDE = ("72", "78", "60", "66", "69")   # Puerto Rico, Virgin Islands, the Pacific territories
@@ -95,14 +96,14 @@ class Spine:
         self.states = {c[:2] for c in self.codes}
 
     def fold(self, code):
-        """-> (spine codes, how): how is 'direct', a crosswalk kind, 'outside' or 'missed'."""
+        """-> (spine codes, how): how is 'direct', a crosswalk kind, 'outside' or 'missed'. The fold is
+        county_fold.resolve (the one fold every county builder imports), read against this tree's table."""
         code = str(code or "").strip()
-        if code in self.codes:
-            return [code], "direct"
-        row = self.table.get(code)
-        if row is not None:
-            to = [t for t in (row.get("to") or []) if t in self.codes]
-            return (to, row["kind"]) if to else ([], "missed")
+        r = resolve(code, self.codes, self.table)
+        if r.to:
+            return list(r.to), r.kind or "direct"
+        if r.kind is not None:
+            return [], "missed"
         if code[:2] in OUTSIDE or code[:2] not in self.states:
             return [], "outside"
         return [], "missed"
