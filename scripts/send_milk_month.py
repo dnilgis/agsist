@@ -513,6 +513,26 @@ def selftest():
     ck("live: only the opted-in reader not yet mailed gets it", sent_to == ["a@example.com"], sent_to)
     ck("marked with the class month", marks == [{"email": "a@example.com", "topic": "milk-month", "month": "2026-09"}], marks)
     ck("the log has counts, no address", not any("@example.com" in x for x in log), log)
+    # a deferral (4xx) is tried again at the end of the run and marked once; not a failure
+    soft_done = []
+
+    class SoftOnce(Conn):
+        def send_message(self, m):
+            if m["To"] == "a@example.com" and not soft_done:
+                soft_done.append(1)
+                raise smtplib.SMTPRecipientsRefused({m["To"]: (451, b"4.7.1 try again later")})
+            Conn.send_message(self, m)
+    sent_to.clear()
+    marks.clear()
+    rows.append({"email": "d@example.com", "topic": "milk-month", "lid": "4" * 16})
+    log = []
+    run(["--send"], http=http, connect=SoftOnce, now=t_ok, sleep=lambda s: None, out=log.append, repo=tmp)
+    ck("a deferred reader goes out last, is marked once, and nothing failed",
+       sent_to == ["d@example.com", "a@example.com"] and [m["email"] for m in marks] == ["d@example.com", "a@example.com"]
+       and any("failed 0" in x for x in log), (sent_to, marks, log))
+    rows.pop()
+    sent_to.clear()
+    marks.clear()
     sent_to.clear()
     marks.clear()
     log = []

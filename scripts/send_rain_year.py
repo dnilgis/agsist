@@ -480,6 +480,18 @@ def selftest():
        sorted(s.sent) == ["one@example.com", "two@example.com"] and w.log[-1] == ("list", "rainyear:2026:"), (s.sent, log))
     ck("marked only after the send", sorted(w.marks) == ["one@example.com", "two@example.com"])
     ck("an older year's sign-up is never mailed", "old@example.com" not in s.sent)
+    # a deferral (4xx) is tried again at the end of the run and marked once; not a failure
+    class SoftOnce(SMTP):
+        def send_message(self, msg):
+            if msg["To"] == "one@example.com" and not getattr(SoftOnce, "done", False):
+                SoftOnce.done = True
+                raise smtplib.SMTPRecipientsRefused({msg["To"]: (451, b"4.7.1 try again later")})
+            SMTP.send_message(self, msg)
+    wd, sd1 = Worker(), SoftOnce()
+    rc, log = go(["--send"], wd, sd1, "2027-01-04 09:00")
+    ck("a deferred reader goes out last, is marked once, and nothing failed",
+       rc == 0 and sd1.sent == ["two@example.com", "one@example.com"] and sorted(wd.marks) == ["one@example.com", "two@example.com"]
+       and "failed 0" in log, (sd1.sent, wd.marks, log))
     ck("no address in the log", not any(e in log for e in addrs), log)
     s2 = SMTP()
     rc, log = go(["--send"], w, s2, "2027-01-11 09:00")
