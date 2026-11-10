@@ -14,7 +14,8 @@ that every source commit is reachable there, then prints one status line (date, 
 
 Environment:
   BIDS_BACKUP_REPO    owner/name of the backup (default dnilgis/bids-backup); it must be private
-  PRIVATE_REPO_TOKEN  the key that reads and writes the backup (never printed)
+  BIDS_BACKUP_TOKEN   the key that reads and writes the backup (never printed)
+  PRIVATE_REPO_TOKEN  used for the backup only when BIDS_BACKUP_TOKEN is not set (never printed)
   MIRROR_SRC          source URL or path (default https://github.com/dnilgis/bids.git)
   MIRROR_DST          backup URL or path (tests; skips the GitHub lookup)
   MIRROR_DIR          bare work repository (default a temporary folder)
@@ -39,7 +40,7 @@ DEFAULT_SRC = "https://github.com/dnilgis/bids.git"
 SOURCE_REPO = "dnilgis/bids"
 SEED_REF = "refs/heads/_mirror_seed"
 REPO_RE = re.compile(r"^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$")
-UNREACHABLE = ("the backup repository {repo} cannot be reached with PRIVATE_REPO_TOKEN. Either it does not "
+UNREACHABLE = ("the backup repository {repo} cannot be reached with the backup key. Either it does not "
                "exist yet (create it on GitHub as an empty private repository named {repo}) or the key's "
                "repository access does not include it (add {repo} to the key, Contents: read and write).")
 
@@ -52,12 +53,15 @@ class Mirror:
     def __init__(self, env, log=print):
         self.env = env
         self.log = log
-        self.token = env.get("PRIVATE_REPO_TOKEN", "")
+        self.tokens = [t for t in (env.get("BIDS_BACKUP_TOKEN", ""), env.get("PRIVATE_REPO_TOKEN", "")) if t]
+        self.token = self.tokens[0] if self.tokens else ""
         self.pushes = 0
 
     def hide(self, text):
         text = re.sub(r"x-access-token:[^@\s]*@", "x-access-token:***@", text or "")
-        return text.replace(self.token, "***") if self.token else text
+        for t in self.tokens:
+            text = text.replace(t, "***")
+        return text
 
     def git(self, *args, cwd=None, check=True):
         genv = dict(os.environ)
@@ -80,7 +84,7 @@ class Mirror:
         if self.env.get("MIRROR_DST"):
             return self.env["MIRROR_DST"]
         if not self.token:
-            raise MirrorError("PRIVATE_REPO_TOKEN is not set; " + UNREACHABLE.format(repo=repo))
+            raise MirrorError("the secret BIDS_BACKUP_TOKEN is not set; " + UNREACHABLE.format(repo=repo))
         req = urllib.request.Request("https://api.github.com/repos/" + repo, headers={
             "Authorization": "Bearer " + self.token, "Accept": "application/vnd.github+json",
             "User-Agent": "bids-mirror"})
@@ -333,6 +337,22 @@ def selftest():
         check(sh("rev-parse", "kept/20261129/main^{commit}", cwd=dst) == old, "rewritten: the old tip is kept as a tag on the backup")
         check("side" in sh("branch", "--list", "side", cwd=dst), "a branch the source deleted stays on the backup")
 
+        m2 = Mirror({"BIDS_BACKUP_TOKEN": "own-456", "PRIVATE_REPO_TOKEN": "sekrit-123"})
+        m3 = Mirror({"PRIVATE_REPO_TOKEN": "sekrit-123"})
+        check(m2.token == "own-456" and m3.token == "sekrit-123", "backup key: BIDS_BACKUP_TOKEN first, PRIVATE_REPO_TOKEN as the fallback")
+        check("own-456" not in m2.hide("x own-456 y sekrit-123") and "sekrit-123" not in m2.hide("sekrit-123"), "backup key: both keys are hidden")
+        url_env = {"BIDS_BACKUP_TOKEN": "own-456", "PRIVATE_REPO_TOKEN": "sekrit-123"}
+        import unittest.mock as um
+        class R:
+            def __enter__(s): return s
+            def __exit__(s, *a): return False
+            def read(s): return b'{"private": true, "permissions": {"push": true}}'
+        with um.patch("urllib.request.urlopen", return_value=R()):
+            check(Mirror(url_env).backup() == "https://x-access-token:own-456@github.com/dnilgis/bids-backup.git",
+                  "the backup URL uses BIDS_BACKUP_TOKEN when set")
+            check(Mirror({"PRIVATE_REPO_TOKEN": "sekrit-123"}).backup() == "https://x-access-token:sekrit-123@github.com/dnilgis/bids-backup.git",
+                  "the backup URL falls back to PRIVATE_REPO_TOKEN when it is unset")
+
         bad = dict(env, MIRROR_DST=os.path.join(t, "nowhere.git"))
         logs.clear()
         rc = main(bad, logs.append, "2026-12-06")
@@ -343,7 +363,7 @@ def selftest():
 
         for e2, word in ((dict(env, BIDS_BACKUP_REPO="dnilgis/bids"), "source itself"),
                          (dict(env, BIDS_BACKUP_REPO="not a repo"), "owner/name"),
-                         ({k: v for k, v in env.items() if k not in ("MIRROR_DST", "PRIVATE_REPO_TOKEN")}, "not set")):
+                         ({k: v for k, v in env.items() if k not in ("MIRROR_DST", "PRIVATE_REPO_TOKEN")}, "BIDS_BACKUP_TOKEN is not set")):
             logs.clear()
             check(main(e2, logs.append, "2026-12-06") == 1 and word in " ".join(logs), "refused: " + word)
 
