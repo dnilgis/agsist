@@ -168,12 +168,13 @@ test("390 px: the three rent columns show without a sideways swipe, and the filt
       assert.ok(r.page <= 390, `${st}: the page scrolls sideways (${r.page} px)`);
     }
     await pg.goto(`http://127.0.0.1:${port}/rent/iowa`, { waitUntil: "load" });
-    const box0 = await pg.locator("#rs-table").boundingBox();
+    const top = () => pg.evaluate(() => document.getElementById("rs-table").getBoundingClientRect().top + window.scrollY);
+    const y0 = await top();
     await pg.fill("#rs-q", "fayet");
     const shown = await pg.$$eval("#rs-table tbody tr", (rs) => rs.filter((r) => !r.hidden).map((r) => r.cells[0].textContent.trim()));
     assert.deepEqual(shown.map((s) => s.replace(/\s*sales$/, "")), ["Fayette"]);
     assert.equal(await pg.textContent("#rs-qn"), "1 county");
-    assert.equal((await pg.locator("#rs-table").boundingBox()).y, box0.y, "the table does not move when the filter is used");
+    assert.equal(await top(), y0, "the table does not move when the filter is used");
     await ctx.close();
   } finally {
     await browser.close();

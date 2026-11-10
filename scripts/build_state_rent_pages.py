@@ -608,7 +608,7 @@ def head(title, desc, path, jsonld):
     .rs-filter{{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;min-height:44px;margin:10px 0 2px}}
     .rs-filter label{{font-size:.85rem;color:var(--text-muted)}}
     .rs-filter input{{min-height:40px;padding:0 10px;font-size:16px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface,var(--bg));color:var(--text);width:13rem;max-width:100%;box-sizing:border-box}}
-    .rs-qn{{font-size:.8rem;color:var(--text-muted)}}
+    .rs-qn{{font-size:.8rem;color:var(--text-muted);flex-basis:100%;min-height:1.25em;line-height:1.25}}
     .rs-t td.old{{white-space:normal;min-width:5.5em;font-size:.72rem;line-height:1.25}}
     .rs-tnote{{font-size:.78rem;margin:4px 0 10px}}
     @media (max-width:640px){{
