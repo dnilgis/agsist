@@ -21,7 +21,7 @@
  * test/drought-county-week.test.mjs.
  *
  * Oct 20: the raw and references branches moved off the public repo, to
- * the private repo the private repo. Every step that saves or reads them
+ * the private repo. Every step that saves or reads them
  * passes the PRIVATE_REPO_TOKEN secret; scripts/private_remote.sh turns it into
  * the remote. A save that fails in a job that publishes site data is a warning
  * (RAW_SOFT=1), never the reason the data did not ship; a missing build input

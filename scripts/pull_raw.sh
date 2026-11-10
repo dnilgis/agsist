@@ -14,7 +14,7 @@
 # dark map that looks like a working one. Better a red run than that.
 #
 # By hand, for a local build: bash scripts/pull_raw.sh data/atlas/raw
-# (since Oct 20 the branches are in the private repo the private repo; from
+# (since Oct 20 the branches are in the private repo; from
 # a session that has it cloned: RAW_REMOTE=/path/to/the private repo bash scripts/pull_raw.sh data/fsa)
 #
 # Where from: scripts/private_remote.sh (RAW_REMOTE wins; in Actions,

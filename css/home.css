@@ -7,7 +7,7 @@
 .draw-lbl{font-size:.824rem}
 .draw-item{font-size:.824rem}
 .ticker-live span{font-size:.765rem}
-/* 2026-10-08 the owner: the ticker status takes half the width it did. Two short
+/* 2026-10-08: the ticker status takes half the width it did. Two short
    lines ("Delayed" over "15 min", "Settle" over "Oct 7"), smaller type. */
 .ticker-live{padding:0 .5rem;gap:.3rem}
 .ticker-live #ticker-age{font-size:.6rem;line-height:1.1;letter-spacing:.04em;white-space:nowrap;display:inline-block}

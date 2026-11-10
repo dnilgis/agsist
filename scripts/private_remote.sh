@@ -1,7 +1,7 @@
 # Where the private branches live (raw, references, private-data). Sourced, not run:
 #   . scripts/private_remote.sh
 #
-# Since Oct 20, 2026 they are in the private repo the private repo, not on
+# Since Oct 20, 2026 they are in the private repo, not on
 # agsist (off the public repo). Pages read only public files on main, so
 # nothing here touches the site. Picks, in order:
 #   RAW_REMOTE set          that remote (tests, or a local run against a clone:

@@ -144,15 +144,21 @@ test("the comment reader finds comments and leaves strings and regexes alone", (
 });
 
 const METHOD_GREP = "msgbatch_|\"batch_id\"|\\bSig\\b|scripts/[A-Za-z0-9_-]+\\.(py|mjs|sh)\\b|\\b(MultiStnData|StnData|GridData)\\b|feedbag|\\.github/workflows";
+const METHOD_RE = new RegExp(METHOD_GREP, "g");
+// every hit in each file's whole text (git grep -c counts lines, so a one-line file counted once)
+const hitsPerFile = (files) => Object.fromEntries(files.map((f) => [f, (read(f).match(METHOD_RE) || []).length]).filter(([, n]) => n > 0));
+
+test("the ratchet counts hits in the whole file, not lines", () => {
+  const one = '{"a": "see scripts/x.py", "b": "and scripts/y.py", "c": "msgbatch_1"}';
+  assert.equal((one.match(METHOD_RE) || []).length, 3, "three hits on one line count three");
+  assert.equal(('"batch_id": 1\n"batch_id": 2'.match(METHOD_RE) || []).length, 2);
+});
 
 test("public data files gain no method text (the list only goes down)", () => {
   const allowed = JSON.parse(read("test/public-data-text.json"));
-  const have = {};
-  for (const line of git(["grep", "-c", "-I", "-E", METHOD_GREP, "--", "data/*.json", "data/**/*.json"]).split("\n")) {
-    const m = /^(.+):(\d+)$/.exec(line);
-    if (m) have[m[1]] = +m[2];
-  }
-  const over = Object.entries(have).filter(([f, n]) => n > (allowed[f] || 0)).map(([f, n]) => f + ": " + n + " line(s), allowed " + (allowed[f] || 0));
+  // hits per file content, not per line: a minified file is one line and may hold many hits
+  const have = hitsPerFile(git(["grep", "-l", "-I", "-E", METHOD_GREP, "--", "data/*.json", "data/**/*.json"]).split("\n").filter(Boolean));
+  const over = Object.entries(have).filter(([f, n]) => n > (allowed[f] || 0)).map(([f, n]) => f + ": " + n + " hit(s), allowed " + (allowed[f] || 0));
   assert.deepEqual(over, [], "name the source in plain words; no script, endpoint or private path in a public data file");
   const lower = Object.entries(allowed).filter(([f, n]) => (have[f] || 0) < n).map(([f, n]) => f + ": allowed " + n + ", has " + (have[f] || 0));
   assert.deepEqual(lower, [], "lower these counts in test/public-data-text.json");

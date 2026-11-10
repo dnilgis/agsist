@@ -84,7 +84,7 @@ Reply-To sig@agsist.com.
 
 Env: LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS. Optional:
 SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME (the owner's own alerts only), RP_FROM_NAME
-(the buyer emails' sender name, default "the owner at AGSIST"; 2026-10-20. The shared
+(the buyer emails' sender name, default BUYER_FROM_NAME; 2026-10-20. The shared
 FROM_NAME secret serves a dozen other jobs and never decides it), SIG_TO, SIG_TEST_EMAILS (comma
 separated), RENDER_BASE (default https://agsist.com), PLAYWRIGHT_PATH,
 CHROMIUM_PATH. Run by.github/workflows/rp-buyer-email.yml.
@@ -127,7 +127,7 @@ BUYER_FROM_NAME = "Sig at AGSIST"
 
 
 def buyer_from_name():
-    """The sender name on every buyer email (the proof, the files): RP_FROM_NAME, else "the owner at AGSIST". Never FROM_NAME."""
+    """The sender name on every buyer email (the proof, the files): RP_FROM_NAME, else BUYER_FROM_NAME. Never FROM_NAME."""
     return one_line(env("RP_FROM_NAME", BUYER_FROM_NAME), 60) or BUYER_FROM_NAME
 FILE_MIME = {"pdf": ("application", "pdf"), "guide": ("application", "pdf"), "png": ("image", "png"), "jpg": ("image", "jpeg")}
 
@@ -971,7 +971,7 @@ def smtp_send(fn, fa):
         if not (env("SMTP_USER") and env("SMTP_PASS")):
             raise RuntimeError("no SMTP_USER / SMTP_PASS")
         del m["From"]
-        # a buyer email goes out as the owner at AGSIST (RP_FROM_NAME); the owner's own alerts and notes keep FROM_NAME
+        # a buyer email goes out under RP_FROM_NAME (else BUYER_FROM_NAME); the owner's own alerts and notes keep FROM_NAME
         m["From"] = formataddr((buyer_from_name() if getattr(m, "rp_buyer", False) else fn, fa))
         conn = smtplib.SMTP(env("SMTP_HOST", "smtp.gmail.com"), int(env("SMTP_PORT", "587")), timeout=30)
         try:

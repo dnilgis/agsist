@@ -441,7 +441,7 @@
 
   function renderWalk(){
     // Illinois vs Gulf corn as the worked example. The gap is shown as a gap, never labelled freight:
-    // the Nov 4 site panel found basis does not track freight week to week (the owner Oct: spread alone, no freight share)
+    // basis does not track freight week to week, so the walk shows the spread alone, with no freight share
     var key=Object.keys(journey.spreads).find(function(k){return k.indexOf('Corn|Illinois|Gulf')===0;})
          ||Object.keys(journey.spreads)[0];
     if(!key) return;

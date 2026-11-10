@@ -1259,7 +1259,7 @@ function renderToday(data,why){
   // v5.1: the one thresholded action holds the takeaway's slot. An issue
   // from before the cut has no action and keeps its takeaway.
   var takeaway='';
-  /* 2026-10-09, the owner: the prediction bot is out of the Daily for now; it
+  /* 2026-10-09: the prediction bot is out of the Daily for now; it
      lives on /scorecard. An issue whose action is the bot's call shows none. */
   var actTxt=data.bot_call?'':(data.action||'').trim();
   var taTxt=(data.the_takeaway||'').trim();

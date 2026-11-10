@@ -65,7 +65,7 @@ on a new ask (GH_DISPATCH_TOKEN), which also sends any reminder already due.
     python3 scripts/rp_design_email.py --selftest   fixtures, no network, no mail
 
 Env: LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS. Optional: SMTP_HOST,
-SMTP_PORT, FROM_ADDR, RP_FROM_NAME (default "the owner at AGSIST"), SIG_TO, GH_TOKEN
+SMTP_PORT, FROM_ADDR, RP_FROM_NAME (default FROM_NAME below), SIG_TO, GH_TOKEN
 and GITHUB_REPOSITORY (start the buyer job), RP_BUYER_EMAIL_LIVE.
 Run by .github/workflows/rp-design-email.yml.
 """

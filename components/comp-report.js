@@ -175,7 +175,7 @@
   function median(v) { var m = v.length >> 1; return v.length % 2 ? v[m] : Math.round((v[m - 1] + v[m]) / 2); }
   CR.quarterOf = function (iso) { var m = /^(\d{4})-(\d{2})/.exec(String(iso || '')); return m ? m[1] + ' Q' + (Math.floor((+m[2] - 1) / 3) + 1) : null; };
   // n, middle, low and high $/acre of the sales with a usable $/acre (F.statOK: known, and not
-  // under the floor). Nothing under CR.MIN_N (5, the one land rule, the owner Oct 29, 2026: the Atlas, the
+  // under the floor). Nothing under CR.MIN_N (5, the one land rule since Oct 29, 2026: the Atlas, the
   // land-sales pages and Field Scout use the same). By quarter: the count every quarter, a middle only
   // where a quarter holds CR.MIN_N or more. No fitted line.
   CR.MIN_N = 5;

@@ -5,7 +5,7 @@
 #   bash scripts/fetch_private.sh raw            -> origin/raw and FETCH_HEAD
 #   bash scripts/fetch_private.sh references     -> origin/references
 #
-# The branches moved to the private repo the private repo on Oct 20, 2026.
+# The branches moved to the private repo on Oct 20, 2026.
 # This puts the tip at refs/remotes/origin/<branch>, the name
 # scripts/bid_snapshots.py, build_ids.py, accuracy_sets.py and
 # build_custom_rates.py already read, and at FETCH_HEAD for the workflows that

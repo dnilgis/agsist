@@ -68,12 +68,12 @@ build/shots/
 !/data/fsa/urls.txt
 !/data/fsa/manifest.tsv
 
-# Working notes live in the private repo the private repo, never here (Oct 20).
+# Working notes live in the private repo, never here.
 # A stray copy unpacked here is never committed.
 /.claude/notes/
 
-# Session skills live in the private repo the private repo at.claude/skills
-# (Oct 20, 2026, off the public repo). A session that adds that repo loads them.
+# Session skills live in the private repo at .claude/skills, off the public
+# repo. A session that adds that repo loads them.
 /.claude/skills/
 
 # Job files no page reads, unpacked from (and saved to) the private repo's

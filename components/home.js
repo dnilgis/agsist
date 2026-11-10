@@ -814,7 +814,7 @@ window.hydrateDaily = function(data) {
   // v5.1: the one thresholded action, in the block the takeaway used to hold.
   // A daily.json from before the cut has no action and shows its takeaway
   // under the old label instead, so the block never goes blank on upload day.
-  /* 2026-10-09, the owner: the prediction bot is out of the Daily for now; it
+  /* 2026-10-09: the prediction bot is out of the Daily for now; it
      lives on /scorecard. An issue whose action is the bot's call (bot_call
      present) shows no action, and the box hides. */
   var takeaway=(data.bot_call?'':(data.action||'')).trim();
