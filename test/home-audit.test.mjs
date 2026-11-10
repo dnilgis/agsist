@@ -39,6 +39,7 @@ function load({ shards = true } = {}) {
   window.fetch = fetch;
   vm.runInContext(read("components/util.js"), ctx);
   ctx.AG = window.AG;
+  vm.runInContext(read("components/elev-names.js"), ctx); // index.html loads it before the card (normOperator reads window.elevNames)
   vm.runInContext(read("components/bids-homepage.js"), ctx);
   return window.__agsistHomeBidsInternals;
 }
@@ -55,6 +56,16 @@ function rowsOf(placeName) {
       currency: "USD", bestCash: null, bestPeriod: "", lat: p.lat, lon: p.lon };
   });
 }
+// the futures month the board itself posts for a row (the frozen shard's futuresMonth, CME month code), so no
+// expectation below is a month typed into the test: change the fixture and the expectations follow
+const CME = "FGHJKMNQUVXZ", MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+function boardMonth(shardFile, crop, delivery) {
+  const b = fx(shardFile).bids.find((x) => x.crop === crop && x.delivery === delivery);
+  assert.ok(b && /^Z[CS][FGHJKMNQUVXZ]\d\d$/.test(b.futuresMonth), crop + " " + delivery + " has a board contract in the fixture");
+  const mon = MON[CME.indexOf(b.futuresMonth[2])];
+  return { mon, label: mon + " '" + b.futuresMonth.slice(3), cents: b.basisCents };
+}
+const esc = (t) => t.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 const cellOf = (html, crop) => {
   const i = html.indexOf('<span class="bh-ck">' + crop);
   assert.ok(i >= 0, crop + " cell drawn");
@@ -68,15 +79,20 @@ test("River Country Bloomer soybeans: the board's own contract, Jan '27, like th
   const elev = H.groupByElevator(rows)[0];
   const html = H.renderElevatorHTML(elev, "all", false, ["corn", "soybeans"], true, "");
   const soy = cellOf(html, "Soybeans");
-  assert.match(soy, /−74¢<\/span><span class="bh-refm">\s*Jan</, "soy cell names Jan");
-  assert.match(html, /basis vs Jan '27/, "expanded row names Jan '27");
-  assert.doesNotMatch(html, /basis vs Nov '26/);
+  const RC = "river-country-co-op-bloomer-wi-ac046dc1.json";
+  const sb = boardMonth(RC, "soybeans", "HAR 26"), cb = boardMonth(RC, "corn", "HAR 26");
+  assert.match(soy, new RegExp("−" + -sb.cents + "¢</span><span class=\"bh-refm\">\\s*" + sb.mon + "<"), "soy cell names the board's month");
+  assert.match(html, new RegExp("basis vs " + esc(sb.label)), "expanded row names the board's contract");
+  // every contract the row names is one the board posts (the clock's nearby soybean month, Nov '26, would not be)
+  const named = [...html.matchAll(/basis vs ([A-Z][a-z]{2} '\d\d)/g)].map((m) => m[1]);
+  assert.ok(named.length >= 1);
+  for (const n of named) assert.ok([sb.label, cb.label].includes(n), "a contract the board posts: " + n);
   // (the Bloomer town page, a generated set, printed "vs Jan '27" for this row on Nov 9; not read here: a cron rewrites it)
   // HAR 26 is the harvest window, not "Nov"
   assert.match(soy, /<span class="bh-mon"><span class="bh-vh">for <\/span>Harvest<\/span>/);
   assert.match(html, /<div class="bh-per">Harvest 2026<\/div>/);
   // corn: board posts ZCZ26
-  assert.match(cellOf(html, "Corn"), /class="bh-refm">\s*Dec</);
+  assert.match(cellOf(html, "Corn"), new RegExp("class=\"bh-refm\">\\s*" + cb.mon + "<"));
 });
 
 test("CDR Farms Bloomer corn: the board names no contract, so the card names none", async () => {
@@ -86,7 +102,7 @@ test("CDR Farms Bloomer corn: the board names no contract, so the card names non
   const html = H.renderElevatorHTML(H.groupByElevator(rows)[0], "all", false, ["corn", "soybeans"], true, "");
   const corn = cellOf(html, "Corn");
   assert.match(corn, /−65¢<\/span><span class="bh-refm"><\/span>/, "no month after the basis");
-  assert.doesNotMatch(html, /data-ref-crop|basis vs (Dec|Mar|Jan|Nov)/, "no month inferred either");
+  assert.doesNotMatch(html, /data-ref-crop|basis vs [A-Z][a-z]{2}\b/, "no month inferred either");
 });
 
 test("when the board's file cannot be read, an inferred month says so and rolls past first notice", async () => {
