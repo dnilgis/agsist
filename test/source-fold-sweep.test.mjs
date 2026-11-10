@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(ROOT + p, "utf8");
 const PAGES = ["usda-calendar", "corn-futures-prices", "soybean-futures-prices", "wheat-futures-prices", "cattle-futures-prices",
-  "milk-prices", "breakeven", "usda-quick-stats", "hay-prices", "fast-facts", "farmland-atlas", "conditions", "cash-lease"];   // arc-plc: built on main, read through its builder below
+  "milk-prices", "breakeven", "usda-quick-stats", "hay-prices", "fast-facts", "farmland-atlas", "conditions", "cash-lease", "spray"];   // arc-plc: built on main, read through its builder below
 const NASS = "This product uses the NASS API but is not endorsed or certified by NASS.";
 const OPEN = /<details\b[^>]*>\s*<summary\b[^>]*>(?:<h2\b[^>]*>)?\s*Sources and terms\s*</g;
 const folds = (h) => [...h.matchAll(OPEN)].map((m) => {
