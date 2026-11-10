@@ -99,7 +99,16 @@ def kind_word(c):
 
 
 def where_words(c):
-    return f"the {kind_word(c)} {R.station_where(c['station']['raw'])}"
+    """'the Libby Dam weather station in Libby': the opening names the station itself, not only its town,
+    unless the place words already carry its name ('at Des Moines International Airport')."""
+    raw = c["station"]["raw"]
+    where, name = R.station_where(raw), R.station_name(raw)
+    # only a named station in a town ('in Libby' for LIBBY DAM); an offset ('8 miles west-southwest of Ames')
+    # or an airport already says where it is, and a name with mileage in it reads as code
+    if (not where.startswith("in ") or not name or re.search(r"\d", name)
+            or name.lower() == where[3:].lower()):
+        return f"the {kind_word(c)} {where}"
+    return f"the {name} {kind_word(c)} {where}"
 
 
 def compare(c, year_word="a usual year to date"):
@@ -1516,6 +1525,11 @@ def selftest():
         c = d["counties"]["19169"]
         ok(f"{c['total']:.2f} inches of rain have fallen so far in 2026 at the weather station 8 miles west-southwest of Ames, Story County, through Oct 12." in story,
            "the answer comes first, in plain words")
+        ok(where_words({"station": {"raw": "LIBBY DAM", "net": "ghcn"}}) == "the Libby Dam weather station in Libby",
+           "the opening names the station when its town alone would not")
+        ok(where_words({"station": {"raw": "AMES", "net": "ghcn"}}) == "the weather station in Ames", "a station named for its town is not named twice")
+        ok(where_words({"station": {"raw": "LIBBY 1 NE RS", "net": "ghcn"}}) == "the weather station in Libby NE Rs" or
+           "1 NE" not in where_words({"station": {"raw": "LIBBY 1 NE RS", "net": "ghcn"}}), "no mileage code in the name")
         ok(f"({c['pct']}% of usual)" in story and ("less than a usual year to date" in story or "more than a usual year to date" in story), "the comparison sentence")
         ok(f"<title>{c['total']:.2f} in of Rain in Story County, IA, 2026 | AGSIST</title>" in story, "title: the year's inches first (Nov 2 test)")
         ok('<meta property="og:title" content="%.2f in of Rain in Story County, IA, 2026">' % c["total"] in story, "og:title in step")
