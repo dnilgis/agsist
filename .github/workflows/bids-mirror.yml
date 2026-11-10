@@ -1,0 +1,88 @@
+name: Bids backup (weekly)
+# Bids backup (weekly).
+
+on:
+  schedule:
+    - cron: '47 7 * * 0'
+  # cron above, by either trigger, do the work within 360 minutes
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow bids-mirror.yml --max-lag 360
+          --cron "47 7 * * 0"
+
+  mirror:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 300
+    concurrency:
+      group: bids-mirror
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest (no network)
+        run: python3 scripts/bids_mirror.py --selftest > /dev/null
+      - name: Make room for the full history
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL
+          df -h "$RUNNER_TEMP" | tail -1
+      - name: Copy to the backup and verify
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          BIDS_BACKUP_REPO: ${{ vars.BIDS_BACKUP_REPO || 'dnilgis/bids-backup' }}
+          MIRROR_DIR: ${{ runner.temp }}/bids-mirror.git
+          MIRROR_STATUS: private/stats/bids-mirror.log
+        run: |
+          RAW_BRANCH=private-data RAW_SOFT=1 bash scripts/pull_raw.sh private/stats/bids-mirror.log
+          python3 scripts/bids_mirror.py
+      - name: Save the status line (private repo, private-data branch)
+        if: ${{ !cancelled() }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: |
+          [ -f private/stats/bids-mirror.log ] || { echo "no status line written"; exit 0; }
+          bash scripts/push_raw.sh "bids backup status" private/stats/bids-mirror.log
