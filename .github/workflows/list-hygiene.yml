@@ -14,6 +14,14 @@ on:
         description: "Report only, change nothing"
         type: boolean
         default: true
+      accept_suppression:
+        description: "Apply a held bounce suppression batch (runs for real even when dry_run is ticked)"
+        type: boolean
+        default: false
+      reject_suppression:
+        description: "Discard a held bounce suppression batch (runs for real even when dry_run is ticked)"
+        type: boolean
+        default: false
 permissions:
   contents: read
 jobs:
@@ -49,10 +57,13 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
     concurrency:
       group: list-hygiene
       cancel-in-progress: false
-    timeout-minutes: 10
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -66,7 +77,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: python3 scripts/list_hygiene.py --selftest
-      - run: python3 scripts/list_hygiene.py ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
+      - name: Clean the lists
         env:
           LIST_URL: ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
@@ -82,3 +93,25 @@ jobs:
           UNSUB_IMAP_USER: ${{ secrets.UNSUB_IMAP_USER }}
           UNSUB_IMAP_PASS: ${{ secrets.UNSUB_IMAP_PASS }}
           REMOVE: ${{ github.event_name == 'workflow_dispatch' && secrets.LIST_REMOVE || '' }}
+          BOUNCE_EVENTS_OUT: ${{ runner.temp }}/bounce-events.json
+        run: python3 scripts/list_hygiene.py ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
+      - name: Fold hard bounces
+        if: ${{ success() }}
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          FROM_NAME: ${{ secrets.FROM_NAME }}
+          REPORT_TO: ${{ secrets.REPLY_TO }}
+          GH_TOKEN: ${{ github.token }}
+          BOUNCE_EVENTS_IN: ${{ runner.temp }}/bounce-events.json
+          UNSUPPRESS: ${{ github.event_name == 'workflow_dispatch' && secrets.LIST_UNSUPPRESS || '' }}
+          BOUNCE_ACCEPT: ${{ (github.event_name == 'workflow_dispatch' && inputs.accept_suppression) && '1' || '' }}
+          BOUNCE_REJECT: ${{ (github.event_name == 'workflow_dispatch' && inputs.reject_suppression) && '1' || '' }}
+        run: python3 scripts/bounces.py --fold ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run && !inputs.accept_suppression && !inputs.reject_suppression) && '--dry-run' || '' }}
