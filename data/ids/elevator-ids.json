@@ -88,7 +88,8 @@
   },
   "a00021": {
    "first": "basis:IA|AGSTATE|ELLSWORTH",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e22edpvn80"
   },
   "a00022": {
    "first": "basis:IA|AGSTATE|GRANVILLE",
@@ -96,11 +97,13 @@
   },
   "a00023": {
    "first": "basis:IA|AGSTATE|HOSPERS",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e42m8gr48q"
   },
   "a00024": {
    "first": "basis:IA|AGSTATE|MAURICE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "emxyss6hnn"
   },
   "a00025": {
    "first": "basis:IA|ARCHER COOP GRAIN CO|ARCHER",
@@ -426,15 +429,18 @@
   },
   "a00101": {
    "first": "basis:IA|THE SCOULAR COMPANY|EMERSON",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e2h8zfx5h5"
   },
   "a00102": {
    "first": "basis:IA|THE SCOULAR COMPANY|GRISWOLD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e3trsg52dh"
   },
   "a00103": {
    "first": "basis:IA|THE SCOULAR COMPANY|HANCOCK",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e2r68ze6t8"
   },
   "a00104": {
    "first": "basis:IA|UNITED COOPERATIVE WEBSTER CITY|WEBSTER CITY",
@@ -782,27 +788,33 @@
   },
   "a00188": {
    "first": "basis:KS|AMERICAN PLAINS CO-OP|DUNDEE",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "egb5zrkm24"
   },
   "a00189": {
    "first": "basis:KS|AMERICAN PLAINS CO-OP|ELLINWOOD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eeg8r3wx18"
   },
   "a00190": {
    "first": "basis:KS|AMERICAN PLAINS CO-OP|GREAT BEND",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e9538jmj1g"
   },
   "a00191": {
    "first": "basis:KS|AMERICAN PLAINS CO-OP|PAWNEE ROCK",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "e2t0jwam59"
   },
   "a00192": {
    "first": "basis:KS|AMERICAN PLAINS CO-OP|RADIUM",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "emygpx232x"
   },
   "a00193": {
    "first": "basis:KS|AMERICAN PLAINS CO-OP|SEWARD",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "escd673s36"
   },
   "a00194": {
    "first": "basis:KS|BARTLETT CO-OP ASSN|BARTLETT",
@@ -1586,7 +1598,8 @@
   },
   "a00378": {
    "first": "basis:NE|THE SCOULAR COMPANY|MADRID",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "eptvcq27vx"
   },
   "a00379": {
    "first": "basis:NE|THOMAS LIVESTOCK CO|BROKEN BOW",
@@ -2078,7 +2091,8 @@
   },
   "a00497": {
    "first": "dir:73579",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "em9jgymfh9"
   },
   "a00498": {
    "first": "dir:73655",
@@ -4923,6 +4937,90 @@
    "back": "edy2eazz93",
    "from": "a00538",
    "why": "the bids-repo id is back in the bids repo's directory"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00021",
+   "into": "e22edpvn80",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00023",
+   "into": "e42m8gr48q",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00024",
+   "into": "emxyss6hnn",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00101",
+   "into": "e2h8zfx5h5",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00102",
+   "into": "e3trsg52dh",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00103",
+   "into": "e2r68ze6t8",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00188",
+   "into": "egb5zrkm24",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00189",
+   "into": "eeg8r3wx18",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00190",
+   "into": "e9538jmj1g",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00191",
+   "into": "e2t0jwam59",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00192",
+   "into": "emygpx232x",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00193",
+   "into": "escd673s36",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00378",
+   "into": "eptvcq27vx",
+   "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00497",
+   "into": "em9jgymfh9",
+   "why": "every key now matches that bids-repo row"
   }
  ],
  "keys": {
@@ -4998,10 +5096,10 @@
   "basis:IA|AGP|SHELDON": "a00018",
   "basis:IA|AGRI-WAY PARTNERS, LLC.|CEDAR RAPIDS": "a00019",
   "basis:IA|AGSTATE|ALTON": "a00020",
-  "basis:IA|AGSTATE|ELLSWORTH": "a00021",
+  "basis:IA|AGSTATE|ELLSWORTH": "e22edpvn80",
   "basis:IA|AGSTATE|GRANVILLE": "a00022",
-  "basis:IA|AGSTATE|HOSPERS": "a00023",
-  "basis:IA|AGSTATE|MAURICE": "a00024",
+  "basis:IA|AGSTATE|HOSPERS": "e42m8gr48q",
+  "basis:IA|AGSTATE|MAURICE": "emxyss6hnn",
   "basis:IA|AGSTATE|SHELDON": "etarnz8x43",
   "basis:IA|ARCHER COOP GRAIN CO.|ARCHER COOP": "e3hjwvfm5t",
   "basis:IA|ARCHER COOP GRAIN CO.|DIRECT SHIP AGP SHELDON": "erxv00cfb4",
@@ -5747,9 +5845,9 @@
   "basis:IA|TETTENS GRAIN|CLINTON": "eb1ye7qd7n",
   "basis:IA|THE ANDERSONS|DENISON": "ehckfrhp44",
   "basis:IA|THE MILL, INC.|COLWELL": "e8d8kfrphx",
-  "basis:IA|THE SCOULAR COMPANY|EMERSON": "a00101",
-  "basis:IA|THE SCOULAR COMPANY|GRISWOLD": "a00102",
-  "basis:IA|THE SCOULAR COMPANY|HANCOCK": "a00103",
+  "basis:IA|THE SCOULAR COMPANY|EMERSON": "e2h8zfx5h5",
+  "basis:IA|THE SCOULAR COMPANY|GRISWOLD": "e3trsg52dh",
+  "basis:IA|THE SCOULAR COMPANY|HANCOCK": "e2r68ze6t8",
   "basis:IA|THE SCOULAR COMPANY|HARLAN": "e48984wry9",
   "basis:IA|THE SCOULAR COMPANY|PORTSMOUTH": "e2a58hcby1",
   "basis:IA|TWO RIVERS COOP IA|MONROE": "eth2q3w7te",
@@ -6464,14 +6562,14 @@
   "basis:KS|AMERICAN PLAINS CO-OP - CASH BID INCLUDE|SEWARD": "escd673s36",
   "basis:KS|AMERICAN PLAINS CO-OP|ALBERT": "ex9nsbx1td",
   "basis:KS|AMERICAN PLAINS CO-OP|DORRANCE": "eh3dsta0sn",
-  "basis:KS|AMERICAN PLAINS CO-OP|DUNDEE": "a00188",
-  "basis:KS|AMERICAN PLAINS CO-OP|ELLINWOOD": "a00189",
-  "basis:KS|AMERICAN PLAINS CO-OP|GREAT BEND": "a00190",
+  "basis:KS|AMERICAN PLAINS CO-OP|DUNDEE": "egb5zrkm24",
+  "basis:KS|AMERICAN PLAINS CO-OP|ELLINWOOD": "eeg8r3wx18",
+  "basis:KS|AMERICAN PLAINS CO-OP|GREAT BEND": "e9538jmj1g",
   "basis:KS|AMERICAN PLAINS CO-OP|HOISINGTON": "er876yjq7g",
-  "basis:KS|AMERICAN PLAINS CO-OP|PAWNEE ROCK": "a00191",
-  "basis:KS|AMERICAN PLAINS CO-OP|RADIUM": "a00192",
+  "basis:KS|AMERICAN PLAINS CO-OP|PAWNEE ROCK": "e2t0jwam59",
+  "basis:KS|AMERICAN PLAINS CO-OP|RADIUM": "emygpx232x",
   "basis:KS|AMERICAN PLAINS CO-OP|RUSSELL": "e40m0tfccj",
-  "basis:KS|AMERICAN PLAINS CO-OP|SEWARD": "a00193",
+  "basis:KS|AMERICAN PLAINS CO-OP|SEWARD": "escd673s36",
   "basis:KS|AMERICAN PLAINS CO-OP|SUSANK": "exeaeyy956",
   "basis:KS|ANTHONY FARMERS COOP ELEVATOR|ANTHONY": "eccma0t024",
   "basis:KS|ANTHONY FARMERS COOP ELEVATOR|HARPER": "e948cfrghx",
@@ -7784,7 +7882,7 @@
   "basis:NE|SIOUXLAND ETHANOL LLC|SIOUXLAND ETHANOL": "ebszn1ha4r",
   "basis:NE|THE SCOULAR COMPANY|FREMONT": "ebecya47yd",
   "basis:NE|THE SCOULAR COMPANY|GRANT": "e8dyxbkac5",
-  "basis:NE|THE SCOULAR COMPANY|MADRID": "a00378",
+  "basis:NE|THE SCOULAR COMPANY|MADRID": "eptvcq27vx",
   "basis:NE|THE SCOULAR COMPANY|OGALLALA": "e9rn6dkj1e",
   "basis:NE|THE SCOULAR COMPANY|PAXTON": "edv6a34pc2",
   "basis:NE|THE SCOULAR COMPANY|WALLACE": "egs2ze9ps3",
@@ -9376,7 +9474,7 @@
   "dir:73331": "e0hyvahpak",
   "dir:73497": "eypj9h59ez",
   "dir:73509": "ed5sam9fkx",
-  "dir:73579": "a00497",
+  "dir:73579": "em9jgymfh9",
   "dir:73655": "a00498",
   "dir:73857": "ejpne6qb1a",
   "dir:7388": "eqkhpaya4q",
