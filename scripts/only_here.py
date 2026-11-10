@@ -178,26 +178,48 @@ def _miles(a, b, c, d):
     return 2 * r * math.asin(math.sqrt(h))
 
 
-def _record_words(st, c, repo=REPO, within=3):
-    """' That is the 2nd driest by this date in 54 years on record there.' when the county's station sits
-    within `within` places of its record, from data/rain/context/<st>.json (scripts/fetch_rain_context.py;
-    only a context from the same fetch as the totals, so the rank and the total are the same day's)."""
+def _record_rank(st, c, repo=REPO, within=3):
+    """(sentence, fact) when the county's station sits within `within` places of its record, from
+    data/rain/context/<st>.json (scripts/fetch_rain_context.py; only a context from the same fetch as the
+    totals, so the rank and the total are the same day's), else ("", None). The fact is the county's, never
+    the reader's: {"kind": "rain_rank", "key": "<ST>:<fips>", "value": "<side>:<place>"} (Nov 10 2026: the
+    same "3rd wettest" sentence rode the ZIP reader's rain line Nov 5 to 10 unchanged; daily_v2 keeps it only
+    when daily_fresh.still_news says the rank entered or moved since the issue that last printed it)."""
     try:
         with open(os.path.join(repo, "data", "rain", "context", st.lower() + ".json"), encoding="utf-8") as f:
             x = json.load(f)
     except (OSError, ValueError):
-        return ""
+        return "", None
     if x.get("fetched") != c.get("_fetched"):
-        return ""
+        return "", None
     r = ((x.get("counties") or {}).get(c.get("_fips")) or {}).get("rank")
     if not r:
-        return ""
+        return "", None
     for side, k in (("wettest", "wetter"), ("driest", "drier")):
         place = r[k] + 1
         if place <= within:
             nth = "the" if place == 1 else "the %d%s" % (place, {2: "nd", 3: "rd"}.get(place, "th"))
-            return " That is %s %s by this date in %d years on record there (%d on)." % (nth, side, r["n"], r["first"])
-    return ""
+            return (" That is %s %s by this date in %d years on record there (%d on)." % (nth, side, r["n"], r["first"]),
+                    {"kind": "rain_rank", "key": "%s:%s" % (st.upper(), c.get("_fips")), "value": "%s:%d" % (side, place)})
+    return "", None
+
+
+def _record_words(st, c, repo=REPO, within=3):
+    """' That is the 2nd driest by this date in 54 years on record there.' or "" (see _record_rank)."""
+    return _record_rank(st, c, repo, within)[0]
+
+
+def record_facts(before, repo=REPO):
+    """[fact] of every county whose record sentence a ZIP reader's rain line could carry in the issue for
+    `before`: the issue's own record of it (per county, never per reader), so the next issues know it was told."""
+    out = []
+    for _lat, _lon, st, c in _stations(repo):
+        if str(c.get("as_of") or "") > before:
+            continue
+        f = _record_rank(st, c, repo)[1]
+        if f:
+            out.append(f)
+    return out
 
 
 def rain_line(at, before, repo=REPO):
@@ -217,9 +239,13 @@ def rain_line(at, before, repo=REPO):
     import county_rain as R
     town = R.station_town((c.get("station") or {}).get("raw") or "") or (c.get("station") or {}).get("name")
     text = ("Your rain: %.2f in. this year through %s at the %s station (%s, %d mi from you), %d%% of normal for the date."
-            % (c["total"], _md(c["as_of"]), town, c["name"], round(mi), c["pct"])) + _record_words(st, c, repo)
+            % (c["total"], _md(c["as_of"]), town, c["name"], round(mi), c["pct"]))
+    words, fact = _record_rank(st, c, repo)
     slug = "/rain/%s/%s" % (R.slug(_states().get(st, st)), R.slug(c["name"]))
-    return {"text": text, "kind": "rain_vs_normal", "url": slug, "link": "Your county's rain", "n": 1}
+    out = {"text": text + words, "kind": "rain_vs_normal", "url": slug, "link": "Your county's rain", "n": 1}
+    if words:
+        out["record"] = {"text": words, "fact": fact}     # daily_v2 drops the words when the rank is no news
+    return out
 
 
 def records_line(before, repo=REPO):

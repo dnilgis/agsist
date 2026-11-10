@@ -28,8 +28,8 @@ agriculture still writes some retired codes. This file holds, in one place:
   code) and the Drought Monitor in every file we read; scripts/join_report.py proves that per dataset
   every build, and fails the ship checks when a match rate falls below its floor.
 
-  build_farmland_atlas.FIPS_ALIAS (the Atlas build's own fold) is a strict subset of `codes`, with the
-  same targets; the selftest and test/geo-crosswalk.test.mjs fail if the two ever disagree.
+  The table itself lives in scripts/county_fold.py (TABLE), which every county builder imports; this
+  file publishes it. test/county-fold.test.mjs fails if another script defines its own alias table.
 
 The Drought Monitor's regions (High Plains, Midwest, ...) are not here: no file in this repo states
 their state lists, and the county statistics the site reads are already keyed by county.
@@ -61,7 +61,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-from build_farmland_atlas import FIPS_ALIAS, RENAMES  # noqa: E402  (the Atlas build's fold, kept as the seed)
+from county_fold import TABLE, CT_REGIONS, ONTO, published, resolve  # noqa: E402  (the one fold; this file publishes it)
 
 OUT = os.path.join(ROOT, "data", "ids", "geo-crosswalk.json")
 SPINE = os.path.join(ROOT, "data", "atlas", "counties.geo.json")
@@ -79,71 +79,9 @@ STATES = {"01": "AL", "02": "AK", "04": "AZ", "05": "AR", "06": "CA", "08": "CO"
           "45": "SC", "46": "SD", "47": "TN", "48": "TX", "49": "UT", "50": "VT", "51": "VA", "53": "WA",
           "54": "WV", "55": "WI", "56": "WY"}
 
-# Codes our sources publish that are not spine counties. The Atlas fold (FIPS_ALIAS) is merged in
-# below; these are the rest, each from a file in this repo (agencies) and checked by hand against
-# the name that file prints beside the code.
-EXTRA = {
-    "29193": dict(to=["29186"], kind="rename", agencies=["fsa"], name="Ste. Genevieve MO",
-                  note="FSA still writes the pre-1979 code; Census moved Ste. Genevieve to 29186"),
-    "27138": dict(to=["27137"], kind="part", agencies=["fsa"], name="South St. Louis MN",
-                  note="FSA office area inside St. Louis County"),
-    "39094": dict(to=["39095"], kind="part", agencies=["fsa"], name="East Lucas OH",
-                  note="FSA office area inside Lucas County"),
-    "23002": dict(to=["23003"], kind="part", agencies=["fsa"], name="Houlton ME",
-                  note="FSA office area inside Aroostook County (Houlton is its county seat)"),
-    "23004": dict(to=["23003"], kind="part", agencies=["fsa"], name="Fort Kent ME",
-                  note="FSA office area inside Aroostook County"),
-    "32035": dict(to=["32023"], kind="part", agencies=["fsa"], name="Southeast Nye NV",
-                  note="FSA office area inside Nye County"),
-    "02002": dict(to=["02240"], kind="office", agencies=["fsa"], name="Delta AK",
-                  note="FSA's Delta office; Delta Junction lies in Southeast Fairbanks Census Area. "
-                       "Its area may reach past that census area: treat as approximate"),
-    "02010": dict(to=["02013", "02016"], kind="split", agencies=["nass"], name="Aleutian Islands AK",
-                  note="retired 1987, now Aleutians East and Aleutians West; the census of agriculture "
-                       "still reports the pair as one"),
-}
-CT_REGIONS = {"09110": "Capitol", "09120": "Greater Bridgeport", "09130": "Lower Connecticut River Valley",
-              "09140": "Naugatuck Valley", "09150": "Northeastern Connecticut", "09160": "Northwest Hills",
-              "09170": "South Central Connecticut", "09180": "Southeastern Connecticut", "09190": "Western Connecticut"}
-ATLAS_NOTES = {
-    "46113": ("Shannon SD -> Oglala Lakota", "2015-05-01", ["fsa", "nass"]),
-    "02270": ("Wade Hampton AK -> Kusilvak", "2015-07-01", ["nass"]),
-    "51515": ("Bedford city VA -> Bedford County", "2013-07-01", ["fsa", "nass"]),
-    "02063": ("Chugach AK, out of Valdez-Cordova", "2019-01-02", ["usdm"]),
-    "02066": ("Copper River AK, out of Valdez-Cordova", "2019-01-02", ["usdm"]),
-    "12025": ("Dade FL -> Miami-Dade", "1997", ["rma"]),
-    "19156": ("West Pottawattamie IA", None, ["fsa", "rma"]),
-    "27112": ("West Otter Tail MN", None, ["fsa", "rma"]),
-    "27120": ("West Polk MN", None, ["fsa", "rma"]),
-}
-
-
-def atlas_kind(code):
-    if code in ("19156", "27112", "27120"):
-        return "part"      # RMA and FSA rating/office areas; the Atlas adds their old books onto the county
-    if code in RENAMES:
-        return "rename"
-    if code == "51515":
-        return "merger"
-    return "split"
-
-
 def codes_table():
-    out = {}
-    for code, target in FIPS_ALIAS.items():
-        name, since, ag = ATLAS_NOTES.get(code, (code, None, []))
-        row = dict(to=[target], kind=atlas_kind(code), agencies=ag, name=name)
-        if since:
-            row["since"] = since
-        row["atlas"] = True
-        out[code] = row
-    for code, row in EXTRA.items():
-        assert code not in out, code
-        out[code] = dict(row)
-    for code, name in CT_REGIONS.items():
-        out[code] = dict(to=None, kind="reshape", agencies=["rma", "usdm"], name=name + " planning region CT",
-                         since="2022", note="crosses the eight old county lines; no area shares in this repo, not folded")
-    return dict(sorted(out.items()))
+    """The published copy of county_fold.TABLE (the one fold every county builder imports)."""
+    return {code: published(row) for code, row in TABLE.items()}
 
 
 # ------------------------------------------------------------------ sources
@@ -288,13 +226,15 @@ def selftest():
     ck(parse_parse_json({"counties": {"19001": "1970", "19888": "1998", "19003": "2070"}}) == {"19001": "70"},
        "parse json: state prefix must match, 888 dropped")
     codes = codes_table()
-    for k, v in FIPS_ALIAS.items():
-        ck(codes.get(k, {}).get("to") == [v], f"Atlas FIPS_ALIAS {k}->{v} is in the table with the same target")
+    for k, v in ONTO.items():
+        ck(codes.get(k, {}).get("to") == [v], f"county_fold.fold {k}->{v} is in the table with the same target")
+    ck(all(fold(k, {"codes": codes}) == (list(resolve(k).to), resolve(k).kind) for k in codes),
+       "the published table and county_fold.resolve agree on every code")
     ck(codes["29193"]["to"] == ["29186"] and codes["46113"]["to"] == ["46102"],
        "real case Oct 27: Ste. Genevieve (FSA 29193) and Oglala Lakota (FSA 46113) fold onto their FIPS")
     ck(all(codes[c]["to"] is None and codes[c]["kind"] == "reshape" for c in CT_REGIONS), "CT regions are never folded")
     spine = ["02013", "02016", "02240", "02261", "09001", "12086", "19155", "23003", "27111", "27119", "27137",
-             "29186", "32023", "39095", "46102", "02158", "51019"]
+             "29186", "32023", "39095", "46102", "02158", "51019", "51005", "51083"]
     d = build(spine, {"46102": "70", "19155": "70", "99999": "10", "02270": "50", "02010": "50"}, "test")
     ck(d["asd"] == {"02158": "50", "19155": "70", "46102": "70"}, f"only spine counties carry a district: {d['asd']}")
     ck(d["asd_from"] == {"02158": "02270"}, "a renamed county takes its old code's district, and says so")
