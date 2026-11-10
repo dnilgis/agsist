@@ -1249,7 +1249,8 @@
   },
   "a00298": {
    "first": "basis:MO|ADM GRAIN|MONTGOMERY CITY",
-   "since": "2026-10-18"
+   "since": "2026-10-18",
+   "into": "esf055a2zt"
   },
   "a00299": {
    "first": "basis:MO|ADM|ST. LOUIS",
@@ -5129,6 +5130,12 @@
    "merge": "a00497",
    "into": "em9jgymfh9",
    "why": "every key now matches that bids-repo row"
+  },
+  {
+   "on": "2026-11-10",
+   "merge": "a00298",
+   "into": "esf055a2zt",
+   "why": "every key now matches that bids-repo row"
   }
  ],
  "keys": {
@@ -7476,7 +7483,7 @@
   "basis:MO|ADM GRAIN|CARTHAGE": "e8zh8n62e5",
   "basis:MO|ADM GRAIN|DEERFIELD": "e274ree8pq",
   "basis:MO|ADM GRAIN|MEXICO": "epcyyqt4sf",
-  "basis:MO|ADM GRAIN|MONTGOMERY CITY": "a00298",
+  "basis:MO|ADM GRAIN|MONTGOMERY CITY": "esf055a2zt",
   "basis:MO|ADM|CARTHAGE": "e8zh8n62e5",
   "basis:MO|ADM|CHARLESTON": "ephgywpecg",
   "basis:MO|ADM|DEERFIELD": "e274ree8pq",
@@ -9182,6 +9189,7 @@
   "bids:Mid-Iowa Cooperative||JEWELL|IA": "e3c9ck5dbz",
   "bids:Mid-Iowa Cooperative||KLOSTERMANN|IA": "e2b33gqv4q",
   "bids:Mid-Iowa Cooperative||LINCOLNWAY|IA": "etj8pts7dh",
+  "bids:Mid-Iowa Cooperative||POET IA FALLS|IA": "exmrbmcrn2",
   "bids:Mid-Iowa Cooperative||SHELL ROCK SOY PROC|IA": "ec0rqyyggz",
   "bids:Midwest Commodity Service, Inc.||Baldwin|WI": "ecbd1eskdj",
   "bids:Minn-Kota Ag Products, Inc.||Breckenridge|MN": "ef3dvv4qqr",

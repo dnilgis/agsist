@@ -371,6 +371,7 @@
    "key": "basis:IL|ADM GRAIN|DECATUR",
    "rule": "name+town",
    "candidates": [
+    "e04f2r51hd",
     "e6b9deqk60",
     "ezk9c693bk"
    ]
@@ -380,6 +381,7 @@
    "rule": "name+town",
    "candidates": [
     "e0ddh16vw0",
+    "ekbzj3fbfa",
     "exqrqchhw2"
    ]
   },
@@ -1196,13 +1198,15 @@
    "candidates": [
     "e5rgq90b00",
     "ec0m7jfj41",
-    "ejm528j17p"
+    "ejm528j17p",
+    "er13t2t8e3"
    ]
   },
   {
    "key": "basis:NE|ADM GRAIN|LINCOLN",
    "rule": "name+town",
    "candidates": [
+    "e7sten68p9",
     "ebsk8p46t6",
     "er9td1a63t"
    ]
