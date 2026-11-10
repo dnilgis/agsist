@@ -29,6 +29,9 @@
     COMPANY: 1, COOP: 1, COOPERATIVE: 1, ASSN: 1, ASSOCIATION: 1 };
   var OP_NOISE = /\b(inc|llc|l\s?l\s?c|co|company|corp|corporation|cooperative|coop|co-op|the|of|grain|elevator|elevators|farmers)\b/g;
   var TOWN_ALT = { saint: 'st', mount: 'mt', fort: 'ft', sainte: 'ste' };
+  /* a firm's legal name and the short name its boards use (Wisner NE: "ADM" and "Archer-Daniels-Midland Company") */
+  var PARENT_ALIASES = [[/\barcher[\s-]*daniels[\s-]*midland\b/g, 'adm']];
+  var CO_OPERATIVE = /\bco[\s.-]*operative\b/g;
   function has(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
 
   function setNames(json) {
@@ -56,7 +59,7 @@
   }
   function basisName(op) { return displayName(op).toUpperCase().split(/\s+/).filter(Boolean).join(' '); }
   function facKey(s) {
-    var t = displayName(s).toUpperCase().replace(/&/g, ' AND ').replace(/\bCO[\s.-]*OP\b/g, 'COOP')
+    var t = displayName(s).toUpperCase().replace(/&/g, ' AND ').replace(/\bCO[\s.-]*OPERATIVE\b/g, 'COOPERATIVE').replace(/\bCO[\s.-]*OP\b/g, 'COOP')
       .replace(/[^A-Z0-9]+/g, ' ').trim().split(' ').filter(Boolean);
     while (t.length > 1 && FAC_TAIL[t[t.length - 1]]) t.pop();
     return t.join('');
@@ -75,7 +78,9 @@
     return s.toLowerCase().replace(/[^a-z0-9]+/g, '');
   }
   function tradeKey(name, town) {
-    var s = displayName(name).toLowerCase().replace(/\bco\s?-?\s?op\b/g, 'coop').replace(OP_NOISE, ' ');
+    var s = displayName(name).toLowerCase().replace(CO_OPERATIVE, 'cooperative');
+    PARENT_ALIASES.forEach(function (a) { s = s.replace(a[0], a[1]); });
+    s = s.replace(/\bco\s?-?\s?op\b/g, 'coop').replace(OP_NOISE, ' ');
     (String(town || '').toLowerCase().match(/[a-z0-9]+/g) || []).forEach(function (w) {
       [w, TOWN_ALT[w] || w].forEach(function (v) { s = s.replace(new RegExp('\\b' + v + '\\b', 'g'), ' '); });
     });

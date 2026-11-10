@@ -46,6 +46,10 @@ _FAC_TAIL = {"LLC", "LC", "INC", "INCORPORATED", "CO", "CORP", "CORPORATION", "L
 _OP_NOISE = re.compile(r"\b(inc|llc|l\s?l\s?c|co|company|corp|corporation|cooperative|coop|co-op|the|of|grain|"
                        r"elevator|elevators|farmers)\b")
 _TOWN_ALT = {"saint": "st", "mount": "mt", "fort": "ft", "sainte": "ste"}
+# A firm's full legal name and the short name its boards use: one operator in a town (Wisner NE lists
+# "ADM" as a board and "Archer-Daniels-Midland Company" on the roster).
+_PARENT_ALIASES = ((re.compile(r"\barcher[\s-]*daniels[\s-]*midland\b"), "adm"),)
+_CO_OPERATIVE = re.compile(r"\bco[\s.-]*operative\b")
 _table = None
 
 
@@ -109,15 +113,23 @@ def basis_name(op):
     return " ".join(display_name(op).upper().split())
 
 
+def fac_words(s):
+    """fac_key's words, kept apart: ["ADM", "MARSHALL"] for "ADM, Marshall".
+    For matching one name inside another on whole words (ADM is not inside
+    "LADMORE"); Python only, the page has no use for it."""
+    t = re.sub(r"\bCO[\s.-]*OPERATIVE\b", "COOPERATIVE", display_name(s).upper().replace("&", " AND "))
+    t = re.sub(r"\bCO[\s.-]*OP\b", "COOP", t)
+    t = [x for x in re.sub(r"[^A-Z0-9]+", " ", t).strip().split(" ") if x]
+    while len(t) > 1 and t[-1] in _FAC_TAIL:
+        t.pop()
+    return t
+
+
 def fac_key(s):
     """One elevator across spellings: "CDR FARMS, LLC" and "CDR Farms LLC";
     trailing legal and co-op words off (the town page's history box and the
     home page's basis chart)."""
-    t = re.sub(r"\bCO[\s.-]*OP\b", "COOP", display_name(s).upper().replace("&", " AND "))
-    t = [x for x in re.sub(r"[^A-Z0-9]+", " ", t).strip().split(" ") if x]
-    while len(t) > 1 and t[-1] in _FAC_TAIL:
-        t.pop()
-    return "".join(t)
+    return "".join(fac_words(s))
 
 
 def merge_key(name):
@@ -151,8 +163,12 @@ def trade_key(name, town=""):
     """An operator name with the legal and trade words, and the town's own
     name, taken out: "Bartlett Grain Company- St. Joseph" and "Bartlett Grain
     Company, LLC" in Saint Joseph are one operator there."""
-    # "Co-op" first: the noise word "co" would leave "op" ("Heartland Co-op" vs "Heartland Coop")
-    s = _OP_NOISE.sub(" ", re.sub(r"\bco\s?-?\s?op\b", "coop", display_name(name).lower()))
+    # "Co-operative" and "Co-op" first: the noise word "co" would leave "operative" or "op"
+    # ("Cameron Co-operative Elevator Association" is Cameron Cooperative Elevator Association)
+    s = _CO_OPERATIVE.sub("cooperative", display_name(name).lower())
+    for pat, short in _PARENT_ALIASES:
+        s = pat.sub(short, s)
+    s = _OP_NOISE.sub(" ", re.sub(r"\bco\s?-?\s?op\b", "coop", s))
     for w in re.findall(r"[a-z0-9]+", (town or "").lower()):
         for v in {w, _TOWN_ALT.get(w, w)}:
             s = re.sub(rf"\b{v}\b", " ", s)
@@ -213,6 +229,11 @@ CASES_KEY = [
     ("trade_key", "Bartlett Grain Company- St. Joseph|Saint Joseph", "bartlett"),
     ("trade_key", "Bartlett Grain Company, LLC|St Joseph", "bartlett"),
     ("trade_key", "Heartland Co-op|", "heartland"), ("trade_key", "Rice Lake Grain|Rice Lake", ""),
+    ("trade_key", "Cameron Cooperative Elevator Association|Cameron", "association"),
+    ("trade_key", "Cameron Co-operative Elevator Association|Cameron", "association"),
+    ("trade_key", "ADM|Wisner", "adm"), ("trade_key", "Archer-Daniels-Midland Company|Wisner", "adm"),
+    ("fac_key", "Cameron Co-operative Elevator Association", "CAMERONCOOPERATIVEELEVATOR"),
+    ("fac_key", "Cameron Cooperative Elevator Association", "CAMERONCOOPERATIVEELEVATOR"),
 ]
 
 CASES_KEY += [("nice_case", "PINE BLUFFS", "Pine Bluffs"), ("nice_case", "FARMERS COOP LLC", "Farmers Coop LLC"),
