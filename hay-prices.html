@@ -152,6 +152,7 @@
       <section id="hp-ams" class="hp-ams" aria-labelledby="hp-ams-h">
         <h2 id="hp-ams-h">This week&rsquo;s trades, by grade and bale</h2>
         <div id="hp-ams-live" class="hp-ams-wait" aria-live="polite"><p class="hp-empty hp-ams-empty"><b>Trades load after the first USDA read.</b> USDA AMS state hay reports, by grade and bale type, show here once the page has read them. The monthly NASS prices are below.</p></div>
+        <script>/* if hay-ams.js has not let go of the hold after 8 s (blocked or failed), the box lets go itself */setTimeout(function(){var b=document.getElementById('hp-ams-live');if(b)b.classList.remove('hp-ams-wait');},8000);</script>
       </section>
 
       <h2 id="nass">Monthly average price received</h2>
