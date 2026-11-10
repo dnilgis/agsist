@@ -3,7 +3,7 @@
 //   node --test test/seo-nov10.test.mjs
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
@@ -62,12 +62,16 @@ test("company titles: count and crops, never a price; meta without a price", () 
   assert.ok(!/\$/.test(t[3]) && t[3].length <= 160, t[3]);
 });
 
-test("Daily titles fit the cap and keep the date; the Nov 1 issue no longer shares the Oct 31 H1", () => {
-  const h1 = (d) => read(`daily/${d}.html`).match(/<h1 class="dv3-headline">([^<]*)<\/h1>/)[1];
-  assert.notEqual(h1("2026-10-31"), h1("2026-11-01"));
-  for (const d of ["2026-10-21", "2026-11-03", "2026-11-09"]) {
-    const t = read(`daily/${d}.html`).match(/<title>([^<]*)<\/title>/)[1].replace(/&amp;/g, "&");
-    assert.ok(t.length <= 68 && /\| \w{3} \d{1,2}, 2026/.test(t), t);
+test("Daily issue pages: titles fit the cap and keep the date, and no two issues share an H1", () => {
+  const seen = new Map();
+  for (const f of readdirSync(ROOT + "daily").filter((x) => /^\d{4}-\d\d-\d\d\.html$/.test(x))) {
+    const page = read(`daily/${f}`);
+    const t = page.match(/<title>([^<]*)<\/title>/)[1].replace(/&amp;/g, "&");
+    assert.ok(t.length <= 68 && /\| \w{3} \d{1,2}, \d{4}/.test(t), `${f}: ${t}`);
+    const h = (page.match(/<h1 class="dv3-headline">([^<]*)<\/h1>/) || [])[1];
+    if (!h) continue;
+    assert.ok(!seen.has(h), `${f} repeats the H1 of ${seen.get(h)}`);
+    seen.set(h, f);
   }
 });
 
