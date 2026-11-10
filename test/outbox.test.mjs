@@ -35,6 +35,7 @@ function tab(ls, fetchImpl, files = ["components/outbox.js"]) {
   const c = { localStorage: ls, sessionStorage: storage(), setTimeout, clearTimeout, JSON, Promise, Date, Math, URLSearchParams,
     TextEncoder, TextDecoder, atob, btoa, FormData, AbortController };
   c.window = c;
+  c.location = { hostname: "agsist.com" };
   c.calls = [];
   c.fetch = async (u, init) => { c.calls.push({ u, init }); return c.impl(u, init); };
   c.impl = fetchImpl;
