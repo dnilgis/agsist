@@ -20,6 +20,11 @@ var _rmaWatching=false;
        the old guard meant the widget never appeared on the call that does not
        pass coordinates -- caught by rendering it, not by reading it. */
     if(_rmaWatching)return null; _rmaWatching=true;
+    /* Nov 10 audit: final planting dates matter from January to June. From July
+       the card has stepped back (both dates passed), so the RMA file (360 KB) is not
+       fetched and nothing polls. */
+    var _m=+new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',month:'numeric'}).format(new Date());
+    if(_m>=7)return null;
     /* The county can arrive late (permission prompt + fix + reverse-geocode)
        and can CHANGE -- geo.js publishes a cached county first and corrects it
        when the real one resolves. Latching the first value showed a grower in
@@ -30,7 +35,10 @@ var _rmaWatching=false;
       var w=window.AGSIST_STATE&&window.AGSIST_STATE.weather;
       var key=w&&w.state&&w.county?(w.state+'|'+w.county):'';
       if(key&&key!==_rmaSeen){ _rmaSeen=key; renderForCounty(w.state,w.county); }
-      setTimeout(watch,400);
+      /* Nov 10 audit: it polled every 400 ms forever. Quick while the county
+         is still arriving, then once every 5 s (a changed ZIP), and not at
+         all while the tab is hidden. */
+      setTimeout(watch,document.visibilityState==='hidden'?5000:(key?5000:400));
     })();
     return null;
   }
