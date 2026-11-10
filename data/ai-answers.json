@@ -35,6 +35,7 @@
   {
    "id": "crop-report",
    "page": "usda-calendar.html",
+   "fold": true,
    "queries": [
     "usda crop report today"
    ],

@@ -33,7 +33,8 @@ const jsLine = new Function("lr", `
   const window = {};
   ${UTIL_SRC}
   const esc = window.esc;
-  function num(n,u){return (n==null)?'-':(n+(u?(' '+u):''));}
+  ${lift("d3")}
+  ${lift("num")}
   var MON3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   ${lift("lastLine")}
   return lastLine(lr);

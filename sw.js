@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 435;  // v435 2026-11-10: futures wording (435, next after main's 434). Delayed, never live; the price stamp says when the quote was read (price-local.js 13, futures.js 33, breakeven.js 11, fast-facts.js 20, cb-sample.js 8); the state bid line holds its box with a saved ZIP.
+var CACHE_VERSION = 438;  // v438 2026-11-10: futures wording. Delayed, never live; the price stamp says when the quote was read (price-local.js 13, futures.js 33, breakeven.js 11, fast-facts.js 20, cb-sample.js 8); the state bid line holds its box with a saved ZIP. (438, next after 437)
+// var CACHE_VERSION = 435;  // v435 2026-11-10: USDA calendar results first. One card per number against the trade, then the next 5 reports; schedule and details fold away (components/priced-in.js?v=4). (435, next after main's 434)
 // var CACHE_VERSION = 434;  // v434 2026-11-09: PRF panel fixes. The find card no longer jumps, the El Nino row prints CPC's status, the calculator opens on haying, one closed Sources and terms fold (components/prf.js?v=10, prf-now.js?v=5, prf-optimize.js?v=6, prf-optimize-ui.js?v=8, prf.css?v=10). (434, next after main's 432)
 // var CACHE_VERSION = 432;  // v432 2026-11-10: rent age. State rent tables and Farmland Atlas titles show a rent more than three survey years old as n/a with its last year; unpublished counties listed; county finder on the state rent pages (generated pages only, no shared file changed). (432, next after main's 431)
 // var CACHE_VERSION = 431;  // v431 2026-11-09: forms send nothing to the backup form off agsist.com. A local copy keeps the item and says nothing was sent (components/form-post.js?v=9, loader.js signup fallback). (431, next after main's 429)

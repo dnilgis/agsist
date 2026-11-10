@@ -143,14 +143,20 @@ test("every county page carries one answer per card, and the browser's words for
   assert.ok(cards >= 15000, `${cards} cards`);
 });
 
-test("trigger line, by hand: Story County, IA corn pays under 215 bu at $4.70", () => {
+test("trigger line, by hand: Story County, IA corn pays under 215 bu at $4.70 (October print), 220 bu at $4.60 (November)", () => {
   const html = readFileSync(ROOT + "arc-plc/iowa/story-county.html", "utf8");
   const corn = [...html.matchAll(CARD)].find((m) => m[1] === "corn");
   // 223.82 bu x 90% = 201.438; x $5.03 = 1,013.23 guarantee per acre; / $4.70 = 215.58 bu. At 215 bu: 215 x 4.70 = 1,010.50, under
   // the guarantee, pays $2.73 an acre; at 216 bu: 1,015.20, over it, pays nothing. Floored, so "under 215" is always true.
+  // November WASDE (Nov 10, 2026), $4.60: 1,013.23 / 4.60 = 220.27 bu. At 220 bu: 1,012.00, under; at 221 bu: 1,016.60, over.
+  // The page follows USDA's current print, so the line is checked against the hand-worked figure for the print in the data.
+  const HAND = { 4.7: [215, "$4.70"], 4.6: [220, "$4.60"] };
   assert.equal(D.years["2026"].crops.corn.bp.value, 5.03);
-  assert.equal(D.years["2026"].crops.corn.scen.center, 4.7);
-  assert.ok(corn[7].includes("comes in under <b>215 bu</b> at USDA&rsquo;s price outlook, $4.70."), corn[7]);
+  const cen = D.years["2026"].crops.corn.scen.center;
+  // a later print not yet worked by hand: the same arithmetic from the data (the next test checks it on every card)
+  const [bu, price] = HAND[cen] || [Math.floor(Math.round(0.9 * 223.82 * 5.03 / cen * 1e6) / 1e6), "$" + cen.toFixed(2)];
+  assert.equal(Math.floor(0.9 * 223.82 * 5.03 / cen), bu);
+  assert.ok(corn[7].includes(`comes in under <b>${bu} bu</b> at USDA&rsquo;s price outlook, ${price}.`), corn[7]);
   // the benchmark prints as the title does, to a tenth (Oct 19, 2026; was "223.82 bu")
   // curtain round 2 (Nov 9): the working behind the trigger is not printed on the card
   assert.ok(!/90% of the|divided by/.test(corn[7]), corn[7]);
