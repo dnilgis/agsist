@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 410;  // v410 2026-11-09: USDA calendar page. Method text out of the reading path, one closed Sources and terms fold at the bottom (bot-scorecard.js?v=2, priced-in.js?v=3). (410, next after main's 409)
+var CACHE_VERSION = 411;  // v411 2026-11-10: page titles within 68 characters (company bid pages, custom rates, land sales, Daily, PRF, hail map, hand pages), the USDA calendar crop report answer from the WASDE data, the 2025 all-milk line, worked bin example. (411, next after main's 410)
+// var CACHE_VERSION = 410;  // v410 2026-11-09: USDA calendar page. Method text out of the reading path, one closed Sources and terms fold at the bottom (bot-scorecard.js?v=2, priced-in.js?v=3). (410, next after main's 409)
 // var CACHE_VERSION = 409;  // v409 2026-11-09: fx/cash-bids-panel. /cash-bids panel fixes: no-ZIP table shows the reader's state first and says est., the email ask is one line under that table, the sticky bar returns after results (bar-cash-bids), Best price skips basisOdd rows, no stale best-bid line. (409, next after main's 408)
 // var CACHE_VERSION = 408;  // v408 2026-11-10: data links left. /spray names its measured inversion networks in text and a Sources and terms fold, /cash-lease prints Iowa Code 562.6 as text (no data-source URLs in their scripts). (408, next after main's 407)
 // var CACHE_VERSION = 407;  // v407 2026-11-09: phone width. Nested cards on 23 pages add no extra side padding at 480px and under (fx/phone-width). (407, next after main's 406)
