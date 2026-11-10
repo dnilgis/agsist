@@ -9,6 +9,13 @@
    "link": "/daily"
   },
   {
+   "id": "2026-11-09-rain-print-several-days",
+   "date": "2026-11-09",
+   "title": "Rain Print gaps",
+   "line": "When a gauge reports several days of rain in one later total, Rain Print and the county prints count those days as reported together, not as gaps.",
+   "link": "/rain-print"
+  },
+  {
    "id": "2026-11-09-arcplc-plain",
    "date": "2026-11-09",
    "title": "ARC or PLC method, in plain words",
@@ -51,6 +58,13 @@
    "link": "/grain-bin-calculator"
   },
   {
+   "id": "2026-11-09-calendar-terms-fold",
+   "date": "2026-11-09",
+   "title": "A shorter USDA calendar page",
+   "line": "The USDA calendar page is shorter: sources and terms now sit in one closed note at the bottom.",
+   "link": "/usda-calendar"
+  },
+  {
    "id": "2026-11-09-cash-bids-panel",
    "date": "2026-11-09",
    "title": "Cash bids: your state first, one-line email",
@@ -77,6 +91,13 @@
    "title": "Shorter hail map pages",
    "line": "The hail map and the state hail pages put sources and terms in one closed note at the bottom, so the map comes sooner.",
    "link": "/hail-map"
+  },
+  {
+   "id": "2026-11-09-rain-print-fixes",
+   "date": "2026-11-09",
+   "title": "Rain Print fixes",
+   "line": "Rain Print keeps the nearest station with rain and snow records, offers the right spelling for a typo, and names the exact-spot option for a thin year.",
+   "link": "/rain-print"
   },
   {
    "id": "2026-11-09-rain-terms-fold",

@@ -192,14 +192,21 @@
   function ord(k) { var s = ['th', 'st', 'nd', 'rd'], v = k % 100; return k + (s[(v - 20) % 10] || s[v] || s[0]); }
   /* -> {n, rank, dir: 'driest' | 'wettest', tied, text} or null when the year isn't full.
      Ranked from whichever end it is nearer (the driest half from the dry end). */
-  function rank(full, year) {
+  /* o.upTo (2026-11-09, Rain Print panel: one "full years" rule on a print): rank only against the full years up
+     to and including this one, never later ones, as the remarkable days do (components/rain-print-records.js),
+     and only with o.min full years in that window; the text says "kept up to <year>". */
+  function rank(full, year, o) {
     full = full || [];
+    if (o && o.upTo) {
+      full = full.filter(function (f) { return f.year <= +year; });
+      if (o.min && full.length < o.min) return null;
+    }
     var me = full.filter(function (f) { return f.year === +year; })[0];
     if (!me || full.length < 2) return null;
     var lt = 0, gt = 0, eq = 0;
     full.forEach(function (f) { if (f.year === me.year) return; if (Math.abs(f.total - me.total) < 0.005) eq++; else if (f.total < me.total) lt++; else gt++; });
     var dry = lt <= gt, r = (dry ? lt : gt) + 1, dir = dry ? 'driest' : 'wettest', n = full.length;
-    var text = (eq ? 'Tied for ' : '') + (r === 1 ? (eq ? 'the ' : 'The ') + dir : ord(r) + ' ' + dir) + ' of the ' + n + ' full years this station has kept';
+    var text = (eq ? 'Tied for ' : '') + (r === 1 ? (eq ? 'the ' : 'The ') + dir : ord(r) + ' ' + dir) + ' of the ' + n + ' full years this station ' + (o && o.upTo ? 'kept up to ' + (+year) : 'has kept');
     if (!eq && r !== 1) text = text.charAt(0).toUpperCase() + text.slice(1);
     return { n: n, rank: r, dir: dir, tied: eq > 0, text: text };
   }

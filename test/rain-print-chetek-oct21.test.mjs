@@ -25,7 +25,7 @@ import assert from "node:assert/strict";
 import { readFileSync, existsSync, mkdirSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import vm from "node:vm";
-import { PW, CHROME, serve, mocks, acisRows } from "./fixtures/rp-chetek-oct21.mjs";
+import { PW, CHROME, serve, mocks, acisRows, AMES, AMES_META } from "./fixtures/rp-chetek-oct21.mjs";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const ctx = { TextEncoder, TextDecoder, URLSearchParams, btoa, atob };
@@ -107,13 +107,13 @@ try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chrom
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 const SHOTS = process.env.RP_SHOTS || null;
 
-async function withPage(fn, { width = 1280, scheme = "dark", delay = 0 } = {}) {
+async function withPage(fn, { width = 1280, scheme = "dark", delay = 0, meta, town } = {}) {
   const srv = await serve(ROOT), base = "http://127.0.0.1:" + srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const context = await browser.newContext({ viewport: { width, height: width > 500 ? 900 : 844 }, colorScheme: scheme, serviceWorkers: "block" });
     await context.clock.setFixedTime(new Date("2026-10-21T15:00:00Z"));
-    const log = await mocks(context, { delay });
+    const log = await mocks(context, { delay, meta, town });
     const page = await context.newPage();
     const errors = [];
     page.on("pageerror", (e) => errors.push(String(e)));
@@ -130,25 +130,34 @@ async function shot(page, name, sel) {
   await page.screenshot({ path: SHOTS + "/" + name + ".png" });
 }
 
-/* Since 2026-10-22 (Sig: every layer on by default) a new visit starts with every year behind on, so the town typed
-   is drawn straight from the nearest long record, which says why; turning the threads off goes back to the gauge. */
-test("browser: Sig's sequence: the town typed while the sample draws is drawn, from the nearest long record (threads on by default) saying why; threads off goes back to the gauge", { skip }, async () => {
+/* Since 2026-10-22 (Sig: every layer on by default) a new visit starts with every year behind on. Since Nov 9 (Sig: the
+   Oct 15 rule wins) the switch no longer moves the pick: the town typed is drawn from the nearest station with rain AND
+   snowfall records, the threads are off while it has under 30 full years and the panel says so, and the long record is
+   the reader's one tap, said plainly, with the tap back to the nearer gauge. */
+const GAUGE_WHY = /^Weather station: Chetek, WI, 11 mi from Chetek \(volunteer gauge US1WIRS0008\)\. Picked over a gauge 1\.9 mi away because it records snowfall too\./;
+const LONG = /Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\./;
+const SHORT_WHY = "Chetek, 10.6 mi E has 0 full years; it takes 30. Use the nearest station with 30 full years";
+test("browser: Sig's sequence: the town typed while the sample draws is drawn from the near station with rain and snowfall; the long record is one tap; threads off goes back", { skip }, async () => {
   for (const [width, scheme] of [[1280, "dark"], [390, "light"]]) await withPage(async (page, base, log, errors) => {
     await page.goto(base + "/rain-print.html");
     await page.waitForTimeout(2500);   // the worker refused /where; the sample is drawing (NOAA slow)
     assert.ok(log.worker.includes("GET /where"), "the page asked the worker for the town");
     await page.fill("#rp-place", "chetek, wi");
     await page.click("#rp-name");      // leaves the town box
-    // the reader's own print (the sample is the same town, so wait for the sample line to go)
     await page.waitForFunction(() => document.getElementById("rp-sample-line").hidden && /days recorded/.test(document.getElementById("rp-source").textContent) && !document.getElementById("rp-go").disabled, null, { timeout: 40000 });
     assert.ok(await page.isChecked("#rp-hist"), "every year behind is on for a new visit");
-    // one short plain line (Sig, 2026-10-22), its last part the tap back to the nearer gauge, named once it is read
-    assert.match(await text(page, "rp-source"), /^Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\. Use the nearer /);
-    await page.waitForFunction(() => document.getElementById("rp-near") && document.getElementById("rp-near").textContent === "Use the nearer Chetek gauge (11 mi)", null, { timeout: 20000 });
-    assert.ok(!/Picked for every year behind|nearest station of all/.test(await text(page, "rp-source")), "no longer paragraph about it");
+    assert.match(await text(page, "rp-source"), GAUGE_WHY);
+    assert.equal(await page.inputValue("#rp-station"), "US1WIRS0008 6", "the Oct 15 rule: rain and snowfall, not the long record");
     assert.equal(await page.inputValue("#rp-place"), "Chetek, WI", "the box says the town as it is spelled");
     assert.equal(await text(page, "rp-pending"), "", "no Not drawn yet: the town is drawn");
     assert.equal(await page.evaluate(() => !!document.querySelector("#rp-sample-line:not([hidden])")), false, "the print is the reader's, not the sample");
+    await page.waitForFunction((w) => document.getElementById("rp-hist-why").textContent.trim() === w, SHORT_WHY, { timeout: 20000 });
+    assert.ok(!/data-rp="hist"/.test(await page.$eval("#rp-art", (e) => e.innerHTML)), "no threads under 30 full years");
+    // the long record: the reader's own tap, with the way back named once it is read
+    await page.click("#rp-hist-long");
+    await drawnFrom(page, LONG);
+    await page.waitForFunction(() => document.getElementById("rp-near") && document.getElementById("rp-near").textContent === "Use the nearer Chetek gauge (11 mi)", null, { timeout: 20000 });
+    assert.ok(!/Picked for every year behind|nearest station of all/.test(await text(page, "rp-source")), "no longer paragraph about it");
     assert.equal(await text(page, "rp-hist-why"), "", "nothing contradicts the switch");
     assert.equal(await page.inputValue("#rp-station"), "470904 2");
     assert.match(page.url(), /hist=1/);
@@ -164,51 +173,62 @@ test("browser: Sig's sequence: the town typed while the sample draws is drawn, f
   }, { width, scheme, delay: 1200 });
 });
 
-test("browser: the sample with no town typed re-picks its own station for every year behind, and back without it", { skip }, async () => {
+test("browser: the sample with no town typed keeps its near station with snowfall, threads on or off", { skip }, async () => {
   await withPage(async (page, base, log, errors) => {
     await page.goto(base + "/rain-print.html");
-    // every year behind is on for a new visit (2026-10-22), so the sample comes from the nearest long record
-    await drawnFrom(page, /Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\./);
-    assert.ok(await page.evaluate(() => !document.getElementById("rp-sample-line").hidden), "the sample is up, with the threads");
-    assert.equal(await text(page, "rp-hist-why"), "");
+    await drawnFrom(page, /volunteer gauge US1WIRS0008/);
+    assert.ok(await page.evaluate(() => !document.getElementById("rp-sample-line").hidden), "the sample is up");
     assert.equal(await text(page, "rp-pending"), "");
     await page.uncheck("#rp-hist");
     await drawnFrom(page, /volunteer gauge US1WIRS0008/);
-    assert.ok(await page.evaluate(() => !document.getElementById("rp-sample-line").hidden), "still the sample, now without the threads");
+    assert.ok(await page.evaluate(() => !document.getElementById("rp-sample-line").hidden), "still the sample, without the threads");
     await page.check("#rp-hist");
-    await drawnFrom(page, /Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\./);
-    assert.ok(await page.evaluate(() => !document.getElementById("rp-sample-line").hidden), "and back");
+    await drawnFrom(page, /volunteer gauge US1WIRS0008/);
+    assert.ok(await page.evaluate(() => !document.getElementById("rp-sample-line").hidden), "and back, the same station");
+    assert.ok(!log.acis.includes("por 470904 2"), "the long record is never read unless asked for");
     assert.deepEqual(errors, []);
   }, { width: 390, scheme: "light" });
 });
 
-test("browser: a short station picked by hand says so and offers the way back, which works", { skip }, async () => {
+test("browser: a short station says so and offers the long record, which works; picked by hand, the same", { skip }, async () => {
   await withPage(async (page, base, log, errors) => {
     await page.goto(base + "/rain-print.html?place=Chetek%2C+WI&year=2025&style=r1&hist=1");
-    await drawnFrom(page, /Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\./);
+    await drawnFrom(page, GAUGE_WHY);
+    await page.waitForFunction((w) => document.getElementById("rp-hist-why").textContent.trim() === w, SHORT_WHY, { timeout: 20000 });
+    await shot(page, "hist-short-1280-dark", "#rp-hist");
+    await page.click("#rp-hist-long");
+    await drawnFrom(page, LONG);
+    assert.equal(await text(page, "rp-hist-why"), "");
     await page.evaluate(() => { document.getElementById("rp-more").open = true; });
     await page.selectOption("#rp-station", "US1WIRS0008 6");
     await drawnFrom(page, /volunteer gauge US1WIRS0008\) Change station\./);
-    await page.waitForFunction(() => /has 0 full years; it takes 30\./.test(document.getElementById("rp-hist-why").textContent), null, { timeout: 20000 });
-    assert.equal(await text(page, "rp-hist-why"), "Chetek, 10.6 mi E has 0 full years; it takes 30. Use the nearest station with 30 full years");
-    await shot(page, "hist-short-1280-dark", "#rp-hist");
+    await page.waitForFunction((w) => document.getElementById("rp-hist-why").textContent.trim() === w, SHORT_WHY, { timeout: 20000 });
     await page.click("#rp-hist-long");
-    await drawnFrom(page, /Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\./);
+    await drawnFrom(page, LONG);
     assert.equal(await text(page, "rp-hist-why"), "");
     assert.ok(await page.isChecked("#rp-hist"));
     assert.deepEqual(errors, []);
   });
 });
 
-test("browser: ZIP 54728 with the worker blocked: the town is found, no page error, no red line", { skip }, async () => {
+/* Nov 9 2026 (Sig, Rain Print panel): the Oct 15 rule wins over every year behind. Ames 2012 picked Ames 5 SE (6.4 mi,
+   rain only) for its long record and lost its snow; now the 2.0 mi gauge with rain AND snowfall draws, the threads are
+   off (it has under 30 full years) and the options panel says so with the one-tap way to the long record. */
+test("browser: Ames 2012 keeps the near gauge with rain and snowfall; the threads are off and say why; the long record is one tap", { skip }, async () => {
   await withPage(async (page, base, log, errors) => {
-    await page.goto(base + "/rain-print.html");
-    await page.fill("#rp-place", "54728");
-    await page.click("#rp-go");
-    // the reader's print, not the Chetek sample the blocked worker left up
-    await page.waitForFunction(() => document.getElementById("rp-sample-line").hidden && /from Chetek|^Weather from Bloomer, 17 mi:/.test(document.getElementById("rp-source").textContent) && !document.getElementById("rp-go").disabled, null, { timeout: 40000 });
-    assert.equal(await page.inputValue("#rp-place"), "Chetek, WI");
-    assert.equal(await page.$eval("#rp-status", (el) => el.classList.contains("rp-bad")), false);
+    await page.goto(base + "/rain-print.html?place=Ames%2C+IA&year=2012&style=r1&hist=1");
+    await drawnFrom(page, /volunteer gauge US1IASR0018/);
+    assert.equal(await page.inputValue("#rp-station"), "US1IASR0018 6", "the 2.0 mi gauge, not Ames 5 SE");
+    assert.ok(await page.isChecked("#rp-hist"), "the switch stays as the reader set it");
+    await page.waitForFunction(() => /has \d+ full years; it takes 30\./.test(document.getElementById("rp-hist-why").textContent), null, { timeout: 20000 });
+    assert.match(await text(page, "rp-hist-why"), /^Ames, 2\.0 mi SW has 1[67] full years; it takes 30\. Use the nearest station with 30 full years$/);
+    assert.ok(!/data-rp="hist"/.test(await page.$eval("#rp-art", (e) => e.innerHTML)), "no gray lines under 30 years");
+    assert.ok(!log.acis.includes("por 130203 2"), "the long record was never read to pick the station");
+    // the reader's own choice: the long record, said plainly
+    await page.click("#rp-hist-long");
+    await drawnFrom(page, /Weather from Ames, 6\.4 mi: the nearest station with 30\+ years of records, so every past year can be drawn\. Use the nearer Ames gauge \(2\.0 mi\)/);
+    assert.equal(await page.inputValue("#rp-station"), "130203 2");
+    assert.ok(/data-rp="hist"/.test(await page.$eval("#rp-art", (e) => e.innerHTML)), "the gray lines, from the long record");
     assert.deepEqual(errors, []);
-  }, { width: 390, scheme: "light" });
+  }, { meta: AMES_META, town: AMES, width: 390, scheme: "light" });
 });
