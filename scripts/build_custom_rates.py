@@ -38,6 +38,7 @@ import os
 import re
 import subprocess
 import source_links  # noqa: E402  no direct links to data sources
+import seo_caps as SEO  # noqa: E402  the site title cap
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -815,11 +816,30 @@ def state_hero(d, blend):
         line1, line2, st, "" if k == "combine-corn" else "&amp;k=" + k)
 
 
+# Who ran each state's survey, short enough for a title ("Iowa Custom Farming Rates 2026: Iowa State Survey").
+SURVEY_SHORT = {"IA": "Iowa State", "IN": "Purdue", "KS": "K-State", "MD": "UMD", "DE": "UMD",
+                "MO": "MU Extension", "ND": "NDSU", "NE": "Nebraska Extension", "OH": "Ohio State", "OK": "Oklahoma State",
+                "PA": "USDA NASS", "WI": "UW Extension"}
+
+
+def page_title(d):
+    """"{State} Custom Farming Rates {year}: {who} Survey", within the site's title cap
+    (scripts/seo_caps.py). The year is the year the rates were charged (the one year rule);
+    a survey run the next year carries its own year after the name."""
+    name, yr = d["name"], rate_year(d)
+    who = SURVEY_SHORT.get(d["state"])
+    if who and yr != d["survey_year"]:
+        who = "%s %d" % (who, d["survey_year"])   # "Missouri Custom Farming Rates 2025: MU Extension 2026 Survey"
+    cands = (["%s Custom Farming Rates %d: %s Survey" % (name, yr, who)] if who else []) + [
+        "%s Custom Farming Rates %d" % (name, yr), "%s Custom Rates %d" % (name, yr)]
+    return SEO.fit(cands)
+
+
 def state_page(d, idx, blend):
     name, yr, st = d["name"], d["survey_year"], d["state"]
     when = survey_words(yr, d.get("rate_year"))
     url = "https://agsist.com/custom-rates/" + d["slug"]
-    title = "%s custom rates %d: combining, planting, spraying, baling | AGSIST" % (name, yr)
+    title = page_title(d)
     desc = "%s custom farm work rates from the %d survey by %s: the average and range for each job, per acre, hour, bushel or bale." % (name, yr, d["publisher"].split(",")[0])
     if len(desc) > 158:
         desc = "%s custom farm work rates from the %d state survey: average and range for each job, per acre, hour, bushel or bale." % (name, yr)
@@ -1432,6 +1452,12 @@ def selftest():
     mo = docs.get("MO")
     ok(mo and mo.get("rate_year") == 2025 and any(r.get("k") == "combine-corn" and r["a"] == 47.56 and r["md"] == 40 and r["lo"] == 35 and r["hi"] == 95 and r["n"] == 9 for r in mo["rows"]),
        "Missouri 2025 corn combining without grain cart is $47.56 (median $40, $35-$95, 9), as G302 (March 2026) Table 5 prints it")
+    # every state page title fits the site cap and names who ran the survey
+    for st, d in docs.items():
+        t = page_title(d)
+        ok(len(t) <= SEO.TITLE_MAX and st in SURVEY_SHORT, "%s title %r (%d chars, cap %d)" % (st, t, len(t), SEO.TITLE_MAX))
+    ok(page_title(docs["IA"]) == "Iowa Custom Farming Rates 2026: Iowa State Survey", page_title(docs["IA"]))
+    ok(page_title(docs["MO"]) == "Missouri Custom Farming Rates 2025: MU Extension 2026 Survey", "rate year first, survey year after: %r" % page_title(docs["MO"]))
     print("selftest: %d failed" % len(fails))
     for x in fails:
         print("  FAIL", x)
