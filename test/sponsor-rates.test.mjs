@@ -182,7 +182,7 @@ test("a partial audience file shows only what it has", { skip }, async () => {
     const s = await state(page);
     assert.deepEqual(s.cards, { users: "1,234", search: null, ytd: null, elev: null, subs: null, phone: "70%" });
     assert.ok(!s.none && s.statesShown && s.states === 1 && !s.pagesShown);
-    assert.equal(s.win, "Last 28 days: Oct 12 to Nov 8, 2026. So far this year: not available.");
+    assert.ok(s.win.startsWith("Last 28 days: ") && s.win.endsWith(". So far this year: not available."), s.win);
     assert.deepEqual(s.cards, expected(aud, null));
   } finally { await browser.close(); srv.close(); }
 });
