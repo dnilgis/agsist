@@ -34,8 +34,8 @@ def get(base, path, token):
     try:
         with urllib.request.urlopen(req, timeout=60) as r:
             return json.loads(r.read().decode())
-    except Exception as ex:  # never let a traceback print the URL with the token in it
-        print(f"::error::{path} failed: {type(ex).__name__} {getattr(ex, 'code', '')}"); sys.exit(1)
+    except Exception:  # a fixed line, never a traceback with the URL
+        print("::error::a list read failed"); sys.exit(1)
 
 
 def when(ms):
@@ -154,7 +154,7 @@ def main():
         print("::error::LIST_TOKEN, SMTP_USER, SMTP_PASS and a recipient are required"); sys.exit(1)
     lists = build(get(base, "/list", token), get(base, "/alert-list", token), get(base, "/watch-list", token),
                   get(base, "/elevator-watch-list", token), get(base, "/price-watch-list", token))
-    print("read %d lists" % len(lists))
+    print("lists read")
     m = message(lists, to, sender, env("FROM_NAME", "AGSIST"))
     with smtplib.SMTP(env("SMTP_HOST", "smtp.gmail.com"), int(env("SMTP_PORT", "587")), timeout=30) as c:
         c.starttls(); c.login(user, pw); c.send_message(m)

@@ -20,6 +20,5 @@ jobs:
             echo "FATAL: need LIST_URL, LIST_TOKEN, RECIPIENTS secrets set first"; exit 1
           fi
           RESP=$(printf '%s' "$RECIPIENTS" | curl -sS -X POST -H "Authorization: Bearer $LIST_TOKEN" --data-binary @- "$LIST_URL/import")
-          # counts and the worker's reply stay out of the public log: ok or failed only
           printf '%s' "$RESP" | grep -q '"ok":true' || { echo "import FAILED"; exit 1; }
           echo "import ok"

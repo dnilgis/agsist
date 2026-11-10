@@ -34,8 +34,8 @@ jobs:
                                        headers={"User-Agent": "agsist-count", "Authorization": "Bearer " + os.environ["LIST_TOKEN"].strip()})
           try:
               d = json.load(urllib.request.urlopen(req, timeout=30))
-          except Exception as ex:  # the error only: never the URL or the token
-              print("::error::count failed: %s %s" % (type(ex).__name__, getattr(ex, "code", ""))); raise SystemExit(1)
+          except Exception:
+              print("::error::count failed"); raise SystemExit(1)
           keep = {k: v for k, v in d.items() if isinstance(v, (int, float)) or k == "by_source"}
           if isinstance(d.get("forms"), dict):
               keep["forms"] = {str(k): v for k, v in d["forms"].items() if isinstance(v, (int, float)) and "@" not in str(k)}

@@ -147,19 +147,19 @@ def main():
         return 0
     import subscribers
     try:
-        records, how = subscribers.fetch(lu, lt)
-    except Exception as e:  # noqa: BLE001  never print the URL, it carries the token
-        print("::warning::signup list failed: %s %s" % (type(e).__name__, getattr(e, "code", "")))
+        records, _how = subscribers.fetch(lu, lt)
+    except Exception:  # noqa: BLE001  a fixed line only: no URL, no count
+        print("::warning::signup list failed")
         return 0
     try:
         notices = get_notices(lu, lt)
-    except Exception as e:  # noqa: BLE001
-        print("::warning::notice list failed: %s %s" % (type(e).__name__, getattr(e, "code", "")))
+    except Exception:  # noqa: BLE001
+        print("::warning::notice list failed")
         notices = None
     out = build(records, notices, datetime.now(CT).date())
     OUT.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
     # the file is the record; the public job log gets no count (counts are read in the morning email)
-    print("signups: data/signups.json written (%s list)" % how)
+    print("signups: data/signups.json written")
     return 0
 
 

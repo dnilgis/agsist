@@ -785,7 +785,7 @@ def main(argv=(), now=None, fetch=None):
         return 1
     if len(recipients) < len(rows_):
         print("::warning::%d reader(s) had no link id this run and are not mailed" % (len(rows_) - len(recipients)))
-    print("list: %d reader(s) on Funds this week" % len(recipients))
+    print("list: Funds this week read")
     tally.waiting = len(recipients)
     if mode == "send":
         # Nov 4 (fx/datasplit): never mail the list without the twenty-year file. The
@@ -824,7 +824,7 @@ def main(argv=(), now=None, fetch=None):
         LINK_IDS["reader@example.com"] = email_links.SAMPLE_LID
         m = build_email(day, b, "reader@example.com", from_name, from_addr, reply_to)
         print("SUBJECT: " + str(m["Subject"]))
-        print("would send to %d reader(s)" % len(recipients))
+        print("would send to the Funds this week list")
         print("-" * 60)
         print(m.get_body(("plain",)).get_content())
         print("dry run complete -- nothing sent, no flag set")
@@ -1233,7 +1233,8 @@ def _selftest():
     # 1. the default is a dry run: secrets all set, nothing sent, no flag touched
     rc, log, sent, calls = _run(files, dict(W, **SM), now, fetch)
     ok(rc == 0 and not sent and not _FakeSMTP.made and not calls and "dry run complete" in log, "dry by default: %r %r" % (rc, log[-300:]))
-    ok(asked == ["cot"] and "would send to 2 reader(s)" in log and "list: 2 reader(s) on Funds this week" in log, log[-400:])
+    ok(asked == ["cot"] and "would send to the Funds this week list" in log and "list: Funds this week read" in log
+       and "2 reader(s)" not in log, log[-400:])
     ok("1 reader(s) had no link id this run and are not mailed" in log, "a reader without a link id is skipped, by count")
     ok(private(log) and "a=notice-unsubscribe&k=" + email_links.SAMPLE_LID in log and "%40" not in log, "the dry run log has no address")
     # 2. DRY_RUN=1 beats SEND=1

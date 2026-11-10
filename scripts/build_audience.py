@@ -887,7 +887,7 @@ def main():
             log("email: count read")
         except Exception as e:  # noqa: BLE001
             errors["email"] = "%s: %s" % (type(e).__name__, str(e)[:200])
-            log("::warning::subscriber count failed: " + errors["email"])
+            log("::warning::subscriber count failed (the reason is in data/audience.json)")
 
     if not any((ga, gsc, bing, email is not None)):
         log("::warning::no source was reachable or configured -- data/audience.json left exactly as it was")
