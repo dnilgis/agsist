@@ -2,11 +2,12 @@
  * Fixtures and stubs only: no outside host is asked.
  *   4  a thin year names the exact-spot estimate (1981 on) and shows the help line; a marked day drops "another year"
  *   5  an automatic draw is not one of the reader's tries; a typo offers the nearest spelling (data/places)
- *   6  (S, M..., A: its own PR, fx/rp-sma-accumulation, since it needs the county data refetched)
+ *   6  S, M..., A is one accumulation (Chetek 2.0 SE, Jul 21-25 2025, the real ACIS rows), page and county set alike
  *   7  one "full years" rule: the rank counts the years up to the print's and needs 30; a year record said twice goes
  *   8  priceValidUntil never in the past (a fake clock), and every return description has the redo-or-refund
  *   9  one closed Sources and terms fold at the bottom, holding the thresholds the questions no longer carry
  *   10 one size line per product, S.D. accepted, a noscript line
+ * Fix 6 ships in its own pull request (fx/rp-sma-accumulation): the county data must be refetched with it.
  * The station pick (3) is in test/rain-print-chetek-oct21.test.mjs (Ames 2012 and Chetek in a browser).
  *   node --test test/rain-print-panel-nov9.test.mjs */
 import { test } from "node:test";
@@ -14,6 +15,7 @@ import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createRequire } from "node:module";
+import { execFileSync } from "node:child_process";
 import vm from "node:vm";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -32,6 +34,54 @@ vm.runInNewContext(read("components/rain-print-extras.js"), ctx);
 vm.runInNewContext(read("components/rain-print-records.js"), ctx);
 const RP = ctx.RainPrint, X = ctx.AgRainExtras, REC = ctx.AgRainRecords;
 const plain = (x) => JSON.parse(JSON.stringify(x));
+
+// ---------- 6. S, M..., A ----------
+// US1WIBR0002 (Chetek 2.0 SE), 2025, as ACIS sent it to the data seat on Nov 9 (pcpn, snow columns)
+const CHETEK_JUL = [["2025-07-19", "1.30"], ["2025-07-20", "0.04"], ["2025-07-21", "S"], ["2025-07-22", "M"], ["2025-07-23", "M"], ["2025-07-24", "M"], ["2025-07-25", "0.98A"], ["2025-07-26", "0.00"]];
+const daysOf = (rows) => rows.map(([d, p], i) => { const x = RP.parsePcpn(p), dt = new Date(d + "T00:00:00Z"); return { date: d, v: x.v, flag: x.flag, t: null, s: null, m: dt.getUTCMonth(), d: dt.getUTCDate(), doy: i }; });
+
+test("6: Chetek 2.0 SE, Jul 21 S, Jul 22-24 M, Jul 25 0.98A: one accumulation, no gaps, the rain counted once", () => {
+  const out = RP.closeOpenS(daysOf(CHETEK_JUL));
+  assert.deepEqual(out.map((x) => x.flag), ["", "", "S", "S", "S", "S", "A", ""]);
+  const D = RP.derive(out);
+  assert.equal(D.missing, 0, "no day drawn as a gap");
+  assert.equal(D.unsplit, 4, "four days reported together in the Jul 25 total");
+  assert.equal(Math.round(D.total * 100) / 100, 2.32, "1.30 + 0.04 + 0.98");
+  assert.equal(D.max.v, 1.3, "an A total is never the wettest day");
+  // the usual year keeps those days' normal (their rain is in the total): both sides count the same days
+  const norm = new Map(CHETEK_JUL.map(([d]) => [d.slice(5), 0.1]));
+  const o = RP.overlayDaily(out, norm);
+  assert.equal(Math.round(o.total * 100) / 100, 0.8, "all 8 days keep their normal");
+});
+
+test("6: an S run with no A after its M days is still lost rain; M days and an A with no S are left as they are", () => {
+  const lost = RP.closeOpenS(daysOf([["2025-03-01", "S"], ["2025-03-02", "M"], ["2025-03-03", "0.20"]]));
+  assert.deepEqual(lost.map((x) => x.flag), ["M", "M", ""]);
+  assert.equal(lost[0].v, null);
+  const noS = RP.closeOpenS(daysOf([["2025-03-01", "M"], ["2025-03-02", "M"], ["2025-03-03", "0.50A"]]));
+  assert.deepEqual(noS.map((x) => x.flag), ["M", "M", "A"], "without an S nobody knows when the catch began");
+  const plainSA = RP.closeOpenS(daysOf([["2025-03-01", "S"], ["2025-03-02", "S"], ["2025-03-03", "0.50A"]]));
+  assert.deepEqual(plainSA.map((x) => x.flag), ["S", "S", "A"]);
+});
+
+test("6: the county set reads the same rule (rain-county-print.js uses RP.closeOpenS; county_rain.close_runs in Python)", () => {
+  assert.match(read("components/rain-county-print.js"), /return RP\.closeOpenS\(out\);/);
+  const py = execFileSync("python3", ["-c", `
+import sys, json; sys.path.insert(0, "scripts")
+import county_rain as R
+rows = ${JSON.stringify(CHETEK_JUL.map((r) => r[1]))}
+pp = [R.parse_pcpn(v) for v in rows]
+print(json.dumps({"runs": [f for v, f in R.close_runs(pp)], "s": [f for v, f in R.close_s(pp)],
+  "lost": [f for v, f in R.close_runs([R.parse_pcpn(v) for v in ["S", "M", "0.20"]])],
+  "tail": [f for v, f in R.close_s([R.parse_pcpn(v) for v in ["0.10", "S", "M"]])],
+  "snow": R.snow_state(rows, ["0.0"] * len(rows), 2025)}))`], { cwd: ROOT, encoding: "utf8" });
+  const got = JSON.parse(py);
+  assert.deepEqual(got.runs, ["", "", "S", "S", "S", "S", "A", ""]);
+  assert.deepEqual(got.s, got.runs, "close_s: the same, the summary counts the days as reported together");
+  assert.deepEqual(got.lost, ["M", "M", ""]);
+  assert.deepEqual(got.tail, ["", "S", "M"], "a run still open at the end waits for its A");
+  assert.ok(read("scripts/build_county_rain.py").includes("close_runs"), "the builder names the rule it mirrors");
+});
 
 // ---------- 4. a thin year ----------
 test("4: Lennox, SD 1994, 38 days missing: the exact-spot estimate named (1981 on), no 'another year' with a wedding marked", () => {

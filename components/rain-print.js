@@ -608,18 +608,31 @@
     });
     return { n: n, month: month, mdays: mdays, monthValid: monthValid, total: total, wet: wet, missing: missing, unsplit: unsplit, trace: trace, max: max, maxRain: maxRain, dryMax: dryMax, cum: cum, maxMonth: maxMonth, maxDay: maxDay, over1: over1, hot: hot, cold: cold, snow: snow };
   }
-  /* A run of S days that no A total closes (the next day is missing, a plain
-     reading, or the year ends) has its catch nowhere in the record, so those
-     days are missing days, not days counted later. Returns a new array. */
+  /* A run of S days that no A total closes (the next day is a plain reading,
+     a trace, or the year ends) has its catch nowhere in the record, so those
+     days are missing days, not days counted later. Returns a new array.
+     S, then M days, then an A total (2026-11-09, Rain Print panel: Chetek 2.0 SE,
+     Jul 21 S, Jul 22-24 M, Jul 25 0.98A) is ONE accumulation: the observer
+     started it, missed the days between, and the A total holds all of them, so
+     the M days inside it are S days too. Their rain is in the year's total (on
+     the A day), so they keep their normal in the usual year, the same as any
+     S day, and the page counts them as reported together, not as gaps.
+     The same rule: scripts/county_rain.py close_runs. */
   function closeOpenS(days) {
     var out = (days || []).map(function (x) { return x; });
+    var gap = function (x) { return x && x.flag !== 'S' && (x.v === null || x.v === undefined); };
     for (var i = 0; i < out.length; i++) {
       if (!out[i] || out[i].flag !== 'S') continue;
       var j = i;
       while (j < out.length && out[j] && out[j].flag === 'S') j++;
-      if (!(j < out.length && out[j] && out[j].flag === 'A')) {
-        for (var k = i; k < j; k++) out[k] = Object.assign({}, out[k], { v: null, flag: 'M' });
+      var a = j;
+      while (a < out.length && gap(out[a])) a++;
+      if (a < out.length && out[a] && out[a].flag === 'A') {
+        for (var m = j; m < a; m++) out[m] = Object.assign({}, out[m], { v: 0, flag: 'S' });
+        i = a;
+        continue;
       }
+      for (var k = i; k < j; k++) out[k] = Object.assign({}, out[k], { v: null, flag: 'M' });
       i = j - 1;
     }
     return out;
