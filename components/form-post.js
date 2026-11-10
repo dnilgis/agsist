@@ -36,7 +36,7 @@
  * never to Formspree. Without outbox.js (or with storage blocked) it rejects
  * as before.
  *
- * LIVE HOST ONLY (2026-11-09, BUILD-RULES 58): nothing goes to Formspree
+ * LIVE HOST ONLY: nothing goes to Formspree
  * unless the page is on agsist.com or www.agsist.com. From a local copy
  * (127.0.0.1, localhost, a preview host) the worker refuses the Origin with
  * 403, and that used to send a test post to the real backup form (a made-up
