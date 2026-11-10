@@ -161,7 +161,7 @@ test("no headline reads the harvest aliases: every 'corn-dec' / 'beans-nov' lite
   assert.match(hero, /nearby_of\(q, crop\)/);
   assert.doesNotMatch(hero, /"beans-nov"|"corn-dec"/);
   // every page that calls the helper loads it first
-  assert.ok(read("breakeven.html").indexOf("price-local.js?v=10") < read("breakeven.html").indexOf("breakeven.js?v="));
+  assert.ok(read("breakeven.html").indexOf("price-local.js?v=11") < read("breakeven.html").indexOf("breakeven.js?v="));
 });
 
 /* PR #320 checker: the merge of main put markets.html back on price-local.js?v=9 while the page

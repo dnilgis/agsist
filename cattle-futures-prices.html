@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/util.js?v=20"></script>
 <script src="/components/asof.js?v=1"></script>
-<script src="/components/price-local.js?v=10"></script>
+<script src="/components/price-local.js?v=11"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -714,8 +714,8 @@ details.fold[hidden]{display:none}
     var lea=le&&le.close_kind==='settle'&&window.AgPxStamp&&AgPxStamp.settleAge?AgPxStamp.settleAge(le.settle_date||le.close_date):null;
     var ctg=document.querySelector('.ct-grid');if(ctg)ctg.classList.toggle('px-old',!!(lea&&lea.old));
     var st=$('status');var dot='<span class="ps-dot" aria-hidden="true"></span>';
-    if(d.fetched){var t=new Date(d.fetched);if(st)st.innerHTML=window.AgPxStamp&&le?dot+'CME futures \u00b7 '+AgPxStamp.html(le,d.fetched):window.AgAsOf?dot+'CME futures, delayed \u00b7 '+AgAsOf.html(d.fetched,'prices'):dot+'Live CME futures · updated '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric'});}
-    else if(st)st.innerHTML=dot+'Live CME futures · updated through the trading day';
+    if(d.fetched){var t=new Date(d.fetched);if(st)st.innerHTML=window.AgPxStamp&&le?dot+'CME futures \u00b7 '+AgPxStamp.html(le,d.fetched):window.AgAsOf?dot+'CME futures, delayed \u00b7 '+AgAsOf.html(d.fetched,'prices'):dot+'CME futures, delayed 10 to 25 min · read '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric',timeZone:'America/Chicago'})+' CT';}
+    else if(st)st.innerHTML=dot+'CME futures, delayed 10 to 25 min';
     // hero prices: feeder cattle and live cattle, same size, each with its own stamp
     function heroQ(q,px,ch,stp,ct){
       var hp=$(px);if(hp&&q&&q.close!=null)hp.textContent=cwt(q.close);
@@ -743,7 +743,7 @@ details.fold[hidden]{display:none}
     pickFed(true);
     cog();
     return {q:{cattle:le,feeders:gf},fetched:d.fetched};
-  }).catch(function(){var st=$('status');if(st)st.innerHTML='<span class="ps-dot" aria-hidden="true"></span>Live prices unavailable right now. Enter feeder and fed prices to use the calculator.';cog();return null;});
+  }).catch(function(){var st=$('status');if(st)st.innerHTML='<span class="ps-dot" aria-hidden="true"></span>Prices unavailable right now. Enter feeder and fed prices to use the calculator.';cog();return null;});
 
   /* LE contract nearest the month the cattle would finish, at ADG lb/day. */
   var LQ=null,ADG=3.5,fedTouched=false,MON={jan:0,feb:1,mar:2,apr:3,may:4,jun:5,jul:6,aug:7,sep:8,oct:9,nov:10,dec:11};
@@ -782,7 +782,7 @@ details.fold[hidden]{display:none}
     [['le','cattle'],['gf','feeders']].forEach(function(p){
       var s=d&&d[p[1]];if(!s||s.pct==null)return;
       var lq=pr&&pr.q&&pr.q[p[1]],live=(lq&&lq.close!=null)?Number(lq.close):null,h=s.hist,pct,nn,note;
-      if(h&&h.length>=29&&live!=null){var c=1;for(var i=0;i<h.length;i++)if(h[i]<=live)c++;nn=h.length+1;pct=Math.round(100*c/nn);var pw=window.AgPxStamp?AgPxStamp.stamp(lq,pr.fetched):'';pw=/ settle$/.test(pw)?'the '+pw:/^Last trade/.test(pw)?'the l'+pw.slice(1):'today\u2019s quote'+(pr.fetched?' ('+ctT(pr.fetched)+')':'');note='Ranks '+pw+' ('+cwt(live)+') against the prior '+h.length+' weekly closes.';}
+      if(h&&h.length>=29&&live!=null){var c=1;for(var i=0;i<h.length;i++)if(h[i]<=live)c++;nn=h.length+1;pct=Math.round(100*c/nn);var pp=window.AgPxStamp&&AgPxStamp.stampParts?AgPxStamp.stampParts(lq,pr.fetched):null,pw=pp&&pp.kind==='settle'?'the '+pp.at+' settle':pp&&pp.kind==='read'?'the delayed quote read '+pp.at:pp&&pp.kind==='bell'?'the last trade at the '+pp.at+' bell':'today\u2019s quote'+(pr.fetched?' ('+ctT(pr.fetched)+')':'');note='Ranks '+pw+' ('+cwt(live)+') against the prior '+h.length+' weekly closes.';}
       else{pct=s.pct;nn=s.n;note='Position of '+cwt(s.cur)+' as of the '+(d.updated?ctT(d.updated):'last')+' update, not today\u2019s quote.';}
       var el=$(p[0]+'-read');if(el)el.textContent='5-year: at the '+pct+ordn(pct)+' percentile: '+band(pct)+'. n = '+nn+' weekly closes, continuous front-month (Yahoo Finance, delayed, not CME settlements). '+note;
     });

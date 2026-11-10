@@ -26,7 +26,7 @@ var MONTH_TIPS={
    on the page: quartiles at 25 and 75, halves at 50. "Mid-range" is not one of them
    (it was printed at the 74th percentile, audit N13, Oct 17). */
 function bandOf(pct){return pct<25?'lower quartile':pct<50?'lower half':pct<75?'upper half':'upper quartile';}
-function zoneOf(pct){return pct<25?'lower quartile: historically a weak pricing window':pct<50?'lower half':pct<75?'upper half':'upper quartile: near recent highs';}
+function zoneOf(pct){return pct<25?'lower quartile':pct<50?'lower half':pct<75?'upper half':'upper quartile: near recent highs';}
 
 var CROPS={
   corn:{
@@ -785,8 +785,8 @@ function loadWasde(){
         if(p.length!==3)return false;
         var dt=new Date(parseInt(p[0],10),parseInt(p[1],10)-1,parseInt(p[2],10));
         if(isNaN(dt.getTime()))return false;
-        var today=new Date();today.setHours(0,0,0,0);
-        var dd=Math.round((dt-today)/86400000);
+        /* today and tomorrow by the Central calendar, not the reader's clock (futures audit 9, Nov 10 2026) */
+        var tc=ctISODate(new Date()).split('-'),dd=Math.round((Date.UTC(+p[0],+p[1]-1,+p[2])-Date.UTC(+tc[0],+tc[1]-1,+tc[2]))/86400000);
         if(dd<0)return false;
         wEl.textContent=name+' · '+MN[dt.getMonth()]+' '+dt.getDate()+' · '+(dd===0?'today':dd===1?'tomorrow':'in '+dd+' days');
         maybeFlagWasdeImminence(dd);
@@ -1699,6 +1699,9 @@ function initZipPrompt(){
 }
 
 
+/* "2026-11-10": the calendar date in Central time (the exchange's and the site's clock) */
+function ctISODate(d){try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',year:'numeric',month:'2-digit',day:'2-digit'}).formatToParts(d).forEach(function(x){p[x.type]=x.value;});if(p.year&&p.month&&p.day)return p.year+'-'+p.month+'-'+p.day;}catch(e){}return d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
+
 // ============ DAILY BRIEFING STRIP ============
 // Fetches /data/daily.json and populates the top strip if today's briefing exists.
 // Schema: {date, headline, subheadline, lead, teaser}
@@ -1707,8 +1710,7 @@ function loadBriefingStrip(){
     .then(function(r){return r.ok?r.json():null;})
     .then(function(d){
       if(!d||!d.date||!d.headline)return;
-      var today=new Date().toISOString().slice(0,10);
-      if(d.date!==today)return;
+      if(d.date!==ctISODate(new Date()))return;  /* the Central date, not UTC (UTC is tomorrow from 6 or 7 pm CT) */
       var strip=document.getElementById('brief-strip');
       var hd=document.getElementById('brief-hd');
       var teaser=document.getElementById('brief-teaser');
@@ -1905,22 +1907,24 @@ function setEl(id,txt,cls){var el=document.getElementById(id);if(!el)return;el.t
 // The hero and the lead tile use the nearest dated contract (<crop>-nearby)
 // when the pipeline publishes it with a price, else the continuous most-active
 // series, labeled "Most-active (ZC)" and never "Front Month".
-/* "the Oct 16 settle" | "the last trade as of 9:15 am CT" | "today's quote (Oct 17, 1:46 am)" */
+/* "the Oct 16 settle" | "the delayed quote read 9:15 am CT" | "the last trade at the 1:20 pm CT bell" |
+   "the overnight trade read 11:45 pm CT" | "today's quote (Oct 17, 1:46 am)" (AgPxStamp.stampParts) */
 function pxWhat(q,fetched,ctf){
-  var s=window.AgPxStamp&&q?AgPxStamp.stamp(q,fetched):'';
-  if(/ settle$/.test(s))return 'the '+s;
-  if(/^Last trade/.test(s))return 'the l'+s.slice(1);
-  if(/^Overnight trade/.test(s))return 'the overnight trade'+s.slice(15);
+  var p=window.AgPxStamp&&AgPxStamp.stampParts&&q?AgPxStamp.stampParts(q,fetched):null;
+  if(p&&p.kind==='settle')return 'the '+p.at+' settle';
+  if(p&&p.kind==='read')return 'the delayed quote read '+p.at;
+  if(p&&p.kind==='bell')return 'the last trade at the '+p.at+' bell';
+  if(p&&p.kind==='overnight')return 'the overnight trade read '+p.at;
   return 'today\u2019s quote'+(fetched&&ctf?' ('+ctf(fetched)+')':'');
 }
 /* The hero line's moment, in the baked seed's words (seed_static.py quote_when,
-   state_words): "Settle Oct 16" | "Last trade as of 10:42 am CT" | "Last quote".
+   state_words): "Settle Oct 16" | "Read 10:42 am CT; quotes delayed 10 to 25 min" | "Last quote".
    Night audit Oct 19, 2026: it called a Friday settle "refreshed" in session
    on a Sunday, and an answer engine can quote that as a live price. */
 function exchWhen(q,fetched){
   var s=window.AgPxStamp&&q?AgPxStamp.stamp(q,fetched):'',m=/^(.*) settle$/.exec(s);
   if(m)return 'Settle '+m[1];
-  if(/^(Last|Overnight) trade/.test(s))return s;
+  if(/^(Read|Last trade|Overnight trade)/.test(s))return s;
   return 'Last quote';
 }
 /* the price stamp: price-local.js when it is on the page, asof.js otherwise */
@@ -1991,11 +1995,11 @@ AG.json('/data/prices.json')
          62 px on a phone, CLS about 0.2 (phone audit, Oct 19, 2026). */
       var __sn=document.querySelector('.px-seed-note');
       if(__sn){
-        var __s=window.AgPxStamp?AgPxStamp.stamp(front,data.fetched):'',__m=/^(.*) settle$/.exec(__s),__t=/^(?:Last|Overnight) trade as of (.*)$/.exec(__s),__u=/^Updated (.*)$/.exec(__s);
-        var __v=__m?'settled at':__t?(/^Overnight/.test(__s)?'traded overnight near':'last traded near'):'last quoted near',__w=__m?__m[1]:__t?__t[1]:__u?__u[1]:'';
+        var __p=window.AgPxStamp&&AgPxStamp.stampParts?AgPxStamp.stampParts(front,data.fetched):null,__k=__p&&__p.kind;
+        var __v=__k==='settle'?'settled at':__k==='overnight'?'traded overnight near':__k==='read'||__k==='bell'?'last traded near':'last quoted near',__w=__p?(__k==='read'||__k==='overnight'?'read '+__p.at+', '+AgPxStamp.DELAY:__k==='bell'?'the '+__p.at+' bell':__p.at):'';
         var __cr={corn:'corn',beans:'soybeans',wheat:'wheat'}[CROP_KEY]||CROP.label.toLowerCase();
         __sn.style.minHeight=__sn.offsetHeight+'px';
-        __sn.innerHTML=heroLabel+' '+__cr+' '+__v+' <strong>'+grain$(front.close)+'</strong>'+(front.stale?' (last good quote)':'')+(__w?' &middot; as of '+__w:'')+'.';
+        __sn.innerHTML=heroLabel+' '+__cr+' '+__v+' <strong>'+grain$(front.close)+'</strong>'+(front.stale?' (last good quote)':'')+(__w?' &middot; '+(__k==='settle'||__k==='updated'?'as of ':__k==='bell'?'at ':'')+__w:'')+'.';
       }
       var hc=chgTxt(front.netChange,front.pctChange,front.roll);setEl('hero-chg',hc.t,hc.c);
       /* 2026-10-20 (Sig): the overnight electronic trade, when the file has one,

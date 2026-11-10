@@ -322,15 +322,14 @@ function fillCorn(){
     var q=pj&&pj.quotes?pj.quotes:{};
     function g(id){return document.getElementById(id);}
     function dollarsBu(v){return v!=null?'$'+(parseFloat(v)/100).toFixed(2):null;}
-    var corn=q.corn&&q.corn.close?parseFloat(q.corn.close)/100:null;
-    var beans=q.beans&&q.beans.close?dollarsBu(q.beans.close):null;
-    var wheat=q.wheat&&q.wheat.close?dollarsBu(q.wheat.close):null;
-    if(corn||beans||wheat){
-      if(corn) g('fft-corn').textContent='$'+corn.toFixed(2);
-      if(beans) g('fft-beans').textContent=beans;
-      if(wheat) g('fft-wheat').textContent=wheat;
-      g('ff-strip').hidden=false;
-    }
+    /* 2026-11-10 (futures audit 7): each tile reads its nearby contract and names
+       the month. The bare key is Yahoo's continuous series: quotes.beans carried the
+       Jan '27 close beside the Nov '26 settle past first notice. */
+    var PS=window.AgPxStamp,near=function(c){var h=PS&&PS.headline?PS.headline(pj,c):null;if(h&&h.q&&h.q.close&&h.label)return h;var n=q[c+'-nearby'],lab=n&&n.ticker&&PS&&PS.label?PS.label(n.ticker):'';return n&&n.close&&lab?{q:n,label:lab}:null;};
+    var hc=near('corn'),hb=near('beans'),hw=near('wheat');
+    function tile(id,h){var e=g(id);if(!e||!h)return false;e.textContent=dollarsBu(h.q.close);var n=e.parentNode&&e.parentNode.querySelector('.n');if(n)n.textContent='CBOT '+h.label+', delayed';return true;}
+    var any=[tile('fft-corn',hc),tile('fft-beans',hb),tile('fft-wheat',hw)].some(Boolean);
+    if(any) g('ff-strip').hidden=false;
     // week card: what most of the Corn Belt is doing, hedged
     var wk=isoWeekNow();
     var W={

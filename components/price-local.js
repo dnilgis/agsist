@@ -2,9 +2,10 @@
    futures price (corn, soybean, wheat and cattle futures, /markets, home).
 
    1. AgPxStamp: what the price stamp says. A quote the price file marks a
-      settle (close_kind "settle") reads "Oct 16 settle"; a last trade reads
-      "Last trade as of 1:46 pm CT" (close_time, else the time the file was
-      read). A quote with no close_kind says "Updated <time> CT". Always
+      settle (close_kind "settle") reads "Oct 16 settle"; a trade reads
+      "Read 1:46 pm CT; quotes delayed 10 to 25 min" (when the site read it),
+      or "Last trade at the 1:20 pm CT bell; settle not posted yet" after the
+      close. A quote with no close_kind says "Updated <time> CT". Always
       Central time, always named.
 
    2. The state line under the price. Only for a reader whose state the site
@@ -219,14 +220,44 @@
       (o.hero ? 'at ' + esc(at) + '. ' : trade + ' at ' + esc(at) + '. ') + ref + '.</span>';
   }
 
-  /* The stamp for one quote: "Oct 16 settle" | "Last trade as of 1:46 pm CT" |
-     "Overnight trade as of 11:45 pm CT" (overnight() hero) | "Updated 1:46 am CT" */
-  function stamp(q, fetched, now) {
+  /* The one delay statement (futures audit Nov 10, 2026): Yahoo lists CBOT and
+     CME futures about 10 minutes behind and the site reads them about every
+     15 minutes, so a grain or livestock quote is 10 to 25 minutes old in
+     session (editorial-standards, terms). Energy, metals and the dollar can
+     lag longer: those say "delayed" with no minutes. */
+  var DELAY = 'quotes delayed 10 to 25 min';
+  var DELAY_ROOTS = /^(ZC|ZS|ZW|KE|MW|ZO|ZM|ZL|ZR|LE|GF|HE)/;
+  function delayWords(q) { return DELAY_ROOTS.test(String((q && q.ticker) || '')) ? DELAY : 'delayed quote'; }
+  /* When a trade price is from (stampParts): the time the site READ it, never
+     "last trade as of" that time (2026-11-10: close_time is the fetch in
+     session, fetch_prices.py). After the bell close_time is the bell itself,
+     earlier than the read: that is the day session's last trade.
+       {kind:'settle', at:'Oct 16'} | {kind:'read', at:'1:05 pm CT'} |
+       {kind:'overnight', at:'11:45 pm CT'} | {kind:'bell', at:'1:20 pm CT'} |
+       {kind:'updated', at:'1:46 am CT'} | null */
+  function stampParts(q, fetched, now) {
     var k = q && q.close_kind;
-    if (k === 'settle') { var d = isoDay(q.settle_date || q.close_date, now); if (d) return d + ' settle'; }
-    if (k === 'last') { var t = clock(q.close_time || fetched, now); if (t) return (overnight(q) && overnight(q).hero ? 'Overnight trade as of ' : 'Last trade as of ') + t; }
+    if (k === 'settle') { var d = isoDay(q.settle_date || q.close_date, now); if (d) return { kind: 'settle', at: d }; }
+    if (k === 'last') {
+      var ov = overnight(q), rd = fetched || q.close_time, ctm = q.close_time ? Date.parse(q.close_time) : NaN, ftm = fetched ? Date.parse(fetched) : NaN;
+      if (ov && ov.hero) { var o = clock(rd, now); if (o) return { kind: 'overnight', at: o }; }
+      else if (isFinite(ctm) && isFinite(ftm) && ctm < ftm - 60000) { var b = clock(q.close_time, now); if (b) return { kind: 'bell', at: b }; }
+      else { var r = clock(rd, now); if (r) return { kind: 'read', at: r }; }
+    }
     var u = fetched ? clock(fetched, now) : '';
-    return u ? 'Updated ' + u : '';
+    return u ? { kind: 'updated', at: u } : null;
+  }
+  /* The stamp for one quote: "Oct 16 settle" | "Read 1:05 pm CT; quotes delayed 10 to 25 min" |
+     "Overnight trade read 11:45 pm CT; quotes delayed 10 to 25 min" (overnight() hero) |
+     "Last trade at the 1:20 pm CT bell; settle not posted yet" | "Updated 1:46 am CT" */
+  function stamp(q, fetched, now) {
+    var s = stampParts(q, fetched, now);
+    if (!s) return '';
+    if (s.kind === 'settle') return s.at + ' settle';
+    if (s.kind === 'read') return 'Read ' + s.at + '; ' + delayWords(q);
+    if (s.kind === 'overnight') return 'Overnight trade read ' + s.at + '; ' + delayWords(q);
+    if (s.kind === 'bell') return DELAY_ROOTS.test(String(q.ticker || '')) ? 'Last trade at the ' + s.at + ' bell; settle not posted yet' : 'Last trade ' + s.at + '; delayed quote';
+    return 'Updated ' + s.at;
   }
   /* A whole board: "Oct 16 settle where posted, latest delayed trade otherwise. Read 1:46 am CT" */
   /* 2026-10-20: cards on different settle dates show the range ("Oct 16 to
@@ -252,7 +283,7 @@
   function html(q, fetched, now) {
     var s = stamp(q, fetched, now);
     if (!s) return '';
-    var t = (q && q.close_kind === 'last' && q.close_time) || fetched || '';
+    var sp = stampParts(q, fetched, now), t = sp && sp.kind === 'bell' ? q.close_time : (fetched || (q && q.close_time) || '');
     var dt = (q && q.close_kind === 'settle' && (q.settle_date || q.close_date)) || t;
     /* a settle the file should have moved past says how old it is; past
        OLD_SESSIONS it is greyed like any stale stamp (asof.css is-stale) */
@@ -410,7 +441,7 @@
     return { key: key, q: d, label: label(d.ticker) || null };
   }
 
-  var api = { headline: headline, harvest: harvest, stamp: stamp, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
+  var api = { headline: headline, harvest: harvest, stamp: stamp, stampParts: stampParts, DELAY: DELAY, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
     deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, label: label, cell: cell, lines: lines, build: build, nearLine: nearLine, placeholder: placeholder, NAMES: NAMES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgPxStamp = api;

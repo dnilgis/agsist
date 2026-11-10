@@ -68,7 +68,7 @@ test("the model: a current quote carries the page's stamp; a stale, old, unmarke
   // a last trade is stamped with its time
   const last = { ...quote("corn"), close_kind: "last", close_time: "2026-11-09T19:20:00Z" };
   const ml = KIT.model({ fetched: "2026-11-09T19:31:00Z", rows: [row("corn", { q: last })] }, PX, Date.parse("2026-11-09T19:40:00Z"));
-  assert.equal(ml.rows[0].when.replace(/\s/g, " "), "Last trade as of 1:20 pm CT");
+  assert.equal(ml.rows[0].when.replace(/\s/g, " "), "Last trade at the 1:20 pm CT bell; settle not posted yet");
   assert.equal(m.pic, PIC);
   assert.equal(m.date, LONG);
 });
