@@ -35,6 +35,8 @@ const WHY = "Expected payments are not printed for this crop; its price swings a
 const WHY_FEW = "Expected payments are not printed for this crop; it has too few years of its own prices, so its price swings are corn’s.";
 const CAP = "Borrowed price swings hold the call at Leans.";
 const card = (h, k) => { const m = new RegExp(`<article class="ap-crop" id="crop-${k}"[\\s\\S]*?</article>`).exec(h); return m ? m[0] : null; };
+// the new-base source line as the build writes it (NEWBASE_SRC), read from the builder, not typed here
+const NEWBASE = /^NEWBASE_SRC = "([^"]+)"/m.exec(read("scripts/build_arc_plc.py"))[1];
 const foldAt = (h) => h.indexOf('<details class="ap-det" id="terms">');
 
 test("1: Story Co., IA wheat: the real reason, no Leans on a Close card, the example price labelled", () => {
@@ -92,7 +94,7 @@ test("3: no source clause or FSA file date in the reading path; the 2025-payment
     assert.ok(at > 0, `${p}: fold`);
     const before = h.slice(0, at);
     assert.doesNotMatch(before, /Source: USDA FSA ARC\/PLC page|FSA file as of|FSA tables as of/, `${p}: a source clause before the fold`);
-    assert.match(h.slice(at), /the FSA ARC\/PLC page \(new base acres, read Nov 2, 2026\)/, `${p}: the new-base source in the fold`);
+    assert.ok(h.slice(at).includes(NEWBASE), `${p}: the new-base source in the fold`);
   }
   const m = read("arc-plc.html");
   assert.match(m.slice(foldAt(m)), /FSA county file as of [A-Z][a-z]{2} \d+, 20\d\d\./);
