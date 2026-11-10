@@ -23,7 +23,10 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <script>document.documentElement.classList.add('hp-js')</script>
+  <script>document.documentElement.classList.add('hp-js');
+  /* a reader with a chosen or saved state gets that state's view once the data lands: hold its layout from the first paint */
+  try{var hpS=localStorage.getItem('agsist-pd-state'),hpW=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');
+    if(hpS||(hpW&&/^[A-Z]{2}$/.test(hpW.state||hpW.st||hpW.abbr||''))) document.documentElement.classList.add('hp-st','hp-st-wait');}catch(e){}</script>
   <link rel="stylesheet" href="/components/styles.css?v=28">
   <script src="/components/util.js?v=17"></script>
 <style>
@@ -60,6 +63,13 @@
 .pd-verdict p{margin:0;color:var(--pd-mut);font-size:.98rem;max-width:62ch;}
 .pd-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--pd-gold2,var(--gold));font-weight:600;font-size:.95rem}
 #pd-cards{margin:0 0 1.2rem}
+/* saved state (hp-st, set before paint): the clear button's slot, the state verdict and the state cards are held
+   until setState paints them, so nothing below moves when they land */
+.hp-st .pd-clear[hidden]{display:inline-block !important;visibility:hidden}
+.hp-st #pd-verdict-more,.hp-st #pd-cards{display:none}
+.hp-st-wait #pd-verdict{visibility:hidden;min-height:88px}
+.hp-st-wait #pd-your{min-height:1290px}
+@media(min-width:700px){.hp-st-wait #pd-verdict{min-height:68px}.hp-st-wait #pd-your{min-height:930px}}
 
 /* ── crop card ───────────────────────────────────────────────────── */
 .pd-sect{font-family:var(--pd-mono);font-size:.72rem;font-weight:700;letter-spacing:.11em;
@@ -938,6 +948,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
         if(BYST[code]===null){
           delete LOADING[code]; delete BYST[code];
           $('pd-your').innerHTML='<p class="pd-note">RMA&rsquo;s windows for '+esc(NAMES[code])+' did not load. Pick the state again to retry.</p>';
+          document.documentElement.classList.remove('hp-st-wait');
           return;
         }
         setState(code,false);
@@ -947,6 +958,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     var groups = code ? group(BYST[code]||[]) : [];
 
     if(!code){
+      document.documentElement.classList.remove('hp-st','hp-st-wait');
       $('pd-fallback').hidden=false;
       $('pd-your').innerHTML=''; $('pd-open').innerHTML=''; $('pd-other').innerHTML='';
       $('pd-verdict-h').textContent='Corn and soybean harvest prices are set in October.';
@@ -969,7 +981,8 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       $('pd-open').innerHTML=''; $('pd-other').innerHTML='';
       $('pd-verdict-h').textContent='No revenue price discovery in '+name+'.';
       $('pd-verdict-p').textContent='';
-      fillCrops([]); calc(true); paintMap(code); return;
+      fillCrops([]); calc(true); paintMap(code);
+      document.documentElement.classList.remove('hp-st-wait'); return;
     }
 
     groups.sort(function(a,b){ return rank(a)-rank(b) ||
@@ -1034,6 +1047,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
       : '';
 
     fillCrops(groups); calc(true); paintMap(code);
+    document.documentElement.classList.remove('hp-st-wait');
   }
 
   /* ---- calculator ------------------------------------------------------ */
@@ -1451,6 +1465,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
   }).catch(function(){
     // No file, no personalisation. A broken picker is worse than no picker,
     // so it is hidden and the calculator says the data did not load.
+    document.documentElement.classList.remove('hp-st','hp-st-wait');
     var p=document.querySelector('.pd-pick'); if(p) p.hidden=true;
     // the baked table is RMA's own figures as of its bake: it stays, labeled with that date
     var dst=document.querySelector('#pd-disc .dn-st'), asof=dst&&/read ([A-Z][a-z]+ \d+, \d{4})/.exec(dst.textContent);
