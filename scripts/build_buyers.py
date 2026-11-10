@@ -5,7 +5,7 @@ and river terminals, each placed at its town point. Also the helpers the cash
 bid town pages and the Atlas county homes use to print one line:
 "Nearby buyers within 50 miles: 2 ethanol plants, 1 oilseed crusher".
 
-SOURCES (the plant lists researched Oct 28, 2026, filed in feedbag
+SOURCES (the plant lists researched Oct 28, 2026, filed in the private repo
 notes/chatgpt/2026-10-28-answers/elevator-attributes/; one CSV per list)
   01 BNSF and 02 other railroad shuttle elevators: Kansas Department of Revenue
      grain elevator guide (Kansas only). A loader on two railroads is one row
@@ -18,7 +18,7 @@ notes/chatgpt/2026-10-28-answers/elevator-attributes/; one CSV per list)
   06 export elevators: port and operator terminal pages, capacity as each
      page states it (storage or throughput, as written).
   EIA (--eia, the U.S. Fuel Ethanol Plant Production Capacity workbook as of
-  Jan 1, 2025, saved on the feedbag raw branch history/biofuel-plants/2026-10-28/)
+  Jan 1, 2025, saved on the the private repo raw branch history/biofuel-plants/2026-10-28/)
   is read only to check the RFA list: a plant in both gets EIA's capacity
   beside RFA's; a plant in one list and not the other is written to the log,
   never placed from EIA alone.

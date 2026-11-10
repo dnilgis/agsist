@@ -1,4 +1,4 @@
-/* The page shell stays small (shell diet, Oct 27, 2026; Sig said yes Oct 26).
+/* The page shell stays small (shell diet, Oct 27, 2026; the owner said yes Oct 26).
  *
  * Every page loads the same shell: components/loader.js, which brings header.html,
  * footer.html, states.css, states.js and sponsor-metrics.js, plus components/styles.css.

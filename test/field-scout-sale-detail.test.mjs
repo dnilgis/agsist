@@ -40,7 +40,7 @@ function expectFor(c, r, f) {
     // the section key (scripts/land_keys.py): the panel's "Section, township, range" line reads it
     case "str": return v ? ["Section, township, range", esc(F.strOf(r.legal) || F.keyText(v))] : ["Section, township, range"];
     case "exempt": return [v ? "Exemption claimed" : "No exemption claimed"];
-    // names never show in the panel itself (Sig, Oct 27; lead, Nov 4, 2026): a names-free county file offers the tap,
+    // names never show in the panel itself (Oct 27 and Nov 4, 2026): a names-free county file offers the tap,
     // an older one still holding names says they come with the next update
     case "grantor": case "grantee": return f.names ? (f.names_file ? ["Show buyer and seller"] : ["names come after the next update"]) : ["not in our copy"];
     case "si": case "bi": return f.names && f.names_file ? ["Show buyer and seller"] : [];
@@ -244,8 +244,8 @@ test("printable report: your filters or 3-year defaults, median with n, the 10 n
   assert.match(js, /Recorded sales in our data, through ' \+ F\.fmtDate\(thru\) \+ '; not an appraisal\./);
   assert.match(js, /middle of ' \+ med\.n \+ ' sales/);
   assert.match(read("field-scout-land.js"), /rep\.setAttribute\('href', base \+ \(cf \? '&cf=' \+ encodeURIComponent\(cf\) : ''\)\)/);
-  assert.match(read("field-report.html"), /field-scout-land\.js\?v=18/);
-  assert.match(read("field-scout-read.js"), /FS_LAND_SRC='\/field-scout-land\.js\?v=18'/);
+  assert.match(read("field-report.html"), /field-scout-land\.js\?v=19/);
+  assert.match(read("field-scout-read.js"), /FS_LAND_SRC='\/field-scout-land\.js\?v=19'/);
   // the same nearest-first list from rows (hand-checked: 2, 6, 10, 14 and 20 mi; the 30 mi sale is out)
   const c = { lat: 45.0, lng: -91.0 };
   const mk = (doc, dLat) => ({ doc, date: "2025-01-01", price: 400000, acres: 80, cls: "4", conv: "Warranty Deed", lat: 45.0 + dLat, lng: -91.0, muniName: "T" });

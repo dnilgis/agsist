@@ -1,7 +1,7 @@
 /**
- * The engine checkout (Sig, Oct 20 2026: "move bids code private", the agsist
+ * The engine checkout (Oct 20 2026, the agsist
  * scripts and tests too). The collection code (.github/engine-paths: scripts/,
- * test/, build/) lives on the engine-agsist branch of dnilgis/feedbag.
+ * test/, build/) lives on the engine-agsist branch of the private repo.
  * Every workflow job that runs it starts with the "Engine checkout" step
  * (.github/actions/engine), which copies it into the workspace with
  * PRIVATE_REPO_TOKEN when the repository variable ENGINE_MODE is private, and
@@ -355,7 +355,7 @@ test('engine.sh pull and save: a local session gets the engine and saves its cha
 // ---- curtain step P1 (Nov 5, 2026): the engine copy wins in private mode, and a run uses its own branch ----
 // A run on main in private mode uses the engine's copy of every engine path, even while this repository
 // still tracks the code; a run on fx/x uses the engine branch fx/x when the engine has one (a pull
-// request's head, or a dispatch on that branch: BUILD-RULES 62 and 66). With ENGINE_MODE unset nothing
+// request's head, or a dispatch on that branch: build rule 62 and 66). With ENGINE_MODE unset nothing
 // changes. The tracked copy is set aside with a sparse checkout, so status stays clean, a bare
 // `git add -A` stages data only and a rebase over a code change on main still goes through.
 function engineAt(base, dir, files) {
@@ -490,7 +490,7 @@ test('overlay on a branch run with no engine branch of its name (a dispatch on f
   const r = sh(d, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: 'workflow_dispatch', RUN_BRANCH: 'fx/x', PAIRED: 'fx/x', PAIRED_OUTCOME: 'failure' });
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.equal(fs.readFileSync(path.join(d, 'scripts/a.py'), 'utf8'), 'public a\n');
-  // with one, the dispatch runs the branch's engine code even when the job checked out main (BUILD-RULES 62)
+  // with one, the dispatch runs the branch's engine code even when the job checked out main (build rule 62)
   const p = publicRepo();
   engineAt(p, '.engine-src', ENGINE_FILES); engineAt(p, '.engine-pair', PAIR_FILES);
   const rp = sh(p, `${E} overlay .engine-src`, { GITHUB_EVENT_NAME: 'workflow_dispatch', RUN_BRANCH: 'fx/x', PAIRED: 'fx/x', PAIRED_OUTCOME: 'success' });

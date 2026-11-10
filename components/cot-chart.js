@@ -1,7 +1,7 @@
-/* The 52-week funds chart on /cot (Nov 5, 2026, Sig: "I can picture people sharing it if we make it easy").
+/* The 52-week funds chart on /cot (Nov 5, 2026).
    One market at a time, picked by chips; the pick rides in the link (/cot?m=soybeans). The main line is managed
    money's net for the weekly reports in data/cot-history.json; the futures price sits in its own strip with its
-   own scale (Sig, Nov 6: kept on the pictures and the sheet), never a second scale on the net. The strip is drawn
+   own scale (Nov 6: kept on the pictures and the sheet), never a second scale on the net. The strip is drawn
    when every week has a close and the roll-repaired index (px_adj) and the pipeline does not withhold the price;
    on release day it runs to the last repaired week, dated. Kit v2 (Nov 6, the share kit panel): weeks placed by
    date with months and the year, round ticks with a unit, the 52-week high and low and the latest point labelled
@@ -388,7 +388,7 @@
   /* The saved picture. o.phone: 1080x1350 (4:5, the default on a phone): headline 60 px, every other word 26 px
      or more, so it reads at 390 px wide; else 1200x675 (desktop). Both: agsist.com/cot, the headline, the answer
      line, the chart (with the price strip when the market has one), the report date and the source, then the
-     Funds this week ask on its own last line ("Free every Friday: agsist.com/cot", Sig, Nov 6).
+     Funds this week ask on its own last line ("Free every Friday: agsist.com/cot", Nov 6).
      -> {canvas, texts, sizes, ys} (texts and their font sizes, every string drawn, and the baselines of the ones
      drawn outside the chart, for the tests) */
   function image(m, doc, o) {
@@ -411,7 +411,7 @@
       y += 4;
       if (m.answer) { wrapped(m.answer, 30, 500, 4).forEach(function (s) { text(s, P, y, 30, 500, INK); y += 41; }); y += 8; }
       wrapped(sub, 26, 600, 2).forEach(function (s) { text(s, P, y, 26, 600, 'rgba(233,237,235,.80)'); y += 34; });
-      /* the ask on its own last line, a gap above it so the source line is not crowded (Sig, Nov 6) */
+      /* the ask on its own last line, a gap above it so the source line is not crowded (Nov 6) */
       var srcL = wrapped(src, 20, 400, 4), foot = H - 40 - 50 - (srcL.length - 1) * 26;
       gh = foot - 50 - y;
       g = layout(m, W - 2 * P, gh, { fs: 26, big: true });

@@ -1,4 +1,4 @@
-/* The county rain box (Sig, Nov 3, 2026): /embed/rain for other sites, and a closed fold on every county rain
+/* The county rain box (Nov 3, 2026): /embed/rain for other sites, and a closed fold on every county rain
  * page ("Put this on your site or in your newsletter") with the iframe code, the one plain sentence and the
  * monthly newsletter block.
  *

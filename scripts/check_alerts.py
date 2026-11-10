@@ -407,7 +407,7 @@ def main():
         except Exception:
             pass
 
-    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to Sig is dry
+    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to the owner is dry
     print("sent " + str(sent) + "/" + str(len(hits)))
     # THE FLAG IS SET FOR ANY SUCCESSFUL SEND, and it is reached now because
     # nothing above it can escape. A partial send that silently repeats is a
@@ -417,7 +417,7 @@ def main():
     if sent > 0:
         day_flag(day, set_it=True)
     if failed:
-        # Full addresses go to Sig by private mail; the public log and the
+        # Full addresses go to the owner by private mail; the public log and the
         # annotation get the count and masked addresses only.
         mailed = log_safe.owner_mail("AGSIST hail alerts: %d of %d did not send (%s)"
                                      % (len(failed), len(hits), day),

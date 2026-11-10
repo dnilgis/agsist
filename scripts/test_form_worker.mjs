@@ -780,7 +780,7 @@ r = await rpsGet(idA, { Origin: 'https://evil.example' }); A(r.headers.get('Acce
   console.error = errOut;
 }
 
-// v5.63: the frame color (Sig, Nov 4): oak or black on a framed order only; a bad one is dropped, never an error
+// v5.63: the frame color (Nov 4): oak or black on a framed order only; a bad one is dropped, never an error
 {
   const one = async (patch) => { const before = rpKeys(); const res = await post(Object.assign({}, rp, patch)); A(res.status === 200, 'frame order stored ' + JSON.stringify(patch)); return JSON.parse(store.get(newKey(before))); };
   A((await one({ choice: 'framed12x18', frame_color: 'oak' })).frame_color === 'oak', 'v5.63: oak kept on a framed order');

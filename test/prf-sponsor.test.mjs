@@ -6,7 +6,7 @@
  * hold in the script and in the shipped data: a sold state shows its sponsor,
  * labelled, on the state page, every county page and beside the result on
  * /prf; an unsold or lapsed state shows the offer, one per page, in the upper
- * part of the page (Sig, 2026-10-14), never at the foot; nothing a sponsor types can
+ * part of the page (2026-10-14), never at the foot; nothing a sponsor types can
  * run script or carry a javascript: link; no price and no "founding" anywhere;
  * Farmers First never in a slot. The mock sponsor below lives only in this file.
  *
@@ -156,7 +156,7 @@ test("/prf: the sponsor of the reader's state beside the result, gone for an uns
   assert.match(box.innerHTML, /PRF in Nebraska is sponsored by Example Ag Lending/);
 });
 
-/* The /prf print sheet (Sig, Oct 18): a sold state prints its sponsor box; unsold prints nothing. */
+/* The /prf print sheet (Oct 18): a sold state prints its sponsor box; unsold prints nothing. */
 const toolBox = () => { const b = el({}); b.hidden = true; b.innerHTML = ""; b.removeAttribute = function (k) { delete this.attrs[k]; }; return b; };
 const PRINT_FIX = { KS: { name: "Prairie Range Test Agency", url: "https://www.example.org/prf/", line: "Range and hay coverage for Kansas ranches.", phone: "620-555-0142", through: "2099-12-31" } };
 test("print sheet: a sold state prints its sponsor, labelled, with name, phone, website, line and the disclosure", () => {
@@ -276,7 +276,7 @@ test("/prf: the offer band under Find your grid on the empty page (moved under t
   assert.ok(o.includes('<a href="/prf-sponsor" data-prf-offer data-out="prf-sponsor">See your block and ask &rarr;</a>'), "the offer goes to /prf-sponsor");
   assert.ok(!PRICE.test(o) && !BAND_BAD.test(o) && !/left/i.test(o));
   const at = h.indexOf(o);
-  /* Sig, Oct 20: never above "Find your grid". In the HTML it closes #prf-app, after the find step and the
+  /* Oct 20: never above "Find your grid". In the HTML it closes #prf-app, after the find step and the
      whole tool, so the empty page shows it under Find your grid; prf-sponsor.js moves it under the answer */
   assert.ok(at > h.indexOf('id="prf-find-h"') && at > h.indexOf('id="prf-app"'), "the band sits below Find your grid");
   assert.ok(at > h.indexOf('id="prf-spon-p"') && at < h.indexOf('class="prf-byline"'), "the last thing in the tool's block");

@@ -37,7 +37,7 @@ function faqPage(src) {
 // page -> [expected FAQ count, the questions added in October 2026]
 const PAGES = {
   "farm-bill": [10, ["Does the Senate bill change late planting rules?"]],
-  "grain-bin-calculator": [8, ["How does USDA measure the grain in my bin, and how close is it?", "How much does a cubic foot of corn weigh in a bin?"]],
+  "grain-bin-calculator": [9, ["How does USDA measure the grain in my bin, and how close is it?", "How much does a cubic foot of corn weigh in a bin?", "How many bushels are in a 15 ft 3 in by 24 ft 4 in bin?"]],   // 9: the worked bin example (Nov 10)
   "arc-plc": [14, ["If I pick ARC-CO, do I have to turn in my yields to FSA?", "Do I have to carry crop insurance to get ARC or PLC?", "Is there a deadline for the payment eligibility paperwork after I sign up?"]],
   "cash-lease": [8, ["Can I mail the notice to end an Iowa farm lease, and when does it have to go out?", "In Kansas, what happens to the wheat if I give notice after my tenant already planted it?", "How much notice does Wisconsin want to end a year-to-year farm lease?"]],
   "cattle-auction-prices": [10, ["What is value of gain, and how do I use it?", "What's the difference between a large frame and a medium frame calf?", "What makes a calf grade a 3 instead of a 1?", "Will my beef on dairy calves grade a 1?"]],

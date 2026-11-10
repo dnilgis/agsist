@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-daily_fresh.py -- the Daily never says the same thing two days running (Sig,
-Nov 1 2026: "the best morning email that people actually look forward to
+daily_fresh.py -- the Daily never says the same thing two days running (Nov 1 2026: "the best morning email that people actually look forward to
 reading every day"; never the same headline, number, story or fact twice).
 
 WHY. The 14 issues Oct 19 to Nov 1 2026 (data/daily-archive):
@@ -11,12 +10,12 @@ WHY. The 14 issues Oct 19 to Nov 1 2026 (data/daily-archive):
     Oct 31 and Nov 1; "$2.4 billion" extra diesel cost on Oct 28 and 29.
   - The same story: the Senate farm bill score on Oct 31 and Nov 1; the Texas
     elk screwworm case on Oct 23 and again Oct 25.
-  - 11 of the 14 headlines start "Corn ...".
+  - 11 of the 14 headlines start "Corn...".
 The writer was shown three past headlines and nothing else, so it could not know.
 
 WHAT. One definition, used by the generator (prompt block, the one send-back and
-the cut), the gate (what is left is a warning, never a hold: Sig, Nov 1) and the replay.
-Sig, Nov 2: "cut the repeat": what still repeats after the one rewrite does not ship
+the cut), the gate (what is left is a warning, never a hold: Nov 1) and the replay.
+Nov 2: what still repeats after the one rewrite does not ship
 (cut_repeats); the email still always goes out.
   recent(today, archive_dir, n)   the last n issues before today, oldest first
   memory_block(recent)            "ALREADY SAID THIS WEEK" for the writer's prompt
@@ -52,7 +51,7 @@ THE THRESHOLDS, measured on the whole archive (Mar 4 to Nov 1 2026, 234 issues):
     little words do not). Of 1,555 headline pairs within 7 days, 7 reach 0.5:
     1.00 Nov 1/Oct 31, 0.78 Oct 25/Oct 24, 0.78 Jul 26/25, 0.75 Sep 6/4,
     0.67 Apr 14/10 ("Grains drift/steady as planting window opens"), 0.57 Apr 10/6,
-    0.50 Jul 6/3 ("Corn breaks 4% again; oats ..."), every one a rerun. The next
+    0.50 Jul 6/3 ("Corn breaks 4% again; oats..."), every one a rerun. The next
     pairs (0.45) are the same weekly template with new numbers.
   WEEKEND_SIM 0.3: a weekend headline vs the weekday issue before it. Oct 24 vs
     Oct 23 is 0.33 and is Friday's corn $4.56 and crude 3.8% again.
@@ -96,7 +95,7 @@ NEW_TURN_MAX = 0.8          # above this a title is a retelling even with a new 
 SAME_LEAD_RUN = 3
 SAID_SIM = 0.8              # share of a sentence's (weighted) words already said in one sentence this week
 STORY_TEXT_SIM = 0.5        # title + body against an older item's title + body: the same story
-HARD = ("headline", "weekend", "number")      # sent back once; then cut_repeats (Sig, Nov 2: "cut the repeat")
+HARD = ("headline", "weekend", "number")      # sent back once; then cut_repeats (Nov 2)
 CUT = ("story", "sentence")                   # sent back once, then cut by the generator
 SOFT = ("same-lead",)                         # sent back once, a warning after
 # where a repeated sentence may be cut (the headline and titles never are; a field is never emptied)
@@ -478,7 +477,7 @@ def hits(briefing, rec, today=None, archive_dir=ARCHIVE, locked_prices=None, loc
             found.append(("story", "outside_the_pit[%d]" % i, "%r retells %s's %r with nothing new in the title"
                           % (it["title"], _day(best[1]), best[2]["title"])))
             continue
-        # Sig, Nov 2: a story already reported in the last 7 days is a repeat unless its title has a new
+        # Nov 2: a story already reported in the last 7 days is a repeat unless its title has a new
         # development, whether it ran as a news item or inside a section.
         text = "%s %s" % (it["title"], it.get("body") or "")
         best = None
@@ -540,7 +539,7 @@ def story_line(briefing):
 
 
 def cut_repeats(briefing, found, rec, today=None, archive_dir=ARCHIVE, locked_prices=None, locked_changes=None):
-    """Sig, Nov 2 2026: "cut the repeat". After the one rewrite, a repeat that is still there does not ship,
+    """Nov 2 2026. After the one rewrite, a repeat that is still there does not ship,
     and the email still goes out:
       story     the news item is cut (drop_stories)
       sentence  the sentence is cut, unless it is the field's only sentence
@@ -608,6 +607,16 @@ def stamp(found, tries):
 #   percentile   a band cross (PCT_BANDS) or a move of PCT_MOVE points or more; never printed, only
 #                from the bottom or top tenth (the middle band is a standing fact)
 #   basis_wow    a state enters, leaves or moves WOW_MOVE cents (wow_should_print)
+#   land_sales   a ZIP reader's farm sales line, by month and state (daily_land_line.state_fact): a new month,
+#                or the state's count for the month above the last printed (a re-read that drops a
+#                duplicate is no news: Indiana 193 then 191, Nov 5 and 9 2026)
+#   rain_rank    the record sentence on a ZIP reader's rain line, by county (only_here._record_rank):
+#                a new value, the county entering the top three or changing place (anything else, below)
+#   rain_line    a ZIP reader's rain line, by the station's county (only_here.rain_fact): a new as-of day, so
+#                a station that has not reported since gives no line; each issue keeps every station as the
+#                usual day (key "*") plus the stations on another day (anything else, below)
+#   rain_records the no-ZIP rain records line: the two counts or the oldest record changed (Nov 9 and 10
+#                2026 went out word for word: the lines are computed at send time and were never remembered)
 #   anything else  a new value (the same key with the same value is a repeat)
 # The memory is what went out: data/daily-sent/<day>.json (its "printed" list,
 # written by send_daily from the email as built; before Nov 10 2026, the
@@ -664,8 +673,12 @@ def still_news(fact, mem, today):
     """(True, why) when the fact may print today; (False, why) when it says what the
     issue that last printed it already said. mem: memory() entries, oldest first."""
     kind, key = fact.get("kind"), fact.get("key")
-    past = [m for m in mem or [] if isinstance(m, dict) and m.get("kind") == kind and m.get("key") == key
+    # a rain line's usual day (key "*", issue_facts) stands for every station not named that issue
+    keys = (key, "*") if kind == "rain_line" else (key,)
+    past = [m for m in mem or [] if isinstance(m, dict) and m.get("kind") == kind and m.get("key") in keys
             and m.get("date") and str(m["date"]) < today.isoformat()]
+    if kind == "rain_line":
+        past.sort(key=lambda m: (str(m["date"]), m.get("key") != "*"))
     last = past[-1] if past else None
     if kind == "funds":
         if today.weekday() != FUNDS_WEEKDAY:
@@ -687,6 +700,16 @@ def still_news(fact, mem, today):
             if round(abs(float(v) - float(lv)) * 100) >= round(RATIO_MOVE * 100):
                 return True, "moved %.2f since %s" % (abs(float(v) - float(lv)), last["date"])
             return False, "%s was %s on %s; moved under %.2f" % (key, lv, last["date"], RATIO_MOVE)
+        if kind == "land_sales":
+            if int(v) > int(lv):
+                return True, "%d more sales than the %s print" % (int(v) - int(lv), last["date"])
+            return False, "%s: %s sales, %s printed %s" % (key, v, lv, last["date"])
+        if kind == "rain_records":
+            # [wet, dry, oldest record]; a list saved before Nov 11 2026 holds the two counts only
+            same = list(v[:2]) == list(lv[:2]) and (len(v) < 3 or len(lv) < 3 or v[2] == lv[2])
+            if same:
+                return False, "the same record counts and oldest record printed %s" % last["date"]
+            return True, "the record counts or the oldest record changed since %s" % last["date"]
         if kind == "percentile":
             if _band(float(v), PCT_BANDS) != _band(float(lv), PCT_BANDS):
                 return True, "crossed a band since %s" % last["date"]
@@ -725,6 +748,13 @@ def issue_facts(issue):
         return []
     pr = issue.get("printed")
     out = [f for f in pr if isinstance(f, dict)] if isinstance(pr, list) else []
+    # every station's rain line, kept as the usual day (key "*") plus the stations on another day by name
+    # (send_daily rain_lines_record); the named ones come after "*" so they win on the same date
+    rl = issue.get("rain_lines")
+    if isinstance(rl, dict) and isinstance(rl.get("as_of"), str):
+        out.append({"kind": "rain_line", "key": "*", "value": rl["as_of"], "text": ""})
+        for v, ks in sorted((rl.get("other") or {}).items()):
+            out += [{"kind": "rain_line", "key": k, "value": v, "text": ""} for k in ks or [] if isinstance(k, str)]
     b = issue.get("briefing") if isinstance(issue.get("briefing"), dict) else issue
     if not isinstance(b, dict):
         return out

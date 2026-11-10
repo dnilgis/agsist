@@ -284,7 +284,7 @@ function loadWeatherEnhancements(state){
   Promise.all([fcastPromise]).then(function(results){
     var forecast=results[0]||{};try{if(window.S7)window.S7.onWx(results[0]);}catch(e){}
     var dailyF=forecast.daily||{};
-    /* 2026-11-05 (Sig): no soil temperature on the home page; /planting-date and /fall-nitrogen keep it. */
+    /* 2026-11-05: no soil temperature on the home page; /planting-date and /fall-nitrogen keep it. */
     // Update Quick Tools planting dates location label with detected city + state-aware dates
     var detectedState=applyPlantingDates(lat,lon);
     var _wxSt=state.weather||{};
@@ -296,7 +296,7 @@ function loadWeatherEnhancements(state){
     }
     var forecastMaxArr=dailyF.temperature_2m_max||[],forecastMinArr=dailyF.temperature_2m_min||[];
     var forecastPrecipArr=dailyF.precipitation_sum||[],forecastWindArr=dailyF.windspeed_10m_max||[];
-    /* 2026-11-05 (Sig): the home page shows no spray read; /spray and Field Scout keep theirs. */
+    /* 2026-11-05: the home page shows no spray read; /spray and Field Scout keep theirs. */
 
     // ========== 7-DAY FORECAST ==========
     var forecastWcodeArr=dailyF.weathercode||[];
@@ -419,7 +419,7 @@ setInterval(function(){
   var st=window.AGSIST_STATE;
   if(st&&st.weather&&st.weather.lat!=null)_runEnhancements(st.weather.lat,st.weather.lon,st);
 },2500);
-// 2026-10-19 (Sig): no browser geolocation fallback here. It asked for the
+// 2026-10-19: no browser geolocation fallback here. It asked for the
 // location 3.5 s after load; the page now asks only when the reader taps
 // "Use my location" (geo.js requestGeo), and waitForGeo above picks that up.
 // Planting dates — render immediately with national default; loadWeatherEnhancements overrides with state-specific once geo resolves

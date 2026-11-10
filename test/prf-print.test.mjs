@@ -1,4 +1,4 @@
-/* The /prf print sheet (Sig, Oct 18: "very good", one Letter page).
+/* The /prf print sheet (Oct 18, one Letter page).
  *
  * WHY. A rancher prints this and takes it to the kitchen table or the agent's
  * office. It has to carry, on one page and readable at arm's length: the
@@ -47,7 +47,7 @@ test("print CSS: one Letter page, the sheet shown, the panels and the pick hidde
   const sizes = [...PRINT.matchAll(/font-size:\s*([\d.]+)pt/g)].map((m) => +m[1]);
   assert.ok(sizes.length > 10 && Math.min(...sizes) >= 9, "no print type under 9pt: " + Math.min(...sizes));
   assert.match(CSS, /\.prf-ph, \.prf-pp, \.prf-pcap, \.prf-pbot, \.prf-pq, \.prf-spon-p \{ display: none; \}/, "hidden on screen");
-  /* the plain "What this means" line shows on screen too (Sig, Oct 20), and hides only when empty */
+  /* the plain "What this means" line shows on screen too (Oct 20), and hides only when empty */
   assert.match(CSS, /\.prf-pm:empty \{ display: none; \}/);
   assert.ok(!/\.prf-pcap[^{]*\.prf-pm|\.prf-pm[^{]*\.prf-pcap/.test(CSS.split("@media print")[0]), "the plain line is not in the screen-hidden list");
 });

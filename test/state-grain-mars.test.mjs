@@ -1,6 +1,6 @@
 // USDA state cash grain (data/state-grain-ams.json) and daily FI slaughter (data/slaughter.json),
 // read from USDA My Market News by scripts/fetch_state_grain_mars.py and scripts/fetch_slaughter_mars.py
-// in the hay-ams workflow (Sig, Nov 2 2026). Real case: the saved report answers of Nov 2, 2026 in
+// in the hay-ams workflow (Nov 2 2026). Real case: the saved report answers of Nov 2, 2026 in
 // test/fixtures/mars-grain and test/fixtures/mars-slaughter. The 15 cent cross-check against our state
 // medians is scripts/check_state_grain_ams.py: it reports and never fails a build.
 import { test } from 'node:test';

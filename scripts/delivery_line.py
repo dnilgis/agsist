@@ -2,18 +2,18 @@
 """
 delivery_line.py: the one machine-readable line every reader email sender prints per run.
 
-A green run is not a delivered email (BUILD-RULES 56, Nov 3 2026): rp-design-email and
+A green run is not a delivered email (build rule 56, Nov 3 2026): rp-design-email and
 rp-buyer-email ran green and dry for two weeks with their live variable at 1. So every
 script that mails readers or a list prints, once per run, at exit:
 
     DELIVERY sender=<name> sent_readers=N waiting=M dry=0|1 [asks=N] [orders=N]
 
-  sent_readers  emails that reached a reader this run (Sig's copies and previews never count)
+  sent_readers  emails that reached a reader this run (the owner's copies and previews never count)
   waiting       readers due an email this run, sent or not (in a dry run: what would have gone)
-  dry           1 when this run could not mail the list (dry run, preview, Sig only, send off)
+  dry           1 when this run could not mail the list (dry run, preview, the owner only, send off)
   asks, orders  extra counts a check reads (rp-design-email's design asks, rp-buyer-email's orders)
   already_sent  1 when the Daily found its day flag set: 0 sent is fine (any other 0/0 exit is no send)
-  smtp          recipients this run handed to the mail server, Sig's copies too (scripts/send_cap.py; only
+  smtp          recipients this run handed to the mail server, the owner's copies too (scripts/send_cap.py; only
                 on a run that sent); the send-volume row counts the plan's daily cap from it
   cap_refused   sends the mail server refused like the plan's daily cap or a rate limit (send_cap.py)
 

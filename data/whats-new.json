@@ -2,6 +2,83 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-10-arcplc-fixes",
+   "date": "2026-11-10",
+   "title": "Clearer ARC or PLC answers",
+   "line": "ARC or PLC pages say why some expected payments are not shown, lead with the dryland answer, and show your farm total once you type base acres.",
+   "link": "/arc-plc"
+  },
+  {
+   "id": "2026-11-10-clearer-page-titles",
+   "date": "2026-11-10",
+   "title": "Clearer page titles and answers",
+   "line": "Company bid pages name their locations, the USDA calendar sums up the last crop report from its own figures, and milk shows the 2025 all-milk average.",
+   "link": "/usda-calendar"
+  },
+  {
+   "id": "2026-11-10-daily-onlyhere-repeats",
+   "date": "2026-11-10",
+   "title": "Only here lines skip a repeat",
+   "line": "The Daily's Only here lines now come back only when something changed: new rain record counts, or a new rain report at your county's station.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-10-daily-zip-repeats",
+   "date": "2026-11-10",
+   "title": "No repeat lines for ZIP readers",
+   "line": "With a ZIP, the Daily now gives the farm sales near you and your county's rain record once, and again only when new sales are recorded or the rank moves.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-10-elevator-names",
+   "date": "2026-11-10",
+   "title": "One name for each elevator",
+   "line": "Elevators listed under an old or archived board name now show their own name and keep their basis history, on the home page, /cash-bids and the town pages.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-10-pages-hold-still",
+   "date": "2026-11-10",
+   "title": "Thirteen pages hold still while they load",
+   "line": "Tariffs, sale barn prices, hay, break-even, store or sell, urea and seven more pages keep their room while the numbers load, so nothing jumps under your thumb.",
+   "link": "/tools"
+  },
+  {
+   "id": "2026-11-10-quickstats-radar",
+   "date": "2026-11-10",
+   "title": "Yield by state on phones",
+   "line": "Quick stats shows each state's yield on phones and a pick-your-state menu; rain radar drops a bad NOAA square and links the spray forecast for your spot.",
+   "link": "/usda-quick-stats"
+  },
+  {
+   "id": "2026-11-10-rain-gauge-headline",
+   "date": "2026-11-10",
+   "title": "County rain names its gauge",
+   "line": "County rain pages name the gauge behind the total, with the county-wide estimate beside it. A mountain snow site no longer leads a county page.",
+   "link": "/rain"
+  },
+  {
+   "id": "2026-11-10-same-state-links",
+   "date": "2026-11-10",
+   "title": "One state, every page",
+   "line": "State pages for bids, rent, yield, rain, PRF and hail now link to each other, and ARC/PLC and PRF county pages name the nearest towns with bids.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-10-town-pages",
+   "date": "2026-11-10",
+   "title": "Town bid pages, clearer",
+   "line": "Town pages name corn and soybeans every time, keep elevators whose board went quiet with a labelled estimate, and mark boards that repeat another's bids.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-09-rain-print-several-days",
+   "date": "2026-11-09",
+   "title": "Rain Print gaps",
+   "line": "When a gauge reports several days of rain in one later total, Rain Print and the county prints count those days as reported together, not as gaps.",
+   "link": "/rain-print"
+  },
+  {
    "id": "2026-11-09-arcplc-plain",
    "date": "2026-11-09",
    "title": "ARC or PLC method, in plain words",
@@ -44,6 +121,20 @@
    "link": "/grain-bin-calculator"
   },
   {
+   "id": "2026-11-09-calendar-terms-fold",
+   "date": "2026-11-09",
+   "title": "A shorter USDA calendar page",
+   "line": "The USDA calendar page is shorter: sources and terms now sit in one closed note at the bottom.",
+   "link": "/usda-calendar"
+  },
+  {
+   "id": "2026-11-09-cash-bids-panel",
+   "date": "2026-11-09",
+   "title": "Cash bids: your state first, one-line email",
+   "line": "Cash bids now shows your own state first before you type a ZIP, labels the table as estimates, and asks for your email in one line.",
+   "link": "/cash-bids"
+  },
+  {
    "id": "2026-11-09-cashbid-terms-fold",
    "date": "2026-11-09",
    "title": "Shorter cash bid town pages",
@@ -56,6 +147,20 @@
    "title": "Shorter cash bid state and company pages",
    "line": "Cash bid state and elevator company pages keep where the bids come from in one short fold at the bottom.",
    "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-09-hail-terms-fold",
+   "date": "2026-11-09",
+   "title": "Shorter hail map pages",
+   "line": "The hail map and the state hail pages put sources and terms in one closed note at the bottom, so the map comes sooner.",
+   "link": "/hail-map"
+  },
+  {
+   "id": "2026-11-09-rain-print-fixes",
+   "date": "2026-11-09",
+   "title": "Rain Print fixes",
+   "line": "Rain Print keeps the nearest station with rain and snow records, offers the right spelling for a typo, and names the exact-spot option for a thin year.",
+   "link": "/rain-print"
   },
   {
    "id": "2026-11-09-rain-terms-fold",

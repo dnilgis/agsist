@@ -1,7 +1,5 @@
-/* "Today and this week" in the hero, beside the futures (Sig, Nov 6, 2026: "a happening today block, for example a
- * link to the COT and some kind of teaser to get people interested, important releases people should be made aware
- * of"). components/happening.js, baked by scripts/seed_static.py happening_seed, styled in css/home.css.
- *   - the COT schedule: happening.js cotRelease() is scripts/cot_calendar.py release_date, every week 2010-2027;
+/* "Today and this week" in the hero, beside the futures (Nov 6, 2026). components/happening.js, baked by scripts/seed_static.py happening_seed, styled in css/home.css.
+ *   - the COT schedule: happening.js cotRelease is scripts/cot_calendar.py release_date, every week 2010-2027;
  *   - which releases show, on fixtures and a fixed clock (no test reads today's date): across a weekend, a COT
  *     release moved to Monday by Veterans Day, a Crop Progress moved to Tuesday by Columbus Day; the bake picks the
  *     same rows as the script;

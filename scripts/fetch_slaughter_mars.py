@@ -5,7 +5,7 @@ figures USDA prints beside it.
 
 Source: USDA AMS report 3208, "Daily Livestock and Poultry Slaughter"
 (estimated, FIS), read through USDA My Market News (the MARS API), section
-"Report Livestock Commodity", class "All". Approved by Sig, Nov 2 2026. Data
+"Report Livestock Commodity", class "All". Approved by Nov 2 2026. Data
 only: no page reads it yet; daily_line is a short plain line the Daily can use
 later (not wired in).
 

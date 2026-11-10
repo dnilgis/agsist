@@ -3,7 +3,7 @@
  * The real case: home showed "2,109 of 8,052 elevators read directly, updated 1:47 pm" beside "23,273 bids
  * from 2,069 locations, updated 6:22 pm": two counts, two labels, two times for one network. The bids file's
  * location count is the one kept; the other line and its fetch of data/elevator-counts.json are gone.
- * Browser run blocks every outside host and service workers (BUILD-RULES 58).
+ * Browser run blocks every outside host and service workers (build rule 58).
  *
  *   node --test test/home-one-count.test.mjs
  */

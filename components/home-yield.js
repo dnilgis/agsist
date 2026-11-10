@@ -172,7 +172,7 @@
   /* 2026-10-01: when the front-month and this-year's-harvest contract are
      the same contract (true for corn/beans from early fall through year end),
      this used to hide the second tile and append "+ new crop" to the first.
-     Sig's call: never drop to one tile for corn or beans -- when that
+     a product decision: never drop to one tile for corn or beans -- when that
      happens, swap the second tile to NEXT year's harvest contract
      (corn-dec27 / beans-nov27) instead, so the reader always sees two real,
      distinct corn (or bean) prices. Both symbols are already fetched live by

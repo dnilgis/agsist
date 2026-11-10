@@ -1,4 +1,4 @@
-// What the site serves names no AI vendor or model (Sig, 2026-10-20: "de AI, de Claude").
+// What the site serves names no AI vendor or model (2026-10-20).
 // Served = every file Pages publishes; this checks the text kinds (html, js, css, json,
 // txt, xml and friends) outside test/, scripts/, .claude/ and .github/.
 //

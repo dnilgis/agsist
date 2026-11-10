@@ -118,7 +118,7 @@ test("Sig, 2026-10-14: a business logo may go on the print; shipping covers the 
 test("the Rain Print section links the page in words people search for and says only what is true of the example (2026-10-15)", () => {
   const sec = HTML.slice(HTML.indexOf('<section class="gf-rp"'), HTML.indexOf("</section>", HTML.indexOf('<section class="gf-rp"')));
   assert.match(sec, /<a href="\/rain-print">a custom rainfall print of that year<\/a>/, "a plain-text link with the search words");
-  // the picture is a real photo of Sig's framed test print (img/photos/, 2026-10-18), so the caption cannot call it made up
+  // the picture is a real photo of the owner's framed test print (img/photos/, 2026-10-18), so the caption cannot call it made up
   assert.ok(!/made up/i.test(sec), "the example is real NOAA data");
   assert.match(sec, /<figcaption>My test print of Chetek, Wisconsin, framed in black and hung on a wall\. It is shown without the white mat that comes with a framed print\.<\/figcaption>/);
   // the page marks up to five days (rain-print.html, Mark a day)

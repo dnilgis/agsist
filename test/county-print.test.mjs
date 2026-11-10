@@ -1,4 +1,4 @@
-/* County Print (Sig, Nov 7, 2026: "County print, yes"): the one-page county sheet, the phone picture and the share
+/* County Print (Nov 7, 2026): the one-page county sheet, the phone picture and the share
  * link on every Farmland Atlas county page (components/county-print.js, components/county-print.css; the figures
  * from scripts/build_atlas_pages.py county_print_data, the daily rows from components/county-home.js).
  *
@@ -14,7 +14,7 @@
  *   - in a browser: one page on Letter and on A4 for a full county (Story, IA) and a sparse one (New York
  *     County, NY), the title with the date and year, the 8.5 pt source line, "Not advice", no buyer name; Ctrl+P
  *     (beforeprint) prints the sheet; the picture is 1080 x 1350; nothing on the page moves when the sheet is
- *     built. Every outside host is blocked and service workers are off (BUILD-RULES 58). */
+ *     built. Every outside host is blocked and service workers are off (build rule 58). */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, statSync, mkdtempSync, rmSync } from "node:fs";

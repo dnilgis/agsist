@@ -164,7 +164,7 @@ test("whats-new entries (data/whats-new/, one file each): real pages, newest fir
   assert.deepEqual(entries.filter((i) => /saledetail|tap-a-sale|land sales/i.test(i.id + i.title)), [], "nothing from branches not on main");
   execFileSync("python3", [join(ROOT, "scripts/build_whats_new.py"), "--check"], { cwd: ROOT });
   const h = read("index.html");
-  // Oct 20 (panel A and G, Sig's after-main-content rule): no card near the top; one small line at
+  // Oct 20 (panel A and G, the owner's after-main-content rule): no card near the top; one small line at
   // the end, above the byline, linking /changelog and the newest entry.
   assert.ok(!h.includes("WHATSNEW:card") && !h.includes('id="wn-card"'), "the card is off the homepage");
   const ln = h.slice(h.indexOf("<!-- WHATSNEW:link"), h.indexOf("<!-- /WHATSNEW:link -->"));

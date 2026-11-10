@@ -1,4 +1,4 @@
-/* The share kit on /cot, part 2 (kit v2, Sig Nov 6: "pick your market before making the picture"; the growth seat's
+/* The share kit on /cot, part 2 (kit v2, Nov 6; the growth seat's
    tags and the share fallback). Kept out of cot-chart.js so that file stays under its size budget.
 
    - Share this chart: the phone's share sheet with the market's link, else copy it.

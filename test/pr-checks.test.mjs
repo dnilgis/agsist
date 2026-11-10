@@ -1,5 +1,5 @@
 /**
- * pr-checks.yml runs the ship checks on every pull request to main (Sig, Oct 21 2026:
+ * pr-checks.yml runs the ship checks on every pull request to main (Oct 21 2026:
  * "make shipping faster without checking less"). scripts/dev/checks.sh stays the one
  * list of checks; the workflow calls it (node-test in shards, then --skip-node), so a
  * check added to checks.sh runs in the PR checks with no change to the workflow.
@@ -74,7 +74,7 @@ test('the workflow: the shards and --skip-node together run every check, and the
   assert.ok(m, 'node-tests has a shard matrix');
   const shards = m[1].split(',').map((s) => +s.trim());
   const N = shards.length;
-  // four shards (Sig, Oct 21); eight from Oct 29 (fx/cifast, "streamline that whole process"): split by
+  // four shards (Oct 21); eight from Oct 29 (fx/cifast, "streamline that whole process"): split by
   // measured time, eight shards end near the slowest single file (test/accuracy-sets-oct18, about 3 minutes)
   assert.equal(N, 8, 'eight shards');
   assert.deepEqual(shards, Array.from({ length: N }, (_, i) => i + 1));
@@ -89,7 +89,7 @@ test('the workflow: the shards and --skip-node together run every check, and the
   // no other job runs checks, and no job runs a check by hand beside the list; the guard runs two
   // named lines of checks.sh (the built-files guard and its inputs), the generated pages guard on a pull
   // request (Nov 4, 2026: scripts/generated_sets.py, test/generated-sets.test.mjs), the AI footer check on a pull
-  // request (Nov 4, 2026: BUILD-RULES 38, scripts/dev/ai_footer_check.py) and the test pick, nothing else
+  // request (Nov 4, 2026: build rule 38, scripts/dev/ai_footer_check.py) and the test pick, nothing else
   for (const j of Object.keys(jobs)) if (!['node-tests', 'other-checks', 'guard'].includes(j)) assert.doesNotMatch(jobs[j], /checks\.sh|node --test|python3? scripts\//, j);
   const g = jobs.guard;
   assert.deepEqual([...g.matchAll(/checks\.sh[^\n]*/g)].map((m) => m[0]), ['checks.sh --only=built-guard,built-inputs']);
@@ -229,7 +229,7 @@ test('skips the PR checks accept: only the listed halves of an either/or pair, a
   assert.equal(go('# skipped 1\n').status, 1, 'a count it cannot match to lines fails');
 });
 
-// Oct 29, 2026 (Sig: "yes do all five"): a pull request runs the tests its change can reach, main runs them all.
+// Oct 29, 2026: a pull request runs the tests its change can reach, main runs them all.
 test('the pick: the guard picks, the shards run the pick or every test, and every check still runs in full', () => {
   const g = jobs.guard;
   assert.match(g, /mode: \$\{\{ steps\.pick\.outputs\.mode \}\}/);
@@ -271,7 +271,7 @@ test('main-checks.yml: rebuilds the built files, then every test on that commit,
   const m = read('.github/workflows/main-checks.yml');
   const mc = m.split('\n').filter((l) => !l.trim().startsWith('#')).join('\n');
   assert.match(mc, /^on:\n  push:\n    branches: \[main\]\n    paths-ignore:\n/m);
-  // the nightly Sig approved (Oct 29) became every two hours on the Fetch Grain Bids chain, gated (BUILD-RULES 59,
+  // the nightly the owner approved (Oct 29) became every two hours on the Fetch Grain Bids chain, gated (build rule 59,
   // Nov 3; test/cron-gated.test.mjs holds the gate)
   assert.match(mc, /^  schedule:\n    - cron: '17 \*\/2 \* \* \*'/m);
   assert.match(mc, /^  workflow_dispatch:\n/m, 'merge-when-green.yml starts it after a merge');

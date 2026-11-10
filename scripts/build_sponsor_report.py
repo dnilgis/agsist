@@ -21,7 +21,7 @@ WHAT IT REPORTS, AND WHAT EACH THING MEANS
     by page               where it was seen
 
 SPLIT BY SLOT (Oct 29, 2026). Every ad tags its events with the parameter
-`slot` (components/sponsor-metrics.js), and Sig registered it in GA4 as the
+`slot` (components/sponsor-metrics.js), and the owner registered it in GA4 as the
 event-scoped custom dimension `customEvent:slot` on Oct 29, 2026. Every
 per-sponsor query filters on that sponsor's own slot names (sponsor_slots
 below), so two sponsors each get only their own rows. GA4 fills the dimension
@@ -71,7 +71,7 @@ OUTDIR = Path(os.environ.get("SPONSOR_PRIVATE_DIR") or (ROOT / "private" / "spon
 # The day the viewable rule became the MRC one.
 DEFINITION_CHANGED = "2026-09-05"
 
-# The registered custom dimension for the slot (Sig, Oct 29, 2026), and the
+# The registered custom dimension for the slot (Oct 29, 2026), and the
 # first day GA4 fills it. Before SLOT_SINCE every slot reads "(not set)".
 SLOT_DIMENSION = "customEvent:slot"
 SLOT_SINCE = "2026-10-29"
@@ -227,7 +227,7 @@ def geo_creative(geo_id):
 
 def page_creative(slot_ids):
     """A sold page ribbon's ad, from data/page-sponsors.json: the copy the
-    applicant typed and Sig approved. The same fields the ribbon draws."""
+    applicant typed and the owner approved. The same fields the ribbon draws."""
     try:
         d = json.loads((ROOT / "data" / "page-sponsors.json").read_text(encoding="utf-8"))
     except (OSError, ValueError):
@@ -368,14 +368,14 @@ def previews(c):
 # Never written to a portal, even if someone types them into data/sponsors.json:
 # every file in this repo is published, so a person's name, phone, email or
 # invoice address in a portal file is public. Who to call and where invoices go
-# live with Sig, in his own email, nowhere in the repo (Oct 19).
+# live with the owner, in his own email, nowhere in the repo (Oct 19).
 PRIVATE_BILLING_KEYS = ("invoice_contact", "invoice_to", "invoice_email", "contact", "email", "phone")
 
 
 def portal_extras(s):
     """What the portal needs beyond the numbers: the approval on record and the
     contract terms. All of it is read from data/sponsors.json, typed there by
-    Sig, never inferred. No contact: see PRIVATE_BILLING_KEYS.
+    The owner, never inferred. No contact: see PRIVATE_BILLING_KEYS.
 
     approved  {"proof": "xxxxxxxx", "on": "YYYY-MM-DD", "by": "name"} -- set when
               the approval email arrives. The portal shows APPROVED only when
@@ -408,7 +408,7 @@ def portal_extras(s):
         # their offices are: an agency licensed in a state with no office is
         # exactly the case this exists for.
         "licensedStates": licensed_states(s.get("licensed_states")),
-        # The day Sig took the ad down, as typed in data/sponsors.json. The
+        # The day the owner took the ad down, as typed in data/sponsors.json. The
         # portal's status reads "Ended <date>" instead of "Not started". Only a
         # YYYY-MM-DD day counts; anything else is treated as not ended.
         "ended": s.get("ended") if isinstance(s.get("ended"), str) and re.match(r"^\d{4}-\d{2}-\d{2}$", s.get("ended")) else None,
@@ -804,9 +804,9 @@ def sponsor_payload(s, ga, end, conf_sponsors, today=None):
     slug = s["slug"]
     pages = s.get("pages")          # None = every page
     start = s.get("start")
-    # A STATE-TARGETED AD SWITCHED ON BY HAND (Oct 28, 2026: Sig said start
+    # A STATE-TARGETED AD SWITCHED ON BY HAND (Oct 28, 2026: the owner said start
     # for RootLot; it goes live the day the change merges). Nobody types the
-    # day it first ran, so 'count_from' (the day Sig said start; nothing of
+    # day it first ran, so 'count_from' (the day the owner said start; nothing of
     # it could run before) is where GA4 is asked from, and the portal's
     # "live since" is the FIRST DAY WITH DATA, found below. Until a day has
     # data the counts are 0, never blank and never another ad's.
@@ -977,7 +977,7 @@ def main():
     #  is both of their numbers, handed to each of them as their own, and
     #  neither would have any way to notice.
     #
-    #  So this refuses rather than guesses. Sig registered `slot` on Oct 29,
+    #  So this refuses rather than guesses. The owner registered `slot` on Oct 29,
     #  2026 and SLOT_DIMENSION is set, so this no longer fires. That is safe
     #  only because every per-sponsor query now filters on the sponsor's
     #  slots: GA4Reader.request raises on a query without them (tested in

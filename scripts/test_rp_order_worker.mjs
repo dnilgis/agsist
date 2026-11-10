@@ -2,7 +2,7 @@
 // (POST /rp-order, GET /rp-order/list, POST /rp-order/serial) against an
 // in-memory KV and a stand-in for Stripe's Checkout Sessions list. No network.
 //   node scripts/test_rp_order_worker.mjs
-// The real case (2026-10-20): Sig paid $19 for a digital file and Stripe's
+// The real case (2026-10-20): the owner paid $19 for a digital file and Stripe's
 // payment page showed no design. The refs here are the formats the page sends:
 // a design code, GIFT-<code>, RPS-<id> and GIFT-RPS-<id>.
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path';
@@ -38,7 +38,7 @@ const recs = () => [...store.keys()].filter(k => k.startsWith('rpo:')).sort();
 // newest by insertion: keys are rpo:<ms>:<rand>, so two orders in the same millisecond sort by the random part
 const newest = () => JSON.parse(store.get([...store.keys()].filter(k => k.startsWith('rpo:')).pop()));
 
-// Sig's own test order, Oct 20: Chetek WI, Staircase, "Gustum Farm", Apr 1 "Moved in" (the year here is only for the test)
+// The owner's own test order, Oct 20: Chetek WI, Staircase, "Gustum Farm", Apr 1 "Moved in" (the year here is only for the test)
 const sig = { place: 'Chetek, WI', station: '471667 2', year: 2025, style: 'r1', name: 'Gustum Farm', markers: [{ date: '2025-04-01', label: 'Moved in' }] };
 const sigCode = RP.encodeCode(sig);
 const sigRec = RP.orderRecord(sig, RP.checkoutRef(sigCode, false, null), 'digital', 19);
@@ -89,7 +89,7 @@ r = await post(sigRec, { Origin: 'https://evil.example' }); A(r.status === 403, 
 r = await post(sigRec, { 'Content-Type': 'text/plain' }); A(r.status === 415, 'not JSON refused');
 A(recs().length === 4, 'four records so far');
 
-// ---------- the list: Sig only ----------
+// ---------- the list: the owner only ----------
 r = await admin('/rp-order/list', 'GET', null, ''); A(r.status === 403, 'no token: refused');
 r = await admin('/rp-order/list?token=tok', 'GET', null, ''); A(r.status === 403, '?token= refused');
 r = await admin('/rp-order/list', 'GET', null, 'Bearer nope'); A(r.status === 403, 'wrong token refused');
@@ -109,7 +109,7 @@ A(prints[1].fulfill_url.endsWith('&maker=1&serial=3') && prints[1].frame_color =
 A(j.serial_last === 1 && !store.has('rpo-serial'), 'no counter stored: last is 1; nothing handed out without a confirmed payment');
 A(!JSON.stringify(j).includes('@'), 'no email anywhere in the list');
 
-// the last serial Sig already used
+// the last serial the owner already used
 r = await admin('/rp-order/serial', 'POST', { last: -1 }); A(r.status === 400, 'serial: negative refused');
 r = await admin('/rp-order/serial', 'POST', { last: 2.5 }); A(r.status === 400, 'serial: not whole refused');
 r = await admin('/rp-order/serial', 'POST', { last: 3 }, ''); A(r.status === 403, 'serial: Sig only');
@@ -241,7 +241,7 @@ console.log('rp-order worker checks: ' + n + ' passed');
 
   let h = await hook(event(), signed(event())); A(h.status === 503, 'webhook: no secret set, refused');
   env.STRIPE_WEBHOOK_SECRET = SECRET;
-  // a fresh press of Sig's design to be paid
+  // a fresh press of the owner's design to be paid
   await post(sigRec);
   const pressKey = recs().map(k => [k, JSON.parse(store.get(k))]).filter(([, r]) => r.ref === sigCode && !r.paid).sort((a, b) => b[1].ts - a[1].ts)[0][0];
   const body = event();
@@ -257,7 +257,7 @@ console.log('rp-order worker checks: ' + n + ' passed');
   A(!JSON.stringify([...store.values()]).includes('example.com') && !JSON.stringify([...store.values()]).includes('Pat Example'), 'webhook: nothing about the buyer kept');
   h = await hook(body, signed(body)); hj = await h.json(); A(hj.ok && hj.already === true, 'webhook: the same session again changes nothing');
   A(dispatches.length === 0, 'no dispatch without a token');
-  // a framed print by webhook, with the dispatch token: serial and the job started, dry run until Sig says live
+  // a framed print by webhook, with the dispatch token: serial and the job started, dry run until the owner says live
   env.GH_DISPATCH_TOKEN = 'ghp_x';
   await post(RP.orderRecord(long, longRef, 'framed12x18', 89));
   const before = JSON.parse(store.get('rpo-serial')).last;
@@ -267,6 +267,19 @@ console.log('rp-order worker checks: ' + n + ' passed');
   A(JSON.parse(dispatches[0].body).inputs.dry_run === 'true', 'dry run until RP_BUYER_EMAIL_LIVE is 1');
   const fr2 = recs().map(k => JSON.parse(store.get(k))).find(r => r.paid && r.paid.session === 'cs_live_framed2');
   A(fr2 && fr2.serial === before + 1 && JSON.parse(store.get('rpo-serial')).last === before + 1, 'webhook: a framed print gets the next serial');
+  A(fr2 && fr2.dispatch && fr2.dispatch.job === 'started' && typeof fr2.dispatch.at === 'string', 'v5.66: the job start is kept on the order');
+  A(!JSON.stringify(fr2.dispatch).includes('ghp_'), 'v5.66: never the token on the record');
+  // v5.66: an expired token (GitHub answers 401): still 200 to Stripe, but the failed start stays on the order
+  const fetchOk = globalThis.fetch;
+  globalThis.fetch = async (u, o) => { dispatches.push({ u: String(u), body: o && o.body }); return new Response(null, { status: 401 }); };
+  await post(RP.orderRecord(long, 'RPS-K7Q2N', 'print12x18', 45));
+  const b401 = event({ id: 'cs_live_dead401', client_reference_id: 'RPS-K7Q2N', amount_subtotal: 4500, amount_total: 4500 });
+  h = await hook(b401, signed(b401)); hj = await h.json();
+  A(h.status === 200 && hj.job === 'HTTP 401', 'v5.66: a refused start answers 200 with the reason');
+  const dead = recs().map(k => JSON.parse(store.get(k))).find(r => r.paid && r.paid.session === 'cs_live_dead401');
+  A(dead && dead.dispatch && dead.dispatch.job === 'HTTP 401' && !dead.mailed, 'v5.66: the failed start is kept on the paid, unmailed order');
+  globalThis.fetch = fetchOk;
+  dispatches.length = 1;
   env.RP_BUYER_EMAIL_LIVE = '1';
   // async: completed but unpaid is ignored, async_payment_succeeded counts
   const b3 = event({ id: 'cs_live_async3', payment_status: 'unpaid', client_reference_id: 'GIFT-RPS-K7Q2M', amount_subtotal: 4500, amount_total: 4500 });
@@ -274,7 +287,7 @@ console.log('rp-order worker checks: ' + n + ' passed');
   const b4 = event({ id: 'cs_live_async3', payment_status: 'paid', client_reference_id: 'GIFT-RPS-K7Q2M', amount_subtotal: 4500, amount_total: 4500 }, 'checkout.session.async_payment_succeeded');
   h = await hook(b4, signed(b4)); hj = await h.json();
   A(hj.job === 'started' && JSON.parse(dispatches[1].body).inputs.dry_run === 'false', 'webhook: async success counts; live when Sig says');
-  // a paid session with no press: its own record, so Sig still sees it
+  // a paid session with no press: its own record, so the owner still sees it
   const b5 = event({ id: 'cs_live_bare5', client_reference_id: null, amount_subtotal: 4500, amount_total: 4500 });
   h = await hook(b5, signed(b5)); A((await h.json()).ok, 'webhook: a bare payment link is taken');
   const bare = recs().map(k => JSON.parse(store.get(k))).find(r => r.paid && r.paid.session === 'cs_live_bare5');
@@ -286,10 +299,18 @@ console.log('rp-order worker checks: ' + n + ' passed');
   const L = await (await admin('/rp-order/list')).json();
   A(L.orders.filter(o => o.paid && o.paid.session === 'cs_live_a1B2c3').length === 1, 'the poll leaves a webhook-paid session alone');
   A(L.orders.some(o => o.no_press && o.fulfill_url === ''), 'a record with no design has no maker link');
+  A(L.orders.some(o => o.paid && o.paid.session === 'cs_live_dead401' && o.dispatch && o.dispatch.job === 'HTTP 401'), 'v5.66: /rp-order/list carries the failed start');
   // the alert mark
   let m = await admin('/rp-order/alerted', 'POST', { key: pressKey }); let mj = await m.json();
   A(mj.ok && mj.already === false && mj.alerted.session === 'cs_live_a1B2c3', 'alerted: marked');
   m = await admin('/rp-order/alerted', 'POST', { key: pressKey }); A((await m.json()).already === true, 'alerted: once');
+  // v5.66: the hourly guard's once-per-order mark
+  m = await admin('/rp-order/guarded', 'POST', { key: pressKey }); mj = await m.json();
+  A(mj.ok && mj.already === false && mj.guarded.session === 'cs_live_a1B2c3', 'v5.66 guarded: marked');
+  m = await admin('/rp-order/guarded', 'POST', { key: pressKey }); A((await m.json()).already === true, 'v5.66 guarded: once');
+  const LG = await (await admin('/rp-order/list')).json();
+  A(LG.orders.some(o => o.key === pressKey && o.guarded && o.guarded.session === 'cs_live_a1B2c3'), 'v5.66 guarded: on /rp-order/list');
+  m = await admin('/rp-order/guarded', 'POST', { key: 'nope' }); A(m.status === 400, 'v5.66 guarded: a bad key is refused');
   globalThis.fetch = realFetch;
   console.log('rp-order webhook checks: ' + n + ' passed');
 }
@@ -415,7 +436,7 @@ console.log('rp-order worker checks: ' + n + ' passed');
   store.set('rps:K7Q2M', RP.encodeCode(lg).replace(/^GIFT-/, ''));
   r = await issue({ order_key: lgKey }); j = await r.json();
   A(j.ok && JSON.parse(store.get(j.key)).lock.design_code === RP.encodeCode(lg).replace(/^GIFT-/, '') && JSON.parse(store.get(j.key)).product === 'print12x18', 'gift card: a long gift locks to its full design');
-  // Sig's own "already redeemed" card (the giver gave the address) reads as prepaid too
+  // The owner's own "already redeemed" card (the giver gave the address) reads as prepaid too
   r = await issue({ product: 'print12x18', order_ref: 'RP-1042', lock: { design_code: gPlain }, already_redeemed: true }); j = await r.json();
   r = await pub('/rp-gift/check', { code: j.code }); A((await r.json()).prepaid === true, 'check: an already-redeemed card from the desk is prepaid');
   r = await issue({ product: 'print12x18', order_ref: 'RP-1043' }); j = await r.json();
@@ -424,7 +445,7 @@ console.log('rp-order worker checks: ' + n + ' passed');
   console.log('rp-order gift card checks: ' + n + ' passed');
 }
 
-// ---------- v5.63: the frame color (Sig, Nov 4: oak, picked first, or black) ----------
+// ---------- v5.63: the frame color (Nov 4: oak, picked first, or black) ----------
 {
   store.clear(); n = 0;
   // one record a few ms apart, so the newest key is the last post

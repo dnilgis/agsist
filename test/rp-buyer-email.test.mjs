@@ -1,7 +1,6 @@
-/* The Rain Print buyer's email (Sig, 2026-10-20: "send the buyer a proof of
- * what they purchased and the letter that will accompany the gift").
- *   - scripts/rp_buyer_email.py --selftest: who gets it (the buyer, or Sig only
- *     for a dry run, a test-mode session or his own address), once per paid
+/* The Rain Print buyer's email (2026-10-20).
+ *   - scripts/rp_buyer_email.py --selftest: who gets it (the buyer, or the owner only
+ * for a dry run, a test-mode session or his own address), once per paid
  *     session, counts only in the log, the words;
  *   - scripts/rp_buyer_render.mjs in a real browser on a local copy of the
  *     site: the proof is the page's own preview of the exact design, the

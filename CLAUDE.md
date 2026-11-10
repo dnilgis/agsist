@@ -1,7 +1,7 @@
 # agsist
 
-Static site (GitHub Pages). Before building, read notes/HANDOFF.md (section START HERE), notes/STANDING-DECISIONS.md and
-notes/BUILD-RULES.md in the owner's private repo (dnilgis/feedbag, branch restoredcode).
+Static site (GitHub Pages). Before building, read notes/HANDOFF.md (START HERE), notes/STANDING-DECISIONS.md and
+notes/BUILD-RULES.md in the private notes repo (dnilgis/feedbag, branch restoredcode).
 
 - Never commit on main; work on an fx/* branch in its own worktree and open a pull request.
 - The gate is the PR checks (.github/workflows/pr-checks.yml). While building: scripts/dev/quick.sh. The full

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
-"""The weekly re-test engine (god's-eye panel build 3, the "insight machine", task 25; Sig, Oct 27 2026).
+"""The weekly re-test engine (god's-eye panel build 3, the "insight machine", task 25; Oct 27 2026).
 
 WHAT IT DOES. Re-runs every pre-registered relationship in scripts/insight_registry.json on the
 history we hold, the same way each week, and appends one result row per spec to a private ledger.
-It never publishes anything. When a spec meets every condition of Sig's "printable" rule except
-his yes, its row says eligible (for Sig's review) and the run's log line and the Monday morning
+It never publishes anything. When a spec meets every condition of  rule except
+his yes, its row says eligible (for the owner's review) and the run's log line and the Monday morning
 report list it by id, counts only.
 
-PRINTABLE (STANDING-DECISIONS, Oct 27 2026: "yes to all"): held-out test + placebo shuffle +
-multiple-comparison correction across the whole test ledger + two seasons + Sig's yes, per test.
+PRINTABLE (a site rule, Oct 27 2026: "yes to all"): held-out test + placebo shuffle +
+multiple-comparison correction across the whole test ledger + two seasons + the owner's yes, per test.
 Here, a scored spec is:
   holdout   beats its benchmark on data the fit never saw: the bootstrap range of the gain
             (or of the contagion net) sits above zero and the sign is the one registered
@@ -27,7 +27,7 @@ Here, a scored spec is:
             its first result, or the run broke)
   eligible  HOLDS, the same sign on the spec's last scored re-test, the minimum effect, and no
             sig_yes yet
-  min effect (Sig, Nov 4 2026, site panel call 1): skill of at least MIN_SKILL (5%) over the
+  min effect (Nov 4 2026, site panel call 1): skill of at least MIN_SKILL (5%) over the
             benchmark (1 - model MAE / benchmark MAE on the holdout) AND the gain above zero in the
             latest scored season. barge-change-leads-spread-v1 held every test and was eligible
             with skill 1.4% (0.11c on an 8.07c error) and a 2026 season below zero: printable by
@@ -94,7 +94,7 @@ SHUFFLES, SHUFFLES_NEAR, NEAR_P = 1000, 5000, 0.01
 SHUFFLES_LINE = 20000      # when p is within 10x the ledger-wide line
 LINE = [None]              # alpha / M for this run (set by run())
 BOOT = 1000
-MIN_SKILL = 0.05           # minimum effect for "eligible": 5% better than the benchmark (Sig, Nov 4 2026)
+MIN_SKILL = 0.05           # minimum effect for "eligible": 5% better than the benchmark (Nov 4 2026)
 CHECK_PAIRS = []           # selftest only: compare the matrix counts with a pair-by-pair count
 BLOCK_WEEKS = 8            # weekly placebo: shuffle 8-week blocks, not single weeks (autocorrelation)
 WEEKDAY_RUN = 6            # Sunday (Python weekday), Central time
@@ -1007,7 +1007,7 @@ def span(years):
 
 # ------------------------------------------------------------------ the gate
 def min_effect(c, min_skill=MIN_SKILL):
-    """Sig's Nov 4 2026 minimum effect. Pure. -> {skill, min_skill, latest_season, latest_gain, pass, why}.
+    """the owner's Nov 4 2026 minimum effect. Pure. -> {skill, min_skill, latest_season, latest_gain, pass, why}.
     skill = 1 - model MAE / benchmark MAE on the holdout (the engine's own figure when it wrote one);
     the latest season is the last scored one in the core's by_season (written in season order)."""
     ho = c.get("holdout") or {}
@@ -1456,7 +1456,7 @@ def selftest():
     ck("HOLDS again with the same sign: eligible for Sig's review", rws2[0]["eligible"] and rws2[0]["sign_stable"], rws2[0])
     rws3 = gate(regG, {"ga-v1": dict(good, sign=-1, estimate=-2.0), "gb-v1": good}, prev, today, M)
     ck("sign flipped since the last re-test: not eligible", not rws3[0]["eligible"], rws3[0])
-    # the minimum effect (Sig, Nov 4 2026): barge-change-leads-spread-v1 as the ledger had it on Nov 1,
+    # the minimum effect (Nov 4 2026): barge-change-leads-spread-v1 as the ledger had it on Nov 1,
     # HOLDS twice with the same sign, gain 0.11c on an 8.07c benchmark error (skill 1.4%), 2026 below zero
     barge = dict(good, estimate=0.11, holdout={"pass": True, "mae_model": 7.96, "mae_benchmark": 8.07, "skill": 0.013631},
                  seasons={"pass": True, "good": 3, "closed": 4, "by_season": {"2023": 0.3, "2024": 0.2, "2025": 0.1, "2026": -0.05}})

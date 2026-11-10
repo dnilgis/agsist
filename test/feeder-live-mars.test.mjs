@@ -1,5 +1,5 @@
 // The live AGSIST USDA feeder steer index reads USDA My Market News (MARS) first and the barn
-// PDFs only for a barn and week MARS lacks (Sig, Nov 2 2026: "Ship + use USDA live"), and never
+// PDFs only for a barn and week MARS lacks (Nov 2 2026), and never
 // counts one sale twice. Real cases: Oklahoma National Stockyards (report 1280), whose Monday
 // sale was stored a second time under the Tuesday its Final came out, in the weeks of Oct 19
 // and Oct 26 2026 (data/feeder-index.json on main, Nov 2 2026), and Joplin (1245) as MARS sent it.

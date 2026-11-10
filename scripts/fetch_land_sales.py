@@ -179,11 +179,11 @@ STATES.update({
         "source": "Florida Department of Revenue, sale data file and assessment roll",
         "short": "Florida sale data file",
         "pages": [], "links": [],
-        # since_note is set from the years read (fl_since); every year and every deed is kept (Sig, Nov 5: option A)
+        # since_note is set from the years read (fl_since); every year and every deed is kept (Nov 5: option A)
         "since_note": "Florida's sale data files give the month of each sale, not the day, and carry no buyer or seller names.",
         "terms": "public records published by the Florida Department of Revenue; confidential owners removed by the state",
         "dates": "month",
-        # served from the public agsist-data repo, not this site (Sig, Nov 5): written with --to <agsist-data checkout>
+        # served from the public agsist-data repo, not this site (Nov 5): written with --to <agsist-data checkout>
         "host": "agsist-data",
         "max_mb": 200,
     },
@@ -390,7 +390,7 @@ COLS = {
     # New Jersey: 1 when the deed names land whose acres the files cannot give (nj_table); read as acres uncertain
     "acx": ["ACRESUNKNOWN"],
     "exempt": ["EXEMPTION", "EXEMPTIONNUMBER", "EXEMPTNUMBER", "FEEEXEMPT", "EXEMPTIONCODE", "TRANSFERFEEEXEMPTION", "TRANSFEREXEMPTIONNUMBER"],
-    # The sale detail panel (Sig, Nov 4, 2026: "every detail about the sale that is pertinent"), EXTRA below:
+    # The sale detail panel (Nov 4, 2026), EXTRA below:
     # Illinois Line 12a personal property in the price; Wisconsin rights the seller keeps and Managed Forest Law acres;
     # Vermont financing, use before and after, the town's listed value; New Jersey's main lot assessed land and
     # building values, their list year, living space and year built (SR-1A).
@@ -778,7 +778,7 @@ def build(st, recs, gaz, now, prior=None, months=None):
         # Each county gets its own copy of cols: add_column changes the list it is given (Nov 3).
         land_keys.add_column(doc, GEO)
         check_rows(doc)
-        # no name in a county file (lead decision on PR 324, Nov 4, 2026; Sig's Oct 27 names-on-tap rule): the names
+        # no name in a county file (decision on PR 324, Nov 4, 2026; Oct 27 names-on-tap rule): the names
         # go to data/land/<st>/names/<fips>.json, si and bi stay (scripts/land_names.py). Holds only grow: the legals the
         # county's names file held on the last run seed this split, so a window roll or a word that stops being rare
         # never puts a held legal back in the county file (checker, Nov 5; every state, not only WI's held() path)
@@ -2958,7 +2958,7 @@ def refiled_dedupe(recs):
 def trim(recs, done, st=None):
     """The next cut when a state's files are over the cap: first farm sales of 10 acres or more
     (any parcel's acres; a return with no acres at all is dropped), then the oldest filing year,
-    one year at a time. None when nothing is left to cut. Florida is never cut (Sig, Nov 5: every year, every deed)."""
+    one year at a time. None when nothing is left to cut. Florida is never cut (Nov 5: every year, every deed)."""
     if "10+ acres" not in done:
         return [r for r in recs if max(r.get("acres") or 0, r.get("ac1") or 0, r.get("acany") or 0) >= 10], "10+ acres"
     yrs = sorted({(r.get("rec") or r["date"])[:4] for r in recs})

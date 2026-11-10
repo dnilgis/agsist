@@ -1,4 +1,4 @@
-/* County land values where sale prices are not public record (Sig, Oct 29, 2026 priority queue:
+/* County land values where sale prices are not public record (Oct 29, 2026 priority queue:
  * ND Trust Lands, the K-State Kansas book). scripts/build_land_survey.py reads the PDFs into
  * data/land/nd/survey.json and data/land/ks/survey.json; scripts/build_atlas_pages.py puts one
  * labeled line on each county's land card; scripts/build_land_sales.py names both on the hub.

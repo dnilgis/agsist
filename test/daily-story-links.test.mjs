@@ -1,4 +1,4 @@
-/* The Daily's top stories on the web (Sig, Nov 2): since PR #237 each story in
+/* The Daily's top stories on the web (Nov 2): since PR #237 each story in
  * outside_the_pit carries the publisher's link and the source name, and the email
  * shows them. /daily (daily.html) and the home page Daily card (components/home.js)
  * now draw each title as a link (rel="noopener nofollow") with the source in small

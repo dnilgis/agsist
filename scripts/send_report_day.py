@@ -597,7 +597,7 @@ def main(argv=()):
         LINK_IDS["reader@example.com"] = email_links.SAMPLE_LID
         m = build_email(day, b, "reader@example.com", from_name, from_addr, reply_to)
         print("SUBJECT: " + str(m["Subject"]))
-        print("would send to %d reader(s)" % len(recipients))
+        print("would send to the report-day list")
         print("-" * 60)
         print(m.get_body(("plain",)).get_content())
         print("dry run complete -- nothing sent, no flag set")
@@ -658,12 +658,12 @@ def main(argv=()):
             conn.quit()
         except Exception:
             pass
-    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to Sig is dry
+    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to the owner is dry
     print("sent " + str(sent) + "/" + str(len(recipients)))
     if sent > 0:
         flag(day, set_it=True)
     if failed:
-        # Full addresses go to Sig by private mail; the public annotation gets
+        # Full addresses go to the owner by private mail; the public annotation gets
         # the count and masked addresses only.
         mailed = log_safe.owner_mail("AGSIST report email %s: %d of %d did not send" % (day, len(failed), len(recipients)),
                                      ["Resend to these addresses individually (the report is flagged):", ""] + failed)

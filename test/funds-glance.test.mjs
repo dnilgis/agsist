@@ -1,12 +1,11 @@
-/* COT at a glance and the Funds this week email (2026-11-04, Sig: "concise and to the point at
- * first glance, with an option to get the report by email"; the counts file showed no cot list).
+/* COT at a glance and the Funds this week email (2026-11-04,; the counts file showed no cot list).
  *   - /cot opens with the crowded verdict when it fits one line (else the report's dates), then the
- *     52-week chart with one brief line for the market picked (Nov 5, Sig: "KISS"; test/cot-chart.test.mjs),
+ *     52-week chart with one brief line for the market picked (Nov 5,; test/cot-chart.test.mjs),
  *     every market as a table row behind one "All markets" tap, then a "Get this every Friday by email"
  *     ask that posts topic cot, then the details behind one tap; no sentence per market;
  *   - the home COT card shows the top three markets in the reader's order as short rows (market, long
  *     or short, change), the ask and the ranges behind taps;
- *   - the sentence form (line(), lines()) is kept in cot-glance.js and tested here;
+ *   - the sentence form (line, lines) is kept in cot-glance.js and tested here;
  *   - the home card's "Since <report day>" price change compares the HEADLINE contract with itself
  *     (AgPxStamp.headline, #320): Jan '27 soybeans on Nov 4, Mar '27 corn after Nov 30, never the
  *     continuous front month;
@@ -14,7 +13,7 @@
  *     and the COT file keeps each dated contract's report-day close (scripts/enrich_cot_prices.py).
  * Frozen inputs: test/fixtures/funds (cot.json, cot-analysis.json and cot-history.json for the Oct 27, 2026 report; the
  * px_by_contract closes in it are made up for the test) and test/fixtures/soyroll2/prices-2026-11-04.json.
- * The browser parts route every outside host to a stub or abort and block service workers (BUILD-RULES 58).
+ * The browser parts route every outside host to a stub or abort and block service workers (build rule 58).
  *
  *   node --test test/funds-glance.test.mjs
  */
@@ -306,7 +305,7 @@ test("after a Daily signup One more? keeps a Funds this week row even with ZIP, 
   const run = async (init) => {
     const { pg, posts } = await open(browser, port, "/index.html", { width: 390, own: { "/data/rain/ia.json": rain }, init });
     await pg.waitForFunction(() => !!document.body);
-    if (!(await pg.evaluate(() => !!(window.AgsistSignup && window.AgsistSignup.oneMore)))) await pg.addScriptTag({ url: "/components/signup-ask.js?v=21" });
+    if (!(await pg.evaluate(() => !!(window.AgsistSignup && window.AgsistSignup.oneMore)))) await pg.addScriptTag({ url: "/components/signup-ask.js?v=22" });
     await pg.waitForFunction(() => window.AgsistSignup && window.AgsistSignup.oneMore);
     await pg.evaluate(() => { const h = document.createElement("div"); h.id = "t-host"; document.body.prepend(h);
       window.AgsistSignup.oneMore(h, { gave: "daily", email: "reader@example.com", zip: "50010", fips: "19169" }); });

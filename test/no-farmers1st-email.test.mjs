@@ -1,7 +1,7 @@
-// Sig, 2026-10-22: the site's public email addresses are on agsist.com (sig@, privacy@,
+// 2026-10-22: the site's public email addresses are on agsist.com (sig@, privacy@,
 // news@, bids@). No farmers1st.com email address may appear anywhere in the repo:
 // pages, generated pages, data, scripts, workers, workflows or tests. Links to the
-// farmers1st.com website that identify Sig (sameAs, "about me") are fine; only an
+// farmers1st.com website that identify the owner (sameAs, "about me") are fine; only an
 // address (name@ or name%40 the domain) fails. The allow-list is empty on purpose.
 import { test } from "node:test";
 import assert from "node:assert/strict";

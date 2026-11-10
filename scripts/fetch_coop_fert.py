@@ -12,9 +12,7 @@ WHY IT LIVES HERE AND NOT IN dnilgis/bids
 
 WHERE THE CO-OPS COME FROM
   scripts/coop_fert_sources.json, one line per co-op: the four co-op price
-  pages Sig sent on 2026-10-15. Nothing searches for more (Sig, Oct 15: "stop
-  looking for fertilizer prices for now and just use the pricing data that i
-  provided"). A one-off discovery run that day asked 273 Barchart/AgriCharts
+  pages the owner sent on 2026-10-15. Nothing searches for more (Oct 15). A one-off discovery run that day asked 273 Barchart/AgriCharts
   co-op sites from the dnilgis/bids lists and found no others posting prices. Parsers go by page
   LAYOUT, not by co-op, so a new co-op with a known layout is one config line:
     html-table  a price table typed into a Barchart / AgriCharts co-op page
@@ -25,8 +23,7 @@ WHERE THE CO-OPS COME FROM
                 The entry may give "index" (a page on the co-op's site that
                 links the current sheet); the newest dated sheet linked there
                 is read, else "url".
-    sheet       a price list the co-op sent Sig rather than posts (Sig, Oct 16:
-                "just publish prices as a new coop"). Its rows are typed into
+    sheet       a price list the co-op sent the owner rather than posts (Oct 16). Its rows are typed into
                 the config line itself: "rows": [{raw, cash, charge, date}].
                 No fetch. The rows go through the same checks as every other
                 co-op (bands, cash not above charge, the 60-day stale rule);

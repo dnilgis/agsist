@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-/* "Your county this week" for the Thursday Daily (Sig, Oct 27 2026: inside the existing Daily
+/* "Your county this week" for the Thursday Daily (Oct 27 2026: inside the existing Daily
  * slots; no new list, sender or cron). scripts/send_daily.py runs this once per send with the
  * ZIP points of the readers who ticked it and saved a place, on stdin:
  *

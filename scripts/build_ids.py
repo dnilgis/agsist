@@ -7,6 +7,7 @@ Writes, under data/ids/:
   ambiguous.json     keys that matched more than one facility; listed, never guessed
   ownership-changes.json  (input, by hand) dated ownership changes; marks parent/status on elevators.json
   board-parents.json parent company and destination buyer per bids board, from evidence (board_parents.py)
+  companies.json     company ids joining facilities on evidence only, never a name; ids never reused (company_ids.py)
   parcel-rules.json  the parcel key rule per state, in words, and the repeat-sale counts
   parcel-key-fixtures.json  pid -> key pairs from this file; test/ids.test.mjs checks parcel-key.js agrees
 
@@ -57,7 +58,8 @@ from collections import Counter, defaultdict
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)
 sys.path.insert(0, HERE)
-from build_cash_bid_pages import op_key as _op_key, town_key  # noqa: E402  (the cash-bid pages' own keys)
+from build_cash_bid_pages import town_key  # noqa: E402  (the cash-bid pages' own keys)
+from elevator_names import trade_key as _op_key  # noqa: E402  (the one elevator name key)
 from build_state_basis_pages import STATE_NAMES, town_text  # noqa: E402
 from elevator_names import display_name  # noqa: E402
 
@@ -830,17 +832,73 @@ def load_changes(root):
         return {"events": []}
 
 
-def apply_changes(recs, changes, today):
+def merge_map(ledger):
+    """{old id: the id it went into} from the id ledger: merges, retirements and returns, in event order (a later
+    event wins), then the ledger's own into fields for any id no event names. A returned id is live again."""
+    m = {}
+    for e in (ledger or {}).get("events") or []:
+        if e.get("merge") and e.get("into"):
+            m[e["merge"]] = e["into"]
+        elif e.get("retire") and e.get("into"):
+            m[e["retire"]] = e["into"]
+        elif e.get("back") and e.get("from"):
+            m[e["from"]] = e["back"]
+            m.pop(e["back"], None)
+    for part in ("minted", "retired"):
+        for k, v in ((ledger or {}).get(part) or {}).items():
+            if isinstance(v, dict) and v.get("into") and k not in m:
+                m[k] = v["into"]
+    return m
+
+
+def id_resolver(ledger, live):
+    """fid -> the live record id it is now, or None. A live id is itself; a merged or retired id follows the ledger
+    (a into b into c gives c); a cycle or a chain that ends on no live record gives None (skipped, never minted).
+    Every reader of the ownership change log resolves through this (apply_changes, board_parents, company_ids)."""
+    live = set(live)
+    m = merge_map(ledger)
+
+    def resolve(fid):
+        seen = set()
+        while fid not in live:
+            if fid in seen or fid not in m:
+                return None
+            seen.add(fid)
+            fid = m[fid]
+        return fid
+    return resolve
+
+
+def follow_changes(changes, resolve):
+    """The change log with every facility id resolved (id_resolver); an id with no live survivor is left out.
+    resolve None: the log as given."""
+    if resolve is None:
+        return changes or {"events": []}
+    out = dict(changes or {})
+    evs = []
+    for e in (changes or {}).get("events") or []:
+        fs = []
+        for fid in e.get("facilities") or []:
+            r = resolve(fid)
+            if r and r not in fs:
+                fs.append(r)
+        evs.append(dict(e, facilities=fs))
+    out["events"] = evs
+    return out
+
+
+def apply_changes(recs, changes, today, resolve=None):
     """Mark facilities from the ownership change log. parent: a completed change that names a date on or
     before today (never a pending one); status: closing, closed, for sale, pending or lease. Only the two
-    optional fields are written; name, company and id are never touched (a board's own posted name wins),
-    and an event naming an id that is not a record is skipped, never minted. Returns the number marked."""
+    optional fields are written; name, company and id are never touched (a board's own posted name wins).
+    resolve (id_resolver): an id merged into another record marks the survivor; an event naming an id with no
+    live record is skipped, never minted. Returns the number marked."""
     by_id = {r["id"]: r for r in recs}
     for r in recs:
         r.pop("parent", None)
         r.pop("status", None)
     marked = set()
-    for e in changes.get("events") or []:
+    for e in follow_changes(changes, resolve).get("events") or []:
         if e.get("noop"):
             continue
         for fid in e.get("facilities") or []:
@@ -865,7 +923,8 @@ def changes_only(root, out_dir, today, log=print):
     does the same inside build()). Idempotent."""
     path = os.path.join(out_dir, "elevators.json")
     doc = read_json(path)
-    n = apply_changes(doc["elevators"], load_changes(root), today)
+    resolve = id_resolver(load_ledger(os.path.join(out_dir, "elevator-ids.json")), (r["id"] for r in doc["elevators"]))
+    n = apply_changes(doc["elevators"], load_changes(root), today, resolve)
     doc["counts"]["with_ownership_change"] = n
     write_json(path, doc, compact=True)
     log(f"[ids] ownership changes: {n} facilities marked")
@@ -885,8 +944,9 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     groups, ambiguous, rules = assign(anchors, keys, ledger, today, folded_ids(directory))
     counties = Counties(os.path.join(root, "data", "atlas", "counties.geo.json"))
     recs = build_records(anchors, keys, sched, groups, counties, ambiguous)
-    changes = load_changes(root)
-    marked = apply_changes(recs, changes, today)
+    resolve = id_resolver(ledger, (r["id"] for r in recs))
+    changes = follow_changes(load_changes(root), resolve)   # every reader below gets live ids
+    marked = apply_changes(recs, changes, today, resolve)
     kinds = Counter()
     multi = 0
     for r in recs:
@@ -933,10 +993,24 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
         log(f"[ids] board parents not rebuilt: data/index.json not readable ({type(e).__name__})")
     if index:
         import board_parents
-        bp = board_parents.build(directory, index, today, changes)
+        bp = board_parents.build(directory, index, today, changes, resolve)
         write_json(os.path.join(out_dir, "board-parents.json"), bp)
         log(f"[ids] board parents: {bp['counts']['with_parent']} of {bp['counts']['live_boards']} live boards with a "
             f"parent {bp['counts']['parent_by_rule']}, {bp['counts']['with_dest']} with a destination")
+    # company ids on evidence only (scripts/company_ids.py, Nov 9 2026). A stop (too many ids lost in one run)
+    # keeps the last file and never costs the ids above.
+    if index:
+        import company_ids
+        cpath = os.path.join(out_dir, "companies.json")
+        try:
+            cdoc = company_ids.build(directory, index, recs, read_json(os.path.join(out_dir, "board-parents.json")),
+                                     changes, company_ids.load(cpath), today, resolve)
+            company_ids.write(cpath, cdoc)
+            c = cdoc["counts"]
+            log(f"[ids] companies: {c['companies']} ids over {c['facilities_with_company']} of {c['facilities']} "
+                f"facilities, links {c['links_by_type']}, held {c['held']}")
+        except SystemExit as e:
+            log(f"[ids] companies not rebuilt: {e}")
     if do_parcels:
         prules, fixtures = parcel_outputs(root)
         write_json(os.path.join(out_dir, "parcel-rules.json"), prules)
@@ -1045,6 +1119,17 @@ def selftest():
         ids1 = {r["id"]: r["sources"] for r in d1["elevators"]}
         d2 = build(root, bdir, sch, out, "2026-10-19", do_parcels=False, log=lambda *_: None)
         ck("second build gives the same ids", {r["id"]: r["sources"] for r in d2["elevators"]} == ids1)
+        # company ids: the two Coop X boards post one phone and one site, so they share a company id; the
+        # board index is gone again on the next run and the last companies.json stays
+        json.dump({"sources": [{"id": i, "operator": "Coop X", "website": "https://coopx.com/", "phone": "715-555-0100",
+                                "health": "live", "url": ""} for i in ("coopx-chetek", "coopx-chetekeast")]},
+                  open(os.path.join(bdir, "data", "index.json"), "w"))
+        build(root, bdir, sch, out, "2026-10-19", do_parcels=False, log=lambda *_: None)
+        cdoc = read_json(os.path.join(out, "companies.json"))
+        ck("companies.json: the two Coop X boards share one company id, on phone and website",
+           [c["facilities"] for c in cdoc["companies"].values()] == [["e000000001", "e000000002"]]
+           and cdoc["counts"]["links_by_type"]["phone"] == 1 and cdoc["counts"]["links_by_type"]["website"] == 1)
+        os.remove(os.path.join(bdir, "data", "index.json"))
         # the old mill turns up in the bids repo: its AGSIST id is merged, not reused
         aid = olds[0]["id"]
         directory["elevators"].append({"id": "known:Old Mill|Barron|Barron|WI", "elevId": "e000000005", "operator": "Old Mill",

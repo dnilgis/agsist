@@ -1,15 +1,13 @@
 /* /hail-map opens on now (2026-10-20).
  *
- *   Sig: "the hail map should open to current or active storms within the last
- *   24 hours". A bare /hail-map opens on the now view: NWS hail-tagged
+ *. A bare /hail-map opens on the now view: NWS hail-tagged
  *   warnings in effect, the rolling 24-hour radar hail layer, and ground
  *   reports from the last 24 hours. When none has hail, one plain line says so,
  *   names the latest radar hail day and where, and offers that day and the
  *   5-year map. Every link that names a year, a swath date, a spot or a view
  *   opens exactly that, never now.
  *
- *   A state alone (Oct 20, Sig: "open to the last 24 yes, with the history
- *   readily available for viewers"): ?state=IA, the link on each of the 52
+ *   A state alone (Oct 20): ?state=IA, the link on each of the 52
  *   state hail pages, opens on now zoomed to that state, the line says what
  *   happened in that state, and "Iowa: 5 years of hail" sits in the card.
  *   ?view=all&state=IA opens the state's 5-year map.

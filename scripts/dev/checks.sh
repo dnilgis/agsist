@@ -77,6 +77,8 @@ run site-check python3 scripts/daily_site_check.py --selftest
 # a correction USDA published (data/usda-corrections.json) is shown beside the printed figure wherever it is used
 run usda-corrections bash -c "python3 scripts/usda_corrections.py --selftest >/dev/null && python3 scripts/usda_corrections.py --check"
 run ids python3 scripts/build_ids.py --selftest
+# company ids on evidence only (scripts/company_ids.py, Nov 9 2026): rules selftest, then the committed file
+run company-ids bash -c "python3 scripts/company_ids.py --selftest && python3 scripts/company_ids.py --check"
 # buyer and seller names out of the county transfer files (scripts/land_names.py, PR 324, Nov 4, 2026)
 run land-names python3 scripts/land_names.py --selftest
 run basis-join bash -c "python3 scripts/build_basis_join.py --selftest && python3 scripts/build_basis_join.py --check"

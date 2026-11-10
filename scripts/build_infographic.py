@@ -26,7 +26,7 @@ SPEC (data/infographics/<yyyy-mm-dd>.json)
    highlight}, facts [{text, source, date}], sources [{name, url, period}], topic, related_page, data_date,
    poster {kicker, headline {lead, em, tail}, lede [{s, b}], panels [{id, title, source, date, ...}], data_line}}
 
-POSTER (the Friday Chart poster, Sig Nov 7: dark for phones, paper for an 11 x 17 print; components/infographic.js
+POSTER (the Friday Chart poster, Nov 7: dark for phones, paper for an 11 x 17 print; components/infographic.js
 draws it): 5 or 6 panels, every number computed here from the same files, each panel with its source and date.
   harvest-gap   hook (the furthest state, its week's gain), map (every state's points vs its own average),
                 count (behind, even, ahead), crops (U.S. corn vs soybeans), lists (most behind and most ahead; a tie

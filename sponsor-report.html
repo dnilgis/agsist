@@ -47,7 +47,7 @@
 .cp-logo .sa-wordmark{display:none}
 .cp-logo.sa-logo--text img{display:none}
 .cp-logo.sa-logo--text .sa-wordmark{display:block}
-/* Two brands side by side, divided by a thin rule -- never 'A x B' (Sig, 2026-10-07). */
+/* Two brands side by side, divided by a thin rule -- never 'A x B' (2026-10-07). */
 .cp-x{display:inline-block;width:1px;height:2.4rem;background:var(--border,#2a3330);align-self:center}
 .cp-agsist{font-family:var(--font-display,'Inter',sans-serif);font-weight:800;letter-spacing:.06em;font-size:1.05rem}
 .cp-agsist span{color:var(--gold,#d4a23f)}
@@ -121,7 +121,7 @@
 .cp-step.is-now{border-color:var(--acc);background:rgba(var(--acc-rgb),.08)}
 .cp-step.is-now .cp-step-n{color:var(--acc)}
 
-/* ── the first screen (Oct 28, 2026, Sig: "a bit busy"): who, the status, the ad, four numbers ── */
+/* ── the first screen (Oct 28, 2026): who, the status, the ad, four numbers ── */
 .cp-pillrow{display:flex;flex-wrap:wrap;gap:.4rem;margin:.8rem 0 0}
 .cp-pill{display:inline-flex;align-items:center;gap:.45rem;font-size:.84rem;font-weight:700;padding:.3rem .75rem;border-radius:999px;
   border:1px solid rgba(var(--acc-rgb),.5);background:rgba(var(--acc-rgb),.08);color:var(--text,#e8ece9)}
@@ -441,7 +441,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 </style>
 </head>
 <body>
-<!-- A private page: a slim header and footer, not the site menu (Sig, Nov 4, 2026). Fixed height, so nothing moves (CLS). -->
+<!-- A private page: a slim header and footer, not the site menu (Nov 4, 2026). Fixed height, so nothing moves (CLS). -->
 <header class="cp-top"><a class="cp-top-logo" href="/" aria-label="AGSIST home">AG<span>SIST</span></a><a class="cp-top-help" href="mailto:sig@agsist.com">Help: sig@agsist.com</a></header>
 <main id="main" tabindex="-1">
 <div class="cp" id="cp">
@@ -486,7 +486,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
   function num(n) { return n == null ? '-' : Number(n).toLocaleString('en-US'); }
-  /* A CLICK RATE ONLY OVER ENOUGH VIEWS (honest numbers, Sig Nov 4): under MIN_VIEWS times seen a rate is
+  /* A CLICK RATE ONLY OVER ENOUGH VIEWS (honest numbers, Nov 4): under MIN_VIEWS times seen a rate is
      noise (one click in 40 views reads 2.50%), so every rate on this page shows "-" and says why instead. */
   var MIN_VIEWS = 100, THIN_RATE = 'Too few views to judge yet';
   function rateOf(v, c, ctr) {
@@ -542,7 +542,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   var API = 'https://agsist-api.dnilgis.workers.dev';
   var r = (new URLSearchParams(location.search).get('r') || '').replace(/[^a-z0-9-]/gi, '');
   if (!r) return die('This page needs the link you were sent.');
-  /* k proves the link came from Sig: the subs worker checks it against r before
+  /* k proves the link came from the owner: the subs worker checks it against r before
      it takes an approval (worker v5.13). A link without it still opens the
      page; its approval goes by the written-out email instead. */
   var K = (new URLSearchParams(location.search).get('k') || '').toLowerCase();
@@ -682,7 +682,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   function rememberApproveSent(code) {
     /* Remembered per browser ONLY so a reload does not look as though the
        press did nothing. It is not a record of approval -- the record is
-       data/sponsors.json, which Sig writes -- and the wording below says so
+       data/sponsors.json, which the owner writes -- and the wording below says so
        rather than claiming this page knows. */
     try { localStorage.setItem(approveSentKey(code), new Date().toISOString()); } catch (e) {}
   }
@@ -835,7 +835,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   });
 
   /* ───────────────────────────── hero ─────────────────────────────
-     THE FIRST SCREEN (Sig, Oct 28: "a bit busy"). A busy owner on a phone
+     THE FIRST SCREEN (Oct 28). A busy owner on a phone
      gets, in order: who this is, one status, four numbers, and the ad as it
      runs (the numbers first, so they are on the first screen even under a
      tall ad with a logo and a facts row). Everything else is one tap away, below, never gone. */
@@ -919,7 +919,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     return h + '</ol>';
   }
 
-  /* The sections below the first screen, in Sig's order. A section with
+  /* The sections below the first screen, in the owner's order. A section with
      nothing to show is not listed, so no link points at a section that was
      not drawn. */
   function nav(hasAud, hasReg) {
@@ -983,7 +983,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       (d.pending ? (d.geo && s.live ? 'Live · no full day counted yet' : (d.ended ? 'Ended' : 'Not started'))
         : (d.geo && !d.liveSince ? 'Live · no full day counted yet · ' : '') + thru) + '</span></div>';
     if (d.pending) {
-      /* Before the ad runs its counts read 0 and say why (Sig, Oct 28), never blank,
+      /* Before the ad runs its counts read 0 and say why (Oct 28), never blank,
          and never someone else's traffic shown as theirs. */
       var why = d.demo ? 'Starts the day your ad runs' : (d.geo && s.live ? 'live, no full day counted yet' : (d.ended ? 'the ad is off' : 'your ad has not run yet'));
       if (d.demo) thru = 'Demo: no ad has run';
@@ -1024,7 +1024,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       big(rate || '-', '', 'Click rate', verdict, asof, !rate) +
       areaKpi(d) + '</div>';
     /* The same derived reader-lag line as under Who reads AGSIST (lagLine), right under the readers tile whose
-       earlier end date it explains (Sig, Nov 4). Empty when the two files end on the same day. */
+       earlier end date it explains (Nov 4). Empty when the two files end on the same day. */
     var lag = d.__aud && areaReaders(d) ? lagLine(d, d.__aud) : '';
     if (lag) h += '<p class="cp-note cp-kpi-lag" id="cp-kpi-lag"><b>' + esc(areaReaders(d).k) + ':</b> ' + esc(lag) + '</p>';
     if ((d.series || []).length > 7) h += '<p class="cp-note">Since ' + esc(fmt(d.liveSince || s.start, true)) + ': ' + num(t.viewable) + ' times seen, ' + num(t.clicks) + ' click' + (t.clicks === 1 ? '' : 's') + '.</p>';
@@ -1226,7 +1226,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
      different plan, more time, a pause, a cancellation, or just a note.
 
      It posts to AGSIST's subs worker, or the site's Formspree form when the
-     worker cannot take it (sendForm above); either way Sig gets it. Nothing here changes the campaign by itself -- a person
+     worker cannot take it (sendForm above); either way the owner gets it. Nothing here changes the campaign by itself -- a person
      reads it and acts -- and the page says so. If the post fails for any
      reason the page says it did NOT send and hands over a ready-written email
      with the same words, because a request that quietly vanishes is the worst
@@ -1372,7 +1372,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   /* A tier's monthly price for one state (a State Sponsor costs more in a few states), and the
      plain note that says which (data/rate-card.json price_by_state, opens_soon). */
   function tierPrice(t, st) { return (st && t.price_by_state && t.price_by_state[st]) || t.price_month; }
-  /* "opens soon" never names a state this sponsor already runs in (Root Lot holds CA, NV and TX: Sig, Nov 4). */
+  /* "opens soon" never names a state this sponsor already runs in (Root Lot holds CA, NV and TX: Nov 4). */
   function stateNote(t, mine) {
     var by = t.price_by_state || {}, hi = {};
     Object.keys(by).forEach(function (k) { (hi[by[k]] = hi[by[k]] || []).push(k); });
@@ -1381,7 +1381,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     if (soon.length) out.push(soon.join(', ') + (soon.length > 1 ? ' open soon' : ' opens soon'));
     return out.join('; ');
   }
-  /* THE SPONSOR'S OWN PRICE (Sig, Nov 4): a State Sponsor costs its own state's price from the rate card
+  /* THE SPONSOR'S OWN PRICE (Nov 4): a State Sponsor costs its own state's price from the rate card
      (Texas $49, California $29...), never the "most states" figure. The deal's billing.state when typed,
      else the ad's states. [[price, [codes]], ...], dearest first; null when the tier has one price. */
   function ownPrices(t, d, s) {
@@ -1435,7 +1435,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
          (ownPriceNote(t, d, s) ? '<p class="cp-small">' + esc(ownPriceNote(t, d, s)) + '</p>'
            : (t.price_by_state && !ownPrices(t, d, s) ? '<p class="cp-small">' + esc(stateNote(t, d.regions)) + '</p>' : '')) +
          '<ul>' +
-         /* Only a deal with a free period says so, with its own end date when the ad has started (Sig, Nov 4). */
+         /* Only a deal with a free period says so, with its own end date when the ad has started (Nov 4). */
          (s.trialEnd ? '<li>Free through ' + esc(fmt(s.trialEnd, true)) + ', then month to month</li>'
            : s.free ? '<li>' + s.free.charAt(0).toUpperCase() + s.free.slice(1) + ' free, then month to month</li>' : '') +
          (s.lockM ? '<li>Rate locked for ' + esc(s.lockM) + ' months from your start date</li>' : '') +
@@ -1545,7 +1545,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
     var lag = lagLine(d, a);
     return fold('audience', 'Who reads AGSIST', sum, (lag ? '<p class="cp-note" id="cp-aud-lag">' + esc(lag) + '</p>' : '') + '<div id="cp-aud-body">' + audBody() + '</div>', ' cp-aud');
   }
-  /* WHY THE READERS END A DAY BEFORE THE AD (Sig, Nov 4: the readers "stopped on Nov 2", the ad ran to Nov 3).
+  /* WHY THE READERS END A DAY BEFORE THE AD (Nov 4: the readers "stopped on Nov 2", the ad ran to Nov 3).
      Ad counts end yesterday; data/audience.json ends LAG days before the day it was built (scripts/build_audience.py:
      GA4 has not finished a day before then). Every word comes from the two files, no date or count is typed here.
      A reader file older than the ad results says when it was last updated instead of blaming Google. */
@@ -1575,7 +1575,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
 
     /* KPIs */
     var fourth = a.email
-      /* Only an ad that runs in the email is told it does (Root Lot's does not: Sig, Oct 28). */
+      /* Only an ad that runs in the email is told it does (Root Lot's does not: Oct 28). */
       ? kpi(num(a.email.subscribers), 'Morning email subscribers', ((d.placements || []).indexOf('daily_email') >= 0 ? 'the briefing your ad runs in' : 'the morning briefing') + ' &middot; ' + esc(fmt(a.email.asOf, true)))
       : kpi(num(rows.filter(function (r) { return r.users > 0; }).length), 'States with readers', rows.length === 51 ? 'all 50 and DC' : 'of 50 and DC');
     h += '<div class="cp-kpis">' +
@@ -1841,7 +1841,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
   function regionsSection(d) {
     if (!d.regions || !d.regions.length) return '';
     var a = d.__aud, ids = a ? (a.ranges || []).map(function (x) { return x.id; }) : [];
-    /* Opens on 7 days, the same window as the readers figure above it and this section's summary (Sig, Nov 4). */
+    /* Opens on 7 days, the same window as the readers figure above it and this section's summary (Nov 4). */
     if (!REG.r) REG.r = ids.indexOf('7d') >= 0 ? '7d' : ids[0];
     var ar = areaReaders(d);
     var sum = ar ? num(ar.n) + ' readers in ' + esc(regionNames(d)) + ', ' + ar.asof : 'Not available right now';

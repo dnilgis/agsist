@@ -1,4 +1,4 @@
-/* Shared pieces of the COT kit (kit v2, Nov 6, 2026, Sig: the share kit panel's chart spec): number and date words,
+/* Shared pieces of the COT kit (kit v2, Nov 6, 2026, the share kit panel's chart spec): number and date words,
    futures prices in a farmer's units, the round y ticks, the dated month and year axis, and the buying or selling run.
    components/cot-chart.js (the page chart and the saved pictures) and components/cot-print.js (the printed sheet)
    both use them, so every asset says a number, a date and a run the same way. Kept out of cot-chart.js so that file
@@ -116,7 +116,7 @@
     return items;
   }
 
-  /* Contracts in the crop's own units (kit v2 part 2, Sig Nov 6: "contracts shown in bushels too"). The size of one
+  /* Contracts in the crop's own units (kit v2 part 2, Nov 6). The size of one
      futures contract, from the exchange contract specifications (CBOT corn, soybeans, Chicago SRW wheat, KC HRW wheat
      and Minneapolis HRS wheat 5,000 bushels; soybean meal 100 short tons; soybean oil 60,000 pounds; CME live cattle
      40,000 pounds, feeder cattle 50,000 pounds, lean hogs 40,000 pounds, Class III milk 200,000 pounds). A public fact

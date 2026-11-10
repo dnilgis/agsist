@@ -47,7 +47,7 @@ test("usda-calendar: title, description and the two FAQs agree with the page's s
     assert.ok(vis.includes(q) && vis.includes(ld.get(q)), `visible answer for ${q} matches the JSON-LD`);
     assert.ok(!/—|&mdash;/.test(ld.get(q)), "no em dash");
   }
-  // Sig, 2026-10-19: the Oct 11 title stands every month, never the Oct 18
+  // 2026-10-19: the Oct 11 title stands every month, never the Oct 18
   // "Next WASDE & Crop Production" variant (it was removed that day).
   assert.ok(!/Crop Production/.test(t), `title names no Crop Production: ${t}`);
   const tm = t.match(/^(?:WASDE & USDA Report Dates \d{4}: Next WASDE (\w{3}) (\d+)|WASDE & USDA Report Dates: The Full USDA Calendar) \| AGSIST$/);

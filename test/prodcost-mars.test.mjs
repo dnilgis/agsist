@@ -1,4 +1,4 @@
-/* USDA production cost reports (Sig, Nov 2, 2026): fertilizer, farm diesel and propane from USDA
+/* USDA production cost reports (Nov 2, 2026): fertilizer, farm diesel and propane from USDA
  * My Market News into data/production-costs.json (scripts/fetch_prodcost_mars.py), shown on Fast
  * Facts My place.
  *   node --test test/prodcost-mars.test.mjs
@@ -94,7 +94,7 @@ test("farm diesel and propane: the report for the state, its range and freight, 
   const id = P.factFuel(PC, "ID", "diesel", TODAY);
   assert.equal(id.value, "$6.03 a gallon");
   assert.match(id.ctx, /^Inter-Mountain West fuel dealers’ asking price, \$5\.83 to \$6\.35 delivered\. Call to confirm\.$/);
-  // no report covers the state, or the covering report does not price the fuel: the row is hidden (lead, Nov 3)
+  // no report covers the state, or the covering report does not price the fuel: the row is hidden (Nov 3)
   for (const [st, k] of [["WI", "diesel"], ["WI", "propane"], ["IL", "propane"], ["KS", "diesel"]]) {
     const h = P.factFuel(PC, st, k, TODAY);
     assert.equal(h.hide, true, st + " " + k + " hidden");
@@ -122,7 +122,7 @@ test("Fast Facts: the rows are in the page and the Today card, the heading carri
   assert.doesNotMatch(page, /Current Fertilizer Prices/i, "the heading never says current");
   assert.match(page, /Fertilizer Prices<span id="fert-title-date"><\/span>/);
   assert.match(ff, /getElementById\('fert-title-date'\)[\s\S]{0,80}' as of '\+d\.toLocaleDateString/);
-  for (const s of ["place.js?v=13", "here.js?v=45", "fast-facts.js?v=18"]) assert.ok(page.includes("/components/" + s), s);
+  for (const s of ["place.js?v=13", "here.js?v=47", "fast-facts.js?v=18"]) assert.ok(page.includes("/components/" + s), s);
   assert.ok(Number(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1]) >= 331, "CACHE_VERSION at or past 331");
 });
 

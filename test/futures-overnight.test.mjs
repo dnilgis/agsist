@@ -1,5 +1,5 @@
 // The overnight (electronic) grain trade, shown when the price file has one.
-// Sig, Oct 20 2026: "Just don't forget about overnight market trading, I want
+// Oct 20 2026: "Just don't forget about overnight market trading, I want
 // that displayed if it is available." Fixtures are the real data/prices.json
 // from main at two moments that night:
 //   prices-2026-10-20T0046Z.json (7:46 pm CT Oct 19): settle not in yet.

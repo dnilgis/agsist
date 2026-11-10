@@ -8,7 +8,7 @@
  *    390 (viz seat; 58 of 58 labels);
  *  - the hub map's lowest gold step (#403a27) was 1.64:1 on the #101415 map.
  * The page is built from the builder into a temp folder (never the committed set). Browser runs block every
- * outside host and service workers (BUILD-RULES 58).
+ * outside host and service workers (build rule 58).
  *
  *   node --test test/atlas-chart-text.test.mjs
  */

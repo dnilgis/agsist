@@ -35,7 +35,7 @@ INPUT
     python3 scripts/build_chapter12.py --check             the committed file passes every rule
     python3 scripts/build_chapter12.py --selftest
 
-NEXT RELEASE (by hand, no schedule; a new schedule needs Sig's OK): add the new
+NEXT RELEASE (by hand, no schedule; a new schedule needs the owner's OK): add the new
 PDF to references/sources.json as uscourts-f2-<year>-<mon>, then run the
 "Chapter 12 filings" workflow (.github/workflows/chapter12.yml) with that id. It
 fetches the PDF, runs --add, refreshes the Daily fact and commits; the Atlas

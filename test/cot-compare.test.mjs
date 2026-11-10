@@ -1,10 +1,10 @@
-/* Compare mode on the /cot 52-week chart (2026-11-05, Sig: "Is there a way to select multiple commodities in the COT chart?").
+/* Compare mode on the /cot 52-week chart (2026-11-05).
  *   - a Compare toggle next to the chips; in it the chips pick up to three markets, a fourth is refused with a short note;
  *   - one 0 to 100 axis: each line is the pipeline's rk (share of open interest, ranked since 2010 against that week
  *     and the weeks before it only), so the latest point is the headline rank; nothing is ranked in the browser;
  *   - the link carries ?m=corn,soybeans,chicago-wheat and opens on those picks; single mode and its links are unchanged;
  *   - hover shows the date and every market's value; Share and Save image work; text 12 px or more, taps 44 px or more.
- * Browser parts route every outside host to a stub or abort and block service workers (BUILD-RULES 58).
+ * Browser parts route every outside host to a stub or abort and block service workers (build rule 58).
  *
  *   node --test test/cot-compare.test.mjs
  */

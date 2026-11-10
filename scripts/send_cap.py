@@ -13,7 +13,7 @@ Three parts:
 
 1. SMTP volume per run. The start() of delivery_line.py calls install(tally) when the sender is the program
    run. It wraps smtplib.SMTP for that process only: every recipient a send hands to the server
-   (Sig's copies too) adds to the DELIVERY line's smtp= count, and a refusal that looks like the cap
+   (the owner's copies too) adds to the DELIVERY line's smtp= count, and a refusal that looks like the cap
    prints one marker line and adds to cap_refused=.
 
 2. The marker line, counts only (never an address):
@@ -44,13 +44,13 @@ Three parts:
    already reads; no extra API calls). Per UTC day, the sum over every DELIVERY line read of smtp=
    (or sent_readers= from a line without it). It is a floor: delivery_check reads
    at most LOGS_PER_WF logs per workflow, so a sender that mails on many runs (report-day, the
-   alert senders) is sampled, and the Sig-only workflows (morning report, audit and the rest) print
+   alert senders) is sampled, and the owner-only workflows (morning report, audit and the rest) print
    no line. The row says which senders were sampled. Since Nov 9 it is not judged against a cap;
    it is red only on a SEND-CAP refusal marker in the runs read.
 
-4. (Nov 9: Sig upgraded to Brevo Starter, which has no daily cap. The send-volume row is information only,
-   the preflight only prints the count, the upgrade reminders are gone, and scripts/mail_budget.py judges the
-   monthly allowance. Only a real refusal from the mail server still turns the row red.)
+4. (Nov 9: the owner upgraded to Brevo Starter, which has no daily cap. The send-volume row is information only,
+ the preflight only prints the count, the upgrade reminders are gone, and scripts/mail_budget.py judges the
+ monthly allowance. Only a real refusal from the mail server still turns the row red.)
 
     python3 scripts/send_cap.py --selftest
 """

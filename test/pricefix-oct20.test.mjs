@@ -126,10 +126,10 @@ test("1: Nov 3, Iowa corn and soybeans closed Oct 31, not released: no 'if it cl
   } finally { await browser.close(); srv.close(); }
 });
 
-/* ---- Sig's call Oct 20 (v37 item 2): the window bar uses our running average where we have the settles ----
+/* ---- a product decision Oct 20 (v37 item 2): the window bar uses our running average where we have the settles ----
  * Reads a frozen copy of the harvest data (test/fixtures/harvest-tracker/, the copy test/harvest-tracker-oct19
  * reads: Oct 25, 2026, Iowa corn's window running), routed in the browser, on a clock taken from that copy. On live
- * data/ it returned early once the October window closed (Nov 2), so nothing was checked (BUILD-RULES 50). */
+ * data/ it returned early once the October window closed (Nov 2), so nothing was checked (build rule 50). */
 const HFIX = "test/fixtures/harvest-tracker";
 test("bar: Iowa corn reads our running average, the calculator's number, with RMA's figure in one line", { skip, timeout: 90000 }, async () => {
   const HP = JSON.parse(read(HFIX + "/harvest-prices.json"));

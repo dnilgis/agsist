@@ -24,7 +24,7 @@ try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chrom
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 // The table runs on frozen copies of the two files it reads (basis-states Nov 4, 2026; the futures copy alert-asks
 // uses, Nov 3) on a clock an hour after the newer one: it withholds itself when the basis is over 10 days old, so
-// live files on a fake clock (a January run) left no table at all (BUILD-RULES 50).
+// live files on a fake clock (a January run) left no table at all (build rule 50).
 const FIX = {
   "/data/basis-states.json": readFileSync(ROOT + "test/fixtures/cash-bids-speed/basis-states.json"),
   "/data/prices.json": readFileSync(ROOT + "test/fixtures/alert-asks/prices.json"),

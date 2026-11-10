@@ -89,6 +89,7 @@ test("page-title elevator names are fixed the same way on the live page and the 
   const ctx = { console };
   ctx.window = ctx;
   vm.createContext(ctx);
+  vm.runInContext(read("components/elev-names.js"), ctx);
   vm.runInContext(read("components/cb-rank.js"), ctx);
   const R = ctx.cbRank;
   R.setNames(JSON.parse(read("data/elevator-names.json")));
@@ -134,7 +135,8 @@ test('HRW wheat basis names its exchange ("KC Dec \'26"), live page and town pag
   assert.equal(w("December 2026", "Wheat"), "", "a bare month on an unnamed wheat is not guessed");
   const PY = read("scripts/build_cash_bid_pages.py");
   assert.match(PY, /WHEAT_EXCH = \{"KE": "KC", "ZW": "Chicago", "MW": "MIAX", "MWO": "MIAX"\}/);
-  assert.match(PY, /vs \{con_label\(r\["contract"\]\)\}/);
+  assert.match(PY, /vs \{con_text\(r\)\}/);
+  assert.match(PY, /def con_text\(r\):[\s\S]{0,200}return con_label\(r\["contract"\]\)/, "the town table names the exchange through con_label");
   assert.match(PY, /gen\.year, b\.get\("commodity"\)\)/, "the town builder does not pass the commodity name");
 });
 
