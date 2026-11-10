@@ -46,6 +46,42 @@ WASDE_DATES = frozenset(WASDE_2026 | WASDE_2027)
 GRAIN_STOCKS_2026 = {date(2026, 1, 12), date(2026, 3, 31), date(2026, 6, 30), date(2026, 9, 30)}
 CROP_PRODUCTION_2026 = {date(2026, 1, 12), date(2026, 4, 9), date(2026, 8, 12), date(2026, 9, 11),
                         date(2026, 10, 9), date(2026, 11, 10), date(2026, 12, 10)}
+# 2027: the Crop Production editions the site grades come out with the WASDE on the
+# same day (Jan, Apr, Aug to Nov in 2026), so these are WASDE_2027's dates for those
+# months. Not read from NASS's own 2027 calendar (usda.gov refuses this sandbox):
+# recheck when NASS posts it. The January 12 annual is the one that matters most.
+CROP_PRODUCTION_2027 = {date(2027, 1, 12), date(2027, 4, 9), date(2027, 8, 12), date(2027, 9, 10),
+                        date(2027, 10, 8), date(2027, 11, 10)}
+CROP_PRODUCTION_DATES = frozenset(CROP_PRODUCTION_2026 | CROP_PRODUCTION_2027)
+
+# The January Crop Production Annual: the first day a corn or soybean yield for
+# a crop year can be a final. crop year -> release day, out at 12:00 p.m. ET.
+# Before Nov 9 2026 the builders used fixed days (Jan 1, Jan 10): a run between
+# then and the real release (Jan 12, 2027) would have kept NASS's November
+# forecast, which NASS tags "YEAR", as the 2026 final.
+ANNUAL_CROP_PRODUCTION = {2025: date(2026, 1, 12), 2026: date(2027, 1, 12)}
+NO_DATE_WAIT = (1, 31)      # crop year+1, Jan 31: with no annual on file, wait (never early)
+
+
+def release_instant(day):
+    """12:00 p.m. Eastern on `day`, as an aware UTC datetime (EST or EDT)."""
+    from datetime import datetime, timezone
+    from zoneinfo import ZoneInfo
+    return datetime(day.year, day.month, day.day, 12, tzinfo=ZoneInfo("America/New_York")).astimezone(timezone.utc)
+
+
+def annual_final_out(crop_year, now_utc):
+    """Has NASS published the corn and soybean finals for crop_year by now_utc
+    (an aware datetime; a plain date counts as its first minute)?"""
+    from datetime import datetime, timezone
+    if not isinstance(now_utc, datetime):
+        now_utc = datetime(now_utc.year, now_utc.month, now_utc.day, tzinfo=timezone.utc)
+    d = ANNUAL_CROP_PRODUCTION.get(int(crop_year))
+    if d is None:
+        return now_utc.date() >= date(int(crop_year) + 1, *NO_DATE_WAIT)
+    return now_utc >= release_instant(d)
+
+
 PROSPECTIVE_PLANTINGS_2026 = {date(2026, 3, 31)}
 ACREAGE_2026 = {date(2026, 6, 30)}
 
@@ -56,7 +92,7 @@ def major_reports(day):
     out = []
     if day in WASDE_DATES:
         out.append("WASDE")
-    if day in CROP_PRODUCTION_2026:
+    if day in CROP_PRODUCTION_DATES:
         out.append("Crop Production")
     if day in GRAIN_STOCKS_2026:
         out.append("Grain Stocks")
@@ -328,6 +364,21 @@ def _selftest():
     def check(ok, what, got=""):
         (print("  ok    " + what) if ok
          else (fails.append(what), print("  FAIL  %s  -- %s" % (what, got))))
+
+    # the January annual, on a fake clock (Nov 9 2026 panel)
+    from datetime import datetime as _dt, timezone as _tz
+    _u = lambda *a: _dt(*a, tzinfo=_tz.utc)
+    check(CROP_PRODUCTION_2027 <= WASDE_2027, "2027 Crop Production days are WASDE days")
+    check(date(2027, 1, 12) in CROP_PRODUCTION_DATES and major_reports(date(2027, 1, 12)) == ["WASDE", "Crop Production"],
+          "Jan 12 2027 names the annual", major_reports(date(2027, 1, 12)))
+    check(release_instant(date(2027, 1, 12)) == _u(2027, 1, 12, 17) and release_instant(date(2026, 10, 9)) == _u(2026, 10, 9, 16),
+          "noon Eastern is 17:00 UTC in January, 16:00 in October")
+    check(not annual_final_out(2026, _u(2027, 1, 11, 20)), "Jan 11 2027: the 2026 crop is still a forecast")
+    check(not annual_final_out(2026, _u(2027, 1, 12, 16, 5)), "Jan 12 16:05 UTC, before the noon Eastern print: forecast")
+    check(annual_final_out(2026, _u(2027, 1, 12, 17, 5)), "Jan 12 17:05 UTC: final")
+    check(not annual_final_out(2026, date(2027, 1, 12)) and annual_final_out(2026, date(2027, 1, 13)), "a plain date is its first minute")
+    check(not annual_final_out(2027, _u(2028, 1, 20)) and annual_final_out(2027, _u(2028, 1, 31)),
+          "no annual on file: wait to Jan 31, never early")
 
     print("the table matches what USDA publishes")
     # Read from USDA's own WASDE page on 2026-09-12: "In 2026 the WASDE report

@@ -319,17 +319,13 @@ test("tariffs: a visible byline and the CCA in the JSON-LD", () => {
 });
 
 /* ---------------- /usda-quick-stats ----------------
- *   - the query builder lists all 50 states (it queries NASS, which has every
- *     state; the page's own table already has 42), not 31
  *   - a visible byline and the author in the JSON-LD
+ *   - the query builder that listed all 50 states was cut on Sig's call (Nov 9 2026 panel); its
+ *     absence, and no NASS opener, are tested in test/quickstats-radar-nov9.test.mjs
  */
-test("quick stats: the query builder lists all 50 states, and a byline", () => {
+test("quick stats: a byline, and the author in the structured data", () => {
   const Q = read("usda-quick-stats.html");
-  const sel = Q.slice(Q.indexOf('<select id="qb-state"'), Q.indexOf("</select>", Q.indexOf('<select id="qb-state"')));
-  const codes = [...sel.matchAll(/<option value="([A-Z]{2})">/g)].map((m) => m[1]);
-  assert.equal(codes.length, 50);
-  assert.equal(new Set(codes).size, 50);
-  for (const k of ["DE", "MD", "NY", "NJ", "AK", "HI"]) assert.ok(codes.includes(k), k);
+  assert.ok(!Q.includes('<select id="qb-state"'), "the query builder is cut (Nov 9 2026)");
   assert.match(Q, BYLINE);
   assert.match(Q, /"author":\{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser \(CCA\)"/);
 });
