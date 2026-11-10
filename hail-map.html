@@ -282,6 +282,9 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     .hm-note{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1rem 1.1rem;margin-top:1.1rem;color:var(--text-dim);line-height:1.55;font-size:1rem}
     .hm-note strong{color:var(--text)}
     .hm-src{color:var(--text-muted);font-size:0.795rem;margin-top:.9rem}
+    .hm-terms{margin:1.4rem 0 0;padding:.2rem 1rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-radius:10px}
+    .hm-terms summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center}
+    .hm-terms p{font-size:.88rem;line-height:1.6;margin:0 0 .6rem;color:var(--text-dim)}
     .hm-src a{color:var(--brand,var(--gold));text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
     .hm-banner{background:var(--surface);border:1px dashed var(--border);border-radius:10px;padding:1rem;color:var(--text-dim);text-align:center;margin-top:.6rem}
     @media(max-width:640px){#hm-map{height:54vh}}
@@ -483,7 +486,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
         <button type="button" id="hm-mesh-next" aria-label="Next storm day">&#9654;</button>
         <button type="button" id="hm-mesh-latest">Latest</button>
         <button type="button" id="hm-live24" class="hm-live24" hidden>LIVE · last 24 hrs</button>
-        <span class="hm-mesh-note">Radar-<em>estimated</em> size (NOAA MRMS MESH) &middot; not a ground measurement &middot; tap the map to pull the human reports for any spot</span>
+        <span class="hm-mesh-note">Radar-<em>estimated</em> size (NOAA radar) &middot; not a ground measurement &middot; tap the map to pull the human reports for any spot</span>
       </div>
 
       <div class="hm-livebar" id="hm-livebar" hidden>
@@ -576,13 +579,13 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
 
       
 
-      <p class="hm-biasnote" id="hm-biasnote">Color is <strong>report density</strong>, not hail risk. A Local Storm Report exists because somebody called it in, so cities glow: of the ten densest cells on this map, nine are metro areas. Counted by hail <em>days</em> instead, the busiest ground in the country is eastern Colorado, western Nebraska and western South Dakota, the &ldquo;hail alley&rdquo; described in the questions below. <strong>For your own place, use the lookup above</strong>: it counts reports near a point and checks the radar, neither of which cares how many neighbors you have.</p>
+      <p class="hm-biasnote" id="hm-biasnote">Color is <strong>report density</strong>, not hail risk. A Local Storm Report exists because somebody called it in, so cities glow. Counted by hail <em>days</em> instead, the busiest ground is eastern Colorado, western Nebraska and western South Dakota. <strong>For your own place, use the lookup above.</strong></p>
 
-      <p class="hm-about">Five years of National Weather Service hail reports on one map. Step through the years or press play to see the same corridors light up each season: the High Plains, the Front Range, the southern Plains. Most US hail falls April through July. Outside those months this is the record for checking a claim or planning next year's coverage, and any new hail day still gets its own page the next morning.</p>
+      <p class="hm-about">Five years of National Weather Service hail reports on one map. Step through the years or press play to see the same corridors light up each season. Most US hail falls April through July.</p>
 
       <div class="hm-note">
         <strong>What you're looking at.</strong> Each point is a hail report logged by a National Weather Service office: a trained spotter, law enforcement, or the public called it in. Brighter areas got more reports. Reporting follows population and spotters, so this is a map of <em>reported</em> hail, not every stone that fell. The corridors that show up year after year are real.
-        <div class="hm-src">Source: NWS Local Storm Reports via the Iowa Environmental Mesonet. Recent reports refresh daily; the full multi-year archive rebuilds monthly. <span id="hm-gen"></span> &nbsp;&middot;&nbsp; <a href="/field-scout">Draw one field in Field Scout &rarr;</a></div>
+        <div class="hm-src">Source: NWS Local Storm Reports via the Iowa Environmental Mesonet. <span id="hm-gen"></span> &nbsp;&middot;&nbsp; <a href="/field-scout">Draw one field in Field Scout &rarr;</a></div>
       </div>
 
       <script src="/components/rp-xmas.js?v=1"></script>
@@ -593,7 +596,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
             <select id="hm-cty-select" aria-label="Choose a state"></select>
           </label>
         </div>
-        <p class="hm-cty-hint">Updates as you pan the map. Ranked by total reported hail over the last five years. <strong id="hm-dmg-lbl">% severe</strong> is the share that were <span id="hm-dmg-in">1</span>&Prime; or larger<span id="hm-dmg-note"> (the National Weather Service severe size)</span>, a partial way to see past the fact that more people means more reports.<span id="hm-dmg-old" hidden> That is bigger than the 1&Prime; National Weather Service severe size: this table was counted before the site moved to 1&Prime;, and the next monthly data run recounts it at 1&Prime;.</span> Crops can be hurt by smaller hail; the loss depends on growth stage.</p>
+        <p class="hm-cty-hint">Updates as you pan the map. Ranked by total reported hail over the last five years. <strong id="hm-dmg-lbl">% severe</strong> is the share that were <span id="hm-dmg-in">1</span>&Prime; or larger<span id="hm-dmg-note"> (the National Weather Service severe size)</span>.<span id="hm-dmg-old" hidden> That is bigger than the 1&Prime; National Weather Service severe size: this table was counted before the site moved to 1&Prime;, and the next monthly data run recounts it at 1&Prime;.</span> Crops can be hurt by smaller hail.</p>
         <div class="hm-cty-tablewrap">
           <table class="hm-cty-table" id="hm-cty-table">
             <thead><tr>
@@ -625,15 +628,6 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
 <details class="he-yr" id="y2022"><summary>2022 <span>14 storm days</span></summary><div class="he-tw"><table><thead><tr><th>Storm day</th><th class="num">Reports</th><th class="num">Largest</th><th>Record</th></tr></thead><tbody><tr><td><a href="/hail/2022-06-16">Jun 16, 2022</a></td><td class="num">158</td><td class="num">3.00″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-06-13">Jun 13, 2022</a></td><td class="num">166</td><td class="num">4.00″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-06-07">Jun 7, 2022</a></td><td class="num">269</td><td class="num">4.00″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-06-05">Jun 5, 2022</a></td><td class="num">154</td><td class="num">4.00″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-05-21">May 21, 2022</a></td><td class="num">200</td><td class="num">2.00″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-05-19">May 19, 2022</a></td><td class="num">357</td><td class="num">3.00″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-05-15">May 15, 2022</a></td><td class="num">218</td><td class="num">4.50″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-05-14">May 14, 2022</a></td><td class="num">174</td><td class="num">2.75″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-05-12">May 12, 2022</a></td><td class="num">196</td><td class="num">2.50″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-05-09">May 9, 2022</a></td><td class="num">168</td><td class="num">3.00″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-05-06">May 6, 2022</a></td><td class="num">160</td><td class="num">2.50″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-05-01">May 1, 2022</a></td><td class="num">195</td><td class="num">3.00″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-04-22">Apr 22, 2022</a></td><td class="num">218</td><td class="num">3.50″</td><td class="rec">Reports only</td></tr><tr><td><a href="/hail/2022-04-12">Apr 12, 2022</a></td><td class="num">350</td><td class="num">5.50″</td><td class="rec">Reports only</td></tr></tbody></table></div></details>
 <!--/SEED:hailhistory-->
       </section>
-
-      <section class="hm-method" aria-labelledby="hm-method-h" style="margin:1.6rem 0 0;padding:1rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-radius:10px">
-        <h2 id="hm-method-h" style="font-size:1.05rem;margin:0 0 .5rem">Who runs this, how it works, how to cite it</h2>
-        <p style="font-size:.88rem;line-height:1.6;margin:0 0 .6rem"><strong>Who:</strong> Sigurd Lindquist, CCA, Wisconsin, the same person behind the rest of <a href="/about">AGSIST</a>. Questions, corrections, press: <a href="mailto:sig@agsist.com">sig@agsist.com</a>.</p>
-        <p style="font-size:.88rem;line-height:1.6;margin:0 0 .6rem"><strong>Data &amp; cadence:</strong> The heatmap is NWS Local Storm Reports (hail) via the Iowa Environmental Mesonet: the 5-year base rebuilds monthly, the 30-day layer refreshes daily. Radar swaths are NOAA MRMS MESH, vectorized daily around 3:30&nbsp;AM&nbsp;CT with an intraday rolling-24h layer several times a day. Live warnings poll the National Weather Service API about every 90&nbsp;seconds while the layer is on. The long-term point record is the NOAA NCEI Storm Events Database, 1955&ndash;2020, never mixed with the live record.</p>
-        <p style="font-size:.88rem;line-height:1.6;margin:0 0 .6rem"><strong>Known limits:</strong> MESH is a radar algorithm on a ~1&nbsp;km grid; published verification work (NOAA NSSL) finds it tends to run large versus measured stones, which is why every swath here is labeled an estimate. Storm reports are town-level precision and depend on someone reporting, so a quiet spot on the map can just mean nobody called it in.</p>
-        <p style="font-size:.88rem;line-height:1.6;margin:0"><strong>Reuse &amp; citation:</strong> Screenshots and embeds are welcome with credit. Suggested line: <em>&ldquo;NWS/NOAA data via agsist.com/hail-map.&rdquo;</em> The underlying records are public. What AGSIST adds is putting them on one map, labeling the estimates and the address lookup.</p>
-      </section>
-
       <div data-signup-ask="Storm or no storm, the market moves. Email me the markets and my top local bid every morning." data-source="page:hail-map" data-note="AGSIST Daily, free. It carries no hail reports; the hail alert in the lookup above does that."></div>
       <section class="hm-faq" aria-labelledby="hm-faq-h">
         <section class="hm-compare" id="compare" aria-labelledby="hm-cmp-h">
@@ -652,7 +646,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
         <tr><td>Price</td><td>Yearly subscription</td><td>Free, no login</td></tr>
       </tbody>
     </table></div>
-    <p class="hm-cmp-src">Competitor details from their public pricing and feature pages, July 2026. Verify current offerings with them directly. If you run a contractor sales team, those tools may earn their price; if you need the hail record itself, it’s free here.</p>
+    <p class="hm-cmp-src">Competitor details from public pricing pages, July 2026. Verify current offerings with them directly.</p>
   </section>
 
   <h2 id="hm-faq-h">Hail in the United States: the questions people ask</h2>
@@ -689,6 +683,12 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
       </section>
       <p class="rp-promo" style="margin:1.2rem 0 0;font-size:.92rem;color:var(--text-muted)">Your farm&rsquo;s rainfall year, as wall art: <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws every day of rain and snow at the nearest weather station. Free to make. For rain so far this year, see <a href="/rain">rain by county</a>.</p>
       <p style="margin:.6rem 0 0;font-size:.92rem;color:var(--text-muted)">Storms bring rain too: <a href="/rain-radar">rain on your field in the last 24 hours to 7 days, from NOAA radar and gauges</a>.</p>
+      <details class="hm-terms" id="terms"><summary>Sources and terms</summary>
+        <p><strong>Who:</strong> Sigurd Lindquist, CCA, Wisconsin, the same person behind the rest of <a href="/about">AGSIST</a>. Questions, corrections, press: <a href="mailto:sig@agsist.com">sig@agsist.com</a>.</p>
+        <p><strong>Sources:</strong> Hail reports are National Weather Service Local Storm Reports via the Iowa Environmental Mesonet, with the date they run through shown above the map. Radar swaths are NOAA radar estimates of hail size. Live warnings are from the National Weather Service. The long-term point record is the NOAA NCEI Storm Events Database, 1955 to 2020, never mixed with the current record.</p>
+        <p><strong>Known limits:</strong> Radar estimates tend to run large against measured stones, so every swath here is labeled an estimate. Storm reports are town-level precision and depend on someone reporting, so a quiet spot on the map can just mean nobody called it in.</p>
+        <p><strong>Reuse and citation:</strong> Screenshots and embeds are welcome with credit: <em>&ldquo;NWS/NOAA data via agsist.com/hail-map.&rdquo;</em> The underlying records are public.</p>
+      </details>
     </div>
   <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>

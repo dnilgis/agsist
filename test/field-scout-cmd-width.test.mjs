@@ -25,7 +25,7 @@ test("the column holds its width and only its buttons take taps", () => {
   assert.match(CSS, /\.fs-cmd-right\{[^}]*min-width:157px[^}]*pointer-events:none/);
   assert.match(CSS, /\.fs-cmd-right>\*\{ pointer-events:auto; \}/);
   assert.match(CSS, /@media\(max-width:820px\)\{[\s\S]*?\.fs-cmd-right\{[^}]*min-width:0/);
-  assert.match(HTML, /field-scout\.css\?v=4/);
+  assert.match(HTML, /field-scout\.css\?v=5/);
 });
 
 test("1280px, the page cut at the first layer button, the rest 500 ms later: layout shift under 0.001", { skip, timeout: 120000 }, async () => {
