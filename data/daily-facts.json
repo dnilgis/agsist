@@ -480,7 +480,8 @@
       "quote": "At $161 per acre, the average rate to rent cropland in the United States in 2025 was $1 higher than in 2024.",
       "order": 34,
       "refresh": true,
-      "added": "2026-11-03"
+      "added": "2026-11-03",
+      "stop": "the 2026 US average came out in August 2026 and is not in this repo yet; refresh this entry from the 2026 Land Values and Cash Rents highlights"
     },
     {
       "id": "umn-breathing-100-bpm",

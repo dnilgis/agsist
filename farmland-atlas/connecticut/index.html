@@ -85,9 +85,11 @@ var t=document.getElementById('t'),b=t.tBodies[0],dir={};
   [].forEach.call(svg.querySelectorAll('a'),function(a){
     var p=a.querySelector('path'),ti=p.querySelector('title').textContent,n=ti.slice(0,ti.lastIndexOf(': '));
     var g=function(k){return p.getAttribute('data-'+k);},c=function(v,txt){return '<td data-v="'+(v===null?'':v)+'">'+(v===null?'n/a':txt)+'</td>';};
-    var r=g('r')!==null?c(g('r'),m(g('r'))):(g('o')!==null?c(g('o'),m(g('o'))+' <small>'+g('oy')+'</small>'):c(null));
+    var x=function(y){return '<td class="mut" data-v="">n/a, last published '+y+'</td>';};
+    var r=g('r')!==null?c(g('r'),m(g('r'))):(g('o')!==null?c(g('o'),m(g('o'))+' <small>'+g('oy')+'</small>'):(g('ox')!==null?x(g('ox')):c(null)));
+    var ir=g('ix')!==null?x(g('ix')):c(g('i'),g('i')&&m(g('i')));
     var v=g('v')!==null?c(g('v'),m(g('v'))):(g('vs')!==null?c(g('vs'),m(g('vs'))+' *'):c(null));
-    o.push([n,'<tr><td><a href="'+a.getAttribute('href')+'"></a></td>'+r+c(g('i'),g('i')&&m(g('i')))+v
+    o.push([n,'<tr><td><a href="'+a.getAttribute('href')+'"></a></td>'+r+ir+v
       +c(g('y'),g('y')&&(Math.round(g('y')*10)/10).toFixed(1))+c(g('c'),g('c')&&'$'+(+g('c')).toFixed(2))+c(g('d'),g('d')&&Math.round(g('d'))+'%')+'</tr>']);
   });
   o.sort(function(x,y){return x[0].toLowerCase()<y[0].toLowerCase()?-1:1;});

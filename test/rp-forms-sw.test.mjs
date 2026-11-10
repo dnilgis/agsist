@@ -27,6 +27,7 @@ function formPost(workerFetch) {
     },
   };
   ctx.window = ctx;
+  ctx.location = { hostname: "agsist.com" };
   vm.runInNewContext(read("components/form-post.js"), ctx);
   return { post: ctx.agsistFormPost, timers, calls };
 }
@@ -122,6 +123,7 @@ test("form-post.js (panel 3 F11): the Formspree copy after a slow worker says it
     },
   };
   ctx.window = ctx;
+  ctx.location = { hostname: "agsist.com" };
   vm.runInNewContext(read("components/form-post.js"), ctx);
   const p = ctx.agsistFormPost("rain-print-order", { name: "Kate" }, { _subject: "Rain Print order", name: "Kate" });
   await new Promise((r) => setImmediate(r));

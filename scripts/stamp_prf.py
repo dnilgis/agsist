@@ -143,7 +143,7 @@ def check_sentence(chk):
 
 def values(meta, chk, facts):
     d, y = meta["dates"], meta["years"]
-    for k in ("sales_closing", "acreage_reporting", "premium_billing"):
+    for k in ("sales_closing", "acreage_reporting", "premium_billing", "cancellation"):
         if not d.get(k):
             raise ValueError(f"meta.json has no {k} date")
     sub = meta["subsidy"]
@@ -171,6 +171,7 @@ def values(meta, chk, facts):
         "nyears": str(y["last_complete"] - y["first"] + 1),
         "_sales_short": short_date(d["sales_closing"]), "sales_long": long_date(d["sales_closing"]),
         "acreage_long": long_date(d["acreage_reporting"]),
+        "cancel_long": long_date(d["cancellation"]),
         "_billing_short": short_date(d["premium_billing"]), "billing_long": long_date(d["premium_billing"]),
         "grids": f"{meta['counts']['grids']:,}", "counties": f"{meta['counts']['counties']:,}",
         "states": str(meta["counts"]["states"]),
@@ -213,7 +214,7 @@ def jsonld(page, v, meta=None):
         {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
             {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
             {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://agsist.com/tools"},
-            {"@type": "ListItem", "position": 3, "name": "PRF rainfall insurance", "item": URL}]},
+            {"@type": "ListItem", "position": 3, "name": "PRF insurance calculator", "item": URL}]},
     ]
     if meta:
         # the data behind the page, as a schema.org Dataset: USDA's files, public domain
@@ -295,7 +296,7 @@ def selftest():
 
     meta = {"crop_year": 2027, "built": "2026-10-12T02:30:00Z",
             "years": {"first": 1951, "last_complete": 2025, "open": {}},
-            "dates": {"sales_closing": "2026-12-01", "acreage_reporting": "2026-12-01", "premium_billing": "2027-09-01"},
+            "dates": {"sales_closing": "2026-12-01", "acreage_reporting": "2026-12-01", "premium_billing": "2027-09-01", "cancellation": "2026-12-01"},
             "subsidy": {"70": 0.59, "75": 0.59, "80": 0.55, "85": 0.55, "90": 0.51},
             # the real meta.json carries its sources; the stamp cites them (isBasedOn)
             "sources": {"adm": "https://pubfs-rma.fpac.usda.gov/pub/References/actuarial_data_master/2027/2027_ADM_YTD.zip",
@@ -317,6 +318,12 @@ def selftest():
     except ValueError as e:
         ok("another build" in str(e), str(e))
     ok(v["sales_long"] == "Dec 1, 2026" and v["_sales_short"] == "Dec 1" and v["billing_long"] == "Sep 1, 2027", "dates")
+    ok(v["cancel_long"] == "Dec 1, 2026", "the cancellation date is meta.json's, with its year (panel, Nov 9)")
+    try:
+        values(dict(meta, dates={k: x for k, x in meta["dates"].items() if k != "cancellation"}), None, facts)
+        ok(False, "no cancellation date should stop the run")
+    except ValueError as e:
+        ok("cancellation" in str(e), str(e))
     ok(v["nyears"] == "75" and v["grids"] == "13,414", "counts")
     ok(v["subsidy_sentence"] == "59% at the 70% and 75% coverage levels, 55% at 80% and 85%, and 51% at 90%", v["subsidy_sentence"])
     ok(subsidy_sentence({"70": 0.6, "75": 0.6, "80": 0.6, "85": 0.6, "90": 0.6}) == "60% at the 70%, 75%, 80%, 85% and 90% coverage levels", "one rate")

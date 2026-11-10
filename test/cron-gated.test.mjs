@@ -82,6 +82,8 @@ const GATED = [
   // Nov 7, 2026: the weekly Schrader auction results capture; the feed shows only the newest five sales,
   // so a dropped Monday can lose results for good
   ["schrader-capture.yml", ["43 19 * * 1"], 360],
+  // Nov 10, 2026: the monthly bid archive check (one past day's snapshot against that day's published town pages)
+  ["bid-archive-check.yml", ["19 10 6 * *"], 360],
 ];
 
 // Scheduled workflows that are not gated by a tick of their own, and why.
@@ -269,7 +271,7 @@ test("the gate passes over runs by hand for these, the land email retries after 
   const out = execFileSync("python3", ["scripts/cron_gate.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
   assert.match(out, /all cron_gate checks passed/);
   for (const name of [
-    "the four mail and rain workflows and the 51 gated since Nov 3, and only those, ignore runs by hand",
+    "the four mail and rain workflows and the 52 gated since Nov 3, and only those, ignore runs by hand",
     "land email: the first chained run after late land data goes once more",
     "land email: only one retry per land data commit",
     "land email: the land data landed before the tick's run, no retry",
