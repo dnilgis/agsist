@@ -5311,6 +5311,13 @@ def _selftest_town_fixes():
     assert SB.fresh_until(mon).astimezone(CT) == dt.datetime(2026, 11, 10, 13, 20, tzinfo=CT)
     assert SB.is_fresh(fri, dt.datetime(2026, 11, 9, 16, 0, tzinfo=CT)) and \
         not SB.is_fresh(fri, dt.datetime(2026, 11, 10, 13, 21, tzinfo=CT))
+    # a market holiday is not a session (contract_calendar.is_trading_day)
+    wed = dt.datetime(2026, 11, 25, 10, 0, tzinfo=CT)
+    assert SB.is_fresh(wed, dt.datetime(2026, 11, 26, 14, 0, tzinfo=CT)), "Thanksgiving is not a session"
+    assert SB.fresh_until(wed).astimezone(CT) == dt.datetime(2026, 11, 27, 13, 20, tzinfo=CT)
+    fri2 = dt.datetime(2027, 1, 15, 10, 0, tzinfo=CT)
+    assert SB.is_fresh(fri2, dt.datetime(2027, 1, 18, 14, 0, tzinfo=CT)), "MLK Day is not a session"
+    assert SB.fresh_until(fri2).astimezone(CT) == dt.datetime(2027, 1, 19, 13, 20, tzinfo=CT)
     # a read elevator is not also listed as "not read yet": Cameron MO (Co-operative), Wisner NE (ADM)
     cam = {"name": "Cameron", "state": "MO", "boards": {"p": {"operator": "Cameron Cooperative Elevator Association"}}}
     assert known_section(cam, [{"id": "known:x", "name": "Cameron Co-operative Elevator Association",

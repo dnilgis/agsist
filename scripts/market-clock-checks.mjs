@@ -53,7 +53,7 @@ function lift(name) {
   }
   return null;
 }
-const NAMES = ["mktParts", "mktInstant", "mktAddDays", "mktNextEveningOpen",
+const NAMES = ["mktHolidayName", "mktParts", "mktInstant", "mktAddDays", "mktNextEveningOpen",
                "marketSession", "mktCountdown", "mktSessionsClosedSince"];
 const src = {};
 for (const n of NAMES) {
@@ -65,11 +65,9 @@ if (fails.length) { report(); process.exit(1); }
 const constOf = (n) => { const m = new RegExp(`var ${n} ?= ?([^;]+);`).exec(PAGE); return m ? m[1] : null; };
 const consts = ["MKT_TZ", "MKT_OPEN_EVE", "MKT_PAUSE", "MKT_DAY_OPEN", "MKT_DAY_CLOSE"]
   .map((n) => `var ${n}=${constOf(n)};`).join("\n");
-const hol = /var MKT_HOLIDAYS_2026 ?= ?\{[\s\S]*?\};/.exec(PAGE);
-ok(!!hol, "the holiday table is gone");
 
 const M = new Function("Intl", "Date", "isFinite", "Math", "parseInt",
-  `var _mktFmt=null;\n${consts}\n${hol ? hol[0] : "var MKT_HOLIDAYS_2026={};"}\n` +
+  `var _mktFmt=null;\n${consts}\n` +
   NAMES.map((n) => src[n]).join("\n") +
   `\nreturn {${NAMES.join(",")}};`)(Intl, Date, isFinite, Math, parseInt);
 
@@ -152,10 +150,15 @@ ok(labor.state === "day",
 const since = (p, n) => M.mktSessionsClosedSince(p, at(n));
 ok(since("2026-09-04T18:31:00Z", "2026-09-05T12:25:00Z") === 0,
    "a board posted after Friday's close reads as stale on Saturday — nothing has closed since");
-ok(since("2026-09-04T14:00:00Z", "2026-09-07T12:00:00Z") === 1,
+ok(since("2026-09-11T14:00:00Z", "2026-09-14T12:00:00Z") === 1,
    "a Friday-morning board viewed on Monday should be one session old");
-ok(since("2026-09-04T14:00:00Z", "2026-09-08T12:00:00Z") === 2,
+ok(since("2026-09-11T14:00:00Z", "2026-09-15T12:00:00Z") === 2,
    "a Friday-morning board viewed on Tuesday should be two sessions old");
+/* A market holiday is not a session (contract_calendar.is_trading_day). */
+ok(since("2026-09-04T14:00:00Z", "2026-09-08T12:00:00Z") === 1,
+   "Labor Day counted as a session: a Friday-morning board read Tuesday morning after Labor Day is one session old");
+ok(since("2026-11-25T16:00:00Z", "2026-11-26T20:00:00Z") === 1,
+   "Thanksgiving counted as a session: a Wednesday 10:00 board is one session old (still current) Thursday afternoon");
 ok(since(null, "2026-09-08T12:00:00Z") === null, "a missing timestamp did not return null");
 ok(since("not a date", "2026-09-08T12:00:00Z") === null, "an unparseable timestamp did not return null");
 

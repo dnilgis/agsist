@@ -82,6 +82,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_bids import _net_get_json, BIDS_NETWORK_BASE  # noqa: E402  (network reader only)
 from fetch_bids import held_skip_row, HELD_SKIP_HOURS as _FB_HELD_SKIP_HOURS  # noqa: E402  (one rule)
 import source_links as SL  # noqa: E402  no direct links to data sources
+from contract_calendar import is_trading_day  # noqa: E402  (the one exchange-holiday list)
 import pricefmt  # noqa: E402  (cash as posted, basis in cents, "Dec '26": twin of components/util.js AG.px)
 from basis_method import (  # noqa: E402  (the one state-basis method)
     futures_disagree,
@@ -128,8 +129,10 @@ SPECIALTY = re.compile(r"white|organic|non[\s-]?gmo|nongmo|high oleic|\bip\b|foo
 # ---------------------------------------------------------------- helpers
 
 def fresh_until(pt, n=FRESH_SESSIONS):
-    """UTC moment a price posted at pt stops being current: the n-th weekday
-    day-session close (1:20 pm Central) after it. The site's one freshness
+    """UTC moment a price posted at pt stops being current: the n-th trading
+    day's session close (1:20 pm Central) after it. A market holiday is not a
+    session (contract_calendar.is_trading_day, the site's one holiday list;
+    components/cash-bids.js mktSessionsClosedSince reads its twin). The site's one freshness
     rule, the same one /cash-bids marks a board's card with (two closed
     sessions): a Friday afternoon bid is current through Monday's session and
     a Monday morning bid until Tuesday's close. None when pt is None."""
@@ -140,7 +143,7 @@ def fresh_until(pt, n=FRESH_SESSIONS):
     seen = 0
     for _ in range(40):
         close = dt.datetime(d.year, d.month, d.day, *SESSION_CLOSE_CT, tzinfo=CT)
-        if d.weekday() < 5 and close > t:
+        if is_trading_day(d) and close > t:
             seen += 1
             if seen >= n:
                 return close.astimezone(dt.timezone.utc)
@@ -844,8 +847,8 @@ def build_state_page(st, rows_all, summ, ctx):
          "name": f"{name} cash grain basis, AGSIST elevator network",
          "description": (f"Cash bids and basis (cash minus the named futures contract, $/bu) posted by "
                          f"{len(elevators)} elevators in {name} that the AGSIST elevator network read directly "
-                         f"from their own bid boards, priced within {FRESH_HOURS} hours of the "
-                         f"{fmt_ct(gen)} snapshot. A sample of elevators, not every elevator in the state."),
+                         f"from their own bid boards, priced within the last two trading "
+                         f"sessions before the {fmt_ct(gen)} snapshot. A sample of elevators, not every elevator in the state."),
          "url": f"{SITE}{path}", "isAccessibleForFree": True,
          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
          "dateModified": gen.strftime("%Y-%m-%dT%H:%M:%SZ"),
@@ -986,8 +989,9 @@ def build_state_page(st, rows_all, summ, ctx):
   {table}
   <div class="bs-note"><b>How these numbers are made.</b> Source: each elevator&rsquo;s own posted bid board,
   read by AGSIST; no third-party bid feed is used on this page. A bid counts only if its board was read
-  successfully in the last {HELD_SKIP_HOURS} hours and did not fail on the latest pass, and its price was posted within {FRESH_HOURS} hours of the snapshot, long enough
-  that a board unchanged over a weekend still counts on Monday. Specialty bids (white, organic, non-GMO, high-oleic,
+  successfully in the last {HELD_SKIP_HOURS} hours and did not fail on the latest pass, and its price was posted within the last two trading sessions
+  (1:20 pm Central closes; weekends and market holidays are not sessions) before the snapshot, so
+  a board unchanged over a weekend still counts through Monday&rsquo;s session. Specialty bids (white, organic, non-GMO, high-oleic,
   identity-preserved) are excluded. Medians and ranges are printed only with at least {MIN_STAT} elevators on the
   same futures contract. Prices are a snapshot as of {fmt_ct(gen)} and will have moved since; call the elevator
   before you haul.</div>
