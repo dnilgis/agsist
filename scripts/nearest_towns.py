@@ -101,7 +101,7 @@ def county_center(root, fips):
             except (OSError, ValueError):
                 continue
             for k, v in cs.items():
-                c = (v or {}).get("c")
+                c = v.get("c") if isinstance(v, dict) else None   # index.json maps codes to names
                 if isinstance(c, list) and len(c) == 2:
                     pts[k] = (c[0], c[1])
         _CACHE[key] = pts

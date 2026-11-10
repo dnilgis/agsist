@@ -200,11 +200,11 @@ def near_bids(root, fips, st_abbr, cls="xl-near"):
     p = NT.links_html(root, ctr[0], ctr[1], st_abbr, NEAR_LEAD, cls) if ctr else ""
     tag = f'<p data-xl="near" data-f="{fips}" data-s="{st_abbr}"'
     if not p:
-        return tag + " hidden></p>"
+        return tag + (f' class="{cls}"' if cls else "") + " hidden></p>"
     return tag + p[2:]
 
 
-_NEAR = re.compile(r'<p data-xl="near" data-f="(\d{5})" data-s="([A-Z]{2})"[^>]*>.*?</p>', re.S)
+_NEAR = re.compile(r'<p data-xl="near" data-f="(\d{5})" data-s="([A-Z]{2})"(?: class="([^"]*)")?[^>]*>.*?</p>', re.S)
 
 
 def steady(text):
@@ -214,7 +214,7 @@ def steady(text):
 
 def restamp_near(text, root):
     """Rewrite every marked bids-near line in one page's text. -> (text, changed)."""
-    new = _NEAR.sub(lambda m: near_bids(root, m.group(1), m.group(2)), text)
+    new = _NEAR.sub(lambda m: near_bids(root, m.group(1), m.group(2), m.group(3) or ""), text)
     return new, new != text
 
 
@@ -351,7 +351,7 @@ def selftest():
                          '<a href="/cash-bids/iowa/nevada">Nevada</a> (3 mi), <a href="/cash-bids/iowa/ames">Ames</a>'), nb)
         ok(NT.county_center(d, "46113") == (43.33, -102.55), "an old code is folded onto the spine county")
         far = near_bids(d, "46113", "SD")
-        ok(far == '<p data-xl="near" data-f="46113" data-s="SD" hidden></p>', far)
+        ok(far == '<p data-xl="near" data-f="46113" data-s="SD" class="xl-near" hidden></p>', far)
         ok(steady(nb) == steady(far.replace("46113", "19169").replace("SD", "IA")), "the check ignores the line")
         # a new town page lands: the stamp writes it, the check never notices
         w("arc-plc/iowa/story-county.html", "<main>" + far.replace("46113", "19169").replace("SD", "IA") + "</main>")
@@ -360,6 +360,8 @@ def selftest():
         got = open(os.path.join(d, "arc-plc/iowa/story-county.html")).read()
         ok(nb in got, got)
         ok(restamp_near(got, d) == (got, False), "stamping twice changes nothing")
+        kept, _ = restamp_near('<p data-xl="near" data-f="19169" data-s="IA" class="prf-fine" hidden></p>', d)
+        ok(kept.startswith('<p data-xl="near" data-f="19169" data-s="IA" class="prf-fine">Bids near'), "a restamp keeps the page's class")
         ld = '<script type="application/ld+json">{"@graph": [%s]}</script>' % _j.dumps(j)
         ok(trail_matches(ld + v) is None, trail_matches(ld + v))
         ok(trail_matches(ld + v.replace(">Iowa<", ">Ohio<")) is not None and trail_matches(ld) is not None, "a mismatch is caught")
