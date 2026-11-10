@@ -347,6 +347,17 @@ class Reader:
         self.rp, self.fw = read_wasde_pdf, fetch_wasde
         self.root, self.release, self.opener, self.log = Path(root), release, opener, log
         self.nass = nass and bool(fetch_wasde.API_KEY)
+        self.key = fetch_wasde.API_KEY
+        self.asks = 0
+        if not getattr(fetch_wasde.nass_rows, "short_wait", False):
+            # one slow NASS answer must not hold up the PDF: 8 s per ask here (60 s in the module)
+            orig = fetch_wasde.nass_rows
+
+            def nass_rows(short_desc, year, period, key=None, opener=None):
+                return orig(short_desc, year, period, key=key,
+                            opener=opener or (lambda req, timeout=None: urllib.request.urlopen(req, timeout=8)))
+            nass_rows.short_wait = True
+            fetch_wasde.nass_rows = nass_rows
         self.pdf_dir = self.root / "data/wasde-pdf"
         self.parsed = None
         self.wasde_sig = None
@@ -358,8 +369,6 @@ class Reader:
         fw.EST_PATH = self.root / "data/analyst-estimates.json"
         fw.HIST_PATH = self.root / "data/wpi-history.json"
         fw.OUT_PATH = self.root / "data/wasde.json"
-        if not self.nass:
-            fw.API_KEY = ""
 
     def pdf(self, now):
         """The PDF read for this release, or None. A file that does not read
@@ -385,8 +394,11 @@ class Reader:
         return self.parsed
 
     def fill(self):
-        """fetch_wasde.py on this release; True when wasde.json changed."""
+        """fetch_wasde.py on this release; True when wasde.json changed. NASS is
+        asked on every third check (every 30 s), the PDF on every one."""
         self._point()
+        self.asks += 1
+        self.fw.API_KEY = self.key if (self.nass and self.asks % 3 == 1) else ""
         rc, out = _quiet(self.fw.main, ["--date", self.release.isoformat()])
         for ln in out.splitlines():
             if ln.startswith("::error") or "REFUSED" in ln:

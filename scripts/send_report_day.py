@@ -35,8 +35,8 @@ WHEN IT SENDS, AND WHEN IT DOES NOT.
 
 THE LIVE RESULT FIRST. On report day the report-day job (scripts/report_live.py)
 puts the graded result on the site's worker within seconds of the release; this
-reads it first (REPORT_LIVE_URL, default the worker; REPORT_LIVE_TEST=1 reads
-the rehearsal's record) and falls back to the committed files above when the
+reads it first (REPORT_LIVE_URL, else LIST_URL; REPORT_LIVE_TEST=1 reads the
+rehearsal's record) and falls back to the committed files above when the
 worker has nothing for today, so the email does not wait for the commit.
 
 THE PRICE MOVE. The last data/prices.json committed before the release is
@@ -158,7 +158,11 @@ def live_record(day, opener=None):
     """Today's graded result from the worker, or None (nothing kept for `day`,
     or the worker did not answer). Never raises."""
     test = env("REPORT_LIVE_TEST", "") == "1"
-    url = (env("REPORT_LIVE_URL") or "https://agsist-api.dnilgis.workers.dev").rstrip("/") + "/report-live" + ("?test=1" if test else "")
+    base = env("REPORT_LIVE_URL") or env("LIST_URL")
+    if not base:
+        print("live result: no worker address in this run; the committed files are the source")
+        return None
+    url = base.rstrip("/") + "/report-live" + ("?test=1" if test else "")
     try:
         with (opener or urllib.request.urlopen)(urllib.request.Request(url, headers=UA), timeout=8) as r:
             rec = (json.loads(r.read().decode()) or {}).get("live")
@@ -764,11 +768,17 @@ def _selftest():
     def _op(req, timeout=None):
         seen.append(req.full_url)
         return _R(json.dumps({"ok": True, "live": lv}).encode())
-    ok(live_record(date(2026, 12, 10), opener=_op) == lv and seen[-1].endswith("/report-live"), "live_record reads the worker")
+    _old_url = os.environ.get("REPORT_LIVE_URL")
+    os.environ["REPORT_LIVE_URL"] = "https://api.example.com"
+    ok(live_record(date(2026, 12, 10), opener=_op) == lv and seen[-1] == "https://api.example.com/report-live", "live_record reads the worker")
     ok(live_record(date(2026, 12, 11), opener=_op) is None, "and only today's record counts")
     def _down(req, timeout=None):
         raise OSError("down")
     ok(live_record(date(2026, 12, 10), opener=_down) is None, "a worker that does not answer means the committed files")
+    if _old_url is None:
+        os.environ.pop("REPORT_LIVE_URL", None)
+    else:
+        os.environ["REPORT_LIVE_URL"] = _old_url
     # 180.1 vs 179.0 is +0.61%, past the 0.5% yield band: graded by the same rule
     ok(row_line(rr["October WASDE"][0]).endswith("Graded bearish."), row_line(rr["October WASDE"][0]))
     ok(release_utc(date(2026, 10, 9)).hour == 16 and release_utc(date(2026, 12, 10)).hour == 17, "noon ET in UTC, DST aware")
