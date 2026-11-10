@@ -215,9 +215,9 @@ test('morning report: reader counts by area to private-data, after the email, ne
   assert.ok(y.indexOf('- name: Reader counts by area') > y.indexOf('- name: Build and send'), 'after the email');
 });
 
-test('bid snapshots: a live day under 500 locations waits for the next run, and a refusal never pushes', () => {
+test('bid snapshots: a live day under 1,500 locations waits for the next run, and a refusal never pushes', () => {
   const b = read('scripts/bid_snapshots.py');
-  assert.match(b, /^MIN_LOCS = 500$/m);
+  assert.match(b, /^MIN_LOCS = 1500$/m);
   assert.match(b, /if gate == "wait":\n\s+print\([^\n]+\)\n\s+return 3/);
   const s = step('fetch_bids.yml', 'Daily bid snapshot to the raw branch');
   assert.match(s, /build --from bids-full\.json --day "\$day" \\\n\s+\|\| \{ echo "::warning::bid snapshot for \$day not built[^\n]*; exit 0; \}/,

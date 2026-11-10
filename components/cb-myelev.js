@@ -84,6 +84,9 @@
     catch(e){ return false; }
   }
   function has(key){ return read().some(function(i){ return i.key === key; }); }
+  /* A source system's archived-copy marks ("zShawnee Feed Old") never reach a card: the same cleaning the
+     results use (components/cb-rank.js displayName), applied to names read from a shard or saved earlier. */
+  function dn(n){ n = String(n || ''); try { return (window.cbRank && window.cbRank.displayName && window.cbRank.displayName(n)) || n; } catch (e) { return n; } }
   function keyOf(elev){
     if(!elev) return '';
     if(elev.place) return String(elev.place);
@@ -323,7 +326,7 @@
       /* No usable row at all and the board's rows are flagged: say it was not reached. */
       if(!crops.length && sh && Array.isArray(sh.bids) && sh.bids.some(function(b){ return b && b.stale === true; })) stale = true;
       return { item:item, crops:crops, posted:posted(p.pricedAt), stale:stale, basis:basisLine(facts),
-               elev:{ facility:p.operator, city:p.city, town:p.town || p.city, state:p.state, commodities: crops.some(function(c){ return c.crop === 'corn'; }) ? { corn:[1] } : {} } };
+               elev:{ facility:dn(p.operator), city:p.city, town:p.town || p.city, state:p.state, commodities: crops.some(function(c){ return c.crop === 'corn'; }) ? { corn:[1] } : {} } };
     });
   }
   function basisLine(facts){
@@ -357,7 +360,7 @@
       if(p) return factsFromNetwork(item, p).then(function(f){ return (!f.crops.length && fed[item.key]) ? factsFromCard(item, fed[item.key]) : f; });
       if(fed[item.key]) return factsFromCard(item, fed[item.key]);
       var k = item.key.split('|');
-      return { item:item, crops:[], posted:null, stale:false, basis:'', elev:{ facility:item.name, city:k[2] || '', town:item.town, state:item.state, commodities:{} } };
+      return { item:item, crops:[], posted:null, stale:false, basis:'', elev:{ facility:dn(item.name), city:k[2] || '', town:item.town, state:item.state, commodities:{} } };
     });
   }
 
@@ -399,7 +402,7 @@
       }
       el.hidden = true; el.innerHTML = ''; return;
     }
-    Promise.all(items.map(function(it){ return factsFor(it).catch(function(){ return { item:it, crops:[], basis:'', elev:{ facility:it.name, state:it.state, commodities:{} } }; }); })).then(function(list){
+    Promise.all(items.map(function(it){ return factsFor(it).catch(function(){ return { item:it, crops:[], basis:'', elev:{ facility:dn(it.name), state:it.state, commodities:{} } }; }); })).then(function(list){
       if(m.seq !== seq) return;
       /* An alert form open in a row that is still listed: do not wipe what they typed. */
       var keys = items.map(function(i){ return i.key; }).join('\n'), busy = false;
