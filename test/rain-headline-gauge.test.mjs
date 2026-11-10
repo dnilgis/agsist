@@ -31,11 +31,15 @@ out["ark_narrow"] = page("05001", ark)
 out["pondera_nogrid"] = page("30073", {})
 def st(fips_list, st_):
     d = dict(fx[fips_list[0]]["d"], counties={f: fx[f]["c"] for f in fips_list})
-    return B.state_page(st_, d, {f: (fx[f]["c"]["name"], "/rain/x/" + f, "", "") for f in fips_list}, [], None)
+    return B.state_page(st_, d, {f: (fx[f]["c"]["name"], "/rain/x/" + f, "", "") for f in fips_list}, [], None,
+                        {f: fx[f]["ctx"] for f in fips_list})
 out["fl_state"] = st(["12099"], "FL")
 pal = copy.deepcopy(fx["12099"]); pal["c"]["total"] = 10.0; pal["c"]["name"] = "Glacier County"
 fx["30035"] = pal
 out["mt_state"] = st(["30073", "30035"], "MT")
+out["mt_mid"] = [B.middle({f: fx[f]["c"] for f in ("30073", "30035")}),
+                 B.middle({f: fx[f]["c"] for f in ("30073", "30035")}, {f: fx[f]["ctx"] for f in ("30073", "30035")}),
+                 fx["30035"]["c"]["pct"]]
 files = {"FL": dict(fx["12099"]["d"], counties={"12099": fx["12099"]["c"]})}
 out["hub"] = B.hub_page(files, "2026-11-09", [])
 out["saved_js"] = B.SAVED_JS
@@ -50,7 +54,7 @@ const visible = (h) => h.replace(/<details[^]*?<\/details>/g, "");
 
 test("Palm Beach FL: the title, og:title and lede name the Aberdeen gauge; the county-wide estimate sits beside it", () => {
   const h = P["12099"];
-  assert.match(title(h), /^75\.03 in of Rain at (the )?Aberdeen( Gauge)?, Palm Beach County, FL, 2026( \| AGSIST)?$/);
+  assert.match(title(h), /^75\.03 in of Rain at Aberdeen, Palm Beach( County)?, FL(, 2026)?( \| AGSIST)?$/);
   assert.equal(og(h), title(h).replace(/ \| AGSIST$/, ""));
   assert.match(lede(h), /^<b>75\.03 inches<\/b> of rain have fallen so far in 2026 at the volunteer rain gauge 4\.2 miles north-northwest of Aberdeen in Palm Beach County, through Nov 8\./);
   assert.match(lead(h), /Averaged over the whole county, about 57\.82 inches, 109% of usual/);
@@ -60,7 +64,7 @@ test("Palm Beach FL: the title, og:title and lede name the Aberdeen gauge; the c
 });
 
 test("Story County IA: the title names Gilbert", () => {
-  assert.match(title(P["19169"]), /^55\.56 in of Rain at (the )?Gilbert( Gauge)?, Story County, IA, 2026/);
+  assert.match(title(P["19169"]), /^55\.56 in of Rain at Gilbert, Story County, IA, 2026 \| AGSIST$/);
 });
 
 for (const [f, county, st, site, est, pct] of [["30073", "Pondera County", "MT", "Pike Creek", "16.85", 116], ["16041", "Franklin County", "ID", "Franklin Basin", "18.35", 94]]) {
@@ -81,9 +85,25 @@ test("Franklin ID: two qualifying stations, both mountain sites, said as such", 
   assert.match(lead(P["30073"]), /The only station in Pondera County that reported nearly every day is the Pike Creek SNOTEL site/);
 });
 
+test("Pondera MT: the as-of line says which date is the county estimate's and which the snow site's", () => {
+  const h = P["30073"];
+  assert.match(h, /<p class="rc-asof">2026: the county estimate runs Jan 1 to Nov 8; the snow site&rsquo;s figures run Jan 1 to Nov 5, the latest day it has reported<\/p>/);
+  assert.ok(!/<p class="rc-asof">As of /.test(h), "no bare as-of date that the lead contradicts");
+  assert.match(h, /<title id="rc-ct">Running total of rain at the Pike Creek snow site in Pondera County, 2026/, "the chart is the snow site's, and says so");
+});
+
+test("Montana state page: the Pondera row is the county-wide estimate, the snow site marked; no snow-site percent in the median", () => {
+  const row = P.mt_state.match(/<tr><th scope="row"><a href="\/rain\/x\/30073">Pondera<\/a>.*?<\/tr>/)[0];
+  assert.match(row, /<td>16\.85<\/td><td>14\.50<\/td><td>116%<\/td><td>County-wide estimate; its station, Pike Creek, is a mountain snow site<\/td><td>Nov 8<\/td>/, row);
+  assert.ok(!row.includes("37.50") && !row.includes("102%"), "the snow site's 37.50 in and 102% are not the row");
+  const [noCtx, withCtx, glacier] = P.mt_mid;
+  assert.equal(noCtx, glacier, "without an estimate the snow site's county is left out of the median");
+  assert.equal(withCtx, (116 + glacier) / 2, "with one, the county counts with its estimate, never the site's 102%");
+});
+
 test("a mountain site with no county-wide estimate keeps its lede but says what it is", () => {
   const h = P.pondera_nogrid;
-  assert.match(title(h), /^37\.50 in of Rain at (the )?Pike Creek( Snow Site)?, Pondera County, MT, 2026/);
+  assert.match(title(h), /^37\.50 in of Rain at Pike Creek Snow Site, Pondera( County)?, MT(, 2026)?( \| AGSIST)?$/);
   assert.match(lede(h), /This station is a mountain snow site/);
 });
 
@@ -141,10 +161,11 @@ test("/rain saved place: the county page is linked and the state is chosen; noth
   assert.deepEqual(r.fetched, ["/rain/florida"]);
   assert.equal(r.els["rc-pick-st"].value, "/rain/florida");
   assert.equal(r.els["rc-mine"].hidden, false);
-  assert.equal(r.els["rc-mine"].textContent, "Your saved place is in Palm Beach, Florida: ");
+  assert.equal(r.els["rc-mine"].textContent, "Your saved place is in Palm Beach County, Florida: ", "the whole county name, not \"Palm Beach, Florida\"");
   assert.equal(r.els["rc-mine"].kids[0].href, "/rain/florida/palm-beach-county");
   r = await runSaved({ state: "FL", county: "Dade" }, sp);
   assert.equal(r.els["rc-mine"].kids[0].href, "/rain/florida", "a county with no page links the state page");
+  assert.equal(r.els["rc-mine"].textContent, "Your saved place is in Dade County, Florida: ");
   r = await runSaved({ state: "FL", county: "" }, sp);
   assert.equal(r.els["rc-mine"].hidden, true);
   assert.deepEqual(r.fetched, []);

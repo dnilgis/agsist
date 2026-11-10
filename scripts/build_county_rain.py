@@ -1700,9 +1700,29 @@ def selftest():
         ok(f"{c['total']:.2f} inches of rain have fallen so far in 2026 at the weather station 8 miles west-southwest of Ames in Story County, through Oct 12." in story,
            "the answer comes first, in plain words, naming the gauge and then the county")
         ok(f"({c['pct']}% of usual)" in story and ("less than a usual year to date" in story or "more than a usual year to date" in story), "the comparison sentence")
-        ok(f"<title>{c['total']:.2f} in of Rain at the Ames Station, Story County, IA, 2026</title>" in story,
-           "title: the year's inches first (Nov 2 test), at the gauge it was read at (Nov 10)")
-        ok('<meta property="og:title" content="%.2f in of Rain at the Ames Station, Story County, IA, 2026">' % c["total"] in story, "og:title in step")
+        ok(f"<title>{c['total']:.2f} in of Rain at Ames, Story County, IA, 2026 | AGSIST</title>" in story,
+           "title: the year's inches first (Nov 2 test), at the gauge it was read at, the brand kept (Nov 10)")
+        ok('<meta property="og:title" content="%.2f in of Rain at Ames, Story County, IA, 2026">' % c["total"] in story, "og:title in step")
+        # Nov 10: the title names the gauge and keeps " | AGSIST" by shortening the place, never by dropping the gauge
+        cg = {"total": 55.56, "station": {"raw": "GILBERT 0.2 NNE", "net": "cocorahs", "sid": "x"}}
+        t1 = rain_title(cg, None, False, False, "Gilbert", "Story County", "IA", 2026)
+        ok(t1 == "55.56 in of Rain at Gilbert, Story County, IA, 2026 | AGSIST", f"short gauge title: {t1}")
+        t2 = rain_title(dict(cg, total=111.51), None, False, False, "Yakutat", "Yakutat City and Borough", "AK", 2026)
+        ok(t2 == "111.51 in of Rain at Yakutat, Yakutat, AK, 2026 | AGSIST", f"a long borough shortens first: {t2}")
+        cl = {"total": 18.55, "station": {"raw": "SPRINGFIELD COMANCHE NATIONAL GRASSLAND", "net": "coop", "sid": "y"}}
+        t3 = rain_title(cl, None, False, False, "Springfield Comanche National Grassland", "Baca County", "CO", 2026)
+        ok(" at Springfield" in t3 and len(t3) <= CAPS.TITLE_MAX and " in Baca" not in t3, f"a very long gauge name: {t3}")
+        t4 = rain_title(cg, (16.85, 116), True, True, "Pike Creek", "Pondera County", "MT", 2026)
+        ok(t4 == "About 16.85 in of Rain in Pondera County, MT, 2026 | AGSIST", f"a snow site's county leads with the estimate: {t4}")
+        ok(short_place("Valdez-Cordova Census Area") == "Valdez-Cordova" and short_place("Richmond city") == "Richmond city", "short_place")
+        # a snow site's percent never enters a state median; its county counts with the estimate when there is one
+        snow = {"name": "Pondera County", "total": 37.5, "usual": 36.89, "pct": 102, "as_of": "2026-11-05", "station": {"sid": "USS0013A19S", "raw": "PIKE CREEK"}}
+        low = {"name": "Teton County", "total": 10.0, "usual": 10.0, "pct": 100, "as_of": "2026-11-08", "station": {"sid": "245000 2", "raw": "CHOTEAU"}}
+        gx = {"grid": {"total": 16.85, "usual": 14.5}}
+        ok(middle({"1": snow, "2": low}) == 100, "median without a snow site's percent")
+        ok(middle({"1": snow, "2": low}, {"1": gx}) == 108, "median with the snow site's county estimate (116 and 100)")
+        v_ = county_view(snow, gx, "2026-11-08")
+        ok(v_["kind"] == "est" and v_["total"] == 16.85 and v_["pct"] == 116 and v_["as_of"] == "2026-11-08", f"county_view: {v_}")
         # 2026-10-23 (Sig): the pages are rebuilt every day, not Mondays; each says the day it was read
         # and the day its numbers run through, and none says weekly
         ok('<p class="rc-asof">As of Oct 12, 2026, the latest day this station has reported</p>' in story
@@ -1995,7 +2015,7 @@ def selftest():
         de = want.get("rain/delaware/kent-county.html", "")
         # the title leads with the inches since the Nov 2 test, so the finished-year question is read from the h1
         ok(de and "How much rain did Kent County, Delaware, get in 2024?" in de and "fell in 2024" in de
-           and re.search(r"<title>\d+\.\d\d in of Rain at the Dover Station, Kent County, DE, 2024</title>", de), "finished year wording")
+           and re.search(r"<title>\d+\.\d\d in of Rain at Dover, Kent County, DE, 2024 \| AGSIST</title>", de), "finished year wording")
         ok(de and "ship in January" not in de and "All of 2024" in de, "finished year: no January note")
         # a station that last reported Dec 29 in a year fetched through Dec 31: the year is over, the page says Dec 29
         dd3 = os.path.join(t, "late")
