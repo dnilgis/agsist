@@ -202,7 +202,7 @@ def render(a):
     if a.get("fold"):
         # folded: the answer is in the page (crawlers read it), the reader opens it
         return (f'{op}<details class="ai-answer" id="answer-{aid}" data-checked="{checked(a)}" style="{box.replace("1rem 0;padding:.8rem 1rem", ".5rem 0;padding:.3rem .9rem")}">'
-                f'<summary style="cursor:pointer;padding:.35rem 0">{head.replace("<h2 ", "<h2 class=fold-h ", 1).replace("margin:0 0 .4rem", "display:inline;margin:0", 1)}</summary>'
+                f'<summary style="cursor:pointer;padding:.35rem 0">{head.replace(f'<h2 id="answer-{aid}-h"', f'<h2 id="answer-{aid}-h" class="fold-h"', 1).replace("margin:0 0 .4rem", "display:inline;margin:0", 1)}</summary>'
                 f'{body}</details>{cl}')
     return (f'{op}<section class="ai-answer" id="answer-{aid}" aria-labelledby="answer-{aid}-h" data-checked="{checked(a)}" '
             f'style="{box}">{head}{body}</section>{cl}')

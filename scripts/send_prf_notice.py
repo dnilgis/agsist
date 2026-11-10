@@ -58,6 +58,7 @@ sys.path.insert(0, str(HERE))
 import email_links  # noqa: E402  (every send refuses a link to the worker host; scripts/email_links.py)
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
+import send_pace  # noqa: E402  batches, one try more for a deferral, hard bounces (scripts/send_pace.py)
 TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import send_notice as SN          # noqa: E402  transport, render, unsubscribe link
 
@@ -327,18 +328,21 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         return 0
 
     conn, sent, failed, reconnects = None, 0, 0, 0
+    pace = send_pace.Pacer(todo, sleep=sleep, key=lambda it: (it[0].strip().lower(), it[1]))  # per reader and topic
     try:
         conn = connect()
-        for k, (e, t, src, grid, items) in enumerate(todo):
+        for k, (e, t, src, grid, items) in enumerate(pace):
+            conn = pace.fresh(conn, connect)   # the retry pass starts on a new connection
             ctx.update(grid=grid, items=items)
             try:
                 conn.send_message(SN.render(t, src, e, base, secret, today, from_addr, reply_to, repo))
             except Exception as ex:
-                failed += 1
-                out("  send failed (%s)" % type(ex).__name__)
+                if not pace.defer(ex):       # a deferral (4xx) is tried once more at the end of the list
+                    failed += 1
+                    out("  send failed (%s)" % type(ex).__name__)
                 dead = isinstance(ex, (smtplib.SMTPServerDisconnected, smtplib.SMTPConnectError)) or \
                     (isinstance(ex, OSError) and not isinstance(ex, smtplib.SMTPException))
-                if dead and reconnects < 3 and k < len(todo) - 1:
+                if dead and reconnects < 3 and pace.more():
                     reconnects += 1
                     try:
                         conn.quit()
@@ -355,8 +359,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 out("::error::prf: a sent email could not be marked; stopping so nobody gets two")
                 broken = True
                 break
-            if k < len(todo) - 1:
-                sleep(1.2)
+            pace.after()   # the short gap, or the pause between batches
     except Exception as ex:
         out("  could not connect to SMTP (%s)" % type(ex).__name__)
     finally:
@@ -365,6 +368,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 conn.quit()
         except Exception:
             pass
+    failed += len(pace.unsent())   # deferred, never tried again
     if TALLY:
         TALLY.sent += sent
     out("prf: sent %d, failed %d" % (sent, failed))
