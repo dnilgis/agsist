@@ -28,9 +28,6 @@ import re
 import sys
 from datetime import datetime, timezone
 
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import cross_links as XL  # noqa: E402  the same-state row
-
 SC = "data/hail/state-counties.json"
 DAYS = "data/hail/storm-days.json"
 DAYS_MAX = 24        # storm days listed per state page, newest first; the storm log has them all
@@ -394,7 +391,6 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
         "<h2>" + esc(name) + " hail: the questions people ask</h2>\n"
         + faq_vis +
         "\n<nav class=\"hs-states\" aria-label=\"Hail by state\"><h2>Hail in other states</h2><div class=\"hs-states-grid\">" + all_state_links(name) + "</div></nav>\n"
-        + XL.same_state_row(".", slug(name), esc(name), "hail-map") + "\n"
         + b2b +
         "\n<details class=\"hs-terms\" id=\"terms\"><summary>Sources and terms</summary>"
         "<p>Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet, " + str(years[0]) + "\u2013" + str(years[-1]) + ". Reports depend on someone reporting, so population and spotter density bias the counts. "

@@ -59,7 +59,6 @@ from decimal import Decimal, ROUND_HALF_UP
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import county_yield as CY  # noqa: E402  (the one least-squares fit)
 import credits as CR  # noqa: E402  (NASS notice wording)
-import cross_links as XL  # noqa: E402  (same-state row, breadcrumb trail)
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -535,9 +534,6 @@ def build_state_page(name, inp, ctx):
     seasons = current_season(st, inp["state_stats"].get(st), stats, warn)
 
     # ---- JSON-LD
-    # the visible trail and its JSON-LD from one list (cross_links.crumbs)
-    trail_html, trail_ld = XL.crumbs([("AGSIST", f"{SITE}/"), ("USDA Quick Stats", f"{SITE}/usda-quick-stats"),
-                                      (f"{name} yield by year", f"{SITE}{path}")])
     jsonld = {"@context": "https://schema.org", "@graph": [
         {"@type": "Dataset", "@id": f"{SITE}{path}#dataset",
          "name": f"{name} {crops_phrase(crops).lower()} yield by year, {yrs_plain(y0, y1)}",
@@ -555,7 +551,10 @@ def build_state_page(name, inp, ctx):
          "variableMeasured": [f"{CROP_LC[c]} yield (bu/acre)" for c in crops]
                              + [f"{CROP_LC[c]} acres planted (million acres)" for c in crops
                                 if c in ACRES and name in inp["acres"][c]["rows"]]},
-        trail_ld,
+        {"@type": "BreadcrumbList", "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": f"{SITE}/"},
+            {"@type": "ListItem", "position": 2, "name": "USDA Quick Stats", "item": f"{SITE}/usda-quick-stats"},
+            {"@type": "ListItem", "position": 3, "name": f"{name} yield by year", "item": f"{SITE}{path}"}]},
     ]}
 
     cards = "".join(stat_card(c, stats[c]) for c in crops)
@@ -588,8 +587,12 @@ def build_state_page(name, inp, ctx):
                       "are not included, and no wheat acres column is shown.")
 
     links = ['<a href="/usda-quick-stats">corn &amp; soybean yields for every state (USDA Quick Stats)</a>']
-    # the Atlas, rent and cash bid pages for this state are in the same-state row (cross_links)
-    same_row = XL.same_state_row(root, sl, esc(name), "yield")
+    if os.path.exists(os.path.join(root, "farmland-atlas", sl, "index.html")):
+        links.append(f'<a href="/farmland-atlas/{sl}/">{name} Farmland Atlas: every county</a>')
+    if os.path.exists(os.path.join(root, "rent", f"{sl}.html")):
+        links.append(f'<a href="/rent/{sl}">{name} cash rent by county</a>')
+    if os.path.exists(os.path.join(root, "cash-bids", sl, "index.html")):
+        links.append(f'<a href="/cash-bids/{sl}/#basis">{name} cash bids and basis today</a>')
     if os.path.exists(os.path.join(root, "arc-plc", f"{sl}.html")):
         links.append(f'<a href="/arc-plc/{sl}">{name} ARC or PLC by county</a>')
     cloud = " &middot; ".join(f'<a href="/yield/{slug(o)}">{esc(o)}</a>' for o in ctx["all_states"] if o != name)
@@ -600,7 +603,7 @@ def build_state_page(name, inp, ctx):
 <body>
 {hdr}
 <main class="yl-wrap" id="main">
-  {trail_html}
+  <p class="yl-sub" style="margin-top:14px"><a href="/usda-quick-stats" style="color:var(--text-muted)">USDA Quick Stats</a> &rsaquo; <b style="color:var(--text)">{esc(name)} yield by year</b></p>
   <h1>{esc(name)} {crops_phrase(crops).lower()} yield by year</h1>
   {forecast_line(inp["state_stats"].get(st), seasons)}
   <p class="yl-sub">USDA NASS annual state yield estimates for {esc(name)}: {intro_crops}.
@@ -614,7 +617,6 @@ def build_state_page(name, inp, ctx):
   {year_table(st, name, inp, crops, y0, y1t)}
   {cty_html}
   <p class="yl-links yl-sub">Related: {' &middot; '.join(links)}.</p>
-  {same_row}
   <h2>Yield by year in other states</h2>
   <p class="yl-cloud">{cloud}</p>
   <details class="yl-terms" id="terms"><summary>Sources and terms</summary>
@@ -751,7 +753,6 @@ def selftest():
         lds = [json.loads(b) for b in re.findall(r'<script type="application/ld\+json">(.*?)</script>', ia, re.S)]
         types = {g["@type"] for d in lds for g in d["@graph"]}
         ck("JSON-LD parses: Dataset + BreadcrumbList, no FAQ", types == {"Dataset", "BreadcrumbList"}, types)
-        ck("visible trail = BreadcrumbList", '<nav class="breadcrumb"' in ia and XL.trail_matches(ia) is None, XL.trail_matches(ia))
         ck("gap year is n/a + reason", re.search(r"<tr><td>2014</td><td class=\"n\"><span class=\"mut\" "
                                                      r"title=\"NASS published no figure\">n/a", ia) is not None)
         ck("acres missing -> n/a, present -> value", "<td class=\"n\">13.6</td>" in ia)

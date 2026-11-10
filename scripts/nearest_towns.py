@@ -11,7 +11,6 @@ daily except which towns have a page.
 
     nearest(root, lat, lon, k=3, max_mi=60) -> [{"name", "st", "url", "mi"}]
     links_html(root, lat, lon, county_state, lead) -> '<p>...</p>' or ''
-    county_center(root, fips) -> (lat, lon) of the county middle, or None
 """
 import glob
 import html
@@ -85,26 +84,3 @@ def links_html(root, lat, lon, county_state, lead, cls=""):
         lab = n["name"] + ("" if n["st"] == county_state else ", " + n["st"])
         bits.append('<a href="%s">%s</a> (%d mi)' % (html.escape(n["url"]), html.escape(lab), max(1, round(n["mi"]))))
     return '<p%s>%s %s.</p>' % (' class="%s"' % cls if cls else "", lead, ", ".join(bits))
-
-
-def county_center(root, fips):
-    """(lat, lon) of a county's middle from data/atlas/pct/<ST>.json (the point the Atlas measures from),
-    with the code first folded onto the spine county (county_fold.fold). None when it has none."""
-    root = os.path.abspath(root)
-    key = ("ctr", root)
-    if key not in _CACHE:
-        import json
-        pts = {}
-        for f in sorted(glob.glob(os.path.join(root, "data", "atlas", "pct", "*.json"))):
-            try:
-                cs = json.load(open(f, encoding="utf-8")).get("counties") or {}
-            except (OSError, ValueError):
-                continue
-            for k, v in cs.items():
-                c = v.get("c") if isinstance(v, dict) else None   # index.json maps codes to names
-                if isinstance(c, list) and len(c) == 2:
-                    pts[k] = (c[0], c[1])
-        _CACHE[key] = pts
-    from county_fold import fold
-    pts = _CACHE[key]
-    return pts.get(str(fips)) or pts.get(fold(str(fips)))

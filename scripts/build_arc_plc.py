@@ -3570,8 +3570,6 @@ def county_page(st, S, c, D, ch):
         rel.append(f'<a href="{prf_h}">PRF rainfall insurance in {esc(cname)}</a>')
     if st in RAIN_STATES:
         rel.append(XL.rain_link(ROOT, rain_slug(RAIN_STATES[st]), esc(RAIN_STATES[st]), cslug, esc(cname)))
-    # up to three town bid pages nearest the county middle; restamped daily with the rain link
-    near = XL.near_bids(ROOT, c["f"], st, "ap-small ap-noprint")
     missing = [CROP_LC[k] for k in CROPS if k not in c["k"]]
     miss_txt = f'<p class="ap-small">Nothing from FSA here for {" or ".join(missing)}. {ASK}</p>' if missing else ""
     share = f"{SITE}{path}"
@@ -3620,7 +3618,6 @@ def county_page(st, S, c, D, ch):
   {form_shell(D, first, st, c['f']) if official else form_html(D, first, st, c['f'])}
   </details>
   {f'<div class="ap-faq ap-noprint"><h2>Questions about {esc(cname)}</h2>{faq_html}</div>' if faqs else ''}
-  {near}
   {RP_SEE}
   <p class="ap-small ap-noprint">Related: {' &middot; '.join(rel)}</p>
   {terms_fold(f'An estimate by AGSIST, not a USDA determination. <a href="{OFFICE}" rel="noopener">Find your county office</a>.')}
@@ -3822,8 +3819,7 @@ def main_build(root=".", check=False):
     for rel, content in out.items():
         p = os.path.join(root, rel)
         cur = open(p, encoding="utf-8").read() if os.path.exists(p) else None
-        # the bids-near line follows the town pages (cross_links --stamp), not this set's data
-        if cur != content and not (check and cur is not None and XL.steady(cur) == XL.steady(content)):
+        if cur != content:
             stale.append(rel)
             if not check:
                 os.makedirs(os.path.dirname(p) or ".", exist_ok=True)

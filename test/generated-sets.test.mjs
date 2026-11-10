@@ -152,10 +152,8 @@ test("main-checks.yml: a set whose builder changed is rebuilt on main before the
   const out = py(`import generated_sets as G
 ch = [(100, ["data/bids.json", "rain/iowa/x.html"]), (200, ["scripts/build_county_rain.py"]), (300, ["scripts/cross_links.py"]), (400, ["scripts/build_cash_bid_pages.py"])]
 p = G.pending(ch)
-print(json.dumps({"rain": p.get("rain"), "cash": p.get("cash-bids"), "prf": p.get("prf"), "land": p.get("land-sales"), "info": p.get("infographic"), "none": G.pending([(9, ["rain/a.html", "data/x.json"])])}))`);
-  // land sales imports cross_links since its county pages carry the same-state row (Nov 10, 2026); the
-  // infographic set imports neither changed module
-  assert.deepEqual(JSON.parse(out), { rain: 300, cash: 400, prf: 300, land: 300, info: null, none: {} },
+print(json.dumps({"rain": p.get("rain"), "cash": p.get("cash-bids"), "prf": p.get("prf"), "land": p.get("land-sales"), "none": G.pending([(9, ["rain/a.html", "data/x.json"])])}))`);
+  assert.deepEqual(JSON.parse(out), { rain: 300, cash: 400, prf: 300, land: null, none: {} },
     "a builder or a module it imports changed: pending from that commit; data and page commits never");
   const r = spawnSync("python3", ["scripts/generated_sets.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
   assert.equal(r.status, 0, r.stdout + r.stderr);
