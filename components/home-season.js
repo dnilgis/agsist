@@ -453,6 +453,8 @@
     if(!o||o[key]==null)return null;
     return name+' '+o[key]+'%'+(o[prev]!=null?' <small>'+o[prev]+'% '+(/5yr|avg/.test(prev)?'5-year':'a year ago')+'</small>':'');
   }
+  /* The week a crop's condition rating is on: its own report_date, else the file's. */
+  function rateWeek(o,d){return String((o&&o.report_date)||(d&&d.report_date)||'').slice(0,10);}
   function cropModules(){
     if(!cells.harvest&&!cells.condition&&!cells.planting)return;
     progress().then(function(d){
@@ -492,18 +494,29 @@
         if(!st)stTxt='<span class="w1c-cp">Set your ZIP to see your state.</span>';
         else if(!d||!d.states)stTxt='';
         else{var so=d.states[st]||{},ks=Object.keys(SL).filter(function(k){return so[k]&&so[k].pct!=null;});
-          stTxt=ks.length?ks.map(function(k){var o=so[k];return '<span class="w1c-cp"><b>'+esc(st)+' '+SL[k].toLowerCase()+' '+o.pct+'%</b>'+(o.prev_year!=null?', last year '+o.prev_year+'%':'')+(o.avg5!=null?', avg '+o.avg5+'%':'')+'</span>';}).join('')
+          /* Nov 10 audit: a state figure from an older week than the US harvest week
+             (WI winter wheat Nov 1 under "week ending Nov 8") names its own week. */
+          stTxt=ks.length?ks.map(function(k){var o=so[k],ow=o.date&&hd&&String(o.date).slice(0,10)!==String(hd).slice(0,10)?' <small>(week ending '+esc(isoDay(o.date).replace(/, \d{4}$/,''))+')</small>':'';return '<span class="w1c-cp"><b>'+esc(st)+' '+SL[k].toLowerCase()+' '+o.pct+'%</b>'+ow+(o.prev_year!=null?', last year '+o.prev_year+'%':'')+(o.avg5!=null?', avg '+o.avg5+'%':'')+'</span>';}).join('')
             :'<span class="w1c-cp"><b>'+esc(st)+':</b> NASS published no progress figure for this state this week.</span>';}
         /* 2026-10-06 EARN: crop condition (good or excellent) joins this cell,
            from the same NASS file and week; it left the markets fold. */
-        var ge=[];if(!cells.condition&&d){[['Corn',d.corn],['soybeans',d.soybeans]].forEach(function(x){if(x[1]&&x[1].good_excellent!=null)ge.push(x[0]+' '+x[1].good_excellent+'%');});}
+        /* Nov 10 audit: the line sits under the harvest week, so a rating from an
+           older week (NASS stops rating a crop in late October but keeps counting
+           harvest: corn Oct 25, soybeans Oct 11 under "week ending Nov 8") is
+           dropped, same rule as /conditions' harvest week. */
+        var ge=[];if(!cells.condition&&d){[['Corn',d.corn],['soybeans',d.soybeans]].forEach(function(x){if(x[1]&&x[1].good_excellent!=null&&rateWeek(x[1],d)===(hd?String(hd).slice(0,10):rateWeek(x[1],d)))ge.push(x[0]+' '+x[1].good_excellent+'%');});}
         var gel=ge.length?'<span class="s7-line">Good or excellent <small>'+ge.join(' \u00b7 ')+'</small></span>':'';
         if(a||b)put('harvest',[a,b].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join('')+gel,esc(hd?'US, USDA week ending '+isoDay(hd)+'.'+avgWhy:asof)+cpSt,stTxt,mt);
         else put('harvest',NL(),esc('Harvested share is not in our crop progress feed yet'+(d&&d.report_date?' (latest week: '+isoDay(d.report_date)+')':'')+'.'),stTxt);
       }
       if(cells.condition){
+        /* Nov 10 audit: each crop's rating carries its own week when the two differ. */
+        var cw1=d&&d.corn&&rateWeek(d.corn,d),cw2=d&&d.soybeans&&rateWeek(d.soybeans,d),split=cw1&&cw2&&cw1!==cw2;
+        var wkOf=function(w){return split&&w?' <small>(week ending '+esc(isoDay(w).replace(/, \d{4}$/,''))+')</small>':'';};
         var c1=d&&cropLine('Corn',d.corn,'good_excellent','good_excellent_prev_year'),c2=d&&cropLine('Soybeans',d.soybeans,'good_excellent','good_excellent_prev_year');
-        if(c1||c2)put('condition',[c1,c2].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join(''),esc('Good or excellent'+wk+'. '+asof)+cpSt);
+        if(c1)c1+=wkOf(cw1);if(c2)c2+=wkOf(cw2);
+        var cwk=split?'':(cw1||cw2?', week ending '+isoDay(cw1||cw2).replace(/, \d{4}$/,''):wk);
+        if(c1||c2)put('condition',[c1,c2].filter(Boolean).map(function(x){return '<span class="s7-line">'+x+'</span>';}).join(''),esc('Good or excellent'+cwk+'. USDA Crop Progress.')+cpSt);
         else put('condition',NL(),'');
       }
       if(cells.planting){
