@@ -919,6 +919,35 @@ def only_here(daily, rain=None, loc=None):
     return [x for x in lines if not COUNT_LINE.search(x["text"])]
 
 
+def here_words(x, news):
+    """The line with its record sentence (only_here rain_line "record") kept only when news(fact) says the
+    county's rank entered or moved since the issue that last printed it."""
+    r = x.get("record")
+    if not isinstance(r, dict) or not r.get("text"):
+        return x
+    if isinstance(r.get("fact"), dict) and news(r["fact"]):
+        return x
+    return dict(x, text=x["text"].replace(r["text"], "").rstrip(), record=None)
+
+
+def zip_facts(iso):
+    """The facts this issue carried to ZIP readers, whoever they are: each state's land month (daily_land_line)
+    and each county's record rank (only_here.record_facts). Saved with the no-ZIP reader's printed list
+    (send_daily save_sent_copy), so the memory stays per issue and holds no reader's place."""
+    out = []
+    try:
+        import daily_land_line
+        out += daily_land_line.issue_facts(iso)
+    except Exception as ex:
+        print("land facts skipped (%s)" % type(ex).__name__)
+    try:
+        import only_here as OH
+        out += OH.record_facts(iso)
+    except Exception as ex:
+        print("record facts skipped (%s)" % type(ex).__name__)
+    return out
+
+
 def reader_state(rain=None, loc=None):
     """The reader's two-letter state from the saved place (loc) or the ZIP's town, else None."""
     if isinstance(loc, (tuple, list)) and len(loc) > 2 and loc[2]:
@@ -1036,9 +1065,12 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
             print("memory skipped (%s); every line judged on its own rule" % type(ex).__name__)
             memory = []
 
+    def is_news(f):
+        return not isinstance(today, date) or daily_fresh.still_news(f, memory, today)[0]
+
     def fresh(x):
-        f = x.get("fact")
-        return not f or not isinstance(today, date) or daily_fresh.still_news(f, memory, today)[0]
+        f, fs = x.get("fact"), [g for g in (x.get("facts") or []) if isinstance(g, dict)]
+        return (not f or is_news(f)) and (not x.get("facts") or any(is_news(g) for g in fs))
     report = report_item(today)
     funds_l = funds_item(today)
     news = news_items(daily)
@@ -1049,7 +1081,11 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     items = lead[:1] + [x for x in items if x not in lead[:1]]
     cap = TODAY_WITH_STORIES if top_stories(daily, items) else TODAY_MAX
     items = items[:cap]
-    here = [x for x in only_here(daily, rain, loc) if fresh(x)]
+    # 2026-11-10: a ZIP reader's land line and the record sentence on their rain line go through the same
+    # memory, by the issue's own facts (per state and per county, never per reader): Nov 5 to 10 both reprinted
+    # word for word. The record words are cut, the rain line stays; one line of a kind per issue.
+    here = [here_words(x, is_news) for x in only_here(daily, rain, loc) if fresh(x)]
+    here = [x for i, x in enumerate(here) if x.get("kind") not in {y.get("kind") for y in here[:i]}]
     # 2026-11-09 (Sig, "all"): the state week-over-week basis line takes the Today slot the
     # North Dakota basis line held since Nov 2, the reader's state first; on a quiet week
     # nothing takes it. The generator decided whether it prints (basis_wow on the issue).
@@ -1070,6 +1106,8 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     offer = BE.rain_print_offer(rain, today)
     funds = funds_offer(today, cot)
     cw = county_block(county)
+    if cw and any(r.get("label") == "Land sales" for r in cw["rows"]):
+        here = [x for x in here if x.get("kind") != "land_sales"]     # the county block tells the month's sales
     stories = top_stories(daily, items)
     slots = {"today": len(items), "only_here": len(here), "print": bool(pod), "fact": bool(fact), "county": bool(cw),
              "top_stories": len(stories), "funds": bool(funds), "weekend": bool(weekend_block(daily)),
@@ -1081,6 +1119,7 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
                       site_href, unsub_url, forward_url, today, county=cw, county_ask=ask, stories=stories, funds=funds)
     html, text = tag_group(html, group, True), tag_group(text, group, False)
     printed = [dict(x["fact"], text=x["text"]) for x in items + here if x.get("fact")]
+    printed += [f for f in zip_facts(iso) if is_news(f)]
     if sfrom == "market" and sfield == "locked_changes" and big_move(daily):
         q = big_move(daily)[2]
         printed.append({"kind": "move", "key": q["key"], "value": str(q.get("date") or iso), "text": subj})

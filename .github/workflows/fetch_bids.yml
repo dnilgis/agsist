@@ -154,7 +154,7 @@ jobs:
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
           git add data/bids.json data/basis data/basis-sparklines data/elevator-directory.json
-          git add data/ids/elevators.json data/ids/elevator-ids.json data/ids/ambiguous.json data/ids/board-parents.json 2>/dev/null || true
+          git add data/ids/elevators.json data/ids/elevator-ids.json data/ids/ambiguous.json data/ids/board-parents.json data/ids/companies.json 2>/dev/null || true
           [ -f data/ids/river.json ] && git add data/ids/river.json || true
           [ -d data/ids/basis-join ] && git add -A data/ids/basis-join || true
           [ -f data/bids-stats.json ] && git add data/bids-stats.json || true
