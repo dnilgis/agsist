@@ -677,6 +677,9 @@ def trace(sid, root=ROOT):
         t = json.load(open(out, encoding="utf-8")) if os.path.getsize(out) else {"rc": r.returncode, "read": [], "listed": [], "written": []}
     finally:
         os.remove(out)
+    # a whole-file write goes to <file>.tmp and is renamed into place (build_feeds.py): the temp is gone after the
+    # run and is not a file the builder leaves behind
+    t["written"] = [w for w in t.get("written", []) if not (w.endswith(".tmp") and not os.path.exists(os.path.join(root, w)))]
     t["log"] = (r.stdout + r.stderr)[-1500:]
     return t
 

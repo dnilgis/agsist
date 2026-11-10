@@ -147,8 +147,12 @@ test('no workflow gained a schedule: every cron line is already on origin/main',
   //   Nov 7 2026: the owner, chat (a site rule "2026-11-07 (chat)"): answered "Yes" to "May I schedule the weekly
   //     Schrader capture, Mondays 1:43 PM Central (19:43 UTC)?": schrader-capture.yml, Mondays 19:43 UTC, gated.
   //   Nov 10 2026: the monthly bid archive check: bid-archive-check.yml, the 6th at 10:19 UTC, gated.
+  //   Nov 10 2026: the owner, written yes to the report-day speed plan: "a dedicated report-day start at 10:55 CT ...
+  //     that stays running and polls USDA every 10 s" and "a dress rehearsal the day before each report day":
+  //     report-day-live.yml, two start ticks on report days (the runner is booked early; checking starts at 10:55 CT)
+  //     and one rehearsal tick the day before, each gated by scripts/report_live.py on scripts/usda_dates.py.
   //   Nov 10 2026: the weekly bids history backup: bids-mirror.yml, Sundays 07:47 UTC, gated.
-  const APPROVED = { 'bid-archive-check.yml': ['19 10 6 * *'], 'bids-mirror.yml': ['47 7 * * 0'], 'schrader-capture.yml': ['43 19 * * 1'], 'freshness.yml': ['50 6 * * 2-6'], 'fall-nitrogen.yml': ['23 13 * 3-6,9-12 *', '47 22 * 3-6,9-12 *'], 'main-checks.yml': ['17 */2 * * *'], 'agstocks.yml': ['17 22 * * 1-5'], 'vintage.yml': ['37 17 * * 1-5'], 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'], 'implied-futures.yml': [] };  // stats-ingest: Oct 23 2026
+  const APPROVED = { 'report-day-live.yml': ['38 15,16 8-12,30,31 * *', '48 15,16 8-12,30,31 * *', '17 19 7-11,29,30 * *'], 'bid-archive-check.yml': ['19 10 6 * *'], 'bids-mirror.yml': ['47 7 * * 0'], 'schrader-capture.yml': ['43 19 * * 1'], 'freshness.yml': ['50 6 * * 2-6'], 'fall-nitrogen.yml': ['23 13 * 3-6,9-12 *', '47 22 * 3-6,9-12 *'], 'main-checks.yml': ['17 */2 * * *'], 'agstocks.yml': ['17 22 * * 1-5'], 'vintage.yml': ['37 17 * * 1-5'], 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'], 'implied-futures.yml': [] };  // stats-ingest: Oct 23 2026
   const left = added.filter((a) => !Object.entries(APPROVED).some(([f, cs]) => cs.some((c) => a === `${f}: cron '${c}' (new workflow)` || a === `${f}: cron '${c}'`)));
   assert.deepEqual(left, [], 'a new schedule is Sig\'s decision: list it in the report, do not add it');
 });

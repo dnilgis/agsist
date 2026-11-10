@@ -22,12 +22,12 @@
   "hogs": {
    "ok": true,
    "note": "",
-   "checked": "2026-11-10T21:47:14Z"
+   "checked": "2026-11-10T22:06:00Z"
   },
   "cutout": {
    "ok": true,
    "note": "",
-   "checked": "2026-11-10T21:47:14Z"
+   "checked": "2026-11-10T22:06:00Z"
   }
  },
  "cutout": {
@@ -46,5 +46,5 @@
   "source": "USDA AMS, National Daily Pork Report FOB Plant - Negotiated Sales - Afternoon (LM_PK602)"
  },
  "daily_line": "National negotiated cash hogs $49.43/cwt carcass base on 6,147 head (killed Nov 9); pork cutout $69.52/cwt on Nov 10. USDA AMS.",
- "updated": "2026-11-10T21:47:14Z"
+ "updated": "2026-11-10T22:06:00Z"
 }

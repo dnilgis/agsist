@@ -102,6 +102,7 @@ const NOT_GATED = {
   "farmland-atlas-watch.yml": "runs after every Fetch Grain Bids; the hourly cron is a fallback",
   "farmland-atlas-pages.yml": "runs after farmland-atlas, land-data and the credit workflows; the weekly cron is a backstop",
   "report-day.yml": "runs after WASDE watch, What's Priced In and Fetch Grain Bids (cron health watches it)",
+  "report-day-live.yml": "dated start ticks on report days and the day before; its own gate reads scripts/usda_dates.py, and wasde-watch.yml is the backup",
   "arc-plc-refresh.yml": "runs after WASDE watch; the Monday and signup crons are a backstop (open: gate the Monday tick)",
   "croptour.yml": "runs after WASDE watch; the daily cron is a backstop",
   "state-stats.yml": "runs after WASDE watch; the monthly cron is a backstop",
