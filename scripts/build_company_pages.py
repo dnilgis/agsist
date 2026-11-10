@@ -459,6 +459,10 @@ def build_page(co, ctx):
              f'in {esc(st_txt)} that the AGSIST elevator network reads. The bids are read from {esc(short)}&rsquo;s '
              f'public bid board{site}. AGSIST is not affiliated with {esc(short)}. Cash is $/bu; under each price is '
              f'its delivery month and basis. Call the location before you haul.</p>')
+    if all(bd.get("roster") for _, bd in co["locs"]):      # no board of the company is read: say what the page is
+        intro = (f'<p class="cbt-sub">{esc(co["name"])} has <b>{n_loc}</b> location{"s" if n_loc != 1 else ""} '
+                 f'in {esc(st_txt)}. Every one is listed here with its own bids page{site}. '
+                 f'AGSIST is not affiliated with {esc(short)}. Call the location before you haul.</p>')
     near_html = ""
     if not indexable:
         near_html = nearby_html(co, ctx, crops)

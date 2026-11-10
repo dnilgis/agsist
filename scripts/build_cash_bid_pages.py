@@ -773,8 +773,7 @@ def _read_json(path):
 
 def load_roster(root="."):
     """[{id, company, city, state, lat, lon, bids_url, phone, basis_key}] for every facility of a
-    BLOCKED_COOPS company in data/ids/elevators.json that is a place (a point or a county on file:
-    "To Buy for HCP" is a board label, not a location). basis_key is (ST, FACILITY, CITY) as the
+    BLOCKED_COOPS company in data/ids/elevators.json. basis_key is (ST, FACILITY, CITY) as the
     basis log files it. bids_url: the co-op's bids page (BLOCKED_COOPS, else the website
     data/ids/companies.json names). phone: the one number the elevator directory files for that
     facility and town, after the checked corrections; "" when it files none or several."""
@@ -782,7 +781,8 @@ def load_roster(root="."):
     cos = (_read_json(os.path.join(root, COMPANIES_PATH)) or {}).get("companies") or {}
     site = {}
     for c in cos.values():
-        for kind, host in c.get("links") or []:
+        for link in c.get("links") or []:
+            kind, host = link[0], link[1]
             if kind == "website" and host:
                 site.setdefault(c.get("name"), "https://" + re.sub(r"^https?://", "", str(host)).rstrip("/"))
     phones = defaultdict(set)
@@ -795,7 +795,7 @@ def load_roster(root="."):
         st = (e.get("st") or "").upper()
         src = e.get("sources") or {}
         ids = src.get("bids_repo") or []
-        if co not in BLOCKED_COOPS or st not in STATE_NAMES or not ids or not (e.get("lat") or e.get("fips")):
+        if co not in BLOCKED_COOPS or st not in STATE_NAMES or not ids:
             continue
         key = None
         for k in src.get("basis") or []:
@@ -807,7 +807,7 @@ def load_roster(root="."):
         ph = next(iter(ph)) if ph and len(ph) == 1 else ""
         ph = phone_corrections.for_directory(st, e.get("city") or "", co, ph) if ph else ""
         out.append({"id": ids[0], "company": co, "city": (e.get("city") or "").strip(), "state": st,
-                    "lat": e.get("lat"), "lon": e.get("lng"), "bids_url": BLOCKED_COOPS[co] or site.get(co) or "",
+                    "lat": e.get("lat"), "lon": e.get("lng"), "fips": e.get("fips"), "bids_url": BLOCKED_COOPS[co] or site.get(co) or "",
                     "phone": ph, "basis_key": key})
     return out
 
@@ -817,7 +817,8 @@ def roster_rows(rows, srcs, roster, towns_by_state):
     priced), and its stand-in entry in `srcs`. A facility is left to an earlier board when its id is
     already a board in `rows`, or a board of the same company names the same city and state
     (numbers kept: "Creston 1" is not "Creston 2"). The town is the roster's own city, spelt as the
-    ZIP table spells it when that has it, without a trailing number."""
+    ZIP table spells it when that has it, without a trailing number. A record with no map point and no
+    county whose city is no postal town is a board label, not a place ("To Buy for HCP"): no card."""
     have = {b.get("source") for b in rows}
     seen = {((b.get("state") or "").upper(), trade_key(b.get("operator") or ""), town_key(b.get("city")))
             for b in rows}
@@ -827,11 +828,13 @@ def roster_rows(rows, srcs, roster, towns_by_state):
         st, city = f["state"], f["city"]
         if f["id"] in have or (st, trade_key(f["company"]), town_key(city)) in seen:
             continue
+        base = re.sub(r"\s+\d+$", "", city).strip()
+        if not (f.get("lat") or f.get("fips") or town_key(base) in (towns_by_state.get(st) or {})):
+            continue
         place = f"{f['company']}||{city}|{st}"
         if (st, place) in places:
             continue
         places.add((st, place))
-        base = re.sub(r"\s+\d+$", "", city).strip()
         town = (towns_by_state.get(st) or {}).get(town_key(base)) or town_name(base)
         srcs[f["id"]] = dict(srcs.get(f["id"]) or {}, id=f["id"], operator=f["company"], location=city, usState=st,
                              phone=f["phone"], website=f["bids_url"], rows=0)
@@ -1961,7 +1964,8 @@ def est_html(ests):
     basis older than ESTIMATE_OLD_DAYS says so ("basis from Oct 3, may be out of date")."""
     return "".join(f'<br><span class="cbt-est">{esc(CROP_LABEL[e["crop"]])} {cash_c(e["cash"])} '
                    f'<span class="mut">{esc(e["label"])}. Estimate, not a posted bid: last posted basis '
-                   f'({esc(e["basis_day"])}) + {esc(e["con"])} futures ({esc(e["close_day"])} close)'
+                   f'({esc(e["basis_day"])}) + {esc(e["con"])}{" (inferred)" if e.get("inferred") else ""} futures '
+                   f'({esc(e["close_day"])} close)'
                    + (f'; basis from {esc(e["basis_day"])}, may be out of date' if e.get("age", 0) > ESTIMATE_OLD_DAYS else "")
                    + '</span></span>'
                    for e in ests)
@@ -2094,6 +2098,26 @@ def basis_since(bd, shard, snap_ct):
     return n
 
 
+# The futures month a delivery month is quoted against, when a board posts a basis with no month named
+# (NEW Cooperative's board: delivery month, cash, basis and the futures price, no contract). The usual
+# grain-trade pairing; its own futures prices step the same way (Jan and Mar corn on one price, Jan soybeans
+# on their own). Used only for a roster card, and the estimate says "inferred".
+DELIVERY_FUTURES = {"corn": "ZC", "soybeans": "ZS"}
+DELIVERY_CODE = {"corn": {1: "H", 2: "H", 3: "H", 4: "K", 5: "K", 6: "N", 7: "N", 8: "U", 9: "U", 10: "Z", 11: "Z", 12: "Z"},
+                 "soybeans": {1: "F", 2: "H", 3: "H", 4: "K", 5: "K", 6: "N", 7: "N", 8: "Q", 9: "U", 10: "X", 11: "X",
+                              12: "F"}}
+
+
+def delivery_contract(crop, dm):
+    """(root, month index, year) a 'YYYY-MM' delivery month of corn or soybeans is usually quoted against."""
+    root, codes = DELIVERY_FUTURES.get(crop), DELIVERY_CODE.get(crop)
+    if not root or not re.fullmatch(r"\d{4}-\d{2}", str(dm or "")):
+        return None
+    y, m = int(dm[:4]), int(dm[5:7])
+    code = codes[m]
+    return root, FUT_LETTERS.index(code), y + (1 if crop == "soybeans" and m == 12 else 0)
+
+
 def estimates(bd, shard, fut, snap_ct, days=ESTIMATE_DAYS):
     """[{crop, cash, label, basis_day, con, close_day, age}] for a board with no current bid:
     per crop (corn, soybeans), its last posted basis for the nearest delivery
@@ -2114,20 +2138,23 @@ def estimates(bd, shard, fut, snap_ct, days=ESTIMATE_DAYS):
             age = (snap_ct.date() - dt.date.fromisoformat(last)).days
             dm = parse_dm(month, last)
             con = parse_contract(sym, crop, snap_ct.year)
+            inferred = False
+            if not con and not sym and bd.get("roster"):        # no month on the board: the delivery month's usual one
+                con, inferred = delivery_contract(crop, dm), True
             if not (0 <= age <= days) or not dm or dm < cur_m or not con or con not in fut or in_delivery(con, snap_ct):
                 continue
             k = (dm, -age)
             if best is None or k < best[0]:
-                best = (k, dm, cents, last, con)
+                best = (k, dm, cents, last, con, inferred)
         if best:
-            _, dm, cents, last, con = best
+            _, dm, cents, last, con, inferred = best
             price, close_day = fut[con]
             d0, d1 = dt.date.fromisoformat(last), dt.date.fromisoformat(close_day)
             out.append({"crop": crop, "cash": round(price + cents / 100, 4),
                         "label": f"{MONTH_ABBR[int(dm[5:7]) - 1]} {dm[:4]}",
                         "basis_day": f"{MONTH_ABBR[d0.month - 1]} {d0.day}", "con": con_label(con),
                         "close_day": f"{MONTH_ABBR[d1.month - 1]} {d1.day}",
-                        "age": (snap_ct.date() - d0).days})
+                        "age": (snap_ct.date() - d0).days, **({"inferred": True} if inferred else {})})
     return out
 
 
