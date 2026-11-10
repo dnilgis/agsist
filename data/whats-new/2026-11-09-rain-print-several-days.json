@@ -1,0 +1,8 @@
+{
+ "id": "2026-11-09-rain-print-several-days",
+ "date": "2026-11-09",
+ "title": "Rain Print gaps",
+ "line": "When a gauge reports several days of rain in one later total, Rain Print and the county prints count those days as reported together, not as gaps.",
+ "link": "/rain-print",
+ "rank": 4
+}

@@ -9,6 +9,20 @@
    "link": "/daily"
   },
   {
+   "id": "2026-11-10-pages-hold-still",
+   "date": "2026-11-10",
+   "title": "Thirteen pages hold still while they load",
+   "line": "Tariffs, sale barn prices, hay, break-even, store or sell, urea and seven more pages keep their room while the numbers load, so nothing jumps under your thumb.",
+   "link": "/tools"
+  },
+  {
+   "id": "2026-11-09-rain-print-several-days",
+   "date": "2026-11-09",
+   "title": "Rain Print gaps",
+   "line": "When a gauge reports several days of rain in one later total, Rain Print and the county prints count those days as reported together, not as gaps.",
+   "link": "/rain-print"
+  },
+  {
    "id": "2026-11-09-arcplc-plain",
    "date": "2026-11-09",
    "title": "ARC or PLC method, in plain words",

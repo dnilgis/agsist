@@ -102,7 +102,7 @@ test("page: title, canonical, h1, byline, one script of its own", () => {
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/cattle-auction-prices">/);
   assert.equal((page.match(/<h1>/g) || []).length, 1);
   assert.match(page, /Sigurd Lindquist, CCA/);
-  assert.match(page, /<script src="\/components\/cattle-auction\.js\?v=\d+" defer><\/script>/);
+  assert.match(page, /<script src="\/components\/cattle-auction\.js\?v=9" defer><\/script>/, "cattle-auction.js is v9 (bump with every change to the script; this test owns the number)");
   assert.ok(page.length < 150 * 1024, "page under the 150 KB cap");
 });
 
