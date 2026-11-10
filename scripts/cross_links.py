@@ -143,6 +143,13 @@ def crumbs_html(items):
             + " &rsaquo; ".join(bits) + "</nav>")
 
 
+def crumbs_html_of(ld):
+    """The visible trail read back from a page's JSON-LD (a dict with @graph, or a BreadcrumbList)."""
+    nodes = ld.get("@graph", [ld]) if isinstance(ld, dict) else []
+    bl = next((g for g in nodes if g.get("@type") == "BreadcrumbList"), None)
+    return crumbs_html([(x["name"], x["item"]) for x in bl["itemListElement"]]) if bl else ""
+
+
 def crumbs(items):
     """-> (visible html, BreadcrumbList dict) from one list."""
     return crumbs_html(items), crumbs_jsonld(items)
@@ -263,6 +270,7 @@ def selftest():
         v, j = crumbs([("AGSIST", SITE + "/"), ("Cash bids", SITE + "/cash-bids"), ("Iowa", SITE + "/cash-bids/iowa/")])
         ok('<a href="/">AGSIST</a> &rsaquo; <a href="/cash-bids">Cash bids</a> &rsaquo; <span aria-current="page">Iowa</span>' in v, v)
         ok([x["name"] for x in j["itemListElement"]] == ["AGSIST", "Cash bids", "Iowa"], j)
+        ok(crumbs_html_of({"@graph": [{"@type": "WebPage"}, j]}) == v and crumbs_html_of({"@graph": []}) == "", "trail read back from JSON-LD")
         ok("&amp;" in crumbs_html([("A", "/"), ("Corn & beans", "/x")]), "names are escaped")
     if fails:
         print("SELFTEST FAILED:\n  " + "\n  ".join(fails))

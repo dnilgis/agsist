@@ -1205,8 +1205,26 @@ def share_prices(tops, n=3):
 
 
 def breadcrumb(items):
-    return {"@type": "BreadcrumbList", "itemListElement": [
-        {"@type": "ListItem", "position": i + 1, "name": n, "item": u} for i, (n, u) in enumerate(items)]}
+    import cross_links as XL  # the one trail: JSON-LD and the visible nav from the same list
+    return XL.crumbs_jsonld(items)
+
+
+def same_state_row(ssl, sname):
+    """the shared same-state row (cross_links) on a state page"""
+    import cross_links as XL
+    return XL.same_state_row(".", ssl, esc(sname), "cash-bids")
+
+
+def trail(items):
+    """the visible breadcrumb for the same items breadcrumb() is given"""
+    import cross_links as XL
+    return XL.crumbs_html(items)
+
+
+def trail_of(ld):
+    """the visible breadcrumb read back from a page's JSON-LD (company pages)"""
+    import cross_links as XL
+    return XL.crumbs_html_of(ld)
 
 
 # 2026-10-11: no house ask in the footer's sponsor slot any more. An unsold
@@ -2305,9 +2323,9 @@ def build_town_page(t, ctx):
     known_html = known_section(t, (ctx.get("known") or {}).get((st, t["slug"]), []), z)
     links = [f'<a href="/cash-bids/{ssl}/">Every {esc(sname)} town</a>',
              f'<a href="/cash-bids/{ssl}/#basis">{esc(sname)} basis today</a>']
-    jsonld = {"@context": "https://schema.org", "@graph": [breadcrumb([
-        ("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"),
-        (sname, f"{SITE}/cash-bids/{ssl}/"), (t["name"], f"{SITE}{path}")])]}
+    crumb_items = [("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"),
+                   (sname, f"{SITE}/cash-bids/{ssl}/"), (t["name"], f"{SITE}{path}")]
+    jsonld = {"@context": "https://schema.org", "@graph": [breadcrumb(crumb_items)]}
     hows = {b["how"] for b in t["boards"].values()}
     near_note = ""
     if "zip" in hows:
@@ -2387,7 +2405,7 @@ def build_town_page(t, ctx):
 <body>
 {hdr}
 <main class="cbt-wrap" id="main">
-  <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/{ssl}/" style="color:var(--text-muted)">{esc(sname)}</a> &rsaquo; <b style="color:var(--text)">{esc(t['name'])}</b></p>
+  {trail(crumb_items)}
   <h1>Cash grain bids in {esc(place)} today</h1>
   {answer_html}
   {share_html}
@@ -3096,7 +3114,8 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
                        'page.</p><ul class="cbt-list">' + "".join(lis) + "</ul>")
     others = " &middot; ".join(f'<a href="/cash-bids/{url_slug(STATE_NAMES[o])}/">{STATE_NAMES[o]}</a>'
                                for o in ctx["states"] if o != st)
-    crumbs = breadcrumb([("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"), (sname, f"{SITE}{path}")])
+    crumb_items = [("AGSIST", f"{SITE}/"), ("Cash bids", f"{SITE}/cash-bids"), (sname, f"{SITE}{path}")]
+    crumbs = breadcrumb(crumb_items)
     graph = [crumbs]
     if near:
         graph.append({"@type": "Dataset", "@id": f"{SITE}{path}#dataset",
@@ -3148,7 +3167,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
 <body>
 {hdr}
 <main class="cbt-wrap" id="main">
-  <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <b style="color:var(--text)">{esc(sname)}</b></p>
+  {trail(crumb_items)}
   <h1>{esc(sname)} cash grain bids and basis today</h1>
   <p class="cbt-sub">Bids and basis from elevators in the AGSIST network, read directly from each
   elevator&rsquo;s own bid board. This is the network&rsquo;s sample, not every elevator in {esc(sname)}; the
@@ -3163,6 +3182,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   {ctx.get("storage_note", {}).get(st) or ""}
   {sponsor_slot(ssl)}
   <p class="cbt-sub" style="margin-top:18px"><a href="/cash-bids">Cash bids by ZIP</a> &middot; <a href="/basis#by-state">Basis in every state, and USDA regions vs normal</a></p>
+  {same_state_row(ssl, sname)}
   <h2>Other states</h2>
   <p class="cbt-cloud">{others}</p>
   <details class="cbt-note cbt-terms"><summary>Sources and terms</summary>

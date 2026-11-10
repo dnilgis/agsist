@@ -450,7 +450,7 @@ def build_page(co, ctx):
 <body>
 {hdr}
 <main class="cbt-wrap" id="main">
-  <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <a href="/cash-bids/{SUBDIR}/" style="color:var(--text-muted)">By company</a> &rsaquo; <b style="color:var(--text)">{esc(short)}</b></p>
+  {CB.trail_of(jsonld)}
   <h1>{esc(short)} cash grain bids today</h1>
   {f'<p class="cbt-answer">{esc(ans)}</p>' if ans else ''}
   {story_html}{intro}
@@ -497,7 +497,7 @@ def build_index(metas, ctx):
 <body>
 {hdr}
 <main class="cbt-wrap" id="main">
-  <p class="cbt-sub" style="margin-top:14px"><a href="/cash-bids" style="color:var(--text-muted)">Cash bids</a> &rsaquo; <b style="color:var(--text)">By company</b></p>
+  {CB.trail_of(jsonld)}
   <h1>Cash grain bids by elevator company</h1>
   <p class="cbt-sub">Every company with {COMPANY_MIN} or more locations in the AGSIST elevator network, each with today&rsquo;s
   bids at all its locations on one page. Bids are read from each company&rsquo;s public bid board; AGSIST is not
