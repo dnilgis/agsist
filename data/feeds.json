@@ -206,6 +206,7 @@
    "pages": [
     "desk.html",
     "sponsor-kit.html",
+    "sponsor-rates.html",
     "sponsor-report.html",
     "sponsor.html"
    ],
@@ -1026,7 +1027,8 @@
   {
    "path": "data/elevator-counts.json",
    "pages": [
-    "sponsor-kit.html"
+    "sponsor-kit.html",
+    "sponsor-rates.html"
    ],
    "written_by": [
     "cash-bid-pages"
@@ -2469,6 +2471,7 @@
    "path": "data/rate-card.json",
    "pages": [
     "sponsor-kit.html",
+    "sponsor-rates.html",
     "sponsor-report.html",
     "sponsor.html"
    ],
