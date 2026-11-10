@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
-"""history_lib.py -- shared pieces for the history collectors (Sig, Oct 21:
-"start the collection jobs" for the insight machine).
+"""history_lib.py -- shared pieces for the history collectors (Oct 21 for the insight machine).
 
 The collectors (scripts/backfill_*.py, scripts/history_append.py) write raw
 history to history/<source>/ in the runner and save it to the PRIVATE raw
-branch with scripts/push_raw.sh. Never to main: /history/ is in .gitignore and
+branch with scripts/push_raw.sh. Never to main: /history/ is in.gitignore and
 no page reads it.
 
 What is here:

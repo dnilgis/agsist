@@ -1,5 +1,5 @@
 /* A Daily headline that fails its check is rewritten before the send and checked
- * again until it passes (Sig, Oct 27 2026). Regression case: the Oct 21 headline
+ * again until it passes (Oct 27 2026). Regression case: the Oct 21 headline
  * "Corn down 6 straight days to $4.59½; beans down 7 to $12.45" (a run of settles
  * counted to a 5:46 a.m. trade). The model is stubbed or absent; no API call.
  *   node --test test/headline-fix.test.mjs

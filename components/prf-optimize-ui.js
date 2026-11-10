@@ -57,7 +57,7 @@
     return 'the grid’s two driest pairs of months and November to February';
   }
 
-  /* "Only months my grass needs rain" (Sig, Oct 20). The reader ticks months; a pair of months is in
+  /* "Only months my grass needs rain" (Oct 20). The reader ticks months; a pair of months is in
      play only when both its months are ticked. The pick, its own walk-forward record and the setups it
      is compared with are all worked out on those pairs alone. The test across grids picked from every
      month, so with the filter on it is not quoted as this pick's record. */

@@ -1,5 +1,5 @@
 /* Rain Print orders through a worker outage and a burst of orders (subs
- * worker v5.47, BUILD-RULES 14): a late or repeated Stripe webhook makes one
+ * worker v5.47, build rule 14): a late or repeated Stripe webhook makes one
  * record with the design from Stripe's own reference, the poll finds payments
  * Stripe stopped retrying, serials stay unique under 40 orders at once (with
  * and without KV's one-write-a-second limit), RPH- refs, and a kept logo goes

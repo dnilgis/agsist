@@ -1,4 +1,4 @@
-// Sig, Nov 6: the /about page has no "My other businesses" section.
+// Nov 6: the /about page has no "My other businesses" section.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";

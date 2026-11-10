@@ -59,7 +59,7 @@
     return h + '</tbody></table></div>';
   }
 
-  // The headline tile (Sig, Oct 19, 2026): the same median the county block leads with (market
+  // The headline tile (Oct 19, 2026): the same median the county block leads with (market
   // sales of A+ acres with known acres, the last 12 months), its count and the through date.
   // scripts/build_atlas_pages.py sales_tile() bakes the same words into the county page (a test
   // compares them on every IL and WI county); the sheet draws it here. Under N sales: no median,

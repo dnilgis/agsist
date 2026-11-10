@@ -18,7 +18,7 @@ const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const LONE = /<\/strong>\s+<span\b/g;
 const LONE_B = /<\/b>\s+<span\b/g; // part 2 (fx/strayspace2): the same shape after a <b>
 
-// Pages another open change is rebuilding on the same day (BUILD-RULES 26: they ship in that change, not here).
+// Pages another open change is rebuilding on the same day (build rule 26: they ship in that change, not here).
 // An entry whose page no longer has the pattern fails the test, so each one is removed when its change lands.
 const LEFT = {
   'corn-futures-prices.html': 'PR #210 (quickwins) edits this page and components/futures.js; nc-chg is rewritten by futures.js',
@@ -26,7 +26,7 @@ const LEFT = {
   'milk-prices.html': 'fx/curtain edits this page and scripts/seed_static.py (the dp-spread seed; milk-prices.html sets dp-spread-words itself)',
   'sponsor.html': 'fx/curtain edits this page; the span is filled by script (textContent)',
 };
-// </b> + <span> on pages fx/curtain (PR #223) edits (BUILD-RULES 26: they ship in that change, not here).
+// </b> + <span> on pages fx/curtain (PR #223) edits (build rule 26: they ship in that change, not here).
 const LEFT_B = {
   'basis.html': 'fx/curtain edits this page',
   'breakeven.html': 'fx/curtain edits this page',

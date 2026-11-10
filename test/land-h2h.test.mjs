@@ -30,7 +30,7 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 const read = (f) => readFileSync(ROOT + f, "utf8");
-// Sig, Oct 18: no name at the top of a page; it sits in one line at the end
+// Oct 18: no name at the top of a page; it sits in one line at the end
 const BYLINE = /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/;
 
 function serve() {
@@ -115,7 +115,7 @@ test("printed on Letter in Chromium, the lease is two whole pages: the deal and 
       assert.equal(pages, 2, `state ${st || "none"}: ${pages} pages`);
       const sig = await pg.$eval(".lease .sig-grid", (e) => getComputedStyle(e).breakInside);
       assert.equal(sig, "avoid");
-      // Two whole halves (Sig, Oct 15): page 1 is sections 1-8 and ends with both initials,
+      // Two whole halves (Oct 15): page 1 is sections 1-8 and ends with both initials,
       // page 2 always starts clean at section 9. With the forced break, 2 pages in all means neither half spills.
       const halves = await pg.evaluate(() => {
         const p2 = document.querySelector(".lease .lease-p2");
@@ -319,17 +319,13 @@ test("tariffs: a visible byline and the CCA in the JSON-LD", () => {
 });
 
 /* ---------------- /usda-quick-stats ----------------
- *   - the query builder lists all 50 states (it queries NASS, which has every
- *     state; the page's own table already has 42), not 31
  *   - a visible byline and the author in the JSON-LD
+ *   - the query builder that listed all 50 states was cut on Sig's call (Nov 9 2026 panel); its
+ *     absence, and no NASS opener, are tested in test/quickstats-radar-nov9.test.mjs
  */
-test("quick stats: the query builder lists all 50 states, and a byline", () => {
+test("quick stats: a byline, and the author in the structured data", () => {
   const Q = read("usda-quick-stats.html");
-  const sel = Q.slice(Q.indexOf('<select id="qb-state"'), Q.indexOf("</select>", Q.indexOf('<select id="qb-state"')));
-  const codes = [...sel.matchAll(/<option value="([A-Z]{2})">/g)].map((m) => m[1]);
-  assert.equal(codes.length, 50);
-  assert.equal(new Set(codes).size, 50);
-  for (const k of ["DE", "MD", "NY", "NJ", "AK", "HI"]) assert.ok(codes.includes(k), k);
+  assert.ok(!Q.includes('<select id="qb-state"'), "the query builder is cut (Nov 9 2026)");
   assert.match(Q, BYLINE);
   assert.match(Q, /"author":\{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser \(CCA\)"/);
 });

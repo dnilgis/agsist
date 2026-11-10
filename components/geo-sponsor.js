@@ -1,4 +1,4 @@
-/* STATE-TARGETED SPONSOR (Sig, Oct 28, 2026; first use RootLot in CA, NV, TX).
+/* STATE-TARGETED SPONSOR (Oct 28, 2026; first use RootLot in CA, NV, TX).
  *
  * components/loader.js loads this file once its page sponsor check is done
  * and the page has no sold page sponsor; it never loads it where the page
@@ -28,7 +28,7 @@
  * components/sponsor-metrics.js under the slot "geo-<id>", unchanged. The
  * reader's state is in no event.
  *
- * Preview for Sig: ?geo-preview=CA on any page (not linked anywhere; pages
+ * Preview for the owner: ?geo-preview=CA on any page (not linked anywhere; pages
  * carry their canonical URL, so the flag is never indexed). It draws even an
  * inactive entry, once its copy is filled in, and counts nothing.
  *

@@ -22,17 +22,17 @@ matches the page (rain_month.rank).
 MODES (the same three as send_cot_weekly.py):
   dry      the default. Counts the list and renders a sample (a made-up
            address and link id) into the log. Sends nothing.
-  preview  Sig's test inbox only (SIG_TEST_EMAILS, else SIG_TO), one email per
+  preview  the owner's test inbox only (SIG_TEST_EMAILS, else SIG_TO), one email per
            sample county (--fips, default Barron 55005 and Story 19169), with
-           "[Preview]" in the subject. BUILD-RULES 13: this is the copy that
+           "[Preview]" in the subject. build rule 13: this is the copy that
            goes to the spam and link checkers before the list gets anything.
            The list is never read for addresses and nothing is marked.
-  send     the list. Refused unless RAIN_MONTHLY_LIVE=1 (Sig turns it on;
-           the workflow passes the repo variable) and the month is the one
+  send     the list. Refused unless RAIN_MONTHLY_LIVE=1 (the owner turns it on;
+ the workflow passes the repo variable) and the month is the one
            just ended.
 
     python3 scripts/send_rain_month.py                       # dry run
-    PREVIEW=1 python3 scripts/send_rain_month.py             # Sig's test inbox only
+    PREVIEW=1 python3 scripts/send_rain_month.py             # the owner's test inbox only
     SEND=1 RAIN_MONTHLY_LIVE=1 python3 scripts/send_rain_month.py
     python3 scripts/send_rain_month.py --month 2026-09 --out <dir>   # write sample renders, send nothing
     python3 scripts/send_rain_month.py --selftest            # fake HTTP and fake SMTP; no network
@@ -42,7 +42,7 @@ SMTP_PASS, FROM_ADDR (the same as the other senders), RAIN_MONTHLY_LIVE,
 SIG_TEST_EMAILS / SIG_TO (preview), MAX_PER_RUN (default 300).
 
 The log carries counts only. No address is ever printed, including in error
-lines. Reply-To is news@agsist.com (Sig, Oct 22). The unsubscribe link stops
+lines. Reply-To is news@agsist.com (Oct 22). The unsubscribe link stops
 this one county's monthly email (send_notice.unsub_link, the agsist.com front
 door).
 """
@@ -759,7 +759,7 @@ def selftest():
     rc, log = go(["--send", "--max", "1"], w, s, "2026-10-02 09:00", {"RAIN_MONTHLY_LIVE": "1"})
     ck("--max caps a run", rc == 0 and len(s.sent) == 1 and "2 left for the next run" in log, log)
 
-    # preview: Sig's test inbox only
+    # preview: the owner's test inbox only
     w, s = Worker(), SMTP()
     rc, log = go([], w, s, "2026-10-02 09:00", {"PREVIEW": "1", "SIG_TO": "sig@example.org"})
     ck("preview: Sig only, both sample counties, [Preview] subject, list untouched", rc == 0 and s.sent == ["sig@example.org", "sig@example.org"]

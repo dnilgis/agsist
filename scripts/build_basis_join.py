@@ -60,6 +60,12 @@ def _norm(x):
     return " ".join(str(x or "").strip().upper().split())
 
 
+def _fac(x):
+    """The basis history's facility key (elevator_names.basis_name, as build_basis_history.key_of writes it)."""
+    from elevator_names import basis_name
+    return basis_name(x)
+
+
 def retired_keys(ledger):
     """{survivor elevId: {basis key: retired elevId}} from the ledger's retirements (chains followed)."""
     ret = (ledger or {}).get("retired") or {}
@@ -113,7 +119,7 @@ def build(elevators, facs, ledger=None):
             # spellings over time (a fold, a renamed board). The key its own live rows write today
             # (sources.bids, upper-cased as build_basis_history.key_of does) is its history; if exactly
             # one key is that, it is the join. Otherwise unsure: multi, left out, as before.
-            cur = {f"{st}|{_norm(p.split('|')[0])}|{_norm(p.split('|')[2])}" for p in (src.get("bids") or []) if p.count("|") == 3}
+            cur = {f"{st}|{_fac(p.split('|')[0])}|{_norm(p.split('|')[2])}" for p in (src.get("bids") or []) if p.count("|") == 3}
             own = [x for x in keys if x in cur]
             if len(own) == 1:
                 keys = own

@@ -1,6 +1,6 @@
 /* Audit Nov 2, 2026 item 18: the changelog linked "/cash-bids/", a folder with no
  * index.html, so the link 404'd; the page is cash-bids.html, served at /cash-bids.
- * The old entry in data/changelog.json stays as written (BUILD-RULES 25); the
+ * The old entry in data/changelog.json stays as written (build rule 25); the
  * builders' shared live_href (scripts/build_changelog.py) links the page instead.
  *
  *   node --test test/changelog-folder-links.test.mjs

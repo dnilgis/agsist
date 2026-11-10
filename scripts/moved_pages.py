@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""moved_pages.py: the pages merged into another page on Oct 22 and 23, 2026 (Sig approved the
+"""moved_pages.py: the pages merged into another page on Oct 22 and 23, 2026 (the owner approved the
 seven merges from the Oct 21 pages board, then /foreign-land and /archive), in one table.
 
   MOVED       old path -> (new path, section anchor). The one list every builder and test reads.
@@ -36,11 +36,11 @@ MOVED = {
                           "Bids by state are on the basis page now."),
     "/elevators": ("/list-your-elevator", "coverage", "elevators.html",
                    "Elevator coverage and claiming a board are on List your elevator now."),
-    # Oct 23, 2026 (Sig approved three more): foreign-held land into the Atlas, the archive into the Daily
+    # Oct 23, 2026 (the owner approved three more): foreign-held land into the Atlas, the archive into the Daily
     "/foreign-land": ("/farmland-atlas", "foreign", "foreign-land.html",
                       "Foreign-held farmland is in the Farmland Atlas now."),
     "/archive": ("/daily", "past", "archive.html", "Past briefings are on the Daily page now."),
-    # Oct 29, 2026 (Sig, consolidation round 2): the Illinois index into the land sales hub, the
+    # Oct 29, 2026 (consolidation round 2): the Illinois index into the land sales hub, the
     # data sources list into the editorial standards
     "/farmland-index": ("/land-sales/", "illinois-index", "farmland-index.html",
                         "The Illinois farmland sale index is on the land sales page now."),

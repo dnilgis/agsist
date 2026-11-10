@@ -17,7 +17,7 @@ bids-full.json
 # Private basis forecast ledger (scripts/basis_ledger.py): raw branch only, never main.
 /basis-ledger/
 
-# private, never published (Sig, 2026-10-12)
+# private, never published (2026-10-12)
 data/signups.json
 data/seo-opportunities.json
 data/seo-index.json
@@ -68,12 +68,12 @@ build/shots/
 !/data/fsa/urls.txt
 !/data/fsa/manifest.tsv
 
-# Working notes live in the private repo dnilgis/feedbag, never here (Sig, Oct 20).
+# Working notes live in the private repo, never here.
 # A stray copy unpacked here is never committed.
 /.claude/notes/
 
-# Session skills live in the private repo dnilgis/feedbag at .claude/skills
-# (Oct 20, 2026, Sig: off the public repo). A session that adds that repo loads them.
+# Session skills live in the private repo at .claude/skills, off the public
+# repo. A session that adds that repo loads them.
 /.claude/skills/
 
 # Job files no page reads, unpacked from (and saved to) the private repo's
@@ -93,7 +93,7 @@ build/shots/
 /.verify/
 # implied futures shadow test: ticks live on the private raw branch only (implied-futures.yml)
 /data/implied-futures/
-# Builder-only data (Nov 4, Sig: "builder-only data moves to feedbag raw"; no page,
+# Builder-only data (Nov 4,; no page,
 # component, worker or other repo loads them). Each producing job saves it with
 # scripts/push_raw.sh and every job that reads it unpacks it first with
 # scripts/pull_raw.sh; test/raw-readers.test.mjs holds the list and checks both.
@@ -109,3 +109,5 @@ build/shots/
 /data/land-src/
 # agsist-data's land folder (Florida's county files), linked here only while a job builds from it (scripts/build_land_summary.py HOSTED)
 /data/land-hosted
+# River key inputs (river-pull.yml, one time): saved to the raw branch, never main
+/river/

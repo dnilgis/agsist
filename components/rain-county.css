@@ -104,7 +104,7 @@
 .rc-sell .rc-fine { margin: .5rem 0 0; }
 /* the second year button (last year by Christmas, this year in January): an outline that reads as a button */
 .rc-sell .btn-secondary { border-color: var(--text-muted); }
-/* The county page's print up top, in the plain chart's place (Sig, Oct 28 2026). The plain chart ships inside
+/* The county page's print up top, in the plain chart's place (Oct 28 2026). The plain chart ships inside
    .rc-print-art as the no-JS fallback; the script replaces it with the print. While scripts run, the print's
    box (3:2, the art's 1800 x 1200), its picker row and the longer of the two captions are held from the first
    paint, so drawing the print moves nothing below it (the !important beats styles.css's [hidden] rule). Without scripts nothing is held: the chart shows as is; when the print cannot be drawn the script lets the room go

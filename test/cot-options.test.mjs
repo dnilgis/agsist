@@ -1,4 +1,4 @@
-/* Options positions on /cot (2026-11-06, Sig: feature options open interest and single out unusual positions).
+/* Options positions on /cot (2026-11-06, feature options open interest and single out unusual positions).
  * scripts/cot_options.py builds data/cot-options.json from CFTC data only; components/cot-options.js words it.
  *   - the builder's hand-worked selftest passes;
  *   - on real CFTC rows (test/fixtures/cot-options: corn, KC wheat and Minneapolis wheat, the Disaggregated
@@ -8,7 +8,7 @@
  *   - the unusual list says market, group, number, rank and report date, and the count of readings scanned;
  *     no arrows, no direction words, no dashes;
  *   - in a browser at 390 and 1280 px: the section renders from the file, no sideways scroll, a market picked
- *     shows its table; a missing file says so. Every outside host is aborted, service workers blocked (BUILD-RULES 58).
+ *     shows its table; a missing file says so. Every outside host is aborted, service workers blocked (build rule 58).
  *
  *   node --test test/cot-options.test.mjs
  */

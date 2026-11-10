@@ -1,8 +1,8 @@
 /* /prf-sponsor: prf-sponsor.html and components/prf-sponsor-page.js.
  *
- * WHY. PRF state slots sell passively (Sig, 2026-10-13): a stranger lands on
+ * WHY. PRF state slots sell passively (2026-10-13): a stranger lands on
  * this page from a PRF offer, sees their own block and asks, with no call
- * from Sig. So the page must: offer only the states that have PRF pages, tick
+ * from the owner. So the page must: offer only the states that have PRF pages, tick
  * the one the link names, draw the preview with the PRF pages' own code, send
  * what the worker (kind prf-sponsor, v5.22) accepts, and never print a price
  * or "founding". The example business below lives only in this file.
@@ -93,7 +93,7 @@ test("the page: indexable, FAQ in JSON-LD, the terms, no price, no founding, no 
   for (const q of faq.mainEntity) assert.ok(HTML.includes(q.name.replace(/'/g, "&#x27;")) || HTML.includes(q.name), "FAQ shown on the page: " + q.name);
   for (const t of ["One business per state.", "Price on request.", "Prepaid.", "through Dec 31", "first say on renewing",
       "A sponsor has no say over any figure.", "USDA RMA"]) assert.ok(HTML.includes(t), t);
-  // Sig, Nov 6: nothing about his other businesses on a page that sells a slot.
+  // Nov 6: nothing about his other businesses on a page that sells a slot.
   for (const t of ["also owns", "may compete", "never takes a sponsor", "Loke Drone"]) assert.ok(!HTML.includes(t), "absent: " + t);
   for (const who of ["Crop insurance agencies", "Ag lenders", "Ranch supply", "Cattle buyers", "Seed dealers", "Fencing dealers"]) assert.ok(HTML.includes(who), who);
   const text = HTML.replace(/<style>[\s\S]*?<\/style>/, "").replace(/<!--[\s\S]*?-->/g, "");

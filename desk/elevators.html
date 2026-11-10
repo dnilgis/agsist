@@ -9,7 +9,7 @@
 <title>Elevator desk | AGSIST</title>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-<!-- Sig's desk for the elevator portal (subs worker v5.20; Requests, v5.21). Not linked from
+<!-- The owner's desk for the elevator portal (subs worker v5.20; Requests, v5.21). Not linked from
      anywhere and noindex. Every action needs LIST_TOKEN: it is sent only in
      the Authorization header, never in an address. It is kept in this
      browser's localStorage so it is pasted once; "Forget the token" clears
@@ -407,7 +407,7 @@ textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5
   });
 
   // ---------- Paste bids (worker v5.34) ----------
-  // Sig pastes a site's public bid page, opened in his own browser. Nothing on
+  // The owner pastes a site's public bid page, opened in his own browser. Nothing on
   // this page fetches the elevator's site. The rows go to the worker as printed;
   // dnilgis/bids reads them with the same code as a live read.
   var PB = window.AgsistPasteBids;

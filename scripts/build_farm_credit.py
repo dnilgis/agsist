@@ -33,7 +33,7 @@ INPUT (raw branch, never deployed; the sandbox cannot reach the reserve banks)
     python3 scripts/build_farm_credit.py --check       the committed file passes every rule
     python3 scripts/build_farm_credit.py --selftest
 
-NEXT RELEASE (by hand, no schedule; a new schedule needs Sig's OK): save the new
+NEXT RELEASE (by hand, no schedule; a new schedule needs the owner's OK): save the new
 files to the raw branch under a new dated folder, then run the "Farm credit by
 Fed district" workflow (.github/workflows/farm-credit.yml) with that folder.
 Stdlib + openpyxl (xlsx) + xlrd (the Chicago .xls).

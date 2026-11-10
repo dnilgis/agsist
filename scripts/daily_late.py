@@ -1,13 +1,12 @@
 #!/usr/bin/env python3
 """
-daily_late.py -- tell Sig when the Daily has not gone out by 7:15 AM CT.
+daily_late.py -- tell the owner when the Daily has not gone out by 7:15 AM CT.
 
 WHAT HAPPENED (Nov 3 2026). Every morning run from 5:46 to 7:31 CT stopped at a
 self-test, a manual dry run then published the issue without mailing it, and the
 heartbeats skipped. Nobody got the Daily until a second manual run, and nothing
-told Sig: the self-test step was not one the block alert names, and cron-health
-only asks whether the issue is PUBLISHED. Sig, Nov 3: "The Daily must alert Sig
-if not sent by 7:15 AM CT."
+told the owner: the self-test step was not one the block alert names, and cron-health
+only asks whether the issue is PUBLISHED. Nov 3
 
     python3 scripts/daily_late.py check            (cron-health.yml, the run after the 7:15 tick)
     python3 scripts/daily_late.py check --now 2026-11-03T07:16:00-06:00
@@ -43,7 +42,7 @@ REPO = HERE.parent
 sys.path.insert(0, str(HERE))
 
 CT = "America/Chicago"
-DUE = (7, 15)            # Sig, Nov 3: sent by 7:15 AM CT
+DUE = (7, 15)            # Nov 3: sent by 7:15 AM CT
 ALERT_UNTIL = (8, 15)    # the run after the 7:15 tick; the other UTC tick lands outside this hour
 MAX_RUNS = 12            # newest runs read for a failing step (two API calls each at most)
 STAMP = re.compile(r"^\d{4}-\d\d-\d\dT[\d:.]+Z ?")

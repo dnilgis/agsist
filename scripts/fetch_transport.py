@@ -37,6 +37,9 @@ import urllib.request
 from collections import defaultdict
 from datetime import datetime, timedelta, timezone
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from released_at import socrata  # noqa: E402  when the rows were public
+
 BASE = "https://agtransport.usda.gov/resource/{}.json"
 UA = {"User-Agent": "AGSIST/1.0 (+https://agsist.com)"}
 OUT_DIR = "data/transport"
@@ -73,6 +76,20 @@ def get_json(dataset, params):
         except Exception as e:  # noqa: BLE001 — retried, then fatal below
             last = e
     raise SystemExit(f"FATAL: {dataset} unreachable after retries: {last}")
+
+
+def get_meta(dataset):
+    """The dataset's Socrata metadata (/api/views/<id>.json), which carries rowsUpdatedAt: when USDA last
+    changed its rows. One try; {} on any failure, so the page files never wait on it (released_at then
+    falls back to the fetch time and says so)."""
+    try:
+        req = urllib.request.Request(f"https://agtransport.usda.gov/api/views/{dataset}.json", headers=UA)
+        with urllib.request.urlopen(req, timeout=30) as r:
+            m = json.loads(r.read().decode("utf-8"))
+        return m if isinstance(m, dict) else {}
+    except Exception as e:  # noqa: BLE001  never blocks the write
+        print(f"  {dataset} metadata not read ({type(e).__name__}); released_at falls back to the fetch time", file=sys.stderr)
+        return {}
 
 
 def week_of_year(date_s):
@@ -328,7 +345,7 @@ def series_stats(rows, key_fields, value_field, date_field="date", ahead=0):
     return out
 
 
-def build(fetch=get_json):
+def build(fetch=get_json, meta=get_meta):
     since = f"{datetime.now(timezone.utc).year - AVG_YEARS - 1}-01-01"
     basis_rows = fetch("v85y-3hep", {
         "$where": f"date >= '{since}'", "$limit": 50000,
@@ -392,13 +409,18 @@ def build(fetch=get_json):
                 continue
 
     stamp = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    # released_at: when USDA last changed the rows each file reads (the dataset's own rowsUpdatedAt), never
+    # after our fetch; the fetch time when a dataset does not say (scripts/released_at.py)
+    metas = {ds: meta(ds) for ds in ("v85y-3hep", "deqi-uken", "8uye-ieij", "an4w-mnp7")}
+    rel_basis = socrata([metas["v85y-3hep"]], stamp)
+    rel_journey = socrata([metas["deqi-uken"], metas["8uye-ieij"], metas["an4w-mnp7"]], stamp)
     note = ("Attribution is regional (named markets and origins), not any specific "
             "elevator. Basis in $/bu vs futures; barge rate is % of 1976 benchmark tariff.")
-    basis_doc = {"generated": stamp, "source": "USDA AgTransport grain_basis v85y-3hep",
+    basis_doc = {"generated": stamp, **rel_basis, "source": "USDA AgTransport grain_basis v85y-3hep",
                  "note": note, "band": BASIS_BAND, "rejected": rejected,
                  "jump": {"floor": JUMP_FLOOR, "pct": JUMP_PCT, "by_crop": thresholds},
                  "held": held, "weeks": weeks, "series": basis}
-    journey_doc = {"generated": stamp, "note": note,
+    journey_doc = {"generated": stamp, **rel_journey, "note": note,
                    "barge": barge,
                    "cost_index": {k: v for k, v in cost_latest.items()},
                    "spreads": spreads_latest}
@@ -510,9 +532,24 @@ def selftest():
     assert sn["norms"][2] == ["2025-10-17", -0.1, 5], sn["norms"][2]
     assert sn["norms"][0] == ["2025-10-03", -0.3, 5] and sn["avg5"] == -0.3, sn["norms"][0]
     assert "norms" not in series_stats(nr, ["commodity", "market_name", "market_type"], "basis")[k], "barge: no norms"
+    # released_at from the datasets' own rowsUpdatedAt; a dataset that says nothing: the fetch time
+    def fake(ds, p):
+        if ds == "v85y-3hep":
+            return [dict(r, date=r["date"] + "T00:00:00.000") for r in rows[-60:]]
+        if ds == "deqi-uken":
+            return [{"date": r["date"] + "T00:00:00.000", "location": "St. Louis", "rate": 400} for r in rows[-60:]]
+        if ds == "8uye-ieij":
+            return [{"date": "2025-12-25T00:00:00.000", "truck": "100"}]
+        return [{"date": "2025-12-25T00:00:00.000", "commodity": "Corn", "origin": "IA", "destination": "Gulf",
+                 "origin_bid": "4", "destination_bid": "4.6", "price_spread": "0.6"}]
+    b1, j1 = build(fetch=fake, meta=lambda ds: {"rowsUpdatedAt": 1762430400})
+    assert b1["released_at"] == "2025-11-06T12:00:00Z" and b1["released_basis"] == "source", b1["released_at"]
+    assert j1["released_basis"] == "source"
+    b2, j2 = build(fetch=fake, meta=lambda ds: {} if ds == "8uye-ieij" else {"rowsUpdatedAt": 1762430400})
+    assert b2["released_basis"] == "source" and j2["released_basis"] == "fetched" and j2["released_at"] == j2["generated"]
     # fail-loud path: empty dataset must raise
     try:
-        build(fetch=lambda ds, p: [])
+        build(fetch=lambda ds, p: [], meta=lambda ds: {})
         raise AssertionError("empty dataset did not fail loud")
     except SystemExit:
         pass

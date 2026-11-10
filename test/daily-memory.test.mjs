@@ -1,4 +1,4 @@
-/* Daily phase 2 (panel Nov 9 2026, Sig "all"): one memory keyed by fact, the
+/* Daily phase 2 (panel Nov 9 2026): one memory keyed by fact, the
  * state week-over-week basis line in place of the North Dakota line, funds on
  * Saturday as the streak, the overnight, ratio, percentile and cash-count rules,
  * month to date and the WASDE watch rule, raw counts off the web block, and the

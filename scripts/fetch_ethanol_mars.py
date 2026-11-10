@@ -3,7 +3,7 @@
 their co-products sell for, from USDA My Market News (the MARS API), written to
 data/ethanol-bids.json for the "Ethanol plants paying" fold on /cash-bids.
 
-Sig, Nov 2 2026: build from USDA MARS (fx/marseth). Two reports, both from the
+Nov 2 2026: build from USDA MARS (fx/marseth). Two reports, both from the
 USDA AMS St. Joseph, MO office:
   3617  National Daily Ethanol Report (weekdays). One row per state (Iowa: East
         and West): the range of corn bids at ethanol plants, #2 yellow,

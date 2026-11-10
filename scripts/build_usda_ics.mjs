@@ -84,8 +84,8 @@ const UID_NAME = {
   "2027 ARC/PLC signup deadline": "arc-plc-2027-signup-deadline",
 };
 
-/* The last line of every event (Sig, Nov 2: the calendar a reader subscribed to
-   brings them back). Plain URLs: calendar apps show DESCRIPTION as text and
+/* The last line of every event (Nov 2: the calendar a reader subscribed to
+ brings them back). Plain URLs: calendar apps show DESCRIPTION as text and
    link bare URLs themselves. The Daily link carries utm_source=ics only. */
 export const TRAILER = "What the market priced in: https://agsist.com/usda-calendar. Free morning Daily: https://agsist.com/daily?utm_source=ics";
 

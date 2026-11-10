@@ -3,7 +3,7 @@
 // states picked for the demo, the ad's own counts at the not-started 0, the
 // real rate card greyed, and nothing that could put an ad in front of a reader.
 // After its last day (expires) the builder drops the data and the page says
-// "This demo has ended. Contact Sig."
+// "This demo has ended. Contact the owner."
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync } from "node:fs";

@@ -1,4 +1,4 @@
-/* "Email me when my state's new custom rate survey is out" (Sig, Nov 3, custom rates panel).
+/* "Email me when my state's new custom rate survey is out" (Nov 3, custom rates panel).
  * The ask on /custom-rates posts topic customrates:<st> to the subscriptions worker's /notice;
  * scripts/send_custom_rates_notice.py mails each notice once, when a survey edition newer than
  * the ask is on the page, and marks it. Fake worker store, fake SMTP; no network.

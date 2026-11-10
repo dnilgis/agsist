@@ -1,6 +1,6 @@
-/* The printed sheet on /cot (Nov 6, 2026, Sig: shareable by default, "nicely printed PDFs"; kit v2 the same day, the
-   share kit panel: one short line per market, a six-number scoreboard readable from 6 feet, the year prominent, a true
-   black-and-white palette).
+/* The printed sheet on /cot (Nov 6, 2026, shareable by default, "nicely printed PDFs"; kit v2 the same day, the
+ share kit panel: one short line per market, a six-number scoreboard readable from 6 feet, the year prominent, a true
+ black-and-white palette).
 
    One page, US Letter portrait (it fits A4 too): the title with the week and its year, the Tuesday and the release
    day, then the scoreboard: corn, soybeans, Chicago wheat, live cattle, feeder cattle and lean hogs, each with its
@@ -21,7 +21,7 @@
   var C = root.AgCotChart || (typeof require === 'function' ? require('./cot-chart.js') : null);
   var K = root.AgCotKit || (typeof require === 'function' ? require('./cot-kit.js') : null);
   var KEYS = ['corn', 'beans', 'wheat', 'livecattle', 'feedercattle', 'leanhogs'];
-  /* the QR code lands on the Funds this week signup box (Sig, Nov 6: grow the list); the printed URL stays short */
+  /* the QR code lands on the Funds this week signup box (Nov 6: grow the list); the printed URL stays short */
   var URL_SHOWN = 'agsist.com/cot', URL_FULL = 'https://agsist.com/cot#cot-signup', ASK = 'Every Friday by email:';
   /* the QR code's address carries the kit's tags (AgCotKit.link: utm_source=print, utm_medium=qr, the report week) */
   function qrUrl(week) { return K.link(null, week, 'print', 'qr', '#cot-signup'); }
@@ -135,7 +135,7 @@
       + '<p class="cotp-note">' + esc(s.note) + '</p><p class="cotp-src">' + esc(s.src) + '</p>';
   }
 
-  /* PIN IT HERE (kit v2 part 2, Sig Nov 6): the wall edition. US Letter landscape, black and white, big type: the
+  /* PIN IT HERE (kit v2 part 2, Nov 6): the wall edition. US Letter landscape, black and white, big type: the
      picked market's headline readable across a room, the six-market scoreboard (net, change and the week with its
      year), a QR code "Latest report and free Friday email" to the signup box, a blank "Posted by" line for a co-op or
      an elevator to write in, and the repost permission. Same data as the sheet (sheet()). */

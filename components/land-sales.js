@@ -1,10 +1,10 @@
-/* Farm sales in front of readers (Sig, Oct 27, 2026): Illinois, Wisconsin and Indiana ("Yes turn on Indiana", Oct 27),
+/* Farm sales in front of readers (Oct 27, 2026): Illinois, Wisconsin and Indiana ("Yes turn on Indiana", Oct 27),
    and Vermont and New Jersey (Oct 29: next land states).
 
    Data (scripts/build_land_sales.py; no names in any of it):
      /data/land-sales/latest.json     the newest monthly update in brief
      /data/land-sales/<st>.json       each county's latest few sales with the township point
-   Names (STANDING-DECISIONS, Oct 27): never in a page. A "Show buyer and seller" button
+   Names (a site rule, Oct 27): never in a page. A "Show buyer and seller" button
    (button.ls-nm[data-ls-id][data-ls-f]) loads them on tap from /data/land/names/..., a folder
    robots.txt blocks, with a "Remove my name" link beside them.
 
@@ -230,7 +230,7 @@
     });
   }
 
-  /* ── a county page's full list (Sig, Oct 29, 2026: every recorded sale) ─────────────
+  /* ── a county page's full list (Oct 29, 2026: every recorded sale) ─────────────
      The page carries the newest 50 rows; "Show more" and the type filter read the county's list
      file (data/land-sales/<st>/<fips>.json, no names; cols id, when, recorded, acres, price, ppa,
      place, kind, flag). Both controls stay hidden until this runs, so a page without the script
@@ -284,8 +284,7 @@
     if (sel) sel.addEventListener('change', function () { kind = sel.value; load().then(function (f) { if (f) { shown = STEP; draw(f); } }); });
   }
 
-  /* ── one sale, every pertinent detail (Sig, Nov 4, 2026: "when you click I want it to open every detail
-     about the sale that is pertinent") ──────────────────────────────────────────────────────────
+  /* ── one sale, every pertinent detail (Nov 4, 2026) ──────────────────────────────────────────────────────────
      Every sale row (the county table, a month table) and every sale card (Atlas, Fast Facts) opens a panel.
      What the page already has draws at once (data-ls on the row: DCOLS, scripts/build_land_sales.py ROW_COLS;
      data-ls-c on the row or its table: state, county fips and name, the county's 24-month middle). The deed's

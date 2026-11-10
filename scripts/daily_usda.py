@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 daily_usda.py -- the USDA market lines handed to the Daily's writer as dated
-source blocks (Sig, Nov 2 2026: build from USDA My Market News and the LM
+source blocks (Nov 2 2026: build from USDA My Market News and the LM
 reports, then wire them into the Daily; the pattern is scripts/daily_more.py).
 Every number is read from a file already in the repo, written by the fetchers
 below. Nothing is fetched here and nothing is forecast. A block whose file is

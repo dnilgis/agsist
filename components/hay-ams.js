@@ -122,7 +122,8 @@
   var KEY = 'agsist-hay-ams';
 
   function mount() {
-    var box = d.getElementById('hp-ams-live'); if (!box || !root.fetch) return;
+    var box = d.getElementById('hp-ams-live'); if (!box) return;
+    if (!root.fetch) { box.classList.remove('hp-ams-wait'); return; }
     var V = null, NASS = null, PICK = '';
     try { var sv = JSON.parse(localStorage.getItem(KEY) || 'null'); if (sv && /^[A-Z]{2}$|^all$/.test(sv.st || '')) PICK = sv.st; } catch (e) {}
     if (!PICK) { try { var loc = JSON.parse(localStorage.getItem('agsist-wx-loc') || 'null'); if (loc && /^[A-Z]{2}$/.test(loc.state || '')) PICK = loc.state; } catch (e) {} }
@@ -209,6 +210,7 @@
       NASS = a[1];
       V = view(a[0], Date.now());
       if (V) render();
+      box.classList.remove('hp-ams-wait');
     });
   }
   if (d.readyState === 'loading') d.addEventListener('DOMContentLoaded', mount); else mount();

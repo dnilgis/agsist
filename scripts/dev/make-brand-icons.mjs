@@ -1,7 +1,7 @@
 /* AGSIST browser and home-screen icons, from one drawing.
  *
  * The mark: a red barn with a gold door and a gold hay-loft square under a
- * cream roof line, on the wordmark green tile. Sig picked it Oct 21, 2026
+ * cream roof line, on the wordmark green tile. The owner picked it Oct 21, 2026
  * ("the red barn with the gold door, on the tile") from ten drawn options
  * (tab strip and home-screen mocks); the drawing is the one
  * src/art_options.py drew for that board (barn-tile, barn-app, barn-mask).

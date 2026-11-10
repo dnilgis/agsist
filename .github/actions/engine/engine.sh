@@ -364,7 +364,7 @@ PY
       [ "${HAVE_TOKEN:-false}" = "true" ] || say_fail "PRIVATE_REPO_TOKEN is not set in this repository's Actions secrets (needed to read $REPO $BRANCH)"
       exclude_paths
       # a run on fx/x (a pull request's head, a dispatch or push on that branch) tries the engine
-      # branch fx/x first, so it runs its own branch's code (BUILD-RULES 62, 66); main and the rest
+      # branch fx/x first, so it runs its own branch's code (build rule 62, 66); main and the rest
       # use the default engine branch
       # never on pull_request_target: it runs with a write token, and a head branch name is the PR's to pick
       paired=""
@@ -443,7 +443,7 @@ PY
     git -C "$ED" rm -r -q --cached --ignore-unmatch -- "${PATHS[@]}" >/dev/null
     git -C "$ED" add -A -- "${PATHS[@]}"
     if git -C "$ED" diff --cached --quiet; then echo "engine: nothing to save"; exit 0; fi
-    git -C "$ED" -c user.name="${GIT_AUTHOR_NAME:-dnilgis}" -c user.email="${GIT_AUTHOR_EMAIL:-dnilgis@gmail.com}" \
+    git -C "$ED" -c user.name="${GIT_AUTHOR_NAME:-dnilgis}" -c user.email="${GIT_AUTHOR_EMAIL:-dnilgis@users.noreply.github.com}" \
       commit -q -m "${1:-engine: from $(basename "$ROOT") $(git -C "$ROOT" rev-parse --short HEAD)}" || exit 1
     git -C "$ED" show --stat --format='engine: committed %h %s' HEAD | tail -n +1 | head -20
     echo "push it: git -C $ED push origin $BRANCH" ;;

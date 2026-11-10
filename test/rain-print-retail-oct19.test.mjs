@@ -1,4 +1,4 @@
-/* Rain Print retail fixes (2026-10-19, monetization board, Sig: "yeah fix please"):
+/* Rain Print retail fixes (2026-10-19, monetization board):
  *   1. "Last year, by Christmas" beside "This year, in January": on the county
  *      rain pages (one promo block) and on the first screen of /rain-print,
  *      while a Christmas cutoff in data/rain-print.json is ahead;

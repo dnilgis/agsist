@@ -1,13 +1,13 @@
-/* A green run is not a delivered email (BUILD-RULES 55 and 56, Nov 3 2026). rp-design-email and
+/* A green run is not a delivered email (build rule 55 and 56, Nov 3 2026). rp-design-email and
  * rp-buyer-email ran green and dry for two weeks with the live variable at 1, and the subs worker had
  * never started either job. scripts/delivery_check.py reads the DELIVERY line every reader email
  * sender prints (scripts/delivery_line.py) and cron_health.py turns its findings into rows.
  *
  * This file holds:
  *   - the classifier, on fixtures only (delivery_check.py --selftest: no network, no date from today);
- *   - the inventory: every workflow with mail secrets is a reader sender or listed as Sig only; every
+ *   - the inventory: every workflow with mail secrets is a reader sender or listed as the owner only; every
  *     sender script it lists is run by that workflow and prints the line under its name; every script
- *     run in a reader workflow's mail step is a listed sender or listed as Sig only; every script that
+ *     run in a reader workflow's mail step is a listed sender or listed as the owner only; every script that
  *     prints the line is listed; cron-health passes every live switch. So a new sender cannot be missed.
  *
  *   node --test test/delivery-check.test.mjs

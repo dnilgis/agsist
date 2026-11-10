@@ -1,34 +1,34 @@
 {
  "rain": {
-  "v": "5feaf602",
-  "alt": "Map of the US by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026: 2,714 counties with a weather station."
+  "v": "ef552366",
+  "alt": "Map of the US by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026: 2,775 counties with a weather station."
  },
  "rain-ak": {
   "v": "c8090390",
   "alt": "Map of Alaska by borough or census area, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 14 of 21 boroughs and census areas are wetter than usual, and the typical borough or census area is at 106%."
  },
  "rain-al": {
-  "v": "a8a77a33",
-  "alt": "Map of Alabama by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 14 of 47 counties are wetter than usual, and the typical county is at 94%."
+  "v": "b204e2ea",
+  "alt": "Map of Alabama by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 14 of 49 counties are wetter than usual, and the typical county is at 94%."
  },
  "rain-ar": {
-  "v": "4a2450d7",
-  "alt": "Map of Arkansas by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 1 of 52 counties are wetter than usual, and the typical county is at 74%."
+  "v": "a039f411",
+  "alt": "Map of Arkansas by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 1 of 54 counties are wetter than usual, and the typical county is at 72%."
  },
  "rain-az": {
-  "v": "ae166dfb",
-  "alt": "Map of Arizona by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 9 of 12 counties are wetter than usual, and the typical county is at 122%."
+  "v": "32f8e894",
+  "alt": "Map of Arizona by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 9 of 12 counties are wetter than usual, and the typical county is at 124%."
  },
  "rain-ca": {
-  "v": "6bf6ecfe",
+  "v": "b27fa7bc",
   "alt": "Map of California by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 1 of 55 counties are wetter than usual, and the typical county is at 75%."
  },
  "rain-co": {
-  "v": "2ebebc36",
+  "v": "c210cd9f",
   "alt": "Map of Colorado by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 19 of 55 counties are wetter than usual, and the typical county is at 88%."
  },
  "rain-ct": {
-  "v": "d6260b5c",
+  "v": "edaf30f2",
   "alt": "Map of Connecticut by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 5 of 7 counties are wetter than usual, and the typical county is at 101%."
  },
  "rain-de": {
@@ -36,43 +36,43 @@
   "alt": "Map of Delaware by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 1 of 1 county are wetter than usual."
  },
  "rain-fl": {
-  "v": "9855a8df",
-  "alt": "Map of Florida by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 17 of 47 counties are wetter than usual, and the typical county is at 98%."
+  "v": "db75d741",
+  "alt": "Map of Florida by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 16 of 47 counties are wetter than usual, and the typical county is at 96%."
  },
  "rain-ga": {
-  "v": "58bb6acb",
-  "alt": "Map of Georgia by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 7 of 71 counties are wetter than usual, and the typical county is at 89%."
+  "v": "7aa24211",
+  "alt": "Map of Georgia by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 8 of 74 counties are wetter than usual, and the typical county is at 88%."
  },
  "rain-hi": {
   "v": "669a24ad",
   "alt": "Map of Hawaii by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 4 of 4 counties are wetter than usual."
  },
  "rain-ia": {
-  "v": "c761c1ad",
-  "alt": "Map of Iowa by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 63 of 78 counties are wetter than usual, and the typical county is at 120%."
+  "v": "59728332",
+  "alt": "Map of Iowa by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 62 of 81 counties are wetter than usual, and the typical county is at 118%."
  },
  "rain-id": {
-  "v": "ee71899a",
-  "alt": "Map of Idaho by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 6 of 34 counties are wetter than usual, and the typical county is at 88%."
+  "v": "065da2de",
+  "alt": "Map of Idaho by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 6 of 35 counties are wetter than usual, and the typical county is at 88%."
  },
  "rain-il": {
-  "v": "9ac509d8",
-  "alt": "Map of Illinois by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 45 of 75 counties are wetter than usual, and the typical county is at 105%."
+  "v": "7ec94ce0",
+  "alt": "Map of Illinois by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 45 of 76 counties are wetter than usual, and the typical county is at 105%."
  },
  "rain-in": {
-  "v": "9ebbb43d",
-  "alt": "Map of Indiana by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 52 of 70 counties are wetter than usual, and the typical county is at 108%."
+  "v": "712ac1c4",
+  "alt": "Map of Indiana by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 53 of 71 counties are wetter than usual, and the typical county is at 108%."
  },
  "rain-ks": {
-  "v": "b21a5440",
-  "alt": "Map of Kansas by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 54 of 82 counties are wetter than usual, and the typical county is at 106%."
+  "v": "75ed89e2",
+  "alt": "Map of Kansas by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 53 of 82 counties are wetter than usual, and the typical county is at 108%."
  },
  "rain-ky": {
-  "v": "94bb832b",
-  "alt": "Map of Kentucky by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 11 of 53 counties are wetter than usual, and the typical county is at 89%."
+  "v": "f7f7111e",
+  "alt": "Map of Kentucky by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 11 of 55 counties are wetter than usual, and the typical county is at 89%."
  },
  "rain-la": {
-  "v": "309cbd8c",
+  "v": "35ce6110",
   "alt": "Map of Louisiana by parish, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 2 of 37 parishes are wetter than usual, and the typical parish is at 79%."
  },
  "rain-ma": {
@@ -80,79 +80,79 @@
   "alt": "Map of Massachusetts by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 3 of 10 counties are wetter than usual, and the typical county is at 87%."
  },
  "rain-md": {
-  "v": "df6b08ba",
-  "alt": "Map of Maryland by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 0 of 15 counties are wetter than usual, and the typical county is at 83%."
+  "v": "97a6fc25",
+  "alt": "Map of Maryland by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 0 of 15 counties are wetter than usual, and the typical county is at 81%."
  },
  "rain-me": {
-  "v": "d1e601f4",
+  "v": "933d1d23",
   "alt": "Map of Maine by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 0 of 14 counties are wetter than usual, and the typical county is at 78%."
  },
  "rain-mi": {
-  "v": "6eb04c1e",
-  "alt": "Map of Michigan by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 43 of 67 counties are wetter than usual, and the typical county is at 107%."
+  "v": "64c1ba92",
+  "alt": "Map of Michigan by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 45 of 68 counties are wetter than usual, and the typical county is at 107%."
  },
  "rain-mn": {
-  "v": "93b9051d",
-  "alt": "Map of Minnesota by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 19 of 63 counties are wetter than usual, and the typical county is at 93%."
+  "v": "8ca86a6a",
+  "alt": "Map of Minnesota by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 19 of 65 counties are wetter than usual, and the typical county is at 92%."
  },
  "rain-mo": {
-  "v": "abe9574b",
-  "alt": "Map of Missouri by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 45 of 87 counties are wetter than usual, and the typical county is at 101%."
+  "v": "7d177971",
+  "alt": "Map of Missouri by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 49 of 96 counties are wetter than usual, and the typical county is at 101%."
  },
  "rain-ms": {
-  "v": "577a7020",
-  "alt": "Map of Mississippi by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 7 of 39 counties are wetter than usual, and the typical county is at 81%."
+  "v": "3422b06b",
+  "alt": "Map of Mississippi by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 6 of 39 counties are wetter than usual, and the typical county is at 79%."
  },
  "rain-mt": {
-  "v": "e8b2f361",
-  "alt": "Map of Montana by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 28 of 54 counties are wetter than usual, and the typical county is at 102%."
+  "v": "610d8027",
+  "alt": "Map of Montana by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 27 of 54 counties are wetter than usual, and the typical county is at 101%."
  },
  "rain-nc": {
-  "v": "8afa8aaf",
-  "alt": "Map of North Carolina by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 5 of 84 counties are wetter than usual, and the typical county is at 77%."
+  "v": "17aa9128",
+  "alt": "Map of North Carolina by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 5 of 85 counties are wetter than usual, and the typical county is at 78%."
  },
  "rain-nd": {
-  "v": "08e5bc35",
+  "v": "f4fc98d5",
   "alt": "Map of North Dakota by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 6 of 31 counties are wetter than usual, and the typical county is at 77%."
  },
  "rain-ne": {
-  "v": "5c28fad4",
-  "alt": "Map of Nebraska by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 41 of 77 counties are wetter than usual, and the typical county is at 103%."
+  "v": "20d3361c",
+  "alt": "Map of Nebraska by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 40 of 77 counties are wetter than usual, and the typical county is at 103%."
  },
  "rain-nh": {
-  "v": "e613de37",
-  "alt": "Map of New Hampshire by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 1 of 10 counties are wetter than usual, and the typical county is at 87%."
+  "v": "9663a822",
+  "alt": "Map of New Hampshire by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 1 of 9 counties are wetter than usual, and the typical county is at 87%."
  },
  "rain-nj": {
-  "v": "c036e20c",
-  "alt": "Map of New Jersey by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 8 of 19 counties are wetter than usual, and the typical county is at 97%."
+  "v": "1ba063fc",
+  "alt": "Map of New Jersey by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 8 of 19 counties are wetter than usual, and the typical county is at 98%."
  },
  "rain-nm": {
-  "v": "f41edd38",
-  "alt": "Map of New Mexico by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 26 of 29 counties are wetter than usual, and the typical county is at 118%."
+  "v": "913eb1de",
+  "alt": "Map of New Mexico by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 25 of 28 counties are wetter than usual, and the typical county is at 120%."
  },
  "rain-nv": {
-  "v": "2e8815d2",
+  "v": "7155498f",
   "alt": "Map of Nevada by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 3 of 15 counties are wetter than usual, and the typical county is at 80%."
  },
  "rain-ny": {
-  "v": "0a0c363f",
-  "alt": "Map of New York by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 16 of 45 counties are wetter than usual, and the typical county is at 97%."
+  "v": "dced48a7",
+  "alt": "Map of New York by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 20 of 46 counties are wetter than usual, and the typical county is at 98%."
  },
  "rain-oh": {
-  "v": "7b7d08af",
-  "alt": "Map of Ohio by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 47 of 65 counties are wetter than usual, and the typical county is at 111%."
+  "v": "0fae3891",
+  "alt": "Map of Ohio by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 47 of 65 counties are wetter than usual, and the typical county is at 110%."
  },
  "rain-ok": {
-  "v": "94661ca2",
-  "alt": "Map of Oklahoma by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 5 of 56 counties are wetter than usual, and the typical county is at 85%."
+  "v": "4ed12734",
+  "alt": "Map of Oklahoma by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 5 of 55 counties are wetter than usual, and the typical county is at 83%."
  },
  "rain-or": {
-  "v": "4b4ecf42",
-  "alt": "Map of Oregon by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 0 of 31 counties are wetter than usual, and the typical county is at 68%."
+  "v": "3acd2b74",
+  "alt": "Map of Oregon by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 1 of 31 counties are wetter than usual, and the typical county is at 69%."
  },
  "rain-pa": {
-  "v": "960835a7",
+  "v": "c6d079f6",
   "alt": "Map of Pennsylvania by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 23 of 51 counties are wetter than usual, and the typical county is at 98%."
  },
  "rain-ri": {
@@ -160,47 +160,47 @@
   "alt": "Map of Rhode Island by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 2 of 3 counties are wetter than usual."
  },
  "rain-sc": {
-  "v": "93276d69",
+  "v": "a0c56074",
   "alt": "Map of South Carolina by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 4 of 36 counties are wetter than usual, and the typical county is at 78%."
  },
  "rain-sd": {
-  "v": "404dec8a",
-  "alt": "Map of South Dakota by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 16 of 56 counties are wetter than usual, and the typical county is at 93%."
+  "v": "543b32e6",
+  "alt": "Map of South Dakota by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 15 of 57 counties are wetter than usual, and the typical county is at 93%."
  },
  "rain-tn": {
-  "v": "445845f1",
-  "alt": "Map of Tennessee by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 4 of 68 counties are wetter than usual, and the typical county is at 84%."
+  "v": "f4a67011",
+  "alt": "Map of Tennessee by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 3 of 71 counties are wetter than usual, and the typical county is at 85%."
  },
  "rain-tx": {
-  "v": "6cf2249a",
-  "alt": "Map of Texas by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 52 of 185 counties are wetter than usual, and the typical county is at 91%."
+  "v": "e1a21a25",
+  "alt": "Map of Texas by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 51 of 187 counties are wetter than usual, and the typical county is at 91%."
  },
  "rain-ut": {
-  "v": "8f04f4ed",
-  "alt": "Map of Utah by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 19 of 29 counties are wetter than usual, and the typical county is at 105%."
+  "v": "d9b87239",
+  "alt": "Map of Utah by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 17 of 28 counties are wetter than usual, and the typical county is at 106%."
  },
  "rain-va": {
-  "v": "3d167766",
-  "alt": "Map of Virginia by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 7 of 72 counties are wetter than usual, and the typical county is at 86%."
+  "v": "c2e60ed9",
+  "alt": "Map of Virginia by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 7 of 73 counties are wetter than usual, and the typical county is at 86%."
  },
  "rain-vt": {
-  "v": "41809c9f",
-  "alt": "Map of Vermont by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 0 of 8 counties are wetter than usual, and the typical county is at 92%."
+  "v": "21d07627",
+  "alt": "Map of Vermont by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 1 of 8 counties are wetter than usual, and the typical county is at 93%."
  },
  "rain-wa": {
-  "v": "c6cda813",
-  "alt": "Map of Washington by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 3 of 32 counties are wetter than usual, and the typical county is at 75%."
+  "v": "fe98e1b5",
+  "alt": "Map of Washington by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 2 of 33 counties are wetter than usual, and the typical county is at 75%."
  },
  "rain-wi": {
-  "v": "7c0903f9",
-  "alt": "Map of Wisconsin by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 37 of 65 counties are wetter than usual, and the typical county is at 104%."
+  "v": "41024ac5",
+  "alt": "Map of Wisconsin by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 36 of 65 counties are wetter than usual, and the typical county is at 104%."
  },
  "rain-wv": {
-  "v": "8922bb4f",
+  "v": "ca7e3777",
   "alt": "Map of West Virginia by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 20 of 34 counties are wetter than usual, and the typical county is at 104%."
  },
  "rain-wy": {
-  "v": "c1ba5dc4",
-  "alt": "Map of Wyoming by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 2 of 21 counties are wetter than usual, and the typical county is at 78%."
+  "v": "9eb426f8",
+  "alt": "Map of Wyoming by county, shaded by rain so far in 2026 as a percent of a usual year, through Nov 8, 2026. 1 of 21 counties are wetter than usual, and the typical county is at 78%."
  }
 }

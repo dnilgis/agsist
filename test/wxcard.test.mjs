@@ -1,6 +1,4 @@
-/* The home Local conditions card, Nov 4, 2026 (Sig: "Remove the spray days stuff from the weather card. I would like
- * the YTD rain and GDUs to be displayed year round, as well as the 30-day amounts for each, and the departure from
- * normal. There is too much wasted space in the card").
+/* The home Local conditions card, Nov 4, 2026.
  *
  *   - the five-day spray table is gone from the card (today's read stays as one line); /spray and Field Scout keep theirs
  *   - Season so far (components/season-wx.js) reads the county rain files only, on a summer and a winter fixture
@@ -40,7 +38,7 @@ function card() {
 test("the spray days table, its How it's rated and the Today spray line are gone from the card", () => {
   const c = card();
   for (const x of ["spray-days-strip", "spray-windows", "Spray days", "tip-s7-spray", "How it&rsquo;s rated"]) assert.ok(!c.includes(x), x);
-  // Nov 5 (Sig): the one Today spray line left the card too (test/wxcard2.test.mjs), and the hero band's read with it
+  // Nov 5: the one Today spray line left the card too (test/wxcard2.test.mjs), and the hero band's read with it
   // (test/homeseasonal.test.mjs)
   assert.ok(!/id="wx-today-summary"/.test(c), "no Today spray line in the card");
   assert.ok(!/spray days/i.test(c), "no 'spray days' copy left in the card");
@@ -77,7 +75,7 @@ test("summer: every figure from the files, with its dates; departures by hand", 
   const h = A.html(m, "2026-11-04"), t = text(h);
   for (const x of ["Rain, Jan 1 to Nov 3 55.03 in +20.43 in (159%)", "Rain, Oct 5 to Nov 3 2.71 in −0.09 in (97%)",
     "GDDs, May 1 to Nov 3 2,912 GDDs +153 (106%)", "GDDs, Oct 5 to Nov 3 312 GDDs +22 (108%)"]) assert.ok(t.includes(x), x + "\n" + t);
-  // Nov 8 (Sig crossed it out): no stations and sources paragraph on the home card; the county rain page keeps its method text
+  // Nov 8 (the owner crossed it out): no stations and sources paragraph on the home card; the county rain page keeps its method text
   assert.doesNotMatch(t, /Stations and sources|Gilbert|RCC-ACIS|CoCoRaHS|weather station 8 miles/, "no source text on the home card");
   assert.doesNotMatch(h, /<details|wxs-src/, "no sources fold");
   assert.doesNotMatch(h, /<a\b/, "no link to a data source");
@@ -136,7 +134,7 @@ test("no weather file yet (before the fetch has run): the rain shows, the GDDs s
   assert.ok(text(A.html(A.model(old, WX, "19169"), "2026-11-04")).includes("Rain, last 30 days Not loaded yet"), "a rain file from before r30: not loaded, never a guess");
 });
 
-/* ---------- the month charts (Sig, Nov 8: "add back the gdu by month chart like the precip chart"; "make sure the
+/* ---------- the month charts (Nov 8; "make sure the
    month by month chart is perfect and readable clickable and shareable") ---------- */
 const bars = (svg, cls) => [...svg.matchAll(new RegExp('<rect x="[\\d.]+" y="([\\d.]+)" width="[\\d.]+" height="([\\d.]+)" class="' + cls + '(?: wxs-part)?"><title>([^<]+)</title>', "g"))].map((x) => ({ y: +x[1], h: +x[2], t: x[3] }));
 test("GDDs by month, summer: a second button beside Rain by month, the same drawing, readouts worked by hand", () => {
@@ -313,7 +311,7 @@ test("on the page: Season so far fills from the files, no spray table, 30% short
       const pg = await ctx.newPage();
       const errors = [];
       pg.on("pageerror", (e) => errors.push(String(e)));
-      // BUILD-RULES 58: our own copy only; the forecast from the stand-in; every other outside host aborted
+      // build rule 58: our own copy only; the forecast from the stand-in; every other outside host aborted
       await pg.route("**/*", (r) => {
         const u = r.request().url();
         if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();

@@ -1,4 +1,4 @@
-/* Farm sales in front of readers (Sig, Oct 27, 2026; STANDING-DECISIONS Oct 27 lines):
+/* Farm sales in front of readers (Oct 27, 2026; a site rule Oct 27 lines):
  *   - names behind a tap: pages show the sale without names plus "Show buyer and seller"; the names load
  *     on tap from /data/land/names/, a folder robots.txt blocks; a "Remove my name" link beside them;
  *   - no buyer or seller name in any published page, sitemap, snippet or data file outside data/land/

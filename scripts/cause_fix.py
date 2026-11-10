@@ -6,7 +6,7 @@ the same text.
 
 WHY. Oct 29 the Daily went out with "Crude is still pricing in Iran supply
 risk, and diesel follows it." briefing_gate only WARNs on the cause rule
-(scripts/daily_claims.py r_cause_without_source; Sig: prose heuristics never
+(scripts/daily_claims.py r_cause_without_source; prose heuristics never
 hard-block), and the generator's cut leaves a field that would be left empty,
 but test/daily-claims.test.mjs requires every archived issue to pass the rule.
 So a published issue turned every pull request red until it was reworded by

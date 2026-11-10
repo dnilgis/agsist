@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """share_cards.py: draws the site's share images (og:image), 1200 x 630 JPG.
 
-Two looks, picked by Sig on 2026-10-15:
+Two looks, picked by the owner on 2026-10-15:
 
   A, the answer card: paper background, the real logo, the page's answer big
      (a number, or the title when a page has no single number), one line of

@@ -1,5 +1,5 @@
 #!/bin/bash
-# WIP autosave (BUILD-RULES 18: local-only work is not work). Run by the Stop and
+# WIP autosave (build rule 18: local-only work is not work). Run by the Stop and
 # SubagentStop hooks in .claude/settings.json (async, so it never holds up a turn).
 #
 # For the session's checkout and every worktree of it that is on an fx/* branch:
@@ -15,7 +15,7 @@ exec 2>/dev/null
 trap 'exit 0' EXIT
 IN=$(timeout 5 cat 2>/dev/null)
 MAX="${WIP_MAX_BYTES:-5242880}"
-NAME=dnilgis; MAIL=dnilgis@gmail.com
+NAME=dnilgis; MAIL=dnilgis@users.noreply.github.com
 # new (untracked) files are only picked up under these, or as a top-level page or script
 SRC_DIRS=(components scripts workers test css js img fonts embed .github .claude/agents)
 

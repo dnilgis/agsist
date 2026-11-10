@@ -1,4 +1,4 @@
-/* One fertilizer price source for the whole site (Sig, 2026-10-15).
+/* One fertilizer price source for the whole site (2026-10-15).
  *
  * Every fertilizer price on agsist.com comes from data/fertilizer-prices.json,
  * built by scripts/build_fert_prices.py from the co-op posted prices and the
@@ -9,11 +9,11 @@
  * name, or a dollar figure per pound of N, P2O5 or K2O. Allowed:
  *   * the parts a baker writes from the shared file and rewrites every
  *     weekday (manure-value.html [data-mv] numbers, its FAQ and meta,
- *     breakeven.html's FERT:SRC line and CROP_DEFAULTS fertilizer, and the
- *     title / description / share tags bake_seo.py and build_share_images.py
- *     stamp on fertilizer.html, manure-value.html and breakeven.html, and
- *     the co-op line bake_seo.py body_fertilizer writes into fertilizer.html
- *     between <!--BAKE:fert-bar--> and <!--/BAKE-->, Sig Oct 19), each
+ * breakeven.html's FERT:SRC line and CROP_DEFAULTS fertilizer, and the
+ * title / description / share tags bake_seo.py and build_share_images.py
+ * stamp on fertilizer.html, manure-value.html and breakeven.html, and
+ * the co-op line bake_seo.py body_fertilizer writes into fertilizer.html
+ * between <!--BAKE:fert-bar--> and <!--/BAKE-->, Oct 19), each
  *     checked current by its own test or --check;
  *   * documented sensitivities, which are arithmetic, not prices:
  *     "a $100/ton price increase adds roughly $17/acre";
@@ -43,7 +43,7 @@ function stripBaked(file, s) {
       .replace(/<script type="application\/ld\+json"[^>]*>[\s\S]*?<\/script>/g, " ")
       .replace(/<!--BAKE:[\w-]+-->[\s\S]*?<!--\/BAKE:[\w-]+-->/g, " ");
   }
-  // Sig Oct 19: the description's sentence, baked into the body (checked below and by fert-head)
+  // The owner Oct 19: the description's sentence, baked into the body (checked below and by fert-head)
   if (file === "fertilizer.html") s = s.replace(/<!--BAKE:fert-bar-->[\s\S]*?<!--\/BAKE-->/, " ");
   if (file === "manure-value.html") s = s.replace(/<details><summary>[\s\S]*?<\/details>/g, " ");
   if (file === "breakeven.html") s = s.replace(/\bfertilizer:\d+/g, "fertilizer:BAKED");
@@ -111,7 +111,7 @@ test("nothing reads the old dealer sheet", () => {
   assert.deepEqual(bad, []);
 });
 
-/* Sig, 2026-10-15: prices come only from the co-op pages he sent; 2026-10-16:
+/* 2026-10-15: prices come only from the co-op pages he sent; 2026-10-16:
    the USDA AMS Illinois report is off /fertilizer. No page or browser script
    reads the USDA file (fertilizer-ams.yml may still keep it as a background
    data file). */
@@ -133,7 +133,7 @@ test("the baked fertilizer numbers are current with the shared file", () => {
   execFileSync("python3", ["scripts/bake_fert_defaults.py", "--check"], { cwd: ROOT, encoding: "utf8" });
   // manure-value.html and the fast-facts manure table
   execFileSync("node", ["scripts/bake_manure_value.mjs", "--check"], { cwd: ROOT, encoding: "utf8" });
-  // fertilizer.html's baked co-op line (Sig Oct 19): every price it names is the shared file's, rounded
+  // fertilizer.html's baked co-op line (Oct 19): every price it names is the shared file's, rounded
   const bar = /<!--BAKE:fert-bar-->([\s\S]*?)<!--\/BAKE-->/.exec(read("fertilizer.html"));
   assert.ok(bar, "fertilizer.html has its baked co-op line");
   const KEY = { urea: "urea", anhydrous: "anhydrous", DAP: "dap", MAP: "map", potash: "potash" };

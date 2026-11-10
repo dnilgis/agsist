@@ -6,7 +6,7 @@
  * Checks:
  *   - rain-print?d=RPS-<id> and ?d=GIFT-RPS-<id> open the design through the
  *     short link (they said "damaged or cut short");
- *   - the approved flow (2026-10-14, Sig): example words are gray hints only,
+ *   - the approved flow (2026-10-14): example words are gray hints only,
  *     never pre-filled on a buyer's print; one picker, framed first, whose
  *     pick the button, the print, the phone bar and the review sheet follow;
  *     "Check it and pay" asks once about a missing name, opens the review
@@ -102,7 +102,7 @@ function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".woff2": "font/woff2", ".html": "text/html", ".svg": "image/svg+xml", ".jpg": "image/jpeg", ".png": "image/png" };
   const srv = createServer((req, res) => {
     const u = new URL(req.url, "http://x");
-    // data/site-notice.json is Sig's outage switch (components/loader.js siteNotice): its bar, fixed over the bottom of
+    // data/site-notice.json is the owner's outage switch (components/loader.js siteNotice): its bar, fixed over the bottom of
     // the screen, comes and goes with the live file. These tests are about the page under it, so they see no notice
     // (no file is the documented off state) and pass or fail the same whichever way the switch is set.
     if (u.pathname === "/data/site-notice.json") { res.writeHead(404); res.end(); return; }
@@ -163,7 +163,7 @@ test("rain-print?d=RPS-<id> opens the design; GIFT-RPS-<id> keeps the gift flag"
   }, { theme });
 });
 
-// ---------- the approved flow (2026-10-14, Sig: "yes to all three, build it") ----------
+// ---------- the approved flow (2026-10-14) ----------
 const MINE = { place: "Chetek, WI", year: "2025", station: "471667 2", style: "r1", name: "Olson" };
 const decodeRef = (u) => RP.decodeCode(refOf(u));
 
@@ -334,7 +334,7 @@ test("a marked day is a month and a day from lists: the day picked is the day or
     assert.deepEqual([await page.inputValue("#rp-m1mo"), await page.inputValue("#rp-m1dy")], ["05", "02"]);
     assert.equal(await page.isHidden("#rp-m1err"), true);
     assert.equal(await page.textContent("#rp-m1on"), "On the print: Planted, May 2");
-    // four more days: five is the most (2026-10-15, Sig)
+    // four more days: five is the most (2026-10-15)
     await page.click("#rp-add-day");
     await page.selectOption("#rp-m2mo", "06"); await page.selectOption("#rp-m2dy", "21"); await page.fill("#rp-m2l", "Hail");
     await page.click("#rp-add-day");
@@ -579,7 +579,7 @@ test("Mark a day: numbered rows with Remove, the message under its own row at th
   });
 });
 
-// ---------- 2026-10-15 (Sig): Mark a day tightened, up to five days ----------
+// ---------- 2026-10-15: Mark a day tightened, up to five days ----------
 test("Mark a day: one line per day on a laptop, stacked on a phone, the count only near the limit, a day the art can't place says so", { skip }, async () => {
   const FIVE = { ...MINE, m1: "2025-03-02 Calving", m2: "2025-05-12 Planted", m3: "2025-07-04 Wedding", m4: "2025-09-20 First frost", m5: "2025-10-20 Harvest done" };
   await withPage(async (page, base, errors) => {
@@ -630,7 +630,7 @@ test("Mark a day: one line per day on a laptop, stacked on a phone, the count on
   });
 });
 
-// "Your print", rebuilt 2026-10-14 (Sig: "all scrunched and very hard to see")
+// "Your print", rebuilt 2026-10-14
 const proofBox = (page) => page.evaluate(() => {
   const f = document.getElementById("rp-proof-frame").getBoundingClientRect(), st = document.getElementById("rp-proof-stage").getBoundingClientRect(), d = document.getElementById("rp-proof");
   return { inView: f.width > 0 && f.left >= st.left - 1 && f.right <= st.right + 1 && f.top >= st.top - 1 && f.bottom <= st.bottom + 1 && f.bottom <= innerHeight,
@@ -673,9 +673,9 @@ test("Your print: labeled controls, the magnifier, Esc back to Fit then closed, 
     assert.equal(await page.getAttribute("#rp-proof", "data-zoom"), "fit", "it opens at Fit");
     assert.match(await page.getAttribute("#rp-proof-stage", "aria-label"), /^The print\. +Place and year: Chetek, WI, 2025\. .*Name: Olson\./, "the print has its words");
     // the details: label above value, in the order a buyer checks them
-    assert.deepEqual(await page.$$eval("#rp-proof-sum dt", (a) => a.map((x) => x.textContent)), ["Place and year", "Weather station", "Name", "Line under it", "Marked days", "Compared with", "Style", "Temperatures", "Every year behind", "Frame", "When"]);   // the framed print names its frame color (Sig, Nov 4)   // a hand link has every year behind on (2026-10-22)
+    assert.deepEqual(await page.$$eval("#rp-proof-sum dt", (a) => a.map((x) => x.textContent)), ["Place and year", "Weather station", "Name", "Line under it", "Marked days", "Compared with", "Style", "Temperatures", "Every year behind", "Frame", "When"]);   // the framed print names its frame color (Nov 4)   // a hand link has every year behind on (2026-10-22)
     // one product state (2026-10-14): the sheet's picker is step 3's, no Style or Look of its own
-    assert.deepEqual(await page.$$eval("#rp-proof [role=radiogroup]", (a) => a.map((g) => document.getElementById(g.getAttribute("aria-labelledby")).textContent)), ["You get", "Frame"]);   // plus the framed print's frame color (Sig, Nov 4)
+    assert.deepEqual(await page.$$eval("#rp-proof [role=radiogroup]", (a) => a.map((g) => document.getElementById(g.getAttribute("aria-labelledby")).textContent)), ["You get", "Frame"]);   // plus the framed print's frame color (Nov 4)
     await page.click('#rp-proof label:has(input[name="rp-pproduct"][value="print12x18"])');
     assert.ok(await page.$eval('input[name="rp-product"][value="print12x18"]', (r) => r.checked), "step 3 follows");
     assert.equal(await page.getAttribute("#rp-wall", "data-view"), "print", "and so does the print at the top");

@@ -65,7 +65,7 @@ table.ig-t{width:100%;border-collapse:collapse;font-size:.85rem;margin:8px 0}
 .igs-qr{flex:none;width:1.1in;text-align:center;font-size:8pt}
 .igs-qr svg{display:block;width:100%;height:auto}
 
-/* the Friday Chart print poster (components/infographic.js posterSvg, Sig Nov 7): the paper poster as one SVG alone on
+/* the Friday Chart print poster (components/infographic.js posterSvg, Nov 7): the paper poster as one SVG alone on
    one sheet, 11 x 17 (class igp-17) or Letter (igp-letter), set by the poster's Print buttons with html.igp-on. The
    one-page sheet (#igs) hides while it prints, and the poster hides on any other print. Fraunces is our own serif
    (the Rain Print font) for the paper poster's titles. */

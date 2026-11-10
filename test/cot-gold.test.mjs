@@ -1,4 +1,4 @@
-/* /cot gold standard, build 1 (Nov 6 2026, Sig: "get the cot page done now"; "make sure on the cot page that there is
+/* /cot gold standard, build 1 (Nov 6 2026,; "make sure on the cot page that there is
  * a clear indicator or countdown until the release that you can't miss").
  *   1. One rank engine: every cot-history.json row carries oi and rk (share of open interest, ranked since the record's
  *      first week against that week and the weeks before it only, at or below), the latest rk is the headline rank
@@ -292,7 +292,7 @@ test("phone save image: 1080x1350, headline 56 px or more, everything else 26 px
     const buf = fs.readFileSync(await dl.path());
     assert.deepEqual([buf.readUInt32BE(16), buf.readUInt32BE(20)], [1080, 1350], "4:5 on a phone-width screen");
     const im = await pg.evaluate(() => window.AgCotChart.lastImage);
-    // the source line is small print (Sig, Nov 6: "make the source print smaller"): 20 px; every other word 26 px or more
+    // the source line is small print (Nov 6): 20 px; every other word 26 px or more
     assert.ok(Math.min(...im.sizes.filter((z) => z !== 20)) >= 26 && Math.min(...im.sizes) >= 20, "every word 26 px or more, source 20 px: " + Math.min(...im.sizes));
     const head = im.texts.findIndex((t) => t.startsWith("Corn funds cut their net long by"));
     assert.ok(head >= 0 && im.sizes[head] >= 56, "headline 56 px or more");
@@ -303,7 +303,7 @@ test("phone save image: 1080x1350, headline 56 px or more, everything else 26 px
     assert.ok(!im.texts.some((t) => /\bthis week\b|\btoday\b|moderate|crowded/i.test(t)), "no 'this week', 'today' or weight words on the picture");
     assert.ok(im.texts.some((t) => t.startsWith("Source: CFTC Commitments of Traders")), "the source");
     assert.ok(!im.texts.some((t) => DASH.test(t)));
-    // the Funds this week ask (Sig, Nov 6): its own last line, 26 px or more, clear of the source and of the bottom edge
+    // the Funds this week ask (Nov 6): its own last line, 26 px or more, clear of the source and of the bottom edge
     const ask = im.texts.indexOf("Free every Friday: agsist.com/cot");
     assert.ok(ask >= 0 && im.sizes[ask] >= 26, "the ask line, 26 px or more");
     const below = im.ys.slice(0, ask);   // every line drawn before it: the site, date, headline, answer, axis words, source

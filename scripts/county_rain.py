@@ -379,12 +379,15 @@ def unpack_days(s):
     return out
 
 
-def close_s(parsed):
-    """An S run must end in the A value that carries its rain. A run that ends
-    in anything else (a plain value, a trace, a gap) has lost that rain, so its
-    days are gaps (M), not reported days. A run at the very end is left alone:
-    its A has not come in yet (summarize() stops before it)."""
-    out = list(parsed)
+def close_runs(pp, keep_tail=False):
+    """The engine's closeOpenS (components/rain-print.js), on (value, flag) pairs. An S run
+    closed by an A value is that A's accumulation; S, then M days, then an A value (Nov 9,
+    2026: Chetek 2.0 SE, Jul 21 S, Jul 22-24 M, Jul 25 0.98A) is one accumulation too, so the
+    M days inside it become S days (0.0, "S"): their rain is in the A total. An S run closed
+    by anything else (a plain value, a trace, M days then no A) has lost its rain: its days
+    are gaps (None, "M"). keep_tail: an S run (and the M days after it) running to the very
+    end is left alone, its A has not come in yet (summarize() stops before it)."""
+    out = list(pp)
     i = 0
     while i < len(out):
         if out[i][1] != "S":
@@ -393,11 +396,25 @@ def close_s(parsed):
         j = i
         while j < len(out) and out[j][1] == "S":
             j += 1
-        if j < len(out) and out[j][1] != "A":
+        a = j
+        while a < len(out) and out[a][0] is None and out[a][1] != "S":
+            a += 1
+        if a < len(out) and out[a][1] == "A":
+            for k in range(j, a):
+                out[k] = (0.0, "S")
+            i = a
+            continue
+        if not (keep_tail and a >= len(out)):
             for k in range(i, j):
                 out[k] = (None, "M")
         i = j
     return out
+
+
+def close_s(parsed):
+    """An S run must end in the A value that carries its rain (close_runs). A run at the very
+    end is left alone: its A has not come in yet (summarize() stops before it)."""
+    return close_runs(parsed, keep_tail=True)
 
 
 def last_days(vals, n, nv=None):
@@ -499,7 +516,7 @@ def summarize(year, dates, vals, norms, edate, snows=None):
                 acc_day = max(acc_day, v / (i - k + 1))
         # a dry day: a measured 0.00, plain or an A total of 0.00, with no snow
         # that day (Rain Print's derive, components/rain-print.js: an A total of
-        # 0.00 is several dry days; snow falling is not a dry day, Sig).
+        # 0.00 is several dry days; snow falling is not a dry day, the owner).
         # 2026-10-19: Allerton IA (Wayne County), Feb 7 0.00A then 12 zeros: 13 days.
         if v is not None and flag in ("", "A") and v == 0 and not (i < len(snowed) and snowed[i]):
             if run == 0:
@@ -733,17 +750,7 @@ def snow_state(vals, snows, year):
     pp = [parse_pcpn(x) for x in vals]
     last = max((i for i, (v, f) in enumerate(pp) if v is not None and f != "S"), default=-1)
     pp = pp[:last + 1]
-    i = 0
-    while i < len(pp):                     # an S run not closed by an A day is missing days
-        if pp[i][1] != "S":
-            i += 1
-            continue
-        j = i
-        while j < len(pp) and pp[j][1] == "S":
-            j += 1
-        if not (j < len(pp) and pp[j][1] == "A"):
-            pp[i:j] = [(None, "M")] * (j - i)
-        i = j
+    pp = close_runs(pp)                    # an S run not closed by an A day is missing days (the engine's closeOpenS)
     end = len(pp)
     if dt.date(int(year), 1, 1) + dt.timedelta(days=len(pp) - 1) != dt.date(int(year), 12, 31):
         has = [k for k in range(min(len(pp), len(sv))) if sv[k] is not None]
@@ -765,7 +772,7 @@ def snow_state(vals, snows, year):
 
 def snow_trace_on(raw, year, k):
     """Day k of the year (0 = Jan 1) has a snowfall trace the print marks: a snowfall value of T,
-    not June 1 to August 31 by the day's date (Sig, 2026-10-20: "skip summer traces"; a summer T
+    not June 1 to August 31 by the day's date (2026-10-20; a summer T
     is most likely hail logged as snow). The engine's rule (snowTraceRaw in components/rain-print.js).
     A measured summer snow amount is not changed."""
     if str(raw).strip() != "T":
@@ -774,8 +781,7 @@ def snow_trace_on(raw, year, k):
 
 
 def snow_trace_days(vals, snows, year):
-    """How many days the Rain Print marks with a trace of snow (2026-10-20, Sig: "a trace should
-    somehow show as a trace"): the art's rule (components/rain-print-art.js model, snowTr), on
+    """How many days the Rain Print marks with a trace of snow (2026-10-20): the art's rule (components/rain-print-art.js model, snowTr), on
     the days snow_state reads: only where the snowfall record is whole ("drawn" or "little"), a
     snowfall value of T (snow_trace_on: not in summer) on a day with a rain report of its own
     (not M, not an S day), within the days counted. Never a measured amount: these add nothing to any snow total."""
@@ -786,17 +792,7 @@ def snow_trace_days(vals, snows, year):
     pp = [parse_pcpn(x) for x in vals]
     last = max((i for i, (v, f) in enumerate(pp) if v is not None and f != "S"), default=-1)
     pp = pp[:last + 1]
-    i = 0
-    while i < len(pp):                     # as snow_state: an S run not closed by an A day is missing days
-        if pp[i][1] != "S":
-            i += 1
-            continue
-        j = i
-        while j < len(pp) and pp[j][1] == "S":
-            j += 1
-        if not (j < len(pp) and pp[j][1] == "A"):
-            pp[i:j] = [(None, "M")] * (j - i)
-        i = j
+    pp = close_runs(pp)                    # as snow_state: the engine's closeOpenS
     end = len(pp)
     if dt.date(int(year), 1, 1) + dt.timedelta(days=len(pp) - 1) != dt.date(int(year), 12, 31):
         has = [k for k in range(min(len(pp), len(sv))) if sv[k] is not None]
@@ -847,7 +843,7 @@ def _elev(meta):
 
 def pick_order(cands, st, lat, year):
     """A county's qualifying stations (summary set, mark_mountain run) in pick
-    order. rank_key first; then Sig's rule (2026-10-15, the one /rain-print
+    order. rank_key first; then the owner's rule (2026-10-15, the one /rain-print
     follows): where snow is normal (snow_country), when the first pick's
     snowfall record is not whole (snow_state "gaps" or "none"), the nearest
     station that keeps BOTH a full rain record (at most SNOW_MISS_OK days
@@ -855,7 +851,7 @@ def pick_order(cands, st, lat, year):
     if it ranks the same on mountain and sits within snow_limit_mi of the
     first pick's distance. 2026-10-19: Story County IA took a CoCoRaHS gauge
     with 95 snowfall gaps; the page's print drew no snow.
-    2026-10-20, Sig changed the rule: the full snowfall record wins over the
+    2026-10-20, the owner changed the rule: the full snowfall record wins over the
     NOAA-normals tier. Until then the swap had to rank the same on normals too,
     so a gappy gauge with normals never lost to a co-op without them, and 835
     snow-country counties drew no snow (Hampden MA, Berkshire MA, Clearwater

@@ -42,7 +42,7 @@ THE TEST (fixed before the answers were read, Oct 29):
   The gridded route (scripts/land_soil_raster.py, valu1 nccpi3corn over CDL cropland) is the
   primary since Oct 29: SDA fills the corn submodel for Indiana only. Result, Oct 29: Illinois
   passes at 20+ sale cells only narrowly, Indiana fails, Wisconsin is too thin; nothing ships on
-  pages (feedbag notes/audits/soil-comps-2026-10-29.md).
+  pages (in the private notes).
 
   python3 scripts/land_soil.py --selftest
   python3 scripts/land_soil.py --keys                      count the sections needed (offline)

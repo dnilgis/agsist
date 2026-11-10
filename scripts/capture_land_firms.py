@@ -2,7 +2,7 @@
 """
 AGSIST -- capture four land auction firms' published results pages, raw.
 
-Phase 1 of the firm results readers (Sig, Nov 7 and 8, 2026): real pages before any
+Phase 1 of the firm results readers (Nov 7 and 8, 2026): real pages before any
 parser is written. Nothing here parses a price, writes a data/ file on main or
 changes a page.
 

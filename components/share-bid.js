@@ -1,5 +1,5 @@
 /* Share today's bids, on the cash-bid town pages (scripts/build_cash_bid_pages.py,
- * share_bid_html). Sig, Nov 3, 2026.
+ * share_bid_html). Nov 3, 2026.
  *
  * The page carries the button and everything it shares: data-text names the
  * page's own headline bid (the row the answer line names, with the day it was
@@ -9,7 +9,7 @@
  * days later never passes on an old price as today's. No futures price, no basis.
  *
  * Phones with the share sheet get it, with the text minus its bare link and the
- * tagged link once in the url field (lead, Nov 3). Otherwise one tap shows "Copy" and, on a
+ * tagged link once in the url field (Nov 3). Otherwise one tap shows "Copy" and, on a
  * phone, "Text it" (an sms: link). The link carries utm_source=share and nothing
  * about the reader. One GA4 event, share_bid, with what was done.
  * Bump ?v= in SHARE_JS (scripts/build_cash_bid_pages.py) on any change here.

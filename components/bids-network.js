@@ -14,7 +14,7 @@
  * So when fetch_bids.yml died on 2026-09-23, the scrape kept running and none
  * of it reached a reader. The file froze for 27 hours carrying 889 rows, 250
  * of them from our own boards, while those same boards were being read every
- * ten minutes and published. Sig, on being told:
+ * ten minutes and published. The owner, on being told:
  *
  *     "wtf i thought that bids repo was scraping continusly throught the day
  *      and contiunously feed ing agsist the most recent data"
