@@ -1136,7 +1136,10 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     links.append('<a href="/field-scout?fips=%s">Every sale on a map in Field Scout</a>' % c["fips"])
     links.append('<a href="/comp-report">Comparable sales report</a>')
     links.append('<a href="/land-sales/">Other counties</a>')
-    b.append("<p>" + " &middot; ".join(links) + "</p></div>")
+    b.append("<p>" + " &middot; ".join(links) + "</p>")
+    import cross_links as XL  # the one same-state row
+    row = XL.same_state_row(str(d.repo), s, e(NAME[st]), "land-sales")
+    b.append((row + "</div>") if row else "</div>")
     if allp:
         b.append("<script>%s</script>" % SALE_JS)
     return "\n".join(b) + "\n" + FOOT
