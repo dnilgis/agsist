@@ -222,7 +222,7 @@ test("the home page: the block sits in the futures row, baked, with its script a
   // the only aria-live in the block is #hap-say; nothing on the list or the countdown
   assert.deepEqual([...row.matchAll(/<[^>]*aria-live[^>]*>/g)].map((m) => m[0]), ['<span class="visually-hidden" id="hap-say" role="status" aria-live="polite">']);
   assert.doesNotMatch(read("components/happening.js"), /aria-live|setAttribute\(['"]role/);
-  assert.match(home, /<script src="\/components\/happening\.js\?v=4" defer><\/script>/);
+  assert.match(home, /<script src="\/components\/happening\.js\?v=5" defer><\/script>/);
   assert.ok(!/—/.test(read("components/happening.js")), "no em dash in the script");
   const css = read("css/home.css");
   assert.ok(!/—/.test(css.slice(css.indexOf(".hap{"))), "no em dash in its CSS");

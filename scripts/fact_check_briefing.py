@@ -3,8 +3,8 @@
 fact_check_briefing.py -- the last read of the AGSIST Daily before it can send.
 
 Runs in daily.yml after the critic and before GATE 2. A careful reviewer model
-(claude_models.REVIEWER, Claude Fable 5.1 at effort high, the most capable
-model Anthropic offers; Opus 5.5 if the account cannot use it) gets the draft and the
+(claude_models.REVIEWER, Opus 5.5 at effort high; Opus 5, then the
+writer's model, if it refuses or the account cannot use it) gets the draft and the
 exact source data the generator used, and returns structured findings:
   mismatch               a claim the data contradicts (a price, a change, a level)
   unsourced_number       a number that appears in none of the inputs
@@ -270,7 +270,7 @@ def review_payload(fields, sources, model=None):
     p = {
         "model": model,
         "max_tokens": 16000,           # thinking counts against it; the findings are short
-        # Fable 5.1 and Opus 5.5 cannot turn thinking off; effort is the
+        # Fable 5.2 and Opus 5.5 cannot turn thinking off; effort is the
         # control, and a careful review is worth "high".
         "output_config": {"effort": "high",
                           "format": {"type": "json_schema", "schema": SCHEMA}},
@@ -332,10 +332,12 @@ def _moved(payload, model):
 
 
 def call_reviewer(payload, api_key, post=_post):
-    """(findings, usage, model, summary) or raises. A refusal, a 404 (unknown
-    model) or a 400 (for example an account that cannot use Fable 5.1) moves
-    the review down the chain once per model: REVIEWER, REVIEWER_FALLBACK,
-    WRITER. The strongest model is a preference, not a requirement for the
+    """(findings, usage, model, summary) or raises. A 400 on a request that
+    asked for the server fallback is sent again on the same model without it.
+    Otherwise a refusal, a 404 (unknown model) or a 400 (for example an
+    account that cannot use the reviewer) moves the review down the chain
+    once per model: REVIEWER (Opus 5.5), REVIEWER_FALLBACK (Opus 5), WRITER
+    (Sonnet 5.5). The first model is a preference, not a requirement for the
     check to run."""
     chain = [m for m in (claude_models.REVIEWER_FALLBACK, claude_models.WRITER) if m != payload["model"]]
     while True:
@@ -346,6 +348,14 @@ def call_reviewer(payload, api_key, post=_post):
             break
         except RuntimeError as e:
             msg = str(e)
+            if "HTTP 400" in msg and "fallbacks" in payload:
+                # a rejected beta field must never drop the review: the same
+                # model again without the field (and its header); a second
+                # 400 is about something else and moves down the chain
+                print(f"::warning title=Fact check server fallback rejected::{payload['model']} "
+                      f"({msg[:160]}); sent again without it", flush=True)
+                payload = {k: v for k, v in payload.items() if k != "fallbacks"}
+                continue
             if not chain or not ("refusal" in msg or "HTTP 404" in msg or "HTTP 400" in msg):
                 raise
             nxt = chain.pop(0)
@@ -415,6 +425,9 @@ def report(findings, model, usage, note=""):
                f"({f.get('source')}). {f.get('explanation')}").replace("\n", " ")
         print(f"::{lvl} title=Fact check {f.get('severity')}::{msg[:900]}", flush=True)
     md = summary_md(findings, model, usage, note)
+    if usage:
+        # token counts and dollars only, like every other model job summary
+        md += "\n" + claude_models.usage_table("Fact check", [("fact check", model, usage, False)]) + "\n"
     print(md)
     sp = os.environ.get("GITHUB_STEP_SUMMARY")
     if sp:

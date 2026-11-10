@@ -93,7 +93,6 @@
     var v = document.getElementById('hl-v');
     if (v) { v.textContent = w.v.replace(/ an acre$/, ''); var u = document.createElement('span'); u.className = 'hl-u'; u.textContent = ' an acre'; v.appendChild(u); }
     var a = document.getElementById('hl-sale'); if (a) { a.setAttribute('href', w.href); a.setAttribute('data-st', p.st); }
-    if (w.rule) { txt('hl-rule', w.rule); var d = document.getElementById('hl-why'); if (d) d.classList.remove('hl-wait'); }
   }
 
   function go() {

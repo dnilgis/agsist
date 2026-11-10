@@ -622,7 +622,11 @@ function fetchWeather(lat, lon, label, known) {
         wl2.innerHTML = '';
         var msg = document.createElement('div');
         msg.style.cssText = 'font-size:.88rem;color:var(--text-dim)';
-        msg.textContent = 'Weather unavailable. ';
+        /* Nov 10: with a place already saved, "Try ZIP" sent the reader to
+           type the ZIP the page already had; the forecast service failed, not the ZIP. */
+        var _had = false; try { var _l = JSON.parse(localStorage.getItem('agsist-wx-loc') || 'null'); _had = !!(_l && _l.lat != null); } catch (e) {}
+        msg.textContent = _had ? 'The weather service did not answer. Try again in a few minutes.' : 'Weather unavailable. ';
+        if (_had) { wl2.appendChild(msg); wl2.style.display = 'block'; _wspNoWeather(); return; }
         var btn = document.createElement('button');
         btn.textContent = 'Try ZIP \u2192';
         btn.setAttribute('style','background:none;border:none;color:var(--gold);cursor:pointer;font-size:.88rem;font-family:inherit');

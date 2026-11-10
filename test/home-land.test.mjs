@@ -127,7 +127,7 @@ test("the home page: the block, its script and the hub's email anchor", () => {
   assert.match(jobs, /id="job-field-h">My field<[^]*<\/nav>\s*<!--[^]*?-->\s*<div class="job job-land" id="job-land" role="group" aria-labelledby="job-land-h">\s*<h3 class="job-h" id="job-land-h">Farmland sales<\/h3>/, "right after My field");
   assert.match(jobs, /href="\/land-sales\/"[^>]*><span class="job-l" id="hl-all-l">Farmland sales by county in IL, IN, NJ, VT, WI<\/span>/);
   assert.match(jobs, /href="\/land-sales\/#email"/);
-  assert.match(home, /<script src="\/components\/home-land\.js\?v=1" defer><\/script>/);
+  assert.match(home, /<script src="\/components\/home-land\.js\?v=2" defer><\/script>/);
   assert.match(read("scripts/build_land_sales.py"), /<div class="ls-ask" id="email"><div data-land-alert data-source="page:land-sales">/);
 });
 
@@ -208,7 +208,7 @@ async function look(browser, port, width, place) {
     const field = document.querySelector(".job-field").getBoundingClientRect(), fut = document.querySelector(".hb-futh").getBoundingClientRect();
     return { field: { top: field.top, bottom: field.bottom }, futTop: fut.top, block: box(b), v: v.textContent, k: document.getElementById("hl-k").textContent, s: document.getElementById("hl-s").textContent,
       href: document.getElementById("hl-sale").getAttribute("href"), all: all.textContent.trim(), allHref: all.getAttribute("href"),
-      text: b.textContent, shift: window.__shift, moved: window.__moved, vh: innerHeight, why: getComputedStyle(document.getElementById("hl-why")).visibility,
+      text: b.textContent, shift: window.__shift, moved: window.__moved, vh: innerHeight, why: !!document.getElementById("hl-why"), terms: (document.getElementById("terms-method") || {}).textContent || "",
       cut: ["hl-k", "hl-v", "hl-s"].filter((id) => { const e = document.getElementById(id); return e.scrollHeight > e.clientHeight + 1 || e.scrollWidth > e.clientWidth + 1; }) };
   });
   await ctx.close();
@@ -230,7 +230,9 @@ test("in Chromium: first screen at 1280, right under My field at 390; the fixtur
       assert.ok(il.block.bottom <= il.futTop, `${width}: before the futures`);
       assert.equal(il.v, "$21,000 an acre", `${width}: the Illinois reader sees the Illinois sale`);
       assert.equal(il.href, "/land-sales/illinois/madison-county#s-0a1b2c3d4e");
-      assert.equal(il.why, "visible", `${width}: how the sale was picked`);
+      // Nov 8: the rule is not at the top; one plain sentence in the closed Sources and terms fold
+      assert.equal(il.why, false, `${width}: no method fold in the block`);
+      assert.match(il.terms, /Farmland sale at the top: the highest price per acre/);
       assert.ok(!il.text.includes(NAME), `${width}: no name in the block`);
       assert.equal(il.shift, 0, `${width}: the block moves nothing`);
       const none = await look(browser, withData.address().port, width, null);
@@ -241,7 +243,7 @@ test("in Chromium: first screen at 1280, right under My field at 390; the fixtur
       assert.equal(gone.href, "/land-sales/");
       assert.equal(gone.allHref, "/land-sales/");
       assert.equal(gone.all, "Farmland sales by county in IL, IN, NJ, VT, WI");
-      assert.equal(gone.why, "hidden", `${width}: no rule shown without a sale`);
+      assert.equal(gone.why, false);
       assert.equal(gone.shift, 0);
       assert.ok(Math.abs(gone.block.h - il.block.h) < 1, `${width}: the same height with and without data (${gone.block.h} vs ${il.block.h})`);
     }
@@ -291,7 +293,7 @@ test("in Chromium: a paint between two parts of the page moves nothing in the bl
   assert.match(home.slice(0, home.indexOf("</head>")), /<link rel="expect" href="#hb-plain" blocking="render">/, "the first paint waits for the block");
   const land = home.indexOf('id="job-land"'), after = home.indexOf('id="hb-plain"');
   assert.ok(land > 0 && after > home.indexOf("</ul>", land), "the expected element comes after the whole block");
-  const cuts = ['<span class="hl-k"', '<span class="hl-v"', '<span class="hl-s"', "</a>\n        <details", 'id="hl-all-l">', 'id="hl-ask-l">', "</ul>"]
+  const cuts = ['<span class="hl-k"', '<span class="hl-v"', '<span class="hl-s"', "</a>\n        <ul", 'id="hl-all-l">', 'id="hl-ask-l">', "</ul>"]
     .map((m) => { const i = home.indexOf(m, land); assert.ok(i > land && i < after, "cut point " + m); return Buffer.byteLength(home.slice(0, i + m.length)); });
   const browser = await chromium.launch({ executablePath: CHROME });
   try {

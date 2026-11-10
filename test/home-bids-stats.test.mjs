@@ -1,4 +1,4 @@
-/* Homepage without a location: the "All feeds" counts line reads
+/* Homepage without a location: the elevator-boards counts line (it said "All feeds" until Nov 10) reads
  * data/bids-stats.json (under 1 KB), never the 230 KB data/bids.json.
  * scripts/fetch_bids.py writes both on the same run (bids_stats_doc).
  *
@@ -63,10 +63,10 @@ test("no location at 390: the counts line fills from the stats file and data/bid
       return r.continue();
     });
     await pg.goto(`http://127.0.0.1:${port}/`);
-    await pg.waitForFunction(() => /All feeds: [\d,]+ bids from [\d,]+ locations/.test(document.getElementById("idx1-trust-ledger").textContent), null, { timeout: 15000 });
+    await pg.waitForFunction(() => /Elevator boards read: [\d,]+ bids from [\d,]+ locations/.test(document.getElementById("idx1-trust-ledger").textContent), null, { timeout: 15000 });
     await pg.waitForTimeout(1500);
     const s = JSON.parse(read("data/bids-stats.json"));
-    assert.match(await pg.textContent("#idx1-trust-ledger"), new RegExp(`All feeds: ${s.stats.total_bids.toLocaleString("en-US")} bids from ${s.stats.locations.toLocaleString("en-US")} locations`));
+    assert.match(await pg.textContent("#idx1-trust-ledger"), new RegExp(`Elevator boards read: ${s.stats.total_bids.toLocaleString("en-US")} bids from ${s.stats.locations.toLocaleString("en-US")} locations`));
     assert.ok(asked.includes("/data/bids-stats.json"));
     assert.ok(!asked.includes("/data/bids.json"), "the homepage still fetches data/bids.json with no location");
     await ctx.close();
@@ -87,7 +87,7 @@ test("a missing stats file falls back to data/bids.json, so the line never goes 
       return r.continue();
     });
     await pg.goto(`http://127.0.0.1:${port}/`);
-    await pg.waitForFunction(() => /All feeds: [\d,]+ bids from/.test(document.getElementById("idx1-trust-ledger").textContent), null, { timeout: 15000 });
+    await pg.waitForFunction(() => /Elevator boards read: [\d,]+ bids from/.test(document.getElementById("idx1-trust-ledger").textContent), null, { timeout: 15000 });
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });

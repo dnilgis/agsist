@@ -3,7 +3,7 @@
 claude_models.py -- the one place that knows which Claude model does which job,
 how to ask each one not to think, and what a call costs.
 
-WHO USES WHAT (2026-10-17)
+WHO USES WHAT (2026-11-10)
   WRITER   claude-sonnet-5-5   the daily briefing (generate_daily.py) and the
                                critic that scores and rewrites it
                                (critique_briefing.py). Both write text a
@@ -13,13 +13,20 @@ WHO USES WHAT (2026-10-17)
                                there on 2026-10-11; every read is held to a
                                program's number check and voice check whatever
                                wrote it.
-  REVIEWER claude-fable-5-1    the fact check before the send
-                               (fact_check_briefing.py): the most capable
-                               model Anthropic offers, for a careful read of
-                               every number against the source data. Its
-                               thinking is always on; effort is the control.
-                               A 404 or a 400 (the account cannot use it)
-                               moves the check to REVIEWER_FALLBACK, Opus 5.5.
+  REVIEWER claude-opus-5-5     the fact check before the send
+                               (fact_check_briefing.py) at effort high: a
+                               careful read of every number against the
+                               source data (the owner's Oct 17 choice, kept on
+                               Nov 10 for cost). Its thinking is always on;
+                               effort is the control. A refusal, a 404 or a
+                               400 moves the check to REVIEWER_FALLBACK, Opus 5,
+                               then to WRITER.
+  STORY    claude-opus-5-5     county rain stories, the other story sets and
+                               the discount schedules (api_jobs.py, batched)
+  RESEARCH claude-sonnet-5-5   search review, alt text, elevator sites and
+                               county land sources (api_jobs.py, batched)
+  ACCURACY claude-opus-5-5     the page accuracy pass (accuracy_pass.py, batched)
+  No other file names a model: each job reads its role from here.
   A model the API does not know (404) falls back once to WRITER_FALLBACK, so a
   name change at Anthropic costs a warning and not a morning.
 
@@ -34,7 +41,7 @@ THINKING
   "between_tools" is a 400 on every model but Sonnet 5.5, so a request moved to
   another model must have its thinking field rewritten: use with_model().
 
-PRICES are USD per million tokens from Anthropic's pricing as of 2026-10-17:
+PRICES are USD per million tokens from Anthropic's pricing as of 2026-11-10:
 (input, output, 5-minute cache write, cache read). Haiku 5.5's rate is for a
 prompt of 100K tokens or fewer; every prompt here is far under that. Batches are
 half price on all of them.
@@ -43,39 +50,45 @@ half price on all of them.
 WRITER = "claude-sonnet-5-5"
 WRITER_FALLBACK = "claude-sonnet-5"
 CHECKER = "claude-haiku-5-5"
-REVIEWER = "claude-fable-5-1"
-REVIEWER_FALLBACK = "claude-opus-5-5"
+REVIEWER = "claude-opus-5-5"
+REVIEWER_FALLBACK = "claude-opus-5"
+STORY = "claude-opus-5-5"
+RESEARCH = "claude-sonnet-5-5"
+ACCURACY = "claude-opus-5-5"
 
 # Server side refusal fallback (beta). On a safety decline the API reruns the
 # same request on the model Anthropic picks for that kind of decline and
-# returns that answer, in one round trip. Sent on the fact check only: the
-# writer and critic already retry a refusal on WRITER_FALLBACK themselves, the
-# Batches API (atlas reads) rejects it, and Haiku 5.5 has no server fallback.
+# returns that answer, in one round trip. Sent on the fact check and the
+# critic (one plain request each). Not on the writer: it streams, and a decline
+# part way through would leave half an answer in front of the fallback's whole
+# one, so it keeps its own retry on WRITER_FALLBACK. Not on batches (the
+# Batches API rejects it) and not on Haiku 5.5 (it has no server fallback).
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
-FALLBACK_MODELS = ("claude-fable-5-1", "claude-opus-5-5")
+FALLBACK_MODELS = ("claude-fable-5-2", "claude-fable-5-1", "claude-opus-5-5", "claude-opus-5", "claude-sonnet-5-5")
 
 PRICES = {
+    "claude-fable-5-2": (8.00, 40.00, 10.00, 0.20),
     "claude-fable-5-1": (10.00, 50.00, 12.50, 0.25),
     "claude-opus-5-5": (4.00, 20.00, 5.00, 0.20),
-    "claude-sonnet-5-5": (2.00, 10.00, 2.50, 0.20),
+    # where a server fallback can answer (bill the model that answered)
+    "claude-opus-5": (5.00, 25.00, 6.25, 0.50),
+    "claude-opus-4-8": (5.00, 25.00, 6.25, 0.50),
+    "claude-sonnet-5-5": (2.00, 10.00, 2.50, 0.10),
     "claude-sonnet-5": (2.00, 10.00, 2.50, 0.20),
-    "claude-sonnet-4-6": (3.00, 15.00, 3.75, 0.30),
     "claude-haiku-5-5": (0.10, 0.50, 0.125, 0.01),
-    "claude-haiku-4-5-20251001": (1.00, 5.00, 1.25, 0.10),
-    "claude-haiku-4-5": (1.00, 5.00, 1.25, 0.10),
 }
 
 # Smallest prefix each model will cache. A marker on a shorter prefix is ignored
 # without an error (cache_creation_input_tokens stays 0).
 CACHE_MIN_TOKENS = {
+    "claude-fable-5-2": 512,
     "claude-fable-5-1": 512,
     "claude-opus-5-5": 512,
+    "claude-opus-5": 512,
+    "claude-opus-4-8": 1024,
     "claude-sonnet-5-5": 512,
     "claude-haiku-5-5": 512,
     "claude-sonnet-5": 1024,
-    "claude-sonnet-4-6": 1024,
-    "claude-haiku-4-5-20251001": 4096,
-    "claude-haiku-4-5": 4096,
 }
 
 CACHE = {"type": "ephemeral"}
@@ -92,12 +105,24 @@ def no_thinking(model):
 
 
 def with_model(payload, model):
-    """A copy of a request body moved to another model, thinking field and all."""
+    """A copy of a request body moved to another model, thinking field and all.
+    The server fallback stays only on a model that takes it."""
     out = dict(payload)
     out["model"] = model
     if "thinking" in out:
         out["thinking"] = no_thinking(model)
+    if "fallbacks" in out and not model.startswith(FALLBACK_MODELS):
+        del out["fallbacks"]
     return out
+
+
+def headers_for(payload, headers):
+    """A copy of the request headers with the fallback beta exactly when the
+    body asks for the server fallback."""
+    h = {k: v for k, v in headers.items() if k != "anthropic-beta"}
+    if "fallbacks" in payload:
+        h["anthropic-beta"] = FALLBACK_BETA
+    return h
 
 
 def server_fallback(payload, headers):
@@ -126,6 +151,60 @@ def usage_line(model, usage, batch=False):
             f"output {out}; {cost}")
 
 
+def usage_table(title, rows):
+    """A markdown table of token counts and estimated dollars, one row per job
+    and model. rows: (job, model, usage, batch) per response. Counts only: no
+    prompt or answer text goes into it."""
+    agg = {}
+    for job, model, usage, batch in rows:
+        u = usage or {}
+        k = (job, model, bool(batch))
+        a = agg.setdefault(k, [0, 0, 0, 0, 0, 0.0, True])
+        a[0] += 1
+        a[1] += int(u.get("input_tokens") or 0)
+        a[2] += int(u.get("cache_creation_input_tokens") or 0)
+        a[3] += int(u.get("cache_read_input_tokens") or 0)
+        a[4] += int(u.get("output_tokens") or 0)
+        c = cost_usd(model, u, batch=batch)
+        if c is None:
+            a[6] = False
+        else:
+            a[5] += c
+    lines = [f"### {title}: Model usage", "",
+             "| job | model | calls | input | cache write | cache read | output | est. USD |",
+             "|---|---|---|---|---|---|---|---|"]
+    total, known = 0.0, True
+    for (job, model, batch), a in sorted(agg.items()):
+        usd = f"{a[5]:.4f}" if a[6] else "unknown"
+        lines.append(f"| {job} | {model}{' (batch)' if batch else ''} | {a[0]} | {a[1]} | {a[2]} | {a[3]} | {a[4]} | {usd} |")
+        total += a[5]
+        known = known and a[6]
+    if not agg:
+        lines.append("| (no calls) | | 0 | 0 | 0 | 0 | 0 | 0.0000 |")
+    lines += ["", f"Total estimated: ${total:.4f}" + ("" if known else " (a model with no price is left out)"), ""]
+    return "\n".join(lines)
+
+
+def write_usage_summary(title, rows, summary_path=None):
+    """usage_table() on stdout and appended to the job summary page
+    ($GITHUB_STEP_SUMMARY) when there is one. Never raises."""
+    try:
+        md = usage_table(title, rows)
+    except Exception as e:  # a log line must never fail a job
+        print(f"usage summary skipped ({type(e).__name__})", flush=True)
+        return ""
+    print(md, flush=True)
+    import os
+    path = summary_path if summary_path is not None else os.environ.get("GITHUB_STEP_SUMMARY")
+    if path:
+        try:
+            with open(path, "a") as f:
+                f.write(md + "\n")
+        except Exception:
+            pass
+    return md
+
+
 def cost_usd(model, usage, batch=False):
     """USD for one response's usage block, or None for a model with no price here."""
     p = PRICES.get(model)
@@ -138,6 +217,20 @@ def cost_usd(model, usage, batch=False):
          + int(u.get("cache_creation_input_tokens") or 0) * pw
          + int(u.get("cache_read_input_tokens") or 0) * pr) / 1e6
     return c / 2 if batch else c
+
+
+def cache_probe(post, payloads):
+    """Each payload sent twice; the second must read the cache the first wrote.
+    post(payload) returns the response JSON. Returns (rows, all_ok), rows of
+    (label, model, first usage, second usage, ok)."""
+    rows, all_ok = [], True
+    for label, p in payloads:
+        u1 = (post(p) or {}).get("usage") or {}
+        u2 = (post(p) or {}).get("usage") or {}
+        ok = int(u2.get("cache_read_input_tokens") or 0) > 0
+        all_ok = all_ok and ok
+        rows.append((label, p["model"], u1, u2, ok))
+    return rows, all_ok
 
 
 def selftest():
@@ -155,20 +248,62 @@ def selftest():
     assert abs(cost_usd(CHECKER, {"input_tokens": 10**6}, batch=True) - 0.05) < 1e-12
     try:
         no_thinking(REVIEWER)
-        raise AssertionError("Fable 5.1 has no thinking-off word")
-    except ValueError:
-        pass
-    try:
-        no_thinking(REVIEWER_FALLBACK)
         raise AssertionError("Opus 5.5 has no thinking-off word")
     except ValueError:
         pass
+    assert REVIEWER_FALLBACK == "claude-opus-5" != REVIEWER, "a distinct second link"
+    # a fallback answer on Opus 5 or Opus 4.8 is priced: 1M in + 1M out is $5 + $25
+    for m in ("claude-opus-5", "claude-opus-4-8"):
+        assert abs(cost_usd(m, {"input_tokens": 10**6, "output_tokens": 10**6}) - 30.0) < 1e-9, m
+    b, h = server_fallback({"model": REVIEWER_FALLBACK}, {})
+    assert b["fallbacks"] == "default"
     b, h = server_fallback({"model": REVIEWER}, {"x": "1"})
     assert b["fallbacks"] == "default" and h["anthropic-beta"] == FALLBACK_BETA and h["x"] == "1"
     b, h = server_fallback({"model": CHECKER}, {"x": "1"})
     assert "fallbacks" not in b and "anthropic-beta" not in h, "Haiku 5.5 has no server fallback"
-    # hand-worked: 30k input + 3k output on Fable 5.1 is $0.30 + $0.15
-    assert abs(cost_usd(REVIEWER, {"input_tokens": 30000, "output_tokens": 3000}) - 0.45) < 1e-9
+    # hand-worked: 30k input + 3k output on Opus 5.5 is $0.12 + $0.06
+    assert REVIEWER == "claude-opus-5-5"
+    assert abs(cost_usd(REVIEWER, {"input_tokens": 30000, "output_tokens": 3000}) - 0.18) < 1e-9
+    # Fable 5.2 stays priced for a FACT_CHECK_MODEL override: the same read is $0.24 + $0.12
+    assert abs(cost_usd("claude-fable-5-2", {"input_tokens": 30000, "output_tokens": 3000}) - 0.36) < 1e-9
+    # Sonnet 5.5 cache reads are $0.10 per million
+    assert abs(cost_usd(WRITER, {"cache_read_input_tokens": 10**6}) - 0.10) < 1e-12
+    b, h = server_fallback({"model": WRITER}, {})
+    assert b["fallbacks"] == "default", "the critic on Sonnet 5.5 takes the server fallback"
+    q = with_model(dict(b, thinking=no_thinking(WRITER)), WRITER_FALLBACK)
+    assert "fallbacks" not in q and q["thinking"] == {"type": "disabled"}, "Sonnet 5 gets no fallbacks field"
+    assert headers_for(b, {"x": "1"}) == {"x": "1", "anthropic-beta": FALLBACK_BETA}
+    assert headers_for(q, {"x": "1", "anthropic-beta": FALLBACK_BETA}) == {"x": "1"}
+    # the usage table: counts and dollars, grouped by job and model, batch halved
+    md = usage_table("t", [("reads", CHECKER, {"input_tokens": 10**6, "cache_read_input_tokens": 10**6}, True),
+                           ("reads", CHECKER, {"output_tokens": 10**6}, True),
+                           ("x", "claude-unknown", {"input_tokens": 5}, False)])
+    assert "| reads | claude-haiku-5-5 (batch) | 2 | 1000000 | 0 | 1000000 | 1000000 | 0.3050 |" in md, md
+    assert "| x | claude-unknown | 1 | 5 | 0 | 0 | 0 | unknown |" in md and "Total estimated: $0.3050" in md, md
+    import os
+    import tempfile
+    sp = os.path.join(tempfile.mkdtemp(), "summary.md")
+    write_usage_summary("t", [("w", WRITER, {"input_tokens": 1}, False)], summary_path=sp)
+    assert "| w | claude-sonnet-5-5 | 1 | 1 |" in open(sp).read()
+    # the cache probe: a second call that reads no cache fails it
+    calls = []
+
+    def fake(p):
+        calls.append(p["model"])
+        n = sum(1 for m in calls if m == p["model"])
+        return {"usage": {"cache_creation_input_tokens": 900 if n == 1 else 0,
+                          "cache_read_input_tokens": 0 if n == 1 or p["model"] == STORY else 900}}
+    rows, ok = cache_probe(fake, [("a", {"model": WRITER}), ("b", {"model": CHECKER})])
+    assert ok and [r[4] for r in rows] == [True, True]
+    rows, ok = cache_probe(fake, [("c", {"model": STORY})])
+    assert not ok and rows[0][4] is False
+    # this file imports no other script: every job imports it, so an import here would make each
+    # generated page set count every job's code as its own (scripts/generated_sets.py)
+    import ast
+    tree = ast.parse(open(__file__).read())
+    mods = {a.name.split(".")[0] for n in ast.walk(tree) if isinstance(n, ast.Import) for a in n.names}
+    mods |= {n.module.split(".")[0] for n in ast.walk(tree) if isinstance(n, ast.ImportFrom) and n.module}
+    assert mods <= {"os", "sys", "json", "tempfile", "ast", "urllib"}, mods
     assert cost_usd("claude-unknown", {"input_tokens": 1}) is None
     for m in PRICES:
         assert m in CACHE_MIN_TOKENS, m
@@ -179,3 +314,4 @@ if __name__ == "__main__":
     import sys
     if "--selftest" in sys.argv:
         selftest()
+

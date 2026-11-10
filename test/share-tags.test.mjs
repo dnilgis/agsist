@@ -48,7 +48,7 @@ function imageOk(h, where) {
 }
 
 const SHARED = { R: false, r: false, "rp-gift": false, "comp-report": false, "field-report": false,
-  "sponsor-kit": true, "prf-sponsor-kit": true }; // true: the link has no query, so og:url is fine
+  "sponsor-kit": true, "sponsor-rates": true, "prf-sponsor-kit": true }; // true: the link has no query, so og:url is fine
 
 test("noindex pages people send as links show a card, and keep their query", () => {
   for (const [name, urlOk] of Object.entries(SHARED)) {
