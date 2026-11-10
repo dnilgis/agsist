@@ -102,9 +102,9 @@ test("the crop report answer after the Nov 10 report names the Dec 10 Crop Produ
     + "  out.append(B.wasde_answer({'id': 'crop-report', 'from': 'wasde', 'sources': []}, root))\n"
     + "print(json.dumps(out))"], { cwd: ROOT, encoding: "utf8" }));
   if (out[0].status === "withheld") return;   // a blank figure in the live data withholds the block
-  assert.ok(out[0].text.join(" ").includes("The next WASDE and Crop Production report come out Thursday, December 10, 2026"),
+  assert.ok(out[0].text.join(" ").includes("The next WASDE and Crop Production report come out Thursday, December 10, 2026"),  // pin-ok: the fixture report dates set above
     out[0].text.join(" "));
-  assert.ok(out[1].text.join(" ").startsWith("The last Crop Production report and WASDE, out Thursday, December 10, 2026"),
+  assert.ok(out[1].text.join(" ").startsWith("The last Crop Production report and WASDE, out Thursday, December 10, 2026"),  // pin-ok: the fixture report dates set above
     out[1].text.join(" "));
 });
 
