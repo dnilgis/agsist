@@ -4560,7 +4560,7 @@ def selftest():
     _selftest_off_feed()
     _selftest_storage()
     _selftest_buyers()
-    _selftest_town_audit()
+    _selftest_town_fixes()
     # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
                   (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
@@ -5302,7 +5302,7 @@ def _selftest_buyers():
         BUY.load = keep
 
 
-def _selftest_town_audit():
+def _selftest_town_fixes():
     """Real cases from the town pages on Nov 9-10, 2026."""
     # one freshness rule: two closed day sessions (1:20 pm CT), as /cash-bids marks a board
     fri = dt.datetime(2026, 11, 6, 14, 0, tzinfo=CT)
@@ -5401,7 +5401,7 @@ def _selftest_town_audit():
                          "checked": None, "how": "name"}, e)
         assert "Corn $3.67" in li and "Estimate, not a posted bid: last posted basis (Nov 6) + Dec &#x27;26 futures " \
             "(Nov 9 close)" in li, li
-    print("town audit selftest OK")
+    print("town fixes selftest OK")
 
 
 def _selftest_known():
