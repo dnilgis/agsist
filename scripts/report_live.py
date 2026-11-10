@@ -12,7 +12,7 @@ report-day email read that result first and fall back to the committed files.
 The same files are then committed to the repo by the workflow.
 .github/workflows/wasde-watch.yml stays as the backup.
 
-    python3 scripts/report_live.py gate [--now 2026-12-10T16:40:00Z]
+    python3 scripts/report_live.py gate [--now 2026-12-10T16:40:00Z] [--mode live|rehearse --day YYYY-MM-DD]
         prints mode=live|rehearse|none and release=YYYY-MM-DD (GITHUB_OUTPUT too)
     python3 scripts/report_live.py key
         makes the signing key for this run from UNSUB_SECRET (to REPORT_KEY_FILE)
@@ -20,6 +20,7 @@ The same files are then committed to the repo by the workflow.
     python3 scripts/report_live.py wait-live --release 2026-12-10 [--test] [--timeout 1500]
     python3 scripts/report_live.py watchdog --release 2026-12-10
     python3 scripts/report_live.py rehearse [--release 2026-11-10] [--fast] [--no-email] [--no-nass]
+                                            [--worker URL] [--notify --for 2026-12-10]
         the whole path against last month's file, into the test record, with a
         dry-run email; prints one JSON line with pass/fail and the timings
     python3 scripts/report_live.py --selftest
@@ -119,10 +120,10 @@ def gate(now):
 
 def rehearsal_source(report_day, root=ROOT):
     """Last month's file for the rehearsal before `report_day`: the WASDE before
-    it, or the newest earlier one whose PDF is in the repo (up to three back)."""
+    it, or the newest earlier one whose PDF is in the repo (up to a year back)."""
     d = usda_dates.prior_wasde(report_day)
     first = d
-    for _ in range(3):
+    for _ in range(12):
         if d is None:
             break
         if (Path(root) / "data/wasde-pdf" / ("wasde%s.pdf" % d.strftime("%m%y"))).exists():
@@ -583,20 +584,21 @@ class _Resp(io.BytesIO):
 
 
 def scrub(root, release):
-    """A rehearsal copy that has not seen `release` yet: its actuals cleared,
-    its track-record rows and wasde.json for that day removed."""
+    """A rehearsal copy that has not seen `release` yet: the actuals of that
+    report and of any later one cleared, their track-record rows and wasde.json
+    removed (the copy stands on the morning of `release`)."""
     iso = release.isoformat()
     ep = root / "data/analyst-estimates.json"
     est = json.loads(ep.read_text())
     for rep in est.get("reports", []):
-        if rep.get("date") == iso:
+        if str(rep.get("date") or "") >= iso:
             for m in rep.get("metrics", []):
                 m["actual"] = None
     ep.write_text(json.dumps(est, indent=2) + "\n")
     hp = root / "data/wpi-history.json"
     if hp.exists():
         h = json.loads(hp.read_text())
-        h["history"] = [r for r in h.get("history", []) if r.get("date") != iso]
+        h["history"] = [r for r in h.get("history", []) if str(r.get("date") or "") < iso]
         hp.write_text(json.dumps(h, indent=2) + "\n")
     (root / "data/wasde.json").write_text("{}\n")
 
@@ -676,6 +678,27 @@ def rehearse(release=None, worker=None, key=None, fast=False, email=True, nass=F
         shutil.rmtree(tmp, ignore_errors=True)
 
 
+def rehearsal_lines(res, for_day=None):
+    t = res.get("timings") or {}
+    steps = res.get("steps") or {}
+    lines = ["Rehearsal for the report on %s, run on the %s file into the test record." % (for_day or "the next report day", res.get("release")),
+             "Result: %s." % ("pass" if res.get("pass") else "FAIL (%s)" % res.get("why", "")),
+             "File appears to live value served: %s s (target under %d s)." % (t.get("appear_to_served_s", "n/a"), SERVE_TARGET_S),
+             "Steps: " + ", ".join("%s %s" % (k, "ok" if v else "FAILED") for k, v in steps.items()) + ".",
+             "Figures served: %s. The email ran as a dry run; nothing was sent and no live record was touched." % res.get("figures", 0)]
+    return lines
+
+
+def report_rehearsal(res, for_day=None):
+    """The rehearsal's result as an issue (closed when it passed) and the owner's notice."""
+    lines = rehearsal_lines(res, for_day)
+    for ln in lines:
+        print("  " + ln)
+    word = "passed" if res.get("pass") else "FAILED"
+    issue("Report-day rehearsal for %s: %s" % (for_day or res.get("release"), word), "\n\n".join(lines), close=bool(res.get("pass")))
+    notify("Report-day rehearsal %s (%s)" % (word, for_day or res.get("release")), lines)
+
+
 # -- the command line -------------------------------------------------------------
 def _arg(argv, name, default=None):
     return argv[argv.index(name) + 1] if name in argv and argv.index(name) + 1 < len(argv) else default
@@ -703,6 +726,17 @@ def main(argv):
         n = _arg(argv, "--now")
         now = datetime.fromisoformat(n.replace("Z", "+00:00")) if n else datetime.now(timezone.utc)
         mode, day = gate(now)
+        want = _arg(argv, "--mode")
+        if want in ("live", "rehearse"):          # a run by hand: its own mode and day
+            d = _arg(argv, "--day") or ""
+            today = now.astimezone(CT).date()
+            if re.match(r"^\d{4}-\d{2}-\d{2}$", d):
+                day = date.fromisoformat(d)
+            elif want == "live":
+                day = today
+            else:
+                day = next((x for x in report_days() if x > today), None)
+            mode = want if day else "none"
         src = rehearsal_source(day) if mode == "rehearse" else None
         _out(mode=mode, release=day.isoformat() if day else "", source=src.isoformat() if src else "",
              auto=("1" if day and auto_read(day) else "0"))
@@ -746,6 +780,8 @@ def main(argv):
                        nass="--no-nass" not in argv)
         print("REHEARSAL " + json.dumps(res, sort_keys=True))
         _out(passed=("1" if res["pass"] else "0"))
+        if "--notify" in argv:
+            report_rehearsal(res, _arg(argv, "--for"))
         return 0 if res["pass"] else 1
     print("unknown command: %s" % cmd)
     return 2
