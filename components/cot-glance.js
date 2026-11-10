@@ -1,4 +1,4 @@
-/* COT at a glance (2026-11-04, Sig: "concise and to the point at first glance").
+/* COT at a glance (2026-11-04).
    One plain line per market, the same words on /cot and the home card:
 
      Funds are fairly heavily long soybeans (higher than 75% of weeks since 2010) and
@@ -16,7 +16,7 @@
    A market inside the pipeline's flat band reads "about even".
    Without the analysis file (or for a different week) the line drops the
    percentile and the "how heavy" word rather than guess them.
-   Nov 5, Sig ("extremely repetitive wording"; "KISS, the chart I want can tell a
+   Nov 5, the owner ("extremely repetitive wording"; "KISS, the chart I want can tell a
    lot of that story"): the pages no longer print one sentence per market. brief()
    is the one line over the 52-week chart for the market picked:
      Soybeans: funds long, fairly heavy, sold 27,544 this week
@@ -24,7 +24,7 @@
    and verdict() the crowded line, short enough for one line where it fits.
    SLUG names each market in a link (/cot?m=soybeans). line() and lines() stay for
    anything that still wants a sentence.
-   Nov 6, Sig ("get the cot page done now"): no ordinals. The rank is said in words,
+   Nov 6, the owner ("get the cot page done now"): no ordinals. The rank is said in words,
    "higher than 48% of weeks since 2010" (a short: "a bigger net short than 67% of
    weeks since 2010"), from the pipeline's crowd.words. Kit v2 (Nov 6): brief() is the
    headline, what changed then where funds stand, with no weight word; answer() under it

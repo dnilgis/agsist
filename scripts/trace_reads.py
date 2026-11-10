@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """trace_reads.py: run a Python builder and record every repository file it reads (Nov 4, 2026).
 
-WHY. BUILD-RULES 61: a builder run by hand must leave every file that summarises its output current. On Nov 4
+WHY. build rule 61: a builder run by hand must leave every file that summarises its output current. On Nov 4
 a hand run of the Cash Bid Index left llms.txt on the partial edition and main went red. scripts/generated_sets.py
 lists, per generated set, the summary files rebuilt after it (its dependents). This script is how the test
 (test/generated-sets.test.mjs) learns what a summary builder really reads, so a new read cannot go undeclared.
@@ -17,7 +17,7 @@ OUT.json: {"rc": exit code, "read": [repository paths], "listed": [folders], "wr
 """
 import sys
 if __name__ == "__main__":
-    # --help and a bad flag of its own exit before any work (BUILD-RULES 46); the arguments after the
+    # --help and a bad flag of its own exit before any work (build rule 46); the arguments after the
     # builder's path are the builder's, so only the ones before it are checked here
     _own = []
     for _a in sys.argv[1:]:

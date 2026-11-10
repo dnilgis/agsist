@@ -1,5 +1,5 @@
 /* components/report-link.js: the short link a printed report's QR carries (Oct 19, 2026).
-   Sig: the QR as simple as it can be, the fewest squares that still open the exact report.
+   The owner: the QR as simple as it can be, the fewest squares that still open the exact report.
    So the code holds HTTPS://AGSIST.COM/<kind>/<fields>: upper case, digits and + - . * : /
    only, all of it QR alphanumeric (5.5 bits a letter instead of 8). No such page exists:
    GitHub Pages answers with 404.html, which reads the path with this file, turns it back

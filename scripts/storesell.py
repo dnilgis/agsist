@@ -141,7 +141,7 @@ def new_crop_from(k, crop):
     return f"{y}-{ncm:02d}"
 
 
-# EARLIEST BID FIRST (Sig, 2026-11-02): storesell.js periodRank, the same
+# EARLIEST BID FIRST (2026-11-02): storesell.js periodRank, the same
 # patterns as build_cash_bid_pages.period_rank (test/storesell.test.mjs runs
 # the same cases through all three). 0: spot or cash, the first half, the whole
 # month, or a label that does not say; 1: the last half, or a day range inside

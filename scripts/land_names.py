@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Buyer and seller names apart from the county transfer files (lead decision on PR 324, Nov 4, 2026).
 
-Sig's rule (STANDING-DECISIONS, Oct 27): names load only on a reader's tap, from separate names files in the
+The owner's rule (the standing decisions, Oct 27): names load only on a reader's tap, from separate names files in the
 robots-blocked folder. So a county transfer file, data/land/<st>/<fips>.json, carries no grantor or grantee column.
 Its names sit in data/land/<st>/names/<fips>.json: the county's distinct sellers and buyers, each once (as first
 written), stamped with the county file's read time and row count (a tap trusts the file only when both match):

@@ -1,5 +1,5 @@
 /* Share today's bids, on the cash-bid town pages (scripts/build_cash_bid_pages.py,
- * share_bid_html). Sig, Nov 3, 2026.
+ * share_bid_html). Nov 3, 2026.
  *
  * The page carries the button and everything it shares: data-text names the
  * page's own headline bid (the row the answer line names, with the day it was

@@ -12,11 +12,11 @@ THE DATA is the same county transfer files Field Scout, the comp report and the 
 (build_land_summary.row_objs, sale_rows, market_sale, stat_ok: the port of field-scout-land.js
 that test/land-rule.test.mjs holds to the page row for row). Nothing here re-decides it.
 
-STATES: Illinois, Wisconsin and Indiana (STATES). Indiana was held from Oct 18 until Sig turned it on,
+STATES: Illinois, Wisconsin and Indiana (STATES). Indiana was held from Oct 18 until the owner turned it on,
 Oct 27 2026 ("Yes turn on Indiana": the land sale pages and this email). Indiana's records differ
 (IN_NOTE): the sales disclosure form carries the sale date, not a recording date, and places the sale
 at the parcel's mailing town, whose point is that ZIP's Census centroid, not a township; the email
-says so whenever an Indiana sale is in it. Vermont on Oct 29, 2026 (Sig: next land states, Vermont first):
+says so whenever an Indiana sale is in it. Vermont on Oct 29, 2026 (next land states, Vermont first):
 the town clerk's recording date is on every return, and the place is the town's Census point, as in
 Illinois and Wisconsin. New Jersey the same day: the SR-1A deed abstracts carry the recording date, the place
 is the municipality's Census point, and the acres are the lot's on the 2026 assessment list (NJ_NOTE).
@@ -39,7 +39,7 @@ Wisconsin's RETR reports are monthly, so M is ready when its report is on file (
 any other state when it was read after M ended (a county file's fetched_utc, the state index's, or the
 state's checked stamp, data/land/checked.json) AND its records reach M's last week (REACH_DAYS): a state
 read on Nov 3 whose records stop on Oct 14 has posted half of October, not October. Otherwise the reader waits
-("wait-data"), and scripts/send_land_alert.py sends the newest month that is ready instead (Sig, Nov 3).
+("wait-data"), and scripts/send_land_alert.py sends the newest month that is ready instead (Nov 3).
 
 FETCHED AND CHECKED (Nov 3, 2026). A land run that reads a state and finds nothing new leaves its county
 files as they were (scripts/land_keep_stamp_only.py), fetched_utc included, so the files alone cannot
@@ -47,7 +47,7 @@ tell "looked and there is nothing newer" from "did not look". fetch_land_sales.p
 data/land/checked.json after each state it read: {st: {checked_utc, newest}} (newest: the newest month
 the source holds). checked_utc counts as a read; newest counts toward the reach.
 
-WHAT IS LISTED (Sig, Oct 29, 2026: every recorded sale of any acreage): market sales recorded in
+WHAT IS LISTED (Oct 29, 2026: every recorded sale of any acreage): market sales recorded in
 the month with the acres known, any acreage, small parcels included, nearest first, at most
 MAX_ROWS (the rest are counted). Market sales with the acres not stated (a return of several
 parcels that does not give them) are counted in one line, never listed. A sale is marked "with
@@ -253,7 +253,7 @@ class Land:
 def sale_id(st, r):
     """A sale's id: opaque and stable across rebuilds (a hash of the state, county, document, deed date and
     price of its first deed). The county sale page gives that sale's row id="s-<id>" and the land sale email
-    links each sale to it (Sig, Nov 3, 2026). build_land_sales.sale_id is this one. No name goes into it."""
+    links each sale to it (Nov 3, 2026). build_land_sales.sale_id is this one. No name goes into it."""
     k = "|".join(str(x) for x in (st, r.get("fips"), r.get("doc"), str(r.get("date") or "")[:10], BLS.js_round(BLS.num(r.get("price")) or 0)))
     return hashlib.sha1(k.encode("utf-8")).hexdigest()[:10]
 

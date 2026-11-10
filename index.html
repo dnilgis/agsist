@@ -251,7 +251,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
     <h1 class="hb-h1">Cash bids near you, grain prices, the morning briefing and USDA report days. Free.</h1>
     <h2 class="visually-hidden" id="hb-h">Today at a glance</h2>
-    <!-- 2026-11-02 (Sig: go): the first screen is three jobs, near me, sell grain, my field.
+    <!-- 2026-11-02 (go): the first screen is three jobs, near me, sell grain, my field.
          The futures and every other destination stay on the page, lower down. -->
     <div class="jobs" id="hb-jobs">
       <div class="job job-near" role="group" aria-labelledby="job-near-h">
@@ -300,10 +300,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <li><a href="/fast-facts" data-track="jobs"><span class="job-l" id="job-ff">Fast Facts for your county</span><span class="job-s">Bids, rain, drought, rent and land value, each dated</span></a></li>
         </ul>
       </nav>
-      <!-- 2026-11-04 (Sig: "my buddy didn't know that farm land sales were on agsist"; "there is dead space on the home
+      <!-- 2026-11-04 ("there is dead space on the home
            page"): one real recorded sale, picked by the rule in scripts/build_land_sales.py (LEAD_RULE, shown on tap),
            from data/land-sales/lead.json (components/home-land.js). County, acres, $/acre and the date only, never a
-           name. Phone: right under My field (the three jobs keep the first screen, Sig Nov 2); 1000px and up: the room
+           name. Phone: right under My field (the three jobs keep the first screen, Nov 2); 1000px and up: the room
            under Sell grain and My field. No data: these plain words stay and the link still works. Each line holds its room (no layout shift). -->
       <div class="job job-land" id="job-land" role="group" aria-labelledby="job-land-h">
         <h3 class="job-h" id="job-land-h">Farmland sales</h3>
@@ -345,8 +345,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 --><!--SEED:hp:fs-s--><span class="hb-l"><span class="hb-n hb-chg dn"><span aria-hidden="true">▼ </span><span class="visually-hidden">down </span>−6 3/4¢</span></span><span class="hb-l hb-age">Last trade Nov 9, 1:20 p.m. CT</span><!--/SEED--><!--
 --></span>
       </a>
-      <!-- 2026-11-06 (Sig: "a happening today block, for example a link to the COT and some kind of teaser to get people
-           interested, important releases people should be made aware of"): the next release with a countdown and one
+      <!-- 2026-11-06: the next release with a countdown and one
            line from our own last numbers, then up to two more this week (components/happening.js). The rows are baked
            by scripts/seed_static.py happening_seed (day and time as text without script); css/home.css holds their room.
            #hap-say speaks only when a row changes state, never the minute. -->
@@ -364,7 +363,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   </section>
   <script>try{AgPxStamp.reserve(document.querySelector('#hero-band .pl-line'));}catch(e){}try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
   <script src="/components/signup-ask.js?v=22"></script>
-  <!-- Worth a look (Sig, Nov 2, 2026): Rain Print (the promo card, components/rain-print-promo.js), the rain gauge, and one new page from What's new (components/home-worth.js) -->
+  <!-- Worth a look (Nov 2, 2026): Rain Print (the promo card, components/rain-print-promo.js), the rain gauge, and one new page from What's new (components/home-worth.js) -->
   <section class="wl" id="wl" aria-labelledby="wl-h">
     <h2 class="wl-h" id="wl-h">Worth a look</h2>
     <div class="wl-row">
@@ -826,7 +825,7 @@ try {
         if(sa)old=false;
         var cell=$(id);if(cell)cell.classList.toggle('px-old',!!(sa&&sa.old));
         var age=old?'<span class="hb-l hb-old">Last close'+(cd?' · '+keyDay(cd):'')+'</span>':(stamp?'<span class="hb-l hb-age">'+stamp+'</span>':'');
-        /* 2026-10-20 (Sig): the overnight electronic trade beside the settle when the file has one (price-local.js overnight) */
+        /* 2026-10-20: the overnight electronic trade beside the settle when the file has one (price-local.js overnight) */
         var ov=!old&&!held&&window.AgPxStamp&&AgPxStamp.overnightHtml?AgPxStamp.overnightHtml(x,function(c){return AG.px.price(c,{style:'slash'});},function(n){return AG.px.move(n,{style:'slash',sign:true});},null,{short:true}):'';
         set(id+'-s',(c?'<span class="hb-l">'+c+'</span>':'')+age+(ov?'<span class="hb-l hb-ovn">'+ov+'</span>':'')||'&nbsp;');
       });
@@ -841,10 +840,9 @@ try {
     /* 2026-10-19: a baked quote (seed_static.py hero_futures_seeds) carries its own date, so it stays. */
     setTimeout(function(){if(futParsed)return;['hb-fc','hb-fs'].forEach(function(id){var v=$(id+'-v');if(v&&v.querySelector('.hb-n'))return;set(id+'-v',DASH);set(id+'-s','<span class="hb-l">Prices didn’t load</span>');});},10000);
 
-    /* ---- today: a snapshot of today's forecast for the saved place (2026-11-02, Sig: "the weather
-       today should be a snapshot of the actual day's forecast"). The National Weather Service grid the
+    /* ---- today: a snapshot of today's forecast for the saved place (2026-11-02). The National Weather Service grid the
        page already reads (components/nws.js; it keeps one answer per point, so this adds no request):
-       today's high and tonight's low, the sky in words, the rain chance and the wind. 2026-11-05 (Sig): no spray
+       today's high and tonight's low, the sky in words, the rain chance and the wind. 2026-11-05: no spray
        read here; spraying is seasonal and /spray and Field Scout keep theirs. After 6 PM local it is tonight's
        low and tomorrow's high.
        A forecast is an estimate: the label says so and names the NWS issue time. ---- */
@@ -1428,7 +1426,7 @@ try {
           if(!r.ok||!data||data.ok!==true)
             return fail('The alert service did not confirm this'+(r.ok?'':' (error '+r.status+')')+'. Nothing was saved. Try again in a minute.');
           /* 2026-10-06: the labelled daily opt-in, empty until the reader ticks it
-             (Sig, 2026-10-19). It is
+             (2026-10-19). It is
              read before the form is replaced, and only after the alert
              itself was accepted. */
           var oi=document.getElementById('pa-optin'), oiL=document.getElementById('pa-optin-l');
@@ -1460,7 +1458,7 @@ try {
       <a class="land-cell" id="land-hail" href="/hail-map" data-track="land" hidden><span class="land-k">Hail, 30 days</span><span class="land-v" id="land-hail-v"></span><span class="land-s" id="land-hail-s"></span></a>
     </div>
     <nav class="land-more" aria-labelledby="land-more-h"><h3 class="land-more-h" id="land-more-h">More</h3>
-    <!-- 2026-11-02 (Sig): folded shut by default, grouped like the site menu. -->
+    <!-- 2026-11-02: folded shut by default, grouped like the site menu. -->
     <details class="m-fold m-fold--lite land-fold"><summary class="m-fold-sum"><span>More: every tool and page</span></summary>
     <h4 class="land-grp">Prices</h4>
     <ul class="land-links">
@@ -1690,7 +1688,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 </main>
 <div class="main" style="padding:0 1rem 1rem;max-width:1400px;margin:0 auto">
   <div style="font-size:.824rem;color:var(--text-muted);line-height:1.65;border-top:1px solid var(--border);padding-top:.75rem;margin-top:.5rem;display:flex;flex-wrap:wrap;gap:.4rem .9rem;align-items:center">
-    <!-- Sig Nov 8: sources and terms folded (screenshot crossed out); the text stays in the page for the NASS notice -->
+    <!-- The owner Nov 8: sources and terms folded (screenshot crossed out); the text stays in the page for the NASS notice -->
     <span>Questions? <a href="tel:+17157972428" style="color:var(--gold);text-decoration:underline;">715-797-2428</a> &middot; <a href="mailto:sig@agsist.com" style="color:var(--gold);text-decoration:underline;">sig@agsist.com</a></span>
     <a href="/privacy" style="color:var(--gold);text-decoration:underline;">Privacy Policy</a>
     <details class="hp-terms" style="flex-basis:100%"><summary style="cursor:pointer;color:var(--text-dim)">Sources and terms</summary>

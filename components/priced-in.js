@@ -412,7 +412,7 @@
     }
     return 'Forecasters above the line have landed closer to the print than the trade consensus on <b>'+yes+' of '+n+'</b> graded calls.'+tail;
   }
-  /* Every metric class that is not the main board still gets a table. Sig's
+  /* Every metric class that is not the main board still gets a table. The owner's
      rule is that misses stay on the record; the stocks call that used to carry
      a forecaster onto the leaderboard is still here, scored on its own. */
   function otherClasses(classes,primary,minN,ordMin){

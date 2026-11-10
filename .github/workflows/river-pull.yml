@@ -1,5 +1,5 @@
 name: River pull (dispatch only)
-# River pull, one time (Sig approved Nov 9: dispatch only, no schedule).
+# River pull, one time (Nov 9: dispatch only, no schedule).
 
 on:
   workflow_dispatch:

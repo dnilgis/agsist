@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""One-time pull of the river inputs for the elevator river key (Sig, Nov 9 2026: dispatch only, no schedule).
+"""One-time pull of the river inputs for the elevator river key (Nov 9 2026: dispatch only, no schedule).
 
 Reads two public federal map layers through their ArcGIS REST query endpoints and writes a small derived
 copy under river/ (saved to the private raw branch by river-pull.yml, never to main, so the site does not

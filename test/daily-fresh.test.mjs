@@ -1,4 +1,4 @@
-// Fresh every morning (Sig, Nov 1 2026): never the same headline, number, story
+// Fresh every morning (Nov 1 2026): never the same headline, number, story
 // or fact twice in a row, 3 to 5 top stories with their links, weekends that do
 // not rerun Friday. scripts/test_daily_fresh.py replays the 14 real issues Oct 19
 // to Nov 1 and pins the gate, the story links, the feeds and the prompt; this
@@ -39,7 +39,7 @@ test("the generator runs the check, sends the draft back once and stamps the iss
   assert.ok(heal < main.indexOf("briefing_cut.enforce_budget(briefing)"), "before the cut");
   assert.match(main, /_dfr\.correction\(_fresh_found\)/);
   assert.match(main, /briefing\["freshness"\] = _dfr\.stamp/);
-  // Sig, Nov 2: "cut the repeat". cut_repeats cuts the stories (drop_stories), sentences and the
+  // Nov 2. cut_repeats cuts the stories (drop_stories), sentences and the
   // day's number that still repeat after the one rewrite, and swaps a repeated headline for the top story.
   assert.match(main, /_dfr\.cut_repeats\(briefing, _fresh_found,/);
   assert.match(main, /attach_story_links\(briefing\)/);

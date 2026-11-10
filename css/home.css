@@ -7,7 +7,7 @@
 .draw-lbl{font-size:.824rem}
 .draw-item{font-size:.824rem}
 .ticker-live span{font-size:.765rem}
-/* 2026-10-08 Sig: the ticker status takes half the width it did. Two short
+/* 2026-10-08 the owner: the ticker status takes half the width it did. Two short
    lines ("Delayed" over "15 min", "Settle" over "Oct 7"), smaller type. */
 .ticker-live{padding:0 .5rem;gap:.3rem}
 .ticker-live #ticker-age{font-size:.6rem;line-height:1.1;letter-spacing:.04em;white-space:nowrap;display:inline-block}
@@ -900,7 +900,7 @@ body{--hair:rgba(132,160,168,.12);--sp-md:12px;--sp-lg:16px;--sp-xl:24px;--sp-2x
 /* The lead item keeps its box. */
 #f1>.card{border:1px solid var(--border-2);border-radius:8px;background:var(--surface)}
 /* ===== block 5 of 23 ===== */
-/* ===== 2026-10-01 cutover, round 2 (panel findings) ===== */
+/* ===== 2026-10-01 cutover, round 2 (review findings) ===== */
 /* Keyboard: a focused ticker link stops the track, and the hidden clone
    copy is never a tab stop (geo.js marks it inert). */
 .ticker-track:focus-within{animation-play-state:paused}
@@ -1002,18 +1002,17 @@ html.has-zip #bids-list-area:has(.bids-skeleton){min-height:760px}
 .faq-list .faq-item{break-inside:avoid}
 }
 /* ===== block 8 of 23 ===== */
-/* ===== 2026-10-01 round 6. Sig: "lets mute the sponsor this and not be in
-   your face with it." The empty slot is a quiet ad-orange text link (paid
+/* ===== 2026-10-01 round 6.  The empty slot is a quiet ad-orange text link (paid
    space is always ad orange), no box, no pulse, no price; gone on a phone (the footer strip still sells the slot). A paid
    sponsor, when there is one, keeps its ad-orange label, smaller. ===== */
-/* 2026-10-07, Sig: "make the sponsor slots catch your eye". The empty slot
+/* 2026-10-07,. The empty slot
    is back as a solid ad-orange pill with a pulsing dot and its price (written
    from data/rate-card.json by scripts/stamp_rates.py), on every screen size.
    #0d1117 on --ad-orange is 6.4:1. A paid sponsor's label stays small. */
 #daily-teaser-sponsor.empty-state{display:inline-flex!important;align-items:center;gap:.45rem;font-size:.86rem!important;font-weight:800!important;letter-spacing:.02em!important;text-transform:none!important;
   color:#0d1117!important;background:var(--ad-orange)!important;border:0!important;border-radius:999px;padding:.42rem .95rem .42rem .8rem!important;box-shadow:0 3px 16px rgba(var(--ad-orange-rgb),.35)!important;text-decoration:none;min-height:36px}
 #daily-teaser-sponsor.empty-state:hover{color:#0d1117!important;background:var(--ad-orange-hi)!important;text-decoration:none;transform:translateY(-1px)}
-/* Sig's rule: anything that sells or shows paid space is ad orange, always.
+/* The owner's rule: anything that sells or shows paid space is ad orange, always.
    Light theme needs a darker orange to stay readable as text (4.5:1). */
 html[data-theme="light"] #daily-teaser-sponsor:not(.empty-state){color:var(--ad-orange-ink)!important}
 #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{display:inline!important;font-family:"JetBrains Mono",monospace;font-size:.78rem;font-weight:800;opacity:1;margin-left:.15rem;padding-left:.5rem;border-left:1px solid rgba(13,17,23,.35)}
@@ -1302,8 +1301,7 @@ details>summary:hover{color:var(--text)}
 .idx1-shell input:not([type=checkbox]):not([type=radio]):not([type=range]),.idx1-shell select{border-color:var(--ui-field)!important}
 #bids-zip:focus,#wx-zip:focus{outline:2px solid var(--gold)!important;outline-offset:2px}
 /* Range tracks. The price-card track keeps its red-gold-green gradient
-   (Sig, 2026-10-03: "i like the color gradient for 52wk range bar, my
-   personal preference"); the label sits on its own line instead of an
+   (2026-10-03); the label sits on its own line instead of an
    ellipsis. */
 .idx1-shell .pc-range-labels{display:grid!important;grid-template-columns:auto 1fr auto;row-gap:2px}
 .idx1-shell .pc-range-labels>span:nth-child(2){grid-row:1;grid-column:1/-1;text-align:left!important;overflow:visible!important;text-overflow:clip!important;white-space:normal!important}
@@ -1403,8 +1401,7 @@ details.wr>summary{align-items:center!important}
 .cot-na .cot-bar-wrap{visibility:hidden}
 /* The NOAA source line ran into The Read heading. */
 #f-noaa{margin-bottom:24px}
-/* Section headers read as content (Sig: "cash bids & basis ... blends in
-   with the content, it should jump out as a header"). Headers take the
+/* Section headers read as content. Headers take the
    accent: gold text and icon on dark (#d4a23f, 8:1 on the page), #86600f on
    light (4.96:1; the light brand gold #a87d1e is 3.5:1 as text). The phone
    fold titles are the same headers, so they match. */
@@ -1732,7 +1729,7 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
 .m-fold--calc[open]>summary.m-fold-sum{border-bottom:0;margin-bottom:8px}
 .m-fold--calc>summary.m-fold-sum:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 /* ===== 2026-10-06: the hero band and the page order around it ==========
-   Sig: "turn the homepage into the ultimate hero page". The first screen is
+   . The first screen is
    numbers: the best local bid for corn and soybeans, the two harvest
    futures, and today's field read. Sans for words, mono for figures only.
    Order after the hero: cash bids beside local conditions, then markets,
@@ -1834,7 +1831,7 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
 html[data-look] .idx1-content>.s7-month{grid-column:1/3;grid-row:10;margin-top:0}
 html[data-look] #market-intel{grid-row:2/11!important}
 }
-/* ===== 2026-10-06 type pass (Sig: "too much text blur") ================
+/* ===== 2026-10-06 type pass ================
    Mono for figures and section eyebrows only; labels, sub-lines, notes and
    links in the sans. Nothing a reader needs under 13px (.765rem). No
    letter-spacing on anything longer than a few words. The cash bids card's
@@ -2029,16 +2026,14 @@ html[data-look] #dash-grid{row-gap:0!important;margin-bottom:0!important}
 html[data-look] .m-fold--cot>summary.m-fold-sum>span small{display:none}
 }
 /* ===== THE LOOK (2026-10-03) ==========================================
-   Sig: "lots of still monotone and hard to differentiate one thing from
-   another". Every top-level section belongs to a family, and the page
+   . Every top-level section belongs to a family, and the page
    frames sections one of three ways, chosen by <html data-look="...">:
 
      panels    each section on its own raised panel
      bands     square tinted blocks with a solid header bar
      families  no panel; a coloured rule and header per family
 
-   Sig, 2026-10-03: "my favorite is b, second favoorite is c and then a, i
-   like elements of all in that weight". Default is bands, carrying C's
+   2026-10-03. Default is bands, carrying C's
    family-coloured headers and A's hairline border and rounded corners.
 
    Families and their colours, all existing tokens (no new colours):
@@ -2078,7 +2073,7 @@ html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m
   background:var(--panel-bg)!important;border:0!important;border-radius:0!important;
   padding:0 18px 16px!important;margin-bottom:var(--sec-gap)!important;box-shadow:none!important}
 html[data-look="bands"] .sec-head{background:var(--band-bar);margin:0 -18px 12px!important;padding:10px 18px!important;border-bottom:2px solid var(--fam,var(--gold))!important}
-/* 2026-10-07 (Sig): the radar map fills its card. It reaches into the band's
+/* 2026-10-07: the radar map fills its card. It reaches into the band's
    18px sides and 16px foot the same way the header row above it does. */
 @media(min-width:901px){
 html[data-look="bands"] #radar-fold .radar-card{margin:0 -18px -16px!important}
@@ -2125,7 +2120,7 @@ html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--c
 html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,.m-fold--alert,#f-rail-scorecard-teaser){padding:0 14px 14px!important}
 }
 /* 52-week range bars in the price tables: the same red-to-gold-to-green
-   gradient as the price cards (Sig's preference, 2026-10-03). */
+   gradient as the price cards (the owner's preference, 2026-10-03). */
 #f-prices .r7-bar{height:4px!important;border-radius:2px;background:linear-gradient(to right,var(--red),var(--gold) 50%,var(--green))!important}
 #f-prices .r7-dot{box-shadow:0 0 0 2px var(--surface2)}
 /* Rail headers: in a 340px rail with panel padding, "Upcoming USDA Reports"
@@ -2239,7 +2234,7 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
 /* 3. A saved state's middle-bid line holds its space until the numbers come
       (components/price-local.js reserve()); unseen until filled. */
 .pl-line.pl-wait{visibility:hidden}
-/* ===== 2026-11-02 (Sig: go): the first screen is three jobs =====
+/* ===== 2026-11-02 (go): the first screen is three jobs =====
    Today near me (the reader's ZIP: best bids, weather, the Daily), Sell grain,
    My field. The hero band keeps every id its script paints; the futures
    cells (baked for crawlers, Oct 19) sit under the jobs, and every other
@@ -2284,7 +2279,7 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
   #hero-band .hb-grid--fut #hb-fc{padding-left:0;border-left:0}
   #hero-band.hb-nozip .job-near .hb-grid{grid-template-columns:minmax(0,1fr)}
 }
-/* ===== 2026-11-02 round 2 (Sig: "a snapshot of the actual day's forecast"; "the containers in
+/* ===== 2026-11-02 round 2 ("the containers in
    containers thing, I hate when they are not tight"; "not blown away") =====
    One level of boxes at most: the band itself is no longer a card, so on a desktop the three jobs are
    the only cards; on a phone (520px and under) they are full-width sections split by a hairline, no
@@ -2363,8 +2358,8 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
   #hero-band .job-near #hb-wx{grid-column:1/-1;padding:8px 0}
   #hero-band .job-links a{padding:4px 0}
 }
-/* ===== 2026-11-02 round 3 (Sig: are we still promoting the rain gauge, Rain Print and the new features
-   nicely?): "Worth a look", right under the three jobs. Three short cards in a row on a wide screen, one
+/* ===== 2026-11-02 round 3 (are we still promoting the rain gauge, Rain Print and the new features
+ nicely?): "Worth a look", right under the three jobs. Three short cards in a row on a wide screen, one
    level of boxes; under 1100px full-width rows split by hairlines, no boxes. Each card holds its size from
    the first paint: the Rain Print card is filled by rain-print-promo.js and the new-page card's words by
    home-worth.js, after load (test/home-jobs.test.mjs measures no shift for each Rain Print wording). ===== */
@@ -2401,7 +2396,7 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
   a.wl-c:hover,.wl-rp:has(a.rp-card:hover){border-color:var(--gold)}
   .wl .rp-card-i{width:96px}
 }
-/* ===== 2026-11-04 (Sig: "my buddy didn't know that farm land sales were on agsist"; "there is dead space on the
+/* ===== 2026-11-04 ("there is dead space on the
    home page"): the Farmland sales block (components/home-land.js). Phone and tablet: right under Today near me,
    full width. 1000px and up: it fills the room under Sell grain and My field, beside the forecast and the Daily.
    Every line holds its room from first paint, so the sale replacing the plain words moves nothing. Nov 4 (checker):
@@ -2439,7 +2434,7 @@ a.wl-c:focus-visible,.wl a.rp-card:focus-visible{outline:2px solid var(--gold);o
   .hl-links{grid-area:links;align-self:start}
 }
 
-/* 2026-11-04 (fx/wxcard, Sig: "too much space between elements"): Season so far (components/season-wx.js) and a
+/* 2026-11-04 (fx/wxcard): Season so far (components/season-wx.js) and a
    tighter Local conditions card. The gaps between blocks are halved, inner padding cut, section heads smaller;
    tap targets stay 44px and text 12px or more. Everything is scoped to .wx-card.wx-tight. */
 .wx-season{margin-top:6px;padding-top:6px;border-top:1px solid var(--hair)}
@@ -2535,7 +2530,7 @@ rect.wxs-cy.wxs-part{stroke:var(--wxs-y)}
 #cot-glance{min-height:132px}
 #cot-gl-asof{min-height:2.3em}
 
-/* ===== 2026-11-06 (Sig: "a happening today block ... important releases people should be made aware of"): "Today and
+/* ===== 2026-11-06: "Today and
    this week" (components/happening.js, baked by scripts/seed_static.py happening_seed). Phone and tablet: a full-width
    row right after the two futures. 1000px and up: the third column of the futures row, the room right of the beans.
    Every line holds its room (the teaser two lines, each later row its line), so the live rows replace the baked ones
@@ -2559,7 +2554,7 @@ rect.wxs-cy.wxs-part{stroke:var(--wxs-y)}
 .hap-i:not(.hap-top) .hap-t{font-size:.882rem}
 .hap-none{min-height:45px}
 .hap-all .hap-t{font-weight:600;color:var(--gold)}
-/* the Funds this week ask (Sig, Nov 6): right of the COT row's title line, centred on it, a 44 px target placed over
+/* the Funds this week ask (Nov 6): right of the COT row's title line, centred on it, a 44 px target placed over
    the row's own room (absolute), so its arrival moves nothing; the title stops short of it */
 .hap-top{position:relative}
 .hap-asks .hap-t{padding-right:8.6rem}
@@ -2586,8 +2581,7 @@ rect.wxs-cy.wxs-part{stroke:var(--wxs-y)}
   .hap-list{min-height:127px}
   #hero-band.hb-nozip .hb-grid--fut{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.5fr)}
 }
-/* Phones use the width (Sig, Nov 8, 2026: "use the space we have, phone screens are already small and we are making
-   them smaller"; STANDING-DECISIONS Oct 22: about 12px gutter). At 480px and under: a 12px page gutter, a section
+/* Phones use the width (Nov 8, 2026; the standing decisions Oct 22: about 12px gutter). At 480px and under: a 12px page gutter, a section
    band's text 12px in from its edge (11px padding plus the 1px line), and a card inside a band adds no side padding
    of its own. The tokens --gutter and --card-pad-x come from components/styles.css. Wide screens are unchanged.
    test/phone-padding.test.mjs holds the home weather card's text column to 342px or more at 390. */

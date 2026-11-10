@@ -1,4 +1,4 @@
-/* components/cb-house.js -- RETIRED 2026-10-11 (Sig: "tone it down").
+/* components/cb-house.js -- RETIRED 2026-10-11.
 
    This used to put a house ask ("Watch your elevators", "Sponsor this spot")
    into the UNSOLD sponsor slot on /cash-bids and the cash-bid town pages. The

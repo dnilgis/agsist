@@ -938,7 +938,7 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
         write_json(os.path.join(out_dir, "board-parents.json"), bp)
         log(f"[ids] board parents: {bp['counts']['with_parent']} of {bp['counts']['live_boards']} live boards with a "
             f"parent {bp['counts']['parent_by_rule']}, {bp['counts']['with_dest']} with a destination")
-    # company ids on evidence only (scripts/company_ids.py, Sig Nov 9 2026). A stop (too many ids lost in one run)
+    # company ids on evidence only (scripts/company_ids.py, Nov 9 2026). A stop (too many ids lost in one run)
     # keeps the last file and never costs the ids above.
     if index:
         import company_ids

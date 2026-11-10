@@ -74,7 +74,7 @@ SCHEMA = "agsist-radar-rain/1"
 NI, NJ, DEG = 7000, 3500, 0.01
 LA1, LO1 = 54.995, -129.995          # first cell center (north-west), lon in -180..180
 
-POOL = 4                 # 0.01 deg cells averaged 4 x 4 -> 0.04 deg (about 2.8 x 2 mi); Sig chose it Oct 17, 2026 to halve each run
+POOL = 4                 # 0.01 deg cells averaged 4 x 4 -> 0.04 deg (about 2.8 x 2 mi); the owner chose it Oct 17, 2026 to halve each run
 PAD = 0.3                # degrees of neighbor around each state's box, for the map
 MM_PER_IN = 25.4
 MISSING = -1

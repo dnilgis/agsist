@@ -1,7 +1,7 @@
 /* The track record table at /scorecard (usda-calendar.html#scorecard), Nov 6, 2026: scripts/build_track_record.py
  * reads the public forecast record and writes the block between the TRACK markers. Synthetic record only
  * (test/fixtures/track-record/make.py), never live data. In Chromium at 390 and 1280 px every outside host is
- * refused and service workers are blocked (BUILD-RULES 58). TR_SHOTS=<dir> saves screenshots.
+ * refused and service workers are blocked (build rule 58). TR_SHOTS=<dir> saves screenshots.
  *
  *   PLAYWRIGHT_PATH=... CHROMIUM_PATH=... node --test test/track-record.test.mjs */
 import { test } from "node:test";

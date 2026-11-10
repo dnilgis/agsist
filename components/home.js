@@ -93,7 +93,7 @@ try {
   }
   /* WAVE3-L: after a failed cot.json there are no rows to put back. */
   window.AGSIST_COT={rows:COT_ROWS,render:function(){if(window.AGSIST_COT.failed)return;placeCOT(window.AGSIST_COT._d);glance(window.AGSIST_COT._d);}};
-  /* AT A GLANCE (2026-11-04; short rows 2026-11-05, Sig: "KISS"): the top three
+  /* AT A GLANCE (2026-11-04; short rows 2026-11-05): the top three
      markets in the reader's order (the crop picker reorders COT_ROWS), one short
      row each (components/cot-glance.js row(): market | long or short | change,
      the cells /cot's table prints; the rank is on /cot), each opening /cot on that market's
@@ -777,7 +777,7 @@ window.hydrateDaily = function(data) {
   function escHtml(s){return(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   /* A top story's publisher link, fit to show a reader, else ''. Same test as
      generate_daily.safe_story_link and daily.html storyLink: https only, no
-     shared host (BUILD-RULES 11), no user part, no spaces, at most 800 chars. */
+     shared host (build rule 11), no user part, no spaces, at most 800 chars. */
   function storyLink(u){
     u=(u==null?'':String(u)).trim();
     if(!u||u.length>800||/\s/.test(u)||u.slice(0,8).toLowerCase()!=='https://')return'';
@@ -814,7 +814,7 @@ window.hydrateDaily = function(data) {
   // v5.1: the one thresholded action, in the block the takeaway used to hold.
   // A daily.json from before the cut has no action and shows its takeaway
   // under the old label instead, so the block never goes blank on upload day.
-  /* 2026-10-09, Sig: the prediction bot is out of the Daily for now; it
+  /* 2026-10-09, the owner: the prediction bot is out of the Daily for now; it
      lives on /scorecard. An issue whose action is the bot's call (bot_call
      present) shows no action, and the box hides. */
   var takeaway=(data.bot_call?'':(data.action||'')).trim();
@@ -1120,7 +1120,7 @@ window.hydrateDaily = function(data) {
   }
 
   // v4.1: sponsor block, filled state plus the collapsed teaser credit.
-  // 2026-10-11 (Sig, "tone it down"): only a PAID sponsor draws anything. No
+  // 2026-10-11: only a PAID sponsor draws anything. No
   // sponsor, sponsor:false or the house ad -> the block, the credit and the
   // strip all stay hidden. There is no empty-state billboard any more.
   var sp=data.sponsor,spEl=el('daily-sponsor'),spFilled=el('dsp-filled'),spTeaser=el('daily-teaser-sponsor');
@@ -1786,7 +1786,7 @@ try {
   window.__r7={pricesOnce:pricesOnce,contractOf:contractOf,ctStamp:ctStamp,cents:cents,tickMonth:tickMonth};
 
   /* COT: what price did since the positions were taken, on THE HEADLINE
-     CONTRACT (2026-11-04, Sig). It used the continuous front month (ZS=F), so
+     CONTRACT (2026-11-04). It used the continuous front month (ZS=F), so
      after soybeans rolled to Jan '27 at first notice (#320) the card said
      "front month (Nov '26)" under a page that headlines Jan '27; corn does the
      same on Nov 30. Now: the headline contract (AgPxStamp.headline, the
@@ -1855,11 +1855,11 @@ try {
 
 /* ---- former inline block 14 ---- */
 try {
-/* 2026-10-06 (U13) folded the GDU and soil tiles on phones, Sep to Nov. 2026-11-04 (Sig: GDUs year round, less wasted
-   space): the GDU tile is in Season so far now (components/season-wx.js) and soil sits in the grid, so no fold. */
+/* 2026-10-06 (U13) folded the GDU and soil tiles on phones, Sep to Nov. 2026-11-04 (GDUs year round, less wasted
+ space): the GDU tile is in Season so far now (components/season-wx.js) and soil sits in the grid, so no fold. */
 } catch (e) { blockFailed(e); }
 /* ---- 2026-10-16: no location after a few seconds ----
-   2026-10-19 (Sig): never ask for the location on load. With no saved place
+   2026-10-19: never ask for the location on load. With no saved place
    this box shows at once, worded as an offer ("See the bids near you."),
    with a "Use my location" button; "Your location did not come through."
    only follows a tap that got no location (geo.js requestGeo).
@@ -1889,7 +1889,7 @@ try {
   function day(iso){var d=new Date(iso);return isNaN(d)?'':d.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/Chicago'});}
   /* One state, as lines. Only crops with a median (basis-states.json prints
      one at min_n elevators or more); a thinner crop is counted, not priced. */
-  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Nov 3 2026); a file without the company count says 'median of N elevators'. */
   function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   window.__agsistNolocRows=function(doc,code){
     var s=doc&&doc.states&&doc.states[code];if(!s)return null;
@@ -1933,7 +1933,7 @@ try {
       var row=document.getElementById('bids-zip-row'),z=document.getElementById('bids-zip');
       if(row)row.style.display='block';if(z)z.focus();
     });
-    /* 2026-10-19 (Sig): the browser is asked only on this tap. geo.js
+    /* 2026-10-19: the browser is asked only on this tap. geo.js
        draws the bids over this box when a place lands, and says so here
        when none does. */
     box.querySelector('.hn-loc').addEventListener('click',function(){
@@ -1960,7 +1960,7 @@ try {
       var out=box.querySelector('.hn-out');if(out)out.innerHTML='<p class="hn-fine">State basis did not load. Your ZIP still works.</p>';
     });
   }
-  /* 2026-10-19 (Sig): nothing asks for the location on load any more, so a
+  /* 2026-10-19: nothing asks for the location on load any more, so a
      first visit with no saved place gets this box at once (home.js runs
      before first paint, so the card never shows the gray rows first). A
      saved place keeps the old wait, for a lookup that stalls. */

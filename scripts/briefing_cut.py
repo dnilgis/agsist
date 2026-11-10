@@ -2,11 +2,10 @@
 """
 briefing_cut.py — the one definition of how long AGSIST Daily is allowed to be.
 
-Sig, 2026-09-11: "i will go with all the way as long as it becomes the most
-impactful daily ag briefing available, period." He also said he barely reads
+2026-09-11 He also said he barely reads
 it because it is too long. Before this file the budget was a number inside a
 prompt (750, then 750-900), a second number inside the critic's Rule 8, and a
-third inside validate_briefing() — and "Word budget" sat in NON_BLOCKING, so
+third inside validate_briefing — and "Word budget" sat in NON_BLOCKING, so
 no run could ever fail for length. It drifted for two days while five other
 rounds shipped over it.
 

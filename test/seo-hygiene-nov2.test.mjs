@@ -199,7 +199,7 @@ function datasetsOf(h, type) {
   return out;
 }
 
-// Rain county title test (Sig, Nov 2): the title leads with the year's own inches and place; it is the page's total.
+// Rain county title test (Nov 2): the title leads with the year's own inches and place; it is the page's total.
 test("rain county pages: the title's inches are the total the page shows, og:title in step", () => {
   let n = 0, bare = 0, question = 0;
   for (const st of readdirSync(ROOT + "rain", { withFileTypes: true }).filter((d) => d.isDirectory())) {

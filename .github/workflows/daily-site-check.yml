@@ -1,7 +1,7 @@
 name: Daily site check
 # Daily site check.
 
-# Sig approved 2026-10-17. Once a day after the morning data runs: the number
+# The owner approved 2026-10-17. Once a day after the morning data runs: the number
 
 on:
   schedule:

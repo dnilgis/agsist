@@ -140,7 +140,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
   /* ---------- the token ---------- */
   function tok() { return $('tok').value.trim(); }
   /* One token box for every tab. The Haymow desk kept its own key before Oct 28: read it once
-     as a fallback and keep it under the shared key, so Sig never pastes twice. */
+     as a fallback and keep it under the shared key, so the owner never pastes twice. */
   var OLD_KEYS = ['agsist-haymow-admin-token'];
   try {
     var t0 = localStorage.getItem(TOK_KEY) || '';

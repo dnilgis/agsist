@@ -1,4 +1,4 @@
-/* Farmland Atlas map: the recorded farmland sales layer (Sig, Nov 5, 2026: every county with recorded sales is
+/* Farmland Atlas map: the recorded farmland sales layer (Nov 5, 2026: every county with recorded sales is
  * shown, no minimum count; the count stands beside every figure and low counts are marked, never hidden).
  *   - data/land/atlas-layer.json agrees with the state summaries it is built from: every county with a market sale
  *     in the window has its count, every priced county its median and the sales behind it
@@ -6,7 +6,7 @@
  *   - Florida dates are months
  *   - in Chromium, on a fixture file: covered counties with no sale, uncovered states, a county with sales but no
  *     farm-size price, the thin-read mark, Florida months, the two links, the count toggle
- * Reads live files only for invariants (BUILD-RULES 73): no county's presence or value is pinned.
+ * Reads live files only for invariants (build rule 73): no county's presence or value is pinned.
  *
  *   node --test test/atlas-sales-layer.test.mjs
  */
@@ -140,7 +140,7 @@ test("in Chromium: fills, the card, the thin mark, Florida months, links and the
     const pg = await ctx.newPage();
     const errors = [];
     pg.on("pageerror", (e) => errors.push(String(e)));
-    // BUILD-RULES 58: nothing leaves the machine
+    // build rule 58: nothing leaves the machine
     await pg.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.abort());
     const open = async (hash) => {
       await pg.goto(`http://127.0.0.1:${port}/farmland-atlas#${hash}`);

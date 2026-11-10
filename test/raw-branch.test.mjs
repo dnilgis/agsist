@@ -4,8 +4,7 @@
  * GitHub Pages publishes all of main. data/ was at 290 of its 300 MB budget,
  * and about 80 MB of it was raw inputs no page fetches: the Farmland Atlas
  * pulls (data/atlas/raw) and each workflow's probe captures. They moved to the
- * `raw` branch at the same paths; nothing was deleted (Sig: "don't throw away
- * anything important"). This keeps them from coming back to main, checks every
+ * `raw` branch at the same paths; nothing was deleted. This keeps them from coming back to main, checks every
  * workflow that writes them saves them to raw instead, and runs
  * scripts/push_raw.sh and scripts/pull_raw.sh against a throwaway remote.
  *
@@ -21,8 +20,8 @@
  * unpacks data/atlas/src first; the PR checks pull drought.json for
  * test/drought-county-week.test.mjs.
  *
- * Oct 20 (Sig): the raw and references branches moved off the public repo, to
- * the private repo dnilgis/feedbag. Every step that saves or reads them
+ * Oct 20: the raw and references branches moved off the public repo, to
+ * the private repo the private repo. Every step that saves or reads them
  * passes the PRIVATE_REPO_TOKEN secret; scripts/private_remote.sh turns it into
  * the remote. A save that fails in a job that publishes site data is a warning
  * (RAW_SOFT=1), never the reason the data did not ship; a missing build input

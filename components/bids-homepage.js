@@ -817,7 +817,7 @@
   // cannot show a stale or invented number: no bid, no line.
   /* WAVE1-A: one option per elevator and crop: its nearest open delivery
      month, per bushel, not a special grade. Nearest elevator first. */
-  /* EARLIEST BID FIRST (Sig, 2026-11-02). Inside one delivery month a board can post a
+  /* EARLIEST BID FIRST (2026-11-02). Inside one delivery month a board can post a
      first-half and a last-half bid (Nevada, IA: "FH Nov 2026" $4.17, "LH Nov 2026" $4.22);
      both file under Nov and the option took the higher one, so the last half (later
      delivery) stood in as today's price. Tier 0: spot or cash, the first half, the whole

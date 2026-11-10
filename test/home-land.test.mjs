@@ -1,5 +1,4 @@
-/* Farmland sales, not missable (Sig, Nov 4 2026: "my buddy didn't know that farm land sales were on agsist, we need
- * to fix that and make sure it is not missable"; "there is dead space on the home page").
+/* Farmland sales, not missable (Nov 4 2026; "there is dead space on the home page").
  *   - the builder's rule (scripts/build_land_sales.py lead_pick, LEAD_RULE): its selftest cases ran;
  *   - components/home-land.js in node: the reader's state first, else the newest covered sale labeled with its state,
  *     "Not yet in <state>" for an uncovered saved state, withheld on a missing or malformed file, and never a name
@@ -9,9 +8,9 @@
  *   - site search: the words people type land on /land-sales/;
  *   - in Chromium: at 1280 px the block is on the first screen, in the room under Sell grain and My field; at 390 px
  *     it sits right under My field with no gap, before the futures (the three jobs keep the phone's first screen,
- *     Sig Nov 2, test/home-jobs.test.mjs); it shows the fixture's sale, never a name, and moves nothing; with no
+ * The owner Nov 2, test/home-jobs.test.mjs); it shows the fixture's sale, never a name, and moves nothing; with no
  *     data file the plain words and the link stay.
- *     Every outside host is aborted and service workers are blocked (BUILD-RULES 58).
+ *     Every outside host is aborted and service workers are blocked (build rule 58).
  *
  *   node --test test/home-land.test.mjs
  */
@@ -35,7 +34,7 @@ function lead(st, o) {
     rule: "The highest price per acre among bare farmland sales (40 acres or more) recorded in Wisconsin in the 30 days to Sep 30, 2026.",
     src: "Wisconsin Department of Revenue", buyer: NAME, grantee: NAME }, o || {});
 }
-// the page clock for every case below (BUILD-RULES 50: no test reads today's date)
+// the page clock for every case below (build rule 50: no test reads today's date)
 const NOW = new Date(2026, 10, 4, 9, 0);
 const FIX = {
   states: ["IL", "WI", "IN", "VT", "NJ"], published: "2026-11-03",

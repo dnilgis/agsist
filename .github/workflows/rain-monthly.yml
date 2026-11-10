@@ -1,8 +1,8 @@
 name: Monthly county rain email
 # Monthly county rain email.
 
-# topic rain-month:<fips>; scripts/send_rain_month.py). Sig approved the list,
-# The 2nd, 14:41 UTC (morning in Central), the one schedule Sig approved.
+# topic rain-month:<fips>; scripts/send_rain_month.py). The owner approved the list,
+# The 2nd, 14:41 UTC (morning in Central), the one schedule the owner approved.
 on:
   schedule:
     - cron: "41 14 2 * *"

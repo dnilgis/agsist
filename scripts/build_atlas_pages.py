@@ -79,7 +79,7 @@ LICENSE_URL = "https://creativecommons.org/licenses/by/4.0/"
 CREDIT = "AGSIST Farmland Atlas, agsist.com/farmland-atlas"
 RANK_SENTENCE = ("Rent ranks count every county with a published rent in the same survey year, within the state (the same counties as the state rent page); "
                  "other ranks count counties with 10,000 acres or more in farms.")   # test/priceatlas.test.mjs A6: the sheet prints the same sentence
-# the Christmas Rain Print line (components/rp-xmas.js, Sig 2026-10-30), county pages only. A plain script tag on
+# the Christmas Rain Print line (components/rp-xmas.js, 2026-10-30), county pages only. A plain script tag on
 # purpose: it writes the line before the first paint, so nothing moves.
 XMAS_JS = '<script src="/components/rp-xmas.js?v=1"></script>'
 
@@ -373,7 +373,7 @@ def uni_survey_note(W, st):
                "Their numbers, on their page; this page does not copy them."))
 
 
-# County land values where sale prices are not public record (Sig, Oct 29, 2026 priority queue: ND Trust
+# County land values where sale prices are not public record (Oct 29, 2026 priority queue: ND Trust
 # Lands, the K-State Kansas book). data/land/<st>/survey.json, written by scripts/build_land_survey.py
 # from the PDFs. Neither is a recorded sale: every line names its evidence ("state survey of farmers",
 # "average of reported sales, K-State") and year, sits on the county's land line under the land
@@ -1348,7 +1348,7 @@ def sales_summary(W, st):
 
 
 def sales_tile(W, f, st):
-    """The recorded-sales headline tile (Sig, Oct 19, 2026), the same words as AtlasSales.tile in
+    """The recorded-sales headline tile (Oct 19, 2026), the same words as AtlasSales.tile in
     components/atlas-sales.js (test/atlas-sales-tile.test.mjs compares them on every IL and WI
     county). The median is the one the "Recorded farm sales" block leads with: market sales of
     min_acres+ acres with known acres in the last 12 months. Under min_n: n/a with the count and
@@ -1452,12 +1452,12 @@ def sales_state(W, st):
             '<script defer src="/%s?v=%s"></script>' % (st, esc(src["record"]), urls, SALES_JS, sales_v(W.root)))
 
 
-# The land sales door (Sig, Oct 29, 2026: "the farmland sale page should be easy to find"). One
+# The land sales door (Oct 29, 2026). One
 # line in the county's Land card, only where it helps. A state with sales on /land-sales/ links the
 # county's own page there, only when that page is on disk (scripts/build_land_sales.py writes one per
 # county with sales; the county comes from data/land-sales/<st>.json by FIPS, never guessed from the
 # name). A county in such a state with no sale of its own gets one neutral line to the farm sales
-# page. A state without sales prints nothing: no research status on a public page (Sig, Nov 8, 2026),
+# page. A state without sales prints nothing: no research status on a public page (Nov 8, 2026),
 # so data/land-sales/coverage.json is not read here. test/land-nav.test.mjs checks every page.
 LS_DIR = "land-sales"
 
@@ -1493,7 +1493,7 @@ def _land_sales_door(W, f, lab, st):
     return '<p class="note" data-ls-door="state">Farm sales by county: see the <a href="/%s/">farm sales page</a>.</p>' % LS_DIR
 
 
-# Land first (Sig, Oct 29, 2026: the property view is top priority; panel record
+# Land first (Oct 29, 2026: the property view is top priority; panel record
 # notes/panels/property-2026-10-29). In a state with sales on /land-sales/, a county that has its
 # own sales page opens with the land: place and how fresh the sales are, what ground sold for (the
 # 24-month market middle, its count and middle half, or "too few sales"), the three newest sales
@@ -1606,7 +1606,7 @@ def land_first_rent(rv, ri, rv_old, R):
     return '<div class="lf-r"><span class="l">Rent</span><span class="r"><b>%s</b><span class="lc"> %s</span></span></div>' % (esc(v), esc(sub))
 
 
-# ---- auction results (Sig, Nov 7, 2026): the sold and auction results land auction firms publish on their
+# ---- auction results (Nov 7, 2026): the sold and auction results land auction firms publish on their
 # own sites, read into data/land/auctions/<firm>.json (scripts/read_schrader.py). A fourth kind of land figure,
 # kept apart from recorded transfers, surveys and assessments: its own card after the Land card, the firm's
 # own figures as printed (its per-acre figure where it printed one; a tract without one gets none, never a
@@ -2189,7 +2189,7 @@ def county_title(W, f, rec, max_len=60):
         tail = ": Farmland Value and Risk"
     else:
         tail = ": Farmland Record"
-    # County farm facts (Sig, Oct 23, 2026): the page's name leads where it fits, the rent stays in
+    # County farm facts (Oct 23, 2026): the page's name leads where it fits, the rent stays in
     # the title (the query the page is found by); else the older title, shortened as before
     ff = (" Farm Facts · " + tail.lstrip(" :")) if tail.startswith(" ") else (" Farm Facts" + (tail if "Record" not in tail else ""))
     tries = []
@@ -2218,7 +2218,7 @@ def county_desc(lede_text):
 
 
 # ------------------------------------------------- county farm facts (Oct 23, 2026)
-# The Atlas county page is the county home (Sig, Oct 23: vision panel Oct 22, build 3,
+# The Atlas county page is the county home (Oct 23: vision panel Oct 22, build 3,
 # laid out like the Barron mock). It keeps every figure the Atlas page carried and adds:
 #   - "Stands out": up to three figures ranked against the county's OWN record, each
 #     with the length of that record and its source. Only a record high or low, or a
@@ -2255,7 +2255,7 @@ def cp_v(root):
 
 
 def county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfacts):
-    """The County Print's yearly figures (Sig, Nov 7, 2026), as this page prints them: the same values through
+    """The County Print's yearly figures (Nov 7, 2026), as this page prints them: the same values through
     the same formatters as the key tiles and the cards, so the sheet can never disagree with the page. Short keys,
     a few hundred bytes a page; a figure the page withholds is left out (the sheet drops its row, never a guess).
     The daily rows (bids, basis, rain, drought, hail) come from county-home.js in the browser, not from here.
@@ -2547,7 +2547,7 @@ def county_page(W, f, d, stamp):
         if s_ and not s_.get("none"):
             s_["latest"] = RL
     keys = ""
-    # the neighbor table's rule on the dry tile too (Sig, Oct 19, 2026): a rent more than three
+    # the neighbor table's rule on the dry tile too (Oct 19, 2026): a rent more than three
     # survey years old shows n/a with its last year (134 counties, 2009 to 2022, on the 2026 file),
     # and no state comparison or rent per bushel is drawn from it
     rv_old = bool(rv and RL and rv.get("year") and rv["year"] < RL - 3)
@@ -2980,7 +2980,7 @@ def county_page(W, f, d, stamp):
     in_ask = ('<div data-land-alert data-source="%s"></div>' % esc(("page:%s/%s" % (OUT, W.slug[f]))[:60])) if lf_html and st == "IN" else ""
     C_LAND = ('<section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2>'
               + S1 + S2 + sales_block(W, f, lab, st, bool(lf_html)) + in_ask + sales_faq_html + land_sales_line(W, f, lab, st) + "</section>")
-    # auction results: their own card right after the Land card, never inside it (Sig, Nov 7, 2026)
+    # auction results: their own card right after the Land card, never inside it (Nov 7, 2026)
     C_AUC = auction_section(getattr(W, "auctions", {}).get(f))
     arc_link = ('<p class="note">Benchmarks, payments and the choice for each crop: <a href="%s">ARC or PLC in %s</a>.</p>' % (arc_url, esc(lab))) if arc_url else (
         ('<p class="note">No county ARC or PLC estimate here. <a href="/arc-plc/%s">ARC or PLC in %s</a>.</p>' % (slugify(stn), esc(stn)))
@@ -2995,7 +2995,7 @@ def county_page(W, f, d, stamp):
                     esc(f), esc(st), esc(lab), (' data-lat="%s" data-lng="%s"' % (ctr[0], ctr[1])) if ctr else "",
                     (' data-ring="%s"' % county_ring(W, f)) if county_ring(W, f) else "", ' data-ls-done="1"' if lf_html else "", ",".join(lines), heads,
                     esc(re.search(r'href="([^"]+)"', rain_note).group(1)) if rain_note else "", esc(arc_url or "/arc-plc"), CH_JS, ch_v(W.root)))
-    # County Print (Sig, Nov 7, 2026): the one-page sheet, the phone picture and the share link, drawn in the
+    # County Print (Nov 7, 2026): the one-page sheet, the phone picture and the share link, drawn in the
     # browser by components/county-print.js from the figures this page prints (cp below) and the live rows
     # county-home.js fills. Print falls back to the shared sheet before the script runs.
     cpd = county_print_data(W, f, d, st, rv, ri, rv_old, rpb, ytv, yt, ylast, ss, sfacts)

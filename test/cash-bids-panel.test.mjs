@@ -1,4 +1,4 @@
-/* /cash-bids, the panel review of 2026-11-09 (notes/panels/cash-bids-2026-11-09):
+/* /cash-bids, review of 2026-11-09 (notes/panels/cash-bids-2026-11-09):
  *   #1  the signup box is one line (heading, email, button); the price alert and crop select are behind a closed
  *       "More options"; the ZIP is carried (shown only when none is known); same worker route and source tag
  *   #2  the no-ZIP table shows the reader's own state first when it is known

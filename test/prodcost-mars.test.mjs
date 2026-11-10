@@ -1,4 +1,4 @@
-/* USDA production cost reports (Sig, Nov 2, 2026): fertilizer, farm diesel and propane from USDA
+/* USDA production cost reports (Nov 2, 2026): fertilizer, farm diesel and propane from USDA
  * My Market News into data/production-costs.json (scripts/fetch_prodcost_mars.py), shown on Fast
  * Facts My place.
  *   node --test test/prodcost-mars.test.mjs

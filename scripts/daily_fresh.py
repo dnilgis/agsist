@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-daily_fresh.py -- the Daily never says the same thing two days running (Sig,
-Nov 1 2026: "the best morning email that people actually look forward to
+daily_fresh.py -- the Daily never says the same thing two days running (Nov 1 2026: "the best morning email that people actually look forward to
 reading every day"; never the same headline, number, story or fact twice).
 
 WHY. The 14 issues Oct 19 to Nov 1 2026 (data/daily-archive):
@@ -11,12 +10,12 @@ WHY. The 14 issues Oct 19 to Nov 1 2026 (data/daily-archive):
     Oct 31 and Nov 1; "$2.4 billion" extra diesel cost on Oct 28 and 29.
   - The same story: the Senate farm bill score on Oct 31 and Nov 1; the Texas
     elk screwworm case on Oct 23 and again Oct 25.
-  - 11 of the 14 headlines start "Corn ...".
+  - 11 of the 14 headlines start "Corn...".
 The writer was shown three past headlines and nothing else, so it could not know.
 
 WHAT. One definition, used by the generator (prompt block, the one send-back and
-the cut), the gate (what is left is a warning, never a hold: Sig, Nov 1) and the replay.
-Sig, Nov 2: "cut the repeat": what still repeats after the one rewrite does not ship
+the cut), the gate (what is left is a warning, never a hold: Nov 1) and the replay.
+Nov 2: what still repeats after the one rewrite does not ship
 (cut_repeats); the email still always goes out.
   recent(today, archive_dir, n)   the last n issues before today, oldest first
   memory_block(recent)            "ALREADY SAID THIS WEEK" for the writer's prompt
@@ -52,7 +51,7 @@ THE THRESHOLDS, measured on the whole archive (Mar 4 to Nov 1 2026, 234 issues):
     little words do not). Of 1,555 headline pairs within 7 days, 7 reach 0.5:
     1.00 Nov 1/Oct 31, 0.78 Oct 25/Oct 24, 0.78 Jul 26/25, 0.75 Sep 6/4,
     0.67 Apr 14/10 ("Grains drift/steady as planting window opens"), 0.57 Apr 10/6,
-    0.50 Jul 6/3 ("Corn breaks 4% again; oats ..."), every one a rerun. The next
+    0.50 Jul 6/3 ("Corn breaks 4% again; oats..."), every one a rerun. The next
     pairs (0.45) are the same weekly template with new numbers.
   WEEKEND_SIM 0.3: a weekend headline vs the weekday issue before it. Oct 24 vs
     Oct 23 is 0.33 and is Friday's corn $4.56 and crude 3.8% again.
@@ -96,7 +95,7 @@ NEW_TURN_MAX = 0.8          # above this a title is a retelling even with a new 
 SAME_LEAD_RUN = 3
 SAID_SIM = 0.8              # share of a sentence's (weighted) words already said in one sentence this week
 STORY_TEXT_SIM = 0.5        # title + body against an older item's title + body: the same story
-HARD = ("headline", "weekend", "number")      # sent back once; then cut_repeats (Sig, Nov 2: "cut the repeat")
+HARD = ("headline", "weekend", "number")      # sent back once; then cut_repeats (Nov 2)
 CUT = ("story", "sentence")                   # sent back once, then cut by the generator
 SOFT = ("same-lead",)                         # sent back once, a warning after
 # where a repeated sentence may be cut (the headline and titles never are; a field is never emptied)
@@ -478,7 +477,7 @@ def hits(briefing, rec, today=None, archive_dir=ARCHIVE, locked_prices=None, loc
             found.append(("story", "outside_the_pit[%d]" % i, "%r retells %s's %r with nothing new in the title"
                           % (it["title"], _day(best[1]), best[2]["title"])))
             continue
-        # Sig, Nov 2: a story already reported in the last 7 days is a repeat unless its title has a new
+        # Nov 2: a story already reported in the last 7 days is a repeat unless its title has a new
         # development, whether it ran as a news item or inside a section.
         text = "%s %s" % (it["title"], it.get("body") or "")
         best = None
@@ -540,7 +539,7 @@ def story_line(briefing):
 
 
 def cut_repeats(briefing, found, rec, today=None, archive_dir=ARCHIVE, locked_prices=None, locked_changes=None):
-    """Sig, Nov 2 2026: "cut the repeat". After the one rewrite, a repeat that is still there does not ship,
+    """Nov 2 2026. After the one rewrite, a repeat that is still there does not ship,
     and the email still goes out:
       story     the news item is cut (drop_stories)
       sentence  the sentence is cut, unless it is the field's only sentence

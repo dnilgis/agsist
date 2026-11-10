@@ -1,7 +1,7 @@
 """Add signups kept by the backup form (worker blocked or unreachable) straight
-to their lists, as Sig asked (no confirm email). Reads
+to their lists, as the owner asked (no confirm email). Reads
 private/<PENDING_FILE> (default pending-signups.jsonl, the Oct 21-22 block)
-from dnilgis/feedbag (branch private-data),
+from the private repo (branch private-data),
 posts each to the worker's own routes, and prints counts only.
 
 Daily and notice records go through /subscribe and /notice, which add at once.

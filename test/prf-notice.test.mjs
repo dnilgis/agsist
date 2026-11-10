@@ -1,4 +1,4 @@
-/* The PRF grid index email (2026-10-17, Sig approved): "Email me when grid
+/* The PRF grid index email (2026-10-17): "Email me when grid
  * N's index posts" on /prf and the PRF county pages, topic prf:<grid> (subs
  * worker v5.29), mailed by scripts/send_prf_notice.py from prf.yml.
  * PRF rule: plain index information, no lead capture beyond the address, no
@@ -69,7 +69,7 @@ test("every real grid passes the id check the worker uses; neighbours outside do
 test("/prf: one ask holder under the answer, the component loaded, the byline says what the box sends", () => {
   const h = read("prf.html");
   assert.equal((h.match(/data-prf-notice/g) || []).length, 1);
-  /* Sig, Oct 20: on a ?g= link the email box goes below the answer, not in the grid card above it */
+  /* Oct 20: on a ?g= link the email box goes below the answer, not in the grid card above it */
   const at = h.indexOf('<div class="prf-notice" data-prf-notice hidden></div>');
   assert.ok(at > h.indexOf('id="prf-answer"') && at > h.indexOf('id="prf-acts"'), "under the step 3 answer");
   assert.ok(at < h.indexOf('id="prf-det-h"') && at < h.indexOf('id="prf-optimize"'), "above step 4");

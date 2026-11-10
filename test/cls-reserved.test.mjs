@@ -1,4 +1,4 @@
-// Reserved space, read from the files (Oct 29, 2026; Sig approved). Every element a page's scripts fill or reveal
+// Reserved space, read from the files (Oct 29, 2026). Every element a page's scripts fill or reveal
 // after the first paint must have its box held in the HTML or CSS up front: a min-height or height, a set width,
 // an aspect-ratio, tabular figures for a counter, or a hold (visibility:hidden under a class set before paint).
 // Otherwise it moves the page when it fills, and the browser layout-shift tests only catch that when the timing

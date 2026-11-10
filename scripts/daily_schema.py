@@ -89,7 +89,7 @@ OPTIONAL_TOP_LEVEL = [
     "corrections",         # 2026-10-16: [{date, text}] dated correction notes, added by hand (editorial-standards#corrections)
     "first_published_at",  # 2026-10-16: ISO UTC, when this date's issue first went up (generate_daily.keep_first_published)
     "edge",                # 2026-10-17: {label, generated, facts[]} "Only on AGSIST", computed by scripts/daily_edge.py
-    "cca_note",            # 2026-10-17: {date, text} Sig's own note from data/cca-note.json, only on the date he set
+    "cca_note",            # 2026-10-17: {date, text} the owner's own note from data/cca-note.json, only on the date he set
     "freshness",           # 2026-11-01: {window, tries, hits[]} the repeat check vs the last 7 issues (scripts/daily_fresh.py)
     "basis_wow",           # 2026-11-09: {print, rows[], why, snapshot} the state basis line (only_here.wow_rows, daily_fresh memory)
 ]
@@ -339,7 +339,7 @@ def validate(data: dict) -> tuple[bool, list[str], list[str]]:
             errors.append(f"{len(_otp)} top stories; max is {briefing_cut.MAX_OTP}")
 
     # top story links (2026-11-01): attached by code from the news digest. A link
-    # a reader clicks is https and never on a shared host (BUILD-RULES 11).
+    # a reader clicks is https and never on a shared host (build rule 11).
     for _i, _it in enumerate(data.get("outside_the_pit") or []):
         _u = _it.get("link") if isinstance(_it, dict) else None
         if _u and not _safe_link(_u):

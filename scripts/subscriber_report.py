@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Email Sig every subscriber, sorted by what they signed up for.
+"""Email the owner every subscriber, sorted by what they signed up for.
 
 Run by .github/workflows/subscriber-report.yml (manual button only). Reads the
 agsist-api subs worker's token-gated list routes with LIST_TOKEN, builds one CSV per

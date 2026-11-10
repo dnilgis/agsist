@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""build_infographic_pages.py: the Friday Chart pages (subtitle "Infographic of the Week"; Sig Nov 7), from the specs
+"""build_infographic_pages.py: the Friday Chart pages (subtitle "Infographic of the Week"; Nov 7), from the specs
 in data/infographics/. The URLs stay /infographic/ for now.
 
 OFFLINE. Reads committed files only. MACHINE-OWNED: edit this script, never infographic/*.html. Built on main

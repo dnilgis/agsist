@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Site forms digest (2026-10-11): emails Sig what came in through the site's
+Site forms digest (2026-10-11): emails the owner what came in through the site's
 own forms (the first three used to go to Formspree).
 
   list-your-elevator  fix your listing (claim)       kind claim (was elevators.html until Oct 22, 2026)
@@ -12,28 +12,28 @@ own forms (the first three used to go to Formspree).
   list-your-elevator  an elevator asks to post bids  kind elevator-listing (worker v5.21)
   prf-sponsor         a business asks about PRF      kind prf-sponsor (worker v5.22)
                       state sponsor slots
-  rain-print.html     "Rather not fiddle with it?"   kind rain-print-help (2026-10-30): Sig makes the
+  rain-print.html     "Rather not fiddle with it?"   kind rain-print-help (2026-10-30): the owner makes the
                                                      print for them (components/rp-forme.js). Until
                                                      the worker knows the kind, these go to Formspree.
 
 A gift order (this year's print, ordered before the year is over) says so in
 the subject, "Rain print order (2026 gift, January): ...", and its body tells
-Sig to make it after January 1, once the full year is in. An
+The owner to make it after January 1, once the full year is in. An
 ordinary order given as a gift (gift:true, worker v5.12) says "(gift)" instead,
 and both list who it is for, where it goes and the note for the card. A
 business quote shipped to each customer lists its note for every print.
 
-A digital file order (2026-10-14, Sig) gets a Next line: there is no proof
-step for the file. Sig emails the finished file within 1 business day after
+A digital file order (2026-10-14) gets a Next line: there is no proof
+step for the file. The owner emails the finished file within 1 business day after
 payment (a January gift: in January), and redoes it free if they ask.
 
 The pages post to the subs worker (POST /form, workers/subs-worker.js v5.8),
 which stores each post in KV under form:<kind>:<ms>:<rand>. This job reads the
-ones not yet mailed (GET /form-list?new=1), sends Sig ONE email listing them,
+ones not yet mailed (GET /form-list?new=1), sends the owner ONE email listing them,
 then marks them mailed (POST /form-mark). Mark after send: a failed send leaves
 them unmarked and the next run tries again. Nothing is written to the repo.
 
-Every digest opens with one counts line (2026-10-14, Sig): what came in over
+Every digest opens with one counts line (2026-10-14): what came in over
 the last 24 hours by kind, mailed or not, e.g. "Last 24 hours: 2 Rain Print
 order requests, 0 gift card redemptions, ... 5 rain gauge waitlist, ...". It
 reads the whole stored list (GET /form-list, no new=1) and the rain gauge
@@ -42,11 +42,11 @@ If either read fails the line says the counts could not be read and the
 digest still goes. scripts/morning_report.py uses the same counter.
 
 The hay board (worker v5.30, agsist.com/haymow) rides the same run: new
-posts, and posts held by the screen or hidden by three reports, go to Sig in
+posts, and posts held by the screen or hidden by three reports, go to the owner in
 one more email (public text only, never the poster's phone or email), then
 POST /hay/admin/mark. The hay admin routes take the token as a Bearer header.
 Each post links to it on the Haymow desk (agsist.com/haymow-admin#<id>, the
-token pasted there once, never in the link). No curl line (Sig, Nov 2: the desk does it from a phone).
+token pasted there once, never in the link). No curl line (Nov 2: the desk does it from a phone).
 
 The Actions log gets counts only, never a name, address or phone.
 
@@ -97,12 +97,12 @@ EL_HOW = {"email": "Add bids@agsist.com to the morning bid email or text", "phon
           "not-sure": "Not sure yet"}
 EL_NEXT = ("Call the elevator at its own number (not only the one typed here) and ask for this person. "
            "Then make the listing at agsist.com/elev-admin under Requests, or Dismiss it there.")
-# What Sig does with a PRF state sponsor inquiry (worker v5.22). The price is never on the site.
+# What the owner does with a PRF state sponsor inquiry (worker v5.22). The price is never on the site.
 PRF_NEXT = ("Reply with your price for these states (Reply goes to them). Terms: one business per state, prepaid, "
             "placement through Dec 31, first say on renewing. Once paid, add one entry per state to data/prf-sponsors.json "
             "(name, url, line, phone, logo in img/sponsors/ under 50 KB, through YYYY-12-31) and commit. It shows on the state "
             "page, every county page and the /prf result for that state on that commit.")
-# What Sig does with a "make it for me" request (rain-print-help, 2026-10-30). How-to: feedbag notes/howto/rain-print-design-for-them.md.
+# What the owner does with a "make it for me" request (rain-print-help, 2026-10-30). How-to: the private repo the private notes.
 RPH_NEXT = ("Call or write them and ask a few things (the year, the name for the print, any dates to mark). Make two or three "
             "versions on agsist.com/rain-print, press Copy link on each, and email the links. They open one and order it the "
             "usual way; the proof email is where they approve it. No charge for the help.")
@@ -120,7 +120,7 @@ RP_DELIVER = {"buyer": "The buyer", "recipient": "The person it is for"}
 RPB_PRODUCT = {"print": "13 x 19 print", "framed": "13 x 19 framed print", "digital": "Digital file", "not-sure": "Not sure yet"}
 RPB_SHIP = {"one": "All to one address", "each": "One to each customer", "not-sure": "Not sure yet"}
 GIFT_NOTE = "Yes: make it after January 1, once the full year is in"
-# A digital file has no proof step (2026-10-14, Sig): the finished file goes out after payment.
+# A digital file has no proof step (2026-10-14): the finished file goes out after payment.
 RP_FILE_NEXT = ("No proof for the file. Email them the finished file within 1 business day after they pay. "
                 "If they ask for any change, fix it or redo it by hand and send it again, no charge.")
 RP_FILE_NEXT_JAN = ("No proof for the file. Email them the finished file in January, once the full year is in. "
@@ -159,7 +159,7 @@ FIELDS = {
 }
 
 
-# The counts line (2026-10-14). (key, one, many), in the order Sig reads them.
+# The counts line (2026-10-14). (key, one, many), in the order the owner reads them.
 # "gift-card" is a rain-print-order placed with a gift card (it has a
 # gift_card field); "rain-gauge" is the /notice waiting list, not a form.
 TALLY = (("rain-print-order", "Rain Print order request", "Rain Print order requests"),
@@ -304,7 +304,7 @@ def gift_tag(p):
 
 
 # The 2026-10-17 Rain Print options, read from the design link the order carries (components/rain-print.js toParams),
-# so Sig sees what the print must show without opening it: crop and its days, plant drawings, a usual year,
+# so the owner sees what the print must show without opening it: crop and its days, plant drawings, a usual year,
 # every year behind, frost marks, hottest and coldest day, the temperature band.
 RP_CROP = {"corn": "Corn", "soy": "Soybeans"}
 MON3 = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -322,8 +322,8 @@ def rp_options(url):
     q = urllib.parse.parse_qs(urllib.parse.urlsplit(url).query)
     on = lambda k: q.get(k, [""])[0] == "1"
     out = []
-    # a crop layer: only a design made before Oct 23, 2026 has one (Sig: no crop layers since); it does not print
-    # unless Sig says so (his order view with oldcrop=1), so the order mail says that next to it
+    # a crop layer: only a design made before Oct 23, 2026 has one (no crop layers since); it does not print
+    # unless the owner says so (his order view with oldcrop=1), so the order mail says that next to it
     crop = q.get("crop", [""])[0]
     if crop in RP_CROP:
         out.append("%s, planted %s, harvested %s%s%s (old crop layer: not printed unless you say so)" % (
@@ -380,7 +380,7 @@ def blocks(posts):
             p = dict(p, gift_card_twice="yes")
         gift = is_gift(p)
         if p["kind"] == "rain-print-order" and p.get("choice") == "framed12x18" and p.get("frame_color") not in ("oak", "black"):
-            # worker v5.63 (Sig, Nov 4): a framed order from before the color choice was black
+            # worker v5.63 (Nov 4): a framed order from before the color choice was black
             p = dict(p, frame_color="black")
         rows = [(lab, value(p, f)) for f, lab in FIELDS[p["kind"]]
                 if p.get(f) not in (None, "") and (gift or not f.startswith("gift_") or f.startswith("gift_card"))
@@ -406,7 +406,7 @@ def build(posts, to, fn="AGSIST", fa="", top=""):
     m["To"] = to
     m["Message-ID"] = make_msgid(domain=(fa.split("@", 1)[1] if "@" in fa else "agsist.com"))
     # One post with an address: Reply goes straight to that person, the way
-    # Formspree's emails did. With several, Sig picks from the links.
+    # Formspree's emails did. With several, the owner picks from the links.
     # A help request (rain-print-help) has one "phone or email" box: Reply-To only when it is an address.
     one = posts[0].get("email") or (posts[0].get("contact") if posts[0].get("kind") == "rain-print-help" else "") if len(posts) == 1 else ""
     if len(posts) == 1 and re.fullmatch(r"[A-Za-z0-9._%+'-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", str(one or "")):
@@ -457,7 +457,7 @@ def run(base, tok, to, dry, send, fetch=worker, top=None, tally=None):
     try:
         posts = fetch(base, "form-list", tok, new="1")
     except list_source.Unavailable as e:
-        # Oct 21: the Cloudflare block page. Not our failure: one warning, exit 0 (Sig had 45,000 "Run failed" emails)
+        # Oct 21: the Cloudflare block page. Not our failure: one warning, exit 0 (the owner had 45,000 "Run failed" emails)
         log.append("::warning::worker blocked, skipped (form posts are only on the worker: %s)" % e)
         return 0, log
     except urllib.error.HTTPError as e:
@@ -558,7 +558,7 @@ def hay_rows(p):
     if HAY_ID_RE.fullmatch(str(p.get("id") or "")):
         rows.append(("Id", p["id"]))
         rows.append(("On the desk", "%s#%s" % (HAY_DESK, p["id"])))
-        # Nov 2, 2026 (Sig): no curl line. It is useless on a phone, and the desk link hides or clears the post.
+        # Nov 2, 2026: no curl line. It is useless on a phone, and the desk link hides or clears the post.
     return rows
 
 
@@ -1009,7 +1009,7 @@ def selftest():
     bad = build([dict(rp, logo="<b>x</b>")], "s").get_body(("html",)).get_content()
     ck("a bad logo id is no link", "<b>x</b>" not in bad and "rp-logo/&lt;" not in bad and "does not look right" in bad)
     ck("no logo, no Logo: line", "Logo:" not in build([rp], "s").get_body(("plain",)).get_content())
-    # the frame color (worker v5.63, Sig Nov 4): the chosen one; a framed post from before it reads Black; none for a print
+    # the frame color (worker v5.63, Nov 4): the chosen one; a framed post from before it reads Black; none for a print
     ck("a framed order with no frame color reads Black", "Frame: Black" in build([rp], "s").get_body(("plain",)).get_content())
     ck("a framed order shows its frame color", "Frame: Oak" in build([dict(rp, frame_color="oak")], "s").get_body(("plain",)).get_content())
     ck("a print has no Frame line", "Frame:" not in build([dict(rp, choice="print12x18")], "s").get_body(("plain",)).get_content())

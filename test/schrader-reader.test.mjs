@@ -10,7 +10,7 @@
  *   - the data file carries facts only: no buyer, owner or name field, the credit and a link on every record,
  *     a per-acre figure only where Schrader printed one, farmland only
  *   - the capture workflow builds the file right after the capture, on a weekly gated Monday tick at 19:43 UTC
- *     (Sig approved that schedule in chat, Nov 7, 2026; STANDING-DECISIONS)
+ *     (the owner approved that schedule in chat, Nov 7, 2026; the standing decisions)
  *
  *   node --test test/schrader-reader.test.mjs
  */
@@ -128,7 +128,7 @@ test('the data file: facts only, credited, linked, farmland only, never a figure
 
 test('the capture workflow: weekly on Monday at 19:43 UTC behind the house gate, a read-only capture job, a commit job that only merges the facts file', () => {
   const wf = read('.github/workflows/schrader-capture.yml');
-  // exactly the one schedule Sig approved (Nov 7, 2026): Mondays 19:43 UTC, 1:43 PM Central
+  // exactly the one schedule the owner approved (Nov 7, 2026): Mondays 19:43 UTC, 1:43 PM Central
   const crons = [...wf.matchAll(/^\s*-?\s*cron:\s*(?:(['"])(.+?)\1|(\S[^#\n]*?))\s*$/gm)].map((m) => m[2] || m[3]);
   assert.deepEqual(crons, ['43 19 * * 1'], 'the one approved cron line, exactly');
   assert.match(wf, /\npermissions:\n  contents: read\n/, 'read-only by default');

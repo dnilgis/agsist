@@ -4,7 +4,7 @@
 WHY. On Nov 3 four pull requests carried generated page sets (#280 the rain set, #282 the cash bid town pages
 twice, #296 land sales). Main's own jobs rebuild those sets every 15 minutes to once a day, so a pull request's
 copy went stale within hours: merge conflicts, or a merge on checks run against an older main and main red
-(build_*.py --check). BUILD-RULES 49 and 60 asked the lead to remember; this makes it mechanical.
+(build_*.py --check). build rule 49 and 60 asked the lead to remember; this makes it mechanical.
 
 THE TABLE (SETS below): for each set, the builder commands, the output paths, the --check, the workflow that
 rebuilds it on main, whether the builder reads only committed files (offline), and the code it runs (the builder,
@@ -28,7 +28,7 @@ THE RULES IT ENFORCES
              network set by starting its own workflow by hand and waiting for that run. A set whose code did not
              change is left alone, so a stale set from a failing data job still shows red.
 
-  dependents (BUILD-RULES 61, Nov 4: a hand run of cash-bid-index.yml left llms.txt on the partial
+  dependents (build rule 61, Nov 4: a hand run of cash-bid-index.yml left llms.txt on the partial
              edition and main went red) every summary file that reads a set's output (SUMMARIES: llms.txt,
              the search index, data/feeds.json, ...) is that set's dependent, and is rebuilt in the same
              commit as the set: by the set's own workflow (`dependents <id> --stage` right before its commit)
@@ -138,7 +138,7 @@ SETS = [
      # the state pages copy the ?v= the map page carries for its scripts
      "code": ["scripts/generate_hail_states.py"], "inputs": ["hail-map.html"],
      "dependents": ["search", "llms"]},
-    # the Cash Bid Index (BUILD-RULES 61): the month's edition is written by cash-bid-index.yml (--build, from the
+    # the Cash Bid Index (build rule 61): the month's edition is written by cash-bid-index.yml (--build, from the
     # boards folded into data/cash-index by fetch_bids.yml); the page is rebuilt from editions.json alone (--page)
     {"id": "cash-bid-index", "offline": True, "workflow": "cash-bid-index.yml",
      "build": [[PY, "scripts/cash_bid_index.py", "--page"]], "check": [[PY, "scripts/cash_bid_index.py", "--check"]],
@@ -155,7 +155,7 @@ SETS = [
      "dependents": []},
 ]
 
-# Summary files: committed files whose builder reads what a set writes (BUILD-RULES 61). A set lists the ones it
+# Summary files: committed files whose builder reads what a set writes (build rule 61). A set lists the ones it
 # feeds as its "dependents"; they are rebuilt, in this order, in the same commit as the set. "trace" is a run of
 # the builder that writes nothing (its --check, or the build itself when it writes only when its output changes),
 # which scripts/trace_reads.py watches to learn what it reads. "files" is what the rebuild commits. A summary that
@@ -585,7 +585,7 @@ def cmd_main(window, dry):
     return commit_and_push([s["id"] for s in offline], rebuild, summary_files(deps)) or rc
 
 
-# ── dependents (BUILD-RULES 61) ─────────────────────────────────────────────────
+# ── dependents (build rule 61) ─────────────────────────────────────────────────
 SUMMARY = {x["id"]: x for x in SUMMARIES}
 
 
@@ -661,7 +661,7 @@ def summary_files(ids):
 
 
 def run_dependents(ids, dry=False, stage=False):
-    """rebuild these summaries (SUMMARIES order); -> the ids that failed. Fail soft (BUILD-RULES 53): a summary
+    """rebuild these summaries (SUMMARIES order); -> the ids that failed. Fail soft (build rule 53): a summary
     that fails to build never stops the set's own commit; it is a warning here and main's --check stays red."""
     bad = []
     for x in SUMMARIES:

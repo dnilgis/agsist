@@ -65,7 +65,7 @@ UNITS = {
 
 # The jobs more than one survey prices, under one name, so the page can set
 # states side by side and take the middle. Each state's own wording still shows.
-# Grouped by the page's categories (Sig, Oct 23: categories on top, every kind of
+# Grouped by the page's categories (Oct 23: categories on top, every kind of
 # planter, drill and combine under its category), in the order the page lists them.
 CATS = [("tillage", "Tillage"), ("planting", "Planting"), ("spray", "Spraying and fertilizing"),
         ("harvest", "Harvest"), ("hauling", "Hauling"), ("hay", "Hay and forage"),
@@ -283,7 +283,7 @@ def validate(meta, rows, where="tsv"):
         if not re.fullmatch(r"20\d\d-\d\d(-\d\d)?", meta.get("published", "")):
             errs.append("%s: numbers_only needs published: YYYY-MM" % where)
     elif not meta.get("ref") and not meta.get("src_pdf"):
-        # src_pdf: a survey copy Sig downloaded that is not on the references branch yet; --verify-refs
+        # src_pdf: a survey copy the owner downloaded that is not on the references branch yet; --verify-refs
         # reads it from CR_SRC_DIR (never committed to this repo)
         errs.append("%s: missing meta ref" % where)
     for k, v in meta.items():
@@ -510,7 +510,7 @@ def index_doc(docs):
 # average is used so every state is read the same way). Nothing is inflated or
 # adjusted. A survey whose rate year is more than AGE_MAX years behind the
 # newest survey is shown with its year but left out of the middle (the rent
-# tiles' rule, Sig Oct 19). Rows in a different unit from the job's usual unit
+# tiles' rule, the owner Oct 19). Rows in a different unit from the job's usual unit
 # are shown beside it, never mixed in. Fewer than MIN_BLEND surveys: no middle,
 # each number shown on its own.
 AGE_MAX = 3
@@ -783,7 +783,7 @@ def over_under(mine, md, unit, who):
 
 
 def state_hero(d, blend):
-    """The state's own number first (Sig, Nov 3): one common job, the state's survey average big with its
+    """The state's own number first (Nov 3): one common job, the state's survey average big with its
     answers and range, the middle across the state surveys on the line under it."""
     st, name = d["state"], d["name"]
     ops = blend["ops"]
@@ -861,7 +861,7 @@ def state_page(d, idx, blend):
     me = next(s for s in idx["states"] if s["st"] == st)
     nb = ", ".join('<a href="%s">%s (%s)</a>' % (state_href(s), esc(s["name"]), year_label(s)) for s in idx["states"] if s["st"] in me["neighbors"])
     others = " &middot; ".join('<a href="%s">%s</a>' % (state_href(s), esc(s["name"])) for s in idx["states"] if s["st"] != st)
-    # the survey is named in words with its date; it is not linked (no direct links to data sources, Sig Oct 29 and Nov 3)
+    # the survey is named in words with its date; it is not linked (no direct links to data sources, Oct 29 and Nov 3)
     srcl = "%s (%s)" % (esc(d["survey"]), when)
     faq_html = "".join('<details><summary>%s</summary><p>%s</p></details>' % (esc(q), esc(a)) for q, a in faq)
     withheld = ('<p class="fine">%s</p>' % esc(d["withheld"])) if d.get("withheld") else ""
@@ -1110,7 +1110,7 @@ def month_year(ym):
 def how_block(b, docs):
     r = b["rule"]
     inb = [s for s in b["states"].values() if s.get("in_blend")]
-    # each survey named with its year, never linked (no direct links to data sources, Sig Oct 29 and Nov 3)
+    # each survey named with its year, never linked (no direct links to data sources, Oct 29 and Nov 3)
     li = "".join('<li><a href="%s">%s</a>, %s: %s, %s.%s</li>\n' % (
         state_href(dict(s, st=st)), esc(s["name"]), ("%d rates" % s["ry"]) if s["ry"] != s["year"] else s["year"], esc(s["survey"]), esc(s["publisher"]),
         "" if s["in_blend"] else " Too old for the middle; shown with its year.") for st, s in b["states"].items() if not s.get("same_as"))

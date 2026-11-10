@@ -15,7 +15,7 @@ never deploys:
 
 Anyone can then read a source with
     bash scripts/fetch_private.sh references && git show origin/references:refs/<id>.txt
-(the branch is in the private repo dnilgis/feedbag since Oct 20, 2026)
+(the branch is in the private repo the private repo since Oct 20, 2026)
 
 Polite: one request at a time, a pause between them, a browser User-Agent,
 a 30 MB cap per file. A file that has not changed is not rewritten: a 304 on
@@ -278,7 +278,7 @@ def scrub(body):
 # The row records which one worked ("via", and "archive_timestamp" for a
 # Wayback copy) and every attempt. Later runs always try the live URL first,
 # so an archived copy is replaced as soon as the site answers again.
-# (Sig saw "Bad Gateway" on www.rma.usda.gov from his own browser the same
+# (on www.rma.usda.gov from his own browser the same
 # day, so the RMA timeouts were the site, not only GitHub's runners.)
 # Once a host has timed out twice, later sources skip it and go straight to
 # the fallbacks, so one silent host cannot eat the hour.

@@ -29,7 +29,7 @@ made-up and real, and compares them row for row and the patterns character for c
     partition, trade, exchange and the like, read even when the state file cuts the type short),
     a whole interest, and not dated after the fetch.
   - statOK: a $/acre of $500 or more. A sale under it never feeds a median or a range.
-  - THE ONE LAND RULE (Sig, Oct 29, 2026; property panel synthesis): buildings are read from the
+  - THE ONE LAND RULE (Oct 29, 2026; property panel synthesis): buildings are read from the
     property class only (FSLand.hasBuildings: class 1, 2, 3 or 7 on the return), never from deed
     text; Illinois declarations carry no class that says so, so an Illinois sale is never marked.
     A Wisconsin or Vermont sale whose classes are forest (5M or 6) with no agricultural class 4 is a forest
@@ -607,7 +607,7 @@ def county_summary(f, W, today):
 
 
 def layer_median(cur):
-    """The Atlas map's recorded-sales layer (Sig, Nov 5, 2026): every county with a sale is shown, no minimum count;
+    """The Atlas map's recorded-sales layer (Nov 5, 2026): every county with a sale is shown, no minimum count;
     the count goes beside the figure instead. c: market sales in the window. Bare farm land of MIN_ACRES or more
     first; a county with none uses its market sales of MIN_ACRES or more of any kind (buildings or forest included),
     and says so ("set": "any"). Smaller sales never price farmland here. d: the first and last sale date in the set."""

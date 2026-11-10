@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Company ids for elevator facilities, on evidence only (god's-eye build 3; Sig's decision, Nov 9 2026).
+"""Company ids for elevator facilities, on evidence only (god's-eye build 3; Nov 9 2026).
 
 Writes data/ids/companies.json (built by scripts/build_ids.py on every bids run, after board-parents.json; read by
 builds only, never by a page). A company id ("c" plus five digits) joins facilities of data/ids/elevators.json that
-evidence says one firm runs. Sig, Nov 9: company ids may link facilities ONLY on a shared phone, a shared website or
+evidence says one firm runs. Nov 9: company ids may link facilities ONLY on a shared phone, a shared website or
 domain, the board's own parent page, or a dated ownership change; NEVER on a name alone.
 
 EVIDENCE (each link in the file carries its type and value)
@@ -35,7 +35,7 @@ WHERE EVIDENCE IS NOT ENOUGH (unsure is blank, never a guess)
               The name never links on its own; it only decides how much evidence a phone link needs.
   not used    the CHS brand rule (a board named "CHS <place>") is a name rule, so it links nothing here (it still
               counts companies in basis_method). The Oct 11 elevator directory (data/elevator-directory.json) is
-              never read: its rows come from the Barchart feed, which stays private (Sig, Nov 9).
+              never read: its rows come from the Barchart feed, which stays private (Nov 9).
   A facility with no link to another facility has no company id. No company id means no evidence, not one firm.
 
 IDS ARE NEVER REUSED (ledger in the same file, like data/ids/elevator-ids.json)

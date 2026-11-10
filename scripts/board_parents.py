@@ -6,7 +6,7 @@ builds only, never by a page). One entry per live board of the bids repo (dnilgi
 data/index.json) that has evidence, keyed by the board id (the row `source`):
 
   parent  the company that runs the board when the board itself says so. Evidence, never a
-          name alone (the Oct 19 fold rule; the skeptic showed a name normalizer merges unrelated
+          name alone (the Oct 19 fold rule; a review showed a name normalizer merges unrelated
           co-ops). Three rules:
             board-page  the board is read from another company's own cash bid page: the page's
                         host is the website of every other board on it, and those boards all

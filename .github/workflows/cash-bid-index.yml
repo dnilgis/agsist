@@ -1,7 +1,7 @@
 name: Cash Bid Index
 # Cash Bid Index.
 
-# cash-bid-index.html. Schedule approved by Sig 2026-10-17: the 1st of each
+# cash-bid-index.html. Schedule approved by the owner 2026-10-17: the 1st of each
 on:
   schedule:
     - cron: '23 11 1 * *'

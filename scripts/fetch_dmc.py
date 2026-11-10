@@ -231,7 +231,7 @@ def confirm(parsed, nass):
 
 # ---------------------------------------------------------------- months read off a screen capture
 # Oct 28, 2026: the runner reaches FSA only through the Internet Archive, whose
-# newest copy (Jun 10) ends at April 2026. Sig captured FSA's live page that day
+# newest copy (Jun 10) ends at April 2026. The owner captured FSA's live page that day
 # ("2026 Rates" table, May to Aug posted); those four months were typed from the
 # capture into "screenshot" with FSA's own corn, hay and soybean meal, and are
 # kept only while each feed cost is FSA's formula on its own prices (to the cent
@@ -594,7 +594,7 @@ def selftest():
         rec2 = run(d, now=datetime.datetime(2026, 10, 29, tzinfo=datetime.timezone.utc), get=lambda u: (None, "timeout"))
         ck("...a failed read keeps the last good file and says why",
            len(rec2["margins"]) == 88 and rec2["status"]["ok"] is False and "timeout" in rec2["status"]["why"], rec2.get("status"))
-    # months read off Sig's Oct 28 screen capture of FSA's live page (2026 Rates table)
+    # months read off the owner's Oct 28 screen capture of FSA's live page (2026 Rates table)
     cap = {"2026-05": (4.48, 247.00, 338.72, 21.30, 10.68, 10.62), "2026-06": (4.28, 239.00, 319.68, 21.10, 10.22, 10.88),
            "2026-07": (4.26, 242.00, 337.96, 20.30, 10.37, 9.93), "2026-08": (4.45, 243.00, 320.30, 19.80, 10.46, 9.34)}
     shot = {"read": "2026-10-28", "via": "screenshot", "source_url": MARGINS_URL,

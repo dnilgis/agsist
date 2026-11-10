@@ -256,7 +256,7 @@ BIDS_NETWORK_BASE = os.environ.get(
     "BIDS_NETWORK_BASE", "https://dnilgis.github.io/bids/")
 MERGE_RADIUS_MI = float(os.environ.get("BIDS_MERGE_RADIUS_MI", "50"))
 
-# A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17, Sig approved). The bids
+# A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17). The bids
 # repo flags a row stale whenever its board was not read on the latest pass,
 # for three reasons: "refused" and "broken" (the read failed) and "skipped"
 # (not asked this pass: Landus is paced 5 boards a pass, NEW Cooperative
@@ -748,7 +748,7 @@ def network_rows(grid, base=None):
                              "checkedAt": b.get("checkedAt"), "pricedAt": b.get("pricedAt") or None})
         if b.get("pasted") is True:
             # A BOARD SIG PASTED BY HAND (2026-10-20): the site will not let the
-            # bids reader in, so Sig pastes its public page. dnilgis/bids holds
+            # bids reader in, so the owner pastes its public page. dnilgis/bids holds
             # it up to 7 days, aged by the paste. It prints its own paste time.
             pa = b.get("pastedAt") or b.get("checkedAt")
             rows[-1].update({"pasted": pa, "timestamp": pa, "checkedAt": b.get("checkedAt"),

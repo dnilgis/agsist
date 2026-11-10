@@ -1,9 +1,9 @@
-/* Rain Print, Oct 21, 2026 (Sig, live, dark mode, desktop): Chetek, WI (54728), 2025, Staircase. The subs
+/* Rain Print, Oct 21, 2026 (live, dark mode, desktop): Chetek, WI (54728), 2025, Staircase. The subs
  * worker was blocked, so the page drew the Chetek sample; "chetek, wi" typed while the sample was still
  * drawing never drew ("Not drawn yet: chetek, wi, 2025"), and Every year behind your year, checked on the
  * sample, stayed on the gauge 10.6 mi E with 0 full years and said "Pick the nearest station again under
  * Weather station, or turn this off" instead of moving to the nearest station with 30 full years.
- * And Sig: the default station should be the one with the more complete record (rain AND snow) over a
+ * And the owner: the default station should be the one with the more complete record (rain AND snow) over a
  * slightly closer one with a thin record, never a far one, and the page says which and why.
  *
  * Checks, on the shipped components/rain-print.js:
@@ -12,7 +12,7 @@
  *   - the long-record pick for every year behind yours says why, and prefers one that draws snow;
  *   - the town said back in its own capitals;
  * In a real browser (skipped without Playwright), from the fixture of the real case:
- *   - Sig's sequence draws the typed town, then moves to the long record with the why on the page;
+ *   - the owner's sequence draws the typed town, then moves to the long record with the why on the page;
  *   - the sample with no town typed re-picks its own station for the threads;
  *   - a short station picked by hand says so and offers the way back, which works;
  *   - the worker blocked costs no page error and no red line.
@@ -130,8 +130,8 @@ async function shot(page, name, sel) {
   await page.screenshot({ path: SHOTS + "/" + name + ".png" });
 }
 
-/* Since 2026-10-22 (Sig: every layer on by default) a new visit starts with every year behind on. Since Nov 9 (Sig: the
-   Oct 15 rule wins) the switch no longer moves the pick: the town typed is drawn from the nearest station with rain AND
+/* Since 2026-10-22 (every layer on by default) a new visit starts with every year behind on. Since Nov 9 (the
+ Oct 15 rule wins) the switch no longer moves the pick: the town typed is drawn from the nearest station with rain AND
    snowfall records, the threads are off while it has under 30 full years and the panel says so, and the long record is
    the reader's one tap, said plainly, with the tap back to the nearer gauge. */
 const GAUGE_WHY = /^Weather station: Chetek, WI, 11 mi from Chetek \(volunteer gauge US1WIRS0008\)\. Picked over a gauge 1\.9 mi away because it records snowfall too\./;
@@ -211,7 +211,7 @@ test("browser: a short station says so and offers the long record, which works; 
   });
 });
 
-/* Nov 9 2026 (Sig, Rain Print panel): the Oct 15 rule wins over every year behind. Ames 2012 picked Ames 5 SE (6.4 mi,
+/* Nov 9 2026 (Rain Print panel): the Oct 15 rule wins over every year behind. Ames 2012 picked Ames 5 SE (6.4 mi,
    rain only) for its long record and lost its snow; now the 2.0 mi gauge with rain AND snowfall draws, the threads are
    off (it has under 30 full years) and the options panel says so with the one-tap way to the long record. */
 test("browser: Ames 2012 keeps the near gauge with rain and snowfall; the threads are off and say why; the long record is one tap", { skip }, async () => {

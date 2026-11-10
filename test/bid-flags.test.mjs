@@ -1,4 +1,4 @@
-// Bad rows in the daily bid snapshots (Oct 29 data check, feedbag notes/audits/bids-dq-2026-10-29.md).
+// Bad rows in the daily bid snapshots (Oct 29 data check, the private repo the private notes.
 // The old Barchart feed stored a 1 to 4 cent basis as 1 to 4 dollars, filed meal as soybeans and posted
 // cash 0. The raw snapshots are never rewritten: scripts/bid_flags.py lists the bad rows beside each day,
 // the basis ledger (rule set v2) skips them, the snapshot build counts them (never drops), the public

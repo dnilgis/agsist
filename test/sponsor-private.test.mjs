@@ -1,4 +1,4 @@
-// PRIVATE SPONSOR LINKS (Sig, Nov 4, 2026: "move the codes to feedbag").
+// PRIVATE SPONSOR LINKS (Nov 4, 2026).
 // Until then data/sponsors.json listed every sponsor's link token and each report was a public file,
 // data/sponsors/<slug>-<token>.json, so the repo and agsist.com handed out every sponsor's numbers.
 // Now the tokens live in the private repo only, the reports are served by the subs worker

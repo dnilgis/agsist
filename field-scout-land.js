@@ -211,7 +211,7 @@
   };
   FSLand.FARM_CLASSES = ['4', '5', '5M', '6', '7'];
   FSLand.hasBuildings = function (c) { return /(^|[\s,;/])(1|2|3|7)($|[\s,;/])/.test(String(c || '')); };
-  // The one land rule (Sig, Oct 29, 2026), ported in scripts/build_land_summary.py (has_buildings,
+  // The one land rule (Oct 29, 2026), ported in scripts/build_land_summary.py (has_buildings,
   // is_forest, land_type): buildings from the property class only, never deed text; a Wisconsin or
   // Vermont sale of forest classes (5M, 6) with no farm class 4 and no buildings is a forest sale. Every middle
   // counts bare farm land only; with buildings and forest are listed, never in a middle.
@@ -594,7 +594,7 @@
       if (r.acres > 0) bits.push((+r.acres).toFixed(1) + ' ac');
       else if (r.acUnsure) bits.push((+r.np || 2) + ' parcels, acres uncertain');
       if (ppa != null) bits.push(fm(ppa) + '/ac');
-      var who = '';   /* names only on a tap, in the sale's own panel (Sig, Oct 27; lead, Nov 4, 2026) */
+      var who = '';   /* names only on a tap, in the sale's own panel (Oct 27; lead, Nov 4, 2026) */
       var meta = [r.conv ? esc(r.conv) : null, r.cls ? esc(FSLand.classLabel(r.cls, r.st || (cov && cov.st))) : null, r.exempt ? 'exempt from the transfer fee' : null,
         m.how === 'format' ? 'parcel number matched with county formatting set aside' : null,
         m.how === 'uncertain' ? '<span class="fl-warn">match uncertain: same section, quarter and town, parcel number differs (often a split)</span>' : null,
@@ -839,7 +839,7 @@
 
     group('Who');
     if (file.names && file.names_file) {
-      // names live in their own robots-blocked file and load only on this tap (Sig, Oct 27; lead, Nov 4, 2026)
+      // names live in their own robots-blocked file and load only on this tap (Oct 27; lead, Nov 4, 2026)
       row('Seller and buyer', '<span id="fl-sd-who"><button type="button" class="fl-btn" data-sd="names">Show buyer and seller</button></span>');
     } else if (file.names) {
       row('Seller and buyer', '<span class="fl-miss">' + FSLand.NAMES_LATER + '</span>');
@@ -962,7 +962,7 @@
       (bad.length ? ' Did not load just now: ' + bad.join(', ') + '.' : '') +
       ' Only ' + (stName || 'this state') + '\u2019s records are searched; sales across a state line are not.';
   };
-  // Names on the tap (Sig, Oct 27; lead decision, Nov 4, 2026): each row's seller and buyer from its county's names
+  // Names on the tap (Oct 27; lead decision, Nov 4, 2026): each row's seller and buyer from its county's names
   // file (data/land/<st>/names/<fips>.json, robots-blocked: s and b, the distinct names, at the row's si and bi),
   // trusted only when the file's read time and row count are the county file's. Fills r.grantor and r.grantee in
   // memory; resolves to how many rows got names.

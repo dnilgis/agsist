@@ -25,7 +25,7 @@ state file: the survey's combine corn average, answers and range when the survey
     python3 scripts/send_custom_rates_notice.py              # dry run: counts and a preview, sends nothing
     CUSTOMRATES_NOTICE_LIVE=1 python3 scripts/send_custom_rates_notice.py --send   # the real thing
 
-LIVE GATE. --send is refused unless CUSTOMRATES_NOTICE_LIVE=1 (Sig turns it on; the workflow passes the
+LIVE GATE. --send is refused unless CUSTOMRATES_NOTICE_LIVE=1 (the owner turns it on; the workflow passes the
 repo variable), the same switch as LANDSALES_MONTHLY_LIVE in send_land_alert.py. Without it a run is a
 dry run at most: nothing is sent and nothing is marked.
     python3 scripts/send_custom_rates_notice.py --selftest   # fake HTTP and fake SMTP; no network

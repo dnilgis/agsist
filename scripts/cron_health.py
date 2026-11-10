@@ -19,7 +19,7 @@ push) is a red row that daily-site-check.yml, on GitHub's own cron, reports
 even when cron-job.org has stopped dispatching this one.
 
 THE PRIVATE REPO (Oct 20, 2026). No page reads this file, so it lives in the
-private repo dnilgis/feedbag (branch private-data) at
+private repo the private repo (branch private-data) at
 private/data/cron-health.json, with the raw and references branches. The
 workflows unpack the last copy there with scripts/pull_raw.sh and save the new
 one with scripts/push_raw.sh. Two rows watch that link, from one API call with
@@ -29,7 +29,7 @@ github-authentication-token-expiration header) and private-raw-saves (a
 warning when nothing has reached the private raw branch for RAW_STALE_HOURS:
 the jobs' saves are failing softly).
 
-READER EMAIL DELIVERED (Nov 3, 2026; BUILD-RULES 55 and 56). A green run is not a delivered
+READER EMAIL DELIVERED (Nov 3, 2026; build rule 55 and 56). A green run is not a delivered
 email: rp-design-email and rp-buyer-email ran dry for two weeks with their live variable at 1.
 One row per workflow that mails readers, "delivery:<workflow>", from scripts/delivery_check.py:
 it reads the DELIVERY line each sender prints (scripts/delivery_line.py) from the run logs, and
@@ -48,7 +48,7 @@ same pass as the delivery rows from the logs that pass already reads (scripts/se
 own): emails per UTC day (each DELIVERY line's smtp=, else sent_readers=) against the cap, the repository
 variable SEND_DAILY_CAP (default 300; cron-health.yml passes it). A warning at 80%, red at 95%, and red on a
 SEND-CAP marker: a refusal that looks like the cap, or a sender's preflight that projected past it. The count
-is a floor (sampled senders and Sig-only mail are not all counted) and the row says so.
+is a floor (sampled senders and owner-only mail are not all counted) and the row says so.
 
 THE ENGINE (Oct 20, 2026). The collection code is checked out from the private
 repo's engine-agsist and engine-bids branches by the "Engine checkout" step
@@ -59,7 +59,7 @@ the last ENGINE_LOOKBACK_HOURS, or when ENGINE_MODE is private and the key
 cannot read an engine branch; a warning when an engine branch cannot be read
 while the code still runs from the public repo (do not flip until it can).
 
-ENGINE DRIFT (Nov 4, 2026; BUILD-RULES 63). Engine sync is part of every merge that touches scripts/,
+ENGINE DRIFT (Nov 4, 2026; build rule 63). Engine sync is part of every merge that touches scripts/,
 test/ or build/: on Nov 3 the engine copy was missing the Daily's new safety checks for hours. One row,
 engine-drift: the engine-agsist branch of the private repo (one tree call with PRIVATE_REPO_TOKEN) against
 this checkout's HEAD (git ls-tree), the paths in .github/engine-paths, compared by git blob hash only. No
@@ -121,7 +121,7 @@ MANUAL_DOES_NOT_SERVE = {"rain-monthly.yml", "land-alert.yml", "arcplc-reminder.
     "seasonal-models.yml", "share-images.yml", "site-usage.yml", "sitemap.yml", "sponsor-report.yml",
     "state-rent-pages.yml", "stats-ingest.yml", "storage.yml", "tenure.yml", "transport.yml", "vintage.yml",
     "whats-priced-in.yml",
-    # gated Nov 4, 2026 (BUILD-RULES 59)
+    # gated Nov 4, 2026 (build rule 59)
     "main-checks.yml",
     # gated Nov 7, 2026: the weekly Schrader auction results capture
     "schrader-capture.yml",
@@ -150,7 +150,7 @@ COMMIT_GUARD_HOURS = 24     # the commit-guard row reads main's commits of the l
 COMMIT_GUARD_PAGES = 8      # 100 commits a page; main took about 450 a day on Nov 4, 2026
 COMMIT_GUARD_RE = re.compile(r"COMMIT-GUARD dropped=(\d+) path=(\S+)")
 ENGINE_RUNS_LOOKED_AT = 15
-ENGINE_DRIFT_HOURS = 2       # engine-drift is red once a file has differed from main this long (BUILD-RULES 63)
+ENGINE_DRIFT_HOURS = 2       # engine-drift is red once a file has differed from main this long (build rule 63)
 ENGINE_DRIFT_BRANCH = "engine-agsist"
 
 # file, clock (None = read it from the workflow's cron_gate step), max delay
@@ -248,7 +248,7 @@ CHECKS = [
     ("daily-site-check.yml", ["37 11 * * *"], 480, False, "the morning site check and its issue, GitHub cron 11:37 UTC"),
     ("cron-health.yml", None, 60, False, "this check, after every Fetch Grain Bids, gated to every half hour"),
     # The full suite on main (Oct 29, 2026): a red run opens the "main is red" issue itself; this row
-    # catches the suite not running at all. Chained and gated every two hours since Nov 4 (BUILD-RULES 59).
+    # catches the suite not running at all. Chained and gated every two hours since Nov 4 (build rule 59).
     ("main-checks.yml", None, 100, False, "every test on main, every two hours on the chain and after each merge"),
 ]
 
@@ -260,9 +260,9 @@ SELF_STALE_HOURS = RECOMMIT_HOURS + 2
 FOLDER_WARN = 0.90
 
 # The briefing is judged by what reached the list: today's sent copy, by 07:15
-# Central (Sig, Nov 3 2026: published is not sent; that morning the issue was
+# Central (Nov 3 2026: published is not sent; that morning the issue was
 # published by a manual dry run and mailed to nobody until 7:48). Its runs
-# prove nothing alone (most heartbeats skip on purpose). The email to Sig at
+# prove nothing alone (most heartbeats skip on purpose). The email to the owner at
 # 7:15 is scripts/daily_late.py; this row is the same fact in the health file.
 BRIEFING = {"path": "data/daily-sent/{date}.json", "published": "data/daily-archive/{date}.json",
             "due_ct": "07:15", "critical": True}
@@ -1356,7 +1356,7 @@ def selftest():
     check("PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}" in wf and "--out private/data/cron-health.json" in wf,
           "cron-health.yml gives the check the key and writes the private copy")
 
-    # engine-drift (BUILD-RULES 63): blob hashes only, red past ENGINE_DRIFT_HOURS, nothing named
+    # engine-drift (build rule 63): blob hashes only, red past ENGINE_DRIFT_HOURS, nothing named
     asked_t = []
 
     def tree(files, fail=None, truncated=False):

@@ -1,7 +1,7 @@
 /**
  * Builder-only data lives on the private raw branch, and every job that reads it unpacks it first.
  *
- * Nov 4, 2026 (Sig: "builder-only data moves to feedbag raw"; browser-fetched data stays public).
+ * Nov 4, 2026 (browser-fetched data stays public).
  * data/site-usage.json (90 days of Search Console queries, 4.0 MB) and data/cot-deep.json (the
  * twenty-year COT history behind data/cot-analysis.json, 1.2 MB) left main: no page, component,
  * worker or other repo loads either one. The inventory behind the choice is in the PR from fx/datasplit.
@@ -13,7 +13,7 @@
  *   - every script that reads them (by name, or by importing a reader) is known
  *   - in every workflow job, a step that runs a reader comes after a pull_raw.sh of the path
  *   - every job that writes one saves it with push_raw.sh after the write, never `git add`s it,
- *     and rebuilds its summary in the same run (BUILD-RULES 61)
+ *     and rebuilds its summary in the same run (build rule 61)
  *   - the PR checks and scripts/dev/checks.sh pull a moved file a node test reads
  *   - a soft pull (continue-on-error) of a moved file never lets a send step mail on without it:
  *     the send step's if must require that pull's success (Nov 4 checker on #325: cot-release-watch

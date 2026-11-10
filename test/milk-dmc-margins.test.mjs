@@ -1,6 +1,6 @@
 // /milk-prices DMC margins, May to Aug 2026 (fx/dmcmayaug, Oct 28, 2026). The workflow reads FSA's
 // prices page through the Internet Archive, whose newest copy (Jun 10) ends at April 2026, so the
-// page said May to Aug were left out. Sig captured FSA's live page on Oct 28, 2026 ("2026 Rates"
+// page said May to Aug were left out. The owner captured FSA's live page on Oct 28, 2026 ("2026 Rates"
 // table). The values below are typed from that capture, hand-checked: each feed cost is
 // 1.0728 corn + 0.0137 premium alfalfa hay + 0.00735 soybean meal to the cent, milk minus feed is
 // the margin, and Jan to Apr in the same capture match the file.

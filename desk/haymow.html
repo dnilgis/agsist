@@ -7,14 +7,14 @@
 <meta name="referrer" content="no-referrer">
 <script src="/components/desk-frame.js?v=1"></script>
 <title>Haymow desk | AGSIST</title>
-<!-- Sig's desk for The Haymow (subs worker v5.30 hay board). Not in the menu or a
+<!-- The owner's desk for The Haymow (subs worker v5.30 hay board). Not in the menu or a
      sitemap, and noindex. Every call needs LIST_TOKEN: it is sent only in the
      Authorization header, never in an address. It is kept in this browser's
      localStorage so it is pasted once (one key for every desk tab since Oct 28,
      agsist-elev-admin-token; the old Haymow key is read as a fallback); "Forget
      the token" clears it.
      The list route returns each poster's phone and email; this page keeps them
-     out of the list and shows one post's only when Sig presses "Show phone and
+     out of the list and shows one post's only when the owner presses "Show phone and
      email". Nothing is logged. No analytics on this page.
      Calls only /hay/admin/list, /hay/admin/hide, /hay/admin/clear, /hay/admin/mark.
      A link from the digest email can end in #<post id>: that post is marked
@@ -123,7 +123,7 @@ button:disabled{opacity:.5;cursor:default}
   }
 
   var POSTS = [];       // public fields, reports and status only
-  var CONTACT = {};     // id -> {phone, email}; drawn only when Sig asks for one post
+  var CONTACT = {};     // id -> {phone, email}; drawn only when the owner asks for one post
   var OPEN = {};        // ids whose phone and email are showing
   function pick() { return (/^#([0-9a-hjkmnp-tv-z]{10})$/.exec(location.hash || '') || [])[1] || ''; }
   function toPick() {

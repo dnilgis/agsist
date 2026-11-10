@@ -163,7 +163,7 @@ check(BY in g.render_byline_block_html(), "archive byline", g.render_byline_bloc
 for f in ("daily.html",):
     src = open(os.path.join(HERE, "..", f), encoding="utf-8").read()
     check(BY in src and "Lindquist</strong>, founder" not in src, f"{f} byline")
-# Sig, Oct 18: no name at the top of a page; the homepage names him in one line at the end
+# Oct 18: no name at the top of a page; the homepage names him in one line at the end
 src = open(os.path.join(HERE, "..", "index.html"), encoding="utf-8").read()
 check('Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.' in src and "Lindquist</strong>, founder" not in src, "index.html byline at the end")
 src = open(os.path.join(HERE, "send_morning_brief.py"), encoding="utf-8").read()
@@ -212,7 +212,7 @@ for rel in ("data/daily.json", "data/daily-archive/2026-10-12.json", "daily/2026
     check("up 1\u00bc\u00a2" in t and "9\u00bc\u00a2" in t and "USDA raised the corn yield" in t,
           f"{rel}: up 1\u00bc\u00a2, 9\u00bc\u00a2 and the yield raise are printed")
 # frozen copies (Nov 3, 2026): the Oct 5 to 12 issues and analyst-estimates.json, so a new issue or a new
-# estimate on main can never change this check (Sig, Nov 3: no test depends on live data)
+# estimate on main can never change this check (Nov 3: no test depends on live data)
 _FIX = os.path.join(ROOT, "test", "fixtures", "daily-trust")
 _d = _json.load(open(os.path.join(_FIX, "daily-archive", "2026-10-12.json"), encoding="utf-8"))
 _iss = []

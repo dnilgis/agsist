@@ -10,7 +10,7 @@ the trade average without the survey's range, so September 2026 soybean yield
 (trade 52.5, range 51.5-53.3, USDA 52.8) read IN LINE in one section and
 BEARISH in the other.
 
-On 2026-10-10 the rule changed (Sig approved it): the distance from the trade
+On 2026-10-10 the rule changed (the owner approved it): the distance from the trade
 average decides, against a band per kind of number (yield 0.5%, production
 1%, stocks 2%), and the range is printed as context. October corn yield, 1.9%
 over the average and inside the range, had read "in line".

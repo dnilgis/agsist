@@ -211,7 +211,7 @@ test("the six pages at 390 and 1280: no horizontal scroll, no page errors, the n
     for (const w of [390, 1280]) {
       const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: w, height: w === 390 ? 844 : 800 } });
       // the pages read the committed files, so their clock starts an hour after the futures copy was read and runs on:
-      // on a later clock (a January run) the no-ZIP bid table withheld itself over an old basis (BUILD-RULES 50)
+      // on a later clock (a January run) the no-ZIP bid table withheld itself over an old basis (build rule 50)
       await ctx.clock.install({ time: new Date(DATA_AT) });
       await ctx.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
       for (const [p, sel] of Object.entries(want)) {

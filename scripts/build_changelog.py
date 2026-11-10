@@ -71,7 +71,7 @@ def validate(data):
                 cp = ord(ch)
                 assert not (0x1F000 <= cp <= 0x1FAFF or 0x2600 <= cp <= 0x27BF), \
                     f"{iso}: emoji {ch!r} in reader copy"
-            # Sig's rule: this log is for farmers, and it does not talk about AI.
+            # The owner's rule: this log is for farmers, and it does not talk about AI.
             low = (txt + " " + it["name"]).lower()
             for banned in (" ai ", "ai assistant", "chatgpt", "claude", "llm",
                            "perplexity", "gemini", "artificial intelligence"):

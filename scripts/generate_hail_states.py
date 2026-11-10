@@ -397,7 +397,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
         "To cite these figures: <em>AGSIST National Hail Map, " + canonical + " (NWS Local Storm Reports, " + str(years[0]) + "\u2013" + str(years[-1]) + ")</em>. A link back is appreciated. "
         "Compiled by Sigurd Lindquist \u00b7 AGSIST.</p></details>\n"
         # one quiet promo line, filled by components/rain-print-promo.js ("auto": Rain Print through Dec 24,
-        # the rain gauge hook Dec 26 through May, Sig 2026-10-23); empty and hidden when off
+        # the rain gauge hook Dec 26 through May, the owner 2026-10-23); empty and hidden when off
         "<p class=\"rp-promo\" data-rain-print-promo=\"auto\" hidden></p><script src=\"/components/rain-print-promo.js?v=6\" defer></script>\n"
         "</div>\n</main>\n<div id=\"site-footer\"></div>\n"
         "<script src=\"" + asset_url("/components/loader.js") + "\" defer></script>\n</body>\n</html>\n")

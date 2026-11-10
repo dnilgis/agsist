@@ -163,7 +163,7 @@ def simulate(script, *, event="schedule", start="05:19", dow=1, published=False,
         # archive did not exist yet. PUBLISHING IT IS WHAT BROKE THE TEST, and
         # from the next morning the four "should generate" cases all came back
         # skip=1. Wired as GATE 0b under `bash -e`, that failure took the
-        # briefing with it. Sig got no briefing on 09-01 and three manual runs
+        # briefing with it. The owner got no briefing on 09-01 and three manual runs
         # died at 26 seconds.
         #
         # A test whose fixture is the live repository is not a fixture.
@@ -305,7 +305,7 @@ def main():
     # NOV 3 2026, IN ORDER (Central). Runs from 5:46 to 7:31 stopped at a
     # self-test; at 7:32 a manual run without send_email published the issue
     # and left data/daily-sent/2026-11-03.dry-run.json; the 7:46 heartbeat
-    # skipped on that mark. Sig: a manual run never marks the day done.
+    # skipped on that mark. The owner: a manual run never marks the day done.
     skip, _, out = simulate(gate, event="workflow_dispatch", heartbeat=True, start="07:31", day="2026-11-03",
                             published=False, sent=False, flag_rc=0)
     check(skip == "0", "Nov 3 7:31: a heartbeat with nothing published generates", out)
@@ -392,7 +392,7 @@ def main():
     # issue #177 went to the live list SEVEN TIMES between 2:23 and 5:04 PM
     # Central, each with a different headline as the market moved under it.
     #
-    # Sig found it in his own inbox. No test did.
+    # The owner found it in his own inbox. No test did.
     for hhmm in ("14:23", "14:54", "15:24", "15:54", "16:25", "16:55", "17:04"):
         skip, _, out = simulate(gate, event="workflow_dispatch", heartbeat=True,
                                 start=hhmm, dow=5, published=True)

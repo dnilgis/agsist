@@ -1,4 +1,4 @@
-/* Sig, Nov 8, 2026, "Cut it": the ARC/PLC method section says what the verdict compares and how past years came out, in plain words.
+/* Nov 8, 2026: the ARC/PLC method section says what the verdict compares and how past years came out, in plain words.
  * No call cutoffs, no t statistic, no weights; the track-record table stays; the section sits in the one closed fold at the bottom.
  * Static, on the builder and the two components that carried copies of the text (3 copies: method_html, arc-plc-math.js, arc-plc.js). */
 import { test } from "node:test";

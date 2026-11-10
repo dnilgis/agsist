@@ -17,7 +17,7 @@ JSON) and a made-up copy of the worker's storage, with a fake mail server:
   * an alert mailed in backup mode is not mailed again next run (the journal)
   * a blocked worker is a warning and exit 0 for the hourly jobs and the
     forms digest, an error for the Daily when there is no usable copy
-  * test_to_sig: only Sig's address, no day flag
+  * test_to_sig: only the owner's address, no day flag
 
 No network, no real mail. Counts only.
 
@@ -237,7 +237,7 @@ try:
     check(rc == 1 and not SENT and "days ago" in out, "daily: a 9-day-old copy was used: rc %s, %d sent" % (rc, len(SENT)))
     check(not (Path(TMP) / list_source._flag_file("briefed:2099-01-04")).exists(), "daily: a refused send set the flag")
 
-    # test_to_sig: only Sig, no flag
+    # test_to_sig: only the owner, no flag
     write_copy()
     env_set(TEST_TO_SIG="1", SIG_TEST_EMAILS="sig@example.com", LIST_SOURCE="backup")
     send_daily.load_today = lambda: ("2099-01-05", json.load(open(archive)))

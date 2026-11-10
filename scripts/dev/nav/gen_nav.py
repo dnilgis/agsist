@@ -78,7 +78,7 @@ MONEY = [
 ]
 SIGNUP = ("SIGNUP", "Get it by email", None)
 # A short line under a link's name, in the menu and the phone panel only (not the footer
-# or the no-script copies). 2026-10-18 (Sig: "add it to the menu"): The Haymow.
+# or the no-script copies). 2026-10-18: The Haymow.
 SUBLINE = {"/haymow": "Hay for sale and wanted"}
 
 
@@ -212,7 +212,7 @@ def drawer(theme_btn_d):
     return "".join(out)
 
 
-# Advertise (Sig, Oct 22: "there is no place to easily find a place to inquire about advertising").
+# Advertise (Oct 22).
 # A quiet text link at the left of the header actions on wide screens, a row beside About in the
 # phone panel, and a plain line in the footer's bottom row (the footer columns fold on phones).
 # data-sponsor-link: loader.js hides it wherever the page hides /sponsor (Rain Print pages).
@@ -484,7 +484,7 @@ ADSPACE = """    <div class="footer-adspace" id="footer-adspace" hidden>
     </div>
 """
 
-# Bottom row: one small line (data note), then the legal links. No sources link in the footer (Sig, Oct 21: honest, but the inner workings are not put on display).
+# Bottom row: one small line (data note), then the legal links. No sources link in the footer (Oct 21: honest, but the inner workings are not put on display).
 # The legal links stay last: test/nav-full-oct18.test.mjs reads every link after footer-legal.
 BOTTOM = """    <div class="footer-bottom">
       <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Updated as each source posts. For information, not financial advice. <a href="/sponsor" data-sponsor-link class="footer-adv\"""" + ADV_GA % "footer_bottom" + """>Advertise with AGSIST</a></p>

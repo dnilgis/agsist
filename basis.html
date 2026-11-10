@@ -441,7 +441,7 @@
 
   function renderWalk(){
     // Illinois vs Gulf corn as the worked example. The gap is shown as a gap, never labelled freight:
-    // the Nov 4 site panel found basis does not track freight week to week (Sig Oct: spread alone, no freight share)
+    // the Nov 4 site panel found basis does not track freight week to week (the owner Oct: spread alone, no freight share)
     var key=Object.keys(journey.spreads).find(function(k){return k.indexOf('Corn|Illinois|Gulf')===0;})
          ||Object.keys(journey.spreads)[0];
     if(!key) return;
@@ -506,7 +506,7 @@
     }catch(e){ return ''; }
   }
   var LAB={corn:'Corn',soybeans:'Soybeans'}, USDA=null;
-  /* 'median of 203 elevators, 23 companies' (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators' */
+  /* 'median of 203 elevators, 23 companies' (scripts/build_cash_bid_pages.py med_of, Nov 3 2026); a file without the company count says 'median of N elevators' */
   function medOf(c){ var n=c.n, m=c.companies, s='median of '+n+' elevator'+(n===1?'':'s'); return typeof m!=='number'?s:s+', '+m+' compan'+(m===1?'y':'ies'); }
   /* USDA'S NORMAL BESIDE THE STATE NUMBER (2026-10-15). Where USDA tracks the
      state, its 5-year normal for the same week sits next to our number, with

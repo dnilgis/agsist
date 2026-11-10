@@ -186,7 +186,7 @@ def cwt_dollars(q):
     return pricefmt.cash(c, dollar=False)
 
 
-# SEEDS ON THEIR OWN LINES (BUILD-RULES 67, Nov 4 2026). The price job reseeds
+# SEEDS ON THEIR OWN LINES (build rule 67, Nov 4 2026). The price job reseeds
 # index.html and markets.html every 15 minutes, so a PR whose structural edit
 # shared or neighboured a seed line conflicted with main (#320). Each seed is
 # written on its own line, split off by an empty comment that holds the line
@@ -437,7 +437,7 @@ def overnight_trade(q):
     close_kind "last", close_time between 7 p.m. and 7:45 a.m. CT, and a
     settle on file for an earlier day (the day just finished). Twin of the
     second shape in components/price-local.js overnight(). The 04:50 UTC
-    freshness run (Sig, Oct 20) bakes in this window; the title still takes
+    freshness run (Oct 20) bakes in this window; the title still takes
     the settle (settled_close), and the seed calls the price what it is."""
     q = q or {}
     if str(q.get("ticker") or "")[:2] not in OVN_ROOTS or q.get("close_kind") != "last" or q.get("roll"):
@@ -980,7 +980,7 @@ HB_SKEL = '<span class="hb-skel" aria-hidden="true"></span>'
 
 
 def hero_futures_seeds(q, fetched):
-    """The hero band's two futures tiles (corn, soybeans), Sig Oct 19:
+    """The hero band's two futures tiles (corn, soybeans), the owner Oct 19:
     baked so a crawler sees prices, then index.html paintFut draws over them
     on load. Same quote, same formatter (AG.px slash, hb-frac) and the same
     label and change markup as paintFut; the moment line uses quote_when, the
@@ -1022,7 +1022,7 @@ def hero_futures_seeds(q, fetched):
 
 
 # --- the hero's "Today and this week" (components/happening.js) ---------------
-# Sig, Nov 6, 2026: the next releases beside the futures. The page script draws
+# Nov 6, 2026: the next releases beside the futures. The page script draws
 # the countdown, the teaser and the "Out today" line from the same files; this
 # bakes the rows it will draw (each one's day and time, Eastern, as CFTC and USDA
 # publish them) so a reader without script, or a crawler, sees the schedule and
@@ -1042,7 +1042,7 @@ HAP_USDA = [
 ]
 HAP_FILL = ('<li class="hap-i hap-all"><a class="hap-a" href="/usda-calendar" data-track="happening">'
             '<span class="hap-w">Every report date</span><span class="hap-t">USDA report calendar</span></a></li>')
-# The Funds this week ask on the first row when it is the COT report (Sig, Nov 6): the same markup as happening.js ASK,
+# The Funds this week ask on the first row when it is the COT report (Nov 6): the same markup as happening.js ASK,
 # absolutely placed over the row's room in css/home.css, so the live swap moves nothing either way.
 HAP_ASK = '<a class="hap-ask" href="/cot#cot-signup" data-track="funds-ask">Email me Fridays</a>'
 _HAP_DOW = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
@@ -2939,7 +2939,7 @@ def milk_dmc_margin(dmc, d, today):
 
 
 # --- Federal Order 30 (Upper Midwest), from data/dairy-order30.json ----------
-# 2026-10-28 (dairy board, build 4; Sig: Order 30 first). The order's own
+# 2026-10-28 (dairy board, build 4; Order 30 first). The order's own
 # monthly numbers, latest month and a year earlier, read from the Upper Midwest
 # market administrator's releases by scripts/fetch_order30.py. A value the file
 # does not hold prints as a dash with the reason in the source line; nothing is
@@ -3082,7 +3082,7 @@ def milk_o30_hist(o30):
 
 
 # --- the published miss of Read my check, from data/dairy-miss.json -----------
-# 2026-10-28 (dairy board, build 3; BUILD-RULES rule 1). What the check reader
+# 2026-10-28 (dairy board, build 3; the build rules rule 1). What the check reader
 # said for each Class III month at the standard tests (the futures settle of the
 # last session before the month began, scripts/milk_miss.py) beside what USDA
 # announced. The log only grows and is never backfilled; until a month is
@@ -3294,8 +3294,8 @@ def milk_fall(cheese, whey, fat, c3, month, math=None):
 
 
 def milk_cost_faq(v, alab, yago):
-    """The cost-of-production FAQ answer, dated. 2026-10-28 (dairy board, Sig's
-    decision 1 as recommended): no national cost figure and no "left for the
+    """The cost-of-production FAQ answer, dated. 2026-10-28 (dairy board, the owner's
+ decision 1 as recommended): no national cost figure and no "left for the
     mortgage" line built off one; the answer points at the reader's own cost
     and the calculator above. Until then a 100-cow box set the August all-milk
     price against an uncited ~$19 ERS cost and printed $1,736 left over."""
@@ -3374,7 +3374,7 @@ MILK_JS_SEED = re.compile(r"var SEED=\{[^\n]*\};")
 MILK_SEC = re.compile(r'(<section class="dp-sec" aria-labelledby="dp-mkt" id="dp-mkt-sec" data-seed-month=")([^"]*)(")')
 
 
-# --- /milk-prices first screen: "This month for your milk" (Sig, Nov 3, 2026) ---
+# --- /milk-prices first screen: "This month for your milk" (Nov 3, 2026) ---
 # One card a dairy farmer reads first: the announced Class III and IV and the
 # all-milk price with their change, what a $1/cwt move means on his herd (stated
 # assumption, editable on the page), the DMC margin and whether DMC paid, the
@@ -3589,7 +3589,7 @@ def milk_now_seed(d, dmc, fb, prices, hist, today):
         fut_html = f'<p class="dp-now-note">The next months at futures: not shown ({w}).</p>'
     mean_html = (f'<p class="dp-now-mean"><strong>What this means:</strong> {" ".join(mean)}</p>' if mean else "")
     # the states NASS prices this month, for the area card's before-paint layout: a state with no AMS mailbox
-    # area shows its own all-milk price (Sig, Nov 3), and the bars it lays out must be the ones that fill
+    # area shows its own all-milk price (Nov 3), and the bars it lays out must be the ones that fill
     ams = d.get("all_milk_states") if isinstance(d.get("all_milk_states"), dict) else {}
     amk = milk_allmilk_ok(ams, today) if isinstance(ams.get("rows"), list) else None
     code = {s[3:]: s[:2] for s in MILK_STATES.split("|")}

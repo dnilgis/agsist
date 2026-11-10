@@ -1,7 +1,7 @@
 /* Florida farm sales in Chromium (Nov 5, 2026): the county land-sales page lists sale months, a sale past the recent
  * years opens its detail panel from the older year's file on agsist-data, and the Field Scout sale panel reads a Florida
  * sale with Florida's labels. Synthetic rows only (test/fixtures/land-fl/make_site.py). A local run reaches no outside
- * host (BUILD-RULES 58): agsist-data answers from the fixture's files, every other host is refused, service workers
+ * host (build rule 58): agsist-data answers from the fixture's files, every other host is refused, service workers
  * blocked. FL_SHOTS=<dir> saves 390 px screenshots of both.
  *
  *   PLAYWRIGHT_PATH=... CHROMIUM_PATH=... node --test test/land-fl-browser.test.mjs */

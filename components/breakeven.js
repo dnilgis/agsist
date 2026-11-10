@@ -200,7 +200,7 @@
     var s = SRC.fertilizer; if (!s || s.k !== 'fert') return;
     var f = fertFor(crop(), num('yield')); if (f) $('fertilizer').value = f.usd;
   }
-  /* The page's one signup ask (Sig, 2026-10-23), under the answer: "email me when the futures
+  /* The page's one signup ask (2026-10-23), under the answer: "email me when the futures
      price I need shows up". It watches the same figure the "Futures needed" row shows, on the
      contract on screen, and only a contract the price watch sender follows (December corn,
      November soybeans, wheat). On any other (the next crop's contract) the Daily ask stands in:

@@ -1,5 +1,4 @@
-/* One sale, every pertinent detail (Sig, Nov 4, 2026: "when you click I want it to open every detail about the sale
- * that is pertinent"). components/land-sales.js opens a panel from a sale row (the county table, a month table) or a
+/* One sale, every pertinent detail (Nov 4, 2026). components/land-sales.js opens a panel from a sale row (the county table, a month table) or a
  * sale card (Atlas, Fast Facts); scripts/build_land_sales.py puts each sale's facts on its row (data-ls) and the
  * county's middle on its table (data-ls-c); the deed's own record comes from the robots-blocked county file, row ri.
  *   - in Chromium, on a synthetic five-state site (test/fixtures/land-detail/make_site.py): each state's panel shows
@@ -8,7 +7,7 @@
  *     buyer or seller name shows until "Show buyer and seller" is tapped (a legal that names the seller is blanked);
  *     the layout shift score stays 0; the Atlas card and a month table row open the same panel;
  *   - the panel's SHA-1 is node's, so a row is only trusted when it hashes to its sale id.
- * Every outside host is aborted and service workers are blocked (BUILD-RULES 58).
+ * Every outside host is aborted and service workers are blocked (build rule 58).
  *
  *   node --test test/land-detail.test.mjs
  */

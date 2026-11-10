@@ -118,7 +118,7 @@ PAGES = [
     ("/hay-prices", "Hay prices by state", "Alfalfa and other hay, $/ton", "hay prices alfalfa grass hay bale ton price per ton state usda nass forage"),
     ("/cattle-auction-prices", "Sale barn prices", "Feeder cattle by weight near you", "sale barn auction feeder cattle steers heifers calves prices cwt weight class stockyards livestock auction market report usda"),
     ("/harvest-price-tracker", "Harvest price tracker", "Crop insurance harvest price", "harvest price projected crop insurance rma tracker"),
-    # Nov 4 (Sig: "my buddy didn't know that farm land sales were on agsist"): the words a farmer types for it
+    # Nov 4: the words a farmer types for it
     ("/land-sales/", "Land sales: farmland sales by county", "Recorded farm sales, acres and price per acre", "land sales farmland sales farm sales farm ground sold sale prices land prices price per acre recorded deeds buyers county monthly illinois wisconsin indiana vermont new jersey auction auctions auctioned sell sells selling what did for farms acreage values"),
     ("/land-sales/#illinois-index", "Farmland sale index (Illinois)", "What farm ground sold for, by quarter", "farmland index land sale prices values illinois sold acre county median price to rent buyers"),
     ("/farmland-atlas", "Farmland Atlas", "Land value, rent and risk by county", "farmland atlas land value values county rent rents cash rent risk acre tenure rented owned landlord ownership"),

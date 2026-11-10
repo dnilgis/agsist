@@ -1,16 +1,15 @@
 /**
- * No test pins a month, a date or a season to live data or to today's clock (Sig, Nov 3, 2026: "tired of these
- * foreseeable issues coming up to bite me day after day"). In one day test/drought-to50 pinned "September",
+ * No test pins a month, a date or a season to live data or to today's clock (Nov 3, 2026). In one day test/drought-to50 pinned "September",
  * test/lrp-page assumed CDT after DST, test/conditions-week assumed the condition week was the harvest week, and
  * scripts/test_daily_numbers.py compared a fixture to the live data/harvest-prices.json and held the Daily.
  *
- * The rule: a test that reads a live file under data/ (a bot rewrites it) or today's clock (new Date() with no
- * argument, Date.now(), datetime.now(), date.today()) may not hold a literal month name or a literal date
+ * The rule: a test that reads a live file under data/ (a bot rewrites it) or today's clock (new Date with no
+ * argument, Date.now, datetime.now, date.today) may not hold a literal month name or a literal date
  * (YYYY-MM-DD) in what it asserts. Copy the real file into test/fixtures/ and assert on the copy, or compute
  * the expectation from the data or the date.
  *
  * What counts: the EXPECTED side of an assertion only (assert.equal/strictEqual/deepEqual: the 2nd argument;
- * assert.match: the pattern; assert.ok and python check()/ck(): the condition), never the message.
+ * assert.match: the pattern; assert.ok and python check/ck: the condition), never the message.
  * A literal that is an inline fixture (the value is built in the test itself, not read from data/ or the clock)
  * can say so on its line: a comment "pin-ok: <why>" (// in node, # in python) and the line is not counted.
  * test/no-live-date-pins.json holds the count each older file had on Nov 3 (most are inline fixtures that only

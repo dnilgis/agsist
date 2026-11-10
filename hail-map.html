@@ -349,7 +349,7 @@
     .hm-cty-empty{color:var(--text-muted);text-align:center;padding:1.1rem!important}
     #hm-cty-err .st-msg{max-width:calc(100vw - 64px)} /* the table scrolls sideways; keep the retry in view */
   
-    /* ── mobile de-clunk (Sig, 2026-07-19) ── */
+    /* ── mobile de-clunk (2026-07-19) ── */
     @media(max-width:640px){
       .hm-title{font-size:1.35rem}
       .leaflet-touch .leaflet-bar a{width:40px;height:40px;line-height:40px} /* tap target 40 px (polish3) */
@@ -854,16 +854,14 @@
         .catch(function(){ mapFail('The hail reports did not load. Try again.'); });
     }
 
-    /* WHAT THE PAGE OPENS ON (2026-10-20, Sig: "the hail map should open to
-       current or active storms within the last 24 hours"). A bare /hail-map
+    /* WHAT THE PAGE OPENS ON (2026-10-20). A bare /hail-map
        opens on now. Any link that names something -- a year, a swath date, a
        spot, a date of loss, a view -- opens exactly that, as it did before,
        never the now view. ?year=2024 and ?view=all|recent|now are new ways to
        name a view.
        A state alone (?state=IA, the 52 state hail pages) opens on now zoomed
        to that state, with the line about that state and its 5 years one tap
-       away (Sig, 2026-10-20: "open to the last 24 yes, with the history
-       readily available"). ?view=all&state=IA opens the state's 5-year map. */
+       away (2026-10-20). ?view=all&state=IA opens the state's 5-year map. */
     var NAMED_PARAMS=['year','view','swath','swaths','state','lat','lon','day','mi'];
     function openingView(qp){
       var v=String(qp.get('view')||'').toLowerCase();
@@ -1612,7 +1610,7 @@
              no event at all rather than a clean-looking number. */
           if(r.ok){ ga('hm_alert_signup',{radius_mi:radius});
                     stx.textContent='Watching this spot: '+radius+' mi radius. Alerts arrive the morning after radar-estimated hail touches it.'; em.value='';
-                    /* 2026-10-20 (Sig): then "One more?" under it: the Daily, unticked, with the ZIP they searched or the one nearest the spot */
+                    /* 2026-10-20: then "One more?" under it: the Daily, unticked, with the ZIP they searched or the one nearest the spot */
                     var S=window.AgsistSignup, old=box.querySelector('[data-sa-more]'); if(old) old.parentNode.removeChild(old);
                     if(S&&S.oneMore) S.oneMore(box,{gave:'hail',email:v,lat:lastLookup.lat,lon:lastLookup.lon,place:lastLookup.label||'',zip:spotZip}); }
           else{ stx.textContent='Couldn\u2019t save just now. Try again in a minute.'; }

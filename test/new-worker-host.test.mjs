@@ -1,7 +1,7 @@
 /* The subs worker's new home (Oct 22, 2026): agsist-api.dnilgis.workers.dev.
  *
  * Cloudflare blocked agsist-subs.dnilgis.workers.dev on Oct 21 and support
- * said a new Worker on the account is Sig's call. The same code deploys as
+ * said a new Worker on the account is a product decision. The same code deploys as
  * the Worker agsist-api (workers/wrangler.api.toml, the same KV store).
  *   - the two wrangler files differ only in the name;
  *   - no live file names the old host: only the lines listed below may
@@ -80,7 +80,7 @@ test("pages and components call the new host", () => {
     "components/ga-gate.js", "components/form-post.js", "components/rain-print.js", "farmland-atlas/watch.js"]) {
     assert.ok(read(f).includes("agsist-api.dnilgis.workers.dev"), f);
   }
-  // status.html was retired to a forward to the homepage (Sig, Oct 21; fx/fastfacts): it calls no worker on either host
+  // status.html was retired to a forward to the homepage (Oct 21; fx/fastfacts): it calls no worker on either host
   assert.match(read("status.html"), /<link rel="canonical" href="https:\/\/agsist\.com\/">/);
   assert.doesNotMatch(read("status.html"), /workers\.dev/);
   assert.ok(read("scripts/build_atlas_pages.py").includes("var U='" + NEW + "/watch-subscribe'"), "the Atlas watch script builder");

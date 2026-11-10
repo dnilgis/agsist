@@ -279,7 +279,7 @@ test("Sig's desk: requests with the roster match, Make the listing, Dismiss", { 
       assert.ok((await first.locator(".match").textContent()).includes("Not found in the elevator list"), "no id, no name match");
       if (SHOTS) await p.locator("#requests").screenshot({ path: `${SHOTS}/admin-requests-${width}.png` });
 
-      /* Make the listing: the create form is filled, Sig presses Add, the request is marked made */
+      /* Make the listing: the create form is filled, the owner presses Add, the request is marked made */
       await second.locator("[data-make]").click();
       assert.equal(await p.inputValue("#c-name"), "West Plains");
       assert.equal(await p.inputValue("#c-town"), "Lingle");

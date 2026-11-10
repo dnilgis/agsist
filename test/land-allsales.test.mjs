@@ -1,5 +1,5 @@
-/* Every recorded land sale, and the one land rule (Sig, Oct 29, 2026; STANDING-DECISIONS Oct 29;
- * the property panel, notes/panels/property-2026-10-29/07-synthesis.md decision 2):
+/* Every recorded land sale, and the one land rule (Oct 29, 2026; the standing decisions Oct 29;
+ * the property panel, the private notes decision 2):
  *   - a /land-sales/ county page lists EVERY recorded market sale of any acreage, newest first, with
  *     date, acres, price, $/acre and type (farmland, with buildings, forest, small parcel); the page
  *     carries the newest 50 and "Show more" loads the rest from data/land-sales/<st>/<fips>.json;

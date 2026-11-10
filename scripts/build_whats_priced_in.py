@@ -202,7 +202,7 @@ def cot_positioning(commodity_text, cot):
 
 # ── EVERY NUMBER ON THE REPORT, NOT JUST THE HEADLINE ────────────────────────
 #
-# Sig, 2026-09-11, after reading the page on WASDE morning: "it only showed
+# 2026-09-11, after reading the page on WASDE morning: "it only showed
 # corn, i want to walk people through the numbers when released, more
 # informative without getting messy."
 #
@@ -761,7 +761,7 @@ def main():
     # 16:05 UTC on release day and emptied at 00:00 UTC, roughly seven hours
     # later -- and this September it never filled at all, because NASS refused
     # for two days and by the time the grade landed the card had already
-    # flipped to October. Sig asked to "walk people through the numbers when
+    # flipped to October. The owner asked to "walk people through the numbers when
     # released"; the strip was showing them only before the release.
     #
     # The result banner already has the right lifetime: it runs from report day

@@ -31,7 +31,7 @@ tooling folders in SKIP_DIRS and files git ignores, at its size on disk in
 bytes; 1 MB = 1,048,576 bytes. Since #221 (Oct 30) Pages deploys a filtered
 artifact (scripts/pages_publish.py), so the total, the 900 MB stop and every
 folder budget count only the published bytes: a path in NOT_READER_FACING is
-left out (Nov 4, Sig: "count only the published bytes"; the tree held 31 MB that
+left out (Nov 4,; the tree held 31 MB that
 Pages never received). The tree total is still printed, as tree_mb. A sparse
 or partial checkout holds only part of the tree, so the walk would undercount
 (Oct 27: a sparse worktree read 25.9 MB of 817); there it measures HEAD's tree
@@ -136,7 +136,7 @@ NOT_READER_FACING = (
     "data/wasde-pdf/", "data/rain-print-examples/",
     "data/rain/wxnorm/",   # each rain station's 1991-2020 summary, read only by scripts/fetch_rain_weather.py (Nov 4, fx/rainwx)
     "data/elevator-directory.json",
-    "data/land-sales/coverage.json",   # our own research status for states without sales (Nov 8, Sig): read by builders and tests, no page loads it
+    "data/land-sales/coverage.json",   # our own research status for states without sales (Nov 8): read by builders and tests, no page loads it
     "data/ids/geo-crosswalk.json",   # read by scripts/join_report.py and builds only (Oct 27)
     "data/ids/board-parents.json",   # read by scripts/build_cash_bid_pages.py only (Oct 27, fx/bidkeys)
     # Nov 6: data files that builders and jobs read but no page, script, worker or other repo loads; not published
@@ -441,7 +441,7 @@ def selftest():
                         fails.append("a bad --tree commit must raise, not read as 0 MB")
                     except RuntimeError:
                         pass
-        # Nov 4 (Sig): the 900 MB stop and the folder budgets count the published
+        # Nov 4: the 900 MB stop and the folder budgets count the published
         # bytes, not the tree. A tree over the stop whose artifact is under it passes;
         # an artifact over it fails; a folder budget ignores its left-out files.
         with tempfile.TemporaryDirectory() as d:

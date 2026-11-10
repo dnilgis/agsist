@@ -30,7 +30,7 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 const read = (f) => readFileSync(ROOT + f, "utf8");
-// Sig, Oct 18: no name at the top of a page; it sits in one line at the end
+// Oct 18: no name at the top of a page; it sits in one line at the end
 const BYLINE = /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/;
 
 function serve() {
@@ -115,7 +115,7 @@ test("printed on Letter in Chromium, the lease is two whole pages: the deal and 
       assert.equal(pages, 2, `state ${st || "none"}: ${pages} pages`);
       const sig = await pg.$eval(".lease .sig-grid", (e) => getComputedStyle(e).breakInside);
       assert.equal(sig, "avoid");
-      // Two whole halves (Sig, Oct 15): page 1 is sections 1-8 and ends with both initials,
+      // Two whole halves (Oct 15): page 1 is sections 1-8 and ends with both initials,
       // page 2 always starts clean at section 9. With the forced break, 2 pages in all means neither half spills.
       const halves = await pg.evaluate(() => {
         const p2 = document.querySelector(".lease .lease-p2");

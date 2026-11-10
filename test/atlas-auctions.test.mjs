@@ -1,4 +1,4 @@
-/* Farmland Atlas "Auction results" (Sig, Nov 7, 2026): the sold and auction results a land auction firm
+/* Farmland Atlas "Auction results" (Nov 7, 2026): the sold and auction results a land auction firm
  * publishes on its own site, on the county page as their own card after the Land card, never mixed into the
  * recorded sales, surveys or census values. Newest first; each row: date, headline acres, total sold, each
  * tract group with the firm's own per-acre figure when it printed one, and a link to the firm's page. No

@@ -1345,7 +1345,7 @@ function readTimeOnly(pricedAt,checkedAt){
   return !isFinite(p)||(isFinite(c)&&p===c);
 }
 /* "3h ago" from a row's posted time; nothing when the board posted no time. */
-/* "Last updated Oct 20, 2:05 PM CT" on a board Sig pasted by hand, once it is
+/* "Last updated Oct 20, 2:05 PM CT" on a board the owner pasted by hand, once it is
    older than the 14-hour line every live board is held to. Empty before then. */
 var PASTE_MARK_H=14;
 function pastedMark(iso,cls){
@@ -1875,7 +1875,7 @@ function renderBids(bids,keepLimit){
        board. One means it has not been touched since the last close, which is
        worth saying plainly rather than as a warning. Two or more is a warning. */
     /* AN ELEVATOR THAT POSTS ITS OWN BIDS (agsist.com/post) always says when it
-       last saved them, in its own words of time: "Updated 6:10 AM Wed" (Sig, Oct 22).
+       last saved them, in its own words of time: "Updated 6:10 AM Wed" (Oct 22).
        That time is when the manager pressed Save, even for a save that reached us
        late (subs worker v5.50), so an old price is plain to see. */
     if(elev.fromPortal&&elev.asOfT!=null){
@@ -2202,7 +2202,7 @@ function netContract(b){
     return{symbol:t,month:MON[m[3]]+' 202'+m[2]};
   return{symbol:raw,month:raw};
 }
-/* A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17, Sig approved). The bids
+/* A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17). The bids
    repo flags a row stale whenever its board was not read on the latest pass:
    "refused" or "broken" (the read failed) or "skipped" (not asked: Landus is
    read 5 boards a pass, NEW Cooperative answers most passes with a bot check).
@@ -2311,7 +2311,7 @@ function netRowsFrom(shard,distanceMi){
       periodPast:(b.periodPast===true||b.periodPast===false)?b.periodPast:null,
       via:'direct',
       /* A BOARD SIG PASTED BY HAND (dnilgis/bids rows with pasted: true, 2026-10-20): the
-         site will not let the reader in, so Sig pastes their public page. Held
+         site will not let the reader in, so the owner pastes their public page. Held
          up to 7 days and stamped "Last updated" once older than 14 hours. */
       pasted:b.pasted===true?(b.pastedAt||b.checkedAt||''):''
     });

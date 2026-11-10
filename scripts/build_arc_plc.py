@@ -993,7 +993,7 @@ def signup_copy(today):
     c6, o7, c7 = nice_date(a["close"]), nice_date(b["open"]), nice_date(b["close"])
     sign = ("Sign", "Producers with a share in the crop sign. FSA says a landowner with no share interest, such as a cash-rent landlord, cannot enroll.")
     bring = ("Bring", "Bring the farm&rsquo;s FSA-156EZ. It lists the base acres and PLC yields.")
-    # USDA FSA's ARC/PLC page, read Nov 2, 2026 (feedbag notes/INBOX.md entry of that date): "providing an additional
+    # USDA FSA's ARC/PLC page, read Nov 2, 2026 (the private repo the private notes entry of that date): "providing an additional
     # 30 million base acres to be added to farms nationwide" and "Because eligible acres exceeded the nationwide
     # 30-million-acre cap ... a prorated reduction of 3.69% to all newly allocated base acres." FSA's own releases
     # differ on "more than 30 million" and "first in 20 years", so neither is said here.
@@ -1735,7 +1735,7 @@ def head(title, desc, path, jsonld, indexable=True, fonts="", og_title=None, og_
 </head>"""
 
 
-# The one cross-promo on a county page (Sig, Oct 23 2026): the quiet "auto" line after the
+# The one cross-promo on a county page (Oct 23 2026): the quiet "auto" line after the
 # questions, as on the hub (components/rain-print-promo.js: the Rain Print "see" line through
 # Dec 24, the rain gauge hook Dec 26 to May 31, from data/rain-print.json; hidden and taking no
 # space otherwise). About 130 bytes a page.
@@ -2017,7 +2017,7 @@ def dy_source_text(D):
 
 
 def method_html(D):
-    """How the verdict is figured, in plain words (Sig, Nov 8, 2026: "Cut it"): what it compares and how the past years came out.
+    """How the verdict is figured, in plain words (Nov 8, 2026): what it compares and how the past years came out.
     No call rules, no test statistics, no weights; the track-record table stays. Every number here is computed from the data."""
     y6 = D["years"]["2026"]["crops"]
     head = '<h2 id="method">How the ARC or PLC verdict is figured</h2>'
@@ -2814,7 +2814,7 @@ def bc_html(items):
 
 
 def byline_html(D):
-    # Sig, Oct 18: no name at the top of a page; the name goes in one quiet line
+    # Oct 18: no name at the top of a page; the name goes in one quiet line
     # at the end (BY_END) or in the "Reviewed by" source note
     return f'<p class="ap-byline">{asof(D["updated"])}</p>'
 
@@ -3560,7 +3560,7 @@ def county_page(st, S, c, D, ch):
     rel = [f'<a href="/arc-plc/{sl}">All {esc(name)} counties</a>', '<a href="/arc-plc">ARC or PLC calculator and method</a>']
     if atlas:
         rel.append(f'<a href="/farmland-atlas/{sl}/{cslug}">{esc(cname)} in the Farmland Atlas</a>')
-    # the county's recorded farm sales, where the state has them (Nov 4, Sig: "make sure it is not missable")
+    # the county's recorded farm sales, where the state has them (Nov 4)
     if os.path.exists(os.path.join(ROOT, "land-sales", sl, f"{cslug}.html")):
         rel.append(f'<a href="/land-sales/{sl}/{cslug}">Recent farmland sales near you: {esc(cname)}</a>')
     # the same county's PRF and rain pages (scripts/cross_links.py, night SEO audit Oct 19, 2026):
@@ -4223,7 +4223,7 @@ def selftest():
        and county_title("Wright County", "MN", "Non-irrigated corn", "2026", "182.3 bu") == "Wright County, MN ARC or PLC 2026: Non-irrigated corn 182.3 bu"
        and county_title("Story County", "IA", "Corn", "2026", "203.4 bu") == "Story County, IA ARC or PLC 2026: Corn Benchmark 203.4 bu"
        and county_title("Story County", "IA", "ARC-CO", "2026", "") == "Story County, IA ARC or PLC 2026: ARC-CO Benchmark")
-    # Sig, 2026-10-20: at 60 about 300 county titles lost the number, most of them "Non-irrigated"; Grand Forks was one
+    # 2026-10-20: at 60 about 300 county titles lost the number, most of them "Non-irrigated"; Grand Forks was one
     ck("title: a long Non-irrigated title keeps its benchmark number at the site cap",
        county_title("Grand Forks County", "ND", "Non-irrigated wheat", "2026", "61.4 bu") == "Grand Forks County, ND ARC or PLC 2026: Non-irrigated wheat 61.4 bu")
     ck(f"title: always {TITLE_MAX} or fewer with 'ARC or PLC'", TITLE_MAX == 68 and all(len(t) <= TITLE_MAX and "ARC or PLC" in t for t in (

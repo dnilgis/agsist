@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-build_newsletter_block.py: the monthly newsletter block (Sig, Nov 2, 2026).
+build_newsletter_block.py: the monthly newsletter block (Nov 2, 2026).
 
 A short, paste-ready block for co-op, Farm Credit and local paper newsletters:
 one county's rain for the month just ended, the year to date, and the state's

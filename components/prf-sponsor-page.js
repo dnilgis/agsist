@@ -6,7 +6,7 @@
    (window.AgPrfSponsor.render, components/prf-sponsor.js), so the preview is
    exactly what would show. The inquiry posts to the subs worker (POST /form,
    kind prf-sponsor, worker v5.22) through components/form-post.js;
-   scripts/form_digest.py mails Sig with the subject
+   scripts/form_digest.py mails the owner with the subject
    "PRF sponsor inquiry: <business> (<states>)". Nothing is published from an
    inquiry, and no price is printed, suggested or sent from here.
 

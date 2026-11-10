@@ -1,5 +1,4 @@
-/* A trace of snow on the Rain Print (Sig, 2026-10-20: "if a trace of snow falls we should not just
- * dismiss it, especially on the rain print, a trace should somehow show as a trace").
+/* A trace of snow on the Rain Print (2026-10-20).
  *
  * NOAA's snowfall "T" (snow fell, under 0.1 in) used to read as 0 and draw nothing. Now the day
  * carries sT, the art marks it above the line on both styles, the foot line keys it, and a measured
@@ -10,7 +9,7 @@
  * (2026 through Oct 18): Belle Mina AL (Limestone County, only traces: 5 days, two of them with
  * measured rain, 1.42 in on Jan 25) and Grand Forks International Airport ND (24.4 in of snow
  * and 35 trace days, most on days the gauge also read T; its Jun 3 snowfall T, on the year's biggest rain,
- * is a summer trace and is not marked: Sig, 2026-10-20, "skip summer traces").
+ * is a summer trace and is not marked: 2026-10-20).
  *
  *   node --test test/rain-print-snow-trace.test.mjs
  */

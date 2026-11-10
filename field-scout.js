@@ -103,7 +103,7 @@
     map.on('zoomstart', dismissInvite);
     try{ map.getContainer().addEventListener('pointerdown', dismissInvite, { once:true }); }catch(e){}
 
-    // THE BASE MAP IS THE USGS NATIONAL MAP (Sig, Oct 29, 2026): public domain, no key, no
+    // THE BASE MAP IS THE USGS NATIONAL MAP (Oct 29, 2026): public domain, no key, no
     // account, so it cannot turn into a bill or a watermark (scripts/basemap-checks.mjs). The
     // satellite view is USGSImageryOnly (NAIP aerial photos, cached to level 16; closer zooms
     // stretch the level-16 tile), the map view is USGSTopo. Esri World Imagery (no account,

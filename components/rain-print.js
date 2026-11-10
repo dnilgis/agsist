@@ -2,16 +2,16 @@
  *
  * A place and a finished year become a print: every day's precipitation at
  * the nearest NOAA weather station with a usable record, drawn in one of the
- * two styles Sig picked (2026-10-13): R1 Staircase (the running total, the
+ * two styles the owner picked (2026-10-13): R1 Staircase (the running total, the
  * default) or R2 Roots (snow piled above the ground line, rain soaking down
  * below it). components/rain-print-art.js draws both; this file feeds it.
  * Optional: a dedication line, NOAA's 30-year normal under each month's total,
  * and remarkable days (components/rain-print-records.js, loaded on first use).
  * The QR on every preview is the standard code to the Rain Print page; only
- * the files Sig makes after payment carry the print's own short link
+ * the files the owner makes after payment carry the print's own short link
  * (components/rp-short.js), made at the moment of export (2026-10-14).
  * A serial goes under it on physical prints only.
- * Ported from Sig's standalone Rain Print Studio (the October last-pass
+ * Ported from the owner's standalone Rain Print Studio (the October last-pass
  * version, with its QR, marker, callout and dry-spell fixes); the art is his design.
  *
  * WHERE THE NUMBERS COME FROM (nothing here is invented or filled in)
@@ -30,7 +30,7 @@
  *   A station with more than MISS_BLOCK unrecorded days in the year gets no
  *   print: the page says so and offers the other stations. Fewer missing days
  *   are left as gaps in the line (never drawn as dry, never added to either
- *   total), and no count of them is printed on the art (Sig); the line under
+ *   total), and no count of them is printed on the art; the line under
  *   the print on the page states how many there were.
  *
  * THE DESIGN IS THE URL. Every choice (place, station, year, layout, palette,
@@ -53,7 +53,7 @@
  * (scripts/rp_buyer_email.py, worker v5.40; components/rp-gift.js, worker v5.16);
  * a ?gift=CODE link redeems one here (see THE GIFT CARD below).
  *
- * PRODUCTS (2026-10-11; paper 13 x 19 from 2026-10-17, SHEET): digital file (the art, 18 x 12 in), print, framed; Sig
+ * PRODUCTS (2026-10-11; paper 13 x 19 from 2026-10-17, SHEET): digital file (the art, 18 x 12 in), print, framed; the owner
  * prints, frames and ships them. 18 x 24 is gone; an old code with its size
  * letter still opens as 12 x 18. The maker's seal is square to the page.
  *
@@ -69,11 +69,11 @@
  * drawn design. The cutoff line, the price table and the per-print readout
  * come from business_cutoff, business_note, business_tiers,
  * business_one_address_off and business_quote_max in data/rain-print.json.
- * Since 2026-10-13 (Sig): 5 prints up, one delivered price per print like
+ * Since 2026-10-13: 5 prints up, one delivered price per print like
  * the cards, $ off each print shipped all to one address; over the quote max
- * Sig quotes it. Consumer orders above it never use them.
+ * The owner quotes it. Consumer orders above it never use them.
  *
- * A LOGO (2026-10-14, Sig: "a real upload button"). Under the name and the
+ * A LOGO (2026-10-14). Under the name and the
  * line, a buyer can add a farm or business logo (components/rp-logo.js reads
  * and trims it in the browser; the subs worker v5.23 keeps the PNG). It prints
  * small beside the name block, in the print's ink or in its own colors. The
@@ -96,7 +96,7 @@
      components/rain-print-art.js. Layout and palette still round-trip so an old
      link opens; they no longer change the art (an old Waveform link opens as R2). */
   var STYLE = { r1: 1, r2: 2 };
-  /* markers: up to five marked days (Sig, 2026-10-15: "I don't want 100 dates, but if someone had 4 or 5 why not");
+  /* markers: up to five marked days (2026-10-15);
      the art leaves off a day it can't place cleanly and says which (AgRainArt.lastUnplaced) */
   var LIMITS = { place: 32, name: 24, label: 13, markers: 5, dedication: 70 };
   /* The order files' QR carries the short link (rp-short.js), which fits at
@@ -105,18 +105,18 @@
      A code over Stripe's 200 characters goes to checkout as its short-link id
      (checkoutRef below). */
   var SITE = 'https://agsist.com/rain-print';
-  /* The standard code (2026-10-14, Sig: no working QR for a design until
-     someone pays). Every preview, test print and mockup carries this one fixed
-     QR to the Rain Print page; only the files Sig makes after payment carry the
+  /* The standard code (2026-10-14, no working QR for a design until
+ someone pays). Every preview, test print and mockup carries this one fixed
+     QR to the Rain Print page; only the files the owner makes after payment carry the
      print's own short link. Uppercase keeps it in QR alphanumeric mode: version
      2 at level M, 25 x 25 modules, the same printed size as the short link. */
   var STANDARD_LINK = 'HTTPS://AGSIST.COM/RAIN-PRINT', STD_M = null;
-  /* THE SHEET (2026-10-17, Sig): prints and framed prints are printed on 13 x 19 in
+  /* THE SHEET (2026-10-17): prints and framed prints are printed on 13 x 19 in
      paper and ship untrimmed. The 3:2 art (1800 x 1200 units) is scaled to 16.5 x
      11 in and centred on the sheet; the margin is the print's own white. The
-     framed print sits in a 13 x 19 frame (oak wood or black MDF, Sig's Nov 4 order: 2 mm tempered glass) with an acid-free white mat (the stock "cut for 11 x 17" kind; the maker's listing gives the opening as 10.5 x 16.5 in, Nov 4), so everything the
+     framed print sits in a 13 x 19 frame (oak wood or black MDF, Nov 4 order: 2 mm tempered glass) with an acid-free white mat (the stock "cut for 11 x 17" kind; the maker's listing gives the opening as 10.5 x 16.5 in, Nov 4), so everything the
      art draws stays inside the centred safe window, which
-     test/rain-print-sheet.test.mjs measures on the drawn sheet. When Sig
+     test/rain-print-sheet.test.mjs measures on the drawn sheet. When the owner
      measures the real mat, change mat and safe here (inches, landscape). The
      digital file is the art alone, 18 x 12 in at 300 dpi, as before. */
   var SHEET = { w: 19, h: 13, art: { w: 16.5, h: 11 }, mat: { w: 16.5, h: 10.5 }, safe: { w: 16.25, h: 10.25 } };
@@ -173,14 +173,14 @@
       style: 'r1', dedication: '', normals: false, records: false, logo: '', logoInk: true, units: '', lang: '',
       hist: false, frost: false, heat: false, ribbon: false };
   }
-  /* The 2026-10-17 options (Sig). hist: every full year the station kept, behind the
+  /* The 2026-10-17 options. hist: every full year the station kept, behind the
      year (Staircase); frost: the last and first frost marked on the date line; heat: the hottest and coldest
      day in the foot line; ribbon: each day's high and low in a thin band. A new design starts with frost and
      heat on (the page and a hand-written link); a code or tool link made before them opens as it was made.
-     Since 2026-10-22 (Sig) a new design also starts with ribbon and hist on; codes and tool links still open as made.
-     NO CROP LAYERS (2026-10-23, Sig: no plant outlines or any of that on the prints). The crop, its planting and
+     Since 2026-10-22 a new design also starts with ribbon and hist on; codes and tool links still open as made.
+     NO CROP LAYERS (2026-10-23, no plant outlines or any of that on the prints). The crop, its planting and
      harvest days, the plant drawings (plants) and the usual-year plants (ghost) are gone from the design: a code or
-     link made with them opens and draws without them, no error. Only Sig's order view can still draw one, for an
+     link made with them opens and draws without them, no error. Only the owner's order view can still draw one, for an
      order paid before that day, and only when he asks (orderCrop, ORDER_CROP). */
   var OPT_FLAGS = ['hist', 'frost', 'heat', 'ribbon'], OPT_LETTER = 'hftr';
   function flag(v) { return v === true || v === '1' || v === 1; }
@@ -236,7 +236,7 @@
     OPT_FLAGS.forEach(function (k, i) { o[k] = !!m[6 + i]; });
     return o;
   }
-  /* The crop of an order paid before 2026-10-23, for Sig's order view only (ORDER_CROP): from a link's d= code or
+  /* The crop of an order paid before 2026-10-23, for the owner's order view only (ORDER_CROP): from a link's d= code or
      its crop=, plant=, harvest=, plants=, ghost=. -> {crop, cropPlant, cropHarvest, plants, ghost} or null. Pure. */
   function orderCrop(search) {
     var q = new URLSearchParams(String(search || '').replace(/^\?/, '')), x = null, year;
@@ -298,7 +298,7 @@
     return 'Orders placed now ship after Christmas.';
   }
   /* CHRISTMAS DATES (2026-10-13). The last day to order and still have it by
-     Dec 24, from the page's own promise in data/rain-print.json: Sig sends the
+     Dec 24, from the page's own promise in data/rain-print.json: the owner sends the
      proof within proof_business_days, the buyer OKs it within
      approve_business_days, the print ships within ship_business_days after
      that, and the carrier takes transit_business_days[product]. Business days
@@ -393,15 +393,15 @@
     if (!m || +m[2] < 1 || +m[2] > 12 || !/^\d{4}-\d{2}-\d{2}$/.test(String(todayIso || '')) || todayIso > cutoffIso) return '';
     return 'For Christmas, send your list by ' + ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][+m[2] - 1] + ' ' + (+m[3]) + '.';
   }
-  /* Business prices, all from data/rain-print.json (Sig, 2026-10-13): one
+  /* Business prices, all from data/rain-print.json (2026-10-13): one
      price per print, delivered, like the cards. business_tiers
      [{min, print12x18, framed12x18}] in dollars a print, shipping included;
      business_one_address_off {print12x18, framed12x18} dollars off each print
      when the whole order goes to one address; business_quote_max the most
-     prints the table and quote line price (above it Sig quotes it himself).
+     prints the table and quote line price (above it the owner quotes it himself).
      A digital file is the digital price at any quantity. A business order is
      BIZ_MIN to BIZ_MAX prints (the worker checks the same). No usable tier:
-     no rows, so the page shows no table and the quote line says Sig quotes it.
+     no rows, so the page shows no table and the quote line says the owner quotes it.
      Every figure is rounded to the cent. */
   var BIZ_PRODUCTS = ['print12x18', 'framed12x18', 'digital'];
   var BIZ_SHIPPED = ['print12x18', 'framed12x18'];
@@ -443,7 +443,7 @@
         r.one[id] = cents(Math.max(0, t[id] - off[id]));
         if (t[id] !== j[id]) r.retail = false;
       });
-      // a tier at the card prices is "no discount": no one-address discount either (Sig, 2026-10-13)
+      // a tier at the card prices is "no discount": no one-address discount either (2026-10-13)
       if (r.retail) r.one = { print12x18: r.prices.print12x18, framed12x18: r.prices.framed12x18 };
       return r;
     });
@@ -455,7 +455,7 @@
   /* One product, one quantity, one destination ('one' all to one address,
      anything else one to each customer): {unit, total}, delivered;
      total = unit x qty, to the cent. null outside BIZ_MIN to the quote max,
-     or with no tier for that quantity (Sig quotes it). */
+     or with no tier for that quantity (the owner quotes it). */
   function bizQuote(j, qty, id, dest) {
     if (!bizPricesOk(j) || BIZ_PRODUCTS.indexOf(id) < 0 || !Number.isInteger(qty) || qty < BIZ_MIN || qty > BIZ_MAX) return null;
     var unit;
@@ -475,7 +475,7 @@
      same price and checkout), and the print cards say so. With ships on, the
      prices are canada.print12x18 / framed12x18 (US dollars, delivered; null keeps
      the US price), the checkout is canada.payment_links (null: the order request
-     form, which emails Sig), and the shipping line, transit days and Christmas
+ form, which emails the owner), and the shipping line, transit days and Christmas
      dates are Canada's own (no Christmas date unless canada sets one).
      -> the prices object the order step reads, and blocked: the products a
      Canadian design can't order yet. */
@@ -524,8 +524,7 @@
   /* A snowfall value of T: snow fell that day, too little to measure (under 0.1 in). Its own
      flag on the day (sT), never the precipitation trace (flag 'T', counted in derive's D.trace):
      a snowfall trace can fall on a day with measured rain, or a day the gauge read T or 0.
-     Not June 1 to August 31 by the day's date (iso, YYYY-MM-DD; Sig, 2026-10-20: "skip summer
-     traces"): a summer T is most likely hail logged as snow (Grand Forks ND, Jun 3 2026, on the
+     Not June 1 to August 31 by the day's date (iso, YYYY-MM-DD; 2026-10-20): a summer T is most likely hail logged as snow (Grand Forks ND, Jun 3 2026, on the
      year's biggest rain). US and Canada only, so one season. A measured summer snow amount stays. */
   function snowTraceRaw(raw, iso) {
     if (raw === undefined || raw === null || String(raw).trim() !== 'T') return false;
@@ -584,10 +583,10 @@
         wet++; endDry();
         // An A value is several days' catch, so it cannot be the wettest single day.
         if (x.flag !== 'A' && x.v > max.v) max = { v: x.v, date: x.date, doy: x.doy };
-        // The biggest rain: a plain reading on a day with no snow (Sig: rain days only).
+        // The biggest rain: a plain reading on a day with no snow (rain days only).
         if (x.flag === '' && !(x.s > 0) && x.v > maxRain.v) maxRain = { v: x.v, date: x.date, doy: x.doy };
       }
-      else if (x.s > 0) endDry();   // snow fell: not a dry day, whatever the gauge read (Sig)
+      else if (x.s > 0) endDry();   // snow fell: not a dry day, whatever the gauge read
       else { if (dry === 0) dryStart = x.doy; dry++; if (dry > dryMax.len) dryMax = { len: dry, end: x.date, endDoy: x.doy, startDoy: dryStart }; }
     });
     // Withheld, not guessed, when an A total proves some day beat it.
@@ -715,7 +714,7 @@
      besides "the place's default for both"), so a plain US code is exactly as before. Only the characters A-Z a-z 0-9 - _ so Stripe takes it
      as a client_reference_id (200 at most).
      A gift order (this year, delivered in January) is the same code with GIFT-
-     in front, so Sig sees it in Stripe without decoding anything. A v1 code
+     in front, so the owner sees it in Stripe without decoding anything. A v1 code
      always starts with M (base64 of "1|"), so the prefix cannot be mistaken
      for part of a code. */
   var GIFT_PREFIX = 'GIFT-', XFLAG = 'abcdefgh', LOCF = 'ABCDEFGH', LOC_U = ['', 'in', 'mm'], LOC_L = ['', 'en', 'fr'];
@@ -809,7 +808,7 @@
     /* A link the tool made always carries style= (toParams) and comes in as it was
        made. A link written by hand (the story links, county rain pages, an email)
        has no style= and gets a new visitor's defaults: compared with the 30-year
-       normal, the normals shown and the remarkable days on (Sig, 2026-10-15),
+       normal, the normals shown and the remarkable days on (2026-10-15),
        unless the link says cmp=, normals=0 or records=0. The normals go with the
        30-year comparison only, as the boxes do: a hand link with cmp=station or
        cmp=none leaves them off unless it says normals=1. */
@@ -821,7 +820,7 @@
       logo: q.get('logo'), logoInk: q.get('logoInk'), units: q.get('u'), lang: q.get('lang'),
       // the options: a hand link gets a new visitor's frost marks and hottest and coldest day; a tool link as it was made
       // (crop=, plant=, harvest=, plants=, ghost= of a link made before 2026-10-23 are left out: no crop layers)
-      // (Sig, 2026-10-22: every layer on by default) a hand link also gets the daily temperature stripes and every year behind
+      // (2026-10-22: every layer on by default) a hand link also gets the daily temperature stripes and every year behind
       frost: dflt('frost', true), heat: dflt('heat', true), ribbon: dflt('ribbon', true), hist: dflt('hist', true) });
   }
   // URLSearchParams leaves * as it is, and the worker's design_url rule has no * (2026-10-14, panel 3)
@@ -957,13 +956,13 @@
     return m ? (gift ? GIFT_PREFIX : '') + 'RPS-' + m[1] : '';
   }
 
-  /* THE HASH REFERENCE (2026-10-22, after the Oct 21 worker block; BUILD-RULES
+  /* THE HASH REFERENCE (2026-10-22, after the Oct 21 worker block; the build rules
      14: checkout never depends on the worker). A design past Stripe's 200
      characters goes to checkout as its short-link id, which only the worker
      can make. When the worker can't be reached, it goes as RPH-<10 letters>
      instead (GIFT-RPH-... for this year's January gift): a hash of the full
      design code, made here with no outside service. It names exactly one
-     design: the same code always gives the same ref, and Sig gets the full
+     design: the same code always gives the same ref, and the owner gets the full
      code itself by the backup form (pressBackup below, Formspree) and the
      buyer's browser keeps it until that is sent. Stripe alone can't hold
      such a design (its payment links take nothing longer than 200
@@ -981,12 +980,12 @@
     return (gift ? GIFT_PREFIX : '') + 'RPH-' + out;
   }
 
-  /* THE ORDER RECORD (2026-10-20, Sig: a $19 payment showed in Stripe with no
-     design on it; client_reference_id sits on the Checkout Session, not on
-     the payment page). Every press of Pay that opens Stripe posts this to the
-     subs worker first (POST /rp-order, kept 120 days, Sig only reads it at
-     /rp-order/list): the same ref Stripe gets, the product, the price shown,
-     the full design link and the design in words, so Sig can match a payment
+  /* THE ORDER RECORD (2026-10-20, a $19 payment showed in Stripe with no
+ design on it; client_reference_id sits on the Checkout Session, not on
+ the payment page). Every press of Pay that opens Stripe posts this to the
+     subs worker first (POST /rp-order, kept 120 days, the owner only reads it at
+ /rp-order/list): the same ref Stripe gets, the product, the price shown,
+     the full design link and the design in words, so the owner can match a payment
      to a design by ref, or by time and product. Never the buyer's email,
      name or address: Stripe has those. */
   function orderRecord(x, ref, choice, price, frame) {
@@ -1001,7 +1000,7 @@
     if (o.product === 'framed12x18') o.frame_color = frameColor(frame);
     return o;
   }
-  /* THE FRAME COLOR (Sig, Nov 4): oak, picked first, or black, the same price.
+  /* THE FRAME COLOR (Nov 4): oak, picked first, or black, the same price.
      frameColor(c) -> 'oak' | 'black' (anything else is oak, the default).
      frameOf(rec) reads a record or order post: no color on it reads black
      (every framed print sold before Nov 4 was black). */
@@ -1290,8 +1289,7 @@
   }
   function isoMinusDays(iso, n) { return new Date(Date.parse(iso + 'T00:00:00Z') - n * 86400000).toISOString().slice(0, 10); }
   function lastDayOf(year) { return year === CURRENT_YEAR ? TODAY : year + '-12-31'; }
-  /* THE EXACT SPOT (2026-10-24, Sig: "a PRISM rainfall for that exact location if a person prefers that over a
-     gauge"). A pseudo station "spot:<lat>,<lon>" (2 decimals, about 1 km; PRISM's cells are 4 km) read from
+  /* THE EXACT SPOT (2026-10-24). A pseudo station "spot:<lat>,<lon>" (2 decimals, about 1 km; PRISM's cells are 4 km) read from
      RCC-ACIS GridData: grid 21 (PRISM daily, lower 48, 1981 on) for rain and temperature, and grid2
      ncei-norm:91-20 for the usual. GridData has no snowfall, so a spot print is rain only. It is an estimate made
      from nearby gauges, and the page says so. Never auto-picked: it is offered at the end of the station list.
@@ -1375,8 +1373,7 @@
     });
   }
 
-  /* THE AUTO PICK (2026-10-15, Sig: "find the nearest station with a full set
-     of data, in my case that includes snow and rain"). Chetek 2025 took a
+  /* THE AUTO PICK (2026-10-15). Chetek 2025 took a
      CoCoRaHS gauge 1.9 mi away that keeps no snowfall, so the print drew no
      snow, while Rice Lake's co-op station 9 mi away keeps both.
        1. Rain, as before: the first of the nearest three with at most MISS_OK
@@ -1390,7 +1387,7 @@
           metadata) is taken; else the rain pick stays and the page says so.
      Only for a design with no station of its own: a short link, an RPS
      reference, a gift card or any saved design keeps its station exactly.
-       pickStation(list, year, read(sid, year) -> Promise of daily(), o)
+       pickStation(list, year, read(sid, year) -> Promise of daily, o)
          o: {lat (the town's), snowy (overrides snowCountry), onTry(station, 'rain'|'snow')}
          -> Promise of {chosen, picked, why, seen}
        why: null, {over: {sid, name, km}} (picked over that nearer one) or
@@ -1455,8 +1452,7 @@
           if (d.d.missing <= MISS_OK) ok.push({ s: s, d: d });
         }
         if (!ok.length) { picked = best; chosen = bestSt; return null; }
-        /* THE MOST COMPLETE NEAR ONE (2026-10-21, Sig: "prefer the station with the more complete record,
-           especially one that has both rain and snow, over a slightly closer one with a thin record").
+        /* THE MOST COMPLETE NEAR ONE (2026-10-21).
            Of the near-complete years read, within the snow slack of the nearest of them (never a far one):
            a snowfall record that draws, where snow is normal, first; then the fewest unrecorded days (a few
            days either way count the same: MISS_SAME); then the nearest. The page says which and why. */
@@ -1536,7 +1532,7 @@
         // counts that snow melted down to water, so snowfall is shown beside it, never added.
         var p = parsePcpn(row[1]), t = row[2] !== undefined ? parseTemp(row[2]) : null, sn = row[3] !== undefined ? parsePcpn(row[3]).v : null;
         var dt = new Date(row[0] + 'T00:00:00'), dy = { date: row[0], v: p.v, flag: p.flag, t: t, s: sn, m: dt.getMonth(), d: dt.getDate(), doy: days.length };
-        // a snowfall "T" (2026-10-20, Sig: "a trace should somehow show as a trace"): snow fell, under 0.1 in (not in summer: snowTraceRaw).
+        // a snowfall "T" (2026-10-20): snow fell, under 0.1 in (not in summer: snowTraceRaw).
         // It stays 0 in every snow total; sT only lets the print mark the day. Not the gauge's own T (flag).
         if (snowTraceRaw(row[3], row[0])) dy.sT = true;
         days.push(dy);
@@ -1648,7 +1644,7 @@
   function tempWords(tm) { return tm.same ? 'Temperatures from the same station' : 'Temperatures: ' + tm.name + (tm.words ? ', ' + tm.words : ''); }
   // "3.1 mi away" from a distance in km (the temperature station's, from the town)
   function tempAway(km) { return milesText(miles(km)) + ' away'; }
-  /* s: an order's crop (orderCrop: Sig's order view only, since 2026-10-23); td: the temperature station's year
+  /* s: an order's crop (orderCrop: the owner's order view only, since 2026-10-23); td: the temperature station's year
      (AgRainExtras.tempDays); tdN: its 1991-2020 normals (or null); -> the art's input.crop, or null (no crop, or nothing to place). */
   function cropInput(s, td, tdN) {
     var X = X_();
@@ -1665,7 +1661,7 @@
      temperature station's year, kinds TEMP_KINDS (it withholds what a missing day could change); tm: tempWords'
      station; tdN: that station's 1991-2020 daily normal highs and lows (AgRainExtras.normalTemps), null when NOAA
      has none for it, false when the ask failed, undefined while they load.
-     The stripes (option C, Sig 2026-10-21): each day's average against its normal (AgRainExtras.stripes), with
+     The stripes (option C, 2026-10-21): each day's average against its normal (AgRainExtras.stripes), with
      the hottest and coldest days named on the strip (from found, so a day a gap could change is never named).
      No normals: no stripes, and the foot line says why and names the hottest and coldest days instead.
      -> input.temp, or null when none of the three is on or there's nothing to show. */
@@ -1726,8 +1722,8 @@
   }
   function longDate(iso) { var p = String(iso).split('-').map(Number); return ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'][p[1] - 1] + ' ' + p[2]; }
 
-  /* THE GIFT CARD'S PREVIEW (2026-10-14, Sig). rp-gift.html shows the print so
-     far on the card Sig emails for a this-year gift. previewArt(code) opens the
+  /* THE GIFT CARD'S PREVIEW (2026-10-14). rp-gift.html shows the print so
+     far on the card the owner emails for a this-year gift. previewArt(code) opens the
      card's design code the way the page opens ?d=, reads the same town, station
      record and comparison, and draws with the same art (AgRainArt.render, with
      the page's preview of this year: Jan 1 through the last reported day on the
@@ -1813,7 +1809,7 @@
     });
   }
 
-  /* PAID (2026-10-14, Sig: Stripe checkout in the same tab). Each Payment Link
+  /* PAID (2026-10-14, Stripe checkout in the same tab). Each Payment Link
      sends the buyer back to rain-print?paid=<framed12x18|print12x18|digital>
      &s={CHECKOUT_SESSION_ID} (the setting is in TODO-SIG.md). paidFromUrl
      reads it: {choice, session ('' unless it looks like Stripe's cs_ id)}, or
@@ -1844,7 +1840,7 @@
     var what = sv && sv.place && sv.year ? 'Your ' + PAID_WHAT[id] + ' of ' + sv.place + ', ' + sv.year + ' is ordered. ' : '';
     var out = [];
     if (sv && sv.gift) {
-      // the card goes out by email the moment Stripe says paid (scripts/rp_buyer_email.py, worker v5.40; Sig 2026-10-20)
+      // the card goes out by email the moment Stripe says paid (scripts/rp_buyer_email.py, worker v5.40; 2026-10-20)
       out.push(what + 'Your gift card to print comes by email within minutes, with what they get and how to use it. ' +
         (file ? 'Your proof follows in January, once the full year is in, and the full file once you approve it.' : 'The print follows in January, with a proof to you first.'));
     } else if (sv && sv.settle) {
@@ -1885,7 +1881,7 @@
     return hit;
   }
 
-  /* BY THE BUTTON (2026-10-20, Sig: "do all"). Two short lines under Pay, then
+  /* BY THE BUTTON (2026-10-20). Two short lines under Pay, then
      "Send this to your family". Line one (buyLine) is when it comes: for a print
      or framed print, from October 1 through that product's own cutoff in
      data/rain-print.json, "Order by Dec 9 for Christmas delivery." (a plain
@@ -1893,8 +1889,8 @@
      past the cutoff it plainly says a date after Christmas. This year's January
      gift says January; a year NOAA hasn't finished, a gift being redeemed and
      the digital file say nothing here. o = {gift, settle, used, year}. Line
-     two (promiseLine) is Sig's guarantee, and for a print the serial: every
-     print and framed print carries "No. 0001" under the QR and Sig initials it
+     two (promiseLine) is the owner's guarantee, and for a print the serial: every
+     print and framed print carries "No. 0001" under the QR and the owner initials it
      in pencil (the renderer prints no signature, so it says initialed, never
      signed). The digital file has no serial. */
   var GUARANTEE = 'If it’s not right, I’ll redo it or refund it.';
@@ -1996,7 +1992,7 @@
   var CHOICE = { digital: 'Digital file', print12x18: '13 x 19 print', framed12x18: '13 x 19 framed print' };
   var PRODUCTS = ['digital', 'print12x18', 'framed12x18'];
   var ORDER_TO = 'sig@agsist.com';
-  /* Sig, 2026-10-22: "if someone is having problems they can always call me or email". The help line goes with every
+  /* 2026-10-22. The help line goes with every
      failure on the way to an order (the draw, checkout, the order form) and sits by Pay on the review sheet. */
   var HELP_HTML = 'Questions or trouble? Call or text Sig: <a href="tel:+17157972428">715-797-2428</a> or email <a href="mailto:' + ORDER_TO + '">' + ORDER_TO + '</a>.';
   function helpLine(on) { var h = $('rp-help'); if (h) h.hidden = !on; }
@@ -2059,8 +2055,8 @@
      form, and the town field stays empty, until the reader draws their own
      place or clicks "Use this design". Any failure puts the empty box back. */
   var SAMPLE = null;
-  /* THE EXAMPLE (2026-10-14, Sig: example words are gray hints only, never
-     pre-filled on a buyer's print). The boxes start empty, with the example as
+  /* THE EXAMPLE (2026-10-14, example words are gray hints only, never
+ pre-filled on a buyer's print). The boxes start empty, with the example as
      their placeholders. Until the reader does something with the page, the
      print at the top wears the example words, labeled as an example under it
      (SHOW_EX); the design itself (ST: the URL, the up-close view, the order)
@@ -2174,9 +2170,9 @@
      page, warm gray on the paper. On everything a buyer sees before paying (the
      page, the up-close view, the mini copy, the preview PNG) it is the standard
      code to the Rain Print page (STANDARD_LINK), and no short link is asked for
-     (2026-10-14, Sig: a working QR only once someone pays; the old mint on every
-     redraw also ran the link service into its hourly limit). The print's own
-     short link (components/rp-short.js, 25 x 25 modules) is made only when Sig
+     (2026-10-14, a working QR only once someone pays; the old mint on every
+ redraw also ran the link service into its hourly limit). The print's own
+     short link (components/rp-short.js, 25 x 25 modules) is made only when the owner
      saves an order file (exportFile, o.qrMatrix), and that file waits for it. */
   // The design itself, without the gift marker: what the QR and shared links open.
   function artDesign() { return Object.assign({}, ST, { gift: false }); }
@@ -2285,7 +2281,7 @@
      it is in. The gauge's own highs and lows are used when it keeps them; else the nearest station that does
      (StnMeta maxt over the same box), up to three read, nearest first. */
   var TEMP = null, TEMP_KEY = '', TEMP_P = null, HIST_WHY = '', FULL_CACHE = new Map(), EXTRAS_P = null, LONG_ASK = false;
-  // the maker's files wait for the options' data, so the file Sig prints shows what the buyer saw
+  // the maker's files wait for the options' data, so the file the owner prints shows what the buyer saw
   function extrasGate() { return Promise.resolve(EXTRAS_P).then(function () { return true; }, function () { return true; }); }
   var TEMP_ELEMS = ['pcpn', 'avgt', 'snow', 'maxt', 'mint'];
   function wantTemp() { return !!(orderCropOn() || ST.frost || ST.heat || ST.ribbon); }
@@ -2367,7 +2363,7 @@
   function extrasHist() { return wantHist() && META && FULL_CACHE.get(META.sid) ? histInput(FULL_CACHE.get(META.sid), META.year) : null; }
   /* Every year behind: the nearest station whose full record reaches HIST_MIN full years and whose year is good
      (at most MISS_OK unrecorded days), from those whose record spans 30 years or more, up to four read.
-     Where snow is normal, one whose year also draws snow comes first (2026-10-21, Sig: rain AND snow);
+     Where snow is normal, one whose year also draws snow comes first (2026-10-21, rain AND snow);
      when none of the four does, the nearest long record stands. -> {chosen, picked, n (full years)} or null */
   function pickLong(list, year, onTry, lat) {
     var yrs = function (s) { var r = s.valid_daterange && s.valid_daterange[0]; return r ? +r[1].slice(0, 4) - +r[0].slice(0, 4) + 1 : 0; };
@@ -2417,7 +2413,7 @@
     }
     syncLayers();
   }
-  /* THE LAYERS CARD (2026-10-22, Sig: yes to all six). Seven layers since the crop ones went (2026-10-23), each one tap on or off. A layer that can't
+  /* THE LAYERS CARD (2026-10-22, yes to all six). Seven layers since the crop ones went (2026-10-23), each one tap on or off. A layer that can't
      change the print right now is greyed, and its one-line reason shows in its row; tapping it says why under
      the print. Hottest, coldest is "included" while the daily temperature stripes are on: the stripes name those
      two days. The count says how many are on the print. */
@@ -2468,8 +2464,8 @@
     if (k === 'ribbon' && on && heatIncluded()) where += '; the hottest and coldest day are named on it';
     el.innerHTML = w ? '<b>' + esc(nm) + '</b>: ' + esc(w) + '.' : '<b>' + esc(nm) + (k === 'cmp' && on ? '' : on ? ' on' : ' off') + '</b>' + (on ? ': ' + esc(where) + '.' : '.');
   }
-  /* AN ORDER'S CROP (2026-10-23). The crop layers are gone (Sig: no plant outlines or any of that on the prints).
-     A print paid for before that day with a crop on it can still be drawn as it was bought, only in Sig's order
+  /* AN ORDER'S CROP (2026-10-23). The crop layers are gone (no plant outlines or any of that on the prints).
+     A print paid for before that day with a crop on it can still be drawn as it was bought, only in the owner's order
      view and only when the link also says oldcrop=1; nothing sets that by itself,
      so a new order's proof and files are drawn as the buyer saw them. The crop stays out of the design (ST): it is
      never in a code, a short link, a gift card or the address bar's design, only here. */
@@ -2620,7 +2616,7 @@
     logoRedraw();
     try { $('rp-logo-pick').focus(); } catch (e) {}
   }
-  /* A file Sig prints or someone pays for waits for the logo (8 s at most);
+  /* A file the owner prints or someone pays for waits for the logo (8 s at most);
      true when it is in, or the design has none. */
   function logoGate() {
     if (!ST.logo || logoArt()) return Promise.resolve(true);
@@ -2673,7 +2669,7 @@
     showBuy(false);
   }
   function lastFullYear() { return CURRENT_YEAR - 1; }
-  /* THE READER'S OWN AREA (2026-10-13, Sig): a new visitor's first print is
+  /* THE READER'S OWN AREA (2026-10-13): a new visitor's first print is
      their own town, last full year, from the subs worker's GET /where (the
      town Cloudflare puts on the request: no prompt, nothing kept). It is a
      real draw, the town in the box, ready to order. Outside the US, no
@@ -2848,7 +2844,7 @@
         : n >= x[2] ? n + ' of ' + x[2] + ' letters. That\u2019s the most that fits.' : n + ' of ' + x[2] + ' letters';
       el.classList.toggle('rp-at', !c && n >= x[2]);
       el.classList.toggle('rp-bad', !!c);
-      // the counter shows only within 5 letters of the limit (2026-10-15, Sig: too much dead space)
+      // the counter shows only within 5 letters of the limit (2026-10-15, too much dead space)
       el.classList.toggle('rp-near', n >= x[2] - 5);
     });
     /* The same counter under each date's label (2026-10-14: a label stopped at
@@ -3080,12 +3076,12 @@
     // a card holder is the one getting the gift: never "Want a gift card?" (2026-10-20)
     $('rp-gift').hidden = !on || !!(GIFT && (GIFT.usable || GIFT.prepaid));
     /* Who it's for and the card note are asked here, on the page, always
-       (2026-10-18, Sig: the page must not rely on Stripe for gift details).
+       (2026-10-18, the page must not rely on Stripe for gift details).
        With a checkout link they come onto the review sheet's gift box
-       (#rp-pgift) and go to Sig as a rain-print-order post before checkout. */
+       (#rp-pgift) and go to the owner as a rain-print-order post before checkout. */
     $('rp-gift-fields').hidden = false;
     $('rp-gift-cardnote').textContent = 'Want a gift card for under the tree? Fill in the boxes above, then order. Within minutes of paying, a card to print comes by email, with a code they use to see their print.';
-    // the digital file's card (2026-10-14, Sig: no proof step for the file; he redoes it free on request)
+    // the digital file's card (2026-10-14, no proof step for the file; he redoes it free on request)
     $('rp-dig-when').textContent = giftYear() ? 'A proof by email in January, once the full year is in, the full file once you approve it'
       : SETTLE && canOrder() ? 'A proof by email once the full year is in, the full file once you approve it' : 'A proof by email within 1 business day of paying, the full file once you approve it';
     if (!ORDER_NOTE) ORDER_NOTE = $('ro-order-note').textContent;
@@ -3156,7 +3152,7 @@
   // "<b>Cameron, WI (2 mi NE of Cameron)</b>, 3.1 mi from Chetek (NOAA co-op station 471667)"
   // and, when the pick traded miles for a snowfall record (or looked and found none): "Picked over a gauge 1.9 mi away because it records snowfall too."
   function gaugeHtml(m) {
-    // the nearest station also has the years: nothing to explain (2026-10-22, Sig: no long paragraph about it)
+    // the nearest station also has the years: nothing to explain (2026-10-22, no long paragraph about it)
     var w = m.why && m.why.long && !m.why.long.over && !m.ca ? '' : pickWhy(m.why, m.year);
     if (m.ca && CA()) {
       var lg = LOC().lang, fr = lg === 'fr';
@@ -3171,8 +3167,8 @@
     return '<b>' + esc(gaugeWords(m)) + '</b>, ' + esc(distText(m)) + ' (' + esc(sidPlain(m.sid)) + ')' + (w ? '. <span class="rp-why" id="rp-why">' + esc(w.replace(/\.$/, '')) + '</span>' : '') +
       (STATIONS.length > 1 ? (w ? '.' : '') + ' <a href="#rp-station" class="rp-chg" id="rp-chg">Change station</a>' : '');
   }
-  /* A station picked for every year behind yours (Sig, 2026-10-22: the 30-year station stays the default, said in
-     one short plain line): "Weather from Bloomer, 17 mi: the nearest station with 30+ years of records, so every past
+  /* A station picked for every year behind yours (2026-10-22: the 30-year station stays the default, said in
+ one short plain line): "Weather from Bloomer, 17 mi: the nearest station with 30+ years of records, so every past
      year can be drawn. Use the nearer Chetek gauge (11 mi)". The last part is a button: it turns every year behind
      off and draws from the station the page picks without it (named once that is known, read in the background). */
   // only when the long record passed a nearer station; the nearest station that also has the years reads as any other
@@ -3226,7 +3222,7 @@
     updateUrl();
   }
   /* This year, too thin to draw: a plain message instead of art. The order stays
-     open; Sig draws the print from the full year in January. */
+     open; the owner draws the print from the full year in January. */
   // the data line under the print: a station's NOAA record, or the spot's PRISM estimate
   function spotCredit(m) {
     return m && isSpot(m.sid)
@@ -3340,7 +3336,7 @@
     try { doc.dispatchEvent(new root.CustomEvent('rainprint:drawn')); } catch (e) {}
   }
 
-  /* WATCH YOUR YEAR DRAW (2026-10-20, Sig): components/rain-print-draw.js plays the
+  /* WATCH YOUR YEAR DRAW (2026-10-20): components/rain-print-draw.js plays the
      print drawing itself and records it as a video, from this same art input, so the
      video is the print (nothing drawn a second way). The example words come off first
      (they are hints, never the reader's). No serial: a video is not a numbered print. */
@@ -3359,7 +3355,7 @@
      Rain Print ask (source page:rain-print). components/signup-ask.js draws
      the form, as on the county pages. A past year, the sample, a Canadian
      town, a town with no county named, a county with no row in
-     data/rain/<st>.json, a gift card being used and Sig's maker view ask
+     data/rain/<st>.json, a gift card being used and the owner's maker view ask
      nothing. Analytics: rain_print_year_signup {daily: 0|1}, nothing else (no
      address, no design code, no place). */
   var YA = { key: '', inp: '', st: {} };
@@ -3729,8 +3725,8 @@
         STATIONS = [chosen].concat(list);
         picked = d; seen[linked] = snowStateOf(d.days);
       }).catch(function (err) { if (err === 'stale') throw err; return instead(); });
-      /* Every year behind your year no longer moves the pick (Sig, Nov 9 2026: the Oct 15 rule wins, the nearest
-         station with a full record of BOTH rain and snowfall). The threads draw from that station when it has
+      /* Every year behind your year no longer moves the pick (Nov 9 2026: the Oct 15 rule wins, the nearest
+ station with a full record of BOTH rain and snowfall). The threads draw from that station when it has
          HIST_MIN full years; under that they are off, and the options panel says so with a one-tap way to the
          nearest long record (LONG_ASK, the reader's own choice: nearestLong). */
       var askLong = LONG_ASK; LONG_ASK = false;
@@ -3926,7 +3922,7 @@
       });
       if (j.ships_within) $('rp-ships').textContent = j.ships_within;
       if (j.gift_delivery) $('rp-gift-delivery').textContent = fill(j.gift_delivery);
-      /* Lost or damaged in shipping: replaced free, same serial number (Sig, 2026-10-18; was $15).
+      /* Lost or damaged in shipping: replaced free, same serial number (2026-10-18; was $15).
          The FAQ says so in the page itself; no fee comes from data/rain-print.json. */
       syncCutoffs();
       var xp = !PICK_CHOSEN && !januaryGift() ? xmasPick(TODAY, OJ().j) : '';
@@ -3950,7 +3946,7 @@
      $89"). With no name on the print it asks once: add one, or check out
      without. Then it opens "Your print" as the review sheet: the details in
      words, the same picker, a tick for the spelling and the dates, and the
-     button that pays. Checkout is Stripe in the same tab (Sig): the design is
+     button that pays. Checkout is Stripe in the same tab: the design is
      in the address bar and saved for the way back, and Stripe sends the buyer
      back to rain-print?paid=<product>&s=<session> (PAID below). */
   var PICK = 'framed12x18', NONAME_OK = false, PICK_CHOSEN = false, FRAME = 'oak';
@@ -3980,7 +3976,7 @@
     syncPick();
     if ($('rp-proof').open) proofRender();
   }
-  /* The frame color (Sig, Nov 4): one pair under the picker, one on the
+  /* The frame color (Nov 4): one pair under the picker, one on the
      review sheet and one on the order form, all the same choice; shown for
      the framed print only. The mockup above follows it. */
   function setFrame(c) {
@@ -4035,7 +4031,7 @@
     syncMailme(fam && !!DATA && !MAKER);
     syncXmas();
   }
-  /* EMAIL ME THIS DESIGN (2026-10-20, Sig): the reader's own address, nothing
+  /* EMAIL ME THIS DESIGN (2026-10-20): the reader's own address, nothing
      ticked. The worker (v5.43, POST /rp-remind) keeps the design code and
      starts the email job: the link now, and one reminder the next day unless
      a paid order matches it, then nothing. A changed design can be sent again. */
@@ -4068,7 +4064,7 @@
           function () { return 'down'; });
       }, function () { return 'down'; })
       .then(function (ok) {
-        /* THE WORKER DOWN (2026-10-22): the request goes to Sig by the backup
+        /* THE WORKER DOWN (2026-10-22): the request goes to the owner by the backup
            form instead (the address and the design link only, like a signup
            while the worker is blocked), and he sends it when the worker is
            back (notes: restore checklist). A refusal the worker means stays
@@ -4160,11 +4156,11 @@
      Stripe opens. Fail-soft: whatever the worker answers, or after
      PRESS_WAIT_MS with no answer, checkout opens anyway. */
   var ORDER_URL = 'https://agsist-api.dnilgis.workers.dev/rp-order', PRESS_WAIT_MS = 2000, PRESS_BUSY = false;
-  /* The worker out (2026-10-22, BUILD-RULES 14): a design Stripe holds in
+  /* The worker out (2026-10-22, build rule 14): a design Stripe holds in
      full (its own code as the ref) needs nothing more; the webhook or the
      poll makes the record from Stripe once the worker is back. A hash ref
      (RPH-, hashRef above) is all Stripe gets of a long design, so the record
-     also goes to Sig by the backup form, BACKUP_WAIT_MS at most before
+     also goes to the owner by the backup form, BACKUP_WAIT_MS at most before
      checkout opens; until it is sent it waits in this browser (the outbox). */
   var BACKUP_WAIT_MS = 3000;
   function pressPost(rec) {
@@ -4195,7 +4191,7 @@
       outboxSend({ to: 'formspree', fields: f }).then(function (sent) { if (sent) outboxDrop(id); root.clearTimeout(t); done(); });
     });
   }
-  /* THE OUTBOX (2026-10-22): what this browser still owes Sig after a worker
+  /* THE OUTBOX (2026-10-22): what this browser still owes the owner after a worker
      or form failure: a long design's order record, or a gift's details when
      neither the worker nor the backup form took them. Each goes again on the
      next visit to this page (the way back from Stripe is one), until sent;
@@ -4296,7 +4292,7 @@
     try { $('rp-design').scrollIntoView({ behavior: smooth(), block: 'start' }); } catch (e) {}
     try { $('rp-name').focus({ preventScroll: true }); } catch (e) {}
   }
-  /* Under the Paid view (2026-10-23, Sig's Oct 23 promo asks), in its own box so the thank-you
+  /* Under the Paid view (2026-10-23, Oct 23 promo asks), in its own box so the thank-you
      reads first: one AGSIST Daily ask (components/signup-ask.js: an empty email box and a button,
      nothing ticked, gone for a reader already on the Daily) and one line about the rain gauge,
      in data/rain-print.json gauge_hook's words when set. */
@@ -4382,7 +4378,7 @@
     /* A design past Stripe's 200 letters goes as its short-link id, and the
        id is asked of the worker at this press every time, never taken from
        this browser's memory alone: an id the worker doesn't have would leave
-       Sig an order he can't open (2026-10-15). */
+       The owner an order he can't open (2026-10-15). */
     if (link && long && !(opts && opts.minted) && root.AgRpShort && root.AgRpShort.mint) {
       proofSay('Opening checkout\u2026', true);
       // 4 s at most (2026-10-22): past that, or on any failure, the hash ref below
@@ -4391,9 +4387,9 @@
     }
     /* No short id (the worker failed, was slow, or rp-short.js didn't load): the
        hash ref, and the full design goes by the backup form (pressPost). Never
-       the order form for want of a worker (BUILD-RULES 14, 2026-10-22). */
+       the order form for want of a worker (build rule 14, 2026-10-22). */
     var code = !link ? '' : long && !(opts && opts.ok) ? hashRef(encodeCode(ST), ST.gift) : (refFor() || hashRef(encodeCode(ST), ST.gift));
-    // a gift goes to Sig first, then to checkout; if it can't be saved, the buyer stays here and is told
+    // a gift goes to the owner first, then to checkout; if it can't be saved, the buyer stays here and is told
     if (gift && link && code && !(opts && opts.giftSent)) {
       var g = pgOrder(code).x, send = root.agsistFormPost;
       var fs = Object.assign({ _subject: orderSubject(g) + ' (paying at checkout)', _replyto: g.email, form: 'rain-print-order' }, g);
@@ -4470,7 +4466,7 @@
   var PAY_SEEN = false, TYPING = false, MINI_DIRTY = true;
   function navBottom() { var n = doc.querySelector('.nav'); var b = n ? n.getBoundingClientRect().bottom : 0; return b > 0 ? b : 0; }
   function phone() { return (root.innerWidth || 1000) < 900; }
-  /* A DESIGN LINK OPENS WITH ITS PRINT FIRST (Sig, 2026-10-19). The early
+  /* A DESIGN LINK OPENS WITH ITS PRINT FIRST (2026-10-19). The early
      script in rain-print.html's head marks <html> rp-from-link for a ?d= link
      (/r?<id>, GIFT- and RPS- links all arrive as one), so the print sits at the
      top from the first paint. This names that print in the line over it (place
@@ -4487,7 +4483,7 @@
     // a design link that can't be drawn opens as an ordinary visit, unless the link also names a place
     try { if (!(new URLSearchParams(root.location.search).get('place') || '').trim()) doc.documentElement.classList.remove('rp-tool-first'); } catch (e) {}
   }
-  /* A link with a place opens on the tool (2026-10-22, Sig): the headline and photo move under it, but the one tap
+  /* A link with a place opens on the tool (2026-10-22): the headline and photo move under it, but the one tap
      to last year by Christmas ("Make it 2025, by Christmas", shown for a drawn current year) stays on the first
      screen, over the print. */
   if (doc.documentElement.classList.contains('rp-tool-first')) (function () {
@@ -4594,7 +4590,7 @@
   function orderCode() { var c = encodeCode(ST); return c.length <= 300 ? c : (checkoutRef(c, ST.gift, shortHit()) || c); }
   /* The order summary at the top of the order form: what is ordered, the
      design in words, and exactly what happens next. Payment links are null
-     today, so every order is a request Sig answers by email. */
+     today, so every order is a request the owner answers by email. */
   function markerWords(m) {
     var c = linkCut(m), t = c ? null : typedCut(m);
     return shortDate(m.date) + (m.label ? ' \u201c' + m.label + '\u201d' : '') + (c ? ' (cut off: only ' + LIMITS.label + ' letters fit, the link had \u201c' + c.full + '\u201d)'
@@ -4608,7 +4604,7 @@
     if (META) rows.push(['Weather station', gaugeWords(META) + ', ' + distText(META)]);
     rows.push(['Compared with', ST.cmp === 'normal' ? 'NOAA 30-year normal' : ST.cmp === 'station' ? 'The station\u2019s full record' : 'Nothing']);
     // the 2026-10-17 options, so the proof and the order say exactly what prints
-    // an order paid before 2026-10-23 with a crop, drawn on Sig's order view only (ORDER_CROP)
+    // an order paid before 2026-10-23 with a crop, drawn on the owner's order view only (ORDER_CROP)
     if (orderCropOn()) rows.push(['Crop', ({ corn: 'Corn', soy: 'Soybeans' })[ORDER_CROP.crop] + ', planted ' + shortDate(ORDER_CROP.cropPlant) + ', harvested ' + shortDate(ORDER_CROP.cropHarvest) +
       (ORDER_CROP.plants ? ', with plant drawings' : ', stages labeled') + (ORDER_CROP.ghost ? ', against a usual year' : '') + ' (an order from before Oct 23, 2026)']);
     var tw = [];
@@ -4649,7 +4645,7 @@
   }
 
   // ---------- "Your print": the exact print file, fitted or at actual size ----------
-  /* Rebuilt 2026-10-14 (Sig: "all scrunched and very hard to see"): the print
+  /* Rebuilt 2026-10-14: the print
      fills the window, one panel beside it (under it on a phone) holds the order
      button, Style and Look, and the details in words. The magnifier toggles Fit
      and actual size; at actual size, drag or scroll to move; Esc goes back to Fit. */
@@ -4708,7 +4704,7 @@
     pgSync();
   }
   /* RIGHT ABOVE PAY (2026-10-17, panels): who the next email comes from and
-     when, so a proof email from Sig isn't taken for spam, and a
+     when, so a proof email from the owner isn't taken for spam, and a
      design of this year says it arrives in January before anyone pays. The
      Christmas date on each card holds only if the proof is OK'd the day it
      comes; this says what happens when it isn't. */
@@ -4728,9 +4724,9 @@
      form's (PG_MIRROR), so a fall-back to the form keeps what was typed. With
      a payment link, Pay first posts the gift as a rain-print-order (gift: yes,
      the same fields an order request sends) for scripts/form_digest.py to mail
-     Sig, whose note goes on the letter (rp-insert), then opens checkout. Not
+     The owner, whose note goes on the letter (rp-insert), then opens checkout. Not
      offered for an order a gift card pays for. This year's January gift
-     (2026-10-18, Sig) uses the same box: its note is for the gift card, it
+     (2026-10-18) uses the same box: its note is for the gift card, it
      posts gift_january instead of gift, and the step 3 boxes (#rp-gift-to,
      #rp-gift-msg) come onto it and stay in step with it. */
   var PG_MIRROR = { 'rp-pg-to': 'ro-gift-to', 'rp-pg-msg': 'ro-gift-msg', 'rp-pg-deliver': 'ro-deliver', 'rp-pg-email': 'ro-gift-email',
@@ -4751,7 +4747,7 @@
     $('rp-pg-box').hidden = !on;
     $('rp-pg-msg-l').textContent = januaryGift() ? 'A message for the gift card (optional)' : file ? 'Your note, sent with the file (optional)' : 'Your note, printed at the top of the letter in the box (optional)';
     /* The address is Stripe's (2026-10-19, board B: the same address typed twice on a phone was a quit point;
-       Sig keeps Stripe's shipping field on, 2026-10-18). With a payment link the sheet asks no address and says
+ The owner keeps Stripe's shipping field on, 2026-10-18). With a payment link the sheet asks no address and says
        where it goes; the order post says it is at checkout. Without one, the order form path, it is asked here. */
     var stripeShips = !file && !!payLink(PICK);
     $('rp-pg-addr-wrap').hidden = file || stripeShips;
@@ -5023,10 +5019,10 @@
 
   // ---------- for businesses: a quote request for a set of prints ----------
   /* Its own form (#rb-form, kind rain-print-business, worker v5.12). It needs
-     no drawn design: the business sends a list of towns and years and Sig
+     no drawn design: the business sends a list of towns and years and the owner
      quotes it. The cutoff line, the table and the per-print readout come only
      from data/rain-print.json (bizCutoffNote, bizRows, bizQuote above).
-     Prices are delivered, shipping included (Sig, 2026-10-13). */
+     Prices are delivered, shipping included (2026-10-13). */
   var BIZ_PRODUCT = { print: 'print12x18', framed: 'framed12x18', digital: 'digital' };
   var BIZ_WORD = { print: ['print', 'prints'], framed: ['framed print', 'framed prints'], digital: ['digital file', 'digital files'],
     'not-sure': ['not sure yet', 'not sure yet'] };
@@ -5228,7 +5224,7 @@
   }
   /* -> Promise<canvas>. kind 'preview' (watermarked, 2000 px wide), 'digital' (the
      $19 file: the art alone, 18 x 12 in at 300 dpi, no serial) or a print size key
-     (Sig's print file: the 13 x 19 in sheet at 300 dpi, the art 16.5 x 11 in in the
+     (the owner's print file: the 13 x 19 in sheet at 300 dpi, the art 16.5 x 11 in in the
      middle (SHEET), and the serial when the link has one; untrimmed, so no bleed and no crop marks). */
   /* own: the QR matrix of the print's own short link (an order file); without
      it the file carries the standard code. */
@@ -5317,7 +5313,7 @@
     if (kind !== 'preview' && lostMsg()) return;
     var was = btn.textContent, out = $('rp-dl-note');
     btn.disabled = true; btn.textContent = 'Making the file…';
-    /* Sig's test print (2026-10-14): the 13 x 19 sheet PDF with the standard code to
+    /* The owner's test print (2026-10-14): the 13 x 19 sheet PDF with the standard code to
        the Rain Print page, for his own test prints and samples. No short link,
        no worker call, no serial, so it works when the link service doesn't. */
     if (btn.getAttribute('data-qr') === 'standard') {
@@ -5334,7 +5330,7 @@
     }
     var name = slug() + (kind === 'preview' ? '-preview' : kind === 'digital' ? '-12x18-300dpi' : '-' + kind + '-300dpi' + (SERIAL ? '-no-' + SERIAL.replace(/\D/g, '') : ''));
     var job, NO_QR = {};
-    /* Every file someone pays for, or Sig prints, carries the print's own
+    /* Every file someone pays for, or the owner prints, carries the print's own
        short-link QR: the long ?d= link makes modules too small to scan, and the
        standard code would send the buyer to the Rain Print page instead of their
        print. The short link is made now, one request (AgRpShort.mint), and the
@@ -5396,12 +5392,12 @@
       })
       .then(function () { btn.disabled = false; btn.textContent = was; });
   }
-  /* THE INSERT LETTER (2026-10-17, Sig): one letter-size page that goes on top
+  /* THE INSERT LETTER (2026-10-17): one letter-size page that goes on top
      in every print and framed print box: what it is, the year's numbers as the
      print says them (AgRainArt.facts, from the same model the print is drawn
      from), how to read this style beside a small copy of the print drawn by the
      same engine, the giver's note or a business's message when the order has one (the
-     boxes under the buttons: paste it from the order; there is no separate card), the serial and Sig's maker line, care,
+     boxes under the buttons: paste it from the order; there is no separate card), the serial and the owner's maker line, care,
      and the standard code to the Rain Print page. components/rp-insert.js lays
      it out; it loads on first use. No short link: the letter's code is the
      standard one. The digital file has no box, so no letter. */
@@ -5510,16 +5506,14 @@
   if (PAID && PAID_SAVED && !ST.place) { var ps = decodeCode(PAID_SAVED.code); if (ps) ST = ps; }
   /* A new visitor: the boxes start empty (the example is in them as gray
      hints) and the comparison, the normals and the remarkable days are on
-     (2026-10-14, Sig; remarkable days on from 2026-10-15, Sig: "default the rain
-     print to display the remarkable days on page load"); the print at the top
+     (2026-10-14; remarkable days on from 2026-10-15); the print at the top
      wears the example words until the reader does something. A design from a
      link comes in as it was made. */
-  /* Every layer on (Sig, 2026-10-22: "show by default all options such as hi low temp, temp, historical lines on
-     staircase"): the daily temperature stripes (which name the hottest and coldest day) and every year behind yours
-     join them. Every layer means the seven on the Layers card; the crop layers are gone (2026-10-23, Sig). */
+  /* Every layer on (2026-10-22): the daily temperature stripes (which name the hottest and coldest day) and every year behind yours
+     join them. Every layer means the seven on the Layers card; the crop layers are gone (2026-10-23). */
   if (!ST.place) { ST.cmp = 'normal'; ST.normals = true; ST.records = true; ST.frost = true; ST.heat = true; ST.ribbon = true; ST.hist = true; SHOW_EX = !PAID; }
   writeInputs(ST);
-  // what this browser still owes Sig from a press while the worker was out (the outbox, a kept logo) goes now
+  // what this browser still owes the owner from a press while the worker was out (the outbox, a kept logo) goes now
   root.setTimeout(function () { outboxFlush(); logoFlush(); }, 1500);
   doc.querySelectorAll('.rp-cy').forEach(function (el) { el.textContent = String(CURRENT_YEAR); });
   // the Christmas lines read right from October 1 through December 25 only
@@ -5645,7 +5639,7 @@
   // Canada: mm or inches, English or French (the choice rides in the design)
   radios('rp-units').forEach(function (r) { r.addEventListener('change', function () { ST.units = r.value; restyle(); syncCa(); ga('rain_print_units', { units: r.value }); }); });
   radios('rp-lang').forEach(function (r) { r.addEventListener('change', function () { ST.lang = r.value; restyle(); syncCa(); if (DATA && !BLOCKED) { render(); drawnStatus(); } ga('rain_print_lang', { lang: r.value }); }); });
-  /* The usual year is one switch of three (2026-10-22, Sig: "Show the 30-year normals" and "Compare with" were one
+  /* The usual year is one switch of three (2026-10-22,  and "Compare with" were one
      thing as two controls). Month normals is the usual month total under each month: it goes with either usual year
      and is greyed while the switch is Off. */
   $('rp-normals').addEventListener('change', function () { restyle(); });
@@ -5676,8 +5670,8 @@
     ga('rain_print_layers_off', {});
   });
   /* The threads change the station (the nearest with HIST_MIN full years), so the year is drawn again:
-     the reader's own, the town in the box when the sample is up (2026-10-21, Sig: Chetek 2025 on the
-     sample stayed on a gauge with 0 full years and said "Pick the nearest station again"), or the sample
+     the reader's own, the town in the box when the sample is up (2026-10-21, Chetek 2025 on the
+ sample stayed on a gauge with 0 full years and said "Pick the nearest station again"), or the sample
      itself, re-picked, when no town is typed yet. */
   function histStation() {
     HIST_WHY = '';
@@ -5812,7 +5806,7 @@
     if (root.navigator.clipboard && root.navigator.clipboard.writeText) root.navigator.clipboard.writeText(u).then(ok, function () { root.prompt('Copy this link', u); });
     else root.prompt('Copy this link', u);
   });
-  /* SEND THIS TO YOUR FAMILY (2026-10-20, Sig): the reader's own design link
+  /* SEND THIS TO YOUR FAMILY (2026-10-20): the reader's own design link
      (?d=, opens with their print first) and a few words for going in on it
      together (familyMessage). A phone opens its own share sheet; a computer
      gets Email it, Text it and Copy the link. The event says only how. */
@@ -5900,8 +5894,8 @@
     // the station box is right under the station line
     if (t && t.id === 'rp-chg') { ev.preventDefault(); var sl = $('rp-station'); try { sl.scrollIntoView({ behavior: smooth(), block: 'center' }); sl.focus({ preventScroll: true }); } catch (e) {} }
   });
-  /* Two example years by the town box (Sig, 2026-10-14; the made-up family
-     year went with the example words): a drought and a flood. Each is a plain
+  /* Two example years by the town box (2026-10-14; the made-up family
+ year went with the example words): a drought and a flood. Each is a plain
      link (it works with no script); a tap draws it in place, in the reader's
      chosen style, keeping any words they have typed. */
   doc.querySelectorAll('.rp-story').forEach(function (a) {
@@ -5988,13 +5982,13 @@
         $('rp-link-note').classList.add('rp-bad');
         $('rp-link-note').hidden = false;
         setStatus('');
-        // Sig's print files page draws nothing in its place; a reader gets their area,
+        // The owner's print files page draws nothing in its place; a reader gets their area,
         // and the reference stays in the address bar until they draw their own
         if (!MAKER) { KEEP_URL = true; startNear(); }
         return;
       }
       if (ref.gift) s.gift = true;
-      // Sig's order view of an order paid before 2026-10-23: the crop rides in the short link's code (ORDER_CROP)
+      // The owner's order view of an order paid before 2026-10-23: the crop rides in the short link's code (ORDER_CROP)
       if (MAKER && !ORDER_CROP && /(?:^|[?&])oldcrop=1(?:&|$)/.test(root.location.search)) ORDER_CROP = orderCrop('d=' + r.code);
       ST = s;
       // a design from a link comes in as it was made: no example words on it (they went on an RPS- design with no name of its own)

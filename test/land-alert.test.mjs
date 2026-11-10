@@ -1,11 +1,11 @@
-/* The monthly land sale email (Sig, Oct 23 2026: new list, sender and monthly schedule
+/* The monthly land sale email (Oct 23 2026: new list, sender and monthly schedule
  * approved; gated on a repo variable until he flips it). Topic landsales:<ZIP>:<miles>
  * (subs worker v5.55), mailed by scripts/send_land_alert.py from
  * .github/workflows/land-alert.yml on the 3rd, numbers from scripts/land_alert.py.
  *   - no buyer or seller name, parcel, legal or document number in any email, checked on
  *     the real county files for both samples (Chetek 54728, Charleston IL 61920);
  *   - the gate: nothing reaches the list without LANDSALES_MONTHLY_LIVE=1, in the workflow
- *     and in the script (the route is the Daily's until Plan A: Sig, Oct 23);
+ *     and in the script (the route is the Daily's until Plan A: Oct 23);
  *   - the unsubscribe: front door, link id, UNSUB_SECRET hmac, topic=landsales, no ZIP;
  *   - an empty month sends nothing; the radius math; Illinois, Wisconsin and Indiana (Oct 27);
  *   - the ask on Field Scout, the comp report, Fast Facts and the Atlas county pages.

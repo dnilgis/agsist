@@ -1,4 +1,4 @@
-// The direct-link rule for data sources (Sig, Oct 29, 2026), for the node bakers and tests.
+// The direct-link rule for data sources (Oct 29, 2026), for the node bakers and tests.
 // One definition: the two patterns are read from scripts/source_links.py, never copied here.
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";

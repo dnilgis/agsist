@@ -28,11 +28,11 @@
    is asked for in this browser (agsist_notices), and enrolls nobody in the
    Daily unless "Also send the morning briefing" is ticked.
    That box always starts empty and its ZIP box opens when it is ticked
-   (Sig, 2026-10-19: no ask ever pre-ticks the Daily; data-daily is ignored).
+   (2026-10-19: no ask ever pre-ticks the Daily; data-daily is ignored).
    data-after="YYYY-II" goes with a recurring notice (prf:<grid>): the
    newest interval already out, so the first email is the next one.
 
-   Two standing lists on the same route (worker v5.44, Sig Oct 21), each its
+   Two standing lists on the same route (worker v5.44, Oct 21), each its
    own list, never the Daily unless the reader ticks the box:
      data-topic="reports"  the report-day email alone, the WASDE summary
                            (scripts/send_report_day.py), source
@@ -51,7 +51,7 @@
        setDismissed, zip, subscribe, okText. The homepage's watch and price
        alert opt-ins and its signup band call subscribe() from here.
 
-   Your county this week (2026-10-27, Sig: inside the existing Daily, no new list):
+   Your county this week (2026-10-27, inside the existing Daily, no new list):
    every Daily ask's ZIP row gains one more box once the reader starts on the email
    box, "Thursdays, add what changed in my county", never pre-ticked. Ticked, the signup sends cw:true (worker v5.56)
    and needs a ZIP; unticked, nothing is sent and a stored choice is left alone.
@@ -617,7 +617,7 @@
   }
   function dismissed(id, how) { track('ask_dismissed', { ask_id: id, how: how }); }
 
-  /* ---------- "One more?" (2026-10-20, Sig) ---------- */
+  /* ---------- "One more?" (2026-10-20) ---------- */
   var WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var ST_NAMES = {};
   ('AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming')
@@ -673,7 +673,7 @@
         return { topic: 'rainyear:' + y + ':' + fips, name: c.name, year: y };
       });
   }
-  /* 2026-10-20 (Sig), "One more?" after the alert signups too, and the extras */
+  /* 2026-10-20, "One more?" after the alert signups too, and the extras */
   var GAUGE_HOOK = 'The rain gauge waitlist: a better gauge is in the works, and the list hears first';
   function gaugeHook() {
     return getJ('/data/rain-print.json').then(function (c) {
@@ -810,7 +810,7 @@
         /* the same list: no source, so the worker keeps where they signed up */
         send: function () { return post(EP, { email: email, reports: true }); },
         ok: 'Report-day emails are on.' };
-      /* 2026-11-04 (Sig): Funds this week is also offered after a Daily signup on any page, last, when there is room */
+      /* 2026-11-04: Funds this week is also offered after a Daily signup on any page, last, when there is room */
       if ((kind.cot || gave === 'daily') && topic !== 'cot' && had.indexOf('cot') < 0 && !noticeDone('cot')) O.cot = {
         label: esc('Funds this week: where the big funds sit in corn, soybeans, wheat and cattle, one short email after each COT report'),
         send: function () { return notice({ email: email, source: source, topic: 'cot', daily: false, askId: 'onemore' }); },
@@ -827,7 +827,7 @@
         .filter(function (k) { return k !== 'cot' || kind.cot; });   /* off a COT page, Funds this week waits at the end */
       /* a notice or alert: the Daily first, then what fits the page, then the gauge */
       var order = (gave === 'daily' ? lead.concat(base) : ['daily'].concat(lead, base.slice(1))).filter(function (k, i, a) { return a.indexOf(k) === i; });
-      /* ctx.only: the ids a page allows (the rain gauge waitlist offers the Daily alone, Sig 2026-10-23) */
+      /* ctx.only: the ids a page allows (the rain gauge waitlist offers the Daily alone, 2026-10-23) */
       var ids = order.filter(function (k) { return O[k] && (!ctx.only || ctx.only.indexOf(k) >= 0); }).slice(0, 3);
       /* 2026-11-05: after a Daily signup Funds this week always gets a row when the reader lacks it;
          with ZIP, rain and rent all on offer it takes the third place, not a fourth */
@@ -971,9 +971,9 @@
       document.body.style.paddingBottom = show ? h + 'px' : '';
     });
   }
-  /* 2026-10-20 (Sig): */
+  /* 2026-10-20: */
   var BAR_SEEN = 'agsist_bar_seen', ENGAGE_S = 40;
-  /* /cash-bids (Sig, 2026-11-09): the bar is back on this page, but only once the results have shown, and with
+  /* /cash-bids (2026-11-09): the bar is back on this page, but only once the results have shown, and with
      its own source tag, bar-cash-bids, so the signups can be compared with the box's page:cash-bids over two weeks.
      The page's one-line box does not count as "the page's own ask" here. */
   function cashBidsPage() { return /^\/cash-bids(\.html)?\/?$/.test(location.pathname); }
@@ -1005,8 +1005,8 @@
     /* No sticky bar where it covers the work or is the wrong ask: the briefing */
     if (/^\/(daily|field-scout|fast-facts|rain-print|sponsor|sponsor-kit|sponsor-apply|sponsor-report|store-or-sell|prf)(\.html)?$/.test(p)
         || /^\/daily\/[^/]+$/.test(p)) return false;
-    /* Page types with one page-matched ask (Sig, 2026-10-23: the bar opened 0.5% of the time it
-       showed). The bar stays off them even when the reader has already asked, which hides the ask:
+    /* Page types with one page-matched ask (2026-10-23: the bar opened 0.5% of the time it
+ showed). The bar stays off them even when the reader has already asked, which hides the ask:
        the state pages' rent notice (not the /rent hub), the four futures pages, ARC/PLC and its
        county pages, and the break-even, grain bin and yield tools. */
     if (/^\/rent\/[^/]+$/.test(p) || /^\/(corn|soybean|wheat|cattle)-futures-prices(\.html)?$/.test(p)

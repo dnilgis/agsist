@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """backfill_wasde.py -- every past WASDE, as USDA published it, to the private raw branch.
 
-Brief 04 (Oct 26, Sig: go): every past WASDE plus each figure's month-to-month
+Brief 04 (Oct 26, go): every past WASDE plus each figure's month-to-month
 revisions. Two sources, both USDA, both read from their own index pages; no
 file name is ever guessed (the May and June 2026 files carry a V2 suffix, and
 the old ESMIS files use ids that differ per file):
