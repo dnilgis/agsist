@@ -33,6 +33,12 @@ WHEN IT SENDS, AND WHEN IT DOES NOT.
     Production has no file of its own: its corn and soybean yields arrive as
     the WASDE rows, and the email says WASDE.
 
+THE LIVE RESULT FIRST. On report day the report-day job (scripts/report_live.py)
+puts the graded result on the site's worker within seconds of the release; this
+reads it first (REPORT_LIVE_URL, default the worker; REPORT_LIVE_TEST=1 reads
+the rehearsal's record) and falls back to the committed files above when the
+worker has nothing for today, so the email does not wait for the commit.
+
 THE PRICE MOVE. The last data/prices.json committed before the release is
 read from git history (the workflow checks out with history) and compared
 with the current file. If no file before the release is on record, the move
@@ -50,6 +56,7 @@ worker has one list) and the forward-to-a-neighbor link.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
+import io
 import json
 import os
 import re
@@ -146,9 +153,40 @@ def fnum(v):
     return str(int(f)) if f.is_integer() else repr(f)
 
 
+# ── the live result (scripts/report_live.py) ─────────────────────────────
+def live_record(day, opener=None):
+    """Today's graded result from the worker, or None (nothing kept for `day`,
+    or the worker did not answer). Never raises."""
+    test = env("REPORT_LIVE_TEST", "") == "1"
+    url = (env("REPORT_LIVE_URL") or "https://agsist-api.dnilgis.workers.dev").rstrip("/") + "/report-live" + ("?test=1" if test else "")
+    try:
+        with (opener or urllib.request.urlopen)(urllib.request.Request(url, headers=UA), timeout=8) as r:
+            rec = (json.loads(r.read().decode()) or {}).get("live")
+    except Exception as ex:
+        print("live result: not read (%s); the committed files are the source" % type(ex).__name__)
+        return None
+    if not isinstance(rec, dict) or rec.get("release") != day.isoformat() or bool(rec.get("test")) != test:
+        return None
+    return rec
+
+
+def live_rows(rec):
+    """The live record's rows in the shape todays_reports() returns."""
+    iso = rec.get("release")
+    return [{"date": iso, "report": rec.get("report"), "metric": r.get("label"), "actual": r.get("actual"),
+             "expected": r.get("expected"), "low": r.get("low"), "high": r.get("high"), "unit": r.get("unit"),
+             "surprise": r.get("surprise") or "", "context": r.get("context") or "", "reaction": ""}
+            for r in (rec.get("rows") or []) if num(r.get("actual")) is not None]
+
+
 # ── what today's data says ────────────────────────────────────────────────
-def todays_reports(day, wpi=None, wasde=None):
-    """{report name: [rows]} for rows dated `day` with a USDA figure."""
+def todays_reports(day, wpi=None, wasde=None, live=None):
+    """{report name: [rows]} for rows dated `day` with a USDA figure. The live
+    result (live_record) first, the committed files when it has nothing."""
+    if live and live.get("release") == day.isoformat() and live.get("report"):
+        rows = live_rows(live)
+        if rows:
+            return {str(live["report"]): rows}
     if wpi is None:
         try:
             wpi = json.load(open(WPI))
@@ -212,12 +250,19 @@ MONTH_NAME = {"Jan": "January", "Feb": "February", "Mar": "March", "Apr": "April
 CROP_NAME = (("corn", "Corn"), ("soybeans", "Soybeans"), ("wheat", "Wheat"))
 
 
-def balance_lines(day, wasde=None):
+def balance_lines(day, wasde=None, live=None):
     """One line per crop: ending stocks and the season-average farm price, each
     against last month, as the WASDE PDF printed them (data/wasde.json's
     `wasde_pdf`, written by fetch_wasde.py). [] when the file is not today's
     or carries no PDF read. Nothing here is computed but the difference of two
     printed figures."""
+    if live and live.get("release") == day.isoformat() and live.get("balance"):
+        # the live result carries the same printed figures (scripts/report_live.py compose)
+        wasde = {"release": live["release"], "wasde_pdf": {"date": live["release"], "crops": {
+            b["crop"]: {"marketing_year": b.get("my"), "prev_month": b.get("prev_month"),
+                        "ending_stocks": {"value": b.get("stocks"), "prev": b.get("stocks_prev")},
+                        "price": {"value": b.get("price"), "prev": b.get("price_prev")}}
+            for b in live["balance"] if isinstance(b, dict) and b.get("crop")}}}
     if wasde is None:
         try:
             wasde = json.load(open(WASDE))
@@ -505,7 +550,10 @@ def main(argv=()):
     day = date.fromisoformat(argv[argv.index("--date") + 1]) if "--date" in argv else today_ct()
     rel = release_utc(day)
     now = datetime.now(timezone.utc)
-    reports = todays_reports(day)
+    live = live_record(day)
+    reports = todays_reports(day, live=live)
+    if live and reports:
+        print("report rows from the live result (%s, %s)" % (live.get("report"), live.get("generated")))
     cal = gmail_limit.report_kinds(day)
     for t in TYPES:
         have = [n for n in reports if kind_of(n) == t]
@@ -546,7 +594,7 @@ def main(argv=()):
 
     now_j = json.load(open(REPO / PRICES_REL))
     moves = price_moves(now_j, prices_before(rel), rel)
-    balance = balance_lines(day) if any(kind_of(n) == "WASDE" for n in reports) else []
+    balance = balance_lines(day, live=live) if any(kind_of(n) == "WASDE" for n in reports) else []
     b = compose(day, reports, moves, balance)
 
     base, token = env("LIST_URL"), env("LIST_TOKEN")
@@ -694,6 +742,33 @@ def _selftest():
     w = {"release": "2026-10-09", "metrics": [{"label": "2026/27 corn yield", "value": 180.1, "unit": "bu/acre", "consensus": 179.0}]}
     rr = todays_reports(date(2026, 10, 9), {"history": []}, w)
     ok(list(rr) == ["October WASDE"] and "Trade average 179" in row_line(rr["October WASDE"][0]), "wasde.json alone fills WASDE")
+    # the live result (scripts/report_live.py) comes first and fills the same rows and balance lines
+    lv = {"v": 1, "test": False, "release": "2026-12-10", "report": "December WASDE", "generated": "2026-12-10T17:00:31Z",
+          "counts": {"metrics": 1, "in_line": 0, "ungraded": 0}, "big": "corn_2627",
+          "rows": [{"key": "corn_2627", "label": "2026/27 corn ending stocks", "unit": "bil bu", "actual": 2.1,
+                    "expected": 1.9, "low": 1.8, "high": 2.0, "usda_current": 1.95, "surprise": "bearish",
+                    "gap_pct": 10.5, "context": "above the range"}],
+          "balance": [{"crop": "corn", "my": "2026/27", "prev_month": "Nov", "stocks": 2100, "stocks_prev": 1950,
+                       "price": 4.1, "price_prev": 4.2}]}
+    rl = todays_reports(date(2026, 12, 10), wpi={}, wasde={}, live=lv)
+    ok(list(rl) == ["December WASDE"] and "USDA 2.1 bil bu. Trade average 1.9, range 1.8 to 2." in row_line(rl["December WASDE"][0])
+       and "Graded bearish, above the range." in row_line(rl["December WASDE"][0]), "the live result fills the rows")
+    ok(todays_reports(date(2026, 12, 11), wpi={}, wasde={}, live=lv) == {}, "a live result for another day is not today's")
+    bl = balance_lines(date(2026, 12, 10), wasde={}, live=lv)
+    ok(bl == ["2026/27 Corn: ending stocks 2,100 million bushels, up 150 million from November; average farm price $4.10 a bushel, down 10 cents."],
+       "the live result's balance line reads as the PDF's: %r" % bl)
+    seen = []
+    class _R(io.BytesIO):
+        def __enter__(self): return self
+        def __exit__(self, *a): pass
+    def _op(req, timeout=None):
+        seen.append(req.full_url)
+        return _R(json.dumps({"ok": True, "live": lv}).encode())
+    ok(live_record(date(2026, 12, 10), opener=_op) == lv and seen[-1].endswith("/report-live"), "live_record reads the worker")
+    ok(live_record(date(2026, 12, 11), opener=_op) is None, "and only today's record counts")
+    def _down(req, timeout=None):
+        raise OSError("down")
+    ok(live_record(date(2026, 12, 10), opener=_down) is None, "a worker that does not answer means the committed files")
     # 180.1 vs 179.0 is +0.61%, past the 0.5% yield band: graded by the same rule
     ok(row_line(rr["October WASDE"][0]).endswith("Graded bearish."), row_line(rr["October WASDE"][0]))
     ok(release_utc(date(2026, 10, 9)).hour == 16 and release_utc(date(2026, 12, 10)).hour == 17, "noon ET in UTC, DST aware")
