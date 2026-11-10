@@ -137,12 +137,9 @@ try {
     /* Nov 10 audit: no "crowded" (Sig dropped crowding Nov 6); the measured rank only. */
     if(c.crowded&&cr&&cr.word)return cr.word;   /* "bottom 1%", never "0th" */
     var r=Math.max(1,Math.min(99,Math.round(p))),o=['th','st','nd','rd'],v=r%100;return r+(o[(v-20)%10]||o[v]||o[0])+' pct';}
-  /* 2026-11-05 (checker on #334): the verdict reads every market in the analysis
-     file (AgCotGlance.crowdedLine, the same `crowded` field the glance lines use),
-     not the four rows the old grains and cattle badges read, so it can never say
-     "No market crowded" while meal, hogs or milk is crowded. */
   /* Nov 10 audit: Sig dropped the crowding verdict everywhere on Nov 6; the home
-     badge no longer prints one (G.crowdedLine stays for /cot until it follows). */
+     badge no longer prints one and its verdict code is gone (the shared verdict in
+     cot-glance.js stays for /cot until it follows). */
   function verdict(el,lv){
     /* no crowding verdict on home (Sig, Nov 6): the badge stays hidden */
     if(lv)lv.hidden=true;if(el)el.hidden=true;
