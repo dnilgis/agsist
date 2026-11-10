@@ -7,6 +7,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
+import { spawnSync } from "node:child_process";
 import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
@@ -74,12 +75,27 @@ test("usda-calendar: title, description and the two FAQs agree with the page's s
   assert.match(h, /time:'4:00 PM ET'|4:00 PM ET/, "the page itself shows Crop Progress at 4 p.m. ET");
 });
 
-test("markets: CBOT in the title, delayed or settle in the description, never live", () => {
-  const h = read("markets.html");
+test("markets: the bake's title and description say delayed or settle, never live", () => {
+  // markets.html is rebaked every few minutes on main with main's engine, so the committed page
+  // is not this branch's work. Run THIS branch's bake on an in-memory copy and read that.
+  const py = [
+    "import sys",
+    "sys.path.insert(0, sys.argv[1] + 'scripts')",
+    "import bake_seo as b",
+    "src = open(sys.argv[1] + 'markets.html', encoding='utf-8').read()",
+    "t, d = b.seo_markets(b.build_ctx(b.date.today()))",
+    "b.check(t, d, 'markets.html', b.PAGES['markets.html'][1])",
+    "out, n = b.stamp(src, t, d, b.PAGES['markets.html'][1])",
+    "assert n == b.expected_tags(b.PAGES['markets.html'][1]), n",
+    "sys.stdout.write(out)",
+  ].join("\n");
+  const r = spawnSync("python3", ["-c", py, ROOT], { encoding: "utf8", maxBuffer: 64 * 1024 * 1024 });
+  assert.equal(r.status, 0, r.stderr);
+  const h = r.stdout;
   const t = title(h), d = desc(h);
-  assert.match(t, /^CBOT Grain Prices /);
+  assert.match(t, /^Grain Futures Prices Today/);
   assert.ok(t.length <= 68, t);
-  assert.ok(/delayed|Settles/.test(d), d);
+  assert.ok(/delayed|Settles|settle/.test(d), d);
   assert.ok(!/\blive\b/i.test(d.replace(/live cattle/gi, "")), d);
   assert.ok(!/\blive\b/i.test(t.replace(/live cattle/gi, "")), t);
 });
