@@ -213,12 +213,19 @@ def _key(x):
     return "2" + _h(x["id"])
 
 
+def _stopped(x):
+    return isinstance(x.get("stop"), str) and bool(x["stop"].strip())
+
+
 def _items(pool, gens=None):
     """[(id, category, kind, start, hash, months)] for the pool entries and the computed generators."""
     out = []
     for x in pool:
         start = date.fromisoformat(x["added"]) if x.get("added") else EPOCH
-        out.append((x["id"], x["category"], "pool", max(start, EPOCH), _key(x), ALL_YEAR))
+        # "stop" (a reason): the entry keeps its place on the schedule, so no other day moves, but it is never
+        # printed again; its day takes a stand-in like a withheld computed fact (Nov 10, 2026: the 2025 US cash
+        # rent after the 2026 figure came out)
+        out.append((x["id"], x["category"], "stop" if _stopped(x) else "pool", max(start, EPOCH), _key(x), ALL_YEAR))
     for g in (OURS if gens is None else gens):
         out.append((g[0], g[1], "ours", max(g[3], EPOCH), "0" + _h(g[0]), tuple(g[4]) if len(g) > 4 else ALL_YEAR))
     seen, uniq = set(), []
@@ -288,7 +295,7 @@ def plan(items, upto):
     # else whatever was shown longest ago.
     spares, last_at = [], {}
     for k, it in enumerate(days):
-        if it is None or it[2] != "ours":
+        if it is None or it[2] not in ("ours", "stop"):
             spares.append(None)
         else:
             bar = set()
@@ -370,11 +377,12 @@ def for_day(day, repo=REPO, pool_path=None, gens=None):
     if it is None:
         return None
     by_id = {x["id"]: x for x in pool}
-    if it[2] == "ours":
-        fn = {g[0]: g[2] for g in gens}[it[0]]
-        got = _run(fn, day, repo)
-        if got:
-            return dict(got, id=it[0], kind="ours", category=it[1])
+    if it[2] in ("ours", "stop"):
+        if it[2] == "ours":
+            fn = {g[0]: g[2] for g in gens}[it[0]]
+            got = _run(fn, day, repo)
+            if got:
+                return dict(got, id=it[0], kind="ours", category=it[1])
         it = spares[k]
         if it is None:
             return None
@@ -641,6 +649,21 @@ def _selftest():
     with open(ans, "w", encoding="utf-8") as f:
         f.write(json.dumps([good]) + "\n\nDropped: one page would not open.\n")
     ok(read_entries(ans) == [good], "the answers file can carry words after the array")
+    # a stopped entry keeps its place (no other day moves) and is never printed; its day gets a stand-in
+    sp = _fake_pool(24)
+    p1, p2 = os.path.join(tmp, "p1.json"), os.path.join(tmp, "p2.json")
+    with open(p1, "w", encoding="utf-8") as f:
+        json.dump({"facts": sp}, f)
+    with open(p2, "w", encoding="utf-8") as f:
+        json.dump({"facts": [dict(x, stop="a newer edition is out") if x["id"] == "f005" else x for x in sp]}, f)
+    d0 = EPOCH + timedelta(days=30)
+    a = [(for_day(d0 + timedelta(days=k), pool_path=p1, gens=[]) or {}).get("id") for k in range(60)]
+    b = [(for_day(d0 + timedelta(days=k), pool_path=p2, gens=[]) or {}).get("id") for k in range(60)]
+    ok("f005" in a and "f005" not in b, "a stopped entry is never printed")
+    ok(all(x == y for x, y in zip(a, b) if x != "f005") and all(y for x, y in zip(a, b) if x == "f005"),
+       "a stopped entry moves no other day, and its day still has a fact")
+    live = [x for x in raw if x.get("stop")]
+    ok(all(isinstance(x["stop"], str) and x["stop"].strip() for x in live), "a stop says why")
     print("daily_fact selftest " + ("FAILED" if bad else "ok"))
     return 1 if bad else 0
 
