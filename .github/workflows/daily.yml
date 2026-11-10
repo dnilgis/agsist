@@ -370,7 +370,6 @@ jobs:
         id: g2f
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          # blank: the reviewer in scripts/claude_models.py decides
           FACT_CHECK_MODEL: ${{ vars.FACT_CHECK_MODEL }}
           FACT_CHECK_MODE: block
         run: |
