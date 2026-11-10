@@ -1,4 +1,4 @@
-// Daily cash bid snapshots on the raw branch (Bet 7, Sig 2026-10-19).
+// Daily cash bid snapshots on the raw branch (Bet 7, 2026-10-19).
 // fetch_bids.yml saves one compact snapshot a trading day (first run at or
 // after 15:00 CT) with scripts/push_raw.sh, after the bids are committed, and
 // the save can never fail the job. The full-file-only "_" fields it reads

@@ -12,7 +12,9 @@
      it is used. Kept byte-identical to the other so the baked port can mirror
      one rule; test/wpi-numbers-strip.test.mjs holds them together. */
   
-  function num(n,u){return (n==null)?'-':(n+(u?(' '+u):''));}
+  /* stocks and production in billion bushels read like USDA prints them: 1.840, not 1.84 */
+  function d3(n,u){return (u==='bil bu'&&typeof n==='number'&&isFinite(n))?n.toFixed(3):n;}
+  function num(n,u){return (n==null)?'-':(d3(n,u)+(u?(' '+u):''));}
   /* THE STRIP. Renders what the pipeline decided and decides nothing itself.
      A missing figure prints an em dash and the reason the pipeline gave, never
      a blank cell and never a zero. */
@@ -21,9 +23,9 @@
     var DASH='n/a';
     var body=rows.map(function(r){
       var u=r.unit?(' '+r.unit):'';
-      var exp=(r.expected==null)?(DASH+(r.expected_why?('<div style="font-size:.72rem;color:var(--wp-mut)">'+esc(r.expected_why)+'</div>'):'')):(r.expected+u+(r.source_date_unknown?'<div style="font-size:.72rem;color:var(--wp-mut)">source date unknown</div>':''));
-      var rng=(r.low!=null&&r.high!=null)?('<div style="font-size:.72rem;color:var(--wp-mut)">range '+r.low+' to '+r.high+'</div>'):'';
-      var now=(r.usda_current==null)?DASH:(r.usda_current+u);
+      var exp=(r.expected==null)?(DASH+(r.expected_why?('<div style="font-size:.72rem;color:var(--wp-mut)">'+esc(r.expected_why)+'</div>'):'')):(d3(r.expected,r.unit)+u+(r.source_date_unknown?'<div style="font-size:.72rem;color:var(--wp-mut)">source date unknown</div>':''));
+      var rng=(r.low!=null&&r.high!=null)?('<div style="font-size:.72rem;color:var(--wp-mut)">range '+d3(r.low,r.unit)+' to '+d3(r.high,r.unit)+'</div>'):'';
+      var now=(r.usda_current==null)?DASH:(d3(r.usda_current,r.unit)+u);
       var printed,tag='';
       if(r.actual==null){ printed='<td class="wait">'+esc(r.why||'not printed yet')+'</td>'; }
       else{
@@ -33,7 +35,7 @@
         else tag='<span class="v flat" title="'+esc(r.why||'')+'">no call</span>';
         /* Where it sat against the survey's own low and high, worded by the pipeline (report_bands.range_context). */
         var ctx=r.context?('<div style="font-size:.72rem;color:var(--wp-mut)">'+esc(r.context)+'</div>'):'';
-        printed='<td class="n"><b>'+r.actual+u+'</b>'+tag+ctx+'</td>';
+        printed='<td class="n"><b>'+d3(r.actual,r.unit)+u+'</b>'+tag+ctx+'</td>';
       }
       return '<tr><td>'+esc(r.label)+rng+'</td><td class="n">'+exp+'</td><td class="n">'+now+'</td>'+printed+'</tr>';
     }).join('');
@@ -41,7 +43,7 @@
     var srcs=rows.map(function(r){return r.source;}).filter(function(s,i,a){return s&&a.indexOf(s)===i;});
     var src=srcs[0];
     var links=srcs.length>1?('Survey sources: '+srcs.map(function(s){return '<a href="'+esc(s)+'" rel="nofollow noopener" target="_blank">'+esc(s.replace(/^https?:\/\/(www\.)?/,'').split('/')[0])+'</a>';}).join(', ')):('<a href="'+esc(src)+'" rel="nofollow noopener" target="_blank">Survey source</a>');
-    var note=src?('<div class="src">Trade estimates come from a published pre-report survey, entered as published. '+links+'. Graded on the distance from the trade average: within 0.5% for a yield, 1% for production and 2% for stocks is in line; past that, more supply than the trade expected is bearish and less is bullish. The survey\u2019s low-high range is shown beside the grade and does not change it.</div>'):'';
+    var note=src?('<div class="src">Trade estimates come from a published pre-report survey, entered as published. '+links+'. Graded on the distance from the trade average: close to it is in line; past that, more supply than the trade expected is bearish and less is bullish. The survey\u2019s low-high range is shown beside the grade and does not change it.</div>'):'';
     var waiting=rows.every(function(r){return r.actual==null;});
     /* Once USDA prints, its standing figure is the one from BEFORE the report. */
     return '<div class="wp-nums"><div class="nh"><b>Every number on this report</b><span>'
@@ -59,7 +61,7 @@
     var MO=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     var p=String(tb.date||'').split('-'),md=(p.length===3)?(MO[+p[1]-1]+' '+(+p[2])):esc(tb.date);
     var body=tb.rows.map(function(r){
-      return '<tr><td>'+esc(r.label)+'</td><td class="n"><b>'+esc(r.value)+' '+esc(r.unit)+'</b></td></tr>';
+      return '<tr><td>'+esc(r.label)+'</td><td class="n"><b>'+esc(d3(r.value,r.unit))+' '+esc(r.unit)+'</b></td></tr>';
     }).join('');
     return '<div class="wp-nums wp-beat"><div class="nh"><b>The number to beat</b><span>USDA\u2019s '+esc(tb.report)+' ('+md+'), standing until the '+esc(nextReport||'next report')+'</span></div>'
       +'<table><thead><tr><th>Number</th><th>USDA now</th></tr></thead><tbody>'+body+'</tbody></table>'
@@ -101,7 +103,7 @@
       thr='<div class="wp-thr">'
         +'<div class="t bull"><div class="k">Bullish surprise</div><div class="v">'+(n.bullish_threshold||'-')+'</div></div>'
         +'<div class="t bear"><div class="k">Bearish surprise</div><div class="v">'+(n.bearish_threshold||'-')+'</div></div></div>';
-    } else { thr=gap('thresholds','No surprise thresholds'); }
+    } else { thr=gap('thresholds','No surprise line yet'); }
     var pos=n.positioning?('<div class="wp-pos">Fund positioning: '+n.positioning+'</div>')
       :gap('positioning','No positioning');
     return '<div class="wp-card"><div class="hd"><span class="rpt">'+n.report+'</span><span class="cd">'+n.date+(n.time?(' \u00b7 '+n.time.replace('12:00 PM ET','11:00 a.m. CT')):'')+' \u00b7 '+cd+'</span></div>'
@@ -156,7 +158,7 @@
          survey's own low-high range is the pipeline's context line. */
       var inNote='';
       if(b.context&&b.low!=null&&b.high!=null){
-        inNote=b.context.charAt(0).toUpperCase()+b.context.slice(1)+' ('+b.low+' to '+b.high+').';
+        inNote=b.context.charAt(0).toUpperCase()+b.context.slice(1)+' ('+d3(b.low,b.unit)+' to '+d3(b.high,b.unit)+').';
       }
       big='<div class="wp-res-big">'
         +'<div class="wp-res-row"><span class="wp-res-metric">'+b.metric+'</span>'
@@ -175,7 +177,7 @@
       +'<div class="wp-res-sum">'+sum+'</div>'+big+numbersEl(lr.numbers)
       +'<div class="wp-res-foot">Every figure, scored, in the <a href="#track-record">track record</a> below.</div></div>';
   }
-  function fmtNum(n,u){return (n==null)?'n/a':(n+(u?('\u00a0'+u):''));}
+  function fmtNum(n,u){return (n==null)?'n/a':(d3(n,u)+(u?('\u00a0'+u):''));}
   /* AN EMPTY SURPRISE IS NOT "IN LINE". Both builders used to return "in line"
      when there was no consensus to compare against, and the page rendered
      `r.surprise||'in line'` on top of that, so a metric nobody had filed an
@@ -358,9 +360,9 @@
         +'their position is not, because '+(minN-1)+' calls is not a record.</td></tr>';
     }
     var lead='';
-    if(!rows.length){lead='<div class="as-err" style="margin-bottom:.6rem">Nobody has '+minN+' scored calls in this group yet. Building records below.</div>';}
-    else if(rows.length===1){lead='<div class="as-err" style="margin-bottom:.6rem">A finishing order needs at least two forecasters with '+ordMin+' scored calls each in the same group. One forecaster has '+minN+' or more so far, so this board shows records, not places.</div>';}
-    else if(!ordinals){lead='<div class="as-err" style="margin-bottom:.6rem">Listed by average error, with no places. This page prints a finishing order only once every forecaster above the line has <b>'+ordMin+' scored calls</b> in the same group. Under that, the gap between two averages sits inside the spread of each one\u2019s own calls (shown beside every average), so an order would be a coin flip.</div>';}
+    if(!rows.length){lead='<div class="as-err" style="margin-bottom:.6rem">Too few scored calls in this group yet. Building records below.</div>';}
+    else if(rows.length===1){lead='<div class="as-err" style="margin-bottom:.6rem">Too few scored calls to rank forecasters yet, so this board shows records, not places.</div>';}
+    else if(!ordinals){lead='<div class="as-err" style="margin-bottom:.6rem">Listed by average error, with no places: too few scored calls yet for an order to mean anything.</div>';}
     return lead+head+cap+body+note+brows+'</tbody></table>';
   }
   /* ── WHAT THE BOARD'S OWN NUMBERS SAY, IN ONE LINE, UNDER THE BOARD ──────
@@ -412,7 +414,7 @@
     }
     return 'Forecasters above the line have landed closer to the print than the trade consensus on <b>'+yes+' of '+n+'</b> graded calls.'+tail;
   }
-  /* Every metric class that is not the main board still gets a table. Sig's
+  /* Every metric class that is not the main board still gets a table. The owner's
      rule is that misses stay on the record; the stocks call that used to carry
      a forecaster onto the leaderboard is still here, scored on its own. */
   function otherClasses(classes,primary,minN,ordMin){
@@ -539,7 +541,7 @@
     document.getElementById('as-board-note').innerHTML=beatNote(qrows,brows);
     document.getElementById('as-board-note').style.display=document.getElementById('as-board-note').innerHTML?'':'none';
     document.getElementById('as-other').innerHTML=classes?otherClasses(classes,primary,minN,ordMin):'';
-    if(d.leaderboard&&d.leaderboard.length){document.getElementById('as-legend').style.display='block';document.getElementById('as-minn').textContent=minN;document.getElementById('as-ordmin').textContent=ordMin;}
+    if(d.leaderboard&&d.leaderboard.length){document.getElementById('as-legend').style.display='block';}
     document.getElementById('as-upcoming').innerHTML=pipelineEl(d.pipeline);
     document.getElementById('as-roster').innerHTML=rosterEl(d.roster)||'<div class="as-err">Roster loading&hellip;</div>';
     document.getElementById('as-reports').innerHTML=reportsEl(d.reports);

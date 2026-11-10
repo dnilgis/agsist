@@ -1,12 +1,11 @@
-/* COT at a glance and the Funds this week email (2026-11-04, Sig: "concise and to the point at
- * first glance, with an option to get the report by email"; the counts file showed no cot list).
+/* COT at a glance and the Funds this week email (2026-11-04,; the counts file showed no cot list).
  *   - /cot opens with the crowded verdict when it fits one line (else the report's dates), then the
- *     52-week chart with one brief line for the market picked (Nov 5, Sig: "KISS"; test/cot-chart.test.mjs),
+ *     52-week chart with one brief line for the market picked (Nov 5,; test/cot-chart.test.mjs),
  *     every market as a table row behind one "All markets" tap, then a "Get this every Friday by email"
  *     ask that posts topic cot, then the details behind one tap; no sentence per market;
  *   - the home COT card shows the top three markets in the reader's order as short rows (market, long
  *     or short, change), the ask and the ranges behind taps;
- *   - the sentence form (line(), lines()) is kept in cot-glance.js and tested here;
+ *   - the sentence form (line, lines) is kept in cot-glance.js and tested here;
  *   - the home card's "Since <report day>" price change compares the HEADLINE contract with itself
  *     (AgPxStamp.headline, #320): Jan '27 soybeans on Nov 4, Mar '27 corn after Nov 30, never the
  *     continuous front month;
@@ -14,7 +13,7 @@
  *     and the COT file keeps each dated contract's report-day close (scripts/enrich_cot_prices.py).
  * Frozen inputs: test/fixtures/funds (cot.json, cot-analysis.json and cot-history.json for the Oct 27, 2026 report; the
  * px_by_contract closes in it are made up for the test) and test/fixtures/soyroll2/prices-2026-11-04.json.
- * The browser parts route every outside host to a stub or abort and block service workers (BUILD-RULES 58).
+ * The browser parts route every outside host to a stub or abort and block service workers (build rule 58).
  *
  *   node --test test/funds-glance.test.mjs
  */
@@ -112,7 +111,8 @@ test("the crowded verdict reads every market: never 'No market crowded' while an
   assert.equal(G.crowdedLine(COT, calm).text, "No market crowded");
   assert.equal(G.crowdedLine(COT, null), null, "no analysis for this report: nothing claimed");
   const h = read("components/home.js");
-  assert.ok(h.includes("G.crowdedLine(data,COT_CX)") && !/label\+': none crowded'/.test(h), "the home card uses the shared verdict, not the four-row badges");
+  // Nov 10: the crowding verdict was dropped Nov 6; the home card has no verdict code left (no "Crowded:" title)
+  assert.ok(!/crowdedLine|COT_VERDICT|Crowded:/.test(h) && !/label\+': none crowded'/.test(h), "the home card prints no crowding verdict");
 });
 
 test("the counts file keeps the standing lists, Funds this week at zero included", () => {
@@ -239,9 +239,12 @@ test("home card: the top three markets in plain lines, the ask and the ranges be
       await pg.evaluate(() => { let d = document.getElementById("cot-widget"); while (d) { if (d.tagName === "DETAILS") d.open = true; d = d.parentElement; } document.getElementById("cot-widget").scrollIntoView(); });
       await pg.waitForFunction(() => /moderate|heavy|light/.test((document.getElementById("cot-glance") || {}).textContent || ""));
       const got = await pg.$$eval("#cot-glance li", (els) => els.map((e) => e.textContent));
-      assert.deepEqual(got, G.rows(COT, CX, ["corn", "beans", "wheat"]).map((r) => r.name + r.pos + r.chg), "three short rows, the reader's first three markets " + width);
+      // Nov 10: no "crowded" (Nov 6), and the right cell says it is the week's change in contracts
+      assert.deepEqual(got, G.rows(COT, CX, ["corn", "beans", "wheat"]).map((r) => { const f = G.facts(r.key, COT, CX), w = { flat: "About even", long: "Long", short: "Short" }[f.side];
+        return r.name + w + (f.side === "flat" ? "" : f.flip ? ", flipped" : f.weight ? ", " + f.weight : "") + r.chg + " contracts this week"; }), "three short rows, the reader's first three markets " + width);
+      assert.ok(got.every((t) => !/crowded/i.test(t)), "no crowded word " + width);
       assert.equal((await pg.textContent("#cot-gl-asof")).trim(), "Positions as of Tuesday, Oct 27, released Friday, Oct 30.");
-      assert.equal((await pg.textContent("#cot-verdict")).trim(), "Crowded: soybean meal (long), lean hogs and Class III milk (short)", "the verdict over all markets " + width);
+      assert.equal(await pg.$eval("#cot-verdict", (e) => e.hidden), true, "no crowding verdict on the home card (the crowding verdict was dropped Nov 6) " + width);
       assert.equal(await pg.locator("#cot-verdict-lv").count(), 0, "one verdict, not a grains and a cattle badge");
       assert.equal(await pg.$eval("#cot-detail", (d) => d.open), false);
       assert.equal(await pg.$eval("#cot-ask", (d) => d.open), false);
@@ -302,7 +305,7 @@ test("after a Daily signup One more? keeps a Funds this week row even with ZIP, 
   const run = async (init) => {
     const { pg, posts } = await open(browser, port, "/index.html", { width: 390, own: { "/data/rain/ia.json": rain }, init });
     await pg.waitForFunction(() => !!document.body);
-    if (!(await pg.evaluate(() => !!(window.AgsistSignup && window.AgsistSignup.oneMore)))) await pg.addScriptTag({ url: "/components/signup-ask.js?v=21" });
+    if (!(await pg.evaluate(() => !!(window.AgsistSignup && window.AgsistSignup.oneMore)))) await pg.addScriptTag({ url: "/components/signup-ask.js?v=22" });
     await pg.waitForFunction(() => window.AgsistSignup && window.AgsistSignup.oneMore);
     await pg.evaluate(() => { const h = document.createElement("div"); h.id = "t-host"; document.body.prepend(h);
       window.AgsistSignup.oneMore(h, { gave: "daily", email: "reader@example.com", zip: "50010", fips: "19169" }); });

@@ -366,15 +366,14 @@ jobs:
         continue-on-error: true
         run: python scripts/critique_briefing.py
 
-      # ── GATE 2f ── fact check (2026-10-17, Sig approved). A careful reviewer
       - name: GATE 2f, fact check against the source data
         id: g2f
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
-          FACT_CHECK_MODEL: ${{ vars.FACT_CHECK_MODEL || 'claude-opus-5-5' }}
+          FACT_CHECK_MODEL: ${{ vars.FACT_CHECK_MODEL }}
           FACT_CHECK_MODE: block
         run: |
-          echo "fact check: model=$FACT_CHECK_MODEL mode=$FACT_CHECK_MODE"
+          echo "fact check: model=${FACT_CHECK_MODEL:-claude_models.REVIEWER} mode=$FACT_CHECK_MODE"
           rm -f "$RUNNER_TEMP/fact-check.json"
           python scripts/fact_check_briefing.py
 

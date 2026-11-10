@@ -1,4 +1,4 @@
-/* The Daily's top stories on the web (Sig, Nov 2): since PR #237 each story in
+/* The Daily's top stories on the web (Nov 2): since PR #237 each story in
  * outside_the_pit carries the publisher's link and the source name, and the email
  * shows them. /daily (daily.html) and the home page Daily card (components/home.js)
  * now draw each title as a link (rel="noopener nofollow") with the source in small
@@ -62,7 +62,7 @@ test("both pages say why these links are allowed (news, not data sources) and bu
     assert.match(read(f), /rel="noopener nofollow"/);
   }
   const idx = read("index.html");
-  assert.ok(idx.includes('<script src="/components/home.js?v=24"></script>'));
+  assert.match(idx, /<script src="\/components\/home\.js\?v=\d+"><\/script>/); // test/one-more.test.mjs owns the exact version
   // v29 carried these styles; a later bump (fx/homejobs took v31) still serves them
   const css = /<link rel="stylesheet" href="\/css\/home\.css\?v=(\d+)">/.exec(idx);
   assert.ok(css && +css[1] >= 29, `home.css is v29 or later (${css && css[1]})`);

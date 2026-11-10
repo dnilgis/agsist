@@ -4,7 +4,7 @@
 WHY. On Nov 3 four pull requests carried generated page sets (#280 the rain set, #282 the cash bid town pages
 twice, #296 land sales). Main's own jobs rebuild those sets every 15 minutes to once a day, so a pull request's
 copy went stale within hours: merge conflicts, or a merge on checks run against an older main and main red
-(build_*.py --check). BUILD-RULES 49 and 60 asked the lead to remember; this makes it mechanical.
+(build_*.py --check). build rule 49 and 60 asked the lead to remember; this makes it mechanical.
 
 THE TABLE (SETS below): for each set, the builder commands, the output paths, the --check, the workflow that
 rebuilds it on main, whether the builder reads only committed files (offline), and the code it runs (the builder,
@@ -19,14 +19,16 @@ THE RULES IT ENFORCES
              main job, or a one-time repair).
   prebuild   (scripts/dev/checks.sh with AGSIST_GEN_BASE, the PR checks) a pull request that changes an offline
              set's code gets that set rebuilt in the CI copy before the checks, the same way the built files are
-             (AGSIST_PREBUILD), so the --check and the tests see what main will serve after the rebuild. Nothing
-             is committed. A network set (cash bid pages) is not rebuilt here: its tests run on fixtures.
+             (AGSIST_PREBUILD), so the --check and the tests see what main will serve after the rebuild. Each
+             rebuilt set's dependents (the summary files below, and any summary that reads those) are rebuilt
+             right after, in SUMMARIES order. Nothing is committed. A network set (cash bid pages) is not
+             rebuilt here, nor are its dependents: its tests run on fixtures.
   main       (main-checks.yml, the generated job, before the suite) a set whose code changed on main in the last
              WINDOW_MIN minutes is rebuilt at once: an offline set here, from main as it is, and committed; a
              network set by starting its own workflow by hand and waiting for that run. A set whose code did not
              change is left alone, so a stale set from a failing data job still shows red.
 
-  dependents (BUILD-RULES 61, Nov 4: a hand run of cash-bid-index.yml left llms.txt on the partial
+  dependents (build rule 61, Nov 4: a hand run of cash-bid-index.yml left llms.txt on the partial
              edition and main went red) every summary file that reads a set's output (SUMMARIES: llms.txt,
              the search index, data/feeds.json, ...) is that set's dependent, and is rebuilt in the same
              commit as the set: by the set's own workflow (`dependents <id> --stage` right before its commit)
@@ -73,6 +75,7 @@ PY = "python3"
 # then the sets in the order their own jobs run them.
 SETS = [
     {"id": "cash-bids", "offline": False, "workflow": "cash-bid-pages.yml", "dispatch": {"force": "true"},
+     "build_job": "build",
      "build": [[PY, "scripts/build_cash_bid_pages.py"]], "check": None,
      "outputs": ["cash-bids/**", "sitemap-cash-bids.xml"],
      "writes": [], "code": ["scripts/build_cash_bid_pages.py"], "inputs": [],
@@ -136,7 +139,7 @@ SETS = [
      # the state pages copy the ?v= the map page carries for its scripts
      "code": ["scripts/generate_hail_states.py"], "inputs": ["hail-map.html"],
      "dependents": ["search", "llms"]},
-    # the Cash Bid Index (BUILD-RULES 61): the month's edition is written by cash-bid-index.yml (--build, from the
+    # the Cash Bid Index (build rule 61): the month's edition is written by cash-bid-index.yml (--build, from the
     # boards folded into data/cash-index by fetch_bids.yml); the page is rebuilt from editions.json alone (--page)
     {"id": "cash-bid-index", "offline": True, "workflow": "cash-bid-index.yml",
      "build": [[PY, "scripts/cash_bid_index.py", "--page"]], "check": [[PY, "scripts/cash_bid_index.py", "--check"]],
@@ -153,10 +156,11 @@ SETS = [
      "dependents": []},
 ]
 
-# Summary files: committed files whose builder reads what a set writes (BUILD-RULES 61). A set lists the ones it
+# Summary files: committed files whose builder reads what a set writes (build rule 61). A set lists the ones it
 # feeds as its "dependents"; they are rebuilt, in this order, in the same commit as the set. "trace" is a run of
 # the builder that writes nothing (its --check, or the build itself when it writes only when its output changes),
-# which scripts/trace_reads.py watches to learn what it reads. "files" is what the rebuild commits.
+# which scripts/trace_reads.py watches to learn what it reads. "files" is what the rebuild commits. A summary that
+# reads another summary's files lists it under "dependents" (optional) and comes after it here.
 SUMMARIES = [
     {"id": "stamp-prf", "build": [PY, "scripts/stamp_prf.py"], "trace": ["--check"], "files": ["prf.html"]},
     {"id": "breakeven", "build": [PY, "scripts/build_breakeven_data.py"], "trace": ["--check"], "files": ["data/breakeven"]},
@@ -403,11 +407,11 @@ def pull_raw(s):
 def cmd_prebuild(base):
     """the PR checks: rebuild, in this copy only, every offline set whose code the pull request changes"""
     files = changed_files(base)
-    ids = touched(SETS, files)
+    ids = touched(SETS, files, ROOT)
     if not ids:
         print("prebuild: no generated set's code changed against %s" % base)
         return 0
-    bad = 0
+    bad, rebuilt = 0, []
     for s in SETS:
         if s["id"] not in ids:
             continue
@@ -417,7 +421,20 @@ def cmd_prebuild(base):
             continue
         print("prebuild: %s (its code changed)" % s["id"])
         pull_raw(s)
-        bad += not build(s)
+        if build(s):
+            rebuilt.append(s["id"])
+        else:
+            bad += 1
+    # the summary files the rebuilt sets feed (and the summaries those feed), in SUMMARIES order, before any
+    # check reads them (Nov 10, 2026: a change to a module every set imports rebuilt arc-plc here but not
+    # data/breakeven, which reads it, so build_breakeven_data.py --check read 47 files stale)
+    deps = summary_closure({d for sid in rebuilt for d in next(s for s in SETS if s["id"] == sid)["dependents"]})
+    if deps:
+        print("prebuild: dependents of %s: %s" % (", ".join(rebuilt), ", ".join(deps)))
+        failed = run_dependents(deps)
+        if failed:
+            print("prebuild: dependent(s) not rebuilt: %s" % ", ".join(failed))
+            bad += len(failed)
     return 1 if bad else 0
 
 
@@ -473,23 +490,66 @@ def pick_run(runs, since):
     return max(mine, key=lambda r: r["created_at"]) if mine else None
 
 
-def await_network(gh, s, since, wait_min=WAIT_MIN):
+def built(gh, s, run):
+    """did this finished run of the set's workflow actually rebuild? (success, and the set's build job, when it names
+    one, ran: cash-bid-pages succeeds with its build job skipped when its gate finds the pages too recent)"""
+    if run.get("conclusion") != "success":
+        return False
+    job = s.get("build_job")
+    if not job:
+        return True
+    jobs = (gh.call("GET", "/repos/%s/actions/runs/%s/jobs?per_page=50" % (gh.repo, run["id"])) or {}).get("jobs", [])
+    return any(j.get("name") == job and j.get("conclusion") == "success" for j in jobs)
+
+
+def superseded(gh, s, gone, wait_min=WAIT_MIN, sleep=time.sleep, clock=time.time):
+    """the watched run ended cancelled: a run of the same workflow queued after it (any trigger) takes its place in the
+    workflow's concurrency group. Wait (bounded) for the newer runs on main -> 'success' when one of them rebuilt,
+    'newer run <conclusion>' when one failed, 'cancelled (no newer run ...)' when none rebuilt, or 'timed out'"""
+    path = "/repos/%s/actions/workflows/%s/runs?branch=main&per_page=30" % (gh.repo, s["workflow"])
+    end = clock() + wait_min * 60
+    while True:
+        runs = (gh.call("GET", path) or {}).get("workflow_runs", [])
+        newer = sorted((r for r in runs if r.get("id") != gone.get("id") and r.get("head_branch", "main") == "main"
+                        and r["created_at"] > gone["created_at"]), key=lambda r: r["created_at"])
+        if not newer:
+            return "cancelled (no newer run)"
+        done = [r for r in newer if r.get("status") == "completed"]
+        for r in done:
+            if built(gh, s, r):
+                print("  %s run %s was superseded by run %s: success" % (s["workflow"], gone.get("id"), r.get("id")))
+                return "success"
+        failed = [r for r in done if r.get("conclusion") not in ("success", "cancelled", "skipped")]
+        if failed:
+            return "newer run %s %s" % (failed[0].get("id"), failed[0].get("conclusion"))
+        if len(done) == len(newer):
+            return "cancelled (no newer run rebuilt the pages)"
+        if clock() >= end:
+            return "timed out"
+        sleep(30)
+
+
+def await_network(gh, s, since, wait_min=WAIT_MIN, sleep=time.sleep, clock=time.time):
     """start the network set's own workflow (unless a run by hand already started after the code changed) and
-    wait for it -> its conclusion, or 'timed out'"""
+    wait for it -> its conclusion, or 'timed out'. A run cancelled by the workflow's concurrency group counts as
+    the newer run that replaced it (superseded)"""
     wf = s["workflow"]
     path = "/repos/%s/actions/workflows/%s/runs?event=workflow_dispatch&per_page=20" % (gh.repo, wf)
     run = pick_run((gh.call("GET", path) or {}).get("workflow_runs", []), since)
     if run is None:
         gh.call("POST", "/repos/%s/actions/workflows/%s/dispatches" % (gh.repo, wf), {"ref": "main", "inputs": s.get("dispatch") or {}})
         print("  started %s by hand" % wf)
-        since = time.time() - 30
-    end = time.time() + wait_min * 60
-    while time.time() < end:
-        time.sleep(30)
+        since = clock() - 30
+    end = clock() + wait_min * 60
+    while clock() < end:
+        sleep(30)
         run = pick_run((gh.call("GET", path) or {}).get("workflow_runs", []), since)
         if run and run.get("status") == "completed":
-            print("  %s run %s: %s" % (wf, run.get("id"), run.get("conclusion")))
-            return run.get("conclusion")
+            c = run.get("conclusion")
+            print("  %s run %s: %s" % (wf, run.get("id"), c))
+            if c == "cancelled":
+                return superseded(gh, s, run, max(1, (end - clock()) / 60), sleep=sleep, clock=clock)
+            return c
     return "timed out"
 
 
@@ -569,7 +629,7 @@ def cmd_main(window, dry):
     return commit_and_push([s["id"] for s in offline], rebuild, summary_files(deps)) or rc
 
 
-# ── dependents (BUILD-RULES 61) ─────────────────────────────────────────────────
+# ── dependents (build rule 61) ─────────────────────────────────────────────────
 SUMMARY = {x["id"]: x for x in SUMMARIES}
 
 
@@ -627,12 +687,25 @@ def dependents_of(sid, sets=None):
     return [x for x in SUMMARIES if x["id"] in want]
 
 
+def summary_closure(ids):
+    """these summaries and every summary that reads one of them (a summary's own "dependents", at any depth), in
+    SUMMARIES order, which is the order they are rebuilt in (a summary comes after every summary it reads)"""
+    want, todo = set(), list(ids)
+    while todo:
+        i = todo.pop()
+        if i in want:
+            continue
+        want.add(i)
+        todo += SUMMARY[i].get("dependents", []) if i in SUMMARY else []
+    return [x["id"] for x in SUMMARIES if x["id"] in want]
+
+
 def summary_files(ids):
     return [f for x in SUMMARIES if x["id"] in ids for f in x["files"]]
 
 
 def run_dependents(ids, dry=False, stage=False):
-    """rebuild these summaries (SUMMARIES order); -> the ids that failed. Fail soft (BUILD-RULES 53): a summary
+    """rebuild these summaries (SUMMARIES order); -> the ids that failed. Fail soft (build rule 53): a summary
     that fails to build never stops the set's own commit; it is a warning here and main's --check stays red."""
     bad = []
     for x in SUMMARIES:
@@ -797,6 +870,10 @@ def selftest():
     check([x["id"] for x in dependents_of("cash-bid-index")] == ["feeds", "llms"] and "llms.txt" in summary_files(["llms"]),
           "the Cash Bid Index rebuilds llms.txt (Nov 4)")
     check(all(d in SUMMARY for s in SETS for d in s["dependents"]), "every dependent is a summary")
+    order = [x["id"] for x in SUMMARIES]
+    check(all(d in SUMMARY and order.index(d) > order.index(x["id"]) for x in SUMMARIES for d in x.get("dependents", [])),
+          "a summary that reads another summary is rebuilt after it")
+    check(summary_closure(["llms", "breakeven"]) == ["breakeven", "llms"], "summary_closure: SUMMARIES order")
     check(all(x["build"][1].endswith(".py") for x in SUMMARIES), "summary builders are Python (the tracer runs them)")
     ids = [s["id"] for s in SETS]
     check(len(ids) == len(set(ids)), "every set once")

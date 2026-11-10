@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """agstocks_plants.py -- the plants a listed ag company runs, matched by operator name only.
 
-Reads the plant lists researched Oct 28, 2026 (feedbag notes/chatgpt/2026-10-28-answers/
+Reads the plant lists researched Oct 28, 2026 (the private notes
 elevator-attributes/): 01 BNSF shuttle elevators and 02 other railroad shuttle elevators
 (Kansas Department of Revenue grain elevator guide), 03 ethanol plants (Renewable Fuels
 Association plant list), 04 soybean crush plants (NOPA plant locations), 06 export grain

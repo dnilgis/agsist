@@ -89,11 +89,13 @@ GATED_NOV3 = {
     "seasonal-models.yml", "share-images.yml", "site-usage.yml", "sitemap.yml", "sponsor-report.yml",
     "state-rent-pages.yml", "stats-ingest.yml", "storage.yml", "tenure.yml", "transport.yml", "vintage.yml",
     "whats-priced-in.yml",
-    # Nov 4, 2026 (BUILD-RULES 59): the full suite on main, every two hours on the chain; a push or a
+    # Nov 4, 2026 (build rule 59): the full suite on main, every two hours on the chain; a push or a
     # merge always runs it and does not use up the two-hour tick
     "main-checks.yml",
     # Nov 7, 2026: the weekly Schrader auction results capture (the feed shows only the newest five sales)
     "schrader-capture.yml",
+    # Nov 10, 2026: the monthly bid archive check (the daily bid snapshots match the published town pages)
+    "bid-archive-check.yml",
     # Nov 10, 2026: the weekly bids history backup to a private repository
     "bids-mirror.yml",
 }

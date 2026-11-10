@@ -159,7 +159,7 @@ test("hail: our own records within the stated radius, the reported kind only, ne
 });
 
 /* 2026-10-29: the wind came from Open-Meteo's ERA5 archive, now off (no free source gives a daily gust for any spot
-   and year); the matching code stays for a source Sig picks, so it is still checked on a made-up answer. */
+   and year); the matching code stays for a source the owner picks, so it is still checked on a made-up answer. */
 test("wind: no source, so nothing is asked; the matching code still aligns a gust answer to the print's days", () => {
   assert.equal(DR.windSource(), null);
   assert.equal(DR.windUrl, undefined);

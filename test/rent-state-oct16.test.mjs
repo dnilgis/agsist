@@ -67,7 +67,9 @@ test("every built state page: the release line says what NASS says, and one tren
     assert.doesNotMatch(h, /usually come out in August/, f);
     assert.doesNotMatch(h, /15-year fit/, f);
     const fold = h.slice(h.indexOf('<details class="rs-terms"'));
-    assert.match(fold, /NASS says county rents come out in late August every year/, f);
+    // audit Nov 10, 2026: no survey in 2015 or 2018, so the fold never says "every year"
+    assert.match(fold, /NASS puts county rents out in late August of each survey year \(it ran no survey in 2015 or 2018\)/, f);
+    assert.doesNotMatch(fold, /every year/, f);
     // curtain round 2: the trend method is not published, only that it is AGSIST's number
     assert.doesNotMatch(h, /14-yr trend|least.squares/i, f);
     if (h.includes('id="your-ground"')) assert.match(h, /Derived by AGSIST, not a NASS number/, f);

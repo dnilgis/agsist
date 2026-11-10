@@ -38,6 +38,13 @@ const CD = obj("CROP_DEFAULTS"), BUD = obj("BUDGETS"), FERT = obj("FERT");
 const fertAt = (crop, y) => { const nf = FERT.nf && FERT.nf[crop]; const lb = FERT.r[crop].map((x) => Math.round(y * x)); if (nf) lb[0] = nf[0]; return Math.round(lb[0] * (nf ? nf[1] : FERT.n) + lb[1] * FERT.p + lb[2] * FERT.k); };
 const IA = JSON.parse(readFileSync(ROOT + "data/breakeven/IA.json", "utf8"));
 const STORY = IA.c.find((c) => c.n === "Story");
+/* The 2026 estimate follows USDA's current price print (6.44 ARC-CO / 1.13 PLC on October's; 15.04 / 3.98 on
+   November's, Nov 10, 2026), so it is read from the county file: the verdict names the program, a close call
+   takes the larger, and the other program's figure goes in brackets. [label, dollars, other label, other dollars] */
+const pick = (row) => { const [v, plc, arc] = row; const p = /plc/.test(v) ? "PLC" : /arc/.test(v) ? "ARC-CO" : plc > arc ? "PLC" : "ARC-CO";
+  return p === "PLC" ? [p, plc / 100, "ARC-CO", arc / 100] : [p, arc / 100, "PLC", plc / 100]; };
+const usd = (x) => (x % 1 ? x.toFixed(2) : String(x)), m = (x) => "$" + usd(x);
+const E26 = pick(STORY.a.corn["2026"]), re = (x) => x.replace(/[.$()]/g, "\\$&");
 
 test("farmdoc 2027 Table 1 lines add up to the published totals, and the corn and soybean defaults are the northern Illinois budget", () => {
   /* Table 1 (farmdoc daily (16):157): total non-land costs less fertilizers, by region.
@@ -130,15 +137,16 @@ test("the saved location fills the county, rent, trend yield and an ARC/PLC esti
     const yld = Math.round(STORY.y.corn.v);
     assert.equal(await pg.inputValue("#land"), "290");
     assert.equal(await pg.inputValue("#yield"), String(yld));
-    assert.equal(await pg.inputValue("#other"), "6.44", "ARC-CO $6.44 per base acre, the build's lean-ARC pick");
+    assert.equal(await pg.inputValue("#other"), usd(E26[1]), `${E26[0]} $${E26[1]} per base acre, the build's pick`);
     const note = await txt(pg, "#co-note");
     assert.match(note, /Story County, IA, from the location you saved on AGSIST/);
-    assert.match(note, /Other revenue \$6\.44\/ac: AGSIST.s ARC-CO estimate for corn base acres in Story County, 2026 program year \(PLC \$1\.13\)\. Per base acre at FSA.s 85% payment acres, before sequestration, paid after Oct 1, 2027\. It counts one base acre for each planted acre; change it if yours differ\. An estimate, not a sure payment\./);
+    assert.match(note, new RegExp(re(`Other revenue ${m(E26[1])}/ac: `) + `AGSIST.s ${E26[0]} estimate for corn base acres in Story County, 2026 program year ` + re(`(${E26[2]} ${m(E26[3])})`)));
+    assert.match(note, /2026 program year \([^)]*\)\. Per base acre at FSA.s 85% payment acres, before sequestration, paid after Oct 1, 2027\. It counts one base acre for each planted acre; change it if yours differ\. An estimate, not a sure payment\./);
     assert.equal(await pg.$eval("#co-note a", (a) => a.getAttribute("href")), "/arc-plc/iowa/story-county");
-    assert.equal(await txt(pg, "#src-other"), "Estimate: ARC-CO, Story County, 2026 program year.");
+    assert.equal(await txt(pg, "#src-other"), `Estimate: ${E26[0]}, Story County, 2026 program year.`);
     assert.equal(await txt(pg, "#src-land"), "USDA NASS 2026 cash rent, Story County.");
-    /* hand math: 632 budget lines + fertilizer at 217 bu + 290 rent, less 6.44 */
-    const total = 632 + fertAt("corn", yld) + 290, be = (total - 6.44) / yld;
+    /* hand math: 632 budget lines + fertilizer at 217 bu + 290 rent, less the estimate (6.44 on October's print) */
+    const total = 632 + fertAt("corn", yld) + 290, be = (total - E26[1]) / yld;
     assert.equal(await txt(pg, "#ans-be"), "$" + be.toFixed(2));
     assert.match(await txt(pg, "#ans-from"), /^Rent and trend yield from Story County, IA \(your saved location\); an ARC\/PLC estimate in other revenue; basis: Iowa corn median; other costs from farmdoc.s 2027 northern Illinois budget; fertilizer at co-op prices posted through /);
     assert.deepEqual(srv.hits.filter((h) => h.startsWith("/data/breakeven/")), ["/data/breakeven/IA.json"]);
@@ -182,7 +190,7 @@ test("a returning reader keeps his numbers; a bare ZIP picks no county; his own 
     await pg.waitForSelector("#co-co:not([disabled])");
     await pg.selectOption("#co-co", STORY.f);
     assert.equal(await pg.inputValue("#other"), "12", "his other revenue stays");
-    assert.match(await txt(pg, "#co-note"), /Other revenue \(yours kept; our estimate is \$6\.44\/ac\)/);
+    assert.match(await txt(pg, "#co-note"), new RegExp(re(`Other revenue (yours kept; our estimate is ${m(E26[1])}/ac)`)));
     /* a county with no typical-farm estimate fills no number and says why */
     await type(pg, "#other", "");
     await pg.selectOption("#co-st", "CO");
@@ -329,8 +337,13 @@ test("a saved state opens on its median basis for the picked contract, labeled, 
     /* futures needed = cash break-even - basis */
     const be = Number((await txt(pg, "#ans-be")).slice(1));
     const want = (be - e.median).toFixed(2), sign = e.median > 0 ? "+" : "\u2212";
-    assert.match(await txt(pg, "#ans-fut"), new RegExp(`^Futures needed at your \\${sign}${Math.abs(e.median).toFixed(2).replace(".", "\\.")} basis: \\$${want.replace(".", "\\.")}\\.`));
-    assert.equal(await txt(pg, "#futNeeded"), "$" + want + "/bu");
+    /* the page subtracts from the unrounded break-even (breakeven.js), and the one shown is rounded to the
+       cent, so the futures figure can sit one cent either side of what the two shown numbers give */
+    const near = [-0.01, 0, 0.01].map((d) => (Number(want) + d).toFixed(2));
+    const fut = await txt(pg, "#ans-fut");
+    const got = (fut.match(new RegExp(`^Futures needed at your \\${sign}${Math.abs(e.median).toFixed(2).replace(".", "\\.")} basis: \\$(\\d+\\.\\d{2})\\.`)) || [])[1];
+    assert.ok(got && near.includes(got), `${fut} is the break-even less the basis (${want}, within a cent)`);
+    assert.equal(await txt(pg, "#futNeeded"), "$" + got + "/bu");
     assert.equal(await pg.isVisible("#fut-sub"), false, "no 'assumed' line with a real basis");
     /* the 2027 contract has no matching basis: the state median comes back out, and the page says why */
     await pg.selectOption("#be-year", "1");

@@ -29,6 +29,38 @@ def ordinal(n):
     return f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
 
 
+MISS_WET = 3   # a missing day may have held this many times its usual rain (one storm in a short gap)
+
+
+def missing_usual(c):
+    """The usual rain for this year's missing days, from the month table (total, usual over the reported
+    days, reported, days); None when a month has missing days and nothing to scale from."""
+    out = 0.0
+    for m in c.get("months") or []:
+        t, u, rep, days = m
+        if rep >= days:
+            continue
+        if not rep or u is None:
+            return None
+        out += u / rep * (days - rep)
+    return out
+
+
+def dry_rank_ok(c, r):
+    """False when a rank on the dry side (driest, or the drier half of the record) could be wrong because of
+    this year's missing days: a missing day counts as unknown, so the true total can only be higher. The
+    rank stands when the gap to the next wetter year ("up", from scripts/fetch_rain_context.py) is more than
+    MISS_WET times the usual rain for those days. A context file without "up" says nothing on the dry side
+    for a year with missing days. A wet rank stands: missing days only add rain. Arkansas County AR, Nov
+    2026: 15 missing days, ranked driest of 71 years at 63% of usual, while the county average read 71%."""
+    if not r:
+        return False
+    if r["drier"] >= r["wetter"] or not (c.get("missing") or 0):
+        return True
+    up, mu = r.get("up"), missing_usual(c)
+    return up is not None and mu is not None and up > MISS_WET * mu
+
+
 def rows(rain=RAIN, states=None, within=3):
     out = []
     for p in sorted(glob.glob(os.path.join(rain, "*.json"))):
@@ -48,7 +80,7 @@ def rows(rain=RAIN, states=None, within=3):
                 continue
             for side, k in (("wettest", "wetter"), ("driest", "drier")):
                 place = r[k] + 1
-                if place <= within:
+                if place <= within and (side == "wettest" or dry_rank_ok(c, r)):
                     g = cx.get("grid") or {}
                     gp = round(100 * g["total"] / g["usual"]) if g.get("usual") and g["usual"] >= 1 else None
                     out.append({"state": st, "fips": f, "county": c["name"], "side": side, "place": place, "years": r["n"],
@@ -95,6 +127,31 @@ def selftest():
             fails.append("one gauge flag")
         if rows(t, within=1) != rs[:1]:
             fails.append("within 1")
+        # a dry rank from a year with missing days: withheld unless the gap to the next year is wider than
+        # what those days could hold (Arkansas County AR, Nov 2026: 15 missing, ranked driest of 71)
+        ark = {"name": "Arkansas County", "total": 25.42, "pct": 63, "as_of": "2026-11-08", "station": {"name": "Saint Charles"},
+               "missing": 15, "months": [[1.95, 3.78, 27, 31], [2.23, 4.7, 28, 28], [5.4, 5.34, 29, 31], [2.24, 5.86, 30, 30],
+                                         [5.26, 4.49, 31, 31], [2.63, 3.54, 30, 30], [3.39, 2.92, 24, 31], [1.25, 2.76, 31, 31],
+                                         [0.12, 3.02, 30, 30], [0.12, 3.48, 29, 31], [0.83, 0.28, 3, 3]]}
+        rk = {"n": 71, "first": 1941, "wetter": 70, "drier": 0, "last_wetter": 2024, "last_drier": None}
+        mu = missing_usual(ark)
+        if not (1.9 < mu < 2.1):
+            fails.append(f"missing usual {mu}")
+        if dry_rank_ok(ark, rk) or dry_rank_ok(ark, dict(rk, up=5.0)):
+            fails.append("Arkansas County's driest rank stands with 15 missing days")
+        if not dry_rank_ok(ark, dict(rk, up=6.5)) or not dry_rank_ok(dict(ark, missing=0), rk):
+            fails.append("a dry rank with a wide gap, or no missing days, is withheld")
+        if not dry_rank_ok(ark, {"n": 71, "first": 1941, "wetter": 0, "drier": 70}):
+            fails.append("a wet record from a gappy year is withheld")
+        wi = json.load(open(os.path.join(t, "wi.json")))
+        wi["counties"]["55007"].update(missing=4, months=[[12.0, 24.0, 290, 294]])
+        json.dump(wi, open(os.path.join(t, "wi.json"), "w"))
+        if [(o["county"], o["side"]) for o in rows(t)] != [("Ashland County", "wettest")]:
+            fails.append("a gappy driest-but-one row is listed")
+        ctx["counties"]["55007"]["rank"]["up"] = 3.0
+        json.dump(ctx, open(os.path.join(t, "context", "wi.json"), "w"))
+        if [(o["county"], o["side"]) for o in rows(t)] != [("Ashland County", "wettest"), ("Bayfield County", "driest")]:
+            fails.append("a gap wider than the missing days could hold keeps the row")
         ctx["fetched"] = "b"
         json.dump(ctx, open(os.path.join(t, "context", "wi.json"), "w"))
         if rows(t):

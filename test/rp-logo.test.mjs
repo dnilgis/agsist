@@ -202,7 +202,7 @@ test("the page: the upload under the name, its help line, the color switch, the 
   assert.match(H, /value="1" checked><span>Ink color<\/span>/);
   assert.match(H, /<span>Keep its colors<\/span>/);
   assert.match(H, /id="rp-logo-remove" hidden>Remove</);
-  assert.match(H, />Logo for the prints \(optional\)</);   // no separate note card (Sig, 2026-10-17)
+  assert.match(H, />Logo for the prints \(optional\)</);   // no separate note card (2026-10-17)
   const i = (s) => H.indexOf(s);
   // 2026-10-17 (speed panel): the engine loads rp-logo.js when a logo is first wanted (a ?logo= link or the file picker)
   assert.ok(i("/components/rp-logo.js?v=") < 0, "not loaded up front on /rain-print");

@@ -1,5 +1,4 @@
-/* The weather fold on county rain pages (fx/rainwx, Sig Nov 4, 2026: "under county rain ... any other
- * measured meteorological data, such as YTD GDUs, weather extremes of note").
+/* The weather fold on county rain pages (fx/rainwx, Nov 4, 2026).
  *
  * scripts/fetch_rain_weather.py --selftest holds the arithmetic on hand-worked and saved (made-up) ACIS
  * answers: corn GDD known values, the 5% missing-day withhold, no rank under 20 years of record, no

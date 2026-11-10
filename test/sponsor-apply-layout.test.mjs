@@ -89,7 +89,7 @@ for (const width of [390, 1280]) {
   });
 }
 
-/* Oct 29, 2026 (Sig, option A): California, Nevada and Texas are held while the Root Lot
+/* Oct 29, 2026 (option A): California, Nevada and Texas are held while the Root Lot
  * test runs there. The form lists them, disabled, as "opens soon"; every other state is open
  * at the card's price. scripts/sponsor_apply.py refuses them too (its --selftest). */
 test("the State Sponsor picker holds the states the card holds, and prices the rest from the card", { skip }, async () => {

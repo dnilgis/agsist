@@ -29,7 +29,7 @@ CARD = ROOT / "data" / "rate-card.json"
 SUPPORTERS = ROOT / "data" / "supporters.json"
 PITCH = ROOT / "sponsor.html"
 # Every page that sells a slot or quotes the card (Oct 29, 2026).
-SELLING = ("sponsor.html", "sponsor-apply.html", "sponsor-kit.html")
+SELLING = ("sponsor.html", "sponsor-apply.html", "sponsor-kit.html", "sponsor-rates.html")
 STATE_NAMES = {"IL": "Illinois", "MN": "Minnesota", "WI": "Wisconsin", "TX": "Texas", "CA": "California", "NV": "Nevada"}
 # Plain numbers the pages may print that are not audience figures: terms (5 sponsors, 24 months,
 # 12 for 10, day 30, 28 days, 50 words, 250 KB), never a count of readers or views.
@@ -111,7 +111,7 @@ def main():
         m_ = re.search(r"([A-Z][a-z]+(?: [A-Z][a-z]+)*(?:, [A-Z][a-z]+(?: [A-Z][a-z]+)*)*(?: and [A-Z][a-z]+(?: [A-Z][a-z]+)*)?) opens? soon", pitch)
         said = set(re.split(r", | and ", m_.group(1))) if m_ else set()
         check(said == {STATE_NAMES.get(c, c) for c in soon}, "sponsor.html names exactly the states that open soon", (said, soon))
-        # Oct 29, 2026 (Sig, option A): a state a state-targeted test runs in is held, not sold.
+        # Oct 29, 2026 (option A): a state a state-targeted test runs in is held, not sold.
         geo_ = json.loads((ROOT / "data" / "geo-sponsors.json").read_text())
         held = {c for e in geo_.get("sponsors") or [] if e.get("active") is True for c in e.get("states") or []}
         check(held <= set(soon), "every state an active geo test runs in is held on the card (opens_soon)", (sorted(held), soon))
@@ -128,7 +128,7 @@ def main():
           "the founding rate on sponsor.html matches the card", f_)
     check("No reply means the ad comes down and nothing is owed" in pitch and "day 30" in pitch.lower(),
           "the day-30 yes or no is on sponsor.html")
-    # Nov 6, 2026 (Sig): no line about the owner's other businesses on any page that sells a slot.
+    # Nov 6, 2026: no line about the owner's other businesses on any page that sells a slot.
     check("insurance" not in card, "the card carries no insurance line")
     for page in ("sponsor.html", "sponsor-kit.html", "sponsor-apply.html", "prf-sponsor.html", "prf-sponsor-kit.html", "terms.html"):
         t_ = _text(ROOT / page)

@@ -1,4 +1,4 @@
-/* Share today's bids on the cash-bid town pages (Sig, Nov 3, 2026):
+/* Share today's bids on the cash-bid town pages (Nov 3, 2026):
  * components/share-bid.js and the button scripts/build_cash_bid_pages.py writes.
  *
  * The page under test is built from the frozen Nevada, IA fixture

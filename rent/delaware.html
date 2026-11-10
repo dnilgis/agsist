@@ -96,6 +96,14 @@
     },
     {
      "@type": "Question",
+     "name": "How much does farmland rent for per acre per month in Delaware?",
+     "acceptedAnswer": {
+      "@type": "Answer",
+      "text": "Cash rent is quoted per acre per year, not per month. Divided by 12, the middle Delaware county's 2026 non-irrigated cropland rent of $106 a year is about $8.83 an acre a month."
+     }
+    },
+    {
+     "@type": "Question",
      "name": "How much did Delaware cash rent change from 2025 to 2026?",
      "acceptedAnswer": {
       "@type": "Answer",
@@ -104,10 +112,10 @@
     },
     {
      "@type": "Question",
-     "name": "Why is my Delaware county not listed?",
+     "name": "Why does my Delaware county say not published?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "USDA NASS publishes a county rate only where enough Cash Rents Survey responses came back (and the county has at least 20,000 acres of cropland plus pasture). If your county is missing, NASS did not publish a rate for it."
+      "text": "USDA NASS publishes a county rate only where enough Cash Rents Survey responses came back (and the county has at least 20,000 acres of cropland plus pasture). A county marked not published had no 2026 rate of any kind from NASS. Some counties NASS reports only inside a combined district, and those show as not published too. A rent more than three survey years old shows n/a with the last year it was published."
      }
     },
     {
@@ -115,7 +123,7 @@
      "name": "When is county cash rent data released?",
      "acceptedAnswer": {
       "@type": "Answer",
-      "text": "USDA NASS releases county cash rent estimates each August for the current crop year."
+      "text": "USDA NASS releases county cash rent estimates in August of each survey year for that crop year. There was no survey in 2015 or 2018."
      }
     }
    ]
@@ -148,11 +156,22 @@
     .rs-t .up{color:var(--green)}.rs-t .dn{color:var(--red)}
     [data-theme="light"] .rs-t .dn{color:#b3261e}
     .rs-swipe{display:none}
+    /* Nov 10, 2026: the county filter keeps its space before the script runs (no shift), and an old or unpublished
+       cell wraps so the three rent columns fit a 390 px phone (pasture was cut off at 558 to 615 px) */
+    .rs-filter{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;min-height:44px;margin:10px 0 2px}
+    .rs-filter label{font-size:.85rem;color:var(--text-muted)}
+    .rs-filter input{min-height:40px;padding:0 10px;font-size:16px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface,var(--bg));color:var(--text);width:13rem;max-width:100%;box-sizing:border-box}
+    .rs-qn{font-size:.8rem;color:var(--text-muted);flex-basis:100%;min-height:1.25em;line-height:1.25}
+    .rs-t td.old{white-space:normal;min-width:5.5em;font-size:.72rem;line-height:1.25}
     .rs-tnote{font-size:.78rem;margin:4px 0 10px}
     @media (max-width:640px){
       .rs-swipe{display:block;color:var(--text-muted);font-size:.75rem;margin:8px 0 -4px}
       .rs-t th{white-space:normal;vertical-align:bottom;letter-spacing:.03em;padding:6px 7px;line-height:1.25}
       .rs-t td{padding:6px 7px;font-size:.8rem}
+      .rs-t th,.rs-t td{padding:6px 4px}
+      .rs-t th{font-size:.6rem;letter-spacing:0}
+      .rs-t td{white-space:normal}
+      .rs-t td:first-child{min-width:5.5em;max-width:7.5em}
     }
     .rs-bars{margin:8px 0}
     .rs-bar{display:flex;align-items:center;gap:10px;margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:.78rem}
@@ -207,7 +226,7 @@
 <body>
 <div id="site-header"></div>
 <main class="rs-wrap">
-  <p class="sub" style="margin-top:14px"><a href="/rent/" style="color:var(--text-muted)">Cash Rent by State</a> &rsaquo; <b>Delaware</b></p>
+  <nav class="breadcrumb" aria-label="Breadcrumb" style="min-height:1.4em;margin:14px 0 6px"><a href="/">AGSIST</a> &rsaquo; <a href="/rent/">Cash Rent by State</a> &rsaquo; <span aria-current="page">Delaware</span></nav>
   <h1>Delaware Cash Rent by County, 2026</h1>
   <p class="rs-jump" style="margin:.1rem 0 .3rem"><a href="#counties" style="display:inline-flex;align-items:center;min-height:44px;color:var(--gold,#d4a23f);font-weight:600">County table &darr;</a></p>
   <p class="sub">Delaware cash rent by county, per acre per year: every USDA-published county rate, free, from
@@ -226,7 +245,7 @@
   <div class="rs-hero">
     <div class="rs-stat"><div class="v">$106</div><div class="l">median rent /ac &middot; 2026</div><div class="s">non-irrigated cropland, 3 counties</div></div>
     <div class="rs-stat"><div class="v mut">-</div><div class="l">state median vs 2025</div><div class="s">too few matched counties</div></div>
-    <div class="rs-stat"><div class="v mut">-</div><div class="l">vs 2017</div><div class="s">too few matched counties</div></div>
+    <div class="rs-stat"><div class="v mut">-</div><div class="l">vs 2016</div><div class="s">too few matched counties</div></div>
     <div class="rs-stat"><div class="v">$119</div><div class="l">top county</div><div class="s">Kent</div></div>
   </div>
   
@@ -259,11 +278,12 @@
   </details>
   <script type="application/json" id="gr-data">{"st":"DE","unit":"County","mid":"Sussex","c":[["Kent",119.0,151.1,0.79,"delaware/kent-county"],["New Castle",102.0,156.8,0.65,"delaware/new-castle-county"],["Sussex",106.0,120.3,0.88,"delaware/sussex-county"]]}</script>
   </section>
-  <h2 id="counties" style="scroll-margin-top:80px">Every published county, 2026</h2>
+  <h2 id="counties" style="scroll-margin-top:80px">Every county, 2026</h2>
   <p class="sub">Tap a column heading to sort. Greyed values are the county&rsquo;s most recent published year where 2026
-  wasn&rsquo;t published. Each county name opens its Farmland Atlas record (land value, yield, insurance
+  wasn&rsquo;t published; a rent more than three survey years old shows n/a with its last year and sorts as no value.
+   Each county name opens its Farmland Atlas record (land value, yield, insurance
   and drought). Corn trend is a county yield trend from NASS county estimates.</p>
-  <p class="rs-swipe">Swipe the table sideways for every column.</p><div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr><th>County</th><th title="non-irrigated cropland, $/acre">Non-irrigated 2026</th><th>YoY</th><th title="county corn trend yield, bu/ac, for 2026">Corn trend 2026</th></tr></thead><tbody><tr><td><a href="/farmland-atlas/delaware/kent-county" title="Kent: Farmland Atlas county record">Kent</a></td><td data-v="119.0">$119</td><td class="up" data-v="20.8">+20.8%</td><td data-v="151.1">151 bu</td></tr><tr><td><a href="/farmland-atlas/delaware/new-castle-county" title="New Castle: Farmland Atlas county record">New Castle</a></td><td data-v="102.0">$102</td><td class="dn" data-v="-7.3">-7.3%</td><td data-v="156.8">157 bu</td></tr><tr><td><a href="/farmland-atlas/delaware/sussex-county" title="Sussex: Farmland Atlas county record">Sussex</a></td><td data-v="106.0">$106</td><td class="up" data-v="0.0">+0.0%</td><td data-v="120.3">120 bu</td></tr></tbody></table></div>
+  <div class="rs-filter"><label for="rs-q">Find a county</label><input id="rs-q" type="search" placeholder="County name" autocomplete="off" disabled><span id="rs-qn" class="rs-qn" aria-live="polite"></span></div><p class="rs-swipe">Swipe the table sideways for every column.</p><div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr><th>County</th><th title="non-irrigated cropland, $/acre">Non-irrigated 2026</th><th>YoY</th><th title="county corn trend yield, bu/ac, for 2026">Corn trend 2026</th></tr></thead><tbody><tr><td><a href="/farmland-atlas/delaware/kent-county" title="Kent: Farmland Atlas county record">Kent</a></td><td data-v="119.0">$119</td><td class="up" data-v="20.8">+20.8%</td><td data-v="151.1">151 bu</td></tr><tr><td><a href="/farmland-atlas/delaware/new-castle-county" title="New Castle: Farmland Atlas county record">New Castle</a></td><td data-v="102.0">$102</td><td class="dn" data-v="-7.3">-7.3%</td><td data-v="156.8">157 bu</td></tr><tr><td><a href="/farmland-atlas/delaware/sussex-county" title="Sussex: Farmland Atlas county record">Sussex</a></td><td data-v="106.0">$106</td><td class="mut" data-v="0.0">unchanged</td><td data-v="120.3">120 bu</td></tr></tbody></table></div>
   <h2>Delaware median county rent by year</h2>
   <p class="sub">Median of counties published each year (non-irrigated cropland). Years with no survey
   are left blank.</p>
@@ -272,13 +292,14 @@
   what the acre can actually gross, year by year) &middot; put a number in a <a href="/cash-lease?st=DE">printable Delaware cash lease</a> &middot;
   check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price &middot; insuring hay ground? See <a href="/prf/delaware">PRF rainfall insurance in Delaware</a>.</div>
   <h2 id="faq">Questions</h2>
-  <details class="rs-faq"><summary>What is the average cash rent per acre in Delaware for 2026?</summary><p>The middle Delaware county pays $106 per acre for non-irrigated cropland: half of the 3 counties with a published 2026 USDA NASS rate are above it and half below. NASS also puts out its own statewide average, a separate figure that is not shown here. Rents vary widely by county: highest Kent ($119), Sussex ($106), New Castle ($102). With under five published counties, a highest/lowest split would overstate the sample. The county mean is a survey reference point, not a rate card.</p></details><details class="rs-faq"><summary>How much did Delaware cash rent change from 2025 to 2026?</summary><p>Too few counties were published in both years for a clean year-over-year figure.</p></details><details class="rs-faq"><summary>Why is my Delaware county not listed?</summary><p>USDA NASS publishes a county rate only where enough Cash Rents Survey responses came back (and the county has at least 20,000 acres of cropland plus pasture). If your county is missing, NASS did not publish a rate for it.</p></details><details class="rs-faq"><summary>When is county cash rent data released?</summary><p>USDA NASS releases county cash rent estimates each August for the current crop year.</p></details>
+  <details class="rs-faq"><summary>What is the average cash rent per acre in Delaware for 2026?</summary><p>The middle Delaware county pays $106 per acre for non-irrigated cropland: half of the 3 counties with a published 2026 USDA NASS rate are above it and half below. NASS also puts out its own statewide average, a separate figure that is not shown here. Rents vary widely by county: highest Kent ($119), Sussex ($106), New Castle ($102). With under five published counties, a highest/lowest split would overstate the sample. The county mean is a survey reference point, not a rate card.</p></details><details class="rs-faq"><summary>How much does farmland rent for per acre per month in Delaware?</summary><p>Cash rent is quoted per acre per year, not per month. Divided by 12, the middle Delaware county&#x27;s 2026 non-irrigated cropland rent of $106 a year is about $8.83 an acre a month.</p></details><details class="rs-faq"><summary>How much did Delaware cash rent change from 2025 to 2026?</summary><p>Too few counties were published in both years for a clean year-over-year figure.</p></details><details class="rs-faq"><summary>Why does my Delaware county say not published?</summary><p>USDA NASS publishes a county rate only where enough Cash Rents Survey responses came back (and the county has at least 20,000 acres of cropland plus pasture). A county marked not published had no 2026 rate of any kind from NASS. Some counties NASS reports only inside a combined district, and those show as not published too. A rent more than three survey years old shows n/a with the last year it was published.</p></details><details class="rs-faq"><summary>When is county cash rent data released?</summary><p>USDA NASS releases county cash rent estimates in August of each survey year for that crop year. There was no survey in 2015 or 2018.</p></details>
   <p class="rp-promo" data-rain-print-promo="land" hidden></p>
+  <nav class="xl-st" aria-label="Same state on AGSIST" style="font-size:.85rem;line-height:1.8;margin:18px 0"><b>Delaware on AGSIST:</b> <a href="/yield/delaware">Yield by year</a> &middot; <a href="/farmland-atlas/delaware/">Farmland Atlas</a> &middot; <a href="/rain/delaware">Rain by county</a> &middot; <a href="/prf/delaware">PRF pasture insurance</a> &middot; <a href="/hail-map/delaware">Hail map</a></nav>
   <h2>Other states</h2>
   <p class="rs-cloud"><a href="/rent/alabama">Alabama</a> &middot; <a href="/rent/arizona">Arizona</a> &middot; <a href="/rent/arkansas">Arkansas</a> &middot; <a href="/rent/california">California</a> &middot; <a href="/rent/colorado">Colorado</a> &middot; <a href="/rent/connecticut">Connecticut</a> &middot; <a href="/rent/florida">Florida</a> &middot; <a href="/rent/georgia">Georgia</a> &middot; <a href="/rent/idaho">Idaho</a> &middot; <a href="/rent/illinois">Illinois</a> &middot; <a href="/rent/indiana">Indiana</a> &middot; <a href="/rent/iowa">Iowa</a> &middot; <a href="/rent/kansas">Kansas</a> &middot; <a href="/rent/kentucky">Kentucky</a> &middot; <a href="/rent/louisiana">Louisiana</a> &middot; <a href="/rent/maine">Maine</a> &middot; <a href="/rent/maryland">Maryland</a> &middot; <a href="/rent/massachusetts">Massachusetts</a> &middot; <a href="/rent/michigan">Michigan</a> &middot; <a href="/rent/minnesota">Minnesota</a> &middot; <a href="/rent/mississippi">Mississippi</a> &middot; <a href="/rent/missouri">Missouri</a> &middot; <a href="/rent/montana">Montana</a> &middot; <a href="/rent/nebraska">Nebraska</a> &middot; <a href="/rent/nevada">Nevada</a> &middot; <a href="/rent/new-hampshire">New Hampshire</a> &middot; <a href="/rent/new-jersey">New Jersey</a> &middot; <a href="/rent/new-mexico">New Mexico</a> &middot; <a href="/rent/new-york">New York</a> &middot; <a href="/rent/north-carolina">North Carolina</a> &middot; <a href="/rent/north-dakota">North Dakota</a> &middot; <a href="/rent/ohio">Ohio</a> &middot; <a href="/rent/oklahoma">Oklahoma</a> &middot; <a href="/rent/oregon">Oregon</a> &middot; <a href="/rent/pennsylvania">Pennsylvania</a> &middot; <a href="/rent/south-carolina">South Carolina</a> &middot; <a href="/rent/south-dakota">South Dakota</a> &middot; <a href="/rent/tennessee">Tennessee</a> &middot; <a href="/rent/texas">Texas</a> &middot; <a href="/rent/utah">Utah</a> &middot; <a href="/rent/vermont">Vermont</a> &middot; <a href="/rent/virginia">Virginia</a> &middot; <a href="/rent/washington">Washington</a> &middot; <a href="/rent/west-virginia">West Virginia</a> &middot; <a href="/rent/wisconsin">Wisconsin</a> &middot; <a href="/rent/wyoming">Wyoming</a></p>
   <details class="rs-terms" id="sources-terms"><summary>Sources and terms</summary>
   <p>Source: USDA NASS Cash Rents Survey, 2026 county estimates, and NASS county yield estimates. Data as of 2026-10-06.</p>
-  <p>These are the 2026 county rents, the newest NASS has put out (released Aug 21, 2026). NASS says county rents come out in late August every year, and they have every year since 2019; the 2027 date is not on its calendar yet.</p>
+  <p>These are the 2026 county rents, the newest NASS has put out (released Aug 21, 2026). NASS puts county rents out in late August of each survey year (it ran no survey in 2015 or 2018); the 2027 date is not on its calendar yet.</p>
   <p><b>What this can&rsquo;t tell you.</b> These are county <b>means from a voluntary USDA survey</b>. Rents vary widely inside a county, driven by soil, drainage, field size and how badly a neighbor wants the ground. Year-over-year stats compare only counties published in both years.</p>
   <p>This product uses the NASS API but is not endorsed or certified by NASS. Averages, trends, ranks and estimates are calculations by AGSIST.</p></details>
 </main>
@@ -298,7 +319,14 @@ for(let i=0;i<ths.length;i++)ths[i].addEventListener('click',function(){
  });
  rows.forEach(function(r){t.tBodies[0].appendChild(r);});
  gaEvent('rent_state_sort',{col:ths[i].textContent});
-});})();
+});
+var q=document.getElementById('rs-q'),qn=document.getElementById('rs-qn');
+if(q){q.disabled=false;q.addEventListener('input',function(){
+ var v=q.value.trim().toLowerCase(),n=0,rs=t.tBodies[0].rows;
+ for(var k=0;k<rs.length;k++){var hit=!v||rs[k].cells[0].textContent.toLowerCase().indexOf(v)>=0;rs[k].hidden=!hit;if(hit)n++;}
+ qn.textContent=v?(n?n+(n===1?' county':' counties'):'no county by that name'):'';
+});}
+})();
 </script><script src="/components/saved-place.js?v=1"></script><script>
 (function(){var el=document.getElementById('gr-data');if(!el)return;var D=JSON.parse(el.textContent);
 var $=function(i){return document.getElementById(i);},sel=$('gr-co'),y=$('gr-y'),pr=$('gr-p'),sh=$('gr-s'),lv=$('gr-v'),rr=$('gr-r');

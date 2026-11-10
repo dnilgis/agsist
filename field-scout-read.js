@@ -158,7 +158,7 @@ window.__fsRead = function (FSX) {
 
   // ── Parcel, owner, transfers, sold land, flood and wetlands: field-scout-land.js,
   // fetched only when a field is picked (it is not on the first screen).
-  var FS_LAND_SRC='/field-scout-land.js?v=18', _landP=null, LAND=null;
+  var FS_LAND_SRC='/field-scout-land.js?v=19', _landP=null, LAND=null;
   function loadLand(poly){
     if(LAND) LAND.clear();
     if(!_landP) _landP=new Promise(function(ok, no){
@@ -498,7 +498,7 @@ window.__fsRead = function (FSX) {
   }
 
   // ── 3. WEATHER NOW: the National Weather Service's nearest observing station ──
-  // 2026-10-29 (Sig: no paid Open-Meteo key; its free tier is for sites without ads or
+  // 2026-10-29 (no paid Open-Meteo key; its free tier is for sites without ads or
   // subscriptions, and AGSIST runs sponsor slots). api.weather.gov is public domain, free for
   // any purpose, no key. Three small reads: the point, its stations, the newest observation.
   // The 7-day rain number is no longer a weather model's: it is the county gauge's own days
@@ -1128,7 +1128,7 @@ window.__fsRead = function (FSX) {
     }
     setBody('fs-risk', rows.join('') + hailSwathHtml() +
       '<div class="fs-src" style="margin-top:.5rem">A starting risk read from public data, not an underwriting decision.</div>'+
-      // Sig, Oct 29, 2026: his contact stays, but quiet: one small plain line, no button or arrow
+      // Oct 29, 2026: his contact stays, but quiet: one small plain line, no button or arrow
       '<p class="fs-risk-ask" style="margin:.35rem 0 0;font-size:.78rem;color:var(--text-muted)">Questions about this read: <a href="mailto:sig@agsist.com" style="color:inherit">sig@agsist.com</a></p>');
   }
   function riskRow(label, level, color, detail, link){
@@ -1148,7 +1148,7 @@ window.__fsRead = function (FSX) {
   // mile on the card is from this field, and no ZIP (no reverse geocode) is needed. If the
   // network does not answer, the committed /data/bids.json (the same network, this morning's
   // copy) fills in. The licensed Barchart feed and its proxy are gone: the feed is off
-  // (STANDING-DECISIONS: "The Barchart feed is off"), and the call was already switched off
+  // (a site rule: "The Barchart feed is off"), and the call was already switched off
   // here on 2026-10-11.
   var FS_LEGAL = {llc:1,lc:1,inc:1,incorporated:1,co:1,corp:1,corporation:1,ltd:1,limited:1,lp:1,llp:1,company:1};
   function fsKey(name, city, state){
@@ -1173,7 +1173,7 @@ window.__fsRead = function (FSX) {
     return new Promise(function(resolve){
       if(window.AGSIST_BIDS_NET) return resolve(window.AGSIST_BIDS_NET);
       var done=false; function fin(){ if(!done){ done=true; resolve(window.AGSIST_BIDS_NET||null); } }
-      try{ var sc=document.createElement('script'); sc.src='/components/bids-network.js?v=8'; sc.async=true; sc.onload=fin; sc.onerror=fin; document.head.appendChild(sc); }catch(e){ return fin(); }
+      try{ var sc=document.createElement('script'); sc.src='/components/bids-network.js?v=9'; sc.async=true; sc.onload=fin; sc.onerror=fin; document.head.appendChild(sc); }catch(e){ return fin(); }
       setTimeout(fin, 3000);
     });
   }
@@ -1181,7 +1181,7 @@ window.__fsRead = function (FSX) {
     return new Promise(function(resolve){
       if(window.AGSIST_BIDS_NET) return resolve(window.AGSIST_BIDS_NET);
       var done=false; function fin(){ if(!done){ done=true; resolve(window.AGSIST_BIDS_NET||null); } }
-      try{ var sc=document.createElement('script'); sc.src='/components/bids-network.js?v=8'; sc.async=true; sc.onload=fin; sc.onerror=fin; document.head.appendChild(sc); }catch(e){ return fin(); }
+      try{ var sc=document.createElement('script'); sc.src='/components/bids-network.js?v=9'; sc.async=true; sc.onload=fin; sc.onerror=fin; document.head.appendChild(sc); }catch(e){ return fin(); }
       setTimeout(fin, 3000);
     });
   }

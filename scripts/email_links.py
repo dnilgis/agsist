@@ -13,7 +13,7 @@ An address in a link is the phishing pattern, so since subs worker v5.46:
   * every signed route takes ?k=<lid>&t= in place of ?e=<address>&t=, with
     t = hmac16(lid + the same suffix as before), e.g. "|de", "|c|" + fips.
 
-FRONT DOOR (Oct 22, 2026, Sig; subs worker v5.48; BUILD-RULES 11): no
+FRONT DOOR (Oct 22, 2026; subs worker v5.48; build rule 11): no
 emailed link points at the worker's shared host (*.workers.dev) any more.
 Every link goes to one page on our own domain, FRONT = https://agsist.com/e,
 with the worker route as a=<route> and the same signed params; that page
@@ -164,7 +164,7 @@ DASH_RE = re.compile(r"\s*(?:\u2014|&mdash;|\s\u2013\s)\s*")
 
 
 def plain_dashes(s):
-    """No em dash in a subject or headline (Sig's rule): " \u2014 " becomes ", "."""
+    """No em dash in a subject or headline: " \u2014 " becomes ", "."""
     return DASH_RE.sub(", ", str(s or "")).strip(", ") if s else s
 
 
@@ -233,7 +233,7 @@ def worker_names(body):
 
 
 def scrub_text(s):
-    """For Sig's own run notes (log_safe): a worker URL or host becomes "the subs worker"."""
+    """For the owner's own run notes (log_safe): a worker URL or host becomes "the subs worker"."""
     s = re.sub(r"https?://[^\s<>\"']*\.workers\.dev[^\s<>\"']*", "the subs worker", str(s or ""), flags=re.I)
     s = SHARED_RE.sub("the subs worker", s)
     for h in worker_hosts():
@@ -302,7 +302,7 @@ def check_hosts(msg):
 
 
 def tidy_subject(msg):
-    """The last net for Sig's no-em-dash rule: a Subject with one gets a comma instead."""
+    """The last net for the owner's no-em-dash rule: a Subject with one gets a comma instead."""
     s = msg.get("Subject")
     if s is not None and DASH_RE.search(str(s)):
         del msg["Subject"]

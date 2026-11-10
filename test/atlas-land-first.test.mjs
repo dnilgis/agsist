@@ -1,4 +1,4 @@
-/* Land first on the county home (Sig, Oct 29, 2026: the property view is top priority; panel record
+/* Land first on the county home (Oct 29, 2026: the property view is top priority; panel record
  * notes/panels/property-2026-10-29, steps 1 and 3).
  *
  *   node --test test/atlas-land-first.test.mjs

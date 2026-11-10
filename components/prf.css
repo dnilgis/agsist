@@ -88,6 +88,8 @@ main.main { padding-top: 12px; }
 .prf-b-map .prf-chip { min-width: 0; padding: 0 .3rem; }
 .prf-find-msg { margin: 0; font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.5; }
 .prf-find-msg:not(:empty) { margin-top: .4rem; }
+.prf-find-msg.prf-hold { margin-top: .4rem; min-height: 1.5em; }
+.prf-find [disabled], .prf-find-alt [disabled] { opacity: .6; cursor: progress; }
 .prf-find-msg.is-bad { color: var(--text); border-left: 3px solid var(--red); padding-left: .6rem; }
 .prf-find-msg .prf-chip { margin: .3rem .3rem 0 0; font-family: inherit; }
 .prf-chip { min-height: 44px; min-width: 60px; padding: 0 .55rem; border: 1px solid var(--prf-ctl); border-radius: var(--r-sm); background: transparent; color: var(--text); font-family: var(--font-mono); font-size: .85rem; cursor: pointer; }
@@ -101,7 +103,7 @@ main.main { padding-top: 12px; }
 .prf-pane { display: contents; }
 .prf-block { min-width: 0; }
 .prf-o1 { order: 1; } .prf-o3 { order: 2; } .prf-o2 { order: 3; } .prf-o5 { order: 4; } .prf-o6 { order: 5; min-width: 0; }
-/* under the answer, in this order (Sig, Oct 20): the plain line, a sold state's sponsor, the grid's index email, the offer to businesses */
+/* under the answer, in this order (Oct 20): the plain line, a sold state's sponsor, the grid's index email, the offer to businesses */
 .prf-tool .prf-notice, .prf-tool .prf-spon-offer { order: 3; }
 .prf-tool .prf-notice { margin: 0; padding: .2rem var(--prf-pad) .6rem; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r-md); }
 .prf-tool .prf-spon-offer { margin: 0; }
@@ -378,7 +380,7 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
 }
 @media (prefers-reduced-motion: reduce) { .prf * { transition: none !important; scroll-behavior: auto !important; } }
 .prf-printonly, .prf-printfoot, .prf-ph, .prf-pp, .prf-pcap, .prf-pbot, .prf-pq, .prf-spon-p { display: none; }
-/* Print: one Letter page, readable at arm's length (Sig, Oct 18). The AGSIST
+/* Print: one Letter page, readable at arm's length (Oct 18). The AGSIST
    header with the grid, county and state; the policy as chosen; the answer
    with one plain "what this means" line; the chart; every counted year's
    payout; the conditions and
@@ -493,18 +495,17 @@ caption { caption-side: top; text-align: left; color: var(--text-muted); font-si
 .prf-st-links a { min-height: 44px; }
 .prf-states a { color: var(--brand); }
 
-/* Sig, 2026-10-12: the PRF state pages advertise their own sponsor slot before
+/* 2026-10-12: the PRF state pages advertise their own sponsor slot before
    sales closing, an exception to "an unsold slot shows nothing" (styles.css). */
 .prf.prf-st aside.ag-sponsor-ribbon.ag-sponsor-ribbon { display: flex !important; }
 
 .prf-co-t td a { display: inline-block; padding: 12px 8px; margin: -12px -8px; }
 
 /* PRF state sponsors (2026-10-13; components/prf-sponsor.js, data/prf-sponsors.json).
-   2026-10-14 (Sig: "the advertise-here CTA needs to be on the upper part of
-   the page"): the unsold offer is one slim band under the opening answer on
+   2026-10-14: the unsold offer is one slim band under the opening answer on
    /prf, every state page and every county page, quieter than the tool: a thin
    ad-orange edge, a small "For businesses" label and a text link, no button.
-   It shows unsold, like the state ribbons (Sig's exception). A sold state's
+   It shows unsold, like the state ribbons (the owner's exception). A sold state's
    sponsor takes the band's place on its state and county pages, and sits
    beside the result on /prf, always labelled Sponsor in ad orange. The band
    never prints; a sold state's sponsor prints on the /prf sheet (.prf-spon-p). On a phone the middle sentence (.prf-spon-x) drops so the band
@@ -538,3 +539,6 @@ html:not([data-theme="light"]) .prf-spon-band .prf-spon-tag { color: var(--ad-or
 .prf details.prf-fold > summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 .prf-fold-x { display: block; color: var(--text-muted); font-size: var(--fs-sm); line-height: 1.5; }
 .prf details.prf-fold[open] .prf-fold-x { display: none; }
+/* the one closed "Sources and terms" fold at the bottom of the state pages and how-prf-works */
+.prf details.prf-terms:not(.prf-fold) { border-top: 1px solid var(--border-2); margin: 1.6rem 0 0; font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.6; }
+.prf details.prf-terms:not(.prf-fold) > summary { cursor: pointer; min-height: 44px; display: flex; align-items: center; color: var(--text-dim); }

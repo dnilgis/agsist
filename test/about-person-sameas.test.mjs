@@ -1,4 +1,4 @@
-// Sig, 2026-10-19: the About page Person record lists sameAs farmers1st.com and
+// 2026-10-19: the About page Person record lists sameAs farmers1st.com and
 // lokedrone.com (his only other profiles); url and worksFor stay as they were.
 import { test } from "node:test";
 import assert from "node:assert/strict";

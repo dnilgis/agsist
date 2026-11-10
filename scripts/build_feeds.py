@@ -145,11 +145,11 @@ CURATED = {
     # stamp_rates.py and the sponsor pages. No cadence to keep.
     "data/rate-card.json", "data/sponsor-slots.json",
     "data/page-sponsors.json", "data/supporters.json",
-    # PRF state sponsors (components/prf-sponsor.js): Sig edits it when a state
+    # PRF state sponsors (components/prf-sponsor.js): the owner edits it when a state
     # sells or renews; each entry lapses on its own "through" date.
     "data/prf-sponsors.json",
-    # State-targeted sponsors (components/geo-sponsor.js; Sig's desk lists them):
-    # Sig switches an entry on and off by hand with its active flag (Oct 28).
+    # State-targeted sponsors (components/geo-sponsor.js; the owner's desk lists them):
+    # The owner switches an entry on and off by hand with its active flag (Oct 28).
     "data/geo-sponsors.json",
     # Farm bill program dates and rules (DMC signup window and the rest): edited by
     # hand from USDA notices; seed_static.py reads it for /milk-prices (Oct 28).
@@ -161,7 +161,7 @@ CURATED = {
     # Hand-kept quote list; the briefing stopped printing a quote 2026-10-09.
     "data/quote-pool.json",
     # Rain Print prices, payment links and the seasonal promo switch. Edited by
-    # hand by Sig; read by /rain-print, components/rain-print-promo.js (homepage,
+    # hand by the owner; read by /rain-print, components/rain-print-promo.js (homepage,
     # /cash-bids, /daily) and scripts/brief_email.py. No cadence to keep.
     "data/rain-print.json",
     # Custom farm work rates (/custom-rates): built by hand-run

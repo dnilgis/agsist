@@ -27,7 +27,8 @@ test("facts match the page, the validator catches planted errors, dated stories 
 test("the API job builds story requests on Opus 5.5 and stays under its cap", () => {
   assert.match(py(["scripts/api_jobs.py", "selftest"]), /selftest ok/);
   const src = readFileSync(ROOT + "scripts/api_jobs.py", "utf8");
-  assert.match(src, /STORY_MODEL = "claude-opus-5-5"/);
+  assert.match(src, /STORY_MODEL = claude_models\.STORY\b/);
+  assert.match(readFileSync(ROOT + "scripts/claude_models.py", "utf8"), /^STORY = "claude-opus-5-5"$/m);
   assert.match(src, /STORY_CAP = (\d+(\.\d+)?)/);
   assert.ok(Number(src.match(/STORY_CAP = (\d+(\.\d+)?)/)[1]) <= 50, "story cap at most $50");
 });
@@ -84,4 +85,31 @@ print(json.dumps({"bad": bad, "shown": shown}))
     }
   }
   assert.equal(pages, r.shown, "pages with a story = stored stories that are fresh and on the same station");
+});
+
+test("the county rain job never carries story files onto main, and strips ids from any it finds", () => {
+  const wf = readFileSync(ROOT + ".github/workflows/county-rain.yml", "utf8");
+  const commit = wf.split("- name: Commit")[1].split("- name: ")[0];
+  const lists = commit.split("\n").filter((l) => /git ls-files/.test(l));
+  assert.equal(lists.length, 2, "one list of files written, one of files removed");
+  for (const l of lists) assert.match(l, /':!data\/rain\/stories'/, "story files are left out: " + l.trim());
+  assert.doesNotMatch(commit, /cp -r data\/rain|cp -r "\$SAVE\/rain"/, "no whole-folder copy of data/rain");
+  const loop = commit.split("for i in")[1];
+  assert.match(loop, /county_stories\.py normalize data\/rain\/stories/, "every attempt strips ids from story files");
+});
+
+test("a story file with a batch id comes out without it", () => {
+  const out = py(["-c", `
+import sys, json, os, tempfile
+sys.path.insert(0, "scripts")
+import county_stories as CS
+d = tempfile.mkdtemp()
+p = os.path.join(d, "ia.json")
+json.dump({"batch_id": "msgbatch_01X", "model": "m", "schema": CS.SCHEMA, "state": "IA", "made": "m0",
+           "counties": {"19169": {"story": "s", "hash": "h", "custom_id": "c_IA_19169"}}}, open(p, "w"))
+print(json.dumps({"done": CS.normalize(d), "j": json.load(open(p))}))
+`]);
+  const r = JSON.parse(out.trim().split("\n").pop());
+  assert.deepEqual(r.done, ["ia.json"]);
+  assert.deepEqual(r.j, { schema: "agsist-county-stories/1", state: "IA", made: "m0", counties: { 19169: { story: "s", hash: "h" } } });
 });

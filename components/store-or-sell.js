@@ -375,7 +375,7 @@
     if (!ds.length) return '';
     return esc(' We read the boards of the ' + state.read.length + ' nearest elevator' + (state.read.length === 1 ? '' : 's') + ', out to ' + Math.round(Math.max.apply(null, ds)) + ' miles.');
   }
-  /* 2026-11-04 (site panel, skeptic row 7): a read that failed (the network
+  /* 2026-11-04 (site review, row 7): a read that failed (the network
      or every board did not answer) used to come back as an empty list and
      print "No elevator we read near 50010 posts a later bid", blaming the
      elevators for our own failed read. A failed read now says so. */

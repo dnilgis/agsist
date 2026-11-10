@@ -26,8 +26,8 @@ COST, AND WHY THIS NOW RUNS AS A BATCH (2026-09-19)
      its answers in seconds. Batches usually finish within the hour and are
      allowed 24.
   2. The model is a setting: ATLAS_READS_MODEL, default the cheaper model
-     since 2026-10-11 (Sig: use the cheaper model; was claude-sonnet-5,
-     $2/$10 per million tokens against $1/$5 for Haiku 4.5). 2026-10-17:
+     since 2026-10-11 (use the cheaper model; was claude-sonnet-5,
+ $2/$10 per million tokens against $1/$5 for Haiku 4.5). 2026-10-17:
      claude-haiku-5-5, the newest Haiku, $0.10/$0.50 (claude_models.py). The number
      check and the voice check still gate every read, whichever model wrote it. `--trial N` writes N
      counties on two models side by side into data/atlas/reads-trial.json so
@@ -49,7 +49,7 @@ VOICE (2026-10-11)
   1,929 opened "Non-irrigated cash rent in X County runs $N", 695 said "stands
   at", 443 "sits at", 260 "no clear direction", 122 repeated the page's own
   "operators' own estimate, not a sale price". The prompt now names those
-  shapes and asks for Sig's voice; the block no longer hands the model the
+  shapes and asks for the owner's voice; the block no longer hands the model the
   phrases it echoed. Every answer then goes through atlas_reads_cleanup.py:
   clean_text() makes the safe rewrites (never a number), voice_hits() lists
   what is left. A read with hits goes round once more with them named; if the
@@ -96,7 +96,7 @@ DETAIL_DIR = "data/atlas/counties"
 OUT = "data/atlas/reads.json"
 API = "https://api.anthropic.com/v1/messages"
 import claude_models  # noqa: E402  ONE table of models, thinking-off words and prices
-MODEL = os.environ.get("ATLAS_READS_MODEL", "").strip() or claude_models.CHECKER   # Sig 2026-10-11: the cheaper model
+MODEL = os.environ.get("ATLAS_READS_MODEL", "").strip() or claude_models.CHECKER   # The owner 2026-10-11: the cheaper model
 MODE = os.environ.get("ATLAS_READS_MODE", "").strip() or "batch"      # batch | sync
 BATCH_WAIT_MIN = float(os.environ.get("ATLAS_READS_BATCH_WAIT_MIN", "") or 180)
 # ONE DEADLINE, AND IT COUNTS FROM THE JOB'S START WHEN THE WORKFLOW SAYS WHEN
@@ -548,11 +548,19 @@ def _entry(text, sha, block, model, hits):
 
 
 USAGE = {}   # summed usage of every answer this run, for the cost line
+USAGE_ROWS = []   # each answer's usage, for the table on the job summary
 
 
 def _add_usage(u):
     for k in ("input_tokens", "output_tokens", "cache_creation_input_tokens", "cache_read_input_tokens"):
         USAGE[k] = USAGE.get(k, 0) + int((u or {}).get(k) or 0)
+    USAGE_ROWS.append(dict(u or {}))
+
+
+def usage_summary(batch, summary_path=None):
+    """Token counts and estimated dollars of this run on the job summary."""
+    return claude_models.write_usage_summary(
+        "Farmland Atlas county reads", [("county reads", MODEL, u, batch) for u in USAGE_ROWS], summary_path)
 
 
 def parse_results(jsonl_bytes):
@@ -764,6 +772,15 @@ def selftest():
     assert _rp['max_tokens'] == 400 and _rp['system'][0]['text'] == SYSTEM
     assert _rp['system'][0].get('cache_control') == {'type': 'ephemeral'}, 'the shared prompt is cached'
     assert 'temperature' not in _rp, 'Haiku 5.5 and Sonnet 5.5 400 on a non-default temperature'
+    assert 'fallbacks' not in _rp, 'the Batches API rejects the server fallback, and Haiku 5.5 has none'
+    # the job summary table: one row per answer, counted, batch prices
+    import tempfile
+    _keep_rows = list(USAGE_ROWS)
+    USAGE_ROWS[:] = [{"input_tokens": 100, "cache_read_input_tokens": 900, "output_tokens": 150}] * 2
+    _sp = os.path.join(tempfile.mkdtemp(), "s.md")
+    _md = usage_summary(True, _sp)
+    assert f"| county reads | {MODEL} (batch) | 2 | 200 | 0 | 1800 | 300 |" in _md and _md in open(_sp).read(), _md
+    USAGE_ROWS[:] = _keep_rows
     rec = {"name": "Adams", "state": "NE", "sha": "abc",
            "rent": {"status": "ok", "nonirr": {"year": 2025, "value": 138.0},
                     "nonirr_change10": {"from_year": 2014, "to_year": 2025, "pct": 7.8}, "irr": {"year": 2025, "value": 289.0}},
@@ -960,7 +977,7 @@ def load_detail(fips, rec):
 
 
 def save(reads):
-    # The published file carries no model name (Sig, 2026-10-20). The run log says which model ran.
+    # The published file carries no model name (2026-10-20). The run log says which model ran.
     reads.pop("model", None)
     for e in (reads.get("counties") or {}).values():
         if isinstance(e, dict):
@@ -1268,6 +1285,7 @@ def main():
         print(f"::error title=County reads stopped::{type(e).__name__}: {str(e)[:300]}", flush=True)
         log(f"STOPPED: {type(e).__name__}: {e}")
         log(f"  {written} entries written before the stop; every other county keeps the entry it had.")
+        usage_summary(mode == "batch")
         sys.exit(1)
 
     reads["generated"] = _now()
@@ -1278,6 +1296,7 @@ def main():
     n_wh = len(reads["counties"]) - n_ok
     log(f"wrote {OUT}: {n_ok} current reads, {n_wh} without one, {written} written this run, "
         f"{carried} carried forward, {kept_old} kept as they were after an API error")
+    usage_summary(mode == "batch")
 
 if __name__ == "__main__":
     main()

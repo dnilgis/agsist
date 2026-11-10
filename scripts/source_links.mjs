@@ -1,4 +1,4 @@
-// The direct-link rule for data sources (Sig, Oct 29, 2026), for the node bakers and tests.
+// The direct-link rule for data sources (Oct 29, 2026), for the node bakers and tests.
 // One definition: the two patterns are read from scripts/source_links.py, never copied here.
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -37,4 +37,22 @@ export function scan(text) {
 /** every data-source <a> replaced by its text */
 export function unlink(text) {
   return String(text).replace(ANCHOR, (all, q, u, inner) => (isDataSource(u) ? inner : all));
+}
+
+// String URLs in inline page scripts (Nov 9 2026: /usda-quick-stats opened a NASS query with
+// window.open and no <a>). Same rule as scan_scripts() in source_links.py: structured data and a
+// URL that is only fetched or loaded (fetch, src) do not count.
+const SCRIPT = /<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi;
+const LITERAL = /(['"`])(https?:\/\/[^'"`\s<>]+)/g;
+const LOADS = /(fetch\(|\bsrc\s*[:=]\s*)\s*$/i;
+export function scanScripts(text) {
+  const out = [];
+  for (const m of String(text).matchAll(SCRIPT)) {
+    if (/ld\+json/i.test(m[1])) continue;
+    const body = m[2];
+    for (const l of body.matchAll(LITERAL)) {
+      if (isDataSource(l[2]) && !LOADS.test(body.slice(Math.max(0, l.index - 24), l.index))) out.push(l[2]);
+    }
+  }
+  return out;
 }

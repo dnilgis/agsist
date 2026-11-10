@@ -70,6 +70,11 @@
       "id": "farmdoc",
       "analyst": "Scott Irwin",
       "firm": "farmdoc / U of Illinois"
+    },
+    {
+      "id": "archer",
+      "analyst": "Mark Soderberg",
+      "firm": "Archer Financial Services"
     }
   ],
   "reports": [
@@ -769,17 +774,24 @@
           "unit": "bu/acre",
           "direction": "supply",
           "consensus": 180.3,
-          "actual": null,
+          "actual": 179.6,
           "usda_current": 181.2,
           "consensus_source": "https://www.stonex.com/en-us/insights/nov-wasde-estimates/",
           "consensus_note": "Average trade estimate and range from the StoneX November WASDE estimates page. Typed in 2026-11-09 from that table.",
-          "estimates": [],
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": 183.1,
+              "source": "https://www.stonex.com/en/insights/perspective-mid-day-commentary-for-november-4-2026-11-04/",
+              "source_note": "StoneX firm crop survey, mid-day commentary Nov 4, 2026 17:09 UTC. Published before the Nov 10 noon ET release."
+            }
+          ],
           "consensus_range": [
             173.2,
             183.1
           ],
           "consensus_source_date": "2026-11-09",
-          "consensus_source_date_basis": "Read from the StoneX page on 2026-11-09 (the page's own publish date was not recorded) and committed that day, before the 2026-11-10 release."
+          "consensus_source_date_basis": "StoneX page published Nov 5, 2026 17:40 UTC (public date Nov 6, 2026 17:40 UTC); the table attributes the averages to Reuters. Typed in 2026-11-09, before the 2026-11-10 release."
         },
         {
           "key": "soy_yield_2627",
@@ -787,17 +799,24 @@
           "unit": "bu/acre",
           "direction": "supply",
           "consensus": 53.5,
-          "actual": null,
+          "actual": 53.3,
           "usda_current": 53.1,
           "consensus_source": "https://www.stonex.com/en-us/insights/nov-wasde-estimates/",
           "consensus_note": "Average trade estimate and range from the StoneX November WASDE estimates page. Typed in 2026-11-09 from that table.",
-          "estimates": [],
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": 55.0,
+              "source": "https://www.stonex.com/en/insights/perspective-mid-day-commentary-for-november-4-2026-11-04/",
+              "source_note": "StoneX firm crop survey, mid-day commentary Nov 4, 2026 17:09 UTC. Published before the Nov 10 noon ET release."
+            }
+          ],
           "consensus_range": [
             53.0,
             55.0
           ],
           "consensus_source_date": "2026-11-09",
-          "consensus_source_date_basis": "Read from the StoneX page on 2026-11-09 (the page's own publish date was not recorded) and committed that day, before the 2026-11-10 release."
+          "consensus_source_date_basis": "StoneX page published Nov 5, 2026 17:40 UTC (public date Nov 6, 2026 17:40 UTC); the table attributes the averages to Reuters. Typed in 2026-11-09, before the 2026-11-10 release."
         },
         {
           "key": "corn_2627",
@@ -805,17 +824,30 @@
           "unit": "bil bu",
           "direction": "supply",
           "consensus": 1.84,
-          "actual": null,
+          "actual": 1.758,
           "usda_current": 1.849,
           "consensus_source": "https://www.stonex.com/en-us/insights/nov-wasde-estimates/",
           "consensus_note": "Average trade estimate and range from the StoneX November WASDE estimates page. Typed in 2026-11-09 from that table.",
-          "estimates": [],
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": 1.918,
+              "source": "https://www.stonex.com/en-us/insights/nov-wasde-estimates/",
+              "source_note": "StoneX estimate column in its Nov WASDE estimates table, Nov 5-6, 2026. Published before the Nov 10 noon ET release."
+            },
+            {
+              "id": "archer",
+              "value": 1.87,
+              "source": "https://www.archerfinancials.com/ag-prices-try-carving-out-a-seasonal-low/",
+              "source_note": "Archer Financial Services commentary Nov 5, 2026 13:49 UTC. Published before the Nov 10 noon ET release."
+            }
+          ],
           "consensus_range": [
             1.698,
             1.969
           ],
           "consensus_source_date": "2026-11-09",
-          "consensus_source_date_basis": "Read from the StoneX page on 2026-11-09 (the page's own publish date was not recorded) and committed that day, before the 2026-11-10 release."
+          "consensus_source_date_basis": "StoneX page published Nov 5, 2026 17:40 UTC (public date Nov 6, 2026 17:40 UTC); the table attributes the averages to Reuters. Typed in 2026-11-09, before the 2026-11-10 release."
         },
         {
           "key": "soy_2627",
@@ -823,17 +855,30 @@
           "unit": "mil bu",
           "direction": "supply",
           "consensus": 331,
-          "actual": null,
+          "actual": 300,
           "usda_current": 315,
           "consensus_source": "https://www.stonex.com/en-us/insights/nov-wasde-estimates/",
           "consensus_note": "Average trade estimate and range from the StoneX November WASDE estimates page. Typed in 2026-11-09 from that table.",
-          "estimates": [],
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": 363,
+              "source": "https://www.stonex.com/en-us/insights/nov-wasde-estimates/",
+              "source_note": "StoneX estimate column in its Nov WASDE estimates table, Nov 5-6, 2026. Published before the Nov 10 noon ET release."
+            },
+            {
+              "id": "archer",
+              "value": 335,
+              "source": "https://www.archerfinancials.com/ag-prices-try-carving-out-a-seasonal-low/",
+              "source_note": "Archer Financial Services commentary Nov 5, 2026 13:49 UTC. Published before the Nov 10 noon ET release."
+            }
+          ],
           "consensus_range": [
             280,
             370
           ],
           "consensus_source_date": "2026-11-09",
-          "consensus_source_date_basis": "Read from the StoneX page on 2026-11-09 (the page's own publish date was not recorded) and committed that day, before the 2026-11-10 release."
+          "consensus_source_date_basis": "StoneX page published Nov 5, 2026 17:40 UTC (public date Nov 6, 2026 17:40 UTC); the table attributes the averages to Reuters. Typed in 2026-11-09, before the 2026-11-10 release."
         },
         {
           "key": "wheat_2627",
@@ -841,17 +886,24 @@
           "unit": "mil bu",
           "direction": "supply",
           "consensus": 746,
-          "actual": null,
+          "actual": 743,
           "usda_current": 740,
           "consensus_source": "https://www.stonex.com/en-us/insights/nov-wasde-estimates/",
           "consensus_note": "Average trade estimate and range from the StoneX November WASDE estimates page. Typed in 2026-11-09 from that table.",
-          "estimates": [],
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": 730,
+              "source": "https://www.stonex.com/en-us/insights/nov-wasde-estimates/",
+              "source_note": "StoneX estimate column in its Nov WASDE estimates table, Nov 5-6, 2026. Published before the Nov 10 noon ET release."
+            }
+          ],
           "consensus_range": [
             730,
             769
           ],
           "consensus_source_date": "2026-11-09",
-          "consensus_source_date_basis": "Read from the StoneX page on 2026-11-09 (the page's own publish date was not recorded) and committed that day, before the 2026-11-10 release."
+          "consensus_source_date_basis": "StoneX page published Nov 5, 2026 17:40 UTC (public date Nov 6, 2026 17:40 UTC); the table attributes the averages to Reuters. Typed in 2026-11-09, before the 2026-11-10 release."
         },
         {
           "key": "corn_prod_2627",
@@ -859,17 +911,30 @@
           "unit": "bil bu",
           "direction": "supply",
           "consensus": 15.961,
-          "actual": null,
+          "actual": 15.893,
           "usda_current": 16.034,
           "consensus_source": "https://www.stonex.com/en-us/insights/nov-wasde-estimates/",
           "consensus_note": "Average trade estimate and range from the StoneX November WASDE estimates page. Typed in 2026-11-09 from that table.",
-          "estimates": [],
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": 16.203,
+              "source": "https://podfollow.com/market-talk/episode/852fd51ee2b74e58a61d54bdb0ff8e771a628aa3/view",
+              "source_note": "StoneX firm estimate, Market Talk episode notes Nov 4, 2026; also in a Nov 4 16:40 UTC market update. Published before the Nov 10 noon ET release."
+            },
+            {
+              "id": "archer",
+              "value": 16.055,
+              "source": "https://www.archerfinancials.com/ag-prices-try-carving-out-a-seasonal-low/",
+              "source_note": "Archer Financial Services commentary Nov 5, 2026 13:49 UTC. Published before the Nov 10 noon ET release."
+            }
+          ],
           "consensus_range": [
             15.344,
             16.203
           ],
           "consensus_source_date": "2026-11-09",
-          "consensus_source_date_basis": "Read from the StoneX page on 2026-11-09 (the page's own publish date was not recorded) and committed that day, before the 2026-11-10 release."
+          "consensus_source_date_basis": "StoneX page published Nov 5, 2026 17:40 UTC (public date Nov 6, 2026 17:40 UTC); the table attributes the averages to Reuters. Typed in 2026-11-09, before the 2026-11-10 release."
         },
         {
           "key": "soy_prod_2627",
@@ -877,17 +942,30 @@
           "unit": "mil bu",
           "direction": "supply",
           "consensus": 4597,
-          "actual": null,
+          "actual": 4574,
           "usda_current": 4562,
           "consensus_source": "https://www.stonex.com/en-us/insights/nov-wasde-estimates/",
           "consensus_note": "Average trade estimate and range from the StoneX November WASDE estimates page. Typed in 2026-11-09 from that table.",
-          "estimates": [],
+          "estimates": [
+            {
+              "id": "stonex",
+              "value": 4725,
+              "source": "https://podfollow.com/market-talk/episode/852fd51ee2b74e58a61d54bdb0ff8e771a628aa3/view",
+              "source_note": "StoneX firm estimate, Market Talk episode notes Nov 4, 2026. Published before the Nov 10 noon ET release."
+            },
+            {
+              "id": "archer",
+              "value": 4592,
+              "source": "https://www.archerfinancials.com/ag-prices-try-carving-out-a-seasonal-low/",
+              "source_note": "Archer Financial Services commentary Nov 5, 2026 13:49 UTC. Published before the Nov 10 noon ET release."
+            }
+          ],
           "consensus_range": [
             4552,
             4725
           ],
           "consensus_source_date": "2026-11-09",
-          "consensus_source_date_basis": "Read from the StoneX page on 2026-11-09 (the page's own publish date was not recorded) and committed that day, before the 2026-11-10 release."
+          "consensus_source_date_basis": "StoneX page published Nov 5, 2026 17:40 UTC (public date Nov 6, 2026 17:40 UTC); the table attributes the averages to Reuters. Typed in 2026-11-09, before the 2026-11-10 release."
         }
       ]
     }

@@ -1,4 +1,4 @@
-/* Private ag raises on /ag-stocks (Sig, Oct 29, 2026): SEC Regulation Crowdfunding filings.
+/* Private ag raises on /ag-stocks (Oct 29, 2026): SEC Regulation Crowdfunding filings.
  * - the reader, the ag screen and the outcome scoring run as a python selftest on two fixed
  *   quarterly zips in the SEC layout (scripts/agraises.py --selftest);
  * - the workflow is by hand only, saves the originals to the private raw branch with SHA256SUMS,

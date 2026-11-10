@@ -7,7 +7,7 @@
  *   2. National Weather Service forecast grid (components/nws.js) — weather
  *   3. Nominatim OSM      — reverse geocoding
  *
- * v18, 2026-10-19 (Sig: never ask for the reader's location on page load)
+ * v18, 2026-10-19 (never ask for the reader's location on page load)
  *   The browser's location question is asked only when the reader taps
  *   "Use my location" (requestGeo, refreshLocation). Boot no longer calls
  *   geolocation at all: a saved place (agsist-wx-loc, any age) renders at
@@ -333,7 +333,7 @@ function calcSprayRating(tempF, humid, wind) {
 }
 
 /* LIVE NWS ALERTS FOR THE READER'S OWN SPOT (2026-10-07).
-   Sig, watching a wind he had "literally never seen before": the homepage
+   The owner, watching a wind he had "literally never seen before": the homepage
    showed the temperature and a spray rating and nothing about the warning in
    effect outside. api.weather.gov/alerts/active?point= returns every watch,
    warning and advisory covering that lat/lon, straight from NWS, CORS-open, no
@@ -622,7 +622,11 @@ function fetchWeather(lat, lon, label, known) {
         wl2.innerHTML = '';
         var msg = document.createElement('div');
         msg.style.cssText = 'font-size:.88rem;color:var(--text-dim)';
-        msg.textContent = 'Weather unavailable. ';
+        /* Nov 10: with a place already saved, "Try ZIP" sent the reader to
+           type the ZIP the page already had; the forecast service failed, not the ZIP. */
+        var _had = false; try { var _l = JSON.parse(localStorage.getItem('agsist-wx-loc') || 'null'); _had = !!(_l && _l.lat != null); } catch (e) {}
+        msg.textContent = _had ? 'The weather service did not answer. Try again in a few minutes.' : 'Weather unavailable. ';
+        if (_had) { wl2.appendChild(msg); wl2.style.display = 'block'; _wspNoWeather(); return; }
         var btn = document.createElement('button');
         btn.textContent = 'Try ZIP \u2192';
         btn.setAttribute('style','background:none;border:none;color:var(--gold);cursor:pointer;font-size:.88rem;font-family:inherit');
@@ -1072,7 +1076,7 @@ function applyPriceResult(key, q, close, open, netChg, pctChg) {
     var prevTxt = fmtPrice(open, meta.dec, meta.grain, meta.suffix, meta.prefix, meta.comma, meta.tick);
     prevEl.textContent = 'prev: ' + prevTxt + ' ' + (q && q.ticker ? q.ticker : '');
   }
-  /* 2026-10-20 (Sig): a grain card shows the overnight electronic trade when
+  /* 2026-10-20: a grain card shows the overnight electronic trade when
      the file has one, beside the settle (components/price-local.js overnight). */
   if (meta.grain && meta.priceEl && q && window.AgPxStamp && AgPxStamp.overnightHtml) {
     var __ope = document.getElementById(meta.priceEl), __oc = (__ope && __ope.closest) ? __ope.closest('.pc') : null;
@@ -1602,7 +1606,7 @@ function loadDailyBriefing() {
       startPricePoll();
     }
 
-    // 2026-10-19 (Sig): never ask for the location on load. A saved place,
+    // 2026-10-19: never ask for the location on load. A saved place,
     // of any age, renders at once; with none, nothing is asked until the
     // reader taps "Use my location" or types a ZIP.
     setTimeout(function() {

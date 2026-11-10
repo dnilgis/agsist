@@ -32,8 +32,10 @@ button,.btn{font:inherit;font-weight:600;min-height:44px;padding:0 1rem;border-r
 button.quiet,.btn.quiet{background:none;color:var(--accent)}
 :root[data-theme="dark"] button:not(.quiet){color:#10151a}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button:not(.quiet){color:#10151a}}
-.tok-row{display:flex;gap:8px;align-items:center}
-.tok-row input{flex:1;min-width:0}
+.tok-row{display:grid;grid-template-columns:minmax(0,1fr) 9.5em 4.45em;gap:8px;align-items:center}
+.tok-row input{min-width:0}
+/* fixed button columns, so a button does not slide when the next one (or its words) arrives while the page streams in */
+.tok-row button{white-space:nowrap;justify-content:center;min-width:0}
 #tok-state{font-size:.9rem;margin:12px 0 0}
 .tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:12px 0}
 @media(min-width:760px){.tiles{grid-template-columns:repeat(4,minmax(0,1fr))}}
@@ -110,7 +112,6 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
   var GH = 'https://api.github.com/repos/dnilgis/agsist/actions/';
   var BIDS = 'https://dnilgis.github.io/bids/data/';
   var EDIT = 'https://github.com/dnilgis/agsist/edit/main/';
-  var TODO_EDIT = EDIT + 'TODO-SIG.md';
   var WEEK = 7 * 864e5;
   var $ = function (id) { return document.getElementById(id); };
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#x27;' }[c]; }); }
@@ -140,7 +141,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
   /* ---------- the token ---------- */
   function tok() { return $('tok').value.trim(); }
   /* One token box for every tab. The Haymow desk kept its own key before Oct 28: read it once
-     as a fallback and keep it under the shared key, so Sig never pastes twice. */
+     as a fallback and keep it under the shared key, so the owner never pastes twice. */
   var OLD_KEYS = ['agsist-haymow-admin-token'];
   try {
     var t0 = localStorage.getItem(TOK_KEY) || '';
@@ -312,8 +313,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
     },
     dir: function () { return get(BIDS + 'directory.json'); },
     ids: function () { return get(BIDS + 'elevator-ids.jsonl', { text: true }); },
-    aud: function () { return get('/data/audience.json'); },
-    todo: function () { return get('/TODO-SIG.md', { text: true }); }
+    aud: function () { return get('/data/audience.json'); }
   };
 
   /* ---------- Signups: where Daily readers signed up. COPY of SIGNUP_GROUPS in
@@ -343,8 +343,7 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
     { id: 'signups', title: 'Signups', needs: ['worker'], private: true, acts: [], tiles: signupTiles, body: signupBody },
     { id: 'boards', title: 'Elevator boards', needs: ['dir', 'ids', 'worker'], acts: [['#elevators', 'Elevators tab'], ['#today', 'Today list tab']], tiles: boardTiles, body: boardBody },
     { id: 'money', title: 'Money in', needs: ['worker', 'sponsors'], private: true, acts: [['#gifts', 'Gift cards tab'], ['https://dashboard.stripe.com/payments', 'Stripe']], tiles: moneyTiles, body: moneyBody },
-    { id: 'audience', title: 'Audience', needs: ['aud'], acts: [['https://analytics.google.com/', 'GA4']], tiles: audTiles, body: audBody },
-    { id: 'todo', title: 'To-do', needs: ['todo'], acts: [[TODO_EDIT, 'Edit the list']], tiles: todoTiles, body: todoBody }
+    { id: 'audience', title: 'Audience', needs: ['aud'], acts: [['https://analytics.google.com/', 'GA4']], tiles: audTiles, body: audBody }
   ];
 
   /* the worker's answer, or why not; a part of it that failed carries {error} */
@@ -687,46 +686,6 @@ summary{cursor:pointer;font-weight:600;font-size:.9rem;min-height:32px}
         sv.towns.slice(0, 6).map(function (x) { return esc(x.city) + ', ' + esc(x.region) + ' ' + num(x.users); }).join('; ') + (sv.towns.length > 6 ? '; and ' + (sv.towns.length - 6) + ' more' : '') + '.</p>';
     }
     h += src('Google Analytics 4 via data/audience.json' + (r7 ? ', 7 days ' + day(r7.start) + ' to ' + day(r7.end) : '') + (r28 ? ', 28 days to ' + day(r28.end) : '') + '; AI assistants = GA4’s "AI Assistant" channel', a.built ? 'built ' + ct(a.built) : '');
-    return h;
-  }
-
-  /* ---------- 7. To-do ---------- */
-  var MON = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
-  function dueOf(text, now) {
-    var m = /\b(\d{4})-(\d{2})-(\d{2})\b/.exec(text);
-    if (m) return Date.UTC(+m[1], +m[2] - 1, +m[3]);
-    m = /\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)[a-z]*\.? (\d{1,2})\b/.exec(text);
-    if (!m) return null;
-    var y = new Date(now).getUTCFullYear(), t = Date.UTC(y, MON[m[1].toLowerCase()], +m[2]);
-    if (t < now - 180 * 864e5) t = Date.UTC(y + 1, MON[m[1].toLowerCase()], +m[2]);
-    return t;
-  }
-  function todos(D) {
-    var r = D.todo;
-    if (!r || !r.ok) return { why: r ? r.why : 'not read' };
-    var items = String(r.d).split('\n').map(function (l) { return /^\s*[-*]\s+\[( |x|X)\]\s+(.+?)\s*$/.exec(l); }).filter(function (m) { return m && m[1] === ' '; }).map(function (m) { return m[2]; });
-    return { items: items };
-  }
-  function todoTiles(D) {
-    var t = todos(D);
-    if (!t.items) return [tile('To-dos open', 'Can’t read', t.why, 'cantv')];
-    var dated = t.items.filter(function (x) { return dueOf(x, D.now) !== null; }).length;
-    return [tile('To-dos open', num(t.items.length), dated ? dated + ' with a date' : 'none dated', '', '#c-todo')];
-  }
-  function todoBody(D) {
-    var t = todos(D);
-    if (!t.items) return '<p>TODO-SIG.md: ' + cant(t.why) + '</p>';
-    var now = D.now, dated = [], rest = [];
-    t.items.forEach(function (x) { var d = dueOf(x, now); if (d === null) rest.push(x); else dated.push([d, x]); });
-    dated.sort(function (a, b) { return a[0] - b[0]; });
-    var h = '';
-    if (dated.length) h += '<h3>Dated</h3><ul class="l">' + dated.map(function (x) {
-      var days = Math.round((x[0] - Date.UTC(new Date(now).getUTCFullYear(), new Date(now).getUTCMonth(), new Date(now).getUTCDate())) / 864e5);
-      return '<li>' + (days < 0 ? '<span class="red">' + (-days) + ' days past</span>' : days === 0 ? '<span class="red">today</span>' : 'in ' + days + ' days') + ': ' + esc(x[1]) + '</li>';
-    }).join('') + '</ul>';
-    h += rest.length ? '<h3>Open</h3><ul class="l">' + rest.map(function (x) { return '<li>' + esc(x) + '</li>'; }).join('') + '</ul>' : (dated.length ? '' : '<p>Nothing open.</p>');
-    h += '<p class="dim">To add a dated reminder, add a line like <code>- [ ] Nov 10: decide on the Open-Meteo key</code>. Check one off with <code>- [x]</code>. The file is public: no names.</p>';
-    h += src('TODO-SIG.md on agsist.com (the morning email reads the same file)', ct(now));
     return h;
   }
 

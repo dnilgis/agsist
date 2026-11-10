@@ -4,8 +4,7 @@
  * GitHub Pages publishes all of main. data/ was at 290 of its 300 MB budget,
  * and about 80 MB of it was raw inputs no page fetches: the Farmland Atlas
  * pulls (data/atlas/raw) and each workflow's probe captures. They moved to the
- * `raw` branch at the same paths; nothing was deleted (Sig: "don't throw away
- * anything important"). This keeps them from coming back to main, checks every
+ * `raw` branch at the same paths; nothing was deleted. This keeps them from coming back to main, checks every
  * workflow that writes them saves them to raw instead, and runs
  * scripts/push_raw.sh and scripts/pull_raw.sh against a throwaway remote.
  *
@@ -21,8 +20,8 @@
  * unpacks data/atlas/src first; the PR checks pull drought.json for
  * test/drought-county-week.test.mjs.
  *
- * Oct 20 (Sig): the raw and references branches moved off the public repo, to
- * the private repo dnilgis/feedbag. Every step that saves or reads them
+ * Oct 20: the raw and references branches moved off the public repo, to
+ * the private repo. Every step that saves or reads them
  * passes the PRIVATE_REPO_TOKEN secret; scripts/private_remote.sh turns it into
  * the remote. A save that fails in a job that publishes site data is a warning
  * (RAW_SOFT=1), never the reason the data did not ship; a missing build input
@@ -183,7 +182,7 @@ function seedRaw({ t, g }, files) {
   g(['push', '-q', path.join(t, 'origin.git'), 'HEAD:raw'], s);
 }
 // The sandbox's own origin: never the real private repo, whatever this shell has set.
-const baseEnv = () => { const e = { ...process.env }; for (const k of ['PRIVATE_REPO_TOKEN', 'RAW_REMOTE', 'RAW_SOFT', 'RAW_BRANCH', 'RAW_KEEP', 'GITHUB_STEP_SUMMARY']) delete e[k]; return e; };
+const baseEnv = () => { const e = { ...process.env }; for (const k of ['PRIVATE_REPO_TOKEN', 'RAW_REMOTE', 'RAW_SOFT', 'RAW_BRANCH', 'RAW_KEEP', 'RAW_DELETE', 'GITHUB_STEP_SUMMARY']) delete e[k]; return e; };
 const run = (sb, script, args, extra = {}) => spawnSync('bash', [`scripts/${script}`, ...args], {
   cwd: sb.w, encoding: 'utf8', env: { ...baseEnv(), RAW_WT: path.join(sb.t, 'rawwt'), RAW_SLEEP: '0', ...extra },
 });
@@ -229,6 +228,26 @@ test('push_raw.sh with RAW_KEEP=1 adds new files and never replaces one already 
     const again = run(sb, 'push_raw.sh', ['x vintage', 'data/x-raw'], { RAW_KEEP: '1' });
     assert.equal(again.status, 0);
     assert.match(again.stdout, /raw: no change/);
+  } finally { fs.rmSync(sb.t, { recursive: true, force: true }); }
+});
+
+test('push_raw.sh with RAW_DELETE takes the named files off in the same commit, and nothing else', () => {
+  const sb = sandbox();
+  try {
+    seedRaw(sb, { 'data/x-ev/a.jsonl': 'a\n', 'data/x-ev/b.jsonl': 'b\n' });
+    fs.mkdirSync(path.join(sb.w, 'data'), { recursive: true });
+    fs.writeFileSync(path.join(sb.w, 'data/x-ledger.json'), '{}\n');
+    const r = run(sb, 'push_raw.sh', ['x fold', 'data/x-ledger.json'], { RAW_DELETE: 'data/x-ev/a.jsonl data/x-ev/gone.jsonl' });
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    assert.deepEqual(onRaw(sb), ['README.md', 'data/x-ev/b.jsonl', 'data/x-ledger.json'], 'a.jsonl deleted, b.jsonl kept, a missing name skipped');
+    assert.match(git(['log', '-1', '--format=%s', 'raw'], path.join(sb.t, 'origin.git')), /x fold .*: 2 file\(s\)/);
+    fs.writeFileSync(path.join(sb.w, 'data/x-ledger.json'), '{"v": 2}\n');
+    const glob = run(sb, 'push_raw.sh', ['x fold', 'data/x-ledger.json'], { RAW_DELETE: 'data/x-ev/*.jsonl data/*' });
+    assert.equal(glob.status, 0, glob.stdout + glob.stderr);
+    assert.deepEqual(onRaw(sb), ['README.md', 'data/x-ev/b.jsonl', 'data/x-ledger.json'], 'a glob in RAW_DELETE deletes nothing');
+    const bad = run(sb, 'push_raw.sh', ['x fold', 'data/x-ledger.json'], { RAW_DELETE: '../outside.txt' });
+    assert.notEqual(bad.status, 0, 'a path outside the repo is refused');
+    assert.deepEqual(onRaw(sb), ['README.md', 'data/x-ev/b.jsonl', 'data/x-ledger.json']);
   } finally { fs.rmSync(sb.t, { recursive: true, force: true }); }
 });
 

@@ -43,23 +43,22 @@ const sheetTbody = (doc, f) => M.sheetRows(doc, f).map((r) => {
 }).join("");
 
 /* The fixture holds the pre-Oct 20 words. A county average PLC yield over the benchmark said "Ask FSA" and "no
-   typical-farm verdict" there; it now gives the call across PLC yields of 60% to 100% of the benchmark (arcfix, Sig
-   Oct 20, 2026). The fixture's data has no range words (packs ["mismatch"]), so the browser writes its default
-   ("depends on your PLC yield"); newWords() puts exactly those words into the old output, and everything else must
+   typical-farm verdict" there; it now gives the call across PLC yields of 60% to 100% of the benchmark (arcfix, Oct 20, 2026). The fixture's data has no range words (packs ["mismatch"]), so the browser writes its default
+   ("depends on your PLC yield"); newWords puts exactly those words into the old output, and everything else must
    still match to the character. The live-tree test below holds the real range words to the build's. */
-/* Nov 9, 2026 (curtain): the fixture holds the old words about a crop with too little price history of its own
-   (its price swings "borrowed from corn's"). The build and the browser now say one plain line; the old sentences are
-   moved to it on the fixture side, and the live-tree tests hold every page to the new line. */
+/* Nov 9, 2026 (curtain) and Nov 10, 2026: the fixture holds the old words about a crop whose price swings are borrowed
+   from corn. Since Nov 10 the build and the browser say the expected payments are not printed, with one plain reason (too
+   little price history of its own, no method), and "shown as Leans" only where that lowered a clear pick (flag 32, none in the fixture,
+   so the old "Capped at Leans" notes go). The old sentences are moved to the new ones on the fixture side, and the
+   live-tree tests hold every page to the build's words. */
 const RSQ = "(?:&rsquo;|’)";
-const BOR_LINE = "This crop has too little price history of its own, so the call stops at Leans and no dollar figure is printed.";
+const OLDWHY = "(?:too few years of (?:its|their) own prices in FSA" + RSQ + "s tables, so (?:its|their) price swings are corn" + RSQ + "s|no October futures history of (?:its|their) own on file, so (?:its|their) price swings are borrowed from corn" + RSQ + "s)";
 const plainBorrow = (h) => h
-  .replace(new RegExp("the expected payments are not printed\\. [A-Z][^.<>]*? (?:has|have) (?:too few years of (?:its|their) own prices in FSA" + RSQ + "s tables, so (?:its|their) price swings are corn" + RSQ + "s|no October futures history of (?:its|their) own on file, so (?:its|their) price swings are borrowed from corn" + RSQ + "s), and the expected dollars would rest on them\\. We do not print them\\.", "g"), "the expected payments are not printed: too little price history of its own.")
-  .replace(new RegExp("[A-Z][^.<>]*? (?:has|have) (?:too few years of (?:its|their) own prices in FSA" + RSQ + "s tables, so (?:its|their) price swings are corn" + RSQ + "s|no October futures history of (?:its|their) own on file, so (?:its|their) price swings are borrowed from corn" + RSQ + "s), and the expected dollars would rest on them\\. We do not print them\\.(?: So it stops at Leans\\.)?", "g"), BOR_LINE)
-  .replace(new RegExp("[A-Z][a-z][^.<>]*? borrows? corn" + RSQ + "s price swings, so (?:they stop|it stops) at Leans\\.", "g"), BOR_LINE)
-  .replace(new RegExp("no dollar figure, because the price swings are borrowed from corn" + RSQ + "s\\)", "g"), "no dollar figure for this crop)")
-  .replace(new RegExp(" Capped at Leans: this crop borrows corn" + RSQ + "s price swings\\.", "g"), " Capped at Leans: too little price history of its own.")
-  .replace(new RegExp(" have no October futures history of their own, so they borrow corn" + RSQ + "s October swings \\(wheat its own price changes, scaled to corn" + RSQ + "s size\\) and stop at Leans\\.", "g"), " stop at Leans and print no dollar figure: too little price history of their own.")
-  .replace(new RegExp(" No dollar figure: price swings borrowed from corn\\.", "g"), " No dollar figure: too little price history.");
+  .replace(new RegExp("the expected payments are not printed\\. [A-Z][^.<>]*? (?:has|have) " + OLDWHY + ", and the expected dollars would rest on them\\. We do not print them\\.", "g"), "the expected payments are not printed: this crop does not have enough of its own price history.")
+  .replace(new RegExp("no dollar figure, because the price swings are borrowed from corn" + RSQ + "s\\)", "g"), "expected payments not printed, not enough price history of its own)")
+  .replace(new RegExp(" Capped at Leans: this crop borrows corn" + RSQ + "s price swings\\.", "g"), "")
+  .replace(new RegExp(" have no October futures history of their own, so they borrow corn" + RSQ + "s October swings \\(wheat its own price changes, scaled to corn" + RSQ + "s size\\) and stop at Leans\\.", "g"), ": expected payments are not printed and the call goes no higher than Leans, because they do not have enough of their own price history.")
+  .replace(new RegExp(" No dollar figure: price swings borrowed from corn\\.", "g"), " No expected dollars: too little price history.");
 const ASK = /Ask FSA|ask your FSA office/;
 const newWords = (h, ly) => plainBorrow(h)
   .replace(/<p class="ap-small"><b>([^<]+):<\/b> no typical-farm verdict\. (FSA&rsquo;s average PLC yield for the county \([^)]*\) covers all practices and is above this benchmark \([^)]*\), so it does not describe a typical farm here\.) Run your own PLC yield below\.<\/p>/g,
@@ -191,7 +190,8 @@ test("every county page: its math file renders, and the page's FAQ and cards say
         assert.equal(p[0], w, `${f} ${k} ${y}: card ${w}, math ${p[0]}`);
         if (w === "mismatch") {
           // no one typical farm: the math file carries the range answer's tier verdict and words, never "Ask FSA" (arcfix)
-          assert.ok(p.length === 3 && typeof p[2] === "string" && p[2] && !ASK.test(p[2]), `${f} ${k} ${y}: range words ${JSON.stringify(p)}`);
+          // a 4th member, 1, marks a PLC yield under 60% of the benchmark (Nov 10, 2026)
+          assert.ok((p.length === 3 || (p.length === 4 && p[3] === 1)) && typeof p[2] === "string" && p[2] && !ASK.test(p[2]), `${f} ${k} ${y}: range words ${JSON.stringify(p)}`);
         } else if (p.length > 2 && (pc === "-" || p[1] === null)) {
           // money audit 3 (2026-10-19): withheld dollars (flag 8) carry no cents in either place, and only there
           assert.ok(pc === "-" && ac === "-" && p[1] === null && p[2] === null && (p[8] & 8), `${f} ${k} ${y}: withheld in both or neither: card ${pc}/${ac}, math ${p[1]}/${p[2]}`);

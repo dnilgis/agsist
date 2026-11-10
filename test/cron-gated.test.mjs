@@ -1,6 +1,6 @@
 /* Every schedule that matters is gated (Nov 3, 2026). GitHub's scheduler never started land-data.yml's
  * monthly run on Nov 3, so the land sale email that afternoon found no October files and mailed none
- * of its readers ("wait-data"); the same class as Nov 2 (rain-monthly, county-rain; #245). Sig: stop
+ * of its readers ("wait-data"); the same class as Nov 2 (rain-monthly, county-rain; #245). The owner: stop
  * foreseeable failures. So every data, page and email workflow with a schedule that matters also runs
  * after "Fetch Grain Bids" (cron-job.org, every 15 minutes), and a cron_gate.py tick step carrying the
  * workflow's own schedule lets one run per tick do the work. This file holds, for each of them:
@@ -77,11 +77,13 @@ const GATED = [
   ["transport.yml", ["43 11 * * 5"], 360],
   ["vintage.yml", ["37 17 * * 1-5"], 360],
   ["whats-priced-in.yml", ["20 11 * * *"], 360],
-  // Nov 4, 2026 (BUILD-RULES 59): data commits carry [skip ci], so main could sit red for hours unseen
+  // Nov 4, 2026 (build rule 59): data commits carry [skip ci], so main could sit red for hours unseen
   ["main-checks.yml", ["17 */2 * * *"], 100],
   // Nov 7, 2026: the weekly Schrader auction results capture; the feed shows only the newest five sales,
   // so a dropped Monday can lose results for good
   ["schrader-capture.yml", ["43 19 * * 1"], 360],
+  // Nov 10, 2026: the monthly bid archive check (one past day's snapshot against that day's published town pages)
+  ["bid-archive-check.yml", ["19 10 6 * *"], 360],
   // Nov 10, 2026: the weekly copy of the bids history (the only intraday record) to a private backup repository
   ["bids-mirror.yml", ["47 7 * * 0"], 360],
 ];

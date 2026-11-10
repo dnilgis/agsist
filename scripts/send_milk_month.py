@@ -27,18 +27,18 @@ THE SEND REFUSES (no email to anyone) unless all of these hold:
   * the class month is the newest one due: the month before today's, or this
     month in its last 3 days (AMS posted September on Sep 30). Nothing older.
   * the file was written in the last 3 days.
-  * DAIRY_MONTHLY_LIVE is 1. Sig, Oct 28: on. The workflow passes the repo
-    variable and treats it as on unless Sig sets it to 0.
+  * DAIRY_MONTHLY_LIVE is 1. Oct 28: on. The workflow passes the repo
+    variable and treats it as on unless the owner sets it to 0.
 
 MODES (the same three as send_rain_month.py):
   dry      the default. Counts the list and renders a sample (a made-up
            address and link id) into the log. Sends nothing.
-  preview  Sig's test inbox only (SIG_TEST_EMAILS, else SIG_TO), "[Preview]"
-           in the subject, any month the file holds. BUILD-RULES 13.
+  preview  the owner's test inbox only (SIG_TEST_EMAILS, else SIG_TO), "[Preview]"
+           in the subject, any month the file holds. build rule 13.
   send     the list. Refused on any check above.
 
     python3 scripts/send_milk_month.py                    # dry run
-    PREVIEW=1 python3 scripts/send_milk_month.py          # Sig's test inbox only
+    PREVIEW=1 python3 scripts/send_milk_month.py          # the owner's test inbox only
     SEND=1 DAIRY_MONTHLY_LIVE=1 python3 scripts/send_milk_month.py
     python3 scripts/send_milk_month.py --selftest         # fake HTTP and SMTP; no network
 
@@ -65,6 +65,7 @@ sys.path.insert(0, str(HERE))
 import email_links                 # noqa: E402
 import log_safe                    # noqa: E402
 import delivery_line             # noqa: E402  (the DELIVERY count line cron_health reads)
+import send_pace  # noqa: E402  batches, one try more for a deferral, hard bounces (scripts/send_pace.py)
 TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import send_notice as SN           # noqa: E402
 from send_watch import base_msg    # noqa: E402
@@ -376,17 +377,20 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     if not todo:
         return 0
     conn, sent, failed, broken, reconnects = None, 0, 0, False, 0
+    pace = send_pace.Pacer(todo, sleep=sleep)   # batches and a pause between (scripts/send_pace.py)
     try:
         conn = connect()
-        for i, (e, lid) in enumerate(todo):
+        for i, (e, lid) in enumerate(pace):
+            conn = pace.fresh(conn, connect)   # the retry pass starts on a new connection
             try:
                 conn.send_message(render(e, base, secret, lid, parts, from_addr))
             except Exception as ex:
-                failed += 1
-                out("  send failed (%s)" % type(ex).__name__)
+                if not pace.defer(ex):       # a deferral (4xx) is tried once more at the end of the list
+                    failed += 1
+                    out("  send failed (%s)" % type(ex).__name__)
                 dead = isinstance(ex, (smtplib.SMTPServerDisconnected, smtplib.SMTPConnectError)) or \
                     (isinstance(ex, OSError) and not isinstance(ex, smtplib.SMTPException))
-                if dead and reconnects < 3 and i < len(todo) - 1:
+                if dead and reconnects < 3 and pace.more():
                     reconnects += 1
                     try:
                         conn.quit()
@@ -403,8 +407,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 out("::error::milk-month: a sent email could not be marked; stopping so nobody gets two")
                 broken = True
                 break
-            if i < len(todo) - 1:
-                sleep(1.2)
+            pace.after()   # the short gap, or the pause between batches
     except Exception as ex:
         out("  could not connect to SMTP (%s)" % type(ex).__name__)
     finally:
@@ -413,6 +416,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 conn.quit()
         except Exception:
             pass
+    failed += len(pace.unsent())   # deferred, never tried again
     if TALLY:
         TALLY.sent += sent
     out("milk-month:%s: sent %d; failed %d" % (k, sent, failed))
@@ -509,6 +513,26 @@ def selftest():
     ck("live: only the opted-in reader not yet mailed gets it", sent_to == ["a@example.com"], sent_to)
     ck("marked with the class month", marks == [{"email": "a@example.com", "topic": "milk-month", "month": "2026-09"}], marks)
     ck("the log has counts, no address", not any("@example.com" in x for x in log), log)
+    # a deferral (4xx) is tried again at the end of the run and marked once; not a failure
+    soft_done = []
+
+    class SoftOnce(Conn):
+        def send_message(self, m):
+            if m["To"] == "a@example.com" and not soft_done:
+                soft_done.append(1)
+                raise smtplib.SMTPRecipientsRefused({m["To"]: (451, b"4.7.1 try again later")})
+            Conn.send_message(self, m)
+    sent_to.clear()
+    marks.clear()
+    rows.append({"email": "d@example.com", "topic": "milk-month", "lid": "4" * 16})
+    log = []
+    run(["--send"], http=http, connect=SoftOnce, now=t_ok, sleep=lambda s: None, out=log.append, repo=tmp)
+    ck("a deferred reader goes out last, is marked once, and nothing failed",
+       sent_to == ["d@example.com", "a@example.com"] and [m["email"] for m in marks] == ["d@example.com", "a@example.com"]
+       and any("failed 0" in x for x in log), (sent_to, marks, log))
+    rows.pop()
+    sent_to.clear()
+    marks.clear()
     sent_to.clear()
     marks.clear()
     log = []

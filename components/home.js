@@ -32,10 +32,12 @@ try {
     var dotEl=document.getElementById('cot-'+key+'-dot'),minEl=document.getElementById('cot-'+key+'-min'),maxEl=document.getElementById('cot-'+key+'-max');
     var net=d.net,prev=d.prev,min52=d.min52,max52=d.max52,range=(max52-min52)||1;
     var isLong=net>=0;
-    /* 2026-09-25 audit: /cot labels a net inside +/-5,000 contracts FLAT; this row said SHORT for wheat at -3,674. Same threshold, same word. */
-    var isFlat=Math.abs(net)<5000;
+    /* Nov 10: one side word for the glance line and this row (cotSide). The
+       glance said "About even" for corn (the analysis file's side) while this row
+       said LONG +8.8k for the same net. */
+    var isFlat=cotSide(key,d)==='flat';
     if(netEl){netEl.textContent=fmtK(net);netEl.style.color=isFlat?'var(--text-muted)':isLong?'var(--green)':'var(--red)';}
-    if(dirEl){dirEl.textContent=isFlat?'FLAT':isLong?'LONG':'SHORT';dirEl.className='cot-dir '+(isFlat?'':isLong?'long':'short');dirEl.style.color=isFlat?'var(--text-muted)':'';}
+    if(dirEl){dirEl.textContent=isFlat?'About even':isLong?'Long':'Short';dirEl.className='cot-dir '+(isFlat?'':isLong?'long':'short');dirEl.style.color=isFlat?'var(--text-muted)':'';}
     if(chgEl&&prev!=null){var chg=net-prev;chgEl.textContent=(chg>=0?'\u25b2':'\u25bc')+fmtK(Math.abs(chg)).replace(/^[+\u2212-]/,'');chgEl.className='cot-chg '+(chg>0?'up':chg<0?'dn':'nc');}
     if(minEl)minEl.textContent=fmtKShort(min52);if(maxEl)maxEl.textContent=fmtKShort(max52);
     var zeroPct=Math.max(0,Math.min(100,((0-min52)/range)*100));
@@ -93,18 +95,33 @@ try {
   }
   /* WAVE3-L: after a failed cot.json there are no rows to put back. */
   window.AGSIST_COT={rows:COT_ROWS,render:function(){if(window.AGSIST_COT.failed)return;placeCOT(window.AGSIST_COT._d);glance(window.AGSIST_COT._d);}};
-  /* AT A GLANCE (2026-11-04; short rows 2026-11-05, Sig: "KISS"): the top three
+  /* AT A GLANCE (2026-11-04; short rows 2026-11-05): the top three
      markets in the reader's order (the crop picker reorders COT_ROWS), one short
      row each (components/cot-glance.js row(): market | long or short | change,
      the cells /cot's table prints; the rank is on /cot), each opening /cot on that market's
      52-week chart. The rank and the weight word come with cot-analysis.json for
      the same report; until then the row carries neither rather than guess. */
   var COT_GLANCE=3;
+  /* The side, one rule for every COT line on this page: the analysis file's side
+     when it is for the same week (it calls a net small for its market "flat"),
+     else a net inside 5,000 contracts is flat (/cot's rule), else its sign.
+     key: the row id (corn, beans, ...) or the cot.json key. */
+  function cotSide(key,d){
+    var k=key;COT_ROWS.forEach(function(r){if(r.id===key)k=r.k;});
+    var c=COT_CX&&COT_CX.commodities&&COT_CX.commodities[k];
+    if(c&&c.date&&window.AGSIST_COT&&window.AGSIST_COT._d&&cotIso(c.date)===cotIso(window.AGSIST_COT._d.report_date)&&c.side)return c.side==='flat'?'flat':(c.net!=null?(c.net>0?'long':'short'):c.side);
+    var n=d&&d.net;if(typeof n!=='number')return '';
+    return Math.abs(n)<5000?'flat':n>0?'long':'short';
+  }
   function glance(data){
     var ul=document.getElementById('cot-glance'),G=window.AgCotGlance;if(!ul||!G||!data||!G.rows)return;
     var keys=COT_ROWS.slice(0,COT_GLANCE).map(function(r){return r.k;});
     var rs=G.rows(data,COT_CX,keys);if(!rs.length)return;
-    ul.innerHTML=rs.map(function(r){return '<li class="cot-gl-line"><a class="cot-gl-a" href="'+G.href(r.key)+'"><b>'+r.name+'</b><span>'+r.pos+'</span><span class="cot-gl-r">'+r.chg+'</span></a></li>';}).join('');
+    /* The right cell is the week's change; it says so, in contracts,
+       and the side word is the one the rows below use. No "crowded" (Nov 6). */
+    var SW={flat:'About even',long:'Long',short:'Short'};
+    ul.innerHTML=rs.map(function(r){var sd=cotSide(r.key,data[r.key]),f=G.facts?G.facts(r.key,data,COT_CX):null,pos=SW[sd]?SW[sd]+(sd!=='flat'&&f&&!f.flip&&f.weight?', '+f.weight:(sd!=='flat'&&f&&f.flip?', flipped':'')):r.pos.replace(/, crowded$/,'');
+      return '<li class="cot-gl-line"><a class="cot-gl-a" href="'+G.href(r.key)+'"><b>'+r.name+'</b><span>'+pos+'</span><span class="cot-gl-r">'+(r.chg?r.chg+' contracts this week':'')+'</span></a></li>';}).join('');
     ul.removeAttribute('aria-busy');
     var a=document.getElementById('cot-gl-asof');if(a){var t=G.asOf(data,COT_CX);if(t)a.textContent=t;}
   }
@@ -117,20 +134,15 @@ try {
   function cotIso(s){var d=new Date(String(s||'')+(/^\d{4}-\d{2}-\d{2}$/.test(String(s||''))?'T12:00:00':''));return isNaN(d)?'':d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
   function cxFor(k,data){var c=COT_CX&&COT_CX.commodities&&COT_CX.commodities[k];return (c&&c.date&&data&&cotIso(c.date)===cotIso(data.report_date))?c:null;}
   function rankTxt(c){var cr=c.crowd,p=cr?cr.pctl:(c.pctl&&c.pctl.net_oi_all);if(p==null)return '';
-    if(c.crowded&&cr&&cr.word)return cr.word+', crowded '+c.crowded;   /* "bottom 1%", never "0th" */
-    var r=Math.max(1,Math.min(99,Math.round(p))),o=['th','st','nd','rd'],v=r%100;return r+(o[(v-20)%10]||o[v]||o[0])+' pct'+(c.crowded?', crowded '+c.crowded:'');}
-  /* 2026-11-05 (checker on #334): the verdict reads every market in the analysis
-     file (AgCotGlance.crowdedLine, the same `crowded` field the glance lines use),
-     not the four rows the old grains and cattle badges read, so it can never say
-     "No market crowded" while meal, hogs or milk is crowded. */
-  function verdict(el,lv,data){
-    if(!el)return;if(lv)lv.hidden=true;
-    var G=window.AgCotGlance,v=G&&G.crowdedLine(data,COT_CX);
-    if(!v){el.hidden=true;return;}
-    el.hidden=false;
-    el.title='Crowded: net as a share of open interest in the top or bottom tenth of every week since 2010, on the side the position is on (the COT page\u2019s measure), across all '+v.markets+' markets.';
-    el.className='cot-verdict '+(v.state==='none'?'mixed':v.state);
-    el.textContent=v.text;
+    /* No "crowded" (the crowding verdict was dropped Nov 6); the measured rank only. */
+    if(c.crowded&&cr&&cr.word)return cr.word;   /* "bottom 1%", never "0th" */
+    var r=Math.max(1,Math.min(99,Math.round(p))),o=['th','st','nd','rd'],v=r%100;return r+(o[(v-20)%10]||o[v]||o[0])+' pct';}
+  /* Nov 10: the crowding verdict was dropped everywhere on Nov 6; the home
+     badge no longer prints one and its verdict code is gone (the shared verdict in
+     cot-glance.js stays for /cot until it follows). */
+  function verdict(el,lv){
+    /* no crowding verdict on home (Nov 6): the badge stays hidden */
+    if(lv)lv.hidden=true;if(el)el.hidden=true;
   }
   function rankRows(data){
     COT_ROWS.forEach(function(r){
@@ -145,7 +157,8 @@ try {
   /* The crowding badges and rank lines: drawn again once cot-analysis.json
      arrives (it loads when the COT card comes near the screen; see below). */
   function cxPaint(data){
-    verdict(document.getElementById('cot-verdict'),document.getElementById('cot-verdict-lv'),data);
+    verdict(document.getElementById('cot-verdict'),document.getElementById('cot-verdict-lv'));
+    if(data)COT_ROWS.forEach(function(row){if(data[row.k])renderCOTRow(row.id,data[row.k]);});
     rankRows(data);
     glance(data);
   }
@@ -777,7 +790,7 @@ window.hydrateDaily = function(data) {
   function escHtml(s){return(s==null?'':String(s)).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
   /* A top story's publisher link, fit to show a reader, else ''. Same test as
      generate_daily.safe_story_link and daily.html storyLink: https only, no
-     shared host (BUILD-RULES 11), no user part, no spaces, at most 800 chars. */
+     shared host (build rule 11), no user part, no spaces, at most 800 chars. */
   function storyLink(u){
     u=(u==null?'':String(u)).trim();
     if(!u||u.length>800||/\s/.test(u)||u.slice(0,8).toLowerCase()!=='https://')return'';
@@ -814,7 +827,7 @@ window.hydrateDaily = function(data) {
   // v5.1: the one thresholded action, in the block the takeaway used to hold.
   // A daily.json from before the cut has no action and shows its takeaway
   // under the old label instead, so the block never goes blank on upload day.
-  /* 2026-10-09, Sig: the prediction bot is out of the Daily for now; it
+  /* 2026-10-09: the prediction bot is out of the Daily for now; it
      lives on /scorecard. An issue whose action is the bot's call (bot_call
      present) shows no action, and the box hides. */
   var takeaway=(data.bot_call?'':(data.action||'')).trim();
@@ -1120,7 +1133,7 @@ window.hydrateDaily = function(data) {
   }
 
   // v4.1: sponsor block, filled state plus the collapsed teaser credit.
-  // 2026-10-11 (Sig, "tone it down"): only a PAID sponsor draws anything. No
+  // 2026-10-11: only a PAID sponsor draws anything. No
   // sponsor, sponsor:false or the house ad -> the block, the credit and the
   // strip all stay hidden. There is no empty-state billboard any more.
   var sp=data.sponsor,spEl=el('daily-sponsor'),spFilled=el('dsp-filled'),spTeaser=el('daily-teaser-sponsor');
@@ -1786,7 +1799,7 @@ try {
   window.__r7={pricesOnce:pricesOnce,contractOf:contractOf,ctStamp:ctStamp,cents:cents,tickMonth:tickMonth};
 
   /* COT: what price did since the positions were taken, on THE HEADLINE
-     CONTRACT (2026-11-04, Sig). It used the continuous front month (ZS=F), so
+     CONTRACT (2026-11-04). It used the continuous front month (ZS=F), so
      after soybeans rolled to Jan '27 at first notice (#320) the card said
      "front month (Nov '26)" under a page that headlines Jan '27; corn does the
      same on Nov 30. Now: the headline contract (AgPxStamp.headline, the
@@ -1855,11 +1868,11 @@ try {
 
 /* ---- former inline block 14 ---- */
 try {
-/* 2026-10-06 (U13) folded the GDU and soil tiles on phones, Sep to Nov. 2026-11-04 (Sig: GDUs year round, less wasted
-   space): the GDU tile is in Season so far now (components/season-wx.js) and soil sits in the grid, so no fold. */
+/* 2026-10-06 (U13) folded the GDU and soil tiles on phones, Sep to Nov. 2026-11-04 (GDUs year round, less wasted
+ space): the GDU tile is in Season so far now (components/season-wx.js) and soil sits in the grid, so no fold. */
 } catch (e) { blockFailed(e); }
 /* ---- 2026-10-16: no location after a few seconds ----
-   2026-10-19 (Sig): never ask for the location on load. With no saved place
+   2026-10-19: never ask for the location on load. With no saved place
    this box shows at once, worded as an offer ("See the bids near you."),
    with a "Use my location" button; "Your location did not come through."
    only follows a tap that got no location (geo.js requestGeo).
@@ -1889,7 +1902,7 @@ try {
   function day(iso){var d=new Date(iso);return isNaN(d)?'':d.toLocaleDateString('en-US',{month:'short',day:'numeric',timeZone:'America/Chicago'});}
   /* One state, as lines. Only crops with a median (basis-states.json prints
      one at min_n elevators or more); a thinner crop is counted, not priced. */
-  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Nov 3 2026); a file without the company count says 'median of N elevators'. */
   function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   window.__agsistNolocRows=function(doc,code){
     var s=doc&&doc.states&&doc.states[code];if(!s)return null;
@@ -1933,7 +1946,7 @@ try {
       var row=document.getElementById('bids-zip-row'),z=document.getElementById('bids-zip');
       if(row)row.style.display='block';if(z)z.focus();
     });
-    /* 2026-10-19 (Sig): the browser is asked only on this tap. geo.js
+    /* 2026-10-19: the browser is asked only on this tap. geo.js
        draws the bids over this box when a place lands, and says so here
        when none does. */
     box.querySelector('.hn-loc').addEventListener('click',function(){
@@ -1960,7 +1973,7 @@ try {
       var out=box.querySelector('.hn-out');if(out)out.innerHTML='<p class="hn-fine">State basis did not load. Your ZIP still works.</p>';
     });
   }
-  /* 2026-10-19 (Sig): nothing asks for the location on load any more, so a
+  /* 2026-10-19: nothing asks for the location on load any more, so a
      first visit with no saved place gets this box at once (home.js runs
      before first paint, so the card never shows the gray rows first). A
      saved place keeps the old wait, for a lookup that stalls. */

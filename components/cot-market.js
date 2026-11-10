@@ -71,8 +71,8 @@ window.cotMarket = function (api) {
        normal", and a tenth of a point should not flip a reader between
        "protect what you have unpriced" and "nothing to do". The wording now
        tracks the percentile continuously. The "look this week at unpriced
-       bushels" line is gone (2026-11-06, Sig: no crowding advice anywhere; it
-       was never tested). */
+       bushels" line is gone (2026-11-06, no crowding advice anywhere; it
+ was never tested). */
     var p = c.pctl.net_oi_all;
     /* the rank in words, never an ordinal (2026-11-06): the pipeline's crowd.words, else the same rule */
     function words(c, sh) {

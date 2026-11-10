@@ -1,4 +1,4 @@
-/* Land sales in the menu (Sig, Oct 29, 2026: the land sale page should be easy to find).
+/* Land sales in the menu (Oct 29, 2026: the land sale page should be easy to find).
  * Every copy of the header carries Money & Land > Land sales to /land-sales/: the live header
  * (desktop panel and phone drawer), the no-JS fallback, the menu table and the static header baked
  * into every generated and root page. Nov 4, 2026 (lead, "not missable"): renamed "Farmland sales"

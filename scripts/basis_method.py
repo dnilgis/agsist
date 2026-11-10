@@ -76,17 +76,7 @@ SHARED_HOSTS = frozenset({"facebook.com", "m.facebook.com", "sites.google.com", 
 # its owned retail units as "CHS <place>" ("CHS Herman", "CHS Dakota Plains Ag"),
 # each with its own site, so neither name nor website would join them.
 PARENT_BRANDS = ((re.compile(r"^chs\b", re.I), "CHS"),)
-_LEGAL_TAIL = re.compile(r"[\s,._-]*\b(inc|incorporated|llc|l\.l\.c|ltd|lp|co|corp|company)\b\.?[\s,._-]*$", re.I)
-
-
-def name_key(op):
-    """'Farmers Elevator & Exchange, Inc.' and 'Farmers Elevator & Exchange'
-    are one name; letters and digits only, legal tails off."""
-    s = (op or "").strip()
-    for _ in range(2):
-        t = _LEGAL_TAIL.sub("", s).strip()
-        s = t or s
-    return re.sub(r"[^a-z0-9]+", "", s.lower())
+from elevator_names import name_key  # noqa: E402,F401  (the one elevator name key; components/elev-names.js nameKey)
 
 
 def site_key(url):

@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 99,
- "with_known_cadence": 99,
+ "count": 98,
+ "with_known_cadence": 98,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -206,6 +206,7 @@
    "pages": [
     "desk.html",
     "sponsor-kit.html",
+    "sponsor-rates.html",
     "sponsor-report.html",
     "sponsor.html"
    ],
@@ -405,6 +406,7 @@
     "Ag stocks",
     "Build Analyst Scorecard",
     "ARC/PLC signup reminder",
+    "Bid archive check (monthly)",
     "Bids backup (weekly)",
     "Cash Bid Index",
     "cash-rent",
@@ -616,6 +618,7 @@
     "Build Analyst Scorecard",
     "ARC/PLC refresh",
     "ARC/PLC signup reminder",
+    "Bid archive check (monthly)",
     "Bids backup (weekly)",
     "Cash Bid Index",
     "cash-bid-pages",
@@ -729,6 +732,7 @@
     "Build Analyst Scorecard",
     "ARC/PLC refresh",
     "ARC/PLC signup reminder",
+    "Bid archive check (monthly)",
     "Bids backup (weekly)",
     "Cash Bid Index",
     "cash-bid-pages",
@@ -1029,7 +1033,8 @@
   {
    "path": "data/elevator-counts.json",
    "pages": [
-    "sponsor-kit.html"
+    "sponsor-kit.html",
+    "sponsor-rates.html"
    ],
    "written_by": [
     "cash-bid-pages"
@@ -2053,32 +2058,6 @@
    "why_quiet": null
   },
   {
-   "path": "data/predictions-backtest.json",
-   "pages": [
-    "usda-calendar.html"
-   ],
-   "written_by": [
-    "Prediction bot \u2014 call and grade"
-   ],
-   "touched_by": [
-    "Prediction bot \u2014 call and grade"
-   ],
-   "cadence": "4 launches weekdays at about 2pm, 3pm, 5pm, 6pm Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "41 19 * * 1-5",
-    "41 20 * * 1-5",
-    "41 22 * * 1-5",
-    "41 23 * * 1-5"
-   ],
-   "max_gap_hours": 68.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/predictions.json",
    "pages": [
     "usda-calendar.html"
@@ -2090,6 +2069,7 @@
     "Ag stocks",
     "Build Analyst Scorecard",
     "ARC/PLC signup reminder",
+    "Bid archive check (monthly)",
     "Bids backup (weekly)",
     "Cash Bid Index",
     "cash-rent",
@@ -2499,6 +2479,7 @@
    "path": "data/rate-card.json",
    "pages": [
     "sponsor-kit.html",
+    "sponsor-rates.html",
     "sponsor-report.html",
     "sponsor.html"
    ],
@@ -3005,6 +2986,7 @@
     "Ag stocks",
     "Build Analyst Scorecard",
     "ARC/PLC signup reminder",
+    "Bid archive check (monthly)",
     "Bids backup (weekly)",
     "Cash Bid Index",
     "cash-rent",

@@ -719,6 +719,21 @@ def hold_last_condition(result: dict, path: str, today=None, max_age_days: int =
 
 
 
+def stamp_release(result: dict, fetched=None) -> None:
+    """released_at beside each report_date (a week-ending Sunday): Crop Progress is out Monday 4 pm ET,
+    Tuesday after a Monday holiday (scripts/released_at.py), so a test knows what was public on a date.
+    `fetched` is when this run read it. A crop with no report_date gets none."""
+    from released_at import stamp
+    fetched = fetched or datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    result["fetched"] = fetched
+    if result.get("report_date"):
+        result.update(stamp("crop_progress", result["report_date"], fetched))
+    for key in ("corn", "soybeans", "winter_wheat", "spring_wheat"):
+        c = result.get(key)
+        if isinstance(c, dict) and c.get("report_date"):
+            c["released_at"] = stamp("crop_progress", c["report_date"], fetched)["released_at"]
+
+
 def main():
     os.makedirs("data", exist_ok=True)
 
@@ -868,6 +883,7 @@ def main():
         result["in_season"] = False
 
     hold_last_condition(result, OUT_FILE)
+    stamp_release(result)
 
     # compact: with every state row the indented file passed 30 KB (Nov 7, 2026)
     with open(OUT_FILE, "w") as f:
@@ -1074,6 +1090,15 @@ def selftest():
     check(new["corn"]["harvest_pct"] == 60, "this run's harvest figure is not replaced")
     check(new["corn"]["condition_held_from"] == "2026-10-25" and new["report_date"] == "2026-10-25",
           "held reading says where it came from; report date filled")
+    # released_at from the real file's week (ending Sun Oct 25): out Mon Oct 26 4 pm EDT
+    rel = {"report_date": "2026-10-25", "corn": {"good_excellent": 56, "report_date": "2026-10-25"}, "soybeans": None}
+    stamp_release(rel, "2026-11-09T15:00:00Z")
+    check(rel["released_at"] == "2026-10-26T20:00:00Z" and rel["released_basis"] == "schedule"
+          and rel["corn"]["released_at"] == "2026-10-26T20:00:00Z" and rel["fetched"] == "2026-11-09T15:00:00Z",
+          "released_at: Crop Progress for the week ending Oct 25 was out Monday Oct 26, 4 pm ET")
+    off = {"report_date": None, "corn": None}
+    stamp_release(off, "2026-11-09T15:00:00Z")
+    check("released_at" not in off, "no report, no released_at")
     new2 = {"corn": {"good_excellent": 58, "report_date": "2026-11-01"}}
     check(hold_last_condition(new2, tf.name, today=_d(2026, 11, 2)) == [] and new2["corn"]["good_excellent"] == 58,
           "a fresh reading is never replaced")

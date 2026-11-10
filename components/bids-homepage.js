@@ -20,7 +20,7 @@
 (function(){
   'use strict';
 
-  var NET_SCRIPT = '/components/bids-network.js?v=8';
+  var NET_SCRIPT = '/components/bids-network.js?v=9';
 
   var MAX_ELEVATORS = 3;
   var MAX_BIDS_PER_COMMODITY = 3;
@@ -76,6 +76,15 @@
     return 'other';
   }
 
+  /* The name printed for an elevator. An archived copy's marks ("zShawnee Feed Old") and a page title's
+     tail ("American Plains Co-op - Cash Bid Include") never reach the card. The one name cleaner is
+     elevNames.displayName (components/elev-names.js, twin of scripts/elevator_names.py), loaded on the home page.
+     Keys and alert ids keep the raw name: only what is printed changes. */
+  function displayName(op){
+    var raw = String(op || '').trim();
+    try { var N = window.elevNames; if(N && typeof N.displayName === 'function') return N.displayName(raw) || raw; } catch(e){}
+    return raw;
+  }
   function escHtml(s){
     if(!s) return '';
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
@@ -245,7 +254,21 @@
      said once and a reader compares crops for the same haul. The distance
      sits on the town line and says what it is: the elevator network's miles
      are straight-line (haversine in bids-network.js), not road miles. */
-  function delLabel(b){ return b.deliveryMonth || b.deliveryStart || 'Spot'; }
+  function delLabel(b){ return cropYearLabel(b) || b.deliveryMonth || b.deliveryStart || 'Spot'; }
+  /* Nov 10: a harvest or new-crop token ("HAR 26", newcrop-2026) is a
+     window, not the current month; the card printed it as "Nov". It reads
+     "Harvest 2026" (the board says HAR) or "New crop 2026", as the town pages do. */
+  function cropYearLabel(b){
+    var m = /^(newcrop|oldcrop)-(\d{4})$/.exec(String(b && b.deliveryStart || ''));
+    if(!m) return '';
+    if(m[1] === 'oldcrop') return 'Old crop ' + m[2];
+    return (/^\s*HAR/i.test(String(b.delivery || '')) ? 'Harvest ' : 'New crop ') + m[2];
+  }
+  function cropYearShort(b){
+    var l = cropYearLabel(b); if(!l) return '';
+    var y = l.slice(-4), w = l.slice(0, -5);
+    return (w === 'Harvest' ? 'Harvest' : w) + (y === ctToday().slice(0, 4) ? '' : ' \'' + y.slice(2));
+  }
   /* WAVE1-A 2026-10-03: FRESHNESS, PER ELEVATOR, FROM THE BOARD'S OWN TIMES.
      merged-index.json carries two times per place: pricedAt (when the board's
      prices last changed) and checkedAt (when the bids repo last read it). Both
@@ -395,15 +418,20 @@
      Its basis is checked against that day's settle, not today's close. */
   function refFor(bid, cat, pp, staleOn){
     var r = { attr: '', label: '', short: '' };
-    var rm = refMonth(bid.symbol);
+    var rm = refMonth(bid.symbol), br = boardRef(bid, cat);
+    if(!rm && br) rm = br;
     if(rm){
       r.label = 'basis vs ' + rm.replace(/ (corn|soybeans)$/, '');
       r.short = rm.slice(0, 3) + (/KC wheat$/.test(rm) ? ' KC' : '');
       return r;
     }
+    /* The board's own file was read and names no contract: no month. */
+    if(br === null) return r;
+    var sk = shardRowKey(bid);
+    if(sk) r.attr = ' data-ref-shard="' + escHtml(bid.shard) + '" data-ref-pk="' + escHtml(sk) + '"';
     if(pp != null && bid.basis != null && refCropFor(bid, cat)){
       var rc = refCropFor(bid, cat), ek = refEndKey(bid, rc === 'kcwheat' ? 'wheat' : rc);
-      if(ek) r.attr = ' data-ref-crop="' + rc + '" data-ref-for="' + cat + '" data-ref-end="' + ek + '" data-ref-imp="' + (pp - basisCents(bid.basis) / 100).toFixed(4) + '"' + (bid.pricedAt || bid.checkedAt ? ' data-ref-read="' + escHtml(String(bid.pricedAt || bid.checkedAt)) + '"' : '')
+      if(ek) r.attr += ' data-ref-crop="' + rc + '" data-ref-for="' + cat + '" data-ref-end="' + ek + '" data-ref-imp="' + (pp - basisCents(bid.basis) / 100).toFixed(4) + '"' + (bid.pricedAt || bid.checkedAt ? ' data-ref-read="' + escHtml(String(bid.pricedAt || bid.checkedAt)) + '"' : '')
         + (staleOn ? ' data-ref-on="' + escHtml(staleOn) + '"' : '');
     }
     return r;
@@ -432,7 +460,7 @@
       return '<span class="bh-cell bh-cell--none" title="' + escHtml(why.charAt(0).toUpperCase() + why.slice(1)) + '"><span class="bh-ck">' + escHtml(name) + '</span><span class="bh-cash">-</span><span class="bh-vh">' + escHtml(why) + '</span></span>';
     }
     var pp = ppu(b.cashPrice), bs = formatBasis(b.basis, b), wc = cat === 'wheat' ? wheatClass(b) : '';
-    var mon = monthShort(rowMonthKey(b));
+    var mon = cropYearShort(b) || monthShort(rowMonthKey(b));
     var sub = '';
     if(mon) sub += '<span class="bh-mon"><span class="bh-vh">for </span>' + escHtml(mon) + '</span>';
     if(bs.str !== '-'){
@@ -468,7 +496,7 @@
 
     // The row
     html += '<button type="button" class="bh-head" data-board-key="' + escHtml(boardKey(elev)) + '" aria-expanded="' + (isOpen ? 'true' : 'false') + '" aria-controls="' + xid + '">';
-    html += '<span class="bh-id"><span class="bh-l1"><span class="bh-name">' + escHtml(elev.facility) + '</span>'
+    html += '<span class="bh-id"><span class="bh-l1"><span class="bh-name">' + escHtml(displayName(elev.facility)) + '</span>'
       + (topLabel ? '<span class="bh-topk">' + escHtml(topLabel) + '</span>' : '')
       + '<span class="bh-type"></span></span>';
     /* PANEL6 U12: the date tag sits on the town line, so every name line is
@@ -590,7 +618,7 @@
     var hasCorn = !!(cornBids && cornBids.length);
     if((hasCorn || opts.length) && elev.state && elev.facility){
       var wid = hasCorn ? widFor(elev.state, elev.facility, elev.city, 'corn') : '';
-      var name = elev.facility + (townOf(elev) ? ', ' + townOf(elev) + (elev.state ? ', ' + elev.state : '') : '');
+      var name = displayName(elev.facility) + (townOf(elev) ? ', ' + townOf(elev) + (elev.state ? ', ' + elev.state : '') : '');
       var label = escHtml(name + ', corn');
       html += '<div class="watch-elevator-wrap" data-wid="' + wid + '" data-label="' + label + '" data-name="' + escHtml(name) + '"'
         + (opts.length ? ' data-opts="' + escHtml(JSON.stringify(opts)) + '"' : '') + '>'
@@ -650,11 +678,26 @@
     if(nc) return nc[1] + (cat === 'wheat' ? '-07' : '-10');
     return rowMonthKey(b) || '';
   }
-  function refCandidate(cat, endKey){
+  /* Nov 10: CBOT first notice day for a contract month is the last
+     weekday of the month before (exchange holidays not known here). From that
+     day no elevator quotes against the month: Nov '26 soybeans rolled to
+     Jan '27 on Oct 30. `asOf` is a Central-time YYYY-MM-DD. */
+  function firstNotice(y, mo){
+    var d = new Date(Date.UTC(y, mo - 1, 0, 12));
+    while(d.getUTCDay() === 0 || d.getUTCDay() === 6) d.setUTCDate(d.getUTCDate() - 1);
+    return d.toISOString().slice(0, 10);
+  }
+  function refCandidate(cat, endKey, asOf){
     var m = /^(\d{4})-(\d{2})$/.exec(endKey || ''); if(!m || !REF_CYCLE[cat]) return null;
     var y = +m[1], mo = +m[2], cyc = REF_CYCLE[cat], pick = null;
-    for(var i = 0; i < cyc.length; i++){ if(cyc[i] >= mo){ pick = cyc[i]; break; } }
-    if(pick == null){ pick = cyc[0]; y += 1; }
+    var on = /^\d{4}-\d{2}-\d{2}$/.test(asOf || '') ? asOf : ctToday();
+    for(var g = 0; g < 30; g++){
+      pick = null;
+      for(var i = 0; i < cyc.length; i++){ if(cyc[i] >= mo){ pick = cyc[i]; break; } }
+      if(pick == null){ pick = cyc[0]; y += 1; }
+      if(firstNotice(y, pick) > on) break;
+      mo = pick + 1; if(mo > 12){ mo = 1; y += 1; }
+    }
     var yy = String(y).slice(-2);
     return { key: REF_KEY[cat] + '-' + MON_LC[pick - 1] + yy, label: MON[pick - 1] + ' \'' + yy + ' ' + (cat === 'soybeans' ? 'soybeans' : cat === 'wheat' ? 'Chicago wheat' : cat === 'kcwheat' ? 'KC wheat' : cat) };
   }
@@ -726,7 +769,7 @@
   function resolveRef(crop, forCrop, imp, endKey, q, onDay, hp){
     if(!isFinite(imp)) return null;
     if(onDay){
-      var sc = refCandidate(crop, endKey);
+      var sc = refCandidate(crop, endKey, onDay);
       var sv = sc && settleOn(hp, crop, sc.key, onDay);
       if(sv == null || Math.abs(sv - imp) > REF_TOL) return null;
       var stext = forCrop === crop ? sc.label.replace(/ (corn|soybeans|oats)$/, '') : sc.label;
@@ -765,19 +808,79 @@
   }
   var pricesData = null;
   var hpData = null;
+  /* Nov 10: THE BOARD'S OWN CONTRACT. merged-index.json leaves out the
+     futures month; each place's shard carries it per row as futuresMonth
+     (ZSF27, ZCZ6, @C6Z, "Dec 26"). Read only for the boards a card shows.
+     shardSym: undefined (file not read), '' (read, the row names none) or a
+     ticker refMonth reads. */
+  var SHARDS = {};
+  var DTN_ROOT = { C:'ZC', S:'ZS', W:'ZW', KW:'KE', MW:'MWE' };
+  function normSym(raw, crop){
+    var t = String(raw || '').trim().toUpperCase(), m;
+    if(!t || !/[A-Z]/.test(t) || /^\d/.test(t)) return '';
+    if((m = /^([A-Z]{1,3})([FGHJKMNQUVXZ])(\d{1,2})$/.exec(t))) return (m[1] === 'MWE' ? 'MW' : m[1]) + m[2] + (m[3].length === 1 ? '2' + m[3] : m[3]);
+    if((m = /^@([A-Z]{1,2})(\d)([FGHJKMNQUVXZ])$/.exec(t)) && DTN_ROOT[m[1]]) return DTN_ROOT[m[1]].replace('MWE', 'MW') + m[3] + '2' + m[2];
+    var root = crop === 'corn' ? 'ZC' : crop === 'soybeans' ? 'ZS' : '';
+    if(root && (m = /^([A-Z]{3})[A-Z]*\.?\s*'?(20)?(\d{2})$/.exec(t))){
+      var i = MON.map(function(x){ return x.toUpperCase(); }).indexOf(m[1]);
+      if(i >= 0) return root + FUT_CODE.charAt(i) + m[3];
+    }
+    return '';
+  }
+  function shardRowKey(b){ return b && b.shard && b.netCrop ? [b.netCrop, b.deliveryStart || '', b.delivery || ''].join('|') : ''; }
+  function loadShardPaths(paths){
+    var NET = window.AGSIST_BIDS_NET;
+    return Promise.all(paths.map(function(p){
+      if(!SHARDS[p]){
+        SHARDS[p] = (NET && typeof NET.shard === 'function' ? NET.shard(p) : Promise.resolve(null)).then(function(j){
+          if(!j || !Array.isArray(j.bids)){ delete SHARDS[p]; return null; }
+          var map = {};
+          j.bids.forEach(function(r){ map[[r.crop, r.period || '', r.delivery || ''].join('|')] = normSym(r.futuresSymbol || r.futuresMonth, r.crop); });
+          SHARDS[p].done = map; return map;
+        }, function(){ delete SHARDS[p]; return null; });
+      }
+      return SHARDS[p];
+    }));
+  }
+  function loadShards(rows){ var ps = {}; (rows || []).forEach(function(b){ if(b && b.shard) ps[b.shard] = 1; }); return loadShardPaths(Object.keys(ps)); }
+  function shardSym(path, key){
+    var s = path && SHARDS[path], map = s && s.done;
+    if(!map || !key) return undefined;
+    return Object.prototype.hasOwnProperty.call(map, key) ? map[key] : undefined;
+  }
+  function boardRef(b, cat){
+    var s = shardSym(b && b.shard, shardRowKey(b));
+    if(s === undefined) return undefined;
+    return s ? (refMonth(s) || null) : null;
+  }
   function fillRefs(area){
-    Promise.all([pricesOnce(), harvestOnce()]).then(function(x){
+    var sel = '.r7-ref[data-ref-crop], .bh-refm[data-ref-crop], .r7-ref[data-ref-shard], .bh-refm[data-ref-shard]';
+    var paths = {};
+    Array.prototype.forEach.call(area.querySelectorAll(sel), function(el){ var p = el.getAttribute('data-ref-shard'); if(p) paths[p] = 1; });
+    Promise.all([pricesOnce(), harvestOnce(), loadShardPaths(Object.keys(paths))]).then(function(x){
       var pd = x[0]; pricesData = pd; hpData = x[1];
-      var q = (pd && pd.quotes) || {}, n = 0, used = {}, settled = {}, oldest = '';
-      var els = area.querySelectorAll('.r7-ref[data-ref-crop], .bh-refm[data-ref-crop]');
+      var q = (pd && pd.quotes) || {}, n = 0, used = {}, settled = {}, oldest = '', inferred = 0;
+      var els = area.querySelectorAll(sel);
       for(var i = 0; i < els.length; i++){
         var el = els[i], crop = el.getAttribute('data-ref-crop'), forCrop = el.getAttribute('data-ref-for') || crop;
+        /* Nov 10: the board's own contract first. Its file read and the
+           row names none: no month, never a guess. */
+        var own = shardSym(el.getAttribute('data-ref-shard'), el.getAttribute('data-ref-pk'));
+        if(own !== undefined){
+          var om = own ? refMonth(own) : '';
+          if(!om){ el.textContent = ''; continue; }
+          if(el.classList.contains('bh-refm')){ el.textContent = ' ' + om.slice(0, 3) + (/KC wheat$/.test(om) ? ' KC' : ''); el.title = 'basis vs ' + om + ', as the board posts it'; }
+          else el.textContent = 'basis vs ' + om.replace(/ (corn|soybeans)$/, '');
+          continue;
+        }
+        if(!crop) continue;
         var r = resolveRef(crop, forCrop, parseFloat(el.getAttribute('data-ref-imp')), el.getAttribute('data-ref-end'), q, el.getAttribute('data-ref-on') || '', hpData);
         if(!r) continue;
+        inferred++;
         var sdl = r.settleDay ? ctShortDay(r.settleDay) : '';
-        /* A cell reads "−62¢ Dec"; the expanded row names the full contract. */
-        if(el.classList.contains('bh-refm')){ el.textContent = ' ' + r.short; el.title = 'basis vs ' + r.text + (sdl ? ', matched to the ' + sdl + ' settle' : ''); continue; }
-        el.textContent = 'basis vs ' + r.text;
+        /* A cell reads "−62¢ ~Dec": the board did not name it, the price did. */
+        if(el.classList.contains('bh-refm')){ el.textContent = ' ~' + r.short; el.title = 'basis vs ' + r.text + ', inferred from the price' + (sdl ? ' (the ' + sdl + ' settle)' : '') + '; the board names no contract'; continue; }
+        el.textContent = 'basis vs ' + r.text + ' (inferred)';
         if(r.settleDay){ settled[r.label + ' ' + sdl] = r.close; n++; continue; }
         used[r.label] = r.close;
         var rdt = el.getAttribute('data-ref-read') || ''; if(rdt && (!oldest || rdt < oldest)) oldest = rdt;
@@ -792,7 +895,7 @@
         var ft = ctTime(pd && pd.fetched);
         note.textContent = (ft && fut ? 'Futures at ' + ft + ': ' + fut + '. Boards post at other times. ' : '')
           + (stl ? 'Old boards are matched to the settle on the day they posted: ' + stl + '. ' : '')
-          + 'A basis month shows where cash minus basis lands within 8¢ of that contract.';
+          + 'A month marked ~ or inferred is worked out from the price; the board did not name it.';
         note.hidden = false;
       }
     });
@@ -817,7 +920,7 @@
   // cannot show a stale or invented number: no bid, no line.
   /* WAVE1-A: one option per elevator and crop: its nearest open delivery
      month, per bushel, not a special grade. Nearest elevator first. */
-  /* EARLIEST BID FIRST (Sig, 2026-11-02). Inside one delivery month a board can post a
+  /* EARLIEST BID FIRST (2026-11-02). Inside one delivery month a board can post a
      first-half and a last-half bid (Nevada, IA: "FH Nov 2026" $4.17, "LH Nov 2026" $4.22);
      both file under Nov and the option took the higher one, so the last half (later
      delivery) stood in as today's price. Tier 0: spot or cash, the first half, the whole
@@ -863,7 +966,7 @@
       /* the nearest month, then the earliest tier in it (periodRank), then the higher cash */
       if(o && (o.monthKey < k || (o.monthKey === k && (o.tier < t || (o.tier === t && o.rawCash >= b.cashPrice))))) return;
       by[id] = { id: id, crop: b.category, cropName: COMM_NAMES[b.category] + (b.category === 'wheat' && wheatClass(b) ? ' ' + wheatClass(b) : ''),
-        where: (b.facility || '') + (b.branch ? ' \u00b7 ' + b.branch : ''),
+        where: displayName(b.facility) + (b.branch ? ' \u00b7 ' + b.branch : ''),
         city: townOf(b) + (b.state ? ', ' + b.state : ''),
         miles: b.distance == null ? null : b.distance,
         cash: ppu(b.cashPrice), rawCash: b.cashPrice, tier: t, monthKey: k, monthLabel: shortMon(k),
@@ -954,7 +1057,7 @@
         cash: best.cashPrice,
         basis: (best.basis == null ? null : basisCents(best.basis) / 100),
         monthKey: bestMonthKey,
-        where: (best.facility || '') + (best.branch ? ' \u00b7 ' + best.branch : ''),
+        where: displayName(best.facility) + (best.branch ? ' \u00b7 ' + best.branch : ''),
         city: townOf(best) + (best.state ? ', ' + best.state : ''),
         miles: (best.distance == null ? null : best.distance),
         avgBasis: avgBasis,
@@ -992,19 +1095,8 @@
   // Names that differ by a real word ("ADM Grain" / "ADM") are merged only by
   // isTwin() below, under much stricter conditions: a repeated elevator is
   // visible and fixable, a wrong merge hides a real one.
-  var LEGAL = {llc:1,lc:1,inc:1,incorporated:1,co:1,corp:1,corporation:1,ltd:1,limited:1,lp:1,llp:1,company:1};
-  function normOperator(name){
-    var t = String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ')
-      .replace(/co op/g, 'coop').replace(/co operative/g, 'cooperative')
-      .split(' ').filter(function(x){ return x; });
-    while(t.length && LEGAL[t[t.length - 1]]) t.pop();
-    t = t.map(function(x){ return (x === 'cooperative' || x === 'coops') ? 'coop' : x; });
-    var FOLD = {bros:'brother',brothers:'brother',brother:'brother',st:'saint',mt:'mount',ft:'fort',
-                farmers:'farmer',assn:'association',assoc:'association',elev:'elevator',elevators:'elevator'};
-    t = t.map(function(x){ return FOLD[x] || x; });
-    t = t.map(function(x){ return (x.length > 3 && x.charAt(x.length - 1) === 's') ? x.slice(0, -1) : x; });
-    return t.join('');
-  }
+  /* elevNames.mergeKey (components/elev-names.js), twin of scripts/elevator_names.merge_key. */
+  function normOperator(name){ return window.elevNames.mergeKey(name); }
   function plain(x){ return String(x || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
   function rowKey(r){ return normOperator(r.facility) + '|' + plain(r.city) + '|' + plain(r.state); }
 
@@ -1090,7 +1182,7 @@
             /* WAVE1-A: when the board last changed, the crop key and place
                string merged-index.json uses (the daily-change join), and
                the board's source id (its own file carries its phone). */
-            pricedAt: r.pricedAt || null, netCrop: r.crop || '', place: r.place || '', sourceId: r.sourceId || '',
+            pricedAt: r.pricedAt || null, netCrop: r.crop || '', place: r.place || '', sourceId: r.sourceId || '', shard: r.shard || '',
             deliveryStart: r.period || '',
             category: cat, source: 'network', currency: r.currency || '',
             // Real coordinates, not a geocode -- bids-network.js already carries
@@ -1191,7 +1283,9 @@
   }
   window.__agsistHomeBidsInternals = { rowKey: rowKey, fromNetwork: fromNetwork, widFor: widFor, publishSummary: publishSummary,
     rowMonthKey: function(r){ return rowMonthKey(r); }, rowExpired: function(r){ return rowExpired(r); }, topEntry: function(e, c){ return topEntry(e, c); },
-    storeOptions: function(bids, best){ return storeOptions(bids, best); }, periodRank: periodRank };
+    storeOptions: function(bids, best){ return storeOptions(bids, best); }, periodRank: periodRank,
+    displayName: displayName, groupByElevator: groupByElevator, renderElevatorHTML: renderElevatorHTML,
+    loadShardPaths: loadShardPaths, refCandidate: refCandidate, fillRefs: fillRefs, cropYearLabel: cropYearLabel };
 
   // ── WAVE1-A: the day's change, filled after the card draws ──────────
   // data/bids-prev/<ST>.json is written by scripts/build_bids_prev.py in the
@@ -1547,24 +1641,27 @@
     if(!tp) return null;
     var best = tp.best;
     var b = best.b, e = best.e, pp = ppu(b.cashPrice), bc = basisCents(b.basis);
-    var ref = null, rm = refMonth(b.symbol);
+    var ref = null, rm = refMonth(b.symbol), br = boardRef(b, cat);
+    if(!rm && br) rm = br;
     if(rm) ref = rm.replace(/ (corn|soybeans)$/, '');
-    else if(bc != null && refCropFor(b, cat) && pricesData){
+    else if(br === undefined && bc != null && refCropFor(b, cat) && pricesData){
+      /* The board's own file could not be read: the month is worked out from
+         the price and says so. */
       var rc = refCropFor(b, cat);
       var r = resolveRef(rc, cat, pp - bc / 100, refEndKey(b, rc === 'kcwheat' ? 'wheat' : rc), (pricesData && pricesData.quotes) || {}, staleDay(e, best.fr, b), hpData);
-      if(r) ref = r.text;
+      if(r) ref = r.text + ' (inferred)';
     }
     var ho = tp.higherOlder;
     return {
       cash: Math.round(pp * 10000) / 10000,
       basis: bc == null ? null : Math.round(bc * 100) / 10000,
       ref: ref,
-      name: e.facility || '',
+      name: displayName(e.facility),
       town: townOf(e) + (townOf(e) && e.state ? ', ' : '') + (e.state || ''),
       mi: e.distance == null ? null : Math.round(e.distance * 10) / 10,
       posted: e.fromNetwork && e.pricedAt ? String(e.pricedAt) : null,
       stale: best.stale,
-      month: monthShort(rowMonthKey(b)) || null,
+      month: cropYearShort(b) || monthShort(rowMonthKey(b)) || null,
       boardKey: boardKey(e),
       higherOlder: ho ? { cash: Math.round(ppu(ho.b.cashPrice) * 10000) / 10000, posted: ho.e.fromNetwork && ho.e.pricedAt ? String(ho.e.pricedAt) : null } : null,
       ageUnknown: !!best.fr.ageUnknown
@@ -1589,10 +1686,11 @@
       dispatchTop(d);
     }
     build();
-    /* Network boards name no contract; once the futures file and the dated
-       settles are in, the label can be checked, so the summary goes out
-       again with it. */
-    if(!pricesData || !hpData) Promise.all([pricesOnce(), harvestOnce()]).then(function(x){ if(tok !== topSeq) return; if(x[0]) pricesData = x[0]; if(x[1]) hpData = x[1]; if(x[0] || x[1]) build(); });
+    /* The board's own contract is in its shard; once those and the futures
+       file are in, the summary goes out again with the month. */
+    var picked = [];
+    ['corn','soybeans','wheat'].forEach(function(c){ try{ var tp = topPick(ctx.elevators, c); if(tp && tp.best) picked.push(tp.best.b); }catch(e){} });
+    Promise.all([pricesOnce(), harvestOnce(), loadShards(picked)]).then(function(x){ if(tok !== topSeq) return; if(x[0]) pricesData = x[0]; if(x[1]) hpData = x[1]; build(); });
   }
   function publishEmpty(label, zip, status){ ++topSeq; dispatchTop(emptyTop(placeOf(label, zip), status)); }
 

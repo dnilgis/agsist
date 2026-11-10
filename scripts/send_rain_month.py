@@ -22,17 +22,17 @@ matches the page (rain_month.rank).
 MODES (the same three as send_cot_weekly.py):
   dry      the default. Counts the list and renders a sample (a made-up
            address and link id) into the log. Sends nothing.
-  preview  Sig's test inbox only (SIG_TEST_EMAILS, else SIG_TO), one email per
+  preview  the owner's test inbox only (SIG_TEST_EMAILS, else SIG_TO), one email per
            sample county (--fips, default Barron 55005 and Story 19169), with
-           "[Preview]" in the subject. BUILD-RULES 13: this is the copy that
+           "[Preview]" in the subject. build rule 13: this is the copy that
            goes to the spam and link checkers before the list gets anything.
            The list is never read for addresses and nothing is marked.
-  send     the list. Refused unless RAIN_MONTHLY_LIVE=1 (Sig turns it on;
-           the workflow passes the repo variable) and the month is the one
+  send     the list. Refused unless RAIN_MONTHLY_LIVE=1 (the owner turns it on;
+ the workflow passes the repo variable) and the month is the one
            just ended.
 
     python3 scripts/send_rain_month.py                       # dry run
-    PREVIEW=1 python3 scripts/send_rain_month.py             # Sig's test inbox only
+    PREVIEW=1 python3 scripts/send_rain_month.py             # the owner's test inbox only
     SEND=1 RAIN_MONTHLY_LIVE=1 python3 scripts/send_rain_month.py
     python3 scripts/send_rain_month.py --month 2026-09 --out <dir>   # write sample renders, send nothing
     python3 scripts/send_rain_month.py --selftest            # fake HTTP and fake SMTP; no network
@@ -42,7 +42,7 @@ SMTP_PASS, FROM_ADDR (the same as the other senders), RAIN_MONTHLY_LIVE,
 SIG_TEST_EMAILS / SIG_TO (preview), MAX_PER_RUN (default 300).
 
 The log carries counts only. No address is ever printed, including in error
-lines. Reply-To is news@agsist.com (Sig, Oct 22). The unsubscribe link stops
+lines. Reply-To is news@agsist.com (Oct 22). The unsubscribe link stops
 this one county's monthly email (send_notice.unsub_link, the agsist.com front
 door).
 """
@@ -69,6 +69,7 @@ sys.path.insert(0, str(HERE))
 import email_links                 # noqa: E402  link ids, the front door, check_message
 import log_safe                    # noqa: E402  sender_addr
 import delivery_line             # noqa: E402  (the DELIVERY count line cron_health reads)
+import send_pace  # noqa: E402  batches, one try more for a deferral, hard bounces (scripts/send_pace.py)
 TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import send_notice as SN           # noqa: E402  unsub_link, footer, transport, EMAIL_RE, TZ
 from send_watch import base_msg    # noqa: E402  headers, List-Unsubscribe
@@ -464,17 +465,20 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     if not todo:
         return 0
     conn, sent, failed, broken, reconnects = None, 0, 0, False, 0
+    pace = send_pace.Pacer(todo, sleep=sleep, key=lambda it: (it[0].strip().lower(), it[1]))  # per reader and topic
     try:
         conn = connect()
-        for i, (e, t, fips, lid) in enumerate(todo):
+        for i, (e, t, fips, lid) in enumerate(pace):
+            conn = pace.fresh(conn, connect)   # the retry pass starts on a new connection
             try:
                 conn.send_message(render(fips, e, base, secret, lid, cache[fips][0], from_addr))
             except Exception as ex:
-                failed += 1
-                out("  send failed (%s)" % type(ex).__name__)
+                if not pace.defer(ex):       # a deferral (4xx) is tried once more at the end of the list
+                    failed += 1
+                    out("  send failed (%s)" % type(ex).__name__)
                 dead = isinstance(ex, (smtplib.SMTPServerDisconnected, smtplib.SMTPConnectError)) or \
                     (isinstance(ex, OSError) and not isinstance(ex, smtplib.SMTPException))
-                if dead and reconnects < 3 and i < len(todo) - 1:
+                if dead and reconnects < 3 and pace.more():
                     reconnects += 1
                     try:
                         conn.quit()
@@ -491,8 +495,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 out("::error::%s: a sent email could not be marked; stopping so nobody gets two" % TOPIC_PRE)
                 broken = True
                 break
-            if i < len(todo) - 1:
-                sleep(1.2)
+            pace.after()   # the short gap, or the pause between batches
     except Exception as ex:
         out("  could not connect to SMTP (%s)" % type(ex).__name__)
     finally:
@@ -501,6 +504,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 conn.quit()
         except Exception:
             pass
+    failed += len(pace.unsent())   # deferred, never tried again
     if TALLY:
         TALLY.sent += sent
     out("%s%s: sent %d; failed %d" % (TOPIC_PRE, month, sent, failed))   # the line morning_report.py reads
@@ -759,7 +763,7 @@ def selftest():
     rc, log = go(["--send", "--max", "1"], w, s, "2026-10-02 09:00", {"RAIN_MONTHLY_LIVE": "1"})
     ck("--max caps a run", rc == 0 and len(s.sent) == 1 and "2 left for the next run" in log, log)
 
-    # preview: Sig's test inbox only
+    # preview: the owner's test inbox only
     w, s = Worker(), SMTP()
     rc, log = go([], w, s, "2026-10-02 09:00", {"PREVIEW": "1", "SIG_TO": "sig@example.org"})
     ck("preview: Sig only, both sample counties, [Preview] subject, list untouched", rc == 0 and s.sent == ["sig@example.org", "sig@example.org"]

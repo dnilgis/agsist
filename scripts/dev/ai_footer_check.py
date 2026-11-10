@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""No AI footer in a pull request's body or its commit messages (BUILD-RULES 38 and 40, Nov 4, 2026).
+"""No AI footer in a pull request's body or its commit messages (build rule 38 and 40, Nov 4, 2026).
 
 The platform appends a "Generated with Claude Code" footer to pull request bodies, and session lines
 (Co-Authored-By: Claude, Claude-Session: and a claude.ai/code link) to commit messages, even when a
@@ -43,7 +43,7 @@ MARKS = [
     ("claude.ai/code link", re.compile(r"(?i)^<?https?://claude\.ai/code\S*?>?$")),
 ]
 COMMIT_PAGES = 3   # 100 commits a page; GitHub lists at most 250 for a pull request
-# Nov 5, 2026 (Sig): the repository is public, so a body or commit message says what changed for readers.
+# Nov 5, 2026: the repository is public, so a body or commit message says what changed for readers.
 # A long one is a warning only, never a failure.
 LONG = 1200
 HINT = "say what changed for readers; method goes in private notes"

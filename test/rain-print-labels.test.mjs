@@ -1,5 +1,4 @@
-/* Rain Print labels (2026-10-13, Sig: "all points when selected to display on
- * the print must be visible and never cross each other"). Every case in
+/* Rain Print labels (2026-10-13). Every case in
  * test/fixtures/rp-label-cases.mjs (both styles, every option, crowded date
  * picks, hard years) plus a fixed fuzz set is drawn by the shipped engine and
  * read back by test/fixtures/rp-label-check.mjs with the real font metrics.
@@ -173,7 +172,7 @@ test("the longest name, place and line, with and without a logo, draw with nothi
   }
 });
 
-// ---------- remarkable days with their dates (Sig, 2026-10-15) ----------
+// ---------- remarkable days with their dates (2026-10-15) ----------
 test("remarkable days with dates: wet, dry and snowy years, both styles, nothing overlaps and every date prints", () => {
   for (const style of ["r1", "r2"]) for (const data of ["wet", "dry", "snowWinter"]) for (const records of ["all", "sameMonth", "sameDay"]) for (const real of [true, false]) {
     const { I, svg, skipped } = draw({ ...base, style, data, records, markers: "spread" }, real), id = [style, data, records, real ? "real" : "table"].join(" ");
@@ -190,7 +189,7 @@ test("remarkable days with dates: wet, dry and snowy years, both styles, nothing
   }
 });
 
-// ---------- up to five marked days (Sig, 2026-10-15: "as long as everything still fits") ----------
+// ---------- up to five marked days (2026-10-15) ----------
 test("five marked days: spread out and three in one week all fit, both styles; nothing overlaps", () => {
   for (const style of ["r1", "r2"]) for (const data of ["usual", "wet", "dry", "snowWinter"]) for (const markers of ["five", "bunch3"]) for (const records of [false, "all"]) {
     const spec = { ...base, style, data, markers, records };

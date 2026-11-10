@@ -14,7 +14,7 @@
  * So when fetch_bids.yml died on 2026-09-23, the scrape kept running and none
  * of it reached a reader. The file froze for 27 hours carrying 889 rows, 250
  * of them from our own boards, while those same boards were being read every
- * ten minutes and published. Sig, on being told:
+ * ten minutes and published. The owner, on being told:
  *
  *     "wtf i thought that bids repo was scraping continusly throught the day
  *      and contiunously feed ing agsist the most recent data"
@@ -255,6 +255,8 @@
       pricedAt: p.pricedAt || null,
       place: p.place || null,
       sourceId: p.source || null,
+      /* Nov 10: the place's shard, which carries each row's futuresMonth (the board's own contract). */
+      shard: p.shard || null,
       delivery: n.delivery || '', period: n.period || '',
       distance: dist == null ? null : Math.round(dist * 10) / 10,
       source: 'network', via: 'scrape'

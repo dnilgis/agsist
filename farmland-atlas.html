@@ -980,7 +980,7 @@ details.fa-arith .body a{color:var(--gold)}
 <!-- /static-nav:footer -->
 </div>
 <script src="/components/loader.js?v=19" defer></script>
-<script src="/components/form-post.js?v=8"></script>
+<script src="/components/form-post.js?v=9"></script>
 
 <script>
 (function(){
@@ -1229,7 +1229,7 @@ var SIDE={
   rentrev:{url:'/data/cash-rent/national.json', why:'the cash rent file did not load'},
   sales:{url:'/data/land/atlas-layer.json', why:'the recorded sales file did not load'}
 };
-// ---------- recorded farmland sales (Sig, Nov 5, 2026): every county with a recorded market sale is shown, no
+// ---------- recorded farmland sales (Nov 5, 2026): every county with a recorded market sale is shown, no
 // minimum count. The count stands beside every figure and a count under the file's "thin" is marked; never hidden.
 // Row: [median $/acre or null, sales in it, 1 bare land / 2 any 20+ acre sale / 0 none priced, first, last, sales in the window, page]
 var SMON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
@@ -2040,7 +2040,7 @@ function renderStrip(fips,c){
   var rv=ok(R)&&R.nonirr?R.nonirr:null, sh=get(c,'water','irrigated_share_2022','share');
   var ia=get(c,'water','applied_2015','irrigated_acres'), ha=get(c,'water','irrigated_share_2022','harvested_acres');
   if(sh==null&&ia&&ha) sh=ia/ha;
-  // Sig, Oct 19, 2026: a rent tile more than three survey years old shows n/a with its last year (the county page and sheet rule)
+  // Oct 19, 2026: a rent tile more than three survey years old shows n/a with its last year (the county page and sheet rule)
   var old_=function(r){ return !!(r&&r.year&&RENT_LATEST&&r.year<RENT_LATEST-3); }, OLDW=', more than three survey years old';
   if(R&&R.irr&&(!ok(R)||!R.nonirr||(sh!=null&&sh>=0.10))){
     var dryW=rv?(old_(rv)?' · dry last published '+rv.year:' · dry '+money(rv.value)):' · no dry rent published';

@@ -1,4 +1,4 @@
-// The bid change-time ledger (god's-eye panel build 1; Sig, Oct 27 2026: "yes to all").
+// The bid change-time ledger (god's-eye panel build 1; Oct 27 2026).
 // scripts/bid_change_ledger.py walks dnilgis/bids git history and dates every bid change
 // between two consecutive good reads of its board; scripts/bid_change_ledger.sh runs it in
 // Actions and saves to the private repo only. These checks pin: the selftest (a real git

@@ -299,7 +299,7 @@ A(/Authorization/.test(r.headers.get('Access-Control-Allow-Headers')), 'prefligh
   r = await get('/elev/feed'); A(!(await r.text()).includes('Farmers Elevator Co'), 'requests are not in the feed');
 }
 
-// ---- v5.34: a board Sig pastes by hand (NEW Cooperative, Oct 20) ----
+// ---- v5.34: a board the owner pastes by hand (NEW Cooperative, Oct 20) ----
 {
   const AFTON = { commodity: 'Corn', delivery: '10/1/2026 - 10/31/2026', cash: '$4.26', basis: '-35', future: '461-4', change: '-5-4' };
   const P = { site: 'newcoop', locations: [{ name: 'Afton', rows: [AFTON] }, { name: 'Creston 1', rows: [Object.assign({}, AFTON, { cash: '$4.21', basis: '-40' })] }] };

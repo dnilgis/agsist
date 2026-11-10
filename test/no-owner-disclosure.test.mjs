@@ -1,4 +1,4 @@
-// Sig, Nov 6, 2026: "I'm not going to steer anybody so don't say anything about it."
+// Nov 6, 2026
 // No shipped page, sponsor component or email script tells a reader the owner also owns
 // another business that may compete with a sponsor. His byline and employer stay.
 import { test } from "node:test";
@@ -7,7 +7,7 @@ import { readFileSync } from "node:fs";
 
 const ROOT = new URL("../", import.meta.url);
 const read = (f) => readFileSync(new URL(f, ROOT), "utf8");
-const PAGES = ["sponsor.html", "sponsor-kit.html", "sponsor-apply.html", "prf-sponsor.html", "prf-sponsor-kit.html",
+const PAGES = ["sponsor.html", "sponsor-kit.html", "sponsor-rates.html", "sponsor-apply.html", "prf-sponsor.html", "prf-sponsor-kit.html",
   "terms.html", "privacy.html", "editorial-standards.html", "about.html", "contact.html", "list-your-elevator.html",
   "hail-map.html", "field-scout.html", "index.html", "daily.html", "prf.html", "lrp.html"];
 const CODE = ["components/sponsor-ad.js", "components/prf-sponsor.js", "components/sponsor-apply.js",

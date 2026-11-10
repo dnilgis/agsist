@@ -1,6 +1,6 @@
 /* components/nws.js: the National Weather Service forecast grid, read for one point (2026-10-29).
  *
- * It replaced Open-Meteo on every page (Sig, Oct 29: Open-Meteo's terms count an ad-supported site
+ * It replaced Open-Meteo on every page (Oct 29: Open-Meteo's terms count an ad-supported site
  * as commercial use). The source is api.weather.gov, public and keyless: /points/<lat>,<lon> names the
  * forecast office and grid cell (2.5 km), then /gridpoints/<office>/<x>,<y> is that cell's NDFD
  * forecast, every element on its own time steps. This file lays those steps out hour by hour and

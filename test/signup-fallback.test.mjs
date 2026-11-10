@@ -41,7 +41,7 @@ function page(worker, formspree = () => new Response(JSON.stringify({ ok: true }
   };
   const el = () => ({ style: {}, setAttribute() {}, appendChild() {}, addEventListener() {}, remove() {}, parentNode: null });
   const win = {
-    fetch: realFetch, location: { href: "https://agsist.com/cash-bids", pathname: "/cash-bids" },
+    fetch: realFetch, location: { href: "https://agsist.com/cash-bids", hostname: "agsist.com", pathname: "/cash-bids" },
     dispatchEvent: (e) => events.push(e.type), CustomEvent: class { constructor(t, d) { this.type = t; this.detail = d && d.detail; } },
   };
   const ctx = {
@@ -120,7 +120,7 @@ test("signup-ask.js shows the queued line in place of its own text, cache versio
   const sa = read("components/signup-ask.js");
   assert.ok(sa.includes("esc(queued(res) || OK"), "the ask shows the queued line");
   assert.ok(sa.includes("res.data.queued === true"));
-  assert.ok(LOADER.includes("s.src = '/components/signup-ask.js?v=21';"));
+  assert.ok(LOADER.includes("s.src = '/components/signup-ask.js?v=22';"));
   assert.ok(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1] >= 220);
   assert.ok(!/—/.test(wrapper()), "no em dash");
 });

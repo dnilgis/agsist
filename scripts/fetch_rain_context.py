@@ -37,7 +37,10 @@ import urllib.request
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 RAIN = os.path.join(ROOT, "data", "rain")
-OUT = os.path.join(RAIN, "context")
+CONTEXT_DIR = "context"
+OUT = os.path.join(RAIN, CONTEXT_DIR)
+# The one source line every data/rain/context/<st>.json carries, fresh or kept (run() brings kept files current).
+SOURCE = "RCC-ACIS: PRISM and NCEI 1991-2020 normals (county means); NOAA station records"
 SCHEMA = "agsist-rain-context/1"
 GRID_URL = "https://data.rcc-acis.org/GridData"
 GRID2_URL = "https://grid2.rcc-acis.org/GridData"
@@ -118,9 +121,13 @@ def rank_of(vals, first_year):
         return None
     wetter = [y for y, v in years if v > this + 0.005]
     drier = [y for y, v in years if v < this - 0.005]
+    # "up": inches more this year would need to pass the next wetter year. A year with missing days could
+    # hide that much, so the pages say a dry rank only when the gap is wider (rain_records.dry_rank_ok).
+    up = min(v for _y, v in years if v > this + 0.005) - this if wetter else None
     return {"this": round(this, 2), "n": len(years) + 1, "first": years[0][0],
             "wetter": len(wetter), "drier": len(drier),
-            "last_wetter": max(wetter) if wetter else None, "last_drier": max(drier) if drier else None}
+            "last_wetter": max(wetter) if wetter else None, "last_drier": max(drier) if drier else None,
+            "up": round(up, 2) if up is not None else None}
 
 
 def state_fips(d):
@@ -166,7 +173,7 @@ def build_state(src, d):
                 r.pop("this")
                 out.setdefault(f, {})["rank"] = r
     return {"schema": SCHEMA, "state": st, "year": d["year"], "edate": edate, "fetched": d["fetched"],
-            "source": "RCC-ACIS: PRISM grid 21 and NCEI 1991-2020 gridded normals (county means); station records (MultiStnData)",
+            "source": SOURCE,
             "counties": out}
 
 
@@ -193,6 +200,12 @@ def run(src, states=None, rain=RAIN, out=OUT):
         r = sum(1 for c in res["counties"].values() if "rank" in c)
         print(f"  {st}: county average {g}, on record {r} of {len(d['counties'])}", flush=True)
         ok += 1
+    # a kept state keeps its numbers, not an older source line
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import county_rain as R
+    fixed = R.set_source(out, SOURCE)
+    if fixed:
+        print(f"rain context: source line brought current on {len(fixed)} kept file(s): {', '.join(fixed)}", flush=True)
     print(f"rain context: {ok} states written, {bad} kept", flush=True)
     return 0
 
@@ -212,6 +225,9 @@ def selftest():
     r = rank_of(vals, FIRST_YEAR)
     ok(r and r["this"] == 28.05, f"this year {r}")
     ok(r and r["last_wetter"] == 2025, f"last wetter {r}")
+    nxt = min(num(v) for v in vals[:-1] if num(v) is not None and num(v) > 28.055)
+    ok(r and r["up"] == round(nxt - 28.05, 2) and r["up"] > 0, f"gap to the next wetter year {r}")
+    ok(rank_of(["10.0"] * 30 + ["12.0"], FIRST_YEAR)["up"] is None, "the wettest year has no next wetter year")
     ok(r and r["n"] == r["wetter"] + r["drier"] + 1 + sum(1 for v in vals[:-1] if num(v) == 28.05), f"counts {r}")
     ok(rank_of(vals[-20:], FIRST_YEAR) is None, "under 30 years says nothing")
     ok(rank_of(vals[:-1] + ["M"], FIRST_YEAR) is None, "this year missing says nothing")
@@ -231,6 +247,15 @@ def selftest():
         ok("rank" not in c["counties"].get("55003", {}), "a station with no record gets no rank")
         ok("27045" not in c["counties"], "a Minnesota county in the bounding box is dropped")
         ok(c["fetched"] == "x", "fetched carried over")
+        ok(c["source"] == SOURCE, f"a fresh context file carries the one source line: {c.get('source')}")
+        # a kept context file (here MN, whose rain file is gone) keeps its numbers and loses an older source line
+        kept = {"schema": SCHEMA, "state": "MN", "source": "station records (MultiStnData)", "counties": {"27001": {"grid": {"total": 1.0}}}}
+        with open(os.path.join(out, "mn.json"), "w") as fh:
+            json.dump(kept, fh, separators=(",", ":"))
+        run(Saved(fx), {"WI"}, rain, out)
+        k2 = json.load(open(os.path.join(out, "mn.json")))
+        ok(k2["source"] == SOURCE and k2["counties"] == kept["counties"] and list(k2) == list(kept),
+           f"a kept context file comes out with the current source line, same keys in the same order: {k2.get('source')}")
         # Alaska: no grid asked at all, the rank still written
         asked = []
         class Spy(Saved):

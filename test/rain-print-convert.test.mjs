@@ -148,7 +148,7 @@ test("a phone buyer sees the date it should arrive by the button, per product", 
     await drawn(page);
     await page.waitForTimeout(600);
     // the clock is Oct 14 (Wed): framed 11 business days -> Thu Oct 29; print 10 -> Wed Oct 28.
-    // 2026-10-20 (Sig): in the Christmas window the line by the button is the order-by date, and the arrival date sits lower
+    // 2026-10-20: in the Christmas window the line by the button is the order-by date, and the arrival date sits lower
     assert.equal(await page.textContent("#rp-arrive"), "Order by Dec 9 for Christmas delivery.");
     assert.equal(await page.textContent("#rp-arrive-est"), "Ordered today, it should arrive by about Thursday, Oct 29.");
     await page.fill("#rp-name", "Olson Home Place");

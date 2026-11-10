@@ -103,7 +103,7 @@
     map.on('zoomstart', dismissInvite);
     try{ map.getContainer().addEventListener('pointerdown', dismissInvite, { once:true }); }catch(e){}
 
-    // THE BASE MAP IS THE USGS NATIONAL MAP (Sig, Oct 29, 2026): public domain, no key, no
+    // THE BASE MAP IS THE USGS NATIONAL MAP (Oct 29, 2026): public domain, no key, no
     // account, so it cannot turn into a bill or a watermark (scripts/basemap-checks.mjs). The
     // satellite view is USGSImageryOnly (NAIP aerial photos, cached to level 16; closer zooms
     // stretch the level-16 tile), the map view is USGSTopo. Esri World Imagery (no account,
@@ -1100,7 +1100,7 @@
   // touch or key press, or when a field is picked. The print report, boundary
   // export and note photos are field-scout-extras.js, fetched on their buttons.
   // Both reach this file's variables through FSX (getters, so always the live value).
-  var FS_READ_SRC='/field-scout-read.js?v=24', FS_EXTRAS_SRC='/field-scout-extras.js?v=4';
+  var FS_READ_SRC='/field-scout-read.js?v=25', FS_EXTRAS_SRC='/field-scout-extras.js?v=4';
   var RM=null, XM=null, _rmP=null, _xmP=null;
   var FSX=Object.defineProperties({}, {
     map:{get:function(){ return map; }, set:function(v){ map=v; }},

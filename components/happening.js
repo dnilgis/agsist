@@ -1,6 +1,4 @@
-/* happening.js: "Today and this week" in the hero, beside the futures (Sig, Nov 6, 2026: "a happening today block,
-   for example a link to the COT and some kind of teaser to get people interested, important releases people should
-   be made aware of").
+/* happening.js: "Today and this week" in the hero, beside the futures (Nov 6, 2026).
 
    Up to three stacked releases, never a carousel. The first is the next release with a countdown (redrawn each
    minute, not announced) and one line built only from numbers this site already published; then up to two more in
@@ -10,7 +8,7 @@
 
    WHERE THE DATES COME FROM (nothing is typed here):
      COT        data/cot.json next_release (fetch_cot.py, from scripts/cot_calendar.py release_date), and for the
-                weeks after it cotRelease(), a line-for-line port of release_date: the Friday of the as-of week,
+                weeks after it cotRelease, a line-for-line port of release_date: the Friday of the as-of week,
                 one business day later for each federal holiday Wednesday to Friday (CFTC's Monday releases).
      USDA       /usda-calendar.ics (scripts/build_usda_ics.mjs, from the report list on /usda-calendar).
      Crop       Progress: Mondays 4:00 PM ET in season, the next business day after a Monday holiday, through the
@@ -21,12 +19,12 @@
    css/home.css holds each line's room. The live region (#hap-say) speaks only when a row changes state.
    window.AgHappening (test/home-happening.test.mjs runs it in node on fixtures and a fixed clock).
 
-   THE FUNDS THIS WEEK ASK (Sig, Nov 6: grow the Friday COT email list): when the first row is the COT report (its
+   THE FUNDS THIS WEEK ASK (Nov 6: grow the Friday COT email list): when the first row is the COT report (its
    countdown, "updating" or "Out today"), a small "Email me Fridays" link sits at the right of its title line and opens
    the one Funds this week box on /cot (#cot-signup; no second signup path). It is placed over the row's own room
    (absolute, a 44 px target), so it moves nothing; the bake writes it too. GA4: funds_ask {where: home_happening}.
 
-   LAST WEEK'S QUESTION, THIS WEEK'S ANSWER (kit v2 part 2, Sig Nov 6): before the release the COT row's line is the
+   LAST WEEK'S QUESTION, THIS WEEK'S ANSWER (kit v2 part 2, Nov 6): before the release the COT row's line is the
    week's question from data/cot-questions.json (scripts/cot_questions.py: fund positions only, never prices); once the
    new report is in cot.json the row is titled "Read this week's funds report" and its line answers ("Funds sold corn
    for 7 weeks in a row."): the question file's answer when it is for that report, else the corn run from cot-history.
@@ -341,7 +339,10 @@
       var a = e.target && e.target.closest ? e.target.closest('.hap-ask') : null;
       if (a) try { if (typeof root.gaEvent === 'function') root.gaEvent('funds_ask', { where: 'home_happening' }); } catch (x) {}
     });
-    Promise.all([load(), get('/usda-calendar.ics', 'text').then(function (t) { D.ics = t; })]).then(function () { tick(); });
+    /* Nov 10: one request for the calendar file per page (AG.text, components/util.js), shared
+       with the season strip, not a second fetch of the same file. */
+    var icsP = root.AG && root.AG.text ? root.AG.text('/usda-calendar.ics').catch(function () { return null; }) : get('/usda-calendar.ics', 'text');
+    Promise.all([load(), icsP.then(function (t) { D.ics = t; })]).then(function () { tick(); });
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', go); else go();
 })(typeof self !== 'undefined' ? self : this);

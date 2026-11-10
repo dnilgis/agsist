@@ -220,27 +220,14 @@ def block(rows, base, today):
                      % (e(r["fc"]), e(r["label"]), cls, e(r["status"]), why, e(r["every"][0].upper() + r["every"][1:]),
                         e(r["why"][0].upper() + r["why"][1:]) if r["why"] and r["status"] != "Quiet" else "Graded by arithmetic", dl))
     asof = max(max(r.get("locked_at", ""), r.get("graded_at", "")) for r in rows)[:10] if rows else today
-    fixed = day(base["declared_on"])
     return (START + "\n"
             '<div class="tr" id="forecast-record">\n<style>' + CSS + '</style>\n'
             '<h2 class="cal-big-h" id="tr-h">Every AGSIST forecast, graded</h2>\n'
-            '<p class="tr-lede">Every forecast AGSIST publishes is locked before the outcome is known and graded by arithmetic '
-            'after it. Each one is scored beside simple baselines that need no model at all (for a direction call, always calling '
-            'the direction fixed in advance as the more common one; for a level, calling no change), never against a coin flip. A rate stays hidden until enough calls are graded '
-            'to mean something.</p>\n'
+            '<p class="tr-lede">Every forecast AGSIST publishes is locked before the outcome is known and graded after it, '
+            'beside a simple baseline that needs no model, never against a coin flip. A rate stays hidden until enough calls are '
+            'graded to mean something.</p>\n'
             '<ul class="tr-list">' + "".join(cards) + '</ul>\n'
             '<p class="tr-note">Record as of ' + e(day(asof)) + '.</p>\n'
-            '<details class="tr-src"><summary>Sources and terms</summary><p class="tr-note"><b>Status.</b> Live: over its most '
-            'recent graded calls it beats its baseline and keeps its range and direction record, and it is still being made. '
-            'Quiet: it misses one of those; it keeps locking and grading in the open. Building: too few graded calls to '
-            'say. Retired: no longer made; its record stays. Locked counts every forecast written down, including ones still waiting '
-            'for their outcome and ones replaced by a newer lock before the report, which are kept and never graded. A call whose outcome landed exactly on the price at the lock counts as neither right '
-            'nor wrong and is left out of the direction count. The average miss is the gap to the outcome as a share of the '
-            'outcome. The baselines were fixed ' + e(fixed) + ' and are never changed.</p><p class="tr-note">AGSIST&rsquo;s public forecast record: one '
-            'line per locked forecast and one per grade, so no past '
-            'call can be changed or dropped without it showing. Outcomes: USDA WASDE and NASS Crop Production yields; futures '
-            'closes from Yahoo Finance; USDA AMS announced Class III prices. Backtest baselines: the USDA WASDE archive and the '
-            'prediction bot&rsquo;s published backtest.</p></details>\n'
             '</div>\n' + END)
 
 
@@ -301,7 +288,7 @@ def selftest():
     eq(status(base["forecasts"]["a"], [], [], "2026-10-25")[0], "Building")
     html = block(rows, base, "2026-10-25")
     assert "—" not in html and "–" not in html
-    assert '<details class="tr-src"><summary>Sources and terms</summary>' in html and "<details open" not in html
+    assert "<details" not in html and "Sources and terms" not in html   # the one fold is at the bottom of the page
     eq(html.count('class="tr-c"'), 2)
     # a broken chain, an edited row or an extra field: refused, the page is left alone
     with tempfile.TemporaryDirectory() as t:

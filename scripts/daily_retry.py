@@ -7,10 +7,9 @@ and published the issue, and then the send step's number check (daily_v2.check,
 through send_daily.v2_gate) refused it: a close word over the morning's last
 trade. Every later run said "already published" and skipped, so nobody got the
 Daily until a manual run, and the refused headline sat on agsist.com/daily for
-about two hours. Sig, Oct 27: "if the headline is bad, trigger a fix on the
-spot until it passes its test."
+about two hours. Oct 27
 
-THREE PIECES, all used by .github/workflows/daily.yml:
+THREE PIECES, all used by.github/workflows/daily.yml:
 
   prepublish   The send step's own number check (send_daily.v2_gate, the same
                function, the same daily_v2.check) on today's issue, BEFORE the
@@ -24,7 +23,7 @@ THREE PIECES, all used by .github/workflows/daily.yml:
                but unsent issue may be written again; 1 = sent; 2 = cannot tell,
                and the gate skips (never risk a second send).
 
-  alert        One email to Sig when a check blocks a run that was meant to
+  alert        One email to the owner when a check blocks a run that was meant to
                send: which check, that nothing was published or sent, and
                whether the next run tries again (until 2 p.m. CT, the gate's
                morning window) or not.
@@ -34,7 +33,7 @@ THREE PIECES, all used by .github/workflows/daily.yml:
 
   dry-run-note DAY
                A manual run without send_email publishes and sends nothing. It
-               NEVER marks the day done (Sig, Nov 3 2026): on Nov 3 the 7:32 CT
+               NEVER marks the day done (Nov 3 2026): on Nov 3 the 7:32 CT
                dry run left data/daily-sent/<day>.dry-run.json, the 7:46
                heartbeat skipped on it, and the Daily went out only with a
                second manual run. This writes nothing; it tells the person, in
@@ -43,7 +42,7 @@ THREE PIECES, all used by .github/workflows/daily.yml:
 
     python3 scripts/daily_retry.py prepublish [issue.json]
     python3 scripts/daily_retry.py flag 2026-10-28
-    python3 scripts/daily_retry.py alert          (FAILED="g2f ..." from daily.yml)
+    python3 scripts/daily_retry.py alert          (FAILED="g2f..." from daily.yml)
     python3 scripts/daily_retry.py retry 2026-10-28
     python3 scripts/daily_retry.py dry-run-note 2026-10-28
 """
@@ -65,7 +64,7 @@ SENT = REPO / "data" / "daily-sent"
 # (daily.yml, "A DELAYED MORNING FIRE IS NOT A REGENERATION").
 RETRY_UNTIL_HOUR = 14
 
-# daily.yml step ids -> what Sig reads
+# daily.yml step ids -> what the owner reads
 CHECKS = {
     "g0": "a selftest of the checks (GATE 0)",
     "g1": "the price feed check (GATE 1)",
@@ -77,7 +76,7 @@ CHECKS = {
     "g2v": "the email's number check on the subject, headline and lead (GATE 2v)",
     "commit": "publishing (the push to agsist.com)",
 }
-# steps that already mail Sig themselves when they block (headline_fix.hold_alert)
+# steps that already mail the owner themselves when they block (headline_fix.hold_alert)
 MAILS_ITSELF = {"g2h"}
 
 
@@ -183,7 +182,7 @@ def runs_today(day, fetch=gh_fetch):
 
 
 def is_dry_run(run):
-    """A manual run without send_email (not the price loop's heartbeat, not Sig's test copy)."""
+    """A manual run without send_email (not the price loop's heartbeat, not the owner's test copy)."""
     t = str(run.get("display_title") or run.get("name") or "")
     return (run.get("event") == "workflow_dispatch" and "send_email=false" in t and "heartbeat=false" in t
             and "test_to_sig=false" in t)
@@ -198,7 +197,7 @@ def dry_run_today(day, fetch=gh_fetch):
 def retry_state(day, fetch=gh_fetch):
     """For the gate, about a published issue with no sent copy: 0 write it
     again, 1 it went out, 2 cannot tell (the gate skips). Only the day flag
-    decides. A manual dry run today is no reason to skip (Sig, Nov 3 2026):
+    decides. A manual dry run today is no reason to skip (Nov 3 2026):
     a run without send_email never marks the day done."""
     return flag_state(day)
 
@@ -249,7 +248,7 @@ def may_mail(check, now, past):
 
 
 def capped(check, now=None, fetch=gh_fetch):
-    """True when this block may mail Sig. History unreadable: mail (an alert
+    """True when this block may mail the owner. History unreadable: mail (an alert
     too many beats a block nobody hears about)."""
     from zoneinfo import ZoneInfo
     now = now or datetime.now(ZoneInfo(CT))
@@ -271,7 +270,7 @@ def can_retry(now):
     return now.hour * 60 + now.minute + NEXT_RUN_MIN < RETRY_UNTIL_HOUR * 60
 
 
-# ── alert: one email to Sig, naming the check ──────────────────────────────
+# ── alert: one email to the owner, naming the check ──────────────────────────────
 
 def alert_lines(day, failed, now, run_url=""):
     """(subject, lines) or (None, None) when there is nothing to say."""

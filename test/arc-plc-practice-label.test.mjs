@@ -33,7 +33,12 @@ const f1 = (v) => f1s(v)[f1s(v).length - 1];
 test("hand-checked: Platte County, NE names non-irrigated and shows the irrigated 239.0 bu too", () => {
   const { title, desc } = meta(read("arc-plc/nebraska/platte-county.html"));
   assert.match(title + " " + desc, /non-irrigated corn/i);
-  assert.ok(desc.includes("187.4 bu") && desc.includes("239.0 bu irrigated"), desc);
+  assert.ok(title.includes("187.4 bu"), title);
+  // The description carries the benchmark when it fits in 155 characters, and then the irrigated one beside it.
+  // A longer verdict and dollar figures (November WASDE, Nov 10, 2026: "ARC-CO expected to pay more ... $12.59")
+  // push it to the short form, which names the practice and prints no benchmark at all.
+  if (desc.includes("187.4 bu")) assert.ok(desc.includes("239.0 bu irrigated"), desc);
+  else assert.ok(!/\d bu\b/.test(desc) && /for non-irrigated corn in 2026/.test(desc), desc);
 });
 
 test("every county page that prints a split crop's benchmark names the practice", () => {

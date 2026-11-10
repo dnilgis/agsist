@@ -25,7 +25,9 @@ const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not foun
 
 /* ---- 2: the badge function from components/home-yield.js, run with a fixed clock ---- */
 function badge(data, nowIso) {
-  const body = read("components/home-yield.js").match(/var _st=(\(function\(iso\)\{[\s\S]*?\}\)\(data\.fetched\));/)[1];
+  const src = read("components/home-yield.js");
+  // the badge calls stampAt (a last trade stamped from its close_time), a one-line helper beside it in the same file
+  const body = src.match(/function stampAt\(cq,F\)\{[^\n]*\}/)[0] + "\n" + src.match(/var _st=(\(function\(iso\)\{[\s\S]*?\}\)\(data\.fetched\));/)[1];
   const RD = Date;
   const D = class extends RD { constructor(...a) { super(...(a.length ? a : [nowIso])); } static now() { return new RD(nowIso).getTime(); } };
   D.UTC = RD.UTC; D.parse = RD.parse;
@@ -126,10 +128,10 @@ test("1: Nov 3, Iowa corn and soybeans closed Oct 31, not released: no 'if it cl
   } finally { await browser.close(); srv.close(); }
 });
 
-/* ---- Sig's call Oct 20 (v37 item 2): the window bar uses our running average where we have the settles ----
+/* ---- a product decision Oct 20 (v37 item 2): the window bar uses our running average where we have the settles ----
  * Reads a frozen copy of the harvest data (test/fixtures/harvest-tracker/, the copy test/harvest-tracker-oct19
  * reads: Oct 25, 2026, Iowa corn's window running), routed in the browser, on a clock taken from that copy. On live
- * data/ it returned early once the October window closed (Nov 2), so nothing was checked (BUILD-RULES 50). */
+ * data/ it returned early once the October window closed (Nov 2), so nothing was checked (build rule 50). */
 const HFIX = "test/fixtures/harvest-tracker";
 test("bar: Iowa corn reads our running average, the calculator's number, with RMA's figure in one line", { skip, timeout: 90000 }, async () => {
   const HP = JSON.parse(read(HFIX + "/harvest-prices.json"));

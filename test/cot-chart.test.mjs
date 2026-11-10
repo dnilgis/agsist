@@ -1,18 +1,17 @@
-/* The 52-week funds chart on /cot (2026-11-05, Sig: "I want the 52-week COT chart enhanced and made near the top
- * of the page ... I can picture people sharing it if we make it easy"). components/cot-chart.js.
- *   - one chart near the top (Nov 5, Sig: "KISS, the chart I want can tell a lot of that story"): the crowded
+/* The 52-week funds chart on /cot (2026-11-05). components/cot-chart.js.
+ *   - one chart near the top (Nov 5): the crowded
  *     verdict when it fits one line, the chips, one brief line for the market picked, the chart; every market
  *     in a table behind one "All markets" tap under it, then the email ask; on a 390 px phone the chart's
  *     line is on the first screen; no sentence repeats per market (no phrase over 4 words repeats across rows);
  *   - one market at a time, corn by default, the pick in the link (?m=soybeans); a table row picks it too;
- *   - the last point is cot.json's net for that market; the title is cot-glance.js brief();
+ *   - the last point is cot.json's net for that market; the title is cot-glance.js brief;
  *   - the price strip only when every week has a close (none for lean hogs or Minneapolis wheat, and none when a
  *     week is missing), never a second scale on the net;
  *   - Share this chart calls the phone's share sheet with the market's link, or copies it; Save image is a
  *     1200x675 PNG carrying agsist.com/cot and the report date;
  *   - the home card's lines open /cot on their market.
  * Frozen inputs: test/fixtures/funds (cot.json, cot-analysis.json and cot-history.json for the Oct 27, 2026 report).
- * The browser parts route every outside host to a stub or abort and block service workers (BUILD-RULES 58).
+ * The browser parts route every outside host to a stub or abort and block service workers (build rule 58).
  *
  *   node --test test/cot-chart.test.mjs
  */
@@ -246,7 +245,8 @@ test("the home card's lines open /cot on their market", () => {
   for (const k of G.ORDER) assert.equal(G.keyOf(G.SLUG[k]), k);
   assert.equal(G.keyOf("nonsense"), null);
   const idx = read("index.html");
-  for (const s of ["components/cot-glance.js?v=6", "components/home.js?v=24", "css/home.css?v=41"]) assert.ok(idx.includes("/" + s + '"'), s);
+  for (const s of ["components/cot-glance.js?v=6", "css/home.css?v=41"]) assert.ok(idx.includes("/" + s + '"'), s);
+  assert.match(idx, /\/components\/home\.js\?v=\d+"/); // test/one-more.test.mjs owns the exact version
 });
 
 // ---------------------------------------------------------------- in a browser
@@ -493,7 +493,7 @@ test("home card: each line opens /cot on its market", { skip, timeout: 120000 },
   } finally { await browser.close(); srv.close(); }
 });
 
-/* The Funds this week ask (Sig, Nov 6: grow the list). The release bar's link, the print sheet's QR code, the email's
+/* The Funds this week ask (Nov 6: grow the list). The release bar's link, the print sheet's QR code, the email's
    forward line and the homepage all land on #cot-signup, the one ask: arriving there puts the email field in focus with
    the box in view, and the bar's link does the same and tells GA4 funds_ask {where}. */
 test("arriving on /cot#cot-signup, or tapping the release bar's link, focuses the email field of the one Funds this week box", { skip, timeout: 120000 }, async () => {

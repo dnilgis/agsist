@@ -69,7 +69,7 @@ run place-pct python3 scripts/build_place_pct.py --check
 run nav python3 scripts/inject_static_nav.py --check
 run feeds bash -c 'python3 scripts/build_feeds.py && python3 scripts/test_feeds.py'
 for f in network-checks delivery-checks market-clock-checks network-safety-checks homepage-bids-checks sponsor-checks; do run $f node scripts/$f.mjs; done
-for t in scripts/test_send_loops.py scripts/test_daily_delivery_line.py scripts/test_list_fallback.py scripts/test_basis_states.py scripts/test_basis_companies.py scripts/test_basis_usda.py scripts/test_ownership_changes.py scripts/test_share_images.py scripts/test_fact_check.py scripts/test_sponsor_portal.py scripts/test_rate_card.py; do [ -f $t ] && run "$(basename $t)" python3 $t; done
+for t in scripts/test_send_loops.py scripts/test_send_pace.py scripts/test_daily_delivery_line.py scripts/test_list_fallback.py scripts/test_basis_states.py scripts/test_basis_companies.py scripts/test_basis_usda.py scripts/test_ownership_changes.py scripts/test_share_images.py scripts/test_fact_check.py scripts/test_sponsor_portal.py scripts/test_rate_card.py; do [ -f $t ] && run "$(basename $t)" python3 $t; done
 run llms bash -c "python3 scripts/build_llms_txt.py --selftest && python3 scripts/build_llms_txt.py --check"
 # number consistency: rule selftests must pass; on the real data it reports only (prints, never fails) until it has run clean
 run numbers bash -c "python3 scripts/check_number_consistency.py --selftest >/dev/null && python3 scripts/check_number_consistency.py > '$OUT/numbers.out' 2>&1; tail -1 '$OUT/numbers.out' >&2; true"
@@ -77,7 +77,7 @@ run site-check python3 scripts/daily_site_check.py --selftest
 # a correction USDA published (data/usda-corrections.json) is shown beside the printed figure wherever it is used
 run usda-corrections bash -c "python3 scripts/usda_corrections.py --selftest >/dev/null && python3 scripts/usda_corrections.py --check"
 run ids python3 scripts/build_ids.py --selftest
-# company ids on evidence only (scripts/company_ids.py, Sig Nov 9 2026): rules selftest, then the committed file
+# company ids on evidence only (scripts/company_ids.py, Nov 9 2026): rules selftest, then the committed file
 run company-ids bash -c "python3 scripts/company_ids.py --selftest && python3 scripts/company_ids.py --check"
 # buyer and seller names out of the county transfer files (scripts/land_names.py, PR 324, Nov 4, 2026)
 run land-names python3 scripts/land_names.py --selftest

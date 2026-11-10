@@ -3,7 +3,7 @@
 daily_site_check.py: once a day, after the morning data runs, is the site
 telling one story, and is everything it depends on still moving?
 
-Runs from .github/workflows/daily-site-check.yml (Sig approved 2026-10-17).
+Runs from.github/workflows/daily-site-check.yml (2026-10-17).
 Four checks (the fourth, answers, added Oct 28 for the answer blocks):
   numbers    scripts/check_number_consistency.py --strict (the same number
              everywhere, and its staleness rule: each data file's own date

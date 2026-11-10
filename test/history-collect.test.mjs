@@ -1,4 +1,4 @@
-/* The history collectors for the insight machine (Sig, Oct 21: start the
+/* The history collectors for the insight machine (Oct 21: start the
  * collection jobs; HARD RULE: no new scheduled workflow, no new cron line).
  *   - one-time backfills (scripts/backfill_agtransport.py, backfill_usdm.py,
  *     backfill_nass_progress.py, backfill_ams_fert.py) behind ONE dispatch-only
@@ -101,7 +101,7 @@ test('history-backfill.yml: resumes from the saved manifest, refuses to start bl
   assert.doesNotMatch(s, /RAW_SOFT/, 'the last save is hard: a red run says the history did not land');
 });
 
-// ---------------------------------------------------------------- no new schedule (Sig, Oct 21)
+// ---------------------------------------------------------------- no new schedule (Oct 21)
 function crons(text) {
   // quoted ('17 20 * * 1,2'), with or without a comment after it, or bare
   return noComments(text).split('\n').map((l) => {
@@ -124,30 +124,31 @@ test('no workflow gained a schedule: every cron line is already on origin/main',
     }
   }
   assert.ok(n > 50, `found ${n} cron lines; the reader lost them`);
-  // A schedule Sig has approved in so many words (STANDING-DECISIONS), exactly as approved and nothing else:
+  // A schedule the owner has approved in so many words (a site rule), exactly as approved and nothing else:
   //   Oct 23 2026: the monthly "my county's rain" email, "new list, sender and schedule approved", on the 2nd.
   //   Oct 23 2026: "County rain pages rebuild daily (was Mondays)": county-rain.yml every day at the old time.
   //   Oct 23 2026: the monthly land-sale alert email, "new list, sender and monthly schedule approved", on the 3rd.
-  //   Oct 27 2026: Sig, "Turn on land sale email alert signups": the same land-alert.yml schedule, signups on.
-  //   Oct 28 2026: Sig, yes: the implied-futures shadow test "may run on its own during CBOT day session (every 30 min
+  //   Oct 27 2026:: the same land-alert.yml schedule, signups on.
+  //   Oct 28 2026: the owner, yes: the implied-futures shadow test "may run on its own during CBOT day session (every 30 min
   //     8:30-13:20 CT + once after close) for a week or two". No cron line: implied-futures.yml rides Fetch Grain Bids
   //     (pinned in the test below), so its entry lists none.
-  //   Oct 28 2026: Sig, "YES to a daily point-in-time ("vintage") archive of outside data ... New schedule approved for
+  //   Oct 28 2026: vintage") archive of outside data... New schedule approved for
   //     this": vintage.yml, weekdays 17:37 UTC (pinned in the test below).
-  //   Oct 29 2026: Sig, ag stock tracker (STANDING-DECISIONS: "build /ag-stocks with closes from Yahoo ... use until
-  //     told no"; brief: "The new daily workflow is approved by Sig (Oct 29)"): agstocks.yml, weekdays 22:17 UTC.
-  //   Oct 29 2026: Sig, "yes do all five" (STANDING-DECISIONS: "the full suite runs on every main push and nightly ...
+  //   Oct 29 2026: the owner, ag stock tracker (a site rule: "build /ag-stocks with closes from Yahoo... use until
+  //     told no"; brief: "The new daily workflow is approved by Oct 29"): agstocks.yml, weekdays 22:17 UTC.
+  //   Oct 29 2026:  (a site rule: "the full suite runs on every main push and nightly...
   //     (schedule approved)"): main-checks.yml, nightly 08:17 UTC.
-  //   Oct 29 2026: Sig, "yes soil" (STANDING-DECISIONS: run the fall-nitrogen soil station readings March to June too):
+  //   Oct 29 2026:  (a site rule: run the fall-nitrogen soil station readings March to June too):
   //     fall-nitrogen.yml, the same two times, months 3-6 added to 9-12.
-  //   Nov 3 2026: BUILD-RULES 59 (Sig, "tired of these foreseeable issues"): main-checks.yml moves from nightly to
+  //   Nov 3 2026: build rule 59: main-checks.yml moves from nightly to
   //     every two hours on the Fetch Grain Bids chain, gated (fx/genpages brief), so a red main shows within 2 hours.
-  //   Oct 30 2026: Sig, "yes add the 06:50 title refresh" (STANDING-DECISIONS): freshness.yml, Tue-Sat 06:50 UTC,
+  //   Oct 30 2026:  (a site rule): freshness.yml, Tue-Sat 06:50 UTC,
   //     a second night run for a late settle.
-  //   Nov 7 2026: Sig, chat (STANDING-DECISIONS "2026-11-07 (Sig, chat)"): answered "Yes" to "May I schedule the weekly
+  //   Nov 7 2026: the owner, chat (a site rule "2026-11-07 (chat)"): answered "Yes" to "May I schedule the weekly
   //     Schrader capture, Mondays 1:43 PM Central (19:43 UTC)?": schrader-capture.yml, Mondays 19:43 UTC, gated.
+  //   Nov 10 2026: the monthly bid archive check: bid-archive-check.yml, the 6th at 10:19 UTC, gated.
   //   Nov 10 2026: the weekly bids history backup: bids-mirror.yml, Sundays 07:47 UTC, gated.
-  const APPROVED = { 'bids-mirror.yml': ['47 7 * * 0'], 'schrader-capture.yml': ['43 19 * * 1'], 'freshness.yml': ['50 6 * * 2-6'], 'fall-nitrogen.yml': ['23 13 * 3-6,9-12 *', '47 22 * 3-6,9-12 *'], 'main-checks.yml': ['17 */2 * * *'], 'agstocks.yml': ['17 22 * * 1-5'], 'vintage.yml': ['37 17 * * 1-5'], 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'], 'implied-futures.yml': [] };  // stats-ingest: Sig, Oct 23 2026
+  const APPROVED = { 'bid-archive-check.yml': ['19 10 6 * *'], 'bids-mirror.yml': ['47 7 * * 0'], 'schrader-capture.yml': ['43 19 * * 1'], 'freshness.yml': ['50 6 * * 2-6'], 'fall-nitrogen.yml': ['23 13 * 3-6,9-12 *', '47 22 * 3-6,9-12 *'], 'main-checks.yml': ['17 */2 * * *'], 'agstocks.yml': ['17 22 * * 1-5'], 'vintage.yml': ['37 17 * * 1-5'], 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'], 'implied-futures.yml': [] };  // stats-ingest: Oct 23 2026
   const left = added.filter((a) => !Object.entries(APPROVED).some(([f, cs]) => cs.some((c) => a === `${f}: cron '${c}' (new workflow)` || a === `${f}: cron '${c}'`)));
   assert.deepEqual(left, [], 'a new schedule is Sig\'s decision: list it in the report, do not add it');
 });
@@ -216,9 +217,9 @@ test('morning report: reader counts by area to private-data, after the email, ne
   assert.ok(y.indexOf('- name: Reader counts by area') > y.indexOf('- name: Build and send'), 'after the email');
 });
 
-test('bid snapshots: a live day under 500 locations waits for the next run, and a refusal never pushes', () => {
+test('bid snapshots: a live day under 1,500 locations waits for the next run, and a refusal never pushes', () => {
   const b = read('scripts/bid_snapshots.py');
-  assert.match(b, /^MIN_LOCS = 500$/m);
+  assert.match(b, /^MIN_LOCS = 1500$/m);
   assert.match(b, /if gate == "wait":\n\s+print\([^\n]+\)\n\s+return 3/);
   const s = step('fetch_bids.yml', 'Daily bid snapshot to the raw branch');
   assert.match(s, /build --from bids-full\.json --day "\$day" \\\n\s+\|\| \{ echo "::warning::bid snapshot for \$day not built[^\n]*; exit 0; \}/,

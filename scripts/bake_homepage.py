@@ -179,7 +179,7 @@ def main():
     # v5.1: the action holds the takeaway's block (same ids, label reads
     # THE ACTION). Empty action -> block stays hidden and its text is emptied,
     # so yesterday's line never survives into a day that has none.
-    # 2026-10-09, Sig: the prediction bot is out of the Daily for now (it
+    # 2026-10-09, the owner: the prediction bot is out of the Daily for now (it
     # lives on /scorecard). An issue whose action is the bot's call bakes none.
     action = "" if daily.get("bot_call") else (daily.get("action") or "").strip()
     html, _ = replace_inner(

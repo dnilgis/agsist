@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#111a0a">
-  <title>Combine loss calculator: beans and kernels behind the combine | AGSIST</title>
+  <title>Combine loss calculator: beans and kernels behind the combine</title>
   <meta name="description" content="Count beans or kernels in a frame behind the combine and get bushels an acre lost and dollars an acre at your bid. Soybean seed size, corn ears, preharvest loss.">
   <meta name="author"      content="Sigurd Lindquist">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -25,6 +25,7 @@
   <meta name="twitter:description" content="Count beans or kernels in a frame behind the combine and get bushels an acre lost and dollars an acre at your bid. Soybean seed size, corn ears, preharvest loss.">
 
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+  <script>/* the crop's boxes (.soy-only, .corn-only) show from the first paint: the same choice combine-loss-ui.js makes (?crop=, else the saved crop, else soybeans) */try{var clQ=String(new URLSearchParams(location.search).get('crop')||'').toLowerCase(),clS=JSON.parse(localStorage.getItem('agsist-combine-loss')||'null'),clC=(clS&&(clS.crop==='corn'||clS.crop==='soybeans'))?clS.crop:'soybeans';if(/^(beans|soybeans?)$/.test(clQ))clC='soybeans';if(clQ==='corn')clC='corn';document.documentElement.setAttribute('data-cl',clC)}catch(e){document.documentElement.setAttribute('data-cl','soybeans')}</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
   <!-- static-nav:fonts -->
@@ -287,7 +288,7 @@
 <!-- /static-nav:footer -->
 </div>
   <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/bids-network.js?v=8" defer></script>
+  <script src="/components/bids-network.js?v=9" defer></script>
   <script src="/components/grain-shrink.js?v=4" defer></script>
   <script src="/components/combine-loss.js?v=1" defer></script>
   <script src="/components/combine-loss-ui.js?v=3" defer></script>

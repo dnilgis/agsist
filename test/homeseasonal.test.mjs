@@ -1,5 +1,4 @@
-/* The home page without the seasonal reads, Nov 5, 2026 (Sig: "No soil temp on the home screen weather card either.
- * These are seasonal things; if they want a homepage presence we can do that next spring when spray season starts").
+/* The home page without the seasonal reads, Nov 5, 2026.
  *
  *   - no soil temperature anywhere on home: no card cell, no This month cell, no soil reader loaded
  *   - no spray read in the hero band and no spray rule in home-season.js; no fall nitrogen cell in any month's strip
@@ -9,7 +8,7 @@
  *     weather cell has only weather, and the card holds its height at 390 and 1280 (November)
  *
  *   node --test test/homeseasonal.test.mjs
- * Fixtures: test/fixtures/wxcard (frozen). Browser runs block every outside host and service workers (BUILD-RULES 58). */
+ * Fixtures: test/fixtures/wxcard (frozen). Browser runs block every outside host and service workers (build rule 58). */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
@@ -55,7 +54,18 @@ test("the pages that keep them still carry them", () => {
 test("the COT tip names one verdict and the second badge is gone", () => {
   assert.ok(!/id="cot-verdict-lv"/.test(HTML), "no hidden second badge");
   assert.ok(!/grains and live cattle separately|The badges name/.test(HTML), "no talk of two badges");
-  assert.match(HTML, /The one verdict at the top names any market that is crowded on the rank, across every market in the report\./);
+  // Nov 10: the crowding verdict was dropped Nov 6; the home COT card names no crowded tenth and the method
+  // text sits in the closed Sources and terms fold at the bottom
+  const cot = HTML.slice(HTML.indexOf('id="cot-widget"'), HTML.indexOf('id="nowcast-widget"'));
+  assert.ok(cot.length > 500, "COT card found");
+  assert.doesNotMatch(cot, /crowded|tenth/i);
+  const fold = (HTML.match(/<details class="hp-terms"[\s\S]*?<\/details>/) || [""])[0];
+  assert.ok(fold.length > 500, "Sources and terms fold found");
+  // the moved method sentences, word for word, inside the fold
+  assert.ok(fold.includes("Funds: the CFTC Commitments of Traders report, managed money (hedge funds and commodity trading advisers), net futures positions as of Tuesday, in contracts; not a headcount of who is long or short, and not a trading signal."), "COT method sentence");
+  assert.ok(fold.includes("The &ldquo;Since&rdquo; price line compares the front-month price now with its close on the report&rsquo;s Tuesday, so a contract roll in between is inside the number."), "the Since price line explained");
+  assert.ok(fold.includes("the 80% band means that in 8 of every 10 of <span id=\"nc-years\">12</span> past years, each estimated from earlier years only, the estimate at the same week missed USDA&rsquo;s final yield by no more than this. The band gets narrower as the season goes on."), "nowcast band facts");
+  assert.ok(fold.includes("It is withheld once the ratings are two weeks old."), "nowcast withholding");
 });
 
 /* ---------- in the browser ---------- */
@@ -86,7 +96,7 @@ function serve() {
   srv.hits = hits;
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-// BUILD-RULES 58: our own copy only; the forecast from the stand-in; every other outside host aborted
+// build rule 58: our own copy only; the forecast from the stand-in; every other outside host aborted
 const guard = (port, now) => (r) => {
   const u = r.request().url();
   if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();

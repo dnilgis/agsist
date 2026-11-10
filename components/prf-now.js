@@ -114,7 +114,7 @@
 
   /* What share of its protection a policy at each coverage level pays at this index: the policy's own
      rule, (coverage - index) / coverage, whole percent. Only for an interval whose months are both
-     NCEI final (Sig, Oct 20): "a 90% policy pays 28% of protection" at 65.0, computed, never typed. */
+     NCEI final (Oct 20): "a 90% policy pays 28% of protection" at 65.0, computed, never typed. */
   function payShare(index, cov) { return index == null || !(index < cov) ? 0 : Math.round((cov - index) / cov * 100); }
   function payLine(iv) {
     var parts = [];
@@ -129,7 +129,7 @@
     var h = '<table class="pn-need"><caption>More rain by ' + fmtDate(iv.to) + ' that would lift the index to each coverage level</caption>' +
       '<thead><tr><th scope="col">Coverage</th><th scope="col">Rain still to fall</th></tr></thead><tbody>';
     iv.need.forEach(function (n) {
-      h += '<tr><th scope="row">' + n.cov + '%</th><td>' + (n.mm > 0 ? fmtIn(n.inches) + ' more' : 'Already there') + '</td></tr>';
+      h += '<tr><th scope="row">' + n.cov + '%</th><td>' + (n.mm > 0 ? fmtIn(n.inches) + ' more' : 'Already above: won’t pay') + '</td></tr>';
     });
     return h + '</tbody></table><p class="pn-fine">A policy at a coverage level pays only when the final index ends under it. Past that much more rain, that level would not pay for ' + esc(iv.name) + '.</p>';
   }
@@ -139,7 +139,7 @@
     if (iv.ended) h += '<p class="pn-when">Ended ' + fmtDate(iv.to) + '. ' + (iv.allFinal ? 'Both months are NCEI&rsquo;s final data, the same data RMA&rsquo;s index uses.' : 'Not all final yet, so this is still an estimate.') + '</p>';
     else h += '<p class="pn-when">Day ' + (iv.days - iv.left) + ' of ' + iv.days + ', ' + iv.left + (iv.left === 1 ? ' day' : ' days') + ' left (to ' + fmtDate(iv.to) + ').</p>';
     if (iv.withheld) return h + '<p class="pn-held">' + esc(iv.withheld) + '</p></div>';
-    /* an open interval leads with the rain still needed (Sig, Oct 20) */
+    /* an open interval leads with the rain still needed (Oct 20) */
     if (!iv.ended) h += needTable(iv);
     h += '<dl class="pn-figs">' +
       '<div><dt>' + (iv.ended ? 'Rain, whole interval' : 'Rain so far') + '</dt><dd>' + fmtIn(iv.precipIn) + '</dd></div>' +

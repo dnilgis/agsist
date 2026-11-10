@@ -57,14 +57,17 @@ import time
 import urllib.error
 import urllib.request
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import claude_models  # noqa: E402  ONE table of models and prices
+
 API = "https://api.anthropic.com/v1"
-MODEL = "claude-sonnet-5-5"            # search and alt
-STORY_MODEL = "claude-opus-5-5"        # county stories (Sig, Oct 17)
+MODEL = claude_models.RESEARCH         # search, alt, elevator sites, land sources
+STORY_MODEL = claude_models.STORY      # county stories, the other story sets, schedules
 RUN = re.sub(r"[^a-zA-Z0-9_-]", "", os.environ.get("APIJOBS_RUN", "r1")) or "r1"
 OUT = f"apijobs/{RUN}"
 COST_CAP = 20.0      # dollars, search and alt together; submit refuses above the worst case
-STORY_CAP = 45.0     # dollars, county stories (Sig: well under $50); added when a bundle has stories
-ELEVSITE_CAP = 35.0  # dollars, the unread elevators' sites (Sig, Oct 18: capped at $35)
+STORY_CAP = 45.0     # dollars, county stories (well under $50); added when a bundle has stories
+ELEVSITE_CAP = 35.0  # dollars, the unread elevators' sites (Oct 18: capped at $35)
 SCHEDULE_CAP = 20.0  # dollars, discount and drying schedules (Oct 18 research round two)
 LANDSRC_CAP = 20.0   # dollars, county land sale sources (Oct 18 research round two)
 # APIJOBS_CAP lowers a run's cap below the job caps (elevsites round two: $12); it never raises one.
@@ -73,14 +76,10 @@ MAX_TOKENS = {"search": 12000, "alt": 3000, "story": 1000, "elevsite": 2500, "sc
 SET_STORY_MAX_TOKENS = 700   # the other story sets: a story is about 150 tokens; 700 keeps a 3,070-page batch under STORY_CAP
 EFFORT = {"search": "medium", "alt": "low", "story": "low", "elevsite": "low", "schedule": "low", "landsrc": "low"}
 KINDS = ("search", "alt", "story", "elevsite", "schedule", "landsrc")
-# Claude Sonnet 5.5 list prices per million tokens, halved for the Batches API.
-PRICE_IN = 2.00 / 2
-PRICE_OUT = 10.00 / 2
-PRICE_CACHE_WRITE = 2.00 * 1.25 / 2
-PRICE_CACHE_READ = 0.20 / 2
-# Claude Opus 5.5 ($4 in, $20 out, cache read $0.20 per million), halved for the Batches API.
-PRICES = {MODEL: (PRICE_IN, PRICE_OUT, PRICE_CACHE_WRITE, PRICE_CACHE_READ),
-          STORY_MODEL: (4.00 / 2, 20.00 / 2, 4.00 * 1.25 / 2, 0.20 / 2)}
+# List prices per million tokens (claude_models.PRICES: input, output, cache
+# write, cache read), halved for the Batches API.
+PRICES = {m: tuple(x / 2 for x in claude_models.PRICES[m]) for m in (MODEL, STORY_MODEL)}
+PRICE_IN, PRICE_OUT, PRICE_CACHE_WRITE, PRICE_CACHE_READ = PRICES[MODEL]
 STORY_SAMPLE = 30    # count_tokens on this many story requests, scale the rest by characters
 
 SEARCH_SYSTEM = """You review one page of agsist.com, a free farm website, against the real search terms people typed before they landed on it (or that an AI search engine used when it cited the page). Today is {today}.
@@ -231,7 +230,16 @@ def requests_of(bundle):
         import landsrc_job as LJ
         out.append(("landsrc", LJ.cid_of(e["key"]), e["key"],
                     LJ.params(e, model_of("landsrc"), MAX_TOKENS["landsrc"], EFFORT["landsrc"])))
-    return out
+    return [(k, c, n, cached(p)) for k, c, n, p in out]
+
+
+def cached(p):
+    """Each job's system prompt is the same for every request in its batch:
+    marked for caching, so the requests after the first read it at a tenth of
+    the input price (best effort inside a batch)."""
+    if isinstance(p.get("system"), str):
+        p = dict(p, system=claude_models.cached_system(p["system"]))
+    return p
 
 
 def http(method, path, body=None, timeout=120):
@@ -271,9 +279,11 @@ def model_of(kind):
 
 
 def worst_case(kind, n_in, max_out=None):
-    """Upper bound for one request: the prompt once, full max_tokens of output."""
-    pi, po = PRICES[model_of(kind)][:2]
-    return (n_in * pi + (max_out or MAX_TOKENS[kind]) * po) / 1e6
+    """Upper bound for one request: the prompt once at the cache write price
+    (the system prompt is marked for caching, and a write costs more than
+    plain input), full max_tokens of output."""
+    _, po, pw, _ = PRICES[model_of(kind)]
+    return (n_in * pw + (max_out or MAX_TOKENS[kind]) * po) / 1e6
 
 
 def cap_of(bundle):
@@ -394,6 +404,13 @@ def cmd_collect(wait_min):
     out = collect_from(rec, raw)
     json.dump(out, open(f"{OUT}/results.json", "w"), indent=1)
     print(f"::notice title=API jobs results::actual cost ${out['actual_cost_usd']:.2f} {out['per_job_usd']}", flush=True)
+    claude_models.write_usage_summary("API jobs", usage_rows(out))
+
+
+def usage_rows(out):
+    """(job, model, usage, batch) for each answered request, for the usage table."""
+    return [(e["job"], model_of(e["job"]), e.get("usage") or {}, True)
+            for e in out["items"].values() if e.get("result") == "succeeded"]
 
 
 def selftest():
@@ -445,7 +462,7 @@ def selftest():
     gr = requests_of({"story": [{"set": "prf", "id": "DE:10001", "hash": "h", "facts": pf},
                                 {"set": "town", "id": "ia/hubbard", "hash": "h", "facts": {"town": "Hubbard", "state_code": "IA", "as_of": "Oct 17"}}]})
     assert [(r[0], r[1], r[2]) for r in gr] == [("story", "p_DE_10001", "prf:DE:10001"), ("story", "t_ia_hubbard", "town:ia/hubbard")], gr
-    assert gr[0][3]["model"] == STORY_MODEL and "PRF" in gr[0][3]["system"] and "Kent County" in gr[0][3]["messages"][0]["content"]
+    assert gr[0][3]["model"] == STORY_MODEL and "PRF" in gr[0][3]["system"][0]["text"] and "Kent County" in gr[0][3]["messages"][0]["content"]
     assert "as_of_iso" not in gr[0][3]["messages"][0]["content"] and kind_of("p_DE_10001") == kind_of("o_adm") == "story"
     assert cap_of({"story": [{"set": "prf"}]}) == STORY_CAP
     # every set's full batch stays under its cap at the worst case (the facts measured on Oct 18, 2026)
@@ -458,7 +475,7 @@ def selftest():
           "states": {"WI": 3}, "towns": ["Elk Mound, WI"], "pages": [{"url": "https://meyergrain.com/", "text": "Cash Bids"}]}
     er = requests_of({"elevsite": [el]})
     assert er[0][:3] == ("elevsite", "e_MEYER_BROTHERS_GRAIN", "MEYER BROTHERS GRAIN"), er[0][:3]
-    assert er[0][3]["model"] == MODEL and er[0][3]["system"] == EJ.SYSTEM and "meyergrain.com" in er[0][3]["messages"][0]["content"]
+    assert er[0][3]["model"] == MODEL and er[0][3]["system"][0]["text"] == EJ.SYSTEM and "meyergrain.com" in er[0][3]["messages"][0]["content"]
     assert er[0][3]["thinking"] == {"type": "adaptive"} and "temperature" not in er[0][3] and kind_of("e_X") == "elevsite"
     assert cap_of({"elevsite": [el]}) == ELEVSITE_CAP == 35.0
     # the whole list (about 600 companies at up to 12,000 input tokens each) stays under the cap at the worst case
@@ -474,8 +491,8 @@ def selftest():
     ls = {"fips": "19169", "name": "Story", "state": "IA", "key": "19169 Story County, IA", "pages": [{"url": "https://s.gov/", "text": "Assessor"}]}
     rr = requests_of({"schedule": [sc], "landsrc": [ls]})
     assert [(r[0], r[1]) for r in rr] == [("schedule", "d_R_Test_Coop"), ("landsrc", "l_19169_Story_County__IA")], rr
-    assert rr[0][3]["model"] == STORY_MODEL and rr[0][3]["system"] == SJ.SYSTEM and "Shrink 1.4%" in rr[0][3]["messages"][0]["content"]
-    assert rr[1][3]["model"] == MODEL and rr[1][3]["system"] == LJ.SYSTEM and kind_of("d_x") == "schedule" and kind_of("l_x") == "landsrc"
+    assert rr[0][3]["model"] == STORY_MODEL and rr[0][3]["system"][0]["text"] == SJ.SYSTEM and "Shrink 1.4%" in rr[0][3]["messages"][0]["content"]
+    assert rr[1][3]["model"] == MODEL and rr[1][3]["system"][0]["text"] == LJ.SYSTEM and kind_of("d_x") == "schedule" and kind_of("l_x") == "landsrc"
     assert cap_of({"schedule": [sc]}) == SCHEDULE_CAP == 20.0 and cap_of({"landsrc": [ls]}) == LANDSRC_CAP == 20.0
     # worst case: 250 companies with a schedule page at 9,000 input tokens (Opus), 900 counties at 7,000 (Sonnet)
     assert 250 * worst_case("schedule", 9000) < SCHEDULE_CAP and 900 * worst_case("landsrc", 7000) < LANDSRC_CAP
@@ -485,6 +502,19 @@ def selftest():
     RUN_CAP = 100.0
     assert cap_of({"elevsite": [el]}) == ELEVSITE_CAP
     RUN_CAP = old
+    # one registry: the models come from claude_models, and every request caches its system prompt
+    assert MODEL == claude_models.RESEARCH == "claude-sonnet-5-5" and STORY_MODEL == claude_models.STORY == "claude-opus-5-5"
+    for r in reqs + sr + gr + er + rr:
+        assert r[3]["system"][-1]["cache_control"] == {"type": "ephemeral"}, r[1]
+        assert "fallbacks" not in r[3], "the Batches API rejects the server fallback"
+    # cache reads bill at the batch cache read price: Sonnet 5.5 $0.10 per million, halved
+    assert abs(cost_of({"cache_read_input_tokens": 1_000_000}) - 0.05) < 1e-12
+    # the usage table on the job summary: per job, counts and dollars only
+    rows = usage_rows(out) + usage_rows(o2)
+    assert rows == [("search", MODEL, {"input_tokens": 1000, "output_tokens": 1000}, True),
+                    ("story", STORY_MODEL, {"input_tokens": 1000, "output_tokens": 100}, True)], rows
+    md = claude_models.usage_table("API jobs", rows)
+    assert "| search | claude-sonnet-5-5 (batch) | 1 | 1000 | 0 | 0 | 1000 | 0.0060 |" in md, md
     print("selftest ok")
 
 

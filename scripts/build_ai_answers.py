@@ -42,7 +42,7 @@ import os
 import re
 import sys
 import source_links  # noqa: E402  no direct links to data sources
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DATA = os.path.join(ROOT, "data", "ai-answers.json")
@@ -59,7 +59,78 @@ def nice(iso):
 
 def load(path=DATA):
     with open(path, encoding="utf-8") as f:
-        return json.load(f)
+        doc = json.load(f)
+    return resolve(doc, os.path.dirname(os.path.dirname(os.path.abspath(path))))
+
+
+# ---- answers written from the site's own data ("from": "wasde"), never typed in.
+# The USDA crop report answer on usda-calendar.html reads data/wasde.json (what the
+# last WASDE printed, written by the wasde-watch job after each release) and the
+# report dates in scripts/usda_dates.py. Nothing in it depends on today's date, so the
+# page only changes when a new report is read; the line under it names the report
+# date instead of a "last checked" date that would go stale between reports.
+NOON = "at noon Eastern (11 a.m. Central)"
+
+
+def _long(d):
+    return f"{d.strftime('%A')}, {d.strftime('%B')} {d.day}, {d.year}"
+
+
+def _bil(mil):
+    """16034 (million bushels) -> '16.03 billion bushels'; 315 -> '315 million bushels'."""
+    return f"{mil / 1000:.2f} billion bushels" if mil >= 1000 else f"{mil:,.0f} million bushels"
+
+
+def _stocks(mil):
+    return f"{mil / 1000:.3f} billion bushels" if mil >= 1000 else f"{mil:,.0f} million bushels"
+
+
+def wasde_answer(a, root):
+    """Fill text, sources, review_by and the dated line from data/wasde.json and the
+    calendar. Withheld, with the reason, when a figure is missing."""
+    import usda_dates as UD
+    a = dict(a)
+    try:
+        w = json.load(open(os.path.join(root, "data", "wasde.json"), encoding="utf-8"))
+        pdf = w["wasde_pdf"]
+        rel = date.fromisoformat(pdf["date"])
+        c, sb = pdf["crops"]["corn"], pdf["crops"]["soybeans"]
+        nums = {k: (c[k]["value"], sb[k]["value"]) for k in ("production", "yield", "ending_stocks", "price")}
+        if any(v is None for pair in nums.values() for v in pair):
+            raise ValueError("a figure is blank")
+        read = str(w.get("generated") or pdf["date"])[:10]
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        a.update(status="withheld", withheld_why=f"data/wasde.json has no complete corn and soybean block ({exc})")
+        return a
+    cp = rel in UD.CROP_PRODUCTION_2026
+    nxt = UD.next_wasde(rel + timedelta(days=1))
+    nxt_cp = nxt is not None and nxt in UD.CROP_PRODUCTION_2026
+    (cprod, sprod), (cy, sy), (cst, sst), (cpr, spr) = (nums[k] for k in ("production", "yield", "ending_stocks", "price"))
+    my = c.get("marketing_year") or ""
+    what = "The last Crop Production report and WASDE" if cp else "The last WASDE"
+    text = [f"{what}, out {_long(rel)}, put the U.S. corn crop at {_bil(cprod)} on a {cy:g} bushel yield, "
+            f"and soybeans at {_bil(sprod)} on {sy:g} bushels an acre.",
+            f"The WASDE projected {my + ' ' if my else ''}ending stocks at {_stocks(cst)} of corn and {_stocks(sst)} of soybeans, "
+            f"with season-average farm prices of ${cpr:.2f} for corn and ${spr:.2f} for soybeans."]
+    if nxt:
+        text.append(f"The next {'WASDE and Crop Production report come' if nxt_cp else 'WASDE comes'} out {_long(nxt)}, {NOON}.")
+    mm, yy = rel.strftime("%m"), rel.strftime("%y")
+    srcs = [{"name": f"USDA {pdf.get('report') or 'WASDE'}" + (" and NASS Crop Production" if cp else "") + f", {nice(rel.isoformat())}",
+             "url": f"https://www.usda.gov/oce/commodity/wasde/wasde{mm}{yy}.pdf", "read": read}]
+    srcs += [s for s in a.get("sources") or [] if "calendar" in s.get("name", "").lower()]
+    a.update(text=text, sources=srcs, review_by=(nxt or rel).isoformat(),
+             dated=f"Figures as USDA printed them {nice(rel.isoformat())}; report dates from the NASS release calendar.")
+    return a
+
+
+COMPUTED = {"wasde": wasde_answer}
+
+
+def resolve(doc, root=ROOT):
+    """The answers with every computed one filled in from data."""
+    out = dict(doc)
+    out["answers"] = [COMPUTED[a["from"]](a, root) if a.get("from") in COMPUTED else a for a in doc.get("answers", [])]
+    return out
 
 
 def problems(doc):
@@ -125,12 +196,13 @@ def render(a):
         for s in a["sources"])
     head = (f'<h2 id="answer-{aid}-h" style="font-size:1.1rem;margin:0 0 .4rem">{e(a["question"])}</h2>')
     body = (f'<p style="margin:0 0 .5rem">{e(" ".join(a["text"]))}</p>'
-            f'<p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked {nice(checked(a))}. Sources: {srcs}</p>')
+            f'<p style="margin:0;font-size:.8rem;color:var(--text-muted)">'
+            f'{e(a["dated"]) if a.get("dated") else "Last checked " + nice(checked(a)) + "."} Sources: {srcs}</p>')
     box = 'margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px'
     if a.get("fold"):
         # folded: the answer is in the page (crawlers read it), the reader opens it
         return (f'{op}<details class="ai-answer" id="answer-{aid}" data-checked="{checked(a)}" style="{box.replace("1rem 0;padding:.8rem 1rem", ".5rem 0;padding:.3rem .9rem")}">'
-                f'<summary style="cursor:pointer;padding:.35rem 0">{head.replace("<h2 ", "<h2 class=fold-h ", 1).replace("margin:0 0 .4rem", "display:inline;margin:0", 1)}</summary>'
+                f'<summary style="cursor:pointer;padding:.35rem 0">{head.replace(f'<h2 id="answer-{aid}-h"', f'<h2 id="answer-{aid}-h" class="fold-h"', 1).replace("margin:0 0 .4rem", "display:inline;margin:0", 1)}</summary>'
                 f'{body}</details>{cl}')
     return (f'{op}<section class="ai-answer" id="answer-{aid}" aria-labelledby="answer-{aid}-h" data-checked="{checked(a)}" '
             f'style="{box}">{head}{body}</section>{cl}')
@@ -236,6 +308,11 @@ def selftest():
     check(bake_text("no markers", [good])[1] == ["t"], "missing marker reported")
     check(stale({"answers": [good]}, today="2026-11-11") == [("t", "p.html", "2026-11-10")], "stale after review_by")
     check(stale({"answers": [good]}, today="2026-11-10") == [], "not stale on review_by")
+    gone = wasde_answer({"id": "c", "from": "wasde", "sources": []}, "/nonexistent")
+    check(gone["status"] == "withheld" and "wasde.json" in gone["withheld_why"], "no WASDE file: withheld, says why")
+    cr = by_id(load())["crop-report"]
+    if cr["status"] == "live":
+        check("Last checked" not in render(cr) and cr["dated"] in render(cr), "crop report dated by its report")
     real = load()
     check(problems(real) == [], "data/ai-answers.json passes: %s" % problems(real)[:3])
     print("selftest:", "ok" if ok else "FAILED")

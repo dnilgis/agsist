@@ -1,7 +1,5 @@
-/* "Today and this week" in the hero, beside the futures (Sig, Nov 6, 2026: "a happening today block, for example a
- * link to the COT and some kind of teaser to get people interested, important releases people should be made aware
- * of"). components/happening.js, baked by scripts/seed_static.py happening_seed, styled in css/home.css.
- *   - the COT schedule: happening.js cotRelease() is scripts/cot_calendar.py release_date, every week 2010-2027;
+/* "Today and this week" in the hero, beside the futures (Nov 6, 2026). components/happening.js, baked by scripts/seed_static.py happening_seed, styled in css/home.css.
+ *   - the COT schedule: happening.js cotRelease is scripts/cot_calendar.py release_date, every week 2010-2027;
  *   - which releases show, on fixtures and a fixed clock (no test reads today's date): across a weekend, a COT
  *     release moved to Monday by Veterans Day, a Crop Progress moved to Tuesday by Columbus Day; the bake picks the
  *     same rows as the script;
@@ -224,7 +222,7 @@ test("the home page: the block sits in the futures row, baked, with its script a
   // the only aria-live in the block is #hap-say; nothing on the list or the countdown
   assert.deepEqual([...row.matchAll(/<[^>]*aria-live[^>]*>/g)].map((m) => m[0]), ['<span class="visually-hidden" id="hap-say" role="status" aria-live="polite">']);
   assert.doesNotMatch(read("components/happening.js"), /aria-live|setAttribute\(['"]role/);
-  assert.match(home, /<script src="\/components\/happening\.js\?v=4" defer><\/script>/);
+  assert.match(home, /<script src="\/components\/happening\.js\?v=5" defer><\/script>/);
   assert.ok(!/—/.test(read("components/happening.js")), "no em dash in the script");
   const css = read("css/home.css");
   assert.ok(!/—/.test(css.slice(css.indexOf(".hap{"))), "no em dash in its CSS");

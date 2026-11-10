@@ -5,13 +5,13 @@
  * sends Global Privacy Control, when the /privacy switch is set, and (since
  * 2026-10-17) when the browser is plainly automated: navigator.webdriver, or a
  * HeadlessChrome, PhantomJS, Lighthouse, bot, crawler or spider user agent.
- * Why: Sig's GA export (Jul 19 to Oct 16) had /prf at 28,884 views from 20,007
+ * Why: the owner's GA export (Jul 19 to Oct 16) had /prf at 28,884 views from 20,007
  * users with 0.7 s engagement against 2 Search Console clicks, and "Direct" at
  * 54,974 of about 74,500 sessions at 5.8 s. Those are scripted browsers, and
  * they were counted as readers.
  *
  * 2026-10-20 (morning) to 2026-10-20b it also stayed off unless the browser's
- * time zone was a US or Canada one. Sig, the same day: keep global human
+ * time zone was a US or Canada one. The owner, the same day: keep global human
  * readers but keep data centers out. Since 2026-10-20b the guard loads nothing
  * until the reader scrolls, taps, presses a key or touches the shown page.
  * Then it loads /components/ga-gate.js, which asks the subs worker (GET

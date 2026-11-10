@@ -45,22 +45,28 @@ const attrs = (a) => Object.fromEntries([...a.matchAll(/data-([a-z]+)="([^"]*)"/
 const rngOf = (a) => { const m = /data-rng='([^']*)'/.exec(a); return m ? JSON.parse(unesc(m[1])) : null; };
 const ASK = /Ask FSA|ask your FSA office/;
 /* The fixture holds the pre-Oct 20 words. A PLC yield over the benchmark said "Ask FSA" there; it now gives the
-   call across PLC yields of 60% to 100% of the benchmark (arcfix, Sig Oct 20, 2026). Those pieces are cut from
+   call across PLC yields of 60% to 100% of the benchmark (arcfix, Oct 20, 2026). Those pieces are cut from
    both sides before the exact comparison, and the new side must not say "Ask FSA"; the live-page test below holds
    the new words to the build's on every card. */
-/* Nov 9, 2026 (curtain): the fixture holds the old words about a crop with too little price history of its own
-   (its price swings "borrowed from corn's"). The build and the browser now say one plain line; the old sentences are
-   moved to it on the fixture side, and the live-tree tests hold every page to the new line. */
+/* Nov 9, 2026 (curtain) and Nov 10, 2026: the fixture holds the old words about a crop whose price swings are borrowed
+   from corn ("borrows corn's price swings, so it stops at Leans"). Since Nov 10 a card says, in one plain line, why the expected payments are
+   not printed, per crop (flag 128: too few years of its own prices), and "held at Leans" only where the borrowed swings
+   lowered a clear pick (flag 512, which no fixture pack carries). So on the fixture side the old sentence becomes the
+   new reason where the pack withholds the dollars (flag 64) and goes where it does not; the live-tree tests hold every
+   page to the build's words. */
 const RSQ = "(?:&rsquo;|’)";
-const BOR_LINE = "This crop has too little price history of its own, so the call stops at Leans and no dollar figure is printed.";
-const plainBorrow = (h) => h
-  .replace(new RegExp("the expected payments are not printed\\. [A-Z][^.<>]*? (?:has|have) (?:too few years of (?:its|their) own prices in FSA" + RSQ + "s tables, so (?:its|their) price swings are corn" + RSQ + "s|no October futures history of (?:its|their) own on file, so (?:its|their) price swings are borrowed from corn" + RSQ + "s), and the expected dollars would rest on them\\. We do not print them\\.", "g"), "the expected payments are not printed: too little price history of its own.")
-  .replace(new RegExp("[A-Z][^.<>]*? (?:has|have) (?:too few years of (?:its|their) own prices in FSA" + RSQ + "s tables, so (?:its|their) price swings are corn" + RSQ + "s|no October futures history of (?:its|their) own on file, so (?:its|their) price swings are borrowed from corn" + RSQ + "s), and the expected dollars would rest on them\\. We do not print them\\.(?: So it stops at Leans\\.)?", "g"), BOR_LINE)
-  .replace(new RegExp("[A-Z][a-z][^.<>]*? borrows? corn" + RSQ + "s price swings, so (?:they stop|it stops) at Leans\\.", "g"), BOR_LINE)
-  .replace(new RegExp("no dollar figure, because the price swings are borrowed from corn" + RSQ + "s\\)", "g"), "no dollar figure for this crop)")
-  .replace(new RegExp(" Capped at Leans: this crop borrows corn" + RSQ + "s price swings\\.", "g"), " Capped at Leans: too little price history of its own.")
-  .replace(new RegExp(" have no October futures history of their own, so they borrow corn" + RSQ + "s October swings \\(wheat its own price changes, scaled to corn" + RSQ + "s size\\) and stop at Leans\\.", "g"), " stop at Leans and print no dollar figure: too little price history of their own.")
-  .replace(new RegExp(" No dollar figure: price swings borrowed from corn\\.", "g"), " No dollar figure: too little price history.");
+// one plain reason for every withheld crop, no method (Nov 10, 2026)
+const BOR_WHY = ["Expected payments are not printed for this crop: it does not have enough of its own price history.", "Expected payments are not printed for this crop: it does not have enough of its own price history."];
+const OLD_BOR = [
+  "[A-Z][^.<>]*? (?:has|have) (?:too few years of (?:its|their) own prices in FSA" + RSQ + "s tables, so (?:its|their) price swings are corn" + RSQ + "s|no October futures history of (?:its|their) own on file, so (?:its|their) price swings are borrowed from corn" + RSQ + "s), and the expected dollars would rest on them\\. We do not print them\\.(?: So it stops at Leans\\.)?",
+  "[A-Z][a-z][^.<>]*? borrows? corn" + RSQ + "s price swings, so (?:they stop|it stops) at Leans\\.",
+  "This crop has too little price history of its own, so the call stops at Leans and no dollar figure is printed\\."];
+const plainBorrow = (h, pack) => {
+  const f = +String(pack || "").split(",")[2] || 0;
+  let x = h;
+  for (const re of OLD_BOR) x = x.replace(new RegExp(" ?" + re, "g"), f & 64 ? " " + BOR_WHY[f & 128 ? 1 : 0] : "");
+  return x;
+};
 const cutMismatch = (h, P) => {
   let x = h;
   if (P.w === "mismatch") x = x.replace(/^<div class="ap-ans">.*?<\/div><p>.*?<\/p>/, "");
@@ -84,9 +90,9 @@ test("Lower, About the same and Higher: the browser writes the words the old pag
   let cut = 0;
   for (const [card, pack, sameW, html, where] of FX) {
     const P = C.unpack(pack), got = C.level(card, pack, sameW);
-    if (P.w !== "mismatch" && P.wo !== "mismatch" && P.w7 !== "mismatch") { assert.equal(got, plainBorrow(html), `${where} ${pack}`); continue; }
+    if (P.w !== "mismatch" && P.wo !== "mismatch" && P.w7 !== "mismatch") { assert.equal(got, plainBorrow(html, pack), `${where} ${pack}`); continue; }
     assert.ok(!ASK.test(got), `${where} ${pack}: no "Ask FSA"`);
-    assert.equal(cutMismatch(got, P), cutMismatch(plainBorrow(html), P), `${where} ${pack}: the rest of the card`);
+    assert.equal(cutMismatch(got, P), cutMismatch(plainBorrow(html, pack), P), `${where} ${pack}: the rest of the card`);
     cut++;
   }
   assert.ok(cut >= 50, `${cut} mismatch cases checked`);
@@ -137,14 +143,20 @@ test("every county page carries one answer per card, and the browser's words for
   assert.ok(cards >= 15000, `${cards} cards`);
 });
 
-test("trigger line, by hand: Story County, IA corn pays under 215 bu at $4.70", () => {
+test("trigger line, by hand: Story County, IA corn pays under 215 bu at $4.70 (October print), 220 bu at $4.60 (November)", () => {
   const html = readFileSync(ROOT + "arc-plc/iowa/story-county.html", "utf8");
   const corn = [...html.matchAll(CARD)].find((m) => m[1] === "corn");
   // 223.82 bu x 90% = 201.438; x $5.03 = 1,013.23 guarantee per acre; / $4.70 = 215.58 bu. At 215 bu: 215 x 4.70 = 1,010.50, under
   // the guarantee, pays $2.73 an acre; at 216 bu: 1,015.20, over it, pays nothing. Floored, so "under 215" is always true.
+  // November WASDE (Nov 10, 2026), $4.60: 1,013.23 / 4.60 = 220.27 bu. At 220 bu: 1,012.00, under; at 221 bu: 1,016.60, over.
+  // The page follows USDA's current print, so the line is checked against the hand-worked figure for the print in the data.
+  const HAND = { 4.7: [215, "$4.70"], 4.6: [220, "$4.60"] };
   assert.equal(D.years["2026"].crops.corn.bp.value, 5.03);
-  assert.equal(D.years["2026"].crops.corn.scen.center, 4.7);
-  assert.ok(corn[7].includes("comes in under <b>215 bu</b> at USDA&rsquo;s price outlook, $4.70."), corn[7]);
+  const cen = D.years["2026"].crops.corn.scen.center;
+  // a later print not yet worked by hand: the same arithmetic from the data (the next test checks it on every card)
+  const [bu, price] = HAND[cen] || [Math.floor(Math.round(0.9 * 223.82 * 5.03 / cen * 1e6) / 1e6), "$" + cen.toFixed(2)];
+  assert.equal(Math.floor(0.9 * 223.82 * 5.03 / cen), bu);
+  assert.ok(corn[7].includes(`comes in under <b>${bu} bu</b> at USDA&rsquo;s price outlook, ${price}.`), corn[7]);
   // the benchmark prints as the title does, to a tenth (Oct 19, 2026; was "223.82 bu")
   // curtain round 2 (Nov 9): the working behind the trigger is not printed on the card
   assert.ok(!/90% of the|divided by/.test(corn[7]), corn[7]);
@@ -187,7 +199,7 @@ test("trigger line on every card with a price outlook: floor(90% x benchmark x b
 });
 
 test("main page: one plain line, then the county picker, then the quick answer (2026 counts first), before the deadlines and the reminder box", () => {
-  // Sig, Oct 20, 2026 (arcfix item 3): on a phone the first screen is one plain line and the county picker;
+  // Oct 20, 2026 (arcfix item 3): on a phone the first screen is one plain line and the county picker;
   // the counts and the ERP paragraph move below the picker. Until then the quick answer came first.
   const html = readFileSync(ROOT + "arc-plc.html", "utf8");
   const main = html.slice(html.indexOf("<main"));
@@ -199,11 +211,18 @@ test("main page: one plain line, then the county picker, then the quick answer (
   assert.ok(main.indexOf("effective reference prices are <b>") > pick, "the ERP paragraph is below the picker");
   const lead = /<div class="ap-quick" id="quick-answer">\s*<p class="ap-lead"><b>For 2026, on a typical farm\.<\/b> Corn: (.*?)<\/p>/.exec(main);
   assert.ok(lead, "quick answer opens with the 2026 counts");
-  // the counts are the build's own verdicts, so they add up to the tally sentence below them
+  // the counts are the build's own verdicts: the denominator is every 2026 corn entry with a call in the math files
   const m = /(?:([\d,]+) of|all) ([\d,]+) county and practice combinations/.exec(lead[1]);
   assert.ok(!/in ([\d,]+) of \1\b/.test(lead[1]), "no 'N of N'");
-  const tally = /across ([\d,]+) county and practice combinations/.exec(main);
-  assert.equal(m[2], tally[1], "same denominator as the corn tally");
+  let corn = 0;
+  for (const f of readdirSync(ROOT + "data/arc-plc/math").filter((x) => /^[A-Z]{2}\.json$/.test(x))) {
+    for (const rec of Object.values(JSON.parse(readFileSync(ROOT + "data/arc-plc/math/" + f, "utf8")).c)) {
+      for (const row of (rec.v || {}).corn || []) if (row && row["2026"] && ["plc", "arc", "close", "lean_plc", "lean_arc", "none"].includes(row["2026"][0])) corn++;
+    }
+  }
+  assert.equal(m[2], corn.toLocaleString("en-US"), "same denominator as the county verdicts");
+  // Nov 10, 2026: the top of the page names corn once; the second corn paragraph with the tier count is gone
+  assert.ok(!/across [\d,]+ county and practice combinations: pick/.test(main) && !/For a typical farm, 2026 corn/.test(main), "no tier count at the top");
   assert.ok(main.indexOf("Login.gov") > 0, "online election line");
   // the crop pages (scripts/arc_plc_crops.py) lead the same way
   let crops = 0;

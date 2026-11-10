@@ -125,7 +125,7 @@ def dollars(x):
 
 def example_html(ex, cy, y0, y1, many, ng, read_day=""):
     """The labeled 100-acre example (scripts/prf_county_facts.mjs countyExample): the calculator's
-    opening policy, priced on the county's middle grid by premium. Since Oct 20 (Sig) it is the page's
+    opening policy, priced on the county's middle grid by premium. Since Oct 20 it is the page's
     first answer, right under the lede, and it opens with what you pay, dated by the USDA files read."""
     if not ex:
         return ('<p class="prf-note prf-ex"><b>Example:</b> the calculator opens on April to May and June to July, and this county '
@@ -178,7 +178,9 @@ def page(ctx):
     title = CAPS.fit([f"PRF Insurance in {full}: {cy} Grids and Rates{CAPS.SUFFIX}",
                       f"PRF Insurance in {full}: {cy} Grids and Rates",
                       f"PRF Insurance in {full}: {cy} Grids",
-                      f"PRF Insurance, {full}: {cy}"])
+                      f"PRF Insurance, {full}: {cy}",
+                      f"PRF Insurance, {name}, {stc}: {cy}",
+                      f"PRF, {name}, {stc}: {cy}"])
     desc = (f"PRF insurance in {full} for {cy}: {ng} {'grid' if ng == 1 else 'grids'} ({g_short}), "
             f"county values {money2(gz)} grazing and {money2(hy) if hy is not None else 'no'} hay per acre, rates by month, history since {y0}.")
     if len(desc) > CAPS.DESC_MAX:
@@ -271,6 +273,8 @@ def page(ctx):
     # only whether the page is there, and county-rain.yml re-stamps the link when the rain set moves.
     rain = (f'<p class="prf-fine">{XL.rain_link(ROOT, rain_slug(RAIN_STATES[stc]), e(RAIN_STATES[stc]), sl, e(name))}</p>'
             if stc in RAIN_STATES else "")
+    # up to three town bid pages nearest the county middle; restamped daily with the rain link
+    near = XL.near_bids(ROOT, fips, stc, "prf-fine")
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
          "dateModified": S.modified(meta), "inLanguage": "en-US", "isPartOf": {"@id": "https://agsist.com/prf#app"},
@@ -296,11 +300,11 @@ def page(ctx):
            f'<p class="pn-sub">Where {"a grid in " if many else "the grid in "}{e(name)} stands in the pairs of months still open, before RMA&rsquo;s final index. Preliminary.</p>'
            f'<p class="pn-pick" data-pn-pick hidden></p>'
            f'<div data-pn-body><p class="pn-held">Rain so far loads from NOAA&rsquo;s rain data when the page opens.</p></div></section>'
-           f'<script src="/components/prf-now.js?v=4" defer></script>'
+           f'<script src="/components/prf-now.js?v=5" defer></script>'
            # the grid index email (components/prf-notice.js, worker topic prf:<grid>): follows the card's grid
            f'<div class="prf-notice" data-prf-notice data-grid="{now_g}" hidden></div>'
            f'<script src="/components/prf-notice.js?v=2" defer></script>')
-    # irrigated hay under non-irrigated (2,968 of 3,070 counties for 2027): said, never explained (Sig, Oct 20)
+    # irrigated hay under non-irrigated (2,968 of 3,070 counties for 2027): said, never explained (Oct 20)
     irr_low = " USDA sets irrigated hay lower here." if hi is not None and hy is not None and hi < hy else ""
     sod = (f'<p class="prf-note">{stn} has the native sod rule: native sod broken in recent years gets 65% of the protection and 50 points less of USDA&rsquo;s share. '
            f'The values here are for land the rule does not touch.</p>') if stc in S.SOD else ""
@@ -311,7 +315,7 @@ def page(ctx):
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#0a0c0d">
   <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/prf.css?v=9">
+  <link rel="stylesheet" href="/components/prf.css?v=10">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -389,6 +393,7 @@ def page(ctx):
     {('<nav class="prf-links prf-st-links" aria-label="PRF next door"><b>PRF next door:</b> ' + nb_html + '</nav>') if nb_html else ''}
     <p class="prf-fine">{more}</p>
     {rain}
+    {near}
     <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
   </div>
   </main>
@@ -464,7 +469,9 @@ def main():
         have = open(p, encoding="utf-8").read() if os.path.exists(p) else None
         if have != body:
             if check:
-                bad.append(rel)
+                # the bids-near line follows the town pages (cross_links --stamp), not this set's data
+                if have is None or XL.steady(have) != XL.steady(body):
+                    bad.append(rel)
             else:
                 os.makedirs(os.path.dirname(p), exist_ok=True)
                 open(p, "w", encoding="utf-8").write(body)

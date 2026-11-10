@@ -12,7 +12,7 @@
 #
 # Each path (a file or a folder, relative to the repo root) is copied OVER the
 # same path on raw: new and changed files land, nothing already there is
-# deleted (Sig: "don't throw away anything important"; git history keeps every
+# deleted (git history keeps every
 # old version too). Commits as agsist-bot and pushes, retrying on a moved tip
 # the way refs.yml does for the references branch. Every git failure is printed
 # as a ::warning:: with git's own words, because the job log is not always
@@ -24,7 +24,7 @@
 # is never committed to main by accident.
 #
 # WHERE IT GOES (Oct 20, 2026): the branches moved to the private repo
-# dnilgis/feedbag. In Actions the step passes PRIVATE_REPO_TOKEN and this
+# the private repo. In Actions the step passes PRIVATE_REPO_TOKEN and this
 # pushes there; scripts/private_remote.sh has the rules (RAW_REMOTE wins, no
 # token means origin). RAW_BRANCH=private-data saves the job files no page reads
 # (private/data/cron-health.json and the like) to that branch instead.
@@ -42,7 +42,8 @@
 # Knobs (test/raw-branch.test.mjs): RAW_REMOTE (see above), RAW_BRANCH
 # (default raw), RAW_WT (where the branch worktree goes; default
 # ../<branch>-branch, outside the checkout, so the site budget never counts
-# it), RAW_SLEEP (seconds per retry step, default 10), RAW_SOFT, RAW_KEEP.
+# it), RAW_SLEEP (seconds per retry step, default 10), RAW_SOFT, RAW_KEEP, RAW_DELETE
+# (paths deleted on the branch in the same commit; a path not there is skipped).
 _g="$(dirname "${BASH_SOURCE[0]}")/_argguard.sh"; [ -f "$_g" ] && { . "$_g"; argguard "${BASH_SOURCE[0]}" "$@"; }
 set -u
 set -o pipefail
@@ -116,6 +117,12 @@ for i in 1 2 3 4 5; do
     cp -r "$STAGE/." . || fail "could not copy the files in"
   fi
   g add -A -- "${HAVE[@]}" || fail "git add refused the files"
+  # RAW_DELETE: files to take off the branch in the same commit (folded bounce events), a space-separated list
+  read -r -a DEL <<< "${RAW_DELETE:-}"      # split on spaces only: read -a never expands a glob
+  for d in "${DEL[@]}"; do
+    case "$d" in /*|..|../*|*/../*|*/..) fail "push_raw.sh: RAW_DELETE path $d must be inside the repo";; esac
+    if [ -e "$d" ]; then g rm -q -- ":(literal)$d" || fail "git rm refused $d"; fi
+  done
   if git diff --cached --quiet; then echo "raw: no change"; exit 0; fi
   N=$(git diff --cached --name-only | wc -l)
   g -c user.name=agsist-bot -c user.email=bot@agsist.com commit -q -m "$MSG $(date -u +%Y-%m-%dT%H:%M:%SZ): $N file(s)" || fail "could not commit"

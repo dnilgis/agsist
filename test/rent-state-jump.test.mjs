@@ -1,7 +1,7 @@
 /* Phone audit, Oct 19, 2026: on /rent/minnesota the county table (what
  * "cash rents by county" searchers came for) starts about 2,800 px down, after
  * the hero, tiles and calculator. A "County table" link now sits under the H1
- * and lands on the table's heading. The page order is unchanged (Sig's call).
+ * and lands on the table's heading. The page order is unchanged.
  *
  *   node --test test/rent-state-jump.test.mjs
  */
@@ -23,7 +23,7 @@ test("/rent/minnesota: a County table link right under the H1 lands on the count
   assert.equal((h.match(/id="counties"/g) || []).length, 1, "one target");
   const tgt = h.indexOf('<h2 id="counties"');
   assert.ok(tgt > h1, "target found");
-  assert.match(h.slice(tgt, tgt + 120), /Every published county, 20\d\d<\/h2>/);
+  assert.match(h.slice(tgt, tgt + 120), /Every county, 20\d\d<\/h2>/);
   assert.ok(h.indexOf('<table', tgt) > tgt, "the county table follows its heading");
   // order unchanged: hero tiles and the ground panel still come before the table
   assert.ok(h.indexOf('class="rs-hero"') < tgt);
