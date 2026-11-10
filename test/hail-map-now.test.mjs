@@ -86,7 +86,7 @@ test("every feed failing, with a long state list: the card keeps one headline an
     latest: { d: "2026-10-13", where: "Texas, Oklahoma, Kansas, Nebraska, South Dakota, North Dakota, Minnesota and Iowa" } };
   const r = nowLine(long);
   assert.equal(r.quiet, true);
-  assert.equal(text(r.html), "Latest radar hail: Oct 13, 2026, Texas, Oklahoma, Kansas, Nebraska, South Dakota, North Dakota, Minnesota and Iowa.");
+  assert.equal(text(r.html), `Latest radar hail: ${long.latestDay}, ${long.latest.where}.`, "no claim about the 24 hours when no feed answered");
   assert.equal(notes(r), "Warnings are not shown right now. Ground reports are not shown right now. The 24-hour radar layer is not posted yet. It updates four times a day in hail season. " + NOW_BASE);
   assert.equal(r.acts.length, 2);
   for (const c of [r, nowLine({ ...long, warn: 2, warnStates: "Kansas" }), nowLine({ ...base, ...IA0, warn: "err", pins: "err", radar: "none" }),

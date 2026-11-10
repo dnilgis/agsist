@@ -322,6 +322,8 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     .hm-now-more summary{min-height:44px;line-height:44px;cursor:pointer;color:var(--text)}
     .hm-now-more p{margin:0 0 .5rem;line-height:1.5}
     .hm-hold .hm-now-more[hidden]{display:block!important;visibility:hidden}
+    /* the notes are written while the box is closed, where they take no room; said here so the space check reads it */
+    .hm-now-more:not([open]) #hm-now-notes{visibility:hidden}
     /* floors for boxes the map code fills or shows later (test/cls-reserved.test.mjs) */
     #hm-meshnav{min-height:3.4rem}
     #hm-mesh-date{font-variant-numeric:tabular-nums}
