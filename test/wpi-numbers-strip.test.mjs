@@ -54,6 +54,7 @@ const jsStrip = new Function("rows", `
   const window = {};
   ${UTIL_SRC}
   const esc = window.esc;
+  ${liftFromPage("d3")}
   ${liftFromPage("numbersEl")}
   return numbersEl(rows);
 `);
