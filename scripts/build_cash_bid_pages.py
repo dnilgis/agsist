@@ -2586,12 +2586,16 @@ def build_town_page(t, ctx):
   <p>Bids come from each elevator&rsquo;s own posted bid board, read in the last {SB.HELD_SKIP_HOURS} hours, with the price {FRESH_WORDS} and the delivery period still open. This page is a snapshot rebuilt through the day; the <a href="{esc(live)}">live page</a>
   has the newest bids and nearby elevators. Always call the elevator to confirm before you haul. Basis is cash minus the futures contract named under it.{near_note}{hold_note}{HIST_NOTE if hist_html else ''}</p></details>
 """
+    # every town page that lists an elevator is indexed and in the sitemap, with or without a current bid:
+    # an elevator is never dropped from the site because no price could be read (Nov 10)
+    lastmod = max(times) if times else max((b["checked"] for b in quiet if b.get("checked")), default=None)
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
+            "listed": True, "lastmod": lastmod,
             "elevators": len(live_b), "quiet": len(quiet), "rows": nrows, "crops": crops,
             "latest": max(times) if times else None, "title": title, "desc": desc, "tops": tops,
             "ll": [round(center[0], 4), round(center[1], 4)] if center else None,
             "share": share, "story_facts": story_facts}
-    h = head(title, desc, path, jsonld, indexable, share)
+    h = head(title, desc, path, jsonld, True, share)
     if box:
         sheet = '  <link rel="stylesheet" href="/components/asof.css?v=1">\n'
         assert sheet in h, "head() changed shape; update build_town_page()"
@@ -3815,7 +3819,8 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
             stamp_basis_hub(hub, doc, states_html)
     entries = [(SITE + hub_meta["path"], hub_meta["latest"])] if hub_meta["indexable"] else []
     entries += [(SITE + m["path"], m["latest"]) for m in smetas if m["indexable"]]
-    entries += [(SITE + m["path"], m["latest"]) for m in metas if m["indexable"]]
+    entries += [(SITE + m["path"], m["latest"] or m.get("lastmod") or gen) for m in metas
+                if m["indexable"] or m.get("listed")]
     if cindex["indexable"]:
         entries.append((SITE + cindex["path"], cindex["latest"] or gen))
     entries += [(SITE + m["path"], m["latest"]) for m in cmetas if m["indexable"]]
@@ -3831,7 +3836,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
               f"ZIP or pin instead: " + ", ".join(f"{k[1]} {k[0]} -> {v[0]}" for k, v in sorted(moved.items())))
     print(f"[cash-bid-pages] places with no town in their name: {len(placed)}; placed by ZIP {how['zip']}, "
           f"within {NEAR_MI} mi of a town {how['near']}, not placed {how['none']}")
-    print(f"[cash-bid-pages] {len(metas)} town pages ({n_idx} with a current bid, {len(metas) - n_idx} noindex), "
+    print(f"[cash-bid-pages] {len(metas)} town pages ({n_idx} with a current bid, {len(metas) - n_idx} with none, all indexed), "
           f"{len(smetas)} state indexes, {sum(m['elevators'] for m in metas)} elevators, "
           f"{sum(m['rows'] for m in metas)} bid rows, {size / 1024:.0f} KB -> {out_dir}/; "
           f"{len(entries)} sitemap URLs; {len(new_urls)} new pages")
@@ -3945,7 +3950,8 @@ def _selftest_off_feed():
         for slug in ("creston", "afton"):
             assert not m[("IA", slug)]["indexable"] and m[("IA", slug)]["rows"] == 0, m[("IA", slug)]
             h = open(os.path.join(out, "iowa", f"{slug}.html"), encoding="utf-8").read()
-            assert 'content="noindex,follow"' in h
+            assert 'content="noindex,follow"' not in h, "a town whose boards could not be read stays indexed (Nov 10)"
+            assert f"https://agsist.com/cash-bids/iowa/{slug}</loc>" in open(os.path.join(td, "sm.xml")).read(), slug
             assert "NEW Cooperative, Inc." in h and "board could not be read on recent passes, last read Oct 6, 2026" in h, slug
             assert "3.90" not in h and "$3.9" not in h
         assert open(os.path.join(out, "nebraska", "fremont.html"), encoding="utf-8").read().count("could not be read") == 0
@@ -4170,12 +4176,12 @@ def selftest():
         top_i = fr.index('<div class="cbt-top"><p><b>Corn, Op n0:</b> Hold to Nov?')
         assert fr.index("</table>") < top_i < fr.index('id="bid-email"')
         assert top_i < [m.start() for m in re.finditer('class="cbt-el"', fr)][1]
-        # a town whose only boards are quiet is written noindex and left out of the sitemap
+        # a town whose only boards are quiet stays indexed and in the sitemap (Nov 10: never dropped)
         lone = json.loads(json.dumps(merged))
         lone["bids"] = [x for x in lone["bids"] if x["source"] != "t-st"]
         build_all(lone, index, ZT, out_dir=out + "2", root=".", min_towns=0, now=parse_ts("2026-10-07T19:00:00Z"))
         ho2 = open(os.path.join(out + "2", "nebraska", "hooper.html")).read()
-        assert 'content="noindex,follow"' in ho2 and "No current bid." in ho2
+        assert 'content="noindex,follow"' not in ho2 and "No current bid." in ho2
         # no dead end: the nearest elevators that do have a bid, above the cards
         assert "Nearest elevators with a current bid" in ho2 and 'href="/cash-bids/nebraska/fremont"' in ho2
         assert "Corn $3.95" in ho2 and "1.17" not in ho2
