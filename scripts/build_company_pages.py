@@ -162,6 +162,8 @@ def loc_label(t, bd):
         return re.sub(r"[^a-z0-9]", "", (x or "").lower())
     city = re.sub(r"(,\s*[A-Z]{2})+$", "", (bd.get("city") or "").strip()).strip()
     extra = city if city and n(city) != n(t["name"]) and n(city) not in n(bd.get("operator")) else ""
+    if bd.get("twin"):          # twin boards in one town are told apart by the facility each names
+        extra = bd["twin"] + (", " + extra if extra else "")
     if bd.get("how") == "near" and bd.get("near_mi") is not None:
         mi = bd["near_mi"]
         extra = (extra + ", " if extra else "") + ("under 1 mi away" if mi < 1 else f"{mi:.0f} mi away")
@@ -176,10 +178,10 @@ def _cell(r, snap_ct):
     the town page's wording (CB.con_label), and "Nov delivery" on its own."""
     if r is None:
         return '<td class="n"><span class="mut">&ndash;</span></td>'
-    mon = CB._mon(r["dm"], snap_ct) + " delivery"
+    mon = CB.deliv_short(r, snap_ct)
     if r["basis"] is None:
         return f'<td class="n">{CB.cash_c(r["cash"])}<br><span class="mut">{mon}</span></td>'
-    b = money_basis(r["basis"]) + (f" vs {CB.con_label(r['contract'])}" if r.get("contract") else "")
+    b = money_basis(r["basis"]) + (f" vs {CB.con_text(r)}" if r.get("contract") else "")
     return f'<td class="n">{CB.cash_c(r["cash"])}<br><span class="mut">{b}<br>{mon}</span></td>'
 
 

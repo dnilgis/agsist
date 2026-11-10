@@ -239,29 +239,36 @@ function deliveryText(delivery,period){
   return lab;
 }
 var MON_WORD=/^(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*$/i;
-/* Twin of build_cash_bid_pages._months_only(). */
+/* Twin of build_cash_bid_pages._months_only(): the label says nothing but the network's own period. */
 function monthsOnly(lab,per){
-  var toks=lab.match(/[A-Za-z]+|\d+/g)||[],k,t,seen={};
-  if(/^\d{4}-\d{2}$/.test(per||'')){
-    toks.forEach(function(x){if(MON_WORD.test(x))seen[x.slice(0,3).toLowerCase()]=1;});
-    if(Object.keys(seen).length>1||toks.some(function(x){return x.length<=3&&/^[A-Za-z]+$/.test(x)&&!MON_WORD.test(x)&&x.toLowerCase()!=='to';}))return false;
-    var nums=toks.filter(function(x){return /^\d+$/.test(x);});
-    if(nums.length>1||(nums.length===1&&nums[0]!==per.slice(0,4)&&nums[0]!==per.slice(2,4)&&
-       !(nums[0].length===8&&nums[0].slice(0,6)===per.slice(0,4)+per.slice(5,7))))return false;
-  }
-  var anyAlpha=toks.some(function(x){return /^[A-Za-z]+$/.test(x);});
-  if(!toks.length||(!anyAlpha&&!/^\d{8}$/.test(lab)))return false;
-  for(k=0;k<toks.length;k++){
-    t=toks[k];
-    if(!(/^\d+$/.test(t)||MON_WORD.test(t)||t.toLowerCase()==='to'||t.length===1||(t.length===3&&/^[JFMASOND]{3}$/.test(t))))return false;
-  }
+  var m1=/^(\d{4})-(\d{2})$/.exec(per||''),m2=/^(\d{4})-(\d{2})\/(\d{4})-(\d{2})$/.exec(per||''),y0,a0,y1,a1,i;
+  if(m1){y0=y1=+m1[1];a0=a1=+m1[2];}else if(m2){y0=+m2[1];a0=+m2[2];y1=+m2[3];a1=+m2[4];}else return false;
+  var len=(y1-y0)*12+a1-a0+1;
+  if(!(a0>=1&&a0<=12&&a1>=1&&a1<=12)||len<1||len>12)return false;
+  var span=[];for(i=0;i<len;i++)span.push((a0-1+i)%12);
   var r=/^(\d{1,2}) ([A-Za-z]{3}) (\d{4}) to (\d{1,2}) ([A-Za-z]{3}) (\d{4})$/.exec(lab);
   if(r){
-    var mo=MONTHS.indexOf(titleMon(r[5]))+1,y=+r[6];
-    var last=mo===2?(y%4===0?29:28):(mo?LAST_DAY[mo-1]:0);
+    if(titleMon(r[2])!==MONTHS[span[0]]||titleMon(r[5])!==MONTHS[span[span.length-1]]||+r[3]!==y0||+r[6]!==y1)return false;
+    var last=a1===2?(y1%4===0?29:28):LAST_DAY[a1-1];
     return +r[1]===1&&+r[4]===last;
   }
-  return true;
+  var seq=[],nums=[],toks=lab.match(/[A-Za-z]+|\d+/g)||[],k,t;
+  for(k=0;k<toks.length;k++){
+    t=toks[k];
+    if(/^\d+$/.test(t))nums.push(t);
+    else if(MON_WORD.test(t))seq.push(['w',MONTHS.indexOf(titleMon(t.slice(0,3)))]);
+    else if(t.length===1||/^[JFMASOND]{3}$/.test(t))t.toUpperCase().split('').forEach(function(c){seq.push(['l',c]);});
+    else return false;
+  }
+  function fits(x,mi){return x[0]==='w'?x[1]===mi:MONTHS[mi].charAt(0)===x[1];}
+  if(seq.length&&!((seq.length===span.length&&seq.every(function(x,j){return fits(x,span[j]);}))||
+     (seq.length===2&&span.length>1&&fits(seq[0],span[0])&&fits(seq[1],span[span.length-1]))))return false;
+  var ok={};if(y0===y1){ok[String(y0)]=1;ok[String(y0).slice(2)]=1;}
+  for(k=0;k<nums.length;k++){
+    var n=nums[k];
+    if(!(ok[n]||(n.length===8&&m1&&n.slice(0,6)===String(y0)+(a0<10?'0':'')+a0)))return false;
+  }
+  return seq.length>0||!!(nums.length&&m1&&nums[0].length===8);
 }
 var FUT={},FUT_ROOTS={ZC:1,ZS:1,ZW:1,KE:1};
 /* data/prices.json -> {ZSX26:{price:12.9575,date:'2026-10-07'}}. Only dated

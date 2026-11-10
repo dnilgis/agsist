@@ -321,29 +321,52 @@ _MON_WORD = re.compile(r"(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z
 
 
 def _months_only(lab, per=""):
-    """True when a label holds nothing but month words, month initials, "to" and
-    numbers, and any day range covers whole months; against a one-month period
-    it names at most that one month ("Oct Nov 26" filed as Oct stays as written).
-    Twin of cb-rank.js monthsOnly()."""
-    toks = re.findall(r"[A-Za-z]+|\d+", lab)
-    if re.fullmatch(r"\d{4}-\d{2}", per or "") and (
-            len({t[:3].lower() for t in toks if _MON_WORD.fullmatch(t)}) > 1
-            or any(len(t) <= 3 and t.isalpha() and not _MON_WORD.fullmatch(t) and t.lower() != "to" for t in toks)
-            or [t for t in toks if t.isdigit()] not in ([], [per[:4]], [per[2:4]], [per[:4] + per[5:7] + t[6:] for t in toks if len(t) == 8][:1])):
-        return False   # a day ("Oct 3-31") or a second month says more than the period
-    if not toks or not any(t.isalpha() for t in toks) and not re.fullmatch(r"\d{8}", lab):
+    """True when a label says nothing but the network's own period: its month
+    words or initials are exactly the period's months (all of them, or its first
+    and last), any year is the period's own (a year across two years is left
+    as written: the board's year is never moved), a day range covers whole
+    months, and an 8-digit date ("20261130") falls in the period. "SEP/OCT/NOV 26"
+    filed as Sep-Oct and "Oct 3-31" stay as the board wrote them. Twin of
+    cb-rank.js monthsOnly()."""
+    m1 = re.fullmatch(r"(\d{4})-(\d{2})", per or "")
+    m2 = re.fullmatch(r"(\d{4})-(\d{2})/(\d{4})-(\d{2})", per or "")
+    if m1:
+        y0, a0, y1, a1 = int(m1.group(1)), int(m1.group(2)), int(m1.group(1)), int(m1.group(2))
+    elif m2:
+        y0, a0, y1, a1 = (int(x) for x in m2.groups())
+    else:
         return False
-    for t in toks:
-        if not (t.isdigit() or _MON_WORD.fullmatch(t) or t.lower() == "to" or len(t) == 1
-                or (len(t) == 3 and all(c in "JFMASOND" for c in t.upper()) and t.isupper())):
-            return False
+    if not (1 <= a0 <= 12 and 1 <= a1 <= 12) or (y1, a1) < (y0, a0) or (y1 - y0) * 12 + a1 - a0 > 11:
+        return False
+    span = [(a0 - 1 + i) % 12 for i in range((y1 - y0) * 12 + a1 - a0 + 1)]
     r = re.fullmatch(r"(\d{1,2}) ([A-Za-z]{3}) (\d{4}) to (\d{1,2}) ([A-Za-z]{3}) (\d{4})", lab)
     if r:
-        mo = MONTH_ABBR.index(r.group(5).title()) + 1 if r.group(5).title() in MONTH_ABBR else 0
-        y = int(r.group(6))
-        last = 29 if mo == 2 and y % 4 == 0 else (28 if mo == 2 else _LAST_DAY[mo - 1] if mo else 0)
+        if r.group(2).title() != MONTH_ABBR[span[0]] or r.group(5).title() != MONTH_ABBR[span[-1]] \
+                or int(r.group(3)) != y0 or int(r.group(6)) != y1:
+            return False
+        last = 29 if a1 == 2 and y1 % 4 == 0 else (28 if a1 == 2 else _LAST_DAY[a1 - 1])
         return int(r.group(1)) == 1 and int(r.group(4)) == last
-    return True
+    seq, nums = [], []
+    for t in re.findall(r"[A-Za-z]+|\d+", lab):
+        if t.isdigit():
+            nums.append(t)
+        elif _MON_WORD.fullmatch(t):
+            seq.append(("w", MONTH_ABBR.index(t[:3].title())))
+        elif len(t) == 1 or (len(t) == 3 and t.isupper() and all(c in "JFMASOND" for c in t)):
+            seq += [("l", c.upper()) for c in t]
+        else:
+            return False
+
+    def fits(item, mi):
+        return item[1] == mi if item[0] == "w" else MONTH_ABBR[mi][0] == item[1]
+    if seq and not ((len(seq) == len(span) and all(fits(x, mi) for x, mi in zip(seq, span)))
+                    or (len(seq) == 2 and len(span) > 1 and fits(seq[0], span[0]) and fits(seq[1], span[-1]))):
+        return False
+    ok_years = {str(y0), str(y0)[2:]} if y0 == y1 else set()
+    for n in nums:
+        if not (n in ok_years or (len(n) == 8 and n[:6] == f"{y0}{a0:02d}" and m1)):
+            return False
+    return bool(seq) or bool(nums and m1 and len(nums[0]) == 8)
 
 
 def delivery_label(row):
@@ -524,6 +547,8 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             "place": place, "source": sid,
             "operator": display_name(b.get("operator") or src.get("operator") or ""),
             "city": clean_place(town_name(b.get("city"))), "branch": branch_name(b, src, tname, towns_by_state.get(st, {})),
+            # the facility the board itself names ("1st Ave", "Soy Processing"): tells twin boards apart
+            "point": clean_place(town_name(b.get("branch") or "")),
             "zip": ovr["zip"] if ovr else zip5(b.get("zip") or src.get("zip")),
             # a checked number replaces the filed one, an unconfirmed one is withheld (2026-10-27)
             "phone": phone_corrections.for_source(sid, src.get("phone") or ""), "checked": parse_ts(src.get("checkedAt")),
@@ -628,7 +653,24 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             "source": sid, "via": b.get("via"),
             "pasted": parse_ts(b.get("pastedAt") or b.get("checkedAt")) if b.get("pasted") is True else None,
             "posted_from": b.get("postedFrom") if b.get("pasted") is True else None})
+    for t in towns.values():
+        name_twins(t["boards"].values())
     return towns, drops, unplaced
+
+
+def name_twins(boards):
+    """Two or more boards on one page that would print the same heading (four
+    "ADM, Evansville" boards) are named by the facility each board names
+    ("ADM (1st Ave)", "ADM (Broadway)"). Only when every twin names its own,
+    different facility; otherwise they stay as they are."""
+    by = defaultdict(list)
+    for bd in boards:
+        by[head_name(bd).lower()].append(bd)
+    for grp in by.values():
+        pts = [bd.get("point") or "" for bd in grp]
+        if len(grp) > 1 and all(pts) and len({p.lower() for p in pts}) == len(pts):
+            for bd in grp:
+                bd["twin"] = bd["point"]
 
 
 # A BOARD OFF THE FEED FOR A DAY KEEPS ITS PAGE (2026-10-20). The network
@@ -1001,6 +1043,77 @@ def drop_misreads(towns, drops):
                 drops["implied_futures_disagrees"] += n
                 bd["why"]["implied_futures_disagrees"] += n
                 bd["rows"] = [r for r in bd["rows"] if not r["bad"]]
+
+
+INFER_TOL = 0.01      # $/bu: cash - basis within a cent of one contract's network middle ...
+INFER_GAP = 0.03      # ... and at least 3 cents from every other contract of that crop
+INFER_ROOT = {"corn": "ZC", "soybeans": "ZS"}
+
+
+def infer_contracts(towns):
+    """A board that posts a basis but no futures month (Five Star Cooperative at
+    Lime Springs IA: corn Nov26 $3.77, basis -63c) still used one: cash - basis
+    is that contract's price. When it lands within INFER_TOL of the network's
+    middle implied futures for exactly one corn or soybean contract (at least
+    BM.FUTURES_MIN_N boards on it), the row is labelled with that contract and
+    marked inferred ("Dec '26 (inferred)"); otherwise it stays unlabelled."""
+    allrows = [r for t in towns.values() for bd in t["boards"].values() for r in bd["rows"]]
+    by = defaultdict(list)
+    for r in allrows:
+        if r["contract"] and r["basis"] is not None and r["contract"][0] == INFER_ROOT.get(r["crop"]):
+            by[r["contract"]].append(r["cash"] - r["basis"])
+    med = {c: statistics.median(v) for c, v in by.items() if len(v) >= BM.FUTURES_MIN_N}
+    n = 0
+    for r in allrows:
+        root = INFER_ROOT.get(r["crop"])
+        if r["contract"] or r["basis"] is None or not root:
+            continue
+        imp = r["cash"] - r["basis"]
+        ds = sorted((abs(imp - m), c) for c, m in med.items() if c[0] == root)
+        if ds and ds[0][0] <= INFER_TOL and (len(ds) == 1 or ds[1][0] >= INFER_GAP):
+            r["contract"], r["inferred"] = ds[0][1], True
+            n += 1
+    return n
+
+
+RELAY_MIN_ROWS = 2
+
+
+def mark_relays(towns):
+    """A board that only relays another elevator's bids (Farmers Cooperative
+    Elevator's "ADM, Marshall" and "Granite Falls Energy" boards post ADM's and
+    Granite Falls Energy's own bids cent for cent) stays listed, marked "same
+    bids as" that elevator, and is not counted or ranked a second time. Both
+    must hold: the other elevator's name is in the board's own place name, and
+    every row the board posts (at least RELAY_MIN_ROWS) is one of the other's,
+    same crop, delivery, cash and basis."""
+    boards = [(t, bd) for t in towns.values() for bd in t["boards"].values() if bd["rows"]]
+    sig = lambda r: (r["crop"], r["dm"], round(r["cash"], 4), r["basis"])   # noqa: E731
+    by_sig = defaultdict(list)
+    for t, bd in boards:
+        for s in {sig(r) for r in bd["rows"]}:
+            by_sig[s].append((t, bd))
+    n = 0
+    for t, bd in boards:
+        mine = {sig(r) for r in bd["rows"]}
+        if len(mine) < RELAY_MIN_ROWS:
+            continue
+        where = fac_key(" ".join(x for x in (bd.get("branch") or "", bd.get("city") or "", bd.get("point") or "") if x))
+        me = fac_key(bd["operator"])
+        for t2, other in by_sig[next(iter(mine))]:
+            ok_ = fac_key(other["operator"])
+            if other is bd or not ok_ or ok_ == me or ok_ not in where:
+                continue
+            if mine <= {sig(r) for r in other["rows"]}:
+                bd["relay_of"] = (head_name(other, with_town=False), t2["name"], t2["state"])
+                n += 1
+                break
+    return n
+
+
+def con_text(r):
+    """The contract a row's basis is against, as printed: "Dec '26", or "Dec '26 (inferred)"."""
+    return con_label(r["contract"]) + (" (inferred)" if r.get("inferred") else "")
 
 
 ODD_NEAR_MI = 50              # the live page's default search radius
@@ -1409,7 +1522,7 @@ def live_board_list(towns):
     out = []
     for (st, slug), t in towns.items():
         for bd in t["boards"].values():
-            if not bd["rows"] or not bd.get("pin"):
+            if not bd["rows"] or not bd.get("pin") or bd.get("relay_of"):
                 continue
             g = board_glance(bd)
             if not g:
@@ -1438,6 +1551,20 @@ def town_center(t, z, zip_coord):
 def _mon(dm, snap_ct):
     y, m = int(dm[:4]), int(dm[5:7])
     return MONTH_ABBR[m - 1] + ("" if y == snap_ct.year else f" &rsquo;{y % 100:02d}")
+
+
+def deliv_short(r, snap_ct):
+    """A row's delivery in a short list (nearby elevators, company pages):
+    "Nov delivery" when the board's own label is that month, else the board's
+    label as the town page prints it ("New crop 2026", "Harvest 2026"), never
+    the month the row is only filed under (the nearby list said "Nov" for a
+    "New crop 2026" bid). HTML-escaped."""
+    lab = re.sub(r"\s+", " ", str(r.get("label") or "")).strip()
+    m = re.match(r"([A-Za-z]{3})\b", lab)
+    if not lab or (m and m.group(1).title() == MONTH_ABBR[int(r["dm"][5:7]) - 1]
+                   and re.fullmatch(r"[A-Za-z]{3,9}\.? ?(?:\d{4})?", lab)):
+        return _mon(r["dm"], snap_ct) + " delivery"
+    return esc(lab)
 
 
 def nearby_pick(t, center, live_all, has_own):
@@ -1475,7 +1602,7 @@ def nearby_section(t, center, live_all, snap_ct, has_own):
     for d, b in pick:
         g = b["glance"]
         cs = [c for c in ("corn", "soybeans") if c in g] or [c for c in CROPS if c in g][:1]
-        prices = " &middot; ".join(f'{CROP_LABEL[c]} {cash_c(g[c][0])} <span class="mut">{_mon(g[c][1], snap_ct)}</span>'
+        prices = " &middot; ".join(f'{CROP_LABEL[c]} {cash_c(g[c][0])} <span class="mut">{deliv_short(b["rows"][c], snap_ct)}</span>'
                                    for c in cs)
         p = b["posted"].astimezone(CT)
         dist = dist_text(d)
@@ -1513,7 +1640,7 @@ def _skb_row(r, name, town, st, d, path, snap_ct):
     bas = None if r.get("basis") is None else re.sub(r"<[^>]+>", "", money_basis(r["basis"]))
     return {"n": name, "t": town, "s": st, "mi": None if d is None else round(d, 1), "c": cash_c(r["cash"]),
             "v": r["cash"], "d": _skb_mon(r["dm"], snap_ct), "dl": re.sub(r"\s+", " ", str(r.get("label") or "")).strip(),
-            "b": bas, "k": con_label(r["contract"]) if (bas and r.get("contract")) else "",
+            "b": bas, "k": con_text(r) if (bas and r.get("contract")) else "",
             "p": r["priced"].astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
             "u": share_until(r).strftime("%Y-%m-%dT%H:%M:%SZ"), "h": path}
 
@@ -1607,6 +1734,8 @@ def board_section(bd, snap_ct):
     call = (f'<a href="tel:+1{ph}">call{who} to confirm ({ph[:3]}-{ph[3:6]}-{ph[6:]})</a>' if ph
             else f"call{who} to confirm")
     name = bd["operator"] or bd["city"]
+    if bd.get("twin") and bd["operator"]:
+        name = f'{bd["operator"]} ({bd["twin"]})'
     pt = bd["branch"] if "branch" in bd else bd["city"]
     loc = near_text(bd) or (pt if pt and pt.lower() != name.lower() else "")
     # the company's own page (scripts/build_company_pages.py), when it has one
@@ -1623,7 +1752,7 @@ def board_section(bd, snap_ct):
         else:
             bas = money_basis(r["basis"])
             if r["contract"]:
-                bas += f'<br><span class="mut">vs {con_label(r["contract"])}</span>'
+                bas += f'<br><span class="mut">vs {con_text(r)}</span>'
         trs.append(f'<tr><td>{crop}</td><td>{esc(r["label"])}</td><td class="n">{cash_c(r["cash"])}</td>'
                    f'<td class="n">{bas}</td></tr>')
         if r.get("odd"):
@@ -1634,8 +1763,11 @@ def board_section(bd, snap_ct):
                  f'delivery on the <a href="{esc(live)}">live page</a>.</p>' if more else "")
     holds = hold_lines(bd)
     more_html += "".join(f'<p class="cbt-hold">{esc(CROP_LABEL[c])}: {esc(t)}</p>' for c, t, _ in holds)
+    rel = bd.get("relay_of")
+    rel_html = (f'<div class="loc">Same bids as {esc(rel[0])}, {esc(rel[1])}, {rel[2]}; counted once</div>'
+                if rel else "")
     return (f'<section class="cbt-el"><h2>{esc(name)}</h2>'
-            + (f'<div class="loc">{esc(loc)}</div>' if loc else "") + co
+            + (f'<div class="loc">{esc(loc)}</div>' if loc else "") + rel_html + co
             + portal_html(pi, snap_ct)
             + f'<p class="cbt-posted" title="Posted {esc(posted)}">{asof_time(lo)}<span class="cbt-sep"> &middot; </span>{call}</p>'
             + pasted_mark(rows, snap_ct) +
@@ -1687,6 +1819,8 @@ def head_name(bd, with_town=True):
     Ingredion bid on 2026-10-15; the bare company name sent a farmer to the
     wrong scale."""
     op = (bd.get("operator") or "").strip()
+    if bd.get("twin") and op:
+        return f"{op} ({bd['twin']})"
     city = bd["branch"] if "branch" in bd else bd.get("city")
     city = re.sub(r"(,\s*[A-Z]{2})+$", "", (city or "").strip().rstrip(", ")).strip()
     town = (bd.get("town") or "").strip()
@@ -1757,7 +1891,7 @@ def _basis_plain(r, vs=True):
     if r["basis"] is None:
         return ""
     b = pricefmt.basis(r["basis"] * 100)
-    return b + (f" vs {con_label(r['contract'])}" if vs and r["contract"] else "")
+    return b + (f" vs {con_text(r)}" if vs and r["contract"] else "")
 
 
 def _posted_days(rows):
@@ -1891,11 +2025,11 @@ MIN_CMP_COMPANIES = 3        # a state middle on fewer companies is not a middle
 
 
 def first_notice(con):
-    """The first notice day of a grain futures contract (root, month, year):
-    the last weekday of the month before the delivery month (Nov '26
-    soybeans: Fri Oct 30, 2026). None when it cannot be read."""
+    """The first notice day of a grain futures contract (root, month index
+    0-11, year): the last weekday of the month before the delivery month
+    (Nov '26 soybeans: Fri Oct 30, 2026). None when it cannot be read."""
     try:
-        y, m = int(con[2]), int(con[1])
+        y, m = int(con[2]), int(con[1]) + 1
     except (TypeError, ValueError, IndexError):
         return None
     d = dt.date(y, m, 1) - dt.timedelta(days=1)
@@ -1972,22 +2106,22 @@ def faq_pairs(t, picks, cmp_lines, near, center, snap_ct, latest=None):
     cs = [c for c in CROPS if c in picks]
     if not cs:
         return []
-    names = []
-    for c in cs[:ANSWER_CROPS]:
-        r, name = picks[c]
-        names.append(f"{CROP_LABEL[c].lower()} at {name}{_deliv_phrase(r, True)}")
     c = cs[0]
     crop = CROP_LABEL[c].lower()
     r, name = picks[c]
     qs = []
-    crops_txt = " and ".join(CROP_LABEL[x].lower() for x in cs[:ANSWER_CROPS])
-    a1 = (f"The nearest-delivery {crops_txt} {'bids' if len(names) > 1 else 'bid'} we read in {place} "
-          f"{'are' if len(names) > 1 else 'is'} {' and '.join(names)}, posted "
-          f"{_posted_days([picks[x][0] for x in cs[:ANSWER_CROPS]])}. The cash price and basis are in the table "
+    two = cs[:ANSWER_CROPS]
+    if len(two) > 1 and not any(picks[x][0].get("open_far") for x in two):
+        who = "The nearest-delivery bids we read in " + place + " are " + " and ".join(
+            f"{CROP_LABEL[x].lower()} at {picks[x][1]}{_deliv_phrase(picks[x][0], True)}" for x in two)
+    else:
+        who = (f"The nearest{' open' if r.get('open_far') else '-delivery'} {crop} bid we read in {place} comes from "
+               f"{name}{_deliv_phrase(r, True)}")
+    a1 = (f"{who}, posted {_posted_days([picks[x][0] for x in two])}. The cash price and basis are in the table "
           "on this page. Call the elevator to confirm before you haul.")
     qs.append((f"Where can I sell {crop} in {town}?", a1))
     if r["basis"] is not None:
-        a2 = (f"{name} posts {crop} basis with its bid" + (f", against {con_label(r['contract'])} futures" if r["contract"] else "")
+        a2 = (f"{name} posts {crop} basis with its bid" + (f", against {con_text(r)} futures" if r["contract"] else "")
               + ".")
         a2 += "".join(" " + x["faq"] for x in cmp_lines if x["crop"] == c)
     else:
@@ -2284,10 +2418,12 @@ def build_town_page(t, ctx):
         shown += rows
         nrows += len(rows)
         crops |= {r["crop"] for r in rows}
+    # a board that relays another elevator's bids is listed, never counted or ranked again (mark_relays)
+    own_b = [b for b in live_b if not b.get("relay_of")] or live_b
     indexable = bool(live_b)
     path = f"/cash-bids/{ssl}/{t['slug']}"
     place = f"{t['name']}, {st}"
-    title = town_title(place, live_b)
+    title = town_title(place, own_b)
     zips = Counter(b["zip"] for b in live_b or quiet if b["zip"] and b["how"] != "near")
     if not zips:
         zips = Counter(b["zip"] for b in live_b or quiet if b["zip"])
@@ -2296,8 +2432,8 @@ def build_town_page(t, ctx):
     if indexable:
         cl = [CROP_LABEL[c].lower() for c in CROPS if c in crops]
         cl_txt = ", ".join(cl[:-1]) + (" and " if len(cl) > 1 else "") + cl[-1]
-        n = len(live_b)
-        n_near = sum(1 for b in live_b if b["how"] == "near")
+        n = len(own_b)
+        n_near = sum(1 for b in own_b if b["how"] == "near")
         where = f"in and near {place}" if n_near else f"in {place}"
         latest = max(times)
         desc = (f"Cash {cl_txt} bids at {n} elevator{'s' if n != 1 else ''} {where}: delivery month, cash "
@@ -2306,7 +2442,7 @@ def build_town_page(t, ctx):
             desc = (f"Cash grain bids at {n} elevator{'s' if n != 1 else ''} {where}, posted {fmt_day(latest)}: "
                     f"cash price and basis by delivery month. Call to confirm.")
         desc = desc[:160]
-        picks = answer_picks(live_b)
+        picks = answer_picks(own_b)
         answer, adesc = answer_and_desc(picks, snap_ct, place)
         if adesc:
             desc = adesc
@@ -2375,7 +2511,7 @@ def build_town_page(t, ctx):
     # the share button sends the answer line's own pick, so it shows only under an answer line
     share_html = share_bid_html(picks, place, path) if answer else ""
     # the Bids near kit: its buttons join the share row (one row, no new line); its rows are this page's own
-    skb_btns, skb_js = skb_html(skb_rows(t, live_b, center, nearby_pick(t, center, ctx.get("live_all"), True), snap_ct),
+    skb_btns, skb_js = skb_html(skb_rows(t, own_b, center, nearby_pick(t, center, ctx.get("live_all"), True), snap_ct),
                                 place, t["name"], path, center) if indexable else ("", "")
     if skb_btns:
         share_html = ((share_html[:-len("</p>")] + skb_btns + "</p>") if share_html else f'<p class="cbt-share">{skb_btns}</p>') + skb_js
@@ -2384,7 +2520,7 @@ def build_town_page(t, ctx):
     if indexable:
         import stories_bids as SBX
         hm = re.search(r"Basis since ([A-Z][a-z]{2} \d{1,2})<", hist_html or "")
-        story_facts = SBX.town_facts(t, live_b, crops, picks, cmp_lines, hm and hm.group(1), sname, NEAR_MI, CROPS, CROP_LABEL,
+        story_facts = SBX.town_facts(t, own_b, crops, picks, cmp_lines, hm and hm.group(1), sname, NEAR_MI, CROPS, CROP_LABEL,
                                      snap_ct, near_text, head_name)
         story_html = SBX.TOWN.story_html((ctx.get("stories") or {}).get("town"), f"{st.lower()}/{t['slug']}", story_facts)
     if any_hold:
@@ -3499,6 +3635,8 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     towns, drops, unplaced = select(merged, index, tbs, zip_towns, zip_coord, placed, moved, prev=prev_doc)
     how = Counter(v["how"] for v in placed.values())
     drop_misreads(towns, drops)
+    infer_contracts(towns)
+    mark_relays(towns)
     ids = {s["id"] for s in index.get("sources") or []}
     bad = [r for t in towns.values() for bd in t["boards"].values() for r in bd["rows"]
            if r["source"] not in ids or r["via"] != "scrape"]
@@ -3953,14 +4091,16 @@ def selftest():
                "soybeans $9.85 at Op n0 for Oct 2026 (basis \u221235\u00a2 vs Nov &#x27;26), posted Oct 7.")
         short = ("Nearest-delivery bids: corn $3.95 at Op kept for delivery by Oct 9 and soybeans $9.85 at Op n0 for Oct 2026, posted Oct 7.")
         a_html = re.search(r'<p class="cbt-answer">(.*?)</p>', fr).group(1)
-        assert a_html in (ans, short), a_html
+        assert a_html == ans, "the answer line keeps both crops and their basis, never cut to fit: " + a_html
         assert "<td>By Oct 9</td><td class=\"n\">$3.95</td>" in fr and "<td>Oct 2026</td><td class=\"n\">$9.85</td>" in fr, \
             "each delivery the answer names is the table row its price sits on"
         nc = {"label": "New crop 2026", "dm": "2026-10"}
         assert _deliv_phrase(nc, True) == " for New crop 2026 delivery" and _deliv_phrase(nc, False) == " for New crop 2026"
         assert "Top bid" not in a_html
         dsc = re.search(r'<meta name="description" content="([^"]*)">', fr).group(1)
-        assert dsc.startswith("Fremont, NE cash bids. ") and a_html in dsc and len(html_unescape(dsc)) <= DESC_MAX, dsc
+        # Nov 10: no price in the meta description (a search result outlives the bid)
+        assert "$" not in dsc and "\u00a2" not in html_unescape(dsc) and len(html_unescape(dsc)) <= DESC_MAX, dsc
+        assert "Fremont, NE" in dsc and "posted Oct 7" in dsc, dsc
         for v in re.findall(r"\$(\d+\.\d\d)", a_html):
             assert f"${v}</td>" in fr, f"answer price {v} is not in the table"
         assert fr.index('class="cbt-answer"') < fr.index("<table") < fr.index('class="cbt-cmp"') \
@@ -4000,16 +4140,20 @@ def selftest():
                                    "url": "https://agsist.com/"}, wp
         assert wp["@id"] == wp["url"] == "https://agsist.com/cash-bids/nebraska/fremont"
         faq = next(g for g in blks[0]["@graph"] if g["@type"] == "FAQPage")["mainEntity"]
-        assert [q["name"] for q in faq] == ["What is corn paying in Fremont today?", "What is the corn basis in Fremont?",
+        assert [q["name"] for q in faq] == ["Where can I sell corn in Fremont?", "What is the corn basis in Fremont?",
                                            "How far is the next elevator from Fremont?"]
         vis = re.search(r'<div class="cbt-faq">(.*?)</div>', fr).group(1)
         assert re.findall(r"<h3>(.*?)</h3><p>(.*?)</p>", vis) == [(esc(q["name"]), esc(q["acceptedAnswer"]["text"]))
                                                                    for q in faq], "FAQ and JSON-LD word for word"
-        assert faq[0]["acceptedAnswer"]["text"].startswith("The nearest-delivery corn bid we read in Fremont, NE is $3.95 a bushel at Op kept for delivery by Oct 9")
-        assert "That is 6\u00bd\u00a2 stronger than the Nebraska middle" in faq[1]["acceptedAnswer"]["text"]
+        assert faq[0]["acceptedAnswer"]["text"].startswith("The nearest-delivery bids we read in Fremont, NE "
+                                                          "are corn at Op kept for delivery by Oct 9 and soybeans at Op n0")
+        assert "That is stronger than the Nebraska middle for Dec &#x27;26 futures" in esc(faq[1]["acceptedAnswer"]["text"])
+        # Nov 10: no price or basis figure in the FAQ structured data
+        for q in faq:
+            assert not re.search(r"\$\d|\d\u00a2|\u2212\d", q["acceptedAnswer"]["text"]), q
         assert faq[2]["acceptedAnswer"]["text"] == ("The nearest other elevator with a current bid is Op st in Hooper, NE, "
-                                                    "13 miles straight-line from the elevators in Fremont. It posted "
-                                                    "soybeans $9.70 on Oct 7.")
+                                                    "13 miles straight-line from the elevators in Fremont. It last "
+                                                    "posted on Oct 7.")
         assert "cbt-hist" not in fr.split("</style>")[1] and "cb-basis-hist.js" not in fr, \
             "no basis log given: no history box, no script"
         ho = open(os.path.join(out, "nebraska", "hooper.html")).read()
@@ -4017,7 +4161,7 @@ def selftest():
         assert "Op old: no recent price" in ho, "a quiet board must be named, unpriced"
         # nearby: a town with bids lists the other elevators within 40 mi, with their own gated numbers
         assert "Other elevators within 40 miles" in fr and 'href="/cash-bids/nebraska/hooper"' in fr
-        near_fr = fr[fr.index('id="nearby"'):]
+        near_fr = fr[fr.index('id="nearby"'):fr.index('id="faq"')]   # the list itself (the FAQ below names the page's own)
         assert "Soybeans $9.70" in near_fr and "13 mi" in near_fr and "posted Oct 7" in near_fr, near_fr[:900]
         assert "1.16" not in near_fr and "Redfield" not in near_fr, "only gated rows, only within 40 mi"
         assert "Op n0" not in near_fr, "a town's own elevators are not repeated as its neighbours"
@@ -4306,8 +4450,17 @@ def _selftest_answer():
                                                           "median": -0.40}]}}, "Iowa")
     assert nv_line[1] == ["Corn basis at Lincolnway Energy LLC, \u221230\u00a2 vs Dec '26, is 10\u00a2 stronger than "
                           "the Iowa middle (\u221240\u00a2 vs Dec '26, median of 349 elevators, 51 companies)."], nv_line
-    assert nv_line[0][0]["faq"] == ("That is 10\u00a2 stronger than the Iowa middle (\u221240\u00a2 vs Dec '26, "
-                                    "median of 349 elevators, 51 companies)."), nv_line
+    assert nv_line[0][0]["faq"] == "That is stronger than the Iowa middle for Dec '26 futures.", nv_line
+    # Nov 10: a middle on fewer than 3 companies is withheld (45 pages compared a town with 1 or 2 companies)
+    thin = {"corn": {"contracts": [{"contract": dec, "n": 4, "companies": 2, "median": -0.40}]}}
+    assert state_compare(pnv, thin, "Iowa") == ([], []), "a 2-company middle is no middle"
+    # Nov 10: no Nov '26 soybean comparison after its first notice day (Fri Oct 30, 2026)
+    nov = ("ZS", 10, 2026)
+    assert first_notice(nov) == dt.date(2026, 10, 30) and first_notice(dec) == dt.date(2026, 11, 30)
+    psb = {"soybeans": (dict(pnv["corn"][0], crop="soybeans", contract=nov), "Lincolnway Energy LLC")}
+    sm = {"soybeans": {"contracts": [{"contract": nov, "n": 40, "companies": 12, "median": -0.80}]}}
+    assert state_compare(psb, sm, "Iowa", dt.datetime(2026, 10, 29, 12, tzinfo=CT))[1], "before first notice: compared"
+    assert state_compare(psb, sm, "Iowa", dt.datetime(2026, 11, 2, 12, tzinfo=CT)) == ([], []), "after: withheld"
     # every other copy of the pick takes the same row
     assert top_nearby(lw["rows"] + key["rows"])["corn"][0] == 4.18
     assert board_glance(dict(lw, rows=lw["rows"]))["corn"][:2] == (4.18, "2026-11")
@@ -4378,8 +4531,7 @@ def _selftest_answer():
     pk2 = dict(pk, corn=(dict(pk["corn"][0], priced=t1), "Alpha Grain"))
     assert answer_sentence(pk2, snap).endswith("posted Oct 6 to 7."), answer_sentence(pk2, snap)
     sen, dsc = answer_and_desc(pk, snap, "Longname Township Junction, WI")
-    assert dsc == f"Longname Township Junction, WI cash bids. {sen} Call to confirm." or dsc.endswith(sen)
-    assert len(dsc) <= DESC_MAX and sen in dsc
+    assert dsc == "" and sen == answer_sentence(pk, snap), "the answer is never cut; the description carries no price"
     summ = {"corn": {"contracts": [{"contract": dec, "n": 9, "median": -0.55}]},
             "soybeans": {"contracts": [{"contract": nov, "n": 4, "median": -0.80}]}}
     out, lines = state_compare(pk, summ, "Wisconsin")
@@ -4461,7 +4613,8 @@ def _selftest_delivery_year():
     assert got[("OH", "soybeans", "SEP/OCT/NOV 26")] == ("2026-09/2026-10", "2026-10"), got
     assert got[("OH", "soybeans", "Jan 2027")] == ("2027-01", "2027-01"), got
     assert got[("MI", "corn", "Oct/Nov27")] == ("2027-10", "2027-10"), got
-    assert got[("MI", "corn", "Oct/Nov 26")] == ("2026-10/2026-11", "2026-11"), got
+    # "Oct/Nov 26" says only its own period: printed in the page's words (one label normaliser, Nov 10)
+    assert got[("MI", "corn", "Oct-Nov 2026")] == ("2026-10/2026-11", "2026-11"), got
     assert got[("MN", "soybeans", "DEC-JAN 2027")] == ("2026-12/2027-01", "2027-01"), got
     assert got[("CO", "corn", "Aug 2027")] == ("2027-08", "2027-08"), "a year the board wrote is never moved"
     assert ("CO", "corn", "Oct 2026") not in got and drops["delivery_year_did_not_check_out"] == 1, (got, drops)
@@ -4805,16 +4958,17 @@ def _selftest_share():
     og = re.search(r'<meta property="og:description" content="([^"]*)"', pg)
     assert og and "corn $4.10" in og.group(1) and "4.90" not in og.group(1), og and og.group(1)
     assert 'data-top="corn:4.10"' in pg, "the email box's placeholder is the answer's price too"
-    assert "What is corn paying in Fremont today?" in pg and "<title>Cash Grain Bids in Fremont, NE Today" in pg
+    assert "Where can I sell corn in Fremont?" in pg and "<title>Cash Grain Bids in Fremont, NE Today" in pg
     # nothing posted today (CT): the FAQ asks for the latest bid; title and H1 keep "Today"
     snap = parse_ts(gen).astimezone(CT)
     r = {"crop": "corn", "commodity": "Corn", "dm": "2026-10", "cash": 4.1, "basis": None, "contract": None,
          "label": "Oct 2026", "period": "2026-10", "priced": parse_ts("2026-10-17T22:00:00Z")}
     tf = {"name": "Fremont", "state": "NE"}
     q = faq_pairs(tf, {"corn": (r, "Alpha Grain")}, [], [], None, snap, r["priced"])
-    assert q[0][0] == "What is the latest corn bid in Fremont?", q[0]
-    q = faq_pairs(tf, {"corn": (r, "Alpha Grain")}, [], [], None, snap, parse_ts("2026-10-18T05:30:00Z"))
-    assert q[0][0] == "What is corn paying in Fremont today?", "12:30 am CT Oct 18 is today"
+    # Nov 10: the FAQ carries no price, so it asks where to sell and names the day the bid was posted
+    assert q[0] == ("Where can I sell corn in Fremont?", "The nearest-delivery corn bid we read in Fremont, NE comes "
+                    "from Alpha Grain for Oct 2026 delivery, posted Oct 17. The cash price and basis are in the table "
+                    "on this page. Call the elevator to confirm before you haul."), q[0]
 
 
 def _selftest_best():
@@ -4868,32 +5022,19 @@ def _selftest_restricted():
     assert "11.67" not in sen
     assert top_nearby(rc["rows"])["soybeans"][0] == 11.41
     assert "open_far" not in rc["rows"][2], "the table's own row is not changed"
-    # a long delivery-point name gives up the town, then (one crop) the point, before the second crop or the answer
+    # Nov 10: a long delivery-point name never costs the soybean half of the answer (351 pages dropped it)
     tg = {"corn": (row("corn", 4.39, -0.35, ("ZC", 11, 2026), "2026-10", "Oct 2026"),
                    "Total Grain Marketing (Fairgrange, Charleston)"),
           "soybeans": (row("soybeans", 12.23, -0.38, ("ZS", 10, 2026), "2026-10", "Oct 2026"),
                        "Total Grain Marketing (Fairgrange, Charleston)")}
     a, d = answer_and_desc(tg, snap, "Charleston, IL")
-    assert "Total Grain Marketing (Fairgrange" in a and len(d) <= DESC_MAX, a
-    tg2 = {c: (r, "Total Grain Marketing (Lis, Newton)") for c, (r, _) in tg.items()}
-    a, d = answer_and_desc(tg2, snap, "Newton, IL")
-    assert a.startswith("Nearest-delivery bids: corn $4.39 at Total Grain Marketing (Lis) for Oct 2026") \
-        and "soybeans $12.23" in a and len(d) <= DESC_MAX, a
-    fv = {"corn": (row("corn", 4.59, None, None, "2026-10", "Oct 2026"),
-                   "Frenchman Valley Farmers Cooperative, Inc. (Culbertson Shuttle)")}
-    a, d = answer_and_desc(fv, snap, "Culbertson, NE")
-    assert a and len(d) <= DESC_MAX, (a, d)
-    two = {"corn": (tg["corn"][0], "CHS United Plains Ag"),
-           "wheat": (row("wheat", 6.34, -0.5, ("KE", 11, 2026), "2026-10", "Open Storage"),
-                     "CHS United Plains Ag (Kanco, Tribune)")}
-    a, _ = answer_and_desc(two, snap, "Tribune, KS")
-    assert "wheat" not in a or "at CHS United Plains Ag (Kanco" in a, "two boards never read as one: " + a
+    assert "corn $4.39" in a and "soybeans $12.23" in a and "basis" in a and d == "", a
     # an open bid a month after the restricted one: an ordinary answer
     rc2 = dict(rc, rows=rc["rows"][:2] + [row("soybeans", 11.70, -0.90, ("ZS", 10, 2026), "2026-11", "Nov 2026")])
     p2 = answer_picks([rc2])["soybeans"][0]
     assert p2["cash"] == 11.70 and not p2.get("open_far")
     q = faq_pairs({"name": "Sheldon", "state": "WI"}, {"soybeans": pk["soybeans"]}, [], [], None, snap, pt)
-    assert q[0][1].startswith("The nearest open soybeans bid we read in Sheldon, WI is $11.41"), q[0][1]
+    assert q[0][1].startswith("The nearest open soybeans bid we read in Sheldon, WI comes from River Country Co-op"), q[0][1]
 
 
 def _selftest_pasted():
