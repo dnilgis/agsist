@@ -43,6 +43,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_cash_rent import NO_SURVEY_YEARS, REASON_MIXED, pair_county  # noqa: E402  (stdlib-only module, main() guarded)
 import credits as CR  # noqa: E402
+import cross_links as XL  # noqa: E402  same-state row and the breadcrumb trail
 
 DATA_DIR = "data/cash-rent"
 MIN_DRY = 3          # counties with a latest-year dryland rent before a state is headlined on it
@@ -993,6 +994,9 @@ def build_state_page(st, d, s, all_states, aslug=None):
     nf = notice_faq(st, name)
     if nf:
         faq.append(nf)
+    # the visible trail and its JSON-LD from one list (cross_links.crumbs)
+    trail_html, trail_ld = XL.crumbs([("AGSIST", f"{SITE}/"), ("Cash Rent by State", f"{SITE}/rent/"),
+                                      (html.unescape(name), f"{SITE}/rent/{sl}")])
     jsonld = {"@context": "https://schema.org", "@graph": [
         {"@type": "Dataset",
          "@id": f"{SITE}/rent/{sl}#dataset",
@@ -1006,10 +1010,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
          "temporalCoverage": f"{s['y0']}/{yr}",
          "spatialCoverage": {"@type": "Place", "name": f"{name}, United States"}},
-        {"@type": "BreadcrumbList", "itemListElement": [
-            {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": f"{SITE}/"},
-            {"@type": "ListItem", "position": 2, "name": "Cash Rent by State", "item": f"{SITE}/rent/"},
-            {"@type": "ListItem", "position": 3, "name": name, "item": f"{SITE}/rent/{sl}"}]},
+        trail_ld,
         {"@type": "FAQPage", "mainEntity": [
             {"@type": "Question", "name": f["q"],
              "acceptedAnswer": {"@type": "Answer", "text": f["a"]}} for f in faq]},
@@ -1063,7 +1064,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
 <body>
 <div id="site-header"></div>
 <main class="rs-wrap">
-  <p class="sub" style="margin-top:14px"><a href="/rent/" style="color:var(--text-muted)">Cash Rent by State</a> &rsaquo; <b>{name}</b></p>
+  {trail_html}
   <h1>{name} Cash Rent by County, {yr}</h1>
   <p class="rs-jump" style="margin:.1rem 0 .3rem"><a href="#counties" style="display:inline-flex;align-items:center;min-height:44px;color:var(--gold,#d4a23f);font-weight:600">County table &darr;</a></p>
   <p class="sub">{name} cash rent by county, per acre per year: every USDA-published county rate, free, from
@@ -1084,6 +1085,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price{prf_rel}.</div>
   {faq_html(faq)}
   {RP_LAND}
+  {XL.same_state_row(".", sl, name, "rent")}
   <h2>Other states</h2>
   {state_cloud(all_states, exclude=st)}
   {state_terms(yr, d.get("generated", ""))}
