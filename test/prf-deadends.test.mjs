@@ -78,7 +78,7 @@ test("a search that finds nothing says whose figures are still on screen, in the
   try {
     for (const fail of [(r) => r.abort(), (r) => r.fulfill({ contentType: "application/json", body: "{}" })]) {
       const { pg, errors, ctx } = await page(browser, port, "/prf", 390, fail);
-      await pg.waitForSelector("#prf-app:not([hidden])");
+      await pg.waitForSelector("#prf-app[data-ready]");
       await pg.click("#prf-eg");
       await pg.waitForSelector("#prf-answer .prf-figs", { timeout: 15000 });
       assert.match(await pg.$eval("#prf-bar", (b) => b.textContent), /^Example: 100 ac/, "the pinned line starts as the example");
@@ -107,18 +107,22 @@ test("the two long sections are folded on a phone, open on a wide screen, and op
   try {
     const folds = (pg) => pg.$$eval("details.prf-fold", (ds) => ds.map((d) => [d.id, d.open]));
     let { pg, ctx } = await page(browser, port, "/prf", 390);
-    await pg.waitForSelector("#prf-app:not([hidden])");
-    assert.deepEqual(await folds(pg), [["payback-d", false], ["new-d", false]]);
+    await pg.waitForSelector("#prf-app[data-ready]");
+    assert.deepEqual(await folds(pg), [["payback-d", false], ["new-d", false], ["terms", false]]);
     const summary = await pg.$eval("#new-d > summary", (s) => s.textContent);
     assert.ok(summary.startsWith("New for 2027"), "the heading stays visible: " + summary);
     await ctx.close();
     ({ pg, ctx } = await page(browser, port, "/prf#new", 390));
-    await pg.waitForSelector("#prf-app:not([hidden])");
-    assert.deepEqual(await folds(pg), [["payback-d", false], ["new-d", true]]);
+    await pg.waitForSelector("#prf-app[data-ready]");
+    assert.deepEqual(await folds(pg), [["payback-d", false], ["new-d", true], ["terms", false]]);
     await ctx.close();
     ({ pg, ctx } = await page(browser, port, "/prf", 1280));
-    await pg.waitForSelector("#prf-app:not([hidden])");
-    assert.deepEqual(await folds(pg), [["payback-d", true], ["new-d", true]]);
+    await pg.waitForSelector("#prf-app[data-ready]");
+    assert.deepEqual(await folds(pg), [["payback-d", true], ["new-d", true], ["terms", false]], "Sources and terms stays closed on a wide screen (Sig, Nov 8)");
+    await ctx.close();
+    ({ pg, ctx } = await page(browser, port, "/prf#method", 390));   /* old links to the method section land in the fold, opened */
+    await pg.waitForSelector("#prf-app[data-ready]");
+    assert.deepEqual(await folds(pg), [["payback-d", false], ["new-d", false], ["terms", true]]);
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });

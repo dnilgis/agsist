@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-09T19:55:33Z",
+ "updated": "2026-11-10T19:42:42Z",
  "rules": {
   "version": "bot-v1.1",
   "registered": "2026-10-03",
@@ -54,12 +54,18 @@
     "trend_pct": -4.32,
     "contract": "Dec '26",
     "ticker": "ZCZ26.CBT",
-    "entry": 438.75,
-    "target": 438.5,
+    "entry": 439.25,
+    "target": 439.0,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null
+    "graded_on": null,
+    "note": "Entry set to the settled 2026-11-09 close 439.25 (read 438.75 that evening).",
+    "entry_final": true,
+    "mark": {
+     "date": "2026-11-10",
+     "close": 448.0
+    }
    },
    {
     "id": "beans-2026-11-03",
@@ -73,12 +79,18 @@
     "trend_pct": -2.35,
     "contract": "Jan '27",
     "ticker": "ZSF27.CBT",
-    "entry": 1187.0,
-    "target": 1186.75,
+    "entry": 1188.25,
+    "target": 1188.0,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null
+    "graded_on": null,
+    "note": "Entry set to the settled 2026-11-09 close 1188.25 (read 1187.0 that evening).",
+    "entry_final": true,
+    "mark": {
+     "date": "2026-11-10",
+     "close": 1226.75
+    }
    },
    {
     "id": "wheat-2026-11-03",
@@ -92,12 +104,18 @@
     "trend_pct": -10.98,
     "contract": "Dec '26",
     "ticker": "ZWZ26.CBT",
-    "entry": 587.5,
-    "target": 587.25,
+    "entry": 588.0,
+    "target": 587.75,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null
+    "graded_on": null,
+    "note": "Entry set to the settled 2026-11-09 close 588.0 (read 587.5 that evening).",
+    "entry_final": true,
+    "mark": {
+     "date": "2026-11-10",
+     "close": 591.5
+    }
    },
    {
     "id": "kcwheat-2026-11-03",
@@ -111,12 +129,18 @@
     "trend_pct": -13.49,
     "contract": "Dec '26",
     "ticker": "KEZ26.CBT",
-    "entry": 631.75,
-    "target": 631.5,
+    "entry": 632.5,
+    "target": 632.25,
     "status": "open",
     "exit": null,
     "outcome": null,
-    "graded_on": null
+    "graded_on": null,
+    "note": "Entry set to the settled 2026-11-09 close 632.5 (read 631.75 that evening).",
+    "entry_final": true,
+    "mark": {
+     "date": "2026-11-10",
+     "close": 633.5
+    }
    }
   ]
  },
@@ -433,7 +457,7 @@
   "ungradeable": 0
  },
  "action_label": "BOT CALL",
- "action_text": "Bot call, Nov 9 close, 4 weeks out: corn $4.38¾ down, soybeans $11.87 down, Chicago wheat $5.87½ down, KC wheat $6.31¾ down. Backtest: no edge.",
+ "action_text": "Bot call, Nov 9 close, 4 weeks out: corn $4.39¼ down, soybeans $11.88¼ down, Chicago wheat $5.88 down, KC wheat $6.32½ down. Backtest: no edge.",
  "calls": [
   {
    "id": "corn-2026-09-29",
@@ -544,8 +568,8 @@
    "note": "Entry set to the settled 2026-10-19 close 467.0 (read 466.75 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-09",
-    "close": 438.75
+    "date": "2026-11-10",
+    "close": 448.0
    }
   },
   {
@@ -569,8 +593,8 @@
    "note": "Entry set to the settled 2026-10-19 close 1268.75 (read 1268.25 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-09",
-    "close": 1187.0
+    "date": "2026-11-10",
+    "close": 1226.75
    }
   },
   {
@@ -594,8 +618,8 @@
    "note": "Entry set to the settled 2026-10-19 close 655.25 (read 656.0 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-09",
-    "close": 587.5
+    "date": "2026-11-10",
+    "close": 591.5
    }
   },
   {
@@ -618,8 +642,8 @@
    "graded_on": null,
    "entry_final": true,
    "mark": {
-    "date": "2026-11-09",
-    "close": 631.75
+    "date": "2026-11-10",
+    "close": 633.5
    }
   },
   {
@@ -642,8 +666,8 @@
    "graded_on": null,
    "entry_final": true,
    "mark": {
-    "date": "2026-11-09",
-    "close": 438.75
+    "date": "2026-11-10",
+    "close": 448.0
    }
   },
   {
@@ -667,8 +691,8 @@
    "note": "Entry set to the settled 2026-10-26 close 1252.5 (read 1253.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-09",
-    "close": 1187.0
+    "date": "2026-11-10",
+    "close": 1226.75
    }
   },
   {
@@ -692,8 +716,8 @@
    "note": "Entry set to the settled 2026-10-26 close 616.0 (read 615.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-09",
-    "close": 587.5
+    "date": "2026-11-10",
+    "close": 591.5
    }
   },
   {
@@ -717,8 +741,8 @@
    "note": "Entry set to the settled 2026-10-26 close 659.0 (read 658.5 that evening).",
    "entry_final": true,
    "mark": {
-    "date": "2026-11-09",
-    "close": 631.75
+    "date": "2026-11-10",
+    "close": 633.5
    }
   },
   {
@@ -733,12 +757,18 @@
    "trend_pct": -4.32,
    "contract": "Dec '26",
    "ticker": "ZCZ26.CBT",
-   "entry": 438.75,
-   "target": 438.5,
+   "entry": 439.25,
+   "target": 439.0,
    "status": "open",
    "exit": null,
    "outcome": null,
-   "graded_on": null
+   "graded_on": null,
+   "note": "Entry set to the settled 2026-11-09 close 439.25 (read 438.75 that evening).",
+   "entry_final": true,
+   "mark": {
+    "date": "2026-11-10",
+    "close": 448.0
+   }
   },
   {
    "id": "beans-2026-11-03",
@@ -752,12 +782,18 @@
    "trend_pct": -2.35,
    "contract": "Jan '27",
    "ticker": "ZSF27.CBT",
-   "entry": 1187.0,
-   "target": 1186.75,
+   "entry": 1188.25,
+   "target": 1188.0,
    "status": "open",
    "exit": null,
    "outcome": null,
-   "graded_on": null
+   "graded_on": null,
+   "note": "Entry set to the settled 2026-11-09 close 1188.25 (read 1187.0 that evening).",
+   "entry_final": true,
+   "mark": {
+    "date": "2026-11-10",
+    "close": 1226.75
+   }
   },
   {
    "id": "wheat-2026-11-03",
@@ -771,12 +807,18 @@
    "trend_pct": -10.98,
    "contract": "Dec '26",
    "ticker": "ZWZ26.CBT",
-   "entry": 587.5,
-   "target": 587.25,
+   "entry": 588.0,
+   "target": 587.75,
    "status": "open",
    "exit": null,
    "outcome": null,
-   "graded_on": null
+   "graded_on": null,
+   "note": "Entry set to the settled 2026-11-09 close 588.0 (read 587.5 that evening).",
+   "entry_final": true,
+   "mark": {
+    "date": "2026-11-10",
+    "close": 591.5
+   }
   },
   {
    "id": "kcwheat-2026-11-03",
@@ -790,12 +832,18 @@
    "trend_pct": -13.49,
    "contract": "Dec '26",
    "ticker": "KEZ26.CBT",
-   "entry": 631.75,
-   "target": 631.5,
+   "entry": 632.5,
+   "target": 632.25,
    "status": "open",
    "exit": null,
    "outcome": null,
-   "graded_on": null
+   "graded_on": null,
+   "note": "Entry set to the settled 2026-11-09 close 632.5 (read 631.75 that evening).",
+   "entry_final": true,
+   "mark": {
+    "date": "2026-11-10",
+    "close": 633.5
+   }
   }
  ],
  "skipped": [
@@ -853,12 +901,12 @@
   }
  ],
  "next_entry": {
-  "report": "2026-11-03",
-  "day": "2026-11-09",
+  "report": "2026-11-10",
+  "day": "2026-11-17",
   "after_holiday": null
  },
  "backtest": {
-  "computed": "2026-11-09T19:55:33Z",
+  "computed": "2026-11-10T19:42:42Z",
   "source": "data/cot-deep.json (CFTC disaggregated COT; Yahoo continuous front-month, roll-repaired by cot_calendar.roll_adjust)",
   "source_built": "rebuild 2006–2026",
   "cutoff": "2026-10-02",
