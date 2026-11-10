@@ -40,7 +40,7 @@ function expectFor(c, r, f) {
     // the section key (scripts/land_keys.py): the panel's "Section, township, range" line reads it
     case "str": return v ? ["Section, township, range", esc(F.strOf(r.legal) || F.keyText(v))] : ["Section, township, range"];
     case "exempt": return [v ? "Exemption claimed" : "No exemption claimed"];
-    // names never show in the panel itself (Oct 27; lead, Nov 4, 2026): a names-free county file offers the tap,
+    // names never show in the panel itself (Oct 27 and Nov 4, 2026): a names-free county file offers the tap,
     // an older one still holding names says they come with the next update
     case "grantor": case "grantee": return f.names ? (f.names_file ? ["Show buyer and seller"] : ["names come after the next update"]) : ["not in our copy"];
     case "si": case "bi": return f.names && f.names_file ? ["Show buyer and seller"] : [];

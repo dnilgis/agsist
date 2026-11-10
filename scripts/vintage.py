@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """vintage.py -- a daily point-in-time copy of outside data, saved exactly as
-published with the time we fetched it (Oct 28 2026, the standing decisions).
+published with the time we fetched it (Oct 28 2026, a site rule).
 
 WHY. A forecast test may only use what was knowable on each date. USDA, USGS
 and EIA revise their numbers (provisional river readings, late inspection

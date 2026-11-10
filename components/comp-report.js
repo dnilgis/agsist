@@ -365,7 +365,7 @@
       var soil = r.soil === undefined ? '<span class="cr-dim cr-wait">reading</span>' : CR.soilText(r.soil) || '<span class="cr-dim">' + esc(r.soilWhy || 'not available') + '</span>';
       var str = F.strOf(F.legalText(r)) || (r.str ? F.keyText(r.str) : null);
       var form = r.st === 'IL' ? 'declaration' : r.st === 'IN' ? 'sales disclosure form' : 'return';
-      // names only after the reader taps Show buyer and seller (names === 'shown'; Oct 27; lead, Nov 4, 2026)
+      // names only after the reader taps Show buyer and seller (names === 'shown'; Oct 27 and Nov 4, 2026)
       var who = names === 'shown' ? 'Seller ' + esc(r.grantor || 'not in the record') + ' &rarr; buyer ' + esc(r.grantee || 'not in the record')
         : names === 'later' ? esc(F.NAMES_LATER) : names ? 'Seller and buyer: tap Show buyer and seller' : 'Seller and buyer not in our copy';
       var det = ['Parcel ' + esc(r.pid || 'not in the record') + (+r.np > 1 ? ' (first of ' + (+r.np) + ' on the ' + form + ')' : ''),

@@ -5,7 +5,7 @@
 
 The god's-eye panel (Oct 27, 2026, seat 8) found the Kansas corn middle rests
 on 203 locations but only 23 companies, one of them holding 50. The owner approved
-printing the company count beside every state middle (the standing decisions,
+printing the company count beside every state middle (a site rule,
 decision 4). These are the Dec '26 corn headline boards of three states from
 the network snapshot of 2026-10-27T14:00:23Z: printed name, the board's website
 host (scripts/basis_method.py site_key) and how many locations post under them.

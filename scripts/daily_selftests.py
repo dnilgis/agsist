@@ -16,7 +16,7 @@ and never stops the job. Each one still runs on every run.
 ONE EXCEPTION STAYS A HARD STEP: scripts/test_send_loops.py, daily.yml's "Neither
 send loop can re-mail the whole list", right before the send. It guards readers
 against a double or mass send, depends on no date and no live data, and a
-failure there must hold the email (lead, Nov 3 2026). It is not in this list.
+failure there must hold the email (Nov 3 2026). It is not in this list.
 
 A failure is reported three ways:
   - the step goes red in the run (exit 1; daily.yml marks it continue-on-error)

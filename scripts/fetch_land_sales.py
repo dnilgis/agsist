@@ -778,7 +778,7 @@ def build(st, recs, gaz, now, prior=None, months=None):
         # Each county gets its own copy of cols: add_column changes the list it is given (Nov 3).
         land_keys.add_column(doc, GEO)
         check_rows(doc)
-        # no name in a county file (lead decision on PR 324, Nov 4, 2026; Oct 27 names-on-tap rule): the names
+        # no name in a county file (decision on PR 324, Nov 4, 2026; Oct 27 names-on-tap rule): the names
         # go to data/land/<st>/names/<fips>.json, si and bi stay (scripts/land_names.py). Holds only grow: the legals the
         # county's names file held on the last run seed this split, so a window roll or a word that stops being rare
         # never puts a held legal back in the county file (checker, Nov 5; every state, not only WI's held() path)

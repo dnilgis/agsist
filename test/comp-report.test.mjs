@@ -236,7 +236,7 @@ test("the map numbers are the table numbers, one marker per comp, shared towns r
 
 test("the comps table carries every field the brief lists", () => {
   const r = row({ doc: "923949", pid: "1-2-3", grantor: "SYNTHETIC SELLER", grantee: "SYNTHETIC BUYER", rec: "2026-09-30", legal: "The SW1/4-SW1/4, Section 8, Township 34 N, Range 11 W", conv: "Land Contract, Sale", cls: "4 1", np: 2, ppa: 6640, price: 464000, acres: 69.88, mi: 3.24, soil: { np: 0.61, cs: null }, no: 1 });
-  // names only after the reader taps Show buyer and seller (Oct 27; lead, Nov 4, 2026): "shown"
+  // names only after the reader taps Show buyer and seller (Oct 27 and Nov 4, 2026): "shown"
   const h0 = CR.compsHTML([r], true);
   assert.ok(!h0.includes("SYNTHETIC") && h0.includes("Seller and buyer: tap Show buyer and seller"), "no name before the tap");
   assert.ok(CR.compsHTML([r], "later").includes("Seller and buyer: names come after the next update") && !CR.compsHTML([r], "later").includes("SYNTHETIC"),

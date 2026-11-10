@@ -4,7 +4,7 @@
 WHY THIS EXISTS
     Every ZIP box and town box on the site asked Open-Meteo's geocoder. Open-Meteo's
     terms count ad-supported sites as commercial use and the owner declined the paid key
-    (the standing decisions, Oct 29), so the lookup moves onto files we serve ourselves.
+    (a site rule, Oct 29), so the lookup moves onto files we serve ourselves.
     components/places.js reads them and answers in the shape the pages already used
     ({results: [{name, latitude, longitude, admin1, admin2, country_code, postcodes}]}).
 

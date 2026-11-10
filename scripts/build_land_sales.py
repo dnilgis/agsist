@@ -26,7 +26,7 @@ the month and place logic of the land sale email (land_alert: Land.sales, window
   data/land/names/<st>/<fips>.json      buyer and seller for every sale on the county's list
   data/land/names/<YYYY-MM>.json        buyer and seller for the sales and buyers in the update
 
-NAMES (the standing decisions, Oct 27): pages show the sale without names plus "Show buyer and seller";
+NAMES (a site rule, Oct 27): pages show the sale without names plus "Show buyer and seller";
 the names load on that tap from a file under /data/land/, which robots.txt blocks; a "Remove my
 name" link sits beside them. No name is ever written into a page, a sitemap, a snippet or a data
 file outside data/land/ (test/land-sales.test.mjs greps every published file for every name).
@@ -799,7 +799,7 @@ def names_note(d, states):
 
 
 # Method text never sits at the top (Nov 7, on /land-sales/2026-09: "way too much info... needs to be on the bottom
-# of page and collapsed unless someone wants to read it"; the standing decisions Nov 7). The market rule and each state's
+# of page and collapsed unless someone wants to read it"; a site rule Nov 7). The market rule and each state's
 # method note move, word for word, into one closed details block at the bottom, each state under its own small heading.
 # The ls-src class is the page's own collapsed source table (coverage_html); ls-dh is its small heading. No new CSS.
 IL_NOTE = ("A farm sale is a farm parcel on a MyDec transfer declaration. Left out: gifts, family and related-party sales and anything "

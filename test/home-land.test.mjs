@@ -3,7 +3,7 @@
  *   - components/home-land.js in node: the reader's state first, else the newest covered sale labeled with its state,
  *     "Not yet in <state>" for an uncovered saved state, withheld on a missing or malformed file, and never a name
  *     even when the file carries one;
- *   - the menu: "Farmland sales" first under Money & Land > Land (lead, Nov 4), in the live menu (desktop panel and
+ *   - the menu: "Farmland sales" first under Money & Land > Land (Nov 4), in the live menu (desktop panel and
  *     phone drawer), the no-script header, the menu table and the header baked into the home page;
  *   - site search: the words people type land on /land-sales/;
  *   - in Chromium: at 1280 px the block is on the first screen, in the room under Sell grain and My field; at 390 px

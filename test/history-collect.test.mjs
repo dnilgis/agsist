@@ -124,7 +124,7 @@ test('no workflow gained a schedule: every cron line is already on origin/main',
     }
   }
   assert.ok(n > 50, `found ${n} cron lines; the reader lost them`);
-  // A schedule the owner has approved in so many words (the standing decisions), exactly as approved and nothing else:
+  // A schedule the owner has approved in so many words (a site rule), exactly as approved and nothing else:
   //   Oct 23 2026: the monthly "my county's rain" email, "new list, sender and schedule approved", on the 2nd.
   //   Oct 23 2026: "County rain pages rebuild daily (was Mondays)": county-rain.yml every day at the old time.
   //   Oct 23 2026: the monthly land-sale alert email, "new list, sender and monthly schedule approved", on the 3rd.
@@ -134,17 +134,17 @@ test('no workflow gained a schedule: every cron line is already on origin/main',
   //     (pinned in the test below), so its entry lists none.
   //   Oct 28 2026: vintage") archive of outside data... New schedule approved for
   //     this": vintage.yml, weekdays 17:37 UTC (pinned in the test below).
-  //   Oct 29 2026: the owner, ag stock tracker (the standing decisions: "build /ag-stocks with closes from Yahoo... use until
+  //   Oct 29 2026: the owner, ag stock tracker (a site rule: "build /ag-stocks with closes from Yahoo... use until
   //     told no"; brief: "The new daily workflow is approved by Oct 29"): agstocks.yml, weekdays 22:17 UTC.
-  //   Oct 29 2026:  (the standing decisions: "the full suite runs on every main push and nightly...
+  //   Oct 29 2026:  (a site rule: "the full suite runs on every main push and nightly...
   //     (schedule approved)"): main-checks.yml, nightly 08:17 UTC.
-  //   Oct 29 2026:  (the standing decisions: run the fall-nitrogen soil station readings March to June too):
+  //   Oct 29 2026:  (a site rule: run the fall-nitrogen soil station readings March to June too):
   //     fall-nitrogen.yml, the same two times, months 3-6 added to 9-12.
   //   Nov 3 2026: build rule 59: main-checks.yml moves from nightly to
   //     every two hours on the Fetch Grain Bids chain, gated (fx/genpages brief), so a red main shows within 2 hours.
-  //   Oct 30 2026:  (the standing decisions): freshness.yml, Tue-Sat 06:50 UTC,
+  //   Oct 30 2026:  (a site rule): freshness.yml, Tue-Sat 06:50 UTC,
   //     a second night run for a late settle.
-  //   Nov 7 2026: the owner, chat (the standing decisions "2026-11-07 (chat)"): answered "Yes" to "May I schedule the weekly
+  //   Nov 7 2026: the owner, chat (a site rule "2026-11-07 (chat)"): answered "Yes" to "May I schedule the weekly
   //     Schrader capture, Mondays 1:43 PM Central (19:43 UTC)?": schrader-capture.yml, Mondays 19:43 UTC, gated.
   const APPROVED = { 'schrader-capture.yml': ['43 19 * * 1'], 'freshness.yml': ['50 6 * * 2-6'], 'fall-nitrogen.yml': ['23 13 * 3-6,9-12 *', '47 22 * 3-6,9-12 *'], 'main-checks.yml': ['17 */2 * * *'], 'agstocks.yml': ['17 22 * * 1-5'], 'vintage.yml': ['37 17 * * 1-5'], 'rain-monthly.yml': ['41 14 2 * *'], 'county-rain.yml': ['23 13 * * *'], 'stats-ingest.yml': ['47 12 * * *'], 'land-alert.yml': ['47 15 3 * *'], 'implied-futures.yml': [] };  // stats-ingest: Oct 23 2026
   const left = added.filter((a) => !Object.entries(APPROVED).some(([f, cs]) => cs.some((c) => a === `${f}: cron '${c}' (new workflow)` || a === `${f}: cron '${c}'`)));

@@ -4,7 +4,7 @@
    Data (scripts/build_land_sales.py; no names in any of it):
      /data/land-sales/latest.json     the newest monthly update in brief
      /data/land-sales/<st>.json       each county's latest few sales with the township point
-   Names (the standing decisions, Oct 27): never in a page. A "Show buyer and seller" button
+   Names (a site rule, Oct 27): never in a page. A "Show buyer and seller" button
    (button.ls-nm[data-ls-id][data-ls-f]) loads them on tap from /data/land/names/..., a folder
    robots.txt blocks, with a "Remove my name" link beside them.
 

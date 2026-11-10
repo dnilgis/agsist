@@ -127,7 +127,7 @@ test("in Chromium: every state's panel, every inventoried field, names only on t
         const pg = await ctx.newPage();
         const errors = [], reqs = [], county = [];
         pg.on("pageerror", (e) => errors.push(String(e)));
-        // the network log: no file that carries a name may load before the tap (lead, Nov 4, 2026)
+        // the network log: no file that carries a name may load before the tap (Nov 4, 2026)
         pg.on("request", (q) => reqs.push(new URL(q.url()).pathname));
         pg.on("response", async (r) => { const u = new URL(r.url()).pathname; if (/^\/data\/land\/[a-z]{2}\/\d{5}\.json$/.test(u)) county.push(await r.text()); });
         await pg.goto(`${base}/land-sales/${p}`);

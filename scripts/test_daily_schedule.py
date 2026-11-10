@@ -30,7 +30,7 @@ The repository already knew. From the top of .github/workflows/prices.yml:
      (every-30-min) runs ... Low-frequency, off-:00 minutes (GitHub honors
      these far more reliably than */30)."
 
-And from the standing decisions, measured on the sibling repo 2026-08-26: a
+And from a site rule, measured on the sibling repo 2026-08-26: a
 ten-minute cron delivered one to three runs an hour against six asked, while an
 hourly cron outside the window delivered every one. **Do not "fix" the schedule
 by asking more often.** The net asked more often, with ten of its twelve fires

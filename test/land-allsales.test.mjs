@@ -1,4 +1,4 @@
-/* Every recorded land sale, and the one land rule (Oct 29, 2026; the standing decisions Oct 29;
+/* Every recorded land sale, and the one land rule (Oct 29, 2026; a site rule Oct 29;
  * the property panel, the private notes decision 2):
  *   - a /land-sales/ county page lists EVERY recorded market sale of any acreage, newest first, with
  *     date, acres, price, $/acre and type (farmland, with buildings, forest, small parcel); the page

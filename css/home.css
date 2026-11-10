@@ -2581,7 +2581,7 @@ rect.wxs-cy.wxs-part{stroke:var(--wxs-y)}
   .hap-list{min-height:127px}
   #hero-band.hb-nozip .hb-grid--fut{grid-template-columns:minmax(0,1fr) minmax(0,1fr) minmax(0,1.5fr)}
 }
-/* Phones use the width (Nov 8, 2026; the standing decisions Oct 22: about 12px gutter). At 480px and under: a 12px page gutter, a section
+/* Phones use the width (Nov 8, 2026; a site rule Oct 22: about 12px gutter). At 480px and under: a 12px page gutter, a section
    band's text 12px in from its edge (11px padding plus the 1px line), and a card inside a band adds no side padding
    of its own. The tokens --gutter and --card-pad-x come from components/styles.css. Wide screens are unchanged.
    test/phone-padding.test.mjs holds the home weather card's text column to 342px or more at 390. */

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """agstocks.py -- ag stock closes, SEC filings and the AGSIST Ag 20, for /ag-stocks.
 
-Approved by the owner Oct 29, 2026 (the standing decisions: "use it until told no"). Run by
+Approved by the owner Oct 29, 2026 (a site rule: "use it until told no"). Run by
 .github/workflows/agstocks.yml after the U.S. close on weekdays.
 
   python3 scripts/agstocks.py universe   # check every candidate against SEC's ticker list

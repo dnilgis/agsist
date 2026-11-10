@@ -498,7 +498,7 @@ window.__fsRead = function (FSX) {
   }
 
   // ── 3. WEATHER NOW: the National Weather Service's nearest observing station ──
-  // 2026-10-29 (the owner: no paid Open-Meteo key; its free tier is for sites without ads or
+  // 2026-10-29 (no paid Open-Meteo key; its free tier is for sites without ads or
   // subscriptions, and AGSIST runs sponsor slots). api.weather.gov is public domain, free for
   // any purpose, no key. Three small reads: the point, its stations, the newest observation.
   // The 7-day rain number is no longer a weather model's: it is the county gauge's own days
@@ -1148,7 +1148,7 @@ window.__fsRead = function (FSX) {
   // mile on the card is from this field, and no ZIP (no reverse geocode) is needed. If the
   // network does not answer, the committed /data/bids.json (the same network, this morning's
   // copy) fills in. The licensed Barchart feed and its proxy are gone: the feed is off
-  // (the standing decisions: "The Barchart feed is off"), and the call was already switched off
+  // (a site rule: "The Barchart feed is off"), and the call was already switched off
   // here on 2026-10-11.
   var FS_LEGAL = {llc:1,lc:1,inc:1,incorporated:1,co:1,corp:1,corporation:1,ltd:1,limited:1,lp:1,llp:1,company:1};
   function fsKey(name, city, state){

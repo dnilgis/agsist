@@ -65,7 +65,7 @@ FIELD = [
                           ("/tools", "All tools", "i-calculator", "all")]),
 ]
 MONEY = [
-    ("Land", [("/land-sales/", "Farmland sales", "i-land-plot"),   # first, plain words (lead, Nov 4: "not missable")
+    ("Land", [("/land-sales/", "Farmland sales", "i-land-plot"),   # first, plain words (Nov 4: "not missable")
               ("/rent/", "Cash rent", "i-banknote"),
               ("/farmland-atlas", "Farmland Atlas", "i-map"),
               ("/custom-rates", "Custom rates", "i-banknote"),

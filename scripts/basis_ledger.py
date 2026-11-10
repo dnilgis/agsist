@@ -25,7 +25,7 @@ so the live record can confirm or refute it.
 
 NOTHING HERE IS PUBLISHED. Everything goes to the private raw branch
 (scripts/push_raw.sh), never to main or the site. The owner decides when the record
-is shown (the standing decisions, Oct 21: basis findings not published yet).
+is shown (a site rule, Oct 21: basis findings not published yet).
 
 THE DISCIPLINE (copied from scripts/prediction_bot.py)
 ------------------------------------------------------

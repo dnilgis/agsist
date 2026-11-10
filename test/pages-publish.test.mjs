@@ -33,7 +33,7 @@ test('pages.yml is off until PAGES_FROM_ACTIONS is 1', () => {
   const jobs = [...pages.slice(pages.search(/^jobs:\s*$/m)).matchAll(/^  ([A-Za-z0-9_-]+):\s*$/gm)].map((m) => m[1]);
   assert.deepEqual(jobs, ['deploy'], `jobs: ${jobs}`);
   assert.match(pages, /^  deploy:\n    if: \$\{\{ vars\.PAGES_FROM_ACTIONS == '1' \}\}$/m);
-  // a new cron is a product decision (the standing decisions, Oct 21): the fast jobs' dispatches are its clock
+  // a new cron is a product decision (a site rule, Oct 21): the fast jobs' dispatches are its clock
   assert.doesNotMatch(pages, /^\s*schedule:/m, 'pages.yml has no schedule of its own');
 });
 

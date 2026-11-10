@@ -10,7 +10,7 @@
  *   - the data file carries facts only: no buyer, owner or name field, the credit and a link on every record,
  *     a per-acre figure only where Schrader printed one, farmland only
  *   - the capture workflow builds the file right after the capture, on a weekly gated Monday tick at 19:43 UTC
- *     (the owner approved that schedule in chat, Nov 7, 2026; the standing decisions)
+ *     (the owner approved that schedule in chat, Nov 7, 2026; a site rule)
  *
  *   node --test test/schrader-reader.test.mjs
  */

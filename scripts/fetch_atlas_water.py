@@ -23,7 +23,7 @@ TWO SOURCES, BOTH OFFICIAL, NEITHER MODELLED
 
   The workbook's header names are read, not assumed: if any column above is
   missing the script prints every header it found and exits non-zero. Rule 44
-  in the standing decisions: open one record and look at its keys before reading
+  in a site rule: open one record and look at its keys before reading
   a field off a file you did not write.
 
 USAGE

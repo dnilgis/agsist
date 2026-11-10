@@ -1,7 +1,7 @@
 // The Illinois farmland sale index (scripts/build_land_index.py): a section of the land sales hub,
 // /land-sales/#illinois-index, since Oct 29, 2026 (it was its own page, /farmland-index, now a moved-page stub).
 // No buyer or seller name, legal description, parcel or document number may reach the hub or
-// data/land/index.json (the standing decisions, Oct 17: no names on indexed land pages). Withheld
+// data/land/index.json (a site rule, Oct 17: no names on indexed land pages). Withheld
 // cells say why, a state that does not hold up on its own prints no index number, the latest
 // quarter is provisional, no em dashes, no sponsor slot, and the byline is at the end.
 //

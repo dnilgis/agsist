@@ -7,7 +7,7 @@ It never publishes anything. When a spec meets every condition of  rule except
 his yes, its row says eligible (for the owner's review) and the run's log line and the Monday morning
 report list it by id, counts only.
 
-PRINTABLE (the standing decisions, Oct 27 2026: "yes to all"): held-out test + placebo shuffle +
+PRINTABLE (a site rule, Oct 27 2026: "yes to all"): held-out test + placebo shuffle +
 multiple-comparison correction across the whole test ledger + two seasons + the owner's yes, per test.
 Here, a scored spec is:
   holdout   beats its benchmark on data the fit never saw: the bootstrap range of the gain
