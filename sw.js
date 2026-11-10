@@ -37,7 +37,9 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 431;  // v431 2026-11-09: forms send nothing to the backup form off agsist.com. A local copy keeps the item and says nothing was sent (components/form-post.js?v=9, loader.js signup fallback). (431, next after main's 429)
+var CACHE_VERSION = 434;  // v434 2026-11-09: PRF panel fixes. The find card no longer jumps, the El Nino row prints CPC's status, the calculator opens on haying, one closed Sources and terms fold (components/prf.js?v=10, prf-now.js?v=5, prf-optimize.js?v=6, prf-optimize-ui.js?v=8, prf.css?v=10). (434, next after main's 432)
+// var CACHE_VERSION = 432;  // v432 2026-11-10: rent age. State rent tables and Farmland Atlas titles show a rent more than three survey years old as n/a with its last year; unpublished counties listed; county finder on the state rent pages (generated pages only, no shared file changed). (432, next after main's 431)
+// var CACHE_VERSION = 431;  // v431 2026-11-09: forms send nothing to the backup form off agsist.com. A local copy keeps the item and says nothing was sent (components/form-post.js?v=9, loader.js signup fallback). (431, next after main's 429)
 // var CACHE_VERSION = 429;  // v429 2026-11-09: layout shift sweep, the rest. /drought-monitor holds the headline and updated line, /hail-map holds the now card and view buttons, /milk-prices keeps the stand-in font when Inter is slow, the desk token row and the Field Scout layer column keep their width (components/field-scout.css?v=5). (429, next after main's 427)
 // var CACHE_VERSION = 427;  // v427 2026-11-09: home bid names. The homepage cash bid card prints elevator names clean: no archive "z" prefix or "Old" tail, no page title tail (components/bids-homepage.js?v=48). (427, next after main's 426)
 // var CACHE_VERSION = 426;  // v426 2026-11-10: comments in served files reworded; version bumps for each served file that changed. (426, next after main's 425)

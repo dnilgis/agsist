@@ -1,6 +1,6 @@
 {
- "updated": "2026-10-30T19:39:51+00:00",
- "count": 22,
+ "updated": "2026-11-10T17:57:38+00:00",
+ "count": 23,
  "added": 1,
  "state": {
   "px": {
@@ -29,6 +29,17 @@
   }
  },
  "items": [
+  {
+   "id": "wasde:2026-11-10:2026/27 soybean ending stocks",
+   "kind": "usda",
+   "headline": "November WASDE: 2026/27 soybean ending stocks came in bullish",
+   "detail": "Trade looked for 331 mil bu; USDA printed 300 mil bu, -9.4% versus the survey average, inside the range, near the bottom. 5 of 7 graded figures in line.",
+   "significance": "high",
+   "url": "/usda-calendar#priced-in",
+   "source": "USDA, graded against the pre-report survey",
+   "day_only": true,
+   "ts": "2026-11-10T12:00:00+00:00"
+  },
   {
    "id": "cot:October 27, 2026:kcwheat:flip",
    "kind": "positioning",
