@@ -832,8 +832,9 @@ def home_usda_card(wpi):
         f'<div class="gs-line">{line}</div>'
         '<details class="gs-more"><summary>Every figure against the trade</summary>'
         + "".join(items) +
-        '<p>Graded on the distance from the trade average: 0.5% for a yield, 1% for '
-        'production, 2% for stocks. <a href="/usda-calendar#priced-in">What&rsquo;s Priced In</a></p>'
+        # Nov 8: no grading thresholds on the home page; the plain
+        # sentence is in the page's closed Sources and terms fold, the cutoffs on /usda-calendar.
+        '<p><a href="/usda-calendar#priced-in">What&rsquo;s Priced In</a></p>'
         '</details></div>'
     )
 

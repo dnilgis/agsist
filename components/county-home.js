@@ -334,7 +334,7 @@
       if (!ok) { fail(ALL, 'this part did not load; try again in a minute'); return; }
       P = window.AgPlace;
       if (lat == null || lng == null) fail(['corn-bid', 'soy-bid', 'lf-bid'], 'no county middle on file to measure from');
-      var b = lat == null ? Promise.resolve(null) : loadScript('/components/bids-network.js?v=8', function () { return !!window.AGSIST_BIDS_NET; }).then(bids);
+      var b = lat == null ? Promise.resolve(null) : loadScript('/components/bids-network.js?v=9', function () { return !!window.AGSIST_BIDS_NET; }).then(bids);
       basis(b.then(null, function () { return null; }));
       futures(); hay(); weather(); crops(); arc();
       b.then(week, week);

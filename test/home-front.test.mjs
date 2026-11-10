@@ -44,7 +44,7 @@ function serve() {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-async function open(browser, port, path, routes = {}, width = 1280, init = null) {
+async function open(browser, port, path, routes = {}, width = 1280, init = null, at = null) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
   if (init) await ctx.addInitScript(init);
   const pg = await ctx.newPage();
@@ -58,6 +58,7 @@ async function open(browser, port, path, routes = {}, width = 1280, init = null)
     if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
     return r.abort();
   });
+  if (at) await pg.clock.setFixedTime(at);
   await pg.goto(`http://127.0.0.1:${port}${path}`);
   return { pg, errors, ctx };
 }
@@ -66,7 +67,8 @@ test("homepage nowcast labels our trend by its fit window and shows USDA's corn 
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const { pg } = await open(browser, port, "/", { "/data/yield-nowcast.json": NOWCAST, "/data/wasde.json": null });
+    // the page clock the week after the fixture's ratings week (Nov 10: older ratings are withheld)
+    const { pg } = await open(browser, port, "/", { "/data/yield-nowcast.json": NOWCAST, "/data/wasde.json": null }, 1280, null, new Date(2026, 9, 10, 9, 0));
     await pg.waitForSelector("#nc-corn-trend", { state: "attached", timeout: 15000 });
     const corn = await pg.textContent("#nc-corn-trend");
     assert.equal(corn, "Our straight-line trend: 188.7 (2010–2025 finals) · USDA’s trend: 183.0 · backtest miss averages 4.2 bu");
@@ -74,7 +76,29 @@ test("homepage nowcast labels our trend by its fit window and shows USDA's corn 
     const beans = await pg.textContent("#nc-beans-trend");
     assert.equal(beans, "Our straight-line trend: 53.9 (2010–2025 finals) · backtest miss averages 1.3 bu");
     assert.equal(await pg.textContent("#nc-years"), "12");
-    assert.match(await pg.textContent("#tip-nowcast"), /12 past years, each estimated from earlier years only/);
+    assert.match(await pg.textContent("#nc-method"), /12 past years, each estimated from earlier years only/);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("Nov 10: ratings two or more weeks old are withheld, never headed Near USDA", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const W = { metrics: [{ key: "corn_yield", value: 181.2 }, { key: "soy_yield", value: 53.1 }], release: "2026-10-09" };
+  try {
+    // Nov 9: the file still held the Oct 4 week (the real case)
+    const { pg } = await open(browser, port, "/", { "/data/yield-nowcast.json": NOWCAST, "/data/wasde.json": W }, 1280, null, new Date(2026, 10, 9, 9, 0));
+    await pg.waitForFunction(() => /Withheld/.test(document.getElementById("nc-verdict").textContent), null, { timeout: 15000 });
+    await pg.waitForTimeout(800);
+    assert.equal(await pg.textContent("#nc-verdict"), "Withheld");
+    assert.equal(await pg.textContent("#nc-corn"), "-");
+    assert.match(await pg.textContent("#nc-week"), /last usable USDA ratings week ended Oct 4, two or more weeks back/); // pin-ok: the NOWCAST fixture above, page clock set
+    assert.ok(!(await pg.$("#nc-corn-trend")), "no trend line under a withheld estimate");
+    // 13 days after the week: one missed report, still shown
+    const b = await open(browser, port, "/", { "/data/yield-nowcast.json": NOWCAST, "/data/wasde.json": W }, 1280, null, new Date(2026, 9, 17, 9, 0));
+    await b.pg.waitForFunction(() => /USDA/.test(document.getElementById("nc-verdict").textContent), null, { timeout: 15000 });
+    await b.pg.waitForTimeout(800);
+    assert.equal(await b.pg.textContent("#nc-corn"), "180.6");
+    assert.notEqual(await b.pg.textContent("#nc-verdict"), "Withheld");
   } finally { await browser.close(); srv.close(); }
 });
 

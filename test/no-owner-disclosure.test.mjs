@@ -7,7 +7,7 @@ import { readFileSync } from "node:fs";
 
 const ROOT = new URL("../", import.meta.url);
 const read = (f) => readFileSync(new URL(f, ROOT), "utf8");
-const PAGES = ["sponsor.html", "sponsor-kit.html", "sponsor-apply.html", "prf-sponsor.html", "prf-sponsor-kit.html",
+const PAGES = ["sponsor.html", "sponsor-kit.html", "sponsor-rates.html", "sponsor-apply.html", "prf-sponsor.html", "prf-sponsor-kit.html",
   "terms.html", "privacy.html", "editorial-standards.html", "about.html", "contact.html", "list-your-elevator.html",
   "hail-map.html", "field-scout.html", "index.html", "daily.html", "prf.html", "lrp.html"];
 const CODE = ["components/sponsor-ad.js", "components/prf-sponsor.js", "components/sponsor-apply.js",

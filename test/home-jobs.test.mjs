@@ -218,7 +218,7 @@ test("browser: the forecast cell holds its height while loading and says so in o
     }
     assert.ok(hts.loading.skel, "a placeholder while the forecast loads");
     assert.ok(Math.abs(hts.ok.h - hts.loading.h) <= 2, `no shift when the forecast lands (${hts.loading.h} -> ${hts.ok.h})`);
-    assert.equal(hts.down.s, "Forecast did not load. Weather card below →", "one plain line when the NWS does not answer");
+    assert.equal(hts.down.s, "The weather service did not answer. Try again in a few minutes.", "one plain line when the NWS does not answer; the card below has failed too (Nov 10 audit)");
     assert.ok(hts.down.h <= hts.loading.h + 2, "the failure line does not grow the cell");
   } finally { await browser.close(); srv.close(); }
 });
