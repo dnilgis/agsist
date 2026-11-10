@@ -1,7 +1,6 @@
 name: SEC Reg CF (private ag raises)
 # SEC Reg CF (private ag raises).
 
-# The "Private ag raises" section of /ag-stocks (Sig approved Oct 29, 2026).
 on:
   workflow_dispatch:
     inputs:

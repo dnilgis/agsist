@@ -1,4 +1,4 @@
-/* One headline futures contract (fx/soyroll2, Sig's screenshot Nov 4 2026, 8:46 AM CT,
+/* One headline futures contract (fx/soyroll2, the owner's screenshot Nov 4 2026, 8:46 AM CT,
  * home page at 1280 px).
  *
  * #307 rolled the headline soybean contract to Jan '27 at first notice (Oct 30), but the home
@@ -14,7 +14,7 @@
  * real first-notice rule, not a hand-written answer.
  *
  * Browser part (390 and 1280 px, every outside host aborted, service workers blocked:
- * BUILD-RULES 58) needs PLAYWRIGHT_PATH and CHROMIUM_PATH. SHOT_DIR=<dir> saves screenshots.
+ * build rule 58) needs PLAYWRIGHT_PATH and CHROMIUM_PATH. SHOT_DIR=<dir> saves screenshots.
  *   node --test test/headline-contract.test.mjs
  */
 import { test } from "node:test";
@@ -194,7 +194,7 @@ async function open(browser, port, path, width, file, clock) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
   const pg = await ctx.newPage(), errs = [];
   pg.on("pageerror", (e) => errs.push(e.message));
-  // BUILD-RULES 58: nothing leaves this machine
+  // build rule 58: nothing leaves this machine
   await pg.route((u) => !u.href.startsWith(`http://127.0.0.1:${port}/`), (r) => r.abort());
   await pg.route((u) => u.pathname === "/data/prices.json", (r) => r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(file) }));
   await pg.clock.setFixedTime(new Date(clock));
@@ -279,7 +279,7 @@ test("markets: the second soybean card is Nov '27 on Nov 4, and nothing names No
   } finally { await browser.close(); srv.close(); }
 });
 
-/* BUILD-RULES 67 (PR #320): the price run reseeds markets.html and index.html every 15 minutes,
+/* build rule 67 (PR #320): the price run reseeds markets.html and index.html every 15 minutes,
    so a PR that edits a line carrying a seed (or the line next to one) conflicts with main
    forever. This PR edits no such line: the second-card chips are written by the builder
    (seed_static.mk_card_chips) on the card's own line, and every seed value is main's. */

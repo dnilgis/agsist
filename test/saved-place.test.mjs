@@ -5,7 +5,7 @@
  * agsist_zip. The header said "Bids near 50010"; the home hero said "Set your ZIP to see local cash bids";
  * /rent/iowa opened at Clayton ($266, the middle county), not Story ($290), the county of the reader's ZIP.
  *
- * Browser runs block every outside host and service workers (BUILD-RULES 58).
+ * Browser runs block every outside host and service workers (build rule 58).
  *
  *   node --test test/saved-place.test.mjs
  */

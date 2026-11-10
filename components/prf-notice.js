@@ -1,5 +1,5 @@
 /* components/prf-notice.js: "Email me when grid N's index posts" on /prf and
-   the PRF county pages (2026-10-17, Sig approved).
+   the PRF county pages (2026-10-17).
 
    One ask for the grid the reader is looking at. It posts topic prf:<grid>
    (subs worker v5.29) through components/signup-ask.js, with after = the
@@ -10,7 +10,7 @@
 
    PRF RULE: plain index information. No lead capture beyond the address the
    reader types for this email, no agent, no sales words. The briefing box
-   starts empty; the reader ticks it to get the Daily too (Sig, 2026-10-19).
+   starts empty; the reader ticks it to get the Daily too (2026-10-19).
 
    WIRING
      <div class="prf-notice" data-prf-notice data-grid="30452" hidden></div>

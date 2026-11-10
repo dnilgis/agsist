@@ -37,7 +37,7 @@
     return !doc.querySelector(SIGNUP) && !doc.getElementById('site-footer');
   }
 
-  /* 2026-10-18 v2 (Sig: "lots of alignment issues"): a row of 2 or 3 cards,
+  /* 2026-10-18 v2: a row of 2 or 3 cards,
      stacked on phones, lined up with the page's own content column (align()
      measures the block just above and matches its edges). */
   var CSS = '.next-links{display:block;max-width:1100px;margin:2.5rem auto 1rem;padding:0;box-sizing:border-box}' +

@@ -1,5 +1,4 @@
-/* The monthly emails, the ARC/PLC reminder and county rain always run (Sig, Nov 2 2026: "yes i want
- * reliable email delivery"). GitHub's scheduler never started rain-monthly.yml or county-rain.yml on
+/* The monthly emails, the ARC/PLC reminder and county rain always run (Nov 2 2026). GitHub's scheduler never started rain-monthly.yml or county-rain.yml on
  * Nov 2, so each of the four also runs after every "Fetch Grain Bids" (cron-job.org, every 15 minutes)
  * and a cron_gate.py tick step, carrying the workflow's own cron, lets one run per tick do the work.
  *   - each runs on workflow_run after Fetch Grain Bids, its schedule unchanged;

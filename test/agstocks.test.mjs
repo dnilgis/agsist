@@ -1,4 +1,4 @@
-/* /ag-stocks (Sig, Oct 29, 2026): ag company closes from Yahoo, SEC filings, the AGSIST Ag 20.
+/* /ag-stocks (Oct 29, 2026): ag company closes from Yahoo, SEC filings, the AGSIST Ag 20.
  * - the index math, the SEC picks and the page states run as python selftests on fixed fixtures
  *   (scripts/agstocks_index.py: equal weight, gates, stale, held, rebalance continuity, split, removal);
  * - every close baked into ag-stocks.html is the stored source row of that date, every index level

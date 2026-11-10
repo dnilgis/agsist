@@ -1,7 +1,7 @@
 /**
- * Off the public repo (Sig, Oct 20 2026). The raw and references branches, the
+ * Off the public repo (Oct 20 2026). The raw and references branches, the
  * session skills and four job files no page reads moved to the private repo
- * dnilgis/feedbag. The site keeps running exactly as before: pages read
+ * the private repo. The site keeps running exactly as before: pages read
  * only public files on main, which stay.
  *
  * - scripts/private_remote.sh picks the remote: RAW_REMOTE, else the private

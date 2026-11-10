@@ -1,11 +1,11 @@
-/* Email asks, Oct 20 (Sig, monetization board): from the real pages.
+/* Email asks, Oct 20 (monetization board): from the real pages.
  *   1. "One more?" after any signup that went through: up to three more
  *      emails that fit, each an unticked box, one "Add these" button, only
  *      topics with a sender; GA4 onemore_shown / onemore_added, no address.
  *   2. The second-visit bar also on a first visit, after the reader used the
  *      page (phone: half the page or 40 s; desktop: 40 s); once a session.
  *   3. One Daily ask a page: a page with its own ask gets no bar. The PRF
- *      grid notice does not count (Sig, Oct 20: PRF pages keep the bar).
+ *      grid notice does not count (Oct 20: PRF pages keep the bar).
  *   4. A Daily ask on /hail-map and /gdu-calculator.
  *   5. The signed-up flag lasts 365 days; a rent notice is remembered per
  *      release year, and the worker takes a rent ask again once it was sent.
@@ -86,9 +86,9 @@ test("hail-map and gdu-calculator: one Daily ask each, honest about what the Dai
 });
 
 test("versions: signup-ask.js v12 where it loads (Oct 21), home.js v15", () => {
-  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=21';"));
+  assert.ok(read("components/loader.js").includes("s.src = '/components/signup-ask.js?v=22';"));
   const idx = read("index.html");
-  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=21"></script>'));
+  assert.ok(idx.includes('<script src="/components/signup-ask.js?v=22"></script>'));
   assert.ok(idx.includes('<script src="/components/home.js?v=24"></script>'));
   assert.ok(read("privacy.html").includes("for one year, so the signup prompts stop until then."));
 });
@@ -275,7 +275,7 @@ test("town cash bid box: after the Daily, One more? offers a ZIP alert for the t
     const more = box.locator("[data-sa-more]");
     await more.locator(".sa-mh").waitFor();
     const keys = await more.locator("[data-k]").evaluateAll((a) => a.map((x) => x.getAttribute("data-k")));
-    // Nov 4 (Sig): after a Daily signup anywhere, Funds this week is offered last, when there is room
+    // Nov 4: after a Daily signup anywhere, Funds this week is offered last, when there is room
     assert.deepEqual(keys, ["zip", "rent", "cot"]);
     assert.match(await more.locator('[data-k="zip"]').textContent(), new RegExp("within 25 mi of ZIP " + town.zip + " pays \\$"));
     await more.locator(".sa-mp").fill("4.25");

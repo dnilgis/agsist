@@ -1,6 +1,6 @@
 /* Phones use the width (Nov 8, 2026).
  *
- * Sig, with a 390px screenshot of the home weather card and red bars over the empty side margins: "We need to not
+ * The owner, with a 390px screenshot of the home weather card and red bars over the empty side margins: "We need to not
  * use so much padding in containers, use the space we have, phone screens are already small and we are making them
  * smaller." His standing rule from Oct 22 already said about 12px of gutter, and the site drifted anyway: measured at
  * 390px before this fix, the home weather card's text column was 304px (16px page gutter, a 14px band, a 12px card
@@ -13,7 +13,7 @@
  * carries the home page's. This test holds the column on several pages, so one page drifting fails it.
  *
  *   node --test test/phone-padding.test.mjs
- * Browser runs serve this checkout, block every outside host and service workers (BUILD-RULES 58); the home card
+ * Browser runs serve this checkout, block every outside host and service workers (build rule 58); the home card
  * fills from the frozen fixtures test/wxcard.test.mjs uses. */
 import { test } from "node:test";
 import assert from "node:assert/strict";

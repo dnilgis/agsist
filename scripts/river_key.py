@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""River key: is an elevator a river terminal, near a navigable waterway, or inland (Sig, Nov 9 2026).
+"""River key: is an elevator a river terminal, near a navigable waterway, or inland (Nov 9 2026).
 
 Reads data/ids/elevators.json, the river inputs that river-pull.yml saved to the raw branch (river/docks.json:
 USACE grain docks; river/waterways.json: National Waterway Network lines, simplified) and the bids repo's

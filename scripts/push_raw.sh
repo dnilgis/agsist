@@ -12,7 +12,7 @@
 #
 # Each path (a file or a folder, relative to the repo root) is copied OVER the
 # same path on raw: new and changed files land, nothing already there is
-# deleted (Sig: "don't throw away anything important"; git history keeps every
+# deleted (git history keeps every
 # old version too). Commits as agsist-bot and pushes, retrying on a moved tip
 # the way refs.yml does for the references branch. Every git failure is printed
 # as a ::warning:: with git's own words, because the job log is not always
@@ -24,7 +24,7 @@
 # is never committed to main by accident.
 #
 # WHERE IT GOES (Oct 20, 2026): the branches moved to the private repo
-# dnilgis/feedbag. In Actions the step passes PRIVATE_REPO_TOKEN and this
+# the private repo. In Actions the step passes PRIVATE_REPO_TOKEN and this
 # pushes there; scripts/private_remote.sh has the rules (RAW_REMOTE wins, no
 # token means origin). RAW_BRANCH=private-data saves the job files no page reads
 # (private/data/cron-health.json and the like) to that branch instead.

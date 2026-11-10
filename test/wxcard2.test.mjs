@@ -1,16 +1,15 @@
-/* The home Local conditions card, Nov 5, 2026 (Sig: "The fall nitrogen doesn't belong in the homepage weather card,
- * same as the spray conditions").
+/* The home Local conditions card, Nov 5, 2026.
  *
- *   - no Fall nitrogen block (or its link) and no one-line "Today: ... spray" read in the card, in markup, script or CSS
+ *   - no Fall nitrogen block (or its link) and no one-line "Today:... spray" read in the card, in markup, script or CSS
  *   - the pages that keep them still carry them: /fall-nitrogen (its soil answer, rendered), /planting-date (soil at
- *     4 in and the fall anhydrous link), /spray and Field Scout (their spray reads). Later on Nov 5 (Sig) soil
+ *     4 in and the fall anhydrous link), /spray and Field Scout (their spray reads). Later on Nov 5 soil
  *     temperature, the hero band spray read and the strip's fall N cell left home too (test/homeseasonal.test.mjs)
  *   - on the page in November (a fall N month, fixed clock): neither block shows, the card is shorter than the 908 px it
  *     was with both (measured Nov 5 with these fixtures at 390 and 1280), taps 44 px, text 12 px, nothing moves
  *
  *   node --test test/wxcard2.test.mjs
  * Fixtures: test/fixtures/wxcard (frozen) and a made-up soil feed below. Browser runs block every outside host and
- * service workers (BUILD-RULES 58). */
+ * service workers (build rule 58). */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
@@ -38,13 +37,13 @@ test("the card carries no fall nitrogen block and no Today spray line", () => {
   const css = strip(read("css/home.css"));
   assert.ok(!/\.wx-falln|\.wx-today|#wx-today-summary/.test(css), "home.css has no rule for either block");
   assert.ok(!/\.wx-today/.test(strip(read("components/styles.css"))), "styles.css has no rule for the old Today line");
-  // Nov 5 (Sig): the card's soil reading left too, so home loads no soil reader (test/homeseasonal.test.mjs)
+  // Nov 5: the card's soil reading left too, so home loads no soil reader (test/homeseasonal.test.mjs)
   assert.ok(!/id="s7-wx-soil"/.test(c), "no soil cell in the card");
   assert.equal((HTML.match(/components\/soil-near\.js\?v=\d+/g) || []).length, 0);
 });
 
 test("the pages that keep them still carry them", () => {
-  // Nov 5 (Sig): the This month strip has no fall N cell either; the pages below keep it
+  // Nov 5: the This month strip has no fall N cell either; the pages below keep it
   const hs = read("components/home-season.js");
   assert.ok(!/'fallN'/.test(hs), "no fall N cell in any month's strip");
   // /fall-nitrogen: the soil view; /planting-date: measured soil at 4 in and the fall anhydrous link
@@ -55,7 +54,7 @@ test("the pages that keep them still carry them", () => {
   // /spray and Field Scout keep their spray reads
   assert.match(read("spray.html"), /components\/spray-windows\.js|spray-wind\.js/);
   assert.match(read("field-scout-read.js"), /Too windy to spray right now/);
-  // Nov 5 (Sig): the hero band's spray read left too
+  // Nov 5: the hero band's spray read left too
   assert.ok(!/agsist:spray/.test(hs), "no spray read handed to the hero band");
 });
 
@@ -95,7 +94,7 @@ function serve() {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-// BUILD-RULES 58: our own copy only; the forecast from the stand-in; every other outside host aborted
+// build rule 58: our own copy only; the forecast from the stand-in; every other outside host aborted
 const guard = (port) => (r) => {
   const u = r.request().url();
   if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();

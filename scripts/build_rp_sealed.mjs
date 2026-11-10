@@ -5,7 +5,7 @@
  * A printed Rain Print carries HTTPS://AGSIST.COM/R?<id>. /r asks the worker
  * for the design code behind <id> (rps:<id> in its storage). When the worker
  * does not answer, /r opens a sealed copy instead, written here from the
- * private daily copy of the worker's storage (feedbag, private-data,
+ * private daily copy of the worker's storage (the private repo, private-data,
  * kv-backup/latest.json.gz) into data/rp-sealed/ on agsist.com:
  *
  *   bits  = PBKDF2-SHA256(password = id, salt = SALT, ITERATIONS, 256 bits)
@@ -61,7 +61,7 @@ const enc = new TextEncoder();
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 export const OUT_DEFAULT = path.join(ROOT, "data", "rp-sealed");
 
-/* NOTHING PERSONAL IS SEALED (Sig, Oct 22). Before sealing, the design is
+/* NOTHING PERSONAL IS SEALED (Oct 22). Before sealing, the design is
    decoded with the page's own code (components/rain-print.js) and drawn
    again without what a buyer typed or added: the name line, the dedication,
    the marked days and their labels, the logo, the gift flag. What stays:

@@ -1,4 +1,4 @@
-/* The monthly county rain email (Sig, Oct 23 2026: new list, sender and
+/* The monthly county rain email (Oct 23 2026: new list, sender and
  * schedule approved; Plan A sending not yet, so it goes the way the other
  * list senders go). Topic rain-month:<fips> (subs worker v5.54), mailed by
  * scripts/send_rain_month.py from .github/workflows/rain-monthly.yml on the

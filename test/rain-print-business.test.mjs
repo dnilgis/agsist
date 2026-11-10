@@ -1,6 +1,6 @@
 /* /rain-print-business: the business Christmas landing page.
  * Structure and SEO, prices and dates written on the page match
- * data/rain-print.json (hand-worked from Sig's Oct 13 tiers too), the quote
+ * data/rain-print.json (hand-worked from the owner's Oct 13 tiers too), the quote
  * form posts the worker's own kind and fields, standing rules (no sponsor,
  * no business name on the print, no em dashes, no store names, no fake
  * counts), and the CSV list reader.
@@ -27,7 +27,12 @@ const COPY = MAIN.replace(/<script[\s\S]*?<\/script>/g, "");
 test("indexable page with its own canonical, byline, share image and structured data", () => {
   assert.match(HTML, /<meta name="robots" content="index, follow/);
   assert.match(HTML, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/rain-print-business">/);
-  assert.match(HTML, /<title>[^<]+ \| AGSIST<\/title>/);
+  assert.match(HTML, /<title>[^<]+<\/title>/);
+  // the site title rule (scripts/seo_caps.py): at most 68 characters, and " | AGSIST" gives way
+  // first when the whole title would not fit with it
+  const tt = HTML.match(/<title>([^<]*)<\/title>/)[1].replace(/&amp;/g, "&");
+  assert.ok(tt.length <= 68, `title ${tt.length} chars: ${tt}`);
+  assert.ok(tt.endsWith(" | AGSIST") || (tt + " | AGSIST").length > 68, `the brand fits and is missing: ${tt}`);
   assert.match(HTML, /og:image"\s+content="https:\/\/agsist\.com\/img\/og\/rain-print-business\.jpg/);
   assert.match(MAIN, /Sigurd Lindquist, CCA/);
   const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
@@ -109,7 +114,7 @@ test("standing rules: no sponsor, name off the print, honest copy", () => {
   assert.ok(!/sponsor/i.test(MAIN), "no sponsor on a Rain Print page");
   assert.match(COPY, /business name stays off the print/);
   assert.match(COPY, /logo can go on it, small, next to their name/);
-  // Sig, 2026-10-17: no separate card; the business's message is printed at the top of the letter in each box
+  // 2026-10-17: no separate card; the business's message is printed at the top of the letter in each box
   assert.match(COPY, /Your message is printed at the top of the letter in the box, at no charge\./);
   assert.doesNotMatch(COPY, /note card|on a card/);
   assert.match(COPY, /13 x 19 frame in oak wood or black, with an acid-free white mat and 2 mm tempered glass, ready to hang/);
@@ -170,7 +175,7 @@ test("the 'Questions? Call or text' line is not pulled up under the title", () =
 
 // 2026-10-19 (board seat C: "no picture of the box letter with a business note"). The code renders the real
 // letter (components/rp-insert.js), so the sample is rendered by scripts/render_rp_business_letter.mjs from the
-// saved 2012 Ames NOAA answers; the proof sheet and a logo print have no renderer and wait for Sig's photos.
+// saved 2012 Ames NOAA answers; the proof sheet and a logo print have no renderer and wait for the owner's photos.
 test("the sample box letter with a business note: the real letter, small, captioned as a sample", () => {
   const fig = MAIN.match(/<figure class="rbz-fig rbz-fig-letter" id="rbz-letter">([\s\S]*?)<\/figure>/);
   assert.ok(fig, "the figure");
@@ -188,7 +193,7 @@ test("the sample box letter with a business note: the real letter, small, captio
   assert.doesNotMatch(MAIN, /proof-sheet-sample|logo-sample/, "no made-up proof sheet or logo picture");
 });
 
-// 2026-10-19: "Sample by" date. Sig has not confirmed one, so the data field is null and the page says nothing.
+// 2026-10-19: "Sample by" date. The owner has not confirmed one, so the data field is null and the page says nothing.
 test("sample-by line: driven by business_sample_by, which stays null (nothing shown) until Sig sets it", () => {
   assert.ok(Object.prototype.hasOwnProperty.call(J, "business_sample_by"), "the field exists");
   assert.equal(J.business_sample_by, null, "Sig sets the date; until then null");
@@ -250,7 +255,7 @@ test("a 100-customer list with mailing addresses fits the form and the worker; a
   assert.match((await over.json()).error, /towns is too long/);
 });
 
-// 2026-10-20 (business walk-through: the sample offer said "order one" with nowhere to click and no way for Sig to match it).
+// 2026-10-20 (business walk-through: the sample offer said "order one" with nowhere to click and no way for the owner to match it).
 test("the sample offer links to the order box and says how Sig matches it; the sample date stays Sig's", () => {
   const p = MAIN.match(/<p class="rbz-sample" id="rbz-sample">([\s\S]*?)<\/p>/)[1];
   assert.match(p, /<a href="\/rain-print#rp-buy" data-rbz-cta="sample">Order one at the regular price<\/a> and I take it off your invoice when you order 10 or more\./);

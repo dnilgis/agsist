@@ -1,8 +1,8 @@
 /* components/print-qr.js: the QR code on a printed report (Oct 19, 2026).
-   Sig: every printed report carries a QR that opens the same report on the site.
+   Every printed report carries a QR that opens the same report on the site.
    It draws with components/qr.js (window.AgQR, the one QR encoder on the site)
    and is used by /comp-report, /field-report and the /hail-map Hail History
-   Report. Sig: the fewest squares that still open the exact report, so the code holds
+   Report. The fewest squares that still open the exact report, so the code holds
    the short link from components/report-link.js (HTTPS://AGSIST.COM/C/..., all of it
    QR alphanumeric, opened by 404.html), and the full link only when a report
    has something the short link cannot write. Both open the same report.

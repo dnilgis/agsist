@@ -240,7 +240,7 @@ test("your county fills rent and the paired trend yield, says where they came fr
 });
 
 test("a byline under the H1, the author in the JSON-LD, and no sideways scroll on a phone", { skip }, async () => {
-  // Sig, Oct 18: no name at the top of a page; it sits in one line at the end
+  // Oct 18: no name at the top of a page; it sits in one line at the end
   assert.match(HTML, /<h1>Break-even price calculator<\/h1><p class="be-by">Page updated /);
   assert.match(HTML, /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/);
   const ld = JSON.parse(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(HTML)[1]);

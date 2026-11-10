@@ -1,6 +1,6 @@
 /* The homepage store-or-sell options take the earliest delivery tier in the nearest month.
  *
- * Nov 2, 2026 audit (Sig's rule: spot/cash, FH and the whole month are one tier; LH, or a
+ * Nov 2, 2026 audit (spot/cash, FH and the whole month are one tier; LH, or a
  * day range inside one month starting on the 11th or later, ranks after). Lincolnway Energy,
  * Nevada IA, posted corn "FH Nov 2026" $4.17 (-30c) and "LH Nov 2026" $4.22 (-25c), both
  * filed under Nov. components/bids-homepage.js storeOptions kept the higher one, so the
@@ -38,6 +38,7 @@ function load(nowIso) {
   const ctx = vm.createContext({ window, document, navigator: {}, location: window.location, localStorage: window.localStorage,
     setTimeout, clearTimeout, console, Date: FixedDate, Intl, CustomEvent: function () {}, fetch: () => Promise.reject(new Error("offline")) });
   vm.runInContext(read("components/util.js"), ctx);
+  vm.runInContext(read("components/elev-names.js"), ctx);   // the page loads it before bids-homepage.js
   vm.runInContext(read("components/bids-homepage.js"), ctx);
   return window.__agsistHomeBidsInternals;
 }

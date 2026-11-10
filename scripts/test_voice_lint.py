@@ -2,7 +2,7 @@
 """
 SIG'S VOICE, CHECKED BY A MACHINE: voice_lint and the three places it is wired.
 
-The AGSIST Daily carries Sig's name. This drives voice_lint with drafts that
+The AGSIST Daily carries the owner's name. This drives voice_lint with drafts that
 must fail (an invented first-person experience, machine tells) and drafts that
 must pass (plain prose, first person used only for an opinion), then checks
 each caller does what it says:
@@ -95,7 +95,7 @@ for s, code in MUST_FAIL_TELL:
     codes = [c for c, _, _ in voice_lint.tell_hits({"lead": s})]
     check(code in codes, f"tell [{code}] caught: {s!r}")
 
-# Fields the model does not write in Sig's voice are not scanned.
+# Fields the model does not write in the owner's voice are not scanned.
 check(not voice_lint.lint({"daily_quote": {"text": "I sold my farm in 1985."},
                            "action": "I'd hold beans."})["fabricated"],
       "the quote of the day and the bot's Action are not scanned")

@@ -1,4 +1,4 @@
-/* Fast Facts panel, second half (Oct 22, 2026): the skeptic pass over the seven seat files and the
+/* Fast Facts panel, second half (Oct 22, 2026): a review over the seven seat files and the
  * fixes that survived, each pinned on the real case.
  *
  *   node --test test/fast-facts-panel-oct22.test.mjs

@@ -48,7 +48,7 @@ test("every issue: one NewsArticle, one headline, dates with an offset, a byline
     assert.equal(a.publisher.logo.url, "https://agsist.com/img/logo-agsist.png");
     assert.ok(a.image[0].width >= 1200, f + ": image 1200 wide");
     assert.ok(h.includes(`Published <time datetime="${a.datePublished}">`), f + ": visible published time = datePublished");
-    // Sig, Oct 18: no name under the headline; the byline block at the end carries it
+    // Oct 18: no name under the headline; the byline block at the end carries it
     assert.ok(/<p class="dv3-dateline">Published <time/.test(h), f + ": published time under the headline");
     assert.ok(!/dv3-dateline">[^<]*<a[^>]*>Sigurd/.test(h), f + ": no name under the headline");
     assert.ok(h.indexOf("Sigurd Lindquist", h.indexOf("dv3-headline")) > h.indexOf("dv3-dateline"), f + ": byline below the article top");
@@ -97,7 +97,7 @@ test("daily.yml: commits the news sitemap and pings IndexNow last, never blockin
   assert.match(y, /git add [^\n]*sitemap-news\.xml/);
   const i = y.indexOf("- name: Ping IndexNow with today's issue");
   assert.ok(i > y.indexOf("- name: Send daily email"), "after the email");
-  // Sig, 2026-10-20: the old plain-text forwarding brief is off; the Daily list replaced it.
+  // 2026-10-20: the old plain-text forwarding brief is off; the Daily list replaced it.
   assert.equal(y.indexOf("send_morning_brief.py"), -1, "no forwarding brief step");
   assert.equal(y.indexOf("- name:", i + 10), -1, "nothing after it");
   const step = y.slice(i);
@@ -113,7 +113,7 @@ test("editorial standards page: how the Daily is made, corrections, no em dashes
     assert.ok(h.includes(`id="${id}"`), id);
   assert.ok(h.includes('<link rel="canonical"    href="https://agsist.com/editorial-standards">'));
   assert.ok(!h.includes("—"), "no em dashes");
-  // Oct 16, Sig: toned down to one plain paragraph; the AI draft and the price check stay stated
+  // Oct 16, the owner: toned down to one plain paragraph; the AI draft and the price check stay stated
   assert.match(h, /drafted each morning by AI software/);
   assert.match(h, /code checks every price in it against the market feed; a draft that fails does not post/);
   assert.match(h, /Sigurd Lindquist<\/a>, CCA /);

@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 """
 headline_fix.py -- a Daily headline that fails its check is fixed before the
-send, and checked again until it passes (Sig, Oct 27 2026: "trigger a fix on
-the spot until it passes its test"; never send a failing headline).
+send, and checked again until it passes (Oct 27 2026; never send a failing headline).
 
 WHY. A sentence in the body that breaks a claim rule is cut (daily_claims.strip).
 A headline cannot be cut, so until now briefing_gate only warned on it, and the
@@ -23,7 +22,7 @@ data/daily.json:
      itself pass the gate.
   4. Even that fails (or the strip has no settle): the send is held. Exit 1
      stops the job before the commit and the send, as a GATE 2 block does, and
-     Sig gets one email saying what failed (log_safe.owner_mail, the v2 hold's
+     The owner gets one email saying what failed (log_safe.owner_mail, the v2 hold's
      route).
 A teaser, subheadline or subject_line that was a copy of the old headline takes
 the new one. Every try is logged (try number, rule hit); no key, no address.
@@ -321,7 +320,7 @@ def fix(briefing, prices=None, today=None, archive_dir=None, model=call_model, t
 
 
 def hold_alert(day, rec):
-    """One email to Sig: the headline failed, every rewrite and the fallback
+    """One email to the owner: the headline failed, every rewrite and the fallback
     failed, nothing was sent."""
     import log_safe
     lines = ["The AGSIST Daily for %s did not go out: its headline failed the fact check and no fix passed." % day, "",

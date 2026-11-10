@@ -1,4 +1,4 @@
-/* Subs worker v5.41: unsubscribes are counted for Sig's morning email, with
+/* Subs worker v5.41: unsubscribes are counted for the owner's morning email, with
  * no address in the count, split into readers and the list cleanup job.
  *
  *   node --test test/unsub-count.test.mjs

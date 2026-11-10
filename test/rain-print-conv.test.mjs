@@ -1,4 +1,4 @@
-/* /rain-print by the buy button (Sig, 2026-10-20: "do all"):
+/* /rain-print by the buy button (2026-10-20):
  *   1. the Christmas order-by date, per product, from data/rain-print.json,
  *      shown only from October 1 through that product's cutoff (fixed clock);
  *      after it, the arrival date; this year's print says January;
@@ -6,8 +6,8 @@
  *      share sheet or Email it / Text it / Copy the link, a GA event with the
  *      method only;
  *   3. numbered and initialed by hand (never "signed": the renderer prints a
- *      serial, Sig initials in pencil);
- *   4. Sig's guarantee by the button, in the FAQ and in the FAQ and offer
+ * serial, the owner initials in pencil);
+ *   4. The owner's guarantee by the button, in the FAQ and in the FAQ and offer
  *      structured data, with the return text agreeing;
  *   5. "Email me this design": nothing ticked, posts the design code, the
  *      worker routes and the sender's selftest (sends once, never after a
@@ -118,7 +118,7 @@ test("5. the worker routes and the sender (once, never after a paid order)", () 
   const py = execFileSync("python3", [ROOT + "scripts/rp_design_email.py", "--selftest"], { encoding: "utf8" });
   assert.match(py, /rp_design_email: all checks pass/);
   const wf = read(".github/workflows/rp-design-email.yml");
-  // Sig OK'd an hourly run on Oct 21, 2026: exactly that one schedule, and a
+  // The owner OK'd an hourly run on Oct 21, 2026: exactly that one schedule, and a
   // scheduled run is live only with the repository variable set.
   assert.deepEqual([...wf.matchAll(/cron: '([^']+)'/g)].map((m) => m[1]), ["23 * * * *"], "the one hourly schedule Sig approved");
   // since Nov 3, 2026 the hourly tick also runs after Fetch Grain Bids (cron_gate.py); that chained run is the hourly run

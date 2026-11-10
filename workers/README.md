@@ -37,8 +37,8 @@ Worker on the same account is Sig's call. The same `subs-worker.js` now runs
 as a new Worker, **agsist-api**, at `https://agsist-api.dnilgis.workers.dev`.
 Every page, component and script calls the new host. The lists that must take
 either host while both may answer: the signup backup in `components/loader.js`,
-`components/outbox.js` (a kept item goes to the new host), `sw.js`
-NEVER_CACHE, and `data/audit-expected.json`. `wrangler.subs.toml` stays so
+`components/outbox.js` (a kept item goes to the new host) and `sw.js`
+NEVER_CACHE. `wrangler.subs.toml` stays so
 the old Worker's build still works until it is deleted. Emails never name
 either host: `scripts/email_links.py` refuses any `*.workers.dev` link.
 

@@ -25,12 +25,28 @@
 
   function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
 
-  /* -> html for the box, or '' (pure: tests call it). cellFn = AgPxStamp.cell */
-  function render(bs, prices, cellFn, now) {
+  /* The reader's own state when the page already knows it (2026-11-09 panel: a
+     Chetek WI reader saw IA, NE, KS, IL, MN and no Wisconsin). From the place the
+     page saved or detected, never a guess: the first two-letter code found in the
+     live geo state, the saved place, or the state the reader picked. -> 'WI' or ''. */
+  function ownState(w) {
+    var c = [], s, o;
+    try { s = w.AGSIST_STATE; if (s) { c.push(s.state); if (s.weather) c.push(s.weather.state); } } catch (e) {}
+    try { o = JSON.parse(w.localStorage.getItem('agsist-wx-loc') || 'null'); if (o) c.push(o.state); } catch (e) {}
+    try { c.push(w.localStorage.getItem('agsist_state')); } catch (e) {}
+    for (var i = 0; i < c.length; i++) if (typeof c[i] === 'string' && /^[A-Za-z]{2}$/.test(c[i])) return c[i].toUpperCase();
+    return '';
+  }
+
+  /* -> html for the box, or '' (pure: tests call it). cellFn = AgPxStamp.cell,
+     own = the reader's state code or '' */
+  function render(bs, prices, cellFn, now, own) {
     if (!bs || !bs.states || typeof cellFn !== 'function') return '';
-    var sts = Object.keys(bs.states).filter(function (st) { return cellFn(bs, prices, st, 'corn', now); })
-      .sort(function (a, b) { return (bs.states[b].elevators || 0) - (bs.states[a].elevators || 0) || (a < b ? -1 : 1); })
-      .slice(0, TOP);
+    var ranked = Object.keys(bs.states).filter(function (st) { return cellFn(bs, prices, st, 'corn', now); })
+      .sort(function (a, b) { return (bs.states[b].elevators || 0) - (bs.states[a].elevators || 0) || (a < b ? -1 : 1); });
+    own = String(own || '').toUpperCase();
+    var mine = own && ranked.indexOf(own) >= 0;
+    var sts = (mine ? [own].concat(ranked.filter(function (st) { return st !== own; })) : ranked).slice(0, TOP);
     if (!sts.length) return '';
     var on = '', asOf = '', rows = '';
     sts.forEach(function (st) {
@@ -46,13 +62,13 @@
       rows += '<tr><th scope="row"><a href="' + esc(bs.states[st].path || '/cash-bids') + '">' + esc(bs.states[st].name) + '</a></th>' + tds + '</tr>';
     });
     return '<h3 class="cbs-h">Today&rsquo;s middle bid, before you type a ZIP</h3>' +
-      '<p class="cbs-f">The middle bid at elevators in each state. &ldquo;Under&rdquo; means that many cents a bushel below the futures month named; that gap is the basis. &ldquo;Loc.&rdquo; is how many locations were counted, &ldquo;co.&rdquo; how many companies run them.</p>' +
-      '<table class="cbs-t"><thead><tr><th scope="col">State</th><th scope="col">Corn</th><th scope="col">Soybeans</th></tr></thead><tbody>' + rows + '</tbody></table>' +
+      '<p class="cbs-f">Estimates, not posted bids. The middle bid at elevators in each state. &ldquo;Under&rdquo; means that many cents a bushel below the futures month named; that gap is the basis. &ldquo;Loc.&rdquo; is how many locations were counted, &ldquo;co.&rdquo; how many companies run them.</p>' +
+      '<table class="cbs-t"><thead><tr><th scope="col">State</th><th scope="col">Corn <span class="cbs-est">est.</span></th><th scope="col">Soybeans <span class="cbs-est">est.</span></th></tr></thead><tbody>' + rows + '</tbody></table>' +
       '<p class="cbs-f">About: ' + (on ? 'futures at ' + esc(on) + ' plus ' : '') + 'each state&rsquo;s median basis at AGSIST network elevators' +
-      (asOf ? ', ' + esc(asOf) : '') + '. The five states with the most elevators. Your ZIP gives the real bids near you.</p>';
+      (asOf ? ', ' + esc(asOf) : '') + '. ' + (mine ? 'Your state first, then the states with the most elevators.' : 'The five states with the most elevators.') + ' Your ZIP gives the real bids near you.</p>';
   }
 
-  var api = { render: render, TOP: TOP };
+  var api = { render: render, ownState: ownState, TOP: TOP };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgCbSample = api;
   var doc = root.document;
@@ -100,7 +116,7 @@
     var wait = new Promise(function (ok) { setTimeout(ok, 400); });
     Promise.all([Promise.all([stamp(), get('/data/basis-states.json'), get('/data/prices.json')]), wait]).then(function (a) {
       var r = a[0], px = r[0], live = doc.querySelector('#cb-results .cb-empty');
-      var h = px && live && el.isConnected && noZip() ? render(r[1], r[2], px.cell) : '';
+      var h = px && live && el.isConnected && noZip() ? render(r[1], r[2], px.cell, undefined, ownState(root)) : '';
       if (!h) { if (el.parentNode) el.parentNode.removeChild(el); return; }
       el.innerHTML = h;
       el.className = 'cb-sample';

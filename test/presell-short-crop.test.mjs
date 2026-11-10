@@ -2,7 +2,7 @@
  * The page reads a frozen copy of its harvest data (test/fixtures/harvest-tracker/, the copy
  * test/harvest-tracker-oct19 reads: Oct 25, 2026, Iowa corn's October window running), routed in the browser,
  * and both clocks come from that copy: the day of its last settle (window open) and five days after the
- * window's end (closed). It read live data/ on fixed Oct 16 and Nov 5 clocks before (BUILD-RULES 50). */
+ * window's end (closed). It read live data/ on fixed Oct 16 and Nov 5 clocks before (build rule 50). */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";

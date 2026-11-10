@@ -18,14 +18,14 @@ fixed rule. The Oct 28 backtest on our own snapshots found that "no change"
 beats every level model, so no change (M0) is the benchmark here, and the
 ledger also makes EVENT calls (will this series' basis move within 1, 5 and 20
 trading days, and which way) next to the level calls. A second ChatGPT run the
-same day (feedbag notes/chatgpt/2026-10-28-answers/basis-event/) found a small
+same day (the private notes) found a small
 logistic model beat the crop x state base rate on held-out 1 and 5 day moves,
 and that the peer-move sign rule beat trained sign models; both are frozen here
 so the live record can confirm or refute it.
 
 NOTHING HERE IS PUBLISHED. Everything goes to the private raw branch
-(scripts/push_raw.sh), never to main or the site. Sig decides when the record
-is shown (STANDING-DECISIONS, Oct 21: basis findings not published yet).
+(scripts/push_raw.sh), never to main or the site. The owner decides when the record
+is shown (a site rule, Oct 21: basis findings not published yet).
 
 THE DISCIPLINE (copied from scripts/prediction_bot.py)
 ------------------------------------------------------

@@ -4,9 +4,9 @@ list_source.py -- the one place every sender gets its list and its day flags.
 
 Oct 21, 2026: Cloudflare blocked the subs worker (a 403 phishing page with no
 CORS). Every sender read its list from the worker, so nothing went out, and
-every hourly job failed and mailed Sig a "Run failed". The worker and the
-private copy of its storage (dnilgis/feedbag, branch private-data,
-kv-backup/latest.json.gz, made by feedbag's kv-backup.yml) are now
+every hourly job failed and mailed the owner a "Run failed". The worker and the
+private copy of its storage (the private repo, branch private-data,
+kv-backup/latest.json.gz, made by the private repo's kv-backup.yml) are now
 interchangeable: a sender asks for the worker route it always asked for, and
 gets the same rows from whichever place answers.
 
@@ -160,7 +160,7 @@ def _set_links(on):
 
 # ---------------------------------------------------------------- the worker
 def first_line(raw):
-    """The page's title, or its first line: what a block page says (BUILD-RULES 20).
+    """The page's title, or its first line: what a block page says (build rule 20).
     Never an address (any word with @ is blanked), at most 100 characters."""
     s = raw or ""
     m = re.search(r"<title[^>]*>(.*?)</title>", s, re.I | re.S)

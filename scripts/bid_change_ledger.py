@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""The bid change-time ledger (god's-eye panel, build 1; Sig, Oct 27 2026: "yes to all").
+"""The bid change-time ledger (god's-eye panel, build 1; Oct 27 2026).
 
 WHY. No file we keep says when an elevator changed a bid. The board's pricedAt in
 dnilgis/bids and the snapshot `posted` field are batch times: on Oct 21, 1,220 of

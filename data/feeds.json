@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 99,
- "with_known_cadence": 99,
+ "count": 98,
+ "with_known_cadence": 98,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -2049,32 +2049,6 @@
    "url": null,
    "crons": [],
    "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
-   "path": "data/predictions-backtest.json",
-   "pages": [
-    "usda-calendar.html"
-   ],
-   "written_by": [
-    "Prediction bot \u2014 call and grade"
-   ],
-   "touched_by": [
-    "Prediction bot \u2014 call and grade"
-   ],
-   "cadence": "4 launches weekdays at about 2pm, 3pm, 5pm, 6pm Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "41 19 * * 1-5",
-    "41 20 * * 1-5",
-    "41 22 * * 1-5",
-    "41 23 * * 1-5"
-   ],
-   "max_gap_hours": 68.0,
    "quiet": null,
    "why_quiet": null
   },

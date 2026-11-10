@@ -55,8 +55,7 @@ THE NOTE IS DROPPED WHENEVER THE NUMBERS MOVE. It is the model's one-sentence
 commentary and it states the close in prose -- "Corn closed at $4.035 today",
 "Crude ran to $74.58 today, up 3.2%". Once the close is corrected those
 sentences are wrong, and a corrected figure sitting beside a sentence that
-contradicts it is worse than either alone. Sig's call, 2026-09-13: "correct
-numbers and dont worry about the notes, i want it right." A note is kept only
+contradicts it is worse than either alone. 2026-09-13 A note is kept only
 when the verdict and both closes are unchanged, in which case it still
 describes what happened.
 

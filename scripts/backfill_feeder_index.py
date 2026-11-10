@@ -31,7 +31,7 @@ real counts of real USDA rows.
         manifest.json               per report: copies listed, read, refused and why
       Resumable: a copy in the manifest is not asked again.
   --mars-fetch --from 2024-01-01 [--to 2026-10-11] [--max-minutes 300]
-      (Nov 3 2026: Sig made a My Market News key, secret MARS_API_KEY, Actions only.)
+      (Nov 3 2026: the owner made a My Market News key, secret MARS_API_KEY, Actions only.)
       Every single-barn report through the MARS API, one ask per report and year,
       1.5 s apart; the rows are mapped to fetch_cattle_auction's own records
       (mars_reports: same tables, same row rules via FCA.check_row, same title check)
@@ -229,7 +229,7 @@ def fetch(d0, d1, out=OUT, fetch_=None, minutes=0, clock=time.monotonic, log=PFA
 
 
 # ------------------------------------------------------------------ MARS (USDA My Market News)
-# Sig, Nov 2: "Get a USDA key". MARS_API_KEY is an Actions secret (HTTP basic, key as
+# Nov 2. MARS_API_KEY is an Actions secret (HTTP basic, key as
 # the user name, empty password); it is never printed or saved. The MARS answer for a
 # report (https://marsapi.ams.usda.gov/services/v1.2/reports/<slug>?q=report_begin_date=
 # MM/DD/YYYY:MM/DD/YYYY) is one JSON row per table row of the same USDA report the PDF

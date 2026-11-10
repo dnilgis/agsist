@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-test_daily_fresh.py -- fresh every morning (Sig, Nov 1 2026), pinned on the real
+test_daily_fresh.py -- fresh every morning (Nov 1 2026), pinned on the real
 archive and on fixtures. Run by test/daily-fresh.test.mjs.
 
   replay     the 14 issues Oct 19 to Nov 1 2026 through daily_fresh.hits: which
@@ -83,7 +83,7 @@ def gate():
     ok(("WARN", "fresh:headline") in fresh and ("WARN", "fresh:weekend") in fresh
        and ("WARN", "fresh:number") in fresh and ("WARN", "fresh:story") in fresh
        and not any(st == "FAIL" for st, _ in fresh), "Nov 1, stamped and uncut: its repeats warn, never hold %r" % fresh)
-    # Sig, Nov 2 2026: "cut the repeat". The rule changed from "repeats warn, never hold" to: what still
+    # Nov 2 2026. The rule changed from "repeats warn, never hold" to: what still
     # repeats after the one rewrite is cut before the send (story, sentence, the day's number; a repeated
     # headline becomes the top story's title), and only what cannot be cut is left, as a warning. The email
     # always goes out.
@@ -109,7 +109,7 @@ def gate():
 
 
 def cut_nov2():
-    """The Oct 30 to Nov 2 2026 repeats Sig named on Nov 2, from the real archive."""
+    """The Oct 30 to Nov 2 2026 repeats the owner named on Nov 2, from the real archive."""
     d = dt.date(2026, 11, 2)
     b = load("2026-11-02")
     rec = F.recent(d, ARCH)

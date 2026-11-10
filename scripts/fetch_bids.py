@@ -256,7 +256,7 @@ BIDS_NETWORK_BASE = os.environ.get(
     "BIDS_NETWORK_BASE", "https://dnilgis.github.io/bids/")
 MERGE_RADIUS_MI = float(os.environ.get("BIDS_MERGE_RADIUS_MI", "50"))
 
-# A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17, Sig approved). The bids
+# A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17). The bids
 # repo flags a row stale whenever its board was not read on the latest pass,
 # for three reasons: "refused" and "broken" (the read failed) and "skipped"
 # (not asked this pass: Landus is paced 5 boards a pass, NEW Cooperative
@@ -329,11 +329,6 @@ def _nearest_grid(lat, lon, grid):
             best_z, best_d = g["zip"], d
     return best_z, best_d
 
-# Legal-entity words that a feed carries and the other one drops. Stripped only
-# from the END of a name, never mid-name: "Co-op Services" must keep its "co".
-_LEGAL_SUFFIX = {"llc", "lc", "inc", "incorporated", "co", "corp", "corporation",
-                 "ltd", "limited", "lp", "llp", "company"}
-
 def _norm_operator(name):
     """One elevator's name as the two feeds spell it, reduced to one string.
 
@@ -353,16 +348,10 @@ def _norm_operator(name):
     that differ by a real word ("ADM Grain" against "ADM"): a duplicate pin is
     visible and fixable, a wrong merge hides a real elevator.
 
+    It is elevator_names.merge_key (twin of elevNames.mergeKey).
     """
-    import re as _re
-    s = _re.sub(r"[^a-z0-9]+", " ", str(name or "").lower())
-    s = s.replace("co op", "coop").replace("co operative", "cooperative")
-    toks = [t for t in s.split() if t]
-    while toks and toks[-1] in _LEGAL_SUFFIX:
-        toks.pop()
-    toks = ["coop" if t in ("cooperative", "coops") else t for t in toks]
-    toks = [t[:-1] if (len(t) > 3 and t.endswith("s")) else t for t in toks]
-    return "".join(toks)
+    from elevator_names import merge_key
+    return merge_key(name)
 
 # ── A ROW WITHOUT A STATE CANNOT BE FILED ────────────────────────
 # build_basis_history.py writes one shard per state and the page can only
@@ -748,7 +737,7 @@ def network_rows(grid, base=None):
                              "checkedAt": b.get("checkedAt"), "pricedAt": b.get("pricedAt") or None})
         if b.get("pasted") is True:
             # A BOARD SIG PASTED BY HAND (2026-10-20): the site will not let the
-            # bids reader in, so Sig pastes its public page. dnilgis/bids holds
+            # bids reader in, so the owner pastes its public page. dnilgis/bids holds
             # it up to 7 days, aged by the paste. It prints its own paste time.
             pa = b.get("pastedAt") or b.get("checkedAt")
             rows[-1].update({"pasted": pa, "timestamp": pa, "checkedAt": b.get("checkedAt"),

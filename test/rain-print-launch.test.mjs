@@ -68,7 +68,7 @@ test("one name for the $19 product, curly apostrophes in FAQ titles, no 'made-up
 });
 
 test("a Stripe reference RPS-<id> or GIFT-RPS-<id> opens as rain-print?d=, through the short link", () => {
-  // checkoutRef sends these for a design past 200 characters; the data file tells Sig to open rain-print?d=<reference>
+  // checkoutRef sends these for a design past 200 characters; the data file tells the owner to open rain-print?d=<reference>
   const long = RP.encodeCode({ place: "Chetek, WI", year: 2025, name: "The Johnson Family Farm", dedication: "For Dad, his 40th crop on the home place. Love, Kate, Ben and Ole",
     markers: [{ date: "2025-05-08", label: "Planted beans" }, { date: "2025-07-12", label: "Hail storm" }, { date: "2025-10-24", label: "Harvest done" }] });
   assert.ok(long.length > 200, "this design goes to Stripe as RPS-");
@@ -192,7 +192,7 @@ test("the print names the gauge and distance, and counts gaps only past 3 missin
     const line = full.find((x) => x.t.startsWith("Weather station:"));
     assert.ok(line && line.size >= 12, style + ": gauge line at production size");
     assert.ok(!/no report/.test(line.t), style + ": no gap note on a full year");
-    // Sig, 2026-10-15: the long gap sentence is gone; 3 or fewer missing days say nothing, more say the count, short
+    // 2026-10-15: the long gap sentence is gone; 3 or fewer missing days say nothing, more say the count, short
     for (const n of [1, 3]) {
       const quiet = texts(ART.render(input(year(2025, (i) => (i >= 40 && i < 40 + n ? { p: "M" } : {})), { style, gauge })));
       assert.ok(!quiet.some((x) => /no report|Gaps:/.test(x.t)), style + ": " + n + " missing days: nothing on the print");
@@ -237,7 +237,7 @@ test("the Christmas cutoffs are the last order day that still arrives by Dec 24 
     const next = new Date(Date.parse(cut + "T12:00:00Z") + 86400000).toISOString().slice(0, 10);
     assert.ok(RP.addBizDays(next, n, J.holidays) > "2026-12-24", key + ": the day after does not");
   }
-  // 2026-10-14 (Sig): ships within 3 business days of the OK (was 7)
+  // 2026-10-14: ships within 3 business days of the OK (was 7)
   assert.equal(J.ship_business_days, 3, "the cutoffs use the same 3 business days the page promises");
   assert.match(J.ships_within, /within 3 business days/);
   assert.equal(J.print_christmas_cutoff, "2026-12-10");
@@ -250,7 +250,7 @@ test("the Christmas cutoffs are the last order day that still arrives by Dec 24 
 
 test("shipping included is said plainly; no archival claim; care line; the reprint policy is final (Sig, 2026-10-14)", () => {
   assert.match(HTML, /<b data-price="digital">\$19<\/b> digital file<\/span><span>Shipping included<\/span>/, "the price line under the lede");
-  // Sig, 2026-10-14: Alaska and Hawaii are covered, Christmas dates included; Puerto Rico not promised
+  // 2026-10-14: Alaska and Hawaii are covered, Christmas dates included; Puerto Rico not promised
   assert.equal((HTML.match(/<li>Shipping included, anywhere in the 50 states<\/li>/g) || []).length, 2, "both shipped products, under What you get");
   assert.ok(!/US addresses/.test(HTML + JSON.stringify(J)), "no looser 'US addresses' that would take in Puerto Rico");
   assert.match(HTML, /anywhere in the 50 states, Alaska and Hawaii included/);
@@ -269,7 +269,7 @@ test("the page head: unique title, real prices, FAQ and breadcrumb, a Rain Print
   const types = ld["@graph"].map((g) => g["@type"]);
   for (const t of ["Product", "FAQPage", "BreadcrumbList"]) assert.ok(types.includes(t), t);
   const prod = ld["@graph"].find((g) => g["@type"] === "Product");
-  // Sig's photo of a real framed print first (2026-10-18, test/rain-print-photos.test.mjs), then the share card
+  // The owner's photo of a real framed print first (2026-10-18, test/rain-print-photos.test.mjs), then the share card
   // (with the ?v=<hash> scripts/build_share_images.py gives it, the same URL as og:image),
   // then the two example prints drawn from real NOAA years (test/rain-print-examples.test.mjs)
   const og = HTML.match(/property="og:image"\s+content="([^"]+)"/)[1];
@@ -287,7 +287,7 @@ test("the page head: unique title, real prices, FAQ and breadcrumb, a Rain Print
   assert.deepEqual([w, h], [1200, 630]);
 });
 
-/* 2026-10-13, Sig: Rain Print launches, with the rain gauge waiting list. Both are
+/* 2026-10-13, the owner: Rain Print launches, with the rain gauge waiting list. Both are
    in the menu and the footer (live and static copies alike) and the promo is on. */
 test("Rain Print and the rain gauge list are in the menus and footer at launch (2026-10-13)", () => {
   assert.equal(J.promote, true);
@@ -313,24 +313,24 @@ test("checkout never dead-ends: a design code over 200 goes to Stripe as its sho
   assert.equal(RP.checkoutRef(code, true, "HTTPS://AGSIST.COM/R?K7Q2M"), "GIFT-RPS-K7Q2M");
   assert.ok(/^[A-Za-z0-9_-]{1,200}$/.test(RP.checkoutRef(code, true, "HTTPS://AGSIST.COM/R?K7Q2M")));
   assert.equal(RP.checkoutRef(code, false, null), "", "no short id: checkoutRef has none of its own");
-  // 2026-10-22: pay() then goes to Stripe with the hash of the full code (BUILD-RULES 14)
+  // 2026-10-22: pay then goes to Stripe with the hash of the full code (build rule 14)
   assert.match(RP.hashRef(code, false), /^RPH-[0-9A-HJKMNP-TV-Z]{10}$/);
   assert.match(RP.hashRef(code, true), /^GIFT-RPH-[0-9A-HJKMNP-TV-Z]{10}$/);
   const short = RP.encodeCode({ place: "Chetek, WI", year: 2025 });
   assert.equal(RP.checkoutRef(short, false, null), short, "a code that fits goes as it is");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  // 2026-10-14 (Sig, standard code on previews): no short id is made on a redraw, so pay() makes one at the press when the code is too long
+  // 2026-10-14 (standard code on previews): no short id is made on a redraw, so pay makes one at the press when the code is too long
   const P = S.slice(S.indexOf("function pay(opts)"), S.indexOf("function staleInputs"));
   assert.match(P, /if \(link && long && !\(opts && opts\.minted\) && root\.AgRpShort && root\.AgRpShort\.mint\) \{/, "pay() makes the short id at the press, once");
   // 2026-10-15: asked of the worker at every press (never a kept id alone, so never Stripe with a kept id)
   assert.match(P, /root\.AgRpShort\.mint\(encodeCode\(artDesign\(\)\), \{ fresh: true, timeout: MINT_WAIT_MS \}\)/);
-  /* 2026-10-22 (BUILD-RULES 14, after the Oct 21 worker block): a failed or slow ask goes to Stripe as the hash ref
+  /* 2026-10-22 (build rule 14, after the Oct 21 worker block): a failed or slow ask goes to Stripe as the hash ref
      (RPH-, the full design by the press record or the backup form), never to the order form for want of the worker;
      the order form is for a product with no payment link. */
   assert.match(P, /var code = !link \? '' : long && !\(opts && opts\.ok\) \? hashRef\(encodeCode\(ST\), ST\.gift\) : \(refFor\(\) \|\| hashRef\(encodeCode\(ST\), ST\.gift\)\);/, "pay() uses the reference");
   assert.match(S, /var MINT_WAIT_MS = 4000/, "the checkout waits 4 s at most for the short link");
   assert.match(P, /closeProof\(true\);[\s\S]{0,140}openOrder\(id, link \? 'Checkout couldn\\u2019t open just now, so send this and I\\u2019ll email you a payment link\.' : ''\);\n  \}/, "and falls back to the order form, saying why");
-  // 2026-10-14 (Sig): checkout in the same tab, never a second window
+  // 2026-10-14: checkout in the same tab, never a second window
   assert.match(P, /goTo\(u\);/);
   assert.ok(!/root\.open\(/.test(S), "no window.open anywhere on the page");
   assert.match(S, /design_code: orderCode\(\)/, "the order form sends a code the worker takes (300 at most)");
@@ -342,7 +342,7 @@ test("the proof view and the order summary are on the page", () => {
   for (const v of ["framed12x18", "print12x18", "digital"]) { assert.ok(HTML.includes(`name="rp-pproduct" value="${v}"`), v); assert.ok(HTML.includes(`name="rp-product" value="${v}"`), v); }
   assert.ok(!/data-pstyle|data-pview/.test(HTML), "no second Style or Look state in the sheet");
   assert.match(HTML, /\.rp-proof\[data-zoom="full"\] \.rp-proof-art svg\{width:18in/, "actual size is 18 in wide");
-  // 2026-10-14 (Sig): one magnifier on the print toggles Fit and actual size; the in-between "Closer" step is gone
+  // 2026-10-14: one magnifier on the print toggles Fit and actual size; the in-between "Closer" step is gone
   assert.ok(HTML.includes('id="rp-zoom"') && HTML.includes('id="rp-proof-zoom" aria-pressed="false"'), "a zoom button by the preview and the magnifier on the print");
   assert.ok(!/data-pzoom=/.test(HTML), "no row of zoom pills");
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
@@ -352,9 +352,9 @@ test("the proof view and the order summary are on the page", () => {
   assert.match(S, /else startNear\(\);/, "a new visitor's first print is their own area");
   assert.match(S, /workers\.dev\/where', \{ credentials: 'omit' \}/, "from the worker's /where, no cookies");
   assert.match(S, /if \(!mine\(\)\) runSample\(\)/, "no answer: the sample, never over a town the reader typed");
-  // 2026-10-14 (Sig): example words are gray hints only, shown on a new visit's print at the top and never in the design
-  // and from 2026-10-17 (Sig) the frost marks and the hottest and coldest day are on for a new visit too
-  // and from 2026-10-22 (Sig) every layer: the daily temperature stripes and every year behind too
+  // 2026-10-14: example words are gray hints only, shown on a new visit's print at the top and never in the design
+  // and from 2026-10-17 the frost marks and the hottest and coldest day are on for a new visit too
+  // and from 2026-10-22 every layer: the daily temperature stripes and every year behind too
   assert.match(S, /if \(!ST\.place\) \{ ST\.cmp = 'normal'; ST\.normals = true; ST\.records = true; ST\.frost = true; ST\.heat = true; ST\.ribbon = true; ST\.hist = true; SHOW_EX = !PAID; \}/, "a new visit: empty boxes, every layer on (Sig, 2026-10-15, 10-17 and 10-22)");
   assert.ok(!/withExample|exampleLeft|clearExample|EX_OK/.test(S), "no example guard, no bounce, no Clear the example");
   assert.match(S, /name: ex \? EXAMPLE\.name : ST\.name/, "the example is drawn only where asked (the preview at the top)");
@@ -389,7 +389,7 @@ test("rp-gift.js reads a locked card's design with this page's decoder", () => {
   assert.ok(!G.locked.includes("name") && G.locked.includes("place"));
 });
 
-// ---------- Sig's decisions of 2026-10-13 ----------
+// ---------- the owner's decisions of 2026-10-13 ----------
 test("business copy matches Sig's decisions and the json: min 5, delivered tiers, note card, January, paperwork", () => {
   const faq = HTML.match(/<details><summary>Can a business order a set\?[\s\S]*?<\/details>/)[0];
   const T = J.business_tiers, off = J.business_one_address_off;
@@ -405,12 +405,12 @@ test("business copy matches Sig's decisions and the json: min 5, delivered tiers
   assert.match(HTML, /How many prints \(5 or more\)<\/span><input id="rb-qty" type="number" min="5" max="500"/);
   assert.match(HTML, /Business orders start at 5 prints/);
   assert.match(HTML, /A 2026 print ships in January/);
-  // Sig, 2026-10-17: no separate card; the business's message is printed at the top of the letter in the box
+  // 2026-10-17: no separate card; the business's message is printed at the top of the letter in the box
   assert.match(HTML, /Your message is printed at the top of the letter in the box, and on a label on the back of the frame if you want one, at no charge\./);
   assert.match(faq, /Your message is printed at the top of the letter in the box, not on the print\./);
   assert.doesNotMatch(HTML, /note card|on a card in the box|a note for a card/);
   assert.match(HTML, /does not go on the print/);
-  // Sig, 2026-10-14: a business logo may go on the print, small, if they upload one
+  // 2026-10-14: a business logo may go on the print, small, if they upload one
   assert.match(HTML, /If you want your logo on it, upload one with your request: it prints small, next to the name/);
   assert.match(HTML, /Your business name stays off the print too; a logo can go on it, small next to the name, if you upload one\./);
   assert.match(HTML, /an invoice, net 30, and a W-9 on request/);
@@ -455,7 +455,7 @@ const visible = HTML.replace(/<script[\s\S]*?<\/script>/g, "");
 
 test("Sig's notes: no printer named anywhere, framed prints have real glass, packed well", () => {
   assert.ok(!/epson|artisan|acrylic/i.test(HTML + S2), "no printer model, no acrylic");
-  // the frame specs as plain lines since Nov 4 (Sig): the glass, then the packing
+  // the frame specs as plain lines since Nov 4: the glass, then the packing
   assert.match(HTML, /<li>2 mm tempered glass front<\/li><li>14\.3 x 20\.3 in outside, 0\.9 in frame, sturdy backboard, hanging hardware included<\/li><li>Packed with corner guards and foam, double-boxed<\/li>/);
   assert.match(HTML, /<li>I print it myself, and you see a proof first<\/li>/);
   assert.match(HTML, /I print it myself, frame it if you ordered the frame, and ship it from Chetek, Wisconsin\./);
@@ -499,7 +499,7 @@ test("example words are gray hints only: placeholders in the boxes, never values
 });
 
 test("one promise for the digital file and the gift card: within 1 business day", () => {
-  // 2026-10-14 (Sig): the file had no proof step. 2026-10-20 (Sig): "make the email the proof"; every order, the file
+  // 2026-10-14: the file had no proof step. 2026-10-20: "make the email the proof"; every order, the file
   // too, gets the proof email within 1 business day and is approved there; the full file follows the OK
   assert.match(HTML, /<li id="rp-dig-when">A proof by email within 1 business day of paying, the full file once you approve it<\/li>/);
   assert.ok(!/within a day|Within a business day|after you pay\./.test(visible), "no looser or older promise on the page");
@@ -511,7 +511,7 @@ test("one promise for the digital file and the gift card: within 1 business day"
   assert.match(S2, /'The finished file comes by email within 1 business day of paying\. There\\u2019s no proof step for the file\.'/);
   assert.match(J.gift_delivery, /Every order gets a proof by email first\./);
   assert.ok(!/December numbers/.test(HTML + S2), "January, once the full year is in");
-  // 2026-10-20 (Sig): the gift card goes out by email the moment Stripe says paid (scripts/rp_buyer_email.py, worker v5.40)
+  // 2026-10-20: the gift card goes out by email the moment Stripe says paid (scripts/rp_buyer_email.py, worker v5.40)
   assert.match(HTML, /Within minutes of paying, I email you a gift card to print for under the tree/);
   assert.ok(!/Within 1 business day of paying, I email you a (gift )?card/.test(HTML), "no hand-sent card promise left on the page");
 });
@@ -523,7 +523,7 @@ test("station words are honest and the same everywhere", () => {
   assert.ok(!/Rain gauge/.test(S2), "the page says Weather station, not Rain gauge");
   assert.match(S2, /'Weather station: ' \+ gaugeHtml\(m\)/);
   assert.match(S2, /none\.retry = true/, "no answer from any station offers Try again");
-  assert.match(S2, /The only station near ' \+ g\.name/, "one station is not 'none of the 1'");
+  assert.match(S2, /The only station near ' \+ (g\.name|town)/, "one station is not 'none of the 1'");
   assert.match(S2, /milesText\(miles\(s\.km\)\) \+ ', ' \+ s\.valid_daterange/, "the station option text is short enough to show whole");
 });
 
@@ -572,10 +572,10 @@ test("copy batch: size, proof, business words", () => {
   // the size and "hung sideways" moved from the up-close paragraph to the FAQ (2026-10-14); the up-close view keeps the size
   assert.match(HTML, /It&rsquo;s printed on 13 x 19 inch heavy, textured cotton fine-art paper, hung sideways,/);
   assert.match(HTML, /On the paper the picture is 16\.5 x 11 in, on a 13 x 19 sheet\./);
-  // the maker's note is one plain line (2026-10-15, Sig: the quote was "a bit much"); the byline stays on the page
+  // the maker's note is one plain line (2026-10-15, the quote was "a bit much"); the byline stays on the page
   assert.match(HTML, /<p class="rp-p rp-sig">I print each one myself in Chetek, Wisconsin, and send you a proof first\. Sig<\/p>/);
   assert.ok(!/<blockquote>/.test(HTML), "no big quote");
-  // Sig, 2026-10-20 ("do all"): the story as one quiet line, lower in the buy box, never a block
+  // 2026-10-20 ("do all"): the story as one quiet line, lower in the buy box, never a block
   assert.equal(HTML.split("crop adviser in Chetek").length, 2, "said once");
   assert.match(HTML, /<p class="rp-note rp-madeby" id="rp-madeby">Made by a crop adviser in Chetek, Wisconsin, from NOAA&rsquo;s own records\.<\/p>/);
   assert.match(HTML, /<p class="rp-byline">By <a href="\/about">Sigurd Lindquist<\/a>, CCA<\/p>/);
@@ -606,7 +606,7 @@ test("outside review, as Sig took it: example years, the framed choice first, th
   // one picker, framed first and picked; the promise sits right under the one button
   const picks = [...HTML.matchAll(/name="rp-product" value="([a-z0-9]+)"( checked)?/g)].map((m) => m[1] + (m[2] ? "*" : ""));
   assert.deepEqual(picks, ["framed12x18*", "print12x18", "digital"]);
-  // 2026-10-20 (Sig, "do all"): under Pay, the date line, then the promise: numbered, and Sig's guarantee (test/rain-print-conv.test.mjs)
+  // 2026-10-20: under Pay, the date line, then the promise: numbered, and the owner's guarantee (test/rain-print-conv.test.mjs)
   assert.match(HTML, /id="rp-pay" type="button">Check it and pay \$89<\/button>\s*<p class="rp-arrive" id="rp-arrive" hidden><\/p>\s*<p class="rp-promise" id="rp-promise">Numbered and initialed by hand\. If it&rsquo;s not right, I&rsquo;ll redo it or refund it\.<\/p>/);
   assert.match(S2, /'You see a proof first\. ' \+ GUARANTEE/, "the file gets the proof email too (2026-10-20)");
   // 2026-10-22: the comparison is the Usual year switch in the Layers card (Off, 30-yr normal, This station); what each

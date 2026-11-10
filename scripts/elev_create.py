@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""elev_create.py: add an elevator to the portal and email its private link to Sig.
+"""elev_create.py: add an elevator to the portal and email its private link to the owner.
 
 Run by .github/workflows/elev-create.yml (Actions -> "Add elevator to portal").
 The link is a password for that listing, and Actions logs are public, so it is

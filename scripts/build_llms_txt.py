@@ -352,7 +352,7 @@ LAND_NAMES = {"IL": "Illinois", "IN": "Indiana", "NJ": "New Jersey", "VT": "Verm
 
 
 def land_states(root=REPO):
-    """The states with sale pages, from the land-sales set's own summary (data/land-sales/latest.json, BUILD-RULES 61:
+    """The states with sale pages, from the land-sales set's own summary (data/land-sales/latest.json, build rule 61:
     a new state shows here the day its pages do). Sorted by name; the hand list only when the file is missing."""
     L = _json(root, "data", "land-sales", "latest.json") or {}
     names = sorted(LAND_NAMES.get(s, s) for s in (L.get("states") or []) if isinstance(s, str) and len(s) == 2)
@@ -460,7 +460,7 @@ def numbers_lines(root=REPO):
 
 
 # Lines whose source file moves every 15 minutes (the bids fetch). Every set's run rebuilds llms.txt now
-# (BUILD-RULES 61, scripts/generated_sets.py), so a line here keeps the copy already in llms.txt while that
+# (build rule 61, scripts/generated_sets.py), so a line here keeps the copy already in llms.txt while that
 # copy's date is the same UTC day: llms.txt moves once a day for them, not on every fetch. The kept line
 # still states its own time, so it stays true (that count at that time). (Nov 4, 2026)
 DAILY_KEYS = {"bids": "- Cash bids: ", "elevators": "- Elevators with a current bid: "}

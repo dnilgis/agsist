@@ -1,6 +1,5 @@
 /* Rain Print: the auto pick takes a station that records snowfall too
- * (2026-10-15, Sig: "find the nearest station with a full set of data, in my
- * case that includes snow and rain"). Chetek 2025 picked CoCoRaHS gauge
+ * (2026-10-15). Chetek 2025 picked CoCoRaHS gauge
  * US1WIBR0002, 1.9 mi off, which keeps no snowfall, so the print drew none.
  *
  * Checks, on the shipped components/rain-print.js:

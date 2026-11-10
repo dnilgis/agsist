@@ -113,7 +113,7 @@
   #main .rg .rg-done h2{margin:0 0 .4rem;font-size:var(--fs-lg);line-height:1.25;color:var(--text)}
   .rg-done p{margin:0 0 .5rem;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.55}
   .rg-done .sa-more{margin-top:.9rem}
-  /* No sponsors on the rain gauge page (Sig, 2026-10-15 and 2026-10-23): the header and footer Advertise links and the
+  /* No sponsors on the rain gauge page (2026-10-15 and 2026-10-23): the header and footer Advertise links and the
      supporter strip stay hidden, the same rule as /rain-print. loader.js reads the footer rule and hides the live copies. */
   #site-header a[href^="/sponsor"],#site-footer a[href^="/sponsor"],#site-footer a[href^="/sponsor"]+.footer-sep,#site-footer #footer-adspace{display:none!important}
 
@@ -505,7 +505,7 @@
       m.textContent = text; m.className = 'rg-msg ok'; m.hidden = false;
       f.querySelectorAll('input,button').forEach(function (i) { i.disabled = true; });
     }
-    // The confirmation in the form they used (Sig, 2026-10-23): what happens next, in plain words.
+    // The confirmation in the form they used (2026-10-23): what happens next, in plain words.
     // No email goes out now (there is no gauge sender yet), so it never says "check your inbox".
     function confirmIn(f) {
       // it takes the form's place (a box beside the form, not inside it: the One more? panel brings its own form)

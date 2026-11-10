@@ -1,4 +1,4 @@
-/* components/fert-pick.js: which fertilizer price a reader sees (Sig, Oct 21, 2026).
+/* components/fert-pick.js: which fertilizer price a reader sees (Oct 21, 2026).
    AgFertPick.load(st) -> Promise of a price doc shaped like data/fertilizer-prices.json ({updated, prices, per_lb});
    AgFertPick.choose(coopsDoc, st, today) does the picking with no fetching (node and browser).
 
