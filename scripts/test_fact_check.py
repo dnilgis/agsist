@@ -129,19 +129,21 @@ def main():
         if payload["model"] == claude_models.REVIEWER:
             return {"stop_reason": "refusal", "content": []}
         return fake_reviewer(payload, key)
-    assert run_on(CLEAN, post=refuse_then_ok) == 0 and seen == [claude_models.REVIEWER, claude_models.REVIEWER_FALLBACK]
+    chain = [claude_models.REVIEWER] + [m for m in (claude_models.REVIEWER_FALLBACK, claude_models.WRITER)
+                                        if m != claude_models.REVIEWER]
+    assert run_on(CLEAN, post=refuse_then_ok) == 0 and seen == chain[:2], seen
     # an account that cannot use the reviewer (400), then a refusal, ends on the writer
     seen.clear()
     def no_access(payload, key):
         seen.append(payload["model"])
         if payload["model"] == claude_models.REVIEWER:
             raise RuntimeError("HTTP 400: invalid_request_error")
-        if payload["model"] == claude_models.REVIEWER_FALLBACK:
+        if payload["model"] != claude_models.WRITER:
             return {"stop_reason": "refusal", "content": []}
         # Sonnet 5.5 thinks adaptively here and takes the server fallback too
         assert payload["thinking"] == {"type": "adaptive"} and payload["fallbacks"] == "default"
         return fake_reviewer(payload, key)
-    assert run_on(bad, post=no_access) == 1 and seen == [claude_models.REVIEWER, claude_models.REVIEWER_FALLBACK, claude_models.WRITER]
+    assert run_on(bad, post=no_access) == 1 and seen == chain and seen[-1] == claude_models.WRITER, seen
     # refused everywhere: fail-open, the code checks still ran
     assert run_on(CLEAN, post=lambda p, k: {"stop_reason": "refusal", "content": []}) == 0
 
@@ -162,8 +164,8 @@ def request_shapes():
     """Model ids, thinking word, cache marker and max_tokens of every call."""
     # the fact check
     p = fc.review_payload([("lead", "x")], "SRC", model=claude_models.REVIEWER)
-    assert p["model"] == "claude-fable-5-2"
-    assert "thinking" not in p, "Fable 5.2 400s on any thinking setting but adaptive; omit it"
+    assert p["model"] == "claude-opus-5-5"
+    assert "thinking" not in p, "Opus 5.5 400s on any thinking setting but adaptive; omit it"
     assert p["fallbacks"] == "default", "a safety decline reruns server side"
     assert p["output_config"]["effort"] == "high"
     assert p["output_config"]["format"]["type"] == "json_schema"

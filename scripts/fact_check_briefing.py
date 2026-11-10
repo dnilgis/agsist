@@ -3,8 +3,8 @@
 fact_check_briefing.py -- the last read of the AGSIST Daily before it can send.
 
 Runs in daily.yml after the critic and before GATE 2. A careful reviewer model
-(claude_models.REVIEWER, Claude Fable 5.2 at effort high, the most capable
-model Anthropic offers; Opus 5.5 if the account cannot use it) gets the draft and the
+(claude_models.REVIEWER, Claude Opus 5.5 at effort high; the writer's model
+if Opus refuses or the account cannot use it) gets the draft and the
 exact source data the generator used, and returns structured findings:
   mismatch               a claim the data contradicts (a price, a change, a level)
   unsourced_number       a number that appears in none of the inputs
@@ -333,9 +333,9 @@ def _moved(payload, model):
 
 def call_reviewer(payload, api_key, post=_post):
     """(findings, usage, model, summary) or raises. A refusal, a 404 (unknown
-    model) or a 400 (for example an account that cannot use Fable 5.2) moves
-    the review down the chain once per model: REVIEWER, REVIEWER_FALLBACK,
-    WRITER. The strongest model is a preference, not a requirement for the
+    model) or a 400 (for example an account that cannot use the reviewer)
+    moves the review down the chain once per model: REVIEWER, then
+    REVIEWER_FALLBACK when it differs, then WRITER. The strongest model is a preference, not a requirement for the
     check to run."""
     chain = [m for m in (claude_models.REVIEWER_FALLBACK, claude_models.WRITER) if m != payload["model"]]
     while True:

@@ -57,7 +57,7 @@ test("the registry: current models, exact ids, no date suffix, a price and a cac
   const roles = Object.fromEntries([...src.matchAll(/^([A-Z_]+) = "(claude-[a-z0-9-]+)"$/gm)].map((m) => [m[1], m[2]]));
   assert.deepEqual(roles, {
     WRITER: "claude-sonnet-5-5", WRITER_FALLBACK: "claude-sonnet-5", CHECKER: "claude-haiku-5-5",
-    REVIEWER: "claude-fable-5-2", REVIEWER_FALLBACK: "claude-opus-5-5",
+    REVIEWER: "claude-opus-5-5", REVIEWER_FALLBACK: "claude-opus-5-5",
     STORY: "claude-opus-5-5", RESEARCH: "claude-sonnet-5-5", ACCURACY: "claude-opus-5-5",
   });
   assert.doesNotMatch(src, /"claude-[a-z0-9-]*-20\d{6}"/, "no date-suffixed model id");
@@ -66,12 +66,19 @@ test("the registry: current models, exact ids, no date suffix, a price and a cac
     /claude_models selftest ok/);
 });
 
-test("the paid cache probe never runs without --live", () => {
+test("the paid cache probe never runs without --live; claude_models.py stays a leaf every job can import", () => {
   let err;
   try {
-    execFileSync("python3", ["scripts/claude_models.py", "--cache-probe"], {
+    execFileSync("python3", ["scripts/cache_probe.py"], {
       cwd: ROOT, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"], env: { ...process.env, ANTHROPIC_API_KEY: "" } });
   } catch (e) { err = e; }
   assert.ok(err, "exits non-zero");
-  assert.match(String(err.stderr), /add --live/);
+  assert.match(String(err.stderr), /--live to run it/);
+  assert.match(execFileSync("python3", ["scripts/cache_probe.py", "--selftest"], { cwd: ROOT, encoding: "utf8" }),
+    /cache_probe selftest ok/);
+  // generated_sets.py counts a builder's whole import closure as its code: claude_models.py imports no script
+  const out = execFileSync("python3", ["-c",
+    "import sys; sys.path.insert(0, 'scripts'); import generated_sets as G; print(sorted(G.py_closure('scripts/claude_models.py', G.ROOT)))"],
+    { cwd: ROOT, encoding: "utf8" });
+  assert.equal(out.trim(), "['scripts/claude_models.py']");
 });

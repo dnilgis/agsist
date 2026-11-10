@@ -13,13 +13,14 @@ WHO USES WHAT (2026-11-10)
                                there on 2026-10-11; every read is held to a
                                program's number check and voice check whatever
                                wrote it.
-  REVIEWER claude-fable-5-2    the fact check before the send
-                               (fact_check_briefing.py): the most capable
-                               model Anthropic offers, for a careful read of
-                               every number against the source data. Its
-                               thinking is always on; effort is the control.
-                               A 404 or a 400 (the account cannot use it)
-                               moves the check to REVIEWER_FALLBACK, Opus 5.5.
+  REVIEWER claude-opus-5-5     the fact check before the send
+                               (fact_check_briefing.py) at effort high: a
+                               careful read of every number against the
+                               source data (the owner's Oct 17 choice, kept on
+                               Nov 10 for cost). Its thinking is always on;
+                               effort is the control. A refusal, a 404 or a
+                               400 moves the check to the next model down
+                               (REVIEWER_FALLBACK when it differs, then WRITER).
   STORY    claude-opus-5-5     county rain stories, the other story sets and
                                the discount schedules (api_jobs.py, batched)
   RESEARCH claude-sonnet-5-5   search review, alt text, elevator sites and
@@ -49,7 +50,7 @@ half price on all of them.
 WRITER = "claude-sonnet-5-5"
 WRITER_FALLBACK = "claude-sonnet-5"
 CHECKER = "claude-haiku-5-5"
-REVIEWER = "claude-fable-5-2"
+REVIEWER = "claude-opus-5-5"
 REVIEWER_FALLBACK = "claude-opus-5-5"
 STORY = "claude-opus-5-5"
 RESEARCH = "claude-sonnet-5-5"
@@ -213,23 +214,6 @@ def cost_usd(model, usage, batch=False):
     return c / 2 if batch else c
 
 
-def probe_payloads():
-    """One small request per cached system prompt, built by the jobs' own
-    payload builders so the probe sends exactly the prefix they send."""
-    import atlas_reads
-    import critique_briefing
-    import county_stories
-    out = []
-    p = atlas_reads.request_params("probe", CHECKER)
-    out.append(("atlas reads", dict(p, max_tokens=16)))
-    p = critique_briefing.critic_payload(WRITER, "Reply with the word ok.", cache=True)
-    out.append(("critic", dict(p, max_tokens=16)))
-    out.append(("county stories", {"model": STORY, "max_tokens": 16, "output_config": {"effort": "low"},
-                                   "system": cached_system(county_stories.SYSTEM),
-                                   "messages": [{"role": "user", "content": "Reply with the word ok."}]}))
-    return out
-
-
 def cache_probe(post, payloads):
     """Each payload sent twice; the second must read the cache the first wrote.
     post(payload) returns the response JSON. Returns (rows, all_ok), rows of
@@ -242,27 +226,6 @@ def cache_probe(post, payloads):
         all_ok = all_ok and ok
         rows.append((label, p["model"], u1, u2, ok))
     return rows, all_ok
-
-
-def _live_post(payload):
-    import json
-    import os
-    import urllib.request
-    req = urllib.request.Request("https://api.anthropic.com/v1/messages", method="POST",
-                                 data=json.dumps(payload).encode(),
-                                 headers={"x-api-key": os.environ["ANTHROPIC_API_KEY"],
-                                          "anthropic-version": "2023-06-01", "content-type": "application/json"})
-    with urllib.request.urlopen(req, timeout=120) as r:
-        return json.loads(r.read().decode())
-
-
-def run_cache_probe(post=_live_post):
-    rows, ok = cache_probe(post, probe_payloads())
-    for label, model, u1, u2, good in rows:
-        print(f"{label} ({model}): first call cache write {int(u1.get('cache_creation_input_tokens') or 0)}, "
-              f"second call cache read {int(u2.get('cache_read_input_tokens') or 0)}: {'ok' if good else 'NOT CACHED'}")
-    write_usage_summary("Cache probe", [(r[0], r[1], u, False) for r in rows for u in (r[2], r[3])])
-    return 0 if ok else 1
 
 
 def selftest():
@@ -280,7 +243,7 @@ def selftest():
     assert abs(cost_usd(CHECKER, {"input_tokens": 10**6}, batch=True) - 0.05) < 1e-12
     try:
         no_thinking(REVIEWER)
-        raise AssertionError("Fable 5.2 has no thinking-off word")
+        raise AssertionError("Opus 5.5 has no thinking-off word")
     except ValueError:
         pass
     try:
@@ -292,9 +255,11 @@ def selftest():
     assert b["fallbacks"] == "default" and h["anthropic-beta"] == FALLBACK_BETA and h["x"] == "1"
     b, h = server_fallback({"model": CHECKER}, {"x": "1"})
     assert "fallbacks" not in b and "anthropic-beta" not in h, "Haiku 5.5 has no server fallback"
-    # hand-worked: 30k input + 3k output on Fable 5.2 is $0.24 + $0.12
-    assert REVIEWER == "claude-fable-5-2"
-    assert abs(cost_usd(REVIEWER, {"input_tokens": 30000, "output_tokens": 3000}) - 0.36) < 1e-9
+    # hand-worked: 30k input + 3k output on Opus 5.5 is $0.12 + $0.06
+    assert REVIEWER == "claude-opus-5-5"
+    assert abs(cost_usd(REVIEWER, {"input_tokens": 30000, "output_tokens": 3000}) - 0.18) < 1e-9
+    # Fable 5.2 stays priced for a FACT_CHECK_MODEL override: the same read is $0.24 + $0.12
+    assert abs(cost_usd("claude-fable-5-2", {"input_tokens": 30000, "output_tokens": 3000}) - 0.36) < 1e-9
     # Sonnet 5.5 cache reads are $0.10 per million
     assert abs(cost_usd(WRITER, {"cache_read_input_tokens": 10**6}) - 0.10) < 1e-12
     b, h = server_fallback({"model": WRITER}, {})
@@ -326,12 +291,13 @@ def selftest():
     assert ok and [r[4] for r in rows] == [True, True]
     rows, ok = cache_probe(fake, [("c", {"model": STORY})])
     assert not ok and rows[0][4] is False
-    labels = [lbl for lbl, p in probe_payloads()]
-    assert labels == ["atlas reads", "critic", "county stories"]
-    for lbl, p in probe_payloads():
-        sysb = p["system"]
-        assert isinstance(sysb, list) and sysb[-1]["cache_control"] == CACHE, lbl
-        assert p["max_tokens"] == 16 and "temperature" not in p, lbl
+    # this file imports no other script: every job imports it, so an import here would make each
+    # generated page set count every job's code as its own (scripts/generated_sets.py)
+    import ast
+    tree = ast.parse(open(__file__).read())
+    mods = {a.name.split(".")[0] for n in ast.walk(tree) if isinstance(n, ast.Import) for a in n.names}
+    mods |= {n.module.split(".")[0] for n in ast.walk(tree) if isinstance(n, ast.ImportFrom) and n.module}
+    assert mods <= {"os", "sys", "json", "tempfile", "ast", "urllib"}, mods
     assert cost_usd("claude-unknown", {"input_tokens": 1}) is None
     for m in PRICES:
         assert m in CACHE_MIN_TOKENS, m
@@ -342,8 +308,4 @@ if __name__ == "__main__":
     import sys
     if "--selftest" in sys.argv:
         selftest()
-    elif "--cache-probe" in sys.argv:
-        # two small paid calls per cached prompt; never run by a test or a schedule
-        if "--live" not in sys.argv:
-            sys.exit("--cache-probe makes paid API calls; add --live to run it")
-        sys.exit(run_cache_probe())
+
