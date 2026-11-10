@@ -1,4 +1,4 @@
-/* Which fertilizer price a reader sees (Sig, Oct 21, 2026): components/fert-pick.js.
+/* Which fertilizer price a reader sees (Oct 21, 2026): components/fert-pick.js.
  *
  *   node --test test/fert-pick.test.mjs
  *

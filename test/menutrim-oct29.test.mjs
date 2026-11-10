@@ -1,4 +1,4 @@
-/* Consolidation round 2 (Sig, Oct 29, 2026: "1 yes, 2 yes, 3 yes").
+/* Consolidation round 2 (Oct 29, 2026).
  *   1. The menu goes from 63 lines to 57, plus Ag stocks: PRF, LRP and Rain Print once; no Cash Bid
  *      Index or Illinois sale index line; the two crop report lines in one; drought and manure under
  *      Field. Every copy: the live header (desktop panel and phone panel), the no-script header, the

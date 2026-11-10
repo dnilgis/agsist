@@ -53,7 +53,7 @@
   }
 
   function render(sp, surface, opts) {
-    /* 2026-10-11 (Sig, "tone it down"): an unsold slot shows nothing. The
+    /* 2026-10-11: an unsold slot shows nothing. The
        house ad ("SPONSOR · 1 SLOT", our own pitch for the space) is no longer
        drawn on any surface. generate_daily.render_sponsor_block_html returns
        the same empty string; scripts/sponsor-checks.mjs holds them equal. */
@@ -112,7 +112,7 @@
     return h;
   }
 
-  /* 2026-10-07 (Sig): no disclaimer line on a paid ad. The SPONSORED label
+  /* 2026-10-07: no disclaimer line on a paid ad. The SPONSORED label
      is the disclosure. Only the house ad keeps its own short line. */
   function houseNote(sp) {
     return sp.is_house_ad ? (sp.disclosure || '') : '';

@@ -49,7 +49,7 @@ test("fertilizer.html: the cards and the lede line are baked current from the sh
   assert.ok(top.length > 0, "the committed co-op file has cards to show");
   assert.ok(F.includes('<!--BAKE:fert-cards--><section id="fert-coops" aria-labelledby="fert-coops-h">' + top + "</section><!--/BAKE-->"),
     "the section opens shown, with fert-coops.js top() of the committed file");
-  // the cards carry the baked body line's numbers (bake_seo.py fert-bar, Sig Oct 19)
+  // the cards carry the baked body line's numbers (bake_seo.py fert-bar, Oct 19)
   const bar = /<!--BAKE:fert-bar-->([\s\S]*?)<!--\/BAKE-->/.exec(F)[1];
   let named = 0;
   for (const m of bar.matchAll(/\b(urea|anhydrous|DAP|potash) \$(\d{1,3}(?:,\d{3})*)/g)) {

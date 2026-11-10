@@ -110,8 +110,7 @@ DAY_RULE_LINE = {
                "Prediction Center counts it, so an evening storm stays on the day it fell."),
     None: ("These reports are grouped by UTC calendar day, 7 p.m. Central the evening before to "
            "7 p.m. Central this day, so an evening storm in the central states can show on the "
-           "next day's page. The next archive pull regroups them to the Storm Prediction "
-           "Center's 7 a.m. to 7 a.m. Central storm day."),
+           "next day's page."),
 }
 SWATH_DAY_LINE = ("The radar swath covers the UTC calendar day, 7 p.m. Central the evening before "
                   "to 7 p.m. Central this day.")
@@ -339,7 +338,7 @@ def summary_sentence(nd, fig, mesh_max, has_swath):
     n = fig["n"]
     if not n:
         s = (f"No ground hail reports for {nd} are in the archived NWS Local Storm Reports"
-             + ("; NOAA MRMS radar estimated hail up to " + f"{mesh_max:.2f}" + " inches that day"
+             + ("; NOAA radar estimated hail up to " + f"{mesh_max:.2f}" + " inches that day"
                 " (an estimate, not a measurement), so the swath map is the record for this day."
                 if has_swath and mesh_max else
                 "; the radar swath map is the record for this day." if has_swath else "."))
@@ -476,32 +475,31 @@ def figures_html(nd, fig):
     return "".join(out)
 
 
-def method_html(fig, has_swath):
-    src = fig["src"]
+def method_html(fig, has_swath, canonical):
+    """The one closed "Sources and terms" fold at the end of the page: sources, how the figures
+    are counted, the radar caveat, the citation line and the byline. Nothing about schedules,
+    files or radar products sits in the reading path (curtain round 2, Nov 9)."""
     vint = fig["vintage"]
-    file_line = ("" if not src else
-                 " This page reads data/hail/" + esc(src) +
-                 (" (pulled " + esc(vint) + ")" if vint else "") + ".")
     return (
-        "<details class=\"he-how\"><summary>How these figures are built</summary><p>"
-        "Reports are NWS Local Storm Reports of hail, pulled from the Iowa Environmental Mesonet archive."
-        + file_line +
-        " Local Storm Reports are preliminary and unverified: sizes are what spotters, the public and "
+        "<details class=\"hs-terms\" id=\"terms\"><summary>Sources and terms</summary><p>"
+        "<b>Sources:</b> hail reports are NWS Local Storm Reports via the Iowa Environmental Mesonet"
+        + (", as pulled " + esc(vint) if vint else "") + "."
+        + (" Radar swaths are NOAA radar estimates of hail size via Iowa State." if has_swath else "")
+        + " Counties are placed with US Census cartographic boundaries.</p><p>"
+        "Local Storm Reports are preliminary and unverified: sizes are what spotters, the public and "
         "emergency managers reported, and NOAA NCEI's Storm Data, published months later, is the "
         "verified record. A report with no size counts toward the total but not toward the size figures. "
         "Severe size means 1 inch or larger, the National Weather Service threshold. Crops can be hurt by smaller hail, "
         "especially with wind, and the loss depends on growth stage: the corn growing point stays below ground until about V6, "
-        "and leaf loss near tasseling costs the most yield. State is the state named on the report. "
-        "County is not carried in the archived file; it is assigned here by placing each report's "
-        "coordinates (rounded to about 1 km) inside US Census cartographic county boundaries, so a "
-        "report near a county line can land in the neighboring county."
-        + (" Radar figures are NOAA MRMS MESH, a radar estimate of maximum hail size, not a measurement."
-           if has_swath else "") + "</p>"
-        "<p class=\"method-note\"><b>Method:</b> one day of hail reports, counted and ranked as filed; county placed by "
-        "coordinates; severe means 1\u2033 or larger (NWS) &middot; <b>Sources:</b> NWS Local Storm Reports via the Iowa "
-        "Environmental Mesonet, NOAA MRMS MESH, US Census county boundaries, "
-        "<a href=\"https://www.extension.purdue.edu/extmedia/nch/nch-1.html\" target=\"_blank\" rel=\"noopener\">Assessing Hail Damage to Corn (NCH-1)</a> "
-        "&middot; Reviewed by Sigurd Lindquist, CCA</p></details>\n")
+        "and leaf loss near tasseling costs the most yield "
+        "(<a href=\"https://www.extension.purdue.edu/extmedia/nch/nch-1.html\" target=\"_blank\" rel=\"noopener\">Assessing Hail Damage to Corn (NCH-1)</a>). "
+        "State is the state named on the report. "
+        "County is placed from each report's coordinates (rounded to about 1 km), so a "
+        "report near a county line can land in the neighboring county.</p>"
+        + ("<p><b>Known limits:</b> the radar size is an estimate of the largest stone, not a measurement, "
+           "and radar estimates tend to run large against measured stones.</p>" if has_swath else "")
+        + "<p><b>Reuse and citation:</b> <em>AGSIST hail day, " + canonical + " (NWS Local Storm Reports)</em>. "
+        "A link back is appreciated. Compiled and reviewed by Sigurd Lindquist, CCA \u00b7 AGSIST.</p></details>\n")
 
 
 def page_html(date, rec, has_swath, mesh_max, today, counties=None):
@@ -525,7 +523,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
          (f"The largest reported stone on {nd} was {mx:.2f} inches" if mx else
           f"No measured sizes were reported on {nd}") +
          (f", among {n:,} reports nationwide" if n else "") +
-         (". NOAA MRMS MESH radar also estimated the swath footprint." if has_swath else ".")),
+         (". NOAA radar also estimated the swath footprint." if has_swath else ".")),
     ]
     if fig["n_states"]:
         st_txt = ", ".join(state_name(s) + " (" + f"{c:,}" + ")" for s, c in fig["states"][:5])
@@ -590,8 +588,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         ".he-wrap td.num,.he-wrap th.num{text-align:right;font-family:'JetBrains Mono',monospace;white-space:nowrap}\n"
         ".he-ol{line-height:1.8;padding-left:1.4rem}\n"
         "details{border-top:1px solid var(--border,rgba(132,160,168,.12));padding:.7rem 0}summary{cursor:pointer;font-weight:600}details p{line-height:1.7;font-size:.92rem}\n"
-        ".he-src{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-dim,#8a948f);margin-top:1.2rem;line-height:1.7}\n"
-        ":where(.method-note){font-size:.85rem;color:var(--text-dim,#8a948f)}\n"
+        ".hs-terms{margin-top:1.2rem;border:1px solid var(--border,rgba(132,160,168,.15));border-radius:10px;padding:.1rem 1rem}.hs-terms summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700;font-size:.9rem}.hs-terms p{font-size:.8rem;color:var(--text-dim,#8a948f);line-height:1.7;margin:0 0 .8rem}\n"
         "</style>\n</head>\n<body>\n<div id=\"site-header\"></div>\n<main id=\"main\">\n<div class=\"he-wrap\">\n"
         "<nav class=\"he-bc\" aria-label=\"Breadcrumb\"><a href=\"/\">AGSIST</a> › <a href=\"/hail-map\">Hail Map</a> › <a href=\"/hail-map#history\">Storm Log</a> › " + esc(nd) + "</nav>\n"
         "<h1>Hail on " + esc(nd) + ": where it hit</h1>\n"
@@ -609,8 +606,7 @@ def page_html(date, rec, has_swath, mesh_max, today, counties=None):
         + figures_html(nd, fig) +
         "<p><a href=\"/hail-map\" style=\"color:var(--brand,#d4a23f)\">Check any address against this storm on the hail map &rarr;</a></p>\n"
         "<h2>Questions about the " + esc(nd) + " hail</h2>\n" + faq_vis + "\n"
-        + method_html(fig, has_swath) +
-        "<div class=\"he-src\">Sources: NWS Local Storm Reports via the Iowa Environmental Mesonet (reported sizes, preliminary); NOAA MRMS MESH via Iowa State (radar-estimated swaths); US Census cartographic boundaries (county placement). Compiled by Sigurd Lindquist · AGSIST.</div>\n"
+        + method_html(fig, has_swath, canonical) +
         "</div>\n</main>\n<div id=\"site-footer\"></div>\n<script src=\"" + asset_url("/components/loader.js") + "\" defer></script>\n</body>\n</html>\n")
 
 

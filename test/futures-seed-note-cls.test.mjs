@@ -108,8 +108,8 @@ test("browser: live quotes land with no layout shift on a phone, and the note sa
     const corn = await measure(browser, port, "/corn-futures-prices");
     assert.ok(corn.cls < 0.1, "corn CLS " + corn.cls + " " + JSON.stringify(corn.src));
     assert.equal(corn.shown, true, "the note keeps its box");
-    // 1:16 am CT is the grain overnight: the price is called an overnight trade (Sig, Oct 20)
-    // the time is when the site read it (futures audit, Nov 10 2026), not "as of" it
+    // 1:16 am CT is the grain overnight: the price is called an overnight trade (Oct 20)
+    // the time is when the site read it (Nov 10 2026), not "as of" it
     assert.match(corn.note, /^Nearby Dec '26 corn traded overnight near \$4\.73 · read 1:16\sam CT\.$/);
     assert.equal(corn.hero, "$4.73");
     const soy = await measure(browser, port, "/soybean-futures-prices");

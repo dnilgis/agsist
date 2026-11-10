@@ -1,4 +1,4 @@
-/* Rain Print order records (2026-10-20). The real case: Sig paid $19 for a
+/* Rain Print order records (2026-10-20). The real case: the owner paid $19 for a
  * digital file through the Stripe Payment Link, and the payment page in
  * Stripe showed the product, the customer and the amount but no design
  * (client_reference_id is kept on the Checkout Session, not on the payment).
@@ -8,7 +8,7 @@
  * buyer's email. Checkout opens whether or not the post works.
  *
  *   - the record the page builds (RainPrint.orderRecord), for short and long
- *     designs, gift and not, and Sig's own test design;
+ *     designs, gift and not, and the owner's own test design;
  *   - the worker routes (scripts/test_rp_order_worker.mjs);
  *   - in a browser: the post goes before Stripe with the same ref, once per
  *     press; a worker that fails or never answers still lets checkout open.
@@ -32,7 +32,7 @@ vm.runInNewContext(read("components/rain-print.js"), ctxVm);
 const RP = ctxVm.RainPrint;
 const plain = (x) => JSON.parse(JSON.stringify(x));
 
-// Sig's test order, Oct 20 (the year is only for the test; the real one is not known yet)
+// The owner's test order, Oct 20 (the year is only for the test; the real one is not known yet)
 const SIG = { place: "Chetek, WI", station: "471667 2", year: 2025, style: "r1", name: "Gustum Farm", markers: [{ date: "2025-04-01", label: "Moved in" }] };
 const LONG = { place: "Chetek, WI", station: "471667 2", year: 2025, style: "r1", cmp: "normal", name: "The Olson Family Farm",
   dedication: "For Grandpa Erling, sixty harvests on the home place. Love, all of us",
@@ -91,7 +91,7 @@ test("the page posts the record on the Stripe path only, waits at most 2 s, and 
   const W = read("workers/subs-worker.js");
   assert.match(W, /PUBLIC_POSTS\.add\("\/rp-order"\)/);
   assert.match(W, /"\/rp-order": \[30, 100, 2000\]/);
-  for (const p of ["rain-print.html", "rain-print-business.html", "rp-gift.html"]) assert.match(read(p), /\/components\/rain-print\.js\?v=91"/, p);
+  for (const p of ["rain-print.html", "rain-print-business.html", "rp-gift.html"]) assert.match(read(p), /\/components\/rain-print\.js\?v=93"/, p);
 });
 
 // ---------- in a browser ----------

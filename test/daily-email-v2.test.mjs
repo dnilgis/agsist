@@ -1,4 +1,4 @@
-// The Daily email v2 (Sig, Oct 22 2026): every rule has a check here.
+// The Daily email v2 (Oct 22 2026): every rule has a check here.
 // scripts/test_daily_v2.py runs the content rules on the real archived issues
 // (subject never the elevator count, no raw elevator-count line anywhere, the
 // number check that blocks, sourced facts, the print slot skipped when there is

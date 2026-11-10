@@ -146,7 +146,7 @@ test("grain futures pages: key table up, labeled folds, FAQ kept, scripts in ord
     const ld = JSON.parse(/<script type="application\/ld\+json">(\{"@context": "https:\/\/schema.org", "@graph".*?)<\/script>/.exec(h)[1]);
     const faq = ld["@graph"].find((x) => x["@type"] === "FAQPage");
     for (const q of faq.mainEntity) assert.ok(h.includes(q.name.replace(/&/g, "&amp;")) || h.includes(q.name), page + " FAQ: " + q.name);
-    assert.ok(h.indexOf("components/price-local.js?v=12") > 0 && h.indexOf("components/price-local.js?v=12") < h.indexOf("components/futures.js?v=32"), page + ": stamp helper before futures.js");
+    assert.ok(h.indexOf("components/price-local.js?v=13") > 0 && h.indexOf("components/price-local.js?v=13") < h.indexOf("components/futures.js?v="), page + ": stamp helper before futures.js");
     assert.ok(!h.includes("futures.js?v=13") && !h.includes("futures.js?v=14") && !h.includes("futures.js?v=15") && !h.includes("futures.js?v=16") && !h.includes("futures.js?v=17") && !h.includes("futures.js?v=18") && !h.includes("futures.js?v=19") && !h.includes("futures.js?v=20") && !h.includes("futures.js?v=21") && !h.includes("futures.js?v=22") && !h.includes("futures.js?v=23") && !h.includes("futures.js?v=24") && !h.includes("futures.js?v=25") && !h.includes("futures.js?v=26") && !h.includes("price-local.js?v=6") && !h.includes("price-local.js?v=2"));
     assert.match(h, /matchMedia\('\(min-width:900px\)'\)\.matches\)document\.querySelectorAll\('details\.fold\[data-wide-open\]'\)/);
   }
@@ -187,7 +187,7 @@ test("wide tables carry their column names for the phone cards", () => {
   const L = require(join(ROOT, "field-scout-land.js"));
   const t = L.compsTable([{ date: "2026-09-04", ppa: 10000, acres: 40, price: 400000, mi: 0.3, muniName: "Gridley township", cls: "" }]);
   for (const l of ["Date", "$/ac", "Acres", "Price", "Miles", "Town, class"]) assert.ok(t.includes(`data-l="${l}"`), l);
-  assert.match(read("field-scout-read.js"), /field-scout-land\.js\?v=18/);
+  assert.match(read("field-scout-read.js"), /field-scout-land\.js\?v=19/);
 });
 
 /* ---- in a browser: 390 and 1280, light and dark ---- */
@@ -210,14 +210,14 @@ function serve() {
 }
 
 // the pages read the committed basis and futures files, so their clock starts an hour after the newer copy was read
-// and runs on: on a later clock (a January run) the state line withheld itself over an old basis (BUILD-RULES 50)
+// and runs on: on a later clock (a January run) the state line withheld itself over an old basis (build rule 50)
 const DATA_AT = Math.max(Date.parse(JSON.parse(readFileSync(join(ROOT, "data/basis-states.json"), "utf8")).generated),
   Date.parse(JSON.parse(readFileSync(join(ROOT, "data/prices.json"), "utf8")).fetched)) + 3600e3;
 test("phone and desktop: no sideways scroll, no script errors, short phone pages, state line only with a state", { skip, timeout: 240000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   // phone heights at 390 before this change: corn 11,544, soybean 12,091, wheat 12,961, cattle 7,383
-  // cattle: 6,000 until Oct 28; Sig asked for its three answer blocks open, not folded (measured 7,738 at 390), so 8,000
+  // cattle: 6,000 until Oct 28; the owner asked for its three answer blocks open, not folded (measured 7,738 at 390), so 8,000
   const MAXH = { "/corn-futures-prices": 7500, "/soybean-futures-prices": 7500, "/wheat-futures-prices": 8000, "/cattle-futures-prices": 8000 };
   try {
     for (const path of ["/corn-futures-prices", "/soybean-futures-prices", "/wheat-futures-prices", "/cattle-futures-prices", "/markets", "/cash-bid-index"]) {

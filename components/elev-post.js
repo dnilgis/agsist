@@ -435,7 +435,7 @@
      entered_at, the moment Save was pressed; the worker (v5.50) stores that
      time, not the time a kept save arrives, so the board shows how old the
      prices really are ("Updated 6:10 AM Wed"), and a kept save never
-     overwrites a newer one (Sig, Oct 22). */
+     overwrites a newer one (Oct 22). */
   var LAST = 'elev-last', LAST_DAYS = 14, OFFLINE = false;
   function keepLast(r) { try { localStorage.setItem(LAST, JSON.stringify({ k: key.trim(), rec: r, t: Date.now() })); } catch (e) {} }
   function lastRec() {

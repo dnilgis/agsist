@@ -1,4 +1,4 @@
-/* The WASDE archive (brief 04, Oct 26; Sig: go): every past WASDE and each
+/* The WASDE archive (brief 04, Oct 26; go): every past WASDE and each
  * figure's month-to-month revisions.
  *   - scripts/backfill_wasde.py: USDA's historical WASDE report data (2010 on) and
  *     the ESMIS inventory (1973 on) to the PRIVATE raw branch, history/wasde/;
@@ -9,7 +9,7 @@
  *   - scripts/read_wasde_text.py (brief 09, Oct 27): each report's own U.S. tables, read
  *     from the ESMIS TXT or PDF text, since usda.gov's data page refuses the runners;
  *   - .github/workflows/wasde-watch.yml: one soft step keeps the archive current after
- *     each report (Sig, Oct 27: "Wasde should auto update"; no new schedule).
+ *     each report (Oct 27; no new schedule).
  * Fixtures only (test/fixtures/wasde-archive, invented numbers; test/fixtures/wasde-esmis,
  * an excerpt of the real October 2026 report plus invented layouts); no network.
  *

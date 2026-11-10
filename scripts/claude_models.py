@@ -7,9 +7,9 @@ WHO USES WHAT (2026-10-17)
   WRITER   claude-sonnet-5-5   the daily briefing (generate_daily.py) and the
                                critic that scores and rewrites it
                                (critique_briefing.py). Both write text a
-                               reader sees under Sig's name; judgment matters.
+                               reader sees under the owner's name; judgment matters.
   CHECKER  claude-haiku-5-5    the Farmland Atlas county reads
-                               (atlas_reads.py). Sig chose the cheaper model
+                               (atlas_reads.py). The owner chose the cheaper model
                                there on 2026-10-11; every read is held to a
                                program's number check and voice check whatever
                                wrote it.

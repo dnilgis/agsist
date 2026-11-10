@@ -26,8 +26,8 @@ COST, AND WHY THIS NOW RUNS AS A BATCH (2026-09-19)
      its answers in seconds. Batches usually finish within the hour and are
      allowed 24.
   2. The model is a setting: ATLAS_READS_MODEL, default the cheaper model
-     since 2026-10-11 (Sig: use the cheaper model; was claude-sonnet-5,
-     $2/$10 per million tokens against $1/$5 for Haiku 4.5). 2026-10-17:
+     since 2026-10-11 (use the cheaper model; was claude-sonnet-5,
+ $2/$10 per million tokens against $1/$5 for Haiku 4.5). 2026-10-17:
      claude-haiku-5-5, the newest Haiku, $0.10/$0.50 (claude_models.py). The number
      check and the voice check still gate every read, whichever model wrote it. `--trial N` writes N
      counties on two models side by side into data/atlas/reads-trial.json so
@@ -49,7 +49,7 @@ VOICE (2026-10-11)
   1,929 opened "Non-irrigated cash rent in X County runs $N", 695 said "stands
   at", 443 "sits at", 260 "no clear direction", 122 repeated the page's own
   "operators' own estimate, not a sale price". The prompt now names those
-  shapes and asks for Sig's voice; the block no longer hands the model the
+  shapes and asks for the owner's voice; the block no longer hands the model the
   phrases it echoed. Every answer then goes through atlas_reads_cleanup.py:
   clean_text() makes the safe rewrites (never a number), voice_hits() lists
   what is left. A read with hits goes round once more with them named; if the
@@ -96,7 +96,7 @@ DETAIL_DIR = "data/atlas/counties"
 OUT = "data/atlas/reads.json"
 API = "https://api.anthropic.com/v1/messages"
 import claude_models  # noqa: E402  ONE table of models, thinking-off words and prices
-MODEL = os.environ.get("ATLAS_READS_MODEL", "").strip() or claude_models.CHECKER   # Sig 2026-10-11: the cheaper model
+MODEL = os.environ.get("ATLAS_READS_MODEL", "").strip() or claude_models.CHECKER   # The owner 2026-10-11: the cheaper model
 MODE = os.environ.get("ATLAS_READS_MODE", "").strip() or "batch"      # batch | sync
 BATCH_WAIT_MIN = float(os.environ.get("ATLAS_READS_BATCH_WAIT_MIN", "") or 180)
 # ONE DEADLINE, AND IT COUNTS FROM THE JOB'S START WHEN THE WORKFLOW SAYS WHEN
@@ -960,7 +960,7 @@ def load_detail(fips, rec):
 
 
 def save(reads):
-    # The published file carries no model name (Sig, 2026-10-20). The run log says which model ran.
+    # The published file carries no model name (2026-10-20). The run log says which model ran.
     reads.pop("model", None)
     for e in (reads.get("counties") or {}).values():
         if isinstance(e, dict):

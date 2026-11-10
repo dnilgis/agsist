@@ -10,7 +10,7 @@ reader opens the section on /whats-priced-in:
   data/wasde-history/soybeans.json    as each monthly WASDE printed it, so a figure's
   data/wasde-history/wheat.json       path from first projection to last estimate shows
 
-Honest numbers (BUILD-RULES, honest-numbers skill):
+Honest numbers (the build rules, honest-numbers skill):
   - Only the U.S. supply and use tables (title starts "U.S."), annual rows, the
     crop's own table, bushel-and-acre units. World tables, quarterly rows, the
     wheat-by-class table and metric units are left out and counted.
@@ -57,13 +57,13 @@ SOURCE_ESMIS = {"name": "USDA World Agricultural Outlook Board, monthly WASDE re
 NOTE_ESMIS = ("Each figure as that month's WASDE printed it, read from the U.S. supply and use tables of the report "
               "itself. A column that does not add up on its own balance sheet is left out, never corrected.")
 # Market years before this go to one file a decade (corn-1990s.json ...), loaded only when a reader
-# picks one of those years, so the file that opens first stays small (BUILD-RULES: history on demand).
+# picks one of those years, so the file that opens first stays small (the build rules: history on demand).
 PART_BEFORE = "2000/01"
 MAX_WITHHELD_LISTED = 300
 ORDER = ["area planted", "area harvested", "yield", "beginning stocks", "production", "imports", "supply",
          "feed", "food", "ethanol", "seed", "crush", "domestic", "exports", "use, total", "total use", "ending stocks",
          "farm price", "price"]
-# The site loads one crop file when a reader opens the section (BUILD-RULES: bulky history on demand).
+# The site loads one crop file when a reader opens the section (the build rules: bulky history on demand).
 # Expected about 70 KB a crop; past this the build refuses and says so rather than ship a heavy file.
 MAX_FILE_BYTES = 400_000
 VER_RE = re.compile(r"-v(\d+)$", re.I)

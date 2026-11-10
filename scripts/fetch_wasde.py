@@ -4,8 +4,7 @@ fetch_wasde.py — fill in a USDA report's actual numbers the moment they exist.
 
 WHAT IT REPLACES
 
-Sig, 2026-09-10: "i want the wasde what priced in page to process the reports
-the moment they are available for release."
+2026-09-10
 
 Until now the second of the three hand steps in data/analyst-estimates.json —
 "(2) after USDA releases, fill each metric's `actual`" — was a person typing a

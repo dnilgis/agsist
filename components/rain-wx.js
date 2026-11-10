@@ -1,5 +1,4 @@
-/* The weather fold on a county rain page (Sig, Nov 4, 2026: "show any other measured meteorological
- * data, such as YTD GDUs, weather extremes of note").
+/* The weather fold on a county rain page (Nov 4, 2026).
  *
  * The page bakes only the fold's one-line summary (scripts/build_county_rain.py wx_fold). This file
  * fills the fold from data/rain/wx/<st>.json (scripts/fetch_rain_weather.py), one small file per state,

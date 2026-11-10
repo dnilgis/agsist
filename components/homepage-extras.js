@@ -337,13 +337,7 @@
      writes "BADGER GRAIN SUPPLY", so the exact match never found the chart.
      Case, punctuation, "&"/"and", and trailing legal words and co-op words
      are dropped before comparing. The town must still match exactly. */
-  var FAC_TAIL = {LLC:1,LC:1,INC:1,INCORPORATED:1,CO:1,CORP:1,CORPORATION:1,LTD:1,LIMITED:1,LP:1,LLP:1,COMPANY:1,COOP:1,COOPERATIVE:1,ASSN:1,ASSOCIATION:1};
-  function normFac(s){
-    var t = String(s || '').toUpperCase().replace(/&/g, ' AND ').replace(/\bCO[\s.-]*OP\b/g, 'COOP')
-      .replace(/[^A-Z0-9]+/g, ' ').trim().split(' ').filter(function(x){ return x; });
-    while(t.length > 1 && FAC_TAIL[t[t.length - 1]]) t.pop();
-    return t.join('');
-  }
+  function normFac(s){ return window.elevNames.facKey(s); }   /* the one name key: components/elev-names.js */
   function foldTitle(withChart){
     var f = $('idx1-basis-chart'), d = f && f.closest && f.closest('details'), sp = d && d.querySelector('summary span');
     if(sp) sp.textContent = withChart ? 'Store or sell? · basis history' : 'Store or sell?';
@@ -504,7 +498,7 @@
   /* WAVE2-G 2026-10-03: ALERT OPTIONS. The worker is asked once whether it
      knows the options (GET /elevator-watch-options, worker v5.3). Until it
      answers yes -- an older worker, a slow network -- the form is exactly the
-     plain "Watch -- free" one, so nothing breaks before or after Sig
+     plain "Watch -- free" one, so nothing breaks before or after the owner
      redeploys the worker. The rows offered come from the card itself
      (data-opts on the wrap, written by components/bids-homepage.js). */
   var optsProbe = null;
@@ -581,8 +575,7 @@
       + '<button type="button" class="watch-elevator-go" style="padding:.4rem .7rem;min-height:36px;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:5px;font-size:.8rem;font-weight:700;cursor:pointer;white-space:nowrap">Watch (free)</button>'
       + '</div>'
       /* 2026-10-06: the labelled daily opt-in, shown only to a reader who has
-         not signed up (components/signup-ask.js). It starts empty (Sig,
-         2026-10-19: no ask pre-ticks the Daily). */
+         not signed up (components/signup-ask.js). It starts empty (2026-10-19: no ask pre-ticks the Daily). */
       + (window.AgsistSignup && !window.AgsistSignup.isSignedUp()
         ? '<label class="sa-optin"><input type="checkbox" class="we-optin"> Also send me AGSIST Daily, free, every morning</label>' : '')
       + '<div class="we-note" style="font-size:.8125rem;color:var(--text-muted);margin-top:.25rem">Email when the posted corn basis changes.</div>'

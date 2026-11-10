@@ -1,5 +1,4 @@
-/* home-land.js: the home page's Farmland sales block (Sig, Nov 4, 2026: "my buddy didn't know that farm land
-   sales were on agsist, we need to fix that and make sure it is not missable"; "there is dead space on the home
+/* home-land.js: the home page's Farmland sales block (Nov 4, 2026; "there is dead space on the home
    page, maybe we can link it somehow with the unusual sales or something to get people's attention").
 
    One real recorded sale from data/land-sales/lead.json (scripts/build_land_sales.py lead_pick, LEAD_RULE):
@@ -13,7 +12,7 @@
    NO DATA (file missing, malformed, or no state has a lead): the baked plain words stay, the links still work.
    NO LAYOUT SHIFT: the baked words and the sale fill the same lines; css/home.css holds each line's room.
 
-   STALE: a state's sale more than 60 days past its window's end is withheld (fresh(), the page's own clock).
+   STALE: a state's sale more than 60 days past its window's end is withheld (fresh, the page's own clock).
    window.AgHomeLand = { pick, words } (test/home-land.test.mjs runs both in node on fixtures and a fake clock). */
 (function (root) {
   'use strict';

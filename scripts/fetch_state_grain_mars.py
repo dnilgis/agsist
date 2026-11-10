@@ -3,7 +3,7 @@
 cash grain reports, read through USDA My Market News (the MARS API), as a
 cross-check beside the AGSIST elevator median on the state basis sections.
 
-Approved by Sig, Nov 2 2026 (state cash grain + slaughter). Data only: no page
+Approved by Nov 2 2026 (state cash grain + slaughter). Data only: no page
 reads this file yet. The state basis sections are all built by
 scripts/build_cash_bid_pages.py, so the line that shows USDA beside our median
 is added there later (see "FOR THE PAGE BUILDER" below).

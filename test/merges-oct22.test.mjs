@@ -1,4 +1,4 @@
-/* The page merges Sig approved on Oct 22 and 23, 2026 (scripts/moved_pages.py holds the table).
+/* The page merges the owner approved on Oct 22 and 23, 2026 (scripts/moved_pages.py holds the table).
  *
  *   node --test test/merges-oct22.test.mjs
  *
@@ -122,7 +122,7 @@ test("main's later work on the old pages came along (redo on Oct 28, 2026)", () 
   // the Bids by state page explained how its counts are made; the section on /basis keeps it
   // (since Oct 28 the builder writes the note inside SEED:statelist; it is said once, not twice)
   const bs = read("basis.html");
-  assert.match(bs, /<!--SEED:statelist-->[^]*?<p class="bs-seed">How these counts are made: an elevator counts when its board was read in the last 6 hours and it posted a price within 72 hours[^]*?<!--\/SEED-->/);
+  assert.match(bs, /<!--SEED:statelist-->[^]*?<p class="bs-seed">How these counts are made: an elevator counts when its board was read in the last 6 hours and it posted a price within the last two trading sessions[^]*?<!--\/SEED-->/);   // two trading sessions: one freshness rule since #524
   assert.equal((bs.match(/How these counts are made/g) || []).length, 1, "the counts note once");
   // real case Oct 28: /daily#past at 1280 opened mid-briefing because the briefing fills in after the jump;
   // a visit on #past or #moved stays on that section until the reader scrolls, taps or types

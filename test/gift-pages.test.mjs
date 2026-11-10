@@ -1,6 +1,6 @@
 /* The gift-intent pages (2026-10-16): /farmer-retirement-gifts and
  * /farm-anniversary-gifts. Each answers its question with several ideas,
- * Rain Print as one option with Sig's interest said plainly, prices that
+ * Rain Print as one option with the owner's interest said plainly, prices that
  * match data/rain-print.json, no store names or outside links, no em dashes,
  * no Christmas date written in (it comes from the data).
  *

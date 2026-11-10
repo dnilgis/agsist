@@ -62,7 +62,7 @@
       "inLanguage": "en-US",
       "isPartOf": { "@type": "WebSite", "@id": "https://agsist.com/#website", "url": "https://agsist.com/", "name": "AGSIST" },
       "datePublished": "2025-09-01",
-      "dateModified": "2026-11-09",
+      "dateModified": "2026-11-10",
       "author": { "@type": "Person", "name": "Sigurd Lindquist", "url": "https://agsist.com/about", "email": "sig@agsist.com" },
       "publisher": { "@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/" },
       "breadcrumb": {
@@ -84,7 +84,7 @@
       "creditText": "Source: CFTC Commitments of Traders: Disaggregated Futures-Only",
       "isBasedOn": "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
       "keywords": ["CFTC", "Commitment of Traders", "managed money", "corn", "soybeans", "wheat", "cattle", "fund positioning"],
-      "dateModified": "2026-11-09",
+      "dateModified": "2026-11-10",
       "distribution": [ { "@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://agsist.com/data/cot.json" } ]
     }
   ]
@@ -525,7 +525,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 .cc-how:empty{display:none}
 .cc-answer{margin:0 0 .55rem;font-size:.92rem;line-height:1.5;color:var(--text);min-height:7.5em}
 @media(min-width:701px){.cc-answer{min-height:3em}}
-/* The release bar (2026-11-06, Sig: "a clear indicator or countdown until the release that you can't miss"). */
+/* The release bar (2026-11-06). */
 .cot-rel{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .8rem;margin:0 0 .8rem;padding:.6rem .85rem;border-radius:10px;background:#d4a23f;color:#111;font-weight:800;font-size:1rem;line-height:1.35}
 .cot-rel-t{flex:1 1 14rem;font-variant-numeric:tabular-nums}
 .cot-rel-ic{flex:none;width:22px;height:22px}
@@ -769,13 +769,13 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     </details>
   </div>
 
-  <!-- Funds this week (2026-11-05, Sig: "KISS, the chart I want can tell a lot of that story"): the crowded verdict
+  <!-- Funds this week (2026-11-05): the crowded verdict
        when it fits one line, the market chips, one brief line and the 52-week chart; every market in a table behind
        one tap under it. No sentence per market. -->
   <section class="cg" id="cot-glance" aria-labelledby="cg-h">
     <h2 class="cg-h" id="cg-h">Funds this week</h2>
     <p class="cg-verdict" id="cg-verdict"></p>
-    <!-- The 52-week chart (2026-11-05, Sig): one market at a time, components/cot-chart.js -->
+    <!-- The 52-week chart (2026-11-05): one market at a time, components/cot-chart.js -->
     <figure class="cc" id="cot-chart-box" aria-labelledby="cc-head">
       <div class="cc-chips" id="cc-chips" role="group" aria-label="Pick a market"><button type="button" class="cc-cmp" id="cc-cmp" aria-pressed="false">Compare</button><button type="button" class="cc-chip" data-k="corn" aria-pressed="true">Corn</button><button type="button" class="cc-chip" data-k="beans" aria-pressed="false">Soybeans</button><button type="button" class="cc-chip" data-k="wheat" aria-pressed="false">Chicago wheat</button><button type="button" class="cc-chip" data-k="kcwheat" aria-pressed="false">KC wheat</button><button type="button" class="cc-chip" data-k="mplswheat" aria-pressed="false">MPLS wheat</button><button type="button" class="cc-chip" data-k="soymeal" aria-pressed="false">Soybean meal</button><button type="button" class="cc-chip" data-k="soyoil" aria-pressed="false">Soybean oil</button><button type="button" class="cc-chip" data-k="livecattle" aria-pressed="false">Live cattle</button><button type="button" class="cc-chip" data-k="feedercattle" aria-pressed="false">Feeder cattle</button><button type="button" class="cc-chip" data-k="leanhogs" aria-pressed="false">Lean hogs</button><button type="button" class="cc-chip" data-k="milk" aria-pressed="false">Class III milk</button></div>
       <p class="cc-kind">Futures</p>
@@ -824,14 +824,14 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
   <div id="cot-baked" class="cg-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, November 03, 2026</b>, released Friday, November 6: <b>Corn</b> funds near flat (net long 8,795 contracts, under 2.0% of open interest), −72,318 on the week; <b>Soybeans</b> funds net long 142,727 contracts, −51,054 on the week; <b>Chicago wheat</b> funds net short 87,126 contracts, −12,520 on the week; <b>KC wheat</b> funds near flat (net short 5,109 contracts, under 2.0% of open interest), −4,592 on the week; <b>Minneapolis wheat</b> funds net short 9,735 contracts, −6,022 on the week; <b>Soymeal</b> funds net long 108,367 contracts, −60,347 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
   </section>
 
-  <!-- Last week's question, this week's answer (kit v2 part 2, Sig Nov 6): about fund positions only, picked and
+  <!-- Last week's question, this week's answer (kit v2 part 2, Nov 6): about fund positions only, picked and
        answered from the data by scripts/cot_questions.py; baked in full by prerender_wpi_scorecard.py, no script. -->
   <section class="cq" id="cot-qa" aria-labelledby="cq-h">
     <h2 class="cg-h" id="cq-h">Last week&rsquo;s question, this week&rsquo;s answer</h2>
     <div class="cq-body"><!-- PRERENDER:cot-qa --><div class="cq-i"><p class="cq-k">Last week&rsquo;s question, from the report of Tue, Oct 27, 2026</p><p class="cq-q">Will Chicago wheat&#x27;s selling run reach 9 weeks?</p><p class="cq-a"><b>Yes.</b> Funds sold 12,520 Chicago wheat contracts in the week to Tue, Nov 3, 2026: 9 weeks in a row.</p></div><div class="cq-i"><p class="cq-k">This week&rsquo;s question, answered by the next report, Monday Nov 16, 3:30 PM ET (holiday week)</p><p class="cq-q">Will Chicago wheat&#x27;s selling run reach 10 weeks?</p><p class="cq-f">Funds sold Chicago wheat in each of the 9 weeks to Tue, Nov 3, 2026, 102,030 contracts in all.</p></div><details class="cq-arch"><summary>Earlier questions</summary><ol class="cq-ol"><li><span class="cq-q">Will Chicago wheat&#x27;s selling run reach 8 weeks?</span> Yes. Funds sold 22,601 Chicago wheat contracts in the week to Tue, Oct 27, 2026: 8 weeks in a row.</li><li><span class="cq-q">Will Chicago wheat&#x27;s selling run reach 7 weeks?</span> Yes. Funds sold 19,450 Chicago wheat contracts in the week to Tue, Oct 20, 2026: 7 weeks in a row.</li><li><span class="cq-q">Will Chicago wheat&#x27;s selling run reach 6 weeks?</span> Yes. Funds sold 3,725 Chicago wheat contracts in the week to Tue, Oct 13, 2026: 6 weeks in a row.</li><li><span class="cq-q">Will Chicago wheat&#x27;s selling run reach 5 weeks?</span> Yes. Funds sold 6,721 Chicago wheat contracts in the week to Tue, Oct 6, 2026: 5 weeks in a row.</li><li><span class="cq-q">Will Chicago wheat&#x27;s selling run reach 4 weeks?</span> Yes. Funds sold 10,093 Chicago wheat contracts in the week to Tue, Sep 29, 2026: 4 weeks in a row.</li><li><span class="cq-q">Will corn&#x27;s buying run reach 6 weeks?</span> No. Funds sold 10,363 corn contracts in the week to Tue, Sep 22, 2026, ending the run at 5 weeks.</li><li><span class="cq-q">Will corn&#x27;s buying run reach 5 weeks?</span> Yes. Funds bought 1 corn contracts in the week to Tue, Sep 15, 2026: 5 weeks in a row.</li></ol></details><!-- /PRERENDER:cot-qa --></div>
   </section>
 
-  <!-- Positioning map and options (2026-11-06, Sig: "has to be epic"; few words). Every trader group in every market,
+  <!-- Positioning map and options (2026-11-06,; few words). Every trader group in every market,
        futures and options, placed in its own last 3 years; then the unusual readings. CFTC data only.
        components/cot-options.js renders data/cot-options.json (scripts/cot_options.py). -->
   <section class="co" id="cot-opt" aria-labelledby="co-h">
@@ -941,7 +941,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     </div>
   </section>
 
-  <!-- ══ SOURCE AND SAMPLE ══ (2026-11-06, Sig: plain source and sample-size lines only) -->
+  <!-- ══ SOURCE AND SAMPLE ══ (2026-11-06, plain source and sample-size lines only) -->
   <section class="cx" id="cx-method-sec" aria-labelledby="cx-method-h">
     <details class="fold">
       <summary><h2 class="cx-h" id="cx-method-h">Source and sample</h2> <span class="fold-hint">Where the figures come from and how much history sits behind them.</span></summary>

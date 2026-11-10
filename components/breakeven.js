@@ -200,7 +200,7 @@
     var s = SRC.fertilizer; if (!s || s.k !== 'fert') return;
     var f = fertFor(crop(), num('yield')); if (f) $('fertilizer').value = f.usd;
   }
-  /* The page's one signup ask (Sig, 2026-10-23), under the answer: "email me when the futures
+  /* The page's one signup ask (2026-10-23), under the answer: "email me when the futures
      price I need shows up". It watches the same figure the "Futures needed" row shows, on the
      contract on screen, and only a contract the price watch sender follows (December corn,
      November soybeans, wheat). On any other (the next crop's contract) the Daily ask stands in:
@@ -386,7 +386,12 @@
   function fetchLivePrices() {
     fetch('/data/prices.json', { cache: 'no-cache' })  /* revalidate: as fresh as no-store, and a repeat visit gets a 304 instead of the whole file */
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (data) { _livePrices = data.quotes || {}; _pricesFetched = data.fetched || null; updateLiveBar(); if (W.AgBECounty) W.AgBECounty.basis(); calcBreakeven(); }).catch(function () { });
+      .then(function (data) { _livePrices = data.quotes || {}; _pricesFetched = data.fetched || null; letGoBar(); updateLiveBar(); if (W.AgBECounty) W.AgBECounty.basis(); calcBreakeven(); }).catch(function () { letGoBar(); });
+  }
+  /* breakeven.html holds the bar's and the note's room (live-wait, yr-wait) until the board answers, either way */
+  function letGoBar() {
+    var b = $('live-bar'), n = $('yr-note');
+    if (b) b.classList.remove('live-wait'); if (n) n.classList.remove('yr-wait');
   }
   /* "Settle" only when the price file marks the close a settle (close_kind,
      fetch_prices v3.7); a file from before that counts it a settle only when
@@ -474,7 +479,7 @@
   function syncYearSelect(c) {
     var sel = $('be-year'), nw = $('live-name-wrap'), nt = $('yr-note'); if (!sel) return;
     var k0 = thisCropKey(c), k1 = nextYearKey(c);
-    var y2 = $('be-yr2');
+    var y2 = $('be-yr2'); if (y2) y2.classList.remove('be-yr2-wait');
     if (!k1) { sel.hidden = true; if (nw) nw.hidden = false; if (nt) nt.hidden = true; if (y2) y2.hidden = true; return; }
     sel.innerHTML = '<option value="0">' + contractLabel(c, k0) + '</option><option value="1">' + contractLabel(c, k1) + '</option>';
     sel.value = _beYear; sel.hidden = false; if (nw) nw.hidden = true;

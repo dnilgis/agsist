@@ -137,12 +137,12 @@ test("who made it: tool and price pages name the data source near the top and Si
   for (const f of ["usda-calendar.html", "corn-futures-prices.html", "soybean-futures-prices.html", "wheat-futures-prices.html",
     "cattle-futures-prices.html", "cash-bids.html", "crop-tour.html", "cot.html", "hail-map.html", "markets.html", "fertilizer.html",
     "conditions.html", "basis.html", "lrp.html", "store-or-sell.html", "harvest-price-tracker.html"]) {
-    // not here: grain-emc (Sig, Oct 15: no name in the hero), farmland-atlas (its first phone screen is pinned full),
+    // not here: grain-emc (Oct 15: no name in the hero), farmland-atlas (its first phone screen is pinned full),
     // farm-bill (at its byte cap)
     const h = read(f), i = h.indexOf("<h1"), j = h.indexOf('class="madeby"');
     assert.ok(j > i && i > 0, f + " has the made-by line after its H1");
     assert.ok(j - i < 6000, f + " made-by line sits near the top");
-    // Sig, Oct 18: the name left the top line; the line keeps the data source, the name sits at the end
+    // Oct 18: the name left the top line; the line keeps the data source, the name sits at the end
     const mb = h.slice(j, h.indexOf("</p>", j));
     assert.match(mb, /(Data|Weather|Dates|Sources|Bids|Tour|radar)/i, f);
     assert.doesNotMatch(mb, /Sigurd Lindquist/, f);

@@ -38,10 +38,10 @@
     function verdictLine(r,label,R){
       if(!r)return {v:'-',line:'',luck:''};
       if(r.verdict==='not_enough'){
-        return {v:VERDICT.not_enough,line:n(r.graded)+' graded so far. A rate is shown from '+n(R.min_graded_for_rate)+' graded calls and '+n(R.min_windows_for_rate)+' non-overlapping windows.',luck:''};
+        return {v:VERDICT.not_enough,line:n(r.graded)+' graded so far. A rate is shown once enough calls are graded.',luck:''};
       }
       return {v:r.verdict_text||VERDICT[r.verdict]||'-',
-        line:'Right on '+n(r.hits)+' of '+n(r.graded)+' '+label+' ('+rate(r.hit_rate)+'). Across four non-overlapping groups of calls: '+rate(r.spell_rate_low)+' to '+rate(r.spell_rate_high)+' ('+n(r.windows)+' windows).',
+        line:'Right on '+n(r.hits)+' of '+n(r.graded)+' '+label+' ('+rate(r.hit_rate)+'). Across four separate groups of calls: '+rate(r.spell_rate_low)+' to '+rate(r.spell_rate_high)+' ('+n(r.windows)+' windows).',
         luck:'Odds pure guessing does at least this well: '+luck(r.p_luck)+'; at least this badly: '+luck(r.p_worse)+' ('+luck(r.p_worse_adjusted)+' after adjusting for the records tested at once).'};
     }
     /* The plain sentence at the top. Same words as pb_plain() in scripts/seed_static.py. */
@@ -61,9 +61,6 @@
       var labels={};(d.crops||[]).forEach(function(c){labels[c.key]=c.label;});
       var R=d.rules||{};
       $('pb-plain').textContent=plainLine(d);
-      document.querySelectorAll('[data-rule]').forEach(function(el){var k=el.getAttribute('data-rule');if(R[k]!=null)el.textContent=R[k];});
-      if(R.registered)$('pb-reg').textContent=R.registered;
-      if(R.version)$('pb-ver').textContent=R.version;
       $('pb-updated').textContent=d.updated?d.updated.replace('T',' ').replace('Z',' UTC'):'-';
 
       var live=((d.live||{}).records||{}).all;
@@ -76,12 +73,10 @@
 
       var bt=d.backtest||{};var ba=(bt.records||{}).all;
       var B=verdictLine(ba,'weekly calls',R);
-      if(bt.tests_in_family)$('pb-family').textContent=n(bt.tests_in_family);
       $('pb-bt-verdict').textContent=B.v;
       $('pb-bt-line').textContent=ba?(fdate(ba.first)+' to '+fdate(ba.last)+'. '+B.line):'Backtest not computed yet.';
       $('pb-bt-luck').textContent=B.luck;
       if(ba&&ba.moves_of){$('pb-bt-base').textContent='Always saying down: '+rate(ba.fell_rate)+'. Always saying up: '+rate(ba.rose_rate)+' ('+n(ba.moves_of)+' weekly calls).';}
-      if(bt.cutoff)$('pb-cutoff').textContent=bt.cutoff;
 
       var lt=(d.latest||{}),lc=lt.calls||[];
       $('pb-latest-when').textContent=lt.date?('Made at the '+fdate(lt.date)+' close.'):'No live call yet. The first calls are made at the '+fdate(d.first_live_call||d.live_start)+' close.';
@@ -97,7 +92,7 @@
         var bv=b.graded?(n(b.hits)+' of '+n(b.graded)+' ('+rate(b.hit_rate)+')'):'-';
         var bs=b.graded?(rate(b.spell_rate_low)+'–'+rate(b.spell_rate_high)+' ('+n(b.windows)+' windows)'):'-';
         return '<tr><td>'+esc(c.label)+'</td><td class="num">'+lv+'</td><td class="num">'+ls+'</td><td class="num">'+bv+'</td><td class="num">'+bs+'</td><td>'+esc(b.verdict_text||VERDICT[b.verdict]||'n/a')+'</td></tr>';}).join('');
-      $('pb-bycrop-note').textContent='Live figures show a dash until a crop has '+n(R.min_graded_for_rate)+' graded calls and '+n(R.min_windows_for_rate)+' non-overlapping windows. Backtest: '+n(bt.rules_tested)+' rule tested, '+n(bt.tests_in_family)+' records checked against a coin flip.';
+      $('pb-bycrop-note').textContent='Live figures show a dash until a crop has enough graded calls.';
 
       var calls=(d.calls||[]).slice().sort(function(a,b){return a.made<b.made?1:(a.made>b.made?-1:(a.crop<b.crop?-1:1));});
       var lb=$('pb-log').querySelector('tbody'),shown=0,PAGE=40;

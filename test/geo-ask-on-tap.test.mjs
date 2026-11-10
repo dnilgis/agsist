@@ -1,4 +1,4 @@
-/* Location is asked only on a tap (Sig, Oct 19, 2026).
+/* Location is asked only on a tap (Oct 19, 2026).
  *
  * "Never ask for the reader's location on page load; only when they tap
  * 'Use my location'. A saved ZIP still works at once."

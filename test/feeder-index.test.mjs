@@ -1,4 +1,4 @@
-// Feeder cattle boxes (Sig, Oct 20): RMA's feeder steer value beside the futures,
+// Feeder cattle boxes (Oct 20): RMA's feeder steer value beside the futures,
 // and AGSIST weekly sale barn prices by region and weight. Numbers come from
 // scripts/build_feeder_index.py (its --selftest holds the hand-worked math:
 // pounds weighting, head and barn gates, regions, week boundaries, the RMA type

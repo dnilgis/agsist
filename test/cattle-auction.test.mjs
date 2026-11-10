@@ -98,11 +98,11 @@ test("background or sell: gain pays only when value of gain is above cost of gai
 /* ---------------- page ---------------- */
 
 test("page: title, canonical, h1, byline, one script of its own", () => {
-  assert.match(page, /<title>Feeder cattle sale barn prices near you[^<]*\| AGSIST<\/title>/);
+  assert.match(page, /<title>Feeder cattle sale barn prices near you: auction prices by weight<\/title>/);
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/cattle-auction-prices">/);
   assert.equal((page.match(/<h1>/g) || []).length, 1);
   assert.match(page, /Sigurd Lindquist, CCA/);
-  assert.match(page, /<script src="\/components\/cattle-auction\.js\?v=\d+" defer><\/script>/);
+  assert.match(page, /<script src="\/components\/cattle-auction\.js\?v=9" defer><\/script>/, "cattle-auction.js is v9 (bump with every change to the script; this test owns the number)");
   assert.ok(page.length < 150 * 1024, "page under the 150 KB cap");
 });
 
@@ -239,8 +239,8 @@ test("the parser says plainly it has not been checked against a real report yet"
 test("the barn list: unique ids, town and lower-48 coordinates, a title pattern for every source", () => {
   const ids = srcs.barns.map((b) => b.id).concat(srcs.state_reports.map((b) => b.id));
   assert.equal(new Set(ids).size, ids.length);
-  // 47 barns on Oct 16 2026 after the barn fill, 88 on Oct 17 (Sig: more barns, Upper Midwest first), 125 on
-  // Oct 28 (37 more read from USDA's own PDFs; Sig approved raising the cap for real barns);
+  // 47 barns on Oct 16 2026 after the barn fill, 88 on Oct 17 (more barns, Upper Midwest first), 125 on
+  // Oct 28 (37 more read from USDA's own PDFs; the owner approved raising the cap for real barns);
   // the cap keeps the list a hand-picked set of feeder sales, not every report AMS has
   assert.ok(srcs.barns.length >= 20 && srcs.barns.length <= 125);
   for (const b of srcs.barns) {
@@ -265,7 +265,7 @@ test("the page's list of barns USDA does not report is the own_reports list; no 
   assert.deepEqual(items.sort(), srcs.own_reports.map((b) => `${b.state} ${b.name}, ${b.town}`).sort());
   // each barn is named with its town; its own report page is not linked (no direct links to data sources)
   for (const b of srcs.own_reports) assert.ok(!sec.includes(b.site), b.id + " site linked");
-  // Premier (Withee), Equity and Central Livestock are what Sig asked for by name
+  // Premier (Withee), Equity and Central Livestock are what the owner asked for by name
   for (const id of ["withee-wi", "lomira-wi", "stratford-wi", "reedsville-wi", "bonduel-wi", "johnson-creek-wi", "richland-center-wi", "rock-creek-mn", "zumbrota-mn"])
     assert.ok(srcs.own_reports.some((b) => b.id === id), id);
   // a barn-posted price ships only with a real saved report as its fixture, and the page names every such barn

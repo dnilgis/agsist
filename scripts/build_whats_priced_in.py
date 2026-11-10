@@ -128,9 +128,7 @@ def _fmt(v, unit):
     return f"{v}{(' ' + unit) if unit else ''}"
 
 
-THRESHOLDS_WITHHELD = (
-    "A surprise is a print past the trade average by more than its band: 0.5% for a "
-    "yield, 1% for production, 2% for stocks. The thresholds arrive with the trade average.")
+THRESHOLDS_WITHHELD = "The line for a surprise posts with the trade average."
 
 
 def band_thresholds(avg, metric, unit="", direction="supply"):
@@ -204,7 +202,7 @@ def cot_positioning(commodity_text, cot):
 
 # ── EVERY NUMBER ON THE REPORT, NOT JUST THE HEADLINE ────────────────────────
 #
-# Sig, 2026-09-11, after reading the page on WASDE morning: "it only showed
+# 2026-09-11, after reading the page on WASDE morning: "it only showed
 # corn, i want to walk people through the numbers when released, more
 # informative without getting messy."
 #
@@ -763,7 +761,7 @@ def main():
     # 16:05 UTC on release day and emptied at 00:00 UTC, roughly seven hours
     # later -- and this September it never filled at all, because NASS refused
     # for two days and by the time the grade landed the card had already
-    # flipped to October. Sig asked to "walk people through the numbers when
+    # flipped to October. The owner asked to "walk people through the numbers when
     # released"; the strip was showing them only before the release.
     #
     # The result banner already has the right lifetime: it runs from report day
@@ -958,7 +956,7 @@ def _selftest():
                          "estimate_low": 173.2, "estimate_high": 182.1, "estimate_avg": 177.8, "unit": "bu/acre"}],
                        "2026-11-01")
     assert u["bullish_threshold"] == "Below 176.91 bu/acre" and u["bearish_threshold"] == "Above 178.69 bu/acre", u
-    assert "ends of the trade range" not in THRESHOLDS_WITHHELD and "0.5%" in THRESHOLDS_WITHHELD
+    assert "ends of the trade range" not in THRESHOLDS_WITHHELD and "%" not in THRESHOLDS_WITHHELD
 
     # an empty list behaves the same way as an exhausted one
     assert build_upcoming([], "2026-09-12")["report"] == "October WASDE"

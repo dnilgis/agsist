@@ -3,6 +3,7 @@ name: Tariff data check
 
 on:
   push:
+    branches: [main]
     paths:
       - 'data/tariffs.json'
       - 'scripts/check_tariffs.py'

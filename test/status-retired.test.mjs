@@ -1,4 +1,4 @@
-/* /status is retired (Sig, Oct 21, 2026: it put the feed plumbing on display).
+/* /status is retired (Oct 21, 2026: it put the feed plumbing on display).
  *
  *   node --test test/status-retired.test.mjs
  *

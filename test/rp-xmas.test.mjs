@@ -1,6 +1,6 @@
-/* The Christmas Rain Print line (components/rp-xmas.js, Sig Oct 30, 2026).
+/* The Christmas Rain Print line (components/rp-xmas.js, Oct 30, 2026).
  *
- * One slim line in Sig's voice near the top of the field and weather pages,
+ * One slim line in the owner's voice near the top of the field and weather pages,
  * Nov 1 through the print Christmas cutoff, with his phone number for people
  * who would rather he made the print. It must:
  *   - be on exactly these pages: /rain and every county rain page, /rain-radar,

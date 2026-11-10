@@ -329,8 +329,13 @@ test("a saved state opens on its median basis for the picked contract, labeled, 
     /* futures needed = cash break-even - basis */
     const be = Number((await txt(pg, "#ans-be")).slice(1));
     const want = (be - e.median).toFixed(2), sign = e.median > 0 ? "+" : "\u2212";
-    assert.match(await txt(pg, "#ans-fut"), new RegExp(`^Futures needed at your \\${sign}${Math.abs(e.median).toFixed(2).replace(".", "\\.")} basis: \\$${want.replace(".", "\\.")}\\.`));
-    assert.equal(await txt(pg, "#futNeeded"), "$" + want + "/bu");
+    /* the page subtracts from the unrounded break-even (breakeven.js), and the one shown is rounded to the
+       cent, so the futures figure can sit one cent either side of what the two shown numbers give */
+    const near = [-0.01, 0, 0.01].map((d) => (Number(want) + d).toFixed(2));
+    const fut = await txt(pg, "#ans-fut");
+    const got = (fut.match(new RegExp(`^Futures needed at your \\${sign}${Math.abs(e.median).toFixed(2).replace(".", "\\.")} basis: \\$(\\d+\\.\\d{2})\\.`)) || [])[1];
+    assert.ok(got && near.includes(got), `${fut} is the break-even less the basis (${want}, within a cent)`);
+    assert.equal(await txt(pg, "#futNeeded"), "$" + got + "/bu");
     assert.equal(await pg.isVisible("#fut-sub"), false, "no 'assumed' line with a real basis");
     /* the 2027 contract has no matching basis: the state median comes back out, and the page says why */
     await pg.selectOption("#be-year", "1");

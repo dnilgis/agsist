@@ -1,7 +1,7 @@
 /* /tar-spot photo gallery (2026-11-05): the files are clean (no EXIF, GPS or other metadata), under
  * 200 KB, and every figure on the page names a file that exists with width and height set. In a browser
  * at 390 wide the gallery adds no layout shift and no sideways scroll, with every outside host refused
- * and service workers blocked (BUILD-RULES 58). Browser checks need PLAYWRIGHT_PATH and CHROMIUM_PATH. */
+ * and service workers blocked (build rule 58). Browser checks need PLAYWRIGHT_PATH and CHROMIUM_PATH. */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync, statSync, readdirSync } from "node:fs";

@@ -163,7 +163,7 @@ test("the maker page has the button and the note box; the engine makes the lette
   assert.match(js, /root\.AgRainArt\.facts\(I, \{ unplaced: root\.AgRainArt\.lastUnplaced\(\) \}\)/, "the print's own facts, after the print's own render");
   assert.match(js, /pdfFromJpeg\(new Uint8Array\(buf\), c\.width, c\.height, LETTER, 0\)/, "a letter-size PDF with no bleed");
   assert.match(js, /var LETTER = \{ w: 8\.5, h: 11/);
-  // the care line's frame is the paper's own size (13 x 19, Sig 2026-10-17) and its mat's
+  // the care line's frame is the paper's own size (13 x 19, 2026-10-17) and its mat's
   assert.match(js, /var SHEET = \{ w: 19, h: 13, art: \{ w: 16\.5, h: 11 \}, mat: \{ w: 16\.5, h: 10\.5 \}/);
   assert.match(read("components/rp-insert.js"), /A loose print fits a standard 13 x 19 frame with an 11 x 17 mat\./);
   assert.match(js, /if \(PREVIEW\) \{ out\.textContent = 'The letter is made from the full year/, "no letter from a part year");
@@ -199,7 +199,7 @@ test("What's in the box: the public block, the sample letter and the FAQ, word f
   assert.ok(q, "in FAQPage");
   assert.equal(shown[1].replace(/&rsquo;/g, "’"), q.acceptedAnswer.text);
   assert.match(q.acceptedAnswer.text, /corner guards and foam and double-boxed.*If it’s a gift, your note is printed at the top of that letter\. No prices go in the box\./);
-  // Sig, 2026-10-17: no separate note card anywhere on the page, in the FAQ or in FAQPage; the note is on the letter
+  // 2026-10-17: no separate note card anywhere on the page, in the FAQ or in FAQPage; the note is on the letter
   assert.doesNotMatch(html, /note card|on a card in the box|a note for a card|on a card and put it/);
   const ship = LD["@graph"].find((g) => g["@type"] === "FAQPage").mainEntity.find((x) => x.name === "Can you ship it straight to them with a note?");
   assert.match(ship.acceptedAnswer.text, /your note printed at the top of the letter in the box, at no charge\. No prices go in the box\./);
@@ -211,7 +211,7 @@ test("What's in the box: the public block, the sample letter and the FAQ, word f
   assert.match(html, /I email you a gift card to print for under the tree/);
 });
 
-// the "next print" code line (Sig, 2026-10-17): off until data/rain-print.json letter_offer has a code
+// the "next print" code line (2026-10-17): off until data/rain-print.json letter_offer has a code
 // 2026-10-19 (Rain Print audit): the Stripe coupon is good on a print or a framed print only, not the
 // digital file, so the line says so ("for $10 off a print or framed print"); it said "for $10 off" before
 const OFFER = { code: "rain10", dollars_off: 10, expires: "2027-12-31" };
@@ -227,7 +227,7 @@ test("the code line: on with Sig's Stripe code NEXTPRINT, $10 off print and fram
     const m = make(st, { offer: J.letter_offer, today: "2027-01-10" });
     assert.ok(m.svg.includes('data-rp="offer"'), st + ": the code line");
   }
-  // an empty code still prints nothing (the switch Sig used until Oct 19)
+  // an empty code still prints nothing (the switch the owner used until Oct 19)
   assert.equal(INS.offerLine({ code: "", dollars_off: 0, expires: "" }, "2027-01-10"), "");
   // anything it cannot read prints nothing
   for (const bad of [null, {}, { code: "", dollars_off: 10, expires: "2027-12-31" }, { code: "RAIN10", dollars_off: 0, expires: "2027-12-31" },
@@ -285,7 +285,7 @@ test("the engine hands the letter the offer from the prices it already loads", (
   assert.doesNotMatch(js, /promotion_code|promo_code/i);
 });
 
-// ---------- the reading guide (Sig, 2026-10-20): "How to read your Rain Print", sent with a digital file ----------
+// ---------- the reading guide (2026-10-20): "How to read your Rain Print", sent with a digital file ----------
 // what the engine reads from the print's own groups (components/rain-print.js insertSvg), the same tests on the same SVG
 const DRAWN_RE = { hist: /data-rp="hist"/, rec: /data-rp="rec:/, frost: /data-rp="frost:/, crop: /data-rp="crop"/, ribbon: /data-rp="ribbon"/, qr: /data-rp="qr"/ };
 const drawnOf = (art) => Object.fromEntries(Object.entries(DRAWN_RE).map(([k, re]) => [k, re.test(art)]));

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """What's new: one file per entry in data/whats-new/, built into three places.
 
-  data/whats-new/<YYYY-MM-DD>-<slug>.json   one entry: id (the file name without .json), date,
+  data/whats-new/<YYYY-MM-DD>-<slug>.json   one entry: id (the file name without.json), date,
                  title, line, link, and an optional rank (within one day, higher shows first;
                  left out, the day's entries without one follow, by id). A pull request adds
                  only its entry file; the three built files below are rebuilt on main
@@ -13,8 +13,7 @@
   index.html     one small line at the end of the page, above the byline:
                  a link to /changelog and the newest entry. Until Oct 20 this
                  was a card of the newest four near the top, which sat above
-                 Cash bids on a phone (panel Oct 20, seats A and G; Sig's
-                 "after main content" rule). The card and its hide buttons
+                 Cash bids on a phone (panel Oct 20, seats A and G;  rule). The card and its hide buttons
                  are gone; the entries live on /changelog.
   changelog.html every entry, as day sections above the older hand-written
                  log, which is kept as it is; the stamp line is recounted.

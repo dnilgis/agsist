@@ -107,7 +107,7 @@ function serve() {
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
     if (p === "/here" || p === "/fast-facts") p = p + ".html";
-    // data/site-notice.json is Sig's outage switch (components/loader.js siteNotice): its bar, fixed over the bottom of
+    // data/site-notice.json is the owner's outage switch (components/loader.js siteNotice): its bar, fixed over the bottom of
     // the screen, comes and goes with the live file. These tests are about the page under it, so they see no notice
     // (no file is the documented off state) and pass or fail the same whichever way the switch is set.
     if (p === "/data/site-notice.json") { res.writeHead(404); res.end(); return; }
@@ -120,7 +120,7 @@ function serve() {
 }
 // The page reads the committed files (bids, futures, rain, drought, crop progress) and drops a source whose report is
 // out of season or stale by the clock, so its clock starts an hour after the bid copy was read and runs on: on a later
-// clock (a January run) USDA NASS Crop Progress left the printed sources list (BUILD-RULES 50).
+// clock (a January run) USDA NASS Crop Progress left the printed sources list (build rule 50).
 const DATA_AT = Date.parse(JSON.parse(read("data/bids.json")).fetched) + 3600e3;
 async function openPage(browser, port, url, width = 390, ctxIn = null) {
   const ctx = ctxIn || await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });

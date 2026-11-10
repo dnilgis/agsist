@@ -1,4 +1,4 @@
-/* Farm sale pages, Nov 8, 2026 (Sig, three phone screenshots of /land-sales/2026-09: text crossed out, a table cut off):
+/* Farm sale pages, Nov 8, 2026 (three phone screenshots of /land-sales/2026-09: text crossed out, a table cut off):
  * the method text stays in the page's HTML, short and plain, inside ONE closed "Sources and terms" fold at the bottom;
  * no deed-code number lists anywhere; the Unusual prices section is a heading, one short line and the table, with its
  * definition in the fold; the source credit stays where the sales show; and at 390 px no table is cut off and no element

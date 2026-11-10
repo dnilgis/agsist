@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the tests and the send gates' self-tests with the clock set to a future date (Sig, Nov 3, 2026).
+"""Run the tests and the send gates' self-tests with the clock set to a future date (Nov 3, 2026).
 
 Before a calendar boundary (month end, DST, a holiday, year end, a report window) run this: anything that fails
 only on a future date is a test or a gate that reads today's date and will break on that day.
@@ -11,7 +11,7 @@ only on a future date is a test or a gate that reads today's date and will break
     --checks         also the builders' --check lines (python3 scripts/X.py --check) from checks.sh and the workflows
     --only=node|py   one half only
     --files=a,b      only these node test files (test/x.test.mjs) and python commands whose script is named
-    --jobs=N         parallel runs (default 2; never run this beside a full checks.sh, BUILD-RULES 19)
+    --jobs=N         parallel runs (default 2; never run this beside a full checks.sh, build rule 19)
     --fast           leave out the node files that take over 30 s (scripts/dev/test-durations.json) and the two
                      slowest selftests (build_atlas_pages, build_arc_plc): about a quarter of the time, for a busy machine
     --all            run every item on every date (by default the dates run only the items that read the clock in

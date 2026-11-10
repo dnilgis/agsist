@@ -64,7 +64,12 @@ test("arc-plc: 10-acre rule, peanut limit, Childress title, trigger at the bench
   assert.match(h, /Peanuts carry a separate limit of their own\./);
   assert.ok(!/weighted by/.test((m => m.slice(m.indexOf("def method_html"), m.indexOf("def build_main")))(read("scripts/build_arc_plc.py"))), "the method text carries no weights (Nov 8: cut it)");
   const c = read("arc-plc/texas/childress-county.html");
-  assert.match(c, /<title>Childress Co\., TX ARC or PLC 2026: Irrigated wheat/);
+  // Nov 10, 2026: irrigated wheat here is FSA's all-practice PLC yield 19.7 bu on a 36.5 bu benchmark, under 60%. Its call
+  // stays where it is the same at that PLC yield and across 60% to 100% of the benchmark (Close, as built Nov 10), and the
+  // title names it as before; withheld, the title names the main practice, its benchmark to a tenth
+  const tx = JSON.parse(read("data/arc-plc/math/TX.json")).c["48075"], wi = tx.e.wheat.findIndex((e) => e.d === "irr");
+  if (tx.v.wheat[wi]["2026"][0] !== "mismatch") assert.match(c, /<title>Childress (?:County|Co\.), TX ARC or PLC 2026: Irrigated wheat (?:Benchmark )?36\.5 bu/);
+  else assert.match(c, /<title>Childress (?:County|Co\.), TX ARC or PLC 2026: Non-irrigated wheat (?:Benchmark )?17\.9 bu/);
   assert.match(c, /comes in under <b>41\.6 bu<\/b> at USDA&rsquo;s price outlook, \$5\.70\. That is above the 41\.0 bu benchmark/);  // the benchmark to a tenth, as the title prints it (Oct 19, 2026; was 41.00)
 });
 
@@ -142,7 +147,8 @@ test("spray, urea, conditions, cot, scout, pod counts: corrected wording", () =>
 test("what's priced in: finishing order rule, Oct 9 corn, sources, closest", () => {
   const w = read("usda-calendar.html");   // What's priced in is a section of the calendar since Oct 22, 2026
   assert.ok(!w.includes("A ranking needs at least two forecasters"));
-  assert.match(w, /A finishing order needs at least two forecasters with/);
+  assert.match(w, /Too few scored calls to rank forecasters yet, so this board shows records, not places\./);
+  assert.ok(!w.includes("A finishing order needs at least two forecasters with"));
   assert.match(w, /corn ending stocks landed 10\.3% over the average and read in line on a day December corn fell 20&frac12;&cent;/);
   const d = JSON.parse(read("data/whats-priced-in.json"));
   assert.match(d.latest_result.biggest_surprise.reaction, /20½¢ lower/);

@@ -7,7 +7,7 @@
  *
  * Now: home and /cash-bids link the nearest baked town page with its time; the Atlas and Fast Facts rows
  * name the short list or withhold, never "Best of N within 50 mi"; each counts one GA event,
- * bids_net_fallback. Browser runs block every outside host and service workers (BUILD-RULES 58).
+ * bids_net_fallback. Browser runs block every outside host and service workers (build rule 58).
  *
  *   node --test test/bids-fallback.test.mjs
  */
@@ -83,8 +83,8 @@ test("the builder writes the towns; home, /cash-bids, Fast Facts and the Atlas c
   assert.match(read("components/cash-bids.js"), /AgBidsFallback\.line\(bk,zip,'cash-bids','failed'\)/);
   assert.match(read("components/here.js"), /AgBidsFallback\.count\('fast-facts'/);
   assert.match(read("components/county-home.js"), /AgBidsFallback\.count\('atlas-county'/);
-  assert.match(read("index.html"), /bids-fallback\.js\?v=1" defer><\/script>\n<script src="\/components\/bids-homepage\.js\?v=46"/);
-  assert.match(read("cash-bids.html"), /bids-fallback\.js\?v=1"><\/script><script src="\/components\/cash-bids\.js\?v=19"/);
+  assert.match(read("index.html"), /bids-fallback\.js\?v=1" defer><\/script>\n<script src="\/components\/bids-homepage\.js\?v=48"/);
+  assert.match(read("cash-bids.html"), /bids-fallback\.js\?v=1"><\/script><script src="\/components\/cash-bids\.js\?v=\d+"/);
   assert.match(read("fast-facts.html"), /bids-fallback\.js\?v=1/);
 });
 

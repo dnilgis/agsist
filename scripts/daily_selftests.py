@@ -8,8 +8,7 @@ The live file moved, the fixture check failed, and because GATE 0g was a hard st
 in front of the generator, every morning run from 5:46 to 7:31 CT stopped there.
 Today's issue was fine; the test of the code was not. Nobody got the Daily on time.
 
-Sig, Nov 3: "Code self-tests never hold the Daily send; only content gates on the
-day's issue may." So every self-test that used to sit in front of the generator
+Nov 3 So every self-test that used to sit in front of the generator
 or inside a content step (GATE 0 to 0g, the fact check's, the headline fix's, the
 cause fix's and the edge facts' self-tests) runs here, in one step that reports
 and never stops the job. Each one still runs on every run.
@@ -17,12 +16,12 @@ and never stops the job. Each one still runs on every run.
 ONE EXCEPTION STAYS A HARD STEP: scripts/test_send_loops.py, daily.yml's "Neither
 send loop can re-mail the whole list", right before the send. It guards readers
 against a double or mass send, depends on no date and no live data, and a
-failure there must hold the email (lead, Nov 3 2026). It is not in this list.
+failure there must hold the email (Nov 3 2026). It is not in this list.
 
 A failure is reported three ways:
   - the step goes red in the run (exit 1; daily.yml marks it continue-on-error)
   - the job summary lists every test with pass or fail and its telling line
-  - one email to Sig: the first failing run of the day mails, later runs do not
+  - one email to the owner: the first failing run of the day mails, later runs do not
     (today's runs read from the GitHub API with the job token; unreadable
     history mails rather than stays quiet)
 
@@ -203,7 +202,7 @@ def mailed_today(day, fetch=None, this_run=None, max_runs=20):
 
 
 def may_mail(day, fetch=None, this_run=None):
-    """True when this failure should mail Sig: the first run today whose
+    """True when this failure should mail the owner: the first run today whose
     self-test step failed mails, later ones do not (their job summaries still
     say what failed). Unreadable history mails rather than stays quiet."""
     import daily_retry as R

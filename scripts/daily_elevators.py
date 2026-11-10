@@ -1,15 +1,12 @@
 #!/usr/bin/env python3
 """
 daily_elevators.py -- a Daily reader's own elevators, and at most two lines
-about elevators near them, for AGSIST Daily (Sig, 2026-10-20: "if a person has
-a saved elevator, can we include those elevator bids in those persons daily
-emails, and maybe if we see an elevator that is paying more ... highlight
-those opportunities").
+about elevators near them, for AGSIST Daily (2026-10-20).
 
 WHOSE ELEVATORS
   * the ones the reader saved on /cash-bids and put in the Daily (subs worker
     v5.42: the Daily record's `el`, ids = place_id(place key), the same FNV-1a
-    components/cb-myelev.js placeId() makes), and
+    components/cb-myelev.js placeId makes), and
   * the ones the reader watches with the same address (elevator watch,
     /elevator-watch-list), matched to a network place by the watch's hash.
   Each gets one line: corn and soybeans, cash and basis for the nearest open

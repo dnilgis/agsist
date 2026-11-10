@@ -2,7 +2,7 @@
  *
  * Its gate runs morning_report.py --selftest, and the Today section's test
  * reads test/fixtures/today-bids-index-2026-10-20.json.gz. The checkout list
- * named only scripts/, data/*.json and TODO-SIG.md, so the dry run of Oct 20
+ * named only scripts/, data/*.json and one more file, so the dry run of Oct 20
  * failed with FileNotFoundError and the 6:40 email would have stopped. This
  * reads every repo file the selftests open from test/ and checks the report
  * job's checkout list covers it.

@@ -1,4 +1,4 @@
-/* What the site promises about AGSIST Daily (Sig, 2026-10-19).
+/* What the site promises about AGSIST Daily (2026-10-19).
  *
  *   1. The Daily is described as "every morning", with no clock time. It goes
  *      out seven days a week and weekend sends have landed after 9 am, so no
@@ -11,7 +11,7 @@
  *      (components/cb-signup.js, class cbs-d, drawn on cash bid town and
  *      company pages and /cash-bids). "Get <town> bids by email" is the main
  *      offer of that box, not an "also send me the Daily" add-on, so it stays
- *      pre-ticked (Sig, 2026-10-19: his rule covers only add-on Daily boxes).
+ *      pre-ticked (2026-10-19: his rule covers only add-on Daily boxes).
  *
  * Scanned: every tracked .html page (except the dated issues under daily/,
  * whose datelines are facts about one issue), components/*.js and *.html,

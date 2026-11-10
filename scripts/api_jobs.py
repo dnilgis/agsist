@@ -59,12 +59,12 @@ import urllib.request
 
 API = "https://api.anthropic.com/v1"
 MODEL = "claude-sonnet-5-5"            # search and alt
-STORY_MODEL = "claude-opus-5-5"        # county stories (Sig, Oct 17)
+STORY_MODEL = "claude-opus-5-5"        # county stories (Oct 17)
 RUN = re.sub(r"[^a-zA-Z0-9_-]", "", os.environ.get("APIJOBS_RUN", "r1")) or "r1"
 OUT = f"apijobs/{RUN}"
 COST_CAP = 20.0      # dollars, search and alt together; submit refuses above the worst case
-STORY_CAP = 45.0     # dollars, county stories (Sig: well under $50); added when a bundle has stories
-ELEVSITE_CAP = 35.0  # dollars, the unread elevators' sites (Sig, Oct 18: capped at $35)
+STORY_CAP = 45.0     # dollars, county stories (well under $50); added when a bundle has stories
+ELEVSITE_CAP = 35.0  # dollars, the unread elevators' sites (Oct 18: capped at $35)
 SCHEDULE_CAP = 20.0  # dollars, discount and drying schedules (Oct 18 research round two)
 LANDSRC_CAP = 20.0   # dollars, county land sale sources (Oct 18 research round two)
 # APIJOBS_CAP lowers a run's cap below the job caps (elevsites round two: $12); it never raises one.

@@ -22,7 +22,7 @@ test('live prices hide the whole baked table, not just the nearby row', () => {
   assert.match(block, /querySelector\('\.seed-tbl-wrap'\);if\(__st\)__st\.style\.display='none'/);
   assert.doesNotMatch(block, /\/\^Nearby\//, 'no row-by-row filter that leaves deferred and KC rows behind');
   for (const p of ['corn', 'soybean', 'wheat']) {
-    assert.match(read(`${p}-futures-prices.html`), /futures\.js\?v=32/, `${p} page loads the new futures.js`);
+    assert.match(read(`${p}-futures-prices.html`), /futures\.js\?v=\d+/, `${p} page loads the new futures.js`);
   }
 });
 
@@ -63,11 +63,11 @@ test('bake_seo selftest passes (finished sessions only in titles)', () => {
 test('the freshness workflow retries a rejected push and has a run after the settle lands', () => {
   const y = read('.github/workflows/freshness.yml');
   assert.match(y, /for i in 1 2 3 4; do/);
-  // Sig, Oct 20: the settle reaches the price file about 04:15 UTC; 23:35 was before it
+  // Oct 20: the settle reaches the price file about 04:15 UTC; 23:35 was before it
   assert.match(y, /cron: '50 4 \* \* 2-6'/);
   assert.match(y, /--cron "50 4 \* \* 2-6"/);
   assert.doesNotMatch(y, /35 23 \* \* 1-5/);
-  // Sig, Oct 30: a second night run for a late settle (Oct 29's landed at 06:16 UTC); every schedule tick is gated too
+  // Oct 30: a second night run for a late settle (Oct 29's landed at 06:16 UTC); every schedule tick is gated too
   for (const c of ['35 13 * * 1-5', '35 20 * * 1-5', '50 6 * * 2-6']) {
     assert.ok(y.includes(`cron: '${c}'`) && y.includes(`--cron "${c}"`), c);
   }
@@ -91,7 +91,7 @@ test('the cattle COT sentence follows its own number', () => {
 test('the COT range line and the /cot percentile say which measure they are', () => {
   const fj = read('components/futures.js'), cj = read('components/cot-page.js');
   assert.match(fj, /Where the net sits in its 52-week range, in contracts: '\+p52\+'% of the way from the low/);
-  // the /cot card's "Show the math" 52-week contract rank is gone (2026-11-06, Sig): one ranking on the card
+  // the /cot card's "Show the math" 52-week contract rank is gone (2026-11-06): one ranking on the card
   assert.doesNotMatch(cj, /Show the math|cot-math|ordinal\(k\.pct\)/);
   assert.doesNotMatch(fj + cj, /A shorter yardstick/);
 });

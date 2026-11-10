@@ -64,14 +64,14 @@ test("prompts and code carry no em dash; PRF stays neutral; the bid pages never 
 test("the builders print the story where it belongs and only through the set's own gate", () => {
   const prfB = read("scripts/build_prf_counties.py");
   assert.match(prfB, /SP\.story_html\(STORIES, st\["st"\], fips, SP\.county_facts\(/);
-  /* Sig, Oct 20: the county page's first screen leads with the priced example; the story heads the record section */
+  /* Oct 20: the county page's first screen leads with the priced example; the story heads the record section */
   assert.ok(prfB.indexOf('<h2 id="record">') < prfB.indexOf('{ctx.get("story", "")}'), "PRF: at the head of the record section");
   assert.ok(prfB.indexOf('class="prf-lede"') < prfB.indexOf("{exh}") && prfB.indexOf("{exh}") < prfB.indexOf('{ctx.get("story", "")}'), "PRF: the example comes first");
   const at = read("scripts/build_atlas_pages.py");
   assert.match(at, /SA\.story_html\(W\.stories, W, f, d\)/);
   assert.match(at, /\{story_html\}\{warn\}<div class="two">/);
   const cb = read("scripts/build_cash_bid_pages.py");
-  /* the share line (components/share-bid.js, Sig Nov 3) sits under the answer; the story comes right after it */
+  /* the share line (components/share-bid.js, Nov 3) sits under the answer; the story comes right after it */
   assert.match(cb, /\{answer_html\}\n  \{share_html\}\n  \{story_html\}\{intro\}/);
   assert.match(cb, /STORY_FACTS_OUT/);
   const co = read("scripts/build_company_pages.py");

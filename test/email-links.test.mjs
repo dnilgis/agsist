@@ -12,7 +12,7 @@
  *     scripts/subs-worker-checks.mjs);
  *   - by source text: no sender builds an ?e= link any more.
  *
- * Oct 22, 2026, the front door (Sig; BUILD-RULES 11): no emailed link points at
+ * Oct 22, 2026, the front door (build rule 11): no emailed link points at
  * the worker's workers.dev host. Every link goes to agsist.com/e (e.html; its
  * own test is test/frontdoor-page.test.mjs), which asks the worker's /fd/
  * routes from the reader's browser (scripts/test_frontdoor_worker.mjs).

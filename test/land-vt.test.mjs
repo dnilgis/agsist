@@ -1,4 +1,4 @@
-/* Vermont land sales (Sig, Oct 29, 2026: next land states, Vermont first). The property transfer tax
+/* Vermont land sales (Oct 29, 2026: next land states, Vermont first). The property transfer tax
  * returns (Form PTT-172) from the statewide file the state publishes, read by
  * scripts/fetch_land_sales.py (vt_table) into data/land/vt/<fips>.json, then the same pages,
  * Field Scout comps, Atlas door and monthly email as Illinois, Wisconsin and Indiana.

@@ -134,7 +134,7 @@ test("form-post.js (panel 3 F11): the Formspree copy after a slow worker says it
   await assert.rejects(within(p, 1000), /not sent/);
 });
 
-// 2026-10-19 (Sig, monetization board seat C): a business quote carries the customer list, and the page says
+// 2026-10-19 (monetization board seat C): a business quote carries the customer list, and the page says
 // "your list stays with me". It goes to the AGSIST worker or nowhere: never to Formspree.
 test("form-post.js: a business quote (customer list) never goes to Formspree on any worker failure", async () => {
   const failures = {

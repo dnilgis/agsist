@@ -75,9 +75,7 @@ US_STATES = ("AL AK AZ AR CA CO CT DE DC FL GA HI ID IL IN IA KS KY LA ME MD MA 
 COMM_ORDER = ["corn", "soybeans", "wheat", "sorghum", "oats", "other"]
 NC_WIN = {"corn": (9, 12), "soybeans": (9, 12), "sorghum": (9, 12), "wheat": (6, 9), "oats": (6, 9)}
 CY_START = {"wheat": 6, "oats": 6, "barley": 6}
-LEGAL = {"llc", "lc", "inc", "incorporated", "co", "corp", "corporation", "ltd", "limited", "lp", "llp", "company"}
-FOLD = {"bros": "brother", "brothers": "brother", "brother": "brother", "st": "saint", "mt": "mount", "ft": "fort",
-        "farmers": "farmer", "assn": "association", "assoc": "association", "elev": "elevator", "elevators": "elevator"}
+
 
 
 # ── JS arithmetic, exactly ────────────────────────────────────────────────
@@ -491,15 +489,9 @@ def month_short(k, now=None):
 
 
 def norm_operator(name):
-    t = re.sub(r"[^a-z0-9]+", " ", str(name or "").lower())
-    t = t.replace("co op", "coop").replace("co operative", "cooperative")
-    t = [x for x in t.split(" ") if x]
-    while t and t[-1] in LEGAL:
-        t.pop()
-    t = ["coop" if x in ("cooperative", "coops") else x for x in t]
-    t = [FOLD.get(x, x) for x in t]
-    t = [x[:-1] if (len(x) > 3 and x[-1] == "s") else x for x in t]
-    return "".join(t)
+    """One board across spellings: elevator_names.merge_key (twin of elevNames.mergeKey)."""
+    from elevator_names import merge_key
+    return merge_key(name)
 
 
 def plain(x):
