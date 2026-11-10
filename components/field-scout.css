@@ -671,3 +671,6 @@
     .fs-deck-co{margin-left:.5rem;color:var(--text);letter-spacing:0;text-transform:none;font-weight:600}
     .fs-peek-co{grid-column:1/-1;margin:-2px 0 2px;font-family:var(--font-mono);font-size:.8rem;color:var(--text-muted)}
     .fs-peek-k .v small{display:block;font-size:.7rem;font-weight:500;color:var(--text-muted);overflow-wrap:anywhere}
+
+/* phone width: the saved-spots box and its tray add no extra side padding (Nov 9) */
+@media(max-width:480px){.fs-undertray{padding-left:12px;padding-right:12px}.fs-saved{padding-left:12px;padding-right:12px}}

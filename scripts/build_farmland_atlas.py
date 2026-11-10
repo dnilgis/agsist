@@ -93,7 +93,8 @@ ATLAS_STATES = sorted(ATLAS_STATE_FIPS.values())
 # the 2010 map has one polygon for the pair, so both new codes fold onto it and
 # the page draws them as one place, which is what the map can honestly show.
 # Connecticut's nine 2022 planning regions are not a rename of the eight
-# counties -- they cross the old lines -- so they are deliberately NOT folded.
+# counties -- they cross the old lines -- so they are deliberately NOT folded
+# (county_fold.resolve calls them lossy and they keep their own code).
 # If a source starts publishing them they will appear in the unmatched report,
 # which is the signal to go and get a newer boundary file.
 # Names a federal file uses for a row that is not a county. Normalised through
@@ -104,33 +105,13 @@ def _plain(name):
 
 PLACEHOLDER_NAMES = {"unknown", "other", "allother", "notspecified", "statetotal", "othercounties", "allothercounties"}
 
-FIPS_ALIAS = {
-    "46113": "46102",   # Shannon SD -> Oglala Lakota, 2015-05-01
-    "02270": "02158",   # Wade Hampton AK -> Kusilvak, 2015-07-01
-    "51515": "51019",   # Bedford city VA -> Bedford County VA, 2013-07-01
-    "02063": "02261",   # Chugach AK      -> the 2010 Valdez-Cordova polygon, split 2019-01-02
-    "02066": "02261",   # Copper River AK -> the same polygon
-    "12025": "12086",   # Dade FL -> Miami-Dade, 1997. RMA kept writing 12025 into 2002.
-    # RMA split three big counties into two rating areas through 2012; the second
-    # code is the other half of the same county, with its own policies. Its
-    # 1989-2012 book belongs on the county's polygon, added (panel 9/19: the
-    # 19156 "W Pottawattamie" record sat off the map and 19155 ran short).
-    "19156": "19155",   # W Pottawattamie IA -> Pottawattamie
-    "27112": "27111",   # West Otter Tail MN -> Otter Tail
-    "27120": "27119",   # West Polk MN -> Polk
-}
-
-# THE ALIASES THAT ARE RENAMES: one place, one piece of ground, a new code.
-# Their year-keyed records are JOINED onto the new code (join_renamed). The
-# others in FIPS_ALIAS are a merger (Bedford city into Bedford County) and a
-# split (Chugach and Copper River out of Valdez-Cordova): two places, whose
-# numbers must never be added, and they keep first-code-wins.
-RENAMES = {"46113", "02270", "12025", "19156", "27112", "27120"}
-
-
-def fold(fips):
-    """The code the map carries, for a code a federal file published."""
-    return FIPS_ALIAS.get(fips, fips)
+# The fold itself (which codes, onto what, and which are renames whose records JOIN) is
+# scripts/county_fold.py, the one table every county builder imports (god's-eye build 1,
+# Nov 9). Renames are one place, one piece of ground, a new code: their year-keyed records
+# are JOINED onto the new code (join_renamed). Mergers (Bedford city into Bedford County)
+# and the 2019 Alaska split onto one polygon are two places, whose numbers must never be
+# added, and they keep first-code-wins.
+from county_fold import fold, RENAMES  # noqa: E402,F401  (fetch_atlas_storms imports fold from here)
 
 
 def _add_leaves(a, b):
@@ -1013,7 +994,7 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
         # real county is named by at least one of them. sob, value, crp and
         # drought carry numbers only. RMA's split units (W Pottawattamie IA,
         # West Otter Tail MN, West Polk MN) are folded onto their county by
-        # FIPS_ALIAS before this runs.
+        # county_fold.fold before this runs.
         # The map is the primary namer, so the check only runs when we have it:
         # without counties.geo.json, San Juan CO (08111) and St. Louis City MO
         # (29510) are named by nothing else and a blind check would drop two
@@ -1136,7 +1117,7 @@ def build(rent_dir=RENT_DIR, raw_dir=RAW_DIR, geometry_names=None, geometry_unit
             if f[:2] in ATLAS_STATE_FIPS and f not in geometry_names:
                 off_map.setdefault("rent", []).append(f)
         # A CODE THE MAP DOES NOT CARRY IS NEVER GUESSED INTO A COUNTY. It is
-        # named here so the next build can either fold it (FIPS_ALIAS) or go and
+        # named here so the next build can either fold it (county_fold.TABLE) or go and
         # get a newer boundary file. Connecticut's 09110-09190 showing up here is
         # the specific signal that NASS or RMA has moved to the planning regions.
         if off_map:
