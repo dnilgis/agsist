@@ -16,6 +16,8 @@ script that mails readers or a list prints, once per run, at exit:
   smtp          recipients this run handed to the mail server, the owner's copies too (scripts/send_cap.py; only
                 on a run that sent); the send-volume row counts the plan's daily cap from it
   cap_refused   sends the mail server refused like the plan's daily cap or a rate limit (send_cap.py)
+  suppressed    addresses left out of this run's list after two hard bounces (scripts/bounces.py); only on
+                a run whose list was read with the suppressed-address list
 
 Counts only, never an address. scripts/cron_health.py (the delivery rows) reads these lines
 from each sender's run logs; its list of senders is scripts/delivery_check.py SENDERS, and
@@ -90,6 +92,13 @@ def start(sender, dry=False, _caller=None):
         sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
         import send_cap
         send_cap.install(t)
+    except Exception:                                      # noqa: BLE001  never break a sender
+        pass
+    try:                  # leave out addresses suppressed after two hard bounces; save new ones (scripts/bounces.py)
+        import list_source
+        import bounces
+        list_source.suppress_for(t)
+        bounces.arm(sender)
     except Exception:                                      # noqa: BLE001  never break a sender
         pass
     return t

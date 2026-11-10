@@ -489,7 +489,7 @@ ADSPACE = """    <div class="footer-adspace" id="footer-adspace" hidden>
 BOTTOM = """    <div class="footer-bottom">
       <p class="footer-small"><span class="status-dot" aria-hidden="true"></span>Updated as each source posts. For information, not financial advice. <a href="/sponsor" data-sponsor-link class="footer-adv\"""" + ADV_GA % "footer_bottom" + """>Advertise with AGSIST</a></p>
       <div class="footer-legal">
-        <span>&copy; 2026 AGSIST</span><span class="footer-sep">&middot;</span>
+        <span>&copy; 2026 AGSIST</span><span class="footer-sep">&middot;</span><span>Since 2022</span><span class="footer-sep">&middot;</span>
         <a href="/privacy">Privacy</a><span class="footer-sep">&middot;</span>
         <a href="/accessibility">Accessibility</a><span class="footer-sep">&middot;</span>
         <a href="/terms">Terms</a>

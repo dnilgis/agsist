@@ -77,6 +77,7 @@ import subscribers        # noqa: E402
 import gmail_limit        # noqa: E402
 import log_safe           # noqa: E402  (no address in the public log)
 import delivery_line      # noqa: E402  (the DELIVERY count line cron_health reads)
+import send_pace  # noqa: E402  batches, one try more for a deferral, hard bounces (scripts/send_pace.py)
 TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import email_links        # noqa: E402  (k=<link id> links; never an address in one)
 import list_source  # noqa: E402  (the worker, or the private copy of its list)
@@ -680,6 +681,7 @@ def main(argv=()):
     # held to it by scripts/test_send_loops.py: a dropped socket costs one
     # email, never the tail of the list and never a second copy for everyone.
     sent, failed = 0, []
+    pace = send_pace.Pacer(recipients, sleep=time.sleep)   # batches and a pause between (scripts/send_pace.py)
     ctx = ssl.create_default_context()
 
     def connect():
@@ -692,17 +694,19 @@ def main(argv=()):
     conn = connect()
     reconnects, MAX_RECONNECTS = 0, 3
     try:
-        for i, r in enumerate(recipients):
+        for i, r in enumerate(pace):
+            conn = pace.fresh(conn, connect)   # the retry pass starts on a new connection
             try:
                 conn.send_message(build_email(day, b, r, from_name, from_addr, reply_to))
                 sent += 1
             except Exception as ex:
-                failed.append(r + " (" + type(ex).__name__ + ")")
+                if not pace.defer(ex):       # a deferral (4xx) is tried once more at the end of the list
+                    failed.append(r + " (" + type(ex).__name__ + ")")
                 fatal = (isinstance(ex, (smtplib.SMTPServerDisconnected,
                                          smtplib.SMTPConnectError))
                          or (isinstance(ex, OSError)
                              and not isinstance(ex, smtplib.SMTPException)))
-                if fatal and reconnects < MAX_RECONNECTS and i < len(recipients) - 1:
+                if fatal and reconnects < MAX_RECONNECTS and pace.more():
                     reconnects += 1
                     print("  connection lost after %d sent; reconnecting (%d/%d)"
                           % (sent, reconnects, MAX_RECONNECTS))
@@ -716,13 +720,14 @@ def main(argv=()):
                         print("::error::could not reconnect (%s) — %d of %d report emails sent"
                               % (type(ex2).__name__, sent, len(recipients)))
                         break
-            if i < len(recipients) - 1:
-                time.sleep(1.2)  # gentle throttle keeps Gmail happy
+            pace.after()   # the short gap, or the pause between batches
     finally:
         try:
             conn.quit()
         except Exception:
             pass
+    failed += [a + " (deferred, not sent)" for a in pace.unsent_addresses()]   # never tried again
+    print(pace.line())
     tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to the owner is dry
     print("sent " + str(sent) + "/" + str(len(recipients)))
     if sent > 0:
