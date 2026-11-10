@@ -52,7 +52,7 @@
   .why div{border-top:3px solid var(--gold);padding-top:12px}
   .why h3{font-size:19px;margin-bottom:6px}
   .why p{margin:0;color:var(--soft)}
-  .two{display:grid;grid-template-columns:1fr;gap:28px}
+  .one{max-width:640px}
   .bars{display:flex;flex-direction:column;gap:9px}
   .row{display:grid;grid-template-columns:118px minmax(0,1fr) 56px;align-items:center;gap:10px;font-size:15px}
   .row .n{color:var(--soft);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -91,7 +91,6 @@
     .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
     .stat b{font-size:40px}
     .why{grid-template-columns:repeat(3,minmax(0,1fr))}
-    .two{grid-template-columns:repeat(2,minmax(0,1fr));gap:40px}
     .tiers,.terms{grid-template-columns:repeat(2,minmax(0,1fr))}
     .steps{grid-template-columns:repeat(3,minmax(0,1fr))}
     .cta{flex-direction:row;align-items:center;gap:22px}
@@ -125,6 +124,7 @@
       <div class="stat" data-card="subs" hidden><b></b><span class="l">get the Daily email</span><span class="s">every weekday morning</span></div>
       <div class="stat" data-card="phone" hidden><b></b><span class="l">read on a phone</span><span class="s">in the truck, cab or shop</span></div>
     </div>
+    <p class="note" id="states-line">Ask for your state&rsquo;s numbers.</p>
     <p class="note" id="reach-none">Reader figures load from the site&rsquo;s own analytics file. If they do not show, they are not available right now; nothing here is a guess.</p>
   </section>
 
@@ -137,18 +137,11 @@
     </div>
   </section>
 
-  <section id="read" class="two-wrap">
-    <div class="two">
-      <div id="states-box" hidden>
-        <h2>Readers by state, last 28 days</h2>
-        <div class="bars" id="states"></div>
-        <p class="note" id="states-note"></p>
-      </div>
-      <div id="pages-box" hidden>
-        <h2>What they read, last 28 days</h2>
-        <div class="bars" id="pages"></div>
-        <p class="note" id="pages-note"></p>
-      </div>
+  <section id="read">
+    <div class="one" id="pages-box" hidden>
+      <h2>What they read, last 28 days</h2>
+      <div class="bars" id="pages"></div>
+      <p class="note" id="pages-note"></p>
     </div>
   </section>
 
@@ -303,13 +296,9 @@
     var w28s = span(w28);
     if (w28s && shown) { var wl = document.getElementById('win'); wl.textContent = 'Last 28 days: ' + w28s + '. So far this year: ' + (span(wy) || 'not available') + '.'; wl.hidden = false; }
 
-    var st = ((a.states || {})['28d'] || []).filter(function (x) { return x && x.name && num(x.users); });
-    if (st.length && w28s) {
-      st.sort(function (x, y) { return y.users - x.users; });
-      bars(document.getElementById('states-box'), document.getElementById('states'), st.slice(0, 10).map(function (x) { return [x.name, x.users]; }));
-      var k = st.filter(function (x) { return STATES.indexOf(x.code) >= 0; }).length;
-      document.getElementById('states-note').textContent = (k === 50 ? 'Readers in all 50 states.' : 'Readers in ' + k + ' states.') + ' Target one state or the whole country.';
-    }
+    /* national figures only: the state list gives a count of states with readers, never a state's own figure */
+    var k = ((a.states || {})['28d'] || []).filter(function (x) { return x && num(x.users) && STATES.indexOf(x.code) >= 0; }).length;
+    if (k && w28s) document.getElementById('states-line').textContent = (k === 50 ? 'Readers in all 50 states.' : 'Readers in ' + k + (k === 1 ? ' state.' : ' states.')) + ' Ask for your state\u2019s numbers.';
     var pg = ((a.pages || {})['28d'] || []).filter(function (x) { return x && num(x.views) && pageName(x.path); });
     if (pg.length && w28s) {
       pg.sort(function (x, y) { return y.views - x.views; });

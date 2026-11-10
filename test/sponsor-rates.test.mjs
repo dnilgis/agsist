@@ -25,6 +25,13 @@ const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not foun
 const read = (p) => readFileSync(ROOT + p, "utf8");
 const HTML = read("sponsor-rates.html");
 const CARD = JSON.parse(read("data/rate-card.json"));
+const US = "AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY".split(" ");
+
+test("national figures only: no state bars, one line offers a state's numbers", () => {
+  assert.doesNotMatch(HTML, /states-box|Readers by state/);
+  assert.match(HTML, /<p class="note" id="states-line">Ask for your state&rsquo;s numbers\.<\/p>/);
+  assert.doesNotMatch(HTML, /x\.users\]|\[x\.name/, "no state figure is drawn");
+});
 
 test("head: noindex,follow, canonical without a query, share card, GA guard", () => {
   assert.match(HTML, /<meta name="robots" content="noindex,follow">/);
@@ -121,7 +128,8 @@ const state = (page) => page.evaluate(() => {
     sw: document.documentElement.scrollWidth, cw: document.documentElement.clientWidth,
     tiers: document.querySelectorAll(".tier").length, tierCols: cols.size,
     prices: [...document.querySelectorAll("[data-k^=p-]")].map((p) => p.textContent),
-    states: document.querySelectorAll("#states .row").length, statesShown: !document.getElementById("states-box").hidden,
+    stateLine: document.getElementById("states-line").textContent,
+    text: document.body.innerText,
     pages: document.querySelectorAll("#pages .row").length, pagesShown: !document.getElementById("pages-box").hidden,
     none: !document.getElementById("reach-none").hidden,
     win: document.getElementById("win").hidden ? "" : document.getElementById("win").textContent,
@@ -151,8 +159,10 @@ for (const width of [390, 1280]) {
         .map((id) => "$" + CARD.tiers.find((t) => t.id === id).price_month + " /mo"));
       assert.equal(s.tierCols, width < 760 ? 1 : 4, "one column on a phone, four across at 1280");
       assert.ok(s.tel && s.mail.startsWith("mailto:sig@agsist.com"));
-      assert.ok(s.states <= 10 && s.pages <= 6);
-      if (s.statesShown) assert.ok(s.states > 0);
+      assert.ok(s.pages <= 6);
+      const k = (a?.states?.["28d"] || []).filter((x) => x && x.users > 0 && US.includes(x.code)).length;
+      assert.equal(s.stateLine, s.win && k ? (k === 50 ? "Readers in all 50 states." : `Readers in ${k} state${k === 1 ? "" : "s"}.`) + " Ask for your state\u2019s numbers." : "Ask for your state\u2019s numbers.");
+      for (const x of a?.states?.["28d"] || []) if (x && x.name) assert.ok(!s.text.includes(x.name), "a state is named on the page: " + x.name);
       if (s.win) assert.match(s.win, /^Last 28 days: [A-Z][a-z]{2} \d{1,2}(, \d{4})? to [A-Z][a-z]{2} \d{1,2}, \d{4}\./);
     } finally { await browser.close(); srv.close(); }
   });
@@ -165,7 +175,8 @@ test("no audience file, no counts file: every card withheld, the note says so, n
     const { page } = await open(browser, port, { stub: (r) => r.fulfill({ status: 404, body: "" }) });
     const s = await state(page);
     assert.deepEqual(Object.values(s.cards), [null, null, null, null, null, null]);
-    assert.ok(s.none && !s.statesShown && !s.pagesShown && s.win === "");
+    assert.ok(s.none && !s.pagesShown && s.win === "");
+    assert.equal(s.stateLine, "Ask for your state\u2019s numbers.");
     assert.equal(s.prices.length, 4);
     assert.ok(s.sw <= s.cw);
   } finally { await browser.close(); srv.close(); }
@@ -181,7 +192,9 @@ test("a partial audience file shows only what it has", { skip }, async () => {
       ? r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify(aud) }) : r.fulfill({ status: 404, body: "" }) });
     const s = await state(page);
     assert.deepEqual(s.cards, { users: "1,234", search: null, ytd: null, elev: null, subs: null, phone: "70%" });
-    assert.ok(!s.none && s.statesShown && s.states === 1 && !s.pagesShown);
+    assert.ok(!s.none && !s.pagesShown);
+    assert.equal(s.stateLine, "Readers in 1 state. Ask for your state\u2019s numbers.");
+    assert.ok(!s.text.includes("Iowa") && !/(^|[^\d,])9([^\d,%]|$)/.test(s.text), "no state name or state figure on the page");
     assert.ok(s.win.startsWith("Last 28 days: ") && s.win.endsWith(". So far this year: not available."), s.win);
     assert.deepEqual(s.cards, expected(aud, null));
   } finally { await browser.close(); srv.close(); }
