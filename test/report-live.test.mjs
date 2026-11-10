@@ -112,7 +112,7 @@ test("the worker refuses what is not a signed result in the fixed shape", async 
   assert.equal((await w.fetch(new Request("https://x.dev/report-live", { method: "PUT" }), env)).status, 405);
   delete env.UNSUB_SECRET;
   assert.equal((await post(w, env, p)).status, 503, "no secret on the worker: nothing is kept");
-  assert.ok(read("workers/subs-worker.js").includes(" * v5.67 (2026-11-10): REPORT-DAY RESULT."), "the worker header names the change");
+  assert.match(read("workers/subs-worker.js"), / \* v5\.67 \(\d{4}-\d{2}-\d{2}\): REPORT-DAY RESULT\./, "the worker header names the change");
 });
 
 test("the worker and report_live.validate() agree", async () => {
@@ -235,7 +235,7 @@ sys.path.insert(0, "scripts")
 import prerender_wpi_scorecard as p
 w = {"latest_result": None, "history": [], "upcoming": {"date": "2026-12-10"}}
 print(p.home_usda_card(w))`], { cwd: ROOT, encoding: "utf8" });
-  assert.match(py, /<div class="usda-cal-card gs-card" data-next="2026-12-10" data-shown="" style="display:none"><\/div>/, "an empty card still waits for the live result");
+  assert.match(py, /<div class="usda-cal-card gs-card" data-next="2026-12-10" data-shown="" style="display:none"><\/div>/, "an empty card still waits for the live result"); // pin-ok: inline fixture
 });
 
 test("the homepage card from a live record reads like the baked one", () => {
@@ -243,7 +243,7 @@ test("the homepage card from a live record reads like the baked one", () => {
   const win = {}; const doc = { readyState: "complete", querySelector: () => null, addEventListener() {} };
   new Function("window", "document", src)(win, doc);
   const html = win.agsReportLive.homeCard(good({ release: "2026-12-10" }));
-  assert.match(html, /<span class="gs-t">December WASDE &middot; Dec 10<\/span>/);
+  assert.match(html, /<span class="gs-t">December WASDE &middot; Dec 10<\/span>/); // pin-ok: inline fixture
   // what a reader sees says nothing about how the number gets there
   assert.doesNotMatch(html.replace(/<[^>]+>/g, " "), /worker|KV|cron|GitHub|poll|pipeline|signed|live result/i, "no method text on the card");
   assert.match(html, /0 of 1 graded figures in line with the trade\. Biggest miss: 2026\/27 corn ending stocks, \+10\.5%, bearish\./);
