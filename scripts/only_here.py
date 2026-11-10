@@ -221,6 +221,25 @@ def record_facts(before, repo=REPO):
     return out
 
 
+def rain_fact(st, c):
+    """The ZIP reader's rain line as a fact, by the station's county, never the reader: {"kind": "rain_line",
+    "key": "<ST>:<fips>", "value": "<as_of>"}, the day the station's total runs through. A station that has not
+    reported since the last issue gives the same value, and daily_v2 leaves the line out (Nov 10 2026: lines are
+    computed at send time, so a repeat was never seen)."""
+    return {"kind": "rain_line", "key": "%s:%s" % (st.upper(), c.get("_fips")), "value": str(c.get("as_of"))}
+
+
+def rain_facts(before, repo=REPO):
+    """[fact] of every county whose station a ZIP reader's rain line could read in the issue for `before`
+    (rain_fact): the issue's own record of what its rain lines said, so the next issue can leave out a repeat."""
+    out = []
+    for _lat, _lon, st, c in _stations(repo):
+        if str(c.get("as_of") or "") > before or c.get("total") is None:
+            continue
+        out.append(rain_fact(st, c))
+    return out
+
+
 def rain_line(at, before, repo=REPO):
     """at = (lat, lon) of the reader's ZIP."""
     if not at:
@@ -241,7 +260,8 @@ def rain_line(at, before, repo=REPO):
             % (c["total"], _md(c["as_of"]), town, c["name"], round(mi), c["pct"]))
     words, fact = _record_rank(st, c, repo)
     slug = "/rain/%s/%s" % (R.slug(_states().get(st, st)), R.slug(c["name"]))
-    out = {"text": text + words, "kind": "rain_vs_normal", "url": slug, "link": "Your county's rain", "n": 1}
+    out = {"text": text + words, "kind": "rain_vs_normal", "url": slug, "link": "Your county's rain", "n": 1,
+           "fact": rain_fact(st, c)}
     if words:
         out["record"] = {"text": words, "fact": fact}     # daily_v2 drops the words when the rank is no news
     return out
@@ -260,8 +280,11 @@ def records_line(before, repo=REPO):
             % (len(wet), "county is" if len(wet) == 1 else "counties are", len(dry)))
     oldest = min(rs, key=lambda o: o["first"])
     text += " The longest of those records, %s, %s, goes back to %d (%s)." % (oldest["county"], oldest["state"], oldest["first"], oldest["side"])
+    # the value is the two counts and the oldest record (daily_fresh.still_news: the line prints again only when
+    # one of them changed since the issue that last printed it; Nov 9 and 10 2026 went out word for word)
+    first = "%s, %s, %d, %s" % (oldest["county"], oldest["state"], oldest["first"], oldest["side"])
     return {"text": text, "kind": "rain_records", "url": "/rain#records", "link": "Every record county", "n": len(rs),
-            "fact": {"kind": "rain_records", "key": "us", "value": [len(wet), len(dry)], "text": text}}
+            "fact": {"kind": "rain_records", "key": "us", "value": [len(wet), len(dry), first], "text": text}}
 
 
 def for_reader(before, z=None, repo=REPO, loc=None):

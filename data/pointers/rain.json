@@ -13,6 +13,14 @@
    "to": "/rain/arkansas",
    "since": "2026-10-14"
   },
+  "rain/arkansas/ouachita-county.html": {
+   "to": "/rain/arkansas",
+   "since": "2026-11-10"
+  },
+  "rain/florida/lafayette-county.html": {
+   "to": "/rain/florida",
+   "since": "2026-11-10"
+  },
   "rain/georgia/bacon-county.html": {
    "to": "/rain/georgia",
    "since": "2026-10-14"
@@ -20,6 +28,10 @@
   "rain/georgia/murray-county.html": {
    "to": "/rain/georgia",
    "since": "2026-10-14"
+  },
+  "rain/georgia/whitfield-county.html": {
+   "to": "/rain/georgia",
+   "since": "2026-11-10"
   },
   "rain/idaho/lewis-county.html": {
    "to": "/rain/idaho",
@@ -79,10 +91,6 @@
   },
   "rain/south-carolina/marion-county.html": {
    "to": "/rain/south-carolina",
-   "since": "2026-10-14"
-  },
-  "rain/south-dakota/aurora-county.html": {
-   "to": "/rain/south-dakota",
    "since": "2026-10-14"
   },
   "rain/south-dakota/dewey-county.html": {
