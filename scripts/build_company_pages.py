@@ -313,7 +313,7 @@ def why_none(co):
                 f"{short} bid we can stand behind right now. We check again through the day and the prices come "
                 f"back here as soon as a read goes through.")
     if top == "price_older_than_cutoff":
-        return f"{short} has not posted a new bid in the last {CB.FRESH_HOURS} hours, so no price is shown."
+        return f"{short} has not posted a new bid in the last two trading sessions, so no price is shown."
     if top == "delivery_expired_or_undated":
         return f"The only {short} bids posted are for delivery periods that have already ended."
     return f"No {short} board has a bid we could confirm right now."
@@ -461,7 +461,7 @@ def build_page(co, ctx):
   {CB.faq_html(qs, short)}
   <p class="cbt-sub">{links}</p>
   <details class="cbt-note cbt-terms"><summary>Sources and terms</summary>
-  <p>Bids come from each {esc(short)} location&rsquo;s own posted bid board, read in the last {CB.SB.HELD_SKIP_HOURS} hours, with the price posted in the last {CB.FRESH_HOURS} hours and the delivery period still open. Each price is the location&rsquo;s earliest delivery period for the grade it posts most; the town page has every month and the futures contract each basis is quoted against. A basis far off the elevators around it is left out here. This page is a snapshot rebuilt through the day; always call the elevator to confirm before you haul.</p></details>
+  <p>Bids come from each {esc(short)} location&rsquo;s own posted bid board, read in the last {CB.SB.HELD_SKIP_HOURS} hours, with the price {CB.FRESH_WORDS} and the delivery period still open. Each price is the location&rsquo;s earliest delivery period for the grade it posts most; the town page has every month and the futures contract each basis is quoted against. A basis far off the elevators around it is left out here. This page is a snapshot rebuilt through the day; always call the elevator to confirm before you haul.</p></details>
 """
     h = CB.head(title, desc, path, jsonld, indexable)
     h = with_extra_css(h)
@@ -501,8 +501,8 @@ def build_index(metas, ctx):
   <h1>Cash grain bids by elevator company</h1>
   <p class="cbt-sub">Every company with {COMPANY_MIN} or more locations in the AGSIST elevator network, each with today&rsquo;s
   bids at all its locations on one page. Bids are read from each company&rsquo;s public bid board; AGSIST is not
-  affiliated with any of them. &ldquo;Current&rdquo; counts the locations with a bid posted in the last {CB.FRESH_HOURS}
-  hours.</p>
+  affiliated with any of them. &ldquo;Current&rdquo; counts the locations with a bid posted in the last two trading
+  sessions.</p>
   <div class="cbt-scroll"><table class="cbt-t cbc-t"><thead><tr><th>Company</th><th class="n">Locations</th>
   <th class="n">Current</th><th>States</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
   <p class="cbt-sub"><a href="/cash-bids">Bids near your ZIP</a> &middot; <a href="/basis">Basis by state</a></p>

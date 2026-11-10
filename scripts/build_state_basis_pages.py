@@ -29,9 +29,9 @@ WHAT COUNTS AS A FRESH NETWORK BID (all must hold)
   - board in index.json with status "ok" and health "live"
     (or: board and row "skipped", i.e. not asked this pass, with its last
     successful read within HELD_SKIP_HOURS; see held_skip())
-  - row pricedAt within FRESH_HOURS (72 h) of the snapshot's `generated` time.
-    72 h, not 24: a board that did not move over a weekend is still Friday's
-    posted price on Monday morning, and Friday 14:00 -> Monday 13:00 is 71 h.
+  - row priced before two day sessions have closed (is_fresh(), the site's one
+    freshness rule, the same as /cash-bids): a board that did not move over a
+    weekend is still Friday's posted price through Monday's session.
   - basis in $/bu (basisUnit "per-bushel"); "unknown" units are dropped
   - delivery period parsed and not already past; harvest-season rows
     ("newcrop-YYYY") are undated and are not used to pick a nearby bid
@@ -89,7 +89,9 @@ from basis_method import (  # noqa: E402  (the one state-basis method)
 
 SITE = "https://agsist.com"
 OUT_DIR = "basis"
-FRESH_HOURS = 72
+FRESH_HOURS = 72      # kept for older callers' wording; the rule itself is fresh_until() below
+FRESH_SESSIONS = 2    # /cash-bids: a board's price is current until two day sessions close after it
+SESSION_CLOSE_CT = (13, 20)
 FOLD_ROWS = 8         # table rows shown on a phone before "Show all"
 MIN_INDEX = 5         # elevators behind a corn or soy headline to be indexable
 PREV_TARGET_H = 7 * 24
@@ -124,6 +126,35 @@ SPECIALTY = re.compile(r"white|organic|non[\s-]?gmo|nongmo|high oleic|\bip\b|foo
 
 
 # ---------------------------------------------------------------- helpers
+
+def fresh_until(pt, n=FRESH_SESSIONS):
+    """UTC moment a price posted at pt stops being current: the n-th weekday
+    day-session close (1:20 pm Central) after it. The site's one freshness
+    rule, the same one /cash-bids marks a board's card with (two closed
+    sessions): a Friday afternoon bid is current through Monday's session and
+    a Monday morning bid until Tuesday's close. None when pt is None."""
+    if pt is None:
+        return None
+    t = pt.astimezone(CT)
+    d = t.date()
+    seen = 0
+    for _ in range(40):
+        close = dt.datetime(d.year, d.month, d.day, *SESSION_CLOSE_CT, tzinfo=CT)
+        if d.weekday() < 5 and close > t:
+            seen += 1
+            if seen >= n:
+                return close.astimezone(dt.timezone.utc)
+        d += dt.timedelta(days=1)
+    return None
+
+
+def is_fresh(pt, gen, n=FRESH_SESSIONS):
+    """True while fewer than n day sessions have closed between pt and gen."""
+    if pt is None or gen is None:
+        return False
+    u = fresh_until(pt, n)
+    return u is not None and gen < u
+
 def ld_json(obj):
     """JSON-LD for a <script> block; "</" escaped. Kept out of the f-string so Python 3.11 (fetch_bids.yml) parses this file."""
     return json.dumps(obj, indent=1, ensure_ascii=False).replace("</", "<\\/")
@@ -496,7 +527,7 @@ def fresh_rows(merged, index, stats=None):
             drop("no_us_state")
             continue
         pt = parse_ts(b.get("pricedAt"))
-        if pt is None or gen is None or (gen - pt).total_seconds() > FRESH_HOURS * 3600:
+        if not is_fresh(pt, gen):
             drop("price_older_than_cutoff")
             continue
         crop = b.get("crop")

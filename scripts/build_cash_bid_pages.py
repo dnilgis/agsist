@@ -24,8 +24,9 @@ WHAT IS SHOWN (every rule must hold for a row to print)
   - board in index.json with status "ok" and health "live"
     (or: board and row "skipped", i.e. not asked this pass, with its last
     successful read within SB.HELD_SKIP_HOURS; see held_skip())
-  - pricedAt within FRESH_HOURS (72 h) of the snapshot -- the same window the
-    state basis pages use, so a board unchanged over a weekend still counts
+  - priced before two day sessions have closed (SB.is_fresh, the site's one
+    freshness rule, the same as /cash-bids and the state basis pages), so a
+    board unchanged over a weekend still counts on Monday
   - delivery not expired: periodPast false, the month window not behind the
     snapshot's month (the bids repo's deliveryMonth rules, ported), and a
     dated label ("By Oct 7", "Oct 1-9th") not behind the snapshot's day
@@ -106,7 +107,7 @@ from build_state_basis_pages import (  # noqa: E402
 
 OUT_DIR = "cash-bids"
 SITEMAP = "sitemap-cash-bids.xml"
-FRESH_HOURS = 72
+FRESH_WORDS = "posted within the last two trading sessions"   # SB.is_fresh, in plain words (Sources and terms only)
 # A BOARD SIG PASTED BY HAND (dnilgis/bids rows with pasted: true, 2026-10-20). The site
 # puts a bot check in front of the bids reader, so Sig pastes its public bid
 # page. Sig: show it up to 7 days, with a small "Last updated" mark once it is
@@ -551,8 +552,8 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
         if not held and (src.get("status") != "ok" or src.get("health") != "live"):
             no("board_not_live")
             continue
-        fresh_h = PASTE_HOURS if b.get("pasted") is True else FRESH_HOURS
-        if pt is None or (gen - pt).total_seconds() > fresh_h * 3600:
+        if not (SB.is_fresh(pt, gen) if b.get("pasted") is not True
+                else pt is not None and (gen - pt).total_seconds() <= PASTE_HOURS * 3600):
             no("price_older_than_cutoff")
             continue
         crop = b.get("crop")
@@ -1338,7 +1339,7 @@ def hold_lines(bd):
 # A town page used to end at its own elevators, and a town with no current bid
 # was a dead end ("No current bid", then a link). Each town page now lists the
 # nearest OTHER network elevators that have a current bid, from the same rows
-# this build already gated (72 h, live board, delivery open, misreads out):
+# this build already gated (two trading sessions, live board, delivery open, misreads out):
 # nothing is read or shown that a town page of its own would not show.
 NEARBY_MI = 40                # a town with bids: other elevators this close
 NEARBY_MAX = 6
@@ -1446,7 +1447,7 @@ def nearby_section(t, center, live_all, snap_ct, has_own):
                    f'<span class="np">{prices}</span></li>')
     return (f'<h2 id="nearby">{h2}</h2><ul class="cbt-nl">{"".join(lis)}</ul>'
             f'<p class="cbt-sub">Straight-line miles from {esc(what)}. Each price is that elevator&rsquo;s highest '
-            f'posted cash for its earliest delivery period, posted in the last {FRESH_HOURS} hours. '
+            f'posted cash for its earliest delivery period. '
             f'Call to confirm before you haul.</p>')
 
 
@@ -1609,7 +1610,7 @@ def board_section(bd, snap_ct):
 WHY = {"stale_or_unconfirmed": "board not confirmed on the latest read",
        "board_off_feed_page_kept": "board could not be read on recent passes",
        "board_not_live": "board not confirmed on the latest read",
-       "price_older_than_cutoff": f"no price posted in the last {FRESH_HOURS} hours",
+       "price_older_than_cutoff": "no recent price",
        "delivery_expired_or_undated": "only expired delivery periods posted",
        "implied_futures_disagrees": "posted figures did not check out",
        "delivery_year_did_not_check_out": "posted figures did not check out",
@@ -1826,8 +1827,8 @@ def share_until(r):
     the freshness window from its posted time (the same window that let the row
     onto the page), the day a dated label names, the 15th for a first-half bid,
     and the end of its delivery month, each to the end of that day in Central time."""
-    fresh_h = PASTE_HOURS if r.get("pasted") else FRESH_HOURS
-    ends = [r["priced"].astimezone(dt.timezone.utc) + dt.timedelta(hours=fresh_h)]
+    ends = [r["priced"].astimezone(dt.timezone.utc) + dt.timedelta(hours=PASTE_HOURS) if r.get("pasted")
+            else SB.fresh_until(r["priced"])]
     y, m = int(r["dm"][:4]), int(r["dm"][5:7])
 
     def day_end(yy, mm, dd):
@@ -2400,7 +2401,7 @@ def build_town_page(t, ctx):
   {county_line(t, center, ctx)}
   <p class="cbt-sub">{' &middot; '.join(links)}</p>
   <details class="cbt-note cbt-terms"><summary>Sources and terms</summary>
-  <p>Bids come from each elevator&rsquo;s own posted bid board, read in the last {SB.HELD_SKIP_HOURS} hours, with the price posted in the last {FRESH_HOURS} hours and the delivery period still open. This page is a snapshot rebuilt through the day; the <a href="{esc(live)}">live page</a>
+  <p>Bids come from each elevator&rsquo;s own posted bid board, read in the last {SB.HELD_SKIP_HOURS} hours, with the price {FRESH_WORDS} and the delivery period still open. This page is a snapshot rebuilt through the day; the <a href="{esc(live)}">live page</a>
   has the newest bids and nearby elevators. Always call the elevator to confirm before you haul. Basis is cash minus the futures contract named under it.{near_note}{hold_note}{HIST_NOTE if hist_html else ''}</p></details>
 """
     meta = {"state": st, "slug": t["slug"], "name": t["name"], "indexable": indexable, "path": path,
@@ -3092,7 +3093,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
                       "description": (f"Cash bids and basis (cash minus the named futures contract, $/bu) posted by "
                                       f"{len({r['source'] for r in near})} elevators in {sname} that the AGSIST "
                                       f"elevator network read from their own bid boards, priced within "
-                                      f"{FRESH_HOURS} hours of the snapshot. A sample of elevators, not every "
+                                      f"the last two trading sessions before the snapshot. A sample of elevators, not every "
                                       f"elevator in the state."),
                       "url": f"{SITE}{path}", "isAccessibleForFree": True,
                       "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
@@ -3154,7 +3155,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   <h2>Other states</h2>
   <p class="cbt-cloud">{others}</p>
   <details class="cbt-note cbt-terms"><summary>Sources and terms</summary>
-  <p>Bids come from each elevator&rsquo;s own posted bid board, read in the last {SB.HELD_SKIP_HOURS} hours, with the price posted in the last {FRESH_HOURS} hours. Specialty bids (white, organic, non-GMO, high-oleic, identity-preserved) are left out of the basis, and a middle number shows only when enough elevators post the same futures month.{wow_note} Prices move through the day; always call the elevator to confirm before you haul.</p></details>
+  <p>Bids come from each elevator&rsquo;s own posted bid board, read in the last {SB.HELD_SKIP_HOURS} hours, with the price {FRESH_WORDS}. Specialty bids (white, organic, non-GMO, high-oleic, identity-preserved) are left out of the basis, and a middle number shows only when enough elevators post the same futures month.{wow_note} Prices move through the day; always call the elevator to confirm before you haul.</p></details>
 """
     return head(title, desc, path, jsonld, indexable, share) + body + page_end(ftr, table=bool(near)), {
         "state": st, "path": path, "indexable": indexable, "towns": len(live), "quiet": len(quiet),
@@ -3182,7 +3183,7 @@ def states_list_html(live, quiet=()):
                          f'town{"s" if m["towns"] != 1 else ""}</span></li>' for m in live)
                + '</ul>')
     out += (f'<p class="bs-seed">How these counts are made: an elevator counts when its board was read in the '
-            f'last {SB.HELD_SKIP_HOURS} hours and it posted a price within {FRESH_HOURS} hours; a town counts when '
+            f'last {SB.HELD_SKIP_HOURS} hours and it posted a price within the last two trading sessions; a town counts when '
             f'it has one. The same counts are on each state&rsquo;s page.</p>')
     if quiet:
         out += ('<p class="bs-seed">The network reads a board here, but none has a bid it could confirm right '
@@ -3967,7 +3968,7 @@ def selftest():
             "no basis log given: no history box, no script"
         ho = open(os.path.join(out, "nebraska", "hooper.html")).read()
         assert "1.16" not in ho and "1.17" not in ho and "$9.70" in ho
-        assert "Op old: no price posted in the last 72 hours" in ho, "a quiet board must be named, unpriced"
+        assert "Op old: no recent price" in ho, "a quiet board must be named, unpriced"
         # nearby: a town with bids lists the other elevators within 40 mi, with their own gated numbers
         assert "Other elevators within 40 miles" in fr and 'href="/cash-bids/nebraska/hooper"' in fr
         near_fr = fr[fr.index('id="nearby"'):]
@@ -4698,7 +4699,7 @@ def _selftest_sharebid():
     assert href == "/cash-bids/iowa/nevada?utm_source=share" and title == "Nevada, IA cash bids" and crop == "corn"
     assert "$" not in plain and plain.endswith("agsist.com/cash-bids/iowa/nevada"), plain
     assert not re.search(r"futures|\d{3}\.\d|basis", text, re.I), "no futures price and no basis in the share"
-    assert parse_ts(until) == parse_ts(lw["pricedAt"]) + dt.timedelta(hours=FRESH_HOURS), until
+    assert parse_ts(until) == SB.fresh_until(parse_ts(lw["pricedAt"])), until
     assert pg.count("/components/share-bid.js?v=") == 1 and pg.index('class="cbt-answer"') < pg.index("data-share-bid")
     # the period can end first: a first-half bid stops on the 15th, a dated one on its day
     late = parse_ts(lw["pricedAt"]).replace(day=14)
@@ -4707,7 +4708,7 @@ def _selftest_sharebid():
     r = dict(r, label=f"By {MONTH_ABBR[late.month - 1]} {late.day + 1}")
     assert share_until(r) < share_until(dict(r, label=f"{MONTH_ABBR[late.month - 1]} {late.year}"))
     assert share_until(dict(r, label=f"{MONTH_ABBR[late.month - 1]} {late.year}")) == \
-        late + dt.timedelta(hours=FRESH_HOURS), "a month label's year is not read as a day"
+        min(SB.fresh_until(late), share_until(dict(r, label="x"))), "a month label's year is not read as a day"
     # no answer line, no button and no script
     assert share_bid_html({}, "Nevada, IA", "/cash-bids/iowa/nevada") == ""
     assert "share-bid.js" not in page_end("") and "share-bid.js" in page_end("", share=True)
@@ -4853,7 +4854,7 @@ def _selftest_pasted():
     """A board Sig pasted by hand (NEW Cooperative, Afton IA, Oct 20 2026: corn
     $4.26, basis -35 vs 461-4): shown up to PASTE_HOURS with a "Last updated"
     mark once older than PASTE_MARK_HOURS; past that, or the same row unpasted
-    past FRESH_HOURS, it is not shown."""
+    past the two-session freshness rule, it is not shown."""
     pa = "2026-10-20T14:05:00Z"
     row = {"source": "newcoop-afton", "place": "NEW Cooperative, Inc.||Afton|IA", "operator": "NEW Cooperative, Inc.",
            "city": "Afton", "town": None, "state": "IA", "zip": None, "lat": 41.0401, "lon": -94.194, "precision": "town",
@@ -4897,7 +4898,7 @@ def _selftest_pasted():
     # past seven days: gone
     got, drops = boards("2026-10-27T14:06:00Z", row)
     assert not got and drops["price_older_than_cutoff"] == 1, drops
-    # the same row, not pasted, four days old: gone (FRESH_HOURS)
+    # the same row, not pasted, four days old: gone (two trading sessions, SB.is_fresh)
     plain = {k: v for k, v in row.items() if k not in ("pasted", "pastedAt", "postedFrom")}
     got, drops = boards("2026-10-24T14:05:00Z", plain)
     assert not got and drops["price_older_than_cutoff"] == 1, drops
