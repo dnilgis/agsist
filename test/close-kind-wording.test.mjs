@@ -59,10 +59,10 @@ test("/markets source line follows close_kind, and the page script and the build
     const fromPy = py("import json, seed_static as s; print(s.mk_source(json.loads(" + JSON.stringify(JSON.stringify(q)) + ")))");
     assert.equal(js(q), fromPy, JSON.stringify(q).slice(0, 80));
   }
-  assert.equal(js(cases[2]), "Every card shows the exchange settle. Quotes from Yahoo Finance, refreshed every 15 minutes in session.");
-  assert.equal(js(cases[1]), "Exchange settles, except the latest delayed trade for Crude WTI. Quotes from Yahoo Finance, refreshed every 15 minutes in session.");
-  assert.equal(js(cases[3]), "Every card shows the latest delayed trade, not the exchange settle. Quotes from Yahoo Finance, refreshed every 15 minutes in session.");
-  assert.equal(js(cases[4]), "Latest delayed trades, except the exchange settle for Live cattle. Quotes from Yahoo Finance, refreshed every 15 minutes in session.");
+  assert.equal(js(cases[2]), "Every card shows the exchange settle. Quotes from Yahoo Finance, read about every 15 minutes; grain and livestock delayed 10 to 25 min.");
+  assert.equal(js(cases[1]), "Exchange settles, except the latest delayed trade for Crude WTI. Quotes from Yahoo Finance, read about every 15 minutes; grain and livestock delayed 10 to 25 min.");
+  assert.equal(js(cases[3]), "Every card shows the latest delayed trade, not the exchange settle. Quotes from Yahoo Finance, read about every 15 minutes; grain and livestock delayed 10 to 25 min.");
+  assert.equal(js(cases[4]), "Latest delayed trades, except the exchange settle for Live cattle. Quotes from Yahoo Finance, read about every 15 minutes; grain and livestock delayed 10 to 25 min.");
   // the baked line is the build's words for the file on disk. The build and the
   // page both swap in each card's shown contract first (the -nearby alias, the
   // next harvest month, the nearest dated month), so the raw aliases are not

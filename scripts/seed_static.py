@@ -723,9 +723,9 @@ def mk_source(q):
         if d.get("close") is None:
             continue
         (st if d.get("close_kind") == "settle" else la).append(MK_NAMES.get(key, key))
-    tail = " Quotes from Yahoo Finance, refreshed every 15 minutes in session."
+    tail = " Quotes from Yahoo Finance, read about every 15 minutes; grain and livestock delayed 10 to 25 min."
     if not st and not la:
-        return "Quotes from Yahoo Finance, refreshed every 15 minutes in session."
+        return "Quotes from Yahoo Finance, read about every 15 minutes; grain and livestock delayed 10 to 25 min."
     if not la:
         return "Every card shows the exchange settle." + tail
     if not st:
