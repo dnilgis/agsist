@@ -20,7 +20,7 @@
 (function(){
   'use strict';
 
-  var NET_SCRIPT = '/components/bids-network.js?v=8';
+  var NET_SCRIPT = '/components/bids-network.js?v=9';
 
   var MAX_ELEVATORS = 3;
   var MAX_BIDS_PER_COMMODITY = 3;
