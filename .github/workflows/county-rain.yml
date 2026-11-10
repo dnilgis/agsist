@@ -137,7 +137,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           SAVE=$RUNNER_TEMP/rain-save; rm -rf "$SAVE"; mkdir -p "$SAVE/og"
-          # story files are written by the stories job only: this job never carries its checkout's copy onto main
           git ls-files -m -o --exclude-standard -- data/rain ':!data/rain/stories' | while IFS= read -r f; do [ -f "$f" ] && echo "$f"; done > "$SAVE/changed.txt" || true
           git ls-files -d -- data/rain ':!data/rain/stories' > "$SAVE/removed.txt"
           echo "data/rain files this run wrote: $(wc -l < "$SAVE/changed.txt"), removed: $(wc -l < "$SAVE/removed.txt")"
