@@ -23,6 +23,7 @@ import fs from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const LIST = JSON.parse(fs.readFileSync(join(ROOT, 'test/cls-reserved.json'), 'utf8'));
@@ -177,6 +178,41 @@ test('every element a script fills or reveals on a CLS-tested page has its space
   for (const p of Object.keys(LIST.below_fold).concat(Object.keys(LIST.to_fix))) if (!PAGES.includes(p)) problems.push(`test/cls-reserved.json lists ${p}, which no CLS test covers`);
   if (process.env.CLS_RESERVED_DUMP) fs.writeFileSync(process.env.CLS_RESERVED_DUMP, JSON.stringify(Object.fromEntries(PAGES.map((p) => [p, scan(fs.readFileSync(join(ROOT, p), 'utf8')).filter((x) => !x.reserved).map((x) => x.id)]))));
   assert.deepEqual(problems, []);
+});
+
+/* to_fix may only shrink. Two guards: a frozen ceiling per page (the list as of Nov 10, 2026: lower a number when its
+   page's entries come out, never raise one, never add a page), and, where origin/main is fetched (the PR checks fetch
+   it), no page's list may hold an id that main's list does not. */
+const TO_FIX_CAP = { 'cash-bids.html': 8, 'corn-futures-prices.html': 10, 'fertilizer.html': 3, 'index.html': 50, 'soybean-futures-prices.html': 8, 'wheat-futures-prices.html': 5 };
+const TO_FIX_TOTAL_CAP = 84;
+function toFixGrowth(toFix, main) {
+  const grew = [];
+  let total = 0;
+  for (const [p, ids] of Object.entries(toFix)) {
+    total += ids.length;
+    if (!(p in TO_FIX_CAP)) grew.push(`${p} is new on to_fix: hold its elements' space instead`);
+    else if (ids.length > TO_FIX_CAP[p]) grew.push(`${p} has ${ids.length} on to_fix, over its ceiling of ${TO_FIX_CAP[p]}`);
+  }
+  if (total > TO_FIX_TOTAL_CAP) grew.push(`to_fix holds ${total}, over the ceiling of ${TO_FIX_TOTAL_CAP}`);
+  if (main) {
+    for (const [p, ids] of Object.entries(toFix)) for (const id of ids) if (!(main[p] || []).includes(id)) grew.push(`${p} #${id} is on to_fix here but not on main's list`);
+  }
+  return grew;
+}
+test('to_fix never grows: within its frozen ceiling, and nothing main does not already list', () => {
+  let main = null;
+  try { main = JSON.parse(execFileSync('git', ['show', 'origin/main:test/cls-reserved.json'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })).to_fix || {}; } catch (e) { main = null; }
+  if (!main) console.log('# to_fix: origin/main is not fetched here, so only the frozen ceiling was checked');
+  assert.deepEqual(toFixGrowth(LIST.to_fix, main), []);
+});
+
+test('the to_fix guard catches growth', () => {
+  const base = JSON.parse(JSON.stringify(LIST.to_fix));
+  assert.match(toFixGrowth({ ...base, 'tariffs.html': ['tariff-tbody'] }, null).join(), /tariffs\.html is new on to_fix/, 'a new page');
+  const more = JSON.parse(JSON.stringify(base)); more['index.html'] = (more['index.html'] || []).concat(Array.from({ length: 51 }, (_, i) => 'x' + i));
+  assert.match(toFixGrowth(more, null).join(), /index\.html has \d+ on to_fix, over its ceiling of 50/, 'a page over its ceiling');
+  const swap = JSON.parse(JSON.stringify(base)); swap['fertilizer.html'] = ['not-on-main'];
+  assert.match(toFixGrowth(swap, base).join(), /fertilizer\.html #not-on-main is on to_fix here but not on main's list/, 'an id main does not list, within the ceiling');
 });
 
 test('pages already cleaned up stay clean: nothing to fix on /milk-prices', () => {

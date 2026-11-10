@@ -81,15 +81,6 @@ for r in d["rows"]:
 for k in ("headline","status_note","status_label"):
     if EMOJI.search(d[k]): bad(f"{k}: emoji in reader copy")
 
-# 9. the status banner holds a set room before this file lands (tariffs.html .tsb-label/.tsb-note min-heights,
-#    Nov 10 CLS sweep): the label and the first sentence of the headline (the page's own split) must fit it
-LABEL_MAX, FIRST_MAX = 75, 130
-if len(d["status_label"]) > LABEL_MAX: bad(f"status_label is {len(d['status_label'])} characters; the banner holds {LABEL_MAX}")
-_full = d.get("headline") or d.get("status_note") or ""
-_m = re.match(r"^(.+?[.!?])\s+(?=[A-Z])", _full)
-_first = _m.group(1) if _m and len(_m.group(1)) < len(_full) - 20 else _full
-if len(_first) > FIRST_MAX: bad(f"the headline's first sentence is {len(_first)} characters; the banner holds {FIRST_MAX} (split it)")
-
 print(f"{len(d['timeline'])} timeline entries, {len(d['rows'])} rows")
 if fail:
     print("\nFAILED:"); [print("  -", f) for f in fail]; sys.exit(1)

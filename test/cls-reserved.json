@@ -293,10 +293,6 @@
    "rng-hi",
    "rng-lo"
   ],
-  "tariffs.html": [
-   "tariff-tbody",
-   "tsb-more-p"
-  ],
   "wheat-futures-prices.html": [
    "benchline",
    "brief-hd",

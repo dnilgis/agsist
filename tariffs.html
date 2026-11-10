@@ -139,25 +139,39 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tsb-label.mixed    { color: var(--gold); }
 .tsb-note { font-size:1rem; color: var(--text-muted); line-height: 1.55; }
 .tsb-date { font-family: 'JetBrains Mono', monospace; font-size:0.763rem; color: var(--text-muted); margin-top: .35rem; }
-/* the banner holds the room its data needs before the data lands (Nov 10 CLS sweep: it grew 54 to 144 px and moved the
-   page 0.13 to 0.43); scripts/check_tariffs.py caps the label and the first sentence so they fit these lines */
+/* the banner, the age note under it and the rate rows hold the room their data needs before /data/tariffs.json lands, so
+   nothing moves when it does. All are min-heights: longer copy makes them taller, never clipped. */
 .tsb-label { min-height: 1.1em; }
 .tsb-note { min-height: 3.1em; }
 .tsb-date { min-height: 1.25em; }
-.tariff-stale { min-height: 1.5em; }
-@media (max-width: 880px) { .tariff-stale { min-height: 3em; } }
 @media (max-width: 760px) { .tsb-label { min-height: 2.1em; } .tsb-note { min-height: 4.65em; } }
-@media (max-width: 440px) { .tsb-label { min-height: 3.2em; } .tsb-note { min-height: 6.2em; } .tariff-stale { min-height: 4.5em; } }
-@media (max-width: 374px) { .tsb-note { min-height: 7.75em; } .tariff-stale { min-height: 6em; } }
-/* the banner as a whole, at the heights those lines make (so a guard reading the banner sees its hold), the icon's box,
-   and the table's as-of line */
-#tariff-status-banner { min-height: 190px; }
-@media (max-width: 880px) { #tariff-status-banner { min-height: 210px; } }
-@media (max-width: 760px) { #tariff-status-banner { min-height: 255px; } }
-@media (max-width: 440px) { #tariff-status-banner { min-height: 322px; } }
-@media (max-width: 374px) { #tariff-status-banner { min-height: 369px; } }
+@media (max-width: 440px) { .tsb-label { min-height: 3.2em; } .tsb-note { min-height: 6.2em; } }
+@media (max-width: 374px) { .tsb-note { min-height: 7.75em; } }
+#tariff-status-banner { min-height: 161px; }
+@media (max-width: 759px) { #tariff-status-banner { min-height: 180px; } }
+@media (max-width: 699px) { #tariff-status-banner { min-height: 206px; } }
+@media (max-width: 439px) { #tariff-status-banner { min-height: 233px; } }
+@media (max-width: 413px) { #tariff-status-banner { min-height: 251px; } }
+@media (max-width: 374px) { #tariff-status-banner { min-height: 278px; } }
+/* the age note is unseen until the data's date is known; its room is the longer (over 45 days) note's */
+#tariff-stale { min-height: 68px; }
+@media (max-width: 699px) { #tariff-stale { min-height: 89px; } }
+@media (max-width: 440px) { #tariff-stale { min-height: 110px; } }
+@media (max-width: 374px) { #tariff-stale { min-height: 131px; } }
 #tsb-icon { width: 1.5rem; }
 #tariff-updated { display: inline-block; min-height: 1.3em; }
+/* the rate rows (tt-wait comes off when they are drawn or the file fails) */
+.tariff-table tbody.tt-wait > tr > td { height: 1600px; }
+@media (max-width: 960px) {
+  .tariff-table tbody.tt-wait > tr > td { height: auto; }
+  #tariff-tbody.tt-wait { min-height: 2000px; }
+}
+@media (max-width: 880px) { #tariff-tbody.tt-wait { min-height: 2100px; } }
+@media (max-width: 760px) { #tariff-tbody.tt-wait { min-height: 2250px; } }
+@media (max-width: 600px) { #tariff-tbody.tt-wait { min-height: 2450px; } }
+@media (max-width: 440px) { #tariff-tbody.tt-wait { min-height: 2750px; } }
+@media (max-width: 390px) { #tariff-tbody.tt-wait { min-height: 3000px; } }
+@media (max-width: 374px) { #tariff-tbody.tt-wait { min-height: 3150px; } }
 
 /* Rate table */
 .tariff-section { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1.1rem; overflow: hidden; }
@@ -273,10 +287,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tariff-source { font-size:0.763rem; color: var(--text-muted); text-align: center; padding-top: .65rem; border-top: 1px solid var(--border); }
 .tariff-source a { color: var(--gold); text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px; }
 .tariff-source a:hover { text-decoration: underline; }
-.tariff-stale{margin-top:.35rem;font-size:.8rem;line-height:1.5;color:var(--text-muted)}
-.tariff-stale.warn{color:var(--gold);font-weight:600}
-.tariff-stale.alert{color:var(--red,#e06b42);font-weight:600}
-.tariff-stale a{color:inherit;font-weight:700;text-decoration:underline}
+.tariff-stale.warn{background:rgba(var(--gold-rgb),.1);border:1px solid rgba(var(--gold-rgb),.45);color:var(--gold)}
+.tariff-stale.alert{background:rgba(224,107,66,.12);border:1px solid rgba(224,107,66,.5);color:var(--red,#e06b42)}
+.tariff-stale a{color:inherit;font-weight:800;text-decoration:underline}
 .tt-meta{display:block;margin-top:.35rem;font-size:0.755rem;color:var(--text-muted);line-height:1.5}
 .tt-meta a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 .tt-meta a:hover{text-decoration:underline}
@@ -304,7 +317,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .cn-empty{font-size:.84rem;color:var(--text-muted);line-height:1.6}
 .tsb-more{margin-top:.35rem;font-size:.84rem;color:var(--text-muted)}
 .tsb-more summary{cursor:pointer;color:var(--gold);font-weight:600;font-size:.8rem}
-.tsb-more p{margin:.4rem 0 0;line-height:1.55}
+.tsb-more p{margin:.4rem 0 0;line-height:1.55;min-height:1.55em}
 </style>
 </head>
 <body>
@@ -396,10 +409,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
       <div class="tsb-note" id="tsb-note">Loading current status…</div>
       <details class="tsb-more" id="tsb-more"><summary>More on what applies today</summary><p id="tsb-more-p"></p></details>
       <div class="tsb-date" id="tsb-date">Updated -</div>
-      <div class="tariff-stale" id="tariff-stale">Trade policy can change in days: check <a href="https://ustr.gov" target="_blank" rel="noopener">USTR</a> and the <a href="https://www.federalregister.gov" target="_blank" rel="noopener">Federal Register</a> before any trading decision.</div>
     </div>
   </div>
 
+  <div id="tariff-stale" class="tariff-stale" style="visibility:hidden;margin:0 0 1rem;border-radius:10px;padding:.7rem 1rem;font-size:.8rem;line-height:1.55;font-weight:600"></div>
 
   <!-- ai-answer:tariff-impact --><section class="ai-answer" id="answer-tariff-impact" aria-labelledby="answer-tariff-impact-h" data-checked="2026-10-28" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-tariff-impact-h" style="font-size:1.1rem;margin:0 0 .4rem">How are tariffs hitting farmers&#x27; sales?</h2><p style="margin:0 0 .5rem">USDA&#x27;s October 9 WASDE projects 2026/27 U.S. soybean exports at 1.695 billion bushels, up from 1.515 billion in 2025/26 but still below the 1.892 billion of 2024/25. Corn exports are projected at 3.300 billion bushels, after 3.429 billion in 2025/26. USDA puts the 2026/27 season-average farm price at $12.00 for soybeans and $4.70 for corn. The tariff rates in force and USDA&#x27;s weekly count of soybeans sold to China are in the sections below; I have not seen a USDA figure for what tariffs cost a farm, so this page does not print one.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 28, 2026. Sources: USDA WASDE-676, Oct 9, 2026</p></section><!-- /ai-answer:tariff-impact -->
   <div class="tariff-section">
@@ -419,7 +432,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
             <th class="tt-note-col">Note</th>
           </tr>
         </thead>
-        <tbody id="tariff-tbody">
+        <tbody id="tariff-tbody" class="tt-wait">
           <tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.795rem">Loading…</td></tr>
         </tbody>
       </table>
@@ -599,13 +612,13 @@ fetch('/data/tariffs.json')
       if(m && m[1].length < full.length - 20){
         note.textContent = m[1];
         var mp = document.getElementById('tsb-more-p'); if(mp) mp.textContent = full.slice(m[0].length);
-      } else { note.textContent = full; var mo = document.getElementById('tsb-more'); if(mo) mo.remove(); }
+      } else { note.textContent = full; var mo = document.getElementById('tsb-more'); if(mo) mo.style.visibility = 'hidden'; /* keeps its line: nothing below moves */ }
     }
     if(date)  date.textContent = 'Updated '+fmtDate(data.updated);
 
     var upd = document.getElementById('tariff-updated');
     if(upd) upd.textContent = 'As of '+fmtDate(data.updated);
-    try{var ageDays=Math.floor((Date.now()-new Date(data.updated+'T12:00:00').getTime())/86400000);var sb=document.getElementById('tariff-stale');if(sb){if(ageDays>45){sb.className='tariff-stale alert';sb.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> <strong>This data is '+ageDays+' days old</strong> and may no longer be current. Confirm with <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> and the <a href=\"https://www.federalregister.gov\" target=\"_blank\" rel=\"noopener\">Federal Register</a> before trading.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'alert'});}else if(ageDays>14){sb.className='tariff-stale warn';sb.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> <strong>This data is '+ageDays+' days old.</strong> Trade policy changes quickly: verify current rates at <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> or USDA GATS before acting.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'warn'});}}}catch(e){}
+    try{var ageDays=Math.floor((Date.now()-new Date(data.updated+'T12:00:00').getTime())/86400000);var sb=document.getElementById('tariff-stale');if(sb){if(ageDays>45){sb.className='tariff-stale alert';sb.style.visibility='visible';sb.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> <strong>This tariff data is '+ageDays+' days old.</strong> Trade policy can shift in days. These rates may no longer be current. Confirm against <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> and the <a href=\"https://www.federalregister.gov\" target=\"_blank\" rel=\"noopener\">Federal Register</a> before any trading decision.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'alert'});}else if(ageDays>14){sb.className='tariff-stale warn';sb.style.visibility='visible';sb.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> This data is '+ageDays+' days old. Trade policy changes quickly: verify current rates at <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> or USDA GATS before acting.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'warn'});}}}catch(e){}
 
     var tbody = document.getElementById('tariff-tbody');
     if(tbody && data.rows && data.rows.length){
@@ -630,6 +643,7 @@ fetch('/data/tariffs.json')
       }).join('');
       (function(){var ls=document.querySelectorAll('#tariff-tbody a.tariff-src, #tariff-tbody a.tariff-act');for(var i=0;i<ls.length;i++){ls[i].addEventListener('click',function(e){try{if(typeof gaEvent==='function')gaEvent(e.target.className.indexOf('tariff-act')>-1?'tariff_action_click':'tariff_source_click',{href:e.target.href});}catch(x){}});}})();
     }
+    if(tbody) tbody.classList.remove('tt-wait'); /* drawn, or no rows: its held room goes */
 
     var tl = document.getElementById('tariff-timeline');
     if(tl && data.timeline && data.timeline.length){
@@ -657,7 +671,7 @@ fetch('/data/tariffs.json')
     var tl = document.getElementById('tariff-timeline');
     if(tl) tl.innerHTML = '<li style="color:var(--text-muted)">Timeline unavailable. Try again shortly.</li>';
     var tbody = document.getElementById('tariff-tbody');
-    if(tbody) tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.795rem">Data unavailable. Try refreshing.</td></tr>';
+    if(tbody){ tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:1.5rem;color:var(--text-muted);font-size:0.795rem">Data unavailable. Try refreshing.</td></tr>'; tbody.classList.remove('tt-wait'); }
   });
 
 
