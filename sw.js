@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 426;  // v426 2026-11-10: comments in served files reworded; version bumps for each served file that changed. (426, next after main's 425)
+var CACHE_VERSION = 427;  // v427 2026-11-09: home bid names. The homepage cash bid card prints elevator names clean: no archive "z" prefix or "Old" tail, no page title tail (components/bids-homepage.js?v=48). (427, next after main's 426)
+// var CACHE_VERSION = 426;  // v426 2026-11-10: comments in served files reworded; version bumps for each served file that changed. (426, next after main's 425)
 // var CACHE_VERSION = 425;  // v425 2026-11-10: rain pages name the gauge in the headline, gift pages hide the footer strip. (425, next after main's 424)
 // var CACHE_VERSION = 424;  // v424 2026-11-10: quick stats and rain radar. Rain radar answer keeps its room when a spot is known and adds a spray forecast line (components/radar-rain-page.js?v=9). (424, next after main's 422)
 // var CACHE_VERSION = 422;  // v422 2026-11-10: page titles within 68 characters (company bid pages, custom rates, land sales, PRF, hail map, hand pages), the USDA calendar crop report answer from the WASDE data, the 2025 all-milk line, worked bin example. (422, next after main's 421)
