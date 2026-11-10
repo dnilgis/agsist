@@ -36,7 +36,7 @@
      not load elev-names.js themselves, so it is fetched once here when missing. */
   var namesReady = null;
   function needNames() {
-    if (window.elevNames) return Promise.resolve(window.elevNames);
+    if (names()) return Promise.resolve(names());
     if (!namesReady) namesReady = new Promise(function (ok) {
       var sc = document.createElement('script');
       sc.src = '/components/elev-names.js?v=1';
@@ -46,7 +46,8 @@
     });
     return namesReady;
   }
-  function normFac(s) { return window.elevNames.facKey(s); }
+  function names() { return (typeof window !== 'undefined' && window.elevNames) || (typeof require === 'function' ? require('./elev-names.js') : null); }
+  function normFac(s) { return names().facKey(s); }
   /* Twin of norm_town() in scripts/build_cash_bid_pages.py: "St. Ansgar" = "SAINT ANSGAR". */
   function normKey(s) {
     return String(s || '').toUpperCase().trim().replace(/^(STE?)\b\.?/, function (m, a) { return a === 'ST' ? 'SAINT' : 'SAINTE'; })
