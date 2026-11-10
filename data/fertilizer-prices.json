@@ -202,21 +202,20 @@
    "key": "thiosul",
    "name": "Thio-Sul",
    "symbol": "12-0-0-26S",
-   "price": 420.0,
+   "price": 390.0,
    "unit": "$/ton",
    "as_of": "2026-10-06",
-   "oldest": "2026-09-10",
+   "oldest": "2026-10-06",
    "src": "coop",
-   "n": 2,
+   "n": 1,
    "low": 390.0,
-   "high": 450.0,
+   "high": 390.0,
    "region": "Kansas",
    "coops": [
-    "tworivers-ks",
     "mulvane-ks"
    ],
-   "src_label": "Kansas co-ops, average of 2, posted Sep 10 to Oct 6, 2026",
-   "short_label": "Kansas co-ops, Sep 10 to Oct 6",
+   "src_label": "Mulvane Cooperative Union, Kansas, posted Oct 6, 2026",
+   "short_label": "Mulvane Cooperative Union, Oct 6",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   }
  ],
@@ -267,5 +266,5 @@
   }
  },
  "notes": [],
- "generated": "2026-11-09T13:58:01Z"
+ "generated": "2026-11-10T13:44:40Z"
 }
