@@ -234,7 +234,7 @@
     var el = $('sb-glance');
     if (!el) return;
     var g = S.here || S.state ? [] : glance(states, S.sex + '|' + S.grade, today());
-    if (!g.length) { el.hidden = true; el.innerHTML = ''; return; }
+    if (!g.length) { el.hidden = true; el.innerHTML = ''; return; } /* no fresh report: its held room goes (sb-gwait comes off in init) */
     var who = 'Medium and Large ' + S.grade + ' ' + (S.sex === 'steers' ? 'steers' : 'heifers');
     el.innerHTML = '<p class="sb-gh"><b>Cattle prices today:</b> biggest USDA state auction reports, ' + esc(who) + ', $/cwt</p><ul>' +
       g.map(function (x) {
@@ -367,7 +367,7 @@
     $('sb-zip').addEventListener('keydown', function (e) { if (e.key === 'Enter') byZip(); });
     $('sb-state').addEventListener('change', function () { S.state = this.value; save(); render(); });
     getJSON(DATA + '?t=' + Math.floor(Date.now() / 6e5), 9000).then(function (d) {
-      if (!d || !((d.barns || []).some(hasSales) || (d.states || []).some(hasSales))) return;
+      if (!d || !((d.barns || []).some(hasSales) || (d.states || []).some(hasSales))) return unwait();
       S.data = d;
       var st = {}, sel = $('sb-state');
       (d.barns || []).concat(d.states || []).forEach(function (b) { if (hasSales(b)) st[b.state] = 1; });
@@ -376,7 +376,16 @@
       $('sb-controls').hidden = false;
       if (S.state && st[S.state]) sel.value = S.state; else S.state = '';
       if (!S.state && $('sb-zip').value) byZip(); else render();
-    }).catch(function () { /* no file yet: the empty box stays */ });
+      unwait();
+    }).catch(unwait);
+  }
+  /* the page holds the controls and the glance from the first paint (sb-wait, sb-gwait in the page); once the file has
+     loaded or failed they take their real state, and without a file the empty box and no heading show */
+  function unwait() {
+    var a = document.querySelector('.sb-wait');
+    if (!a) return;
+    if (!S.data) { $('sb-head').textContent = ''; }
+    a.classList.remove('sb-wait', 'sb-gwait');
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })(typeof self !== 'undefined' ? self : this);
