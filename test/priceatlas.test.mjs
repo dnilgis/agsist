@@ -16,7 +16,8 @@ const fx = (p) => JSON.parse(read("test/fixtures/priceatlas/" + p));
 /* The badge function from components/home-yield.js, run with a fixed clock. */
 function badge(data, nowIso) {
   const src = read("components/home-yield.js");
-  const body = src.match(/var _st=(\(function\(iso\)\{[\s\S]*?\}\)\(data\.fetched\));/)[1];
+  // the badge calls stampAt (a last trade stamped from its close_time), a one-line helper beside it in the same file
+  const body = src.match(/function stampAt\(cq,F\)\{[^\n]*\}/)[0] + "\n" + src.match(/var _st=(\(function\(iso\)\{[\s\S]*?\}\)\(data\.fetched\));/)[1];
   const RD = Date;
   const D = class extends RD { constructor(...a) { super(...(a.length ? a : [nowIso])); } static now() { return new RD(nowIso).getTime(); } };
   D.UTC = RD.UTC; D.parse = RD.parse;

@@ -32,10 +32,12 @@ try {
     var dotEl=document.getElementById('cot-'+key+'-dot'),minEl=document.getElementById('cot-'+key+'-min'),maxEl=document.getElementById('cot-'+key+'-max');
     var net=d.net,prev=d.prev,min52=d.min52,max52=d.max52,range=(max52-min52)||1;
     var isLong=net>=0;
-    /* 2026-09-25 audit: /cot labels a net inside +/-5,000 contracts FLAT; this row said SHORT for wheat at -3,674. Same threshold, same word. */
-    var isFlat=Math.abs(net)<5000;
+    /* Nov 10: one side word for the glance line and this row (cotSide). The
+       glance said "About even" for corn (the analysis file's side) while this row
+       said LONG +8.8k for the same net. */
+    var isFlat=cotSide(key,d)==='flat';
     if(netEl){netEl.textContent=fmtK(net);netEl.style.color=isFlat?'var(--text-muted)':isLong?'var(--green)':'var(--red)';}
-    if(dirEl){dirEl.textContent=isFlat?'FLAT':isLong?'LONG':'SHORT';dirEl.className='cot-dir '+(isFlat?'':isLong?'long':'short');dirEl.style.color=isFlat?'var(--text-muted)':'';}
+    if(dirEl){dirEl.textContent=isFlat?'About even':isLong?'Long':'Short';dirEl.className='cot-dir '+(isFlat?'':isLong?'long':'short');dirEl.style.color=isFlat?'var(--text-muted)':'';}
     if(chgEl&&prev!=null){var chg=net-prev;chgEl.textContent=(chg>=0?'\u25b2':'\u25bc')+fmtK(Math.abs(chg)).replace(/^[+\u2212-]/,'');chgEl.className='cot-chg '+(chg>0?'up':chg<0?'dn':'nc');}
     if(minEl)minEl.textContent=fmtKShort(min52);if(maxEl)maxEl.textContent=fmtKShort(max52);
     var zeroPct=Math.max(0,Math.min(100,((0-min52)/range)*100));
@@ -100,11 +102,26 @@ try {
      52-week chart. The rank and the weight word come with cot-analysis.json for
      the same report; until then the row carries neither rather than guess. */
   var COT_GLANCE=3;
+  /* The side, one rule for every COT line on this page: the analysis file's side
+     when it is for the same week (it calls a net small for its market "flat"),
+     else a net inside 5,000 contracts is flat (/cot's rule), else its sign.
+     key: the row id (corn, beans, ...) or the cot.json key. */
+  function cotSide(key,d){
+    var k=key;COT_ROWS.forEach(function(r){if(r.id===key)k=r.k;});
+    var c=COT_CX&&COT_CX.commodities&&COT_CX.commodities[k];
+    if(c&&c.date&&window.AGSIST_COT&&window.AGSIST_COT._d&&cotIso(c.date)===cotIso(window.AGSIST_COT._d.report_date)&&c.side)return c.side==='flat'?'flat':(c.net!=null?(c.net>0?'long':'short'):c.side);
+    var n=d&&d.net;if(typeof n!=='number')return '';
+    return Math.abs(n)<5000?'flat':n>0?'long':'short';
+  }
   function glance(data){
     var ul=document.getElementById('cot-glance'),G=window.AgCotGlance;if(!ul||!G||!data||!G.rows)return;
     var keys=COT_ROWS.slice(0,COT_GLANCE).map(function(r){return r.k;});
     var rs=G.rows(data,COT_CX,keys);if(!rs.length)return;
-    ul.innerHTML=rs.map(function(r){return '<li class="cot-gl-line"><a class="cot-gl-a" href="'+G.href(r.key)+'"><b>'+r.name+'</b><span>'+r.pos+'</span><span class="cot-gl-r">'+r.chg+'</span></a></li>';}).join('');
+    /* The right cell is the week's change; it says so, in contracts,
+       and the side word is the one the rows below use. No "crowded" (Nov 6). */
+    var SW={flat:'About even',long:'Long',short:'Short'};
+    ul.innerHTML=rs.map(function(r){var sd=cotSide(r.key,data[r.key]),f=G.facts?G.facts(r.key,data,COT_CX):null,pos=SW[sd]?SW[sd]+(sd!=='flat'&&f&&!f.flip&&f.weight?', '+f.weight:(sd!=='flat'&&f&&f.flip?', flipped':'')):r.pos.replace(/, crowded$/,'');
+      return '<li class="cot-gl-line"><a class="cot-gl-a" href="'+G.href(r.key)+'"><b>'+r.name+'</b><span>'+pos+'</span><span class="cot-gl-r">'+(r.chg?r.chg+' contracts this week':'')+'</span></a></li>';}).join('');
     ul.removeAttribute('aria-busy');
     var a=document.getElementById('cot-gl-asof');if(a){var t=G.asOf(data,COT_CX);if(t)a.textContent=t;}
   }
@@ -117,20 +134,15 @@ try {
   function cotIso(s){var d=new Date(String(s||'')+(/^\d{4}-\d{2}-\d{2}$/.test(String(s||''))?'T12:00:00':''));return isNaN(d)?'':d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
   function cxFor(k,data){var c=COT_CX&&COT_CX.commodities&&COT_CX.commodities[k];return (c&&c.date&&data&&cotIso(c.date)===cotIso(data.report_date))?c:null;}
   function rankTxt(c){var cr=c.crowd,p=cr?cr.pctl:(c.pctl&&c.pctl.net_oi_all);if(p==null)return '';
-    if(c.crowded&&cr&&cr.word)return cr.word+', crowded '+c.crowded;   /* "bottom 1%", never "0th" */
-    var r=Math.max(1,Math.min(99,Math.round(p))),o=['th','st','nd','rd'],v=r%100;return r+(o[(v-20)%10]||o[v]||o[0])+' pct'+(c.crowded?', crowded '+c.crowded:'');}
-  /* 2026-11-05 (checker on #334): the verdict reads every market in the analysis
-     file (AgCotGlance.crowdedLine, the same `crowded` field the glance lines use),
-     not the four rows the old grains and cattle badges read, so it can never say
-     "No market crowded" while meal, hogs or milk is crowded. */
-  function verdict(el,lv,data){
-    if(!el)return;if(lv)lv.hidden=true;
-    var G=window.AgCotGlance,v=G&&G.crowdedLine(data,COT_CX);
-    if(!v){el.hidden=true;return;}
-    el.hidden=false;
-    el.title='Crowded: net as a share of open interest in the top or bottom tenth of every week since 2010, on the side the position is on (the COT page\u2019s measure), across all '+v.markets+' markets.';
-    el.className='cot-verdict '+(v.state==='none'?'mixed':v.state);
-    el.textContent=v.text;
+    /* No "crowded" (the crowding verdict was dropped Nov 6); the measured rank only. */
+    if(c.crowded&&cr&&cr.word)return cr.word;   /* "bottom 1%", never "0th" */
+    var r=Math.max(1,Math.min(99,Math.round(p))),o=['th','st','nd','rd'],v=r%100;return r+(o[(v-20)%10]||o[v]||o[0])+' pct';}
+  /* Nov 10: the crowding verdict was dropped everywhere on Nov 6; the home
+     badge no longer prints one and its verdict code is gone (the shared verdict in
+     cot-glance.js stays for /cot until it follows). */
+  function verdict(el,lv){
+    /* no crowding verdict on home (Nov 6): the badge stays hidden */
+    if(lv)lv.hidden=true;if(el)el.hidden=true;
   }
   function rankRows(data){
     COT_ROWS.forEach(function(r){
@@ -145,7 +157,8 @@ try {
   /* The crowding badges and rank lines: drawn again once cot-analysis.json
      arrives (it loads when the COT card comes near the screen; see below). */
   function cxPaint(data){
-    verdict(document.getElementById('cot-verdict'),document.getElementById('cot-verdict-lv'),data);
+    verdict(document.getElementById('cot-verdict'),document.getElementById('cot-verdict-lv'));
+    if(data)COT_ROWS.forEach(function(row){if(data[row.k])renderCOTRow(row.id,data[row.k]);});
     rankRows(data);
     glance(data);
   }

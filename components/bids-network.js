@@ -255,6 +255,8 @@
       pricedAt: p.pricedAt || null,
       place: p.place || null,
       sourceId: p.source || null,
+      /* Nov 10: the place's shard, which carries each row's futuresMonth (the board's own contract). */
+      shard: p.shard || null,
       delivery: n.delivery || '', period: n.period || '',
       distance: dist == null ? null : Math.round(dist * 10) / 10,
       source: 'network', via: 'scrape'
