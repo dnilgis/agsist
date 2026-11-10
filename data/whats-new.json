@@ -149,11 +149,25 @@
    "link": "/cash-bids"
   },
   {
+   "id": "2026-11-09-hail-day-terms-fold",
+   "date": "2026-11-09",
+   "title": "Shorter hail day pages",
+   "line": "Each hail day page now keeps its sources, the radar caveat and the citation in one closed note at the bottom, so the storm figures read first.",
+   "link": "/hail-map#history"
+  },
+  {
    "id": "2026-11-09-hail-terms-fold",
    "date": "2026-11-09",
    "title": "Shorter hail map pages",
    "line": "The hail map and the state hail pages put sources and terms in one closed note at the bottom, so the map comes sooner.",
    "link": "/hail-map"
+  },
+  {
+   "id": "2026-11-09-load-steady-rest",
+   "date": "2026-11-09",
+   "title": "Steadier drought, hail and milk pages",
+   "line": "The Drought Monitor, Hail Map, Milk Prices and Desk pages no longer jump while they load.",
+   "link": "/drought-monitor"
   },
   {
    "id": "2026-11-09-rain-print-fixes",
