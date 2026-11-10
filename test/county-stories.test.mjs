@@ -27,7 +27,8 @@ test("facts match the page, the validator catches planted errors, dated stories 
 test("the API job builds story requests on Opus 5.5 and stays under its cap", () => {
   assert.match(py(["scripts/api_jobs.py", "selftest"]), /selftest ok/);
   const src = readFileSync(ROOT + "scripts/api_jobs.py", "utf8");
-  assert.match(src, /STORY_MODEL = "claude-opus-5-5"/);
+  assert.match(src, /STORY_MODEL = claude_models\.STORY\b/);
+  assert.match(readFileSync(ROOT + "scripts/claude_models.py", "utf8"), /^STORY = "claude-opus-5-5"$/m);
   assert.match(src, /STORY_CAP = (\d+(\.\d+)?)/);
   assert.ok(Number(src.match(/STORY_CAP = (\d+(\.\d+)?)/)[1]) <= 50, "story cap at most $50");
 });

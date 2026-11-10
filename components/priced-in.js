@@ -238,6 +238,15 @@
     if(lr&&document.getElementById('wp-result').innerHTML){
       gaEvent('wpi_result',{report:lr.report||'',in_line:lr.in_line_count,of:lr.metric_count});
     }
+    /* REPORT DAY: the graded result from the worker as soon as it is there (components/report-live.js),
+       before the committed file reaches the site. The committed file stays until then. */
+    if(window.agsReportLive&&d.upcoming&&d.upcoming.date&&(!lr||lr.date!==d.upcoming.date)){
+      window.agsReportLive.watch(d.upcoming.date,function(rec){
+        var live=agsND(window.agsReportLive.toResult(rec,d.upcoming));
+        var el=document.getElementById('wp-result');el.innerHTML=resultBanner(live);
+        document.getElementById('wp-next').innerHTML=nextCard(d.upcoming,!!el.innerHTML);
+      });
+    }
   }).catch(function(){
     document.getElementById('wp-next').innerHTML='<div class="wp-err">Report expectations didn’t load. Refresh, or see the <a href="/usda-calendar" style="color:var(--wp-gold2)">USDA report calendar</a>.</div>';
   });

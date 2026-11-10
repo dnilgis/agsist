@@ -24,7 +24,7 @@ on:
         description: "Lower this run's cost cap in dollars (never raises a job's own cap); empty for the job cap"
         default: ""
       schedule_model:
-        description: "Model for build=schedules (default Opus); claude-sonnet-5-5 to fit the cap"
+        description: "Model for build=schedules (default STORY in scripts/claude_models.py); the RESEARCH model id there to fit the cap"
         default: ""
 
 permissions:

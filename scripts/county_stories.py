@@ -994,7 +994,9 @@ def selftest():
         reqs = A.requests_of({"story": bd_["story"][:2]})
         ok([q[0] for q in reqs] == ["story", "story"] and reqs[0][1] == cid0, "api_jobs builds story requests")
         p = reqs[0][3]
-        ok(p["model"] == "claude-opus-5-5" and "Use only those facts" in p["system"] and r0["facts"]["total_in"] in p["messages"][0]["content"],
+        import claude_models
+        ok(p["model"] == claude_models.STORY == "claude-opus-5-5" and "Use only those facts" in p["system"][0]["text"]
+           and p["system"][0]["cache_control"] == {"type": "ephemeral"} and r0["facts"]["total_in"] in p["messages"][0]["content"],
            "story request: Opus 5.5, the rules, the facts")
         ok("\u2014" not in SYSTEM and "\u2014" not in json.dumps(p), "no em dash in the prompt")
     print("county stories selftest:", "ok" if not fails else f"{len(fails)} failure(s)")

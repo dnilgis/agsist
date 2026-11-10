@@ -84,6 +84,47 @@ FALLBACK_MODEL = claude_models.WRITER_FALLBACK
 USAGE_LOG = []
 
 
+def _status_of(e):
+    """The HTTP status of a requests or urllib error, or None."""
+    resp = getattr(e, "response", None)
+    return getattr(resp, "status_code", None) if resp is not None else getattr(e, "code", None)
+
+
+def post_critic(payload, headers, post=None):
+    """(result, payload actually answered). Three ways down, each once:
+    a 400 on a request that asked for the server fallback is sent again on
+    the same model without the field and its beta header (a rejected beta
+    must never drop the critic); a model the API does not know, or a
+    refusal, moves the pass to FALLBACK_MODEL."""
+    post = post or http_post_json
+
+    def send(p):
+        try:
+            return post(ANTHROPIC_API, p, claude_models.headers_for(p, headers), timeout=90), None
+        except Exception as e:  # noqa: BLE001  sorted below
+            return None, e
+
+    result, err = send(payload)
+    if err is not None and "fallbacks" in payload and _status_of(err) == 400:
+        print(f"::warning title=Critic server fallback rejected::{payload['model']} answered 400 with the "
+              f"fallbacks field; sent again without it", flush=True)
+        payload = {k: v for k, v in payload.items() if k != "fallbacks"}
+        result, err = send(payload)
+    refusal = result is not None and result.get("stop_reason") == "refusal"
+    if err is not None and not (_refused_model(err) and payload["model"] != FALLBACK_MODEL):
+        raise err
+    if result is None or (refusal and payload["model"] != FALLBACK_MODEL):
+        print(f"::warning title=Critic model fallback::'{payload['model']}' refused; "
+              f"the critic pass runs on {FALLBACK_MODEL}", flush=True)
+        # with_model rewrites the thinking word too ("between_tools" is Sonnet 5.5 only)
+        payload = claude_models.with_model(payload, FALLBACK_MODEL)
+        globals()["MODEL"] = FALLBACK_MODEL
+        result = post(ANTHROPIC_API, payload, claude_models.headers_for(payload, headers), timeout=90)
+    if result.get("stop_reason") == "refusal":
+        raise RuntimeError("critic refused on both models")
+    return result, payload
+
+
 def _refused_model(e):
     """(status, body) if an exception is the API saying it does not know the
     model -- a 404, or a 400 naming "model:" -- else None. Reads both a
@@ -286,11 +327,20 @@ def _voice_payload(briefing):
     return out
 
 
+def write_usage_summary(summary_path=None):
+    """Every critic call of this run: token counts and estimated dollars."""
+    return claude_models.write_usage_summary(
+        "Daily briefing critic", [("critic", m, u, False) for m, u in USAGE_LOG], summary_path)
+
+
 def critic_payload(model, user_message, cache=False):
     """The critic's request body. CRITIC_SYSTEM never changes, so it is cached
     when a second pass can follow inside five minutes (--max-rewrites above 1);
-    a single pass would pay the cache write's 25% and never read it."""
-    return {
+    a single pass would pay the cache write's 25% and never read it. On the
+    models that take it, a safety decline is rerun server side (beta); the
+    client side retry on FALLBACK_MODEL below stays for the declines the
+    server does not rerun."""
+    p = {
         "model": model,
         "max_tokens": 4000,
         # no extended thinking: it eats max_tokens and is billed (claude_models.no_thinking)
@@ -298,6 +348,8 @@ def critic_payload(model, user_message, cache=False):
         "system": claude_models.cached_system(CRITIC_SYSTEM) if cache else CRITIC_SYSTEM,
         "messages": [{"role": "user", "content": user_message}],
     }
+    p, _ = claude_models.server_fallback(p, {})
+    return p
 
 
 def critique_briefing(briefing, threshold=7, cache=False):
@@ -363,27 +415,15 @@ Respond with ONLY the JSON output. No preamble, no markdown."""
         "anthropic-version": "2023-06-01",
     }
 
-    try:
-        result = http_post_json(ANTHROPIC_API, payload, headers, timeout=90)
-        _refusal = result.get("stop_reason") == "refusal"
-    except Exception as e:
-        _ref = _refused_model(e)
-        if not (_ref and payload["model"] != FALLBACK_MODEL):
-            raise
-        _refusal = False
-        result = None
-    if result is None or (_refusal and payload["model"] != FALLBACK_MODEL):
-        print(f"::warning title=Critic model fallback::'{payload['model']}' refused; "
-              f"the critic pass runs on {FALLBACK_MODEL}", flush=True)
-        # with_model rewrites the thinking word too ("between_tools" is Sonnet 5.5 only)
-        payload = claude_models.with_model(payload, FALLBACK_MODEL)
-        globals()["MODEL"] = FALLBACK_MODEL
-        result = http_post_json(ANTHROPIC_API, payload, headers, timeout=90)
-    if result.get("stop_reason") == "refusal":
-        raise RuntimeError("critic refused on both models")
+    result, payload = post_critic(payload, headers)
     if result.get("usage"):
-        USAGE_LOG.append((payload["model"], result["usage"]))
-        print("  " + claude_models.usage_line(payload["model"], result["usage"]), flush=True)
+        if not USAGE_LOG:
+            import atexit
+            atexit.register(write_usage_summary)
+        # a server side fallback answers on another model: bill the one that answered
+        served = result.get("model") or payload["model"]
+        USAGE_LOG.append((served, result["usage"]))
+        print("  " + claude_models.usage_line(served, result["usage"]), flush=True)
     text = ""
     for block in result.get("content", []):
         if block.get("type") == "text":
