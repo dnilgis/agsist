@@ -139,6 +139,40 @@ test("several pages at 390: 12px page gutter, each main card's text column 342px
   assert.deepEqual(bad, []);
 });
 
+// Narrow cards (Nov 9): pages whose own card sat inside a padded card had the inner box 291 to 328px wide at 390 (the page
+// gutter was fine, the card inside a card added 17px or more each side). Phones now give the parent 8 to 12px, so the inner
+// box is [page, selector, least width]; "before" is the width on main on Nov 9.
+const NESTED = [
+  ["/combine-loss", "#cl-answer .cl-kv", 332], ["/grain-shrink", "#gs-answer div", 332], ["/commodity-loan", "#lo-answer > div", 332], ["/harvest-or-wait", "#hw-answer > div", 332],
+  ["/corn-futures-prices", ".sc-f", 318], ["/soybean-futures-prices", ".sc-f", 318], ["/wheat-futures-prices", ".sc-f", 318],
+  ["/cattle-futures-prices", ".ctcot-box", 316], ["/conditions", "#cyn-corn", 334], ["/spray", ".edu-card-tip", 312], ["/spray", ".inv-layer", 310],
+  ["/urea", ".soil-air-card", 336], ["/milk-prices", ".dp-ppd-class", 312], ["/cash-lease", ".np-box", 318], ["/cattle-auction-prices", "#vog-out", 332],
+  ["/developer", "pre#ifr-gdu", 336], ["/field-scout", "#fs-saved", 336],
+];
+
+test("the Sources fold on /fast-facts sits in a 12px card on phones (the fold is hidden until data loads, so this reads the CSS)", () => {
+  assert.match(read("fast-facts.html"), /@media\(max-width:480px\)\{[^}]*\.ff-sources\{padding-left:12px;padding-right:12px\}/);
+});
+
+test("nested cards at 390: the box inside a card keeps its width (no extra side padding), no sideways scroll", { skip, timeout: 300000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const bad = [];
+  try {
+    for (const [path, sel, min] of NESTED) {
+      const { ctx, pg } = await open(browser, port, path, 390);
+      try { await pg.waitForSelector(sel, { state: "attached", timeout: 15000 }); } catch (e) { bad.push(`${path}: ${sel} not on the page`); await ctx.close(); continue; }
+      await pg.evaluate((sel) => { for (const e of document.querySelectorAll(sel)) for (let n = e.parentElement; n; n = n.parentElement) if (n.tagName === "DETAILS") n.open = true; }, sel);
+      await pg.waitForTimeout(300);
+      const w = await pg.evaluate((sel) => { const e = [...document.querySelectorAll(sel)].find((x) => x.getBoundingClientRect().width > 0) || document.querySelector(sel); return { w: e.getBoundingClientRect().width, scroll: document.documentElement.scrollWidth }; }, sel);
+      if (w.w < min) bad.push(`${path}: ${sel} is ${w.w.toFixed(1)}px wide, ${min} or more wanted`);
+      if (w.scroll > 390) bad.push(`${path}: sideways scroll ${w.scroll}px`);
+      await ctx.close();
+    }
+  } finally { await browser.close(); srv.close(); }
+  assert.deepEqual(bad, []);
+});
+
 test("wide screens unchanged: at 1280 no phone token is set and the cards keep their own padding", { skip, timeout: 120000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
