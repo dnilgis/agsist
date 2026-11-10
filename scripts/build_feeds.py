@@ -305,6 +305,15 @@ def cron_sentence(crons):
     part of it comes off the expression."""
     if not crons:
         return None
+    # a cron on a range of days (report-day jobs: '38 15,16 8-12,30,31 * *') does not run every day
+    ranged = [c for c in crons if len(c.split()) == 5 and "-" in c.split()[2]]
+    if ranged and len(ranged) < len(crons):
+        return cron_sentence([c for c in crons if c not in ranged]) + ", and more on set days of each month"
+    if ranged:
+        hrs = sorted({(int(h) + CENTRAL_OFFSET_H) % 24 for c in ranged for h in c.split()[1].split(",") if h.isdigit()})
+        t = ", ".join("%d%s" % (h % 12 or 12, "am" if h < 12 else "pm") for h in hrs[:4])
+        return "%d launch%s on set days of each month%s Central" % (len(ranged), "" if len(ranged) == 1 else "es",
+                                                                 " at about " + t if t else "")
     gap = max_gap_hours(crons, minutes=True)
     if any(len(c.split()) == 5 and c.split()[1] == "*" for c in crons) and gap is not None and gap <= 60:
         return "about every %d minutes" % gap   # an hourly-or-faster cron is a rate, not launch times

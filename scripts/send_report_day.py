@@ -94,7 +94,7 @@ WPI = REPO / "data" / "whats-priced-in.json"
 WASDE = REPO / "data" / "wasde.json"
 PRICES_REL = "data/prices.json"
 PAGE = "https://agsist.com/usda-calendar?utm_source=report_email&utm_medium=email#priced-in"
-FUTURES_LINE = "Futures reaction: agsist.com/usda-calendar"
+FUTURES_LINE = "Futures reaction: on agsist.com later today"
 # Tagged like PAGE, so GA4 splits this email from the Daily (2026-10-19). The
 # site still reads ?ref= for the sign-up source.
 FORWARD_URL = "https://agsist.com/?ref=email-forward&utm_source=report_email&utm_medium=email"
@@ -159,6 +159,9 @@ def live_record(day, opener=None):
     """Today's graded result from the worker, or None (nothing kept for `day`,
     or the worker did not answer). Never raises."""
     test = env("REPORT_LIVE_TEST", "") == "1"
+    if test and env("DRY_RUN", "") != "1":
+        print("live result: the rehearsal's test record is read only in a dry run; the committed files are the source")
+        return None
     base = env("REPORT_LIVE_URL") or env("LIST_URL")
     if not base:
         print("live result: no worker address in this run; the committed files are the source")
@@ -792,6 +795,20 @@ def _selftest():
     def _op2(req, timeout=None):
         return _R(json.dumps({"ok": True, "live": lv_part}).encode())
     ok(live_record(date(2026, 12, 10), opener=_op2) is None, "a partial live result is never sent from")
+    _old_t, _old_d = os.environ.get("REPORT_LIVE_TEST"), os.environ.get("DRY_RUN")
+    os.environ["REPORT_LIVE_TEST"] = "1"
+    os.environ.pop("DRY_RUN", None)
+    lv_t = dict(lv, test=True)
+    def _op3(req, timeout=None):
+        return _R(json.dumps({"ok": True, "live": lv_t}).encode())
+    ok(live_record(date(2026, 12, 10), opener=_op3) is None, "the test record is never read outside a dry run")
+    os.environ["DRY_RUN"] = "1"
+    ok(live_record(date(2026, 12, 10), opener=_op3) == lv_t, "and is read in a dry run")
+    for _k, _v in (("REPORT_LIVE_TEST", _old_t), ("DRY_RUN", _old_d)):
+        if _v is None:
+            os.environ.pop(_k, None)
+        else:
+            os.environ[_k] = _v
     def _down(req, timeout=None):
         raise OSError("down")
     ok(live_record(date(2026, 12, 10), opener=_down) is None, "a worker that does not answer means the committed files")

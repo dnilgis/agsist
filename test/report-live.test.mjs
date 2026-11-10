@@ -110,14 +110,22 @@ test("the worker refuses what is not the job's result in the fixed shape", async
   assert.equal((await post(w, env, p)).status, 200);
   const older = good({ generated: "2000-01-01T00:00:00Z" });
   assert.equal((await post(w, env, older)).status, 409, "an older copy of the same release never replaces a newer one");
-  // fewer figures: only a newer AND complete copy may replace the kept one
-  const two = good({ rows: [good().rows[0], Object.assign({}, good().rows[0], { key: "soy_2627", label: "2026/27 soybean ending stocks" })], complete: false });
-  assert.equal((await post(w, env, two)).status, 200);
+  // fewer figures: only a newer AND complete copy may replace the kept one; complete is never replaced by partial
   const later = (s) => new Date(Date.now() + s * 1000).toISOString().slice(0, 19) + "Z";
-  assert.equal((await post(w, env, good({ generated: later(5), complete: false }))).status, 409, "fewer figures, partial: refused");
-  let r409 = await post(w, env, good({ generated: later(5), complete: false }));
-  assert.equal((await r409.json()).error, "fewer");
-  assert.equal((await post(w, env, good({ generated: later(6), complete: true }))).status, 200, "fewer figures, newer and complete: kept");
+  {
+    const f = await loadWorker();
+    const two = good({ generated: later(1), complete: false,
+      rows: [good().rows[0], Object.assign({}, good().rows[0], { key: "soy_2627", label: "2026/27 soybean ending stocks" })] });
+    assert.equal((await post(f.w, f.env, two)).status, 200);
+    const fw = await post(f.w, f.env, good({ generated: later(2), complete: false }));
+    assert.equal(fw.status, 409, "fewer figures, partial: refused");
+    assert.equal((await fw.json()).error, "fewer");
+    assert.equal((await post(f.w, f.env, good({ generated: later(3), complete: true }))).status, 200, "fewer figures, newer and complete: kept");
+    const part = await post(f.w, f.env, good({ generated: later(4), complete: false,
+      rows: [good().rows[0], Object.assign({}, good().rows[0], { key: "wheat_2627", label: "2026/27 wheat ending stocks" })] }));
+    assert.equal(part.status, 409, "a complete record is never replaced by a partial one, even with more figures");
+    assert.equal((await part.json()).error, "partial");
+  }
   assert.equal((await post(w, env, good({ release: daysAgo(1), generated: later(7) }))).status, 409, "a live release older than the kept one is refused");
   for (const bad of [good({ release: 20261210 }), good({ rows: [Object.assign({}, good().rows[0], { key: ["corn_2627"] })] }), good({ complete: "yes" })])
     assert.equal((await post(w, env, bad)).status, 400, "non-string release or row key, or no complete flag");
@@ -140,7 +148,7 @@ print(json.dumps([r.validate(c) for c in json.load(sys.stdin)]))`], { cwd: ROOT,
   for (let i = 0; i < cases.length; i++) {
     const r = await post(w, env, cases[i]);
     const js = r.status === 200 ? "" : (await r.json()).error;
-    assert.equal(js === "" || js === "older" || js === "fewer", py[i] === "", `case ${i}: worker ${js || "ok"}, python ${py[i] || "ok"}`);
+    assert.equal(js === "" || ["older", "fewer", "partial"].includes(js), py[i] === "", `case ${i}: worker ${js || "ok"}, python ${py[i] || "ok"}`);
   }
 });
 
@@ -166,7 +174,18 @@ test("the whole path on a fixture: file appears -> read -> graded -> served in u
     const line = out.s.split("\n").find((l) => l.startsWith("REHEARSAL "));
     assert.ok(line, "the rehearsal printed its result\n" + out.s.slice(-1500) + out.e.slice(-800));
     const res = JSON.parse(line.slice(10));
-    assert.deepEqual(res.steps, { fixture: true, read: true, served: true, email: true }, out.s.slice(-1500));
+    assert.deepEqual(res.steps, { fixture: true, read: true, served: true, complete: true, email: true }, out.s.slice(-1500));
+    // the yields land one check after the PDF: a partial result first, then the complete one, and the email
+    // renders from the live result exactly once, on the complete one (steps.email). A month with no NASS yield
+    // on the board is complete on its first result; both are honest answers.
+    assert.ok(["partial,complete", "complete"].includes(res.posts), "results sent: " + res.posts);
+    const surveyed = JSON.parse(execFileSync("python3", ["-c", `
+import json, sys
+sys.path.insert(0, "scripts")
+import fetch_wasde
+from datetime import date
+print(json.dumps(date.fromisoformat(sys.argv[1]).month in fetch_wasde.SURVEY_MONTHS))`, res.release], { cwd: ROOT, encoding: "utf8" }));
+    if (surveyed) assert.equal(res.posts, "partial,complete", "a NASS survey month: partial first, then complete");
     assert.ok(res.timings.appear_to_served_s < 30, `file appears -> live value served took ${res.timings.appear_to_served_s} s`);
     assert.equal(res.pass, true);
     assert.equal(out.code, 0);

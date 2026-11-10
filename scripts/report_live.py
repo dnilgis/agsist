@@ -345,22 +345,23 @@ def _quiet(fn, *a, **k):
 class Reader:
     """The existing readers, pointed at `root` (the checkout, or a rehearsal copy)."""
 
-    def __init__(self, root, release, opener=None, nass=True, log=print):
+    def __init__(self, root, release, opener=None, nass=True, log=print, nass_opener=None, nass_key=None):
         import read_wasde_pdf
         import fetch_wasde
         self.rp, self.fw = read_wasde_pdf, fetch_wasde
         self.root, self.release, self.opener, self.log = Path(root), release, opener, log
-        self.nass = nass and bool(fetch_wasde.API_KEY)
-        self.key = fetch_wasde.API_KEY
+        self.key = nass_key if nass_key is not None else fetch_wasde.API_KEY
+        self.nass = nass and bool(self.key)
         self.asks = 0
+        # one slow NASS answer must not hold up the PDF: 5 s per ask here (60 s in the module)
+        Reader.nass_opener = nass_opener or (lambda req, timeout=None: urllib.request.urlopen(req, timeout=5))
         if not getattr(fetch_wasde.nass_rows, "short_wait", False):
-            # one slow NASS answer must not hold up the PDF: 8 s per ask here (60 s in the module)
             orig = fetch_wasde.nass_rows
 
             def nass_rows(short_desc, year, period, key=None, opener=None):
-                return orig(short_desc, year, period, key=key,
-                            opener=opener or (lambda req, timeout=None: urllib.request.urlopen(req, timeout=8)))
+                return orig(short_desc, year, period, key=key, opener=opener or Reader.nass_opener)
             nass_rows.short_wait = True
+            nass_rows.orig = orig
             fetch_wasde.nass_rows = nass_rows
         self.pdf_dir = self.root / "data/wasde-pdf"
         self.parsed = None
@@ -398,11 +399,21 @@ class Reader:
         return self.parsed
 
     def fill(self):
-        """fetch_wasde.py on this release (the PDF and NASS on every check); True
-        when wasde.json changed."""
+        """fetch_wasde.py on this release; True when wasde.json changed. NASS is
+        asked once a check (one yield series); only when it answers does the
+        reader ask for every yield, once."""
         self._point()
-        self.asks += 1
-        self.fw.API_KEY = self.key if self.nass else ""
+        self.fw.API_KEY = ""
+        if self.nass and self.waiting_on_nass():
+            self.asks += 1
+            try:
+                est = json.loads((self.root / "data/analyst-estimates.json").read_text())
+                j = self.fw.plan(est, self.release)[0][0]
+                rows = self.fw.nass_rows.orig(j["short_desc"], j["year"], j["period"], key=self.key, opener=Reader.nass_opener)
+                if self.fw.read_value(rows)[0] is not None:
+                    self.fw.API_KEY = self.key
+            except Exception as ex:
+                self.log("  NASS     not answering (%s); asked again on the next check" % type(ex).__name__)
         rc, out = _quiet(self.fw.main, ["--date", self.release.isoformat()])
         for ln in out.splitlines():
             if ln.startswith("::error") or "REFUSED" in ln:
@@ -431,7 +442,8 @@ class Reader:
 
 
 def poll(release, root=ROOT, worker=None, key="", test=False, dry_run=False, opener=None, nass=True,
-         now=None, sleep=time.sleep, interval=POLL_S, start=None, deadline=None, log=print, on_post=None):
+         now=None, sleep=time.sleep, interval=POLL_S, start=None, deadline=None, log=print, on_post=None,
+         nass_opener=None, nass_key=None):
     """Check, read, grade and send until the result is whole or the window
     closes. Returns a dict: posted (count), complete, first_post (UTC ISO),
     last (the payload sent last)."""
@@ -442,7 +454,7 @@ def poll(release, root=ROOT, worker=None, key="", test=False, dry_run=False, ope
     while now() < start:
         sleep(max(1.0, min(30.0, (start - now()).total_seconds())))
     log("report day %s: checking every %ds until %s UTC" % (release, interval, deadline.strftime("%H:%M")))
-    rd = Reader(root, release, opener=opener, nass=nass, log=log)
+    rd = Reader(root, release, opener=opener, nass=nass, log=log, nass_opener=nass_opener, nass_key=nass_key)
     out = {"posted": 0, "complete": False, "first_post": None, "last": None, "checks": 0}
     last_body, sent_whole = None, False
     while True:
@@ -598,6 +610,29 @@ class FakeUsda:
         return _Resp(self.body)
 
 
+class FakeNass:
+    """NASS for the rehearsal: the yields as last month's PDF printed them, with
+    no answer until one check after the PDF appeared (yields land a check late)."""
+
+    def __init__(self, usda, pdf_path):
+        import read_wasde_pdf
+        crops = read_wasde_pdf.parse_pdf(pdf_path)["crops"]
+        self.yields = {"CORN": crops["corn"]["yield"]["value"], "SOYBEANS": crops["soybeans"]["yield"]["value"]}
+        self.usda, self.after = usda, 0
+
+    def __call__(self, req, timeout=None):
+        import urllib.parse as up
+        q = dict(up.parse_qsl(up.urlparse(req.full_url).query))
+        if self.usda.appeared is None:
+            return _Resp(b'{"data": []}')
+        self.after += 1
+        if self.after <= 1:
+            return _Resp(b'{"data": []}')
+        crop = "CORN" if q.get("short_desc", "").startswith("CORN") else "SOYBEANS"
+        return _Resp(json.dumps({"data": [{"Value": str(self.yields[crop]),
+                                           "reference_period_desc": q.get("reference_period_desc", "YEAR")}]}).encode())
+
+
 class _Resp(io.BytesIO):
     status = 200
 
@@ -659,42 +694,57 @@ def rehearse(release=None, worker=None, key=None, fast=False, email=True, nass=F
         scrub(tmp, release)
         res["steps"]["fixture"] = True
         usda = FakeUsda(pdf_src.read_bytes(), misses=misses)
+        fake_nass = None if nass else FakeNass(usda, pdf_src)
         rel = release_at(release) or datetime(release.year, release.month, release.day, 17, tzinfo=timezone.utc)
         t0 = time.monotonic()
         clock = lambda: rel + timedelta(seconds=time.monotonic() - t0)   # noqa: E731  (the release-day clock)
-        served = {}
+        posts = []
 
-        def check_served(payload):
+        def served_now(payload):
             end = time.monotonic() + 60
             while time.monotonic() < end:
                 rec = get_live(True, worker)
-                if rec and rec.get("generated") == payload["generated"] and rec.get("release") == payload["release"]:
-                    served.setdefault("at", time.monotonic())
-                    served["rows"] = len(rec.get("rows") or [])
-                    served["same"] = {k: v for k, v in rec.items() if k in TOP_KEYS} == payload
-                    return
+                if rec and all(rec.get(k) == payload[k] for k in ("generated", "release", "complete")) \
+                        and len(rec.get("rows") or []) == len(payload["rows"]):
+                    return time.monotonic(), {k: v for k, v in rec.items() if k in TOP_KEYS} == payload
                 time.sleep(0.5)
+            return None, False
 
-        out = poll(release, tmp, worker=worker, key=key, test=True, opener=usda, nass=nass, now=clock,
-                   interval=1 if fast else POLL_S, start=rel, deadline=rel + timedelta(minutes=3 if fast else WINDOW_MIN),
-                   log=log, on_post=lambda p: served or check_served(p))
-        res["steps"]["read"] = out["posted"] > 0
-        res["steps"]["served"] = bool(served.get("at")) and bool(served.get("same"))
-        if usda.appeared and served.get("at"):
-            res["timings"]["appear_to_served_s"] = round(served["at"] - usda.appeared, 2)
-        res["timings"]["checks"] = out["checks"]
-        res["figures"] = served.get("rows", 0)
-        if email and res["steps"]["served"]:
+        def dry_email():
             env = dict(os.environ, DRY_RUN="1", REPORT_LIVE_TEST="1", REPORT_LIVE_URL=worker or worker_url(),
                        RECIPIENTS="reader@example.com", FROM_ADDR=os.environ.get("FROM_ADDR") or "AGSIST <reports@agsist.com>",
                        LIST_URL="", LIST_TOKEN="", SMTP_USER="", SMTP_PASS="")
             r = subprocess.run([sys.executable, str(HERE / "send_report_day.py"), "--date", release.isoformat()],
                                env=env, capture_output=True, text=True, timeout=180, cwd=str(src_root))
-            txt = r.stdout
-            res["steps"]["email"] = (r.returncode == 0 and "rows from the live result" in txt
-                                     and "dry run complete" in txt and "USDA " in txt)
-            if not res["steps"]["email"]:
-                log("  email dry run said: " + " | ".join(txt.strip().splitlines()[-4:]) + (r.stderr.strip()[-200:]))
+            return r.returncode, r.stdout + r.stderr[-300:]
+
+        def on_post(payload):
+            at, same = served_now(payload)
+            rec = {"complete": payload["complete"], "rows": len(payload["rows"]), "served_at": at, "same": same}
+            if email:
+                rc, txt = dry_email()
+                rec["email_live"] = "rows from the live result" in txt
+                rec["email_ok"] = rc == 0 and (("dry run complete" in txt and "USDA " in txt) if rec["email_live"]
+                                               else "still partial" in txt)
+                if not rec["email_ok"]:
+                    log("  email dry run said: " + " | ".join(txt.strip().splitlines()[-4:]))
+            posts.append(rec)
+
+        out = poll(release, tmp, worker=worker, key=key, test=True, opener=usda, nass=True, now=clock,
+                   interval=1 if fast else POLL_S, start=rel, deadline=rel + timedelta(minutes=3 if fast else WINDOW_MIN),
+                   log=log, on_post=on_post, nass_opener=fake_nass, nass_key="fixture" if fake_nass else None)
+        res["steps"]["read"] = out["posted"] > 0
+        res["steps"]["served"] = bool(posts) and all(p_["served_at"] and p_["same"] for p_ in posts)
+        res["steps"]["complete"] = bool(posts) and posts[-1]["complete"] and not any(p_["complete"] for p_ in posts[:-1])
+        res["posts"] = ",".join("complete" if p_["complete"] else "partial" for p_ in posts)
+        if usda.appeared and posts and posts[0]["served_at"]:
+            res["timings"]["appear_to_served_s"] = round(posts[0]["served_at"] - usda.appeared, 2)
+        res["timings"]["checks"] = out["checks"]
+        res["figures"] = posts[-1]["rows"] if posts else 0
+        if email:
+            live_sends = [p_ for p_ in posts if p_.get("email_live")]
+            res["steps"]["email"] = (all(p_.get("email_ok") for p_ in posts) and len(live_sends) == 1
+                                     and live_sends[0]["complete"])
         t = res["timings"].get("appear_to_served_s")
         res["timings"]["under_target"] = t is not None and t < SERVE_TARGET_S
         res["pass"] = all(res["steps"].values()) and res["timings"]["under_target"]
@@ -713,7 +763,8 @@ def rehearsal_lines(res, for_day=None):
              "Result: %s." % ("pass" if res.get("pass") else "FAIL (%s)" % res.get("why", "")),
              "File appears to live value served: %s s (target under %d s)." % (t.get("appear_to_served_s", "n/a"), SERVE_TARGET_S),
              "Steps: " + ", ".join("%s %s" % (k, "ok" if v else "FAILED") for k, v in steps.items()) + ".",
-             "Figures served: %s. The email ran as a dry run; nothing was sent and no live record was touched." % res.get("figures", 0)]
+             "Results sent: %s. Figures served: %s. The email ran as a dry run on each and went out once, on the complete result;"
+             " nothing was sent and no live record was touched." % (res.get("posts") or "none", res.get("figures", 0))]
     return lines
 
 
@@ -729,10 +780,28 @@ def report_rehearsal(res, for_day=None):
     notify("Report-day rehearsal %s (%s)" % (word, for_day or res.get("release")), lines, force=True)
 
 
+LIVE_STATES = ("queued", "in_progress", "waiting", "pending", "requested")
+
+
+def _ran_live(run):
+    """Did this run of the workflow take the live path? Its jobs say: a `live`
+    job that is running or succeeded. None when GitHub cannot be asked."""
+    jobs = _gh("GET", "/actions/runs/%s/jobs?per_page=30" % run.get("id"))
+    if not isinstance(jobs, dict):
+        return None
+    for j in jobs.get("jobs", []):
+        if j.get("name") == "live":
+            return j.get("status") in LIVE_STATES or j.get("conclusion") == "success"
+    # the gate is still deciding: a run created inside the live window will take the live path
+    return any(j.get("name") == "gate" and j.get("status") in LIVE_STATES for j in jobs.get("jobs", [])) or None
+
+
 def earlier_run(release):
-    """Another scheduled run of this workflow already started for `release`'s
-    window (the first start tick): its id, else None. None too when GitHub
-    cannot be asked (the concurrency groups are the second guard)."""
+    """An earlier scheduled run that took the live path for `release` and is
+    still running or succeeded: its id, else None. A run created outside the
+    live window (a late tick from the other hour), one that failed or was
+    cancelled, or one whose gate said none never blocks this tick. None too
+    when GitHub cannot be asked (the concurrency groups are the second guard)."""
     rel = release_at(release)
     me = os.environ.get("GITHUB_RUN_ID", "")
     if rel is None or not me:
@@ -741,12 +810,24 @@ def earlier_run(release):
                + (rel - timedelta(hours=1)).strftime("%Y-%m-%dT%H:%M:%SZ"))
     if not isinstance(runs, dict):
         return None
+    lo, hi = rel - timedelta(minutes=25), rel + timedelta(minutes=15)
     mine = next((r for r in runs.get("workflow_runs", []) if str(r.get("id")) == me), None)
-    for r in runs.get("workflow_runs", []):
-        if str(r.get("id")) == me or r.get("conclusion") == "cancelled":
+    for r in sorted(runs.get("workflow_runs", []), key=lambda x: str(x.get("created_at", ""))):
+        if str(r.get("id")) == me:
             continue
-        if mine is None or str(r.get("created_at", "")) < str(mine.get("created_at", "")):
-            return r.get("id")
+        if mine is not None and str(r.get("created_at", "")) >= str(mine.get("created_at", "")):
+            continue
+        try:
+            made = datetime.fromisoformat(str(r.get("created_at", "")).replace("Z", "+00:00"))
+        except ValueError:
+            continue
+        if not lo <= made <= hi:
+            continue                                   # gated none: outside the live window
+        if r.get("status") == "completed" and r.get("conclusion") != "success":
+            continue                                   # failed or cancelled: the next tick runs
+        if _ran_live(r) is False:
+            continue                                   # its gate said none
+        return r.get("id")
     return None
 
 
@@ -877,20 +958,39 @@ def selftest():
             break
     else:
         ok(True, "every report day on file starts inside the workflow's start ticks")
-    # one live run per report day: the second start tick sees the first run and does nothing
+    # one live run per report day: only an earlier run that took the live path and is running or succeeded blocks a tick
     global _gh
     real_gh, old_id = _gh, os.environ.get("GITHUB_RUN_ID")
-    runs = {"workflow_runs": [{"id": 1, "created_at": "2026-12-10T16:38:20Z", "conclusion": None},
-                              {"id": 2, "created_at": "2026-12-10T16:48:15Z", "conclusion": None}]}
+    state = {}
+
+    def fake_gh(m, path, b=None):
+        if "/jobs" in path:
+            rid = path.split("/runs/")[1].split("/")[0]
+            return {"jobs": state["jobs"].get(rid, [])}
+        return {"workflow_runs": state["runs"]}
+
+    def run(i, at, status="in_progress", conclusion=None):
+        return {"id": i, "created_at": at, "status": status, "conclusion": conclusion}
     try:
-        _gh = lambda m, p, b=None: runs   # noqa: E731
+        _gh = fake_gh
+        live_job = [{"name": "gate", "status": "completed", "conclusion": "success"}, {"name": "live", "status": "in_progress"}]
+        state.update(runs=[run(1, "2026-12-10T16:38:20Z"), run(2, "2026-12-10T16:48:15Z")], jobs={"1": live_job})
         os.environ["GITHUB_RUN_ID"] = "2"
-        ok(earlier_run(d) == 1, "the second start tick finds the first run")
+        ok(earlier_run(d) == 1, "on-time ticks: the second finds the first running live and does nothing")
         os.environ["GITHUB_RUN_ID"] = "1"
-        ok(earlier_run(d) is None, "the first start tick runs")
-        runs["workflow_runs"][0]["conclusion"] = "cancelled"
+        ok(earlier_run(d) is None, "on-time ticks: the first runs")
+        state.update(runs=[run(1, "2026-12-10T15:48:40Z", "completed", "success"), run(2, "2026-12-10T16:38:20Z")],
+                     jobs={"1": [{"name": "gate", "status": "completed", "conclusion": "success"},
+                                 {"name": "live", "status": "completed", "conclusion": "skipped"}]})
         os.environ["GITHUB_RUN_ID"] = "2"
+        ok(earlier_run(d) is None, "a late tick from the other hour (15:48 UTC on a CST day) gated none and never blocks")
+        state.update(runs=[run(1, "2026-12-10T16:38:20Z", "completed", "failure"), run(2, "2026-12-10T16:48:15Z")], jobs={"1": live_job})
+        ok(earlier_run(d) is None, "a failed first run leaves the second tick to run")
+        state.update(runs=[run(1, "2026-12-10T16:38:20Z", "completed", "cancelled"), run(2, "2026-12-10T16:48:15Z")], jobs={"1": live_job})
         ok(earlier_run(d) is None, "a cancelled first run leaves the second tick to run")
+        state.update(runs=[run(1, "2026-12-10T16:38:20Z", "completed", "success"), run(2, "2026-12-10T16:48:15Z")],
+                     jobs={"1": [{"name": "live", "status": "completed", "conclusion": "success"}]})
+        ok(earlier_run(d) == 1, "a first run that finished the live path blocks a rerun of the tick")
         _gh = lambda m, p, b=None: None   # noqa: E731
         ok(earlier_run(d) is None, "GitHub not answering: the tick runs (the concurrency group is the second guard)")
     finally:

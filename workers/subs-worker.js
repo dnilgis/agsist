@@ -3032,6 +3032,7 @@ async function rlivePost(env, req) {
   if (old && !p.test && typeof old.release === "string" && old.release > p.release) return json({ ok: false, error: "older" }, 409, h);
   if (old && old.release === p.release) {
     if (String(old.generated) > p.generated) return json({ ok: false, error: "older" }, 409, h);
+    if (old.complete === true && !p.complete) return json({ ok: false, error: "partial" }, 409, h);   // complete stays complete
     // a copy with fewer figures replaces the kept one only when it is newer and complete
     const fewer = Array.isArray(old.rows) && p.rows.length < old.rows.length;
     if (fewer && !(p.complete && String(old.generated) < p.generated)) return json({ ok: false, error: "fewer" }, 409, h);
