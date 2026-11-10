@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """agstocks.py -- ag stock closes, SEC filings and the AGSIST Ag 20, for /ag-stocks.
 
-Approved by Sig Oct 29, 2026 (STANDING-DECISIONS: "use it until told no"). Run by
+Approved by the owner Oct 29, 2026 (a site rule: "use it until told no"). Run by
 .github/workflows/agstocks.yml after the U.S. close on weekdays.
 
   python3 scripts/agstocks.py universe   # check every candidate against SEC's ticker list
@@ -54,7 +54,7 @@ US_EXCHANGES = {"NYSE", "Nasdaq", "NYSE American", "NYSE MKT", "NYSE Arca", "CBO
 GROUPS = ["Equipment", "Crop inputs", "Grain and processing", "Livestock and animal health",
           "Food and produce", "Farmland and lenders", "Farm retail"]
 
-# The candidates, from the research list (feedbag notes/chatgpt/2026-10-29-answers/agstocks/
+# The candidates, from the research list (the private notes
 # universe.csv, 73 rows). Leads, not facts: each is checked against SEC's ticker list every run.
 # (ticker, company, group, CIK from the research note or None)
 SEED = [

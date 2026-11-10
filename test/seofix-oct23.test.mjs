@@ -6,7 +6,7 @@
  *      median $5,668 an acre." and a visible question + FAQPage markup say the same. Florence WI (55037) has 0
  *      sales in the window, under the 5-sale minimum: no sales number in its description, FAQ or markup.
  *      The monthly land run rewrites that file, so the test reads the count, median, middle half and window
- *      from it (BUILD-RULES 50, Nov 3: Barron went to 21 sales at $5,760), and falls back to another county
+ *      from it (build rule 50, Nov 3: Barron went to 21 sales at $5,760), and falls back to another county
  *      with (or without) a median if Barron (or Florence) crosses the 5-sale line.
  *   2. Barron County's middle is about 6 to 8 miles from Cameron, Almena and Rice Lake, all with
  *      town bid pages: Atlas and rain pages link them (three at most, distance printed).

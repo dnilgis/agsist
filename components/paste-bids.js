@@ -1,12 +1,12 @@
-/* Read a bid board Sig pasted by hand (desk/elevators.html, Paste bids).
+/* Read a bid board the owner pasted by hand (desk/elevators.html, Paste bids).
  *
  * NEW Cooperative's site puts a Cloudflare bot check in front of the bids
- * reader, and the reader does not try to get past it. So Sig opens
+ * reader, and the reader does not try to get past it. So the owner opens
  * https://www.newcoop.com/cash-bids in his own browser, copies the page source
  * (or select-all text, or uses the "Copy for AGSIST" bookmarklet) and pastes it
  * here. Nothing in this file fetches their site.
  *
- * The board (Sig's page source, Oct 20): inside <turbo-frame id="cashbids">, an
+ * The board (the owner's page source, Oct 20): inside <turbo-frame id="cashbids">, an
  * <h1 class="text-4xl ..."> per location, then a table
  *   COMMODITY | DELIVERY | CASH PRICE | BASIS | FUTURE PRICE | FUTURE CHANGE
  *   Corn | 10/1/2026 - 10/31/2026 | $4.26 | -35 | 461-4 | -5-4
@@ -223,7 +223,7 @@
   }
 
   /* The Send to AGSIST bookmark (desk/today.html). On the elevator's bid page,
-     in Sig's own browser, it copies the page (a spare, in case the new tab is
+     in the owner's own browser, it copies the page (a spare, in case the new tab is
      cut off from it) and opens the desk at #send. When the desk says it is
      ready, and only to https://agsist.com, it hands over the page's HTML. It
      holds no token and no list of sites: the desk decides which pages it takes. */

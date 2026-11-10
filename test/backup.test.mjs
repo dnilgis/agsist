@@ -1,5 +1,4 @@
-/* The monthly backup (Sig, Oct 20: "how are we going to back up our repos
- * monthly exactly. i have an external ssd drive").
+/* The monthly backup (Oct 20).
  *   - worker v5.39 GET /export (scripts/test_export_worker.mjs, run here so
  *     `node --test` covers it): Bearer LIST_TOKEN only, ?token= refused,
  *     pages through every key, values round-trip exactly;

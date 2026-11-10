@@ -2,8 +2,7 @@
 """
 stats_ingest.py - daily GA4, Search Console and Bing numbers, kept private.
 
-Sig, Oct 23 2026: "all available tracking reporting, full ingestion and
-correlation". This pulls the raw daily rows so they can be joined later on
+Oct 23 2026. This pulls the raw daily rows so they can be joined later on
 date + page, and writes them under private/stats/ (gitignored on main). The
 workflow saves that folder to the private repo's private-data branch with
 scripts/push_raw.sh. Nothing here is committed to this public repo, and the

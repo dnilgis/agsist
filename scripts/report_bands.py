@@ -33,7 +33,7 @@ That is not a withheld number, it is an asserted one — the page told a reader
 that a print nobody had an estimate for landed where the trade expected. It now
 returns "" and every caller prints the reason instead.
 
-THE RULE CHANGED ON 2026-10-10 (Sig approved it). From 2026-10-03 to
+THE RULE CHANGED ON 2026-10-10 (the owner approved it). From 2026-10-03 to
 2026-10-09 any print inside the trade's range was "in line", however far from
 the average. On 2026-10-09 October corn stocks came in 10.3% over the trade
 average and the corn yield 1.9% over, both read "in line", and corn fell 19 3/4

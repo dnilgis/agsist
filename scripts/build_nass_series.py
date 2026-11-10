@@ -125,7 +125,17 @@ SCOPE_MY = ("marketing-year average price received, final only (reference_period
 
 
 def final_ok(year, final_at=DEFAULT_FINAL_AT, today=None):
-    """Could NASS have published a final for this year by today?"""
+    """Could NASS have published a final for this year by today?
+
+    Corn and soybeans (DEFAULT_FINAL_AT) wait for the January annual's real
+    release, read from usda_dates (Jan 12, 2027 at noon Eastern for the 2026
+    crop). The fixed Jan 1 let any run from Jan 1 to 11 keep NASS's November
+    forecast, tagged "YEAR", as a final (Nov 9 2026 panel). today: a date or an
+    aware datetime; None is now."""
+    if final_at == DEFAULT_FINAL_AT:
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import usda_dates
+        return usda_dates.annual_final_out(int(year), today or datetime.datetime.now(datetime.timezone.utc))
     today = today or datetime.date.today()
     dy, m, d = final_at
     return (today.year, today.month, today.day) >= (int(year) + dy, m, d)
@@ -284,7 +294,13 @@ def check_data(outdir):
 def selftest():
     D = datetime.date
     # corn/soy wait for January; small grains are final from Oct 1 of the crop year
-    assert not final_ok(2026, DEFAULT_FINAL_AT, D(2026, 12, 31)) and final_ok(2026, DEFAULT_FINAL_AT, D(2027, 1, 1))
+    assert not final_ok(2026, DEFAULT_FINAL_AT, D(2026, 12, 31)) and not final_ok(2026, DEFAULT_FINAL_AT, D(2027, 1, 1))
+    # the real annual on a fake clock: Jan 12 2027, noon Eastern = 17:00 UTC
+    _U = lambda *a: datetime.datetime(*a, tzinfo=datetime.timezone.utc)
+    assert not final_ok(2026, DEFAULT_FINAL_AT, _U(2027, 1, 11, 20)), "Jan 11: the November forecast is not a final"
+    assert not final_ok(2026, DEFAULT_FINAL_AT, _U(2027, 1, 12, 16, 5)), "Jan 12 before the print"
+    assert final_ok(2026, DEFAULT_FINAL_AT, _U(2027, 1, 12, 17, 5)) and final_ok(2025, DEFAULT_FINAL_AT, D(2026, 11, 9))
+    assert is_forecast({"year": "2026", "reference_period_desc": "YEAR"}) == (not final_ok(2026))
     assert not final_ok(2026, SMALL_GRAIN, D(2026, 9, 30)) and final_ok(2026, SMALL_GRAIN, D(2026, 10, 1))
     # 2025/26 corn marketing year closes Aug 31, 2026; final from Oct 1, 2026, not before
     my = DATASETS["corn-price-my"]

@@ -1,4 +1,4 @@
-/* components/infographic.js: the Friday Chart (subtitle "Infographic of the Week", Sig Nov 7), drawn from its spec (data/infographics/<date>.json,
+/* components/infographic.js: the Friday Chart (subtitle "Infographic of the Week", Nov 7), drawn from its spec (data/infographics/<date>.json,
    made by scripts/build_infographic.py from our own data files; the page carries the same spec inline as
    <script type="application/json" id="ig-spec">). Nov 7, 2026.
 
@@ -192,7 +192,7 @@
       + (qr ? '<div class="igs-qr">' + qr + '<p>Scan for the page</p></div>' : '') + '</div>';
   }
 
-  /* ---------------------------------------------------------------- the poster (Friday Chart, Sig Nov 7)
+  /* ---------------------------------------------------------------- the poster (Friday Chart, Nov 7)
      One layout, two looks: dark (the phone poster, 1080 x 2400, a canvas picture to save or share) and paper (the
      print poster, an SVG on an 11 x 17 sheet, Letter as the fallback). The layout is a list of drawing steps
      (rect, text, circle, arc, line, path, qr) painted on a canvas or written as SVG, so both looks match. Every

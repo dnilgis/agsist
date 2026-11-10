@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Sig's morning report (2026-10-14): ONE email at about 6:40 am Central he can
+The owner's morning report (2026-10-14): ONE email at about 6:40 am Central he can
 skim over coffee. Run by .github/workflows/morning-report.yml.
 
-  Today              first, before anything else (2026-10-20, Sig): the bid
+  Today              first, before anything else (2026-10-20): the bid
                      sites a person has to deal with by hand (a bot check or a
                      refusal, no good read for 6 h), biggest town count first,
                      each with its last good read and a Paste link when the
@@ -39,7 +39,8 @@ skim over coffee. Run by .github/workflows/morning-report.yml.
                      withheld) and the Rain Print funnel for 7 days, read
                      from GA4 here (GA4_PROPERTY_ID, GA4_SERVICE_ACCOUNT) and
                      never written to a file; left out of a dry run.
-  To-dos             the unchecked lines of TODO-SIG.md.
+  To-dos             the unchecked lines of the to-do list (private repo,
+                     branch private-data, private/todo.md; the job unpacks it).
   Backup             on the 1st of each month (Central time), one line in
                      Needs you: plug in the SSD and run the monthly backup
                      (scripts/backup/backup-agsist.cmd on his SSD).
@@ -107,12 +108,20 @@ STATE_NAMES = {"IA": "Iowa", "IL": "Illinois", "IN": "Indiana", "KS": "Kansas", 
                "LA": "Louisiana", "PA": "Pennsylvania", "NY": "New York", "ID": "Idaho", "WA": "Washington",
                "OR": "Oregon", "WY": "Wyoming", "ON": "Ontario", "MB": "Manitoba", "SK": "Saskatchewan", "AB": "Alberta"}
 PRIVATE_KEY_WARN_DAYS = 14     # same as cron_health.KEY_WARN_DAYS: say it two weeks out
-TODO_EDIT = "https://github.com/dnilgis/agsist/edit/main/TODO-SIG.md"
+TODO_FILE = "private/todo.md"
+
+
+def todo_edit():
+    """The edit link for the to-do list: TODO_EDIT_URL (a repository variable), an https GitHub link or ''."""
+    u = (os.environ.get("TODO_EDIT_URL") or "").strip()
+    return u if u.startswith("https://github.com/") and not any(c in u for c in ' "<>') else ""
+
+
 # The two clocks the workflow lists: 11:40 UTC is 6:40 am CDT, 12:40 UTC is 6:40 am CST.
 CRONS = ("40 11 * * *", "40 12 * * *")
 # Orders and requests: the digest's kinds plus sponsor applications (/sponsor-apps).
 ORDER_KINDS = FD.TALLY + (("sponsor-apply", "sponsor application", "sponsor applications"),)
-# Kinds that wait on Sig when one comes in (a reply, a call, a yes or no).
+# Kinds that wait on the owner when one comes in (a reply, a call, a yes or no).
 WAITING = ("rain-print-order", "gift-card", "rain-print-business", "rain-print-help", "elevator-listing", "prf-sponsor", "claim",
            "sponsor-feedback")
 # Lists on the worker's /count, in the order they print.
@@ -992,7 +1001,7 @@ def sec_orders(src, now, rep):
         pend_reqs = [r for r in (reqs.get("requests") or []) if isinstance(r, dict) and r.get("status") == "pending"]
         n = len(pend_reqs)
         lines.append("Elevator listing requests still pending on elev-admin: %d." % n)
-        # Sig, Oct 20: name them (elevator, town, state) so the email says who without opening elev-admin.
+        # Oct 20: name them (elevator, town, state) so the email says who without opening elev-admin.
         # Business name and place only: never the contact person, phone or email.
         for r in pend_reqs[:10]:
             where = ", ".join(x for x in (clean_txt(r.get("town")), clean_txt(r.get("state"))) if x)
@@ -1063,7 +1072,7 @@ def rp_sessions(src, since):
 
 def rain_print_paid(src, now):
     """Each paid Rain Print checkout of the last 48 hours, one line each:
-    product, amount, the design reference and the maker link Sig opens to make
+    product, amount, the design reference and the maker link the owner opens to make
     it. Read from /v1/checkout/sessions?status=complete. Only those things,
     and the session id of a paid session with no design reference, are taken
     from a session; never an email, a name or an address."""
@@ -1106,10 +1115,10 @@ RP_PRINTS = ("print12x18", "framed12x18")
 
 def rp_order_line(o, now):
     """One order: product, town year style, paid or pay pressed, and the link
-    that opens it in Sig's maker view (with the serial for a print)."""
+    that opens it in the owner's maker view (with the serial for a print)."""
     what = {"digital": "Digital file", "print12x18": "Print", "framed12x18": "Framed"}.get(o.get("product"), "Rain Print")
     if o.get("product") == "framed12x18":
-        # worker v5.63 (Sig, Nov 4): oak or black; a record without the key reads black (sold before Nov 4), "" is not known
+        # worker v5.63 (Nov 4): oak or black; a record without the key reads black (sold before Nov 4), "" is not known
         fc = "black" if o.get("frame_color") is None else str(o.get("frame_color") or "")
         what += " in oak" if fc == "oak" else " in black" if fc == "black" else ", frame color not on file (ask the buyer)"
     design = " ".join(x for x in (clean_txt(o.get("place"), 60), str(o.get("year") or ""),
@@ -1437,7 +1446,7 @@ def sec_today(src, now, rep, snap):
 def sec_insight(src, now, rep):
     """The weekly re-test engine (scripts/insight_engine.py), the morning after it ran. Counts and
     test ids only; nothing it finds is published. A test every printable condition holds for except
-    Sig's yes goes in Needs you."""
+    The owner's yes goes in Needs you."""
     try:
         doc = json.loads(src.file("private/ledger/tests/latest.json"))
     except FileNotFoundError:
@@ -1473,10 +1482,10 @@ def sec_insight(src, now, rep):
 
 def sec_todos(src, now, rep):
     try:
-        items = [m.group(2) for m in map(TODO_RE.match, src.file("TODO-SIG.md").splitlines()) if m and m.group(1) == " "]
+        items = [m.group(2) for m in map(TODO_RE.match, src.file(TODO_FILE).splitlines()) if m and m.group(1) == " "]
         lines = ["- " + x for x in items] or ["Nothing open."]
     except Exception as e:                                 # noqa: BLE001
-        lines = ["TODO-SIG.md: could not be read (%s)." % why(e)]
+        lines = ["The to-do list: could not be read (%s)." % why(e)]
     rep.add("To-dos", lines)
 
 
@@ -1538,7 +1547,9 @@ def text_body(rep, now):
         out += ["", title]
         out.extend(lines)
         out.extend(table_text(rep.tables.get(title)))
-    out += ["", "To check off a to-do, edit TODO-SIG.md on GitHub: %s" % TODO_EDIT,
+    link = todo_edit()
+    out += ["", ("To check off a to-do, edit the list on GitHub: %s" % link) if link else
+            "To check off a to-do, edit the list in the private repo.",
             "Counts only: no reader or customer address is ever in this email.", "", "-- ", ADDRESS]
     return "\n".join(out) + "\n"
 
@@ -1578,9 +1589,11 @@ def html_body(rep, now):
         if rep.tables.get(title):
             parts.append(table_html(rep.tables[title]))
             parts.append(ul(rep.tables[title].get("after") or []))
+    link = todo_edit()
+    todo = ('<a href="%s">edit the list on GitHub</a>' % e(link, quote=True)) if link else "edit the list in the private repo"
     parts.append('<p style="font-size:13px;color:#6b6b6b;margin-top:22px;line-height:1.45">To check off a to-do, '
-                 '<a href="%s">edit TODO-SIG.md on GitHub</a>.<br>Counts only: no reader or customer address is ever in '
-                 'this email.<br>%s</p>' % (e(TODO_EDIT, quote=True), e(ADDRESS)))
+                 '%s.<br>Counts only: no reader or customer address is ever in '
+                 'this email.<br>%s</p>' % (todo, e(ADDRESS)))
     return ('<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
             '<body style="margin:0;background:#fff"><div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;'
             'padding:16px;color:#1a1a1a;background:#fff">%s</div></body></html>' % "".join(parts))
@@ -1885,7 +1898,7 @@ def fixtures(now):
                               {"path": "/hail-map", "views": 300}]},
             "series": {"days": [{"d": "2026-10-10", "users": 197}, {"d": "2026-10-11", "users": 181}, {"d": "2026-10-12", "users": None}]},
             "email": {"subscribers": 139, "asOf": "2026-10-13"}}),
-        "TODO-SIG.md": "# To-dos\n\n- [ ] Test Stripe with a $19 purchase and refund it\n- [x] Done thing\n* [ ] Join Something Special from Wisconsin\nnot a task\n",
+        TODO_FILE: "# To-dos\n\n- [ ] Test Stripe with a $19 purchase and refund it\n- [x] Done thing\n* [ ] Join Something Special from Wisconsin\nnot a task\n",
     }
     subs = [{"email": "a%d@farm.com" % i, "ts": ms - i * 3600 * 1000 * 20} for i in range(12)]
     worker = {
@@ -1988,7 +2001,26 @@ def selftest():
        and "/hail-map" not in t, t)
     ck("only unchecked to-dos", "- Test Stripe with a $19 purchase and refund it" in t and "- Join Something Special from Wisconsin" in t
        and "Done thing" not in t and "not a task" not in t, t)
-    ck("footer says how to check one off", TODO_EDIT in t and ('href="%s"' % TODO_EDIT) in h, t[-400:])
+    ck("footer without TODO_EDIT_URL: no link, plain words", "edit the list in the private repo." in t and
+       "edit the list in the private repo." in h and "/edit/" not in t, t[-400:])
+    link = "https://github.com/example/repo/edit/branch/todo.md"
+    old_link = os.environ.get("TODO_EDIT_URL")
+    try:
+        os.environ["TODO_EDIT_URL"] = link
+        def bodies():
+            out = []
+            run(Fake(*fixtures(now)), now, False, out.append, "sig@x.com", dict(snap))
+            return (out[0].get_body(("plain",)).get_content(), out[0].get_body(("html",)).get_content()) if out else ("", "")
+        t2, h2 = bodies()
+        ck("footer with TODO_EDIT_URL links the list", link in t2 and ('href="%s"' % link) in h2, t2[-400:])
+        os.environ["TODO_EDIT_URL"] = 'javascript:alert(1)'
+        t3, h3 = bodies()
+        ck("a non-GitHub TODO_EDIT_URL is not linked", "javascript" not in t3 + h3 and "edit the list in the private repo." in t3)
+    finally:
+        if old_link is None:
+            os.environ.pop("TODO_EDIT_URL", None)
+        else:
+            os.environ["TODO_EDIT_URL"] = old_link
 
     print("\nno addresses")
     addrs = ["jane@farm.com", "bo@farm.com", "al@chetek.coop", "gauge1@y.org", "gauge2@y.org", "boss@seed.com", "pat@x.com", "office@coop.com", "a1@farm.com"]
@@ -2012,7 +2044,7 @@ def selftest():
         "Reader summary: could not be read (HTTP 500).", "Worker counts: could not be read (HTTP 500).",
         "data/audience.json: could not be read (FileNotFoundError).",
         "Could not read: forms (HTTP 500), rain gauge list (HTTP 500), sponsor applications (HTTP 500). Those count as 0 below.",
-        "Elevator listing requests: could not be read (HTTP 500).", "TODO-SIG.md: could not be read (FileNotFoundError).")), ft)
+        "Elevator listing requests: could not be read (HTTP 500).", "The to-do list: could not be read (FileNotFoundError).")), ft)
     ck("no token in the email or log", "SECRET" not in ft and not any("SECRET" in x for x in flog))
     w2 = dict(worker)
     del w2["count"]
@@ -2174,8 +2206,8 @@ def selftest():
     ck("a bad key is one line", rain_print_paid(Fake(stripe=ses, stripe_key="rk", broken={"stripe"}), now) == ["Rain Print orders: could not be read from Stripe (HTTP 401)."])
 
     print("\nRain Print order records (the subs worker's /rp-order/list)")
-    # The real case, Oct 20: Sig's $19 digital file, Stripe's payment page showed no design.
-    # Sig's test design: Chetek WI, Staircase, "Gustum Farm", Apr 1 "Moved in" (the year is only for the test).
+    # The real case, Oct 20: the owner's $19 digital file, Stripe's payment page showed no design.
+    # The owner's test design: Chetek WI, Staircase, "Gustum Farm", Apr 1 "Moved in" (the year is only for the test).
     sig_url = ("https://agsist.com/rain-print?place=Chetek%2C+WI&year=2025&station=471667+2&layout=staircase&palette=paper"
                "&size=12x18&style=r1&name=Gustum+Farm&m1=2025-04-01+Moved+in")
     sig_ref = "MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8c3AwYWF8R3VzdHVtIEZhcm18Mml8TW92ZWQgaW4"

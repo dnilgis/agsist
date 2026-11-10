@@ -77,19 +77,13 @@
   }
 
   /* The name printed for an elevator. An archived copy's marks ("zShawnee Feed Old") and a page title's
-     tail ("American Plains Co-op - Cash Bid Include") never reach the card. /cash-bids cleans names with
-     cbRank.displayName (components/cb-rank.js), and that is used when it is on the page. The home page does
-     not load cb-rank.js (26 KB and two more data files for one name rule), so its three general rules are
-     mirrored here; test/home-bid-names.test.mjs holds them equal to cb-rank.js. Keys and alert ids keep the
-     raw name: only what is printed changes. */
-  var OP_HEAD = /^\s*(?:cash\s+bid\s+)?(?:jsi\s+site|iframe|current\s+grain\s+bids)\s*-\s*/i;
-  var OP_TAIL = /\s*-\s*cash\s+bid\s+include\s*$/i;
-  var OP_ARCHIVED = /^z(?=[A-Z])|\s*\.?\b(?:OLD|Old)$/g;
+     tail ("American Plains Co-op - Cash Bid Include") never reach the card. The one name cleaner is
+     elevNames.displayName (components/elev-names.js, twin of scripts/elevator_names.py), loaded on the home page.
+     Keys and alert ids keep the raw name: only what is printed changes. */
   function displayName(op){
     var raw = String(op || '').trim();
-    try { if(window.cbRank && typeof window.cbRank.displayName === 'function') return window.cbRank.displayName(raw) || raw; } catch(e){}
-    var s = raw.replace(OP_HEAD, '').replace(OP_TAIL, '').trim().replace(/,+$/, '').trim();
-    return s.replace(OP_ARCHIVED, '').trim() || raw;
+    try { var N = window.elevNames; if(N && typeof N.displayName === 'function') return N.displayName(raw) || raw; } catch(e){}
+    return raw;
   }
   function escHtml(s){
     if(!s) return '';
@@ -832,7 +826,7 @@
   // cannot show a stale or invented number: no bid, no line.
   /* WAVE1-A: one option per elevator and crop: its nearest open delivery
      month, per bushel, not a special grade. Nearest elevator first. */
-  /* EARLIEST BID FIRST (Sig, 2026-11-02). Inside one delivery month a board can post a
+  /* EARLIEST BID FIRST (2026-11-02). Inside one delivery month a board can post a
      first-half and a last-half bid (Nevada, IA: "FH Nov 2026" $4.17, "LH Nov 2026" $4.22);
      both file under Nov and the option took the higher one, so the last half (later
      delivery) stood in as today's price. Tier 0: spot or cash, the first half, the whole
@@ -1007,19 +1001,8 @@
   // Names that differ by a real word ("ADM Grain" / "ADM") are merged only by
   // isTwin() below, under much stricter conditions: a repeated elevator is
   // visible and fixable, a wrong merge hides a real one.
-  var LEGAL = {llc:1,lc:1,inc:1,incorporated:1,co:1,corp:1,corporation:1,ltd:1,limited:1,lp:1,llp:1,company:1};
-  function normOperator(name){
-    var t = String(name || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ')
-      .replace(/co op/g, 'coop').replace(/co operative/g, 'cooperative')
-      .split(' ').filter(function(x){ return x; });
-    while(t.length && LEGAL[t[t.length - 1]]) t.pop();
-    t = t.map(function(x){ return (x === 'cooperative' || x === 'coops') ? 'coop' : x; });
-    var FOLD = {bros:'brother',brothers:'brother',brother:'brother',st:'saint',mt:'mount',ft:'fort',
-                farmers:'farmer',assn:'association',assoc:'association',elev:'elevator',elevators:'elevator'};
-    t = t.map(function(x){ return FOLD[x] || x; });
-    t = t.map(function(x){ return (x.length > 3 && x.charAt(x.length - 1) === 's') ? x.slice(0, -1) : x; });
-    return t.join('');
-  }
+  /* elevNames.mergeKey (components/elev-names.js), twin of scripts/elevator_names.merge_key. */
+  function normOperator(name){ return window.elevNames.mergeKey(name); }
   function plain(x){ return String(x || '').toLowerCase().replace(/[^a-z0-9]/g, ''); }
   function rowKey(r){ return normOperator(r.facility) + '|' + plain(r.city) + '|' + plain(r.state); }
 

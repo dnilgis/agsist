@@ -1,4 +1,4 @@
-/* PRF fixes Sig approved on Oct 20, 2026, each from a real case on /prf?g=14538 (Henderson County, TX)
+/* PRF fixes the owner approved on Oct 20, 2026, each from a real case on /prf?g=14538 (Henderson County, TX)
  * at 390 px: step 2 open was 9,021 px tall with the productivity factor at y 10,527; the plain
  * "What this means" line printed but never showed; the sponsor ask and the email box sat above the answer.
  *   node --test test/prf-oct20.test.mjs */

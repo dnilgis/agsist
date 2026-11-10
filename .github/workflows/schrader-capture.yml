@@ -154,7 +154,6 @@ jobs:
           git pull --rebase --autostash origin "${GITHUB_REF_NAME}" || true
           git push origin "HEAD:${GITHUB_REF_NAME}"
 
-  # Land auction firms (Sig, Nov 8, 2026): raw results pages only, nothing read or published yet.
   firms-seen:
     needs: gate
     if: needs.gate.outputs.go == '1'

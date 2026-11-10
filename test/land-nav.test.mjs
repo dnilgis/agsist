@@ -1,9 +1,9 @@
-/* Land sales easy to find (Sig, Oct 29, 2026: "the farmland sale page should be easy to find").
+/* Land sales easy to find (Oct 29, 2026).
  *
  * Every link into /land-sales/ from the Atlas county homes, the rent pages, the cash bid town
  * pages, Fast Facts' place row and the hub's own jump row must land on a file in this checkout
  * (and an anchor that is on that page). Atlas county homes in a state without sales on the site
- * print no land sales line and no research status (Sig, Nov 8, 2026); a county without a sale in a
+ * print no land sales line and no research status (Nov 8, 2026); a county without a sale in a
  * state with sales gets one neutral line to the farm sales page; never a county page that does not exist.
  *
  *   node --test test/land-nav.test.mjs

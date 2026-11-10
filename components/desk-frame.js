@@ -1,4 +1,4 @@
-/* A desk tab page (desk/*.html) shown inside /desk (Sig, Oct 28: "one admin home").
+/* A desk tab page (desk/*.html) shown inside /desk (Oct 28).
    Inside the desk it hides its own token box and heading (the desk has the one
    token box, under the same browser key), and its links open in the desk window,
    not inside the frame. Opened on its own, it does nothing and the page works

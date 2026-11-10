@@ -4,7 +4,7 @@
    components/manure-value.js, shared with /manure-value. */
 (function(){
 'use strict';
-/* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+/* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Nov 3 2026); a file without the company count says 'median of N elevators'. */
 function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
 
 /* ─── TAB SYSTEM ─────────────────────────────────────────────────────── */
@@ -59,7 +59,7 @@ setTimeout(function(){if(!tabFromHash(true)){switchTab(document.querySelector('.
 var PRICES={};
 var ECO_TYPED={};   /* cost-builder boxes the reader typed in */
 /* data/fertilizer-prices.json (scripts/build_fert_prices.py): each product's
-   middle cash price posted by the co-ops Sig sent, nothing else. Every row
+   middle cash price posted by the co-ops the owner sent, nothing else. Every row
    names its co-ops, region and date, and every
    $/lb shown here says how it was worked out. Lime and K-Mag have no live
    source, so they are not priced here (the lime calculator takes your $/ton).
@@ -140,7 +140,7 @@ function loadFertPrices(){
       });
       wrap.appendChild(btn);
     });
-    /* one line of method, not a worked formula per product (Sig: undershare); each pill
+    /* one line of method, not a worked formula per product (undershare); each pill
        carries its own $/lb, price and dated source */
     var dv=document.getElementById('fert-deriv');
     if(!dv){dv=document.createElement('p');dv.id='fert-deriv';dv.className='fert-deriv';wrap.parentNode.insertBefore(dv,wrap.nextSibling);}
@@ -248,14 +248,14 @@ function loadGrainPrices(){
 }
 /* The reader's state: their last pick here ('fut' = futures only), else the
    state of their saved location. '' when neither is known: the box then asks
-   rather than guessing (Sig, Oct 16: state basis by default). */
+   rather than guessing (Oct 16: state basis by default). */
 function savedState(){
   try{var s=localStorage.getItem('agsist-ff-state');if(s)return s;}catch(e){}
   try{var w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'{}');if(w&&/^[A-Z]{2}$/.test(w.state||''))return w.state;}catch(e){}
   return '';
 }
-/* Your state in the notes under the N box (Sig, Oct 17: local from what is on
-   disk). Wisconsin: this is its own guide. Illinois: Illinois Extension runs
+/* Your state in the notes under the N box (Oct 17: local from what is on
+ disk). Wisconsin: this is its own guide. Illinois: Illinois Extension runs
    the Corn N Rate Calculator by region of Illinois and last crop (Illinois
    Extension, Feb 27, 2026). The fall line links straight to the reader's
    saved ZIP on /fall-nitrogen and to their state's rule there when that page

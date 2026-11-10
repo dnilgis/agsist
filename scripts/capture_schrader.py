@@ -32,7 +32,7 @@ between requests is the larger of 2 seconds and robots.txt's Crawl-delay; over 3
 seconds, no auction page is fetched. Redirects are never followed blindly: one hop
 at most, and only to the same host, outside /buyers/, where robots.txt allows it.
 
-Backfill (--backfill; Sig approved one manual run Nov 8, 2026, no schedule; only the
+Backfill (backfill; the owner approved one manual run Nov 8, 2026, no schedule; only the
 workflow_dispatch input "backfill" runs it): walks Schrader's recent_auctions archive,
 filtered by state, for IA NE OH MI KY AR MS TX OK CO WA GA, collects the auction ids,
 skips ids captured before (weekly capture pages in this checkout, the saved data file,

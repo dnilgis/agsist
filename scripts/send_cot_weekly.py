@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 send_cot_weekly.py -- "Funds this week", one short email after each CFTC
-Commitments of Traders release (Sig, Oct 21 2026).
+Commitments of Traders release (Oct 21 2026).
 
 WHO GETS IT. The readers on the worker's `cot` list (subs worker v5.44,
 POST /notice topic cot, from the boxes on /cot and the futures and cattle
@@ -83,7 +83,7 @@ COT = REPO / "data" / "cot.json"
 HIST = REPO / "data" / "cot-history.json"
 DEEP = REPO / "data" / "cot-deep.json"
 ANA = REPO / "data" / "cot-analysis.json"
-# Sig, Oct 22: every list email replies to news@ (sig@ is his own mail).
+# Oct 22: every list email replies to news@ (sig@ is his own mail).
 REPLY_DEFAULT = "news@agsist.com"
 # One tag convention for every COT kit asset (kit v2 part 2): utm_source share|print|email, utm_medium
 # picture|sheet|qr|forward|email, utm_campaign cot. The forward line says forward, so a neighbor's visit is told
@@ -91,7 +91,7 @@ REPLY_DEFAULT = "news@agsist.com"
 SRC_TAG = "utm_source=email&utm_medium="
 TAG = SRC_TAG + "email&utm_campaign=cot"
 PAGE = "https://agsist.com/cot?" + TAG
-FORWARD_URL = "https://agsist.com/cot?ref=email-forward&" + SRC_TAG + "forward&utm_campaign=cot#cot-signup"   # lands on the signup box (Sig, Nov 6)
+FORWARD_URL = "https://agsist.com/cot?ref=email-forward&" + SRC_TAG + "forward&utm_campaign=cot#cot-signup"   # lands on the signup box (Nov 6)
 UA = {"User-Agent": "AGSIST-automation/1.0 (+https://agsist.com; sig@agsist.com)"}
 TOPIC = "cot"
 # (key in the COT files, the name in the email)
@@ -324,7 +324,7 @@ def sentence(r):
     return "Managed money is %s %s contracts%s." % (side(r["net"]), NOUN[r["key"]], (", " + ch) if ch else "")
 
 
-# ── the email's words (Nov 6, Sig: "make sure the COT email is very very good") ──
+# ── the email's words (Nov 6) ──
 # One rank, the /cot page's: managed-money net as a share of open interest, ranked
 # against every week since the record starts, in words (data/cot-analysis.json
 # crowd.words, the field the page's answer line prints). No ordinals, no second
@@ -690,7 +690,7 @@ def deep_problem(path=None):
 
 def prepare(now=None, cot=None, hist=None, deep=None, ana=None, gaps=None, stale_ok=False):
     """(as_of, released, rows) or (None, None, why). stale_ok (the preview to
-    Sig only) lets an older report through; a send to the list never."""
+ The owner only) lets an older report through; a send to the list never."""
     cot = load(COT) if cot is None else cot
     hist = load(HIST) if hist is None else hist
     deep = load(DEEP) if deep is None else deep
@@ -714,7 +714,7 @@ def prepare(now=None, cot=None, hist=None, deep=None, ana=None, gaps=None, stale
 
 
 def mode_of(argv):
-    """'dry' (the default), 'preview' (Sig only) or 'send' (the list).
+    """'dry' (the default), 'preview' (the owner only) or 'send' (the list).
     DRY_RUN=1 wins over everything; nothing reaches the list unless SEND=1
     (or --send) says so in so many words."""
     if env("DRY_RUN", "") == "1" or "--dry-run" in argv:
@@ -785,7 +785,7 @@ def main(argv=(), now=None, fetch=None):
         return 1
     if len(recipients) < len(rows_):
         print("::warning::%d reader(s) had no link id this run and are not mailed" % (len(rows_) - len(recipients)))
-    print("list: %d reader(s) on Funds this week" % len(recipients))
+    print("list: Funds this week read")
     tally.waiting = len(recipients)
     if mode == "send":
         # Nov 4 (fx/datasplit): never mail the list without the twenty-year file. The
@@ -824,7 +824,7 @@ def main(argv=(), now=None, fetch=None):
         LINK_IDS["reader@example.com"] = email_links.SAMPLE_LID
         m = build_email(day, b, "reader@example.com", from_name, from_addr, reply_to)
         print("SUBJECT: " + str(m["Subject"]))
-        print("would send to %d reader(s)" % len(recipients))
+        print("would send to the Funds this week list")
         print("-" * 60)
         print(m.get_body(("plain",)).get_content())
         print("dry run complete -- nothing sent, no flag set")
@@ -885,12 +885,12 @@ def main(argv=(), now=None, fetch=None):
             conn.quit()
         except Exception:
             pass
-    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to Sig is dry
+    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to the owner is dry
     print("sent " + str(sent) + "/" + str(len(recipients)))
     if sent > 0:
         flag(day, set_it=True)
     if failed:
-        # Full addresses go to Sig by private mail; the public annotation gets
+        # Full addresses go to the owner by private mail; the public annotation gets
         # the count and masked addresses only.
         mailed = log_safe.owner_mail("AGSIST Funds this week %s: %d of %d did not send" % (day, len(failed), len(recipients)),
                                      ["Resend to these addresses individually (the week is flagged):", ""] + failed)
@@ -1208,7 +1208,7 @@ def _selftest():
     us = re.findall(r'https://agsist\.com/[^\s"<>]*', allt)
     ok(us and all(SRC_TAG in u and "utm_campaign=cot" in u for u in us), "every agsist.com link tagged email: %r" % [u for u in us if SRC_TAG not in u])
     ok("https://agsist.com/cot?" in allt, "links to the COT tool")
-    # the forward line lands a neighbor on the signup box, tagged like every other link (Sig, Nov 6)
+    # the forward line lands a neighbor on the signup box, tagged like every other link (Nov 6)
     fw = FORWARD_URL
     ok("utm_medium=forward" in fw, "the forward link says forward")
     ok(body.count(fw) == 1 and hb.replace("&amp;", "&").count('href="' + fw + '"') == 1, "forward link goes to /cot#cot-signup in text and HTML")
@@ -1233,7 +1233,8 @@ def _selftest():
     # 1. the default is a dry run: secrets all set, nothing sent, no flag touched
     rc, log, sent, calls = _run(files, dict(W, **SM), now, fetch)
     ok(rc == 0 and not sent and not _FakeSMTP.made and not calls and "dry run complete" in log, "dry by default: %r %r" % (rc, log[-300:]))
-    ok(asked == ["cot"] and "would send to 2 reader(s)" in log and "list: 2 reader(s) on Funds this week" in log, log[-400:])
+    ok(asked == ["cot"] and "would send to the Funds this week list" in log and "list: Funds this week read" in log
+       and "2 reader(s)" not in log, log[-400:])
     ok("1 reader(s) had no link id this run and are not mailed" in log, "a reader without a link id is skipped, by count")
     ok(private(log) and "a=notice-unsubscribe&k=" + email_links.SAMPLE_LID in log and "%40" not in log, "the dry run log has no address")
     # 2. DRY_RUN=1 beats SEND=1
@@ -1263,7 +1264,7 @@ def _selftest():
     late = datetime(2026, 10, 30, 20, 0, tzinfo=timezone.utc)
     rc, log, sent, calls = _run(files, dict(W, SEND="1", **SM), late, fetch)
     ok(rc == 0 and not sent and "too old" in log, "a stale send sends nothing")
-    # 8. PREVIEW=1: Sig only, even for an older report; the list and the flag untouched
+    # 8. PREVIEW=1: the owner only, even for an older report; the list and the flag untouched
     rc, log, sent, calls = _run(files, dict(W, PREVIEW="1", SIG_TO="sig@example.org", **SM), late, fetch)
     ok(rc == 0 and [x["To"] for x in sent] == ["sig@example.org"] and not calls, "preview: %r %r %r" % (rc, [x["To"] for x in sent], calls))
     ok(sent and sent[0]["Subject"].startswith("[Preview] ") and private(log) and "the list gets nothing" in log, "preview subject, log")

@@ -175,7 +175,7 @@
   function median(v) { var m = v.length >> 1; return v.length % 2 ? v[m] : Math.round((v[m - 1] + v[m]) / 2); }
   CR.quarterOf = function (iso) { var m = /^(\d{4})-(\d{2})/.exec(String(iso || '')); return m ? m[1] + ' Q' + (Math.floor((+m[2] - 1) / 3) + 1) : null; };
   // n, middle, low and high $/acre of the sales with a usable $/acre (F.statOK: known, and not
-  // under the floor). Nothing under CR.MIN_N (5, the one land rule, Sig Oct 29, 2026: the Atlas, the
+  // under the floor). Nothing under CR.MIN_N (5, the one land rule since Oct 29, 2026: the Atlas, the
   // land-sales pages and Field Scout use the same). By quarter: the count every quarter, a middle only
   // where a quarter holds CR.MIN_N or more. No fitted line.
   CR.MIN_N = 5;
@@ -365,7 +365,7 @@
       var soil = r.soil === undefined ? '<span class="cr-dim cr-wait">reading</span>' : CR.soilText(r.soil) || '<span class="cr-dim">' + esc(r.soilWhy || 'not available') + '</span>';
       var str = F.strOf(F.legalText(r)) || (r.str ? F.keyText(r.str) : null);
       var form = r.st === 'IL' ? 'declaration' : r.st === 'IN' ? 'sales disclosure form' : 'return';
-      // names only after the reader taps Show buyer and seller (names === 'shown'; Sig, Oct 27; lead, Nov 4, 2026)
+      // names only after the reader taps Show buyer and seller (names === 'shown'; Oct 27 and Nov 4, 2026)
       var who = names === 'shown' ? 'Seller ' + esc(r.grantor || 'not in the record') + ' &rarr; buyer ' + esc(r.grantee || 'not in the record')
         : names === 'later' ? esc(F.NAMES_LATER) : names ? 'Seller and buyer: tap Show buyer and seller' : 'Seller and buyer not in our copy';
       var det = ['Parcel ' + esc(r.pid || 'not in the record') + (+r.np > 1 ? ' (first of ' + (+r.np) + ' on the ' + form + ')' : ''),

@@ -31,7 +31,7 @@ test("tool groups and the cards in each run by 90-day views, new pages last", ()
     ["/cash-bids", "/breakeven", "/arc-plc", "/prf", "/store-or-sell", "/lrp", "/commodity-loan"],
     ["/hail-map", "/gdu-calculator", "/field-scout", "/planting-date"],
     ["/usda-calendar", "/tariffs", "/", "/hay-prices", "/cattle-auction-prices"],
-    ["/usda-quick-stats", "/yield-estimator", "/fast-facts", "/glossary"],  // no sources card (Sig, Oct 21)
+    ["/usda-quick-stats", "/yield-estimator", "/fast-facts", "/glossary"],  // no sources card (Oct 21)
     ["/spray", "/fertilizer", "/urea", "/manure-value", "/nutrient-removal", "/fall-nitrogen", "/tar-spot"],  // tar spot added Nov 5, new pages last
     ["/grain-bin-calculator", "/grain-emc", "/grain-shrink", "/combine-loss", "/harvest-or-wait"],
   ]);
@@ -153,7 +153,7 @@ test("find box and chips filter the cards, hide empty groups, and say when nothi
 });
 
 test("byline, not-covered note and structured data", () => {
-  // Sig, Oct 18: no name at the top of a page; it sits in one line at the end
+  // Oct 18: no name at the top of a page; it sits in one line at the end
   assert.match(html, /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/);
   assert.match(html, /id="not-here">Not on this site yet</);
   assert.match(html, /No irrigation scheduling tools\./);
@@ -179,7 +179,7 @@ test("Planting Date card does not promise county windows everywhere", () => {
   assert.match(c, /<div class="short">Soil temp and planting dates<\/div>/);
 });
 
-/* Oct 17 (Sig approved): each data card shows its own as-of date and source
+/* Oct 17: each data card shows its own as-of date and source
  * from data/tools-fresh.json, and "Everything else" folds behind one tap on
  * phones while the find box and chips still reach into it. */
 async function freshKit() {

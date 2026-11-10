@@ -697,7 +697,7 @@ def selftest():
         ck("WY East Alfalfa Good 3x4: 1600 t, $270-300, avg 281.25, F.O.B.-Farm/Ranch",
            (e["region"], e["qty"], e["lo"], e["hi"], e["avg"], e["freight"]) == ("East", 1600, 270, 300, 281.25, "F.O.B.-Farm/Ranch"), e)
         ck("WY row tons add to the report's 2435", sum(r["qty"] for r in wy["rows"] if r["kind"] == "hay") == 2435)
-    # REAL CASE (Oct 28, Sig's copy of AMS 2246): auction tables say "(Per Ton)", not "(Trade/Per Ton)"
+    # REAL CASE (Oct 28, the owner's copy of AMS 2246): auction tables say "(Per Ton)", not "(Trade/Per Ton)"
     pip, why = parse_report((FIX / "ams_2246-2026-10-27.txt").read_text())
     ck("real MN 2246 Pipestone auction parses", pip is not None, why)
     if pip:

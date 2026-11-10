@@ -1,4 +1,4 @@
-/* Baked prices for crawlers (Sig, Oct 19, 2026).
+/* Baked prices for crawlers (Oct 19, 2026).
  *
  * "Homepage hero prices and the fertilizer page body are baked with the same
  * dated settle the page already shows, so crawlers see prices; live prices
@@ -30,7 +30,7 @@ import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import vm from "node:vm";
-const SB = "(?:<!--\\n-->)?";   // a seed may sit on its own line (seed_static SEED_BREAK, BUILD-RULES 67)
+const SB = "(?:<!--\\n-->)?";   // a seed may sit on its own line (seed_static SEED_BREAK, build rule 67)
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const FX = join(ROOT, "test/fixtures/locprice");

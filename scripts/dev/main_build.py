@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Files built on main, never edited in a pull request (Sig, Oct 29, 2026: no generated-file conflicts).
+"""Files built on main, never edited in a pull request (Oct 29, 2026: no generated-file conflicts).
 
 Every pull request used to rebuild these, so nearly every merge conflicted in them. Now a pull
 request changes only the inputs (an entry file in data/whats-new/, data/changelog.json, tests,

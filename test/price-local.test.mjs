@@ -179,7 +179,7 @@ test("wide tables carry their column names for the phone cards", () => {
   const L = require(join(ROOT, "field-scout-land.js"));
   const t = L.compsTable([{ date: "2026-09-04", ppa: 10000, acres: 40, price: 400000, mi: 0.3, muniName: "Gridley township", cls: "" }]);
   for (const l of ["Date", "$/ac", "Acres", "Price", "Miles", "Town, class"]) assert.ok(t.includes(`data-l="${l}"`), l);
-  assert.match(read("field-scout-read.js"), /field-scout-land\.js\?v=18/);
+  assert.match(read("field-scout-read.js"), /field-scout-land\.js\?v=19/);
 });
 
 /* ---- in a browser: 390 and 1280, light and dark ---- */
@@ -202,14 +202,14 @@ function serve() {
 }
 
 // the pages read the committed basis and futures files, so their clock starts an hour after the newer copy was read
-// and runs on: on a later clock (a January run) the state line withheld itself over an old basis (BUILD-RULES 50)
+// and runs on: on a later clock (a January run) the state line withheld itself over an old basis (build rule 50)
 const DATA_AT = Math.max(Date.parse(JSON.parse(readFileSync(join(ROOT, "data/basis-states.json"), "utf8")).generated),
   Date.parse(JSON.parse(readFileSync(join(ROOT, "data/prices.json"), "utf8")).fetched)) + 3600e3;
 test("phone and desktop: no sideways scroll, no script errors, short phone pages, state line only with a state", { skip, timeout: 240000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   // phone heights at 390 before this change: corn 11,544, soybean 12,091, wheat 12,961, cattle 7,383
-  // cattle: 6,000 until Oct 28; Sig asked for its three answer blocks open, not folded (measured 7,738 at 390), so 8,000
+  // cattle: 6,000 until Oct 28; the owner asked for its three answer blocks open, not folded (measured 7,738 at 390), so 8,000
   const MAXH = { "/corn-futures-prices": 7500, "/soybean-futures-prices": 7500, "/wheat-futures-prices": 8000, "/cattle-futures-prices": 8000 };
   try {
     for (const path of ["/corn-futures-prices", "/soybean-futures-prices", "/wheat-futures-prices", "/cattle-futures-prices", "/markets", "/cash-bid-index"]) {

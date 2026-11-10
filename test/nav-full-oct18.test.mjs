@@ -1,4 +1,4 @@
-/* The full new menu (Oct 18, 2026; Sig: "do all of it").
+/* The full new menu (Oct 18, 2026).
  *   Desktop: Prices | Livestock | Field | Money & Land | Daily, then the ZIP chip, Search, Free daily email.
  *   Phone: logo, ZIP chip, search, menu. The panel: search, My place, the five groups open, a Rain Print card,
  *   About, Contact, Display mode.
@@ -31,7 +31,7 @@ const SUBLINES = { "/haymow": "Hay for sale and wanted" };
 // The approved outline, labels exact. Oct 22-23, 2026: the merged pages left it (scripts/moved_pages.py).
 const MENU = {
   markets: ["Prices", {
-    // Oct 29, 2026 (Sig, consolidation round 2): Cash Bid Index out of the menu (linked from /basis), Ag stocks
+    // Oct 29, 2026 (consolidation round 2): Cash Bid Index out of the menu (linked from /basis), Ag stocks
     // under Futures, the two crop report lines in one; drought and manure moved to Field; PRF and LRP once.
     "Near you": [["/cash-bids", "Cash bids near me"], ["/basis", "Bids and basis by state"], ["/grain-transport", "Grain on the move"], ["/fertilizer", "Fertilizer prices"]],
     Futures: [["/corn-futures-prices", "Corn"], ["/soybean-futures-prices", "Soybeans"], ["/wheat-futures-prices", "Wheat"], ["/ag-stocks", "Ag stocks"], ["/harvest-price-tracker", "Harvest price tracker"], ["/markets", "All markets →"]],
@@ -92,7 +92,7 @@ test("phone panel: search, My place, the five groups open with subheads, a Rain 
   const at = (s) => { const i = drawer.indexOf(s); assert.ok(i > 0, s); return i; };
   const seq = ['id="draw-srch"', 'id="dp-here"', 'id="dp-bids"', 'id="dg-markets"', 'id="dg-livestock"', 'id="dg-field"', 'id="dg-money"', 'id="dg-daily"', 'class="draw-rp"', 'href="/about"', 'href="/contact"', 'id="theme-btn-d"'];
   for (let i = 1; i < seq.length; i++) assert.ok(at(seq[i - 1]) < at(seq[i]), `${seq[i - 1]} before ${seq[i]}`);
-  // Sig, Oct 20: the place page (/fast-facts since Oct 21) is the first My place tile
+  // Oct 20: the place page (/fast-facts since Oct 21) is the first My place tile
   assert.match(drawer, /<div class="draw-place-row">\s*<a href="\/fast-facts" class="draw-pl" id="dp-here">[\s\S]*?Everything near me<\/a>/);
   assert.match(drawer, /<a href="\/cash-bids" class="draw-pl" id="dp-bids">[\s\S]*?Bids near me<\/a>/);
   assert.match(drawer, /<a href="\/rain-radar" class="draw-pl" id="dp-rain">[\s\S]*?Rain at my field<\/a>/);
@@ -108,7 +108,7 @@ test("phone panel: search, My place, the five groups open with subheads, a Rain 
   assert.match(drawer, /<a href="\/rain-print" class="draw-rp"><span class="draw-rp-k">Rain Print<\/span><span class="draw-rp-t">Your farm&rsquo;s year of rain, framed<\/span>/);
   assert.equal((drawer.match(/href="\/rain-print"/g) || []).length, 1, "Rain Print once in the phone panel");
   for (const u of ["/prf", "/lrp"]) assert.equal((drawer.match(new RegExp(`href="${u}"`, "g")) || []).length, 1, `${u} once in the phone panel`);
-  // Oct 29, 2026: 63 lines to 57, plus Ag stocks; Nov 5 (Sig) plus Tar spot. Groups, the Rain Print card and About, Advertise, Contact.
+  // Oct 29, 2026: 63 lines to 57, plus Ag stocks; Nov 5 plus Tar spot. Groups, the Rain Print card and About, Advertise, Contact.
   const lines = (drawer.match(/class="draw-item[^"]*"|class="draw-rp"/g) || []).length;
   assert.equal(lines, 59, "phone panel lines");
 });
@@ -127,7 +127,7 @@ test("footer: email band with an optional ZIP and one Rain Print line, six colum
   assert.deepEqual(cols, ["Prices", "Livestock", "Field", "Money & Land", "Work with us", "About"]);
   const col = (n) => { const a = footer.indexOf(`<span class="footer-h">${n}</span>`); return footer.slice(a, footer.indexOf("</details>", a)); };
   const labels = (n) => [...col(n).matchAll(/<a href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map((m) => [m[1], text(m[2])]);
-  // 2026-10-20: "List your elevator, free" in Work with us (Sig, business walk-through fixes).
+  // 2026-10-20: "List your elevator, free" in Work with us (business walk-through fixes).
   assert.deepEqual(labels("Work with us"), [["/sponsor", "Advertise"], ["/rain-print-business", "Rain Print for business"], ["/prf-sponsor", "PRF sponsor"], ["/list-your-elevator", "List your elevator, free"], ["/rain-gauge", "Rain gauge waitlist"], ["/developer", "Embeds"]]);
   assert.deepEqual(labels("About"), [["/about", "About"], ["/editorial-standards", "Editorial standards"], ["/contact", "Contact"], ["/changelog", "What’s new"]]);
   const legal = footer.slice(footer.indexOf('<div class="footer-legal">'));
@@ -206,7 +206,7 @@ test("ZIP chip: reads the saved place, sets all three keys, a failed lookup save
     const keys = await pg.evaluate(() => ({ loc: JSON.parse(localStorage.getItem("agsist-wx-loc")), z: localStorage.getItem("agsist_zip"), u: localStorage.getItem("agsist_user_zip") }));
     assert.equal(keys.z, "54728"); assert.equal(keys.u, "54728");
     assert.equal(keys.loc.zip, "54728"); assert.equal(keys.loc.state, "WI"); assert.equal(keys.loc.label, "Chetek, WI"); assert.equal(keys.loc.zipTyped, true);
-    // Sig, Oct 20: once a ZIP is saved the box sends the reader to the place page for that ZIP (Fast Facts since Oct 21)
+    // Oct 20: once a ZIP is saved the box sends the reader to the place page for that ZIP (Fast Facts since Oct 21)
     assert.equal(await pg.getAttribute("#zip-go", "href"), "/fast-facts?zip=54728");
     assert.equal(await pg.textContent("#zip-go"), "Everything near Chetek →");
     await pg.keyboard.press("Escape");

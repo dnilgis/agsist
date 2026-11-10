@@ -42,7 +42,7 @@ const D = {
 };
 
 test('head, byline and structured data', () => {
-  assert.match(page, /<title>Is it cold enough for fall anhydrous\? Soil temperature by county \| AGSIST<\/title>/);
+  assert.match(page, /<title>Is it cold enough for fall anhydrous\? Soil temperature by county<\/title>/);
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/fall-nitrogen">/);
   assert.match(page, /<h1>Is it cold enough for fall anhydrous\?<\/h1>/);
   assert.match(page, /Sigurd Lindquist, CCA/);
@@ -241,7 +241,7 @@ test('browser: empty state, county pick, blank county and ZIP', { skip }, async 
   } finally { await browser.close(); srv.close(); }
 });
 
-// Oct 28 (Sig): Wisconet joins as a fifth network under CC BY 4.0, which asks
+// Oct 28: Wisconet joins as a fifth network under CC BY 4.0, which asks
 // for credit. Every reading names its network with a link, and the source
 // list quotes Wisconet's own terms. Nebraska and South Dakota mesonets are
 // never read (their terms restrict automated reading or redistribution).

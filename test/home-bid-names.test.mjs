@@ -1,7 +1,7 @@
 /* Nov 9: the homepage cash bid card prints elevator names clean. data/bids.json carries archived copies with the
  * source system's marks ("zShawnee Feed Old", "zWest-Con") and a page title tail ("... - Cash Bid Include");
- * /cash-bids cleans them with cbRank.displayName (components/cb-rank.js) and the card (components/bids-homepage.js)
- * now does the same.   node --test test/home-bid-names.test.mjs */
+ * the card (components/bids-homepage.js) prints them through the one name cleaner, elevNames.displayName
+ * (components/elev-names.js), the same one /cash-bids uses.   node --test test/home-bid-names.test.mjs */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -11,7 +11,7 @@ import vm from "node:vm";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (f) => readFileSync(ROOT + f, "utf8");
-const cbRank = createRequire(import.meta.url)(ROOT + "components/cb-rank.js");
+const elevNames = createRequire(import.meta.url)(ROOT + "components/elev-names.js");
 
 function load(extra = {}) {
   const noop = () => {};
@@ -25,6 +25,7 @@ function load(extra = {}) {
   const ctx = vm.createContext({ window, document, navigator: {}, location: window.location, localStorage: window.localStorage,
     setTimeout, clearTimeout, console, Date, Intl, CustomEvent: function () {}, fetch: () => Promise.reject(new Error("offline")) });
   vm.runInContext(read("components/util.js"), ctx);
+  if (!extra.elevNames) vm.runInContext(read("components/elev-names.js"), ctx);   // index.html loads it before the card
   ctx.AG = window.AG;   // the page reads AG as a global, as a browser does
   vm.runInContext(read("components/bids-homepage.js"), ctx);
   return window.__agsistHomeBidsInternals;
@@ -50,24 +51,22 @@ test("a real archived board from data/bids.json prints clean on the homepage car
     assert.ok(shown, "the card has a name");
     assert.equal(shown[1], clean.replace(/&/g, "&amp;"), raw);
     assert.doesNotMatch(html, /<span class="bh-name">z[A-Z]|Old<\/span>|Cash Bid Include/i, raw);
-    assert.equal(H.displayName(raw), cbRank.displayName(raw), "same answer as /cash-bids for " + raw);
+    assert.equal(H.displayName(raw), elevNames.displayName(raw), "same answer as the shared name cleaner for " + raw);
   }
 });
 
-test("the card's name rule agrees with cbRank.displayName on every facility name in data/bids.json", () => {
+test("the card's names agree with elevNames.displayName on every facility name in data/bids.json", () => {
   const H = load();
   const names = [...new Set(BIDS.map((b) => b.facility).filter(Boolean))];
   assert.ok(names.length > 50, "names checked: " + names.length);
-  for (const n of names) assert.equal(H.displayName(n), cbRank.displayName(n), n);
+  for (const n of names) assert.equal(H.displayName(n), elevNames.displayName(n), n);
 });
 
-test("the mirrored rules are the same three regexes as cb-rank.js, and cbRank is used when the page has it", () => {
-  const src = read("components/bids-homepage.js"), cb = read("components/cb-rank.js");
-  for (const k of ["OP_HEAD", "OP_TAIL", "OP_ARCHIVED"]) {
-    const re = new RegExp("var " + k + "\\s*=\\s*(/.+?/[gimsuy]*);");
-    assert.equal(src.match(re)?.[1], cb.match(re)?.[1], k + " drifted from cb-rank.js");
-  }
-  const H = load({ cbRank: { displayName: (n) => "EXACT:" + n } });
-  assert.equal(H.displayName("zShawnee Feed Old"), "EXACT:zShawnee Feed Old", "the shared function wins when loaded");
-  assert.match(read("index.html"), /\/components\/bids-homepage\.js\?v=47"/);
+test("the card keeps no name rules of its own: it calls elevNames, loaded before it on the home page", () => {
+  const src = read("components/bids-homepage.js");
+  for (const k of ["OP_HEAD", "OP_TAIL", "OP_ARCHIVED"]) assert.ok(!src.includes("var " + k), k + " is not copied into the card");
+  const H = load({ elevNames: { displayName: (n) => "EXACT:" + n } });
+  assert.equal(H.displayName("zShawnee Feed Old"), "EXACT:zShawnee Feed Old", "the shared function is what prints");
+  const page = read("index.html");
+  assert.ok(page.indexOf("/components/elev-names.js?v=") > -1 && page.indexOf("/components/elev-names.js?v=") < page.indexOf("/components/bids-homepage.js?v=48\""), "elev-names.js loads before the card");
 });

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Merge a pull request labeled "merge-when-green" once its PR checks are green (Sig, Oct 29, 2026).
+"""Merge a pull request labeled "merge-when-green" once its PR checks are green (Oct 29, 2026).
 
 GitHub's own auto-merge needs required checks on main, which would stop the data jobs that commit
 straight to main, so .github/workflows/merge-when-green.yml does it instead. For every open pull
@@ -11,7 +11,7 @@ request with the label it merges (a squash, through the API, with the job token)
 Red, pending, conflicted or behind: no merge. A red or conflicted head gets one comment saying why
 (once per head commit and reason); a pending one waits for the next pr-checks run to finish.
 
-No merge on stale checks (Nov 4, 2026; BUILD-RULES 60: #280 and #282 merged on checks run against an older
+No merge on stale checks (Nov 4, 2026; build rule 60: #280 and #282 merged on checks run against an older
 main and main went red). Green checks ran against main as it was when they started (the checked base: main at
 the run's start for a pull_request run, the branch's merge base for a run this script started). When main has
 since changed a file that can change the result, the bot updates the branch from main (GitHub's update
@@ -21,7 +21,7 @@ or an output or data file of a generated set whose builder the pull request chan
 relevant(): the PR checks rebuild that set from them, and its code). Main's changed files come from git (a shallow
 fetch of the base and main, then git diff --name-only), so the bot's 900 to 2,900 file data commits are read whole.
 
-Data commits do not hold a builder's pull request (Nov 4, 2026, #308; BUILD-RULES 60 amended: checks green at 08:10
+Data commits do not hold a builder's pull request (Nov 4, 2026, #308; build rule 60 amended: checks green at 08:10
 UTC and still not merged at 09:27, since the bids bot rewrote the set it builds every 15 minutes and each fresh run was
 stale again). Main's own commits since the base are read along its first parents (a merge is one commit: what it
 brought in); a set's outputs and data changed only by scheduled data commits (data_bot_commit(): one parent, the data
@@ -33,7 +33,7 @@ changed a workflow file, or main's changes or history cannot be read (then every
 No silent loop: after MAX_UPDATES updates from main for one kind of reason (counted from the bot's own comments since
 the label was last added) the bot says so once and stops updating; merge by hand, or remove and add the label again.
 
-Squash, with a message from the body only (Nov 4, 2026; BUILD-RULES 38): the commit title is the pull request's
+Squash, with a message from the body only (Nov 4, 2026; build rule 38): the commit title is the pull request's
 title plus " (#N)", the message is its body with the AI footer lines stripped (scripts/dev/ai_footer_check.py
 strip()). Never GitHub's default squash body, which joins every commit message: that is how Co-Authored-By: Claude
 and Claude-Session: lines reached main (#304). The PR checks fail a body with a footer and only warn on commits.
@@ -167,7 +167,7 @@ def stale(pr_files, main_files, relevant=None, others=None):
 # .github/workflows). Any job, or anyone who sets these in git, can commit as them, so the address alone is not
 # enough: a data commit also has one parent and no "(#NNN)" pull request suffix, and its committer is the bot,
 # never GitHub (noreply@github.com commits every merge and squash done through GitHub, the bot's merges too).
-# sig@agsist.com commits from two jobs but is Sig's own address too: not here, so those count (stale, never a
+# sig@agsist.com commits from two jobs but is the owner's own address too: not here, so those count (stale, never a
 # blind merge).
 DATA_BOT_EMAILS = {"bot@agsist.com", "actions@users.noreply.github.com", "actions@github.com",
                    "github-actions[bot]@users.noreply.github.com", "41898282+github-actions[bot]@users.noreply.github.com"}
@@ -644,7 +644,7 @@ def selftest():
     assert inputs_for("sitemap.yml", ["a.html"], b, h) == {"base": b, "head": h}
     assert inputs_for("sitemap.yml", ["a.html"]) is None, "no merged range: not started on a wrong one"
     assert inputs_for("preship.yml", ["a.html"], "HEAD~1", h) is None
-    # no merge on stale checks (Nov 4, 2026; BUILD-RULES 60: #280, #282)
+    # no merge on stale checks (Nov 4, 2026; build rule 60: #280, #282)
     assert decide(pr, repo, green, ["a.html"], "another merge landed on main since (abc)") == \
         ("update", "the checks ran against an older main: another merge landed on main since (abc)")
     assert decide(pr, repo, red, ["a.html"], "x")[0] == "no", "red stays red, stale or not"
@@ -686,7 +686,7 @@ def selftest():
     assert not data_bot_commit(squash), "a squash merge"
     assert not data_bot_commit(dict(botc, subject="Bids fix (#311)")), "the bot's address with a PR suffix counts"
     assert not data_bot_commit(dict(botc, committer="noreply@github.com")), "GitHub committed it: a merge through GitHub"
-    assert not data_bot_commit(dict(botc, author="dnilgis@gmail.com")), "a hand push"
+    assert not data_bot_commit(dict(botc, author="dnilgis@users.noreply.github.com")), "a hand push"
     assert not data_bot_commit(dict(botc, author="sig@agsist.com", committer="sig@agsist.com")), "Sig's own address"
     assert not data_bot_commit(dict(botc, parents=2, subject="Merge branch 'main'")), "a merge, whoever made it"
     assert stale(real, town + ["scripts/build_cash_bid_pages.py"], rel308, []).startswith("main changed 1 file"), \
@@ -775,7 +775,7 @@ def git_fixture():
         o, c = os.path.join(d, "origin"), os.path.join(d, "clone")
         env0 = dict(os.environ, GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
 
-        def git(cwd, *a, who=("dnilgis", "dnilgis@gmail.com"), at=None, by=None):
+        def git(cwd, *a, who=("dnilgis", "dnilgis@users.noreply.github.com"), at=None, by=None):
             env = dict(env0, GIT_AUTHOR_NAME=who[0], GIT_AUTHOR_EMAIL=who[1], GIT_COMMITTER_NAME=(by or who)[0],
                        GIT_COMMITTER_EMAIL=(by or who)[1])
             if at:

@@ -15,7 +15,7 @@
  *     checked (a co-op with no url is named with no link). Prices are what
  *     the co-op posts; the copy says to call and confirm.
  *   * Only the co-ops' own prices. No other source is drawn or blended in
- *     (Sig, 2026-10-15 and 16).
+ *     (2026-10-15 and 16).
  */
 (function (root) {
   'use strict';

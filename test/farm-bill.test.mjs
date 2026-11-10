@@ -119,8 +119,8 @@ test("the page got lighter", () => {
   // 91,261 bytes on Oct 14 with the titles and ledger inline. The picker and the
   // 90-day strip were added on top, so the cap is just under where it started.
   // Oct 16: the Oct 1 cards and the sources moved into folds and repeated status copy went, so 86,000.
-  // Oct 20: the baked menu grew 215 bytes on every page (Sig approved Everything near me, Yield by state and Farmland sale index), so the cap moves up 500 bytes.
-  // Oct 21: the baked menu grew again (Sig approved Grain on the move under Prices), so the cap moves up 500 bytes, as on Oct 20.
+  // Oct 20: the baked menu grew 215 bytes on every page (the owner approved Everything near me, Yield by state and Farmland sale index), so the cap moves up 500 bytes.
+  // Oct 21: the baked menu grew again (the owner approved Grain on the move under Prices), so the cap moves up 500 bytes, as on Oct 20.
   assert.ok(Buffer.byteLength(html) < 87000, `farm-bill.html is ${Buffer.byteLength(html)} bytes`);
 });
 

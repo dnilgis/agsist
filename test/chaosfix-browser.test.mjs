@@ -17,7 +17,7 @@ import vm from "node:vm";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
-/* Cash bids read a frozen copy of the bids data (BUILD-RULES 70, Nov 4 2026): chaos-2 read the live
+/* Cash bids read a frozen copy of the bids data (build rule 70, Nov 4 2026): chaos-2 read the live
    dnilgis/bids clone through BIDS_PATH and flaked on #321 when the State Center board changed.
    test/fixtures/chaosbids/data is the 10 boards nearest ZIP 50010 plus State Center, the index cut to
    those 11, and ZIP 50010's point, from the bids data of Nov 4 2026 (generated 20:55 UTC). */

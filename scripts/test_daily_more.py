@@ -3,7 +3,7 @@
 test_daily_more.py -- the farm calendar, harvest pace and fund position blocks
 handed to the Daily's writer (scripts/daily_more.py), and the state basis line
 second in the email's Today list (scripts/daily_v2.py promote_wow; it replaced the
-North Dakota line, Sig Nov 9 2026). Run by
+North Dakota line, Nov 9 2026). Run by
 test/daily-more.test.mjs. No network, no model, nothing is sent.
 
 The files are the real ones as of Monday Nov 2 2026, trimmed to what the blocks
@@ -86,7 +86,7 @@ def main():
     ok("webinar" not in cal, "Nov 2: the Nov 17 webinar is not today's news")
     ok("withheld" in b["harvest"] and "not yet released" in b["harvest"]["withheld"],
        "Nov 2 morning: the week ending Nov 1 is not out until 3 p.m. CT, withheld: %r" % b["harvest"])
-    # Sig, Nov 9 2026: funds run on Saturday only, once per release (was Saturday and Monday)
+    # Nov 9 2026: funds run on Saturday only, once per release (was Saturday and Monday)
     ok(not b["funds"].get("lines") and "Saturday" in b["funds"].get("withheld", ""),
        "Nov 2: Monday carries no fund block (Saturday only since Nov 9): %r" % b["funds"])
     f = run("2026-10-31", "2026-10-31T12:00:00Z")["funds"]
@@ -277,7 +277,7 @@ def binding_check(blocks):
 
 
 def email_checks():
-    """Sig, Nov 9 2026: the state week-over-week basis line takes the Today slot the North Dakota
+    """Nov 9 2026: the state week-over-week basis line takes the Today slot the North Dakota
     basis line held (Nov 2, #258); on a quiet week nothing takes it."""
     import daily_v2 as V
     items = [{"text": "News with 5 numbers", "kind": "news", "field": "outside_the_pit[0]"},

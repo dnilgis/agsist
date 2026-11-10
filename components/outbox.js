@@ -3,7 +3,7 @@
  *
  * A few things only the worker can finish: a gift card order (the card must
  * be checked and used once), a business quote (its customer list never goes
- * to the backup form, Sig's rule), a hay board post or change, an elevator's
+ * to the backup form), a hay board post or change, an elevator's
  * bids, a watch confirm. When the worker is blocked or down, the page keeps
  * the request here, in this browser's storage, and says so in one plain
  * line. Nothing about it leaves this browser until the worker answers again.

@@ -282,12 +282,19 @@ check("Near " not in t and "LOCAL_BIDS=0" in out, "LOCAL_BIDS=0 turns the line o
 os.environ.pop("LOCAL_BIDS", None)
 
 # 6. the Gmail projection runs on every send
-check("gmail limit: projected" in out, "gmail projection printed")
+check("gmail limit: projection under the warning line" in out and "recipient(s)" not in out, "gmail projection printed, no count")
 
 # 7. v5.46: a reader the worker gave no link id is not mailed; no ids at all sends nothing
 MODE["m"] = "nolid1"
+_real_start, _tally = send_daily.delivery_line.start, {}
+def _keep_tally(sender, dry=False):
+    # the run's tally, never printed (its caller is send_daily.py, not the program run)
+    _tally["t"] = _real_start(sender, dry, _caller=send_daily.__file__)
+    return _tally["t"]
+send_daily.delivery_line.start = _keep_tally
 rc, out = run()
-check(rc == 0 and "1 reader(s) had no link id this run and are not mailed" in out and "recipients 5 " in out,
+send_daily.delivery_line.start = _real_start
+check(rc == 0 and "1 reader(s) had no link id this run and are not mailed" in out and _tally["t"].waiting == 5,
       "a reader with no link id is left out, counted: " + out[-300:])
 MODE["m"] = "nolid"
 rc, out = run()

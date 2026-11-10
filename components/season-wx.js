@@ -1,5 +1,4 @@
-/* Season so far in the home Local conditions card (Sig, Nov 4, 2026: "I would like the YTD rain and GDUs to be
- * displayed year round, as well as the 30-day amounts for each, and the departure from normal").
+/* Season so far in the home Local conditions card (Nov 4, 2026).
  *
  * One reader for the county rain page's own figures, never a second calculation:
  *   rain, Jan 1 to the last reported day, and its usual       data/rain/<st>.json  total, usual, pct, as_of
@@ -11,10 +10,10 @@
  * The only arithmetic here is a departure, figure minus its normal, as the county page's month table does it.
  * Every figure carries its own dates. Whether a figure has enough days is decided where it is built, never here:
  * a county row in the rain file passed the county page's own rule (county_rain.MIN_SHARE), r30 "m" and a GDD "m"
- * are the builders' withholds, and each reads "Not enough days reported". Nov 8 (Sig): the card keeps no stations
+ * are the builders' withholds, and each reads "Not enough days reported". Nov 8: the card keeps no stations
  * and sources paragraph (the county rain page keeps its method text); the shared picture names its source.
  *
- * Two month charts, one drawing (Sig, Nov 8: "add back the gdu by month chart like the precip chart", then "make sure
+ * Two month charts, one drawing (Nov 8, then "make sure
  * the month by month chart is perfect and readable clickable and shareable"):
  *   Rain by month   data/rain/<st>.json months  [rain, usual for the same reported days, days reported, days so far]
  *   GDDs by month   data/rain/wx/<st>.json gm   [GDDs, 1991-2020 normal for the same days or null, reported, so far];
@@ -146,7 +145,7 @@
     out.push(tile(gl, m.wxLoaded || g ? g : null, "gdd", num, "gdd"));
     out.push(tile(lab("GDDs", g3, "last 30 days"), g3, "gdd", num, "gdd30"));
     out.push("</div>");
-    // Nov 8 (Sig): no stations and sources paragraph on the home card; a county read from its neighbor still says so
+    // Nov 8: no stations and sources paragraph on the home card; a county read from its neighbor still says so
     if (m.near) out.push('<p class="wxs-near">' + esc(m.near.name) + " has no NOAA station with a full record this year; these are " + esc(m.near.from) + "&rsquo;s, next door.</p>");
     var hasR = !!(m.months && m.months.length), hasG = !!(m.gmonths && m.gmonths.length);
     if (hasR || hasG) {

@@ -1,0 +1,155 @@
+{
+ "note": "Fixture: the bids repo directory rows of the fixture elevators, copied 2026-11-09 (placing fields only).",
+ "elevators": [
+  {
+   "id": "known:1773",
+   "elevId": "eb7vhtjz7n",
+   "operator": "Encompass Grain & Rail Co-op",
+   "location": "Havana",
+   "state": "IL",
+   "lat": 40.28696,
+   "lon": -90.07081,
+   "precision": "street"
+  },
+  {
+   "id": "adm-havanail",
+   "elevId": "ej8re5fxpt",
+   "operator": "ADM",
+   "location": "Havana",
+   "state": "IL",
+   "lat": 40.29491,
+   "lon": -90.06661,
+   "precision": "street"
+  },
+  {
+   "id": "adm-laconil",
+   "elevId": "e4nyfacaf8",
+   "operator": "ADM",
+   "location": "Lacon",
+   "state": "IL",
+   "lat": 41.03059,
+   "lon": -89.40707,
+   "precision": "street"
+  },
+  {
+   "id": "adm-hennepinil",
+   "elevId": "es6mcndxfs",
+   "operator": "ADM",
+   "location": "Hennepin",
+   "state": "IL",
+   "lat": 41.22312,
+   "lon": -89.32055,
+   "precision": "street"
+  },
+  {
+   "id": "adm-burlingtonia",
+   "elevId": "ea2szt0mc0",
+   "operator": "ADM",
+   "location": "Burlington",
+   "state": "IA",
+   "lat": 40.82698,
+   "lon": -91.10585,
+   "precision": "street"
+  },
+  {
+   "id": "adm-winonamn",
+   "elevId": "egdaqern6p",
+   "operator": "ADM",
+   "location": "Winona",
+   "state": "MN",
+   "lat": 44.05862,
+   "lon": -91.66366,
+   "precision": "street"
+  },
+  {
+   "id": "chsag-winona",
+   "elevId": "er3a6bgdh9",
+   "operator": "CHS River Terminals & Processing Plants",
+   "location": "Winona",
+   "state": "MN",
+   "lat": 44.05978,
+   "lon": -91.66923,
+   "precision": "street"
+  },
+  {
+   "id": "bunge-cairo-il",
+   "elevId": "e6xmtjmw7j",
+   "operator": "Bunge",
+   "location": "Cairo",
+   "state": "IL",
+   "lat": 37.01542,
+   "lon": -89.17734,
+   "precision": "street"
+  },
+  {
+   "id": "adm-crevecoeuril",
+   "elevId": "evvtekpwh1",
+   "operator": "ADM",
+   "location": "Creve Coeur",
+   "state": "IL",
+   "lat": 40.63704,
+   "lon": -89.61617,
+   "precision": "street"
+  },
+  {
+   "id": "known:Cargill US|Havana, CAH|Havana|IL",
+   "elevId": "e0f6f4jd63",
+   "operator": "Cargill US",
+   "location": "Havana",
+   "state": "IL",
+   "lat": 40.3,
+   "lon": -90.061,
+   "precision": "town"
+  },
+  {
+   "id": "jerseycountygrain-hardinelevator",
+   "elevId": "eh7q2e9ev0",
+   "operator": "Jersey County Grain",
+   "location": "Hardin Elevator",
+   "state": "IL",
+   "lat": 39.1547,
+   "lon": -90.624,
+   "precision": "town"
+  },
+  {
+   "id": "premiercooperative1-tolono",
+   "elevId": "e0jpfbvn1q",
+   "operator": "Premier Cooperative - IL",
+   "location": "Tolono",
+   "state": "IL",
+   "lat": 39.98454,
+   "lon": -88.25743,
+   "precision": "street"
+  },
+  {
+   "id": "premiercooperative1-premiercooperativechampaign",
+   "elevId": "e9db7c07p8",
+   "operator": "Premier Cooperative - IL",
+   "location": "Premier Cooperative - Champaign",
+   "state": "IL",
+   "lat": 40.1178,
+   "lon": -88.28301,
+   "precision": "street"
+  },
+  {
+   "id": "adm-tuscolail",
+   "elevId": "e9bmh9n9p4",
+   "operator": "ADM",
+   "location": "Tuscola",
+   "state": "IL",
+   "lat": 39.7947,
+   "lon": -88.29735,
+   "precision": "street"
+  },
+  {
+   "id": "verbionorthamericallc-nevada",
+   "elevId": "emknz275z3",
+   "operator": "VERBIO North America LLC",
+   "location": "Nevada",
+   "state": "IA",
+   "lat": 42.02436,
+   "lon": -93.51725,
+   "precision": "street"
+  }
+ ]
+}

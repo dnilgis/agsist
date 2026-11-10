@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-"Email me this design" on /rain-print (Sig, 2026-10-20: "do all"). A reader
+"Email me this design" on /rain-print (2026-10-20). A reader
 who drew a print and did not buy can ask for it by email: the link to their
 own design now, and ONE reminder the next day if no paid order matches it.
 Then nothing.
@@ -25,23 +25,23 @@ Then nothing.
                 order records cannot be read, no reminder goes this run.
                 Past GIVE_UP_H hours with no reminder sent, the row is marked
                 done: a reminder a week late is not the next day.
-  Words         plain, Sig's voice. The reminder carries the Christmas
+  Words         plain, the owner's voice. The reminder carries the Christmas
                 order-by dates from data/rain-print.json for a past year
                 while they hold (October 1 to the cutoff), never a countdown,
-                and Sig's guarantee. Every email has a stop link
+                and the owner's guarantee. Every email has a stop link
                 (/rp-remind/stop) and says it is the only reminder.
   Log           counts only: never an address, a town or a design.
-  Sig only      DRY_RUN=1 sends each new ask's emails to Sig (SIG_TO) and
+  The owner only      DRY_RUN=1 sends each new ask's emails to the owner (SIG_TO) and
                 marks nothing; it skips asks older than DRY_FRESH_H hours, so
                 a dry run does not resend old asks every time.
 
 It runs hourly (rp-design-email.yml, cron_gate) and when the worker starts it
 on a new ask (GH_DISPATCH_TOKEN), which also sends any reminder already due.
 
-  Paid, unmailed  (Sig, Nov 9 2026; no new schedule) the same run reads the
+  Paid, unmailed  (Nov 9 2026; no new schedule) the same run reads the
                 order records and finds paid orders still waiting STUCK_MIN
                 minutes after payment: the buyer's email not sent (only when
-                the buyer email is live, RP_BUYER_EMAIL_LIVE = "1"), or Sig's
+                the buyer email is live, RP_BUYER_EMAIL_LIVE = "1"), or the owner's
                 own order alert not sent. It starts rp-buyer-email.yml, the
                 same dispatch the subs worker makes (GH_TOKEN, the run's own
                 Actions token), at most once a run, for orders under ACT_MAX_H
@@ -51,21 +51,21 @@ on a new ask (GH_DISPATCH_TOKEN), which also sends any reminder already due.
                 start or alert, not zero or two. This script never emails a
                 buyer: the buyer job marks each order mailed before its send
                 and skips a mailed order. When the start fails (no token,
-                "HTTP 401", a network error), Sig gets one plain email about
+                "HTTP 401", a network error), the owner gets one plain email about
                 the orders just marked. A dry run (DRY_RUN=1, which the
                 workflow sets unless RP_DESIGN_EMAIL_LIVE is 1 or a by-hand run
-                says live) only counts: no mark, no start, no email to Sig.
+                says live) only counts: no mark, no start, no email to the owner.
                 The DELIVERY line carries
                 unmailed_late (orders waiting over LATE_MIN minutes), which
                 scripts/delivery_check.py reads for its "paid, unmailed over 2
                 hours" row. Counts only in the log.
 
     python3 scripts/rp_design_email.py              send what is due
-    DRY_RUN=1 python3 scripts/rp_design_email.py    to Sig only, nothing marked
+    DRY_RUN=1 python3 scripts/rp_design_email.py    to the owner only, nothing marked
     python3 scripts/rp_design_email.py --selftest   fixtures, no network, no mail
 
 Env: LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS. Optional: SMTP_HOST,
-SMTP_PORT, FROM_ADDR, RP_FROM_NAME (default "Sig at AGSIST"), SIG_TO, GH_TOKEN
+SMTP_PORT, FROM_ADDR, RP_FROM_NAME (default FROM_NAME below), SIG_TO, GH_TOKEN
 and GITHUB_REPOSITORY (start the buyer job), RP_BUYER_EMAIL_LIVE.
 Run by .github/workflows/rp-design-email.yml.
 """
@@ -112,7 +112,7 @@ REMIND_AFTER_H = 20
 GIVE_UP_H = 72
 NOW_MAX_H = 24   # Nov 3: an ask never answered within a day is closed, not mailed late (the first live run met a week of dry-run asks)
 DRY_FRESH_H = 2
-STUCK_MIN = 60      # Nov 9 (Sig): a paid order unmailed this long after payment: start the buyer job, or tell Sig
+STUCK_MIN = 60      # Nov 9: a paid order unmailed this long after payment: start the buyer job, or tell the owner
 ACT_MAX_H = 24      # an order first found past a day is not started or alerted; delivery_check shows it
 LATE_MIN = 120      # delivery_check's "paid, unmailed over 2 hours" row reads this count (unmailed_late)
 BUYER_JOB = "rp-buyer-email.yml"
@@ -309,8 +309,8 @@ def _ms(iso):
 
 def stuck_orders(orders, now_ms, buyer_live):
     """[(order, minutes since payment)] for paid orders still waiting STUCK_MIN minutes after payment:
-    Sig's alert not sent, or (buyer email live) a design order whose buyer email is not sent. A mailed
-    order only counts when Sig's alert is missing; the buyer job never mails it twice."""
+    The owner's alert not sent, or (buyer email live) a design order whose buyer email is not sent. A mailed
+    order only counts when the owner's alert is missing; the buyer job never mails it twice."""
     out = []
     for o in orders or []:
         if o.get("status") != "paid":
@@ -329,7 +329,7 @@ def stuck_orders(orders, now_ms, buyer_live):
 
 
 def alert_sig(stuck, job, sig_to, now_ms):
-    """Sig's email: the orders waiting and why the buyer job did not start. Never an address."""
+    """the owner's email: the orders waiting and why the buyer job did not start. Never an address."""
     lines = ["A paid Rain Print order has had no email an hour after payment, and the buyer email job",
              "could not be started from the hourly run (%s)." % job, ""]
     for o, mins in stuck:
@@ -357,7 +357,7 @@ def check_paid(src, orders, now_ms, send, sig_to, buyer_live, tally=None, dry=Fa
     """The paid-but-unmailed guard (see the top of this file). -> (counts, failed).
     Once per order: each order acted on is marked guarded on its record (rp-order/guarded) before
     the start, and a guarded order is never acted on again, whichever run sees it first. A dry run
-    (DRY_RUN=1) only counts: no mark, no start, no email to Sig."""
+    (DRY_RUN=1) only counts: no mark, no start, no email to the owner."""
     c = {"paid, unmailed": 0, "would act": 0, "buyer job started": 0, "start failed": 0, "Sig told": 0, "mark failed": 0}
     if orders is None:
         return c, False
@@ -697,7 +697,7 @@ def selftest():
     ck("between the cutoffs: the print only", "Order it as a print by Dec 10 for Christmas delivery." in paras, str(paras))
     s, paras, _ = words(row(11, code=_code("Chetek, WI", 2026)), "reminder", Fake([], []).prices(), "2026-10-21")
     ck("this year: January", "A 2026 print ships in January 2027, once the full year is in." in paras and not any("Christmas" in p for p in paras), str(paras))
-    # dry run: to Sig, nothing marked, only fresh asks
+    # dry run: to the owner, nothing marked, only fresh asks
     sent.clear()
     f = Fake([row(12), row(13, ts=NOW - 10 * H_)], [])
     run(f, True, send, "sig@agsist.com", now_ms=NOW + 60e3, today="2026-10-20")
@@ -718,7 +718,7 @@ def selftest():
     ck("asks: an ask still waiting counts 1", asks_of([row(24, sent={"at": "x"})], now=NOW + 2 * H_) == 1
        and asks_of([row(25)], now=NOW + 60e3) == 1)
     ck("asks: a dry run closes nothing, so still 1", asks_of([row(26, sent={"at": "x"})], dry=True, now=NOW + 80 * H_) == 1)
-    # Nov 9 (Sig): a paid order with no email. Paid at T, unmailed, the worker's start refused ("HTTP 401")
+    # Nov 9: a paid order with no email. Paid at T, unmailed, the worker's start refused ("HTTP 401")
     T = NOW
     iso = lambda ms: dt.datetime.fromtimestamp(ms / 1000, dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.000Z")
     def porder(n, **kw):
@@ -748,7 +748,7 @@ def selftest():
     ck("mailed, hours later, token dead: still nothing", f.starts == [] and not sent and t.extra.get("unmailed_late") == 0)
     # the script itself never emails a buyer and never marks an order: only the buyer job does
     ck("the guard never marks an order mailed", not [m for m in f.marks if m[0].startswith("rpo:") and m[1] != "guarded"])
-    # an expired token: the start fails, Sig is told once, in the order's first hour
+    # an expired token: the start fails, the owner is told once, in the order's first hour
     f, code_, log, t = at(61, [porder(4)], job="HTTP 401")
     ck("expired token: Sig is told", len(sent) == 1 and sent[0]["To"] == "sig@agsist.com" and "HTTP 401" in sent[0].get_content()
        and "GH_DISPATCH_TOKEN" in sent[0].get_content() and "Lennox, SD 1994" in sent[0].get_content(), str([m["Subject"] for m in sent]))
@@ -781,7 +781,7 @@ def selftest():
     ck("mark fails: the next run acts once", f.starts == [True] and len(sent) == 1)
     f, code_, log, t = at(130, [porder(23, guarded={"at": "x"})], job="HTTP 401")
     ck("guarded on the record (an earlier run): nothing, still counted late", f.starts == [] and not sent and t.extra["unmailed_late"] == 1)
-    # checker, Nov 9: a dry run never starts the buyer job or emails Sig, even with GH_TOKEN set
+    # checker, Nov 9: a dry run never starts the buyer job or emails the owner, even with GH_TOKEN set
     import unittest.mock as um0
     net = []
     class DryFake(Fake):
@@ -807,17 +807,17 @@ def selftest():
     ck("no token: Sig is told", len(sent) == 1 and "no token" in sent[0].get_content())
     f, code_, log, t = at(25 * 60, [porder(6)], job="HTTP 401")
     ck("past a day: no more starts, delivery row still sees it", f.starts == [] and not sent and t.extra["unmailed_late"] == 1)
-    # Sig's alert email failing to send makes the run red
+    # The owner's alert email failing to send makes the run red
     sent.clear()
     f = Fake([], [porder(7)]); f.job = "HTTP 401"
     code_, log = run(f, False, lambda m: (_ for _ in ()).throw(OSError("smtp")), "sig@agsist.com", now_ms=T + 61 * 60e3, today="2026-11-09", buyer_live=True)
     ck("alert send failed: exit 1", code_ == 1, str(log))
-    # buyer email not live: an alerted order is not waiting on anything; an unalerted one is (Sig's own alert)
+    # buyer email not live: an alerted order is not waiting on anything; an unalerted one is (the owner's own alert)
     f, code_, log, t = at(61, [porder(8, alerted={"at": "x"})], live=False)
     ck("dry buyer email, alerted: no start", f.starts == [])
     f, code_, log, t = at(61, [porder(9)], live=False)
     ck("dry buyer email, Sig not alerted: started as a dry run", f.starts == [False])
-    # a paid record with no design (bare payment link): only Sig's alert matters
+    # a paid record with no design (bare payment link): only the owner's alert matters
     f, code_, log, t = at(61, [porder(10, no_press=True, design_url="", alerted={"at": "x"})])
     ck("no design, alerted: not waiting", f.starts == [])
     # an order not yet paid, or with no payment time, is never counted

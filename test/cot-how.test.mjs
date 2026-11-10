@@ -9,7 +9,7 @@
  * count, when the analysis is for another week, or when the files disagree.
  * Frozen inputs: test/fixtures/funds (cot.json, cot-analysis.json and cot-history.json for the Oct 27, 2026 report),
  * with card.how added in memory from how_changed() itself. The browser part routes every outside host to a stub or
- * abort and blocks service workers (BUILD-RULES 58).
+ * abort and blocks service workers (build rule 58).
  *
  *   node --test test/cot-how.test.mjs
  */

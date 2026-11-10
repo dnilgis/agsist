@@ -1,5 +1,5 @@
 /* components/rp-xmas.js -- the Christmas Rain Print line on the field and
-   weather pages (Sig, 2026-10-30): one slim, quiet line in Sig's voice, near
+   weather pages (2026-10-30): one slim, quiet line in the owner's voice, near
    the top of the page, with his phone number for people who would rather he
    made the print for them (/rain-print has the "I'll make it for you" form).
 
@@ -15,8 +15,8 @@
    PAGES (and only these): /rain and every county rain page
    (scripts/build_county_rain.py), /rain-radar, /hail-map, /drought-monitor,
    /spray, /gdu-calculator, /field-scout and the Farmland Atlas county pages
-   (scripts/build_atlas_pages.py). Never the home page or the Daily (Sig
-   parked both until Nov 19). test/rp-xmas.test.mjs holds the list.
+   (scripts/build_atlas_pages.py). Never the home page or the Daily (the owner
+ parked both until Nov 19). test/rp-xmas.test.mjs holds the list.
 
    DATES: FROM..UNTIL inclusive, America/Chicago. UNTIL is the last day a
    print can be ordered for Christmas delivery, print_christmas_cutoff in

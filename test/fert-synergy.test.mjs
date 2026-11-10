@@ -1,6 +1,6 @@
 /* Synergy Cooperative (Northwest Wisconsin) on /fertilizer: one more co-op.
  *
- * Sig, Oct 16, 2026: "just publish prices as a new coop". The co-op's own
+ * Oct 16, 2026. The co-op's own
  * list (dated Oct 1, 2026) is typed into scripts/coop_fert_sources.json as a
  * "sheet" layout line and goes through scripts/fetch_coop_fert.py like every
  * other co-op: same checks, same 60-day rule, counted in the middle price.

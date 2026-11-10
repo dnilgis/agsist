@@ -84,7 +84,7 @@ A(r.status === 403, 'another site cannot post');
 for (let y = 2000; y < 2010; y++) await post({ email: 'many@b.com', code: RP.encodeCode(Object.assign({}, design, { year: y })) });
 A(recs().filter(x => JSON.parse(store.get(x)).email === 'many@b.com').length === 5, 'five designs an address at most');
 
-// list and mark: Sig only
+// list and mark: the owner only
 r = await admin('/rp-remind/list', 'GET', null, null); A(r.status === 403, 'list needs the token');
 r = await admin('/rp-remind/list?token=tok', 'GET', null, null); A(r.status === 403, 'never ?token= (Bearer only)');
 r = await admin('/rp-remind/list'); j = await r.json();

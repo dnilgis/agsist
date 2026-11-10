@@ -1,4 +1,4 @@
-/* Sources sections are closed until a reader opens them (Sig, Nov 5). One look for every page. */
+/* Sources sections are closed until a reader opens them (Nov 5). One look for every page. */
 details.src-fold{border:1px solid var(--border,#d8d4c8);border-radius:10px;background:var(--surface,transparent);margin:1.6rem 0 1rem}
 details.src-fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:.85rem;padding:.4rem 1rem}
 details.src-fold>summary::-webkit-details-marker{display:none}

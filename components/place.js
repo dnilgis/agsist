@@ -8,7 +8,7 @@
      data/rain/<st>.json, data/drought/county-week.json, data/hail/recent.json,
      data/transport/basis.json, data/basis-states.json, /usda-calendar.ics, a bids snapshot
 
-   Rules (Sig's honest numbers): every figure carries its source and year; a
+   Rules (the owner's honest numbers): every figure carries its source and year; a
    figure that is missing stays missing with its reason; ranks are "among
    <State> counties", never among fields; the one sentence is a fixed template
    filled from the numbers, nothing written freehand.
@@ -19,7 +19,7 @@
   else root.AgPlace = factory();
 })(typeof self !== 'undefined' ? self : this, function () {
   'use strict';
-  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Nov 3 2026); a file without the company count says 'median of N elevators'. */
   function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
 
   var MIN_RANK_N = 5;          // fewer counties than this with a figure: no rank
@@ -31,7 +31,7 @@
   var FIPS_ST = { '01': 'AL', '02': 'AK', '04': 'AZ', '05': 'AR', '06': 'CA', '08': 'CO', '09': 'CT', '10': 'DE', '12': 'FL', '13': 'GA', '15': 'HI', '16': 'ID', '17': 'IL', '18': 'IN', '19': 'IA', '20': 'KS', '21': 'KY', '22': 'LA', '23': 'ME', '24': 'MD', '25': 'MA', '26': 'MI', '27': 'MN', '28': 'MS', '29': 'MO', '30': 'MT', '31': 'NE', '32': 'NV', '33': 'NH', '34': 'NJ', '35': 'NM', '36': 'NY', '37': 'NC', '38': 'ND', '39': 'OH', '40': 'OK', '41': 'OR', '42': 'PA', '44': 'RI', '45': 'SC', '46': 'SD', '47': 'TN', '48': 'TX', '49': 'UT', '50': 'VT', '51': 'VA', '53': 'WA', '54': 'WV', '55': 'WI', '56': 'WY' };
 
   /* ── sections and the go deeper row ──────────────────────────── */
-  // One fixed order for everyone (Sig, Oct 19: no role chips, every reader sees everything).
+  // One fixed order for everyone (Oct 19: no role chips, every reader sees everything).
   var SECTIONS = ['week', 'fingerprint', 'unusual', 'long'];
   // What the Print report panel can leave out, in page order.
   var PRINT_PARTS = ['sentence', 'week', 'fingerprint', 'unusual', 'long', 'sources'];
@@ -99,7 +99,7 @@
     var n = printCode(place.print);
     if (n !== 63) q.push('p=' + n);
     // the common case goes as a short path (404.html routes /H/ back here, components/report-link.js):
-    // all QR letters-and-digits, 25 x 25 instead of 29 x 29 (Sig, Oct 19: smallest QR always)
+    // all QR letters-and-digits, 25 x 25 instead of 29 x 29 (Oct 19: smallest QR always)
     // Oct 22 panel: a spot or a print choice rides the same short path (it was /here?..., one more hop
     // through the forward forever): H/<fips>[/<ZIP> | /A<lat><lng>][/P<print code>], all QR letters and digits
     var h = 'HTTPS://AGSIST.COM/H/' + place.fips;
@@ -1140,7 +1140,7 @@
       ctx: (where ? where.charAt(0).toUpperCase() + where.slice(1) + '. ' : '') + 'Cash price; call to confirm.', src: ['Fertilizer prices', '/fertilizer'], paper: 'Co-op posted prices' };
   }
   /* Farm diesel or propane (key 'diesel' or 'propane') from the USDA report that covers the state.
-     Lead decision Nov 3 (Sig dislikes clutter): where no report covers the state, or the covering
+     Lead decision Nov 3 (the owner dislikes clutter): where no report covers the state, or the covering
      report does not price the fuel, the row is hidden (hide: true). Where the newest covering report
      is over USDA_DAYS old, the row says so, dated, with the report named; no stale price is shown. */
   function factFuel(pc, st, key, today) {

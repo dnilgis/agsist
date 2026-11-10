@@ -1,7 +1,7 @@
 /* Generated page sets are built on main, never carried in a pull request (Nov 4, 2026).
  * On Nov 3 four pull requests carried generated sets (#280 rain, #282 cash bid town pages twice, #296 land
  * sales); main's own jobs rebuilt those sets within hours, so the branches conflicted or merged on checks run
- * against an older main and main went red. BUILD-RULES 49 and 60 asked the lead to remember; this holds the
+ * against an older main and main went red. build rule 49 and 60 asked the lead to remember; this holds the
  * mechanical version together:
  *   - the table (scripts/generated_sets.py) covers every folder of generated pages and every --check builder,
  *     and every path, builder and workflow it names exists;
@@ -10,7 +10,7 @@
  *   - the PR checks rebuild a set whose builder changed in their own copy; main-checks.yml rebuilds it on main
  *     right after the merge, before the suite;
  *   - merge-when-green never merges on checks run against an older main (the stale rule, unit cases);
- *   - BUILD-RULES 61 (Nov 4: a hand run of cash-bid-index.yml left llms.txt on the partial edition and main
+ *   - build rule 61 (Nov 4: a hand run of cash-bid-index.yml left llms.txt on the partial edition and main
  *     went red): every summary file a set feeds is that set's dependent, found by tracing what each summary
  *     builder really reads (scripts/trace_reads.py), and every workflow that runs a set's builder rebuilds
  *     those summaries before its commit.
@@ -152,12 +152,70 @@ test("main-checks.yml: a set whose builder changed is rebuilt on main before the
   const out = py(`import generated_sets as G
 ch = [(100, ["data/bids.json", "rain/iowa/x.html"]), (200, ["scripts/build_county_rain.py"]), (300, ["scripts/cross_links.py"]), (400, ["scripts/build_cash_bid_pages.py"])]
 p = G.pending(ch)
-print(json.dumps({"rain": p.get("rain"), "cash": p.get("cash-bids"), "prf": p.get("prf"), "land": p.get("land-sales"), "none": G.pending([(9, ["rain/a.html", "data/x.json"])])}))`);
-  assert.deepEqual(JSON.parse(out), { rain: 300, cash: 400, prf: 300, land: null, none: {} },
+print(json.dumps({"rain": p.get("rain"), "cash": p.get("cash-bids"), "prf": p.get("prf"), "land": p.get("land-sales"), "info": p.get("infographic"), "none": G.pending([(9, ["rain/a.html", "data/x.json"])])}))`);
+  // land sales imports cross_links since its county pages carry the same-state row (Nov 10, 2026); the
+  // infographic set imports neither changed module
+  assert.deepEqual(JSON.parse(out), { rain: 300, cash: 400, prf: 300, land: 300, info: null, none: {} },
     "a builder or a module it imports changed: pending from that commit; data and page commits never");
   const r = spawnSync("python3", ["scripts/generated_sets.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
   assert.equal(r.status, 0, r.stdout + r.stderr);
   assert.match(r.stdout, /all generated_sets checks passed/);
+});
+
+test("main-checks: a network set's run cancelled by its workflow's concurrency group counts the newer run that replaced it", () => {
+  // Nov 10: the dispatched cash-bid-pages run was cancelled when a newer run queued; main-checks went red although
+  // the newer run rebuilt the pages. Fake run lists: the watched run by hand, then what came after it.
+  const out = py(`import generated_sets as G
+S = next(s for s in G.SETS if s["id"] == "cash-bids")
+GONE = {"id": 1, "event": "workflow_dispatch", "status": "completed", "conclusion": "cancelled", "head_branch": "main", "created_at": "2026-11-10T02:29:41Z"}
+def run(i, t, c, st="completed", ev="workflow_run"):
+    return {"id": i, "event": ev, "status": st, "conclusion": c, "head_branch": "main", "created_at": t}
+class Fake:
+    repo = "o/r"
+    def __init__(self, seq, jobs=None):
+        self.seq, self.jobs, self.posts = list(seq), jobs or {}, 0
+    def call(self, m, path, body=None):
+        if m == "POST":
+            self.posts += 1
+            return None
+        if "/jobs" in path:
+            rid = int(path.split("/runs/")[1].split("/")[0])
+            return {"jobs": [{"name": "gate", "conclusion": "success"}, {"name": "build", "conclusion": self.jobs.get(rid, "success")}]}
+        if "event=workflow_dispatch" in path:
+            return {"workflow_runs": [GONE]}
+        rs = self.seq.pop(0) if len(self.seq) > 1 else self.seq[0]
+        return {"workflow_runs": [GONE, run(0, "2026-11-10T02:00:00Z", "failure")] + rs}
+class Clock:
+    t = 0.0
+    def __call__(self): return self.t
+    def sleep(self, n): self.t += n
+def go(seq, jobs=None, wait=30):
+    c = Clock(); g = Fake(seq, jobs)
+    r = G.await_network(g, S, G._ts("2026-11-10T02:20:00Z"), wait_min=wait, sleep=c.sleep, clock=c)
+    return [r, g.posts]
+ok = run(2, "2026-11-10T02:30:10Z", "success")
+print(json.dumps({
+  "then_success": go([[ok]]),
+  "none_newer": go([[]]),
+  "then_failure": go([[run(2, "2026-11-10T02:30:10Z", "failure")]]),
+  "gate_skipped": go([[ok]], {2: "skipped"}),
+  "gate_skipped_then_built": go([[ok, run(3, "2026-11-10T04:30:00Z", "success")]], {2: "skipped"}),
+  "chain": go([[run(2, "2026-11-10T02:30:10Z", "cancelled"), run(3, "2026-11-10T02:31:00Z", "success")]]),
+  "waits": go([[run(2, "2026-11-10T02:30:10Z", None, "in_progress")], [run(2, "2026-11-10T02:30:10Z", "success")]]),
+  "times_out": go([[run(2, "2026-11-10T02:30:10Z", None, "in_progress")]], wait=5),
+}))`);
+  const r = JSON.parse(out.trim().split("\n").pop());
+  assert.deepEqual(r.then_success, ["success", 0], "cancelled, then a newer run that rebuilt: pass");
+  assert.deepEqual(r.none_newer, ["cancelled (no newer run)", 0], "cancelled with no newer run: fail");
+  assert.deepEqual(r.then_failure, ["newer run 2 failure", 0], "cancelled, then a newer run that failed: fail");
+  assert.deepEqual(r.gate_skipped, ["cancelled (no newer run rebuilt the pages)", 0], "a newer run whose build job its gate skipped did not rebuild");
+  assert.deepEqual(r.gate_skipped_then_built, ["success", 0]);
+  assert.deepEqual(r.chain, ["success", 0], "a newer run cancelled in turn passes the wait on to the one after it");
+  assert.deepEqual(r.waits, ["success", 0], "a newer run still going is waited for");
+  assert.deepEqual(r.times_out, ["timed out", 0], "the wait is bounded");
+  const wf = read(".github/workflows/cash-bid-pages.yml");
+  const S = T.sets.find((s) => s.id === "cash-bids");
+  assert.ok(new RegExp(`\\n  ${S.build_job}:\\n`).test(wf), `cash-bid-pages.yml has the job the wait checks (${S.build_job})`);
 });
 
 test("merge-when-green: no merge on checks run against an older main", () => {
@@ -194,7 +252,7 @@ print(json.dumps({
   assert.match(src, /"git", "-C", root\] \+ list\(a\)/, "main's changed files from git, not the 300-file compare");
 });
 
-// ── BUILD-RULES 61: a builder run by hand leaves every summary of its output current ──────────────────────
+// ── build rule 61: a builder run by hand leaves every summary of its output current ──────────────────────
 const summary = Object.fromEntries(T.summaries.map((x) => [x.id, x]));
 const setById = Object.fromEntries(T.sets.map((s) => [s.id, s]));
 const traced = {};
@@ -329,6 +387,60 @@ print(json.dumps(bad))`, "fail_sum.py").trim().split("\n").at(-1));
   assert.deepEqual(out, []);
   assert.equal(g(a, "diff", "--staged", "--name-only").trim(), "sum.txt", "a built summary is staged");
   fs.rmSync(d, { recursive: true, force: true });
+});
+
+// Nov 10, 2026: a pull request changed a module every set builder imports (scripts/source_links.py). The PR
+// prebuild rebuilt arc-plc ("its code changed") but not build_breakeven_data.py, its dependent, so
+// data/breakeven read stale against the new arc-plc data and other checks failed. The fixture: a shared import,
+// a set that imports it, a summary that reads the set (as breakeven reads arc-plc) and a summary that reads
+// that summary (transitive).
+const depFixture = () => {
+  const d = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), "gendep-"));
+  const g = (...x) => execFileSync("git", ["-C", d, "-c", "user.name=t", "-c", "user.email=t@t", ...x], { encoding: "utf8" });
+  g("init", "-q", "-b", "main");
+  const w = (f, body) => { fs.mkdirSync(path.dirname(path.join(d, f)), { recursive: true }); fs.writeFileSync(path.join(d, f), body); };
+  w("scripts/shared_links.py", "LABEL = 'old'\n");
+  w("scripts/build_set.py", "from shared_links import LABEL\nimport os\nos.makedirs('data/set', exist_ok=True)\nopen('data/set/a.json', 'w').write(LABEL + '\\n')\n");
+  const sum = (src, out) => `import sys, os\nbody = 'from ' + open(${JSON.stringify(src)}).read()\nif '--check' in sys.argv:\n    sys.exit(0 if os.path.exists(${JSON.stringify(out)}) and open(${JSON.stringify(out)}).read() == body else 1)\nos.makedirs(os.path.dirname(${JSON.stringify(out)}), exist_ok=True)\nopen(${JSON.stringify(out)}, 'w').write(body)\n`;
+  w("scripts/build_sum.py", sum("data/set/a.json", "data/sum/a.json"));
+  w("scripts/build_sum2.py", sum("data/sum/a.json", "data/sum2/a.json"));
+  for (const b of ["build_set.py", "build_sum.py", "build_sum2.py"]) execFileSync("python3", ["scripts/" + b], { cwd: d });
+  g("add", "-A"); g("commit", "-qm", "main");
+  w("scripts/shared_links.py", "LABEL = 'new label'\n");  // another length: a .pyc from the same second is not reused
+  g("add", "-A"); g("commit", "-qm", "pull request: the shared import changes");
+  return d;
+};
+const prebuildFake = (root) => pyBare(`import generated_sets as G
+G.ROOT = G.GIT_ROOT = ${JSON.stringify(root)}
+G.SUMMARIES = [{"id": "sum", "build": ["python3", "scripts/build_sum.py"], "trace": ["--check"], "files": ["data/sum"], "dependents": ["sum2"]},
+               {"id": "sum2", "build": ["python3", "scripts/build_sum2.py"], "trace": ["--check"], "files": ["data/sum2"]}]
+G.SUMMARY = {x["id"]: x for x in G.SUMMARIES}
+G.SETS = [{"id": "base-set", "offline": True, "workflow": "x.yml", "build": [["python3", "scripts/build_set.py"]],
+           "check": None, "outputs": ["data/set/**"], "writes": [], "code": ["scripts/build_set.py"], "inputs": [],
+           "dependents": ["sum"]}]
+print("RC=%d" % G.cmd_prebuild("HEAD^1"))`);
+
+test("prebuild: a set rebuilt because a shared import changed gets its dependents rebuilt too, transitively, in order", () => {
+  const d = depFixture();
+  const out = prebuildFake(d);
+  assert.match(out, /prebuild: base-set \(its code changed\)/, out);
+  assert.match(out, /RC=0/, out);
+  assert.equal(fs.readFileSync(d + "/data/set/a.json", "utf8"), "new label\n", "the set is rebuilt with the new import");
+  for (const b of ["build_sum.py", "build_sum2.py"]) {
+    const r = spawnSync("python3", ["scripts/" + b, "--check"], { cwd: d, encoding: "utf8" });
+    assert.equal(r.status, 0, `${b} --check reads fresh after the prebuild:\n${out}`);
+  }
+  assert.equal(fs.readFileSync(d + "/data/sum2/a.json", "utf8"), "from from new label\n", "the summary of the summary, after it");
+  assert.ok(out.indexOf("build_sum.py") < out.indexOf("build_sum2.py"), "dependency order");
+  fs.rmSync(d, { recursive: true, force: true });
+});
+
+test("prebuild: the real table lists breakeven as an arc-plc dependent, and a shared import change rebuilds both", () => {
+  assert.ok(T.sets.find((s) => s.id === "arc-plc").dependents.includes("breakeven"));
+  const r = JSON.parse(py(`import generated_sets as G
+print(json.dumps({"touched": G.touched(G.SETS, ["scripts/source_links.py"], G.ROOT), "closure": G.summary_closure(["breakeven"])}))`).trim().split("\n").at(-1));
+  if (fs.existsSync(path.join(ROOT, "scripts/source_links.py"))) assert.ok(r.touched.includes("arc-plc"), "arc-plc imports source_links: " + r.touched);
+  assert.deepEqual(r.closure.slice(0, 1), ["breakeven"]);
 });
 
 test("rule 61: pull-rebase rebuilds a summary that conflicts, never keeping either side; another conflict aborts", () => {

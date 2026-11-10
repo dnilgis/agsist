@@ -9,7 +9,7 @@ thing that changes the site:
 
   pending, never mailed      -> the applicant gets a confirmation link
   pending, older than 14 days-> dropped (expired), as the privacy page says
-  confirmed, Sig not told     -> Sig gets the ad, the contact, the price, and
+  confirmed, the owner not told     -> the owner gets the ad, the contact, the price, and
                                  APPROVE / DECLINE links (only his email has them)
   approved (State Sponsor or  -> the ad is written into the site and pushed:
    Cash Bids Sponsor)            data/page-sponsors.json (a State Sponsor takes
@@ -17,7 +17,7 @@ thing that changes the site:
                                  and its town pages, and the cash rent page),
                                  the logo to img/sponsors/. Then marked live with
                                  its start date, and both sides are told.
-  approved (anything else)    -> Sig is told it needs setting up by hand: the
+  approved (anything else)    -> the owner is told it needs setting up by hand: the
                                  Daily Sponsor card has its own approval flow, a
                                  Featured elevator box is built with them, a
                                  state that opens soon waits, and a retired tier
@@ -26,13 +26,13 @@ thing that changes the site:
   live                        -> 3 days before the free month ends, the sponsor
                                  is asked yes or no (no reply: the ad comes down
                                  and nothing is owed); on each monthly date
-                                 from then on, Sig gets "send the invoice", with
+                                 from then on, the owner gets "send the invoice", with
                                  an END link for the day someone stops paying.
-  ending (Sig clicked END)    -> the ad comes down, the slot is open again.
+  ending (the owner clicked END)    -> the ad comes down, the slot is open again.
 
 Billing is a handshake, on purpose: no card, an invoice a month, and a slot
 that goes back on the market if it is not paid. This job never charges anyone;
-it reminds Sig, who invoices the way he already does.
+it reminds the owner, who invoices the way he already does.
 
 Order of operations: files are written and PUSHED before the worker is marked,
 so a failed push leaves the application approved and the next run tries again.
@@ -91,7 +91,7 @@ PEND_TTL_MS = 14 * 864e5
 TIER_NAME = {"daily": "Daily Sponsor", "state": "State Sponsor", "cashbids": "Cash Bids Sponsor",
              "elevator": "Featured elevator", "page": "Own a page (no longer sold)", "supporter": "Supporter (no longer sold)"}
 # Only these two ever go live on their own. Any other tier (the Daily Sponsor, a
-# Featured elevator, a state that opens soon, or a retired tier) is handed to Sig,
+# Featured elevator, a state that opens soon, or a retired tier) is handed to the owner,
 # never written into the site (Oct 19: the Daily tier id became "daily").
 SELF_SERVE = ("state", "cashbids")
 FE_SLOT = re.compile(r"fe-([a-z]{2})-([a-z0-9][a-z0-9-]{0,50})")
@@ -195,8 +195,8 @@ def plan(apps, now_ms, today, sold_pages, supporters, card=None, slots=()):
             ct = card_tier(a)
             state, want = state_slots(a.get("slot"), slots) if ct == "state" else (None, [a.get("slot")])
             if ct == "state" and opens_soon(card, state):
-                # HELD (Oct 29, 2026, Sig option A): California, Nevada and Texas are not sold
-                # while the Root Lot test runs there. Refused here, told to Sig, nothing written.
+                # HELD (Oct 29, 2026, the owner option A): California, Nevada and Texas are not sold
+                # while the Root Lot test runs there. Refused here, told to the owner, nothing written.
                 if (a.get("notified") or 0) < 2:
                     out.append(("held", a))
             elif ct not in SELF_SERVE or (ct == "state" and not state):
@@ -204,7 +204,7 @@ def plan(apps, now_ms, today, sold_pages, supporters, card=None, slots=()):
                     out.append(("daily", a))
             elif any(slot_owner(sold_pages, x) not in (None, aid) for x in want):
                 if (a.get("notified") or 0) < 2:
-                    out.append(("clash", a))          # someone else holds the page: tell Sig, change nothing
+                    out.append(("clash", a))          # someone else holds the page: tell the owner, change nothing
             else:
                 out.append(("golive", a))
         elif st == "declined" and (a.get("m") or 0) < 2:
@@ -323,7 +323,7 @@ def portal_link(app_id, root=REPO, private=None, secret=None, sync=None):
     """The private report page for a live application, or None. An opaque token, no personal data.
     Since Nov 4, 2026 the token lives only in the private repo (scripts/sponsor_publish.py): it is
     pulled, minted if this sponsor has none, and saved back before the link is used. If either
-    step fails there is no link (the daily report job mints one, and Sig sends it from links.json)."""
+    step fails there is no link (the daily report job mints one, and the owner sends it from links.json)."""
     try:
         d = json.loads((root / "data" / "sponsors.json").read_text(encoding="utf-8"))
     except (OSError, ValueError):

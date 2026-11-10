@@ -1,4 +1,4 @@
-/* "Email me when X" asks (2026-10-17, Sig: more signups wherever a reader has a
+/* "Email me when X" asks (2026-10-17, more signups wherever a reader has a
  * reason to come back). Each ask must post the topic its sender reads, and say
  * only what that sender sends.
  *   - county rain pages (/rain/<st>/<county>): rainyear:<year>:<fips>, one email
@@ -10,7 +10,7 @@
  * The page-matched asks run on a frozen copy of the futures file (test/fixtures/alert-asks/prices.json, Nov 3,
  * 2026), routed in the browser, on a clock taken from that copy; the ARC/PLC reminder's date is worked out from the
  * deadlines the page carries. They read live data/prices.json on a fixed Oct 23 clock and pinned Dec 11 before,
- * which breaks when the December contract rolls or the deadline passes (BUILD-RULES 50).
+ * which breaks when the December contract rolls or the deadline passes (build rule 50).
  *
  *   node --test test/alert-asks.test.mjs
  */
@@ -95,7 +95,7 @@ test("every county rain page asks once, for its own county and year, and says wh
 test("the rain year sender rides county-rain.yml, in January only, with no new schedule", () => {
   const y = read(".github/workflows/county-rain.yml");
   const crons = [...y.matchAll(/- cron: "([^"]+)"/g)].map((m) => m[1]);
-  // Sig, Oct 23 2026: the rain pages rebuild every day (was Mondays, "23 13 * * 1"); the Jan 2 run stays
+  // Oct 23 2026: the rain pages rebuild every day (was Mondays, "23 13 * * 1"); the Jan 2 run stays
   assert.deepEqual(crons, ["23 13 * * *", "41 14 2 1 *"], "every day at 13:23 UTC, and the Jan 2 finished-year run");
   assert.ok(y.includes("python scripts/send_rain_year.py --selftest"), "offline selftest first");
   const at = y.indexOf("python3 scripts/send_rain_year.py --send");
@@ -261,7 +261,7 @@ test("rent release emails ride cash-rent.yml with no new schedule, after the com
   assert.ok(read("scripts/send_notice.py").includes("import send_rent_notice"), "send_notice.py hands rent topics over");
 });
 
-// ---------------------------------------------------------------- page-matched asks (Sig, Oct 23)
+// ---------------------------------------------------------------- page-matched asks (Oct 23)
 // The generic bar opened 0.5% of the time it showed (GA4, 28 days). On these page types the bar is gone and
 // one ask that fits the page stands in its place. Each ask posts the topic its sender reads.
 const asksIn = (h) => h.match(/<div [^>]*data-(?:signup|price)-ask[^>]*>/g) || [];

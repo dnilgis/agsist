@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#111a0a">
-  <title>Nutrient Removal Value Calculator: P and K in Corn Stalks, Silage, Straw and Hay | AGSIST</title>
+  <title>Nutrient Removal Calculator: P and K in Stalks, Silage, Straw, Hay</title>
   <meta name="description" content="What leaves the field when you bale corn stalks, chop silage, bale straw or sell hay: lb of P2O5 and K2O per ton and acre, priced at posted co-op fertilizer prices.">
   <meta name="author"      content="Sigurd Lindquist">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -27,6 +27,7 @@
   <meta name="twitter:description" content="What leaves the field when you bale corn stalks, chop silage, bale straw or sell hay: lb of P2O5 and K2O per ton and acre, priced at posted co-op fertilizer prices.">
 
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+  <script>/* hold the price-dependent lines unseen until nutrient-removal.js fills them (nr-wait); a reader with a saved place also gets the Your area box (near-coop.js), whose room is held (nc-saved) */try{var h=document.documentElement;h.classList.add('nr-wait');setTimeout(function(){h.classList.remove('nr-wait')},8000);if(localStorage.getItem('agsist-wx-loc')||localStorage.getItem('agsist_zip'))h.classList.add('nc-saved')}catch(e){}</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
   <!-- static-nav:fonts -->
@@ -58,6 +59,12 @@
     .nr-gold{color:var(--gold)!important}
     .nr .nr-prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:0 0 .4rem;padding:0;list-style:none}
     .nr .nr-prices li{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .6rem;font-size:.8rem;line-height:1.35;color:var(--text-muted)}
+    /* the price lines hold their filled height before the price list lands (CLS sweep Nov 10) */
+    .nr-wait .nr-answer>p:not(.nr-fine),.nr-wait .nr-prices,.nr-wait [data-nr-ans]{visibility:hidden}
+    .nr-answer>p:not(.nr-fine){min-height:82px}.nr .nr-prices{min-height:139px}
+    @media(max-width:760px){.nr-answer>p:not(.nr-fine){min-height:110px}.nr .nr-prices{min-height:158px}}
+    @media(max-width:480px){.nr-answer>p:not(.nr-fine){min-height:165px}.nr-answer>p.nr-spread{min-height:192px}.nr .nr-prices{min-height:179px}}
+    .nc-saved [data-near-coop]{min-height:265px}@media(max-width:480px){.nc-saved [data-near-coop]{min-height:375px}}
     .nr .nr-prices li.nr-empty{grid-column:1/-1;font-size:.9rem}
     .nr .nr-prices b{display:block;margin:.1rem 0;font-family:'JetBrains Mono',monospace;font-size:1.1rem;color:var(--text)}
     .nr-fine{font-size:.85rem!important;color:var(--text-muted)!important}
@@ -236,7 +243,7 @@
 </div>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/fert-pick.js?v=1" defer></script>
-  <script src="/components/nutrient-removal.js?v=3" defer></script>
+  <script src="/components/nutrient-removal.js?v=4" defer></script>
   <script>/* near-coop: the Your area box loads only for a reader with a saved location */try{if(localStorage.getItem('agsist-wx-loc')||localStorage.getItem('agsist_zip')){var s=document.createElement('script');s.src='/components/near-coop.js?v=3';document.head.appendChild(s);}}catch(e){}</script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
