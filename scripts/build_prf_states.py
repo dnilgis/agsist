@@ -247,7 +247,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     {sod}
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
-    <p>At 90% coverage, across the {n_grid:,} grids that touch a {e(name)} county with PRF. The premium is the full rate per $100 of protection; USDA pays {subrow}.</p>
+    <p>At 90% coverage, across the {n_grid:,} grids that touch a {e(name)} county with PRF. The premium is the full rate per $100 of protection; USDA pays {subrow}. Each figure is the middle of the grids for that pair of months, so a row&rsquo;s middle can be a different grid from the next row&rsquo;s.</p>
     <div class="prf-scroll" tabindex="0" role="region" aria-label="Each pair of months, scrolls sideways"><table class="prf-sub-t prf-iv-t"><caption class="prf-sr">Each pair of months in {e(name)} at 90% coverage, middle of the grids for each pair</caption><thead><tr><th scope="col">Months</th><th scope="col">Normal precipitation</th><th scope="col">Premium per $100</th><th scope="col">Years under 90% of normal, of {ny}</th><th scope="col">Grids offered</th></tr></thead><tbody>{iv}</tbody></table></div>
     <p>Across {e(name)}&rsquo;s grids, $1 of full premium at 90% coverage would have paid back a middle ${f['payback_mid_90']:.2f} over {y0} to {y1} at {cy} rates ({f['payback_n_90']:,} grid and month pairs), close to the national middle of $0.87. On the full premium, no month or grid stands out. The months to insure are the ones when a dry spell costs you grass or hay.</p>
     </div>
@@ -279,7 +279,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here.</p>
     <nav class="prf-links prf-st-links" aria-label="PRF in other states"><a href="/prf">PRF calculator</a> {others}</nav>
     <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
-    {terms(f"Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}. In the top figures, the first is the middle county and the small ones the lowest and highest. In the months table each figure is the middle grid for that pair, and a row&rsquo;s middle grid can differ from the next row&rsquo;s. Protection per acre is the county value times your coverage level times a productivity factor of 60 to 150.")}
+    {terms(f"Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}. In the top figures, the first is the middle county and the small ones the lowest and highest. Protection per acre is the county value times your coverage level times a productivity factor of 60 to 150.")}
   </div>
   </main>
   <div id="site-footer"></div>
