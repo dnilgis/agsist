@@ -93,7 +93,7 @@ test("markets: the bake's title and description say delayed or settle, never liv
   assert.equal(r.status, 0, r.stderr);
   const h = r.stdout;
   const t = title(h), d = desc(h);
-  assert.match(t, /^Grain Futures Prices Today/);
+  assert.match(t, /^CBOT Grain /);
   assert.ok(t.length <= 68, t);
   assert.ok(/delayed|Settles|settle/.test(d), d);
   assert.ok(!/\blive\b/i.test(d.replace(/live cattle/gi, "")), d);

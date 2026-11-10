@@ -983,8 +983,8 @@ def _known_trade(q):
 # was a date line ("Ag Markets Oct 16") with no CBOT in it. The description
 # says delayed, never "live": quotes are 10 to 25 minutes behind (data-sources).
 # 2026-11-10: this is the markets title every day, no price, no date.
-# Nov 10: the search-matched words, "Grain Futures Prices Today".
-MARKETS_PLAIN = ("Grain Futures Prices Today: Corn, Soybeans, Wheat" + SUFFIX,
+# Nov 10: the search-matched words, "CBOT Grain Futures Today" ("cbot grain prices" brings readers).
+MARKETS_PLAIN = ("CBOT Grain Futures Today: Corn, Soybeans, Wheat" + SUFFIX,
                  "Corn, soybean, wheat, cattle and crude futures on one board, quotes delayed "
                  "10 to 25 min in session, with settles, cash bids and USDA dates. Free.")
 
