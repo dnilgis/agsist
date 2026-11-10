@@ -43,6 +43,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_cash_rent import NO_SURVEY_YEARS, REASON_MIXED, pair_county  # noqa: E402  (stdlib-only module, main() guarded)
 import credits as CR  # noqa: E402
+import rent_age as RA  # noqa: E402  (the one rent age rule and ten-year base, shared with the Atlas)
 
 DATA_DIR = "data/cash-rent"
 MIN_DRY = 3          # counties with a latest-year dryland rent before a state is headlined on it
@@ -431,7 +432,9 @@ def state_stats(d):
         dv = [c["rent"]["nonirr"][str(yr_latest)] for c in counties if str(yr_latest) in c["rent"].get("nonirr", {})]
         dy, dyn = matched_delta(yr_latest - 1, "nonirr")
         dry = {"median": med(dv), "n": len(dv), "yoy": dy, "yoy_n": dyn}
-    dec, dec_n = matched_delta(yr_latest - 9)
+    # one ten-year base year with the Atlas (scripts/rent_age.py): 2016 on the 2026 survey, not 2017
+    dec_y = RA.ten_year_base(d.get("years", []), yr_latest)
+    dec, dec_n = matched_delta(dec_y) if dec_y else (None, 0)
 
     # median of published counties, per year, primary type — for the bar table
     hist = []
@@ -475,12 +478,61 @@ def state_stats(d):
         "other": other, "dry": dry,
         "yr": yr_latest, "primary": primary, "have_types": have_types,
         "coverage": coverage, "n": len(cur), "median": med(list(cur.values())),
-        "yoy": yoy, "yoy_n": yoy_n, "yoy_med": yoy_med, "dec": dec, "dec_n": dec_n,
+        "yoy": yoy, "yoy_n": yoy_n, "yoy_med": yoy_med, "dec": dec, "dec_n": dec_n, "dec_y": dec_y,
+        "yoy_apart": yoy_apart(med(list(cur.values())), yoy_med),
         "hi": ranked[:5], "lo": ranked[-5:][::-1] if len(ranked) >= 5 else [],
-        "hist": hist, "counties": counties,
+        "hist": hist, "counties": counties, "unpub": unpublished(d.get("state"), counties),
         "y0": min(all_years) if all_years else yr_latest,
         "ty": int(str(d.get("generated") or yr_latest)[:4]),
     }
+
+
+APART = 0.05   # the matched counties' median this far from the headline median: the change line names its own set
+
+
+def yoy_apart(headline, yoy_med):
+    """True when the median of the counties published both years differs from the headline median by more than
+    APART (audit Nov 10, 2026: Georgia's headline $58 sat beside a change from $64.50 to $73.50)."""
+    if not headline or not yoy_med or yoy_med[1] is None:
+        return False
+    return abs(yoy_med[1] - headline) / headline > APART
+
+
+def yoy_set(s):
+    """How the change line names its counties: 'the N counties published both years' when that set's median is
+    apart from the headline, else 'the same N counties'."""
+    return (f"the {s['yoy_n']} counties published both years" if s.get("yoy_apart")
+            else f"the same {s['yoy_n']} counties")
+
+
+def unpublished(st, counties, root="."):
+    """[{fips, name}] of the state's counties (Farmland Atlas county list, mapped counties only) with no row in the
+    NASS file. Combined districts NASS publishes under no county FIPS are dropped by fetch_cash_rent.py fips(); those
+    counties land here as not published (not changed here: it needs a NASS check first)."""
+    have = {c.get("fips") for c in counties}
+    if not _atlas_counties(root):
+        return None
+    out = []
+    for f, c in _atlas_counties(root).items():
+        if c.get("state") == st and f not in have:
+            nm = str(c.get("name") or f) + (" city" if c.get("u") == "City" else "")
+            out.append({"fips": f, "name": nm})
+    return sorted(out, key=lambda c: c["name"].lower())
+
+
+_AC = {}
+
+
+def _atlas_counties(root="."):
+    if root not in _AC:
+        try:
+            A = json.load(open(os.path.join(root, "data", "atlas", "atlas.json"), encoding="utf-8"))["counties"]
+            geo = {g["id"] for g in json.load(open(os.path.join(root, "data", "atlas", "counties.geo.json"), encoding="utf-8"))["features"]}
+            _AC[root] = {f: c for f, c in A.items() if f in geo}
+        except Exception as e:  # pragma: no cover
+            print(f"WARN: county list unavailable ({type(e).__name__}: {e}); unpublished counties not listed", file=sys.stderr)
+            _AC[root] = {}
+    return _AC[root]
 
 
 # ---------------------------------------------------------------- HTML pieces
@@ -551,11 +603,21 @@ def head(title, desc, path, jsonld):
     .rs-t .up{{color:var(--green)}}.rs-t .dn{{color:var(--red)}}
     [data-theme="light"] .rs-t .dn{{color:#b3261e}}
     .rs-swipe{{display:none}}
+    /* Nov 10, 2026: the county filter keeps its space before the script runs (no shift), and an old or unpublished
+       cell wraps so the three rent columns fit a 390 px phone (pasture was cut off at 558 to 615 px) */
+    .rs-filter{{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px;min-height:44px;margin:10px 0 2px}}
+    .rs-filter label{{font-size:.85rem;color:var(--text-muted)}}
+    .rs-filter input{{min-height:40px;padding:0 10px;font-size:16px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface,var(--bg));color:var(--text);width:13rem;max-width:100%;box-sizing:border-box}}
+    .rs-qn{{font-size:.8rem;color:var(--text-muted)}}
+    .rs-t td.old{{white-space:normal;min-width:5.5em;font-size:.72rem;line-height:1.25}}
     .rs-tnote{{font-size:.78rem;margin:4px 0 10px}}
     @media (max-width:640px){{
       .rs-swipe{{display:block;color:var(--text-muted);font-size:.75rem;margin:8px 0 -4px}}
       .rs-t th{{white-space:normal;vertical-align:bottom;letter-spacing:.03em;padding:6px 7px;line-height:1.25}}
       .rs-t td{{padding:6px 7px;font-size:.8rem}}
+      .rs-t th,.rs-t td{{padding:6px 4px}}
+      .rs-t th{{font-size:.6rem;letter-spacing:0;max-width:4.6em}}
+      .rs-t td:first-child{{white-space:normal;min-width:6.5em;max-width:7.5em}}
     }}
     .rs-bars{{margin:8px 0}}
     .rs-bar{{display:flex;align-items:center;gap:10px;margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:.78rem}}
@@ -609,13 +671,13 @@ def head(title, desc, path, jsonld):
 </head>"""
 
 
-def delta_html(v, n, label):
+def delta_html(v, n, label, sub=None):
     if v is None:
         return f'<div class="v mut">-</div><div class="l">{label}</div><div class="s">too few matched counties</div>'
-    cls = "up" if v >= 0 else "dn"
-    sign = "+" if v >= 0 else ""
-    return (f'<div class="v {cls}">{sign}{v}%</div><div class="l">{label}</div>'
-            f'<div class="s">median of {n} matched counties</div>')
+    w = pct_words(v)
+    cls = "mut" if w == "unchanged" else ("up" if v > 0 else "dn")
+    return (f'<div class="v {cls}">{w}</div><div class="l">{label}</div>'
+            f'<div class="s">{sub or f"median of {n} matched counties"}</div>')
 
 
 def bars_html(hist):
@@ -646,7 +708,9 @@ def state_terms(yr, generated):
             f'estimates. Data as of {esc(generated)}.</p>\n'
             f'  <p>These are the {yr} county rents, the newest NASS has put out'
             + (f" (released {COUNTY_RENT_RELEASED[yr]})" if yr in COUNTY_RENT_RELEASED else "")
-            + f'. NASS says county rents come out in late August every year, and they have every year since 2019; the {yr + 1} date is not on its calendar yet.</p>\n'
+            + f'. NASS puts county rents out in late August of a survey year; there was no survey in '
+            + " or ".join(str(y) for y in sorted(NO_SURVEY_YEARS))
+            + f', and the {yr + 1} date is not on its calendar yet.</p>\n'
             '  <p><b>What this can&rsquo;t tell you.</b> These are county <b>means from a voluntary USDA survey</b>. '
             'Rents vary widely inside a county, driven by soil, drainage, field size and how badly a neighbor wants the '
             'ground. Year-over-year stats compare only counties published in both years.</p>\n'
@@ -655,12 +719,20 @@ def state_terms(yr, generated):
 
 def hub_terms(generated):
     return (f'<details class="rs-terms" id="sources-terms"><summary>{TERMS_SUMMARY}</summary>\n'
-            '  <p>Source: USDA NASS Cash Rents Survey county estimates, a survey of roughly 280,000 farms and ranches every year '
-            'in every state but Alaska. NASS publishes a mean rate for every county with at least 20,000 acres of cropland plus '
-            'pasture, each August. Results are not revised afterward. The county corn trend is AGSIST&rsquo;s, from NASS county '
+            '  <p>Source: USDA NASS Cash Rents Survey county estimates, a survey of roughly 280,000 farms and ranches '
+            'in every state but Alaska (no survey in ' + " or ".join(str(y) for y in sorted(NO_SURVEY_YEARS)) + '). NASS publishes a mean rate for every county with at least 20,000 acres of cropland plus '
+            'pasture, in August of each survey year. Results are not revised afterward. The county corn trend is AGSIST&rsquo;s, from NASS county '
             f'yield estimates. Data as of {esc(generated)}.</p>\n'
             '  <p>A county mean is a survey reference point, not a rate card.</p>\n'
             f'  <p>{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p></details>')
+
+
+def pct_words(v, digits=1):
+    """A change in percent, one rounding: '+4.2%', '-1.5%', or 'unchanged' when it rounds to zero."""
+    r = round(v, digits)
+    if r == 0:
+        return "unchanged"
+    return f"{'+' if r > 0 else ''}{r:.{digits}f}%"
 
 
 def county_table(st, s, aslug=None):
@@ -669,26 +741,36 @@ def county_table(st, s, aslug=None):
     thead = "<th>County</th>" + "".join(
         f'<th title="{lab}, $/acre">{TYPE_SHORT[t]} {yr}</th>' for t, lab in cols)
     thead += ('<th>YoY</th><th title="county corn trend yield, bu/ac, for %s">Corn trend %s</th>' % (s["ty"], s["ty"]))
-    body, seen = [], set()
-    for c in sorted(s["counties"], key=lambda c: c["name"]):
+    rows, seen = [], set()
+
+    def name_cell(c):
         a = (aslug or {}).get(c.get("fips"))
         ls = land_sales_hrefs().get(c.get("fips"))
         ls = (f' <a class="rs-ls" href="{ls}" title="Land sales near here: recorded farm sales in {esc(c["name"])}">sales</a>') if ls else ""
-        cells = [f'<td><a href="/{ATLAS_OUT}/{a}" title="{esc(c["name"])}: Farmland Atlas county record">{esc(c["name"])}</a>{ls}</td>'
-                 if a else f"<td>{esc(c['name'])}{ls}</td>"]
+        return (f'<td><a href="/{ATLAS_OUT}/{a}" title="{esc(c["name"])}: Farmland Atlas county record">{esc(c["name"])}</a>{ls}</td>'
+                if a else f"<td>{esc(c['name'])}{ls}</td>")
+
+    for c in s["counties"]:
+        cells = [name_cell(c)]
         for t, _ in cols:
             r = c["rent"].get(t, {})
             if str(yr) in r:
                 cells.append(f'<td data-v="{r[str(yr)]}">{money(r[str(yr)])}</td>')
             else:
+                # Sig, Oct 19, 2026: a rent more than three survey years old is n/a with its year and sorts as no
+                # value (scripts/rent_age.py, the Atlas tiles' rule); a newer one keeps its figure and its year
                 ly, lv = latest(r)
-                cells.append(f'<td class="mut" data-v="{lv if lv is not None else -1}">'
-                             + (f"{money(lv)} <span style='font-size:.68rem'>({ly})</span>" if lv is not None else "n/a")
-                             + "</td>")
+                if lv is None:
+                    cells.append('<td class="mut" data-v="-1">n/a</td>')
+                elif RA.too_old(ly, yr):
+                    cells.append(f'<td class="mut old" data-v="-1">{RA.old_words(ly)}</td>')
+                else:
+                    cells.append(f'<td class="mut" data-v="{lv}">{money(lv)} <span style="font-size:.68rem">({ly})</span></td>')
         p = c["rent"].get(s["primary"], {})
         if str(yr) in p and str(yr - 1) in p and p[str(yr - 1)]:
             ch = 100 * (p[str(yr)] - p[str(yr - 1)]) / p[str(yr - 1)]
-            cells.append(f'<td class="{"up" if ch >= 0 else "dn"}" data-v="{ch:.1f}">{"+" if ch >= 0 else ""}{ch:.1f}%</td>')
+            w = pct_words(ch)
+            cells.append(f'<td class="{"mut" if w == "unchanged" else ("up" if ch > 0 else "dn")}" data-v="{ch:.1f}">{w}</td>')
         else:
             cells.append('<td class="mut" data-v="-999">n/a</td>')
         tr = ((pair_county(c) or {}).get("corn") or {}).get("t", {})
@@ -707,13 +789,24 @@ def county_table(st, s, aslug=None):
             seen.add(k)
             lab = f'<span class="mut">{lab}</span>'
         cells.append(f'<td data-v="{ct if ct is not None else -1}">{lab}</td>')
-        body.append("<tr>" + "".join(cells) + "</tr>")
+        rows.append((c["name"], "<tr>" + "".join(cells) + "</tr>"))
+    # every county NASS did not publish gets a row that says so (audit Nov 10, 2026: 175 counties were simply
+    # missing while the hero said "Every county is in the table below")
+    for c in s.get("unpub", []):
+        cells = [name_cell(c), f'<td class="mut old" data-v="-1">not published</td>']
+        cells += ['<td class="mut" data-v="-1">-</td>'] * (len(cols) - 1)
+        cells += ['<td class="mut" data-v="-999">-</td>', '<td class="mut" data-v="-1">-</td>']
+        rows.append((c["name"], '<tr class="rs-np">' + "".join(cells) + "</tr>"))
+    body = [r for _, r in sorted(rows, key=lambda r: r[0].lower())]
     keys = [("mixed", "<b>mixed</b>: NASS publishes only an all-practice corn yield for the county, and the county "
                       "also irrigates, so that yield is withheld rather than set beside dryland rent"),
             ("ends", "<b>ends</b>: the county&rsquo;s yield series stopped that year, too long ago to project"),
             ("na", "<b>n/a</b>: too few years of county yield on record")]
     note = "; ".join(t for k, t in keys if k in seen)
-    return (f'<p class="rs-swipe">Swipe the table sideways for every column.</p>'
+    return (f'<div class="rs-filter"><label for="rs-q">Find a county</label>'
+            f'<input id="rs-q" type="search" placeholder="County name" autocomplete="off" disabled>'
+            f'<span id="rs-qn" class="rs-qn" aria-live="polite"></span></div>'
+            f'<p class="rs-swipe">Swipe the table sideways for every column.</p>'
             f'<div class="rs-tw"><table class="rs-t" id="rs-table"><thead><tr>{thead}</tr></thead>'
             f'<tbody>{"".join(body)}</tbody></table></div>'
             + (f'<p class="sub rs-tnote">Corn trend: {note}.</p>' if note else ""))
@@ -731,7 +824,14 @@ for(let i=0;i<ths.length;i++)ths[i].addEventListener('click',function(){
  });
  rows.forEach(function(r){t.tBodies[0].appendChild(r);});
  gaEvent('rent_state_sort',{col:ths[i].textContent});
-});})();
+});
+var q=document.getElementById('rs-q'),qn=document.getElementById('rs-qn');
+if(q){q.disabled=false;q.addEventListener('input',function(){
+ var v=q.value.trim().toLowerCase(),n=0,rs=t.tBodies[0].rows;
+ for(var k=0;k<rs.length;k++){var hit=!v||rs[k].cells[0].textContent.toLowerCase().indexOf(v)>=0;rs[k].hidden=!hit;if(hit)n++;}
+ qn.textContent=v?(n?n+(n===1?' county':' counties'):'no county by that name'):'';
+});}
+})();
 </script>"""
 
 
@@ -887,6 +987,20 @@ def lead_why(name, s):
     return f"NASS published non-irrigated rent for fewer than {MIN_DRY} {name} counties"
 
 
+def yoy_words(s):
+    """The change line's percent, one rounding (pct_words)."""
+    return pct_words(s["yoy"])
+
+
+def every_county_line(s):
+    """The hero's last sentence: true only when the table really has every county."""
+    if s.get("unpub") is None:
+        return "Every county NASS published is in the table below."
+    n = len(s["unpub"])
+    return (f"Every county is in the table below, including {n} NASS did not publish." if n
+            else "Every county is in the table below.")
+
+
 def other_crop_line(name, yr, s):
     """One sentence under the lead: the other cropland rent, when NASS has it."""
     alt = "irr" if s["primary"] == "nonirr" else "nonirr"
@@ -968,17 +1082,23 @@ def build_state_page(st, d, s, all_states, aslug=None):
                + other_crop_line(name, yr, s)
                + " The county mean is a survey reference point, not a rate card.")},
         {"q": f"How much did {name} cash rent change from {yr-1} to {yr}?",
-         "a": (f"Comparing the same {s['yoy_n']} counties published in both years, the median {plabel} rent went from "
-               f"{money(s['yoy_med'][0])} to {money(s['yoy_med'][1])}, {'+' if s['yoy'] and s['yoy'] >= 0 else ''}{s['yoy']}% year over year. "
+         "a": (f"Comparing the {s['yoy_n']} counties published in both years, the median {plabel} rent went from "
+               f"{money(s['yoy_med'][0])} to {money(s['yoy_med'][1])}, " + yoy_words(s) + " year over year. "
+               + (f"That median is not the {money(s['median'])} headline, which counts every county published in {yr}. " if s.get("yoy_apart") else "")
+               + 
                f"That is the change in the state median, not in a typical county: each county's own rent moved its own way."
                if s["yoy"] is not None else
                "Too few counties were published in both years for a clean year-over-year figure.")},
-        {"q": f"Why is my {name} county not listed?",
+        {"q": f"Why does my {name} county say not published?",
          "a": "USDA NASS publishes a county rate only where enough Cash Rents Survey responses came back "
-              "(and the county has at least 20,000 acres of cropland plus pasture). If your county is missing, "
-              "NASS did not publish a rate for it."},
+              "(and the county has at least 20,000 acres of cropland plus pasture). A county marked not published "
+              f"had no {yr} rate of any kind from NASS"
+              + (f"; {len(s['unpub'])} {name} counties are in the table that way" if s.get("unpub") else "")
+              + ". Some counties NASS reports only inside a combined district, and those show as not published "
+                "too. A rent more than three survey years old shows n/a with the last year it was published."},
         {"q": "When is county cash rent data released?",
-         "a": "USDA NASS releases county cash rent estimates each August for the current crop year."},
+         "a": "USDA NASS releases county cash rent estimates in August of each survey year for that crop year. "
+              "There was no survey in " + " or ".join(str(y) for y in sorted(NO_SURVEY_YEARS)) + "."},
     ]
     if pas:
         pv = sorted(((c["rent"]["pasture"][str(yr)], c["name"]) for c in s["counties"]
@@ -1016,7 +1136,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
     ]}
     seed = (f"{s['n']} {name} counties with a published {yr} {plabel} rent &middot; "
             f"median {money(s['median'])}/acre"
-            + (f" &middot; state median {'+' if s['yoy'] >= 0 else ''}{s['yoy']}% vs {yr-1} (same counties), not a typical county&rsquo;s change" if s["yoy"] is not None else "")
+            + (f" &middot; state median {yoy_words(s)} vs {yr-1} ({'counties published both years' if s.get('yoy_apart') else 'same counties'}), not a typical county&rsquo;s change" if s["yoy"] is not None else "")
             + f" &middot; data refreshed {esc(d.get('generated', ''))}")
     other_types = ""
     if len(s["have_types"]) > 1:
@@ -1046,15 +1166,15 @@ def build_state_page(st, d, s, all_states, aslug=None):
     <div style="font-family:'JetBrains Mono',monospace;font-size:3.6rem;font-weight:800;line-height:1;color:{vc}">{money(s['median'])}</div>
     <div>
       <div style="font-family:'JetBrains Mono',monospace;font-size:1.25rem;font-weight:800;letter-spacing:.05em;color:{vc}">{vw}</div>
-      <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median {name} county paid <b style="color:{vc}">{money(s['median'])} an acre</b> for {plabel} in {yr}.{f" Across the same {s['yoy_n']} counties the state median went from {money(s['yoy_med'][0])} to {money(s['yoy_med'][1])}, <b style='color:{vc}'>{'+' if s['yoy']>=0 else ''}{s['yoy']}&#37; vs {yr-1}</b>: the change in the median, not in a typical county." if s['yoy'] is not None else ""} Highest county: {esc(s['hi'][0][0])} at {money(s['hi'][0][1])}.{other_crop_line(name, yr, s)} Every county is in the table below.</div>{sa_line}
+      <div style="font-size:1rem;line-height:1.7;color:#e6ebe9;max-width:540px">The median {name} county paid <b style="color:{vc}">{money(s['median'])} an acre</b> for {plabel} in {yr}.{f" Across {yoy_set(s)} the state median went from {money(s['yoy_med'][0])} to {money(s['yoy_med'][1])}, <b style='color:{vc}'>{yoy_words(s).replace('%', '&#37;')} vs {yr-1}</b>: the change in the median, not in a typical county." if s['yoy'] is not None else ""} Highest county: {esc(s['hi'][0][0])} at {money(s['hi'][0][1])}.{other_crop_line(name, yr, s)} {every_county_line(s)}</div>{sa_line}
     </div>
   </div>
   {rent_ask(st, name, yr)}
   {atlas_line(atlas_state_href(st))}{land_sales_line(st)}{arc_line(st)}
   <div class="rs-hero">
     <div class="rs-stat"><div class="v">{money(s['median'])}</div><div class="l">median rent /ac &middot; {yr}</div><div class="s">{plabel}, {s['n']} counties</div></div>
-    <div class="rs-stat">{delta_html(s['yoy'], s['yoy_n'], f'state median vs {yr-1}')}</div>
-    <div class="rs-stat">{delta_html(s['dec'], s['dec_n'], f'vs {yr-9}')}</div>
+    <div class="rs-stat">{delta_html(s['yoy'], s['yoy_n'], f'state median vs {yr-1}', ("median of " + yoy_set(s)) if s.get("yoy_apart") else None)}</div>
+    <div class="rs-stat">{delta_html(s['dec'], s['dec_n'], f"vs {s['dec_y'] or yr - 10}")}</div>
     <div class="rs-stat"><div class="v">{money(s['hi'][0][1]) if s['hi'] else '-'}</div><div class="l">top county</div><div class="s">{esc(s['hi'][0][0]) if s['hi'] else ''}</div></div>{sa_tile}
   </div>
   {('<div class="rs-hero">' + other_tiles + '</div>') if other_tiles else ''}{pasture_prf}"""
@@ -1070,9 +1190,10 @@ def build_state_page(st, d, s, all_states, aslug=None):
   the NASS Cash Rents Survey. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
   {hero}
   <aside class="ag-sponsor-ribbon" data-slot="rent-{st.lower()}"></aside>{ground_html}
-  <h2 id="counties" style="scroll-margin-top:80px">Every published county, {yr}</h2>
+  <h2 id="counties" style="scroll-margin-top:80px">Every county, {yr}</h2>
   <p class="sub">Tap a column heading to sort. Greyed values are the county&rsquo;s most recent published year where {yr}
-  wasn&rsquo;t published.{other_types} Each county name opens its Farmland Atlas record (land value, yield, insurance
+  wasn&rsquo;t published; a rent more than three survey years old shows n/a with its last year and sorts as no value.
+  {"Counties NASS did not publish are listed as not published." if s.get("unpub") else ""}{other_types} Each county name opens its Farmland Atlas record (land value, yield, insurance
   and drought). Corn trend is a county yield trend from NASS county estimates.</p>
   {county_table(st, s, aslug)}
   <h2>{name} median county rent by year</h2>
@@ -1274,8 +1395,8 @@ def build_hub(states, stats, generated):
     for st in sorted(states, key=lambda s: STATE_NAMES[s]):
         s = stats[st]
         dy = s["dry"]
-        yoy = (f'<td class="{"up" if dy["yoy"] >= 0 else "dn"}" data-v="{dy["yoy"]}">'
-               f'{"+" if dy["yoy"] >= 0 else ""}{dy["yoy"]}%</td>') if dy and dy["yoy"] is not None \
+        yoy = (f'<td class="{"mut" if pct_words(dy["yoy"]) == "unchanged" else ("up" if dy["yoy"] > 0 else "dn")}" data-v="{dy["yoy"]}">'
+               f'{pct_words(dy["yoy"])}</td>') if dy and dy["yoy"] is not None \
             else NA_YOY
         dry = (f'<td data-v="{dy["median"]}">{money(dy["median"])}</td>' if dy
                else '<td class="mut" data-v="-1">n/a</td>')
@@ -1331,7 +1452,7 @@ def build_hub(states, stats, generated):
     # County rates were one click deep and the first screen did not say how to reach them
     # ("cash rents by county per acre" 492, "cash rents by county" 277): a state picker that opens
     # the state's county table, first thing under the heading.
-    opts = "".join(f'<option value="/rent/{slug(STATE_NAMES[st])}">{STATE_NAMES[st]}</option>'
+    opts = "".join(f'<option value="/rent/{slug(STATE_NAMES[st])}#counties">{STATE_NAMES[st]}</option>'
                    for st in sorted(states, key=lambda s_: STATE_NAMES[s_]))
     finder = (RH_STYLE + '<form class="rh-find" action="/rent/" onsubmit="var v=this.st.value;if(v)location.href=v;return false">'
               '<label for="rh-st">Your county&rsquo;s rent per acre: pick your state</label>'
