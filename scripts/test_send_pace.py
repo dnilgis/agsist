@@ -228,6 +228,9 @@ ONE_READER = {
     "sponsor_send_link.py": "one sponsor's own link",
     "form_digest.py": "a digest to the owner",
 }
+# notice senders whose list holds one row per reader AND topic: one email per (address, topic)
+TOPIC_KEYED = {"send_land_alert.py", "send_rain_month.py", "send_prf_notice.py", "send_rent_notice.py",
+               "send_custom_rates_notice.py", "send_rain_year.py"}
 SKIP = {"send_pace.py", "bounces.py", "delivery_line.py", "list_source.py", "send_cap.py", "log_safe.py",
         "email_links.py"}
 for path in sorted((ROOT / "scripts").glob("*.py")):
@@ -247,6 +250,12 @@ for path in sorted((ROOT / "scripts").glob("*.py")):
               "%s makes a Pacer but its loop does not go through it (enumerate(pace), pace.defer(ex), pace.after())" % n)
         check(not re.search(r"if \w+ < len\(\w+\) - 1:\n\s+(?:time\.)?sleep\(1\.[25]\)", src),
               "%s still has its old fixed throttle beside the Pacer" % n)
+        check("conn = pace.fresh(conn, connect)" in src,
+              "%s: its retry pass does not start on a fresh connection (pace.fresh)" % n)
+        check("pace.unsent" in src, "%s: a deferral never tried again does not reach the failed list (pace.unsent)" % n)
+        if n in TOPIC_KEYED:
+            check("key=lambda it: (it[0].strip().lower(), it[1])" in src,
+                  "%s: one reader on two topics must get both; its Pacer is keyed by address alone" % n)
 for n in ONE_READER:
     check((ROOT / "scripts" / n).exists(), "ONE_READER names %s, which is gone: take it off" % n)
 

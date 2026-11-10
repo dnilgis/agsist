@@ -182,7 +182,7 @@ function seedRaw({ t, g }, files) {
   g(['push', '-q', path.join(t, 'origin.git'), 'HEAD:raw'], s);
 }
 // The sandbox's own origin: never the real private repo, whatever this shell has set.
-const baseEnv = () => { const e = { ...process.env }; for (const k of ['PRIVATE_REPO_TOKEN', 'RAW_REMOTE', 'RAW_SOFT', 'RAW_BRANCH', 'RAW_KEEP', 'GITHUB_STEP_SUMMARY']) delete e[k]; return e; };
+const baseEnv = () => { const e = { ...process.env }; for (const k of ['PRIVATE_REPO_TOKEN', 'RAW_REMOTE', 'RAW_SOFT', 'RAW_BRANCH', 'RAW_KEEP', 'RAW_DELETE', 'GITHUB_STEP_SUMMARY']) delete e[k]; return e; };
 const run = (sb, script, args, extra = {}) => spawnSync('bash', [`scripts/${script}`, ...args], {
   cwd: sb.w, encoding: 'utf8', env: { ...baseEnv(), RAW_WT: path.join(sb.t, 'rawwt'), RAW_SLEEP: '0', ...extra },
 });
@@ -228,6 +228,22 @@ test('push_raw.sh with RAW_KEEP=1 adds new files and never replaces one already 
     const again = run(sb, 'push_raw.sh', ['x vintage', 'data/x-raw'], { RAW_KEEP: '1' });
     assert.equal(again.status, 0);
     assert.match(again.stdout, /raw: no change/);
+  } finally { fs.rmSync(sb.t, { recursive: true, force: true }); }
+});
+
+test('push_raw.sh with RAW_DELETE takes the named files off in the same commit, and nothing else', () => {
+  const sb = sandbox();
+  try {
+    seedRaw(sb, { 'data/x-ev/a.jsonl': 'a\n', 'data/x-ev/b.jsonl': 'b\n' });
+    fs.mkdirSync(path.join(sb.w, 'data'), { recursive: true });
+    fs.writeFileSync(path.join(sb.w, 'data/x-ledger.json'), '{}\n');
+    const r = run(sb, 'push_raw.sh', ['x fold', 'data/x-ledger.json'], { RAW_DELETE: 'data/x-ev/a.jsonl data/x-ev/gone.jsonl' });
+    assert.equal(r.status, 0, r.stdout + r.stderr);
+    assert.deepEqual(onRaw(sb), ['README.md', 'data/x-ev/b.jsonl', 'data/x-ledger.json'], 'a.jsonl deleted, b.jsonl kept, a missing name skipped');
+    assert.match(git(['log', '-1', '--format=%s', 'raw'], path.join(sb.t, 'origin.git')), /x fold .*: 2 file\(s\)/);
+    const bad = run(sb, 'push_raw.sh', ['x fold', 'data/x-ledger.json'], { RAW_DELETE: '../outside.txt' });
+    assert.notEqual(bad.status, 0, 'a path outside the repo is refused');
+    assert.deepEqual(onRaw(sb), ['README.md', 'data/x-ev/b.jsonl', 'data/x-ledger.json']);
   } finally { fs.rmSync(sb.t, { recursive: true, force: true }); }
 });
 
