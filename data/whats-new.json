@@ -16,6 +16,13 @@
    "link": "/usda-calendar"
   },
   {
+   "id": "2026-11-10-coop-locations",
+   "date": "2026-11-10",
+   "title": "Every co-op location listed",
+   "line": "Every NEW Cooperative and Central United location has a town page and a company page, with a link to its own bids and its phone while its bids are not online.",
+   "link": "/cash-bids/company/"
+  },
+  {
    "id": "2026-11-10-daily-onlyhere-repeats",
    "date": "2026-11-10",
    "title": "Only here lines skip a repeat",
