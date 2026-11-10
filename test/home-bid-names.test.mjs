@@ -69,5 +69,5 @@ test("the mirrored rules are the same three regexes as cb-rank.js, and cbRank is
   }
   const H = load({ cbRank: { displayName: (n) => "EXACT:" + n } });
   assert.equal(H.displayName("zShawnee Feed Old"), "EXACT:zShawnee Feed Old", "the shared function wins when loaded");
-  assert.match(read("index.html"), /\/components\/bids-homepage\.js\?v=47"/);
+  assert.match(read("index.html"), /\/components\/bids-homepage\.js\?v=48"/);
 });

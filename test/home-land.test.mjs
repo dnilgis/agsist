@@ -128,7 +128,7 @@ test("the home page: the block, its script and the hub's email anchor", () => {
   assert.match(jobs, /id="job-field-h">My field<[^]*<\/nav>\s*<!--[^]*?-->\s*<div class="job job-land" id="job-land" role="group" aria-labelledby="job-land-h">\s*<h3 class="job-h" id="job-land-h">Farmland sales<\/h3>/, "right after My field");
   assert.match(jobs, /href="\/land-sales\/"[^>]*><span class="job-l" id="hl-all-l">Farmland sales by county in IL, IN, NJ, VT, WI<\/span>/);
   assert.match(jobs, /href="\/land-sales\/#email"/);
-  assert.match(home, /<script src="\/components\/home-land\.js\?v=1" defer><\/script>/);
+  assert.match(home, /<script src="\/components\/home-land\.js\?v=2" defer><\/script>/);
   assert.match(read("scripts/build_land_sales.py"), /<div class="ls-ask" id="email"><div data-land-alert data-source="page:land-sales">/);
 });
 

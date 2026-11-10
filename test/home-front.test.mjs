@@ -91,7 +91,7 @@ test("Nov 10 audit: ratings two or more weeks old are withheld, never headed Nea
     await pg.waitForTimeout(800);
     assert.equal(await pg.textContent("#nc-verdict"), "Withheld");
     assert.equal(await pg.textContent("#nc-corn"), "-");
-    assert.match(await pg.textContent("#nc-week"), /last usable USDA ratings week ended Oct 4, two or more weeks back/);
+    assert.match(await pg.textContent("#nc-week"), /last usable USDA ratings week ended Oct 4, two or more weeks back/); // pin-ok: the NOWCAST fixture above, page clock set
     assert.ok(!(await pg.$("#nc-corn-trend")), "no trend line under a withheld estimate");
     // 13 days after the week: one missed report, still shown
     const b = await open(browser, port, "/", { "/data/yield-nowcast.json": NOWCAST, "/data/wasde.json": W }, 1280, null, new Date(2026, 9, 17, 9, 0));
