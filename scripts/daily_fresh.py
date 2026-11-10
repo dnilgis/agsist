@@ -613,6 +613,10 @@ def stamp(found, tries):
 #                duplicate is no news: Indiana 193 then 191, Nov 5 and 9 2026)
 #   rain_rank    the record sentence on a ZIP reader's rain line, by county (only_here._record_rank):
 #                a new value, the county entering the top three or changing place (anything else, below)
+#   rain_line    a ZIP reader's rain line, by the station's county (only_here.rain_fact): a new value, so a
+#                station that has not reported since gives no line (anything else, below)
+#   rain_records the no-ZIP rain records line: the two counts or the oldest record changed (Nov 9 and 10
+#                2026 went out word for word: the lines are computed at send time and were never remembered)
 #   anything else  a new value (the same key with the same value is a repeat)
 # The memory is what went out: data/daily-sent/<day>.json (its "printed" list,
 # written by send_daily from the email as built; before Nov 10 2026, the
@@ -696,6 +700,12 @@ def still_news(fact, mem, today):
             if int(v) > int(lv):
                 return True, "%d more sales than the %s print" % (int(v) - int(lv), last["date"])
             return False, "%s: %s sales, %s printed %s" % (key, v, lv, last["date"])
+        if kind == "rain_records":
+            # [wet, dry, oldest record]; a list saved before Nov 11 2026 holds the two counts only
+            same = list(v[:2]) == list(lv[:2]) and (len(v) < 3 or len(lv) < 3 or v[2] == lv[2])
+            if same:
+                return False, "the same record counts and oldest record printed %s" % last["date"]
+            return True, "the record counts or the oldest record changed since %s" % last["date"]
         if kind == "percentile":
             if _band(float(v), PCT_BANDS) != _band(float(lv), PCT_BANDS):
                 return True, "crossed a band since %s" % last["date"]
@@ -734,6 +744,10 @@ def issue_facts(issue):
         return []
     pr = issue.get("printed")
     out = [f for f in pr if isinstance(f, dict)] if isinstance(pr, list) else []
+    # the ZIP readers' rain lines, kept compact as {"<ST>:<fips>": value} (send_daily save_sent_copy)
+    rl = issue.get("rain_lines")
+    if isinstance(rl, dict):
+        out += [{"kind": "rain_line", "key": k, "value": v, "text": ""} for k, v in sorted(rl.items()) if isinstance(v, str)]
     b = issue.get("briefing") if isinstance(issue.get("briefing"), dict) else issue
     if not isinstance(b, dict):
         return out

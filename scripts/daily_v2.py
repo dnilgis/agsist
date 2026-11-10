@@ -930,9 +930,28 @@ def here_words(x, news):
     return dict(x, text=x["text"].replace(r["text"], "").rstrip(), record=None)
 
 
+_MEMO = {}
+
+
+def _memory(today):
+    """daily_fresh.memory(today), read once per send run (every reader's build asks for the same days)."""
+    k = ("memory", today.isoformat(), id(daily_fresh.memory))
+    if k not in _MEMO:
+        _MEMO[k] = daily_fresh.memory(today)
+    return _MEMO[k]
+
+
 def zip_facts(iso):
-    """The facts this issue carried to ZIP readers, whoever they are: each state's land month (daily_land_line)
-    and each county's record rank (only_here.record_facts). Saved with the no-ZIP reader's printed list
+    k = ("zip", iso)
+    if k not in _MEMO:
+        _MEMO[k] = _zip_facts(iso)
+    return [dict(f) for f in _MEMO[k]]
+
+
+def _zip_facts(iso):
+    """The facts this issue carried to ZIP readers, whoever they are: each state's land month (daily_land_line),
+    each county's record rank (only_here.record_facts) and each county station's rain line (only_here.rain_facts,
+    Nov 10 2026). Saved with the no-ZIP reader's printed list
     (send_daily save_sent_copy), so the memory stays per issue and holds no reader's place."""
     out = []
     try:
@@ -945,6 +964,11 @@ def zip_facts(iso):
         out += OH.record_facts(iso)
     except Exception as ex:
         print("record facts skipped (%s)" % type(ex).__name__)
+    try:
+        import only_here as OH
+        out += OH.rain_facts(iso)
+    except Exception as ex:
+        print("rain line facts skipped (%s)" % type(ex).__name__)
     return out
 
 
@@ -1060,13 +1084,19 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     # the one memory (scripts/daily_fresh.py): what the last issues printed, by fact
     if memory is None:
         try:
-            memory = daily_fresh.memory(today) if isinstance(today, date) else []
+            memory = _memory(today) if isinstance(today, date) else []
         except Exception as ex:
             print("memory skipped (%s); every line judged on its own rule" % type(ex).__name__)
             memory = []
+    # still_news reads only the entries of the fact's own kind and key: grouped once, since an issue's ZIP facts
+    # hold one rain line per county station (about 1,800) and every reader's build judges them
+    by_key = {}
+    for m in memory or []:
+        if isinstance(m, dict):
+            by_key.setdefault((m.get("kind"), m.get("key")), []).append(m)
 
     def is_news(f):
-        return not isinstance(today, date) or daily_fresh.still_news(f, memory, today)[0]
+        return not isinstance(today, date) or daily_fresh.still_news(f, by_key.get((f.get("kind"), f.get("key")), []), today)[0]
 
     def fresh(x):
         f, fs = x.get("fact"), [g for g in (x.get("facts") or []) if isinstance(g, dict)]

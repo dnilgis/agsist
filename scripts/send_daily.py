@@ -152,7 +152,12 @@ def save_sent_copy(day, b, subject, fmt, sent_dir=None, printed=None):
                "note": "The Daily as emailed. The page at /daily/" + day + " may have been updated later the same day.",
                "briefing": b}
         if isinstance(printed, list):
-            rec["printed"] = printed
+            # the ZIP readers' rain lines go in one compact map by county station (daily_fresh.issue_facts reads
+            # it back): one entry per station, too many to keep as full facts
+            rl = {f["key"]: f["value"] for f in printed if isinstance(f, dict) and f.get("kind") == "rain_line" and f.get("key")}
+            rec["printed"] = [f for f in printed if not (isinstance(f, dict) and f.get("kind") == "rain_line")]
+            if rl:
+                rec["rain_lines"] = rl
         tmp = path.with_suffix(".tmp")
         with open(tmp, "w", encoding="utf-8") as fh:
             json.dump(rec, fh, indent=2, ensure_ascii=False)
