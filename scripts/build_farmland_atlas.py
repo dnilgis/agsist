@@ -58,6 +58,7 @@ from atlas_layers_p1 import (practice_share, irrigated_share, sob_layer, value_l
                              national_p1, summarize_p1, seed_p1,
                              MIN_RATIO_PREMIUM, MIN_RATIO_YEARS, MIN_CRP_ACRES, FULL_YEAR_MAPS, HALF_YEAR_WEEKS)
 from atlas_layers_p2 import (climate_layer, storms_layer, livestock_layer, frost_layer, wells_state_block, more_row, MORE_KEYS)
+import rent_age as RA  # noqa: E402  the ten-year base year, shared with the state rent pages
 
 # Layers added 2026-09-20. None of them is in a county's fingerprint: no read
 # quotes them, and adding one must not hide every read on the map.
@@ -330,11 +331,11 @@ def rent_layer(rent):
         ys = sorted(int(y) for y in series)
         last = ys[-1]
         # the survey skipped 2015 and some counties skip years; take the closest
-        # published year at or before last-10 but not older than last-12
-        cands = [y for y in ys if last - 12 <= y <= last - 10]
-        if not cands:
+        # published year at or before last-10 but not older than last-12 (rent_age.py, the
+        # one base-year rule the state rent pages use too)
+        base = RA.ten_year_base(ys, last)
+        if base is None:
             return None
-        base = max(cands)
         b, l = series[str(base)], series[str(last)]
         if not b:
             return None

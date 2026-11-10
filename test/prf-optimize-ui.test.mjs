@@ -49,7 +49,8 @@ function localVerdict(objective, fx = FX) {
 const OPT = JSON.parse(readFileSync(ROOT + "data/prf/opt.json", "utf8"));
 
 /* the outlook another script will publish; the shape prf-optimize.js reads */
-const OUTLOOK = { issued: "2026-10-15", source: "fixture", enso: { phase: "La Nina", oni: -0.6, season: "ASO", year: 2026 },
+/* enso: the shape data/prf/outlook.json really carries (CPC's status, no phase or ONI) */
+const OUTLOOK = { issued: "2026-10-15", source: "fixture", enso: { status: "El Nino Advisory", issued: "2026-10-08" },
                   intervals: { "625": { below: 0.45, near: 0.33, above: 0.22 }, "635": { below: 0.42, near: 0.33, above: 0.25 }, "630": { below: 0.3, near: 0.33, above: 0.37 } } };
 
 const PAGE = `<!doctype html><html lang="en" data-theme="THEME"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
@@ -57,7 +58,7 @@ const PAGE = `<!doctype html><html lang="en" data-theme="THEME"><head><meta char
 <body style="background:var(--bg)"><main class="prf" style="max-width:1100px;margin:0 auto;padding:0 16px">
 <section id="prf-optimize" class="prf-block" aria-labelledby="prf-opt-h">
   <h2 id="prf-opt-h">What the numbers would pick</h2>
-  <p class="po-note">This is what the history and current outlook point to, not advice. RMA rates already price most of this in.</p>
+  <p class="po-note">This is what the history and the rates point to, not advice. RMA rates already price most of this in.</p>
   <div data-opt-body></div>
 </section></main>
 <script src="/components/prf-math.js"></script><script src="/components/prf-optimize.js"></script><script src="/components/prf-optimize-ui.js"></script>
@@ -131,10 +132,16 @@ test("the panel, with no outlook file: verdict first, legal pick, both scores, t
     assert.equal(await page.$$eval("#prf-optimize .po-use", (bs) => bs.length), 0, "no button to copy a pick the local test says would not have beaten an even spread");
     assert.ok(text.includes("That is why winter and fall months look good on a payback table."), "a pick mostly in winter carries the page's own warning");
     assert.ok(text.includes("Would it have worked here?"), "the grid's own out-of-sample record is shown");
-    assert.ok(/not loaded/.test(text), "says the outlook is not loaded");
+    assert.ok(/El Niño status did not load/.test(text), "says the CPC status did not load");
     assert.ok(text.includes("What we tested"), "the list of what was tried is offered");
     const testedText = await page.$eval("#prf-optimize", (s) => s.textContent);
-    for (const p of Object.values(OPT.predictors)) assert.ok(testedText.includes(p.line), `missing line: ${p.line}`);
+    for (const [id, p] of Object.entries(OPT.predictors)) {
+      if (/^fc-/.test(id) || /not tested yet/.test(p.line)) continue;
+      assert.ok(testedText.includes(id === "enso" ? p.line.replace(/ \(already in the panel[^)]*\)/, "") : p.line), `missing line: ${p.line}`);
+    }
+    /* the curtain (Sig, Nov 5 and Nov 8): no script path, no model names, no pipeline status */
+    assert.ok(!/scripts\/|\.py\b|\.mjs\b|not tested yet|run so far|promised|CFSv2|SPEAR|GEOS|CESM|CanSIPS|ECMWF|Met Office|M[ée]t[ée]o-France|DWD|CMCC|Japan Meteorological/.test(testedText), "pipeline detail in What we tested");
+    assert.ok(testedText.includes("Seasonal forecasts made in November, from five weather models and their average"), "the forecast models are one line with their numbers");  // pin-ok: the month is the panel code's own wording, not data
     assert.ok(!text.includes("—"), "no em dash");
     assert.ok(!/NaN|undefined|\bnull\b/.test(text), "no broken number");
 
@@ -164,25 +171,22 @@ test("the panel, with no outlook file: verdict first, legal pick, both scores, t
   } finally { await browser.close(); srv.close(); }
 });
 
-test("the panel with NOAA's outlook and ENSO: the tilt is shown as untested, and the reader can change ENSO", { skip }, async () => {
+test("the panel with NOAA's outlook and CPC's El Nino status: status printed, the pick not moved by it, no ENSO choice", { skip }, async () => {
   const srv = await serve(true), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const { page, errors } = await open(browser, port, "dark", 1100);
-    let text = await page.$eval("#prf-optimize", (s) => s.innerText);
-    assert.ok(text.includes("This fall reads La Niña"), "the ENSO reading from the file is used");
-    assert.ok(text.includes("issued 2026-10-15"));
-    assert.ok(/could not be, because past outlooks are not in the data/.test(text), "says the monthly outlook is untested");
+    const text = await page.$eval("#prf-optimize", (s) => s.innerText);
+    assert.ok(text.includes("NOAA’s Climate Prediction Center: El Nino Advisory, Oct 8."), "the CPC status from the real file shape is printed");  // pin-ok: inline OUTLOOK fixture above
+    assert.ok(text.includes("found no edge from El Niño or La Niña, so it does not move the pick"), "and says it does not move the pick");
+    assert.ok(!text.includes("Not set"), "no 'Not set' beside an advisory");
+    assert.ok(!text.includes("This fall reads"), "ENSO never weights the pick (Sig, Nov 9)");
+    assert.equal(await page.$$eval("#prf-opt-enso", (x) => x.length), 0, "no reader-set El Nino or La Nina choice (Sig, Nov 9)");
+    assert.ok(text.includes("issued 2026-10-15"));  // pin-ok: inline OUTLOOK fixture above
+    assert.ok(/could not be tested, because past outlooks are not in the data/.test(text), "says the monthly outlook is untested");
     assert.ok(/The outlook (moved \d+% of the policy|did not change the pick)/.test(text));
     assert.ok(text.includes("With the outlook"), "the table shows the outlook pick beside the record alone");
     assert.ok(legal(await splitOnScreen(page)));
-    await page.selectOption("#prf-opt-enso", "el-nino");
-    text = await page.$eval("#prf-optimize", (s) => s.innerText);
-    assert.ok(text.includes("This fall reads El Niño"));
-    assert.ok(legal(await splitOnScreen(page)));
-    await page.selectOption("#prf-opt-enso", "none");
-    text = await page.$eval("#prf-optimize", (s) => s.innerText);
-    assert.ok(!text.includes("This fall reads"), "left out means left out");
     const bg = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
     const fg = await page.$eval("#prf-optimize .po-verdict", (p) => getComputedStyle(p).color);
     assert.notEqual(bg, fg);

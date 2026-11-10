@@ -106,7 +106,6 @@
   "test/prf-notice.test.mjs": 1,
   "test/prf-now.test.mjs": 2,
   "test/prf-oct20.test.mjs": 2,
-  "test/prf-optimize-ui.test.mjs": 1,
   "test/prf-outlook-text.test.mjs": 1,
   "test/prf-sponsor.test.mjs": 2,
   "test/price-local.test.mjs": 8,

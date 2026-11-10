@@ -129,7 +129,7 @@
     var h = '<table class="pn-need"><caption>More rain by ' + fmtDate(iv.to) + ' that would lift the index to each coverage level</caption>' +
       '<thead><tr><th scope="col">Coverage</th><th scope="col">Rain still to fall</th></tr></thead><tbody>';
     iv.need.forEach(function (n) {
-      h += '<tr><th scope="row">' + n.cov + '%</th><td>' + (n.mm > 0 ? fmtIn(n.inches) + ' more' : 'Already there') + '</td></tr>';
+      h += '<tr><th scope="row">' + n.cov + '%</th><td>' + (n.mm > 0 ? fmtIn(n.inches) + ' more' : 'Already above: won’t pay') + '</td></tr>';
     });
     return h + '</tbody></table><p class="pn-fine">A policy at a coverage level pays only when the final index ends under it. Past that much more rain, that level would not pay for ' + esc(iv.name) + '.</p>';
   }
