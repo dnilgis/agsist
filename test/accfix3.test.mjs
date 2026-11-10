@@ -64,7 +64,9 @@ test("arc-plc: 10-acre rule, peanut limit, Childress title, trigger at the bench
   assert.match(h, /Peanuts carry a separate limit of their own\./);
   assert.ok(!/weighted by/.test((m => m.slice(m.indexOf("def method_html"), m.indexOf("def build_main")))(read("scripts/build_arc_plc.py"))), "the method text carries no weights (Nov 8: cut it)");
   const c = read("arc-plc/texas/childress-county.html");
-  assert.match(c, /<title>Childress Co\., TX ARC or PLC 2026: Irrigated wheat/);
+  // Nov 10, 2026: irrigated wheat here (FSA's all-practice PLC yield 19.7 bu on a 36.5 bu benchmark, under 60%) has no
+  // typical-farm answer either, so the title names the main practice, its benchmark to a tenth
+  assert.match(c, /<title>Childress (?:County|Co\.), TX ARC or PLC 2026: Non-irrigated wheat (?:Benchmark )?17\.9 bu/);
   assert.match(c, /comes in under <b>41\.6 bu<\/b> at USDA&rsquo;s price outlook, \$5\.70\. That is above the 41\.0 bu benchmark/);  // the benchmark to a tenth, as the title prints it (Oct 19, 2026; was 41.00)
 });
 
