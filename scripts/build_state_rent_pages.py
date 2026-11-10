@@ -990,6 +990,16 @@ def build_state_page(st, d, s, all_states, aslug=None):
                              f"per acre across the {pas['n']} counties with a published {yr} pasture rate. "
                              + (f"Highest {p_hi}; lowest {p_lo}. " if len(pv) >= 5 else "")
                              + "Each county's pasture rate is in its own column in the county table below.")})
+    # "per acre per month" (search Console): rent is quoted per year; the month figure is that / 12, from the same numbers
+    mo = lambda v: money(round(v / 12, 2))
+    pm = (f"Cash rent is quoted per acre per year, not per month. Divided by 12, the middle {name} county's {yr} "
+          f"{plabel} rent of {money(s['median'])} a year is about {mo(s['median'])} an acre a month")
+    if s.get("state_avg"):
+        pm += f"; the USDA NASS statewide average of {money(s['state_avg'])} is about {mo(s['state_avg'])} a month"
+    if pas:
+        pm += f". Pasture: {money(pas['median'])} a year, about {mo(pas['median'])} a month"
+    faq.insert(2 if pas else 1, {"q": f"How much does farmland rent for per acre per month in {name}?",
+                                 "a": pm + "."})
     nf = notice_faq(st, name)
     if nf:
         faq.append(nf)
@@ -1482,6 +1492,15 @@ def selftest():
                 if g["@type"] == "FAQPage":
                     for q in g["mainEntity"]:
                         assert esc(q["name"]) in hub and esc(q["acceptedAnswer"]["text"]) in hub, "hub FAQ not visible: " + q["name"]
+        # per acre per month = the yearly figure / 12, from the state's own numbers, visible and in the JSON-LD
+        ia_s = stats["IA"]
+        want_pm = f"{money(ia_s['median'])} a year is about {money(round(ia_s['median'] / 12, 2))} an acre a month"
+        assert "How much does farmland rent for per acre per month in Iowa?" in ia and want_pm in ia, "IA per-month FAQ missing"
+        for blk in _re.findall(r'<script type="application/ld\+json">(.*?)</script>', ia, _re.S):
+            for g in json.loads(blk)["@graph"]:
+                if g["@type"] == "FAQPage":
+                    for q in g["mainEntity"]:
+                        assert esc(q["name"]) in ia and esc(q["acceptedAnswer"]["text"]) in ia, "IA FAQ not visible: " + q["name"]
         # one county set: a state's dryland median here is the Farmland Atlas state median
         cards_p = os.path.join("farmland-atlas", "data", "cards.json")
         if os.path.exists(cards_p):
