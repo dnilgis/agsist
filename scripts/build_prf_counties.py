@@ -178,7 +178,9 @@ def page(ctx):
     title = CAPS.fit([f"PRF Insurance in {full}: {cy} Grids and Rates{CAPS.SUFFIX}",
                       f"PRF Insurance in {full}: {cy} Grids and Rates",
                       f"PRF Insurance in {full}: {cy} Grids",
-                      f"PRF Insurance, {full}: {cy}"])
+                      f"PRF Insurance, {full}: {cy}",
+                      f"PRF Insurance, {name}, {stc}: {cy}",
+                      f"PRF, {name}, {stc}: {cy}"])
     desc = (f"PRF insurance in {full} for {cy}: {ng} {'grid' if ng == 1 else 'grids'} ({g_short}), "
             f"county values {money2(gz)} grazing and {money2(hy) if hy is not None else 'no'} hay per acre, rates by month, history since {y0}.")
     if len(desc) > CAPS.DESC_MAX:
@@ -271,6 +273,8 @@ def page(ctx):
     # only whether the page is there, and county-rain.yml re-stamps the link when the rain set moves.
     rain = (f'<p class="prf-fine">{XL.rain_link(ROOT, rain_slug(RAIN_STATES[stc]), e(RAIN_STATES[stc]), sl, e(name))}</p>'
             if stc in RAIN_STATES else "")
+    # up to three town bid pages nearest the county middle; restamped daily with the rain link
+    near = XL.near_bids(ROOT, fips, stc, "prf-fine")
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
          "dateModified": S.modified(meta), "inLanguage": "en-US", "isPartOf": {"@id": "https://agsist.com/prf#app"},
@@ -389,6 +393,7 @@ def page(ctx):
     {('<nav class="prf-links prf-st-links" aria-label="PRF next door"><b>PRF next door:</b> ' + nb_html + '</nav>') if nb_html else ''}
     <p class="prf-fine">{more}</p>
     {rain}
+    {near}
     <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
   </div>
   </main>
@@ -464,7 +469,9 @@ def main():
         have = open(p, encoding="utf-8").read() if os.path.exists(p) else None
         if have != body:
             if check:
-                bad.append(rel)
+                # the bids-near line follows the town pages (cross_links --stamp), not this set's data
+                if have is None or XL.steady(have) != XL.steady(body):
+                    bad.append(rel)
             else:
                 os.makedirs(os.path.dirname(p), exist_ok=True)
                 open(p, "w", encoding="utf-8").write(body)

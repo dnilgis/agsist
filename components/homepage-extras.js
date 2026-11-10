@@ -337,13 +337,7 @@
      writes "BADGER GRAIN SUPPLY", so the exact match never found the chart.
      Case, punctuation, "&"/"and", and trailing legal words and co-op words
      are dropped before comparing. The town must still match exactly. */
-  var FAC_TAIL = {LLC:1,LC:1,INC:1,INCORPORATED:1,CO:1,CORP:1,CORPORATION:1,LTD:1,LIMITED:1,LP:1,LLP:1,COMPANY:1,COOP:1,COOPERATIVE:1,ASSN:1,ASSOCIATION:1};
-  function normFac(s){
-    var t = String(s || '').toUpperCase().replace(/&/g, ' AND ').replace(/\bCO[\s.-]*OP\b/g, 'COOP')
-      .replace(/[^A-Z0-9]+/g, ' ').trim().split(' ').filter(function(x){ return x; });
-    while(t.length > 1 && FAC_TAIL[t[t.length - 1]]) t.pop();
-    return t.join('');
-  }
+  function normFac(s){ return window.elevNames.facKey(s); }   /* the one name key: components/elev-names.js */
   function foldTitle(withChart){
     var f = $('idx1-basis-chart'), d = f && f.closest && f.closest('details'), sp = d && d.querySelector('summary span');
     if(sp) sp.textContent = withChart ? 'Store or sell? · basis history' : 'Store or sell?';

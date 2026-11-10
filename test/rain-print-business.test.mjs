@@ -27,7 +27,12 @@ const COPY = MAIN.replace(/<script[\s\S]*?<\/script>/g, "");
 test("indexable page with its own canonical, byline, share image and structured data", () => {
   assert.match(HTML, /<meta name="robots" content="index, follow/);
   assert.match(HTML, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/rain-print-business">/);
-  assert.match(HTML, /<title>[^<]+ \| AGSIST<\/title>/);
+  assert.match(HTML, /<title>[^<]+<\/title>/);
+  // the site title rule (scripts/seo_caps.py): at most 68 characters, and " | AGSIST" gives way
+  // first when the whole title would not fit with it
+  const tt = HTML.match(/<title>([^<]*)<\/title>/)[1].replace(/&amp;/g, "&");
+  assert.ok(tt.length <= 68, `title ${tt.length} chars: ${tt}`);
+  assert.ok(tt.endsWith(" | AGSIST") || (tt + " | AGSIST").length > 68, `the brand fits and is missing: ${tt}`);
   assert.match(HTML, /og:image"\s+content="https:\/\/agsist\.com\/img\/og\/rain-print-business\.jpg/);
   assert.match(MAIN, /Sigurd Lindquist, CCA/);
   const ld = JSON.parse(HTML.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);

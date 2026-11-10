@@ -2817,6 +2817,31 @@ def _dmc_hay(dmc, years):
 # calculations table, apart from DMC: a different program, so no payment is
 # worked out and nothing is set beside the DMC table as if one. The months FSA's
 # table does not have are named.
+MON_FULL = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October",
+            "November", "December"]
+
+
+def milk_year_seed(dmc, today):
+    """The last full calendar year's all-milk line, from the monthly U.S. all-milk prices in
+    data/dairy-dmc.json (FSA's DMC table, which lists NASS's monthly all-milk price): the simple
+    average of the 12 months, with the high and low month. '' unless all 12 months are there."""
+    from decimal import Decimal, ROUND_HALF_UP
+    m = (dmc or {}).get("margins") if isinstance(dmc, dict) else None
+    if not isinstance(m, dict):
+        return ""
+    y = int(str(today)[:4]) - 1
+    vals = [(mo, (m.get(f"{y}-{mo + 1:02d}") or {}).get("all_milk")) for mo in range(12)]
+    if not all(_pos(v) for _, v in vals):
+        return ""
+    avg = (sum(Decimal(str(v)) for _, v in vals) / 12).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
+    hi = max(vals, key=lambda x: (x[1], -x[0]))
+    lo = min(vals, key=lambda x: (x[1], x[0]))
+    return (f'<p class="dp-now-year" id="dp-now-year"><strong>{y} all-milk price:</strong> ${avg} per hundredweight, the simple '
+            f'average of USDA&rsquo;s 12 monthly U.S. all-milk prices for {y} (high {_cwt(hi[1])} in {MON_FULL[hi[0]]}, '
+            f'low {_cwt(lo[1])} in {MON_FULL[lo[0]]}). USDA NASS&rsquo;s own annual figure weights each month by milk '
+            f'marketed, so it can differ a little. Monthly prices: USDA NASS, as listed by FSA for Dairy Margin Coverage.</p>')
+
+
 def milk_mpp_seed(dmc):
     m = (dmc or {}).get("mpp") if isinstance(dmc, dict) else None
     rows = (m or {}).get("months") if isinstance(m, dict) else None
@@ -3613,6 +3638,7 @@ def seed_milk(today):
     seeds["milkdmcpaid"] = milk_dmc_paid(dmc, d)
     seeds["milkdmcmargin"] = milk_dmc_margin(dmc, d, today)
     seeds["milkmpp"] = milk_mpp_seed(dmc)
+    seeds["milkyear"] = milk_year_seed(dmc, today)
     seeds["milkherds"] = milk_herds_seed(_load_json(MILK_HERDS_DATA))
     seeds["milkmiss"] = milk_miss_seed(_load_json(MILK_MISS_DATA), today)
     seeds["milko30"] = milk_o30_seed(_load_json(MILK_O30_DATA), d, today)
