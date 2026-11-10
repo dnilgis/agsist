@@ -353,8 +353,8 @@ test("in a browser: ranked line, the Rain Print, unusual lines only when unusual
         // never a name: no operator in the network's rows shows anywhere on the tab
         const tabText = await pg.textContent("#place");
         for (const n of new Set(IDX.places.map((p) => String(p.operator || "").trim()).filter((n) => n.length > 3))) assert.ok(!tabText.includes(n), url + " names " + n);
-        assert.match(await pg.textContent("#h-elev-b"), /Basis history starts June 2026/);
-        // the history note follows the data: all six too new at first (June 2026 start), then "for N of these" as
+        assert.match(await pg.textContent("#h-elev-b"), /Basis history starts Oct 11, 2026/);
+        // the history note follows the data: all six too new at first (Oct 11, 2026 start), then "for N of these" as
         // each elevator's own series grows long enough, then hidden once none is too new (Oct 30: 2 of 6 still new)
         const thin = await pg.$eval("#h-el-thin", (e) => ({ hidden: e.hidden, text: e.textContent }));
         if (!thin.hidden) {

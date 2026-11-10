@@ -444,6 +444,19 @@ def write_shards(state, out_dir, generated):
                                "kb": round(os.path.getsize(p) / 1024, 1)}
     with open(os.path.join(out_dir, "index.json"), "w") as f:
         json.dump(index, f, separators=(",", ":"), indent=1)
+    # A shard this run did not write (a state with no row seen since PUBLIC_FROM, or the old "??" file)
+    # is no longer in the index and nothing reads it: it leaves the public folder.
+    for p in glob.glob(os.path.join(out_dir, "*.json")):
+        name = os.path.basename(p)
+        if len(name) == 7 and name[:2] not in index["states"] and not name.startswith("changes"):
+            try:
+                with open(p) as f:
+                    old = json.load(f)
+            except (OSError, ValueError):
+                continue
+            if isinstance(old, dict) and "r" in old and "f" in old:
+                os.remove(p)
+                print("  removed %s: no row seen in that state since %s" % (name, PUBLIC_FROM))
     return index
 
 
@@ -712,7 +725,13 @@ def selftest():
                 json.dump({"date": day, "changes": []}, f)
         p0, n0 = write_changes([(("X", "Y", "IA", "CORN", "ZCZ26", "DEC26"), -1, -2)], d, "2026-09-01")
         ck("no change file before Oct 11 is written", n0 == 0 and not os.path.exists(p0))
+        for orphan in ("AR.json", "??.json"):
+            with open(os.path.join(d, orphan), "w") as f:
+                json.dump({"state": orphan[:2], "f": ["X|Y"], "d": ["2026-06-09"], "r": [[0, 0, "ZCZ26", "DEC26", -1, None, 0, 0, 0]]}, f)
         idx = write_shards(dict(pub), d, "2026-11-10")
+        ck("a shard this run did not write leaves the folder (a state with no row since Oct 11, the old ?? file)",
+           not os.path.exists(os.path.join(d, "AR.json")) and not os.path.exists(os.path.join(d, "??.json"))
+           and os.path.exists(os.path.join(d, "IA.json")))
         gone = prune_changes(d)
         left = sorted(x for x in os.listdir(d) if x.startswith("changes-"))
         ck("change files before Oct 11 are removed, Oct 11 on are kept",
