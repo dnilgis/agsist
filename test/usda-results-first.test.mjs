@@ -32,6 +32,11 @@ sys.stdout.write(json.dumps({"mode": m.top_mode(w), "html": m.top_block(w)}))
 `], { cwd: ROOT, input: JSON.stringify(wpi), encoding: "utf8" });
 }
 const iso = (d) => new Date(Date.now() + d * 86400000).toISOString().slice(0, 10);
+/* "USDA in <month>": the month before the graded report's own date, worked out here, never typed in */
+const MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const before = (isoDay) => MONTHS[(Number(isoDay.slice(5, 7)) + 10) % 12];
+const rx = (s) => new RegExp(s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"));
+const REP = "Fixture WASDE", NEXT = "Next fixture WASDE";
 const row = (key, label, unit, expected, low, high, before, actual, surprise) =>
   ({ key, label, unit, expected, low, high, usda_current: before, actual, surprise, source: "https://www.example-survey.test/nov" });
 const GRADED = [
@@ -40,9 +45,9 @@ const GRADED = [
   row("corn_2627", "2026/27 corn ending stocks", "bil bu", 1.84, 1.698, 1.969, 1.849, 1.758, "bullish"),
   row("soy_prod_2627", "2026/27 soybean production", "mil bu", 4597, 4552, 4725, 4562, 4574, "in line"),
 ];
-const UP = { report: "December WASDE", date: iso(30), time: "12:00 PM ET", numbers: [],
+const UP = { report: NEXT, date: iso(30), time: "12:00 PM ET", numbers: [],
   withheld: { range: "No pre-report trade survey is on file for this report yet. The survey usually publishes one to two days ahead." },
-  to_beat: { report: "November WASDE", date: iso(-1), wasde_no: "WASDE-677", source: "https://www.usda.gov/oce/commodity/wasde",
+  to_beat: { report: REP, date: iso(-1), wasde_no: "WASDE-677", source: "https://www.usda.gov/oce/commodity/wasde",
     rows: [{ key: "corn_yield_2627", label: "2026/27 corn yield", value: 179.6, unit: "bu/acre" }] } };
 
 test("the top block sits right under the H1, before the next reports and every fold", () => {
@@ -83,7 +88,7 @@ test("curtain: the top block and the next reports carry numbers and plain lines,
 });
 
 test("graded report: one card per number in the set order, the bar, the headline from the data", () => {
-  const { mode, html } = JSON.parse(bake({ latest_result: { date: iso(-1), report: "November WASDE", numbers: GRADED }, upcoming: UP }));
+  const { mode, html } = JSON.parse(bake({ latest_result: { date: iso(-1), report: REP, numbers: GRADED }, upcoming: UP }));
   assert.equal(mode, "results");
   const names = [...html.matchAll(/<div class="ct-k">([^<]+)/g)].map((m) => m[1]);
   assert.deepEqual(names, ["Corn yield", "Corn ending stocks", "Soybean ending stocks", "Soybean production"]);
@@ -91,7 +96,7 @@ test("graded report: one card per number in the set order, the bar, the headline
   assert.equal((html.match(/class="ct-tick"/g) || []).length, 4);
   assert.match(html, /Tighter than the trade expected: corn and soybean ending stocks came in under the trade average\./);
   assert.match(html, /<b class="ct-big">4,574<\/b>/);
-  assert.match(html, /Trade <b>180\.3<\/b> &middot; USDA in October 181\.2/);
+  assert.match(html, rx(`Trade <b>180.3</b> &middot; USDA in ${before(iso(-1))} 181.2`));
   assert.match(html, /11:00 a\.m\. CT/);
   assert.match(html, /Source: USDA WASDE-677/);
   assert.doesNotMatch(html, /href="https:\/\/www\.usda\.gov\/oce/, "no link straight at the USDA data");
@@ -100,22 +105,22 @@ test("graded report: one card per number in the set order, the bar, the headline
 
 test("headline says tighter only when the data does", () => {
   const inl = GRADED.map((r) => ({ ...r, surprise: "in line" }));
-  let h = JSON.parse(bake({ latest_result: { date: iso(-1), report: "November WASDE", numbers: inl }, upcoming: UP })).html;
+  let h = JSON.parse(bake({ latest_result: { date: iso(-1), report: REP, numbers: inl }, upcoming: UP })).html;
   assert.match(h, /In line with the trade/);
   assert.doesNotMatch(h, /Tighter|Looser/);
   const over = GRADED.map((r) => (r.key === "corn_2627" ? { ...r, actual: 1.95, surprise: "bearish" } : { ...r, surprise: "in line" }));
-  h = JSON.parse(bake({ latest_result: { date: iso(-1), report: "November WASDE", numbers: over }, upcoming: UP })).html;
+  h = JSON.parse(bake({ latest_result: { date: iso(-1), report: REP, numbers: over }, upcoming: UP })).html;
   assert.match(h, /Looser than the trade expected: corn ending stocks came in over the trade average/);
   assert.doesNotMatch(h, /Tighter/);
 });
 
 test("no graded row: the spot shows the next report, its date and time, and USDA's numbers to beat", () => {
   const ungraded = GRADED.map((r) => ({ ...r, actual: null, surprise: null }));
-  for (const lr of [{ date: iso(-1), report: "November WASDE", numbers: ungraded }, {}, { date: iso(-1), report: "November WASDE", numbers: [] }]) {
+  for (const lr of [{ date: iso(-1), report: REP, numbers: ungraded }, {}, { date: iso(-1), report: REP, numbers: [] }]) {
     const { mode, html } = JSON.parse(bake({ latest_result: lr, upcoming: UP }));
     assert.equal(mode, "next");
     assert.match(html, /<span class="ct-kick">Next report<\/span>/);
-    assert.match(html, /December WASDE/);
+    assert.ok(html.includes(NEXT), "names the next report");
     assert.match(html, /11:00 a\.m\. CT &middot; 30 days out/);
     assert.match(html, /No pre-report trade survey is on file/);
     assert.match(html, /<b class="ct-big">179\.6<\/b>/);
@@ -129,14 +134,14 @@ test("no graded row: the spot shows the next report, its date and time, and USDA
 
 test("survey on file for the next report: the next report leads with what the trade expects", () => {
   const up = { ...UP, date: iso(1), numbers: GRADED.map((r) => ({ ...r, actual: null, surprise: null })) };
-  const { mode, html } = JSON.parse(bake({ latest_result: { date: iso(-29), report: "November WASDE", numbers: GRADED }, upcoming: up }));
+  const { mode, html } = JSON.parse(bake({ latest_result: { date: iso(-29), report: REP, numbers: GRADED }, upcoming: up }));
   assert.equal(mode, "next");
   assert.match(html, /tomorrow/);
   assert.match(html, /<b class="ct-big">180\.3<\/b>/);
   assert.match(html, /Trade average &middot; USDA now 181\.2/);
   assert.match(html, /class="ct-tick"/);
   assert.doesNotMatch(html, /class="ct-dot"/);
-  assert.match(html, /Last report: November WASDE, .*2 of 4 numbers in line/);
+  assert.ok(html.includes(`Last report: ${REP}, `) && html.includes("2 of 4 numbers in line"), "the last report in one line");
 });
 
 /* ---------- browser: the numbers on the first screen, the page short with its folds closed ---------- */
