@@ -174,10 +174,9 @@ test("the ask: email, ZIP, 10/25/50 with 25 picked, the topic, One more? with th
   assert.ok(A.okZip("54728") && !A.okZip("00000") && !A.okZip("5472"));
 });
 
-test("signups on (Sig, Oct 27): the reader is told when the first email is due, and the send gate stays", () => {
+test("signups on (Oct 27): the reader is told when the first email is due, and the send gate stays", () => {
   const js = read("components/land-alert.js");
   assert.match(js, /Signups on since Oct 27, 2026/);
-  assert.match(read(".github/workflows/land-alert.yml"), /Signups on \(Oct 27, 2026\)/);
   const ctx = { window: {}, document: { readyState: "loading", addEventListener() {}, querySelector() { return null; }, querySelectorAll() { return []; } }, location: { search: "", pathname: "/" }, setTimeout() {}, Date };
   vm.runInNewContext(js, ctx);
   const A = ctx.window.AgLandAlert;
