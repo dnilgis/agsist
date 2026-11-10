@@ -255,3 +255,88 @@ test("the homepage card from a live record reads like the baked one", () => {
   assert.equal(r.biggest_surprise.metric, "2026/27 corn ending stocks");
   assert.equal(r.metric_count, 1);
 });
+
+// ---------------------------------------------------------------- in a browser (needs Playwright and Chromium)
+const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
+const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
+let chromium = null;
+try { if (fs.existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
+const noBrowser = !chromium || !fs.existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
+
+function serveSite() {
+  const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
+  const srv = createServer((req, res) => {
+    let f = path.normalize(path.join(ROOT, decodeURIComponent(new URL(req.url, "http://x").pathname)));
+    if (f.endsWith(path.sep)) f += "index.html";
+    if (!fs.existsSync(f) && fs.existsSync(f + ".html")) f += ".html";
+    if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
+    res.writeHead(200, { "content-type": types[path.extname(f)] || "application/octet-stream" }); res.end(fs.readFileSync(f));
+  });
+  return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
+}
+
+test("in Chromium on report day: the calendar banner and the homepage card fill from the live result; with none, the committed copy stays", { skip: noBrowser, timeout: 120000 }, async () => {
+  // the next report day on file and its release instant, from scripts/report_live.py
+  const [day, at] = JSON.parse(execFileSync("python3", ["-c", `
+import json, sys
+sys.path.insert(0, "scripts")
+import report_live as r
+from datetime import date
+d = [x for x in r.report_days() if x > date.today()][0]
+print(json.dumps([d.isoformat(), r.release_at(d).isoformat()]))`], { cwd: ROOT, encoding: "utf8" }));
+  const clock = new Date(Date.parse(at) + 90000);            // 90 s after the release
+  const rec = good({ release: day, generated: clock.toISOString().slice(0, 19) + "Z" });
+  const wpi = JSON.parse(read("data/whats-priced-in.json"));
+  const up = Object.assign({}, wpi.upcoming || {}, { date: day, report: "December WASDE",
+    numbers: [{ key: "corn_2627", label: "2026/27 corn ending stocks", unit: "bil bu", expected: 1.9, low: 1.8, high: 2.0, usda_current: 1.95,
+      actual: null, surprise: "", gap_pct: null, context: "", source: "https://example.com/survey", why: "" }] });
+  const fixture = JSON.stringify(Object.assign({}, wpi, { upcoming: up, latest_result: wpi.latest_result && wpi.latest_result.date !== day ? wpi.latest_result : null }));
+  const srv = await serveSite(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const shots = process.env.REPORT_LIVE_SHOTS;
+  try {
+    for (const live of [rec, null]) {
+      const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 900 } });
+      const pg = await ctx.newPage(), errs = [];
+      pg.on("pageerror", (e) => errs.push(e.message));
+      let asked = 0;
+      await pg.route((u) => !u.href.startsWith(`http://127.0.0.1:${port}`), (r) => r.abort());
+      await pg.route((u) => u.href.startsWith("https://agsist-api.dnilgis.workers.dev/report-live"), (r) => { asked++; return r.fulfill({ status: 200, contentType: "application/json", body: JSON.stringify({ ok: true, live }) }); });
+      await pg.route((u) => u.pathname === "/data/whats-priced-in.json", (r) => r.fulfill({ status: 200, contentType: "application/json", body: fixture }));
+      await pg.route((u) => u.pathname === "/index.html" || u.pathname === "/", async (r) => {
+        const html = read("index.html").replace(/<!-- PRERENDER:home-usda -->[\s\S]*?<!-- \/PRERENDER:home-usda -->/,
+          `<!-- PRERENDER:home-usda --><div class="usda-cal-card gs-card" data-next="${day}" data-shown="2000-01-01"><div class="gs-head"><span class="gs-t">Old report</span></div><div class="gs-line">committed copy</div></div><!-- /PRERENDER:home-usda -->`);
+        return r.fulfill({ status: 200, contentType: "text/html", body: html });
+      });
+      await pg.clock.setFixedTime(clock);
+      await pg.goto(`http://127.0.0.1:${port}/usda-calendar.html#priced-in`, { waitUntil: "load" });
+      if (live) {
+        await pg.waitForFunction(() => /How the December WASDE landed/.test((document.getElementById("wp-result") || {}).textContent || ""), null, { timeout: 20000 });
+        const t = await pg.textContent("#wp-result");
+        assert.match(t, /2\.1\s?bil bu actual/, "USDA's figure from the live result");
+        assert.match(t, /bearish/);
+        assert.ok(await pg.$('#wp-result a[href="https://example.com/survey"]'), "the survey source credit from the committed file stays");
+        if (shots) await pg.locator("#wp-result").screenshot({ path: path.join(shots, "calendar-live-390.png") });
+      } else {
+        await pg.waitForFunction(() => document.getElementById("wp-next") && document.getElementById("wp-next").innerHTML.length > 0, null, { timeout: 20000 });
+        await pg.waitForTimeout(1500);
+        assert.doesNotMatch(await pg.textContent("#wp-result"), /How the December WASDE landed/, "no live result: the committed copy stays"); // pin-ok: the report name is the inline fixture above
+      }
+      assert.ok(asked >= 1, "the page asked for the live result");
+      await pg.goto(`http://127.0.0.1:${port}/index.html`, { waitUntil: "load" });
+      if (live) {
+        await pg.waitForFunction(() => /December WASDE/.test((document.querySelector(".usda-cal-card[data-next]") || {}).textContent || ""), null, { timeout: 20000 });
+        const card = await pg.textContent(".usda-cal-card[data-next]");
+        assert.match(card, /0 of 1 graded figures in line with the trade/);
+        if (shots) { await pg.locator(".usda-cal-card[data-next]").scrollIntoViewIfNeeded(); await pg.screenshot({ path: path.join(shots, "home-live-390.png") }); }
+      } else {
+        await pg.waitForTimeout(1500);
+        assert.match(await pg.textContent(".usda-cal-card[data-next]"), /committed copy/);
+      }
+      assert.deepEqual(errs, [], "no script error");
+      const sw = await pg.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth);
+      assert.ok(sw <= 0, "no sideways scroll at 390");
+      await ctx.close();
+    }
+  } finally { await browser.close(); srv.close(); }
+});
