@@ -307,9 +307,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
         figs.append(("Roughly " if not st_tot else "") + f"{dmg_reports:,}" + " of " + name + "'s reports" + (where if not st_tot else "") + " involved stones " + size_line(dmg_in) + ".")
     key_figs = ("<section class=\"hs-figs\" id=\"key-figures\"><h2>Key figures: " + esc(name) + " hail at a glance</h2><ul>"
         + "".join("<li>" + f + "</li>" for f in figs) + "</ul>"
-        "<p class=\"hs-cite\">To cite these figures: <em>AGSIST National Hail Map, "
-        + canonical + " (NWS Local Storm Reports, " + str(years[0]) + "\u2013" + str(years[-1]) + ")</em>. "
-        "A link back is appreciated.</p></section>\n")
+        "</section>\n")
 
     b2b = ("<p class=\"hs-pro\">Insurance, roofing and ag firms that use this data with clients can license it as an "
         "embeddable widget. See "
@@ -374,7 +372,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
         "summary{cursor:pointer;font-weight:600}\n"
         "details p{color:var(--text,#e6ebe9);line-height:1.7;font-size:.92rem}\n"
         ".hs-states{margin:1.6rem 0 0}.hs-states h2{font-size:1rem}.hs-states-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:0 .8rem;font-size:.85rem}.hs-states a{color:var(--text-dim,#9aa39e);text-decoration:none;display:flex;align-items:center;min-height:40px}.hs-states a:hover{color:var(--brand,#d4a23f)}\n"
-        ".hs-src{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text-dim,#8a948f);margin-top:1.2rem;line-height:1.7}\n"
+        ".hs-terms{margin-top:1.2rem;border:1px solid var(--border,rgba(132,160,168,.15));border-radius:10px;padding:.1rem 1rem}.hs-terms summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:700;font-size:.9rem}.hs-terms p{font-size:.8rem;color:var(--text-dim,#8a948f);line-height:1.7;margin:0 0 .8rem}\n"
         ".hs-figs{border:1px solid var(--border,rgba(132,160,168,.12));padding:1rem 1.1rem;margin:1.4rem 0}.hs-figs h2{margin:0 0 .5rem;font-size:1rem}.hs-figs ul{margin:.3rem 0 .7rem;padding-left:1.1rem}.hs-figs li{line-height:1.75;margin:.25rem 0}\n"
         ".hs-cite{font-family:'JetBrains Mono',monospace;font-size:.68rem;color:var(--text-dim,#8a948f);line-height:1.7;margin:0}\n"
         ".hs-days ul{list-style:none;margin:.4rem 0 .6rem;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.1rem .9rem}.hs-days li{font-size:.88rem}.hs-days li a{display:inline-block;min-height:40px;line-height:40px}.hs-days a{color:var(--brand,#d4a23f);text-decoration:none}.hs-days li span{color:var(--text-dim,#8a948f);font-size:.8rem}.hs-days p{line-height:1.7;font-size:.9rem}\n"
@@ -387,14 +385,17 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
         "<h2>Top hail counties in " + esc(name) + " (" + str(years[0]) + "\u2013" + str(years[-1]) + ")</h2>\n"
         "<div class=\"hs-tw\"><table><thead><tr><th>County</th><th class=\"num\">Reports</th><th class=\"num\">Avg/yr</th><th>Peak</th><th class=\"num\">% \u2265" + inch(dmg_in) + "\u2033</th></tr></thead>"
         "<tbody>" + (trs or '<tr><td colspan="5">Too few reports to rank counties.</td></tr>') + "</tbody></table></div>\n"
-        "<p class=\"hs-note\">Peak is the county's month with the most reports. % \u2265" + inch(dmg_in) + "\u2033 is the share of its reports with stones " + size_line(dmg_in) + ". Crops can be hurt by smaller hail; the loss depends on growth stage.</p>\n"
+        "<p class=\"hs-note\">Peak is the county's month with the most reports. % \u2265" + inch(dmg_in) + "\u2033 is the share of its reports with stones " + size_line(dmg_in) + ". Crops can be hurt by smaller hail.</p>\n"
         + key_figs
         + storm_days_html(name, sdays) +
         "<h2>" + esc(name) + " hail: the questions people ask</h2>\n"
         + faq_vis +
         "\n<nav class=\"hs-states\" aria-label=\"Hail by state\"><h2>Hail in other states</h2><div class=\"hs-states-grid\">" + all_state_links(name) + "</div></nav>\n"
         + b2b +
-        "\n<div class=\"hs-src\">Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet, " + str(years[0]) + "\u2013" + str(years[-1]) + ". Reports depend on someone reporting, so population and spotter density bias the counts. Compiled by Sigurd Lindquist \u00b7 AGSIST.</div>\n"
+        "\n<details class=\"hs-terms\" id=\"terms\"><summary>Sources and terms</summary>"
+        "<p>Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet, " + str(years[0]) + "\u2013" + str(years[-1]) + ". Reports depend on someone reporting, so population and spotter density bias the counts. "
+        "To cite these figures: <em>AGSIST National Hail Map, " + canonical + " (NWS Local Storm Reports, " + str(years[0]) + "\u2013" + str(years[-1]) + ")</em>. A link back is appreciated. "
+        "Compiled by Sigurd Lindquist \u00b7 AGSIST.</p></details>\n"
         # one quiet promo line, filled by components/rain-print-promo.js ("auto": Rain Print through Dec 24,
         # the rain gauge hook Dec 26 through May, Sig 2026-10-23); empty and hidden when off
         "<p class=\"rp-promo\" data-rain-print-promo=\"auto\" hidden></p><script src=\"/components/rain-print-promo.js?v=6\" defer></script>\n"

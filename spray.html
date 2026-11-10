@@ -984,6 +984,8 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease,padding .2s ease;font-size:1rem;color:var(--text-dim);line-height:1.75;padding:0 1.1rem}
 .faq-item.open .faq-a{max-height:1200px;padding:.1rem 1.1rem .9rem}
 .faq-item.open .faq-chevron{transform:rotate(90deg)}
+/* phone width: nested cards add no extra side padding (narrow cards, Nov 9) */
+@media(max-width:480px){.edu-card{padding-left:12px;padding-right:12px}.inv-box{padding-left:12px;padding-right:12px}.edu-card-tip{padding-left:8px;padding-right:8px}.inv-layer{padding-left:8px;padding-right:8px}}
 </style>
 <noscript><style>.fade-up{opacity:1;transform:none}</style></noscript>
 </head>
