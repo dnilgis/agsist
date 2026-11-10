@@ -212,7 +212,7 @@ details.fold[hidden]{display:none}
   <div class="ph">
     <div class="ph-info">
       <h1><!--BAKE:cattle-h1-->Feeder and live cattle futures prices today<!--/BAKE--></h1>
-      <div class="ph-exch">CME Group feeder and live cattle futures · $ per cwt (100 lb) · Updated every 15 min</div>
+      <div class="ph-exch">Feeder and live cattle futures · $ per cwt (100 lb)</div>
     </div>
     <div class="ph-price ph-two">
       <div class="ph-q" id="hero-gf">
@@ -253,7 +253,7 @@ details.fold[hidden]{display:none}
       <div class="ps"><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span></div>
 
   <p class="ph-plain" style="font-size:.95rem;color:var(--text-dim);margin:.45rem 0 .2rem;line-height:1.5">Feeder cattle are calves headed to the feedlot; live cattle are finished cattle ready to sell. The settle is the exchange&rsquo;s official closing price for the day. <a href="/cattle-auction-prices">See what cattle brought at sale barns</a>.</p>
-  <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.2rem 0 .5rem">Data: CME Group futures via Yahoo Finance, delayed 10 to 25 min. Sources at the bottom of the page.</p>
+  <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.2rem 0 .5rem">Data: CME Group futures via Yahoo Finance, delayed 10 to 25 min. Every source is in Sources and terms at the bottom of the page.</p>
   <!-- ░░ static, AI-readable lead ░░ -->
   <div class="qa">
     <style>
@@ -298,7 +298,7 @@ details.fold[hidden]{display:none}
     </style>
     <div class="ct-grid">
       <div class="ct-card">
-        <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="lbl">Live Cattle</span><span class="tk">LE=F · $/cwt</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="lbl">Live Cattle</span><span class="tk" id="le-tk">$/cwt</span></div>
         <div class="ct-price" id="le-price">-</div>
         <div class="ct-chg" id="le-chg"></div>
         <div class="ct-rng"><div class="ct-rng-lbl" id="le-rng-lbl">52-Week Range</div>
@@ -308,7 +308,7 @@ details.fold[hidden]{display:none}
         <div class="ct-read" id="le-read"></div>
       </div>
       <div class="ct-card">
-        <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="lbl">Feeder Cattle</span><span class="tk">GF=F · $/cwt</span></div>
+        <div style="display:flex;justify-content:space-between;align-items:baseline"><span class="lbl">Feeder Cattle</span><span class="tk" id="gf-tk">$/cwt</span></div>
         <div class="ct-price" id="gf-price">-</div>
         <div class="ct-chg" id="gf-chg"></div>
         <div class="ct-rng"><div class="ct-rng-lbl" id="gf-rng-lbl">52-Week Range</div>
@@ -341,11 +341,9 @@ details.fold[hidden]{display:none}
         <div class="ct-read" id="cash-cut-meta"></div>
       </div>
     </div>
-    <div class="method-note">USDA AMS cash prices, each dated by its own report. The cutout is per cwt of carcass, not live weight. Not futures.</div>
   </section>
   <aside class="ya" data-your-state="cattle" data-v="2" hidden></aside><script src="/components/your-state.js?v=1" defer></script>
-  <div class="fx-pair"><section class="fx" data-feeder="index" id="feeder-index" hidden aria-label="AGSIST USDA feeder steer index"></section>
-  <section class="fx" data-feeder="rma" id="feeder-value" hidden aria-label="RMA feeder steer value"></section></div>
+  <section class="fx" data-feeder="index" id="feeder-index" hidden aria-label="AGSIST USDA feeder steer index"></section>
   <p class="method-note" style="margin:.5rem 0 1rem">Selling feeders? <a href="/cattle-auction-prices">Sale barn prices near you</a>: steers and heifers by weight class at USDA-reported auctions.</p>
   <script>
   (function(){
@@ -392,14 +390,13 @@ details.fold[hidden]{display:none}
 
   <!-- ░░ forward curve · live cattle ░░ -->
   <details class="fold" id="fold-fwd" data-wide-open>
-    <summary class="fold-sum"><span class="fold-t">Forward curve, every live cattle contract</span><span class="fold-d">Carry or discount from the nearby out</span></summary>
+    <summary class="fold-sum"><span class="fold-t">Forward curve, live cattle</span><span class="fold-d">Carry or discount from the nearby out</span></summary>
     <div class="fold-body">
     <section class="fwd-card" id="fwd-card" style="display:none" aria-label="Live cattle forward curve">
       <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Forward curve · live cattle</span><span class="fwd-shape" id="fwd-shape">-</span></div>
       <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Futures price by contract month, loading"></svg>
       <div class="fwd-empty" id="fwd-empty" style="display:none">Deferred contracts not available right now.</div>
       <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
-      <div class="method-note">CME live cattle futures via Yahoo Finance, <span id="fwd-kind">the settle after the close, the latest delayed trade in session</span>, in $/cwt, five contracts in all, this month first. A futures curve, not a cash forecast.</div>
     </section>
     </div>
   </details>
@@ -417,6 +414,7 @@ details.fold[hidden]{display:none}
       if(!st.length)return 'the latest delayed trade';
       return 'the settle where it is posted, the latest delayed trade otherwise';
     }
+    function fwdCount(n){return ['no contracts','one contract','two contracts','three contracts','four contracts','five contracts'][n]||n+' contracts';}
     var card=document.getElementById('fwd-card');
     fetch('/data/prices.json',{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).then(function(d){
       if(!d||!d.quotes)return;var q=d.quotes,pts=[],now=new Date(),nowIdx=now.getFullYear()*12+now.getMonth();
@@ -428,6 +426,8 @@ details.fold[hidden]{display:none}
       });
       pts.sort(function(a,b){return a.idx-b.idx;});pts=pts.slice(0,5);
       var fk=document.getElementById('fwd-kind');if(fk)fk.textContent=fwdKind(pts);
+      /* the count is the contracts drawn, from the data (futures audit 4: it said "five" over four) */
+      var fn=document.getElementById('fwd-n');if(fn)fn.textContent=fwdCount(pts.length);
       var svg=document.getElementById('fwd-svg'),shape=document.getElementById('fwd-shape'),interp=document.getElementById('fwd-interp'),empty=document.getElementById('fwd-empty');
       if(pts.length<2){if(card)card.style.display='none';return;}
       if(card)card.style.display='block';
@@ -459,6 +459,9 @@ details.fold[hidden]{display:none}
     }).catch(function(){if(card)card.style.display='none';});
   })();
   </script>
+
+  <!-- ░░ USDA RMA feeder value, on its own (Sig, Nov 10 2026): not beside our index, so the two do not read as a comparison ░░ -->
+  <section class="fx" data-feeder="rma" id="feeder-value" hidden aria-label="RMA feeder steer value"></section>
 
   <!-- ░░ managed money positioning (COT) ░░ -->
   <details class="fold" id="fold-cot" data-wide-open>
@@ -511,7 +514,6 @@ details.fold[hidden]{display:none}
         </div>
       </div>
       <div class="ctcot-interp" id="cot-interp"></div>
-      <div class="ctcot-src">Source: CFTC Disaggregated Commitments of Traders, futures-only, released Fridays 3:30 PM ET · CFTC ↗</div>
     </section>
     </div>
   </details>
@@ -643,7 +645,12 @@ details.fold[hidden]{display:none}
   <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
 
   <details class="hp-terms" style="max-width:1100px;margin:1.2rem auto;padding:0 12px;font-size:.78rem;line-height:1.6;color:var(--text-muted)"><summary style="cursor:pointer;color:var(--text-dim);min-height:44px;display:flex;align-items:center">Sources and terms</summary>
-<p style="margin:.4rem 0 0">Prices from Yahoo Finance, delayed 10 to 25 min: the exchange settle after the close, the latest delayed trade in session. 5-year percentile from Yahoo weekly closes of the continuous front-month series (not roll-adjusted). Quoted in $/cwt. Decision-support only, not financial advice. Verify with your broker before making marketing decisions.</p><p style="margin:.4rem 0 0">Reviewed by Sigurd Lindquist, CCA.</p>
+<p style="margin:.4rem 0 0"><b>Futures:</b> CME Group live cattle (LE) and feeder cattle (GF) futures via Yahoo Finance, read about every 15 minutes in session, quotes delayed 10 to 25 min: the exchange settle after the close, the latest delayed trade in session, each card named by its contract month. Quoted in $/cwt. 5-year percentiles from Yahoo weekly closes of the continuous front-month series (not roll-adjusted).</p>
+<p style="margin:.4rem 0 0"><b>Forward curve:</b> CME live cattle futures via Yahoo Finance, <span id="fwd-kind">the settle after the close, the latest delayed trade in session</span>, in $/cwt, <span id="fwd-n">the nearest contracts</span>, nearest first. A futures curve, not a cash forecast.</p>
+<p style="margin:.4rem 0 0"><b>Cash side:</b> USDA AMS cash prices (5-area weekly fed steers, boxed beef cutout), each dated by its own report. The cutout is per cwt of carcass, not live weight. Not futures.</p>
+<p style="margin:.4rem 0 0"><b>Feeder steer index:</b> AGSIST&rsquo;s own figure from USDA AMS sale barn reports, not the CME Feeder Cattle Index. <b>RMA value:</b> USDA RMA Livestock Risk Protection actual ending values, shown in its own section.</p>
+<p style="margin:.4rem 0 0"><b>Fund positioning:</b> CFTC Disaggregated Commitments of Traders, futures only, released Fridays 3:30 pm ET. <b>Herd and supply:</b> USDA NASS cattle reports, USDA WASDE and USDA FAS, as each answer above names them.</p>
+<p style="margin:.4rem 0 0">Decision-support only, not financial advice. Verify with your broker before making marketing decisions.</p><p style="margin:.4rem 0 0">Reviewed by Sigurd Lindquist, CCA.</p>
 </details>
 <script>/* fold: open the analysis folds on wide screens before first paint; phones get the short page */try{if(window.matchMedia&&matchMedia('(min-width:900px)').matches)document.querySelectorAll('details.fold[data-wide-open]').forEach(function(d){d.open=true;});}catch(e){}</script>
 </main>
@@ -710,11 +717,13 @@ details.fold[hidden]{display:none}
     if(lbL)lbL.textContent=(le===nLE&&nLE.contract)?'52-Week Range \u00b7 '+nLE.contract+' contract':'52-Week Range \u00b7 continuous series';
     if(lbG)lbG.textContent=(gf===nGF&&nGF.contract)?'52-Week Range \u00b7 '+nGF.contract+' contract':'52-Week Range \u00b7 continuous series';
     setQuote('le',le);setQuote('gf',gf);
+    /* the card names the contract month it shows (Dec '26 live, Nov '26 feeders), never the Yahoo ticker (futures audit 6, Nov 10 2026) */
+    [['le-tk',le],['gf-tk',gf]].forEach(function(t){var e=$(t[0]),lb=t[1]&&t[1].ticker&&window.AgPxStamp&&AgPxStamp.label?AgPxStamp.label(t[1].ticker):'';if(e)e.textContent=(lb||'Continuous')+' \u00b7 $/cwt';});
     /* chaos-1: an old settle greys the cards, as the stamp does */
     var lea=le&&le.close_kind==='settle'&&window.AgPxStamp&&AgPxStamp.settleAge?AgPxStamp.settleAge(le.settle_date||le.close_date):null;
     var ctg=document.querySelector('.ct-grid');if(ctg)ctg.classList.toggle('px-old',!!(lea&&lea.old));
     var st=$('status');var dot='<span class="ps-dot" aria-hidden="true"></span>';
-    if(d.fetched){var t=new Date(d.fetched);if(st)st.innerHTML=window.AgPxStamp&&le?dot+'CME futures \u00b7 '+AgPxStamp.html(le,d.fetched):window.AgAsOf?dot+'CME futures, delayed \u00b7 '+AgAsOf.html(d.fetched,'prices'):dot+'CME futures, delayed 10 to 25 min · read '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric',timeZone:'America/Chicago'})+' CT';}
+    if(d.fetched){var t=new Date(d.fetched);if(st)st.innerHTML=window.AgPxStamp&&le?dot+AgPxStamp.html(le,d.fetched):window.AgAsOf?dot+'CME futures, delayed \u00b7 '+AgAsOf.html(d.fetched,'prices'):dot+'CME futures, delayed 10 to 25 min · read '+t.toLocaleString('en-US',{hour:'numeric',minute:'2-digit',month:'short',day:'numeric',timeZone:'America/Chicago'})+' CT';}
     else if(st)st.innerHTML=dot+'CME futures, delayed 10 to 25 min';
     // hero prices: feeder cattle and live cattle, same size, each with its own stamp
     function heroQ(q,px,ch,stp,ct){

@@ -213,8 +213,12 @@ test('each page carries its box and the component; credits and the not-the-index
       const i = html.indexOf('data-feeder="' + k + '"');
       assert.doesNotMatch(html.slice(i, html.indexOf('</section>', i)), /\$\d/, p + ': no number baked into the ' + k + ' box');
     }
-    // the index sits beside RMA's value, in one pair
-    assert.match(html, /<div class="fx-pair"><section class="fx" data-feeder="index"[^>]*><\/section>\s*<section class="fx" data-feeder="rma"[^>]*><\/section><\/div>/, p + ': index beside RMA');
+    // Sig, Nov 10 2026: RMA's value (with its RMA-minus-futures line) is its own section, never
+    // paired with our index, so the two do not read as a comparison. Something else always sits between.
+    assert.doesNotMatch(html, /class="fx-pair"/, p + ': no pair box');
+    const ix = html.indexOf('data-feeder="index"'), rm = html.indexOf('data-feeder="rma"');
+    const between = ix < rm ? html.slice(html.indexOf('</section>', ix), rm) : html.slice(html.indexOf('</section>', rm), ix);
+    assert.match(between, /<(section|details|h2|p)\b/, p + ': the RMA box and the index are apart');
   }
   assert.match(comp, /AGSIST USDA feeder steer index, not the CME index/);
   assert.match(comp, /It is not the CME Feeder Cattle Index, and no CME data goes into it\./);

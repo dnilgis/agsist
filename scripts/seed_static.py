@@ -4106,8 +4106,8 @@ def seed_futures_pages(prices, today):
                 c1 = c1 or c4
             note = ("Live cattle " + state_words(live)[0] + (" at" if live is False else " near") + " <strong>$" + lc + "</strong>" + stale
                     + ((" &middot; feeders near $" + gf) if gf else "")
-                    + " &middot; $/cwt &middot; as of " + flabel
-                    + " &middot; Yahoo Finance, delayed, updated every 15 min in session.")
+                    + " &middot; $/cwt &middot; as of " + flabel + ".")
+            # the source and the delay are the page's one data line under it (futures audit, Nov 10 2026)
             t, c2 = seed_between(t, "note", note)
             changed = c1 or c2
         else:
