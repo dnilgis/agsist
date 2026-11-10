@@ -433,6 +433,12 @@
                1:46 PM trade; CBOT settled $12.61 1/4. */
             var qs=data.quotes||{},cq=qs['corn-nearby']||qs.corn||{};
             var hn=holName(dayT);
+            /* Nov 10 audit: one stamp for one price file. The ticker said "As of
+               1:46 PM CT" (the file's read time) over cards saying "Last trade as
+               of 1:20 pm CT"; a last trade is stamped with its own close_time,
+               the same words as the cards (AgPxStamp.clock, components/price-local.js). */
+            var LT=cq.close_kind==='last'&&cq.close_time&&!isNaN(Date.parse(cq.close_time))?new Date(cq.close_time):F;
+            function hmT(){return window.AgPxStamp&&AgPxStamp.clock?AgPxStamp.clock(LT.toISOString()):hm(LT);}
             /* 2026-10-19 (P1): the settle check comes before the session
                check. Sunday 7:31 PM CT is inside the overnight session, but the
                file held the Oct 16 settles and the badge still called them a delayed live quote.
@@ -452,13 +458,13 @@
               if(cq.close_kind==='last'&&cq.settled&&cq.close_date){var ld=Date.parse(cq.close_date+'T00:00:00Z');
                 if(!isNaN(ld))return{t:'As of '+lbl(ld),live:false,title:'Last trades. The day session closed at 1:20 PM CT; the settles post late in the evening. '+read};}
               var n=ct(new Date()),same=(+n.year===+p.year&&+n.month===+p.month&&+n.day===+p.day);
-              return{t:'As of '+(same?hm(F):lbl(dayT)),live:false,title:read};
+              return{t:'As of '+(same?hmT():lbl(dayT)),live:false,title:read};
             }
-            if(tr&&m>=800&&m<815)return{t:'As of '+hm(F),live:false,title:'The day session closed at 1:20 PM CT; closing prices may not be final yet. '+read};
+            if(tr&&m>=800&&m<815)return{t:'As of '+hmT(),live:false,title:'The day session closed at 1:20 PM CT; closing prices may not be final yet. '+read};
             if(tr&&m>=465&&m<510)return{t:'Pre-open',live:false,title:'Overnight session closed, day session not open yet. '+read};
             if(cq.close_kind==='last'||(tr&&m>=815&&m<1410)){
               var n2=ct(new Date()),same2=(+n2.year===+p.year&&+n2.month===+p.month&&+n2.day===+p.day);
-              return{t:'As of '+(same2?hm(F):lbl(dayT)),live:false,title:'Last trades. The day session closed at 1:20 PM CT; the settles post late in the evening. '+read};}
+              return{t:'As of '+(same2?hmT():lbl(dayT)),live:false,title:'Last trades. The day session closed at 1:20 PM CT; the settles post late in the evening. '+read};}
             var s=(tr&&m>=815)?dayT:dayT-DY,guard=0;while(!trading(s)&&guard++<10)s-=DY;
             /* A file from before close_kind: "Close", not "Settle". */
             return{t:'Close '+lbl(s),live:false,title:(hn?'Markets closed for '+hn+'. ':'')+'Closing prices for '+lbl(s)+', '+new Date(s).getUTCFullYear()+' (Yahoo Finance closes, not CME settlements). '+read};
@@ -466,7 +472,11 @@
           if(_st){_tb.innerHTML='';(/^As of /.test(_st.t)?['As of',_st.t.slice(6)]:_st.t.split(/ (.+)/).slice(0,2)).forEach(function(w,i){if(i)_tb.appendChild(document.createElement('br'));_tb.appendChild(document.createTextNode(w));});_tb.parentNode.title=_st.title;_tb.parentNode.classList.toggle('stale',!_st.live);}
           else{_tb.innerHTML='Not loaded<br>yet';_tb.parentNode.classList.add('stale');}
         }
-        if(window.AgAsOf)AgAsOf.set(_pa,data.fetched,'prices');
+        /* Nov 10 audit: the card said "Updated 1:46 pm" (read time, no zone); it
+           carries the same stamp as the futures cards above it. */
+        var _cq=(data.quotes||{})['corn-nearby']||(data.quotes||{}).corn;
+        if(window.AgPxStamp&&AgPxStamp.html&&_cq&&AgPxStamp.html(_cq,data.fetched))_pa.innerHTML=AgPxStamp.html(_cq,data.fetched);
+        else if(window.AgAsOf)AgAsOf.set(_pa,data.fetched,'prices');
         else{_pa.textContent=_mins<2?'• Live now':_mins<60?'• Updated '+_mins+' min ago':_mins<2880?'• Updated '+Math.round(_mins/60)+'h ago':'• Updated '+Math.round(_mins/1440)+'d ago';
         _pa.style.color=_mins>60?'var(--orange)':_mins>30?'var(--gold)':'var(--text-muted)';}
       }
