@@ -57,6 +57,7 @@ import pointer_pages as PP  # noqa: E402
 import nearest_towns as NT  # noqa: E402  town bid pages nearest the county middle (Oct 23, 2026)
 import inject_static_nav as nav  # noqa: E402
 import county_stories as CS  # noqa: E402
+import rain_records as RREC  # noqa: E402  dry_rank_ok: a dry rank waits when missing days could undo it
 
 ROOT = R.ROOT
 MAX_KB = 25
@@ -111,6 +112,31 @@ def where_words(c):
     return f"the {name} {kind_word(c)} {where}"
 
 
+def gauge_name(stw):
+    """The gauge's own short name for a headline: "Gilbert", "Corning", "Waterloo Municipal Airport"
+    (the station name without its "0.2 mi W" offset)."""
+    return re.sub(r", [\d.]+ mi [A-Z]+$", "", R.station_name(stw["raw"]))
+
+
+def gauge_called(gname, noun):
+    """"Ames station", "Gilbert gauge"; a name that already ends in the noun keeps it once
+    ("Garden City Experiment Station", not "... Station station")."""
+    return gname if gname.lower().endswith(noun.lower()) else f"{gname} {noun}"
+
+
+def mountain_site(stw):
+    """A SNOTEL mountain snow site heads this county (it is the only kind of station that qualified)."""
+    return R.snow_site([stw.get("sid")])
+
+
+def county_est(c, x):
+    """(inches, percent of usual or None) averaged over the county from the PRISM grid, or None."""
+    g = (x or {}).get("grid")
+    if not g or g.get("total") is None:
+        return None
+    return g["total"], (round(100 * g["total"] / g["usual"]) if g.get("usual") and g["usual"] >= 1 else None)
+
+
 def compare(c, year_word="a usual year to date"):
     """'That is 2.10 inches less than a usual year to date (91% of usual).' or the reason there is none.
     Two decimals, like the month table, so the page never shows two numbers for one difference."""
@@ -131,13 +157,13 @@ def compare(c, year_word="a usual year to date"):
 def answer(c, county, year, done):
     w = where_words(c)
     if done and c["as_of"][5:] == "12-31":
-        return (f"{inches_word(c['total'])} of rain fell in {year} at {w}, {county}. "
+        return (f"{inches_word(c['total'])} of rain fell in {year} at {w} in {county}. "
                 + compare(c, "a usual year"))
     if done:
-        return (f"{inches_word(c['total'])} of rain fell in {year} at {w}, {county}, through {short_date(c['as_of'])}, the last day reported. "
+        return (f"{inches_word(c['total'])} of rain fell in {year} at {w} in {county}, through {short_date(c['as_of'])}, the last day reported. "
                 + compare(c, f"a usual year through {short_date(c['as_of'])}"))
     amt = inches_word(c["total"])
-    return (f"{amt} of rain {'has' if amt.startswith('1.00 ') else 'have'} fallen so far in {year} at {w}, {county}, through {short_date(c['as_of'])}. "
+    return (f"{amt} of rain {'has' if amt.startswith('1.00 ') else 'have'} fallen so far in {year} at {w} in {county}, through {short_date(c['as_of'])}. "
             + compare(c))
 
 
@@ -411,7 +437,7 @@ def rain_print_href_last(c, st, year):
 LABEL_GAP = 18   # chart end labels at least this far apart (font 15 on phones, 10 on a laptop)
 
 
-def chart(c, year, county, noun="station", ready=None):
+def chart(c, year, county, noun="station", ready=None, where=None):
     """The plain running total. With ready (st, fips, place, gauge words), the
     same chart is the placeholder and no-JS fallback for the county's Rain
     Print, which components/rain-county-print.js draws over it when the figure
@@ -426,7 +452,7 @@ def chart(c, year, county, noun="station", ready=None):
     pw, ph = W - L - Rm, H - T - B
     X = lambda doy: L + pw * doy / n_year
     Y = lambda v: T + ph * (1 - v / ymax)
-    out = [f'<svg viewBox="0 0 {W} {H}" role="img" aria-labelledby="rc-ct"><title id="rc-ct">Running total of rain in {e(county)}, {year}'
+    out = [f'<svg viewBox="0 0 {W} {H}" role="img" aria-labelledby="rc-ct"><title id="rc-ct">Running total of rain {e(where or "in " + county)}, {year}'
            + (", against a usual year" if has_us else "") + "</title>"]
     # Bytes (Nov 4, 2026, fx/rainwx: the rain folder is at 96% of its budget): one axis path and one
     # grid path, the labels in two groups that carry the class and anchor once, the lines as whole
@@ -707,6 +733,47 @@ def month_ask(name, fips):
 TITLE_TEST_MAX = 60   # the inches-first title drops " | AGSIST" past this (Nov 2 test)
 
 
+PLACE_KIND = re.compile(r" (City and Borough|Census Area|Borough|Municipality|County|Parish)$")
+
+
+def short_place(name):
+    """"Story County" -> "Story", "Valdez-Cordova Census Area" -> "Valdez-Cordova": a title's fallback shortens the
+    place before it ever drops the gauge."""
+    return PLACE_KIND.sub("", name) or name
+
+
+def rain_title(c, est, lead_county, mtn, gname, name, st, year):
+    """The inches-first title (Nov 2 test). The total is one gauge's, so the title names the gauge and never states
+    it as the county's (Nov 10): "55.56 in of Rain at Gilbert, Story County, IA, 2026 | AGSIST". A county whose only
+    gauge is a mountain snow site leads with the county-wide estimate, which always says About. " | AGSIST" is kept
+    while the title fits 60; past that the place shortens (no "County", then no year) before the brand or the gauge
+    is given up, and a title never runs past the site cap (scripts/seo_caps.py)."""
+    sp = short_place(name)
+    places = [f"{name}, {st}, {year}"] + ([f"{sp}, {st}, {year}"] if sp != name else []) + [f"{sp}, {st}"]
+    if lead_county:
+        heads = [f"About {inch(est[0])} in of Rain in"]
+    else:
+        N_ = inch(c["total"])
+        g_ = [gauge_called(gname, "Snow Site") if mtn else gname]
+        town_ = R.station_town(c["station"]["raw"])
+        if town_ and town_ not in g_ and not mtn:
+            g_.append(town_)   # "Waterloo" for "Waterloo Municipal Airport" when the full name will not fit
+        heads = [f"{N_} in of Rain at {g}," for g in g_]
+    forms = [f"{h} {pl}" for pl in places for h in heads]
+    for t_ in forms:   # the brand: the fullest form that fits 60 with " | AGSIST"
+        if len(t_ + CAPS.SUFFIX) <= TITLE_TEST_MAX:
+            return t_ + CAPS.SUFFIX
+    for t_ in forms:   # then the fullest form within the cap, the brand given up
+        if len(t_) <= CAPS.TITLE_MAX:
+            return t_
+    if not lead_county:   # a gauge name too long for any title: the town it is named for, its first word
+        w_ = gname.split(" ")[0]
+        for pl in places:
+            if len(f"{inch(c['total'])} in of Rain at {w_}, {pl}") <= CAPS.TITLE_MAX:
+                return f"{inch(c['total'])} in of Rain at {w_}, {pl}"
+    return min(forms, key=len)
+
+
 def county_page(ctx):
     c, st, fips, year, d = ctx["c"], ctx["st"], ctx["fips"], ctx["year"], ctx["d"]
     stn = R.STATES[st]
@@ -719,24 +786,72 @@ def county_page(ctx):
     asof = c["as_of"]
     whole = done and asof[5:] == "12-31"        # and this station reported through Dec 31
     ans = answer(c, name, year, done)
+    stw = c["station"]
+    u1 = unit(st)[0]
+    # The headline names the gauge (one gauge is not the county), with the county-wide estimate beside it.
+    # A SNOTEL mountain snow site never leads: the page leads with the county-wide estimate instead.
+    gname = gauge_name(stw)
+    gnoun = "gauge" if stw["net"] == "cocorahs" else "station"
+    mtn = mountain_site(stw)
+    est = county_est(c, ctx.get("ctx"))
+    edate = ctx.get("edate") or asof
+    lead_county = mtn and est is not None
+    lead_day = edate if lead_county else asof   # the one date the lead shows
+    est_line = ""                                # the county-wide estimate under the answer, with its own date
+    if lead_county:
+        amt_ = inches_word(est[0])
+        verb_ = (f"fell in {year}" if done else
+                 f"{'has' if amt_.startswith('1.00 ') else 'have'} fallen so far in {year}")
+        ans = (f"{amt_} of rain {verb_} averaged over {name}, Jan 1 to {short_date(edate)}, an estimate from a weather grid"
+               + (f" ({est[1]}% of usual)." if est[1] is not None else "."))
+        n_ok_ = c.get("n_ok", 1)
+        who_ = (f"The only {gnoun} in {e(name)} that reported nearly every day is" if n_ok_ <= 1 else
+                f"All {n_ok_} {gnoun}s in {e(name)} that reported nearly every day are high mountain sites; the one used is")
+        est_line = (f'\n    <p class="rc-fine"><b>The gauge here is a mountain snow site.</b> {who_} '
+                    f'the {e(gname)} SNOTEL site, {miles_from(stw["mi"])} the middle of the {u1}, high in the mountains, where rain and snow are not what the farms below get. '
+                    f'It had {inches_word(c["total"])} from Jan 1 to {short_date(asof)}; the figures below are that site&rsquo;s.</p>')
+    elif mtn:
+        ans += (f" This {gnoun} is a mountain snow site, high in the mountains, where rain and snow are not what the farms below get.")
+    elif est is not None:
+        cw = (f"Averaged over the whole {u1}, about {inches_word(est[0])}" + (f", {est[1]}% of usual" if est[1] is not None else ""))
+        if edate == asof:
+            ans += f" {cw}."
+        else:
+            est_line = f'\n    <p class="rc-fine">{cw}, Jan 1 to {short_date(edate)}.</p>'
     # the site's one cap (scripts/seo_caps.py): " | AGSIST" gives way first
     q_ = (f"How Much Rain Did {full_c} Get in {year}?" if done else f"How Much Rain Has {full_c} Had in {year}?")
     title = CAPS.fit([q_ + CAPS.SUFFIX, q_])
     # Title test (Nov 2, 2026): lead with the year's own total and place, short form, no through date (the
-    # description keeps it). A page with no total keeps the question.
+    # description keeps it). A page with no total keeps the question. Nov 10: the total is the gauge's, so the
+    # title names it; a mountain snow site's county leads with the county-wide estimate.
     if c.get("total") is not None:
-        t_ = f"{inch(c['total'])} in of Rain in {name}, {st}, {year}"
-        title = t_ + CAPS.SUFFIX if len(t_ + CAPS.SUFFIX) <= TITLE_TEST_MAX else t_
+        title = rain_title(c, est, lead_county, mtn, gname, name, st, year)
     span = f"Jan 1 to {short_date(asof)}"
     pct_bit = f", {c['pct']}% of a usual year{'' if whole else ' to date'}" if c["pct"] is not None else ""
     has = [x for x, k in (("the wettest month", "wet_month"), ("the biggest rain", "max_day"), ("the longest dry stretch", "dry")) if c.get(k)]
-    desc = (f"{inch(c['total'])} inches of rain in {full_c} in {year} ({span}){pct_bit}. "
-            + "Month by month" + ("".join(", " + x for x in has[:-1]) + " and " + has[-1] if has else "") + ".")
-    if len(desc) > CAPS.DESC_MAX:
-        desc = f"{inch(c['total'])} inches of rain in {full_c} in {year} ({span}){pct_bit}. Month by month" + (" and the year's biggest rain." if c.get("max_day") else ".")
-    if len(desc) > CAPS.DESC_MAX:
-        desc = f"{inch(c['total'])} inches of rain in {full}, {span}, {year}{pct_bit}."
-    stw = c["station"]
+    at_g = f"at the {gauge_called(gname, 'snow site' if mtn else gnoun)} in"
+    if lead_county:
+        desc = (f"About {inch(est[0])} inches of rain averaged over {full_c} in {year} (Jan 1 to {short_date(edate)})"
+                + (f", {est[1]}% of usual" if est[1] is not None else "") + f". Its weather {gnoun} is a mountain snow site.")
+        if len(desc) > CAPS.DESC_MAX:
+            desc = f"About {inch(est[0])} inches of rain averaged over {full_c} in {year} (Jan 1 to {short_date(edate)})."
+    else:
+        N_ = inch(c["total"])
+        gs_ = [gauge_called(gname, "snow site") if mtn else gname]
+        town_ = R.station_town(stw["raw"])
+        if town_ and town_ not in gs_ and not mtn:
+            gs_.append(town_)
+        sp_ = short_place(name)
+        pct_short = f", {c['pct']}% of usual" if c["pct"] is not None else ""
+        # the gauge is named in every form; the place and the wording shorten first (Nov 10)
+        dcands = [f"{N_} inches of rain {at_g} {full_c} in {year} ({span}){pct_bit}. "
+                  + "Month by month" + ("".join(", " + x for x in has[:-1]) + " and " + has[-1] if has else "") + ".",
+                  f"{N_} inches of rain {at_g} {full_c} in {year} ({span}){pct_bit}. Month by month" + (" and the year's biggest rain." if c.get("max_day") else "."),
+                  f"{N_} inches of rain {at_g} {full}, {span}, {year}{pct_bit}."]
+        dcands += [f"{N_} inches of rain at {g} in {full}, {span}, {year}{pct_bit}." for g in gs_]
+        dcands += [f"{N_} inches of rain at {g} in {name}, {st}, {span}, {year}{pct_bit}." for g in gs_]
+        dcands += [f"{N_} inches of rain at {g} in {sp_}, {st}, {span}, {year}{pct_short}." for g in gs_]
+        desc = next((x for x in dcands if len(x) <= CAPS.DESC_MAX), min(dcands, key=len))
     # CoCoRaHS data is CC BY 4.0: a page drawn from one of its volunteer gauges credits it by name
     # in the byline. The prose keeps the owner's plain words (Oct 15); the credit line is a product decision (Oct 23).
     cocorahs_credit = (' Volunteer gauge data: <a href="https://www.cocorahs.org/" rel="noopener">CoCoRaHS</a>.'
@@ -759,6 +874,10 @@ def county_page(ctx):
     for r, n in ((r7, 7), (r30, 30)):
         if r:
             figs.append((f"Last {n} days, {span_words(r[1], asof)}", f"{inch(r[0])} <small>in</small>"))
+    if lead_county:
+        figs = ([("Across the county, estimate", f"{inch(est[0])} <small>in</small>")]
+                + ([("County, percent of usual", f"{est[1]}%")] if est[1] is not None else [])
+                + [("Snow site: " + a[0].lower() + a[1:], b) for a, b in figs])
     figs_html = "".join(f"<div><dt>{a}</dt><dd>{b}</dd></div>" for a, b in figs)
     # ---- month table
     has_us = c["usual"] is not None
@@ -929,7 +1048,8 @@ def county_page(ctx):
         crumbs_ld([("Home", ORIGIN + "/"), ("Rain by county", ORIGIN + "/rain"), (stn, f"{ORIGIN}/rain/{st_slug}"), (name, url)]),
     ]
     faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faq)
-    plain_chart, print_fig = chart(c, year, name, noun, ready)
+    # a mountain snow site's running total is that site's, not the county's
+    plain_chart, print_fig = chart(c, year, name, noun, ready, where=f"at the {gname} snow site in {name}" if mtn else None)
     # One date in the lead (Oct 23, 2026): the dated story names the day it was written from
     # ("Through Oct 13, ..."). When that is not the day the totals run through, it moves below
     # the figures and says plainly what each date is, so the answer is never followed by a second date.
@@ -937,13 +1057,19 @@ def county_page(ctx):
     if ctx.get("story"):
         sp = '<p class="rc-story">' + e(ctx["story"]) + "</p>"
         m_ = re.match(r"\s*[Tt]hrough ([A-Z][a-z]{2} \d{1,2})\b", ctx["story"])
-        if m_ and m_.group(1) != short_date(asof):
+        if m_ and m_.group(1) != short_date(lead_day):
             story_below = (sp + f'<p class="rc-fine">This paragraph was written from the record through {m_.group(1)}. '
                            f'The totals above run through {short_date(asof)}.</p>')
         else:
             story_top = sp + chr(10) + "    "
     near_towns = NT.links_html(ROOT, ctx.get("lat"), ctx.get("lon"), st, f"Cash bids by town near {e(name)}:", "rc-fine")
+    asof_line = ('All of ' + str(year) + ', Jan 1 to Dec 31' if whole else (str(year) + ', Jan 1 to ' + short_date(asof) + ', the last day reported' if done else 'As of ' + long_date(asof) + ', the latest day this ' + noun + ' has reported'))
+    if lead_county and edate != asof:
+        # two figures, two dates: say which date belongs to which (the lead is the county estimate)
+        asof_line = (f"{year}: the county estimate runs Jan 1 to {short_date(edate)}; "
+                     f"the snow site&rsquo;s figures run Jan 1 to {short_date(asof)}, the latest day it has reported")
     h1 = (f"How much rain did {e(full_c)} get in {year}?" if done else f"How much rain has {e(full_c)} had in {year}?")
+    lead_amt = inches_word(est[0]) if lead_county else inches_word(c["total"])
     return head(title, desc, url, ld, img=share_img(st)) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -951,9 +1077,9 @@ def county_page(ctx):
   <main id="main" class="main" tabindex="-1">
   <div class="rc">
     <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/rain">Rain by county</a> &rsaquo; <a href="/rain/{st_slug}">{e(stn)}</a> &rsaquo; <span aria-current="page">{e(name)}</span></nav>
-    <p class="rc-asof">{'All of ' + str(year) + ', Jan 1 to Dec 31' if whole else (str(year) + ', Jan 1 to ' + short_date(asof) + ', the last day reported' if done else 'As of ' + long_date(asof) + ', the latest day this ' + noun + ' has reported')}</p>
+    <p class="rc-asof">{asof_line}</p>
     <h1>{h1}</h1>
-    <p class="rc-answer">{ans.replace(inches_word(c['total']), '<b>' + inches_word(c['total']) + '</b>', 1)}</p>{gap_note(c, ctx.get("ctx"), noun)}
+    <p class="rc-answer">{ans.replace(lead_amt, '<b>' + lead_amt + '</b>', 1)}</p>{est_line}{"" if lead_county else gap_note(c, ctx.get("ctx"), noun, said=est is not None)}
     {story_top}<dl class="rc-figs">{figs_html}</dl>{story_below}
     {radar_line(st, name, stw)}
     {plain_chart}{(print_fig + chr(10) + "    " + sell) if print_fig else ""}
@@ -987,9 +1113,24 @@ def unit(st):
     return UNIT.get(st, ("county", "counties"))
 
 
-def middle(cs):
-    """The median county's percent of usual, or None."""
-    p = sorted(c["pct"] for c in cs.values() if c["pct"] is not None)
+def county_view(c, x, edate=None):
+    """What a state table, a median and a neighbor list show for a county: its station's figures, or, when that
+    station is a mountain snow site, the county-wide estimate the county page leads with (kind "est"). A snow site
+    with no estimate keeps its own figures (kind "snow") and its percent never enters a median ("med" None)."""
+    if not mountain_site(c["station"]):
+        return {"kind": "gauge", "total": c["total"], "usual": c["usual"], "pct": c["pct"], "med": c["pct"], "as_of": c["as_of"]}
+    est = county_est(c, x)
+    if est is not None:
+        u_ = (x or {}).get("grid", {}).get("usual")
+        return {"kind": "est", "total": est[0], "usual": u_ if est[1] is not None else None, "pct": est[1], "med": est[1],
+                "as_of": edate or c["as_of"]}
+    return {"kind": "snow", "total": c["total"], "usual": c["usual"], "pct": c["pct"], "med": None, "as_of": c["as_of"]}
+
+
+def middle(cs, ctxs=None):
+    """The median county's percent of usual, or None. A mountain snow site's percent is never in it: its county
+    counts with the county-wide estimate when there is one (county_view)."""
+    p = sorted(v["med"] for v in (county_view(c, (ctxs or {}).get(f)) for f, c in cs.items()) if v["med"] is not None)
     if not p:
         return None
     k = len(p) // 2
@@ -1012,7 +1153,7 @@ def state_records_html(recs, st):
             f'years to date on record. Only years the station reported fully are counted.</p><ul class="rc-list">{li}</ul>')
 
 
-def state_page(st, d, pages, none_rows, recs=None, mod=None):
+def state_page(st, d, pages, none_rows, recs=None, ctxs=None, mod=None):
     stn = R.STATES[st]
     st_slug = R.slug(stn)
     url = f"{ORIGIN}/rain/{st_slug}"
@@ -1020,7 +1161,8 @@ def state_page(st, d, pages, none_rows, recs=None, mod=None):
     cs = d["counties"]
     asofs = sorted({c["as_of"] for c in cs.values()})
     done = done_year(d)
-    mid = middle(cs)
+    mid = middle(cs, ctxs)
+    views = {f: county_view(c, (ctxs or {}).get(f), d.get("edate")) for f, c in cs.items()}
     u1, un = unit(st)
     by = {"LA": "Parish by Parish", "AK": "Borough by Borough"}.get(st, "County by County")
     q_ = f"How Much Rain Has {stn} Had in {year}? {by}" if not done else f"How Much Rain Did {stn} Get in {year}? {by}"
@@ -1030,22 +1172,40 @@ def state_page(st, d, pages, none_rows, recs=None, mod=None):
             + ("." if done else f", through {short_date(asofs[-1])}"
                + (f" ({early} {'station stops' if early == 1 else 'stations stop'} earlier; each {u1} page gives its own last day)." if early else ".")))
     if mid is not None:
-        n_pct = sum(1 for c in cs.values() if c["pct"] is not None)
+        n_pct = sum(1 for v in views.values() if v["med"] is not None)
         who = f"the {un}" if n_pct == len(cs) else f"the {n_pct} {un} with a NOAA usual year"
         lede += f" Half {who} are above {mid:g}% of a usual year{'' if done else ' to date'} and half below."
-    wettest = max(cs.items(), key=lambda kv: kv[1]["total"])
-    driest = min(cs.items(), key=lambda kv: kv[1]["total"])
-    desc = (f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} {un}, from weather stations: inches, percent of usual and the station. "
-            f"Most: {wettest[1]['name']}, {inch(wettest[1]['total'])} in.")
-    if len(desc) > CAPS.DESC_MAX:
-        desc = f"Rain {'in' if done else 'so far in'} {year} in {len(cs)} {stn} {un} from weather stations: inches, percent of usual, the station."
+    # "Most:" is one gauge's total, so it names the gauge; a mountain snow site is not a county's rain
+    low = {f: c for f, c in cs.items() if not mountain_site(c["station"])} or cs
+    wettest = max(low.items(), key=lambda kv: kv[1]["total"])
+    w_ = wettest[1]
+    wg_ = gauge_name(w_["station"])
+    wt_ = R.station_town(w_["station"]["raw"])
+    so_ = 'in' if done else 'so far in'
+    leads_ = [f"Rain {so_} {year} in {len(cs)} {stn} {un}, from weather stations: inches, percent of usual and the station. ",
+              f"Rain {so_} {year} in {len(cs)} {stn} {un}: inches, percent of usual and the station. ",
+              f"Rain {so_} {year} in {len(cs)} {stn} {un}. "]
+    mosts_ = [f"Most: {inch(w_['total'])} in at the {gauge_called(wg_, 'gauge' if w_['station']['net'] == 'cocorahs' else 'station')} in {w_['name']}.",
+              f"Most: {inch(w_['total'])} in at {wg_}, {w_['name']}."]
+    if wt_ and wt_ != wg_:
+        mosts_.append(f"Most: {inch(w_['total'])} in at {wt_}, {w_['name']}.")
+    short_ = ([f"Most: {inch(w_['total'])} in at {wt_ or wg_}, {short_place(w_['name'])}."]
+              if short_place(w_["name"]) != w_["name"] else [])
+    # the lead and the gauge's words shorten, then the place, before "Most:" is ever dropped
+    dc_ = [ld_ + m_ for ld_ in leads_ for m_ in mosts_] + [ld_ + m_ for ld_ in leads_ for m_ in short_]
+    desc = next((x_ for x_ in dc_ if len(x_) <= CAPS.DESC_MAX), min(dc_, key=len))
     rows = []
     for fips, c in sorted(cs.items(), key=lambda kv: kv[1]["name"]):
         href = pages[fips][1]
-        early_bit = "" if c["as_of"] == asofs[-1] else f' <span class="rc-n">to {short_date(c["as_of"])}</span>'
-        rows.append(f'<tr><th scope="row"><a href="{href}">{e(re.sub(r" (County|Parish)$", "", c["name"]))}</a>{early_bit}</th><td>{inch(c["total"])}</td>'
-                    f'<td>{inch(c["usual"]) if c["usual"] is not None else "none"}</td><td>{str(c["pct"]) + "%" if c["pct"] is not None else "none"}</td>'
-                    f'<td>{e(R.station_name(c["station"]["raw"]))}</td><td>{short_date(c["as_of"])}</td></tr>')
+        v = views[fips]
+        early_bit = "" if v["as_of"] == asofs[-1] else f' <span class="rc-n">to {short_date(v["as_of"])}</span>'
+        sname = e(R.station_name(c["station"]["raw"]))
+        # a mountain snow site's row matches its county page: the county-wide estimate, the site marked as a snow site
+        st_cell = (f"County-wide estimate; its station, {sname}, is a mountain snow site" if v["kind"] == "est" else
+                   f"{sname} (mountain snow site)" if v["kind"] == "snow" else sname)
+        rows.append(f'<tr><th scope="row"><a href="{href}">{e(re.sub(r" (County|Parish)$", "", c["name"]))}</a>{early_bit}</th><td>{inch(v["total"])}</td>'
+                    f'<td>{inch(v["usual"]) if v["usual"] is not None else "none"}</td><td>{str(v["pct"]) + "%" if v["pct"] is not None else "none"}</td>'
+                    f'<td>{st_cell}</td><td>{short_date(v["as_of"])}</td></tr>')
     none_html = ""
     if none_rows:
         held = [r for r in none_rows if r[3]]
@@ -1120,11 +1280,32 @@ def records_html(recs):
             f'    <ul class="rc-list">{"".join(li(o) for o in top)}</ul>{more}\n')
 
 
+# /rain opens on the reader's saved place (components/saved-place.js, the same record /rain-radar and /here
+# read): the state is chosen in the picker and a line links that county's page, found on the state page
+# itself, so a county with no page of its own is never linked. Nothing leaves the browser.
+SAVED_JS = ("(function(){var b=document.getElementById('rc-mine'),P=window.AgSavedPlace,M=JSON.parse(b?b.getAttribute('data-st'):'{}');"
+            "if(!b||!P||!window.fetch||!window.DOMParser)return;"
+            "function k(s){return P.county(s).toLowerCase();}"
+            # the saved record keeps the county without its "County" (AgSavedPlace.county): the name is put back
+            # from the county page's own link ("story-county" -> "Story County"), else from the state's word
+            "function nm(p,h){var c=P.county(p.county);if(h){var t=h.textContent.trim(),u=h.getAttribute('href');"
+            "return t+(/-county$/.test(u)&&!/ County$/.test(t)?' County':/-parish$/.test(u)&&!/ Parish$/.test(t)?' Parish':'');}"
+            "return c+(p.state==='LA'?' Parish':p.state==='AK'||/ city$/i.test(c)?'':' County');}"
+            "function show(p){if(!p||!p.state||!p.county||!M[p.state])return;var s=M[p.state][0],sel=document.getElementById('rc-pick-st');"
+            "if(sel&&!sel.value)sel.value='/rain/'+s;"
+            "fetch('/rain/'+s).then(function(r){return r.ok?r.text():'';}).then(function(t){var d=t&&new DOMParser().parseFromString(t,'text/html'),hit=null;"
+            "if(d)[].forEach.call(d.querySelectorAll('.rc-t tbody th a'),function(a){if(!hit&&k(a.textContent)===k(p.county))hit=a;});"
+            "var a=document.createElement('a');b.textContent='Your saved place is in '+nm(p,hit)+', '+M[p.state][1]+': ';"
+            "if(hit){a.href=hit.getAttribute('href');a.textContent='rain this year in your county';}"
+            "else{a.href='/rain/'+s;a.textContent='rain in '+M[p.state][1]+', county by county';}"
+            "b.appendChild(a);b.appendChild(document.createTextNode('.'));b.hidden=false;}).catch(function(){});}"
+            "try{P.full().then(show,function(){});}catch(e){}})();")
+
 PICK_JS = ("(function(){var f=document.getElementById('rc-pick');if(!f)return;"
            "f.addEventListener('submit',function(e){e.preventDefault();var v=f.elements.st.value;if(v)location.href=v;});})();")
 
 
-def hub_page(files, built, recs=None, mod=None):
+def hub_page(files, built, recs=None, context=None, mod=None):
     url = f"{ORIGIN}/rain"
     years = sorted({d["year"] for d in files.values()})
     yw = str(years[-1]) if len(years) == 1 else "this year"
@@ -1134,13 +1315,14 @@ def hub_page(files, built, recs=None, mod=None):
     for st, d in sorted(files.items(), key=lambda kv: R.STATES[kv[0]]):
         if not d["counties"]:
             continue
-        mid = middle(d["counties"])
+        mid = middle(d["counties"], (context or {}).get(st))
         last = max(c["as_of"] for c in d["counties"].values())
         u1, un = unit(st)
         rows.append(f'<li><a href="/rain/{R.slug(R.STATES[st])}">{e(R.STATES[st])}</a> <small>{len(d["counties"])} {un if len(d["counties"]) != 1 else u1}'
                     + (f", typical {u1} {mid:g}% of usual" if mid is not None else "") + f", {d['year']} through {short_date(last)}</small></li>")
     pick_opts = "".join(f'<option value="/rain/{R.slug(R.STATES[st])}">{e(R.STATES[st])}</option>'
                         for st, d in sorted(files.items(), key=lambda kv: R.STATES[kv[0]]) if d["counties"])
+    st_map = {st: [R.slug(R.STATES[st]), R.STATES[st]] for st, d in files.items() if d["counties"]}
     title = f"How Much Rain Did Your County Get in {yw}? | AGSIST" if done else "How Much Rain Has Your County Had This Year? | AGSIST"
     sofar = "" if done else "so far "
     yin = "in " + yw if yw[0].isdigit() else yw
@@ -1160,13 +1342,17 @@ def hub_page(files, built, recs=None, mod=None):
     {XMAS_JS}
     <h1>{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h1>
     <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.{" The counties having a record year are below the states." if recs else ""}</p>
+    <p class="rc-fine" id="rc-mine" data-st="{e(json.dumps(st_map, separators=(',', ':')))}" hidden></p>
     <form class="rc-pick" id="rc-pick" aria-label="Find your state"><label for="rc-pick-st">State</label><div class="rc-pr"><select id="rc-pick-st" name="st"><option value="">Choose your state</option>{pick_opts}</select><button type="submit">Show counties</button></div><noscript><p class="rc-fine">Without JavaScript, use All states at the bottom of the page.</p></noscript></form>
     <script>{PICK_JS}</script>
+    <script src="/components/saved-place.js?v=1"></script>
+    <script>{SAVED_JS}</script>
+    <p>Rain on one field in the last day or week? <a href="/rain-radar">Look up radar rain by ZIP</a>.</p>
 {records_html(recs)}    <details class="rc-more rc-how"><summary>How the numbers are counted</summary><ul class="rc-list">
       <li>One weather station inside each county, reporting at least 90% of the days {"in " + yw if done else "this year"}. A county without one points to the nearest that has one.</li>
       <li>A day not reported is unknown, not dry: it adds to neither the total nor the usual year.</li>
       <li>Usual is NOAA&rsquo;s daily normal for the station, over the same days. NOAA&rsquo;s numbers come in a few days late, so the pages are updated every day and each one says the day its numbers run through.</li>
-      <li>Records count only full years. A station 25 points or more from its county average is left off: one gauge, not the county.</li>
+      <li>A record counts the past years in which the station reported at least 95% of the days to the same date (3 missed days are always allowed). A dry record waits when this year&rsquo;s own missed days could have held enough rain to undo it. A station 25 points or more from its county average is left off: one gauge, not the county.</li>
     </ul></details>
     <details class="rc-all" id="all-states"><summary>All states</summary><ul class="rc-states">{''.join(rows)}</ul></details>
     <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws it from the same NOAA records.</p>
@@ -1234,15 +1420,18 @@ def ordinal(n):
     return f"{n}{'th' if 10 <= n % 100 <= 20 else {1: 'st', 2: 'nd', 3: 'rd'}.get(n % 10, 'th')}"
 
 
-def gap_note(c, x, noun):
+def gap_note(c, x, noun, said=False):
     """Under the answer, when the station and the PRISM county average are 25+ points of usual apart (Oct 24
- 2026: say it where it is read, not only in the facts list): the station is one gauge, not the county."""
+    2026: say it where it is read, not only in the facts list): the station is one gauge, not the county."""
     g = (x or {}).get("grid")
     if not g or not g.get("usual") or g["usual"] < 1 or c.get("pct") is None:
         return ""
     gp = round(100 * g["total"] / g["usual"])
     if abs(gp - c["pct"]) < 25:
         return ""
+    if said:
+        return (f'\n    <p class="rc-fine"><b>One {noun}, not the whole county:</b> the county average is {abs(gp - c["pct"])} points of usual '
+                f'{"below" if gp < c["pct"] else "above"} this {noun}. Rain fell unevenly here this year. More under Across the county below.</p>')
     return (f'\n    <p class="rc-fine"><b>One {noun}, not the whole county:</b> averaged over {e(c["name"])}, rain is {gp}% of usual, '
             f'against {c["pct"]}% at this {noun}. Rain fell unevenly here this year. More under Across the county below.</p>')
 
@@ -1252,6 +1441,8 @@ def context_facts(c, x, noun, edate):
     the PRISM county average against NOAA's gridded normal (a check on the one gauge)."""
     out = []
     r = (x or {}).get("rank")
+    if r and not RREC.dry_rank_ok(c, r):
+        r = None   # this year's missing days could undo a dry rank: say nothing (rain_records.dry_rank_ok)
     if r:
         day = short_date(c["as_of"])
         if r["wetter"] == 0:
@@ -1307,8 +1498,10 @@ def build(data_dir, C=None, NB=None, img_root=None):
     for st, d in files.items():
         for fips, c in d["counties"].items():
             if fips in C:
+                # a neighbor link shows what that county's page leads with (county_view: a snow site's county, the estimate)
+                v = county_view(c, context.get(st, {}).get(fips), d.get("edate"))
                 pages[fips] = (c["name"], f"/rain/{R.slug(R.STATES[st])}/{C[fips]['slug']}",
-                               f"{inch(c['total'])} in" + (f", {c['pct']}%" if c["pct"] is not None else ""), c["as_of"])
+                               ("about " if v["kind"] == "est" else "") + f"{inch(v['total'])} in" + (f", {v['pct']}%" if v["pct"] is not None else ""), v["as_of"])
     want, urls = {}, []
     near = None
     for st, d in sorted(files.items(), key=lambda kv: R.STATES[kv[0]]):
@@ -1346,12 +1539,12 @@ def build(data_dir, C=None, NB=None, img_root=None):
                 near = hub_records(data_dir, pages, within=3)
             # the state page's dateModified is its sitemap lastmod: its newest county
             st_mod = max((c["as_of"] for fp, c in d["counties"].items() if fp in C), default=day)
-            want[f"rain/{st_slug}.html"] = nav.fill_fonts(state_page(st, d, pages, none_rows, near, mod=st_mod))
+            want[f"rain/{st_slug}.html"] = nav.fill_fonts(state_page(st, d, pages, none_rows, near, context.get(st, {}), mod=st_mod))
             urls.insert(0, (f"{ORIGIN}/rain/{st_slug}", st_mod))
     if pages:
         built = max(d["fetched"][:10] for d in files.values())
         hub_mod = max(m for _u, m in urls)
-        want["rain.html"] = hub_page(files, built, hub_records(data_dir, pages), mod=hub_mod)
+        want["rain.html"] = hub_page(files, built, hub_records(data_dir, pages), context, mod=hub_mod)
         urls.insert(0, (f"{ORIGIN}/rain", hub_mod))
     urls = [urls[0]] + sorted(urls[1:]) if pages else []
     want["sitemap-rain.xml"] = sitemap(urls)
@@ -1526,16 +1719,37 @@ def selftest():
             ok("today" not in S.text_of(re.sub(r"<script.*?</script>", "", own, flags=re.S)).lower(), f"{rel}: never says today")
         d = json.load(open(os.path.join(data, "ia.json")))
         c = d["counties"]["19169"]
-        ok(f"{c['total']:.2f} inches of rain have fallen so far in 2026 at the weather station 8 miles west-southwest of Ames, Story County, through Oct 12." in story,
-           "the answer comes first, in plain words")
+        ok(f"{c['total']:.2f} inches of rain have fallen so far in 2026 at the weather station 8 miles west-southwest of Ames in Story County, through Oct 12." in story,
+           "the answer comes first, in plain words, naming the gauge and then the county")
         ok(where_words({"station": {"raw": "LIBBY DAM", "net": "ghcn"}}) == "the Libby Dam weather station in Libby",
            "the opening names the station when its town alone would not")
         ok(where_words({"station": {"raw": "AMES", "net": "ghcn"}}) == "the weather station in Ames", "a station named for its town is not named twice")
         ok(where_words({"station": {"raw": "LIBBY 1 NE RS", "net": "ghcn"}}) == "the weather station in Libby NE Rs" or
            "1 NE" not in where_words({"station": {"raw": "LIBBY 1 NE RS", "net": "ghcn"}}), "no mileage code in the name")
         ok(f"({c['pct']}% of usual)" in story and ("less than a usual year to date" in story or "more than a usual year to date" in story), "the comparison sentence")
-        ok(f"<title>{c['total']:.2f} in of Rain in Story County, IA, 2026 | AGSIST</title>" in story, "title: the year's inches first (Nov 2 test)")
-        ok('<meta property="og:title" content="%.2f in of Rain in Story County, IA, 2026">' % c["total"] in story, "og:title in step")
+        ok(f"<title>{c['total']:.2f} in of Rain at Ames, Story County, IA, 2026 | AGSIST</title>" in story,
+           "title: the year's inches first (Nov 2 test), at the gauge it was read at, the brand kept (Nov 10)")
+        ok('<meta property="og:title" content="%.2f in of Rain at Ames, Story County, IA, 2026">' % c["total"] in story, "og:title in step")
+        # Nov 10: the title names the gauge and keeps " | AGSIST" by shortening the place, never by dropping the gauge
+        cg = {"total": 55.56, "station": {"raw": "GILBERT 0.2 NNE", "net": "cocorahs", "sid": "x"}}
+        t1 = rain_title(cg, None, False, False, "Gilbert", "Story County", "IA", 2026)
+        ok(t1 == "55.56 in of Rain at Gilbert, Story County, IA, 2026 | AGSIST", f"short gauge title: {t1}")
+        t2 = rain_title(dict(cg, total=111.51), None, False, False, "Yakutat", "Yakutat City and Borough", "AK", 2026)
+        ok(t2 == "111.51 in of Rain at Yakutat, Yakutat, AK, 2026 | AGSIST", f"a long borough shortens first: {t2}")
+        cl = {"total": 18.55, "station": {"raw": "SPRINGFIELD COMANCHE NATIONAL GRASSLAND", "net": "coop", "sid": "y"}}
+        t3 = rain_title(cl, None, False, False, "Springfield Comanche National Grassland", "Baca County", "CO", 2026)
+        ok(" at Springfield" in t3 and len(t3) <= CAPS.TITLE_MAX and " in Baca" not in t3, f"a very long gauge name: {t3}")
+        t4 = rain_title(cg, (16.85, 116), True, True, "Pike Creek", "Pondera County", "MT", 2026)
+        ok(t4 == "About 16.85 in of Rain in Pondera County, MT, 2026 | AGSIST", f"a snow site's county leads with the estimate: {t4}")
+        ok(short_place("Valdez-Cordova Census Area") == "Valdez-Cordova" and short_place("Richmond city") == "Richmond city", "short_place")
+        # a snow site's percent never enters a state median; its county counts with the estimate when there is one
+        snow = {"name": "Pondera County", "total": 37.5, "usual": 36.89, "pct": 102, "as_of": "2026-11-05", "station": {"sid": "USS0013A19S", "raw": "PIKE CREEK"}}
+        low = {"name": "Teton County", "total": 10.0, "usual": 10.0, "pct": 100, "as_of": "2026-11-08", "station": {"sid": "245000 2", "raw": "CHOTEAU"}}
+        gx = {"grid": {"total": 16.85, "usual": 14.5}}
+        ok(middle({"1": snow, "2": low}) == 100, "median without a snow site's percent")
+        ok(middle({"1": snow, "2": low}, {"1": gx}) == 108, "median with the snow site's county estimate (116 and 100)")
+        v_ = county_view(snow, gx, "2026-11-08")
+        ok(v_["kind"] == "est" and v_["total"] == 16.85 and v_["pct"] == 116 and v_["as_of"] == "2026-11-08", f"county_view: {v_}")
         # 2026-10-23: the pages are rebuilt every day, not Mondays; each says the day it was read
         # and the day its numbers run through, and none says weekly
         ok('<p class="rc-asof">As of Oct 12, 2026, the latest day this station has reported</p>' in story
@@ -1575,7 +1789,7 @@ def selftest():
             if rel.endswith(".html"):
                 low = S.text_of(re.sub(r"<script.*?</script>", "", body, flags=re.S)).lower()
                 ok(not re.search(r"\bweekly\b|once a week|every week|mondays?\b", low), f"{rel}: still says weekly or Mondays")
-        ok(re.search(r'<meta name="description" content="27\.61 inches of rain in Story County, Iowa, in 2026', story) is not None, "description carries the number")
+        ok(re.search(r'<meta name="description" content="27\.61 inches of rain at the Ames station in Story County, Iowa, (in 2026|Jan 1 to Oct 12, 2026)', story) is not None, "description carries the number")
         ok("/rain-print?place=Ames%2C+IA&amp;year=2026&amp;station=130203+2" in story, "Rain Print link draws that place and year")
         gc = rain_print_href({"station": {"raw": "GARDEN CITY EXP STN", "sid": "142980 2"}}, "KS", 2026)
         ok(gc == "/rain-print?place=Garden+City%2C+KS&year=2026&station=142980+2", f"Rain Print link from an experiment station: {gc}")
@@ -1828,7 +2042,7 @@ def selftest():
         de = want.get("rain/delaware/kent-county.html", "")
         # the title leads with the inches since the Nov 2 test, so the finished-year question is read from the h1
         ok(de and "How much rain did Kent County, Delaware, get in 2024?" in de and "fell in 2024" in de
-           and re.search(r"<title>\d+\.\d\d in of Rain in Kent County, DE, 2024 \| AGSIST</title>", de), "finished year wording")
+           and re.search(r"<title>\d+\.\d\d in of Rain at Dover, Kent County, DE, 2024 \| AGSIST</title>", de), "finished year wording")
         ok(de and "ship in January" not in de and "All of 2024" in de, "finished year: no January note")
         # a station that last reported Dec 29 in a year fetched through Dec 31: the year is over, the page says Dec 29
         dd3 = os.path.join(t, "late")

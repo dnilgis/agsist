@@ -29,3 +29,19 @@ test("the state-targeted sponsor skips Rain Print, gift card, gift and rain gaug
     assert.ok(!/geo-sponsor/.test(readFileSync(ROOT + f, "utf8")), f + " names the geo sponsor");
   }
 });
+
+// Nov 10: the footer's supporter strip (#footer-adspace, components/footer.html) and its Advertise link are hidden on
+// every no-sponsor page that carries the shared footer, the four gift pages included.
+test("every no-sponsor page with the shared footer hides its supporter strip and Advertise link", () => {
+  const HIDE = '#site-footer a[href^="/sponsor"],#site-footer a[href^="/sponsor"]+.footer-sep,#site-footer #footer-adspace{display:none!important}';
+  let n = 0;
+  for (const f of ["rain-print.html", "rp-gift.html", "rain-gauge.html", "rain-print-business.html", "gifts-for-farmers.html",
+    "rain-print-approve.html", "birth-year-weather-gift.html", "wedding-year-weather-gift.html", "farm-anniversary-gifts.html", "farmer-retirement-gifts.html"]) {
+    const html = readFileSync(ROOT + f, "utf8");
+    if (!html.includes('id="site-footer"')) continue;   // no shared footer, no strip to hide
+    n++;
+    const head = html.slice(0, html.indexOf("</head>"));
+    assert.ok(head.includes(HIDE), f + " shows the footer supporter strip");
+  }
+  assert.ok(n >= 8, "pages with the shared footer checked: " + n);
+});

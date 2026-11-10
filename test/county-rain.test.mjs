@@ -71,7 +71,7 @@ test("every shipped county page is small and has its answer in the HTML", () => 
       assert.ok(html.length < 25 * 1024, rel + " is over 25 KB");
       assert.match(html, /<p class="rc-answer"><b>\d+\.\d\d inch(es)?<\/b> of rain/, rel + " has no answer up top");
       assert.ok(!html.includes("—") && !html.includes("&mdash;"), rel + " has an em dash");
-      assert.match(html, /<p class="rc-asof">(As of [A-Z][a-z]{2} \d{1,2}, \d{4}, the latest day this [a-z]+ has reported|All of \d{4}, Jan 1 to Dec 31|\d{4}, Jan 1 to [A-Z][a-z]{2} \d{1,2}, the last day reported)<\/p>/, rel + " shows its data date");
+      assert.match(html, /<p class="rc-asof">(As of [A-Z][a-z]{2} \d{1,2}, \d{4}, the latest day this [a-z]+ has reported|All of \d{4}, Jan 1 to Dec 31|\d{4}, Jan 1 to [A-Z][a-z]{2} \d{1,2}, the last day reported|\d{4}: the county estimate runs Jan 1 to [A-Z][a-z]{2} \d{1,2}; the snow site&rsquo;s figures run Jan 1 to [A-Z][a-z]{2} \d{1,2}, the latest day it has reported)<\/p>/, rel + " shows its data date");
       assert.match(html, /read [A-Z][a-z]+ \d{1,2}, \d{4}; updated daily\./, rel + " says it is updated daily, with the day it was read");
       assert.doesNotMatch(html, /rebuilt weekly|once a week/, rel + " still says weekly");
       assert.ok(locs.has("https://agsist.com/" + rel.replace(/\.html$/, "")), rel + " is not in sitemap-rain.xml");
