@@ -846,7 +846,8 @@ CATTLE_PAGE = "cattle-futures-prices.html"
 # 2026-11-10 (Sig): "Feeder and Live Cattle Futures Prices", no CME brand in
 # the title (the source credit, CME Group futures via Yahoo Finance, delayed,
 # is in the page body and its Sources fold) and no price or date.
-CATTLE_TITLE = "Feeder and Live Cattle Futures Prices" + SUFFIX
+# Nov 10 (lead, search-matched): "Today" added; still no CME, no price, no date.
+CATTLE_TITLE = "Feeder and Live Cattle Futures Prices Today" + SUFFIX
 CATTLE_DESC = ("Feeder and live cattle futures, quotes delayed 10 to 25 min in session, "
                "with 5-year ranges, the feeder-to-live ratio and a cost-of-gain calculator.")
 
@@ -909,19 +910,28 @@ def _known_trade(q):
 # was a date line ("Ag Markets Oct 16") with no CBOT in it. The description
 # says delayed, never "live": quotes are 10 to 25 minutes behind (data-sources).
 # 2026-11-10 (Sig): this is the markets title every day, no price, no date.
-MARKETS_PLAIN = ("CBOT Grain Prices Today: Corn, Soybeans, Wheat" + SUFFIX,
+# Nov 10 (lead): the search-matched words, "Grain Futures Prices Today".
+MARKETS_PLAIN = ("Grain Futures Prices Today: Corn, Soybeans, Wheat" + SUFFIX,
                  "Corn, soybean, wheat, cattle and crude futures on one board, quotes delayed "
                  "10 to 25 min in session, with settles, cash bids and USDA dates. Free.")
 
 
+# Nov 10 2026 (lead): search-matched titles, each under the 68-character cap.
+FUTURES_TITLES = {
+    "corn-futures-prices.html": "Corn Prices Today: CBOT Corn Futures Quotes",
+    "soybean-futures-prices.html": "Soybean Prices Today: CBOT Soybean Futures per Bushel",
+    "wheat-futures-prices.html": "Wheat Prices Today: Chicago and KC Wheat Futures",
+}
+
+
 def futures_title(page):
-    """'CBOT Corn Futures Prices Today | AGSIST': what the page is, in the words
-    people search, with no price and no date (Sig, Nov 10 2026). From the
-    1:20 p.m. CT close until Yahoo posts the settle near 11 p.m. CT the title
-    held the session before, a day behind the body, and search caches it."""
-    exch, crop, _key, extra = FUTURES[page]
-    base = f"{exch} {crop} Futures Prices Today"
-    return fit(([base + f", {extra}" + SUFFIX] if extra else []) + [base + SUFFIX, base])
+    """'Corn Prices Today: CBOT Corn Futures Quotes | AGSIST': what the page is,
+    in the words people search, with no price and no date (Sig, Nov 10 2026).
+    From the 1:20 p.m. CT close until Yahoo posts the settle near 11 p.m. CT a
+    priced title held the session before, a day behind the body, and search
+    caches it."""
+    base = FUTURES_TITLES[page]
+    return fit([base + SUFFIX, base])
 
 
 def make_futures(page):
@@ -1976,12 +1986,12 @@ def selftest():
                "live" not in re.sub(r"live cattle|feeder-to-live", "", (_t + " " + _d).lower()) and "real-time" not in _d.lower(), _t + _d)
     ck("the no-price guard looked at every page and case", _seen >= 24, _seen)
     ck("the grain titles say what the page is, with the exchange the query uses",
-       PAGES["corn-futures-prices.html"][0](ctx)[0] == "CBOT Corn Futures Prices Today | AGSIST"
-       and PAGES["soybean-futures-prices.html"][0](ctx)[0] == "CBOT Soybean Futures Prices Today | AGSIST"
-       and PAGES["wheat-futures-prices.html"][0](ctx)[0].startswith("CBOT Wheat Futures Prices Today, SRW & KC HRW"),
+       PAGES["corn-futures-prices.html"][0](ctx)[0] == "Corn Prices Today: CBOT Corn Futures Quotes | AGSIST"
+       and PAGES["soybean-futures-prices.html"][0](ctx)[0] == "Soybean Prices Today: CBOT Soybean Futures per Bushel | AGSIST"
+       and PAGES["wheat-futures-prices.html"][0](ctx)[0] == "Wheat Prices Today: Chicago and KC Wheat Futures | AGSIST",
        [PAGES[_p][0](ctx)[0] for _p in FUTURES])
     ck("the cattle title is Sig's words, no CME brand",
-       PAGES[CATTLE_PAGE][0](ctx)[0] == "Feeder and Live Cattle Futures Prices | AGSIST"
+       PAGES[CATTLE_PAGE][0](ctx)[0] == "Feeder and Live Cattle Futures Prices Today | AGSIST"
        and "CME" not in "".join(PAGES[CATTLE_PAGE][0](ctx)), PAGES[CATTLE_PAGE][0](ctx))
     ck("the grain futures pages write no description here (seed_static owns it)",
        all(PAGES[_p][0](ctx)[1] is None for _p in FUTURES))

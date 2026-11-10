@@ -48,6 +48,7 @@
 
 /* the status line is a full sentence (the same words the build bakes): let it drop under the title instead of squeezing the title into broken words */
 .sec-head:has(> #price-data-status){flex-wrap:wrap;align-items:baseline}
+#price-data-status{min-height:1.75em} /* holds its line before the board script rewrites the baked stamp (CLS sweep Nov 10 2026) */
 /* baked change lines carry .nc until the live quote sets .up/.dn, which adds a 1px border: same box either way */
 .pc-chg-val.nc{border:1px solid transparent}
 /* the unit under each name: soybean oil trades in cents a pound, the dollar index and the S&P are index points */
