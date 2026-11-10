@@ -129,21 +129,52 @@ def main():
         if payload["model"] == claude_models.REVIEWER:
             return {"stop_reason": "refusal", "content": []}
         return fake_reviewer(payload, key)
-    chain = [claude_models.REVIEWER] + [m for m in (claude_models.REVIEWER_FALLBACK, claude_models.WRITER)
-                                        if m != claude_models.REVIEWER]
-    assert run_on(CLEAN, post=refuse_then_ok) == 0 and seen == chain[:2], seen
-    # an account that cannot use the reviewer (400), then a refusal, ends on the writer
+    # three distinct links: Opus 5.5, Opus 5, the writer's Sonnet 5.5
+    R, RF, W = claude_models.REVIEWER, claude_models.REVIEWER_FALLBACK, claude_models.WRITER
+    assert (R, RF, W) == ("claude-opus-5-5", "claude-opus-5", "claude-sonnet-5-5")
+    assert run_on(CLEAN, post=refuse_then_ok) == 0 and seen == [R, RF], seen
+    # an account that cannot use the reviewer: a 400 with the fallbacks field is first sent again
+    # without it; a second 400 moves on; a refusal on Opus 5 ends on the writer
     seen.clear()
     def no_access(payload, key):
-        seen.append(payload["model"])
-        if payload["model"] == claude_models.REVIEWER:
+        seen.append((payload["model"], "fallbacks" in payload))
+        if payload["model"] == R:
             raise RuntimeError("HTTP 400: invalid_request_error")
-        if payload["model"] != claude_models.WRITER:
+        if payload["model"] == RF:
+            assert "thinking" not in payload, "Opus 5 thinks adaptively by default"
             return {"stop_reason": "refusal", "content": []}
         # Sonnet 5.5 thinks adaptively here and takes the server fallback too
         assert payload["thinking"] == {"type": "adaptive"} and payload["fallbacks"] == "default"
         return fake_reviewer(payload, key)
-    assert run_on(bad, post=no_access) == 1 and seen == chain and seen[-1] == claude_models.WRITER, seen
+    assert run_on(bad, post=no_access) == 1 and seen == [(R, True), (R, False), (RF, True), (W, True)], seen
+    # a 400 caused by the beta field itself: the same model again without the field or its header,
+    # and the review still runs there
+    sent = []
+    def beta_rejected(payload, key):
+        sent.append((payload["model"], "fallbacks" in payload))
+        if "fallbacks" in payload:
+            raise RuntimeError("HTTP 400: fallbacks: Extra inputs are not permitted")
+        return fake_reviewer(payload, key)
+    assert run_on(bad, post=beta_rejected) == 1 and sent == [(R, True), (R, False)], sent
+    hdrs = []
+    class Resp:
+        def __init__(self, body): self.body = body
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+        def read(self): return self.body
+    import urllib.request as _ur
+    _keep = _ur.urlopen
+    def fake_open(req, timeout=None):
+        hdrs.append({k.lower(): v for k, v in req.header_items()})
+        return Resp(json.dumps({"stop_reason": "end_turn", "content": [], "usage": {}}).encode())
+    _ur.urlopen = fake_open
+    try:
+        p0 = fc.review_payload([("lead", "x")], "SRC", model=R)
+        fc._post(p0, "k")
+        fc._post({k: v for k, v in p0.items() if k != "fallbacks"}, "k")
+    finally:
+        _ur.urlopen = _keep
+    assert hdrs[0].get("anthropic-beta") == claude_models.FALLBACK_BETA and "anthropic-beta" not in hdrs[1], hdrs
     # refused everywhere: fail-open, the code checks still ran
     assert run_on(CLEAN, post=lambda p, k: {"stop_reason": "refusal", "content": []}) == 0
 
@@ -171,7 +202,7 @@ def request_shapes():
     assert p["output_config"]["format"]["type"] == "json_schema"
     assert p["system"] == fc.SYSTEM, "one call on this model per run: no cache write that is never read"
     po = fc._moved(p, claude_models.REVIEWER_FALLBACK)
-    assert po["model"] == "claude-opus-5-5" and "thinking" not in po and po["fallbacks"] == "default"
+    assert po["model"] == "claude-opus-5" and "thinking" not in po and po["fallbacks"] == "default"
     assert p["max_tokens"] == 16000
     assert not any(k in p for k in ("temperature", "top_p", "top_k"))
     assert "SRC" in p["messages"][0]["content"] and "lead: x" in p["messages"][0]["content"]
@@ -210,6 +241,43 @@ def request_shapes():
     cf = claude_models.with_model(cp, c.FALLBACK_MODEL)
     assert "fallbacks" not in cf and cf["thinking"] == {"type": "disabled"}, "the client retry on Sonnet 5 sends neither"
     assert "fallbacks" not in c.critic_payload("claude-haiku-5-5", "u"), "Haiku 5.5 has no server fallback"
+
+    # the critic's way down: a 400 on the fallbacks field is sent again on the same model without the
+    # field or its beta header; a refusal moves to Sonnet 5; nothing silently drops the pass
+    class HTTP400(Exception):
+        code = 400
+        def read(self): return b'{"error": {"message": "fallbacks: Extra inputs are not permitted"}}'
+    keep_model = c.MODEL
+    calls = []
+    def beta_rejected(url, payload, headers, timeout=None):
+        calls.append((payload["model"], "fallbacks" in payload, headers.get("anthropic-beta")))
+        if "fallbacks" in payload:
+            raise HTTP400()
+        return {"stop_reason": "end_turn", "content": [{"type": "text", "text": "{}"}], "usage": {}}
+    hd = {"x-api-key": "k"}
+    r, sent = c.post_critic(cp, hd, post=beta_rejected)
+    assert calls == [("claude-sonnet-5-5", True, claude_models.FALLBACK_BETA), ("claude-sonnet-5-5", False, None)], calls
+    assert sent["model"] == "claude-sonnet-5-5" and "fallbacks" not in sent and r["stop_reason"] == "end_turn"
+    calls.clear()
+    def refuses(url, payload, headers, timeout=None):
+        calls.append((payload["model"], "fallbacks" in payload, headers.get("anthropic-beta")))
+        if payload["model"] == "claude-sonnet-5-5":
+            return {"stop_reason": "refusal", "content": []}
+        return {"stop_reason": "end_turn", "content": [], "usage": {}}
+    r, sent = c.post_critic(cp, hd, post=refuses)
+    assert calls == [("claude-sonnet-5-5", True, claude_models.FALLBACK_BETA), ("claude-sonnet-5", False, None)], calls
+    assert sent["thinking"] == {"type": "disabled"}
+    calls.clear()
+    def always_400(url, payload, headers, timeout=None):
+        calls.append(payload["model"])
+        raise HTTP400()
+    try:
+        c.post_critic(cp, hd, post=always_400)
+        raise AssertionError("a 400 that is not about the field still fails loudly")
+    except HTTP400:
+        pass
+    assert calls == ["claude-sonnet-5-5", "claude-sonnet-5-5"], calls
+    c.MODEL = keep_model
 
     # the writer streams: no server fallback (a decline part way would mix two answers); its own retry covers it
     assert "fallbacks" not in pa

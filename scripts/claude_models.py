@@ -19,8 +19,8 @@ WHO USES WHAT (2026-11-10)
                                source data (the owner's Oct 17 choice, kept on
                                Nov 10 for cost). Its thinking is always on;
                                effort is the control. A refusal, a 404 or a
-                               400 moves the check to the next model down
-                               (REVIEWER_FALLBACK when it differs, then WRITER).
+                               400 moves the check to REVIEWER_FALLBACK, Opus 5,
+                               then to WRITER.
   STORY    claude-opus-5-5     county rain stories, the other story sets and
                                the discount schedules (api_jobs.py, batched)
   RESEARCH claude-sonnet-5-5   search review, alt text, elevator sites and
@@ -51,7 +51,7 @@ WRITER = "claude-sonnet-5-5"
 WRITER_FALLBACK = "claude-sonnet-5"
 CHECKER = "claude-haiku-5-5"
 REVIEWER = "claude-opus-5-5"
-REVIEWER_FALLBACK = "claude-opus-5-5"
+REVIEWER_FALLBACK = "claude-opus-5"
 STORY = "claude-opus-5-5"
 RESEARCH = "claude-sonnet-5-5"
 ACCURACY = "claude-opus-5-5"
@@ -64,12 +64,15 @@ ACCURACY = "claude-opus-5-5"
 # one, so it keeps its own retry on WRITER_FALLBACK. Not on batches (the
 # Batches API rejects it) and not on Haiku 5.5 (it has no server fallback).
 FALLBACK_BETA = "server-side-fallback-2026-07-01"
-FALLBACK_MODELS = ("claude-fable-5-2", "claude-fable-5-1", "claude-opus-5-5", "claude-sonnet-5-5")
+FALLBACK_MODELS = ("claude-fable-5-2", "claude-fable-5-1", "claude-opus-5-5", "claude-opus-5", "claude-sonnet-5-5")
 
 PRICES = {
     "claude-fable-5-2": (8.00, 40.00, 10.00, 0.20),
     "claude-fable-5-1": (10.00, 50.00, 12.50, 0.25),
     "claude-opus-5-5": (4.00, 20.00, 5.00, 0.20),
+    # where a server fallback can answer (bill the model that answered)
+    "claude-opus-5": (5.00, 25.00, 6.25, 0.50),
+    "claude-opus-4-8": (5.00, 25.00, 6.25, 0.50),
     "claude-sonnet-5-5": (2.00, 10.00, 2.50, 0.10),
     "claude-sonnet-5": (2.00, 10.00, 2.50, 0.20),
     "claude-haiku-5-5": (0.10, 0.50, 0.125, 0.01),
@@ -81,6 +84,8 @@ CACHE_MIN_TOKENS = {
     "claude-fable-5-2": 512,
     "claude-fable-5-1": 512,
     "claude-opus-5-5": 512,
+    "claude-opus-5": 512,
+    "claude-opus-4-8": 1024,
     "claude-sonnet-5-5": 512,
     "claude-haiku-5-5": 512,
     "claude-sonnet-5": 1024,
@@ -165,7 +170,7 @@ def usage_table(title, rows):
             a[6] = False
         else:
             a[5] += c
-    lines = [f"### {title}: Claude API usage", "",
+    lines = [f"### {title}: Model usage", "",
              "| job | model | calls | input | cache write | cache read | output | est. USD |",
              "|---|---|---|---|---|---|---|---|"]
     total, known = 0.0, True
@@ -246,11 +251,12 @@ def selftest():
         raise AssertionError("Opus 5.5 has no thinking-off word")
     except ValueError:
         pass
-    try:
-        no_thinking(REVIEWER_FALLBACK)
-        raise AssertionError("Opus 5.5 has no thinking-off word")
-    except ValueError:
-        pass
+    assert REVIEWER_FALLBACK == "claude-opus-5" != REVIEWER, "a distinct second link"
+    # a fallback answer on Opus 5 or Opus 4.8 is priced: 1M in + 1M out is $5 + $25
+    for m in ("claude-opus-5", "claude-opus-4-8"):
+        assert abs(cost_usd(m, {"input_tokens": 10**6, "output_tokens": 10**6}) - 30.0) < 1e-9, m
+    b, h = server_fallback({"model": REVIEWER_FALLBACK}, {})
+    assert b["fallbacks"] == "default"
     b, h = server_fallback({"model": REVIEWER}, {"x": "1"})
     assert b["fallbacks"] == "default" and h["anthropic-beta"] == FALLBACK_BETA and h["x"] == "1"
     b, h = server_fallback({"model": CHECKER}, {"x": "1"})
