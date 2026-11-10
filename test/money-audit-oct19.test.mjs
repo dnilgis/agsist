@@ -42,22 +42,34 @@ test("2: no claim about the order of sequestration and the payment limit", () =>
   assert.match(h, /Sequestration \(5\.7% on recent payments\) also comes off; ask your FSA office how it meets the limit for your farm\./);
 });
 
+// The prices on these cards follow USDA's current print (wheat $6.30 in October, $6.20 on Nov 10, 2026), so the
+// price-led figures below are worked from the data files; the words and what is withheld are fixed.
+const D = JSON.parse(read("data/arc-plc.json"));
+const pf = (x) => "\\$" + x.toFixed(2).replace(".", "\\.");
+
 test("3: Sumner Co., KS 2026 wheat keeps its call and prints no expected dollars, with the reason", () => {
   const h = read("arc-plc/kansas/sumner-county.html"), t = text(h);
+  const W = D.years["2026"].crops.wheat, cen = W.scen.center;
+  const by = JSON.parse(read("data/arc-plc/KS.json")).c.find((c) => c.f === "20191").k.wheat.find((e) => e.d === "non").by;
+  // the trigger yield, as the card prints it: floored, to a tenth when it is over the benchmark (October: 43 bu at $6.30)
+  const raw = 0.9 * by * W.bp.value / Math.max(cen, W.loan);
+  const trig = raw > by ? (Math.floor(Math.round(raw * 10 * 1e6) / 1e6) / 10).toFixed(1) : String(Math.floor(Math.round(raw * 1e6) / 1e6));
   // Nov 10, 2026: it says what is withheld (the expected payments: the example-price line below prints dollars) and a
   // plain reason with no method, and a Close card says nothing about Leans
   assert.match(t, new RegExp("Wheat · non-irrigated Either one Close Too close to call\\. " + WHY.replace(/\./g, "\\.") + " PLC only pays"));
   assert.doesNotMatch(t, /no dollar figure|stops at Leans/, "the old words are gone");
   assert.doesNotMatch(h, /\$6\.76|\$6\.64/, "the borrowed-spread dollars are gone from the page, FAQ and JSON-LD");
   assert.doesNotMatch(reading(h), CURTAIN, "the curtain: no word of where the swings come from, in the cards, FAQ or JSON-LD");
-  assert.match(t, /At \$5\.80, one example price, not a forecast \(50 cents under USDA’s \$6\.30 for 2026\): PLC \$[\d.]+, ARC-CO \$[\d.]+ per base acre/, "the fixed-price line stays, labelled");
-  assert.match(t, /Close, either one: too small or too uncertain to call \(PLC paid more in 3 of 11 past-year scenarios, ARC-CO in 3; expected payments not printed, not enough price history of its own\)/);
+  assert.match(t, new RegExp(`At ${pf(cen - 0.5)}, one example price, not a forecast \\(50 cents under USDA’s ${pf(cen)} for 2026\\): PLC \\$[\\d.]+, ARC-CO \\$[\\d.]+ per base acre`), "the fixed-price line stays, labelled");
+  const cl = /Close, either one: too small or too uncertain to call \(PLC paid more in (\d+) of (\d+) past-year scenarios, ARC-CO in (\d+); expected payments not printed, not enough price history of its own\)/.exec(t);
+  assert.ok(cl && +cl[1] + +cl[3] <= +cl[2], "the Close line, its counts within the scenarios (3 and 3 of 11 in October)");
   // what does not rest on the spread stays: the PLC price line and the trigger yield
   assert.match(t, /PLC only pays if wheat averages under \$6\.35 a bushel for 2026\./);
-  assert.match(t, /ARC-CO pays here for 2026 if the county yield comes in under 43 bu at USDA’s price outlook, \$6\.30\./);
+  assert.match(t, new RegExp(`ARC-CO pays here for 2026 if the county yield comes in under ${trig.replace(".", "\\.")} bu at USDA’s price outlook, ${pf(cen)}\\.`));
   // a crop on its own spread still prints dollars (Sumner corn, October futures of its own)
-  // Nov 10, 2026: even tiers (Leans from $2): the $2 corn gap that read Close now reads Leans ARC-CO
-  assert.match(t, /Corn · non-irrigated ARC-CO Leans ARC-CO comes out about \$2 more per base acre, but that swings from year to year\./);
+  // Nov 10, 2026: even tiers (Leans from $2): the $2 corn gap that read Close now reads Leans ARC-CO; on the
+  // November print the gap is about $4, a clear pick. Either way corn prints its dollars.
+  assert.match(t, /Corn · non-irrigated (ARC-CO|PLC) (Leans|Clear pick) (ARC-CO|PLC) comes out about \$\d+ more per base acre/);
   // and the page source carries no cents for the withheld card (data-t and the Lower / Higher packs)
   const tag = /<article class="ap-crop" id="crop-wheat"([^>]*)>[\s\S]*?data-t="([^"]+)"/.exec(h);
   assert.ok(tag, "wheat card");
