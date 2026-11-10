@@ -1,6 +1,6 @@
 {
  "source": "Posted retail fertilizer prices on co-op websites",
- "generated": "2026-11-09T13:57:46Z",
+ "generated": "2026-11-10T13:44:19Z",
  "stale_days": 60,
  "min_median": 2,
  "conventions": "Dollars per ton. Cash is each co-op's own cash price (cash, cash discount or cash pickup, as labeled). Rows dated over 60 days ago, rows whose per-unit or cwt figure does not match, and products the reader cannot name are shown but not summarized. One price per co-op per product: the first listed. Middle price from 2 co-ops up (from 2 it is their average); one co-op is named.",
@@ -177,15 +177,14 @@
    "key": "thiosul",
    "name": "Thio-Sul",
    "symbol": "12-0-0-26S",
-   "n": 2,
-   "median": 420.0,
+   "n": 1,
+   "median": null,
    "low": 390.0,
-   "high": 450.0,
-   "oldest": "2026-09-10",
+   "high": 390.0,
+   "oldest": "2026-10-06",
    "newest": "2026-10-06",
    "undated": 0,
    "coops": [
-    "tworivers-ks",
     "mulvane-ks"
    ],
    "far": []
@@ -219,7 +218,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 39,
+     "age_days": 40,
      "stale": false
     },
     {
@@ -238,7 +237,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 39,
+     "age_days": 40,
      "stale": false
     },
     {
@@ -257,8 +256,8 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 60,
-     "stale": false
+     "age_days": 61,
+     "stale": true
     },
     {
      "product": "anhydrous",
@@ -276,7 +275,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 39,
+     "age_days": 40,
      "stale": false
     },
     {
@@ -296,7 +295,7 @@
      "notes": [],
      "flags": [],
      "first_seen": "2026-10-15",
-     "age_days": 25,
+     "age_days": 26,
      "stale": false
     },
     {
@@ -315,7 +314,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 28,
+     "age_days": 29,
      "stale": false
     },
     {
@@ -334,7 +333,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 35,
+     "age_days": 36,
      "stale": false
     },
     {
@@ -353,7 +352,7 @@
       "cash: priced per gallon or pound, not per ton (5.75/gal)"
      ],
      "flags": [],
-     "age_days": 1622,
+     "age_days": 1623,
      "stale": true
     },
     {
@@ -372,7 +371,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 39,
+     "age_days": 40,
      "stale": false
     },
     {
@@ -391,7 +390,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 1144,
+     "age_days": 1145,
      "stale": true
     },
     {
@@ -410,7 +409,7 @@
       "cash: priced per gallon or pound, not per ton (.60lb)"
      ],
      "flags": [],
-     "age_days": 1630,
+     "age_days": 1631,
      "stale": true
     },
     {
@@ -429,7 +428,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 97,
+     "age_days": 98,
      "stale": true
     },
     {
@@ -448,13 +447,13 @@
       "cash: priced per gallon or pound, not per ton (4.00/gal)"
      ],
      "flags": [],
-     "age_days": 474,
+     "age_days": 475,
      "stale": true
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-11-09T13:57:46Z",
+   "fetched": "2026-11-10T13:44:19Z",
    "ok": true,
    "note": null
   },
@@ -485,7 +484,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -504,7 +503,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -523,7 +522,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -542,7 +541,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -561,13 +560,13 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-11-09T13:57:46Z",
+   "fetched": "2026-11-10T13:44:19Z",
    "ok": true,
    "note": null
   },
@@ -598,7 +597,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -617,7 +616,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -636,7 +635,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -655,7 +654,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -674,7 +673,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false,
      "far_from_others": true
     },
@@ -694,7 +693,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -713,7 +712,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -732,7 +731,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -751,13 +750,13 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-11-09T13:57:46Z",
+   "fetched": "2026-11-10T13:44:19Z",
    "ok": true,
    "note": null
   },
@@ -788,7 +787,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 26,
+     "age_days": 27,
      "stale": false
     },
     {
@@ -807,7 +806,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 26,
+     "age_days": 27,
      "stale": false
     },
     {
@@ -826,7 +825,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 26,
+     "age_days": 27,
      "stale": false
     },
     {
@@ -845,7 +844,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 26,
+     "age_days": 27,
      "stale": false
     },
     {
@@ -864,7 +863,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 26,
+     "age_days": 27,
      "stale": false
     },
     {
@@ -883,7 +882,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 26,
+     "age_days": 27,
      "stale": false
     },
     {
@@ -902,7 +901,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 26,
+     "age_days": 27,
      "stale": false
     },
     {
@@ -921,7 +920,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 26,
+     "age_days": 27,
      "stale": false
     },
     {
@@ -940,7 +939,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 26,
+     "age_days": 27,
      "stale": false
     },
     {
@@ -959,7 +958,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 26,
+     "age_days": 27,
      "stale": false
     },
     {
@@ -978,7 +977,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 26,
+     "age_days": 27,
      "stale": false
     },
     {
@@ -999,13 +998,13 @@
      "flags": [
       "per-unit figure 0.870 does not match any ton price"
      ],
-     "age_days": 26,
+     "age_days": 27,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-11-09T13:57:46Z",
+   "fetched": "2026-11-10T13:44:19Z",
    "ok": true,
    "note": null
   },
@@ -1035,7 +1034,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 31,
+     "age_days": 32,
      "stale": false
     },
     {
@@ -1053,7 +1052,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 31,
+     "age_days": 32,
      "stale": false
     },
     {
@@ -1071,7 +1070,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 31,
+     "age_days": 32,
      "stale": false
     },
     {
@@ -1089,7 +1088,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 31,
+     "age_days": 32,
      "stale": false
     },
     {
@@ -1107,7 +1106,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 31,
+     "age_days": 32,
      "stale": false
     },
     {
@@ -1125,7 +1124,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 31,
+     "age_days": 32,
      "stale": false
     },
     {
@@ -1143,7 +1142,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 31,
+     "age_days": 32,
      "stale": false
     },
     {
@@ -1161,7 +1160,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 31,
+     "age_days": 32,
      "stale": false
     },
     {
@@ -1179,13 +1178,13 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 31,
+     "age_days": 32,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-11-09T13:57:46Z",
+   "fetched": "2026-11-10T13:44:19Z",
    "ok": true,
    "note": null
   },
@@ -1216,7 +1215,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 39,
+     "age_days": 40,
      "stale": false
     },
     {
@@ -1235,13 +1234,13 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 39,
+     "age_days": 40,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-11-09T13:57:46Z",
+   "fetched": "2026-11-10T13:44:19Z",
    "ok": true,
    "note": null
   }
