@@ -1,0 +1,70 @@
+name: River pull (dispatch only)
+# River pull, one time (Sig approved Nov 9: dispatch only, no schedule).
+
+on:
+  workflow_dispatch:
+    inputs:
+      docks_url:
+        description: "Docks layer URL (blank = found by search)"
+        type: string
+        default: ""
+      lines_url:
+        description: "Waterway lines layer URL (blank = found by search)"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+concurrency:
+  group: river-pull
+  cancel-in-progress: false
+
+jobs:
+  pull:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftests (no network)
+        run: |
+          python3 scripts/fetch_river.py --selftest
+          python3 scripts/river_key.py --selftest
+      - name: Pull the docks and waterway lines
+        env:
+          RIVER_DOCKS_URL: ${{ inputs.docks_url }}
+          RIVER_LINES_URL: ${{ inputs.lines_url }}
+        run: |
+          for u in "$RIVER_DOCKS_URL" "$RIVER_LINES_URL"; do
+            case "$u" in ""|https://*) ;; *) echo "::error::a layer URL starts with https://"; exit 1;; esac
+            case "$u" in *[!A-Za-z0-9:/._%-]*) echo "::error::a layer URL has letters, digits and / . _ % - only"; exit 1;; esac
+          done
+          python3 scripts/fetch_river.py --out river
+      - name: Save to the raw branch
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/push_raw.sh "river pull, grain docks and waterway lines" river
+      - name: Summary
+        if: ${{ !cancelled() }}
+        run: |
+          python3 - >> "$GITHUB_STEP_SUMMARY" <<'EOF'
+          import json
+          try:
+              m = json.load(open("river/manifest.json"))
+          except OSError:
+              print("No manifest written."); raise SystemExit(0)
+          for k in ("docks", "lines"):
+              s = m[k]
+              print(f"### {k}\n\n{s.get('title')} ({s.get('owner')}); source date {s.get('source_date')} ({s.get('source_date_from')}).\n")
+              print("```\n" + json.dumps(s.get("tally"), indent=1) + "\n```\n")
+          EOF
