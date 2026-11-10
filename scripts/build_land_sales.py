@@ -115,7 +115,7 @@ MIN_LISTED = 3                          # biggest sales withheld under this many
 MIN_BUYERS = 5                          # buyers withheld under this many distinct buyers
 MIN_JUDGED = 10                         # unusual and best value withheld under this many judged sales
 BEST_MIN_ACRES = 40
-CSS = '<link rel="stylesheet" href="/components/land-sales.css?v=3">'
+CSS = '<link rel="stylesheet" href="/components/land-sales.css?v=4">'
 JS = '<script src="/components/land-sales.js?v=6" defer></script>'
 KIND_WORDS = {"farm": "farmland", "bldg": "with buildings", "forest": "forest", "small": "small parcel"}
 KIND_CODE = {"farm": "f", "bldg": "b", "forest": "w", "small": "s"}   # the list file's type column
@@ -707,6 +707,7 @@ def stack_css():
     r = ["@media(max-width:560px){"
          ".ls-st thead{display:none}"
          ".ls-st,.ls-st tbody{display:block}"
+         ".ls-st caption{display:block;width:auto}"   # a table caption in a block table shrinks to its narrowest word
          ".ls-st tr{display:block;border-top:1px solid var(--border);padding:.45rem 0}"
          ".ls-st tr:first-child{border-top:0}"
          ".ls-st td{display:block;border:0;padding:.1rem 0 .1rem 6.8rem;position:relative;text-align:left;overflow-wrap:anywhere}"
