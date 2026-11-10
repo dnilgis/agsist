@@ -94,8 +94,8 @@ GATED_NOV3 = {
     "main-checks.yml",
     # Nov 7, 2026: the weekly Schrader auction results capture (the feed shows only the newest five sales)
     "schrader-capture.yml",
-    # Nov 10, 2026: the monthly restore test of the daily bid snapshots
-    "restore-test.yml",
+    # Nov 10, 2026: the monthly bid archive check (the daily bid snapshots match the published town pages)
+    "bid-archive-check.yml",
 }
 MANUAL_DOES_NOT_SERVE = MAIL_AND_RAIN | GATED_NOV3
 

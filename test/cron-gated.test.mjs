@@ -82,8 +82,8 @@ const GATED = [
   // Nov 7, 2026: the weekly Schrader auction results capture; the feed shows only the newest five sales,
   // so a dropped Monday can lose results for good
   ["schrader-capture.yml", ["43 19 * * 1"], 360],
-  // Nov 10, 2026: the monthly restore test (a past day's town cards rebuilt from the daily bid snapshot)
-  ["restore-test.yml", ["19 10 6 * *"], 360],
+  // Nov 10, 2026: the monthly bid archive check (one past day's snapshot against that day's published town pages)
+  ["bid-archive-check.yml", ["19 10 6 * *"], 360],
 ];
 
 // Scheduled workflows that are not gated by a tick of their own, and why.
