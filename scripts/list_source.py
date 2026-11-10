@@ -226,7 +226,7 @@ def _switch(why):
 
 def request(method, url, body=None, headers=None, timeout=30):
     """Parsed JSON, from the worker or, when it is blocked, the copy. A list read by a sender
-    leaves out the addresses suppressed after two hard bounces (drop_suppressed)."""
+    leaves out the addresses suppressed after hard bounces on two days (drop_suppressed)."""
     data = _request(method, url, body, headers, timeout)
     route = _route(url)[0]
     if method.upper() == "GET" and route in LIST_ROUTES:

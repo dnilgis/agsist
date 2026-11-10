@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-bounces.py: hard bounces per address, and the addresses left out of every list after two
-(Nov 10, 2026).
+bounces.py: hard bounces per address, and the addresses left out of every list after hard bounces on two
+different days (Nov 10, 2026).
 
 Nothing here holds an address. An address is kept as its key: an HMAC-SHA256 of the lowercased
 address under UNSUB_SECRET (a secret every list job already holds), first 32 hex characters. Without

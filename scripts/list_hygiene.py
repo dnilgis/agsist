@@ -639,7 +639,7 @@ def selftest():
     acts = plan(daily, hail, mx=lambda d: False)
     kinds = sorted((a["list"], a["do"], a["email"]) for a in acts)
     chk(("daily", "fix", "13241@gmail.comb") in kinds and ("hail", "fix", "x@yahoo.con") in kinds, "typos on both lists are planned as fixes")
-    chk(not any(a["email"] == "dead@example.org" for a in acts), "a bounced Daily address is not removed (Nov 10: counted, suppressed after 2)")
+    chk(not any(a["email"] == "dead@example.org" for a in acts), "a bounced Daily address is not removed (Nov 10: counted, suppressed after two days of hard bounces)")
     chk(not any(a["email"] == "ok@gmail.com" for a in acts), "a good address is untouched")
     # Nov 10: what counts as hard, and the hand-over to the fold step (keys only)
     os.environ.setdefault("UNSUB_SECRET", "selftest-secret")
