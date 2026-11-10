@@ -74,6 +74,7 @@ from datetime import date, datetime, timedelta, timezone
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_atlas_drought import parse  # noqa: E402  one parser for both USDM readers
 from released_at import stamp as released  # noqa: E402  when the map was public
+from county_fold import resolve, lossy_note  # noqa: E402  the one county code fold
 
 API = "https://usdmdataservices.unl.edu/api/CountyStatistics/GetDroughtSeverityStatisticsByAreaPercent"
 API_US = "https://usdmdataservices.unl.edu/api/USStatistics/GetDroughtSeverityStatisticsByAreaPercent"
@@ -240,6 +241,14 @@ def build(rows, today, expected):
         "counties": len(have), "dropped_rows": n_bad,
         "zero": zero, "c": c, "k": ks,
     }
+    # Codes the Drought Monitor writes that are not one spine county (Connecticut's 2022 planning regions,
+    # Alaska's 2019 pieces of Valdez-Cordova). They stay under their own code and are never copied onto a
+    # county: a region crosses the old county lines, so no county value can be read from it (county_fold).
+    lossy = {f: resolve(f).kind for f in sorted(have) if resolve(f).lossy}
+    if lossy:
+        doc["lossy"] = lossy
+        doc["lossy_note"] = ("Kept as published, no county value: Connecticut's planning regions cross the old "
+                             "county lines, and Alaska's two pieces share one older county outline.")
     return doc, []
 
 
@@ -428,6 +437,13 @@ def selftest():
     assert doc["zero"] == ["19001"] and doc["c"]["40139"] == [[100.0, 100.0, 80.2, 33.3, 0.0], None, None], doc
     # released_at: the Oct 13 map (a Tuesday) was out Thursday Oct 15, 8:30 am EDT
     assert doc["released_at"] == "2026-10-15T12:30:00Z" and doc["released_basis"] == "schedule", doc["released_at"]
+    assert "lossy" not in doc, "a file with no off-spine code carries no lossy list"
+    # real case: the Drought Monitor writes Connecticut's planning regions (09110 Capitol). It stays under its
+    # own code, is listed lossy, and no old county (09003 Hartford) gets a value from it
+    ct = rows + [mk("09110", "20261013", "70", "30", "0", "0", "0", "0")]
+    dct, _ = build(ct, today, {"19169", "19001", "40139"})
+    assert dct["lossy"] == {"09110": "reshape"} and "09110" in dct["c"] and "09003" not in dct["c"], dct.get("lossy")
+    assert "no county value" in dct["lossy_note"] and "no county value" in lossy_note("09110")
     # refusals
     assert check_row(mk("19169", "20261013", "60", "40", "45", "0", "0", "0"))[1] == "not cumulative"
     assert check_row(mk("19169", "20261013", "50", "40", "0", "0", "0", "0"))[1] == "none+d0"
@@ -515,6 +531,8 @@ def main():
     with open(OUT, "w", encoding="utf-8") as f:
         json.dump(doc, f, separators=(",", ":"))
     print(f"wrote {OUT}: map valid {doc['valid']}, {doc['counties']} counties, {len(doc['zero'])} at zero, {doc['dropped_rows']} rows dropped", flush=True)
+    for f in doc.get("lossy") or {}:
+        print("  lossy, kept as published: " + lossy_note(f), flush=True)
     # Raw history for the insight machine (Oct 21): this year's maps, every county, as
     # NDMC sent them, to history/usdm-county/ (scripts/backfill_usdm.py ongoing());
     # the workflow saves it to the private raw branch. Never blocks the page files.

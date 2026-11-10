@@ -32,8 +32,8 @@ FIPS VINTAGE
   The last two are a split and a reshape, which a 1:1 map cannot hold. Sources
   disagree about which vintage they publish: NASS cash rents still emits the old
   Connecticut county codes (data/cash-rent/CT.json carries 09003-09015). So the
-  fold happens at INGEST, not here — build_farmland_atlas.FIPS_ALIAS maps every
-  code a source might emit onto the code this file carries, and anything that
+  fold happens at INGEST, not here: county_fold.fold (the one table every county
+  builder imports) maps every code a source might emit onto the code this file carries, and anything that
   still does not match is named in the unmatched-FIPS report rather than guessed.
 
 USAGE
@@ -48,19 +48,16 @@ import os
 import sys
 
 from build_farmland_atlas import ATLAS_STATE_FIPS
+from county_fold import TABLE as FOLD_TABLE
 
 OUT = "data/atlas/counties.geo.json"
 
-# FIPS changes since the 2010 boundary vintage that are a 1:1 rename.
-FIPS_RENAMED = {
-    "46113": ("46102", "Oglala Lakota"),   # Shannon County SD -> Oglala Lakota County, 2015-05-01
-    "02270": ("02158", "Kusilvak"),        # Wade Hampton Census Area AK -> Kusilvak, 2015-07-01
-}
-
-# Codes in the source that no longer name a place. Dropped, with the reason.
-FIPS_RETIRED = {
-    "51515": "Bedford city VA reverted to a town and merged into 51019 on 2013-07-01",
-}
+# FIPS changes since the 2010 boundary vintage, from the one table (scripts/county_fold.py).
+# A rename that carries the new name is renamed here (46113 Shannon, 02270 Wade Hampton); a
+# merger names a place that no longer exists and is dropped, with the reason (51515 Bedford
+# city). A code the source does not carry is never reached.
+FIPS_RENAMED = {c: (r["to"][0], r["new_name"]) for c, r in FOLD_TABLE.items() if r["kind"] == "rename" and r.get("new_name")}
+FIPS_RETIRED = {c: r["dropped"] for c, r in FOLD_TABLE.items() if r.get("dropped")}
 
 # Census LSAD -> the word that follows the name. "County" is the default and is
 # not stored. The empty string is Carson City NV, whose name is already complete.
