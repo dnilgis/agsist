@@ -137,8 +137,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           SAVE=$RUNNER_TEMP/rain-save; rm -rf "$SAVE"; mkdir -p "$SAVE/og"
-          # only the files this run wrote or removed go over main: a file it left alone keeps main's copy,
-          # which may be newer than this run's checkout
           git ls-files -m -o --exclude-standard -- data/rain | while IFS= read -r f; do [ -f "$f" ] && echo "$f"; done > "$SAVE/changed.txt" || true
           git ls-files -d -- data/rain > "$SAVE/removed.txt"
           echo "data/rain files this run wrote: $(wc -l < "$SAVE/changed.txt"), removed: $(wc -l < "$SAVE/removed.txt")"
@@ -149,7 +147,6 @@ jobs:
             git reset -q --hard origin/main
             tar -xf "$SAVE/rain.tar"
             xargs -r rm -f < "$SAVE/removed.txt"
-            # main's copy of the fetch scripts sets the one source line, so a run that started on older code cannot bring an older line back
             python3 scripts/fetch_county_rain.py --normalize-source
             cp "$SAVE"/og/* img/og/ 2>/dev/null || true
             python3 scripts/dev/quiet.py rain-pages -- python scripts/build_county_rain.py

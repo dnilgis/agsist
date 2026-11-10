@@ -27,7 +27,9 @@ WHAT IT WILL NOT DO
   A state whose call fails keeps the file already published. A state whose
   answer is much thinner than the published one (under half the counties, same
   year) is refused and kept. No file is written that fails --check. A kept
-  file keeps its numbers; only its source line is brought current.
+  file keeps its numbers; only its source line is brought current. The county
+  rain workflow's commit step copies over main only the data/rain files a run
+  wrote or removed, then runs --normalize-source from main's copy of this file.
 
   python3 scripts/fetch_county_rain.py                    fetch every state
   python3 scripts/fetch_county_rain.py --states IA,KS     some states
