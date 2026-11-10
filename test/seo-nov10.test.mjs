@@ -62,6 +62,27 @@ test("company titles: count and crops, never a price; meta without a price", () 
   assert.ok(t[1].length <= 68 && !/Soybeans/.test(t[1]), t[1]);
   assert.equal(t[2], "X Grain Bids Today: 3 Locations, Wheat");
   assert.ok(!/\$/.test(t[3]) && t[3].length <= 160, t[3]);
+  // the count is the locations with a current bid; with none, no count at all
+  const z = JSON.parse(py("import build_company_pages as C; print(json.dumps([C.company_title('ADM', 0, []), "
+    + "C.company_desc('ADM', 89, 'Illinois', 'Nov 9', 40)]))"));
+  assert.equal(z[0], "ADM Grain Bids");
+  assert.match(z[1], /^ADM grain bids today at 40 of its 89 locations in Illinois/);
+  assert.match(read("scripts/build_company_pages.py"), /title = company_title\(short, n_live,/,
+    "the page passes the count of locations with a current bid");
+});
+
+test("seo_caps.fit never returns a title over 68, even for a 60-character company name", () => {
+  const name = "Northern Plains Agricultural Cooperative Grain and Feed Assn";
+  assert.equal(name.length, 60);
+  const r = JSON.parse(py("import seo_caps as S, build_company_pages as C; n = " + JSON.stringify(name) + "; "
+    + "print(json.dumps([S.fit([n + ' Grain Bids Today: 12 Locations | AGSIST', n + ' Grain Bids']), "
+    + "S.fit([n + ' Grain Bids' + S.SUFFIX]), S.fit(['A' * 40 + ' ' + 'B' * 40]), S.fit(['Short' + S.SUFFIX]), "
+    + "C.company_title(n, 12, ['corn', 'soybeans'])]))"));
+  for (const t of r) assert.ok(t.length <= 68, `${t.length} ${t}`);
+  assert.ok(r[0].startsWith(name) && !/AGSIST/.test(r[0]) && !/\s$/.test(r[0]), r[0]);
+  assert.equal(r[2], "A".repeat(40), "cut at a word boundary, never mid-word");
+  assert.equal(r[3], "Short | AGSIST", "the brand stays when it fits");
+  assert.ok(r[4].startsWith(name), r[4]);
 });
 
 test("Daily issue pages: the title keeps the whole headline and the date", () => {

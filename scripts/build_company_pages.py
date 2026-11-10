@@ -217,23 +217,32 @@ def answer(co, cells):
     return f"{co['short']} cash bids today: {', '.join(parts)}, {'as of' if one else 'posted'} {d}.", used
 
 
-def company_title(short, n_loc, crops):
+def company_title(short, n_live, crops):
     """"{Company} Grain Bids Today: {n} Locations, Corn and Soybeans", fitted to
-    the site's title cap (scripts/seo_caps.py). The crops named are the ones the
-    page shows a current bid for, never a crop it does not; no price, no date."""
+    the site's title cap (scripts/seo_caps.py). {n} is the number of locations
+    with a current bid on the page (n_live, the count the FAQ answer gives), not
+    every location read: a title that says "today" counts only bids posted now.
+    The crops named are the ones the page shows a current bid for, never a crop
+    it does not; no price, no date. With no current bid, no count."""
     named = [CB.CROP_LABEL[c] for c in ("corn", "soybeans") if c in crops] or [CB.CROP_LABEL[c] for c in crops]
-    locs = f"{n_loc} Location{'s' if n_loc != 1 else ''}"
     cands = []
-    if named:
-        cands.append(f"{short} Grain Bids Today: {locs}, {' and '.join(named)}")
-    cands += [f"{short} Grain Bids Today: {locs}", f"{short} Grain Bids Today", f"{short} Grain Bids"]
+    if n_live:
+        locs = f"{n_live} Location{'s' if n_live != 1 else ''}"
+        if named:
+            cands.append(f"{short} Grain Bids Today: {locs}, {' and '.join(named)}")
+        cands += [f"{short} Grain Bids Today: {locs}", f"{short} Grain Bids Today"]
+    cands.append(f"{short} Grain Bids")
     return SEO.fit(cands)
 
 
-def company_desc(short, n_loc, st_txt, posted):
-    """The meta description: never a price (a snippet outlives the bid it quotes)."""
+def company_desc(short, n_loc, st_txt, posted, n_live=None):
+    """The meta description: never a price (a snippet outlives the bid it quotes).
+    With bids posted it counts the locations with a current bid (n_live), out of
+    every location read when some have none."""
     when = f", posted {posted}" if posted else ""
     locs = f"{n_loc} location{'s' if n_loc != 1 else ''}"
+    if posted and n_live is not None and n_live < n_loc:
+        locs = f"{n_live} of its {n_loc} locations"
     if posted:
         cands = [f"{short} grain bids today at {locs} in {st_txt}: cash price, basis and delivery month by town{when}. "
                  f"Read from {short}'s public bid board.",
@@ -424,8 +433,8 @@ def build_page(co, ctx):
     indexable = bool(cells)
     ans, used = answer(co, cells)
     st_txt = ", ".join(STATE_NAMES[s] for s in states[:-1]) + (" and " if len(states) > 1 else "") + STATE_NAMES[states[-1]]
-    title = company_title(short, n_loc, [c for c in SHOW_CROPS if any(c in g for g in cells)])
-    desc = company_desc(short, n_loc, st_txt, _days(used)[0] if used else "")
+    title = company_title(short, n_live, [c for c in SHOW_CROPS if any(c in g for g in cells)])
+    desc = company_desc(short, n_loc, st_txt, _days(used)[0] if used else "", n_live)
     site = (f' (<a href="{esc(co["site"])}" rel="noopener">{esc(co["host"])}</a>)' if co.get("site") else "")
     intro = (f'<p class="cbt-sub">{esc(co["name"])} posts bids at <b>{n_loc}</b> location{"s" if n_loc != 1 else ""} '
              f'in {esc(st_txt)} that the AGSIST elevator network reads. The bids are read from {esc(short)}&rsquo;s '
@@ -635,12 +644,13 @@ def selftest():
         assert '<a href="https://www.acmecoop.example/bids" rel="noopener">acmecoop.example</a>' in p
         assert '<link rel="canonical" href="https://agsist.com/cash-bids/company/acme-co-op">' in p
         assert 'content="index,follow"' in p
-        assert "<title>Acme Co-op Grain Bids Today: 4 Locations, Corn and Soybeans</title>" in p, \
+        # the title counts the 3 locations with a current bid, not all 4 read
+        assert "<title>Acme Co-op Grain Bids Today: 3 Locations, Corn and Soybeans</title>" in p, \
             re.findall(r"<title>.*?</title>", p)
         # the meta description and og/twitter descriptions quote no price
         mds = re.findall(r'<meta (?:name|property)="(?:description|og:description|twitter:description)" content="([^"]*)"', p)
         assert mds and not any("$" in m for m in mds), mds
-        assert mds[0].startswith("Acme Co-op grain bids today at 4 locations in Nebraska and Iowa: cash price, basis"), mds
+        assert mds[0].startswith("Acme Co-op grain bids today at 3 of its 4 locations in Nebraska and Iowa: cash price, basis"), mds
         assert "ga-guard" in p and 'id="site-header"' in p, "same head and static chrome as the town pages"
         assert "\u2014" not in p, "no em dashes"
         # 2026-11-04: the basis names the futures month it is against, never the delivery month
