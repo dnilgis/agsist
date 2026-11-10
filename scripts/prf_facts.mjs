@@ -20,6 +20,7 @@
  *
  *   node scripts/prf_facts.mjs            write data/prf/facts.json
  *   node scripts/prf_facts.mjs --check    exit 1 if the file is not what this would write
+ *   node scripts/prf_facts.mjs --print    print what it would write, write nothing
  *   node scripts/prf_facts.mjs --selftest
  */
 import fs from 'node:fs';
@@ -97,7 +98,6 @@ export function build(dir) {
       const net90 = [];
       const gst = [...new Set((rec.c || []).filter((code) => countyOf[code]).map((code) => countyOf[code].st))];
       for (let i = 0; i < M.N; i++) {
-        if (o.avgMm && o.avgMm[i] != null) { normal[i].push(o.avgMm[i] / 25.4); gst.forEach((st) => stAcc(st).normal[i].push(o.avgMm[i] / 25.4)); }
         for (const cov of M.COVERAGE) {
           const rate = o.rates[cov][i]; if (rate == null || !(rate > 0)) continue;
           const mf = meanFactor(index, i, cov); if (mf == null) continue;
@@ -108,6 +108,9 @@ export function build(dir) {
             let below = 0; Object.keys(index).forEach((y) => { if (index[y][i] < 0.9 - 1e-12) below++; });
             paidYears90[i].push(below);
             gst.forEach((st) => { const a = stAcc(st); a.rate[i].push(rate * 100); a.below[i].push(below); a.pb.push(pb); });
+            /* normal over the same rated grids as the premium and the years (the caption says "among those USDA rates for that pair";
+               panel, Nov 9: over all 13,414 grids it read Apr-May 5.77 in, May-Jun 6.57, against 5.87 and 6.79 over rated grids) */
+            if (o.avgMm && o.avgMm[i] != null) { normal[i].push(o.avgMm[i] / 25.4); gst.forEach((st) => stAcc(st).normal[i].push(o.avgMm[i] / 25.4)); }
             if (o.avgMm && o.avgMm[i] != null) net90.push({ i, net: mf - rate * (1 - sub90), mm: o.avgMm[i] });
           }
         }
@@ -181,7 +184,9 @@ if (arg === '--selftest') {
   console.log(bad ? 'selftest: ' + bad + ' failed' : 'selftest: all passed'); process.exit(bad ? 1 : 0);
 }
 const out = JSON.stringify(build(DIR), null, 1) + '\n', file = path.join(DIR, 'facts.json');
-if (arg === '--check') {
+if (arg === '--print') {
+  process.stdout.write(out);
+} else if (arg === '--check') {
   const have = fs.existsSync(file) ? fs.readFileSync(file, 'utf8') : '';
   if (have !== out) { console.error('data/prf/facts.json is not what scripts/prf_facts.mjs writes from data/prf. Run it.'); process.exit(1); }
   console.log('data/prf/facts.json matches data/prf');
