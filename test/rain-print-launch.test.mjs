@@ -523,7 +523,7 @@ test("station words are honest and the same everywhere", () => {
   assert.ok(!/Rain gauge/.test(S2), "the page says Weather station, not Rain gauge");
   assert.match(S2, /'Weather station: ' \+ gaugeHtml\(m\)/);
   assert.match(S2, /none\.retry = true/, "no answer from any station offers Try again");
-  assert.match(S2, /The only station near ' \+ g\.name/, "one station is not 'none of the 1'");
+  assert.match(S2, /The only station near ' \+ (g\.name|town)/, "one station is not 'none of the 1'");
   assert.match(S2, /milesText\(miles\(s\.km\)\) \+ ', ' \+ s\.valid_daterange/, "the station option text is short enough to show whole");
 });
 

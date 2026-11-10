@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 410;  // v410 2026-11-09: USDA calendar page. Method text out of the reading path, one closed Sources and terms fold at the bottom (bot-scorecard.js?v=2, priced-in.js?v=3). (410, next after main's 409)
+var CACHE_VERSION = 412;  // v412 2026-11-09: Rain Print panel fixes. The pick keeps the nearest station with rain and snowfall records (gray lines off under 30 full years), a thin year names the exact-spot estimate, a typo offers the nearest spelling and S.D. is read, one full years rule, a Sources and terms fold (rain-print.js?v=92, places.js?v=2, rain-print-extras.js?v=3, rain-print-records.js?v=5, rp-canada.js?v=5, rain-county-print.js?v=48, here.js?v=46). (412, next after main's 410)
+// var CACHE_VERSION = 410;  // v410 2026-11-09: USDA calendar page. Method text out of the reading path, one closed Sources and terms fold at the bottom (bot-scorecard.js?v=2, priced-in.js?v=3). (410, next after main's 409)
 // var CACHE_VERSION = 409;  // v409 2026-11-09: fx/cash-bids-panel. /cash-bids panel fixes: no-ZIP table shows the reader's state first and says est., the email ask is one line under that table, the sticky bar returns after results (bar-cash-bids), Best price skips basisOdd rows, no stale best-bid line. (409, next after main's 408)
 // var CACHE_VERSION = 408;  // v408 2026-11-10: data links left. /spray names its measured inversion networks in text and a Sources and terms fold, /cash-lease prints Iowa Code 562.6 as text (no data-source URLs in their scripts). (408, next after main's 407)
 // var CACHE_VERSION = 407;  // v407 2026-11-09: phone width. Nested cards on 23 pages add no extra side padding at 480px and under (fx/phone-width). (407, next after main's 406)
