@@ -4392,6 +4392,7 @@ def selftest():
     _selftest_off_feed()
     _selftest_storage()
     _selftest_buyers()
+    _selftest_town_audit()
     # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
                   (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
@@ -5131,6 +5132,68 @@ def _selftest_buyers():
                 assert "data-buyers" not in fr and "cb-buyers.js" not in fr, "no buyer: no line and no script"
     finally:
         BUY.load = keep
+
+
+def _selftest_town_audit():
+    """Real cases from the town pages on Nov 9-10, 2026."""
+    # one freshness rule: two closed day sessions (1:20 pm CT), as /cash-bids marks a board
+    fri = dt.datetime(2026, 11, 6, 14, 0, tzinfo=CT)
+    assert SB.fresh_until(fri).astimezone(CT) == dt.datetime(2026, 11, 10, 13, 20, tzinfo=CT)
+    mon = dt.datetime(2026, 11, 9, 9, 0, tzinfo=CT)
+    assert SB.fresh_until(mon).astimezone(CT) == dt.datetime(2026, 11, 10, 13, 20, tzinfo=CT)
+    assert SB.is_fresh(fri, dt.datetime(2026, 11, 9, 16, 0, tzinfo=CT)) and \
+        not SB.is_fresh(fri, dt.datetime(2026, 11, 10, 13, 21, tzinfo=CT))
+    # a read elevator is not also listed as "not read yet": Cameron MO (Co-operative), Wisner NE (ADM)
+    cam = {"name": "Cameron", "state": "MO", "boards": {"p": {"operator": "Cameron Cooperative Elevator Association"}}}
+    assert known_section(cam, [{"id": "known:x", "name": "Cameron Co-operative Elevator Association",
+                                "town": "Cameron", "state": "MO"}]) == ""
+    wis = {"name": "Wisner", "state": "NE", "boards": {"p": {"operator": "ADM"}}}
+    assert known_section(wis, [{"id": "known:y", "name": "Archer-Daniels-Midland Company", "town": "Wisner",
+                                "state": "NE"}]) == ""
+    assert known_section(wis, [{"id": "known:z", "name": "Wisner Farmers Coop", "town": "Wisner", "state": "NE"}])
+    # twin boards named by the facility each names (four ADM boards on the Evansville IN page)
+    ev = [{"operator": "ADM", "city": "Evansville", "branch": "Evansville", "town": "Evansville", "point": p}
+          for p in ("1st Ave", "Broadway", "Ohio St", "River South")]
+    name_twins(ev)
+    assert [head_name(b) for b in ev] == ["ADM (1st Ave)", "ADM (Broadway)", "ADM (Ohio St)", "ADM (River South)"]
+    one = [{"operator": "Scoular", "city": "Fremont", "branch": "Fremont", "town": "Fremont", "point": "Elevator"}]
+    name_twins(one)
+    assert head_name(one[0]) == "Scoular", "a board with no twin keeps its name"
+    # a posted label in short lists: "New crop 2026" is never printed as "Nov"
+    snap = dt.datetime(2026, 11, 10, 9, tzinfo=CT)
+    assert deliv_short({"label": "New crop 2026", "dm": "2026-11"}, snap) == "New crop 2026"
+    assert deliv_short({"label": "Nov 2026", "dm": "2026-11"}, snap) == "Nov delivery"
+    assert deliv_short({"label": "Harvest 2026", "dm": "2026-11"}, snap) == "Harvest 2026"
+    # an inferred contract: Five Star Cooperative, Lime Springs IA, corn Nov26 $3.77 basis -63c, no futures month;
+    # cash - basis = $4.40, Dec '26 as five other boards read it that day; Mar '27 is 14 cents off
+    pt = dt.datetime(2026, 11, 9, 10, tzinfo=CT)
+
+    def rw(cash, basis, con, crop="corn"):
+        return {"crop": crop, "dm": "2026-11", "cash": cash, "basis": basis, "contract": con, "priced": pt,
+                "label": "Nov 2026"}
+    dec, mar = ("ZC", 11, 2026), ("ZC", 2, 2027)
+    others = [rw(4.40 - b, -b, dec) for b in (0.30, 0.35, 0.40, 0.45, 0.50)] + \
+        [rw(4.54 - b, -b, mar) for b in (0.30, 0.35, 0.40, 0.45, 0.50)]
+    ls = rw(3.77, -0.63, None)
+    far = rw(3.70, -0.63, None)
+    towns = {("IA", "x"): {"name": "x", "state": "IA", "boards": {"a": {"rows": others}, "b": {"rows": [ls, far]}}}}
+    assert infer_contracts(towns) == 1
+    assert ls["contract"] == dec and ls.get("inferred") and con_text(ls) == "Dec '26 (inferred)"
+    assert far["contract"] is None, "seven cents off every contract: no month is guessed"
+    # a relay board: Farmers Cooperative Elevator's "ADM, Marshall" board posts ADM Corn Processing's bids cent for cent
+    a1, a2 = rw(3.96, -0.45, dec), dict(rw(4.10, -0.44, mar), dm="2027-03")
+    adm = {"operator": "ADM", "city": "Marshall", "branch": "Marshall", "point": "Corn Processing", "town": "Marshall",
+           "rows": [a1, a2, rw(3.90, -0.50, dec, "soybeans")]}
+    fce = {"operator": "Farmers Cooperative Elevator Co", "city": "ADM, Marshall", "branch": "ADM, Marshall",
+           "point": "", "town": "Marshall", "rows": [dict(a1), dict(a2)]}
+    own = {"operator": "Farmers Cooperative Elevator Co", "city": "Hanley Falls", "branch": "Hanley Falls", "point": "",
+           "town": "Hanley Falls", "rows": [dict(a1), dict(a2)]}
+    tw = {("MN", "marshall"): {"name": "Marshall", "state": "MN", "boards": {"adm": adm, "fce": fce}},
+          ("MN", "hanley-falls"): {"name": "Hanley Falls", "state": "MN", "boards": {"own": own}}}
+    assert mark_relays(tw) == 1
+    assert fce["relay_of"] == ("ADM", "Marshall", "MN") and "relay_of" not in adm
+    assert "relay_of" not in own, "same numbers but no ADM in its own place name: not called a relay"
+    print("town audit selftest OK")
 
 
 def _selftest_known():
