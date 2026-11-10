@@ -64,9 +64,18 @@ def esc(s):
     return htmlmod.escape(nodash("" if s is None else s), quote=True)
 
 
+def _d3(n, u):
+    """Stocks and production in billion bushels read like USDA prints them: 1.840, not 1.84.
+    Twin of d3() in components/priced-in.js."""
+    if u == "bil bu" and isinstance(n, (int, float)) and not isinstance(n, bool):
+        return f"{n:.3f}"
+    return n
+
+
 def num(n, u=""):
     if n is None:
         return "-"
+    n = _d3(n, u)
     return f"{n} {u}".strip() if u else str(n)
 
 
@@ -172,13 +181,13 @@ def numbers_el(rows):
         u = (" " + r["unit"]) if r.get("unit") else ""
         exp = ((DASH + ('<div style="font-size:.72rem;color:var(--wp-mut)">'
                         + _esc4(r["expected_why"]) + "</div>" if r.get("expected_why") else ""))
-               if r.get("expected") is None else (_sig(r["expected"]) + u + (
+               if r.get("expected") is None else (_sig(_d3(r["expected"], r.get("unit"))) + u + (
                    '<div style="font-size:.72rem;color:var(--wp-mut)">source date unknown</div>'
                    if r.get("source_date_unknown") else "")))
         rng = ('<div style="font-size:.72rem;color:var(--wp-mut)">range '
-               + _sig(r["low"]) + " to " + _sig(r["high"]) + "</div>") \
+               + _sig(_d3(r["low"], r.get("unit"))) + " to " + _sig(_d3(r["high"], r.get("unit"))) + "</div>") \
             if (r.get("low") is not None and r.get("high") is not None) else ""
-        now = DASH if r.get("usda_current") is None else (_sig(r["usda_current"]) + u)
+        now = DASH if r.get("usda_current") is None else (_sig(_d3(r["usda_current"], r.get("unit"))) + u)
         if r.get("actual") is None:
             printed = '<td class="wait">' + _esc4(r.get("why") or "not printed yet") + "</td>"
         else:
@@ -196,7 +205,7 @@ def numbers_el(rows):
             # numbersEl()'s ctx; test/wpi-numbers-strip.test.mjs holds them.
             ctx = ('<div style="font-size:.72rem;color:var(--wp-mut)">' + _esc4(r["context"]) + "</div>"
                    if r.get("context") else "")
-            printed = '<td class="n"><b>' + _sig(r["actual"]) + u + "</b>" + tag + ctx + "</td>"
+            printed = '<td class="n"><b>' + _sig(_d3(r["actual"], r.get("unit"))) + u + "</b>" + tag + ctx + "</td>"
         body.append("<tr><td>" + _esc4(r.get("label")) + rng + '</td><td class="n">' + exp
                     + '</td><td class="n">' + now + "</td>" + printed + "</tr>")
     # One link per distinct survey, same as numbersEl(): a report's yields and its
@@ -236,7 +245,7 @@ def to_beat_el(tb, next_report):
         return ""
     p = str(tb.get("date") or "").split("-")
     md = (MO3[int(p[1]) - 1] + " " + str(int(p[2]))) if len(p) == 3 else _esc4(tb.get("date"))
-    body = "".join('<tr><td>' + _esc4(r.get("label")) + '</td><td class="n"><b>' + _esc4(_sig(r.get("value")))
+    body = "".join('<tr><td>' + _esc4(r.get("label")) + '</td><td class="n"><b>' + _esc4(_sig(_d3(r.get("value"), r.get("unit"))))
                    + " " + _esc4(r.get("unit")) + "</b></td></tr>" for r in tb["rows"])
     return ('<div class="wp-nums wp-beat"><div class="nh"><b>The number to beat</b><span>USDA\u2019s '
             + _esc4(tb.get("report")) + " (" + md + "), standing until the " + _esc4(next_report or "next report")
@@ -333,7 +342,7 @@ def last_line(lr):
     md = f"{MON3[m - 1]} {d}"
 
     def n_(v, u):
-        return "-" if v is None else (f"{_sig(v)} {u}" if u else _sig(v))
+        return "-" if v is None else (f"{_sig(_d3(v, u))} {u}" if u else _sig(v))
     if not lr.get("metric_count"):
         body = "No figure had a trade estimate to grade it against."
     elif lr.get("all_in_line") or not b.get("metric"):
@@ -391,7 +400,7 @@ def result_banner(lr):
         if b.get("context") and b.get("low") is not None and b.get("high") is not None:
             c = b["context"]
             in_note = (f'<div class="wp-res-reaction">{esc(c[:1].upper() + c[1:])} '
-                       f'({_sig(b["low"])} to {_sig(b["high"])}).</div>')
+                       f'({_sig(_d3(b["low"], b.get("unit")))} to {_sig(_d3(b["high"], b.get("unit")))}).</div>')
         big = (
             '<div class="wp-res-big">'
             f'<div class="wp-res-row"><span class="wp-res-metric">{esc(b["metric"])}</span>'
@@ -414,6 +423,7 @@ def result_banner(lr):
 def fmt_num_nbsp(n, u):
     if n is None:
         return "n/a"
+    n = _d3(n, u)
     return f"{n} {u}" if u else str(n)
 
 
@@ -854,8 +864,10 @@ TOP_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "A
 TOP_NOON = re.compile(r"WASDE|Crop Production|Grain Stocks|Plantings|Acreage", re.I)
 
 
-def _top_n(x):
-    """4574 -> '4,574'; 179.6 stays 179.6."""
+def _top_n(x, u=None):
+    """4574 -> '4,574'; 179.6 stays 179.6; 1.84 billion bu -> 1.840."""
+    if u == "bil bu":
+        return _sig(_d3(x, u))
     if isinstance(x, (int, float)) and abs(x) >= 1000 and float(x).is_integer():
         return f"{int(x):,}"
     return _sig(x)
@@ -919,7 +931,7 @@ def _top_unit(u):
     return TOP_UNITS.get(u or "", u or "")
 
 
-def _top_bar(v, avg, lo, hi, label):
+def _top_bar(v, avg, lo, hi, label, ru=None):
     """Dot = USDA (or nothing before a release), line = trade low to high, tick = trade average."""
     pts = [x for x in (v, avg, lo, hi) if x is not None]
     if lo is None or hi is None or not pts or max(pts) <= min(pts):
@@ -932,42 +944,44 @@ def _top_bar(v, avg, lo, hi, label):
     dot = f'<span class="ct-dot" style="left:{p(v)}"></span>' if v is not None else ""
     return (f'<div class="ct-bar" role="img" aria-label="{esc(label)}">'
             f'<span class="ct-line" style="left:{p(lo)};right:{100 - (hi - a) / (b - a) * 100:.1f}%"></span>'
-            f'{tick}{dot}</div><div class="ct-ends" aria-hidden="true"><span>{_top_n(lo)}</span><span>{_top_n(hi)}</span></div>')
+            f'{tick}{dot}</div><div class="ct-ends" aria-hidden="true"><span>{_top_n(lo, ru)}</span><span>{_top_n(hi, ru)}</span></div>')
 
 
 def _top_card(r, before_word):
     _, name = _top_label(r.get("label"))
-    u = _top_unit(r.get("unit"))
+    ru = r.get("unit")
+    u = _top_unit(ru)
     v, avg, lo, hi = r.get("actual"), r.get("expected"), r.get("low"), r.get("high")
     tag = ""
     if r.get("surprise") == "in line":
         tag = '<span class="ct-tag">In line</span>'
     elif r.get("surprise") in ("bullish", "bearish"):
         tag = ('<span class="ct-tag ct-off">' + ("Under" if v < avg else "Over") + " the trade</span>")
-    prev = (f' &middot; {esc(before_word)} {_top_n(r["usda_current"])}' if r.get("usda_current") is not None else "")
-    label = (f"USDA {_top_n(v)} {u}, trade range {_top_n(lo)} to {_top_n(hi)}, trade average {_top_n(avg)}"
+    prev = (f' &middot; {esc(before_word)} {_top_n(r["usda_current"], ru)}' if r.get("usda_current") is not None else "")
+    label = (f"USDA {_top_n(v, ru)} {u}, trade range {_top_n(lo, ru)} to {_top_n(hi, ru)}, trade average {_top_n(avg, ru)}"
              if lo is not None and hi is not None else "")
     return (f'<li class="ct-c"><div class="ct-k">{esc(name)}{tag}</div>'
-            f'<div class="ct-v"><b class="ct-big">{_top_n(v)}</b> <span class="ct-u">{esc(u)}</span></div>'
-            f'<div class="ct-vs">Trade <b>{_top_n(avg)}</b>{prev}</div>'
-            f'{_top_bar(v, avg, lo, hi, label)}</li>')
+            f'<div class="ct-v"><b class="ct-big">{_top_n(v, ru)}</b> <span class="ct-u">{esc(u)}</span></div>'
+            f'<div class="ct-vs">Trade <b>{_top_n(avg, ru)}</b>{prev}</div>'
+            f'{_top_bar(v, avg, lo, hi, label, ru)}</li>')
 
 
 def _top_next_card(r):
     """Before a release: the trade's average big, its range, and USDA's standing figure."""
     _, name = _top_label(r.get("label"))
-    u = _top_unit(r.get("unit"))
+    ru = r.get("unit")
+    u = _top_unit(ru)
     avg, lo, hi, now = r.get("expected"), r.get("low"), r.get("high"), r.get("usda_current")
     if avg is None:
         big, vs = now, "USDA now"
         bar = ""
     else:
-        big, vs = avg, ("Trade average" + (f" &middot; USDA now {_top_n(now)}" if now is not None else ""))
-        bar = _top_bar(None, avg, lo, hi, f"Trade range {_top_n(lo)} to {_top_n(hi)} {u}, average {_top_n(avg)}")
+        big, vs = avg, ("Trade average" + (f" &middot; USDA now {_top_n(now, ru)}" if now is not None else ""))
+        bar = _top_bar(None, avg, lo, hi, f"Trade range {_top_n(lo, ru)} to {_top_n(hi, ru)} {u}, average {_top_n(avg, ru)}", ru)
     if big is None:
         return ""
     return (f'<li class="ct-c"><div class="ct-k">{esc(name)}</div>'
-            f'<div class="ct-v"><b class="ct-big">{_top_n(big)}</b> <span class="ct-u">{esc(u)}</span></div>'
+            f'<div class="ct-v"><b class="ct-big">{_top_n(big, ru)}</b> <span class="ct-u">{esc(u)}</span></div>'
             f'<div class="ct-vs">{vs}</div>{bar}</li>')
 
 

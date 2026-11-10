@@ -96,6 +96,10 @@ test("graded report: one card per number in the set order, the bar, the headline
   assert.equal((html.match(/class="ct-tick"/g) || []).length, 4);
   assert.match(html, /Tighter than the trade expected: corn and soybean ending stocks came in under the trade average\./);
   assert.match(html, /<b class="ct-big">4,574<\/b>/);
+  // billion-bushel figures read like USDA prints them, three decimals
+  assert.match(html, /<b class="ct-big">1\.758<\/b>/);
+  assert.match(html, /Trade <b>1\.840<\/b>/);
+  assert.match(html, /<span>1\.698<\/span><span>1\.969<\/span>/);
   assert.match(html, rx(`Trade <b>180.3</b> &middot; USDA in ${before(iso(-1))} 181.2`));
   assert.match(html, /11:00 a\.m\. CT/);
   assert.match(html, /Source: USDA WASDE-677/);
@@ -179,7 +183,7 @@ test("in Chromium at 390 and 1280 px: numbers within the first screen, under 6 s
         return { head: y(document.getElementById("latest-h")), big: y(document.querySelector("#latest .ct-big")),
           mode: document.querySelector("#latest .ct")?.dataset.mode, H: document.documentElement.scrollHeight,
           vw: document.documentElement.clientWidth, sw: document.documentElement.scrollWidth,
-          open: [...document.querySelectorAll("main details")].filter((d) => d.open).map((d) => d.className + "#" + d.id + ":" + (d.querySelector("summary") || {}).textContent).join(" | "), n5: document.querySelectorAll("#cal-next5 li").length };
+          open: [...document.querySelectorAll("main details")].filter((d) => d.open).map((d) => d.className + "#" + d.id + ":" + (d.querySelector("summary") || {}).textContent).join(" | "), n5: document.querySelectorAll("#cal-next5 li[data-type]").length };
       });
       assert.ok(m.mode === "results" || m.mode === "next", `${width}: a top block (${m.mode})`);
       assert.ok(m.head !== null && m.head < 900, `${width}: the headline starts on the first screen (${m.head})`);
@@ -189,11 +193,30 @@ test("in Chromium at 390 and 1280 px: numbers within the first screen, under 6 s
       assert.ok(m.sw <= m.vw, `${width}: no sideways scroll (${m.sw} > ${m.vw})`);
       assert.equal(m.open, "", `${width}: every fold ships closed`);
       assert.ok(m.n5 >= 1 && m.n5 <= 5, `${width}: next reports listed (${m.n5})`);
+      // with no saved choice the crop reports lead, then the weekly line, then the rest
+      const order = await pg.$$eval("#cal-next5 li", (ls) => ls.map((l) => l.dataset.type || (l.classList.contains("cal-n5-wk") ? "weekly" : "")));
+      const CROP = ["wasde", "supply", "stocks", "plantings"], firstOther = order.findIndex((t) => !CROP.includes(t));
+      if (firstOther >= 0) assert.ok(order.slice(firstOther).every((t) => !CROP.includes(t)), `${width}: crop reports first (${order})`);
+      const wi = order.indexOf("weekly");
+      if (wi >= 0) assert.ok(order.slice(0, wi).every((t) => CROP.includes(t)) && order.slice(wi + 1).every((t) => !CROP.includes(t)), `${width}: weekly line after the crop reports (${order})`);
       // a link to a folded section opens it
       await pg.evaluate(() => document.querySelector('.cal-jump a[href="#priced-in"]').click());
       assert.equal(await pg.evaluate(() => document.querySelector("#priced-in > details.fold").open), true, "the priced-in link opens its fold");
       assert.deepEqual(errors, []);
       await ctx.close();
     }
+    // a reader who picked livestock gets livestock reports first
+    const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 844 } });
+    await ctx.route(PLACES_ROUTE, (q) => q.abort());
+    await ctx.route("**/*", (q) => (q.request().url().startsWith(base) ? q.continue() : q.abort()));
+    await ctx.addInitScript(() => { try { localStorage.setItem("agsist-cal-grow", "stock"); } catch (e) {} });
+    const pg = await ctx.newPage();
+    await pg.goto(`${base}/usda-calendar`, { waitUntil: "load" });
+    await pg.waitForFunction(() => document.querySelectorAll("#cal-next5 li").length > 0);
+    const st = await pg.$$eval("#cal-next5 li", (ls) => ls.map((l) => l.dataset.type || ""));
+    const fo = st.findIndex((t) => t !== "livestock");
+    if (fo >= 0) assert.ok(st.slice(fo).every((t) => t !== "livestock"), `livestock first for a livestock reader (${st})`);
+    assert.ok(!st.includes(""), "no weekly crop line at the top for a livestock reader");
+    await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
