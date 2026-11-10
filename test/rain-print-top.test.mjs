@@ -54,7 +54,7 @@ test("county pages: the Rain Print is the first chart, the plain chart lives ins
     assert.ok(!/ hidden[ >]/.test(body.split(">")[0]), `${p}: the figure is not a hidden shell any more`);
     assert.equal((main.match(/aria-labelledby="rc-ct"/g) || []).length, 1, `${p}: one plain chart in the page`);
     const art = body.slice(body.indexOf('<div class="rc-print-art">'));
-    assert.ok(art.startsWith('<div class="rc-print-art"><svg viewBox=') && art.includes('<title id="rc-ct">Running total of rain in '),
+    assert.ok(art.startsWith('<div class="rc-print-art"><svg viewBox=') && /<title id="rc-ct">Running total of rain (in |at the [^<]* snow site in )/.test(art),
       `${p}: the plain chart, with its title, is inside the print's art box`);
     assert.ok(body.includes('<span class="rc-cap-chart">Inches of rain added up day by day') && body.includes('<span class="rc-cap-print" hidden>'),
       `${p}: both captions ship; the print's waits hidden`);
