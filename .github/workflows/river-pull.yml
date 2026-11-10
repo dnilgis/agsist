@@ -53,7 +53,7 @@ jobs:
       - name: Save to the raw branch
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
-        run: bash scripts/push_raw.sh "river pull: grain docks and waterway lines" river
+        run: bash scripts/push_raw.sh "river pull, grain docks and waterway lines" river
       - name: Summary
         if: ${{ !cancelled() }}
         run: |
