@@ -189,7 +189,7 @@ def apply_day(state, rows, date):
 
 
 # ------------------------------------------- the old feed's unit errors ---
-# THE OCT 29 DATA CHECK (the private repo the private notes. The old
+# THE OCT 29 DATA CHECK (in the private notes). The old
 # Barchart feed's rows were read by fetch_bids.py `_norm_basis`, which divided
 # by 100 only when |basis| >= 5: a basis of 1 to 4 CENTS was stored as 1 to 4
 # DOLLARS, so this record holds 100 to 400 where the board meant 1 to 4. The

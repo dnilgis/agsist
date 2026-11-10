@@ -102,7 +102,7 @@ PRF_NEXT = ("Reply with your price for these states (Reply goes to them). Terms:
             "placement through Dec 31, first say on renewing. Once paid, add one entry per state to data/prf-sponsors.json "
             "(name, url, line, phone, logo in img/sponsors/ under 50 KB, through YYYY-12-31) and commit. It shows on the state "
             "page, every county page and the /prf result for that state on that commit.")
-# What the owner does with a "make it for me" request (rain-print-help, 2026-10-30). How-to: the private repo the private notes.
+# What the owner does with a "make it for me" request (rain-print-help, 2026-10-30). How-to: the private notes.
 RPH_NEXT = ("Call or write them and ask a few things (the year, the name for the print, any dates to mark). Make two or three "
             "versions on agsist.com/rain-print, press Copy link on each, and email the links. They open one and order it the "
             "usual way; the proof email is where they approve it. No charge for the help.")

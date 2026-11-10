@@ -1,6 +1,6 @@
 /**
  * Publish only the site (.github/workflows/pages.yml, scripts/pages_publish.py).
- * The plan: the private repo the private notes.
+ * The plan: the private notes.
  *
  * - the workflow is off until the repository variable PAGES_FROM_ACTIONS is 1,
  *   so it can sit on main while Pages still deploys from the branch

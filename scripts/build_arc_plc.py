@@ -1023,7 +1023,7 @@ def signup_copy(today):
     c6, o7, c7 = nice_date(a["close"]), nice_date(b["open"]), nice_date(b["close"])
     sign = ("Sign", "Producers with a share in the crop sign. FSA says a landowner with no share interest, such as a cash-rent landlord, cannot enroll.")
     bring = ("Bring", "Bring the farm&rsquo;s FSA-156EZ. It lists the base acres and PLC yields.")
-    # USDA FSA's ARC/PLC page, read Nov 2, 2026 (the private repo the private notes entry of that date): "providing an additional
+    # USDA FSA's ARC/PLC page, read Nov 2, 2026 (the private notes entry of that date): "providing an additional
     # 30 million base acres to be added to farms nationwide" and "Because eligible acres exceeded the nationwide
     # 30-million-acre cap ... a prorated reduction of 3.69% to all newly allocated base acres." FSA's own releases
     # differ on "more than 30 million" and "first in 20 years", so neither is said here.

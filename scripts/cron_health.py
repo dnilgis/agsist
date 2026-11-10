@@ -19,7 +19,7 @@ push) is a red row that daily-site-check.yml, on GitHub's own cron, reports
 even when cron-job.org has stopped dispatching this one.
 
 THE PRIVATE REPO (Oct 20, 2026). No page reads this file, so it lives in the
-private repo the private repo (branch private-data) at
+private repo (branch private-data) at
 private/data/cron-health.json, with the raw and references branches. The
 workflows unpack the last copy there with scripts/pull_raw.sh and save the new
 one with scripts/push_raw.sh. Two rows watch that link, from one API call with
