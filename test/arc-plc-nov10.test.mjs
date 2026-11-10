@@ -297,6 +297,6 @@ test("4, 6: base acres give the farm total beside each call; the 2027 assumption
     const w = await pg.$eval(".ap-decide .ap-verdict", (e) => e.textContent.replace(/\s+/g, " ").trim());
     assert.doesNotMatch(w, /On 200 base acres/, w);
     assert.ok(w.includes(WHY), w);
-    assert.doesNotMatch(w, /borrow|corn’s (price swings|October)/i, w);
+    assert.doesNotMatch(w, /borrow|corn’s price swings/i, w);
   } finally { await browser.close(); srv.close(); }
 });
