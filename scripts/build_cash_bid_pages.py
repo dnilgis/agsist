@@ -101,7 +101,7 @@ import phone_corrections  # noqa: E402  (numbers checked on the buyer's own site
 import storesell  # noqa: E402  (the site's one store-or-sell calculation, twin of components/storesell.js)
 import build_buyers as BUY  # noqa: E402  (where the big buyers are: data/buyers.json)
 from elevator_names import clean_place, display_name  # noqa: E402  (page-title names fixed, twin of elev-names.js)
-from elevator_names import fac_key, trade_key, basis_name  # noqa: E402  (the one elevator name key)
+from elevator_names import fac_key, fac_words, trade_key, basis_name  # noqa: E402  (the one elevator name key)
 from build_state_basis_pages import (  # noqa: E402
     CT, MONTH_ABBR, SITE, STATE_NAMES, contract_label, esc, money_basis, parse_contract, parse_ts)
 
@@ -1078,9 +1078,23 @@ def infer_contracts(towns):
     return n
 
 
-RELAY_MIN_ROWS = 2
+RELAY_MIN_ROWS = 3     # rows that must match; two are enough only when they are two crops (relay_enough)
 RELAY_CENT = 0.0101   # $/bu: a relay may round the other's cash to the cent (ADM $3.9625, the relay $3.96)
 RELAY_SHARE = 0.8     # share of the board's rows that must be the other's (the Marshall relay files ADM's June row as July)
+
+
+def relay_enough(hits):
+    """Enough matching rows to call a board a relay: RELAY_MIN_ROWS, or two
+    rows of two different crops. Two rows of one crop can agree to the cent by
+    chance (a short board beside a big buyer), so they are not enough."""
+    return len(hits) >= RELAY_MIN_ROWS or (len(hits) == 2 and len({r["crop"] for r in hits}) == 2)
+
+
+def name_in(name_words, where_words):
+    """True when the name's words appear, in order and whole, inside the place
+    words: ADM in "ADM, Marshall", not in "Ladmore Grain"; CHS not in "Chester"."""
+    k = len(name_words)
+    return k > 0 and any(where_words[i:i + k] == name_words for i in range(len(where_words) - k + 1))
 
 
 def mark_relays(towns):
@@ -1088,9 +1102,10 @@ def mark_relays(towns):
     Elevator's "ADM, Marshall" and "Granite Falls Energy" boards post ADM's and
     Granite Falls Energy's own bids cent for cent) stays listed, marked "same
     bids as" that elevator, and is not counted or ranked a second time. Both
-    must hold: the other elevator's name is in the board's own place name, and
-    at least RELAY_SHARE of the rows the board posts (and RELAY_MIN_ROWS) are
-    the other's: same crop, delivery month and basis, cash to the cent."""
+    must hold: the other elevator's name is in the board's own place name, on
+    whole words (name_in), and at least RELAY_SHARE of the rows the board posts
+    are the other's (same crop, delivery month and basis, cash to the cent),
+    with enough of them to rule out chance (relay_enough)."""
     boards = [(t, bd) for t in towns.values() for bd in t["boards"].values() if bd["rows"]]
     sig = lambda r: (r["crop"], r["dm"], r["basis"])   # noqa: E731
     by_sig = defaultdict(list)
@@ -1102,13 +1117,13 @@ def mark_relays(towns):
         cash = defaultdict(list)
         for r in other_rows:
             cash[sig(r)].append(r["cash"])
-        hit = sum(1 for r in mine_rows if any(abs(r["cash"] - c) <= RELAY_CENT for c in cash.get(sig(r), ())))
-        return hit >= RELAY_MIN_ROWS and hit >= RELAY_SHARE * len(mine_rows)
+        hits = [r for r in mine_rows if any(abs(r["cash"] - c) <= RELAY_CENT for c in cash.get(sig(r), ()))]
+        return relay_enough(hits) and len(hits) >= RELAY_SHARE * len(mine_rows)
     n = 0
     for t, bd in boards:
-        if len(bd["rows"]) < RELAY_MIN_ROWS or bd["rows"][0]["basis"] is None:
+        if len(bd["rows"]) < 2 or bd["rows"][0]["basis"] is None:
             continue
-        where = fac_key(" ".join(x for x in (bd.get("branch") or "", bd.get("city") or "", bd.get("point") or "") if x))
+        where = fac_words(" ".join(x for x in (bd.get("branch") or "", bd.get("city") or "", bd.get("point") or "") if x))
         me = fac_key(bd["operator"])
         seen = set()
         for s_ in {sig(r) for r in bd["rows"]}:
@@ -1116,8 +1131,8 @@ def mark_relays(towns):
                 if id(other) in seen:
                     continue
                 seen.add(id(other))
-                ok_ = fac_key(other["operator"])
-                if other is bd or not ok_ or ok_ == me or ok_ not in where or other.get("relay_of"):
+                ow = fac_words(other["operator"])
+                if other is bd or not ow or "".join(ow) == me or not name_in(ow, where) or other.get("relay_of"):
                     continue
                 if covered(bd["rows"], other["rows"]):
                     bd["relay_of"] = (head_name(other, with_town=False), t2["name"], t2["state"])
@@ -5357,11 +5372,12 @@ def _selftest_town_fixes():
     assert far["contract"] is None, "seven cents off every contract: no month is guessed"
     # a relay board: Farmers Cooperative Elevator's "ADM, Marshall" board posts ADM Corn Processing's bids cent for cent
     a1, a2 = rw(3.9625, -0.45, dec), dict(rw(4.1, -0.45, mar), dm="2027-01")
+    a3 = dict(rw(4.15, -0.40, mar), dm="2027-02")
     adm = {"operator": "ADM", "city": "Marshall", "branch": "Marshall", "point": "Corn Processing", "town": "Marshall",
-           "rows": [a1, a2, rw(3.90, -0.50, dec, "soybeans")]}
+           "rows": [a1, a2, a3, rw(3.90, -0.50, dec, "soybeans")]}
     # the relay posts $3.96 and $4.09 where ADM posts $3.9625 and $4.10 (Nov 6 snapshot)
     fce = {"operator": "Farmers Cooperative Elevator Co", "city": "ADM, Marshall", "branch": "ADM, Marshall",
-           "point": "", "town": "Marshall", "rows": [dict(a1, cash=3.96), dict(a2, cash=4.09)]}
+           "point": "", "town": "Marshall", "rows": [dict(a1, cash=3.96), dict(a2, cash=4.09), dict(a3)]}
     half = {"operator": "Other Co-op", "city": "ADM Marshall", "branch": "ADM Marshall", "point": "", "town": "Marshall",
             "rows": [dict(a1, cash=3.96), dict(a2, basis=-0.30), dict(a2, dm="2027-05", basis=-0.20)]}
     own = {"operator": "Farmers Cooperative Elevator Co", "city": "Hanley Falls", "branch": "Hanley Falls", "point": "",
@@ -5372,6 +5388,29 @@ def _selftest_town_fixes():
     assert fce["relay_of"] == ("ADM", "Marshall", "MN") and "relay_of" not in adm
     assert "relay_of" not in own, "same numbers but no ADM in its own place name: not called a relay"
     assert "relay_of" not in half, "one row in three the same: its own bids"
+    # chance, not a relay: two rows of one crop agreeing to the cent are not enough (relay_enough), and an
+    # operator key inside another word is not its name (CHS in "PeaCHSprings", ADM in "Gladmore": name_in)
+    two = {"operator": "Two Row Grain", "city": "ADM Marshall", "branch": "ADM Marshall", "point": "", "town": "Marshall",
+           "rows": [dict(a1), dict(a2)]}
+    two_crops = {"operator": "Two Crop Grain", "city": "ADM Marshall", "branch": "ADM Marshall", "point": "",
+                 "town": "Marshall", "rows": [dict(a1), rw(3.90, -0.50, dec, "soybeans")]}
+    chs = {"operator": "CHS", "city": "Peach Springs", "branch": "Peach Springs", "point": "", "town": "Peach Springs",
+           "rows": [dict(a1), dict(a2), dict(a3)]}
+    chester = {"operator": "Peach Springs Farmers Elevator", "city": "Peach Springs", "branch": "Peach Springs",
+               "point": "", "town": "Peach Springs", "rows": [dict(a1), dict(a2), dict(a3)]}
+    glad = {"operator": "Gladmore Grain", "city": "Gladmore", "branch": "Gladmore", "point": "", "town": "Gladmore",
+            "rows": [dict(a1), dict(a2), dict(a3)]}
+    tw2 = {("MN", "marshall"): {"name": "Marshall", "state": "MN", "boards": {
+               "adm": dict(adm, rows=[dict(r) for r in adm["rows"]]), "two": two, "two_crops": two_crops}},
+           ("SD", "peach-springs"): {"name": "Peach Springs", "state": "SD", "boards": {"chs": chs, "chester": chester}},
+           ("MN", "gladmore"): {"name": "Gladmore", "state": "MN", "boards": {"glad": glad}}}
+    assert mark_relays(tw2) == 1
+    assert "relay_of" not in two, "two corn rows the same to the cent: chance, its own bids"
+    assert two_crops["relay_of"][0] == "ADM", "two rows, corn and soybeans, both the other's: a relay"
+    assert "relay_of" not in chester and "relay_of" not in chs, "CHS is not a word of Peach Springs"
+    assert "relay_of" not in glad, "ADM is not a word of Gladmore"
+    assert name_in(["ADM"], ["ADM", "MARSHALL"]) and not name_in(["ADM"], ["GLADMORE"])
+    assert name_in(["GRANITE", "FALLS", "ENERGY"], ["GRANITE", "FALLS", "ENERGY"]) and not name_in([], ["X"])
     # an elevator off the feed keeps a labelled estimate: last posted basis + the same contract's latest close,
     # only within ESTIMATE_DAYS of that basis; Farmers Cooperative Elevator, Montevideo MN (its basis log, Nov 2026)
     import tempfile as _tf2

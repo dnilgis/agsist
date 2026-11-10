@@ -113,16 +113,23 @@ def basis_name(op):
     return " ".join(display_name(op).upper().split())
 
 
-def fac_key(s):
-    """One elevator across spellings: "CDR FARMS, LLC" and "CDR Farms LLC";
-    trailing legal and co-op words off (the town page's history box and the
-    home page's basis chart)."""
+def fac_words(s):
+    """fac_key's words, kept apart: ["ADM", "MARSHALL"] for "ADM, Marshall".
+    For matching one name inside another on whole words (ADM is not inside
+    "LADMORE"); Python only, the page has no use for it."""
     t = re.sub(r"\bCO[\s.-]*OPERATIVE\b", "COOPERATIVE", display_name(s).upper().replace("&", " AND "))
     t = re.sub(r"\bCO[\s.-]*OP\b", "COOP", t)
     t = [x for x in re.sub(r"[^A-Z0-9]+", " ", t).strip().split(" ") if x]
     while len(t) > 1 and t[-1] in _FAC_TAIL:
         t.pop()
-    return "".join(t)
+    return t
+
+
+def fac_key(s):
+    """One elevator across spellings: "CDR FARMS, LLC" and "CDR Farms LLC";
+    trailing legal and co-op words off (the town page's history box and the
+    home page's basis chart)."""
+    return "".join(fac_words(s))
 
 
 def merge_key(name):
