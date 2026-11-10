@@ -1,8 +1,6 @@
 name: Daily site check
 # Daily site check.
 
-# The owner approved 2026-10-17. Once a day after the morning data runs: the number
-
 on:
   schedule:
     - cron: '37 11 * * *'     # 11:37 UTC, after the morning price, bids and Daily runs

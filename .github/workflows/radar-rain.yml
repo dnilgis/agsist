@@ -14,7 +14,6 @@ on:
         description: "...to this day (YYYY-MM-DD)"
         required: false
   schedule:
-    # Four runs a day since Oct 17, 2026. NOAA posts each hour's Pass 2
     - cron: '17 1,7,13,19 * * *'
   # cron above, by either trigger, do the work within 350 minutes
   workflow_run:

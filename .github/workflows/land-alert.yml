@@ -1,9 +1,6 @@
 name: Monthly land sale email
 # Monthly land sale email.
 
-# scripts/land_alert.py). The owner approved the list, the sender and this schedule on Oct 23, 2026.
-# Signups on (Oct 27, 2026). The ask tells a
-# The 3rd, 15:47 UTC (the schedule the owner approved): after land-data.yml (the 3rd, 09:23 UTC,
 on:
   schedule:
     - cron: "47 15 3 * *"

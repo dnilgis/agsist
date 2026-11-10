@@ -1,7 +1,6 @@
 name: PRF interval so far
 # PRF interval so far.
 
-# Daily at 14:23 UTC (Oct 17, 2026), plus dispatch modes below.
 on:
   schedule:
     - cron: '23 14 * * *'

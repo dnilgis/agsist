@@ -1,7 +1,6 @@
 name: Ag stocks
 # Ag stocks.
 
-# page scripts/build_agstocks_page.py). Approved by the owner Oct 29, 2026.
 on:
   schedule:
     - cron: '17 22 * * 1-5'
