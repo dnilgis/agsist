@@ -113,7 +113,7 @@ MONTHS = {"JAN": "January", "FEB": "February", "MAR": "March", "APR": "April",
 # USDA does not publish a FINAL yield for a crop year until the Annual Crop
 # Production summary the following January. Anything carrying the current crop
 # year before then is a forecast no matter what the reference period says.
-FINAL_MONTH, FINAL_DAY = 1, 10          # ~Jan 10 of year+1, deliberately early
+# The release day is usda_dates.ANNUAL_CROP_PRODUCTION (was a fixed Jan 10).
 
 
 # SMALL GRAINS ARE FINAL IN THE AUTUMN, NOT IN JANUARY. NASS's Small Grains
@@ -130,7 +130,7 @@ def finals_possible(year, today=None, small_grain=False):
     today: a date, or an aware datetime (None: now). Corn and soybeans are final
     from the January annual's real release (usda_dates.annual_final_out, Nov 9
     2026 panel); a fixed Jan 10 would have called the November forecast a final
-    on Jan 10 and 11, 2027. FINAL_MONTH and FINAL_DAY are no longer read."""
+    on Jan 10 and 11, 2027."""
     if small_grain:
         d = today or date.today()
         return (d.year, d.month, d.day) >= (year, *SMALL_GRAIN_FINAL)

@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 406;  // v406 2026-11-09: arc-plc plain words (406, next after main's 405). The ARC/PLC cards, FAQ and structured data say one plain line where a crop has too little price history (components/arc-plc.js, arc-plc-math.js, arc-plc-simple.js at CALC_V 18).
+var CACHE_VERSION = 407;  // v407 2026-11-10: quick stats and rain radar (407, next after main's 406). Rain radar answer keeps its room when a spot is known and adds a spray forecast line (components/radar-rain-page.js?v=9).
+// var CACHE_VERSION = 406;  // v406 2026-11-09: arc-plc plain words (406, next after main's 405). The ARC/PLC cards, FAQ and structured data say one plain line where a crop has too little price history (components/arc-plc.js, arc-plc-math.js, arc-plc-simple.js at CALC_V 18).
 // var CACHE_VERSION = 405;  // v405 2026-11-09: GDU calculator and fall nitrogen layout. The maturity card is moved before the first paint and the empty note and stage list keep their room (/gdu-calculator); the county pickers and the table block keep their room while the readings load (/fall-nitrogen), so neither page jumps. (405, next after main's 404)
 // var CACHE_VERSION = 404;  // v404 2026-11-09: daily memory. The Only on AGSIST note on /daily describes the state basis line, a week's change per bid (components/daily-edge.js?v=2).
 // var CACHE_VERSION = 403;  // v403 2026-11-09: futures pages layout. The session badge, hero price and quote cards keep their boxes when live quotes land, so the page no longer jumps (components/futures.js?v=31).
