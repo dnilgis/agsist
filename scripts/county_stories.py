@@ -582,10 +582,49 @@ def collect(bundle_d, results_d, out_dir, made=None):
         kept += 1
     os.makedirs(out_dir, exist_ok=True)
     for st, cs in sorted(files.items()):
-        json.dump({"schema": SCHEMA, "state": st,
-                   "made": made or results_d.get("collected_utc"), "counties": cs},
-                  open(os.path.join(out_dir, st.lower() + ".json"), "w", encoding="utf-8"), indent=1, ensure_ascii=False, sort_keys=True)
+        write_story_file(os.path.join(out_dir, st.lower() + ".json"),
+                         {"schema": SCHEMA, "state": st, "made": made or results_d.get("collected_utc"), "counties": cs})
     return kept, rej
+
+
+# A served story file carries the story, its facts and dates only: no request, batch or model id. Every writer goes
+# through write_story_file, and normalize() strips them from files already on disk.
+ID_KEYS = frozenset({"batch_id", "batch", "model", "model_id", "request_id", "custom_id", "run"})
+ID_VALUE_RE = re.compile(r"^(msgbatch_|msg_|req_)")
+
+
+def scrub(x):
+    """x without id keys or id-looking string values, at any depth."""
+    if isinstance(x, dict):
+        return {k: scrub(v) for k, v in x.items()
+                if k not in ID_KEYS and not (isinstance(v, str) and ID_VALUE_RE.match(v))}
+    if isinstance(x, list):
+        return [scrub(v) for v in x if not (isinstance(v, str) and ID_VALUE_RE.match(v))]
+    return x
+
+
+def write_story_file(path, j):
+    with open(path, "w", encoding="utf-8") as fh:
+        json.dump(scrub(j), fh, indent=1, ensure_ascii=False, sort_keys=True)
+
+
+def normalize(out_dir):
+    """Strip id keys from every story file under out_dir. Returns the file names rewritten."""
+    done = []
+    if not os.path.isdir(out_dir):
+        return done
+    for name in sorted(os.listdir(out_dir)):
+        if not name.endswith(".json"):
+            continue
+        p = os.path.join(out_dir, name)
+        try:
+            j = json.load(open(p, encoding="utf-8"))
+        except ValueError:
+            continue
+        if scrub(j) != j:
+            write_story_file(p, j)
+            done.append(name)
+    return done
 
 
 def load_stories(data_dir):
@@ -936,6 +975,18 @@ def selftest():
         j = json.load(open(os.path.join(out, "ia.json")))
         ok(list(j["counties"]) == [r0["fips"]] and j["counties"][r0["fips"]]["hash"] == r0["hash"], "collect writes the story with its facts hash")
         ok("model" not in j and '"m"' not in json.dumps(j), "the published story file names no model")
+        ok("batch_id" not in j and '"b"' not in json.dumps(j), "the published story file names no batch")
+        # a story file that came back with a batch id (an older copy) comes out without it; a clean one is left alone
+        nd = os.path.join(t, "norm")
+        os.makedirs(nd)
+        dirty = dict(j, batch_id="msgbatch_01X", model="m-1", counties={k: dict(v, custom_id="c_IA_1") for k, v in j["counties"].items()})
+        json.dump(dirty, open(os.path.join(nd, "ia.json"), "w"), indent=1)
+        write_story_file(os.path.join(nd, "ks.json"), dict(j, state="KS"))
+        ks_m = os.path.getmtime(os.path.join(nd, "ks.json"))
+        ok(normalize(nd) == ["ia.json"], "normalize rewrites only the file with ids")
+        jn = json.load(open(os.path.join(nd, "ia.json")))
+        ok(jn == j and "msgbatch_" not in open(os.path.join(nd, "ia.json")).read(), "normalize strips batch, model and request ids, keeps the rest")
+        ok(normalize(nd) == [] and os.path.getmtime(os.path.join(nd, "ks.json")) == ks_m, "a second normalize changes nothing")
         je = j["counties"][r0["fips"]]
         ok(je["facts"] == r0["facts"] and je["sid"] == r0["sid"] and je["through"] == r0["facts"]["through_iso"], "collect stores the facts and station it was checked against")
         # the request: the API job builds one per county with the facts only
@@ -979,6 +1030,11 @@ def main(a):
         for k, n in sorted(why.items(), key=lambda kv: -kv[1])[:15]:
             print(f"  {n:5d}  {k}")
         return 0
+    if a[0] == "normalize":
+        d = a[1] if len(a) > 1 else os.path.join(ROOT, "data", "rain", "stories")
+        done = normalize(d)
+        print(f"story files: {len(done)} had ids stripped" + (f" ({', '.join(done)})" if done else ""))
+        return 0
     if a[0] == "stale":
         data = a[1] if len(a) > 1 else os.path.join(ROOT, "data", "rain")
         S = load_stories(data)
@@ -991,7 +1047,7 @@ def main(a):
                     m += story_for(e, page_now(c, d)) is not None
         print(f"{n} stored stories, {m} still show (same station, under {MAX_AGE_DAYS} days old)")
         return 0
-    sys.exit("modes: selftest | bundle OUT [--states IA,KS] | collect BUNDLE RESULTS OUTDIR [REJECTED] | stale [DATA_DIR]")
+    sys.exit("modes: selftest | bundle OUT [--states IA,KS] | collect BUNDLE RESULTS OUTDIR [REJECTED] | normalize [DIR] | stale [DATA_DIR]")
 
 
 if __name__ == "__main__":
