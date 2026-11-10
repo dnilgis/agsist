@@ -1079,6 +1079,8 @@ def infer_contracts(towns):
 
 
 RELAY_MIN_ROWS = 2
+RELAY_CENT = 0.0101   # $/bu: a relay may round the other's cash to the cent (ADM $3.9625, the relay $3.96)
+RELAY_SHARE = 0.8     # share of the board's rows that must be the other's (the Marshall relay files ADM's June row as July)
 
 
 def mark_relays(towns):
@@ -1087,28 +1089,41 @@ def mark_relays(towns):
     Granite Falls Energy's own bids cent for cent) stays listed, marked "same
     bids as" that elevator, and is not counted or ranked a second time. Both
     must hold: the other elevator's name is in the board's own place name, and
-    every row the board posts (at least RELAY_MIN_ROWS) is one of the other's,
-    same crop, delivery, cash and basis."""
+    at least RELAY_SHARE of the rows the board posts (and RELAY_MIN_ROWS) are
+    the other's: same crop, delivery month and basis, cash to the cent."""
     boards = [(t, bd) for t in towns.values() for bd in t["boards"].values() if bd["rows"]]
-    sig = lambda r: (r["crop"], r["dm"], round(r["cash"], 4), r["basis"])   # noqa: E731
+    sig = lambda r: (r["crop"], r["dm"], r["basis"])   # noqa: E731
     by_sig = defaultdict(list)
     for t, bd in boards:
-        for s in {sig(r) for r in bd["rows"]}:
-            by_sig[s].append((t, bd))
+        for s_ in {sig(r) for r in bd["rows"]}:
+            by_sig[s_].append((t, bd))
+
+    def covered(mine_rows, other_rows):
+        cash = defaultdict(list)
+        for r in other_rows:
+            cash[sig(r)].append(r["cash"])
+        hit = sum(1 for r in mine_rows if any(abs(r["cash"] - c) <= RELAY_CENT for c in cash.get(sig(r), ())))
+        return hit >= RELAY_MIN_ROWS and hit >= RELAY_SHARE * len(mine_rows)
     n = 0
     for t, bd in boards:
-        mine = {sig(r) for r in bd["rows"]}
-        if len(mine) < RELAY_MIN_ROWS:
+        if len(bd["rows"]) < RELAY_MIN_ROWS or bd["rows"][0]["basis"] is None:
             continue
         where = fac_key(" ".join(x for x in (bd.get("branch") or "", bd.get("city") or "", bd.get("point") or "") if x))
         me = fac_key(bd["operator"])
-        for t2, other in by_sig[next(iter(mine))]:
-            ok_ = fac_key(other["operator"])
-            if other is bd or not ok_ or ok_ == me or ok_ not in where:
-                continue
-            if mine <= {sig(r) for r in other["rows"]}:
-                bd["relay_of"] = (head_name(other, with_town=False), t2["name"], t2["state"])
-                n += 1
+        seen = set()
+        for s_ in {sig(r) for r in bd["rows"]}:
+            for t2, other in by_sig[s_]:
+                if id(other) in seen:
+                    continue
+                seen.add(id(other))
+                ok_ = fac_key(other["operator"])
+                if other is bd or not ok_ or ok_ == me or ok_ not in where or other.get("relay_of"):
+                    continue
+                if covered(bd["rows"], other["rows"]):
+                    bd["relay_of"] = (head_name(other, with_town=False), t2["name"], t2["state"])
+                    n += 1
+                    break
+            if bd.get("relay_of"):
                 break
     return n
 
@@ -1856,10 +1871,12 @@ def basis_shard(basis_dir, st):
     out = defaultdict(list)
     for r in sh.get("r") or []:
         try:
-            fi, ci, sym, month, cur, _prev, since_i, _first, last_i = r[:9]
+            fi, ci, sym, month, cur, prev, since_i, first_i, last_i = r[:9]
             facility, city = (fac[fi].split("|", 1) + [""])[:2]
+            # the changed day only when a change was seen (a row never changed has its first day there)
+            changed = days[since_i] if since_i is not None and prev is not None and since_i != first_i else None
             out[(facility, city)].append((cats[ci], sym, month, cur, days[last_i] if last_i is not None else None,
-                                          days[since_i] if since_i is not None else None))
+                                          changed))
         except (ValueError, IndexError, TypeError):
             continue
     return out
@@ -5332,18 +5349,22 @@ def _selftest_town_audit():
     assert ls["contract"] == dec and ls.get("inferred") and con_text(ls) == "Dec '26 (inferred)"
     assert far["contract"] is None, "seven cents off every contract: no month is guessed"
     # a relay board: Farmers Cooperative Elevator's "ADM, Marshall" board posts ADM Corn Processing's bids cent for cent
-    a1, a2 = rw(3.96, -0.45, dec), dict(rw(4.10, -0.44, mar), dm="2027-03")
+    a1, a2 = rw(3.9625, -0.45, dec), dict(rw(4.1, -0.45, mar), dm="2027-01")
     adm = {"operator": "ADM", "city": "Marshall", "branch": "Marshall", "point": "Corn Processing", "town": "Marshall",
            "rows": [a1, a2, rw(3.90, -0.50, dec, "soybeans")]}
+    # the relay posts $3.96 and $4.09 where ADM posts $3.9625 and $4.10 (Nov 6 snapshot)
     fce = {"operator": "Farmers Cooperative Elevator Co", "city": "ADM, Marshall", "branch": "ADM, Marshall",
-           "point": "", "town": "Marshall", "rows": [dict(a1), dict(a2)]}
+           "point": "", "town": "Marshall", "rows": [dict(a1, cash=3.96), dict(a2, cash=4.09)]}
+    half = {"operator": "Other Co-op", "city": "ADM Marshall", "branch": "ADM Marshall", "point": "", "town": "Marshall",
+            "rows": [dict(a1, cash=3.96), dict(a2, basis=-0.30), dict(a2, dm="2027-05", basis=-0.20)]}
     own = {"operator": "Farmers Cooperative Elevator Co", "city": "Hanley Falls", "branch": "Hanley Falls", "point": "",
            "town": "Hanley Falls", "rows": [dict(a1), dict(a2)]}
-    tw = {("MN", "marshall"): {"name": "Marshall", "state": "MN", "boards": {"adm": adm, "fce": fce}},
+    tw = {("MN", "marshall"): {"name": "Marshall", "state": "MN", "boards": {"adm": adm, "fce": fce, "half": half}},
           ("MN", "hanley-falls"): {"name": "Hanley Falls", "state": "MN", "boards": {"own": own}}}
     assert mark_relays(tw) == 1
     assert fce["relay_of"] == ("ADM", "Marshall", "MN") and "relay_of" not in adm
     assert "relay_of" not in own, "same numbers but no ADM in its own place name: not called a relay"
+    assert "relay_of" not in half, "one row in three the same: its own bids"
     # an elevator off the feed keeps a labelled estimate: last posted basis + the same contract's latest close,
     # only within ESTIMATE_DAYS of that basis; Farmers Cooperative Elevator, Montevideo MN (its basis log, Nov 2026)
     import tempfile as _tf2
