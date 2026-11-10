@@ -15,7 +15,7 @@ exec 2>/dev/null
 trap 'exit 0' EXIT
 IN=$(timeout 5 cat 2>/dev/null)
 MAX="${WIP_MAX_BYTES:-5242880}"
-NAME=dnilgis; MAIL=dnilgis@gmail.com
+NAME=dnilgis; MAIL=dnilgis@users.noreply.github.com
 # new (untracked) files are only picked up under these, or as a top-level page or script
 SRC_DIRS=(components scripts workers test css js img fonts embed .github .claude/agents)
 

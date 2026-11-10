@@ -55,6 +55,7 @@ test("the page: noindex, no referrer, no analytics, no em dash, in no sitemap, s
 
 test("the token goes only in the Authorization header; one list of cards, each naming its sources", () => {
   assert.doesNotMatch(A, /[?&]token=/, "the token never goes in a URL");
+  assert.doesNotMatch(A, /TODO-SIG|todo\.md/i, "the to-do list is private: the page never reads it");
   assert.doesNotMatch(script, /console\./, "nothing is logged");
   assert.match(script, /Authorization: 'Bearer ' \+ t/);
   assert.equal((script.match(/fetch\(/g) || []).length, 1, "one fetch, through get()");
@@ -63,7 +64,7 @@ test("the token goes only in the Authorization header; one list of cards, each n
   const list = /var CARDS = \[([\s\S]*?)\n  \];/.exec(script);
   assert.ok(list, "one CARDS list");
   const ids = [...list[1].matchAll(/\{ id: '([a-z]+)'/g)].map((m) => m[1]);
-  assert.deepEqual(ids, ["today", "ads", "signups", "boards", "money", "audience", "todo"]);
+  assert.deepEqual(ids, ["today", "ads", "signups", "boards", "money", "audience"]);
   const sources = /var SOURCES = \{([\s\S]*?)\n  \};/.exec(script)[1];
   for (const m of list[1].matchAll(/needs: \[([^\]]*)\]/g))
     for (const n of m[1].split(",").map((s) => s.trim().replace(/'/g, "")).filter(Boolean)) assert.match(sources, new RegExp("\\b" + n + ": function"), "source " + n);
@@ -323,7 +324,7 @@ test("in a browser at 360, 390 and 1280: every card, no sideways scroll, no layo
       const t = await noAddress(p);
       /* headline tiles */
       const tiles = await p.$$eval(".tile", (els) => els.map((e) => e.innerText.replace(/\s+/g, " ").trim()));
-      assert.equal(tiles.length, 8, tiles.join(" | "));
+      assert.equal(tiles.length, 7, tiles.join(" | "));
       assert.match(tiles[0], /^The Daily today Sent .* CT Corn bounces/);
       assert.match(tiles[1], /^Checks on main 1 red Cattle auctions/);
       assert.match(tiles[2], /^Ads live 2 Root Lot, Barn Co \(1 free test\)/);
@@ -331,7 +332,6 @@ test("in a browser at 360, 390 and 1280: every card, no sideways scroll, no layo
       assert.match(tiles[4], /^Boards read now 2,098 98 late, 133 withdrawn/);
       assert.match(tiles[5], /^Rain Print, 120 days \$287\.00 5 paid; \$108\.00 this week/);
       assert.match(tiles[6], /^Readers, 7 days /);
-      assert.match(tiles[7], /^To-dos open \d+/);
       /* card text */
       const today = await p.textContent("#c-today");
       assert.match(today, /To how many: can’t read: the send count is only in the job log/);
@@ -355,7 +355,7 @@ test("in a browser at 360, 390 and 1280: every card, no sideways scroll, no layo
       const aud = await p.textContent("#c-audience");
       assert.match(aud, /Data-center traffic left out/);
       assert.match(aud, /Visits from AI assistants/);
-      for (const c of ["today", "ads", "signups", "boards", "money", "audience", "todo"]) assert.match(await p.innerHTML("#c-" + c), /class="src"/, c + " names its source");
+      for (const c of ["today", "ads", "signups", "boards", "money", "audience"]) assert.match(await p.innerHTML("#c-" + c), /class="src"/, c + " names its source");
       assert.ok(t.length > 500);
       if (process.env.DESK_SHOTS) { fs.mkdirSync(process.env.DESK_SHOTS, { recursive: true }); await p.screenshot({ path: path.join(process.env.DESK_SHOTS, `desk-${width}.png`), fullPage: true }); }
 

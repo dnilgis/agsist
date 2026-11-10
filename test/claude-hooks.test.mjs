@@ -72,7 +72,7 @@ test('wip-push: on fx/* saves tracked changes and new source files, never secret
   const r = run('bash', [path.join(DEV, 'wip-push.sh')], { hook_event_name: 'SubagentStop', cwd: w }, w, { WIP_MAX_BYTES: '1000' });
   assert.equal(r.status, 0);
   assert.equal(r.stdout + r.stderr, '', 'silent');
-  assert.equal(git(w, 'log', '-1', '--format=%s|%an|%ae'), 'WIP autosave|dnilgis|dnilgis@gmail.com');
+  assert.equal(git(w, 'log', '-1', '--format=%s|%an|%ae'), 'WIP autosave|dnilgis|dnilgis@users.noreply.github.com');
   const files = git(w, 'show', '--name-only', '--format=', 'HEAD').split('\n').sort();
   assert.deepEqual(files, ['page.html', 'scripts/a.py', 'scripts/new.py']);
   assert.equal(remoteHead(origin, 'fx/t'), git(w, 'rev-parse', 'HEAD'), 'pushed to origin fx/t');

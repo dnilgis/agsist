@@ -9,6 +9,13 @@
    "link": "/arc-plc"
   },
   {
+   "id": "2026-11-10-clearer-page-titles",
+   "date": "2026-11-10",
+   "title": "Clearer page titles and answers",
+   "line": "Company bid pages name their locations, the USDA calendar sums up the last crop report from its own figures, and milk shows the 2025 all-milk average.",
+   "link": "/usda-calendar"
+  },
+  {
    "id": "2026-11-10-daily-zip-repeats",
    "date": "2026-11-10",
    "title": "No repeat lines for ZIP readers",
@@ -16,11 +23,39 @@
    "link": "/daily"
   },
   {
+   "id": "2026-11-10-elevator-names",
+   "date": "2026-11-10",
+   "title": "One name for each elevator",
+   "line": "Elevators listed under an old or archived board name now show their own name and keep their basis history, on the home page, /cash-bids and the town pages.",
+   "link": "/cash-bids"
+  },
+  {
    "id": "2026-11-10-pages-hold-still",
    "date": "2026-11-10",
    "title": "Thirteen pages hold still while they load",
    "line": "Tariffs, sale barn prices, hay, break-even, store or sell, urea and seven more pages keep their room while the numbers load, so nothing jumps under your thumb.",
    "link": "/tools"
+  },
+  {
+   "id": "2026-11-10-quickstats-radar",
+   "date": "2026-11-10",
+   "title": "Yield by state on phones",
+   "line": "Quick stats shows each state's yield on phones and a pick-your-state menu; rain radar drops a bad NOAA square and links the spray forecast for your spot.",
+   "link": "/usda-quick-stats"
+  },
+  {
+   "id": "2026-11-10-same-state-links",
+   "date": "2026-11-10",
+   "title": "One state, every page",
+   "line": "State pages for bids, rent, yield, rain, PRF and hail now link to each other, and ARC/PLC and PRF county pages name the nearest towns with bids.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-10-town-pages",
+   "date": "2026-11-10",
+   "title": "Town bid pages, clearer",
+   "line": "Town pages name corn and soybeans every time, keep elevators whose board went quiet with a labelled estimate, and mark boards that repeat another's bids.",
+   "link": "/cash-bids"
   },
   {
    "id": "2026-11-09-rain-print-several-days",

@@ -98,7 +98,7 @@ test("background or sell: gain pays only when value of gain is above cost of gai
 /* ---------------- page ---------------- */
 
 test("page: title, canonical, h1, byline, one script of its own", () => {
-  assert.match(page, /<title>Feeder cattle sale barn prices near you[^<]*\| AGSIST<\/title>/);
+  assert.match(page, /<title>Feeder cattle sale barn prices near you: auction prices by weight<\/title>/);
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/cattle-auction-prices">/);
   assert.equal((page.match(/<h1>/g) || []).length, 1);
   assert.match(page, /Sigurd Lindquist, CCA/);

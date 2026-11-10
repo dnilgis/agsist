@@ -66,6 +66,10 @@
     }
     return null;
   }
+  /* The page reserves the results' height from first paint when a spot is
+     already known (rain-radar.html, class rr-known), so the answer landing
+     does not push the page down. Released once results or an error show. */
+  function reserved(on) { var a = $('rr-answer'); if (a) a.classList.toggle('rr-known', !!on); }
   function load(lat, lon, label, save) {
     var my = ++S.seq;
     status('Reading the radar file for ' + (label || 'your spot') + '…');
@@ -90,6 +94,7 @@
       })
       .catch(function (e) {
         if (my !== S.seq) return;
+        reserved(false);
         $('rr-locbox').hidden = false;
         if (e && e.outside) status('NOAA’s radar rain estimate covers the lower 48 states. This spot is outside it.', true);
         else if (e && e.message === 'no-inflate') status('This browser is too old to open the radar file. A current Chrome, Safari, Edge or Firefox will.', true);
@@ -150,13 +155,17 @@
     var end = h.data_end, ageH = (Date.now() - Date.parse(end)) / 3600e3;
     var tz = tzName(end);
     $('rr-asof').innerHTML = 'Newest radar hour: <b>' + esc(when(end)) + ' ' + esc(tz) + '</b>. Times are your time zone.' +
-      (v24 == null && v7 == null ? ' The radar has a gap here (a blocked or distant beam), so there is no number to give.' : '');
+      (v24 == null && v7 == null ? ' The radar has a gap here (a blocked or distant beam, or a square left out as a bad reading), so there is no number to give.' : '');
+    /* Sig, Nov 9: rain still to come is one line to our own spray forecast for this spot (no rain-chance row here) */
+    var nx = $('rr-next');
+    if (nx) { nx.innerHTML = 'Rain in the next hours: <a href="/spray?f=' + (+pt.lat).toFixed(4) + ',' + (+pt.lon).toFixed(4) + '">the spray forecast for this spot</a>.'; nx.hidden = false; }
     var stale = $('rr-stale');
     if (!(ageH < STALE_H)) {
       stale.hidden = false;
       stale.textContent = 'Old data: the newest radar total ends ' + when(end) + ' ' + tz + ', ' + Math.round(ageH) + ' hours ago. Rain since then is not in these numbers. This page updates about four times a day; check back.';
     } else stale.hidden = true;
     $('rr-results').hidden = false;
+    reserved(false);
     renderGauge();
     renderMap();
     renderLinks();
@@ -173,7 +182,7 @@
     if (wk) {
       var diff = wk.radar - wk.gauge;
       html = '<p class="rr-gk">Beside a real gauge</p><p>The nearest county gauge I track is ' + who + ', ' + mi + ' away. For the 7 days of reports from ' +
-        dayLabel(wk.from) + ' to ' + dayLabel(wk.to) + ' (each day ending about 7 am):</p>' +
+        dayLabel(wk.from) + ' to ' + dayLabel(wk.to) + ' (each day ending at the morning reading):</p>' +
         '<div class="rr-gv"><span><b>' + inTxt(wk.gauge) + '</b> gauge</span><span><b>' + inTxt(wk.radar) + '</b> radar at the gauge</span></div>' +
         '<p class="fine">' + (Math.abs(diff) < 5 ? 'Within 0.05 in of each other that week.' : 'Radar read ' + (diff > 0 ? 'more' : 'less') + ' than the gauge by ' + (Math.abs(diff) / 100).toFixed(2) + ' in that week.') +
         ' NOAA posts gauge reports a few days late, so this week runs behind the totals above.</p>';
@@ -365,7 +374,7 @@
     if (q) { load(q.lat, q.lon, q.label, false); return; }
     var loc = lsGet(LS_LOC);
     if (loc && typeof loc.lat === 'number' && typeof loc.lon === 'number' && isFinite(loc.lat) && isFinite(loc.lon)) load(loc.lat, loc.lon, loc.label || 'your saved location', false);
-    else $('rr-locbox').hidden = false;
+    else { reserved(false); $('rr-locbox').hidden = false; }
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();

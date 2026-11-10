@@ -115,7 +115,7 @@ test("bad input returns nothing, not a number", () => {
 /* ---------------- the page ---------------- */
 
 test("page: head, canonical, byline, JSON-LD FAQ matches the visible FAQ, sources cited", () => {
-  assert.match(page, /<title>Combine loss calculator: beans and kernels behind the combine \| AGSIST<\/title>/);
+  assert.match(page, /<title>Combine loss calculator: beans and kernels behind the combine<\/title>/);
   assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/combine-loss">/);
   // Oct 18: no name at the top of a page; it sits in one line at the end
   assert.match(page, /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/);

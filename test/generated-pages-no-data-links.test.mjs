@@ -35,7 +35,8 @@ test("a sample of generated pages still names a source and a year", () => {
     for (const f of files) {
       const h = readFileSync(ROOT + f, "utf8"), t = h.replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>|<[^>]+>/g, " ");
       if (!/\bsource/i.test(t)) continue;
-      assert.match(t, /(USDA|NOAA|NASS|NWS|FSA|RMA|EIA|AMS|AGSIST|Drought Monitor|Census|Fed)/, f + ": no source name");
+      // a state agency is a source name too (land sale pages credit e.g. "Illinois Department of Revenue")
+      assert.match(t, /(USDA|NOAA|NASS|NWS|FSA|RMA|EIA|AMS|AGSIST|Drought Monitor|Census|Fed|Department of [A-Z][a-z]+)/, f + ": no source name");
       // a live snapshot (cash bid company pages) prints its date as "Updated Nov 9, 1:50 pm CT" in a <time>
       // whose datetime carries the year: that is the date beside the source
       assert.ok(/20\d\d/.test(t) || /<time[^>]*datetime="20\d\d-\d\d-\d\d[^"]*"[^>]*>\s*Updated [A-Z][a-z]{2} \d{1,2}\b/.test(h), f + ": no year");

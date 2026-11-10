@@ -8,7 +8,8 @@ or deadline page), articles, law, licence notices, our own pages. Two links are 
 (Oct 29): the K-State land values book on the Kansas county lines and the Farm Credit reserve
 bank survey pages.
 
-  python3 scripts/source_links.py --scan FILE...   list the data-source links in these files; exit 1 if any
+  python3 scripts/source_links.py --scan FILE...   list the data-source links in these files (anchors, and
+                                                   string URLs in inline scripts); exit 1 if any
   python3 scripts/source_links.py --selftest
 
 Builders and the test import is_data_source() / unlink(); there is one definition.
@@ -48,6 +49,27 @@ def scan(text):
     return [m.group(2) for m in ANCHOR.finditer(text) if is_data_source(m.group(2))]
 
 
+# Nov 9 2026 panel: a page script can open a data source with no <a> at all (/usda-quick-stats built
+# a quickstats.nass.usda.gov query string and window.open()ed it), so the anchor scan passed it.
+# String URLs inside inline scripts count too. Not counted: structured data (ld+json), and a URL
+# the script only fetches or loads as an image or script (fetch, src), which no reader is sent to.
+SCRIPT = re.compile(r"<script\b([^>]*)>(.*?)</script\s*>", re.I | re.S)
+LITERAL = re.compile(r"""(['"`])(https?://[^'"`\s<>]+)""")
+LOADS = re.compile(r"""(fetch\(|\bsrc\s*[:=]\s*)\s*$""", re.I)
+
+
+def scan_scripts(text):
+    out = []
+    for m in SCRIPT.finditer(text):
+        if re.search(r"ld\+json", m.group(1), re.I):
+            continue
+        body = m.group(2)
+        for lm in LITERAL.finditer(body):
+            if is_data_source(lm.group(2)) and not LOADS.search(body[max(0, lm.start() - 24):lm.start()]):
+                out.append(lm.group(2))
+    return out
+
+
 def selftest():
     bad = ["https://quickstats.nass.usda.gov/results/?commodity_desc=CORN", "https://www.fsa.usda.gov/sites/default/files/2026-10/2026_ARC_CO.xlsx",
            "https://api.weather.gov", "https://www.cftc.gov/MarketReports/CommitmentsofTraders/index.htm",
@@ -75,6 +97,15 @@ def selftest():
         fails.append("link()")
     if scan(s) != ["https://www.cftc.gov/x.htm"]:
         fails.append("scan")
+    # the real case: usda-quick-stats.html on Nov 9 2026 (no <a>, a script opener)
+    qs = ("<script>qbURL = 'https://quickstats.nass.usda.gov/results/?' + p.toString();"
+          "window.open(qbURL,'_blank','noopener');</script>")
+    if scan(qs) or scan_scripts(qs) != ["https://quickstats.nass.usda.gov/results/?"]:
+        fails.append("scan_scripts: opener")
+    quiet = ('<script type="application/ld+json">{"url":"https://registry.opendata.aws/noaa-mrms-pds/"}</script>'
+             "<script>fetch('https://api.weather.gov/alerts');img.src = 'https://droughtmonitor.unl.edu/x.png';</script>")
+    if scan_scripts(quiet):
+        fails.append("scan_scripts: structured data, fetch and src are not links: %s" % scan_scripts(quiet))
     print("source_links selftest:", "FAIL " + "; ".join(fails) if fails else "ok")
     return not fails
 
@@ -86,7 +117,8 @@ if __name__ == "__main__":
     if a[:1] == ["--scan"]:
         n = 0
         for f in a[1:]:
-            for u in scan(open(f, encoding="utf-8", errors="replace").read()):
+            t = open(f, encoding="utf-8", errors="replace").read()
+            for u in scan(t) + scan_scripts(t):
                 print("%s: %s" % (f, u)); n += 1
         print("data-source links: %d in %d files" % (n, len(a) - 1))
         sys.exit(1 if n else 0)

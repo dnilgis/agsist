@@ -75,6 +75,7 @@ PY = "python3"
 # then the sets in the order their own jobs run them.
 SETS = [
     {"id": "cash-bids", "offline": False, "workflow": "cash-bid-pages.yml", "dispatch": {"force": "true"},
+     "build_job": "build",
      "build": [[PY, "scripts/build_cash_bid_pages.py"]], "check": None,
      "outputs": ["cash-bids/**", "sitemap-cash-bids.xml"],
      "writes": [], "code": ["scripts/build_cash_bid_pages.py"], "inputs": [],
@@ -489,23 +490,66 @@ def pick_run(runs, since):
     return max(mine, key=lambda r: r["created_at"]) if mine else None
 
 
-def await_network(gh, s, since, wait_min=WAIT_MIN):
+def built(gh, s, run):
+    """did this finished run of the set's workflow actually rebuild? (success, and the set's build job, when it names
+    one, ran: cash-bid-pages succeeds with its build job skipped when its gate finds the pages too recent)"""
+    if run.get("conclusion") != "success":
+        return False
+    job = s.get("build_job")
+    if not job:
+        return True
+    jobs = (gh.call("GET", "/repos/%s/actions/runs/%s/jobs?per_page=50" % (gh.repo, run["id"])) or {}).get("jobs", [])
+    return any(j.get("name") == job and j.get("conclusion") == "success" for j in jobs)
+
+
+def superseded(gh, s, gone, wait_min=WAIT_MIN, sleep=time.sleep, clock=time.time):
+    """the watched run ended cancelled: a run of the same workflow queued after it (any trigger) takes its place in the
+    workflow's concurrency group. Wait (bounded) for the newer runs on main -> 'success' when one of them rebuilt,
+    'newer run <conclusion>' when one failed, 'cancelled (no newer run ...)' when none rebuilt, or 'timed out'"""
+    path = "/repos/%s/actions/workflows/%s/runs?branch=main&per_page=30" % (gh.repo, s["workflow"])
+    end = clock() + wait_min * 60
+    while True:
+        runs = (gh.call("GET", path) or {}).get("workflow_runs", [])
+        newer = sorted((r for r in runs if r.get("id") != gone.get("id") and r.get("head_branch", "main") == "main"
+                        and r["created_at"] > gone["created_at"]), key=lambda r: r["created_at"])
+        if not newer:
+            return "cancelled (no newer run)"
+        done = [r for r in newer if r.get("status") == "completed"]
+        for r in done:
+            if built(gh, s, r):
+                print("  %s run %s was superseded by run %s: success" % (s["workflow"], gone.get("id"), r.get("id")))
+                return "success"
+        failed = [r for r in done if r.get("conclusion") not in ("success", "cancelled", "skipped")]
+        if failed:
+            return "newer run %s %s" % (failed[0].get("id"), failed[0].get("conclusion"))
+        if len(done) == len(newer):
+            return "cancelled (no newer run rebuilt the pages)"
+        if clock() >= end:
+            return "timed out"
+        sleep(30)
+
+
+def await_network(gh, s, since, wait_min=WAIT_MIN, sleep=time.sleep, clock=time.time):
     """start the network set's own workflow (unless a run by hand already started after the code changed) and
-    wait for it -> its conclusion, or 'timed out'"""
+    wait for it -> its conclusion, or 'timed out'. A run cancelled by the workflow's concurrency group counts as
+    the newer run that replaced it (superseded)"""
     wf = s["workflow"]
     path = "/repos/%s/actions/workflows/%s/runs?event=workflow_dispatch&per_page=20" % (gh.repo, wf)
     run = pick_run((gh.call("GET", path) or {}).get("workflow_runs", []), since)
     if run is None:
         gh.call("POST", "/repos/%s/actions/workflows/%s/dispatches" % (gh.repo, wf), {"ref": "main", "inputs": s.get("dispatch") or {}})
         print("  started %s by hand" % wf)
-        since = time.time() - 30
-    end = time.time() + wait_min * 60
-    while time.time() < end:
-        time.sleep(30)
+        since = clock() - 30
+    end = clock() + wait_min * 60
+    while clock() < end:
+        sleep(30)
         run = pick_run((gh.call("GET", path) or {}).get("workflow_runs", []), since)
         if run and run.get("status") == "completed":
-            print("  %s run %s: %s" % (wf, run.get("id"), run.get("conclusion")))
-            return run.get("conclusion")
+            c = run.get("conclusion")
+            print("  %s run %s: %s" % (wf, run.get("id"), c))
+            if c == "cancelled":
+                return superseded(gh, s, run, max(1, (end - clock()) / 60), sleep=sleep, clock=clock)
+            return c
     return "timed out"
 
 

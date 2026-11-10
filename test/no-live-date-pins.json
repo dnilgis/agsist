@@ -96,7 +96,6 @@
   "test/milk-dmc.test.mjs": 9,
   "test/milk-herds.test.mjs": 8,
   "test/near-coop.test.mjs": 3,
-  "test/new-worker-host.test.mjs": 1,
   "test/newsletter-block.test.mjs": 2,
   "test/one-more.test.mjs": 2,
   "test/outbox.test.mjs": 1,

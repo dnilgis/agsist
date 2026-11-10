@@ -686,7 +686,7 @@ def selftest():
     assert not data_bot_commit(squash), "a squash merge"
     assert not data_bot_commit(dict(botc, subject="Bids fix (#311)")), "the bot's address with a PR suffix counts"
     assert not data_bot_commit(dict(botc, committer="noreply@github.com")), "GitHub committed it: a merge through GitHub"
-    assert not data_bot_commit(dict(botc, author="dnilgis@gmail.com")), "a hand push"
+    assert not data_bot_commit(dict(botc, author="dnilgis@users.noreply.github.com")), "a hand push"
     assert not data_bot_commit(dict(botc, author="sig@agsist.com", committer="sig@agsist.com")), "Sig's own address"
     assert not data_bot_commit(dict(botc, parents=2, subject="Merge branch 'main'")), "a merge, whoever made it"
     assert stale(real, town + ["scripts/build_cash_bid_pages.py"], rel308, []).startswith("main changed 1 file"), \
@@ -775,7 +775,7 @@ def git_fixture():
         o, c = os.path.join(d, "origin"), os.path.join(d, "clone")
         env0 = dict(os.environ, GIT_CONFIG_GLOBAL=os.devnull, GIT_CONFIG_NOSYSTEM="1")
 
-        def git(cwd, *a, who=("dnilgis", "dnilgis@gmail.com"), at=None, by=None):
+        def git(cwd, *a, who=("dnilgis", "dnilgis@users.noreply.github.com"), at=None, by=None):
             env = dict(env0, GIT_AUTHOR_NAME=who[0], GIT_AUTHOR_EMAIL=who[1], GIT_COMMITTER_NAME=(by or who)[0],
                        GIT_COMMITTER_EMAIL=(by or who)[1])
             if at:

@@ -262,7 +262,11 @@ def assign(comps, prev, today):
     return out, ledger, lost
 
 
-def build(directory, index, recs, parents_doc, changes, prev, today):
+def build(directory, index, recs, parents_doc, changes, prev, today, resolve=None):
+    """resolve (build_ids.id_resolver): the change log's facility ids follow id merges to the live record."""
+    if resolve is not None:
+        import build_ids
+        changes = build_ids.follow_changes(changes, resolve)
     parents = (parents_doc or {}).get("boards") or {}
     ev, notes = gather(directory, index, recs, parents, changes, today)
     comps, used, held = link(ev, recs)

@@ -18,7 +18,7 @@ that exists in this checkout)
   states    rent/, yield/, hail-map/, cash-bids/<state>/,
             farmland-atlas/<state>/ pages that exist and are not noindex
   towns     cash-bids/<state>/<town>.html (title "Cash Grain Bids in X, ST")
-  companies cash-bids/company/<slug>.html (title "X Cash Bids Today"), with the elevators
+  companies cash-bids/company/<slug>.html (title "X Grain Bids Today: ..." or the older "X Cash Bids Today"), with the elevators
   counties  farmland-atlas/data/counties-index.json, kept only where the page
             exists and is not noindex
   land      /land-sales/ county pages by FIPS from data/land-sales/<st>.json, and
@@ -332,7 +332,7 @@ def norm_co(s):
     return re.sub(r"\s+", " ", s).strip()
 
 
-CO_T = re.compile(r"^(.+?) Cash Bids(?: Today)?(?: \| AGSIST)?$")
+CO_T = re.compile(r"^(.+?) (?:Cash|Grain) Bids(?: Today)?(?:: .*)?(?: \| AGSIST)?$")
 
 
 def build_companies():

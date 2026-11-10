@@ -120,9 +120,30 @@ test("page: one shared page, honest label, the measured numbers, FAQ in structur
   assert.ok(!/noindex/.test(page));
   assert.ok(page.includes('id="rr-stale"') && page.includes('id="rr-status"') && page.includes('id="rr-locbox"'), "stale, status and location states exist");
   assert.ok(page.includes("Sigurd Lindquist, CCA"));
-  // every number in "How close" is the measured one in data/radar-rain/validation.json
+  // every number in "How close" is the measured one in data/radar-rain/validation.json. Since the
+  // Nov 9 2026 panel the full check sits in the closed Sources and terms fold at the bottom (Sig,
+  // Nov 8) and one line of it stays visible under the tool.
   const v = JSON.parse(fs.readFileSync(path.join(ROOT, "data/radar-rain/validation.json"), "utf8"));
   const fmt = (n) => n.toLocaleString("en-US");
+  const terms = /<details class="hp-terms rr-terms" id="sources"><summary>Sources and terms<\/summary>([\s\S]*?)<\/details>/.exec(page);
+  assert.ok(terms, "one closed Sources and terms fold");
+  assert.equal(page.split("<summary>Sources and terms</summary>").length, 2);
+  assert.ok(page.indexOf(terms[0]) > page.indexOf('id="questions"'), "the fold sits below the questions");
+  assert.ok(terms[1].includes(fmt(v.stations) + " NOAA co-op rain gauges") && terms[1].includes("median " + v.wet_days.median_abs_in.toFixed(2) + " in apart"),
+    "the gauge check is in the fold");
+  // the period in words, from the file's own dates ("October 1 to 13, 2026")
+  const [p0, p1] = v.period.map((d) => new Date(d + "T12:00:00Z"));
+  const mon = (d) => d.toLocaleString("en-US", { month: "long", timeZone: "UTC" });
+  const span = mon(p0) + " " + p0.getUTCDate() + " to " + (mon(p1) === mon(p0) ? "" : mon(p1) + " ") + p1.getUTCDate() + ", " + p1.getUTCFullYear();
+  assert.ok(page.includes('<p class="rr-check" id="how-close">Checked against ' + fmt(v.stations) + " NOAA co-op gauges, " + span + ": radar and gauge were a median " +
+    v.wet_days.median_abs_in.toFixed(2) + " in apart on wet days."), "one visible line, from the same file");
+  // no pipeline detail in the fold or the page text (Nov 8): bucket, product codes, thresholds, UTC schedule
+  const text = page.replace(/<script[\s\S]*?<\/script>/g, "");
+  assert.doesNotMatch(text, /noaa-mrms-pds|MultiSensor_QPE|20 times the middle|0, 6, 12 and 18 UTC|How the numbers are worked/);
+  assert.ok(!/<p class="src">/.test(page), "no visible source line in the reading path");
+  // the masked square has its reason in the fold (Sig, Nov 9: "Yes, with the reason in the fold")
+  assert.match(terms[1], /Mount Baker, Washington, read half an inch to more than an inch a day on dry days/);
+  assert.match(terms[1], /in every window/);
   assert.ok(page.includes(fmt(v.stations) + " NOAA co-op rain gauges in " + v.states + " states"));
   assert.ok(page.includes("(" + fmt(v.gauge_days) + " gauge-days)"));
   assert.ok(page.includes("(" + fmt(v.wet_days.n) + " of them)"));
@@ -168,7 +189,7 @@ test("a real map under the rain: USGS National Map only, credited, with a fallba
   // the rain still draws over the site's own outline and keeps the field pin
   assert.match(js, /\/data\/us-states\.geo\.json/);
   assert.match(js, /circleMarker\(\[pt\.lat, pt\.lon\]/);
-  assert.ok(page.includes("/components/radar-rain-page.js?v=8"));
+  assert.ok(page.includes("/components/radar-rain-page.js?v=9"));
   // Oct 23, 2026: the county gauges are read every day now; the lag is NOAA's, not a weekly run
   assert.doesNotMatch(js, /once a week/);
   assert.match(js, /NOAA posts gauge reports a few days late, so this week runs behind the totals above\./);

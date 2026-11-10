@@ -104,6 +104,9 @@ test("built pages: the visible trail names the same steps as the BreadcrumbList 
     rent: htmlIn("rent").filter((f) => !f.endsWith("index.html")),
     yield: htmlIn("yield").filter((f) => !f.endsWith("index.html")),
   };
+  // a retired page is a pointer (agsist-pointer meta, scripts/pointer_pages.py): it is not built by the set's
+  // builder and carries no trail, so it is not one of the family's pages
+  for (const k of Object.keys(fams)) fams[k] = fams[k].filter((f) => !readFileSync(join(ROOT, f), "utf8").includes('<meta name="agsist-pointer"'));
   const all = Object.values(fams).flat();
   assert.ok(all.length >= 1000, `only ${all.length} pages; the sets have moved`);
   const res = JSON.parse(execFileSync("python3", ["-c", `
