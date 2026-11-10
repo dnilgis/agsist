@@ -72,6 +72,8 @@ SELFTESTS = [
     # The one clock (#455) and the one fact-keyed memory (#458): frozen fixtures, no network, no live date.
     ("Daily one clock", ["scripts/test_daily_clock.py"], {}),
     ("Daily one memory", ["scripts/test_daily_memory.py"], {}),
+    # Nov 10 2026: a ZIP reader's land line and rain record words, through the one memory (real Nov 5 to 9 repeats)
+    ("Daily ZIP lines memory", ["scripts/test_daily_zip_lines.py"], {}),
 ]
 STEP_NAME = "Code self-tests (report only, never hold the send)"
 TIMEOUT_S = 240

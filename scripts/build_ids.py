@@ -7,6 +7,7 @@ Writes, under data/ids/:
   ambiguous.json     keys that matched more than one facility; listed, never guessed
   ownership-changes.json  (input, by hand) dated ownership changes; marks parent/status on elevators.json
   board-parents.json parent company and destination buyer per bids board, from evidence (board_parents.py)
+  companies.json     company ids joining facilities on evidence only, never a name; ids never reused (company_ids.py)
   parcel-rules.json  the parcel key rule per state, in words, and the repeat-sale counts
   parcel-key-fixtures.json  pid -> key pairs from this file; test/ids.test.mjs checks parcel-key.js agrees
 
@@ -937,6 +938,20 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
         write_json(os.path.join(out_dir, "board-parents.json"), bp)
         log(f"[ids] board parents: {bp['counts']['with_parent']} of {bp['counts']['live_boards']} live boards with a "
             f"parent {bp['counts']['parent_by_rule']}, {bp['counts']['with_dest']} with a destination")
+    # company ids on evidence only (scripts/company_ids.py, Sig Nov 9 2026). A stop (too many ids lost in one run)
+    # keeps the last file and never costs the ids above.
+    if index:
+        import company_ids
+        cpath = os.path.join(out_dir, "companies.json")
+        try:
+            cdoc = company_ids.build(directory, index, recs, read_json(os.path.join(out_dir, "board-parents.json")),
+                                     changes, company_ids.load(cpath), today)
+            company_ids.write(cpath, cdoc)
+            c = cdoc["counts"]
+            log(f"[ids] companies: {c['companies']} ids over {c['facilities_with_company']} of {c['facilities']} "
+                f"facilities, links {c['links_by_type']}, held {c['held']}")
+        except SystemExit as e:
+            log(f"[ids] companies not rebuilt: {e}")
     if do_parcels:
         prules, fixtures = parcel_outputs(root)
         write_json(os.path.join(out_dir, "parcel-rules.json"), prules)
@@ -1045,6 +1060,17 @@ def selftest():
         ids1 = {r["id"]: r["sources"] for r in d1["elevators"]}
         d2 = build(root, bdir, sch, out, "2026-10-19", do_parcels=False, log=lambda *_: None)
         ck("second build gives the same ids", {r["id"]: r["sources"] for r in d2["elevators"]} == ids1)
+        # company ids: the two Coop X boards post one phone and one site, so they share a company id; the
+        # board index is gone again on the next run and the last companies.json stays
+        json.dump({"sources": [{"id": i, "operator": "Coop X", "website": "https://coopx.com/", "phone": "715-555-0100",
+                                "health": "live", "url": ""} for i in ("coopx-chetek", "coopx-chetekeast")]},
+                  open(os.path.join(bdir, "data", "index.json"), "w"))
+        build(root, bdir, sch, out, "2026-10-19", do_parcels=False, log=lambda *_: None)
+        cdoc = read_json(os.path.join(out, "companies.json"))
+        ck("companies.json: the two Coop X boards share one company id, on phone and website",
+           [c["facilities"] for c in cdoc["companies"].values()] == [["e000000001", "e000000002"]]
+           and cdoc["counts"]["links_by_type"]["phone"] == 1 and cdoc["counts"]["links_by_type"]["website"] == 1)
+        os.remove(os.path.join(bdir, "data", "index.json"))
         # the old mill turns up in the bids repo: its AGSIST id is merged, not reused
         aid = olds[0]["id"]
         directory["elevators"].append({"id": "known:Old Mill|Barron|Barron|WI", "elevId": "e000000005", "operator": "Old Mill",

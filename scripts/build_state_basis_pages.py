@@ -84,6 +84,7 @@ from fetch_bids import held_skip_row, HELD_SKIP_HOURS as _FB_HELD_SKIP_HOURS  # 
 import source_links as SL  # noqa: E402  no direct links to data sources
 import pricefmt  # noqa: E402  (cash as posted, basis in cents, "Dec '26": twin of components/util.js AG.px)
 from basis_method import (  # noqa: E402  (the one state-basis method)
+    futures_disagree,
     CROP_ORDER, MIN_STAT, SANITY, match_key, median, state_basis)
 
 SITE = "https://agsist.com"
@@ -557,20 +558,13 @@ def nearby(rows):
     return [v[1] for v in best.values()]
 
 
-def flag_futures_disagreement(rows, tol=0.03):
-    """cash - basis is the futures price the board used. Every board quoting
-    the same contract at the same snapshot should land on about the same
-    number; one that is more than 3% off the network-wide median for that
-    contract has a misread cash, basis or month, and is kept out of the
-    statistics (still listed, marked)."""
-    by = {}
+def flag_futures_disagreement(rows):
+    """r["fut_off"]: the board's cash - basis is more than 3% off the network for that contract, a misread
+    cash, basis or month; kept out of the statistics (still listed, marked). The check is
+    basis_method.futures_disagree, the one copy fetch_bids and the cash bid pages use too."""
+    off = futures_disagree(rows, lambda r: r["contract"], lambda r: r["cash"] - r["basis"])
     for r in rows:
-        if r["contract"] is not None:
-            by.setdefault(r["contract"], []).append(r["cash"] - r["basis"])
-    med = {c: statistics.median(v) for c, v in by.items() if len(v) >= 5}
-    for r in rows:
-        m = med.get(r["contract"])
-        r["fut_off"] = bool(m) and abs((r["cash"] - r["basis"]) / m - 1) > tol
+        r["fut_off"] = id(r) in off
 
 
 # THE METHOD lives in scripts/basis_method.py, one copy for every surface that

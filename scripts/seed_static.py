@@ -1569,11 +1569,10 @@ def _pb_verdict(r, label, R):
         return "-", "", ""
     if r.get("verdict") == "not_enough":
         return (PB_VERDICT["not_enough"],
-                f"{_pb_n(r.get('graded'))} graded so far. A rate is shown from {_pb_n(R.get('min_graded_for_rate'))} "
-                f"graded calls and {_pb_n(R.get('min_windows_for_rate'))} non-overlapping windows.", "")
+                f"{_pb_n(r.get('graded'))} graded so far. A rate is shown once enough calls are graded.", "")
     v = _e(r.get("verdict_text") or PB_VERDICT.get(r.get("verdict"), "")) or "-"
     line = (f"Right on {_pb_n(r.get('hits'))} of {_pb_n(r.get('graded'))} {label} ({_pb_rate(r.get('hit_rate'))}). "
-            f"Across four non-overlapping groups of calls: {_pb_rate(r.get('spell_rate_low'))} to "
+            f"Across four separate groups of calls: {_pb_rate(r.get('spell_rate_low'))} to "
             f"{_pb_rate(r.get('spell_rate_high'))} ({_pb_n(r.get('windows'))} windows).")
     luck = (f"Odds pure guessing does at least this well: {_pb_luck(r.get('p_luck'))}; at least this badly: "
             f"{_pb_luck(r.get('p_worse'))} ({_pb_luck(r.get('p_worse_adjusted'))} after adjusting for the records tested at once).")
@@ -4251,7 +4250,7 @@ def main():
         rc = hm.get("recent_count")
         line = (f"{tot:,} National Weather Service hail reports, {yrs[0]}\u2013{yrs[-1]}"
                 + (f", {rc:,} in the last 30 days" if rc else "")
-                + ". Recent reports refresh daily; the full archive rebuilds monthly.") if yrs else None
+                + ".") if yrs else None
         if line:
             t = open("hail-map.html", encoding="utf-8").read()
             t, ch = seed_between(t, "hailstats", line)

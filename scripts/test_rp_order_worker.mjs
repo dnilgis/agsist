@@ -267,6 +267,19 @@ console.log('rp-order worker checks: ' + n + ' passed');
   A(JSON.parse(dispatches[0].body).inputs.dry_run === 'true', 'dry run until RP_BUYER_EMAIL_LIVE is 1');
   const fr2 = recs().map(k => JSON.parse(store.get(k))).find(r => r.paid && r.paid.session === 'cs_live_framed2');
   A(fr2 && fr2.serial === before + 1 && JSON.parse(store.get('rpo-serial')).last === before + 1, 'webhook: a framed print gets the next serial');
+  A(fr2 && fr2.dispatch && fr2.dispatch.job === 'started' && typeof fr2.dispatch.at === 'string', 'v5.66: the job start is kept on the order');
+  A(!JSON.stringify(fr2.dispatch).includes('ghp_'), 'v5.66: never the token on the record');
+  // v5.66: an expired token (GitHub answers 401): still 200 to Stripe, but the failed start stays on the order
+  const fetchOk = globalThis.fetch;
+  globalThis.fetch = async (u, o) => { dispatches.push({ u: String(u), body: o && o.body }); return new Response(null, { status: 401 }); };
+  await post(RP.orderRecord(long, 'RPS-K7Q2N', 'print12x18', 45));
+  const b401 = event({ id: 'cs_live_dead401', client_reference_id: 'RPS-K7Q2N', amount_subtotal: 4500, amount_total: 4500 });
+  h = await hook(b401, signed(b401)); hj = await h.json();
+  A(h.status === 200 && hj.job === 'HTTP 401', 'v5.66: a refused start answers 200 with the reason');
+  const dead = recs().map(k => JSON.parse(store.get(k))).find(r => r.paid && r.paid.session === 'cs_live_dead401');
+  A(dead && dead.dispatch && dead.dispatch.job === 'HTTP 401' && !dead.mailed, 'v5.66: the failed start is kept on the paid, unmailed order');
+  globalThis.fetch = fetchOk;
+  dispatches.length = 1;
   env.RP_BUYER_EMAIL_LIVE = '1';
   // async: completed but unpaid is ignored, async_payment_succeeded counts
   const b3 = event({ id: 'cs_live_async3', payment_status: 'unpaid', client_reference_id: 'GIFT-RPS-K7Q2M', amount_subtotal: 4500, amount_total: 4500 });
@@ -286,10 +299,18 @@ console.log('rp-order worker checks: ' + n + ' passed');
   const L = await (await admin('/rp-order/list')).json();
   A(L.orders.filter(o => o.paid && o.paid.session === 'cs_live_a1B2c3').length === 1, 'the poll leaves a webhook-paid session alone');
   A(L.orders.some(o => o.no_press && o.fulfill_url === ''), 'a record with no design has no maker link');
+  A(L.orders.some(o => o.paid && o.paid.session === 'cs_live_dead401' && o.dispatch && o.dispatch.job === 'HTTP 401'), 'v5.66: /rp-order/list carries the failed start');
   // the alert mark
   let m = await admin('/rp-order/alerted', 'POST', { key: pressKey }); let mj = await m.json();
   A(mj.ok && mj.already === false && mj.alerted.session === 'cs_live_a1B2c3', 'alerted: marked');
   m = await admin('/rp-order/alerted', 'POST', { key: pressKey }); A((await m.json()).already === true, 'alerted: once');
+  // v5.66: the hourly guard's once-per-order mark
+  m = await admin('/rp-order/guarded', 'POST', { key: pressKey }); mj = await m.json();
+  A(mj.ok && mj.already === false && mj.guarded.session === 'cs_live_a1B2c3', 'v5.66 guarded: marked');
+  m = await admin('/rp-order/guarded', 'POST', { key: pressKey }); A((await m.json()).already === true, 'v5.66 guarded: once');
+  const LG = await (await admin('/rp-order/list')).json();
+  A(LG.orders.some(o => o.key === pressKey && o.guarded && o.guarded.session === 'cs_live_a1B2c3'), 'v5.66 guarded: on /rp-order/list');
+  m = await admin('/rp-order/guarded', 'POST', { key: 'nope' }); A(m.status === 400, 'v5.66 guarded: a bad key is refused');
   globalThis.fetch = realFetch;
   console.log('rp-order webhook checks: ' + n + ' passed');
 }

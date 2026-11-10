@@ -50,12 +50,15 @@ test("crosswalk: every off-spine code folds onto spine counties or is never fold
     assert.equal(XW.codes[c].kind, "reshape", `${c} CT planning region`);
 });
 
-test("crosswalk: the Atlas build's FIPS_ALIAS is a subset with the same targets", () => {
-  const src = read("scripts/build_farmland_atlas.py");
-  const block = src.slice(src.indexOf("FIPS_ALIAS = {"), src.indexOf("}", src.indexOf("FIPS_ALIAS = {")));
-  const pairs = [...block.matchAll(/"(\d{5})":\s*"(\d{5})"/g)];
-  assert.ok(pairs.length >= 9, "read the alias table");
-  for (const [, from, to] of pairs) assert.deepEqual(XW.codes[from]?.to, [to], `FIPS_ALIAS ${from} -> ${to}`);
+test("crosswalk: every code the Atlas folded is in the table with the same target", () => {
+  // was a parse of build_farmland_atlas.FIPS_ALIAS; the fold now lives in scripts/county_fold.py only
+  // (test/county-fold.test.mjs), and these are the nine pairs that table held on Nov 9
+  const old = { "46113": "46102", "02270": "02158", "51515": "51019", "02063": "02261", "02066": "02261",
+                "12025": "12086", "19156": "19155", "27112": "27111", "27120": "27119" };
+  for (const [from, to] of Object.entries(old)) {
+    assert.deepEqual(XW.codes[from]?.to, [to], `${from} -> ${to}`);
+    assert.equal(XW.codes[from].atlas, true, `${from} still marked as an Atlas fold`);
+  }
 });
 
 test("crosswalk: every county code our federal files write is a spine county, in the table, or outside", () => {
@@ -68,7 +71,7 @@ test("crosswalk: every county code our federal files write is a spine county, in
   for (const k of Object.keys(json("data/rma-planting-dates.json").counties)) seen.push(["rma", k]);
   for (const k of Object.keys(json("data/tenure/tenure.json").counties)) seen.push(["tenure", k]);
   const stray = seen.filter(([, k]) => !SPINE.has(k) && !XW.codes[k] && !OUTSIDE.has(k.slice(0, 2)));
-  assert.deepEqual(stray, [], "a new off-spine code: add it to scripts/build_geo_crosswalk.py EXTRA");
+  assert.deepEqual(stray, [], "a new off-spine code: add it to scripts/county_fold.py TABLE");
   const arc = seen.filter(([s]) => s === "arc-plc").map(([, k]) => k);
   assert.ok(arc.includes("29193") && arc.includes("46113"), "the real ARC case is still in the data (else rewrite this check)");
 });

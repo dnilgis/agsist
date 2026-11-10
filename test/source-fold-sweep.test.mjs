@@ -11,7 +11,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(ROOT + p, "utf8");
 const PAGES = ["usda-calendar", "corn-futures-prices", "soybean-futures-prices", "wheat-futures-prices", "cattle-futures-prices",
-  "milk-prices", "breakeven", "usda-quick-stats", "hay-prices", "fast-facts", "farmland-atlas", "conditions", "cash-lease"];   // arc-plc: built on main, read through its builder below
+  "milk-prices", "breakeven", "usda-quick-stats", "hay-prices", "fast-facts", "farmland-atlas", "conditions", "cash-lease", "spray"];   // arc-plc: built on main, read through its builder below
 const NASS = "This product uses the NASS API but is not endorsed or certified by NASS.";
 const OPEN = /<details\b[^>]*>\s*<summary\b[^>]*>(?:<h2\b[^>]*>)?\s*Sources and terms\s*</g;
 const folds = (h) => [...h.matchAll(OPEN)].map((m) => {
@@ -47,9 +47,10 @@ test("pages that gained the fold hold it once, with their credit line short and 
 test("the track record keeps its status text, the lock sentence and the sources inside the fold", () => {
   const h = read("usda-calendar.html"), f = folds(h);
   assert.equal(f.length, 1);
-  assert.match(f[0].body, /The baselines were fixed Nov \d+, 2026 and are never changed\./);
-  assert.match(f[0].body, /Live: over its most recent graded calls/);
-  assert.match(f[0].body, /Backtest baselines: the USDA WASDE archive/);
+  assert.match(f[0].body, /baseline that is fixed in advance and never changed/);
+  assert.match(f[0].body, /Status: Live beats its baseline and is still being made/);
+  assert.match(f[0].body, /is left out of the direction count/);
+  assert.match(f[0].body, /USDA AMS announced Class III prices/);
   assert.match(h, /<p class="tr-note">Record as of [A-Z][a-z]+ \d+, 2026\.<\/p>/);
 });
 
