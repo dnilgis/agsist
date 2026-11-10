@@ -199,33 +199,40 @@ function datasetsOf(h, type) {
   return out;
 }
 
-// Rain county title test (Sig, Nov 2): the title leads with the year's own inches and place; it is the page's total.
+// Rain county title test (Nov 2): the title leads with the year's own inches and place; it is the page's total.
+// Nov 10: the total is one gauge's, so the title names the gauge ("at the Gilbert Gauge," or "at Gilbert,"); a county
+// whose only gauge is a mountain snow site leads with the county-wide estimate ("About 16.85 in of Rain in ...").
 test("rain county pages: the title's inches are the total the page shows, og:title in step", () => {
-  let n = 0, bare = 0, question = 0;
+  let n = 0, bare = 0, question = 0, gauge = 0, county = 0;
   for (const st of readdirSync(ROOT + "rain", { withFileTypes: true }).filter((d) => d.isDirectory())) {
     for (const f of readdirSync(ROOT + "rain/" + st.name).filter((x) => x.endsWith(".html"))) {
       const p = `rain/${st.name}/${f}`;
       const h = read(p);
       if (/http-equiv="refresh"/.test(h)) continue;   // a moved county's pointer
       const title = h.match(/<title>([^<]*)<\/title>/)[1];
-      const shown = h.match(/<dt>Rain (?:so far|in \d{4})<\/dt><dd>([\d,]+\.\d\d) <small>in<\/small><\/dd>/);
+      const shown = h.match(/<dt>(Rain (?:so far|in \d{4})|Across the county, estimate)<\/dt><dd>([\d,]+\.\d\d) <small>in<\/small><\/dd>/);
       if (!shown) { question++; assert.match(title, /^How Much Rain /, `${p}: no total shown, so the question title`); continue; }
       n++;
-      const m = title.match(/^([\d,]+\.\d\d) in of Rain in (.+), ([A-Z]{2}), (\d{4})( \| AGSIST)?$/);
+      const m = title.match(/^(About )?([\d,]+\.\d\d) in of Rain (in |at [^,]+, )(.+), ([A-Z]{2}), (\d{4})( \| AGSIST)?$/);
       assert.ok(m, `${p}: ${title}`);
-      assert.equal(m[1], shown[1], `${p}: title inches = the page's total`);
-      assert.match(h, new RegExp(`class="rc-answer"><b>${m[1].replace(/\./, "\\.")} inches?</b>`), `${p}: the lead answer says the same`);
-      assert.match(h, new RegExp(`<h1>How much rain (?:has|did) ${m[2]}, [A-Za-z .]+, (?:had|get) in ${m[4]}\\?`), `${p}: same place and year as the h1`);
-      const base = m[0].replace(/ \| AGSIST$/, "");
-      if (m[5]) assert.ok(title.length <= 60, `${p}: ${title.length} chars with the suffix`);
+      assert.equal(!!m[1], shown[1] === "Across the county, estimate", `${p}: "About" exactly when the county-wide estimate leads`);
+      if (m[1]) { county++; assert.equal(m[3], "in ", p); } else if (m[3] !== "in ") gauge++;
+      assert.equal(m[2], shown[2], `${p}: title inches = the page's lead figure`);
+      assert.match(h, new RegExp(`class="rc-answer"><b>${m[2].replace(/\./, "\\.")} inches?</b>`), `${p}: the lead answer says the same`);
+      assert.match(h, new RegExp(`<h1>How much rain (?:has|did) ${m[4]}, [A-Za-z .]+, (?:had|get) in ${m[6]}\\?`), `${p}: same place and year as the h1`);
+      const base = title.replace(/ \| AGSIST$/, "");
+      if (m[7]) assert.ok(title.length <= 60, `${p}: ${title.length} chars with the suffix`);
       else { bare++; assert.ok((base + " | AGSIST").length > 60, `${p}: suffix dropped only past 60`); }
+      assert.ok(base.length <= 68, `${p}: ${base.length} chars`);
       assert.ok(!/thru|through/i.test(title), p);
       assert.ok(h.includes(`<meta property="og:title" content="${base}">`), `${p}: og:title`);
     }
   }
   assert.ok(n >= 2500, `inches-first titles: ${n}`);
-  assert.ok(bare < 100, `titles over 60 with the suffix: ${bare}`);
-  assert.match(read("rain/kentucky/marion-county.html"), /<title>\d+\.\d\d in of Rain in Marion County, KY, \d{4} \| AGSIST<\/title>/);
+  assert.ok(gauge >= n * 0.9, `titles naming the gauge: ${gauge} of ${n}`);
+  assert.ok(county <= 30, `county-estimate titles (mountain snow sites only): ${county}`);
+  // most gauge titles run past 60 and drop " | AGSIST" (checked page by page above); the count is no longer capped
+  assert.match(read("rain/kentucky/marion-county.html"), /<title>\d+\.\d\d in of Rain (in|at [^,]+,) Marion County, KY, \d{4}( \| AGSIST)?<\/title>/);
 });
 
 // 4. ARC/PLC county pages: one plain sentence ahead of the cards, built only from what the cards print.

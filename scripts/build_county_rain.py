@@ -777,15 +777,17 @@ def county_page(ctx):
     if c.get("total") is not None:
         N_ = inch(c["total"])
         if lead_county:
-            cands = [f"About {inch(est[0])} in of Rain in {name}, {st}, {year}", f"{inch(est[0])} in of Rain in {name}, {st}, {year}"]
+            cands = [f"About {inch(est[0])} in of Rain in {name}, {st}, {year}"]   # an estimate always says so
         else:
             kind_ = "Snow Site" if mtn else gnoun.title()
             cands = [f"{N_} in of Rain at the {gauge_called(gname, kind_)}, {name}, {st}, {year}", f"{N_} in of Rain at {gname}, {name}, {st}, {year}"]
             town_ = R.station_town(stw["raw"])
             if town_ and town_ != gname:
                 cands.append(f"{N_} in of Rain at {town_}, {name}, {st}, {year}")
-        title = next((t_ + CAPS.SUFFIX for t_ in cands if len(t_ + CAPS.SUFFIX) <= TITLE_TEST_MAX),
-                     next((t_ for t_ in cands if len(t_) <= CAPS.TITLE_MAX), cands[-1] if lead_county else f"{N_} in of Rain in {name}, {st}, {year}"))
+        last_ = cands[-1] if lead_county else f"{N_} in of Rain in {name}, {st}, {year}"   # a gauge name too long for any title
+        # the first form that fits the cap wins ("at the Gilbert Gauge" before "at Gilbert"); " | AGSIST" only within 60
+        title = next((t_ + CAPS.SUFFIX if len(t_ + CAPS.SUFFIX) <= TITLE_TEST_MAX else t_ for t_ in cands if len(t_) <= CAPS.TITLE_MAX),
+                     last_ + CAPS.SUFFIX if len(last_ + CAPS.SUFFIX) <= TITLE_TEST_MAX else last_)
     span = f"Jan 1 to {short_date(asof)}"
     pct_bit = f", {c['pct']}% of a usual year{'' if whole else ' to date'}" if c["pct"] is not None else ""
     has = [x for x, k in (("the wettest month", "wet_month"), ("the biggest rain", "max_day"), ("the longest dry stretch", "dry")) if c.get(k)]
@@ -1618,9 +1620,9 @@ def selftest():
         ok(f"{c['total']:.2f} inches of rain have fallen so far in 2026 at the weather station 8 miles west-southwest of Ames in Story County, through Oct 12." in story,
            "the answer comes first, in plain words, naming the gauge and then the county")
         ok(f"({c['pct']}% of usual)" in story and ("less than a usual year to date" in story or "more than a usual year to date" in story), "the comparison sentence")
-        ok(f"<title>{c['total']:.2f} in of Rain at Ames, Story County, IA, 2026 | AGSIST</title>" in story,
+        ok(f"<title>{c['total']:.2f} in of Rain at the Ames Station, Story County, IA, 2026</title>" in story,
            "title: the year's inches first (Nov 2 test), at the gauge it was read at (Nov 10)")
-        ok('<meta property="og:title" content="%.2f in of Rain at Ames, Story County, IA, 2026">' % c["total"] in story, "og:title in step")
+        ok('<meta property="og:title" content="%.2f in of Rain at the Ames Station, Story County, IA, 2026">' % c["total"] in story, "og:title in step")
         # 2026-10-23 (Sig): the pages are rebuilt every day, not Mondays; each says the day it was read
         # and the day its numbers run through, and none says weekly
         ok('<p class="rc-asof">As of Oct 12, 2026, the latest day this station has reported</p>' in story
@@ -1913,7 +1915,7 @@ def selftest():
         de = want.get("rain/delaware/kent-county.html", "")
         # the title leads with the inches since the Nov 2 test, so the finished-year question is read from the h1
         ok(de and "How much rain did Kent County, Delaware, get in 2024?" in de and "fell in 2024" in de
-           and re.search(r"<title>\d+\.\d\d in of Rain at Dover, Kent County, DE, 2024 \| AGSIST</title>", de), "finished year wording")
+           and re.search(r"<title>\d+\.\d\d in of Rain at the Dover Station, Kent County, DE, 2024</title>", de), "finished year wording")
         ok(de and "ship in January" not in de and "All of 2024" in de, "finished year: no January note")
         # a station that last reported Dec 29 in a year fetched through Dec 31: the year is over, the page says Dec 29
         dd3 = os.path.join(t, "late")
