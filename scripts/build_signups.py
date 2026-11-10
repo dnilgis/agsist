@@ -132,8 +132,8 @@ def build(records, notices, today):
 
 
 def get_notices(base, token):
-    u = base.rstrip("/") + "/notice-list?token=" + urllib.parse.quote(token)
-    with urllib.request.urlopen(urllib.request.Request(u, headers=UA), timeout=60) as r:
+    u = base.rstrip("/") + "/notice-list"
+    with urllib.request.urlopen(urllib.request.Request(u, headers=dict(UA, Authorization="Bearer " + token)), timeout=60) as r:
         arr = json.loads(r.read().decode())
     if not isinstance(arr, list):
         raise ValueError("notice-list did not answer with a list")
@@ -147,27 +147,19 @@ def main():
         return 0
     import subscribers
     try:
-        records, how = subscribers.fetch(lu, lt)
-    except Exception as e:  # noqa: BLE001  never print the URL, it carries the token
-        print("::warning::signup list failed: %s %s" % (type(e).__name__, getattr(e, "code", "")))
+        records, _how = subscribers.fetch(lu, lt)
+    except Exception:  # noqa: BLE001  a fixed line only: no URL, no count
+        print("::warning::signup list failed")
         return 0
     try:
         notices = get_notices(lu, lt)
-    except Exception as e:  # noqa: BLE001
-        print("::warning::notice list failed: %s %s" % (type(e).__name__, getattr(e, "code", "")))
+    except Exception:  # noqa: BLE001
+        print("::warning::notice list failed")
         notices = None
     out = build(records, notices, datetime.now(CT).date())
     OUT.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
-    print("signups: %d subscribers (%s list), %d sources, %d with ZIP, last 7 days %d"
-          % (out["subscribers"], how, len(out["bySource"]), out["withZip"],
-             sum(b["last7"] for b in out["bySource"])))
-    # counts only, as annotations so they can be read without the log (page names and numbers, never an address)
-    print("::notice title=signups by kind::" + "; ".join("%s %d (7d %d)" % (k["kind"], k["total"], k["last7"]) for k in out["byKind"][:25]))
-    print("::notice title=signups by page::" + "; ".join("%s %d (7d %d)" % (b["src"], b["total"], b["last7"]) for b in out["bySource"][:25]))
-    for t in out.get("notices") or []:
-        print("::notice title=notice list %s::%d total, %d last 7 days, %d sent%s" % (
-            t["topic"], t["total"], t["last7"], t["sent"],
-            (", " + ", ".join("%s %d" % kv for kv in sorted(t["detail"].items(), key=lambda kv: -kv[1])[:10])) if t["detail"] else ""))
+    # the file is the record; the public job log gets no count (counts are read in the morning email)
+    print("signups: data/signups.json written")
     return 0
 
 
