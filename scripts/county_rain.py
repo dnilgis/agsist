@@ -53,6 +53,31 @@ MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "
                "October", "November", "December"]
 
 
+def set_source(dirpath, source, sort_keys=False, newline=False):
+    """Set the top-level "source" of every <st>.json in dirpath to source, written back in the file's own form
+    (key order or sorted, trailing newline or not). Only files whose line differs are rewritten; a file that does
+    not parse is left for the checks. Returns the state codes rewritten, so a kept file never carries an older line."""
+    import glob
+    done = []
+    for p in sorted(glob.glob(os.path.join(dirpath, "*.json"))):
+        try:
+            with open(p, encoding="utf-8") as fh:
+                d = json.load(fh)
+        except ValueError:
+            continue
+        if not isinstance(d, dict) or d.get("source") == source:
+            continue
+        d["source"] = source
+        tmp = p + ".tmp"
+        with open(tmp, "w", encoding="utf-8") as fh:
+            json.dump(d, fh, separators=(",", ":"), sort_keys=sort_keys)
+            if newline:
+                fh.write("\n")
+        os.replace(tmp, p)
+        done.append(os.path.basename(p)[:-5].upper())
+    return done
+
+
 def slug(name):
     return re.sub(r"[^a-z0-9]+", "-", name.lower()).strip("-")
 
