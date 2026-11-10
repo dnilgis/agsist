@@ -45,7 +45,7 @@ WASDE_DATES = frozenset(WASDE_2026 | WASDE_2027)
 # out, so on those days the briefing names the WASDE alone.
 GRAIN_STOCKS_2026 = {date(2026, 1, 12), date(2026, 3, 31), date(2026, 6, 30), date(2026, 9, 30)}
 CROP_PRODUCTION_2026 = {date(2026, 1, 12), date(2026, 4, 9), date(2026, 8, 12), date(2026, 9, 11),
-                        date(2026, 10, 9), date(2026, 11, 10)}
+                        date(2026, 10, 9), date(2026, 11, 10), date(2026, 12, 10)}
 PROSPECTIVE_PLANTINGS_2026 = {date(2026, 3, 31)}
 ACREAGE_2026 = {date(2026, 6, 30)}
 
@@ -352,6 +352,8 @@ def _selftest():
     check(next_wasde(date(2026, 12, 11)) == date(2027, 1, 12), "after Dec 10, 2026 the next WASDE is Jan 12, 2027")
     check(prior_wasde(date(2027, 1, 13)) == date(2027, 1, 12), "and January 2027 is graded against itself")
     check(major_reports(date(2027, 7, 9)) == ["WASDE"], "Fri Jul 9, 2027 is a WASDE day")
+    check(major_reports(date(2026, 12, 10)) == ["WASDE", "Crop Production"],
+          "Thu Dec 10, 2026 is a WASDE and Crop Production day")
 
     print()
     print("the horizon is announced before it arrives, not after")

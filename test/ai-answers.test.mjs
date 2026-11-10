@@ -91,6 +91,23 @@ test("the crop report answer is written from data/wasde.json and the report cale
   assert.ok(a.review_by > w.date, "goes stale at the next report");
 });
 
+test("the crop report answer after the Nov 10 report names the Dec 10 Crop Production report", () => {
+  // a fixture copy of data/wasde.json dated each release; the calendar comes from scripts/usda_dates.py
+  const out = JSON.parse(execFileSync("python3", ["-c",
+    "import sys, json, os, tempfile; sys.path.insert(0, 'scripts'); import build_ai_answers as B\n"
+    + "w = json.load(open('data/wasde.json')); out = []\n"
+    + "for d in ('2026-11-10', '2026-12-10'):\n"   // pin-ok: fixture report dates
+    + "  root = tempfile.mkdtemp(); os.makedirs(os.path.join(root, 'data'))\n"
+    + "  w['wasde_pdf']['date'] = d; json.dump(w, open(os.path.join(root, 'data', 'wasde.json'), 'w'))\n"
+    + "  out.append(B.wasde_answer({'id': 'crop-report', 'from': 'wasde', 'sources': []}, root))\n"
+    + "print(json.dumps(out))"], { cwd: ROOT, encoding: "utf8" }));
+  if (out[0].status === "withheld") return;   // a blank figure in the live data withholds the block
+  assert.ok(out[0].text.join(" ").includes("The next WASDE and Crop Production report come out Thursday, December 10, 2026"),
+    out[0].text.join(" "));
+  assert.ok(out[1].text.join(" ").startsWith("The last Crop Production report and WASDE, out Thursday, December 10, 2026"),
+    out[1].text.join(" "));
+});
+
 test("bake_seo bakes the usda-calendar answer too, so the wasde job's bake keeps it current", () => {
   const src = read("scripts/bake_seo.py");
   assert.match(src, /build_ai_answers/);
