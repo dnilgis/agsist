@@ -147,7 +147,7 @@ test("the gate passes over runs by hand for these four, and cron health watches 
   for (const name of ["mail workflow: a run by hand after the tick does not serve it; the chained run sends",
     "other workflows: a run by hand still serves the tick (unchanged)",
     "mail workflow: the second chained run after the tick still skips",
-    "the four mail and rain workflows and the 52 gated since Nov 3, and only those, ignore runs by hand"]) {
+    "the four mail and rain workflows and the 53 gated since Nov 3, and only those, ignore runs by hand"]) {
     assert.ok(out.includes("ok   " + name), "cron_gate selftest ran: " + name);
   }
   const ch = execFileSync("python3", ["scripts/cron_health.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
