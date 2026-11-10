@@ -154,10 +154,10 @@ for (const width of [390, 1280]) {
       assert.deepEqual(s.cards, expected(a, e), "cards follow the data files");
       assert.equal(s.none, Object.values(s.cards).every((v) => v === null), "the withheld note shows only when no card does");
       assert.ok(s.sw <= s.cw, `no sideways scroll: ${s.sw} > ${s.cw}`);
-      assert.equal(s.tiers, 4);
-      assert.deepEqual(s.prices, CARD.tiers.map((t) => t.id).sort((x, y) => ["daily", "cashbids", "state", "elevator"].indexOf(x) - ["daily", "cashbids", "state", "elevator"].indexOf(y))
+      assert.equal(s.tiers, 3);
+      assert.deepEqual(s.prices, CARD.tiers.map((t) => t.id).sort((x, y) => ["daily", "cashbids", "state"].indexOf(x) - ["daily", "cashbids", "state"].indexOf(y))
         .map((id) => "$" + CARD.tiers.find((t) => t.id === id).price_month + " /mo"));
-      assert.equal(s.tierCols, width < 760 ? 1 : 4, "one column on a phone, four across at 1280");
+      assert.equal(s.tierCols, width < 760 ? 1 : 3, "one column on a phone, three across at 1280");
       assert.ok(s.tel && s.mail.startsWith("mailto:sig@agsist.com"));
       assert.ok(s.pages <= 6);
       const k = (a?.states?.["28d"] || []).filter((x) => x && x.users > 0 && US.includes(x.code)).length;
@@ -177,7 +177,7 @@ test("no audience file, no counts file: every card withheld, the note says so, n
     assert.deepEqual(Object.values(s.cards), [null, null, null, null, null, null]);
     assert.ok(s.none && !s.pagesShown && s.win === "");
     assert.equal(s.stateLine, "Ask for your state\u2019s numbers.");
-    assert.equal(s.prices.length, 4);
+    assert.equal(s.prices.length, 3);
     assert.ok(s.sw <= s.cw);
   } finally { await browser.close(); srv.close(); }
 });
@@ -204,7 +204,7 @@ test("?ref: a valid slug reaches the form link and the email subject; anything e
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   const plain = { apply: "/sponsor-apply", mail: "mailto:sig@agsist.com?subject=AGSIST%20sponsorship",
-    tierLinks: ["daily", "cashbids", "state", "elevator"].map((t) => "/sponsor-apply?tier=" + t) };
+    tierLinks: ["daily", "cashbids", "state"].map((t) => "/sponsor-apply?tier=" + t) };
   try {
     let { page } = await open(browser, port, { query: "?ref=valley-coop-2" });
     let s = await state(page);

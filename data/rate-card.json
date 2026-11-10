@@ -40,14 +40,6 @@
       "exclusive": true,
       "slot": "cash-bids",
       "placement": "The sponsor ribbon on Cash Bids near me (agsist.com/cash-bids). One sponsor only."
-    },
-    {
-      "id": "elevator",
-      "name": "Featured elevator",
-      "price_month": 19,
-      "slots": null,
-      "exclusive": false,
-      "placement": "An elevator's own logo, phone and a call to sell box on its own town page, labeled Sponsored. It never changes bid order or any bid."
     }
   ],
   "retired": {
