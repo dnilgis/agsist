@@ -1775,6 +1775,9 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
         </div>
       </div>
       <p class="rp-promo" data-rain-print-promo="auto" hidden></p>
+      <details class="hp-terms" style="margin:1.2rem 0 .8rem;font-size:.78rem;line-height:1.6;color:var(--text-muted)"><summary style="cursor:pointer;color:var(--text-dim);min-height:44px;display:flex;align-items:center">Sources and terms</summary>
+        <p>Forecast: National Weather Service forecast grid. Measured inversion networks named on the inversion card, by state: Iowa Environmental Mesonet, Purdue Mesonet (Indiana), Kansas Mesonet, MSU Enviroweather (Michigan), Missouri Mesonet, NDAWN (North Dakota and Minnesota), SD Mesonet Spray Tool (South Dakota) and the Oklahoma Mesonet Drift Risk Advisor, from the Midwestern Regional Climate Center list of networks that show inversions live. Nothing is copied from them. Label rules from the product labels and state rules named on the page.</p>
+      </details>
     </div>
     <div class="sidebar fade-up" id="edu2">
       <div class="sc sc-live"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Recommendation</div><div class="rec marginal" id="rec-box"><div class="rec-h marginal" id="rec-head">Awaiting Location</div><div class="rec-t" id="rec-text">Set your location above to get a spray read for your field.</div></div></div>
@@ -1887,22 +1890,22 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   function showStatePick(){var w=document.getElementById('state-wrap'),e=document.getElementById('in-product');if(w)w.style.display=(e&&e.value==='dicamba')?'flex':'none';}
   // The field's state picks the state rule: Minnesota or Illinois get theirs, anywhere else gets the label only.
   // Measured inversion networks, from the MRCC list of networks that show inversion conditions live (checked Oct 16, 2026:
-  // https://mrcc.purdue.edu/climate_watch/special_topics/tempinversion), plus Oklahoma's Drift Risk Advisor. A plain link
-  // under the inversion row for a field in one of these states; nothing is copied from them.
+  // https://mrcc.purdue.edu/climate_watch/special_topics/tempinversion), plus Oklahoma's Drift Risk Advisor. The network is named under the inversion row for a field in one of
+  // these states, in plain text with no link (Oct 29 no-data-links rule, Nov 10); nothing is copied from them.
   var INV_NETS={
-    Iowa:{n:'Iowa Environmental Mesonet',u:'https://mesonet.agron.iastate.edu/agclimate/#tmpf'},
-    Indiana:{n:'Purdue Mesonet',u:'https://ag.purdue.edu/indiana-state-climate/purdue-mesonet/purdue-mesonet-data-hub/'},
-    Kansas:{n:'Kansas Mesonet',u:'https://mesonet.k-state.edu/agriculture/inversion/'},
-    Michigan:{n:'MSU Enviroweather',u:'https://legacy.enviroweather.msu.edu/soy.php'},
-    Missouri:{n:'Missouri Mesonet',u:'http://agebb.missouri.edu/weather/realTime/maps/index.php#temp_inversion/'},
-    'North Dakota':{n:'NDAWN (North Dakota Agricultural Weather Network)',u:'https://www.ndsu.edu/agriculture/ag-hub/ndawn-inversion'},
-    Minnesota:{n:'NDAWN (North Dakota Agricultural Weather Network)',u:'https://www.ndsu.edu/agriculture/ag-hub/ndawn-inversion'},
-    'South Dakota':{n:'SD Mesonet Spray Tool',u:'https://climate.sdstate.edu/tools/spray/'},
-    Oklahoma:{n:'Oklahoma Mesonet Drift Risk Advisor',u:'https://www.mesonet.org/agriculture/drift-risk-advisor'}
+    Iowa:{n:'Iowa Environmental Mesonet'},
+    Indiana:{n:'Purdue Mesonet'},
+    Kansas:{n:'Kansas Mesonet'},
+    Michigan:{n:'MSU Enviroweather'},
+    Missouri:{n:'Missouri Mesonet'},
+    'North Dakota':{n:'NDAWN (North Dakota Agricultural Weather Network)'},
+    Minnesota:{n:'NDAWN (North Dakota Agricultural Weather Network)'},
+    'South Dakota':{n:'SD Mesonet Spray Tool'},
+    Oklahoma:{n:'Oklahoma Mesonet Drift Risk Advisor'}
   };
   // The state is the last comma part that is exactly a state name ("Kansas City, Missouri" is Missouri).
   function invKey(name){if(typeof name!=='string')return'';var p=name.split(',');for(var i=p.length-1;i>=0;i--){var t=p[i].trim();if(Object.prototype.hasOwnProperty.call(INV_NETS,t))return t;}return'';}
-  function renderInvNet(key){var el=document.getElementById('fc-inv-net');if(!el)return;var net=Object.prototype.hasOwnProperty.call(INV_NETS,key)?INV_NETS[key]:null;if(!net){el.hidden=true;el.textContent='';return;}el.innerHTML='Measured inversion near you: <a href="'+net.u+'" target="_blank" rel="noopener">'+net.n+'</a>. Their stations read temperature at two heights; the rating above is a forecast rule.';el.hidden=false;}
+  function renderInvNet(key){var el=document.getElementById('fc-inv-net');if(!el)return;var net=Object.prototype.hasOwnProperty.call(INV_NETS,key)?INV_NETS[key]:null;if(!net){el.hidden=true;el.textContent='';return;}el.textContent='Measured inversion near you: '+net.n+'. Their stations read temperature at two heights; the rating above is a forecast rule.';el.hidden=false;}
   function setInvState(name){if(typeof name!=='string'||!name)return;var key=invKey(name);try{localStorage.setItem('agsist-spray-net',key);}catch(x){}renderInvNet(key);}
   function setStateFromName(name){setInvState(name);var e=document.getElementById('in-state');if(!e||typeof name!=='string'||!name)return false;var v=/\bMinnesota\b/.test(name)?'MN':/\bIllinois\b/.test(name)?'IL':'';if(e.value===v)return false;e.value=v;try{localStorage.setItem('agsist-spray-state',v);}catch(x){}return true;}
   function currentState(){var e=document.getElementById('in-state');return(e&&DICAMBA_STATES[e.value])||null;}

@@ -56,6 +56,7 @@ from datetime import date, datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from history_lib import UA  # noqa: E402
+from released_at import socrata  # noqa: E402  when the rows were public
 
 SCHEMA = "agsist-vintage/1"
 OUT = "vintage"
@@ -355,6 +356,9 @@ def run(day, out=OUT, only=None, net=None, log=print):
             rec = {"requests": [], "data": None, "error": f"{type(e).__name__}: {str(e)[:200]}"}
         ok = rec.get("data") is not None and not rec.get("error")
         doc = dict(rec, schema=SCHEMA, source=src, day=ds, fetched_utc=started, finished_utc=now_iso(), ok=ok)
+        if src.startswith("agtransport-") and ok:
+            # when USDA last changed these rows (the dataset's rowsUpdatedAt), beside our fetch time
+            doc.update(socrata([rec.get("meta")], doc["finished_utc"]))
         doc.setdefault("rows", None)
         doc.setdefault("error", None)
         if not ok:
@@ -457,6 +461,9 @@ def selftest():
                and r["sha256"] == hashlib.sha256(meta_b if "/api/views/" in r["url"] else json.dumps(rows[0:SOCRATA_PAGE]).encode()).hexdigest()
                for r in b["requests"]), b["requests"])
         ck("metadata saved as sent", b["meta"] == json.loads(meta_b))
+        ck("released_at beside the fetch: the dataset's rowsUpdatedAt, or the fetch time when it states none",
+           b["released_basis"] == ("source" if json.loads(meta_b).get("rowsUpdatedAt") else "fetched") and b["released_at"].endswith("Z"),
+           (b.get("released_at"), b.get("released_basis")))
         u = read_vintage(os.path.join(d, "usgs-river", "2026-10-28.json.gz"))
         ck("USGS: new API asked first, one gauge at a time, then WaterServices once; the answer covering more gauges kept whole",
            u["service"] == "waterservices" and u["data"] == json.loads(usgs_b) and len(u["requests"]) == len(GAUGES) + 1, u.get("service"))

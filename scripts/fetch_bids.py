@@ -882,6 +882,20 @@ def verify_bids(bids, detail=None):
 
     n_ok = n_bad = 0
     net_odd = network_basis_outliers(bids)
+    # THE MISREAD-BOARD CHECK on network rows is basis_method.futures_disagree, the one copy the state
+    # basis pages (fut_off) and the cash bid pages (drop_misreads) use, so a row gets one verdict
+    # everywhere (god's-eye build 5, Nov 9). Before, bids.json trusted every network row while those
+    # pages dropped the same row. Plain bushel bids of the three crops make up each contract's group, as in
+    # network_basis_outliers, so a special grade can neither move the middle nor be called a misread.
+    net_plain = [b for b in bids if b.get("source") == "network" and b.get("category") in ("corn", "soybeans", "wheat")
+                 and _lb.can_set_best(b)]
+    # the contract key is the state pages' own reader (parse_contract): "DECEMBER 2026" is corn's December
+    # and says nothing about which wheat, so a wheat row on a bare month is in no group, as there
+    from build_state_basis_pages import parse_contract  # noqa: E402  (imported here: it imports this file)
+    yr = datetime.now(timezone.utc).year
+    net_misread = _bm.futures_disagree(
+        net_plain, lambda b: parse_contract(b.get("symbol"), b.get("category"), yr, b.get("commodity")),
+        lambda b: implied[id(b)])
     for b in bids:
         # Rows from the AGSIST elevator network (dnilgis/bids) were verified
         # by that repository's own board checks before they were published
@@ -889,6 +903,17 @@ def verify_bids(bids, detail=None):
         # are not in Barchart's per-symbol cohorts, so this Barchart-shaped
         # cohort check cannot see them; running it would refuse every one for
         # having no cohort. Trust the upstream verification and move on.
+        if b.get("source") == "network" and id(b) in net_misread:
+            v, med, n = net_misread[id(b)]
+            sym = b.get("symbol")
+            b["verified"] = False
+            b.pop("basisOdd", None)
+            b["unverifiedWhy"] = (f"cash {b.get('cashPrice')} minus basis {b.get('basis')} implies {v} for {sym}, "
+                                  f"more than 3% off the {med} the {n} network bids on {sym} imply")
+            n_bad += 1
+            if detail is not None:
+                detail[id(b)] = {"kind": "off_network", "implied": v, "cohortRows": n, "cohortFutures": med, "span": None}
+            continue
         if b.get("source") == "network":
             # `basisOdd` IS NOT A VERDICT ON THE ROW. It is a flag that this board's
             # basis sits far from the other network boards on its contract in its
@@ -987,6 +1012,9 @@ def selectable(bids):
 #
 #   no_cohort         nothing here can check it. Rice, barley, millet, durum,
 #                     peas, delivered-basis quotes. Not shown to be wrong.
+#   off_network       a network row whose cash minus basis is more than 3% off
+#                     the network bids on its contract (basis_method.futures_disagree,
+#                     the same verdict the state basis and cash bid pages reach).
 #   off_cohort        three or more facilities quote the contract and this row
 #                     implies a different futures price.
 #   outside_envelope  a thin contract, and the row is outside the crop's span.
@@ -1045,7 +1073,7 @@ def withheld_report(bids, detail):
         m = b.get("deliveryMonth")
         if m and m not in g["months"]:
             g["months"].append(m)
-    order = {"off_cohort": 0, "outside_envelope": 1, "no_price": 2,
+    order = {"off_network": 0, "off_cohort": 0, "outside_envelope": 1, "no_price": 2,
              "no_symbol": 3, "no_cohort": 4}
     rows = sorted(groups.values(),
                   key=lambda g: (order.get(g["kind"], 9), g["state"], g["facility"],
