@@ -37,6 +37,13 @@
    "link": "/cash-bids"
   },
   {
+   "id": "2026-11-10-home-audit",
+   "date": "2026-11-10",
+   "title": "Home page bids name the right futures month",
+   "line": "Home bid card shows the futures month the elevator posts (Jan, not Nov, for soybeans now), and how-it-works notes move to the bottom.",
+   "link": "/"
+  },
+  {
    "id": "2026-11-10-pages-hold-still",
    "date": "2026-11-10",
    "title": "Thirteen pages hold still while they load",
