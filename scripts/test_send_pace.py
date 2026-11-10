@@ -142,6 +142,8 @@ cases = [
     (smtplib.SMTPRecipientsRefused("not a dict"), None),
     (smtplib.SMTPAuthenticationError(535, b"5.7.8 bad login"), None),
     (TimeoutError("slow"), None),
+    (smtplib.SMTPServerDisconnected("please run connect() first"), "soft"),
+    (smtplib.SMTPServerDisconnected("Connection unexpectedly closed"), None),
 ]
 for ex, want in cases:
     got = send_pace.classify(ex, "h@x.com")[0]
@@ -329,15 +331,21 @@ class Worker:
 
 class SMTP:
     def __init__(self, plan):
-        self.plan, self.sent = {k: list(v) for k, v in plan.items()}, []
+        self.plan, self.sent, self.closed, self.connects = {k: list(v) for k, v in plan.items()}, [], False, 0
 
     def __call__(self):
+        self.connects += 1
+        self.closed = False
         return self
 
     def send_message(self, msg):
         to = msg["To"]
+        if self.closed:
+            raise smtplib.SMTPServerDisconnected("please run connect() first")
         if self.plan.get(to):
-            raise self.plan[to].pop(0)
+            ex = self.plan[to].pop(0)
+            self.closed = getattr(ex, "smtp_code", None) == 421
+            raise ex
         self.sent.append(to)
 
     def quit(self):
@@ -370,6 +378,14 @@ check(len(bounces.PENDING) == 1 and bounces.PENDING[0]["h"] == K("n7@farm.com"),
 check(4.0 in waits and 60.0 in waits, "the notice run waits in batches and before the retry (%r)" % sorted(set(waits)))
 check(not any(e in log for e in addrs5) and "@farm.com" not in log, "no address in the notice run's log")
 bounces.PENDING[:] = []
+# a 421 that closes the connection: that reader and the next are tried again after a reconnect
+w = Worker()
+s = SMTP({"n5@farm.com": [smtplib.SMTPSenderRefused(421, b"4.7.0 Try again later, closing connection", "news@x")]})
+rc = send_notice.run(["--send", "--topic", T], http=w, connect=s, now=Clock("2027-03-08 08:10"),
+                     sleep=lambda x: None, out=lambda *a: None)
+check(rc == 0 and len(s.sent) == 25 and s.connects == 2 and set(s.sent[-2:]) == {"n5@farm.com", "n6@farm.com"},
+      "the notice run after a 421: %d of 25 sent, %d connections" % (len(s.sent), s.connects))
+check(not bounces.PENDING, "a 421 is not a hard bounce")
 
 
 def main():

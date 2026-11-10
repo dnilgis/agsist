@@ -245,10 +245,9 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
             try:
                 conn.send_message(SN.render(t, src, e, base, secret, today, from_addr, reply_to, repo))
             except Exception as ex:
-                if pace.defer(ex):           # a deferral (4xx) is tried once more at the end of the list
-                    continue
-                failed += 1
-                out("  send failed (%s)" % type(ex).__name__)
+                if not pace.defer(ex):       # a deferral (4xx) is tried once more at the end of the list
+                    failed += 1
+                    out("  send failed (%s)" % type(ex).__name__)
                 dead = isinstance(ex, (smtplib.SMTPServerDisconnected, smtplib.SMTPConnectError)) or \
                     (isinstance(ex, OSError) and not isinstance(ex, smtplib.SMTPException))
                 if dead and reconnects < 3 and pace.more():

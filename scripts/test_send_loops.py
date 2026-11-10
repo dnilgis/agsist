@@ -96,9 +96,16 @@ def run(body, fail_on=(), fail_with=OSError, n=6, login_fails=False, flag_raises
         def send_message(self, msg):
             pos = len(state["sent"]) + len(state.setdefault("_failed", []))
             to = getattr(msg, "to", None)
+            if getattr(self, "closed", False):
+                # smtplib after a 421: it closed the socket itself, and refuses before sending anything
+                state["_failed"].append(pos)
+                raise smtplib.SMTPServerDisconnected("please run connect() first")
             if to is not None and refuse.get(to):
                 state["_failed"].append(pos)
-                raise refuse[to].pop(0)
+                ex = refuse[to].pop(0)
+                if getattr(ex, "smtp_code", None) == 421:
+                    self.closed = True
+                raise ex
             if pos in fail_on:
                 state["_failed"].append(pos)
                 raise fail_with("simulated failure")
@@ -285,6 +292,13 @@ for script, plural in SENDERS:
     rc, st = run(body, refuse={"w4@example.com": [pol]})
     check(not bounces.PENDING and len(st["sent"]) == 5, W("a 5.7.1 policy refusal was counted as a hard bounce"))
     check(any(ln.startswith("pacing: ") for ln in st["printed"]), W("the loop printed no pacing line"))
+    # A 421 closes the connection inside smtplib: the next send is refused before anything goes out.
+    # Both are tried again (after one reconnect); nobody loses their email to it.
+    slow = smtplib.SMTPSenderRefused(421, b"4.7.0 Try again later, closing connection", "news@x")
+    rc, st = run(body, refuse={"w2@example.com": [slow]})
+    check(len(st["sent"]) == 6 and st["connects"] == 2 and "::error::" not in "\n".join(st["printed"]),
+          W("after a 421 that closed the connection: %d of 6 sent, %d connections (expected 6 and 2)"
+            % (len(st["sent"]), st["connects"])))
 
     # ── a run killed mid-list has already flagged the day (send_daily, Oct 28)
     # A published issue that never went out is written again by the next run,

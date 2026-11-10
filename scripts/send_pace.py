@@ -121,6 +121,10 @@ def classify(ex, addr=""):
         k = kind_of(code, text, recipient=True)
         m = STATUS_RE.search(_text(text))
         return k, ("%s %s" % (code, m.group(0) if m else "")).strip()
+    if isinstance(ex, smtplib.SMTPServerDisconnected) and "run connect() first" in str(ex):
+        # smtplib closed the connection itself (a 421 before this send), so nothing of this message
+        # went out: safe to try again later. Any other drop may have delivered it: a failure, never a retry.
+        return "soft", "421"
     if isinstance(ex, (smtplib.SMTPConnectError, smtplib.SMTPHeloError, smtplib.SMTPAuthenticationError)):
         return None, ""
     if isinstance(ex, smtplib.SMTPResponseException):
