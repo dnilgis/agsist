@@ -189,7 +189,8 @@ SENDERS = [
      "steps": {"Send the report-day email": ["report-day"]}, "due": ("run",)},
     {"workflow": "report-day-live.yml", "senders": {"send_report_day.py": "report-day"}, "switch": None,
      "counts": "the step that sends the report-day email from the live result",
-     "steps": {"Send the report-day email from the live result": ["report-day"]}, "due": ("run",)},
+     # its send step runs only once the complete result is on the worker: no complete result, no send due
+     "steps": {"Send the report-day email from the live result": ["report-day"]}, "due": ("run",), "may_skip": True},
     {"workflow": "sponsor-apply.yml", "senders": {"sponsor_apply.py": "sponsor-apply"}, "switch": None,
      "counts": "the step that runs sponsor_apply.py (its readers are the applicants)",
      "steps": {"Run": ["sponsor-apply"]}, "due": ("run",)},
