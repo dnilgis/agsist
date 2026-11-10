@@ -717,7 +717,7 @@ details.fold[hidden]{display:none}
     if(lbL)lbL.textContent=(le===nLE&&nLE.contract)?'52-Week Range \u00b7 '+nLE.contract+' contract':'52-Week Range \u00b7 continuous series';
     if(lbG)lbG.textContent=(gf===nGF&&nGF.contract)?'52-Week Range \u00b7 '+nGF.contract+' contract':'52-Week Range \u00b7 continuous series';
     setQuote('le',le);setQuote('gf',gf);
-    /* the card names the contract month it shows (Dec '26 live, Nov '26 feeders), never the Yahoo ticker (futures audit 6, Nov 10 2026) */
+    /* the card names the contract month it shows (Dec '26 live cattle, Nov '26 feeders), never the Yahoo ticker (futures audit 6, Nov 10 2026) */
     [['le-tk',le],['gf-tk',gf]].forEach(function(t){var e=$(t[0]),lb=t[1]&&t[1].ticker&&window.AgPxStamp&&AgPxStamp.label?AgPxStamp.label(t[1].ticker):'';if(e)e.textContent=(lb||'Continuous')+' \u00b7 $/cwt';});
     /* chaos-1: an old settle greys the cards, as the stamp does */
     var lea=le&&le.close_kind==='settle'&&window.AgPxStamp&&AgPxStamp.settleAge?AgPxStamp.settleAge(le.settle_date||le.close_date):null;

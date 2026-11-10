@@ -242,7 +242,7 @@ function loadGrainPrices(){
     else if(hc){CORN.fut=CORN.nearby;CORN.label='nearby';CORN.date=hc.q.close_date||'';}
     fillCorn();
     var ebp=document.getElementById('eco-bean-price');if(hb&&ebp){ebp.textContent=fmtGrain(hb.q.close);unit('eco-bean-price',hb);} /* key is 'beans' in prices.json: 'soybeans' never existed, tile sat at "-" (fixed 2026-07-20) */
-    var ewp=document.getElementById('eco-wheat-price');if(q.wheat&&q.wheat.close&&ewp)ewp.textContent=fmtGrain(q.wheat.close);
+    var hw=hd('wheat'),ewp=document.getElementById('eco-wheat-price');if(hw&&ewp){ewp.textContent=fmtGrain(hw.q.close);unit('eco-wheat-price',hw);} /* the nearby month, named, not ZW=F (futures audit 7) */
     updateEcoCosts();
   }).catch(function(){calcNC();});
 }

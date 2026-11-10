@@ -496,6 +496,21 @@ function renderCropProgress(data){
       pace.style.display='block';
     }else if(pace){pace.style.display='none';}
   }else if(plantSec){plantSec.style.display='none';}
+  /* Harvest (futures audit 8, Nov 10 2026): the card read the condition week (Oct 11) while the
+     hero read the newest week in the same file (Nov 1, harvest). In harvest the newest week is
+     the harvest week, shown in the progress bar, and the condition says the week it was rated. */
+  var hv=cropHarvestWeek(d);
+  if(hv&&plantSec){
+    plantSec.style.display='block';
+    var hl=plantSec.querySelector('.crop-sec-lbl');if(hl)hl.textContent='Harvest progress';
+    var hf=document.getElementById('crop-plant-fill');if(hf)hf.style.width=d.harvest_pct+'%';
+    var hp=document.getElementById('crop-plant-bar-pct');if(hp)hp.textContent=d.harvest_pct+'%';
+    var hb=d.harvest_5yr_avg!=null?d.harvest_5yr_avg:d.harvest_prev_year,hw=d.harvest_5yr_avg!=null?'5-year average':'prior year';
+    var hpw=document.getElementById('crop-plant-prev');if(hpw)hpw.innerHTML=hb!=null?'Same week, '+hw+': <span class="v">'+hb+'%</span>':'';
+    var hpc=document.getElementById('crop-plant-pace');
+    if(hpc&&hb!=null){var hd=d.harvest_pct-hb;hpc.textContent=Math.abs(hd)<=3?'Even with the '+hw:hd<0?Math.abs(hd)+' points behind the '+hw:hd+' points ahead of the '+hw;hpc.className='crop-pace '+(Math.abs(hd)<=3?'onpace':hd<0?'behind':'ahead');hpc.style.display='block';}
+    else if(hpc)hpc.style.display='none';
+  }
 
   // Good/Excellent section
   var geSec=document.getElementById('crop-ge-sec');
@@ -529,14 +544,21 @@ function renderCropProgress(data){
     var prevYrEl=document.getElementById('crop-ge-prev-yr');if(prevYrEl)prevYrEl.textContent='';
   }
 
-  // As-of stamp
+  var gl=geSec&&geSec.querySelector('.crop-sec-lbl');
+  if(gl)gl.textContent='Crop condition (good + excellent)'+(hv&&d.report_date&&d.report_date<hv&&d.good_excellent!=null?', last rated week ending '+cropWeekLabel(d.report_date):'');
+
+  // As-of stamp: the newest week on the card, the same week the hero names
   var asof=document.getElementById('crop-asof');
   if(asof){
-    var stamp=d.report_date||data.report_date||data.updated;
-    if(window.AgAsOf&&data.updated)asof.innerHTML=(d.report_date||data.report_date?'Week ending '+(d.report_date||data.report_date)+' \u00b7 ':'')+AgAsOf.html(data.updated,'usda');
-    else if(stamp)asof.textContent='Updated '+stamp;
+    var wk=hv||d.report_date||data.report_date,stamp=wk||data.updated;
+    if(window.AgAsOf&&data.updated)asof.innerHTML=(wk?'Week ending '+cropWeekLabel(wk)+' \u00b7 ':'')+AgAsOf.html(data.updated,'usda');
+    else if(stamp)asof.textContent='Updated '+(wk?cropWeekLabel(wk):stamp);
   }
 }
+/* the harvest week when the file carries harvest progress newer than (or as new as) the condition week, else null */
+function cropHarvestWeek(d){return d&&d.harvest_pct!=null&&/^\d{4}-\d{2}-\d{2}$/.test(d.harvest_date||'')&&(!d.report_date||d.harvest_date>=d.report_date)?d.harvest_date:null;}
+/* "2026-11-08" -> "Nov 8" */
+function cropWeekLabel(iso){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||'');return m?['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1]+' '+(+m[3]):String(iso||'');}
 
 
 // ============ COT POSITIONING (CFTC Disaggregated) ============
