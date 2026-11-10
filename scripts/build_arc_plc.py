@@ -3620,8 +3620,8 @@ def county_page(st, S, c, D, ch):
   {form_shell(D, first, st, c['f']) if official else form_html(D, first, st, c['f'])}
   </details>
   {f'<div class="ap-faq ap-noprint"><h2>Questions about {esc(cname)}</h2>{faq_html}</div>' if faqs else ''}
-  {near}
   {RP_SEE}
+  {near}
   <p class="ap-small ap-noprint">Related: {' &middot; '.join(rel)}</p>
   {terms_fold(f'An estimate by AGSIST, not a USDA determination. <a href="{OFFICE}" rel="noopener">Find your county office</a>.')}
   <p class="ap-printonly ap-small">Printed from {share}</p>
