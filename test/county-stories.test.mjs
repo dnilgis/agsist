@@ -104,11 +104,11 @@ sys.path.insert(0, "scripts")
 import county_stories as CS
 d = tempfile.mkdtemp()
 p = os.path.join(d, "ia.json")
-json.dump({"batch_id": "msgbatch_01X", "model": "m", "schema": CS.SCHEMA, "state": "IA", "made": "2026-10-17",
+json.dump({"batch_id": "msgbatch_01X", "model": "m", "schema": CS.SCHEMA, "state": "IA", "made": "m0",
            "counties": {"19169": {"story": "s", "hash": "h", "custom_id": "c_IA_19169"}}}, open(p, "w"))
 print(json.dumps({"done": CS.normalize(d), "j": json.load(open(p))}))
 `]);
   const r = JSON.parse(out.trim().split("\n").pop());
   assert.deepEqual(r.done, ["ia.json"]);
-  assert.deepEqual(r.j, { schema: "agsist-county-stories/1", state: "IA", made: "2026-10-17", counties: { 19169: { story: "s", hash: "h" } } });
+  assert.deepEqual(r.j, { schema: "agsist-county-stories/1", state: "IA", made: "m0", counties: { 19169: { story: "s", hash: "h" } } });
 });
