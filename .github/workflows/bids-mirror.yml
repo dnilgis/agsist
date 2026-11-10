@@ -71,6 +71,7 @@ jobs:
       - name: Copy to the backup and verify
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          BIDS_BACKUP_TOKEN: ${{ secrets.BIDS_BACKUP_TOKEN }}
           BIDS_BACKUP_REPO: ${{ vars.BIDS_BACKUP_REPO || 'dnilgis/bids-backup' }}
           MIRROR_DIR: ${{ runner.temp }}/bids-mirror.git
           MIRROR_STATUS: private/stats/bids-mirror.log
