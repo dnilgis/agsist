@@ -17,7 +17,11 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(join(ROOT, p), "utf8");
-const doc = JSON.parse(read("data/ai-answers.json"));
+// the answers as built: an answer marked "from" (crop-report: data/wasde.json and the calendar) is filled in by the builder
+const doc = JSON.parse(execFileSync("python3", ["-c",
+  "import sys, json; sys.path.insert(0, 'scripts'); import build_ai_answers as B; print(json.dumps(B.load()))"],
+  { cwd: ROOT, encoding: "utf8" }));
+const raw = JSON.parse(read("data/ai-answers.json"));
 const MON = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 const nice = (iso) => { const [y, m, d] = iso.split("-").map(Number); return `${MON[m - 1]} ${d}, ${y}`; };
 const between = (html, id) => {
@@ -59,12 +63,38 @@ for (const a of doc.answers) {
       } else assert.ok(inner.includes(`href="${s.url.replace(/&/g, "&amp;")}"`), `links ${s.name}`);
     }
     const oldest = a.sources.map((s) => s.read).sort()[0];
-    assert.ok(inner.includes(`Last checked ${nice(oldest)}.`), "last checked = oldest source read");
+    if (a.from) {
+      // written from data: the line names the report date, never a "last checked" date that goes stale
+      assert.ok(a.dated && inner.includes(a.dated) && !inner.includes("Last checked"), "dated by the report, not last checked");
+    } else assert.ok(inner.includes(`Last checked ${nice(oldest)}.`), "last checked = oldest source read");
     assert.ok(inner.includes(`<h2 id="answer-${a.id}-h"`), "heading");
     // every number in the text is in the block as written (nothing reformatted on the way)
     for (const n of a.text.join(" ").match(/\$?\d[\d,.]*%?/g) || []) assert.ok(inner.includes(n), n);
   });
 }
+
+test("the crop report answer is written from data/wasde.json and the report calendar, nothing typed in", () => {
+  const r = raw.answers.find((a) => a.id === "crop-report");
+  assert.equal(r.from, "wasde");
+  assert.ok(!r.text, "no typed text to go stale");
+  const a = doc.answers.find((x) => x.id === "crop-report");
+  const w = JSON.parse(read("data/wasde.json")).wasde_pdf;
+  if (a.status !== "live") {           // honest either way: a blank figure withholds the block
+    assert.ok((a.withheld_why || "").includes("wasde.json"));
+    return;
+  }
+  const t = a.text.join(" ");
+  assert.ok(t.includes(`a ${w.crops.corn.yield.value} bushel yield`), "corn yield as the WASDE printed it");
+  assert.ok(t.includes(`$${w.crops.soybeans.price.value.toFixed(2)} for soybeans`), "soybean price as printed");
+  const [y, m, d] = w.date.split("-").map(Number);
+  assert.ok(a.dated.includes(`${MON[m - 1]} ${d}, ${y}`), "dated by the report it read");
+  assert.ok(a.review_by > w.date, "goes stale at the next report");
+});
+
+test("bake_seo bakes the usda-calendar answer too, so the wasde job's bake keeps it current", () => {
+  const src = read("scripts/bake_seo.py");
+  assert.match(src, /build_ai_answers/);
+});
 
 test("arc-plc builder carries the block (not a hand edit)", () => {
   const src = read("scripts/build_arc_plc.py");
