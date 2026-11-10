@@ -97,4 +97,9 @@ jobs:
           git add data/fsa/manifest.tsv
           if git diff --cached --quiet; then echo "no change on main"; exit 0; fi
           git commit -m "data: FSA ARC/PLC program data files manifest [skip ci]"
-          for i in 1 2 3; do git pull --rebase origin main && git push && break; sleep 5; done
+          for i in 1 2 3 4 5; do
+            git pull --rebase origin main || { echo "Rebase failed."; exit 1; }
+            if git push; then echo "Pushed on attempt $i."; exit 0; fi
+            sleep 5
+          done
+          echo "Failed to push after 5 attempts."; exit 1

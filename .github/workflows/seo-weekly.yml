@@ -63,7 +63,9 @@ jobs:
             exit 0
           fi
           git commit -m "seo: weekly index sample and what-to-fix list $(date -u +%Y-%m-%d) [skip ci]"
-          for i in 1 2 3; do
-            git push && break
-            git pull --rebase --autostash && sleep 3
+          for i in 1 2 3 4 5; do
+            if git push; then echo "Pushed on attempt $i."; exit 0; fi
+            git pull --rebase --autostash || { echo "Rebase failed."; exit 1; }
+            sleep 3
           done
+          echo "Failed to push after 5 attempts."; exit 1

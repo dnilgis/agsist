@@ -78,6 +78,12 @@ jobs:
             echo "No changes to commit."
           else
             git commit -m "data: refresh national hail LSRs [skip ci]"
-            git pull --rebase --autostash origin main || true
-            git push
+            pushed=0
+            for n in 1 2 3 4 5; do
+              if git push; then pushed=1; break; fi
+              echo "Push race on attempt $n; rebasing..."
+              git pull --rebase --autostash origin main || { echo "Rebase failed."; exit 1; }
+              sleep $((RANDOM % 4 + 2))
+            done
+            [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
           fi

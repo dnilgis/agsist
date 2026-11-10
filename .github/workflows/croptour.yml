@@ -116,4 +116,11 @@ jobs:
           git diff --cached --quiet && { echo "nothing to bake"; exit 0; }
           phase=$(python3 -c "import json,datetime,zoneinfo;d=json.load(open('data/crop-tour.json'));t=datetime.datetime.now(zoneinfo.ZoneInfo('America/Chicago')).date().isoformat();b=d['benchmarks']['tour'].get('corn');print('scored' if b is not None else ('before' if t<d['tour']['start'] else ('during' if t<=d['tour']['end'] else 'waiting')))")
           git commit -m "crop tour: rebaked ($phase)"
-          git push
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull --rebase --autostash origin main || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
+          done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
