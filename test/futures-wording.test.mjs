@@ -35,7 +35,7 @@ test("no delayed quote is called live or real-time: pages, JSON-LD, meta, fallba
   for (const f of PAGES) {
     // code and markup comments are not copy a reader sees (a JS line comment needs a space before //, so URLs stay)
     const h = read(f).replace(/\/\*[\s\S]*?\*\//g, "").replace(/<!--[\s\S]*?-->/g, "").replace(/(^|[\s;{}])\/\/[^\n]*/g, "$1")
-      .replace(/<style[\s\S]*?<\/style>/g, "").replace(/\s(class|id)="[^"]*"/g, "");
+      .replace(/<style[\s\S]*?<\/style>/g, "").replace(/\s(class|id|src)="[^"]*"/g, "");   // a script path (report-live.js) is not copy either
     for (const m of h.matchAll(/.{0,40}\b(live|real-time|realtime)\b.{0,40}/gi)) {
       seen++;
       if (NOT_A_QUOTE.test(m[0])) continue;
