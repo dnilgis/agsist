@@ -52,6 +52,7 @@ import email_links  # noqa: E402  (every send refuses a link to the worker host;
 import log_safe  # noqa: E402  sender_addr: the From line, SES-safe
 from credits import NASS_NOTICE  # noqa: E402  the NASS API notice
 import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
+import send_pace  # noqa: E402  batches, one try more for a deferral, hard bounces (scripts/send_pace.py)
 TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import send_notice as SN               # noqa: E402  transport, render, unsubscribe link, mark
 import build_state_rent_pages as BR    # noqa: E402  state_stats, money, names, release dates
@@ -255,17 +256,20 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         return 0
 
     conn, sent, failed, broken, reconnects = None, 0, 0, False, 0
+    pace = send_pace.Pacer(todo, sleep=sleep, key=lambda it: (it[0].strip().lower(), it[1]))  # per reader and topic
     try:
         conn = connect()
-        for i, (e, t, src) in enumerate(todo):
+        for i, (e, t, src) in enumerate(pace):
+            conn = pace.fresh(conn, connect)   # the retry pass starts on a new connection
             try:
                 conn.send_message(SN.render(t, src, e, base, secret, today, from_addr, reply_to, repo))
             except Exception as ex:
-                failed += 1
-                out("  send failed (%s)" % type(ex).__name__)
+                if not pace.defer(ex):       # a deferral (4xx) is tried once more at the end of the list
+                    failed += 1
+                    out("  send failed (%s)" % type(ex).__name__)
                 dead = isinstance(ex, (smtplib.SMTPServerDisconnected, smtplib.SMTPConnectError)) or \
                     (isinstance(ex, OSError) and not isinstance(ex, smtplib.SMTPException))
-                if dead and reconnects < 3 and i < len(todo) - 1:
+                if dead and reconnects < 3 and pace.more():
                     reconnects += 1
                     try:
                         conn.quit()
@@ -282,8 +286,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 out("::error::rent: a sent notice could not be marked; stopping so nobody gets two")
                 broken = True
                 break
-            if i < len(todo) - 1:
-                sleep(1.2)
+            pace.after()   # the short gap, or the pause between batches
     except Exception as ex:
         out("  could not connect to SMTP (%s)" % type(ex).__name__)
     finally:
@@ -292,6 +295,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 conn.quit()
         except Exception:
             pass
+    failed += len(pace.unsent())   # deferred, never tried again
     if TALLY:
         TALLY.sent += sent
     out("rent: sent %d, failed %d" % (sent, failed))
@@ -460,6 +464,27 @@ def selftest():
     w, s = Worker(), SMTP(refuse={"before@example.com", "early@example.com"})
     rc, log = go(["--send"], w, s)
     ck("all refused: exit 1, nothing marked", rc == 1 and not w.marks, log)
+    # one reader on two topics gets both notices (the pacer keeps one email per reader AND topic)
+    class Worker2(Worker):
+        def __init__(self):
+            Worker.__init__(self)
+            self.t = {("both@example.com", "rent:ia"): {"ts": ms("2026-10-11 09:00"), "sent": None},
+                      ("both@example.com", "rent:wi"): {"ts": ms("2026-10-11 09:00"), "sent": None}}
+
+        def __call__(self, method, url, body=None):
+            u = SN.urllib.parse.urlsplit(url)
+            if method == "GET" and u.path == "/notice-list":
+                return [{"email": e, "topic": tp, "ts": v["ts"], "src": tp, "sent": v["sent"], "lid": "00000000000000ab"}
+                        for (e, tp), v in self.t.items() if not v["sent"]]
+            if method == "POST" and u.path == "/notice-mark":
+                self.marks.append((body["email"], body["topic"]))
+                self.t[(body["email"], body["topic"])]["sent"] = 2
+                return {"ok": True}
+            raise AssertionError(method + " " + u.path)
+    w, s = Worker2(), SMTP()
+    rc, log = go(["--send"], w, s, git=lambda repo, st, y: ms("2027-08-26 10:00") if st == "WI" else None)
+    ck("one reader on two topics gets both notices", s.sent == ["both@example.com", "both@example.com"]
+       and sorted(w.marks) == [("both@example.com", "rent:ia"), ("both@example.com", "rent:wi")], (s.sent, w.marks, log))
     old = dict(ia, years=[2025, 2026], counties=[dict(c, rent={"nonirr": {"2026": 1.0}}) for c in ia["counties"]])
     json.dump(old, open(os.path.join(tmp, "data", "cash-rent", "IA.json"), "w"))
     w, s = Worker(), SMTP()
