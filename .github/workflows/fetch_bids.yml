@@ -107,6 +107,21 @@ jobs:
           python3 scripts/dev/quiet.py basis-join -- python scripts/build_basis_join.py || echo "::warning::basis join not rebuilt this run"
           python3 scripts/dev/quiet.py join-report -- python scripts/join_report.py || true
 
+      - name: River key for the elevator ids
+        continue-on-error: true
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: |
+          if git diff --quiet -- data/ids/elevators.json && [ -f data/ids/river.json ]; then echo "river key: elevators unchanged"; exit 0; fi
+          r="$RUNNER_TEMP/river"; mkdir -p "$r"
+          for f in docks waterways; do
+            GH_TOKEN="$PRIVATE_REPO_TOKEN" gh api -H "Accept: application/vnd.github.raw" \
+              "repos/dnilgis/feedbag/contents/river/$f.json?ref=raw" > "$r/$f.json" 2>/dev/null \
+              || { echo "river key: no river/$f.json on raw yet (river-pull.yml not run); the last river key stays"; exit 0; }
+          done
+          python3 scripts/dev/quiet.py river-key -- python scripts/river_key.py --river-dir "$r" \
+            || echo "::warning::river key not rebuilt this run; the last one stays"
+
       - name: Elevator contacts for the homepage card
         continue-on-error: true
         run: python3 scripts/dev/quiet.py elevator-contacts -- python scripts/build_elevator_contacts.py
@@ -140,6 +155,7 @@ jobs:
           git config user.email "bot@agsist.com"
           git add data/bids.json data/basis data/basis-sparklines data/elevator-directory.json
           git add data/ids/elevators.json data/ids/elevator-ids.json data/ids/ambiguous.json data/ids/board-parents.json 2>/dev/null || true
+          [ -f data/ids/river.json ] && git add data/ids/river.json || true
           [ -d data/ids/basis-join ] && git add -A data/ids/basis-join || true
           [ -f data/bids-stats.json ] && git add data/bids-stats.json || true
           [ -d data/bids-prev ] && git add -A data/bids-prev || true

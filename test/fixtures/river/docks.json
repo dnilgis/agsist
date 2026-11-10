@@ -1,0 +1,76 @@
+{
+ "schema": "agsist-river-docks/1",
+ "source": {
+  "what": "TEST FIXTURE, not the USACE layer",
+  "source_date": "2026-10-28",
+  "source_date_from": "fixture",
+  "fetched_utc": "2026-11-09T00:00:00Z"
+ },
+ "count": 10,
+ "docks": [
+  {
+   "lat": 40.287,
+   "lng": -90.067,
+   "name": "test dock beside Encompass Grain & Rail Co-op Havana",
+   "why": "synthetic: 0.2 mi east of the board, not USACE data"
+  },
+  {
+   "lat": 40.2949,
+   "lng": -90.0628,
+   "name": "test dock beside ADM Havana",
+   "why": "synthetic: 0.2 mi east of the board, not USACE data"
+  },
+  {
+   "lat": 41.0306,
+   "lng": -89.40326,
+   "name": "test dock beside ADM Lacon",
+   "why": "synthetic: 0.2 mi east of the board, not USACE data"
+  },
+  {
+   "lat": 41.2231,
+   "lng": -89.31665,
+   "name": "test dock beside ADM Hennepin",
+   "why": "synthetic: 0.2 mi east of the board, not USACE data"
+  },
+  {
+   "lat": 40.827,
+   "lng": -91.10207,
+   "name": "test dock beside ADM Burlington",
+   "why": "synthetic: 0.2 mi east of the board, not USACE data"
+  },
+  {
+   "lat": 44.0586,
+   "lng": -91.65967,
+   "name": "test dock beside ADM Winona",
+   "why": "synthetic: 0.2 mi east of the board, not USACE data"
+  },
+  {
+   "lat": 44.0598,
+   "lng": -91.66517,
+   "name": "test dock beside CHS River Terminals & Processing Plants Winona",
+   "why": "synthetic: 0.2 mi east of the board, not USACE data"
+  },
+  {
+   "lat": 37.0154,
+   "lng": -89.17367,
+   "name": "test dock beside Bunge Cairo",
+   "why": "synthetic: 0.2 mi east of the board, not USACE data"
+  },
+  {
+   "lat": 40.3,
+   "lng": -90.0591,
+   "name": "test dock beside the Havana town point",
+   "why": "synthetic: 0.1 mi from a town-centre point (must stay unsure)"
+  },
+  {
+   "lat": 40.039715,
+   "lng": -91.497402,
+   "name": "Bunge Grain Elevator Dock",
+   "city": "La Grange",
+   "st": "MO",
+   "waterway": "Mississippi River",
+   "mile": 335.7,
+   "why": "real: USACE dock description, read 2026-10-28 (rivergages station LGRM7)"
+  }
+ ]
+}
