@@ -57,7 +57,7 @@ test("source_links reads script URLs: the old quick stats opener is caught, the 
     assert.deepEqual(scan(h).concat(scanScripts(h)), [], p);
   }
   // pages that still carry a script URL to a data source on Nov 9 2026 (not this branch's pages): a ratchet
-  const KNOWN = { "cash-lease.html": 1, "spray.html": 4, "usda-calendar.html": 2 };
+  const KNOWN = { "usda-calendar.html": 2 };   // spray and cash-lease cleared in #505
   const got = {};
   for (const f of readdirSync(ROOT).filter((n) => n.endsWith(".html"))) {
     const n = scanScripts(read(f)).length;

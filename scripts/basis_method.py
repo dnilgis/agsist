@@ -16,7 +16,8 @@ THE METHOD
     no contract is listed and never counted: a basis against an unnamed month
     cannot be compared with one against December
   - a bid with |basis| beyond SANITY, or whose implied futures (cash - basis)
-    is more than 3% off the network's for that contract, is a misread board
+    is more than 3% off the network's for that contract (futures_disagree, the
+    one copy fetch_bids and the cash bid pages use too), is a misread board
     and is left out (listed as suspect)
   - OUTLIER GUARD: within each contract group of at least OUTLIER_MIN_N bids,
     a bid further from the group median than OUTLIER_K robust standard
@@ -159,6 +160,39 @@ def robust_split(rows, k=OUTLIER_K, floor=OUTLIER_FLOOR, min_n=OUTLIER_MIN_N):
         else:
             kept.append(r)
     return kept, out
+
+
+FUTURES_TOL = 0.03    # share of the network's implied futures for the contract
+FUTURES_MIN_N = 5     # rows on one contract before its median says anything
+
+
+def futures_disagree(rows, contract, implied, tol=FUTURES_TOL, min_n=FUTURES_MIN_N):
+    """THE MISREAD-BOARD CHECK, one copy (god's-eye build 5, Nov 9 2026; fetch_bids.verify_bids,
+    build_state_basis_pages.flag_futures_disagreement and build_cash_bid_pages.drop_misreads each had
+    their own). cash - basis is the futures price the board used. Every board quoting the same contract at
+    the same snapshot lands on about the same number; one more than `tol` (3%) off the median of the rows
+    on that contract (at least `min_n` of them) has a misread cash, basis or month.
+
+    contract(row) -> a hashable contract key or None; implied(row) -> cash - basis or None. Rows with
+    either None are in no group and never flagged. -> {id(row): (implied, median, n)} for each row that
+    disagrees. A basis far from the others with the right futures (Riceville IA soybeans +$1.40,
+    Oct 9) is NOT a misread: that is robust_split's question, not this one."""
+    by = {}
+    for r in rows:
+        c, v = contract(r), implied(r)
+        if c is not None and v is not None:
+            by.setdefault(c, []).append(v)
+    med = {c: (statistics.median(v), len(v)) for c, v in by.items() if len(v) >= min_n}
+    out = {}
+    for r in rows:
+        c = contract(r)
+        if c is None or c not in med:
+            continue
+        v = implied(r)
+        m, n = med[c]
+        if v is not None and m and abs(v / m - 1) > tol:
+            out[id(r)] = (round(v, 4), round(m, 4), n)
+    return out
 
 
 OUTLIER_MIN_OTHERS = OUTLIER_MIN_N - 1   # one bid tested against the rest
