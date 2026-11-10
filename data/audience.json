@@ -1,6 +1,6 @@
 {
  "schema": "agsist-audience/2",
- "built": "2026-11-10T14:42:42+00:00",
+ "built": "2026-11-10T17:39:33+00:00",
  "ranges": [
   {
    "id": "7d",
@@ -6000,7 +6000,7 @@
   }
  },
  "email": {
-  "subscribers": 229,
+  "subscribers": 231,
   "asOf": "2026-11-10"
  },
  "returns": {
@@ -6565,31 +6565,31 @@
   "ga4": {
    "ok": true,
    "through": "2026-11-08",
-   "fetched": "2026-11-10T14:42:42+00:00"
+   "fetched": "2026-11-10T17:39:33+00:00"
   },
   "gsc": {
    "ok": true,
    "site": "sc-domain:agsist.com",
-   "fetched": "2026-11-10T14:42:42+00:00"
+   "fetched": "2026-11-10T17:39:33+00:00"
   },
   "bing": {
    "ok": true,
    "site": "https://agsist.com/",
-   "fetched": "2026-11-10T14:42:42+00:00"
+   "fetched": "2026-11-10T17:39:33+00:00"
   },
   "email": {
    "ok": true,
-   "fetched": "2026-11-10T14:42:42+00:00"
+   "fetched": "2026-11-10T17:39:33+00:00"
   },
   "returns": {
    "ok": true,
    "through": "2026-11-08",
-   "fetched": "2026-11-10T14:42:42+00:00"
+   "fetched": "2026-11-10T17:39:33+00:00"
   },
   "cotKit": {
    "ok": true,
    "through": "2026-11-08",
-   "fetched": "2026-11-10T14:42:42+00:00"
+   "fetched": "2026-11-10T17:39:33+00:00"
   }
  }
 }
