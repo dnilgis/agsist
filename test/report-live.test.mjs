@@ -268,7 +268,7 @@ test("the workflow: no write token where USDA is read, one email queue, a commit
 test("the pages read the live result first and keep the committed files otherwise; no method text", () => {
   const rl = read("components/report-live.js"), pi = read("components/priced-in.js"), cal = read("usda-calendar.html"), home = read("index.html");
   assert.match(rl, /https:\/\/agsist-api\.dnilgis\.workers\.dev\/report-live/);
-  assert.match(cal, /'priced-in':\['\/components\/util\.js\?v=18','\/components\/report-live\.js\?v=1','\/components\/priced-in\.js\?v=4'\]/);
+  assert.match(cal, /'priced-in':\['\/components\/util\.js\?v=18','\/components\/report-live\.js\?v=1','\/components\/priced-in\.js\?v=5'\]/);
   assert.equal((home.match(/<script src="\/components\/report-live\.js\?v=1" defer><\/script>/g) || []).length, 1);
   assert.match(pi, /window\.agsReportLive\.watch\(d\.upcoming\.date/);
   assert.match(rl, /function esc\(/, "the homepage card escapes text");
@@ -357,7 +357,7 @@ print(json.dumps([d.isoformat(), r.release_at(d).isoformat()]))`], { cwd: ROOT, 
       if (live) {
         await pg.waitForFunction(() => /How the December WASDE landed/.test((document.getElementById("wp-result") || {}).textContent || ""), null, { timeout: 20000 });
         const t = await pg.textContent("#wp-result");
-        assert.match(t, /2\.1\s?bil bu actual/, "USDA's figure from the live result");
+        assert.match(t, /2\.100\s?bil bu actual/, "USDA's figure from the live result");
         assert.match(t, /bearish/);
         assert.ok(await pg.$('#wp-result a[href="https://example.com/survey"]'), "the survey source credit from the committed file stays");
         if (shots) await pg.locator("#wp-result").screenshot({ path: path.join(shots, "calendar-live-390.png") });
