@@ -26,7 +26,8 @@ WHICH STATION (scripts/county_rain.py has the rules)
 WHAT IT WILL NOT DO
   A state whose call fails keeps the file already published. A state whose
   answer is much thinner than the published one (under half the counties, same
-  year) is refused and kept. No file is written that fails --check.
+  year) is refused and kept. No file is written that fails --check. A kept
+  file keeps its numbers; only its source line is brought current.
 
   python3 scripts/fetch_county_rain.py                    fetch every state
   python3 scripts/fetch_county_rain.py --states IA,KS     some states
@@ -34,6 +35,7 @@ WHAT IT WILL NOT DO
   python3 scripts/fetch_county_rain.py --fixtures DIR --out DIR --edate YYYY-MM-DD
                                                           read saved ACIS answers instead of the network
   python3 scripts/fetch_county_rain.py --check            validate data/rain/*.json
+  python3 scripts/fetch_county_rain.py --normalize-source the one source line on data/rain/*.json and context/*.json
   python3 scripts/fetch_county_rain.py --selftest         offline tests on test/fixtures/rain
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
