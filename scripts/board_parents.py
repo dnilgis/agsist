@@ -82,7 +82,11 @@ def dest_brands(directory):
     return out
 
 
-def build(directory, index, today, changes=None):
+def build(directory, index, today, changes=None, resolve=None):
+    """resolve (build_ids.id_resolver): the change log's facility ids follow id merges to the live record."""
+    if resolve is not None:
+        import build_ids
+        changes = build_ids.follow_changes(changes, resolve)
     eid_of = {r.get("id"): r.get("elevId") for r in directory.get("elevators") or [] if r.get("id")}
     live = [s for s in index.get("sources") or [] if s.get("health") == "live" and s.get("id")]
     boards = {}
