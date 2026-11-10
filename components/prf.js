@@ -132,7 +132,7 @@
   function blank() { var a = []; for (var i = 0; i < N; i++) a.push(0); return a; }
   /* touched: the reader has changed the policy. Until then the card says it is showing the page's example.
      win: 0 for every complete year, else the last 30, 20 or 10. alt: a five-digit entry that is also a grid ID. */
-  /* use: the index in the state's combos. The page opens on non-irrigated haying (Sig, Nov 9), then irrigated
+  /* use: the index in the state's combos. The page opens on non-irrigated haying, then irrigated
      haying, then grazing when a county offers neither; the reader can pick any use the county offers. */
   var USE_ORDER = [4, 1, 0, 5, 6, 2, 3], USE_DEFAULT = USE_ORDER[0];
   var S = { grid: null, st: null, co: null, pt: null, use: USE_DEFAULT, acres: 100, share: 100, win: 0, touched: false, alt: null, lost: false,
@@ -1312,7 +1312,7 @@
     Array.prototype.forEach.call(document.querySelectorAll('details.prf-fold'), function (d) {
       var inside = false;
       try { inside = !!h && (d.id === h || !!d.querySelector('#' + CSS.escape(h))); } catch (e) {}
-      if (inside || (wide && !d.classList.contains('prf-terms'))) d.open = true;   /* Sources and terms stays closed (Sig, Nov 8) */
+      if (inside || (wide && !d.classList.contains('prf-terms'))) d.open = true;   /* Sources and terms stays closed */
     });
   }
   window.addEventListener('hashchange', openFolds);
