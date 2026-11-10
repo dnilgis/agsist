@@ -55,6 +55,9 @@ jobs:
       group: rp-design-email
       cancel-in-progress: false
     timeout-minutes: 10
+    permissions:
+      actions: write
+      contents: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -86,5 +89,7 @@ jobs:
           FROM_ADDR: ${{ secrets.FROM_ADDR }}
           RP_FROM_NAME: ${{ vars.RP_FROM_NAME }}
           SIG_TO: ${{ secrets.SIG_TO }}
+          GH_TOKEN: ${{ github.token }}
+          RP_BUYER_EMAIL_LIVE: ${{ vars.RP_BUYER_EMAIL_LIVE }}
           DRY_RUN: ${{ !(((github.event_name == 'schedule' || github.event_name == 'workflow_run') && vars.RP_DESIGN_EMAIL_LIVE == '1') || (github.event_name == 'workflow_dispatch' && inputs.dry_run == false)) && '1' || '' }}
         run: python3 scripts/rp_design_email.py

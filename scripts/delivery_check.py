@@ -43,6 +43,12 @@ A row is late when:
       the step has its own condition, may_skip); a tick had no run after it for TICK_GRACE_HOURS;
       a run that started a sender's job stopped before the send step;
   (f) one live run (dry=0) had readers waiting and mailed none of them.
+
+One more row, "rp-paid-unmailed" (Sig, Nov 9 2026): "paid, unmailed over 2 hours". The hourly
+rp-design-email run counts paid Rain Print orders still waiting over 2 hours for their email (or
+for Sig's own order alert) and prints it as unmailed_late= on its DELIVERY line
+(scripts/rp_design_email.py). The newest line read decides: above 0 is late (critical), 0 is ok,
+no line with the count is unknown. Rule (c) waits 14 days; this row sees one lost order the same day.
 "Nothing due" reads ok only when nothing was due: no tick in the window, or no run reached a send
 step that need not run. A due run whose jobs or log could not be read, or a Daily send run still
 going, makes the row unknown; a spent call budget leaves the rest of the rows unknown. A sender that
@@ -83,6 +89,7 @@ DELIVERY_EVERY_HOURS = 6      # one pass per saved cron-health file (cron_health
 WINDOW_HOURS = 24             # (a) and (b) read the runs of the last 24 hours
 DRY_TITLE = "(dry run)"       # a by-hand workflow names a dry run so a stop before its send step is not a reader miss (run-name)
 DISPATCH_DAYS = 14            # (c) a worker-started job with no workflow_dispatch run in 14 days
+PAID_ROW = "rp-paid-unmailed"  # paid Rain Print orders with no email over 2 hours (rp-design's unmailed_late=)
 # The DELIVERY line merged Nov 3 2026 23:40 UTC (#293): a run started before then cannot print it,
 # so it is never judged (a send step with no line, or a send due, before the line existed).
 LINE_SINCE = "2026-11-04T00:00:00Z"
@@ -690,7 +697,8 @@ def delivery_rows(now, repo, token, api_url, environ=None, prev=None, api=None):
                    if w.get("workflow") == send_cap.ROW]   # the cap variable may have changed since
             mon = [mail_budget.rejudge_month(w, now, environ) for w in (prev or {}).get("workflows") or []
                    if w.get("workflow") == mail_budget.MONTH_ROW]   # the allowance may have changed, and the clock moves
-            return old + vol + mon, prev["delivery_checked_at"]
+            paid = [w for w in (prev or {}).get("workflows") or [] if w.get("workflow") == PAID_ROW]
+            return old + vol + mon + paid, prev["delivery_checked_at"]
     except Exception:                                      # noqa: BLE001
         pass
     if api is None:
@@ -728,7 +736,29 @@ def delivery_rows(now, repo, token, api_url, environ=None, prev=None, api=None):
                          "status": "unknown", "why": "could not read runs: %s" % str(ex)[:160]})
     rows.append(volume_row(now, read_cache, environ, prev))
     rows.append(month_row(now, read_cache, environ, prev))
+    try:
+        rows.append(paid_row(read("rp-design-email.yml")[0]))
+    except Exception as ex:                                # noqa: BLE001
+        rows.append(paid_row(None, str(ex)))
     return rows, now.strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def paid_row(runs, error=""):
+    """"paid, unmailed over 2 hours": the newest rp-design-email DELIVERY line read that carries
+    unmailed_late= (runs newest first, as read_runs gives them). Pure: no clock, no network."""
+    row = {"workflow": PAID_ROW, "critical": True, "clock": "paid, unmailed over 2 hours"}
+    if runs is None:
+        return dict(row, status="unknown", why="could not read rp-design-email runs: %s" % error[:160])
+    for r in runs:
+        for l in r.get("lines") or []:
+            if l.get("sender") == "rp-design" and "unmailed_late" in l:
+                n = l["unmailed_late"]
+                if n > 0:
+                    return dict(row, status="late", count=n,
+                                why="%d paid Rain Print order(s) with no email over 2 hours (rp-design-email run %s); "
+                                    "start Rain Print buyer email by hand, and check GH_DISPATCH_TOKEN on the subs worker" % (n, r.get("id")))
+                return dict(row, status="ok", count=0, why="no paid order waiting over 2 hours (rp-design-email run %s)" % r.get("id"))
+    return dict(row, status="unknown", why="no rp-design-email line with unmailed_late= in the runs read")
 
 
 def volume_row(now, read_cache, environ, prev=None):
@@ -1223,8 +1253,9 @@ def selftest():
     fa = FakeApi()
     rows, at = delivery_rows(now, "o/r", "t", "https://api", {"RP_DESIGN_EMAIL_LIVE": "1"}, api=fa)
     by = {r["workflow"]: r for r in rows}
-    ck("delivery_rows: one row per sender workflow, the send-volume row and the brevo-month row",
-       len([r for r in rows if r["workflow"].startswith("delivery:")]) == len(SENDERS) and len(rows) == len(SENDERS) + 2
+    ck("delivery_rows: one row per sender workflow, the send-volume row, the brevo-month row and the paid-unmailed row",
+       len([r for r in rows if r["workflow"].startswith("delivery:")]) == len(SENDERS) and len(rows) == len(SENDERS) + 3
+       and PAID_ROW in by
        and mail_budget.MONTH_ROW in by
        and at == "2026-11-20T12:00:00Z", len(rows))
     vol = by.get(send_cap.ROW) or {}
@@ -1257,6 +1288,27 @@ def selftest():
        and any(r["workflow"] == mail_budget.MONTH_ROW for r in again) and at2 == at and not fb.calls, fb.calls)
     again, at3 = delivery_rows(now + timedelta(hours=DELIVERY_EVERY_HOURS), "o/r", "t", "https://api", {}, prev=prev, api=fb)
     ck("a pass six hours old is redone", fb.calls and at3 != at)
+    ck("paid-unmailed: a line without the count (before Nov 9) is unknown", by[PAID_ROW]["status"] == "unknown", by[PAID_ROW])
+    ck("paid-unmailed: a reused pass keeps the row", any(r["workflow"] == PAID_ROW for r in again))
+    # Nov 9 (Sig): paid, unmailed over 2 hours. The newest line decides.
+    P = lambda i, n: {"id": i, "event": "schedule", "lines": [L("rp-design", 0, 0, 0, asks=0, orders=1, unmailed_late=n)]}
+    pr = paid_row([P(9, 1), P(8, 0)])
+    ck("paid-unmailed: one order over 2 hours is late and critical", pr["status"] == "late" and pr["critical"] is True
+       and pr["count"] == 1 and "run 9" in pr["why"] and "@" not in pr["why"], pr)
+    pr = paid_row([P(9, 0), P(8, 2)])
+    ck("paid-unmailed: the newest run says 0, ok (the order was mailed since)", pr["status"] == "ok", pr)
+    pr = paid_row([{"id": 9, "event": "schedule", "lines": None}, P(8, 3)])
+    ck("paid-unmailed: a run whose log was not read is skipped, the next line decides", pr["status"] == "late" and pr["count"] == 3, pr)
+    ck("paid-unmailed: no runs read is unknown", paid_row([])["status"] == "unknown" and paid_row(None, "x")["status"] == "unknown")
+    class PaidApi(FakeApi):
+        def blob(self, path):
+            self.calls.append(path)
+            b = io.BytesIO()
+            with zipfile.ZipFile(b, "w") as z:
+                z.writestr("0_send.txt", "2026-11-20T09:01:00.1Z DELIVERY sender=rp-design sent_readers=0 waiting=0 dry=0 asks=0 orders=1 unmailed_late=1\n")
+            return b.getvalue()
+    by2 = {r["workflow"]: r for r in delivery_rows(now, "o/r", "t", "https://api", {"RP_DESIGN_EMAIL_LIVE": "1"}, api=PaidApi())[0]}
+    ck("paid-unmailed: end to end from the log, late", by2[PAID_ROW]["status"] == "late" and by2[PAID_ROW]["count"] == 1, by2[PAID_ROW])
     ck("no token: one unknown row, not critical", delivery_rows(now, "o/r", "", "https://api", {})[0][0]["status"] == "unknown")
 
     class Broken(FakeApi):
