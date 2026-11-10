@@ -608,6 +608,11 @@ def stamp(found, tries):
 #   percentile   a band cross (PCT_BANDS) or a move of PCT_MOVE points or more; never printed, only
 #                from the bottom or top tenth (the middle band is a standing fact)
 #   basis_wow    a state enters, leaves or moves WOW_MOVE cents (wow_should_print)
+#   land_sales   a ZIP reader's farm sales line, by month and state (daily_land_line.state_fact): a new month,
+#                or the state's count for the month above the last printed (a re-read that drops a
+#                duplicate is no news: Indiana 193 then 191, Nov 5 and 9 2026)
+#   rain_rank    the record sentence on a ZIP reader's rain line, by county (only_here._record_rank):
+#                a new value, the county entering the top three or changing place (anything else, below)
 #   anything else  a new value (the same key with the same value is a repeat)
 # The memory is what went out: data/daily-sent/<day>.json (its "printed" list,
 # written by send_daily from the email as built; before Nov 10 2026, the
@@ -687,6 +692,10 @@ def still_news(fact, mem, today):
             if round(abs(float(v) - float(lv)) * 100) >= round(RATIO_MOVE * 100):
                 return True, "moved %.2f since %s" % (abs(float(v) - float(lv)), last["date"])
             return False, "%s was %s on %s; moved under %.2f" % (key, lv, last["date"], RATIO_MOVE)
+        if kind == "land_sales":
+            if int(v) > int(lv):
+                return True, "%d more sales than the %s print" % (int(v) - int(lv), last["date"])
+            return False, "%s: %s sales, %s printed %s" % (key, v, lv, last["date"])
         if kind == "percentile":
             if _band(float(v), PCT_BANDS) != _band(float(lv), PCT_BANDS):
                 return True, "crossed a band since %s" % last["date"]
