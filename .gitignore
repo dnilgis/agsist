@@ -109,3 +109,5 @@ build/shots/
 /data/land-src/
 # agsist-data's land folder (Florida's county files), linked here only while a job builds from it (scripts/build_land_summary.py HOSTED)
 /data/land-hosted
+# River key inputs (river-pull.yml, one time): saved to the raw branch, never main
+/river/

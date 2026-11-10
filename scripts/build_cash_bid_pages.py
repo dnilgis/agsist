@@ -951,19 +951,17 @@ def near_text(bd):
     return ""
 
 
-def drop_misreads(towns, drops, tol=0.03):
+def drop_misreads(towns, drops):
     """cash - basis is the futures price the board used. One more than 3% off
     the network median for that contract (>= 5 boards) is a misread cash,
-    basis or month: the row is not printed. The figure itself is never shown."""
-    by = defaultdict(list)
-    allrows = [(t, bd, r) for t in towns.values() for bd in t["boards"].values() for r in bd["rows"]]
-    for _, _, r in allrows:
-        if r["contract"] and r["basis"] is not None:
-            by[r["contract"]].append(r["cash"] - r["basis"])
-    med = {c: statistics.median(v) for c, v in by.items() if len(v) >= 5}
-    for _, bd, r in allrows:
-        m = med.get(r["contract"]) if r["contract"] and r["basis"] is not None else None
-        r["bad"] = bool(m) and abs((r["cash"] - r["basis"]) / m - 1) > tol
+    basis or month: the row is not printed. The figure itself is never shown.
+    The check is basis_method.futures_disagree, the one copy the state pages
+    and fetch_bids use too."""
+    allrows = [r for t in towns.values() for bd in t["boards"].values() for r in bd["rows"]]
+    off = BM.futures_disagree(allrows, lambda r: r["contract"] or None,
+                              lambda r: r["cash"] - r["basis"] if r["basis"] is not None else None)
+    for r in allrows:
+        r["bad"] = id(r) in off
     for t in towns.values():
         for bd in t["boards"].values():
             n = sum(1 for r in bd["rows"] if r["bad"])
