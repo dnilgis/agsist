@@ -120,7 +120,9 @@ test("labels: an empty comparison writes a not-available line over 'Working out 
 });
 
 test("labels: the archive z-prefix and Old tail never reach a saved elevator's name", () => {
-  const rank = vm.runInNewContext(read("components/cb-rank.js") + ";window.cbRank", { window: {}, module: undefined, console });
+  // cb-rank names through components/elev-names.js, which the page loads first
+  const rank = vm.runInNewContext(read("components/elev-names.js") + ";" + read("components/cb-rank.js") + ";window.cbRank",
+    { window: {}, module: undefined, console });
   const dn = rank.displayName;
   assert.equal(dn("zShawnee Feed Old"), "Shawnee Feed");
   assert.equal(dn("zWest-Con"), "West-Con");

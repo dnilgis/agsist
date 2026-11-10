@@ -89,6 +89,7 @@ test("page-title elevator names are fixed the same way on the live page and the 
   const ctx = { console };
   ctx.window = ctx;
   vm.createContext(ctx);
+  vm.runInContext(read("components/elev-names.js"), ctx);
   vm.runInContext(read("components/cb-rank.js"), ctx);
   const R = ctx.cbRank;
   R.setNames(JSON.parse(read("data/elevator-names.json")));

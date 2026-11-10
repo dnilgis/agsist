@@ -444,33 +444,13 @@ function markOutliers(items){
 }
 
 /* ── The name printed for an elevator and its place ───────────────────────
-   Twin of scripts/elevator_names.py (test/cashfix.test.mjs runs the same cases
-   through both). "Cash Bid JSI Site - Ag State" is a page title, not a name;
-   "Dewar, IA" printed beside its state read "Dewar, IA, IA". Exact fixes are in
-   data/elevator-names.json; until it loads, the general rules still apply. */
-var NAMES={operators:{},places:{}};
-var OP_HEAD=/^\s*(?:cash\s+bid\s+)?(?:jsi\s+site|iframe|current\s+grain\s+bids)\s*-\s*/i;
-var OP_TAIL=/\s*-\s*cash\s+bid\s+include\s*$/i;
-var ST_TAIL=new RegExp('(?:\\s*[,.]\\s*(?:'+('AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND '+
-  'OH OK OR PA RI SC SD TN TX UT VT VA WA WV WI WY').split(' ').join('|')+'))+\\s*$','i');
-var OP_ARCHIVED=/^z(?=[A-Z])|\s*\.?\b(?:OLD|Old)$/g;
-function setNames(json){
-  NAMES={operators:(json&&json.operators)||{},places:(json&&json.places)||{}};
-  return NAMES;
-}
-function displayName(op){
-  var s=String(op||'').trim();
-  if(Object.prototype.hasOwnProperty.call(NAMES.operators,s))return NAMES.operators[s];
-  s=s.replace(OP_HEAD,'').replace(OP_TAIL,'').trim().replace(/,+$/,'').trim();
-  return s.replace(OP_ARCHIVED,'').trim();
-}
-function cleanPlace(p){
-  var s=String(p||'').trim();
-  if(Object.prototype.hasOwnProperty.call(NAMES.places,s))return NAMES.places[s];
-  s=s.replace(/^[{\s]+|[}\s]+$/g,'').replace(/[,\s]+$/,'').trim();
-  var out=s.replace(ST_TAIL,'').trim().replace(/,+$/,'').trim();
-  return out||s;
-}
+   components/elev-names.js holds the one name key (twin of
+   scripts/elevator_names.py; test/elev-names.test.mjs). Load it first. */
+var EN=root.elevNames||(typeof require==='function'?require('./elev-names.js'):null);
+function names(){return root.elevNames||EN;}
+function setNames(json){var n=names();return n?n.setNames(json):null;}
+function displayName(op){return names().displayName(op);}
+function cleanPlace(p){return names().cleanPlace(p);}
 
 var api={centralDay:centralDay,dayLabel:dayLabel,pairMonths:pairMonths,pairEnd:pairEnd,
   wheatClass:wheatClass,classLabel:classLabel,contractKey:contractKey,parseContract:parseContract,deliveryText:deliveryText,setFutures:setFutures,

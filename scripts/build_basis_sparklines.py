@@ -32,7 +32,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from basis_method import relative_outlier  # noqa: E402  (the one outlier rule)
-from build_basis_history import row_state  # noqa: E402  (the one rule for a row's state)
+from build_basis_history import row_state, clean_facility  # noqa: E402  (the one rule for a row's state and name)
 
 REPO = os.environ.get("AGSIST_REPO", ".")
 CHANGES_GLOB = os.path.join(REPO, "data/basis/changes-*.json")
@@ -115,11 +115,36 @@ def key_for(state, facility, city, commodity, symbol, delivery_month):
 # data/basis-sparklines/.json that no page can ask for. The logs are never rewritten, so the state is
 # read the way build_basis_history.py reads it (the state at the end of the city field); a row with
 # nothing to read is skipped and counted in build()'s `stateless`, never written.
+def known_facilities(files):
+    """{(facility, city, state)} the shards and the change logs file today: a
+    raw archive name in an old log joins its cleaned twin only when the twin
+    is here (build_basis_history.clean_facility)."""
+    known = set()
+    for p in glob.glob(os.path.join(os.path.dirname(CHANGES_GLOB), "[A-Z][A-Z].json")):
+        try:
+            with open(p) as f:
+                sh = json.load(f)
+        except (OSError, ValueError):
+            continue
+        for fc in sh.get("f") or []:
+            fac, city = (str(fc).split("|", 1) + [""])[:2]
+            known.add((fac, city, sh.get("state") or os.path.basename(p)[:2]))
+    for fp in files:
+        try:
+            with open(fp) as f:
+                rows = json.load(f).get("changes") or []
+        except (OSError, ValueError):
+            continue
+        known.update((r[1], r[2], r[0]) for r in rows if len(r) >= 3)
+    return known
+
+
 def build(stats=None):
     files = sorted(glob.glob(CHANGES_GLOB))
     by_state = {}  # state -> key -> list of {date, to}
     stats = {} if stats is None else stats
-    stats.update(recovered=0, stateless=0)
+    stats.update(recovered=0, stateless=0, renamed=0)
+    known = known_facilities(files)
     for fp in files:
         with open(fp) as f:
             d = json.load(f)
@@ -133,6 +158,11 @@ def build(stats=None):
             if st != state:
                 stats["recovered"] += 1
             state = st
+            # the log is never rewritten: an archived copy's old rows join the elevator's own series
+            new = clean_facility(facility, city, state, known)
+            if new != facility:
+                stats["renamed"] += 1
+                facility = new
             k = key_for(state, facility, city, commodity, symbol, dm)
             by_state.setdefault(state, {}).setdefault(k, [])
             pts = by_state[state][k]
@@ -224,6 +254,28 @@ def selftest():
         assert pts[1] == {"date": "2026-01-02", "cents": -40}, pts[1]
         print("selftest OK: 2 real points, duplicate same-date row dropped, values correct")
 
+        # the real case (Nov 10): Finley ND's board was logged as "ZFINLEY FARMERS GRAIN & ELEVATOR" until the
+        # history was keyed on the cleaned name; its old rows join the new series, and a real Z name stays
+        with open(os.path.join(td, "data/basis/changes-2026-01-03.json"), "w") as f:
+            json.dump({"date": "2026-01-03", "changes": [
+                ["ND", "ZFINLEY FARMERS GRAIN & ELEVATOR", "FINLEY, ND", "corn", "ZCZ26", "11/01/2026", -80, -85],
+                ["MI", "ZEELAND FARM SERVICES", "ZEELAND", "corn", "ZCZ26", "11/01/2026", -50, -55]]}, f)
+        with open(os.path.join(td, "data/basis/changes-2026-01-04.json"), "w") as f:
+            json.dump({"date": "2026-01-04", "changes": [
+                ["ND", "FINLEY FARMERS GRAIN & ELEVATOR", "FINLEY, ND", "corn", "ZCZ26", "11/01/2026", -85, -90]]}, f)
+        REPO, CHANGES_GLOB = td, os.path.join(td, "data/basis/changes-*.json")
+        st0 = {}
+        out = build(st0)
+        REPO, CHANGES_GLOB = old_repo, old_glob
+        fin = out["ND"]["series"].get(key_for("ND", "FINLEY FARMERS GRAIN & ELEVATOR", "FINLEY, ND", "corn", "ZCZ26", "11/01/2026"))
+        assert fin == [{"date": "2026-01-03", "cents": -85}, {"date": "2026-01-04", "cents": -90}], fin
+        assert not any(k.startswith("ND|ZFINLEY") for k in out["ND"]["series"]), out["ND"]["series"].keys()
+        assert key_for("MI", "ZEELAND FARM SERVICES", "ZEELAND", "corn", "ZCZ26", "11/01/2026") in out["MI"]["series"]
+        assert st0["renamed"] == 1, st0
+        for n in ("changes-2026-01-03.json", "changes-2026-01-04.json"):
+            os.remove(os.path.join(td, "data/basis", n))
+        print("selftest OK: an archived copy's logged rows join the elevator's own series")
+
         # the real case (changes-2026-08-03.json): a row with a blank state is filed by the state
         # in its city field; a row with nothing to read is skipped and counted; neither writes ".json"
         with open(os.path.join(td, "data/basis/changes-2026-08-03.json"), "w") as f:
@@ -239,7 +291,7 @@ def selftest():
         out = build(stats)
         written = write(out, "2026-11-04T00:00:00Z")
         REPO, CHANGES_GLOB, OUT_DIR = old_repo, old_glob, old_out
-        assert stats == {"recovered": 1, "stateless": 2}, stats
+        assert stats == {"recovered": 1, "stateless": 2, "renamed": 0}, stats
         assert "" not in out and None not in out, sorted(map(str, out))
         assert key_for("MO", "HILLSIDE GRAIN, LLC", "GOLDEN CITY, MO", "soybeans", "ZSX26", "NOV26") in out["MO"]["series"]
         names = sorted(os.listdir(os.path.join(td, "out")))
