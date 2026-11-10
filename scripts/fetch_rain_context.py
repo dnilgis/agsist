@@ -118,13 +118,9 @@ def rank_of(vals, first_year):
         return None
     wetter = [y for y, v in years if v > this + 0.005]
     drier = [y for y, v in years if v < this - 0.005]
-    # "up": inches more this year would need to pass the next wetter year. A year with missing days could
-    # hide that much, so the pages say a dry rank only when the gap is wider (rain_records.dry_rank_ok).
-    up = min(v for _y, v in years if v > this + 0.005) - this if wetter else None
     return {"this": round(this, 2), "n": len(years) + 1, "first": years[0][0],
             "wetter": len(wetter), "drier": len(drier),
-            "last_wetter": max(wetter) if wetter else None, "last_drier": max(drier) if drier else None,
-            "up": round(up, 2) if up is not None else None}
+            "last_wetter": max(wetter) if wetter else None, "last_drier": max(drier) if drier else None}
 
 
 def state_fips(d):
@@ -216,9 +212,6 @@ def selftest():
     r = rank_of(vals, FIRST_YEAR)
     ok(r and r["this"] == 28.05, f"this year {r}")
     ok(r and r["last_wetter"] == 2025, f"last wetter {r}")
-    nxt = min(num(v) for v in vals[:-1] if num(v) is not None and num(v) > 28.055)
-    ok(r and r["up"] == round(nxt - 28.05, 2) and r["up"] > 0, f"gap to the next wetter year {r}")
-    ok(rank_of(["10.0"] * 30 + ["12.0"], FIRST_YEAR)["up"] is None, "the wettest year has no next wetter year")
     ok(r and r["n"] == r["wetter"] + r["drier"] + 1 + sum(1 for v in vals[:-1] if num(v) == 28.05), f"counts {r}")
     ok(rank_of(vals[-20:], FIRST_YEAR) is None, "under 30 years says nothing")
     ok(rank_of(vals[:-1] + ["M"], FIRST_YEAR) is None, "this year missing says nothing")
