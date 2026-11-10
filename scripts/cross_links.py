@@ -32,6 +32,15 @@ only when its page is live in the checkout; the page's own set is left out.
 
     <nav class="xl-st" aria-label="Same state on AGSIST"><b>Iowa on AGSIST:</b> <a href="/rent/iowa">Cash rent</a> ...</nav>
 
+BIDS NEAR THIS COUNTY. ARC/PLC and PRF county pages carry one marked line, up to three town bid
+pages nearest the county middle (nearest_towns: the Atlas county point, the fold applied):
+
+    <p class="xl-near" data-xl="near" data-f="19169">Bids near this county: <a href="/cash-bids/iowa/ames">Ames</a> (4 mi), ...</p>
+
+Town pages come and go with the bids, and those two sets rebuild about once a year, so --stamp
+rewrites the marked line too (county-rain.yml runs it daily), and their --check compares pages with
+the line blanked (steady()), so a new town page never turns a check red.
+
 THE BREADCRUMB TRAIL. crumbs(items) gives the visible trail and the BreadcrumbList
 JSON-LD from one list, so the two cannot disagree.
 
@@ -155,6 +164,37 @@ def crumbs(items):
     return crumbs_html(items), crumbs_jsonld(items)
 
 
+# ---- bids near this county (Nov 10, 2026)
+NEAR_SETS = ("prf", "arc-plc")
+NEAR_LEAD = "Bids near this county:"
+
+
+def near_bids(root, fips, st_abbr, cls="xl-near"):
+    """The marked line of town bid pages nearest the county middle; an empty hidden marker when none
+    (so a later stamp can fill it)."""
+    import nearest_towns as NT
+    ctr = NT.county_center(root, fips)
+    p = NT.links_html(root, ctr[0], ctr[1], st_abbr, NEAR_LEAD, cls) if ctr else ""
+    tag = f'<p data-xl="near" data-f="{fips}" data-s="{st_abbr}"'
+    if not p:
+        return tag + " hidden></p>"
+    return tag + p[2:]
+
+
+_NEAR = re.compile(r'<p data-xl="near" data-f="(\d{5})" data-s="([A-Z]{2})"[^>]*>.*?</p>', re.S)
+
+
+def steady(text):
+    """A page's text with the bids-near line blanked: what a --check compares."""
+    return _NEAR.sub(lambda m: f'<p data-xl="near" data-f="{m.group(1)}"></p>', text)
+
+
+def restamp_near(text, root):
+    """Rewrite every marked bids-near line in one page's text. -> (text, changed)."""
+    new = _NEAR.sub(lambda m: near_bids(root, m.group(1), m.group(2)), text)
+    return new, new != text
+
+
 _A = re.compile(r'<a data-xl="rain"(?: data-n="([^"]*)")? href="/rain/([a-z0-9-]+)(?:/([a-z0-9-]+))?">'
                 r'Rain so far this year in ([^<]*)</a>')
 
@@ -179,7 +219,8 @@ def restamp(text, root, county_slug):
 
 
 def stamp(root=ROOT):
-    """Every PRF, Atlas and ARC/PLC county page: its marked rain link as rain_link() says now."""
+    """Every PRF, Atlas and ARC/PLC county page: its marked rain link as rain_link() says now, and on PRF and
+    ARC/PLC pages the bids-near line as near_bids() says now."""
     _LIVE.clear()
     n_pages = n_changed = 0
     for top in STAMP_SETS:
@@ -196,15 +237,18 @@ def stamp(root=ROOT):
                 p = os.path.join(sd, fn)
                 with open(p, encoding="utf-8") as fh:
                     t = fh.read()
-                if 'data-xl="rain"' not in t:
+                if 'data-xl="rain"' not in t and 'data-xl="near"' not in t:
                     continue
                 n_pages += 1
                 new, ch = restamp(t, root, fn[:-5])
+                if top in NEAR_SETS and 'data-xl="near"' in new:
+                    new, _ = restamp_near(new, root)
+                    ch = new != t
                 if ch:
                     with open(p, "w", encoding="utf-8") as fh:
                         fh.write(new)
                     n_changed += 1
-    print(f"[cross-links] {n_pages} pages carry a rain link; {n_changed} rewritten")
+    print(f"[cross-links] {n_pages} pages carry a rain or bids-near link; {n_changed} rewritten")
     return n_changed
 
 
@@ -271,6 +315,28 @@ def selftest():
         ok('<a href="/">AGSIST</a> &rsaquo; <a href="/cash-bids">Cash bids</a> &rsaquo; <span aria-current="page">Iowa</span>' in v, v)
         ok([x["name"] for x in j["itemListElement"]] == ["AGSIST", "Cash bids", "Iowa"], j)
         ok(crumbs_html_of({"@graph": [{"@type": "WebPage"}, j]}) == v and crumbs_html_of({"@graph": []}) == "", "trail read back from JSON-LD")
+        # bids near this county: the nearest town pages from the Atlas point, a hidden marker when none
+        import json as _j
+        import nearest_towns as NT
+        w("data/atlas/pct/IA.json", _j.dumps({"counties": {"19169": {"c": [42.04, -93.46]}, "19001": {"c": [41.33, -94.47]}}}))
+        w("data/atlas/pct/SD.json", _j.dumps({"counties": {"46102": {"c": [43.33, -102.55]}}}))
+        NT._CACHE.pop(("ctr", os.path.abspath(d)), None)
+        NT._CACHE[os.path.abspath(d)] = [(42.03, -93.62, "Ames", "IA", "/cash-bids/iowa/ames"),
+                                         (42.05, -93.40, "Nevada", "IA", "/cash-bids/iowa/nevada")]
+        nb = near_bids(d, "19169", "IA")
+        ok(nb.startswith('<p data-xl="near" data-f="19169" data-s="IA" class="xl-near">Bids near this county: '
+                         '<a href="/cash-bids/iowa/nevada">Nevada</a> (3 mi), <a href="/cash-bids/iowa/ames">Ames</a>'), nb)
+        ok(NT.county_center(d, "46113") == (43.33, -102.55), "an old code is folded onto the spine county")
+        far = near_bids(d, "46113", "SD")
+        ok(far == '<p data-xl="near" data-f="46113" data-s="SD" hidden></p>', far)
+        ok(steady(nb) == steady(far.replace("46113", "19169").replace("SD", "IA")), "the check ignores the line")
+        # a new town page lands: the stamp writes it, the check never notices
+        w("arc-plc/iowa/story-county.html", "<main>" + far.replace("46113", "19169").replace("SD", "IA") + "</main>")
+        _LIVE.clear()
+        stamp(d)
+        got = open(os.path.join(d, "arc-plc/iowa/story-county.html")).read()
+        ok(nb in got, got)
+        ok(restamp_near(got, d) == (got, False), "stamping twice changes nothing")
         ok("&amp;" in crumbs_html([("A", "/"), ("Corn & beans", "/x")]), "names are escaped")
     if fails:
         print("SELFTEST FAILED:\n  " + "\n  ".join(fails))
