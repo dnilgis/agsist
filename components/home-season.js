@@ -44,7 +44,7 @@
   var NOW=new Date(), M=NOW.getMonth()+1, S=SEASON[M];
   /* 2026-10-06 EARN, one fact one place: the strip does not repeat what the
      page already shows. Frost is in Local conditions and the next USDA report
-     is the calendar's first card. 2026-11-05 (Sig): no spray read, fall
+     is the calendar's first card. 2026-11-05: no spray read, fall
      nitrogen or soil temperature on the home page (card, strip, hero); they
      are seasonal, and /spray, /fall-nitrogen, /planting-date and Field Scout
      keep theirs. */
@@ -71,7 +71,7 @@
   if(S){
     if(!S.urea)root.classList.add('s7-no-urea');
     if(!S.planting)root.classList.add('s7-no-planting');
-    /* gdu: 2026-11-04 (Sig) the season figures show all year (components/season-wx.js); the flag hides nothing now. */
+    /* gdu: 2026-11-04 the season figures show all year (components/season-wx.js); the flag hides nothing now. */
     if(!S.hail)root.classList.add('s7-no-hail');
     if(!S.cropTour)root.classList.add('s7-no-croptour');
     if(S.hailLead){root.classList.add('s7-hail-lead');var lh=$('land-hail');if(lh&&lh.parentNode&&lh.previousElementSibling)lh.parentNode.insertBefore(lh,lh.parentNode.firstElementChild);}

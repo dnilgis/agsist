@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """build_share_images.py: every page's share image (og:image), from its own data.
 
-What a link looks like when someone texts it: Sig picked the looks on
+What a link looks like when someone texts it: the owner picked the looks on
 2026-10-15 (scripts/share_cards.py draws them):
 
   A, the answer card, for every indexable root page. The page's answer big
@@ -37,7 +37,7 @@ set's builder writes the URL into every page; this script draws the image.
   daily/*     -> card-<date>.jpg on dnilgis/agsist-data (scripts/build_social_card.py)
 lrp/record.html gets its own card, img/og/lrp-record.jpg (SUB_PAGES); --only lrp draws both.
 
-COUNTY RAIN CARDS ONCE A WEEK (Sig, Oct 23 2026). The /rain pages rebuild every day, but
+COUNTY RAIN CARDS ONCE A WEEK (Oct 23 2026). The /rain pages rebuild every day, but
 rain.jpg and rain-<st>.jpg are redrawn only on Mondays (America/Chicago), and only by
 county-rain.yml (--only rain), which rebuilds the pages right after. Any other day the
 files are left byte for byte as they are, so git sees no change and every page's
@@ -368,7 +368,7 @@ def card_lrp_record():
 
 def card_fertilizer():
     """data/fertilizer-prices.json (scripts/build_fert_prices.py): co-op middle
-    cash prices of the co-ops Sig sent, nothing else. Until 2026-10-15 this
+    cash prices of the co-ops the owner sent, nothing else. Until 2026-10-15 this
     read the hand-typed dealer sheet."""
     d = js("data/fertilizer-prices.json")
     by = {p["key"]: p for p in d["prices"]}
@@ -495,7 +495,7 @@ def progress_hook(gaps):
 
 
 def card_progress(d):
-    """The weekly Crop Progress hook (Sig, Nov 9 2026: the conditions card gave no reason to share): a US map
+    """The weekly Crop Progress hook (Nov 9 2026: the conditions card gave no reason to share): a US map
     shading each state by corn harvest points behind or ahead of its own NASS 5-year average. None when the
     week has no top corn state with a NASS average."""
     corn = d.get("corn") or {}
@@ -782,11 +782,11 @@ def state_names():
 
 # ------------------------------------------------------------------ product cards
 
-RP_PHOTO = "img/photos/rain-print-photo-chetek-2025-1600.jpg"   # Sig's photo of a framed test print (scripts/process_photo.py)
+RP_PHOTO = "img/photos/rain-print-photo-chetek-2025-1600.jpg"   # The owner's photo of a framed test print (scripts/process_photo.py)
 
 
 def card_rain_print():
-    """Sig's photo of a real framed test print, Chetek, Wisconsin, 2025 (the
+    """the owner's photo of a real framed test print, Chetek, Wisconsin, 2025 (the
     close-up /rain-print leads with). The price is the unframed print's, from
     data/rain-print.json. The engine-drawn Ames card art stays in scripts/cardart."""
     price = js("data/rain-print.json")["print12x18"]
@@ -1356,7 +1356,7 @@ def selftest():
     assert text("224&ndash;200 &middot; Apr") == "224-200 · Apr"
     assert not is_indexable('<meta name="robots" content="noindex,follow">')
     assert is_indexable('<meta name="robots" content="index, follow">')
-    # county rain cards: Mondays only (Sig, Oct 23 2026)
+    # county rain cards: Mondays only (Oct 23 2026)
     import shutil
     import tempfile
     t = tempfile.mkdtemp()

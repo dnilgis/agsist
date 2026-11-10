@@ -57,8 +57,8 @@
     return y + '-' + (ncm < 10 ? '0' : '') + ncm;
   }
 
-  /* EARLIEST BID FIRST (Sig, 2026-11-02; scripts/build_cash_bid_pages.py
-     period_rank). Inside one delivery month a board can post a first-half and
+  /* EARLIEST BID FIRST (2026-11-02; scripts/build_cash_bid_pages.py
+ period_rank). Inside one delivery month a board can post a first-half and
      a last-half bid ("FH Nov 2026" $4.17, "LH Nov 2026" $4.22 at Nevada, IA);
      both file under Nov, and "now" took the higher one, so the last half
      (later delivery) counted as today's price. Tier 0: spot or cash, the

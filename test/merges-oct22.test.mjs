@@ -1,4 +1,4 @@
-/* The page merges Sig approved on Oct 22 and 23, 2026 (scripts/moved_pages.py holds the table).
+/* The page merges the owner approved on Oct 22 and 23, 2026 (scripts/moved_pages.py holds the table).
  *
  *   node --test test/merges-oct22.test.mjs
  *

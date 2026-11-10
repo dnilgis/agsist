@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""daily_land_line.py: one Daily line for a ZIP reader near Illinois or Wisconsin farm sales (Sig, Oct 27, 2026:
+"""daily_land_line.py: one Daily line for a ZIP reader near Illinois or Wisconsin farm sales (Oct 27, 2026:
 land sales get a Daily line). scripts/only_here.py adds it under "Only here"; nothing else in the Daily changes.
 
 For the newest monthly update (data/land-sales/latest.json, scripts/build_land_sales.py), in the first DAYS days

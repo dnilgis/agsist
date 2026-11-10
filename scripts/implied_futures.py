@@ -3,8 +3,7 @@
 
 Nothing here reaches a page. The ticks go to the private repo's raw branch
 (data/implied-futures/<Central date>.jsonl) and the summary prints to the job
-log. Sig, Oct 28 2026: "can we show a synthetic futures price built from cash
-and basis? Yes for grains, IF it holds up." This is the test of "holds up".
+log. Oct 28 2026 This is the test of "holds up".
 
 THE IDEA. A board posts cash = futures + basis, so cash - basis gives back the
 futures price that board was quoting when it priced. The median of that across

@@ -100,7 +100,7 @@
     return 'The ' + what + ' did not go through' + (res.status >= 400 ? ' (error ' + res.status + ')' : '') + '. Nothing was saved. Try again in a minute.';
   }
 
-  /* ONE LINE (Sig, 2026-11-09, /cash-bids): "Email me these every morning", an
+  /* ONE LINE (2026-11-09, /cash-bids): "Email me these every morning", an
      email field and a button, with the ZIP carried along. A ZIP the page already
      has is not asked again; with none (a reader who has not searched yet) the ZIP
      field shows, because the morning email cannot be sent without it. The price

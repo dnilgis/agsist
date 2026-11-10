@@ -1,5 +1,4 @@
-/* Long sources and method text sit in one closed "Sources and terms" fold at the bottom (Sig, Nov 8, 2026: "long source
- * hiding and method hiding, pulling the curtain closed"; the pattern of the home page, PR #430). Static, on the files:
+/* Long sources and method text sit in one closed "Sources and terms" fold at the bottom (Nov 8, 2026; the pattern of the home page, PR #430). Static, on the files:
  * each listed page has at most one such fold, closed on load; the NASS notice (scripts/credits.py) is inside it wherever
  * the page carries it; the "not financial advice" line of the four futures pages is inside it. arc-plc.html is built
  * from scripts/build_arc_plc.py on main, so the builder is read for it. */

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """vintage.py -- a daily point-in-time copy of outside data, saved exactly as
-published with the time we fetched it (Sig, Oct 28 2026, STANDING-DECISIONS).
+published with the time we fetched it (Oct 28 2026, a site rule).
 
 WHY. A forecast test may only use what was knowable on each date. USDA, USGS
 and EIA revise their numbers (provisional river readings, late inspection
@@ -8,7 +8,7 @@ certificates, corrected barge weeks), and nobody can rebuild what a page said
 on a past day once it has changed. This keeps that record from now on.
 
 WHERE. vintage/<source>/<YYYY-MM-DD>.json.gz in the runner, saved by
-vintage.yml to the PRIVATE raw branch (dnilgis/feedbag) with scripts/push_raw.sh
+vintage.yml to the PRIVATE raw branch (the private repo) with scripts/push_raw.sh
 and RAW_KEEP=1. Never main (/vintage/ is in .gitignore), never a page.
   vintage/manifest/<YYYY-MM-DD>.json   one line per source: ok or failed, HTTP
                                         status, rows, bytes, sha256 of the file

@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """
-Sig's morning report (2026-10-14): ONE email at about 6:40 am Central he can
+The owner's morning report (2026-10-14): ONE email at about 6:40 am Central he can
 skim over coffee. Run by .github/workflows/morning-report.yml.
 
-  Today              first, before anything else (2026-10-20, Sig): the bid
+  Today              first, before anything else (2026-10-20): the bid
                      sites a person has to deal with by hand (a bot check or a
                      refusal, no good read for 6 h), biggest town count first,
                      each with its last good read and a Paste link when the
@@ -121,7 +121,7 @@ def todo_edit():
 CRONS = ("40 11 * * *", "40 12 * * *")
 # Orders and requests: the digest's kinds plus sponsor applications (/sponsor-apps).
 ORDER_KINDS = FD.TALLY + (("sponsor-apply", "sponsor application", "sponsor applications"),)
-# Kinds that wait on Sig when one comes in (a reply, a call, a yes or no).
+# Kinds that wait on the owner when one comes in (a reply, a call, a yes or no).
 WAITING = ("rain-print-order", "gift-card", "rain-print-business", "rain-print-help", "elevator-listing", "prf-sponsor", "claim",
            "sponsor-feedback")
 # Lists on the worker's /count, in the order they print.
@@ -1001,7 +1001,7 @@ def sec_orders(src, now, rep):
         pend_reqs = [r for r in (reqs.get("requests") or []) if isinstance(r, dict) and r.get("status") == "pending"]
         n = len(pend_reqs)
         lines.append("Elevator listing requests still pending on elev-admin: %d." % n)
-        # Sig, Oct 20: name them (elevator, town, state) so the email says who without opening elev-admin.
+        # Oct 20: name them (elevator, town, state) so the email says who without opening elev-admin.
         # Business name and place only: never the contact person, phone or email.
         for r in pend_reqs[:10]:
             where = ", ".join(x for x in (clean_txt(r.get("town")), clean_txt(r.get("state"))) if x)
@@ -1072,7 +1072,7 @@ def rp_sessions(src, since):
 
 def rain_print_paid(src, now):
     """Each paid Rain Print checkout of the last 48 hours, one line each:
-    product, amount, the design reference and the maker link Sig opens to make
+    product, amount, the design reference and the maker link the owner opens to make
     it. Read from /v1/checkout/sessions?status=complete. Only those things,
     and the session id of a paid session with no design reference, are taken
     from a session; never an email, a name or an address."""
@@ -1115,10 +1115,10 @@ RP_PRINTS = ("print12x18", "framed12x18")
 
 def rp_order_line(o, now):
     """One order: product, town year style, paid or pay pressed, and the link
-    that opens it in Sig's maker view (with the serial for a print)."""
+    that opens it in the owner's maker view (with the serial for a print)."""
     what = {"digital": "Digital file", "print12x18": "Print", "framed12x18": "Framed"}.get(o.get("product"), "Rain Print")
     if o.get("product") == "framed12x18":
-        # worker v5.63 (Sig, Nov 4): oak or black; a record without the key reads black (sold before Nov 4), "" is not known
+        # worker v5.63 (Nov 4): oak or black; a record without the key reads black (sold before Nov 4), "" is not known
         fc = "black" if o.get("frame_color") is None else str(o.get("frame_color") or "")
         what += " in oak" if fc == "oak" else " in black" if fc == "black" else ", frame color not on file (ask the buyer)"
     design = " ".join(x for x in (clean_txt(o.get("place"), 60), str(o.get("year") or ""),
@@ -1446,7 +1446,7 @@ def sec_today(src, now, rep, snap):
 def sec_insight(src, now, rep):
     """The weekly re-test engine (scripts/insight_engine.py), the morning after it ran. Counts and
     test ids only; nothing it finds is published. A test every printable condition holds for except
-    Sig's yes goes in Needs you."""
+    The owner's yes goes in Needs you."""
     try:
         doc = json.loads(src.file("private/ledger/tests/latest.json"))
     except FileNotFoundError:
@@ -2206,8 +2206,8 @@ def selftest():
     ck("a bad key is one line", rain_print_paid(Fake(stripe=ses, stripe_key="rk", broken={"stripe"}), now) == ["Rain Print orders: could not be read from Stripe (HTTP 401)."])
 
     print("\nRain Print order records (the subs worker's /rp-order/list)")
-    # The real case, Oct 20: Sig's $19 digital file, Stripe's payment page showed no design.
-    # Sig's test design: Chetek WI, Staircase, "Gustum Farm", Apr 1 "Moved in" (the year is only for the test).
+    # The real case, Oct 20: the owner's $19 digital file, Stripe's payment page showed no design.
+    # The owner's test design: Chetek WI, Staircase, "Gustum Farm", Apr 1 "Moved in" (the year is only for the test).
     sig_url = ("https://agsist.com/rain-print?place=Chetek%2C+WI&year=2025&station=471667+2&layout=staircase&palette=paper"
                "&size=12x18&style=r1&name=Gustum+Farm&m1=2025-04-01+Moved+in")
     sig_ref = "MnxDaGV0ZWssIFdJfDQ3MTY2NyAyfDIwMjV8c3AwYWF8R3VzdHVtIEZhcm18Mml8TW92ZWQgaW4"

@@ -207,7 +207,7 @@ def seo_usda_calendar(c):
     # named the WASDE only. When the next WASDE comes with Crop Production
     # on the page's own schedule, both are named, and the description gives
     # the release time and the weekly Crop Progress time.
-    # 2026-10-19 (Sig): the title stays the Oct 11 one every month, with no
+    # 2026-10-19: the title stays the Oct 11 one every month, with no
     # Crop Production variant, and is left alone until the Nov 15 re-measure.
     # Only the description names Crop Production.
     title = f"WASDE & USDA Report Dates {w.year}: Next WASDE {MONTHS[w.month - 1][:3]} {w.day}{SUFFIX}"
@@ -1179,7 +1179,7 @@ FERT_PLAIN = ("Fertilizer Prices per Ton: What Co-ops Are Posting" + SUFFIX,
 
 def seo_fertilizer(c):
     """data/fertilizer-prices.json (scripts/build_fert_prices.py): each
-    product's middle cash price posted by the co-ops Sig sent, nothing else. Posted prices move week to week, so the TITLE carries no date --
+    product's middle cash price posted by the co-ops the owner sent, nothing else. Posted prices move week to week, so the TITLE carries no date --
     a date there would read as today's price. The dates the named prices were
     posted go in the description, and a price more than FERT_ROUND_DAYS older
     than the newest is not named. Until 2026-10-15 this read a hand-typed
@@ -1280,7 +1280,7 @@ FERT_BAR_WAIT = "Loading co-op prices&hellip;"
 
 
 def body_fertilizer(c):
-    """The line under the fertilizer page's lede (#fert-coop-bar), Sig Oct 19:
+    """The line under the fertilizer page's lede (#fert-coop-bar), the owner Oct 19:
     the named co-op prices and their posting dates, so a crawler and a reader
     whose script has not run see prices, not "Loading co-op prices". It is the
     description's own sentence (seo_fertilizer, same run, same file), so the
@@ -1706,7 +1706,7 @@ def selftest():
     ck("the page's REPORTS list parses", _cr_rows and len(_cr_rows) > 40, len(_cr_rows or []))
     cctx = dict(ctx, cal_reports=_cr_rows, today=date(2026, 10, 18), next_wasde=date(2026, 11, 10))
     ct, cd = seo_usda_calendar(cctx)
-    # Changed 2026-10-19 (Sig): the Oct 11 title stands every month; the
+    # Changed 2026-10-19: the Oct 11 title stands every month; the
     # Oct 18 "Next WASDE & Crop Production" title is gone.
     ck("when Crop Production comes with the WASDE, the title is still the Oct 11 one",
        ct == "WASDE & USDA Report Dates 2026: Next WASDE Nov 10" + SUFFIX, ct)
@@ -2258,7 +2258,7 @@ def selftest():
                             prev_date="2026-10-15"), "2026-10-17T05:00:00Z", "grain")
     ck("Friday's bar read after 11 p.m. CT (no evening session) is the settle",
        sc and sc["px"] == 474.25 and sc["date"] == "2026-10-16" and sc["net"] == -3.75, sc)
-    # 2026-10-20 (Sig): the last daily bake moved from 23:35 to 04:50 UTC, after
+    # 2026-10-20: the last daily bake moved from 23:35 to 04:50 UTC, after
     # the settle lands (about 04:15 UTC). Real files: at 00:46 UTC Dec corn's
     # file still held the Oct 16 settle (the day's 466.75 a last trade, the
     # evening trade 465.50 in last); at 04:46 UTC the Oct 19 settle 467.00 is

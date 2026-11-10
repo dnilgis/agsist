@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
-"""Direct links to data sources: which ones a page may not carry (Sig, Oct 29, 2026).
+"""Direct links to data sources: which ones a page may not carry (Oct 29, 2026).
 
 A page names its source in plain text with the date ("Source: USDA NASS, Oct 2026") and does not
 link straight at the data: no API endpoints, CSV/ZIP/XLSX/PDF downloads, report or dataset pages,
 query URLs or feeds. Links that are not data sources stay: a reader's action page (an FSA sign-up
 or deadline page), articles, law, licence notices, our own pages. Two links are kept on purpose
-(Sig, Oct 29): the K-State land values book on the Kansas county lines and the Farm Credit reserve
+(Oct 29): the K-State land values book on the Kansas county lines and the Farm Credit reserve
 bank survey pages.
 
   python3 scripts/source_links.py --scan FILE...   list the data-source links in these files (anchors, and

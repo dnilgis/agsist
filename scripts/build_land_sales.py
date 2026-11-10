@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""build_land_sales.py: the farm sale pages and their small data files (Sig, Oct 27, 2026).
+"""build_land_sales.py: the farm sale pages and their small data files (Oct 27, 2026).
 
 "People are nosey; getting those land sales in front of people is a must." This builds, from the
 committed county transfer files (data/land/<st>/<fips>.json, scripts/fetch_land_sales.py) and the
@@ -26,7 +26,7 @@ the month and place logic of the land sale email (land_alert: Land.sales, window
   data/land/names/<st>/<fips>.json      buyer and seller for every sale on the county's list
   data/land/names/<YYYY-MM>.json        buyer and seller for the sales and buyers in the update
 
-NAMES (STANDING-DECISIONS, Oct 27): pages show the sale without names plus "Show buyer and seller";
+NAMES (a site rule, Oct 27): pages show the sale without names plus "Show buyer and seller";
 the names load on that tap from a file under /data/land/, which robots.txt blocks; a "Remove my
 name" link sits beside them. No name is ever written into a page, a sitemap, a snippet or a data
 file outside data/land/ (test/land-sales.test.mjs greps every published file for every name).
@@ -35,14 +35,14 @@ A sale whose id is in data/land-sales/removed.json keeps no names at all.
 WORDS: "unusual price", with plain possible reasons (family sale, part interest, buildings or timber
 included); never "questionable" or any word that accuses anyone.
 
-STATES: Illinois, Wisconsin, Indiana, Vermont and New Jersey (Sig, Oct 27: "Yes turn on Indiana"; it was held to Field Scout
+STATES: Illinois, Wisconsin, Indiana, Vermont and New Jersey (Oct 27; it was held to Field Scout
 and the comp report since Oct 18), the monthly land sale email included (land_alert.STATES); the email
 ask shows beside any state the email covers. Indiana's records differ and the pages say so
 (IN_NOTE): the date is the sale date on the disclosure form (no recording date), and the place is the
 parcel's postal town, placed at its ZIP's middle, not a township. data/land-sales/coverage.json is the
 per-state source table, kept by hand; this script only draws it and counts the states with sales.
 
-EVERY SALE (Sig, Oct 29, 2026: "people are nosey"): a county page lists every recorded market sale of
+EVERY SALE (Oct 29, 2026): a county page lists every recorded market sale of
 any acreage, newest first, with its date, acres, price, $/acre and type: farmland, with buildings,
 forest or small parcel (build_land_summary.land_type, the one land rule: buildings by property class
 only, never deed text; a Wisconsin or Vermont forest-class sale with no farm class is forest; a small parcel is
@@ -82,7 +82,7 @@ import land_names                   # noqa: E402  names apart from the county fi
 import seo_caps as SEO              # noqa: E402  the site's title cap
 
 ORIGIN = "https://agsist.com"
-# Vermont and New Jersey since Oct 29, 2026 (Sig: next land states); Florida since Nov 5 (sale months, not days; its county
+# Vermont and New Jersey since Oct 29, 2026 (next land states); Florida since Nov 5 (sale months, not days; its county
 # files are on agsist-data, build_land_summary.HOSTED: see CARRY below)
 STATES = ("IL", "WI", "IN", "VT", "NJ", "FL")
 SLUG = dict(LA.STATE_SLUGS, IN="indiana")
@@ -120,7 +120,7 @@ JS = '<script src="/components/land-sales.js?v=6" defer></script>'
 KIND_WORDS = {"farm": "farmland", "bldg": "with buildings", "forest": "forest", "small": "small parcel"}
 KIND_CODE = {"farm": "f", "bldg": "b", "forest": "w", "small": "s"}   # the list file's type column
 LIST_COLS = ["id", "when", "recorded", "acres", "price", "ppa", "place", "kind", "flag"]
-# The detail panel (Sig, Nov 4, 2026: "when you click I want it to open every detail about the sale that is pertinent").
+# The detail panel (Nov 4, 2026).
 # Each listed sale carries three more facts, no name in any: ri, the sale's first deed as a row number in the county's
 # transfer file (data/land/<st>/<fips>.json, robots-blocked, the file Field Scout already loads; the panel reads the
 # deed type, document, parcel, legal, section and the rest from it on the first tap, and checks the row against the
@@ -459,7 +459,7 @@ def month_build(d, year, m0):
     return out, names
 
 
-# ---------------------------------------------------------------- the hub's stand-out sales (Sig, Nov 8)
+# ---------------------------------------------------------------- the hub's stand-out sales (Nov 8)
 # "The map and any stand-out sales top and center." Up to four cards, each a different sale of the latest month: the
 # largest by acres; the highest and the lowest price per acre against the county's usual (bare farmland of
 # BEST_MIN_ACRES or more in a county with a usual, the same "usual" the month page uses); the newest. A card that has no
@@ -502,7 +502,7 @@ def stand_out(listed, by_acres):
 
 
 # ---------------------------------------------------------------- the home page's one sale
-# Sig, Nov 4, 2026: "my buddy didn't know that farm land sales were on agsist"; "maybe we can link it somehow with
+# Nov 4, 2026; "maybe we can link it somehow with
 # the unusual sales or something to get people's attention". The home page leads with one real sale per state,
 # picked by this rule (LEAD_RULE is printed under the sale on tap, word for word):
 #   bare farmland of 40 acres or more (the market-sale rule's comparable sales: known acres, $500 an acre or more, no buildings,
@@ -636,7 +636,7 @@ def names_btn(sid, file, what="buyer and seller"):
 
 def flag_words(p):
     """The note for a sale: an unusual price, and for Vermont whether the return says the land is enrolled in
-    current use (a fact about the sale, not a farm test: Sig's brief, Oct 29)."""
+    current use (a fact about the sale, not a farm test: the owner's brief, Oct 29)."""
     w = ""
     if p.get("flag") == 1:
         w = "Unusual price: above the county's usual"
@@ -690,7 +690,7 @@ def ctx_data(st, fips, county, u, w24, ok=0):
     return jdump([st, fips, county, usual_list(u), w24, ok])
 
 
-# Phones (Sig, Nov 8, 2026: the Unusual prices table was cut off at 390 px): every table this builder makes becomes one
+# Phones (Nov 8, 2026: the Unusual prices table was cut off at 390 px): every table this builder makes becomes one
 # block per row, each value under a small label, so no number is cut and the page never scrolls sideways. The labels are
 # CSS (td:nth-child), so the rows components/land-sales.js draws later read the same. Inline, so no shared file changes.
 SALE_COLS = {"when": "Date", "where": "Where", "acres": "Acres", "price": "Price", "ppa": "$/acre", "note": "Note",
@@ -800,8 +800,8 @@ def names_note(d, states):
     return out
 
 
-# Method text never sits at the top (Sig, Nov 7, on /land-sales/2026-09: "way too much info ... needs to be on the bottom
-# of page and collapsed unless someone wants to read it"; STANDING-DECISIONS Nov 7). The market rule and each state's
+# Method text never sits at the top (Nov 7, on /land-sales/2026-09: "way too much info... needs to be on the bottom
+# of page and collapsed unless someone wants to read it"; a site rule Nov 7). The market rule and each state's
 # method note move, word for word, into one closed details block at the bottom, each state under its own small heading.
 # The ls-src class is the page's own collapsed source table (coverage_html); ls-dh is its small heading. No new CSS.
 IL_NOTE = ("A farm sale is a farm parcel on a MyDec transfer declaration. Left out: gifts, family and related-party sales and anything "
@@ -990,7 +990,7 @@ def month_page(d, M, early, coverage, archive):
 
 
 # The map is the shared real US map (components/usmap.js, data/us-states-map.svg). It shows only what a reader can use
-# (Sig, Nov 8): the states with sales on these pages (each links to its county list) and the states where the Farmland
+# (Nov 8): the states with sales on these pages (each links to its county list) and the states where the Farmland
 # Atlas has other county land values (each links to its Atlas page). Every other state is drawn neutral with its name and
 # nothing else. data/land-sales/coverage.json (our own research status, kept by hand) feeds no page and no public file.
 MAP_FILL = {"live": "#2e7d4f", "atlas": "#e6d6a8"}
@@ -1083,7 +1083,7 @@ def middle_words(st, u, k24, w24):
 
 
 def in_trend_words(u):
-    """Indiana: the middle stays, labeled (Sig, Oct 29, 2026)."""
+    """Indiana: the middle stays, labeled (Oct 29, 2026)."""
     if not u:
         return "Most Indiana sales are marked not valid for trending by the state."
     return ("Most Indiana sales are marked not valid for trending by the state: %d of the %d sales behind this middle carry that mark. "
@@ -1209,7 +1209,7 @@ def county_page(d, st, c, allp, u, n12, summ, early, latest, W, k24, n12all):
     return "\n".join(b) + "\n" + FOOT
 
 
-# One sale, linked (Sig, Nov 3, 2026: every sale in the land sale email links to its row here). Each row of
+# One sale, linked (Nov 3, 2026: every sale in the land sale email links to its row here). Each row of
 # the county table has id="s-<sale id>" (land_alert.sale_id: a hash, no name). #s-<id> scrolls to the row and
 # marks it (:target). A sale past the newest COUNTY_ROWS is not in the page until components/land-sales.js draws
 # it from the list file, so this presses its "Show more" until the row is there (found by its names button,
@@ -1232,7 +1232,7 @@ SALE_JS = ("(function(){var t=0,n=0,id='',k=0;"
            "if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',go);else go();})();")
 
 
-# "Your county" on the hub (Sig, Oct 29, 2026: the land sale page should be easy to find). The jump
+# "Your county" on the hub (Oct 29, 2026: the land sale page should be easy to find). The jump
 # row is plain links to the state lists and the source table. The script reads the place the reader
 # saved elsewhere on the site (localStorage agsist-wx-loc: state and county, written by
 # components/geo.js and Fast Facts), finds that county's link in the list already on this page
@@ -1295,7 +1295,7 @@ def index_section(repo):
 
 def index_page(d, latest, counties, early, coverage, archive, ix=None):
     url = ORIGIN + "/land-sales/"
-    # Nov 4 (Sig: "my buddy didn't know that farm land sales were on agsist"): the words people search for first
+    # Nov 4: the words people search for first
     title = "Farmland Sales Prices by County | AGSIST"     # 60 characters or fewer; the states are in the description
     desc = ("What farmland sold for in %s: every recorded farm sale by county with acres, price and price per acre, and a monthly "
             "update of the biggest buyers and sales." % and_list(sorted(NAME[x] for x in d.states)))
@@ -1304,7 +1304,7 @@ def index_page(d, latest, counties, early, coverage, archive, ix=None):
                 "Illinois farmland sale index and a monthly update of the biggest buyers and sales." % and_list(sorted(NAME[x] for x in d.states)))
     ld = [crumbs([("AGSIST", ORIGIN + "/"), ("Farmland sales", url)])] + (ix["ld"] if ix else [])
     b = [head(title, desc, url, ld, early, (ix["css"] if ix else "") + stack_css()), '<div class="ls-w ls-hub">', "<h1>Farmland sales</h1>"]
-    # top: one sentence, the map, the stand-out sales, the picker (Sig, Nov 8, on a phone: the map and the stand-out sales top and center)
+    # top: one sentence, the map, the stand-out sales, the picker (Nov 8, on a phone: the map and the stand-out sales top and center)
     if latest:
         b.append('<p class="ls-ans">%d farm sales in %s. Tap a state, or see the biggest <a href="/land-sales/%s">buyers and sales of the month</a>.</p>'
                  % (latest["n"], e(latest["label"]), latest["month"]))

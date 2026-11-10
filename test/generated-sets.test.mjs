@@ -1,7 +1,7 @@
 /* Generated page sets are built on main, never carried in a pull request (Nov 4, 2026).
  * On Nov 3 four pull requests carried generated sets (#280 rain, #282 cash bid town pages twice, #296 land
  * sales); main's own jobs rebuilt those sets within hours, so the branches conflicted or merged on checks run
- * against an older main and main went red. BUILD-RULES 49 and 60 asked the lead to remember; this holds the
+ * against an older main and main went red. build rule 49 and 60 asked the lead to remember; this holds the
  * mechanical version together:
  *   - the table (scripts/generated_sets.py) covers every folder of generated pages and every --check builder,
  *     and every path, builder and workflow it names exists;
@@ -10,7 +10,7 @@
  *   - the PR checks rebuild a set whose builder changed in their own copy; main-checks.yml rebuilds it on main
  *     right after the merge, before the suite;
  *   - merge-when-green never merges on checks run against an older main (the stale rule, unit cases);
- *   - BUILD-RULES 61 (Nov 4: a hand run of cash-bid-index.yml left llms.txt on the partial edition and main
+ *   - build rule 61 (Nov 4: a hand run of cash-bid-index.yml left llms.txt on the partial edition and main
  *     went red): every summary file a set feeds is that set's dependent, found by tracing what each summary
  *     builder really reads (scripts/trace_reads.py), and every workflow that runs a set's builder rebuilds
  *     those summaries before its commit.
@@ -252,7 +252,7 @@ print(json.dumps({
   assert.match(src, /"git", "-C", root\] \+ list\(a\)/, "main's changed files from git, not the 300-file compare");
 });
 
-// ── BUILD-RULES 61: a builder run by hand leaves every summary of its output current ──────────────────────
+// ── build rule 61: a builder run by hand leaves every summary of its output current ──────────────────────
 const summary = Object.fromEntries(T.summaries.map((x) => [x.id, x]));
 const setById = Object.fromEntries(T.sets.map((s) => [s.id, s]));
 const traced = {};

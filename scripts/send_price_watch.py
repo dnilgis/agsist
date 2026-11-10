@@ -365,7 +365,7 @@ def main():
             except Exception:
                 pass
     # Counts and masked addresses only: the Actions log is public. The full
-    # list goes to Sig by private mail.
+    # list goes to the owner by private mail.
     tally.sent = sent
     print(f"sent {sent}; failed {len(failed)}"
           + (": " + ", ".join(log_safe.mask_text(f) for f in failed[:10]) if failed else ""))
@@ -378,5 +378,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # worker blocked and no usable copy: one warning, exit 0 (an hourly job must not flood Sig with failures)
+    # worker blocked and no usable copy: one warning, exit 0 (an hourly job must not flood the owner with failures)
     sys.exit(list_source.guard(main, soft=True))

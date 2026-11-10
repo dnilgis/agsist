@@ -1,4 +1,4 @@
-/* Sig, Oct 23 2026: more organic email signups and quieter, steadier promotion of Rain Print,
+/* Oct 23 2026: more organic email signups and quieter, steadier promotion of Rain Print,
  * the rain gauge waitlist and the Daily, without nagging. The rules these hold:
  *   - one cross-promo a page, after the answer; no popups, timers or exit-intent;
  *   - no sponsor on Rain Print, gift or gauge pages;
@@ -42,7 +42,7 @@ test("one cross-promo a page, after the answer, with its script", () => {
     assert.ok(m.indexOf(slot) > m.indexOf(after), f + ": after the answer and the questions");
     assert.match(h, /rain-print-promo\.js\?v=6" defer/, f);   // one version sitewide (test/gauge-hook.test.mjs)
   }
-  // /hail-map keeps its one Rain Print line (Oct 19 rule): the gauge waits on Sig's swap after Dec 10
+  // /hail-map keeps its one Rain Print line (Oct 19 rule): the gauge waits on the owner's swap after Dec 10
   const hm = inMain(read("hail-map.html"));
   assert.equal((hm.match(/class="rp-promo"/g) || []).length, 1);
   assert.ok(!/href="\/rain-gauge"/.test(hm));
@@ -53,7 +53,7 @@ test("one cross-promo a page, after the answer, with its script", () => {
   const ix = read("index.html");
   assert.equal((ix.match(/data-rain-print-promo/g) || []).length, 1);
   assert.equal((ix.match(/data-rp-card-early/g) || []).length, 1);
-  // Nov 2 (Sig, home jobs round 3): the card and its early marker moved up from under the prices into
+  // Nov 2 (home jobs round 3): the card and its early marker moved up from under the prices into
   // "Worth a look", right under the three jobs and before the Daily (test/home-jobs.test.mjs)
   const wl = ix.indexOf('<section class="wl" id="wl"'), wlEnd = ix.indexOf("</section>", wl);
   for (const k of ["data-rp-card-early", 'data-rain-print-promo="card"']) assert.ok(ix.indexOf(k) > wl && ix.indexOf(k) < wlEnd, k + " sits in Worth a look");

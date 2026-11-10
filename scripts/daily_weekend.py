@@ -1,4 +1,4 @@
-"""daily_weekend.py -- the code-built blocks of the Saturday and Sunday Dailies (Sig, Nov 6 and 7 2026:
+"""daily_weekend.py -- the code-built blocks of the Saturday and Sunday Dailies (Nov 6 and 7 2026:
 "Saturday Daily = wrap-up of the week. Sunday Daily = the week ahead"; plan in the private notes,
 plans/weekend-daily-plan.md). No weekend number comes from the writer: these blocks print what the data
 files say, and the writer is told they exist and may not restate them differently.

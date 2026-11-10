@@ -1,4 +1,4 @@
-/* A late elevator save keeps its own time (Sig, Oct 22 2026): the page sends
+/* A late elevator save keeps its own time (Oct 22 2026): the page sends
  * entered_at with every save, the worker (v5.50) stores it and refuses a save
  * older than the listing's newest change (scripts/test_elev_worker.mjs runs
  * the worker), and the board says when the elevator last saved, in plain

@@ -186,7 +186,7 @@ test("soybeans are a crop choice and the old notice is gone", () => {
   assert.match(page, /src="\/components\/grain-emc-ui\.js\?v=([4-9]|\d\d+)"/);
   assert.ok(!/—|&mdash;/.test(page + ui), "no em dashes");
   assert.match(ui, /grainKey\(q\.get\('grain'\)\)/, "?grain=soy opens soybeans");
-  // Oct 20: the baked menu grew 215 bytes on every page (Sig approved Everything near me, Yield by state and Farmland sale index), so the cap moves up 500 bytes.
+  // Oct 20: the baked menu grew 215 bytes on every page (the owner approved Everything near me, Yield by state and Farmland sale index), so the cap moves up 500 bytes.
   assert.ok(Buffer.byteLength(page) < 90500);
 });
 

@@ -1,5 +1,5 @@
 /* "One more?" after the alert signups, and the page's own extra after a
- * Daily signup (Sig, Oct 20):
+ * Daily signup (Oct 20):
  *   1. After a hail alert on /hail-map: the Daily, unticked, with an optional
  *      ZIP box filled from the ZIP nearest the spot (or blank); source
  *      onemore:hail-alert. Hidden for a browser already on the Daily.

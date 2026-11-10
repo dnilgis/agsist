@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-One sponsor's report link, emailed to that sponsor with a copy to Sig (Sig, Nov 5, 2026:
-"When you get the sponsor link done, just email that directly to [the sponsor] and copy me on it").
+One sponsor's report link, emailed to that sponsor with a copy to Nov 5, 2026.
 
-Run by hand only: .github/workflows/sponsor-send-link.yml (workflow_dispatch, inputs sponsor and resend).
+Run by hand only:.github/workflows/sponsor-send-link.yml (workflow_dispatch, inputs sponsor and resend).
 
     SPONSOR_ID=rootlot python3 scripts/sponsor_send_link.py           send once
     SPONSOR_ID=rootlot RESEND=1 python3 scripts/sponsor_send_link.py  send again
@@ -17,11 +16,11 @@ private/sponsors before this runs; SPONSOR_PRIVATE_DIR overrides the folder):
   * the address: private/sponsors/contacts.json, key <id>.to (a sponsor with no application record,
     like Root Lot, is added there by hand). An optional first_name (or name) gives the greeting.
     No address on file: the run fails and says so; nothing is guessed.
-  * Sig's copy: the SPONSOR_TO secret, the address sponsor_apply.py already copies Sig at
+  * The owner's copy: the SPONSOR_TO secret, the address sponsor_apply.py already copies the owner at
     (log_safe.OWNER_DEFAULT when unset).
 
 It sends through the same SMTP secrets, From and message builder as scripts/sponsor_apply.py, counts
-the send through delivery_line.start() (the DELIVERY line and the send_cap.py SMTP count), and writes
+the send through delivery_line.start (the DELIVERY line and the send_cap.py SMTP count), and writes
 private/sponsors/sent/<id>.json after a send; the workflow saves that folder to private-data, so a
 rerun skips unless RESEND=1.
 

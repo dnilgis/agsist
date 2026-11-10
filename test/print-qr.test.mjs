@@ -84,7 +84,7 @@ test("one QR encoder: the three report pages load components/qr.js (v=11) before
   }
 });
 
-// ---------------------------------------------------------------- the short links (Sig, Oct 19: fewest squares)
+// ---------------------------------------------------------------- the short links (Oct 19: fewest squares)
 const EX = {
   comp: "https://agsist.com/comp-report?f=" + encodeURIComponent(FIELD) + "&fips=55005&r=25&from=2023-10-19&to=2026-10-19&amin=10&n=15&sort=mi",
   compParcel: "https://agsist.com/comp-report?pid=036-0400-11-000&fips=55005&r=25&from=2023-10-19&to=2026-10-19&amin=10&n=15&sort=mi",

@@ -520,7 +520,7 @@ def export_sales_holiday_week(day):
     the week containing `day` and Thursday itself is not one, else None.
     2026-10-12 was Columbus Day; that week's Export Sales came Friday Oct 16.
     usda_dates.export_sales_date() still names Thursday (its selftest pins it;
-    changing the rule is Sig's call), so the prompt hedges instead."""
+ changing the rule is a product decision), so the prompt hedges instead."""
     import usda_dates
     mon = day - timedelta(days=day.weekday())
     thu = mon + timedelta(days=3)
@@ -1951,7 +1951,7 @@ STORY_MATCH_MIN = 0.5    # an uncited story must be this close to a digest title
 
 def safe_story_link(url):
     """A publisher link fit to put in front of a reader, else "". https only,
-    no shared host (BUILD-RULES 11), no user part, no spaces, bounded length.
+    no shared host (build rule 11), no user part, no spaces, bounded length.
     Google News links (news.google.com/rss/articles/...) pass: they open the
     publisher's story."""
     from urllib.parse import urlparse
@@ -2090,7 +2090,7 @@ def _tour_is_over_note(span, label, final_date=None, today=None):
     It did exactly that. The briefing published 2026-08-26 told readers "The
     Pro Farmer tour number Friday is the next real test" and repeated it in the
     takeaway -- five days after the tour had finished and four days after its
-    final number was out. Sig caught it in his own inbox.
+    final number was out. The owner caught it in his own inbox.
 
     A guard that stops guarding is worse than no guard, because the shape of
     the code implies the case is handled. This one does not expire.
@@ -2105,7 +2105,7 @@ def _tour_is_over_note(span, label, final_date=None, today=None):
         PRO FARMER DONE; SEPTEMBER WASDE HOLDS THE ANSWER
         "The Pro Farmer tour is in the rearview."
 
-    Sig caught that one in his inbox too. A prohibition written at full volume
+    The owner caught that one in his inbox too. A prohibition written at full volume
     reads as a topic. The fix for the last headline defect authored the next.
 
     So the note now FADES, and says out loud that it is not news:
@@ -3370,7 +3370,7 @@ def sponsor_cta_urls(sponsor):
 
 
 def _house_note_text(sp):
-    # 2026-10-07 (Sig): no disclaimer line on a paid ad, anywhere it runs. The
+    # 2026-10-07: no disclaimer line on a paid ad, anywhere it runs. The
     # SPONSORED label is the disclosure. Only the house ad keeps its own line.
     return (sp.get("disclosure") or "") if sp.get("is_house_ad") else ""
 
@@ -3536,7 +3536,7 @@ def render_sponsor_block_html(sponsor, surface="archive", slot=None):
     given and the ad is paid, adds the measurement attributes that
     components/sponsor-metrics.js counts.
     """
-    # 2026-10-11 (Sig, "tone it down"): an unsold slot shows nothing. The
+    # 2026-10-11: an unsold slot shows nothing. The
     # house ad is never drawn; components/sponsor-ad.js returns the same "".
     if not sponsor or sponsor.get("is_house_ad"): return ""
     sp = sponsor
@@ -3591,7 +3591,7 @@ def render_forward_block_html(date_iso):
 
 def render_byline_block_html():
     # "By", not "Written by" (2026-10-16): the draft is written by software
-    # from the morning's feeds under Sig's rules and checked by code before it
+    # from the morning's feeds under the owner's rules and checked by code before it
     # posts. /editorial-standards#how-the-daily-is-made says so in plain words,
     # and Google asks that automation be evident to the reader.
     return ('<div class="dv3-byline">'
@@ -3606,7 +3606,7 @@ def render_dateline_html(briefing, date_iso):
     rewritten 10 minutes or more after it first went up."""
     pub_iso = published_at(briefing)
     pub_dt, mod_dt = _ct_dt(pub_iso), _ct_dt(briefing.get("generated_at"))
-    # Sig, Oct 18: no name under the headline; the byline block at the end carries it
+    # Oct 18: no name under the headline; the byline block at the end carries it
     parts = []
     if pub_dt:
         parts.append(f'Published <time datetime="{iso_ct(pub_iso)}">{html_esc(human_ct(pub_iso))}</time>')
@@ -4409,7 +4409,7 @@ def generate_archive_html(briefing, date_iso, prev_date=None, next_date=None,
     og_description = html_esc(page_desc_raw)
     desc_escaped = og_description
     headline_sc = headline
-    # 2026-10-11: no issue number on the page (Sig: it dates the project).
+    # 2026-10-11: no issue number on the page (it dates the project).
     issue_suffix = ""
 
     surprise_html = ""
@@ -6034,7 +6034,7 @@ def main():
         print(f"  [warn] wasde-self-heal skipped ({type(_e).__name__}: {_e})")
 
     # ── VOICE self-heal (2026-10-09) ─────────────────────────────────────
-    # The briefing carries Sig's name. voice_lint (one definition, shared with
+    # The briefing carries the owner's name. voice_lint (one definition, shared with
     # the critic and the gate) finds invented first-person experiences ("I
     # talked to elevators today", "my neighbor said") and machine tells
     # ("navigate", "robust", "not just X but Y"). Any hit regenerates ONCE
@@ -6090,10 +6090,10 @@ def main():
         print(f"  [warn] story links skipped ({type(_e).__name__}: {_e})")
 
     # ── FRESHNESS self-heal (2026-11-01) ────────────────────────────────
-    # Never the same headline, number or story twice in a week (Sig, Nov 1).
+    # Never the same headline, number or story twice in a week (Nov 1).
     # scripts/daily_fresh.py compares the draft with the last 7 issues; any repeat
     # sends it back ONCE with the reasons, the voice self-heal's pattern. What
-    # still repeats is cut (daily_fresh.cut_repeats, Sig Nov 2); briefing_gate
+    # still repeats is cut (daily_fresh.cut_repeats, Nov 2); briefing_gate
     # warns on anything left and never holds. Fail-open on any error here: the
     # gate re-checks from the archive.
     _fresh_tries = 1
@@ -6143,7 +6143,7 @@ def main():
                 briefing, _fresh_found = _brief2, _f2
             else:
                 print("  [fresh-self-heal] regenerated draft is no better; keeping the first")
-        # Sig, Nov 2: "cut the repeat". What still repeats after the one rewrite is cut
+        # Nov 2. What still repeats after the one rewrite is cut
         # (story, sentence, the day's number; a repeated headline becomes the top
         # story's title); what cannot be cut stays and the gate warns. The email goes out.
         if _fresh_found:
@@ -6254,7 +6254,7 @@ def main():
     briefing = report_day.apply(briefing, datetime.now().date(), datetime.now(timezone.utc))
     if briefing.get("report_day"):
         print(f"  Report day: {', '.join(briefing['report_day']['reports'])}; fixed watch line in place")
-    # 2026-11-09 (Daily panel, Sig "all"): What to watch names the WASDE only the day before and
+    # 2026-11-09 (Daily panel): What to watch names the WASDE only the day before and
     # the day of (Nov 3 to 9 it ran seven issues straight). The report-day line stays (report_day).
     try:
         import daily_v2 as _v2w
@@ -6314,7 +6314,7 @@ def main():
     except Exception as _e:
         briefing["board"] = {"fetched": _fetched}
         print(f"  [warn] board session stamp unavailable ({type(_e).__name__}: {_e})")
-    # 2026-10-09, Sig: the prediction bot is out of the Daily for now. It
+    # 2026-10-09, the owner: the prediction bot is out of the Daily for now. It
     # lives on /scorecard (data/predictions.json), not in the briefing, the
     # homepage teaser or the email. insert_bot_call() is kept, uncalled, so
     # putting it back is one line. With no action the box stays hidden.
@@ -6346,7 +6346,7 @@ def main():
                 print("  Only on AGSIST: " + _f["sentence"])
         else:
             print("  Only on AGSIST: none (data/daily-edge.json missing, stale or empty)")
-        # 2026-11-09 (Daily panel, Sig "all"): the state week-over-week basis line, gated in
+        # 2026-11-09 (Daily panel): the state week-over-week basis line, gated in
         # only_here.wow_rows and through the one memory (daily_fresh.wow_should_print): it prints only
         # when a state enters, leaves or moves another 5 cents since the issue that last printed it.
         # The rows ride on the issue (basis_wow) for the email; the web block gets the line.

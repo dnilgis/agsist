@@ -505,7 +505,7 @@ test("rp-gift.js: the same code rules as the worker, and the banner words", () =
   assert.match(G._state({ ok: true, status: "redeemed", redeemed_on: "2026-12-26" }, good).text, /used on Dec 26, 2026\./);
   assert.equal(G.dayText("2026-01-05"), "Jan 5, 2026");
   assert.equal(G.dayText("Dec 28, 2026"), "Dec 28, 2026");
-  // Sig speaks for himself on the Rain Print page, and the promises match the page's.
+  // The owner speaks for himself on the Rain Print page, and the promises match the page's.
   const v = G._state({ ok: true, status: "void" }, good).text;
   assert.equal(v, "This card is no longer active. Write to me at sig@agsist.com and I’ll sort it out.");
   assert.equal(G.errorText({ status_code: 0 }), "The gift card check didn’t answer. Try again in a minute.");
@@ -515,7 +515,7 @@ test("rp-gift.js: the same code rules as the worker, and the banner words", () =
   assert.match(now, /I have your order and will email you a proof within 1 business day\./);
   const jan = G.doneHtml({ code: good }, { ships: "january", upgrade: true });
   assert.match(jan, /a proof in January, once the full year is in\./);
-  // 2026-10-14 (Sig): the digital file has no proof step
+  // 2026-10-14: the digital file has no proof step
   const file = G.doneHtml({ code: good, product: "framed12x18" }, { ships: "now" }, "digital");
   assert.match(file, /will email you the finished file within 1 business day\. If you want anything changed, write to me and I’ll fix it or redo it by hand and send it again, no charge\./);
   assert.doesNotMatch(file, /proof/);
@@ -567,7 +567,7 @@ test("rp-gift.html: the card's words (station, marked days, full year, card numb
   assert.match(h, /<script src="\/components\/rp-gift\.js\?v=\d+"><\/script>/, "the card page loads a versioned script");
 });
 
-/* The 8 x 10 card (2026-10-14, Sig): the default size, on letter with cut marks,
+/* The 8 x 10 card (2026-10-14): the default size, on letter with cut marks,
    and the print so far drawn by the page's own engine and art. */
 test("rp-gift.html: 8 x 10 is the default, and the print sizes are right for 8 x 10 and letter", () => {
   const h = read("rp-gift.html");
@@ -591,7 +591,7 @@ test("rp-gift.html: 8 x 10 is the default, and the print sizes are right for 8 x
   assert.match(marks, /\[\.5, 10\.5\]\.forEach/);
   assert.match(marks, /left:\.3in/); assert.match(marks, /right:\.3in/);
   assert.match(h, /size === '8x10l' \? '<div class="sheet">' \+ card8\(\) \+ marks\(\) \+ '<\/div>'/);
-  // the 8 x 10 says what's coming, never a price, and speaks of Sig in the third person
+  // the 8 x 10 says what's coming, never a price, and speaks of the owner in the third person
   const c8 = h.match(/function card8\(\) \{[\s\S]*?\n  \}/)[0];
   assert.doesNotMatch(c8 + h.match(/var COMING = \{[\s\S]*?\};/)[0], /\$|price/i);
   assert.match(c8, /'Made' : 'Drawn and printed'\) \+ ' by Sig Lindquist, AGSIST, Chetek, Wisconsin/);
@@ -641,7 +641,7 @@ test("previewArt: the card's print so far, through the last reported day, the mo
   assert.equal(r.place, "Chetek, Wisconsin");
   assert.equal(r.days, 282, "January 1 through October 9");
   assert.match(r.svg, /^<svg /);
-  // Sig, 2026-10-20: nothing covers the data; the card's own wash note holds the weeks still to come, so no band
+  // 2026-10-20: nothing covers the data; the card's own wash note holds the weeks still to come, so no band
   assert.doesNotMatch(r.svg, /data-rp="band"/, "no preview band over the card's print");
   assert.match(r.svg, /<title id="gcT">Chetek, Wisconsin, 2026, rain print, preview through Oct 9<\/title>/);
   const later = r.svg.match(/<g data-rp="later" aria-hidden="true"><rect x="([\d.]+)" y="[\d.]+" width="([\d.]+)"[^>]*\/>([\s\S]*?)<\/g>/);

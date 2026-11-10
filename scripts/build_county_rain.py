@@ -196,13 +196,13 @@ RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = R.SNOW_MISS_OK  # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
 PRINT_JS = '<script src="/components/rain-county-print.js?v=49" defer></script>'
-# the Christmas Rain Print line (components/rp-xmas.js, Sig 2026-10-30): county pages and the hub, not the state pages.
+# the Christmas Rain Print line (components/rp-xmas.js, 2026-10-30): county pages and the hub, not the state pages.
 # On a county page it sits right under the Rain Print sell block, below the print, so the print stays on a phone's
 # first screen and still draws (it waits until it is near the screen).
 # A plain script tag on purpose: it writes the line before the first paint, so nothing moves.
 XMAS_JS = '<script src="/components/rp-xmas.js?v=1"></script>'
 
-# The county rain box (Sig, Nov 3, 2026): a closed fold on every county page with the iframe code for /embed/rain,
+# The county rain box (Nov 3, 2026): a closed fold on every county page with the iframe code for /embed/rain,
 # the one plain sentence and the monthly newsletter block. The sentence is written here; components/rain-box.js
 # (loaded deferred, about 4 KB, shared and cached) only adds the iframe code and the copy buttons on first open.
 BOX_JS = '<script src="/components/rain-box.js?v=1" defer></script>'
@@ -218,7 +218,7 @@ def wx_deg(n):
 
 
 def wx_fold(c, r, d, noun, name, year, done):
-    """The weather fold (Sig, Nov 4 2026) and its FAQ answers, from data/rain/wx/<st>.json
+    """The weather fold (Nov 4 2026) and its FAQ answers, from data/rain/wx/<st>.json
     (scripts/fetch_rain_weather.py). Only the one-line summary is baked into the page; the
     fold's body is drawn by components/rain-wx.js from the same file, so each page carries a
     few hundred bytes, not the whole block (the rain folder is near its budget). Every figure
@@ -266,8 +266,8 @@ def box_line(c, st, year, done):
 
 
 def box_source(c):
-    """The source in plain words, no link (Oct 29 rule). The page's prose never names CoCoRaHS (Sig, Oct 15; only the
-    byline credits it), so the page's sentence says "volunteer rain gauge"; the embed box, shown on other sites with
+    """The source in plain words, no link (Oct 29 rule). The page's prose never names CoCoRaHS (Oct 15; only the
+ byline credits it), so the page's sentence says "volunteer rain gauge"; the embed box, shown on other sites with
     no byline, names CoCoRaHS (source() in components/rain-box.js)."""
     return "NOAA daily records" + (", volunteer rain gauge" if c["station"]["net"] == "cocorahs" else "")
 
@@ -303,7 +303,7 @@ def rp_cutoffs():
 
 
 def xmas_last_by(today, year, cut):
-    """"Last year, by Christmas" (2026-10-19, board B, Sig: "yeah fix please"): from Oct 1 of the page's
+    """"Last year, by Christmas" (2026-10-19, board B): from Oct 1 of the page's
     year through the later of the two Christmas cutoffs in data/rain-print.json, last year's print still
     arrives by Christmas. Returns the order-by words ("framed by Dec 9, or as a print by Dec 10"), or "" when
     the offer is off (a finished year, no dates, the dates for another year, or both dates passed)."""
@@ -364,7 +364,7 @@ def snow_caption(day, snow, year):
     stays the snow state, but where the station's snowfall record for the year has no value
     above zero the caption says so instead of "under 0.1 in", which reads as if snow fell
     (162 pages, mostly the South). "nosnow": every value 0; "trace": only zeros and traces.
-    A summer trace (June to August) is not snow here (county_rain.snow_trace_on, Sig 2026-10-20)."""
+    A summer trace (June to August) is not snow here (county_rain.snow_trace_on, 2026-10-20)."""
     if snow != "little" or not day or not day.get("s"):
         return snow
     raw = R.unpack_days(day["s"])
@@ -514,7 +514,7 @@ def chart(c, year, county, noun="station", ready=None, where=None):
 
 def print_figure(c, year, noun, ready, has_us, svg="", cap=""):
     """The county's year as a Rain Print, with its style picker, right under the figures
-    (Sig, Oct 28 2026: "move our Rain Print chart up in place of that generic chart").
+    (Oct 28 2026).
     The plain running-total chart ships inside the print's art box as its fallback: a reader
     without scripts, a search engine, or a page whose print cannot be drawn keeps that chart;
     components/rain-county-print.js draws the print over it (replacing it) and swaps the
@@ -542,7 +542,7 @@ def print_figure(c, year, noun, ready, has_us, svg="", cap=""):
             + ((" Usual is NOAA&rsquo;s " + ("1991 to 2020" if period == "1991-2020" else "30-year")
                 + f" normals for this {noun}, added up over the days it reported: the gray number under each month&rsquo;s total, "
                 "and on Staircase the dashed line, drawn straight inside a month.") if mn else ""))
-    # Roots opens first on county pages (Sig, Oct 28 2026); rain-county-print.js draws the pressed style
+    # Roots opens first on county pages (Oct 28 2026); rain-county-print.js draws the pressed style
     styles = ('<div class="rc-print-styles" role="group" aria-label="Print style" hidden>'
               '<button type="button" data-style="r1" aria-pressed="false">Staircase</button>'
               '<button type="button" data-style="r2" aria-pressed="true">Roots</button>'
@@ -585,7 +585,7 @@ RAIN_SIDECAR = os.path.join("img", "og", "rain-cards.json")   # scripts/build_sh
 
 def card_alt(rel, v, st):
     """The alt text for the card file as it is now. The cards are redrawn only on Mondays
-    (Sig, Oct 23 2026) while the pages rebuild every day, so the alt is the one saved with
+    (Oct 23 2026) while the pages rebuild every day, so the alt is the one saved with
     the drawn card (img/og/rain-cards.json), printed only while its hash is this file's:
     it gives the card's own "through" day, never today's numbers on last week's map.
     No saved alt for this file: a plain one with no numbers or dates."""
@@ -669,7 +669,7 @@ FOOT = """  </main>
 </body>
 </html>
 """
-# State pages (Sig, 2026-10-23): the one cross-promotion is the
+# State pages (2026-10-23): the one cross-promotion is the
 # "auto" line after the table (components/rain-print-promo.js): Rain Print
 # through Dec 24, the rain gauge hook from Dec 26 through May (gauge_window
 # and gauge_hook in data/rain-print.json). County pages keep their Rain Print
@@ -711,8 +711,8 @@ def year_ask(name, year, fips):
     """One email in January with this county's full-year rain (subs worker v5.28,
     topic rainyear:<year>:<fips>, mailed by scripts/send_rain_year.py from
     county-rain.yml once the finished year is fetched). components/signup-ask.js
-    draws it; the morning briefing box starts empty (Sig, 2026-10-19: no ask
-    pre-ticks the Daily)."""
+    draws it; the morning briefing box starts empty (2026-10-19: no ask
+ pre-ticks the Daily)."""
     return (f'<div data-signup-ask="Email me {e(name)}&rsquo;s full {year} rain total in January." '
             f'data-topic="rainyear:{year}:{fips}" '
             f'data-ok="Done. One email in January, once NOAA has all of {year} for {e(name)}." '
@@ -730,7 +730,7 @@ def month_ask(name, fips):
     return RM.ask_html(name, fips)
 
 
-TITLE_TEST_MAX = 60   # the inches-first title drops " | AGSIST" past this (Sig, Nov 2 test)
+TITLE_TEST_MAX = 60   # the inches-first title drops " | AGSIST" past this (Nov 2 test)
 
 
 PLACE_KIND = re.compile(r" (City and Borough|Census Area|Borough|Municipality|County|Parish)$")
@@ -821,7 +821,7 @@ def county_page(ctx):
     # the site's one cap (scripts/seo_caps.py): " | AGSIST" gives way first
     q_ = (f"How Much Rain Did {full_c} Get in {year}?" if done else f"How Much Rain Has {full_c} Had in {year}?")
     title = CAPS.fit([q_ + CAPS.SUFFIX, q_])
-    # Title test (Sig, Nov 2, 2026): lead with the year's own total and place, short form, no through date (the
+    # Title test (Nov 2, 2026): lead with the year's own total and place, short form, no through date (the
     # description keeps it). A page with no total keeps the question. Nov 10: the total is the gauge's, so the
     # title names it; a mountain snow site's county leads with the county-wide estimate.
     if c.get("total") is not None:
@@ -853,7 +853,7 @@ def county_page(ctx):
         dcands += [f"{N_} inches of rain at {g} in {sp_}, {st}, {span}, {year}{pct_short}." for g in gs_]
         desc = next((x for x in dcands if len(x) <= CAPS.DESC_MAX), min(dcands, key=len))
     # CoCoRaHS data is CC BY 4.0: a page drawn from one of its volunteer gauges credits it by name
-    # in the byline. The prose keeps Sig's plain words (Oct 15); the credit line is Sig's call (Oct 23).
+    # in the byline. The prose keeps the owner's plain words (Oct 15); the credit line is a product decision (Oct 23).
     cocorahs_credit = (' Volunteer gauge data: <a href="https://www.cocorahs.org/" rel="noopener">CoCoRaHS</a>.'
                        if stw["net"] == "cocorahs" else "")
     noun = "gauge" if stw["net"] == "cocorahs" else "station"     # one word for it on the whole page
@@ -1141,7 +1141,7 @@ def middle(cs, ctxs=None):
 
 def state_records_html(recs, st):
     """The state's counties within 3 places of their wettest or driest year to date on record (one-gauge records
-    left off), in the state page itself: no separate page (Sig, Oct 24 2026)."""
+    left off), in the state page itself: no separate page (Oct 24 2026)."""
     rs = [o for o in (recs or []) if o["state"] == st]
     if not rs:
         return ""
@@ -1261,7 +1261,7 @@ def hub_records(data_dir, pages, within=1):
     return [dict(o, url=pages[o["fips"]][1]) for o in rs if not o["one_gauge"] and o["fips"] in pages]
 
 
-SHOW_RECORDS = 5   # /rain shows the five longest records; the rest open under "See all" (Sig, Oct 24 2026)
+SHOW_RECORDS = 5   # /rain shows the five longest records; the rest open under "See all" (Oct 24 2026)
 
 
 def records_html(recs):
@@ -1421,7 +1421,7 @@ def ordinal(n):
 
 
 def gap_note(c, x, noun, said=False):
-    """Under the answer, when the station and the PRISM county average are 25+ points of usual apart (Sig, Oct 24
+    """Under the answer, when the station and the PRISM county average are 25+ points of usual apart (Oct 24
     2026: say it where it is read, not only in the facts list): the station is one gauge, not the county."""
     g = (x or {}).get("grid")
     if not g or not g.get("usual") or g["usual"] < 1 or c.get("pct") is None:
@@ -1551,7 +1551,7 @@ def build(data_dir, C=None, NB=None, img_root=None):
     # the county and state pages (rain/**.html) are written slim: compact JSON-LD, no indentation
     # or comments between tags (scripts/html_slim.py); rain.html, a root page, is left as written
     for rel in want:
-        if rel.endswith(".html"):  # no direct links to data sources; the source is named in text (Sig, Oct 29, 2026)
+        if rel.endswith(".html"):  # no direct links to data sources; the source is named in text (Oct 29, 2026)
             want[rel] = SL.unlink(want[rel])
         if rel.startswith("rain/") and rel.endswith(".html"):
             want[rel] = HS.slim(want[rel])
@@ -1750,7 +1750,7 @@ def selftest():
         ok(middle({"1": snow, "2": low}, {"1": gx}) == 108, "median with the snow site's county estimate (116 and 100)")
         v_ = county_view(snow, gx, "2026-11-08")
         ok(v_["kind"] == "est" and v_["total"] == 16.85 and v_["pct"] == 116 and v_["as_of"] == "2026-11-08", f"county_view: {v_}")
-        # 2026-10-23 (Sig): the pages are rebuilt every day, not Mondays; each says the day it was read
+        # 2026-10-23: the pages are rebuilt every day, not Mondays; each says the day it was read
         # and the day its numbers run through, and none says weekly
         ok('<p class="rc-asof">As of Oct 12, 2026, the latest day this station has reported</p>' in story
            and f"read {long_date(d['fetched'][:10])}; updated daily." in story, "the county page: data date up top, read date and updated daily")
@@ -1799,7 +1799,7 @@ def selftest():
         ok('id="rc-print"' in story and 'data-st="ia" data-fips="19169" data-year="2026"' in story and PRINT_JS in story,
            "Story County's days are in the daily file: the page carries the Rain Print placeholder and its script")
         ok(f'data-days="{c["days"]}" data-total="{c["total"]:.2f}"' in story, "the print is checked against the page's own days and total")
-        # 2026-10-28 (Sig, on Barron County: "move our Rain Print chart up in place of that generic chart"):
+        # 2026-10-28 (on Barron County: "move our Rain Print chart up in place of that generic chart"):
         # the print is the page's chart, right under the figures; the plain chart ships only inside its art
         # box, the no-JS fallback the script draws over. (Oct 20 to 27 it was a hidden shell after the farm content.)
         pf = story.split('id="rc-print"')[1].split("</figure>")[0]
@@ -2001,11 +2001,11 @@ def selftest():
         ok('"description":"Daily precipitation from the weather station AMES 8 WSW' in story, "the Dataset names a weather station as one")
         ok("have a weather station inside" in want.get("rain/iowa.html", "") and ">NOAA station</th>" not in want.get("rain/iowa.html", ""), "state page does not call every gauge NOAA's")
         ok("the NOAA station in" not in want["rain.html"] and "One NOAA station per county" not in want["rain.html"], "hub does not call every gauge NOAA's")
-        # the prose never names CoCoRaHS (Sig, Oct 15: weather station, volunteer rain gauge); the byline credits it
-        # on a gauge's page and nowhere else (CC BY 4.0, Sig Oct 23)
+        # the prose never names CoCoRaHS (Oct 15: weather station, volunteer rain gauge); the byline credits it
+        # on a gauge's page and nowhere else (CC BY 4.0, Oct 23)
         bad = [k for k, b in want.items() if "CoCoRaHS" in b.replace("Volunteer gauge data: CoCoRaHS.", "")]
         ok(not bad, f"no page names CoCoRaHS outside its credit line: {bad[:3]}")
-        # the county rain box fold (Sig, Nov 3): closed, once per county page, the page's own numbers, the newsletter block
+        # the county rain box fold (Nov 3): closed, once per county page, the page's own numbers, the newsletter block
         sj = json.load(open(os.path.join(data, "ia.json"), encoding="utf-8"))["counties"]["19169"]
         ok(story.count('<details class="rc-emb" data-st="IA" data-c="19169" data-n="Story County">') == 1 and "rc-emb\" open" not in story,
            "one closed rain box fold on the county page")
@@ -2073,7 +2073,7 @@ def selftest():
         ok('id="rc-pick"' in hub and ('id="records"' not in hub or hub.index('id="rc-pick"') < hub.index('id="records"')), "hub: state picker above the records")
         ok(re.search(r'<details class="rc-all" id="all-states">', hub) and hub.index('id="all-states"') > hub.index('How the numbers are counted')
            and hub.count('href="/rain/iowa"') == 1 and hub.count('value="/rain/iowa"') == 1, "hub: every state link once, in the closed All states fold at the bottom")
-        # Sig, Nov 9: method text sits at the bottom, closed and short; the records list opens with one line
+        # Nov 9: method text sits at the bottom, closed and short; the records list opens with one line
         ok('<details class="rc-more rc-how"><summary>How the numbers are counted</summary>' in hub and "<h2>How the numbers are counted</h2>" not in hub
            and "rc-how\" open" not in hub, "hub: how the numbers are counted is a closed fold")
         recs_html = records_html([{"first": 1895, "side": "wettest", "county": "Story County", "state": "IA", "url": "/rain/iowa/story-county",
@@ -2118,7 +2118,7 @@ def selftest():
     ok(print_snow(_z, 2026) == "little" and snow_caption(_z, "little", 2026) == "nosnow", "all-zero snowfall says no snow fell")
     _t = {"p": _z["p"], "s": R.pack_days(["0.0"] * 40 + ["T"] + ["0.0"] * 239)}
     ok(snow_caption(_t, "little", 2026) == "trace", "a trace is snow that fell: not 'no snow'")
-    # a summer trace (June 1 to August 31) is not snow (Sig, 2026-10-20: "skip summer traces")
+    # a summer trace (June 1 to August 31) is not snow (2026-10-20)
     _su = {"p": _z["p"], "s": R.pack_days(["0.0"] * 153 + ["T"] + ["0.0"] * 126)}   # day 153 = Jun 3
     ok(snow_caption(_su, "little", 2026) == "nosnow" and print_snow_traces(_su, 2026) == 0, "a June trace: no snow fell, nothing marked")
     ok([R.snow_trace_on("T", 2026, k) for k in (150, 151, 242, 243)] == [True, False, False, True]
@@ -2126,7 +2126,7 @@ def selftest():
        "summer is June 1 to August 31 by the date, leap years too")
     _l = {"p": _z["p"], "s": R.pack_days(["0.0"] * 40 + ["0.05"] + ["0.0"] * 239)}
     ok(snow_caption(_l, "little", 2026) == "little" and snow_caption(sf["vilas_wi"], "drawn", 2026) == "drawn", "a little snow keeps 'under 0.1 in'")
-    # a trace of snow is marked on the print (2026-10-20, Sig): the caption says so, from real days
+    # a trace of snow is marked on the print (2026-10-20): the caption says so, from real days
     # (test/fixtures/snow-trace/days.json, copied from data/rain/daily through Oct 18, 2026)
     tf = json.load(open(os.path.join(ROOT, "test", "fixtures", "snow-trace", "days.json")))
     ok(print_snow_traces(tf["limestone_al"], 2026) == 5 and print_snow_traces(tf["grandforks_nd"], 2026) == 35,

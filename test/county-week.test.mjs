@@ -1,4 +1,4 @@
-/* Your county this week (Sig, Oct 27 2026: inside the existing Daily slots; no new list, sender
+/* Your county this week (Oct 27 2026: inside the existing Daily slots; no new list, sender
  * or cron). Thursdays, for readers who tick it in the Daily ask and saved a place, mirrored as
  * "This week here" on the Farmland Atlas county home.
  *

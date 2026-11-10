@@ -364,7 +364,7 @@ PY
       [ "${HAVE_TOKEN:-false}" = "true" ] || say_fail "PRIVATE_REPO_TOKEN is not set in this repository's Actions secrets (needed to read $REPO $BRANCH)"
       exclude_paths
       # a run on fx/x (a pull request's head, a dispatch or push on that branch) tries the engine
-      # branch fx/x first, so it runs its own branch's code (BUILD-RULES 62, 66); main and the rest
+      # branch fx/x first, so it runs its own branch's code (build rule 62, 66); main and the rest
       # use the default engine branch
       # never on pull_request_target: it runs with a write token, and a head branch name is the PR's to pick
       paired=""

@@ -48,8 +48,7 @@
      "read": "2026-10-16"
     }
    ],
-   "from": "wasde",
-   "_from_note": "Written from data/wasde.json and scripts/usda_dates.py by build_ai_answers.wasde_answer; text, the WASDE source and review_by are filled in at build time."
+   "from": "wasde"
   },
   {
    "id": "tariff-impact",

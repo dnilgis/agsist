@@ -1,4 +1,4 @@
-/* Subs worker v5.44: two standing lists on /notice (Sig, Oct 21).
+/* Subs worker v5.44: two standing lists on /notice (Oct 21).
  *   reports  the report-day email alone (the WASDE summary), no Daily needed;
  *   cot      "Funds this week", one email after each COT release.
  * Each keeps its source, shows in /notice-list for its sender, counts in

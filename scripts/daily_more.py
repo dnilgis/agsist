@@ -2,13 +2,12 @@
 """
 daily_more.py -- what a farmer should know that morning, handed to the Daily's
 writer as dated data (Nov 2 2026 audit: a DTN or Pro Farmer reader got these on
-Monday Nov 2 and the Daily did not; Sig, Nov 1: "everything a farmer should
-know"). Every number here is read from a file already in the repo. Nothing is
+Monday Nov 2 and the Daily did not; Nov 1). Every number here is read from a file already in the repo. Nothing is
 fetched and nothing is forecast. A block whose file is missing, stale, out of
 season or not yet public when the issue is written is WITHHELD, with the reason,
 never filled in.
 
-THE BLOCKS (prompt_block() joins the ones that are on, each with its source and date)
+THE BLOCKS (prompt_block joins the ones that are on, each with its source and date)
   calendar   USDA reports today and tomorrow, the next WASDE with its date and
              days away, and FSA signup dates: a signup that opened in the last
              7 days, any FSA date today or tomorrow, a deadline within 45 days.
@@ -27,8 +26,7 @@ THE BLOCKS (prompt_block() joins the ones that are on, each with its source and 
              CT, or the next business day after a Monday federal holiday. An
              older week (a missed fetch, the season over) or a newer one
              (look-ahead) is withheld, as is a file that says out of season.
-  funds      the Saturday issue after the CFTC release, once per release (Sig,
-             Nov 9 2026; was Saturday and Monday, Nov 2): managed
+  funds      the Saturday issue after the CFTC release, once per release (Nov 9 2026; was Saturday and Monday, Nov 2): managed
              money's net position and its change, futures only, for corn,
              soybeans, Chicago wheat and live cattle, from data/cot.json and
              data/cot-history.json through scripts/send_cot_weekly.rows_for,
@@ -78,7 +76,7 @@ WASDE_DAYS = 35            # the next WASDE is named when it is this close (alwa
 HARVEST_DAYS = (0, 1)      # Monday and Tuesday issues
 CROP_PROGRESS_HOUR_CT = 15
 FUND_MARKETS = ("corn", "beans", "wheat", "livecattle")
-FUND_DAYS = (5,)           # Saturday only, once per release (Sig, Nov 9 2026)
+FUND_DAYS = (5,)           # Saturday only, once per release (Nov 9 2026)
 FUND_MAX_DAYS = 6          # a Friday release is 1 day back; a Monday release in a holiday week, 5
 
 

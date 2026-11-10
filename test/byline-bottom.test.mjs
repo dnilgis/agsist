@@ -1,4 +1,4 @@
-/* Sig, Oct 18, 2026: "I don't want my name on the top of any pages." The name goes in one
+/* Oct 18, 2026 The name goes in one
  * quiet line at the end of the page (class by-end) or a source note lower down; structured
  * data keeps the author. This holds every hand-built page, every Daily issue, and the
  * ARC/PLC, custom-rate and Cash Bid Index pages to it: no visible "Sigurd Lindquist" between

@@ -1,7 +1,6 @@
 /* components/rp-canada.js: Rain Print for Canadian farms (2026-10-16).
  *
- * Sig: "make the rain print inclusive for Canadian farmers: does Canada have a
- * rain gauge system we can grab, and offer them metric or French."
+ * 
  *
  * WHERE THE NUMBERS COME FROM (nothing invented, nothing filled in)
  *   place     a Canadian town ("Regina, SK", "Saint-Hyacinthe QC", "Brandon
@@ -596,7 +595,7 @@
      by value). The English column is what a Canadian design shows in English
      where the US words would be wrong (the comparison is not NOAA's). The US
      page keeps its own words: restore() puts back what was there. The order
-     step, checkout and Sig's emails stay in English (the page says so). */
+     step, checkout and the owner's emails stay in English (the page says so). */
   var PAGE = [
     ['#rp-draw-h', 'tail', null, 'Où et quand'],
     ['label.rp-place > span', 'text', null, 'Ville la plus proche de la ferme ou de la maison'],

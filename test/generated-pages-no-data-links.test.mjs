@@ -1,4 +1,4 @@
-// Sig, Oct 29 2026: no direct links to data sources; the source is named in plain text with its date.
+// Oct 29 2026: no direct links to data sources; the source is named in plain text with its date.
 // The generated sets (rain, ARC/PLC, cash bids, Farmland Atlas, land sales) carry none, and a page
 // that names a source keeps the name and a year beside it. The rule is scripts/source_links.py.
 import { test } from "node:test";

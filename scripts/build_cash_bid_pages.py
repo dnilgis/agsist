@@ -109,8 +109,8 @@ OUT_DIR = "cash-bids"
 SITEMAP = "sitemap-cash-bids.xml"
 FRESH_WORDS = "posted within the last two trading sessions"   # SB.is_fresh, in plain words (Sources and terms only)
 # A BOARD SIG PASTED BY HAND (dnilgis/bids rows with pasted: true, 2026-10-20). The site
-# puts a bot check in front of the bids reader, so Sig pastes its public bid
-# page. Sig: show it up to 7 days, with a small "Last updated" mark once it is
+# puts a bot check in front of the bids reader, so the owner pastes its public bid
+# page. The owner: show it up to 7 days, with a small "Last updated" mark once it is
 # older than the 14 hours a live read is held. bids withdraws it at 168 h.
 PASTE_HOURS = 168
 PASTE_MARK_HOURS = 14
@@ -1300,7 +1300,7 @@ def asof_time(t):
     return f'<time class="asof" data-asof="bids" datetime="{iso}">Updated {fmt_share_time(t)} CT</time>'
 
 
-# EARLIEST BID FIRST (Sig, 2026-11-02). Inside one delivery month a board can
+# EARLIEST BID FIRST (2026-11-02). Inside one delivery month a board can
 # post a first-half and a last-half bid ("FH Nov 2026", "LH Nov 2026"); both
 # file under the same month key, and the pick used to take the higher cash,
 # so the last half (later delivery, usually more money) headlined. Nevada, IA
@@ -1325,7 +1325,7 @@ _PRINTED_DAYS_RE = re.compile(r"\b([A-Za-z]{3})[a-z]* (\d{1,2})-(\d{1,2})\b")
 def period_rank(r):
     """0 deliverable now (spot, cash, the first half, the whole month, or a
     label that does not say); 1 the last half of the month. Read from the
-    delivery label the table prints. Sig's rule (Nov 2): spot/cash, FH and the
+    delivery label the table prints. The owner's rule (Nov 2): spot/cash, FH and the
     whole month are one tier; LH, or a day range inside one month that starts
     on the 11th or later, ranks after. The range is read in the board's raw form
     ("16 Nov 2026 to 30 Nov 2026") and as the page prints it ("Nov 16-30, 2026";
@@ -1416,7 +1416,7 @@ SIGNUP_CSS = '  <link rel="stylesheet" href="/components/cb-signup.css?v=2">\n'
 SIGNUP_JS = '<script src="/components/cb-signup.js?v=2" defer></script>\n'
 
 
-# Rain Print, one quiet line on each town page in the gift season (Sig, 2026-10-16:
+# Rain Print, one quiet line on each town page in the gift season (2026-10-16:
 # cross-promotion, at most one a page, after the main content). The page
 # carries the line only from Nov 1 to Dec 24 of the snapshot's Central date;
 # components/rain-print-promo.js then shows it only while data/rain-print.json
@@ -1434,7 +1434,7 @@ def rain_print_line(snap_ct):
     return '<p class="rp-promo" data-rain-print-promo hidden></p>'
 
 
-# Sponsor slot (Sig, Oct 22: "I still want to attract advertisers"). One slot per
+# Sponsor slot (Oct 22). One slot per
 # state: the state page and every town page in it carry the same empty aside,
 # the same form scripts/stamp_rates.py writes on every other page (no text, no
 # price). components/loader.js fills it when data/page-sponsors.json has a
@@ -1755,7 +1755,7 @@ def top_holds(held, ss):
 
 
 def pasted_mark(rows, snap_ct, short=False):
-    """'Last updated Oct 20, 2:05 PM CDT' for a board Sig pasted by hand, once
+    """'Last updated Oct 20, 2:05 PM CDT' for a board the owner pasted by hand, once
     the paste is older than PASTE_MARK_HOURS at the snapshot; '' otherwise.
     short: one line for a company page table cell."""
     ts = [r["pasted"] for r in rows if r.get("pasted")]
@@ -2044,7 +2044,7 @@ def answer_picks(boards):
     period and the highest cash there; then across elevators the earliest
     period and the highest cash in it. Earliest is the month, then inside it
     spot, the first half and the whole month as one tier before the last half
-    (nearest_rows; Sig, 2026-11-02: "Earliest bid first"). On a tie the newer posting, then the name.
+    (nearest_rows; 2026-11-02). On a tie the newer posting, then the name.
     A restricted bid (contract, feed or members only) is skipped; when that
     leaves the nearest open bid FAR_OPEN_MONTHS or more past it, the row comes
     back as a copy with "open_far": True so the answer says so."""
@@ -2136,7 +2136,7 @@ def answer_and_desc(picks, snap_ct, place):
     return answer_sentence(picks, snap_ct, ANSWER_CROPS, True), ""
 
 
-# SHARE A BID (Sig, 2026-11-03). One button under the answer line: "Share today's
+# SHARE A BID (2026-11-03). One button under the answer line: "Share today's
 # bids" sends the page's own headline pick (answer_picks, the same row the answer
 # line names, first crop only) as "Corn $4.16 at Lincolnway Energy LLC, Nevada, IA
 # (FH Nov 2026), Nov 3, 2026. More bids near you: agsist.com/cash-bids/iowa/nevada",
@@ -2857,7 +2857,7 @@ def loc_co(st, bold=False):
 
 def med_of(st, bold=False):
     """'median of 203 elevators, 23 companies': the label on a state middle
-    wherever it prints as ours (Sig, Nov 3 2026: "Label + show USDA"); n is
+    wherever it prints as ours (Nov 3 2026); n is
     the boards in the median. Twin of medOf() in basis.html. A record without
     the company count (an older file) says 'median of N elevators'."""
     n, m = st["n"], st.get("companies")
@@ -2866,7 +2866,7 @@ def med_of(st, bold=False):
     return s if m is None else f"{s}, {b(m)} {_plural(m, 'company', 'companies')}"
 
 
-# USDA BESIDE OUR MEDIAN (Sig, Nov 3 2026). USDA AMS's own state daily cash
+# USDA BESIDE OUR MEDIAN (Nov 3 2026). USDA AMS's own state daily cash
 # grain report (data/state-grain-ams.json, scripts/fetch_state_grain_mars.py)
 # gets one quiet line under our corn and soybean median, no link (Oct 29 rule).
 # Only when USDA's average basis is on the same futures month as our headline
@@ -4672,7 +4672,7 @@ def _selftest_answer():
     pk = answer_picks([a, b])
     assert pk["corn"][0]["cash"] == 4.12 and pk["corn"][1] == "Beta Co-op", \
         "the earliest delivery's best regular bid: never the non-GMO premium, never a later month"
-    # Sig changed the rule on 2026-11-02 ("Earliest bid first"). The real Nevada,
+    # The owner changed the rule on 2026-11-02 ("Earliest bid first"). The real Nevada,
     # IA rows that day: Lincolnway Energy posted FH Nov $4.18 (-30c) and LH Nov
     # $4.23 (-25c), both filed under Nov; the page headlined the LH bid and put
     # it 15c over the Iowa middle (-40c) where the nearest row is 10c.
@@ -4746,7 +4746,7 @@ def _selftest_answer():
         assert period_rank({"label": lab, "period": "2026-11"}) == want, (lab, want)
     # Pekin, IL (Nov 2, real rows): River Valley Cooperative's Alto ICP board posts Nov 2026 corn $4.52
     # (+5c vs Dec '26); Tremont Co-operative's Adwell board posts CASH $4.12 (-35c). Both deliver now: the
-    # whole-month bid, the higher one, stays the answer (lead's ruling on Sig's rule, Nov 2)
+    # whole-month bid, the higher one, stays the answer (lead's ruling on the owner's rule, Nov 2)
     alto = {"operator": "River Valley Cooperative", "city": "Alto Icp", "town": "Pekin", "rows": [
         dict(row("corn", 4.52, 0.05, dec, dm="2026-11"), label="Nov 2026")]}
     adwell = {"operator": "Tremont Co-operative Grain Co.", "city": "Adwell", "town": "Pekin", "rows": [
@@ -5117,7 +5117,7 @@ def build_fixture_town(fixture_path, out_dir, root="."):
 
 
 def _selftest_sharebid():
-    """Share today's bids (Sig, 2026-11-03), from the frozen Nevada, IA fixture:
+    """Share today's bids (2026-11-03), from the frozen Nevada, IA fixture:
     the button shares the answer line's own row (Lincolnway FH Nov, not the
     higher LH Nov), the day it was posted, the town link, and stops counting at
     the end of its freshness window or delivery period. Every expectation is
@@ -5287,7 +5287,7 @@ def _selftest_restricted():
 
 
 def _selftest_pasted():
-    """A board Sig pasted by hand (NEW Cooperative, Afton IA, Oct 20 2026: corn
+    """A board the owner pasted by hand (NEW Cooperative, Afton IA, Oct 20 2026: corn
     $4.26, basis -35 vs 461-4): shown up to PASTE_HOURS with a "Last updated"
     mark once older than PASTE_MARK_HOURS; past that, or the same row unpasted
     past the two-session freshness rule, it is not shown."""

@@ -1,6 +1,6 @@
 // Sponsor portal audit, Nov 4, 2026. Every case is the real Root Lot report and reader file of that morning
 // (test/fixtures/sponsoraudit/, frozen: the live files change every day), changed only where a case needs it.
-// - Sig saw the readers "stop on Nov 2" while the ad ran to Nov 3: the reader file ends two days back on purpose
+// - the owner saw the readers "stop on Nov 2" while the ad ran to Nov 3: the reader file ends two days back on purpose
 //   (scripts/build_audience.py LAG), and the page now says why, worked out from the two files.
 // - A state-targeted free test was told the morning email is "the briefing your ad runs in", that its schedule had a
 //   "First billed month Oct 28, 2026" at $29, and "Exclusive: one sponsor per issue".
@@ -53,7 +53,7 @@ function serve() {
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
 
-// One portal, on a clock an hour after the report was generated, with every outside host blocked (BUILD-RULES 58).
+// One portal, on a clock an hour after the report was generated, with every outside host blocked (build rule 58).
 async function portal(browser, port, d, a) {
   const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, serviceWorkers: "block" });
   await ctx.clock.install({ time: new Date(Date.parse(d.generated) + 3600e3) });
@@ -83,7 +83,7 @@ test("browser: the Root Lot portal of Nov 4, and each way it can go wrong", { sk
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    // The real case: Sig's line, word for word.
+    // The real case: the owner's line, word for word.
     let p = await portal(browser, port, clone(ROOTLOT), clone(AUD));
     assert.equal(p.lag, "Reader counts run a day behind the ad results: Google takes two days to finish counting a day.");
     assert.doesNotMatch(p.audience, /your ad runs in/i, "Root Lot's ad is not in the email");

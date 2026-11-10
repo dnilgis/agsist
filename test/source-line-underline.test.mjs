@@ -1,4 +1,4 @@
-// Sig, 2026-10-19: links inside small source/credit lines are underlined;
+// 2026-10-19: links inside small source/credit lines are underlined;
 // menus, nav and buttons are unchanged. The real case (a11y audit, axe
 // link-in-text-block): on /cash-bids/iowa/adair the ".cbt-note" links to
 // /cash-bids and /store-or-sell were gold on muted grey with no underline,

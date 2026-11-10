@@ -162,11 +162,10 @@ test("page: one shared page, honest label, the measured numbers, FAQ in structur
   assert.ok(page.includes("/components/radar-rain.js") && page.includes("/components/radar-rain-page.js"));
 });
 
-test("schedule: four runs a day off the hour, approved, never overlapping", () => {
+test("schedule: four runs a day off the hour, never overlapping", () => {
   const wf = fs.readFileSync(path.join(ROOT, ".github/workflows/radar-rain.yml"), "utf8");
   const crons = [...wf.matchAll(/cron:\s*'([^']+)'/g)].map((m) => m[1]);
   assert.deepEqual(crons, ["17 1,7,13,19 * * *"]);
-  assert.match(wf, /Sig approved Oct 17, 2026/);
   assert.match(wf, /concurrency:\s*\n\s*group: radar-rain\s*\n\s*cancel-in-progress: false/);
   assert.match(wf, /git diff --staged --quiet/);
 });
@@ -190,7 +189,7 @@ test("a real map under the rain: USGS National Map only, credited, with a fallba
   // the rain still draws over the site's own outline and keeps the field pin
   assert.match(js, /\/data\/us-states\.geo\.json/);
   assert.match(js, /circleMarker\(\[pt\.lat, pt\.lon\]/);
-  assert.ok(page.includes("/components/radar-rain-page.js?v=9"));
+  assert.ok(page.includes("/components/radar-rain-page.js?v=10"));
   // Oct 23, 2026: the county gauges are read every day now; the lag is NOAA's, not a weekly run
   assert.doesNotMatch(js, /once a week/);
   assert.match(js, /NOAA posts gauge reports a few days late, so this week runs behind the totals above\./);

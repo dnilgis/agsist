@@ -1,6 +1,4 @@
-/* Advertise is easy to find (Sig, Oct 22 2026: "there is no place to easily find a place to inquire
- * about advertising or sponsoring a page, or at least I don't see it in the footer or header.
- * I still want to attract advertisers.").
+/* Advertise is easy to find (Oct 22 2026).
  *   Header: a quiet Advertise link in the bar on wide screens; Advertise with AGSIST beside About in the phone panel.
  *   Footer: an Advertise with AGSIST line in the bottom row, which phones see without opening a folded column.
  *   Unsold page slot: one small "Sponsor this page" link to /sponsor-apply?tier=<tier>&slot=<id>. No price, no box.

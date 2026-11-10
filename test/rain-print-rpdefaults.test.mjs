@@ -1,13 +1,11 @@
-/* Rain Print, Oct 22, 2026 (Sig: "make sure the entire experience on rain print is easy and seamless. On my iPhone I
- * wish the padding next to containers was not so big ... show by default all options such as hi low temp, temp,
- * historical lines on staircase"; and "if someone is having problems they can always call me or email").
+/* Rain Print, Oct 22, 2026 (and "if someone is having problems they can always call me or email").
  *
  * Checks, on the shipped pages, from the Chetek fixture (test/fixtures/rp-chetek-oct21.mjs):
  *   - a new visit opens with every layer on: the usual year, month normals, remarkable days, frost, hottest and coldest,
- *     the daily temperature stripes and every year behind: all seven layers (no crop layers since Oct 23, Sig);
+ *     the daily temperature stripes and every year behind: all seven layers (no crop layers since Oct 23);
  *   - a phone (390 and 375, touch): one 12px gutter, cards 12px inside, nothing wider than the screen, no word nearer the
  *     edge than the gutter, and every tap in the tool at least 44px tall;
- *   - the help line (call or text Sig, or email) sits by Pay on the review sheet, shows when a draw fails, and is on the
+ *   - the help line (call or text the owner, or email) sits by Pay on the review sheet, shows when a draw fails, and is on the
  *     gift card and business pages; the order form's failures carry the phone too.
  *
  *   node --test test/rain-print-rpdefaults.test.mjs
@@ -70,7 +68,7 @@ test("a new visit opens with every layer on, all seven; no crop layers", { skip 
     await drawn(page);
     const a = await page.$eval("#rp-art", (e) => e.innerHTML);
     assert.match(a, /data-rp="ribbon"/, "the daily temperature stripes are on the print");
-    // Nov 9 (Sig: the Oct 15 rule wins): the switch is on, but the near station with snowfall has under 30 full years,
+    // Nov 9 (the Oct 15 rule wins): the switch is on, but the near station with snowfall has under 30 full years,
     // so the threads are off and the panel says why; the long record is one tap
     assert.ok(!/data-rp="hist"/.test(a), "no threads from a station with under 30 full years");
     assert.match(a, /data-rp="frost:0"/, "the frost marks");
@@ -79,7 +77,7 @@ test("a new visit opens with every layer on, all seven; no crop layers", { skip 
     assert.match(page.url(), /hist=1&frost=1&heat=1&ribbon=1/, "the link carries what is on");
     assert.match(await page.textContent("#rp-source"), /^Weather station: Chetek, WI, 11 mi from Chetek \(volunteer gauge US1WIRS0008\)\. Picked over a gauge 1\.9 mi away because it records snowfall too\./);
     await page.waitForFunction(() => /has 0 full years; it takes 30\./.test(document.getElementById("rp-hist-why").textContent), null, { timeout: 20000 });
-    // the long record by the reader's tap, said in one short line with a tap back to the nearer gauge (Sig, Oct 22)
+    // the long record by the reader's tap, said in one short line with a tap back to the nearer gauge (Oct 22)
     await page.click("#rp-hist-long");
     await page.waitForFunction(() => /^Weather from Bloomer, 17 mi: the nearest station with 30\+ years of records, so every past year can be drawn\. /.test(document.getElementById("rp-source").textContent) && !document.getElementById("rp-go").disabled, null, { timeout: 30000 });
     assert.match(await page.$eval("#rp-art", (e) => e.innerHTML), /data-rp="hist"/, "every year behind yours, from the long record");

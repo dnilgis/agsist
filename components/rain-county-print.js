@@ -1,7 +1,7 @@
 /* components/rain-county-print.js: the county's year so far, drawn as a Rain
  * Print, on every county rain page (/rain/<state>/<county>), 2026-10-15.
  *
- * Sig: "put a rain print in place of that chart on every county rain page."
+ * 
  * The page ships only a small placeholder: the plain running-total chart
  * (inline SVG, a few KB) inside <figure id="rc-print" data-...>. Nothing more
  * loads until that figure comes near the screen; then, once:
@@ -160,7 +160,7 @@
         if (days.length !== +D.days || Math.abs(d.total - +D.total) > 0.011) return false;
         if (d.missing > MISS_BLOCK || days.length < MIN_DAYS) return false;
         state = { RP: RP, days: days, d: d, preview: days.length < (isLeap(year) ? 366 : 365), ov: usualOf(days, D.mn, D.usual) };
-        /* the style the page ships pressed opens first: Roots on county pages (Sig, Oct 28 2026),
+        /* the style the page ships pressed opens first: Roots on county pages (Oct 28 2026),
            Staircase where a figure presses it (/here) or presses none */
         var pre = fig.querySelector('.rc-print-styles [data-style][aria-pressed="true"]');
         draw(pre && pre.getAttribute('data-style') === 'r2' ? 'r2' : 'r1');

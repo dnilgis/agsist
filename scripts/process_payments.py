@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """process_payments.py — FSA payment files (browser-downloaded xlsx) →
 /payments page data. Like AFIDA: fsa.usda.gov tarpits datacenter IPs, so
-Sig downloads the ~11 state-range files in his browser once a year and this
+The owner downloads the ~11 state-range files in his browser once a year and this
 runs LOCALLY (workspace), never in CI.
 
 Schema validated on the real FY2025 WV-WY file (2026-07-19):

@@ -295,7 +295,7 @@ function serve() {
 }
 // The page reads the committed rain files and works out "this year" and its windows from the clock, so its clock
 // starts an hour after the rain copy was read and runs on: on a later clock (a January run) the year had turned and
-// Champaign's unusual lines dropped from 2 to 1 (BUILD-RULES 50).
+// Champaign's unusual lines dropped from 2 to 1 (build rule 50).
 const RAIN_AT = Date.parse(J("data/rain/il.json").fetched) + 3600e3;
 async function openPage(browser, port, url, width, opts = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });

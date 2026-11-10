@@ -10,7 +10,7 @@
  * The test recomputes those from a frozen copy of the files (test/fixtures/harvest-tracker/, the copy
  * test/harvest-tracker-oct19 reads: Oct 25, 2026, Iowa corn's October window running), routed in the browser,
  * on a clock taken from that copy (the day of its last settle). It read live data/ on a fixed Oct 16 clock
- * before, which breaks once the window closes or a new one opens (BUILD-RULES 50).
+ * before, which breaks once the window closes or a new one opens (build rule 50).
  * The Acres box is full width on a phone (it was 103 px at 390, placeholder clipped).
  *
  * Needs Playwright and Chromium; skipped where they are missing.

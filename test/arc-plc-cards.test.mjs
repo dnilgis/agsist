@@ -45,7 +45,7 @@ const attrs = (a) => Object.fromEntries([...a.matchAll(/data-([a-z]+)="([^"]*)"/
 const rngOf = (a) => { const m = /data-rng='([^']*)'/.exec(a); return m ? JSON.parse(unesc(m[1])) : null; };
 const ASK = /Ask FSA|ask your FSA office/;
 /* The fixture holds the pre-Oct 20 words. A PLC yield over the benchmark said "Ask FSA" there; it now gives the
-   call across PLC yields of 60% to 100% of the benchmark (arcfix, Sig Oct 20, 2026). Those pieces are cut from
+   call across PLC yields of 60% to 100% of the benchmark (arcfix, Oct 20, 2026). Those pieces are cut from
    both sides before the exact comparison, and the new side must not say "Ask FSA"; the live-page test below holds
    the new words to the build's on every card. */
 /* Nov 9, 2026 (curtain) and Nov 10, 2026: the fixture holds the old words about a crop whose price swings are borrowed
@@ -193,7 +193,7 @@ test("trigger line on every card with a price outlook: floor(90% x benchmark x b
 });
 
 test("main page: one plain line, then the county picker, then the quick answer (2026 counts first), before the deadlines and the reminder box", () => {
-  // Sig, Oct 20, 2026 (arcfix item 3): on a phone the first screen is one plain line and the county picker;
+  // Oct 20, 2026 (arcfix item 3): on a phone the first screen is one plain line and the county picker;
   // the counts and the ERP paragraph move below the picker. Until then the quick answer came first.
   const html = readFileSync(ROOT + "arc-plc.html", "utf8");
   const main = html.slice(html.indexOf("<main"));

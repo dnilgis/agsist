@@ -51,7 +51,7 @@ OUT_DIR = "rent"
 SITE = "https://agsist.com"
 
 
-# The open sponsor ribbon is an empty aside with only its slot id (Sig,
+# The open sponsor ribbon is an empty aside with only its slot id (the owner,
 # 2026-10-19: no price text in an unsold slot). components/loader.js fills it
 # when the slot is sold; the pitch lives in data/sponsor-slots.json
 # (scripts/stamp_rates.py writes the same form into every other page).
@@ -272,7 +272,7 @@ _LS = {}
 def land_sales_hrefs(root="."):
     """{fips: '/land-sales/<state>/<county>'} for every county with its own page on /land-sales/
     (scripts/build_land_sales.py writes them; data/land-sales/<st>.json carries each county's slug
-    by FIPS). Only pages on disk, so no link 404s (Sig, Oct 29, 2026: land sales easy to find)."""
+    by FIPS). Only pages on disk, so no link 404s (Oct 29, 2026: land sales easy to find)."""
     if root not in _LS:
         out = {}
         for p_ in sorted(glob.glob(os.path.join(root, "data", "land-sales", "[a-z][a-z].json"))):
@@ -758,8 +758,8 @@ def state_cloud(states, exclude=None):
 
 
 def rent_ask(st, name, yr):
-    """The page's one signup ask, right under the first answer (the big median card; Sig, Oct 23:
-    the generic bar goes, one page-matched ask replaces it): one email when USDA puts out the
+    """The page's one signup ask, right under the first answer (the big median card; Oct 23:
+ the generic bar goes, one page-matched ask replaces it): one email when USDA puts out the
     next county rents for this state. components/signup-ask.js draws it and posts topic
     rent:<st> to the subs worker's /notice (v5.11), read by scripts/send_rent_notice.py; it puts
     nobody on AGSIST Daily unless they tick the box for it. The release year it names is the
@@ -768,7 +768,7 @@ def rent_ask(st, name, yr):
             f'data-ok="Done. One email when USDA puts out the {yr + 1} {name} county rents, usually in August."></div>')
 
 
-# The one cross-promo on a state rent page (Sig, Oct 23 2026): a Rain Print gift line for
+# The one cross-promo on a state rent page (Oct 23 2026): a Rain Print gift line for
 # landlords and tenants, after the content. components/rain-print-promo.js fills it only
 # while data/rain-print.json's promote window runs (through the framed Christmas order-by
 # date, Dec 9 in 2026); otherwise it stays hidden and takes no space.

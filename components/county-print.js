@@ -1,4 +1,4 @@
-/* County Print (Sig, Nov 7, 2026: "County print, yes"): one printable, shareable page for every Farmland Atlas
+/* County Print (Nov 7, 2026): one printable, shareable page for every Farmland Atlas
    county, in the family of the COT kit and Bin Print: the gold bar, agsist.com, the date with its year, a plain
    headline, the numbers big, one chart, the source line, black and white on paper, a QR code back to the county.
 

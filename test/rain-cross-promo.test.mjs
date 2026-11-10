@@ -1,4 +1,4 @@
-/* Cross-promotion rule (Sig, Oct 13): at most one promo a page, after the
+/* Cross-promotion rule (Oct 13): at most one promo a page, after the
  * main content. Oct 23: state rain and hail pages carry
  * the "auto" slot (/rain and /hail-map keep their typed Rain Print line) (Rain Print through Dec 24, the gauge hook Dec 26 through
  * May; test/gauge-hook.test.mjs has the dates). Oct 16: state rain pages carried the rain gauge line; county
@@ -68,7 +68,7 @@ test("markets and futures pages: one Rain Print gift line, after the FAQ, with i
   }
 });
 
-// Oct 19 (Sig, monetization fixes): hail pages keep one cross-promo each. The 51 state hail pages carry the
+// Oct 19 (monetization fixes): hail pages keep one cross-promo each. The 51 state hail pages carry the
 // gauge line (scripts/generate_hail_states.py); /hail-map already carries its one Rain Print line, so the
 // gauge line is not added there on top of it.
 const inMain = (h) => h.slice(h.indexOf("<main"), h.indexOf("</main>"));

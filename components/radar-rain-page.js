@@ -156,7 +156,7 @@
     var tz = tzName(end);
     $('rr-asof').innerHTML = 'Newest radar hour: <b>' + esc(when(end)) + ' ' + esc(tz) + '</b>. Times are your time zone.' +
       (v24 == null && v7 == null ? ' The radar has a gap here (a blocked or distant beam, or a square left out as a bad reading), so there is no number to give.' : '');
-    /* Sig, Nov 9: rain still to come is one line to our own spray forecast for this spot (no rain-chance row here) */
+    /* rain still to come is one line to our own spray forecast for this spot (no rain-chance row here) */
     var nx = $('rr-next');
     if (nx) { nx.innerHTML = 'Rain in the next hours: <a href="/spray?f=' + (+pt.lat).toFixed(4) + ',' + (+pt.lon).toFixed(4) + '">the spray forecast for this spot</a>.'; nx.hidden = false; }
     var stale = $('rr-stale');

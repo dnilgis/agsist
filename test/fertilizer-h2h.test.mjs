@@ -1,11 +1,10 @@
 /* /fertilizer, after the 2026-10-15 rebuild:
- *  - the prices are the co-op posted prices Sig sent (data/fertilizer-coops.json)
+ *  - the prices are the co-op posted prices the owner sent (data/fertilizer-coops.json)
  *    and nothing else: scripts/build_fert_prices.py writes the middle cash
  *    price per product into data/fertilizer-prices.json, which the cheapest
  *    box, the nutrient table and the fertility bill read. Every row labeled
  *    with its co-ops, region and date.
- *  - no USDA AMS Illinois figure on the page at all (Sig, 2026-10-16: "remove
- *    the illinois report from the fert page"): no box, no copy, no fetch.
+ *  - no USDA AMS Illinois figure on the page at all (2026-10-16): no box, no copy, no fetch.
  *  - the hand-typed dealer sheet (data/fertilizer.json, its history,
  *    scripts/update_fertilizer.py, fertilizer-update.yml) is gone, and
  *    nothing may read it.

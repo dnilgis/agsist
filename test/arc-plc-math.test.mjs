@@ -43,9 +43,8 @@ const sheetTbody = (doc, f) => M.sheetRows(doc, f).map((r) => {
 }).join("");
 
 /* The fixture holds the pre-Oct 20 words. A county average PLC yield over the benchmark said "Ask FSA" and "no
-   typical-farm verdict" there; it now gives the call across PLC yields of 60% to 100% of the benchmark (arcfix, Sig
-   Oct 20, 2026). The fixture's data has no range words (packs ["mismatch"]), so the browser writes its default
-   ("depends on your PLC yield"); newWords() puts exactly those words into the old output, and everything else must
+   typical-farm verdict" there; it now gives the call across PLC yields of 60% to 100% of the benchmark (arcfix, Oct 20, 2026). The fixture's data has no range words (packs ["mismatch"]), so the browser writes its default
+   ("depends on your PLC yield"); newWords puts exactly those words into the old output, and everything else must
    still match to the character. The live-tree test below holds the real range words to the build's. */
 /* Nov 9, 2026 (curtain) and Nov 10, 2026: the fixture holds the old words about a crop whose price swings are borrowed
    from corn. Since Nov 10 the build and the browser say the expected payments are not printed, with one plain reason (too

@@ -147,7 +147,7 @@ def snap_price(daily, target_date):
     return None
 
 
-# ── THE REPORT-DAY CLOSE OF EACH DATED CONTRACT (Nov 4, 2026, Sig) ────────────
+# ── THE REPORT-DAY CLOSE OF EACH DATED CONTRACT (Nov 4, 2026) ────────────
 # "Since Oct 27" on the home COT card compared the continuous front month (ZS=F,
 # still Nov '26) while every headline on the site had rolled to Jan '27 at first
 # notice (#320). The card now compares the headline contract with ITSELF: its close

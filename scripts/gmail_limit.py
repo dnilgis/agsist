@@ -15,7 +15,7 @@ mail for a day, and the readers at the end of the list simply get nothing.
 
 At WARN_AT (400) or more:
   * a warning goes into the GitHub step summary on every run, and
-  * Sig gets one email a week at most, at FROM_ADDR, subject
+  * The owner gets one email a week at most, at FROM_ADDR, subject
     "AGSIST: email list is near Gmail's daily limit". The week is deduped
     through the subs worker's /flag day-markers (14-day TTL), key
     gmail-near:<ISO year>-W<week>. No flag service, no email: a warning that
@@ -144,7 +144,7 @@ def body_text(projected, daily_n, report_n, kinds):
 
 
 def check(daily_n, report_n=0, day=None, dry=False, send=True):
-    """Print, write the step summary, and email Sig weekly at most. Returns the projection."""
+    """Print, write the step summary, and email the owner weekly at most. Returns the projection."""
     day = day or date.today()
     kinds = report_kinds(day)
     proj = projection(daily_n, report_n, bool(kinds))

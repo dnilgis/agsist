@@ -1,4 +1,4 @@
-/* Rain Print panel, Nov 9 2026 (skeptic fixes 3 to 10; Sig's decisions the same day in STANDING-DECISIONS).
+/* Rain Print panel, Nov 9 2026 (skeptic fixes 3 to 10; the owner's decisions the same day in a site rule).
  * Fixtures and stubs only: no outside host is asked.
  *   4  a thin year names the exact-spot estimate (1981 on) and shows the help line; a marked day drops "another year"
  *   5  an automatic draw is not one of the reader's tries; a typo offers the nearest spelling (data/places)

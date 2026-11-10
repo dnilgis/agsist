@@ -1,7 +1,7 @@
 /* /tar-spot (2026-11-05): the tar spot hub and its spray break-even calculator.
  *
  * The math (components/tar-spot.js calc) against hand-worked answers; the page
- * links no outside source (Sig, Oct 29: sources named in plain text, with dates);
+ * links no outside source (Oct 29: sources named in plain text, with dates);
  * the FAQ structured data says only what the page says; the sitemap, tools page
  * and llms.txt list it; and in a browser, at 390 and 1280 wide, the page draws
  * with every outside host refused, no sideways scroll, and the calculator gives
@@ -183,7 +183,7 @@ function serve() {
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
 
-// frozen price files (BUILD-RULES 50): $4.00 December futures for any crop year, Iowa basis -40 cents
+// frozen price files (build rule 50): $4.00 December futures for any crop year, Iowa basis -40 cents
 const quotes = {};
 for (let y = 24; y <= 40; y++) quotes[`corn-dec${y}`] = { ticker: `ZCZ${y}.CBT`, close: 400, close_date: "2026-11-05", close_kind: "settle" };
 const PRICES = { fetched: "2026-11-05T21:00:00Z", quotes };

@@ -7,7 +7,7 @@
  *
  * Now: home and /cash-bids link the nearest baked town page with its time; the Atlas and Fast Facts rows
  * name the short list or withhold, never "Best of N within 50 mi"; each counts one GA event,
- * bids_net_fallback. Browser runs block every outside host and service workers (BUILD-RULES 58).
+ * bids_net_fallback. Browser runs block every outside host and service workers (build rule 58).
  *
  *   node --test test/bids-fallback.test.mjs
  */
