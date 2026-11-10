@@ -3,8 +3,8 @@
 
     python3 scripts/test_send_pace.py
 
-Nov 10, 2026: the mail provider's deliverability score had slipped, bounces were mostly soft
-deferrals, and a report-day email had gone to the whole list right behind the morning Daily.
+Nov 10, 2026: big sends at once draw deferrals (soft bounces), and repeat sends to dead addresses
+hurt the sender's standing.
 
   1. scripts/send_pace.py: batches and pauses, the job's cap on waiting, DRY_RUN, one address once,
      a 4xx tried once more at the end of the list and never counted as a hard bounce, a 5xx for
@@ -72,13 +72,13 @@ def refused(addr, code, text):
 
 
 # ───────────────────────── 1. the pacer ─────────────────────────
-addrs = ["r%d@example.com" % i for i in range(211)]
+addrs = ["r%d@example.com" % i for i in range(201)]
 p, slept, sent, failed = walk(addrs)
-check(len(sent) == 211 and not failed, "211 readers: %d sent" % len(sent))
-check(len([s for s in slept if s == 4.0]) == 10, "211 readers in batches of 20: %d pauses, expected 10"
+check(len(sent) == 201 and not failed, "201 readers: %d sent" % len(sent))
+check(len([s for s in slept if s == 4.0]) == 10, "201 readers in batches of 20: %d pauses, expected 10"
       % len([s for s in slept if s == 4.0]))
-check(len(slept) == 210 and abs(sum(slept) - (200 * 1.2 + 10 * 4.0)) < 1e-6,
-      "211 readers: %d waits, %.1f s in all (expected 210 waits, 280 s)" % (len(slept), sum(slept)))
+check(len(slept) == 200 and abs(sum(slept) - (190 * 1.2 + 10 * 4.0)) < 1e-6,
+      "201 readers: %d waits, %.1f s in all (expected 200 waits, 268 s)" % (len(slept), sum(slept)))
 p, slept, *_ = walk(addrs, {"SEND_BATCH": "50", "SEND_BATCH_PAUSE": "5", "SEND_GAP": "0.5"})
 check(len([s for s in slept if s == 5.0]) == 4 and all(s in (0.5, 5.0) for s in slept),
       "SEND_BATCH, SEND_BATCH_PAUSE and SEND_GAP are read from the environment")

@@ -2,9 +2,8 @@
 """
 send_pace.py: every list sender walks its list through one Pacer (Nov 10, 2026).
 
-The mail provider's deliverability score had slipped and most bounces were soft (deferrals) at one
-big mailbox provider, after a report-day email went to the whole list right behind the morning
-Daily. So every loop that mails a list:
+Big sends to one mailbox provider at once draw deferrals (soft bounces), and repeat sends to dead
+addresses hurt the sender's standing. So every loop that mails a list:
 
   * sends in batches: SEND_BATCH emails (default 20), SEND_BATCH_PAUSE seconds between batches
     (default 4), and the sender's own short gap between two emails inside a batch (1.2 or 1.5 s,
