@@ -220,11 +220,13 @@ test('pages already cleaned up stay clean: nothing to fix on /milk-prices', () =
 });
 
 /* ---------- the below-the-fold list, proved in a browser ---------- */
-const PW = process.env.PLAYWRIGHT_PATH || '/home/user/node_modules/playwright/index.mjs';
-const CHROME = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium';
+const isFile = (f) => { try { return fs.statSync(f).isFile(); } catch (e) { return false; } };
+const PW = [process.env.PLAYWRIGHT_PATH, '/opt/node-tools/node_modules/playwright/index.mjs', '/home/user/node_modules/playwright/index.mjs'].filter(Boolean).find(isFile);
+const CHROME = [process.env.CHROMIUM_PATH, '/opt/pw-browsers/chromium-1243/chrome-linux64/chrome'].filter(Boolean).find(isFile);
 let chromium = null;
-try { if (fs.existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
-const skip = !chromium || !fs.existsSync(CHROME) ? 'Playwright or Chromium not found here' : false;
+try { if (PW) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
+const skip = !chromium ? 'Playwright not found: set PLAYWRIGHT_PATH' : !CHROME ? 'Chromium not found: set CHROMIUM_PATH' : false;
+if (skip) process.stderr.write(`\n*** cls-reserved browser case SKIPPED: ${skip}. A skipped case is not a pass. ***\n\n`);
 
 test('everything on the below-the-fold list starts 900px or more down, at 390 and 1280', { skip, timeout: 240000 }, async () => {
   const types = { '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.html': 'text/html', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };

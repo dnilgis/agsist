@@ -27,11 +27,49 @@ test("the holds are in the pages", () => {
   assert.match(D, /\.cd-ver>div:last-child\{min-height:\d+px\}/, "conditions: the verdict column is held at desktop width");
   assert.match(Y, /<div id="hp-ams-live" class="hp-ams-wait"/, "hay: the AMS box starts held");
   assert.match(read("components/hay-ams.js"), /box\.classList\.remove\('hp-ams-wait'\)/, "hay: hay-ams.js lets go once it has drawn");
+  // the page itself lets go after 8 s when the component script never runs (blocked or failed): proved in a browser below
+  assert.match(Y, /<script>[^<]*setTimeout\(function\(\)\{var b=document\.getElementById\('hp-ams-live'\);if\(b\)b\.classList\.remove\('hp-ams-wait'\);\},8000\);<\/script>/, "hay: an inline 8 s release");
+  assert.match(C, /setTimeout\(function\(\)\{if\(!a\.classList\.contains\('sb-wait'\)\)return;[^}]*a\.classList\.remove\('sb-wait','sb-gwait'\);\},8000\)/, "cattle auction: an inline 8 s release");
+  // the age note keeps its own box and copy, held unseen until the data's date is known; no extra always-on line
+  assert.match(T, /<div id="tariff-stale" class="tariff-stale" style="visibility:hidden;[^"]*"><\/div>/, "tariffs: the age note starts empty and unseen");
+  assert.match(T, /#tariff-stale \{ min-height: \d+px; \}/, "tariffs: the age note's room is held");
+  assert.doesNotMatch(T, /Trade policy can change in days/, "tariffs: no always-visible policy line");
+  assert.match(T, /<tbody id="tariff-tbody" class="tt-wait">/, "tariffs: the rate rows start held");
+  assert.equal((T.match(/classList\.remove\('tt-wait'\)/g) || []).length, 2, "tariffs: drawn, empty and failed all let go of the rows' hold");
 });
 
 let h = null;
 before(async () => { if (!skip) h = await open(); });
 after(async () => { if (h) await h.close(); });
+/* a script that never loads: the holds still let go (the page's own 8 s release), so no screen-tall gap and no dead
+   controls stay behind */
+for (const w of [390, 1280]) {
+  test(`/hay-prices at ${w}px with hay-ams.js blocked: the AMS box lets go of its hold`, { skip, timeout: 60000 }, async () => {
+    const r = await h.probe("/hay-prices", w, false, /^\/components\/hay-ams\.js$/, 9500, () => {
+      const b = document.getElementById("hp-ams-live");
+      return { wait: b.classList.contains("hp-ams-wait"), mh: getComputedStyle(b).minHeight, text: b.textContent.trim().slice(0, 40) };
+    });
+    assert.equal(r.out.wait, false, JSON.stringify(r.out));
+    assert.equal(r.out.mh, "0px", JSON.stringify(r.out));
+    assert.match(r.out.text, /^Trades load after the first USDA read/, "the placeholder stays");
+  });
+  test(`/cattle-auction-prices at ${w}px with cattle-auction.js blocked: the empty box shows and the held controls go`, { skip, timeout: 60000 }, async () => {
+    const r = await h.probe("/cattle-auction-prices", w, false, /^\/components\/cattle-auction\.js$/, 9500, () => {
+      const vis = (id) => { const e = document.getElementById(id); return !!e && getComputedStyle(e).display !== "none"; };
+      return { wait: !!document.querySelector(".sb-wait, .sb-gwait"), empty: vis("sb-empty"), controls: vis("sb-controls"), glance: vis("sb-glance"), head: document.getElementById("sb-head").textContent };
+    });
+    assert.deepEqual(r.out, { wait: false, empty: true, controls: false, glance: false, head: "" });
+  });
+  /* a reader who chose a state (agsist-pd-state) and has no saved place: the hold is set before paint and let go */
+  test(`/harvest-price-tracker at ${w}px with state IA chosen: layout shift under ${LIMIT}, no hold left`, { skip, timeout: 90000 }, async () => {
+    const r = await h.probe("/harvest-price-tracker", w, { "agsist-pd-state": "IA" }, null, 9000, () => ({
+      wait: document.documentElement.classList.contains("hp-st-wait"), st: document.documentElement.classList.contains("hp-st"),
+      sel: document.getElementById("pd-state").value, verdict: getComputedStyle(document.getElementById("pd-verdict")).visibility }));
+    assert.ok(r.cls < LIMIT, `layout shift ${r.cls.toFixed(4)}: ${r.who.join(" | ")}`);
+    assert.deepEqual(r.out, { wait: false, st: true, sel: "IA", verdict: "visible" });
+  });
+}
+
 for (const p of PAGES) for (const [w, saved] of MODES) {
   test(`${p} at ${w}px, ${saved ? "saved ZIP 54728" : "nothing saved"}: layout shift under ${LIMIT}`, { skip, timeout: 90000 }, async () => {
     const r = await h.cls(p, w, saved);
