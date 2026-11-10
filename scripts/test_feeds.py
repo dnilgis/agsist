@@ -73,6 +73,11 @@ def main():
           BF.cron_sentence(["23 9 3 * *"]))
     check(BF.cron_sentence(["0 7 1,15 * *"]).startswith("1 launch monthly, on days 1 and 15"), "a comma list of days")
     check(BF.cron_sentence(["23 9 * * *"]).startswith("1 launch every day"), "a daily cron stays every day")
+    check(BF.cron_sentence(["38 15,16 8-12,30,31 * *"]).startswith("1 launch on set days of each month"), "a range of days is not every day",
+          BF.cron_sentence(["38 15,16 8-12,30,31 * *"]))
+    check(BF.cron_sentence(["25 11 * * *", "38 15,16 8-12,30,31 * *"]).startswith("1 launch every day")
+          and BF.cron_sentence(["25 11 * * *", "38 15,16 8-12,30,31 * *"]).endswith(", and more on set days of each month"),
+          "a daily cron plus a report-day cron says both", BF.cron_sentence(["25 11 * * *", "38 15,16 8-12,30,31 * *"]))
     lead = [f for f in d["feeds"] if f["path"] == "data/land-sales/lead.json"]
     check(len(lead) == 1 and lead[0]["cadence"].startswith("1 launch monthly"), "the home lead file reads as monthly", lead[0]["cadence"] if lead else "missing")
 
