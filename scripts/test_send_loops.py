@@ -38,6 +38,8 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "scripts"))
 import log_safe  # noqa: E402  (the real masker; only its mail is faked below)
 import delivery_line  # noqa: E402  (the DELIVERY tally the loop reports its count to)
+import send_pace  # noqa: E402  (the real pacer; the loop's sleeps go to the fake clock below)
+import bounces  # noqa: E402  (hard bounces recorded in memory; nothing is saved by a test)
 
 # (script, what its own loop calls the messages)
 SENDERS = [
@@ -73,12 +75,15 @@ def lift(script):
     return src[i:j + len(END)]
 
 
-def run(body, fail_on=(), fail_with=OSError, n=6, login_fails=False, flag_raises=0):
+def run(body, fail_on=(), fail_with=OSError, n=6, login_fails=False, flag_raises=0, addresses=None, refuse=None):
     """Run one lifted loop against a fake server. Returns (rc, state).
     login_fails: the server refuses the login. flag_raises: the first N
-    attempts to set the day flag raise (the worker down mid-send)."""
+    attempts to set the day flag raise (the worker down mid-send).
+    addresses: the list (default n made-up ones). refuse: {address: [exception, ...]}, one raised
+    per attempt to that address, in order (a deferral, then a success, and so on)."""
     state = {"sent": [], "connects": 0, "flagged": None, "printed": [], "owner": [], "released": [],
-             "flag_calls": 0}
+             "flag_calls": 0, "slept": [], "to": []}
+    refuse = {k: list(v) for k, v in (refuse or {}).items()}
 
     class FakeSMTP:
         def __init__(self, *a, **k):
@@ -90,10 +95,15 @@ def run(body, fail_on=(), fail_with=OSError, n=6, login_fails=False, flag_raises
         def quit(self): pass
         def send_message(self, msg):
             pos = len(state["sent"]) + len(state.setdefault("_failed", []))
+            to = getattr(msg, "to", None)
+            if to is not None and refuse.get(to):
+                state["_failed"].append(pos)
+                raise refuse[to].pop(0)
             if pos in fail_on:
                 state["_failed"].append(pos)
                 raise fail_with("simulated failure")
             state["sent"].append(pos)
+            state["to"].append(to)
 
     def flagger(day, set_it=False):
         state["flag_calls"] += 1
@@ -101,7 +111,18 @@ def run(body, fail_on=(), fail_with=OSError, n=6, login_fails=False, flag_raises
             raise OSError("worker unreachable")
         state["flagged"] = (day, set_it)
 
-    addresses = ["w%d@example.com" % k for k in range(n)]
+    addresses = list(addresses) if addresses is not None else ["w%d@example.com" % k for k in range(n)]
+
+    class Msg:
+        def __init__(self, to):
+            self.to = to
+
+    def build(*a, **k):
+        # send_daily and the rest pass the address third; check_alerts passes the watcher first
+        for x in a:
+            if isinstance(x, dict) and "email" in x:
+                return Msg(x["email"])
+        return Msg(a[2] if len(a) > 2 else None)
     tally = delivery_line.Tally("loop-test")   # unregistered: prints nothing
     ns = {
         "tally": tally,
@@ -113,7 +134,8 @@ def run(body, fail_on=(), fail_with=OSError, n=6, login_fails=False, flag_raises
             "SMTPRecipientsRefused": smtplib.SMTPRecipientsRefused,
         }),
         "ssl": type("C", (), {"create_default_context": staticmethod(lambda: None)}),
-        "time": type("T", (), {"sleep": staticmethod(lambda s: None)}),
+        "time": type("T", (), {"sleep": staticmethod(lambda s: state["slept"].append(s))}),
+        "send_pace": send_pace,
         "host": "smtp.test", "port": 587, "user": "u", "pw": "p",
         "day": "2026-09-05", "from_name": "n", "from_addr": "a", "reply_to": "r",
         # check_alerts iterates `hits` of (watcher, band); send_daily iterates
@@ -122,7 +144,7 @@ def run(body, fail_on=(), fail_with=OSError, n=6, login_fails=False, flag_raises
         "hits": [({"email": a}, 2.0) for a in addresses],
         "recipients": list(addresses),
         "b": {},
-        "build_email": lambda *a, **k: object(),
+        "build_email": build,
         "day_flag": flagger,
         "flag": flagger,
         "release_claim": lambda d: state["released"].append(d) or True,
@@ -220,6 +242,50 @@ for script, plural in SENDERS:
           W("a run that sent NOTHING flagged the day anyway — the mail would "
             "never go out at all"))
 
+    # ── Nov 10, 2026: pacing, deferrals, hard bounces (scripts/send_pace.py) ──
+    # Batches: 45 readers, batches of 20 -> the long pause after the 20th and the 40th email,
+    # the short gap between the others, nothing after the last.
+    rc, st = run(body, n=45)
+    pauses = [s for s in st["slept"] if s >= send_pace.DEFAULT_PAUSE]
+    check(len(st["sent"]) == 45 and len(pauses) == 2,
+          W("45 readers: %d sent, %d batch pauses (expected 45 and 2)" % (len(st["sent"]), len(pauses))))
+    check(len(st["slept"]) == 44, W("45 readers waited %d times; a wait between each pair, none after the last"
+                                     % len(st["slept"])))
+    check(sum(st["slept"]) <= send_pace.DEFAULT_MAX, W("the waiting went past the job's cap"))
+    # One address once: a repeat on the list (any case) is not mailed twice.
+    rc, st = run(body, addresses=["a@example.com", "b@example.com", "A@example.com ", "c@example.com"])
+    check(len(st["sent"]) == 3, W("a list with one address twice mailed %d, not 3" % len(st["sent"])))
+    # A deferral (4xx) is tried once more after the rest of the list, and is not a failure.
+    soft = smtplib.SMTPRecipientsRefused({"w2@example.com": (450, b"4.2.1 try again later")})
+    bounces.PENDING[:] = []
+    rc, st = run(body, refuse={"w2@example.com": [soft]})
+    check(len(st["sent"]) == 6 and st["to"][-1] == "w2@example.com",
+          W("a deferred reader was not tried again at the end of the list (sent %d, last %r)"
+            % (len(st["sent"]), st["to"][-1:] and "w2" in str(st["to"][-1:]))))
+    check("::error::" not in "\n".join(st["printed"]),
+          W("a deferral that went through on the second try was still reported as failed"))
+    check(st["connects"] == 1, W("a deferral opened a new connection"))
+    check(not bounces.PENDING, W("a soft bounce was recorded as a hard one"))
+    # Deferred twice: one failure, still not a hard bounce, and never a third try.
+    rc, st = run(body, refuse={"w2@example.com": [soft, soft]})
+    check(len(st["sent"]) == 5 and "::error::" in "\n".join(st["printed"]),
+          W("a reader deferred twice was not reported as one failure (sent %d)" % len(st["sent"])))
+    check(not bounces.PENDING, W("a reader deferred twice was recorded as a hard bounce"))
+    # A permanent refusal of the address: recorded once as a hard bounce, not retried, no address printed.
+    hard = smtplib.SMTPRecipientsRefused({"w3@example.com": (550, b"5.1.1 The email account does not exist")})
+    rc, st = run(body, refuse={"w3@example.com": [hard, hard]})
+    check(len(st["sent"]) == 5 and len(bounces.PENDING) == 1 and bounces.PENDING[0]["h"] == bounces.key("w3@example.com"),
+          W("a 550 5.1.1 was not recorded once as a hard bounce (sent %d, recorded %d)"
+            % (len(st["sent"]), len(bounces.PENDING))))
+    check("@example.com" not in "\n".join(st["printed"]) and "@" not in repr(bounces.PENDING),
+          W("an address reached the public log or the bounce record"))
+    # A spam or policy refusal (5.7.1) is about the message, not the address: not a hard bounce.
+    bounces.PENDING[:] = []
+    pol = smtplib.SMTPRecipientsRefused({"w4@example.com": (550, b"5.7.1 message rejected as spam")})
+    rc, st = run(body, refuse={"w4@example.com": [pol]})
+    check(not bounces.PENDING and len(st["sent"]) == 5, W("a 5.7.1 policy refusal was counted as a hard bounce"))
+    check(any(ln.startswith("pacing: ") for ln in st["printed"]), W("the loop printed no pacing line"))
+
     # ── a run killed mid-list has already flagged the day (send_daily, Oct 28)
     # A published issue that never went out is written again by the next run,
     # and that run asks this flag. A cancel or a lost runner is not an
@@ -260,6 +326,7 @@ for script, plural in SENDERS:
                                           "SMTPException": smtplib.SMTPException}),
                 "ssl": type("C", (), {"create_default_context": staticmethod(lambda: None)}),
                 "time": type("T", (), {"sleep": staticmethod(lambda s: None)}),
+                "send_pace": send_pace,
                 "host": "h", "port": 587, "user": "u", "pw": "p", "day": "2026-10-28",
                 "from_name": "n", "from_addr": "a", "reply_to": "r", "b": {},
                 "recipients": ["w%d@example.com" % k for k in range(6)],
