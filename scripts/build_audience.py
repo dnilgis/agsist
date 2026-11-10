@@ -684,10 +684,11 @@ def bing_section(get, rg, today):
 
 # ── email ─────────────────────────────────────────────────────────────────
 def email_count(base, token, fetch=None):
-    u = base.rstrip("/") + "/list?token=" + urllib.parse.quote(token)
+    u = base.rstrip("/") + "/list"
     if fetch is None:
         def fetch(url):
-            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=30) as r:
+            req = urllib.request.Request(url, headers={"User-Agent": UA, "Authorization": "Bearer " + token})
+            with urllib.request.urlopen(req, timeout=30) as r:
                 return r.read().decode()
     body = fetch(u)
     return len({x.strip().lower() for x in re.split(r"[,\n]", body) if "@" in x})
@@ -883,10 +884,10 @@ def main():
     if lu and lt:
         try:
             email = email_count(lu, lt)
-            log("email: %d subscribers" % email)
+            log("email: count read")
         except Exception as e:  # noqa: BLE001
             errors["email"] = "%s: %s" % (type(e).__name__, str(e)[:200])
-            log("::warning::subscriber count failed: " + errors["email"])
+            log("::warning::subscriber count failed (the reason is in data/audience.json)")
 
     if not any((ga, gsc, bing, email is not None)):
         log("::warning::no source was reachable or configured -- data/audience.json left exactly as it was")

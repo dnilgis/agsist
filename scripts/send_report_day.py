@@ -597,7 +597,7 @@ def main(argv=()):
         LINK_IDS["reader@example.com"] = email_links.SAMPLE_LID
         m = build_email(day, b, "reader@example.com", from_name, from_addr, reply_to)
         print("SUBJECT: " + str(m["Subject"]))
-        print("would send to %d reader(s)" % len(recipients))
+        print("would send to the report-day list")
         print("-" * 60)
         print(m.get_body(("plain",)).get_content())
         print("dry run complete -- nothing sent, no flag set")

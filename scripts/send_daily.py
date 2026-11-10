@@ -875,7 +875,7 @@ def main():
     if not recipients:
         print("FATAL: RECIPIENTS parsed to zero addresses")
         return 1
-    print("briefing " + day + " · recipients " + str(len(recipients)) + " · dry_run " + str(dry))
+    print("briefing " + day + " · dry_run " + str(dry))
     tally.waiting = len(recipients)
     ELEVATOR_LINES.update(load_elevator_lines(subs, how))
     try:

@@ -148,8 +148,9 @@ def check(daily_n, report_n=0, day=None, dry=False, send=True):
     day = day or date.today()
     kinds = report_kinds(day)
     proj = projection(daily_n, report_n, bool(kinds))
-    print("gmail limit: projected %d recipient(s) in 24 h (daily %d%s); warn at %d"
-          % (proj, daily_n, (", report-day %d" % report_n) if kinds else "", WARN_AT))
+    # no count in the public log: under or over the warning line only
+    print("gmail limit: projection under the warning line" if proj < WARN_AT else
+          "gmail limit: projection at or above the warning line")
     if proj < WARN_AT:
         return proj
     if not is_gmail():
@@ -249,7 +250,7 @@ def _selftest():
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
             check(250, 200, date(2026, 10, 9), dry=True)
-        ok("::warning" in buf.getvalue() and "projected 450" in buf.getvalue(), "250 + 200 on a report day warns")
+        ok("::warning" in buf.getvalue() and "at or above the warning line" in buf.getvalue(), "250 + 200 on a report day warns")
         buf = io.StringIO()
         saved = {k: os.environ.pop(k, None) for k in ("LIST_URL", "LIST_TOKEN")}
         with contextlib.redirect_stdout(buf):
