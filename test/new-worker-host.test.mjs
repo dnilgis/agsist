@@ -45,7 +45,6 @@ const OLD_RE = /agsist-subs(?:\\?\.)dnilgis(?:\\?\.)workers(?:\\?\.)dev/i;
 const ALLOWED = {
   "workers/README.md": [/old host|agsist-subs\.dnilgis\.workers\.dev\/rp-order\/stripe/i],
   "sw.js": [/^\s*'agsist-subs\.dnilgis\.workers\.dev',\s+\/\/ the subs worker \(old home/],
-  "data/audit-expected.json": [/^\s*"match": "agsist-subs\.dnilgis\.workers\.dev\/",$/],
   "components/loader.js": [/^\s*var HOSTS = \{ 'agsist-api\.dnilgis\.workers\.dev': 1, 'agsist-subs\.dnilgis\.workers\.dev': 1 \};$/],
   // the email guard's own selftests: an email naming the old host is refused
   "scripts/email_links.py": [/./],
@@ -90,8 +89,6 @@ test("pages and components call the new host", () => {
   const cv = /var CACHE_VERSION = (\d+);/.exec(sw);
   assert.ok(cv && +cv[1] >= 238, "CACHE_VERSION at or past 238: " + (cv && cv[1]));
   assert.ok(sw.includes("'agsist-api.dnilgis.workers.dev',") && sw.includes("'workers.dev',"), "never cached, either host");
-  const ex = JSON.parse(read("data/audit-expected.json")).expected.map((e) => e.match);
-  assert.ok(ex.includes("agsist-api.dnilgis.workers.dev/") && ex.includes("agsist-subs.dnilgis.workers.dev/"), "status ping expected on either host");
   assert.match(read("workers/subs-worker.js"), /^ \* v5\.52 \(2026-10-22\): NEW HOME, agsist-api\.dnilgis\.workers\.dev/m);
 });
 

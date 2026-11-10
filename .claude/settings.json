@@ -9,7 +9,7 @@
       "Bash(git fetch *)",
       "Bash(git add *)",
       "Bash(git commit *)",
-      "Bash(git -c user.name=dnilgis -c user.email=dnilgis@gmail.com commit *)",
+      "Bash(git -c user.name=dnilgis -c user.email=dnilgis@users.noreply.github.com commit *)",
       "Bash(git push origin fx/*)",
       "Bash(git push -q origin fx/*)",
       "Bash(git push -u origin fx/*)",
@@ -97,7 +97,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "f=\"$CLAUDE_PROJECT_DIR/scripts/dev/session-compact.sh\"; [ -f \"$f\" ] || { echo 'Read notes/HANDOFF.md (Now), BUILD-RULES.md and STANDING-DECISIONS.md in the private repo dnilgis/feedbag.'; exit 0; }; bash \"$f\"; exit 0",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/scripts/dev/session-compact.sh\"; [ -f \"$f\" ] || { echo 'Read the private notes before building.'; exit 0; }; bash \"$f\"; exit 0",
             "timeout": 15
           }
         ]

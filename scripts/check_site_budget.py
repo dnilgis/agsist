@@ -122,7 +122,7 @@ KEEP_ALWAYS = (".well-known/", ".nojekyll", "CNAME")
 # these out of a filtered Pages artifact.
 NOT_READER_FACING = (
     "scripts/", "test/", "build/", "references/", "workers/",
-    "CLAUDE.md", "TODO-SIG.md", ".gitignore",
+    "CLAUDE.md", ".gitignore",
     # workflow inputs and outputs read only by scripts/ (Oct 27 grep of every
     # page, component and worker). Oct 29 (fx/sizeinputs) moved
     # data/site-inventory.json to the private raw branch; the rest stay on main

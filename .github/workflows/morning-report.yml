@@ -72,7 +72,6 @@ jobs:
           sparse-checkout: |
             /scripts/
             /data/*.json
-            /TODO-SIG.md
             /test/fixtures/today-bids-index-*.json.gz
             /.github/actions/engine/
             /.github/engine-paths
@@ -109,6 +108,12 @@ jobs:
           RAW_BRANCH: private-data
           RAW_SOFT: '1'
         run: bash scripts/pull_raw.sh private/ledger/tests/latest.json
+      - name: Get the to-do list (private repo)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: bash scripts/pull_raw.sh private/todo.md
       - name: Build and send
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}

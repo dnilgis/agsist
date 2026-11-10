@@ -39,7 +39,8 @@ skim over coffee. Run by .github/workflows/morning-report.yml.
                      withheld) and the Rain Print funnel for 7 days, read
                      from GA4 here (GA4_PROPERTY_ID, GA4_SERVICE_ACCOUNT) and
                      never written to a file; left out of a dry run.
-  To-dos             the unchecked lines of TODO-SIG.md.
+  To-dos             the unchecked lines of the to-do list (private repo,
+                     branch private-data, private/todo.md; the job unpacks it).
   Backup             on the 1st of each month (Central time), one line in
                      Needs you: plug in the SSD and run the monthly backup
                      (scripts/backup/backup-agsist.cmd on his SSD).
@@ -107,7 +108,8 @@ STATE_NAMES = {"IA": "Iowa", "IL": "Illinois", "IN": "Indiana", "KS": "Kansas", 
                "LA": "Louisiana", "PA": "Pennsylvania", "NY": "New York", "ID": "Idaho", "WA": "Washington",
                "OR": "Oregon", "WY": "Wyoming", "ON": "Ontario", "MB": "Manitoba", "SK": "Saskatchewan", "AB": "Alberta"}
 PRIVATE_KEY_WARN_DAYS = 14     # same as cron_health.KEY_WARN_DAYS: say it two weeks out
-TODO_EDIT = "https://github.com/dnilgis/agsist/edit/main/TODO-SIG.md"
+TODO_FILE = "private/todo.md"
+TODO_EDIT = "https://github.com/dnilgis/feedbag/edit/private-data/" + TODO_FILE
 # The two clocks the workflow lists: 11:40 UTC is 6:40 am CDT, 12:40 UTC is 6:40 am CST.
 CRONS = ("40 11 * * *", "40 12 * * *")
 # Orders and requests: the digest's kinds plus sponsor applications (/sponsor-apps).
@@ -1473,10 +1475,10 @@ def sec_insight(src, now, rep):
 
 def sec_todos(src, now, rep):
     try:
-        items = [m.group(2) for m in map(TODO_RE.match, src.file("TODO-SIG.md").splitlines()) if m and m.group(1) == " "]
+        items = [m.group(2) for m in map(TODO_RE.match, src.file(TODO_FILE).splitlines()) if m and m.group(1) == " "]
         lines = ["- " + x for x in items] or ["Nothing open."]
     except Exception as e:                                 # noqa: BLE001
-        lines = ["TODO-SIG.md: could not be read (%s)." % why(e)]
+        lines = ["The to-do list: could not be read (%s)." % why(e)]
     rep.add("To-dos", lines)
 
 
@@ -1538,7 +1540,7 @@ def text_body(rep, now):
         out += ["", title]
         out.extend(lines)
         out.extend(table_text(rep.tables.get(title)))
-    out += ["", "To check off a to-do, edit TODO-SIG.md on GitHub: %s" % TODO_EDIT,
+    out += ["", "To check off a to-do, edit the list on GitHub: %s" % TODO_EDIT,
             "Counts only: no reader or customer address is ever in this email.", "", "-- ", ADDRESS]
     return "\n".join(out) + "\n"
 
@@ -1579,7 +1581,7 @@ def html_body(rep, now):
             parts.append(table_html(rep.tables[title]))
             parts.append(ul(rep.tables[title].get("after") or []))
     parts.append('<p style="font-size:13px;color:#6b6b6b;margin-top:22px;line-height:1.45">To check off a to-do, '
-                 '<a href="%s">edit TODO-SIG.md on GitHub</a>.<br>Counts only: no reader or customer address is ever in '
+                 '<a href="%s">edit the list on GitHub</a>.<br>Counts only: no reader or customer address is ever in '
                  'this email.<br>%s</p>' % (e(TODO_EDIT, quote=True), e(ADDRESS)))
     return ('<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
             '<body style="margin:0;background:#fff"><div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;'
@@ -1885,7 +1887,7 @@ def fixtures(now):
                               {"path": "/hail-map", "views": 300}]},
             "series": {"days": [{"d": "2026-10-10", "users": 197}, {"d": "2026-10-11", "users": 181}, {"d": "2026-10-12", "users": None}]},
             "email": {"subscribers": 139, "asOf": "2026-10-13"}}),
-        "TODO-SIG.md": "# To-dos\n\n- [ ] Test Stripe with a $19 purchase and refund it\n- [x] Done thing\n* [ ] Join Something Special from Wisconsin\nnot a task\n",
+        TODO_FILE: "# To-dos\n\n- [ ] Test Stripe with a $19 purchase and refund it\n- [x] Done thing\n* [ ] Join Something Special from Wisconsin\nnot a task\n",
     }
     subs = [{"email": "a%d@farm.com" % i, "ts": ms - i * 3600 * 1000 * 20} for i in range(12)]
     worker = {
@@ -2012,7 +2014,7 @@ def selftest():
         "Reader summary: could not be read (HTTP 500).", "Worker counts: could not be read (HTTP 500).",
         "data/audience.json: could not be read (FileNotFoundError).",
         "Could not read: forms (HTTP 500), rain gauge list (HTTP 500), sponsor applications (HTTP 500). Those count as 0 below.",
-        "Elevator listing requests: could not be read (HTTP 500).", "TODO-SIG.md: could not be read (FileNotFoundError).")), ft)
+        "Elevator listing requests: could not be read (HTTP 500).", "The to-do list: could not be read (FileNotFoundError).")), ft)
     ck("no token in the email or log", "SECRET" not in ft and not any("SECRET" in x for x in flog))
     w2 = dict(worker)
     del w2["count"]
