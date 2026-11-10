@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 """
-The Rain Print buyer's "here's your print, get ready for it" email (Sig,
-2026-10-20). One email per paid Checkout Session, phone first, from the same
+The Rain Print buyer's "here's your print, get ready for it" email (2026-10-20). One email per paid Checkout Session, phone first, from the same
 Gmail sending path the site's other jobs use (SMTP_USER / SMTP_PASS), with
 Reply-To sig@agsist.com.
 
@@ -22,20 +21,20 @@ Reply-To sig@agsist.com.
                 page's own words (RainPrint.paidText, from the business days
                 in data/rain-print.json); "Something wrong? Reply to this
                 email."
-  Sig's alert   first, every paid record not yet alerted: one plain email to
-                Sig (product, town year style, gift, amount, serial, the
+  The owner's alert   first, every paid record not yet alerted: one plain email to
+                The owner (product, town year style, gift, amount, serial, the
                 "Open to fulfill" maker link, the buyer's address as Stripe
                 sent it), marked alerted first, dry run or not. A paid
                 session comes in by Stripe's webhook (worker v5.36, which
                 also starts this job at once) or by the worker's poll.
   Once only     the record is marked mailed (POST /rp-order/mailed) BEFORE the
                 send, so a crash or a rerun can never send it twice; a send
-                that fails after the mark is counted in the log for Sig.
-  Sig only      DRY_RUN=1 sends every email to Sig (SIG_TO, default
+                that fails after the mark is counted in the log for the owner.
+  The owner only      DRY_RUN=1 sends every email to the owner (SIG_TO, default
                 sig@agsist.com) and marks nothing. A test-mode session
                 (livemode false) or a buyer address in SIG_TEST_EMAILS (and
-                SIG_TO) goes to Sig only.
-  The files     (Sig, 2026-10-20) a paid DIGITAL file the buyer has approved
+                SIG_TO) goes to the owner only.
+  The files     (2026-10-20) a paid DIGITAL file the buyer has approved
                 (the Approve this print button starts this job, worker
                 v5.37) gets a second email at once: "Your Rain Print files:
                 <town>, <year>", with the files attached (the PDF of the art at
@@ -47,15 +46,13 @@ Reply-To sig@agsist.com.
                 far under Gmail's 25 MB, and nothing about an order is hosted
                 anywhere. Over ATTACH_MAX the JPG, then the PNG, are left off;
                 if even the PDF and guide are over, no buyer email goes, the
-                record is marked delivered by hand and Sig is told to send them.
+                record is marked delivered by hand and the owner is told to send them.
                 Marked delivered (POST /rp-order/delivered, worker v5.38)
-                BEFORE the send, like mailed: once per order. Sig gets a
+                BEFORE the send, like mailed: once per order. The owner gets a
                 one-line note that the files went (no buyer details). Prints
-                and framed prints keep their flow. Dry run: to Sig, nothing
+                and framed prints keep their flow. Dry run: to the owner, nothing
                 marked, same as the proof.
-  The gift card (Sig, 2026-10-20: "the gift card option should provide
-                explanation as to what the receiver is getting and how to
-                redeem easily"; no more card links sent by hand) a paid
+  The gift card (2026-10-20; no more card links sent by hand) a paid
                 this-year gift (ref GIFT-..., the print made in January) gets
                 its card at once: issued through the worker's POST
                 /rp-gift/issue {order_key} (Bearer LIST_TOKEN, worker v5.40:
@@ -73,24 +70,24 @@ Reply-To sig@agsist.com.
                 to fill in; never expires), when it comes (January, a proof
                 first) and tips for printing the card. Marked gift-mailed
                 (POST /rp-order/gift-mailed) BEFORE the send: once per order.
-                Sig gets a one-line note (card number, no buyer details). Dry
-                run: nothing issued or marked, the email to Sig with a
+                The owner gets a one-line note (card number, no buyer details). Dry
+                run: nothing issued or marked, the email to the owner with a
                 stand-in code. The words for the card ("for", the message)
                 come from the order form post, like the gift note.
 
     python3 scripts/rp_buyer_email.py              send what is due
-    DRY_RUN=1 python3 scripts/rp_buyer_email.py    every email to Sig, nothing marked
+    DRY_RUN=1 python3 scripts/rp_buyer_email.py    every email to the owner, nothing marked
     python3 scripts/rp_buyer_email.py --selftest   fixtures, no network, no mail
     python3 scripts/rp_buyer_email.py --sample out.html   the email as a page (made-up order), for a look
     python3 scripts/rp_buyer_email.py --sample-files out.html   the files email as a page, for a look
     python3 scripts/rp_buyer_email.py --sample-gift out.html   the gift card email as a page, for a look
 
 Env: LIST_URL, LIST_TOKEN, SMTP_USER, SMTP_PASS. Optional:
-SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME (Sig's own alerts only), RP_FROM_NAME
-(the buyer emails' sender name, default "Sig at AGSIST"; Sig 2026-10-20. The shared
+SMTP_HOST, SMTP_PORT, FROM_ADDR, FROM_NAME (the owner's own alerts only), RP_FROM_NAME
+(the buyer emails' sender name, default BUYER_FROM_NAME; 2026-10-20. The shared
 FROM_NAME secret serves a dozen other jobs and never decides it), SIG_TO, SIG_TEST_EMAILS (comma
 separated), RENDER_BASE (default https://agsist.com), PLAYWRIGHT_PATH,
-CHROMIUM_PATH. Run by .github/workflows/rp-buyer-email.yml.
+CHROMIUM_PATH. Run by.github/workflows/rp-buyer-email.yml.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
@@ -130,7 +127,7 @@ BUYER_FROM_NAME = "Sig at AGSIST"
 
 
 def buyer_from_name():
-    """The sender name on every buyer email (the proof, the files): RP_FROM_NAME, else "Sig at AGSIST". Never FROM_NAME."""
+    """The sender name on every buyer email (the proof, the files): RP_FROM_NAME, else BUYER_FROM_NAME. Never FROM_NAME."""
     return one_line(env("RP_FROM_NAME", BUYER_FROM_NAME), 60) or BUYER_FROM_NAME
 FILE_MIME = {"pdf": ("application", "pdf"), "guide": ("application", "pdf"), "png": ("image", "png"), "jpg": ("image", "jpeg")}
 
@@ -209,7 +206,7 @@ class Sources:
 # ───────────────────────────── the email ─────────────────────────────
 
 def frame_of(o):
-    """A framed order's frame color (worker v5.63, Sig Nov 4): "oak" or "black"; a record with no
+    """A framed order's frame color (worker v5.63, Nov 4): "oak" or "black"; a record with no
     frame_color key reads "black" (every framed print sold before Nov 4 was black); "" is a framed
     order paid at Stripe with no press on record, so the color is not known. None: not framed."""
     if o.get("product") != "framed12x18":
@@ -257,7 +254,7 @@ def change_url(o):
 
 
 def proof_lines(o, r):
-    """What the buyer does with this proof, and what happens after. The email is the proof (Sig, 2026-10-20)."""
+    """What the buyer does with this proof, and what happens after. The email is the proof (2026-10-20)."""
     digital = o.get("product") == "digital"
     if not can_approve(o, r):
         # a year not finished (this year's gift, or last year before NOAA has December): the proof comes later
@@ -344,7 +341,7 @@ def html_body(o, r, gift_to="", srcs=None):
 def build(o, r, to, gift_to="", fn=None, fa="", dry=False):
     fn = fn or buyer_from_name()
     m = EmailMessage()
-    m.rp_buyer = True   # smtp_send keeps this name (Sig's alerts take FROM_NAME)
+    m.rp_buyer = True   # smtp_send keeps this name (the owner's alerts take FROM_NAME)
     m["Subject"] = ("[dry run, would go to the buyer] " if dry else "") + subject(o)
     m["From"] = formataddr((fn, fa))
     m["To"] = to
@@ -463,7 +460,7 @@ def build_files(o, files, to, gift_to="", fn=None, fa="", dry=False):
 
 
 def sig_note(o, sig_to, text, fn="AGSIST", fa=""):
-    """Sig's one-line note about the files: product, town and year only, never the buyer."""
+    """the owner's one-line note about the files: product, town and year only, never the buyer."""
     m = EmailMessage()
     m["Subject"] = "Rain Print files sent: %s%s" % (one_line(o.get("place"), 60) or "a digital file", (" " + str(o["year"])) if o.get("year") else "")
     m["From"] = formataddr((fn, fa))
@@ -507,7 +504,7 @@ def deliver(src, due, notes, dry, send, sig_to, test_emails):
                 continue
             keep = fit_files(files)
             if not keep:
-                # too big to attach even as the PDF and the guide: Sig sends them, told once
+                # too big to attach even as the PDF and the guide: the owner sends them, told once
                 if not dry:
                     mk = src.worker("rp-order/delivered", body={"key": o["key"], "how": "hand"})
                     if not mk.get("ok") or mk.get("already"):
@@ -722,7 +719,7 @@ def send_gift_cards(src, due, notes, dry, send, sig_to, test_emails):
     """Each paid this-year gift gets ONE email (the lead, 2026-10-20): the card (issued by the worker v5.40, once
     per order, the code kept on the order) and, under it, the print so far (the proof email's preview picture,
     folded in). Marked gift-mailed, then mailed (the preview was its proof email), both before the send; the
-    proof loop never sends a this-year gift a second email. Dry run: nothing issued or marked, the email to Sig
+    proof loop never sends a this-year gift a second email. Dry run: nothing issued or marked, the email to the owner
     with a stand-in code. -> counts."""
     c = {"cards sent": 0, "cards to Sig": 0, "cards waiting": 0, "cards no address": 0, "card not issued": 0,
          "cards render failed": 0, "cards marked, send failed": 0}
@@ -783,10 +780,10 @@ def send_gift_cards(src, due, notes, dry, send, sig_to, test_emails):
     return c
 
 
-# ───────────────────────────── Sig's order alert ─────────────────────────────
+# ───────────────────────────── the owner's order alert ─────────────────────────────
 
 def alert_text(o, buyer):
-    """Sig's alert: one order, plain text. The buyer's address only as Stripe sent it, never kept."""
+    """the owner's alert: one order, plain text. The buyer's address only as Stripe sent it, never kept."""
     paid = o.get("paid") or {}
     amt = paid.get("amount")
     lines = ["New Rain Print order.", ""]
@@ -824,8 +821,8 @@ def alert_subject(o):
 
 
 def send_alerts(src, orders, send, sig_to, fn="AGSIST", fa=""):
-    """Every paid record not yet alerted: marked first (once only), then one email to Sig. Dry run or not:
-    the alert always goes to Sig. -> counts."""
+    """Every paid record not yet alerted: marked first (once only), then one email to the owner. Dry run or not:
+    the alert always goes to the owner. -> counts."""
     c = {"alerts": 0, "alert failed": 0}
     for o in orders:
         if o.get("status") != "paid" or o.get("alerted") or not (o.get("paid") or {}).get("session"):
@@ -921,7 +918,7 @@ def run(src, dry, send, sig_to, test_emails, tally=None):
     except Exception as e:                                 # noqa: BLE001
         notes = None
         log.append("Gift notes could not be read (%s); every order waits for the next run." % type(e).__name__)
-    # the gift card first (Sig, 2026-10-20: the buyer gets it at once, no hand-sent links); its counts on their own line
+    # the gift card first (2026-10-20: the buyer gets it at once, no hand-sent links); its counts on their own line
     gc = send_gift_cards(src, gdue, notes, dry, send, sig_to, test_emails)
     log.append("; ".join("%s: %d" % (k, v) for k, v in gc.items()) + ".")
     # the files for each approved digital file first (the buyer is waiting on them); their counts on their own line
@@ -974,7 +971,7 @@ def smtp_send(fn, fa):
         if not (env("SMTP_USER") and env("SMTP_PASS")):
             raise RuntimeError("no SMTP_USER / SMTP_PASS")
         del m["From"]
-        # a buyer email goes out as Sig at AGSIST (RP_FROM_NAME); Sig's own alerts and notes keep FROM_NAME
+        # a buyer email goes out under RP_FROM_NAME (else BUYER_FROM_NAME); the owner's own alerts and notes keep FROM_NAME
         m["From"] = formataddr((buyer_from_name() if getattr(m, "rp_buyer", False) else fn, fa))
         conn = smtplib.SMTP(env("SMTP_HOST", "smtp.gmail.com"), int(env("SMTP_PORT", "587")), timeout=30)
         try:
@@ -1220,7 +1217,7 @@ def selftest():
     ck("alert: what, paid, serial, the maker link", "What: 13 x 19 framed print (black frame) of Chetek, WI, 2025, Staircase" in a and "Paid: $79.00 ($89.00 less a code)" in a
        and "Serial: 4" in a and "Open to fulfill: " + SIG_URL + "&maker=1&serial=4" in a, a)
     ck("alert: the buyer only as Stripe sent it", "Buyer (as Stripe sent it): buyer@example.com" in a, a)
-    # the frame color (worker v5.63, Sig Nov 4): a record from before it has none and reads Black
+    # the frame color (worker v5.63, Nov 4): a record from before it has none and reads Black
     ck("alert: an old framed record reads Black", "\nFrame: Black\n" in a, a)
     ck("alert: no Frame line for a print", "Frame:" not in alerts[1].get_content(), alerts[1].get_content())
     ck("frame_of: oak, black, old, unknown, not framed",
@@ -1429,7 +1426,7 @@ def selftest():
 
     print("\nthe gift card (a this-year gift, at once; Sig 2026-10-20)")
     GIFT_URL = SIG_URL.replace("year=2025", "year=2026") + "&gift=1"
-    # made-up giver on the order form post: their name and email must never reach the card email, the log or Sig's note
+    # made-up giver on the order form post: their name and email must never reach the card email, the log or the owner's note
     gform = [{"design_code": "GIFT-" + SIG_REF, "gift_january": "yes", "gift_to": "Dad", "gift_message": "Every inch of the year you farmed.",
               "name": "Pat Example", "email": "pat@example.com", "address": "The shipping address given at Stripe checkout"}]
 

@@ -3,7 +3,7 @@
 
     python3 scripts/test_basis_usda.py
 
-Sig, Nov 3 2026: "Label + show USDA". The state basis middle stays the median
+Nov 3 2026. The state basis middle stays the median
 of every elevator we read, labelled "median of N elevators", and USDA AMS's
 own state daily average shows under it with its report name and date, no
 link, only on the same futures month and only when fresh.

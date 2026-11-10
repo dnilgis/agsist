@@ -1,4 +1,4 @@
-/* daily-edge.js -- the "Only on AGSIST" block and Sig's note on /daily.
+/* daily-edge.js -- the "Only on AGSIST" block and the owner's note on /daily.
 
    Draws data/daily.json -> edge and cca_note. Every number in them was
    counted by scripts/daily_edge.py from the elevator boards AGSIST reads,

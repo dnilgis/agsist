@@ -140,7 +140,7 @@ test("withheld when the year call and the history disagree, or the record is thr
 test("record June: wettest of its own full months, value and span", () => {
   const p = por({ from: "1950-01-01", to: "2025-12-31", june: (y) => (y === 2025 ? 0.4 : 0.05 + 0.1 * h(y, 5)) });
   const r = one(hist(p, 2025), "wetMonth");
-  assert.equal(r.f.label, "Wettest June of 76 full years: 12.00 in");
+  assert.equal(r.f.label, "Wettest June of 76 full Junes: 12.00 in");
   assert.deepEqual(r.f.span, { from: "2025-06-01", to: "2025-06-30" });
 });
 
@@ -156,7 +156,7 @@ test("top 2% with a long record allows a rank, tied wording when within the band
   const r = one(hist(p, 2025), "wetMonth");
   assert.equal(r.f, undefined, "rank 2 plus a tie is 3 of 126, over the limit of 2");
   const q = por({ from: "1900-01-01", to: "2025-12-31", june: (y) => (y === 2025 ? 0.4 : y === 1960 ? 0.5 : 0.05 + 0.1 * h(y, 5)) });
-  assert.equal(one(hist(q, 2025), "wetMonth").f.label, "2nd wettest June of 126 full years: 12.00 in");
+  assert.equal(one(hist(q, 2025), "wetMonth").f.label, "2nd wettest June of 126 full Junes: 12.00 in");
 });
 
 test("dry month: a month that is usually near zero is never called a record", () => {
@@ -167,8 +167,8 @@ test("dry month: a month that is usually near zero is never called a record", ()
 
 test("warm and cold month from the station's daily means; months missing 4 days drop out", () => {
   const p = por({ from: "1950-01-01", to: "2025-12-31", temp: (y, m) => (m === 6 && y === 2025 ? 80 : m === 0 && y === 2025 ? 5 : 50 + 10 * h(y, m)) });
-  assert.equal(one(hist(p, 2025), "warmMonth").f.label, "Warmest July of 76 full years: 80.0°F average");
-  assert.equal(one(hist(p, 2025), "coldMonth").f.label, "Coldest January of 76 full years: 5.0°F average");
+  assert.equal(one(hist(p, 2025), "warmMonth").f.label, "Warmest July of 76 full Julys: 80.0°F average");
+  assert.equal(one(hist(p, 2025), "coldMonth").f.label, "Coldest January of 76 full Januaries: 5.0°F average");
   for (const d of dates("2025-07-01", "2025-07-04")) p.data.find((r) => r[0] === d)[2] = "M";
   assert.notEqual(one(hist(p, 2025), "warmMonth").f?.date, "2025-07-01");
 });

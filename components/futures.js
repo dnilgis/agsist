@@ -1713,7 +1713,7 @@ function loadBriefingStrip(){
       var hd=document.getElementById('brief-hd');
       var teaser=document.getElementById('brief-teaser');
       if(strip&&hd&&teaser){
-        /* Audit 2026-07-29 (Sig): NO emoji in reader copy: the briefing pipeline
+        /* Audit 2026-07-29: NO emoji in reader copy: the briefing pipeline
            still emits them (daily.json), so scrub anything it feeds this strip.
            Surrogate-pair class = all astral emoji; BMP ranges = misc symbols/dingbats.
            Plain arrows are outside these ranges and survive. */
@@ -1998,7 +1998,7 @@ AG.json('/data/prices.json')
         __sn.innerHTML=heroLabel+' '+__cr+' '+__v+' <strong>'+grain$(front.close)+'</strong>'+(front.stale?' (last good quote)':'')+(__w?' &middot; as of '+__w:'')+'.';
       }
       var hc=chgTxt(front.netChange,front.pctChange,front.roll);setEl('hero-chg',hc.t,hc.c);
-      /* 2026-10-20 (Sig): the overnight electronic trade, when the file has one,
+      /* 2026-10-20: the overnight electronic trade, when the file has one,
          beside the settle (price-local.js overnight). Titles keep the settle. */
       heroOvernight(front);
       if(front.roll){var __rn=document.querySelector('.px-seed-note');if(__rn){var __d=document.createElement('div');__d.className='roll-note';__d.innerHTML=CROP.rollNote;__rn.parentNode.insertBefore(__d,__rn);}}

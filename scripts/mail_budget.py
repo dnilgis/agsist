@@ -3,7 +3,7 @@
 mail_budget.py: two cron-health rows about mail (Nov 9, 2026). Counts only; no address is read into
 a row, a log or a file here.
 
-1. brevo-month: the Brevo monthly allowance. Sig upgraded Brevo on Nov 9 to Starter, 5,000 emails a
+1. brevo-month: the Brevo monthly allowance. The owner upgraded Brevo on Nov 9 to Starter, 5,000 emails a
    month, credits renewing on the 9th. The allowance and the renewal day live in two repository
    variables (cron-health.yml passes them), so a plan change is one edit and no code:
 
@@ -17,21 +17,21 @@ a row, a log or a file here.
    logs it already read (send_cap.tally_days; no API call of its own), keeps the larger of the new
    and the saved count for each day (a day's count only grows; a day half outside a pass's 24 hour
    window keeps the count an earlier pass saw), drops days before the last renewal, and sums what is
-   left. Each DELIVERY line counts smtp= (every recipient handed to the mail server, Sig's copies
-   too, which is what Brevo bills) else sent_readers=; a dry run counts nothing.
+   left. Each DELIVERY line counts smtp= (every recipient handed to the mail server, the owner's copies
+ too, which is what Brevo bills) else sent_readers=; a dry run counts nothing.
 
    The window starts at 00:00 UTC on the renewal day. Brevo renews at 13:32 local, so up to about
    a day of mail around each renewal can fall on the wrong side; the row accepts that rounding.
 
    The count is a floor: delivery_check reads at most LOGS_PER_WF logs per workflow (a sender that
-   mails on many runs is sampled), Sig-only mail prints no line, and the row has no days from before
+   mails on many runs is sampled), owner-only mail prints no line, and the row has no days from before
    it was first saved (it says "counted since <day>"). The projection is the count so far plus the
    daily rate (the count over the days counted so far) for the days left before the next renewal.
    It is withheld under MIN_PROJECT_DAYS counted days. Warning when the projection (or the count)
    passes 80% of the allowance, red at 95% of it or when the count passes the allowance.
 
 2. signups-waiting: the Formspree backup form (signup-fallback) is recorded by hand into
-   private/pending-signups*.jsonl on feedbag private-data with a status field; restore-signups.yml
+   private/pending-signups*.jsonl on the private repo private-data with a status field; restore-signups.yml
    adds them and the status is then rewritten. Warning (never red) when any record still has status
    "pending" and was recorded more than PENDING_HOURS ago (its ts; a record without one is dated by
    its file name's day, else counted as age unknown). Counts and ages only.

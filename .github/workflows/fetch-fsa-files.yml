@@ -4,6 +4,7 @@ name: fetch-fsa-files
 on:
   workflow_dispatch:
   push:
+    branches: [main]
     paths: ["data/fsa/urls.txt"]
 permissions:
   contents: write

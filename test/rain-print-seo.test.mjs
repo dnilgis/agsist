@@ -1,5 +1,5 @@
 // 2026-10-15: Rain Print, made findable. The search words are in the head, the Product
-// schema says only what Sig has decided (made to order, free US shipping to the 50 states,
+// schema says only what the owner has decided (made to order, free US shipping to the 50 states,
 // no returns once printed, free reprint if lost or damaged), and every FAQ is in the
 // structured data word for word.
 import { test } from "node:test";

@@ -1,4 +1,4 @@
-/* County rain pages lead with the Rain Print (Sig, Oct 28 2026, on rain/wisconsin/barron-county.html: "move our
+/* County rain pages lead with the Rain Print (Oct 28 2026, on rain/wisconsin/barron-county.html: "move our
  * Rain Print chart up in place of that generic chart and get rid of that chart or make it hidden").
  *
  *   - On every county page that carries the print, #rc-print is the first chart in <main>, right under the
@@ -6,7 +6,7 @@
  *   - The plain running-total chart is no longer a chart of its own there: it ships inside the print's art box
  *     (title and caption kept) as the fallback for readers without scripts, search engines and a print that
  *     cannot be drawn. Drawing the print replaces it.
- *   - It opens in the Roots style (Sig, Oct 28); Staircase and Up close stay as choices.
+ *   - It opens in the Roots style (Oct 28); Staircase and Up close stay as choices.
  *   - Drawing moves nothing: the print's box, picker row and caption are held from the first paint
  *     (rain-county.css), at 390 and 1280. A print that cannot be drawn keeps the chart and lets the room go.
  *
@@ -54,7 +54,7 @@ test("county pages: the Rain Print is the first chart, the plain chart lives ins
     assert.ok(!/ hidden[ >]/.test(body.split(">")[0]), `${p}: the figure is not a hidden shell any more`);
     assert.equal((main.match(/aria-labelledby="rc-ct"/g) || []).length, 1, `${p}: one plain chart in the page`);
     const art = body.slice(body.indexOf('<div class="rc-print-art">'));
-    assert.ok(art.startsWith('<div class="rc-print-art"><svg viewBox=') && art.includes('<title id="rc-ct">Running total of rain in '),
+    assert.ok(art.startsWith('<div class="rc-print-art"><svg viewBox=') && /<title id="rc-ct">Running total of rain (in |at the [^<]* snow site in )/.test(art),
       `${p}: the plain chart, with its title, is inside the print's art box`);
     assert.ok(body.includes('<span class="rc-cap-chart">Inches of rain added up day by day') && body.includes('<span class="rc-cap-print" hidden>'),
       `${p}: both captions ship; the print's waits hidden`);

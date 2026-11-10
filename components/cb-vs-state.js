@@ -11,7 +11,7 @@
    zip, crop, delivery}). Tests: test/cb-vs-state.test.mjs. */
 (function (root) {
   'use strict';
-  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Nov 3 2026); a file without the company count says 'median of N elevators'. */
   function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   var Z3 = '005NY006--010MA028RI030NH039ME050VT055MA056VT060CT070NJ090--100NY150PA197DE200DC201VA202DC206MD220VA247WV270NC290SC300GA320FL340--341FL350AL370TN386MS398GA400KY430OH460IN480MI500IA530WI550MN569DC570SD580ND590MT600IL630MO660KS680NE700LA716AR730OK733TX734OK750TX800CO820WY832ID840UT850AZ870NM885TX889NV900CA962--967HI969--970OR980WA995AK';
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' }, MIN = 3;

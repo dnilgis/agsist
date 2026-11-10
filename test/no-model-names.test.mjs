@@ -1,4 +1,4 @@
-// Nov 6 (curtain, Sig Nov 5): pages and public data show the estimate, its range, its sources and its record, never
+// Nov 6 (curtain, Nov 5): pages and public data show the estimate, its range, its sources and its record, never
 // the model's name or what it reads. The yield nowcast's id and the words that named its input are out of the files
 // readers can load.
 import { test } from "node:test";

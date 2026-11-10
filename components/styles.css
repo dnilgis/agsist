@@ -847,7 +847,7 @@ html :is(.breadcrumb, .bc, .hm-bc, .fs-bc, .pb-bc, .cal-bc, .qs-bc) a { color: v
 .tbl :is(th, td).num, .num { text-align: right; font-variant-numeric: tabular-nums }
 .price { font-family: var(--font-mono); font-weight: 700; font-variant-numeric: tabular-nums; letter-spacing: -.01em }
 @media (max-width: 640px) { p.by-end, nav.next-links:not([style*="width"]) { padding-left: max(0px, calc(var(--gutter, 16px) - (100vw - 100%) / 2)); padding-right: max(0px, calc(var(--gutter, 16px) - (100vw - 100%) / 2)) } }
-/* Phones (Sig, Nov 8): 12px gutter, card text 12px inside its edge, no padding for a card in a card; why: test/phone-padding.test.mjs */
+/* Phones (Nov 8): 12px gutter, card text 12px inside its edge, no padding for a card in a card; why: test/phone-padding.test.mjs */
 @media (max-width: 480px) {
   :root { --gutter: 12px; --card-in: 12px; --card-pad-x: 11px }
   html:not([data-look]) body:not(#_) :is(main, main > :is(.ls-w, .prf, .rc, .rg, .sos, .pg, .le, .hb, .wrap, article), .cb-wrap, .info-page, .legal-page, .hs-wrap, .he-wrap, #cp, .ct-wrap, #lrp, .sp-page, .dev-page, .section-inner, .cl-wrap, .cal-main, .qs-main, .hm-wrap, .fs-wrap, .dp-wrap, .dv3-page) {

@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-"""desk_tabs.py: Sig's admin pages folded into /desk as tabs (Oct 28, 2026, Sig: "can't you reuse
-the elevator page and create a singular dashboard?"), in one table.
+"""desk_tabs.py: the owner's admin pages folded into /desk as tabs (Oct 28, 2026), in one table.
 
   TABS        old file -> (desk tab, the page that now holds it, one line for the stub)
   stub(old)   the forward page at the old address: noindex, canonical to /desk, the query kept and

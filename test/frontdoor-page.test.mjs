@@ -1,4 +1,4 @@
-/* The front door on agsist.com (Sig, Oct 22 2026; BUILD-RULES 11).
+/* The front door on agsist.com (Oct 22 2026; build rule 11).
  * Every link AGSIST emails goes to agsist.com/e?a=<route>&k=<lid>&t=<hmac>
  * (scripts/email_links.py); e.html asks the subs worker from the reader's
  * browser (GET /fd/<route>, subs worker v5.48) and its button POSTs.

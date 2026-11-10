@@ -23,8 +23,8 @@ Networks (each read on its own; one failing never blocks the others):
           data is publicly available and may be used commercially under the
           Creative Commons Attribution (CC BY) license" (wisconet.wisc.edu,
           read Oct 28 2026), so every reading is credited to Wisconet with a
-          link (Sig, Oct 28: add it). Nebraska and South Dakota mesonets are
-          never read here (Sig, Oct 28).
+          link (Oct 28: add it). Nebraska and South Dakota mesonets are
+          never read here (Oct 28).
 The sandbox cannot reach any of these hosts. GitHub runners can.
 
 Modes:
@@ -1007,7 +1007,7 @@ def probe():
             save("ksmeso-data-sample.csv", KSM + "stationdata/?" + urllib.parse.urlencode(q))
     except Exception as e:  # noqa: BLE001
         summ["ksmeso_error"] = str(e)
-    # Wisconet (Oct 28, Sig: add it; CC BY 4.0). The API's own schema, the
+    # Wisconet (Oct 28, add it; CC BY 4.0). The API's own schema, the
     # station list and one station's recent measures, so the reader is
     # written against what the service really sends.
     save("wisconet-openapi.json", WCN + "openapi.json")

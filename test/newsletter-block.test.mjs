@@ -1,4 +1,4 @@
-/* The monthly newsletter block (Sig, Nov 2, 2026; /newsletter-block,
+/* The monthly newsletter block (Nov 2, 2026; /newsletter-block,
  * scripts/build_newsletter_block.py, components/newsletter-block.js).
  *   - the builder's selftest, with the real Barbour County AL October 2026
  *     (21 of 31 days: inches, no percent);
@@ -45,7 +45,7 @@ const in2 = (x) => x.toFixed(2);
 test("every number equals its source file: Barbour County AL and Story County IA", () => {
   const B = build();
   const bs = JSON.parse(read("data/basis-states.json"));
-  // Live data (BUILD-RULES 70): a county can drop out of the rain file on a day its stations miss the reporting rule
+  // Live data (build rule 70): a county can drop out of the rain file on a day its stations miss the reporting rule
   // (Barbour AL did on Nov 5). Use the named county when it is published, else the state's first published county.
   const pick = (st, fips, slug) => {
     const rain = JSON.parse(read(`data/rain/${st}.json`));

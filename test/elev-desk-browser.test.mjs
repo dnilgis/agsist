@@ -1,10 +1,10 @@
-/* The elevator desk (desk/elevators.html, was elev-admin.html) and Sig's Today list (desk/today.html, was elev-today.html)
- * in Chromium, at 390 and 1280, the way Sig uses them. The pages are served
+/* The elevator desk (desk/elevators.html, was elev-admin.html) and the owner's Today list (desk/today.html, was elev-today.html)
+ * in Chromium, at 390 and 1280, the way the owner uses them. The pages are served
  * as https://agsist.com from this checkout, so the browser's own CORS checks
  * run against the real worker: workers/subs-worker.js answers in-process on an
  * in-memory KV (as scripts/test_elev_worker.mjs does). Nothing leaves the
  * machine. Paste input is test/fixtures/paste-bids (NEW Cooperative's board),
- * grown to 51 boards for the long preview Sig saw on Oct 20.
+ * grown to 51 boards for the long preview the owner saw on Oct 20.
  * Needs Playwright and Chromium; skipped where they are missing. Today reads the bids data at BIDS_PATH
  * (test/fixtures/bids-path.mjs): without it those tests fail at once and say so.
  * SHOTS=<dir> saves a screenshot of each case there.
@@ -61,7 +61,7 @@ function longPaste() {
 }
 const LONG = longPaste();
 
-/* The local bids index as Sig's Oct 20 morning had it: NEW Cooperative behind
+/* The local bids index as the owner's Oct 20 morning had it: NEW Cooperative behind
    its bot check, last good read the day before. */
 function blocked(ix) {
   for (const x of ix.sources || []) if (/^newcoop-/.test(x.id || "")) Object.assign(x, { health: "refused", error: "bot check: Cloudflare challenge page", checkedAt: "2026-10-19T15:30:29.149Z" });
@@ -152,7 +152,7 @@ let browser = null;
 async function br() { if (!browser) browser = await chromium.launch({ executablePath: CHROME + (existsSync(CHROME + "/chrome") ? "/chrome" : "") }); return browser; }
 test.after(async () => { if (browser) await browser.close(); });
 
-/* Oct 20: Sig saved a 51-board preview and saw nothing. The answer went into
+/* Oct 20: the owner saved a 51-board preview and saw nothing. The answer went into
    #p-out, above the preview, a screen or more away from the button. */
 for (const width of WIDTHS) test(`${width}px: after Save on a long preview, the answer is in view next to the button`, { skip }, async () => {
   const S = await open(await br(), "/desk/elevators.html?paste=newcoop#paste", { width, token: TOK });
@@ -383,7 +383,7 @@ test("the desk logs no errors and fetches nothing that is not there", { skip }, 
 
 /* Today -> Paste -> the desk: the cross-page view transition styles.css opts
    into needs both pages to opt in, or Chrome logs "View Transition opt-in
-   disabled" on the way (Sig's console, Oct 20). */
+   disabled" on the way (the owner's console, Oct 20). */
 for (const width of WIDTHS) test(`${width}px: Today lists NEW Cooperative; its Paste button opens the paste box with no console error`, { skip }, async () => {
   const S = await open(await br(), "/desk/today.html", { width, token: TOK });
   const pg = S.pg;

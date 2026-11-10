@@ -1,6 +1,6 @@
 /* components/prism.js: daily weather history at a point from the PRISM grids (2026-10-29).
  *
- * It replaced Open-Meteo's ERA5 archive (Sig, Oct 29: Open-Meteo's terms count an ad-supported site as
+ * It replaced Open-Meteo's ERA5 archive (Oct 29: Open-Meteo's terms count an ad-supported site as
  * commercial use). PRISM (Oregon State University, 4 km daily grids of observed max and min temperature
  * and precipitation, built from station reports) is read through RCC-ACIS GridData, grid 21, the same
  * host and grid Rain Print uses for a spot. Public, keyless. PRISM posts a day about a day late, so the

@@ -566,7 +566,7 @@ def main():
     # ---- NO CONTACT IN ANY PUBLIC FILE (Oct 19) -----------------------------
     # Every file in the repo is published. A sponsor's contact person, phone,
     # email or invoice address never goes into data/sponsors.json, a baked
-    # portal file, or the portal page; Sig keeps them in his own email.
+    # portal file, or the portal page; the owner keeps them in his own email.
     print("\nno contact or invoice address in a public file")
     for sp_ in conf.get("sponsors", []):
         check("contact" not in sp_, "data/sponsors.json carries no contact")
@@ -616,7 +616,7 @@ def main():
         # the ad that runs is the ad that was approved, and the counter has its start
         if e.get("active") is True:
             # A paid ad runs only on an approval for its current words. A free
-            # test whose copy Sig picked himself (RootLot, Oct 28) does not wait
+            # test whose copy the owner picked himself (RootLot, Oct 28) does not wait
             # on one; its approve button still works and is still recorded.
             if not (sp_.get("billing") or {}).get("free_test"):
                 ap = (sp_.get("approved") or {}).get("proof")

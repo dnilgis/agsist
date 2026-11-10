@@ -79,7 +79,7 @@ test("the serial is maker-only: never in the share link, only behind ?maker=1, n
   assert.ok(!/serial/.test(RP.toParams({ ...FULL, serial: "12" })));
   assert.ok(!("serial" in RP.normalize({ ...FULL, serial: "12" })));
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
-  // serial=0 is "No. 0000", Sig's own test prints (Oct 17, 2026); still only behind ?maker=1
+  // serial=0 is "No. 0000", the owner's own test prints (Oct 17, 2026); still only behind ?maker=1
   assert.match(S, /return MAKER && m \? 'No\. ' \+ String\(\+m\[1\]\)\.padStart\(4, '0'\) : '';/);
   const draw = S.slice(S.indexOf("function drawCanvas("), S.indexOf("function toBlob("));
   assert.equal((draw.match(/o\.serial = SERIAL/g) || []).length, 1, "one place sets it");
@@ -159,7 +159,7 @@ test("the normals: month normals only with the switch on; what usual means where
     const none = texts(ART.render(input(days, { style, ov: null })));
     assert.ok(!none.some((t) => /usual/i.test(t)), style + ": no comparison, no usual wording at all");
     if (style === "r2") assert.ok(on.some((t) => /^usual \d/.test(t)), style + ": on shows the month normals");
-    // Staircase A2 clean (Sig, 2026-10-17): the usual total is the light gray number under each month, and the foot line says so
+    // Staircase A2 clean (2026-10-17): the usual total is the light gray number under each month, and the foot line says so
     else {
       const months = /<g data-rp="months">(.*?)<\/g>/.exec(ART.render(input(days, { style, showNormals: true })))[1];
       assert.equal([...months.matchAll(/font-size="11" fill="#A3A8B0"/g)].length, 12, style + ": on shows the twelve month normals, 11 u light gray");
@@ -387,7 +387,7 @@ test("a preview of this year lays out the whole calendar and says so without cov
   for (const style of ["r1", "r2"]) {
     const svg = ART.render(input(days, { style, axisLen: 365, preview: { last: "2026-10-10" } }));
     const t = texts(svg);
-    // Sig, 2026-10-20: nothing covers the data. The note sits in the weeks still to come (Staircase), with no filled box.
+    // 2026-10-20: nothing covers the data. The note sits in the weeks still to come (Staircase), with no filled box.
     const band = svg.match(/<g data-rp="band"[^>]*>([\s\S]*?)<\/g>/);
     if (style === "r1") assert.ok(t.includes("THROUGH OCT 10") && t.includes("PREVIEW"), style + ": the note names the last day");
     if (band) assert.doesNotMatch(band[1], /<rect/, style + ": no box drawn over the chart");
@@ -411,7 +411,7 @@ test("the page offers the two styles, the dedication and both switches, and load
   const i = (s) => html.indexOf(s);
   assert.ok(i("/components/rp-short.js") > 0 && i("/components/rain-print-art.js") > 0);
   assert.ok(i("/components/rp-short.js") < i("/components/rain-print.js?v=") && i("/components/rain-print-art.js") < i("/components/rain-print.js?v="));
-  assert.match(html, /\/components\/rain-print\.js\?v=91"/);
+  assert.match(html, /\/components\/rain-print\.js\?v=93"/);
   for (const f of ["rp-fraunces-opsz.woff2", "rp-fraunces-opsz-400i.woff2", "rp-plex-sans-var.woff2", "rp-plex-sans-400i.woff2"]) {
     assert.ok(html.includes("/fonts/" + f), "the page declares " + f);
     assert.ok(readFileSync(ROOT + "components/rain-print.js", "utf8").includes("/fonts/" + f), "and the export inlines " + f);
@@ -455,7 +455,7 @@ test("the buyer's name is the biggest words on the sheet, in the serif, in both 
     const t = sized(ART.render(I)), nm = t.find((x) => x.s === name);
     assert.ok(nm, style + ": the name is printed as typed: " + name);
     assert.match(nm.fam, /Fraunces/, style + ": in the serif");
-    // Staircase A2 clean (Sig, 2026-10-17): the year as large as the name, everything else smaller
+    // Staircase A2 clean (2026-10-17): the year as large as the name, everything else smaller
     const yr = style === "r1" ? t.find((x) => x.s === "2025" && x.rp === "title") : null;
     if (yr) assert.equal(yr.size, nm.size, style + ": the year as large as the name");
     for (const x of t) if (x !== nm && x !== yr) assert.ok(x.size < nm.size, `${style} ${name}${logo ? " +logo" : ""}: "${x.s}" (${x.size}) is smaller than the name (${nm.size})`);
@@ -474,7 +474,7 @@ test("Staircase: what a usual year is goes to the foot line, the header keeps th
   const note = t.find((x) => x.s.includes("A usual year: NOAA’s 30-year normal"));
   assert.equal(note.rp, "foot");
   assert.ok(!t.some((x) => x.rp === "head" && /NOAA/.test(x.s)), "not in the header");
-  // A2 clean (Sig, 2026-10-17): month names 11 u tracked gray, totals 14 u tabular in ink
+  // A2 clean (2026-10-17): month names 11 u tracked gray, totals 14 u tabular in ink
   const jan = /<text x="[\d.]+" y="([\d.]+)"[^>]*font-size="11" fill="#8A8F98"[^>]*letter-spacing[^>]*>JAN<\/text>/.exec(svg);
   assert.ok(jan, "JAN at 11 u, tracked, gray");
   assert.ok(+jan[1] - 716 <= 30, "tucked under the axis: " + jan[1]);
@@ -498,7 +498,7 @@ test("the reader's dates read clearly: Staircase on the line beside the dot, Roo
     for (const l of ["Planted", "Wedding"]) {
       const m = new RegExp('<g data-rp="mark:\\d">.*?<text x="[\\d.]+" y="([\\d.]+)"[^>]*font-weight="(\\d+)" font-style="(\\w+)" font-size="([\\d.]+)" fill="([^"]+)"[^>]*>' + l + "<tspan[^>]*>[^<]*</tspan></text>").exec(svg);
       assert.ok(m, style + ": " + l);
-      // Staircase A2 clean (Sig, 2026-10-17): a marked day is 15 u Medium in ink, the one dark voice on the chart
+      // Staircase A2 clean (2026-10-17): a marked day is 15 u Medium in ink, the one dark voice on the chart
       assert.equal(m[3], "normal", style + ": upright"); assert.equal(m[5], style === "r1" ? "#1F2328" : "#1E2125", style + ": in ink");
       if (style === "r1") { assert.equal(+m[4], 15, "r1: 15 u"); assert.equal(m[2], "500", "r1: Medium"); } else assert.ok(+m[4] >= 20, style + ": " + m[4] + " u");
       if (style === "r1") assert.ok(+m[1] < 716, "r1: on the chart, above the axis: " + m[1]);
@@ -579,7 +579,7 @@ test("the date is counted in the label's width, so the placer keeps it clear", (
   assert.equal(ART.model(input(year(2025), { markers: [{ doy: 140, label: "A\u0001B\u0002" }] })).markers[0].words, "AB");
 });
 
-// ---------- remarkable days carry their dates (Sig, 2026-10-15) ----------
+// ---------- remarkable days carry their dates (2026-10-15) ----------
 test("a remarkable day prints its date after its words: a day, a stretch's range, none for a whole month or year", () => {
   const E = ART.model(input(year(2025)));
   const one = (r) => ART.recordPoints(E, [r]);

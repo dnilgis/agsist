@@ -1,4 +1,4 @@
-/* A Daily reader's own elevators in AGSIST Daily (Sig, Oct 20, 2026).
+/* A Daily reader's own elevators in AGSIST Daily (Oct 20, 2026).
  *
  *   - the worker routes, v5.42 (scripts/test_daily_elev_worker.mjs);
  *   - the email block and its rules, made-up readers and boards

@@ -10,7 +10,7 @@
  *   priced only at the reader's own $/ton.
  *
  *   Fertilizer prices come from data/fertilizer-prices.json
- *   (scripts/build_fert_prices.py): the co-op posted prices Sig sent, only. The
+ *   (scripts/build_fert_prices.py): the co-op posted prices the owner sent, only. The
  *   files below are made up in that shape; none is a real price.
  *
  * Needs Playwright and Chromium; skipped where they are missing.
@@ -53,7 +53,7 @@ function serve() {
 }
 const PAGE_NOW = "2026-10-15T15:00:00Z";
 // the co-op sheets: a frozen copy (Nov 3, 2026, rows Oct 1 to Oct 14), so the page clock above keeps them current;
-// the live file on that fixed clock went stale the day its rows did (BUILD-RULES 50)
+// the live file on that fixed clock went stale the day its rows did (build rule 50)
 const COOPS_FIX = join(ROOT, "test/fixtures/fast-facts-calcs/fertilizer-coops.json");
 async function open(browser, port, path, opts = {}) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 1280, height: 900 } });
@@ -175,7 +175,7 @@ test("every fertilizer pill names its source and date and its $/lb; one line say
     const labels = await pg.$$eval(".fert-pill", (els) => els.map((e) => e.getAttribute("aria-label")));
     assert.equal(labels[0], "Urea $623/ton, Kansas co-ops, middle of 4, posted Oct 6, 2026: $0.677/lb N");
     assert.equal(labels[1], "UAN 32% $451/ton, one Kansas co-op, posted Sep 24, 2026: $0.705/lb N");
-    // the method in one line, not a worked formula per product (Sig, Oct 21: undershare)
+    // the method in one line, not a worked formula per product (Oct 21: undershare)
     assert.equal(await pg.textContent("#fert-deriv"), "Price per pound is the ton price over the pounds of nutrient in a ton. MAP\u2019s N is taken out at the urea price.");
     assert.doesNotMatch(await pg.textContent("body"), /Farmers Coop/, "the single co-op is not named anywhere on the page");
     assert.deepEqual(errors, []);
@@ -240,7 +240,7 @@ test("with no price file, no fertilizer number appears and the page says why", {
   } finally { await browser.close(); srv.close(); }
 });
 
-/* Oct 21 (Sig): a Wisconsin reader is priced from the Wisconsin co-op sheet when it posts the product;
+/* Oct 21: a Wisconsin reader is priced from the Wisconsin co-op sheet when it posts the product;
    what it does not post comes from the middle of every current sheet, labeled with the states. */
 test("a saved Wisconsin ZIP prices urea from the Wisconsin sheet, anhydrous from every sheet", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;

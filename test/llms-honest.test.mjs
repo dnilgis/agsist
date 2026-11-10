@@ -1,5 +1,5 @@
 /* Night audit, Oct 19, 2026 (AI answer engines). llms.txt and the wheat page told engines things
- * that were not true: Sig was "a licensed crop insurance agent" (the standing byline is "Sigurd
+ * that were not true: the owner was "a licensed crop insurance agent" (the standing byline is "Sigurd
  * Lindquist, Certified Crop Adviser (CCA)", never "crop insurance agent"), cash bids came from
  * "a licensed feed" (the Barchart feed is off), and /fertilizer showed "a USDA Illinois average"
  * (removed Oct 16). The live-key-gated copies in components/futures.js and scripts/fetch_bids.py

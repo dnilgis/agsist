@@ -41,7 +41,7 @@
     var srcs=rows.map(function(r){return r.source;}).filter(function(s,i,a){return s&&a.indexOf(s)===i;});
     var src=srcs[0];
     var links=srcs.length>1?('Survey sources: '+srcs.map(function(s){return '<a href="'+esc(s)+'" rel="nofollow noopener" target="_blank">'+esc(s.replace(/^https?:\/\/(www\.)?/,'').split('/')[0])+'</a>';}).join(', ')):('<a href="'+esc(src)+'" rel="nofollow noopener" target="_blank">Survey source</a>');
-    var note=src?('<div class="src">Trade estimates come from a published pre-report survey, entered as published. '+links+'. Graded on the distance from the trade average: within 0.5% for a yield, 1% for production and 2% for stocks is in line; past that, more supply than the trade expected is bearish and less is bullish. The survey\u2019s low-high range is shown beside the grade and does not change it.</div>'):'';
+    var note=src?('<div class="src">Trade estimates come from a published pre-report survey, entered as published. '+links+'. Graded on the distance from the trade average: close to it is in line; past that, more supply than the trade expected is bearish and less is bullish. The survey\u2019s low-high range is shown beside the grade and does not change it.</div>'):'';
     var waiting=rows.every(function(r){return r.actual==null;});
     /* Once USDA prints, its standing figure is the one from BEFORE the report. */
     return '<div class="wp-nums"><div class="nh"><b>Every number on this report</b><span>'
@@ -101,7 +101,7 @@
       thr='<div class="wp-thr">'
         +'<div class="t bull"><div class="k">Bullish surprise</div><div class="v">'+(n.bullish_threshold||'-')+'</div></div>'
         +'<div class="t bear"><div class="k">Bearish surprise</div><div class="v">'+(n.bearish_threshold||'-')+'</div></div></div>';
-    } else { thr=gap('thresholds','No surprise thresholds'); }
+    } else { thr=gap('thresholds','No surprise line yet'); }
     var pos=n.positioning?('<div class="wp-pos">Fund positioning: '+n.positioning+'</div>')
       :gap('positioning','No positioning');
     return '<div class="wp-card"><div class="hd"><span class="rpt">'+n.report+'</span><span class="cd">'+n.date+(n.time?(' \u00b7 '+n.time.replace('12:00 PM ET','11:00 a.m. CT')):'')+' \u00b7 '+cd+'</span></div>'
@@ -358,9 +358,9 @@
         +'their position is not, because '+(minN-1)+' calls is not a record.</td></tr>';
     }
     var lead='';
-    if(!rows.length){lead='<div class="as-err" style="margin-bottom:.6rem">Nobody has '+minN+' scored calls in this group yet. Building records below.</div>';}
-    else if(rows.length===1){lead='<div class="as-err" style="margin-bottom:.6rem">A finishing order needs at least two forecasters with '+ordMin+' scored calls each in the same group. One forecaster has '+minN+' or more so far, so this board shows records, not places.</div>';}
-    else if(!ordinals){lead='<div class="as-err" style="margin-bottom:.6rem">Listed by average error, with no places. This page prints a finishing order only once every forecaster above the line has <b>'+ordMin+' scored calls</b> in the same group. Under that, the gap between two averages sits inside the spread of each one\u2019s own calls (shown beside every average), so an order would be a coin flip.</div>';}
+    if(!rows.length){lead='<div class="as-err" style="margin-bottom:.6rem">Too few scored calls in this group yet. Building records below.</div>';}
+    else if(rows.length===1){lead='<div class="as-err" style="margin-bottom:.6rem">Too few scored calls to rank forecasters yet, so this board shows records, not places.</div>';}
+    else if(!ordinals){lead='<div class="as-err" style="margin-bottom:.6rem">Listed by average error, with no places: too few scored calls yet for an order to mean anything.</div>';}
     return lead+head+cap+body+note+brows+'</tbody></table>';
   }
   /* ── WHAT THE BOARD'S OWN NUMBERS SAY, IN ONE LINE, UNDER THE BOARD ──────
@@ -412,7 +412,7 @@
     }
     return 'Forecasters above the line have landed closer to the print than the trade consensus on <b>'+yes+' of '+n+'</b> graded calls.'+tail;
   }
-  /* Every metric class that is not the main board still gets a table. Sig's
+  /* Every metric class that is not the main board still gets a table. The owner's
      rule is that misses stay on the record; the stocks call that used to carry
      a forecaster onto the leaderboard is still here, scored on its own. */
   function otherClasses(classes,primary,minN,ordMin){
@@ -539,7 +539,7 @@
     document.getElementById('as-board-note').innerHTML=beatNote(qrows,brows);
     document.getElementById('as-board-note').style.display=document.getElementById('as-board-note').innerHTML?'':'none';
     document.getElementById('as-other').innerHTML=classes?otherClasses(classes,primary,minN,ordMin):'';
-    if(d.leaderboard&&d.leaderboard.length){document.getElementById('as-legend').style.display='block';document.getElementById('as-minn').textContent=minN;document.getElementById('as-ordmin').textContent=ordMin;}
+    if(d.leaderboard&&d.leaderboard.length){document.getElementById('as-legend').style.display='block';}
     document.getElementById('as-upcoming').innerHTML=pipelineEl(d.pipeline);
     document.getElementById('as-roster').innerHTML=rosterEl(d.roster)||'<div class="as-err">Roster loading&hellip;</div>';
     document.getElementById('as-reports').innerHTML=reportsEl(d.reports);

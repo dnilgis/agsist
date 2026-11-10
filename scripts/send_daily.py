@@ -221,7 +221,7 @@ def load_today():
     today = date.today().isoformat()
     path = ARCHIVE / (today + ".json")
     if not path.exists() and env("TEST_TO_SIG", "") == "1":
-        # Sig's test copy: the newest issue there is (the morning run has not made today's yet)
+        # The owner's test copy: the newest issue there is (the morning run has not made today's yet)
         olds = sorted(p for p in ARCHIVE.glob("????-??-??.json"))
         if olds:
             path, today = olds[-1], olds[-1].stem
@@ -502,7 +502,7 @@ def load_rain_lines(subs, how, bids_data=None):
     return out
 
 
-# YOUR COUNTY THIS WEEK (Sig, Oct 27 2026: inside the existing Daily slots; no
+# YOUR COUNTY THIS WEEK (Oct 27 2026: inside the existing Daily slots; no
 # new list, sender or cron). Address -> the block daily_v2 draws in "Only here",
 # filled once by main() like LOCAL_LINES. Only on Thursdays, only for a reader
 # who ticked it in the Daily ask (cw, subs worker v5.56) and has a saved ZIP,
@@ -673,7 +673,7 @@ def load_county_week(subs, how, day, bids_data=None, runner=None):
     return out, counts
 
 
-# ── the Daily, v2 (Sig, Oct 22 2026: live from the Oct 22 morning send) ─────
+# ── the Daily, v2 (Oct 22 2026: live from the Oct 22 morning send) ─────
 # DAILY_FORMAT=v2 builds the email with scripts/daily_v2.py; anything else
 # (DAILY_FORMAT=current, or unset) builds the old format with brief_email. That
 # is the rollback: daily.yml's format input, or the repo variable DAILY_FORMAT
@@ -726,7 +726,7 @@ def v2_parts(b, to_addr, uurl, mine, loc, rain, county=None, county_ask=None, gr
 
 
 def v2_hold_alert(day, built, bad):
-    """One email to Sig (OWNER_TO, the SIG_TO secret in daily.yml) the moment
+    """One email to the owner (OWNER_TO, the SIG_TO secret in daily.yml) the moment
     the number check holds a live issue: what failed and how to fix and rerun.
     The day is not flagged, so a rerun sends. Returns True if it went out."""
     fields = sorted({f["field"] for f in bad})
@@ -750,7 +750,7 @@ def v2_hold_alert(day, built, bad):
 def v2_gate(day, b, alert=False):
     """The number check that blocks the v2 send (daily_v2.check): a wrong number
     in the subject, headline or lead. True = clear to send. alert=True (a live
-    send) mails Sig at once when it holds the issue."""
+    send) mails the owner at once when it holds the issue."""
     import daily_v2
     built = v2_parts(b, "reader@example.com", None, None, None, None)
     bad, notes = daily_v2.check(b, built)
@@ -774,7 +774,7 @@ def build_email(day, b, to_addr, from_name, from_addr, reply_to):
 
     Until 2026-08-27 this built a 130-word teaser by hand: headline, lead,
     takeaway, one number, button. That is an advertisement for a website, not a
-    briefing, and Sig said so plainly. The body now comes from brief_email,
+    briefing, and the owner said so plainly. The body now comes from brief_email,
     which renders the SAME issue as a full HTML letter and as a real plain-text
     alternative. This function is reduced to what it should always have been:
     addressing, unsubscribe headers, and transport.
@@ -841,7 +841,7 @@ def main():
     reply_to = env("REPLY_TO")
     dry = env("DRY_RUN", "") == "1"
     test = env("TEST_TO_SIG", "") == "1"
-    tally = delivery_line.start("daily", dry=dry or test)   # a test to Sig is not the list
+    tally = delivery_line.start("daily", dry=dry or test)   # a test to the owner is not the list
 
     if not dry and not test and flag(day):
         # The one path where 0 sent is fine: say so on the DELIVERY line. Every other exit before the
@@ -875,7 +875,7 @@ def main():
     if not recipients:
         print("FATAL: RECIPIENTS parsed to zero addresses")
         return 1
-    print("briefing " + day + " · recipients " + str(len(recipients)) + " · dry_run " + str(dry))
+    print("briefing " + day + " · dry_run " + str(dry))
     tally.waiting = len(recipients)
     ELEVATOR_LINES.update(load_elevator_lines(subs, how))
     try:
@@ -961,7 +961,7 @@ def main():
     user = env("SMTP_USER", required=True)
     pw = env("SMTP_PASS", required=True)
     if test:
-        # Sig's copy: no day flag read or set, so the morning run still goes to everyone
+        # The owner's copy: no day flag read or set, so the morning run still goes to everyone
         globals()["flag"] = lambda *a, **k: False
     elif not list_source.claim("briefed:" + day):
         # backup mode: the day flag goes into the private repo before the first mail
@@ -969,7 +969,7 @@ def main():
     else:
         # The issue as it went out is kept when the day is flagged sent, which
         # the loop below does on the first delivered mail (save_sent_copy).
-        # Sig's test copy sets no flag, so it keeps nothing.
+        # The owner's test copy sets no flag, so it keeps nothing.
         keep_sent_copy(day, b, from_name, from_addr, reply_to)
 
     sent, failed = 0, []
@@ -1051,7 +1051,7 @@ def main():
             conn.quit()
         except Exception:
             pass
-    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to Sig is dry
+    tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to the owner is dry
     print("sent " + str(sent) + "/" + str(len(recipients)))
     # Set the day flag whenever ANY mail went out. Anyone who received a copy
     # must never get a second one, so the flag is about the day, not about
@@ -1061,7 +1061,7 @@ def main():
     if sent == 0:
         release_claim(day)
     if failed:
-        # Full addresses go to Sig by private mail; the public annotation gets
+        # Full addresses go to the owner by private mail; the public annotation gets
         # the count and masked addresses only.
         mailed = log_safe.owner_mail("AGSIST Daily %s: %d of %d did not send" % (day, len(failed), len(recipients)),
                                      ["Resend to these addresses individually (the day is flagged):", ""] + failed)

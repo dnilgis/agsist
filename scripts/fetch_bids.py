@@ -256,7 +256,7 @@ BIDS_NETWORK_BASE = os.environ.get(
     "BIDS_NETWORK_BASE", "https://dnilgis.github.io/bids/")
 MERGE_RADIUS_MI = float(os.environ.get("BIDS_MERGE_RADIUS_MI", "50"))
 
-# A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17, Sig approved). The bids
+# A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17). The bids
 # repo flags a row stale whenever its board was not read on the latest pass,
 # for three reasons: "refused" and "broken" (the read failed) and "skipped"
 # (not asked this pass: Landus is paced 5 boards a pass, NEW Cooperative
@@ -329,11 +329,6 @@ def _nearest_grid(lat, lon, grid):
             best_z, best_d = g["zip"], d
     return best_z, best_d
 
-# Legal-entity words that a feed carries and the other one drops. Stripped only
-# from the END of a name, never mid-name: "Co-op Services" must keep its "co".
-_LEGAL_SUFFIX = {"llc", "lc", "inc", "incorporated", "co", "corp", "corporation",
-                 "ltd", "limited", "lp", "llp", "company"}
-
 def _norm_operator(name):
     """One elevator's name as the two feeds spell it, reduced to one string.
 
@@ -353,16 +348,10 @@ def _norm_operator(name):
     that differ by a real word ("ADM Grain" against "ADM"): a duplicate pin is
     visible and fixable, a wrong merge hides a real elevator.
 
+    It is elevator_names.merge_key (twin of elevNames.mergeKey).
     """
-    import re as _re
-    s = _re.sub(r"[^a-z0-9]+", " ", str(name or "").lower())
-    s = s.replace("co op", "coop").replace("co operative", "cooperative")
-    toks = [t for t in s.split() if t]
-    while toks and toks[-1] in _LEGAL_SUFFIX:
-        toks.pop()
-    toks = ["coop" if t in ("cooperative", "coops") else t for t in toks]
-    toks = [t[:-1] if (len(t) > 3 and t.endswith("s")) else t for t in toks]
-    return "".join(toks)
+    from elevator_names import merge_key
+    return merge_key(name)
 
 # ── A ROW WITHOUT A STATE CANNOT BE FILED ────────────────────────
 # build_basis_history.py writes one shard per state and the page can only
@@ -748,7 +737,7 @@ def network_rows(grid, base=None):
                              "checkedAt": b.get("checkedAt"), "pricedAt": b.get("pricedAt") or None})
         if b.get("pasted") is True:
             # A BOARD SIG PASTED BY HAND (2026-10-20): the site will not let the
-            # bids reader in, so Sig pastes its public page. dnilgis/bids holds
+            # bids reader in, so the owner pastes its public page. dnilgis/bids holds
             # it up to 7 days, aged by the paste. It prints its own paste time.
             pa = b.get("pastedAt") or b.get("checkedAt")
             rows[-1].update({"pasted": pa, "timestamp": pa, "checkedAt": b.get("checkedAt"),
@@ -882,6 +871,20 @@ def verify_bids(bids, detail=None):
 
     n_ok = n_bad = 0
     net_odd = network_basis_outliers(bids)
+    # THE MISREAD-BOARD CHECK on network rows is basis_method.futures_disagree, the one copy the state
+    # basis pages (fut_off) and the cash bid pages (drop_misreads) use, so a row gets one verdict
+    # everywhere (god's-eye build 5, Nov 9). Before, bids.json trusted every network row while those
+    # pages dropped the same row. Plain bushel bids of the three crops make up each contract's group, as in
+    # network_basis_outliers, so a special grade can neither move the middle nor be called a misread.
+    net_plain = [b for b in bids if b.get("source") == "network" and b.get("category") in ("corn", "soybeans", "wheat")
+                 and _lb.can_set_best(b)]
+    # the contract key is the state pages' own reader (parse_contract): "DECEMBER 2026" is corn's December
+    # and says nothing about which wheat, so a wheat row on a bare month is in no group, as there
+    from build_state_basis_pages import parse_contract  # noqa: E402  (imported here: it imports this file)
+    yr = datetime.now(timezone.utc).year
+    net_misread = _bm.futures_disagree(
+        net_plain, lambda b: parse_contract(b.get("symbol"), b.get("category"), yr, b.get("commodity")),
+        lambda b: implied[id(b)])
     for b in bids:
         # Rows from the AGSIST elevator network (dnilgis/bids) were verified
         # by that repository's own board checks before they were published
@@ -889,6 +892,17 @@ def verify_bids(bids, detail=None):
         # are not in Barchart's per-symbol cohorts, so this Barchart-shaped
         # cohort check cannot see them; running it would refuse every one for
         # having no cohort. Trust the upstream verification and move on.
+        if b.get("source") == "network" and id(b) in net_misread:
+            v, med, n = net_misread[id(b)]
+            sym = b.get("symbol")
+            b["verified"] = False
+            b.pop("basisOdd", None)
+            b["unverifiedWhy"] = (f"cash {b.get('cashPrice')} minus basis {b.get('basis')} implies {v} for {sym}, "
+                                  f"more than 3% off the {med} the {n} network bids on {sym} imply")
+            n_bad += 1
+            if detail is not None:
+                detail[id(b)] = {"kind": "off_network", "implied": v, "cohortRows": n, "cohortFutures": med, "span": None}
+            continue
         if b.get("source") == "network":
             # `basisOdd` IS NOT A VERDICT ON THE ROW. It is a flag that this board's
             # basis sits far from the other network boards on its contract in its
@@ -987,6 +1001,9 @@ def selectable(bids):
 #
 #   no_cohort         nothing here can check it. Rice, barley, millet, durum,
 #                     peas, delivered-basis quotes. Not shown to be wrong.
+#   off_network       a network row whose cash minus basis is more than 3% off
+#                     the network bids on its contract (basis_method.futures_disagree,
+#                     the same verdict the state basis and cash bid pages reach).
 #   off_cohort        three or more facilities quote the contract and this row
 #                     implies a different futures price.
 #   outside_envelope  a thin contract, and the row is outside the crop's span.
@@ -1045,7 +1062,7 @@ def withheld_report(bids, detail):
         m = b.get("deliveryMonth")
         if m and m not in g["months"]:
             g["months"].append(m)
-    order = {"off_cohort": 0, "outside_envelope": 1, "no_price": 2,
+    order = {"off_network": 0, "off_cohort": 0, "outside_envelope": 1, "no_price": 2,
              "no_symbol": 3, "no_cohort": 4}
     rows = sorted(groups.values(),
                   key=lambda g: (order.get(g["kind"], 9), g["state"], g["facility"],

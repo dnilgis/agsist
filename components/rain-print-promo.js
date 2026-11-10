@@ -16,10 +16,9 @@
      "framed_christmas_cutoff"           the card's Christmas wording runs promote_from..this date
      "briefing_line": "..."              optional; the one line on /daily (null = none)
      "gauge_hook": {line, link}          the rain gauge's one line and link label, used wherever
-                                         the gauge is linked (Sig, 2026-10-23); missing or bad = no gauge line
+                                         the gauge is linked (2026-10-23); missing or bad = no gauge line
      "gauge_window": {from, until, rain_print_until}
-                                         "auto" (rain, weather, PRF, ARC/PLC and Fast Facts pages, Sig
-                                         2026-10-23): the gauge hook from..until inclusive; nothing after
+                                         "auto" (rain, weather, PRF, ARC/PLC and Fast Facts pages, 2026-10-23): the gauge hook from..until inclusive; nothing after
                                          rain_print_until and before from (Christmas Day); "see" any other day.
                                          A bad window leaves "auto" on "see".
 
@@ -32,9 +31,8 @@
    The Christmas card links /gifts-for-farmers (Rain Print first, then other
    gift ideas); the other two link /rain-print. While the Christmas wording
    runs (through the framed order-by date), the card moves up to the page's
-   empty [data-rp-card-early] marker, right under the homepage prices (Sig,
-   Oct 23); after that date it stays where the page put it.
-   xmasLine() is the order-by sentence on /gifts-for-farmers, from the two
+   empty [data-rp-card-early] marker, right under the homepage prices (Oct 23); after that date it stays where the page put it.
+   xmasLine is the order-by sentence on /gifts-for-farmers, from the two
    Christmas cutoffs in data/rain-print.json: Oct 1 through Dec 25 of the
    cutoff's year only, a plain date, never a countdown.
    "see" links /rain-print with the reader's saved ZIP and last year when the
@@ -42,7 +40,7 @@
    Off, out of the window, or on any failure, the element stays hidden and
    takes no space. No countdown, no badge, no pop-up. Clicks send one
    analytics event (rain_print_promo_click / rain_gauge_promo_click).
-   scripts/brief_email.py rain_print_line() applies the briefing rule to the email. */
+   scripts/brief_email.py rain_print_line applies the briefing rule to the email. */
 (function (root) {
   'use strict';
   var ISO = /^\d{4}-\d{2}-\d{2}$/;

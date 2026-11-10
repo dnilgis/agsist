@@ -1,4 +1,4 @@
-// Sig, Nov 6, 2026: "I'm not going to steer anybody so don't say anything about it."
+// Nov 6, 2026
 // No shipped page, sponsor component or email script tells a reader the owner also owns
 // another business that may compete with a sponsor. His byline and employer stay.
 import { test } from "node:test";

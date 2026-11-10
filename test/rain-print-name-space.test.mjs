@@ -1,4 +1,4 @@
-/* Rain Print, Oct 22, 2026 (Sig): "make sure that the printed year has a space between it and a custom farm
+/* Rain Print, Oct 22, 2026: "make sure that the printed year has a space between it and a custom farm
  * name entry."
  *
  * The year was its own <text>, placed at the name's measured width plus the gap (Staircase: name, 26 u, year;

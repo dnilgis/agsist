@@ -43,7 +43,7 @@ test("the answer is in the HTML: grids by number, county values, the deadline, t
     const main = h.slice(h.indexOf("<main"), h.indexOf("</main>"));
     assert.match(main, /<h1>PRF insurance in [^<]+<\/h1>/, p.rel);
     assert.ok(main.includes(SALES), p.rel + " lacks the sales closing date");
-    /* Sig, Oct 20: the grid numbers left the lede for the grids table; the FAQ still names them all */
+    /* Oct 20: the grid numbers left the lede for the grids table; the FAQ still names them all */
     assert.match(main, /<table class="prf-t prf-co-t">[\s\S]*?<th scope="row">\d{4,5}<\/th>/, p.rel + " lacks its grid numbers in the grids table");
     assert.match(main, /Which PRF grid is [^<]+\?<\/summary><p>Grids? \d{4,5}/, p.rel + " lacks its grid numbers in the FAQ");
     assert.match(main, /Grazing, county base value per acre<\/dt><dd>\$\d/, p.rel);
@@ -131,7 +131,7 @@ test("each county page prints the 100-acre example on its middle grid by premium
     rows.sort((a, b) => a.you - b.you || a.g - b.g);
     const x = rows[Math.ceil(rows.length / 2) - 1];
     const t = m[1];
-    /* Sig, Oct 20: it leads the page with what you pay, dated by the USDA files read, and stays labeled */
+    /* Oct 20: it leads the page with what you pay, dated by the USDA files read, and stays labeled */
     assert.ok(t.startsWith(`<b>What it costs here at ${meta.crop_year} rates (USDA files read `), p.rel + " example does not lead with the cost: " + t.slice(0, 80));
     assert.ok(t.endsWith("Example, not a recommendation."), p.rel + " example is not labeled");
     assert.ok(t.includes(`you pay ${usd(x.you)} a year, $${(x.you / 100).toFixed(2)} an acre, for 100 acres of grazing at 90% coverage`), `${p.rel}: ${t}`);

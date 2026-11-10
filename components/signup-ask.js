@@ -28,11 +28,11 @@
    is asked for in this browser (agsist_notices), and enrolls nobody in the
    Daily unless "Also send the morning briefing" is ticked.
    That box always starts empty and its ZIP box opens when it is ticked
-   (Sig, 2026-10-19: no ask ever pre-ticks the Daily; data-daily is ignored).
+   (2026-10-19: no ask ever pre-ticks the Daily; data-daily is ignored).
    data-after="YYYY-II" goes with a recurring notice (prf:<grid>): the
    newest interval already out, so the first email is the next one.
 
-   Two standing lists on the same route (worker v5.44, Sig Oct 21), each its
+   Two standing lists on the same route (worker v5.44, Oct 21), each its
    own list, never the Daily unless the reader ticks the box:
      data-topic="reports"  the report-day email alone, the WASDE summary
                            (scripts/send_report_day.py), source
@@ -51,7 +51,7 @@
        setDismissed, zip, subscribe, okText. The homepage's watch and price
        alert opt-ins and its signup band call subscribe() from here.
 
-   Your county this week (2026-10-27, Sig: inside the existing Daily, no new list):
+   Your county this week (2026-10-27, inside the existing Daily, no new list):
    every Daily ask's ZIP row gains one more box once the reader starts on the email
    box, "Thursdays, add what changed in my county", never pre-ticked. Ticked, the signup sends cw:true (worker v5.56)
    and needs a ZIP; unticked, nothing is sent and a stored choice is left alone.
@@ -79,13 +79,7 @@
      keeps its own source. */
   var GENERIC = { hero: 1, bar: 1, 'signup-band': 1, footer: 1 };
 
-  /* ---------- flags ----------
-     Signed up (2026-10-20, Sig): the Daily asks come back after a year. The
-     cookie lasts 365 days; localStorage keeps agsist_subscribed = '1' (the
-     inline head checks on the cash bid and futures pages read that) and
-     agsist_subscribed_at = when. A flag with no date (set before this, or by
-     an older copy of the setter) starts its year the first time it is read
-     here. Past a year both are cleared and the asks show again. */
+  /* ---------- flags ---------- */
   var SIGNED_DAYS = 365, SIGNED_AT = 'agsist_subscribed_at';
   function hasCookie() { try { return /(^|;\s*)agsist_subscribed=/.test(document.cookie); } catch (e) { return false; } }
   function isSignedUp() {
@@ -623,25 +617,7 @@
   }
   function dismissed(id, how) { track('ask_dismissed', { ask_id: id, how: how }); }
 
-  /* ---------- "One more?" (2026-10-20, Sig) ----------
-     After any signup that went through, one quiet panel in the same place
-     offers up to three more emails that fit what the reader gave. Each is an
-     unticked box; one button, "Add these". Only topics with a sender:
-       daily     AGSIST Daily (scripts/send_daily.py), when not on it yet;
-       zip       a cash price alert within 25 mi of their ZIP, double opt-in
-                 (POST /elevator-watch-subscribe, scripts/send_zip_alert.py),
-                 the body components/cb-signup.js sends;
-       rainyear  their county's full-year rain total, one email in January
-                 (after a monthly county rain signup too, rain-month:<fips>)
-                 (rainyear:<year>:<fips>, scripts/send_rain_year.py), when
-                 data/rain has the county and its year is still going;
-       rent      their state's next county cash rent release (rent:<st>,
-                 scripts/send_rent_notice.py), for the states with a /rent page.
-     The ZIP is the one they typed, the page's, or the saved one. The county
-     comes only from the page or the topic; the state from those, the page
-     address, or the ZIP's first three digits. Never geolocation. Nothing
-     shows when nothing fits. GA4: onemore_shown and onemore_added with the
-     topics, never the address. */
+  /* ---------- "One more?" (2026-10-20) ---------- */
   var WORKER = 'https://agsist-api.dnilgis.workers.dev';
   var ST_NAMES = {};
   ('AL Alabama|AK Alaska|AZ Arizona|AR Arkansas|CA California|CO Colorado|CT Connecticut|DE Delaware|FL Florida|GA Georgia|HI Hawaii|ID Idaho|IL Illinois|IN Indiana|IA Iowa|KS Kansas|KY Kentucky|LA Louisiana|ME Maine|MD Maryland|MA Massachusetts|MI Michigan|MN Minnesota|MS Mississippi|MO Missouri|MT Montana|NE Nebraska|NV Nevada|NH New Hampshire|NJ New Jersey|NM New Mexico|NY New York|NC North Carolina|ND North Dakota|OH Ohio|OK Oklahoma|OR Oregon|PA Pennsylvania|RI Rhode Island|SC South Carolina|SD South Dakota|TN Tennessee|TX Texas|UT Utah|VT Vermont|VA Virginia|WA Washington|WV West Virginia|WI Wisconsin|WY Wyoming')
@@ -697,41 +673,7 @@
         return { topic: 'rainyear:' + y + ':' + fips, name: c.name, year: y };
       });
   }
-  /* 2026-10-20 (Sig), "One more?" after the alert signups too, and the extras
-     that fit the page after a Daily signup:
-       hail      a hail alert, 10 mi around the spot (POST /alert-subscribe,
-                 scripts/check_alerts.py), on hail and rain pages: the hail
-                 map's last spot (window.AGSIST_HAIL_SPOT) or their ZIP's
-                 center (the bids network's data/zips, as cb-alerts.js);
-       price     a futures price alert, double opt-in (POST
-                 /price-watch-subscribe, scripts/send_price_watch.py), the
-                 body index.html sends, on the futures and report pages;
-       reports   the "USDA vs the trade" report-day emails
-                 (scripts/send_report_day.py), on report and futures pages,
-                 only when the Daily was just taken without them (the menu
-                 asks send reports:false). A Daily signup anywhere else
-                 already gets them, so it is never offered there.
-     2026-10-21 (Sig), the two standing lists (worker v5.44, POST /notice):
-       wasde     the WASDE summary alone (topic reports, the same email),
-                 on report and futures pages, after a notice or alert signup
-                 by a reader not on the Daily (a Daily reader already gets it);
-       cot       Funds this week (topic cot, scripts/send_cot_weekly.py), on
-                 /cot, /markets and the futures and cattle pages; since
-                 2026-11-04 also after a Daily signup anywhere, last in line,
-                 and never pushed off: it takes the third row when needed.
-     After a hail alert, the Daily row carries an optional ZIP box filled
-     from the ZIP they searched, else the ZIP nearest the spot (agsist's
-     data/zip-grid.json picks the ZIP files, the bids network's data/zips
-     gives the centers; nothing within 15 mi leaves it blank). Source tags
-     onemore:<what they gave>, with onemore:hail-alert and
-     onemore:elevator-watch for the hail alert and the elevator alerts.
-     2026-10-23 (Sig, Oct 23 promo asks):
-       gauge     the rain gauge waitlist (topic rain-gauge, the list /rain-gauge
-                 keeps; Sig writes to it when the first batch is ready), after
-                 a county rain notice (rainyear: or rain-month:) or a hail alert,
-                 never twice. Its words are data/rain-print.json gauge_hook (line,
-                 then link) when set, else GAUGE_HOOK. The waitlist's own One more?
-                 is rain-gauge.html's (only: the Daily). */
+  /* 2026-10-20, "One more?" after the alert signups too, and the extras */
   var GAUGE_HOOK = 'The rain gauge waitlist: a better gauge is in the works, and the list hears first';
   function gaugeHook() {
     return getJ('/data/rain-print.json').then(function (c) {
@@ -868,7 +810,7 @@
         /* the same list: no source, so the worker keeps where they signed up */
         send: function () { return post(EP, { email: email, reports: true }); },
         ok: 'Report-day emails are on.' };
-      /* 2026-11-04 (Sig): Funds this week is also offered after a Daily signup on any page, last, when there is room */
+      /* 2026-11-04: Funds this week is also offered after a Daily signup on any page, last, when there is room */
       if ((kind.cot || gave === 'daily') && topic !== 'cot' && had.indexOf('cot') < 0 && !noticeDone('cot')) O.cot = {
         label: esc('Funds this week: where the big funds sit in corn, soybeans, wheat and cattle, one short email after each COT report'),
         send: function () { return notice({ email: email, source: source, topic: 'cot', daily: false, askId: 'onemore' }); },
@@ -885,7 +827,7 @@
         .filter(function (k) { return k !== 'cot' || kind.cot; });   /* off a COT page, Funds this week waits at the end */
       /* a notice or alert: the Daily first, then what fits the page, then the gauge */
       var order = (gave === 'daily' ? lead.concat(base) : ['daily'].concat(lead, base.slice(1))).filter(function (k, i, a) { return a.indexOf(k) === i; });
-      /* ctx.only: the ids a page allows (the rain gauge waitlist offers the Daily alone, Sig 2026-10-23) */
+      /* ctx.only: the ids a page allows (the rain gauge waitlist offers the Daily alone, 2026-10-23) */
       var ids = order.filter(function (k) { return O[k] && (!ctx.only || ctx.only.indexOf(k) >= 0); }).slice(0, 3);
       /* 2026-11-05: after a Daily signup Funds this week always gets a row when the reader lacks it;
          with ZIP, rain and rent all on offer it takes the third place, not a fourth */
@@ -1029,26 +971,29 @@
       document.body.style.paddingBottom = show ? h + 'px' : '';
     });
   }
-  /* 2026-10-20 (Sig):
-     - the bar shows at most once a browser session (agsist_bar_seen, set
-       the first time it is on screen); before this it came back on every
-       page of a visit until it was closed;
-     - a first visit gets it too, but only after the reader has used the
-       page: on a phone past half the page or 40 seconds on it, on a wider
-       screen 40 seconds (time the tab is hidden does not count). A second
-       visit or later gets it as before;
-     - one Daily ask a page: where the page shows its own ask (a page ask,
-       the homepage hero line, the cash bid box, a rent, rain year or ARC/PLC
-       notice ask) the bar stays away. The footer band and the menu box do
-       not count. The PRF grid notice does not count either: PRF pages keep
-       the bar (Sig, Oct 20). */
+  /* 2026-10-20: */
   var BAR_SEEN = 'agsist_bar_seen', ENGAGE_S = 40;
+  /* /cash-bids (2026-11-09): the bar is back on this page, but only once the results have shown, and with
+     its own source tag, bar-cash-bids, so the signups can be compared with the box's page:cash-bids over two weeks.
+     The page's one-line box does not count as "the page's own ask" here. */
+  function cashBidsPage() { return /^\/cash-bids(\.html)?\/?$/.test(location.pathname); }
+  function resultsShown() {
+    var b = document.getElementById('best-bids-section');
+    try { return !!b && window.getComputedStyle(b).display !== 'none'; } catch (e) { return false; }
+  }
+  function whenResults(fn) {
+    var b = document.getElementById('best-bids-section');
+    if (!b || !window.MutationObserver) return;
+    var mo = new MutationObserver(function () { if (resultsShown()) { mo.disconnect(); fn(); } });
+    mo.observe(b, { attributes: true, attributeFilter: ['style', 'class', 'hidden'] });
+  }
   function ownAsk() {
     var a = document.querySelectorAll('[data-signup-ask],[data-bid-alerts]');
     for (var i = 0; i < a.length; i++) {
       var el = a[i];
+      if (cashBidsPage() && el.hasAttribute('data-bid-alerts')) continue;
       if (el.closest('#sa-bar,footer,#topnav,#drawer,[data-signup-hide],[data-prf-notice]')) continue;
-      if (/^(footer|menu-desk|menu-phone|bar)$/.test(el.getAttribute('data-source') || '')) continue;
+      if (/^(footer|menu-desk|menu-phone|bar|bar-cash-bids)$/.test(el.getAttribute('data-source') || '')) continue;
       if (/^prf:/.test(el.getAttribute('data-topic') || '')) continue;
       if (el.hidden || el.closest('[hidden]')) continue;
       return true;
@@ -1057,16 +1002,11 @@
   }
   function barOk() {
     var p = location.pathname.replace(/\/+$/, '') || '/';
-    /* No sticky bar where it covers the work or is the wrong ask: the briefing
-       and its archive (/daily/2026-10-11), the field tools and print sheets,
-       the sponsor pages, the store-or-sell worksheet (2026-10-11), and /prf
-       itself (2026-10-12; its county pages keep it, Sig Oct 20). Fast Facts
-       (2026-10-23): its one ask is the inline Daily ask under the first card,
-       drawn only once a place is open, so the bar never stands in for it. */
+    /* No sticky bar where it covers the work or is the wrong ask: the briefing */
     if (/^\/(daily|field-scout|fast-facts|rain-print|sponsor|sponsor-kit|sponsor-apply|sponsor-report|store-or-sell|prf)(\.html)?$/.test(p)
         || /^\/daily\/[^/]+$/.test(p)) return false;
-    /* Page types with one page-matched ask (Sig, 2026-10-23: the bar opened 0.5% of the time it
-       showed). The bar stays off them even when the reader has already asked, which hides the ask:
+    /* Page types with one page-matched ask (2026-10-23: the bar opened 0.5% of the time it
+ showed). The bar stays off them even when the reader has already asked, which hides the ask:
        the state pages' rent notice (not the /rent hub), the four futures pages, ARC/PLC and its
        county pages, and the break-even, grain bin and yield tools. */
     if (/^\/rent\/[^/]+$/.test(p) || /^\/(corn|soybean|wheat|cattle)-futures-prices(\.html)?$/.test(p)
@@ -1075,6 +1015,7 @@
     try { if (Date.now() < +(localStorage.getItem('agsist_bar_snooze') || 0)) return false; } catch (e) {}
     try { if (sessionStorage.getItem(BAR_SEEN) === '1') return false; } catch (e) {}
     if (document.getElementById('sa-bar')) return false;
+    if (cashBidsPage() && !resultsShown()) return false;
     return !ownAsk();
   }
   function engaged(fn) {
@@ -1088,6 +1029,7 @@
     if (phone) window.addEventListener('scroll', sc, { passive: true });
   }
   function bar() {
+    if (cashBidsPage() && !resultsShown()) { whenResults(bar); return; }
     if (!barOk()) return;
     if (visits() >= 2) openBar();
     else engaged(function () { if (barOk()) openBar(); });
@@ -1098,7 +1040,7 @@
     var b = document.createElement('aside');
     b.id = 'sa-bar'; b.className = 'sa-bar is-off';
     b.setAttribute('aria-label', 'AGSIST Daily signup');
-    b.innerHTML = '<div class="sa-bar-in"><div data-signup-ask="' + esc(BAR_TEXT) + '" data-source="bar" data-variant="bar"></div>'
+    b.innerHTML = '<div class="sa-bar-in"><div data-signup-ask="' + esc(BAR_TEXT) + '" data-source="' + (cashBidsPage() ? 'bar-cash-bids' : 'bar') + '" data-variant="bar"></div>'
       + '<button type="button" class="sa-x" aria-label="Close the AGSIST Daily signup">✕</button></div>';
     document.body.appendChild(b);
     barEl = b;

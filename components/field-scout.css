@@ -560,7 +560,7 @@
 .fs-god-chip{min-height:44px}
 @media(max-width:560px){.fs-vigor-word{font-size:1.1rem}.fs-god-slider{min-width:100%}}
 
-    /* ── mobile overhaul (Sig, 2026-07-19): bigger map, fewer buttons, safe taps ── */
+    /* ── mobile overhaul (2026-07-19): bigger map, fewer buttons, safe taps ── */
     .fs-ghostbar{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:1200;display:flex;gap:8px;align-items:center;width:max-content;max-width:94vw;background:var(--fs-glass-bg-strong);border:1px solid var(--brand,#daa520);border-radius:var(--card-r);padding:9px 12px;box-shadow:0 4px 18px rgba(0,0,0,.55);font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text)}
     .fs-ghostbar .fs-ghost-yes{background:var(--brand-fill,var(--brand,#daa520));color:#0a1206;border:none;border-radius:8px;font-family:inherit;font-weight:800;font-size:.82rem;padding:.6rem .9rem;cursor:pointer;min-height:44px}
     .fs-ghostbar .fs-ghost-no{background:transparent;color:var(--text-dim);border:1px solid var(--line-2,#2a3133);border-radius:8px;font-size:1rem;padding:.5rem .7rem;cursor:pointer;min-height:44px}

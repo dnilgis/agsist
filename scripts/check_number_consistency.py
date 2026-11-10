@@ -36,7 +36,7 @@ Rules (id: what must agree):
                    fertilizer.html CROPS and its printed line == breakeven.html
                    FERT.r == the pounds in fertilizer-prices.json programs
   fert-head        fertilizer.html description AND the baked body line
-                   (<!--BAKE:fert-bar-->, Sig Oct 19): each named price == the
+                   (<!--BAKE:fert-bar-->, Oct 19): each named price == the
                    shared price file, each state named belongs to that price,
                    its date range sits inside the oldest-to-newest range of the
                    file, and the body names the same prices and dates as the
@@ -393,7 +393,7 @@ def rule_fert_head(c):
     rows = {r["key"]: r for r in d.get("prices") or [] if r.get("key")}
     _, desc = head_of(page)
     _fert_text(c, rows, desc, "description")
-    # Sig Oct 19: the body is baked with the same prices (bake_seo.py
+    # The owner Oct 19: the body is baked with the same prices (bake_seo.py
     # body_fertilizer). It is checked against the file on its own, and
     # against the description: one price shown one way on the page.
     bm = re.search(r"<!--BAKE:fert-bar-->(.*?)<!--/BAKE-->", page, re.S)

@@ -232,7 +232,7 @@ check("no footer supporter is live while a daily sponsor is being reported", () 
     "footer-strip views and supporter_click would be counted as the sponsor's. Register `slot` as a GA4 " +
     "custom dimension and set SLOT_DIMENSION, or keep one of the two off.");
 });
-/* Nov 4, 2026 (Sig: "move the codes to feedbag"): the link tokens live only in the private
+/* Nov 4, 2026: the link tokens live only in the private
    repo (scripts/sponsor_publish.py refuses one shorter than 16 hex), so the public registry
    carries none and no report file is published. test/sponsor-private.test.mjs scans the tree. */
 check("no sponsor token in the public registry, and no public report folder", () => {
@@ -327,7 +327,7 @@ check("the ad's CSS lives in one file", () => {
 });
 
 console.log("\nTHE PAGE RIBBON (\"Sponsor this page\")");
-/* 2026-10-08 (Sig): on a phone the ribbon sat above the tool, and on some pages
+/* 2026-10-08: on a phone the ribbon sat above the tool, and on some pages
  * above the H1 and the breadcrumb. The rule: it comes after the page's first
  * answer or result, never above the title. Each page carries its own copy of
  * the ribbon (and rent/*.html get theirs from build_state_rent_pages.py), so
@@ -340,7 +340,7 @@ const ribbonPages = [...readdirSync(ROOT).filter((f) => f.endsWith(".html")),
 check("every page that ships the ribbon puts it below the H1 and the breadcrumb", () => {
   // 76: /cash-rent, /land-tenure and /storage-crunch retired to stubs (2026-10), taking their ribbons with them
   // 75: /presell-calculator merged into /harvest-price-tracker (2026-10), its slot removed from sponsor-slots.json
-  // 72: five pages merged into the page a reader already uses (Oct 22-23, Sig; scripts/moved_pages.py): /archive,
+  // 72: five pages merged into the page a reader already uses (Oct 22-23; scripts/moved_pages.py): /archive,
   //     /conditions-yield, /elevators, /foreign-land, /whats-priced-in; their slots left sponsor-slots.json with them
   assert.ok(ribbonPages.length >= 72, "only " + ribbonPages.length + " pages carry the ribbon; the pages have moved");
   for (const [f, s] of ribbonPages) {
@@ -367,7 +367,7 @@ check("the ribbon's link is a 44px tap target", () => {
 });
 
 /* ── AN UNSOLD SLOT SHOWS NOTHING ───────────────────────────────────────
-   2026-10-11 (Sig, "tone it down, whatever that looks like"). Five reviewers
+   2026-10-11. Five reviewers
    read the house ads, open ribbons, pulsing OPEN pills and prices as the site
    advertising that nothing had sold. The rule: a placement shows only when it
    is sold. Unsold, nothing is drawn; the one way in is the footer's quiet
@@ -432,8 +432,8 @@ check("the footer strip ships hidden and empty; loader.js shows it only for an a
   assert.ok(ret > 0 && show > ret, "the strip is shown before the active-supporter check");
   assert.match(fn, /s\.active === true/);
 });
-// Oct 18 menu (Sig approved): the one Advertise link moved from the bottom row to the "Work with us" column.
-// Oct 22 (Sig: "I don't see it in the footer or header"): the column folds on phones, so the always-open
+// Oct 18 menu: the one Advertise link moved from the bottom row to the "Work with us" column.
+// Oct 22: the column folds on phones, so the always-open
 // bottom row gets one plain "Advertise with AGSIST" line too. Exactly those two, nothing else.
 check("the footer keeps one quiet Advertise link in the Work with us column and one in the bottom row", () => {
   const i = FOOTER.indexOf('<span class="footer-h">Work with us</span>');

@@ -8,7 +8,7 @@ disagree the first time it changes (2026-10-07: the footer said $25/week while
 the card had moved on). The sponsor kit pages (/sponsor, /sponsor-apply) keep
 their prices this way.
 
-An UNSOLD "Sponsor this page" ribbon carries no text at all (Sig, 2026-10-19):
+An UNSOLD "Sponsor this page" ribbon carries no text at all (2026-10-19):
 since 2026-10-11 it is hidden on the page (components/styles.css), and the
 "$29/mo, first month free" it still carried was read only by crawlers that skip
 CSS. Each ribbon is now an empty aside with the slot id and nothing else:

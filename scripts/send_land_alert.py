@@ -11,7 +11,7 @@ sales recorded the month before within that radius, and marks it with POST /noti
 only after the send went through. A row already marked for that month (mo) is never mailed again,
 so any number of runs is safe. A month with no sales to list sends nothing and marks nothing.
 
-WHICH MONTH EACH READER GETS (Sig, Nov 3, 2026, option 1). The month just ended, when every state
+WHICH MONTH EACH READER GETS (Nov 3, 2026, option 1). The month just ended, when every state
 within the reader's radius has published it (land_alert.ready()). When one has not (Wisconsin posts its
 transfer returns about a month behind), the month before, if it is ready and the reader has not had it,
 said plainly in the subject and the first line ("September is the newest month Wisconsin has published;
@@ -33,20 +33,20 @@ MODES (the same three as send_rain_month.py):
   dry      the default. Counts the list (and, without --month, what it would get now: counts by data
            month and by the state not posted yet) and renders samples (a made-up address and link id)
            into the log. Without --month a sample is what a reader there gets now. Sends nothing.
-  preview  Sig's test inbox only (SIG_TEST_EMAILS, else SIG_TO), one email per sample
+  preview  the owner's test inbox only (SIG_TEST_EMAILS, else SIG_TO), one email per sample
            (--sample, default Chetek 54728 at 25 mi and Charleston, IL 61920 at 25 mi), with
-           "[Preview]" in the subject. BUILD-RULES 13: this is the copy that goes through the spam
+           "[Preview]" in the subject. build rule 13: this is the copy that goes through the spam
            and link checkers before the list gets anything. The list is never read for addresses.
-  send     the list. Refused unless LANDSALES_MONTHLY_LIVE=1 (Sig turns it on; the workflow
-           passes the repo variable) and the month is the one just ended.
+  send     the list. Refused unless LANDSALES_MONTHLY_LIVE=1 (the owner turns it on; the workflow
+ passes the repo variable) and the month is the one just ended.
 
-THE SENDING ROUTE: the same SMTP_* and FROM_ADDR secrets as the Daily. BUILD-RULES 12 (no site
-email through Sig's own Google account) is the target; until Plan A sending is migrated, Sig's
+THE SENDING ROUTE: the same SMTP_* and FROM_ADDR secrets as the Daily. build rule 12 (no site
+email through the owner's own Google account) is the target; until Plan A sending is migrated, the owner's
 Oct 23 decision is that new list emails go the way the Daily does now. Plan A is a swap of those
 secrets; nothing in this file changes then.
 
     python3 scripts/send_land_alert.py                                  # dry run
-    PREVIEW=1 python3 scripts/send_land_alert.py                        # Sig's test inbox only
+    PREVIEW=1 python3 scripts/send_land_alert.py                        # the owner's test inbox only
     SEND=1 LANDSALES_MONTHLY_LIVE=1 python3 scripts/send_land_alert.py
     python3 scripts/send_land_alert.py --month 2026-09 --out <dir>       # sample renders, send nothing
     python3 scripts/send_land_alert.py --selftest                       # fake HTTP and SMTP; no network
@@ -56,7 +56,7 @@ LANDSALES_MONTHLY_LIVE, SIG_TEST_EMAILS / SIG_TO (preview), BIDS_BASE (the ZIP t
 bids site), MAX_PER_RUN (default 300).
 
 The log carries counts only: no address and no reader's ZIP is ever printed, error lines included.
-Reply-To is news@agsist.com. The stop link carries no ZIP (BUILD-RULES 10): topic=landsales stops
+Reply-To is news@agsist.com. The stop link carries no ZIP (build rule 10): topic=landsales stops
 every land sale email of that address and nothing else.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
@@ -158,7 +158,7 @@ def update_url(year, m0, repo):
 
 
 def sale_url(r, repo):
-    """The sale's own row on its county sale page (Sig, Nov 3, 2026): SITE/land-sales/<state>/<county>?utm...#s-<sale id>.
+    """The sale's own row on its county sale page (Nov 3, 2026): SITE/land-sales/<state>/<county>?utm...#s-<sale id>.
     The id is land_alert.sale_id (a hash, never a name); build_land_sales gives the row that id. A county page
     not in this checkout: the farm sales hub instead, so every sale line still has its one link."""
     p = "land-sales/%s/%s" % (LA.STATE_SLUGS.get(r["st"], ""), LA.county_slug(r["county"]))
@@ -334,7 +334,7 @@ def render(email, base, secret, lid, parts, from_addr, preview=False):
 def due(zip5, radius, mo, ly, lm, land, zips, today, repo, cache=None):
     """What one reader gets now: (parts, why, (year, m0)). mo: the newest month the reader was mailed
     ("YYYY-MM" or ""). The month just ended when it is ready for every state near; else the month before,
-    when it is ready and newer than mo, with the line that says why (Sig, Nov 3, 2026). Never older.
+    when it is ready and newer than mo, with the line that says why (Nov 3, 2026). Never older.
     why: send, done (mailed for the month just ended), wait-data (the newer month not posted and nothing
     else due), empty, outside, bad-zip, zip-table."""
     cache = {} if cache is None else cache
@@ -756,7 +756,7 @@ def selftest():
                 "news@agsist.com").get_body(("plain",)).get_content()
     ck("the month's update page linked once it is built", "the biggest buyers, the biggest sales, unusual prices and the best value per acre: https://agsist.com/land-sales/2026-09?" in t2, t2[-1400:])
     os.remove(os.path.join(tmp, "land-sales", "2026-09.html"))
-    # Indiana (Sig, Oct 27): an Indiana ZIP gets its sales, the email says what Indiana's records carry, no names
+    # Indiana (Oct 27): an Indiana ZIP gets its sales, the email says what Indiana's records carry, no names
     import json
     os.makedirs(os.path.join(tmp, "data", "land", "in"), exist_ok=True)
     icols = ["doc", "date", "price", "acres", "tac", "np", "cls", "conv", "pid", "muni", "legal", "exempt", "grantor", "grantee", "ac1"]
@@ -913,7 +913,7 @@ def selftest():
     w, s = Worker(), SMTP()
     rc, log = go(["--send", "--month", "2026-08"], w, s, "2026-10-03 10:00", {"LANDSALES_MONTHLY_LIVE": "1"})
     ck("a send is only for the month just ended", rc == 1 and not s.sent and not w.log, log)
-    # the route is the Daily's (Sig, Oct 23: until Plan A); a preview goes to Sig's test inbox on it
+    # the route is the Daily's (Oct 23: until Plan A); a preview goes to the owner's test inbox on it
     w, s = Worker(), SMTP()
     rc, log = go(["--sample", "54001"], w, s, "2026-10-03 10:00", {"PREVIEW": "1", "SIG_TO": "sig@example.org", "SMTP_HOST": "smtp.example.net"})
     ck("preview to Sig's test inbox on the current route (the list is not touched)", rc == 0 and s.sent == ["sig@example.org"] and not w.log, log)
@@ -951,7 +951,7 @@ def selftest():
     rc, log = go(["--send", "--max", "1"], w, s, "2026-10-03 10:00", {"LANDSALES_MONTHLY_LIVE": "1"})
     ck("--max caps a run", rc == 0 and len(s.sent) == 1 and "2 left for the next run" in log, log)
 
-    # preview: Sig's test inbox only
+    # preview: the owner's test inbox only
     w, s = Worker(), SMTP()
     rc, log = go(["--sample", "54001:25,54001:10"], w, s, "2026-10-03 10:00", {"PREVIEW": "1", "SIG_TO": "sig@example.org"})
     ck("preview: Sig only, each sample, [Preview] subject, list untouched", rc == 0 and s.sent == ["sig@example.org", "sig@example.org"]
@@ -984,7 +984,7 @@ def selftest():
 
 
 def lag_selftest(ck, C):
-    """The Nov 3, 2026 case (Sig's option 1), from fixture files and made-up readers: Wisconsin had posted
+    """The Nov 3, 2026 case (the owner's option 1), from fixture files and made-up readers: Wisconsin had posted
     its transfer returns through September (fetched Oct 18, read again Nov 3 with nothing newer),
     Illinois had October. No date here comes from the clock."""
     import json
@@ -1026,7 +1026,7 @@ def lag_selftest(ck, C):
     ck("ready: Illinois October, read Nov 3 with records into October", LA.ready(land, "IL", lf, 2026, 9))
     ck("fetched is not checked: the stamp says the state was read Nov 3", land.seen("WI", wf) == "2026-11-03" and land.seen("IL", lf) == "2026-11-03")
 
-    # the samples Sig previews: what a reader gets now
+    # the samples the owner previews: what a reader gets now
     p1, why1, ym1 = due("54451", 10, "", 2026, 9, land, zips, "2026-11-03", tmp)
     m1 = render("a@example.com", "https://w.dev", "sec", email_links.SAMPLE_LID, p1, "news@agsist.com") if p1 else None
     t1 = m1.get_body(("plain",)).get_content() if m1 else ""
@@ -1156,7 +1156,7 @@ def lag_selftest(ck, C):
     rc, log = go(["--catch-up"], "2026-11-19 13:45", s5)
     ck("and the next catch-up mails nobody", rc == 0 and not s5.msgs, log)
 
-    # every sale links to its own row on the county sale page (Sig, Nov 3): build the pages from these files
+    # every sale links to its own row on the county sale page (Nov 3): build the pages from these files
     # the way land-data does, then check each sale line's one link against the built page
     import build_land_sales as BS
     from pathlib import Path as _P

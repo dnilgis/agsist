@@ -1,4 +1,4 @@
-// The sponsor portal, simplified (Sig, Oct 28, 2026: "a bit busy").
+// The sponsor portal, simplified (Oct 28, 2026).
 // First screen: name, one status pill, four numbers for the last 7 days (each
 // with its meaning and as-of date, a zero reads "0 so far"), then the ad.
 // Everything else is one tap away in a collapsed section, never gone.
@@ -56,7 +56,7 @@ function serve() {
 
 // Each report opens on a clock an hour after its own file was generated and runs on: the page reads "today" for the
 // flight, the counts and a demo's expiry, so a later clock (a January run) found the demo expired and drew no numbers
-// (BUILD-RULES 50).
+// (build rule 50).
 const genAt = (r) => Date.parse(REPORT(r).generated) + 3600e3;
 async function open(browser, port, r, w, hash = "") {
   const ctx = await browser.newContext({ viewport: { width: w, height: 844 }, serviceWorkers: "block" });
@@ -112,7 +112,7 @@ test("browser: every sponsor's first screen, every section reachable, short, sti
           if (x.n.trim() === "0") assert.equal(x.u.trim(), "so far", tag + x.k + ": a zero reads 0 so far");
           if (x.n.trim() === "-") assert.ok(x.m.trim(), tag + x.k + ": a dash says why");
         }
-        // the click rate: never a rate under 100 views (Sig, Nov 4: "-" and "Too few views to judge yet", the
+        // the click rate: never a rate under 100 views (Nov 4 and "Too few views to judge yet", the
         // honest-numbers rule); over 100 it is the file's own clicks / times seen for the 7 days shown
         const w7 = d.pending || d.withheld ? null : (d.windows || []).find((x) => x.days === 7) || d.totals || {};
         if (!w7 || !w7.viewable) assert.equal(k[2].n.trim(), "-", tag + "no rate shown over zero views");

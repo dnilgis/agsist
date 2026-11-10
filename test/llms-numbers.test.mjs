@@ -1,4 +1,4 @@
-/* llms.txt "Latest numbers" (Nov 2, 2026; Sig: useful numbers where answer
+/* llms.txt "Latest numbers" (Nov 2, 2026; useful numbers where answer
  * engines look, each with its date). Every figure comes from the file the
  * site's own pages read, stated with that file's date; nothing is carried over
  * or guessed. scripts/build_llms_txt.py writes them; the daily sitemap job

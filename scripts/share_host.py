@@ -2,7 +2,7 @@
 """share_host.py: where the share images live (Nov 4, 2026; growth plan, phase 1).
 
 WHY. The share images (og:image, twitter:image) are 68 MB of the published site: the Farmland Atlas cards
-(farmland-atlas/og/, 3,202 PNGs) and the Daily cards (data/social/, one JPG a day). Sig's Nov 4 decision: three
+(farmland-atlas/og/, 3,202 PNGs) and the Daily cards (data/social/, one JPG a day). The owner's Nov 4 decision: three
 repos, one job each; the public repo dnilgis/agsist-data serves files that pages point at, from
 https://dnilgis.github.io/agsist-data/ at the same paths. Social sites accept an og:image on another host.
 

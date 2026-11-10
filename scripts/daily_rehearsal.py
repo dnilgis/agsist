@@ -3,9 +3,7 @@
 daily_rehearsal.py -- tomorrow's Daily, rehearsed the evening before.
 
 WHY (Nov 3 2026). A self-test that compared its fixture with live data broke
-overnight and held the morning's Daily for two hours. Sig: "Before a calendar
-boundary (month end, DST, holiday, year end, report windows) run the suite with
-a future date." This runs every evening, so every boundary is covered the night
+overnight and held the morning's Daily for two hours.  This runs every evening, so every boundary is covered the night
 before it arrives.
 
 WHAT IT RUNS, with send off and nothing published or committed:
@@ -28,7 +26,7 @@ writer's cost is not worth a rehearsal. Steps 5 and 6 judge tonight's data,
 not tomorrow's, so only a crash there fails the rehearsal; a block is reported
 as a note. Steps 1 to 4 fail on any failure.
 
-A failure mails Sig once (scripts/log_safe.owner_mail), writes the job summary,
+A failure mails the owner once (scripts/log_safe.owner_mail), writes the job summary,
 and exits 1 so the run goes red where the lead sees it. No address, count or
 reader link anywhere.
 

@@ -1,4 +1,4 @@
-/* State-targeted sponsor (Sig, Oct 28, 2026; RootLot in CA, NV, TX; Oregon dropped the same day).
+/* State-targeted sponsor (Oct 28, 2026; RootLot in CA, NV, TX; Oregon dropped the same day).
  * components/geo-sponsor.js, data/geo-sponsors.json, the hook in components/loader.js.
  * The pure part runs in node; the page cases run in Chromium with Playwright routes
  * answering data/geo-sponsors.json and the worker's GET /where.
@@ -28,7 +28,7 @@ const ENTRY = {
   cta_text: "See it", url: "https://example.com/start?x=1", phone: null, logo: null, utm_campaign: "geo-test",
 };
 const DATA = (o = {}) => ({ sponsors: [Object.assign({}, ENTRY, o)] });
-// the pages draw the shipped RootLot entry, switched on (what readers will see once Sig says start)
+// the pages draw the shipped RootLot entry, switched on (what readers will see once the owner says start)
 const LIVE = (o = {}) => ({ sponsors: [Object.assign({}, JSON.parse(read("data/geo-sponsors.json")).sponsors.find((x) => x.id === "rootlot"), { active: true }, o)] });
 
 test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), no dates, Sig's copy, its own logo, a facts line, no phone", () => {
@@ -39,7 +39,7 @@ test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), no date
   assert.equal(e.active, true, "Sig said start, Oct 28");
   assert.equal(e.start, null); assert.equal(e.end, null);
   assert.equal(e.headline, "Put Your Root Down");
-  // Nov 5 (Sig, "make his ad pop"): the body is one line of facts from the private notes
+  // Nov 5: the body is one line of facts from the private notes
   assert.equal(e.body, "Trees and plants \u00b7 Shipped direct from California growers \u00b7 CA, NV and TX");
   assert.equal(e.cta_text, "Root Down Now");
   assert.equal(e.url, "https://rootlot.com/shop");
@@ -283,7 +283,7 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
       assert.equal(a.href, "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=state-page");
       assert.match(a.text, /Sponsor/); assert.match(a.text, /Put Your Root Down/); assert.match(a.text, /Root Down Now/);
       assert.equal(await pg.$(".geo-spon .sa-phone, .geo-spon .sa-facts"), null, w + ": no phone, no facts row");
-      // Nov 5 (Sig, "make his ad pop"): its logo at the left at a fixed size, the site's ad orange on the button and the outline
+      // Nov 5: its logo at the left at a fixed size, the site's ad orange on the button and the outline
       const look = await pg.evaluate(() => {
         const g = document.querySelector(".geo-spon"), img = g.querySelector(".sa-logo img"), cta = g.querySelector("a.sa-cta");
         const rgb = (c) => (c.match(/[\d.]+/g) || []).slice(0, 3).map(Number);

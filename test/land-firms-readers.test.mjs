@@ -1,5 +1,5 @@
 /**
- * Land auction firms readers (Sig, Nov 8, 2026; step 2 after the capture, PR for fx/land-firms-readers).
+ * Land auction firms readers (Nov 8, 2026; step 2 after the capture, PR for fx/land-firms-readers).
  * scripts/read_land_firms.py reads the saved pages of Wieman, Younger, Horning and Martin's into
  * data/land/auctions/<firm>.json in the record shape of read_schrader.py: facts only, no buyer, farmland only,
  * a county only when exactly one county and one state are named, the firm's credit and a link per record.

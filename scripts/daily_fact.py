@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-daily_fact.py -- "I didn't know that" (was "I never knew that"; Sig, Oct 27) in the Daily (Sig, Oct 22 2026): one fact
+daily_fact.py -- "I didn't know that" (was "I never knew that"; Oct 27) in the Daily (Oct 22 2026): one fact
 a day that makes a reader stop. Never invented, never unsourced. Nov 1: "everything a farmer should know".
 
 Two kinds, each with one of the CATEGORIES below:
@@ -203,8 +203,8 @@ def _h(s):
 def _key(x):
     """Order inside a category, as one hex string (so _neg still works on it):
       "0" + hash   a computed fact (ours): first in its category each cycle, as before the list came in;
-      "1" + order  a pool entry with a send "order" (the Nov 2, 2026 list of 233, already in send order: feedbag
-                   notes/chatgpt/2026-11-01-answers/README.md), in that order;
+      "1" + order  a pool entry with a send "order" (the Nov 2, 2026 list of 233, already in send order: the private repo
+                   the private notes, in that order;
       "2" + hash   any other pool entry, by the fixed hash of its id.
     Adding the ordered list never changes a day before its "added" date: those days never saw it."""
     o = x.get("order")

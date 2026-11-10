@@ -211,7 +211,7 @@ def daily_rec(vals, snows):
 
 
 def recent30(vals, nv):
-    """The county's last 30 days for the home page's Local conditions card (Sig, Nov 4, 2026):
+    """The county's last 30 days for the home page's Local conditions card (Nov 4, 2026):
     [inches, usual or None, percent or None] from the same days the daily file carries (packed and
     unpacked, so it is the county page's own "Last 30 days" figure), "m" when a day in the window has
     no reading of its own, None (left out) when the year has fewer than 30 days so far."""
@@ -341,8 +341,7 @@ def build_state(src, st, year, edate, C, fetched):
         daily[fips] = daily_rec(x["vals"][:s["days"]], x["snows"][:s["days"]])
     return {"schema": SCHEMA, "state": st, "year": int(year), "edate": edate, "fetched": fetched,
             "normals": ("1991-2020" if period else "current") if has_norm else None,
-            "pick": 4,   # 2: mountain sites ranked last (county_rain.mark_mountain); 3: and a full snowfall record (county_rain.pick_order); 4: that record over NOAA normals (Sig, 2026-10-20); the pages say so
-            "source": "NOAA daily records through RCC-ACIS (MultiStnData)",
+            "source": "NOAA daily records through RCC-ACIS",
             "stations_in_counties": seen, "counties": out, "none": none, "_daily": daily}
 
 
@@ -687,8 +686,8 @@ def selftest():
     ok(_pick([_hi, _lo1, _lo2, _near[1]]) == "LOW ONE", f"a station far above the county's others is picked last: {_pick([_hi, _lo1, _lo2, _near[1]])}")
     _lo1["meta"]["elev"] = 5900
     ok(_pick([_hi, _lo1, _near[1]]) == "HIGH CAMP", "a station only a little higher keeps the usual order")
-    ok(build_state(_Src([_val]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z").get("pick") == 4, "the data file says which pick rule it used")
-    # Sig's rule (2026-10-15): where snow is normal, a station with full rain AND
+    ok(build_state(_Src([_val]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z").get("pick") is None, "the data file does not say how a station is picked")
+    # The owner's rule (2026-10-15): where snow is normal, a station with full rain AND
     # snowfall records beats a nearer gauge whose snowfall has gaps, within 10 mi
     # farther or twice as far. Story County IA style: the real Ames 1.5 NNE
     # CoCoRaHS days (95 snowfall gaps, 7.8 mi from the middle) against a co-op
@@ -710,7 +709,7 @@ def selftest():
        "Story IA: a co-op 14 mi out with rain and snowfall beats the 7.8 mi gauge with snowfall gaps")
     ok(_st_pick([_gauge, _st_row("COOP 30 N", "130000 2", 30.0, _ap, _cs)]) == "AMES 1.5 NNE",
        "past 10 mi farther and twice as far, the nearer gauge stays")
-    # Sig changed the rule 2026-10-20: the full snowfall record now wins over the NOAA-normals tier
+    # The owner changed the rule 2026-10-20: the full snowfall record now wins over the NOAA-normals tier
     ok(_st_pick([_gauge, _st_row("COOP 14 N", "130000 2", 14.0, _ap, _cs, nrm="M")]) == "COOP 14 N",
        "a full record of rain and snowfall beats a nearer gauge with normals whose snowfall has gaps (Sig, Oct 20)")
     ok(_st_pick([_gauge, _st_row("COOP 30 N", "130000 2", 30.0, _ap, _cs, nrm="M")]) == "AMES 1.5 NNE",
@@ -726,7 +725,7 @@ def selftest():
        f"real days: a whole snowfall record beats the Ames gauge's normals: {_st_pick([_g2, _al])}")
     _oa = build_state(_Src([_g2, _al]), "IA", 2026, _sx["as_of"], _ST, "2026-10-14T00:00:00Z")
     _ca = next(iter(_oa["counties"].values()))
-    ok(_ca["usual"] is None and _ca["pct"] is None and _oa["pick"] == 4, "the swap drops the usual year: no normal, no percent, and the file says pick 4")
+    ok(_ca["usual"] is None and _ca["pct"] is None and "pick" not in _oa, "the swap drops the usual year: no normal, no percent, and no pick rule in the file")
     _gappy = ["M" if 40 <= i < 51 else x for i, x in enumerate(_ap)]
     ok(_st_pick([_gauge, _st_row("COOP 14 N", "130000 2", 14.0, _gappy, _cs)]) == "AMES 1.5 NNE",
        "a co-op with 11 rain days missing is not a full record of both")
@@ -741,7 +740,7 @@ def selftest():
     # snowfall comes in the third column and is packed beside the rain
     _sn = {"meta": _val["meta"], "data": [[r[0], r[1], "1.5" if i == 3 else "T" if i == 4 else "0.0"] for i, r in enumerate(_val["data"])]}
     _o = build_state(_Src([_sn]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z")
-    # the last 30 days (Sig, Nov 4, 2026: the home card's 30-day rain against normal): every day its own
+    # the last 30 days (Nov 4, 2026: the home card's 30-day rain against normal): every day its own
     # reading, else "m"; the usual is the same 30 days' normals; fewer than 30 days so far: none
     _v30 = ["0.00"] * 10 + ["0.10"] * 25 + ["T"] * 5
     _n30 = [0.05] * 40

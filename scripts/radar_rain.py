@@ -74,7 +74,7 @@ SCHEMA = "agsist-radar-rain/1"
 NI, NJ, DEG = 7000, 3500, 0.01
 LA1, LO1 = 54.995, -129.995          # first cell center (north-west), lon in -180..180
 
-POOL = 4                 # 0.01 deg cells averaged 4 x 4 -> 0.04 deg (about 2.8 x 2 mi); Sig chose it Oct 17, 2026 to halve each run
+POOL = 4                 # 0.01 deg cells averaged 4 x 4 -> 0.04 deg (about 2.8 x 2 mi); the owner chose it Oct 17, 2026 to halve each run
 PAD = 0.3                # degrees of neighbor around each state's box, for the map
 MM_PER_IN = 25.4
 MISSING = -1
@@ -340,6 +340,42 @@ def despike(q):
     return q, int(bad.sum())
 
 
+# MRMS squares that read rain on dry days while every square around them read
+# none. Each is no data in every window. (lat, lon, the case that put it here)
+BAD_CELLS = (
+    (48.78, -121.82, "Mount Baker, WA: 0.50 to 1.16 in a day on dry days from Oct 19 to Nov 3 2026, "
+                     "its 24 neighbors 0.00 to 0.01; 12.91 in for the 7 days to Nov 9"),
+)
+
+
+def mask_bad_cells(geo, q):
+    """Set the BAD_CELLS squares to no data. geo: a header (x0, y0, d)."""
+    q = q.copy()
+    for lat, lon, _ in BAD_CELLS:
+        c = int(round((lon - geo["x0"]) / geo["d"]))
+        r = int(round((geo["y0"] - lat) / geo["d"]))
+        if 0 <= r < q.shape[0] and 0 <= c < q.shape[1]:
+            q[r, c] = MISSING
+    return q
+
+
+def clean_windows(geo, grids):
+    """grids: [(window dict, int grid)]. Mask the known bad squares, despike
+    each window, then blank a square in EVERY window when any window blanked
+    it (a bad square must not print 0.82 in for 24 hours while its 7 days say
+    no data). Each window dict gets 'blanked': squares this cleanup removed."""
+    gone = None
+    for _, q in grids:
+        d, _ = despike(mask_bad_cells(geo, q))
+        cut = (d == MISSING) & (q != MISSING)
+        gone = cut if gone is None else (gone | cut)
+    out = []
+    for w, q in grids:
+        cut = gone & (q != MISSING)
+        out.append((dict(w, blanked=int(cut.sum())), np.where(cut, MISSING, q).astype(q.dtype)))
+    return out
+
+
 def predict_residual(q):
     """Gradient predictor (the PNG/LOCO-I 'a + b - c' guess): each cell minus
     left + above - above-left. First row: minus left; first column: minus above."""
@@ -420,6 +456,20 @@ def lookup(h, q, lat, lon):
 
 # ---------------------------------------------------------------- the county gauges
 
+def morning_gauge(s):
+    """True for a county station the radar can be checked against: a NOAA
+    co-op gauge (ACIS sid type 2) or a CoCoRaHS gauge, both read in the
+    morning. Airport stations (type 1) close their day at midnight, and SNOTEL
+    mountain sites share the CoCoRaHS sid type but carry net "noaa"; both stay
+    out. Story County IA heads its page with the Gilbert CoCoRaHS gauge, which
+    a co-op-only rule dropped in favor of the farther Boone gauge."""
+    s = s or {}
+    sid = str(s.get("sid", ""))
+    if not s.get("ll"):
+        return False
+    return sid.endswith(" 2") or s.get("net") == "cocorahs"
+
+
 def gauge_days(st, end_day, n=GAUGE_DAYS):
     """{fips: {name, sid, net, ll, mi, county, days: {date: 'value'}}} for the
     state's county rain stations (morning readers only: CoCoRaHS and NOAA
@@ -436,7 +486,7 @@ def gauge_days(st, end_day, n=GAUGE_DAYS):
     for fips, c in d.get("counties", {}).items():
         s = c.get("station") or {}
         sid = str(s.get("sid", ""))
-        if not s.get("ll") or not (sid.endswith(" 2") or sid.endswith(" 10")):
+        if not morning_gauge(s):
             continue
         rec = dd["counties"].get(fips)
         if not rec:
@@ -575,11 +625,12 @@ def build(states, now=None):
     for st in states:
         r0, r1, c0, c1 = crop_index(boxes[st])
         ny, nx = (r1 - r0) // POOL, (c1 - c0) // POOL
-        grids = []
-        for wid, (a, span) in fields.items():
-            q, spikes = despike(quantize(pool_mean(a[r0:r1, c0:c1])))
-            grids.append(({"id": wid, "start": iso(end - dt.timedelta(hours=span)), "end": iso(end), "hours": span,
-                           "blanked": spikes}, q))
+        geo = {"x0": round(LO1 + (c0 + (POOL - 1) / 2) * DEG, 4), "y0": round(LA1 - (r0 + (POOL - 1) / 2) * DEG, 4),
+               "d": round(DEG * POOL, 4)}
+        grids = clean_windows(geo, [
+            ({"id": wid, "start": iso(end - dt.timedelta(hours=span)), "end": iso(end), "hours": span},
+             quantize(pool_mean(a[r0:r1, c0:c1])))
+            for wid, (a, span) in fields.items()])
         gl = []
         for g in sorted(gauge[st].values(), key=lambda x: x["sid"]):
             dates, gv, rv = [], [], []
@@ -596,8 +647,7 @@ def build(states, now=None):
                            "ll": g["ll"], "page": g.get("page"), "dates": dates, "gauge": gv, "radar": rv})
         hdr = {
             "schema": SCHEMA, "st": st, "source": SOURCE, "data_end": iso(end),
-            "x0": round(LO1 + (c0 + (POOL - 1) / 2) * DEG, 4), "y0": round(LA1 - (r0 + (POOL - 1) / 2) * DEG, 4),
-            "d": round(DEG * POOL, 4), "nx": nx, "ny": ny, "unit": "0.01 in", "missing": MISSING,
+            "x0": geo["x0"], "y0": geo["y0"], "d": geo["d"], "nx": nx, "ny": ny, "unit": "0.01 in", "missing": MISSING,
             "gauge_day_end": "12:00Z", "gauges": gl,
         }
         n = write_bin(os.path.join(OUT, st.lower() + ".bin"), hdr, grids)
@@ -712,6 +762,39 @@ def selftest():
     g_, n_ = despike(core)
     ok(n_ == 0 and g_[4, 4] == 400, "despike keeps a 4 in core inside 1.5 in rain")
 
+    # 2c. the real Mount Baker square (crops of the published wa.bin): no data
+    #     in every window, its neighbors untouched
+    bk = json.load(open(os.path.join(FIXTURE, "baker-cell.json")))
+    for case in bk["cases"]:
+        geo = {k: case[k] for k in ("x0", "y0", "d")}
+        wins = [({"id": w}, np.array(v, dtype=np.int16)) for w, v in case["windows"].items()]
+        got = dict((w["id"], (w, q)) for w, q in clean_windows(geo, wins))
+        for wid, (w, q) in got.items():
+            src = np.array(case["windows"][wid], dtype=np.int16)
+            ok(q[4, 4] == MISSING, "Baker %s %s still reads %s" % (case["data_end"], wid, q[4, 4]))
+            keep = np.ones_like(src, dtype=bool)
+            keep[4, 4] = False
+            ok(np.array_equal(q[keep], src[keep]), "Baker %s %s: a neighbor changed" % (case["data_end"], wid))
+        ok(lookup(dict(geo, nx=9, ny=9), got["7d"][1], 48.78, -121.82) is None, "Baker lookup %s" % case["data_end"])
+    # one window blanks a spike: every window loses that square (Oct 21 2026:
+    # 24h kept at 0.82 in while 3 days, 7 days and month were blanked), even
+    # with the mask list empty
+    oct21 = bk["cases"][0]
+    wins = []
+    for w, v in oct21["windows"].items():
+        a = np.array(v, dtype=np.int16)
+        if w != "24h":
+            a[4, 4] = 9500           # the 95 in the 72-hour totals carried in October
+        wins.append(({"id": w}, a))
+    saved = BAD_CELLS
+    try:
+        globals()["BAD_CELLS"] = ()
+        got = clean_windows({k: oct21[k] for k in ("x0", "y0", "d")}, wins)
+    finally:
+        globals()["BAD_CELLS"] = saved
+    ok(all(q[4, 4] == MISSING and w["blanked"] == 1 for w, q in got), "a spike in one window blanks every window")
+    ok(int(np.array(oct21["windows"]["24h"])[4, 4]) == 82, "fixture: Oct 21 24h is the published 0.82 in")
+
     # 3. a file, written and read, and a point lookup
     import tempfile
     with tempfile.TemporaryDirectory() as d:
@@ -737,6 +820,15 @@ def selftest():
 
     # 5. gauge strings
     ok([gauge_value(v) for v in ("1.50", "T", "M", "S", "0.40A", "0.00")] == [150, 0, None, None, None, 0], "gauge values")
+
+    # 6. which county stations the radar is checked against (real records)
+    gilbert = {"ll": [-93.6511, 42.1079], "name": "Gilbert, 0.2 mi W", "net": "cocorahs", "sid": "US1IASR0019 6"}
+    boone = {"ll": [-93.8909, 42.0417], "name": "Boone", "net": "noaa", "sid": "130807 2"}
+    airport = {"ll": [-92.4013, 42.5544], "name": "Waterloo Municipal Airport", "net": "noaa", "sid": "94910 1"}
+    snotel = {"ll": [-113.33, 48.3], "name": "Pike Creek", "net": "noaa", "sid": "USS0013A26S 6"}
+    ok(morning_gauge(gilbert) and morning_gauge(boone), "Story County's Gilbert CoCoRaHS gauge and a co-op gauge are kept")
+    ok(not morning_gauge(airport) and not morning_gauge(snotel), "an airport and a SNOTEL site stay out")
+    ok(not morning_gauge(dict(gilbert, ll=None)) and not morning_gauge(None), "no location, no gauge")
 
     for f in fails:
         print("FAIL", f)

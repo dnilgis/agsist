@@ -383,7 +383,7 @@ def selftest():
     txt = m.get_body(("plain",)).get_content()
     htm = m.get_body(("html",)).get_content()
     ck("subject names the county, the total and the year", m["Subject"] == "Story County, Iowa: 38.40 inches of rain in 2026", m["Subject"])
-    ck("the page's own answer sentence", "38.40 inches of rain fell in 2026 at the weather station 8 miles west-southwest of Ames, Story County, Iowa." in txt
+    ck("the page's own answer sentence", "38.40 inches of rain fell in 2026 at the weather station 8 miles west-southwest of Ames in Story County, Iowa." in txt
        and "2.28 inches more than a usual year (106% of usual)." in txt, txt[:400])
     ck("links the county page it was asked on", SITE + "/rain/iowa/story-county?" + UTM in txt)
     ck("links the Rain Print for that place and year", SITE + "/rain-print?place=Ames%2C+IA&year=2026" in txt)

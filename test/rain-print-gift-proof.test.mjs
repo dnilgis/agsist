@@ -183,14 +183,14 @@ test("a gift that can't be saved keeps the buyer on the sheet with a way on", { 
   }, { posts, stripe, formFail: true });
 });
 
-/* Sig, 2026-10-18: the page must not rely on Stripe for gift details. This
+/* 2026-10-18: the page must not rely on Stripe for gift details. This
    year's print as a gift (made in January) asks who it's for and the card
    note on the page, and Pay posts them (gift_january) before checkout. */
 test("this year's gift: no line says Stripe asks for the gift details", () => {
   assert.ok(!/At checkout you can say who it|add their name and your note at checkout|Payment Link asks who it's for/.test(JS), "no line leaves the gift to Stripe");
   assert.match(JS, /\$\('rp-gift-fields'\)\.hidden = false;/, "the step 3 boxes always show");
   assert.match(JS, /function pgOffered\(\) \{ return canOrder\(\) && !\(GIFT && GIFT\.usable\); \}/, "the review sheet offers the gift for this year's print too");
-  // 2026-10-19 (board B, Sig): Stripe's shipping field stays on, so the sheet no longer asks for the address too
+  // 2026-10-19 (board B): Stripe's shipping field stays on, so the sheet no longer asks for the address too
   assert.ok(!/Use the same one/.test(HTML + JS), "no 'type it again' line");
   assert.match(JS, /\$\('rp-pg-addr-wrap'\)\.hidden = file \|\| stripeShips;/, "the address box shows only without a payment link");
 });

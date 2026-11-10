@@ -1,4 +1,4 @@
-/* In the frame (Sig, Nov 4): Sig's own three crops of the frame maker's pictures under What you get on
+/* In the frame (Nov 4): the owner's own three crops of the frame maker's pictures under What you get on
  * /rain-print, used as he cropped them (resized only). Each picture exists, is a small webp, carries its
  * size, loads lazily and has its alt text; the page's own text names no brand.
  *

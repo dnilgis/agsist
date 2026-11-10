@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Last week's question, this week's answer (kit v2 part 2, Sig Nov 6): data/cot-questions.json.
+"""Last week's question, this week's answer (kit v2 part 2, Nov 6): data/cot-questions.json.
 
     python3 scripts/cot_questions.py             # writes data/cot-questions.json from data/cot-history.json
     python3 scripts/cot_questions.py --selftest  # no files
