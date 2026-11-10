@@ -37,7 +37,15 @@ test("the backfill is there: dropped cash-bids, rain and ARC/PLC pages and /elev
     assert.ok(manifest[rel] || fs.existsSync(path.join(ROOT, rel)), `${rel}: neither a pointer nor a live page`);
     if (!manifest[rel]) assert.ok(!fs.readFileSync(path.join(ROOT, rel), "utf8").includes('content="noindex, follow"'), `${rel}: live again, so not a pointer`);
   }
-  assert.ok(n("rain/") >= 39, `rain pointers ${n("rain/")}`);
+  /* The 50 rain pointers of Nov 9: the Nov 10 refetch brought 21 of those counties back as real pages, so a
+     count floor broke on good news here too. Each address must still answer, as a pointer or a live page. */
+  const rainWas = JSON.parse(fs.readFileSync(path.join(ROOT, "test/fixtures/pointers/rain-pointers-2026-11-09.json"), "utf8"));
+  assert.equal(rainWas.length, 50);
+  for (const rel of rainWas) {
+    assert.ok(manifest[rel] || fs.existsSync(path.join(ROOT, rel)), `${rel}: neither a pointer nor a live page`);
+    if (!manifest[rel]) assert.ok(!fs.readFileSync(path.join(ROOT, rel), "utf8").includes('content="noindex, follow"'), `${rel}: live again, so not a pointer`);
+  }
+  assert.ok(n("rain/") >= 1, `rain pointers ${n("rain/")}`);
   assert.ok(n("arc-plc/connecticut") >= 9, `arc-plc pointers ${n("arc-plc/connecticut")}`);
   assert.equal(manifest["elevator-websites.html"]?.to, "/cash-bids");
   assert.equal(manifest["arc-plc/connecticut/fairfield-county.html"]?.to, "/arc-plc", "no Connecticut page left: the hub");
