@@ -375,6 +375,112 @@ for script, plural in SENDERS:
               W("a run killed after 3 mails left the day UNFLAGGED; the next run's retry of a published, "
                 "unsent issue would mail those 3 readers a second copy"))
 
+# ── THE WATCH SENDERS (Nov 10, 2026): the same pacing, lifted the same way ──────────────────
+# Their loops run from `sent, failed = 0, []` to `tally.sent = sent`. Each is cut out and run with a
+# fake server: a deferred job goes out at the end of the run on a fresh connection and is not a
+# failure; ignoring pace.defer() would leave it on the failed list.
+import ast  # noqa: E402
+import builtins  # noqa: E402
+import textwrap  # noqa: E402
+
+WATCH = {"send_elevator_watch.py": ("confirms", "chg"), "send_price_watch.py": ("confirms", "fires"),
+         "send_watch.py": ("confirms", "chg"), "send_zip_alert.py": ("confirms", "sends")}
+
+
+def lift_watch(script):
+    src = (ROOT / "scripts" / script).read_text(encoding="utf-8")
+    i, j = src.find("    sent, failed = 0, []"), src.find("\n    tally.sent = sent")
+    if i < 0 or j <= i:
+        check(False, "%s: the watch loop is no longer delimited by `sent, failed = 0, []` ... `tally.sent = sent`" % script)
+        return None
+    return textwrap.dedent(src[i:j])
+
+
+class Stub:
+    """Anything a watch loop names that this test does not care about: callable, indexable, iterable."""
+    def __call__(self, *a, **k):
+        return Msg(a[0]) if a and isinstance(a[0], str) and "@" in a[0] else Stub()
+
+    def __getitem__(self, k):
+        return Stub()
+
+    def __getattr__(self, k):
+        return Stub()
+
+    def __iter__(self):
+        return iter(())
+
+
+class Msg:
+    def __init__(self, to):
+        self.to = to
+
+
+def run_watch(script, refuse):
+    body = lift_watch(script)
+    if body is None:
+        return None
+    first, second = WATCH[script]
+    jobs1 = [("w%d@example.com" % k, "id%d" % k, "label", 1, 2, 3, 4) for k in range(3)]
+    jobs2 = [("v%d@example.com" % k, "id%d" % k, "label", 1, 2, 3, 4) for k in range(2)]
+    st = {"sent": [], "connects": 0, "printed": [], "owner": []}
+    refuse = {k: list(v) for k, v in refuse.items()}
+
+    class FakeSMTP:
+        def __init__(self, *a, **k):
+            st["connects"] += 1
+            self.closed = False
+        def starttls(self, **k): pass
+        def login(self, *a): pass
+        def quit(self): pass
+        def send_message(self, msg):
+            if refuse.get(msg.to):
+                raise refuse[msg.to].pop(0)
+            st["sent"].append(msg.to)
+
+    names = {n.id for n in ast.walk(ast.parse(body)) if isinstance(n, ast.Name)}
+    ns = {n: Stub() for n in names if not hasattr(builtins, n)}
+    ns.update({
+        "smtplib": type("S", (), {"SMTP": FakeSMTP, "SMTPServerDisconnected": smtplib.SMTPServerDisconnected,
+                                  "SMTPConnectError": smtplib.SMTPConnectError, "SMTPException": smtplib.SMTPException}),
+        "ssl": type("C", (), {"create_default_context": staticmethod(lambda: None)}),
+        "time": type("T", (), {"sleep": staticmethod(lambda s: None)}),
+        "send_pace": send_pace, "cap": 50, "env": lambda name, d=None: d or "587",
+        first: jobs1, second: jobs2, "oconf": [], "osend": [], "oend": [], "watchers": [],
+        "print": lambda *a, **k: st["printed"].append(" ".join(str(x) for x in a)),
+        "log_safe": type("L", (), {"mask_text": staticmethod(log_safe.mask_text), "mask": staticmethod(log_safe.mask),
+                                   "owner_mail": staticmethod(lambda s, l: st["owner"].append(list(l)) or True)}),
+    })
+    if script == "send_zip_alert.py":
+        ns["sew"] = type("W", (), {"link_ids_from": staticmethod(lambda w, cs: (cs, 0)),
+                                   "env": staticmethod(lambda name, d=None: d or "587"),
+                                   "worker": staticmethod(lambda *a, **k: None)})
+    exec(compile(body, "<lifted from %s>" % script, "exec"), ns)
+    st["failed"] = ns.get("failed")
+    return st
+
+
+for script in WATCH:
+    W = lambda m: script + ": " + m
+    st = run_watch(script, {})
+    if st is None:
+        continue
+    check(len(st["sent"]) == 5 and not st["failed"] and st["connects"] == 1,
+          W("a clean watch run: %d of 5 sent, failed %r, %d connections" % (len(st["sent"]), st["failed"], st["connects"])))
+    soft = smtplib.SMTPRecipientsRefused({"w1@example.com": (451, b"4.7.1 try again later")})
+    st = run_watch(script, {"w1@example.com": [soft]})
+    check(len(st["sent"]) == 5 and st["sent"][-1] == "w1@example.com" and not st["failed"],
+          W("a deferred watch email was not sent again at the end (sent %d, last is it: %r, failed %d)"
+            % (len(st["sent"]), st["sent"][-1:] == ["w1@example.com"], len(st["failed"] or []))))
+    check(st["connects"] == 2, W("the retry pass did not start on one fresh connection (%d)" % st["connects"]))
+    bounces.PENDING[:] = []
+    hard = smtplib.SMTPRecipientsRefused({"v0@example.com": (550, b"5.1.1 no such user")})
+    st = run_watch(script, {"v0@example.com": [hard, hard]})
+    check(len(st["sent"]) == 4 and len(st["failed"]) == 1 and len(bounces.PENDING) == 1,
+          W("a hard bounce: one failure, recorded once, not retried (sent %d, recorded %d)" % (len(st["sent"]), len(bounces.PENDING))))
+    check("@example.com" not in "\n".join(st["printed"]), W("a full address reached the public log"))
+    bounces.PENDING[:] = []
+
 if fails:
     for f in fails:
         print("FAIL: " + f)
@@ -382,4 +488,4 @@ if fails:
     sys.exit(1)
 print("send loops: %d passed across %d senders — a dropped socket costs one email, "
       "not the tail of the list, and never a second blast to everyone"
-      % (passes, len(SENDERS)))
+      % (passes, len(SENDERS) + len(WATCH)))

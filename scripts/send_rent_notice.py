@@ -464,6 +464,27 @@ def selftest():
     w, s = Worker(), SMTP(refuse={"before@example.com", "early@example.com"})
     rc, log = go(["--send"], w, s)
     ck("all refused: exit 1, nothing marked", rc == 1 and not w.marks, log)
+    # one reader on two topics gets both notices (the pacer keeps one email per reader AND topic)
+    class Worker2(Worker):
+        def __init__(self):
+            Worker.__init__(self)
+            self.t = {("both@example.com", "rent:ia"): {"ts": ms("2026-10-11 09:00"), "sent": None},
+                      ("both@example.com", "rent:wi"): {"ts": ms("2026-10-11 09:00"), "sent": None}}
+
+        def __call__(self, method, url, body=None):
+            u = SN.urllib.parse.urlsplit(url)
+            if method == "GET" and u.path == "/notice-list":
+                return [{"email": e, "topic": tp, "ts": v["ts"], "src": tp, "sent": v["sent"], "lid": "00000000000000ab"}
+                        for (e, tp), v in self.t.items() if not v["sent"]]
+            if method == "POST" and u.path == "/notice-mark":
+                self.marks.append((body["email"], body["topic"]))
+                self.t[(body["email"], body["topic"])]["sent"] = 2
+                return {"ok": True}
+            raise AssertionError(method + " " + u.path)
+    w, s = Worker2(), SMTP()
+    rc, log = go(["--send"], w, s, git=lambda repo, st, y: ms("2027-08-26 10:00") if st == "WI" else None)
+    ck("one reader on two topics gets both notices", s.sent == ["both@example.com", "both@example.com"]
+       and sorted(w.marks) == [("both@example.com", "rent:ia"), ("both@example.com", "rent:wi")], (s.sent, w.marks, log))
     old = dict(ia, years=[2025, 2026], counties=[dict(c, rent={"nonirr": {"2026": 1.0}}) for c in ia["counties"]])
     json.dump(old, open(os.path.join(tmp, "data", "cash-rent", "IA.json"), "w"))
     w, s = Worker(), SMTP()
