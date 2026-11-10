@@ -172,8 +172,10 @@ test("every page and script that loads price-local.js asks for the same version"
     .concat(readdirSync(join(ROOT, "components")).filter((f) => f.endsWith(".js")).map((f) => "components/" + f));
   const seen = {};
   for (const f of files) for (const m of read(f).matchAll(/components\/price-local\.js\?v=(\d+)/g)) (seen[m[1]] = seen[m[1]] || []).push(f);
-  assert.deepEqual(Object.keys(seen), ["12"], "price-local.js versions: " + JSON.stringify(seen));
-  for (const f of ["index.html", "markets.html", "breakeven.html", "fast-facts.html"]) assert.ok(seen["12"].includes(f), f + " loads price-local.js");
+  // one version everywhere; the exact number is owned by test/price-local.test.mjs
+  assert.equal(Object.keys(seen).length, 1, "price-local.js versions: " + JSON.stringify(seen));
+  const v = Object.keys(seen)[0];
+  for (const f of ["index.html", "markets.html", "breakeven.html", "fast-facts.html"]) assert.ok(seen[v].includes(f), f + " loads price-local.js");
 });
 
 /* ---------------------------------------------------------------- browser */
