@@ -1959,7 +1959,7 @@ ANSWER_CROPS = 2              # crops named in the answer sentence
 DESC_MAX = 160
 HIST_NOTE = (" The &ldquo;Basis since&rdquo; box shows the day each elevator&rsquo;s basis last changed; before Oct 11, 2026 "
              "it also drew on a licensed bid feed.")
-HIST_JS = '<script src="/components/elev-names.js?v=1" defer></script><script src="/components/cb-basis-hist.js?v=4" defer></script>\n'
+HIST_JS = '<script src="/components/elev-names.js?v=2" defer></script><script src="/components/cb-basis-hist.js?v=5" defer></script>\n'
 
 
 def head_name(bd, with_town=True):
@@ -4740,7 +4740,7 @@ def _selftest_answer():
     assert box and json.loads(html_unescape(box.group(1))) == [["Op n0", ["Fremont"]]], \
         "Op n1's only key names no month it can draw, so it is not offered"
     assert "-31" not in fr and "\u221231\u00a2" not in fr.split("Nebraska middle")[0].split("cbt-hist")[-1]
-    assert fr.count('/components/cb-basis-hist.js?v=4') == 1 and fr.count('/components/elev-names.js?v=1') == 1 and "&ldquo;Basis since&rdquo; box shows" in fr.split("<summary>Sources and terms</summary>")[1]
+    assert fr.count('/components/cb-basis-hist.js?v=5') == 1 and fr.count('/components/elev-names.js?v=2') == 1 and "&ldquo;Basis since&rdquo; box shows" in fr.split("<summary>Sources and terms</summary>")[1]
     assert "<summary>Basis since Sep 1</summary>" in fr and "since June" not in fr, "the heading is the first logged date"
     assert fr.index("cbt-hist\"") > fr.index('id="bid-email"'), "after the email box, with the other cards"
     assert "cb-basis-hist.js" not in ia and "Basis since" not in ia, "no logged change in the state: no box"

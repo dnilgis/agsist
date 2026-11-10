@@ -108,5 +108,5 @@ test("every site that cleans or matches a name uses the shared key", () => {
     const h = read(page), i = h.indexOf("/components/elev-names.js?v="), j = h.indexOf("/components/" + after);
     assert.ok(i > 0 && j > i, `${page} loads elev-names.js before ${after}`);
   }
-  assert.match(read("scripts/build_cash_bid_pages.py"), /HIST_JS = '<script src="\/components\/elev-names\.js\?v=1" defer><\/script><script src="\/components\/cb-basis-hist\.js/);
+  assert.match(read("scripts/build_cash_bid_pages.py"), /HIST_JS = '<script src="\/components\/elev-names\.js\?v=2" defer><\/script><script src="\/components\/cb-basis-hist\.js/);
 });

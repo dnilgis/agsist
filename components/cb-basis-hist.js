@@ -39,7 +39,7 @@
     if (names()) return Promise.resolve(names());
     if (!namesReady) namesReady = new Promise(function (ok) {
       var sc = document.createElement('script');
-      sc.src = '/components/elev-names.js?v=1';
+      sc.src = '/components/elev-names.js?v=2';
       sc.onload = function () { ok(window.elevNames || null); };
       sc.onerror = function () { ok(null); };
       document.head.appendChild(sc);
