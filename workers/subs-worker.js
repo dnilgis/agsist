@@ -5,6 +5,13 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.67 (2026-11-10): REPORT-DAY RESULT. POST /report-live takes the graded result of a USDA
+ *   report from the report-day job (.github/workflows/report-day-live.yml, scripts/report_live.py),
+ *   signed by that job, in one fixed shape (rows of USDA's figure against the trade, counts, the
+ *   WASDE balance lines) and nothing else; a rehearsal writes a separate test record. GET
+ *   /report-live (?test=1 for the rehearsal's) answers {ok, live} for /usda-calendar, the homepage
+ *   card and the report-day email, so they show the result before the commit reaches the site.
+ *   No new binding or secret. Every other route answers as before.
  * v5.66 (2026-11-09): A FAILED EMAIL JOB START IS KEPT ON THE ORDER. The Stripe webhook and
  *   /rp-order/approve write dispatch {at, job} on the order record after starting
  *   rp-buyer-email.yml ("started", "no token", "HTTP 401", "failed"), and /rp-order/list
@@ -2960,6 +2967,78 @@ async function stripeSigProblem(header, raw, secret, nowS) {
   const want = await hmacHex(secret, t + "." + raw);
   return v1.some(v => safeEq(v, want)) ? "" : "bad signature";
 }
+// ---------- v5.67: THE REPORT-DAY RESULT ----------
+// One record per kind: rlive:live (what the pages and the email read) and
+// rlive:test (the rehearsal). The shape is fixed and every string is plain text;
+// scripts/report_live.py validate() holds the same rules.
+const RLIVE_MAX_BYTES = 12000;
+const RLIVE_SKEW_S = 300;
+const RLIVE_SAFE = /^[A-Za-z0-9 .,\/()%+:&'$-]*$/;
+const RLIVE_KEY = /^[a-z0-9_]{1,40}$/;
+const RLIVE_TOP = ["v", "test", "release", "report", "generated", "counts", "big", "rows", "balance"];
+const RLIVE_ROW = ["key", "label", "unit", "actual", "expected", "low", "high", "usda_current", "surprise", "gap_pct", "context"];
+const RLIVE_BAL = ["crop", "my", "prev_month", "stocks", "stocks_prev", "price", "price_prev"];
+const RLIVE_GRADES = ["bullish", "bearish", "in line", ""];
+const rliveKeys = (o, want) => o && typeof o === "object" && !Array.isArray(o)
+  && Object.keys(o).length === want.length && want.every((k) => Object.prototype.hasOwnProperty.call(o, k));
+const rliveNum = (v) => v === null || (typeof v === "number" && Number.isFinite(v) && Math.abs(v) <= 1e9);
+const rliveText = (v, n) => typeof v === "string" && v.length <= n && RLIVE_SAFE.test(v);
+// -> "" when the record is one this route keeps, else why not
+function rliveProblem(p, nowMs) {
+  if (!p || typeof p !== "object" || Array.isArray(p) || Object.keys(p).some((k) => !RLIVE_TOP.includes(k))) return "shape";
+  if (p.v !== 1 || typeof p.test !== "boolean") return "version";
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(String(p.release))) return "release";
+  const rel = Date.parse(p.release + "T00:00:00Z");
+  if (!Number.isFinite(rel)) return "release";
+  const today = Date.parse(new Date(nowMs).toISOString().slice(0, 10) + "T00:00:00Z");
+  const days = Math.round((rel - today) / 864e5);
+  if (p.test ? (days < -400 || days > 1) : Math.abs(days) > 1) return "release";
+  if (!rliveText(p.report, 60) || p.report.length < 3) return "report";
+  if (!/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z$/.test(String(p.generated))) return "generated";
+  const c = p.counts;
+  if (!rliveKeys(c, ["metrics", "in_line", "ungraded"]) || !Object.values(c).every((n) => Number.isInteger(n) && n >= 0 && n <= 60)) return "counts";
+  if (!Array.isArray(p.rows) || !Array.isArray(p.balance) || p.rows.length > 40 || p.balance.length > 3 || !(p.rows.length || p.balance.length)) return "rows";
+  for (const r of p.rows) {
+    if (!rliveKeys(r, RLIVE_ROW) || !RLIVE_KEY.test(String(r.key))) return "row";
+    if (!rliveText(r.label, 80) || !rliveText(r.unit, 16) || !rliveText(r.context, 80)) return "row text";
+    if (!RLIVE_GRADES.includes(r.surprise)) return "row grade";
+    if (!["actual", "expected", "low", "high", "usda_current", "gap_pct"].every((k) => rliveNum(r[k])) || r.actual === null) return "row number";
+  }
+  if (p.big !== null && !p.rows.some((r) => r.key === p.big)) return "big";
+  for (const b of p.balance) {
+    if (!rliveKeys(b, RLIVE_BAL) || !["corn", "soybeans", "wheat"].includes(b.crop)) return "balance";
+    if (!/^(\d{4}\/\d{2})?$/.test(String(b.my)) || !/^([A-Z][a-z]{2})?$/.test(String(b.prev_month))) return "balance";
+    if (!["stocks", "stocks_prev", "price", "price_prev"].every((k) => rliveNum(b[k]))) return "balance";
+  }
+  return "";
+}
+async function rlivePost(env, req) {
+  const h = { "Cache-Control": "no-store" };
+  if (typeof env.UNSUB_SECRET !== "string" || !env.UNSUB_SECRET) return json({ ok: false, error: "temporarily unavailable" }, 503, h);
+  const raw = await req.text();
+  if (raw.length > RLIVE_MAX_BYTES) return json({ ok: false, error: "too big" }, 413, h);
+  const ts = Number(req.headers.get("X-Report-Ts"));
+  const sig = String(req.headers.get("X-Report-Sig") || "");
+  const nowMs = Date.now();
+  if (!Number.isInteger(ts) || Math.abs(nowMs / 1000 - ts) > RLIVE_SKEW_S || !/^[0-9a-f]{64}$/.test(sig)) return json({ ok: false }, 403, h);
+  const key = await hmacHex(env.UNSUB_SECRET, "report-live|v1");
+  if (!safeEq(sig, await hmacHex(key, ts + "." + raw))) return json({ ok: false }, 403, h);
+  let p;
+  try { p = JSON.parse(raw); } catch (e) { return json({ ok: false, error: "bad json" }, 400, h); }
+  const why = rliveProblem(p, nowMs);
+  if (why) return json({ ok: false, error: why }, 400, h);
+  const k = p.test ? "rlive:test" : "rlive:live";
+  const old = await env.SUBS.get(k, "json").catch(() => null);
+  if (old && old.release === p.release && String(old.generated) > p.generated) return json({ ok: false, error: "older" }, 409, h);
+  const rec = Object.assign({}, p, { received: new Date(nowMs).toISOString().slice(0, 19) + "Z" });
+  await env.SUBS.put(k, JSON.stringify(rec), { expirationTtl: (p.test ? 14 : 60) * 86400 });
+  return json({ ok: true, release: p.release, rows: p.rows.length }, 200, h);
+}
+async function rliveGet(env, url, req) {
+  const test = url.searchParams.get("test") === "1";
+  const live = await env.SUBS.get(test ? "rlive:test" : "rlive:live", { type: "json", cacheTtl: 30 }).catch(() => null);
+  return json({ ok: true, live: live || null }, 200, Object.assign({ "Cache-Control": "public, max-age=10" }, cors(req)));
+}
 /* v5.47: the record for a paid session with no press on record, from Stripe's
    own: the key comes from the session (rpo:<created ms>:<8 hex of SHA-256 of
    the session id>), so the webhook, a retry of it and the poll all write the
@@ -3424,6 +3503,13 @@ async function handle(req, env) {
       if (cf.country !== "US" || !cf.city || !Number.isFinite(lat) || !Number.isFinite(lon)) return json({ ok: false }, 200, h);
       return json({ ok: true, city: String(cf.city).slice(0, 60), region: String(cf.region || "").slice(0, 60),
         region_code: String(cf.regionCode || "").slice(0, 3), lat: Math.round(lat * 100) / 100, lon: Math.round(lon * 100) / 100 }, 200, h);
+    }
+
+    // v5.67: the report-day result (scripts/report_live.py). Public read, signed write.
+    if (path === "/report-live") {
+      if (req.method === "GET") return rliveGet(env, url, req);
+      if (req.method === "POST") return rlivePost(env, req);
+      return json({ ok: false }, 405, cors(req));
     }
 
     // v5.33: may this visit load Google Analytics? Network type only; nothing kept.

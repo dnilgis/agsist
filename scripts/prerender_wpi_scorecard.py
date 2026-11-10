@@ -786,8 +786,13 @@ def home_usda_card(wpi):
     lr = (wpi or {}).get("latest_result") or {}
     date, rpt = lr.get("date"), lr.get("report")
     rows = [r for r in (wpi or {}).get("history") or [] if r.get("date") == date]
+    # The next report's day: on that day components/report-live.js fills this card from the
+    # worker's live result before the committed files reach the site.
+    nxt = ((wpi or {}).get("upcoming") or {}).get("date") or ""
+    live = (f' data-next="{esc(nxt)}" data-shown="{esc(date or "")}"'
+            if re.match(r"^\d{4}-\d{2}-\d{2}$", str(nxt)) else "")
     if not date or not rpt or not rows:
-        return ""
+        return f'<div class="usda-cal-card gs-card"{live} style="display:none"></div>' if live else ""
     graded = [r for r in rows if r.get("surprise") in ("bullish", "bearish", "in line")]
     off = [r for r in graded if r["surprise"] != "in line"]
     ung = len(rows) - len(graded)
@@ -814,7 +819,7 @@ def home_usda_card(wpi):
             words = f"trade {_sig(r['expected'])}. {words[:1].upper() + words[1:]}"
         items.append(f"<p>{esc(r['metric'])}: {_sig(r['actual'])}{esc(u)}, {esc(words)}.</p>")
     return (
-        '<div class="usda-cal-card gs-card">'
+        f'<div class="usda-cal-card gs-card"{live}>'
         '<div class="gs-head">'
         f'<span class="gs-t">{esc(rpt)} &middot; {_short_day(date)}</span>'
         '<a href="/usda-calendar#priced-in" class="gs-src">USDA, graded</a></div>'
