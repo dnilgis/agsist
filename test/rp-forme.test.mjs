@@ -88,7 +88,9 @@ function serve() {
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
 
-async function page(browser, port, width, worker, posts) {
+/* live: the page opens as https://agsist.com (answered from the local server, never fetched), the only host
+   where form-post.js uses the backup form (Nov 9 2026); otherwise as 127.0.0.1, where nothing goes there. */
+async function page(browser, port, width, worker, posts, live) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 }, isMobile: width < 600, hasTouch: width < 600, timezoneId: "America/Chicago" });
   const pg = await ctx.newPage();
   await pg.route("**/*", (r) => {
@@ -98,10 +100,14 @@ async function page(browser, port, width, worker, posts) {
       return worker === "ok" ? r.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' })
         : r.fulfill({ status: 400, contentType: "application/json", body: '{"error":"unknown form"}' });
     }
-    if (u.startsWith("https://formspree.io/")) { posts.push({ to: "formspree", body: r.request().postData() || "" }); return r.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' }); }
+    if (/^https?:\/\/([^/]+\.)?formspree\.io\//.test(u)) {
+      posts.push({ to: "formspree", body: r.request().postData() || "" });
+      return live ? r.fulfill({ status: 200, contentType: "application/json", body: '{"ok":true}' }) : r.abort();
+    }
+    if (live && u.startsWith("https://agsist.com/")) return r.fetch({ url: `http://127.0.0.1:${port}` + u.slice("https://agsist.com".length) }).then((resp) => r.fulfill({ response: resp }));
     return u.startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort();
   });
-  await pg.goto(`http://127.0.0.1:${port}/rain-print`, { waitUntil: "load" });
+  await pg.goto((live ? "https://agsist.com" : `http://127.0.0.1:${port}`) + "/rain-print", { waitUntil: "load" });
   return { ctx, pg };
 }
 
@@ -112,7 +118,7 @@ test("browser: opens, checks, sends to the worker or Formspree, fits at 390 and 
   try {
     for (const [width, worker] of [[390, "unknown"], [1280, "ok"]]) {
       const at = `at ${width}, worker ${worker}`, posts = [];
-      const { ctx, pg } = await page(browser, port, width, worker, posts);
+      const { ctx, pg } = await page(browser, port, width, worker, posts, true);
       assert.equal(await pg.locator("#rp-fm-form").isVisible(), false, at + ": the form starts closed");
       if (SHOTS) { await pg.locator("#rp-fm").scrollIntoViewIfNeeded(); await pg.screenshot({ path: join(SHOTS, "rain-print-help-" + width + ".png") }); }
       await pg.click("#rp-fm-open");
@@ -145,5 +151,25 @@ test("browser: opens, checks, sends to the worker or Formspree, fits at 390 and 
       assert.equal(await pg.locator("#rp-fm-form").isVisible(), false, at + ": the form closes once sent");
       await ctx.close();
     }
+  } finally { await browser.close(); srv.close(); }
+});
+
+// the real case (Oct 30 2026): from a local copy the backup form is never used; the reader is told nothing was sent
+test("browser on 127.0.0.1: an unknown kind sends nothing to formspree.io and says nothing was sent", { skip, timeout: 120000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    const posts = [];
+    const { ctx, pg } = await page(browser, port, 1280, "unknown", posts, false);
+    await pg.click("#rp-fm-open");
+    await pg.fill("#rp-fm-name", "Ann Test");
+    await pg.fill("#rp-fm-contact", "715-555-0101");
+    await pg.fill("#rp-fm-place", "Chetek, WI");
+    await pg.fill("#rp-fm-for", "My dad");
+    await pg.click("#rp-fm-submit");
+    await pg.waitForSelector("#rp-fm-out .rp-bad", { timeout: 20000 });
+    assert.match(await pg.locator("#rp-fm-out").innerText(), /nothing was sent/);
+    assert.deepEqual(posts.map((x) => x.to), ["worker"], "the worker only; no request to formspree.io");
+    await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
