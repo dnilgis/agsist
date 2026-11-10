@@ -70,15 +70,15 @@ test('every page that leads with a grain price draws the overnight line', () => 
   const fut = read('components/futures.js');
   assert.match(fut, /heroOvernight\(front\);/);
   assert.match(fut, /function heroOvernight\(q\)\{[\s\S]{0,400}AgPxStamp\.overnightHtml\(q,grain\$/);
-  assert.match(fut, /\/\^\(Read\|Last trade\|Overnight trade\)\//, 'the hero line takes the overnight stamp');
+  assert.match(fut, /if\(k==='overnight'\)return 'Overnight trade read '\+p\.at;/, 'the hero line takes the overnight stamp');
   assert.match(read('markets.html'), /AgPxStamp\.overnightHtml\(d,/);
   assert.match(read('index.html'), /AgPxStamp\.overnightHtml\(x,[\s\S]{0,200}\{short:true\}/);
   assert.match(read('components/geo.js'), /meta\.grain && meta\.priceEl && q && window\.AgPxStamp && AgPxStamp\.overnightHtml/);
   assert.match(read('components/home-yield.js'), /AgPxStamp\.overnightHtml\(fq,/, 'the swapped deferred card shows its own contract');
-  for (const p of ['corn', 'soybean', 'wheat']) assert.match(read(`${p}-futures-prices.html`), /price-local\.js\?v=11[\s\S]*futures\.js\?v=32/, p);
+  for (const p of ['corn', 'soybean', 'wheat']) assert.match(read(`${p}-futures-prices.html`), /price-local\.js\?v=12[\s\S]*futures\.js\?v=32/, p);
   // the line's box is reserved from the first paint in the overnight hours (no layout shift, test/futures-seed-note-cls)
   for (const p of ['corn', 'soybean', 'wheat']) assert.match(read(`${p}-futures-prices.html`), /id="hero-chg">[\s\S]{0,120}<\/div><div class="ph-ovn" id="hero-ovn" hidden><\/div><script>[^<]*m>=1140&&d!=='Fri'&&d!=='Sat'\)\|\|\(m<465&&d!=='Sat'&&d!=='Sun'\)/, p);
-  for (const p of ['index.html', 'markets.html']) assert.match(read(p), /price-local\.js\?v=11/, p);
+  for (const p of ['index.html', 'markets.html']) assert.match(read(p), /price-local\.js\?v=12/, p);
   assert.match(read('index.html'), /geo\.js\?v=36/);
   assert.match(read('index.html'), /home-yield\.js\?v=12/);
 });

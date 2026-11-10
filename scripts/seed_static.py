@@ -405,6 +405,13 @@ def quote_when(q, fetched):
     settle "refreshed" in session, on a Sunday."""
     live, label = quote_state(q, fetched, "grain")
     noun = "Overnight trade" if live is True and overnight_trade(q) else state_words(live)[1]
+    # 2026-11-10 (futures audit 2): in session close_time IS the fetch, so the
+    # time is when the site read the quote, not "last trade" at it. After the
+    # bell close_time is the bell and "Last trade" stays. Twin: price-local.js stampParts.
+    if noun == "Last trade" and (q or {}).get("close_kind") == "last":
+        ct, ft = (q or {}).get("close_time") or "", fetched or ""
+        if not ct or not ft or ct >= ft:
+            noun = "Read"
     return noun + (" " + label if label else "")
 
 

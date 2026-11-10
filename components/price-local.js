@@ -279,9 +279,21 @@
     else out = 'Latest delayed trades';
     return out + (read ? '. Read ' + read : '');
   }
-  /* Markup: a <time> (no data-asof, so asof.js leaves the words alone) with the full time as its title. */
+  /* The same moment in the few words a small box holds (a card, the hero, a status line): the
+     old "Last trade as of 1:46 pm CT" length, so the line does not wrap where it did not before.
+     The full sentence, with the delay in minutes, is the title. */
+  function shortStamp(q, fetched, now) {
+    var s = stampParts(q, fetched, now);
+    if (!s) return '';
+    if (s.kind === 'settle') return s.at + ' settle';
+    if (s.kind === 'read') return 'Read ' + s.at + ', delayed';
+    if (s.kind === 'overnight') return 'Overnight, read ' + s.at;
+    if (s.kind === 'bell') return 'Last trade, ' + s.at + ' bell';
+    return 'Updated ' + s.at;
+  }
+  /* Markup: a <time> (no data-asof, so asof.js leaves the words alone), the short words, the full stamp as its title. */
   function html(q, fetched, now) {
-    var s = stamp(q, fetched, now);
+    var s = shortStamp(q, fetched, now), full = stamp(q, fetched, now);
     if (!s) return '';
     var sp = stampParts(q, fetched, now), t = sp && sp.kind === 'bell' ? q.close_time : (fetched || (q && q.close_time) || '');
     var dt = (q && q.close_kind === 'settle' && (q.settle_date || q.close_date)) || t;
@@ -289,7 +301,7 @@
        OLD_SESSIONS it is greyed like any stale stamp (asof.css is-stale) */
     var a = q && q.close_kind === 'settle' ? settleAge(q.settle_date || q.close_date, now) : null;
     return '<time class="px-stamp' + (a && a.old ? ' is-stale' : '') + '" datetime="' + esc(dt) + '"' + (a && a.old ? ' data-stale=""' : '') +
-      (fetched ? ' title="Price file read ' + esc(clock(fetched, now)) + '"' : '') + '>' + esc(s) + (a && a.stale ? '<span class="asof-note"> &middot; ' + esc(a.note) + '</span>' : '') + '</time>';
+      ' title="' + esc(full) + (fetched && q && q.close_kind === 'settle' ? '. Price file read ' + esc(clock(fetched, now)) : '') + '">' + esc(s) + (a && a.stale ? '<span class="asof-note"> &middot; ' + esc(a.note) + '</span>' : '') + '</time>';
   }
   /* The age of a whole board: its OLDEST settle (2026-10-19, P4). The newest
      one let a board with one card days behind look current. Adds oldest and
@@ -374,12 +386,13 @@
   /* The line's shape before its numbers: the same words with typical-width
      figures, for a reader with a saved state, so the page holds the space
      the line will take (2026-10-19 phone audit: the homepage moved down
-     70 to 170px when it arrived). The page shows it hidden (.pl-wait). */
+     70 to 170px when it arrived). The page shows it hidden (.pl-wait). The longest
+     common shape: "the latest delayed trade" and the company count (Nov 10 2026). */
   function placeholder(st, crops) {
     var l = [];
     (crops || []).forEach(function (crop) {
       var c = (CROPS[crop] || [])[0];
-      if (c && NAMES[st]) l.push('<b>' + esc(NAMES[st]) + ' ' + c[1] + ':</b> basis <b>00¢ under</b> ' + (crop === 'soybeans' ? 'Nov' : 'Dec') + " '00 futures, about <b>$0.00</b> cash on the Oct 00 settle. <span class=\"pl-s\">The median of 000 elevators, Oct 00.</span>");
+      if (c && NAMES[st]) l.push('<b>' + esc(NAMES[st]) + ' ' + c[1] + ':</b> basis <b>00¢ under</b> ' + (crop === 'soybeans' ? 'Nov' : 'Dec') + " '00 futures, about <b>$0.00</b> cash on the latest delayed trade. <span class=\"pl-s\">The median of 000 elevators, 00 companies, Oct 00.</span>");
     });
     return l.length ? l.join('<br>') + ' <a href="/cash-bids" tabindex="-1">Bids near you &rarr;</a>' : '';
   }
@@ -441,7 +454,7 @@
     return { key: key, q: d, label: label(d.ticker) || null };
   }
 
-  var api = { headline: headline, harvest: harvest, stamp: stamp, stampParts: stampParts, DELAY: DELAY, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
+  var api = { headline: headline, harvest: harvest, stamp: stamp, stampParts: stampParts, shortStamp: shortStamp, DELAY: DELAY, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
     deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, label: label, cell: cell, lines: lines, build: build, nearLine: nearLine, placeholder: placeholder, NAMES: NAMES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgPxStamp = api;
@@ -456,6 +469,9 @@
     el.innerHTML = h; el.className += ' pl-wait'; el.setAttribute('aria-hidden', 'true'); el.hidden = false;
   };
   function settle(el, h) {
+    /* the line keeps at least the box it held, so a shorter line (a settle instead of "the latest
+       delayed trade") never pulls the page up (CLS sweep, Nov 10 2026) */
+    if (el.classList.contains('pl-wait') && h) { var hh = el.getBoundingClientRect().height; if (hh > 0) el.style.minHeight = hh + 'px'; }
     el.classList.remove('pl-wait'); el.removeAttribute('aria-hidden');
     if (h) { el.innerHTML = h; el.hidden = false; } else { el.hidden = true; el.innerHTML = ''; }
   }
@@ -526,7 +542,7 @@
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', folds); else folds();
 
   var css = doc.createElement('style');
-  css.textContent = '.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:6px;font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}' +
+  css.textContent = '.pl-line.pl-wait{visibility:hidden}.pl-line{margin:.45rem 0 .2rem;padding:.45rem .7rem;border-left:3px solid var(--green,#3a7d44);background:var(--surface,transparent);border-radius:6px;font-size:.86rem;line-height:1.5;color:var(--text-dim)}.pl-line b{color:var(--text)}.pl-line .pl-s{color:var(--text-muted);font-size:.8rem}.pl-line a{color:var(--gold);white-space:nowrap}' +
     '.ph-ovn{margin:4px 0 0 auto;max-width:26rem}.pc-ovn{margin-top:3px}.pc-ovn[hidden],.ph-ovn[hidden]{display:none}.ph-price .ph-ovn{order:4;flex-basis:100%}.px-ovn{display:block;font-size:.85em;line-height:1.4;color:var(--text-muted,#666)}.px-ovn-k{font-weight:600;color:var(--text,inherit)}.px-ovn b{color:var(--text,inherit)}.px-stamp.is-stale{color:var(--text-muted)}.px-stamp .asof-note{font-weight:600;white-space:nowrap}.px-old{filter:grayscale(1);opacity:.75}';
   (doc.head || doc.documentElement).appendChild(css);
   if (doc.readyState === 'loading') doc.addEventListener('DOMContentLoaded', boot); else boot();

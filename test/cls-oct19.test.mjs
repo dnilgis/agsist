@@ -62,7 +62,7 @@ test("fertilizer.html: the cards and the lede line are baked current from the sh
 test("price-local placeholder: same words as the line, for the saved state only", () => {
   const PL = (() => { const m = { exports: {} }; vm.runInNewContext(read("components/price-local.js"), { module: m, Intl, Date }); return m.exports; })();
   const h = PL.placeholder("IA", ["corn", "soybeans"]);
-  assert.match(h, /^<b>Iowa corn:<\/b> basis <b>00¢ under<\/b> Dec '00 futures, about <b>\$0\.00<\/b> cash on the Oct 00 settle\. <span class="pl-s">The median of 000 elevators, Oct 00\.<\/span><br><b>Iowa soybeans:<\/b> /);
+  assert.match(h, /^<b>Iowa corn:<\/b> basis <b>00¢ under<\/b> Dec '00 futures, about <b>\$0\.00<\/b> cash on the latest delayed trade\. <span class="pl-s">The median of 000 elevators, 00 companies, Oct 00\.<\/span><br><b>Iowa soybeans:<\/b> /);
   assert.match(h, /Nov '00 futures/);
   assert.match(h, / <a href="\/cash-bids" tabindex="-1">Bids near you &rarr;<\/a>$/);
   assert.equal(PL.placeholder("", ["corn"]), "");

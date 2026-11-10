@@ -14,6 +14,7 @@
 <link rel="stylesheet" href="/components/styles.css?v=28">
 <link rel="stylesheet" href="/components/asof.css?v=1">
 <script src="/components/util.js?v=20"></script>
+<script src="/components/price-local.js?v=12"></script>
 <script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script><script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
@@ -441,7 +442,7 @@ details.fold[hidden]{display:none}
 --></div><div class="ph-ovn" id="hero-ovn" hidden></div><script>/* 2026-10-20: the overnight line (futures.js heroOvernight) keeps a two-line box from the first paint in the grain overnight, 7 pm to 7:45 am CT, so it lands with no layout shift */try{(function(){var e=document.getElementById('hero-ovn'),p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute),d=p.weekday;if(e&&((m>=1140&&d!=='Fri'&&d!=='Sat')||(m<465&&d!=='Sat'&&d!=='Sun'))){e.hidden=false;e.className+=' ph-ovn-wait';e.style.minHeight='2.4em';}})();}catch(x){}</script>
     </div>
   </div>
-  <p class="pl-line" data-state-bid="corn" hidden></p>
+  <p class="pl-line" data-state-bid="corn" hidden></p><script>/* a saved state holds the line's box from the first paint, as the homepage does (CLS sweep Nov 10 2026: 0.07 to 0.12 at 390 with a saved ZIP) */try{AgPxStamp.reserve(document.currentScript.previousElementSibling);}catch(e){}</script>
   <p class="ph-plain" style="font-size:.95rem;color:var(--text-dim);margin:.45rem 0 .2rem;line-height:1.5">This is the price corn trades at on the Chicago Board of Trade for the nearest delivery month. It is the starting point for what elevators pay; your local price differs by the basis. <a href="/cash-bids">See what elevators near you pay</a>.</p>
   <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.2rem 0 .5rem">Data: CME Group futures via Yahoo Finance, delayed 10 to 25 min. Sources at the bottom of the page.</p>
 
@@ -851,7 +852,7 @@ details.fold[hidden]{display:none}
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/geo.js?v=36" defer></script>
 <script>window.AGSIST_FUTURES='corn'</script>
-<script src="/components/storesell.js?v=9"></script><script src="/components/price-local.js?v=11"></script><script src="/components/bid-filter.js?v=1"></script><script src="/components/futures.js?v=32"></script>
+<script src="/components/storesell.js?v=9"></script><script src="/components/bid-filter.js?v=1"></script><script src="/components/futures.js?v=32"></script>
 
   <script src="/components/next-links.js?v=3" defer></script>
 </body>

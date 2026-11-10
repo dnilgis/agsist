@@ -1940,13 +1940,16 @@ function pxWhat(q,fetched,ctf){
   return 'today\u2019s quote'+(fetched&&ctf?' ('+ctf(fetched)+')':'');
 }
 /* The hero line's moment, in the baked seed's words (seed_static.py quote_when,
-   state_words): "Settle Oct 16" | "Read 10:42 am CT; quotes delayed 10 to 25 min" | "Last quote".
+   state_words): "Settle Oct 16" | "Read 10:42 am CT, delayed" | "Last trade, 1:20 pm CT bell" | "Last quote".
    Night audit Oct 19, 2026: it called a Friday settle "refreshed" in session
    on a Sunday, and an answer engine can quote that as a live price. */
 function exchWhen(q,fetched){
-  var s=window.AgPxStamp&&q?AgPxStamp.stamp(q,fetched):'',m=/^(.*) settle$/.exec(s);
-  if(m)return 'Settle '+m[1];
-  if(/^(Read|Last trade|Overnight trade)/.test(s))return s;
+  /* short: the hero line held one line with "Last trade Oct 19, 10:42 a.m. CT"; the delay is under the price (heroFresh) */
+  var p=window.AgPxStamp&&AgPxStamp.stampParts&&q?AgPxStamp.stampParts(q,fetched):null,k=p&&p.kind;
+  if(k==='settle')return 'Settle '+p.at;
+  if(k==='read')return 'Read '+p.at+', delayed';
+  if(k==='bell')return 'Last trade, '+p.at+' bell';
+  if(k==='overnight')return 'Overnight trade read '+p.at;
   return 'Last quote';
 }
 /* the price stamp: price-local.js when it is on the page, asof.js otherwise */
@@ -2018,7 +2021,7 @@ AG.json('/data/prices.json')
       var __sn=document.querySelector('.px-seed-note');
       if(__sn){
         var __p=window.AgPxStamp&&AgPxStamp.stampParts?AgPxStamp.stampParts(front,data.fetched):null,__k=__p&&__p.kind;
-        var __v=__k==='settle'?'settled at':__k==='overnight'?'traded overnight near':__k==='read'||__k==='bell'?'last traded near':'last quoted near',__w=__p?(__k==='read'||__k==='overnight'?'read '+__p.at+', '+AgPxStamp.DELAY:__k==='bell'?'the '+__p.at+' bell':__p.at):'';
+        var __v=__k==='settle'?'settled at':__k==='overnight'?'traded overnight near':__k==='read'||__k==='bell'?'last traded near':'last quoted near',__w=__p?(__k==='read'||__k==='overnight'?'read '+__p.at:__k==='bell'?'the '+__p.at+' bell':__p.at):'';
         var __cr={corn:'corn',beans:'soybeans',wheat:'wheat'}[CROP_KEY]||CROP.label.toLowerCase();
         __sn.style.minHeight=__sn.offsetHeight+'px';
         __sn.innerHTML=heroLabel+' '+__cr+' '+__v+' <strong>'+grain$(front.close)+'</strong>'+(front.stale?' (last good quote)':'')+(__w?' &middot; '+(__k==='settle'||__k==='updated'?'as of ':__k==='bell'?'at ':'')+__w:'')+'.';
