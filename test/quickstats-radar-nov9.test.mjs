@@ -145,7 +145,9 @@ test("browser: quick stats at 390 px shows the yield, labels that follow the dat
     const corn = await pg.textContent("#ts-src");
     const real = Object.entries(SS).filter(([k, v]) => v.corn_prod > 0 && !v.combined && !/^(ot|other|other states)$/i.test(v.name || k)).map((e) => e[1]);
     const nCorn = real.length, fcCorn = real.filter((v) => v.forecast).length;
-    assert.ok(corn.includes(`${fcCorn} of ${nCorn} states are the USDA NASS October forecast`), corn);
+    const fm = [...new Set(real.filter((v) => v.forecast).map((v) => v.forecast_month))];
+    assert.equal(fm.length, 1, "one forecast month in the file");
+    assert.ok(corn.includes(`${fcCorn} of ${nCorn} states are the USDA NASS ${fm[0]} forecast`), corn);
     await pg.click('.ts-btn[data-cmd="wheat"]');
     const wheat = await pg.textContent("#ts-src");
     assert.doesNotMatch(wheat, /of \d+ states are|forecast/, wheat);

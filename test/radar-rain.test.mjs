@@ -131,9 +131,12 @@ test("page: one shared page, honest label, the measured numbers, FAQ in structur
   assert.ok(page.indexOf(terms[0]) > page.indexOf('id="questions"'), "the fold sits below the questions");
   assert.ok(terms[1].includes(fmt(v.stations) + " NOAA co-op rain gauges") && terms[1].includes("median " + v.wet_days.median_abs_in.toFixed(2) + " in apart"),
     "the gauge check is in the fold");
-  assert.ok(page.includes('<p class="rr-check" id="how-close">Checked against ' + fmt(v.stations) + " NOAA co-op gauges, October 1 to 13, 2026: radar and gauge were a median " +
+  // the period in words, from the file's own dates ("October 1 to 13, 2026")
+  const [p0, p1] = v.period.map((d) => new Date(d + "T12:00:00Z"));
+  const mon = (d) => d.toLocaleString("en-US", { month: "long", timeZone: "UTC" });
+  const span = mon(p0) + " " + p0.getUTCDate() + " to " + (mon(p1) === mon(p0) ? "" : mon(p1) + " ") + p1.getUTCDate() + ", " + p1.getUTCFullYear();
+  assert.ok(page.includes('<p class="rr-check" id="how-close">Checked against ' + fmt(v.stations) + " NOAA co-op gauges, " + span + ": radar and gauge were a median " +
     v.wet_days.median_abs_in.toFixed(2) + " in apart on wet days."), "one visible line, from the same file");
-  assert.equal(v.period[0], "2026-10-01"); assert.equal(v.period[1], "2026-10-13");
   // no pipeline detail in the fold or the page text (Nov 8): bucket, product codes, thresholds, UTC schedule
   const text = page.replace(/<script[\s\S]*?<\/script>/g, "");
   assert.doesNotMatch(text, /noaa-mrms-pds|MultiSensor_QPE|20 times the middle|0, 6, 12 and 18 UTC|How the numbers are worked/);
