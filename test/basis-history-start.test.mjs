@@ -126,10 +126,10 @@ test("a town page this builder wrote heads its basis box with the start day", (t
 test("the builders' selftests hold the start day", () => {
   const h = execFileSync("python3", ["scripts/build_basis_history.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
   assert.match(h, /FAILS=0/);
-  assert.match(h, /ok {3}no change file before Oct 11 is written/);
-  assert.match(h, /ok {3}the shards carry no date before Oct 11 and drop the row last seen Oct 9/);
+  assert.match(h, /ok {3}no change file before Oct 11 is written/); // pin-ok: the selftest's own line, not live data
+  assert.match(h, /ok {3}the shards carry no date before Oct 11 and drop the row last seen Oct 9/); // pin-ok: the selftest's own line, not live data
   const s = execFileSync("python3", ["scripts/build_basis_sparklines.py", "--selftest"], { cwd: ROOT, encoding: "utf8" });
-  assert.match(s, /a change logged before Oct 11, 2026 adds no point/);
+  assert.match(s, /a change logged before Oct 11, 2026 adds no point/); // pin-ok: the selftest's own line, not live data
 });
 
 test("the box names the start day in its heading and its lines", () => {
