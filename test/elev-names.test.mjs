@@ -59,6 +59,42 @@ test("the real archived names print and key as the elevator (Fosston, Montevideo
   assert.equal(E.displayName("Route 2020"), "Route 2020");
 });
 
+/* THE REAL CORPUS. The hand-picked cases above catch the rules someone thought
+   of; this runs a fixed sample of ~300 real names and towns (test/fixtures/
+   elev-names-real.json, from data/ids/elevators.json) through every key
+   function on both sides, so a copy that drifts on a name nobody listed is
+   caught by what it does. */
+const REAL = JSON.parse(read("test/fixtures/elev-names-real.json")).names;
+const REAL_FNS = { display_name: "displayName", archive_clean: "archiveClean", basis_name: "basisName",
+  fac_key: "facKey", merge_key: "mergeKey", name_key: "nameKey", nice_case: "niceCase" };
+
+test("Python and JS give the same answer on every real name in the sample, for every key function", () => {
+  const E = load();
+  assert.ok(REAL.length >= 250, "the sample is about 300 real names");
+  const py = JSON.parse(execFileSync("python3", ["-I", "-c",
+    "import sys,json;sys.path.insert(0,sys.argv[1]);import elevator_names as e\n" +
+    "R=json.load(open(sys.argv[2]))['names'];F=json.loads(sys.argv[3])\n" +
+    "print(json.dumps({'fns':{f:[getattr(e,f)(n) for n,_ in R] for f in F}," +
+    "'trade':[e.trade_key(n,t) for n,t in R],'place':[e.clean_place(t) for _,t in R]," +
+    "'nice_place':[e.nice_case(t) for _,t in R]}))",
+    ROOT + "scripts", ROOT + "test/fixtures/elev-names-real.json", JSON.stringify(Object.keys(REAL_FNS))],
+    { encoding: "utf8", maxBuffer: 32 << 20 }));
+  const bad = [];
+  for (const [fn, js] of Object.entries(REAL_FNS)) {
+    assert.equal(typeof E[js], "function", `no JS twin ${js}`);
+    REAL.forEach(([n], i) => { const g = E[js](n); if (g !== py.fns[fn][i]) bad.push(`${fn}(${JSON.stringify(n)}): py ${JSON.stringify(py.fns[fn][i])}, js ${JSON.stringify(g)}`); });
+  }
+  REAL.forEach(([n, t], i) => {
+    const g = E.tradeKey(n, t);
+    if (g !== py.trade[i]) bad.push(`trade_key(${JSON.stringify(n)}, ${JSON.stringify(t)}): py ${JSON.stringify(py.trade[i])}, js ${JSON.stringify(g)}`);
+    const c = E.cleanPlace(t);
+    if (c !== py.place[i]) bad.push(`clean_place(${JSON.stringify(t)}): py ${JSON.stringify(py.place[i])}, js ${JSON.stringify(c)}`);
+    const k = E.niceCase(t);
+    if (k !== py.nice_place[i]) bad.push(`nice_case(${JSON.stringify(t)}): py ${JSON.stringify(py.nice_place[i])}, js ${JSON.stringify(k)}`);
+  });
+  assert.deepEqual(bad, []);
+});
+
 /* The copies the drift came from: each rule's own words, anywhere but the two twins. */
 const OWN = [
   [/FAC_TAIL\s*=/, "a facility tail list"],
@@ -108,5 +144,5 @@ test("every site that cleans or matches a name uses the shared key", () => {
     const h = read(page), i = h.indexOf("/components/elev-names.js?v="), j = h.indexOf("/components/" + after);
     assert.ok(i > 0 && j > i, `${page} loads elev-names.js before ${after}`);
   }
-  assert.match(read("scripts/build_cash_bid_pages.py"), /HIST_JS = '<script src="\/components\/elev-names\.js\?v=1" defer><\/script><script src="\/components\/cb-basis-hist\.js/);
+  assert.match(read("scripts/build_cash_bid_pages.py"), /HIST_JS = '<script src="\/components\/elev-names\.js\?v=2" defer><\/script><script src="\/components\/cb-basis-hist\.js/);
 });

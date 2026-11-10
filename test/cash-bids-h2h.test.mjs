@@ -143,7 +143,7 @@ test("town pages load the history script only from the builder, and the data onl
   assert.match(src, /fetch\('\/data\/basis-sparklines\/' \+ st \+ '\.json'\)/);
   assert.ok(src.indexOf("fetch(") > src.indexOf("function open("), "nothing is fetched until the box is opened");
   const py = readFileSync(ROOT + "scripts/build_cash_bid_pages.py", "utf8");
-  assert.match(py, /HIST_JS = '<script src="\/components\/elev-names\.js\?v=1" defer><\/script><script src="\/components\/cb-basis-hist\.js\?v=4" defer><\/script>/);
+  assert.match(py, /HIST_JS = '<script src="\/components\/elev-names\.js\?v=\d+" defer><\/script><script src="\/components\/cb-basis-hist\.js\?v=5" defer><\/script>/);
 });
 
 // 2026-10-17 audit N5: the box heading names the log's first date, and the

@@ -187,7 +187,8 @@ var MON_START=/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?(?![a-
 function yy(t){return t.length===2?2000+(+t):+t;}
 function titleMon(t){t=String(t||'');return t.charAt(0).toUpperCase()+t.slice(1,3).toLowerCase();}
 function deliveryText(delivery,period){
-  var lab=String(delivery||'').trim().replace(/\s*\(\d{4}-\d{2}\)\s*$/,'').replace(/\s+/g,' ').trim();
+  var lab=String(delivery||'').trim().replace(/\s*\(\d{4}-\d{2}\)\s*$/,'').replace(/\s*\([FGHJKMNQUVXZ]\)\s*$/,'')
+    .replace(/\s+/g,' ').trim().replace(/\.+$/,'').trim().replace(/^([A-Za-z]{3})-(\d{2})$/,'$1 $2');
   var per=String(period||''),m,i;
   if((m=/^([A-Za-z]{3})[A-Za-z]*\.?\s*'?(\d{2}|\d{4})$/.exec(lab))&&MONTHS.indexOf(titleMon(m[1]))>=0)
     return titleMon(m[1])+' '+yy(m[2]);
@@ -233,7 +234,41 @@ function deliveryText(delivery,period){
     }
     if(sy)return (per.indexOf('new')===0?'New crop':'Old crop')+' '+sy[1];
   }
+  /* only months, month initials and dates ("O/N27", "DEC-JAN 2027", "20261130"): the network's period */
+  if(lab&&monthsOnly(lab,per))return deliveryText('',per)||lab;
   return lab;
+}
+var MON_WORD=/^(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*$/i;
+/* Twin of build_cash_bid_pages._months_only(): the label says nothing but the network's own period. */
+function monthsOnly(lab,per){
+  var m1=/^(\d{4})-(\d{2})$/.exec(per||''),m2=/^(\d{4})-(\d{2})\/(\d{4})-(\d{2})$/.exec(per||''),y0,a0,y1,a1,i;
+  if(m1){y0=y1=+m1[1];a0=a1=+m1[2];}else if(m2){y0=+m2[1];a0=+m2[2];y1=+m2[3];a1=+m2[4];}else return false;
+  var len=(y1-y0)*12+a1-a0+1;
+  if(!(a0>=1&&a0<=12&&a1>=1&&a1<=12)||len<1||len>12)return false;
+  var span=[];for(i=0;i<len;i++)span.push((a0-1+i)%12);
+  var r=/^(\d{1,2}) ([A-Za-z]{3}) (\d{4}) to (\d{1,2}) ([A-Za-z]{3}) (\d{4})$/.exec(lab);
+  if(r){
+    if(titleMon(r[2])!==MONTHS[span[0]]||titleMon(r[5])!==MONTHS[span[span.length-1]]||+r[3]!==y0||+r[6]!==y1)return false;
+    var last=a1===2?(y1%4===0?29:28):LAST_DAY[a1-1];
+    return +r[1]===1&&+r[4]===last;
+  }
+  var seq=[],nums=[],toks=lab.match(/[A-Za-z]+|\d+/g)||[],k,t;
+  for(k=0;k<toks.length;k++){
+    t=toks[k];
+    if(/^\d+$/.test(t))nums.push(t);
+    else if(MON_WORD.test(t))seq.push(['w',MONTHS.indexOf(titleMon(t.slice(0,3)))]);
+    else if(t.length===1||/^[JFMASOND]{3}$/.test(t))t.toUpperCase().split('').forEach(function(c){seq.push(['l',c]);});
+    else return false;
+  }
+  function fits(x,mi){return x[0]==='w'?x[1]===mi:MONTHS[mi].charAt(0)===x[1];}
+  if(seq.length&&!((seq.length===span.length&&seq.every(function(x,j){return fits(x,span[j]);}))||
+     (seq.length===2&&span.length>1&&fits(seq[0],span[0])&&fits(seq[1],span[span.length-1]))))return false;
+  var ok={};if(y0===y1){ok[String(y0)]=1;ok[String(y0).slice(2)]=1;}
+  for(k=0;k<nums.length;k++){
+    var n=nums[k];
+    if(!(ok[n]||(n.length===8&&m1&&n.slice(0,6)===String(y0)+(a0<10?'0':'')+a0)))return false;
+  }
+  return seq.length>0||!!(nums.length&&m1&&nums[0].length===8);
 }
 var FUT={},FUT_ROOTS={ZC:1,ZS:1,ZW:1,KE:1};
 /* data/prices.json -> {ZSX26:{price:12.9575,date:'2026-10-07'}}. Only dated

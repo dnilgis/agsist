@@ -16,6 +16,13 @@
    "link": "/daily"
   },
   {
+   "id": "2026-11-10-elevator-names",
+   "date": "2026-11-10",
+   "title": "One name for each elevator",
+   "line": "Elevators listed under an old or archived board name now show their own name and keep their basis history, on the home page, /cash-bids and the town pages.",
+   "link": "/cash-bids"
+  },
+  {
    "id": "2026-11-10-pages-hold-still",
    "date": "2026-11-10",
    "title": "Thirteen pages hold still while they load",
