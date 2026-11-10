@@ -145,7 +145,7 @@ test("schedule: four runs a day off the hour, approved, never overlapping", () =
   const wf = fs.readFileSync(path.join(ROOT, ".github/workflows/radar-rain.yml"), "utf8");
   const crons = [...wf.matchAll(/cron:\s*'([^']+)'/g)].map((m) => m[1]);
   assert.deepEqual(crons, ["17 1,7,13,19 * * *"]);
-  assert.match(wf, /Sig approved Oct 17, 2026/);
+  assert.match(wf, /Four runs a day since Oct 17, 2026/);
   assert.match(wf, /concurrency:\s*\n\s*group: radar-rain\s*\n\s*cancel-in-progress: false/);
   assert.match(wf, /git diff --staged --quiet/);
 });

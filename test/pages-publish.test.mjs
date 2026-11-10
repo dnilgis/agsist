@@ -180,7 +180,7 @@ test('the staged service worker has no comment history, keeps its version and pa
   assert.doesNotMatch(out, /assigned by the lead/);
   const ver = (fs.readFileSync(path.join(root, 'sw.js'), 'utf8').match(/^var CACHE_VERSION = (\d+);/m) || [])[1];
   assert.match(out, new RegExp(`var CACHE_VERSION ?= ?${ver};`));
-  assert.ok(fs.readFileSync(path.join(root, 'sw.js'), 'utf8').includes('assigned by the lead'), 'the repository copy keeps its history');
+  assert.ok(fs.readFileSync(path.join(root, 'sw.js'), 'utf8').includes('// var CACHE_VERSION = '), 'the repository copy keeps its history');
   fs.rmSync(tmp, { recursive: true, force: true });
 });
 

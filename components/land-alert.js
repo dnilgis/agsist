@@ -1,5 +1,5 @@
 /* The monthly land sale email ask (Oct 23, 2026: new list, sender and schedule approved).
-   Signups on: the owner approved Oct 27, 2026 ("Turn on land sale email alert signups"). The ask has no
+   Signups on since Oct 27, 2026. The ask has no
    switch of its own; it shows wherever a host is. The list gets mail only once the repo variable
    LANDSALES_MONTHLY_LIVE is 1 (.github/workflows/land-alert.yml).
 

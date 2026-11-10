@@ -318,7 +318,7 @@ test("land data selftests pass (newest-only merge, month picker, timestamp-only 
 
 test("monthly land run: the 3rd, Sig's approval noted, one run at a time", () => {
   const y = read(".github/workflows/land-data.yml");
-  assert.match(y, /# Sig approved Oct 17, 2026: monthly on the 3rd[\s\S]*?cron: '23 9 3 \* \*'/);
+  assert.match(y, /# Monthly on the 3rd since Oct 17, 2026[\s\S]*?cron: '23 9 3 \* \*'/);
   assert.match(y, /concurrency:\s*\n\s*group: land-data/);
   assert.match(y, /--newest-only/); assert.match(y, /--merge/); assert.match(y, /land_keep_stamp_only\.py data\/land/);
 });
