@@ -14,10 +14,13 @@ addresses hurt the sender's standing. So every loop that mails a list:
   * tries a temporary refusal (an SMTP 4xx for that address: a deferral, a busy server) once more
     after the rest of the list, after SEND_RETRY_WAIT seconds (default 60, inside the cap). A soft
     refusal is never a hard bounce;
-  * records a permanent refusal of the address itself (a 5xx at RCPT, or a 5.1.x / 5.2.1 status)
-    as a hard bounce (scripts/bounces.py). Refusals about the message or the sender (5.7.x policy
-    and spam replies, 5.2.2 mailbox full, 5.3.4 too big) are not the address's fault and are not
-    counted. After two hard bounces an address is left out of every list.
+  * records a hard bounce (scripts/bounces.py) only for a refusal of the recipient itself (RCPT)
+    with status 5.1.1, 5.1.2, 5.1.3, 5.1.6, 5.1.10 or 5.2.1, or a 550, 551 or 553 with no status
+    whose text says the user or mailbox does not exist. Everything else (other 5.x.x statuses,
+    blocks, relays, policy, a sender or DATA refusal) is never charged to a reader. Two hard
+    bounces on different days leave an address out of every list.
+  * the retry pass starts on a new connection, and every deferred reader who never got a second
+    try (the loop stopped first) goes on the failed list.
 
 A dropped socket still costs one email: the loops keep their own reconnect logic, and a Pacer never
 sends anything itself. DRY_RUN=1 makes it skip every wait (a dry run sends nothing to wait for).
@@ -26,6 +29,7 @@ Use, in a send loop:
 
     pace = send_pace.Pacer(recipients, sleep=time.sleep)
     for i, r in enumerate(pace):
+        conn = pace.fresh(conn, connect)   # the retry pass starts on a new connection
         try:
             conn.send(...)                 # the sender's own send
         except Exception as ex:
@@ -33,6 +37,7 @@ Use, in a send loop:
                 failed.append(...)
             ... reconnect when the socket died and pace.more() ...
         pace.after()                       # the gap, or the pause at a batch boundary
+    failed += pace.unsent_addresses()      # deferred, never tried again: on the resend list
 
 Counts only in the log, never an address. scripts/test_send_pace.py tests it and checks that every
 loop that mails a list goes through it.
@@ -42,6 +47,7 @@ loop that mails a list goes through it.
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
 
+import math
 import os
 import re
 import smtplib
@@ -54,17 +60,42 @@ DEFAULT_BATCH = 20
 DEFAULT_PAUSE = 4.0
 DEFAULT_RETRY_WAIT = 60.0
 DEFAULT_MAX = 600.0
+# Each setting's sane range; anything else (not a number, inf, nan, out of range) is the default, with a warning.
+RANGES = {"SEND_BATCH": (1, 1000), "SEND_GAP": (0.0, 30.0), "SEND_BATCH_PAUSE": (0.0, 300.0),
+          "SEND_RETRY_WAIT": (0.0, 900.0), "SEND_PACE_MAX": (1.0, 3600.0)}
+WARNED = set()
 
 # An enhanced status code in a reply ("550 5.1.1 The email account does not exist").
 STATUS_RE = re.compile(r"\b([245])\.(\d{1,3})\.(\d{1,3})\b")
+# What a hard bounce is, and nothing more: the address or its domain does not exist, or the mailbox
+# is disabled. Every other permanent status (5.0.0, 5.2.2, 5.2.3, 5.3.x, 5.4.x, 5.5.x, 5.6.x, 5.7.x)
+# is about the message, the sender, the route or a policy, and is never charged to a reader.
+HARD_STATUS = frozenset(("5.1.1", "5.1.2", "5.1.3", "5.1.6", "5.1.10", "5.2.1"))
+# A permanent reply with no status counts only as 550, 551 or 553 whose text says the user or the
+# mailbox does not exist, and never when it names a block, a list, spam, a relay or a policy.
+NO_SUCH = re.compile(r"\b(?:user|mailbox|recipient|account|address)\b[^.\n]{0,30}?"
+                     r"\b(?:unknown|does ?n[o']t exist|not exist|not found|no such)"
+                     r"|\b(?:unknown|no such|nonexistent|non-existent|invalid)\s+(?:user|mailbox|recipient|account|address)\b"
+                     r"|\bno mailbox\b", re.I)
+NOT_ADDRESS = re.compile(r"block|listed|spam|reputation|relay|policy|auth|abuse|blacklist|dnsbl|rbl|rate", re.I)
 
 
-def _num(environ, name, default, lo=0.0):
-    try:
-        v = float(str(environ.get(name) or "").strip())
-    except ValueError:
+def _num(environ, name, default, lo=None):
+    raw = str(environ.get(name) or "").strip()
+    if not raw:
         return default
-    return v if v >= lo else default
+    lo_, hi = RANGES.get(name, (lo if lo is not None else 0.0, float("inf")))
+    try:
+        v = float(raw)
+    except ValueError:
+        v = None
+    ok = v is not None and math.isfinite(v) and lo_ <= v <= hi and (name != "SEND_BATCH" or v == int(v))
+    if ok:
+        return v
+    if name not in WARNED:
+        WARNED.add(name)
+        print("::warning::%s is not a usable value (%s to %s); using the default %s" % (name, lo_, hi, default))
+    return default
 
 
 def _text(t):
@@ -82,24 +113,28 @@ def address(item):
     return ""
 
 
+def status_is_hard(status):
+    """A delivery-status code (5.1.1) that is a hard bounce. 4.x.x (a delay, an expired try) never is."""
+    return str(status or "").strip() in HARD_STATUS
+
+
 def kind_of(code, text, recipient=False):
-    """'hard', 'soft' or None for one SMTP reply. recipient: the reply refused the RCPT itself."""
+    """'hard', 'soft' or None for one SMTP reply. recipient: the reply refused the RCPT itself; only
+    such a reply can be a hard bounce (a sender or DATA refusal is never charged to a reader)."""
     try:
         code = int(code)
     except (TypeError, ValueError):
         return None
     if 400 <= code < 500:
         return "soft"
-    if not 500 <= code < 600:
+    if not 500 <= code < 600 or not recipient:
         return None
-    m = STATUS_RE.search(_text(text))
-    st = m.group(0) if m else ""
-    if st.startswith("5.7.") or st in ("5.2.2", "5.3.4"):
-        return None                     # policy, spam, mailbox full, too big: not the address
-    if recipient:
+    t = _text(text)
+    m = STATUS_RE.search(t)
+    if m:
+        return "hard" if status_is_hard(m.group(0)) else None
+    if code in (550, 551, 553) and NO_SUCH.search(t) and not NOT_ADDRESS.search(t):
         return "hard"
-    if st.startswith("5.1.") or st == "5.2.1":
-        return "hard"                   # the address or its domain does not exist, or is disabled
     return None
 
 
@@ -127,8 +162,9 @@ def classify(ex, addr=""):
     if isinstance(ex, (smtplib.SMTPConnectError, smtplib.SMTPHeloError, smtplib.SMTPAuthenticationError)):
         return None, ""
     if isinstance(ex, smtplib.SMTPResponseException):
+        # a sender or DATA refusal: a 4xx is tried again later; a 5xx is a failure, never a hard bounce
         code, text = getattr(ex, "smtp_code", None), getattr(ex, "smtp_error", "")
-        k = kind_of(code, text)
+        k = kind_of(code, text, recipient=False)
         m = STATUS_RE.search(_text(text))
         return k, ("%s %s" % (code, m.group(0) if m else "")).strip()
     return None, ""
@@ -137,7 +173,7 @@ def classify(ex, addr=""):
 class Pacer:
     def __init__(self, items, gap=1.2, sleep=time.sleep, key=None, addr=None, environ=None, sender=""):
         env = os.environ if environ is None else environ
-        self.batch = int(_num(env, "SEND_BATCH", DEFAULT_BATCH, lo=1))
+        self.batch = int(_num(env, "SEND_BATCH", DEFAULT_BATCH))
         self.gap = _num(env, "SEND_GAP", float(gap))
         self.pause = max(self.gap, _num(env, "SEND_BATCH_PAUSE", DEFAULT_PAUSE))
         self.retry_wait = _num(env, "SEND_RETRY_WAIT", DEFAULT_RETRY_WAIT)
@@ -159,17 +195,19 @@ class Pacer:
         bounds = max(0, (n - 1) // self.batch)
         planned = self.gap * max(0, n - 1 - bounds) + self.pause * bounds
         self.scale = 1.0
-        if planned > self.budget > 0:
+        if planned > self.budget:
             self.scale = self.budget / planned
             self.gap *= self.scale
             self.pause *= self.scale
-        self.deferred, self.passno, self.left, self.done, self.current = [], 1, 0, 0, None
-        self.slept, self.soft, self.soft_final, self.hard = 0.0, 0, 0, 0
+        self.deferred, self.waiting, self.passno, self.left, self.done, self.current = [], [], 1, 0, 0, None
+        self.slept, self.soft, self.soft_final, self.hard, self.refreshed = 0.0, 0, 0, 0, False
 
     def __len__(self):
         return len(self.items)
 
     def _sleep(self, s):
+        """Wait s seconds, never past the cap on this run's waiting (SEND_PACE_MAX)."""
+        s = min(s, self.budget - self.slept)
         if s <= 0 or self.dry:
             return
         self.slept += s
@@ -181,12 +219,12 @@ class Pacer:
             self.left, self.current = len(first) - idx - 1, it
             yield it
         if self.deferred:
-            again, self.deferred = self.deferred, []
+            self.waiting, self.deferred = self.deferred, []
             self.passno = 2
-            room = self.budget - self.slept if self.budget > 0 else self.retry_wait
-            self._sleep(max(0.0, min(self.retry_wait, room)))
-            for idx, it in enumerate(again):
-                self.left, self.current = len(again) - idx - 1, it
+            self._sleep(self.retry_wait)
+            while self.waiting:
+                it = self.waiting.pop(0)
+                self.left, self.current = len(self.waiting), it
                 yield it
         self.left = 0
 
@@ -200,6 +238,29 @@ class Pacer:
         if self.left <= 0:
             return
         self._sleep(self.pause if self.done % self.batch == 0 else self.gap)
+
+    def fresh(self, conn, connect):
+        """Call at the top of the loop: the first retry gets a new connection (the old one sat idle
+        through the wait, or died). The old one stays when a new one cannot be had."""
+        if self.passno != 2 or self.refreshed:
+            return conn
+        self.refreshed = True
+        try:
+            new = connect()
+        except Exception:                                  # noqa: BLE001  the send then fails as before
+            return conn
+        try:
+            conn.quit()
+        except Exception:                                  # noqa: BLE001
+            pass
+        return new
+
+    def unsent(self):
+        """Deferred items never tried again (the loop stopped first): for the failed list."""
+        return list(self.deferred) + list(self.waiting)
+
+    def unsent_addresses(self):
+        return [self._addr(it) for it in self.unsent()]
 
     def defer(self, ex, item=None):
         """True when `ex` was a temporary refusal of this address and the item (the one being sent)

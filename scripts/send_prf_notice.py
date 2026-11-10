@@ -328,10 +328,11 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
         return 0
 
     conn, sent, failed, reconnects = None, 0, 0, 0
-    pace = send_pace.Pacer(todo, sleep=sleep)   # batches and a pause between (scripts/send_pace.py)
+    pace = send_pace.Pacer(todo, sleep=sleep, key=lambda it: (it[0].strip().lower(), it[1]))  # per reader and topic
     try:
         conn = connect()
         for k, (e, t, src, grid, items) in enumerate(pace):
+            conn = pace.fresh(conn, connect)   # the retry pass starts on a new connection
             ctx.update(grid=grid, items=items)
             try:
                 conn.send_message(SN.render(t, src, e, base, secret, today, from_addr, reply_to, repo))
@@ -367,6 +368,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 conn.quit()
         except Exception:
             pass
+    failed += len(pace.unsent())   # deferred, never tried again
     if TALLY:
         TALLY.sent += sent
     out("prf: sent %d, failed %d" % (sent, failed))

@@ -301,6 +301,7 @@ def main():
                                key=lambda j: (j[0], j[1][0], j[1][1]), addr=lambda j: j[1][0])
         try:
             for kind, x in pace:
+                conn = pace.fresh(conn, connect)   # the retry pass starts on a new connection
                 e, f = x[0], x[1]
                 c = cards[f]
                 try:
@@ -329,6 +330,7 @@ def main():
                 conn.quit()
             except Exception:
                 pass
+        failed += [a + " (deferred, not sent)" for a in pace.unsent_addresses()]   # never tried again
         print(pace.line())
     # Counts and masked addresses only: the Actions log is public. The full
     # list goes to the owner by private mail.

@@ -322,6 +322,7 @@ def run(argv, http=http_json, connect=smtp_connect, now=None, sleep=time.sleep, 
         try:
             conn = connect()
             for i, (e, src) in enumerate(pace):
+                conn = pace.fresh(conn, connect)   # the retry pass starts on a new connection
                 try:
                     conn.send_message(render(topic, src, e, base, secret, today, from_addr, reply_to))
                 except Exception as ex:
@@ -357,6 +358,7 @@ def run(argv, http=http_json, connect=smtp_connect, now=None, sleep=time.sleep, 
                     conn.quit()
             except Exception:
                 pass
+        failed += len(pace.unsent())   # deferred, never tried again
         if TALLY:
             TALLY.sent += sent
         out("%s: sent %d, failed %d" % (topic, sent, failed))

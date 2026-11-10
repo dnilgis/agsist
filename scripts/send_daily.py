@@ -1033,6 +1033,7 @@ def main():
     flagged = False
     try:
         for i, r in enumerate(pace):
+            conn = pace.fresh(conn, connect)   # the retry pass starts on a new connection
             try:
                 conn.send_message(build_email(day, b, r, from_name, from_addr, reply_to))
                 sent += 1
@@ -1074,6 +1075,7 @@ def main():
             conn.quit()
         except Exception:
             pass
+    failed += [a + " (deferred, not sent)" for a in pace.unsent_addresses()]   # never tried again
     print(pace.line())
     tally.sent = 0 if tally.dry else sent   # the DELIVERY count (delivery_line.py); a test to the owner is dry
     print("sent " + str(sent) + "/" + str(len(recipients)))
