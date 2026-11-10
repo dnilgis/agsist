@@ -49,5 +49,6 @@ jobs:
       - name: Save to the private repo
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_SOFT: '1'
           RAW_BRANCH: private-data
         run: bash scripts/push_raw.sh "subscriber counts" private/data/subs-count.json
