@@ -65,75 +65,17 @@ PAGES = {
     "wheat-futures-prices.html":   ("wheat", None,         "Deferred",          "wheat"),
 }
 
-# Meta-description templates. A numeric, dated description is the main
-# crawler-visible CTR lever these pages have (Google may rewrite, but a fresh
-# number raises the odds it keeps ours). Placeholders: {px} nearby close,
-# {chg} signed pct, {mon} contract label, {date} price date, {kc} KC HRW clause.
-#
-# Split in two on 2026-08-16. All three descriptions were running 167-184
-# characters and getting cut mid-clause in the result. The HEAD is the numeric,
-# dated sentence -- the reason to click -- and it always ships. The TAIL is the
-# keyword clause, and it ships only if the whole thing still fits. Losing the
-# tail costs a few secondary terms; a sentence cut mid-word costs the click.
-#
-# This also has to survive its own inputs: {px} gains a character when beans
-# cross $100 wide or a contract label runs long, and the wheat {kc} clause is
-# 18 characters that appear only when the KC quote is usable. A fixed string
-# cannot be checked once and trusted -- the length is decided at bake time.
-DESC_MAX = 160
-
-DESC = {
-    # 2026-10-13: "every 30 min" on corn and wheat said what the prices loop
-    # did before 2026-10-07; the page body and the loop say 15. "Live" is
-    # dropped: the body says these are delayed quotes. Corn and soybeans spell
-    # out Chicago Board of Trade, the words of the named queries ("chicago
-    # board of trade corn price", "cbot soybeans").
-    # 2026-10-15: only a finished session goes in (settled_close): {px} is a
-    # close, {date} its own day, {chg} its cents change or nothing. No
-    # percent, no clock time; a snippet can sit in search for a day and this
-    # wording is still true when it is read.
-    "corn-futures-prices.html": (
-        "Corn {mon} settled ${px}{chg} on {date}. Chicago Board of Trade (CBOT) corn "
-        "futures, refreshed every 15 min in session.",
-        " December new-crop, basis, daily read."),
-    "soybean-futures-prices.html": (
-        "Soybeans {mon} settled ${px}{chg} on {date}. Chicago Board of Trade (CBOT) "
-        "soybean futures, refreshed every 15 min in session.",
-        " Crush spread, cash bids."),
-    "wheat-futures-prices.html": (
-        "Wheat {mon} settled ${px}{chg} on {date}. Chicago SRW wheat futures, refreshed "
-        "every 15 min in session{kc}.",
-        " Class spreads, cash bids by ZIP."),
-}
-
-
-# No settle in the file (a v3.6 price file, or nothing finished yet): a
-# description with no number, so a wrong one never sits in search (2026-10-17).
+# The description, with no number (2026-10-17 for a file with no settle; every
+# day from Nov 10 2026, Sig: prices out of titles and descriptions).
 DESC_PLAIN = {
-    "corn-futures-prices.html": "Chicago Board of Trade (CBOT) corn futures, refreshed every 15 min "
+    "corn-futures-prices.html": "Chicago Board of Trade (CBOT) corn futures, quotes delayed 10 to 25 min "
                                 "in session. December new-crop, basis, daily read.",
-    "soybean-futures-prices.html": "Chicago Board of Trade (CBOT) soybean futures, refreshed every 15 "
+    "soybean-futures-prices.html": "Chicago Board of Trade (CBOT) soybean futures, quotes delayed 10 to 25 "
                                    "min in session. Crush spread, cash bids.",
-    "wheat-futures-prices.html": "Chicago SRW wheat futures, refreshed every 15 min in session. "
+    "wheat-futures-prices.html": "Chicago SRW and KC HRW wheat futures, quotes delayed 10 to 25 min in session. "
                                  "Class spreads, cash bids by ZIP.",
 }
 
-
-def render_desc(tmpl, **kw):
-    """(description, note). None means do not stamp -- leave what is there.
-
-    Entities are counted decoded, because that is what the result shows: the
-    wheat description carries `&middot;` in the attribute and a single `·` in
-    the SERP, and counting the source overstates it by six characters.
-    """
-    head, tail = tmpl
-    h, t = head.format(**kw), tail.format(**kw)
-    n = len(H.unescape(h))
-    if n > DESC_MAX:
-        return None, f"head alone is {n} chars — refusing to publish a cut sentence"
-    if n + len(H.unescape(t)) <= DESC_MAX:
-        return h + t, f"{n + len(H.unescape(t))} chars"
-    return h, f"{n} chars, keyword tail dropped to fit"
 
 # pages whose schema dateModified is stamped with today (price pages get it in
 # the loop above; these get it too because their content changes daily)
@@ -4120,26 +4062,12 @@ def seed_futures_pages(prices, today):
                 t, c4 = seed_between(t, "pxtable", tbl)
                 changed = changed or c4
 
-            # meta description: the newest finished session only
-            tmpl = DESC.get(page)
-            sc = settled_close(fq, fetched, "grain")
-            if tmpl and sc is None:
-                print(f"  {page}: no settle in the file — description without a price")
+            # meta description: no price (Sig, Nov 10 2026). A snippet sits in
+            # search for days and lagged the body every weekday afternoon (the
+            # 20:35Z bake cannot see the settle); the price lives in the body.
+            if page in DESC_PLAIN:
                 t, c5 = stamp_meta_description(t, DESC_PLAIN[page])
                 changed = changed or c5
-            if tmpl and sc:
-                kc = settled_close(wheat_class_quote(prices, "kcwheat")[0], fetched, "grain")
-                kc_usd = grain_dollars({"close": kc["px"]}) if kc and kc["date"] == sc["date"] else None
-                desc, dnote = render_desc(
-                    tmpl, px=grain_dollars({"close": sc["px"]}), mon=mon or "front month",
-                    chg=desc_change(sc), date=sc["label"],
-                    kc=(" &middot; KC HRW $" + kc_usd) if kc_usd else "")
-                if desc is None:
-                    print(f"  {page}: description {dnote}")
-                else:
-                    # entity-decode for attribute text: &middot; is fine in content=""
-                    t, c5 = stamp_meta_description(t, desc)
-                    changed = changed or c5
         else:
             print(f"  {page}: no usable {crop_key} quote — seeds left as-is")
         for tag, val in futures_hero_seeds(page, prices).items():

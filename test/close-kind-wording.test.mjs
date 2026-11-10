@@ -111,7 +111,6 @@ test("livestock to the tick everywhere: 343.625 is $343.625, 227.55 stays $227.5
   const cat = read("cattle-futures-prices.html");
   const feed = JSON.parse(read("data/prices.json")).quotes.feeders;
   if (feed && feed.close_kind === "settle" && feed.settle === 343.625) {
-    assert.match(cat, /<title>CME Feeder Cattle Futures \$343\.625 /);
     assert.match(cat, /feeders near \$343\.625/);
   }
   assert.doesNotMatch(cat, /\$343\.6[23]\b/);

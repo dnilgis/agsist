@@ -720,35 +720,26 @@ def _be_budget_year(page_text=None):
 
 
 def seo_breakeven(c):
-    # 2026-10-17: the costs are farmdoc's 2027 budget, so the board quoted beside them is
-    # Dec '27 (the calculator opens on it too), not the 2026 crop's Dec '26.
-    by = _be_budget_year()
-    key, mon = ("corn-dec%02d" % (by % 100), "Dec '%02d " % (by % 100)) if by else ("corn", "")
-    px = _px(c["prices"], key)
-    if px is None and key != "corn":
-        key, mon = "corn", ""
-        px = _px(c["prices"], key)
-    if px is None:
-        return None
-    cents = px if px > 50 else px * 100.0      # cents vs dollars
     # RETITLED 2026-10-13 from "Break-Even Price Calculator: Corn, Soybeans,
     # Wheat" (2,679 impressions, 12 clicks, Jul 10-Oct 7). The named queries
     # ask for a number: "break even price for corn" 35 impressions, "corn
-    # break even price" 10. The description now gives the calculator's own
-    # opening example, labeled as an example, beside the board.
+    # break even price" 10. The description gives the calculator's own
+    # opening example, labeled as an example.
+    # 2026-11-10 (Sig): no futures price and no date in the title or the
+    # description. A snippet sits in search for days; the board price is on
+    # the page, beside the calculator. The example is the calculator's own
+    # cost and yield, which do not move with the market.
     title = f"Corn & Soybean Break-Even Price per Bushel Calculator{SUFFIX}"
     d = _be_defaults("corn")
     if d:
         cost, yld = d
         desc = (f"Example: ${cost:,.0f} an acre at {yld:g} bu/ac is a ${cost / yld:.2f} corn "
-                f"break-even; {mon}futures are near {pricefmt.price(cents)}. Put in your own costs "
-                f"for corn, soybeans or wheat.")
+                f"break-even. Put in your own costs for corn, soybeans or wheat.")
         if len(desc) <= DESC_MAX:
             return title, desc
     return (title,
-            f"Corn is near {pricefmt.price(cents)}. Enter your cost per acre and your yield "
-            f"to get your break-even price per bushel, and the yield where the "
-            f"board stops covering them.")
+            "Enter your cost per acre and your yield to get your break-even price per bushel, "
+            "and the yield where the board stops covering them.")
 
 
 def body_breakeven(c):
@@ -846,39 +837,26 @@ FUTURES = {
         ("CBOT", "Wheat", "wheat", "SRW & KC HRW"),
 }
 
-# Cattle is its own case twice over. seed_static.py does NOT write a
-# description for it -- its DESC dict is the three grain pages only -- so this
-# page owns both fields. And it quotes two different animals: a single number
-# in the title would be read as whichever one the searcher came for. The
-# biggest keyword in the whole Bing export is "feeder cattle futures", 3,665
-# impressions at position 6.5, so that phrase goes in whole and both prices are
-# named.
+# Cattle is its own case twice over: seed_static.py does NOT write a
+# description for it (its DESC_PLAIN is the three grain pages only), so this
+# page owns both fields. The biggest keyword in the whole Bing export is
+# "feeder cattle futures", 3,665 impressions at position 6.5, so that phrase
+# goes in whole and both animals are named.
 CATTLE_PAGE = "cattle-futures-prices.html"
+# 2026-11-10 (Sig): "Feeder and Live Cattle Futures Prices", no CME brand in
+# the title (the source credit, CME Group futures via Yahoo Finance, delayed,
+# is in the page body and its Sources fold) and no price or date.
+CATTLE_TITLE = "Feeder and Live Cattle Futures Prices" + SUFFIX
+CATTLE_DESC = ("Feeder and live cattle futures, quotes delayed 10 to 25 min in session, "
+               "with 5-year ranges, the feeder-to-live ratio and a cost-of-gain calculator.")
 
 
 def seo_cattle(c):
-    """Both animals at their newest FINISHED session (seed_static.settled_close,
-    the same rule the grain descriptions use). In session that is the previous
-    close; a trade that will move by noon is never baked into a snippet."""
-    from seed_static import settled_close
-    p = c["prices"] or {}
-    fetched = p.get("fetched", "")
-    live = settled_close(_quote(p, "cattle"), fetched, "cattle")
-    feed = settled_close(_quote(p, "feeders"), fetched, "cattle")
-    if live is None or feed is None or live["date"] != feed["date"]:
-        return None
-    lab = _label(p, "cattle")
-    when = f" {lab}" if lab else ""
-    # livestock to the tick, the site's one rule (pricefmt.cash): $343.625, $227.55
-    fp, lp = pricefmt.cash(feed["px"]), pricefmt.cash(live["px"])
-    # The settle's own date rides in the title (2026-10-20 panel A4/B1/E2: on
-    # a weekday evening the title holds the session before, and an undated
-    # number read as today's). " | AGSIST" gives way first.
-    head = f"CME Feeder Cattle Futures {fp} & Live Cattle {lp} ({feed['label']})"
-    return (fit([head + SUFFIX, head]),
-            f"Feeder cattle settled {fp}, live cattle{when} "
-            f"{lp} on {feed['label']}. CME futures every 15 min, "
-            "with 5-year ranges, the feeder-to-live ratio and cost of gain.")
+    """Fixed words (Sig, Nov 10 2026: prices and dates out of titles and
+    descriptions). The title and description lagged the body every weekday
+    from the 1:05 p.m. CT close until the settle posted near 11 p.m. CT, and
+    search kept the old price for days. The price lives in the page body."""
+    return CATTLE_TITLE, CATTLE_DESC
 
 
 def _quote(prices, key):
@@ -929,40 +907,28 @@ def _known_trade(q):
 # 2026-10-18: "CBOT" leads. Search Console, Jul to Oct 14: "cbot live" 281
 # impressions at 9.2 and "c bot live" 99 at 7.0, no clicks, while the title
 # was a date line ("Ag Markets Oct 16") with no CBOT in it. The description
-# says delayed or settle, never "live": quotes are 10 to 25 minutes behind (data-sources).
+# says delayed, never "live": quotes are 10 to 25 minutes behind (data-sources).
+# 2026-11-10 (Sig): this is the markets title every day, no price, no date.
 MARKETS_PLAIN = ("CBOT Grain Prices Today: Corn, Soybeans, Wheat" + SUFFIX,
-                 "Corn, soybean, wheat, cattle and crude futures on one board, delayed "
-                 "in session, with settles, cash bids and USDA dates. Free.")
+                 "Corn, soybean, wheat, cattle and crude futures on one board, quotes delayed "
+                 "10 to 25 min in session, with settles, cash bids and USDA dates. Free.")
+
+
+def futures_title(page):
+    """'CBOT Corn Futures Prices Today | AGSIST': what the page is, in the words
+    people search, with no price and no date (Sig, Nov 10 2026). From the
+    1:20 p.m. CT close until Yahoo posts the settle near 11 p.m. CT the title
+    held the session before, a day behind the body, and search caches it."""
+    exch, crop, _key, extra = FUTURES[page]
+    base = f"{exch} {crop} Futures Prices Today"
+    return fit(([base + f", {extra}" + SUFFIX] if extra else []) + [base + SUFFIX, base])
 
 
 def make_futures(page):
-    exch, crop, key, extra = FUTURES[page]
-
     def build(c):
-        # the newest finished session, never an in-session trade (2026-10-15:
-        # the Oct 14 8:31 a.m. soybean quote sat in the title overnight)
-        from seed_static import settled_close
-        p = c["prices"] or {}
-        sc = settled_close(_quote(p, key), p.get("fetched", ""),
-                           "cattle" if key == "cattle" else "grain")
-        lab = _label(p, key)
-        if sc is None and _known_trade(_quote(p, key)):
-            return (f"{exch} {crop} Futures Price Today"
-                    + (f", {extra}" if extra else "") + SUFFIX, None)
-        if sc is None or not lab:
-            return None
-        px = sc["px"]
-        # grain boards quote in cents; cattle already quotes in dollars per cwt
-        money = pricefmt.price(px) if key != "cattle" else pricefmt.cash(px)
-        # Dated by the settle itself (2026-10-20, panel A4/B1/E2): from the
-        # 1:20 p.m. CT close until Yahoo posts the settle near 11 p.m. CT the
-        # newest settle is the session before, and an undated "$4.74 1/4"
-        # read as today's price beside a page showing $4.66 3/4.
-        base = f"{exch} {crop} Futures Price: {lab} {money} ({sc['label']})"
-        cands = ([base + f", {extra}" + SUFFIX, base + f", {extra}"] if extra else []) + [base + SUFFIX, base]
-        return (fit(cands), None)
+        return (futures_title(page), None)
 
-    build.__name__ = f"seo_{key}_futures"
+    build.__name__ = f"seo_{FUTURES[page][2]}_futures"
     return build
 
 
@@ -989,57 +955,9 @@ def _usd(v):
 
 
 def seo_markets(c):
-    """The board, dated by the corn quote's own close date -- never the run
-    date. A quote whose close is from another day is left out rather than
-    printed beside a date it does not belong to (livestock and the S&P close
-    a session apart from grains on a Monday)."""
-    p = c.get("prices")
-    if not p:
-        return None
-    # 2026-10-15: finished sessions only (seed_static.settled_close). The
-    # Oct 14 8:31 a.m. CT trade was baked as "Ag Markets Oct 14: Corn $4.81¼"
-    # and stood after the close went the other way.
-    from seed_static import settled_close
-    fetched = p.get("fetched", "")
-    corn = settled_close(_quote(p, "corn"), fetched, "grain")
-    if corn is None:
-        return MARKETS_PLAIN if _known_trade(_quote(p, "corn")) else None
-    cd = _d(corn["date"])
-    if _too_old(cd, c["today"], 4) or _too_old(_d(fetched), c["today"], 4):
-        return None
-    picks = []
-    for key, name, grain in (("corn", "Corn", True), ("beans", "Soybeans", True),
-                             ("wheat", "Wheat", True), ("cattle", "Live Cattle", False),
-                             ("crude", "Crude", False)):
-        q = _quote(p, key)
-        sc = settled_close(q, fetched, "cattle" if key == "cattle" else "grain")
-        if sc is None or _d(sc["date"]) != cd:
-            continue
-        v = sc["px"]
-        picks.append((key, name, pricefmt.price(v) if grain else _usd(v), q.get("contract")))
-    grains = [x for x in picks if x[0] in ("corn", "beans", "wheat")]
-    if not grains or grains[0][0] != "corn":
-        return None
-    day = f"{MONTHS[cd.month - 1][:3]} {cd.day}"
-    title = None
-    for n in (3, 2, 1):
-        cand = (f"CBOT Grain Prices {day}: " + ", ".join(f"{nm} {px}" for _, nm, px, _ in grains[:n]) + SUFFIX)
-        if len(cand) <= TITLE_MAX:
-            title = cand
-            break
-    if not title:
-        return None
-    head = (f"Settles {mdY(cd)}: " +
-            ", ".join(f"{nm.lower() if i else nm}{(' ' + ct) if ct else ''} {px}"
-                      for i, (_, nm, px, ct) in enumerate(picks)) + ".")
-    tail = " Quotes delayed 10 to 25 min, free."
-    desc = head + tail if len(head + tail) <= DESC_MAX else head
-    while len(desc) > DESC_MAX and len(picks) > 1:   # shed the least-searched quote
-        picks = picks[:-1]
-        desc = (f"Settles {mdY(cd)}: " +
-                ", ".join(f"{nm.lower() if i else nm}{(' ' + ct) if ct else ''} {px}"
-                          for i, (_, nm, px, ct) in enumerate(picks)) + ".")
-    return title, desc
+    """Fixed words (Sig, Nov 10 2026): no price and no date in the markets
+    title or description. The board's settles are on the page."""
+    return MARKETS_PLAIN
 
 
 def _basis_rows(j, crop):
@@ -1954,12 +1872,8 @@ def selftest():
     ck("breakeven.html carries the be-example markers", bake_body(_bp, "be-example", "x")[1])
     ck("the cost lines' crop year is read from the page", _be_budget_year("var BUDGETS={year:2027,src:'x'") == 2027
        and _be_budget_year("nothing") is None)
-    _p27 = {"quotes": {"corn": {"close": 474.25}, "corn-dec27": {"close": 506.75}}}
-    if _be_budget_year() == 2027:
-        ck("the snippet quotes the budget's crop year board: Dec '27, not Dec '26",
-           "Dec '27 futures are near $5.06" in seo_breakeven(dict(ctx, prices=_p27))[1], seo_breakeven(dict(ctx, prices=_p27))[1])
-        ck("no Dec '27 quote: the front board, unnamed",
-           "; futures are near $4.74" in seo_breakeven(dict(ctx, prices={"quotes": {"corn": {"close": 474.25}}}))[1])
+    ck("the break-even snippet carries no board price (Sig, Nov 10 2026)",
+       "futures are near" not in _bd and "$4.74" not in seo_breakeven(dict(ctx, prices={"quotes": {"corn": {"close": 474.25}}}))[1])
 
     print("\nusda calendar rolls at the print")
     ck("report morning, not printed: Oct 9 is next",
@@ -1979,8 +1893,7 @@ def selftest():
         ck("a WASDE date in the past raises", True)
     ck("no data means skip, not a placeholder",
        seo_cot(dict(ctx, cot=None)) is None and
-       seo_quick_stats(dict(ctx, state_stats=None)) is None and
-       seo_breakeven(dict(ctx, prices=None)) is None)
+       seo_quick_stats(dict(ctx, state_stats=None)) is None)
     try:
         check('He said "hello"', "fine", "x.html"); ck("a double quote is refused", False)
     except ValueError:
@@ -2022,44 +1935,58 @@ def selftest():
         except ValueError as exc:
             ck(f"crop tour '{label}' within caps", False, str(exc))
 
-    print("\nfutures titles carry the exchange the query uses")
-    # wheat changed 2026-10-13 to "Futures Price", the form corn and beans
-    # took on 2026-10-11; the assertion follows that copy.
-    for page, want in (("wheat-futures-prices.html", "CBOT Wheat Futures Price: Sep '26 $6.74"),
-                       ("corn-futures-prices.html", "CBOT Corn Futures Price: Sep '26 $4.59"),
-                       ("soybean-futures-prices.html", "CBOT Soybean Futures Price: Aug '26 $11.76"),
-                       ("cattle-futures-prices.html", "CME Feeder Cattle Futures $341.27")):
-        t, d = PAGES[page][0](ctx)
-        ck(f"{page.split('-')[0]} title leads with the exchange and the price",
-           t.startswith(want), t)
-        if page != CATTLE_PAGE:
-            ck(f"{page.split('-')[0]} writes no description", d is None)
-    ck("grain boards convert from cents, cattle does not",
-       "$4.59" in PAGES["corn-futures-prices.html"][0](ctx)[0] and
-       "$223.75" in PAGES[CATTLE_PAGE][0](ctx)[0])
-    ck("the cattle title names BOTH animals with BOTH prices",
-       all(x in PAGES[CATTLE_PAGE][0](ctx)[0]
-           for x in ("Feeder Cattle Futures", "$341.27", "Live Cattle", "$223.75")),
-       PAGES[CATTLE_PAGE][0](ctx)[0])
-    ck("cattle is skipped if only one of the two prices is there",
-       PAGES[CATTLE_PAGE][0](dict(ctx, prices={"quotes": {"cattle": {"close": 223.75}}})) is None)
-    # Fetched after 11:30 p.m. CT, when the bar is the settle (2026-10-17: a
-    # 3:05 p.m. CT bar is the last trade, not a close, and is not baked).
+    print("\nfutures, cattle, markets and breakeven: no price and no date in a title or description")
+    # Sig, Nov 10 2026. The real cases they replace: "CBOT Soybean Futures Price: Aug '26 $11.76"
+    # (Sep's price under Aug's name, 2026-08-16), "CBOT Corn Futures Price: Dec '26 $4.74 1/4
+    # (Oct 16)" beside a body at $4.66 3/4 on the evening of Oct 19, and "CME Feeder Cattle
+    # Futures $343.625 & Live Cattle $227.55 (Oct 16)", a day behind every weekday evening.
     trap = dict(ctx, prices={
         "fetched": "2026-08-15T04:45:00Z",
-        "quotes": {"beans": {"close": 1176.25, "close_date": "2026-08-14"},         # continuous, Sep
-                   "beans-nearby": {"close": 1167.0, "close_date": "2026-08-14"}},  # the dated front, Aug
+        "quotes": {"beans": {"close": 1176.25, "close_date": "2026-08-14"},
+                   "beans-nearby": {"close": 1167.0, "close_date": "2026-08-14"}},
         "nearby": {"beans": {"label": "Aug '26"}}})
-    ck("the price matches the contract the label names",
-       "$11.67" in PAGES["soybean-futures-prices.html"][0](trap)[0],
-       PAGES["soybean-futures-prices.html"][0](trap)[0])
-    ck("...and never the continuous series under a dated label",
-       "$11.76" not in PAGES["soybean-futures-prices.html"][0](trap)[0])
-    ck("a futures page with no price is skipped, not titled with a blank",
-       PAGES["wheat-futures-prices.html"][0](dict(ctx, prices=None)) is None)
-    ck("a futures page with a price but no contract label is skipped",
-       PAGES["wheat-futures-prices.html"][0](
-           dict(ctx, prices={"quotes": {"wheat": {"close": 674.0}}})) is None)
+    eve = {"fetched": "2026-10-20T03:31:20Z",
+           "nearby": {"corn": {"key": "corn-dec26", "label": "Dec '26"},
+                      "wheat": {"key": "wheat-dec26", "label": "Dec '26"}},
+           "quotes": {"corn-nearby": {"close": 466.75, "close_date": "2026-10-19", "close_kind": "last",
+                                      "settle": 474.25, "settle_date": "2026-10-16", "settle_net": -3.75},
+                      "wheat-nearby": {"close": 656.0, "close_date": "2026-10-19", "close_kind": "last",
+                                       "settle": 660.5, "settle_date": "2026-10-16", "settle_net": -2.0},
+                      "cattle": {"close": 228.0, "close_date": "2026-10-19", "close_kind": "last",
+                                 "settle": 227.55, "settle_date": "2026-10-16"},
+                      "feeders": {"close": 344.0, "close_date": "2026-10-19", "close_kind": "last",
+                                  "settle": 343.625, "settle_date": "2026-10-16"}}}
+    _mon = re.compile(r"\b(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\b")
+    _seen = 0
+    for _pg in list(FUTURES) + [CATTLE_PAGE, "markets.html", "breakeven.html"]:
+        for _nm, _cx in (("fixture", ctx), ("trap", trap), ("evening", dict(ctx, prices=eve)),
+                         ("no prices", dict(ctx, prices=None))):
+            _got = PAGES[_pg][0](_cx)
+            ck(f"{_pg} ({_nm}) still writes a title", bool(_got and _got[0]), _got)
+            if not _got:
+                continue
+            _t, _d = _got[0], _got[1] or ""
+            _seen += 1
+            ck(f"{_pg} ({_nm}) title has no price and no date",
+               "$" not in _t and not re.search(r"\d", _t) and not _mon.search(_t), _t)
+            if _pg != "breakeven.html":   # its example is the calculator's cost and yield, not the board
+                ck(f"{_pg} ({_nm}) description has no price and no date",
+                   "$" not in _d and not _mon.search(_d) and not re.search(r"\d+\.\d", _d), _d)
+            ck(f"{_pg} ({_nm}) says delayed, never live",
+               "live" not in re.sub(r"live cattle|feeder-to-live", "", (_t + " " + _d).lower()) and "real-time" not in _d.lower(), _t + _d)
+    ck("the no-price guard looked at every page and case", _seen >= 24, _seen)
+    ck("the grain titles say what the page is, with the exchange the query uses",
+       PAGES["corn-futures-prices.html"][0](ctx)[0] == "CBOT Corn Futures Prices Today | AGSIST"
+       and PAGES["soybean-futures-prices.html"][0](ctx)[0] == "CBOT Soybean Futures Prices Today | AGSIST"
+       and PAGES["wheat-futures-prices.html"][0](ctx)[0].startswith("CBOT Wheat Futures Prices Today, SRW & KC HRW"),
+       [PAGES[_p][0](ctx)[0] for _p in FUTURES])
+    ck("the cattle title is Sig's words, no CME brand",
+       PAGES[CATTLE_PAGE][0](ctx)[0] == "Feeder and Live Cattle Futures Prices | AGSIST"
+       and "CME" not in "".join(PAGES[CATTLE_PAGE][0](ctx)), PAGES[CATTLE_PAGE][0](ctx))
+    ck("the grain futures pages write no description here (seed_static owns it)",
+       all(PAGES[_p][0](ctx)[1] is None for _p in FUTURES))
+    ck("the breakeven description quotes no futures price",
+       "futures" not in PAGES["breakeven.html"][0](dict(ctx, prices={"quotes": {"corn-dec27": {"close": 506.75}}}))[1])
 
     print("\nno field has two writers")
     # seed_static.py owns the meta description on the futures pages and rewrites
@@ -2069,7 +1996,7 @@ def selftest():
     _sp = _ilu.spec_from_file_location("seed_static", REPO / "scripts" / "seed_static.py")
     try:
         _ss = _ilu.module_from_spec(_sp); _sp.loader.exec_module(_ss)
-        theirs = set(getattr(_ss, "DESC", {}))
+        theirs = set(getattr(_ss, "DESC_PLAIN", {}))
     except Exception as exc:                                  # noqa: BLE001
         theirs = set(FUTURES)                                 # assume the worst
         print(f"  (could not import seed_static: {exc}; assuming it owns {len(theirs)})")
@@ -2081,28 +2008,6 @@ def selftest():
     ck("cattle owns its description because nothing else writes one",
        "desc" in PAGES[CATTLE_PAGE][1] and CATTLE_PAGE not in theirs)
 
-    def _cat(fetched, cd):
-        q = {"close": 341.275, "close_date": cd, "netChange": 1.25, "prev_date": "2026-10-05"}
-        return seo_cattle(dict(ctx, prices={"fetched": fetched, "quotes": {
-            "cattle": {"close": 223.75, "close_date": cd, "netChange": -0.5,
-                       "prev_date": "2026-10-05"}, "feeders": q}}))
-    t_in, d_in = _cat("2026-10-06T16:50:00Z", "2026-10-06")
-    # 2026-10-15: an in-session trade is no longer baked at all ("last traded
-    # ... as of 11:50 a.m." stood in search after the close). The snippet
-    # carries the previous close, named with its own day.
-    ck("an in-session cattle quote is not baked; the previous close is, dated",
-       "341.27" not in t_in + d_in and "$340.02" in d_in and "$224.25" in d_in
-       and "on Oct 5." in d_in and "a.m." not in d_in, d_in)
-    t_pm, d_pm = _cat("2026-10-06T20:35:00Z", "2026-10-06")
-    ck("after the bell but before the settle is posted, the previous close is baked",
-       "341.27" not in t_pm + d_pm and "$340.02" in d_pm and "on Oct 5." in d_pm, d_pm)
-    t_cl, d_cl = _cat("2026-10-07T04:35:00Z", "2026-10-06")
-    ck("a cattle quote fetched after 11 p.m. CT says settled, with its day",
-       "Feeder cattle settled $341.27" in d_cl and "on Oct 6." in d_cl, d_cl)
-    d_wk = _cat("2026-10-10T13:35:00Z", "2026-10-09")[1]
-    ck("a Saturday run on Friday's quote says settled", "settled" in d_wk and "Oct 9" in d_wk, d_wk)
-    ck("the cattle description never says closed", "closed" not in d_cl + d_wk, d_cl + d_wk)
-
     print("\nfutures titles and the board carry finished sessions only")
     from seed_static import settled_close
     # Oct 14 2026, 8:31 a.m. CT: Nov beans 1288.25, +4.5 on the Oct 13 close.
@@ -2110,9 +2015,6 @@ def selftest():
                 "close_date": "2026-10-14", "prev_date": "2026-10-13"}
     am = {"fetched": "2026-10-14T13:31:00Z", "quotes": {"beans-nearby": beans_am},
           "nearby": {"beans": {"label": "Nov '26"}}}
-    t_am = PAGES["soybean-futures-prices.html"][0](dict(ctx, prices=am))[0]
-    ck("a morning run titles beans with the Oct 13 close, not the 8:31 trade",
-       "$12.83" in t_am and "$12.88" not in t_am and "%" not in t_am, t_am)
     # Oct 15 03:16 UTC (10:16 p.m. CT Oct 14): the overnight session's trade
     # under the Oct 14 date. It is a trade, not a close.
     corn_night = {"close": 478.75, "netChange": -4.0, "close_date": "2026-10-14",
@@ -2141,24 +2043,6 @@ def selftest():
     # evening trade 465.50 in last); at 04:46 UTC the Oct 19 settle 467.00 is
     # in and the price is the overnight trade 465.00. The title takes the
     # settle both times, never an overnight trade.
-    _ovd = Path(__file__).resolve().parent.parent / "test" / "fixtures" / "futures-overnight"
-    _ov = {}
-    for _n in ("0046Z", "0446Z"):
-        try:
-            with open(_ovd / f"prices-2026-10-20T{_n}.json") as _f:
-                _ov[_n] = json.load(_f)
-        except Exception as exc:
-            _ov[_n] = None
-            print(f"  (overnight fixture {_n} unreadable: {exc})")
-    if _ov["0446Z"] and _ov["0046Z"]:
-        _t5 = PAGES["corn-futures-prices.html"][0](dict(ctx, prices=_ov["0446Z"]))[0]
-        ck("the 04:50 UTC run titles corn with the Oct 19 settle, not the overnight trade",
-           "$4.67" in _t5 and "Oct 19" in _t5 and "4.65" not in _t5, _t5)
-        _t0 = PAGES["corn-futures-prices.html"][0](dict(ctx, prices=_ov["0046Z"]))[0]
-        ck("an evening run before the settle lands keeps the Oct 16 settle (why 23:35 was too early)",
-           "Oct 16" in _t0 and "4.65" not in _t0 and "4.66" not in _t0, _t0)
-    else:
-        ck("overnight fixtures present (test/fixtures/futures-overnight)", False)
     # fetch_prices v3.7 files say what the close is; the bake reads the settle
     # fields and nothing else. Oct 16 2026, 1:46 p.m. CT: Nov beans last trade
     # 1260.50, the Oct 15 settle 1263.00 (-14.25 on Oct 14's 1277.25).
@@ -2174,42 +2058,8 @@ def selftest():
     sc = settled_close(v37s, "2026-10-17T05:00:00Z", "grain")
     ck("v3.7 settle: settled $12.61 1/4, -1 3/4 on Oct 16 (the CBOT settle)",
        sc and sc["px"] == 1261.25 and sc["date"] == "2026-10-16" and sc["net"] == -1.75, sc)
-    # 2026-10-20 03:31 UTC, real file: Dec corn last trade 466.75 (Oct 19),
-    # newest settle 474.25 (Oct 16). The title says which day its number is.
-    eve = {"fetched": "2026-10-20T03:31:20Z",
-           "nearby": {"corn": {"key": "corn-dec26", "label": "Dec '26"},
-                      "wheat": {"key": "wheat-dec26", "label": "Dec '26"}},
-           "quotes": {"corn-nearby": {"close": 466.75, "close_date": "2026-10-19", "close_kind": "last",
-                                      "settle": 474.25, "settle_date": "2026-10-16", "settle_net": -3.75},
-                      "wheat-nearby": {"close": 656.0, "close_date": "2026-10-19", "close_kind": "last",
-                                       "settle": 660.5, "settle_date": "2026-10-16", "settle_net": -2.0},
-                      "cattle": {"close": 228.0, "close_date": "2026-10-19", "close_kind": "last",
-                                 "settle": 227.55, "settle_date": "2026-10-16"},
-                      "feeders": {"close": 344.0, "close_date": "2026-10-19", "close_kind": "last",
-                                  "settle": 343.625, "settle_date": "2026-10-16"}}}
-    t_eve = PAGES["corn-futures-prices.html"][0](dict(ctx, prices=eve))[0]
-    ck("evening corn title names the settle's date, not just a number",
-       t_eve == "CBOT Corn Futures Price: Dec '26 $4.74¼ (Oct 16) | AGSIST", t_eve)
-    t_eve = PAGES["wheat-futures-prices.html"][0](dict(ctx, prices=eve))[0]
-    ck("wheat title keeps its date within the cap",
-       "(Oct 16)" in t_eve and "$6.60½" in t_eve and len(t_eve) <= TITLE_MAX, t_eve)
-    t_eve = PAGES[CATTLE_PAGE][0](dict(ctx, prices=eve))[0]
-    ck("cattle title names both settles and their date within the cap",
-       t_eve.startswith("CME Feeder Cattle Futures $343.625 & Live Cattle $227.55 (Oct 16)")
-       and len(t_eve) <= TITLE_MAX, t_eve)
     ck("v3.7 with no settle field bakes nothing",
        settled_close(dict(v37, settle=None), "2026-10-16T18:46:22Z", "grain") is None)
-    t_nt = PAGES["soybean-futures-prices.html"][0](dict(ctx, prices={
-        "fetched": "2026-10-16T18:46:22Z", "nearby": {"beans": {"label": "Nov '26"}},
-        "quotes": {"beans-nearby": {"close": 1260.5, "netChange": -3.75, "close_date": "2026-10-16",
-                                    "prev_date": "2026-10-15", "prev_source": "recorded settle"}}}))
-    ck("a v3.6 file with no settle titles the page with no number",
-       t_nt == ("CBOT Soybean Futures Price Today | AGSIST", None), t_nt)
-    mk_nt = seo_markets(dict(ctx, today=date(2026, 10, 16), prices={
-        "fetched": "2026-10-16T18:46:22Z",
-        "quotes": {"corn": {"close": 474.25, "close_kind": "last", "close_date": "2026-10-16"}}}))
-    ck("a board with no settle on file: markets title and description carry no number",
-       mk_nt == MARKETS_PLAIN and not re.search(r"\d", mk_nt[0] + mk_nt[1].replace("15-minute", "")), mk_nt)
     ck("a v3.6 previous close taken from the afternoon trade is never baked",
        settled_close({"close": 1260.5, "netChange": -3.75, "close_date": "2026-10-16",
                       "prev_date": "2026-10-15", "prev_source": "recorded settle"},
@@ -2227,31 +2077,7 @@ def selftest():
     sc = settled_close(dict(lc_eve, close=223.9), "2026-10-15T05:31:30Z", "cattle")
     ck("after 11 p.m. CT the cattle bar is the day's settle (legacy file)",
        sc and sc["px"] == 223.9 and sc["date"] == "2026-10-14", sc)
-    mk = seo_markets(dict(ctx, today=date(2026, 10, 14), prices={
-        "fetched": "2026-10-14T13:31:00Z",
-        "quotes": {"corn": {"close": 481.25, "netChange": -1.5, "close_date": "2026-10-14",
-                            "prev_date": "2026-10-13", "contract": "Dec '26"},
-                   "beans": dict(beans_am, contract="Nov '26")}}))
-    ck("a morning run dates the board by the last finished session",
-       mk[0].startswith("CBOT Grain Prices Oct 13: Corn $4.82¾, Soybeans $12.83¾") and "%" not in mk[0] + mk[1],
-       mk)
-
     print("\ndata pages: dated by the data, silent when it is old")
-    t, d = seo_markets(ctx)
-    ck("markets title carries the data's date and the corn price",
-       t.startswith("CBOT Grain Prices Aug 14: Corn $4.59"), t)
-    ck("markets title names CBOT, the word people search", t.startswith("CBOT "), t)
-    ck("markets description says delayed, never live",
-       "delayed" in d and "live" not in d.lower().replace("live cattle", ""), d)
-    ck("the plain markets fallback says delayed, never live",
-       "delayed" in MARKETS_PLAIN[1] and "live" not in (MARKETS_PLAIN[0] + MARKETS_PLAIN[1]).lower(), MARKETS_PLAIN)
-    ck("markets description dates the quotes", "Aug 14, 2026" in d, d)
-    ck("markets is skipped when the price file is a week old",
-       seo_markets(dict(ctx, today=date(2026, 8, 24))) is None)
-    mixed = dict(ctx, prices=dict(ctx["prices"], quotes=dict(
-        ctx["prices"]["quotes"], cattle={"close": 223.75, "close_date": "2026-08-13"})))
-    ck("a quote from another session is not printed under the board's date",
-       "223.75" not in seo_markets(mixed)[1], seo_markets(mixed)[1])
     t, d = seo_basis(ctx)
     ck("basis counts the weak regions with the page's 10c band",
        "Weak in 2 of 3" in t, t)
