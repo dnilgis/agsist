@@ -216,7 +216,7 @@
     var mm = ctx.limits || {};
     var outl = state.outlookJson ? O.outlookFor(state.outlookJson, ctx.grid) : { outlook: null, enso: null };
     /* El Nino or La Nina never moves the pick: the published test found no
-       edge after adjustment (Sig, Nov 9: the reader-set option is gone). The
+       edge after adjustment (the reader-set option is gone). The
        CPC status is printed as a status line only (ensoLine). */
     var enso = null;
     var valid = validWith(mm.valid, state.monOn, state.months);
@@ -411,7 +411,7 @@
   }
   /* One plain line per idea that was tested. Ideas not run (no past data) are
      left off; the seasonal forecast models are one line with their numbers,
-     no model names (Sig, Nov 8: no pipeline detail on public pages). */
+     no model names (no pipeline detail on public pages). */
   function testedLines(pr) {
     var out = [], fc = [], fcAvg = null;
     Object.keys(pr).forEach(function (id) {
