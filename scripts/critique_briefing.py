@@ -286,11 +286,20 @@ def _voice_payload(briefing):
     return out
 
 
+def write_usage_summary(summary_path=None):
+    """Every critic call of this run: token counts and estimated dollars."""
+    return claude_models.write_usage_summary(
+        "Daily briefing critic", [("critic", m, u, False) for m, u in USAGE_LOG], summary_path)
+
+
 def critic_payload(model, user_message, cache=False):
     """The critic's request body. CRITIC_SYSTEM never changes, so it is cached
     when a second pass can follow inside five minutes (--max-rewrites above 1);
-    a single pass would pay the cache write's 25% and never read it."""
-    return {
+    a single pass would pay the cache write's 25% and never read it. On the
+    models that take it, a safety decline is rerun server side (beta); the
+    client side retry on FALLBACK_MODEL below stays for the declines the
+    server does not rerun."""
+    p = {
         "model": model,
         "max_tokens": 4000,
         # no extended thinking: it eats max_tokens and is billed (claude_models.no_thinking)
@@ -298,6 +307,8 @@ def critic_payload(model, user_message, cache=False):
         "system": claude_models.cached_system(CRITIC_SYSTEM) if cache else CRITIC_SYSTEM,
         "messages": [{"role": "user", "content": user_message}],
     }
+    p, _ = claude_models.server_fallback(p, {})
+    return p
 
 
 def critique_briefing(briefing, threshold=7, cache=False):
@@ -364,7 +375,7 @@ Respond with ONLY the JSON output. No preamble, no markdown."""
     }
 
     try:
-        result = http_post_json(ANTHROPIC_API, payload, headers, timeout=90)
+        result = http_post_json(ANTHROPIC_API, payload, claude_models.headers_for(payload, headers), timeout=90)
         _refusal = result.get("stop_reason") == "refusal"
     except Exception as e:
         _ref = _refused_model(e)
@@ -378,12 +389,17 @@ Respond with ONLY the JSON output. No preamble, no markdown."""
         # with_model rewrites the thinking word too ("between_tools" is Sonnet 5.5 only)
         payload = claude_models.with_model(payload, FALLBACK_MODEL)
         globals()["MODEL"] = FALLBACK_MODEL
-        result = http_post_json(ANTHROPIC_API, payload, headers, timeout=90)
+        result = http_post_json(ANTHROPIC_API, payload, claude_models.headers_for(payload, headers), timeout=90)
     if result.get("stop_reason") == "refusal":
         raise RuntimeError("critic refused on both models")
     if result.get("usage"):
-        USAGE_LOG.append((payload["model"], result["usage"]))
-        print("  " + claude_models.usage_line(payload["model"], result["usage"]), flush=True)
+        if not USAGE_LOG:
+            import atexit
+            atexit.register(write_usage_summary)
+        # a server side fallback answers on another model: bill the one that answered
+        served = result.get("model") or payload["model"]
+        USAGE_LOG.append((served, result["usage"]))
+        print("  " + claude_models.usage_line(served, result["usage"]), flush=True)
     text = ""
     for block in result.get("content", []):
         if block.get("type") == "text":

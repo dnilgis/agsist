@@ -3,7 +3,7 @@
 fact_check_briefing.py -- the last read of the AGSIST Daily before it can send.
 
 Runs in daily.yml after the critic and before GATE 2. A careful reviewer model
-(claude_models.REVIEWER, Claude Fable 5.1 at effort high, the most capable
+(claude_models.REVIEWER, Claude Fable 5.2 at effort high, the most capable
 model Anthropic offers; Opus 5.5 if the account cannot use it) gets the draft and the
 exact source data the generator used, and returns structured findings:
   mismatch               a claim the data contradicts (a price, a change, a level)
@@ -270,7 +270,7 @@ def review_payload(fields, sources, model=None):
     p = {
         "model": model,
         "max_tokens": 16000,           # thinking counts against it; the findings are short
-        # Fable 5.1 and Opus 5.5 cannot turn thinking off; effort is the
+        # Fable 5.2 and Opus 5.5 cannot turn thinking off; effort is the
         # control, and a careful review is worth "high".
         "output_config": {"effort": "high",
                           "format": {"type": "json_schema", "schema": SCHEMA}},
@@ -333,7 +333,7 @@ def _moved(payload, model):
 
 def call_reviewer(payload, api_key, post=_post):
     """(findings, usage, model, summary) or raises. A refusal, a 404 (unknown
-    model) or a 400 (for example an account that cannot use Fable 5.1) moves
+    model) or a 400 (for example an account that cannot use Fable 5.2) moves
     the review down the chain once per model: REVIEWER, REVIEWER_FALLBACK,
     WRITER. The strongest model is a preference, not a requirement for the
     check to run."""
@@ -415,6 +415,9 @@ def report(findings, model, usage, note=""):
                f"({f.get('source')}). {f.get('explanation')}").replace("\n", " ")
         print(f"::{lvl} title=Fact check {f.get('severity')}::{msg[:900]}", flush=True)
     md = summary_md(findings, model, usage, note)
+    if usage:
+        # token counts and dollars only, like every other Claude job's summary
+        md += "\n" + claude_models.usage_table("Fact check", [("fact check", model, usage, False)]) + "\n"
     print(md)
     sp = os.environ.get("GITHUB_STEP_SUMMARY")
     if sp:

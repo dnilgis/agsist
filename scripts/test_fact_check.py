@@ -138,7 +138,8 @@ def main():
             raise RuntimeError("HTTP 400: invalid_request_error")
         if payload["model"] == claude_models.REVIEWER_FALLBACK:
             return {"stop_reason": "refusal", "content": []}
-        assert payload["thinking"] == {"type": "adaptive"} and "fallbacks" not in payload
+        # Sonnet 5.5 thinks adaptively here and takes the server fallback too
+        assert payload["thinking"] == {"type": "adaptive"} and payload["fallbacks"] == "default"
         return fake_reviewer(payload, key)
     assert run_on(bad, post=no_access) == 1 and seen == [claude_models.REVIEWER, claude_models.REVIEWER_FALLBACK, claude_models.WRITER]
     # refused everywhere: fail-open, the code checks still ran
@@ -161,8 +162,8 @@ def request_shapes():
     """Model ids, thinking word, cache marker and max_tokens of every call."""
     # the fact check
     p = fc.review_payload([("lead", "x")], "SRC", model=claude_models.REVIEWER)
-    assert p["model"] == "claude-fable-5-1"
-    assert "thinking" not in p, "Fable 5.1 400s on any thinking setting but adaptive; omit it"
+    assert p["model"] == "claude-fable-5-2"
+    assert "thinking" not in p, "Fable 5.2 400s on any thinking setting but adaptive; omit it"
     assert p["fallbacks"] == "default", "a safety decline reruns server side"
     assert p["output_config"]["effort"] == "high"
     assert p["output_config"]["format"]["type"] == "json_schema"
@@ -199,9 +200,33 @@ def request_shapes():
     cp = c.critic_payload("claude-sonnet-5-5", "u")
     assert cp["thinking"] == {"type": "between_tools"} and cp["max_tokens"] == 4000
     assert cp["system"] == c.CRITIC_SYSTEM, "one pass: no cache write that is never read"
+    assert cp["fallbacks"] == "default", "a safety decline on Sonnet 5.5 reruns server side"
+    assert not any(k in cp for k in ("temperature", "top_p", "top_k", "tool_choice"))
     cp2 = c.critic_payload("claude-sonnet-5-5", "u", cache=True)
     assert cp2["system"][0]["cache_control"] == {"type": "ephemeral"}
     assert c.FALLBACK_MODEL == "claude-sonnet-5"
+    cf = claude_models.with_model(cp, c.FALLBACK_MODEL)
+    assert "fallbacks" not in cf and cf["thinking"] == {"type": "disabled"}, "the client retry on Sonnet 5 sends neither"
+    assert "fallbacks" not in c.critic_payload("claude-haiku-5-5", "u"), "Haiku 5.5 has no server fallback"
+
+    # the writer streams: no server fallback (a decline part way would mix two answers); its own retry covers it
+    assert "fallbacks" not in pa
+
+    # usage on the job summary: counts and dollars per job, never text
+    import tempfile
+    sp = os.path.join(tempfile.mkdtemp(), "summary.md")
+    keep_g, keep_c = list(g.USAGE_LOG), list(c.USAGE_LOG)
+    g.USAGE_LOG[:] = [("claude-sonnet-5-5", {"input_tokens": 9000, "cache_creation_input_tokens": 5000, "output_tokens": 2000}),
+                      ("claude-sonnet-5-5", {"input_tokens": 9000, "cache_read_input_tokens": 5000, "output_tokens": 2000})]
+    c.USAGE_LOG[:] = [("claude-sonnet-5-5", {"input_tokens": 4000, "output_tokens": 1000})]
+    g.write_usage_summary(sp)
+    c.write_usage_summary(sp)
+    md = open(sp).read()
+    # 18,000 in at $2, 5,000 written at $2.50, 5,000 read at $0.10, 4,000 out at $10 = $0.036 + $0.0125 + $0.0005 + $0.04
+    assert "| briefing | claude-sonnet-5-5 | 2 | 18000 | 5000 | 5000 | 4000 | 0.0890 |" in md, md
+    assert "| critic | claude-sonnet-5-5 | 1 | 4000 | 0 | 0 | 1000 | 0.0180 |" in md, md
+    assert "u\"" not in md and "SRC" not in md
+    g.USAGE_LOG[:], c.USAGE_LOG[:] = keep_g, keep_c
 
     # the atlas reads
     import atlas_reads as ar

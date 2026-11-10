@@ -49,19 +49,19 @@ import time
 import urllib.error
 import urllib.request
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import claude_models  # noqa: E402  ONE table of models and prices
+
 API = "https://api.anthropic.com/v1"
-MODEL = "claude-opus-5-5"
+MODEL = claude_models.ACCURACY
 ROOT = "accuracy-pass"
 OUT = ROOT           # set from --run in main()
 MAX_SEARCHES = 4
 MAX_TOKENS = 32000
 COST_CAP = 80.0      # dollars; default for --cap
 CALIBRATION_MARGIN = 1.25
-# Claude Opus 5.5 list prices per million tokens, halved for the Batches API.
-PRICE_IN = 4.00 / 2
-PRICE_OUT = 20.00 / 2
-PRICE_CACHE_WRITE = 4.00 * 1.25 / 2
-PRICE_CACHE_READ = 0.20 / 2
+# List prices per million tokens (claude_models.PRICES), halved for the Batches API.
+PRICE_IN, PRICE_OUT, PRICE_CACHE_WRITE, PRICE_CACHE_READ = (x / 2 for x in claude_models.PRICES[MODEL])
 PRICE_SEARCH = 10.00 / 1000   # per web search, not discounted
 
 VERDICTS = ["supported_by_data", "supported_by_source", "likely_outdated", "likely_wrong", "unverifiable"]
@@ -378,6 +378,15 @@ def cmd_collect(wait_min):
            "results": {k: pages[k]["result"] for k in pages}, "pages": pages}
     json.dump(out, open(f"{OUT}/results.json", "w"), indent=1)
     print(f"::notice title=Accuracy pass results::actual cost ${cost:.2f}; claims {sum(counts.values())}; {counts}; errors {errors}", flush=True)
+    claude_models.write_usage_summary("Accuracy pass", usage_rows(out))
+    if tok["searches"]:
+        print(f"web searches: {tok['searches']} (${tok['searches'] * PRICE_SEARCH:.2f}, not in the table)", flush=True)
+
+
+def usage_rows(out):
+    """(job, model, usage, batch) per answered page, for the usage table."""
+    return [("accuracy pass", out["model"], e.get("usage") or {}, True)
+            for e in out["pages"].values() if e.get("result") == "succeeded"]
 
 
 # ---- report: rank the leads (likely_wrong / likely_outdated) into findings.json + findings.md ----
@@ -532,6 +541,10 @@ def selftest():
     assert rep["findings"][1]["quote_on_page"] is False and rep["findings"][1]["backed_by"] == "none" and "flag" in rep["findings"][1]
     assert rep["findings"][0]["score"] > rep["findings"][1]["score"] and "b" in rep["pages_without_a_parsed_answer"]
     assert "| 1 | medium wrong | rent/iowa.html" in md
+    assert MODEL == claude_models.ACCURACY == "claude-opus-5-5"
+    assert abs(cost_of({"input_tokens": 1_000_000, "output_tokens": 1_000_000}) - 12.0) < 1e-9, "Opus 5.5 $4 + $20, halved"
+    res["pages"]["a"]["usage"] = {"input_tokens": 10, "cache_read_input_tokens": 90, "output_tokens": 5}
+    assert usage_rows(res) == [("accuracy pass", MODEL, res["pages"]["a"]["usage"], True)]
     sets_selftest()
     print("selftest ok")
 
