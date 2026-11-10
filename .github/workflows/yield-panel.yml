@@ -111,7 +111,11 @@ jobs:
           git add data/yield-panel.json conditions.html crop-tour.html img/og/crop-tour.jpg
           if git diff --cached --quiet; then echo "panel unchanged"; exit 0; fi
           git commit -m "data: yield benchmark panel [skip ci]"
-          for i in 1 2 3; do
-            git push && break
-            git pull --rebase --autostash origin main && sleep 3
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull --rebase --autostash origin main || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
           done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }

@@ -119,8 +119,14 @@ jobs:
             echo "no sitemap change"
           else
             git commit -m "Bump sitemap lastmod, rebuild llms.txt $(date -u +%F)"
-            git pull --rebase --autostash origin main || true
-            git push
+            pushed=0
+            for n in 1 2 3 4 5; do
+              if git push; then pushed=1; break; fi
+              echo "Push race on attempt $n; rebasing..."
+              git pull --rebase --autostash origin main || { echo "Rebase failed."; exit 1; }
+              sleep $((RANDOM % 4 + 2))
+            done
+            [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
           fi
 
       - name: Ping IndexNow for bumped URLs

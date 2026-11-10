@@ -77,6 +77,12 @@ jobs:
           git config user.email "bot@agsist.com"
           git add data/markets.json
           git diff --staged --quiet || git commit -m "🎯 Markets — $(date -u +%Y-%m-%d)"
-          git pull --rebase origin "${GITHUB_REF_NAME}"
-          git push origin "HEAD:${GITHUB_REF_NAME}"
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push origin "HEAD:${GITHUB_REF_NAME}"; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull --rebase origin "${GITHUB_REF_NAME}" || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
+          done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
           bash .github/pages-kick.sh

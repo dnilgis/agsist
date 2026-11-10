@@ -163,8 +163,14 @@ jobs:
           [ -d data/elevator-contacts ] && git add -A data/elevator-contacts || true
           git diff --staged --quiet && echo "No changes" && exit 0
           git commit -m "Update grain bids + basis map + basis history $(date -u +%Y-%m-%dT%H:%M:%SZ)"
-          git pull --rebase origin main
-          git push
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull --rebase origin main || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
+          done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
 
       - name: Start the site deploy
         if: ${{ !cancelled() && github.event.inputs.dry_run != 'true' }}

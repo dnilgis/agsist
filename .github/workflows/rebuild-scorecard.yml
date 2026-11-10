@@ -49,5 +49,11 @@ jobs:
           git config user.email "bot@agsist.com"
           git add data/scorecard.json usda-calendar.html || true
           git diff --staged --quiet || git commit -m "Rebuild call scorecard — session-aware grading"
-          git pull --rebase origin main
-          git push
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull --rebase origin main || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
+          done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }

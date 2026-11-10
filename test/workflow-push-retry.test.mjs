@@ -33,7 +33,7 @@ function pushLoops(text) {
 }
 
 // The jobs that commit a graded or fetched data file and retry the push after a rebase.
-const files = ['wasde-watch.yml', 'wasde-archive.yml', 'fetch-wasde-pdf.yml', 'fetch-fsa-arcplc.yml', 'fetch-fsa-files.yml', 'seo-weekly.yml'];
+const files = ['wasde-watch.yml', 'analyst-scorecard.yml', 'cash-rent.yml', 'cond-yield.yml', 'conditions.yml', 'coverage-map.yml', 'crop_progress.yml', 'croptour.yml', 'farm-bill.yml', 'fetch-fsa-arcplc.yml', 'fetch-fsa-files.yml', 'fetch-wasde-pdf.yml', 'fetch_bids.yml', 'fetch_outlooks.yml', 'hail-data.yml', 'markets.yml', 'price-stats.yml', 'rebuild-archive.yml', 'rebuild-feeds.yml', 'rebuild-scorecard.yml', 'regrade-archive.yml', 'rss.yml', 'schrader-capture.yml', 'seo-weekly.yml', 'sitemap-add.yml', 'sitemap.yml', 'tenure.yml', 'transport.yml', 'wasde-archive.yml', 'yield-panel.yml'];
 
 test('a push loop with a rebase never re-checks staged changes or commits inside the loop', () => {
   let seen = 0;
@@ -44,7 +44,7 @@ test('a push loop with a rebase never re-checks staged changes or commits inside
       assert.ok(!/\bgit commit\b/.test(l.body), `${f}:${l.line} commits inside the push loop`);
     }
   }
-  assert.ok(seen === 6, `expected the data jobs' push loops, found ${seen}`);
+  assert.ok(seen >= files.length, `expected the data jobs' push loops, found ${seen}`);
 });
 
 test('the loop pushes after a rebase, fails on a failed rebase and exits 1 if never pushed', () => {
@@ -67,4 +67,19 @@ test('wasde-watch commits once, before the loop', () => {
   const commit = t.indexOf('git commit -m "wasde: graded');
   const loop = t.indexOf('for i in 1 2 3 4 5; do', commit);
   assert.ok(commit > 0 && loop > commit);
+});
+
+test('no workflow pushes with a bare "git push" line (no retry, no rebase)', () => {
+  const bare = /^\s*git push( -q| origin "HEAD:\$\{GITHUB_REF_NAME\}")?\s*$/;
+  for (const f of fs.readdirSync(dir).filter((x) => x.endsWith('.yml'))) {
+    fs.readFileSync(path.join(dir, f), 'utf8').split('\n').forEach((line, i) => {
+      assert.ok(!bare.test(line), `${f}:${i + 1} pushes once with no retry; use the push, rebase, push loop that exits 1`);
+    });
+  }
+});
+
+test('daily.yml push loops fail the step when every attempt is refused', () => {
+  const t = fs.readFileSync(path.join(dir, 'daily.yml'), 'utf8');
+  assert.ok(!/git pull -q --rebase --autostash origin main && git push -q && break/.test(t));
+  assert.equal((t.match(/\[ "\$i" = "3" \] && (\{[^}]*)?exit 1/g) || []).length, 3);
 });

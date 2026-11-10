@@ -88,6 +88,7 @@ jobs:
               && git add "$f" && { git diff --cached --quiet || git commit -q -m "Daily print of the day $d"; } \
               && git push -q origin HEAD:main && break
             echo "push attempt $i failed; retrying"; sleep 15
+            [ "$i" = "3" ] && exit 1
           done
           bash .github/pages-kick.sh
           url="https://agsist.com/$f"
@@ -319,7 +320,14 @@ jobs:
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "$f"
           git diff --cached --quiet || git commit -q -m "Daily print of the day $d"
-          for i in 1 2 3; do git pull -q --rebase --autostash origin main && git push -q && break; sleep 10; done
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push -q; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull -q --rebase --autostash origin main || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
+          done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
           bash .github/pages-kick.sh
           echo "file=$f" >> "$GITHUB_OUTPUT"
 
@@ -585,6 +593,7 @@ jobs:
               echo "push ok on attempt $i"; break
             fi
             echo "push attempt $i failed; retrying in 20s"; sleep 20
+            [ "$i" = "3" ] && { git rebase --abort 2>/dev/null || true; exit 1; }
           done
 
       - name: A dry run does not mark the day done

@@ -88,7 +88,11 @@ jobs:
           r=$(node -e "console.log(require('./data/elevator-coverage.json').counts.readers)")
           u=$(node -e "console.log(require('./data/elevator-coverage.json').counts.unreported)")
           git commit -m "coverage: $n of $r readers answered, $u did not, $k in the queue [skip ci]"
-          for i in 1 2 3; do
-            git push && break
-            git pull --rebase --autostash && sleep 3
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push; then pushed=1; break; fi
+            echo "Push race on attempt $n; rebasing..."
+            git pull --rebase --autostash || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
           done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
