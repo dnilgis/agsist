@@ -6,7 +6,9 @@
  *                     map date arrived and slid the next-update badge right; the line now holds its width.
  *   /hail-map         the now card (#hm-now) and the view buttons (#hm-controls) are written by the map code, so the map
  *                     dropped by 100 px and more (0.07 to 0.1). The card's room is held before paint on a plain
- *                     /hail-map (class hm-hold) and the buttons keep one row (two between 641 and 1060 px).
+ *                     /hail-map (class hm-hold) and the buttons keep one row (two between 641 and 1060 px). The card
+ *                     is one headline clamped at two lines and one row of buttons, its notes in a closed box under it,
+ *                     so its height does not depend on the data (a long state list or every feed failing, below).
  *   /milk-prices      Inter is font-display:optional, but a slow file swapped in anyway (headless Chrome, and any browser
  *                     that finishes the file before the page is done) and rewrapped the Dairy Margin Coverage lines
  *                     (0.05 at 1280). The page now keeps the stand-in when Inter is not ready in 100 ms.
@@ -36,7 +38,10 @@ test("static guards: the rooms are held in the files", () => {
   assert.match(dm, /@media \(min-width: 642px\) \{ \.dm-answer \{ min-height: 6\.5em; \} \}/);
   assert.match(dm, /\.dm-updated \{[^}]*min-width: min\(100%, 84ch\)/);
   const hm = rd("hail-map.html");
-  assert.match(hm, /\.hm-now\{min-height:205px\}/);
+  assert.match(hm, /\.hm-now\{box-sizing:border-box;min-height:calc\(2px \+ 1\.3rem \+ 3em \+ \.55rem \+ 44px\)\}/);
+  assert.match(hm, /-webkit-line-clamp:2;line-clamp:2;overflow:hidden;height:3em/);
+  assert.match(hm, /\.hm-now-acts\{display:flex;flex-wrap:nowrap;height:44px/);
+  assert.match(hm, /\.hm-hold \.hm-now-more\[hidden\]\{display:block!important;visibility:hidden\}/);
   assert.match(hm, /\.hm-hold \.hm-now\[hidden\]\{display:block!important;visibility:hidden\}/);
   assert.match(hm, /classList\.add\('hm-hold'\)/);
   assert.match(hm, /\.hm-mapstack \.hm-controls\{min-height:44px\}/);
@@ -50,7 +55,7 @@ test("static guards: the rooms are held in the files", () => {
 const PAGES = ["/desk", "/tar-spot", "/drought-monitor", "/hail-map", "/milk-prices"];
 const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
 
-async function measure(page, w, h, mobile, slowFont) {
+async function measure(page, w, h, mobile, slowFont, opt = {}) {
   const srv = createServer((req, res) => {
     const p = decodeURIComponent(new URL(req.url, "http://x").pathname);
     let f = normalize(join(ROOT, p));
@@ -58,6 +63,8 @@ async function measure(page, w, h, mobile, slowFont) {
     else if (existsSync(f) && statSync(f).isDirectory()) f = join(f, "index.html");
     if (!f.startsWith(ROOT) || !existsSync(f)) { res.writeHead(404); res.end(); return; }
     const slow = p.endsWith(".woff2") ? (slowFont ? 2500 : 0) : p.startsWith("/data/") ? 1500 : 800;
+    const o = opt.override && opt.override(p);
+    if (o) { setTimeout(() => { res.writeHead(o.status, { "content-type": "application/json" }); res.end(o.body || ""); }, slow); return; }
     setTimeout(() => { res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" }); res.end(readFileSync(f)); }, slow);
   });
   await new Promise((ok) => srv.listen(0, "127.0.0.1", ok));
@@ -74,7 +81,9 @@ async function measure(page, w, h, mobile, slowFont) {
     await pg.addInitScript(() => { window.__cls = 0; new PerformanceObserver((l) => { for (const e of l.getEntries()) if (!e.hadRecentInput) window.__cls += e.value; }).observe({ type: "layout-shift", buffered: true }); });
     await pg.goto(`http://127.0.0.1:${port}${page}`, { waitUntil: "load" });
     await pg.waitForTimeout(5500);
-    return await pg.evaluate(() => window.__cls);
+    if (opt.until) { await pg.waitForFunction(opt.until, null, { timeout: 30000 }); await pg.waitForTimeout(1000); }
+    const cls = await pg.evaluate(() => window.__cls);
+    return opt.probe ? { cls, probe: await pg.evaluate(opt.probe) } : cls;
   } finally { await browser.close(); srv.close(); }
 }
 
@@ -85,6 +94,36 @@ for (const page of PAGES) {
       assert.ok(cls < 0.005, `layout shift ${cls.toExponential(2)}`);
     });
   }
+}
+
+/* The worst case for the hail now card: every live feed fails (the outside hosts are aborted, the 24-hour radar layer is
+   missing) and the latest radar day names three of the longest state names. The card stays the height held for it and
+   the notes go in the closed box under it. */
+const sqr = (lo, la) => [[[lo, la], [lo + 0.5, la], [lo + 0.5, la + 0.5], [lo, la + 0.5], [lo, la]]];
+const LONG_DAY = JSON.stringify({ type: "FeatureCollection", features: [[-79.5, 35.5], [-81, 33.8], [-100.5, 44.2]].map(([lo, la]) =>
+  ({ type: "Feature", properties: { thresh_in: 1.0 }, geometry: { type: "MultiPolygon", coordinates: [sqr(lo, la)] } })) });
+for (const [w, h, mobile] of [[390, 844, true], [1280, 900, false]]) {
+  test(`/hail-map at ${w}px, every feed failing and a long state list: layout shift under 0.005, the card at its held height`, { skip, timeout: 120000 }, async () => {
+    const r = await measure("/hail-map", w, h, mobile, false, {
+      override: (p) => p === "/data/hail/mesh/today-partial.json" ? { status: 404 } : /^\/data\/hail\/mesh\/\d{4}-\d\d-\d\d\.json$/.test(p) ? { status: 200, body: LONG_DAY } : null,
+      until: () => /Latest radar hail:/.test((document.getElementById("hm-now") || {}).textContent || "") && /Warnings are not shown/.test((document.getElementById("hm-now-notes") || {}).textContent || ""),
+      probe: () => {
+        const b = document.getElementById("hm-now"), head = b.querySelector(".hm-now-head"), more = document.getElementById("hm-now-more");
+        const held = b.cloneNode(false); held.removeAttribute("id"); held.style.visibility = "hidden"; b.after(held);
+        const out = { h: b.getBoundingClientRect().height, held: held.getBoundingClientRect().height, text: b.textContent, title: head.title,
+          lines: Math.round(head.getBoundingClientRect().height / parseFloat(getComputedStyle(head).lineHeight)), open: more.open, notes: document.getElementById("hm-now-notes").textContent };
+        held.remove(); return out;
+      },
+    });
+    const p = r.probe;
+    assert.ok(r.cls < 0.005, `layout shift ${r.cls.toExponential(2)}`);
+    assert.match(p.title, /^(No .* in the last 24 hours\. )?Latest radar hail: .+, North Carolina, South Carolina and South Dakota\.$/, p.title);
+    assert.ok(Math.abs(p.h - p.held) < 0.5, `card ${p.h}px, held ${p.held}px`);
+    assert.equal(p.lines, 2, "the headline is held at two lines");
+    assert.equal(p.open, false, "the notes box is closed");
+    assert.match(p.notes, /Warnings are not shown right now\. Ground reports are not shown right now\. The 24-hour radar layer is not posted yet\./);
+    assert.doesNotMatch(p.text + p.notes, /did not answer|did not load/);
+  });
 }
 
 for (const [w, h, mobile] of [[390, 844, true], [1280, 900, false]]) {
