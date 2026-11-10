@@ -636,7 +636,7 @@ def selftest():
         assert faqs["Is AGSIST part of Acme Co-op?"].startswith("No. AGSIST is not affiliated with Acme Co-op.")
         # the town page links its company; a two-board company has no page and no link
         fr = open(os.path.join(out, "nebraska", "fremont.html"), encoding="utf-8").read()
-        assert '<a href="/cash-bids/company/acme-co-op">Every Acme Co-op location</a>' in fr
+        assert '<a href="/cash-bids/company/acme-co-op">Acme Co-op cash bids at all 4 locations</a>' in fr
         assert "/cash-bids/company/two-spot" not in fr
         ix = open(os.path.join(d, "index.html"), encoding="utf-8").read()
         assert '<a href="/cash-bids/company/acme-co-op">Acme Co-op</a></td><td class="n">4</td><td class="n">3</td>' in ix

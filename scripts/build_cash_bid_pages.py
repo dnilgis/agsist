@@ -101,7 +101,7 @@ import phone_corrections  # noqa: E402  (numbers checked on the buyer's own site
 import storesell  # noqa: E402  (the site's one store-or-sell calculation, twin of components/storesell.js)
 import build_buyers as BUY  # noqa: E402  (where the big buyers are: data/buyers.json)
 from elevator_names import clean_place, display_name  # noqa: E402  (page-title names fixed, twin of elev-names.js)
-from elevator_names import fac_key, trade_key  # noqa: E402  (the one elevator name key)
+from elevator_names import fac_key, trade_key, basis_name  # noqa: E402  (the one elevator name key)
 from build_state_basis_pages import (  # noqa: E402
     CT, MONTH_ABBR, SITE, STATE_NAMES, contract_label, esc, money_basis, parse_contract, parse_ts)
 
@@ -1741,8 +1741,7 @@ def board_section(bd, snap_ct):
     pt = bd["branch"] if "branch" in bd else bd["city"]
     loc = near_text(bd) or (pt if pt and pt.lower() != name.lower() else "")
     # the company's own page (scripts/build_company_pages.py), when it has one
-    co = (f'<div class="loc"><a href="{esc(bd["company_path"])}">Every {esc(bd["company_short"])} location</a></div>'
-          if bd.get("company_path") else "")
+    co = (f'<div class="loc">{company_link(bd)}</div>' if bd.get("company_path") else "")
     trs = []
     for r in rows:
         com = r["commodity"]
@@ -1755,6 +1754,8 @@ def board_section(bd, snap_ct):
             bas = money_basis(r["basis"])
             if r["contract"]:
                 bas += f'<br><span class="mut">vs {con_text(r)}</span>'
+            if r.get("basis_since"):
+                bas += f'<br><span class="mut">basis last changed {esc(r["basis_since"])}</span>'
         trs.append(f'<tr><td>{crop}</td><td>{esc(r["label"])}</td><td class="n">{cash_c(r["cash"])}</td>'
                    f'<td class="n">{bas}</td></tr>')
         if r.get("odd"):
@@ -1788,6 +1789,15 @@ WHY = {"stale_or_unconfirmed": "board not confirmed on the latest read",
        "cash_outside_sanity_band": "posted figures did not check out"}
 
 
+def company_link(bd):
+    """The town page's link to the company's own page, in the words people search:
+    "Gateway FS cash bids at all 13 locations"."""
+    n = bd.get("company_n")
+    words = (f"{bd['company_short']} cash bids at all {n} locations" if n and n > 1
+             else f"{bd['company_short']} cash bids")
+    return f'<a href="{esc(bd["company_path"])}">{esc(words)}</a>'
+
+
 def quiet_line(bd, ests=()):
     why = next((WHY[k] for k, _ in bd["why"].most_common() if k in WHY), "no current bid")
     seen = f", last read {fmt_day(bd['checked'])}" if bd["checked"] else ""
@@ -1799,7 +1809,8 @@ def quiet_line(bd, ests=()):
                   f'<span class="mut">{esc(e["label"])}. Estimate, not a posted bid: last posted basis '
                   f'({esc(e["basis_day"])}) + {esc(e["con"])} futures ({esc(e["close_day"])} close)</span></span>'
                   for e in ests)
-    return f"<li>{esc(name)}: {esc(why)}{seen}{est}</li>"
+    co = f" &middot; {company_link(bd)}" if bd.get("company_path") else ""
+    return f"<li>{esc(name)}: {esc(why)}{seen}{co}{est}</li>"
 
 
 FUT_LETTERS = "FGHJKMNQUVXZ"
@@ -1834,7 +1845,7 @@ def load_futures(root="."):
 
 
 def basis_shard(basis_dir, st):
-    """{(FACILITY, CITY): [(crop, symbol, delivery month, basis cents, last seen day)]} from
+    """{(FACILITY, CITY): [(crop, symbol, delivery month, basis cents, last seen day, changed day)]} from
     data/basis/<ST>.json (build_basis_history.py); {} when there is none."""
     try:
         with open(os.path.join(basis_dir, f"{st}.json"), encoding="utf-8") as f:
@@ -1845,12 +1856,42 @@ def basis_shard(basis_dir, st):
     out = defaultdict(list)
     for r in sh.get("r") or []:
         try:
-            fi, ci, sym, month, cur, _prev, _since, _first, last_i = r[:9]
+            fi, ci, sym, month, cur, _prev, since_i, _first, last_i = r[:9]
             facility, city = (fac[fi].split("|", 1) + [""])[:2]
-            out[(facility, city)].append((cats[ci], sym, month, cur, days[last_i] if last_i is not None else None))
+            out[(facility, city)].append((cats[ci], sym, month, cur, days[last_i] if last_i is not None else None,
+                                          days[since_i] if since_i is not None else None))
         except (ValueError, IndexError, TypeError):
             continue
     return out
+
+
+def shard_key(bd):
+    """The basis log's (FACILITY, CITY) for a board: elevator_names.basis_name and the raw town."""
+    return (basis_name(bd.get("operator") or ""), " ".join(str(bd.get("raw_city") or "").strip().upper().split()))
+
+
+def basis_since(bd, shard, snap_ct):
+    """Mark r["basis_since"] ('Oct 30') on each row of a board whose basis, by the
+    basis log, last changed on a day before the row's own posted day: the cash
+    moved with futures, the basis did not. A row matches its log entry by crop,
+    futures contract, delivery month and the same basis in cents; no match, no mark."""
+    rows = shard.get(shard_key(bd)) or [] if shard else []
+    n = 0
+    for r in bd["rows"]:
+        if r["basis"] is None or not r["contract"] or r.get("inferred"):
+            continue
+        cents = int(round(r["basis"] * 100))
+        for cat, sym, month, cur, last, since in rows:
+            if cat != r["crop"] or cur != cents or not since or not last:
+                continue
+            if parse_contract(sym, r["crop"], snap_ct.year) != r["contract"] or parse_dm(month, last) != r["dm"]:
+                continue
+            d = dt.date.fromisoformat(since)
+            if d < r["priced"].astimezone(CT).date():
+                r["basis_since"] = f"{MONTH_ABBR[d.month - 1]} {d.day}"
+                n += 1
+            break
+    return n
 
 
 def estimates(bd, shard, fut, snap_ct, days=ESTIMATE_DAYS):
@@ -1862,14 +1903,12 @@ def estimates(bd, shard, fut, snap_ct, days=ESTIMATE_DAYS):
     contract is past its first notice day."""
     if not shard or not fut:
         return []
-    key = (" ".join(display_name(bd.get("operator") or "").upper().split()),
-           " ".join(str(bd.get("raw_city") or "").strip().upper().split()))
-    rows = shard.get(key) or []
+    rows = shard.get(shard_key(bd)) or []
     cur_m = f"{snap_ct.year}-{snap_ct.month:02d}"
     out = []
     for crop in ("corn", "soybeans"):
         best = None
-        for cat, sym, month, cents, last in rows:
+        for cat, sym, month, cents, last, _since in rows:
             if cat != crop or not isinstance(cents, int) or not last:
                 continue
             age = (snap_ct.date() - dt.date.fromisoformat(last)).days
@@ -2501,7 +2540,9 @@ def build_town_page(t, ctx):
     quiet = sorted((b for b in t["boards"].values() if not b["rows"]), key=order)
     secs, times, crops, nrows, shown, any_hold, held_all = [], [], set(), 0, [], False, []
     held_first = False
+    shard_st = ctx["shard"](st) if ctx.get("shard") else {}
     for i_bd, bd in enumerate(live_b):
+        basis_since(bd, shard_st, snap_ct)
         h, rows, ts, held = board_section(bd, snap_ct)
         if held and i_bd == 0:
             held_first = True
@@ -3789,7 +3830,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     companies = CO.group(towns, {s_["id"]: s_ for s_ in index.get("sources") or [] if s_.get("id")})
     for co in companies.values():
         for _, bd in co["locs"]:
-            bd["company_path"], bd["company_short"] = co["path"], co["short"]
+            bd["company_path"], bd["company_short"], bd["company_n"] = co["path"], co["short"], len(co["locs"])
     before, before_real = set(), set()
     if os.path.isdir(out_dir):
         for dp, _, fs in os.walk(out_dir):
@@ -5304,13 +5345,13 @@ def _selftest_town_audit():
     assert fce["relay_of"] == ("ADM", "Marshall", "MN") and "relay_of" not in adm
     assert "relay_of" not in own, "same numbers but no ADM in its own place name: not called a relay"
     # an elevator off the feed keeps a labelled estimate: last posted basis + the same contract's latest close,
-    # only within ESTIMATE_DAYS of that basis; Farmers Cooperative Elevator, Montevideo MN (basis log of Nov 10)
+    # only within ESTIMATE_DAYS of that basis; Farmers Cooperative Elevator, Montevideo MN (its basis log, Nov 2026)
     import tempfile as _tf2
     with _tf2.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "data", "basis"))
         with open(os.path.join(td, "data", "basis", "MN.json"), "w") as f:
             json.dump({"state": "MN", "c": ["corn", "soybeans", "wheat", "other"], "f": ["FARMERS COOPERATIVE ELEVATOR CO|MONTEVIDEO"],
-                       "d": ["2026-10-02", "2026-11-03", "2026-10-30", "2026-09-20"],
+                       "d": ["2026-10-02", "2026-11-03", "2026-11-06", "2026-09-20"],
                        "r": [[0, 0, "ZCZ26", "11/01/2026", -72, -75, 1, 0, 2],
                              [0, 0, "ZCH27", "01/01/2027", -65, -60, 1, 0, 2],
                              [0, 1, "ZSX26", "11/01/2026", -95, None, 0, 0, 2],
@@ -5324,13 +5365,20 @@ def _selftest_town_audit():
         sh = basis_shard(os.path.join(td, "data", "basis"), "MN")
         mv = {"operator": "Farmers Cooperative Elevator Co", "raw_city": "Montevideo"}
         e = estimates(mv, sh, fut, dt.datetime(2026, 11, 10, 9, tzinfo=CT))
-        assert e == [{"crop": "corn", "cash": 3.6675, "label": "Nov 2026", "basis_day": "Oct 30", "con": "Dec '26",
+        assert e == [{"crop": "corn", "cash": 3.6675, "label": "Nov 2026", "basis_day": "Nov 6", "con": "Dec '26",
                       "close_day": "Nov 9"}], e
         # soybeans: Nov '26 is past first notice; the Jan '27 row was last posted Sep 20, 51 days back: no estimate
         assert estimates(mv, sh, fut, dt.datetime(2026, 12, 15, 9, tzinfo=CT)) == [], "past 30 days: no estimate"
+        # the cash was posted Nov 9, the basis (-72c vs Dec '26, Nov delivery) last changed Nov 3: said so
+        bdm = dict(mv, rows=[{"crop": "corn", "basis": -0.72, "contract": ("ZC", 11, 2026), "dm": "2026-11",
+                               "priced": dt.datetime(2026, 11, 9, 10, tzinfo=CT)},
+                              {"crop": "corn", "basis": -0.70, "contract": ("ZC", 11, 2026), "dm": "2026-11",
+                               "priced": dt.datetime(2026, 11, 9, 10, tzinfo=CT)}])
+        assert basis_since(bdm, sh, dt.datetime(2026, 11, 10, 9, tzinfo=CT)) == 1
+        assert bdm["rows"][0]["basis_since"] == "Nov 3" and "basis_since" not in bdm["rows"][1], bdm["rows"]
         li = quiet_line({"operator": "Farmers Cooperative Elevator Co", "city": "Montevideo", "why": Counter(),
                          "checked": None, "how": "name"}, e)
-        assert "Corn $3.67" in li and "Estimate, not a posted bid: last posted basis (Oct 30) + Dec &#x27;26 futures " \
+        assert "Corn $3.67" in li and "Estimate, not a posted bid: last posted basis (Nov 6) + Dec &#x27;26 futures " \
             "(Nov 9 close)" in li, li
     print("town audit selftest OK")
 
