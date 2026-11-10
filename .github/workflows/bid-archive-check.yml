@@ -1,8 +1,5 @@
 name: Bid archive check (monthly)
-# Bid archive check (monthly): bid archive matches the published town pages. Nothing is rebuilt:
-# one past day's raw daily bid snapshot is compared with that state's town pages as committed nearest
-# the snapshot's time. Backfilled and partial days are skipped (first live day 2026-10-19), and so is
-# a thin day (under half the median location count of the live days in the pool).
+# Bid archive check (monthly): one day of raw bid snapshots against the committed town pages.
 
 on:
   schedule:
