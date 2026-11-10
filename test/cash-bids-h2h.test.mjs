@@ -143,22 +143,24 @@ test("town pages load the history script only from the builder, and the data onl
   assert.match(src, /fetch\('\/data\/basis-sparklines\/' \+ st \+ '\.json'\)/);
   assert.ok(src.indexOf("fetch(") > src.indexOf("function open("), "nothing is fetched until the box is opened");
   const py = readFileSync(ROOT + "scripts/build_cash_bid_pages.py", "utf8");
-  assert.match(py, /HIST_JS = '<script src="\/components\/elev-names\.js\?v=\d+" defer><\/script><script src="\/components\/cb-basis-hist\.js\?v=5" defer><\/script>/);
+  assert.match(py, /HIST_JS = '<script src="\/components\/elev-names\.js\?v=\d+" defer><\/script><script src="\/components\/cb-basis-hist\.js\?v=6" defer><\/script>/);
 });
 
-// 2026-10-17 audit N5: the box heading names the log's first date, and the
-// log leaves out points the bid pages would call a misread (-200c at Primient).
-test("the basis log box is headed by its own first date, and misreads are screened out of the log", () => {
+// 2026-10-17 audit N5: the box heading names a real date (it said June over a log from Aug 27), and the
+// log leaves out points the bid pages would call a misread (-200c at Primient). Since the public log
+// starts on build_basis_history.py PUBLIC_FROM, the heading names that day (test/basis-history-start).
+test("the basis log box is headed by where its log starts, and misreads are screened out of the log", () => {
   const src = readFileSync(ROOT + "components/cb-basis-hist.js", "utf8");
-  assert.match(src, /sum\.textContent = 'Basis since ' \+ dayText\(first\)/);
+  assert.match(src, /sum\.textContent = 'Basis since ' \+ since/);
+  assert.match(src, /var since = from \? fullDay\(from\) : \(first \? dayText\(first\) : ''\)/);
   assert.doesNotMatch(src, /since June/);
   const py = readFileSync(ROOT + "scripts/build_cash_bid_pages.py", "utf8");
-  assert.match(py, /head = "Basis since " \+ since_words\(first\)/);
+  assert.match(py, /head = "Basis since " \+ HIST_FROM_WORDS/);
   assert.doesNotMatch(py, /<summary>Basis since June<\/summary>/);
   const sp = readFileSync(ROOT + "scripts/build_basis_sparklines.py", "utf8");
   assert.match(sp, /from basis_method import relative_outlier/);
+  // live file: Primient Decatur corn may have no change since the log's start day; any point it has is screened
   const il = JSON.parse(readFileSync(ROOT + "data/basis-sparklines/IL.json", "utf8"));
   const pri = Object.entries(il.series).filter(([k]) => k.startsWith("IL|PRIMIENT GRAIN|DECATUR|corn|"));
-  assert.ok(pri.length > 0);
   for (const [k, pts] of pri) for (const p of pts) assert.notEqual(p.cents, -200, k);
 });
