@@ -16,11 +16,25 @@
    "link": "/daily"
   },
   {
+   "id": "2026-11-10-elevator-names",
+   "date": "2026-11-10",
+   "title": "One name for each elevator",
+   "line": "Elevators listed under an old or archived board name now show their own name and keep their basis history, on the home page, /cash-bids and the town pages.",
+   "link": "/cash-bids"
+  },
+  {
    "id": "2026-11-10-pages-hold-still",
    "date": "2026-11-10",
    "title": "Thirteen pages hold still while they load",
    "line": "Tariffs, sale barn prices, hay, break-even, store or sell, urea and seven more pages keep their room while the numbers load, so nothing jumps under your thumb.",
    "link": "/tools"
+  },
+  {
+   "id": "2026-11-10-same-state-links",
+   "date": "2026-11-10",
+   "title": "One state, every page",
+   "line": "State pages for bids, rent, yield, rain, PRF and hail now link to each other, and ARC/PLC and PRF county pages name the nearest towns with bids.",
+   "link": "/cash-bids"
   },
   {
    "id": "2026-11-09-rain-print-several-days",

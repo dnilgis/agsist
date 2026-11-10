@@ -70,8 +70,71 @@ CAT_IX = {c: i for i, c in enumerate(CATS)}
 
 
 # ---------------------------------------------------------------- keys -----
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from elevator_names import archive_clean_upper, basis_name  # noqa: E402  (the one elevator name key)
+
+
 def _norm(s):
     return " ".join(str(s or "").strip().upper().split())
+
+
+def raw_renames(bids):
+    """{raw key: cleaned key} for the day's rows whose facility the shards
+    used to file under its raw name ("ZFARMERS COOPERATIVE ELEVATOR CO.OLD" ->
+    "FARMERS COOPERATIVE ELEVATOR CO"). Read from the rows' own spelling,
+    where a source system's archive mark can still be told apart."""
+    out = {}
+    for b in bids or []:
+        raw = _norm(b.get("facility"))
+        new = basis_name(b.get("facility"))
+        if raw and new and raw != new:
+            out[raw] = new
+    return out
+
+
+def clean_facility(fac, city, st, known, renames=None):
+    """The cleaned facility a raw key now lives under. Today's rows say so
+    (renames); else the name itself says it is an archived copy ("ZSHAWNEE
+    FEED OLD"); else the cleaned name is used only when that elevator already
+    sits under it in the same town and state (known: {(facility, city, st)}).
+    Anything else stays as it is: "ZEELAND FARM SERVICES" is a real Z."""
+    if renames and fac in renames:
+        return renames[fac]
+    cand, sure = archive_clean_upper(fac)
+    if cand and cand != fac and (sure or (cand, city, st) in known):
+        return cand
+    return fac
+
+
+def merge_rows(a, b):
+    """One history from a raw-name row and its cleaned twin: the later one
+    is current; the first day seen is the earlier of the two; when the later
+    one has no earlier basis of its own, the other's last basis is it."""
+    if (a.get("last") or "") < (b.get("last") or ""):
+        a, b = b, a
+    out = dict(a)
+    out["first"] = min(x for x in (a.get("first"), b.get("first")) if x) if (a.get("first") or b.get("first")) else None
+    if out.get("prev") is None and b.get("cur") is not None and b.get("cur") != a.get("cur"):
+        out["prev"] = b["cur"]
+        out["since"] = a.get("first") or a.get("since")
+    return out
+
+
+def rekey_state(state, bids):
+    """Move rows filed under a raw archive name to the cleaned name, merging
+    with a twin already there. Returns the number of rows moved."""
+    renames = raw_renames(bids)
+    known = {(k[0], k[1], k[2]) for k in state}
+    moved = 0
+    for k in list(state):
+        new = clean_facility(k[0], k[1], k[2], known, renames)
+        if new == k[0]:
+            continue
+        nk = (new,) + k[1:]
+        v = state.pop(k)
+        state[nk] = merge_rows(state[nk], v) if nk in state else v
+        moved += 1
+    return moved
 
 
 def key_of(b):
@@ -85,7 +148,7 @@ def key_of(b):
     days, and every one of them was two rows arguing rather than a board
     moving.
     """
-    return (_norm(b.get("facility")), _norm(b.get("city")), _norm(b.get("state")),
+    return (basis_name(b.get("facility")), _norm(b.get("city")), _norm(b.get("state")),
             _norm(b.get("category")), _norm(b.get("symbol")), _norm(b.get("deliveryMonth")))
 
 
@@ -128,7 +191,7 @@ def day_ids(bids):
         e = b.get("elevId")
         if not e:
             continue
-        k = (_norm(b.get("facility")), _norm(b.get("city")), _norm(b.get("state")))
+        k = (basis_name(b.get("facility")), _norm(b.get("city")), _norm(b.get("state")))
         v = [e, b.get("fips") or None, b["fipsSure"] if isinstance(b.get("fipsSure"), bool) else None]
         if k in out and out[k][0] != e:
             bad.add(k)
@@ -486,6 +549,35 @@ def selftest():
        ids.get(("ABBYVILLE FARMERS CO-OP GRAIN CO.", "ABBYVILLE", "KS")) == ["epb8e8r7nr", "20155", True])
     ck("fipsSure false is kept", ids.get(("ASSUMPTION COOP", "ASSUMPTION", "IL")) == ["e4sn84jb9v", "17021", False])
     ck("two boards on one key: no id, never a guess", ("ASSUMPTION COOP", "TWIN", "IL") not in ids)
+    # A SOURCE SYSTEM'S ARCHIVED COPY KEYS AS THE ELEVATOR (Nov 10): the Montevideo MN rows were filed
+    # under "ZFARMERS COOPERATIVE ELEVATOR CO.OLD", so the town page found no basis history for it.
+    mv = {"facility": "zFarmers Cooperative Elevator Co.OLD", "city": "Montevideo", "state": "MN", "category": "corn",
+          "symbol": "ZCZ26", "deliveryMonth": "11/01/2026", "basis": -0.72}
+    ck("the key is the cleaned name", key_of(mv)[0] == "FARMERS COOPERATIVE ELEVATOR CO")
+    old = {("ZFARMERS COOPERATIVE ELEVATOR CO.OLD", "MONTEVIDEO", "MN", "CORN", "ZCZ26", "11/01/2026"):
+           {"cur": -72, "prev": -75, "since": "2026-11-03", "first": "2026-10-02", "last": "2026-11-09"},
+           ("ZWEST-CON", "HOLLOWAY", "MN", "CORN", "ZCZ26", "11/01/2026"):
+           {"cur": -80, "prev": None, "since": "2026-10-02", "first": "2026-10-02", "last": "2026-11-09"},
+           ("ZEELAND FARM SERVICES", "ZEELAND", "MI", "CORN", "ZCZ26", "11/01/2026"):
+           {"cur": -60, "prev": None, "since": "2026-10-02", "first": "2026-10-02", "last": "2026-11-09"},
+           ("ZSHAWNEE FEED OLD", "MINCO", "OK", "WHEAT", "KEZ26", "11/01/2026"):
+           {"cur": -90, "prev": None, "since": "2026-10-02", "first": "2026-10-02", "last": "2026-10-20"}}
+    st2 = dict(old)
+    n = rekey_state(st2, [mv, dict(mv, facility="zWest-Con", city="Holloway")])
+    ck("raw-name history carried to the cleaned name (Montevideo, its since and first days kept)",
+       st2.get(("FARMERS COOPERATIVE ELEVATOR CO", "MONTEVIDEO", "MN", "CORN", "ZCZ26", "11/01/2026"))
+       == old[("ZFARMERS COOPERATIVE ELEVATOR CO.OLD", "MONTEVIDEO", "MN", "CORN", "ZCZ26", "11/01/2026")])
+    ck("today's rows say zWest-Con is West-Con", ("WEST-CON", "HOLLOWAY", "MN", "CORN", "ZCZ26", "11/01/2026") in st2)
+    ck("a board gone from the feed moves when its name says archived", ("SHAWNEE FEED", "MINCO", "OK", "WHEAT", "KEZ26", "11/01/2026") in st2)
+    ck("a real Z name stays", ("ZEELAND FARM SERVICES", "ZEELAND", "MI", "CORN", "ZCZ26", "11/01/2026") in st2 and n == 3)
+    st3 = {("ZFARMERS COOPERATIVE ELEVATOR CO.OLD", "ECHO", "MN", "CORN", "ZCZ26", "11/01/2026"):
+           {"cur": -70, "prev": None, "since": "2026-10-02", "first": "2026-10-02", "last": "2026-11-01"},
+           ("FARMERS COOPERATIVE ELEVATOR CO", "ECHO", "MN", "CORN", "ZCZ26", "11/01/2026"):
+           {"cur": -65, "prev": None, "since": "2026-11-03", "first": "2026-11-03", "last": "2026-11-09"}}
+    rekey_state(st3, [])
+    m = st3.get(("FARMERS COOPERATIVE ELEVATOR CO", "ECHO", "MN", "CORN", "ZCZ26", "11/01/2026"))
+    ck("a raw row and its cleaned twin merge: later current, older basis kept as before, first day earliest",
+       len(st3) == 1 and m == {"cur": -65, "prev": -70, "since": "2026-11-03", "first": "2026-10-02", "last": "2026-11-09"})
     with tempfile.TemporaryDirectory() as d:
         state = {}
         apply_day(state, day_rows([ab, dict(ab, category="corn"), asm] + two), "2026-10-26")
@@ -594,6 +686,10 @@ def main():
                   "elevator it does not contain.", file=sys.stderr)
             return 4
         rows = day_rows(doc.get("bids"))
+        if len(rows) >= 1000:
+            moved = rekey_state(state, doc.get("bids"))
+            if moved:
+                print("[basis-history] %d row(s) moved from a raw archive name to the elevator's own" % moved)
         if len(rows) < 1000:
             print("[basis-history] REFUSING %d rows — that is not a national "
                   "pull, and a short day must not be written down as a quiet "

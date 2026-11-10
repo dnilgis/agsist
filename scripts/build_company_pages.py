@@ -163,6 +163,8 @@ def loc_label(t, bd):
         return re.sub(r"[^a-z0-9]", "", (x or "").lower())
     city = re.sub(r"(,\s*[A-Z]{2})+$", "", (bd.get("city") or "").strip()).strip()
     extra = city if city and n(city) != n(t["name"]) and n(city) not in n(bd.get("operator")) else ""
+    if bd.get("twin"):          # twin boards in one town are told apart by the facility each names
+        extra = bd["twin"] + (", " + extra if extra else "")
     if bd.get("how") == "near" and bd.get("near_mi") is not None:
         mi = bd["near_mi"]
         extra = (extra + ", " if extra else "") + ("under 1 mi away" if mi < 1 else f"{mi:.0f} mi away")
@@ -177,10 +179,10 @@ def _cell(r, snap_ct):
     the town page's wording (CB.con_label), and "Nov delivery" on its own."""
     if r is None:
         return '<td class="n"><span class="mut">&ndash;</span></td>'
-    mon = CB._mon(r["dm"], snap_ct) + " delivery"
+    mon = CB.deliv_short(r, snap_ct)
     if r["basis"] is None:
         return f'<td class="n">{CB.cash_c(r["cash"])}<br><span class="mut">{mon}</span></td>'
-    b = money_basis(r["basis"]) + (f" vs {CB.con_label(r['contract'])}" if r.get("contract") else "")
+    b = money_basis(r["basis"]) + (f" vs {CB.con_text(r)}" if r.get("contract") else "")
     return f'<td class="n">{CB.cash_c(r["cash"])}<br><span class="mut">{b}<br>{mon}</span></td>'
 
 
@@ -360,7 +362,7 @@ def why_none(co):
                 f"{short} bid we can stand behind right now. We check again through the day and the prices come "
                 f"back here as soon as a read goes through.")
     if top == "price_older_than_cutoff":
-        return f"{short} has not posted a new bid in the last {CB.FRESH_HOURS} hours, so no price is shown."
+        return f"{short} has not posted a new bid in the last two trading sessions, so no price is shown."
     if top == "delivery_expired_or_undated":
         return f"The only {short} bids posted are for delivery periods that have already ended."
     return f"No {short} board has a bid we could confirm right now."
@@ -494,7 +496,7 @@ def build_page(co, ctx):
   {CB.faq_html(qs, short)}
   <p class="cbt-sub">{links}</p>
   <details class="cbt-note cbt-terms"><summary>Sources and terms</summary>
-  <p>Bids come from each {esc(short)} location&rsquo;s own posted bid board, read in the last {CB.SB.HELD_SKIP_HOURS} hours, with the price posted in the last {CB.FRESH_HOURS} hours and the delivery period still open. Each price is the location&rsquo;s earliest delivery period for the grade it posts most; the town page has every month and the futures contract each basis is quoted against. A basis far off the elevators around it is left out here. This page is a snapshot rebuilt through the day; always call the elevator to confirm before you haul.</p></details>
+  <p>Bids come from each {esc(short)} location&rsquo;s own posted bid board, read in the last {CB.SB.HELD_SKIP_HOURS} hours, with the price {CB.FRESH_WORDS} and the delivery period still open. Each price is the location&rsquo;s earliest delivery period for the grade it posts most; the town page has every month and the futures contract each basis is quoted against. A basis far off the elevators around it is left out here. This page is a snapshot rebuilt through the day; always call the elevator to confirm before you haul.</p></details>
 """
     h = CB.head(title, desc, path, jsonld, indexable)
     h = with_extra_css(h)
@@ -534,8 +536,8 @@ def build_index(metas, ctx):
   <h1>Cash grain bids by elevator company</h1>
   <p class="cbt-sub">Every company with {COMPANY_MIN} or more locations in the AGSIST elevator network, each with today&rsquo;s
   bids at all its locations on one page. Bids are read from each company&rsquo;s public bid board; AGSIST is not
-  affiliated with any of them. &ldquo;Current&rdquo; counts the locations with a bid posted in the last {CB.FRESH_HOURS}
-  hours.</p>
+  affiliated with any of them. &ldquo;Current&rdquo; counts the locations with a bid posted in the last two trading
+  sessions.</p>
   <div class="cbt-scroll"><table class="cbt-t cbc-t"><thead><tr><th>Company</th><th class="n">Locations</th>
   <th class="n">Current</th><th>States</th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
   <p class="cbt-sub"><a href="/cash-bids">Bids near your ZIP</a> &middot; <a href="/basis">Basis by state</a></p>
@@ -679,7 +681,7 @@ def selftest():
         assert faqs["Is AGSIST part of Acme Co-op?"].startswith("No. AGSIST is not affiliated with Acme Co-op.")
         # the town page links its company; a two-board company has no page and no link
         fr = open(os.path.join(out, "nebraska", "fremont.html"), encoding="utf-8").read()
-        assert '<a href="/cash-bids/company/acme-co-op">Every Acme Co-op location</a>' in fr
+        assert '<a href="/cash-bids/company/acme-co-op">Acme Co-op cash bids at all 4 locations</a>' in fr
         assert "/cash-bids/company/two-spot" not in fr
         ix = open(os.path.join(d, "index.html"), encoding="utf-8").read()
         assert '<a href="/cash-bids/company/acme-co-op">Acme Co-op</a></td><td class="n">4</td><td class="n">3</td>' in ix

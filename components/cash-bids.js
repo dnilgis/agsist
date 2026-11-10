@@ -69,18 +69,37 @@ var wtdToggleBtn=$('wtd-toggle-btn'),wtdBodyEl=$('wtd-body');
  * ═══════════════════════════════════════════════════════════════════════════ */
 var MKT_TZ = 'America/Chicago';
 
-/* CME holidays. THIRD-PARTY AND DELIBERATELY NOT ACTED ON.
- * CME finalises product hours roughly two weeks ahead and grains do not all
- * follow the same holiday pattern, so this list is used only to SAY that the
- * schedule differs and to point at CME -- never to invent an open or a close.
- * Rule 1. */
-var MKT_HOLIDAYS_2026 = {
-  '2026-01-01': "New Year's Day", '2026-01-19': 'Martin Luther King Jr. Day',
-  '2026-02-16': "Presidents' Day", '2026-04-03': 'Good Friday',
-  '2026-05-25': 'Memorial Day', '2026-06-19': 'Juneteenth',
-  '2026-07-03': 'Independence Day (observed)', '2026-09-07': 'Labor Day',
-  '2026-11-26': 'Thanksgiving', '2026-12-25': 'Christmas Day'
-};
+/* Exchange holidays: the full-closure list of scripts/contract_calendar.py
+ * market_holidays() (computed, not typed in; components/price-local.js carries
+ * the same rule). Two uses only:
+ * 1. marketSession names the day, to SAY the schedule differs and point at CME;
+ *    it never invents an open or a close (CME finalises holiday hours about two
+ *    weeks ahead and grains do not all follow one pattern). Rule 1.
+ * 2. mktSessionsClosedSince does not count a closed day as a session, the same
+ *    as scripts/build_state_basis_pages.py fresh_until (test/session-fresh-twin.test.mjs
+ *    runs both on one table of cases).
+ * iso 'YYYY-MM-DD' -> the closure's name, or null. */
+function mktHolidayName(iso) {
+  var DAY = 864e5, y0 = +String(iso).slice(0, 4);
+  function U(y, m, d) { return Date.UTC(y, m - 1, d); }
+  function wd(t) { return new Date(t).getUTCDay(); }
+  function nthW(y, m, w, n) { var t = U(y, m, 1); return t + ((w - wd(t) + 7) % 7) * DAY + (n - 1) * 7 * DAY; }
+  function lastW(y, m, w) { var t = Date.UTC(y, m, 0); return t - ((wd(t) - w + 7) % 7) * DAY; }
+  function obs(t) { var x = wd(t); return x === 6 ? t - DAY : x === 0 ? t + DAY : t; }
+  function easter(y) {
+    var a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3),
+      h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, mm = Math.floor((a + 11 * h + 22 * l) / 451);
+    return U(y, Math.floor((h + l - 7 * mm + 114) / 31), ((h + l - 7 * mm + 114) % 31) + 1);
+  }
+  for (var y = y0 - 1; y <= y0 + 1; y++) {
+    var L = [[obs(U(y, 1, 1)), "New Year's Day"], [nthW(y, 1, 1, 3), 'MLK Day'], [nthW(y, 2, 1, 3), 'Presidents Day'],
+      [easter(y) - 2 * DAY, 'Good Friday'], [lastW(y, 5, 1), 'Memorial Day'], [obs(U(y, 6, 19)), 'Juneteenth'],
+      [obs(U(y, 7, 4)), 'Independence Day'], [nthW(y, 9, 1, 1), 'Labor Day'], [nthW(y, 11, 4, 4), 'Thanksgiving'],
+      [obs(U(y, 12, 25)), 'Christmas Day']];
+    for (var j = 0; j < L.length; j++) if (new Date(L[j][0]).toISOString().slice(0, 10) === iso) return L[j][1];
+  }
+  return null;
+}
 
 /* The Chicago wall-clock parts of an instant. */
 var _mktFmt = null;
@@ -144,7 +163,7 @@ function mktNextEveningOpen(p) {
 function marketSession(now) {
   var p = mktParts(now);
   var mins = p.minutes, dow = p.dow;
-  var holiday = MKT_HOLIDAYS_2026[p.date] || null;
+  var holiday = mktHolidayName(p.date);
 
   /* A weekday-shaped session only exists Mon-Fri; the overnight that runs into
      Saturday morning belongs to Friday and does not exist. */
@@ -216,7 +235,8 @@ function mktCountdown(ms) {
  * The honest question is not "how many hours" but "how many day sessions have
  * closed since this board last moved". Nothing closed = this IS the board.
  * One = it has not been touched since the last close. Two or more = say so
- * plainly.
+ * plainly. A market holiday (mktHolidayName) is not a session: a Wednesday
+ * board is still current on Thanksgiving afternoon.
  */
 function mktSessionsClosedSince(pricedAt, now) {
   if (!pricedAt) return null;
@@ -226,7 +246,7 @@ function mktSessionsClosedSince(pricedAt, now) {
   var n = 0, p = mktParts(new Date(t));
   for (var i = 0; i < 30; i++) {
     var close = mktInstant(p.y, p.m, p.d, 13, 20);
-    if (p.dow >= 1 && p.dow <= 5 && +close > t && +close <= +now) n++;
+    if (p.dow >= 1 && p.dow <= 5 && !mktHolidayName(p.date) && +close > t && +close <= +now) n++;
     if (+close > +now) break;
     p = mktAddDays(p, 1);
   }
@@ -582,8 +602,10 @@ function contractStrip(bids){
    page waits for it or depends on it. */
 var _bhFetch={},_bhMap={};
 function bhNorm(v){return String(v==null?'':v).trim().toUpperCase().replace(/\s+/g,' ');}
+/* The facility is keyed by the one name key (elevNames.basisName, components/elev-names.js):
+   an archived copy ("zFarmers Cooperative Elevator Co.OLD") finds the elevator's history. */
 function bhKeyOf(fac,city,st,cat,sym,month){
-  return [bhNorm(fac),bhNorm(city),bhNorm(st),bhNorm(cat),bhNorm(sym),bhNorm(month)].join('|');
+  return [window.elevNames.basisName(fac),bhNorm(city),bhNorm(st),bhNorm(cat),bhNorm(sym),bhNorm(month)].join('|');
 }
 function bhLoadState(st){
   if(_bhFetch[st])return _bhFetch[st];

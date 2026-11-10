@@ -38,6 +38,7 @@ function load(nowIso) {
   const ctx = vm.createContext({ window, document, navigator: {}, location: window.location, localStorage: window.localStorage,
     setTimeout, clearTimeout, console, Date: FixedDate, Intl, CustomEvent: function () {}, fetch: () => Promise.reject(new Error("offline")) });
   vm.runInContext(read("components/util.js"), ctx);
+  vm.runInContext(read("components/elev-names.js"), ctx);   // the page loads it before bids-homepage.js
   vm.runInContext(read("components/bids-homepage.js"), ctx);
   return window.__agsistHomeBidsInternals;
 }
