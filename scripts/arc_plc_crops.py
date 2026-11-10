@@ -48,7 +48,8 @@ WHERE EVERY NUMBER COMES FROM (verified 2026-10-09)
   at most five past years of price change, under the eight a call needs
   (MIN_SCEN in build_arc_plc.py). So for 2026 these crops borrow corn's
   October spread (build_arc_plc.price_scen), the crop is harvested so the
-  county yield is a normal crop, and every call is capped at Leans. For 2027
+  county yield is a normal crop, a clear pick is held at Leans, and the
+  expected payments are not printed. For 2027
   there is no 2027 price for these crops we can check against past years, so
   there is no 2027 call. No price history from outside FSA's files is used.
 """
@@ -681,7 +682,7 @@ def hub_page(B, D, k, ch):
                  + ". The county pages still give the benchmark and where each program pays more by price.</p>") if all_withheld(t6) else ""
     if not verdict_p and t6:
         verdict_p = ("<p><b>Typical-farm verdicts, 2026:</b> " + ", ".join(f"{B.VWORD[w]} {t6.get(w, 0):,}" for w in VORDER if t6.get(w))
-                     + ".</p>")
+                     + "." + (" " + B.bor_why(x["lc"], sc.get("kind") == "corn_oct") if sc.get("nousd") else "") + "</p>")
     quick = f"""<div class="ap-quick" id="quick-answer">
     <p><b>Quick answer.</b> The 2026 PLC effective reference price for {esc(x['lc'])} is <b>{pf(c6, c6['erp']['erp'])}{u}</b> (FSA). PLC pays when the national
     season-average price ends below that; the loan rate, {pf(c6, c6['loan'])}{u}, is as low as the price counts. ARC-CO pays when county revenue falls below 90% of
@@ -689,7 +690,7 @@ def hub_page(B, D, k, ch):
     {proj}
     <p>{y7}</p>
     {verdict_p}
-    <p class="ap-small">Prices in dollars per {word(c6)}, FSA&rsquo;s unit for {esc(x['lc'])}. {x.get('note', '')} {B.asof(D['_xtab_date'], 'FSA tables as of')}</p>
+    <p class="ap-small">Prices in dollars per {word(c6)}, FSA&rsquo;s unit for {esc(x['lc'])}. {x.get('note', '')}</p>
   </div>"""
     # states and counties
     # each state's county links are filled in when its list is opened (components/arc-plc-simple.js), from
@@ -728,7 +729,7 @@ def hub_page(B, D, k, ch):
   {''.join(st_html)}
   <h2 id="faq">Questions about {esc(x['lc'])}</h2>
   <div class="ap-faq">{faq_html}</div>
-  {B.terms_fold(f'An estimate by AGSIST, not a USDA determination. <a href="{B.FSA_PAGE}" rel="noopener">FSA ARC/PLC</a> &middot; <a href="{B.OFFICE}" rel="noopener">Find your county office</a>. Dollars are before the 5.7% sequestration cut.')}
+  {B.terms_fold(f'An estimate by AGSIST, not a USDA determination. <a href="{B.FSA_PAGE}" rel="noopener">FSA ARC/PLC</a> &middot; <a href="{B.OFFICE}" rel="noopener">Find your county office</a>. Dollars are before the 5.7% sequestration cut.', (f"FSA tables as of {nice(D['_xtab_date'])}." if D.get('_xtab_date') else ""))}
   <h2>Other crops</h2>
   <p class="ap-states"><a href="/arc-plc">Corn, soybeans and wheat</a> &middot; {others}</p>
 {B.BY_END}
@@ -741,6 +742,13 @@ def hub_page(B, D, k, ch):
 def hub_json(D, k):
     """data/arc-plc/hub/<crop>.json: each state's counties with a benchmark for the crop, [slug, short name], for the hub page's lists."""
     return {"k": k, "s": {st: [[c["s"], re.sub(r" (County|Parish|Borough)$", "", c["n"])] for c, _es in cs] for st, _S, cs in crop_counties(D, k)}}
+
+
+# what the county and crop pages do for these crops, in one sentence (Nov 10, 2026: the main page said "no pick"
+# while the county pages gave one)
+SMALL_CALL = ("For 2026 each county page gives these crops a call for a typical farm. FSA&rsquo;s price table starts with 2020/21, too few years "
+              "of their own prices: the call goes no higher than Leans and expected payments are not printed. "
+              "There is no 2027 call for them yet.")
 
 
 def other_crops_table(D):
@@ -766,7 +774,7 @@ def other_crops_table(D):
             f'<p class="ap-small">ERP = PLC effective reference price. ARC price = ARC-CO benchmark price. 2026 figures are FSA&rsquo;s (table of '
             f'{nice(D["_xtab_date"])}) and match our math from FSA&rsquo;s price column. 2027 est. is our math from FSA&rsquo;s final prices; where FSA still shows '
             f'the 2025/26 price as projected and the answer depends on it, the 2027 figure waits. USDA proj.: WASDE for sorghum, barley, oats and long grain rice; '
-            f'FSA&rsquo;s table for the rest. No pick is given for these crops yet: FSA&rsquo;s price table starts with 2020/21, too few years for the scenarios.</p>')
+            f'FSA&rsquo;s table for the rest. {SMALL_CALL}</p>')
 
 
 def state_crops_line(D, S):

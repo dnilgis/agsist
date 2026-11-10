@@ -183,7 +183,7 @@ test("a one-cent band reads 'at $X', and every band prints", () => {
 test("every county page's answers equal the calculator's math on the state file: each crop card, all three PLC-yield buttons, both years", (t) => {
   if (!D.fsa) return t.skip("no FSA file");
   const states = {};
-  let pages = 0, seen = 0, calls = 0, withheld = 0;
+  let pages = 0, seen = 0, calls = 0, withheld = 0, mism = 0, low = 0;
   const unq = (x) => x.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'");
   for (const sd of readdirSync(ROOT + "arc-plc", { withFileTypes: true }).filter((x) => x.isDirectory())) {
     for (const f of readdirSync(ROOT + "arc-plc/" + sd.name)) {
@@ -219,7 +219,18 @@ test("every county page's answers equal the calculator's math on the state file:
           const cd = D.years[y].crops[k];
           seen++;
           if (v === "pending") { assert.ok(!cd, `${f} ${k} ${y}: pending means no ${y} figures`); continue; }
-          if (v === "mismatch") { assert.ok(+py > e.by, `${f} ${k} ${y} ${lv}: PLC yield ${py} above benchmark ${e.by}`); continue; }
+          // no typical farm: the PLC yield is above the benchmark, or under 60% of it (Nov 10, 2026)
+          if (v === "mismatch") { assert.ok(+py > e.by || +py < 0.6 * e.by, `${f} ${k} ${y} ${lv}: PLC yield ${py} above benchmark ${e.by} or under 60% of it`); mism++; continue; }
+          assert.ok(+py <= e.by, `${f} ${k} ${y} ${lv}: a typical-farm answer at PLC yield ${py} on benchmark ${e.by} is at or under it`);
+          // Nov 10, 2026: under 60% of the benchmark a call stays only when the calculator gives the same call at every PLC
+          // yield from 60% to 100% of the benchmark (the build's low_call and range_call); else it is withheld (mismatch, above)
+          if (+py < 0.6 * e.by) {
+            for (let q = 60; q <= 100; q += 5) {
+              const at = A.typical(cd, Math.round(e.by * q / 100 * 10) / 10, e).verdict;
+              assert.equal(at, v, `${f} ${k} ${d} ${y} ${lv}: kept under 60% as ${v}, but ${at} at ${q}% of the benchmark`);
+            }
+            low++;
+          }
           const r = A.typical(cd, +py, e);
           assert.equal(r.verdict, v, `${f} ${k} ${d} ${y} ${lv}: page says ${v}, calculator ${r.verdict}`);
           // money audit 3 (2026-10-19): a borrowed spread's dollars are withheld, so its card carries "-", never cents;
@@ -236,8 +247,12 @@ test("every county page's answers equal the calculator's math on the state file:
     }
   }
   assert.ok(pages >= 2700, `only ${pages} county pages read; the pages have moved`);
-  assert.ok(calls >= 20000, `only ${calls} answers re-derived; the cards have moved`);
+  // Nov 10, 2026: the 60% rule (a call under 60% of the benchmark only where it holds across the range) and the dryland
+  // lead move some answers to "no typical farm" (checked above, mism):
+  // the floor counts both, and the calls alone must still be most of them
+  assert.ok(calls + mism >= 20000 && calls >= 15000, `only ${calls} answers re-derived and ${mism} with no typical farm; the cards have moved`);
   assert.ok(withheld >= 100, `only ${withheld} withheld answers seen; the borrowed-spread cards have moved`);
+  assert.ok(low >= 1, "a call kept under 60% of the benchmark was checked across the range");
 });
 
 test("Use my location: point in polygon on a fixture, and Chippewa's coordinates land on Chippewa County, WI", () => {
