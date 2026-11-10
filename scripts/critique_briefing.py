@@ -16,7 +16,7 @@ After any rewrite, briefing_cut.enforce_budget() runs, so the critic cannot
 push the briefing back over the ceiling it was asked to enforce. The review
 payload carries measured word counts per field, so the editor scores Rule 8
 from numbers, not by counting.
-2026-10-09: Sig's voice. The review payload carries voice_lint's findings
+2026-10-09: the owner's voice. The review payload carries voice_lint's findings
 (an invented first person under his name, machine tells), Rule 9 scores 1 on
 an invented first person, and apply_rewrite() refuses any rewrite that adds
 one.
@@ -425,7 +425,7 @@ def apply_rewrite(briefing, critique):
     rewritten = critique.get("rewritten_content") or {}
     applied = None
     # 2026-10-09: a rewrite may never put an invented first-person sentence
-    # under Sig's name. Count before; refuse the whole rewrite if it adds one.
+    # under the owner's name. Count before; refuse the whole rewrite if it adds one.
     _before = copy.deepcopy(briefing)
     _fab0 = len(voice_lint.fabricated_hits(briefing))
 

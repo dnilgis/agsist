@@ -1,7 +1,7 @@
 // Private basis forecast ledger (2026-10-28). fetch_bids.yml freezes the day's basis
 // forecasts right after the day's snapshot is on raw, in the same job (no new schedule),
 // saves them to the private raw branch with scripts/push_raw.sh, and can never fail the
-// run. Nothing reaches main or the site: Sig decides when the record is shown.
+// run. Nothing reaches main or the site: the owner decides when the record is shown.
 // The rules themselves (frozen calls, missing targets ungraded, replay apart from live,
 // conflicts dropped, no look-ahead) are pinned by scripts/basis_ledger.py --selftest.
 import { test } from 'node:test';

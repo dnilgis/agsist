@@ -1,7 +1,7 @@
-// Paste bids (components/paste-bids.js): Sig pastes NEW Cooperative's public
+// Paste bids (components/paste-bids.js): the owner pastes NEW Cooperative's public
 // bid page, opened in his own browser, into elev-admin.html. The fixtures are
 // the real board's markup (trimmed from the Oct 2 capture, Afton's Oct 2026 corn
-// row set to the Oct 20 numbers Sig saw: $4.26, -35, 461-4, -5-4) and that page's
+// row set to the Oct 20 numbers the owner saw: $4.26, -35, 461-4, -5-4) and that page's
 // select-all text as Chromium renders it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

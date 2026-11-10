@@ -1,4 +1,4 @@
-/* Home page first screen = three jobs (Sig, Nov 2, 2026; the Oct 29 "beat AGSIST"
+/* Home page first screen = three jobs (Nov 2, 2026; the Oct 29 "beat AGSIST"
  * defense plan, item 5): "Today near me" (the reader's ZIP: best bids nearby,
  * weather and rain chance, the Daily), "Sell grain" (cash bids, basis, store or
  * sell) and "My field" (Field Scout, Fast Facts for the county). No ZIP: the ZIP
@@ -16,7 +16,7 @@ import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 import { tmpdir } from "node:os";
-const SB = "(?:<!--\\n-->)?";   // a seed may sit on its own line (seed_static SEED_BREAK, BUILD-RULES 67)
+const SB = "(?:<!--\\n-->)?";   // a seed may sit on its own line (seed_static SEED_BREAK, build rule 67)
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
@@ -49,7 +49,7 @@ test("the futures stay baked in the hero, under the jobs; signup band and Rain P
   }
   assert.match(band, /id="hb-ask" data-signup-ask=/, "the hero email ask stays");
   for (const id of ["signup-compact", "signup-full"]) assert.ok(HTML.includes(`id="${id}"`), `#${id} stays`);
-  // round 3 (Sig, Nov 2): the Rain Print card moved up from under the prices into "Worth a look", under the jobs
+  // round 3 (Nov 2): the Rain Print card moved up from under the prices into "Worth a look", under the jobs
   const strip = HTML.indexOf('<section class="wl" id="wl"'), early = HTML.indexOf("<div data-rp-card-early hidden></div>");
   assert.ok(strip > HTML.indexOf('id="hero-band"') && early > strip && early < HTML.indexOf('id="daily-hero"'), "the Rain Print card's early slot is in Worth a look, before the Daily");
   assert.ok(!/—/.test(band), "no em dash in the hero");
@@ -129,7 +129,7 @@ test("browser: the three jobs are the first screen at 390 and 1280, with and wit
   } finally { await browser.close(); srv.close(); }
 });
 
-/* ---- Round 2 (Sig, Nov 2): "the weather today should be a snapshot of the actual day's forecast"; tight on
+/* ---- Round 2 (Nov 2): "the weather today should be a snapshot of the actual day's forecast"; tight on
    phones, no card inside a card; the More list folded shut and grouped like the menu. ---- */
 test("More is folded shut by default and grouped like the site menu", () => {
   const nav = HTML.slice(HTML.indexOf('<nav class="land-more"'), HTML.indexOf("</nav>", HTML.indexOf('<nav class="land-more"')));
@@ -247,15 +247,14 @@ test("browser: tight on a phone; at 390x844 the first screen holds the ZIP line,
   } finally { await browser.close(); srv.close(); }
 });
 
-/* ---- Round 3 (Sig, Nov 2: "are we still promoting the rain gauge, Rain Print and our other data features
-   nicely on the home page?"): "Worth a look", right under the three jobs. Rain Print (the promo card, moved up
+/* ---- Round 3 (Nov 2): "Worth a look", right under the three jobs. Rain Print (the promo card, moved up
    so it is on the page once), the rain gauge waitlist in the gauge hook's words, and one new page from What's
    new that turns over by the Central date. ---- */
 const require = (await import("node:module")).createRequire(import.meta.url);
 const WORTH = require(join(ROOT, "components/home-worth.js"));
 const RP = JSON.parse(read("data/rain-print.json"));
 /* Frozen copies of data/rain-print.json and data/whats-new.json (Nov 3, 2026) for the browser cases that fake a
-   date: Sig's Nov 3 rule, no test depends on today's date or on live data holding a value. */
+   date: the owner's Nov 3 rule, no test depends on today's date or on live data holding a value. */
 const RPF = JSON.parse(read("test/fixtures/home-worth/rain-print.json"));
 const WNF = JSON.parse(read("test/fixtures/home-worth/whats-new.json"));
 

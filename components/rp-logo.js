@@ -240,7 +240,7 @@
     });
   }
 
-  /* KEPT IN THIS BROWSER (2026-10-22, BUILD-RULES 14). When the upload can't
+  /* KEPT IN THIS BROWSER (2026-10-22, build rule 14). When the upload can't
      reach the worker, the PNG is kept in IndexedDB under its own id: 12
      letters from SHA-256 of the PNG's bytes, the same letters the worker
      uses, so the worker makes the same id from the same bytes (POST

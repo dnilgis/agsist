@@ -12,9 +12,9 @@
  *   words       RainPrint.paidText(): the same lines the thank-you page shows.
  * Nothing is uploaded anywhere: the email script attaches the files inline.
  *
- * THE FILES (files: true in in.json; Sig 2026-10-20: a digital file goes out
+ * THE FILES (files: true in in.json; 2026-10-20: a digital file goes out
  * the moment the buyer approves the proof): renderFiles() makes, on the same
- * maker view Sig uses, the buyer's files at full size with no watermark and
+ * maker view the owner uses, the buyer's files at full size with no watermark and
  * the print's own short-link QR, no serial:
  *   the PDF   the art alone, 18 x 12 in (12 x 18 landscape), 300 dpi;
  *   the PNG   5400 x 3600 px, marked 300 dpi;

@@ -1,5 +1,4 @@
-/* The farmland sales hub on a 390 px phone (Sig, Nov 8, 2026: "scroll scroll scroll and finally something ... the map and any
- * stand-out sales top and center"; and: the map shows only what a reader can use). Built from the synthetic fixture site
+/* The farmland sales hub on a 390 px phone (Nov 8, 2026; and: the map shows only what a reader can use). Built from the synthetic fixture site
  * (test/fixtures/land-fl/make_site.py) into a temp folder, never the committed hub, which is carried until a land-data rebuild.
  *
  *   - top of the page: title, one sentence, the real map, the stand-out sales, then the state and county picker;

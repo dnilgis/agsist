@@ -1,11 +1,10 @@
 #!/usr/bin/env python3
 """
-daily_v2.py -- the Daily email, rebuilt (Sig, Oct 22 2026: "I just want to
-actually be excited to open the email every day"). Decisions:
-notes/STANDING-DECISIONS.md "The Daily email", "print of the day",
-"proprietary slot"; the panel record notes/panels/daily-email-2026-10-22.md.
+daily_v2.py -- the Daily email, rebuilt (Oct 22 2026). Decisions:
+the private notes "The Daily email", "print of the day",
+"proprietary slot"; the panel record the private notes.
 
-ONE SWITCH. scripts/send_daily.py uses this when DAILY_FORMAT=v2 (Sig
+ONE SWITCH. scripts/send_daily.py uses this when DAILY_FORMAT=v2 (the owner
 approved it for the list from the Oct 22 2026 morning send). Rollback:
 daily.yml's format input set to current, or the repo variable DAILY_FORMAT=current
 for the scheduled run; scripts/brief_email.py then builds the old email.
@@ -27,17 +26,17 @@ WHAT IS IN IT, top to bottom, about two phone screens:
   Print of the day   scripts/print_of_day.py + render_print_of_day.mjs. No
               picture, no slot; the email never waits on it.
   Oh, that’s interesting  scripts/daily_fact.py, sourced every time (FACT_LABEL;
-              was "I didn’t know that", renamed by Sig Nov 1 2026).
+ was "I didn’t know that", renamed by the owner Nov 1 2026).
   The board   one row per contract (Corn and Corn, Dec fold to one row when
               they are the same quote), stamped honestly: "Last trade 5:46
               a.m. CT, change from Tuesday's settle".
-  Forward     "Forward to a neighbor" right under Today (Sig, Oct 23: the ask
-              people see, not one under the footer).
+  Forward     "Forward to a neighbor" right under Today (Oct 23: the ask
+ people see, not one under the footer).
   Top stories (2026-11-01) the issue's other news items (outside_the_pit, 3 to 5),
               each a linked title (the publisher's link from the news digest,
               attached by code, no tracking added), one line, its tag and
               source. Placed after Today, the forward ask and the reader's own
-              bids: the forward ask stays right under Today (Sig, Oct 23) and
+              bids: the forward ask stays right under Today (Oct 23) and
               the reader's bid is part of Today; the stories come before the
               AGSIST-only slots so the day's news reads as one block. At most
               one story also leads in Today (TODAY_STORIES), never twice.
@@ -46,7 +45,7 @@ WHAT IS IN IT, top to bottom, about two phone screens:
   data/rain-print.json (xmas_line), Oct 1 through the framed cutoff only.
 Section bodies stay on the web page.
 
-THE NUMBER CHECK THAT BLOCKS (check()). A wrong number in the subject, the
+THE NUMBER CHECK THAT BLOCKS (check). A wrong number in the subject, the
 headline or the lead stops the v2 send:
   - code: a sentence that says close/closed/settle/"in a row"/"straight days"
     next to a price that is this morning's last trade, not the settle
@@ -83,7 +82,7 @@ SUBJECT_MAX = 45
 SUBJECT_HARD = 62
 TODAY_MIN, TODAY_MAX = 4, 6
 MAX_NEWS = 3
-FACT_LABEL = "Oh, that’s interesting"   # the fact slot (Sig, Nov 1 2026); the text email prints it in capitals
+FACT_LABEL = "Oh, that’s interesting"   # the fact slot (Nov 1 2026); the text email prints it in capitals
 TODAY_STORIES = 1      # top stories that may also be a Today line (the rest go to Top stories)
 EMAIL_STORIES = 3      # Top stories lines in the email; a 5th story stays on the web page (two phone screens)
 TODAY_WITH_STORIES = 4  # Today lines when the Top stories block is there (it carries the news)
@@ -129,7 +128,7 @@ EVENT_RE = re.compile(r"\b(webinar|workshop|register|registration|field day|conf
                       r"listening session|open house|livestream|live stream|live session|will host|hosts? a)\b", re.I)
 MARKETISH = re.compile(r"52-week|\brange\b|last trade|settle|percentile|futures|\bclose\b", re.I)
 ELEVATOR = re.compile(r"elevator", re.I)
-# A news subject must be a farm story (Sig, Oct 22): grains, oilseeds, livestock,
+# A news subject must be a farm story (Oct 22): grains, oilseeds, livestock,
 # dairy, farm policy and payments, inputs, farm weather, farm exports, farmland.
 # Crude or macro news qualifies only when the item itself names a farm input or
 # farm price (diesel relief does; a country's crude import bill does not).
@@ -171,7 +170,7 @@ def has_number(s):
     return bool(re.search(NUM_WORDS, s, re.I))
 
 
-# Sig, Nov 9 2026 (subject ranking): a bare number with no verb never leads ("8,795 contracts,
+# Nov 9 2026 (subject ranking): a bare number with no verb never leads ("8,795 contracts,
 # funds' net long in corn"). The day's number is a value and a noun phrase by design; it may lead
 # only when its words carry a verb ("88% soybeans harvested").
 VERB = re.compile(r"\b(\w{3,}ed|is|are|was|were|has|have|had|hits?|tops?|sets?|falls?|rises?|gains?|drops?|"
@@ -258,7 +257,7 @@ def news_items(daily):
 
 def story_link(it):
     """The story's publisher link when it is safe to put in front of a reader:
-    https, no shared host (BUILD-RULES 11), no user part."""
+    https, no shared host (build rule 11), no user part."""
     u = str((it or {}).get("link") or "").strip()
     if not u.startswith("https://") or any(c.isspace() for c in u) or "@" in u.split("/")[2] or shared_host(u):
         return ""
@@ -579,7 +578,7 @@ def clock_item(daily, today=None):
                                                                 abs(top["pct"]), "over" if top["pct"] >= 0 else "under")}
 
 
-# ── recurring lines, each with its own rule (Daily panel, Nov 9 2026; Sig "all") ──
+# ── recurring lines, each with its own rule (Daily panel, Nov 9 2026) ──
 RANK_FILL = 1
 OVERNIGHT_MIN_C = 5.0      # the overnight line prints on a move of 5 cents or more, never on a weekend
 
@@ -621,7 +620,7 @@ def fund_streak(hist_rows):
 
 
 def funds_item(today, cot=None, hist=None, repo=REPO):
-    """Saturday only, once per CFTC release (Sig, Nov 9 2026), told as the streak: the
+    """Saturday only, once per CFTC release (Nov 9 2026), told as the streak: the
     market with the longest run of weekly net changes of one sign, its weeks and the
     contracts since the turn (Nov 7 2026: seven weeks, 414,460 to 8,795). None on any
     other day, before the release, or when the files do not agree on the week."""
@@ -719,7 +718,7 @@ def number_to_beat(today, est=None, wasde=None, repo=REPO):
 
 
 def report_item(today, repo=REPO, est=None, wasde=None, events=None):
-    """The report day or deadline line (Sig, Nov 9 2026: it outranks the day's number). A USDA
+    """The report day or deadline line (Nov 9 2026: it outranks the day's number). A USDA
     report that moves grain today (usda_dates.major_reports) with the number to beat when a trade
     range is in hand; else an FSA deadline today or tomorrow (usda-calendar.ics). None otherwise."""
     if not isinstance(today, date):
@@ -806,7 +805,7 @@ def clip(s, room=SUBJECT_MAX, hard=SUBJECT_HARD):
 
 
 def subject(daily, news=None, today=None, fresh=None, report=None):
-    """(subject, where it came from, the field it rests on). Sig, Nov 9 2026: a report day or
+    """(subject, where it came from, the field it rests on). Nov 9 2026: a report day or
     deadline outranks the day's number, and a bare number with no verb never leads. `fresh`
     (a line -> bool) is the memory: a line that may not print in Today does not lead either."""
     fresh = fresh or (lambda x: True)
@@ -903,7 +902,7 @@ def preheader(local, items, subj, sfield=None):
 
 
 # ── only here ────────────────────────────────────────────────────────────
-# Not a raw count of elevators (Sig, Oct 22): a comparison against history,
+# Not a raw count of elevators (Oct 22): a comparison against history,
 # from scripts/only_here.py (basis vs its own record, the reader's rain vs normal).
 COUNT_LINE = re.compile(r"\b[\d,]+ of (?:the )?[\d,]+ elevators\b|\b[\d,]+ elevators\b", re.I)
 
@@ -988,8 +987,8 @@ def reader_state(rain=None, loc=None):
 
 
 def promote_wow(items, line, cap):
-    """Items with the state basis line second (Sig, Nov 9 2026: it takes the Today slot the North
-    Dakota basis line held, Nov 2 #258). No line on a quiet week: nothing takes the slot."""
+    """Items with the state basis line second (Nov 9 2026: it takes the Today slot the North
+ Dakota basis line held, Nov 2 #258). No line on a quiet week: nothing takes the slot."""
     if not line or not has_number(line.get("text") or "") or COUNT_LINE.search(line["text"]):
         return items
     pos = 1 if items else 0
@@ -1042,7 +1041,7 @@ def _a(url, text, camp=None, content=None, cls="link", color=GOLD):
 
 
 # ── the email ────────────────────────────────────────────────────────────
-# 2026-11-07 (Sig, Nov 6: grow the Funds this week list): the issue the morning
+# 2026-11-07 (Nov 6: grow the Funds this week list): the issue the morning
 # after a COT release (Saturday, or Tuesday after a Monday release in a holiday
 # week) carries one line offering Funds this week, linked to the one signup box
 # on /cot (#cot-signup). Release from scripts/cot_calendar.py; no report date,
@@ -1121,13 +1120,13 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
     # word for word. The record words are cut, the rain line stays; one line of a kind per issue.
     here = [here_words(x, is_news) for x in only_here(daily, rain, loc) if fresh(x)]
     here = [x for i, x in enumerate(here) if x.get("kind") not in {y.get("kind") for y in here[:i]}]
-    # 2026-11-09 (Sig, "all"): the state week-over-week basis line takes the Today slot the
+    # 2026-11-09: the state week-over-week basis line takes the Today slot the
     # North Dakota basis line held since Nov 2, the reader's state first; on a quiet week
     # nothing takes it. The generator decided whether it prints (basis_wow on the issue).
     items = promote_wow(items, wow_item(daily, reader_state(rain, loc)), cap)
     pre = preheader(local, items, subj, sfield) or quiet_preheader(daily, subj)
     if unsub_url and shared_host(unsub_url):
-        unsub_url = None          # BUILD-RULES 11: nothing a reader clicks on a shared host
+        unsub_url = None          # build rule 11: nothing a reader clicks on a shared host
     if isinstance(elevators, dict) and elevators.get("add_url") and shared_host(elevators["add_url"]):
         elevators = dict(elevators, add_url=None)
     if fact is None:
@@ -1164,7 +1163,7 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
             "html": html, "text": text, "slots": slots, "items": items, "printed": printed}
 
 
-# ── Your county this week (Sig, Oct 27 2026: inside the existing slots, Thursdays) ──
+# ── Your county this week (Oct 27 2026: inside the existing slots, Thursdays) ──
 # The block is made by components/change-lines.js through scripts/county_week.mjs (send_daily.py
 # load_county_week): only readers who ticked it in the Daily ask and saved a place, only on
 # Thursdays, and only when something changed. It rides in the "Only here" slot. Its one link is
@@ -1398,7 +1397,7 @@ def _weekend_text(blk, own=None):
 
 
 def fact_link(fact):
-    """The fact's url when the email may link it, else None. Sig, Nov 2 2026: a fact whose
+    """The fact's url when the email may link it, else None. Nov 2 2026: a fact whose
     url is a data file (source_links.is_data_source: ERS data products, PDFs, esmis .txt)
     names its source and date in plain text, no link; the url stays in the data."""
     u = (fact or {}).get("url")
@@ -1768,7 +1767,7 @@ def _selftest():
 
 
 def render_issue(path, zip_local=None, pod=None, fact=None):
-    """Preview helper: (built dict) for an archived issue file, as Sig's copy would read."""
+    """Preview helper: (built dict) for an archived issue file, as the owner's copy would read."""
     with open(path, encoding="utf-8") as f:
         daily = json.load(f)
     iso = _iso_day(daily)

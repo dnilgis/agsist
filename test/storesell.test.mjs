@@ -332,7 +332,7 @@ test("lockNote: only for a net above zero, futures leaves the basis open, posted
     "You can lock this today with a forward contract for Jul '27 delivery at this elevator. That fixes both the futures and the basis; ask the elevator for its terms.");
 });
 
-/* EARLIEST BID FIRST (Sig, 2026-11-02). The nearest delivery tier is spot or
+/* EARLIEST BID FIRST (2026-11-02). The nearest delivery tier is spot or
    cash, the first half and the whole month together; the last half (or a day
    range starting on the 11th or later) ranks after. The town pages
    (build_cash_bid_pages.period_rank), storesell.js periodRank and its Python

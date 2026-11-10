@@ -10,8 +10,8 @@ The repo is public, and so is every Actions run log and every ::error:: /
 The rule for every script that touches the subscriber lists:
 
   * the log gets COUNTS, and at most a masked address: j***@g***.com
-  * a list Sig must act on (failed sends to resend by hand, addresses removed
-    by list hygiene) goes to Sig by email through owner_mail(), never the log
+  * a list the owner must act on (failed sends to resend by hand, addresses removed
+    by list hygiene) goes to the owner by email through owner_mail, never the log
 
 mask() and mask_text() never raise. owner_mail() never raises and prints
 only whether the private mail went out.
@@ -80,7 +80,7 @@ def sender_addr(default=""):
 
 
 def owner_mail(subject, lines):
-    """Mail Sig a private list (full addresses). Returns True if it went out.
+    """Mail the owner a private list (full addresses). Returns True if it went out.
 
     Uses the job's own SMTP secrets. Prints one line, with no address in it."""
     user = (os.environ.get("SMTP_USER") or os.environ.get("GMAIL_USER") or "").strip()
@@ -103,7 +103,7 @@ def owner_mail(subject, lines):
         run = "\n\nRun: %s/%s/actions/runs/%s" % (
             os.environ.get("GITHUB_SERVER_URL", "https://github.com"),
             os.environ.get("GITHUB_REPOSITORY", ""), os.environ["GITHUB_RUN_ID"])
-    # a note that names the worker host says "the subs worker" instead, so the guard never holds back Sig's own notice
+    # a note that names the worker host says "the subs worker" instead, so the guard never holds back the owner's own notice
     m.set_content(email_links.scrub_text("\n".join(str(x) for x in lines)) + run
                   + "\n\nThis list is mailed to you and is not printed in the public Actions log.\n")
     try:

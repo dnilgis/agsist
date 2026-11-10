@@ -1,4 +1,4 @@
-/* desk.html: Sig's desk (Oct 28, 2026: "a singular place for all things agsist, executive level, KISS").
+/* desk.html: the owner's desk (Oct 28, 2026: "a singular place for all things agsist, executive level, KISS").
  *
  *   - the page: noindex, no referrer, no analytics, no em dash, not in a sitemap, the search index,
  *     the feeds, llms.txt or the menu; the token only in the Authorization header; one list of cards.
@@ -413,7 +413,7 @@ test("in a browser: a failed source says can't read, never a blank; a refused to
   } finally { await br.close(); srv.close(); }
 });
 
-/* ---------- one admin home: the admin pages are tabs of /desk (Sig, Oct 28) ---------- */
+/* ---------- one admin home: the admin pages are tabs of /desk (Oct 28) ---------- */
 const TAB_PAGES = { today: "desk/today.html", elevators: "desk/elevators.html", haymow: "desk/haymow.html", gifts: "desk/gifts.html" };
 const OLD = { "elev-admin.html": "elevators", "elev-today.html": "today", "haymow-admin.html": "haymow", "rp-gift-admin.html": "gifts" };
 

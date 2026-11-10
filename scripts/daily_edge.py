@@ -432,7 +432,7 @@ def for_issue(block, now=None):
     now = now or datetime.now(timezone.utc)
     if not isinstance(block, dict) or block.get("schema") != SCHEMA or not fresh(block.get("generated"), now):
         return None
-    # Sig, Nov 9 2026: raw elevator counts leave the Daily's "Only on AGSIST" (they live on /cash-bids);
+    # Nov 9 2026: raw elevator counts leave the Daily's "Only on AGSIST" (they live on /cash-bids);
     # daily-edge.json keeps them
     facts = [f for f in shown(block, limit=len(block.get("facts") or [])) if f.get("kind") not in COUNT_KINDS][:MAX_SHOWN]
     if not facts:
@@ -448,14 +448,14 @@ def jsonld_tail(edge):
     return f[0]["sentence"] if f else ""
 
 
-# ── Sig's own note ─────────────────────────────────────────────────────────
+# ── the owner's own note ─────────────────────────────────────────────────────────
 CCA_NOTE_PATH = os.path.join(REPO, "data", "cca-note.json")
 CCA_NOTE_MAX = 600
 
 
 def cca_note(issue_date, path=CCA_NOTE_PATH):
-    """Sig's note for this issue, or None. data/cca-note.json is
-    {"date": "YYYY-MM-DD", "text": "..."}, filled by Sig by hand. It shows only
+    """the owner's note for this issue, or None. data/cca-note.json is
+    {"date": "YYYY-MM-DD", "text": "..."}, filled by the owner by hand. It shows only
     on the issue whose date matches, so a note never repeats on the next day.
     Nothing here writes, rewords or shortens it; a note that is too long or not
     plain text is not shown at all (the workflow log says why)."""
@@ -511,7 +511,7 @@ def render_html(edge, date_iso=""):
 
 
 def render_note_html(note):
-    """Sig's own note, or '' when he did not write one for this issue."""
+    """the owner's own note, or '' when he did not write one for this issue."""
     if not isinstance(note, dict) or not str(note.get("text") or "").strip():
         return ""
     return ('<aside class="dv3-cca" aria-label="A note from Sig">'

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """milk_miss.py: the published miss of "Read my check" (dairy board, Oct 28, 2026;
-BUILD-RULES rule 1: an estimate gets its record printed beside it).
+the build rules rule 1: an estimate gets its record printed beside it).
 
 What the check reader shows for a month not yet announced is the Class III
 futures settle for that month plus the reader's tests valued at the component

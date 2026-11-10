@@ -57,7 +57,7 @@ for (const a of doc.answers) {
     for (const s of a.sources) {
       assert.match(s.url, /^https:\/\//);
       assert.match(s.read, /^\d{4}-\d{2}-\d{2}$/);
-      // a data source is named with its date, not linked (Sig, Oct 29, 2026); anything else is linked
+      // a data source is named with its date, not linked (Oct 29, 2026); anything else is linked
       if (isDataSource(s.url)) {
         assert.ok(inner.includes(s.name.replace(/&/g, "&amp;")) && !inner.includes(`href="${s.url.replace(/&/g, "&amp;")}"`), `names ${s.name}, no link`);
       } else assert.ok(inner.includes(`href="${s.url.replace(/&/g, "&amp;")}"`), `links ${s.name}`);

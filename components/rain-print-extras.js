@@ -1,4 +1,4 @@
-/* components/rain-print-extras.js: the Rain Print options Sig added on 2026-10-17.
+/* components/rain-print-extras.js: the Rain Print options the owner added on 2026-10-17.
  * Pure arithmetic, no fetching and no drawing: the engine (components/rain-print.js)
  * feeds it the station rows it already read, and hands the answers to the art
  * (components/rain-print-art.js).
@@ -15,7 +15,7 @@
  *   AgRainExtras.ribbonScale(td)                  the old temperature band's scale, in round tens (kept for the tests)
  *   AgRainExtras.stripes(td, tdN)                 the temperature stripes: each day's average against its normal
  *
- * CROP STAGES (Sig, 2026-10-17). Corn and soybeans only. Growing degree days are
+ * CROP STAGES (2026-10-17). Corn and soybeans only. Growing degree days are
  * the GDU calculator's (/gdu-calculator): the day's high and low each held
  * between 50 and 86 F, averaged, less 50; counted from the planting day itself
  * (the calculator's weather starts on the planting date); the stage thresholds
@@ -229,7 +229,7 @@
     return { lo: a, hi: b, days: n };
   }
 
-  // ---------- the temperature stripes (option C, Sig 2026-10-21) ----------
+  // ---------- the temperature stripes (option C, 2026-10-21) ----------
   /* td: the year (tempDays); tdN: the same station's 1991-2020 normals (normalTemps), same days.
      Each day's average (high plus low, halved) less the normal average for that date, in °F to a tenth.
      A day with no high, no low, no normal high or no normal low is null: left blank, never filled.

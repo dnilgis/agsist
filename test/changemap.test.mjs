@@ -1,4 +1,4 @@
-/* What changed here this week, on Fast Facts My place (god's-eye panel build 4; Sig, Oct 27 2026).
+/* What changed here this week, on Fast Facts My place (god's-eye panel build 4; Oct 27 2026).
  *
  *   node --test test/changemap.test.mjs
  *

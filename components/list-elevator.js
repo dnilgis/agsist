@@ -2,9 +2,9 @@
 
    An elevator asks to post its own bids on AGSIST. The form posts to the
    subs worker (POST /form, kind elevator-listing, worker v5.21) through
-   components/form-post.js; scripts/form_digest.py mails Sig, and the request
+   components/form-post.js; scripts/form_digest.py mails the owner, and the request
    shows under Requests on desk/elevators.html. Nothing is published from a
-   request: Sig calls the elevator first, then makes the listing.
+   request: the owner calls the elevator first, then makes the listing.
 
    Prefill: links from the coverage map and the town pages carry
    ?id=<bids directory id, known:... or reg:...>&name=&town=&state=&zip=.

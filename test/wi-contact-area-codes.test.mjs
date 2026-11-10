@@ -3,7 +3,7 @@
  * Oct 24 2026: the Cadott town page said "call to confirm (712-289-4056)". 712
  * is western Iowa. The row came in with the Barchart directory. Cadott Grain's
  * own site lists the grain line 715-289-4366 and the scale 715-289-4056, and
- * Sig's Aug 20 elevator list has 715-289-4366. A bid page asks the reader to
+ * The owner's Aug 20 elevator list has 715-289-4366. A bid page asks the reader to
  * call about a bid, so it gets the grain line.
  *
  * Every other Wisconsin row whose area code is not a Wisconsin one is named

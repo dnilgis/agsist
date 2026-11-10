@@ -1,5 +1,5 @@
 #!/bin/bash
-# WIP autosave (BUILD-RULES 18: local-only work is not work). Run by the Stop and
+# WIP autosave (build rule 18: local-only work is not work). Run by the Stop and
 # SubagentStop hooks in .claude/settings.json (async, so it never holds up a turn).
 #
 # For the session's checkout and every worktree of it that is on an fx/* branch:

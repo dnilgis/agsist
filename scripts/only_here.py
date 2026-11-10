@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-only_here.py -- "Only here" in the Daily (Sig, Oct 22 2026): one or two
+only_here.py -- "Only here" in the Daily (Oct 22 2026): one or two
 findings only AGSIST can make, from our own data, each with its number and its
-sample, never the workings. Not a raw count of elevators (Sig, Oct 22: "1,749
-of 1,810 elevators cut bids" is not an insight); a comparison against history.
+sample, never the workings. Not a raw count of elevators (Oct 22 is not an insight); a comparison against history.
 
   wow_rows     the state basis line (Nov 9 2026, replacing the North Dakota
   wow_text     basis-history line): each state's week-over-week basis change
@@ -16,7 +15,7 @@ of 1,810 elevators cut bids" is not an insight); a comparison against history.
                the 1991 to 2020 normal (data/rain/<st>.json), with the same
                record gates as the county pages' prints.
 
-The connections-study basis findings Sig is holding (Oct 21) are not computed
+The connections-study basis findings the owner is holding (Oct 21) are not computed
 here and never shown.
 
     python3 scripts/only_here.py --date 2026-10-21 [--zip 54728]
@@ -51,7 +50,7 @@ def _md(iso):
     return d.strftime("%b ") + str(d.day)
 
 
-# ── the state basis line (Daily panel, Nov 9 2026; Sig "all") ──────────────
+# ── the state basis line (Daily panel, Nov 9 2026) ──────────────
 # Replaces the North Dakota basis-history line (basis_line, cut Nov 9: in the
 # email 15 of 15 issues, it moved only at a month roll, so it could not carry
 # news). From data/basis-states.json: each state's week-over-week basis change

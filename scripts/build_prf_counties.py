@@ -125,7 +125,7 @@ def dollars(x):
 
 def example_html(ex, cy, y0, y1, many, ng, read_day=""):
     """The labeled 100-acre example (scripts/prf_county_facts.mjs countyExample): the calculator's
-    opening policy, priced on the county's middle grid by premium. Since Oct 20 (Sig) it is the page's
+    opening policy, priced on the county's middle grid by premium. Since Oct 20 it is the page's
     first answer, right under the lede, and it opens with what you pay, dated by the USDA files read."""
     if not ex:
         return ('<p class="prf-note prf-ex"><b>Example:</b> the calculator opens on April to May and June to July, and this county '
@@ -304,7 +304,7 @@ def page(ctx):
            # the grid index email (components/prf-notice.js, worker topic prf:<grid>): follows the card's grid
            f'<div class="prf-notice" data-prf-notice data-grid="{now_g}" hidden></div>'
            f'<script src="/components/prf-notice.js?v=2" defer></script>')
-    # irrigated hay under non-irrigated (2,968 of 3,070 counties for 2027): said, never explained (Sig, Oct 20)
+    # irrigated hay under non-irrigated (2,968 of 3,070 counties for 2027): said, never explained (Oct 20)
     irr_low = " USDA sets irrigated hay lower here." if hi is not None and hy is not None and hi < hy else ""
     sod = (f'<p class="prf-note">{stn} has the native sod rule: native sod broken in recent years gets 65% of the protection and 50 points less of USDA&rsquo;s share. '
            f'The values here are for land the rule does not touch.</p>') if stc in S.SOD else ""

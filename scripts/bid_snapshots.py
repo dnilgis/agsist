@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Daily cash bid snapshots on the raw branch (Bet 7, Sig Oct 19).
+"""Daily cash bid snapshots on the raw branch (Bet 7, Oct 19).
 
 data/bids.json on main holds only the latest pass, and the basis files keep
 only basis changes, so a cash price is gone from main within days. This keeps
@@ -354,7 +354,7 @@ def write(snap, out_dir):
 
 # ------------------------------------------------------------------ read
 def _git(*args, text=True):
-    # RAW_GIT: a clone of the private repo (the raw branch moved there Oct 20), e.g. RAW_GIT=../feedbag
+    # RAW_GIT: a clone of the private repo (the raw branch moved there Oct 20), e.g. RAW_GIT=../the private repo
     return subprocess.run(["git", "-C", os.environ.get("RAW_GIT") or ROOT, *args], capture_output=True, text=text)
 
 

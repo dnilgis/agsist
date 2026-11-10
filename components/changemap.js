@@ -1,5 +1,5 @@
-/* What changed here this week (god's-eye panel, build 4; Sig, Oct 27 2026: no new list, sender or
-   cron). Fast Facts "My place" loads this file only once a place is open (components/here.js
+/* What changed here this week (god's-eye panel, build 4; Oct 27 2026: no new list, sender or
+ cron). Fast Facts "My place" loads this file only once a place is open (components/here.js
    changeMap()); nothing of it is inline in the page.
 
    For the open county: a sticky line (county, crop, date), one plain sentence of what changed,
@@ -7,7 +7,7 @@
    buyers within 50 mi, the 50 mi ring and the place. Every line carries its source and date. A
    line we cannot back with a file is withheld and says why; it is never guessed.
 
-   The map (Sig, Oct 29 2026: a good basemap on phone and desktop). The county shapes are drawn as
+   The map (Oct 29 2026: a good basemap on phone and desktop). The county shapes are drawn as
    one SVG the moment the outlines are in, so the first map needs only this file and the state's
    outlines. Leaflet 1.9.4 (/vendor, the copy Field Scout uses) loads when the map is near the
    screen and lays the same SVG over the USGS National Map topo tiles (public domain, no key,

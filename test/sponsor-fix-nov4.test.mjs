@@ -1,5 +1,5 @@
-// Sponsor portal fixes, Nov 4, 2026 (Sig: "fix the rest too"), on the frozen Root Lot report and reader file of that
-// morning (test/fixtures/sponsoraudit/), changed only where a case needs it. Every outside host blocked (BUILD-RULES 58),
+// Sponsor portal fixes, Nov 4, 2026, on the frozen Root Lot report and reader file of that
+// morning (test/fixtures/sponsoraudit/), changed only where a case needs it. Every outside host blocked (build rule 58),
 // the report served through the worker route the page asks (GET /sponsor-report, v5.65).
 // - A click rate under 100 views is noise: "-" and "Too few views to judge yet", everywhere a rate shows.
 // - The reader-lag line sits by the "Readers in your states" tile too.

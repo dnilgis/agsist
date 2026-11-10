@@ -1,5 +1,5 @@
 /* The icon tools (Oct 21, 2026): the drawing is the same every run, and the
- * prepared link-tag swap (scripts/dev/swap_icon_links.py, not run until Sig
+ * prepared link-tag swap (scripts/dev/swap_icon_links.py, not run until the owner
  * picks) passes its selftest: HTML and generator-literal forms, idempotent,
  * inline icons left alone.
  *   node --test test/brand-icon-tools.test.mjs

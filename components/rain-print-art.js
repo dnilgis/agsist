@@ -1,4 +1,4 @@
-/* components/rain-print-art.js: the two Rain Print styles Sig picked (2026-10-13).
+/* components/rain-print-art.js: the two Rain Print styles the owner picked (2026-10-13).
  *
  *   R1 "Staircase" (default): the running total across the year, the verdict and
  *      both year totals upper left, the chart full width, a step that came as
@@ -34,7 +34,7 @@
  * RULES carried from the engine: an unrecorded or S day is a gap (no step, no
  * bar, ground line broken), never a dry day; the comparison is 0 on those days,
  * so both totals leave them out; an A total is never the biggest rain, and when
- * the snow record is whole neither is a snow day (D.maxRain, Sig); a dry
+ * the snow record is whole neither is a snow day (D.maxRain); a dry
  * stretch is marked only when the engine's showDry says so (7 days or more),
  * and on Staircase only from printDryMin days (14 unless the page says).
  */
@@ -216,8 +216,7 @@
      one's letters end, in whatever font draws them. The year used to be its own <text> placed by the
      measured width of the name: when the font that measured was not the font that drew (the web font not
      in yet, a phone measuring the variable font at another weight, an SVG opened in an app without its
-     fonts), the year sat closer to the name or ran into it (Sig, 2026-10-22: "make sure that the printed
-     year has a space between it and a custom farm name"). a, b: [x, y, words, style]. */
+     fonts), the year sat closer to the name or ran into it (2026-10-22). a, b: [x, y, words, style]. */
   function T2(a, b, gap) {
     var o = st(b[3]);
     return T(a[0], a[1], a[2], a[3]).replace(/<\/text>$/, '<tspan dx="' + n2(gap) + '" font-weight="' + o.w + '" font-style="' + (o.it ? 'italic' : 'normal') +
@@ -423,8 +422,7 @@
       snowNote = tr(someSnow ? 'This station’s snowfall record has holes, so no snow is drawn; melted snow is counted in the total'
         : 'This station doesn’t report snowfall; melted snow is counted in the total');
     }
-    /* Snowfall traces (Sig, 2026-10-20: "if a trace of snow falls we should not just dismiss it, especially on the
-       rain print, a trace should somehow show as a trace"): the days whose snowfall was T (the engine's sT), where
+    /* Snowfall traces (2026-10-20): the days whose snowfall was T (the engine's sT), where
        the snow record is whole ('full', or 'none': only traces fell). Never a day with no report or an S day. They
        add nothing to the snow total; each gets the small trace mark above the line (traceMark). */
     var snowTr = [];
@@ -444,7 +442,7 @@
     if (ov) days.forEach(function (x, k) { mN[x.m] += ov.daily[k] || 0; });
     var total = D.total, Ts = rainNum(total, 'tot');
     var liquid = tr({ full: 'rain and melted snow', none: 'rain', unknown: 'precipitation' }[snowState]);
-    // the red mark is the biggest rain: with a whole snow record, picked from rain days only (Sig, 2026-10-13)
+    // the red mark is the biggest rain: with a whole snow record, picked from rain days only (2026-10-13)
     var M = full && D.maxRain ? D.maxRain : D.max;
     var wi = M && M.v > 0 && M.doy >= 0 ? M.doy : -1;
     var wet = wi >= 0 ? { p: M.v, date: M.date } : null;
@@ -492,8 +490,7 @@
   }
 
   // ---------- records: which ones draw as a point, which as a line of text ----------
-  /* A remarkable day prints its date after its words, the way a reader's date does (Sig, 2026-10-15: "Biggest snow:
-     8.0 in Feb 3", the date in gray). A week or other stretch prints its range ("Wettest week: 3.10 in May 3 to 9");
+  /* A remarkable day prints its date after its words, the way a reader's date does (2026-10-15, the date in gray). A week or other stretch prints its range ("Wettest week: 3.10 in May 3 to 9");
      a whole month or year is its own date and gets none. A tie note stays after the date: the date is the day drawn.
      pt.label is the words alone (what the layer said); pt.text is what is drawn and measured. */
   var TIE_RE = / \((?:also [^)]*|on \d+ days|aussi [^)]*|sur \d+ jours)\)$/;
@@ -573,7 +570,7 @@
   // ---------- the maker's mark: QR, square to the page, serial under it ----------
   var snap = function (v) { return Math.round(v * 3) / 3; };   // whole 300 dpi pixels
   /* One QR module, in 300 dpi pixels. The short link is 25 modules: 10 px each
-     makes the mark 250 px, about 0.85 in (Sig's size). A long ?d= code falls back
+     makes the mark 250 px, about 0.85 in (the owner's size). A long ?d= code falls back
      to the old rule. The quiet zone is 4 modules, as the QR standard asks. */
   function qrCell(n) { return n <= 29 ? 10 : Math.max(2, Math.min(7, Math.floor(255 / (n + 6)))); }
   function qrMark(Q, right, bottom) {
@@ -597,7 +594,7 @@
     return s + '</g>';
   }
 
-  // ---------- the buyer's logo (2026-10-14, Sig: "incorporated into the print tastefully") ----------
+  // ---------- the buyer's logo (2026-10-14) ----------
   /* Beside the name block, about its height (roughly 0.9 to 1.05 in): R1 left
      of the place, year and name at the foot, R2 left of the name and place at
      the top. The words move right to make room and shrink as they always do;
@@ -625,7 +622,7 @@
   }
 
   // ---------- a preview of this year: a note in the weeks still to come, and the watermark ----------
-  // Sig, 2026-10-20: nothing may cover the data. The note sits in the empty stretch after the last reported day
+  // 2026-10-20: nothing may cover the data. The note sits in the empty stretch after the last reported day
   // (E.laterBox), never across the line. When that stretch is too narrow (late in the year) the title, the "so far"
   // totals and the dashed last-day line say it instead. The gift card's own wash note (E.preview.later) takes the
   // stretch when it is there.
@@ -698,9 +695,9 @@
      15 u, down to 12 to stay one line; only past that does it take a second
      line above (never under 12 u). Inside the 0.6 in safe margin (last
      baseline 1132), left of the QR. */
-  /* THE TRACE MARK (2026-10-20): a day with a trace of snow, drawn above the line only (Sig's snow rule), smaller
+  /* THE TRACE MARK (2026-10-20): a day with a trace of snow, drawn above the line only (the owner's snow rule), smaller
      than any measured snow and set clear of the line, so it never reads as an amount. TRACE_MARK picks the glyph
-     for both styles; Sig can swap it here: 'flake' (a six-armed flake), 'dot' (a small open ring), 'tick' (a short
+     for both styles; the owner can swap it here: 'flake' (a six-armed flake), 'dot' (a small open ring), 'tick' (a short
      upright stroke). TRACE_R: its half-size in units. Lines 0.8 u or more (production limit 0.7). */
   var TRACE_MARK = 'flake', TRACE_R = 2.6;
   function traceMark(cx, cy, kind) {
@@ -732,12 +729,12 @@
   function smallLine(E, x, maxW, extra) {
     var parts = [];
     if (E.gauge) parts.push(E.gauge);
-    // which mark is snow and which is rain, in plain words (Sig, 2026-10-13: tell them apart at a glance)
+    // which mark is snow and which is rain, in plain words (2026-10-13: tell them apart at a glance)
     if (E.full) parts.push(tr(E.style2 ? 'Light blue above the ground is snow, dark bars below it are rain' : 'Dark blue steps are rain, light blue steps are snow'));
     if (E.snowNote) parts.push(E.snowNote);
     if (E.traceKey) parts.push(TRACE_PAD + E.traceKey);
-    /* Gaps, said short (Sig, 2026-10-15: the full sentence was too long for the foot line; the page's station line
-       explains them in full). Three or fewer missing days say nothing on the print; more give the count. */
+    /* Gaps, said short (2026-10-15: the full sentence was too long for the foot line; the page's station line
+ explains them in full). Three or fewer missing days say nothing on the print; more give the count. */
     if (E.missing > GAP_QUIET) parts.push(LOC.fr ? 'Trous : ' + E.missing + ' jours sans relevé' : 'Gaps: ' + E.missing + ' days with no report');
     (extra || []).forEach(function (t) { if (t) parts.push(t); });
     if (!parts.length) return null;
@@ -859,7 +856,7 @@
      file only places and draws them. */
   var X = { ink: '#1F2328', date: '#8A8F98', fact: '#5B616B', grid: '#EEF0F2', usualM: '#A3A8B0', red: '#B23A2E', stone: C.dryBand, ahead: C.wetBand, thread: '#DDD8D0' };
   var CROP_INK = '#5B616B', GHOST_INK = '#CFCBC4', PLANT_H = 54;
-  // the footnote voices: 12 u words, the date after them in gray (Sig's typographer list, 2026-10-17)
+  // the footnote voices: 12 u words, the date after them in gray (the owner's typographer list, 2026-10-17)
   var FACT = { size: 12, w: 400, fill: X.fact }, FACT_D = { size: 12, w: 400, fill: X.date };
   // the dedication in plain italic: no swash or discretionary ligatures, at a text optical size (both styles)
   var PLAIN_IT = "font-variation-settings:'opsz' 12;font-variant-ligatures:no-discretionary-ligatures;font-feature-settings:'swsh' 0,'dlig' 0";
@@ -1059,7 +1056,7 @@
     return out;
   }
 
-  /* The temperature stripes (input.temp.ribbon, off by default; Sig picked option C, 2026-10-21): one stripe a
+  /* The temperature stripes (input.temp.ribbon, off by default; the owner picked option C, 2026-10-21): one stripe a
      day, the day's average temperature (its high and low, averaged) against the station's own 1991-2020 normal
      average for that date, worked out before render (AgRainExtras.stripes). Blue colder, rust warmer, the pale
      middle within 3°F of usual; three steps each way (3, 9 and 15°F), the same either side, so the scale is
@@ -1131,7 +1128,7 @@
       : 'Stripes: each day’s average temperature (its high and low, averaged) against this station’s 1991 to 2020 normal for that date; blue colder, rust warmer, in steps of 3, 9 and 15°F; a blank is a day with no reading';
   }
 
-  // ======================================================================= R1 "Staircase", A2 clean (Sig, 2026-10-17)
+  // ======================================================================= R1 "Staircase", A2 clean (2026-10-17)
   /* The typographer's list on one left edge: a two-line header ("32% less than a usual year" over "25.52 in
      this year · 37.73 in a usual year"), two label voices (a marked day 15 u Medium in ink with its date in
      gray; the station's facts 12 u Regular, gray footnotes below the line), the snow total in the foot line,
@@ -1936,7 +1933,7 @@
     return close(I, E, o, bandAt(room, [(G + RB) / 2 + 40, G + (RB - G) * 0.3, G + (RB - G) * 0.8], G + 40, RB + 50, X0 - 6, X1 + 6, E.preview && E.n < N ? [X0 + E.n * w + 12, X1 + 6] : null));
   }
 
-  /* Up to five marked days (Sig, 2026-10-15: "as long as everything still fits"). The first three are always
+  /* Up to five marked days (2026-10-15). The first three are always
      drawn, as before. Past three, a set whose labels can only be drawn on top of each other (even merged into
      one) loses its last-added day, then the one before, until it fits; those days are not drawn at all, and
      lastUnplaced() names them (indexes into I.markers) so the page can tell the buyer. */

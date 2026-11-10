@@ -21,7 +21,7 @@ const OPTIONS = [...page.matchAll(/<option value="([^"]*)">/g)].map((m) => m[1])
   .filter((v, i, a) => a.indexOf(v) === i && (v === '' || /^[A-Z]/.test(v)));
 const AREAS = [...new Set(Object.values(M.BY_STATE).concat(...Object.values(M.SPLIT)))];
 
-/* Nov 3, 2026 (Sig: "show Idaho all-milk in the card"): a state with no AMS mailbox area shows its own NASS
+/* Nov 3, 2026: a state with no AMS mailbox area shows its own NASS
    all-milk price. Frozen: the day, the month the page bakes and the NASS rows (never the live files). */
 const NOW = Date.UTC(2026, 10, 3, 15);
 class FDate extends Date { constructor(...a) { if (a.length) super(...a); else super(NOW); } static now() { return NOW; } }

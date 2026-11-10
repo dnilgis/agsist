@@ -1,6 +1,6 @@
-/* Rain Print options of 2026-10-17 (Sig): every year behind your year, frost marks, the hottest and coldest
+/* Rain Print options of 2026-10-17: every year behind your year, frost marks, the hottest and coldest
  * day, the temperature ribbon. The crop layers (crop stages, plant drawings, usual-year plants) came off the
- * page on 2026-10-23 (Sig); their drawing stays for an order paid before then (Sig's order view only), so the
+ * page on 2026-10-23; their drawing stays for an order paid before then (the owner's order view only), so the
  * stage and art checks below feed the order's crop straight in.
  *
  * Pure checks, by hand from the sources:
@@ -188,7 +188,7 @@ test("frost dates and the hottest and coldest day, by hand; withheld when a gap 
   assert.equal(X.ribbonScale(X.tempDays(temps(2025, (i) => (i < 200 ? null : [70, 50])), 2025)), null, "the ribbon needs half the year read");
 });
 
-// ---------- the temperature stripes (option C, Sig 2026-10-21) ----------
+// ---------- the temperature stripes (option C, 2026-10-21) ----------
 test("stripes: each day's average against the station's normal for that date, by hand; missing days blank, never filled", () => {
   // highs and lows: 80/60 every day (average 70), except day 10 (90/70, average 80), day 20 (no low) and day 30 (40/20, average 30)
   const f = (i) => (i === 10 ? [90, 70] : i === 20 ? [75, null] : i === 30 ? [40, 20] : [80, 60]);
@@ -313,7 +313,7 @@ test("a code or tool link made before the options opens as it was made; a hand l
   assert.ok(wasLink.frost && wasLink.heat && !wasLink.ribbon && !wasLink.hist, "and through the tool's own link");
 });
 
-/* No crop layers (Sig, 2026-10-23: "I don't want to offer the plant outlines or any of that as an image on the prints").
+/* No crop layers (2026-10-23).
    A code made before that day carries the crop in its key field ("~" + c or s + the planting and harvest days, base 36,
    + p for plant drawings, g for usual-year plants); a link carries crop=, plant=, harvest=, plants=, ghost=. */
 const b64u = (t) => Buffer.from(t, "utf8").toString("base64").replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
@@ -391,7 +391,7 @@ function artInput(style, opts) {
   const s = RP.normalize(Object.assign({ place: "Ames, IA", year: 2025, style, markers: [{ date: "2025-05-01", label: "Planted" }, { date: "2025-07-04", label: "Our wedding" }, { date: "2025-10-20", label: "Harvest done" }] }, opts));
   const td = X.tempDays(T25, 2025), tdN = X.normalTemps(T25.map((r) => [r[0], String(+r[4] - 2), String(+r[5] - 2)]), 2025);
   const found = REC.find({ year: 2025, daily: { data: T25 }, dailyElems: ELEMS }, { kinds: RP.TEMP_KINDS });
-  // a crop only through an order's crop (RP.orderCrop: Sig's order view), handed straight to the art
+  // a crop only through an order's crop (RP.orderCrop: the owner's order view), handed straight to the art
   const oc = opts && opts.crop ? Object.assign({ plants: false, ghost: false }, opts) : null;
   const crop = oc ? RP.cropInput(oc, td, oc.ghost ? tdN : null) : null;
   // 45 full years, 1981 to 2025, the print's own year among them (so the rank note prints)
@@ -630,11 +630,11 @@ test("an order paid before Oct 23 with a crop: drawn only in Sig's order view wi
     assert.ok(!/data-rp="crop"/.test(o.art), "public page: no crop");
     assert.deepEqual(o.errors, []);
     await o.c.close();
-    // Sig's order view without oldcrop=1 (what the proof and the files use): no crop, as the buyer saw it
+    // The owner's order view without oldcrop=1 (what the proof and the files use): no crop, as the buyer saw it
     o = await open("&maker=1", true);
     assert.ok(!/data-rp="crop"/.test(o.art), "order view without oldcrop: no crop");
     await o.c.close();
-    // Sig's order view with oldcrop=1: the crop as it was bought, kept through the address bar, never in the design code
+    // The owner's order view with oldcrop=1: the crop as it was bought, kept through the address bar, never in the design code
     o = await open("&maker=1&oldcrop=1", true);
     await o.page.waitForFunction(() => /data-rp="crop"/.test(document.getElementById("rp-art").innerHTML), null, { timeout: 30000 });
     const art = await o.page.$eval("#rp-art", (e) => e.innerHTML);

@@ -1,5 +1,5 @@
 /**
- * Faster PR checks without generated-file conflicts (Sig, Oct 29, 2026: "yes do all five").
+ * Faster PR checks without generated-file conflicts (Oct 29, 2026).
  *
  * - What's new is one file per entry (data/whats-new/); the migration kept every old item, same ids,
  *   same order. data/whats-new.json, the homepage line and /changelog are built on main.

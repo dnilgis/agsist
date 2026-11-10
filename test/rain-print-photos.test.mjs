@@ -1,4 +1,4 @@
-// Sig's first photos of real Rain Prints (2026-10-18). Test prints, framed, no mat yet:
+// The owner's first photos of real Rain Prints (2026-10-18). Test prints, framed, no mat yet:
 // every caption must say so, and the matted framed view stays a labeled mockup until mat photos come.
 import { test } from "node:test";
 import assert from "node:assert/strict";

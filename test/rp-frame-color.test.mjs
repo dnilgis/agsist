@@ -1,11 +1,10 @@
-/* The framed Rain Print's frame color (Sig, Nov 4: "yes build it, oak default ... add the frame specs
- * to our what you get"). Oak, picked first, or black, the same $89. The choice is a radio pair under
+/* The framed Rain Print's frame color (Nov 4). Oak, picked first, or black, the same $89. The choice is a radio pair under
  * the picker (framed only), one on the review sheet and one on the order form; the CSS mockup follows
  * it; it travels with the order record (POST /rp-order), the backup form, the outbox, the gift and
  * gift card posts; an old record without it reads black (every framed print sold before Nov 4 was
- * black). Sig's emails name the color (scripts/rp_buyer_email.py selftest, form_digest, morning_report).
+ * black). The owner's emails name the color (scripts/rp_buyer_email.py selftest, form_digest, morning_report).
  *
- * Every browser run blocks every outside host (BUILD-RULES 58: test/fixtures/rp-site-mock.mjs routes
+ * Every browser run blocks every outside host (build rule 58: test/fixtures/rp-site-mock.mjs routes
  * PLACES_ROUTE, aborts the rest) and service workers.
  *
  *   node --test test/rp-frame-color.test.mjs
@@ -54,7 +53,7 @@ test("no reader copy still promises only a black frame", () => {
 });
 
 test("the frame specs follow the maker's listings: wood is oak only, 2 mm glass, no UV claim", () => {
-  // Sig, Nov 4 (the maker's listings): oak is an oak wood frame, black is MDF with a black finish, so a
+  // Nov 4 (the maker's listings): oak is an oak wood frame, black is MDF with a black finish, so a
   // "wood frame" said of both is wrong; the glass is 2 mm tempered; the "75% UV protection" claim is the
   // maker's and unverified, so it is never repeated.
   const files = ["rain-print.html", "rp-gift.html", "rain-print-business.html", "birth-year-weather-gift.html",

@@ -1,8 +1,7 @@
-/* The rain gauge hook and the "auto" promo slot (Sig, Oct 23 2026: "make a good hook for people to sign up for
- * the rain gauge, first batch intro price ... make it sell itself somehow"). Honest only: no count, no deadline,
+/* The rain gauge hook and the "auto" promo slot (Oct 23 2026). Honest only: no count, no deadline,
  * no countdown, no popup, never "founding", no accuracy claim.
  *   1. One hook, gauge_hook in data/rain-print.json: the promo lines, the line under /rain-print and the Next
- *      cards say it word for word. Oct 23, Sig: "something less dramatic or cringey": a plain, calm line.
+ *      cards say it word for word. Oct 23,: a plain, calm line.
  *   2. "auto": rain, weather, PRF, ARC/PLC and Fast Facts pages show Rain Print through Dec 24, nothing on
  *      Christmas Day, the gauge hook Dec 26 through May 31, then Rain Print again. Bids, markets and rent pages
  *      never take "auto"; their gift line ends Dec 9. One cross-promo a page.
@@ -11,7 +10,7 @@
  *
  * The date switches (2) run on a frozen copy of data/rain-print.json (test/fixtures/gauge-hook/rain-print.json,
  * Nov 4, 2026), and the browser reads that copy on clocks taken from its gauge_window: the live file's dates move
- * each season, and a test pinned to them breaks the day they do (BUILD-RULES 50). The live file is checked for a
+ * each season, and a test pinned to them breaks the day they do (build rule 50). The live file is checked for a
  * well-formed window and for the same hook words the pages carry.
  *
  *   node --test test/gauge-hook.test.mjs
@@ -141,7 +140,7 @@ test("one copy of the promo script: every page loads the same version", () => {
 });
 
 test("the hook is said the same everywhere the gauge is linked with words of its own", () => {
-  // the /rain-gauge headline is its own plain line (Sig, Oct 23: "something less dramatic"); the hook says the same thing
+  // the /rain-gauge headline is its own plain line (Oct 23); the hook says the same thing
   const g = read("rain-gauge.html");
   assert.ok(g.includes('<h1 id="rg-gauge-h">A rain gauge that keeps its own log</h1>'));
   assert.equal(J.gauge_hook.line, "I'm building a rain gauge that keeps a log for each field.");

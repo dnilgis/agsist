@@ -1,4 +1,4 @@
-/* The county rain box (Sig, Nov 3, 2026: "put this in your newsletter").
+/* The county rain box (Nov 3, 2026).
  *
  * One line for a county: "Story County, IA: 53.72 in of rain since Jan 1, 156% of usual, through Nov 2."
  * Two users, one copy of the wording:

@@ -1,6 +1,6 @@
 /* No Open-Meteo host anywhere the site serves (scripts/no-open-meteo.mjs, 2026-10-29).
  *
- * Sig, Oct 29: no paid Open-Meteo key, and its terms count an ad-supported site as commercial use.
+ * Oct 29: no paid Open-Meteo key, and its terms count an ad-supported site as commercial use.
  * This runs the scan over the whole checkout and proves it catches a host planted in each kind of
  * file a browser gets: a root page, a component, a root .js file, a data JSON file, a preconnect.
  *

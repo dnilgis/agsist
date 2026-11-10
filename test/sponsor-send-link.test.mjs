@@ -1,7 +1,7 @@
-/* The sponsor report link email (Sig, Nov 5, 2026: email the link straight to the sponsor and copy me).
+/* The sponsor report link email (Nov 5, 2026: email the link straight to the sponsor and copy me).
  * scripts/sponsor_send_link.py run as the program, with real smtplib against a local fake mail server
  * (STARTTLS and login stubbed in the harness only), on a made-up private folder:
- *   - To is the record's address, Cc is Sig, the signed link is in the message;
+ *   - To is the record's address, Cc is the owner, the signed link is in the message;
  *   - a missing address fails with a plain message and sends nothing;
  *   - a second run skips; resend sends again;
  *   - nothing printed holds an @ address or the link; the DELIVERY line counts the send (send_cap smtp=).

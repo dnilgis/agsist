@@ -1,4 +1,4 @@
-/* Rain Print, Sig's decisions of 2026-10-18: shipping damage or loss replaced
+/* Rain Print, the owner's decisions of 2026-10-18: shipping damage or loss replaced
  * free, his phone near "Made by", no promise of photos, no sponsor link on
  * Rain Print pages, the business sample line, the paper named plainly.
  *
@@ -33,14 +33,14 @@ test("2. the phone line sits by Made by on both pages, with a tel link and the e
   assert.match(RP, line); assert.match(BIZ, line);
   const i = RP.indexOf('id="rp-madeby"'), k = RP.indexOf('id="rp-call"');
   assert.ok(i > 0 && k > i && k - i < 1200, "right under Made by Sig Lindquist in Chetek");
-  // Sig, Oct 18: no name at the top; the business page keeps the call line right under its H1
+  // Oct 18: no name at the top; the business page keeps the call line right under its H1
   const b = BIZ.indexOf("<h1"), c = BIZ.indexOf('id="rbz-call"');
   assert.ok(b > 0 && c > b && c - b < 300, "right under the H1");
 });
 
 test("3. no promise of photos; the Mockup tag stays on the mockup", () => {
   for (const [n, h] of PAGES) assert.ok(!/Photos of real prints coming soon/.test(h), n);
-  // the matted view stays a mockup until mat photos come (Sig, 2026-10-18: mats arrive Monday)
+  // the matted view stays a mockup until mat photos come (2026-10-18: mats arrive Monday)
   assert.match(RP, /<span class="rp-ex-tag" aria-hidden="true">Mockup<\/span><\/div><figcaption>Mockup of a framed print\. Photos with the white mat coming soon\.<\/figcaption>/);
   // the business page now shows a real photo, captioned truthfully (test/rain-print-photos.test.mjs)
   assert.match(BIZ, /<figcaption>A Rain Print of Chetek, Wisconsin, 2025, framed in Chetek\. This test print is shown without its white mat\.<\/figcaption>/);
@@ -66,7 +66,7 @@ test("4. no Sponsor or Advertise link on Rain Print pages, done in the page", ()
 test("5. the business sample offer is under the prices", () => {
   const s = BIZ.indexOf('id="prices"'), x = BIZ.indexOf('id="christmas"'), t = BIZ.indexOf('id="rbz-sample"');
   assert.ok(s > 0 && t > s && t < x);
-  // 2026-10-20: the offer links to the order box and says how Sig matches the sample (test/rain-print-business.test.mjs)
+  // 2026-10-20: the offer links to the order box and says how the owner matches the sample (test/rain-print-business.test.mjs)
   assert.match(BIZ, /id="rbz-sample">Want to see one first\? <a href="\/rain-print#rp-buy" data-rbz-cta="sample">Order one at the regular price<\/a> and I take it off your invoice when you order 10 or more\. When you pay, tick <b>This is a gift<\/b> and put your business name in the note, so I can match it to your order\.<\/p>/);
   const tiers = J.business_tiers || [];
   if (tiers.length) assert.ok(tiers.some((r) => r.min === 10), "10 is where the discount starts");

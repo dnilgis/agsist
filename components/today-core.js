@@ -8,7 +8,7 @@
   'use strict';
 
   var LIVE_H = 14;        // dnilgis/bids lib/freshness.mjs WITHDRAW_H
-  var PASTED_H = 168;     // PASTED_WITHDRAW_H: a board Sig pasted by hand
+  var PASTED_H = 168;     // PASTED_WITHDRAW_H: a board the owner pasted by hand
   var STALE_H = 6;        // LATE_H: older than this and a blocked board needs a person
 
   var STATES = { IA: 'Iowa', IL: 'Illinois', IN: 'Indiana', KS: 'Kansas', MN: 'Minnesota', MO: 'Missouri', NE: 'Nebraska',

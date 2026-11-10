@@ -749,7 +749,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
   // A window that has ended is only "final" once RMA has released the price.
   function isDone(g){ return isClosed(g) && g.hstatus==='Released'; }
   function stWord(g){ return isDone(g)?'final':(isOpen(g)?'running':'last posted'); }
-  /* 2026-11-04 (site panel, skeptic row 40): a running or last posted figure is
+  /* 2026-11-04 (site review, row 40): a running or last posted figure is
      never called final. The worked example said the final price is set at
      the end of October, with no gate: after the window closed it still said so, and
      with the harvest price under the projected price it said nothing at all. */
@@ -791,7 +791,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
     return x.getFullYear()+'-'+(m<10?'0':'')+m+'-'+(dd<10?'0':'')+dd; }
 
   function bar(g){
-    /* 2026-10-20, Sig's call (v37 item 2): ONE RUNNING NUMBER reaches the bar.
+    /* 2026-10-20, a product decision (v37 item 2): ONE RUNNING NUMBER reaches the bar.
        While a window is open and we have its daily settles (runH: corn and
        soybeans, "All" types, within 3% of RMA), the bar uses our running
        average, the number the H1 and the calculator print, and names RMA's

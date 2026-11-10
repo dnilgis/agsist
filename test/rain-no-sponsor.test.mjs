@@ -1,4 +1,4 @@
-// Sig, 2026-10-15: no sponsor on the Rain Print or rain gauge pages, sold or open.
+// 2026-10-15: no sponsor on the Rain Print or rain gauge pages, sold or open.
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
@@ -12,7 +12,7 @@ test("Rain Print, gift card and rain gauge pages carry no sponsor slot, and no s
     assert.ok(!/rain-print|rain-gauge|rp-gift/.test(readFileSync(ROOT + f, "utf8")), f + " names a rain page");
 });
 
-// Oct 28 (Sig): the state-targeted sponsor (components/geo-sponsor.js) is never loaded on these pages either.
+// Oct 28: the state-targeted sponsor (components/geo-sponsor.js) is never loaded on these pages either.
 test("the state-targeted sponsor skips Rain Print, gift card, gift and rain gauge pages, in the loader and in the component", async () => {
   const L = readFileSync(ROOT + "components/loader.js", "utf8");
   const m = /var GEO_SKIP = (\/.+\/);\n/.exec(L);

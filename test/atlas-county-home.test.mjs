@@ -1,4 +1,4 @@
-/* County farm facts (Sig, Oct 23, 2026): the Farmland Atlas county page is the county home,
+/* County farm facts (Oct 23, 2026): the Farmland Atlas county page is the county home,
  * laid out like the vision panel's Barron mock and printed through /farmland-atlas/sheet.
  *
  *   node --test test/atlas-county-home.test.mjs
@@ -43,7 +43,7 @@ test("Barron, Story and Champaign: named County farm facts, print the County Pri
     assert.ok(h, fips + " page on disk");
     assert.match(h, /<div class="kick">County farm facts<\/div>/, fips);
     assert.match(h, /<title>[^<]*Farm Facts · Cash Rent 20\d\d: \$[\d,]+\/Acre/, fips + ": the name and the rent in the title");
-    // County Print (Sig, Nov 7, 2026): Print opens the shared sheet until the County Print script runs. The pages are
+    // County Print (Nov 7, 2026): Print opens the shared sheet until the County Print script runs. The pages are
     // built on main, so a committed page may be the build before or after it; the new group is held to the builder's
     // output in test/county-print.test.mjs
     assert.match(h, new RegExp(`<a class="pri"(?: id="cpr-print")? href="/farmland-atlas/sheet#${fips}">(?:Print this sheet|Print County Print)</a>`), fips + ": prints through the shared sheet or the County Print");

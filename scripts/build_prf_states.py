@@ -104,10 +104,9 @@ PRF_SPONSOR_JS = '<script src="/components/prf-sponsor.js?v=5" defer></script>'
 
 def sponsor_ribbon(name, code):
     """The unsold offer on /prf/<state>, one slim band under the opening answer
-    (Sig, 2026-10-14: "the advertise-here CTA needs to be on the upper part of
-    the page"). Price on request, never printed. The link goes to /prf-sponsor
+    (2026-10-14). Price on request, never printed. The link goes to /prf-sponsor
     with this state ticked, where a business sees its own block and asks (the
-    email to Sig is there too). The part in prf-spon-x drops on a phone so the
+ email to the owner is there too). The part in prf-spon-x drops on a phone so the
     band stays two short lines."""
     return (f'<aside class="prf-spon-band" id="sponsor" data-prf-spon="state" data-prf-st="{code}" data-prf-name="{e(name)}" aria-label="For businesses">'
             f'<span class="prf-spon-tag">For businesses</span> '
@@ -190,7 +189,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
                 f"and premium rates and precipitation index history for the {n_grid:,} grids that touch them, {y0} to {y1}.", url, name),
     ]
     ldh = "".join('<script type="application/ld+json">' + json.dumps(b, ensure_ascii=False).replace("</", "<\\/") + "</script>" for b in ld)
-    # Sig, 2026-10-12: the PRF state slots are priced on request, prepaid, with the
+    # 2026-10-12: the PRF state slots are priced on request, prepaid, with the
     # placement guaranteed to the end of the year. Kept out of the self-serve
     # monthly flow (/sponsor-apply) and out of data/sponsor-slots.json on purpose:
     # the link is not /sponsor-apply, so scripts/stamp_rates.py adds no price.

@@ -40,7 +40,7 @@ test("sitemap-rain.xml is in robots.txt; the rain folder has a budget; the workf
   assert.match(wf, /workflow_dispatch/);
 });
 
-// Sig, Oct 23 2026: the county rain pages rebuild every day (they were Mondays only).
+// Oct 23 2026: the county rain pages rebuild every day (they were Mondays only).
 test("the rain pages rebuild every day, and the job watcher expects a run every day", () => {
   const wf = readFileSync(ROOT + ".github/workflows/county-rain.yml", "utf8");
   const crons = [...wf.matchAll(/- cron: "([^"]+)"/g)].map((m) => m[1]);
@@ -79,7 +79,7 @@ test("every shipped county page is small and has its answer in the HTML", () => 
   }
 });
 
-// Sig, Oct 23 2026: the pages rebuild every day, the county rain share cards only on Mondays.
+// Oct 23 2026: the pages rebuild every day, the county rain share cards only on Mondays.
 test("rain share cards: redrawn on Mondays only, and every page describes the card it points at", async () => {
   const { createHash } = await import("node:crypto");
   const wf = readFileSync(ROOT + ".github/workflows/county-rain.yml", "utf8");

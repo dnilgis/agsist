@@ -1,5 +1,5 @@
 /**
- * The Claude Code hooks in .claude/settings.json (Sig, Oct 22 2026), run with the JSON a hook gets on stdin:
+ * The Claude Code hooks in.claude/settings.json (Oct 22 2026), run with the JSON a hook gets on stdin:
  * - scripts/dev/wip-push.sh: autosaves fx/* only (never main), never .env, keys, node_modules or big
  *   files, commits as dnilgis, pushes, silent no-op when nothing changed, always exit 0
  * - scripts/dev/verify-gate.mjs: blocks a stop (exit 2) on skipped>0 or a failure in .verify/last.json

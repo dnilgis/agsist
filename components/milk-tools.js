@@ -120,7 +120,7 @@
     return h;
   }
   /* A state with no AMS mailbox area (Idaho, Colorado, Utah...): its own NASS all-milk price, the month the
-     state table shows, or '' when NASS has no row for it this month (then the ask stays). Sig, Nov 3, 2026.
+     state table shows, or '' when NASS has no row for it this month (then the ask stays). Nov 3, 2026.
      The page's before-paint script lays out these same five lines from the state list baked in #dp-now-src. */
   function stateHtml(d, st, now) {
     var am = d && d.all_milk_states, ai = am ? kidx(am.month_key) : NaN, n = nowIdx(now);

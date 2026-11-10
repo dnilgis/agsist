@@ -1,4 +1,4 @@
-/* components/rp-letterzoom.js: read a sample box letter full size (fx/letterzoom, 2026-10-31, Sig).
+/* components/rp-letterzoom.js: read a sample box letter full size (fx/letterzoom, 2026-10-31).
  *
  * One shared bit of code for every page that shows a sample letter (/rain-print "What's in the box" and
  * /rain-print-business). The page holds a <button class="lz-btn" data-lz="/img/..-lg.webp" data-lz-alt="...">
