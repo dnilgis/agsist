@@ -40,7 +40,7 @@ test("static markup still puts the box under the best prices (the slot it return
   assert.match(cb, /bid-alerts slot/);
 });
 
-test("before a ZIP the email box sits below the results area folded to one line; with results it is under the best prices, open", { skip, timeout: 240000 }, async () => {
+test("before a ZIP the email box sits right under the sample table, open; with results it is under the best prices; with no empty block it folds behind the one-line opener", { skip, timeout: 240000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -53,19 +53,16 @@ test("before a ZIP the email box sits below the results area folded to one line;
     await pg.waitForFunction(() => document.readyState === "complete", null, { timeout: 60000 });
     const where = await pg.evaluate(() => {
       const box = document.querySelector('[data-bid-alerts][data-source="page:cash-bids"]');
-      const res = document.getElementById("cb-results"), btn = res.nextElementSibling;
-      return { btn: btn && btn.className, btnText: btn && btn.textContent, after: btn && btn.nextElementSibling === box,
-               boxH: box.getBoundingClientRect().height, btnH: btn.getBoundingClientRect().height };
+      const smp = document.getElementById("cb-sample");
+      const btn = document.querySelector(".cb-pre-open");
+      return { after: !!smp && smp.nextElementSibling === box, inEmpty: !!box.closest("#cb-results .cb-empty"),
+               boxH: box.getBoundingClientRect().height, pre: box.classList.contains("cb-pre"), btnHidden: !btn || btn.hidden,
+               top: box.getBoundingClientRect().top + scrollY };
     });
-    assert.equal(where.btn, "cb-pre-open", "a one-line opener directly after the results area");
-    assert.equal(where.btnText, "Get the bids near you by email");
-    assert.ok(where.after, "the box sits right after it");
-    assert.equal(where.boxH, 0, "the box is folded before a ZIP");
-    assert.ok(where.btnH < 90, `the opener is one line (${where.btnH}px), not half a phone screen`);
-    // tapping it opens the box
-    await pg.click(".cb-pre-open");
-    assert.ok(await pg.evaluate(() => document.querySelector('[data-bid-alerts][data-source="page:cash-bids"]').getBoundingClientRect().height > 200), "opens on tap");
-    await pg.reload({ waitUntil: "load" });
+    assert.ok(where.after && where.inEmpty, "the box is the next thing after the sample table, inside the empty block");
+    assert.ok(!where.pre && where.btnHidden, "no folded box and no opener before a ZIP");
+    assert.ok(where.boxH > 100, `the box is open (${where.boxH}px)`);
+    assert.ok(where.top < 1300, `the ask is reachable well above the old 1304 px (${where.top})`);
     // results arrive: the best prices show, the box goes back under them
     await pg.evaluate(() => { document.getElementById("best-bids-section").style.display = "block"; });
     await pg.waitForFunction(() => {
@@ -76,10 +73,16 @@ test("before a ZIP the email box sits below the results area folded to one line;
     }, null, { timeout: 5000 });
     assert.ok(await pg.evaluate(() => {
       const box = document.querySelector('[data-bid-alerts][data-source="page:cash-bids"]');
-      return !box.classList.contains("cb-pre") && document.querySelector(".cb-pre-open").hidden;
+      const o = document.querySelector(".cb-pre-open"); return !box.classList.contains("cb-pre") && (!o || o.hidden);
     }), "with results the box is open and the one-line opener is gone");
+    // results cleared again: back under the sample table
     await pg.evaluate(() => { document.getElementById("best-bids-section").style.display = "none"; });
-    // results cleared again: back below them (the reader opened nothing on this load, so folded)
+    await pg.waitForFunction(() => {
+      const smp = document.getElementById("cb-sample"), box = document.querySelector('[data-bid-alerts][data-source="page:cash-bids"]');
+      return smp && smp.nextElementSibling === box;
+    }, null, { timeout: 5000 });
+    // a search replaced the empty block (a ZIP with no elevators): the old fold under the results area
+    await pg.evaluate(() => { document.querySelector("#cb-results .cb-empty").remove(); });
     await pg.waitForFunction(() => {
       const btn = document.getElementById("cb-results").nextElementSibling, box = document.querySelector('[data-bid-alerts][data-source="page:cash-bids"]');
       return btn && btn.className === "cb-pre-open" && !btn.hidden && btn.nextElementSibling === box && box.classList.contains("cb-pre");

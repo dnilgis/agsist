@@ -84,7 +84,7 @@ test("the builder writes the towns; home, /cash-bids, Fast Facts and the Atlas c
   assert.match(read("components/here.js"), /AgBidsFallback\.count\('fast-facts'/);
   assert.match(read("components/county-home.js"), /AgBidsFallback\.count\('atlas-county'/);
   assert.match(read("index.html"), /bids-fallback\.js\?v=1" defer><\/script>\n<script src="\/components\/bids-homepage\.js\?v=46"/);
-  assert.match(read("cash-bids.html"), /bids-fallback\.js\?v=1"><\/script><script src="\/components\/cash-bids\.js\?v=19"/);
+  assert.match(read("cash-bids.html"), /bids-fallback\.js\?v=1"><\/script><script src="\/components\/cash-bids\.js\?v=20"/);
   assert.match(read("fast-facts.html"), /bids-fallback\.js\?v=1/);
 });
 
