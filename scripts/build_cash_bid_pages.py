@@ -40,9 +40,9 @@ shown as today's.
 
 PAGES
   cash-bids/<state>/<town>.html   every town with a network board that has
-                                  posted rows. index,follow when at least one
-                                  current bid is shown; otherwise noindex,follow
-                                  (kept so a link does not break on a quiet day)
+                                  posted rows. Always index,follow and in the
+                                  sitemap, with or without a current bid: an
+                                  elevator stays listed when no price is read
   cash-bids/<state>/index.html    the state's towns. NEVER cash-bids/index.html:
                                   /cash-bids is cash-bids.html, and a directory
                                   index would capture that URL on GitHub Pages
@@ -549,6 +549,7 @@ def select(merged, index, towns_by_state, zip_towns=None, zip_coord=None, placed
             "city": clean_place(town_name(b.get("city"))), "branch": branch_name(b, src, tname, towns_by_state.get(st, {})),
             # the facility the board itself names ("1st Ave", "Soy Processing"): tells twin boards apart
             "point": clean_place(town_name(b.get("branch") or "")),
+            "raw_city": b.get("city") or "",          # the basis log's town key (estimates())
             "zip": ovr["zip"] if ovr else zip5(b.get("zip") or src.get("zip")),
             # a checked number replaces the filed one, an unconfirmed one is withheld (2026-10-27)
             "phone": phone_corrections.for_source(sid, src.get("phone") or ""), "checked": parse_ts(src.get("checkedAt")),
@@ -683,7 +684,8 @@ def name_twins(boards):
 # (not refused), that posted rows and was last read within PAGE_GRACE_DAYS
 # keeps its place on its town page with no price: the "no current bid" line
 # names it with the day it was last read.
-PAGE_GRACE_DAYS = 7      # a board off the feed this long, or less, keeps its town page (select())
+ESTIMATE_DAYS = 30       # an estimate from a board's last posted basis is shown this long after that basis (estimates())
+PAGE_GRACE_DAYS = ESTIMATE_DAYS   # a board off the feed this long, or less, keeps its town page (select())
 OFF_FEED_STATUS = {"skipped", "broken"}   # not "refused": a site that said no is not held
 
 
@@ -1786,14 +1788,107 @@ WHY = {"stale_or_unconfirmed": "board not confirmed on the latest read",
        "cash_outside_sanity_band": "posted figures did not check out"}
 
 
-def quiet_line(bd):
+def quiet_line(bd, ests=()):
     why = next((WHY[k] for k, _ in bd["why"].most_common() if k in WHY), "no current bid")
     seen = f", last read {fmt_day(bd['checked'])}" if bd["checked"] else ""
     name = bd["operator"] or bd["city"]
     where = near_text(bd)
     if where:
         name += f" ({where})"
-    return f"<li>{esc(name)}: {esc(why)}{seen}</li>"
+    est = "".join(f'<br><span class="cbt-est">{esc(CROP_LABEL[e["crop"]])} {cash_c(e["cash"])} '
+                  f'<span class="mut">{esc(e["label"])}. Estimate, not a posted bid: last posted basis '
+                  f'({esc(e["basis_day"])}) + {esc(e["con"])} futures ({esc(e["close_day"])} close)</span></span>'
+                  for e in ests)
+    return f"<li>{esc(name)}: {esc(why)}{seen}{est}</li>"
+
+
+FUT_LETTERS = "FGHJKMNQUVXZ"
+
+
+def load_futures(root="."):
+    """{(root, month index, year): (price $/bu, close day)} for each dated corn,
+    soybean and wheat contract in data/prices.json (ZCZ26.CBT), the way
+    components/cb-rank.js setFutures() reads it: stale, withheld and retired
+    keys are left out. {} when the file cannot be read."""
+    try:
+        with open(os.path.join(root, "data", "prices.json"), encoding="utf-8") as f:
+            d = json.load(f)
+    except (OSError, ValueError):
+        return {}
+    skip = set()
+    for k in ("stale_keys", "withheld_keys", "retired_keys"):
+        v = d.get(k)
+        skip |= set(v) if isinstance(v, (list, dict)) else set()
+    out = {}
+    for k, q in (d.get("quotes") or {}).items():
+        if k in skip or not isinstance(q, dict):
+            continue
+        m = re.fullmatch(r"(ZC|ZS|ZW|KE)([FGHJKMNQUVXZ])(\d{2})\.CBT", str(q.get("ticker") or ""))
+        c, day = q.get("close"), str(q.get("close_date") or "")
+        if not m or not isinstance(c, (int, float)) or c <= 0 or not re.fullmatch(r"\d{4}-\d{2}-\d{2}", day):
+            continue
+        key = (m.group(1), FUT_LETTERS.index(m.group(2)), 2000 + int(m.group(3)))
+        if key not in out or out[key][1] < day:
+            out[key] = (c / 100, day)
+    return out
+
+
+def basis_shard(basis_dir, st):
+    """{(FACILITY, CITY): [(crop, symbol, delivery month, basis cents, last seen day)]} from
+    data/basis/<ST>.json (build_basis_history.py); {} when there is none."""
+    try:
+        with open(os.path.join(basis_dir, f"{st}.json"), encoding="utf-8") as f:
+            sh = json.load(f)
+    except (OSError, ValueError):
+        return {}
+    fac, days, cats = sh.get("f") or [], sh.get("d") or [], sh.get("c") or ["corn", "soybeans", "wheat", "other"]
+    out = defaultdict(list)
+    for r in sh.get("r") or []:
+        try:
+            fi, ci, sym, month, cur, _prev, _since, _first, last_i = r[:9]
+            facility, city = (fac[fi].split("|", 1) + [""])[:2]
+            out[(facility, city)].append((cats[ci], sym, month, cur, days[last_i] if last_i is not None else None))
+        except (ValueError, IndexError, TypeError):
+            continue
+    return out
+
+
+def estimates(bd, shard, fut, snap_ct, days=ESTIMATE_DAYS):
+    """[{crop, cash, label, basis_day, con, close_day}] for a board with no current bid:
+    per crop (corn, soybeans), its last posted basis for the nearest delivery
+    month still open, logged within `days` of the snapshot, plus the latest close
+    of that same futures contract. Never a posted bid and never ranked; nothing
+    for a crop whose basis is older, whose contract has no close, or whose
+    contract is past its first notice day."""
+    if not shard or not fut:
+        return []
+    key = (" ".join(display_name(bd.get("operator") or "").upper().split()),
+           " ".join(str(bd.get("raw_city") or "").strip().upper().split()))
+    rows = shard.get(key) or []
+    cur_m = f"{snap_ct.year}-{snap_ct.month:02d}"
+    out = []
+    for crop in ("corn", "soybeans"):
+        best = None
+        for cat, sym, month, cents, last in rows:
+            if cat != crop or not isinstance(cents, int) or not last:
+                continue
+            age = (snap_ct.date() - dt.date.fromisoformat(last)).days
+            dm = parse_dm(month, last)
+            con = parse_contract(sym, crop, snap_ct.year)
+            if not (0 <= age <= days) or not dm or dm < cur_m or not con or con not in fut or in_delivery(con, snap_ct):
+                continue
+            k = (dm, -age)
+            if best is None or k < best[0]:
+                best = (k, dm, cents, last, con)
+        if best:
+            _, dm, cents, last, con = best
+            price, close_day = fut[con]
+            d0, d1 = dt.date.fromisoformat(last), dt.date.fromisoformat(close_day)
+            out.append({"crop": crop, "cash": round(price + cents / 100, 4),
+                        "label": f"{MONTH_ABBR[int(dm[5:7]) - 1]} {dm[:4]}",
+                        "basis_day": f"{MONTH_ABBR[d0.month - 1]} {d0.day}", "con": con_label(con),
+                        "close_day": f"{MONTH_ABBR[d1.month - 1]} {d1.day}"})
+    return out
 
 
 # ---------------------------------------------------------------- the answer first (2026-10-15)
@@ -2470,9 +2565,15 @@ def build_town_page(t, ctx):
                  f'{esc(place)} has a bid we could confirm right now. The nearest ones that do are below.</div>')
     quiet_html = ""
     if quiet:
+        shard = ctx["shard"](st) if ctx.get("shard") else {}
+        ests = {id(b): estimates(b, shard, ctx.get("fut") or {}, snap_ct) for b in quiet}
+        any_est = any(ests.values())
         quiet_html = (f'<h2>Also in {esc(t["name"])}, no current bid</h2><ul class="cbt-list">'
-                      + "".join(quiet_line(b) for b in quiet) + "</ul>"
-                      '<p class="cbt-sub">No price is shown for these until their board posts again.</p>')
+                      + "".join(quiet_line(b, ests[id(b)]) for b in quiet) + "</ul>"
+                      + ('<p class="cbt-sub">An estimate is not a posted bid: it is the elevator&rsquo;s last posted '
+                         'basis added to the latest close of the same futures contract, and it is never ranked with '
+                         'posted bids. Call the elevator for its price.</p>' if any_est else
+                         '<p class="cbt-sub">No price is shown for these until their board posts again.</p>'))
     known_html = known_section(t, (ctx.get("known") or {}).get((st, t["slug"]), []), z)
     links = [f'<a href="/cash-bids/{ssl}/">Every {esc(sname)} town</a>',
              f'<a href="/cash-bids/{ssl}/#basis">{esc(sname)} basis today</a>']
@@ -3616,7 +3717,7 @@ def attach_storage(towns, ctx, root="."):
 
 def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None, now=None, check_age=True,
               min_towns=10000, zip_coord=None, prev_doc=None, data_dir=None, hub=None, directory=None, hist_dir=None,
-              companies_out=None):
+              companies_out=None, basis_dir=None):
     """data_dir: where data/state-basis/<ST>.json and data/basis-states.json
     go (None = not written). hub: /basis page to bake the state ranking into.
     directory: the bids network's data/directory.json, for the unread
@@ -3670,6 +3771,9 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
            "snap_iso": gen.strftime("%Y-%m-%dT%H:%M:%SZ"), "prev_generated": prev_gen,
            "counts": state_counts(towns, near), "zip_coord": zip_coord, "summaries": summaries,
            "hist": _hist_lookup(hist_dir) if hist_dir else None, "live_all": live_board_list(towns),
+           "fut": load_futures(root) if basis_dir else {},
+           "shard": (lambda st, _c={}: _c[st] if st in _c else _c.setdefault(st, basis_shard(basis_dir, st)))
+           if basis_dir else None,
            "town_zips": town_zips(zip_towns), "known": known_by_town(directory, tbs) if directory else {},
            "odd": town_odd, "county": county_finder(root),
            "labels": {s_["id"]: s_["labelInFeed"] for s_ in index.get("sources") or []
@@ -5199,6 +5303,35 @@ def _selftest_town_audit():
     assert mark_relays(tw) == 1
     assert fce["relay_of"] == ("ADM", "Marshall", "MN") and "relay_of" not in adm
     assert "relay_of" not in own, "same numbers but no ADM in its own place name: not called a relay"
+    # an elevator off the feed keeps a labelled estimate: last posted basis + the same contract's latest close,
+    # only within ESTIMATE_DAYS of that basis; Farmers Cooperative Elevator, Montevideo MN (basis log of Nov 10)
+    import tempfile as _tf2
+    with _tf2.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "data", "basis"))
+        with open(os.path.join(td, "data", "basis", "MN.json"), "w") as f:
+            json.dump({"state": "MN", "c": ["corn", "soybeans", "wheat", "other"], "f": ["FARMERS COOPERATIVE ELEVATOR CO|MONTEVIDEO"],
+                       "d": ["2026-10-02", "2026-11-03", "2026-10-30", "2026-09-20"],
+                       "r": [[0, 0, "ZCZ26", "11/01/2026", -72, -75, 1, 0, 2],
+                             [0, 0, "ZCH27", "01/01/2027", -65, -60, 1, 0, 2],
+                             [0, 1, "ZSX26", "11/01/2026", -95, None, 0, 0, 2],
+                             [0, 1, "ZSF27", "12/01/2026", -90, None, 0, 0, 3]]}, f)
+        with open(os.path.join(td, "data", "prices.json"), "w") as f:
+            json.dump({"quotes": {"corn-dec26": {"ticker": "ZCZ26.CBT", "close": 438.75, "close_date": "2026-11-09"},
+                                  "beans-nov26": {"ticker": "ZSX26.CBT", "close": 1150.0, "close_date": "2026-11-09"},
+                                  "beans-jan27": {"ticker": "ZSF27.CBT", "close": 1160.0, "close_date": "2026-11-09"}},
+                       "stale_keys": []}, f)
+        fut = load_futures(td)
+        sh = basis_shard(os.path.join(td, "data", "basis"), "MN")
+        mv = {"operator": "Farmers Cooperative Elevator Co", "raw_city": "Montevideo"}
+        e = estimates(mv, sh, fut, dt.datetime(2026, 11, 10, 9, tzinfo=CT))
+        assert e == [{"crop": "corn", "cash": 3.6675, "label": "Nov 2026", "basis_day": "Oct 30", "con": "Dec '26",
+                      "close_day": "Nov 9"}], e
+        # soybeans: Nov '26 is past first notice; the Jan '27 row was last posted Sep 20, 51 days back: no estimate
+        assert estimates(mv, sh, fut, dt.datetime(2026, 12, 15, 9, tzinfo=CT)) == [], "past 30 days: no estimate"
+        li = quiet_line({"operator": "Farmers Cooperative Elevator Co", "city": "Montevideo", "why": Counter(),
+                         "checked": None, "how": "name"}, e)
+        assert "Corn $3.67" in li and "Estimate, not a posted bid: last posted basis (Oct 30) + Dec &#x27;26 futures " \
+            "(Nov 9 close)" in li, li
     print("town audit selftest OK")
 
 
@@ -5319,6 +5452,7 @@ def main():
                                       check_age=not a.ignore_age, zip_coord=zip_centroids(base), prev_doc=prev,
                                       data_dir=os.path.join(a.root, "data"), hub=os.path.join(a.root, HUB_PAGE),
                                       directory=directory, hist_dir=os.path.join(a.root, "data", "basis-sparklines"),
+                                      basis_dir=os.path.join(a.root, "data", "basis"),
                                       companies_out=cos)
     try:
         with open(os.path.join(a.root, "data", COUNTS_FILE), encoding="utf-8") as f:
