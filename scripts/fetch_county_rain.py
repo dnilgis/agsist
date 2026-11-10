@@ -42,6 +42,7 @@ import datetime as dt
 import glob
 import json
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -55,6 +56,10 @@ OUT = os.path.join(ROOT, "data", "rain")
 URL = "https://data.rcc-acis.org/MultiStnData"
 SCHEMA = "agsist-county-rain/1"
 DAILY_SCHEMA = "agsist-county-rain-daily/1"
+# The one source line every data/rain/<st>.json carries, fresh or kept (the context files' line is
+# fetch_rain_context.SOURCE). normalize_source() puts both on files a run kept, and the county rain Commit step
+# runs it again from main's copy of these files, so a run that started on older code cannot bring an older line back.
+SOURCE = "NOAA daily records through RCC-ACIS"
 DAILY_DIR = "daily"    # data/rain/daily/<st>.json: the chosen stations' days, for the county pages' Rain Print
 TIMEOUT_S = 180
 BACKOFF_S = (15, 45, 120)
@@ -341,7 +346,7 @@ def build_state(src, st, year, edate, C, fetched):
         daily[fips] = daily_rec(x["vals"][:s["days"]], x["snows"][:s["days"]])
     return {"schema": SCHEMA, "state": st, "year": int(year), "edate": edate, "fetched": fetched,
             "normals": ("1991-2020" if period else "current") if has_norm else None,
-            "source": "NOAA daily records through RCC-ACIS",
+            "source": SOURCE,
             "stations_in_counties": seen, "counties": out, "none": none, "_daily": daily}
 
 
@@ -530,6 +535,14 @@ def check(dirpath=OUT):
     return 1 if bad else 0
 
 
+def normalize_source(dirpath=OUT):
+    """Bring the source line current on every state file and every context file under dirpath (data/rain and
+    data/rain/context). Returns the files rewritten, as "IA" and "context/IA"."""
+    import fetch_rain_context as X
+    done = R.set_source(dirpath, SOURCE, sort_keys=True, newline=True)
+    return done + ["context/" + st for st in R.set_source(os.path.join(dirpath, X.CONTEXT_DIR), X.SOURCE)]
+
+
 # ---------------------------------------------------------------- run
 
 def run(src, states, year, edate, out_dir, C, deadline=None):
@@ -589,6 +602,10 @@ def run(src, states, year, edate, out_dir, C, deadline=None):
                        "counties": {f: daily[f] for f in sorted(d["counties"]) if f in daily}},
                       fh, separators=(",", ":"), sort_keys=True)
             fh.write("\n")
+    # a kept state keeps its numbers, not an older source line
+    fixed = normalize_source(out_dir)
+    if fixed:
+        print(f"source line brought current on {len(fixed)} kept file(s): {', '.join(fixed)}", flush=True)
     return new, failed
 
 
@@ -985,9 +1002,27 @@ def selftest():
         fat = json.load(open(p))
         for i in range(40):
             fat["counties"][f"19{900 + i}"] = dict(next(iter(fat["counties"].values())))
+        ok(ia["source"] == SOURCE, f"a fresh file carries the one source line: {ia.get('source')}")
+        fat["source"] = "NOAA daily records through RCC-ACIS (MultiStnData)"   # an older line on a kept file
         json.dump(fat, open(p, "w"))
         n3, f3 = run(FixtureSource(fx), ["IA"], 2026, "2026-10-12", d, C)
-        ok(f3 == ["IA"] and len(json.load(open(p))["counties"]) == len(fat["counties"]), "thin answer refused, published file kept")
+        kept = json.load(open(p))
+        ok(f3 == ["IA"] and len(kept["counties"]) == len(fat["counties"]), "thin answer refused, published file kept")
+        ok(kept["source"] == SOURCE and kept["counties"] == fat["counties"],
+           f"a kept file keeps its numbers and comes out with the current source line: {kept.get('source')}")
+        # the Commit step's pass: an older line copied over main is brought current, a current file is not rewritten
+        kept["source"] = "an older line"
+        json.dump(kept, open(p, "w"))
+        ks_m = os.path.getmtime(os.path.join(d, "ks.json"))
+        import fetch_rain_context as X
+        os.makedirs(os.path.join(d, X.CONTEXT_DIR), exist_ok=True)
+        cx = os.path.join(d, X.CONTEXT_DIR, "ia.json")
+        with open(cx, "w") as fh:
+            json.dump({"state": "IA", "source": "station records (MultiStnData)", "counties": {}}, fh, separators=(",", ":"))
+        ok(normalize_source(d) == ["IA", "context/IA"] and json.load(open(p))["source"] == SOURCE
+           and json.load(open(cx))["source"] == X.SOURCE, "normalize_source fixes only the old files, state and context")
+        ok(os.path.getmtime(os.path.join(d, "ks.json")) == ks_m and normalize_source(d) == [], "a current file is left alone")
+        ok(not re.search(r"MultiStnData|StnData|GridData|scripts/", SOURCE), "the source line names no method")
         # a state with no saved answer fails alone
         n4, f4 = run(FixtureSource(fx), ["WY"], 2026, "2026-10-12", d, C)
         ok(f4 == ["WY"] and not os.path.exists(os.path.join(d, "wy.json")), "a failed state writes nothing")
@@ -1007,6 +1042,10 @@ def main(argv):
     out = arg("--out") or OUT
     if "--check" in argv:
         return check(out)
+    if "--normalize-source" in argv:
+        fixed = normalize_source(out)
+        print(f"source line: {len(fixed)} file(s) brought current" + (f" ({', '.join(fixed)})" if fixed else ""))
+        return 0
     year, edate = default_year_and_edate(central_today())
     if arg("--year"):
         year = int(arg("--year"))
