@@ -44,7 +44,15 @@ export function serve(ROOT) {
   });
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-export async function mocks(context, { meta = META, worker = "blocked", delay = 0, log = { acis: [], worker: [] } } = {}) {
+// AMES, IA (2012, the drought), shaped like the Nov 9 panel's real case (Ames 5 SE at 6.4 mi, rain only; a volunteer
+// gauge at 2.0 mi with a full snowfall record but a short history). Distances are real; each year's data is made up.
+export const AMES = { name: "Ames", latitude: 42.0308, longitude: -93.6319, admin1: "Iowa", admin2: "Story", country_code: "US", postcodes: ["50010"] };
+export const AMES_META = [
+  { name: "AMES 2.0 SW", sids: ["US1IASR0018 6"], ll: [-93.6319, 42.0308 + 2.0 / 69], state: "IA", elev: 950, valid_daterange: [["2008-04-01", "2026-10-18"]], snow: ["2008-04-01", "2026-10-18"], data: { snow: "full" }, por: [2009, 2025, {}] },
+  { name: "AMES 5 SE", sids: ["130203 2"], ll: [-93.6319, 42.0308 + 6.4 / 69], state: "IA", elev: 1000, valid_daterange: [["1895-01-01", "2026-10-18"]], snow: [], data: { snow: "none", missing: 6 }, por: [1950, 2025, { snow: "none" }] },
+  { name: "BOONE", sids: ["130807 2"], ll: [-93.6319, 42.0308 + 14 / 69], state: "IA", elev: 1100, valid_daterange: [["1893-01-01", "2026-10-18"]], snow: ["1893-01-01", "2026-10-18"], data: { snow: "full", missing: 40 }, por: [1950, 2025, {}] },
+];
+export async function mocks(context, { meta = META, town = null, worker = "blocked", delay = 0, log = { acis: [], worker: [] } } = {}) {
   await context.route(PLACES_ROUTE, async (r) => {
     if (delay && /rcc-acis/.test(r.request().url())) await new Promise((ok) => setTimeout(ok, delay));
     const req = r.request(), u = new URL(req.url());
@@ -58,7 +66,7 @@ export async function mocks(context, { meta = META, worker = "blocked", delay = 
       return r.fulfill({ headers: h, json: { ok: true } });
     }
     // the town lookup: our own data/places/ files (2026-10-29), answered with the town as the live case had it
-    if (isPlaces(u)) return r.fulfill({ json: placesBody(u, [{ name: "Chetek", latitude: TOWN.lat, longitude: TOWN.lon, admin1: "Wisconsin", admin2: "Barron", country_code: "US", postcodes: ["54728"] }]) });
+    if (isPlaces(u)) return r.fulfill({ json: placesBody(u, [town || { name: "Chetek", latitude: TOWN.lat, longitude: TOWN.lon, admin1: "Wisconsin", admin2: "Barron", country_code: "US", postcodes: ["54728"] }]) });
     if (u.host === "data.rcc-acis.org") {
       if (u.pathname === "/StnMeta") {
         const snow = u.searchParams.get("elems") === "snow";

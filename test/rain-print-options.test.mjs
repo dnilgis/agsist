@@ -152,7 +152,10 @@ test("the rank note: from the nearer end, a tie said as a tie, only for a full y
   assert.equal(h.threads.length, 29, "the other 29 years");
   assert.ok(!h.threads.some((t) => t.year === 2000), "the buyer's year is not a thread");
   assert.deepEqual(plain(h.labels), { dry: [1990, 1991], wet: [2019, 2018] });
-  assert.equal(h.note, "11th driest of the 30 full years this station has kept");
+  // Nov 9 (one "full years" rule): the rank counts only the full years up to the print's, and needs 30 of them
+  assert.equal(h.note, "", "2000 has 11 full years up to it: no rank (the remarkable days need 30 too)");
+  assert.equal(RP.histInput(many, 2019).note, "The wettest of the 30 full years this station kept up to 2019");
+  assert.equal(RP.histInput(many.concat([{ year: 2020, total: 1, cum: [1, 2] }]), 2019).note, "The wettest of the 30 full years this station kept up to 2019", "a later, drier year is not counted");
   assert.match(h.foot, /the other 29 full years this station kept, 1990 to 2019 \(the nearest station with 30 or more\)/);
 });
 
@@ -588,7 +591,7 @@ test("the page: options from an old link with a crop draw without the crop, the 
       await drawn(page);
       await page.waitForFunction(() => /data-rp="hist"/.test(document.getElementById("rp-art").innerHTML), null, { timeout: 30000 });
       assert.ok(RP.decodeCode(await page.textContent("#rp-code")).hist, "hist in the code");
-      assert.match(await page.$eval("#rp-art", (e) => e.innerHTML), /full years this station has kept/, "the rank note");
+      assert.match(await page.$eval("#rp-art", (e) => e.innerHTML), /full years this station (?:has kept|kept up to \d{4})/, "the rank note");
       // Roots: no threads, and the switch says why
       await page.click('label:has(input[name="rp-style"][value="r2"])');
       await page.waitForTimeout(500);
