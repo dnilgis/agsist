@@ -2,7 +2,7 @@
 # scripts/report_live.py: the gate, the checks every 10 s, the worker write, the watchdog and the
 # rehearsal. wasde-watch.yml stays as the backup and report-day.yml as the email's second path.
 
-name: Report day live — graded result within a minute
+name: "Report day live: graded result within a minute"
 
 on:
   schedule:
