@@ -616,8 +616,9 @@ def head(title, desc, path, jsonld):
       .rs-t th{{white-space:normal;vertical-align:bottom;letter-spacing:.03em;padding:6px 7px;line-height:1.25}}
       .rs-t td{{padding:6px 7px;font-size:.8rem}}
       .rs-t th,.rs-t td{{padding:6px 4px}}
-      .rs-t th{{font-size:.6rem;letter-spacing:0;max-width:4.6em}}
-      .rs-t td:first-child{{white-space:normal;min-width:6.5em;max-width:7.5em}}
+      .rs-t th{{font-size:.6rem;letter-spacing:0}}
+      .rs-t td{{white-space:normal}}
+      .rs-t td:first-child{{min-width:5.5em;max-width:7.5em}}
     }}
     .rs-bars{{margin:8px 0}}
     .rs-bar{{display:flex;align-items:center;gap:10px;margin:3px 0;font-family:'JetBrains Mono',monospace;font-size:.78rem}}
