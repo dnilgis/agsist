@@ -29,7 +29,7 @@ CARD = ROOT / "data" / "rate-card.json"
 SUPPORTERS = ROOT / "data" / "supporters.json"
 PITCH = ROOT / "sponsor.html"
 # Every page that sells a slot or quotes the card (Oct 29, 2026).
-SELLING = ("sponsor.html", "sponsor-apply.html", "sponsor-kit.html")
+SELLING = ("sponsor.html", "sponsor-apply.html", "sponsor-kit.html", "sponsor-rates.html")
 STATE_NAMES = {"IL": "Illinois", "MN": "Minnesota", "WI": "Wisconsin", "TX": "Texas", "CA": "California", "NV": "Nevada"}
 # Plain numbers the pages may print that are not audience figures: terms (5 sponsors, 24 months,
 # 12 for 10, day 30, 28 days, 50 words, 250 KB), never a count of readers or views.
