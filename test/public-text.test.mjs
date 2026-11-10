@@ -143,7 +143,7 @@ test("the comment reader finds comments and leaves strings and regexes alone", (
   assert.deepEqual(htmlComments(h).map(([a, b]) => h.slice(a, b)), ["<!-- c -->", "// d", "/* e */"]);
 });
 
-const METHOD_GREP = "\\bSig\\b|scripts/[A-Za-z0-9_-]+\\.(py|mjs|sh)\\b|\\b(MultiStnData|StnData|GridData)\\b|feedbag|\\.github/workflows";
+const METHOD_GREP = "msgbatch_|\"batch_id\"|\\bSig\\b|scripts/[A-Za-z0-9_-]+\\.(py|mjs|sh)\\b|\\b(MultiStnData|StnData|GridData)\\b|feedbag|\\.github/workflows";
 
 test("public data files gain no method text (the list only goes down)", () => {
   const allowed = JSON.parse(read("test/public-data-text.json"));
