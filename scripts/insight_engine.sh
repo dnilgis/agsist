@@ -46,8 +46,9 @@ done
 RAW_BRANCH=private-data RAW_SOFT=1 bash scripts/pull_raw.sh private/ledger/bid-changes || true
 
 # The daily basis log before 2026-10-11 is not in the public folder (build_basis_history.py PUBLIC_FROM).
-# The re-test reads those days from a private copy on private-data; the first run without one makes it
-# from the last main commit that still held them and saves it there.
+# The re-test reads those days from a private copy on private-data, with the elevator records of that
+# time (data/ids/elevators.json) so each day still joins to its elevator; the first run without one
+# makes it from the last main commit that still held them and saves it there.
 BASIS_LOG=private/ledger/basis-log
 BASIS_LOG_PIN=f2e960400e5b0ee07451885e5b1535da659bc7c0
 RAW_BRANCH=private-data RAW_SOFT=1 bash scripts/pull_raw.sh "$BASIS_LOG" || true
@@ -58,7 +59,8 @@ if [ ! -d "$BASIS_LOG" ]; then
       day=$(basename "$f" .json); day=${day#changes-}
       [[ "$day" < "2026-10-11" ]] && git show "$BASIS_LOG_PIN:$f" > "$BASIS_LOG/changes-$day.json"
     done
-    n=$(ls "$BASIS_LOG" | wc -l)
+    git show "$BASIS_LOG_PIN:data/ids/elevators.json" > "$BASIS_LOG/elevators.json" || rm -f "$BASIS_LOG/elevators.json"
+    n=$(ls "$BASIS_LOG" | grep -c '^changes-')
     echo "basis log before Oct 11, 2026: $n day file(s) from $BASIS_LOG_PIN"
     [ "$n" -gt 0 ] && RAW_BRANCH=private-data RAW_SOFT=1 bash scripts/push_raw.sh "basis log before Oct 11, 2026" "$BASIS_LOG"
   else

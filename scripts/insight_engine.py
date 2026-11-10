@@ -95,6 +95,22 @@ BID_LEDGER_DIR = "private/ledger/bid-changes"
 BASIS_LOG_PRIVATE = "private/ledger/basis-log"
 
 
+def merge_elevators(cur, old):
+    """Today's elevator records, plus what the private copy (the records when the basis log before
+    2026-10-11 was public) adds: the basis keys an id held then, and the records of ids no longer
+    listed, so a day of that log still joins to its elevator. Today's record wins every other field."""
+    by = {e["id"]: e for e in old if e.get("id")}
+    out = []
+    for e in cur:
+        o = by.pop(e.get("id"), None)
+        if o:
+            add = [k for k in ((o.get("sources") or {}).get("basis") or []) if k not in ((e.get("sources") or {}).get("basis") or [])]
+            if add:
+                e = dict(e, sources=dict(e.get("sources") or {}, basis=((e.get("sources") or {}).get("basis") or []) + add))
+        out.append(e)
+    return out + [by[k] for k in sorted(by)]
+
+
 def basis_log_files(root):
     """Every daily basis log file by day: data/basis/changes-*.json, then the private copy for the days
     the public folder no longer holds. The public file wins a day both have. -> sorted paths."""
@@ -509,7 +525,12 @@ class Inputs:
             if not os.path.exists(p):
                 raise Missing("data/ids/elevators.json")
             with open(p, encoding="utf-8") as f:
-                return json.load(f)["elevators"]
+                cur = json.load(f)["elevators"]
+            old = os.path.join(self.root, BASIS_LOG_PRIVATE, "elevators.json")
+            if not os.path.exists(old):
+                return cur
+            with open(old, encoding="utf-8") as f:
+                return merge_elevators(cur, json.load(f)["elevators"])
         return self._memo(("elev",), load)
 
     def corn_moves(self, source, since, until):
@@ -1610,6 +1631,11 @@ def selftest():
         ck("the private days fill in before the public folder; the public file wins a shared day",
            [os.path.basename(x)[8:18] for x in got] == ["2026-09-03", "2026-10-09", "2026-10-12", "2026-10-13"]
            and json.load(open(got[2]))["where"] == "data/basis", got)
+        cur = [{"id": "e1", "lat": 1, "sources": {"basis": ["IA|A|B"]}}]
+        old = [{"id": "e1", "lat": 9, "sources": {"basis": ["IA|A OLD|B"]}}, {"id": "a2", "lat": 2, "sources": {"basis": ["IA|C|D"]}}]
+        m = merge_elevators(cur, old)
+        ck("the private elevator copy adds old basis keys and gone ids; today's record wins the rest",
+           m == [{"id": "e1", "lat": 1, "sources": {"basis": ["IA|A|B", "IA|A OLD|B"]}}, {"id": "a2", "lat": 2, "sources": {"basis": ["IA|C|D"]}}], m)
     finally:
         shutil.rmtree(tmp2, ignore_errors=True)
 
