@@ -6,15 +6,15 @@
      USDA_TREND in scripts/bake_crop_size.py (/conditions-yield); change both.
      No soybean figure until one is checked at the source. */
   var USDA_TREND={corn:183.0};
-  /* Nov 10 audit: withheld once the ratings week ended 16 or more days ago (15 is still shown). */
+  /* Nov 10: withheld once the ratings week ended 16 or more days ago (15 is still shown). */
   function ncWithheld(we,now){var w=/^\d{4}-\d{2}-\d{2}$/.test(String(we))?Date.UTC(+we.slice(0,4),+we.slice(5,7)-1,+we.slice(8,10)):NaN;return isNaN(w)||(now-w)/864e5>=16;}
-  /* Nov 10 audit: the time a futures stamp names. A last trade carries its own close_time; anything else, the file's read time F. */
+  /* Nov 10: the time a futures stamp names. A last trade carries its own close_time; anything else, the file's read time F. */
   function stampAt(cq,F){return cq&&cq.close_kind==='last'&&cq.close_time&&!isNaN(Date.parse(cq.close_time))?new Date(cq.close_time):F;}
   function loadYieldNowcast(){
     fetch('/data/yield-nowcast.json').then(function(r){if(!r.ok)throw new Error('no-nowcast');return r.json();}).then(function(d){
       if(!d||!d.crops)throw new Error('no-nowcast');
       var map={corn:'nc-corn',soybeans:'nc-beans'};
-      /* Nov 10 audit: an estimate from ratings two or more weekly reports old is
+      /* Nov 10: an estimate from ratings two or more weekly reports old is
          withheld, not headed "Near USDA" (Oct 4 ratings were still shown Nov 9).
          A fresh week is 2 to 9 days old when it posts; 16 days means two missed. */
       var _we=d.crops.corn&&d.crops.corn.week_ending,_wd=/^\d{4}-\d{2}-\d{2}$/.test(String(_we))?Date.UTC(+_we.slice(0,4),+_we.slice(5,7)-1,+_we.slice(8,10)):NaN;
@@ -452,7 +452,7 @@
                1:46 PM trade; CBOT settled $12.61 1/4. */
             var qs=data.quotes||{},cq=qs['corn-nearby']||qs.corn||{};
             var hn=holName(dayT);
-            /* Nov 10 audit: one stamp for one price file. The ticker said "As of
+            /* Nov 10: one stamp for one price file. The ticker said "As of
                1:46 PM CT" (the file's read time) over cards saying "Last trade as
                of 1:20 pm CT"; a last trade is stamped with its own close_time,
                the same words as the cards (AgPxStamp.clock, components/price-local.js). */
@@ -491,7 +491,7 @@
           if(_st){_tb.innerHTML='';(/^As of /.test(_st.t)?['As of',_st.t.slice(6)]:_st.t.split(/ (.+)/).slice(0,2)).forEach(function(w,i){if(i)_tb.appendChild(document.createElement('br'));_tb.appendChild(document.createTextNode(w));});_tb.parentNode.title=_st.title;_tb.parentNode.classList.toggle('stale',!_st.live);}
           else{_tb.innerHTML='Not loaded<br>yet';_tb.parentNode.classList.add('stale');}
         }
-        /* Nov 10 audit: the card said "Updated 1:46 pm" (read time, no zone); it
+        /* Nov 10: the card said "Updated 1:46 pm" (read time, no zone); it
            carries the same stamp as the futures cards above it. */
         var _cq=(data.quotes||{})['corn-nearby']||(data.quotes||{}).corn;
         if(window.AgPxStamp&&AgPxStamp.html&&_cq&&AgPxStamp.html(_cq,data.fetched))_pa.innerHTML=AgPxStamp.html(_cq,data.fetched);

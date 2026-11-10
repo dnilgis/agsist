@@ -1,4 +1,4 @@
-/* Nov 10 home audit (feedbag notes/audits/home-audit-2026-11-09.md), each case from the real page.
+/* Nov 10 home page fixes, each case from the real page.
  * The bid rows are frozen copies of the bids repo files (test/fixtures/home-audit/), read Nov 9 2026 23:49 UTC;
  * the clock inside the page is pinned to that week, so nothing here reads live data or today's date.
  *   node --test test/home-audit.test.mjs */
@@ -126,7 +126,7 @@ test("when the board's file cannot be read, an inferred month says so and rolls 
   assert.equal(H.refCandidate("corn", "2026-11", "2026-11-30").key, "corn-mar27"); // pin-ok: inline
 });
 
-/* ---------- checker on #504: the pure rules, taken from the shipped files ---------- */
+/* ---------- #504: the pure rules, taken from the shipped files ---------- */
 // one named function's source, brace matched, so the test runs the code the page runs
 function fnSrc(file, name) {
   const s = read(file), i = s.indexOf("function " + name + "(");
@@ -166,7 +166,7 @@ test("the nowcast: ratings 15 days old are shown, 16 days withheld (week ending 
   const at = (day, h) => Date.UTC(2026, 9, day, h); // October
   assert.equal(ncWithheld(we, at(19, 23)), false, "15 days and 23 hours: shown");
   assert.equal(ncWithheld(we, at(20, 0)), true, "16 days: withheld");
-  assert.equal(ncWithheld(we, Date.UTC(2026, 10, 9, 12)), true, "Nov 9, the audited page: withheld");
+  assert.equal(ncWithheld(we, Date.UTC(2026, 10, 9, 12)), true, "Nov 9, the page as read: withheld");
   assert.equal(ncWithheld("", at(5, 0)), true, "no week: withheld");
 });
 

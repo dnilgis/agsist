@@ -473,7 +473,7 @@ try {
   var hero=document.getElementById('daily-hero'),teaser=document.getElementById('daily-teaser');
   if(!hero||!teaser)return;
   function todayCT(){try{return new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago'}).format(new Date());}catch(e){return '';}}
-  /* Nov 10 audit: a title that tells the headline's story again ("Crude slips on
+  /* Nov 10: a title that tells the headline's story again ("Crude slips on
      Iran signal" under "Crude slips 2.9% ... Iran strikes") is left out too: two
      or more of its words of four letters or more are in the headline. */
   window.__agsistAlsoToday=function(titles,head){
@@ -491,7 +491,7 @@ try {
     var bd=hero.getAttribute('data-briefing-date')||'',td=todayCT();
     var titles=[];for(var i=1;i<=4;i++){var e=document.getElementById('daily-section-'+i+'-title');if(e)titles.push(e.textContent);}
     var hl=document.getElementById('daily-headline'),jd=document.getElementById('job-daily-t');
-    /* Nov 10 audit: the first screen already prints this briefing's headline
+    /* Nov 10: the first screen already prints this briefing's headline
        (#job-daily-t); the strip keeps its date and its open button, not a
        second telling of the same story. */
     if(pv&&jd&&jd.textContent.trim()&&jd.getClientRects().length)pv.style.display='none';
@@ -508,7 +508,7 @@ try {
 </script>
 
 <div class="idx1-sponsor-wrap" id="idx1-sponsor-wrap" hidden><aside class="ag-sponsor-ribbon idx1-sponsor" id="idx1-sponsor" aria-label="Sponsor"></aside></div>
-<!-- Nov 10 audit: icons the site header already carries (components/header.html) are not repeated here -->
+<!-- Nov 10: icons the site header already carries (components/header.html) are not repeated here -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="i-ban" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" />
   <path d="M4.929 4.929 19.07 19.071" /></symbol><symbol id="i-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /></symbol><symbol id="i-circle-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" />
   <path d="m9 12 2 2 4-4" /></symbol><symbol id="i-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></symbol><symbol id="i-clipboard-list" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="4" x="8" y="2" rx="1" ry="1" />
@@ -1241,7 +1241,7 @@ try {
 <aside class="intel-rail" aria-label="USDA reports and positioning" id="market-intel" tabindex="-1" style="outline:none">
 <div class="fade-up" id="f5">
     <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /></svg>USDA reports and programs</h2><a href="/usda-calendar" class="sec-all">Full calendar</a></div>
-    <!-- Nov 10 audit: the report dates are in "Today and this week" at the top; one calendar, not two -->
+    <!-- Nov 10: the report dates are in "Today and this week" at the top; one calendar, not two -->
     <div class="usda-cal-card gs-card" id="arcplc-card">
       <div class="gs-head"><span class="gs-t">ARC or PLC signup</span></div>
       <div class="gs-line" id="arcplc-26">2026 crop: signup closes Dec 11, 2026.</div>

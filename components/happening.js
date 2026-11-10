@@ -339,7 +339,7 @@
       var a = e.target && e.target.closest ? e.target.closest('.hap-ask') : null;
       if (a) try { if (typeof root.gaEvent === 'function') root.gaEvent('funds_ask', { where: 'home_happening' }); } catch (x) {}
     });
-    /* Nov 10 audit: one request for the calendar file per page (AG.text, components/util.js), shared
+    /* Nov 10: one request for the calendar file per page (AG.text, components/util.js), shared
        with the season strip, not a second fetch of the same file. */
     var icsP = root.AG && root.AG.text ? root.AG.text('/usda-calendar.ics').catch(function () { return null; }) : get('/usda-calendar.ics', 'text');
     Promise.all([load(), icsP.then(function (t) { D.ics = t; })]).then(function () { tick(); });

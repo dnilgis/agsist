@@ -230,7 +230,7 @@ test("in Chromium: first screen at 1280, right under My field at 390; the fixtur
       assert.ok(il.block.bottom <= il.futTop, `${width}: before the futures`);
       assert.equal(il.v, "$21,000 an acre", `${width}: the Illinois reader sees the Illinois sale`);
       assert.equal(il.href, "/land-sales/illinois/madison-county#s-0a1b2c3d4e");
-      // Nov 10 home audit (Sig Nov 8): the rule is not at the top; one plain sentence in the closed Sources and terms fold
+      // Nov 8: the rule is not at the top; one plain sentence in the closed Sources and terms fold
       assert.equal(il.why, false, `${width}: no method fold in the block`);
       assert.match(il.terms, /Farmland sale at the top: the highest price per acre/);
       assert.ok(!il.text.includes(NAME), `${width}: no name in the block`);

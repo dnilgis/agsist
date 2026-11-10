@@ -255,7 +255,7 @@
      sits on the town line and says what it is: the elevator network's miles
      are straight-line (haversine in bids-network.js), not road miles. */
   function delLabel(b){ return cropYearLabel(b) || b.deliveryMonth || b.deliveryStart || 'Spot'; }
-  /* Nov 10 audit: a harvest or new-crop token ("HAR 26", newcrop-2026) is a
+  /* Nov 10: a harvest or new-crop token ("HAR 26", newcrop-2026) is a
      window, not the current month; the card printed it as "Nov". It reads
      "Harvest 2026" (the board says HAR) or "New crop 2026", as the town pages do. */
   function cropYearLabel(b){
@@ -678,7 +678,7 @@
     if(nc) return nc[1] + (cat === 'wheat' ? '-07' : '-10');
     return rowMonthKey(b) || '';
   }
-  /* Nov 10 audit: CBOT first notice day for a contract month is the last
+  /* Nov 10: CBOT first notice day for a contract month is the last
      weekday of the month before (exchange holidays not known here). From that
      day no elevator quotes against the month: Nov '26 soybeans rolled to
      Jan '27 on Oct 30. `asOf` is a Central-time YYYY-MM-DD. */
@@ -808,7 +808,7 @@
   }
   var pricesData = null;
   var hpData = null;
-  /* Nov 10 audit: THE BOARD'S OWN CONTRACT. merged-index.json leaves out the
+  /* Nov 10: THE BOARD'S OWN CONTRACT. merged-index.json leaves out the
      futures month; each place's shard carries it per row as futuresMonth
      (ZSF27, ZCZ6, @C6Z, "Dec 26"). Read only for the boards a card shows.
      shardSym: undefined (file not read), '' (read, the row names none) or a
@@ -863,7 +863,7 @@
       var els = area.querySelectorAll(sel);
       for(var i = 0; i < els.length; i++){
         var el = els[i], crop = el.getAttribute('data-ref-crop'), forCrop = el.getAttribute('data-ref-for') || crop;
-        /* Nov 10 audit: the board's own contract first. Its file read and the
+        /* Nov 10: the board's own contract first. Its file read and the
            row names none: no month, never a guess. */
         var own = shardSym(el.getAttribute('data-ref-shard'), el.getAttribute('data-ref-pk'));
         if(own !== undefined){

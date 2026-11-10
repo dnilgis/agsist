@@ -496,13 +496,13 @@
         if(!st)stTxt='<span class="w1c-cp">Set your ZIP to see your state.</span>';
         else if(!d||!d.states)stTxt='';
         else{var so=d.states[st]||{},ks=Object.keys(SL).filter(function(k){return so[k]&&so[k].pct!=null;});
-          /* Nov 10 audit: a state figure from an older week than the US harvest week
+          /* Nov 10: a state figure from an older week than the US harvest week
              (WI winter wheat Nov 1 under "week ending Nov 8") names its own week. */
           stTxt=ks.length?ks.map(function(k){var o=so[k],ow=o.date&&hd&&String(o.date).slice(0,10)!==String(hd).slice(0,10)?' <small>(week ending '+esc(isoDay(o.date).replace(/, \d{4}$/,''))+')</small>':'';return '<span class="w1c-cp"><b>'+esc(st)+' '+SL[k].toLowerCase()+' '+o.pct+'%</b>'+ow+(o.prev_year!=null?', last year '+o.prev_year+'%':'')+(o.avg5!=null?', avg '+o.avg5+'%':'')+'</span>';}).join('')
             :'<span class="w1c-cp"><b>'+esc(st)+':</b> NASS published no progress figure for this state this week.</span>';}
         /* 2026-10-06 EARN: crop condition (good or excellent) joins this cell,
            from the same NASS file and week; it left the markets fold. */
-        /* Nov 10 audit: the line sits under the harvest week, so a rating from an
+        /* Nov 10: the line sits under the harvest week, so a rating from an
            older week (NASS stops rating a crop in late October but keeps counting
            harvest: corn Oct 25, soybeans Oct 11 under "week ending Nov 8") is
            dropped, same rule as /conditions' harvest week. */
@@ -512,7 +512,7 @@
         else put('harvest',NL(),esc('Harvested share is not in our crop progress feed yet'+(d&&d.report_date?' (latest week: '+isoDay(d.report_date)+')':'')+'.'),stTxt);
       }
       if(cells.condition){
-        /* Nov 10 audit: each crop's rating carries its own week when the two differ. */
+        /* Nov 10: each crop's rating carries its own week when the two differ. */
         var cw1=d&&d.corn&&rateWeek(d.corn,d),cw2=d&&d.soybeans&&rateWeek(d.soybeans,d),split=cw1&&cw2&&cw1!==cw2;
         var wkOf=function(w){return split&&w?' <small>(week ending '+esc(isoDay(w).replace(/, \d{4}$/,''))+')</small>':'';};
         var c1=d&&cropLine('Corn',d.corn,'good_excellent','good_excellent_prev_year'),c2=d&&cropLine('Soybeans',d.soybeans,'good_excellent','good_excellent_prev_year');
@@ -544,7 +544,7 @@
   }
 
   /* ---------- rent ----------
-     Nov 10 rent audit (item 3): the card read the Atlas card file's dryland rent of
+     Nov 10: the card read the Atlas card file's dryland rent of
      any age, unlabeled: Colusa CA "$28 per acre, 2021" and Otero CO "$35, 2009" read as
      the rent, and Fresno CA showed dryland $22 where its rent page leads with
      irrigated $305. It now reads the state's NASS file (data/cash-rent/<ST>.json, the
@@ -552,7 +552,7 @@
      (lead_kind in scripts/build_state_rent_pages.py: the cropland kind NASS
      published for more counties in the latest year, a tie to non-irrigated; three
      counties needed, else the kind with the most), names it, and a rent more than
-     three survey years old shows n/a with its last year (Sig, Oct 19). */
+     three survey years old shows n/a with its last year (Oct 19). */
   function rentLead(d){
     var cs=(d&&d.counties)||[],yl=0,cov={nonirr:0,irr:0,pasture:0};
     (d&&d.years||[]).forEach(function(y){if(+y>yl)yl=+y;});

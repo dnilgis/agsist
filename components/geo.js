@@ -622,7 +622,7 @@ function fetchWeather(lat, lon, label, known) {
         wl2.innerHTML = '';
         var msg = document.createElement('div');
         msg.style.cssText = 'font-size:.88rem;color:var(--text-dim)';
-        /* Nov 10 audit: with a place already saved, "Try ZIP" sent the reader to
+        /* Nov 10: with a place already saved, "Try ZIP" sent the reader to
            type the ZIP the page already had; the forecast service failed, not the ZIP. */
         var _had = false; try { var _l = JSON.parse(localStorage.getItem('agsist-wx-loc') || 'null'); _had = !!(_l && _l.lat != null); } catch (e) {}
         msg.textContent = _had ? 'The weather service did not answer. Try again in a few minutes.' : 'Weather unavailable. ';

@@ -32,7 +32,7 @@ try {
     var dotEl=document.getElementById('cot-'+key+'-dot'),minEl=document.getElementById('cot-'+key+'-min'),maxEl=document.getElementById('cot-'+key+'-max');
     var net=d.net,prev=d.prev,min52=d.min52,max52=d.max52,range=(max52-min52)||1;
     var isLong=net>=0;
-    /* Nov 10 audit: one side word for the glance line and this row (cotSide). The
+    /* Nov 10: one side word for the glance line and this row (cotSide). The
        glance said "About even" for corn (the analysis file's side) while this row
        said LONG +8.8k for the same net. */
     var isFlat=cotSide(key,d)==='flat';
@@ -117,8 +117,8 @@ try {
     var ul=document.getElementById('cot-glance'),G=window.AgCotGlance;if(!ul||!G||!data||!G.rows)return;
     var keys=COT_ROWS.slice(0,COT_GLANCE).map(function(r){return r.k;});
     var rs=G.rows(data,COT_CX,keys);if(!rs.length)return;
-    /* Nov 10 audit: the right cell is the week's change; it says so, in contracts,
-       and the side word is the one the rows below use. No "crowded" (Sig, Nov 6). */
+    /* The right cell is the week's change; it says so, in contracts,
+       and the side word is the one the rows below use. No "crowded" (Nov 6). */
     var SW={flat:'About even',long:'Long',short:'Short'};
     ul.innerHTML=rs.map(function(r){var sd=cotSide(r.key,data[r.key]),f=G.facts?G.facts(r.key,data,COT_CX):null,pos=SW[sd]?SW[sd]+(sd!=='flat'&&f&&!f.flip&&f.weight?', '+f.weight:(sd!=='flat'&&f&&f.flip?', flipped':'')):r.pos.replace(/, crowded$/,'');
       return '<li class="cot-gl-line"><a class="cot-gl-a" href="'+G.href(r.key)+'"><b>'+r.name+'</b><span>'+pos+'</span><span class="cot-gl-r">'+(r.chg?r.chg+' contracts this week':'')+'</span></a></li>';}).join('');
@@ -134,14 +134,14 @@ try {
   function cotIso(s){var d=new Date(String(s||'')+(/^\d{4}-\d{2}-\d{2}$/.test(String(s||''))?'T12:00:00':''));return isNaN(d)?'':d.getFullYear()+'-'+('0'+(d.getMonth()+1)).slice(-2)+'-'+('0'+d.getDate()).slice(-2);}
   function cxFor(k,data){var c=COT_CX&&COT_CX.commodities&&COT_CX.commodities[k];return (c&&c.date&&data&&cotIso(c.date)===cotIso(data.report_date))?c:null;}
   function rankTxt(c){var cr=c.crowd,p=cr?cr.pctl:(c.pctl&&c.pctl.net_oi_all);if(p==null)return '';
-    /* Nov 10 audit: no "crowded" (Sig dropped crowding Nov 6); the measured rank only. */
+    /* No "crowded" (the crowding verdict was dropped Nov 6); the measured rank only. */
     if(c.crowded&&cr&&cr.word)return cr.word;   /* "bottom 1%", never "0th" */
     var r=Math.max(1,Math.min(99,Math.round(p))),o=['th','st','nd','rd'],v=r%100;return r+(o[(v-20)%10]||o[v]||o[0])+' pct';}
-  /* Nov 10 audit: Sig dropped the crowding verdict everywhere on Nov 6; the home
+  /* Nov 10: the crowding verdict was dropped everywhere on Nov 6; the home
      badge no longer prints one and its verdict code is gone (the shared verdict in
      cot-glance.js stays for /cot until it follows). */
   function verdict(el,lv){
-    /* no crowding verdict on home (Sig, Nov 6): the badge stays hidden */
+    /* no crowding verdict on home (Nov 6): the badge stays hidden */
     if(lv)lv.hidden=true;if(el)el.hidden=true;
   }
   function rankRows(data){

@@ -821,7 +821,7 @@ def home_usda_card(wpi):
         f'<div class="gs-line">{line}</div>'
         '<details class="gs-more"><summary>Every figure against the trade</summary>'
         + "".join(items) +
-        # Nov 10 home audit (Sig Nov 8): no grading thresholds on the home page; the plain
+        # Nov 8: no grading thresholds on the home page; the plain
         # sentence is in the page's closed Sources and terms fold, the cutoffs on /usda-calendar.
         '<p><a href="/usda-calendar#priced-in">What&rsquo;s Priced In</a></p>'
         '</details></div>'

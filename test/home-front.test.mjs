@@ -67,7 +67,7 @@ test("homepage nowcast labels our trend by its fit window and shows USDA's corn 
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    // the page clock the week after the fixture's ratings week (Nov 10 audit: older ratings are withheld)
+    // the page clock the week after the fixture's ratings week (Nov 10: older ratings are withheld)
     const { pg } = await open(browser, port, "/", { "/data/yield-nowcast.json": NOWCAST, "/data/wasde.json": null }, 1280, null, new Date(2026, 9, 10, 9, 0));
     await pg.waitForSelector("#nc-corn-trend", { state: "attached", timeout: 15000 });
     const corn = await pg.textContent("#nc-corn-trend");
@@ -80,7 +80,7 @@ test("homepage nowcast labels our trend by its fit window and shows USDA's corn 
   } finally { await browser.close(); srv.close(); }
 });
 
-test("Nov 10 audit: ratings two or more weeks old are withheld, never headed Near USDA", { skip }, async () => {
+test("Nov 10: ratings two or more weeks old are withheld, never headed Near USDA", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   const W = { metrics: [{ key: "corn_yield", value: 181.2 }, { key: "soy_yield", value: 53.1 }], release: "2026-10-09" };

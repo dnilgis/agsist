@@ -26,10 +26,10 @@ var _rmaWatching=false;
        the old guard meant the widget never appeared on the call that does not
        pass coordinates -- caught by rendering it, not by reading it. */
     if(_rmaWatching)return null; _rmaWatching=true;
-    /* Nov 10 audit: once the latest final planting date in the RMA file has
+    /* Nov 10: once the latest final planting date in the RMA file has
        passed, the RMA file (360 KB) is not fetched and nothing polls. The latest
        is Jul 5 (soybeans in 28 counties: 16 Maine, 10 New Hampshire, 2 Virginia), so Jul 1 to 5 still shows it
-       (checker on #504: a July cutoff hid it). RMA_LAST must equal the latest
+       (a July cutoff hid it). RMA_LAST must equal the latest
        date in data/rma-planting-dates.json (test/home-audit.test.mjs reads both). */
     if(rmaPast(new Date()))return null;
     /* The county can arrive late (permission prompt + fix + reverse-geocode)
@@ -42,7 +42,7 @@ var _rmaWatching=false;
       var w=window.AGSIST_STATE&&window.AGSIST_STATE.weather;
       var key=w&&w.state&&w.county?(w.state+'|'+w.county):'';
       if(key&&key!==_rmaSeen){ _rmaSeen=key; renderForCounty(w.state,w.county); }
-      /* Nov 10 audit: it polled every 400 ms forever. Quick while the county
+      /* Nov 10: it polled every 400 ms forever. Quick while the county
          is still arriving, then once every 5 s (a changed ZIP), and not at
          all while the tab is hidden. */
       setTimeout(watch,document.visibilityState==='hidden'?5000:(key?5000:400));
