@@ -1,4 +1,4 @@
-/* Farmland Atlas headline tiles, Sig's Oct 19, 2026 decisions:
+/* Farmland Atlas headline tiles, the owner's Oct 19, 2026 decisions:
  *   1. IL and WI county pages (and the printable sheet) show a recorded-sales tile in the top
  *      tiles: the median $/acre the "Recorded farm sales" block leads with (market sales of 20+
  *      acres with known acres, last 12 months), its count and the through date. Under 5 sales:
@@ -66,7 +66,7 @@ test("the builder: real counties get the tiles Sig asked for, and KS gets no sal
       [t.through, t.label, t.val == null ? "|n/a" : t.val + "|" + t.unit, t.sub], p);
   }
   // the value cell's shape: dollars and /ac with a median in the file, n/a without one. The numbers themselves
-  // come from the committed summary, which the monthly land run rewrites (BUILD-RULES 50, Nov 3: Dane read
+  // come from the committed summary, which the monthly land run rewrites (build rule 50, Nov 3: Dane read
   // $11,974 on 28 and then $12,130 on 27); the fixture test above holds the worked numbers.
   const cell = (st, f) => S.tile(sum[st], f).val ? /^\$\d{1,3}(,\d{3})*<small>\/ac<\/small>$/ : /^<small>n\/a<\/small>$/;
   assert.match(SALES.exec(pg("wisconsin/dane-county"))[3], cell("WI", "55025"));
@@ -142,7 +142,7 @@ try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chrom
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
 test("in Chromium: Dane's tile and sheet, a newer summary redraws the tile, Gallatin's sheet rent is n/a", { skip }, async () => {
-  // what the tile must say, from the same file the page reads (the land run rewrites it monthly; BUILD-RULES 50)
+  // what the tile must say, from the same file the page reads (the land run rewrites it monthly; build rule 50)
   const live = JSON.parse(read("data/land/wi/summary.json"));
   const text = (t) => t.label + (t.val == null ? "n/a" : t.val + t.unit) + t.sub;
   const T0 = S.tile(live, "55025");

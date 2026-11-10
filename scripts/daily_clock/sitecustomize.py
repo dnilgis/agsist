@@ -6,8 +6,7 @@ DAILY_FAKE_NOW set (an ISO time with its UTC offset, e.g.
 runs on: time.time, datetime.now/utcnow/today, date.today, time.localtime,
 time.gmtime, time.strftime. Without DAILY_FAKE_NOW it does nothing at all.
 
-Sig, Nov 3 2026: "Before a calendar boundary run the suite with a future
-date." A test that is about to break on tomorrow's date breaks tonight, here,
+Nov 3 2026 A test that is about to break on tomorrow's date breaks tonight, here,
 instead of holding tomorrow's Daily.
 """
 import os

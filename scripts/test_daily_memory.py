@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-test_daily_memory.py -- Daily phase 2 (panel Nov 9 2026, Sig "all"; brief
-notes/plans/daily-phase2.md items 1 to 10). Each rule is tested on the real day
+test_daily_memory.py -- Daily phase 2 (panel Nov 9 2026,; brief
+the private notes items 1 to 10). Each rule is tested on the real day
 it failed (data/daily-archive, data/daily-sent, or a frozen copy of the data file
 that morning in test/fixtures/daily-memory), and each rule also has a case where
 the line DOES print because its fact changed: a quiet Daily is fine, a Daily that

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-delivery_check.py: did the reader emails actually go? (BUILD-RULES 55 and 56, Nov 3 2026)
+delivery_check.py: did the reader emails actually go? (build rule 55 and 56, Nov 3 2026)
 
 A green run is not a delivered email. On Nov 3 we found rp-design-email and rp-buyer-email had
 run green and dry for two weeks with the live variable at 1, and that the subs worker had never
@@ -44,9 +44,9 @@ A row is late when:
       a run that started a sender's job stopped before the send step;
   (f) one live run (dry=0) had readers waiting and mailed none of them.
 
-One more row, "rp-paid-unmailed" (Sig, Nov 9 2026): "paid, unmailed over 2 hours". The hourly
+One more row, "rp-paid-unmailed" (Nov 9 2026): "paid, unmailed over 2 hours". The hourly
 rp-design-email run counts paid Rain Print orders still waiting over 2 hours for their email (or
-for Sig's own order alert) and prints it as unmailed_late= on its DELIVERY line
+for the owner's own order alert) and prints it as unmailed_late= on its DELIVERY line
 (scripts/rp_design_email.py). The newest line read decides: above 0 is late (critical), 0 is ok,
 no line with the count is unknown. Rule (c) waits 14 days; this row sees one lost order the same day.
 "Nothing due" reads ok only when nothing was due: no tick in the window, or no run reached a send
@@ -57,9 +57,9 @@ may mail on any run is sampled, and its row says "sampled N of M run(s)".
 The live switches are repository variables, read from the env cron-health.yml passes
 (`vars.*`, readable with the Actions token). A switch that lives only in the subs worker
 (RP_BUYER_EMAIL_LIVE) cannot be read from here: never a worker secret. The repository variable
-of the same name, when Sig sets it to match, stands in for it; unset, that row says unknown.
+of the same name, when the owner sets it to match, stands in for it; unset, that row says unknown.
 
-Workflows that mail only Sig are in SIG_ONLY with the reason. test/delivery-check.test.mjs fails
+Workflows that mail only the owner are in SIG_ONLY with the reason. test/delivery-check.test.mjs fails
 any workflow with mail secrets that is in neither list, and any sender script that does not
 print the line, so a new sender cannot be missed.
 
@@ -114,9 +114,9 @@ LOG_MAX_BYTES = 25 * 1024 * 1024
 # What each sender prints and where. `switch`: None = no switch, live on every scheduled or
 # chained run (a run by hand may ask for a dry run); ("repo", VAR, ON) = the repository variable
 # VAR, live when its value is ON ("!0" = anything but "0"); ("worker", VAR, ON) = a subs worker
-# variable, judged from the repository variable of the same name when Sig sets it.
+# variable, judged from the repository variable of the same name when the owner sets it.
 # `worker_started`: the subs worker starts it through the GitHub API (rule 55); `evidence` is
-# where its open asks or paid orders show. `sig_scripts`: scripts in a mail step that mail only Sig.
+# where its open asks or paid orders show. `sig_scripts`: scripts in a mail step that mail only the owner.
 SENDERS = [
     {"workflow": "daily.yml", "senders": {"send_daily.py": "daily"}, "switch": None,
      "counts": "job send, step 'Send the Daily' (and the Sig-only test job, dry=1)",
@@ -190,14 +190,14 @@ SENDERS = [
     {"workflow": "sponsor-apply.yml", "senders": {"sponsor_apply.py": "sponsor-apply"}, "switch": None,
      "counts": "the step that runs sponsor_apply.py (its readers are the applicants)",
      "steps": {"Run": ["sponsor-apply"]}, "due": ("run",)},
-    # By hand only (Nov 5 2026): one sponsor's report link to that sponsor, Sig copied. A rerun after a
+    # By hand only (Nov 5 2026): one sponsor's report link to that sponsor, the owner copied. A rerun after a
     # send skips (waiting=0); a missing address is a reader waiting and not mailed, so it reads red.
     {"workflow": "sponsor-send-link.yml", "senders": {"sponsor_send_link.py": "sponsor-link"}, "switch": None,
      "counts": "by hand only; the step that runs sponsor_send_link.py (its reader is the sponsor)",
      "steps": {"Send the link": ["sponsor-link"]}, "due": ("run",), "max_jobs": 3},
 ]
 
-# Workflows with mail secrets that mail only Sig (or the person who ran them), never readers.
+# Workflows with mail secrets that mail only the owner (or the person who ran them), never readers.
 SIG_ONLY = {
     "audit.yml": "audit findings to Sig",
     "cron-health.yml": "the Daily's 7:15 check, the rehearsal and the Brevo limit reminder mail Sig",
@@ -892,7 +892,7 @@ def selftest():
     row = classify(E["price-watch.yml"], [R(1, "workflow_run", L("price-watch", 0, 0, 0))], 96, ("on", "no switch"))
     ck("nothing waiting is ok", row["status"] == "ok", row)
 
-    # the switch off: dry and waiting are what Sig asked for
+    # the switch off: dry and waiting are what the owner asked for
     la = E["land-alert.yml"]
     row = classify(la, [R(3, "schedule", L("land-alert", 0, 40, 1))], 4, OFF)
     ck("switch off: a dry scheduled run with readers waiting is ok", row["status"] == "ok" and "switch off" in row["why"], row)
@@ -1290,7 +1290,7 @@ def selftest():
     ck("a pass six hours old is redone", fb.calls and at3 != at)
     ck("paid-unmailed: a line without the count (before Nov 9) is unknown", by[PAID_ROW]["status"] == "unknown", by[PAID_ROW])
     ck("paid-unmailed: a reused pass keeps the row", any(r["workflow"] == PAID_ROW for r in again))
-    # Nov 9 (Sig): paid, unmailed over 2 hours. The newest line decides.
+    # Nov 9: paid, unmailed over 2 hours. The newest line decides.
     P = lambda i, n: {"id": i, "event": "schedule", "lines": [L("rp-design", 0, 0, 0, asks=0, orders=1, unmailed_late=n)]}
     pr = paid_row([P(9, 1), P(8, 0)])
     ck("paid-unmailed: one order over 2 hours is late and critical", pr["status"] == "late" and pr["critical"] is True

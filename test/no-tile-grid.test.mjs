@@ -1,4 +1,4 @@
-/* No state tile grid anywhere (Sig Nov 8, 2026): every US map is the real map (data/us-states-map.svg, components/usmap.js).
+/* No state tile grid anywhere (Nov 8, 2026): every US map is the real map (data/us-states-map.svg, components/usmap.js).
  * Guards: no source file carries a table of state codes with row and column positions, and no tile-grid class or name comes
  * back; the share image picture draws 51 real shapes.
  *

@@ -17,8 +17,8 @@ The dry run prints the bytes kept and left out and fails (exit 1) when a
 reader-facing file links to something the filter would leave out: a page that
 loads /scripts/x.js would break the day the deploy switched. The workflow runs
 the same check before it uploads, so a broken link stops the deploy instead of
-reaching readers. The plan and the workflow are in feedbag
-notes/panels/godseye-2026-10-26/size-trim-plan.md.
+reaching readers. The plan and the workflow are in the private repo
+the private notes.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass

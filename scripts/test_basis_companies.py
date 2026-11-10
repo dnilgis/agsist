@@ -4,8 +4,8 @@
     python3 scripts/test_basis_companies.py
 
 The god's-eye panel (Oct 27, 2026, seat 8) found the Kansas corn middle rests
-on 203 locations but only 23 companies, one of them holding 50. Sig approved
-printing the company count beside every state middle (STANDING-DECISIONS,
+on 203 locations but only 23 companies, one of them holding 50. The owner approved
+printing the company count beside every state middle (a site rule,
 decision 4). These are the Dec '26 corn headline boards of three states from
 the network snapshot of 2026-10-27T14:00:23Z: printed name, the board's website
 host (scripts/basis_method.py site_key) and how many locations post under them.
@@ -205,7 +205,7 @@ j = BM.headline_json(st)
 check(j["n"] == 203 and j["companies"] == 23, f"headline_json carries n and companies: {j}")
 
 # ONE WORDING: every page script prints the count beside a state middle with a medOf
-# helper that says the same words as the state pages' Python med_of (Sig, Nov 3 2026:
+# helper that says the same words as the state pages' Python med_of (Nov 3 2026:
 # "median of N elevators, M companies"; run in node, not matched as text: the
 # size-capped scripts carry a shorter spelling of it)
 import json as _json  # noqa: E402
@@ -226,7 +226,7 @@ for f in ("basis-map", "breakeven-more", "cb-vs-state", "combine-loss-ui", "fast
     got = _json.loads(out.stdout or "null")
     check(got == WANT, f"components/{f}.js: medOf says {got}")
 hub = open(os.path.join(ROOT, "basis.html"), encoding="utf-8").read()
-# Sig, Nov 3 2026: the state middle is labelled "median of N elevators", with the company count beside it.
+# Nov 3 2026: the state middle is labelled "median of N elevators", with the company count beside it.
 # basis.html's medOf (run in node) and the pages' med_of say the same words.
 import build_cash_bid_pages as CB  # noqa: E402
 m = re.search(r"function medOf\(c\)\{[^\n]*\}", hub)

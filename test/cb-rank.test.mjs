@@ -56,6 +56,7 @@ function load() {
   const ctx = { console, Intl, Date, Math, JSON };
   ctx.window = ctx; ctx.globalThis = ctx;
   vm.createContext(ctx);
+  vm.runInContext(readFileSync(ROOT + "components/elev-names.js", "utf8"), ctx);   // cb-rank names through it
   vm.runInContext(RANK, ctx);
   vm.runInContext("var currentDelivery='all';\n" + VARS.map(liftVar).join("\n") + "\n" +
     FNS.map(liftFn).join("\n"), ctx);

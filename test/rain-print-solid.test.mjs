@@ -142,7 +142,7 @@ async function withPage(fn, opts = {}) {
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ viewport: { width: opts.width || 1280, height: opts.height || 900 }, serviceWorkers: "block" });
-    await makerFlag(ctx);   // Sig's browser: maker mode is gated (fixtures/rp-maker.mjs)
+    await makerFlag(ctx);   // The owner's browser: maker mode is gated (fixtures/rp-maker.mjs)
     await ctx.clock.setFixedTime(new Date(opts.time || "2026-10-14T17:00:00Z"));
     const log = { stripe: [] };
     await mocks(ctx, opts, log);
@@ -250,7 +250,7 @@ test("P3: a locked card that lets the name change shows the giver's name and red
   }, { where: true, gift });
 });
 
-// ---------- the card holder at phone width (2026-10-20, Sig: what they get and how to use it, plainly) ----------
+// ---------- the card holder at phone width (2026-10-20, what they get and how to use it, plainly) ----------
 test("P3b: at 390 px a card holder reads who it's from, what it covers and two steps; no 'Want a gift card?' box", { skip }, async () => {
   const yr = RP.encodeCode({ place: "Chetek, WI", station: "471667 2", year: 2026, style: "r1", name: "Gustum Farm", markers: [] });
   const gift = { ok: true, kind: "locked", product: "framed12x18", to: "Dad", from_line: "Kate", ships: "january", status: "issued", lock: { design_code: yr, edit: "none" } };

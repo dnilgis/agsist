@@ -1,4 +1,4 @@
-// The weekly re-test engine (god's-eye panel build 3, task 25; Sig, Oct 27 2026: "yes to all").
+// The weekly re-test engine (god's-eye panel build 3, task 25; Oct 27 2026).
 // scripts/insight_engine.py re-runs every spec in scripts/insight_registry.json and appends the
 // results to the private-data branch; scripts/insight_engine.sh runs it in Actions. These checks
 // pin: the selftest (placebo and Holm on synthetic data with known answers, the gate, the ledger

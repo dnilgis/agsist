@@ -30,9 +30,14 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import seo_caps as CAPS  # noqa: E402  the site's title cap
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 D = os.path.join(ROOT, "data", "prf")
 OUT = os.path.join(ROOT, "prf")
+sys.path.insert(0, os.path.join(ROOT, "scripts"))
+import cross_links as XL  # noqa: E402  the same-state row
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 LONG_IV = ["January to February", "February to March", "March to April", "April to May", "May to June", "June to July",
            "July to August", "August to September", "September to October", "October to November", "November to December"]
@@ -99,10 +104,9 @@ PRF_SPONSOR_JS = '<script src="/components/prf-sponsor.js?v=5" defer></script>'
 
 def sponsor_ribbon(name, code):
     """The unsold offer on /prf/<state>, one slim band under the opening answer
-    (Sig, 2026-10-14: "the advertise-here CTA needs to be on the upper part of
-    the page"). Price on request, never printed. The link goes to /prf-sponsor
+    (2026-10-14). Price on request, never printed. The link goes to /prf-sponsor
     with this state ticked, where a business sees its own block and asks (the
-    email to Sig is there too). The part in prf-spon-x drops on a phone so the
+ email to the owner is there too). The part in prf-spon-x drops on a phone so the
     band stays two short lines."""
     return (f'<aside class="prf-spon-band" id="sponsor" data-prf-spon="state" data-prf-st="{code}" data-prf-name="{e(name)}" aria-label="For businesses">'
             f'<span class="prf-spon-tag">For businesses</span> '
@@ -128,7 +132,9 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     jf25 = sum(1 for _, c in counties if (lambda L: bool(L and L[0] and L[0][1] == 25))(c.get("lim") or next(iter((c.get("limc") or {}).values()), None)))
     jf_here = (f"all {n_co} {name} counties" if jf25 == n_co and n_co > 1 else f"the one {name} county" if jf25 == n_co
                else f"{jf25} of the {n_co} {name} counties")
-    title = f"PRF Insurance in {name}: {cy} Rates and County Values | AGSIST"
+    title = CAPS.fit([f"PRF Insurance in {name}: {cy} Rates and County Values | AGSIST",
+                      f"PRF Insurance in {name}: {cy} Rates and County Values",
+                      f"PRF Insurance in {name}: {cy} Rates"])
     desc = (f"PRF (Pasture, Rangeland, Forage) insurance in {name} for {cy}: county base values for grazing and hay in all "
             f"{n_co} {'county' if n_co == 1 else 'counties'}, rates by month and a free calculator.")
     if len(desc) > 160:
@@ -183,7 +189,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
                 f"and premium rates and precipitation index history for the {n_grid:,} grids that touch them, {y0} to {y1}.", url, name),
     ]
     ldh = "".join('<script type="application/ld+json">' + json.dumps(b, ensure_ascii=False).replace("</", "<\\/") + "</script>" for b in ld)
-    # Sig, 2026-10-12: the PRF state slots are priced on request, prepaid, with the
+    # 2026-10-12: the PRF state slots are priced on request, prepaid, with the
     # placement guaranteed to the end of the year. Kept out of the self-serve
     # monthly flow (/sponsor-apply) and out of data/sponsor-slots.json on purpose:
     # the link is not /sponsor-apply, so scripts/stamp_rates.py adds no price.
@@ -278,6 +284,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
 
     <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here.</p>
     <nav class="prf-links prf-st-links" aria-label="PRF in other states"><a href="/prf">PRF calculator</a> {others}</nav>
+    {XL.same_state_row(ROOT, slug(name), e(name), "prf")}
     <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
     {terms(f"Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}. In the top figures, the first is the middle county and the small ones the lowest and highest. Protection per acre is the county value times your coverage level times a productivity factor of 60 to 150.")}
   </div>
@@ -323,7 +330,7 @@ def guide(meta, facts, states, BOOT):
     dear = max(ivs, key=lambda r: r["mid_rate_per_100"])
     n_grids, n_co = meta["counts"]["grids"], meta["counts"]["counties"]
     url = f"https://agsist.com/prf/{GUIDE_SLUG}"
-    title = "How PRF Insurance Works: Intervals, Coverage, Productivity Factor"
+    title = "How PRF Insurance Works: Intervals, Coverage, Productivity Factor"   # within the title cap (seo_caps.TITLE_MAX)
     desc = (f"How Pasture, Rangeland, Forage (PRF) insurance works for {cy}, in plain words: the grid, the eleven intervals, coverage, "
             f"productivity factor, USDA's share and what the record says.")
     if len(desc) > 160:

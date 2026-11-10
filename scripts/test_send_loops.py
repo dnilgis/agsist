@@ -127,7 +127,7 @@ def run(body, fail_on=(), fail_with=OSError, n=6, login_fails=False, flag_raises
         "flag": flagger,
         "release_claim": lambda d: state["released"].append(d) or True,
         "print": lambda *a, **k: state["printed"].append(" ".join(str(x) for x in a)),
-        # The private mail to Sig is captured, never sent; masking is real.
+        # The private mail to the owner is captured, never sent; masking is real.
         "log_safe": type("L", (), {
             "mask": staticmethod(log_safe.mask),
             "mask_text": staticmethod(log_safe.mask_text),

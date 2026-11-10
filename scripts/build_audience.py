@@ -42,8 +42,8 @@ on a later day within 14 days, withheld under COHORT_MIN new readers. GA4's
 caveats (cookies, two devices, consent, blocking) are written into the file.
 funnel_section() counts the events the Rain Print page sends, by week and for
 the last 7 days: event names only, never a parameter. It is NOT written to
-data/audience.json (the file is public; Sig, 2026-10-19): morning_report.py
-calls it in its own job and the counts go only into Sig's email. Both use the
+data/audience.json (the file is public; 2026-10-19): morning_report.py
+calls it in its own job and the counts go only into the owner's email. Both use the
 same US and server-town filter; returns fails on its own and keeps its last copy.
 promo_section() is private the same way (2026-10-19): Rain Print and rain gauge
 promo clicks by page, gauge waitlist signups, and email sessions by utm_source.
@@ -407,7 +407,7 @@ def returns_section(ga, F, rg):
 
 
 # ── the Rain Print funnel ─────────────────────────────────────────────────
-# NOT written to data/audience.json, which is public (Sig, 2026-10-19: no
+# NOT written to data/audience.json, which is public (2026-10-19: no
 # Rain Print numbers in a committed file until he decides). morning_report.py
 # calls funnel_section() in its own job; the counts go only into his email.
 # Event names only, counted on /rain-print* pages. No event parameter is read:
@@ -462,7 +462,7 @@ def funnel_section(ga, F, rg):
 
 # ── promo clicks, gauge signups, email sessions (private, 2026-10-19) ─────
 # Same rule as the funnel: NOT written to data/audience.json. morning_report.py
-# calls promo_section() in its own job and the counts go only into Sig's email.
+# calls promo_section in its own job and the counts go only into the owner's email.
 # The funnel above counts /rain-print* pages only, so a promo click on any other
 # page and a gauge waitlist signup were never reported (board, Oct 19).
 #   - rain_print_promo_click / rain_gauge_promo_click: counted by the page they
@@ -589,7 +589,7 @@ def kit_section(ga, F, rg):
 # ── Your county this week: the holdout's two arms (Oct 27 2026) ─────────
 # scripts/send_daily.py tags every agsist.com link in a ticked reader's Daily with utm_term=cw-block
 # or cw-hold (the arm, never the reader) from the first holdout Thursday. Private like
-# promo_section(): only the morning report calls it, the counts go only into Sig's email.
+# promo_section: only the morning report calls it, the counts go only into the owner's email.
 CW_ARMS = ("cw-block", "cw-hold")
 CW_FIRST = date(2026, 10, 29)
 
@@ -684,10 +684,11 @@ def bing_section(get, rg, today):
 
 # ── email ─────────────────────────────────────────────────────────────────
 def email_count(base, token, fetch=None):
-    u = base.rstrip("/") + "/list?token=" + urllib.parse.quote(token)
+    u = base.rstrip("/") + "/list"
     if fetch is None:
         def fetch(url):
-            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=30) as r:
+            req = urllib.request.Request(url, headers={"User-Agent": UA, "Authorization": "Bearer " + token})
+            with urllib.request.urlopen(req, timeout=30) as r:
                 return r.read().decode()
     body = fetch(u)
     return len({x.strip().lower() for x in re.split(r"[,\n]", body) if "@" in x})
@@ -883,10 +884,10 @@ def main():
     if lu and lt:
         try:
             email = email_count(lu, lt)
-            log("email: %d subscribers" % email)
+            log("email: count read")
         except Exception as e:  # noqa: BLE001
             errors["email"] = "%s: %s" % (type(e).__name__, str(e)[:200])
-            log("::warning::subscriber count failed: " + errors["email"])
+            log("::warning::subscriber count failed (the reason is in data/audience.json)")
 
     if not any((ga, gsc, bing, email is not None)):
         log("::warning::no source was reachable or configured -- data/audience.json left exactly as it was")

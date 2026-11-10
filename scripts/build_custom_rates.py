@@ -38,6 +38,7 @@ import os
 import re
 import subprocess
 import source_links  # noqa: E402  no direct links to data sources
+import seo_caps as SEO  # noqa: E402  the site title cap
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -65,7 +66,7 @@ UNITS = {
 
 # The jobs more than one survey prices, under one name, so the page can set
 # states side by side and take the middle. Each state's own wording still shows.
-# Grouped by the page's categories (Sig, Oct 23: categories on top, every kind of
+# Grouped by the page's categories (Oct 23: categories on top, every kind of
 # planter, drill and combine under its category), in the order the page lists them.
 CATS = [("tillage", "Tillage"), ("planting", "Planting"), ("spray", "Spraying and fertilizing"),
         ("harvest", "Harvest"), ("hauling", "Hauling"), ("hay", "Hay and forage"),
@@ -283,7 +284,7 @@ def validate(meta, rows, where="tsv"):
         if not re.fullmatch(r"20\d\d-\d\d(-\d\d)?", meta.get("published", "")):
             errs.append("%s: numbers_only needs published: YYYY-MM" % where)
     elif not meta.get("ref") and not meta.get("src_pdf"):
-        # src_pdf: a survey copy Sig downloaded that is not on the references branch yet; --verify-refs
+        # src_pdf: a survey copy the owner downloaded that is not on the references branch yet; --verify-refs
         # reads it from CR_SRC_DIR (never committed to this repo)
         errs.append("%s: missing meta ref" % where)
     for k, v in meta.items():
@@ -510,7 +511,7 @@ def index_doc(docs):
 # average is used so every state is read the same way). Nothing is inflated or
 # adjusted. A survey whose rate year is more than AGE_MAX years behind the
 # newest survey is shown with its year but left out of the middle (the rent
-# tiles' rule, Sig Oct 19). Rows in a different unit from the job's usual unit
+# tiles' rule, the owner Oct 19). Rows in a different unit from the job's usual unit
 # are shown beside it, never mixed in. Fewer than MIN_BLEND surveys: no middle,
 # each number shown on its own.
 AGE_MAX = 3
@@ -783,7 +784,7 @@ def over_under(mine, md, unit, who):
 
 
 def state_hero(d, blend):
-    """The state's own number first (Sig, Nov 3): one common job, the state's survey average big with its
+    """The state's own number first (Nov 3): one common job, the state's survey average big with its
     answers and range, the middle across the state surveys on the line under it."""
     st, name = d["state"], d["name"]
     ops = blend["ops"]
@@ -815,11 +816,30 @@ def state_hero(d, blend):
         line1, line2, st, "" if k == "combine-corn" else "&amp;k=" + k)
 
 
+# Who ran each state's survey, short enough for a title ("Iowa Custom Farming Rates 2026: Iowa State Survey").
+SURVEY_SHORT = {"IA": "Iowa State", "IN": "Purdue", "KS": "K-State", "MD": "UMD", "DE": "UMD",
+                "MO": "MU Extension", "ND": "NDSU", "NE": "Nebraska Extension", "OH": "Ohio State", "OK": "Oklahoma State",
+                "PA": "USDA NASS", "WI": "UW Extension"}
+
+
+def page_title(d):
+    """"{State} Custom Farming Rates {year}: {who} Survey", within the site's title cap
+    (scripts/seo_caps.py). The year is the year the rates were charged (the one year rule);
+    a survey run the next year carries its own year after the name."""
+    name, yr = d["name"], rate_year(d)
+    who = SURVEY_SHORT.get(d["state"])
+    if who and yr != d["survey_year"]:
+        who = "%s %d" % (who, d["survey_year"])   # "Missouri Custom Farming Rates 2025: MU Extension 2026 Survey"
+    cands = (["%s Custom Farming Rates %d: %s Survey" % (name, yr, who)] if who else []) + [
+        "%s Custom Farming Rates %d" % (name, yr), "%s Custom Rates %d" % (name, yr)]
+    return SEO.fit(cands)
+
+
 def state_page(d, idx, blend):
     name, yr, st = d["name"], d["survey_year"], d["state"]
     when = survey_words(yr, d.get("rate_year"))
     url = "https://agsist.com/custom-rates/" + d["slug"]
-    title = "%s custom rates %d: combining, planting, spraying, baling | AGSIST" % (name, yr)
+    title = page_title(d)
     desc = "%s custom farm work rates from the %d survey by %s: the average and range for each job, per acre, hour, bushel or bale." % (name, yr, d["publisher"].split(",")[0])
     if len(desc) > 158:
         desc = "%s custom farm work rates from the %d state survey: average and range for each job, per acre, hour, bushel or bale." % (name, yr)
@@ -861,7 +881,7 @@ def state_page(d, idx, blend):
     me = next(s for s in idx["states"] if s["st"] == st)
     nb = ", ".join('<a href="%s">%s (%s)</a>' % (state_href(s), esc(s["name"]), year_label(s)) for s in idx["states"] if s["st"] in me["neighbors"])
     others = " &middot; ".join('<a href="%s">%s</a>' % (state_href(s), esc(s["name"])) for s in idx["states"] if s["st"] != st)
-    # the survey is named in words with its date; it is not linked (no direct links to data sources, Sig Oct 29 and Nov 3)
+    # the survey is named in words with its date; it is not linked (no direct links to data sources, Oct 29 and Nov 3)
     srcl = "%s (%s)" % (esc(d["survey"]), when)
     faq_html = "".join('<details><summary>%s</summary><p>%s</p></details>' % (esc(q), esc(a)) for q, a in faq)
     withheld = ('<p class="fine">%s</p>' % esc(d["withheld"])) if d.get("withheld") else ""
@@ -1110,7 +1130,7 @@ def month_year(ym):
 def how_block(b, docs):
     r = b["rule"]
     inb = [s for s in b["states"].values() if s.get("in_blend")]
-    # each survey named with its year, never linked (no direct links to data sources, Sig Oct 29 and Nov 3)
+    # each survey named with its year, never linked (no direct links to data sources, Oct 29 and Nov 3)
     li = "".join('<li><a href="%s">%s</a>, %s: %s, %s.%s</li>\n' % (
         state_href(dict(s, st=st)), esc(s["name"]), ("%d rates" % s["ry"]) if s["ry"] != s["year"] else s["year"], esc(s["survey"]), esc(s["publisher"]),
         "" if s["in_blend"] else " Too old for the middle; shown with its year.") for st, s in b["states"].items() if not s.get("same_as"))
@@ -1432,6 +1452,12 @@ def selftest():
     mo = docs.get("MO")
     ok(mo and mo.get("rate_year") == 2025 and any(r.get("k") == "combine-corn" and r["a"] == 47.56 and r["md"] == 40 and r["lo"] == 35 and r["hi"] == 95 and r["n"] == 9 for r in mo["rows"]),
        "Missouri 2025 corn combining without grain cart is $47.56 (median $40, $35-$95, 9), as G302 (March 2026) Table 5 prints it")
+    # every state page title fits the site cap and names who ran the survey
+    for st, d in docs.items():
+        t = page_title(d)
+        ok(len(t) <= SEO.TITLE_MAX and st in SURVEY_SHORT, "%s title %r (%d chars, cap %d)" % (st, t, len(t), SEO.TITLE_MAX))
+    ok(page_title(docs["IA"]) == "Iowa Custom Farming Rates 2026: Iowa State Survey", page_title(docs["IA"]))
+    ok(page_title(docs["MO"]) == "Missouri Custom Farming Rates 2025: MU Extension 2026 Survey", "rate year first, survey year after: %r" % page_title(docs["MO"]))
     print("selftest: %d failed" % len(fails))
     for x in fails:
         print("  FAIL", x)

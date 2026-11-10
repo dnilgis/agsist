@@ -4,7 +4,7 @@
  * Rows read by hand off the surveys are frozen in test/fixtures/custom-rates/hand-checked.json,
  * each under the survey edition it was read from; every other expectation (the middle, a
  * state's place against it, the counts) is computed from the built files, never typed
- * (Sig, Nov 3: no test leans on a live value). Browser checks need Playwright and skip without it.
+ * (Nov 3: no test leans on a live value). Browser checks need Playwright and skip without it.
  *
  *   node --test test/custom-rates.test.mjs
  */
@@ -81,7 +81,7 @@ test("Missouri is G302 revised March 2026: 2025 rates, average, median, range an
   assert.equal(mo.rate_year, 2025);
   assert.equal(mo.survey_year, 2026);
   assert.equal(mo.sources[0].url, "https://extension.missouri.edu/publications/g302");
-  // MU does not allow reposting G302: numbers and a link only, no stored copy (Sig, Oct 19)
+  // MU does not allow reposting G302: numbers and a link only, no stored copy (Oct 19)
   assert.deepEqual(mo.sources, [{ url: "https://extension.missouri.edu/publications/g302", numbers_only: true, published: "2026-03" }]);
   assert.match(mo.collected, /^2025 rates \(survey fall 2025 to winter 2026, published March 2026\)/);
   // the rows read off the guide (Tables 3, 4, 5 and 7) are in the frozen fixture; here, the shape
@@ -150,14 +150,14 @@ test("page structure, plain words, no em dashes", () => {
     assert.ok(!h.includes("—"), `${s.slug}: em dash`);
     assert.ok(Buffer.byteLength(h) < 60 * 1024, `${s.slug} under 60 KB`);
     assert.match(h, /may charge more or less/);
-    // the survey is named with its year, never linked (no direct links to data sources; Sig, Oct 29 and Nov 3)
+    // the survey is named with its year, never linked (no direct links to data sources; Oct 29 and Nov 3)
     const d = doc(s.st.toLowerCase());
     assert.ok(h.includes(d.survey.replace(/&/g, "&amp;").replace(/'/g, "&#x27;")), `${s.slug} names its survey`);
     for (const src of d.sources) assert.ok(!h.includes('href="' + src.url.replace(/&/g, "&amp;")), `${s.slug} does not link ${src.url}`);
     const sld = JSON.parse(h.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1]);
     assert.ok(!JSON.stringify(sld).includes(d.sources[0].url), `${s.slug}: no survey file URL in its structured data`);
     assert.match(h, /names it\./, `${s.slug}: the FAQ says the survey is named, not linked`);
-    // the state's own number first (Sig, Nov 3)
+    // the state's own number first (Nov 3)
     assert.match(h, /<section class="crh crh-st"/, `${s.slug}: the state's own number first`);
     // the one year rule: the title of the year is the survey, the rate year follows when it differs
     const yr = d.rate_year ? `${d.survey_year} survey of ${d.rate_year} rates` : `${d.survey_year} survey`;
@@ -349,7 +349,7 @@ test("browser: the reader's state first, the middle under it, only the needed fi
   await new Promise((r) => srv.listen(0, "127.0.0.1", r));
   const base = `http://127.0.0.1:${srv.address().port}`;
   const b = await chromium.launch({ executablePath: CHROME });
-  // every expectation from the built files (Sig, Nov 3: no live literals)
+  // every expectation from the built files (Nov 3: no live literals)
   const cc = blend.ops["combine-corn"], ne = cc.by.NE, ns = blend.states.NE, ny = ns.ry === ns.year ? `${ns.year} survey` : `${ns.year} survey of ${ns.ry} rates`;
   const dd = Math.round((shownV(ne[0], "acre") - shownV(cc.md, "acre")) * 1e6) / 1e6;
   const vctx = { window: {}, document: { readyState: "loading", addEventListener() {} }, URLSearchParams, location: { search: "" } };

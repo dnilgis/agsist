@@ -1,6 +1,11 @@
 {
  "note": "Exceptions to test/cls-reserved.test.mjs. below_fold: script-filled elements that start 1100px or more down at both 390 and 1280 when listed (the browser part of the test proves each is still 900px or more down; for one not shown at load, its nearest shown ancestor). to_fix: known unreserved targets on pages not cleaned up yet (Oct 29, 2026); this list may only shrink. Hold an element's space up front and take it out.",
  "below_fold": {
+  "conditions.html": {
+   "vp-big": "starts at 9570px (390 wide), 5538px (1280)",
+   "vp-maplab": "starts at 9719px (390 wide), 5643px (1280)",
+   "vp-sent": "starts at 9660px (390 wide), 5558px (1280)"
+  },
   "corn-futures-prices.html": {
    "basis-bid": "starts at 3093px (390 wide), 2671px (1280)",
    "basis-delivery": "starts at 3093px (390 wide), 2671px (1280)",
@@ -52,6 +57,10 @@
    "natgas-price": "starts at 7183px (390 wide), 4136px (1280)",
    "natgas-when": "starts at 7216px (390 wide), 4169px (1280)"
   },
+  "hay-prices.html": {
+   "hp-live": "starts at 2465px (390 wide), 1815px (1280)",
+   "hp-seg": "starts at 2406px (390 wide), 1755px (1280)"
+  },
   "index.html": {
    "cot-date": "starts at 4967px (390 wide), 2549px (1280)",
    "cot-rows": "starts at 4520px (390 wide), 2058px (1280)",
@@ -67,6 +76,10 @@
    "pa-form": "starts at 3251px (390 wide), 3283px (1280)",
    "pa-symbol": "starts at 3251px (390 wide), 3283px (1280)",
    "prices-age": "starts at 3179px (390 wide), 1430px (1280)"
+  },
+  "land-sales/index.html": {
+   "li-counties": "starts at 3895px (390 wide), 3023px (1280)",
+   "ls-mine": "starts at 1282px (390 wide), 1287px (1280)"
   },
   "milk-prices.html": {
    "ck-order": "starts at 7493px (390 wide), 5413px (1280)",
@@ -132,6 +145,29 @@
    "snap-wasde": "starts at 2772px (390 wide), 1555px (1280)",
    "snap-wasde-wrap": "starts at 2770px (390 wide), 1553px (1280)"
   },
+  "tariffs.html": {
+   "cn-body": "starts at 4530px (390 wide), 2631px (1280)",
+   "cn-week": "starts at 4475px (390 wide), 2598px (1280)",
+   "tariff-timeline": "starts at 5610px (390 wide), 3267px (1280)"
+  },
+  "urea.html": {
+   "fc-strip": "starts at 2551px (390 wide), 1764px (1280)",
+   "fd-res": "starts at 6325px (390 wide), 2907px (1280)",
+   "fd-surf": "starts at 5490px (390 wide), 2234px (1280)",
+   "fs-res": "starts at 6261px (390 wide), 2841px (1280)",
+   "fs-surf": "starts at 5424px (390 wide), 2168px (1280)",
+   "fv-res": "starts at 6297px (390 wide), 2877px (1280)",
+   "fv-surf": "starts at 5463px (390 wide), 2204px (1280)",
+   "in-ph": "starts at 4073px (390 wide), 1485px (1280)",
+   "in-till": "starts at 4152px (390 wide), 1485px (1280)",
+   "rec-head": "starts at 2338px (390 wide), 1498px (1280)",
+   "rec-text": "starts at 2371px (390 wide), 1530px (1280)",
+   "signup-form": "starts at 2831px (390 wide), 2076px (1280)",
+   "tg-icon": "starts at 4017px (390 wide), 1425px (1280)",
+   "tg-text": "starts at 4047px (390 wide), 1455px (1280)",
+   "urea-cheapest-n": "starts at 4989px (390 wide), 2046px (1280)",
+   "urea-zip-err": "starts at 1741px (390 wide), 1178px (1280)"
+  },
   "wheat-futures-prices.html": {
    "basis-bid": "starts at 3518px (390 wide), 2809px (1280)",
    "basis-delivery": "starts at 3518px (390 wide), 2809px (1280)",
@@ -170,6 +206,44 @@
    "snap-wasde": "starts at 3169px (390 wide), 1885px (1280)",
    "snap-wasde-wrap": "starts at 3167px (390 wide), 1883px (1280)",
    "wc-lbl-m": "starts at 3803px (390 wide), 2526px (1280)"
+  },
+  "drought-monitor.html": {
+   "dm-map-note": "starts at 1465px (390 wide), 1641px (1280)",
+   "dm-map-valid": "starts at 1465px (390 wide), 1641px (1280)",
+   "dm-state-grid": "starts at 1768px (390 wide), 1837px (1280)",
+   "dm-state-line": "starts at 1452px (390 wide), 1628px (1280)"
+  },
+  "hail-map.html": {
+   "hm-alert-status": "starts at 1807px (390 wide), 1428px (1280)",
+   "hm-banner": "starts at 1513px (390 wide), 1227px (1280)",
+   "hm-count": "starts at 1450px (390 wide), 1196px (1280)",
+   "hm-cty-body": "starts at 3209px (390 wide), 2200px (1280)",
+   "hm-cty-select": "starts at 2953px (390 wide), 2008px (1280)",
+   "hm-cty-state": "starts at 2911px (390 wide), 2013px (1280)",
+   "hm-dmg-in": "starts at 3050px (390 wide), 2083px (1280)",
+   "hm-dmg-lbl": "starts at 3029px (390 wide), 2062px (1280)",
+   "hm-dmg-note": "starts at 3050px (390 wide), 2083px (1280)",
+   "hm-dmg-old": "starts at 3111px (390 wide), 2124px (1280)",
+   "hm-gen": "starts at 2721px (390 wide), 1874px (1280)",
+   "hm-legend-freq": "starts at 1479px (390 wide), 1194px (1280)",
+   "hm-legend-mesh": "starts at 1479px (390 wide), 1194px (1280)",
+   "hm-legend-size": "starts at 1511px (390 wide), 1226px (1280)",
+   "hm-livebar": "starts at 1453px (390 wide), 1199px (1280)",
+   "hm-livebar-note": "starts at 1516px (390 wide), 1220px (1280)",
+   "hm-longterm": "starts at 1826px (390 wide), 1372px (1280)",
+   "hm-note-mi": "starts at 2012px (390 wide), 1486px (1280)",
+   "hm-point": "starts at 1519px (390 wide), 1234px (1280)",
+   "hm-point-asof": "starts at 1815px (390 wide), 1360px (1280)",
+   "hm-point-stats": "starts at 1815px (390 wide), 1360px (1280)",
+   "hm-point-table": "starts at 1826px (390 wide), 1372px (1280)",
+   "hm-point-title": "starts at 1537px (390 wide), 1257px (1280)",
+   "hm-scope": "starts at 1450px (390 wide), 1196px (1280)",
+   "hm-swath-btn-t": "starts at 1865px (390 wide), 1410px (1280)",
+   "hm-swath-out": "starts at 1904px (390 wide), 1450px (1280)",
+   "hm-swathcheck": "starts at 1840px (390 wide), 1385px (1280)",
+   "hm-trend": "starts at 1826px (390 wide), 1372px (1280)",
+   "hm-verdict": "starts at 1815px (390 wide), 1360px (1280)",
+   "hm-yearline": "starts at 1815px (390 wide), 1360px (1280)"
   }
  },
  "to_fix": {

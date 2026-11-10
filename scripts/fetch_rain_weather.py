@@ -524,8 +524,8 @@ def gdd_months(hi, lo, dates, norm):
 def carry_season(prev, res):
     """Last season's corn GDDs ("gp") for a row with no season of its own yet (Jan 1 to Apr 30 of a new
     year): from the published file of last year (its "g", with its as-of day and station), or carried on
-    from a published file of this year that already has it. Read, never computed again (Sig, Nov 4:
-    off-season the card still shows the last full season)."""
+    from a published file of this year that already has it. Read, never computed again (Nov 4:
+ off-season the card still shows the last full season)."""
     if not isinstance(prev, dict) or not isinstance(prev.get("counties"), dict):
         return
     py, y = prev.get("year"), res.get("year")

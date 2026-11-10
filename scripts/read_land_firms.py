@@ -2,7 +2,7 @@
 """
 AGSIST -- read four land auction firms' saved results pages into auction records.
 
-Phase 2 of the firm results readers (Sig, Nov 8, 2026). Input is the raw pages
+Phase 2 of the firm results readers (Nov 8, 2026). Input is the raw pages
 scripts/capture_land_firms.py saved (land/<firm>/capture/<date>/current.html, archive/*,
 Martin's feed.xml); output is data/land/auctions/<firm>.json, one file per firm, in the
 record shape of scripts/read_schrader.py:

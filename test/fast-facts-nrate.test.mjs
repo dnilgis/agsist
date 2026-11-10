@@ -106,7 +106,7 @@ test("no em dashes, no 'today's prices', byline and sources on the page", () => 
   assert.ok(!body.includes("—") && !body.includes("&mdash;"), "em dash in fast-facts.html");
   assert.ok(!js.includes("—"), "em dash in fast-facts.js");
   assert.ok(!/today(?:'|&rsquo;|’)s prices/i.test(body));
-  // Sig, Oct 18: no name at the top of a page; it sits in one line at the end (Oct 21, tone: a quieter line)
+  // Oct 18: no name at the top of a page; it sits in one line at the end (Oct 21, tone: a quieter line)
   assert.ok(html.includes("<p>Sig Lindquist, CCA, Chetek, Wisconsin. No sponsor sets any number here.</p>"));
   assert.ok(!html.includes("By <strong>Sigurd Lindquist, CCA</strong>"));
   assert.ok(html.includes('id="ff-sources"'));

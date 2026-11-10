@@ -1,4 +1,4 @@
-/* Rain Print layout, Oct 22, 2026 (Sig, yes to all six, after the audit of the options: the page was 13,686 px tall
+/* Rain Print layout, Oct 22, 2026 (yes to all six, after the audit of the options: the page was 13,686 px tall
  * on a phone with no option in the first screen; 10 layers and 19 options spread over a fold of long help).
  *
  * Checks, on the shipped page, from the fixture of the Chetek case (test/fixtures/rp-chetek-oct21.mjs):
@@ -7,10 +7,10 @@
  *   - one tap per layer redraws the print, the count follows, the line under the print says what changed and where;
  *   - a layer that can't change the print is greyed with its one-line reason (Month normals without a usual year);
  *     hottest and coldest is "included" while the daily stripes are on;
- *   - seven layers since the crop ones came off (Sig, Oct 23): no crop, plant or usual-year plant control anywhere;
+ *   - seven layers since the crop ones came off (Oct 23): no crop, plant or usual-year plant control anywhere;
  *   - All off leaves just the year;
  *   - Watch it draw swaps the print's buttons for Replay, Wind (video only), Make a video, Done, under the print;
- *   - a new visit keeps the headline first, with frost and hottest and coldest on (Sig's defaults);
+ *   - a new visit keeps the headline first, with frost and hottest and coldest on (the owner's defaults);
  *   - no em dashes in the new words.
  *
  *   node --test test/rain-print-layers.test.mjs
@@ -49,7 +49,7 @@ test("the page: one Layers card, seven layers, no crop controls, the usual year 
   const card = HTML.slice(HTML.indexOf('id="rp-layers"'), HTML.indexOf('id="rp-design"'));
   for (const id of ["rp-normals", "rp-records", "rp-frost", "rp-heat", "rp-ribbon", "rp-hist"]) assert.ok(card.includes('id="' + id + '"'), id + " is a chip in the card");
   assert.equal((card.match(/name="rp-cmp"/g) || []).length, 3, "Off, 30-yr normal, This station");
-  // no crop layers (Sig, Oct 23: "I don't want to offer the plant outlines or any of that as an image on the prints")
+  // no crop layers (Oct 23)
   assert.ok(!/data-crop=|id="rp-(crop|plants|ghost|cropdays|crop-set|crop-say|crop-[a-z]+)"|Usual-year plants/.test(HTML), "no crop control on the page");
   assert.ok(!/>Corn<|>Soybeans<|>Plants<|>Crop</.test(card), "no crop chip in the Layers card");
   assert.ok(!/How are the crop stages placed|little plants|Usual-year plants|corn or soybean stages/.test(HTML), "no crop words in Questions or the structured data");
@@ -124,7 +124,7 @@ test("one tap per layer: the print, the count and the line under it follow; grey
     await page.click("label:has(#rp-heat)", { force: true });
     assert.equal(await text(page, "rp-say"), "Hottest, coldest: included, named on the daily temperature stripes.");
     assert.equal(await text(page, "rp-lcount"), "7 in all, 5 on");
-    // no crop controls on the maker (Sig, Oct 23)
+    // no crop controls on the maker (Oct 23)
     assert.equal(await page.$$eval("#rp-crop, #rp-plants, #rp-ghost, [data-crop], #rp-crop-set", (a) => a.length), 0, "no crop controls");
     // All off: just the year
     await page.click("#rp-alloff");

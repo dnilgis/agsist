@@ -1,4 +1,4 @@
-/* Rain Print on 13 x 19 paper (2026-10-17, Sig): the print file is the 13 x 19 in
+/* Rain Print on 13 x 19 paper (2026-10-17): the print file is the 13 x 19 in
  * sheet, untrimmed, with the 3:2 art scaled to 16.5 x 11 in in the middle. The
  * framed print has a white mat (window about 16.5 x 10.5 in), so every mark the
  * art makes (name, dates, numbers, foot line, station line, QR and serial,
@@ -134,7 +134,7 @@ test("every mark on the print stays inside the mat's safe window: both styles, f
   } finally { await browser.close(); srv.close(); }
 });
 
-/* The 2026-10-17 options (Sig): each one, and all at once, in both styles, inside the safe window,
+/* The 2026-10-17 options: each one, and all at once, in both styles, inside the safe window,
    with every text at 11 u or more and every line at 0.7 u or more. Temperatures are the saved answer
    for Ames Municipal Airport (2012); the usual year's temperatures (2 F cooler) and the 40 history
    threads (the year scaled 0.6 to 1.6 times) are made up for the layout only, and said so here. */
@@ -146,7 +146,7 @@ function optionsInput(base, style, o) {
   const marks = [{ date: "2012-05-01", label: "Planted corn" }, { date: "2012-07-04", label: "Our wedding!" }, { date: "2012-10-20", label: "Harvest done" }];
   const s = RP.normalize(Object.assign({ place: "Ames, IA", year: 2012, style, markers: marks }, o));
   const found = REC.find({ year: 2012, daily: { data: rows }, dailyElems: ["pcpn", "avgt", "snow", "maxt", "mint"] }, { kinds: RP.TEMP_KINDS });
-  // crops are no longer a design option (Sig, Oct 23); they draw only for an order made before that, through
+  // crops are no longer a design option (Oct 23); they draw only for an order made before that, through
   // the order view (ORDER_CROP), which hands cropInput the order's own crop fields, as here
   const oc = o.crop ? o : null, crop = oc ? RP.cropInput(oc, td, oc.ghost ? tdN : null) : null;
   const cum = []; let c = 0; base.days.forEach((d) => { c += d.v || 0; cum.push(c); });

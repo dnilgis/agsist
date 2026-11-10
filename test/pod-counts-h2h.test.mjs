@@ -13,7 +13,7 @@ const HTML = readFileSync(new URL("../crop-tour.html", import.meta.url), "utf8")
 test("the byline is visible next to the working-paper date", () => {
   const stamp = /<div class="pc-stamp">([\s\S]*?)<\/div>/.exec(HTML);
   assert.ok(stamp, "pc-stamp");
-  // Sig, Oct 18: no name at the top of a page; it sits in one line at the end
+  // Oct 18: no name at the top of a page; it sits in one line at the end
   assert.doesNotMatch(stamp[1], /Sigurd Lindquist|&middot;\s*$/);
   assert.match(HTML, /<p class="by-end"[^>]*>Made by <a href="\/about">Sigurd Lindquist, CCA<\/a>, Chetek, Wisconsin\.<\/p>/);
   assert.match(stamp[1], /19 August 2026/);

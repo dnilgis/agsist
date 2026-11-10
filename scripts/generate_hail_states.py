@@ -26,7 +26,13 @@ import json
 import os
 import re
 import sys
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import seo_caps  # noqa: E402  the site title cap
 from datetime import datetime, timezone
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import cross_links as XL  # noqa: E402  the same-state row
 
 SC = "data/hail/state-counties.json"
 DAYS = "data/hail/storm-days.json"
@@ -327,7 +333,9 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
 
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n"
         "<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
-        "<title>Hail Map " + esc(name) + ": Worst Hail Counties &amp; Hail Season | AGSIST</title>\n"
+        "<title>" + esc(seo_caps.fit(["Hail Map " + name + ": Worst Hail Counties & Hail Season | AGSIST",
+                                      "Hail Map " + name + ": Worst Hail Counties & Hail Season",
+                                      "Hail Map " + name + ": Worst Hail Counties"])) + "</title>\n"
         "<meta name=\"description\" content=\"Where it hails in " + esc(name) + ": " + str(n_yrs) + " years of NWS hail reports ranked by county, peak months, and " + share_word(dmg_in) + ", with an interactive map and address lookup.\">\n"
         "<link rel=\"canonical\" href=\"" + canonical + "\">\n"
         "<meta property=\"og:title\" content=\"Hail Map " + esc(name) + ": Worst Hail Counties | AGSIST\">\n"
@@ -391,13 +399,14 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
         "<h2>" + esc(name) + " hail: the questions people ask</h2>\n"
         + faq_vis +
         "\n<nav class=\"hs-states\" aria-label=\"Hail by state\"><h2>Hail in other states</h2><div class=\"hs-states-grid\">" + all_state_links(name) + "</div></nav>\n"
+        + XL.same_state_row(".", slug(name), esc(name), "hail-map") + "\n"
         + b2b +
         "\n<details class=\"hs-terms\" id=\"terms\"><summary>Sources and terms</summary>"
         "<p>Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet, " + str(years[0]) + "\u2013" + str(years[-1]) + ". Reports depend on someone reporting, so population and spotter density bias the counts. "
         "To cite these figures: <em>AGSIST National Hail Map, " + canonical + " (NWS Local Storm Reports, " + str(years[0]) + "\u2013" + str(years[-1]) + ")</em>. A link back is appreciated. "
         "Compiled by Sigurd Lindquist \u00b7 AGSIST.</p></details>\n"
         # one quiet promo line, filled by components/rain-print-promo.js ("auto": Rain Print through Dec 24,
-        # the rain gauge hook Dec 26 through May, Sig 2026-10-23); empty and hidden when off
+        # the rain gauge hook Dec 26 through May, the owner 2026-10-23); empty and hidden when off
         "<p class=\"rp-promo\" data-rain-print-promo=\"auto\" hidden></p><script src=\"/components/rain-print-promo.js?v=6\" defer></script>\n"
         "</div>\n</main>\n<div id=\"site-footer\"></div>\n"
         "<script src=\"" + asset_url("/components/loader.js") + "\" defer></script>\n</body>\n</html>\n")

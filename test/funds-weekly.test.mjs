@@ -1,13 +1,13 @@
 /* Funds this week (scripts/send_cot_weekly.py), the weekly COT email.
  *
  *  1. The sender's own selftest: hand-worked numbers from fixtures, the link
- *     guard, dry run by default, preview to Sig only, the send path with the
+ *     guard, dry run by default, preview to the owner only, the send path with the
  *     list, the flag and the mail server mocked.
  *  2. The email made from the repo's real COT files: every net and change it
  *     prints is data/cot.json's, and each rank is the page's own words
  *     (data/cot-analysis.json crowd.words), recounted from data/cot-deep.json.
  *  3. The workflows: funds-weekly.yml runs by hand only (no schedule until
- *     Sig says so) and is a dry run unless told otherwise; the run after a new
+ * The owner says so) and is a dry run unless told otherwise; the run after a new
  *     report sends to the list only with FUNDS_WEEKLY_LIVE set.
  *
  *   node --test test/funds-weekly.test.mjs

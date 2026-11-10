@@ -58,7 +58,7 @@ DIRECT_GUARD_RE = re.compile(r"\n*<!-- noindex when this file is opened on its o
 def block(kind):
     body = (COMP / f"{kind}-fallback.html").read_text(encoding="utf-8")
     body = DIRECT_GUARD_RE.sub("", body).rstrip("\n")
-    # bare markers: the page source does not name the script or file that wrote it (Sig, Oct 29)
+    # bare markers: the page source does not name the script or file that wrote it (Oct 29)
     return f"\n<!-- static-nav:{kind} -->\n{body}\n<!-- /static-nav:{kind} -->\n"
 
 

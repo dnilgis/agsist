@@ -1,4 +1,4 @@
-/* Seeds on their own lines (BUILD-RULES 67, fx/smallfix1104, Nov 4 2026).
+/* Seeds on their own lines (build rule 67, fx/smallfix1104, Nov 4 2026).
  *
  * The price job reseeds index.html and markets.html every 15 minutes, so a PR whose structural edit
  * shared or neighboured a seed line conflicted with main (#320). scripts/seed_static.py seed_between
@@ -66,7 +66,7 @@ test("the seeder puts every seed on its own line, values and text unchanged", ()
 });
 
 test("the seeder's layout renders the same text with nothing moved, at 390 and 1280", { skip, timeout: 120000 }, async () => {
-  // both layouts of each page, scripts off, every outside host aborted, service workers blocked (BUILD-RULES 58)
+  // both layouts of each page, scripts off, every outside host aborted, service workers blocked (build rule 58)
   const srv = createServer((req, res) => {
     const p = decodeURIComponent(new URL(req.url, "http://x").pathname);
     const pr = pairs.find(([f]) => p === "/__before/" + f || p === "/__after/" + f);

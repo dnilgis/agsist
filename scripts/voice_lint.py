@@ -2,7 +2,7 @@
 """
 voice_lint.py -- deterministic voice check for the AGSIST Daily.
 
-The briefing carries Sig's name. Two things in a draft can put words in his
+The briefing carries the owner's name. Two things in a draft can put words in his
 mouth that a prompt alone does not stop:
 
   FABRICATED  a first-person experience he never had: "I talked to three
@@ -31,7 +31,7 @@ One definition, used by three callers:
   briefing_gate.py     FAIL on a fabricated sentence, WARN on a tell
 
 The quote of the day and The Action (the prediction bot's line) are not
-scanned: neither is written by the model in Sig's voice.
+scanned: neither is written by the model in the owner's voice.
 
     python3 scripts/voice_lint.py --selftest
     python3 scripts/voice_lint.py data/daily.json

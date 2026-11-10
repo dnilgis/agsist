@@ -1,4 +1,4 @@
-/* Nov 2, 2026 (Sig: put AGSIST into the tools people already use): the four
+/* Nov 2, 2026 (put AGSIST into the tools people already use): the four
  * futures pages and the /cash-bids hub carry one plain line to subscribe to the
  * USDA report dates (webcal and Google Calendar), the same files /usda-calendar
  * offers, firing the same ics_subscribe GA4 event the calendar page fires.

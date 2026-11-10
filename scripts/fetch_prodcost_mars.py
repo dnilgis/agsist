@@ -3,7 +3,7 @@
 AGSIST -- data/production-costs.json: fertilizer, farm diesel and propane from the
 USDA AMS production cost reports, read through USDA My Market News (the MARS API).
 
-Reports (My Market News slug ids; Sig approved Nov 2, 2026):
+Reports (My Market News slug ids; Nov 2, 2026):
   2863 Iowa (bi-weekly)          3195 Illinois (bi-weekly)
   3621 Oklahoma (bi-weekly)      3159 North Carolina (weekly)
   3883 Inter-Mountain West (monthly: UT, ID, CO, WY)

@@ -25,7 +25,7 @@
    and this script (defer). Tests: test/price-local.test.mjs */
 (function (root) {
   'use strict';
-  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Sig Nov 3 2026); a file without the company count says 'median of N elevators'. */
+  /* 'median of 203 elevators, 23 companies' beside a state basis middle (scripts/build_cash_bid_pages.py med_of, Nov 3 2026); a file without the company count says 'median of N elevators'. */
   function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var FR = { 0: '', 25: '¼', 50: '½', 75: '¾' }, DAY = 864e5, TZ = 'America/Chicago';
@@ -165,8 +165,7 @@
     return out;
   }
 
-  /* THE OVERNIGHT (ELECTRONIC) TRADE, 2026-10-20 (Sig: "don't forget about
-     overnight market trading, I want that displayed if it is available").
+  /* THE OVERNIGHT (ELECTRONIC) TRADE, 2026-10-20.
      CBOT grains trade electronically 7:00 pm to 7:45 am CT. The price file
      carries that trade in one of two shapes (fetch_prices v3.7):
        before the settle posts (about 7 to 11 pm CT): settled:true, close is
@@ -359,7 +358,7 @@
       (b.when ? '. <span class="pl-s">' + esc(b.when) + '.</span>' : '.') + ' <a href="/cash-bids">All bids near you &rarr;</a>';
   }
 
-  /* THE HEADLINE CONTRACT (2026-11-04, Sig's screenshot): ONE choice for every
+  /* THE HEADLINE CONTRACT (2026-11-04, the owner's screenshot): ONE choice for every
      headline corn and soybean futures price. It is <crop>-nearby, the month
      scripts/fetch_prices.py add_nearby picks: the nearest live month, rolled at
      CBOT first notice day (Nov '26 soybeans to Jan '27 from Oct 30; Dec '26
@@ -385,8 +384,8 @@
   }
   /* THE NEXT HARVEST CONTRACT: the Dec corn or Nov soybeans after the headline
      month. Dec '26 corn while Dec '26 is the headline is Dec '27; Nov soybeans
-     with Jan '27 the headline is Nov '27 (Sig, Oct 1: never two cards of one
-     contract; Nov 4: never a month past first notice). A card or ticker slot
+     with Jan '27 the headline is Nov '27 (Oct 1: never two cards of one
+ contract; Nov 4: never a month past first notice). A card or ticker slot
      for "new crop" reads this and names the month. Twin: seed_static.py
      new_crop_quote (and futures.js newCropKey). -> {key, q, label} or null. */
   var HARVEST = { corn: 'dec', beans: 'nov' };

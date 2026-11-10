@@ -2,7 +2,7 @@
 """
 AGSIST Daily — Critic Status Notifier (Phase 2, C7)
 ═══════════════════════════════════════════════════════════════════
-Reads data/daily.json after the generate + critic steps. Emails Sig
+Reads data/daily.json after the generate + critic steps. Emails the owner
 a one-line health summary if anything is off. Quiet success: no email.
 
 Triggers an alert when:
@@ -92,7 +92,7 @@ SERIOUS = 3
 
 
 def should_alert(scores: dict, threshold: float = 7) -> bool:
-    """True when the issue needs Sig's eyes: average under the threshold or a rule at SERIOUS or below."""
+    """True when the issue needs the owner's eyes: average under the threshold or a rule at SERIOUS or below."""
     vals = [float(v) for v in scores.values() if isinstance(v, (int, float))]
     if not vals:
         return True
@@ -138,7 +138,7 @@ def main() -> int:
     flagged = {r: s for r, s in scores.items()
                if isinstance(s, (int, float)) and s < threshold}
 
-    # Quiet unless the issue itself is weak (Sig, 2026-10-20: a rule or two
+    # Quiet unless the issue itself is weak (2026-10-20: a rule or two
     # under 7 and an applied rewrite on an otherwise passing issue were a
     # near-daily email he did not need). Alert when the average is under the
     # threshold or any one rule is at SERIOUS or below.

@@ -327,6 +327,14 @@
    ]
   },
   {
+   "key": "basis:ID|SCOULAR|JEROME",
+   "rule": "name+town",
+   "candidates": [
+    "e4ctwp3tkv",
+    "emp9s8ata3"
+   ]
+  },
+  {
    "key": "basis:IL|ADM|DECATUR",
    "rule": "exact",
    "candidates": [
@@ -363,6 +371,7 @@
    "key": "basis:IL|ADM GRAIN|DECATUR",
    "rule": "name+town",
    "candidates": [
+    "e04f2r51hd",
     "e6b9deqk60",
     "ezk9c693bk"
    ]
@@ -372,6 +381,7 @@
    "rule": "name+town",
    "candidates": [
     "e0ddh16vw0",
+    "ekbzj3fbfa",
     "exqrqchhw2"
    ]
   },
@@ -549,6 +559,22 @@
    "candidates": [
     "e17fwfmsww",
     "etvxathya8"
+   ]
+  },
+  {
+   "key": "basis:IL|PEARL CITY ELEVATOR, INC.|BAILEYVILLE",
+   "rule": "name+town",
+   "candidates": [
+    "e6m8m33m3v",
+    "ed2ct982e9"
+   ]
+  },
+  {
+   "key": "basis:IL|PEARL CITY ELEVATOR, INC.|PEARL CITY",
+   "rule": "name+town",
+   "candidates": [
+    "e3j64zn749",
+    "ef7wxjzrp7"
    ]
   },
   {
@@ -812,6 +838,62 @@
    ]
   },
   {
+   "key": "basis:KS|SCOULAR|ADA",
+   "rule": "name+town",
+   "candidates": [
+    "e1ec0f3ee4",
+    "e8sda156r4"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|BREWSTER",
+   "rule": "name+town",
+   "candidates": [
+    "e52fwrp213",
+    "erc8sp6es1"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|CULLISON",
+   "rule": "name+town",
+   "candidates": [
+    "e18xz4nmd5",
+    "e8ybs5pds6"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|GREENSBURG",
+   "rule": "name+town",
+   "candidates": [
+    "e85fy6sd6j",
+    "ehavf1fg02"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|LINCOLN",
+   "rule": "name+town",
+   "candidates": [
+    "es2zvacxnv",
+    "exmvtrsxm2"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|MINNEAPOLIS",
+   "rule": "name+town",
+   "candidates": [
+    "e18xbsx09t",
+    "eceavazs87"
+   ]
+  },
+  {
+   "key": "basis:KS|SCOULAR|MONUMENT",
+   "rule": "name+town",
+   "candidates": [
+    "e6pns2r1eq",
+    "ewd3bng9e4"
+   ]
+  },
+  {
    "key": "basis:KS|THE ELLSWORTH COOP|CLAFLIN",
    "rule": "name+town",
    "candidates": [
@@ -1022,6 +1104,14 @@
    ]
   },
   {
+   "key": "basis:MT|SCOULAR|BUTTE",
+   "rule": "name+town",
+   "candidates": [
+    "ea620m6q46",
+    "exg3et1gg9"
+   ]
+  },
+  {
    "key": "basis:ND|CHS - GARRISON|GARRISON",
    "rule": "name+town",
    "candidates": [
@@ -1035,6 +1125,22 @@
    "candidates": [
     "ea1nc1v4x0",
     "et5hzawm96"
+   ]
+  },
+  {
+   "key": "basis:ND|FINLEY FARMERS GRAIN & ELEVATOR|COOPERSTOWN, ND",
+   "rule": "name+town",
+   "candidates": [
+    "e2szc1zqgy",
+    "ecy06re57f"
+   ]
+  },
+  {
+   "key": "basis:ND|FINLEY FARMERS GRAIN & ELEVATOR|FINLEY, ND",
+   "rule": "name+town",
+   "candidates": [
+    "e4xqr5hk77",
+    "emb3a76r2r"
    ]
   },
   {
@@ -1092,13 +1198,15 @@
    "candidates": [
     "e5rgq90b00",
     "ec0m7jfj41",
-    "ejm528j17p"
+    "ejm528j17p",
+    "er13t2t8e3"
    ]
   },
   {
    "key": "basis:NE|ADM GRAIN|LINCOLN",
    "rule": "name+town",
    "candidates": [
+    "e7sten68p9",
     "ebsk8p46t6",
     "er9td1a63t"
    ]
@@ -1200,6 +1308,14 @@
    ]
   },
   {
+   "key": "basis:NE|SCOULAR|BRANDON",
+   "rule": "name+town",
+   "candidates": [
+    "ea9zedtzkg",
+    "ezh97amhcm"
+   ]
+  },
+  {
    "key": "basis:OH|CENTERRACOOP|HEBRON",
    "rule": "name+town",
    "candidates": [
@@ -1245,6 +1361,14 @@
    "candidates": [
     "ea2xyw2922",
     "ejx99j1dkp"
+   ]
+  },
+  {
+   "key": "basis:OH|SCOULAR|COVINGTON",
+   "rule": "name+town",
+   "candidates": [
+    "er1k41bjt4",
+    "ev06b7ffk2"
    ]
   },
   {

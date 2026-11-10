@@ -26,7 +26,10 @@ WHICH STATION (scripts/county_rain.py has the rules)
 WHAT IT WILL NOT DO
   A state whose call fails keeps the file already published. A state whose
   answer is much thinner than the published one (under half the counties, same
-  year) is refused and kept. No file is written that fails --check.
+  year) is refused and kept. No file is written that fails --check. A kept
+  file keeps its numbers; only its source line is brought current. The county
+  rain workflow's commit step copies over main only the data/rain files a run
+  wrote or removed, then runs --normalize-source from main's copy of this file.
 
   python3 scripts/fetch_county_rain.py                    fetch every state
   python3 scripts/fetch_county_rain.py --states IA,KS     some states
@@ -34,6 +37,7 @@ WHAT IT WILL NOT DO
   python3 scripts/fetch_county_rain.py --fixtures DIR --out DIR --edate YYYY-MM-DD
                                                           read saved ACIS answers instead of the network
   python3 scripts/fetch_county_rain.py --check            validate data/rain/*.json
+  python3 scripts/fetch_county_rain.py --normalize-source the one source line on data/rain/*.json and context/*.json
   python3 scripts/fetch_county_rain.py --selftest         offline tests on test/fixtures/rain
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
@@ -42,6 +46,7 @@ import datetime as dt
 import glob
 import json
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -55,6 +60,10 @@ OUT = os.path.join(ROOT, "data", "rain")
 URL = "https://data.rcc-acis.org/MultiStnData"
 SCHEMA = "agsist-county-rain/1"
 DAILY_SCHEMA = "agsist-county-rain-daily/1"
+# The one source line every data/rain/<st>.json carries, fresh or kept (the context files' line is
+# fetch_rain_context.SOURCE). normalize_source() puts both on files a run kept, and the county rain Commit step
+# runs it again from main's copy of these files, so a run that started on older code cannot bring an older line back.
+SOURCE = "NOAA daily records through RCC-ACIS"
 DAILY_DIR = "daily"    # data/rain/daily/<st>.json: the chosen stations' days, for the county pages' Rain Print
 TIMEOUT_S = 180
 BACKOFF_S = (15, 45, 120)
@@ -211,7 +220,7 @@ def daily_rec(vals, snows):
 
 
 def recent30(vals, nv):
-    """The county's last 30 days for the home page's Local conditions card (Sig, Nov 4, 2026):
+    """The county's last 30 days for the home page's Local conditions card (Nov 4, 2026):
     [inches, usual or None, percent or None] from the same days the daily file carries (packed and
     unpacked, so it is the county page's own "Last 30 days" figure), "m" when a day in the window has
     no reading of its own, None (left out) when the year has fewer than 30 days so far."""
@@ -341,8 +350,7 @@ def build_state(src, st, year, edate, C, fetched):
         daily[fips] = daily_rec(x["vals"][:s["days"]], x["snows"][:s["days"]])
     return {"schema": SCHEMA, "state": st, "year": int(year), "edate": edate, "fetched": fetched,
             "normals": ("1991-2020" if period else "current") if has_norm else None,
-            "pick": 4,   # 2: mountain sites ranked last (county_rain.mark_mountain); 3: and a full snowfall record (county_rain.pick_order); 4: that record over NOAA normals (Sig, 2026-10-20); the pages say so
-            "source": "NOAA daily records through RCC-ACIS (MultiStnData)",
+            "source": SOURCE,
             "stations_in_counties": seen, "counties": out, "none": none, "_daily": daily}
 
 
@@ -531,6 +539,14 @@ def check(dirpath=OUT):
     return 1 if bad else 0
 
 
+def normalize_source(dirpath=OUT):
+    """Bring the source line current on every state file and every context file under dirpath (data/rain and
+    data/rain/context). Returns the files rewritten, as "IA" and "context/IA"."""
+    import fetch_rain_context as X
+    done = R.set_source(dirpath, SOURCE, sort_keys=True, newline=True)
+    return done + ["context/" + st for st in R.set_source(os.path.join(dirpath, X.CONTEXT_DIR), X.SOURCE)]
+
+
 # ---------------------------------------------------------------- run
 
 def run(src, states, year, edate, out_dir, C, deadline=None):
@@ -590,6 +606,10 @@ def run(src, states, year, edate, out_dir, C, deadline=None):
                        "counties": {f: daily[f] for f in sorted(d["counties"]) if f in daily}},
                       fh, separators=(",", ":"), sort_keys=True)
             fh.write("\n")
+    # a kept state keeps its numbers, not an older source line
+    fixed = normalize_source(out_dir)
+    if fixed:
+        print(f"source line brought current on {len(fixed)} kept file(s): {', '.join(fixed)}", flush=True)
     return new, failed
 
 
@@ -687,8 +707,8 @@ def selftest():
     ok(_pick([_hi, _lo1, _lo2, _near[1]]) == "LOW ONE", f"a station far above the county's others is picked last: {_pick([_hi, _lo1, _lo2, _near[1]])}")
     _lo1["meta"]["elev"] = 5900
     ok(_pick([_hi, _lo1, _near[1]]) == "HIGH CAMP", "a station only a little higher keeps the usual order")
-    ok(build_state(_Src([_val]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z").get("pick") == 4, "the data file says which pick rule it used")
-    # Sig's rule (2026-10-15): where snow is normal, a station with full rain AND
+    ok(build_state(_Src([_val]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z").get("pick") is None, "the data file does not say how a station is picked")
+    # The owner's rule (2026-10-15): where snow is normal, a station with full rain AND
     # snowfall records beats a nearer gauge whose snowfall has gaps, within 10 mi
     # farther or twice as far. Story County IA style: the real Ames 1.5 NNE
     # CoCoRaHS days (95 snowfall gaps, 7.8 mi from the middle) against a co-op
@@ -710,7 +730,7 @@ def selftest():
        "Story IA: a co-op 14 mi out with rain and snowfall beats the 7.8 mi gauge with snowfall gaps")
     ok(_st_pick([_gauge, _st_row("COOP 30 N", "130000 2", 30.0, _ap, _cs)]) == "AMES 1.5 NNE",
        "past 10 mi farther and twice as far, the nearer gauge stays")
-    # Sig changed the rule 2026-10-20: the full snowfall record now wins over the NOAA-normals tier
+    # The owner changed the rule 2026-10-20: the full snowfall record now wins over the NOAA-normals tier
     ok(_st_pick([_gauge, _st_row("COOP 14 N", "130000 2", 14.0, _ap, _cs, nrm="M")]) == "COOP 14 N",
        "a full record of rain and snowfall beats a nearer gauge with normals whose snowfall has gaps (Sig, Oct 20)")
     ok(_st_pick([_gauge, _st_row("COOP 30 N", "130000 2", 30.0, _ap, _cs, nrm="M")]) == "AMES 1.5 NNE",
@@ -726,7 +746,7 @@ def selftest():
        f"real days: a whole snowfall record beats the Ames gauge's normals: {_st_pick([_g2, _al])}")
     _oa = build_state(_Src([_g2, _al]), "IA", 2026, _sx["as_of"], _ST, "2026-10-14T00:00:00Z")
     _ca = next(iter(_oa["counties"].values()))
-    ok(_ca["usual"] is None and _ca["pct"] is None and _oa["pick"] == 4, "the swap drops the usual year: no normal, no percent, and the file says pick 4")
+    ok(_ca["usual"] is None and _ca["pct"] is None and "pick" not in _oa, "the swap drops the usual year: no normal, no percent, and no pick rule in the file")
     _gappy = ["M" if 40 <= i < 51 else x for i, x in enumerate(_ap)]
     ok(_st_pick([_gauge, _st_row("COOP 14 N", "130000 2", 14.0, _gappy, _cs)]) == "AMES 1.5 NNE",
        "a co-op with 11 rain days missing is not a full record of both")
@@ -741,7 +761,7 @@ def selftest():
     # snowfall comes in the third column and is packed beside the rain
     _sn = {"meta": _val["meta"], "data": [[r[0], r[1], "1.5" if i == 3 else "T" if i == 4 else "0.0"] for i, r in enumerate(_val["data"])]}
     _o = build_state(_Src([_sn]), "IA", 2026, "2026-04-10", _SC, "2026-04-11T00:00:00Z")
-    # the last 30 days (Sig, Nov 4, 2026: the home card's 30-day rain against normal): every day its own
+    # the last 30 days (Nov 4, 2026: the home card's 30-day rain against normal): every day its own
     # reading, else "m"; the usual is the same 30 days' normals; fewer than 30 days so far: none
     _v30 = ["0.00"] * 10 + ["0.10"] * 25 + ["T"] * 5
     _n30 = [0.05] * 40
@@ -986,9 +1006,27 @@ def selftest():
         fat = json.load(open(p))
         for i in range(40):
             fat["counties"][f"19{900 + i}"] = dict(next(iter(fat["counties"].values())))
+        ok(ia["source"] == SOURCE, f"a fresh file carries the one source line: {ia.get('source')}")
+        fat["source"] = "NOAA daily records through RCC-ACIS (MultiStnData)"   # an older line on a kept file
         json.dump(fat, open(p, "w"))
         n3, f3 = run(FixtureSource(fx), ["IA"], 2026, "2026-10-12", d, C)
-        ok(f3 == ["IA"] and len(json.load(open(p))["counties"]) == len(fat["counties"]), "thin answer refused, published file kept")
+        kept = json.load(open(p))
+        ok(f3 == ["IA"] and len(kept["counties"]) == len(fat["counties"]), "thin answer refused, published file kept")
+        ok(kept["source"] == SOURCE and kept["counties"] == fat["counties"],
+           f"a kept file keeps its numbers and comes out with the current source line: {kept.get('source')}")
+        # the Commit step's pass: an older line copied over main is brought current, a current file is not rewritten
+        kept["source"] = "an older line"
+        json.dump(kept, open(p, "w"))
+        ks_m = os.path.getmtime(os.path.join(d, "ks.json"))
+        import fetch_rain_context as X
+        os.makedirs(os.path.join(d, X.CONTEXT_DIR), exist_ok=True)
+        cx = os.path.join(d, X.CONTEXT_DIR, "ia.json")
+        with open(cx, "w") as fh:
+            json.dump({"state": "IA", "source": "station records (MultiStnData)", "counties": {}}, fh, separators=(",", ":"))
+        ok(normalize_source(d) == ["IA", "context/IA"] and json.load(open(p))["source"] == SOURCE
+           and json.load(open(cx))["source"] == X.SOURCE, "normalize_source fixes only the old files, state and context")
+        ok(os.path.getmtime(os.path.join(d, "ks.json")) == ks_m and normalize_source(d) == [], "a current file is left alone")
+        ok(not re.search(r"MultiStnData|StnData|GridData|scripts/", SOURCE), "the source line names no method")
         # a state with no saved answer fails alone
         n4, f4 = run(FixtureSource(fx), ["WY"], 2026, "2026-10-12", d, C)
         ok(f4 == ["WY"] and not os.path.exists(os.path.join(d, "wy.json")), "a failed state writes nothing")
@@ -1008,6 +1046,10 @@ def main(argv):
     out = arg("--out") or OUT
     if "--check" in argv:
         return check(out)
+    if "--normalize-source" in argv:
+        fixed = normalize_source(out)
+        print(f"source line: {len(fixed)} file(s) brought current" + (f" ({', '.join(fixed)})" if fixed else ""))
+        return 0
     year, edate = default_year_and_edate(central_today())
     if arg("--year"):
         year = int(arg("--year"))

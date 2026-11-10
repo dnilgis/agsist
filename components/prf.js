@@ -554,7 +554,7 @@
           return '<button type="button" class="prf-chip' + (g === S.grid && st === S.st && k === S.co ? ' is-on' : '') + '" style="grid-row:' + (r1 - rc.row + 1) + ';grid-column:' + (rc.col - c0 + 1) + '" data-grid="' + g + '" data-county="' + f + k + '">' + g + '</button>';
         }).join('') + '</div></div>';
     /* Not sure which? The grid that holds the most of the county, from the county cells (data/prf/c, the
-       Census Bureau's county lines). A tie, or a file that did not load, keeps the plain line. (Sig, Oct 20) */
+       Census Bureau's county lines). A tie, or a file that did not load, keeps the plain line. (Oct 20) */
     if (c.g.length > 1) countyBiggest(c.g, f + k).then(function (g) {
       var sp = document.getElementById('prf-b-start');
       if (!g || $('prf-b-co').value !== k || $('prf-b-st').value !== st || !sp) return;
@@ -1293,7 +1293,7 @@
     ch.addEventListener('pointermove', chartMove); ch.addEventListener('pointerdown', chartMove);
     window.addEventListener('resize', chartResize);
     $('prf-csv').addEventListener('click', function () { if (lastR && lastR.ok) csv(lastR); });
-    /* Print is one Letter page (Sig, Oct 18): the AGSIST header with the grid, county, state and a QR code back here, the policy as chosen,
+    /* Print is one Letter page (Oct 18): the AGSIST header with the grid, county, state and a QR code back here, the policy as chosen,
        the answer, the chart, every year's payout, the conditions and sources, a sold state's sponsor box (prf-sponsor.js), the byline. */
     $('prf-print').addEventListener('click', function () { render(); track('prf_print', { grid: S.grid }); window.print(); });
     $('prf-share-b').addEventListener('click', function () {

@@ -3,6 +3,7 @@ name: Build State Stats (USDA NASS)
 
 on:
   push:
+    branches: [main]
     paths:
       - "scripts/build_state_stats.py"
   schedule:

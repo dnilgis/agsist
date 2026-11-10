@@ -16,7 +16,7 @@ const read = (p) => fs.readFileSync(join(ROOT, p), 'utf8');
 const page = read('milk-prices.html');
 // The hand-checked numbers are asserted on a frozen copy of the herds file (Nov 3, 2026); the live file is rewritten
 // by dairy.yml each month (Wisconsin's Nov 1 count), so it gets the shape checks, and the page is checked against
-// the seed the builder makes from it (Sig, Nov 3: no test pins live data to a literal value).
+// the seed the builder makes from it (Nov 3: no test pins live data to a literal value).
 const herds = JSON.parse(read('test/fixtures/milk-herds/dairy-herds.json'));
 const live = JSON.parse(read('data/dairy-herds.json'));
 const herdsSeed = (file) => execFileSync('python3', ['-c',

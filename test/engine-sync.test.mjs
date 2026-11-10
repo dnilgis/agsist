@@ -1,5 +1,5 @@
-/* BUILD-RULES 63: engine sync is part of every merge that touches scripts/ (Nov 4, 2026).
- * On Nov 3 the engine copy (dnilgis/feedbag engine-agsist) was missing the Daily's new safety checks for hours:
+/* build rule 63: engine sync is part of every merge that touches scripts/ (Nov 4, 2026).
+ * On Nov 3 the engine copy (the private repo engine-agsist) was missing the Daily's new safety checks for hours:
  * the sync after a merge was a step the lead had to remember. Two guards, held here:
  *   - .github/workflows/engine-sync.yml copies main's engine paths to the engine branch on every push to main that
  *     changes them, after refusing when a file is only in the engine (a save would delete it), never forced;

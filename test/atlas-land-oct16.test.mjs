@@ -47,7 +47,7 @@ test("the state's own survey: dated, named in plain text, read from a saved copy
   assert.equal(U.IA.date, "Dec 9, 2025");
   assert.equal(U.NE.date, "Jun 30, 2026");
   const s = read("farmland-atlas/iowa/story-county.html");
-  // Nov 2: the survey site joined source_links.DATA_SOURCE (no direct links to data sources, Sig Oct 29):
+  // Nov 2: the survey site joined source_links.DATA_SOURCE (no direct links to data sources, Oct 29):
   // the survey is named with its date in plain text
   assert.match(s, /Newer local survey: ISU Land Value Survey 2025, Iowa State University, released Dec 9, 2025/);
   assert.ok(!s.includes("farmland.card.iastate.edu"), "the survey site is not linked");

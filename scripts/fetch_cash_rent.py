@@ -345,7 +345,7 @@ def irrigation_signal(c):
     Irrigated rent counts only when NASS published it in IRR_RENT_MIN_YEARS or
     more years. One stray year is thin evidence of material irrigated acres:
     Polk IA has a single irrigated rent (2017) and no irrigated yield ever, and
-    that one figure withheld its rent share. Relaxed 2026-10-06 at Sig's call;
+    that one figure withheld its rent share. Relaxed 2026-10-06 at a product decision;
     110 counties had exactly one irrigated-rent year. An irrigated county yield
     in any year still counts on its own.
     """

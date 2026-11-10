@@ -934,7 +934,7 @@
     EV.forEach(function (t) { window.removeEventListener(t, go, true); });
     if (window.AgsistSignup || document.querySelector('script[src*="/components/signup-ask.js"]')) return;
     var s = document.createElement('script');
-    s.src = '/components/signup-ask.js?v=21';
+    s.src = '/components/signup-ask.js?v=22';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
