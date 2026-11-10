@@ -6,8 +6,8 @@ agsist-api subs worker's token-gated list routes with LIST_TOKEN, builds one CSV
 list, and mails them to REPORT_TO (else FROM_ADDR, else SMTP_USER).
 
 The repository is public and so are its Actions logs, so this script prints
-COUNTS ONLY. No address ever goes to stdout, a file in the repo, or an artifact:
-the email is the only place the list goes.
+neither addresses nor counts: the email is the only place the list and its
+totals go. The token goes in an Authorization header, never in the address.
 
   python3 scripts/subscriber_report.py             build and send
   python3 scripts/subscriber_report.py --selftest  fixtures, no network, no mail
@@ -29,8 +29,8 @@ def env(n, d=None):
 
 
 def get(base, path, token):
-    req = urllib.request.Request(f"{base.rstrip('/')}{path}?token={token}" + ("&format=json" if path == "/list" else ""),
-                                 headers={"User-Agent": "agsist-subscriber-report"})
+    req = urllib.request.Request(f"{base.rstrip('/')}{path}" + ("?format=json" if path == "/list" else ""),
+                                 headers={"User-Agent": "agsist-subscriber-report", "Authorization": "Bearer " + token})
     try:
         with urllib.request.urlopen(req, timeout=60) as r:
             return json.loads(r.read().decode())
@@ -154,8 +154,7 @@ def main():
         print("::error::LIST_TOKEN, SMTP_USER, SMTP_PASS and a recipient are required"); sys.exit(1)
     lists = build(get(base, "/list", token), get(base, "/alert-list", token), get(base, "/watch-list", token),
                   get(base, "/elevator-watch-list", token), get(base, "/price-watch-list", token))
-    for line in summary(lists):
-        print(line)
+    print("read %d lists" % len(lists))
     m = message(lists, to, sender, env("FROM_NAME", "AGSIST"))
     with smtplib.SMTP(env("SMTP_HOST", "smtp.gmail.com"), int(env("SMTP_PORT", "587")), timeout=30) as c:
         c.starttls(); c.login(user, pw); c.send_message(m)

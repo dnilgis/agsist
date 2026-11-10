@@ -1,5 +1,5 @@
 name: Subscriber counts
-# Subscriber counts.
+# Subscriber counts: saved to the private repo, never printed to the job log.
 
 on:
   workflow_dispatch:
@@ -10,22 +10,44 @@ permissions:
 jobs:
   count:
     runs-on: ubuntu-latest
-    timeout-minutes: 3
+    timeout-minutes: 5
     steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
       - name: Counts
         env:
           LIST_URL:   ${{ secrets.LIST_URL }}
           LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
         run: |
+          mkdir -p private/data
           python3 - <<'PY'
           import json, os, urllib.parse, urllib.request
+          from datetime import datetime, timezone
           u = urllib.parse.urlsplit(os.environ["LIST_URL"].strip())
-          url = "%s://%s/count?token=%s" % (u.scheme, u.netloc, urllib.parse.quote(os.environ["LIST_TOKEN"].strip()))
-          d = json.load(urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": "agsist-count"}), timeout=30))
+          req = urllib.request.Request("%s://%s/count" % (u.scheme, u.netloc),
+                                       headers={"User-Agent": "agsist-count", "Authorization": "Bearer " + os.environ["LIST_TOKEN"].strip()})
+          try:
+              d = json.load(urllib.request.urlopen(req, timeout=30))
+          except Exception as ex:  # the error only: never the URL or the token
+              print("::error::count failed: %s %s" % (type(ex).__name__, getattr(ex, "code", ""))); raise SystemExit(1)
           keep = {k: v for k, v in d.items() if isinstance(v, (int, float)) or k == "by_source"}
           if isinstance(d.get("forms"), dict):
               keep["forms"] = {str(k): v for k, v in d["forms"].items() if isinstance(v, (int, float)) and "@" not in str(k)}
           if isinstance(keep.get("by_source"), dict):
               keep["by_source"] = {str(k): v for k, v in keep["by_source"].items() if isinstance(v, (int, float)) and "@" not in str(k)}
-          print(json.dumps(keep, indent=2, sort_keys=True))
+          keep["generated_at"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+          with open("private/data/subs-count.json", "w") as f:
+              json.dump(keep, f, indent=2, sort_keys=True)
+          print("counts read")
           PY
+      - name: Save to the private repo
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+        run: bash scripts/push_raw.sh "subscriber counts" private/data/subs-count.json
