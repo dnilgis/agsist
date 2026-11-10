@@ -97,7 +97,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "f=\"$CLAUDE_PROJECT_DIR/scripts/dev/session-compact.sh\"; [ -f \"$f\" ] || { echo 'Read the private notes before building.'; exit 0; }; bash \"$f\"; exit 0",
+            "command": "f=\"$CLAUDE_PROJECT_DIR/scripts/dev/session-compact.sh\"; [ -f \"$f\" ] || { echo 'Read notes/HANDOFF.md (Now), BUILD-RULES.md and STANDING-DECISIONS.md in the private repo dnilgis/feedbag. Code jobs take scripts/, test/ and build/ from the private engine branch (.github/actions/engine, .github/engine-paths).'; exit 0; }; bash \"$f\"; exit 0",
             "timeout": 15
           }
         ]

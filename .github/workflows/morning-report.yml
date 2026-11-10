@@ -132,6 +132,7 @@ jobs:
           FROM_NAME: ${{ secrets.FROM_NAME }}
           FORMS_TO: ${{ secrets.FORMS_TO }}
           SPONSOR_TO: ${{ secrets.SPONSOR_TO }}
+          TODO_EDIT_URL: ${{ vars.TODO_EDIT_URL }}
           SNAPSHOT: .morning-report/counts.json
           DRY_RUN: ${{ inputs.dry_run == true && '1' || '' }}
         run: python3 scripts/morning_report.py

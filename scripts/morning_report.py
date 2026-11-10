@@ -109,7 +109,14 @@ STATE_NAMES = {"IA": "Iowa", "IL": "Illinois", "IN": "Indiana", "KS": "Kansas", 
                "OR": "Oregon", "WY": "Wyoming", "ON": "Ontario", "MB": "Manitoba", "SK": "Saskatchewan", "AB": "Alberta"}
 PRIVATE_KEY_WARN_DAYS = 14     # same as cron_health.KEY_WARN_DAYS: say it two weeks out
 TODO_FILE = "private/todo.md"
-TODO_EDIT = "https://github.com/dnilgis/feedbag/edit/private-data/" + TODO_FILE
+
+
+def todo_edit():
+    """The edit link for the to-do list: TODO_EDIT_URL (a repository variable), an https GitHub link or ''."""
+    u = (os.environ.get("TODO_EDIT_URL") or "").strip()
+    return u if u.startswith("https://github.com/") and not any(c in u for c in ' "<>') else ""
+
+
 # The two clocks the workflow lists: 11:40 UTC is 6:40 am CDT, 12:40 UTC is 6:40 am CST.
 CRONS = ("40 11 * * *", "40 12 * * *")
 # Orders and requests: the digest's kinds plus sponsor applications (/sponsor-apps).
@@ -1540,7 +1547,9 @@ def text_body(rep, now):
         out += ["", title]
         out.extend(lines)
         out.extend(table_text(rep.tables.get(title)))
-    out += ["", "To check off a to-do, edit the list on GitHub: %s" % TODO_EDIT,
+    link = todo_edit()
+    out += ["", ("To check off a to-do, edit the list on GitHub: %s" % link) if link else
+            "To check off a to-do, edit the list in the private repo.",
             "Counts only: no reader or customer address is ever in this email.", "", "-- ", ADDRESS]
     return "\n".join(out) + "\n"
 
@@ -1580,9 +1589,11 @@ def html_body(rep, now):
         if rep.tables.get(title):
             parts.append(table_html(rep.tables[title]))
             parts.append(ul(rep.tables[title].get("after") or []))
+    link = todo_edit()
+    todo = ('<a href="%s">edit the list on GitHub</a>' % e(link, quote=True)) if link else "edit the list in the private repo"
     parts.append('<p style="font-size:13px;color:#6b6b6b;margin-top:22px;line-height:1.45">To check off a to-do, '
-                 '<a href="%s">edit the list on GitHub</a>.<br>Counts only: no reader or customer address is ever in '
-                 'this email.<br>%s</p>' % (e(TODO_EDIT, quote=True), e(ADDRESS)))
+                 '%s.<br>Counts only: no reader or customer address is ever in '
+                 'this email.<br>%s</p>' % (todo, e(ADDRESS)))
     return ('<!doctype html><html><head><meta name="viewport" content="width=device-width,initial-scale=1"></head>'
             '<body style="margin:0;background:#fff"><div style="font-family:Georgia,serif;max-width:600px;margin:0 auto;'
             'padding:16px;color:#1a1a1a;background:#fff">%s</div></body></html>' % "".join(parts))
@@ -1990,7 +2001,26 @@ def selftest():
        and "/hail-map" not in t, t)
     ck("only unchecked to-dos", "- Test Stripe with a $19 purchase and refund it" in t and "- Join Something Special from Wisconsin" in t
        and "Done thing" not in t and "not a task" not in t, t)
-    ck("footer says how to check one off", TODO_EDIT in t and ('href="%s"' % TODO_EDIT) in h, t[-400:])
+    ck("footer without TODO_EDIT_URL: no link, plain words", "edit the list in the private repo." in t and
+       "edit the list in the private repo." in h and "/edit/" not in t, t[-400:])
+    link = "https://github.com/example/repo/edit/branch/todo.md"
+    old_link = os.environ.get("TODO_EDIT_URL")
+    try:
+        os.environ["TODO_EDIT_URL"] = link
+        def bodies():
+            out = []
+            run(Fake(*fixtures(now)), now, False, out.append, "sig@x.com", dict(snap))
+            return (out[0].get_body(("plain",)).get_content(), out[0].get_body(("html",)).get_content()) if out else ("", "")
+        t2, h2 = bodies()
+        ck("footer with TODO_EDIT_URL links the list", link in t2 and ('href="%s"' % link) in h2, t2[-400:])
+        os.environ["TODO_EDIT_URL"] = 'javascript:alert(1)'
+        t3, h3 = bodies()
+        ck("a non-GitHub TODO_EDIT_URL is not linked", "javascript" not in t3 + h3 and "edit the list in the private repo." in t3)
+    finally:
+        if old_link is None:
+            os.environ.pop("TODO_EDIT_URL", None)
+        else:
+            os.environ["TODO_EDIT_URL"] = old_link
 
     print("\nno addresses")
     addrs = ["jane@farm.com", "bo@farm.com", "al@chetek.coop", "gauge1@y.org", "gauge2@y.org", "boss@seed.com", "pat@x.com", "office@coop.com", "a1@farm.com"]
