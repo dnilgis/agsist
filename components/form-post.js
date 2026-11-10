@@ -37,11 +37,8 @@
  * as before.
  *
  * LIVE HOST ONLY: nothing goes to Formspree
- * unless the page is on agsist.com or www.agsist.com. From a local copy
- * (127.0.0.1, localhost, a preview host) the worker refuses the Origin with
- * 403, and that used to send a test post to the real backup form (a made-up
- * Rain Print order reached Sig on Oct 30). Off the live host the Formspree
- * step rejects with 'not sent' (.offsite true), so the page shows its own
+ * unless the page is on agsist.com or www.agsist.com. Off the live host
+ * (a local copy or a preview) the Formspree step rejects with 'not sent' (.offsite true), so the page shows its own
  * "nothing was sent" line and an outbox keeps the item.
  * agsistFormPost.liveHost() says which it is.
  */
