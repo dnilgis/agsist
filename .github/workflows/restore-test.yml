@@ -1,0 +1,92 @@
+name: Restore test (monthly)
+# Restore test (monthly).
+
+on:
+  schedule:
+    - cron: '19 10 6 * *'
+  # cron above, by either trigger, do the work within 360 minutes
+  workflow_run:
+    workflows: ["Fetch Grain Bids"]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      day:
+        description: "Test this day (YYYY-MM-DD) instead of the month's pick"
+        type: string
+        default: ""
+      state:
+        description: "With a day: the state folder name (iowa, north-dakota, ...)"
+        type: string
+        default: ""
+
+permissions:
+  contents: read
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    outputs:
+      go: ${{ steps.g.outputs.go }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          sparse-checkout: |
+            scripts/cron_gate.py
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - id: g
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: >-
+          python3 scripts/cron_gate.py tick --workflow restore-test.yml --max-lag 360
+          --cron "19 10 6 * *"
+
+  restore:
+    needs: gate
+    if: needs.gate.outputs.go == '1'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    concurrency:
+      group: restore-test
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          filter: blob:none
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Selftest (no network)
+        run: python3 scripts/restore_test.py --selftest > /dev/null
+      - name: Daily snapshots from the private repo
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+        run: bash scripts/fetch_private.sh raw
+      - name: Rebuild a past day's town cards and compare
+        env:
+          DAY: ${{ inputs.day }}
+          STATE: ${{ inputs.state }}
+        run: |
+          if [ -n "$DAY" ]; then
+            case "$DAY" in [0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]) ;; *) echo "::error::day is YYYY-MM-DD"; exit 1;; esac
+            set -- --day "$DAY"
+            if [ -n "$STATE" ]; then set -- "$@" --state "$STATE"; fi
+          fi
+          python3 scripts/restore_test.py "$@"
