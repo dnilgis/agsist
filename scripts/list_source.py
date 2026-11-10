@@ -265,8 +265,9 @@ def _note_suppressed():
 
 
 def drop_suppressed(rows, keys=None):
-    """rows (records with "email", or addresses) without the suppressed ones. keys: a set of
-    bounces.key() values (tests); else this run's, when a sender asked (suppress_for)."""
+    """rows (records with "email", or addresses) without the suppressed ones. keys: {bounces.key(): last
+    bounce day} (or a set, in tests); else this run's, when a sender asked (suppress_for). A row whose
+    signup or confirmation time is after the last bounce day is kept (a new opt-in)."""
     if not isinstance(rows, list) or not rows:
         return rows
     if keys is None:
@@ -279,10 +280,17 @@ def drop_suppressed(rows, keys=None):
     out = []
     for r in rows:
         e = r.get("email") if isinstance(r, dict) else (r if isinstance(r, str) else None)
-        k = bounces.key(e) if e else None
+        try:
+            k = bounces.key(e) if e else None
+        except bounces.NoKey:
+            return rows
         if k and k in keys:
-            STATE["dropped"].add(k)
-            continue
+            # a fresh signup or confirmation after the last bounce is a new opt-in: it goes out
+            last = keys.get(k) if isinstance(keys, dict) else ""
+            ts = (r.get("ts") or r.get("confirmed") or r.get("confirmed_at")) if isinstance(r, dict) else None
+            if not (last and bounces.opted_in_after({"ids": {"x": {"day": last}}}, ts)):
+                STATE["dropped"].add(k)
+                continue
         out.append(r)
     _note_suppressed()
     return out

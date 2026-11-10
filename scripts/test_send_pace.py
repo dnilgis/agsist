@@ -21,6 +21,7 @@ And everywhere: no address in anything printed or recorded.
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
+import hashlib
 import io
 import json
 import os
@@ -37,6 +38,7 @@ import send_pace  # noqa: E402
 import bounces  # noqa: E402
 import delivery_line  # noqa: E402
 import list_source  # noqa: E402
+os.environ["UNSUB_SECRET"] = "pace-test-secret"   # the bounce key's secret (made up)
 
 fails, passes = [], 0
 
@@ -93,9 +95,10 @@ p, slept, *_ = walk(["only@x.com"])
 check(slept == [], "one reader: no wait at all")
 p, slept, *_ = walk([])
 check(slept == [] and len(p) == 0, "an empty list: nothing")
-check(send_pace.Pacer(["a", "b", "c"], environ={"SEND_BATCH": "0"}).batch == 20
-      and send_pace.Pacer(["a"], environ={"SEND_BATCH_PAUSE": "-3"}).pause == 4.0,
-      "a nonsense setting falls back to the default")
+with redirect_stdout(io.StringIO()):
+    check(send_pace.Pacer(["a", "b", "c"], environ={"SEND_BATCH": "0"}).batch == 20
+          and send_pace.Pacer(["a"], environ={"SEND_BATCH_PAUSE": "-3"}).pause == 4.0,
+          "a nonsense setting falls back to the default")
 
 # deferrals
 bounces.PENDING[:] = []
@@ -124,19 +127,75 @@ p.defer(soft)
 next(it)
 check(p.more(), "more(): the last reader of the first pass, with a retry still to come")
 check(next(it, None) == "a@x.com" and not p.more(), "more(): nothing after the retry")
+# S1: the retry pass's own gaps stay inside the cap too
+many_soft = {"r%d@example.com" % i: [refused("r%d@example.com" % i, 450, "4.2.1 later")] for i in range(0, 40, 2)}
+p, slept, sent, failed = walk(addrs[:40], {"SEND_PACE_MAX": "30"}, fail=many_soft)
+check(sum(slept) <= 30.0 + 1e-6 and len(sent) == 40, "the whole run, retries too, waits at most the cap (%.2f s, cap 30)" % sum(slept))
+# S2/S3: the retry pass starts on a fresh connection; a deferral never tried again is reported
+conns = []
+p = send_pace.Pacer(["a@x.com", "b@x.com", "c@x.com"], sleep=lambda s: None, environ={})
+conn = "c0"
+for it in p:
+    conn = p.fresh(conn, lambda: (conns.append(1), "c%d" % len(conns))[1])
+    if it == "a@x.com" and p.passno == 1:
+        p.defer(soft)
+check(len(conns) == 1 and conn == "c1", "one fresh connection for the retry pass, none before it (%d)" % len(conns))
+p = send_pace.Pacer(["a@x.com", "b@x.com", "c@x.com"], sleep=lambda s: None, environ={})
+for it in p:
+    if it == "a@x.com":
+        p.defer(soft)
+    if it == "b@x.com":
+        break                                  # the loop stops (marks broke, the server went away)
+check(p.unsent_addresses() == ["a@x.com"], "a deferral the loop never came back to is reported unsent")
+p = send_pace.Pacer(["a@x.com", "b@x.com"], sleep=lambda s: None, environ={})
+for it in p:
+    if p.passno == 1 and it == "a@x.com":
+        p.defer(soft)
+    if p.passno == 2:
+        break
+check(p.unsent_addresses() == [], "a deferral that was tried again is not double-reported")
+p = send_pace.Pacer(["a@x.com"], sleep=lambda s: None, environ={})
+check(p.fresh("c0", lambda: 1 / 0) == "c0", "no fresh connection to be had: the old one stays")
+# S6: nonsense settings fall back to the defaults, with one warning each
+buf = io.StringIO()
+send_pace.WARNED.clear()
+with redirect_stdout(buf):
+    p = send_pace.Pacer(["a"], environ={"SEND_BATCH": "2.5", "SEND_GAP": "nan", "SEND_BATCH_PAUSE": "inf",
+                                         "SEND_RETRY_WAIT": "-3", "SEND_PACE_MAX": "1e9"})
+check((p.batch, p.gap, p.pause, p.retry_wait, p.budget) == (20, 1.2, 4.0, 60.0, 600.0),
+      "nonsense settings are the defaults: %r" % ((p.batch, p.gap, p.pause, p.retry_wait, p.budget),))
+check(buf.getvalue().count("::warning::") == 5 and "@" not in buf.getvalue(), "each nonsense setting says so once")
 
 # hard bounces
 bounces.PENDING[:] = []
 cases = [
     (refused("h@x.com", 550, "5.1.1 The email account that you tried to reach does not exist"), "hard"),
     (refused("h@x.com", 553, "5.1.3 bad address syntax"), "hard"),
-    (refused("h@x.com", 550, "no such user"), "hard"),
+    (refused("h@x.com", 550, "5.1.2 domain not found"), "hard"),
+    (refused("h@x.com", 550, "5.1.6 recipient has moved"), "hard"),
+    (refused("h@x.com", 550, "5.1.10 recipient address rejected: null MX"), "hard"),
+    (refused("h@x.com", 550, "5.2.1 mailbox disabled"), "hard"),
+    (refused("h@x.com", 550, "no such user here"), "hard"),
+    (refused("h@x.com", 551, "User unknown"), "hard"),
+    (refused("h@x.com", 553, "mailbox does not exist"), "hard"),
+    (refused("h@x.com", 554, "no such user"), None),
+    (refused("h@x.com", 550, "requested action not taken: mailbox unavailable"), None),
+    (refused("h@x.com", 550, "blocked by spamhaus: user unknown"), None),
+    (refused("h@x.com", 550, "relay not permitted"), None),
     (refused("h@x.com", 550, "5.7.1 Our system has detected that this message is likely unsolicited mail"), None),
     (refused("h@x.com", 552, "5.2.2 mailbox full"), None),
+    (refused("h@x.com", 550, "5.2.3 message too long"), None),
+    (refused("h@x.com", 552, "5.3.4 message too big"), None),
+    (refused("h@x.com", 550, "5.4.4 unable to route"), None),
+    (refused("h@x.com", 550, "5.0.0 rejected"), None),
+    (refused("h@x.com", 550, "5.5.0 syntax"), None),
+    (refused("h@x.com", 550, "5.6.0 bad content"), None),
+    (refused("h@x.com", 550, "5.7.26 unauthenticated mail"), None),
     (refused("h@x.com", 452, "4.2.2 mailbox over quota"), "soft"),
-    (smtplib.SMTPDataError(550, b"5.1.1 user unknown"), "hard"),
+    (smtplib.SMTPDataError(550, b"5.1.1 user unknown"), None),
     (smtplib.SMTPDataError(554, b"5.7.1 rejected for policy reasons"), None),
     (smtplib.SMTPDataError(550, b"message refused"), None),
+    (smtplib.SMTPSenderRefused(550, b"5.1.1 user unknown", "news@x"), None),
     (smtplib.SMTPSenderRefused(550, b"5.7.0 sender not allowed", "news@x"), None),
     (smtplib.SMTPServerDisconnected("gone"), None),
     (smtplib.SMTPRecipientsRefused("not a dict"), None),
@@ -194,35 +253,69 @@ for n in ONE_READER:
 # ───────────────────────── 3. the ledger ─────────────────────────
 K = bounces.key
 a, b = "gone@example.org", "Typo@Example.net"
+check(K(a) != hashlib.sha256(a.encode()).hexdigest()[:32] and K(a) != K(a, secret="other"),
+      "the key is an HMAC under the jobs' secret, not a plain hash anyone can redo")
+saved_secret = os.environ.pop("UNSUB_SECRET")
+try:
+    try:
+        K(a)
+        check(False, "no secret: no key")
+    except bounces.NoKey:
+        check(True, "")
+    check(bounces.record(a, "550 5.1.1") is None, "no secret: nothing is recorded")
+finally:
+    os.environ["UNSUB_SECRET"] = saved_secret
 e1 = {"h": K(a), "id": "dsn:1", "day": "2026-11-10", "code": "5.1.1", "src": "dsn"}
 led, ch = bounces.fold(None, [e1], today="2026-11-10")
 check(ch["recorded"] == [K(a)] and not led["suppressed"], "one hard bounce: recorded, not suppressed")
-led, ch = bounces.fold(led, [e1], today="2026-11-11")
-check(not ch["recorded"] and not led["suppressed"], "the same notice read again (an 8-day inbox window) counts once")
+led, ch = bounces.fold(led, [e1, dict(e1, id="smtp:x:1")], today="2026-11-10")
+check(ch["recorded"] == [K(a)] and not led["suppressed"],
+      "a second hard bounce on the SAME day does not suppress (two days are needed); the same notice again counts once")
 e2 = dict(e1, id="smtp:daily:9.1:0", day="2026-11-11", src="smtp")
 led, ch = bounces.fold(led, [e2], today="2026-11-11")
-check(led["suppressed"] == [K(a)] and ch["suppressed"] == [K(a)], "a second hard bounce suppresses the address")
-check(bounces.suppressed_keys(led) == {K(a)}, "suppressed_keys agrees with the ledger")
+check(led["suppressed"] == [K(a)] and ch["suppressed"] == [K(a)], "a hard bounce on a second day suppresses the address")
+check(bounces.suppressed_keys(led) == {K(a): "2026-11-11"}, "suppressed_keys gives the key and its last bounce day")
 check(K(b) == K("typo@example.net") == K(" typo@example.net "), "the key ignores case and spaces")
 led, ch = bounces.fold(led, [], today="2026-11-12", undo=[K(a)])
-check(not led["suppressed"] and ch["undone"] == [K(a)] and len(led["addr"][K(a)]["ids"]) == 2,
+check(not led["suppressed"] and ch["undone"] == [K(a)] and len(led["addr"][K(a)]["ids"]) == 3,
       "an undo puts the address back and keeps its history (a flag, never a delete)")
 led, _ = bounces.fold(led, [dict(e1, id="dsn:2", day="2026-11-13")], today="2026-11-13")
 check(not led["suppressed"], "after an undo one new hard bounce does not suppress again")
 led, _ = bounces.fold(led, [dict(e1, id="dsn:3", day="2026-11-14")], today="2026-11-14")
-check(led["suppressed"] == [K(a)], "two new ones after the undo do")
+check(led["suppressed"] == [K(a)], "two new days after the undo do")
 hand = json.loads(json.dumps(led))
 hand["addr"][K(a)]["undo"] = "2026-11-30"
-check(bounces.suppressed_keys(hand) == set(), "a hand-set undo day in the ledger is honoured by the senders")
+check(bounces.suppressed_keys(hand) == {}, "a hand-set undo day in the ledger is honoured by the senders")
+# S7: a new opt-in after the last bounce is the undo
+led_o, ch = bounces.fold(led, [], today="2026-11-20", optins={K(a): "2026-11-18T10:00:00Z"})
+check(not led_o["suppressed"] and ch["undone"] == [K(a)], "a signup after the last bounce puts the address back")
+led_o, ch = bounces.fold(led, [], today="2026-11-20", optins={K(a): 1762000000000})   # Nov 1, before the bounces
+check(led_o["suppressed"] == [K(a)] and not ch["undone"], "an old signup time does not")
 led, ch = bounces.fold(led, [{"h": "dead@example.org", "id": "x"}, {"h": K(a)}], today="2026-11-14")
 check(not ch["recorded"], "an event with an address for a key, or with no id, is refused")
 check("@" not in json.dumps(led), "no address anywhere in the ledger")
+# B1: the ceiling
+crowd = ["c%d@example.com" % i for i in range(11)]
+evs = [dict(e1, h=K(x), id="d1" + x, day="2026-11-10") for x in crowd] + [dict(e1, h=K(x), id="d2" + x, day="2026-11-11") for x in crowd]
+led_c, ch = bounces.fold(None, evs, today="2026-11-11", list_size=1000)
+check(not led_c["suppressed"] and len(ch["held"]) == 11 and led_c["held"]["count"] == 11 and led_c["held"]["limit"] == 10,
+      "11 at once (over 10): nobody suppressed, all held")
+check(bounces.suppressed_keys(led_c) == {}, "a held fold leaves nobody out of a list")
+led_c, ch = bounces.fold(None, evs[:6] + evs[11:17], today="2026-11-11", list_size=100)
+check(not led_c["suppressed"] and len(ch["held"]) == 6, "6 at once on a list of 100 (over 5%): held")
+led_c, ch = bounces.fold(None, evs[:5] + evs[11:16], today="2026-11-11", list_size=100)
+check(len(led_c["suppressed"]) == 5 and not ch["held"] and "held" not in led_c, "5 on a list of 100: suppressed")
+led_c, ch = bounces.fold(None, evs, today="2026-11-11", list_size=1000, accept=True)
+check(len(led_c["suppressed"]) == 11 and not ch["held"], "a hand run that accepts applies a held fold")
 try:
     bounces.parse(b"[1, 2]")
     check(False, "a broken ledger is refused")
 except ValueError:
     check(True, "")
 check(bounces.parse(None) == bounces.empty(), "a missing ledger is an empty one")
+n1, n2 = bounces.event_name(), bounces.event_name()
+check(n1 != n2 and n1.startswith(bounces.EVENTS + "/") and str(os.getpid()) in n1,
+      "every event file name is new, even twice in one process")
 
 # ───────────────────────── 4. lists leave suppressed addresses out ─────────────────────────
 list_source.reset()
@@ -234,12 +327,15 @@ check(list_source.drop_suppressed(["keep@example.com", "gone@example.org"], keys
 list_source.reset()
 t = delivery_line.Tally("pace-test")
 list_source.suppress_for(t)
-list_source.STATE["sup_keys"] = {K(a)}
+list_source.STATE["sup_keys"] = {K(a): "2026-11-11"}
 kept = list_source.drop_suppressed(rows)
 check(kept == [rows[0], rows[2]] and t.extra.get("suppressed") == 1, "a sender's list: left out and counted (%r)" % t.extra)
 list_source.drop_suppressed(rows)
 check(t.extra.get("suppressed") == 1, "the same address read twice in one run counts once")
 check(t.line().endswith("suppressed=1") and "@" not in t.line(), "the DELIVERY line: %s" % t.line())
+fresh_rows = [{"email": "gone@example.org", "ts": "2026-11-12T08:00:00Z"}, {"email": "gone@example.org", "ts": "2026-11-11T08:00:00Z"}]
+check(list_source.drop_suppressed(fresh_rows, keys={K(a): "2026-11-11"}) == fresh_rows[:1],
+      "a row signed up or confirmed after the last bounce day goes out (a new opt-in); one from that day does not")
 
 
 def fake_request(method, url, body=None, headers=None, timeout=30):
@@ -279,6 +375,7 @@ try:
     list_source.suppress_for(t3)
     led2, _ = bounces.fold(None, [e1, e2])
     bounces.write_ledger(led2)
+    check(bounces.suppressed_keys(bounces.read_ledger()) == {K(a): "2026-11-11"}, "the ledger file reads back")
     kept = list_source.drop_suppressed(rows)
     check(kept == [rows[0], rows[2]] and t3.extra.get("suppressed") == 1, "the ledger file is read and applied")
     check("@" not in (Path(tmp) / bounces.LEDGER).read_text(), "the written ledger holds no address")
@@ -288,9 +385,42 @@ try:
     bounces.record("dead@example.org", "550 5.1.1")
     with redirect_stdout(io.StringIO()):
         ok = bounces.save()
-    evs = bounces.read_events()
+    evs, files = bounces.read_events()
     check(ok and len(evs) == 1 and evs[0]["h"] == K("dead@example.org") and "@" not in json.dumps(evs),
           "send-time hard bounces are saved and read back by key")
+    # S4: the fold step folds them and deletes the files it folded, not one written after its read
+    late = Path(tmp) / bounces.EVENTS / "later.jsonl"
+    late.write_text(json.dumps(dict(e1, id="late")) + "\n")
+    led3, _ = bounces.fold(None, evs)
+    bounces.write_ledger(led3, delete=files)
+    left = sorted(p.name for p in (Path(tmp) / bounces.EVENTS).glob("*.jsonl"))
+    check(left == ["later.jsonl"], "folded event files are pruned; a later one stays: %r" % left)
+    # the fold step end to end: lists faked, mail and issue captured
+    import log_safe
+    mails, issues = [], []
+    real_lists, real_mail, real_issue = bounces._lists, log_safe.owner_mail, bounces._issue
+    try:
+        bounces._lists = lambda: {"daily": [{"email": "c%d@example.com" % i, "ts": 1} for i in range(11)] + [{"email": a, "ts": 1}]
+                                  + [{"email": "r%d@example.com" % i, "ts": 1} for i in range(300)],
+                                  "hail": [], "notices": []}
+        log_safe.owner_mail = lambda subj, lines: mails.append((subj, list(lines))) or True
+        bounces._issue = lambda n, lim: issues.append((n, lim)) or True
+        inbox = Path(tmp) / "inbox.json"
+        inbox.write_text(json.dumps(evs_crowd := [dict(e1, h=K(x), id="i1" + x, day="2026-11-10") for x in crowd]
+                                    + [dict(e1, h=K(x), id="i2" + x, day="2026-11-11") for x in crowd]))
+        os.environ["BOUNCE_EVENTS_IN"] = str(inbox)
+        out = io.StringIO()
+        with redirect_stdout(out):
+            bounces.fold_main()
+        led4 = bounces.read_ledger()
+        check(not bounces.suppressed_keys(led4) and issues == [(11, 10)] and mails and "HELD" in mails[0][1][0],
+              "the fold step over the ceiling: nobody suppressed, the owner mailed, an issue opened (%r %r %r)"
+              % (len(bounces.suppressed_keys(led4)), issues, out.getvalue()[-300:]))
+        check("@" not in out.getvalue(), "the fold step's log names no address")
+        check(any("c3@example.com" in ln for ln in mails[0][1]), "the owner's private mail names who would have gone")
+    finally:
+        bounces._lists, log_safe.owner_mail, bounces._issue = real_lists, real_mail, real_issue
+        os.environ.pop("BOUNCE_EVENTS_IN", None)
 finally:
     list_source.FLAG_ROOT = old_root
     for k, v in old.items():
@@ -383,8 +513,8 @@ w = Worker()
 s = SMTP({"n5@farm.com": [smtplib.SMTPSenderRefused(421, b"4.7.0 Try again later, closing connection", "news@x")]})
 rc = send_notice.run(["--send", "--topic", T], http=w, connect=s, now=Clock("2027-03-08 08:10"),
                      sleep=lambda x: None, out=lambda *a: None)
-check(rc == 0 and len(s.sent) == 25 and s.connects == 2 and set(s.sent[-2:]) == {"n5@farm.com", "n6@farm.com"},
-      "the notice run after a 421: %d of 25 sent, %d connections" % (len(s.sent), s.connects))
+check(rc == 0 and len(s.sent) == 25 and s.connects == 3 and set(s.sent[-2:]) == {"n5@farm.com", "n6@farm.com"},
+      "the notice run after a 421: %d of 25 sent, %d connections (expected 3: the reconnect, then the retry pass's own)" % (len(s.sent), s.connects))
 check(not bounces.PENDING, "a 421 is not a hard bounce")
 
 

@@ -158,21 +158,19 @@ def failed_recipients(raw):
                     rcpt = re.search(r"(?im)^(?:Final|Original)-Recipient:\s*rfc822;\s*<?([^\s>]+)>?", grp)
                     act = re.search(r"(?im)^Action:\s*(\S+)", grp)
                     st = re.search(r"(?im)^Status:\s*([245]\.\d+\.\d+)", grp)
-                    if rcpt and act and act.group(1).lower() == "failed" and st and st.group(1).startswith("5") \
-                            and send_pace.kind_of(550, st.group(1), recipient=True) == "hard":
+                    # the same rule as at send time (send_pace.status_is_hard): only a status that
+                    # says the address or its domain does not exist, or the mailbox is disabled.
+                    # A delay or an expired try (4.x.x) never counts; nor does a notice with no
+                    # status (an X-Failed-Recipients header alone names no reason).
+                    if rcpt and act and act.group(1).lower() == "failed" and st and send_pace.status_is_hard(st.group(1)):
                         out[rcpt.group(1).lower()] = st.group(1)
-    if not out:
-        hdr = m.get("X-Failed-Recipients")
-        if hdr:
-            for a in re.split(r"[,\s]+", hdr.strip()):
-                if "@" in a:
-                    out[a.lower()] = "5.x.x"
     return sorted(out.items())
 
 
 def bounce_events(raw):
     """The hard bounces in one notice as ledger events, keyed by the notice's own Message-ID, so the
-    same notice read on each of LOOKBACK_DAYS runs counts once. No address is kept: only its key."""
+    same notice read on each of LOOKBACK_DAYS runs counts once. No address is kept: only its key
+    (bounces.key, under UNSUB_SECRET)."""
     m = email.message_from_bytes(raw)
     mid = str(m.get("Message-ID") or "").strip() or hashlib.sha256(raw).hexdigest()
     try:
@@ -183,13 +181,12 @@ def bounce_events(raw):
     for a, st in failed_recipients(raw):
         h = bounces.key(a)
         out.append({"h": h, "code": st, "src": "dsn", "day": day,
-                    "id": "dsn:" + hashlib.sha256((mid + " " + h).encode()).hexdigest()[:24], "addr": a})
+                    "id": "dsn:" + hashlib.sha256((mid + " " + h).encode()).hexdigest()[:24]})
     return out
 
 
 def read_bounces(user, pw, days):
-    """[event] for every hard bounce in the notices of the last `days` (bounce_events; "addr" is
-    for the owner's report only and is dropped before anything is saved)."""
+    """[event] for every hard bounce in the notices of the last `days` (bounce_events: keys only)."""
     found = []
     # the same login as the unsubscribe step (UNSUB_IMAP_* when set): bounces land in the inbox news@ forwards to
     # (Nov 2, 2026: the sending login was refused by Gmail IMAP, so both steps had read nothing)
@@ -209,31 +206,14 @@ def read_bounces(user, pw, days):
     return found
 
 
-def bounce_step(ledger, events, daily, hail, undo=(), today=None):
-    """Fold the hard bounces into the ledger. -> (ledger, notes for the owner, counts).
-    The owner's report names addresses (it is private mail); the ledger and the log never do."""
-    names = {bounces.key(r.get("email")): r.get("email") for r in list(daily or []) + list(hail or []) if r.get("email")}
-    for e in events:
-        if e.get("addr"):
-            names.setdefault(e["h"], e["addr"])
-    clean = [{k: v for k, v in e.items() if k != "addr"} for e in events]
-    led, ch = bounces.fold(ledger, clean, today=today, undo=[bounces.key(u) for u in undo])
-    who = lambda h: names.get(h) or "a reader on another list (key " + h[:8] + ")"
-    notes = []
-    for h in sorted(set(ch["recorded"])):
-        if h in ch["suppressed"]:
-            continue
-        n = len(bounces.counted(led["addr"][h]))
-        last = max(led["addr"][h]["ids"].values(), key=lambda v: v.get("day") or "")
-        notes.append(f"Hard bounce {n} of {bounces.SUPPRESS_AFTER}: {who(h)} ({last.get('code') or 'permanent'})")
-    for h in ch["suppressed"]:
-        notes.append(f"Suppressed after {bounces.SUPPRESS_AFTER} hard bounces, left out of every list "
-                     f"(the subscription is kept): {who(h)}")
-    for h in ch["undone"]:
-        notes.append(f"Back on the lists (suppression undone): {who(h)}")
-    counts = {"read": len(events), "new": len(ch["recorded"]), "suppressed": len(led["suppressed"]),
-              "newly": len(ch["suppressed"]), "undone": len(ch["undone"])}
-    return led, notes, counts
+def hand_over(events, path):
+    """Write the inbox's hard-bounce events (keys only) for the fold step, which holds the private
+    repo's write key and reads no mail (list-hygiene.yml). True when written."""
+    if not path:
+        return False
+    with open(path, "w") as fh:
+        json.dump([{k: e[k] for k in ("h", "id", "day", "code", "src") if k in e} for e in events], fh)
+    return True
 
 
 # ---------- 3. unsubscribe by email ----------
@@ -531,7 +511,8 @@ def gkey(e):
 
 def plan(daily, hail, mx=has_mx, remove=()):
     """What to do. daily/hail: lists of records with 'email'. Returns actions. Hard bounces are not
-    removed here (Nov 10, 2026): bounce_step counts them and suppresses after two."""
+    removed here (Nov 10, 2026): the fold step (scripts/bounces.py --fold) counts them and
+    suppresses after hard bounces on two different days."""
     acts = []
     lists = {"daily": {r["email"]: r for r in daily}, "hail": {r["email"]: r for r in hail}}
     seen = set()
@@ -651,24 +632,28 @@ def selftest():
     chk(("daily", "fix", "13241@gmail.comb") in kinds and ("hail", "fix", "x@yahoo.con") in kinds, "typos on both lists are planned as fixes")
     chk(not any(a["email"] == "dead@example.org" for a in acts), "a bounced Daily address is not removed (Nov 10: counted, suppressed after 2)")
     chk(not any(a["email"] == "ok@gmail.com" for a in acts), "a good address is untouched")
-    # Nov 10: hard bounces go into the ledger; two (distinct notices) suppress, the same notice twice counts once
+    # Nov 10: what counts as hard, and the hand-over to the fold step (keys only)
+    os.environ.setdefault("UNSUB_SECRET", "selftest-secret")
+    for stv, n in (("5.1.1", 1), ("5.1.10", 1), ("5.2.1", 1), ("5.7.1", 0), ("5.2.2", 0), ("5.3.4", 0), ("5.4.4", 0),
+                   ("5.0.0", 0), ("5.5.0", 0), ("4.4.7", 0)):
+        r2 = raw.replace(b"Status: 5.1.1", b"Status: " + stv.encode())
+        chk(len(failed_recipients(r2)) == n, f"status {stv}: {'a hard bounce' if n else 'never a hard bounce'}")
+    xfr = (b"From: Mail Delivery Subsystem <mailer-daemon@googlemail.com>\r\nX-Failed-Recipients: dead@example.org\r\n"
+           b"Subject: Delivery Status Notification (Failure)\r\n\r\nThe message could not be delivered.\r\n")
+    chk(failed_recipients(xfr) == [], "an X-Failed-Recipients header alone (no status) is not a hard bounce")
+    for stv in ("5.7.1", "5.2.2", "5.3.4", "4.4.7"):
+        r3 = raw.replace(b"Status: 5.1.1", b"Status: " + stv.encode()).replace(b"MIME-Version", b"X-Failed-Recipients: dead@example.org\r\nMIME-Version")
+        chk(failed_recipients(r3) == [], f"status {stv} with X-Failed-Recipients: 0 hard bounces")
+    exp = raw.replace(b"Action: failed\r\nStatus: 5.1.1", b"Action: failed\r\nStatus: 4.4.7")
+    chk(failed_recipients(exp) == [], "a delivery that expired (failed, 4.4.7) is not a hard bounce")
     ev = bounce_events(raw.replace(b"MIME-Version", b"Message-ID: <n1@googlemail.com>\r\nDate: Tue, 10 Nov 2026 13:00:00 +0000\r\nMIME-Version"))
-    chk(len(ev) == 1 and ev[0]["h"] == bounces.key("dead@example.org") and ev[0]["day"] == "2026-11-10", "a notice becomes one event, keyed")
-    led, nt, cn = bounce_step(None, ev + ev, daily, hail, today="2026-11-10")
-    chk(cn["new"] == 1 and not led["suppressed"] and any("Hard bounce 1 of 2: dead@example.org" in n for n in nt),
-        "one notice (read twice) is one hard bounce, named to the owner, not yet suppressed")
-    ev2 = bounce_events(raw.replace(b"MIME-Version", b"Message-ID: <n2@googlemail.com>\r\nMIME-Version"))
-    led, nt, cn = bounce_step(led, ev2, daily, hail, today="2026-11-11")
-    chk(led["suppressed"] == [bounces.key("dead@example.org")] and cn["newly"] == 1
-        and any(n.startswith("Suppressed after 2 hard bounces") and "dead@example.org" in n for n in nt),
-        "a second notice suppresses the address and tells the owner")
-    chk("@" not in json.dumps(led), "the ledger holds no address, only keys")
-    led, nt, cn = bounce_step(led, [], daily, hail, undo=["dead@example.org"], today="2026-11-12")
-    chk(not led["suppressed"] and any("Back on the lists" in n for n in nt), "LIST_UNSUPPRESS puts an address back")
-    led, nt, _ = bounce_step(led, [{"h": bounces.key("other@example.com"), "id": "smtp:x:1:0", "day": "2026-11-12", "code": "550 5.1.1"}],
-                             daily, hail, today="2026-11-12")
-    chk(any("another list (key " in n for n in nt) and not any("other@example.com" in n for n in nt),
-        "a send-time bounce for a reader on another list is reported by key only")
+    chk(len(ev) == 1 and ev[0]["h"] == bounces.key("dead@example.org") and ev[0]["day"] == "2026-11-10",
+        "a notice becomes one event, keyed under the secret")
+    chk(ev == bounce_events(raw.replace(b"MIME-Version", b"Message-ID: <n1@googlemail.com>\r\nDate: Tue, 10 Nov 2026 13:00:00 +0000\r\nMIME-Version")),
+        "the same notice read again is the same event (its id comes from its Message-ID)")
+    import tempfile
+    hp = os.path.join(tempfile.mkdtemp(prefix="hyg-"), "ev.json")
+    chk(hand_over(ev, hp) and "@" not in open(hp).read(), "the hand-over file holds keys, never an address")
     acts2 = plan(daily, [], mx=lambda d: True)
     chk(not acts2, "a misspelled-looking domain that DOES receive mail is never changed")
     acts3 = plan(daily, [], mx=lambda d: None)
@@ -801,21 +786,14 @@ def main():
     acts = plan(daily, hail, remove=remove)
     print(f"daily list: {len(daily)}  hail list: {len(hail)}  hard bounces in the inbox: {len(dsn)}")
 
-    # 1b. The bounce ledger (private repo): the inbox's notices and the senders' send-time records.
-    # Counts only in the log; the owner's report names addresses.
+    # 1b. Hard bounces go to the fold step (scripts/bounces.py --fold), keys only: this step reads mail
+    # and holds no write key to the private repo (list-hygiene.yml). Counts only in the log.
     notes = []
-    unsuppress = [x.strip().lower() for x in re.split(r"[,\s]+", env("UNSUPPRESS", "")) if "@" in x]
     try:
-        led, bnotes, bc = bounce_step(bounces.read_ledger(), bounces.read_events() + dsn, daily, hail, undo=unsuppress)
-        notes += bnotes
-        saved = bounces.write_ledger(led) if not dry else False
-        print(f"hard bounces: {bc['read']} read, {bc['new']} new; suppressed: {bc['suppressed']} in all, "
-              f"{bc['newly']} new, {bc['undone']} put back; ledger {'saved' if saved else 'not saved (dry run)' if dry else 'NOT saved'}")
-        if not dry and not saved:
-            print("::warning::the bounce ledger was not saved; the inbox notices are read again tomorrow")
+        if hand_over(dsn, env("BOUNCE_EVENTS_OUT")):
+            print(f"hard bounces handed to the fold step: {len(dsn)}")
     except Exception as ex:
-        print(f"::warning::the bounce ledger was not read ({type(ex).__name__}); hard bounces wait for the next run")
-        notes.append("The bounce ledger could not be read this run (" + type(ex).__name__ + "); hard bounces wait for tomorrow.")
+        print(f"::warning::the hard bounces were not handed over ({type(ex).__name__}); read again tomorrow")
 
     # 3. Unsubscribe requests mailed to the list address. Counts only in the log.
     marks, c, days = {}, None, unsub_lookback()

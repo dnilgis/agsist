@@ -40,6 +40,8 @@ import log_safe  # noqa: E402  (the real masker; only its mail is faked below)
 import delivery_line  # noqa: E402  (the DELIVERY tally the loop reports its count to)
 import send_pace  # noqa: E402  (the real pacer; the loop's sleeps go to the fake clock below)
 import bounces  # noqa: E402  (hard bounces recorded in memory; nothing is saved by a test)
+import os  # noqa: E402
+os.environ.setdefault("UNSUB_SECRET", "loop-test-secret")   # the bounce key's secret (made up)
 
 # (script, what its own loop calls the messages)
 SENDERS = [
@@ -271,7 +273,7 @@ for script, plural in SENDERS:
             % (len(st["sent"]), st["to"][-1:] and "w2" in str(st["to"][-1:]))))
     check("::error::" not in "\n".join(st["printed"]),
           W("a deferral that went through on the second try was still reported as failed"))
-    check(st["connects"] == 1, W("a deferral opened a new connection"))
+    check(st["connects"] == 2, W("the retry pass did not start on one fresh connection (%d connections)" % st["connects"]))
     check(not bounces.PENDING, W("a soft bounce was recorded as a hard one"))
     # Deferred twice: one failure, still not a hard bounce, and never a third try.
     rc, st = run(body, refuse={"w2@example.com": [soft, soft]})
@@ -292,12 +294,21 @@ for script, plural in SENDERS:
     rc, st = run(body, refuse={"w4@example.com": [pol]})
     check(not bounces.PENDING and len(st["sent"]) == 5, W("a 5.7.1 policy refusal was counted as a hard bounce"))
     check(any(ln.startswith("pacing: ") for ln in st["printed"]), W("the loop printed no pacing line"))
+    # A deferred reader whose retry never comes (the server stops answering) is on the owner's resend list.
+    rc, st = run(body, refuse={"w1@example.com": [soft]}, fail_on=tuple(range(2, 40)), fail_with=OSError)
+    private = "\n".join("\n".join(ln) for _s, ln in st["owner"])
+    check("w1@example.com" in private, W("a deferred reader who never got a second try is not on the resend list"))
+    # A DATA or sender refusal is never charged to the reader as a hard bounce.
+    bounces.PENDING[:] = []
+    rc, st = run(body, refuse={"w4@example.com": [smtplib.SMTPDataError(550, b"5.1.1 user unknown")]})
+    check(not bounces.PENDING, W("a DATA refusal was recorded as the reader's hard bounce"))
     # A 421 closes the connection inside smtplib: the next send is refused before anything goes out.
     # Both are tried again (after one reconnect); nobody loses their email to it.
     slow = smtplib.SMTPSenderRefused(421, b"4.7.0 Try again later, closing connection", "news@x")
     rc, st = run(body, refuse={"w2@example.com": [slow]})
-    check(len(st["sent"]) == 6 and st["connects"] == 2 and "::error::" not in "\n".join(st["printed"]),
-          W("after a 421 that closed the connection: %d of 6 sent, %d connections (expected 6 and 2)"
+    check(len(st["sent"]) == 6 and st["connects"] == 3 and "::error::" not in "\n".join(st["printed"]),
+          W("after a 421 that closed the connection: %d of 6 sent, %d connections (expected 6 and 3: the "
+            "reconnect, then a fresh one for the retry pass)"
             % (len(st["sent"]), st["connects"])))
 
     # ── a run killed mid-list has already flagged the day (send_daily, Oct 28)
