@@ -96,7 +96,7 @@ test("pages load the box once and point it at a ZIP", () => {
   const cb = read("cash-bids.html");
   assert.equal((cb.match(/\/components\/cb-signup\.js\?v=\d+/g) || []).length, 1);
   assert.equal((cb.match(/\/components\/cb-signup\.css\?v=\d+/g) || []).length, 1);
-  assert.match(cb, /<div data-bid-alerts data-zip-input="cb-zip" data-source="page:cash-bids"/);
+  assert.match(cb, /<div class="cb-ask" data-bid-alerts data-compact data-zip-input="cb-zip" data-source="page:cash-bids"/);
   assert.ok(cb.indexOf('id="best-bids-section"') < cb.indexOf("data-bid-alerts")
     && cb.indexOf("data-bid-alerts") < cb.indexOf('id="cb-results"'), "under the best prices, above the list");
   assert.ok(!cb.includes("data-signup-ask="), "one email ask on /cash-bids");

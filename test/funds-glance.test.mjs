@@ -302,7 +302,7 @@ test("after a Daily signup One more? keeps a Funds this week row even with ZIP, 
   const run = async (init) => {
     const { pg, posts } = await open(browser, port, "/index.html", { width: 390, own: { "/data/rain/ia.json": rain }, init });
     await pg.waitForFunction(() => !!document.body);
-    if (!(await pg.evaluate(() => !!(window.AgsistSignup && window.AgsistSignup.oneMore)))) await pg.addScriptTag({ url: "/components/signup-ask.js?v=21" });
+    if (!(await pg.evaluate(() => !!(window.AgsistSignup && window.AgsistSignup.oneMore)))) await pg.addScriptTag({ url: "/components/signup-ask.js?v=22" });
     await pg.waitForFunction(() => window.AgsistSignup && window.AgsistSignup.oneMore);
     await pg.evaluate(() => { const h = document.createElement("div"); h.id = "t-host"; document.body.prepend(h);
       window.AgsistSignup.oneMore(h, { gave: "daily", email: "reader@example.com", zip: "50010", fips: "19169" }); });
