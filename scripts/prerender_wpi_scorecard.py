@@ -213,8 +213,7 @@ def numbers_el(rows):
         links = source_links.link(src or "", "Survey source", ' rel="nofollow noopener" target="_blank"')
     note = ('<div class="src">Trade estimates come from a published pre-report survey, entered '
             'as published. ' + links + '. Graded on the distance '
-            'from the trade average: within 0.5% for a yield, 1% for production and 2% for '
-            'stocks is in line; past that, more supply than the trade expected is bearish and '
+            'from the trade average: close to it is in line; past that, more supply than the trade expected is bearish and '
             'less is bullish. The survey\u2019s low-high range is shown beside the grade and '
             'does not change it.</div>') if src else ""
     waiting = all(r.get("actual") is None for r in rows)
@@ -304,7 +303,7 @@ def next_card(n, skip_nums=False):
             f'<div class="t bear"><div class="k">Bearish surprise</div><div class="v">{n.get("bearish_threshold") or "-"}</div></div></div>'
         )
     else:
-        thr = gap("thresholds", "No surprise thresholds")
+        thr = gap("thresholds", "No surprise line yet")
     pos = (f'<div class="wp-pos">Fund positioning: {esc(n["positioning"])}</div>'
            if n.get("positioning") else gap("positioning", "No positioning"))
     commodity = (
@@ -621,19 +620,14 @@ def board_tbl(rows, building, min_n=3, cls=None, ord_min=None):
                 u'record.</td></tr>' % (span, min_n, min_n - 1))
     lead = u""
     if not rows:
-        lead = (u'<div class="as-err" style="margin-bottom:.6rem">Nobody has %d scored calls in '
-                u'this group yet. Building records below.</div>' % min_n)
+        lead = (u'<div class="as-err" style="margin-bottom:.6rem">Too few scored calls in '
+                u'this group yet. Building records below.</div>')
     elif len(rows) == 1:
-        lead = (u'<div class="as-err" style="margin-bottom:.6rem">A finishing order needs at least two '
-                u'forecasters with %d scored calls each in the same group. One forecaster has %d or more '
-                u'so far, so this board shows records, not places.</div>' % (ord_min, min_n))
+        lead = (u'<div class="as-err" style="margin-bottom:.6rem">Too few scored calls to rank '
+                u'forecasters yet, so this board shows records, not places.</div>')
     elif not ordinals:
         lead = (u'<div class="as-err" style="margin-bottom:.6rem">Listed by average error, with '
-                u'no places. This page prints a finishing order only once every forecaster above '
-                u'the line has <b>%d scored calls</b> in the same group. Under that, the gap '
-                u'between two averages sits inside the spread of each one\u2019s own calls '
-                u'(shown beside every average), so an order would be a coin '
-                u'flip.</div>' % ord_min)
+                u'no places: too few scored calls yet for an order to mean anything.</div>')
     return lead + head + cap + body + note + brows + u'</tbody></table>'
 
 

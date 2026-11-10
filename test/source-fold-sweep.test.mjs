@@ -47,9 +47,10 @@ test("pages that gained the fold hold it once, with their credit line short and 
 test("the track record keeps its status text, the lock sentence and the sources inside the fold", () => {
   const h = read("usda-calendar.html"), f = folds(h);
   assert.equal(f.length, 1);
-  assert.match(f[0].body, /The baselines were fixed Nov \d+, 2026 and are never changed\./);
-  assert.match(f[0].body, /Live: over its most recent graded calls/);
-  assert.match(f[0].body, /Backtest baselines: the USDA WASDE archive/);
+  assert.match(f[0].body, /baseline that is fixed in advance and never changed/);
+  assert.match(f[0].body, /Status: Live beats its baseline and is still being made/);
+  assert.match(f[0].body, /is left out of the direction count/);
+  assert.match(f[0].body, /USDA AMS announced Class III prices/);
   assert.match(h, /<p class="tr-note">Record as of [A-Z][a-z]+ \d+, 2026\.<\/p>/);
 });
 

@@ -128,9 +128,7 @@ def _fmt(v, unit):
     return f"{v}{(' ' + unit) if unit else ''}"
 
 
-THRESHOLDS_WITHHELD = (
-    "A surprise is a print past the trade average by more than its band: 0.5% for a "
-    "yield, 1% for production, 2% for stocks. The thresholds arrive with the trade average.")
+THRESHOLDS_WITHHELD = "The line for a surprise posts with the trade average."
 
 
 def band_thresholds(avg, metric, unit="", direction="supply"):
@@ -958,7 +956,7 @@ def _selftest():
                          "estimate_low": 173.2, "estimate_high": 182.1, "estimate_avg": 177.8, "unit": "bu/acre"}],
                        "2026-11-01")
     assert u["bullish_threshold"] == "Below 176.91 bu/acre" and u["bearish_threshold"] == "Above 178.69 bu/acre", u
-    assert "ends of the trade range" not in THRESHOLDS_WITHHELD and "0.5%" in THRESHOLDS_WITHHELD
+    assert "ends of the trade range" not in THRESHOLDS_WITHHELD and "%" not in THRESHOLDS_WITHHELD
 
     # an empty list behaves the same way as an exhausted one
     assert build_upcoming([], "2026-09-12")["report"] == "October WASDE"
