@@ -80,7 +80,9 @@ test("quick stats: the state picker goes to every /yield page it names, and the 
   const opts = [...sel[1].matchAll(/<option value="([a-z-]+)">/g)].map((m) => m[1]);
   assert.ok(opts.length >= 40, `${opts.length} states`);
   for (const o of opts) assert.ok(existsSync(ROOT + "yield/" + o + ".html"), o);
-  assert.ok(Buffer.byteLength(QS) < 75000, `the cuts shrink the page (${Buffer.byteLength(QS)} bytes)`);
+  // measured without the state-top10 bake, which the data run fills in (about 3 KB of rows)
+  const qsBare = QS.replace(/<!--BAKE:state-top10-->[\s\S]*?<!--\/BAKE-->/, "<!--BAKE:state-top10--><!--/BAKE-->");
+  assert.ok(Buffer.byteLength(qsBare) < 75000, `the cuts shrink the page (${Buffer.byteLength(qsBare)} bytes without the bake)`);
 });
 
 /* ---------------------------------------------------------------- browser */
@@ -174,6 +176,7 @@ test("browser: with no JavaScript the baked corn rows show the yields (bake_seo.
   assert.equal(committed, body, "the committed state-top10 bake matches a fresh bake of data/state-stats.json");
   const srv = await serve({ "/usda-quick-stats.html": baked }), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
+  let srv2 = null;
   try {
     const { ctx, pg } = await open(browser, port, "/usda-quick-stats", { js: false });
     const r = await pg.evaluate(() => ({ shown: getComputedStyle(document.getElementById("topstates-wrap")).display !== "none", rows: [...document.querySelectorAll("#ts-list .ts-row")].map((x) => x.innerText.replace(/\s+/g, " ")) }));
@@ -181,11 +184,13 @@ test("browser: with no JavaScript the baked corn rows show the yields (bake_seo.
     assert.match(r.rows[0], new RegExp("Iowa.*" + SS.IA.corn_yield.toFixed(0) + " bu/ac"));
     await ctx.close();
     // and an unbaked page with no script hides the empty block instead of showing a bare heading
-    const srv2 = await serve(), p2 = srv2.address().port;
-    const o2 = await open(browser, p2, "/usda-quick-stats", { js: false });
+    // (the committed page may already be baked by the data run, so the bake is emptied here)
+    const unbaked = QS.replace(/<!--BAKE:state-top10-->[\s\S]*?<!--\/BAKE-->/, "<!--BAKE:state-top10--><!--/BAKE-->");
+    srv2 = await serve({ "/usda-quick-stats.html": unbaked });
+    const o2 = await open(browser, srv2.address().port, "/usda-quick-stats", { js: false });
     assert.equal(await o2.pg.evaluate(() => getComputedStyle(document.getElementById("topstates-wrap")).display), "none");
-    await o2.ctx.close(); srv2.close();
-  } finally { await browser.close(); srv.close(); }
+    await o2.ctx.close();
+  } finally { await browser.close(); srv.close(); if (srv2) srv2.close(); }
 });
 
 test("browser: rain radar with a known spot shifts under 0.1 and links our spray forecast for it", { skip, timeout: 180000 }, async () => {
