@@ -32,7 +32,7 @@ test("in Chromium: a Florida county page and both sale panels show months and Fl
   fs.writeFileSync(path.join(tmp, "fs-panel.html"), '<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">'
     + '<link rel="stylesheet" href="/components/styles.css?v=28"><link rel="stylesheet" href="/components/field-scout.css?v=4"><title>Sale panel</title></head>'
     + '<body><main id="main"><div class="fl-sd" role="dialog" style="position:static;max-height:none"><div id="out" class="fl-p">loading</div></div></main>'
-    + '<script src="/field-scout-land.js?v=18"></script><script>FSLand.addCSS();fetch("' + HOST + '12049.json").then(function(r){return r.json();}).then(function(f){'
+    + '<script src="/field-scout-land.js?v=19"></script><script>FSLand.addCSS();fetch("' + HOST + '12049.json").then(function(r){return r.json();}).then(function(f){'
     + 'var rows=FSLand.rowObjs(f),r=rows.filter(function(x){return x.pid==="FX-001";})[0];'
     + 'document.getElementById("out").innerHTML="<h2>Sale of "+FSLand.fmtDate(r.date,r.dm)+"</h2>"+FSLand.saleDetailHTML(r,f,[]);document.body.setAttribute("data-done","1");});</script></body></html>');
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml" };
