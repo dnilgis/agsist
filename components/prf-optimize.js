@@ -1132,7 +1132,8 @@
         }
       }
       tiltNotes.forEach(function (t) { notes.push(t); });
-      notes.push(moved ? 'The outlook moved ' + moved + '% of the policy compared with the record alone.' : 'The outlook did not change the pick.');
+      var what = phase && !outl && !tiltOn.length ? 'The El Niño or La Niña reading' : phase ? 'The outlook, with the El Niño or La Niña reading,' : 'The outlook';
+      notes.push(moved ? what + ' moved ' + moved + '% of the policy compared with the record alone.' : what + ' did not change the pick.');
       fc = { split: f.split, score: f.score, moved: moved, record: record(G, f.split), notes: notes, enso: phase, outlook: !!outl, tilts: tiltOn,
              historyScoreOfForecastPick: (function () { var s = 0; for (var q = 0; q < N; q++) if (f.split[q]) s += f.split[q] / 100 * h.values[q]; return s; })() };
     }
