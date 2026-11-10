@@ -250,7 +250,11 @@ def delivery_text(delivery, period=""):
       With no year on the label, the network's season year (newcrop-2026) is used.
     - Anything else is printed as the board wrote it."""
     lab = re.sub(r"\s*\(\d{4}-\d{2}\)\s*$", "", str(delivery or "").strip())
-    lab = re.sub(r"\s+", " ", lab).strip()
+    # a futures letter in brackets ("Nov 2026 (Z)") names the contract the basis column already shows;
+    # a trailing stop ("Oct 27.") and a dash year ("Dec-26") are typing, not words
+    lab = re.sub(r"\s*\([FGHJKMNQUVXZ]\)\s*$", "", lab)
+    lab = re.sub(r"\s+", " ", lab).strip().rstrip(".").strip()
+    lab = re.sub(r"^([A-Za-z]{3})-(\d{2})$", r"\1 \2", lab)
     per = str(period or "")
     m = re.fullmatch(r"([A-Za-z]{3})[A-Za-z]*\.?\s*'?(\d{2}|\d{4})", lab)
     if m and m.group(1).title() in MONTH_ABBR:
@@ -306,7 +310,40 @@ def delivery_text(delivery, period=""):
             return f"{a_}-{b_} {pr.group(3)}" if pr.group(1) == pr.group(3) else f"{a_} {pr.group(1)}-{b_} {pr.group(3)}"
         if sy:
             return f"{'New crop' if per.startswith('new') else 'Old crop'} {sy.group(1)}"
+    # only months, month initials and dates ("O/N27", "S/O 2027", "DEC-JAN 2027", "JFM 2027", "20261130",
+    # "01 Oct 2027 to 30 Nov 2027"): the network's own period, in the page's words
+    if lab and _months_only(lab, per):
+        return delivery_text("", per) or lab
     return lab
+
+
+_MON_WORD = re.compile(r"(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*", re.I)
+
+
+def _months_only(lab, per=""):
+    """True when a label holds nothing but month words, month initials, "to" and
+    numbers, and any day range covers whole months; against a one-month period
+    it names at most that one month ("Oct Nov 26" filed as Oct stays as written).
+    Twin of cb-rank.js monthsOnly()."""
+    toks = re.findall(r"[A-Za-z]+|\d+", lab)
+    if re.fullmatch(r"\d{4}-\d{2}", per or "") and (
+            len({t[:3].lower() for t in toks if _MON_WORD.fullmatch(t)}) > 1
+            or any(len(t) <= 3 and t.isalpha() and not _MON_WORD.fullmatch(t) and t.lower() != "to" for t in toks)
+            or [t for t in toks if t.isdigit()] not in ([], [per[:4]], [per[2:4]], [per[:4] + per[5:7] + t[6:] for t in toks if len(t) == 8][:1])):
+        return False   # a day ("Oct 3-31") or a second month says more than the period
+    if not toks or not any(t.isalpha() for t in toks) and not re.fullmatch(r"\d{8}", lab):
+        return False
+    for t in toks:
+        if not (t.isdigit() or _MON_WORD.fullmatch(t) or t.lower() == "to" or len(t) == 1
+                or (len(t) == 3 and all(c in "JFMASOND" for c in t.upper()) and t.isupper())):
+            return False
+    r = re.fullmatch(r"(\d{1,2}) ([A-Za-z]{3}) (\d{4}) to (\d{1,2}) ([A-Za-z]{3}) (\d{4})", lab)
+    if r:
+        mo = MONTH_ABBR.index(r.group(5).title()) + 1 if r.group(5).title() in MONTH_ABBR else 0
+        y = int(r.group(6))
+        last = 29 if mo == 2 and y % 4 == 0 else (28 if mo == 2 else _LAST_DAY[mo - 1] if mo else 0)
+        return int(r.group(1)) == 1 and int(r.group(4)) == last
+    return True
 
 
 def delivery_label(row):
@@ -1633,8 +1670,8 @@ def quiet_line(bd):
 # "what is grain paying here" from the same rows the table prints, then the
 # table, then a line putting the basis beside the state's middle basis (the
 # one method, scripts/basis_method.py, from this same snapshot), then the
-# hold box. The same sentence is the meta description, so search shows the
-# answer; it carries its posted date and is rewritten on every build.
+# hold box. The meta description and the FAQ structured data carry no price:
+# a price in a search result outlives the bid; the page itself carries it.
 ANSWER_CROPS = 2              # crops named in the answer sentence
 DESC_MAX = 160
 HIST_NOTE = (" The &ldquo;Basis since&rdquo; box shows the day each elevator&rsquo;s basis last changed; before Oct 11, 2026 "
@@ -1774,36 +1811,11 @@ def answer_sentence(picks, snap_ct, n=ANSWER_CROPS, basis=True):
 
 
 def answer_and_desc(picks, snap_ct, place):
-    """(sentence, meta description): the fullest sentence whose description
-    fits DESC_MAX, the description being "<place> cash bids. <sentence> Call to
-    confirm." -> ("", "") when no variant fits (the caller keeps its old text)."""
-    town = place.rsplit(", ", 1)[0]
-
-    def named(lvl):
-        # 0 the full name; 1 without this page's own town ("Total Grain Marketing
-        # (Fairgrange)"); 2 without the delivery point, for one crop only
-        out = {}
-        for c, (r, name) in picks.items():
-            if lvl >= 1:
-                name = re.sub(rf"(\([^()]*), {re.escape(town)}\)$", r"\1)", name)
-            if lvl >= 2:
-                name = re.sub(r"\s*\([^()]*\)$", "", name) or name
-            out[c] = (r, name)
-        return out
-    for n, lvl, basis in ((ANSWER_CROPS, 0, True), (ANSWER_CROPS, 0, False), (ANSWER_CROPS, 1, True),
-                          (ANSWER_CROPS, 1, False), (1, 0, True), (1, 0, False), (1, 1, True), (1, 1, False),
-                          (1, 2, True), (1, 2, False)):
-        pk = named(lvl) if lvl else picks
-        cs = [c for c in CROPS if c in picks][:n]
-        if len({pk[c][1] for c in cs}) < len({picks[c][1] for c in cs}):
-            continue          # two elevators would read as one
-        a = answer_sentence(pk, snap_ct, n, basis)
-        if not a:
-            return "", ""
-        for d in (f"{place} cash bids. {a} Call to confirm.", f"{place} cash bids. {a}"):
-            if len(d) <= DESC_MAX:
-                return a, d
-    return "", ""
+    """(sentence, ""): the on-page answer always names corn and soybeans when
+    both post, with basis; it is never cut to fit a search snippet (351 town
+    pages had dropped soybeans to fit 160 characters). The meta description
+    carries no price, so the caller's own description stands ("")."""
+    return answer_sentence(picks, snap_ct, ANSWER_CROPS, True), ""
 
 
 # SHARE A BID (Sig, 2026-11-03). One button under the answer line: "Share today's
@@ -1875,7 +1887,31 @@ def share_bid_html(picks, place, path):
 ADJ = {"corn": "corn", "soybeans": "soybean", "wheat": "wheat", "sorghum": "sorghum", "oats": "oat"}
 
 
-def state_compare(picks, summ, sname):
+MIN_CMP_COMPANIES = 3        # a state middle on fewer companies is not a middle to compare a town with
+
+
+def first_notice(con):
+    """The first notice day of a grain futures contract (root, month, year):
+    the last weekday of the month before the delivery month (Nov '26
+    soybeans: Fri Oct 30, 2026). None when it cannot be read."""
+    try:
+        y, m = int(con[2]), int(con[1])
+    except (TypeError, ValueError, IndexError):
+        return None
+    d = dt.date(y, m, 1) - dt.timedelta(days=1)
+    while d.weekday() >= 5:
+        d -= dt.timedelta(days=1)
+    return d
+
+
+def in_delivery(con, snap_ct):
+    """True when the contract's first notice day has come: its basis is a
+    delivery-month basis and no longer compares with a state middle."""
+    fn = first_notice(con) if con else None
+    return bool(fn and snap_ct and snap_ct.date() >= fn)
+
+
+def state_compare(picks, summ, sname, snap_ct=None):
     """[{crop, line, faq}] putting this town's headline basis beside the state's
     middle basis for the same futures contract, corn and soybeans only. line is
     the sentence under the table, faq the shorter one the FAQ adds after its
@@ -1884,10 +1920,16 @@ def state_compare(picks, summ, sname):
     out = []
     for c in ("corn", "soybeans"):
         g = (summ or {}).get(c)
-        stats = [x for x in (g or {}).get("contracts", []) if "median" in x]
+        # a middle resting on fewer than MIN_CMP_COMPANIES companies, or on a contract past its first
+        # notice day (Nov '26 soybeans after Oct 30), is withheld, never compared
+        stats = [x for x in (g or {}).get("contracts", []) if "median" in x
+                 and (x.get("companies") is None or x["companies"] >= MIN_CMP_COMPANIES)
+                 and not in_delivery(x.get("contract"), snap_ct)]
         if c not in picks or not stats or picks[c][0]["basis"] is None:
             continue
         r, name = picks[c]
+        if in_delivery(r["contract"], snap_ct):
+            continue
         same = next((x for x in stats if r["contract"] and x["contract"] == r["contract"]), None)
         if same is None:
             head = stats[0]
@@ -1895,7 +1937,7 @@ def state_compare(picks, summ, sname):
             why = ("posts no futures month with its basis" if not r["contract"] else
                    f"quotes basis vs {contract_label(r['contract'])}, a month too few {sname} elevators use")
             out.append({"crop": c, "name": name, "why": why, "mid": mid,
-                        "faq": f"It is not compared with the {sname} middle ({mid}): {name} {why}."})
+                        "faq": f"It is not compared with the {sname} middle: {name} {why}."})
             continue
         d = round((r["basis"] - same["median"]) * 400) / 4      # to the quarter cent boards post in
         rel = "even with" if abs(d) < 0.25 else (pricefmt.basis(abs(d)).lstrip("+") + (" stronger than" if d > 0 else " weaker than"))
@@ -1905,7 +1947,8 @@ def state_compare(picks, summ, sname):
         smid = f"{pricefmt.basis(same['median'] * 100)} vs {con_label(same['contract'])}, {med_of(same)}"
         out.append({"crop": c, "line": f"{ADJ[c].capitalize()} basis at {name}, {_basis_plain(r)}, is {rel} the {sname} "
                                         f"middle ({smid}).",
-                    "faq": f"That is {rel} the {sname} middle ({smid})."})
+                    "faq": f"That is {rel.split(' ', 1)[-1] if rel != 'even with' else rel} the {sname} middle "
+                           f"for {con_label(same['contract'])} futures."})
     # one sentence for the crops not compared for the same reason
     lines, done = [], set()
     for x in out:
@@ -1920,38 +1963,41 @@ def state_compare(picks, summ, sname):
 
 
 def faq_pairs(t, picks, cmp_lines, near, center, snap_ct, latest=None):
-    """Three questions answered from this page's own numbers, as plain text: the
-    visible FAQ and the FAQPage JSON-LD are built from these same strings.
-    latest: the newest posting on the page; when it is not from today (CT) the
-    first question asks for the latest bid, not today's."""
+    """Three questions answered from this page's own facts, as plain text: the
+    visible FAQ and the FAQPage JSON-LD are built from these same strings, and
+    neither carries a price or a basis figure (a search result outlives the
+    bid; the prices are in the answer line and the tables above). latest: the
+    newest posting on the page."""
     town, place = t["name"], f"{t['name']}, {t['state']}"
     cs = [c for c in CROPS if c in picks]
     if not cs:
         return []
+    names = []
+    for c in cs[:ANSWER_CROPS]:
+        r, name = picks[c]
+        names.append(f"{CROP_LABEL[c].lower()} at {name}{_deliv_phrase(r, True)}")
     c = cs[0]
     crop = CROP_LABEL[c].lower()
     r, name = picks[c]
     qs = []
-    a1 = (f"The nearest{' open' if r.get('open_far') else '-delivery'} {crop} bid we read in {place} is "
-          f"{cash_c(r['cash'])} a bushel at {name}"
-          f"{_deliv_phrase(r, True)}, posted {_posted_days([r])}. Call the elevator to confirm before you haul.")
-    today = latest is None or latest.astimezone(CT).date() == snap_ct.date()
-    qs.append((f"What is {crop} paying in {town} today?" if today else f"What is the latest {crop} bid in {town}?",
-               a1))
+    crops_txt = " and ".join(CROP_LABEL[x].lower() for x in cs[:ANSWER_CROPS])
+    a1 = (f"The nearest-delivery {crops_txt} {'bids' if len(names) > 1 else 'bid'} we read in {place} "
+          f"{'are' if len(names) > 1 else 'is'} {' and '.join(names)}, posted "
+          f"{_posted_days([picks[x][0] for x in cs[:ANSWER_CROPS]])}. The cash price and basis are in the table "
+          "on this page. Call the elevator to confirm before you haul.")
+    qs.append((f"Where can I sell {crop} in {town}?", a1))
     if r["basis"] is not None:
-        a2 = f"{name} posts {crop} basis of {_basis_plain(r)}{_deliv_phrase(r, True)}."
+        a2 = (f"{name} posts {crop} basis with its bid" + (f", against {con_label(r['contract'])} futures" if r["contract"] else "")
+              + ".")
         a2 += "".join(" " + x["faq"] for x in cmp_lines if x["crop"] == c)
     else:
         a2 = f"{name} does not post a basis with its {crop} bid, only the cash price."
     qs.append((f"What is the {ADJ[c]} basis in {town}?", a2))
     if near:
         d, b = near[0]
-        g = b["glance"]
-        pc = [x for x in ("corn", "soybeans") if x in g] or [x for x in CROPS if x in g][:1]
-        prices = " and ".join(f"{CROP_LABEL[x].lower()} {cash_c(g[x][0])}" for x in pc)
         p = b["posted"].astimezone(CT)
         a3 = (f"The nearest other elevator with a current bid is {b['name']} in {b['town']}, {b['state']}, "
-              f"{dist_text(d).replace('mi', 'miles')} straight-line from {center[2]}. It posted {prices} on "
+              f"{dist_text(d).replace('mi', 'miles')} straight-line from {center[2]}. It last posted on "
               f"{MONTH_ABBR[p.month - 1]} {p.day}.")
     else:
         a3 = (f"No other elevator the AGSIST network reads has a current bid within {NEARBY_MI} miles of {town}. "
@@ -2317,7 +2363,7 @@ def build_town_page(t, ctx):
     # where the big buyers are (scripts/build_buyers.py): one closed line, the list loads on open
     buyers_html = (BUY.line_html(BUY.near(center[0], center[1], BUY.load(ctx.get("root") or ".")), center[2],
                                  box="cbt-hist", body="cbt-hist-body") if center else "")
-    cmp_lines, cmp_text = state_compare(picks, (ctx.get("summaries") or {}).get(st), sname)
+    cmp_lines, cmp_text = state_compare(picks, (ctx.get("summaries") or {}).get(st), sname, snap_ct)
     cmp_html = ""
     if cmp_text:
         cmp_html = ('<p class="cbt-cmp">' + " ".join(esc(x) for x in cmp_text)

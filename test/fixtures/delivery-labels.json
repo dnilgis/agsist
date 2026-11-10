@@ -1,5 +1,5 @@
 {
-  "_about": "One table of delivery labels, run through scripts/build_cash_bid_pages.py delivery_text() and components/cb-rank.js deliveryText() by test/cb-rank.test.mjs. Each case: [delivery as the board wrote it, the network's period, what both pages print]. Labels seen in the bids network on 2026-10-16.",
+  "_about": "One table of delivery labels, run through scripts/build_cash_bid_pages.py delivery_text() and components/cb-rank.js deliveryText() by test/cb-rank.test.mjs. Each case: [delivery as the board wrote it, the network's period, what both pages print]. Labels seen in the bids network on 2026-10-16. Odd typed forms (month initials, a futures letter in brackets, an 8-digit date) added from the network on 2026-11-10.",
   "cases": [
     ["HAR 26", "newcrop-2026", "Harvest 2026"],
     ["HAR 27", "newcrop-2027", "Harvest 2027"],
@@ -41,12 +41,25 @@
     ["Oct Nov 26 (2026-11)", "2026-10", "Oct Nov 26"],
     ["Oct 3-31 (2026-11)", "2026-10", "Oct 3-31"],
     ["FH Nov 26 (2026-11)", "2026-11", "FH Nov 26"],
-    ["Oct-Nov 26", "2026-10/2026-11", "Oct-Nov 26"],
+    ["Oct-Nov 26", "2026-10/2026-11", "Oct-Nov 2026"],
     ["Cash/NC26", "spot", "Cash/NC26"],
     ["", "spot", "Spot"],
     ["", "2026-10/2026-11", "Oct-Nov 2026"],
     ["", "newcrop-2026", "New crop 2026"],
     ["Novel Crop", "", "Novel Crop"],
-    ["Nectar", "", "Nectar"]
+    ["Nectar", "", "Nectar"],
+    ["O/N27", "2027-10/2027-11", "Oct-Nov 2027"],
+    ["S/O27", "2027-09/2027-10", "Sep-Oct 2027"],
+    ["20261130", "2026-11", "Nov 2026"],
+    ["Oct 27.", "2027-10", "Oct 2027"],
+    ["01 Oct 2027 to 30 Nov 2027", "2027-10/2027-11", "Oct-Nov 2027"],
+    ["05 Nov 2026 to 31 Dec 2026", "2026-11/2026-12", "05 Nov 2026 to 31 Dec 2026"],
+    ["Nov 2026 (Z)", "2026-11", "Nov 2026"],
+    ["Dec-26", "2026-12", "Dec 2026"],
+    ["DEC-JAN 2027", "2027-12/2028-01", "Dec 2027-Jan 2028"],
+    ["JFM 2027", "2027-01/2027-03", "Jan-Mar 2027"],
+    ["Spot / GO", "spot", "Spot / GO"],
+    ["NOVEMBER HRW 11.5%", "2026-11", "NOVEMBER HRW 11.5%"],
+    ["Fall 2027 (X)", "newcrop-2027", "Fall 2027"]
   ]
 }

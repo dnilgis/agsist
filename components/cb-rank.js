@@ -187,7 +187,8 @@ var MON_START=/^(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?(?![a-
 function yy(t){return t.length===2?2000+(+t):+t;}
 function titleMon(t){t=String(t||'');return t.charAt(0).toUpperCase()+t.slice(1,3).toLowerCase();}
 function deliveryText(delivery,period){
-  var lab=String(delivery||'').trim().replace(/\s*\(\d{4}-\d{2}\)\s*$/,'').replace(/\s+/g,' ').trim();
+  var lab=String(delivery||'').trim().replace(/\s*\(\d{4}-\d{2}\)\s*$/,'').replace(/\s*\([FGHJKMNQUVXZ]\)\s*$/,'')
+    .replace(/\s+/g,' ').trim().replace(/\.+$/,'').trim().replace(/^([A-Za-z]{3})-(\d{2})$/,'$1 $2');
   var per=String(period||''),m,i;
   if((m=/^([A-Za-z]{3})[A-Za-z]*\.?\s*'?(\d{2}|\d{4})$/.exec(lab))&&MONTHS.indexOf(titleMon(m[1]))>=0)
     return titleMon(m[1])+' '+yy(m[2]);
@@ -233,7 +234,34 @@ function deliveryText(delivery,period){
     }
     if(sy)return (per.indexOf('new')===0?'New crop':'Old crop')+' '+sy[1];
   }
+  /* only months, month initials and dates ("O/N27", "DEC-JAN 2027", "20261130"): the network's period */
+  if(lab&&monthsOnly(lab,per))return deliveryText('',per)||lab;
   return lab;
+}
+var MON_WORD=/^(?:jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*$/i;
+/* Twin of build_cash_bid_pages._months_only(). */
+function monthsOnly(lab,per){
+  var toks=lab.match(/[A-Za-z]+|\d+/g)||[],k,t,seen={};
+  if(/^\d{4}-\d{2}$/.test(per||'')){
+    toks.forEach(function(x){if(MON_WORD.test(x))seen[x.slice(0,3).toLowerCase()]=1;});
+    if(Object.keys(seen).length>1||toks.some(function(x){return x.length<=3&&/^[A-Za-z]+$/.test(x)&&!MON_WORD.test(x)&&x.toLowerCase()!=='to';}))return false;
+    var nums=toks.filter(function(x){return /^\d+$/.test(x);});
+    if(nums.length>1||(nums.length===1&&nums[0]!==per.slice(0,4)&&nums[0]!==per.slice(2,4)&&
+       !(nums[0].length===8&&nums[0].slice(0,6)===per.slice(0,4)+per.slice(5,7))))return false;
+  }
+  var anyAlpha=toks.some(function(x){return /^[A-Za-z]+$/.test(x);});
+  if(!toks.length||(!anyAlpha&&!/^\d{8}$/.test(lab)))return false;
+  for(k=0;k<toks.length;k++){
+    t=toks[k];
+    if(!(/^\d+$/.test(t)||MON_WORD.test(t)||t.toLowerCase()==='to'||t.length===1||(t.length===3&&/^[JFMASOND]{3}$/.test(t))))return false;
+  }
+  var r=/^(\d{1,2}) ([A-Za-z]{3}) (\d{4}) to (\d{1,2}) ([A-Za-z]{3}) (\d{4})$/.exec(lab);
+  if(r){
+    var mo=MONTHS.indexOf(titleMon(r[5]))+1,y=+r[6];
+    var last=mo===2?(y%4===0?29:28):(mo?LAST_DAY[mo-1]:0);
+    return +r[1]===1&&+r[4]===last;
+  }
+  return true;
 }
 var FUT={},FUT_ROOTS={ZC:1,ZS:1,ZW:1,KE:1};
 /* data/prices.json -> {ZSX26:{price:12.9575,date:'2026-10-07'}}. Only dated
