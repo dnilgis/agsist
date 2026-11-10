@@ -346,3 +346,12 @@ test("cron-health.yml rehearses every evening after the 00:41 UTC tick, send off
   // cron-job.org's chain wakes this workflow every evening; the GitHub cron stays its fallback
   assert.match(ch, /workflow_run:\n\s+workflows: \["Fetch Grain Bids"\]/);
 });
+
+// ── Nov 10 2026: the two lines a ZIP reader got word for word every day ─────
+test("a ZIP reader's land line and rain record words print only when their fact entered or moved (Nov 5 to 10 repeats)", () => {
+  const out = py(["scripts/test_daily_zip_lines.py"]);
+  assert.equal(out.status, 0, out.stdout + out.stderr);
+  assert.match(out.stdout, /test_daily_zip_lines: 0 failure\(s\)/);
+  assert.doesNotMatch(out.stdout, /^FAIL /m);
+  assert.ok(read("scripts/daily_selftests.py").includes('["scripts/test_daily_zip_lines.py"]'), "in the Daily's self-test list");
+});
