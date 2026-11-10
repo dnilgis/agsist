@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-10-daily-zip-repeats",
+   "date": "2026-11-10",
+   "title": "No repeat lines for ZIP readers",
+   "line": "With a ZIP, the Daily now gives the farm sales near you and your county's rain record once, and again only when new sales are recorded or the rank moves.",
+   "link": "/daily"
+  },
+  {
    "id": "2026-11-09-arcplc-plain",
    "date": "2026-11-09",
    "title": "ARC or PLC method, in plain words",
@@ -56,6 +63,13 @@
    "title": "Shorter cash bid state and company pages",
    "line": "Cash bid state and elevator company pages keep where the bids come from in one short fold at the bottom.",
    "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-09-hail-terms-fold",
+   "date": "2026-11-09",
+   "title": "Shorter hail map pages",
+   "line": "The hail map and the state hail pages put sources and terms in one closed note at the bottom, so the map comes sooner.",
+   "link": "/hail-map"
   },
   {
    "id": "2026-11-09-rain-terms-fold",
