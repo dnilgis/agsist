@@ -103,6 +103,11 @@
    "sv-fat": "starts at 8681px (390 wide), 6204px (1280)",
    "sv-whey": "starts at 8681px (390 wide), 6204px (1280)"
   },
+  "prf.html": {
+   "prf-now": "starts at 1397px (390 wide), 1707px (1280); inside the closed This interval so far fold, 3691px and 2545px with a grid open",
+   "prf-spon": "starts at 1267px (390 wide), 1599px (1280); 3240px and 2128px with a grid open",
+   "prf-spon-p": "starts at 1914px (390 wide), 1413px (1280); the printed sheet's sponsor line, display:none on screen"
+  },
   "soybean-futures-prices.html": {
    "basis-bid": "starts at 3121px (390 wide), 2729px (1280)",
    "basis-delivery": "starts at 3121px (390 wide), 2729px (1280)",

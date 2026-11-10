@@ -58,6 +58,13 @@
    "link": "/rain"
   },
   {
+   "id": "2026-11-10-rent-age",
+   "date": "2026-11-10",
+   "title": "Old county rents marked n/a",
+   "line": "State rent tables and Atlas titles show a rent over three survey years old as n/a with its last year, and list the counties NASS did not publish, with a county finder.",
+   "link": "/rent/"
+  },
+  {
    "id": "2026-11-10-same-state-links",
    "date": "2026-11-10",
    "title": "One state, every page",
@@ -149,11 +156,32 @@
    "link": "/cash-bids"
   },
   {
+   "id": "2026-11-09-hail-day-terms-fold",
+   "date": "2026-11-09",
+   "title": "Shorter hail day pages",
+   "line": "Each hail day page now keeps its sources, the radar caveat and the citation in one closed note at the bottom, so the storm figures read first.",
+   "link": "/hail-map#history"
+  },
+  {
    "id": "2026-11-09-hail-terms-fold",
    "date": "2026-11-09",
    "title": "Shorter hail map pages",
    "line": "The hail map and the state hail pages put sources and terms in one closed note at the bottom, so the map comes sooner.",
    "link": "/hail-map"
+  },
+  {
+   "id": "2026-11-09-load-steady-rest",
+   "date": "2026-11-09",
+   "title": "Steadier drought, hail and milk pages",
+   "line": "The Drought Monitor, Hail Map, Milk Prices and Desk pages no longer jump while they load.",
+   "link": "/drought-monitor"
+  },
+  {
+   "id": "2026-11-09-prf-panel",
+   "date": "2026-11-09",
+   "title": "PRF calculator fixes",
+   "line": "The PRF calculator opens on hay ground, prints the cancellation date and the $30 fee, and no longer jumps while it loads.",
+   "link": "/prf"
   },
   {
    "id": "2026-11-09-rain-print-fixes",

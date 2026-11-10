@@ -160,7 +160,8 @@ test("hail map: a FAQ says report counts follow population and the heatmap is no
 test("rent hub: a state picker for county rates on top, and pasture on the map", () => {
   const h = read("rent/index.html");
   const f = /<form class="rh-find"[\s\S]*?<\/form>/.exec(h)[0];
-  const opts = [...f.matchAll(/<option value="(\/rent\/[a-z-]+)">/g)].map((x) => x[1]);
+  // each option opens the state page at its county table (#counties)
+  const opts = [...f.matchAll(/<option value="(\/rent\/[a-z-]+)#counties">/g)].map((x) => x[1]);
   const n = Number(/(\d+) states &middot;/.exec(h)[1]);
   assert.equal(opts.length, n);
   for (const o of opts) assert.ok(existsSync(ROOT + o.slice(1) + ".html"), o);

@@ -382,7 +382,23 @@ def story_html(store, W, f, d):
         return ""
     s = K.story_for(S, e, county_facts(W, f, d), W.built)
     import html
+    s = one_as_of(s)
     return f'<p class="sub ap-story">{html.escape(s, quote=False)}</p>\n' if s else ""
+
+
+_AS_OF = re.compile(r"^As of (?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Sept|Oct|Nov|Dec)[a-z]*\.? \d{1,2}(?:, \d{4})?, ")
+
+
+def one_as_of(s):
+    """The page states one as-of date ("Figures as of ..."): a story's own leading "As of Oct 16," is dropped
+    on the page (audit Nov 10, 2026: Adair IA showed Oct 16 in the story and Oct 19 beside it)."""
+    if not s:
+        return s
+    m = _AS_OF.match(s)
+    if not m:
+        return s
+    rest = s[m.end():]
+    return rest[:1].upper() + rest[1:]
 
 
 def selftest():
@@ -559,7 +575,7 @@ def selftest():
         store = K.load(S, t)
         d = json.load(open(os.path.join(K.ROOT, A.DATA, "counties", "19169.json"), encoding="utf-8"))
         h = story_html(store, W, "19169", d)
-        ok(h == f'<p class="sub ap-story">{good}</p>\n', f"the story prints on the page: {h[:80]}")
+        ok(h == f'<p class="sub ap-story">{one_as_of(good)}</p>\n' and not h.startswith('<p class="sub ap-story">As of'), f"the story prints on the page, one as-of date: {h[:80]}")
         W.stories = store
         page = A.county_page(W, "19169", d, "2026-10-16")
         ok(page.count('class="sub ap-story"') == 1 and page.index('class="sub"') < page.index("ap-story") < page.index('class="keys"'),
