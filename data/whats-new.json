@@ -2,11 +2,32 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-10-arcplc-fixes",
+   "date": "2026-11-10",
+   "title": "Clearer ARC or PLC answers",
+   "line": "ARC or PLC pages say why some expected payments are not shown, lead with the dryland answer, and show your farm total once you type base acres.",
+   "link": "/arc-plc"
+  },
+  {
    "id": "2026-11-10-daily-zip-repeats",
    "date": "2026-11-10",
    "title": "No repeat lines for ZIP readers",
    "line": "With a ZIP, the Daily now gives the farm sales near you and your county's rain record once, and again only when new sales are recorded or the rank moves.",
    "link": "/daily"
+  },
+  {
+   "id": "2026-11-10-pages-hold-still",
+   "date": "2026-11-10",
+   "title": "Thirteen pages hold still while they load",
+   "line": "Tariffs, sale barn prices, hay, break-even, store or sell, urea and seven more pages keep their room while the numbers load, so nothing jumps under your thumb.",
+   "link": "/tools"
+  },
+  {
+   "id": "2026-11-09-rain-print-several-days",
+   "date": "2026-11-09",
+   "title": "Rain Print gaps",
+   "line": "When a gauge reports several days of rain in one later total, Rain Print and the county prints count those days as reported together, not as gaps.",
+   "link": "/rain-print"
   },
   {
    "id": "2026-11-09-arcplc-plain",

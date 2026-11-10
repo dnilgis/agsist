@@ -155,10 +155,12 @@ def last_year_words(c, L, year):
     return out[0].upper() + out[1:]
 
 
+# S, then M days, then an A total is one accumulation (Nov 9, 2026: county_rain.close_runs, the engine's closeOpenS):
+# the page's print and this page's figures count those days the same way, never as gaps.
 RP_MISS_BLOCK = 31   # mirrors MISS_BLOCK in components/rain-print.js
 RP_MIN_DAYS = 60     # mirrors GIFT_MIN_DAYS in components/rain-print.js: fewer days, no print drawn
 RP_SNOW_MISS_OK = R.SNOW_MISS_OK  # mirrors MISS_OK in components/rain-print.js derive(): snow drawn only with at most this many days lacking a snowfall value
-PRINT_JS = '<script src="/components/rain-county-print.js?v=48" defer></script>'
+PRINT_JS = '<script src="/components/rain-county-print.js?v=49" defer></script>'
 # the Christmas Rain Print line (components/rp-xmas.js, Sig 2026-10-30): county pages and the hub, not the state pages.
 # On a county page it sits right under the Rain Print sell block, below the print, so the print stays on a phone's
 # first screen and still draws (it waits until it is near the screen).
@@ -1070,6 +1072,7 @@ def state_page(st, d, pages, none_rows, recs=None):
     {none_html}
     {GAUGE_SLOT}
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. <a href="/rain">Every state</a> &middot; <a href="/rain-print">Rain Print</a></p>
+    {XL.same_state_row(ROOT, st_slug, e(stn), "rain")}
     {terms_fold(f"Daily NOAA records through {ACIS_LINK}, read {long_date(d['fetched'][:10])}; updated daily.", f"Rain and usual are in inches. Usual is NOAA&rsquo;s daily normal at each station, added up over the days that station reported. A station with no NOAA normal shows none. Each {u1} page has the month by month table.")}
   </div>
 {FOOT_GAUGE}"""
