@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Keep the Daily and hail-alert lists clean, every day, without Sig doing it.
+"""Keep the Daily and hail-alert lists clean, every day, without the owner doing it.
 
 1. Bounces. Reads the sending Gmail inbox over IMAP (same SMTP_USER and app
    password) for delivery-failure notices from the last LOOKBACK_DAYS. An
@@ -22,7 +22,7 @@
    someone else by forging From. The address then comes off the Daily and its
    notices (the worker's /unsubscribe POST deletes sub: and note:) and the hail
    list, through the same signed routes the bounce step uses. Unverified or
-   unclear messages are listed for Sig, never acted on. Price, elevator and
+   unclear messages are listed for the owner, never acted on. Price, elevator and
    county watches have their own stop links: they are reported, not changed.
    A handled message gets the Gmail label agsist-unsub-done (or the IMAP
    keyword $AgsistUnsub elsewhere) so it is read once; no mail is deleted.
@@ -31,7 +31,7 @@
 Price, elevator and county watches are confirmed by a link before anything is
 sent, so they cannot hold a typo; a bounce on one of them is only reported.
 
-Every run that changes something emails Sig the list of changes. Mondays it
+Every run that changes something emails the owner the list of changes. Mondays it
 sends a summary even when nothing changed. The Actions log prints counts only:
 the repository and its logs are public.
 
@@ -58,7 +58,7 @@ LOOKBACK_DAYS = 8
 # down) while the job is still inside that limit. Handled messages are labelled
 # and skipped, so a longer window costs nothing but IMAP time. Until
 # UNSUB_CATCHUP_UNTIL the window is 45 days, so the requests that sat unread
-# before this step existed (Sig saw Gmail one-click mails go unread) are
+# before this step existed (the owner saw Gmail one-click mails go unread) are
 # honoured. UNSUB_LOOKBACK_DAYS in the environment overrides both.
 UNSUB_LOOKBACK_DAYS = 14
 UNSUB_CATCHUP_DAYS = 45
@@ -320,7 +320,7 @@ def all_mail_box(c):
 
 def _why(ex):
     """The server's own words for a failed IMAP step (e.g. [AUTHENTICATIONFAILED] Invalid credentials), first
-    120 characters, any address masked: BUILD-RULES 20, read the real error before asking Sig to touch a secret."""
+    120 characters, any address masked: build rule 20, read the real error before asking the owner to touch a secret."""
     t = ex.args[0] if getattr(ex, "args", None) else str(ex)
     t = t.decode("utf-8", "replace") if isinstance(t, bytes) else str(t)
     try:
@@ -391,9 +391,9 @@ def plan_unsub(reqs, daily, hail, notices, watches, taken=()):
     daily/hail: list records; notices: /notice-list rows, or None when that list
     could not be read; watches: {name: records} (report only).
     Returns (acts, notes, marks): acts are removals for apply(); notes are lines
-    for Sig; marks maps each request uid to the act indexes that must succeed
+    for the owner; marks maps each request uid to the act indexes that must succeed
     before it is marked handled ([]: nothing to do, mark it now; None: it is
-    only a line for Sig, mark it once the report is sent)."""
+ only a line for the owner, mark it once the report is sent)."""
     def index(rows):
         ix = {}
         for r in rows or []:
@@ -781,7 +781,7 @@ def main():
         print("report emailed to the owner")
     if c is not None:
         if not dry:
-            # Acted-on requests once every removal worked; the rest once Sig has the report.
+            # Acted-on requests once every removal worked; the rest once the owner has the report.
             done = [u for u, idx in marks.items()
                     if (mailed if idx is None else all(acts[first + i].get("ok") for i in idx))]
             try:

@@ -1,4 +1,4 @@
-// Sig, 2026-10-19: an unsold sponsor slot carries no price text in the page.
+// 2026-10-19: an unsold sponsor slot carries no price text in the page.
 // The real case: whats-priced-in.html shipped a hidden
 // '<span class="ag-sponsor-price" data-rate="page">$29/mo &middot; first month free</span>'
 // that only crawlers which skip CSS read. Each unsold ribbon is now an empty

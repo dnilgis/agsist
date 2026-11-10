@@ -76,8 +76,8 @@ pages only draw them.
    Backfill: the committed data/cattle-auction.json on main goes back to
    Oct 16, 2026 (27 versions checked Nov 2) and the raw branch holds only the
    latest report per barn; every sale in those versions is in barn_sales.
-   No CME data is read or compared here (Sig, Oct 29).
-   Live reads through USDA My Market News (Sig, Nov 2 2026: "Ship + use USDA live"):
+   No CME data is read or compared here (Oct 29).
+   Live reads through USDA My Market News (Nov 2 2026):
    with MARS_API_KEY set, read_mars reads every single-barn report of the last
    KEEP_DAYS through MARS with the past weeks' own reader (backfill_feeder_index
    mars_fetch), and a barn's PDF read counts only for a barn and week MARS lacks

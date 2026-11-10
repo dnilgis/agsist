@@ -1,6 +1,6 @@
-/* Method text at the bottom, collapsed (Sig, Nov 7, 2026, on /land-sales/2026-09: "way too much info on the farmland
+/* Method text at the bottom, collapsed (Nov 7, 2026, on /land-sales/2026-09: "way too much info on the farmland
  * sales page ... that all needs to be on the bottom of page and collapsed unless someone wants to read it").
- * STANDING-DECISIONS Nov 7: the answer and the data at the top, at most one short caveat line; the market rule and every
+ * a site rule Nov 7: the answer and the data at the top, at most one short caveat line; the market rule and every
  * state's method note, word for word, in one closed details block at the bottom, each state under its own heading.
  * Built from the synthetic fixture site (test/fixtures/land-fl/make_site.py: Wisconsin and Florida, made-up rows) into a
  * temp folder, never the committed pages; the per-state block is read straight from scripts/build_land_sales.py.

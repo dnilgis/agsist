@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """build_land_survey.py: county land values in two states where sale prices are not public record
-(Sig, Oct 29, 2026 priority queue: "ND Trust Lands; K-State KS book").
+(Oct 29, 2026 priority queue: "ND Trust Lands; K-State KS book").
 
 Neither source is a recorded sale, and the files and pages say so every time:
 

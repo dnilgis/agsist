@@ -69,18 +69,37 @@ var wtdToggleBtn=$('wtd-toggle-btn'),wtdBodyEl=$('wtd-body');
  * ═══════════════════════════════════════════════════════════════════════════ */
 var MKT_TZ = 'America/Chicago';
 
-/* CME holidays. THIRD-PARTY AND DELIBERATELY NOT ACTED ON.
- * CME finalises product hours roughly two weeks ahead and grains do not all
- * follow the same holiday pattern, so this list is used only to SAY that the
- * schedule differs and to point at CME -- never to invent an open or a close.
- * Rule 1. */
-var MKT_HOLIDAYS_2026 = {
-  '2026-01-01': "New Year's Day", '2026-01-19': 'Martin Luther King Jr. Day',
-  '2026-02-16': "Presidents' Day", '2026-04-03': 'Good Friday',
-  '2026-05-25': 'Memorial Day', '2026-06-19': 'Juneteenth',
-  '2026-07-03': 'Independence Day (observed)', '2026-09-07': 'Labor Day',
-  '2026-11-26': 'Thanksgiving', '2026-12-25': 'Christmas Day'
-};
+/* Exchange holidays: the full-closure list of scripts/contract_calendar.py
+ * market_holidays() (computed, not typed in; components/price-local.js carries
+ * the same rule). Two uses only:
+ * 1. marketSession names the day, to SAY the schedule differs and point at CME;
+ *    it never invents an open or a close (CME finalises holiday hours about two
+ *    weeks ahead and grains do not all follow one pattern). Rule 1.
+ * 2. mktSessionsClosedSince does not count a closed day as a session, the same
+ *    as scripts/build_state_basis_pages.py fresh_until (test/session-fresh-twin.test.mjs
+ *    runs both on one table of cases).
+ * iso 'YYYY-MM-DD' -> the closure's name, or null. */
+function mktHolidayName(iso) {
+  var DAY = 864e5, y0 = +String(iso).slice(0, 4);
+  function U(y, m, d) { return Date.UTC(y, m - 1, d); }
+  function wd(t) { return new Date(t).getUTCDay(); }
+  function nthW(y, m, w, n) { var t = U(y, m, 1); return t + ((w - wd(t) + 7) % 7) * DAY + (n - 1) * 7 * DAY; }
+  function lastW(y, m, w) { var t = Date.UTC(y, m, 0); return t - ((wd(t) - w + 7) % 7) * DAY; }
+  function obs(t) { var x = wd(t); return x === 6 ? t - DAY : x === 0 ? t + DAY : t; }
+  function easter(y) {
+    var a = y % 19, b = Math.floor(y / 100), c = y % 100, d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25), g = Math.floor((b - f + 1) / 3),
+      h = (19 * a + b - d - g + 15) % 30, i = Math.floor(c / 4), k = c % 4, l = (32 + 2 * e + 2 * i - h - k) % 7, mm = Math.floor((a + 11 * h + 22 * l) / 451);
+    return U(y, Math.floor((h + l - 7 * mm + 114) / 31), ((h + l - 7 * mm + 114) % 31) + 1);
+  }
+  for (var y = y0 - 1; y <= y0 + 1; y++) {
+    var L = [[obs(U(y, 1, 1)), "New Year's Day"], [nthW(y, 1, 1, 3), 'MLK Day'], [nthW(y, 2, 1, 3), 'Presidents Day'],
+      [easter(y) - 2 * DAY, 'Good Friday'], [lastW(y, 5, 1), 'Memorial Day'], [obs(U(y, 6, 19)), 'Juneteenth'],
+      [obs(U(y, 7, 4)), 'Independence Day'], [nthW(y, 9, 1, 1), 'Labor Day'], [nthW(y, 11, 4, 4), 'Thanksgiving'],
+      [obs(U(y, 12, 25)), 'Christmas Day']];
+    for (var j = 0; j < L.length; j++) if (new Date(L[j][0]).toISOString().slice(0, 10) === iso) return L[j][1];
+  }
+  return null;
+}
 
 /* The Chicago wall-clock parts of an instant. */
 var _mktFmt = null;
@@ -144,7 +163,7 @@ function mktNextEveningOpen(p) {
 function marketSession(now) {
   var p = mktParts(now);
   var mins = p.minutes, dow = p.dow;
-  var holiday = MKT_HOLIDAYS_2026[p.date] || null;
+  var holiday = mktHolidayName(p.date);
 
   /* A weekday-shaped session only exists Mon-Fri; the overnight that runs into
      Saturday morning belongs to Friday and does not exist. */
@@ -216,7 +235,8 @@ function mktCountdown(ms) {
  * The honest question is not "how many hours" but "how many day sessions have
  * closed since this board last moved". Nothing closed = this IS the board.
  * One = it has not been touched since the last close. Two or more = say so
- * plainly.
+ * plainly. A market holiday (mktHolidayName) is not a session: a Wednesday
+ * board is still current on Thanksgiving afternoon.
  */
 function mktSessionsClosedSince(pricedAt, now) {
   if (!pricedAt) return null;
@@ -226,7 +246,7 @@ function mktSessionsClosedSince(pricedAt, now) {
   var n = 0, p = mktParts(new Date(t));
   for (var i = 0; i < 30; i++) {
     var close = mktInstant(p.y, p.m, p.d, 13, 20);
-    if (p.dow >= 1 && p.dow <= 5 && +close > t && +close <= +now) n++;
+    if (p.dow >= 1 && p.dow <= 5 && !mktHolidayName(p.date) && +close > t && +close <= +now) n++;
     if (+close > +now) break;
     p = mktAddDays(p, 1);
   }
@@ -396,7 +416,7 @@ var BASIS_SANE={corn:2.5,soybeans:2.5,wheat:3};
    near -$0.70 (2026-10-15) was Best soybeans before this. */
 function basisUnusual(bid){
   if(!bid||bid.basis==null)return false;
-  if(bid._odd)return true;
+  if(bid._odd||bid.basisOdd===true)return true;
   var cap=BASIS_SANE[bid.category],c=basisCents(bid.basis,bid);
   return cap!=null&&c!=null&&Math.abs(c)>cap*100;
 }
@@ -582,8 +602,10 @@ function contractStrip(bids){
    page waits for it or depends on it. */
 var _bhFetch={},_bhMap={};
 function bhNorm(v){return String(v==null?'':v).trim().toUpperCase().replace(/\s+/g,' ');}
+/* The facility is keyed by the one name key (elevNames.basisName, components/elev-names.js):
+   an archived copy ("zFarmers Cooperative Elevator Co.OLD") finds the elevator's history. */
 function bhKeyOf(fac,city,st,cat,sym,month){
-  return [bhNorm(fac),bhNorm(city),bhNorm(st),bhNorm(cat),bhNorm(sym),bhNorm(month)].join('|');
+  return [window.elevNames.basisName(fac),bhNorm(city),bhNorm(st),bhNorm(cat),bhNorm(sym),bhNorm(month)].join('|');
 }
 function bhLoadState(st){
   if(_bhFetch[st])return _bhFetch[st];
@@ -1177,7 +1199,7 @@ function rankCands(elevs,comm){
       (elev.commodities.wheat||[]).forEach(function(b){var c=wheatCls(b);if(classes.indexOf(c)<0)classes.push(c);});
     }
     classes.forEach(function(c){
-      var b=getNearestBid(elev,comm,function(x){return rankable(x)&&(comm!=='wheat'||wheatCls(x)===c);});
+      var b=getNearestBid(elev,comm,function(x){return rankable(x)&&!basisUnusual(x)&&(comm!=='wheat'||wheatCls(x)===c);});
       if(b&&b.cashPrice!=null)out.push({elev:elev,bid:b,dist:elev.distance,rk:rankOf(b),cls:comm==='wheat'?c:''});
     });
   });
@@ -1240,6 +1262,7 @@ var ROAD_FACTOR=1.25;
 function roadMi(d){return d*ROAD_FACTOR;}
 var ROAD_NOTE='estimated road miles (straight line x 1.25)';
 var EARN_CROP={corn:'corn',soybeans:'soybeans',wheat:'wheat'};
+var EARN_NONE='Best after the drive: not enough boards read today to compare here.';
 function earningsLine(win,compared,bu,money){
   var load=Number(bu).toLocaleString('en-US')+' bu';
   if(win)return 'Best after the drive on '+load+' of '+win.crop+': '+win.name+', '+money(win.net)+' more than your closest elevator.';
@@ -1301,7 +1324,9 @@ function renderEarnings(){
   var line=earningsLine(best?{name:truncName(best.top.elev.facility,24),net:best.net,crop:crop}:null,compared,bu,fmtMoney);
   earningsCallout.classList.toggle('muted',!line);
   earningsCallout.classList.toggle('flat',!!line&&!best);
-  if(!line)return;
+  /* NEVER LEAVE THE PAGE'S "Working out the best bid..." ON SCREEN (2026-11-09 panel). With no board to compare
+     (none read today, or a single elevator) there is no line to write; say so, and clear a line left by an earlier search. */
+  if(!line){earningsHead.textContent=EARN_NONE;earningsDetail.innerHTML='';return;}
   earningsHead.textContent=line;
   if(!best){earningsDetail.innerHTML='';return;}
   /* A re-marked price says so where it is printed. */
@@ -1342,7 +1367,7 @@ function readTimeOnly(pricedAt,checkedAt){
   return !isFinite(p)||(isFinite(c)&&p===c);
 }
 /* "3h ago" from a row's posted time; nothing when the board posted no time. */
-/* "Last updated Oct 20, 2:05 PM CT" on a board Sig pasted by hand, once it is
+/* "Last updated Oct 20, 2:05 PM CT" on a board the owner pasted by hand, once it is
    older than the 14-hour line every live board is held to. Empty before then. */
 var PASTE_MARK_H=14;
 function pastedMark(iso,cls){
@@ -1872,7 +1897,7 @@ function renderBids(bids,keepLimit){
        board. One means it has not been touched since the last close, which is
        worth saying plainly rather than as a warning. Two or more is a warning. */
     /* AN ELEVATOR THAT POSTS ITS OWN BIDS (agsist.com/post) always says when it
-       last saved them, in its own words of time: "Updated 6:10 AM Wed" (Sig, Oct 22).
+       last saved them, in its own words of time: "Updated 6:10 AM Wed" (Oct 22).
        That time is when the manager pressed Save, even for a save that reached us
        late (subs worker v5.50), so an old price is plain to see. */
     if(elev.fromPortal&&elev.asOfT!=null){
@@ -2199,7 +2224,7 @@ function netContract(b){
     return{symbol:t,month:MON[m[3]]+' 202'+m[2]};
   return{symbol:raw,month:raw};
 }
-/* A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17, Sig approved). The bids
+/* A PASS NOT ASKED IS NOT A FAILED READ (2026-10-17). The bids
    repo flags a row stale whenever its board was not read on the latest pass:
    "refused" or "broken" (the read failed) or "skipped" (not asked: Landus is
    read 5 boards a pass, NEW Cooperative answers most passes with a bot check).
@@ -2295,6 +2320,10 @@ function netRowsFrom(shard,distanceMi){
          rows whose read had failed were drawn as ordinary live prices under a
          badge claiming they came straight from the elevator. */
       stale:b.stale===true&&!held,
+      /* The feed's own flag that this board's basis sits far from the other boards on its contract
+         (data/bids.json basisOdd; Riceville IA soybeans +$1.40 against an Iowa middle near -$0.65).
+         Marked, never ranked: the Best cards and the day's best basis skip it (basisUnusual). */
+      basisOdd:b.basisOdd===true,
       held:held,
       sourceStatus:b.sourceStatus||'',
       /* THE FEED'S OWN ANSWER TO "HAS THIS MONTH GONE", WHEN IT HAS ONE.
@@ -2303,8 +2332,8 @@ function netRowsFrom(shard,distanceMi){
          that is only sometimes there must never be the only thing consulted. */
       periodPast:(b.periodPast===true||b.periodPast===false)?b.periodPast:null,
       via:'direct',
-      /* A BOARD SIG PASTED BY HAND (dnilgis/bids rows with pasted: true, 2026-10-20): the
-         site will not let the reader in, so Sig pastes their public page. Held
+      /* A BOARD PASTED BY HAND (dnilgis/bids rows with pasted: true, 2026-10-20): the
+         site will not let the reader in, so the owner pastes their public page. Held
          up to 7 days and stamped "Last updated" once older than 14 hours. */
       pasted:b.pasted===true?(b.pastedAt||b.checkedAt||''):''
     });

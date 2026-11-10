@@ -1007,7 +1007,7 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
     except Exception as _e:
         W("wasde-fabricated", "release check could not run (%s: %s)" % (type(_e).__name__, _e))
 
-    # ── Sig's voice (2026-10-09) ──────────────────────────────────────────
+    # ── the owner's voice (2026-10-09) ──────────────────────────────────────────
     # The briefing carries his name. An invented first-person experience ("I
     # talked to elevators today", "my neighbor said") is a false statement of
     # fact under a real man's byline: FAIL. The generator regenerates on one
@@ -1060,7 +1060,7 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
                                     daily_claims.load_progress())
         for _rule, _loc, _s in daily_claims.lint(daily, _ctx):
             _m = '%s: %r' % (_loc, _s[:160])
-            # a headline cannot be cut, but it is never sent failing (Sig, Oct 27):
+            # a headline cannot be cut, but it is never sent failing (Oct 27):
             # scripts/headline_fix.py rewrites it before this gate runs.
             if _rule in daily_claims.BLOCKING and (daily_claims.CUTTABLE(_loc) or _loc == 'headline'):
                 F('claim:' + _rule, _m)
@@ -1082,7 +1082,7 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
             import daily_fresh
             _d = daily_fresh.issue_date(daily, today)
             _ad = archive_dir or daily_fresh.ARCHIVE
-            # WARN, never hold (Sig, Nov 1: the mission is an email people look forward to every
+            # WARN, never hold (Nov 1: the mission is an email people look forward to every
             # morning; a slightly repetitive issue beats no issue). The generator already sent the
             # draft back once and cut repeated stories; what survives that is reported, not blocked.
             for _k, _loc, _why in daily_fresh.hits(daily, daily_fresh.recent(_d, _ad), _d, _ad):

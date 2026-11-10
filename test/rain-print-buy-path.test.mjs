@@ -4,8 +4,8 @@
  *
  *   - a phone that draws and swipes on past step 1 is never pulled back up to
  *     the town box (the pinned copy's focus nudge trapped it at step 1);
- *   - a design that names its station but carries no ?ll= (Sig's
- *     ?d=...&maker=1 view of a county-link order) draws the same town line the
+ *   - a design that names its station but carries no ?ll= (the owner's
+ * ?d=...&maker=1 view of a county-link order) draws the same town line the
  *     buyer saw, when the town lookup finds another town of that name or none;
  *   - the product picked survives leaving and coming back, and a reload: the
  *     price says $45 everywhere for Print.
@@ -98,7 +98,7 @@ async function withPage(fn, { width = 390, height = 844, ...opts } = {}) {
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ viewport: { width, height }, serviceWorkers: "block", hasTouch: width < 900, isMobile: false });
-    await makerFlag(ctx);   // Sig's browser: maker mode is gated (fixtures/rp-maker.mjs)
+    await makerFlag(ctx);   // The owner's browser: maker mode is gated (fixtures/rp-maker.mjs)
     /* Playwright's own scrolls are instant. Before a fill, click or check it scrolls the box into view itself, and
        html{scroll-behavior:smooth} (styles.css) made that a glide it does not wait for. Under load the glide's first
        frames stall with scrollY unchanged, and a jump made by the page during it does not stop it: the glide carried
@@ -440,7 +440,7 @@ test("an order request that went: \"Sent.\" stays, even when the form is opened 
     markers: [{ date: "2025-05-08", label: "Planted beans" }, { date: "2025-07-04", label: "Hay all in" }, { date: "2025-10-24", label: "Harvest done" }] };
   await withPage(async (page, base, errors) => {
     /* the order form is for a product with no payment link (since 2026-10-22 a short link that fails no longer
-       opens it: checkout goes on with a hash ref, BUILD-RULES 14), so the links are taken out here */
+       opens it: checkout goes on with a hash ref, build rule 14), so the links are taken out here */
     await page.route(/\/data\/rain-print\.json/, async (r) => {
       const j = await (await r.fetch()).json();
       j.payment_links = { digital: null, print12x18: null, framed12x18: null };

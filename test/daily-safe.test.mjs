@@ -5,7 +5,7 @@
  *     5:46 to 7:31 CT (11:46Z to 13:31Z) stopped there. Today's issue was never the problem.
  *  2. At 7:32 CT a manual run without send_email published the issue and left a dry-run mark; the 7:46
  *     heartbeat read the mark as "done" and skipped, and nobody got the Daily until a manual send at 7:48.
- * Sig, Nov 3: code self-tests never hold the send; the Daily alerts him if not sent by 7:15 AM CT; a manual
+ * Nov 3: code self-tests never hold the send; the Daily alerts him if not sent by 7:15 AM CT; a manual
  * run never marks the day done without sending; and the suite runs the night before under tomorrow's date.
  * Fixtures are the real Nov 3 job logs (test/fixtures/daily/2026-11-03-*.log), cut for size.
  *   node --test test/daily-safe.test.mjs
@@ -145,7 +145,7 @@ print("unreadable", S.may_mail("2026-11-03", fetcher([], fail=True), this_run=2)
   assert.ok(o.includes("first True") && o.includes("second False") && o.includes("self True") && o.includes("unreadable True"), out.stdout);
 });
 
-// ── 2. not sent by 7:15 AM CT: one email to Sig, naming the step ───────────
+// ── 2. not sent by 7:15 AM CT: one email to the owner, naming the step ───────────
 
 // Nov 3 2026's daily.yml runs as the API returned them (UTC; CST = UTC-6), and the real logs.
 const NOV3 = `

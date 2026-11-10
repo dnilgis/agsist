@@ -77,7 +77,7 @@ test("homepage strip on Fri Oct 16, 2026 shows Milk Production Oct 22 and Cattle
   assert.ok(cards.some((c) => /WASDE/.test(c)), "the next WASDE stays on the strip");
 });
 
-/* Nov 2, 2026 (Sig: the calendar a reader subscribed to brings them back):
+/* Nov 2, 2026 (the calendar a reader subscribed to brings them back):
    every event in all three files ends with the line to /usda-calendar and the
    Daily (utm_source=ics), and each file parses as RFC 5545. */
 import { TRAILER } from "../scripts/build_usda_ics.mjs";

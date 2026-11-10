@@ -124,7 +124,7 @@ test("blank parcel rolls (all zeros) print as missing, not as $0", () => {
 test("which parcel services a spot uses", () => {
   const wi = F.servicesFor(REG, "WI", "55005");
   assert.ok(wi.length >= 1 && wi.every((s) => s.builtin), "Wisconsin's statewide map is tried before the first check");
-  // Live registry (BUILD-RULES 70): the land-data probe verifies county services over time (Story IA, Nov 5), so test the
+  // Live registry (build rule 70): the land-data probe verifies county services over time (Story IA, Nov 5), so test the
   // rule on a county the registry does not list rather than on a named one.
   const iaOpen = Array.from({ length: 99 }, (_, i) => "19" + String(2 * i + 1).padStart(3, "0")).find((f) => !(REG.counties || {})[f]);
   if (!((REG.statewide || {}).IA || []).length && iaOpen) assert.equal(F.servicesFor(REG, "IA", iaOpen).length, 0, "nothing for an Iowa county until a county service is verified");
@@ -173,7 +173,7 @@ test("lazy: the land card is not on Field Scout's first screen and loads by vers
   assert.doesNotMatch(read("field-scout.html"), /field-scout-land\.js/);
   assert.match(read("field-scout-read.js"), /var FS_LAND_SRC='\/field-scout-land\.js\?v=\d+'/);
   assert.match(read("field-scout-read.js"), /section\('land',ICONS\.rent,'Parcel, Owner &amp; Sales','fs-land'\)/);
-  assert.match(read("field-scout.js"), /FS_READ_SRC='\/field-scout-read\.js\?v=24'/);   // v24: fx/landsales-dedupe (field-scout-land.js v18, one price on several parcels is one sale); v23: fx/flon (field-scout-land.js v17, Florida on); v22: fx/flsales (field-scout-land.js v16, Florida ratio study words and timber); v19: fx/landnj (field-scout-land.js v13, New Jersey); v18: field-scout-land.js v12; v17: fx/landkeys (field-scout-land.js v11, section key in comps); v16: fx/landfirst (field-scout-land.js v10, one ground-height call); v15: fx/landvt (field-scout-land.js v9, Vermont); v14: fx/fsbase; v13: fx/merges (old addresses repointed), past v12 (bids-network.js v8, fx/fastfacts)
+  assert.match(read("field-scout.js"), /FS_READ_SRC='\/field-scout-read\.js\?v=25'/);   // v25: comments reworded (field-scout-land.js v19); v24: fx/landsales-dedupe (field-scout-land.js v18, one price on several parcels is one sale); v23: fx/flon (field-scout-land.js v17, Florida on); v22: fx/flsales (field-scout-land.js v16, Florida ratio study words and timber); v19: fx/landnj (field-scout-land.js v13, New Jersey); v18: field-scout-land.js v12; v17: fx/landkeys (field-scout-land.js v11, section key in comps); v16: fx/landfirst (field-scout-land.js v10, one ground-height call); v15: fx/landvt (field-scout-land.js v9, Vermont); v14: fx/fsbase; v13: fx/merges (old addresses repointed), past v12 (bids-network.js v8, fx/fastfacts)
 });
 
 test("the land report is one shared page with a query parameter, kept out of search", () => {
@@ -316,9 +316,9 @@ test("land data selftests pass (newest-only merge, month picker, timestamp-only 
   }
 });
 
-test("monthly land run: the 3rd, Sig's approval noted, one run at a time", () => {
+test("monthly land run: the 3rd, one run at a time", () => {
   const y = read(".github/workflows/land-data.yml");
-  assert.match(y, /# Sig approved Oct 17, 2026: monthly on the 3rd[\s\S]*?cron: '23 9 3 \* \*'/);
+  assert.match(y, /schedule:\s*\n\s*- cron: '23 9 3 \* \*'/);
   assert.match(y, /concurrency:\s*\n\s*group: land-data/);
   assert.match(y, /--newest-only/); assert.match(y, /--merge/); assert.match(y, /land_keep_stamp_only\.py data\/land/);
 });

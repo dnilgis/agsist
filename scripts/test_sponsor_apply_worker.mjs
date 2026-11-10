@@ -44,7 +44,7 @@ r = await call(`/sponsor-confirm?i=${id}&t=${t}`); A((await r.text()).includes('
 r = await call(`/sponsor-confirm?i=${id}&t=0000000000000000`, 'POST'); A((await r.text()).includes("isn't valid") && rec(id).status === 'pending', 'bad token');
 r = await call(`/sponsor-confirm?i=${id}&t=${t}`, 'POST'); A(rec(id).status === 'confirmed', 'confirmed');
 
-// Sig's decisions: the applicant's confirm token cannot approve
+// The owner's decisions: the applicant's confirm token cannot approve
 r = await call(`/sponsor-decide?i=${id}&d=approve&t=${t}`, 'POST'); A(rec(id).status === 'confirmed', 'confirm token cannot approve');
 r = await call(`/sponsor-decide?i=${id}&d=end&t=${tok(id + '|sd|end')}`, 'POST'); A(rec(id).status === 'confirmed', 'cannot end what is not live');
 const ap = tok(id + '|sd|approve');

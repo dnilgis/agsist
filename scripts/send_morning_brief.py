@@ -244,7 +244,7 @@ def section_one_number(daily):
 
 
 def section_action(daily):
-    """The Action, right after the lead. 2026-10-09, Sig: the prediction bot
+    """The Action, right after the lead. 2026-10-09, the owner: the prediction bot
     is out of the Daily for now (it lives on /scorecard), so an action that is
     the bot's call (bot_call present) is not printed."""
     a = strip_html(daily.get("action", ""))
@@ -571,7 +571,7 @@ def send(subject, email_body, sms_body):
 def main():
     today = datetime.now(TZ).date()
 
-    # ── THE WEEKEND SKIP IS GONE — 2026-08-29, Sig: "remove weekend skip yes."
+    # ── THE WEEKEND SKIP IS GONE — 2026-08-29, 
     #
     # It stopped making sense the moment this script started running from
     # daily.yml instead of its own weekday-only cron. The BRIEFING publishes

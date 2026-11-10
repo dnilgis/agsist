@@ -1,5 +1,5 @@
 /**
- * Schrader archive backfill (Nov 8, 2026; Sig approved one manual run, no schedule).
+ * Schrader archive backfill (Nov 8, 2026; the owner approved one manual run, no schedule).
  *
  * scripts/capture_schrader.py --backfill walks Schrader's recent_auctions archive for twelve states and saves
  * the auction pages not captured before to land/schrader/backfill/ on the private raw branch. This file holds:

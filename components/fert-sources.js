@@ -1,8 +1,8 @@
 /* components/fert-sources.js -- the price rows on /fertilizer.
  *
  * data/fertilizer-prices.json (scripts/build_fert_prices.py) is the one list
- * every page prices from: the middle cash price of the co-ops Sig sent that
- * post each product, and nothing else (Sig, 2026-10-15). This file only turns
+ * every page prices from: the middle cash price of the co-ops the owner sent that
+ * post each product, and nothing else (2026-10-15). This file only turns
  * its rows into the calculator's rows and writes the note under the
  * cheapest box. Until 2026-10-15 a hand-typed dealer sheet was merged here;
  * until 2026-10-16 it also drew a USDA AMS Illinois box. Both are gone.

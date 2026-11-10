@@ -1,5 +1,5 @@
 /**
- * The Claude Code hooks in .claude/settings.json (Sig, Oct 22 2026), run with the JSON a hook gets on stdin:
+ * The Claude Code hooks in.claude/settings.json (Oct 22 2026), run with the JSON a hook gets on stdin:
  * - scripts/dev/wip-push.sh: autosaves fx/* only (never main), never .env, keys, node_modules or big
  *   files, commits as dnilgis, pushes, silent no-op when nothing changed, always exit 0
  * - scripts/dev/verify-gate.mjs: blocks a stop (exit 2) on skipped>0 or a failure in .verify/last.json
@@ -72,7 +72,7 @@ test('wip-push: on fx/* saves tracked changes and new source files, never secret
   const r = run('bash', [path.join(DEV, 'wip-push.sh')], { hook_event_name: 'SubagentStop', cwd: w }, w, { WIP_MAX_BYTES: '1000' });
   assert.equal(r.status, 0);
   assert.equal(r.stdout + r.stderr, '', 'silent');
-  assert.equal(git(w, 'log', '-1', '--format=%s|%an|%ae'), 'WIP autosave|dnilgis|dnilgis@gmail.com');
+  assert.equal(git(w, 'log', '-1', '--format=%s|%an|%ae'), 'WIP autosave|dnilgis|dnilgis@users.noreply.github.com');
   const files = git(w, 'show', '--name-only', '--format=', 'HEAD').split('\n').sort();
   assert.deepEqual(files, ['page.html', 'scripts/a.py', 'scripts/new.py']);
   assert.equal(remoteHead(origin, 'fx/t'), git(w, 'rev-parse', 'HEAD'), 'pushed to origin fx/t');

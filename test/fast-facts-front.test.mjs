@@ -2,7 +2,7 @@
  *
  *   node --test test/fast-facts-front.test.mjs
  *
- * Two tabs (Sig, Oct 21 after the panel): My place and Reference tables, each with its own #hash,
+ * Two tabs (Oct 21 after the panel): My place and Reference tables, each with its own #hash,
  * picked before first paint; both panels in order without JavaScript. A saved place or a place link
  * opens My place; any other first visit (a search visitor) opens the tables. Old #state, #us and
  * #print links open My place; Print is a button. The ZIP is asked once (a saved ZIP opens the place, location only on a tap). No

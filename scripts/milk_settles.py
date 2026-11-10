@@ -106,7 +106,7 @@ def series(snaps):
 
 def spikes(ser, jump=0.50):
     """Session dates whose move in and move out both exceed `jump`, in opposite
-    directions (the skeptic's detector)."""
+    directions (a review's detector)."""
     ks = list(ser)
     bad = []
     for i in range(1, len(ks) - 1):

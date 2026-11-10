@@ -1,4 +1,4 @@
-/* The printed "Funds this week" sheet on /cot (Nov 6 2026, Sig: shareable by default, "nicely printed PDFs",
+/* The printed "Funds this week" sheet on /cot (Nov 6 2026, shareable by default, "nicely printed PDFs",
  * "I have always loved a really well done infographic").
  *   1. The print stylesheet shows the sheet alone: no nav, footer, sponsor slots or buttons on paper; hidden on screen.
  *   2. Kit v2 (Nov 6): one short line per market (the big net, what funds bought or sold, one context line), the

@@ -1,5 +1,5 @@
-/* The line logic behind "what changed here this week" (Sig, Oct 27 2026: god's-eye panel; "Your
-   county this week" goes inside the existing Daily slots, no new list, sender or cron).
+/* The line logic behind "what changed here this week" (Oct 27 2026: god's-eye panel; "Your
+ county this week" goes inside the existing Daily slots, no new list, sender or cron).
 
    One module, three readers, so no two places ever print a different line for one county:
      components/changemap.js   Fast Facts My place: the sentence, the lines and the state map (50 mi)
@@ -280,7 +280,7 @@
 
   /* ── the sentence ─────────────────────────────────────────────────── */
   function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
-  /* 2026-11-04 (site panel, skeptic row 8): "Nothing changed here this week" printed with one
+  /* 2026-11-04 (site review, row 8): "Nothing changed here this week" printed with one
      line read and three not read. It is said only when every line was read; otherwise the
      sentence says how many were checked and names the ones that were not. */
   function summary(lines) {

@@ -1,4 +1,4 @@
-/* The GA gate (2026-10-20b). Sig, Oct 20: keep readers anywhere in Google
+/* The GA gate (2026-10-20b). Oct 20: keep readers anywhere in Google
  * Analytics, keep data center traffic out. The inline agsist-ga-guard loads
  * components/ga-gate.js on the reader's first scroll, tap or key press; the
  * gate asks the subs worker, GET /ga-ok (v5.33), whether the visit comes from

@@ -218,7 +218,7 @@
       '<b>' + head + '</b>' + mid + rng + '.';
   }
 
-  /* ---- the first-screen answer: the reader's own state first (Sig, Nov 3), the middle under it ---- */
+  /* ---- the first-screen answer: the reader's own state first (Nov 3), the middle under it ---- */
   function hero(k) {
     var op = S.b && S.b.ops[k];
     if (!op) return;
@@ -499,7 +499,7 @@
   }
   function status(msg, err) { var s = $('cr-status'); s.className = 'cr-status' + (err ? ' err' : ''); s.textContent = msg; }
 
-  /* ---- quote my job: several jobs, the reader's numbers times the survey averages (Sig, Nov 3) ---- */
+  /* ---- quote my job: several jobs, the reader's numbers times the survey averages (Nov 3) ---- */
   var QJKEY = 'agsist-cr-quote';
   /* the rate a quote line uses: the reader's state's own survey average when it prices the job the
      same way, else the middle across the states, else the one survey that prices it */

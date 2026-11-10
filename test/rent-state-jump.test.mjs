@@ -1,7 +1,7 @@
 /* Phone audit, Oct 19, 2026: on /rent/minnesota the county table (what
  * "cash rents by county" searchers came for) starts about 2,800 px down, after
  * the hero, tiles and calculator. A "County table" link now sits under the H1
- * and lands on the table's heading. The page order is unchanged (Sig's call).
+ * and lands on the table's heading. The page order is unchanged.
  *
  *   node --test test/rent-state-jump.test.mjs
  */

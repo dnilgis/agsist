@@ -1,5 +1,5 @@
 /**
- * River key (Sig, Nov 9 2026): each elevator with a street-placed point is a river terminal (a USACE grain
+ * River key (Nov 9 2026): each elevator with a street-placed point is a river terminal (a USACE grain
  * dock within 0.5 mile), near (a National Waterway Network line within 10 miles) or inland; a town or county
  * centre point is unsure, never guessed. The inputs come from a one-time pull (river-pull.yml, dispatch only)
  * saved to the private raw branch, so the site does not grow.

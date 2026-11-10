@@ -40,7 +40,7 @@ import fact_check_briefing as fc  # noqa: E402
 
 REPO = Path(HERE).parent
 # Frozen copies of the real files (taken Nov 3, 2026), so a bot rewriting data/ can never change what this
-# check means or hold the Daily (Sig, Nov 3: no test may depend on live data matching a literal value).
+# check means or hold the Daily (Nov 3: no test may depend on live data matching a literal value).
 # FIX/data/daily-archive holds the Oct 15 to 19 issues as published; the rest are the live files as of Nov 3.
 FIX = REPO / "test" / "fixtures" / "daily-numbers"
 fails = []

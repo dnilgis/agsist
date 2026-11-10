@@ -8,7 +8,7 @@ One short key per sale, where the legal description gives a section, township an
 
 The key is written into the county transfer files (data/land/<st>/<fips>.json, column "str") by
 scripts/fetch_land_sales.py, and only there: data/land/ is blocked in robots.txt, and no indexed
-page prints it (Sig decides whether a section may show on indexed pages). Field Scout's comps use
+page prints it (the owner decides whether a section may show on indexed pages). Field Scout's comps use
 it to put a sale in the reader's own section, or a touching one, first.
 
 Readers, in order:

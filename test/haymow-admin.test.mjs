@@ -1,4 +1,4 @@
-/* haymow-admin.html: Sig's desk for The Haymow (2026-10-18, Sig: "build the admin page").
+/* haymow-admin.html: the owner's desk for The Haymow (2026-10-18).
  *
  *   - the page: noindex, no referrer, no analytics, not in a sitemap or the menu,
  *     the token only in the Authorization header (never in an address), and it

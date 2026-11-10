@@ -15,9 +15,9 @@
  *   State Sponsor      slot = one of the state's ribbons (cash-bids-<state> or rent-xx)
  *   Cash Bids Sponsor  slot = cash-bids
  *   Featured elevator  slot = fe-<st>-<town>   (the town page /cash-bids/<state>/<town>)
- * Nothing is published from here: the applicant confirms by email, Sig approves,
+ * Nothing is published from here: the applicant confirms by email, the owner approves,
  * and scripts/sponsor_apply.py puts it live. If the worker cannot take it, the
- * form hands the same details to an email to Sig instead of losing them.
+ * form hands the same details to an email to the owner instead of losing them.
  */
 (function () {
   'use strict';

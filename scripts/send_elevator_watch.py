@@ -919,7 +919,7 @@ def selftest():
     b2 = m2.get_body(("plain",)).get_content()
     assert "PO Box 243" in b2 and "Stop all elevator watches" in b2 and "-25¢" in b2.replace("−", "-") and "-30¢" in b2.replace("−", "-")
     assert "a=elevator-watch-unsubscribe&k=00000000000000aa&t=%s" % token(s, "00000000000000aa", "|ew") in b2
-    # Oct 22 (Sig): no em dash in an alert's subject, headline or body, even from a label saved with one
+    # Oct 22: no em dash in an alert's subject, headline or body, even from a label saved with one
     m3 = change_email("a@x.com", "wC", ch[0][2], row_old["basis"], row_new, "https://w.dev", s, "AGSIST", "n@agsist.com", None)
     assert ch[0][2] == "Chatham Coop, IL, corn", ch[0][2]
     for mm0 in (m3, confirm_email("a@x.com", "wA", cf[0][2], "https://w.dev", s, "AGSIST", "n@agsist.com", None)):
@@ -1186,7 +1186,7 @@ def main():
             except Exception:
                 pass
     # Counts and masked addresses only: the Actions log is public. The full
-    # list goes to Sig by private mail.
+    # list goes to the owner by private mail.
     tally.sent = sent
     print(f"sent {sent}; failed {len(failed)}"
           + (": " + ", ".join(log_safe.mask_text(f) for f in failed[:10]) if failed else ""))
@@ -1199,5 +1199,5 @@ def main():
 
 
 if __name__ == "__main__":
-    # worker blocked and no usable copy: one warning, exit 0 (an hourly job must not flood Sig with failures)
+    # worker blocked and no usable copy: one warning, exit 0 (an hourly job must not flood the owner with failures)
     sys.exit(list_source.guard(main, soft=True))

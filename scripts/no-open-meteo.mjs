@@ -3,7 +3,7 @@
  *     node scripts/no-open-meteo.mjs
  *     node scripts/no-open-meteo.mjs --selftest
  *
- * 2026-10-29, Sig: no paid Open-Meteo key. Open-Meteo's terms count "websites or apps that have
+ * 2026-10-29, the owner: no paid Open-Meteo key. Open-Meteo's terms count "websites or apps that have
  * subscriptions or display advertisements" as commercial use, so AGSIST is outside its free tier.
  * Every call moved the same week: weather forecasts to the National Weather Service grid
  * (components/nws.js), weather history and GDUs to the PRISM daily grids through RCC-ACIS

@@ -8,7 +8,7 @@ WHAT THIS IS
   going, how much of the county's cropland only works with irrigation and
   where that water comes from, and what has actually destroyed crops there
   since 1989 according to the insurance record. Each is its own layer. There
-  is no combined score, by decision (Sig, 2026-09): heat and water are graded
+  is no combined score, by decision (2026-09): heat and water are graded
   separately and never added.
 
   The page renders. This script computes. Nothing on the page derives a

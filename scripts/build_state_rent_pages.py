@@ -44,6 +44,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_cash_rent import NO_SURVEY_YEARS, REASON_MIXED, pair_county  # noqa: E402  (stdlib-only module, main() guarded)
 import credits as CR  # noqa: E402
 import rent_age as RA  # noqa: E402  (the one rent age rule and ten-year base, shared with the Atlas)
+import cross_links as XL  # noqa: E402  same-state row and the breadcrumb trail
 
 DATA_DIR = "data/cash-rent"
 MIN_DRY = 3          # counties with a latest-year dryland rent before a state is headlined on it
@@ -51,7 +52,7 @@ OUT_DIR = "rent"
 SITE = "https://agsist.com"
 
 
-# The open sponsor ribbon is an empty aside with only its slot id (Sig,
+# The open sponsor ribbon is an empty aside with only its slot id (the owner,
 # 2026-10-19: no price text in an unsold slot). components/loader.js fills it
 # when the slot is sold; the pitch lives in data/sponsor-slots.json
 # (scripts/stamp_rates.py writes the same form into every other page).
@@ -272,7 +273,7 @@ _LS = {}
 def land_sales_hrefs(root="."):
     """{fips: '/land-sales/<state>/<county>'} for every county with its own page on /land-sales/
     (scripts/build_land_sales.py writes them; data/land-sales/<st>.json carries each county's slug
-    by FIPS). Only pages on disk, so no link 404s (Sig, Oct 29, 2026: land sales easy to find)."""
+    by FIPS). Only pages on disk, so no link 404s (Oct 29, 2026: land sales easy to find)."""
     if root not in _LS:
         out = {}
         for p_ in sorted(glob.glob(os.path.join(root, "data", "land-sales", "[a-z][a-z].json"))):
@@ -858,8 +859,8 @@ def state_cloud(states, exclude=None):
 
 
 def rent_ask(st, name, yr):
-    """The page's one signup ask, right under the first answer (the big median card; Sig, Oct 23:
-    the generic bar goes, one page-matched ask replaces it): one email when USDA puts out the
+    """The page's one signup ask, right under the first answer (the big median card; Oct 23:
+ the generic bar goes, one page-matched ask replaces it): one email when USDA puts out the
     next county rents for this state. components/signup-ask.js draws it and posts topic
     rent:<st> to the subs worker's /notice (v5.11), read by scripts/send_rent_notice.py; it puts
     nobody on AGSIST Daily unless they tick the box for it. The release year it names is the
@@ -868,7 +869,7 @@ def rent_ask(st, name, yr):
             f'data-ok="Done. One email when USDA puts out the {yr + 1} {name} county rents, usually in August."></div>')
 
 
-# The one cross-promo on a state rent page (Sig, Oct 23 2026): a Rain Print gift line for
+# The one cross-promo on a state rent page (Oct 23 2026): a Rain Print gift line for
 # landlords and tenants, after the content. components/rain-print-promo.js fills it only
 # while data/rain-print.json's promote window runs (through the framed Christmas order-by
 # date, Dec 9 in 2026); otherwise it stays hidden and takes no space.
@@ -1111,9 +1112,22 @@ def build_state_page(st, d, s, all_states, aslug=None):
                              f"per acre across the {pas['n']} counties with a published {yr} pasture rate. "
                              + (f"Highest {p_hi}; lowest {p_lo}. " if len(pv) >= 5 else "")
                              + "Each county's pasture rate is in its own column in the county table below.")})
+    # "per acre per month" (search Console): rent is quoted per year; the month figure is that / 12, from the same numbers
+    mo = lambda v: money(round(v / 12, 2))
+    pm = (f"Cash rent is quoted per acre per year, not per month. Divided by 12, the middle {name} county's {yr} "
+          f"{plabel} rent of {money(s['median'])} a year is about {mo(s['median'])} an acre a month")
+    if s.get("state_avg"):
+        pm += f"; the USDA NASS statewide average of {money(s['state_avg'])} is about {mo(s['state_avg'])} a month"
+    if pas:
+        pm += f". Pasture: {money(pas['median'])} a year, about {mo(pas['median'])} a month"
+    faq.insert(2 if pas else 1, {"q": f"How much does farmland rent for per acre per month in {name}?",
+                                 "a": pm + "."})
     nf = notice_faq(st, name)
     if nf:
         faq.append(nf)
+    # the visible trail and its JSON-LD from one list (cross_links.crumbs)
+    trail_html, trail_ld = XL.crumbs([("AGSIST", f"{SITE}/"), ("Cash Rent by State", f"{SITE}/rent/"),
+                                      (html.unescape(name), f"{SITE}/rent/{sl}")])
     jsonld = {"@context": "https://schema.org", "@graph": [
         {"@type": "Dataset",
          "@id": f"{SITE}/rent/{sl}#dataset",
@@ -1127,10 +1141,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
          "temporalCoverage": f"{s['y0']}/{yr}",
          "spatialCoverage": {"@type": "Place", "name": f"{name}, United States"}},
-        {"@type": "BreadcrumbList", "itemListElement": [
-            {"@type": "ListItem", "position": 1, "name": "AGSIST", "item": f"{SITE}/"},
-            {"@type": "ListItem", "position": 2, "name": "Cash Rent by State", "item": f"{SITE}/rent/"},
-            {"@type": "ListItem", "position": 3, "name": name, "item": f"{SITE}/rent/{sl}"}]},
+        trail_ld,
         {"@type": "FAQPage", "mainEntity": [
             {"@type": "Question", "name": f["q"],
              "acceptedAnswer": {"@type": "Answer", "text": f["a"]}} for f in faq]},
@@ -1184,7 +1195,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
 <body>
 <div id="site-header"></div>
 <main class="rs-wrap">
-  <p class="sub" style="margin-top:14px"><a href="/rent/" style="color:var(--text-muted)">Cash Rent by State</a> &rsaquo; <b>{name}</b></p>
+  {trail_html}
   <h1>{name} Cash Rent by County, {yr}</h1>
   <p class="rs-jump" style="margin:.1rem 0 .3rem"><a href="#counties" style="display:inline-flex;align-items:center;min-height:44px;color:var(--gold,#d4a23f);font-weight:600">County table &darr;</a></p>
   <p class="sub">{name} cash rent by county, per acre per year: every USDA-published county rate, free, from
@@ -1206,6 +1217,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   check <a href="/basis">local basis vs normal</a> before you commit to a rent that needs a price{prf_rel}.</div>
   {faq_html(faq)}
   {RP_LAND}
+  {XL.same_state_row(".", sl, name, "rent")}
   <h2>Other states</h2>
   {state_cloud(all_states, exclude=st)}
   {state_terms(yr, d.get("generated", ""))}
@@ -1526,6 +1538,8 @@ def selftest():
         assert s["primary"] == "nonirr", "IA primary type wrong"
         assert money(s["median"]) in ia, "IA median not baked into page"
         assert "SEED:rentstate" in ia and "FAQPage" in ia and "canonical" in ia
+        import cross_links as XL   # the visible trail names the same steps as the BreadcrumbList
+        assert '<nav class="breadcrumb"' in ia and XL.trail_matches(ia) is None, XL.trail_matches(ia)
         # the one signup ask: under the hero figures, before the county table, topic rent:ia
         assert ia.count("data-signup-ask") == 1 and 'data-topic="rent:ia"' in ia, "IA rent ask"
         assert ia.index("The median Iowa county paid") < ia.index("data-signup-ask") < ia.index('class="rs-hero"'), "rent ask sits right under the median card"
@@ -1604,6 +1618,15 @@ def selftest():
                 if g["@type"] == "FAQPage":
                     for q in g["mainEntity"]:
                         assert esc(q["name"]) in hub and esc(q["acceptedAnswer"]["text"]) in hub, "hub FAQ not visible: " + q["name"]
+        # per acre per month = the yearly figure / 12, from the state's own numbers, visible and in the JSON-LD
+        ia_s = stats["IA"]
+        want_pm = f"{money(ia_s['median'])} a year is about {money(round(ia_s['median'] / 12, 2))} an acre a month"
+        assert "How much does farmland rent for per acre per month in Iowa?" in ia and want_pm in ia, "IA per-month FAQ missing"
+        for blk in _re.findall(r'<script type="application/ld\+json">(.*?)</script>', ia, _re.S):
+            for g in json.loads(blk)["@graph"]:
+                if g["@type"] == "FAQPage":
+                    for q in g["mainEntity"]:
+                        assert esc(q["name"]) in ia and esc(q["acceptedAnswer"]["text"]) in ia, "IA FAQ not visible: " + q["name"]
         # one county set: a state's dryland median here is the Farmland Atlas state median
         cards_p = os.path.join("farmland-atlas", "data", "cards.json")
         if os.path.exists(cards_p):

@@ -12,6 +12,11 @@
 .ls-held { color: var(--text-muted); font-style: italic; }
 .ls-why { font-size: var(--fs-sm, .9rem); }
 .ls-ask { margin: 1rem 0 1.4rem; max-width: 40em; }
+/* the farm-sale alert form (land-alert.js) is drawn into .ls-ask after the page loads: its room is held so the
+   sales list under it does not jump (CLS sweep Nov 10). Heights are the drawn form at each width. */
+@media (scripting: enabled) { .ls-ask { min-height: 217px; } }
+@media (scripting: enabled) and (max-width: 760px) { .ls-ask { min-height: 269px; } }
+@media (scripting: enabled) and (max-width: 480px) { .ls-ask { min-height: 418px; } }
 .ls-tw { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 0 0 1rem; max-width: 100%; }
 .ls-t { border-collapse: collapse; width: 100%; font-size: .92rem; }
 .ls-t caption { text-align: left; font-weight: 700; padding: 0 0 .35rem; color: var(--text); }
@@ -77,6 +82,8 @@
 .ls-hub h1 { margin-bottom: .3rem; }
 .ls-hub .ls-ans { font-size: 1rem; margin-bottom: .6rem; }
 .ls-hub .ls-usmap { margin: 0 -4px; }
+/* the hub map's box before usmap.js mounts: the map's own ratio (866.9/553.2, at most 900px wide) and its hint line */
+@media (scripting: enabled) { .ls-usmap:not(:has(.usm))::before { content: ""; display: block; max-width: 900px; margin: 0 auto 23px; aspect-ratio: 866.9 / 553.2; } }
 .ls-hub .ls-key { margin: .4rem 0 0; }
 .ls-hub .ls-key .ls-k:first-child { margin-left: 0; }
 .ls-hub h2 { font-size: 1.15rem; margin: 1.3rem 0 .5rem; }

@@ -6,7 +6,7 @@ builds only, never by a page). One entry per live board of the bids repo (dnilgi
 data/index.json) that has evidence, keyed by the board id (the row `source`):
 
   parent  the company that runs the board when the board itself says so. Evidence, never a
-          name alone (the Oct 19 fold rule; the skeptic showed a name normalizer merges unrelated
+          name alone (the Oct 19 fold rule; a review showed a name normalizer merges unrelated
           co-ops). Three rules:
             board-page  the board is read from another company's own cash bid page: the page's
                         host is the website of every other board on it, and those boards all
@@ -82,7 +82,11 @@ def dest_brands(directory):
     return out
 
 
-def build(directory, index, today, changes=None):
+def build(directory, index, today, changes=None, resolve=None):
+    """resolve (build_ids.id_resolver): the change log's facility ids follow id merges to the live record."""
+    if resolve is not None:
+        import build_ids
+        changes = build_ids.follow_changes(changes, resolve)
     eid_of = {r.get("id"): r.get("elevId") for r in directory.get("elevators") or [] if r.get("id")}
     live = [s for s in index.get("sources") or [] if s.get("health") == "live" and s.get("id")]
     boards = {}
