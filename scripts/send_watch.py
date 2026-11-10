@@ -35,6 +35,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import log_safe  # noqa: E402  (no address in the public log)
 import delivery_line  # noqa: E402  (the DELIVERY count line cron_health reads)
+import send_pace  # noqa: E402  batches, one try more for a deferral, hard bounces (scripts/send_pace.py)
 import email_links  # noqa: E402  (k=<link id> links; never an address in one)
 import list_source  # noqa: E402  (the worker, or the private copy of its list)
 
@@ -294,9 +295,12 @@ def main():
             c.login(env("SMTP_USER"), env("SMTP_PASS"))
             return c
         conn, reconnects = connect(), 0
+        # one email per job (a reader's two watches are two jobs), in batches (scripts/send_pace.py)
         jobs = [("c", x) for x in confirms] + [("m", x) for x in chg]
+        pace = send_pace.Pacer(jobs[:cap], gap=1.5, sleep=time.sleep,
+                               key=lambda j: (j[0], j[1][0], j[1][1]), addr=lambda j: j[1][0])
         try:
-            for kind, x in jobs[:cap]:
+            for kind, x in pace:
                 e, f = x[0], x[1]
                 c = cards[f]
                 try:
@@ -308,9 +312,9 @@ def main():
                     sent += 1
                     worker(base, "watch-mark", tok, {"email": e, "fips": f, "confirm_mailed": True} if kind == "c"
                            else {"email": e, "fips": f, "k": x[4], "s": x[3]})
-                    time.sleep(1.5)
                 except Exception as ex:             # bare on purpose: a socket error is not an SMTPException
-                    failed.append(f"{e} {f} ({type(ex).__name__})")
+                    if not pace.defer(ex):       # a deferral (4xx) is tried once more at the end of the list
+                        failed.append(f"{e} {f} ({type(ex).__name__})")
                     dead = isinstance(ex, (smtplib.SMTPServerDisconnected, smtplib.SMTPConnectError)) or \
                         (isinstance(ex, OSError) and not isinstance(ex, smtplib.SMTPException))
                     if dead and reconnects < 3:
@@ -319,11 +323,13 @@ def main():
                             conn = connect()
                         except Exception:
                             break
+                pace.after()   # the short gap, or the pause between batches
         finally:
             try:
                 conn.quit()
             except Exception:
                 pass
+        print(pace.line())
     # Counts and masked addresses only: the Actions log is public. The full
     # list goes to the owner by private mail.
     tally.sent = sent

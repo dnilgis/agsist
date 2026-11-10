@@ -65,6 +65,7 @@ sys.path.insert(0, str(HERE))
 import email_links                 # noqa: E402
 import log_safe                    # noqa: E402
 import delivery_line             # noqa: E402  (the DELIVERY count line cron_health reads)
+import send_pace  # noqa: E402  batches, one try more for a deferral, hard bounces (scripts/send_pace.py)
 TALLY = None  # set in __main__ only (never by a selftest): delivery_line's per-run counts
 import send_notice as SN           # noqa: E402
 from send_watch import base_msg    # noqa: E402
@@ -376,17 +377,20 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
     if not todo:
         return 0
     conn, sent, failed, broken, reconnects = None, 0, 0, False, 0
+    pace = send_pace.Pacer(todo, sleep=sleep)   # batches and a pause between (scripts/send_pace.py)
     try:
         conn = connect()
-        for i, (e, lid) in enumerate(todo):
+        for i, (e, lid) in enumerate(pace):
             try:
                 conn.send_message(render(e, base, secret, lid, parts, from_addr))
             except Exception as ex:
+                if pace.defer(ex):           # a deferral (4xx) is tried once more at the end of the list
+                    continue
                 failed += 1
                 out("  send failed (%s)" % type(ex).__name__)
                 dead = isinstance(ex, (smtplib.SMTPServerDisconnected, smtplib.SMTPConnectError)) or \
                     (isinstance(ex, OSError) and not isinstance(ex, smtplib.SMTPException))
-                if dead and reconnects < 3 and i < len(todo) - 1:
+                if dead and reconnects < 3 and pace.more():
                     reconnects += 1
                     try:
                         conn.quit()
@@ -403,8 +407,7 @@ def run(argv, http=SN.http_json, connect=SN.smtp_connect, now=None, sleep=time.s
                 out("::error::milk-month: a sent email could not be marked; stopping so nobody gets two")
                 broken = True
                 break
-            if i < len(todo) - 1:
-                sleep(1.2)
+            pace.after()   # the short gap, or the pause between batches
     except Exception as ex:
         out("  could not connect to SMTP (%s)" % type(ex).__name__)
     finally:
