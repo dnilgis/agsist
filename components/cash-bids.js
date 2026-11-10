@@ -396,7 +396,7 @@ var BASIS_SANE={corn:2.5,soybeans:2.5,wheat:3};
    near -$0.70 (2026-10-15) was Best soybeans before this. */
 function basisUnusual(bid){
   if(!bid||bid.basis==null)return false;
-  if(bid._odd)return true;
+  if(bid._odd||bid.basisOdd===true)return true;
   var cap=BASIS_SANE[bid.category],c=basisCents(bid.basis,bid);
   return cap!=null&&c!=null&&Math.abs(c)>cap*100;
 }
@@ -1177,7 +1177,7 @@ function rankCands(elevs,comm){
       (elev.commodities.wheat||[]).forEach(function(b){var c=wheatCls(b);if(classes.indexOf(c)<0)classes.push(c);});
     }
     classes.forEach(function(c){
-      var b=getNearestBid(elev,comm,function(x){return rankable(x)&&(comm!=='wheat'||wheatCls(x)===c);});
+      var b=getNearestBid(elev,comm,function(x){return rankable(x)&&!basisUnusual(x)&&(comm!=='wheat'||wheatCls(x)===c);});
       if(b&&b.cashPrice!=null)out.push({elev:elev,bid:b,dist:elev.distance,rk:rankOf(b),cls:comm==='wheat'?c:''});
     });
   });
@@ -1240,6 +1240,7 @@ var ROAD_FACTOR=1.25;
 function roadMi(d){return d*ROAD_FACTOR;}
 var ROAD_NOTE='estimated road miles (straight line x 1.25)';
 var EARN_CROP={corn:'corn',soybeans:'soybeans',wheat:'wheat'};
+var EARN_NONE='Best after the drive: not enough boards read today to compare here.';
 function earningsLine(win,compared,bu,money){
   var load=Number(bu).toLocaleString('en-US')+' bu';
   if(win)return 'Best after the drive on '+load+' of '+win.crop+': '+win.name+', '+money(win.net)+' more than your closest elevator.';
@@ -1301,7 +1302,9 @@ function renderEarnings(){
   var line=earningsLine(best?{name:truncName(best.top.elev.facility,24),net:best.net,crop:crop}:null,compared,bu,fmtMoney);
   earningsCallout.classList.toggle('muted',!line);
   earningsCallout.classList.toggle('flat',!!line&&!best);
-  if(!line)return;
+  /* NEVER LEAVE THE PAGE'S "Working out the best bid..." ON SCREEN (2026-11-09 panel). With no board to compare
+     (none read today, or a single elevator) there is no line to write; say so, and clear a line left by an earlier search. */
+  if(!line){earningsHead.textContent=EARN_NONE;earningsDetail.innerHTML='';return;}
   earningsHead.textContent=line;
   if(!best){earningsDetail.innerHTML='';return;}
   /* A re-marked price says so where it is printed. */
@@ -2295,6 +2298,10 @@ function netRowsFrom(shard,distanceMi){
          rows whose read had failed were drawn as ordinary live prices under a
          badge claiming they came straight from the elevator. */
       stale:b.stale===true&&!held,
+      /* The feed's own flag that this board's basis sits far from the other boards on its contract
+         (data/bids.json basisOdd; Riceville IA soybeans +$1.40 against an Iowa middle near -$0.65).
+         Marked, never ranked: the Best cards and the day's best basis skip it (basisUnusual). */
+      basisOdd:b.basisOdd===true,
       held:held,
       sourceStatus:b.sourceStatus||'',
       /* THE FEED'S OWN ANSWER TO "HAS THIS MONTH GONE", WHEN IT HAS ONE.

@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 409;  // v409 2026-11-10: quick stats and rain radar. Rain radar answer keeps its room when a spot is known and adds a spray forecast line (components/radar-rain-page.js?v=9). (409, next after main's 408)
+var CACHE_VERSION = 411;  // v411 2026-11-10: quick stats and rain radar. Rain radar answer keeps its room when a spot is known and adds a spray forecast line (components/radar-rain-page.js?v=9). (411, next after main's 409)
+// var CACHE_VERSION = 409;  // v409 2026-11-09: fx/cash-bids-panel. /cash-bids panel fixes: no-ZIP table shows the reader's state first and says est., the email ask is one line under that table, the sticky bar returns after results (bar-cash-bids), Best price skips basisOdd rows, no stale best-bid line. (409, next after main's 408)
 // var CACHE_VERSION = 408;  // v408 2026-11-10: data links left. /spray names its measured inversion networks in text and a Sources and terms fold, /cash-lease prints Iowa Code 562.6 as text (no data-source URLs in their scripts). (408, next after main's 407)
 // var CACHE_VERSION = 407;  // v407 2026-11-09: phone width. Nested cards on 23 pages add no extra side padding at 480px and under (fx/phone-width). (407, next after main's 406)
 // var CACHE_VERSION = 406;  // v406 2026-11-09: arc-plc plain words (406, next after main's 405). The ARC/PLC cards, FAQ and structured data say one plain line where a crop has too little price history (components/arc-plc.js, arc-plc-math.js, arc-plc-simple.js at CALC_V 18).
