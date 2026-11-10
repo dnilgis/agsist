@@ -16,7 +16,9 @@ test("method_html: plain words, no t statistic, no cutoffs, no weights", () => {
 test("method_html: the track-record table stays and the record line is computed", () => {
   assert.ok(method.includes('<h3 id="backtest">What each program paid, nationally, per base acre</h3>'));
   assert.ok(method.includes('class="tbl ap-t"'));
-  assert.match(method, /Looking back, over \{len\(done\)\} crop years/);
+  // Nov 10, 2026: the line says what it is: how often ARC-CO paid more, not how often a verdict was right
+  assert.match(method, /How often ARC-CO paid more, not how often a verdict was right: nationally, over \{len\(done\)\} crop years/);
+  assert.ok(!/Looking back/.test(method));
   assert.ok(!/\bcorn \d+ years\b|\b\d{2} crop years\b/.test(method), "no hard-coded counts");
 });
 test("method sits once in the closed fold at the bottom, no em dash", () => {

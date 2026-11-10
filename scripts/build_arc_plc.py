@@ -4181,9 +4181,12 @@ def selftest():
     # a borrowed spread marks "capped" only where it lowered a clear pick (no "held at Leans" on a Close card)
     _Rc = {t: 1.0 + (0.01 if t % 2 else -0.01) for t in range(2015, 2026)}
     _vc = scen_eval(4.0, 5.0, 2.0, 100, [(1.0, 100, 1.0)], 3.0, _Rc, borrowed=True)
-    _vn = scen_eval(4.0, 5.0, 2.0, 100, [(1.0, 100, 1.0)], 3.96, _Rc, borrowed=True)
-    ck("capped: a borrowed Pick held at Leans is marked; a borrowed Close is not",
-       _vc["verdict"] == "lean_plc" and _vc.get("capped") and _vn["verdict"] in ("close", "none") and not _vn.get("capped"), (_vc["verdict"], _vn["verdict"]))
+    _Rw = {t: 1.0 + (0.15 if t % 2 else -0.15) for t in range(2015, 2026)}
+    _vn = scen_eval(4.0, 5.0, 2.0, 100, [(1.0, 100, 1.0)], 3.95, _Rw, borrowed=True)   # $1.64 apart: Close
+    _vl = scen_eval(4.0, 5.0, 2.0, 100, [(1.0, 100, 1.0)], 3.9, _Rw, borrowed=True)    # $2.59, SE 1.34: Leans on its own
+    ck("capped: a borrowed Pick held at Leans is marked; a borrowed Close, or a Leans on its own numbers, is not",
+       _vc["verdict"] == "lean_plc" and _vc.get("capped") and _vn["verdict"] == "close" and not _vn.get("capped")
+       and _vl["verdict"] == "lean_plc" and not _vl.get("capped"), (_vc["verdict"], _vn["verdict"], _vl["verdict"]))
     # money audit 3 (2026-10-19), Sumner Co., KS non-irrigated wheat 2026 as the build had it: expected $6.76 PLC vs
     # $6.64 ARC-CO on a spread borrowed from corn ($1.56 PLC with no spread at all). The call stays, the dollars go.
     LINE9 = "Expected payments are not printed for this crop; its price swings are borrowed from corn."
