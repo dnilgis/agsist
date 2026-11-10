@@ -67,6 +67,13 @@
     .sb-glance ul{margin:0;padding:0;list-style:none}.sb-glance li{margin:.15rem 0;color:var(--text-dim)}.sb-glance li b{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:700}
     .sb-glance li b:first-child{font-family:inherit}
     @media(max-width:520px){.sb-glance{font-size:.85rem;padding:.5rem .7rem}.sb-glance li:nth-child(3){display:none}}
+    .sb-wait #sb-empty{display:none}.sb-wait #sb-controls[hidden]{display:block!important}.sb-gwait .sb-glance[hidden]{display:block!important}
+    .sb-ghold .sb-glance{min-height:150px}
+    @media(max-width:899px){.sb-ghold .sb-glance{min-height:203px}}
+    @media(max-width:767px){.sb-ghold .sb-glance{min-height:256px}}
+    @media(max-width:520px){.sb-ghold .sb-glance{min-height:224px}}
+    @media(max-width:440px){.sb-ghold .sb-glance{min-height:277px}}
+    #sb-asof{min-height:3.2em}@media(max-width:440px){#sb-asof{min-height:4.8em}}
     .sb-status{font-size:.86rem;color:var(--text-muted);margin:.5rem 0 0}
     .sb-status.err{color:var(--red)}
     .sb-status:empty{display:none}
@@ -139,7 +146,8 @@
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/markets">Markets</a> &rarr; Sale barn prices</nav>
       <h1>Feeder cattle sale barn prices near you</h1>
       <p class="by">Prices reported by USDA AMS market reporters at the sale, not by the barns. Ranges a barn posts itself are marked as the barn&#x27;s.</p>
-      <div id="sb-glance" class="sb-glance" aria-live="polite" hidden></div>
+      <div id="sb-glance" class="sb-glance" aria-live="polite" hidden><p class="sb-gh"><b>Cattle prices today:</b> the biggest USDA state auction reports load here</p></div>
+      <script>/* sb-wait (Nov 10 CLS sweep): with scripts on, the controls and the price glance hold their room from the first paint, and the empty box shows only if the file does not load. The glance shows when no ZIP or state is saved. */(function(a){var s=null;try{s=JSON.parse(localStorage.getItem('agsist-salebarn')||'null');}catch(e){}a.classList.add('sb-wait');if(!(s&&(/^\d{5}$/.test(s.zip||'')||/^[A-Z]{2}$/.test(s.state||''))))a.classList.add('sb-gwait','sb-ghold');})(document.currentScript.parentNode);</script>
       <p class="sb-lede">The latest USDA-reported auction prices for feeder steers and heifers at the barns closest to you: each 100 lb class from 300 to 899 lb, with head count, the weighted average in dollars per hundredweight, the range, about what a calf brought per head, and the change from that barn's last sale once USDA has posted two.</p>
 
       <div class="sb-box">
@@ -163,7 +171,7 @@
         <noscript><p>The barn list needs JavaScript. USDA's reports are at mymarketnews.ams.usda.gov.</p></noscript>
       </div>
 
-      <h2 id="sb-head" aria-live="polite"></h2>
+      <h2 id="sb-head" aria-live="polite">Enter a ZIP or pick a state</h2>
       <div id="sb-results"></div>
       <p id="sb-asof" class="src"></p>
 
