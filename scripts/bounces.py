@@ -24,11 +24,20 @@ ledger; the event files folded are then deleted. An address is suppressed when i
 on SUPPRESS_AFTER (2) different days after its undo day. Suppressed means list_source.py leaves it
 out of every list a sender reads; the subscription is kept (a flag, never a delete).
 
-  * Undo: the address in LIST_UNSUPPRESS on a hand run, or a hand-set undo day in the ledger. A
-    fresh signup or confirmation after the last bounce is an undo too (a new opt-in).
+  * Undo: the address in LIST_UNSUPPRESS on a hand run (the Daily's undo), or a hand-set undo day
+    in the ledger. A new notice topic signed up after the last bounce is an undo too: the worker
+    gives a new notice row its own time. A repeat Daily signup does NOT: the worker keeps the
+    first signup time, so the Daily is put back only by LIST_UNSUPPRESS.
+  * Every event day is clamped to the fold's day, so a notice dated in the future can never outlast
+    an undo; the inbox step drops notices dated outside its lookback window.
   * Ceiling: when one fold would newly suppress more than CEILING_N (10) addresses or more than
-    CEILING_PCT (5%) of the Daily list, it suppresses nobody new, mails the owner and opens a
-    GitHub issue (counts only). A hand run with BOUNCE_ACCEPT=1 applies it.
+    CEILING_PCT (5%) of the Daily list, it suppresses nobody new, mails the owner (at most once a
+    week while it stays held) and opens a GitHub issue that says only that a batch is held. A hand
+    run with BOUNCE_ACCEPT=1 applies the batch, BOUNCE_REJECT=1 discards it (an undo for each);
+    either closes the issue.
+  * Key check: the ledger keeps a check value made with the secret. When it does not match (the
+    secret was changed or is missing), the job log and the owner's mail say so loudly, nobody is
+    left out of a list, and the fold changes nothing until the owner decides.
 
 Counts only in any log or issue; only the owner's private mail names addresses.
 
@@ -62,6 +71,8 @@ LEDGER = DIR + "/ledger.json"
 EVENTS = DIR + "/events"
 KEY_RE = re.compile(r"^[0-9a-f]{32}$")
 ISSUE_TITLE = "Bounce suppression held"
+ISSUE_BODY = "A bounce suppression batch is held; details went to the owner."
+HELD_MAIL_DAYS = 7
 
 PENDING = []                  # this run's send-time hard bounces, saved at exit when armed
 STATE = {"armed": False, "sender": "", "saved": False}
@@ -70,6 +81,10 @@ _SEQ = itertools.count()
 
 class NoKey(Exception):
     """UNSUB_SECRET is not set: no key can be made, so nothing is recorded or left out."""
+
+
+class KeyMismatch(Exception):
+    """The ledger's check value does not match this job's secret (changed or missing)."""
 
 
 def key(addr, secret=None):
@@ -82,6 +97,22 @@ def key(addr, secret=None):
 
 def _today():
     return datetime.now(timezone.utc).strftime("%Y-%m-%d")
+
+
+def check_value(secret=None):
+    """A value made with the secret, kept in the ledger: a changed or missing secret no longer matches."""
+    return key("check-value", secret)[:16]
+
+
+def key_matches(ledger):
+    """True when the ledger's check value matches this job's secret (or the ledger has none yet)."""
+    c = (ledger or {}).get("check")
+    if not c:
+        return True
+    try:
+        return hmac.compare_digest(c, check_value())
+    except NoKey:
+        return False
 
 
 def _run_id():
@@ -192,10 +223,11 @@ def opted_in_after(entry, ts):
     return bool(d and last and d > last)
 
 
-def fold(ledger, events, today=None, undo=(), optins=None, list_size=0, accept=False):
+def fold(ledger, events, today=None, undo=(), optins=None, list_size=0, accept=False, reject=False):
     """Add events [{"h", "id", "day", "code", "src"}], undo keys and opt-ins {key: signup ts} to a ledger.
     -> (ledger, changes) with changes {"recorded", "suppressed", "undone", "held"} (keys; held: the
-    keys a ceiling kept from being suppressed)."""
+    keys a ceiling kept from being suppressed). accept applies a held batch; reject discards it
+    (an undo for each of its keys). Every event day is clamped to today."""
     today = today or _today()
     led = parse(json.dumps(ledger)) if ledger is not None else empty()
     before = set(led.get("suppressed") or [])
@@ -208,7 +240,10 @@ def fold(ledger, events, today=None, undo=(), optins=None, list_size=0, accept=F
         ids = ent.setdefault("ids", {})
         if i in ids:
             continue
-        ids[i] = {"day": str(e.get("day") or today)[:10], "code": str(e.get("code") or "")[:20],
+        d = str(e.get("day") or today)[:10]
+        if not re.match(r"^\d{4}-\d{2}-\d{2}$", d) or d > today:
+            d = today                           # a future or broken date never outlasts an undo
+        ids[i] = {"day": d, "code": str(e.get("code") or "")[:20],
                   "src": str(e.get("src") or "")[:8]}
         recorded.append(h)
     undone = []
@@ -221,27 +256,41 @@ def fold(ledger, events, today=None, undo=(), optins=None, list_size=0, accept=F
         if ent and counted_days(ent) and opted_in_after(ent, ts):
             ent["undo"] = today
             undone.append(h)
+    if reject and led.get("held"):
+        for h in led["held"].get("keys") or []:
+            if KEY_RE.match(h) and h in led["addr"]:
+                led["addr"][h]["undo"] = today
+                undone.append(h)
     want = {h for h, ent in led["addr"].items() if KEY_RE.match(h) and due(ent)}
     new = sorted(want - before)
     # more than CEILING_N, or more than CEILING_PCT of the Daily list (when it was read), is held
     over = len(new) > CEILING_N or (list_size and len(new) > CEILING_PCT * list_size)
     limit = min(CEILING_N, int(CEILING_PCT * list_size)) if list_size else CEILING_N
     held = []
+    prev = led.get("held") or {}
     if new and over and not accept:
         held = new
         want = want & before                    # suppress nobody new; undos still apply
-        led["held"] = {"day": today, "count": len(new), "limit": limit}
+        led["held"] = {"day": prev.get("day") or today, "count": len(new), "limit": limit, "keys": new,
+                       "mailed": prev.get("mailed") or ""}
     else:
         led.pop("held", None)
     led["suppressed"] = sorted(want)
     led["updated"] = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    try:
+        led["check"] = check_value()
+    except NoKey:
+        pass
     return led, {"recorded": recorded, "suppressed": sorted(set(want) - before), "undone": sorted(set(undone)),
-                 "held": held}
+                 "held": held, "released": bool(prev) and not held}
 
 
 def suppressed_keys(ledger):
     """{key: last counted bounce day} for the suppressed keys, worked out again from the entries (a hand
-    edit of an undo day counts). Only keys the fold suppressed (a held ceiling suppresses nobody new)."""
+    edit of an undo day counts). Only keys the fold suppressed (a held ceiling suppresses nobody new).
+    Raises KeyMismatch when the ledger was made with another secret: nobody is left out then."""
+    if not key_matches(ledger):
+        raise KeyMismatch("the bounce ledger was keyed with another secret")
     marked = set(ledger.get("suppressed") or [])
     return {h: last_day(ent) for h, ent in (ledger.get("addr") or {}).items()
             if h in marked and KEY_RE.match(h) and due(ent)}
@@ -324,12 +373,10 @@ def _lists():
     return out
 
 
-def _issue(count, limit):
-    """Open (or leave open) one issue, counts only. True when it is there."""
+def _gh():
     tok, repo = os.environ.get("GH_TOKEN") or "", os.environ.get("GITHUB_REPOSITORY") or ""
     if not (tok and repo):
-        print("::warning::no GH_TOKEN or GITHUB_REPOSITORY: the held-suppression issue was not opened")
-        return False
+        return None, None
     h = {"Authorization": "Bearer " + tok, "Accept": "application/vnd.github+json", "User-Agent": "agsist-bounces"}
 
     def gh(method, path, body=None):
@@ -337,27 +384,51 @@ def _issue(count, limit):
                                      data=json.dumps(body).encode() if body is not None else None)
         with urllib.request.urlopen(req, timeout=30) as r:
             return json.loads(r.read().decode() or "null")
+    return gh, repo
+
+
+def _find_issue(gh, repo):
+    for it in gh("GET", "/repos/%s/issues?state=open&per_page=100" % repo) or []:
+        if it.get("title") == ISSUE_TITLE and "pull_request" not in it:
+            return it
+    return None
+
+
+def _issue(open_it=True):
+    """Open the held-batch issue (one, no counts, no list size), or close it. True when done."""
+    gh, repo = _gh()
+    if gh is None:
+        print("::warning::no GH_TOKEN or GITHUB_REPOSITORY: the held-suppression issue was not %s"
+              % ("opened" if open_it else "closed"))
+        return False
     try:
-        for it in gh("GET", "/repos/%s/issues?state=open&per_page=100" % repo) or []:
-            if it.get("title") == ISSUE_TITLE and "pull_request" not in it:
-                return True
-        gh("POST", "/repos/%s/issues" % repo, {"title": ISSUE_TITLE, "body": (
-            "The daily bounce fold would have set aside %d addresses at once, over its limit of %d. "
-            "Nobody new was set aside. The owner has the details by email. If they are right, run the "
-            "list cleanup by hand with accept_suppression ticked." % (count, limit))})
+        it = _find_issue(gh, repo)
+        if open_it and not it:
+            gh("POST", "/repos/%s/issues" % repo, {"title": ISSUE_TITLE, "body": ISSUE_BODY})
+        elif not open_it and it:
+            gh("POST", "/repos/%s/issues/%d/comments" % (repo, it["number"]), {"body": "Decided; closing."})
+            gh("PATCH", "/repos/%s/issues/%d" % (repo, it["number"]), {"state": "closed"})
         return True
     except Exception as ex:                                # noqa: BLE001
-        print("::warning::the held-suppression issue was not opened (%s)" % type(ex).__name__)
+        print("::warning::the held-suppression issue was not updated (%s)" % type(ex).__name__)
         return False
 
 
-def fold_main(dry=False):
+def _days_between(a, b):
+    try:
+        return (datetime.strptime(b, "%Y-%m-%d") - datetime.strptime(a, "%Y-%m-%d")).days
+    except (TypeError, ValueError):
+        return 10 ** 6
+
+
+def fold_main(dry=False, today=None):
     """The fold step. Reads no mail: the inbox step handed over keys only (BOUNCE_EVENTS_IN)."""
     import log_safe
+    today = today or _today()
     try:
         key("x")
     except NoKey:
-        print("::warning::UNSUB_SECRET is not set: bounces not folded")
+        print("::warning::UNSUB_SECRET is not set: bounces not folded, nobody left out")
         return 0
     inbox = []
     fin = os.environ.get("BOUNCE_EVENTS_IN") or ""
@@ -372,49 +443,74 @@ def fold_main(dry=False):
     except Exception as ex:                                # noqa: BLE001
         print("::warning::the bounce ledger was not read (%s); nothing folded" % type(ex).__name__)
         return 0
+    if not key_matches(led0):
+        print("::error title=Bounce ledger key::the bounce ledger was keyed with another secret (changed or missing); "
+              "nothing folded and nobody is left out of any list until the owner decides")
+        if not dry:
+            log_safe.owner_mail("AGSIST bounces: the ledger key does not match",
+                                ["The bounce ledger was made with a different secret than this job has (it was changed,",
+                                 "or is missing). Nothing was folded, and the senders leave nobody out until this is",
+                                 "settled: put the old secret back, or start a new ledger (delete it in the private repo)."])
+        return 0
     lists = _lists()
     names, optins = {}, {}
     for name in ("daily", "hail", "notices"):
         for r in lists.get(name) or []:
-            k = key(r["email"])
-            names.setdefault(k, r["email"])
-            ts = r.get("ts") or r.get("confirmed") or r.get("confirmed_at")
-            if ts and _day_of_ts(ts) > _day_of_ts(optins.get(k)):
-                optins[k] = ts
+            names.setdefault(key(r["email"]), r["email"])
+    # A new opt-in is an undo only where the worker records one: a notice topic signed up after the
+    # last bounce gets its own time. A repeat Daily signup keeps the first time, so it is not one.
+    for r in lists.get("notices") or []:
+        k, ts = key(r["email"]), r.get("ts")
+        if ts and _day_of_ts(ts) > _day_of_ts(optins.get(k)):
+            optins[k] = ts
     unsup = [x.strip().lower() for x in re.split(r"[,\s]+", os.environ.get("UNSUPPRESS") or "") if "@" in x]
     accept = (os.environ.get("BOUNCE_ACCEPT") or "").strip() in ("1", "true")
+    reject = (os.environ.get("BOUNCE_REJECT") or "").strip() in ("1", "true") and not accept
     size = len(lists.get("daily") or [])
-    led, ch = fold(led0, inbox + sent_ev, undo=[key(u) for u in unsup], optins=optins, list_size=size, accept=accept)
+    led, ch = fold(led0, inbox + sent_ev, today=today, undo=[key(u) for u in unsup], optins=optins, list_size=size,
+                   accept=accept, reject=reject)
     print("bounce fold: %d inbox and %d send-time events from %d file(s), %d new; suppressed %d in all, %d new, "
-          "%d put back, %d held by the ceiling" % (len(inbox), len(sent_ev), len(files), len(ch["recorded"]),
-                                                   len(led["suppressed"]), len(ch["suppressed"]), len(ch["undone"]),
-                                                   len(ch["held"])))
+          "%d put back, %d held by the ceiling%s" % (len(inbox), len(sent_ev), len(files), len(ch["recorded"]),
+                                                     len(led["suppressed"]), len(ch["suppressed"]), len(ch["undone"]),
+                                                     len(ch["held"]), "; a held batch was rejected" if reject and led0.get("held") else ""))
     who = lambda h: names.get(h) or "an address on no list read (key %s)" % h[:8]
     notes = []
     for h in sorted(set(ch["recorded"]) - set(ch["suppressed"]) - set(ch["held"])):
         notes.append("Hard bounce on %d of %d days: %s" % (len(counted_days(led["addr"][h])), SUPPRESS_AFTER, who(h)))
     for h in ch["suppressed"]:
-        notes.append("Suppressed after hard bounces on %d days, left out of every list (subscription kept): %s"
+        notes.append("Suppressed after hard bounces on %d different days, left out of every list (subscription kept): %s"
                      % (SUPPRESS_AFTER, who(h)))
     for h in ch["undone"]:
-        notes.append("Back on the lists (undone, or signed up again): %s" % who(h))
+        notes.append("Back on the lists (undone by hand, a rejected batch, or a new notice signup): %s" % who(h))
+    mail_held = False
     if ch["held"]:
-        notes = ["HELD: %d addresses would have been suppressed at once (limit %d). Nobody new was. If this is "
-                 "right, run the list cleanup by hand with accept_suppression ticked." % (len(ch["held"]), led["held"]["limit"])] \
-            + ["Would have been suppressed: %s" % who(h) for h in ch["held"]] + [""] + notes
+        last = led["held"].get("mailed") or ""
+        mail_held = not last or _days_between(last, today) >= HELD_MAIL_DAYS
+        if mail_held:
+            led["held"]["mailed"] = today
+            notes = ["HELD: %d addresses would have been suppressed at once (limit %d). Nobody new was. Run the list "
+                     "cleanup by hand with accept_suppression ticked to apply it, or reject_suppression to discard it. "
+                     "This reminder repeats once a week while it stays held." % (len(ch["held"]), led["held"]["limit"])] \
+                + ["Would have been suppressed: %s" % who(h) for h in ch["held"]] + [""] + notes
     if dry:
         print("dry run: the ledger is not saved")
         return 0
     if not write_ledger(led, delete=files):
         print("::warning::the bounce ledger was not saved; the inbox notices are read again tomorrow")
         return 0
-    if notes:
+    # while a batch stays held, the owner hears about it (and the rest) at most once a week
+    if notes and (not ch["held"] or mail_held):
+        body = notes
         log_safe.owner_mail("AGSIST bounces: %d new, %d suppressed, %d held" % (len(ch["recorded"]), len(ch["suppressed"]),
                                                                               len(ch["held"])),
-                            notes + ["", "Undo: run the list cleanup by hand with the address in the LIST_UNSUPPRESS secret."])
+                            body + ["", "Undo for one address (the Daily's only undo): run the list cleanup by hand with",
+                                    "the address in the LIST_UNSUPPRESS secret. A new notice signup after the last",
+                                    "bounce puts that address back by itself; a repeat Daily signup does not."])
     if ch["held"]:
-        print("::warning::bounce suppression held: %d at once, over the limit of %d" % (len(ch["held"]), led["held"]["limit"]))
-        _issue(len(ch["held"]), led["held"]["limit"])
+        print("::warning::bounce suppression held: over the limit; details went to the owner")
+        _issue(open_it=True)
+    elif ch.get("released"):
+        _issue(open_it=False)
     return 0
 
 

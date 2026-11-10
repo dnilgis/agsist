@@ -228,8 +228,9 @@ def request(method, url, body=None, headers=None, timeout=30):
     """Parsed JSON, from the worker or, when it is blocked, the copy. A list read by a sender
     leaves out the addresses suppressed after two hard bounces (drop_suppressed)."""
     data = _request(method, url, body, headers, timeout)
-    if method.upper() == "GET" and _route(url)[0] in LIST_ROUTES:
-        data = drop_suppressed(data)
+    route = _route(url)[0]
+    if method.upper() == "GET" and route in LIST_ROUTES:
+        data = drop_suppressed(data, optin=(route == "/notice-list"))
     return data
 
 
@@ -252,8 +253,12 @@ def _suppressed():
             STATE["sup_keys"] = bounces.suppressed_keys(bounces.read_ledger())
             _note_suppressed()
         except Exception as ex:                             # noqa: BLE001  never stop a send over this
-            print("::warning::the suppressed-address list was not read (%s); nobody is left out this run"
-                  % type(ex).__name__)
+            if type(ex).__name__ == "KeyMismatch":
+                print("::error title=Bounce ledger key::the bounce ledger was keyed with another secret (changed or "
+                      "missing); nobody is left out this run")
+            else:
+                print("::warning::the suppressed-address list was not read (%s); nobody is left out this run"
+                      % type(ex).__name__)
             STATE["sup_keys"] = False
     return STATE["sup_keys"] if STATE["sup_keys"] is not False else None
 
@@ -264,10 +269,12 @@ def _note_suppressed():
         t.extra["suppressed"] = len(STATE["dropped"])
 
 
-def drop_suppressed(rows, keys=None):
+def drop_suppressed(rows, keys=None, optin=False):
     """rows (records with "email", or addresses) without the suppressed ones. keys: {bounces.key(): last
     bounce day} (or a set, in tests); else this run's, when a sender asked (suppress_for). A row whose
-    signup or confirmation time is after the last bounce day is kept (a new opt-in)."""
+    signup time is after the last bounce day is kept when optin is set: only a notice row, whose time
+    the worker sets when that topic is signed up. A Daily row keeps its first signup time on a repeat
+    signup, so it is never read as a new opt-in."""
     if not isinstance(rows, list) or not rows:
         return rows
     if keys is None:
@@ -287,7 +294,7 @@ def drop_suppressed(rows, keys=None):
         if k and k in keys:
             # a fresh signup or confirmation after the last bounce is a new opt-in: it goes out
             last = keys.get(k) if isinstance(keys, dict) else ""
-            ts = (r.get("ts") or r.get("confirmed") or r.get("confirmed_at")) if isinstance(r, dict) else None
+            ts = r.get("ts") if (optin and isinstance(r, dict)) else None
             if not (last and bounces.opted_in_after({"ids": {"x": {"day": last}}}, ts)):
                 STATE["dropped"].add(k)
                 continue

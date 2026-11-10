@@ -77,7 +77,8 @@ NO_SUCH = re.compile(r"\b(?:user|mailbox|recipient|account|address)\b[^.\n]{0,30
                      r"\b(?:unknown|does ?n[o']t exist|not exist|not found|no such)"
                      r"|\b(?:unknown|no such|nonexistent|non-existent|invalid)\s+(?:user|mailbox|recipient|account|address)\b"
                      r"|\bno mailbox\b", re.I)
-NOT_ADDRESS = re.compile(r"block|listed|spam|reputation|relay|policy|auth|abuse|blacklist|dnsbl|rbl|rate", re.I)
+NOT_ADDRESS = re.compile(r"block|listed|spam|reputation|relay|policy|auth|abuse|blacklist|dnsbl|rbl|rate|limit|quota"
+                         r"|suspend|verif|disabled|inactive|locked|over ?quota|exceed", re.I)
 
 
 def _num(environ, name, default, lo=None):

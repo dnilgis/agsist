@@ -15,7 +15,11 @@ on:
         type: boolean
         default: true
       accept_suppression:
-        description: "Apply a bounce suppression the daily limit held back"
+        description: "Apply a held bounce suppression batch (runs for real even when dry_run is ticked)"
+        type: boolean
+        default: false
+      reject_suppression:
+        description: "Discard a held bounce suppression batch (runs for real even when dry_run is ticked)"
         type: boolean
         default: false
 permissions:
@@ -92,7 +96,7 @@ jobs:
           BOUNCE_EVENTS_OUT: ${{ runner.temp }}/bounce-events.json
         run: python3 scripts/list_hygiene.py ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
       - name: Fold hard bounces
-        if: ${{ !cancelled() }}
+        if: ${{ success() }}
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
@@ -109,4 +113,5 @@ jobs:
           BOUNCE_EVENTS_IN: ${{ runner.temp }}/bounce-events.json
           UNSUPPRESS: ${{ github.event_name == 'workflow_dispatch' && secrets.LIST_UNSUPPRESS || '' }}
           BOUNCE_ACCEPT: ${{ (github.event_name == 'workflow_dispatch' && inputs.accept_suppression) && '1' || '' }}
-        run: python3 scripts/bounces.py --fold ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run) && '--dry-run' || '' }}
+          BOUNCE_REJECT: ${{ (github.event_name == 'workflow_dispatch' && inputs.reject_suppression) && '1' || '' }}
+        run: python3 scripts/bounces.py --fold ${{ (github.event_name == 'workflow_dispatch' && inputs.dry_run && !inputs.accept_suppression && !inputs.reject_suppression) && '--dry-run' || '' }}

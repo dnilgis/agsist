@@ -118,9 +118,10 @@ for i in 1 2 3 4 5; do
   fi
   g add -A -- "${HAVE[@]}" || fail "git add refused the files"
   # RAW_DELETE: files to take off the branch in the same commit (folded bounce events), a space-separated list
-  for d in ${RAW_DELETE:-}; do
+  read -r -a DEL <<< "${RAW_DELETE:-}"      # split on spaces only: read -a never expands a glob
+  for d in "${DEL[@]}"; do
     case "$d" in /*|..|../*|*/../*|*/..) fail "push_raw.sh: RAW_DELETE path $d must be inside the repo";; esac
-    if [ -e "$d" ]; then g rm -q -- "$d" || fail "git rm refused $d"; fi
+    if [ -e "$d" ]; then g rm -q -- ":(literal)$d" || fail "git rm refused $d"; fi
   done
   if git diff --cached --quiet; then echo "raw: no change"; exit 0; fi
   N=$(git diff --cached --name-only | wc -l)

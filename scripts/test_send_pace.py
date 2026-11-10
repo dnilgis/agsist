@@ -192,6 +192,11 @@ cases = [
     (refused("h@x.com", 550, "5.6.0 bad content"), None),
     (refused("h@x.com", 550, "5.7.26 unauthenticated mail"), None),
     (refused("h@x.com", 452, "4.2.2 mailbox over quota"), "soft"),
+    (refused("h@x.com", 550, "user unknown or over quota"), None),
+    (refused("h@x.com", 550, "account suspended: no such user"), None),
+    (refused("h@x.com", 550, "address not verified: user unknown"), None),
+    (refused("h@x.com", 550, "mailbox does not exist or is disabled"), None),
+    (refused("h@x.com", 550, "sending limit reached, user unknown"), None),
     (smtplib.SMTPDataError(550, b"5.1.1 user unknown"), None),
     (smtplib.SMTPDataError(554, b"5.7.1 rejected for policy reasons"), None),
     (smtplib.SMTPDataError(550, b"message refused"), None),
@@ -292,6 +297,16 @@ led, _ = bounces.fold(led, [dict(e1, id="dsn:2", day="2026-11-13")], today="2026
 check(not led["suppressed"], "after an undo one new hard bounce does not suppress again")
 led, _ = bounces.fold(led, [dict(e1, id="dsn:3", day="2026-11-14")], today="2026-11-14")
 check(led["suppressed"] == [K(a)], "two new days after the undo do")
+# forged future dates (2098, 2099) are clamped to the fold's day, so an undo reaches them
+fz = K("future@example.org")
+led_f, _ = bounces.fold(None, [dict(e1, h=fz, id="f1", day="2098-01-01")], today="2026-11-20")
+led_f, _ = bounces.fold(led_f, [dict(e1, h=fz, id="f2", day="2099-06-01")], today="2026-11-21")
+check(led_f["suppressed"] == [fz] and max(e["day"] for e in led_f["addr"][fz]["ids"].values()) == "2026-11-21",
+      "future-dated bounces count on the days they were folded, never later")
+led_f, _ = bounces.fold(led_f, [], today="2026-11-22", undo=[fz])
+check(not led_f["suppressed"] and bounces.suppressed_keys(led_f) == {}, "an undo reaches future-dated bounces too")
+led_f, _ = bounces.fold(led_f, [dict(e1, h=fz, id="f3", day="2099-12-31")], today="2026-11-23")
+check(not led_f["suppressed"], "one more forged-date bounce after the undo is one day, not two")
 hand = json.loads(json.dumps(led))
 hand["addr"][K(a)]["undo"] = "2026-11-30"
 check(bounces.suppressed_keys(hand) == {}, "a hand-set undo day in the ledger is honoured by the senders")
@@ -305,7 +320,7 @@ check(not ch["recorded"], "an event with an address for a key, or with no id, is
 check("@" not in json.dumps(led), "no address anywhere in the ledger")
 # B1: the ceiling
 crowd = ["c%d@example.com" % i for i in range(11)]
-evs = [dict(e1, h=K(x), id="d1" + x, day="2026-11-10") for x in crowd] + [dict(e1, h=K(x), id="d2" + x, day="2026-11-11") for x in crowd]
+evs = [dict(e1, h=K(x), id="d1" + K(x)[:8], day="2026-11-10") for x in crowd] + [dict(e1, h=K(x), id="d2" + K(x)[:8], day="2026-11-11") for x in crowd]
 led_c, ch = bounces.fold(None, evs, today="2026-11-11", list_size=1000)
 check(not led_c["suppressed"] and len(ch["held"]) == 11 and led_c["held"]["count"] == 11 and led_c["held"]["limit"] == 10,
       "11 at once (over 10): nobody suppressed, all held")
@@ -343,8 +358,10 @@ list_source.drop_suppressed(rows)
 check(t.extra.get("suppressed") == 1, "the same address read twice in one run counts once")
 check(t.line().endswith("suppressed=1") and "@" not in t.line(), "the DELIVERY line: %s" % t.line())
 fresh_rows = [{"email": "gone@example.org", "ts": "2026-11-12T08:00:00Z"}, {"email": "gone@example.org", "ts": "2026-11-11T08:00:00Z"}]
-check(list_source.drop_suppressed(fresh_rows, keys={K(a): "2026-11-11"}) == fresh_rows[:1],
-      "a row signed up or confirmed after the last bounce day goes out (a new opt-in); one from that day does not")
+check(list_source.drop_suppressed(fresh_rows, keys={K(a): "2026-11-11"}, optin=True) == fresh_rows[:1],
+      "a notice row signed up after the last bounce day goes out (a new opt-in); one from that day does not")
+check(list_source.drop_suppressed(fresh_rows, keys={K(a): "2026-11-11"}) == [],
+      "a Daily row is never a new opt-in (the worker keeps the first signup time on a repeat signup)")
 
 
 def fake_request(method, url, body=None, headers=None, timeout=30):
@@ -382,7 +399,7 @@ try:
     list_source.reset()
     t3 = delivery_line.Tally("pace-test")
     list_source.suppress_for(t3)
-    led2, _ = bounces.fold(None, [e1, e2])
+    led2, _ = bounces.fold(None, [e1, e2], today="2026-11-12")
     bounces.write_ledger(led2)
     check(bounces.suppressed_keys(bounces.read_ledger()) == {K(a): "2026-11-11"}, "the ledger file reads back")
     kept = list_source.drop_suppressed(rows)
@@ -404,32 +421,90 @@ try:
     bounces.write_ledger(led3, delete=files)
     left = sorted(p.name for p in (Path(tmp) / bounces.EVENTS).glob("*.jsonl"))
     check(left == ["later.jsonl"], "folded event files are pruned; a later one stays: %r" % left)
-    # the fold step end to end: lists faked, mail and issue captured
+    # the fold step end to end: lists faked, mail and issue captured, a fixed clock
     import log_safe
     mails, issues = [], []
     real_lists, real_mail, real_issue = bounces._lists, log_safe.owner_mail, bounces._issue
-    try:
-        bounces._lists = lambda: {"daily": [{"email": "c%d@example.com" % i, "ts": 1} for i in range(11)] + [{"email": a, "ts": 1}]
-                                  + [{"email": "r%d@example.com" % i, "ts": 1} for i in range(300)],
-                                  "hail": [], "notices": []}
-        log_safe.owner_mail = lambda subj, lines: mails.append((subj, list(lines))) or True
-        bounces._issue = lambda n, lim: issues.append((n, lim)) or True
-        inbox = Path(tmp) / "inbox.json"
-        inbox.write_text(json.dumps(evs_crowd := [dict(e1, h=K(x), id="i1" + x, day="2026-11-10") for x in crowd]
-                                    + [dict(e1, h=K(x), id="i2" + x, day="2026-11-11") for x in crowd]))
+    big = [{"email": "r%d@example.com" % i, "ts": 1} for i in range(300)]
+    lists = {"daily": [{"email": "c%d@example.com" % i, "ts": 1} for i in range(11)] + [{"email": a, "ts": 1}] + big,
+             "hail": [], "notices": []}
+    inbox = Path(tmp) / "inbox.json"
+
+    def fold_run(day, events=(), **env):
+        inbox.write_text(json.dumps(list(events)))
         os.environ["BOUNCE_EVENTS_IN"] = str(inbox)
+        for k in ("BOUNCE_ACCEPT", "BOUNCE_REJECT", "UNSUPPRESS"):
+            os.environ.pop(k, None)
+        os.environ.update(env)
         out = io.StringIO()
         with redirect_stdout(out):
-            bounces.fold_main()
+            bounces.fold_main(today=day)
+        return out.getvalue()
+    try:
+        bounces._lists = lambda: lists
+        log_safe.owner_mail = lambda subj, lines: mails.append((subj, list(lines))) or True
+        bounces._issue = lambda open_it=True: issues.append(open_it) or True
+        crowd_ev = [dict(e1, h=K(x), id="i1" + K(x)[:8], day="2026-11-10") for x in crowd] \
+            + [dict(e1, h=K(x), id="i2" + K(x)[:8], day="2026-11-11") for x in crowd]
+        out = fold_run("2026-11-20", crowd_ev)
         led4 = bounces.read_ledger()
-        check(not bounces.suppressed_keys(led4) and issues == [(11, 10)] and mails and "HELD" in mails[0][1][0],
-              "the fold step over the ceiling: nobody suppressed, the owner mailed, an issue opened (%r %r %r)"
-              % (len(bounces.suppressed_keys(led4)), issues, out.getvalue()[-300:]))
-        check("@" not in out.getvalue(), "the fold step's log names no address")
+        check(not bounces.suppressed_keys(led4) and issues == [True] and len(mails) == 1 and "HELD" in mails[0][1][0],
+              "the fold step over the ceiling: nobody suppressed, the owner mailed, an issue opened (%r %r)" % (issues, out[-300:]))
+        check(not list((Path(tmp) / bounces.EVENTS).glob("*.jsonl")), "the fold step deleted the event files it folded")
+        check("@" not in out and "@" not in json.dumps(led4), "the fold step's log and ledger name no address: %r"
+              % [x for x in out.splitlines() if "@" in x][:2])
         check(any("c3@example.com" in ln for ln in mails[0][1]), "the owner's private mail names who would have gone")
+        check(not re.search(r"\d", bounces.ISSUE_BODY) and "held" in bounces.ISSUE_BODY,
+              "the public issue says a batch is held, with no count or list size")
+        fold_run("2026-11-22")
+        check(len(mails) == 1, "still held two days later: no second mail inside a week")
+        fold_run("2026-11-27")
+        check(len(mails) == 2 and "HELD" in mails[1][1][0], "still held a week later: one reminder")
+        fold_run("2026-11-27", BOUNCE_REJECT="1")
+        led5 = bounces.read_ledger()
+        check(not bounces.suppressed_keys(led5) and "held" not in led5 and issues[-1] is False
+              and all(led5["addr"][K(x)].get("undo") == "2026-11-27" for x in crowd),
+              "reject discards the held batch (an undo for each) and closes the issue")
+        # accept: a new held batch, then a hand run that accepts it
+        later = [dict(e1, h=K(x), id="j1" + K(x)[:8], day="2026-11-28") for x in crowd] + [dict(e1, h=K(x), id="j2" + K(x)[:8], day="2026-11-29") for x in crowd]
+        fold_run("2026-11-29", later)
+        check(issues[-1] is True and not bounces.suppressed_keys(bounces.read_ledger()), "a new batch over the limit is held again")
+        fold_run("2026-11-29", BOUNCE_ACCEPT="1")
+        check(len(bounces.suppressed_keys(bounces.read_ledger())) == 11 and issues[-1] is False,
+              "accept applies the held batch and closes the issue")
+        # the Daily: a repeat signup keeps the worker's first time, so it never undoes; a new notice topic does
+        g = K("c0@example.com")
+        lists["daily"][0] = {"email": "c0@example.com", "ts": 1}            # the worker keeps the first signup time
+        fold_run("2026-12-01")
+        check(g in bounces.suppressed_keys(bounces.read_ledger()), "a repeat Daily signup (same first time) does not put it back")
+        lists["daily"][0] = {"email": "c0@example.com", "ts": "2026-11-30T09:00:00Z"}
+        fold_run("2026-12-01")
+        check(g in bounces.suppressed_keys(bounces.read_ledger()), "a Daily row is never read as a new opt-in, whatever its time")
+        lists["notices"] = [{"email": "c0@example.com", "topic": "rent:ia", "ts": "2026-11-30T09:00:00Z"}]
+        fold_run("2026-12-01")
+        check(g not in bounces.suppressed_keys(bounces.read_ledger()), "a notice topic signed up after the last bounce puts it back")
+        lists["notices"] = []
+        # a changed secret: loud, nothing folded, nobody left out
+        before = (Path(tmp) / bounces.LEDGER).read_text()
+        os.environ["UNSUB_SECRET"] = "a-new-secret"
+        try:
+            out = fold_run("2026-12-02", [dict(e1, id="k1")])
+            check("::error" in out and (Path(tmp) / bounces.LEDGER).read_text() == before and "key does not match" in mails[-1][0],
+                  "a changed secret: an error in the log, the owner told, the ledger untouched")
+            list_source.reset()
+            t4 = delivery_line.Tally("pace-test")
+            list_source.suppress_for(t4)
+            buf = io.StringIO()
+            with redirect_stdout(buf):
+                kept = list_source.drop_suppressed([{"email": "c1@example.com"}, {"email": "x@example.com"}])
+            check(len(kept) == 2 and "::error" in buf.getvalue(), "a changed secret: the senders leave nobody out, and say so loudly")
+        finally:
+            os.environ["UNSUB_SECRET"] = saved_secret
+            list_source.reset()
     finally:
         bounces._lists, log_safe.owner_mail, bounces._issue = real_lists, real_mail, real_issue
-        os.environ.pop("BOUNCE_EVENTS_IN", None)
+        for k in ("BOUNCE_EVENTS_IN", "BOUNCE_ACCEPT", "BOUNCE_REJECT"):
+            os.environ.pop(k, None)
 finally:
     list_source.FLAG_ROOT = old_root
     for k, v in old.items():

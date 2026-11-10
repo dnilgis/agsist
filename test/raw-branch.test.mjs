@@ -241,6 +241,10 @@ test('push_raw.sh with RAW_DELETE takes the named files off in the same commit, 
     assert.equal(r.status, 0, r.stdout + r.stderr);
     assert.deepEqual(onRaw(sb), ['README.md', 'data/x-ev/b.jsonl', 'data/x-ledger.json'], 'a.jsonl deleted, b.jsonl kept, a missing name skipped');
     assert.match(git(['log', '-1', '--format=%s', 'raw'], path.join(sb.t, 'origin.git')), /x fold .*: 2 file\(s\)/);
+    fs.writeFileSync(path.join(sb.w, 'data/x-ledger.json'), '{"v": 2}\n');
+    const glob = run(sb, 'push_raw.sh', ['x fold', 'data/x-ledger.json'], { RAW_DELETE: 'data/x-ev/*.jsonl data/*' });
+    assert.equal(glob.status, 0, glob.stdout + glob.stderr);
+    assert.deepEqual(onRaw(sb), ['README.md', 'data/x-ev/b.jsonl', 'data/x-ledger.json'], 'a glob in RAW_DELETE deletes nothing');
     const bad = run(sb, 'push_raw.sh', ['x fold', 'data/x-ledger.json'], { RAW_DELETE: '../outside.txt' });
     assert.notEqual(bad.status, 0, 'a path outside the repo is refused');
     assert.deepEqual(onRaw(sb), ['README.md', 'data/x-ev/b.jsonl', 'data/x-ledger.json']);

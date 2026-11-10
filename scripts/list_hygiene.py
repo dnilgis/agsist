@@ -2,15 +2,18 @@
 """Keep the Daily and hail-alert lists clean, every day, without the owner doing it.
 
 1. Bounces. Reads the sending Gmail inbox over IMAP (same SMTP_USER and app
-   password) for delivery-failure notices from the last LOOKBACK_DAYS. A
-   PERMANENT failure of the address itself (status 5.x.x, but not a 5.7.x
-   policy or spam reply, 5.2.2 mailbox full or 5.3.4 too big) is a hard
-   bounce. Nov 10, 2026: hard bounces are no longer removed on sight. Each one
-   is counted per address in the private bounce ledger (scripts/bounces.py),
-   with the ones the senders saw at send time; after two, the address is
-   suppressed: left out of every list, the subscription kept (a flag, not a
-   delete). LIST_UNSUPPRESS on a hand run puts an address back. Temporary
-   failures (4.x.x, server busy) are never counted.
+   password) for delivery-failure notices from the last LOOKBACK_DAYS. A hard
+   bounce is a failed delivery whose status says the address or its domain
+   does not exist or the mailbox is disabled (5.1.1, 5.1.2, 5.1.3, 5.1.6,
+   5.1.10, 5.2.1; scripts/send_pace.py). Every other status, a delay or an
+   expired try (4.x.x), and a notice with no status never count. A notice dated
+   in the future counts as today; one dated before the window is dropped.
+   Nov 10, 2026: hard bounces are no longer removed on sight. This step reads
+   mail and hands the bounces, as keys only, to the fold step
+   (scripts/bounces.py --fold), which keeps the private ledger: hard bounces on
+   two different days and the address is left out of every list, the
+   subscription kept (a flag, not a delete). LIST_UNSUPPRESS on a hand run puts
+   an address back; a repeat Daily signup does not.
 2. Typos. An address whose domain is a near-miss of a big mail provider
    (13241@gmail.comb, joe@gmial.com, x@yahoo.con) and whose domain has no mail
    server of its own is re-subscribed at the corrected address and the typo is
@@ -167,16 +170,21 @@ def failed_recipients(raw):
     return sorted(out.items())
 
 
-def bounce_events(raw):
+def bounce_events(raw, now=None):
     """The hard bounces in one notice as ledger events, keyed by the notice's own Message-ID, so the
     same notice read on each of LOOKBACK_DAYS runs counts once. No address is kept: only its key
     (bounces.key, under UNSUB_SECRET)."""
     m = email.message_from_bytes(raw)
     mid = str(m.get("Message-ID") or "").strip() or hashlib.sha256(raw).hexdigest()
+    today = (now or datetime.now(timezone.utc)).strftime("%Y-%m-%d")
     try:
         day = email.utils.parsedate_to_datetime(m.get("Date")).astimezone(timezone.utc).strftime("%Y-%m-%d")
     except Exception:
-        day = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+        day = today
+    if day > today:
+        day = today                       # a notice dated in the future counts as today, so an undo reaches it
+    if day < ((now or datetime.now(timezone.utc)) - timedelta(days=LOOKBACK_DAYS + 1)).strftime("%Y-%m-%d"):
+        return []                         # dated before the window it was read in: not trusted
     out = []
     for a, st in failed_recipients(raw):
         h = bounces.key(a)
@@ -590,9 +598,10 @@ def mail_report(acts, dry, notes=()):
     body += [line(a) + ("" if a.get("ok", True) else "  (FAILED, will retry next run)") for a in acts]
     if notes:
         body += [""] + list(notes)
-    body += ["", "Hard bounces come from delivery-failure notices in the sending inbox and from the mail server at",
-             "send time. Each address's are counted; after 2 it is left out of every list and its subscription is",
-             "kept. To put one back, run the list cleanup by hand with the address in the LIST_UNSUPPRESS secret.",
+    body += ["", "Hard bounces from the delivery-failure notices in the sending inbox go to the bounce fold, which",
+             "mails its own report: hard bounces on 2 different days and an address is left out of every list, its",
+             "subscription kept. To put one back, run the list cleanup by hand with the address in the",
+             "LIST_UNSUPPRESS secret (a repeat Daily signup does not put it back).",
              "Typo fixes are made only",
              "when the misspelled domain cannot receive mail. Anyone moved to a fixed address can unsubscribe from",
              "the first email they get.",
@@ -646,10 +655,15 @@ def selftest():
         chk(failed_recipients(r3) == [], f"status {stv} with X-Failed-Recipients: 0 hard bounces")
     exp = raw.replace(b"Action: failed\r\nStatus: 5.1.1", b"Action: failed\r\nStatus: 4.4.7")
     chk(failed_recipients(exp) == [], "a delivery that expired (failed, 4.4.7) is not a hard bounce")
-    ev = bounce_events(raw.replace(b"MIME-Version", b"Message-ID: <n1@googlemail.com>\r\nDate: Tue, 10 Nov 2026 13:00:00 +0000\r\nMIME-Version"))
+    t_now = datetime(2026, 11, 10, 15, tzinfo=timezone.utc)                       # a fixed clock: no live date
+    dated = lambda d: raw.replace(b"MIME-Version", b"Message-ID: <n-" + d.encode() + b"@googlemail.com>\r\nDate: " + d.encode() + b"\r\nMIME-Version")
+    fut = bounce_events(dated("Mon, 1 Jan 2099 13:00:00 +0000"), now=t_now)
+    chk(len(fut) == 1 and fut[0]["day"] == "2026-11-10", "a notice dated 2099 counts as today, never later")
+    chk(bounce_events(dated("Sat, 1 Nov 2025 13:00:00 +0000"), now=t_now) == [], "a notice dated before the window is dropped")
+    ev = bounce_events(raw.replace(b"MIME-Version", b"Message-ID: <n1@googlemail.com>\r\nDate: Tue, 10 Nov 2026 13:00:00 +0000\r\nMIME-Version"), now=t_now)
     chk(len(ev) == 1 and ev[0]["h"] == bounces.key("dead@example.org") and ev[0]["day"] == "2026-11-10",
         "a notice becomes one event, keyed under the secret")
-    chk(ev == bounce_events(raw.replace(b"MIME-Version", b"Message-ID: <n1@googlemail.com>\r\nDate: Tue, 10 Nov 2026 13:00:00 +0000\r\nMIME-Version")),
+    chk(ev == bounce_events(raw.replace(b"MIME-Version", b"Message-ID: <n1@googlemail.com>\r\nDate: Tue, 10 Nov 2026 13:00:00 +0000\r\nMIME-Version"), now=t_now),
         "the same notice read again is the same event (its id comes from its Message-ID)")
     import tempfile
     hp = os.path.join(tempfile.mkdtemp(prefix="hyg-"), "ev.json")
