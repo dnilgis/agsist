@@ -166,7 +166,7 @@ def build_state(src, d):
                 r.pop("this")
                 out.setdefault(f, {})["rank"] = r
     return {"schema": SCHEMA, "state": st, "year": d["year"], "edate": edate, "fetched": d["fetched"],
-            "source": "RCC-ACIS: PRISM grid 21 and NCEI 1991-2020 gridded normals (county means); station records (MultiStnData)",
+            "source": "RCC-ACIS: PRISM and NCEI 1991-2020 normals (county means); NOAA station records",
             "counties": out}
 
 

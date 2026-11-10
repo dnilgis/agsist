@@ -280,7 +280,7 @@
 
   /* ── the sentence ─────────────────────────────────────────────────── */
   function cap(s) { s = String(s || ''); return s.charAt(0).toUpperCase() + s.slice(1); }
-  /* 2026-11-04 (site panel, skeptic row 8): "Nothing changed here this week" printed with one
+  /* 2026-11-04 (site review, row 8): "Nothing changed here this week" printed with one
      line read and three not read. It is said only when every line was read; otherwise the
      sentence says how many were checked and names the ones that were not. */
   function summary(lines) {

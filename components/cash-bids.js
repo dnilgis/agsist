@@ -2310,7 +2310,7 @@ function netRowsFrom(shard,distanceMi){
          that is only sometimes there must never be the only thing consulted. */
       periodPast:(b.periodPast===true||b.periodPast===false)?b.periodPast:null,
       via:'direct',
-      /* A BOARD SIG PASTED BY HAND (dnilgis/bids rows with pasted: true, 2026-10-20): the
+      /* A BOARD PASTED BY HAND (dnilgis/bids rows with pasted: true, 2026-10-20): the
          site will not let the reader in, so the owner pastes their public page. Held
          up to 7 days and stamped "Last updated" once older than 14 hours. */
       pasted:b.pasted===true?(b.pastedAt||b.checkedAt||''):''

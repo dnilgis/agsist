@@ -1811,7 +1811,7 @@
 
   /* PAID (2026-10-14, Stripe checkout in the same tab). Each Payment Link
      sends the buyer back to rain-print?paid=<framed12x18|print12x18|digital>
-     &s={CHECKOUT_SESSION_ID} (the setting is in TODO-SIG.md). paidFromUrl
+     &s={CHECKOUT_SESSION_ID} (a payment link setting). paidFromUrl
      reads it: {choice, session ('' unless it looks like Stripe's cs_ id)}, or
      null. paidText says what happens next, as paragraphs: o = {choice, today
      (YYYY-MM-DD, Chicago), prices (data/rain-print.json), saved (the design
