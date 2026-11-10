@@ -4218,7 +4218,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
                 if m["indexable"] or m.get("listed")]
     if cindex["indexable"]:
         entries.append((SITE + cindex["path"], cindex["latest"] or gen))
-    entries += [(SITE + m["path"], m["latest"]) for m in cmetas if m["indexable"]]
+    entries += [(SITE + m["path"], m["latest"] or gen) for m in cmetas if m["indexable"] or m.get("listed")]
     if sitemap:
         write_sitemap(sitemap, entries)
     size = sum(os.path.getsize(os.path.join(dp, f)) for dp, _, fs in os.walk(out_dir) for f in fs)
@@ -4811,6 +4811,7 @@ def selftest():
     _selftest_storage()
     _selftest_buyers()
     _selftest_town_fixes()
+    _selftest_roster()
     # the Rain Print line: Nov 1 to Dec 24 only, one hidden slot, and page_end loads its script only then
     for d, on in ((dt.date(2026, 10, 31), False), (dt.date(2026, 11, 1), True), (dt.date(2026, 12, 24), True),
                   (dt.date(2026, 12, 25), False), (dt.date(2027, 6, 1), False)):
@@ -5691,6 +5692,150 @@ def _selftest_town_fixes():
         assert "Corn $3.67" in li and "Estimate, not a posted bid: last posted basis (Nov 6) + Dec &#x27;26 futures " \
             "(Nov 9 close)" in li, li
     print("town fixes selftest OK")
+
+
+def _selftest_roster():
+    """The real case, 2026-11-10: NEW Cooperative (66 locations) and Central United (16) sit behind a bot
+    check, the network's last good copy is old, and neither company had a town page. Every roster facility
+    gets a card with no posted bid (Rockwell City IA and Creston IA for NEW, Fairfax and New Ulm MN for
+    Central United; "To Buy for HCP" is a board label, not a place), the labelled estimate from its last
+    posted basis with the basis date, an old basis said to be old, no estimate for a facility with no basis,
+    the co-op's own bids page and its phone; and nothing about it ever reaches a count, median or ranking."""
+    import tempfile as _tf
+    gen_ct = dt.datetime(2026, 11, 10, 9, tzinfo=CT)
+    NEWC, CUC = "NEW Cooperative, Inc.", "Central United Coop"
+
+    def fac(i, co, city, st, lat, lng, fips, bids, basis):
+        return {"id": i, "name": co, "company": co, "city": city, "st": st, "fips": fips, "lat": lat, "lng": lng,
+                "aliases": [], "sources": {"basis": [basis] if basis else [], "bids_repo": [bids]}}
+    els = [fac("e1", NEWC, "Rockwell City", "IA", 42.39, -94.62, "19025", "newcoop-rockwellcity", "IA|NEW COOPERATIVE, INC.|ROCKWELL CITY"),
+           fac("e2", NEWC, "Creston 1", "IA", 41.0597, -94.3498, "19175", "newcoop-creston1", "IA|NEW COOPERATIVE, INC.|CRESTON 1"),
+           fac("e3", NEWC, "Creston 2", "IA", 41.06, -94.36, "19175", "newcoop-creston2", "IA|NEW COOPERATIVE, INC.|CRESTON 2"),
+           fac("e4", NEWC, "Lanyon", "IA", 42.2, -94.3, "19187", "newcoop-lanyon", None),
+           fac("e5", CUC, "Fairfax", "MN", 44.5329, -94.7256, "27129", "centralunitedcoop-fairfax", "MN|CENTRAL UNITED COOP|FAIRFAX"),
+           fac("e6", CUC, "New Ulm", "MN", 44.3191, -94.4549, "27015", "centralunitedcoop-newulm", "MN|CENTRAL UNITED COOP|NEW ULM"),
+           fac("e9", CUC, "Gibbon", "MN", 44.5283, -94.5242, "27139", "centralunitedcoop-gibbon", "MN|CENTRAL UNITED COOP|GIBBON"),
+           fac("e7", CUC, "To Buy for HCP", "MN", None, None, None, "centralunitedcoop-tobuyforhcp", "MN|CENTRAL UNITED COOP|TO BUY FOR HCP"),
+           fac("e8", "Acme Co-op, Inc.", "Fremont", "NE", 41.4, -96.5, "31053", "acme-fremont", None)]
+    days = ["2026-10-03", "2026-10-11", "2026-10-29"]
+
+    def shard(st, f, rows):
+        return {"state": st, "c": ["corn", "soybeans", "wheat", "other"], "f": f, "d": days, "r": rows}
+    mn = shard("MN", ["CENTRAL UNITED COOP|FAIRFAX", "CENTRAL UNITED COOP|NEW ULM"],
+               [[0, 0, "@C6Z", "DEC 26", -58, None, 0, 0, 0], [0, 0, "@C7H", "JAN-MAR 27", -60, None, 0, 0, 0],
+                [0, 1, "@S7H", "FEB-MAR 27", -70, None, 0, 0, 0],
+                [1, 0, "@C6Z", "DEC 26", -60, None, 0, 0, 0]])
+    ia = shard("IA", ["NEW COOPERATIVE, INC.|ROCKWELL CITY", "NEW COOPERATIVE, INC.|CRESTON 1"],
+               [[0, 0, "ZCH27", "JAN27", -40, None, 1, 1, 1], [0, 0, "ZCH27", "MAR27", -35, None, 1, 1, 1],
+                [0, 1, "ZSH27", "MAR27", -70, None, 1, 1, 1],
+                [1, 0, "", "01 JAN 2027 TO 31 JAN 2027", -39, None, 2, 2, 2],
+                [1, 0, "", "01 MAR 2027 TO 31 MAR 2027", -34, None, 2, 2, 2],
+                [1, 1, "", "01 JAN 2027 TO 31 JAN 2027", -70, None, 2, 2, 2]])
+    prices = {"quotes": {k: {"ticker": t, "close": c, "close_date": "2026-11-09"} for k, t, c in (
+        ("a", "ZCZ26.CBT", 438.75), ("b", "ZCH27.CBT", 451.0), ("c", "ZSF27.CBT", 1160.0), ("d", "ZSH27.CBT", 1170.0))}}
+    with _tf.TemporaryDirectory() as td:
+        def put(rel, doc):
+            os.makedirs(os.path.dirname(os.path.join(td, rel)), exist_ok=True)
+            with open(os.path.join(td, rel), "w", encoding="utf-8") as f:
+                json.dump(doc, f)
+        put("data/ids/elevators.json", {"elevators": els})
+        put("data/ids/companies.json", {"companies": {
+            "c1": {"name": NEWC, "links": [["website", "newcoop.com"]]},
+            "c2": {"name": CUC, "links": [["phone", "#abc", ["e5"]], ["website", "centralunitedcoop.com"]]}}})
+        put("data/elevator-directory.json", {"elevators": [
+            {"facility": NEWC, "city": "Rockwell City", "state": "IA", "phone": "712-297-7579"},
+            {"facility": NEWC, "city": "Creston", "state": "IA", "phone": "641-111-0001"},
+            {"facility": NEWC, "city": "Creston", "state": "IA", "phone": "641-111-0002"}]})
+        put("data/basis/MN.json", mn)
+        put("data/basis/IA.json", ia)
+        put("data/prices.json", prices)
+        ros = load_roster(td)
+        by = {r["id"]: r for r in ros}
+        assert len(ros) == 8 and "acme-fremont" not in by, sorted(by)
+        assert tel(by["newcoop-rockwellcity"]["phone"]) == "7122977579" and by["newcoop-rockwellcity"]["bids_url"] == "https://newcoop.com/cash-bids"
+        assert by["newcoop-creston1"]["phone"] == "", "two different numbers filed for a town: none shown"
+        assert by["centralunitedcoop-fairfax"]["bids_url"] == "https://centralunitedcoop.com" and by["centralunitedcoop-fairfax"]["phone"] == ""
+        assert by["centralunitedcoop-fairfax"]["basis_key"] == ("MN", "CENTRAL UNITED COOP", "FAIRFAX")
+        merged, index = _fixture()
+        merged["generated"] = "2026-11-10T15:00:00Z"      # the day of the price file's closes; the fixture's bids are old
+        gen = parse_ts(merged["generated"])
+        ZT = {"zips": {"68025": ["Fremont", "NE"], "68031": ["Hooper", "NE"], "50001": ["Ackworth", "IA"],
+                       "50583": ["Rockwell City", "IA"], "50801": ["Creston", "IA"], "50150": ["Lanyon", "IA"],
+                       "56241": ["Fairfax", "MN"], "56073": ["New Ulm", "MN"], "56036": ["Gibbon", "MN"]}}
+        out, out0 = os.path.join(td, "cb"), os.path.join(td, "cb0")
+        kw = dict(root=td, min_towns=0, now=gen + dt.timedelta(hours=1), basis_dir=os.path.join(td, "data", "basis"))
+        metas0, smetas0, drops0, _ = build_all(merged, index, ZT, out_dir=out0, sitemap=None, **kw)
+        metas, smetas, drops, _ = build_all(merged, index, ZT, out_dir=out, sitemap=os.path.join(td, "sm.xml"), roster=ros, **kw)
+        assert drops["coop_bids_not_online"] == 7 and not drops0["coop_bids_not_online"], drops
+        m = {(x["state"], x["slug"]): x for x in metas}
+        for k in (("IA", "rockwell-city"), ("IA", "creston"), ("IA", "lanyon"), ("MN", "fairfax"), ("MN", "new-ulm")):
+            assert k in m and not m[k]["indexable"] and m[k]["rows"] == 0 and m[k]["elevators"] == 0, (k, m.get(k))
+        assert m[("IA", "creston")]["quiet"] == 2 and ("MN", "to-buy-for-hcp") not in m, "a board label is not a town"
+        assert not os.path.exists(os.path.join(out, "minnesota", "to-buy-for-hcp.html"))
+        rd = lambda o, *p: open(os.path.join(o, *p), encoding="utf-8").read()  # noqa: E731
+        sm = rd(td, "sm.xml")
+        for u in ("iowa/rockwell-city", "iowa/creston", "minnesota/fairfax", "minnesota/new-ulm"):
+            assert f"https://agsist.com/cash-bids/{u}</loc>" in sm, u
+        rc, cr, ff = rd(out, "iowa", "rockwell-city.html"), rd(out, "iowa", "creston.html"), rd(out, "minnesota", "fairfax.html")
+        ly = rd(out, "iowa", "lanyon.html")
+        for h in (rc, cr, ff, ly):
+            assert "Bids not online right now" in h
+        quiet = lambda h: re.sub(r"<[^>]+>", " ", h.split("no current bid</h2>", 1)[1].split("</ul>")[0])  # noqa: E731
+        assert "$" not in quiet(ly) and "Estimate, not a posted bid" not in ly, "no last posted basis: no estimate"
+        assert "(Oct 3) + Dec &#x27;26 futures (Nov 9 close); basis from Oct 3, may be out of date" in ff
+        assert "(Oct 11) + Mar &#x27;27 futures (Nov 9 close); basis from Oct 11, may be out of date" in rc
+        assert "(Oct 29) + Mar &#x27;27 (inferred) futures (Nov 9 close)" in cr and "may be out of date" not in cr
+        assert '<a href="https://newcoop.com/cash-bids" rel="noopener">See the real bid on NEW Cooperative&rsquo;s own bids page</a>' in rc
+        assert 'href="tel:+17122977579">712-297-7579</a>' in rc and "tel:+1641" not in cr
+        assert 'href="https://centralunitedcoop.com" rel="noopener">See the real bid on Central United Coop&rsquo;s own bids page' in ff
+        assert "Creston 1" in cr and "Creston 2" in cr
+        # nothing about a card reaches a count, a median, a ranking or the live page's list
+        assert state_counts(select(merged, index, known_towns(ZT), ZT, roster=ros)[0], []) == \
+            state_counts(select(merged, index, known_towns(ZT), ZT)[0], []), "counts unchanged by roster cards"
+        towns = select(merged, index, known_towns(ZT), ZT, roster=ros)[0]
+        cards = [bd for t in towns.values() for bd in t["boards"].values() if bd["roster"]]
+        assert len(cards) == 7 and all(not bd["rows"] and bd["last_priced"] is None for bd in cards)
+        assert not [x for x in live_board_list(towns) if x["state"] in ("MN",) or x["town"] in ("Creston", "Rockwell City")]
+        for fn in ("nebraska/fremont.html", "nebraska/hooper.html", "iowa/ackworth.html"):
+            assert rd(out, fn) == rd(out0, fn), f"{fn} changed with roster cards elsewhere"
+        # company pages: every location, the card words, the co-op's own link, the page is not indexed as a bid page
+        nc, cu = rd(out, "company", "new-cooperative.html"), rd(out, "company", "central-united-coop.html")
+        assert os.path.exists(os.path.join(out0, "company", "new-cooperative.html")) is False
+        assert "NEW Cooperative, Inc. has <b>4</b> locations in Iowa" in nc and nc.count("Bids not online right now.") == 4, nc.count("Bids not online right now.")
+        assert "Central United Coop has <b>3</b> locations in Minnesota" in cu and cu.count("Bids not online right now.") == 3
+        for h in (nc, cu):
+            assert "No current" in h and 'content="noindex' not in h.split("</head>")[0], "listed and indexed"
+        assert "https://agsist.com/cash-bids/company/new-cooperative</loc>" in sm and "company/central-united-coop</loc>" in sm
+        assert 'href="https://newcoop.com/cash-bids" rel="noopener">newcoop.com</a>' in nc and "centralunitedcoop.com" in cu
+        # the estimates, on a snapshot the closes belong to: a basis from Oct 29 is plain, one from Oct 3 and
+        # one from Oct 11 say how old they are; a month the board never named is "inferred"
+        shd = lambda st: basis_shard(os.path.join(td, "data", "basis"), st)  # noqa: E731
+        fut = load_futures(td)
+        by_key = {bd["source"]: bd for bd in cards}
+        e_ff = estimates(by_key["centralunitedcoop-fairfax"], shd("MN"), fut, gen_ct, days=ROSTER_ESTIMATE_DAYS)
+        assert e_ff and e_ff[0]["crop"] == "corn" and e_ff[0]["basis_day"] == "Oct 3" and e_ff[0]["age"] == 38, e_ff
+        assert round(e_ff[0]["cash"], 2) == round(4.3875 - 0.58, 2) and e_ff[0]["con"] == "Dec '26", e_ff
+        assert estimates(by_key["centralunitedcoop-fairfax"], shd("MN"), fut, gen_ct) == [], "a plain board is held to 30 days"
+        e_cr = estimates(by_key["newcoop-creston1"], shd("IA"), fut, gen_ct, days=ROSTER_ESTIMATE_DAYS)
+        assert [e["crop"] for e in e_cr] == ["corn", "soybeans"] and e_cr[0]["inferred"] and e_cr[0]["con"] == "Mar '27", e_cr
+        assert e_cr[0]["basis_day"] == "Oct 29" and e_cr[0]["age"] == 12 and round(e_cr[0]["cash"], 4) == round(4.51 - 0.39, 4), e_cr
+        assert e_cr[1]["con"] == "Jan '27" and e_cr[1]["inferred"], e_cr
+        assert estimates(by_key["newcoop-lanyon"], shd("IA"), fut, gen_ct, days=ROSTER_ESTIMATE_DAYS) == [], "no basis on file: no estimate"
+        e_rc = estimates(by_key["newcoop-rockwellcity"], shd("IA"), fut, gen_ct, days=ROSTER_ESTIMATE_DAYS)
+        assert e_rc and e_rc[0]["age"] == 30 and "inferred" not in e_rc[0], e_rc      # ZCH27 posted by symbol: not inferred
+        li = quiet_line(dict(by_key["centralunitedcoop-fairfax"], company_path="/cash-bids/company/central-united-coop",
+                             company_short="Central United Coop"), e_ff)
+        assert "Bids not online right now" in li and "Estimate, not a posted bid: last posted basis (Oct 3) + Dec &#x27;26 futures " \
+            "(Nov 9 close); basis from Oct 3, may be out of date" in li, li
+        li = quiet_line(by_key["newcoop-creston1"], e_cr)
+        assert "(Oct 29) + Mar &#x27;27 (inferred) futures" in li and "may be out of date" not in li, li
+        # a facility another board already holds gets no second card
+        have = [{"source": "newcoop-creston1", "state": "IA", "operator": NEWC, "city": "Creston 1", "place": "x"},
+                {"source": "other-id", "state": "IA", "operator": "NEW Cooperative", "city": "Creston 2", "place": "y"},
+                {"source": "o3", "state": "MN", "operator": "Central United Coop", "city": "Fairfax", "place": "z"}]
+        left = roster_rows(have, {}, ros, known_towns(ZT))
+        assert sorted(r["source"] for r in left) == ["centralunitedcoop-gibbon", "centralunitedcoop-newulm", "newcoop-lanyon", "newcoop-rockwellcity"], left
+    print("roster selftest OK")
 
 
 def _selftest_known():

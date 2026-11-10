@@ -520,7 +520,10 @@ def build_page(co, ctx):
   <details class="cbt-note cbt-terms"><summary>Sources and terms</summary>
   <p>Bids come from each {esc(short)} location&rsquo;s own posted bid board, read in the last {CB.SB.HELD_SKIP_HOURS} hours, with the price {CB.FRESH_WORDS} and the delivery period still open. Each price is the location&rsquo;s earliest delivery period for the grade it posts most; the town page has every month and the futures contract each basis is quoted against. A basis far off the elevators around it is left out here. This page is a snapshot rebuilt through the day; always call the elevator to confirm before you haul.</p></details>
 """
-    h = CB.head(title, desc, path, jsonld, indexable)
+    # a company with a card for every location it has, though none can show a bid, is still listed and
+    # indexed: its page carries the co-op's own bids link and phone (an elevator is never dropped, Nov 10)
+    listed = any(bd.get("roster") for _, bd in co["locs"])
+    h = CB.head(title, desc, path, jsonld, indexable or listed)
     h = with_extra_css(h)
     if box:
         sheet = '  <link rel="stylesheet" href="/components/asof.css?v=1">\n'
@@ -528,7 +531,7 @@ def build_page(co, ctx):
         h = h.replace(sheet, sheet + CB.SIGNUP_CSS, 1)
     page = h + body + CB.page_end(ftr, signup=bool(box))
     meta = {"slug": co["slug"], "name": co["name"], "short": short, "path": path, "indexable": indexable,
-            "locations": n_loc, "live": n_live, "states": states, "title": title,
+            "locations": n_loc, "live": n_live, "states": states, "title": title, "listed": listed,
             "latest": max((r["priced"] for g in cells for r in g.values()), default=None), "story_facts": story_facts}
     return page, meta
 
