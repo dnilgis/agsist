@@ -55,7 +55,12 @@ test("the pages that keep them still carry them", () => {
 test("the COT tip names one verdict and the second badge is gone", () => {
   assert.ok(!/id="cot-verdict-lv"/.test(HTML), "no hidden second badge");
   assert.ok(!/grains and live cattle separately|The badges name/.test(HTML), "no talk of two badges");
-  assert.match(HTML, /The one verdict at the top names any market that is crowded on the rank, across every market in the report\./);
+  // Nov 10 home audit: Sig dropped crowding Nov 6; the home COT card names no crowded tenth and the method
+  // text sits in the closed Sources and terms fold at the bottom
+  const cot = HTML.slice(HTML.indexOf('id="cot-widget"'), HTML.indexOf('id="nowcast-widget"'));
+  assert.ok(cot.length > 500, "COT card found");
+  assert.doesNotMatch(cot, /crowded|tenth/i);
+  assert.match(HTML, /<details class="hp-terms"[\s\S]*?Commitments of Traders[\s\S]*?<\/details>/);
 });
 
 /* ---------- in the browser ---------- */

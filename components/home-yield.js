@@ -10,6 +10,21 @@
     fetch('/data/yield-nowcast.json').then(function(r){if(!r.ok)throw new Error('no-nowcast');return r.json();}).then(function(d){
       if(!d||!d.crops)throw new Error('no-nowcast');
       var map={corn:'nc-corn',soybeans:'nc-beans'};
+      /* Nov 10 audit: an estimate from ratings two or more weekly reports old is
+         withheld, not headed "Near USDA" (Oct 4 ratings were still shown Nov 9).
+         A fresh week is 2 to 9 days old when it posts; 16 days means two missed. */
+      var _we=d.crops.corn&&d.crops.corn.week_ending,_wd=/^\d{4}-\d{2}-\d{2}$/.test(String(_we))?Date.UTC(+_we.slice(0,4),+_we.slice(5,7)-1,+_we.slice(8,10)):NaN;
+      if(isNaN(_wd)||(Date.now()-_wd)/864e5>=16){
+        var _mo=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'],_wt=isNaN(_wd)?'':_mo[+_we.slice(5,7)-1]+' '+(+_we.slice(8,10));
+        Object.keys(map).forEach(function(crop){
+          var el=document.getElementById(map[crop]),bd=document.getElementById(map[crop]+'-band'),vs=document.getElementById(map[crop]+'-vs');
+          if(el)el.textContent='-';if(bd&&bd.parentNode)bd.parentNode.style.visibility='hidden';if(vs){vs.textContent='Withheld';vs.style.color='var(--text-muted)';}
+        });
+        var _v=document.getElementById('nc-verdict');if(_v){_v.className='ratio-verdict neutral';_v.textContent='Withheld';}
+        var _w=document.getElementById('nc-week');if(_w)_w.textContent='No estimate now: the last usable USDA ratings week ended '+(_wt||'too long ago')+', two or more weeks back. It returns with the next season’s ratings.';
+        var _y=document.getElementById('nc-years');if(_y&&d.crops.corn&&d.crops.corn.backtest_years)_y.textContent=d.crops.corn.backtest_years;
+        return;
+      }
       var above=0,below=0;
       Object.keys(map).forEach(function(crop){
         var c=d.crops[crop];

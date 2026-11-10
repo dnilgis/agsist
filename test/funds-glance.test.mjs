@@ -239,9 +239,12 @@ test("home card: the top three markets in plain lines, the ask and the ranges be
       await pg.evaluate(() => { let d = document.getElementById("cot-widget"); while (d) { if (d.tagName === "DETAILS") d.open = true; d = d.parentElement; } document.getElementById("cot-widget").scrollIntoView(); });
       await pg.waitForFunction(() => /moderate|heavy|light/.test((document.getElementById("cot-glance") || {}).textContent || ""));
       const got = await pg.$$eval("#cot-glance li", (els) => els.map((e) => e.textContent));
-      assert.deepEqual(got, G.rows(COT, CX, ["corn", "beans", "wheat"]).map((r) => r.name + r.pos + r.chg), "three short rows, the reader's first three markets " + width);
+      // Nov 10 home audit: no "crowded" (Sig, Nov 6), and the right cell says it is the week's change in contracts
+      assert.deepEqual(got, G.rows(COT, CX, ["corn", "beans", "wheat"]).map((r) => { const f = G.facts(r.key, COT, CX), w = { flat: "About even", long: "Long", short: "Short" }[f.side];
+        return r.name + w + (f.side === "flat" ? "" : f.flip ? ", flipped" : f.weight ? ", " + f.weight : "") + r.chg + " contracts this week"; }), "three short rows, the reader's first three markets " + width);
+      assert.ok(got.every((t) => !/crowded/i.test(t)), "no crowded word " + width);
       assert.equal((await pg.textContent("#cot-gl-asof")).trim(), "Positions as of Tuesday, Oct 27, released Friday, Oct 30.");
-      assert.equal((await pg.textContent("#cot-verdict")).trim(), "Crowded: soybean meal (long), lean hogs and Class III milk (short)", "the verdict over all markets " + width);
+      assert.equal(await pg.$eval("#cot-verdict", (e) => e.hidden), true, "no crowding verdict on the home card (Sig dropped crowding Nov 6) " + width);
       assert.equal(await pg.locator("#cot-verdict-lv").count(), 0, "one verdict, not a grains and a cattle badge");
       assert.equal(await pg.$eval("#cot-detail", (d) => d.open), false);
       assert.equal(await pg.$eval("#cot-ask", (d) => d.open), false);
