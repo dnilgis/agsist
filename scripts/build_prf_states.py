@@ -33,6 +33,8 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 D = os.path.join(ROOT, "data", "prf")
 OUT = os.path.join(ROOT, "prf")
+sys.path.insert(0, os.path.join(ROOT, "scripts"))
+import cross_links as XL  # noqa: E402  the same-state row
 MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
 LONG_IV = ["January to February", "February to March", "March to April", "April to May", "May to June", "June to July",
            "July to August", "August to September", "September to October", "October to November", "November to December"]
@@ -278,6 +280,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
 
     <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {long_date(meta['built'][:10])}.</p>
     <nav class="prf-links prf-st-links" aria-label="PRF in other states"><a href="/prf">PRF calculator</a> {others}</nav>
+    {XL.same_state_row(ROOT, slug(name), e(name), "prf")}
     <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
   </div>
   </main>

@@ -61,6 +61,8 @@
   var WORD = { plc: 'PLC', arc: 'ARC-CO' };
   var TIER = { pick: 'Clear pick', lean: 'Leans', close: 'Close', ask: 'No answer yet' };
   var RS = '&rsquo;';
+  var BOR_WHY = ['Expected payments are not printed for this crop: it does not have enough of its own price history.', 'Expected payments are not printed for this crop: it does not have enough of its own price history.'];
+  var CAP_LINE = 'Too little price history for a clear pick: shown as Leans.';
   var IRR_NOTE = 'Figured with the county' + RS + 's all-practice PLC yield; an irrigated farm' + RS + 's own is often higher.';
   function unpackLv(p) {
     var a = String(p).split(',');
@@ -81,14 +83,16 @@
   function tier(w) { var s = shapeOf(w); return '<span class="ap-tier ap-tier-' + s + '"><svg class="ap-ic" viewBox="0 0 16 16" aria-hidden="true"><use href="#api-' + s + '"/></svg>' + TIER[s] + '</span>'; }
   function gapLine(v, c) {
     var w = v.w, lc = c.lc, y = c.ly, pl = /s$/.test(lc);
-    /* no dollars (flag 64): one plain line (gap_line in the build script) */
+    /* no expected dollars (flag 64): the reason for this crop (flag 128: too few years of its own prices), and
+       "held at Leans" only where the borrowed swings lowered a clear pick (flag 512); gap_line in the build script */
     if ((v.f & 64) && (w === 'plc' || w === 'arc' || w === 'close' || w.indexOf('lean_') === 0)) {
-      var bw = 'This crop has too little price history of its own, so the call stops at Leans and no dollar figure is printed.';
+      var bw = BOR_WHY[v.f & 128 ? 1 : 0];
       if (w === 'close') return 'Too close to call. ' + bw;
       var bs = w.indexOf('lean_') === 0 ? w.slice(5) : w, bo = bs === 'plc' ? 'arc' : 'plc';
       var bt = WORD[bs] + ' leads across the ' + v.n + ' price years we ran, but that swings from year to year.';
       if (v.f & 32) bt += ' ' + WORD[bo] + ' did not come out ahead in any of them.';
       bt += ' ' + bw;
+      if (v.f & 512) bt += ' ' + CAP_LINE;
       if (v.f & 2) bt += ' A futures-based price start gives a different answer, so it stops at Leans.';
       return bt;
     }
@@ -97,7 +101,7 @@
       var side = w.slice(5), other = side === 'plc' ? 'arc' : 'plc';
       var t = WORD[side] + ' comes out about $' + v.whole + ' more per base acre, but that swings from year to year.';
       if (v.f & 32) t += ' ' + WORD[other] + ' did not come out ahead in any of the ' + v.n + ' price years we ran.';
-      if (v.f & 1) t += ' This crop has too little price history of its own, so the call stops at Leans and no dollar figure is printed.';
+      if (v.f & 512) t += ' ' + CAP_LINE;
       if (v.f & 2) t += ' A futures-based price start gives a different answer, so it stops at Leans.';
       return t;
     }
@@ -125,9 +129,15 @@
     var big = bigWord(w), tw = w, g = gapLine(v, c);
     if (w === 'mismatch') {
       /* ly: [big word, tier verdict, the answer, the benchmark as printed ('' when the reason does not apply)] */
+      /* flag 256: the PLC yield is under 60% of the benchmark (mm_why in the build); when the card's About the
+         same answer is a mismatch too, it is on the same side, so one flag serves both sentences */
+      var lo = v.f & 256;
       big = ly[0]; tw = ly[1];
-      g = !ly[3] ? ly[2] : sameW === 'mismatch' ? ly[2] + ' The county average PLC yield is above this ' + ly[3] + ' benchmark, so there is no one typical farm here.' :
-        'A PLC yield that high is above the ' + ly[3] + ' benchmark. ' + ly[2];
+      /* under 60% with one call across the range (ly[1] is a call): that call is not the same at the PLC yield itself (mm_why held) */
+      var held = lo && ly[1] !== 'mismatch';
+      g = !ly[3] ? ly[2] : sameW === 'mismatch' ? ly[2] + ' The county average PLC yield is ' + (lo ? 'under 60% of' : 'above') + ' this ' + ly[3] + ' benchmark' +
+        (held ? ', and the call there is not the same' : '') + ', so there is no one typical farm here.' :
+        (lo ? 'A PLC yield that low is under 60% of the ' : 'A PLC yield that high is above the ') + ly[3] + ' benchmark' + (held ? ', and the call there is not the same' : '') + '. ' + ly[2];
     }
     var oth = '';
     if (c.oth && v.wo) oth = '<p class="ap-oth"><b>' + c.oth + ' ground:</b> ' + (v.wo !== 'mismatch' ? low1(shortWord(v.wo)) : (R.ot || 'depends on your PLC yield')) + '.' + (c.oth === 'Irrigated' ? ' ' + IRR_NOTE : '') + '</p>';
