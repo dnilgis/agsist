@@ -29,15 +29,11 @@ SOURCES (all public, no key)
   eia-ethanol          EIA weekly fuel ethanol production by PADD (table download)
   eia-diesel           EIA weekly on-highway diesel retail prices (table download)
                        Bytes kept as sent (base64), never opened here.
-  settles-yahoo        the daily futures bars the site's prices are read from (last 10 sessions,
-                       grains, oilseed products, cattle, hogs), so a restated settle shows
-  settles-cme          CME's own settlement tables for the last weekday (corn, soybeans, wheat,
-                       cattle, hogs); a refusal is recorded like any failure
   cot-cftc             CFTC Commitments of Traders: this week's disaggregated and legacy text
                        files as posted, and the newest rows of the disaggregated dataset
   ams-reports          USDA AMS Market News PDFs the site reads (grain, hay, fertilizer, cattle,
                        dairy), from www.ams.usda.gov or its mirror host (scripts/ams_http.py)
-  The last four keep each document's bytes as sent (base64) with its own URL, status, fetch
+  The last two keep each document's bytes as sent (base64) with its own URL, status, fetch
   time and sha256; a source is ok when at least one document came back, and the ones that did
   not are named.
 
@@ -112,19 +108,11 @@ EIA = {
 SHEET_MAGIC = (bytes.fromhex("D0CF11E0A1B11AE1"), b"PK\x03\x04")   # Excel 97 (OLE), xlsx (zip)
 
 # Documents kept byte for byte: source -> [(label, kind, [urls, first answer that passes wins])].
-# kind: json (parses), pdf (%PDF- magic), text (not a web page). {td} is the last weekday before the
-# day as MM/DD/YYYY (CME's tradeDate). AMS paths are tried on the mirror host too (ams_http.MIRRORS).
-YAHOO = "https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range=10d&interval=1d"
-CME = ("https://www.cmegroup.com/CmeWS/mvc/Settlements/Futures/Settlements/{pid}/FUT"
-       "?strategy=DEFAULT&tradeDate={td}&pageSize=50")
+# kind: json (parses), pdf (%PDF- magic), text (not a web page). AMS paths are tried on the mirror
+# host too (ams_http.MIRRORS). No exchange market data (futures settles or bars) is kept here.
 AMS = "https://{host}/mnreports/ams_{slug}.pdf"
 AMS_HOSTS = ("www.ams.usda.gov", "ams-prod.azureedge.us")
 DOCS = {
-    "settles-yahoo": [(sym, "json", [YAHOO.format(sym=sym)]) for sym in
-                      ("ZC=F", "ZS=F", "ZW=F", "KE=F", "MWE=F", "ZM=F", "ZL=F", "LE=F", "GF=F", "HE=F")],
-    "settles-cme": [(name, "json", [CME.replace("{pid}", str(pid))]) for name, pid in
-                    (("corn", 300), ("soybeans", 320), ("chicago wheat", 323), ("kc wheat", 348),
-                     ("live cattle", 22), ("feeder cattle", 34), ("lean hogs", 19))],
     "cot-cftc": [
         ("disaggregated futures", "text", ["https://www.cftc.gov/dea/newcot/f_disagg.txt"]),
         ("disaggregated futures and options", "text", ["https://www.cftc.gov/dea/newcot/c_disagg.txt"]),
@@ -344,13 +332,6 @@ def fetch_eia(net, source):
     return rec
 
 
-def last_weekday(day):
-    d = day - timedelta(days=1)
-    while d.weekday() >= 5:
-        d -= timedelta(days=1)
-    return d
-
-
 def doc_problem(kind, body):
     """None when the body is the kind of document asked for, else why it is not."""
     head = body[:512].lstrip()
@@ -368,15 +349,13 @@ def doc_problem(kind, body):
     return None
 
 
-def fetch_docs(net, source, day):
+def fetch_docs(net, source):
     """Every document of a DOCS source, bytes as sent. ok when at least one came back."""
-    td = last_weekday(day).strftime("%m/%d/%Y")
     rec = {"requests": [], "data": None, "missing": []}
     docs = []
     for label, kind, urls in DOCS[source]:
         got = None
         for u in urls:
-            u = u.replace("{td}", td)
             req, body = net.get(u)
             rec["requests"].append(req)
             if req["status"] != 200:
@@ -444,7 +423,7 @@ def run(day, out=OUT, only=None, net=None, log=print):
             elif src in EIA:
                 rec = fetch_eia(net, src)
             elif src in DOCS:
-                rec = fetch_docs(net, src, day)
+                rec = fetch_docs(net, src)
             else:
                 raise ValueError(f"unknown source {src}")
         except Exception as e:  # noqa: BLE001  one source's surprise never stops the others
@@ -521,8 +500,6 @@ def selftest():
             for f in fail:
                 if f in u:
                     return 503, b"busy"
-            if "yahoo.com" in u or "cmegroup.com" in u:
-                return 200, json.dumps({"u": u}).encode()
             if "cftc.gov" in u:
                 return 200, (b'[{"report_date_as_yyyy_mm_dd": "2026-10-27"}]' if "publicreporting" in u
                              else b'"WHEAT-SRW - CHICAGO BOARD OF TRADE",261027,...')
@@ -590,8 +567,8 @@ def selftest():
            "ams-prod.azureedge.us" in f3195["url"] and base64.b64decode(f3195["body_b64"]).startswith(b"%PDF-")
            and f3195["sha256"] == hashlib.sha256(base64.b64decode(f3195["body_b64"])).hexdigest()
            and a["rows"] == len(DOCS["ams-reports"]) and a["ok"], f3195["url"])
-        cm = read_vintage(os.path.join(d, "settles-cme", "2026-10-28.json.gz"))
-        ck("CME: the trade date is the last weekday before the day", all("tradeDate=10/27/2026" in x["url"] for x in cm["data"]["docs"]))
+        ck("no exchange market data source", not any(k.startswith("settles") for k in DOCS)
+           and not any(h in u for v in DOCS.values() for _, _, us in v for u in us for h in ("cmegroup", "yahoo")))
         ct = read_vintage(os.path.join(d, "cot-cftc", "2026-10-28.json.gz"))
         ck("COT: the text files and the newest dataset rows, each with its own URL and fetch time",
            ct["rows"] == 4 and all(x["fetched_utc"].endswith("Z") and x["url"].startswith("https://") for x in ct["data"]["docs"]))
@@ -643,11 +620,11 @@ def selftest():
         req, body = r.get("https://example.invalid/x")
         ck("a 403 is asked once", r.calls == 1 and req["status"] == 403 and body == b"", req)
     with tempfile.TemporaryDirectory() as d:
-        net, calls, sleeps = make(fail=("cmegroup.com",))
-        man = run(day, out=d, only=["settles-cme", "settles-yahoo"], net=net, log=quiet)
+        net, calls, sleeps = make(fail=("cftc.gov",))
+        man = run(day, out=d, only=["cot-cftc", "ams-reports"], net=net, log=quiet)
         ck("documents: a refused source is recorded failed, the others go on",
-           not man["sources"]["settles-cme"]["ok"] and man["sources"]["settles-yahoo"]["ok"]
-           and man["sources"]["settles-cme"]["missing"] == [n for n, _, _ in DOCS["settles-cme"]], man["sources"]["settles-cme"])
+           not man["sources"]["cot-cftc"]["ok"] and man["sources"]["ams-reports"]["ok"]
+           and man["sources"]["cot-cftc"]["missing"] == [n for n, _, _ in DOCS["cot-cftc"]], man["sources"]["cot-cftc"])
         ck("documents: a web page is never JSON or a PDF", doc_problem("json", b"<!DOCTYPE html><p>x") and doc_problem("pdf", b"<html>")
            and doc_problem("json", b"{}") is None and doc_problem("text", b"a,b\n") is None)
 
