@@ -176,9 +176,9 @@ test("the page: Bin Print near the top, one ask under its totals, sheets and tip
   /* no field asks for an address or a phone number */
   assert.doesNotMatch(JS, /type="(tel|email)"/);
   assert.doesNotMatch(JS, /placeholder="[^"]*(street|address|phone)/i);
-  /* FAQ JSON-LD stays the eight real questions */
+  /* FAQ JSON-LD stays the real questions: the eight, plus the worked 15 ft 3 in example (Nov 10) */
   const ld = PAGE.match(/"@type":"FAQPage","mainEntity":\[([\s\S]*?)\]\}/);
-  assert.equal((ld[1].match(/"@type": "Question"/g) || []).length, 8);
+  assert.equal((ld[1].match(/"@type": "Question"/g) || []).length, 9);
 });
 
 /* ------------------------------------------------------------------ the browser half */

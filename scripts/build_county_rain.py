@@ -100,7 +100,16 @@ def kind_word(c):
 
 
 def where_words(c):
-    return f"the {kind_word(c)} {R.station_where(c['station']['raw'])}"
+    """'the Libby Dam weather station in Libby': the opening names the station itself, not only its town,
+    unless the place words already carry its name ('at Des Moines International Airport')."""
+    raw = c["station"]["raw"]
+    where, name = R.station_where(raw), R.station_name(raw)
+    # only a named station in a town ('in Libby' for LIBBY DAM); an offset ('8 miles west-southwest of Ames')
+    # or an airport already says where it is, and a name with mileage in it reads as code
+    if (not where.startswith("in ") or not name or re.search(r"\d", name)
+            or name.lower() == where[3:].lower()):
+        return f"the {kind_word(c)} {where}"
+    return f"the {name} {kind_word(c)} {where}"
 
 
 def gauge_name(stw):
@@ -1019,7 +1028,7 @@ def county_page(ctx):
             + (PRINT_JS if ready else ""))
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""),
-         "description": desc, "dateModified": d["fetched"][:10], "inLanguage": "en-US",
+         "description": desc, "dateModified": asof, "inLanguage": "en-US",   # = the sitemap lastmod: the day the numbers last changed
          "about": {"@type": "AdministrativeArea", "name": full}, "author": AUTHOR, "publisher": PUBLISHER},
         {"@context": "https://schema.org", "@type": "Dataset", "name": f"Rain in {full}, {year}, Jan 1 to {short_date(asof)}",
          "description": f"Daily precipitation from the {kind_word(c)} {stw['raw']} ({stw['sid'].split(' ')[0]}) in {full}, added up by month for {year} through {long_date(asof)}"
@@ -1030,7 +1039,7 @@ def county_page(ctx):
          "spatialCoverage": [{"@type": "Place", "name": full},
                              {"@type": "Place", "name": f"{kind_word(c)} {stw['raw']} ({stw['sid'].split(' ')[0]})",
                               "geo": {"@type": "GeoCoordinates", "latitude": stw["ll"][1], "longitude": stw["ll"][0]}}],
-         "creator": PUBLISHER, "dateModified": d["fetched"][:10],
+         "creator": PUBLISHER, "dateModified": asof,
          # no data license is stated on these pages, so the license is the site's own terms (Nov 2 SEO audit)
          "license": f"{ORIGIN}/terms",
          "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": f"{ORIGIN}/data/rain/{st.lower()}.json"}},
@@ -1144,7 +1153,7 @@ def state_records_html(recs, st):
             f'years to date on record. Only years the station reported fully are counted.</p><ul class="rc-list">{li}</ul>')
 
 
-def state_page(st, d, pages, none_rows, recs=None, ctxs=None):
+def state_page(st, d, pages, none_rows, recs=None, ctxs=None, mod=None):
     stn = R.STATES[st]
     st_slug = R.slug(stn)
     url = f"{ORIGIN}/rain/{st_slug}"
@@ -1210,7 +1219,7 @@ def state_page(st, d, pages, none_rows, recs=None, ctxs=None):
                      + (f'<p class="rc-fine">* This {u1}&rsquo;s station reported, but its gauge looks stuck, so it is left out.</p>' if held else ''))
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
-         "dateModified": d["fetched"][:10], "inLanguage": "en-US", "about": {"@type": "AdministrativeArea", "name": stn}, "author": AUTHOR, "publisher": PUBLISHER},
+         "dateModified": mod or d["fetched"][:10], "inLanguage": "en-US", "about": {"@type": "AdministrativeArea", "name": stn}, "author": AUTHOR, "publisher": PUBLISHER},
         crumbs_ld([("Home", ORIGIN + "/"), ("Rain by county", ORIGIN + "/rain"), (stn, url)]),
     ]
     by = by[0] + by[1:].lower()
@@ -1296,7 +1305,7 @@ PICK_JS = ("(function(){var f=document.getElementById('rc-pick');if(!f)return;"
            "f.addEventListener('submit',function(e){e.preventDefault();var v=f.elements.st.value;if(v)location.href=v;});})();")
 
 
-def hub_page(files, built, recs=None, context=None):
+def hub_page(files, built, recs=None, context=None, mod=None):
     url = f"{ORIGIN}/rain"
     years = sorted({d["year"] for d in files.values()})
     yw = str(years[-1]) if len(years) == 1 else "this year"
@@ -1320,7 +1329,7 @@ def hub_page(files, built, recs=None, context=None):
     desc = (f"Rain {sofar}{yin} for {total:,} US counties, from a weather station in each county: inches, percent of a usual year, month by month.")
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
-         "dateModified": built, "inLanguage": "en-US", "author": AUTHOR, "publisher": PUBLISHER},
+         "dateModified": mod or built, "inLanguage": "en-US", "author": AUTHOR, "publisher": PUBLISHER},
         crumbs_ld([("Home", ORIGIN + "/"), ("Rain by county", url)]),
     ]
     page = head(title, desc, url, ld, img=share_img(None)) + f"""
@@ -1528,12 +1537,15 @@ def build(data_dir, C=None, NB=None, img_root=None):
                     none_rows.append((x["name"], None, None, bool(x.get("held"))))
             if near is None:
                 near = hub_records(data_dir, pages, within=3)
-            want[f"rain/{st_slug}.html"] = nav.fill_fonts(state_page(st, d, pages, none_rows, near, context.get(st, {})))
-            urls.insert(0, (f"{ORIGIN}/rain/{st_slug}", max((c["as_of"] for fp, c in d["counties"].items() if fp in C), default=day)))
+            # the state page's dateModified is its sitemap lastmod: its newest county
+            st_mod = max((c["as_of"] for fp, c in d["counties"].items() if fp in C), default=day)
+            want[f"rain/{st_slug}.html"] = nav.fill_fonts(state_page(st, d, pages, none_rows, near, context.get(st, {}), mod=st_mod))
+            urls.insert(0, (f"{ORIGIN}/rain/{st_slug}", st_mod))
     if pages:
         built = max(d["fetched"][:10] for d in files.values())
-        want["rain.html"] = hub_page(files, built, hub_records(data_dir, pages), context)
-        urls.insert(0, (f"{ORIGIN}/rain", max(m for _u, m in urls)))
+        hub_mod = max(m for _u, m in urls)
+        want["rain.html"] = hub_page(files, built, hub_records(data_dir, pages), context, mod=hub_mod)
+        urls.insert(0, (f"{ORIGIN}/rain", hub_mod))
     urls = [urls[0]] + sorted(urls[1:]) if pages else []
     want["sitemap-rain.xml"] = sitemap(urls)
     # the county and state pages (rain/**.html) are written slim: compact JSON-LD, no indentation
@@ -1623,6 +1635,15 @@ def selftest():
         site = os.path.join(t, "site")
         write_or_check(want, site, False)
         ok(write_or_check(build(data), site, True) == [], "a second build matches the first (--check)")
+        # every sitemap lastmod is its page's WebPage dateModified
+        _lm = re.findall(r"<loc>https://agsist\.com/(rain[^<]*)</loc><lastmod>([^<]+)</lastmod>", want.get("sitemap-rain.xml", ""))
+        _bad = []
+        for _u, _m in _lm:
+            _pg = want.get(_u + ".html", "")
+            _dm = re.search(r'"@type": ?"WebPage"[^{}]*?"dateModified": ?"([^"]+)"', _pg)
+            if not _dm or _dm.group(1) != _m:
+                _bad.append((_u, _m, _dm and _dm.group(1)))
+        ok(_lm and not _bad, "sitemap lastmod = page dateModified: %s" % _bad[:3])
         story = want.get("rain/iowa/story-county.html", "")
         ok(story, "Story County page written")
         ok("rain/iowa/hamilton-county.html" not in want, "no page for a county without a station")
@@ -1700,6 +1721,11 @@ def selftest():
         c = d["counties"]["19169"]
         ok(f"{c['total']:.2f} inches of rain have fallen so far in 2026 at the weather station 8 miles west-southwest of Ames in Story County, through Oct 12." in story,
            "the answer comes first, in plain words, naming the gauge and then the county")
+        ok(where_words({"station": {"raw": "LIBBY DAM", "net": "ghcn"}}) == "the Libby Dam weather station in Libby",
+           "the opening names the station when its town alone would not")
+        ok(where_words({"station": {"raw": "AMES", "net": "ghcn"}}) == "the weather station in Ames", "a station named for its town is not named twice")
+        ok(where_words({"station": {"raw": "LIBBY 1 NE RS", "net": "ghcn"}}) == "the weather station in Libby NE Rs" or
+           "1 NE" not in where_words({"station": {"raw": "LIBBY 1 NE RS", "net": "ghcn"}}), "no mileage code in the name")
         ok(f"({c['pct']}% of usual)" in story and ("less than a usual year to date" in story or "more than a usual year to date" in story), "the comparison sentence")
         ok(f"<title>{c['total']:.2f} in of Rain at Ames, Story County, IA, 2026 | AGSIST</title>" in story,
            "title: the year's inches first (Nov 2 test), at the gauge it was read at, the brand kept (Nov 10)")

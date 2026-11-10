@@ -348,3 +348,27 @@ test("bin page and /grain-shrink give one shrink answer for corn", () => {
   assert.doesNotMatch(t, /defaults to 1\.3/);
   assert.doesNotMatch(PAGE, /\$\('shrinkFactor'\)\.value=1\.3/, "reset takes the shared default");
 });
+
+/* Worked example FAQ: 15 ft 3 in x 24 ft 4 in, level, no pack.
+   pi x 7.625^2 = 182.65 ft2; x 24.333 ft = 4,444.6 ft3; x 0.8036 = 3,571.7 bu. */
+test("worked example FAQ: 15 ft 3 in x 24 ft 4 in is about 3,570 bu by the calculator's own factor, on the page and in JSON-LD", () => {
+  const bu = G.bushels(G.roundBin({ d: 15.25, grainH: 24 + 4 / 12, surface: "level" }).total, 0);
+  near(bu, 3571.7, "the calculator's own count", 0.1);
+  const q = "How many bushels are in a 15 ft 3 in by 24 ft 4 in bin?";
+  const vis = PAGE.match(new RegExp(`<dt>${q.replace(/\?/g, "\\?")}</dt>\\s*<dd>([\\s\\S]*?)</dd>`));
+  assert.ok(vis, "visible on the page");
+  const ld = JSON.parse(PAGE.match(/<script type="application\/ld\+json">\s*(\{[\s\S]*?"FAQPage"[\s\S]*?)\s*<\/script>/)[1]);
+  const faq = (ld["@graph"] || [ld]).find((x) => x["@type"] === "FAQPage");
+  const a = faq.mainEntity.find((x) => x.name === q);
+  assert.ok(a, "in the FAQ JSON-LD");
+  assert.equal(text(vis[1]).trim(), a.acceptedAnswer.text, "the JSON-LD answer is the visible answer, word for word");
+  assert.match(a.acceptedAnswer.text, /About 3,570 bu/);
+  assert.match(a.acceptedAnswer.text, new RegExp(`${bu.toFixed(1).replace(/\B(?=(\d{3})+(?!\d))/g, ",")} bu`));
+  assert.match(a.acceptedAnswer.text, /0\.8036 bu a cubic foot/);
+});
+
+test("every FAQ question in the JSON-LD is visible on the page", () => {
+  const ld = JSON.parse(PAGE.match(/<script type="application\/ld\+json">\s*(\{[\s\S]*?"FAQPage"[\s\S]*?)\s*<\/script>/)[1]);
+  const faq = (ld["@graph"] || [ld]).find((x) => x["@type"] === "FAQPage");
+  for (const q of faq.mainEntity) assert.ok(text(PAGE).includes(q.name), q.name);
+});

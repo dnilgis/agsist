@@ -30,6 +30,9 @@ import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import seo_caps as CAPS  # noqa: E402  the site's title cap
+
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 D = os.path.join(ROOT, "data", "prf")
 OUT = os.path.join(ROOT, "prf")
@@ -130,7 +133,9 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     jf25 = sum(1 for _, c in counties if (lambda L: bool(L and L[0] and L[0][1] == 25))(c.get("lim") or next(iter((c.get("limc") or {}).values()), None)))
     jf_here = (f"all {n_co} {name} counties" if jf25 == n_co and n_co > 1 else f"the one {name} county" if jf25 == n_co
                else f"{jf25} of the {n_co} {name} counties")
-    title = f"PRF Insurance in {name}: {cy} Rates and County Values | AGSIST"
+    title = CAPS.fit([f"PRF Insurance in {name}: {cy} Rates and County Values | AGSIST",
+                      f"PRF Insurance in {name}: {cy} Rates and County Values",
+                      f"PRF Insurance in {name}: {cy} Rates"])
     desc = (f"PRF (Pasture, Rangeland, Forage) insurance in {name} for {cy}: county base values for grazing and hay in all "
             f"{n_co} {'county' if n_co == 1 else 'counties'}, rates by month and a free calculator.")
     if len(desc) > 160:
@@ -321,7 +326,9 @@ def guide(meta, facts, states, BOOT):
     dear = max(ivs, key=lambda r: r["mid_rate_per_100"])
     n_grids, n_co = meta["counts"]["grids"], meta["counts"]["counties"]
     url = f"https://agsist.com/prf/{GUIDE_SLUG}"
-    title = f"How PRF Insurance Works: Intervals, Coverage, Productivity Factor ({cy}) | AGSIST"
+    title = CAPS.fit([f"How PRF Insurance Works: Intervals, Coverage, Productivity Factor ({cy}) | AGSIST",
+                      f"How PRF Insurance Works: Intervals, Coverage, Productivity Factor",
+                      f"How PRF Insurance Works: Intervals, Coverage ({cy})"])
     desc = (f"How Pasture, Rangeland, Forage (PRF) insurance works for {cy}, in plain words: the grid, the eleven intervals, coverage, "
             f"productivity factor, USDA's share and what the record says.")
     if len(desc) > 160:

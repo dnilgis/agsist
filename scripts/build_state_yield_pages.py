@@ -547,6 +547,8 @@ def build_state_page(name, inp, ctx):
                          + ("with " + " and ".join(CROP_LC[c] for c in crops if c in ACRES and name in inp["acres"][c]["rows"]) + " planted acres, " if has_acres else "")
                          + "highest and lowest years, 5- and 10-year averages and a trend."),
          "url": f"{SITE}{path}", "isAccessibleForFree": True,
+         # NASS estimates are U.S. government works (the rent pages use the same license line)
+         "license": "https://www.usa.gov/government-works",
          "creator": {"@type": "Organization", "name": "AGSIST", "url": SITE},
          "isBasedOn": "https://quickstats.nass.usda.gov/",
          "dateModified": updated,
@@ -756,6 +758,8 @@ def selftest():
                                                      r"title=\"NASS published no figure\">n/a", ia) is not None)
         ck("acres missing -> n/a, present -> value", "<td class=\"n\">13.6</td>" in ia)
         _ds = next(g for d in lds for g in d["@graph"] if g["@type"] == "Dataset")["description"]
+        ck("the Dataset names its license", next(g for d in lds for g in d["@graph"] if g["@type"] == "Dataset").get("license")
+           == "https://www.usa.gov/government-works")
         ck("dataset names the planted acres the page has (corn), not 'where NASS publishes them'",
            "with corn planted acres" in _ds and "where NASS publishes" not in _ds, _ds)
         ck("high/low years", "<b>211</b> in 2024" in ia and "<b>137</b> in 2012" in ia)
