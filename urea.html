@@ -137,6 +137,9 @@ body {
 }
 
 /* ── Risk Panel + Gauge ──────────────────────────────────────────── */
+/* the urea price line is written after the price file lands: its room is held until then (CLS sweep Nov 10) */
+@media(scripting:enabled){#urea-price-line.up-wait[hidden]{display:block!important;visibility:hidden;min-height:152px}}
+@media(scripting:enabled) and (max-width:500px){#urea-price-line.up-wait[hidden]{min-height:157px}}
 .risk-panel {
   background: var(--surface); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-md, 6px); padding: 1.5rem; text-align: center;
@@ -780,7 +783,7 @@ h2.edu-head,h2.soil-air-head,h2.s-card-title,h3.s-card-title,h3.stab-title{margi
       <div class="hero-eyebrow page-kicker"><span class="live-dot"></span>Risk check</div>
       <h1 class="hero-title">Urea <span>volatilization</span><br>risk monitor</h1>
       <p class="hero-sub page-lede">Nitrogen lost to the air is money left in the field. Montana State trials lost 10 to 20% of the N from urea spread on a dry surface with only light rain after, and 30 to 44% from urea spread on wet or snowy ground that dried slowly. Most of the loss runs over the two to three weeks after spreading, faster when it is warm. Get your real-time N-loss risk score before you spread.</p>
-      <p class="hero-sub" id="urea-price-line" hidden style="margin-top:.4rem"></p>
+      <p class="hero-sub up-wait" id="urea-price-line" hidden style="margin-top:.4rem"></p>
     </div>
     <div class="risk-panel" id="risk-panel" aria-live="polite" role="status">
       <div class="risk-panel-lbl"><span class="live-dot"></span>Current risk level</div>
@@ -1285,8 +1288,9 @@ function applyTempGate(score,tempF){
 }
 
 function scoreToLevel(s){if(s<30)return'low';if(s<55)return'moderate';if(s<75)return'high';return'extreme';}
-(function(){try{(window.AgFertPick?AgFertPick.load():fetch('/data/fertilizer-prices.json').then(function(r){return r.ok?r.json():null;})).then(function(d){
-  var el=document.getElementById('urea-price-line');if(!el||!d||!d.prices)return;
+(function(){var up=document.getElementById('urea-price-line');function letGo(){if(up)up.classList.remove('up-wait');}
+try{(window.AgFertPick?AgFertPick.load():fetch('/data/fertilizer-prices.json').then(function(r){return r.ok?r.json():null;})).then(function(d){
+  letGo();var el=up;if(!el||!d||!d.prices)return;
   var u=d.prices.filter(function(p){return p.key==='urea';})[0];
   if(!u||typeof u.price!=='number'||!(u.price>0)||!u.as_of)return;
   var when=new Date(u.as_of+'T12:00:00Z').toLocaleDateString('en-US',{timeZone:'UTC',month:'short',day:'numeric'});
@@ -1295,7 +1299,7 @@ function scoreToLevel(s){if(s<30)return'low';if(s<55)return'moderate';if(s<75)re
   var src=u.src_label||('co-op cash price, posted '+when);
   var lo=Math.round(8/perN),hi=Math.round(12/perN);
   el.innerHTML='Looking for the price? Urea: <strong>$'+Math.round(u.price)+'/ton</strong>, '+src+'. $'+Math.round(u.price)+' / ('+'2,000 lb x '+nPct+'% N) = about $'+perN+' per lb N. At that price, NBPT at $8 to $12 an acre pays for itself if it saves about '+lo+' to '+hi+' lb of N an acre. Call to confirm. <a href="/fertilizer">All fertilizer prices</a>.';
-  el.hidden=false;}).catch(function(){});}catch(e){}})();
+  el.hidden=false;}).catch(letGo);}catch(e){letGo();}})();
 /* Cheapest N per lb, named from the posted co-op prices (data/fertilizer-prices.json), straight N
    products only (N-0-0: urea, anhydrous, UAN). Was a fixed line saying urea is lowest cost per lb N;
    at the site's own posted prices anhydrous is (accuracy pass, Oct 17). Nothing shown without prices. */
