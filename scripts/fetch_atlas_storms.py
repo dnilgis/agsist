@@ -45,7 +45,8 @@ import sys
 import urllib.request
 from datetime import datetime, timezone
 
-from build_farmland_atlas import ATLAS_STATE_FIPS, fold
+from build_farmland_atlas import ATLAS_STATE_FIPS
+from county_fold import fold
 
 BASE = "https://www.ncei.noaa.gov/pub/data/swdi/stormevents/csvfiles/"
 OUT = "data/atlas/raw/storms.json"

@@ -79,7 +79,7 @@ test("each state hail page: one auto line after the content, and no Rain Print p
     const m = inMain(readFileSync(ROOT + "hail-map/" + f, "utf8"));
     assert.equal(slots(m), 1, f);
     assert.ok(m.includes('<p class="rp-promo" data-rain-print-promo="auto" hidden></p>'), f);
-    assert.ok(m.indexOf('data-rain-print-promo="auto"') > m.indexOf('class="hs-src"'), f + ": after the content");
+    assert.ok(m.indexOf('data-rain-print-promo="auto"') > m.indexOf('class="hs-terms"'), f + ": after the content");
     assert.ok(!/href="\/rain-print/.test(m), f + ": no second promo");
   }
   assert.match(readFileSync(ROOT + "scripts/generate_hail_states.py", "utf8"), /data-rain-print-promo=\\"auto\\"/);
