@@ -1096,7 +1096,12 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
             by_key.setdefault((m.get("kind"), m.get("key")), []).append(m)
 
     def is_news(f):
-        return not isinstance(today, date) or daily_fresh.still_news(f, by_key.get((f.get("kind"), f.get("key")), []), today)[0]
+        mine = by_key.get((f.get("kind"), f.get("key")), [])
+        if f.get("kind") == "rain_line":
+            # an issue keeps its rain lines as one usual day plus the stations off it (daily_fresh.issue_facts):
+            # the usual day is key "*", and a station named on the same day comes after it
+            mine = sorted(mine + by_key.get(("rain_line", "*"), []), key=lambda m: (str(m.get("date")), m.get("key") != "*"))
+        return not isinstance(today, date) or daily_fresh.still_news(f, mine, today)[0]
 
     def fresh(x):
         f, fs = x.get("fact"), [g for g in (x.get("facts") or []) if isinstance(g, dict)]
@@ -1149,7 +1154,9 @@ def build(daily, site_href, unsub_url=None, elevators=None, local=None, forward_
                       site_href, unsub_url, forward_url, today, county=cw, county_ask=ask, stories=stories, funds=funds)
     html, text = tag_group(html, group, True), tag_group(text, group, False)
     printed = [dict(x["fact"], text=x["text"]) for x in items + here if x.get("fact")]
-    printed += [f for f in zip_facts(iso) if is_news(f)]
+    # every station's rain line is kept each issue, news or not: the sent copy stores them as the usual day plus
+    # the stations off it, so a full set costs a few KB (send_daily save_sent_copy)
+    printed += [f for f in zip_facts(iso) if f.get("kind") == "rain_line" or is_news(f)]
     if sfrom == "market" and sfield == "locked_changes" and big_move(daily):
         q = big_move(daily)[2]
         printed.append({"kind": "move", "key": q["key"], "value": str(q.get("date") or iso), "text": subj})

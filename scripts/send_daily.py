@@ -134,6 +134,22 @@ def keep_sent_copy(day, b, from_name, from_addr, reply_to):
     globals()["flag"] = flag_and_keep
 
 
+def rain_lines_record(printed):
+    """{"as_of": usual day, "other": {day: [station county]}} from the issue's rain_line facts, or None. Every
+    station is in it, so it says nothing about where readers are; most share one day, so it stays small."""
+    from collections import Counter
+    rl = {f["key"]: str(f["value"]) for f in printed or []
+          if isinstance(f, dict) and f.get("kind") == "rain_line" and f.get("key") and f.get("key") != "*"}
+    if not rl:
+        return None
+    usual = sorted(Counter(rl.values()).items(), key=lambda kv: (-kv[1], kv[0]))[0][0]
+    other = {}
+    for k, v in sorted(rl.items()):
+        if v != usual:
+            other.setdefault(v, []).append(k)
+    return {"as_of": usual, "other": dict(sorted(other.items()))}
+
+
 def save_sent_copy(day, b, subject, fmt, sent_dir=None, printed=None):
     """Keep the briefing exactly as it was emailed, with its subject. Written
     once per day (the morning send); a later run of the same day leaves it as
@@ -152,10 +168,10 @@ def save_sent_copy(day, b, subject, fmt, sent_dir=None, printed=None):
                "note": "The Daily as emailed. The page at /daily/" + day + " may have been updated later the same day.",
                "briefing": b}
         if isinstance(printed, list):
-            # the ZIP readers' rain lines go in one compact map by county station (daily_fresh.issue_facts reads
-            # it back): one entry per station, too many to keep as full facts
-            rl = {f["key"]: f["value"] for f in printed if isinstance(f, dict) and f.get("kind") == "rain_line" and f.get("key")}
+            # the rain lines of every county station, whoever got one (daily_fresh.issue_facts reads it back):
+            # the day most stations run through, and the stations on any other day by name
             rec["printed"] = [f for f in printed if not (isinstance(f, dict) and f.get("kind") == "rain_line")]
+            rl = rain_lines_record(printed)
             if rl:
                 rec["rain_lines"] = rl
         tmp = path.with_suffix(".tmp")

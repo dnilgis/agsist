@@ -224,11 +224,10 @@ def record_facts(before, repo=REPO):
 
 def rain_fact(st, c):
     """The ZIP reader's rain line as a fact, by the station's county, never the reader: {"kind": "rain_line",
-    "key": "<ST>:<fips>", "value": "<as_of>:<total>:<pct>"}. A station that has not reported since the last
-    issue gives the same value, and daily_v2 leaves the line out (Nov 10 2026: lines are computed at send time,
-    so a repeat was never seen)."""
-    return {"kind": "rain_line", "key": "%s:%s" % (st.upper(), c.get("_fips")),
-            "value": "%s:%.2f:%d" % (c.get("as_of"), float(c.get("total") or 0), int(c.get("pct") or 0))}
+    "key": "<ST>:<fips>", "value": "<as_of>"}, the day the station's total runs through. A station that has not
+    reported since the last issue gives the same value, and daily_v2 leaves the line out (Nov 10 2026: lines are
+    computed at send time, so a repeat was never seen)."""
+    return {"kind": "rain_line", "key": "%s:%s" % (st.upper(), c.get("_fips")), "value": str(c.get("as_of"))}
 
 
 def rain_facts(before, repo=REPO):

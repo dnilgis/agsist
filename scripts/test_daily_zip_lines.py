@@ -169,7 +169,7 @@ def zip_rain():
         OH._stations.cache_clear()
         rl2 = OH.rain_line((42.73, -87.80), "2026-11-05", t)
         OH._stations.cache_clear()
-    fact = {"kind": "rain_line", "key": "WI:55101", "value": "2026-11-03:40.13:128"}
+    fact = {"kind": "rain_line", "key": "WI:55101", "value": "2026-11-03"}
     ok(rl and rl["fact"] == fact, "the rain line's fact: the station's county and its value: %r" % (rl and rl.get("fact")))
     ok(fs == [fact] and none == [], "the issue's rain line facts, a station reporting after the issue left out: %r %r" % (fs, none))
     mem = [dict(fact, date="2026-11-04")]
@@ -180,9 +180,13 @@ def zip_rain():
     ok("Your rain: 40.51 in." in b["text"] and "Your rain: 40.51 in." in b["html"], "a new report (Nov 4, 40.51 in.): the line prints")
     b = build("2026-11-05", [rl], [], memory=[dict(fact, key="WI:55059", date="2026-11-04")])
     ok("Your rain: 40.13 in." in b["text"], "the same value for another county is no repeat")
-    # the no-ZIP build carries the issue's rain line facts; the sent copy keeps them as one compact map
-    nz = build("2026-11-05", [], [fact, RANK_FACT], memory=[], rain=False)
-    ok(any(f["kind"] == "rain_line" for f in nz["printed"]), "the no-ZIP build's printed list carries the rain line facts")
+    # the no-ZIP build carries every station's rain line, news or not; the sent copy keeps the usual day plus the
+    # stations on another day, so the record holds every station alike and says nothing about who got a line
+    others = [dict(fact, key="WI:55059", value="2026-11-04"), dict(fact, key="WI:55079", value="2026-11-04")]
+    nz = build("2026-11-05", [], [fact, RANK_FACT] + others, memory=[], rain=False)
+    ok(sum(f["kind"] == "rain_line" for f in nz["printed"]) == 3, "the no-ZIP build's printed list carries every station's rain line")
+    same = build("2026-11-05", [], [fact] + others, memory=[dict(f, date="2026-11-04") for f in [fact] + others], rain=False)
+    ok(sum(f["kind"] == "rain_line" for f in same["printed"]) == 3, "kept even when no line is news, so each issue's set is whole")
     import send_daily as SD
     with tempfile.TemporaryDirectory() as t:
         sd, ad = os.path.join(t, "sent"), os.path.join(t, "arch")
@@ -190,14 +194,30 @@ def zip_rain():
         SD.save_sent_copy("2026-11-05", {"headline": "x"}, "s", "v2", sd, printed=nz["printed"])
         rec = json.load(open(os.path.join(sd, "2026-11-05.json")))
         mem2 = F.memory(D("2026-11-06"), sd, ad)
-    ok(rec.get("rain_lines") == {"WI:55101": "2026-11-03:40.13:128"} and not any(f.get("kind") == "rain_line" for f in rec["printed"]),
-       "the sent copy keeps rain lines as {county: value}: %r" % rec.get("rain_lines"))
+    ok(rec.get("rain_lines") == {"as_of": "2026-11-04", "other": {"2026-11-03": ["WI:55101"]}}
+       and not any(f.get("kind") == "rain_line" for f in rec["printed"]),
+       "the sent copy keeps the usual day and names only the stations off it: %r" % rec.get("rain_lines"))
     ok(any(f.get("kind") == "rain_rank" for f in rec["printed"]), "the other facts stay in the printed list")
     ok(not any(z in json.dumps(rec) for z in ("53401", "Racine, WI")), "no reader's ZIP or town in the sent copy")
-    ok({"kind": "rain_line", "key": "WI:55101", "value": "2026-11-03:40.13:128", "text": "", "date": "2026-11-05"} in mem2,
-       "the map reads back as memory")
+    ok({"kind": "rain_line", "key": "WI:55101", "value": "2026-11-03", "text": "", "date": "2026-11-05"} in mem2
+       and {"kind": "rain_line", "key": "*", "value": "2026-11-04", "text": "", "date": "2026-11-05"} in mem2,
+       "the record reads back as memory")
     b = build("2026-11-06", [rl], [], memory=mem2)
     ok("Your rain" not in b["text"], "Nov 6, the station still at Nov 3: no rain line")
+    k = dict(rl, fact=dict(fact, key="WI:55079", value="2026-11-04"))
+    b = build("2026-11-06", [k], [], memory=mem2)
+    ok("Your rain" not in b["text"], "a station on the issue's usual day, not named, still at that day: no rain line")
+    b = build("2026-11-06", [dict(k, fact=dict(k["fact"], value="2026-11-05"))], [], memory=mem2)
+    ok("Your rain" in b["text"], "the same station with a new report: the line prints")
+    b = build("2026-11-06", [dict(rl, fact=dict(fact, value="2026-11-04"))], [], memory=mem2)
+    ok("Your rain" in b["text"], "a named station whose day moved onto the usual day: the line prints")
+    # size: every station today, as the record would be written (indent 2, as save_sent_copy writes)
+    on = max(str(c.get("as_of") or "") for _, _, _, c in OH._stations(REPO))
+    full = OH.rain_facts(on)
+    if full:
+        n = len(json.dumps({"rain_lines": SD.rain_lines_record(full)}, indent=2))
+        print("info rain_lines for %d stations: %d bytes" % (len(full), n))
+        ok(n < 20000 or len({f["value"] for f in full}) > 30, "the record stays small while most stations share a day: %d bytes" % n)
 
 
 def mem_of(*days_printed):
