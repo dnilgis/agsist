@@ -199,33 +199,55 @@ function datasetsOf(h, type) {
   return out;
 }
 
-// Rain county title test (Sig, Nov 2): the title leads with the year's own inches and place; it is the page's total.
+// Rain county title test (Nov 2): the title leads with the year's own inches and place; it is the page's total.
+// Nov 10: the total is one gauge's, so every title names the gauge ("55.56 in of Rain at Gilbert, Story County, IA,
+// 2026 | AGSIST") and none states it as the county's; a county whose only gauge is a mountain snow site leads with the
+// county-wide estimate ("About 16.85 in of Rain in ..."). To keep " | AGSIST" the place shortens first (no "County",
+// then no year); the gauge is never dropped. The description names the gauge too.
 test("rain county pages: the title's inches are the total the page shows, og:title in step", () => {
-  let n = 0, bare = 0, question = 0;
+  let n = 0, bare = 0, question = 0, gauge = 0, county = 0, descGauge = 0;
+  const esc = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
   for (const st of readdirSync(ROOT + "rain", { withFileTypes: true }).filter((d) => d.isDirectory())) {
     for (const f of readdirSync(ROOT + "rain/" + st.name).filter((x) => x.endsWith(".html"))) {
       const p = `rain/${st.name}/${f}`;
       const h = read(p);
       if (/http-equiv="refresh"/.test(h)) continue;   // a moved county's pointer
       const title = h.match(/<title>([^<]*)<\/title>/)[1];
-      const shown = h.match(/<dt>Rain (?:so far|in \d{4})<\/dt><dd>([\d,]+\.\d\d) <small>in<\/small><\/dd>/);
+      const shown = h.match(/<dt>(Rain (?:so far|in \d{4})|Across the county, estimate)<\/dt><dd>([\d,]+\.\d\d) <small>in<\/small><\/dd>/);
       if (!shown) { question++; assert.match(title, /^How Much Rain /, `${p}: no total shown, so the question title`); continue; }
       n++;
-      const m = title.match(/^([\d,]+\.\d\d) in of Rain in (.+), ([A-Z]{2}), (\d{4})( \| AGSIST)?$/);
+      const m = title.match(/^(About )?([\d,]+\.\d\d) in of Rain (in |at [^,]+, )(.+?), ([A-Z]{2})(?:, (\d{4}))?( \| AGSIST)?$/);
       assert.ok(m, `${p}: ${title}`);
-      assert.equal(m[1], shown[1], `${p}: title inches = the page's total`);
-      assert.match(h, new RegExp(`class="rc-answer"><b>${m[1].replace(/\./, "\\.")} inches?</b>`), `${p}: the lead answer says the same`);
-      assert.match(h, new RegExp(`<h1>How much rain (?:has|did) ${m[2]}, [A-Za-z .]+, (?:had|get) in ${m[4]}\\?`), `${p}: same place and year as the h1`);
-      const base = m[0].replace(/ \| AGSIST$/, "");
-      if (m[5]) assert.ok(title.length <= 60, `${p}: ${title.length} chars with the suffix`);
-      else { bare++; assert.ok((base + " | AGSIST").length > 60, `${p}: suffix dropped only past 60`); }
+      assert.equal(!!m[1], shown[1] === "Across the county, estimate", `${p}: "About" exactly when the county-wide estimate leads`);
+      if (m[1]) { county++; assert.equal(m[3], "in ", p); } else { assert.notEqual(m[3], "in ", `${p}: a gauge's total names the gauge: ${title}`); gauge++; }
+      assert.equal(m[2], shown[2], `${p}: title inches = the page's lead figure`);
+      assert.match(h, new RegExp(`class="rc-answer"><b>${m[2].replace(/\./, "\\.")} inches?</b>`), `${p}: the lead answer says the same`);
+      // same place (or its short form, without "County") and year as the h1
+      const h1 = h.match(/<h1>How much rain (?:has|did) (.+?), ([A-Za-z .]+), (?:had|get) in (\d{4})\?/);
+      assert.ok(h1, `${p}: h1`);
+      assert.ok(h1[1] === m[4] || h1[1].startsWith(m[4] + " "), `${p}: title place ${m[4]} is the h1's ${h1[1]}`);
+      if (m[6]) assert.equal(m[6], h1[3], `${p}: same year as the h1`);
+      const base = title.replace(/ \| AGSIST$/, "");
+      const len = (x) => x.replace(/&amp;/g, "&").replace(/&#x27;|&#39;/g, "'").replace(/&quot;/g, '"').length;   // what a reader sees
+      if (m[7]) assert.ok(len(title) <= 60, `${p}: ${len(title)} chars with the suffix`);
+      else { bare++; assert.ok(len(base + " | AGSIST") > 60, `${p}: suffix dropped only past 60`); }
+      assert.ok(len(base) <= 68, `${p}: ${len(base)} chars`);
       assert.ok(!/thru|through/i.test(title), p);
       assert.ok(h.includes(`<meta property="og:title" content="${base}">`), `${p}: og:title`);
+      const desc = h.match(/<meta name="description" content="([^"]*)">/)[1];
+      assert.ok(len(desc) <= 160, `${p}: description ${len(desc)} chars`);
+      if (!m[1]) {
+        assert.match(desc, /^[\d,]+\.\d\d inches of rain at .+? in /, `${p}: the description names the gauge: ${desc}`);
+        descGauge++;
+      }
     }
   }
   assert.ok(n >= 2500, `inches-first titles: ${n}`);
-  assert.ok(bare < 100, `titles over 60 with the suffix: ${bare}`);
-  assert.match(read("rain/kentucky/marion-county.html"), /<title>\d+\.\d\d in of Rain in Marion County, KY, \d{4} \| AGSIST<\/title>/);
+  assert.equal(gauge + county, n, "every title names the gauge or is the county-wide estimate");
+  assert.equal(descGauge, gauge, "every gauge page's description names the gauge");
+  assert.ok(county <= 30, `county-estimate titles (mountain snow sites only): ${county}`);
+  assert.ok(bare <= n * 0.1, `titles without " | AGSIST": ${bare} of ${n} (at most 10%)`);
+  assert.match(read("rain/kentucky/marion-county.html"), /<title>\d+\.\d\d in of Rain at [^,]+, Marion(?: County)?, KY(?:, \d{4})?( \| AGSIST)?<\/title>/);
 });
 
 // 4. ARC/PLC county pages: one plain sentence ahead of the cards, built only from what the cards print.

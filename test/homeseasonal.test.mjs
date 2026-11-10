@@ -1,5 +1,4 @@
-/* The home page without the seasonal reads, Nov 5, 2026 (Sig: "No soil temp on the home screen weather card either.
- * These are seasonal things; if they want a homepage presence we can do that next spring when spray season starts").
+/* The home page without the seasonal reads, Nov 5, 2026.
  *
  *   - no soil temperature anywhere on home: no card cell, no This month cell, no soil reader loaded
  *   - no spray read in the hero band and no spray rule in home-season.js; no fall nitrogen cell in any month's strip
@@ -9,7 +8,7 @@
  *     weather cell has only weather, and the card holds its height at 390 and 1280 (November)
  *
  *   node --test test/homeseasonal.test.mjs
- * Fixtures: test/fixtures/wxcard (frozen). Browser runs block every outside host and service workers (BUILD-RULES 58). */
+ * Fixtures: test/fixtures/wxcard (frozen). Browser runs block every outside host and service workers (build rule 58). */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, existsSync } from "node:fs";
@@ -86,7 +85,7 @@ function serve() {
   srv.hits = hits;
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
-// BUILD-RULES 58: our own copy only; the forecast from the stand-in; every other outside host aborted
+// build rule 58: our own copy only; the forecast from the stand-in; every other outside host aborted
 const guard = (port, now) => (r) => {
   const u = r.request().url();
   if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();

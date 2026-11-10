@@ -205,7 +205,7 @@ test("page: title, H1, byline, voice, structured data and the FAQ word for word"
   assert.match(page, /<title>Grain EMC calculator for corn, soybeans and wheat \| AGSIST<\/title>/);
   assert.match(page, /<h1>When to run aeration fans: will they dry your grain or wet it\?<\/h1>/);
   assert.match(page, /Sigurd Lindquist, CCA/);
-  // Sig, Oct 15: no name in the hero; the byline sits at the bottom, after the credit line
+  // Oct 15: no name in the hero; the byline sits at the bottom, after the credit line
   const h1At = page.indexOf("</h1>"), modeAt = page.indexOf('class="emc-seg emc-mode"'), byAt = page.indexOf('<p class="by">');
   assert.ok(byAt > page.indexOf('id="emc-credit"') && !page.slice(h1At, modeAt).includes("Sigurd"), "no byline in the hero");
   assert.ok(!/—|&mdash;/.test(page + ui), "no em dashes in the page or what the script writes (B15)");
@@ -223,7 +223,7 @@ test("page: title, H1, byline, voice, structured data and the FAQ word for word"
   assert.ok(!/50x|50 times/.test(page + ui));
   assert.match(page, /Grain drying down settles a little wetter than grain taking on water/);
   assert.match(page, /src="\/components\/grain-emc\.js\?v=\d+"/);
-  // Oct 20: the baked menu grew 215 bytes on every page (Sig approved Everything near me, Yield by state and Farmland sale index), so the cap moves up 500 bytes.
+  // Oct 20: the baked menu grew 215 bytes on every page (the owner approved Everything near me, Yield by state and Farmland sale index), so the cap moves up 500 bytes.
   assert.ok(Buffer.byteLength(page) < 90500, "page stays small");
 });
 

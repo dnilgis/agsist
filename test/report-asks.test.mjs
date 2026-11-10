@@ -1,4 +1,4 @@
-/* The WASDE summary and Funds this week asks (Sig, Oct 21 2026).
+/* The WASDE summary and Funds this week asks (Oct 21 2026).
  *   - one ask a page: each page's Daily ask was replaced, not stacked;
  *   - each box sends its own source tag (report:wasde:<page>, cot-weekly:<page>)
  *     and topic; the subs worker (v5.44) keeps it; GET /count lists shows it
@@ -40,7 +40,7 @@ test("one ask a page: the list's ask replaced the Daily ask, with its topic and 
     const a = asks[0];
     assert.equal(attr(a, "data-topic"), topic, p);
     assert.equal(attr(a, "data-source"), src, p + ": its own source tag");
-    // Nov 4 (Sig): /cot's ask sits under its at-a-glance lines and says when it comes
+    // Nov 4: /cot's ask sits under its at-a-glance lines and says when it comes
     assert.equal(attr(a, "data-signup-ask"), topic === "reports" ? "Email me the WASDE summary when it drops" : p === "cot" ? "Get this every Friday by email" : "Email me Funds this week, after each COT report", p);
     assert.ok(attr(a, "data-note").endsWith("Free, its own list."), p + ": says it is not the Daily");
     assert.ok(!/data-daily|checked/.test(a), p + ": nothing ticks the Daily");

@@ -241,7 +241,7 @@ test("the seasonal promo is on since launch (2026-10-13), and the gift line show
   const P = pctx.AgsistRainPromo;
   const shipped = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
   assert.equal(shipped.promote, true, "launched 2026-10-13 (Sig): data/rain-print.json ships with the promo on");
-  // 2026-10-14 (Sig: give it a fair chance, move fast): Christmas wording from today, and one line in the daily email
+  // 2026-10-14 (give it a fair chance, move fast): Christmas wording from today, and one line in the daily email
   assert.match(shipped.briefing_line, /^A year of your farm's rain, printed and framed for the wall/);
   assert.ok(!/\u2014|\u2013/.test(shipped.briefing_line), "no em dash in the email line");
   assert.equal(shipped.promote_from, "2026-10-14");
@@ -263,7 +263,7 @@ test("the seasonal promo is on since launch (2026-10-13), and the gift line show
   assert.equal(P.chicagoToday(new Date("2026-11-01T04:30:00Z")), "2026-10-31");
 });
 
-/* The homepage card and the related-page lines (2026-10-13, Sig): Christmas
+/* The homepage card and the related-page lines (2026-10-13): Christmas
    wording from promote_from through the framed order-by date, then the gift
    card through Dec 24 while the gift flow is in the data, otherwise year-round.
    Never a countdown, never an em dash. */
@@ -295,7 +295,7 @@ test("the homepage card's seasonal wording, the see line and the gauge line", ()
   }
   assert.equal(P.lineFor(J, "see", "2026-10-13"), "See a year of rain at your place, drawn as a print for the wall.");
   assert.equal(P.lineFor({ ...J, promote: false }, "see", "2026-10-13"), "");
-  // Oct 23 (Sig): the gauge line is the gauge hook in data/rain-print.json; no data, no line
+  // Oct 23: the gauge line is the gauge hook in data/rain-print.json; no data, no line
   assert.equal(P.lineFor(J, "gauge", "2026-10-13"), J.gauge_hook.line + " " + J.gauge_hook.link + ".");
   assert.equal(P.lineFor(null, "gauge", "2026-10-13"), "", "no data file, no gauge line");
   assert.equal(P.lineFor({ ...J, gauge_hook: { line: "A \u2014 dash", link: "x" } }, "gauge", "2026-10-13"), "", "a dash in the hook shows nothing");
@@ -305,10 +305,10 @@ test("the homepage card's seasonal wording, the see line and the gauge line", ()
   assert.ok(readFileSync(ROOT + "img/rain-print-thumb.jpg").length < 20000, "the card's thumbnail stays small");
 });
 
-/* For businesses (Sig, 2026-10-13): one price per print, delivered, like the
+/* For businesses (2026-10-13): one price per print, delivered, like the
    cards: 5-9 at the card prices on one invoice, 10-24 $40/$79, 25-49 $37/$75,
    50-100 $35/$72; all to one address $3 off each print, $6 off each framed;
-   over 100 Sig quotes it. Every expected figure below is worked by hand. */
+   over 100 the owner quotes it. Every expected figure below is worked by hand. */
 test("business tiers: Sig's delivered prices, one row per tier, 5 to 100", () => {
   const J = JSON.parse(readFileSync(ROOT + "data/rain-print.json", "utf8"));
   for (const k of ["business_shipping", "business_shipping_one_address_tiers", "business_shipping_tiers"]) assert.ok(!(k in J), "the old per-print shipping is gone: " + k);
@@ -351,13 +351,13 @@ test("business quote line: price x quantity, one-address discount, minimum 5, ov
   assert.deepEqual(q(12, "framed12x18", "not-sure"), [79, 948], "not sure yet: priced one to each customer");
   // a digital file is the card price at any quantity, no one-address discount
   assert.deepEqual(q(12, "digital", "one"), [19, 228], "12 x $19");
-  // minimum 5, over 100 Sig quotes it (null), never past 500
+  // minimum 5, over 100 the owner quotes it (null), never past 500
   assert.equal(RP.bizQuote(J, 4, "framed12x18", "one"), null, "4 is under the minimum");
   assert.equal(RP.bizQuote(J, 101, "framed12x18", "one"), null, "over 100: ask Sig");
   assert.equal(RP.bizQuote(J, 101, "digital", "one"), null, "over 100: ask Sig, for files too");
   assert.equal(RP.bizQuote(J, 501, "framed12x18", "one"), null);
   assert.equal(RP.bizQuote(J, 10, "not-sure", "one"), null);
-  // no usable tier: no table, no price (Sig quotes it)
+  // no usable tier: no table, no price (the owner quotes it)
   for (const t of [undefined, null, [], [{ min: 4, print12x18: 45, framed12x18: 89 }], [{ min: 10, print12x18: 0, framed12x18: 79 }], [{ min: 10, print12x18: "40", framed12x18: 79 }]]) {
     const x = { ...J, business_tiers: t };
     assert.deepEqual(plain(RP.bizRows(x)), [], JSON.stringify(t));
@@ -543,7 +543,7 @@ test("a saved PNG says 300 dpi and sRGB (a canvas PNG says neither and opens at 
 test("print and digital files: short-link QR or no file; the 13 x 19 sheet, untrimmed; full-quality PDF; SVG at its size", () => {
   const S = readFileSync(ROOT + "components/rain-print.js", "utf8");
   const ex = S.slice(S.indexOf("function exportFile("), S.indexOf("// ---------- wire up ----------"));
-  // 2026-10-14 (Sig): the short link is made at export, once, not waited on from a redraw; the preview carries the standard code
+  // 2026-10-14: the short link is made at export, once, not waited on from a redraw; the preview carries the standard code
   assert.match(ex, /var gate = kind === 'preview' \? Promise\.resolve\(\)/, "only the watermarked preview skips the short link");
   assert.match(ex, /root\.AgRpShort\.mint\(code\)\.then\(function \(link\) \{\n\s+if \(!link\) throw NO_QR;/, "makes the short link at export");
   assert.match(ex, /if \(kind !== 'preview' && !own\) throw NO_QR/, "and saves nothing without it");
@@ -554,7 +554,7 @@ test("print and digital files: short-link QR or no file; the 13 x 19 sheet, untr
   assert.match(ex, /toBlob\(c, 'image\/jpeg', 1\)/, "PDF JPEG at quality 1");
   assert.match(ex, /px: \['18in', '12in'\]/, "the SVG says its physical size");
   const dc = S.slice(S.indexOf("function drawCanvas("), S.indexOf("function toBlob("));
-  // Sig, 2026-10-17: 13 x 19 paper, shipped untrimmed: no bleed, no crop marks (test/rain-print-sheet.test.mjs measures the art inside the mat)
+  // 2026-10-17: 13 x 19 paper, shipped untrimmed: no bleed, no crop marks (test/rain-print-sheet.test.mjs measures the art inside the mat)
   assert.match(dc, /pxW = Math\.round\(SHEET\.w \* DPI\); pxH = Math\.round\(SHEET\.h \* DPI\);/, "the print file is the whole sheet at 300 dpi");
   assert.ok(!/crop|o\.bleed/.test(dc.replace(/\/\*[\s\S]*?\*\//g, "")), "no crop marks, no bleed");
   assert.match(S, /var SHEET_WORDS = SHEET\.h \+ ' x ' \+ SHEET\.w \+ ' in sheet, the art ' \+ SHEET\.art\.w \+ ' x ' \+ SHEET\.art\.h/);
@@ -569,7 +569,7 @@ test("county-page links: a station town with a field name falls back to shorter 
   assert.deepEqual([...RP.shorterPlaces("Garden City")], []);
 });
 
-// ---------- up to five marked days (2026-10-15, Sig) ----------
+// ---------- up to five marked days (2026-10-15) ----------
 test("five marked days round-trip through the design code and the query string; a sixth is dropped; an old three-day code still opens", () => {
   assert.equal(RP.LIMITS.markers, 5);
   const five = { ...FULL, dedication: "For Dad", markers: [

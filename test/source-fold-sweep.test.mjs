@@ -1,5 +1,4 @@
-/* Long sources and method text sit in one closed "Sources and terms" fold at the bottom (Sig, Nov 8, 2026: "long source
- * hiding and method hiding, pulling the curtain closed"; the pattern of the home page, PR #430). Static, on the files:
+/* Long sources and method text sit in one closed "Sources and terms" fold at the bottom (Nov 8, 2026; the pattern of the home page, PR #430). Static, on the files:
  * each listed page has at most one such fold, closed on load; the NASS notice (scripts/credits.py) is inside it wherever
  * the page carries it; the "not financial advice" line of the four futures pages is inside it. arc-plc.html is built
  * from scripts/build_arc_plc.py on main, so the builder is read for it. */
@@ -11,7 +10,7 @@ import { fileURLToPath } from "node:url";
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(ROOT + p, "utf8");
 const PAGES = ["usda-calendar", "corn-futures-prices", "soybean-futures-prices", "wheat-futures-prices", "cattle-futures-prices",
-  "milk-prices", "breakeven", "usda-quick-stats", "hay-prices", "fast-facts", "farmland-atlas", "conditions", "cash-lease"];   // arc-plc: built on main, read through its builder below
+  "milk-prices", "breakeven", "usda-quick-stats", "hay-prices", "fast-facts", "farmland-atlas", "conditions", "cash-lease", "spray", "rain-radar"];   // arc-plc: built on main, read through its builder below
 const NASS = "This product uses the NASS API but is not endorsed or certified by NASS.";
 const OPEN = /<details\b[^>]*>\s*<summary\b[^>]*>(?:<h2\b[^>]*>)?\s*Sources and terms\s*</g;
 const folds = (h) => [...h.matchAll(OPEN)].map((m) => {
@@ -33,7 +32,7 @@ for (const p of PAGES) {
 
 test("pages that gained the fold hold it once, with their credit line short and in place", () => {
   for (const p of ["corn-futures-prices", "soybean-futures-prices", "wheat-futures-prices", "cattle-futures-prices", "milk-prices", "breakeven",
-    "usda-quick-stats", "hay-prices", "conditions", "cash-lease", "fast-facts"]) assert.equal(folds(read(p + ".html")).length, 1, p);
+    "usda-quick-stats", "hay-prices", "conditions", "cash-lease", "fast-facts", "rain-radar"]) assert.equal(folds(read(p + ".html")).length, 1, p);
   for (const c of ["corn", "soybean", "wheat", "cattle"]) {
     const h = read(`${c}-futures-prices.html`), f = folds(h)[0].body;
     assert.match(f, /Not financial advice|not financial advice/, `${c}: the not-financial-advice line is in the fold`);
@@ -47,9 +46,10 @@ test("pages that gained the fold hold it once, with their credit line short and 
 test("the track record keeps its status text, the lock sentence and the sources inside the fold", () => {
   const h = read("usda-calendar.html"), f = folds(h);
   assert.equal(f.length, 1);
-  assert.match(f[0].body, /The baselines were fixed Nov \d+, 2026 and are never changed\./);
-  assert.match(f[0].body, /Live: over its most recent graded calls/);
-  assert.match(f[0].body, /Backtest baselines: the USDA WASDE archive/);
+  assert.match(f[0].body, /baseline that is fixed in advance and never changed/);
+  assert.match(f[0].body, /Status: Live beats its baseline and is still being made/);
+  assert.match(f[0].body, /is left out of the direction count/);
+  assert.match(f[0].body, /USDA AMS announced Class III prices/);
   assert.match(h, /<p class="tr-note">Record as of [A-Z][a-z]+ \d+, 2026\.<\/p>/);
 });
 

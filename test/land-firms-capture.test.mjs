@@ -1,5 +1,5 @@
 /**
- * Land auction firms capture, phase 1 (Sig approved Nov 8, 2026: Wieman, Younger, Horning and Martin's join the
+ * Land auction firms capture, phase 1 (Nov 8, 2026: Wieman, Younger, Horning and Martin's join the
  * weekly Monday land capture; Iowa Land Company dropped Nov 8: it answers direct requests with 403).
  *
  * scripts/capture_land_firms.py saves each firm's results pages raw (robots.txt first and obeyed, 2 s or the

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """agraises.py -- private ag raises (Regulation Crowdfunding, Form C) for /ag-stocks.
 
-Sig approved Oct 29, 2026. The sandbox cannot reach sec.gov, so the reads run in
+The owner approved Oct 29, 2026. The sandbox cannot reach sec.gov, so the reads run in
 GitHub Actions (.github/workflows/sec-reg-cf.yml, by hand only):
 
   python3 scripts/agraises.py download --out history/sec-reg-cf/<date>

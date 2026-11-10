@@ -35,3 +35,16 @@
 .cbt-jump{margin:.35rem 0 .1rem;font-size:.92rem;line-height:1.4}
 .cbt-jump a{color:var(--gold);font-weight:600}
 .cbs-sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+/* One line on /cash-bids (data-compact, components/cb-signup.js compactHtml): a heading, the email row, a closed
+   "More options". The box holds the height of its placeholder so drawing it moves nothing. */
+.cbs-1 .cbs-h{text-align:left;font-family:inherit}
+.cbs-1 .cbs-zrow[hidden]{display:none}
+.cbs-more{margin:0}
+.cbs-more>summary{display:flex;align-items:center;min-height:40px;cursor:pointer;font-size:.9rem;color:var(--text-muted)}
+.cbs-more>summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.cbs-more[open]>summary{color:var(--text)}
+[data-bid-alerts][data-compact]:not([data-cbs-ready]){min-height:260px}
+[data-bid-alerts][data-compact][data-cbs-ready]>.cbs-1{min-height:260px}
+@media (min-width:700px){[data-bid-alerts][data-compact]:not([data-cbs-ready]){min-height:240px}[data-bid-alerts][data-compact][data-cbs-ready]>.cbs-1{min-height:240px}}
+.cbs-more>summary::before{content:"+";display:inline-block;width:1.1rem;font-weight:700;color:var(--gold)}
+.cbs-more[open]>summary::before{content:"\2212"}

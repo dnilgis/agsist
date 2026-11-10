@@ -127,7 +127,7 @@ def main():
     b19 = build(load("2026-10-19"))
     ok("India" not in b19["subject"] and "crude import" not in b19["subject"] and b19["subject_from"] != "news",
        "Oct 19: India's crude import bill is not the subject: %s" % b19["subject"])
-    # Sig, Nov 9 2026: a bare number with no verb never leads. Oct 20's day's number ("$8 billion emergency
+    # Nov 9 2026: a bare number with no verb never leads. Oct 20's day's number ("$8 billion emergency
     # diesel relief for farmers") is a value and a noun phrase, so it no longer leads; with a verb it may.
     b20s = build(load("2026-10-20"))
     ok(b20s["subject_from"] != "news" and "$8 billion" not in b20s["subject"],
@@ -192,7 +192,7 @@ def main():
     for x in pool:
         ok(daily_fact.valid_entry(x), "pool entry %s has fact, source, https url, date and quote" % x.get("id"))
     ok(not os.path.exists(os.path.join(REPO, "data", "quote-pool.json")) or True, "old pool untouched")
-    # Sig, Nov 2 2026: a fact whose url is a data file names its source and date, no link.
+    # Nov 2 2026: a fact whose url is a data file names its source and date, no link.
     import source_links  # noqa: E402
     dlinks, nlinks, n_data = [], 0, 0
     for x in pool:
@@ -239,7 +239,7 @@ def main():
             os.environ.pop(k, None)
         os.environ.update({k: v for k, v in saved.items() if v is not None})
         ok(got == want, "switch %r -> %s (got %s)" % (env, want, got))
-    # a live issue held by the number check: one alert to Sig, with the field and the rerun steps
+    # a live issue held by the number check: one alert to the owner, with the field and the rerun steps
     import log_safe
     sent = []
     real = log_safe.owner_mail

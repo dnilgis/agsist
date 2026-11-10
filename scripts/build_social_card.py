@@ -14,7 +14,7 @@ Writes : <SOCIAL_CARD_DIR>/card-YYYY-MM-DD.jpg   (dated, permanent: the daily pa
 Runs AFTER GATE 2 in daily.yml, so a card is only ever rendered from a
 briefing that passed every gate. If the briefing was blocked, no card.
 
-Design (2026-10-15, Sig): the "picture from the data" share card drawn by
+Design (2026-10-15): the "picture from the data" share card drawn by
 scripts/share_cards.py, 1200 x 630 JPG under 120 KB. The top shows the
 briefing's number and the grain quotes the briefing was written on; the green
 band carries the headline. It replaced the dark 2400 x 1350 PNG card.

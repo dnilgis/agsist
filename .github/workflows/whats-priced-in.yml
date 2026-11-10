@@ -3,6 +3,7 @@ name: Build What's Priced In
 
 on:
   push:
+    branches: [main]
     paths:
       - "data/wpi-estimates.json"
       - "data/wpi-history.json"

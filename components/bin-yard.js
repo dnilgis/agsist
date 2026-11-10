@@ -1,4 +1,4 @@
-/* components/bin-yard.js: Bin Print, the "my bin yard" tool on /grain-bin-calculator (Sig, Nov 6, 2026).
+/* components/bin-yard.js: Bin Print, the "my bin yard" tool on /grain-bin-calculator (Nov 6, 2026).
 
    A top-down map of the reader's bins (round, hopper, flat storage) and markers (dryer, leg, driveway, unload
    point, entry), each bin with its capacity, bushels per foot of straight wall, bushels in it now and market
@@ -15,7 +15,7 @@
      bu now         roomLeft().now at the grain height the reader gives (or depthFromBelow from a tape reading).
      market bu      marketBu(now, test weight, the crop's standard lb).
 
-   Privacy (Sig, Nov 6): what the farmer types (yard name, bin names, notes, notes for drivers) stays in this
+   Privacy (Nov 6): what the farmer types (yard name, bin names, notes, notes for drivers) stays in this
    browser (localStorage) and in links the farmer chooses to send: the share link carries it in the URL hash,
    which browsers never send to a server. No field asks for an address or a phone number. GA events carry
    counts only, never typed text. There is no dollar line: this page has no local bid for the reader.

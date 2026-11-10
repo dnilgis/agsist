@@ -1,11 +1,11 @@
-/* One sale, linked (Sig, Nov 3 2026): every sale in the monthly land sale email links to its own row on
+/* One sale, linked (Nov 3 2026): every sale in the monthly land sale email links to its own row on
  * the county sale page, land-sales/<state>/<county>#s-<sale id> (scripts/send_land_alert.py sale_url,
  * the id from scripts/land_alert.py sale_id, the row from scripts/build_land_sales.py).
  *   - the selftests: each row has its id, the ids hold across builds, each email sale line has exactly one
  *     link, that link's anchor is on the built page, no name in any link;
  *   - in Chromium: a synthetic county with 70 sales, built by the builder; #s-<id> marks a row in the page,
  *     and a row past the newest 50 is drawn (Show more) and marked. Every outside host is aborted and
- *     service workers are blocked (BUILD-RULES 58).
+ *     service workers are blocked (build rule 58).
  *
  *   node --test test/land-sale-anchor.test.mjs
  */
@@ -107,7 +107,7 @@ test("in Chromium: #s-<id> marks the sale's row, in the page and past the newest
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: 390, height: 800 } });
-    // every outside host goes nowhere: no worker, no form, no mail list (BUILD-RULES 58)
+    // every outside host goes nowhere: no worker, no form, no mail list (build rule 58)
     await ctx.route(PLACES_ROUTE, (r) => r.abort());
     await ctx.route("**/*", (r) => (r.request().url().startsWith(base) ? r.continue() : r.abort()));
     const pg = await ctx.newPage();

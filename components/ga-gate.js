@@ -1,4 +1,4 @@
-/* agsist GA gate (2026-10-20, Sig: keep readers anywhere in GA, keep data
+/* agsist GA gate (2026-10-20, keep readers anywhere in GA, keep data
  * centers out). The inline agsist-ga-guard in every page's head loads this
  * file on the reader's first scroll, tap or key press, and only when its own
  * rules (Global Privacy Control, the /privacy switch, automated browsers,
@@ -6,7 +6,7 @@
  *
  * This file asks the subs worker (agsist-api), GET /ga-ok, whether the visit comes
  * from a cloud or hosting network (Cloudflare's ASN for the request; the
- * worker keeps no address). {"ok":false} keeps GA off. Since Oct 21 (Sig: the
+ * worker keeps no address). {"ok":false} keeps GA off. Since Oct 21 (the
  * worker was blocked for a day and GA counted nobody) an error, an odd answer,
  * no fetch or no answer within 3 seconds loads GA anyway: an outage of the
  * worker lets some data center visits in, it never blanks the readers.

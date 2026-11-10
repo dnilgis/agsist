@@ -1,6 +1,4 @@
-/* The Rain Print QR before and after payment (2026-10-14, Sig: "we should not
- * put a working QR on the mockup until someone pays ... just use a standard one
- * for the test prints and mockups that directs to agsist rain print").
+/* The Rain Print QR before and after payment (2026-10-14).
  *   - every preview carries the standard code, HTTPS://AGSIST.COM/RAIN-PRINT,
  *     version 2 at level M (25 x 25, the short link's size), and a redraw asks
  *     the link service for nothing;
@@ -153,7 +151,7 @@ async function withPage(fn, opts = {}) {
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const ctx = await browser.newContext({ viewport: { width: 1280, height: 900 }, serviceWorkers: "block", acceptDownloads: true });
-    await makerFlag(ctx);   // Sig's browser: maker mode is gated (fixtures/rp-maker.mjs)
+    await makerFlag(ctx);   // The owner's browser: maker mode is gated (fixtures/rp-maker.mjs)
     await ctx.clock.setFixedTime(new Date("2026-10-14T17:00:00Z"));
     const log = { stripe: [] };
     await mocks(ctx, opts, log);
@@ -364,8 +362,8 @@ test("checkout: no short link for a design that fits; one, at the press, for a l
     assert.equal(log.posts, 2, "a second press asks the worker again (2026-10-15: never a kept id alone), and gets the same id");
     assert.deepEqual(errors, []);
   });
-  /* The link service failing (2026-10-22, BUILD-RULES 14: checkout never depends on the worker): the press still goes to
-     Stripe, as RPH-<hash of the full code>, and the full design goes to Sig by the press record (here the worker's
+  /* The link service failing (2026-10-22, build rule 14: checkout never depends on the worker): the press still goes to
+     Stripe, as RPH-<hash of the full code>, and the full design goes to the owner by the press record (here the worker's
      /rp-order still answers) and, if that fails too, the backup form. Never the order form for want of a short link. */
   await withPage(async (page, base, errors, log) => {
     await page.goto(base + "/rain-print.html?d=" + LONG_CODE);

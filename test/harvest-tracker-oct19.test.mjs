@@ -15,7 +15,7 @@
  * The browser test reads a frozen copy of the data the page fetches (test/fixtures/harvest-tracker/: harvest-prices.json
  * and rma-prices/{index,GA,IA,TX}.json, as committed on Oct 25, 2026, corn and soybean windows running, Georgia soybeans
  * not yet open), routed in the browser, on a fake clock taken from that copy. On Nov 4 it read live data/ on that
- * clock and went red: Georgia soybeans had a running average before the fake date (BUILD-RULES 50).
+ * clock and went red: Georgia soybeans had a running average before the fake date (build rule 50).
  *
  *   node --test test/harvest-tracker-oct19.test.mjs
  */

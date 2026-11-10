@@ -8,9 +8,7 @@ The subscriber email was a 130-word teaser: headline, lead, one takeaway, one
 number, and a button to go and read the thing. A briefing that will not tell you
 anything until you click is not a briefing, it is an advertisement for a website.
 
-Sig, 2026-08-27: "i hate the actual format of the daily email i get and i wonder
-if we can put some kind of more catchy or slightly longer daily briefing email
-itself", alongside wanting the briefing CONTENT to be the most concise ag news
+2026-08-27, alongside wanting the briefing CONTENT to be the most concise ag news
 deal ever conceived. Those pull opposite ways only if you think length is the
 variable. It is not: plain text has one level of emphasis, so any amount of it
 arrives as one grey column and reads long. Structure is the variable. This gives
@@ -770,7 +768,7 @@ RAIN_PRINT_JSON = os.path.join(_REPO, "data", "rain-print.json")
 def rain_print_line(today=None, cfg=None):
     """The one Rain Print line for the end of the email, or "" for none.
 
-    OFF unless Sig sets, in data/rain-print.json, promote true AND a string
+    OFF unless the owner sets, in data/rain-print.json, promote true AND a string
     briefing_line, and today (America/Chicago) falls within promote_from ..
     promote_until inclusive. components/rain-print-promo.js applies the same
     rule to /daily. Any problem reading the file means no line.
@@ -821,7 +819,7 @@ def _chicago_today(today):
 def rain_print_offer(rain=None, today=None, cfg=None):
     """The one Rain Print line for this reader, as (sentence, url), or None.
 
-    2026-10-19 (Sig approved the board's fix): a reader whose ZIP the Daily
+    2026-10-19 (the owner approved the board's fix): a reader whose ZIP the Daily
     knows gets their own town's Rain Print for last year, linked the way a
     hand-written link is (/rain-print?place=<ZIP>&year=<last year>, no style=),
     which opens with the 30-year normals and the remarkable days on
@@ -909,7 +907,7 @@ def action_label(daily, take):
 
 
 def daily_action(daily):
-    """The action line, if the Daily carries one. 2026-10-09, Sig: the
+    """The action line, if the Daily carries one. 2026-10-09, the owner: the
     prediction bot is out of the Daily for now (it lives on /scorecard), so
     an issue whose action is the bot's call (bot_call present) has none."""
     if daily.get("bot_call"):
@@ -948,7 +946,7 @@ def clock_text(daily, today=None, camp=None):
 
 
 # "Only on AGSIST" (scripts/daily_edge.py): facts counted by code from the
-# elevator boards AGSIST reads, carried in the issue's `edge` block, plus Sig's
+# elevator boards AGSIST reads, carried in the issue's `edge` block, plus the owner's
 # own note when he wrote one for this date (cca_note). Same for every reader;
 # the per-reader local line stays in local_html. Absent block: nothing.
 SITE = "https://agsist.com"
@@ -1377,7 +1375,7 @@ def _selftest():
             bad.append(("rain print line", cfg, when))
     with open(RAIN_PRINT_JSON, encoding="utf-8") as f:
         shipped = json.load(f)
-    # 2026-10-14 (Sig: "give it a fair chance now"): the shipped file carries one
+    # 2026-10-14: the shipped file carries one
     # email line, plain words, inside a dated window; outside the window, nothing.
     line = shipped.get("briefing_line")
     if not (shipped.get("promote") is True and isinstance(line, str) and 0 < len(line) <= 200

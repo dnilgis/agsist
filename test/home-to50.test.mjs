@@ -5,7 +5,7 @@
  *      rows forever. After 6 s the cash bid card says so, offers the ZIP box
  *      and a state pick that prints that state's median basis from
  *      data/basis-states.json. Numbers checked by hand below. Since Oct 19
- *      (Sig: never ask on load) the box shows at once on a first visit.
+ *      (never ask on load) the box shows at once on a first visit.
  *   2. Byline on the first screen.
  *   3. "Also today" line in the briefing strip, hidden when the briefing is
  *      not today's.
@@ -110,7 +110,7 @@ test("no location: the bid card offers the ZIP box and a state basis, numbers as
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const { pg, errors } = await open(browser, port, { routes: { "/data/basis-states.json": BASIS } });
-    // Sig, Oct 19: the location is never asked on load, so a first visit gets this box at once,
+    // Oct 19: the location is never asked on load, so a first visit gets this box at once,
     // worded as an offer; "did not come through" follows only a failed tap (test/geo-ask-on-tap.test.mjs).
     await pg.waitForSelector("#bids-noloc", { timeout: 15000 });
     assert.match(await pg.textContent("#bids-noloc .hn-h"), /See the bids near you/);

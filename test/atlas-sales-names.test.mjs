@@ -1,5 +1,5 @@
 // Farmland Atlas sales: no buyer or seller name, legal description, parcel id or document
-// number may reach an indexed Atlas page (Sig, Oct 17, 2026). The county transfer files
+// number may reach an indexed Atlas page (Oct 17, 2026). The county transfer files
 // (data/land/<st>/<fips>.json) carry names for the Field Scout card; the Atlas reads only
 // data/land/<st>/summary.json. These tests fail if any of those fields reach the summary,
 // the pages, or the words components/atlas-sales.js draws.

@@ -27,18 +27,18 @@ THE SEND REFUSES (no email to anyone) unless all of these hold:
   * the class month is the newest one due: the month before today's, or this
     month in its last 3 days (AMS posted September on Sep 30). Nothing older.
   * the file was written in the last 3 days.
-  * DAIRY_MONTHLY_LIVE is 1. Sig, Oct 28: on. The workflow passes the repo
-    variable and treats it as on unless Sig sets it to 0.
+  * DAIRY_MONTHLY_LIVE is 1. Oct 28: on. The workflow passes the repo
+    variable and treats it as on unless the owner sets it to 0.
 
 MODES (the same three as send_rain_month.py):
   dry      the default. Counts the list and renders a sample (a made-up
            address and link id) into the log. Sends nothing.
-  preview  Sig's test inbox only (SIG_TEST_EMAILS, else SIG_TO), "[Preview]"
-           in the subject, any month the file holds. BUILD-RULES 13.
+  preview  the owner's test inbox only (SIG_TEST_EMAILS, else SIG_TO), "[Preview]"
+           in the subject, any month the file holds. build rule 13.
   send     the list. Refused on any check above.
 
     python3 scripts/send_milk_month.py                    # dry run
-    PREVIEW=1 python3 scripts/send_milk_month.py          # Sig's test inbox only
+    PREVIEW=1 python3 scripts/send_milk_month.py          # the owner's test inbox only
     SEND=1 DAIRY_MONTHLY_LIVE=1 python3 scripts/send_milk_month.py
     python3 scripts/send_milk_month.py --selftest         # fake HTTP and SMTP; no network
 

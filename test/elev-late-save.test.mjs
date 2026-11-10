@@ -1,4 +1,4 @@
-/* A late elevator save keeps its own time (Sig, Oct 22 2026): the page sends
+/* A late elevator save keeps its own time (Oct 22 2026): the page sends
  * entered_at with every save, the worker (v5.50) stores it and refuses a save
  * older than the listing's newest change (scripts/test_elev_worker.mjs runs
  * the worker), and the board says when the elevator last saved, in plain
@@ -36,7 +36,7 @@ test("a card for an elevator that posts its own bids always says when it last sa
   assert.match(CB, /fromPortal:!!\(shard\.info&&typeof shard\.info==='object'&&!Array\.isArray\(shard\.info\)\),/);
   assert.match(CB, /if\(b\.fromPortal\)e\.fromPortal=true;/);
   assert.match(CB, /if\(elev\.fromPortal&&elev\.asOfT!=null\)\{\n\s+html\+='<div class="elev-posted'\+\(mktSessionsClosedSince\(elev\.asOfT,new Date\(\)\)>=2\?' elev-stale':''\)\+'" title="When this elevator last saved its bids on AGSIST">Updated '\+escH\(portalWhen\(elev\.asOfT,Date\.now\(\)\)\)\+'<\/div>';/);
-  assert.match(read("cash-bids.html"), /<script src="\/components\/cash-bids\.js\?v=19"><\/script>/);   // 19: fx/share-kit-bids (cbKitData for the Bids near kit); 18: fx/wave1b (one saved place, the baked town link); 17: fx/nobarchart; 16: fx/quickwins (posted date beside an old price); 15: fx/bidflags (basis line checks the day's futures); 14 was fx/smallfixes
+  assert.match(read("cash-bids.html"), /<script src="\/components\/cash-bids\.js\?v=22"><\/script>/);   // 22: fx/town-audit (a market holiday is not a session); 21: fx/elev-name-key (basis history keyed by elevNames.basisName); 20: main; 19: fx/share-kit-bids (cbKitData for the Bids near kit); 18: fx/wave1b (one saved place, the baked town link); 17: fx/nobarchart; 16: fx/quickwins (posted date beside an old price); 15: fx/bidflags (basis line checks the day's futures); 14 was fx/smallfixes
 });
 
 test("the page sends the time Save was pressed with every save, and a kept save is never dropped for age", () => {

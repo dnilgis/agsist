@@ -1,4 +1,4 @@
-/* Signup asks, Oct 19 audit (signups.md, adversary pass). From the real pages:
+/* Signup asks, Oct 19 audit (signups.md, a review). From the real pages:
  *   - cattle-futures-prices: its hand-made form (errors swallowed, no source,
  *     no ZIP, no signed-up flag) is now the standard data-signup-ask;
  *   - cot and tariffs: the custom Daily card above the page ask is gone, one
@@ -7,10 +7,10 @@
  *     was (5-county limit, the day's cap for everyone, the rate limit);
  *   - usda-quick-stats and crop-tour: one report-day ask each (the Daily with
  *     report-day mail, scripts/send_report_day.py).
- * Not given an ask: grain-emc and fertilizer (gdu-calculator got one Oct 20, Sig) (the Daily does
+ * Not given an ask: grain-emc and fertilizer (gdu-calculator got one Oct 20) (the Daily does
  * not cover GDUs, grain drying or fertilizer prices, and no notice topic with a
  * sender fits), and lrp (the page says it asks for no contact details).
- * Oct 21 (Sig): one ask a page still, but cot and cattle-futures-prices now
+ * Oct 21: one ask a page still, but cot and cattle-futures-prices now
  * ask for Funds this week (notice topic cot) and usda-quick-stats and
  * crop-tour for the WASDE summary (notice topic reports), each its own list
  * (subs worker v5.44); the Daily-ask checks that ran on cattle futures run on
@@ -61,7 +61,7 @@ test("cattle futures asks for Funds this week (Oct 21), its own list", () => {
   const [a] = asksIn(read("cattle-futures-prices.html"));
   assert.equal(a, '<div data-signup-ask="Email me Funds this week, after each COT report" data-topic="cot" data-source="cot-weekly:cattle-futures-prices" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Where the big funds sit in corn, soybeans, wheat, cattle and hogs against their 1-year range, one short email after CFTC posts its weekly report. Free, its own list."></div>');
   const [c] = asksIn(read("cot.html"));
-  // Nov 4 (Sig): the /cot ask moved up under the at-a-glance lines, in its own words; same list, button and done line
+  // Nov 4: the /cot ask moved up under the at-a-glance lines, in its own words; same list, button and done line
   assert.equal(c, '<div data-signup-ask="Get this every Friday by email" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Fund positions in every market, in one short email after each weekly CFTC report (the Monday after, in a holiday week). Free, its own list." class="cg-ask" id="cot-signup"></div>', "the /cot ask word for word");
   assert.ok(!read("cattle-futures-prices.html").includes(".catch(function(){});\n  });"), "the swallowed-error handler is gone");
 });
@@ -87,7 +87,7 @@ test("usda-quick-stats and crop-tour ask for the WASDE summary, which send_repor
 });
 
 test("pages left without an ask, and why", () => {
-  // gdu-calculator got a Daily ask on Oct 20 (Sig); its note says the Daily carries no GDU counts (test/one-more.test.mjs)
+  // gdu-calculator got a Daily ask on Oct 20; its note says the Daily carries no GDU counts (test/one-more.test.mjs)
   for (const p of ["grain-emc.html", "fertilizer.html"]) assert.equal(asksIn(read(p)).length, 0, p + ": the Daily does not cover it");
   const lrp = read("lrp.html");
   assert.equal(asksIn(lrp).length, 0);

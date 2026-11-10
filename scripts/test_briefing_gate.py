@@ -16,7 +16,7 @@ Written 2026-09-01, after the third failure of this schedule in four days and
 the second one that was my own fix.
 
 WHY THIS EXISTS. The gate is thirty lines of shell inside a YAML string. It is
-the single point that decides, every morning, whether Sig gets a briefing —
+the single point that decides, every morning, whether the owner gets a briefing —
 and until today nothing anywhere ran it. Both previous fixes were reasoned
 about and shipped, and both were wrong in ways five minutes of execution would
 have shown.

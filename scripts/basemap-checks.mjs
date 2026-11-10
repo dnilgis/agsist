@@ -26,8 +26,7 @@
  *
  * Natural Earth 1:50m admin-1, public domain. Rebuilt by build/make_outline.sh.
  *
- * 2026-10-20: /rain-radar puts a real map under the rain again (Sig: "get a
- * real map underneath the rain at my field"). The one tile host allowed is the
+ * 2026-10-20: /rain-radar puts a real map under the rain again. The one tile host allowed is the
  * USGS National Map: a federal service, public domain, no key, no account, no
  * terms that can be changed to a paid plan. The rain still draws over the
  * outline above, so if those tiles stop loading the page is no worse than it
@@ -36,13 +35,13 @@
  *
  * 2026-10-29: Field Scout's satellite view was Esri World Imagery with no account
  * and its "Map" view was CARTO dark_all, both in the root field-scout.js. This file
- * never saw them: it read root .html pages and components/*.js only, and Field
- * Scout's code lives in root .js files. Counted that day: two vendor URLs, one
+ * never saw them: it read root.html pages and components/*.js only, and Field
+ * Scout's code lives in root.js files. Counted that day: two vendor URLs, one
  * file, invisible to the check. Now it reads EVERY file the site serves that can
- * name a tile host (.html, .js, .mjs, .css anywhere in the repository except the
+ * name a tile host (.html,.js,.mjs,.css anywhere in the repository except the
  * tests and scripts, which name vendors on purpose), and Esri's and CARTO's hosts
  * are banned anywhere on the site, tile template or not. Field Scout moved to the
- * USGS National Map the same day (Sig: USGS replaces Esri and CARTO).
+ * USGS National Map the same day (USGS replaces Esri and CARTO).
  */
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";

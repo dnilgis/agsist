@@ -1,5 +1,5 @@
 /* A Rain Print link that carries a design opens with that print first
- * (Sig, 2026-10-19). The phone audit found a real ?d= link (made with
+ * (2026-10-19). The phone audit found a real ?d= link (made with
  * RainPrint.shortUrl(), Ames 2012) opening on the generic headline and the
  * Chetek photo, with the shared print starting at 954 px, under the 844 px
  * fold, while the phone bar already named Ames. Now:
@@ -12,7 +12,7 @@
  *   - a line over it says which print it is (name, place and year, what the
  *     print itself shows) with a Make your own button to the town box;
  *   - an ordinary visit keeps its order and never shows the line;
- *   - a damaged code, a short link the worker doesn't know, Sig's print files
+ *   - a damaged code, a short link the worker doesn't know, the owner's print files
  *     page (maker) and the paid view keep the ordinary order;
  *   - a reader who draws another town is told the print is theirs now, with a
  *     link back to the one shared.
@@ -152,7 +152,7 @@ for (const [label, q] of [["?d=<code>", "?d=" + CODE], ["?d=GIFT-<code>", "?d=GI
       assert.match(L.svg, /2012/, "the print drawn is the shared one");
       assert.doesNotMatch(L.svg, /Johnson|For Dad|Hail/, "no example words on a design from a link");
       assert.ok(L.h1.top > L.art.bottom && L.photo.top > L.art.bottom, "the headline and the photo come after the print");
-      // 2026-10-22 (Sig: tool first on links with a place, headline and photo below): the steps come before the headline
+      // 2026-10-22 (tool first on links with a place, headline and photo below): the steps come before the headline
       assert.ok(L.place.top < L.h1.top, "the steps follow the print, the headline after them");
       // no jump: the print's box never moved or resized once it was on screen, and nothing shifted
       assert.equal(new Set(L.tops).size, 1, "the print's box held still: " + L.tops.join(" "));
@@ -216,9 +216,9 @@ test("an ordinary visit keeps its order and never shows the line", { skip }, asy
     // 2026-10-19 (board B): the Christmas line names last year by Christmas and this year in January, two lines longer at 390 (1019)
     // 2026-10-22 (the layout rebuild): the print's wall is slimmer above the frame (8 px on a phone, 18 on a laptop), so
     // the box sits 14 px (390) and 4 px (1280) higher; the order is the same
-    // 2026-10-22 (Sig: phones use the screen): one 12px gutter instead of 31px, so the words above the print take
+    // 2026-10-22 (phones use the screen): one 12px gutter instead of 31px, so the words above the print take
     // fewer lines at 390 and the box sits 39 px higher; 1280 unchanged; the order is the same
-    // 2026-10-30 (Sig: "Rather not fiddle with it?", fx/rpxmas): the call-me box under "Make yours, free" puts the
+    // 2026-10-30 (fx/rpxmas): the call-me box under "Make yours, free" puts the
     // print 172 px lower at 390 and 57 px lower at 1280 (the words' column now runs past the photo); the order is the same
     assert.equal(L.art.top, w < 900 ? 1138 : 545, `${w}: the print's box where it always was`);
     assert.deepEqual(errors, []);

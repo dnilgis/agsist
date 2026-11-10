@@ -1,10 +1,10 @@
 /**
  * Publish only the site (.github/workflows/pages.yml, scripts/pages_publish.py).
- * The plan: feedbag notes/panels/godseye-2026-10-26/size-trim-plan.md.
+ * The plan: the private notes.
  *
  * - the workflow is off until the repository variable PAGES_FROM_ACTIONS is 1,
  *   so it can sit on main while Pages still deploys from the branch
- * - no schedule of its own (a new cron is Sig's call): fetch_bids runs every 15
+ * - no schedule of its own (a new cron is a product decision): fetch_bids runs every 15
  *   minutes all week and kicks on every run, carrying every other bot commit
  * - it stages with pages_publish.py (which stops on a link into a left-out path)
  * - upload-pages-artifact stays on v3 (v4 drops dot files) and the uploaded
@@ -33,7 +33,7 @@ test('pages.yml is off until PAGES_FROM_ACTIONS is 1', () => {
   const jobs = [...pages.slice(pages.search(/^jobs:\s*$/m)).matchAll(/^  ([A-Za-z0-9_-]+):\s*$/gm)].map((m) => m[1]);
   assert.deepEqual(jobs, ['deploy'], `jobs: ${jobs}`);
   assert.match(pages, /^  deploy:\n    if: \$\{\{ vars\.PAGES_FROM_ACTIONS == '1' \}\}$/m);
-  // a new cron is Sig's call (STANDING-DECISIONS, Oct 21): the fast jobs' dispatches are its clock
+  // a new cron is a product decision (a site rule, Oct 21): the fast jobs' dispatches are its clock
   assert.doesNotMatch(pages, /^\s*schedule:/m, 'pages.yml has no schedule of its own');
 });
 
@@ -118,7 +118,7 @@ test('pages.yml is the only workflow that deploys Pages', () => {
   assert.deepEqual(deployers, ['pages.yml']);
 });
 
-// Nov 5, 2026 (Sig: hide how the site works): the published copies of components/*.js|css and css/*.css are
+// Nov 5, 2026 (hide how the site works): the published copies of components/*.js|css and css/*.css are
 // minified in _site; the repository files, names and ?v= URLs stay; no source map; one pinned minifier.
 test('pages.yml minifies the published copy with the pinned minifier, and no source map ships', () => {
   const pub = fs.readFileSync(path.join(root, 'scripts/pages_publish.py'), 'utf8');
@@ -180,7 +180,7 @@ test('the staged service worker has no comment history, keeps its version and pa
   assert.doesNotMatch(out, /assigned by the lead/);
   const ver = (fs.readFileSync(path.join(root, 'sw.js'), 'utf8').match(/^var CACHE_VERSION = (\d+);/m) || [])[1];
   assert.match(out, new RegExp(`var CACHE_VERSION ?= ?${ver};`));
-  assert.ok(fs.readFileSync(path.join(root, 'sw.js'), 'utf8').includes('assigned by the lead'), 'the repository copy keeps its history');
+  assert.ok(fs.readFileSync(path.join(root, 'sw.js'), 'utf8').includes('// var CACHE_VERSION = '), 'the repository copy keeps its history');
   fs.rmSync(tmp, { recursive: true, force: true });
 });
 

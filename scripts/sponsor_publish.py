@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-SPONSOR LINKS AND REPORTS, KEPT PRIVATE (Sig, Nov 4, 2026: "move the codes to feedbag").
+SPONSOR LINKS AND REPORTS, KEPT PRIVATE (Nov 4, 2026).
 
 Until Nov 4 every sponsor's link token sat in data/sponsors.json and in the
 report file names under data/sponsors/, so the public repo and agsist.com

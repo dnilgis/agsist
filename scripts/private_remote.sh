@@ -1,14 +1,14 @@
 # Where the private branches live (raw, references, private-data). Sourced, not run:
 #   . scripts/private_remote.sh
 #
-# Since Oct 20, 2026 they are in the private repo dnilgis/feedbag, not on
-# agsist (Sig: off the public repo). Pages read only public files on main, so
+# Since Oct 20, 2026 they are in the private repo, not on
+# agsist (off the public repo). Pages read only public files on main, so
 # nothing here touches the site. Picks, in order:
 #   RAW_REMOTE set          that remote (tests, or a local run against a clone:
-#                           RAW_REMOTE=../feedbag)
+#                           RAW_REMOTE=../the private repo)
 #   PRIVATE_REPO_TOKEN set  the private repo, with that token (Actions; the
 #                           secret is fine-grained, Contents read/write on
-#                           feedbag only)
+#                           the private repo only)
 #   neither                 origin (the old branches on agsist, for local runs
 #                           until they are deleted)
 # Sets REMOTE (what git is given), WHERE (what a message may print; never the

@@ -214,7 +214,7 @@ def shown_pct(p, crowded):
 
 
 def rank_words(p, net, crowded, since):
-    """The headline rank in words, never an ordinal (2026-11-06, Sig: "48th" read
+    """The headline rank in words, never an ordinal (2026-11-06,  read
     like a finishing place). p is the at-or-below percentile of net as a share of
     open interest since `since`. A long (or a net of zero) is "higher than N% of
     weeks since 2010"; a short is "a bigger net short than N% of weeks since 2010",
@@ -1580,7 +1580,7 @@ def main():
                      "weeks": max((c2["weeks_of_history"] for c2 in out.values()), default=0)},
         "commodities": out,
     }
-    # Last week's question, this week's answer (kit v2 part 2, Sig Nov 6): scripts/cot_questions.py, from the
+    # Last week's question, this week's answer (kit v2 part 2, Nov 6): scripts/cot_questions.py, from the
     # history this run reads, in this same step. Written to data/cot-questions.json and carried here too, so the
     # files this workflow already commits hold it. A failure there never stops the analysis.
     try:

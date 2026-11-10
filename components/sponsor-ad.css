@@ -17,7 +17,7 @@
  * The advertiser's own colours arrive through their logo, which sits on a
  * white tile so it reads in both themes.
  *
- * Nov 5, 2026 (Sig): every paid ad carries the orange on its button and its
+ * Nov 5, 2026: every paid ad carries the orange on its button and its
  * outline, and the panel itself stays quiet (the page's own surface, no tint),
  * so the orange edge is what stands out. The button keeps its ink colour even
  * inside a page whose links are coloured (rain pages drew gold on orange).
@@ -131,7 +131,7 @@ aside.sa-ad a.sa-cta,aside.sa-ad a.sa-cta:visited,aside.sa-ad a.sa-cta:hover,asi
 [data-theme="light"] .sa-label{color:#a8380a;border-color:rgba(168,56,10,.45);background:rgba(232,116,58,.08)}
 [data-theme="light"] .sa-phone:hover{color:#a8380a}
 
-/* 2026-10-11 (Sig, "tone it down"): an unsold slot shows nothing. The
+/* 2026-10-11: an unsold slot shows nothing. The
    renderers no longer draw the house ad, but archive pages written before
    this carry it (and its "Sponsor this slot" credit) in their HTML. Every
    archive page links this file, so they are hidden here rather than by

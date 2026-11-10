@@ -1,5 +1,5 @@
-/* "Rather not fiddle with it?" on /rain-print (components/rp-forme.js, Sig
- * Oct 30, 2026): Sig makes two or three versions for a reader who would
+/* "Rather not fiddle with it?" on /rain-print (components/rp-forme.js, the owner
+ * Oct 30, 2026): the owner makes two or three versions for a reader who would
  * rather call or leave a number, free; they order the one they pick.
  *
  *   - near the top of the page, with the tel link the page already uses;

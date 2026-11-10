@@ -58,9 +58,9 @@ test("the framed mockup is open under Pay, tagged Mockup, not inside What you ge
 
 test("the frame: only what Sig has said, no made-up sizes", () => {
   const box = HTML.match(/<h3>Framed<\/h3><ul>[\s\S]*?<\/ul>/)[0];
-  // Sig, 2026-10-17: a 13 x 19 frame with a white mat; the real glass front confirmed the same day; Nov 4 order: wood, oak or black, acid-free mat cut for 11 x 17, tempered glass.
-  // Sig, 2026-11-04: oak or black, and the frame specs in What you get (the mat opening is components/rain-print.js SHEET.mat)
-  // Sig, 2026-11-04 (maker's listings): oak is wood, black is MDF, so "wood" goes with oak only; 2 mm glass; 14.3 x 20.3 outside
+  // 2026-10-17: a 13 x 19 frame with a white mat; the real glass front confirmed the same day; Nov 4 order: wood, oak or black, acid-free mat cut for 11 x 17, tempered glass.
+  // 2026-11-04: oak or black, and the frame specs in What you get (the mat opening is components/rain-print.js SHEET.mat)
+  // 2026-11-04 (maker's listings): oak is wood, black is MDF, so "wood" goes with oak only; 2 mm glass; 14.3 x 20.3 outside
   for (const want of [/<li>A 13 x 19 in frame, oak wood or black, your pick<\/li>/, /<li>An acid-free white mat cut for 11 x 17, a 16\.5 x 10\.5 in opening<\/li>/, /<li>2 mm tempered glass front<\/li>/,
     /<li>14\.3 x 20\.3 in outside, 0\.9 in frame, sturdy backboard, hanging hardware included<\/li>/, /<li>Packed with corner guards and foam, double-boxed<\/li>/]) assert.match(box, want);
   assert.doesNotMatch(box, /no mat|a little bigger/);
@@ -69,7 +69,7 @@ test("the frame: only what Sig has said, no made-up sizes", () => {
   assert.doesNotMatch(big, /no mat|trim|a little bigger/);
   // the structured data says the same
   assert.match(HTML, /"text": "[^"]*The framed one comes in a 13 x 19 frame in oak wood or black, with an acid-free white mat and 2 mm tempered glass, ready to hang\./);
-  // no moulding width, outside size, weight or hanger beyond what Sig gave from the maker's listings (Nov 4): the one
+  // no moulding width, outside size, weight or hanger beyond what the owner gave from the maker's listings (Nov 4): the one
   // What you get line with 14.3 x 20.3 in outside and the 0.9 in frame; any other size or weight is invented
   const vis = HTML.replace(/<script[\s\S]*?<\/script>/g, "").replace("<li>14.3 x 20.3 in outside, 0.9 in frame, sturdy backboard, hanging hardware included</li>", "");
   assert.ok(!/moulding|molding|sawtooth|wire hanger|\b\d+(\.\d+)?\s?(x|by)\s?\d+(\.\d+)?\s?(in|inches)? (outside|overall)|\d+(\.\d+)?[- ]?(inch|in\.?) (wide|deep)|\b\d+(\.\d+)? ?(lb|lbs|pounds)\b/i.test(vis), "no frame size or weight invented");
@@ -102,6 +102,6 @@ test("Christmas cutoffs: the data file agrees with a hand count, and the slack i
   // two business days of slack would mean Mon Dec 7 (framed) and Tue Dec 8 (print)
   assert.equal(RP.addBizDays("2026-12-07", 13, J.holidays), "2026-12-24");
   assert.equal(RP.addBizDays("2026-12-08", 12, J.holidays), "2026-12-24");
-  // no slack field exists, so the page shows the cutoffs as Sig set them, nothing else
+  // no slack field exists, so the page shows the cutoffs as the owner set them, nothing else
   assert.ok(!Object.keys(J).some((k) => /slack|order_by/i.test(k)));
 });

@@ -9,7 +9,7 @@
  *   3. In a browser: the phone picture 1080 x 1350 and the link picture 1200 x 630 from the spec, the print sheet
  *      exactly 1 page on Letter and A4, and without share-kit.js the page is whole and the buttons stay hidden.
  *
- *   4. The Friday Chart poster (Sig Nov 7): every panel number recomputed from the fixtures, a tie at the last
+ *   4. The Friday Chart poster (Nov 7): every panel number recomputed from the fixtures, a tie at the last
  *      place of a list shown and not broken, each panel with a source and a date; in a browser the dark phone
  *      poster (1080 x 2400) and the paper print poster fit (no text outside its panel, no two texts on top of each
  *      other, nothing past the bottom, as the approved draft's render.mjs checked), the paper poster prints as one

@@ -1,4 +1,4 @@
-/* /developer, Nov 2, 2026 (Sig's call): no public offer of the futures price
+/* /developer, Nov 2, 2026: no public offer of the futures price
  * file or the prediction-market file (both pass on third-party quotes), no
  * upstream provider names, and no recipe. It offers what is AGSIST's to give:
  * the widgets, the USDA report calendar files, the Daily RSS feed, the Farmland

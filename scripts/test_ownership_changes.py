@@ -67,11 +67,67 @@ for city in ("Kasson", "Ostrander", "Wykoff"):
     got = [r for r in recs.values() if r["city"] == city and r["st"] == "MN" and "CHS" in r["company"]]
     check(got and all(r.get("status", {}).get("kind") == "closing" and r["status"]["after"] == "2026 harvest" for r in got),
           f"{city}: closing after the 2026 harvest")
-check(recs["a00298"]["status"]["kind"] == "pending" and "parent" not in recs["a00298"], "ADM Montgomery City: pending, no parent")
+# ADM Montgomery City by the log's own event (oc06), resolved through the id ledger: no pinned id (Nov 10 2026 the
+# AGSIST id a00298 merged into the bids-repo row and the status must follow the merge)
+resolve = BI.id_resolver(ledger, recs)
+adm = [resolve(f) for f in ev["oc06"]["facilities"]]
+check(adm and all(f in recs for f in adm), "ADM Montgomery City: the oc06 facility resolves to a live record")
+check(all(recs[f]["city"] == "Montgomery City" and recs[f]["st"] == "MO" and recs[f].get("status", {}).get("kind") == "pending"
+          and recs[f]["status"]["event"] == "oc06" and "parent" not in recs[f] for f in adm if f in recs),
+      "ADM Montgomery City: pending, no parent")
+check(resolve("a00298") in adm, "the merged id a00298 still resolves to the ADM Montgomery City record")
 check(recs["a00403"]["status"]["to"] == "Kalmbach Feeds" and "parent" not in recs["a00403"], "Mennel Upper Sandusky: pending")
 check(all(recs[f]["status"]["kind"] == "lease" and recs[f]["company"] == "Scott Coop" and "parent" not in recs[f]
           for f in ev["oc08"]["facilities"]), "Scoular leases to Scott Coop: operator only")
 check("status" not in recs["esvgverxq9"] and "parent" not in recs["esvgverxq9"], "a record already under the new name is left alone")
+
+# a log naming a merged id still marks the survivor; a chain of two merges; a retired id with no survivor is skipped.
+# Fixture: the ADM Montgomery City record of elevators.json (Nov 10 2026) and made-up ids around it.
+FX_DAY = "2026-11-10"   # the fixture's build day (fixture data, not today's clock)
+fx = [{"id": "esf055a2zt", "company": "Archer-Daniels-Midland Company", "city": "Montgomery City", "st": "MO"},
+      {"id": "ezzzzzzzz1", "company": "Chain End", "city": "X", "st": "MO"}]
+fled = {"minted": {"a00298": {"into": "esf055a2zt"}}, "retired": {"eold000001": {"into": "a09001"}},
+        "events": [{"on": FX_DAY, "merge": "a00298", "into": "esf055a2zt"},
+                   {"on": "2026-11-01", "merge": "a09001", "into": "ezzzzzzzz2"},
+                   {"on": "2026-11-02", "retire": "ezzzzzzzz2", "into": "ezzzzzzzz1"},
+                   {"on": "2026-11-03", "merge": "a09002", "into": "a09003"},
+                   {"on": "2026-11-03", "merge": "a09003", "into": "a09002"},
+                   {"on": "2026-11-03", "retire": "egone00001", "into": "egone00002"}]}
+flog = {"events": [{"id": "t1", "kind": "pending", "to": "MFA Inc", "facilities": ["a00298"]},
+                   {"id": "t2", "kind": "closing", "after": "2026 harvest", "facilities": ["a09001"]},
+                   {"id": "t3", "kind": "closed", "facilities": ["egone00001", "a09002", "anever0001"]}]}
+fres = BI.id_resolver(fled, [r["id"] for r in fx])
+frecs = copy.deepcopy(fx)
+nn = BI.apply_changes(frecs, flog, FX_DAY, fres)
+fby = {r["id"]: r for r in frecs}
+check(fby["esf055a2zt"].get("status", {}).get("event") == "t1", "a log naming a merged id marks the survivor")
+check(fby["ezzzzzzzz1"].get("status", {}).get("event") == "t2" and fres("a09001") == "ezzzzzzzz1",
+      "a chain of two merges (merge, then a retirement) gives the last survivor")
+check(fres("eold000001") == "ezzzzzzzz1", "a chain through the ledger's retired list")
+check(fres("egone00001") is None and fres("a09002") is None and fres("anever0001") is None and nn == 2
+      and not any(r.get("status", {}).get("event") == "t3" for r in frecs) and len(frecs) == 2,
+      "a retired id with no survivor, a merge cycle and an unknown id are skipped, never minted")
+check(BI.apply_changes(copy.deepcopy(fx), flog, FX_DAY) == 0, "without the resolver a merged id marks nothing")
+check(fres("esf055a2zt") == "esf055a2zt", "a live id resolves to itself")
+bk = BI.id_resolver({"events": [{"merge": "a1", "into": "e1"}, {"retire": "e1", "into": "a2"}, {"back": "e1", "from": "a2"}]}, ["e1"])
+check(bk("a1") == "e1" and bk("a2") == "e1", "a returned id is live again and its stand-in follows it back")
+# board parents and company ids read the change log through the same resolver
+fdir = {"elevators": [{"id": "b-mc", "elevId": "esf055a2zt", "operator": "ADM Grain"}]}
+fidx = {"sources": [{"id": "b-mc", "operator": "ADM Grain", "location": "Montgomery City", "website": "", "url": "", "health": "live"}]}
+plog = {"events": [{"id": "t4", "kind": "parent", "parent": "MFA Inc", "effective": "2026-11-01", "facilities": ["a00298"]}]}
+check(BP.build(fdir, fidx, FX_DAY, plog, fres)["boards"].get("b-mc", {}).get("pv") == "change:t4",
+      "board parents: a change naming a merged id reaches the survivor's board")
+check("b-mc" not in BP.build(fdir, fidx, FX_DAY, plog)["boards"], "board parents without the resolver: nothing")
+import company_ids as CI  # noqa: E402
+clog = {"events": [{"id": "t5", "kind": "parent", "parent": "P", "effective": "2026-11-01", "facilities": ["a00298", "a09001"]}]}
+cdoc = CI.build({"elevators": []}, {"sources": []}, fx, {"boards": {}}, clog, None, FX_DAY, fres)
+check(any(set(c["facilities"]) == {"esf055a2zt", "ezzzzzzzz1"} for c in cdoc["companies"].values()),
+      "company ids: a change naming merged ids links the survivors")
+check(not CI.build({"elevators": []}, {"sources": []}, fx, {"boards": {}}, clog, None, FX_DAY)["companies"],
+      "company ids without the resolver: nothing linked")
+fol = BI.follow_changes(plog, fres)
+check(fol["events"][0]["facilities"] == ["esf055a2zt"] and plog["events"][0]["facilities"] == ["a00298"],
+      "follow_changes gives live ids and leaves the log as given")
 
 # board parents from REAL boards of the bids index (2026-10-29)
 directory = {"elevators": [

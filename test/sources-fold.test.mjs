@@ -1,6 +1,6 @@
-/* Sources sections are closed until a reader opens them (Sig, Nov 5). Static: no page ships an open
+/* Sources sections are closed until a reader opens them (Nov 5). Static: no page ships an open
  * Sources list, the text stays in the HTML. Browser (390 wide, every outside host refused, service workers
- * blocked, BUILD-RULES 58): closed on load, a tap target of 44 px, text of 12 px or more, #sources opens it,
+ * blocked, build rule 58): closed on load, a tap target of 44 px, text of 12 px or more, #sources opens it,
  * opening shifts nothing above it. Browser checks need PLAYWRIGHT_PATH and CHROMIUM_PATH. */
 import { test } from "node:test";
 import assert from "node:assert/strict";

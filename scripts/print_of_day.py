@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-print_of_day.py -- "Print of the day" in the Daily (Sig, Oct 22 2026): one real
+print_of_day.py -- "Print of the day" in the Daily (Oct 22 2026): one real
 Rain Print of a place with a story that day, one line on why, then "Make yours".
 
 THE PLACE comes from the county rain files the county pages are built from

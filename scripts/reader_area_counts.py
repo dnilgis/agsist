@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """reader_area_counts.py -- a daily snapshot of reader counts by area, counts
-only, to the private-data branch (Sig, Oct 21: the insight machine's "readers
+only, to the private-data branch (Oct 21: the insight machine's "readers
 by place"). Runs inside morning-report.yml after the email (no new schedule).
 
 READS the subs worker's GET /count-area (v5.45, Bearer LIST_TOKEN), one list

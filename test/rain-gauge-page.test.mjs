@@ -1,4 +1,4 @@
-/* /rain-gauge: Sig's two rain things (Oct 17): Rain Print (on sale) and the
+/* /rain-gauge: the owner's two rain things (Oct 17): Rain Print (on sale) and the
  * AGSIST rain gauge prototype with its waitlist, in the live page's own words.
  * Guards the things that matter if someone edits it by hand: the FAQ says the
  * same words on the page and in the JSON-LD, no Product or price goes into
@@ -65,7 +65,7 @@ test("every picture has a size, alt text and a file behind it, and every caption
   const caps = [...main.matchAll(/<figcaption[^>]*>([^<]*)<\/figcaption>/g)].map((m) => m[1]).filter((c) => !/Sigurd/.test(c));
   assert.ok(caps.length >= 7);
   for (const c of caps) assert.ok(/^(Prototype design, 3D render\. |Concept screen: |A real one: \d{4} at )/.test(c), "caption: " + c);
-  // the renders Sig turned down stay off the page and out of the repo
+  // the renders the owner turned down stay off the page and out of the repo
   for (const old of ["gauge-field-edge", "gauge-phone-scan", "gauge-top-qr", "screen-1-scan", "screen-2-confirm"]) {
     assert.ok(!page.includes(old), "old concept image on the page: " + old);
     for (const ext of [".webp", ".jpg"]) assert.ok(!existsSync(ROOT + "img/rain-gauge/" + old + ext), "old concept image in the repo: " + old + ext);
@@ -98,7 +98,7 @@ test("the warranty says normal use, on the card and in the FAQ", () => {
   assert.equal((main.match(/if your gauge breaks in normal use, I&rsquo;ll fix it or replace it/g) || []).length, 2);
 });
 
-// panel 3 (2026-10-14): the fixes that ship without Sig
+// panel 3 (2026-10-14): the fixes that ship without the owner
 test("title says prototype, like the page; share copy matches the share screen", () => {
   assert.match(page, /<title>Rain gauge prototype: a gauge that keeps its own log \| AGSIST<\/title>/);
   assert.ok(!/<title>[^<]*concept/i.test(page));
@@ -134,12 +134,12 @@ test("Sig, 2026-10-14: the first-batch price holds for everyone on the waitlist,
   assert.ok(!/while the first batch lasts/i.test(main));
 });
 
-// Oct 17: two things on one page (Sig, via the lead). Oct 19 (Sig, "yeah fix please"): the gauge and its
+// Oct 17: two things on one page (via the lead). Oct 19: the gauge and its
 // waitlist come first; Rain Print moves after the main content as the page's one cross-promo.
 const ORDER = ["gauge", "rg-faq-h", "waitlist", "rain-print"];
 const sec = (id) => { const i = main.indexOf(`id="${id}"`); assert.ok(i > 0, "section " + id); const nx = ORDER[ORDER.indexOf(id) + 1]; return main.slice(i, nx ? main.indexOf(`id="${nx}"`) : main.indexOf('class="rg-by"')); };
 test("the page runs in order: the gauge, its waitlist right after the intro, questions, second form, then Rain Print", () => {
-  // Oct 23 (Sig): a plain headline, the waitlist form with the first-batch price promise, then "what the waitlist gets you"
+  // Oct 23: a plain headline, the waitlist form with the first-batch price promise, then "what the waitlist gets you"
   const at = ['id="gauge"', '<h1 id="rg-gauge-h">A rain gauge that keeps its own log</h1>', 'class="rg-lede"', 'id="rg-form-1"', 'class="rg-side"', 'id="now"',
     'id="rg-faq-h"', 'id="rg-form-2"', 'id="rain-print"', 'class="rg-by"'].map((k) => main.indexOf(k));
   for (let i = 0; i < at.length; i++) assert.ok(at[i] > 0 && (i === 0 || at[i] > at[i - 1]), "order at " + i);

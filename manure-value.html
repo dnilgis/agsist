@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="theme-color" content="#111a0a">
-  <title>How Much Is Manure Worth? Dairy, Hog, Beef and Poultry Manure Value at Posted Fertilizer Prices | AGSIST</title>
+  <title>How Much Is Manure Worth? Manure Value at Posted Fertilizer Prices</title>
   <meta name="description" content="Kansas and Wisconsin co-op prices, Oct 1 to Oct 14, 2026: all the N, P and K in liquid dairy manure is worth about $30.83 per 1,000 gal; $18.27 usable the first year.">
   <meta name="author"      content="Sigurd Lindquist">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
@@ -27,6 +27,7 @@
   <meta name="twitter:image"       content="https://agsist.com/img/og/manure-value.jpg?v=e58bc698">
 
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
+  <script>/* a reader with a saved place gets their own state's co-op prices (fert-pick.js): the answer and the price list are held unseen until manure-value.js has put them in, so the swap does not move the text */try{var mvL=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if((mvL&&(mvL.state||mvL.zip))||localStorage.getItem('agsist_user_zip')||localStorage.getItem('agsist_zip')){document.documentElement.classList.add('mv-wait');setTimeout(function(){document.documentElement.classList.remove('mv-wait')},8000)}}catch(e){}</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-6KXCTD5Z9H');</script>
 
   <!-- static-nav:fonts -->
@@ -59,6 +60,9 @@
     .mv-answer .mv-num2 small{font-size:.86rem;font-weight:600;color:var(--text-dim);font-family:var(--font-body)}
     .mv-answer .mv-num small{font-size:1rem;font-weight:600;color:var(--text-dim);font-family:var(--font-body)}
     .mv-answer p{margin:.5rem 0 0;font-size:1rem;color:var(--text)}
+    @media(scripting:enabled){.mv-wait .mv-answer,.mv-wait .mv-prices,.mv-wait .mv-nh3{visibility:hidden}}
+    /* a state's name can be shorter than the baked one: the line keeps the baked height so the box does not shrink */
+    .mv-answer>p:not(.fine){min-height:87px}@media(max-width:500px){.mv-answer>p:not(.fine){min-height:173px}}
     .mv-answer p.fine{font-size:.86rem;color:var(--text-muted)}
     .mv p.mv-nh3{font-size:.86rem;line-height:1.5;color:var(--text-muted);margin:.2rem 0 .5rem}
     .mv .mv-prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:0 0 .4rem;padding:0;list-style:none}
@@ -309,7 +313,7 @@
 </div>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/fert-pick.js?v=1" defer></script>
-  <script src="/components/manure-value.js?v=9" defer></script>
+  <script src="/components/manure-value.js?v=10" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

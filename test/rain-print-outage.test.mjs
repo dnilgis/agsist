@@ -1,4 +1,4 @@
-/* Rain Print keeps taking orders with the subs worker out (BUILD-RULES 14,
+/* Rain Print keeps taking orders with the subs worker out (build rule 14,
  * after Oct 21 2026: Cloudflare blocked agsist-subs.dnilgis.workers.dev and
  * every route answered its 403 phishing page as HTML with no CORS headers, so
  * every fetch() from the page rejected).
@@ -9,7 +9,7 @@
  * error for the buyer:
  *   - a short design: the full design code, so Stripe alone holds the design;
  *   - a long design (past Stripe's 200 characters, no short link to be had):
- *     RPH-<hash of the full code>, and the full design goes to Sig by the
+ *     RPH-<hash of the full code>, and the full design goes to the owner by the
  *     backup form (Formspree), kept in the browser until it is sent;
  *   - a gift from the review sheet: its details go by the backup form, then Stripe;
  *   - a Canadian design (the digital file, the US digital link);

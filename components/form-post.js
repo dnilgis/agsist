@@ -3,7 +3,7 @@
  * rain-print-order, worker v5.9, same day).
  *
  * They post to AGSIST's own subs worker (POST /form, workers/subs-worker.js
- * v5.8), which stores them; scripts/form_digest.py mails Sig. Until Sig
+ * v5.8), which stores them; scripts/form_digest.py mails the owner. Until the owner
  * deploys that worker version the route does not exist, so whenever the
  * worker answers 403, 404, 405 or 5xx, does not answer, or the browser cannot
  * read the answer, or the worker does not know the form's kind yet (400
@@ -22,7 +22,7 @@
  *     refusal. For a plain HTML form that falls back by submitting itself.
  *     A worker that has not answered in 12 seconds counts as 'fallback'.
  *
- * WORKER_ONLY (2026-10-19, Sig): a kind that carries a business's customer
+ * WORKER_ONLY (2026-10-19): a kind that carries a business's customer
  * list never goes to Formspree. The business page promises "your list stays
  * with me", so when the worker fails or is silent the post rejects instead
  * (an Error with .workerOnly true, and .slow true when the worker only went

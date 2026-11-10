@@ -4,7 +4,7 @@
 WHY
 ---
 The bid snapshots on the raw branch (scripts/bid_snapshots.py) are never
-rewritten. The Oct 29 data check (feedbag notes/audits/bids-dq-2026-10-29.md)
+rewritten. The Oct 29 data check (in the private notes)
 found that every bad row in them came from the old Barchart feed, Jun 9 to
 Oct 9: fetch_bids.py divided a basis by 100 only when it was 5 or more, so a
 1 to 4.75 cent basis was stored as $1 to $4.75 (2,678 rows); soybean meal was

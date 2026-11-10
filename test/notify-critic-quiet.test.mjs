@@ -1,7 +1,7 @@
-/* The critic email stays quiet on a passing issue (Sig, Oct 20, 2026).
+/* The critic email stays quiet on a passing issue (Oct 20, 2026).
  *
  * Issue #221 averaged 7.2 (threshold 7) with seven rules under 7 and one
- * rewrite, and Sig got "AGSIST critic flagged 7 rule(s)" anyway, as on most
+ * rewrite, and the owner got "AGSIST critic flagged 7 rule(s)" anyway, as on most
  * mornings. Now it mails only when the issue is weak: an average under the
  * threshold, or one rule at 3 or below. A missing daily.json or critic pass
  * still mails (main() checks those before should_alert).

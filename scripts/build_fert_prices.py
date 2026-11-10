@@ -5,8 +5,8 @@ page reads (/fertilizer's cheapest box, nutrient table and calculator,
 /fast-facts, /manure-value, /urea, the break-even defaults, the baked titles
 and share cards).
 
-ONE SOURCE (Sig, 2026-10-15: "just use the pricing data that i provided"):
-the co-op price pages Sig sent, read by scripts/fetch_coop_fert.py into
+ONE SOURCE (2026-10-15):
+the co-op price pages the owner sent, read by scripts/fetch_coop_fert.py into
 data/fertilizer-coops.json. Nothing else feeds a price here. The USDA AMS
 Illinois report stays on /fertilizer as a separate, labeled reference and is
 never blended in.
@@ -25,8 +25,8 @@ true range of the sheets in the middle), short_label and the link. Also per_lb
 (the $/lb of N, P2O5 and K2O, with the arithmetic in words) and programs
 (fertilizer $/acre for the break-even defaults, rates stated).
 
-A co-op that sends Sig its prices rather than posting them (Synergy
-Cooperative, Wisconsin; Sig, 2026-10-16) is one more co-op in
+A co-op that sends the owner its prices rather than posting them (Synergy
+Cooperative, Wisconsin; 2026-10-16) is one more co-op in
 scripts/coop_fert_sources.json (layout "sheet") and arrives here through
 data/fertilizer-coops.json like the rest.
 
