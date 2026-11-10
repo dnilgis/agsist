@@ -3065,6 +3065,10 @@ def trigger_html(cd, e, LY):
     # Where the whole pound would not clear the whole-pound benchmark, the line says "about the benchmark".
     if lb and _t > e["by"] and n <= int(rnd(e["by"], 0)):
         over = f" That is about the {XC.byf(cd, e['by'])} benchmark, so at that price it pays even on a normal crop."
+    # bushel crops: the line floored to a tenth can equal the benchmark rounded to a tenth ("under 10.4 bu ...
+    # above the 10.4 bu benchmark", Cochran Co., TX, Nov 10, 2026 WASDE); say "about" there, as for pounds
+    if not lb and _t > e["by"] and math.floor(round(_t * 10, 6)) / 10 <= rnd(e["by"], 1):
+        over = f" That is about the {XC.byf(cd, e['by'])} benchmark, so at that price it pays even on a normal crop."
     return (f'<p class="ap-trig">ARC-CO pays here for {LY} if the county yield comes in under <b>{ns} {u}</b> {at}.{over}</p>'
 )
 
@@ -4426,6 +4430,14 @@ def selftest():
     ck("pound trigger over the benchmark: whole pounds", "<b>2,870 lb</b>" in _h and "above the 2,430 lb benchmark" in _h, _h)
     _h = trigger_html(dict(_cdl, scen={"center": 0.28347, "kind": "x"}), {"by": 2430.2}, "2026")   # 0.9 x 2,430.2 x 0.315 / 0.28347 = 2,430.5
     ck("pound trigger a hair over the benchmark: whole pounds, 'about the benchmark'", "<b>2,430 lb</b>" in _h and "about the 2,430 lb benchmark" in _h and "above the" not in _h, _h)
+    # Cochran Co., TX wheat, non-irrigated, Nov 10, 2026 WASDE: 0.9 x 10.36 x 6.98 / 6.20 = 10.497, floored to a tenth 10.4,
+    # the benchmark to a tenth 10.4: the line said "under 10.4 bu ... above the 10.4 bu benchmark"
+    _cdw = {"unit": "bu", "dp": 2, "bp": {"value": 6.98}, "loan": 3.72, "scen": {"center": 6.2, "kind": "x"}}
+    _h = trigger_html(_cdw, {"by": 10.36}, "2026")
+    ck("bushel trigger over the benchmark that floors to the benchmark's tenth: 'about the benchmark'",
+       "<b>10.4 bu</b>" in _h and "about the 10.4 bu benchmark" in _h and "above the" not in _h, _h)
+    _h = trigger_html(_cdw, {"by": 43.46}, "2026")      # Sumner Co., KS: 44.03, floored 44.0, over the 43.5 benchmark
+    ck("bushel trigger clear of the benchmark's tenth: still 'above'", "<b>44.0 bu</b>" in _h and "above the 43.5 bu benchmark" in _h, _h)
     print(f"\n{'FAIL' if fails else 'OK'}: {len(fails)} failure(s)")
     return 1 if fails else 0
 

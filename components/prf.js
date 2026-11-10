@@ -132,7 +132,10 @@
   function blank() { var a = []; for (var i = 0; i < N; i++) a.push(0); return a; }
   /* touched: the reader has changed the policy. Until then the card says it is showing the page's example.
      win: 0 for every complete year, else the last 30, 20 or 10. alt: a five-digit entry that is also a grid ID. */
-  var S = { grid: null, st: null, co: null, pt: null, use: 0, acres: 100, share: 100, win: 0, touched: false, alt: null, lost: false,
+  /* use: the index in the state's combos. The page opens on non-irrigated haying, then irrigated
+     haying, then grazing when a county offers neither; the reader can pick any use the county offers. */
+  var USE_ORDER = [4, 1, 0, 5, 6, 2, 3], USE_DEFAULT = USE_ORDER[0];
+  var S = { grid: null, st: null, co: null, pt: null, use: USE_DEFAULT, acres: 100, share: 100, win: 0, touched: false, alt: null, lost: false,
             A: { cov: 90, pf: 100, split: blank(), even: true }, B: null, on: 'A' };
   var WINDOWS = [0, 30, 20, 10];
   function cur() { return S[S.on] || S.A; }
@@ -244,8 +247,9 @@
     if (html != null) sayHtml(html + esc(note), true); else say(msg + note, true);
     if (note) { S.lost = true; drawBar(lastR); }
   }
-  function say(msg, bad) { var el = $('prf-find-msg'); el.textContent = msg || ''; el.classList.toggle('is-bad', !!bad); }
-  function sayHtml(html, bad) { var el = $('prf-find-msg'); el.innerHTML = html; el.classList.toggle('is-bad', !!bad); }
+  /* prf-hold keeps the line the loading text took (no layout shift when the record arrives) until the reader's first action */
+  function say(msg, bad) { var el = $('prf-find-msg'); el.classList.remove('prf-hold'); el.textContent = msg || ''; el.classList.toggle('is-bad', !!bad); }
+  function sayHtml(html, bad) { var el = $('prf-find-msg'); el.classList.remove('prf-hold'); el.innerHTML = html; el.classList.toggle('is-bad', !!bad); }
   function norm(s) {
     return String(s || '').toLowerCase().replace(/\bcounty\b|\bparish\b/g, '').replace(/\bsainte\b/g, 'ste').replace(/\bsaint\b/g, 'st').replace(/[^a-z]/g, '');
   }
@@ -329,7 +333,7 @@
       track('prf_grid', { grid: S.grid, state: S.st, county_from: 'ask' });
       return;
     }
-    if (c.b[S.use] == null) { for (var i = 0; i < c.b.length; i++) if (c.b[i] != null) { S.use = i; break; } }
+    if (c.b[S.use] == null) { for (var i = 0; i < USE_ORDER.length; i++) if (c.b[USE_ORDER[i]] != null) { S.use = USE_ORDER[i]; break; } }
     ['A', 'B'].forEach(function (k) { if (S[k]) fit(S[k]); });
     buildUse(); buildIv(); render();
     track('prf_grid', { grid: S.grid, state: S.st, county_from: S.coHow || 'named' });
@@ -705,9 +709,9 @@
     var pctSub = Math.round(R.subsidy * 100);
     var h = '<p class="prf-verdict">' + verdict + '</p>'
       + '<dl class="prf-figs">'
-      + '<div><dt>You pay, a year</dt><dd>' + usd(t.producer) + ' <span class="prf-sub">' + usd2(per) + ' an acre, before the policy fee</span></dd></div>'
+      + '<div><dt>You pay, a year</dt><dd>' + usd(t.producer) + ' <span class="prf-sub">' + usd2(per) + ' an acre, before the administrative fee</span></dd></div>'
       + '<div><dt>USDA pays toward the premium</dt><dd>' + usd(t.subsidy) + ' <span class="prf-sub">' + pctSub + '% of the ' + usd(t.premium) + ' premium, if you qualify</span></dd></div>'
-      + '<div><dt>Most it can pay in a year</dt><dd>' + usd(t.protection) + ' <span class="prf-sub">' + usd2(p.protectionPerAcre) + ' an acre of protection</span></dd></div>'
+      + '<div><dt>Most it can pay in a year</dt><dd>' + usd(t.protection) + ' <span class="prf-sub">' + usd2(p.protectionPerAcre) + ' an acre of protection' + (S.share < 100 ? ', before your share' : '') + '</span></dd></div>'
       + '<div><dt>Average payout a year</dt><dd>' + usd(s.avgIndemnity) + ' <span class="prf-sub">over all ' + s.years + ' years, the no-payment years included</span></dd></div>'
       + '</dl><dl class="prf-figs prf-figs-more">'
       + '<div><dt>Payout in the middle year</dt><dd>' + usd(R.mid) + ' <span class="prf-sub">' + (R.mid > 0 ? 'half the years paid this or less' : 'more than half the years would have paid nothing') + '</span></dd></div>'
@@ -1172,7 +1176,11 @@
 
   /* ---------------------------------------------------------------- wiring */
   function wire() {
-    $('prf-find').addEventListener('submit', function (e) { e.preventDefault(); $('prf-q').blur(); find($('prf-q').value); });
+    $('prf-find').addEventListener('submit', function (e) { e.preventDefault();
+      /* focus moves to the answer's heading (not to the page body), which also closes a phone's keyboard */
+      var p = find($('prf-q').value);
+      if (p && p.then) p.then(function (ok) { if (!ok) return; var h = $('prf-where-h'); h.setAttribute('tabindex', '-1'); try { h.focus({ preventScroll: true }); } catch (er) { h.focus(); } });
+    });
     $('prf-loc').addEventListener('click', function () {
       if (!navigator.geolocation) { say('This browser will not share a location. Type a ZIP.', true); return; }
       var my = ++ticket;
@@ -1304,15 +1312,17 @@
     Array.prototype.forEach.call(document.querySelectorAll('details.prf-fold'), function (d) {
       var inside = false;
       try { inside = !!h && (d.id === h || !!d.querySelector('#' + CSS.escape(h))); } catch (e) {}
-      if (wide || inside) d.open = true;
+      if (inside || (wide && !d.classList.contains('prf-terms'))) d.open = true;   /* Sources and terms stays closed */
     });
   }
   window.addEventListener('hashchange', openFolds);
 
   function start() {
-    var st = $('prf-status'), o = saved();
+    /* The find card ships visible with its buttons off and "Loading the rain
+       record" inside it, so nothing above the byline moves when the record
+       arrives (panel, Nov 9: CLS 0.115 at 390 px from a status block above it). */
+    var o = saved(), msg = $('prf-find-msg');
     openFolds();
-    st.textContent = 'Loading the rain record…';
     /* a link or a return visit is about to draw the whole tool: hold the room for it so the page below does not jump */
     if (o && o.g) $('prf-app').style.minHeight = '100vh';
     getJSON(SRC + 'meta.json').then(function (m) {
@@ -1320,8 +1330,9 @@
       if (!meta || !meta.states || !meta.years || !meta.subsidy) throw new Error('meta');
       $('prf-b-st').innerHTML = '<option value="">Pick a state</option>' + meta.states.map(function (s) { return '<option value="' + s.st + '">' + esc(s.name) + '</option>'; }).join('');
       wire();
-      st.hidden = true; st.textContent = '';
-      $('prf-app').hidden = false;
+      if (msg.classList.contains('prf-hold')) msg.textContent = '';
+      Array.prototype.forEach.call(document.querySelectorAll('#prf-app [data-wait]'), function (b) { b.disabled = false; b.removeAttribute('data-wait'); });
+      $('prf-app').setAttribute('data-ready', '');
       if (o && o.g) {
         var bad = [], a = parseSetup(o.a), b = o.b ? parseSetup(o.b) : null, nyears = meta.years.last_complete - meta.years.first + 1;
         if (a) S.A = a; else if (o.fromLink && o.a != null) bad.push('the months and coverage');
@@ -1349,11 +1360,9 @@
       }
     }).catch(function () {
       $('prf-app').style.minHeight = '';
-      st.hidden = false;
-      st.textContent = 'The rain record did not load, so the calculator is off. Reload the page, or try again in a few minutes. The rules and dates below do not need it.';
-      st.classList.add('is-bad');
+      say('The rain record did not load, so the calculator is off. Reload the page, or try again in a few minutes. The rules and dates below do not need it.', true);
     });
   }
-  window.AgPrf = { state: S, compute: compute, find: find, goGrid: goGrid, shareUrl: shareUrl, countyAtPoint: countyAtPoint };
+  window.AgPrf = { state: S, USE_ORDER: USE_ORDER, compute: compute, find: find, goGrid: goGrid, shareUrl: shareUrl, countyAtPoint: countyAtPoint };
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', start); else start();
 })();

@@ -14,7 +14,8 @@ Client JS still fetches the JSON and overwrites innerHTML at runtime, so
 hydration is unchanged — the bake only changes what non-JS readers see.
 
 Regions:
-  usda-calendar.html   : PRERENDER:wp-result  (latest-report banner, 5-day window)
+  usda-calendar.html   : PRERENDER:cal-top   (top of the page: USDA vs the trade, or the next report)
+                         PRERENDER:wp-result  (latest-report banner, 5-day window)
                          PRERENDER:wp-nexthead (the heading that names the next report)
                          PRERENDER:wp-farmbox (the "here is what to do about it" box)
                          PRERENDER:wp-next    (next-report expectation card)
@@ -63,9 +64,18 @@ def esc(s):
     return htmlmod.escape(nodash("" if s is None else s), quote=True)
 
 
+def _d3(n, u):
+    """Stocks and production in billion bushels read like USDA prints them: 1.840, not 1.84.
+    Twin of d3() in components/priced-in.js."""
+    if u == "bil bu" and isinstance(n, (int, float)) and not isinstance(n, bool):
+        return f"{n:.3f}"
+    return n
+
+
 def num(n, u=""):
     if n is None:
         return "-"
+    n = _d3(n, u)
     return f"{n} {u}".strip() if u else str(n)
 
 
@@ -171,13 +181,13 @@ def numbers_el(rows):
         u = (" " + r["unit"]) if r.get("unit") else ""
         exp = ((DASH + ('<div style="font-size:.72rem;color:var(--wp-mut)">'
                         + _esc4(r["expected_why"]) + "</div>" if r.get("expected_why") else ""))
-               if r.get("expected") is None else (_sig(r["expected"]) + u + (
+               if r.get("expected") is None else (_sig(_d3(r["expected"], r.get("unit"))) + u + (
                    '<div style="font-size:.72rem;color:var(--wp-mut)">source date unknown</div>'
                    if r.get("source_date_unknown") else "")))
         rng = ('<div style="font-size:.72rem;color:var(--wp-mut)">range '
-               + _sig(r["low"]) + " to " + _sig(r["high"]) + "</div>") \
+               + _sig(_d3(r["low"], r.get("unit"))) + " to " + _sig(_d3(r["high"], r.get("unit"))) + "</div>") \
             if (r.get("low") is not None and r.get("high") is not None) else ""
-        now = DASH if r.get("usda_current") is None else (_sig(r["usda_current"]) + u)
+        now = DASH if r.get("usda_current") is None else (_sig(_d3(r["usda_current"], r.get("unit"))) + u)
         if r.get("actual") is None:
             printed = '<td class="wait">' + _esc4(r.get("why") or "not printed yet") + "</td>"
         else:
@@ -195,7 +205,7 @@ def numbers_el(rows):
             # numbersEl()'s ctx; test/wpi-numbers-strip.test.mjs holds them.
             ctx = ('<div style="font-size:.72rem;color:var(--wp-mut)">' + _esc4(r["context"]) + "</div>"
                    if r.get("context") else "")
-            printed = '<td class="n"><b>' + _sig(r["actual"]) + u + "</b>" + tag + ctx + "</td>"
+            printed = '<td class="n"><b>' + _sig(_d3(r["actual"], r.get("unit"))) + u + "</b>" + tag + ctx + "</td>"
         body.append("<tr><td>" + _esc4(r.get("label")) + rng + '</td><td class="n">' + exp
                     + '</td><td class="n">' + now + "</td>" + printed + "</tr>")
     # One link per distinct survey, same as numbersEl(): a report's yields and its
@@ -235,7 +245,7 @@ def to_beat_el(tb, next_report):
         return ""
     p = str(tb.get("date") or "").split("-")
     md = (MO3[int(p[1]) - 1] + " " + str(int(p[2]))) if len(p) == 3 else _esc4(tb.get("date"))
-    body = "".join('<tr><td>' + _esc4(r.get("label")) + '</td><td class="n"><b>' + _esc4(_sig(r.get("value")))
+    body = "".join('<tr><td>' + _esc4(r.get("label")) + '</td><td class="n"><b>' + _esc4(_sig(_d3(r.get("value"), r.get("unit"))))
                    + " " + _esc4(r.get("unit")) + "</b></td></tr>" for r in tb["rows"])
     return ('<div class="wp-nums wp-beat"><div class="nh"><b>The number to beat</b><span>USDA\u2019s '
             + _esc4(tb.get("report")) + " (" + md + "), standing until the " + _esc4(next_report or "next report")
@@ -332,7 +342,7 @@ def last_line(lr):
     md = f"{MON3[m - 1]} {d}"
 
     def n_(v, u):
-        return "-" if v is None else (f"{_sig(v)} {u}" if u else _sig(v))
+        return "-" if v is None else (f"{_sig(_d3(v, u))} {u}" if u else _sig(v))
     if not lr.get("metric_count"):
         body = "No figure had a trade estimate to grade it against."
     elif lr.get("all_in_line") or not b.get("metric"):
@@ -390,7 +400,7 @@ def result_banner(lr):
         if b.get("context") and b.get("low") is not None and b.get("high") is not None:
             c = b["context"]
             in_note = (f'<div class="wp-res-reaction">{esc(c[:1].upper() + c[1:])} '
-                       f'({_sig(b["low"])} to {_sig(b["high"])}).</div>')
+                       f'({_sig(_d3(b["low"], b.get("unit")))} to {_sig(_d3(b["high"], b.get("unit")))}).</div>')
         big = (
             '<div class="wp-res-big">'
             f'<div class="wp-res-row"><span class="wp-res-metric">{esc(b["metric"])}</span>'
@@ -413,6 +423,7 @@ def result_banner(lr):
 def fmt_num_nbsp(n, u):
     if n is None:
         return "n/a"
+    n = _d3(n, u)
     return f"{n} {u}" if u else str(n)
 
 
@@ -838,6 +849,248 @@ def bake_home():
     return orig, src, HOME_HTML
 
 
+# ── THE TOP OF /usda-calendar: USDA AGAINST THE TRADE, AS PICTURES ─────────
+#
+# Nov 10, 2026: the released numbers sat 16 phone screens down. The page now opens on one card
+# per graded number (USDA big, the trade average, USDA's figure before, and a bar: dot = USDA,
+# line = the trade's low to high, tick = the trade average), the same look as the share picture.
+# Before a release, or when nothing was graded, the same spot shows the next report and what the
+# trade expects. Plain numbers only: the grading method stays in the fold at the bottom.
+# Static: the jobs that grade a report rebake this in the same commit (and daily).
+TOP_ORDER = (r"^corn_yield", r"^corn_\d", r"^soy_yield", r"^soy_\d", r"^wheat_\d", r"^corn_prod", r"^soy_prod")
+TOP_UNITS = {"bil bu": "billion bu", "mil bu": "million bu"}
+TOP_MONTHS = ["January", "February", "March", "April", "May", "June", "July", "August", "September",
+              "October", "November", "December"]
+# The big crop reports all print at noon Eastern; the site shows Central.
+TOP_NOON = re.compile(r"WASDE|Crop Production|Grain Stocks|Plantings|Acreage", re.I)
+
+
+def _top_n(x, u=None):
+    """4574 -> '4,574'; 179.6 stays 179.6; 1.84 billion bu -> 1.840."""
+    if u == "bil bu":
+        return _sig(_d3(x, u))
+    if isinstance(x, (int, float)) and abs(x) >= 1000 and float(x).is_integer():
+        return f"{int(x):,}"
+    return _sig(x)
+
+
+def _top_rank(key):
+    for i, p in enumerate(TOP_ORDER):
+        if re.search(p, key or ""):
+            return i
+    return len(TOP_ORDER)
+
+
+def _top_label(label):
+    """'2026/27 corn ending stocks' -> ('2026/27', 'Corn ending stocks')."""
+    m = re.match(r"^\s*(\d{4}/\d{2})\s+(.*)$", label or "")
+    yr, rest = (m.group(1), m.group(2)) if m else ("", label or "")
+    return yr, rest[:1].upper() + rest[1:]
+
+
+def _top_graded(rows):
+    return [r for r in (rows or []) if r.get("actual") is not None and r.get("expected") is not None]
+
+
+def _top_sorted(rows):
+    return [r for _, r in sorted(enumerate(rows), key=lambda x: (_top_rank(x[1].get("key")), x[0]))]
+
+
+def _top_join(names):
+    """['corn ending stocks', 'soybean ending stocks'] -> 'corn and soybean ending stocks'."""
+    names = [n.lower() for n in names]
+    if not names:
+        return ""
+    tails = {n.split(" ", 1)[1] if " " in n else "" for n in names}
+    if len(names) > 1 and len(tails) == 1 and "" not in tails:
+        heads = [n.split(" ", 1)[0] for n in names]
+        return (", ".join(heads[:-1]) + " and " + heads[-1] + " " + tails.pop())
+    return names[0] if len(names) == 1 else ", ".join(names[:-1]) + " and " + names[-1]
+
+
+def top_headline(rows):
+    """One plain line from the grades: under or over the trade, never a price call."""
+    g = _top_graded(rows)
+    out = [r for r in g if r.get("surprise") in ("bullish", "bearish")]
+    if not g:
+        return ""
+    if not out:
+        return "In line with the trade: every graded number landed close to the trade average."
+    under = [_top_label(r.get("label"))[1] for r in out if r["actual"] < r["expected"]]
+    over = [_top_label(r.get("label"))[1] for r in out if r["actual"] > r["expected"]]
+    if under and not over:
+        return ("Tighter than the trade expected: " + _top_join(under)
+                + " came in under the trade average.")
+    if over and not under:
+        return ("Looser than the trade expected: " + _top_join(over)
+                + " came in over the trade average.")
+    return ("Mixed against the trade: " + _top_join(under) + " came in under the trade average, "
+            + _top_join(over) + " over it.")
+
+
+def _top_unit(u):
+    return TOP_UNITS.get(u or "", u or "")
+
+
+def _top_bar(v, avg, lo, hi, label, ru=None):
+    """Dot = USDA (or nothing before a release), line = trade low to high, tick = trade average."""
+    pts = [x for x in (v, avg, lo, hi) if x is not None]
+    if lo is None or hi is None or not pts or max(pts) <= min(pts):
+        return ""
+    a, b = min(pts), max(pts)
+
+    def p(x):
+        return f"{(x - a) / (b - a) * 100:.1f}%"
+    tick = f'<span class="ct-tick" style="left:{p(avg)}"></span>' if avg is not None else ""
+    dot = f'<span class="ct-dot" style="left:{p(v)}"></span>' if v is not None else ""
+    return (f'<div class="ct-bar" role="img" aria-label="{esc(label)}">'
+            f'<span class="ct-line" style="left:{p(lo)};right:{100 - (hi - a) / (b - a) * 100:.1f}%"></span>'
+            f'{tick}{dot}</div><div class="ct-ends" aria-hidden="true"><span>{_top_n(lo, ru)}</span><span>{_top_n(hi, ru)}</span></div>')
+
+
+def _top_card(r, before_word):
+    _, name = _top_label(r.get("label"))
+    ru = r.get("unit")
+    u = _top_unit(ru)
+    v, avg, lo, hi = r.get("actual"), r.get("expected"), r.get("low"), r.get("high")
+    tag = ""
+    if r.get("surprise") == "in line":
+        tag = '<span class="ct-tag">In line</span>'
+    elif r.get("surprise") in ("bullish", "bearish"):
+        tag = ('<span class="ct-tag ct-off">' + ("Under" if v < avg else "Over") + " the trade</span>")
+    prev = (f' &middot; {esc(before_word)} {_top_n(r["usda_current"], ru)}' if r.get("usda_current") is not None else "")
+    label = (f"USDA {_top_n(v, ru)} {u}, trade range {_top_n(lo, ru)} to {_top_n(hi, ru)}, trade average {_top_n(avg, ru)}"
+             if lo is not None and hi is not None else "")
+    return (f'<li class="ct-c"><div class="ct-k">{esc(name)}{tag}</div>'
+            f'<div class="ct-v"><b class="ct-big">{_top_n(v, ru)}</b><span class="ct-u"> {esc(u)}</span></div>'
+            f'<div class="ct-vs">Trade <b>{_top_n(avg, ru)}</b>{prev}</div>'
+            f'{_top_bar(v, avg, lo, hi, label, ru)}</li>')
+
+
+def _top_next_card(r):
+    """Before a release: the trade's average big, its range, and USDA's standing figure."""
+    _, name = _top_label(r.get("label"))
+    ru = r.get("unit")
+    u = _top_unit(ru)
+    avg, lo, hi, now = r.get("expected"), r.get("low"), r.get("high"), r.get("usda_current")
+    if avg is None:
+        big, vs = now, "USDA now"
+        bar = ""
+    else:
+        big, vs = avg, ("Trade average" + (f" &middot; USDA now {_top_n(now, ru)}" if now is not None else ""))
+        bar = _top_bar(None, avg, lo, hi, f"Trade range {_top_n(lo, ru)} to {_top_n(hi, ru)} {u}, average {_top_n(avg, ru)}", ru)
+    if big is None:
+        return ""
+    return (f'<li class="ct-c"><div class="ct-k">{esc(name)}</div>'
+            f'<div class="ct-v"><b class="ct-big">{_top_n(big, ru)}</b><span class="ct-u"> {esc(u)}</span></div>'
+            f'<div class="ct-vs">{vs}</div>{bar}</li>')
+
+
+def _top_day(iso):
+    d = datetime.strptime(iso, "%Y-%m-%d")
+    return d.strftime("%a, %b ") + str(d.day) + d.strftime(", %Y")
+
+
+def _top_srcs(rows):
+    out = []
+    for r in rows:
+        s = r.get("source")
+        if s and s not in out:
+            out.append(s)
+    return out
+
+
+def top_results(lr, up):
+    rows = _top_sorted(_top_graded(lr.get("numbers")))
+    yr = _top_label(rows[0].get("label"))[0] if rows else ""
+    rep = lr.get("report") or "USDA report"
+    when = _top_day(lr["date"]) + (", 11:00 a.m. CT" if TOP_NOON.search(rep) else "")
+    m = re.match(r"(\d{4})-(\d{2})", lr["date"])
+    before = ("USDA in " + TOP_MONTHS[(int(m.group(2)) - 2) % 12]) if (m and re.search("WASDE", rep)) else "USDA before"
+    inl = sum(1 for r in rows if r.get("surprise") == "in line")
+    tb = (up or {}).get("to_beat") or {}
+    no = tb.get("wasde_no") if tb.get("date") == lr.get("date") else None
+    usda = source_links.link(tb.get("source") or "https://www.usda.gov/oce/commodity/wasde",
+                             "USDA " + esc(no or rep), ' rel="noopener" target="_blank"')
+    srcs = _top_srcs(rows)
+    trade = ", ".join(source_links.link(s, esc(re.sub(r"^https?://(www\.)?", "", s).split("/")[0]),
+                                        ' rel="nofollow noopener" target="_blank"') for s in srcs)
+    return ('<div class="ct-hd"><span class="ct-kick">Latest report: USDA vs the trade</span>'
+            f'<span class="ct-when">{esc(rep)} &middot; {when}</span></div>'
+            f'<h2 class="ct-h" id="latest-h">{esc(top_headline(rows))}</h2>'
+            f'<p class="ct-sub">{inl} of {len(rows)} numbers landed in line with the trade average'
+            + (f' &middot; {esc(yr)} marketing year' if yr else "") + '.</p>'
+            '<ul class="ct-grid">' + "".join(_top_card(r, before) for r in rows) + '</ul>'
+            '<p class="ct-key"><span class="ct-key-dot"></span> USDA <span class="ct-key-line"></span> trade range '
+            '<span class="ct-key-tick"></span> trade average</p>'
+            f'<p class="ct-src">Source: {usda}, {_top_day(lr["date"])}'
+            + (f'. Trade average and range: {trade}' if trade else "")
+            + '. <a href="#priced-in">Every number in a table</a></p>')
+
+
+def top_next(up, lr):
+    if not up or not up.get("date"):
+        return ('<div class="ct-hd"><span class="ct-kick">Next report</span></div>'
+                '<h2 class="ct-h" id="latest-h">No USDA report is on the board right now.</h2>'
+                '<p class="ct-src"><a href="#all-dates">All 2026 and 2027 dates</a></p>')
+    d = days_until(up["date"])
+    cd = f"{d} days out" if d > 1 else ("tomorrow" if d == 1 else ("today" if d == 0 else ""))
+    rep = up.get("report") or "Next USDA report"
+    t = (up.get("time") or "").replace("12:00 PM ET", "11:00 a.m. CT")
+    when = _top_day(up["date"]) + (f", {t}" if t else "") + (f" &middot; {cd}" if cd else "")
+    rows = [r for r in _top_sorted(up.get("numbers") or []) if r.get("expected") is not None]
+    if rows:
+        cards = "".join(_top_next_card(r) for r in rows)
+        sub = "What the trade expects, from the pre-report survey."
+        srcs = _top_srcs(rows)
+        src = ("Trade average and range: " + ", ".join(
+            source_links.link(s, esc(re.sub(r"^https?://(www\.)?", "", s).split("/")[0]),
+                              ' rel="nofollow noopener" target="_blank"') for s in srcs) + ". ") if srcs else ""
+    else:
+        tb = up.get("to_beat") or {}
+        cards = "".join(_top_next_card({"label": x.get("label"), "unit": x.get("unit"), "usda_current": x.get("value"),
+                                        "key": x.get("key")}) for x in _top_sorted(tb.get("rows") or []))
+        why = ((up.get("withheld") or {}).get("range") or "").split(". ")[0].rstrip(".")
+        sub = ("No trade survey is on file yet" if not why else esc(why)) + ". The numbers to beat are USDA&rsquo;s own, standing until then."
+        src = (("Numbers to beat: " + source_links.link(tb.get("source") or "", "USDA " + esc(tb.get("wasde_no") or tb.get("report") or ""),
+                                                         ' rel="noopener" target="_blank"') + ". ") if tb.get("rows") else "")
+    last = ""
+    g = _top_graded((lr or {}).get("numbers"))
+    if g and lr.get("date") and lr.get("date") != up.get("date"):
+        last = (f'Last report: {esc(lr.get("report"))}, {_top_day(lr["date"])}, '
+                f'{sum(1 for r in g if r.get("surprise") == "in line")} of {len(g)} numbers in line. ')
+    return ('<div class="ct-hd"><span class="ct-kick">Next report</span>'
+            f'<span class="ct-when">{when}</span></div>'
+            f'<h2 class="ct-h" id="latest-h">{esc(rep)}</h2>'
+            f'<p class="ct-sub">{sub}</p>'
+            + (f'<ul class="ct-grid">{cards}</ul>' if cards else "")
+            + (('<p class="ct-key"><span class="ct-key-line"></span> trade range <span class="ct-key-tick"></span> '
+                'trade average</p>') if rows else "")
+            + f'<p class="ct-src">{src}{last}<a href="#next-report">What the trade expects, in full</a></p>')
+
+
+def top_mode(wpi):
+    """'results' when the last report has graded numbers, is under 46 days old and the next
+    report has no trade survey on file yet; otherwise 'next'."""
+    lr, up = wpi.get("latest_result") or {}, wpi.get("upcoming") or {}
+    if not lr.get("date") or not _top_graded(lr.get("numbers")):
+        return "next"
+    age = (datetime.now().date() - datetime.strptime(lr["date"], "%Y-%m-%d").date()).days
+    if age < 0 or age > 45:
+        return "next"
+    survey = any(r.get("expected") is not None for r in (up.get("numbers") or []))
+    if survey and up.get("date") and up.get("date") != lr.get("date"):
+        return "next"
+    return "results"
+
+
+def top_block(wpi):
+    lr, up = wpi.get("latest_result") or {}, wpi.get("upcoming")
+    if top_mode(wpi) == "results":
+        return f'<div class="ct ct-res" data-mode="results">{top_results(lr, up)}</div>'
+    return f'<div class="ct ct-next" data-mode="next">{top_next(up, lr)}</div>'
+
+
 def replace_region(src, name, content, fname):
     open_m = f"<!-- PRERENDER:{name} -->"
     close_m = f"<!-- /PRERENDER:{name} -->"
@@ -855,6 +1108,7 @@ def bake_wpi(check_only=False):
     with open(WPI_HTML, encoding="utf-8") as f:
         src = f.read()
     orig = src
+    src = replace_region(src, "cal-top", top_block(wpi), WPI_HTML)
     src = replace_region(src, "wp-result", result_banner(wpi.get("latest_result")), WPI_HTML)
     src = replace_region(src, "wp-nexthead", next_head(wpi.get("upcoming")), WPI_HTML)
     src = replace_region(src, "wp-farmbox", farm_box(wpi.get("upcoming")), WPI_HTML)

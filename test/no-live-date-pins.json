@@ -106,7 +106,6 @@
   "test/prf-notice.test.mjs": 1,
   "test/prf-now.test.mjs": 2,
   "test/prf-oct20.test.mjs": 2,
-  "test/prf-optimize-ui.test.mjs": 1,
   "test/prf-outlook-text.test.mjs": 1,
   "test/prf-sponsor.test.mjs": 2,
   "test/price-local.test.mjs": 8,
@@ -153,7 +152,6 @@
   "test/unsub-count.test.mjs": 1,
   "test/wasde-archive.test.mjs": 3,
   "test/wpi-last-line.test.mjs": 4,
-  "test/wpi-to-beat.test.mjs": 1,
   "test/your-state.test.mjs": 23
  }
 }
