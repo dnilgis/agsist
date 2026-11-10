@@ -167,7 +167,11 @@ test("browser: quick stats at 390 px shows the yield, labels that follow the dat
 test("browser: with no JavaScript the baked corn rows show the yields (bake_seo.py state-top10)", { skip, timeout: 120000 }, async () => {
   const body = execFileSync("python3", ["-c", "import sys,json;sys.path.insert(0,'scripts');import bake_seo as B;print(B.body_qs_top10({'state_stats':json.load(open('data/state-stats.json'))}))"], { cwd: ROOT, encoding: "utf8" }).trim();
   const baked = QS.replace(/<!--BAKE:state-top10-->[\s\S]*?<!--\/BAKE-->/, "<!--BAKE:state-top10-->" + body + "<!--/BAKE-->");
-  assert.notEqual(baked, QS);
+  // the bake is wired and current: the committed page holds what bake_seo.py writes from today's data
+  // (a data run may already have baked it, so the page need not differ from a fresh bake)
+  const committed = (QS.match(/<!--BAKE:state-top10-->([\s\S]*?)<!--\/BAKE-->/) || [])[1];
+  assert.ok(committed != null, "usda-quick-stats.html has the state-top10 bake region");
+  assert.equal(committed, body, "the committed state-top10 bake matches a fresh bake of data/state-stats.json");
   const srv = await serve({ "/usda-quick-stats.html": baked }), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
