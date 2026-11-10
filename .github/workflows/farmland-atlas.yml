@@ -27,7 +27,7 @@ on:
         required: false
         default: ""
       reads_model:
-        description: "Model for the county reads. Blank = the ATLAS_READS_MODEL variable, else claude-haiku-5-5"
+        description: "Model for the county reads. Blank = the ATLAS_READS_MODEL variable, else CHECKER in scripts/claude_models.py"
         required: false
         default: ""
       reads_trial:
