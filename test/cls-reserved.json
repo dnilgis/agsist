@@ -81,6 +81,9 @@
    "li-counties": "starts at 3895px (390 wide), 3023px (1280)",
    "ls-mine": "starts at 1282px (390 wide), 1287px (1280)"
   },
+  "markets.html": {
+   "mk-src": "starts at 2612px (390 wide), 1818px (1280)"
+  },
   "milk-prices.html": {
    "ck-order": "starts at 7493px (390 wide), 5413px (1280)",
    "dp-check-out": "starts at 7653px (390 wide), 5573px (1280)",

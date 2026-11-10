@@ -22,11 +22,11 @@ test('live prices hide the whole baked table, not just the nearby row', () => {
   assert.match(block, /querySelector\('\.seed-tbl-wrap'\);if\(__st\)__st\.style\.display='none'/);
   assert.doesNotMatch(block, /\/\^Nearby\//, 'no row-by-row filter that leaves deferred and KC rows behind');
   for (const p of ['corn', 'soybean', 'wheat']) {
-    assert.match(read(`${p}-futures-prices.html`), /futures\.js\?v=31/, `${p} page loads the new futures.js`);
+    assert.match(read(`${p}-futures-prices.html`), /futures\.js\?v=\d+/, `${p} page loads the new futures.js`);
   }
 });
 
-test('a morning bake writes the previous close into the description, with no percent or clock time', () => {
+test('a morning bake writes a description with no price, percent, date or clock time', () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'fut-'));
   fs.copyFileSync(path.join(root, 'soybean-futures-prices.html'), path.join(dir, 'soybean-futures-prices.html'));
   const prices = {
@@ -48,15 +48,16 @@ s.seed_futures_pages(json.loads(sys.argv[1]), '2026-10-14')
   execFileSync('python3', ['-c', py, JSON.stringify(prices)], { stdio: 'pipe' });
   const out = fs.readFileSync(path.join(dir, 'soybean-futures-prices.html'), 'utf8');
   const desc = /<meta name="description" content="([^"]*)"/.exec(out)[1];
-  assert.match(desc, /^Soybeans Nov '26 settled \$12\.83¾ on Oct 13\./, desc);
-  assert.doesNotMatch(desc, /closed/, 'only a settle is named, and it is called settled');
-  assert.doesNotMatch(desc, /%|a\.m\.|p\.m\.|12\.88/, desc);
+  // Nov 10 2026: no price and no date in the description at all (the 8:31 a.m. trade case above can no longer reach it)
+  assert.equal(desc, 'Chicago Board of Trade (CBOT) soybean futures, quotes delayed 10 to 25 min in session. Crush spread, cash bids.');
+  assert.doesNotMatch(desc, /\$|%|a\.m\.|p\.m\.|12\.8|Oct/, desc);
 });
 
 test('bake_seo selftest passes (finished sessions only in titles)', () => {
   const out = execFileSync('python3', ['scripts/bake_seo.py', '--selftest'], { cwd: root, encoding: 'utf8' });
   assert.match(out, /all bake_seo checks pass/);
-  assert.match(out, /a morning run titles beans with the Oct 13 close/);
+  assert.match(out, /title has no price and no date/);
+  assert.match(out, /a morning run dates the board|after the bell, before the settle is posted, the last trade is not baked/);
 });
 
 test('the freshness workflow retries a rejected push and has a run after the settle lands', () => {

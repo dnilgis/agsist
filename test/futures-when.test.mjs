@@ -35,13 +35,13 @@ test("Sunday night: the baked hero line says Settle Oct 16, never Refreshed in s
   assert.equal(s["wheat-futures-prices.html"].when, "Settle Oct 16");
 });
 
-test("in session the line says Last trade with its time, as the homepage seed does", () => {
+test("in session the line says Read with its time (the site read the quote), as the homepage seed does", () => {
   const p = JSON.parse(readFileSync(FIX, "utf8"));
   p.fetched = "2026-10-19T15:42:00Z";
   for (const k of Object.keys(p.quotes)) Object.assign(p.quotes[k], { close_kind: "last", close_time: "2026-10-19T15:42:00Z", close_date: "2026-10-19" });
   const s = seeds(p);
-  assert.equal(s["soybean-futures-prices.html"].when, "Last trade Oct 19, 10:42 a.m. CT");
-  assert.match(s["corn-futures-prices.html"].exch, / &middot; Last trade Oct 19, 10:42 a\.m\. CT$/);
+  assert.equal(s["soybean-futures-prices.html"].when, "Read Oct 19, 10:42 a.m. CT");
+  assert.match(s["corn-futures-prices.html"].exch, / &middot; Read Oct 19, 10:42 a\.m\. CT$/);
 });
 
 test("futures.js names the same moment the seed does, from the price-local stamp", () => {
