@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 414;  // v414 2026-11-10: rain pages name the gauge in the headline, gift pages hide the footer strip (414, next after main's 413).
+var CACHE_VERSION = 416;  // v416 2026-11-10: rain pages name the gauge in the headline, gift pages hide the footer strip (416, next after main's 415).
+// var CACHE_VERSION = 415;  // v415 2026-11-10: CLS sweep 2 (fx/cls-sweep2; 410, next after main's 409). Thirteen pages hold their room before their data lands: tariffs, cattle auction (cattle-auction.js v9), harvest price tracker, conditions, hay (hay-ams.js v9), break-even (breakeven.js v10), store or sell, grain shrink, manure value (manure-value.js v10), urea, combine loss, nutrient removal (nutrient-removal.js v4), farm sale pages (land-sales.css v4). (415, next after main's 413)
 // var CACHE_VERSION = 413;  // v413 2026-11-09: Rain Print S, M days, A is one accumulation, on /rain-print and the county prints (413, next after main's 412). rain-print.js?v=93, rain-county-print.js?v=49, here.js?v=47.
 // var CACHE_VERSION = 412;  // v412 2026-11-09: Rain Print panel fixes. The pick keeps the nearest station with rain and snowfall records (gray lines off under 30 full years), a thin year names the exact-spot estimate, a typo offers the nearest spelling and S.D. is read, one full years rule, a Sources and terms fold (rain-print.js?v=92, places.js?v=2, rain-print-extras.js?v=3, rain-print-records.js?v=5, rp-canada.js?v=5, rain-county-print.js?v=48, here.js?v=46). (412, next after main's 410)
 // var CACHE_VERSION = 410;  // v410 2026-11-09: USDA calendar page. Method text out of the reading path, one closed Sources and terms fold at the bottom (bot-scorecard.js?v=2, priced-in.js?v=3). (410, next after main's 409)

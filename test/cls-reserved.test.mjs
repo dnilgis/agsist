@@ -23,6 +23,7 @@ import fs from 'node:fs';
 import { createServer } from 'node:http';
 import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { execFileSync } from 'node:child_process';
 
 const ROOT = fileURLToPath(new URL('../', import.meta.url));
 const LIST = JSON.parse(fs.readFileSync(join(ROOT, 'test/cls-reserved.json'), 'utf8'));
@@ -179,16 +180,53 @@ test('every element a script fills or reveals on a CLS-tested page has its space
   assert.deepEqual(problems, []);
 });
 
+/* to_fix may only shrink. Two guards: a frozen ceiling per page (the list as of Nov 10, 2026: lower a number when its
+   page's entries come out, never raise one, never add a page), and, where origin/main is fetched (the PR checks fetch
+   it), no page's list may hold an id that main's list does not. */
+const TO_FIX_CAP = { 'cash-bids.html': 8, 'corn-futures-prices.html': 10, 'fertilizer.html': 3, 'index.html': 50, 'soybean-futures-prices.html': 8, 'wheat-futures-prices.html': 5 };
+const TO_FIX_TOTAL_CAP = 84;
+function toFixGrowth(toFix, main) {
+  const grew = [];
+  let total = 0;
+  for (const [p, ids] of Object.entries(toFix)) {
+    total += ids.length;
+    if (!(p in TO_FIX_CAP)) grew.push(`${p} is new on to_fix: hold its elements' space instead`);
+    else if (ids.length > TO_FIX_CAP[p]) grew.push(`${p} has ${ids.length} on to_fix, over its ceiling of ${TO_FIX_CAP[p]}`);
+  }
+  if (total > TO_FIX_TOTAL_CAP) grew.push(`to_fix holds ${total}, over the ceiling of ${TO_FIX_TOTAL_CAP}`);
+  if (main) {
+    for (const [p, ids] of Object.entries(toFix)) for (const id of ids) if (!(main[p] || []).includes(id)) grew.push(`${p} #${id} is on to_fix here but not on main's list`);
+  }
+  return grew;
+}
+test('to_fix never grows: within its frozen ceiling, and nothing main does not already list', () => {
+  let main = null;
+  try { main = JSON.parse(execFileSync('git', ['show', 'origin/main:test/cls-reserved.json'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] })).to_fix || {}; } catch (e) { main = null; }
+  if (!main) console.log('# to_fix: origin/main is not fetched here, so only the frozen ceiling was checked');
+  assert.deepEqual(toFixGrowth(LIST.to_fix, main), []);
+});
+
+test('the to_fix guard catches growth', () => {
+  const base = JSON.parse(JSON.stringify(LIST.to_fix));
+  assert.match(toFixGrowth({ ...base, 'tariffs.html': ['tariff-tbody'] }, null).join(), /tariffs\.html is new on to_fix/, 'a new page');
+  const more = JSON.parse(JSON.stringify(base)); more['index.html'] = (more['index.html'] || []).concat(Array.from({ length: 51 }, (_, i) => 'x' + i));
+  assert.match(toFixGrowth(more, null).join(), /index\.html has \d+ on to_fix, over its ceiling of 50/, 'a page over its ceiling');
+  const swap = JSON.parse(JSON.stringify(base)); swap['fertilizer.html'] = ['not-on-main'];
+  assert.match(toFixGrowth(swap, base).join(), /fertilizer\.html #not-on-main is on to_fix here but not on main's list/, 'an id main does not list, within the ceiling');
+});
+
 test('pages already cleaned up stay clean: nothing to fix on /milk-prices', () => {
   assert.deepEqual(LIST.to_fix['milk-prices.html'] || [], []);
 });
 
 /* ---------- the below-the-fold list, proved in a browser ---------- */
-const PW = process.env.PLAYWRIGHT_PATH || '/home/user/node_modules/playwright/index.mjs';
-const CHROME = process.env.CHROMIUM_PATH || '/opt/pw-browsers/chromium';
+const isFile = (f) => { try { return fs.statSync(f).isFile(); } catch (e) { return false; } };
+const PW = [process.env.PLAYWRIGHT_PATH, '/opt/node-tools/node_modules/playwright/index.mjs', '/home/user/node_modules/playwright/index.mjs'].filter(Boolean).find(isFile);
+const CHROME = [process.env.CHROMIUM_PATH, '/opt/pw-browsers/chromium-1243/chrome-linux64/chrome'].filter(Boolean).find(isFile);
 let chromium = null;
-try { if (fs.existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
-const skip = !chromium || !fs.existsSync(CHROME) ? 'Playwright or Chromium not found here' : false;
+try { if (PW) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
+const skip = !chromium ? 'Playwright not found: set PLAYWRIGHT_PATH' : !CHROME ? 'Chromium not found: set CHROMIUM_PATH' : false;
+if (skip) process.stderr.write(`\n*** cls-reserved browser case SKIPPED: ${skip}. A skipped case is not a pass. ***\n\n`);
 
 test('everything on the below-the-fold list starts 900px or more down, at 390 and 1280', { skip, timeout: 240000 }, async () => {
   const types = { '.js': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.html': 'text/html', '.svg': 'image/svg+xml', '.woff2': 'font/woff2' };
