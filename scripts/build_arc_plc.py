@@ -148,6 +148,7 @@ import credits as CR  # noqa: E402  NASS notice wording
 import arc_plc_crops as XC  # noqa: E402  every covered crop beyond corn, soybeans and wheat
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
 import cross_links as XL  # noqa: E402  same-county links between the county sets
+from county_fold import fold, resolve  # noqa: E402  the one county code fold
 import build_ai_answers as AA  # noqa: E402  dated answer blocks (data/ai-answers.json), same bytes as its own bake
 from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402
 from seo_caps import TITLE_MAX  # noqa: E402  the site title cap (68); ARC/PLC held itself to 60 until 2026-10-20
@@ -1603,6 +1604,13 @@ def geo_json(D):
     if not g:
         return {}
     pages = {c["f"]: c["s"] for S in D["states"].values() for c in S["c"]}
+    # FSA still files Ste. Genevieve MO as 29193 and Oglala Lakota SD as 46113; the shapes carry
+    # 29186 and 46102. A rename is the same ground, so the shape finds the page (county_fold, Nov 9).
+    # Parts and offices are not the county and never take its shape.
+    for f, slug in list(pages.items()):
+        t = fold(f)
+        if t != f and resolve(f).kind == "rename" and t not in pages:
+            pages[t] = slug
     per, box = {}, {}
     for f in g["features"]:
         st = f["properties"]["st"]
@@ -4068,6 +4076,16 @@ def selftest():
         ck("Chippewa's coordinates (44.94, -91.29) land on 55017 with its page; Eau Claire's (44.73, -91.29) on 55035 without one",
            st_ == "WI" and rec[0] == "55017" and rec[2] == "chippewa-county" and locate(nv, gs, -91.29, 44.73)[1][0] == "55035"
            and locate(nv, gs, -91.29, 44.73)[1][2] is None, str(rec[:3] if rec else None))
+        # real miss fixed Nov 9: FSA files Ste. Genevieve MO as 29193, the shape is 29186. Before the fold the
+        # shape carried no page and Use my location said FSA had no benchmark there. A part (West Polk 27120)
+        # never takes the county's shape.
+        Dm = {"_geo": Dg["_geo"], "states": {"MO": {"n": "Missouri", "slug": "missouri", "c": [{"f": "29193", "n": "Ste. Genevieve County", "s": "ste-genevieve-county"}]},
+                                            "MN": {"n": "Minnesota", "slug": "minnesota", "c": [{"f": "27120", "n": "West Polk County", "s": "west-polk-county"}]}}}
+        gm = geo_json(Dm)
+        mo = {r[0]: r[2] for r in gm[f"{OUT_STATE_JSON}/geo/MO.json"]["c"]}
+        mn = {r[0]: r[2] for r in gm[f"{OUT_STATE_JSON}/geo/MN.json"]["c"]}
+        ck("Ste. Genevieve: the 29186 shape opens the 29193 page; Polk's shape (27119) does not open West Polk",
+           mo.get("29186") == "ste-genevieve-county" and mn.get("27119") is None, f"{mo.get('29186')} {mn.get('27119')}")
     # ---- QR code (scripts/qr_svg.py): structure, and the exact symbol a QR reader decoded on 2026-10-09
     import hashlib
     import qr_svg

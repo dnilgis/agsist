@@ -46,6 +46,7 @@ from datetime import datetime, timezone
 from urllib.parse import urljoin
 
 from atlas_common import get, county_index, names_to_fips, log
+from county_fold import fold
 
 
 def _host_of(url):
@@ -130,17 +131,15 @@ def num(v):
 
 # FSA still files a county under its old code: Shannon SD is Oglala Lakota since
 # 2015, Dade FL is Miami-Dade; Bedford city VA went into Bedford County in 2013,
-# Clifton Forge into Alleghany, South Boston into Halifax.
-FIPS_RENAME = {"46113": "46102", "12025": "12086", "02270": "02158",
-               "51515": "51019", "51560": "51005", "51780": "51083"}
-
-
+# Clifton Forge into Alleghany, South Boston into Halifax. The fold is the one
+# table every county builder imports (scripts/county_fold.py).
 def fips5(v):
+    """-> (the code the map files it under, the code the workbook printed); (None, None) if not a code."""
     s = cell(v).split(".")[0]
     if not s.isdigit() or len(s) > 5:
-        return None
+        return None, None
     s = s.zfill(5)
-    return FIPS_RENAME.get(s, s)
+    return fold(s), s
 
 
 def read_table(header, body, value_hint=None, above=None):
@@ -173,13 +172,15 @@ def read_table(header, body, value_hint=None, above=None):
             st, co = state_abbr(r[i_state] if i_state < len(r) else ""), cell(r[i_county] if i_county < len(r) else "")
             if not st or not co or co.upper() in ("TOTAL", "STATE TOTAL", "US TOTAL", "GRAND TOTAL"):
                 continue
-            fp = fips5(r[i_fips]) if i_fips is not None and i_fips < len(r) else None
+            fp, printed = fips5(r[i_fips]) if i_fips is not None and i_fips < len(r) else (None, None)
             for i, y in year_cols:
                 v = num(r[i]) if i < len(r) else None
                 if v is not None:
                     rec = {"state": st, "county": co, "year": y, "value": v}
                     if fp:
                         rec["fips"] = fp
+                        if printed != fp:
+                            rec["printed"] = printed   # a rate keeps the county's own row first (to_counties)
                     out.append(rec)
         return out, "wide"
     if i_year is not None:
@@ -341,7 +342,7 @@ def to_counties(recs, idx, add=True):
     if not add:
         for fips, rows in by_fips.items():
             years = {}
-            for r in rows:
+            for r in sorted(rows, key=lambda r: "printed" in r):   # the county's own code before a folded one
                 years.setdefault(r["year"], r["value"])
             out[fips] = years
         return out, sorted(set(unmatched))
@@ -385,6 +386,18 @@ def selftest():
                          for f, n, st in (("19155", "Pottawattamie", "IA"), ("46102", "Oglala Lakota", "SD"), ("19169", "Story", "IA"))]}
     c4, un4 = to_counties(recs4, county_index(geo4))
     assert c4 == {"19155": {2024: 10.0, 2025: 20.0}, "46102": {2024: 0.0, 2025: 7.0}, "19169": {2024: 1.0, 2025: 2.0}} and un4 == [], (c4, un4)
+    # one fold (scripts/county_fold.py, Nov 9): Ste. Genevieve MO printed as 29193 lands on 29186; a part
+    # (W Pottawattamie 19156) adds its acres onto the county, and a rate keeps the county's own row
+    recs5, _ = read_table(hdr4, [("IOWA", "W POTTAWATTAMIE", 19156, 3, 4), ("IOWA", "POTTAWATTAMIE", 19155, 10, 20),
+                                 ("MISSOURI", "STE GENEVIEVE", 29193, 5, 6), ("VIRGINIA", "CLIFTON FORGE", 51560, 1, 1)])
+    assert [r["fips"] for r in recs5[::2]] == ["19155", "19155", "29186", "51005"] and recs5[0]["printed"] == "19156", recs5
+    geo5 = {"features": [{"id": f, "properties": {"name": n, "st": st}, "geometry": {"type": "Polygon", "coordinates": [[[0, 0], [1, 0], [1, 1], [0, 0]]]}}
+                         for f, n, st in (("19155", "Pottawattamie", "IA"), ("29186", "Ste. Genevieve", "MO"), ("51005", "Alleghany", "VA"))]}
+    c5, un5 = to_counties(recs5, county_index(geo5))
+    assert c5["19155"] == {2024: 13.0, 2025: 24.0} and c5["29186"] == {2024: 5.0, 2025: 6.0} and un5 == [], (c5, un5)
+    r5, _ = to_counties(recs5, county_index(geo5), add=False)
+    assert r5["19155"] == {2024: 10.0, 2025: 20.0}, r5
+    assert fips5("") == (None, None) and fips5(46113) == ("46102", "46113")
     log("selftest ok")
 
 

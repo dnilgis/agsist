@@ -176,6 +176,7 @@ NOT_SUMMARIES = {
     "usda_corrections": "a log of USDA's own corrections, fetched; no set's output",
     "build_basis_join": "joins the fetched bids and basis files, which no set's builder writes",
     "build_geo_crosswalk": "a county and town crosswalk from Census files, no set's output",
+    "company_ids": "checks data/ids/companies.json, built from the bids repo's board files on the bids run; no set's output",
     "build_whats_new": "built from the entry files in data/whats-new on main (scripts/dev/main_build.py); it reads a "
                        "page only to check an entry's link is there",
     "generate_rss": "feed.xml, from the Daily's archive (data/daily-archive), which no set writes",
