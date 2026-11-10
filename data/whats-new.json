@@ -51,6 +51,13 @@
    "link": "/grain-bin-calculator"
   },
   {
+   "id": "2026-11-09-cash-bids-panel",
+   "date": "2026-11-09",
+   "title": "Cash bids: your state first, one-line email",
+   "line": "Cash bids now shows your own state first before you type a ZIP, labels the table as estimates, and asks for your email in one line.",
+   "link": "/cash-bids"
+  },
+  {
    "id": "2026-11-09-cashbid-terms-fold",
    "date": "2026-11-09",
    "title": "Shorter cash bid town pages",
