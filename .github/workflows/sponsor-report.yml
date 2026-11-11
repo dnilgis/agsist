@@ -173,7 +173,7 @@ jobs:
           git config user.name  "agsist-bot"
           git config user.email "bot@agsist.com"
           add_all() {
-            git add data/audience.json data/audience-pages.json sponsor.html sponsor-kit.html 2>/dev/null || true
+            git add data/audience.json data/audience-pages.json data/sponsor-spots.json sponsor.html sponsor-kit.html 2>/dev/null || true
             git add -A data/rp-sealed 2>/dev/null || true
           }
           add_all
