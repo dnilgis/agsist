@@ -1833,8 +1833,9 @@
 
     /* The page's feed-count lines (index1: .r7-cov, #idx1-trust-ledger) live
        in How to read. Held by reference so a redraw keeps them. */
+    /* Nov 11, 2026: the rebuilt home page keeps its counts line at the foot of the bids card, in view */
     if(!feedNodes){
-      feedNodes = [document.querySelector('.r7-cov'), document.getElementById('idx1-trust-ledger')].filter(function(x){ return x; });
+      feedNodes = document.querySelector('main.hp') ? [] : [document.querySelector('.r7-cov'), document.getElementById('idx1-trust-ledger')].filter(function(x){ return x; });
     }
     area.innerHTML = html;
     var slot = area.querySelector('.bh-feed');

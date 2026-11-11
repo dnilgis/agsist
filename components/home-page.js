@@ -226,9 +226,38 @@
     if (c === 0) return 'even with ' + (r || 'futures');
     return quarters(c) + '¢ ' + (c > 0 ? 'over ' : 'under ') + (r || 'futures');
   }
+  var CARD_CSS = '.ch{font-family:Helvetica,Arial,sans-serif}.ch-grid{stroke:#22292b;stroke-width:1}.ch-base,.ch-tick{stroke:#3a4346;stroke-width:1}.ch-ax{fill:#a9b3b0}'
+    + '.ch-line{fill:none;stroke:#d4a23f;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}.ch-fill-a{stop-color:#d4a23f;stop-opacity:.22}.ch-fill-b{stop-color:#d4a23f;stop-opacity:0}'
+    + '.ch-hi{fill:#0a0c0d;stroke:#a9b3b0;stroke-width:1.5}.ch-note{fill:#a9b3b0}.ch-cur-l{stroke:#d4a23f;stroke-dasharray:3 4;opacity:.55}.ch-cur,.ch-tag{fill:#d4a23f}'
+    + '.ch-cur-o{fill:none;stroke:#d4a23f;stroke-width:1.5;opacity:.6}.ch-tag-t{fill:#0a0c0d;font-weight:700}.ch-band{fill:#d4a23f;opacity:.14}'
+    + '.ch-dot{fill:#6f9fc2;fill-opacity:.6;stroke:#101415;stroke-width:1}.ch-med{stroke:#d4a23f;stroke-width:2}.ch-val{fill:#e9edeb;font-weight:700}'
+    + '.ch-norm{fill:none;stroke:#6f9fc2;stroke-width:2;stroke-dasharray:5 4}.ch-normdot{fill:#6f9fc2}.rmap-bg{fill:#161b1c}.rmap-gr{stroke:#22292b}'
+    + '.rmap-st{fill:none;stroke:#e9edeb;stroke-opacity:.55;stroke-width:1.4}.rmap-t,.rmap-me{fill:#e9edeb;font-weight:700;paint-order:stroke;stroke:#161b1c;stroke-width:3px}.rmap-tdot{fill:#e9edeb}';
+  function wrap(t, n) {
+    var words = String(t).split(' '), lines = [''];
+    words.forEach(function (w) { var l = lines[lines.length - 1]; if ((l + ' ' + w).trim().length > n && l) lines.push(w); else lines[lines.length - 1] = (l + ' ' + w).trim(); });
+    return lines;
+  }
+  function sized(svg, w, h) { return svg.replace(/^<svg([^>]*?)>/, function (m0, at) { return '<svg' + at.replace(/\s(width|height)="[^"]*"/g, '') + ' width="' + w + '" height="' + h + '">'; }); }
+  function cardSvg(sp, today) {
+    var W = 1200, H = 630, date = md(today) + ', ' + today.getUTCFullYear();
+    var head = wrap(sp.head, 58).slice(0, 2), y0 = head.length > 1 ? 196 : 170;
+    var s = ['<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family="Helvetica, Arial, sans-serif"><style>' + CARD_CSS + '</style>',
+      '<rect width="' + W + '" height="' + H + '" fill="#0a0c0d"/><rect width="' + W + '" height="8" fill="#d4a23f"/>',
+      '<text x="48" y="56" fill="#d4a23f" font-size="24" font-weight="800" letter-spacing="3">AGSIST</text>',
+      '<text x="' + (W - 48) + '" y="56" fill="#a9b3b0" font-size="20" text-anchor="end">' + esc(date) + '</text>'];
+    head.forEach(function (l, i) { s.push('<text x="48" y="' + (100 + i * 38) + '" fill="#e9edeb" font-size="32" font-weight="700">' + esc(l) + '</text>'); });
+    s.push('<text x="48" y="' + (y0 - 30) + '" fill="#a9b3b0" font-size="19">' + esc(sp.sub || '') + '</text>');
+    var ch = H - y0 - 86, cw = sp.side ? 560 : W - 96;
+    s.push('<g transform="translate(48,' + y0 + ')">' + sized(sp.big(cw, ch), cw, ch) + '</g>');
+    (sp.side || []).forEach(function (l, i) { s.push('<text x="650" y="' + (y0 + 40 + i * 34) + '" fill="' + (i ? '#a9b3b0' : '#e9edeb') + '" font-size="' + (i ? 20 : 24) + '"' + (i ? '' : ' font-weight="700"') + '>' + esc(l) + '</text>'); });
+    wrap(sp.source, 96).slice(0, 2).forEach(function (l, i) { s.push('<text x="48" y="' + (H - 48 + i * 22 - (wrap(sp.source, 96).length > 1 ? 22 : 0)) + '" fill="#a9b3b0" font-size="16">' + esc(l) + '</text>'); });
+    s.push('<text x="' + (W - 48) + '" y="' + (H - 40) + '" fill="#d4a23f" font-size="24" font-weight="700" text-anchor="end">agsist.com</text></svg>');
+    return s.join('');
+  }
   var words = { basis: basisWords, county: countyName, quarters: quarters };
 
-  var api = { lineSvg: lineSvg, cumSvg: cumSvg, landSvg: landSvg, nice: nice, fridays: fridays, county: county, words: words };
+  var api = { lineSvg: lineSvg, cumSvg: cumSvg, landSvg: landSvg, cardSvg: cardSvg, nice: nice, fridays: fridays, county: county, words: words };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgHomePage = api;
   var doc = root.document;
@@ -260,6 +289,8 @@
   function ga(n, p) { try { p = p || {}; p.page = 'home'; if (typeof root.gtag === 'function') root.gtag('event', n, p); } catch (e) {} }
   var PHONE = root.matchMedia ? root.matchMedia('(max-width:640px)') : null;
   function phone() { return !!(PHONE && PHONE.matches); }
+  /* chart text in viewBox units that renders at 12.2px or more at the box's real width */
+  function fsFor(id, vbW) { var b = $(id), w = b && b.clientWidth; return w ? Math.max(12, Math.round(12.2 * vbW / w * 10) / 10) : 12.5; }
   function later(el, fn) {
     if (!el) return;
     if (!('IntersectionObserver' in root)) { fn(); return; }
@@ -327,12 +358,15 @@
     say('Finding your location…');
     ga('location_tap', {});
     var before = (readPlace() || {}).zip || '';
+    var failed = false;
+    root.agsistGeoFailed = function () { failed = true; say('Your location did not come through. Type your ZIP.', true); };
     if (typeof root.requestGeo === 'function') root.requestGeo();
     else { say('Location is not ready yet. Type your ZIP.', true); return; }
     var n = 0;
     (function wait() {
       var p = readPlace();
       if (p && p.zip && (p.zip !== before || n > 2) && p.lat != null) { say(''); landed(); return; }
+      if (failed) return;
       if (++n < 40) setTimeout(wait, 300); else say('Your location did not come through. Type your ZIP.', true);
     })();
   }
@@ -386,6 +420,57 @@
     tb.innerHTML = out.join('');
   }
 
+  /* ---- no ZIP yet: pick a state, see its median basis (data/basis-states.json, AGSIST network elevators) ----
+     Only crops with a median are printed (the file prints one at min_n elevators or more); a thinner corn or soybean
+     line is counted, not priced. The pick is remembered on this browser for the planting and RMA pages too. */
+  var NOLOC = { corn: 'Corn', soybeans: 'Soybeans', wheat_srw: 'SRW wheat', wheat_hrw: 'HRW wheat', wheat_hrs: 'Spring wheat' };
+  function medOf(n, m) { var s = 'median of ' + n + ' elevator' + (n === 1 ? '' : 's'); return typeof m !== 'number' ? s : s + ', ' + m + ' compan' + (m === 1 ? 'y' : 'ies'); }
+  function bcents(m) { var c = Math.round(m * 10000) / 100; return (root.AG && root.AG.px && root.AG.px.basis) ? root.AG.px.basis(c) : ((c > 0 ? '+' : '\u2212') + Math.abs(c) + '\u00a2'); }
+  root.__agsistNolocRows = function (doc, code) {
+    var s = doc && doc.states && doc.states[code]; if (!s) return null;
+    var rows = [], thin = [];
+    Object.keys(NOLOC).forEach(function (k) {
+      var c = s.crops && s.crops[k]; if (!c) return;
+      if (c.median == null) { if (k === 'corn' || k === 'soybeans') thin.push(NOLOC[k]); return; }
+      var wk = '';
+      if (c.wow != null && c.wow_n >= (doc.min_n || 3)) { var w = Math.round(c.wow * 4) / 4; wk = w === 0 ? 'no change on the week' : (root.AG.px.basis(w) + ' on the week'); }
+      rows.push({ crop: NOLOC[k], basis: bcents(c.median), contract: c.label || '', n: c.n, co: c.companies, week: wk });
+    });
+    return { name: s.name, path: s.path || '', rows: rows, thin: thin };
+  };
+  function noloc() {
+    var box = $('bids-noloc'); if (!box || box._on) return; box._on = true;
+    var sel = box.querySelector('.hn-sel'), out = box.querySelector('.hn-out'), AB = {}, doc = null;
+    function day(iso) { var d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', timeZone: 'America/Chicago' }); }
+    function draw(code) {
+      if (!code) { out.innerHTML = ''; return; }
+      var r = root.__agsistNolocRows(doc, code);
+      if (!r || !r.rows.length) { out.innerHTML = '<p class="hn-fine">Not enough fresh ' + esc(AB[code]) + ' bids in the AGSIST network to print a state basis this week.' + (r && r.path ? ' <a href="' + esc(r.path.replace(/#.*$/, '')) + '">' + esc(r.name) + ' bids</a>' : '') + '</p>'; return; }
+      out.innerHTML = '<ul class="hn-rows">' + r.rows.map(function (x) {
+        return '<li><span class="hn-crop">' + esc(x.crop) + '</span><span class="hn-b">' + esc(x.basis) + '</span><span class="hn-c">' + esc(x.contract) + '</span><span class="hn-n">' + medOf(x.n, x.co) + (x.week ? ', ' + esc(x.week) : '') + '</span></li>';
+      }).join('') + '</ul><p class="hn-fine">Median basis of AGSIST network elevators with a fresh bid, read ' + esc(day(doc.generated)) + '. Your elevator will differ.' + (r.thin.length ? ' Too few bids to print: ' + esc(r.thin.join(', ')) + '.' : '') + ' <a href="' + esc(r.path || '/basis') + '">All ' + esc(r.name) + ' bids</a></p>';
+    }
+    sel.addEventListener('change', function () {
+      var v = sel.value;
+      try { if (v) { localStorage.setItem('agsist-pd-state', v); localStorage.setItem('agsist-rma-state', AB[v]); } } catch (e) {}
+      ga('noloc_state_pick', { state: v || 'none' });
+      draw(v);
+    });
+    getJSON('/data/basis-states.json').then(function (d) {
+      doc = d; var st = (d && d.states) || {};
+      Object.keys(st).forEach(function (k) { if (st[k] && st[k].name) AB[k] = st[k].name; });
+      var ks = Object.keys(AB).sort(function (x, y) { return AB[x] < AB[y] ? -1 : 1; });
+      if (!ks.length) throw new Error('no states');
+      sel.innerHTML = '<option value="">Pick a state</option>' + ks.map(function (k) { return '<option value="' + esc(k) + '">' + esc(AB[k]) + '</option>'; }).join('');
+      sel.disabled = false;
+      var pre = ''; try { pre = localStorage.getItem('agsist-pd-state') || ''; if (!AB[pre]) { var n = localStorage.getItem('agsist-rma-state'); pre = ''; for (var k in AB) if (AB[k] === n) pre = k; } } catch (e) {}
+      if (pre) { sel.value = pre; draw(pre); }
+    }).catch(function () {
+      var lab = box.querySelector('.hn-sl'); if (lab) lab.parentNode.removeChild(lab);
+      out.innerHTML = '<p class="hn-fine">State basis did not load. Your ZIP still works.</p>';
+    });
+  }
+
   /* ---- futures: the header from data/prices.json, the charts from data/price-stats.json ---- */
   var PX = null, STATS = null;
   var CROPS = [['corn', 'fc', 'corn', 'hp-ch-corn', 'Corn'], ['beans', 'fs', 'soybean', 'hp-ch-soy', 'Soybean']];
@@ -396,7 +481,7 @@
     CROPS.forEach(function (c) {
       var h = headline(c[0]); if (!h || !h.q || !num(h.q.close)) return;
       var q = h.q;
-      txt('hb-' + c[1] + '-k', (h.label ? h.label + ' ' : '') + c[2] + ' futures');
+      txt('hb-' + c[1] + '-k', (h.label ? String(h.label).replace(/'/g, '\u2019') + ' ' : '') + c[2] + ' futures');
       html('hb-' + c[1] + '-v', '<span class="hb-n">' + A.price(q.close, { style: 'slash', fracClass: 'hb-frac' }) + '</span>');
       var S = root.AgPxStamp || {}, held = !!(q.move_withheld || q.roll);
       var diff = num(q.netChange) ? q.netChange : (num(q.open) ? q.close - q.open : null), chg = '';
@@ -452,7 +537,7 @@
       if (msg) msg.textContent = '';
       var take = takeaway(cd), A = root.AG && root.AG.px, out = {};
       txt('hp-take-' + c[1], take);
-      var svg = lineSvg({ d: cd.d, v: cd.v, w: ph ? 366 : 446, h: ph ? 190 : 290, fs: ph ? 11 : 12, uid: c[1] + (ph ? 'm' : 'd'), cur: cd.cur, label: chartLabel(c, cd), out: out });
+      var svg = lineSvg({ d: cd.d, v: cd.v, w: ph ? 366 : 446, h: ph ? 190 : 290, fs: fsFor(c[3], ph ? 366 : 446), uid: c[1] + (ph ? 'm' : 'd'), cur: cd.cur, label: chartLabel(c, cd), out: out });
       out.svg = svg; out.mode = 'x'; out.label = chartLabel(c, cd);
       out.text = function (i) { var v = cd.v[i]; return md(cd.d[i]) + (i === cd.v.length - 1 ? ', today: ' : ', Friday close: ') + (A ? A.priceDollars(v, { style: 'slash' }).replace(/<[^>]+>/g, '') : money2(v)); };
       chart(box, out);
@@ -476,13 +561,6 @@
                     in fixed dark colors, so it reads on its own in a text thread. Share sends it with the phone's share
                     sheet (or the link where files cannot be shared); Save picture downloads it. */
   var SPECS = {};
-  var CARD_CSS = '.ch{font-family:Helvetica,Arial,sans-serif}.ch-grid{stroke:#22292b;stroke-width:1}.ch-base,.ch-tick{stroke:#3a4346;stroke-width:1}.ch-ax{fill:#a9b3b0}'
-    + '.ch-line{fill:none;stroke:#d4a23f;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}.ch-fill-a{stop-color:#d4a23f;stop-opacity:.22}.ch-fill-b{stop-color:#d4a23f;stop-opacity:0}'
-    + '.ch-hi{fill:#0a0c0d;stroke:#a9b3b0;stroke-width:1.5}.ch-note{fill:#a9b3b0}.ch-cur-l{stroke:#d4a23f;stroke-dasharray:3 4;opacity:.55}.ch-cur,.ch-tag{fill:#d4a23f}'
-    + '.ch-cur-o{fill:none;stroke:#d4a23f;stroke-width:1.5;opacity:.6}.ch-tag-t{fill:#0a0c0d;font-weight:700}.ch-band{fill:#d4a23f;opacity:.14}'
-    + '.ch-dot{fill:#6f9fc2;fill-opacity:.6;stroke:#101415;stroke-width:1}.ch-med{stroke:#d4a23f;stroke-width:2}.ch-val{fill:#e9edeb;font-weight:700}'
-    + '.ch-norm{fill:none;stroke:#6f9fc2;stroke-width:2;stroke-dasharray:5 4}.ch-normdot{fill:#6f9fc2}.rmap-bg{fill:#161b1c}.rmap-gr{stroke:#22292b}'
-    + '.rmap-st{fill:none;stroke:#e9edeb;stroke-opacity:.55;stroke-width:1.4}.rmap-t,.rmap-me{fill:#e9edeb;font-weight:700;paint-order:stroke;stroke:#161b1c;stroke-width:3px}.rmap-tdot{fill:#e9edeb}';
   var NS = 'http://www.w3.org/2000/svg';
   function chart(box, c) {
     if (!box) return;
@@ -544,31 +622,13 @@
     }
     function hide() { var ro = box.querySelector('.hp-ro'), g = box.querySelector('.ch-pickg'); if (ro) ro.hidden = true; if (g) g.style.display = 'none'; }
   }
-  function wrap(t, n) {
-    var words = String(t).split(' '), lines = [''];
-    words.forEach(function (w) { var l = lines[lines.length - 1]; if ((l + ' ' + w).trim().length > n && l) lines.push(w); else lines[lines.length - 1] = (l + ' ' + w).trim(); });
-    return lines;
-  }
-  function sized(svg, w, h) { return svg.replace(/^<svg([^>]*?)>/, function (m0, at) { return '<svg' + at.replace(/\s(width|height)="[^"]*"/g, '') + ' width="' + w + '" height="' + h + '">'; }); }
   function card(sp) {
-    var W = 1200, H = 630, today = ctDay(), date = md(today) + ', ' + today.getUTCFullYear();
-    var head = wrap(sp.head, 58).slice(0, 2), y0 = head.length > 1 ? 196 : 170;
-    var s = ['<svg xmlns="' + NS + '" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" font-family="Helvetica, Arial, sans-serif"><style>' + CARD_CSS + '</style>',
-      '<rect width="' + W + '" height="' + H + '" fill="#0a0c0d"/><rect width="' + W + '" height="8" fill="#d4a23f"/>',
-      '<text x="48" y="56" fill="#d4a23f" font-size="24" font-weight="800" letter-spacing="3">AGSIST</text>',
-      '<text x="' + (W - 48) + '" y="56" fill="#a9b3b0" font-size="20" text-anchor="end">' + esc(date) + '</text>'];
-    head.forEach(function (l, i) { s.push('<text x="48" y="' + (100 + i * 38) + '" fill="#e9edeb" font-size="32" font-weight="700">' + esc(l) + '</text>'); });
-    s.push('<text x="48" y="' + (y0 - 30) + '" fill="#a9b3b0" font-size="19">' + esc(sp.sub || '') + '</text>');
-    var ch = H - y0 - 86, cw = sp.side ? 560 : W - 96;
-    s.push('<g transform="translate(48,' + y0 + ')">' + sized(sp.big(cw, ch), cw, ch) + '</g>');
-    (sp.side || []).forEach(function (l, i) { s.push('<text x="650" y="' + (y0 + 40 + i * 34) + '" fill="' + (i ? '#a9b3b0' : '#e9edeb') + '" font-size="' + (i ? 20 : 24) + '"' + (i ? '' : ' font-weight="700"') + '>' + esc(l) + '</text>'); });
-    wrap(sp.source, 96).slice(0, 2).forEach(function (l, i) { s.push('<text x="48" y="' + (H - 48 + i * 22 - (wrap(sp.source, 96).length > 1 ? 22 : 0)) + '" fill="#a9b3b0" font-size="16">' + esc(l) + '</text>'); });
-    s.push('<text x="' + (W - 48) + '" y="' + (H - 40) + '" fill="#d4a23f" font-size="24" font-weight="700" text-anchor="end">agsist.com</text></svg>');
+    var W = 1200, H = 630, svg = cardSvg(sp, ctDay());
     return new Promise(function (ok, no) {
       var img = new Image();
       img.onload = function () { var cv = doc.createElement('canvas'); cv.width = W; cv.height = H; cv.getContext('2d').drawImage(img, 0, 0); cv.toBlob(function (b) { b ? ok(b) : no(new Error('blob')); }, 'image/png'); };
       img.onerror = function () { no(new Error('img')); };
-      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(s.join(''));
+      img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
     });
   }
   function act(btn) {
@@ -600,7 +660,9 @@
       if (!d || !num(d.close) || td.length < 3) return;
       var last = kind === 'c' ? A.price(d.close, { style: 'slash' }).replace(/<[^>]+>/g, '') : kind === 'c2' ? f1(d.close, 2) + '¢' : '$' + Number(d.close).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
       var v = num(d.netChange) ? d.netChange : null, ch = '<span class="nc">-</span>';
-      if (v != null) {
+      /* a move the price run withheld (a change that crosses contracts near expiry) prints the price and no change */
+      if (d.move_withheld || d.roll) ch = '<span class="nc">contract roll</span>';
+      else if (v != null) {
         if (Math.abs(v) < 1e-9) ch = '<span class="nc">unch.</span>';
         else ch = '<span class="' + (v > 0 ? 'up' : 'dn') + '"><span aria-hidden="true">' + (v > 0 ? '▲' : '▼') + '</span><span class="vh">' + (v > 0 ? 'up' : 'down') + '</span> '
           + (kind === 'c' ? quarters(v) + '¢' : kind === 'c2' ? f1(Math.abs(v), 2) + '¢' : f1(Math.abs(v), 2)) + '</span>';
@@ -664,6 +726,7 @@
       txt('hp-rpchip-t', (d('framed12x18') || '') + ' framed. Order by ' + md(fc) + ' for Christmas →');
       html('hp-rp-by', 'Order a framed print by <b>' + md(fc) + '</b> for Christmas.');
       txt('hp-rp-k', 'Rain Print · Christmas gift');
+      var gl = $('hp-rp-gift'); if (gl) gl.hidden = false;
     } else if (on && pc && today <= pc) {
       txt('hp-rpchip-t', (d('print12x18') || '') + ' print. Order by ' + md(pc) + ' for Christmas →');
       html('hp-rp-by', 'Order a print by <b>' + md(pc) + '</b> for Christmas.');
@@ -734,7 +797,7 @@
     var head = 'Rain this year: ' + f1(c.total) + ' in' + (num(pct) ? ', ' + pct + '% of normal' : '');
     var opts = function (w, h, fs, uid, out) { return { x: xs, a: a, b: b, w: w, h: h, fs: fs, uid: uid, out: out, fmt: function (v) { return v + ' in'; }, steps: [1, 2, 5, 10, 20], xl: xl,
       now: f1(c.total) + ' in', norm: num(c.usual) ? 'normal ' + f1(c.usual) : '', label: 'Rain since January 1: ' + f1(c.total) + ' inches; normal to date ' + f1(c.usual) + ' inches.' }; };
-    var out = {}; out.svg = cumSvg(opts(ph ? 366 : 380, ph ? 200 : 250, ph ? 11 : 12, 'rn' + (ph ? 'm' : 'd'), out)); out.mode = 'x'; out.label = head + '.';
+    var out = {}; out.svg = cumSvg(opts(ph ? 366 : 380, ph ? 200 : 250, fsFor('hp-rain-ch', ph ? 366 : 380), 'rn' + (ph ? 'm' : 'd'), out)); out.mode = 'x'; out.label = head + '.';
     out.text = function (i) { return (i ? md(addDays(new Date(Date.UTC(yr, 0, 1)), xs[i])) : 'Jan 1') + ': ' + f1(a[i]) + ' in; normal ' + f1(b[i]) + ' in'; };
     chart(box, out);
     var st = c.station || {}, net = st.net === 'cocorahs' ? ' (CoCoRaHS)' : st.net ? ' (NOAA co-op)' : '';
@@ -763,7 +826,7 @@
     var box = $('hp-gdu-ch'); if (!box) return;
     var opts = function (w, h, fs, uid, out) { return { x: xs, a: a, b: b, w: w, h: h, fs: fs, uid: uid, out: out, fmt: function (v) { return v ? (v >= 1000 ? (v / 1000) + 'k' : String(v)) : '0'; },
       steps: [100, 250, 500, 1000], xl: xl, now: comma(now) + ' GDUs', norm: num(norm) ? 'normal ' + comma(norm) : '', label: 'Corn growing degree units since May 1: ' + comma(now) + '; normal ' + comma(norm) + '.' }; };
-    var out = {}; out.svg = cumSvg(opts(ph ? 366 : 380, ph ? 200 : 250, ph ? 11 : 12, 'gd' + (ph ? 'm' : 'd'), out)); out.mode = 'x'; out.label = head + '.';
+    var out = {}; out.svg = cumSvg(opts(ph ? 366 : 380, ph ? 200 : 250, fsFor('hp-gdu-ch', ph ? 366 : 380), 'gd' + (ph ? 'm' : 'd'), out)); out.mode = 'x'; out.label = head + '.';
     out.text = function (i) { return (i ? md(addDays(new Date(Date.UTC(yr, 0, 1)), xs[i])) : 'May 1') + ': ' + comma(a[i]) + ' GDUs; normal ' + comma(b[i]); };
     chart(box, out);
     var s = c.s && c.s[0] ? 'Station ' + c.s[0] + '. ' : '';
@@ -834,7 +897,7 @@
           s.push('<circle cx="' + mx.toFixed(1) + '" cy="' + my.toFixed(1) + '" r="7" fill="#ffd23f" stroke="#111" stroke-width="2"/><text class="rmap-me" x="' + (mx + 11).toFixed(1) + '" y="' + (my + 4).toFixed(1) + '">' + esc(p.zip) + '</text></svg>');
           return { svg: s.join(''), w: W, h: H, lon0: lon0, lon1: lon1, lat0: lat0, lat1: lat1 };
         }
-        var mp = build(ph ? 366 : 392, ph ? 330 : 352, ph ? 11 : 12);
+        var mp = build(ph ? 366 : 392, ph ? 330 : 352, fsFor('hp-rmap', ph ? 366 : 392));
         var here = root.AgRadarRain.lookup(h, q, lat, lon);
         var head = 'Radar rain, last 7 days: ' + (here == null ? 'no reading' : f1(here / 100, 2) + ' in') + ' at ' + p.zip;
         txt('hp-rr-h', head);
@@ -889,7 +952,7 @@
     var cn = countyName(F.county, st), newest = rows.reduce(function (a, b) { return b.d > a.d ? b : a; }, rows[0]);
     var lab = 'Farmland sales in ' + cn + ', price per acre, ' + md(from) + ', ' + from.getUTCFullYear() + ' to ' + md(to) + ', ' + to.getUTCFullYear();
     var opts = function (w, h, fs) { return { rows: rows, med: u[0], q1: u[1], q3: u[2], w: w, h: h, fs: fs, from: from, to: to, ring: ring || newest, label: lab }; };
-    var ch = landSvg(opts(ph ? 366 : 374, ph ? 190 : 250, ph ? 11 : 12));
+    var ch = landSvg(opts(ph ? 366 : 374, ph ? 190 : 250, fsFor('hp-land-ch', ph ? 366 : 374)));
     var src = (L && L.lead && L.lead[st] && L.lead[st].src) || 'State';
     txt('hp-land-h', words.h || (cn + ' median: $' + comma(u[0]) + ' an acre'));
     var nw = words.p || ((num(u[3]) ? u[3] : rows.length) + ' bare farmland sales over two years. Newest: ' + Math.round(newest.acres) + ' acres'
@@ -1011,6 +1074,7 @@
     Array.prototype.forEach.call(doc.querySelectorAll('[data-hp-loc]'), function (b) { b.addEventListener('click', useLocation); });
     doc.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.hp-tools [data-act]'); if (b) act(b); });
     paintPlace(); fullPlace().then(function (p) { paintPlace(p); });
+    if (!hasZip(readPlace())) noloc();
     root.addEventListener('agsist-place', function () { paintPlace(); });
     root.addEventListener('storage', function () { paintPlace(); });
     root._AGSIST_GEO_CALLBACKS = root._AGSIST_GEO_CALLBACKS || [];

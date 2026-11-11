@@ -194,6 +194,7 @@ function requestGeo() {
       // 2026-10-19: said only after a tap that failed, never on a fresh visit.
       var h = document.querySelector('#bids-noloc .hn-h');
       if (h) h.textContent = 'Your location did not come through.';
+      if (typeof window.agsistGeoFailed === 'function') { try { window.agsistGeoFailed(); } catch (e) {} }
     },
     { timeout: 8000, maximumAge: 0 }
   );
