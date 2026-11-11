@@ -91,18 +91,18 @@ def repoint(url):
 
 def stub(old):
     new, anchor, _f, line = MOVED[old]
-    js = new + '"+location.search+(location.hash||"#' + anchor + '")'
+    js = 'location.replace("' + new + '"+location.search+(location.hash||"#' + anchor + '"))'
     if old in TABBED:
-        # a hash of its own is kept; it may name no tab (/urea#foo), so the stub also names the old page's tab in ?ptab=
-        # (components/page-tabs.js opens it when the hash opens nothing, then drops it from the address)
-        js = new + '"+(function(h,q){return h?q+(q?"&":"?")+"ptab=' + anchor + '"+h:q+"#' + anchor + '";})(location.hash,location.search)'
+        # the hash is kept as it is; it may name no tab (/urea#foo), so the stub first leaves the old page's tab in
+        # sessionStorage (components/page-tabs.js opens it when the hash opens nothing, and clears it)
+        js = 'try{sessionStorage.setItem("ptab","' + anchor + '")}catch(e){}' + js
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n<meta charset=\"utf-8\">\n"
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
             f"<title>Moved | AGSIST</title>\n"
             "<meta name=\"robots\" content=\"noindex,follow\">\n"
             f"<link rel=\"canonical\" href=\"https://agsist.com{new}\">\n"
             f"<meta http-equiv=\"refresh\" content=\"0; url={new}#{anchor}\">\n"
-            f"<script>location.replace(\"{js});</script>\n"
+            f"<script>{js};</script>\n"
             "</head>\n<body>\n"
             "<main style=\"max-width:600px;margin:0 auto;padding:3rem 1rem;font-family:Inter,system-ui,sans-serif;text-align:center\">\n"
             f"<p>{line}</p>\n"

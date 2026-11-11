@@ -39,9 +39,9 @@ test("every old weather address forwards to a tab its destination has", () => {
     assert.equal(go("", ""), `${to}#${tab}`, old);
     // a radar link from Field Scout or a county page keeps its spot
     assert.equal(go("?lat=41.9&lon=-93.6&label=Ames", ""), `${to}?lat=41.9&lon=-93.6&label=Ames#${tab}`, old + " keeps the query");
-    // a hash of its own is kept; one that names no tab still lands on this page's tab (?ptab=, dropped by page-tabs.js)
-    assert.equal(go("", "#foo"), `${to}?ptab=${tab}#foo`, old + " keeps its own hash");
-    assert.equal(go("?lat=41.9", "#foo"), `${to}?lat=41.9&ptab=${tab}#foo`, old + " keeps the query and its own hash");
+    // a hash of its own is kept as it is; the stub leaves its tab in sessionStorage for the case the hash names none
+    assert.equal(go("", "#foo"), `${to}#foo`, old + " keeps its own hash");
+    assert.equal(go("?lat=41.9", "#foo"), `${to}?lat=41.9#foo`, old + " keeps the query and its own hash");
     const page = read(fileOf(to));
     const box = page.match(/<div class="ptabs" data-ptabs="([^"]+)" data-default="([^"]+)">/);
     assert.ok(box, to + " has the tab box");
@@ -266,10 +266,8 @@ test("in a browser: an old address opens its tab, a tab click loads its code onc
     assert.ok(!(await pg.isVisible("#rr-answer")), "the radar panel is closed");
     // an old address with a hash that is no tab keeps its own tab, and the address drops the helper
     await pg.goto(`http://127.0.0.1:${port}/urea#foo`);
-    await pg.waitForURL(/\/spray(\?ptab=urea)?#foo$/);
+    await pg.waitForURL(/\/spray#foo$/);
     await pg.waitForFunction(() => document.querySelector(".ptabs").getAttribute("data-on") === "urea");
-    await pg.waitForFunction(() => !/ptab=/.test(location.search));
-    assert.match(pg.url(), /\/spray#foo$/, "the helper is gone from the address");
     // an old section link inside a tab opens that tab
     await pg.goto(`http://127.0.0.1:${port}/rain#all-states`);
     await pg.waitForFunction(() => document.querySelector(".ptabs").getAttribute("data-on") === "county");

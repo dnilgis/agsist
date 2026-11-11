@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex,follow">
 <link rel="canonical" href="https://agsist.com/rain">
 <meta http-equiv="refresh" content="0; url=/rain#drought">
-<script>location.replace("/rain"+(function(h,q){return h?q+(q?"&":"?")+"ptab=drought"+h:q+"#drought";})(location.hash,location.search));</script>
+<script>try{sessionStorage.setItem("ptab","drought")}catch(e){}location.replace("/rain"+location.search+(location.hash||"#drought"));</script>
 </head>
 <body>
 <main style="max-width:600px;margin:0 auto;padding:3rem 1rem;font-family:Inter,system-ui,sans-serif;text-align:center">
