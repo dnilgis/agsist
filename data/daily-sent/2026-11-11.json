@@ -1,0 +1,1068 @@
+{
+  "date": "2026-11-11",
+  "sent_at": "2026-11-11T14:20:59+00:00",
+  "format": "v2",
+  "subject": "Corn slips 2½ cents to $4.46½ after Tuesday's yield cut",
+  "note": "The Daily as emailed. The page at /daily/2026-11-11 may have been updated later the same day.",
+  "briefing": {
+    "headline": "Corn slips 2½ cents to $4.46½ after Tuesday's yield cut",
+    "lead": "Dec corn is at $4.46½ overnight, 2½ cents under Tuesday's $4.49 settle. A Farm Policy News item says USDA's yield cut was bigger than traders expected, and corn had its best day in three months.",
+    "teaser": "Corn gives back 2½ cents after USDA's bigger yield cut; crude firms as Iran peace hopes fade.",
+    "one_number": {
+      "value": "93 to 94",
+      "unit": "cents over December, Gulf corn bids",
+      "context": "USDA AMS says Gulf export elevators bid 93 to 94 cents over December for corn Nov 10."
+    },
+    "sections": [
+      {
+        "title": "Cattle up, cash hogs soft",
+        "body": "- Dec live cattle settled Tuesday at **$219.20**, up $3.00, and AgWeb says Tyson's second-shift restart supports a possible short-term low.\n- USDA AMS puts cash hogs at $49.43 carcass base, and the pork cutout fell $1.29 to $69.52 on Nov 10.",
+        "so_what": "Packer demand helps cattle; pork cutout is still falling.",
+        "conviction_level": "medium",
+        "overnight_surprise": false
+      },
+      {
+        "title": "Crude firms on Iran doubts",
+        "body": "- WTI is at **$87.28** overnight, up 1.4% from Tuesday's $86.04 settle.\n- Oilprice.com says peace optimism faded as tanker attacks near Hormuz continued, with a record number reported.",
+        "so_what": "Fuel costs stay tied to the Hormuz headlines.",
+        "conviction_level": "medium",
+        "overnight_surprise": false
+      }
+    ],
+    "outside_the_pit": [
+      {
+        "title": "ASA warns biofuels rollback would hurt soy markets",
+        "body": "The soybean group says a rollback would hit soy demand. Soybean oil is up 1.1% overnight at $63.49.",
+        "tag": "POLICY",
+        "link": "https://news.google.com/rss/articles/CBMimwFBVV95cUxQcWtSQVBRYm5jcl8tOW0zMzR0VEluTG84RU5TT0p4bEJmcUxtdGVsUU1uQW4ybWZzZEhLaE1MNWNNamk2cHRmNXJLOGl1aExFWW5aeEU1NmJlOEFqZ3FMVXlocU1menJycVJDZzlYc09DUURwSVNmYU5RaWZLcDY0STRLdzM4cUdUdmNfaHBxZzhQS1RHcEZwU2VkSQ?oc=5",
+        "source": "World Grain",
+        "news_id": "N4"
+      },
+      {
+        "title": "Farmdoc looks at who should pick ARC-IC",
+        "body": "Enrollment for 2026 ARC/PLC closes Dec 11. Most farmers have harvested, so yields are known.",
+        "tag": "GRAINS",
+        "link": "https://farmdocdaily.illinois.edu/2026/11/the-2026-arc-plc-decision-who-should-consider-arc-ic.html",
+        "source": "farmdocdaily.illinois.edu",
+        "news_id": "N8"
+      },
+      {
+        "title": "Ukrainian drones hit Russia's Ust-Luga export hub",
+        "body": "The Baltic port handles key commodity exports. Black Sea grain trade is already stalled, per Reuters.",
+        "tag": "TRADE",
+        "link": "https://oilprice.com/Latest-Energy-News/World-News/Ukrainian-Drone-Attack-Sparks-Fire-at-Russias-Key-Baltic-Oil-Export-Hub.html",
+        "source": "oilprice.com",
+        "news_id": "N18"
+      }
+    ],
+    "watch_list": [
+      {
+        "time": "Thursday, Nov 12, or Friday, 7:30 a.m. CT",
+        "desc": "Export sales, Nov 12 or 13. Corn and soybean totals show if Gulf demand matches bids."
+      },
+      {
+        "time": "Ongoing",
+        "desc": "Dec corn back under $4.41½ would give back much of the yield-cut bounce."
+      },
+      {
+        "time": "Dec 11",
+        "desc": "2026 ARC/PLC signup deadline, 30 days out."
+      }
+    ],
+    "source_summary": "AGSIST locked prices, USDA AMS, Farm Policy News, AgWeb, Oilprice.com, Reuters",
+    "date": "Wednesday, November 11, 2026",
+    "meta": {
+      "market_mood": "cautious",
+      "heat_section": 0,
+      "overnight_surprises_count": 2,
+      "word_count": 263,
+      "news_coverage": {
+        "ok": 18,
+        "total": 26,
+        "items": 95,
+        "dark": [
+          "nass.usda.gov",
+          "agproud.com",
+          "brownfieldagnews.com",
+          "dairyherd.com",
+          "porkbusiness.com",
+          "extension.iastate.edu",
+          "extension.umn.edu",
+          "extension.purdue.edu"
+        ]
+      }
+    },
+    "freshness": {
+      "window": 7,
+      "tries": 2,
+      "hits": [
+        {
+          "kind": "sentence",
+          "loc": "sections[2].so_what",
+          "why": "'Fuel costs stay tied to the Hormuz headlines.' says again what Thu Nov 5 said: 'Diesel costs stay tied to Hormuz headlines.'"
+        }
+      ]
+    },
+    "locked_prices": {
+      "corn": 4.465,
+      "corn-dec": 4.465,
+      "beans": 12.2625,
+      "beans-nov": 12.195,
+      "wheat": 5.9625,
+      "oats": 3.5175,
+      "cattle": 219.2,
+      "feeders": 330.35001,
+      "hogs": 55.8,
+      "milk": 17.83,
+      "meal": 325.20001,
+      "soyoil": 63.49,
+      "crude": 87.28,
+      "natgas": 3.363,
+      "gold": 4038.1001,
+      "silver": 52.6,
+      "dollar": 102.804,
+      "sp500": 7520.93018,
+      "bitcoin": 73595.07812
+    },
+    "locked_changes": {
+      "corn": {
+        "prev": 4.49,
+        "pct": -0.5568,
+        "kind": "last",
+        "at": "2026-11-11T14:12:44Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10",
+        "contract": "Dec '26"
+      },
+      "corn-dec": {
+        "prev": 4.49,
+        "pct": -0.5568,
+        "kind": "last",
+        "at": "2026-11-11T14:12:41Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10"
+      },
+      "beans": {
+        "prev": 12.28,
+        "pct": -0.1425,
+        "kind": "last",
+        "at": "2026-11-11T14:12:46Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10",
+        "contract": "Jan '27"
+      },
+      "beans-nov": {
+        "prev": 12.245,
+        "pct": -0.4083,
+        "kind": "last",
+        "at": "2026-11-11T14:12:42Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10"
+      },
+      "wheat": {
+        "prev": 5.9275,
+        "pct": 0.5905,
+        "kind": "last",
+        "at": "2026-11-11T14:12:47Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10",
+        "contract": "Dec '26"
+      },
+      "oats": {
+        "prev": 3.45,
+        "pct": 1.9565,
+        "kind": "last",
+        "at": "2026-11-11T14:12:44Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10"
+      },
+      "cattle": {
+        "prev": 216.2,
+        "pct": 1.3876,
+        "kind": "settle",
+        "date": "2026-11-10",
+        "prev_date": "2026-11-09",
+        "contract": "Dec '26"
+      },
+      "feeders": {
+        "prev": 328.35,
+        "pct": 0.6091,
+        "kind": "settle",
+        "date": "2026-11-10",
+        "prev_date": "2026-11-09",
+        "contract": "Nov '26"
+      },
+      "hogs": {
+        "prev": 55.875,
+        "pct": -0.1342,
+        "kind": "settle",
+        "date": "2026-11-10",
+        "prev_date": "2026-11-09",
+        "contract": "Dec '26"
+      },
+      "milk": {
+        "prev": 17.82,
+        "pct": 0.0561,
+        "kind": "last",
+        "at": "2026-11-11T14:12:54Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10",
+        "contract": "Nov '26"
+      },
+      "meal": {
+        "prev": 326.5,
+        "pct": -0.3982,
+        "kind": "last",
+        "at": "2026-11-11T14:12:55Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10"
+      },
+      "soyoil": {
+        "prev": 62.77,
+        "pct": 1.147,
+        "kind": "last",
+        "at": "2026-11-11T14:12:55Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10"
+      },
+      "crude": {
+        "prev": 86.04,
+        "pct": 1.4412,
+        "kind": "last",
+        "at": "2026-11-11T14:12:55Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10"
+      },
+      "natgas": {
+        "prev": 3.296,
+        "pct": 2.0328,
+        "kind": "last",
+        "at": "2026-11-11T14:12:56Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10"
+      },
+      "gold": {
+        "prev": 4030.2,
+        "pct": 0.196,
+        "kind": "last",
+        "at": "2026-11-11T14:12:56Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10"
+      },
+      "silver": {
+        "prev": 51.101,
+        "pct": 2.9334,
+        "kind": "last",
+        "at": "2026-11-11T14:12:56Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10"
+      },
+      "dollar": {
+        "prev": 102.23,
+        "pct": 0.5615,
+        "kind": "last",
+        "at": "2026-11-11T14:12:57Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10"
+      },
+      "sp500": {
+        "prev": 7549.9399,
+        "pct": -0.3842,
+        "kind": "settle",
+        "date": "2026-11-10",
+        "prev_date": "2026-11-09"
+      },
+      "bitcoin": {
+        "prev": 73720.1172,
+        "pct": -0.1696,
+        "kind": "last",
+        "at": "2026-11-11T14:12:57Z",
+        "date": "2026-11-11",
+        "prev_date": "2026-11-10"
+      }
+    },
+    "board": {
+      "fetched": "2026-11-11T14:12:57Z",
+      "quote_session": "2026-11-11",
+      "prev_close_session": "2026-11-10"
+    },
+    "basis_wow": {
+      "print": true,
+      "rows": [
+        {
+          "st": "IA",
+          "name": "Iowa",
+          "crop": "soybeans",
+          "wow": 5.0,
+          "n": 231,
+          "moved": 143,
+          "companies": 37
+        },
+        {
+          "st": "IN",
+          "name": "Indiana",
+          "crop": "corn",
+          "wow": 9.0,
+          "n": 61,
+          "moved": 53,
+          "companies": 21
+        },
+        {
+          "st": "KS",
+          "name": "Kansas",
+          "crop": "soybeans",
+          "wow": 5.0,
+          "n": 165,
+          "moved": 93,
+          "companies": 22
+        },
+        {
+          "st": "OH",
+          "name": "Ohio",
+          "crop": "corn",
+          "wow": 8.0,
+          "n": 55,
+          "moved": 47,
+          "companies": 20
+        },
+        {
+          "st": "OH",
+          "name": "Ohio",
+          "crop": "soybeans",
+          "wow": 10.0,
+          "n": 59,
+          "moved": 45,
+          "companies": 18
+        }
+      ],
+      "why": "left IN:soybeans, MO:corn, NE:soybeans",
+      "snapshot": "2026-11-11T12:18:34Z"
+    },
+    "edge": {
+      "label": "Only on AGSIST",
+      "generated": "2026-11-11T14:18:21Z",
+      "facts": [
+        {
+          "id": "basis_wow",
+          "kind": "basis_wow",
+          "sentence": "Basis firmed this week: Ohio soybeans +10¢ (45 of 59 bids moved), Indiana corn +9¢ (53 of 61) and Ohio corn +8¢ (47 of 55).",
+          "key": "Basis firmed this week",
+          "detail": "Each state's middle change in a week, across bids matched with the same elevator's same delivery and futures month; states with 30 or more such bids from 8 or more companies.",
+          "url": "/basis",
+          "link_text": "Basis by state",
+          "as_of": "2026-11-11"
+        }
+      ]
+    },
+    "chart_series": {
+      "corn": [
+        4.5175,
+        4.5125,
+        4.4775,
+        4.4825,
+        4.425,
+        4.4425,
+        4.4,
+        4.415,
+        4.3925,
+        4.49
+      ],
+      "soybeans": [
+        12.14,
+        12.0225,
+        11.8825,
+        11.9375,
+        11.8825,
+        12.28
+      ]
+    },
+    "chart_dates": [
+      "2026-10-28",
+      "2026-10-29",
+      "2026-10-30",
+      "2026-11-02",
+      "2026-11-03",
+      "2026-11-04",
+      "2026-11-05",
+      "2026-11-06",
+      "2026-11-09",
+      "2026-11-10"
+    ],
+    "chart_series_dates": {
+      "corn": [
+        "2026-10-28",
+        "2026-10-29",
+        "2026-10-30",
+        "2026-11-02",
+        "2026-11-03",
+        "2026-11-04",
+        "2026-11-05",
+        "2026-11-06",
+        "2026-11-09",
+        "2026-11-10"
+      ],
+      "soybeans": [
+        "2026-11-03",
+        "2026-11-04",
+        "2026-11-05",
+        "2026-11-06",
+        "2026-11-09",
+        "2026-11-10"
+      ]
+    },
+    "chart_window": "Oct 28 - Nov 10",
+    "quote_strip": {
+      "asof": "2026-11-11T14:12:57Z",
+      "session": "2026-11-11",
+      "vs_session": "2026-11-10",
+      "quotes": [
+        {
+          "key": "corn-dec",
+          "name": "Corn",
+          "contract": "Dec '26",
+          "last": 4.465,
+          "prev": 4.49,
+          "pct": -0.5568,
+          "kind": "last",
+          "at": "2026-11-11T14:12:41Z"
+        },
+        {
+          "key": "beans",
+          "name": "Soybeans",
+          "contract": "Jan '27",
+          "last": 12.2625,
+          "prev": 12.28,
+          "pct": -0.1425,
+          "kind": "last",
+          "at": "2026-11-11T14:12:46Z"
+        },
+        {
+          "key": "wheat",
+          "name": "Wheat",
+          "contract": "Dec '26",
+          "last": 5.9625,
+          "prev": 5.9275,
+          "pct": 0.5905,
+          "kind": "last",
+          "at": "2026-11-11T14:12:47Z"
+        }
+      ]
+    },
+    "price_windows": [
+      {
+        "label": "Week so far",
+        "items": [
+          {
+            "name": "Corn",
+            "text": "+7 1/2¢ (+1.70%)"
+          },
+          {
+            "name": "Soybeans",
+            "text": "+34 1/4¢ (+2.87%)"
+          },
+          {
+            "name": "Wheat",
+            "text": "+1 1/2¢ (+0.25%)"
+          }
+        ]
+      },
+      {
+        "label": "Month to date",
+        "items": [
+          {
+            "name": "Corn",
+            "text": "+1 1/4¢ (+0.28%)"
+          }
+        ]
+      }
+    ],
+    "sponsor": {
+      "active": false,
+      "label": "SPONSOR · 1 SLOT",
+      "advertiser": "AGSIST",
+      "headline": "Sponsor the AGSIST Daily Briefing: $149 a month, first month free.",
+      "body": "One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations, who read it every morning before the open. Rate locked in for 12 months from start date. No minimum, cancel anytime. First month free.",
+      "cta_text": "Become the sponsor",
+      "cta_url": "mailto:sig@agsist.com?subject=AGSIST%20Daily%20sponsor%20inquiry",
+      "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
+      "is_house_ad": true
+    },
+    "issue_number": 243,
+    "generated_at": "2026-11-11T14:18:21.364753+00:00",
+    "generator_version": "5.5.0",
+    "surprise_count": 2,
+    "surprises": [
+      {
+        "commodity": "Silver",
+        "key": "silver",
+        "price": "$52.60",
+        "pct_change": 2.9334,
+        "direction": "up",
+        "surprise_magnitude": 1.2
+      },
+      {
+        "commodity": "US Dollar Index",
+        "key": "dollar",
+        "price": "$102.80",
+        "pct_change": 0.5615,
+        "direction": "up",
+        "surprise_magnitude": 1.1
+      }
+    ],
+    "price_validation_clean": true,
+    "market_closed": false,
+    "market_status_reason": "open",
+    "otp_week_ahead": false,
+    "critic_pass": {
+      "version": "2.0",
+      "ran_at": "2026-11-11T14:18:25.794613+00:00",
+      "threshold": 7,
+      "final_scores": {
+        "rule_1_lead_so_what": 5,
+        "rule_2_conviction_earned": 7,
+        "rule_3_lede_no_deferral": 8,
+        "rule_4_watch_conditional": 5,
+        "rule_5_so_what_synthesizes": 6,
+        "rule_6_quiet_days_quiet": 8,
+        "rule_7_yc_honesty": 10,
+        "rule_8_word_budget": 9,
+        "rule_9_voice": 6,
+        "rule_10_forward_test": 4,
+        "rule_11_action_thresholded": 10,
+        "rule_12_one_fact_one_home": 4,
+        "rule_13_level_coherence": 10,
+        "rule_14_one_number_coherence": 9,
+        "rule_15_markdown_not_html": 10,
+        "rule_16_macro_anchoring": 6
+      },
+      "rewrites_applied": [
+        {
+          "pass": 1,
+          "target": "drop_section[0] 'Corn eases after yield cut'",
+          "rule": "rule_12_one_fact_one_home",
+          "scores_before": {
+            "rule_1_lead_so_what": 5,
+            "rule_2_conviction_earned": 7,
+            "rule_3_lede_no_deferral": 8,
+            "rule_4_watch_conditional": 5,
+            "rule_5_so_what_synthesizes": 6,
+            "rule_6_quiet_days_quiet": 8,
+            "rule_7_yc_honesty": 10,
+            "rule_8_word_budget": 9,
+            "rule_9_voice": 6,
+            "rule_10_forward_test": 4,
+            "rule_11_action_thresholded": 10,
+            "rule_12_one_fact_one_home": 4,
+            "rule_13_level_coherence": 10,
+            "rule_14_one_number_coherence": 9,
+            "rule_15_markdown_not_html": 10,
+            "rule_16_macro_anchoring": 6
+          }
+        }
+      ],
+      "consistency": [],
+      "dry_run": false
+    },
+    "first_published_at": "2026-11-11T14:18:21.364753+00:00"
+  },
+  "printed": [
+    {
+      "kind": "number",
+      "key": "cents over december, gulf corn bids",
+      "value": "93 to 94",
+      "text": "93 to 94 cents over December, Gulf corn bids"
+    },
+    {
+      "kind": "rain_records",
+      "key": "us",
+      "value": [
+        13,
+        15,
+        "Grundy County, IA, 1893, wettest"
+      ],
+      "text": "Rain records: 13 counties are at the wettest year to date in their station's record and 15 at the driest. The longest of those records, Grundy County, IA, goes back to 1893 (wettest)."
+    },
+    {
+      "kind": "rain_rank",
+      "key": "AR:05119",
+      "value": "driest:3"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "CO:08111",
+      "value": "wettest:1"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "IA:19075",
+      "value": "wettest:1"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "IL:17183",
+      "value": "wettest:2"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "IN:18065",
+      "value": "wettest:2"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "IN:18159",
+      "value": "wettest:3"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "KY:21003",
+      "value": "driest:3"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "MI:26045",
+      "value": "wettest:3"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "NV:32011",
+      "value": "driest:2"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "OH:39009",
+      "value": "wettest:3"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "OH:39049",
+      "value": "wettest:2"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "OH:39127",
+      "value": "wettest:3"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "OR:41039",
+      "value": "driest:3"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "VA:51019",
+      "value": "driest:2"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "VA:51031",
+      "value": "driest:3"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "WA:53059",
+      "value": "driest:1"
+    },
+    {
+      "kind": "rain_rank",
+      "key": "WI:55127",
+      "value": "wettest:3"
+    }
+  ],
+  "rain_lines": {
+    "as_of": "2026-11-10",
+    "other": {
+      "2026-10-31": [
+        "AK:02150",
+        "AL:01013",
+        "AL:01043",
+        "AZ:04001",
+        "AZ:04009",
+        "CA:06069",
+        "CA:06101",
+        "CA:06105",
+        "CO:08017",
+        "CO:08061",
+        "CO:08081",
+        "ID:16015",
+        "ID:16033",
+        "IL:17011",
+        "IL:17129",
+        "IL:17187",
+        "IN:18123",
+        "KS:20069",
+        "KS:20083",
+        "KY:21079",
+        "KY:21161",
+        "MI:26039",
+        "MI:26059",
+        "MI:26073",
+        "MI:26091",
+        "MN:27063",
+        "MN:27083",
+        "MT:30077",
+        "NC:37105",
+        "NC:37167",
+        "ND:38037",
+        "NE:31007",
+        "NE:31023",
+        "NM:35006",
+        "NM:35051",
+        "NY:36045",
+        "OH:39077",
+        "OH:39089",
+        "OH:39123",
+        "OH:39133",
+        "OH:39137",
+        "OR:41057",
+        "PA:42009",
+        "PA:42075",
+        "PA:42083",
+        "RI:44009",
+        "SC:45049",
+        "SD:46071",
+        "TN:47155",
+        "TX:48129",
+        "TX:48159",
+        "TX:48199",
+        "TX:48205",
+        "TX:48229",
+        "TX:48337",
+        "TX:48381",
+        "TX:48435",
+        "VA:51135",
+        "VA:51149",
+        "WA:53005",
+        "WA:53027",
+        "WA:53037",
+        "WI:55093",
+        "WV:54011",
+        "WY:56027",
+        "WY:56039"
+      ],
+      "2026-11-01": [
+        "AZ:04003",
+        "CA:06049",
+        "CO:08079",
+        "ID:16043",
+        "ID:16057",
+        "MO:29185",
+        "NM:35023"
+      ],
+      "2026-11-02": [
+        "AR:05057",
+        "GA:13067",
+        "MN:27101",
+        "MN:27165",
+        "MO:29229",
+        "MT:30107",
+        "NE:31059",
+        "SC:45039",
+        "UT:49015",
+        "UT:49031"
+      ],
+      "2026-11-03": [
+        "CO:08021",
+        "FL:12049",
+        "ID:16011",
+        "KS:20003",
+        "KS:20009",
+        "KS:20049",
+        "KS:20065",
+        "NE:31063",
+        "NM:35021",
+        "TX:48237",
+        "TX:48425",
+        "UT:49043"
+      ],
+      "2026-11-04": [
+        "IA:19109",
+        "IL:17021",
+        "IL:17141",
+        "KS:20089",
+        "KS:20127",
+        "KS:20141",
+        "LA:22063",
+        "MA:25023",
+        "MN:27161",
+        "MS:28141",
+        "NC:37041",
+        "ND:38083",
+        "NE:31107",
+        "NM:35028",
+        "PA:42021",
+        "SD:46015",
+        "VA:51069"
+      ],
+      "2026-11-05": [
+        "AL:01021",
+        "AR:05047",
+        "FL:12081",
+        "GA:13065",
+        "GA:13187",
+        "GA:13271",
+        "IA:19047",
+        "IA:19129",
+        "ID:16013",
+        "ID:16045",
+        "IL:17097",
+        "IN:18183",
+        "KS:20031",
+        "MA:25019",
+        "MI:26113",
+        "MN:27173",
+        "MO:29097",
+        "MT:30069",
+        "NV:32021",
+        "NV:32029",
+        "PA:42089",
+        "PA:42115",
+        "TN:47059",
+        "TN:47083",
+        "TN:47093",
+        "VA:51051",
+        "WI:55033",
+        "WI:55039"
+      ],
+      "2026-11-06": [
+        "CO:08005",
+        "FL:12051",
+        "GA:13207",
+        "IL:17103",
+        "IN:18083",
+        "KS:20055",
+        "KS:20115",
+        "KS:20185",
+        "ME:23019",
+        "MT:30073",
+        "ND:38101",
+        "NE:31005",
+        "OK:40135",
+        "PA:42109",
+        "TN:47159",
+        "TX:48019",
+        "TX:48221",
+        "VA:51003",
+        "VA:51193",
+        "WI:55049"
+      ],
+      "2026-11-07": [
+        "AK:02013",
+        "AK:02164",
+        "AL:01047",
+        "AL:01109",
+        "AL:01119",
+        "AR:05141",
+        "CA:06003",
+        "CO:08055",
+        "CO:08111",
+        "FL:12133",
+        "GA:13007",
+        "GA:13039",
+        "GA:13185",
+        "IA:19077",
+        "ID:16025",
+        "ID:16041",
+        "ID:16073",
+        "ID:16087",
+        "IN:18019",
+        "IN:18169",
+        "IN:18173",
+        "KS:20047",
+        "KY:21061",
+        "LA:22111",
+        "MN:27067",
+        "MN:27089",
+        "MS:28101",
+        "MT:30043",
+        "MT:30051",
+        "MT:30059",
+        "NC:37179",
+        "NC:37191",
+        "ND:38021",
+        "NE:31167",
+        "OH:39147",
+        "OR:41023",
+        "OR:41065",
+        "OR:41069",
+        "SD:46023",
+        "SD:46093",
+        "SD:46123",
+        "SD:46125",
+        "TN:47171",
+        "TX:48475",
+        "UT:49029",
+        "VA:51131",
+        "WY:56029"
+      ],
+      "2026-11-08": [
+        "AR:05083",
+        "CO:08099",
+        "GA:13009",
+        "GA:13081",
+        "GA:13147",
+        "IA:19149",
+        "IN:18105",
+        "IN:18109",
+        "KS:20021",
+        "KY:21209",
+        "MN:27103",
+        "MO:29109",
+        "MS:28137",
+        "MT:30035",
+        "MT:30079",
+        "NC:37071",
+        "NC:37085",
+        "NC:37151",
+        "NE:31037",
+        "NE:31073",
+        "NV:32023",
+        "OH:39003",
+        "OR:41015",
+        "OR:41037",
+        "SD:46031",
+        "SD:46077",
+        "SD:46087",
+        "SD:46119",
+        "TN:47041",
+        "TN:47119",
+        "TN:47181",
+        "TX:48441",
+        "TX:48467",
+        "UT:49033",
+        "VA:51117",
+        "VA:51730",
+        "WI:55037",
+        "WI:55067",
+        "WV:54023",
+        "WV:54059",
+        "WY:56003"
+      ],
+      "2026-11-09": [
+        "AK:02170",
+        "AL:01001",
+        "AL:01079",
+        "AL:01081",
+        "AR:05109",
+        "AZ:04015",
+        "CO:08053",
+        "CO:08117",
+        "CO:08125",
+        "FL:12043",
+        "FL:12101",
+        "FL:12107",
+        "GA:13055",
+        "GA:13131",
+        "GA:13221",
+        "GA:13251",
+        "GA:13275",
+        "IA:19031",
+        "IA:19093",
+        "IA:19113",
+        "IA:19167",
+        "ID:16039",
+        "ID:16049",
+        "ID:16063",
+        "IL:17035",
+        "IL:17061",
+        "IL:17079",
+        "IL:17105",
+        "IL:17135",
+        "IL:17147",
+        "IN:18033",
+        "IN:18043",
+        "IN:18051",
+        "IN:18153",
+        "KS:20145",
+        "KS:20151",
+        "KY:21003",
+        "LA:22027",
+        "LA:22045",
+        "LA:22077",
+        "LA:22085",
+        "LA:22105",
+        "MD:24043",
+        "ME:23011",
+        "ME:23025",
+        "MI:26063",
+        "MI:26089",
+        "MI:26153",
+        "MN:27073",
+        "MN:27075",
+        "MN:27085",
+        "MN:27113",
+        "MN:27147",
+        "MN:27157",
+        "MO:29027",
+        "MO:29107",
+        "MO:29121",
+        "MO:29171",
+        "MO:29510",
+        "MS:28007",
+        "MS:28021",
+        "MT:30001",
+        "MT:30005",
+        "MT:30017",
+        "MT:30019",
+        "MT:30041",
+        "MT:30067",
+        "NC:37001",
+        "NC:37013",
+        "NC:37055",
+        "NC:37107",
+        "NC:37127",
+        "NC:37141",
+        "NC:37195",
+        "ND:38059",
+        "NE:31039",
+        "NE:31051",
+        "NE:31077",
+        "NE:31085",
+        "NE:31089",
+        "NE:31125",
+        "NE:31143",
+        "NM:35055",
+        "NV:32011",
+        "NY:36071",
+        "NY:36123",
+        "OH:39033",
+        "OH:39047",
+        "OH:39063",
+        "OH:39127",
+        "OK:40073",
+        "OK:40113",
+        "OK:40117",
+        "PA:42061",
+        "SC:45009",
+        "SC:45081",
+        "SC:45089",
+        "SD:46003",
+        "SD:46021",
+        "SD:46095",
+        "SD:46105",
+        "TN:47015",
+        "TN:47105",
+        "TN:47147",
+        "TX:48037",
+        "TX:48049",
+        "TX:48175",
+        "TX:48223",
+        "TX:48293",
+        "TX:48359",
+        "TX:48449",
+        "TX:48459",
+        "TX:48479",
+        "UT:49005",
+        "UT:49011",
+        "UT:49041",
+        "VA:51109",
+        "VA:51153",
+        "VA:51800",
+        "VA:51810",
+        "VT:50001",
+        "WA:53013",
+        "WA:53059",
+        "WY:56007"
+      ]
+    }
+  }
+}
