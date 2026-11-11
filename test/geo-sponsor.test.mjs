@@ -6,7 +6,7 @@
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { readFileSync, existsSync, readdirSync, mkdirSync } from "node:fs";
+import { readFileSync, existsSync, readdirSync, mkdirSync, statSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { createServer } from "node:http";
 import { createRequire } from "node:module";
@@ -105,7 +105,9 @@ test("every CA, NV and TX page the path rule covers exists and loads the loader 
       }
     }
   }
-  assert.ok(count.CA >= 200 && count.NV >= 60 && count.TX >= 500, JSON.stringify(count));
+  /* Nov 2026: the PRF county pages (58 in CA, 17 in NV, 254 in TX) became forwards to their state page,
+     which loads the loader; the counts are the pages left */
+  assert.ok(count.CA >= 140 && count.NV >= 40 && count.TX >= 500, JSON.stringify(count));
   console.log("# geo pages with the loader: " + JSON.stringify(count));
 });
 
@@ -195,8 +197,9 @@ function serve() {
     const p = decodeURIComponent(new URL(req.url, "http://x").pathname);
     let f = normalize(join(ROOT, p));
     if (f.endsWith("/")) f += "index.html";
-    if (!existsSync(f) && existsSync(f + ".html")) f += ".html";
-    if (!f.startsWith(ROOT) || !existsSync(f)) { res.writeHead(404); res.end(); return; }
+    /* as Pages does: /prf/nevada is prf/nevada.html even with a prf/nevada/ folder beside it */
+    if ((!existsSync(f) || statSync(f).isDirectory()) && existsSync(f + ".html")) f += ".html";
+    if (!f.startsWith(ROOT) || !existsSync(f) || statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" });
     res.end(readFileSync(f));
   });

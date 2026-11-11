@@ -38,8 +38,10 @@ test("prf.html and every state and county page carry one dateModified", () => {
   assert.ok(ds, "the Texas page still has its Dataset block");
 });
 
-test("the county month table says the middle is per pair of months", () => {
-  const h = read("prf/texas/anderson-county.html");
+test("the county month table says the middle is per pair of months", async () => {
+  /* Nov 2026: the county is a view on its state page (components/prf-county.js, prf/<state>/<county>.json) */
+  const { createRequire } = await import("node:module");
+  const h = createRequire(import.meta.url)("../components/prf-county.js").render(JSON.parse(read("prf/texas/anderson-county.json")));
   assert.match(h, /across the 11 grids that touch the county: first the middle of the 11 for that pair of months \(it can be a different grid in each row\), then the lowest and highest/);
   assert.doesNotMatch(h, /the middle grid first/);
   // the two Apr-May figures the benchmark compared, both still on the page

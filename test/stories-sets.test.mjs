@@ -64,9 +64,12 @@ test("prompts and code carry no em dash; PRF stays neutral; the bid pages never 
 test("the builders print the story where it belongs and only through the set's own gate", () => {
   const prfB = read("scripts/build_prf_counties.py");
   assert.match(prfB, /SP\.story_html\(STORIES, st\["st"\], fips, SP\.county_facts\(/);
-  /* Oct 20: the county page's first screen leads with the priced example; the story heads the record section */
-  assert.ok(prfB.indexOf('<h2 id="record">') < prfB.indexOf('{ctx.get("story", "")}'), "PRF: at the head of the record section");
-  assert.ok(prfB.indexOf('class="prf-lede"') < prfB.indexOf("{exh}") && prfB.indexOf("{exh}") < prfB.indexOf('{ctx.get("story", "")}'), "PRF: the example comes first");
+  assert.match(prfB, /"story": ctx\.get\("story", ""\)\.strip\(\)/, "PRF: the kept story rides in the county view's data");
+  /* Oct 20: the county's first screen leads with the priced example; the story heads the record section.
+     Nov 2026: the county is a view on its state page, laid out by components/prf-county.js */
+  const prfV = read("components/prf-county.js").split("function render(d)")[1];
+  assert.ok(prfV.indexOf("The last five years in ") < prfV.indexOf("(d.story || '')"), "PRF: at the head of the record section");
+  assert.ok(prfV.indexOf("USDA&rsquo;s ' + d.cy + ' files offer PRF") < prfV.indexOf("example(d)") && prfV.indexOf("example(d)") < prfV.indexOf("(d.story || '')"), "PRF: the example comes first");
   const at = read("scripts/build_atlas_pages.py");
   assert.match(at, /SA\.story_html\(W\.stories, W, f, d\)/);
   assert.match(at, /\{story_html\}\{warn\}<div class="two">/);
@@ -85,18 +88,21 @@ test("the builders print the story where it belongs and only through the set's o
   assert.match(read(".github/workflows/prf.yml"), /rm -rf data\/prf /, "prf.yml still wipes data/prf, so the store stays out of it");
 });
 
-test("shipped stories: every page that prints one prints a story that passes against its facts now", () => {
+test("shipped stories: every page or county view that prints one prints a story that passes against its facts now", () => {
   for (const [set, dir, pages, cls] of [["prf", "data/prf-stories", "prf", "prf-story"], ["atlas", "data/atlas-stories", "farmland-atlas", "ap-story"]]) {
     if (!existsSync(ROOT + dir)) continue;   // none until the first batch comes back
     const out = py(["scripts/stories_core.py", "stale", set]);
     const m = out.match(/(\d+) stored \w+ stories, (\d+) still show/);
     assert.ok(m, out);
     let n = 0;
+    /* Nov 2026: a PRF county is a view on its state page; its story rides in prf/<state>/<county>.json */
+    const ext = set === "prf" ? ".json" : ".html";
     for (const st of readdirSync(ROOT + pages, { withFileTypes: true })) {
       if (!st.isDirectory()) continue;
       for (const f of readdirSync(ROOT + pages + "/" + st.name)) {
-        if (!f.endsWith(".html")) continue;
-        const h = readFileSync(ROOT + pages + "/" + st.name + "/" + f, "utf8");
+        if (!f.endsWith(ext)) continue;
+        const raw = readFileSync(ROOT + pages + "/" + st.name + "/" + f, "utf8");
+        const h = ext === ".json" ? (JSON.parse(raw).story || "") : raw;
         if (h.includes(`class="${set === "prf" ? "prf-lede " : "sub "}${cls}"`)) {
           n++;
           assert.ok(!/story">[^<]*—/.test(h), f);

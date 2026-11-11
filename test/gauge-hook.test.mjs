@@ -108,11 +108,9 @@ test("every rain, weather, PRF, ARC/PLC and Fast Facts page with the slot: one a
   for (const d of ["rain", "hail-map"]) for (const f of readdirSync(join(ROOT, d))) if (f.endsWith(".html")) pages.push(d + "/" + f);
   // the PRF state pages (a state folder beside each); explainers like /prf/how-prf-works carry no slot
   for (const f of readdirSync(join(ROOT, "prf"))) if (f.endsWith(".html") && existsSync(join(ROOT, "prf", f.slice(0, -5)))) pages.push("prf/" + f);
-  for (const st of readdirSync(join(ROOT, "prf"))) {
-    if (!statSync(join(ROOT, "prf", st)).isDirectory()) continue;
-    for (const f of readdirSync(join(ROOT, "prf", st))) if (f.endsWith(".html")) pages.push("prf/" + st + "/" + f);
-  }
-  assert.ok(pages.length > 3200, "the PRF county pages are in: " + pages.length);
+  // Nov 2026: the PRF county pages folded into the state pages; their old addresses are forwards
+  // (scripts/build_prf_counties.py), so the 48 state pages carry the slot for every county
+  assert.ok(pages.filter((f) => /^prf\/[a-z-]+\.html$/.test(f)).length >= 48, "the PRF state pages are in: " + pages.length);
   for (const f of pages) {
     const h = read(f), m = inMain(h);
     assert.equal(slots(h), 1, f + ": one promo slot");
@@ -120,7 +118,7 @@ test("every rain, weather, PRF, ARC/PLC and Fast Facts page with the slot: one a
     assert.match(h, /<script src="\/components\/rain-print-promo\.js\?v=6" defer><\/script>/, f);
   }
   // the generators write it, so a rebuild keeps it
-  for (const g of ["scripts/build_county_rain.py", "scripts/build_prf_states.py", "scripts/build_prf_counties.py", "scripts/build_arc_plc.py"])
+  for (const g of ["scripts/build_county_rain.py", "scripts/build_prf_states.py", "scripts/build_arc_plc.py"])
     assert.match(read(g), /data-rain-print-promo="auto"/, g);
   assert.match(read("scripts/generate_hail_states.py"), /data-rain-print-promo=\\"auto\\"/);
 });
