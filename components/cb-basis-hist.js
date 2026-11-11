@@ -1,4 +1,4 @@
-/* components/cb-basis-hist.js -- "Basis since <first logged date>" on a cash-bids town page.
+/* components/cb-basis-hist.js -- "Basis since Oct 12, 2026" on a cash-bids town page.
  *
  * The town page (scripts/build_cash_bid_pages.py history_box) carries only a
  * closed <details data-basis-hist="WI" data-boards='[[name,[cities]],...]'>.
@@ -15,6 +15,8 @@
  *   changes, the step says so (a thin mark, and the table names both).
  *   Nothing is interpolated, averaged or carried past the last logged run.
  *   An elevator with no logged change shows a plain line saying so.
+ *   The log's public record starts on its publicFrom day (2026-10-12), and
+ *   the heading names that day with its year.
  *
  * Matching: the log writes "CDR FARMS, LLC" where the network writes "CDR
  * Farms LLC"; case, punctuation, "&"/"and" and trailing legal and co-op words
@@ -87,6 +89,7 @@
     return '';
   }
   function dayText(d) { return MON[+d.slice(5, 7) - 1] + ' ' + (+d.slice(8, 10)); }
+  function fullDay(d) { return dayText(d) + ', ' + d.slice(0, 4); }
   function monText(dm) { return MON[+dm.slice(5, 7) - 1] + (dm.slice(0, 4) === REF_YEAR ? '' : ' ' + dm.slice(0, 4)); }
   function basisText(c) { return c === 0 ? 'even' : (c < 0 ? '−' : '+') + Math.abs(c) + '¢'; }
 
@@ -224,6 +227,7 @@
     try { boards = JSON.parse(box.getAttribute('data-boards') || '[]'); } catch (e) { boards = []; }
     if (!data || !data.series) { body.innerHTML = '<p class="cbt-sub">The basis log could not be loaded. Try again later.</p>'; return; }
     var end = String(data.generated || '').slice(0, 10), first = '';
+    var from = /^\d{4}-\d{2}-\d{2}$/.test(String(data.publicFrom || '')) ? data.publicFrom : '';
     if (/^\d{4}/.test(end)) REF_YEAR = end.slice(0, 4);
     var html = '', none = [], got = {}, ser = {}, scales = {};
     boards.forEach(function (b, i) {
@@ -243,13 +247,15 @@
         if (pts.length) html += cropBlock(b[0], c[1], pts, end, scales[c[0]]);
       });
     });
-    var intro = '<p class="cbt-sub">Basis for the nearest delivery month on each date' + (first ? ', since ' + dayText(first) : '') +
+    var since = from ? fullDay(from) : (first ? dayText(first) : '');
+    var intro = '<p class="cbt-sub">Basis for the nearest delivery month on each date' + (since ? ', since ' + since : '') +
       '. Only the days a basis changed are logged: it held flat between dots. A break in the line is a stretch when no open delivery month had a logged basis yet. A thin mark is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price. Every elevator\'s chart for a crop shares one scale and one time span, so the lines compare.</p>';
-    if (none.length) html += '<p class="cbt-sub">No basis change logged' + (first ? ' since ' + dayText(first) : '') + ' for ' + esc(none.join(', ')) + '.</p>';
+    if (none.length) html += '<p class="cbt-sub">No basis change logged' + (since ? ' since ' + since : '') + ' for ' + esc(none.join(', ')) + '.</p>';
     body.innerHTML = intro + html;
-    /* the heading names the log's own first date (2026-10-17 audit N5: the heading said June over a log from Aug 27) */
+    /* the heading names where the public log starts, else the log's own first date (2026-10-17: the heading said
+       June over a log from Aug 27) */
     var sum = box.querySelector('summary');
-    if (sum && first) sum.textContent = 'Basis since ' + dayText(first);
+    if (sum && since) sum.textContent = 'Basis since ' + since;
   }
 
   function open(box) {

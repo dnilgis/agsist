@@ -1377,7 +1377,7 @@
 
   // ── WAVE1-A: basis vs normal, from USDA's weekly state elevator series ──
   // There is no multi-year basis record per elevator: this site's own
-  // per-elevator log (data/basis/changes-*.json) starts 2026-06-10, which
+  // per-elevator log (data/basis/changes-*.json) starts 2026-10-12, which
   // cannot give a same-week normal. data/transport/basis.json carries USDA
   // AgTransport's weekly state elevator-bid basis and, from
   // scripts/fetch_transport.py, its same-week average over the prior five
@@ -1404,7 +1404,7 @@
   function normalLine(stName, cropTxt, s, rej){
     var head = '<strong style="color:var(--text-dim)">' + escHtml(stName + ' ' + cropTxt) + ':</strong> ';
     if(rej && s) return normalLine(stName, cropTxt, s) + rej;
-    if(!s) return head + 'no USDA state series here, and our elevator record (from June 2026) is too short.';
+    if(!s) return head + 'no USDA state series here, and our elevator record (from Oct 12, 2026) is too short.';
     var age = (Date.now() - Date.parse(s.date + 'T12:00:00Z')) / 864e5;
     if(!(age <= NORMAL_MAX_AGE_DAYS)) return head + 'USDA’s latest week for this series is ' + escHtml(s.date) + ', too old to compare.';
     if(s.avg5_n == null) return head + 'the number of years behind USDA’s same-week average is not in the file yet, so no comparison is printed.';

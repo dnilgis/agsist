@@ -29,12 +29,22 @@ THREE THINGS ARE WRITTEN, and they have different jobs:
                                 deltas it to nearly nothing.
 
   data/basis/changes-<date>.json   only what moved that day. WRITTEN ONCE AND
-                                NEVER REWRITTEN -- this is the durable record.
+                                NEVER REWRITTEN (from PUBLIC_FROM on, below)
+                                -- this is the durable record.
                                 Every shard above can be rebuilt from these,
                                 which is the property that makes the shards
                                 safe to regenerate.
 
   data/basis/index.json         which states exist, how many rows, when.
+
+PUBLIC FROM 2026-10-12. These files are public, and the record they publish
+starts on PUBLIC_FROM, the first day after BARCHART_LAST (the old feed's last
+day, below), so every row it carries was read after that day: a shard drops a
+row last seen before it, and a row first
+seen before it reads as first seen on it, with no earlier basis and no earlier
+change day; no changes-<date>.json before it is written, and each run deletes
+any still here (after the unit-error check below has read them). The full
+record before that day stays in the private ledger, never on a page.
 
 BACKFILL. `--backfill-from-git` replays `data/bids.json` out of git history,
 newest-commit-per-day, and seeds the shards with everything from 2026-06-09
@@ -65,6 +75,7 @@ FULL_PATH = os.environ.get("BIDS_FULL_PATH", "bids-full.json")
 OUT_DIR = "data/basis"
 COMMITTED = "data/bids.json"
 FIRST_POPULATED = "2026-06-09"
+PUBLIC_FROM = "2026-10-12"     # the first day the public files carry (see the header)
 CATS = ["corn", "soybeans", "wheat", "other"]
 CAT_IX = {c: i for i, c in enumerate(CATS)}
 
@@ -264,7 +275,8 @@ def apply_day(state, rows, date):
 # rows with a round +-2, +-3 or +-4 dollar basis, 2,088 were the unit error and 9
 # were real; at -1 dollar most were real (5,654 to 325), at +1 mixed (187 to
 # 257), so a lone -100 or +100 is not dropped. Dropped here, from the shards
-# only (the changes-*.json files are the record and are never rewritten), are
+# only (the changes-*.json files are the record and are never rewritten; those
+# before PUBLIC_FROM are read here once more, then deleted by the same run), are
 # rows on the hand-flag list (scripts/bid_hand_flags.json: a person judged them
 # bad, the evidence written beside each), and rows of the three crops last seen
 # on or before BARCHART_LAST whose basis now
@@ -276,6 +288,7 @@ def apply_day(state, rows, date):
 BARCHART_LAST = "2026-10-11"
 UNIT_ERROR_ROUND = (200, 300, 400)
 UNIT_ERROR_CROPS = ("CORN", "SOYBEANS", "WHEAT")
+assert PUBLIC_FROM > BARCHART_LAST, "the public record starts after the old feed's last day"
 
 
 def unit_error_step(a, b):
@@ -338,6 +351,21 @@ def row_state(st, city):
     return None
 
 
+def public_row(v, start=PUBLIC_FROM):
+    """The row as the public shard carries it, or None when it is not carried.
+    Last seen before `start`: dropped. First seen before it: first seen on it,
+    and when its basis has not changed since then, no earlier basis and no
+    earlier change day (the row reads like one first seen on `start`)."""
+    if not v.get("last") or v["last"] < start:
+        return None
+    out = dict(v)
+    if out.get("first") and out["first"] < start:
+        out["first"] = start
+    if not out.get("since") or out["since"] < start:
+        out["prev"], out["since"] = None, out["first"]
+    return out
+
+
 # ------------------------------------------------------------- the write ---
 def write_shards(state, out_dir, generated):
     os.makedirs(out_dir, exist_ok=True)
@@ -357,6 +385,9 @@ def write_shards(state, out_dir, generated):
     by_state, stateless = {}, []
     recovered = 0
     for (facility, city, st, cat, sym, month), v in state.items():
+        v = public_row(v)
+        if v is None:
+            continue
         code = row_state(st, city)
         if code is None:
             stateless.append("%s | %s" % (facility, city or "no city"))
@@ -377,7 +408,7 @@ def write_shards(state, out_dir, generated):
               "source: %s" % (len(stateless), "; ".join(uniq[:10])))
     index = {"generated": generated, "units": "integer cents per bushel",
              "note": ('Basis history by elevator, commodity and delivery month.'),
-             "states": {}}
+             "publicFrom": PUBLIC_FROM, "states": {}}
     for st in sorted(by_state):
         # Sorted on the five identity fields ONLY. `sorted(...)` on the whole
         # tuple compares the trailing dict when all five tie and raises; it
@@ -404,7 +435,7 @@ def write_shards(state, out_dir, generated):
             packed.append([fi[fk], CAT_IX.get(cat.lower(), 3), sym, month,
                            v["cur"], v["prev"], date_ix(v["since"]),
                            date_ix(v["first"]), date_ix(v.get("last"))])
-        shard = {"state": st, "generated": generated, "c": CATS,
+        shard = {"state": st, "generated": generated, "publicFrom": PUBLIC_FROM, "c": CATS,
                  "cols": ["facility", "commodity", "symbol", "deliveryMonth",
                           "basis", "basisBefore", "changedOn", "firstSeen",
                           "lastSeen"],
@@ -416,6 +447,19 @@ def write_shards(state, out_dir, generated):
                                "kb": round(os.path.getsize(p) / 1024, 1)}
     with open(os.path.join(out_dir, "index.json"), "w") as f:
         json.dump(index, f, separators=(",", ":"), indent=1)
+    # A shard this run did not write (a state with no row seen since PUBLIC_FROM, or the old "??" file)
+    # is no longer in the index and nothing reads it: it leaves the public folder.
+    for p in glob.glob(os.path.join(out_dir, "*.json")):
+        name = os.path.basename(p)
+        if len(name) == 7 and name[:2] not in index["states"] and not name.startswith("changes"):
+            try:
+                with open(p) as f:
+                    old = json.load(f)
+            except (OSError, ValueError):
+                continue
+            if isinstance(old, dict) and "r" in old and "f" in old:
+                os.remove(p)
+                print("  removed %s: no row seen in that state since %s" % (name, PUBLIC_FROM))
     return index
 
 
@@ -436,6 +480,8 @@ def write_changes(changed, out_dir, date, ids=None):
     # columns: a board moves about three rows a day, and the table holds it once. A row from
     # before this, or a key no single board holds, has no idx (8 columns, or null).
     p = os.path.join(out_dir, "changes-%s.json" % date)
+    if date < PUBLIC_FROM:
+        return p, 0                    # the public record starts on PUBLIC_FROM (see the header)
     doc = {"date": date, "units": "integer cents per bushel",
            "columns": ["state", "facility", "city", "commodity", "symbol",
                        "deliveryMonth", "from", "to", "idx"],
@@ -478,6 +524,17 @@ def write_changes(changed, out_dir, date, ids=None):
     with open(p, "w") as f:
         json.dump(doc, f, separators=(",", ":"))
     return p, added
+
+
+def prune_changes(out_dir, start=PUBLIC_FROM):
+    """Delete changes-<date>.json files dated before `start`. -> [removed paths]"""
+    gone = []
+    for p in sorted(glob.glob(os.path.join(out_dir, "changes-*.json"))):
+        day = os.path.basename(p)[8:18]
+        if len(day) == 10 and day < start:
+            os.remove(p)
+            gone.append(p)
+    return gone
 
 
 # ---------------------------------------------------------------- backfill --
@@ -645,6 +702,55 @@ def selftest():
         ck("the step rule: 90 cents or more between a round value of 100+ and one under 100",
            unit_error_step(-300, -7) and unit_error_step(100, -25) and not unit_error_step(-100, -95)
            and not unit_error_step(-130, -40) and not unit_error_step(None, 100))
+    # PUBLIC FROM 2026-10-12: nothing dated before PUBLIC_FROM reaches the public folder.
+    # The three shapes on main (2026-11-10): a row first seen Jun 9 that last moved in August, a row last
+    # seen Oct 12 (the old feed's last day), a row first seen Jun 9 that moved on Oct 20; and a row first seen after it.
+    pub = {("21ST CENTURY COOP", "CUMBERLAND", "IA", "CORN", "ZCZ26", "DEC26"):
+           {"cur": -45, "prev": -50, "since": "2026-08-04", "first": "2026-06-09", "last": "2026-11-10"},
+           ("OLD ROW", "SHERRILL", "AR", "CORN", "ZCZ26", "DEC26"):
+           {"cur": -30, "prev": -35, "since": "2026-09-01", "first": "2026-06-09", "last": "2026-10-11"},
+           ("MOVED ROW", "AMES", "IA", "CORN", "ZCZ26", "DEC26"):
+           {"cur": -40, "prev": -44, "since": "2026-10-20", "first": "2026-06-09", "last": "2026-11-10"},
+           ("NEW ROW", "AMES", "IA", "SOYBEANS", "ZSX26", "NOV26"):
+           {"cur": -60, "prev": -62, "since": "2026-10-28", "first": "2026-10-14", "last": "2026-11-10"}}
+    ck("public_row: a row first seen before Oct 12 reads as first seen on it, no earlier basis or change day",
+       public_row(pub[("21ST CENTURY COOP", "CUMBERLAND", "IA", "CORN", "ZCZ26", "DEC26")])
+       == {"cur": -45, "prev": None, "since": "2026-10-12", "first": "2026-10-12", "last": "2026-11-10"})
+    ck("public_row: a row last seen before Oct 12 is not carried",
+       public_row(pub[("OLD ROW", "SHERRILL", "AR", "CORN", "ZCZ26", "DEC26")]) is None)
+    ck("public_row: a move on or after Oct 12 keeps its basis before and its day; a new row is unchanged",
+       public_row(pub[("MOVED ROW", "AMES", "IA", "CORN", "ZCZ26", "DEC26")])["prev"] == -44
+       and public_row(pub[("MOVED ROW", "AMES", "IA", "CORN", "ZCZ26", "DEC26")])["first"] == "2026-10-12"
+       and public_row(pub[("NEW ROW", "AMES", "IA", "SOYBEANS", "ZSX26", "NOV26")]) == pub[("NEW ROW", "AMES", "IA", "SOYBEANS", "ZSX26", "NOV26")])
+    with tempfile.TemporaryDirectory() as d:
+        for day in ("2026-06-10", "2026-10-11", "2026-10-12", "2026-10-13"):
+            with open(os.path.join(d, "changes-%s.json" % day), "w") as f:
+                json.dump({"date": day, "changes": []}, f)
+        p0, n0 = write_changes([(("X", "Y", "IA", "CORN", "ZCZ26", "DEC26"), -1, -2)], d, "2026-09-01")
+        ck("no change file before Oct 12 is written", n0 == 0 and not os.path.exists(p0))
+        for orphan in ("AR.json", "??.json"):
+            with open(os.path.join(d, orphan), "w") as f:
+                json.dump({"state": orphan[:2], "f": ["X|Y"], "d": ["2026-06-09"], "r": [[0, 0, "ZCZ26", "DEC26", -1, None, 0, 0, 0]]}, f)
+        idx = write_shards(dict(pub), d, "2026-11-10")
+        ck("a shard this run did not write leaves the folder (a state with no row since Oct 12, the old ?? file)",
+           not os.path.exists(os.path.join(d, "AR.json")) and not os.path.exists(os.path.join(d, "??.json"))
+           and os.path.exists(os.path.join(d, "IA.json")))
+        gone = prune_changes(d)
+        left = sorted(x for x in os.listdir(d) if x.startswith("changes-"))
+        ck("change files before Oct 12 are removed, Oct 12 on are kept",
+           [os.path.basename(g) for g in gone] == ["changes-2026-06-10.json", "changes-2026-10-11.json"]
+           and left == ["changes-2026-10-12.json", "changes-2026-10-13.json"])
+        dates = set()
+        for st in idx["states"]:
+            sh = json.load(open(os.path.join(d, st + ".json")))
+            dates |= set(sh["d"])
+            ck("shard %s says where its record starts" % st, sh.get("publicFrom") == PUBLIC_FROM)
+        ck("the shards carry no date before Oct 12 and drop the row last seen Oct 11, the old feed's last day",
+           dates and min(dates) >= PUBLIC_FROM and "AR" not in idx["states"] and idx.get("publicFrom") == PUBLIC_FROM)
+        back = load_state(d)
+        ck("the shards read back as the public rows",
+           back.get(("21ST CENTURY COOP", "CUMBERLAND", "IA", "CORN", "ZCZ26", "DEC26"))
+           == {"cur": -45, "prev": None, "since": "2026-10-12", "first": "2026-10-12", "last": "2026-11-10"})
     print(f"FAILS={len(fails)}")
     return 1 if fails else 0
 
@@ -711,10 +817,13 @@ def main():
         for k in bad:
             del state[k]
         print("[basis-history] %d old-feed row(s) with a cents basis read as dollars left out of the shards "
-              "(%d round, %d step, %d hand-flagged; the changes files keep the record)"
+              "(%d round, %d step, %d hand-flagged)"
               % (len(bad), sum(v == "round" for v in bad.values()), sum(v == "step" for v in bad.values()),
                  sum(v == "hand" for v in bad.values())))
     index = write_shards(state, a.out, today)
+    gone = prune_changes(a.out)
+    if gone:
+        print("[basis-history] %d change file(s) dated before %s removed from the public folder" % (len(gone), PUBLIC_FROM))
     tot = sum(v["kb"] for v in index["states"].values())
     big = sorted(index["states"].items(), key=lambda kv: -kv[1]["kb"])[:5]
     print("[basis-history] wrote %d state shards, %.0f KB total (largest: %s)"

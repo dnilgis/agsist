@@ -90,6 +90,35 @@ REGISTRY_SCHEMA = "agsist-insight-registry/1"
 REGISTRY = os.path.join(HERE, "insight_registry.json")
 LEDGER_DIR = "private/ledger/tests"
 BID_LEDGER_DIR = "private/ledger/bid-changes"
+# The daily basis log before 2026-10-12 is not in the public folder (build_basis_history.PUBLIC_FROM); the
+# re-test reads it from here, a private copy kept on the private-data branch (scripts/insight_engine.sh).
+BASIS_LOG_PRIVATE = "private/ledger/basis-log"
+
+
+def merge_elevators(cur, old):
+    """Today's elevator records, plus what the private copy (the records when the basis log before
+    2026-10-12 was public) adds: the basis keys an id held then, and the records of ids no longer
+    listed, so a day of that log still joins to its elevator. Today's record wins every other field."""
+    by = {e["id"]: e for e in old if e.get("id")}
+    out = []
+    for e in cur:
+        o = by.pop(e.get("id"), None)
+        if o:
+            add = [k for k in ((o.get("sources") or {}).get("basis") or []) if k not in ((e.get("sources") or {}).get("basis") or [])]
+            if add:
+                e = dict(e, sources=dict(e.get("sources") or {}, basis=((e.get("sources") or {}).get("basis") or []) + add))
+        out.append(e)
+    return out + [by[k] for k in sorted(by)]
+
+
+def basis_log_files(root):
+    """Every daily basis log file by day: data/basis/changes-*.json, then the private copy for the days
+    the public folder no longer holds. The public file wins a day both have. -> sorted paths."""
+    by_day = {}
+    for d in (os.path.join(root, BASIS_LOG_PRIVATE), os.path.join(root, "data/basis")):
+        for p in glob.glob(os.path.join(d, "changes-*.json")):
+            by_day[os.path.basename(p)] = p
+    return [by_day[k] for k in sorted(by_day)]
 SHUFFLES, SHUFFLES_NEAR, NEAR_P = 1000, 5000, 0.01
 SHUFFLES_LINE = 20000      # when p is within 10x the ledger-wide line
 LINE = [None]              # alpha / M for this run (set by run())
@@ -496,7 +525,12 @@ class Inputs:
             if not os.path.exists(p):
                 raise Missing("data/ids/elevators.json")
             with open(p, encoding="utf-8") as f:
-                return json.load(f)["elevators"]
+                cur = json.load(f)["elevators"]
+            old = os.path.join(self.root, BASIS_LOG_PRIVATE, "elevators.json")
+            if not os.path.exists(old):
+                return cur
+            with open(old, encoding="utf-8") as f:
+                return merge_elevators(cur, json.load(f)["elevators"])
         return self._memo(("elev",), load)
 
     def corn_moves(self, source, since, until):
@@ -511,7 +545,7 @@ class Inputs:
             for e in elev:
                 for k in (e.get("sources") or {}).get("basis") or []:
                     key_to_id.setdefault(k, e["id"])
-            files = sorted(glob.glob(os.path.join(self.root, "data/basis/changes-*.json")))
+            files = basis_log_files(self.root)
             if not files:
                 raise Missing("data/basis/changes-*.json")
             for p in files:
@@ -1584,6 +1618,26 @@ def selftest():
         ck("a missing yield file is Missing, not a guess", _raises_missing(lambda: Inputs(root=tmp, raw=tmp).state_yield("corn_yield_hist")))
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+
+    print("the basis log before Oct 12, 2026 comes from the private copy")
+    tmp2 = tempfile.mkdtemp()
+    try:
+        for sub, days in ((BASIS_LOG_PRIVATE, ("2026-09-03", "2026-10-09", "2026-10-12")), ("data/basis", ("2026-10-12", "2026-10-13"))):
+            os.makedirs(os.path.join(tmp2, sub), exist_ok=True)
+            for day in days:
+                with open(os.path.join(tmp2, sub, "changes-%s.json" % day), "w") as f:
+                    json.dump({"date": day, "changes": [], "where": sub}, f)
+        got = basis_log_files(tmp2)
+        ck("the private days fill in before the public folder; the public file wins a shared day",
+           [os.path.basename(x)[8:18] for x in got] == ["2026-09-03", "2026-10-09", "2026-10-12", "2026-10-13"]
+           and json.load(open(got[2]))["where"] == "data/basis", got)
+        cur = [{"id": "e1", "lat": 1, "sources": {"basis": ["IA|A|B"]}}]
+        old = [{"id": "e1", "lat": 9, "sources": {"basis": ["IA|A OLD|B"]}}, {"id": "a2", "lat": 2, "sources": {"basis": ["IA|C|D"]}}]
+        m = merge_elevators(cur, old)
+        ck("the private elevator copy adds old basis keys and gone ids; today's record wins the rest",
+           m == [{"id": "e1", "lat": 1, "sources": {"basis": ["IA|A|B", "IA|A OLD|B"]}}, {"id": "a2", "lat": 2, "sources": {"basis": ["IA|C|D"]}}], m)
+    finally:
+        shutil.rmtree(tmp2, ignore_errors=True)
 
     print("the real registry")
     real_reg = load_registry()
