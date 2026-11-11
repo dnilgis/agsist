@@ -176,9 +176,11 @@ test("the sentence: changed lines lead; nothing changed says so in one line; not
 
 test("the page: one mount, the map code loads only once a place is open, files by state, no reader point in a URL", () => {
   const page = read("fast-facts.html"), here = read("components/here.js"), cm = read("components/changemap.js");
-  assert.match(page, /<p id="h-where" class="h-where"><\/p>\n<div id="h-cm" class="cm" hidden><\/div>/);
+  // Nov 11, 2026: the map sits in a closed fold under the answers at the top, and loads only when it is opened
+  assert.match(page, /<details id="h-cm-fold" class="pt-fold"><summary>Show on a map: drought across <span id="h-cm-st">the state<\/span><\/summary>\n<div id="h-cm" class="cm" hidden><\/div>\n<\/details>/);
+  assert.match(here, /if \(fold && !fold\.open\) \{ S\.cmWant = fips;/, "nothing loads while the fold is shut");
   assert.doesNotMatch(page, /changemap\.js/, "not a page script: loaded by here.js");
-  assert.match(page, /\/components\/here\.js\?v=48"/);   // v48: fx/basis-history-start (the history note says Oct 12, 2026); v47: fx/rp-sma-accumulation (S M A accumulation); v46: fx/rp-page-fixes (Rain Print panel fixes); v45: fx/landsales-dedupe (Indiana, New Jersey and Vermont sales blocks); v44: fx/flon (Florida sales: month dates, files on agsist-data); v43: the frame specs, round 2 (fx/framespec2); v42: the frame specs (fx/framespec); v41: the bids failure path (fx/wave1b; v40 is fx/rpcolor); v39: change-lines.js v4, nothing changed only when every line was read (fx/wave1a); v38: production cost rows (fx/marsfert); v37: change-lines.js v3 (fx/landnj, New Jersey sales)
+  assert.match(page, /\/components\/here\.js\?v=49"/);   // v49: fx/my-place-answers (answers first, the map in a fold); v48: fx/basis-history-start (the history note says Oct 12, 2026); v47: fx/rp-sma-accumulation (S M A accumulation); v46: fx/rp-page-fixes (Rain Print panel fixes); v45: fx/landsales-dedupe (Indiana, New Jersey and Vermont sales blocks); v44: fx/flon (Florida sales: month dates, files on agsist-data); v43: the frame specs, round 2 (fx/framespec2); v42: the frame specs (fx/framespec); v41: the bids failure path (fx/wave1b; v40 is fx/rpcolor); v39: change-lines.js v4, nothing changed only when every line was read (fx/wave1a); v38: production cost rows (fx/marsfert); v37: change-lines.js v3 (fx/landnj, New Jersey sales)
   assert.match(here, /var CM_JS = '\/components\/changemap\.js\?v=\d+';/);
   assert.match(here, /loadCards\(fips\);\n\s+changeMap\(fips\);/);
   for (const f of [cm]) assert.doesNotMatch(f, /—/);
@@ -332,6 +334,9 @@ test("in a browser: three counties at 390 and 1280; the sentence, the map, the w
         return r.abort();
       });
       await pg.goto(`http://127.0.0.1:${port}${c.url}`, { waitUntil: "load" });
+      await pg.waitForSelector("#h-place:not([hidden])", { timeout: 30000 });
+      assert.equal(await pg.$$eval("#h-cm .cm-box", (l) => l.length), 0, "no map drawn while the fold is shut " + c.url + " @" + w);
+      await pg.click("#h-cm-fold > summary");
       await pg.waitForSelector("#h-cm .cm-svg", { timeout: 30000 });
       // the shapes come first; the lines, the buyers and the fill are all in once the box says ready
       await pg.waitForSelector('#h-cm[data-cm="ready"]', { timeout: 30000 });
@@ -353,7 +358,9 @@ test("in a browser: three counties at 390 and 1280; the sentence, the map, the w
         return { top: m.top + scrollY, mapRight: m.right, sideLeft: s.left, sw: document.documentElement.scrollWidth };
       });
       assert.ok(box.sw <= w + 1, "no sideways scroll " + at + ": " + box.sw);
-      if (w === 390 && !c.saved) assert.ok(box.top < 560, "map top under 560 px on a phone " + at + ": " + box.top);
+      // Nov 11, 2026: the answers come first and the map opens from its fold right under them (it was the top of the page)
+      const order = await pg.evaluate(() => { const t = document.querySelector("#h-top").getBoundingClientRect(), f = document.querySelector("#h-cm-fold").getBoundingClientRect(), wk = document.querySelector("#h-sec-week").getBoundingClientRect(); return { top: t.bottom, fold: f.top, week: wk.top }; });
+      assert.ok(order.top <= order.fold + 1 && order.fold < order.week, "the map fold sits under the answers and above the rows " + at + ": " + JSON.stringify(order));
       if (w === 1280) assert.ok(box.mapRight <= box.sideLeft, "map left, lines right at 1280 " + at);
       // tap a county: its own change in words
       if (w === 1280) {

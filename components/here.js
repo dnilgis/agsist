@@ -421,7 +421,7 @@
     }
     if (d) h += '<p class="pt-t pt-dr' + (d.change ? ' pt-' + d.change.split(' ')[0] : '') + '">Drought: ' + esc(d.line.charAt(0).toLowerCase() + d.line.slice(1)) + '</p>';
     var nm = t && t.normals ? 'Normal: the ' + String(t.normals).replace('-', ' to ') + ' average for the same days' : '';
-    return h + src([t && t.station ? esc(t.station) + ' station, ' + (t.mi === 1 ? '1 mile' : t.mi + ' miles') : '', t ? 'NOAA, ' + esc(t.through) : '', esc(nm), d ? 'U.S. Drought Monitor, ' + esc(mdy(d.valid).replace(/, \d{4}$/, '')) : '']);
+    return h + src([t && t.station ? 'Station: ' + esc(t.station) + ', ' + (t.mi === 1 ? '1 mile' : t.mi + ' miles') : '', t ? 'NOAA, ' + esc(t.through) : '', esc(nm), d ? 'U.S. Drought Monitor, ' + esc(mdy(d.valid).replace(/, \d{4}$/, '')) : '']);
   }
   function topRent(t) {
     return head('pt-rent', 'Cash rent') + big(t.value, 'an acre a year') + (t.rank ? '<p class="pt-t">' + esc(t.rank) + '</p>' : '') +

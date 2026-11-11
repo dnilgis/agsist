@@ -42,7 +42,7 @@
     if (!d || d.status !== 'ok') return null;
     var rows = file.c && file.c[fips], prev = rows ? rows[1] : (file.zero && file.zero.indexOf(fips) >= 0 ? [0, 0, 0, 0, 0] : null);
     var k = level(d.now), words, where;
-    if (k < 0) { words = 'No drought'; where = 'and no part of the county is abnormally dry'; }
+    if (k < 0) { words = 'No drought'; where = 'or dry areas in the county'; }
     else {
       var pct = Math.round(d.now[k]);
       words = NAMES[k];
