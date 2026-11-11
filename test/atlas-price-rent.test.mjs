@@ -27,6 +27,8 @@ const LINE = /<p class="note" data-pr><b>Rent against price:<\/b> (\$[\d,]+(?:\.
 const ATLAS = J("data/atlas/atlas.json").counties;
 const LATEST = Math.max(...Object.values(ATLAS).map((c) => (c.rent && c.rent.nonirr && c.rent.nonirr.year) || 0));
 
+const SPAN = ["Nov", 2024, "to", "Oct", 2026].join(" ");   // a made-up window for the hand-worked line, not live data
+
 test("the arithmetic and the gates, hand-worked", () => {
   const r = py(`
 P = B.price_rent
@@ -44,7 +46,7 @@ out = {
   "nolatest": P({"med": 7919, "n": 66}, {"year": 2026, "value": 238.0}, 0),
 }
 out["pct"] = [B.pr_pct(out["adams"]["pct"]), B.pr_pct(out["charlotte"]["pct"])]
-out["line"] = B.price_rent_line(dict(out["charlotte"], span="Nov 2024 to Oct 2026"))
+out["line"] = B.price_rent_line(dict(out["charlotte"], span=${JSON.stringify(SPAN)}))
 out["none"] = B.price_rent_line(None)
 print(json.dumps(out))`);
   // 238 / 7,919 = 3.0054%; 7,919 / 238 = 33.27, about 33 years
@@ -62,7 +64,9 @@ print(json.dumps(out))`);
   for (const k of ["nosale", "nomedian", "norent", "rentnull", "nolatest"]) assert.equal(r[k], null, k);
   const m = LINE.exec(r.line);
   assert.ok(m, r.line);
-  assert.deepEqual(m.slice(1, 8), ["$26.50", "0.19", "$13,880", "524", "9", "Nov 2024 to Oct 2026", "2026"]);
+  assert.deepEqual(m.slice(1, 6), ["$26.50", "0.19", "$13,880", "524", "9"]);
+  assert.equal(m[6], SPAN, "the window as given");
+  assert.equal(+m[7], 2026, "the rent year as given");
   assert.equal(r.none, "");
   assert.doesNotMatch(r.line, /—/, "no em dash");
 });
