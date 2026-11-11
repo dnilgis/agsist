@@ -8,7 +8,7 @@
 
    WHICH STATE: the reader's saved state when it has a lead; otherwise the newest lead of any covered state,
    labeled with its state (and, for a saved state we do not cover yet, "Not yet in <state>").
-   NEVER A NAME: only county, acres, $/acre, the date, the county median and its count are read from the file.
+   NEVER A NAME: only county, acres, $/acre, the date, the county middle and its count are read from the file.
    NO DATA (file missing, malformed, or no state has a lead): the baked plain words stay, the links still work.
    NO LAYOUT SHIFT: the baked words and the sale fill the same lines; css/home.css holds each line's room.
 
@@ -68,12 +68,11 @@
       + 'Top bare-land price in ' + name + ', 30 days to ' + day(r.window[1]);
     var pct = num(r.pct), med = num(r.med), n = num(r.n24);
     var vs = med && n ? ' ' + (pct == null || pct === 0 ? 'At' : Math.abs(pct) + '% ' + (pct > 0 ? 'above' : 'under'))
-      + ' the county median, ' + money(med) + ' (' + n + ' sales in 24 months).' : '';
+      + ' the county’s middle, ' + money(med) + ' (' + n + ' sales in 24 months).' : '';
     var src = typeof r.src === 'string' && r.src.length < 80 ? ' ' + r.src + ' records.' : '';
-    var base = acres(r.acres) + ', ' + r.county + ' County, ' + (r.basis === 'sale date' ? 'sold ' : 'recorded ') + day(r.when, true) + '.';
-    var s = base + vs + src;
+    var s = acres(r.acres) + ', ' + r.county + ' County, ' + (r.basis === 'sale date' ? 'sold ' : 'recorded ') + day(r.when, true) + '.' + vs + src;
     var all = states(L).slice().sort();
-    return { k: k, v: money(r.ppa) + ' an acre', s: s, base: base + src, href: r.url, rule: typeof r.rule === 'string' ? r.rule : '',
+    return { k: k, v: money(r.ppa) + ' an acre', s: s, href: r.url, rule: typeof r.rule === 'string' ? r.rule : '',
       all: all.length ? 'Farmland sales by county in ' + all.join(', ') : '' };
   }
 
@@ -84,17 +83,13 @@
   }
   function txt(id, t) { var e = document.getElementById(id); if (e && t) e.textContent = t; return e; }
 
-  function hidePic() { var hp = document.getElementById('hl-pic'); if (hp) hp.hidden = true; }
   function draw(L) {
     var p = pick(L, mineState(), new Date());
     var all = states(L).slice().sort();
     if (all.length) txt('hl-all-l', 'Farmland sales by county in ' + all.join(', '));
-    if (!p) { hidePic(); return; }   /* withheld: the plain words and the links stay */
+    if (!p) return;                       /* withheld: the plain words and the links stay */
     var w = words(L, p);
     txt('hl-k', w.k); txt('hl-s', w.s);
-    /* picture first: the median comparison is drawn as two bars, so the line keeps only the sale's own facts */
-    var pics = root.AgHomePics, r = p.lead;
-    if (pics && pics.land(document.getElementById('job-land'), { ppa: r.ppa, med: num(r.med), n: num(r.n24), county: r.county, st: p.st, when: r.when, src: typeof r.src === 'string' && r.src.length < 80 ? r.src : '' })) txt('hl-s', w.base);
     var v = document.getElementById('hl-v');
     if (v) { v.textContent = w.v.replace(/ an acre$/, ''); var u = document.createElement('span'); u.className = 'hl-u'; u.textContent = ' an acre'; v.appendChild(u); }
     var a = document.getElementById('hl-sale'); if (a) { a.setAttribute('href', w.href); a.setAttribute('data-st', p.st); }
@@ -102,7 +97,7 @@
 
   function go() {
     if (!document.getElementById('job-land')) return;
-    fetch('/data/land-sales/lead.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (L) { if (L) draw(L); else hidePic(); }).catch(hidePic);
+    fetch('/data/land-sales/lead.json').then(function (r) { return r.ok ? r.json() : null; }).then(function (L) { if (L) draw(L); }).catch(function () {});
   }
 
   var api = { pick: pick, words: words };

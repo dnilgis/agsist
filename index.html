@@ -16,12 +16,12 @@
   <script src="/components/price-local.js?v=13"></script>
 <link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="stylesheet" href="/components/sponsor-ad.css?v=3">
-<link rel="stylesheet" href="/css/home.css?v=43">
+<link rel="stylesheet" href="/css/home.css?v=42">
 <!-- Nov 7: no first paint until the three jobs and the Farmland sales block are parsed whole (Chrome lifts the block
      when the expected element opens, so it names the first one after them, under the Futures heading). A paint between two parser
      chunks drew the block half built, and its chevrons (centred over rows still arriving) jumped 3 to 50px when the rest
      came: the 3.9e-7 and 5.37e-6 shifts test/home-land.test.mjs saw on loaded runners. -->
-<link rel="expect" href="#hb-ask" blocking="render">
+<link rel="expect" href="#hb-plain" blocking="render">
 <script src="/components/sponsor-ad.js?v=4" defer></script>
   <script src="/components/util.js?v=20"></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
@@ -128,137 +128,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   </header>
 <!-- /static-nav:header -->
 </div>
-<div id="idx1-home-prompt" class="idx1-home-prompt" style="display:none">
-  <svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-banknote"/></svg>
-  <div style="flex-grow:1;font-size:.824rem;color:var(--text)">Add AGSIST to your home screen, one tap from the field, no app store.</div>
-  <button type="button" id="idx1-home-add" style="font-size:.824rem;font-weight:700;color:#0a0c0d;background:var(--gold-fill,var(--gold));border:none;border-radius:6px;padding:.4rem .7rem;flex:none;cursor:pointer">Add</button>
-  <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
-</div>
-<main id="main" class="main" role="main" tabindex="-1">
-  <style>/* 2026-10-29 (CLS): outside the day session (.hb-ovnh, set at the top of the band from the Central clock) the live draw adds an overnight line under each futures price that the baked seed lacks; the cells hold room for it from first paint. Day session: no overnight line, no extra room. The place words follow .hb-nozip, so the class alone sets the first screen. */#hero-band.hb-ovnh .hb-fut .hb-s{min-height:5.6em}#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:7em}@container hero (max-width:999px){#hero-band.hb-ovnh .hb-fut .hb-s{min-height:7em}}@container hero (max-width:329px){#hero-band.hb-ovnh .hb-fut .hb-s,#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:8em}}.hb-pn{display:none}.hb-nozip .hb-pn{display:inline}.hb-nozip .hb-pz{display:none}#hero-band:not(.hb-nozip) .hb-h1,#hero-band:not(.hb-nozip) .hb-plain{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
-  <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
-    <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
-    <h1 class="hb-h1 visually-hidden">Cash bids near you, grain prices, the morning briefing and USDA report days. Free.</h1>
-    <h2 class="visually-hidden" id="hb-h">Today at a glance</h2>
-    <div class="af" id="hb-jobs">
-      <div class="sw-home" id="sw-home"></div>
-      <div class="job job-near" role="group" aria-labelledby="job-near-h">
-        <h3 class="job-h" id="job-near-h">Your cash bids</h3>
-        <div class="hb-top">
-          <span class="hb-where"><span class="hb-place" id="hb-place"><span class="hb-pz">Your area</span><span class="hb-pn">Your ZIP</span></span><span class="hb-date" id="hb-date"></span><span class="hb-asof" id="hb-asof" hidden></span></span>
-          <button type="button" class="hb-change" id="hb-change" aria-controls="hb-zip-form" aria-expanded="false">Change</button>
-        </div>
-        <form class="hb-zip" id="hb-zip-form" novalidate>
-          <label class="visually-hidden" for="hb-zip">Your ZIP code</label>
-          <input type="text" id="hb-zip" name="zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" enterkeyhint="go">
-          <button type="submit" class="hb-zip-go" id="hb-zip-go">Show bids</button>
-          <span class="hb-zip-msg" id="hb-zip-msg" role="status" aria-live="polite"></span>
-          <span class="hb-loc-row"><button type="button" class="hb-loc" id="btn-allow-loc">Use my location</button><span class="hb-loc-n"> &middot; sets bids and weather for you</span></span>
-        </form>
-        <div class="hb-grid hb-grid--near">
-          <a class="hb-cell hb-bid" id="hb-corn" href="#f1" data-track="hero">
-            <span class="hb-k" id="hb-corn-k">Top corn bid nearby</span>
-            <span class="hb-v" id="hb-corn-v"><span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span></span>
-            <span class="hb-s" id="hb-corn-s"></span>
-          </a>
-          <a class="hb-cell hb-bid" id="hb-soy" href="#f1" data-track="hero">
-            <span class="hb-k" id="hb-soy-k">Top soybean bid nearby</span>
-            <span class="hb-v" id="hb-soy-v"><span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span></span>
-            <span class="hb-s" id="hb-soy-s"></span>
-          </a>
-        </div>
-      </div>
-      <h3 class="hb-futh">Futures</h3>
-    <div class="hb-grid hb-grid--fut">
-      <a class="hb-cell hb-fut" id="hb-fc" href="#f-prices" data-track="hero">
-        <span class="hb-k" id="hb-fc-k"><!--
---><!--SEED:hp:fc-k-->Dec ’26 corn futures<!--/SEED--><!--
---></span>
-        <span class="hb-v hb-v2" id="hb-fc-v"><!--
---><!--SEED:hp:fc--><span class="hb-n">$4.47<span class="hb-frac"> 1/4</span></span><!--/SEED--><!--
---></span>
-        <span class="hb-s" id="hb-fc-s"><!--
---><!--SEED:hp:fc-s--><span class="hb-l"><span class="hb-n hb-chg dn"><span aria-hidden="true">▼ </span><span class="visually-hidden">down </span>−1 3/4¢</span></span><span class="hb-l hb-age">Overnight trade Nov 11, 7:37 a.m. CT</span><!--/SEED--><!--
---></span>
-      </a>
-      <a class="hb-cell hb-fut" id="hb-fs" href="#f-prices" data-track="hero">
-        <span class="hb-k" id="hb-fs-k"><!--
---><!--SEED:hp:fs-k-->Jan ’27 bean futures<!--/SEED--><!--
---></span>
-        <span class="hb-v hb-v2" id="hb-fs-v"><!--
---><!--SEED:hp:fs--><span class="hb-n">$12.24<span class="hb-frac"> 3/4</span></span><!--/SEED--><!--
---></span>
-        <span class="hb-s" id="hb-fs-s"><!--
---><!--SEED:hp:fs-s--><span class="hb-l"><span class="hb-n hb-chg dn"><span aria-hidden="true">▼ </span><span class="visually-hidden">down </span>−3 1/4¢</span></span><span class="hb-l hb-age">Overnight trade Nov 11, 7:37 a.m. CT</span><!--/SEED--><!--
---></span>
-      </a>
-      <figure class="hb-pic" id="hb-fut-pic" aria-label="Corn and soybean futures, last 20 weeks"></figure>
-      <p class="hb-plain" id="hb-plain">Your elevator pays the futures price plus or minus its basis. Your ZIP shows that cash bid.</p>
-      <!-- 2026-11-06: the next release with a countdown and one
-           line from our own last numbers, then up to two more this week (components/happening.js). The rows are baked
-           by scripts/seed_static.py happening_seed (day and time as text without script); css/home.css holds their room.
-           #hap-say speaks only when a row changes state, never the minute. -->
-      <div class="hap" id="hap" role="group" aria-labelledby="hap-h">
-        <h3 class="hap-h" id="hap-h">Today and this week</h3>
-        <ol class="hap-list" id="hap-list"><!--
---><!--SEED:hp:hap--><li class="hap-i hap-top hap-asks" data-state="next"><a class="hap-a" href="/cot" data-track="happening"><span class="hap-t">Funds report (COT)</span><span class="hap-w"><span class="hap-wt">Mon Nov 16, 3:30 PM ET, holiday week</span><span class="hap-cd"></span></span><span class="hap-x"></span></a><a class="hap-ask" href="/cot#cot-signup" data-track="funds-ask">Email me Fridays</a></li><li class="hap-i" data-state="next"><a class="hap-a" href="/conditions" data-track="happening"><span class="hap-w">Mon Nov 16, 4:00 PM ET</span><span class="hap-t">Crop Progress</span></a></li><li class="hap-i hap-all"><a class="hap-a" href="/usda-calendar" data-track="happening"><span class="hap-w">Every report date</span><span class="hap-t">USDA report calendar</span></a></li><!--/SEED--><!--
---></ol>
-        <span class="visually-hidden" id="hap-say" role="status" aria-live="polite"></span>
-      </div>
-    </div>
-      <div class="job af-daily" role="group" aria-label="The Daily">
-        <a class="job-daily" href="#daily-hero" data-track="jobs"><span class="job-daily-k" id="job-daily-k">The Daily &middot; Nov 11</span> <span class="job-daily-t" id="job-daily-t">Corn slips 2½ cents after Tuesday's yield cut</span></a>
-      </div>
-      <div class="hb-grid hb-grid--wx af-wx">
-          <a class="hb-cell hb-wx" id="hb-wx" href="#f2" data-track="hero">
-            <span class="hb-k" id="hb-wx-k">Today&rsquo;s forecast</span>
-            <span class="hb-v hb-v2" id="hb-wx-v"><span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading the forecast</span></span>
-            <span class="hb-s" id="hb-wx-s"></span>
-          </a>
-      </div>
-      <!-- 2026-11-04 ("there is dead space on the home
-           page"): one real recorded sale, picked by the rule in scripts/build_land_sales.py (LEAD_RULE, shown on tap),
-           from data/land-sales/lead.json (components/home-land.js). County, acres, $/acre and the date only, never a
-           name. Phone: right under My field (the three jobs keep the first screen, Nov 2); 1000px and up: the room
-           under Sell grain and My field. No data: these plain words stay and the link still works. Each line holds its room (no layout shift). -->
-      <div class="job job-land" id="job-land" role="group" aria-labelledby="job-land-h">
-        <h3 class="job-h" id="job-land-h">Farmland sales</h3>
-        <a class="hl-sale" id="hl-sale" href="/land-sales/" data-track="jobs">
-          <span class="hl-k" id="hl-k">Recorded farm sales, county by county</span>
-          <span class="hl-v" id="hl-v">What farmland sold for near you</span>
-          <span class="hl-s" id="hl-s">The date, acres and price per acre of every recorded farm sale. Never who bought or sold.</span>
-        </a>
-        <figure class="hl-pic" id="hl-pic" aria-label="This sale against the county median"></figure>
-        <ul class="job-links hl-links">
-          <li><a href="/land-sales/" id="hl-all" data-track="jobs"><span class="job-l" id="hl-all-l">Farmland sales by county in IL, IN, NJ, VT, WI</span></a></li>
-          <li><a href="/land-sales/#email" id="hl-ask" data-track="jobs"><span class="job-l" id="hl-ask-l">Email me new farm sales near me</span></a></li>
-        </ul>
-      </div>
-      <div class="jobs af-links">
-      <nav class="job job-sell" aria-labelledby="job-sell-h">
-        <h3 class="job-h" id="job-sell-h">Sell grain</h3>
-        <ul class="job-links">
-          <li><a href="/cash-bids" data-track="jobs"><span class="job-l">Cash bids near me</span><span class="job-s">Every elevator near your ZIP, with the time each bid was posted</span></a></li>
-          <li><a href="/basis" data-track="jobs"><span class="job-l">Basis</span><span class="job-s">Your state&rsquo;s basis against its normal</span></a></li>
-          <li><a href="/store-or-sell" data-track="jobs"><span class="job-l">Store or sell</span><span class="job-s">Your elevator&rsquo;s later bids, minus storage, interest and shrink</span></a></li>
-        </ul>
-      </nav>
-      <nav class="job job-field" aria-labelledby="job-field-h">
-        <h3 class="job-h" id="job-field-h">My field</h3>
-        <ul class="job-links">
-          <li><a href="/field-scout" data-track="jobs"><span class="job-l">Field Scout</span><span class="job-s">Draw your field: soils, crop history, weather and bids nearby</span></a></li>
-          <li><a href="/fast-facts" data-track="jobs"><span class="job-l" id="job-ff">Fast Facts for your county</span><span class="job-s">Bids, rain, drought, rent and land value, each dated</span></a></li>
-        </ul>
-      </nav>
-      </div>
-    </div>
-    <script>try{(function(){var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null'),c=l&&/^\d{5}$/.test(String(l.zip||''))?String(l.county||'').trim():'';if(c&&c.length<40){if(!/county|parish|borough/i.test(c))c+=' County';var e=document.getElementById('job-ff');if(e)e.textContent='Fast Facts for '+c;}})();}catch(e){}</script>
-    <p class="pl-line" data-state-bid="corn soybeans" hidden></p>
-    <div id="hb-ask" data-signup-ask="Get your top local bid by email every morning" data-source="hero" data-variant="hero"></div>
-  <div class="s7-adrow s7-adrow--hb" style="display:none"><a class="teaser-sponsor" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"></a></div>
-  </section>
-  <script>try{AgPxStamp.reserve(document.querySelector('#hero-band .pl-line'));}catch(e){}try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
-  <script src="/components/signup-ask.js?v=22"></script>
 <div class="idx1-subbar">
   <button type="button" id="idx1-zip-chip" class="idx1-zip-chip" aria-label="Change your ZIP" hidden>
     <span class="idx1-zip-label">ZIP</span>
@@ -331,21 +200,21 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div class="ticker-track-wrap">
       <div class="ticker-track" id="ticker-track" aria-live="off">
         <div id="ticker-items-single">
-          <a class="t-item t-link" data-sym="corn" href="/corn-futures-prices" data-track="ticker"><span class="t-label">Corn front month</span><span class="t-price"></span><span class="t-unit">per bushel</span><span class="t-chg nc"></span></a>
+          <a class="t-item t-link" data-sym="corn" href="/corn-futures-prices" data-track="ticker"><span class="t-label">Corn front month</span><span class="t-price"></span><span class="t-unit">per bu</span><span class="t-chg nc"></span></a>
           <div class="t-sep" aria-hidden="true">&middot;</div>
-          <a class="t-item t-link" data-sym="corn-dec" href="/corn-futures-prices" data-track="ticker"><span class="t-label">Corn deferred</span><span class="t-price"></span><span class="t-unit">per bushel</span><span class="t-chg nc"></span></a>
+          <a class="t-item t-link" data-sym="corn-dec" href="/corn-futures-prices" data-track="ticker"><span class="t-label">Corn deferred</span><span class="t-price"></span><span class="t-unit">per bu</span><span class="t-chg nc"></span></a>
           <div class="t-sep" aria-hidden="true">&middot;</div>
-          <a class="t-item t-link" data-sym="beans" href="/soybean-futures-prices" data-track="ticker"><span class="t-label">Soybeans front month</span><span class="t-price"></span><span class="t-unit">per bushel</span><span class="t-chg nc"></span></a>
+          <a class="t-item t-link" data-sym="beans" href="/soybean-futures-prices" data-track="ticker"><span class="t-label">Soybeans front month</span><span class="t-price"></span><span class="t-unit">per bu</span><span class="t-chg nc"></span></a>
           <div class="t-sep" aria-hidden="true">&middot;</div>
-          <a class="t-item t-link" data-sym="beans-nov" href="/soybean-futures-prices" data-track="ticker"><span class="t-label">Soybeans deferred</span><span class="t-price"></span><span class="t-unit">per bushel</span><span class="t-chg nc"></span></a>
+          <a class="t-item t-link" data-sym="beans-nov" href="/soybean-futures-prices" data-track="ticker"><span class="t-label">Soybeans deferred</span><span class="t-price"></span><span class="t-unit">per bu</span><span class="t-chg nc"></span></a>
           <div class="t-sep" aria-hidden="true">&middot;</div>
-          <a class="t-item t-link" data-sym="wheat" href="/wheat-futures-prices" data-track="ticker"><span class="t-label">Chicago SRW wheat front month</span><span class="t-price"></span><span class="t-unit">per bushel</span><span class="t-chg nc"></span></a>
+          <a class="t-item t-link" data-sym="wheat" href="/wheat-futures-prices" data-track="ticker"><span class="t-label">Chicago SRW wheat front month</span><span class="t-price"></span><span class="t-unit">per bu</span><span class="t-chg nc"></span></a>
           <div class="t-sep" aria-hidden="true">&middot;</div>
-          <a class="t-item t-link" data-sym="kcwheat" href="/wheat-futures-prices" data-track="ticker"><span class="t-label">KC HRW wheat</span><span class="t-price"></span><span class="t-unit">per bushel</span><span class="t-chg nc"></span></a>
+          <a class="t-item t-link" data-sym="kcwheat" href="/wheat-futures-prices" data-track="ticker"><span class="t-label">KC HRW wheat</span><span class="t-price"></span><span class="t-unit">per bu</span><span class="t-chg nc"></span></a>
           <div class="t-sep" aria-hidden="true">&middot;</div>
-          <a class="t-item t-link" data-sym="mplswheat" href="/wheat-futures-prices" data-track="ticker"><span class="t-label">MGEX HRS wheat</span><span class="t-price"></span><span class="t-unit">per bushel</span><span class="t-chg nc"></span></a>
+          <a class="t-item t-link" data-sym="mplswheat" href="/wheat-futures-prices" data-track="ticker"><span class="t-label">MGEX HRS wheat</span><span class="t-price"></span><span class="t-unit">per bu</span><span class="t-chg nc"></span></a>
           <div class="t-sep" aria-hidden="true">&middot;</div>
-          <div class="t-item" data-sym="oats"><span class="t-label">Oats</span><span class="t-price"></span><span class="t-unit">per bushel</span><span class="t-chg nc"></span></div>
+          <div class="t-item" data-sym="oats"><span class="t-label">Oats</span><span class="t-price"></span><span class="t-unit">per bu</span><span class="t-chg nc"></span></div>
           <div class="t-sep" aria-hidden="true">&middot;</div>
           <div class="t-item" data-sym="cotton"><span class="t-label">Cotton</span><span class="t-price"></span><span class="t-unit">per lb</span><span class="t-chg nc"></span></div>
           <div class="t-sep" aria-hidden="true">&middot;</div>
@@ -370,12 +239,136 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       b.addEventListener('click',function(){p=!h.classList.contains('ticker-paused');set(p);try{if(p)localStorage.setItem('agsist-ticker-paused','1');else localStorage.removeItem('agsist-ticker-paused');}catch(e){}});})();</script>
   </div>
 </div>
+<div id="idx1-home-prompt" class="idx1-home-prompt" style="display:none">
+  <svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-banknote"/></svg>
+  <div style="flex-grow:1;font-size:.824rem;color:var(--text)">Add AGSIST to your home screen, one tap from the field, no app store.</div>
+  <button type="button" id="idx1-home-add" style="font-size:.824rem;font-weight:700;color:#0a0c0d;background:var(--gold-fill,var(--gold));border:none;border-radius:6px;padding:.4rem .7rem;flex:none;cursor:pointer">Add</button>
+  <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
+</div>
+<main id="main" class="main" role="main" tabindex="-1">
+  <style>/* 2026-10-29 (CLS): outside the day session (.hb-ovnh, set at the top of the band from the Central clock) the live draw adds an overnight line under each futures price that the baked seed lacks; the cells hold room for it from first paint. Day session: no overnight line, no extra room. The place words follow .hb-nozip, so the class alone sets the first screen. */#hero-band.hb-ovnh .hb-fut .hb-s{min-height:5.6em}#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:7em}@container hero (max-width:999px){#hero-band.hb-ovnh .hb-fut .hb-s{min-height:7em}}@container hero (max-width:329px){#hero-band.hb-ovnh .hb-fut .hb-s,#hero-band.hb-ovnh:not(.hb-nozip) .hb-fut .hb-s{min-height:8em}}.hb-pn{display:none}.hb-nozip .hb-pn{display:inline}.hb-nozip .hb-pz{display:none}#hero-band:not(.hb-nozip) .hb-h1,#hero-band:not(.hb-nozip) .hb-plain{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap}.s7-adrow--hb{padding:6px 0 4px!important;margin:0!important;max-width:none!important;min-width:0}.s7-adrow--hb #daily-teaser-sponsor.empty-state{flex-wrap:wrap;justify-content:center;max-width:100%;row-gap:0}@media(max-width:480px){.s7-adrow--hb #daily-teaser-sponsor.empty-state .teaser-sponsor-tag{white-space:nowrap}}</style>
+  <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
+    <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
+    <h1 class="hb-h1">Cash bids near you, grain prices, the morning briefing and USDA report days. Free.</h1>
+    <h2 class="visually-hidden" id="hb-h">Today at a glance</h2>
+    <!-- 2026-11-02 (go): the first screen is three jobs, near me, sell grain, my field.
+         The futures and every other destination stay on the page, lower down. -->
+    <div class="jobs" id="hb-jobs">
+      <div class="job job-near" role="group" aria-labelledby="job-near-h">
+        <h3 class="job-h" id="job-near-h">Today near me</h3>
+        <div class="hb-top">
+          <span class="hb-where"><span class="hb-place" id="hb-place"><span class="hb-pz">Your area</span><span class="hb-pn">Set your ZIP to see local cash bids</span></span><span class="hb-date" id="hb-date"></span><span class="hb-asof" id="hb-asof" hidden></span></span>
+          <button type="button" class="hb-change" id="hb-change" aria-controls="hb-zip-form" aria-expanded="false">Change</button>
+        </div>
+        <form class="hb-zip" id="hb-zip-form" novalidate>
+          <label class="visually-hidden" for="hb-zip">Your ZIP code</label>
+          <input type="text" id="hb-zip" name="zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" enterkeyhint="go">
+          <button type="submit" class="hb-zip-go" id="hb-zip-go">Show bids</button>
+          <span class="hb-zip-msg" id="hb-zip-msg" role="status" aria-live="polite"></span>
+        </form>
+        <div class="hb-grid hb-grid--near">
+          <a class="hb-cell hb-bid" id="hb-corn" href="#f1" data-track="hero">
+            <span class="hb-k" id="hb-corn-k">Top corn bid nearby</span>
+            <span class="hb-v" id="hb-corn-v"><span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span></span>
+            <span class="hb-s" id="hb-corn-s"></span>
+          </a>
+          <a class="hb-cell hb-bid" id="hb-soy" href="#f1" data-track="hero">
+            <span class="hb-k" id="hb-soy-k">Top soybean bid nearby</span>
+            <span class="hb-v" id="hb-soy-v"><span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading</span></span>
+            <span class="hb-s" id="hb-soy-s"></span>
+          </a>
+          <a class="hb-cell hb-wx" id="hb-wx" href="#f2" data-track="hero">
+            <span class="hb-k" id="hb-wx-k">Today&rsquo;s forecast</span>
+            <span class="hb-v hb-v2" id="hb-wx-v"><span class="hb-skel" aria-hidden="true"></span><span class="visually-hidden">Loading the forecast</span></span>
+            <span class="hb-s" id="hb-wx-s"></span>
+          </a>
+        </div>
+        <a class="job-daily" href="#daily-hero" data-track="jobs"><span class="job-daily-k" id="job-daily-k">The Daily &middot; Nov 11</span> <span class="job-daily-t" id="job-daily-t">Corn slips 2½ cents to $4.46½ after Tuesday's yield cut</span></a>
+      </div>
+      <nav class="job job-sell" aria-labelledby="job-sell-h">
+        <h3 class="job-h" id="job-sell-h">Sell grain</h3>
+        <ul class="job-links">
+          <li><a href="/cash-bids" data-track="jobs"><span class="job-l">Cash bids near me</span><span class="job-s">Every elevator near your ZIP, with the time each bid was posted</span></a></li>
+          <li><a href="/basis" data-track="jobs"><span class="job-l">Basis</span><span class="job-s">Your state&rsquo;s basis against its normal</span></a></li>
+          <li><a href="/store-or-sell" data-track="jobs"><span class="job-l">Store or sell</span><span class="job-s">Your elevator&rsquo;s later bids, minus storage, interest and shrink</span></a></li>
+        </ul>
+      </nav>
+      <nav class="job job-field" aria-labelledby="job-field-h">
+        <h3 class="job-h" id="job-field-h">My field</h3>
+        <ul class="job-links">
+          <li><a href="/field-scout" data-track="jobs"><span class="job-l">Field Scout</span><span class="job-s">Draw your field: soils, crop history, weather and bids nearby</span></a></li>
+          <li><a href="/fast-facts" data-track="jobs"><span class="job-l" id="job-ff">Fast Facts for your county</span><span class="job-s">Bids, rain, drought, rent and land value, each dated</span></a></li>
+        </ul>
+      </nav>
+      <!-- 2026-11-04 ("there is dead space on the home
+           page"): one real recorded sale, picked by the rule in scripts/build_land_sales.py (LEAD_RULE, shown on tap),
+           from data/land-sales/lead.json (components/home-land.js). County, acres, $/acre and the date only, never a
+           name. Phone: right under My field (the three jobs keep the first screen, Nov 2); 1000px and up: the room
+           under Sell grain and My field. No data: these plain words stay and the link still works. Each line holds its room (no layout shift). -->
+      <div class="job job-land" id="job-land" role="group" aria-labelledby="job-land-h">
+        <h3 class="job-h" id="job-land-h">Farmland sales</h3>
+        <a class="hl-sale" id="hl-sale" href="/land-sales/" data-track="jobs">
+          <span class="hl-k" id="hl-k">Recorded farm sales, county by county</span>
+          <span class="hl-v" id="hl-v">What farmland sold for near you</span>
+          <span class="hl-s" id="hl-s">The date, acres and price per acre of every recorded farm sale. Never who bought or sold.</span>
+        </a>
+        <ul class="job-links hl-links">
+          <li><a href="/land-sales/" id="hl-all" data-track="jobs"><span class="job-l" id="hl-all-l">Farmland sales by county in IL, IN, NJ, VT, WI</span></a></li>
+          <li><a href="/land-sales/#email" id="hl-ask" data-track="jobs"><span class="job-l" id="hl-ask-l">Email me new farm sales near me</span></a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="sw-home" id="sw-home"></div>
+    <script>try{(function(){var l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null'),c=l&&/^\d{5}$/.test(String(l.zip||''))?String(l.county||'').trim():'';if(c&&c.length<40){if(!/county|parish|borough/i.test(c))c+=' County';var e=document.getElementById('job-ff');if(e)e.textContent='Fast Facts for '+c;}})();}catch(e){}</script>
+    <h3 class="hb-futh">Futures</h3>
+    <p class="hb-plain" id="hb-plain">These are Chicago futures. Your local elevator pays a different price, called a cash bid. Type your ZIP in Today near me to see it.</p>
+    <div class="hb-grid hb-grid--fut">
+      <a class="hb-cell hb-fut" id="hb-fc" href="#f-prices" data-track="hero">
+        <span class="hb-k" id="hb-fc-k"><!--
+--><!--SEED:hp:fc-k-->Dec ’26 corn futures<!--/SEED--><!--
+--></span>
+        <span class="hb-v hb-v2" id="hb-fc-v"><!--
+--><!--SEED:hp:fc--><span class="hb-n">$4.47<span class="hb-frac"> 1/4</span></span><!--/SEED--><!--
+--></span>
+        <span class="hb-s" id="hb-fc-s"><!--
+--><!--SEED:hp:fc-s--><span class="hb-l"><span class="hb-n hb-chg dn"><span aria-hidden="true">▼ </span><span class="visually-hidden">down </span>−1 3/4¢</span></span><span class="hb-l hb-age">Overnight trade Nov 11, 7:37 a.m. CT</span><!--/SEED--><!--
+--></span>
+      </a>
+      <a class="hb-cell hb-fut" id="hb-fs" href="#f-prices" data-track="hero">
+        <span class="hb-k" id="hb-fs-k"><!--
+--><!--SEED:hp:fs-k-->Jan ’27 bean futures<!--/SEED--><!--
+--></span>
+        <span class="hb-v hb-v2" id="hb-fs-v"><!--
+--><!--SEED:hp:fs--><span class="hb-n">$12.24<span class="hb-frac"> 3/4</span></span><!--/SEED--><!--
+--></span>
+        <span class="hb-s" id="hb-fs-s"><!--
+--><!--SEED:hp:fs-s--><span class="hb-l"><span class="hb-n hb-chg dn"><span aria-hidden="true">▼ </span><span class="visually-hidden">down </span>−3 1/4¢</span></span><span class="hb-l hb-age">Overnight trade Nov 11, 7:37 a.m. CT</span><!--/SEED--><!--
+--></span>
+      </a>
+      <!-- 2026-11-06: the next release with a countdown and one
+           line from our own last numbers, then up to two more this week (components/happening.js). The rows are baked
+           by scripts/seed_static.py happening_seed (day and time as text without script); css/home.css holds their room.
+           #hap-say speaks only when a row changes state, never the minute. -->
+      <div class="hap" id="hap" role="group" aria-labelledby="hap-h">
+        <h3 class="hap-h" id="hap-h">Today and this week</h3>
+        <ol class="hap-list" id="hap-list"><!--
+--><!--SEED:hp:hap--><li class="hap-i hap-top hap-asks" data-state="next"><a class="hap-a" href="/cot" data-track="happening"><span class="hap-t">Funds report (COT)</span><span class="hap-w"><span class="hap-wt">Mon Nov 16, 3:30 PM ET, holiday week</span><span class="hap-cd"></span></span><span class="hap-x"></span></a><a class="hap-ask" href="/cot#cot-signup" data-track="funds-ask">Email me Fridays</a></li><li class="hap-i" data-state="next"><a class="hap-a" href="/conditions" data-track="happening"><span class="hap-w">Mon Nov 16, 4:00 PM ET</span><span class="hap-t">Crop Progress</span></a></li><li class="hap-i hap-all"><a class="hap-a" href="/usda-calendar" data-track="happening"><span class="hap-w">Every report date</span><span class="hap-t">USDA report calendar</span></a></li><!--/SEED--><!--
+--></ol>
+        <span class="visually-hidden" id="hap-say" role="status" aria-live="polite"></span>
+      </div>
+    </div>
+    <p class="pl-line" data-state-bid="corn soybeans" hidden></p>
+    <div id="hb-ask" data-signup-ask="Get your top local bid by email every morning" data-source="hero" data-variant="hero"></div>
+  <div class="s7-adrow s7-adrow--hb" style="display:none"><a class="teaser-sponsor" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"></a></div>
+  </section>
+  <script>try{AgPxStamp.reserve(document.querySelector('#hero-band .pl-line'));}catch(e){}try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
+  <script src="/components/signup-ask.js?v=22"></script>
   <!-- Worth a look (Nov 2, 2026): Rain Print (the promo card, components/rain-print-promo.js), the rain gauge, and one new page from What's new (components/home-worth.js) -->
   <section class="wl" id="wl" aria-labelledby="wl-h">
     <h2 class="wl-h" id="wl-h">Worth a look</h2>
     <div class="wl-row">
       <div class="wl-c wl-rp"><div data-rp-card-early hidden></div><aside data-rain-print-promo="card" aria-label="Rain Print" hidden></aside></div>
-      <a class="wl-c wl-g" href="/rain-gauge" data-track="worth"><span class="wl-t">A rain gauge that keeps its own log</span><span class="wl-x">A rain gauge that keeps a log for each field.</span><span class="wl-a">Join the waitlist &rarr;</span></a>
+      <a class="wl-c wl-g" href="/rain-gauge" data-track="worth"><span class="wl-t">A rain gauge that keeps its own log</span><span class="wl-x">I'm building a rain gauge that keeps a log for each field.</span><span class="wl-a">Join the waitlist &rarr;</span></a>
       <a class="wl-c wl-n" id="wl-new" href="/changelog" data-track="worth"><span class="wl-t">New on AGSIST</span><span class="wl-x" id="wl-new-x">Every change to the site, by date.</span><span class="wl-a" id="wl-new-a">See what&rsquo;s new &rarr;</span></a>
     </div>
   </section>
@@ -669,11 +662,10 @@ try {
       clearTimeout(lookT);
       lookT=setTimeout(function(){if(looking===z){looking='';paintPlace();setOpen(true);say('ZIP '+z+' didn’t load. Check it, or try again in a minute.');}},12000);
     });
-    var locBtn=$('btn-allow-loc');if(locBtn)locBtn.addEventListener('click',function(){say('Waiting for your location\u2026');});
     function zipLanded(){var l=loc();if(looking&&l&&String(l.zip||'')===looking){looking='';clearTimeout(lookT);say('');paintPlace();}}
     paintPlace();
     window._AGSIST_GEO_CALLBACKS=window._AGSIST_GEO_CALLBACKS||[];
-    window._AGSIST_GEO_CALLBACKS.push(function(){setTimeout(function(){zipLanded();paintPlace();if(zmsg&&/^Waiting/.test(zmsg.textContent||''))say('');},0);});
+    window._AGSIST_GEO_CALLBACKS.push(function(){setTimeout(function(){zipLanded();paintPlace();},0);});
     window.addEventListener('storage',paintPlace);
 
     /* ---- bids: the bids card publishes its top board per crop ----
@@ -964,10 +956,12 @@ try {
       <div class="card wx-card wx-tight"><div class="card-body">
         <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
           <div style="font-size:1.882rem" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></div>
-          <div style="font-size:.824rem;color:var(--text-dim);text-align:center">Weather and season totals show here once your ZIP is set at the top of the page.</div>
+          <div style="font-size:.824rem;color:var(--text-dim);text-align:center">Weather and season totals for your spot.</div>
+          <button id="btn-allow-loc" style="padding:.65rem 1.25rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Use my location</button>
+          <button id="btn-zip-instead" style="background:none;border:none;color:var(--text-muted);font-size:.824rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP instead</button>
         </div>
         <div id="wx-zip-entry" style="display:none;margin-bottom:.85rem">
-          <p class="wx-zip-ask">Weather and season totals show once your ZIP is set at the top of the page.</p>
+          <p class="wx-zip-ask">Set your ZIP at the top of the page for local weather and season totals. <button type="button" class="wx-zip-ask-b" onclick="if(window.agsistOpenZip)window.agsistOpenZip()">Set ZIP</button></p>
           <div class="wx-zip-old" hidden>
             <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
             <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Go</button>
@@ -1685,7 +1679,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   </script>
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/nws.js?v=1" defer></script>
-<script src="/components/geo.js?v=38" defer></script>
+<script src="/components/geo.js?v=37" defer></script>
 <script src="/components/elev-names.js?v=2" defer></script>
 <script src="/components/bids-fallback.js?v=1" defer></script>
 <script src="/components/bids-homepage.js?v=50" defer></script>
@@ -1695,9 +1689,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/home-yield.js?v=14" defer></script>
 <script src="/components/report-live.js?v=1" defer></script>
 <script src="/components/cot-glance.js?v=6"></script>
-<script src="/components/home.js?v=28"></script>
-<script src="/components/home-pics.js?v=1" defer></script>
-<script src="/components/home-land.js?v=3" defer></script>
+<script src="/components/home.js?v=27"></script>
+<script src="/components/home-land.js?v=2" defer></script>
 <script src="/components/happening.js?v=5" defer></script>
 <script src="/components/home-planting.js?v=8" defer></script>
 <script src="/components/home-season.js?v=13" defer></script>
