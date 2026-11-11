@@ -5,7 +5,6 @@
  *   states offered  data/sponsor-slots.json (scripts/stamp_rates.py reads the ribbons; tier "state")
  *   slots taken     data/page-sponsors.json (sold ribbons)
  *   Daily slot      data/sponsors.json (a Daily Sponsor deal on file means it is spoken for)
- *   town pages      data/state-basis/<ST>.json (the town pages with a current bid), for a Featured elevator
  * The preview is drawn by window.AgsistSlots in components/loader.js, the same
  * code that draws a sold ribbon on the live site.
  *
@@ -14,7 +13,6 @@
  * (scripts/sponsor_apply.py card_tier reads it back):
  *   State Sponsor      slot = one of the state's ribbons (cash-bids-<state> or rent-xx)
  *   Cash Bids Sponsor  slot = cash-bids
- *   Featured elevator  slot = fe-<st>-<town>   (the town page /cash-bids/<state>/<town>)
  * Nothing is published from here: the applicant confirms by email, the owner approves,
  * and scripts/sponsor_apply.py puts it live. If the worker cannot take it, the
  * form hands the same details to an email to the owner instead of losing them.
@@ -26,7 +24,7 @@
   var $ = function (id) { return document.getElementById(id); };
   var form = $('spa-form');
   if (!form) return;
-  var S = { card: null, slots: [], taken: {}, fndReserved: false, logo: '', states: [], towns: {} };
+  var S = { card: null, slots: [], taken: {}, fndReserved: false, logo: '', states: [] };
 
   function get(u) { return fetch(u, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).catch(function () { return null; }); }
   function tier() { var c = form.querySelector('input[name=tier]:checked'); return c ? c.value : ''; }
@@ -50,7 +48,7 @@
     S.fndReserved = !!(r[3] && (r[3].sponsors || []).some(function (s) {
       return s && s.active !== false && s.billing && s.billing.tier === 'daily';
     }));
-    ['state', 'cashbids', 'elevator', 'daily'].forEach(function (t) {
+    ['state', 'cashbids', 'daily'].forEach(function (t) {
       var el = form.querySelector('[data-price="' + t + '"]');
       var lo = priceNum(t), hi = lo;
       var c = card(t);
@@ -61,7 +59,6 @@
     if (S.taken['cash-bids']) $('spa-cb-note').textContent = 'Taken. Apply and you are next in line.';
     buildStates();
     fillStates();
-    fillElevStates();
     var q = new URLSearchParams(location.search);
     var slot = q.get('slot') || '', want = q.get('tier') || '';
     var se = S.slots.filter(function (s) { return s.id === slot; })[0];
@@ -71,7 +68,6 @@
     if (want === 'state' && se && se.state && stateOf(se.state) && !soon(se.state) && !stateTaken(stateOf(se.state))) $('spa-state').value = se.state;
     var radio = form.querySelector('input[name=tier][value="' + want + '"]');
     if (radio) radio.checked = true;
-    loadTowns();
     sync();
   });
 
@@ -103,38 +99,6 @@
     if (first) sel.value = first.value;
   }
 
-  function fillElevStates() {
-    var sel = $('spa-elev-state'), html = '';
-    S.states.forEach(function (e) { if (e.bids) html += '<option value="' + e.code + '">' + esc(e.name) + '</option>'; });
-    sel.innerHTML = html;
-  }
-
-  /* The town pages with a current bid, from the same file the state's bid table reads. */
-  function loadTowns() {
-    var code = $('spa-elev-state').value, sel = $('spa-town');
-    if (!code) return;
-    if (S.towns[code]) { fillTowns(code); return; }
-    sel.innerHTML = '<option value="">Loading town pages&hellip;</option>';
-    get('/data/state-basis/' + code + '.json').then(function (d) {
-      var seen = {}, list = [];
-      ((d && d.rows) || []).forEach(function (r) {
-        var town = r[2], path = r[3];
-        if (path && /^\/cash-bids\/[a-z-]+\/[a-z0-9][a-z0-9-]*$/.test(path) && !seen[path]) { seen[path] = 1; list.push([town, path]); }
-      });
-      list.sort(function (a, b) { return a[0] < b[0] ? -1 : 1; });
-      S.towns[code] = list;
-      if ($('spa-elev-state').value === code) fillTowns(code);
-    });
-  }
-  function fillTowns(code) {
-    var sel = $('spa-town'), list = S.towns[code] || [];
-    sel.innerHTML = list.length ? list.map(function (t) { return '<option value="' + esc(t[1]) + '">' + esc(t[0]) + '</option>'; }).join('')
-      : '<option value="">No town pages loaded. Email Sig your town.</option>';
-    $('spa-town-note').textContent = list.length ? 'Town pages with a current bid. Your box goes on your own town’s page.'
-      : 'The town list did not load. Send the form anyway and name your town in the headline, or email Sig.';
-    sync();
-  }
-
   /* The slot the worker stores (see the top of this file). */
   function slotFor(t) {
     if (t === 'cashbids') return 'cash-bids';
@@ -143,16 +107,10 @@
       if (!e) return '';
       return e.ids.filter(function (id) { return id.indexOf('cash-bids-') === 0; })[0] || e.ids[0];
     }
-    if (t === 'elevator') {
-      var code = $('spa-elev-state').value, path = $('spa-town').value || '';
-      var m = /^\/cash-bids\/[a-z-]+\/([a-z0-9][a-z0-9-]{0,50})$/.exec(path);
-      return code && m ? 'fe-' + code.toLowerCase() + '-' + m[1] : '';
-    }
     return '';
   }
   function where(t) {
     if (t === 'state') { var e = stateOf($('spa-state').value); return e ? e.name : ''; }
-    if (t === 'elevator') { var o = $('spa-town').selectedOptions && $('spa-town').selectedOptions[0]; return o && o.value ? o.textContent + ' (' + o.value + ')' : ''; }
     if (t === 'cashbids') return '/cash-bids';
     return '';
   }
@@ -160,7 +118,6 @@
   function sync() {
     var t = tier();
     $('spa-state-row').hidden = t !== 'state';
-    $('spa-elev-row').hidden = t !== 'elevator';
     var c = card(t), code = t === 'state' ? $('spa-state').value : '';
     $('spa-state-pitch').textContent = (t === 'state' && c) ? c.placement : '';
     var p = price(t, code) || 'the monthly price above';
@@ -184,9 +141,6 @@
         url: link, logo: S.logo }, slotFor(t) || 'page') + '</aside>';
       $('spa-preview-lbl').textContent = t === 'cashbids' ? 'On Cash Bids near me, in place of the "Sponsor this page" line:'
         : 'On the ' + (where('state') || 'state') + ' cash bids page, its town pages and its cash rent page:';
-    } else if (t === 'elevator') {
-      box.innerHTML = '<p class="spa-small">Sig builds your box with you from what you send here: your logo, phone and a &ldquo;call to sell&rdquo; line on your town page, labeled Sponsored. It never changes bid order or any bid. You approve it before it runs.</p>';
-      $('spa-preview-lbl').textContent = 'Featured elevator' + (where('elevator') ? ': ' + where('elevator') : '') + ':';
     } else {
       box.innerHTML = '<p class="spa-small">The Daily Sponsor card runs in every briefing and at the top of the homepage. Sig builds it with you from what you send here, and you approve the final version before it runs.</p>';
       $('spa-preview-lbl').textContent = 'Daily Sponsor card:';
@@ -206,7 +160,6 @@
   });
   form.addEventListener('input', sync);
   form.addEventListener('change', function (e) {
-    if (e.target.id === 'spa-elev-state') { loadTowns(); return; }
     if (e.target.id !== 'spa-logo') sync();
   });
 
@@ -232,7 +185,6 @@
     if (!t || !card(t)) miss.push('a placement');
     if (t === 'state') { var se = stateOf($('spa-state').value); if (!se || soon(se.code) || stateTaken(se)) miss.push('an open state'); }
     if (t === 'cashbids' && S.taken['cash-bids']) miss.push('a placement that is open');
-    if (t === 'elevator' && !slot) miss.push('your town page');
     if (p.company.length < 2) miss.push('your business name');
     if (!p.url) miss.push('your website');
     if (p.headline.length < 3) miss.push('a headline');

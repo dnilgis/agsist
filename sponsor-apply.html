@@ -114,7 +114,7 @@
 </div>
   <main id="main" tabindex="-1" class="spa-page">
     <h1>Put your business in front of farmers</h1>
-    <p class="spa-lede page-lede">Pick where your ad goes and write it. The preview below updates as you type. Sig reads every ad. State and Cash Bids ribbons go live within the hour after he okays it; the Daily Sponsor card and a featured elevator box are set up with you.</p>
+    <p class="spa-lede page-lede">Pick where your ad goes and write it. The preview below updates as you type. Sig reads every ad. State and Cash Bids ribbons go live within the hour after he okays it. The Daily Sponsor card is set up with you.</p>
 
     <div class="spa-deal">
       <p><b>Your first month is free. No card, no contract.</b></p>
@@ -134,9 +134,6 @@
           <div class="spa-tier-name">Cash Bids Sponsor</div><div class="spa-tier-price" data-price="cashbids">-</div>
           <div class="spa-tier-what">Your ribbon on Cash Bids near me. One sponsor only.</div>
           <div class="spa-tier-note" id="spa-cb-note"></div></label>
-        <label class="spa-tier" data-tier="elevator"><input type="radio" name="tier" value="elevator">
-          <div class="spa-tier-name">Featured elevator</div><div class="spa-tier-price" data-price="elevator">-</div>
-          <div class="spa-tier-what">Your elevator&rsquo;s logo, phone and a &ldquo;call to sell&rdquo; box on your own town page, labeled Sponsored. It never changes bid order or any bid.</div></label>
         <label class="spa-tier" data-tier="daily"><input type="radio" name="tier" value="daily">
           <div class="spa-tier-name">Daily Sponsor</div><div class="spa-tier-price" data-price="daily">-</div>
           <div class="spa-tier-what">Your card in every Daily briefing, web and email, plus the top of the homepage. One sponsor only.</div>
@@ -149,11 +146,6 @@
         <p class="spa-small" id="spa-state-pitch" style="margin:.4rem 0 0"></p>
       </div>
 
-      <div id="spa-elev-row" class="spa-grid" style="margin-top:.9rem" hidden>
-        <div><label for="spa-elev-state">Which state?</label><select id="spa-elev-state" name="elev_state"></select></div>
-        <div><label for="spa-town">Which town page?</label><select id="spa-town" name="town"></select></div>
-        <p class="spa-small full" id="spa-town-note" style="margin:0">Town pages with a current bid. Your box goes on your own town&rsquo;s page.</p>
-      </div>
 
       <div class="spa-step">2 &middot; Your ad</div>
       <div class="spa-grid">
@@ -206,7 +198,7 @@
 <!-- /static-nav:footer -->
 </div>
   <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/sponsor-apply.js?v=8" defer></script>
+  <script src="/components/sponsor-apply.js?v=9" defer></script>
   <script>
   /* Show the chosen logo file name next to the picker button. Read after the form script has
      had its turn, since that script clears a file it rejects. */

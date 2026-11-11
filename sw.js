@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 440;  // v440 2026-11-10: futures wording. Delayed, never live; the price stamp says when the quote was read (price-local.js 13, futures.js 33, breakeven.js 11, fast-facts.js 20, cb-sample.js 8); the state bid line holds its box with a saved ZIP. (440, next after main's 439)
+var CACHE_VERSION = 441;  // v441 2026-11-10: sponsor pages. The elevator listing offer is gone from the sponsor pages and the sign-up form (sponsor-apply.js?v=9). (441, next after main's 440)
+// var CACHE_VERSION = 440;  // v440 2026-11-10: futures wording. Delayed, never live; the price stamp says when the quote was read (price-local.js 13, futures.js 33, breakeven.js 11, fast-facts.js 20, cb-sample.js 8); the state bid line holds its box with a saved ZIP. (440, next after main's 439)
 // var CACHE_VERSION = 439;  // v439 2026-11-10: report day live. On WASDE and crop report days the graded numbers reach the USDA calendar and the homepage as soon as they are read (components/report-live.js?v=1, priced-in.js?v=5). (439, next after main's 438)
 // var CACHE_VERSION = 438;  // v438 2026-11-10: home page fixes. Bid card names the board's own futures month, Harvest windows, one futures stamp, method text in Sources and terms, no crowding, nowcast withheld when two weeks old, the rent card names its land type and shows an old rent as n/a (bids-homepage.js?v=49, bids-network.js?v=9, home.js?v=26, home-season.js?v=13, home-yield.js?v=14, home-land.js?v=2, happening.js?v=5, home-planting.js?v=8, geo.js?v=37). (438, next after main's 437)
 // var CACHE_VERSION = 437;  // v437 2026-11-10: Since 2022 in the footer, one line on About and foundingDate in the organization data (components/footer.html, about.html). (437, next after 436)
