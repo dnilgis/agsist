@@ -239,3 +239,14 @@ test("in a browser: the sitewide line lands under the menu without moving the pa
     }
   } finally { await browser.close(); srv.close(); }
 });
+
+test("sponsor pages: no prices in titles or meta descriptions; Root Lot ends Nov 30", () => {
+  for (const f of readdirSync(".").filter((n) => /^sponsor.*\.html$/.test(n))) {
+    const h = readFileSync(f, "utf8");
+    for (const m of h.matchAll(/<title>([^<]*)<\/title>|<meta name="description" content="([^"]*)"/g)) {
+      assert.ok(!/\$\s?\d/.test(m[1] || m[2]), `${f}: price in title or description: ${m[1] || m[2]}`);
+    }
+  }
+  const rl = JSON.parse(readFileSync("data/geo-sponsors.json", "utf8")).sponsors.find((s) => s.id === "rootlot");
+  assert.match(rl.end || "", /^\d{4}-\d{2}-\d{2}$/, "Root Lot has an end day (Sig, Nov 11: it ends Nov 30)");
+});

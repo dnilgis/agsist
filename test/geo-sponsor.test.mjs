@@ -31,13 +31,13 @@ const DATA = (o = {}) => ({ sponsors: [Object.assign({}, ENTRY, o)] });
 // the pages draw the shipped RootLot entry, switched on (what readers will see once the owner says start)
 const LIVE = (o = {}) => ({ sponsors: [Object.assign({}, JSON.parse(read("data/geo-sponsors.json")).sponsors.find((x) => x.id === "rootlot"), { active: true }, o)] });
 
-test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), no dates, Sig's copy, its own logo, a facts line, no phone", () => {
+test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), ends Nov 30 (Sig, Nov 11), Sig's copy, its own logo, a facts line, no phone", () => {
   const d = JSON.parse(read("data/geo-sponsors.json"));
   const e = d.sponsors.find((x) => x.id === "rootlot");
   assert.ok(e, "RootLot entry present");
   assert.deepEqual(e.states, ["CA", "NV", "TX"]);
   assert.equal(e.active, true, "Sig said start, Oct 28");
-  assert.equal(e.start, null); assert.equal(e.end, null);
+  assert.equal(e.start, null); assert.match(e.end, /^\d{4}-\d{2}-\d{2}$/, "an end day (Sig, Nov 11: Nov 30)");
   assert.equal(e.headline, "Put Your Root Down");
   // Nov 5: the body is one line of facts from the private notes
   assert.equal(e.body, "Trees and plants \u00b7 Shipped direct from California growers \u00b7 CA, NV and TX");
@@ -59,7 +59,7 @@ test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), no date
   for (const st of ["CA", "NV", "TX"]) assert.equal(G.choose(off, st, "2026-10-28", false), null, st + ": off draws nothing");
   assert.equal(G.anyLive(off, "2026-10-28"), false, "no live entry, so no page asks /where");
   // switched on with null dates it runs any day
-  const on = { sponsors: [Object.assign({}, e, { active: true })] };
+  const on = { sponsors: [Object.assign({}, e, { active: true, end: null })] };
   for (const day of ["2026-10-28", "2027-06-01", "2030-01-01"]) assert.equal(G.choose(on, "TX", day), on.sponsors[0]);
   const ad = G.toAd(on.sponsors[0], "state-page");
   assert.equal(ad.cta_url, "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=state-page");
