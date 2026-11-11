@@ -42,6 +42,8 @@ Usage also: python3 scripts/build_basis_join.py --stitch-stats   counts per outc
             python3 scripts/build_basis_join.py --stitch-dump    every stitched contract as JSON (the parity test)
 
 Usage: python3 scripts/build_basis_join.py            write data/ids/basis-join/
+       python3 scripts/build_basis_join.py --out DIR  write the same files into DIR instead (tests: data/ids is
+                                                      built on main by fetch_bids.yml, never in a pull request)
        python3 scripts/build_basis_join.py --check    exit 1 when the committed file is not what this builds
        python3 scripts/build_basis_join.py --selftest
 """
@@ -388,20 +390,27 @@ def main(argv):
     el = json.load(open(os.path.join(ROOT, "data", "ids", "elevators.json"), encoding="utf-8"))
     led = json.load(open(os.path.join(ROOT, "data", "ids", "elevator-ids.json"), encoding="utf-8"))
     files = {name: text(doc) for name, doc in build(el, None, led).items()}
-    have = set(os.listdir(OUT)) if os.path.isdir(OUT) else set()
+    out = OUT
+    if "--out" in argv:
+        i = argv.index("--out")
+        if i + 1 >= len(argv):
+            print("--out needs a folder", file=sys.stderr)
+            return 2
+        out = os.path.abspath(argv[i + 1])
+    have = set(os.listdir(out)) if os.path.isdir(out) else set()
     if "--check" in argv:
-        bad = sorted(n for n in set(files) | have if n not in files or n not in have or open(os.path.join(OUT, n), encoding="utf-8").read() != files[n])
+        bad = sorted(n for n in set(files) | have if n not in files or n not in have or open(os.path.join(out, n), encoding="utf-8").read() != files[n])
         if bad:
             print("data/ids/basis-join/ is not what scripts/build_basis_join.py builds (" + ", ".join(bad[:6]) + "); run it and commit", file=sys.stderr)
             return 1
         print("basis-join: up to date,", len(files), "files")
         return 0
-    os.makedirs(OUT, exist_ok=True)
-    for n in have - set(files):
-        os.remove(os.path.join(OUT, n))
+    os.makedirs(out, exist_ok=True)
+    for n in (have - set(files)) if out == OUT else ():    # --out never deletes in a folder it did not make
+        os.remove(os.path.join(out, n))
     for n, t in files.items():
-        open(os.path.join(OUT, n), "w", encoding="utf-8").write(t)
-    print("wrote", len(files), "files in", os.path.relpath(OUT, ROOT), json.loads(files["index.json"])["counts"])
+        open(os.path.join(out, n), "w", encoding="utf-8").write(t)
+    print("wrote", len(files), "files in", os.path.relpath(out, ROOT), json.loads(files["index.json"])["counts"])
     return 0
 
 
