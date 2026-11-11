@@ -12,12 +12,6 @@ on:
   push:
     branches: [main]
     paths:
-      - 'scripts/build_sponsor_report.py'
-      - 'scripts/sponsor_links.py'
-      - 'scripts/sponsor_publish.py'
-      - 'scripts/test_sponsor_portal.py'
-      - 'scripts/test_rate_card.py'
-      - 'scripts/sponsor-checks.mjs'
       - 'sponsor-report.html'
       - 'sponsor.html'
       - 'data/sponsors.json'
@@ -28,12 +22,7 @@ on:
       - 'data/supporters.json'
       - 'components/sponsor-ad.js'
       - 'components/sponsor-ad.css'
-      - 'scripts/brief_email.py'
-      - 'scripts/audience_from_exports.py'
-      - 'scripts/build_audience.py'
-      - 'scripts/bake_audience.py'
       - 'data/audience.json'
-      - 'scripts/build_rp_sealed.mjs'
 
 env:
   TZ: America/Chicago

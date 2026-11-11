@@ -11,18 +11,10 @@ on:
       - 'components/prf-outlook.js'
       - 'components/prf-sponsor.js'
       - 'data/prf-sponsors.json'
-      - 'scripts/build_prf_counties.py'
-      - 'scripts/fetch_prf_outlook.py'
-      - 'test/fixtures/prf-outlook/**'
-      - 'scripts/stamp_prf.py'
-      - 'scripts/prf_facts.mjs'
-      - 'scripts/build_prf_states.py'
-      - 'scripts/make_prf_html.py'
       - 'prf/**'
       - 'data/prf/meta.json'
       - 'data/prf/facts.json'
       - 'data/prf/check.json'
-      - 'test/prf-*.mjs'
       - '.github/workflows/prf-page.yml'
   workflow_dispatch:
 
