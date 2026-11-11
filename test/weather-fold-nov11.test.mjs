@@ -254,3 +254,24 @@ test("in a browser: an old address opens its tab, a tab click loads its code onc
     srv.close();
   }
 });
+
+/* The layout checks the old pages had (cls-sweep-c for /urea, cls-rest for /drought-monitor, gdu-falln-cls for
+ * /fall-nitrogen), now on the tab each page became, with the same limits. They live here, not in a cls-* file:
+ * test/cls-reserved.test.mjs scans every page a cls-* file names, and /spray's and /rain's own default views
+ * have not had that sweep yet (a follow-up). */
+test("the urea tab holds its price line until the price file answers", () => {
+  const U = read("spray.html") + read("components/fold/urea.js");
+  assert.match(U, /class="hero-sub up-wait" id="urea-price-line"/, "urea: the price line starts held");
+  assert.match(U, /\.catch\(letGo\);\}catch\(e\)\{letGo\(\);\}/, "urea: a failed price file lets go of the hold");
+});
+
+const { open: clsOpen, MODES } = await import("./cls-sweep-lib.mjs");
+let clsH = null;
+for (const [p, limit] of [["/spray#urea", 0.04], ["/spray#fall-nitrogen", 0.005], ["/rain#drought", 0.005]]) for (const [w, saved] of MODES) {
+  test(`${p} at ${w}px, ${saved ? "saved ZIP 54728" : "nothing saved"}: layout shift under ${limit} with the tab open`, { skip, timeout: 90000 }, async () => {
+    if (!clsH) clsH = await clsOpen();
+    const r = await clsH.cls(p, w, saved);
+    assert.ok(r.cls < limit, `layout shift ${r.cls.toFixed(4)}: ${r.who.join(" | ")}`);
+  });
+}
+test("close the layout browser", { skip }, async () => { if (clsH) await clsH.close(); });
