@@ -275,11 +275,11 @@ function localNotes(st){
     else if(st==='IL')h=h.replace(out,' In Illinois, Illinois Extension runs the same prices through the <a href="https://www.cornnratecalc.org/">Corn N Rate Calculator</a> by your region of Illinois and last crop (<a href="https://extension.illinois.edu/blogs/nutrient-loss-reduction/2026-02-27-how-mrtn-works-and-economics-behind-nitrogen-rates">how it works</a>).');
     note.innerHTML=h;
   }
-  var a=fall&&fall.querySelector('a[href^="/fall-nitrogen"]'),z=savedZip();
-  if(a){a.href='/fall-nitrogen'+(z?'?zip='+z:'');a.textContent=z?'Soil temps near '+z:'Soil temps near you';}
+  var a=fall&&fall.querySelector('a[href$="#fall-nitrogen"]'),z=savedZip();
+  if(a){a.href='/spray'+(z?'?zip='+z:'')+'#fall-nitrogen';a.textContent=z?'Soil temps near '+z:'Soil temps near you';}
   var r=fall&&document.getElementById('ans-fall-rule');
   if(fall&&!r&&FALL_RULE[st]){r=document.createElement('span');r.id='ans-fall-rule';fall.appendChild(r);}
-  if(r)r.innerHTML=FALL_RULE[st]?' &middot; <a href="/fall-nitrogen#rule-'+st+'">'+esc(BASIS[st]?BASIS[st].name:st)+' rule</a>':'';
+  if(r)r.innerHTML=FALL_RULE[st]?' &middot; <a href="/spray#rule-'+st+'">'+esc(BASIS[st]?BASIS[st].name:st)+' rule</a>':'';
 }
 function loadBasis(){
   getJSON('/data/basis-states.json').then(function(d){
