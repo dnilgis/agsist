@@ -54,17 +54,18 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
    notices. Browsers that do not know the property ignore it. */
 .cb-hero-sub{font-size:.92rem;color:var(--text-dim);line-height:1.65;max-width:40rem;margin:0 auto .85rem;text-wrap:balance}
 .cb-sample{margin:1.1rem auto 0;max-width:34rem;text-align:left}p.cbs-f{display:block}.cb-empty .cb-ask{max-width:34rem;margin:1rem auto 0;text-align:left}.cb-empty .cbs-1 .cbs-h{font-size:1rem;color:var(--text);margin:0 0 .35rem}.cb-empty .cbs p{max-width:none;margin-left:0;margin-right:0;font-size:.8125rem}.cb-empty .cbs p.cbs-ok,.cb-empty .cbs p.cbs-msg{font-size:.875rem}
-.cb-sample-wait{min-height:576px}@media(max-width:480px){.cb-sample-wait{min-height:616px}}@media(max-width:360px){.cb-sample-wait{min-height:690px}}
+.cb-sample-wait{min-height:1030px}@media(max-width:480px){.cb-sample-wait{min-height:940px}}@media(max-width:420px){.cb-sample-wait{min-height:1000px}}@media(max-width:360px){.cb-sample-wait{min-height:1060px}}
 /* The results area keeps the height of the empty state (heading, line, held table) whatever lands in it: the skeleton, a saved-ZIP search that removes the held table, a short error. Nothing below it moves. */
-#cb-results.cb-nz{min-height:1000px}@media(max-width:480px){#cb-results.cb-nz{min-height:1080px}}@media(max-width:360px){#cb-results.cb-nz{min-height:1200px}}#cb-results{min-height:760px}@media(max-width:480px){#cb-results{min-height:830px}}@media(max-width:360px){#cb-results{min-height:960px}}
+#cb-results.cb-nz{min-height:1350px}@media(max-width:480px){#cb-results.cb-nz{min-height:1285px}}@media(max-width:420px){#cb-results.cb-nz{min-height:1350px}}@media(max-width:360px){#cb-results.cb-nz{min-height:1415px}}#cb-results{min-height:760px}@media(max-width:480px){#cb-results{min-height:830px}}@media(max-width:360px){#cb-results{min-height:960px}}
 .cbs-h{font-size:.95rem;font-weight:700;color:var(--text);margin:0 0 .4rem;text-align:center}
 .cbs-t{width:100%;border-collapse:collapse;font-size:.9rem}
-.cbs-t th,.cbs-t td{padding:.4rem .45rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
+.cbs-t th,.cbs-t td{padding:.4rem .3rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
 .cbs-t thead th{font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);font-weight:600}
 .cbs-t tbody th{font-weight:600}.cbs-t tbody th a{color:var(--text)}
 .cbs-t .cbs-n b{font-family:'JetBrains Mono',monospace;color:var(--text);display:block}
 .cbs-t .cbs-est{font-weight:400;text-transform:none;letter-spacing:0}.cbs-m{display:block;font-size:.72rem;color:var(--text-muted);line-height:1.35}
 .cbs-f{font-size:.78rem;color:var(--text-muted);line-height:1.5;margin:.45rem 0 0}
+.cbs-fig{margin:0 0 .7rem}.cbs-cap{font-size:.8rem;color:var(--text-muted);text-align:center;margin:0 0 .3rem}.cbs-map .usm{position:relative;width:100%;max-width:900px;margin:0 auto}.cbs-map .usm-box{position:relative;width:100%;aspect-ratio:866.9/553.2}.cbs-map .usm-read{min-height:1.4em;margin:8px 0 0;text-align:center;font-size:.86rem}.cbs-leg{display:flex;align-items:center;justify-content:center;gap:0;margin:.3rem 0 0;font:600 .72rem 'JetBrains Mono',monospace;color:var(--text-muted)}.cbs-leg i{display:block;width:34px;height:10px}.cbs-leg span{padding:0 .5rem}.cbs-kit{margin:.35rem 0 0;text-align:center}
 .cb-cos{font-size:.86rem;color:var(--text-dim);line-height:1.5;max-width:46rem;margin:.1rem 0 0;text-wrap:pretty}
 .cb-cos a{color:var(--text-dim);text-decoration:underline;text-decoration-color:var(--border-2,#999);text-underline-offset:2px}
 .cb-cos a:last-child{color:var(--gold);text-decoration:none;font-weight:600;white-space:nowrap}
@@ -582,7 +583,6 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
     <div class="cb-hero">
       <h1>Grain prices at local elevators near you</h1>
       <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.15rem 0 .4rem"><!--CB-OPEN-->AGSIST shows current cash bids from 2,061 elevators in 1,622 towns, updated Nov 11, 12:41 pm CT. <!--/CB-OPEN-->Free cash bids by ZIP: corn, soybeans and wheat.</p>
-      <p class="cb-cos" id="cb-cos"><!--CO-LINE-->Bids from <a href="/cash-bids/company/new-cooperative">NEW Cooperative</a>, <a href="/cash-bids/company/agtegra">Agtegra</a>, <a href="/cash-bids/company/adm">ADM</a>, <a href="/cash-bids/company/alcivia">ALCIVIA</a>, <a href="/cash-bids/company/innovative-ag-services">Innovative Ag Services</a> and 131 more elevator companies. <a href="/cash-bids/company/">Bids by company &rarr;</a><!--/CO-LINE--></p>
     </div>
     <div id="my-elevators" data-myelev="cash-bids" hidden></div>
     <div class="cb-lookup" role="search">
@@ -663,7 +663,6 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
       </div>
     </div>
     <script>(function(){var box=document.querySelector('[data-bid-alerts][data-source="page:cash-bids"]'),best=document.getElementById('best-bids-section');if(!box||!best||!window.MutationObserver)return;var slot=document.createComment('bid-alerts slot');box.parentNode.insertBefore(slot,box);var btn=document.createElement('button');btn.type='button';btn.className='cb-pre-open';btn.textContent='Get the bids near you by email';var opened=false;btn.addEventListener('click',function(){opened=true;box.classList.remove('cb-pre');btn.hidden=true;var e=box.querySelector('.cbs-em');if(e)e.focus();});function nz(){var z=document.getElementById('cb-zip');if(z&&z.value.trim())return false;if(/[?&]zip=\d{5}/.test(location.search))return false;try{var v=localStorage.getItem('agsist_zip');if(!(v&&/^\d{5}$/.test(v)))v=String((JSON.parse(localStorage.getItem('agsist-wx-loc')||'null')||{}).zip||'');if(/^\d{5}$/.test(v))return false;}catch(e){}return true;}function place(){var res=document.getElementById('cb-results');if(!res)return;var emp=res.querySelector('.cb-empty'),smp=document.getElementById('cb-sample');if(best.style.display!=='none'){res.classList.remove('cb-nz');box.classList.remove('cb-pre');btn.hidden=true;if(slot.nextSibling!==box)slot.parentNode.insertBefore(box,slot.nextSibling);}else if(emp&&nz()){res.classList.toggle('cb-nz',!!(smp&&smp.parentNode===emp));box.classList.remove('cb-pre');btn.hidden=true;if(smp&&smp.parentNode===emp){if(smp.nextSibling!==box)emp.insertBefore(box,smp.nextSibling);}else if(box.parentNode!==emp)emp.appendChild(box);}else{res.classList.remove('cb-nz');if(res.nextSibling!==btn)res.parentNode.insertBefore(btn,res.nextSibling);if(btn.nextSibling!==box)res.parentNode.insertBefore(box,btn.nextSibling);if(!opened){box.classList.add('cb-pre');btn.hidden=false;}}}function go(){place();var mo=new MutationObserver(place);mo.observe(best,{attributes:true,attributeFilter:['style']});mo.observe(document.getElementById('cb-results'),{childList:true,subtree:true});}go();})();</script>
-    <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
     <div class="wtd-panel" id="wtd-panel" hidden>
       <button class="wtd-toggle" id="wtd-toggle-btn" aria-expanded="false" aria-controls="wtd-body">
         <span class="wtd-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-truck"/></svg></span>
@@ -704,12 +703,14 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
         <div class="wtd-delivery-note" id="wtd-delivery-note" style="display:none">Each elevator is on the soonest delivery it will take, and those months differ. To compare one delivery window, set Delivery above to a single month. Confirm delivery terms before you haul.</div>
       </div>
     </div>
+    <p class="cb-cos" id="cb-cos"><!--CO-LINE-->Bids from <a href="/cash-bids/company/new-cooperative">NEW Cooperative</a>, <a href="/cash-bids/company/agtegra">Agtegra</a>, <a href="/cash-bids/company/adm">ADM</a>, <a href="/cash-bids/company/alcivia">ALCIVIA</a>, <a href="/cash-bids/company/innovative-ag-services">Innovative Ag Services</a> and 131 more elevator companies. <a href="/cash-bids/company/">Bids by company &rarr;</a><!--/CO-LINE--></p>
     <aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="cash-bids"></aside>
     <style>#internal-links-block{display:block!important}.il-states-h{margin:.4rem 0 .2rem;font-size:.85rem;color:var(--text-dim)}.il-states{list-style:none;margin:0;padding:0;columns:4 11rem;column-gap:1.25rem;font-size:.85rem;line-height:1.9;color:var(--text-dim)}.il-states li{break-inside:avoid;display:flex;align-items:center;gap:.45rem}.il-states a{color:var(--text-dim)}.il-states a:hover{color:var(--gold)}.il-states .il-b{font-size:.78rem;color:var(--text-muted);text-decoration:underline;text-underline-offset:2px}@media(max-width:600px){.il-states{columns:2;column-gap:.75rem;font-size:.9rem}.il-states li{min-height:40px}.il-states a{display:inline-flex;align-items:center;min-height:40px}.il-states li>a:first-child{flex:0 1 auto;min-width:0}}</style>
     <div class="internal-links" id="internal-links-block">
       <p class="il-one"><a href="/basis">Basis: your state, vs normal &#8594;</a> <span aria-hidden="true">&#183;</span> <a href="/basis#by-state">Basis in every state &#8594;</a></p>
-      <p class="il-states-h">Today&rsquo;s network bids and basis, by state:</p>
-      <ul class="il-states">
+      <details class="cb-glance-box" id="cb-states-fold">
+        <summary class="cb-fold-s">Today&rsquo;s bids and basis, every state as a list</summary>
+            <ul class="il-states">
         <li><a href="/cash-bids/alabama/">Alabama</a> <a class="il-b" href="/cash-bids/alabama/#basis" aria-label="Alabama basis">basis</a></li>
         <li><a href="/cash-bids/arkansas/">Arkansas</a> <a class="il-b" href="/cash-bids/arkansas/#basis" aria-label="Arkansas basis">basis</a></li>
         <li><a href="/cash-bids/colorado/">Colorado</a> <a class="il-b" href="/cash-bids/colorado/#basis" aria-label="Colorado basis">basis</a></li>
@@ -741,6 +742,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
         <li><a href="/cash-bids/wisconsin/">Wisconsin</a> <a class="il-b" href="/cash-bids/wisconsin/#basis" aria-label="Wisconsin basis">basis</a></li>
         <li><a href="/cash-bids/wyoming/">Wyoming</a> <a class="il-b" href="/cash-bids/wyoming/#basis" aria-label="Wyoming basis">basis</a></li>
       </ul>
+      </details>
       <p class="il-one" style="margin:.8rem 0 0">Run an elevator? <a href="/list-your-elevator" data-track="elev_listing_cashbids">Post your bids free &#8594;</a></p>
     </div>
     <style>.eth-box{margin:.8rem 0}.eth-box #eth-bids{min-height:6rem;padding:0 .75rem .6rem;font-size:.85rem}.eth-lead{margin:.2rem 0 .4rem;color:var(--text-dim)}.eth-wrap{overflow-x:auto}.eth-t{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}.eth-t th,.eth-t td{padding:.3rem .4rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}.eth-nw{white-space:nowrap}.eth-dim{color:var(--text-muted)}.eth-t th{font-weight:600;color:var(--text-dim)}.eth-t .r{text-align:right}.eth-src,.eth-note{margin:.4rem 0 .8rem;font-size:.78rem;color:var(--text-muted)}</style>
@@ -765,7 +767,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
       <div class="faq-item"><details><summary class="faq-q"><span class="faq-q-text">Is AGSIST free? Do I need an account?</span></summary><div class="faq-a">Yes, cash bids are free, and you don't need an account.</div></details></div>
     </details>
   </div>
-<details class="cb-terms" id="sources-terms" style="margin:1.2rem 0 0;font-size:.82rem;color:var(--text-muted)"><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center">Sources and terms</summary><p style="margin:.3rem 0 .6rem">Bids are read from what each elevator posts, and every bid shows when it was read or posted. Futures: CME Group via Yahoo Finance.</p></details>
+<details class="cb-terms" id="sources-terms" style="margin:1.2rem 0 0;font-size:.82rem;color:var(--text-muted)"><summary style="cursor:pointer;min-height:44px;display:flex;align-items:center">Sources and terms</summary><p style="margin:.3rem 0 .6rem">Bids are read from what each elevator posts, and every bid shows when it was read or posted. Futures: CME Group via Yahoo Finance.</p><p style="margin:.3rem 0 .6rem">The state figures before you type a ZIP are estimates, not posted bids. Each is the futures price plus the median bid gap at the elevators AGSIST reads in that state, shown as &ldquo;median of N elevators&rdquo; and the date it was read. &ldquo;Under&rdquo; means that many cents a bushel below the futures month named. A state with fewer than 3 elevators is left out.</p></details>
 <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
 <button id="back-to-top" class="btt-btn" aria-label="Back to search">&#8593;</button>
@@ -818,7 +820,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 <script src="/components/cb-myelev.js?v=9" defer></script>
 <script src="/components/cb-rank.js?v=7"></script>
 <script src="/components/cb-vs-state.js?v=3"></script>
-<script src="/components/cb-sample.js?v=8" defer></script>
+<script src="/components/cb-sample.js?v=9" defer></script>
 <script src="/components/bids-fallback.js?v=1"></script><script src="/components/cash-bids.js?v=22"></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
