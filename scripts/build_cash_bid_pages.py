@@ -2168,9 +2168,12 @@ def estimates(bd, shard, fut, snap_ct, days=ESTIMATE_DAYS):
 # a price in a search result outlives the bid; the page itself carries it.
 ANSWER_CROPS = 2              # crops named in the answer sentence
 DESC_MAX = 160
-HIST_NOTE = (" The &ldquo;Basis since&rdquo; box shows the day each elevator&rsquo;s basis last changed; before Oct 11, 2026 "
-             "it also drew on a licensed bid feed.")
-HIST_JS = '<script src="/components/elev-names.js?v=2" defer></script><script src="/components/cb-basis-hist.js?v=5" defer></script>\n'
+from build_basis_history import PUBLIC_FROM as HIST_FROM  # noqa: E402  the public basis log starts here
+HIST_FROM_WORDS = "%s %d, %s" % (["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"][int(HIST_FROM[5:7]) - 1],
+                                 int(HIST_FROM[8:10]), HIST_FROM[:4])
+HIST_NOTE = (" The &ldquo;Basis since&rdquo; box shows the day each elevator&rsquo;s basis last changed, "
+             "since " + HIST_FROM_WORDS + ".")
+HIST_JS = '<script src="/components/elev-names.js?v=2" defer></script><script src="/components/cb-basis-hist.js?v=6" defer></script>\n'
 
 
 def head_name(bd, with_town=True):
@@ -2568,8 +2571,8 @@ def parse_dm(s, date):
 def history_index(path):
     """{(norm_fac, norm_town): first logged date} for each elevator with at
     least one logged basis change in one state's data/basis-sparklines/<ST>.json;
-    empty when it cannot be read. The date heads the box ("Basis since Aug 27";
-    2026-10-17 audit N5: it said "since June" over a log that began Aug 27)."""
+    empty when it cannot be read. The box's heading names where the public log
+    starts (HIST_FROM_WORDS), not these dates."""
     try:
         with open(path, encoding="utf-8") as f:
             series = (json.load(f) or {}).get("series") or {}
@@ -2595,27 +2598,24 @@ def since_words(iso):
 
 
 def history_box(t, boards, logged):
-    """"Basis since June": a closed box naming this page's elevators that have
+    """"Basis since Oct 12, 2026" (where the public log starts): a closed box naming this page's elevators that have
     a logged basis change (logged: history_index() of the state). Nothing of
     the history is in the page: components/cb-basis-hist.js fetches
     data/basis-sparklines/<ST>.json the first time the box is opened and draws
     each elevator's nearest-delivery basis from its logged changes. No box
     when none of them has one."""
-    names, first = [], ""
+    names = []
     for bd in boards:
         n = bd["operator"] or bd["city"]
         cities = sorted({x for x in (bd["city"], t["name"]) if x})
         hits = [logged[(norm_fac(n), norm_town(c))] for c in cities if n and (norm_fac(n), norm_town(c)) in logged]
         if not hits:
             continue
-        d0 = min(h for h in hits if h) if any(hits) else ""
-        if d0 and (not first or d0 < first):
-            first = d0
         if (n, cities) not in names:
             names.append((n, cities))
     if not names:
         return ""
-    head = "Basis since " + since_words(first) if since_words(first) else "Basis log"
+    head = "Basis since " + HIST_FROM_WORDS      # where the public log starts (build_basis_history.PUBLIC_FROM)
     data = json.dumps([[n, c] for n, c in names], separators=(",", ":"), ensure_ascii=False)
     return (f'<details class="cbt-hist" data-basis-hist="{t["state"]}" data-boards="{esc(data)}">'
             f'<summary>{head}</summary><div class="cbt-hist-body">'
@@ -4013,7 +4013,7 @@ def build_all(merged, index, zip_towns, out_dir=OUT_DIR, root=".", sitemap=None,
     directory: the bids network's data/directory.json, for the unread
     elevators on each town page (None = that section is left out).
     hist_dir: data/basis-sparklines, to know which elevators have a logged
-    basis change for the "Basis since June" box (None = no box).
+    basis change for the "Basis since" box (None = no box).
     roster: load_roster(), the facilities of the co-ops whose boards cannot be read (None = none)."""
     now = now or dt.datetime.now(dt.timezone.utc)
     gen = parse_ts(merged.get("generated"))
@@ -4834,7 +4834,7 @@ def selftest():
 
 
 def _selftest_answer():
-    """The answer sentence, the state line and the "Basis since June" box."""
+    """The answer sentence, the state line and the "Basis since" box."""
     import tempfile as _tf
     snap = parse_ts("2026-10-07T18:00:00Z").astimezone(CT)
     t1, t2 = parse_ts("2026-10-07T17:00:00Z"), parse_ts("2026-10-06T15:00:00Z")
@@ -4980,7 +4980,7 @@ def _selftest_answer():
                          ("HARVEST 26", "2026-09-01", None), ("IN STORE", "2026-09-01", None)):
         assert parse_dm(raw, d) == want, (raw, parse_dm(raw, d))
     assert norm_fac("CDR FARMS, LLC") == norm_fac("CDR Farms LLC") and norm_town("St. Ansgar") == norm_town("SAINT ANSGAR")
-    # "Basis since June": only elevators with a logged change get the box, and the
+    # "Basis since": only elevators with a logged change get the box, and the
     # page carries their names, never the history itself
     merged, index = _fixture()
     ZT = {"zips": {"68025": ["Fremont", "NE"], "68031": ["Hooper", "NE"], "50001": ["Ackworth", "IA"]}}
@@ -4999,8 +4999,9 @@ def _selftest_answer():
     assert box and json.loads(html_unescape(box.group(1))) == [["Op n0", ["Fremont"]]], \
         "Op n1's only key names no month it can draw, so it is not offered"
     assert "-31" not in fr and "\u221231\u00a2" not in fr.split("Nebraska middle")[0].split("cbt-hist")[-1]
-    assert fr.count('/components/cb-basis-hist.js?v=5') == 1 and fr.count('/components/elev-names.js?v=2') == 1 and "&ldquo;Basis since&rdquo; box shows" in fr.split("<summary>Sources and terms</summary>")[1]
-    assert "<summary>Basis since Sep 1</summary>" in fr and "since June" not in fr, "the heading is the first logged date"
+    assert fr.count('/components/cb-basis-hist.js?v=6') == 1 and fr.count('/components/elev-names.js?v=2') == 1 and "&ldquo;Basis since&rdquo; box shows" in fr.split("<summary>Sources and terms</summary>")[1]
+    assert "<summary>Basis since Oct 12, 2026</summary>" in fr and "since June" not in fr and "licensed" not in fr.split("<summary>Sources and terms</summary>")[1], \
+        "the heading names where the public log starts"
     assert fr.index("cbt-hist\"") > fr.index('id="bid-email"'), "after the email box, with the other cards"
     assert "cb-basis-hist.js" not in ia and "Basis since" not in ia, "no logged change in the state: no box"
 

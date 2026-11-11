@@ -233,7 +233,7 @@
       return;
     }
     if(!rows.length && !plainWid){
-      box.innerHTML = '<p class="cba-note">Alerts on this card are not available yet. They work on elevators whose own boards AGSIST reads direct, and this one’s prices come from a licensed feed the alert emails cannot read. The ZIP alert above the cards covers every elevator AGSIST reads near you.</p>';
+      box.innerHTML = '<p class="cba-note">Alerts on this card are not available yet. They work on elevators whose own boards AGSIST reads direct, and the alert emails cannot read this one’s prices yet. The ZIP alert above the cards covers every elevator AGSIST reads near you.</p>';
       return;
     }
     var h = '<form class="cba-form" novalidate><p class="cba-title">Email me about ' + esc(name) + '</p>';
