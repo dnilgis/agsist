@@ -111,8 +111,6 @@ def build(prices, today, wasde_release=None):
     if not reports:
         return None
     quotes = (prices or {}).get("quotes") or {}
-    nearby = {str((q or {}).get("ticker") or "") for k, q in quotes.items()
-              if k.endswith("-nearby") and isinstance(q, dict)}
     prev_day = last_session(day).isoformat()
     rows, seen = [], set()
     for key, group in ROWS:
@@ -130,7 +128,7 @@ def build(prices, today, wasde_release=None):
         px = settles.get(day.isoformat())
         prev = settles.get(prev_day)          # the session before, never an older one
         row = {"key": key, "group": group, "contract": contract, "label": "%s %s" % (NAMES[group], contract),
-               "nearby": tk in nearby}
+               "board": False}
         if isinstance(px, (int, float)) and isinstance(prev, (int, float)) and prev:
             prev = float(prev)
             row.update(settle=float(px), prev=prev, prev_date=prev_day, net=round(float(px) - prev, 4),
@@ -138,6 +136,17 @@ def build(prices, today, wasde_release=None):
         else:
             row["missing"] = True
         rows.append(row)
+    # The board's own contract per commodity: the row whose settles are the
+    # generic quote's ("corn", "beans", "wheat": what the issue's price table
+    # quotes; Nov beans on Nov 11 2026). A sentence that names no month binds
+    # to it, and to nothing when the data cannot say which contract it is.
+    for group in NAMES:
+        g = (quotes.get(group) or {}).get("settles") or {}
+        gd, gp = g.get(day.isoformat()), g.get(prev_day)
+        hit = [r for r in rows if r["group"] == group and not r.get("missing")
+               and r["settle"] == gd and r["prev"] == gp]
+        if len(hit) == 1:
+            hit[0]["board"] = True
     if not rows:
         return None
     return {"date": day.isoformat(), "words": _words(day), "weekday": day.strftime("%A"),
@@ -161,7 +170,8 @@ def text(block):
                                                           pd.strftime("%A"), _frac(r["prev"])))
     return ("YESTERDAY WAS REPORT DAY (HARD RULE): %s, %d, %s. Exchange settles on %s against "
             "the session before. Use ONLY these lines for %s's moves, each with its contract "
-            "month and the day written out (\"%s\"). They are settles, so 'settled' is right for "
+            "month and the day written out (\"%s\"). Put the report-day move and today's move in "
+            "separate sentences. They are settles, so 'settled' is right for "
             "them. The change column in the LOCKED PRICE TABLE is today's move, a different number: "
             "never give one for the other, and never call a report-day move small without "
             "checking it here.\n" % (block["words"], day.year, " and ".join(block["reports"]),
@@ -172,8 +182,15 @@ def text(block):
 MONTHS = ("jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec")
 MONTH_WORD = re.compile(r"\b(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|June?|July?|Aug(?:ust)?|"
                         r"Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)\b\.?(\s+\d{1,2}\b)?")
-TODAY_WORDS = re.compile(r"\b(today|tonight|this morning|overnight|so far|now|(?:is|are)\s+(?:up|down|higher|lower|"
-                         r"trading|sitting|off|firmer|weaker)|trading at|sits? at)\b", re.I)
+TODAY_WORDS = re.compile(r"\b(today|tonight|this morning|overnight|so far|now|early|trades|traded|trading|"
+                         r"opened|opens|open|(?:is|are)\s+(?:up|down|higher|lower|"
+                         r"sitting|off|firmer|weaker)|sits? at)\b", re.I)
+# "after Tuesday's report": the move is today's, the report is only its cause
+AFTER_DAY = r"\b(after|following|since|before|into|ahead of)\s+(?:the\s+|last\s+)?%s"
+NEGATION = re.compile(r"\b(not|no|never|failed|fails|fail|without)\b|n't\b", re.I)
+SPAN_WORDS = re.compile(r"\b(last|previous|prior|combined|week|weeks|days|both|between|through)\b", re.I)
+WEEKDAYS = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+NUM_DATE = re.compile(r"\b(\d{1,2})/(\d{1,2})\b")
 FORWARD_WORDS = re.compile(r"\b(could|may|might|will|would|should|next|ahead|expect\w*|if)\b", re.I)
 UP_WORDS = re.compile(r"\b(up|rose|risen|gain(?:ed|s)?|higher|rall(?:y|ied)|climb(?:ed)?|jump(?:ed)?|"
                       r"add(?:ed)?|advanc(?:e|ed)|firmer)\b", re.I)
@@ -194,7 +211,7 @@ def names_day(sentence, block):
 
 def _row_for(sentence, key, block):
     """The one row the sentence is about: the contract month it names, else
-    the commodity's nearby row. None when it names no month with a row, or
+    the board's own contract for the commodity. None when it names no month with a row, or
     more than one month."""
     day = date.fromisoformat(block["date"])
     months = set()
@@ -212,7 +229,7 @@ def _row_for(sentence, key, block):
         mo = months.pop()
         hit = [r for r in rows if r["contract"][:3].lower() == mo]
     else:
-        hit = [r for r in rows if r.get("nearby")]
+        hit = [r for r in rows if r.get("board")]
     return hit[0] if len(hit) == 1 else None
 
 
@@ -220,14 +237,21 @@ def matches(sentence, key, value, block, kind="cents"):
     """True only when the sentence plainly states the report day's settle move
     for one contract: it names the report day by weekday or date, has no word
     for today or for a day still to come and no other date, names that
-    contract's month (or none, for the nearby contract), moves the same way the
+    contract's month (or none, for the board's own contract), moves the same way the
     row does, and gives the row's number: a quarter-cent figure exactly, a
     whole cent under half a cent off, a percent under a tenth off."""
     if not block or not names_day(sentence, block):
         return False
     s = sentence or ""
-    if TODAY_WORDS.search(s) or FORWARD_WORDS.search(s):
+    if TODAY_WORDS.search(s) or FORWARD_WORDS.search(s) or NEGATION.search(s) or SPAN_WORDS.search(s):
         return False
+    if re.search(AFTER_DAY % block["weekday"], s, re.I):
+        return False
+    if any(re.search(r"\b%s\b" % w, s) for w in WEEKDAYS if w != block["weekday"]):
+        return False                          # another day named beside it
+    day = date.fromisoformat(block["date"])
+    if any((int(a), int(b)) != (day.month, day.day) for a, b in NUM_DATE.findall(s)):
+        return False                          # "11/17": another date
     r = _row_for(s, key, block)
     if r is None or r.get("missing") or not r.get("net"):
         return False
@@ -253,6 +277,9 @@ def _fixture():
         d.update(extra or {})
         return d
     return {"quotes": {
+        "corn": q("ZC=F", 439.25, 449.0),
+        "beans": q("ZS=F", 1182.25, 1224.5),
+        "wheat": q("ZW=F", 588.0, 592.75),
         "corn-dec": q("ZCZ26.CBT", 439.25, 449.0),
         "corn-nearby": q("ZCZ26.CBT", 439.25, 449.0, {"contract": "Dec '26"}),
         "beans-nov": q("ZSX26.CBT", 1182.25, 1224.5),
@@ -296,8 +323,9 @@ def selftest():
     ck("gate match: Jan soybeans 39 3/4, Nov soybeans 42 1/4",
        matches("Jan soybeans settled up 39¾ cents Tuesday.", "beans", 39.75, b)
        and matches("Nov soybeans settled up 42¼ cents Tuesday.", "beans", 42.25, b))
-    ck("no month named: the nearby (Jan) row only", matches("Soybeans rose 40 cents on Tuesday.", "beans", 40.0, b)
-       and not matches("Soybeans rose 42 cents on Tuesday.", "beans", 42.0, b))
+    ck("no month named: the board's own contract (Nov beans) only",
+       matches("Soybeans jumped 42\u00bc cents Tuesday.", "beans", 42.25, b)
+       and not matches("Soybeans jumped 39\u00be cents Tuesday.", "beans", 39.75, b))
     s2 = _fixture()
     s2["quotes"]["beans-nov"]["settles"].pop("2026-11-09")
     ck("no settle for the session before: missing, never an older session's change",

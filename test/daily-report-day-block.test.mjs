@@ -33,6 +33,7 @@ test("the block names Tuesday, Nov 10 and gives each contract's settle and chang
   assert.match(t, /Soybeans Nov '26: settled \$12\.24½ up 42¼¢ \(\+3\.6%\) from Monday's \$11\.82¼/);
   assert.match(t, /Soybeans Jan '27: settled \$12\.28 up 39¾¢/);
   assert.match(t, /Wheat Dec '26: settled \$5\.92¾ up 4¾¢/);
+  assert.match(t, /Put the report-day move and today's move in separate sentences\./);
   assert.doesNotMatch(t, /Nov 17|Friday/);
 });
 
@@ -83,6 +84,7 @@ test("gate: the report-day settle move, named as Tuesday's, with its contract mo
     "Dec corn settled Tuesday up 9¾ cents at $4.49.",
     "Jan soybeans settled Tuesday up 39¾ cents.",
     "Nov soybeans settled up 42¼ cents on Tuesday.",
+    "Soybeans jumped 42¼ cents Tuesday.",
   ]) assert.deepEqual(verdict(line), [], line);
 });
 
@@ -104,6 +106,20 @@ const MUST_FAIL = [
   "Corn rose 10¼ cents Tuesday.",
   "Corn is up 9¾ cents.",
   "Soybeans settled Tuesday up 43½ cents at $12.25¾.",
+  // second round: no month named binds to the board's own contract (Nov beans), not Jan
+  "Soybeans jumped 39¾ cents Tuesday.",
+  // today's move phrasings
+  "Corn trades 9¾ cents higher after Tuesday's report.",
+  "Corn opened 9¾ cents higher after Tuesday's report.",
+  // numeric dates are other dates
+  "Corn rose 9¾ cents on 11/17, a Tuesday.",
+  "december corn settled up 9¾ cents Tuesday, 11/17.",
+  // another weekday or a span
+  "Corn rose 9¾ cents the Tuesday before last.",
+  "Corn rose 9¾ cents Tuesday and Wednesday combined.",
+  // negation
+  "Corn did not gain 9¾ cents Tuesday.",
+  "Corn failed to hold a 9¾ cent gain Tuesday.",
 ];
 
 test("gate: every line that is not plainly the report day's settle move is still flagged", () => {
