@@ -9,6 +9,13 @@
    "link": "/farmland-atlas/illinois/adams-county"
   },
   {
+   "id": "2026-11-11-prf-county-fold",
+   "date": "2026-11-11",
+   "title": "PRF: every county on its state page",
+   "line": "Each PRF state page now opens any county in place: its grids, what each pair of months costs, the last five years and a priced example. Old county links still work.",
+   "link": "/prf/texas"
+  },
+  {
    "id": "2026-11-11-one-elevator-count",
    "date": "2026-11-11",
    "title": "One elevator count",

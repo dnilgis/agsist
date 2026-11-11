@@ -83,6 +83,11 @@ FOLDER_MB = {
     # values, a month table, five recent years and the grid list, nothing more;
     # the year-by-year record stays in the calculator. No static header or
     # footer copy in the county pages.
+    # Nov 2026: the county pages folded into the state pages. Each county is a
+    # data file of about 2.4 KB (7.2 MB) that the state page lays out, and its
+    # old address a forward under 1 KB (2.3 MB): the folder went from 70.8 MB
+    # to 11.5 MB. The budget stays at 75 until main has rebuilt the set, then
+    # comes down.
     "prf": 75,
     # rain: 60 (2026-10-13). One page per county with a NOAA station that
     # reported 90% of the year (at most 3,141) from scripts/build_county_rain.py

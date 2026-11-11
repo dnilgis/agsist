@@ -9,6 +9,11 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
 const read = (f) => readFileSync(ROOT + f, "utf8");
+/* Nov 2026: the county pages folded into the state pages; a county is its view there, laid out by
+   components/prf-county.js from prf/<state>/<county>.json, read here as the browser shows it */
+import { createRequire } from "node:module";
+const PC = createRequire(import.meta.url)("../components/prf-county.js");
+const view = (f) => PC.render(JSON.parse(read(f)));
 const H = read("prf.html");
 const setup = H.slice(H.indexOf('id="prf-setup"'), H.indexOf('id="prf-answer-h"'));
 
@@ -68,21 +73,21 @@ test("irrigated hay valued under non-irrigated is said where both show, with no 
   assert.equal(M.irrigatedLower(tx.combos, and.b, 0), null, "not on grazing");
   assert.equal(M.irrigatedLower(["Haying, irrigated", "Haying, non-irrigated"], [250, 224], 0), null, "not when irrigated is higher");
   assert.match(read("components/prf.js"), /USDA sets irrigated hay lower here: ' \+ usd2\(lo\.irr\)/);
-  const page = read("prf/texas/anderson-county.html");
-  assert.ok(page.includes("<dt>Hay, irrigated, per acre</dt><dd>$168.00</dd>") && page.includes("USDA sets irrigated hay lower here."), "the Anderson page says it");
+  const page = view("prf/texas/anderson-county.json");
+  assert.ok(page.includes("<dt>Hay, irrigated, per acre</dt><dd>$168.00</dd>") && page.includes("USDA sets irrigated hay lower here."), "the Anderson view says it");
   assert.ok(!/irrigated hay lower here because/i.test(page), "no guessed reason");
 });
 
 test("county first screen: the dated dollar example leads, no grid ID list, no single-interval statistic", () => {
-  for (const f of ["prf/nebraska/cherry-county.html", "prf/texas/anderson-county.html"]) {
-    const h = read(f), main = h.slice(h.indexOf("<main"), h.indexOf('<div class="prf-prose">'));
-    const lede = main.match(/<p class="prf-lede">([\s\S]*?)<\/p>/)[1];
+  for (const f of ["prf/nebraska/cherry-county.json", "prf/texas/anderson-county.json"]) {
+    const h = view(f), main = h.slice(0, h.indexOf('<div class="prf-prose">'));
+    const lede = main.match(/<p class="prf-fine">(USDA&rsquo;s \d+ files offer PRF in [\s\S]*?)<\/p>/)[1];
     assert.ok(!/\d{5}, \d{5}/.test(lede), f + ": the grid list left the intro");
-    assert.match(lede, /grids, each in the <a href="#grids">table of grids<\/a> below/);
+    assert.match(lede, /grids, each in the table of grids below/);
     assert.ok(!/under 90% of normal in/.test(main), f + ": no single-interval count on the first screen");
     assert.ok(main.indexOf('class="prf-note prf-ex"') < main.indexOf("prf-figs"), f + ": the example before the tiles");
   }
-  const ch = read("prf/nebraska/cherry-county.html");
+  const ch = view("prf/nebraska/cherry-county.json");
   /* Cherry County, grid 27119, the middle of 36 grids by premium */
   assert.match(ch, /What it costs here at 2027 rates \(USDA files read [A-Z][a-z]{2} \d{1,2}, 2026\):<\/b> you pay \$130 a year, \$1\.30 an acre, for 100 acres of grazing at 90% coverage/);
   assert.match(ch, /it would have paid in 45 of 75 years/);

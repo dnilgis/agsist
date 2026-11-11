@@ -82,10 +82,13 @@ test("Atlas, PRF and county rain story validators: the sets-pass classes are cau
   assert.match(py(["scripts/county_stories.py", "selftest"]), /county stories selftest: ok/);
 });
 
-test("PRF county pages: a pair of months priced on fewer grids says how many and is never 'the middle of' all of them", () => {
+test("PRF county views: a pair of months priced on fewer grids says how many and is never 'the middle of' all of them", async () => {
+  /* Nov 2026: the county pages folded into the state pages; each county is a view laid out by
+     components/prf-county.js from prf/<state>/<county>.json, read here as the browser shows it */
+  const { views } = await import("../scripts/prf_county_views.mjs");
+  const shown = views(ROOT);
   let few = 0;
-  for (const p of pages("prf")) {
-    const h = read(p);
+  for (const { file: p, html: h } of Object.values(shown)) {
     const ng = +(h.match(/<dt>Grids<\/dt><dd>(\d+)<\/dd>/) || [0, 0])[1];
     const rows = [...h.matchAll(/<span class="prf-th-s">(\d+) of (\d+) grids<\/span>/g)];
     if (!rows.length) continue;
@@ -94,7 +97,7 @@ test("PRF county pages: a pair of months priced on fewer grids says how many and
     assert.ok(!h.includes(`first the middle of the ${ng} for that pair of months`), p);
   }
   assert.ok(few >= 30, `counties with a row on fewer grids (${few})`);
-  assert.match(read("prf/california/madera-county.html"), /3 of 19 grids/);
+  assert.match(shown["06039"].html, /3 of 19 grids/, "Madera County");
 });
 
 test("ARC/PLC county pages: a trigger over the benchmark never prints a whole number under it, titles round half up", () => {

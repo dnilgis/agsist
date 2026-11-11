@@ -130,24 +130,28 @@ test("backtest numbers recompute from the pinned rows", () => {
   assert.deepEqual(again.prelim, pinned.prelim);
 });
 
-test("wired on /prf and on every county page, with nothing baked in", () => {
+test("wired on /prf and on every state page's county view, with nothing baked in", () => {
   const prf = readFileSync(ROOT + "prf.html", "utf8");
   assert.match(prf, /<section class="prf-now" id="prf-now"[^>]*hidden>/);
   assert.match(prf, /<script src="\/components\/prf-now\.js\?v=\d+" defer><\/script>/);
-  const page = readFileSync(ROOT + "prf/texas/anderson-county.html", "utf8");
-  const sec = /<section class="prf-now" id="prf-now" data-st="TX" data-grids="([\d,]+)" data-grid="(\d+)"[\s\S]*?<\/section>/.exec(page);
-  assert.ok(sec, "county card");
-  assert.ok(sec[1].split(",").includes(sec[2]), "opens on one of the county's grids");
+  /* Nov 2026: the county pages folded into the state pages. The card sits in the county view's section
+     and opens on the picked county's grid: components/prf-county.js fills its grid picker and sends
+     prf:grid with the grid the county page used to open on (the example's grid, else the middle one). */
+  const page = readFileSync(ROOT + "prf/texas.html", "utf8");
+  const sec = /<section class="prf-now" id="prf-now" data-st="TX"[^>]*hidden>[\s\S]*?<\/section>/.exec(page);
+  assert.ok(sec, "state card");
+  assert.ok(sec.index > page.indexOf('id="county"'), "inside the county view's section");
   assert.doesNotMatch(sec[0], /\d+\.\d\d in/, "no numbers in the page itself");
   assert.doesNotMatch(sec[0], /agent|sponsor|email|sign up/i, "no lead capture or routing");
   assert.doesNotMatch(src, /—/, "no em dashes in the component");
   const shown = N.render(N.model(doc([[1000, 1200], [1500, 1000], [762, 1270], [100, 900]]), 14538, "2026-10-17"));
   assert.doesNotMatch(shown, /agent|sponsor|email|sign up|best/i, "the card routes nobody anywhere");
-  // every county page carries it
+  const view = JSON.parse(readFileSync(ROOT + "prf/texas/anderson-county.json", "utf8"));
+  assert.ok(view.grids.includes(view.now), "the county opens on one of its grids");
+  if (view.ex) assert.equal(view.now, view.ex.grid, "the example's grid");
+  // every state page carries it
   for (const st of ["texas", "montana", "kansas"]) {
-    for (const f of readdirSync(ROOT + "prf/" + st)) {
-      assert.match(readFileSync(ROOT + "prf/" + st + "/" + f, "utf8"), /id="prf-now" data-st="[A-Z]{2}"/, f);
-    }
+    assert.match(readFileSync(ROOT + "prf/" + st + ".html", "utf8"), /id="prf-now" data-st="[A-Z]{2}"/, st);
   }
 });
 

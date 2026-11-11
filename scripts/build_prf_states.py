@@ -48,7 +48,7 @@ e = html.escape
 # section, a rewritten paragraph). Their dateModified is the later of this and
 # the date of USDA's files, so a page that changed says so. Move it in the
 # same commit as any wording change; a data refresh moves the other date.
-PAGE_REVISED = "2026-10-16"
+PAGE_REVISED = "2026-11-11"
 # Where each 2027 change is written down at RMA (read 2026-10-15).
 RMA_NCEI = "https://www.rma.usda.gov/news-events/news/2026/washington-dc/usda-risk-management-agency-upgrades-rainfall-data-source"
 RMA_PM_26_053 = "https://www.rma.usda.gov/policy-procedure/bulletins-memos/product-management-bulletin/pm-26-053-rainfall-index-crop"
@@ -144,7 +144,8 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
         lim = c.get("lim") or next(iter((c.get("limc") or {}).values()), None)
         b = c["b"]
         href = (where or {}).get(sd["fips"] + k)
-        cname = f'<a href="{href[1]}">{e(c["n"])}</a>' if href else e(c["n"])
+        # the county view on this page (components/prf-county.js); the old county address forwards here
+        cname = f'<a href="#county={href[2]}" data-c="{href[2]}">{e(c["n"])}</a>' if href else e(c["n"])
         rows.append(f'<tr><th scope="row">{cname}</th><td>{len(c["g"])}</td><td>{money2(b[0])}</td><td>{money2(b[4])}</td>'
                     f'<td>{(str(lim[0][1]) + "%") if lim and lim[0] else "&mdash;"}</td>'
                     f'<td><a href="/prf?c={sd["fips"]}{k}" rel="nofollow">Open</a></td></tr>')
@@ -252,6 +253,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     </dl>
     {sod}
     <div class="state-spot" data-state-spot="{code}"></div>
+    {county_view(name, code)}
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
     <p>At 90% coverage, across the {n_grid:,} grids that touch a {e(name)} county with PRF. The premium is the full rate per $100 of protection; USDA pays {subrow}. Each figure is the middle of the grids for that pair of months, so a row&rsquo;s middle can be a different grid from the next row&rsquo;s.</p>
@@ -260,7 +262,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     </div>
 
     <h2 id="counties">PRF in every {e(name)} county</h2>
-    <p class="prf-fine">USDA&rsquo;s county base value per acre for {cy}, the number of grids that touch the county, and the most of a policy that can go in January to February. A county&rsquo;s name opens its page with the grids and their record; Open sets acres, months and coverage in the calculator.</p>
+    <p class="prf-fine">USDA&rsquo;s county base value per acre for {cy}, the number of grids that touch the county, and the most of a policy that can go in January to February. A county&rsquo;s name opens it above, with its grids and their record; Open sets acres, months and coverage in the calculator.</p>
     <div class="prf-scroll" tabindex="0" role="region" aria-label="Every county, scrolls sideways"><table class="prf-t prf-co-t"><caption class="prf-sr">PRF county base values in every {e(name)} county, {cy}</caption><thead><tr><th scope="col">County</th><th scope="col">Grids</th><th scope="col">Grazing</th><th scope="col">Hay, non-irrigated</th><th scope="col">Jan-Feb cap</th><th scope="col"><span class="prf-sr">Calculator</span></th></tr></thead><tbody>{''.join(rows)}</tbody></table></div>
 
     <div class="prf-prose">
@@ -283,7 +285,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     <div class="prf-faq">{faq_html}</div>
     </div>
 
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here.</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and sends no one to any agent; its one email box sends a grid&rsquo;s final index when USDA posts it. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here.</p>
     <nav class="prf-links prf-st-links" aria-label="PRF in other states"><a href="/prf">PRF calculator</a> {others}</nav>
     {XL.same_state_row(ROOT, slug(name), e(name), "prf")}
     <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
@@ -293,9 +295,31 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
   <div id="site-footer"></div>
   <script src="/components/loader.js?v=19" defer></script>
   {PRF_SPONSOR_JS}
+  <script src="/components/prf-now.js?v=5" defer></script>
+  <script src="/components/prf-notice.js?v=2" defer></script>
+  <script src="/components/prf-county.js?v=1" defer></script>
 </body>
 </html>
 """
+
+
+def county_view(name, code):
+    """The county view (Nov 2026: the county pages folded into this page). components/prf-county.js builds the
+    picker from the county table's links and fills the view from /prf/<state>/<county>.json; the old county
+    addresses forward here with ?county=. Then the "This interval so far" card and the grid email, which
+    follow the picked county's grid (the prf:grid event)."""
+    st_slug = slug(name)
+    return (f'<section class="prf-county" id="county" data-prf-county data-state="{st_slug}" aria-labelledby="county-h">'
+            f'<h2 id="county-h">PRF county by county in {e(name)}</h2>'
+            f'<p class="prf-fine">Pick a county for its grids, what each pair of months costs there, how often each came in under 90% of normal since the record began, the last five years, and a priced example.</p>'
+            f'<p class="pc-pick" data-pc-pick hidden></p>'
+            f'<div data-pc-body aria-live="polite"><noscript><p class="prf-fine">The county view needs JavaScript. Every county is in the <a href="#counties">table below</a> and in the <a href="/prf?st={code}">calculator</a>.</p></noscript></div>'
+            f'<section class="prf-now" id="prf-now" data-st="{code}" aria-labelledby="prf-now-h" hidden>'
+            f'<h3 id="prf-now-h">This interval so far</h3>'
+            f'<p class="pn-sub">Where the county&rsquo;s grid stands in the pairs of months still open, before RMA&rsquo;s final index. Preliminary.</p>'
+            f'<p class="pn-pick" data-pn-pick hidden></p>'
+            f'<div data-pn-body><p class="pn-held">Rain so far loads from NOAA&rsquo;s rain data when a county is picked.</p></div></section>'
+            f'<div class="prf-notice" data-prf-notice data-grid="" hidden></div></section>')
 
 
 def terms(body):

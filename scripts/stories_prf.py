@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
-"""stories_prf.py: the dated lead paragraph on each PRF county page (prf/<state>/<county>.html).
+"""stories_prf.py: the dated lead paragraph in each PRF county view (the county picker on prf/<state>.html).
 
-FACTS (only what the page prints, as it prints it; scripts/build_prf_counties.py page())
+FACTS (only what the view prints, as it prints it; scripts/build_prf_counties.py view(), laid out by
+components/prf-county.js)
   the grids, USDA's county base values, each pair of months on the middle grid
   (normal, premium per $100 at 90%, years of the record under 90% of normal),
   the wettest and driest pair and where coverage costs least and most, the last
@@ -13,7 +14,7 @@ FACTS (only what the page prints, as it prints it; scripts/build_prf_counties.py
   the deadlines (the PRF rule: the page stays neutral, sells nothing, routes no
   one to an agent).
 
-THE PAGE: build_prf_counties.py prints a kept story at the head of the record section
+THE VIEW: build_prf_counties.py puts a kept story at the head of the record section
 ("The last five years", since Oct 20: the first screen leads with the priced example) only when the
 county's facts rebuilt now (plus the stored "as of" day and preliminary figure)
 hash to the story's own, it passes check(), and it is at most 35 days older than
@@ -151,6 +152,15 @@ def card_grid(fx):
     grids = fx["grids"]
     ex_g = (fx.get("example") or {}).get("grid")
     return ex_g if ex_g in grids else grids[len(grids) // 2]
+
+
+def county_views():
+    """fips -> the county view's HTML as the state page shows it (scripts/prf_county_views.mjs)."""
+    import subprocess
+    r = subprocess.run(["node", os.path.join(K.ROOT, "scripts", "prf_county_views.mjs")], capture_output=True, text=True, check=False)
+    if r.returncode != 0:
+        raise SystemExit("prf_county_views.mjs failed:\n" + r.stderr)
+    return {k: v["html"] for k, v in json.loads(r.stdout).items()}
 
 
 def _ctx():
@@ -420,7 +430,7 @@ def prompt(f):
 
 # ---------------------------------------------------------------- the page
 def story_html(store, st, fips, f_now, page_day):
-    """The <p> for build_prf_counties.page(), or ''."""
+    """The <p> for build_prf_counties.view(), or ''."""
     S = sys.modules[__name__]
     s = K.story_for(S, K.lookup(store, S, f"{st}:{fips}"), f_now, page_day)
     return f'<p class="prf-lede prf-story">{_esc(s)}</p>\n    ' if s else ""
@@ -444,17 +454,17 @@ def selftest():
     B, meta, cf, where, loaded = _ctx()
     rows = facts_all(today=meta["built"][:10])
     ok(len(rows) == len(cf["counties"]) == 3070 or len(rows) == len(cf["counties"]), f"one facts row per county ({len(rows)})")
-    # facts against the real pages: every figure the facts give is printed on that county's page
+    # facts against the real views: every figure the facts give is printed in that county's view on its
+    # state page (prf/<state>/<county>.json laid out by components/prf-county.js, as the browser does)
     miss = []
+    shown = county_views()
     for pid, f in rows:
         st, fips = pid.split(":")
-        href = where[fips][1]
-        p = os.path.join(K.ROOT, href.lstrip("/") + ".html")
-        if not os.path.exists(p):
-            miss.append(f"{pid}: no page")
+        if fips not in shown:
+            miss.append(f"{pid}: no view")
             continue
-        h = open(p, encoding="utf-8").read()
-        want = [", ".join(str(g) for g in f["grid_numbers"]), f["grazing_value_per_acre"] or "&mdash;", f["middle"]]
+        h = shown[fips]
+        want = [f'<th scope="row">{g}</th>' for g in f["grid_numbers"]] + [f["grazing_value_per_acre"] or "&mdash;", f["middle"]]
         for x in f["pairs"]:
             if x["normal_in"]:
                 want.append(f"<td>{x['normal_in']} in</td>")
@@ -477,7 +487,7 @@ def selftest():
             if w not in h:
                 miss.append(f"{pid}: {w!r}")
                 break
-    ok(not miss, f"facts on the real pages: {miss[:5]} ({len(miss)})")
+    ok(not miss, f"facts in the real views: {miss[:5]} ({len(miss)})")
     # a hand-checked county: Kent County, Delaware
     kent = dict(rows)["DE:10001"]
     ok(kent["grids"] == 8 and kent["pairs"][3]["months"] == "April to May" and kent["pairs"][3]["normal_in"] == "7.06"
