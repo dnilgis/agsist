@@ -24,7 +24,7 @@ const RULES = [
   ["changelog.html", ".cl-note a"],
   ["breakeven.html", ".yr-note a"], ["breakeven.html", ".ln-src a"], ["breakeven.html", ".be-budget-note a"],
   ["comp-report.html", ".cr-held a"], ["field-report.html", ".frp-err a"],
-  ["drought-monitor.html", ".dm-map-src a"],
+  ["rain.html", "#p-drought .dm-map-src a"],   // the drought tab of /rain since Nov 11, 2026 (components/fold/drought.css)
   ["hail-map.html", ".hm-src a"],
   ["cash-lease.html", ".cl-src a"],
   ["fertilizer.html", ".fert-source a"],

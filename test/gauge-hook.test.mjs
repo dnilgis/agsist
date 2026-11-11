@@ -103,7 +103,8 @@ test("bids, markets and rent pages keep the gift line, which ends Dec 9", () => 
 
 test("every rain, weather, PRF, ARC/PLC and Fast Facts page with the slot: one auto slot in the body, with its script", () => {
   // /rain and /hail-map keep their typed Rain Print line (test/rain-print-links-in.test.mjs): that is their one promo
-  const pages = ["drought-monitor.html", "rain-radar.html", "arc-plc.html", "fast-facts.html"];
+  // Nov 11, 2026: /rain-radar and /drought-monitor are tabs of /rain, whose one promo is its typed line
+  const pages = ["arc-plc.html", "fast-facts.html"];
   for (const d of ["rain", "hail-map"]) for (const f of readdirSync(join(ROOT, d))) if (f.endsWith(".html")) pages.push(d + "/" + f);
   // the PRF state pages (a state folder beside each); explainers like /prf/how-prf-works carry no slot
   for (const f of readdirSync(join(ROOT, "prf"))) if (f.endsWith(".html") && existsSync(join(ROOT, "prf", f.slice(0, -5)))) pages.push("prf/" + f);
@@ -151,7 +152,7 @@ test("the hook is said the same everywhere the gauge is linked with words of its
   for (const v of Object.values(next.pages)) for (const l of (v && v.links) || []) if (l.href === "/rain-gauge") { assert.equal(l.why, J.gauge_hook.link); n++; }
   assert.ok(n >= 2, "the Next cards");
   // the old line is gone from every page and component
-  for (const f of ["components/rain-print-promo.js", "rain-print.html", "urea.html", "rain-gauge.html"]) assert.ok(!/Want a better rain gauge|Sig is designing one/.test(read(f)), f);
+  for (const f of ["components/rain-print-promo.js", "rain-print.html", "spray.html", "components/fold/urea.js", "rain-gauge.html"]) assert.ok(!/Want a better rain gauge|Sig is designing one/.test(read(f)), f);
 });
 
 test("/rain-gauge: honest numbers only, no count, no timer, no popup, no founding, sig@agsist.com", () => {
