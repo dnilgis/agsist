@@ -52,7 +52,8 @@ test("source_links reads script URLs: the old quick stats opener is caught, the 
   const old = "<script>qbURL = 'https://quickstats.nass.usda.gov/results/?' + p.toString(); window.open(qbURL,'_blank','noopener');</script>";
   assert.deepEqual(scan(old), [], "the anchor scan alone missed it");
   assert.deepEqual(scanScripts(old), ["https://quickstats.nass.usda.gov/results/?"]);
-  for (const p of ["usda-quick-stats", "rain-radar", "corn-futures-prices", "soybean-futures-prices", "wheat-futures-prices"]) {
+  for (const p of ["usda-quick-stats", "rain", "corn-futures-prices",   // the radar lookup is a tab of /rain since Nov 11, 2026
+     "soybean-futures-prices", "wheat-futures-prices"]) {
     const h = read(p + ".html");
     assert.deepEqual(scan(h).concat(scanScripts(h)), [], p);
   }
@@ -198,7 +199,7 @@ test("browser: rain radar with a known spot shifts under 0.1 and links our spray
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     for (const [w, h] of [[390, 844], [1280, 800]]) {
-      for (const run of [{ path: "/rain-radar?lat=43.0&lon=-93.5" }, { path: "/rain-radar", saved: { lat: 43.0, lon: -93.5, label: "Saved field" } }]) {
+      for (const run of [{ path: "/rain?lat=43.0&lon=-93.5" }, { path: "/rain", saved: { lat: 43.0, lon: -93.5, label: "Saved field" } }]) {
         const { ctx, pg } = await open(browser, port, run.path, { width: w, height: h, saved: run.saved });
         const r = await pg.evaluate(() => ({ cls: window.__cls, src: window.__src, v: document.getElementById("rr-verdict").textContent,
           next: document.getElementById("rr-next"), href: (document.querySelector("#rr-next a") || {}).getAttribute?.("href") || null }));
@@ -210,7 +211,7 @@ test("browser: rain radar with a known spot shifts under 0.1 and links our spray
       }
     }
     // a spot outside the radar lets go of the reserved height
-    const { ctx, pg } = await open(browser, port, "/rain-radar?lat=21.3&lon=-157.8");
+    const { ctx, pg } = await open(browser, port, "/rain?lat=21.3&lon=-157.8");
     assert.equal(await pg.evaluate(() => document.getElementById("rr-answer").classList.contains("rr-known")), false);
     assert.match(await pg.textContent("#rr-status"), /lower 48/);
     await ctx.close();

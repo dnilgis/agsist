@@ -24,7 +24,7 @@ test('a tracked sparkline file named for no state is one the builder removes on 
   // main carried data/basis-sparklines/.json until the first bids run after this fix; that run deletes it
   // (remove_strays) and the bids job's git add records the deletion. Deleting it in the pull request
   // instead conflicted with every 15-minute bids commit, so the checks never ran.
-  const files = execFileSync('git', ['ls-files', '--', 'data/basis-sparklines'], { cwd: root, encoding: 'utf8' })
+  const files = execFileSync('git', ['ls-files', '--', 'data/basis-sparklines'], { cwd: root, encoding: 'utf8', maxBuffer: 1 << 26 })
     .split('\n').filter(Boolean);
   const bad = files.filter((f) => !/^[A-Z]{2}\.json$/.test(path.basename(f)));
   for (const f of bad) {

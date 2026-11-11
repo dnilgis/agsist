@@ -173,7 +173,8 @@ test('the moved files are off main, ignored, and named by no page, component or 
     assert.equal(spawnSync('git', ['check-ignore', '-q', '--no-index', p], { cwd: root }).status, 0, `${p} is in .gitignore`);
   }
   const browser = ['sw.js', 'embed.js', ...fs.readdirSync(root).filter((f) => /\.(html|js|txt|json|xml)$/.test(f)),
-    ...fs.readdirSync(path.join(root, 'components')).map((f) => `components/${f}`),
+    // components/fold/ (Nov 11, 2026): the tab panels of /rain and /spray, read as files like the rest
+    ...fs.readdirSync(path.join(root, 'components'), { recursive: true }).map((f) => `components/${f}`).filter((f) => fs.statSync(path.join(root, f)).isFile()),
     ...fs.readdirSync(path.join(root, 'workers')).filter((f) => f.endsWith('.js')).map((f) => `workers/${f}`)];
   for (const f of browser) {
     const t = read(f);

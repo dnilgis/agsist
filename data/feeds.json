@@ -990,7 +990,7 @@
   {
    "path": "data/drought/summary.json",
    "pages": [
-    "drought-monitor.html"
+    "rain.html"
    ],
    "written_by": [
     "Drought county week"
@@ -1138,8 +1138,8 @@
   {
    "path": "data/fall-nitrogen.json",
    "pages": [
-    "fall-nitrogen.html",
-    "planting-date.html"
+    "planting-date.html",
+    "spray.html"
    ],
    "written_by": [
     "Fall nitrogen soil temperature"
@@ -1224,7 +1224,7 @@
    "path": "data/fertilizer-prices.json",
    "pages": [
     "fertilizer.html",
-    "urea.html"
+    "spray.html"
    ],
    "written_by": [
     "Fertilizer co-op posted prices"
@@ -1998,8 +1998,8 @@
   {
    "path": "data/outlooks/manifest.json",
    "pages": [
-    "drought-monitor.html",
-    "index.html"
+    "index.html",
+    "rain.html"
    ],
    "written_by": [
     "Fetch Outlooks (NOAA + USDM)"

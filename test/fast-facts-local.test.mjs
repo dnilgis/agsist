@@ -22,7 +22,7 @@ function run(st, store) {
   const note = { _h: HTML.match(/<p class="ff-ans-note" id="ans-note">([\s\S]*?)<\/p>/)[1], attrs: {},
     get innerHTML() { return this._h; }, set innerHTML(v) { this._h = v; },
     getAttribute(k) { return this.attrs[k] || null; }, setAttribute(k, v) { this.attrs[k] = v; } };
-  const link = { href: "/fall-nitrogen", textContent: "Soil temps near you" };
+  const link = { href: "/spray#fall-nitrogen", textContent: "Soil temps near you" };   // the fall anhydrous tab of /spray since Nov 11, 2026
   const kids = [];
   const fall = { querySelector: () => link, appendChild: (x) => kids.push(x) };
   const els = { "ans-note": note, "ans-fall": fall };
@@ -39,7 +39,7 @@ function run(st, store) {
 test("the generic Outside Wisconsin sentence is still in the page, so the state swap has something to replace", () => {
   const r = run("", {});
   assert.match(r.note, /Outside Wisconsin, run the same prices in <a href="https:\/\/www\.cornnratecalc\.org\/">/);
-  assert.equal(r.link.href, "/fall-nitrogen");
+  assert.equal(r.link.href, "/spray#fall-nitrogen");
   assert.equal(r.rule, "");
 });
 
@@ -47,7 +47,7 @@ test("Wisconsin: A2809 is the reader's own guide, the generic line goes", () => 
   const r = run("WI", { agsist_zip: "54728" });
   assert.match(r.note, /That is your state&rsquo;s own guide\./);
   assert.doesNotMatch(r.note, /Outside Wisconsin/);
-  assert.equal(r.link.href, "/fall-nitrogen?zip=54728");
+  assert.equal(r.link.href, "/spray?zip=54728#fall-nitrogen");
   assert.equal(r.link.textContent, "Soil temps near 54728");
 });
 
@@ -55,8 +55,8 @@ test("Illinois: Illinois Extension's way, with its explainer; fall rule link", (
   const r = run("IL", { "agsist-wx-loc": JSON.stringify({ zip: "61820", state: "IL" }) });
   assert.match(r.note, /In Illinois, Illinois Extension runs the same prices through the <a href="https:\/\/www\.cornnratecalc\.org\/">Corn N Rate Calculator<\/a> by your region of Illinois and last crop/);
   assert.match(r.note, /extension\.illinois\.edu\/blogs\/nutrient-loss-reduction\/2026-02-27-how-mrtn-works/);
-  assert.equal(r.link.href, "/fall-nitrogen?zip=61820");
-  assert.match(r.rule, /href="\/fall-nitrogen#rule-IL">Illinois rule</);
+  assert.equal(r.link.href, "/spray?zip=61820#fall-nitrogen");
+  assert.match(r.rule, /href="\/spray#rule-IL">Illinois rule</);
 });
 
 test("other states keep the generic line; a state with no rule on /fall-nitrogen gets no rule link", () => {
@@ -65,9 +65,9 @@ test("other states keep the generic line; a state with no rule on /fall-nitrogen
   assert.equal(r.rule, "");
 });
 
-test("every state rule linked exists on /fall-nitrogen", () => {
+test("every state rule linked exists on /spray (the fall anhydrous tab)", () => {
   const rules = Object.keys(eval("(" + JS.match(/var FALL_RULE=(\{[^}]*\})/)[1] + ")"));
-  const page = read("fall-nitrogen.html");
+  const page = read("spray.html");
   for (const st of rules) assert.match(page, new RegExp(`id="rule-${st}"`), st);
   assert.doesNotMatch(fn, /—/);
 });

@@ -29,7 +29,7 @@ The sandbox cannot reach any of these hosts. GitHub runners can.
 
 Modes:
   (default)   fetch every network, check, write data/fall-nitrogen.json and
-              stamp the state summary into fall-nitrogen.html. A network that
+              stamp the state summary into spray.html (the fall anhydrous tab). A network that
               fails its checks is left out (its last good stations carry over
               until they age out). If fewer than MIN_STATIONS stations pass,
               NOTHING is written and the exit code is 1.
@@ -37,7 +37,7 @@ Modes:
               network, save them trimmed to data/fall-nitrogen-raw/ with a
               summary of what would parse. Writes no feed.
   --selftest  offline tests, non-zero exit on any failure.
-  --stamp     re-stamp fall-nitrogen.html from the data file on disk.
+  --stamp     re-stamp spray.html (the fall anhydrous tab) from the data file on disk.
 
 WHAT THIS FILE WILL NOT DO
   * Write a reading whose unit it cannot name (Celsius or Fahrenheit from the
@@ -68,7 +68,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 OUT = "data/fall-nitrogen.json"
 RAW_DIR = "data/fall-nitrogen-raw"
-PAGE = "fall-nitrogen.html"
+PAGE = "spray.html"   # the fall anhydrous tab (fall-nitrogen.html until Nov 11, 2026; it forwards there)
 COUNTIES = "data/atlas/counties.geo.json"
 UA = "AGSIST/1.0 (+https://agsist.com)"
 

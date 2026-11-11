@@ -88,7 +88,7 @@ const PAGES = [
   ["/cattle-futures-prices", null],
   ["/fertilizer", null],
   ["/spray", "#btn-geo"],
-  ["/urea", "#btn-geo"],
+  ["/spray#urea", "#u-btn-geo"],   // urea loss is a tab of /spray since Nov 11, 2026 (its ids carry u-)
 ];
 
 test("no geolocation call in any load path the pages ship", () => {
@@ -98,7 +98,7 @@ test("no geolocation call in any load path the pages ship", () => {
   assert.ok(!/_wxRefreshIfMoved|WX_CACHE_TTL_MS\s*=/.test(geo.replace(/\/\*[\s\S]*?\*\//g, "")), "the on-load 'did you move?' fix and the 30-minute expiry are gone");
   assert.ok(!/geolocation/.test(read("components/home-planting.js").replace(/\/\/.*$/gm, "")), "home-planting.js has no fallback ask");
   assert.ok(!/\}requestGeo\(\);\}/.test(read("spray.html")), "spray autoLoad does not ask");
-  assert.ok(!/\n\s*requestGeo\(\);\n\},600\)/.test(read("urea.html")), "urea load does not ask");
+  assert.ok(!/\n\s*requestGeo\(\);\n\},600\)/.test(read("components/fold/urea.js")), "urea load does not ask");
 });
 
 for (const [path, btn] of PAGES) {
@@ -143,7 +143,7 @@ test("a ZIP saved hours ago works at once and asks nothing", { skip }, async () 
   const browser = await chromium.launch({ executablePath: CHROME });
   const saved = { lat: 41.59, lon: -93.62, label: "Des Moines, IA", zip: "50309", state: "IA", ts: Date.now() - 6 * 3600e3 };
   try {
-    for (const path of ["/", "/spray", "/urea"]) {
+    for (const path of ["/", "/spray", "/spray#urea"]) {
       const { pg, seen, ctx } = await open(browser, port, path, { saved });
       await pg.waitForTimeout(4500);
       assert.equal(await pg.evaluate(() => window.__geo), 0, `${path}: no geolocation call with a saved ZIP`);

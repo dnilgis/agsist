@@ -979,8 +979,8 @@
      of the county has been in it. A bare count; FSA decides any program. */
   var DNAME = ['abnormally dry', 'moderate drought', 'severe drought', 'extreme drought', 'exceptional drought'];
   function factDrought(d) {
-    if (!d || d.status !== 'ok') return na('Drought', d && d.why ? d.why : 'no Drought Monitor row', ['Drought map', '/drought-monitor']);
-    var src = ['U.S. Drought Monitor', '/drought-monitor'];
+    if (!d || d.status !== 'ok') return na('Drought', d && d.why ? d.why : 'no Drought Monitor row', ['Drought map', '/rain#drought']);
+    var src = ['U.S. Drought Monitor', '/rain#drought'];
     if (d.worst < 0) return { label: 'Drought', value: 'None', date: isoDay(d.valid), ctx: 'No part of the county dry or in drought.', src: src, paper: 'U.S. Drought Monitor' };
     var k = d.now[1] > 0 ? 1 : 0;
     for (var i = 4; i >= 1; i--) if (d.now[i] >= 50) { k = i; break; }

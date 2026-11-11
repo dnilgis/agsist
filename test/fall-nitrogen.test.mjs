@@ -12,7 +12,12 @@ import { createServer } from 'node:http';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const page = fs.readFileSync(path.join(root, 'fall-nitrogen.html'), 'utf8');
+// /fall-nitrogen is the fall anhydrous tab of /spray since Nov 11, 2026: the markup is in spray.html, the code in
+// components/fold/fall-nitrogen.js (loaded when the tab opens); the old address forwards to /spray#fall-nitrogen
+const spray = fs.readFileSync(path.join(root, 'spray.html'), 'utf8');
+const page = spray + '\n<script>' + fs.readFileSync(path.join(root, 'components/fold/fall-nitrogen.js'), 'utf8') + '</script>';
+// the tab alone (the rest of spray.html is the spray advisory's own)
+const tab = spray.slice(spray.indexOf('id="p-fall-nitrogen"'), spray.indexOf('</section>', spray.indexOf('id="p-fall-nitrogen"'))) + fs.readFileSync(path.join(root, 'components/fold/fall-nitrogen.js'), 'utf8');
 const dataPath = path.join(root, 'data/fall-nitrogen.json');
 
 function lib() {
@@ -42,21 +47,25 @@ const D = {
 };
 
 test('head, byline and structured data', () => {
-  assert.match(page, /<title>Is it cold enough for fall anhydrous\? Soil temperature by county<\/title>/);
-  assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/fall-nitrogen">/);
-  assert.match(page, /<h1>Is it cold enough for fall anhydrous\?<\/h1>/);
+  const stub = fs.readFileSync(path.join(root, 'fall-nitrogen.html'), 'utf8');
+  assert.match(stub, /<meta http-equiv="refresh" content="0; url=\/spray#fall-nitrogen">/, 'the old address forwards to the tab');
+  assert.match(page, /<link rel="canonical" href="https:\/\/agsist\.com\/spray">/);
+  assert.match(page, /<h2 class="fn-h1">Is it cold enough for fall anhydrous\?<\/h2>/);
   assert.match(page, /Sigurd Lindquist, CCA/);
   const ld = JSON.parse(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/.exec(page)[1]);
   const types = ld['@graph'].map((g) => g['@type']);
   for (const t of ['WebPage', 'Dataset', 'BreadcrumbList', 'FAQPage']) assert.ok(types.includes(t), t);
   const faq = ld['@graph'].find((g) => g['@type'] === 'FAQPage');
   assert.ok(faq.mainEntity.length >= 5);
-  // Every FAQ answer in JSON-LD is also on the page.
-  for (const q of faq.mainEntity) assert.ok(page.includes('<summary>' + q.name + '</summary>'), q.name);
+  // Every question the tab shows is in the page's one FAQPage, and the tab shows at least five.
+  const box = /<div class="fn-qs">([\s\S]*?)<\/div>\s*<div class="src">/.exec(page)[1];
+  const shown = [...box.matchAll(/<summary>([\s\S]*?)<\/summary>/g)].map((m) => m[1]);
+  assert.ok(shown.length >= 5, shown.length + ' questions in the tab');
+  for (const q of shown) assert.ok(faq.mainEntity.some((e) => e.name === q), q);
 });
 
 test('no em dashes on the page or in what the fetcher stamps', () => {
-  assert.doesNotMatch(page, /—|&mdash;/);
+  assert.doesNotMatch(tab, /—|&mdash;/);
   const py = fs.readFileSync(path.join(root, 'scripts/fetch_fall_nitrogen.py'), 'utf8').split('\n').filter((l) => !/no em dash/.test(l)).join('\n');
   assert.doesNotMatch(py, /\u2014|&mdash;/);
 });
@@ -208,11 +217,13 @@ test('browser: empty state, county pick, blank county and ZIP', { skip }, async 
         if (u.includes('/data/fall-nitrogen.json')) return withData ? r.fulfill({ contentType: 'application/json', body: JSON.stringify(data) }) : r.fulfill({ status: 404, body: '' });
         if (u.includes('/bids/data/zips/')) return r.fulfill({ headers: h, contentType: 'application/json', body: JSON.stringify({ 50010: [42.1, -93.6] }) });
         // the empty case: the page as it ships before any station read (stamp emptied), so a stamped page on disk does not hide the empty state
-        if (!withData && /\/fall-nitrogen(\?|$)/.test(u)) return r.fulfill({ contentType: 'text/html', body: page.replace(/(<!--FALLN:STATIC-->)[\s\S]*?(<!--\/FALLN:STATIC-->)/, '$1\n<p class="fn-empty"><b>Soil readings load after the first station read.</b></p>\n$2') });
+        if (!withData && /\/spray(\?|$)/.test(u)) return r.fulfill({ contentType: 'text/html', body: spray.replace(/(<!--FALLN:STATIC-->)[\s\S]*?(<!--\/FALLN:STATIC-->)/, '$1\n<p class="fn-empty"><b>Soil readings load after the first station read.</b></p>\n$2') });
         if (u.startsWith(`http://127.0.0.1:${port}`)) return r.continue();
         return r.abort();
       });
-      await pg.goto(`http://127.0.0.1:${port}/fall-nitrogen${q}`);
+      await pg.goto(`http://127.0.0.1:${port}/spray${q}#fall-nitrogen`);
+      await pg.waitForSelector('#p-fall-nitrogen[data-ready]');
+      await pg.waitForFunction(() => typeof window.fnView === 'function');
       return { pg, ctx, errors };
     }
     let { pg, ctx, errors } = await open('', false);
