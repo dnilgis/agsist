@@ -101,23 +101,6 @@ QUIET = {
         "US Drought Monitor map comes out Thursday mornings, CPC's seasonal "
         "outlooks on the third Thursday of the month and the ENSO discussion "
         "on the second."),
-    # Written monthly by climate-indices.yml (scripts/fetch_climate_indices.py),
-    # which keeps a series unchanged when NOAA has not posted a new month.
-    # components/prf-optimize-ui.js reads it; the feed joins this manifest the
-    # day /prf loads that script.
-    "data/prf/climate-indices.json": (
-        "monthly",
-        "NOAA posts the PDO and AMO once a month, so the climate indices job "
-        "runs on the 9th and the file moves only when a new month is out."),
-    # Written by seasonal-models.yml (scripts/fetch_seasonal_models.py) on
-    # Nov 15 and Dec 15: the models start one forecast a year that the PRF
-    # test uses, in November. Read by components/prf-optimize-ui.js only if a
-    # model held up in data/prf/opt.json.
-    "data/prf/seasonal-fc.json": (
-        "seasonal",
-        "The PRF test uses one forecast a year from each model, the one started "
-        "in November, so the seasonal models job runs in mid November and mid "
-        "December and the file sits still the rest of the year."),
 }
 
 # ── feeds nobody schedules, because a person maintains them ──────────────────
@@ -255,18 +238,6 @@ PLANNED = {
     # Written by seo-weekly.yml (scripts/gsc_index_check.py) once the URL
     # Inspection API answers; read only by the internal, noindex seo-report.html,
     # which says "no index check has run yet" until then.
-    # NOAA cannot be reached from the sandbox the optimizer was built in;
-    # climate-indices.yml makes the first fetch on a GitHub runner. Until
-    # then the PRF optimizer test says the PDO and AMO tilts are untested.
-    "data/prf/climate-indices.json": ("planned",
-        "The climate indices job has not made its first run yet. The PRF "
-        "optimizer lists the PDO and AMO tests as not run until it does."),
-    # NOAA's NMME archive and Copernicus cannot be reached from the sandbox
-    # the models test was built in; seasonal-models.yml makes the first fetch
-    # on a GitHub runner (Copernicus also needs the CDS_API_KEY secret).
-    "data/prf/seasonal-fc.json": ("planned",
-        "The seasonal models job has not made its first run yet. The PRF "
-        "optimizer lists every forecast model as not tested until it does."),
     "data/seo-index.json": ("planned",
         "The weekly Search Console index check has not made its first run yet. "
         "Only the internal search report reads it, and it says so until then."),

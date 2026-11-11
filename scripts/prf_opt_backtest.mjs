@@ -16,7 +16,7 @@
    MORE CLIMATE PREDICTORS
      At the 'net' score, each predictor in O.PREDICTORS that the data can
      support is tried as a tilt on the same rate-led pick, year by year, with
-     the same no-look-ahead rule. data/prf/climate-indices.json (written by
+     the same no-look-ahead rule. private/prf/climate-indices.json (written by
      scripts/fetch_climate_indices.py) feeds the PDO and AMO ones; without it
      they are skipped and listed as not tested yet. Each is tested year by
      year (the average gain across grids, sign-flip, 20,000 flips), and the
@@ -34,6 +34,14 @@
      data/prf/opt.json, a few KB: the sample, and for each coverage and score
      the out-of-sample record against each comparison, by year, by region and
      by the season the pick leans to. Every figure is per $100 of protection.
+     Only what the panel prints or reads goes in: no method text, no source
+     list, no model list (test/prf-opt-public.test.mjs).
+
+   THE MODEL INPUTS ARE NOT PUBLISHED
+     private/prf/climate-indices.json and private/prf/seasonal-fc.json live on
+     the private repo's private-data branch. climate-indices.yml and
+     seasonal-models.yml pull them before this runs (scripts/pull_raw.sh,
+     soft: a missing one is skipped as above). /private/ is in .gitignore.
 
    node scripts/prf_opt_backtest.mjs [--step 9] [--out data/prf/opt.json] [--quiet] */
 import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
@@ -49,7 +57,7 @@ const O = require(ROOT + "components/prf-optimize.js");
 const arg = (k, d) => { const i = process.argv.indexOf(k); return i > 0 ? process.argv[i + 1] : d; };
 const STEP = +arg("--step", 9), OUT = arg("--out", ROOT + "data/prf/opt.json"), QUIET = process.argv.includes("--quiet");
 const COVS = [90, 70], OBJS = ["net", "dry"];
-const CLIMATE_FILE = arg("--climate", ROOT + "data/prf/climate-indices.json");
+const CLIMATE_FILE = arg("--climate", ROOT + "private/prf/climate-indices.json");
 const DRAWS = 20000;   /* sign flips for the predictor tests: enough to resolve odds well under 0.05/16 */
 
 /* the climate indices, when the climate-indices workflow has written them; a
@@ -58,7 +66,7 @@ let climate = existsSync(CLIMATE_FILE) ? JSON.parse(readFileSync(CLIMATE_FILE, "
 /* the seasonal forecast models, when the seasonal-models workflow has written
    them (scripts/fetch_seasonal_models.py); without the file every model is
    listed as not tested yet and still counted in the family */
-const SEASONAL_FILE = arg("--seasonal", ROOT + "data/prf/seasonal-fc.json");
+const SEASONAL_FILE = arg("--seasonal", ROOT + "private/prf/seasonal-fc.json");
 const seasonal = existsSync(SEASONAL_FILE) ? JSON.parse(readFileSync(SEASONAL_FILE, "utf8")) : null;
 if (seasonal) climate = { ...(climate || { series: {} }), seasonal };
 const PRED_IDS = O.PREDICTORS.filter((p) => !p.untestable && !p.structural).map((p) => p.id);
@@ -363,7 +371,7 @@ function runStructure() {
       gridYears: n, years: years.length,
       noPaymentPct: { plain: pct(sum((b) => b.s[c].zp), n), steadier: pct(sum((b) => b.s[c].zs), n) },
       mean: { plain: r4(sum((b) => b.s[c].np) / n), steadier: r4(sum((b) => b.s[c].ns) / n), meanDiff: r4(sum((b) => b.s[c].ns - b.s[c].np) / n), p: round4(O.flipTest(nd, DRAWS)) },
-      swing: { plain: r4(avg(sdP)), steadier: r4(avg(sdS)), what: "average across grids of the standard deviation of a grid's yearly net, per $100 of protection" },
+      swing: { plain: r4(avg(sdP)), steadier: r4(avg(sdS)) },   /* average across grids of the SD of a grid's yearly net, per $100 */
       yearsFewerMisses: zd.filter((x) => x < -1e-12).length, yearsMoreMisses: zd.filter((x) => x > 1e-12).length,
       p: O.flipTest(zd, DRAWS)
     };
@@ -374,16 +382,9 @@ function runStructure() {
 
 const out = {
   v: 2, crop_year: meta.crop_year, built_from: meta.built, last_complete: meta.years.last_complete,
-  what: "Walk-forward test of the PRF interval optimizer (components/prf-optimize.js). Each year from 1981 the split is picked from what a buyer had at the Dec 1 sales closing the fall before (earlier years, less that fall's Oct-Nov and Nov-Dec, which were not final yet) and scored on that year at 2027 rates and the producer's share of premium. Figures are dollars per $100 of protection per year.",
-  caveats: [
-    "Every year is scored at 2027 rates; RMA set them with the whole record in view. Past rates are not in the data.",
-    "USDA's index is percent of a 1951-2025 normal, so early years are measured against a normal that includes later ones. This applies equally to every strategy.",
-    "NOAA's own seasonal outlook maps are not tested: no archive of past outlooks is in the data. The forecast models behind them are tested where their archive is in.",
-    ...(seasonal ? ["Forecast models are scored on re-forecasts (hindcasts) for the years before each model was running: the model was built later, with those years in view, so its skill there can look better than it was in real time."] : []),
-    "Grids next to each other share weather, so grid-years are not independent; the year counts are the closer measure."
-  ],
-  sample: { step: STEP, grids: sample.length, states: Object.keys(stCount).length, rule: `every grid ID divisible by ${STEP}, first county listed that offers it, its interval limits` },
-  oni: O.ONI_SOURCE, ensoBoost: 1,
+  /* no method text, caveats or source list: the panel prints none of them (the
+     curtain); what it prints is the sample rule, the lines and the results */
+  sample: { grids: sample.length, states: Object.keys(stCount).length, rule: `every grid ID divisible by ${STEP}, first county listed that offers it, its interval limits` },
   results: {}
 };
 for (const cov of COVS) for (const obj of OBJS) out.results[`${cov}_${obj}`] = run(cov, obj);
@@ -446,10 +447,12 @@ for (const p of O.PREDICTORS) {
   if (p.untestable) { predictors[p.id] = { name: p.name, kept: false, tested: false, line: `${p.name}: not tested. ${p.untestable}` }; continue; }
   const why = O.predictorUnavailable(p.id, climate);
   if (why) {
-    predictors[p.id] = { name: p.name, kept: false, tested: false, why,
-      line: p.family === "forecast" ? `${p.name}: not tested yet. Its past forecasts are not in the data yet; the seasonal models job (scripts/fetch_seasonal_models.py) fetches them.`
-          : p.stub ? `${p.name}: not tested yet. NOAA's archive of past forecasts is not in the data; the access path is written up in scripts/fetch_climate_indices.py.`
-                   : `${p.name}: not tested yet. It waits on NOAA's ${(p.needs || []).map((n) => n.toUpperCase()).join(" and ")} series, which the climate indices workflow fetches.` };
+    /* plain words only: no script, job or file name in the published line (the reason stays in the log) */
+    if (!QUIET) console.error(`  ${p.id}: not tested (${why})`);
+    predictors[p.id] = { name: p.name, kept: false, tested: false,
+      line: p.family === "forecast" ? `${p.name}: not tested yet. Its past forecasts are not in the data yet.`
+          : p.stub ? `${p.name}: not tested yet. NOAA's archive of past forecasts is not in the data.`
+                   : `${p.name}: not tested yet. It waits on NOAA's ${(p.needs || []).map((n) => n.toUpperCase()).join(" and ")} series.` };
     continue;
   }
   const st = {};
@@ -474,9 +477,9 @@ out.predictors = predictors;
   for (const c of [90, 70]) { sp[c].p = round4(sp[c].p); sp[c].adj = round4(a2[c]); }
   const fewer = [90, 70].every((c) => sp[c].adj < 0.05 && sp[c].noPaymentPct.steadier < sp[c].noPaymentPct.plain);
   const s9 = sp[90], s7 = sp[70];
+  /* the rule (within O.SPREAD_NEAR of the best expected score, fewest earlier years
+     with no payment) is the panel's own code; only the verdict and the line go out */
   out.risk = {
-    name: "A steadier split: intervals that do not dry out together, at about the same expected dollars",
-    rule: `of every split the rules allow, those within ${Math.round(O.SPREAD_NEAR * 100)}% of the best expected score; the one whose intervals together missed paying in the fewest earlier years`,
     held: fewer, byCoverage: sp,
     line: `A steadier split (intervals that do not dry out together, at about the same expected dollars): `
       + `years with no payment at all went from ${s9.noPaymentPct.plain}% to ${s9.noPaymentPct.steadier}% at 90% coverage and from ${s7.noPaymentPct.plain}% to ${s7.noPaymentPct.steadier}% at 70%, `
@@ -484,19 +487,16 @@ out.predictors = predictors;
       + (fewer ? "Fewer empty years held up after counting both tests. It is a way to steady the check, not to earn more." : "The drop in empty years did not hold up once luck is allowed for, so it is not counted as a find.")
   };
   out.productivity = "Productivity factor (60 to 150%) scales protection, premium and payments alike; the rate and USDA's share do not change with it. It changes how many dollars ride on the policy, not the return per dollar you pay, so there is nothing for a test to pick.";
-  out.stationDensity = "Not tested: how many rain gauges sit near a grid is not in the data here, and NOAA's gauge counts could not be reached from where this was built.";
-  out.structure = { grids: structure.grids, chosenPct: structure.chosenPct };
 }
 /* the current skill table for any forecast that held up, so the panel can use it */
 {
   const keptFc = Object.entries(predictors).filter(([id, p]) => p.kept && (O.predictorById(id) || {}).family === "forecast").map(([id]) => id);
   if (keptFc.length) out.seasonalSkill = Object.fromEntries(keptFc.map((id) => [id, { [meta.crop_year]: climate.seasonalSkill[id][meta.crop_year] }]));
 }
-out.family = { size: O.FAMILY.length, run: Object.keys(fam).length, members: O.FAMILY, adjustment: "Holm step-down over the whole family; comparisons not yet run count as p = 1",
-               expectedByChanceAt5pct: Math.round(O.FAMILY.length * 0.05 * 10) / 10, test: `year-by-year sign-flip test of the average gain across grids, ${DRAWS} flips, fixed seed`,
-               rule: "a predictor may move the panel's pick only if its adjusted odds are under 0.05 and its gain is positive at both 90% and 70% coverage" };
-out.climate = climate && climate.series ? Object.fromEntries(Object.entries(climate.series).map(([k, v]) => [k, { url: v.url, as_of: v.as_of }])) : null;
-out.seasonal = seasonal ? Object.fromEntries(Object.entries(seasonal.models || {}).map(([k, v]) => [k, { source: v.source, system: v.system, first: v.first, last: v.last, intervals: v.intervals }])) : null;
+/* the two numbers the panel prints; the family itself (O.FAMILY, Holm, sign flips) is
+   in the code, and which inputs were in is in the run log, never the published file */
+out.family = { size: O.FAMILY.length, expectedByChanceAt5pct: Math.round(O.FAMILY.length * 0.05 * 10) / 10 };
+if (!QUIET) console.error(`  family: ${Object.keys(fam).length} of ${O.FAMILY.length} run; climate ${climate && climate.series ? Object.keys(climate.series).join(",") || "none" : "none"}; seasonal ${seasonal ? Object.keys(seasonal.models || {}).join(",") : "none"}`);
 writeFileSync(OUT, JSON.stringify(out) + "\n");
 if (!QUIET) {
   for (const [k, r] of Object.entries(out.results)) {

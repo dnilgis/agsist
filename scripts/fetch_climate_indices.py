@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 """Monthly ocean climate indices for the PRF optimizer's backtest.
 
-Writes data/prf/climate-indices.json: the Pacific Decadal Oscillation and the
+Writes private/prf/climate-indices.json: the Pacific Decadal Oscillation and the
 Atlantic Multidecadal Oscillation, monthly, from 1940. A few KB. Each series
-carries the URL it came from and the last month it holds (as_of).
+carries the URL it came from and the last month it holds (as_of). The file is
+a model input, never published: climate-indices.yml pulls the last copy from
+the private repo's private-data branch before the fetch and saves the new one
+back there (scripts/pull_raw.sh, scripts/push_raw.sh); /private/ is in
+.gitignore, so it is never committed to main.
 
 scripts/prf_opt_backtest.mjs reads the file when it is there and tests the
 "PDO with ENSO" and "AMO" tilts (components/prf-optimize.js, PREDICTORS);
 without it those two are skipped and data/prf/opt.json says "not tested yet".
-The panel on /prf reads it only if one of those tilts held up.
+The panel on /prf never reads it.
 
 SOURCES
   PDO  NOAA NCEI, ERSST v5 PDO index, monthly, 1854 on. Missing as 99.99.
@@ -18,7 +22,7 @@ SOURCES
        depends a little on later years; the backtest uses only its sign.
        https://psl.noaa.gov/data/correlation/amon.us.data
 
-A source that fails or comes back thin keeps the series already published
+A source that fails or comes back thin keeps the series already saved
 (merge per series, never replace with less). Exit 1 if any source failed, but
 whatever did come back is written.
 
@@ -65,7 +69,7 @@ import time
 from urllib.request import Request, urlopen
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-OUT = "data/prf/climate-indices.json"   # relative to ROOT; main() works from there
+OUT = "private/prf/climate-indices.json"   # relative to ROOT; main() works from there. Never published.
 FIRST_YEAR = 1940
 MIN_YEARS = 70           # a series with fewer whole years than this is refused
 UA = "AGSIST-climate-indices (+https://agsist.com)"
@@ -150,7 +154,7 @@ def fetch_nmme():
 def check(d):
     """Raise if the file is not what the backtest expects."""
     assert d.get("v") == 1, "version"
-    assert "written_by" not in d, "the published file names no script"
+    assert "written_by" not in d, "the file names no script"
     ser = d.get("series") or {}
     for k, s in ser.items():
         assert k in SOURCES, "unknown series " + k
@@ -167,6 +171,7 @@ def check(d):
 
 def write(d):
     text = json.dumps(d, separators=(",", ":")) + "\n"
+    os.makedirs(os.path.dirname(OUT), exist_ok=True)
     with open(OUT, "w") as fh:
         fh.write(text)
 
@@ -197,9 +202,9 @@ def main():
                 raise ValueError("%s: refusing to go back from %s to %s" % (key, prev["as_of"], s["as_of"]))
             series[key] = s
             print("%s: %d years, to %s" % (key, len(s["monthly"]), s["as_of"]))
-        except Exception as e:   # one dead source keeps its published series
+        except Exception as e:   # one dead source keeps its saved series
             failed.append(key)
-            print("FAILED %s: %s (kept the published series)" % (key, e))
+            print("FAILED %s: %s (kept the saved series)" % (key, e))
     if not series:
         print("nothing to write")
         return 1
@@ -265,7 +270,7 @@ def selftest():
         raise AssertionError("the NMME stub should raise")
     except NotImplementedError:
         pass
-    # the shipped file, when there is one, passes the same check
+    # the saved file, when one was pulled, passes the same check
     if os.path.exists(OUT):
         with open(OUT) as fh:
             check(json.load(fh))

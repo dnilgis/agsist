@@ -99,6 +99,15 @@ jobs:
           done
           exit 1
 
+      - name: Get the saved model inputs (private repo, private-data branch)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: |
+          bash scripts/pull_raw.sh private/prf/seasonal-fc.json
+          bash scripts/pull_raw.sh private/prf/climate-indices.json
+
       - name: Fetch
         id: fetch
         continue-on-error: true
@@ -108,6 +117,16 @@ jobs:
         run: |
           set -o pipefail
           python3 scripts/fetch_seasonal_models.py --minutes 40 2>&1 | tee seasonal.log
+
+      - name: Save the seasonal forecast models (private repo, private-data branch)
+        env:
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          RAW_BRANCH: private-data
+          RAW_SOFT: '1'
+        run: |
+          [ -f private/prf/seasonal-fc.json ] || { echo "no file written"; exit 0; }
+          python3 scripts/fetch_seasonal_models.py --check
+          bash scripts/push_raw.sh "seasonal forecast models" private/prf/seasonal-fc.json
 
       - name: Re-run the optimizer test with the models
         run: |
@@ -120,10 +139,9 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/prf/seasonal-fc.json data/prf/opt.json 2>/dev/null || true
+          git add data/prf/opt.json
           if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          WHAT=$(python3 -c "import json;d=json.load(open('data/prf/seasonal-fc.json'));print(', '.join('%s %d-%d'%(k,v['first'],v['last']) for k,v in d['models'].items()))")
-          git commit -q -m "data: seasonal forecast models ($WHAT), PRF optimizer test re-run"
+          git commit -q -m "data: PRF optimizer test re-run"
           for i in 1 2 3 4 5; do
             git rebase --abort 2>/dev/null || true
             if git pull -q --rebase --autostash origin main && git push -q; then exit 0; fi
