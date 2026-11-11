@@ -372,7 +372,7 @@ def _quotes_price(sent, locked_val):
     return False
 
 
-def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=None, strict=False):
+def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=None, strict=False, prices=None):
     """WARN, NEVER BLOCK, and here is the measurement that decided that.
 
     Run over the last 60 archived issues, this flags:
@@ -448,6 +448,19 @@ def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=No
         except Exception:
             continue
     ref = ref or today or dt.date.today()
+    # 2026-11-11: THE MORNING AFTER A REPORT DAY the writer is handed that day's
+    # settles as their own block (scripts/report_day_settles.py, from
+    # prices.json settles only). A cents or percent figure that matches a row
+    # of that block, in a sentence that names the report day, is that day's
+    # move, not today's: it is checked against the block, never against the
+    # overnight board. Any other figure is checked exactly as before.
+    report = None
+    if prices:
+        try:
+            import report_day_settles as _rds
+            report = _rds.build(prices, ref, _rds.load_wasde_release())
+        except Exception as _e:
+            W('bind:report-day', 'report-day settles could not be read (%s: %s)' % (type(_e).__name__, _e))
     prior, prior_day = _prior_locked(archive_dir, ref,
                                      daily.get('locked_prices') or {},
                                      daily=daily)
@@ -512,6 +525,8 @@ def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=No
                     if _PCT_PERIOD.search(sent[lo_i:hi_i]):
                         continue
                     claim = float(m.group(1))
+                    if report and _rds.matches(sent, key, claim, report, 'pct'):
+                        continue              # the report day's settle move, named as such
                     if abs(abs(claim) - abs(pct)) > _PCT_TOL:
                         F('bind:pct',
                           '%s says %s%% for %s but the board says %+.2f%% -- "%s"'
@@ -533,6 +548,8 @@ def check_number_binding(daily, F, W, archive_dir='data/daily-archive', today=No
                     off = round(abs(claim - abs(net)), 4)   # 4.81 - 4.7975 is 1.2499999 cents
                     if off <= _cent_tol(net):
                         continue
+                    if report and _rds.matches(sent, key, claim, report, 'cents'):
+                        continue              # the report day's settle move, named as such
                     # A GROSS MISS ON THE ISSUE'S OWN BOARD BLOCKS. Swept
                     # 2026-10-12 over the 28 archived issues that carry
                     # locked_changes (their previous close was recorded by the
@@ -1037,7 +1054,7 @@ def run(daily, prices=None, today=None, archive_dir='data/daily-archive', bind_s
 
     # Prose figures must agree with the board this same issue prints.
     try:
-        check_number_binding(daily, F, W, archive_dir, today, bind_strict)
+        check_number_binding(daily, F, W, archive_dir, today, bind_strict, prices=prices)
     except Exception as _e:
         W('bind:error', 'number binding could not run (%s: %s)' % (type(_e).__name__, _e))
 
