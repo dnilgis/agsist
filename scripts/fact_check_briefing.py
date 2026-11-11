@@ -180,13 +180,49 @@ def _month_num(name):
     return None
 
 
+_WD_ALT = r"(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday|Mon|Tue|Tues|Wed|Thu|Thurs|Fri|Sat|Sun)"
+_PAIR_BEFORE = re.compile(r"\b" + _WD_ALT + r"\.?,?\s*(?:or|and|to|through|-|\u2013)\s*$")
+_PAIR_AFTER = re.compile(r"\s*(?:or|and|to|through|-|\u2013)\s*(?:(" + _MON + r")\.?\s+)?(\d{1,2})\b"
+                         r"(?!\s*(?:%|\u00a2|cents?\b|[:.]\d|[ap]\.?m\b))", re.I)
+
+
 def weekday_findings(fields, today):
     """A weekday that does not fall on its date. The year is the one written,
     else the date's nearest occurrence to today (a "Friday, Jan 8" in a late
-    December issue is next year's)."""
+    December issue is next year's).
+
+    A PAIR (2026-11-11). "Thursday or Friday, Nov 12 or 13" is the holiday-week
+    Export Sales line the prompt asks for. Read one weekday at a time it is
+    "Friday, Nov 12", and this check blocked a correct line. In a pair each
+    weekday is checked against its own day number: the second against the
+    second (its month if one is written, else the first's), the first against
+    the first. Both are checked, so a wrong weekday in a pair still fails."""
     out = []
     for path, text in fields:
         for m in WEEKDAY_DATE.finditer(text):
+            pb = _PAIR_BEFORE.search(text[max(0, m.start() - 24):m.start()])
+            pa = _PAIR_AFTER.match(text, m.end()) if not m.group(4) else None
+            if pb and pa:
+                mon1, d1 = _month_num(m.group(2)), int(m.group(3))
+                mon2 = _month_num(pa.group(1)) if pa.group(1) else mon1
+                d2 = int(pa.group(2))
+                quote = text[max(0, m.start() - 24) + pb.start():pa.end()]
+                for tok, mon, day in ((pb.group(1), mon1, d1), (m.group(1), mon2, d2)):
+                    cands = []
+                    for y in (today.year - 1, today.year, today.year + 1):
+                        try:
+                            cands.append(dt.date(y, mon, day))
+                        except ValueError:
+                            pass
+                    if not cands:
+                        out.append(_code_finding(path, quote, "a real date", "no such date"))
+                        break
+                    d = min(cands, key=lambda c: abs((c - today).days))
+                    if d.weekday() != _WD[tok[:3].lower()]:
+                        out.append(_code_finding(path, quote, d.strftime("%A, %B %-d, %Y"),
+                                                 f"{d.isoformat()} is a {d.strftime('%A')}"))
+                        break
+                continue
             wd = _WD[m.group(1)[:3].lower()]
             mon, day = _month_num(m.group(2)), int(m.group(3))
             years = [int(m.group(4))] if m.group(4) else [today.year - 1, today.year, today.year + 1]
