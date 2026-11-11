@@ -37,8 +37,10 @@ THREE THINGS ARE WRITTEN, and they have different jobs:
 
   data/basis/index.json         which states exist, how many rows, when.
 
-PUBLIC FROM 2026-10-11. These files are public, and the record they publish
-starts on PUBLIC_FROM: a shard drops a row last seen before it, and a row first
+PUBLIC FROM 2026-10-12. These files are public, and the record they publish
+starts on PUBLIC_FROM, the first day after BARCHART_LAST (the old feed's last
+day, below), so every row it carries was read after that day: a shard drops a
+row last seen before it, and a row first
 seen before it reads as first seen on it, with no earlier basis and no earlier
 change day; no changes-<date>.json before it is written, and each run deletes
 any still here (after the unit-error check below has read them). The full
@@ -73,7 +75,7 @@ FULL_PATH = os.environ.get("BIDS_FULL_PATH", "bids-full.json")
 OUT_DIR = "data/basis"
 COMMITTED = "data/bids.json"
 FIRST_POPULATED = "2026-06-09"
-PUBLIC_FROM = "2026-10-11"     # the first day the public files carry (see the header)
+PUBLIC_FROM = "2026-10-12"     # the first day the public files carry (see the header)
 CATS = ["corn", "soybeans", "wheat", "other"]
 CAT_IX = {c: i for i, c in enumerate(CATS)}
 
@@ -286,6 +288,7 @@ def apply_day(state, rows, date):
 BARCHART_LAST = "2026-10-11"
 UNIT_ERROR_ROUND = (200, 300, 400)
 UNIT_ERROR_CROPS = ("CORN", "SOYBEANS", "WHEAT")
+assert PUBLIC_FROM > BARCHART_LAST, "the public record starts after the old feed's last day"
 
 
 def unit_error_step(a, b):
@@ -699,55 +702,55 @@ def selftest():
         ck("the step rule: 90 cents or more between a round value of 100+ and one under 100",
            unit_error_step(-300, -7) and unit_error_step(100, -25) and not unit_error_step(-100, -95)
            and not unit_error_step(-130, -40) and not unit_error_step(None, 100))
-    # PUBLIC FROM 2026-10-11: nothing dated before PUBLIC_FROM reaches the public folder.
+    # PUBLIC FROM 2026-10-12: nothing dated before PUBLIC_FROM reaches the public folder.
     # The three shapes on main (2026-11-10): a row first seen Jun 9 that last moved in August, a row last
-    # seen Oct 9, a row first seen Jun 9 that moved on Oct 20; and a row first seen after Oct 11.
+    # seen Oct 12 (the old feed's last day), a row first seen Jun 9 that moved on Oct 20; and a row first seen after it.
     pub = {("21ST CENTURY COOP", "CUMBERLAND", "IA", "CORN", "ZCZ26", "DEC26"):
            {"cur": -45, "prev": -50, "since": "2026-08-04", "first": "2026-06-09", "last": "2026-11-10"},
            ("OLD ROW", "SHERRILL", "AR", "CORN", "ZCZ26", "DEC26"):
-           {"cur": -30, "prev": -35, "since": "2026-09-01", "first": "2026-06-09", "last": "2026-10-09"},
+           {"cur": -30, "prev": -35, "since": "2026-09-01", "first": "2026-06-09", "last": "2026-10-11"},
            ("MOVED ROW", "AMES", "IA", "CORN", "ZCZ26", "DEC26"):
            {"cur": -40, "prev": -44, "since": "2026-10-20", "first": "2026-06-09", "last": "2026-11-10"},
            ("NEW ROW", "AMES", "IA", "SOYBEANS", "ZSX26", "NOV26"):
            {"cur": -60, "prev": -62, "since": "2026-10-28", "first": "2026-10-14", "last": "2026-11-10"}}
-    ck("public_row: a row first seen before Oct 11 reads as first seen on it, no earlier basis or change day",
+    ck("public_row: a row first seen before Oct 12 reads as first seen on it, no earlier basis or change day",
        public_row(pub[("21ST CENTURY COOP", "CUMBERLAND", "IA", "CORN", "ZCZ26", "DEC26")])
-       == {"cur": -45, "prev": None, "since": "2026-10-11", "first": "2026-10-11", "last": "2026-11-10"})
-    ck("public_row: a row last seen before Oct 11 is not carried",
+       == {"cur": -45, "prev": None, "since": "2026-10-12", "first": "2026-10-12", "last": "2026-11-10"})
+    ck("public_row: a row last seen before Oct 12 is not carried",
        public_row(pub[("OLD ROW", "SHERRILL", "AR", "CORN", "ZCZ26", "DEC26")]) is None)
-    ck("public_row: a move on or after Oct 11 keeps its basis before and its day; a new row is unchanged",
+    ck("public_row: a move on or after Oct 12 keeps its basis before and its day; a new row is unchanged",
        public_row(pub[("MOVED ROW", "AMES", "IA", "CORN", "ZCZ26", "DEC26")])["prev"] == -44
-       and public_row(pub[("MOVED ROW", "AMES", "IA", "CORN", "ZCZ26", "DEC26")])["first"] == "2026-10-11"
+       and public_row(pub[("MOVED ROW", "AMES", "IA", "CORN", "ZCZ26", "DEC26")])["first"] == "2026-10-12"
        and public_row(pub[("NEW ROW", "AMES", "IA", "SOYBEANS", "ZSX26", "NOV26")]) == pub[("NEW ROW", "AMES", "IA", "SOYBEANS", "ZSX26", "NOV26")])
     with tempfile.TemporaryDirectory() as d:
-        for day in ("2026-06-10", "2026-10-10", "2026-10-11", "2026-10-12"):
+        for day in ("2026-06-10", "2026-10-11", "2026-10-12", "2026-10-13"):
             with open(os.path.join(d, "changes-%s.json" % day), "w") as f:
                 json.dump({"date": day, "changes": []}, f)
         p0, n0 = write_changes([(("X", "Y", "IA", "CORN", "ZCZ26", "DEC26"), -1, -2)], d, "2026-09-01")
-        ck("no change file before Oct 11 is written", n0 == 0 and not os.path.exists(p0))
+        ck("no change file before Oct 12 is written", n0 == 0 and not os.path.exists(p0))
         for orphan in ("AR.json", "??.json"):
             with open(os.path.join(d, orphan), "w") as f:
                 json.dump({"state": orphan[:2], "f": ["X|Y"], "d": ["2026-06-09"], "r": [[0, 0, "ZCZ26", "DEC26", -1, None, 0, 0, 0]]}, f)
         idx = write_shards(dict(pub), d, "2026-11-10")
-        ck("a shard this run did not write leaves the folder (a state with no row since Oct 11, the old ?? file)",
+        ck("a shard this run did not write leaves the folder (a state with no row since Oct 12, the old ?? file)",
            not os.path.exists(os.path.join(d, "AR.json")) and not os.path.exists(os.path.join(d, "??.json"))
            and os.path.exists(os.path.join(d, "IA.json")))
         gone = prune_changes(d)
         left = sorted(x for x in os.listdir(d) if x.startswith("changes-"))
-        ck("change files before Oct 11 are removed, Oct 11 on are kept",
-           [os.path.basename(g) for g in gone] == ["changes-2026-06-10.json", "changes-2026-10-10.json"]
-           and left == ["changes-2026-10-11.json", "changes-2026-10-12.json"])
+        ck("change files before Oct 12 are removed, Oct 12 on are kept",
+           [os.path.basename(g) for g in gone] == ["changes-2026-06-10.json", "changes-2026-10-11.json"]
+           and left == ["changes-2026-10-12.json", "changes-2026-10-13.json"])
         dates = set()
         for st in idx["states"]:
             sh = json.load(open(os.path.join(d, st + ".json")))
             dates |= set(sh["d"])
             ck("shard %s says where its record starts" % st, sh.get("publicFrom") == PUBLIC_FROM)
-        ck("the shards carry no date before Oct 11 and drop the row last seen Oct 9",
+        ck("the shards carry no date before Oct 12 and drop the row last seen Oct 11, the old feed's last day",
            dates and min(dates) >= PUBLIC_FROM and "AR" not in idx["states"] and idx.get("publicFrom") == PUBLIC_FROM)
         back = load_state(d)
         ck("the shards read back as the public rows",
            back.get(("21ST CENTURY COOP", "CUMBERLAND", "IA", "CORN", "ZCZ26", "DEC26"))
-           == {"cur": -45, "prev": None, "since": "2026-10-11", "first": "2026-10-11", "last": "2026-11-10"})
+           == {"cur": -45, "prev": None, "since": "2026-10-12", "first": "2026-10-12", "last": "2026-11-10"})
     print(f"FAILS={len(fails)}")
     return 1 if fails else 0
 

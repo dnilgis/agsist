@@ -159,8 +159,8 @@ test("the basis log box is headed by where its log starts, and misreads are scre
   assert.doesNotMatch(py, /<summary>Basis since June<\/summary>/);
   const sp = readFileSync(ROOT + "scripts/build_basis_sparklines.py", "utf8");
   assert.match(sp, /from basis_method import relative_outlier/);
-  // live file: Primient Decatur corn may have no change since the log's start day; any point it has is screened
   const il = JSON.parse(readFileSync(ROOT + "data/basis-sparklines/IL.json", "utf8"));
   const pri = Object.entries(il.series).filter(([k]) => k.startsWith("IL|PRIMIENT GRAIN|DECATUR|corn|"));
+  assert.ok(pri.length > 0);
   for (const [k, pts] of pri) for (const p of pts) assert.notEqual(p.cents, -200, k);
 });

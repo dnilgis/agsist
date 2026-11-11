@@ -1,4 +1,4 @@
-/* components/cb-basis-hist.js -- "Basis since Oct 11, 2026" on a cash-bids town page.
+/* components/cb-basis-hist.js -- "Basis since Oct 12, 2026" on a cash-bids town page.
  *
  * The town page (scripts/build_cash_bid_pages.py history_box) carries only a
  * closed <details data-basis-hist="WI" data-boards='[[name,[cities]],...]'>.
@@ -15,7 +15,7 @@
  *   changes, the step says so (a thin mark, and the table names both).
  *   Nothing is interpolated, averaged or carried past the last logged run.
  *   An elevator with no logged change shows a plain line saying so.
- *   The log's public record starts on its publicFrom day (2026-10-11), and
+ *   The log's public record starts on its publicFrom day (2026-10-12), and
  *   the heading names that day with its year.
  *
  * Matching: the log writes "CDR FARMS, LLC" where the network writes "CDR

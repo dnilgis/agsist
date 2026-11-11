@@ -90,14 +90,14 @@ REGISTRY_SCHEMA = "agsist-insight-registry/1"
 REGISTRY = os.path.join(HERE, "insight_registry.json")
 LEDGER_DIR = "private/ledger/tests"
 BID_LEDGER_DIR = "private/ledger/bid-changes"
-# The daily basis log before 2026-10-11 is not in the public folder (build_basis_history.PUBLIC_FROM); the
+# The daily basis log before 2026-10-12 is not in the public folder (build_basis_history.PUBLIC_FROM); the
 # re-test reads it from here, a private copy kept on the private-data branch (scripts/insight_engine.sh).
 BASIS_LOG_PRIVATE = "private/ledger/basis-log"
 
 
 def merge_elevators(cur, old):
     """Today's elevator records, plus what the private copy (the records when the basis log before
-    2026-10-11 was public) adds: the basis keys an id held then, and the records of ids no longer
+    2026-10-12 was public) adds: the basis keys an id held then, and the records of ids no longer
     listed, so a day of that log still joins to its elevator. Today's record wins every other field."""
     by = {e["id"]: e for e in old if e.get("id")}
     out = []
@@ -1619,7 +1619,7 @@ def selftest():
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
 
-    print("the basis log before Oct 11, 2026 comes from the private copy")
+    print("the basis log before Oct 12, 2026 comes from the private copy")
     tmp2 = tempfile.mkdtemp()
     try:
         for sub, days in ((BASIS_LOG_PRIVATE, ("2026-09-03", "2026-10-09", "2026-10-12")), ("data/basis", ("2026-10-12", "2026-10-13"))):

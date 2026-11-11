@@ -277,19 +277,19 @@ def selftest():
         assert pts[1] == {"date": "2026-10-22", "cents": -40}, pts[1]
         print("selftest OK: 2 real points, duplicate same-date row dropped, values correct")
         # the public record starts on PUBLIC_FROM: a change file dated before it adds no point
-        with open(os.path.join(td, "data/basis/changes-2026-10-10.json"), "w") as f:
-            json.dump({"date": "2026-10-10", "changes": [["IA", "TEST CO-OP", "AMES", "corn", "ZCZ26", "DEC26", -40, -38]]}, f)
         with open(os.path.join(td, "data/basis/changes-2026-10-11.json"), "w") as f:
-            json.dump({"date": "2026-10-11", "changes": [["IA", "TEST CO-OP", "AMES", "corn", "ZCZ26", "DEC26", -38, -36]]}, f)
+            json.dump({"date": "2026-10-11", "changes": [["IA", "TEST CO-OP", "AMES", "corn", "ZCZ26", "DEC26", -40, -38]]}, f)
+        with open(os.path.join(td, "data/basis/changes-2026-10-12.json"), "w") as f:
+            json.dump({"date": "2026-10-12", "changes": [["IA", "TEST CO-OP", "AMES", "corn", "ZCZ26", "DEC26", -38, -36]]}, f)
         REPO, CHANGES_GLOB = td, os.path.join(td, "data/basis/changes-*.json")
         out = build()
         REPO, CHANGES_GLOB = old_repo, old_glob
         pts = out["IA"]["series"][k]
-        assert {"date": "2026-10-11", "cents": -36} in pts and all(p["date"] != "2026-10-10" for p in pts), pts
-        assert out["IA"]["publicFrom"] == "2026-10-11", out["IA"].get("publicFrom")
-        for n in ("changes-2026-10-10.json", "changes-2026-10-11.json"):
+        assert {"date": "2026-10-12", "cents": -36} in pts and all(p["date"] != "2026-10-11" for p in pts), pts
+        assert out["IA"]["publicFrom"] == "2026-10-12", out["IA"].get("publicFrom")
+        for n in ("changes-2026-10-11.json", "changes-2026-10-12.json"):
             os.remove(os.path.join(td, "data/basis", n))
-        print("selftest OK: a change logged before Oct 11, 2026 adds no point")
+        print("selftest OK: a change logged before Oct 12, 2026 adds no point")
 
         # the real case (Nov 10): Finley ND's board was logged as "ZFINLEY FARMERS GRAIN & ELEVATOR" until the
         # history was keyed on the cleaned name; its old rows join the new series, and a real Z name stays

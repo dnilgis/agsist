@@ -45,27 +45,35 @@ for p in history/agtransport/barge_rates history/agtransport/grain_basis history
 done
 RAW_BRANCH=private-data RAW_SOFT=1 bash scripts/pull_raw.sh private/ledger/bid-changes || true
 
-# The daily basis log before 2026-10-11 is not in the public folder (build_basis_history.py PUBLIC_FROM).
+# The daily basis log before 2026-10-12 is not in the public folder (build_basis_history.py PUBLIC_FROM).
 # The re-test reads those days from a private copy on private-data, with the elevator records of that
 # time (data/ids/elevators.json) so each day still joins to its elevator; the first run without one
-# makes it from the last main commit that still held them and saves it there.
+# makes it from the last main commit that still held them (108 day files) and saves it there, only
+# when every file came out whole. A partial copy is never saved: the run says so and stops.
 BASIS_LOG=private/ledger/basis-log
 BASIS_LOG_PIN=f2e960400e5b0ee07451885e5b1535da659bc7c0
+BASIS_LOG_DAYS=108
 RAW_BRANCH=private-data RAW_SOFT=1 bash scripts/pull_raw.sh "$BASIS_LOG" || true
 if [ ! -d "$BASIS_LOG" ]; then
-  if git cat-file -e "$BASIS_LOG_PIN^{commit}" 2>/dev/null || git fetch -q --no-tags --depth 1 origin "$BASIS_LOG_PIN"; then
-    mkdir -p "$BASIS_LOG"
-    for f in $(git ls-tree --name-only "$BASIS_LOG_PIN" data/basis/ | grep -E '/changes-[0-9]{4}-[0-9]{2}-[0-9]{2}\.json$'); do
-      day=$(basename "$f" .json); day=${day#changes-}
-      [[ "$day" < "2026-10-11" ]] && git show "$BASIS_LOG_PIN:$f" > "$BASIS_LOG/changes-$day.json"
-    done
-    git show "$BASIS_LOG_PIN:data/ids/elevators.json" > "$BASIS_LOG/elevators.json" || rm -f "$BASIS_LOG/elevators.json"
-    n=$(ls "$BASIS_LOG" | grep -c '^changes-')
-    echo "basis log before Oct 11, 2026: $n day file(s) from $BASIS_LOG_PIN"
-    [ "$n" -gt 0 ] && RAW_BRANCH=private-data RAW_SOFT=1 bash scripts/push_raw.sh "basis log before Oct 11, 2026" "$BASIS_LOG"
-  else
-    echo "::warning::basis log before Oct 11, 2026 not readable; the basis log specs read the public days only"
+  git cat-file -e "$BASIS_LOG_PIN^{commit}" 2>/dev/null || git fetch -q --no-tags --depth 1 origin "$BASIS_LOG_PIN" \
+    || { echo "::error::basis log before Oct 12, 2026: commit $BASIS_LOG_PIN not readable; nothing saved"; exit 1; }
+  mkdir -p "$BASIS_LOG.part"
+  want=0; got=0
+  for f in $(git ls-tree --name-only "$BASIS_LOG_PIN" data/basis/ | grep -E '/changes-[0-9]{4}-[0-9]{2}-[0-9]{2}\.json$'); do
+    day=$(basename "$f" .json); day=${day#changes-}
+    [[ "$day" < "2026-10-12" ]] || continue
+    want=$((want + 1))
+    git show "$BASIS_LOG_PIN:$f" > "$BASIS_LOG.part/changes-$day.json" && [ -s "$BASIS_LOG.part/changes-$day.json" ] && got=$((got + 1))
+  done
+  git show "$BASIS_LOG_PIN:data/ids/elevators.json" > "$BASIS_LOG.part/elevators.json" && [ -s "$BASIS_LOG.part/elevators.json" ] || got=-1
+  if [ "$want" -ne "$BASIS_LOG_DAYS" ] || [ "$got" -ne "$BASIS_LOG_DAYS" ]; then
+    echo "::error::basis log before Oct 12, 2026: $got of $want day file(s) copied whole (want $BASIS_LOG_DAYS, and the elevator records); nothing saved"
+    rm -rf "$BASIS_LOG.part"; exit 1
   fi
+  mv "$BASIS_LOG.part" "$BASIS_LOG"
+  echo "basis log before Oct 12, 2026: $got day file(s) and the elevator records from $BASIS_LOG_PIN"
+  RAW_BRANCH=private-data bash scripts/push_raw.sh "basis log before Oct 12, 2026" "$BASIS_LOG" \
+    || { echo "::error::basis log before Oct 12, 2026 not saved to private-data"; exit 1; }
 fi
 
 args=(run --ledger "$LEDGER" --root . --raw .)

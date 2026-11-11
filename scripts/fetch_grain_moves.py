@@ -30,7 +30,7 @@ columns it does have; its last good file is kept, never overwritten with less.
 
 OUR OWN DATA: the weekly state basis is replayed from data/basis/<ST>.json and
 data/basis/changes-*.json (build_basis_history.py), the AGSIST network's
-record from PUBLIC_FROM (2026-10-11) on. Offline.
+record from PUBLIC_FROM (2026-10-12) on. Offline.
 
 THE CONNECTION is computed here, not on the page (honest-numbers rule 9): for
 groups of USDA regions, weekly basis against its own same-week 5-year normal
@@ -935,7 +935,7 @@ def connection(basis_rows, freight, ours, today):
 
 
 def ours_connection(ours, freight):
-    """Our own weekly state basis (since Oct 11, 2026) beside freight levels.
+    """Our own weekly state basis (since Oct 12, 2026) beside freight levels.
     Never vs normal: there is no normal yet. Tested through the same gate,
     which it will fail until enough weeks build up; the page says so."""
     out = {"tests": [], "publicFrom": PUBLIC_FROM}
@@ -1447,7 +1447,7 @@ def selftest():
         sh["r"].append([5, 0, "ZCZ26", "NOV26", -90, None, 3, 3, 3])
         json.dump(sh, open(os.path.join(b, "IA.json"), "w"))
         ow = our_weekly(tmp, ["IA"])
-        assert ow["since"] == "2026-10-14" and ow["publicFrom"] == "2026-10-11", (ow["since"], ow.get("publicFrom"))
+        assert ow["since"] == "2026-10-14" and ow["publicFrom"] == "2026-10-12", (ow["since"], ow.get("publicFrom"))
         line = ow["states"]["IA"]["corn"]
         assert [p[0] for p in line] == ["2026-10-16", "2026-10-23"], line
         # Oct 16: E0 -30, E1..E4 -31..-34, E5 +120 (outlier, more than 75c out): median of 5 = -0.32

@@ -2598,7 +2598,7 @@ def since_words(iso):
 
 
 def history_box(t, boards, logged):
-    """"Basis since Oct 11, 2026" (where the public log starts): a closed box naming this page's elevators that have
+    """"Basis since Oct 12, 2026" (where the public log starts): a closed box naming this page's elevators that have
     a logged basis change (logged: history_index() of the state). Nothing of
     the history is in the page: components/cb-basis-hist.js fetches
     data/basis-sparklines/<ST>.json the first time the box is opened and draws
@@ -5000,7 +5000,7 @@ def _selftest_answer():
         "Op n1's only key names no month it can draw, so it is not offered"
     assert "-31" not in fr and "\u221231\u00a2" not in fr.split("Nebraska middle")[0].split("cbt-hist")[-1]
     assert fr.count('/components/cb-basis-hist.js?v=6') == 1 and fr.count('/components/elev-names.js?v=2') == 1 and "&ldquo;Basis since&rdquo; box shows" in fr.split("<summary>Sources and terms</summary>")[1]
-    assert "<summary>Basis since Oct 11, 2026</summary>" in fr and "since June" not in fr and "licensed" not in fr.split("<summary>Sources and terms</summary>")[1], \
+    assert "<summary>Basis since Oct 12, 2026</summary>" in fr and "since June" not in fr and "licensed" not in fr.split("<summary>Sources and terms</summary>")[1], \
         "the heading names where the public log starts"
     assert fr.index("cbt-hist\"") > fr.index('id="bid-email"'), "after the email box, with the other cards"
     assert "cb-basis-hist.js" not in ia and "Basis since" not in ia, "no logged change in the state: no box"

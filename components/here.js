@@ -691,7 +691,7 @@
         var vs = r.status === 'ok' ? ', ' + (r.gap === 0 ? 'the same as' : Math.abs(r.gap) + '¢ ' + (r.gap > 0 ? 'stronger than' : 'weaker than')) + ' the middle of ' + r.nbN + ' elevators within ' + r.radius + ' miles posting the same delivery (' + basisTxt(r.nbMedian) + ').'
           : '. Against its neighbors: not yet.';
         return '<li id="h-el-' + i + '">' + head + vs + ' <span class="h-el-h" id="h-el-h' + i + '"></span></li>';
-      }).join('') + '</ul><p class="h-src" id="h-el-thin" hidden></p><p class="h-src">Posted bids' + (idx.generated ? ', ' + esc(mdy(idx.generated)) : '') + '. Basis history starts Oct 11, 2026. <a href="' + (w.zip ? '/cash-bids?zip=' + w.zip : '/cash-bids') + '">See the bids near here</a></p>';
+      }).join('') + '</ul><p class="h-src" id="h-el-thin" hidden></p><p class="h-src">Posted bids' + (idx.generated ? ', ' + esc(mdy(idx.generated)) : '') + '. Basis history starts Oct 12, 2026. <a href="' + (w.zip ? '/cash-bids?zip=' + w.zip : '/cash-bids') + '">See the bids near here</a></p>';
       elevHistory(rows, mine);
     }, function () { if (mine()) box.innerHTML = na('elevator bids are not in right now'); });
   }
