@@ -11,30 +11,32 @@
 #                               unless .github/future-dated-data.txt lists it (Nov 4, 2026: a test's
 #                               made-up day, data/daily-sent/2099-01-01.json, reached main in a commit)
 #   engine.sh overlay <dir>     copy the engine paths from <dir> (the private checkout) into place;
-#                               a same-named engine branch checked out at .engine-pair wins over <dir>
+#                               a same-named engine branch checked out at .engine-pair wins over <dir>,
+#                               and the files it changes against <dir> (the default branch) are listed
+#                               in the git directory (agsist-engine-changed) for the test pick
 # In a local session (from anywhere inside the checkout):
 #   engine.sh pull              clone or update the engine next to this checkout
 #                               (ENGINE_DIR, default ../<repo>-engine) and copy it in; the engine
 #                               branch is ENGINE_BRANCH, else the one named like this checkout's
-#                               branch when the engine has it, else the default branch
+#                               branch when the engine has it, else the default branch; on a branch
+#                               other than the default it lists the files that branch changes (as overlay)
 #   engine.sh pair [branch]     print the engine branch a run of <branch> uses (default: this
 #                               checkout's branch): the same-named engine branch when it exists
 #                               on ENGINE_REMOTE, else the default
 #   engine.sh save [message]    copy this checkout's engine paths back into ENGINE_DIR and
 #                               commit there (it does not push; it prints the push line)
-#   engine.sh only-engine [dir] refuse (exit 1) when a file under the engine paths is in the
-#                               engine clone's HEAD (dir, default ENGINE_DIR) and not in this
-#                               checkout's HEAD, unless this checkout's history deleted or renamed
-#                               it since the engine's last sync (the "agsist main <sha>" in the
-#                               engine's newest sync commit message): then save deletes it there
-#                               too, as main did. Prints counts, no names.
-#                               .github/workflows/engine-sync.yml runs it before every save.
+# (Nov 11, 2026: "mode private" in .github/engine-paths. This repository tracks none of the engine
+# paths; the engine branch is the only copy. The main-to-engine sync (engine-sync.yml and its
+# only-engine refusal) is retired: code changes land on a paired fx/x branch of the engine and the
+# lead merges it into the default branch.)
 #
 # Rules:
 # - While this repository still tracks a path, the copy never overwrites a
 #   tracked file: the checkout stays clean, so a job's `git pull --rebase`
 #   cannot stop on a code file. Once the code is gone from this repository the
-#   engine copy is the only copy.
+#   engine copy is the only copy: no sparse set-aside, nothing in the index, a
+#   job's own sparse checkout untouched (.gitignore and info/exclude keep it out
+#   of every commit).
 # - In Actions, every engine path (and the scratch checkout) goes into
 #   .git/info/exclude, so a job's bare `git add -A` can never put private code
 #   in this repository. A local `pull` does not touch info/exclude (it is shared
@@ -54,6 +56,9 @@ mapfile -t PATHS < <(awk '$1=="path"{print $2}' "$CONF")
 SCRATCH=.engine-src
 PAIR=.engine-pair
 MAIN_BRANCH=main
+# the files a run's own engine branch changes against the default one, one per line ("*": unknown), in the git
+# directory (never the checkout); scripts/engine_files.py and test/engine-files.mjs read it (keep them in step)
+CHANGED_NOTE=agsist-engine-changed
 
 say_fail() {
   # one loud line in the log and in the job summary, then stop
@@ -218,6 +223,20 @@ overlay_from() {
   if [ "$kept" -gt 0 ]; then
     echo "::notice title=engine older than this repository::$kept file(s) differ from this repository's copy; this repository's copy was used (it still tracks the code). Bring the engine up to date: bash .github/actions/engine/engine.sh save"
   fi
+}
+
+changed_note() {
+  local p; p="$(git -C "$ROOT" rev-parse --git-path "$CHANGED_NOTE")"
+  case "$p" in /*) ;; *) p="$ROOT/$p" ;; esac
+  echo "$p"
+}
+
+# the engine paths whose blob or mode differs between two checkouts' HEAD trees (either side may lack a file)
+tree_diff() {
+  { git -C "$1" ls-tree -r HEAD -- "${PATHS[@]}" | sed 's/^/A /'
+    git -C "$2" ls-tree -r HEAD -- "${PATHS[@]}" | sed 's/^/B /'; } |
+    awk -F'\t' '{ split($1, h, " "); v = h[2] " " h[4]; if (h[1] == "A") a[$2] = v; else b[$2] = v }
+      END { for (k in a) if (a[k] != b[k]) print k; for (k in b) if (!(k in a)) print k }' | LC_ALL=C sort
 }
 
 # A branch name a run may pair with: plain characters only, never the default or main.
@@ -387,9 +406,20 @@ PY
     if [ "${GITHUB_EVENT_NAME:-}" != "pull_request_target" ] && [ "${PAIRED_OUTCOME:-}" = "success" ] && [ -n "${PAIRED:-}" ] && [ -d "$pair/.git" -o -f "$pair/.git" ]; then
       # the run's own engine branch: its code wins, tests included
       from="$PAIRED"; sha=$(git -C "$pair" rev-parse HEAD)
+      # what it changes against the default branch, for the test pick and the generated-set prebuild (the code
+      # is not in this repository, so this commit's own diff cannot show it). Counts only in the log.
+      note="$(changed_note)"
+      if [ "${CHECKOUT_OUTCOME:-}" = "success" ] && [ -d "$src/.git" -o -f "$src/.git" ] && tree_diff "$pair" "$src" > "$note.tmp"; then
+        mv "$note.tmp" "$note"
+        echo "engine: the branch $PAIRED changes $(grep -c . "$note") file(s) against $BRANCH (the test pick reads them)"
+      else
+        rm -f "$note.tmp"; echo '*' > "$note"
+        echo "::notice title=engine change list unknown::the default engine branch could not be compared with $PAIRED; every test runs"
+      fi
       engine_take "$pair"
       how="the engine copy"
     else
+      rm -f "$(changed_note)"
       [ "${CHECKOUT_OUTCOME:-success}" = "success" ] && [ -d "$src/.git" -o -f "$src/.git" ] ||
         say_fail "could not check out $REPO $BRANCH (key expired, revoked, not granted on $REPO, or the branch is gone)"
       from="$BRANCH"; sha=$(git -C "$src" rev-parse HEAD)
@@ -429,6 +459,16 @@ PY
       git clone -q -b "$EB" "${ENGINE_REMOTE:-https://github.com/$REPO.git}" "$ED" || { echo "engine: could not clone $REPO $EB into $ED" >&2; exit 1; }
     fi
     overlay_from "$ED" local
+    note="$(changed_note)"
+    if [ "$EB" = "$BRANCH" ]; then
+      rm -f "$note"
+    elif git -C "$ED" fetch -q origin "$BRANCH" && git -C "$ED" diff --name-only --no-renames FETCH_HEAD...HEAD -- "${PATHS[@]}" > "$note.tmp"; then
+      mv "$note.tmp" "$note"
+      echo "engine: $EB changes $(grep -c . "$note") file(s) against $BRANCH (the test pick reads them)"
+    else
+      rm -f "$note.tmp"; echo '*' > "$note"
+      echo "engine: could not compare $EB with $BRANCH; the test pick runs every test" >&2
+    fi
     echo "engine: $(git -C "$ED" rev-parse --short HEAD) ($EB) from $ED copied into $ROOT (${PATHS[*]})" ;;
   save)
     ED="${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}"
@@ -447,34 +487,6 @@ PY
       commit -q -m "${1:-engine: from $(basename "$ROOT") $(git -C "$ROOT" rev-parse --short HEAD)}" || exit 1
     git -C "$ED" show --stat --format='engine: committed %h %s' HEAD | tail -n +1 | head -20
     echo "push it: git -C $ED push origin $BRANCH" ;;
-  only-engine)
-    ED="${1:-${ENGINE_DIR:-$(dirname "$ROOT")/$(basename "$ROOT")-engine}}"
-    case "$ED" in /*) ;; *) ED="$ROOT/$ED" ;; esac
-    [ -e "$ED/.git" ] || { echo "engine: no engine clone at $ED" >&2; exit 1; }
-    m=$(git -C "$ED" ls-tree -r --name-only HEAD -- "${PATHS[@]}" | wc -l)
-    if [ "$m" -eq 0 ]; then echo "::error title=engine sync refused::the engine clone has no file under ${PATHS[*]}"; exit 1; fi
-    only=$(LC_ALL=C comm -23 <(git -C "$ED" ls-tree -r --name-only HEAD -- "${PATHS[@]}" | LC_ALL=C sort) \
-                            <(git -C "$ROOT" ls-tree -r --name-only HEAD -- "${PATHS[@]}" | LC_ALL=C sort))
-    [ -n "$only" ] || { echo "engine: no file only in the engine ($m files under ${PATHS[*]})"; exit 0; }
-    n=$(printf '%s\n' "$only" | wc -l)
-    # the main commit the engine was last synced to, from the engine's newest sync message
-    last=$(git -C "$ED" log -50 --format=%s | sed -nE 's/.*agsist main ([0-9a-f]{7,40}).*/\1/p' | head -1)
-    gone=""
-    if [ -n "$last" ] && git -C "$ROOT" cat-file -e "$last^{commit}" 2>/dev/null; then
-      # what main deleted, or renamed away, since then (old names of renames are the second field)
-      gone=$(git -C "$ROOT" log -M --diff-filter=DR --name-status --format= "$last..HEAD" -- "${PATHS[@]}" |
-             awk -F'\t' '$1=="D"{print $2} $1 ~ /^R/{print $2}' | LC_ALL=C sort -u)
-    fi
-    left=$(LC_ALL=C comm -23 <(printf '%s\n' "$only" | LC_ALL=C sort) <(printf '%s\n' "$gone" | sed '/^$/d'))
-    k=$(printf '%s\n' "$left" | sed '/^$/d' | wc -l)
-    if [ "$k" -gt 0 ]; then
-      why="main never had them since the last sync"
-      [ -n "$last" ] || why="no sync commit (agsist main <sha>) found in the engine's history"
-      [ -z "$last" ] || git -C "$ROOT" cat-file -e "$last^{commit}" 2>/dev/null || why="the last sync commit $last is not in this checkout's history"
-      echo "::error title=engine sync refused::$k file(s) exist only in the engine branch $BRANCH ($why); a save would delete them. Look by hand (git -C <engine clone> ls-tree against main) before any sync."
-      exit 1
-    fi
-    echo "engine: $n file(s) only in the engine were deleted or renamed on main since $last; the save deletes them there too ($m files under ${PATHS[*]})" ;;
   *)
-    sed -n '2,32p' "$0"; exit 2 ;;
+    sed -n '2,31p' "$0"; exit 2 ;;
 esac
