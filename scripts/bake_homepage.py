@@ -113,6 +113,22 @@ def replace_inner(html, open_pat, close_tag, new_inner, tag, required=True):
     return html, True
 
 
+def no_price(headline):
+    """The first-screen Daily line carries no price: the futures card is the one price on that screen.
+    A clause that holds a dollar price goes when another clause remains; otherwise only the price phrase goes."""
+    h = str(headline or "").strip()
+    price = re.compile(r"\s*(?:\b(?:to|at|near|around|from)\s+)?\$\d[\d,]*(?:\.\d+)?(?:\s?(?:[\u00bd\u00bc\u00be]|\d/\d))?")
+    if not price.search(h):
+        return h
+    clauses = [c.strip() for c in re.split(r"\s*;\s*", h) if c.strip()]
+    keep = [c for c in clauses if not price.search(c)]
+    if keep and len(keep) < len(clauses):
+        return "; ".join(keep)
+    out = price.sub("", h)
+    out = re.sub(r"\s+(?:is|are|was|were|sits|trades|closes|settles)\s+(?=(?:overnight|today|tonight|after|as|on|ahead|before)\b|$)", " ", out)
+    return re.sub(r"\s{2,}", " ", out).strip()
+
+
 def main():
     if not INDEX.exists():
         print("[bake] index.html missing"); sys.exit(2)
@@ -157,7 +173,7 @@ def main():
     # older index.html without the card bakes the rest as before.
     html, ok = replace_inner(
         html, r'<span class="job-daily-t" id="job-daily-t">', "</span>",
-        esc(daily.get("headline", "")), "job-daily", required=False)
+        esc(no_price(daily.get("headline", ""))), "job-daily", required=False)
     if ok:
         jd = ""
         if re.fullmatch(r"\d{4}-\d{2}-\d{2}", iso):

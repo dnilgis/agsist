@@ -2604,3 +2604,65 @@ html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--c
   .sw-home{display:block;height:54px;margin:.6rem 0 .2rem}
   .sw-home .sw-line{height:54px;padding:4px 0}
 }
+
+/* ===== 2026-11-11 answers first: one column, each answer a card, in this order: the sponsor line, the ZIP box,
+   futures, today and this week, the Daily headline, weather (once a ZIP is set), the farmland sale, then the
+   links. No sentence stands before the first answer. The same order at every width. ===== */
+#hero-band .af{display:flex;flex-direction:column;gap:10px;max-width:760px;margin:0 0 12px}
+#hero-band .af>.job,#hero-band .af>.af-wx,#hero-band .af>.hb-grid--fut{background:var(--surface);border:1px solid var(--border-2);border-radius:10px;padding:10px 14px;margin:0;border-top:1px solid var(--border-2);min-width:0}
+#hero-band .af>.job-near{border-top:3px solid var(--gold)}
+#hero-band .af>.jobs{display:block;margin:0;padding:0}
+#hero-band .af>.jobs .job{background:none;border:0;border-radius:0;padding:6px 0 2px;border-top:1px solid var(--border-2);border-left:0}
+#hero-band .af>.jobs .job:first-child{border-top:0}
+#hero-band .af .hb-futh{margin:2px 0 -6px;padding:0 2px}
+#hero-band .af .job-h{margin:0 0 4px;font-size:1.05rem}
+#hero-band .af .hb-top{padding-bottom:2px}
+.hb-nozip .af .hb-top{display:none}
+.hb-nozip .af>.af-wx{display:none}
+#hero-band .af .hb-zip{padding:2px 0 4px}
+.hb-nozip .af .job-near .hb-grid{display:none}
+.hb-loc-row{flex-basis:100%;display:block;font-size:.824rem;line-height:1.4;color:var(--text-dim)}
+.hb-loc{display:inline-flex;align-items:center;min-height:44px;padding:0;margin:0;border:0;background:none;font:inherit;font-size:.941rem;font-weight:700;color:var(--gold);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+[data-theme="light"] .hb-loc{color:#86600f}
+.hb-loc:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+/* futures: two prices, one picture under them, the one explaining line, then Today and this week */
+#hero-band .af .hb-grid--fut{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px;max-width:none}
+#hero-band .af .hb-grid--fut .hb-fut{grid-column:auto;padding:6px 0 4px;border-top:0;border-left:0}
+#hero-band .af .hb-grid--fut #hb-fs{padding-left:16px;border-left:1px solid var(--border-2)}
+#hero-band .af .hb-fut .hb-s{min-height:0}
+#hero-band.hb-ovnh .af .hb-fut .hb-s{min-height:5.6em}
+#hero-band .af .hb-pic{grid-column:1/-1;margin:0;padding:6px 0 4px;border-top:1px solid var(--border-2);color:var(--text-dim)}
+#hero-band .af .hb-pic[hidden]{display:none}
+#hero-band .af .hb-plain{display:block;grid-column:1/-1;margin:0;padding:6px 0 8px;font-size:.824rem;line-height:1.4;color:var(--text-dim)}
+#hero-band .af .hb-grid--fut .hap{grid-column:1/-1;padding:8px 0 2px;border-top:1px solid var(--border-2);border-left:0}
+#hero-band .af .hap-list{min-height:0}
+#hero-band .af .hap-h{font-size:.941rem;color:var(--text);margin:0 0 2px}
+/* the Daily headline: the line, no price */
+#hero-band .af-daily{padding:6px 14px}
+#hero-band .af-daily .job-daily{border-top:0;padding:4px 0}
+#hero-band .af-daily .job-daily-t{min-height:0;-webkit-line-clamp:3}
+/* weather: once a ZIP is set */
+#hero-band .af-wx{display:grid}
+#hero-band .af-wx .hb-cell{border-top:0;padding:4px 0}
+#hero-band .af-wx #hb-wx{min-height:0}
+/* the farmland sale: the price, one short line, one picture */
+#hero-band .af>.job-land{padding:8px 14px 6px}
+#hero-band .af .hl-k{min-height:0;-webkit-line-clamp:2}
+#hero-band .af .hl-s{min-height:0;-webkit-line-clamp:3}
+.hl-pic{margin:6px 0 2px;color:var(--text-dim)}
+/* the small charts */
+.hb-pic-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px}
+.hb-pic-c{min-width:0}
+.hb-pic-c svg,.hl-pic svg{display:block;width:100%;height:auto;overflow:visible}
+.hb-pic-k{display:block;margin:0 0 2px;font-size:.765rem;font-weight:600;line-height:1.3;color:var(--text-dim)}
+.hb-pic figcaption,.hl-pic figcaption{margin:4px 0 0;font-size:.765rem;line-height:1.4;color:var(--text-dim)}
+.pic-save{display:inline-flex;align-items:center;min-height:44px;padding:0;margin:0;border:0;background:none;font:inherit;font-size:.824rem;font-weight:700;color:var(--gold);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+[data-theme="light"] .pic-save{color:#86600f}
+.pic-save:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.pic-say{font-size:.765rem;color:var(--text-dim);margin-left:.5rem}
+/* the sitewide sponsor line is the first thing on every width of the home page (loader.js puts it here) */
+@media (min-width:521px){.sw-home{display:none}}
+#hero-band .af .hb-pic:not([hidden]){min-height:9.8rem}
+#hero-band .af .hl-pic:not([hidden]){min-height:7.4rem}
+.hl-pic[hidden]{display:none}
+#hero-band.hb-nozip .af>.af-wx{display:none}

@@ -194,6 +194,8 @@ function requestGeo() {
       // 2026-10-19: said only after a tap that failed, never on a fresh visit.
       var h = document.querySelector('#bids-noloc .hn-h');
       if (h) h.textContent = 'Your location did not come through.';
+      var zm = document.getElementById('hb-zip-msg');
+      if (zm) zm.textContent = 'Your location did not come through. Type your ZIP.';
     },
     { timeout: 8000, maximumAge: 0 }
   );
