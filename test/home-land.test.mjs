@@ -6,9 +6,9 @@
  *   - the menu: "Farmland sales" first under Money & Land > Land (Nov 4), in the live menu (desktop panel and
  *     phone drawer), the no-script header, the menu table and the header baked into the home page;
  *   - site search: the words people type land on /land-sales/;
- *   - in Chromium: at 1280 px the block is on the first screen, in the room under Sell grain and My field; at 390 px
- *     it sits right under My field with no gap, before the futures (the three jobs keep the phone's first screen,
- * The owner Nov 2, test/home-jobs.test.mjs); it shows the fixture's sale, never a name, and moves nothing; with no
+ *   - in Chromium: the block sits below the Daily and the weather and before the links (Nov 11, answers first:
+ *     the ZIP box, the futures and Today and this week keep the first screen); it shows the fixture's sale, never a
+ *     name, and moves nothing; with no
  *     data file the plain words and the link stay.
  *     Every outside host is aborted and service workers are blocked (build rule 58).
  *
@@ -69,7 +69,7 @@ test("home-land.js: whose sale, what it says, and never a name", () => {
   const w = H.words(FIX, il);
   assert.equal(w.v, "$21,000 an acre");
   assert.equal(w.k, "Top bare-land price in Illinois, 30 days to Oct 30");  // pin-ok: inline fixture (FIX or lead()) read on the fixed clock NOW, not data/ or today
-  assert.equal(w.s, "120 acres, Madison County, recorded Oct 30, 2026. 81% above the county\u2019s middle, $11,584 (48 sales in 24 months). Illinois Department of Revenue records.");  // pin-ok: inline fixture (FIX or lead()) read on the fixed clock NOW, not data/ or today
+  assert.equal(w.s, "120 acres, Madison County, recorded Oct 30, 2026. 81% above the county median, $11,584 (48 sales in 24 months). Illinois Department of Revenue records.");  // pin-ok: inline fixture (FIX or lead()) read on the fixed clock NOW, not data/ or today
   assert.equal(w.href, "/land-sales/illinois/madison-county#s-0a1b2c3d4e");
   assert.equal(w.all, "Farmland sales by county in IL, IN, NJ, VT, WI");
   // no saved state: the newest lead of any covered state, labeled with its state
@@ -85,7 +85,7 @@ test("home-land.js: whose sale, what it says, and never a name", () => {
   assert.equal(H.pick(FIX, "VT", NOW).st, "VT");
   // under the county middle reads "under"; sale date for Indiana-style records
   const low = { states: ["WI"], lead: { WI: lead("WI", { pct: -12, basis: "sale date" }) } };
-  assert.match(H.words(low, H.pick(low, "WI", NOW)).s, /, sold Sep 4, 2026\. 12% under the county\u2019s middle/);  // pin-ok: inline fixture (FIX or lead()) read on the fixed clock NOW, not data/ or today
+  assert.match(H.words(low, H.pick(low, "WI", NOW)).s, /, sold Sep 4, 2026\. 12% under the county median/);  // pin-ok: inline fixture (FIX or lead()) read on the fixed clock NOW, not data/ or today
   for (const p of [il, any, ia]) assert.ok(!JSON.stringify(H.words(FIX, p)).includes(NAME), "no name in any line");
   // withheld: no file, no leads, a malformed lead, a link that is not a land sales page
   assert.equal(H.pick(null, "IL", NOW), null);
@@ -123,11 +123,11 @@ test("the menu: Farmland sales first under Money & Land > Land, in the live menu
 
 test("the home page: the block, its script and the hub's email anchor", () => {
   const home = read("index.html");
-  const jobs = home.slice(home.indexOf('<div class="jobs" id="hb-jobs">'), home.indexOf('<h3 class="hb-futh">'));
-  assert.match(jobs, /id="job-field-h">My field<[^]*<\/nav>\s*<!--[^]*?-->\s*<div class="job job-land" id="job-land" role="group" aria-labelledby="job-land-h">\s*<h3 class="job-h" id="job-land-h">Farmland sales<\/h3>/, "right after My field");
+  const jobs = home.slice(home.indexOf('<div class="af" id="hb-jobs">'), home.indexOf('id="hb-ask"'));
+  assert.match(jobs, /id="hb-wx"[^]*<\/div>\s*<!--[^]*?-->\s*<div class="job job-land" id="job-land" role="group" aria-labelledby="job-land-h">\s*<h3 class="job-h" id="job-land-h">Farmland sales<\/h3>[^]*<div class="jobs af-links">[^]*id="job-sell-h"/, "below the weather, before the links");
   assert.match(jobs, /href="\/land-sales\/"[^>]*><span class="job-l" id="hl-all-l">Farmland sales by county in IL, IN, NJ, VT, WI<\/span>/);
   assert.match(jobs, /href="\/land-sales\/#email"/);
-  assert.match(home, /<script src="\/components\/home-land\.js\?v=2" defer><\/script>/);
+  assert.match(home, /<script src="\/components\/home-land\.js\?v=3" defer><\/script>/);
   assert.match(read("scripts/build_land_sales.py"), /<div class="ls-ask" id="email"><div data-land-alert data-source="page:land-sales">/);
 });
 
@@ -205,8 +205,9 @@ async function look(browser, port, width, place) {
   const r = await p.evaluate(() => {
     const b = document.getElementById("job-land"), v = document.getElementById("hl-v"), all = document.getElementById("hl-all");
     const box = (e) => { const x = e.getBoundingClientRect(); return { top: x.top, bottom: x.bottom, h: x.height }; };
-    const field = document.querySelector(".job-field").getBoundingClientRect(), fut = document.querySelector(".hb-futh").getBoundingClientRect();
-    return { field: { top: field.top, bottom: field.bottom }, futTop: fut.top, block: box(b), v: v.textContent, k: document.getElementById("hl-k").textContent, s: document.getElementById("hl-s").textContent,
+    const daily = document.querySelector(".af-daily").getBoundingClientRect(), sell = document.getElementById("job-sell-h").getBoundingClientRect();
+    const hp = document.getElementById("hl-pic");
+    return { pic: hp ? hp.getBoundingClientRect().height : 0, picHidden: !hp || hp.hidden, daily: { top: daily.top, bottom: daily.bottom }, sellTop: sell.top, block: box(b), v: v.textContent, k: document.getElementById("hl-k").textContent, s: document.getElementById("hl-s").textContent,
       href: document.getElementById("hl-sale").getAttribute("href"), all: all.textContent.trim(), allHref: all.getAttribute("href"),
       text: b.textContent, shift: window.__shift, moved: window.__moved, vh: innerHeight, why: !!document.getElementById("hl-why"), terms: (document.getElementById("terms-method") || {}).textContent || "",
       cut: ["hl-k", "hl-v", "hl-s"].filter((id) => { const e = document.getElementById(id); return e.scrollHeight > e.clientHeight + 1 || e.scrollWidth > e.clientWidth + 1; }) };
@@ -215,19 +216,14 @@ async function look(browser, port, width, place) {
   return r;
 }
 
-test("in Chromium: first screen at 1280, right under My field at 390; the fixture's sale, no name, no shift; no data keeps the words", { skip, timeout: 180000 }, async () => {
+test("in Chromium: below the weather and before the links; the fixture's sale, no name, no shift; no data keeps the words", { skip, timeout: 180000 }, async () => {
   const browser = await chromium.launch({ executablePath: CHROME });
   const withData = await serve(JSON.stringify(FIX)), without = await serve(null);
   try {
     for (const width of [390, 1280]) {
       const il = await look(browser, withData.address().port, width, { zip: "61761", state: "IL", county: "McLean", label: "Normal, IL", lat: 40.51, lon: -88.99 });
-      if (width >= 1000) {
-        assert.ok(il.block.bottom < il.vh, `${width}: the whole Farmland sales block is on the first screen (bottom ${il.block.bottom})`);
-        assert.ok(il.block.top >= il.field.bottom - 1 && il.block.top - il.field.bottom < 24, `${width}: under Sell grain and My field`);
-      } else {
-        assert.ok(il.block.top >= il.field.bottom - 1 && il.block.top - il.field.bottom < 24, `${width}: right under My field, no gap (${il.field.bottom} to ${il.block.top})`);
-      }
-      assert.ok(il.block.bottom <= il.futTop, `${width}: before the futures`);
+      assert.ok(il.block.top >= il.daily.bottom - 1, `${width}: below the Daily and the weather (${il.daily.bottom} to ${il.block.top})`);
+      assert.ok(il.block.bottom <= il.sellTop, `${width}: before the links`);
       assert.equal(il.v, "$21,000 an acre", `${width}: the Illinois reader sees the Illinois sale`);
       assert.equal(il.href, "/land-sales/illinois/madison-county#s-0a1b2c3d4e");
       // Nov 8: the rule is not at the top; one plain sentence in the closed Sources and terms fold
@@ -236,7 +232,6 @@ test("in Chromium: first screen at 1280, right under My field at 390; the fixtur
       assert.ok(!il.text.includes(NAME), `${width}: no name in the block`);
       assert.equal(il.shift, 0, `${width}: the block moves nothing`);
       const none = await look(browser, withData.address().port, width, null);
-      if (width >= 1000) assert.ok(none.block.bottom < none.vh, `${width}: no saved place, still on the first screen`);
       assert.match(none.k, /Illinois/);
       const gone = await look(browser, without.address().port, width, null);
       assert.equal(gone.v, "What farmland sold for near you", `${width}: no data, the plain words stay`);
@@ -245,7 +240,9 @@ test("in Chromium: first screen at 1280, right under My field at 390; the fixtur
       assert.equal(gone.all, "Farmland sales by county in IL, IN, NJ, VT, WI");
       assert.equal(gone.why, false);
       assert.equal(gone.shift, 0);
-      assert.ok(Math.abs(gone.block.h - il.block.h) < 1, `${width}: the same height with and without data (${gone.block.h} vs ${il.block.h})`);
+      // Nov 11: the picture's slot is held from first paint, so the sale lands without a shift; with no file the slot is let go
+      assert.ok(il.block.h >= gone.block.h && il.block.h - gone.block.h <= il.pic + 12, `${width}: with data the block is taller only by the picture's slot (${gone.block.h} vs ${il.block.h}, slot ${il.pic})`);
+      assert.equal(gone.picHidden, true, `${width}: no data, no empty slot`);
     }
   } finally {
     await browser.close(); withData.close(); without.close();
@@ -274,7 +271,7 @@ test("in Chromium: the longest real words fit, nothing is cut, the height holds"
           assert.match(nc.s, /Oct 30, 2026/, `${st} ${width}: the date is in the line`);  // pin-ok: inline fixture (FIX or lead()) read on the fixed clock NOW, not data/ or today
           assert.deepEqual(nc.cut, [], `${st} ${width}: no line cut (${nc.k} | ${nc.s})`);
           const gone = await look(browser, without.address().port, width, { zip: "27601", state: "NC", county: "Wake", label: "Raleigh, NC", lat: 35.78, lon: -78.64 });
-          assert.ok(Math.abs(gone.block.h - nc.block.h) < 1, `${st} ${width}: the same height with and without the sale (${gone.block.h} vs ${nc.block.h})`);
+          assert.ok(nc.block.h >= gone.block.h && nc.block.h - gone.block.h <= nc.pic + 12, `${st} ${width}: taller only by the picture's slot (${gone.block.h} vs ${nc.block.h}, slot ${nc.pic})`);
           assert.equal(nc.shift, 0);
         }
       } finally { srv.close(); }
@@ -290,10 +287,10 @@ test("in Chromium: the longest real words fit, nothing is cut, the height holds"
    until the element after the block has opened. */
 test("in Chromium: a paint between two parts of the page moves nothing in the block", { skip, timeout: 240000 }, async () => {
   const home = read("index.html");
-  assert.match(home.slice(0, home.indexOf("</head>")), /<link rel="expect" href="#hb-plain" blocking="render">/, "the first paint waits for the block");
-  const land = home.indexOf('id="job-land"'), after = home.indexOf('id="hb-plain"');
+  assert.match(home.slice(0, home.indexOf("</head>")), /<link rel="expect" href="#hb-ask" blocking="render">/, "the first paint waits for the block");
+  const land = home.indexOf('id="job-land"'), after = home.indexOf('id="hb-ask"');
   assert.ok(land > 0 && after > home.indexOf("</ul>", land), "the expected element comes after the whole block");
-  const cuts = ['<span class="hl-k"', '<span class="hl-v"', '<span class="hl-s"', "</a>\n        <ul", 'id="hl-all-l">', 'id="hl-ask-l">', "</ul>"]
+  const cuts = ['<span class="hl-k"', '<span class="hl-v"', '<span class="hl-s"', "</figure>\n        <ul", 'id="hl-all-l">', 'id="hl-ask-l">', "</ul>"]
     .map((m) => { const i = home.indexOf(m, land); assert.ok(i > land && i < after, "cut point " + m); return Buffer.byteLength(home.slice(0, i + m.length)); });
   const browser = await chromium.launch({ executablePath: CHROME });
   try {

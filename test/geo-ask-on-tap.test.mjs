@@ -118,7 +118,7 @@ for (const [path, btn] of PAGES) {
   });
 }
 
-test("/: the bid card offers Use my location at once; 'did not come through' only after a failed tap", { skip }, async () => {
+test("/: the ZIP box offers Use my location at once; 'did not come through' only after a failed tap", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -126,14 +126,16 @@ test("/: the bid card offers Use my location at once; 'did not come through' onl
     await pg.waitForSelector("#bids-noloc", { timeout: 2000 });
     assert.equal(await pg.textContent("#bids-noloc .hn-h"), "See the bids near you.");
     assert.ok(!/did not come through/.test(await pg.textContent("#bids-list-area")), "not on a fresh visit");
-    assert.equal(await pg.textContent("#bids-noloc .hn-loc"), "Use my location");
+    assert.ok(!/did not come through/.test(await pg.textContent("#hb-zip-msg")), "nor in the ZIP box");
+    assert.equal(await pg.textContent("#btn-allow-loc"), "Use my location");
+    assert.equal(await pg.$$eval("#bids-noloc .hn-loc", (x) => x.length), 0, "one Use my location on the page, in the ZIP box");
     assert.equal(await pg.$eval("#bids-geo-bar", (e) => getComputedStyle(e).display), "none", "no 'Detecting your location' line");
     await pg.waitForTimeout(1000);
     assert.equal(await pg.evaluate(() => window.__geo), 0);
-    await pg.click("#bids-noloc .hn-loc");
-    await pg.waitForFunction(() => /did not come through/.test(document.querySelector("#bids-noloc .hn-h").textContent), null, { timeout: 3000 });
+    await pg.click("#btn-allow-loc");
+    await pg.waitForFunction(() => /did not come through/.test(document.getElementById("hb-zip-msg").textContent), null, { timeout: 3000 });
     assert.equal(await pg.evaluate(() => window.__geo), 1);
-    assert.equal(await pg.$eval("#bids-zip-row", (e) => e.style.display), "none", "one ZIP box: the hero band's");
+    assert.equal(await pg.$eval("#bids-zip-row", (e) => e.style.display), "none", "one ZIP box: the first card's");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });

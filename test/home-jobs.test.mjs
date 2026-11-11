@@ -29,25 +29,26 @@ const HTML = read("index.html");
 const band = HTML.slice(HTML.indexOf('id="hero-band"'), HTML.indexOf("</section>", HTML.indexOf('id="hero-band"')));
 const mainHtml = HTML.slice(HTML.indexOf('<main id="main"'), HTML.indexOf("<!-- Static footer"));
 
-test("the hero opens with the three jobs, in order, each with its destinations", () => {
-  const near = band.indexOf('id="job-near-h">Today near me<'), sell = band.indexOf('id="job-sell-h">Sell grain<'), field = band.indexOf('id="job-field-h">My field<');
-  assert.ok(near > 0 && near < sell && sell < field, "Today near me, Sell grain, My field");
-  const nearCard = band.slice(near, sell), sellCard = band.slice(sell, field), fieldCard = band.slice(field, band.indexOf("</nav>", field));
-  for (const id of ["hb-place", "hb-zip-form", "hb-zip", "hb-corn", "hb-soy", "hb-wx", "job-daily-t"]) assert.ok(nearCard.includes(`id="${id}"`), `Today near me holds #${id}`);
+test("the hero answers first (Nov 11): the ZIP card, then futures, then the links Sell grain and My field, each with its destinations", () => {
+  const near = band.indexOf('id="job-near-h">Your cash bids<'), sell = band.indexOf('id="job-sell-h">Sell grain<'), field = band.indexOf('id="job-field-h">My field<');
+  assert.ok(near > 0 && near < band.indexOf('id="hb-fc"') && band.indexOf('id="hb-fc"') < sell && sell < field, "the ZIP card, the futures, Sell grain, My field");
+  const nearCard = band.slice(near, band.indexOf('<h3 class="hb-futh">')), sellCard = band.slice(sell, field), fieldCard = band.slice(field, band.indexOf("</nav>", field));
+  for (const id of ["hb-place", "hb-zip-form", "hb-zip", "hb-corn", "hb-soy"]) assert.ok(nearCard.includes(`id="${id}"`), `the ZIP card holds #${id}`);
+  for (const id of ["job-daily-t", "hb-wx"]) assert.ok(band.indexOf(`id="${id}"`) > band.indexOf('id="hap"') && band.indexOf(`id="${id}"`) < sell, `#${id} follows Today and this week, before the links`);
   for (const h of ["/cash-bids", "/basis", "/store-or-sell"]) assert.ok(sellCard.includes(`href="${h}"`), `Sell grain links ${h}`);
   for (const h of ["/field-scout", "/fast-facts"]) assert.ok(fieldCard.includes(`href="${h}"`), `My field links ${h}`);
-  assert.ok(nearCard.includes('href="#daily-hero"'), "the Daily line goes to the briefing on this page");
+  assert.ok(band.includes('href="#daily-hero"'), "the Daily line goes to the briefing on this page");
 });
 
-test("the futures stay baked in the hero, under the jobs; signup band and Rain Print rule kept", () => {
-  const jobsEnd = band.indexOf('<h3 class="hb-futh">Futures</h3>');
-  assert.ok(jobsEnd > band.indexOf('id="job-field-h"'), "the futures come after the three jobs");
+test("the futures stay baked in the hero, right under the ZIP card; signup band and Rain Print rule kept", () => {
+  const futEnd = band.indexOf('<h3 class="hb-futh">Futures</h3>');
+  assert.ok(futEnd > band.indexOf('id="job-near-h"') && futEnd < band.indexOf('id="job-sell-h"'), "the futures come after the ZIP card and before the links");
   for (const t of ["fc", "fs"]) {
     const at = band.indexOf(`id="hb-${t}"`);
-    assert.ok(at > jobsEnd, `#hb-${t} sits under the jobs`);
+    assert.ok(at > futEnd, `#hb-${t} sits under the Futures heading`);
     assert.match(band, new RegExp(`id="hb-${t}-v">${SB}<!--SEED:hp:${t}-->`), `#hb-${t} is still baked`);
   }
-  assert.match(band, /id="hb-ask" data-signup-ask=/, "the hero email ask stays");
+  assert.match(HTML, /id="hb-ask" data-signup-ask=/, "the hero email ask stays");
   for (const id of ["signup-compact", "signup-full"]) assert.ok(HTML.includes(`id="${id}"`), `#${id} stays`);
   // round 3 (Nov 2): the Rain Print card moved up from under the prices into "Worth a look", under the jobs
   const strip = HTML.indexOf('<section class="wl" id="wl"'), early = HTML.indexOf("<div data-rp-card-early hidden></div>");
@@ -100,7 +101,7 @@ function serve() {
 
 const LOC = JSON.stringify({ zip: "54728", lat: 45.31, lon: -91.65, label: "Chetek, WI", state: "WI", county: "Barron", ts: Date.now() });
 
-test("browser: the three jobs are the first screen at 390 and 1280, with and without a ZIP", { skip, timeout: 180000 }, async () => {
+test("browser: the ZIP card and the futures are the first screen at 390 and 1280, with and without a ZIP; the links follow", { skip, timeout: 180000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -115,12 +116,13 @@ test("browser: the three jobs are the first screen at 390 and 1280, with and wit
       const r = await pg.evaluate(() => {
         const box = (s) => { const e = document.querySelector(s); if (!e) return null; const b = e.getBoundingClientRect(); return { top: b.top + scrollY, bottom: b.bottom + scrollY, h: b.height }; };
         return { near: box("#job-near-h"), sell: box("#job-sell-h"), field: box("#job-field-h"), zip: box("#hb-zip"),
-          jobs: box("#hb-jobs"), fc: box("#hb-fc"), vh: innerHeight, ff: document.getElementById("job-ff").textContent,
+          jobs: box("#hb-jobs"), fc: box("#hb-fc"), fs: box("#hb-fs"), vh: innerHeight, ff: document.getElementById("job-ff").textContent,
           zipIn: !!document.querySelector(".job-near #hb-zip"), hs: document.documentElement.scrollWidth - document.documentElement.clientWidth };
       });
-      for (const k of ["near", "sell", "field"]) assert.ok(r[k] && r[k].h > 0 && r[k].bottom <= r.vh, `${tag}: the ${k} job heading is on the first screen (${r[k] && r[k].bottom} of ${r.vh})`);
-      if (!zip) assert.ok(r.zip && r.zip.h > 0 && r.zip.bottom <= r.vh && r.zipIn, `${tag}: the ZIP box shows in Today near me on the first screen`);
-      assert.ok(r.fc.top >= r.jobs.bottom, `${tag}: the futures sit under the jobs`);
+      assert.ok(r.near && r.near.h > 0 && r.near.bottom <= r.vh, `${tag}: the ZIP card's heading is on the first screen (${r.near && r.near.bottom} of ${r.vh})`);
+      if (!zip) assert.ok(r.zip && r.zip.h > 0 && r.zip.bottom <= r.vh && r.zipIn, `${tag}: the ZIP box shows in the first card on the first screen`);
+      assert.ok(r.fc.top >= r.near.bottom && r.fc.top < r.vh && r.fs.top < r.vh, `${tag}: both futures prices sit right under the ZIP card, on the first screen (${r.fc.top} of ${r.vh})`);
+      assert.ok(r.sell.top > r.fc.bottom && r.field.top > r.sell.top, `${tag}: Sell grain and My field come after the answers`);
       assert.equal(r.ff, zip ? "Fast Facts for Barron County" : "Fast Facts for your county", `${tag}: Fast Facts names the saved county`);
       assert.ok(r.hs <= 0, `${tag}: no sideways scroll (${r.hs}px)`);
       assert.deepEqual(errs, [], `${tag}: no page errors`);
@@ -223,7 +225,7 @@ test("browser: the forecast cell holds its height while loading and says so in o
   } finally { await browser.close(); srv.close(); }
 });
 
-test("browser: tight on a phone; at 390x844 the first screen holds the ZIP line, both bids, the forecast, the Daily and Sell grain", { skip, timeout: 120000 }, async () => {
+test("browser: tight on a phone; at 390x844 the first screen holds the ZIP line, both bids and both futures prices, then the forecast and the Daily follow", { skip, timeout: 120000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -232,16 +234,19 @@ test("browser: tight on a phone; at 390x844 the first screen holds the ZIP line,
     await pg.waitForFunction(() => document.getElementById("hb-wx").dataset.state === "ok", null, { timeout: 15000 });
     const r = await pg.evaluate(() => {
       const b = (s) => { const e = document.querySelector(s); const x = e.getBoundingClientRect(); return { top: x.top, bottom: x.bottom, left: x.left, right: x.right, h: x.height }; };
-      const boxed = (e) => { const c = getComputedStyle(e); return (parseFloat(c.borderRadius) > 0) || (c.backgroundColor !== "rgba(0, 0, 0, 0)" && c.backgroundColor !== "transparent") || ["Left", "Right", "Bottom"].some((k) => parseFloat(c["border" + k + "Width"]) > 0 && k !== "Left"); };
+      const boxed = (e) => { const c = getComputedStyle(e); return (parseFloat(c.borderRadius) > 0) || (c.backgroundColor !== "rgba(0, 0, 0, 0)" && c.backgroundColor !== "transparent"); };
       const band = document.getElementById("hero-band");
-      return { vh: innerHeight, vw: innerWidth, place: b("#hb-place"), corn: b("#hb-corn"), soy: b("#hb-soy"), wx: b("#hb-wx"), daily: b("#job-daily-t"), sell: b("#job-sell-h"),
-        boxes: [band, ...document.querySelectorAll("#hb-jobs > .job")].filter(boxed).map((e) => e.id || e.className),
-        rows: [...document.querySelectorAll("#hero-band .job-links a, #hero-band .job-daily")].map((a) => ({ h: a.getBoundingClientRect().height, chev: getComputedStyle(a, "::after").content !== "none", u: getComputedStyle(a.querySelector(".job-l, .job-daily-t")).textDecorationLine })) };
+      return { vh: innerHeight, vw: innerWidth, place: b("#hb-place"), corn: b("#hb-corn"), soy: b("#hb-soy"), fc: b("#hb-fc"), fs: b("#hb-fs"), wx: b("#hb-wx"), daily: b("#job-daily-t"), sell: b("#job-sell-h"),
+        card: b(".job-near"), wxCard: b(".af-wx"), bandBoxed: boxed(band),
+        nested: [...document.querySelectorAll("#hb-jobs > .job, #hb-jobs > .af-wx, #hb-jobs > .hb-grid--fut")].filter((c) => [...c.querySelectorAll("*")].some((e) => boxed(e) && !e.matches("input,button,.hb-skel,svg,svg *"))).map((e) => e.className),
+        rows: [...document.querySelectorAll("#hero-band .job-links a, #hero-band .job-daily")].map((a) => ({ h: a.getBoundingClientRect().height, chev: getComputedStyle(a, "::after").content !== "none", u: getComputedStyle(a.querySelector("span")).textDecorationLine })) };
     });
-    for (const k of ["place", "corn", "soy", "wx", "daily", "sell"]) assert.ok(r[k].h > 0 && r[k].bottom <= r.vh, `${k} is on the first screen (${Math.round(r[k].bottom)} of ${r.vh})`);
-    assert.deepEqual(r.boxes, [], "no box inside a box on a phone: the band and its jobs have no background, radius or frame");
-    assert.ok(r.place.left >= 11 && r.place.left <= 13 && r.vw - r.wx.right >= 11 && r.vw - r.wx.right <= 13, `one 12px gutter (${r.place.left}, ${r.vw - r.wx.right})`);
-    assert.ok(r.rows.length >= 6 && r.rows.every((x) => x.h >= 44 && x.chev && x.u === "none"), "the job links and the Daily are 44px rows with a chevron, not underlined");
+    for (const k of ["place", "corn", "soy", "fc", "fs"]) assert.ok(r[k].h > 0 && r[k].bottom <= r.vh, `${k} is on the first screen (${Math.round(r[k].bottom)} of ${r.vh})`);
+    assert.ok(r.fc.bottom <= r.wx.top && r.wx.top < r.daily.top + 400 && r.daily.bottom <= r.sell.top, "the forecast and the Daily come after the futures, before the links");
+    assert.equal(r.bandBoxed, false, "the band itself is not a box; each answer is one card");
+    assert.deepEqual(r.nested, [], "no box inside a card");
+    assert.ok(r.card.left >= 11 && r.card.left <= 13 && r.vw - r.wxCard.right >= 11 && r.vw - r.wxCard.right <= 13, `one 12px gutter (${r.card.left}, ${r.vw - r.wxCard.right})`);
+    assert.ok(r.rows.length >= 6 && r.rows.every((x) => x.h >= 44 && x.chev && x.u === "none"), "the links and the Daily are 44px rows with a chevron, not underlined");
     assert.deepEqual(errs, []);
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
@@ -274,7 +279,8 @@ test("Worth a look sits right under the jobs, before the Daily, with Rain Print 
   const g = /<a class="wl-c wl-g" href="\/rain-gauge"[^>]*><span class="wl-t">([^<]+)<\/span><span class="wl-x">([^<]+)<\/span><span class="wl-a">([^<]+) &rarr;<\/span><\/a>/.exec(strip);
   assert.ok(g, "the rain gauge card: title, one line, one action");
   assert.equal(g[1], "A rain gauge that keeps its own log", "the /rain-gauge headline");
-  assert.equal(g[2], RP.gauge_hook.line);
+  assert.equal(g[2], "A rain gauge that keeps a log for each field.", "the hook's line without the I (Nov 11): no I on public pages");
+  assert.ok(RP.gauge_hook.line.endsWith("a rain gauge that keeps a log for each field."), "still the same promise as the hook");
   assert.equal(g[3], RP.gauge_hook.link);
   assert.match(strip, /<a class="wl-c wl-n" id="wl-new" href="\/changelog"[^>]*><span class="wl-t">New on AGSIST<\/span><span class="wl-x" id="wl-new-x">[^<]+<\/span><span class="wl-a" id="wl-new-a">[^<]+<\/span><\/a>/, "baked: a plain What's new link until today's page lands");
   assert.match(HTML, /<script src="\/components\/home-worth\.js\?v=1" defer><\/script>/);

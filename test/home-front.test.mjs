@@ -102,23 +102,18 @@ test("Nov 10: ratings two or more weeks old are withheld, never headed Near USDA
   } finally { await browser.close(); srv.close(); }
 });
 
-/* With no ZIP and no location the "Today" cell in the first band sat as a gray
- * bar, then read "Weather didn't load", when the reason was no ZIP. It now
- * says "Set ZIP" and a tap opens the ZIP box. */
-test("homepage Today cell asks for a ZIP when there is no location, and a tap opens the ZIP box", { skip }, async () => {
+/* With no ZIP and no location the weather block is not on the page at all (Nov 11, answers first): the one ZIP box
+ * at the top is the only ask, and the weather appears once a ZIP is set. */
+test("homepage weather block is out of the way with no ZIP, and the one ZIP box is open", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const { pg } = await open(browser, port, "/", {}, 390);
-    // Headless Chromium leaves the location prompt hanging, as a reader who
-    // ignores it does: no ZIP saved, "Detecting location..." below.
-    await pg.waitForFunction(() => document.getElementById("hb-wx-v").textContent.trim() === "Set ZIP", null, { timeout: 15000 });
-    assert.equal((await pg.textContent("#hb-wx-v")).trim(), "Set ZIP");
-    assert.equal((await pg.textContent("#hb-wx-s")).trim(), "for weather and season totals");
-    await pg.waitForTimeout(10500);
-    assert.ok(!/didn/.test(await pg.textContent("#hb-wx-s")), "after 10 s it still says why, not didn't load");
-    await pg.click("#hb-wx");
-    assert.equal(await pg.$eval("#hb-zip-form", (f) => f.classList.contains("is-open")), true);
+    await pg.waitForTimeout(3000);
+    assert.equal(await pg.$eval("#hb-wx", (e) => { const b = e.getBoundingClientRect(); return b.width > 0 && b.height > 0; }), false, "no weather cell with no ZIP");
+    assert.equal(await pg.$eval("#hb-zip-form", (f) => getComputedStyle(f).display !== "none"), true, "the ZIP box is open");
+    await pg.waitForTimeout(9000);
+    assert.ok(!/didn/.test(await pg.textContent("#hb-wx-s")), "it still says why, not didn't load");
   } finally { await browser.close(); srv.close(); }
 });
 

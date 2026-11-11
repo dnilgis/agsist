@@ -137,8 +137,10 @@ test("no location: the bid card offers the ZIP box and a state basis, numbers as
     assert.equal(await pg.$$eval("#bids-noloc .hn-rows", (x) => x.length), 0, "no median, no price row");
     assert.match(await pg.textContent("#bids-noloc .hn-out"), /Not enough fresh Utah bids/);
 
-    await pg.click("#bids-noloc .hn-zip");
-    assert.equal(await pg.$eval("#hb-zip-form", (f) => f.classList.contains("is-open")), true, "Enter ZIP opens the one ZIP box");
+    // Nov 11: the page has one ZIP box (the first card) and one Use my location; this card keeps only the state picker
+    assert.equal(await pg.$$eval("#bids-noloc .hn-zip, #bids-noloc .hn-loc", (x) => x.length), 0, "no second Enter ZIP or Use my location");
+    assert.match(await pg.textContent("#bids-noloc .hn-p"), /ZIP at the top of the page/);
+    assert.equal(await pg.$eval("#hb-zip-form", (f) => getComputedStyle(f).display !== "none"), true, "the one ZIP box is open");
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });

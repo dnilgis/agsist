@@ -2644,7 +2644,6 @@ html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--c
 /* weather: once a ZIP is set */
 #hero-band .af-wx{display:grid}
 #hero-band .af-wx .hb-cell{border-top:0;padding:4px 0}
-#hero-band .af-wx #hb-wx{min-height:0}
 /* the farmland sale: the price, one short line, one picture */
 #hero-band .af>.job-land{padding:8px 14px 6px}
 #hero-band .af .hl-k{min-height:0;-webkit-line-clamp:2}
@@ -2653,7 +2652,8 @@ html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--c
 /* the small charts */
 .hb-pic-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px}
 .hb-pic-c{min-width:0}
-.hb-pic-c svg,.hl-pic svg{display:block;width:100%;height:auto;overflow:visible}
+.hb-pic-c svg{display:block;width:100%;height:72px;overflow:visible}
+.hl-pic svg{display:block;width:100%;max-width:420px;height:auto;overflow:visible}
 .hb-pic-k{display:block;margin:0 0 2px;font-size:.765rem;font-weight:600;line-height:1.3;color:var(--text-dim)}
 .hb-pic figcaption,.hl-pic figcaption{margin:4px 0 0;font-size:.765rem;line-height:1.4;color:var(--text-dim)}
 .pic-save{display:inline-flex;align-items:center;min-height:44px;padding:0;margin:0;border:0;background:none;font:inherit;font-size:.824rem;font-weight:700;color:var(--gold);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
@@ -2662,7 +2662,7 @@ html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--c
 .pic-say{font-size:.765rem;color:var(--text-dim);margin-left:.5rem}
 /* the sitewide sponsor line is the first thing on every width of the home page (loader.js puts it here) */
 @media (min-width:521px){.sw-home{display:none}}
-#hero-band .af .hb-pic:not([hidden]){min-height:9.8rem}
-#hero-band .af .hl-pic:not([hidden]){min-height:7.4rem}
+#hero-band .af .hb-pic:not([hidden]){min-height:11rem}
+#hero-band .af .hl-pic:not([hidden]){min-height:8.8rem}
 .hl-pic[hidden]{display:none}
 #hero-band.hb-nozip .af>.af-wx{display:none}

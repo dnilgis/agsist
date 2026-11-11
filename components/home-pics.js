@@ -49,10 +49,10 @@
       pts.push(x.toFixed(1) + ',' + y.toFixed(1));
     }
     var last = pts[pts.length - 1].split(',');
-    return '<svg xmlns="' + NS + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(label) + '">'
-      + '<line x1="0" y1="' + (H - 1) + '" x2="' + W + '" y2="' + (H - 1) + '" style="stroke:' + pal.rule + '" stroke-width="1"/>'
-      + '<polyline points="' + pts.join(' ') + '" fill="none" style="stroke:' + pal.ink + '" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>'
-      + '<circle cx="' + last[0] + '" cy="' + last[1] + '" r="4" style="fill:' + pal.gold + '"/></svg>';
+    return '<svg xmlns="' + NS + '" viewBox="0 0 ' + W + ' ' + H + '" preserveAspectRatio="none" role="img" aria-label="' + esc(label) + '">'
+      + '<line x1="0" y1="' + (H - 1) + '" x2="' + W + '" y2="' + (H - 1) + '" style="stroke:' + pal.rule + '" stroke-width="1" vector-effect="non-scaling-stroke"/>'
+      + '<polyline points="' + pts.join(' ') + '" fill="none" style="stroke:' + pal.ink + '" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>'
+      + '<polyline points="' + last[0] + ',' + last[1] + ' ' + last[0] + ',' + last[1] + '" fill="none" style="stroke:' + pal.gold + '" stroke-width="8" stroke-linecap="round" vector-effect="non-scaling-stroke"/></svg>';
   }
   function futLabel(name, s) { return name + ', last ' + WEEKS + ' weeks: ' + money(s.lo, 2) + ' to ' + money(s.hi, 2); }
 
