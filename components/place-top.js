@@ -3,7 +3,7 @@
    and the rows never disagree. Each card is null when its numbers are missing: the card is left out,
    never shown empty. Order: the best corn bid, the state spot, rain, cash rent, farmland sales.
 
-     node --test test/place.test.mjs */
+     node --test test/place-top.test.mjs */
 (function (root, make) {
   if (typeof module === 'object' && module.exports) module.exports = make(require('./place.js'));
   else root.AgPlaceTop = make(root.AgPlace);
