@@ -262,8 +262,8 @@
       name: 'El Niño with a warm PDO, or La Niña with a cold PDO (the two pushing the same way)' },
     /* Seasonal forecast models, November starts. Each tilts only the intervals
        and places where its own past forecasts tracked the index (SKILL), with
-       the skill worked out from earlier years only. Data: data/prf/seasonal-fc.json
-       (scripts/fetch_seasonal_models.py); NOAA's CFSv2 and Canada's CanSIPS
+       the skill worked out from earlier years only. Data: the forecast file the
+       backtest reads (not published); NOAA's CFSv2 and Canada's CanSIPS
        come from the NMME archive, which reaches back further than Copernicus's
        copies of the same two models, so they are counted once. */
     { id: 'fc-cfsv2', family: 'forecast', needs: ['seasonal'], model: 'cfsv2', name: 'NOAA’s CFSv2 seasonal forecast, made in November, where it has shown skill' },
@@ -341,14 +341,14 @@
     if (p.family === 'forecast') {
       var sea = climate && climate.seasonal, ms = sea && sea.models;
       var have = ms ? (p.model === '*' ? FORECAST_MODELS.filter(function (m) { return ms[m]; }).length >= SKILL.minModels : !!ms[p.model]) : false;
-      if (!have) return 'data/prf/seasonal-fc.json has no ' + (p.model === '*' ? 'two models' : p.model) + ' forecasts yet';
+      if (!have) return 'no ' + (p.model === '*' ? 'two models' : p.model) + ' forecasts in the data yet';
       if (!climate.seasonalSkill || !climate.seasonalSkill[id]) return 'no skill table for ' + id;
       return null;
     }
     var needs = p.needs || [];
     for (var i = 0; i < needs.length; i++) {
       var s = climate && climate.series && climate.series[needs[i]];
-      if (!s || !s.monthly || !Object.keys(s.monthly).length) return 'data/prf/climate-indices.json has no ' + needs[i].toUpperCase() + ' series';
+      if (!s || !s.monthly || !Object.keys(s.monthly).length) return 'no ' + needs[i].toUpperCase() + ' series in the data';
     }
     return null;
   }
@@ -424,7 +424,7 @@
   }
 
   /* ------------------------------------------------------------ seasonal forecast models */
-  /* data/prf/seasonal-fc.json, written by scripts/fetch_seasonal_models.py:
+  /* The forecast file the backtest reads (not published):
        { v, box_deg: 2, models: { <model>: { first, last, intervals: [..],
          v: { "<row>_<col>": "<two base-36 characters per year and interval>" } } } }
      Each value is the model's ensemble-mean precipitation over the two months
@@ -1101,7 +1101,7 @@
       if (!p || objective !== 'net') return;
       var why = predictorUnavailable(id, opts.climate);
       var tf = why ? null : tiltFor(G, id, policyYear, all, opts.climate);
-      if (!tf || tf.state == null) { tiltNotes.push(p.name + ': held up in the test, but this year’s reading is ' + (why ? 'missing (' + why + ')' : 'not known yet') + ', so it does not move the pick.'); return; }
+      if (!tf || tf.state == null) { tiltNotes.push(p.name + (why ? ': held up in the test, but this predictor’s data is not published, so it does not move the pick.' : ': held up in the test, but this year’s reading is not known yet, so it does not move the pick.')); return; }
       if (tf.opts.recency) tiltOpts.recency = tf.opts.recency;
       if (tf.opts.analogs) tiltOpts.analogs = tiltOpts.analogs.concat(tf.opts.analogs);
       tiltOn.push(id);
