@@ -1,6 +1,5 @@
 name: pr-body
-# Removes platform footer lines from a pull request body, then re-runs the guard job once its run ends
-# when the guard failed on the footer step.
+# Removes platform footer lines from a pull request body, then re-runs a guard that failed on them.
 
 on:
   pull_request:
