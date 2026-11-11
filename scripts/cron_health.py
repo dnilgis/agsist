@@ -794,6 +794,23 @@ def add_share_row(now, rows, late, prev, **kw):
     return rows, late
 
 
+def add_skip_row(now, rows, late, prev, repo="", token="", api="https://api.github.com", **kw):
+    """skip-only (scripts/skip_watch.py row()): scheduled workflows whose last runs all skipped or did no
+    work, checked once a day; not critical. Fail soft."""
+    rows, late = list(rows), list(late)
+    old = next((r for r in (prev or {}).get("workflows", []) if r.get("workflow") == "skip-only"), None)
+    try:
+        import skip_watch
+        r = skip_watch.row(now, old, repo, token, api, **kw)
+    except Exception as e:
+        r = {"workflow": "skip-only", "critical": False, "clock": "scheduled workflows that only skip",
+             "status": "unknown", "why": "check could not run: %s" % type(e).__name__}
+    rows.append(r)
+    if r.get("status") == "late":
+        late.append(r["workflow"])
+    return rows, late
+
+
 def folder_row(r, SB):
     """warn when a top-level folder passes FOLDER_WARN of its check_site_budget.py budget, over
     (red) past the budget itself (the site-budget check then fails every push)."""
@@ -916,6 +933,9 @@ def should_commit(prev, doc, now):
     share = lambda d: next((r.get("checked_at") for r in d.get("workflows", []) if r.get("workflow") == "agsist-data-images"), None)
     if share(doc) != share(prev):
         return True    # the day's share image check is kept, so it runs once a day
+    skip = lambda d: next((r.get("checked_at") for r in d.get("workflows", []) if r.get("workflow") == "skip-only"), None)
+    if skip(doc) != skip(prev):
+        return True    # the day's skip-only pass is kept, so it runs once a day
     try:
         return now - parse_ts(prev["generated_at"]) >= timedelta(hours=RECOMMIT_HOURS)
     except Exception:
@@ -943,6 +963,7 @@ def main(argv):
     rows, late = add_pending_row(now, rows, late, prev, os.environ.get("PRIVATE_REPO_TOKEN", ""))
     rows, late = add_drift_row(now, rows, late, prev)
     rows, late = add_share_row(now, rows, late, prev)
+    rows, late = add_skip_row(now, rows, late, prev, repo, token, api)
     rows, late = add_prediction_row(now, rows, late)
     doc = build(now, rows, late)
     if checked_at:
@@ -1259,6 +1280,16 @@ def selftest():
     srows2, _ = add_share_row(T("2026-11-06 18:00"), [], [], prev_doc, root=sd, get=lambda u: (404, b""))
     check(srows2[0]["status"] == "ok", "an ok check from this morning is kept until tomorrow")
     shutil.rmtree(sd, ignore_errors=True)
+
+    # scheduled workflows that only skip (scripts/skip_watch.py row(); its own selftest covers the rules)
+    kr, kl = add_skip_row(T("2026-11-11 12:00"), [], [], None, "o/r", "", get=lambda u: (_ for _ in ()).throw(OSError("down")))
+    check([r["workflow"] for r in kr] == ["skip-only"] and kr[0]["status"] == "unknown" and not kr[0]["critical"] and kl == [],
+          "one skip-only row; an unreadable run list is unknown, not late (%s)" % kr[0].get("why"))
+    kept = {"workflows": [{"workflow": "skip-only", "critical": False, "status": "late", "idle": ["x.yml"],
+                           "checked_at": "2026-11-11T08:00:00Z", "why": "1 scheduled workflow only skipped"}]}
+    kr, kl = add_skip_row(T("2026-11-11 12:00"), [], [], kept, "o/r", "", get=lambda u: (_ for _ in ()).throw(AssertionError(u)))
+    check(kr[0]["idle"] == ["x.yml"] and kl == ["skip-only"], "the morning's pass is kept, still late, not critical")
+    check("skip-only" not in build(T("2026-11-11 12:00"), kr, kl)["late_critical"], "skip-only never makes the job red")
 
     # the watchers are watched
     names = [c[0] for c in CHECKS]

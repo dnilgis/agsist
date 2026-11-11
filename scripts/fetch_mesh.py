@@ -591,6 +591,17 @@ def selftest_hours():
     log("SELFTEST hours OK")
 
 
+# The page and the storm replay ask for today-partial.json on every load. When there is no rolling
+# estimate (no data yet today, or the finished day superseded it) the file holds this empty layer
+# instead of being deleted: a deleted file answers 404 to every reader until the next partial run.
+# No as_of, so readers treat it exactly as "no live layer"; constant, so it commits once, not hourly.
+EMPTY_PARTIAL = {"type": "FeatureCollection", "features": [], "meta": {"partial": True, "empty": True}}
+
+
+def write_empty_partial(path):
+    json.dump(EMPTY_PARTIAL, open(path, "w"), separators=(",", ":"))
+
+
 def run_partial():
     """Rolling 24-hour MESH as of right now: today's UTC directory fills all
     day, so its newest file IS the last-24h maximum at fetch time. Writes a
@@ -602,9 +613,8 @@ def run_partial():
     log("MESH partial (last 24h) as of", dt.strftime("%Y-%m-%d %H:%MZ"))
     fc = process_day(dt)
     if fc is None:
-        log("no partial data yet today — removing any stale partial")
-        if os.path.exists(out):
-            os.remove(out)
+        log("no partial data yet today — the live layer is left empty")
+        write_empty_partial(out)
         return
     # process_day() returns its header under "properties" (the dated-archive
     # contract). The page reads the PARTIAL's header as fc.meta.as_of, so the
@@ -640,10 +650,10 @@ def main():
         try:
             pd = json.load(open(stale)).get("meta", {}).get("date")
             if pd and pd <= dt.strftime("%Y-%m-%d"):
-                os.remove(stale)
-                log("removed superseded partial for", pd)
-        except (ValueError, KeyError):
-            os.remove(stale)
+                write_empty_partial(stale)
+                log("emptied superseded partial for", pd)
+        except (ValueError, KeyError, AttributeError):
+            write_empty_partial(stale)
     out = os.path.join(OUTDIR, dt.strftime("%Y-%m-%d") + ".json")
     log("MESH", dt.strftime("%Y-%m-%d"))
     fc = process_day(dt)

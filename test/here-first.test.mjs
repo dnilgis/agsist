@@ -12,6 +12,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs, { existsSync, readFileSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import http from "node:http";
 import vm from "node:vm";
@@ -186,9 +187,13 @@ test("elevators against their neighbors, on the network's real rows", () => {
 });
 
 test("the id joins live bids to basis history: match rate on real rows, never on a name", () => {
-  execFileSync("python3", [ROOT + "scripts/build_basis_join.py", "--check"], { stdio: "pipe" });
+  // data/ids is built on main (fetch_bids.yml), never in a pull request: the join is built into its own folder,
+  // so a pull request that changes the builder is tested on what the builder makes now
+  const out = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), "basis-join-"));
+  execFileSync("python3", [ROOT + "scripts/build_basis_join.py", "--out", out], { stdio: "pipe" });
   execFileSync("python3", [ROOT + "scripts/build_basis_join.py", "--selftest"], { stdio: "pipe" });
-  const idx = J("data/ids/basis-join/index.json");
+  const BJ = (f) => JSON.parse(fs.readFileSync(path.join(out, f), "utf8"));
+  const idx = BJ("index.json");
   assert.equal(idx.counts.joined + idx.counts.multi, idx.counts.with_history);
   // the fixture's places (217 real rows near the three test places)
   let withId = 0, joined = 0, multi = 0, nameAgrees = 0;
@@ -196,7 +201,7 @@ test("the id joins live bids to basis history: match rate on real rows, never on
   for (const p of IDX.places) {
     if (!p.elevId) continue;
     withId++;
-    const j = fs.existsSync(ROOT + "data/ids/basis-join/" + p.state + ".json") ? J("data/ids/basis-join/" + p.state + ".json") : { k: {}, multi: {} };
+    const j = fs.existsSync(path.join(out, p.state + ".json")) ? BJ(p.state + ".json") : { k: {}, multi: {} };
     if (j.multi[p.elevId]) multi++;
     const k = j.k[p.elevId];
     if (!k) continue;
@@ -208,6 +213,7 @@ test("the id joins live bids to basis history: match rate on real rows, never on
   assert.ok(joined / withId >= 0.8, `joined ${joined} of ${withId}`);
   assert.ok(nameAgrees / joined >= 0.95, `the joined key is the name key for ${nameAgrees} of ${joined}`);
   console.log(`# basis join on the fixture: ${withId} places with an id, ${joined} joined, ${multi} left out (two or more history names), name key agrees on ${nameAgrees}`);
+  fs.rmSync(out, { recursive: true, force: true });
 });
 
 test("its own history: real rows are too new to compare; the kinds on a hand-built row", () => {
