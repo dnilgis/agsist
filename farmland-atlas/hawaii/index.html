@@ -89,7 +89,8 @@ var t=document.getElementById('t'),b=t.tBodies[0],dir={};
     var ir=g('ix')!==null?x(g('ix')):c(g('i'),g('i')&&m(g('i')));
     var v=g('v')!==null?c(g('v'),m(g('v'))):(g('vs')!==null?c(g('vs'),m(g('vs'))+' *'):c(null));
     o.push([n,'<tr><td><a href="'+a.getAttribute('href')+'"></a></td>'+r+ir+v
-      +c(g('y'),g('y')&&(Math.round(g('y')*10)/10).toFixed(1))+c(g('c'),g('c')&&'$'+(+g('c')).toFixed(2))+c(g('d'),g('d')&&Math.round(g('d'))+'%')+'</tr>']);
+      +c(g('y'),g('y')&&(Math.round(g('y')*10)/10).toFixed(1))+c(g('c'),g('c')&&'$'+(+g('c')).toFixed(2))+c(g('d'),g('d')&&Math.round(g('d'))+'%')
+      +(0?(g('ph')!==null?'<td data-v=""></td><td data-v=""><small>sale prices well above farm value</small></td>':c(g('sp'),g('sp')&&m(g('sp'))+' <small>'+g('sn')+(g('sn')==='1'?' sale':' sales')+'</small>')+c(g('rp'),g('rp')&&g('rpt')+' <small>about '+g('yr')+' yrs</small>')):'')+'</tr>']);
   });
   o.sort(function(x,y){return x[0].toLowerCase()<y[0].toLowerCase()?-1:1;});
   var keep=b.innerHTML;b.innerHTML=o.map(function(x){return x[1];}).join('')+keep;
