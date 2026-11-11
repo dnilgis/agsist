@@ -3852,6 +3852,8 @@
       if (SAMPLE) setStatus(EMPTY_STATUS);
       else {
         ga('rain_print_draw', { style: ST.style, near: NEAR && ST.place === NEAR ? 1 : 0, year_kind: yearMode(ST.year, TODAY) || 'done' });
+        // the order under the print comes now, and stays through later redraws (its buttons wait while one runs)
+        NOW_READY = true; syncNow();
         syncYearAsk(my);
         // a phone: the keyboard goes once the print is drawn, so the town box doesn't hold the page (2026-10-15)
         if (phone() && doc.activeElement === $('rp-place')) try { $('rp-place').blur(); } catch (err) {}
@@ -4057,7 +4059,7 @@
      client_reference_id). A reader outside the US and Canada (AWAY, below)
      sees the digital file only, with where prints ship; so does a design
      prints can't go to yet (Canada, blockedPick). */
-  var NOW_SENT = false, AWAY = false, PRODUCTS_NOW = ['framed12x18', 'print12x18', 'digital'];
+  var NOW_SENT = false, NOW_READY = false, AWAY = false, PRODUCTS_NOW = ['framed12x18', 'print12x18', 'digital'];
   var NOW_LINE = { framed12x18: ['Framed, ready to hang, ', ', shipping included.'], print12x18: ['The print on 13 x 19 paper, ', ', shipping included.'],
     digital: ['The digital file, 12 x 18 in, ', ', by email.'] };
   var NOW_BTN = { framed12x18: 'Order it framed', print12x18: 'Order the print', digital: 'Order the digital file' };
@@ -4066,7 +4068,7 @@
   function nowMain() { return nowOnly() ? 'digital' : xmasPick(TODAY, OJ().j) || 'framed12x18'; }
   function nowOn() {
     var paidFor = typeof PAID_SAVED !== 'undefined' && PAID_SAVED && PAID_SAVED.code === encodeCode(ST);
-    return !!DATA && !SAMPLE && !BLOCKED && !SHOW_EX && !MAKER && !paidFor && !(typeof GIFT !== 'undefined' && GIFT && (GIFT.usable || GIFT.prepaid));
+    return NOW_READY && !!DATA && !SAMPLE && !BLOCKED && !SHOW_EX && !MAKER && !paidFor && !(typeof GIFT !== 'undefined' && GIFT && (GIFT.usable || GIFT.prepaid));
   }
   function syncNow() {
     var box = $('rp-now');
