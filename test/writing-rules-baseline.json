@@ -2,7 +2,7 @@
  "totals": {
   "long": 992,
   "instr": 55,
-  "terms": 1774,
+  "terms": 1746,
   "dash": 0
  },
  "files": {
@@ -333,7 +333,7 @@
   "rain.html": {
    "long": 16,
    "instr": 1,
-   "terms": 142
+   "terms": 114
   },
   "soybean-futures-prices.html": {
    "long": 8,

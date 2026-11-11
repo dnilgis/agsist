@@ -65,8 +65,9 @@ MAX_KB = 25
 # rain.html, a root page, holds three tabs since Nov 11, 2026 (radar, by county, drought); the 150 KB cap of
 # scripts/check_site_budget.py is for set pages, this is the hub's own line. Measured Nov 11, 2026: the committed
 # rain.html is 76.5 KB with the radar, county and drought tabs; the selftest's fixture hub is smaller (61.3 KB, fewer
-# states). The line sits just above the real page, so growth past it is a decision made in the commit that raises it
-HUB_KB = 80
+# states). The selftest builds the fixture, so this line caps the fixture hub, not the committed page; a rise is a decision
+# made in the commit that raises it
+HUB_KB = 65
 CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=8">'
 ORIGIN = "https://agsist.com"
 M3, ML = R.MONTHS, R.MONTHS_LONG
@@ -1277,7 +1278,7 @@ def records_html(recs):
     order = sorted(recs, key=lambda o: (o["first"], o["side"], o["county"]))
     def li(o):
         return (f'<li><a href="{e(o["url"])}">{e(o["county"])}, {e(o["state"])}</a>: {o["side"]} on record by {short_date(o["as_of"])}, '
-                f'of {o["years"]} years ({o["first"]} on). {inch(o["total"])} in., {o["pct"]}% of usual.</li>')
+                f'of {o["years"]} years ({o["first"]} on). {inch(o["total"])} in., {o["pct"]}% of normal.</li>')
     top, rest = order[:SHOW_RECORDS], order[SHOW_RECORDS:]
     more = (f'\n    <details class="rc-more"><summary>See all {len(order)} record counties</summary><ul class="rc-list">{"".join(li(o) for o in rest)}</ul></details>'
             if rest else "")
