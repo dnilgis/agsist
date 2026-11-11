@@ -1667,6 +1667,18 @@
       ageUnknown: !!best.fr.ageUnknown
     };
   }
+  function nearList(elevators){
+    var out = [];
+    (elevators || []).slice().sort(function(a,b){ return (a.distance == null ? 999 : a.distance) - (b.distance == null ? 999 : b.distance); }).forEach(function(e){
+      if(out.length >= 8) return;
+      ['corn','soybeans'].forEach(function(c){
+        if(out.length >= 8 || !(e.commodities[c] || []).length) return;
+        var t = null; try{ t = topEntry([e], c); }catch(x){ t = null; }
+        if(t){ t.crop = c; out.push(t); }
+      });
+    });
+    return out;
+  }
   function dispatchTop(detail){
     window.__agsistBidsTop = detail;
     try{ window.dispatchEvent(new CustomEvent('agsist:bids-top', { detail: detail })); }
@@ -1682,6 +1694,10 @@
     var tok = ++topSeq;
     function build(){
       var d = emptyTop(placeOf(ctx.label, ctx.zip), 'ok');
+      if (typeof ctx.count === 'number') d.count = ctx.count;
+      /* Nov 11, 2026: the home page's "Closest elevators" table: each of the nearest boards' own corn and soybean
+         bid, picked by the same rule as the top bids (topEntry on that one board), nearest first. */
+      try{ d.near = nearList(ctx.elevators); }catch(e){ d.near = []; }
       ['corn','soybeans','wheat'].forEach(function(c){ try{ d[c] = topEntry(ctx.elevators, c); }catch(e){ d[c] = null; } });
       dispatchTop(d);
     }
@@ -1804,7 +1820,8 @@
       + '<div class="bh-feed"></div>'
       + '</div>';
 
-    var alreadySignedUp = (typeof window.isSignedUp === 'function') && window.isSignedUp();
+    /* Nov 11, 2026: the home page has its own Daily card beside this list; no second ask here. */
+    var alreadySignedUp = ((typeof window.isSignedUp === 'function') && window.isSignedUp()) || !!document.getElementById('hp-daily');
     if(!alreadySignedUp){
       html += '<div style="margin-top:.5rem;padding:.5rem 0 0;border-top:1px solid var(--border);text-align:center">'
         + '<a href="#signup-compact" id="bids-cta-link" style="color:var(--gold);font-weight:600;font-size:.82rem;text-decoration:none">'
@@ -1882,6 +1899,7 @@
       }
     }
     lastCtx = ctx;
+    ctx.count = list.length;
     publishTop(ctx);
     var pl = placeOf(ctx.label, zip);
     announce(area, 'Cash bids loaded: ' + list.length + ' elevator' + (list.length === 1 ? '' : 's') + ' within ' + BIDS_RADIUS_MI + ' mi' + (pl ? ' of ' + pl : '') + ', ' + drawn.length + ' shown.');
