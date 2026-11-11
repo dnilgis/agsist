@@ -1423,6 +1423,7 @@ def hub_page(files, built, recs=None, context=None, mod=None):
 <p class="ptab-note" data-ptab-note hidden></p>
 {fold_part("drought.html")}  </section>
   </div>
+  <div data-next-root></div>
   <div class="rc">
     <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Rain: daily NOAA records through RCC-ACIS and NOAA radar with gauges (MRMS). Drought: the U.S. Drought Monitor (NDMC, USDA, NOAA).</p>
   </div>

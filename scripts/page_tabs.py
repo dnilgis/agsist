@@ -45,7 +45,12 @@ def css(ids):
             # phones: the site's 12px gutter sits on <main> (components/styles.css); a panel's own .main wrapper
             # (a whole page until Nov 11, 2026) adds none on top, as when it was the <main> itself
             "@media(max-width:480px){.ptab-bar{gap:.15rem;padding:0 .5rem}.ptab-bar a{padding:.3rem .55rem;font-size:.86rem}"
-            ".ptabs>.ptab>.main{padding-left:0!important;padding-right:0!important}}"
+            ".ptabs>.ptab>.main{padding-left:0!important;padding-right:0!important}"
+            # and the column wrappers styles.css pads as main's own children (main > .pg, ...) keep that gutter here
+            ".ptabs>.ptab>.main>:is(.ls-w,.prf,.rc,.rg,.sos,.pg,.le,.hb,.wrap,article),"
+            ".ptabs>.ptab>:is(.rc,article,.dm-page),.ptabs>.ptab>.fn-wrap>article{"
+            "padding-left:max(0px,calc(var(--gutter,12px) - (100vw - 100%) / 2))!important;"
+            "padding-right:max(0px,calc(var(--gutter,12px) - (100vw - 100%) / 2))!important}}"
             ".ptab{scroll-margin-top:4rem}main.ptab-main{padding:0;margin:0;max-width:none}.ptab-bar a:target{outline:0}"
             ".ptabs[data-on]>.ptab{display:none}"
             f"{shown}{{display:block}}"
