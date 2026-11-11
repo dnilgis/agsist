@@ -629,6 +629,7 @@ summary:focus-visible, .pc:focus-visible {
 :root{--sw-h:36px;--ss-h:204px}
 @media (max-width:700px){:root{--sw-h:54px}}
 body.no-sw{--sw-h:0px}
+@media (scripting:none){:root{--sw-h:0px}}
 #site-header{min-height:calc(74px + var(--sw-h))}
 @media (max-width:520px){#site-header{min-height:calc(62px + var(--sw-h));height:calc(62px + var(--sw-h));overflow:hidden}}
 .sw-line{display:flex;align-items:center;height:var(--sw-h);margin:0;padding:4px 16px;overflow:hidden}
