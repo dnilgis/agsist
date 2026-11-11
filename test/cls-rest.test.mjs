@@ -33,10 +33,11 @@ try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chrom
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
 test("static guards: the rooms are held in the files", () => {
-  const dm = rd("drought-monitor.html");
-  assert.match(dm, /\.dm-answer \{ min-height: 12\.8em; \}/);
-  assert.match(dm, /@media \(min-width: 642px\) \{ \.dm-answer \{ min-height: 6\.5em; \} \}/);
-  assert.match(dm, /\.dm-updated \{[^}]*min-width: min\(100%, 84ch\)/);
+  // /drought-monitor is the drought tab of /rain since Nov 11, 2026: its style is components/fold/drought.css, scoped to the tab
+  const dm = rd("components/fold/drought.css");
+  assert.match(dm, /#p-drought \.dm-answer\s*\{\s*min-height: 12\.8em;\s*\}/);
+  assert.match(dm, /@media \(min-width: 642px\)\s*\{\s*#p-drought \.dm-answer\s*\{\s*min-height: 6\.5em;\s*\}\s*\}/);
+  assert.match(dm, /#p-drought \.dm-updated\s*\{[^}]*min-width: min\(100%, 84ch\)/);
   const hm = rd("hail-map.html");
   assert.match(hm, /\.hm-now\{box-sizing:border-box;min-height:calc\(2px \+ 1\.3rem \+ 3em \+ \.55rem \+ 44px\)\}/);
   assert.match(hm, /-webkit-line-clamp:2;line-clamp:2;overflow:hidden;height:3em/);
@@ -52,7 +53,8 @@ test("static guards: the rooms are held in the files", () => {
   assert.match(milk, /html\.inter-late\{--font-body:'Inter Fallback'/);
 });
 
-const PAGES = ["/desk", "/tar-spot", "/drought-monitor", "/hail-map", "/milk-prices"];
+// /drought-monitor became a tab of /rain on Nov 11, 2026: its layout check is in test/weather-fold-nov11.test.mjs
+const PAGES = ["/desk", "/tar-spot", "/hail-map", "/milk-prices"];
 const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".svg": "image/svg+xml", ".woff2": "font/woff2" };
 
 async function measure(page, w, h, mobile, slowFont, opt = {}) {

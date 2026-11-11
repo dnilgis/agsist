@@ -1,0 +1,203 @@
+<!-- fold/drought.html: the drought tab of /rain, read by scripts/build_county_rain.py (was /drought-monitor until Nov 11, 2026) -->
+<style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-banknote" viewBox="0 0 24 24"><rect width="20" height="12" x="2" y="6" rx="2" />
+  <circle cx="12" cy="12" r="2" />
+  <path d="M6 12h.01M18 12h.01" /></symbol><symbol id="sp-calendar" viewBox="0 0 24 24"><path d="M8 2v4" />
+  <path d="M16 2v4" />
+  <rect width="18" height="18" x="3" y="4" rx="2" />
+  <path d="M3 10h18" /></symbol><symbol id="sp-chart-column" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16" />
+  <path d="M18 17V9" />
+  <path d="M13 17V5" />
+  <path d="M8 17v-3" /></symbol><symbol id="sp-chart-line" viewBox="0 0 24 24"><path d="M3 3v16a2 2 0 0 0 2 2h16" />
+  <path d="m19 9-5 5-4-4-3 3" /></symbol><symbol id="sp-droplet" viewBox="0 0 24 24"><path d="M12 22a7 7 0 0 0 7-7c0-2-1-3.9-3-5.5s-3.5-4-4-6.5c-.5 2.5-2 4.9-4 6.5C6 11.1 5 13 5 15a7 7 0 0 0 7 7z" /></symbol><symbol id="sp-folder" viewBox="0 0 24 24"><path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" /></symbol><symbol id="sp-globe" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" />
+  <path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20" />
+  <path d="M2 12h20" /></symbol><symbol id="sp-landmark" viewBox="0 0 24 24"><path d="M10 18v-7" />
+  <path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z" />
+  <path d="M14 18v-7" />
+  <path d="M18 18v-7" />
+  <path d="M3 22h18" />
+  <path d="M6 18v-7" /></symbol><symbol id="sp-leaf" viewBox="0 0 24 24"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z" />
+  <path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12" /></symbol><symbol id="sp-map" viewBox="0 0 24 24"><path d="M14.106 5.553a2 2 0 0 0 1.788 0l3.659-1.83A1 1 0 0 1 21 4.619v12.764a1 1 0 0 1-.553.894l-4.553 2.277a2 2 0 0 1-1.788 0l-4.212-2.106a2 2 0 0 0-1.788 0l-3.659 1.83A1 1 0 0 1 3 19.381V6.618a1 1 0 0 1 .553-.894l4.553-2.277a2 2 0 0 1 1.788 0z" />
+  <path d="M15 5.764v15" />
+  <path d="M9 3.236v15" /></symbol><symbol id="sp-map-pin" viewBox="0 0 24 24"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0" />
+  <circle cx="12" cy="10" r="3" /></symbol><symbol id="sp-sprout" viewBox="0 0 24 24"><path d="M14 9.536V7a4 4 0 0 1 4-4h1.5a.5.5 0 0 1 .5.5V5a4 4 0 0 1-4 4 4 4 0 0 0-4 4c0 2 1 3 1 5a5 5 0 0 1-1 3" />
+  <path d="M4 9a5 5 0 0 1 8 4 5 5 0 0 1-8-4" />
+  <path d="M5 21h14" /></symbol><symbol id="sp-wheat" viewBox="0 0 24 24"><path d="M2 22 16 8" />
+  <path d="M3.47 12.53 5 11l1.53 1.53a3.5 3.5 0 0 1 0 4.94L5 19l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M7.47 8.53 9 7l1.53 1.53a3.5 3.5 0 0 1 0 4.94L9 15l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M11.47 4.53 13 3l1.53 1.53a3.5 3.5 0 0 1 0 4.94L13 11l-1.53-1.53a3.5 3.5 0 0 1 0-4.94Z" />
+  <path d="M20 2h2v2a4 4 0 0 1-4 4h-2V6a4 4 0 0 1 4-4Z" />
+  <path d="M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+  <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
+  <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol></svg>
+<div class="dm-page">
+
+  <div id="dm-auto-banner" style="display:none" class="dm-state-banner">
+    <span><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> Location detected: <strong id="dm-auto-state-name"></strong></span>
+    <button onclick="autoLoadState()">Show My State</button>
+  </div>
+
+  <div class="dm-hero">
+    <div class="dm-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map"/></svg> NDMC map · Updated weekly</div>
+    <h2 class="dm-h1">US Drought Monitor</h2>
+    <p class="dm-answer" id="dm-answer" aria-live="polite">NDMC&rsquo;s share of the Lower 48 in drought shows here after each Thursday read. The map below is this week&rsquo;s.</p>
+    <p class="page-lede dm-lede">This week&rsquo;s map, your county&rsquo;s numbers, and what each category means for crops.</p>
+    <p class="dm-by">The U.S. Drought Monitor is jointly produced by the National Drought Mitigation Center at the University of Nebraska-Lincoln, the U.S. Department of Agriculture, the National Oceanic and Atmospheric Administration and NASA. Map and data courtesy of NDMC, via https://droughtmonitor.unl.edu.</p>
+    <div class="dm-hero-meta">
+      <div class="dm-updated">Source: droughtmonitor.unl.edu · Updated Thursdays by 8:30 AM ET<span id="dm-valid"></span></div>
+      <div class="dm-next-update" id="dm-next-update">Next update: -</div>
+    </div>
+  </div>
+  
+
+  <section class="dm-card dm-county" aria-labelledby="dm-county-h" style="margin:0 0 1.1rem">
+    <h2 id="dm-county-h" style="font-size:1rem;margin:0 0 .35rem">Is your county in drought this week?</h2>
+    <p style="margin:0 0 .55rem;font-size:.85rem;color:var(--text-dim)">This week&rsquo;s share in each category, how long it has run, rain this year and the record since 2000. NDMC county numbers and the county&rsquo;s rain gauge.</p>
+    <label for="dm-county-q" style="display:block;font-size:.8rem;font-weight:700;margin-bottom:.25rem">County</label>
+    <input id="dm-county-q" type="search" autocomplete="off" placeholder="Type a county, like Story" style="width:100%;max-width:420px;box-sizing:border-box;padding:.55rem .7rem;min-height:44px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font:inherit">
+    <div id="dm-county-list" style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.45rem"></div>
+    <div id="dm-county-out" aria-live="polite" style="margin-top:.6rem;font-size:.88rem;line-height:1.55"></div>
+  </section>
+  
+
+
+  <div class="dm-tabs" id="dm-view-tabs" role="group" aria-label="Map view">
+    <button class="dm-tab active" data-view="national"><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg> National</button>
+    <button class="dm-tab" data-view="corn-belt"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn Belt</button>
+    <button class="dm-tab" data-view="plains"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Plains</button>
+    <button class="dm-tab" data-view="state"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> By State</button>
+  </div>
+
+  <div id="dm-map-section">
+    <div class="dm-map-wrap">
+      <img class="dm-map-img" id="dm-map-img"
+        src="/data/outlooks/usdm_latest.png"
+        alt="US Drought Monitor: weekly national map"
+        loading="lazy">
+      <div class="dm-map-fallback" id="dm-map-fallback"><p style="margin:0">The drought map image did not load.<br>See the current map at droughtmonitor.unl.edu.</p></div>
+      <span class="dm-map-label" id="dm-map-label">US · national view</span>
+      
+      <div class="dm-state-line" id="dm-state-line" aria-live="polite"></div>
+      <div class="dm-map-src">
+        <span id="dm-map-note">AGSIST's saved copy of the national map<span id="dm-map-valid"></span>.</span>
+        Source: droughtmonitor.unl.edu
+        &middot; National Drought Mitigation Center · USDA · NOAA
+      </div>
+    </div>
+  </div>
+
+  <div class="dm-legend">
+    <div class="dm-legend-title">Drought intensity scale</div>
+    <div class="dm-legend-item"><span class="dm-legend-dot" style="background:#ffff00"></span>D0: abnormally dry</div>
+    <div class="dm-legend-item"><span class="dm-legend-dot" style="background:#fcd37f"></span>D1: moderate drought</div>
+    <div class="dm-legend-item"><span class="dm-legend-dot" style="background:#ffaa00"></span>D2: severe drought</div>
+    <div class="dm-legend-item"><span class="dm-legend-dot" style="background:#e60000"></span>D3: extreme drought</div>
+    <div class="dm-legend-item"><span class="dm-legend-dot" style="background:#730000"></span>D4: exceptional drought</div>
+  </div>
+
+  <div id="dm-state-section" style="display:none">
+    <p class="dm-state-prompt">Select a state to view its drought map:</p>
+    <div class="dm-state-grid" id="dm-state-grid"></div>
+  </div>
+
+  <div class="dm-section-label">Crop stress windows: when drought hurts most</div>
+  <p style="margin:-.25rem 0 .55rem;font-size:.8rem;color:var(--text-muted)">My rule of thumb as a crop adviser, not an NDMC rating. Soil, rooting depth and stored moisture move these a lot.</p>
+  <div class="tblscroll dm-stress-wrap" tabindex="0" role="region" aria-label="Crop drought stress calendar"><table class="dm-stress-table" aria-label="Crop drought stress calendar">
+    <thead>
+      <tr><th>Crop</th><th>Critical Period</th><th>Drought Risk</th><th>What's at Stake</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</td>
+        <td data-k="When">Late July – August</td>
+        <td data-k="Risk" class="dm-stress-high">D1+ = High risk</td>
+        <td data-k="At stake">Pollination failure; grain fill stunted. Stress at silking costs more yield than at any other stage.</td>
+      </tr>
+      <tr>
+        <td><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</td>
+        <td data-k="When">June (early growth)</td>
+        <td data-k="Risk" class="dm-stress-med">D2+ = Moderate risk</td>
+        <td data-k="At stake">Root development impaired; plants stress before they can show it.</td>
+      </tr>
+      <tr>
+        <td><svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg> Soybeans</td>
+        <td data-k="When">Late July – September</td>
+        <td data-k="Risk" class="dm-stress-high">D1+ = High risk</td>
+        <td data-k="At stake">Pod set and seed fill, most water-sensitive stage. Yield loss compounds quickly.</td>
+      </tr>
+      <tr>
+        <td><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Winter Wheat</td>
+        <td data-k="When">Fall establishment &amp; spring green-up</td>
+        <td data-k="Risk" class="dm-stress-med">D1+ = Moderate risk</td>
+        <td data-k="At stake">Poor tiller development; winter kill risk increases on shallow soils.</td>
+      </tr>
+      <tr>
+        <td><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Hay / Pasture</td>
+        <td data-k="When">May – August</td>
+        <td data-k="Risk" class="dm-stress-high">D0+ = Risk begins</td>
+        <td data-k="At stake">First cutting reduced; recovery slows. Supplemental feed costs escalate at D2.</td>
+      </tr>
+    </tbody>
+  </table></div>
+
+  <details class="dm-card dm-outlook-more" id="dm-outlook-more" style="margin:0 0 1.25rem">
+    <summary style="cursor:pointer;font-weight:700;font-size:.92rem;min-height:32px;display:flex;align-items:center">What comes next: NOAA&rsquo;s rain outlooks</summary>
+    <p style="margin:.4rem 0 .6rem;font-size:.82rem;color:var(--text-dim)">NOAA Climate Prediction Center odds of more or less rain than normal, for next month and the next three months. Green leans wet, brown leans dry; white is equal chances. Copies AGSIST saves when CPC issues them (third Thursday of the month).</p>
+    <div class="dm-outlook-imgs" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:.7rem"></div>
+  </details>
+  
+
+  <div class="dm-grid">
+    <div class="dm-card">
+      <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Release Schedule</h3>
+      <p>Published every Thursday by 8:30 AM ET. The map reflects conditions through the preceding Tuesday. The national map here is a copy AGSIST saves after each release, labeled with its valid date.</p>
+    </div>
+    <div class="dm-card">
+      <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-landmark"/></svg> USDA programs and the drought map</h3>
+      <p>Different USDA programs respond to drought in different ways. <strong style="color:var(--text)">LFP</strong> (Livestock Forage Disaster Program) is tied directly to the USDM: FSA counts weeks with any part of the county in D2, D3 or D4 during the county's normal grazing period (the rule is <a href="https://www.ecfr.gov/current/title-7/subtitle-B/chapter-XIV/subchapter-B/part-1416" rel="noopener">7 CFR part 1416</a>). The county box on this page counts those weeks for any county. <strong style="color:var(--text)">PRF</strong> (Pasture/Rangeland/Forage) is a rainfall-index product and does not use USDM categories. It pays when the grid's rainfall index for an insured interval falls below the coverage level the producer picks, 70% to 90% of normal. <a href="/prf" style="color:var(--gold)">See what PRF would have paid on your grid</a>, every year since 1951. <strong style="color:var(--text)">WFRP</strong> (Whole-Farm Revenue Protection) pays when year-end revenue falls below your insured revenue from any covered cause, not on USDM status. NDMC keeps an LFP drought page for FSA by county.</p>
+    </div>
+    <div class="dm-card">
+      <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-map"/></svg> Regional drought patterns</h3>
+      <p>The western Corn Belt (Iowa, Nebraska, Kansas, South Dakota) and Southern Plains see drought most frequently. Sandy soils drain fast and show stress first in any region. Check your county on the state view and watch the CPC outlook for 1–3 month trend.</p>
+    </div>
+    <div class="dm-card">
+      <h3><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg> Basis Impact</h3>
+      <p>A local drought means fewer bushels coming in, and elevators may bid basis up to get them. A drought rally in futures can pull the other way. Watch both on the <a href="/cash-bids" style="color:var(--gold)">Cash Bids page</a>.</p>
+    </div>
+  </div>
+
+  <div class="dm-section-label">Other drought resources</div>
+  <div class="dm-outlook">
+    <svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> CPC drought outlook
+    <svg class="ic-sp" aria-hidden="true"><use href="#sp-folder"/></svg> USDM map archive
+    <svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg> Crop Progress report
+    <a href="/cash-bids"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Cash Bids</a>
+    <a href="/markets"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-line"/></svg> Grain Prices</a>
+  </div>
+
+<!--FAQ:START-->
+<style>
+.agf{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin:1.5rem 0 0}
+.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
+.agf details{border-top:1px solid var(--border)}
+.agf details:first-of-type{border-top:0}
+.agf summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.85rem 0;font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}
+.agf summary::-webkit-details-marker{display:none}
+.agf summary::after{content:"+";color:var(--gold);font-weight:700;flex-shrink:0}
+.agf details[open] summary::after{content:"\2212"}
+.agf summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px;border-radius:4px}
+.agf-a{font-size:1rem;line-height:1.65;color:var(--text-dim);padding:0 0 .95rem}
+</style>
+<section class="faq agf" aria-labelledby="agf-t">
+<h2 class="agf-t" id="agf-t">Common questions</h2>
+<details><summary>Is my county in drought this week?</summary><div class="agf-a">Type your county in the box near the top of this page. It shows how much of the county is in each Drought Monitor category on the newest weekly map, the change from a week and four weeks before, how many weeks in a row some part of it has been in drought, rain since January 1 at the county's gauge, and how many weeks since 2000 at least half of it sat in severe drought or worse. The numbers are NDMC's county statistics, read each Thursday after the map comes out.</div></details>
+<details><summary>How does drought affect corn and soybean yields?</summary><div class="agf-a">Corn is most vulnerable to drought during pollination (late July) and grain fill (August). Drought stress at silking costs more corn yield than stress at any other stage. Soybeans are most sensitive during pod set and fill, roughly late July through early September. Even D1 moderate drought during peak demand can cut yields.</div></details>
+<details><summary>What is D2 drought and what does it mean for farmers?</summary><div class="agf-a">D2 is Severe Drought on the US Drought Monitor scale. At D2 and above, crop and pasture losses become likely and water restrictions may begin. FSA's Livestock Forage Disaster Program (LFP) counts weeks with any part of a county in D2 or worse during the county's normal grazing period. The county box on this page counts those weeks for any county. D3 (Extreme) and D4 (Exceptional) mean widespread losses and major economic impacts for agriculture. Revenue and rainfall-index insurance products use different mechanisms and are not triggered directly by USDM categories.</div></details>
+<details><summary>When is the US Drought Monitor updated?</summary><div class="agf-a">The US Drought Monitor is published every Thursday by 8:30 AM ET by the National Drought Mitigation Center, USDA, and NOAA. The map reflects conditions through the previous Tuesday.</div></details>
+<details><summary>Does drought monitor status affect crop insurance?</summary><div class="agf-a">Different USDA programs work differently. The Livestock Forage Disaster Program (LFP) is tied directly to USDM status: FSA counts weeks with any part of the county in D2, D3 or D4 during the county's normal grazing period. The county box on this page counts those weeks for any county. The Pasture, Rangeland, and Forage (PRF) rainfall-index program does not use USDM categories. It pays when the grid's rainfall index for an insured interval falls below the coverage level the producer picks, 70% to 90% of normal. Whole-Farm Revenue Protection (WFRP) pays on year-end revenue shortfall from any covered cause, not USDM status.</div></details>
+<details><summary>Which states are most affected by drought in the Corn Belt?</summary><div class="agf-a">Drought impacts in the Corn Belt vary year to year. Each state’s history is in the US Drought Monitor record (droughtmonitor.unl.edu, weekly since 2000). Use the state view on this page to check current conditions for any agricultural state.</div></details>
+<details><summary>How many weeks does my county have to be in D2 before LFP kicks in?</summary><div class="agf-a">USDA's rule is D2 in any part of the county for at least 4 weeks in a row during the normal grazing period. D3 or D4 anywhere in the county at any time during that period also counts, with no wait.</div></details>
+<details><summary>What's the most LFP will pay me in a year?</summary><div class="agf-a">Five monthly payments for the same livestock in a calendar year, no matter how many drought ratings the county gets. Each monthly payment is 60 percent of a monthly feed cost, figured on the lower of your herd or your grazing land's normal carrying capacity.</div></details>
+<details><summary>Does grazing corn stalks count for LFP if we're in drought?</summary><div class="agf-a">No. USDA counts native or improved pasture and crops planted for grazing, like forage sorghum, small grains or annual ryegrass, but not corn stalks or grain sorghum stalks.</div></details>
+</section>
+<!--FAQ:END-->
+</div>

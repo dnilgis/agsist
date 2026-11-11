@@ -53,7 +53,7 @@ function serve() {
 
 // [path, what must be there]; /urea's column is padded already (no double gutter)
 const PAGES = [["/markets", ["p.by-end", "nav.next-links"]], ["/about", ["nav.next-links"]], ["/glossary", ["p.by-end", "nav.next-links"]],
-  ["/urea", ["p.by-end", "nav.next-links"]], ["/custom-rates/iowa", ["p.by-end"]]];
+  ["/spray#urea", ["p.by-end", "nav.next-links"]], ["/custom-rates/iowa", ["p.by-end"]]];
 
 async function textEdges(browser, port, path, width) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 844 } });

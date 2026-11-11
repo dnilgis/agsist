@@ -15,12 +15,11 @@ import assert from "node:assert/strict";
 import { read, skip, MODES, open } from "./cls-sweep-lib.mjs";
 
 const LIMIT = 0.04;
-const PAGES = ["/urea", "/combine-loss", "/nutrient-removal", "/land-sales/wisconsin/barron-county", "/land-sales/"];
+// /urea became a tab of /spray on Nov 11, 2026: its hold and its layout check are in test/weather-fold-nov11.test.mjs
+const PAGES = ["/combine-loss", "/nutrient-removal", "/land-sales/wisconsin/barron-county", "/land-sales/"];
 
 test("the holds are in the pages and the builder", () => {
-  const U = read("urea.html"), C = read("combine-loss.html"), N = read("nutrient-removal.html"), L = read("components/land-sales.css");
-  assert.match(U, /class="hero-sub up-wait" id="urea-price-line"/, "urea: the price line starts held");
-  assert.match(U, /\.catch\(letGo\);\}catch\(e\)\{letGo\(\);\}/, "urea: a failed price file lets go of the hold");
+  const C = read("combine-loss.html"), N = read("nutrient-removal.html"), L = read("components/land-sales.css");
   assert.match(C, /document\.documentElement\.setAttribute\('data-cl',clC\)/, "combine loss: the crop is set before paint");
   assert.match(N, /h\.classList\.add\('nr-wait'\)/, "nutrient removal: the price lines are held before paint");
   assert.match(N, /\.nr \.nr-prices\{min-height:\d+px\}/, "nutrient removal: the price rows hold their height");

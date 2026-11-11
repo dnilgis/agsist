@@ -20,7 +20,10 @@ import { createServer } from "node:http";
 import { extname, join, normalize } from "node:path";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
-const PAGE = readFileSync(ROOT + "drought-monitor.html", "utf8");
+// /drought-monitor is the drought tab of /rain since Nov 11, 2026: its markup is the tab on rain.html (written by
+// scripts/build_county_rain.py from components/fold/drought.part), its code components/fold/drought.js
+const RAIN = readFileSync(ROOT + "rain.html", "utf8");
+const PAGE = RAIN.slice(RAIN.indexOf('<section class="ptab" id="p-drought"'), RAIN.indexOf("</main>")) + "\n<script>" + readFileSync(ROOT + "components/fold/drought.js", "utf8") + "</script>";
 const COUNTY_JS = readFileSync(ROOT + "components/drought-county.js", "utf8");
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
@@ -39,14 +42,14 @@ test("workflow commits the summary file; page order and copy", () => {
   assert.doesNotMatch(PAGE, /commonly cited/i, "no unsourced 'commonly cited' claims");
   assert.doesNotMatch(PAGE, /can make you eligible/i, "no eligibility promise");
   assert.doesNotMatch(PAGE, /&#39;/, "no entity apostrophes (they print raw in JSON-LD)");
-  assert.match(PAGE, /<script src="\/components\/drought-county\.js\?v=\d+" defer><\/script>/, "the county box script loads deferred");
+  assert.match(PAGE, /id="p-drought"[^>]*data-js="[^"]*\/components\/drought-county\.js\?v=\d+/, "the county box script loads with the tab, after the page code");
   for (const src of [PAGE, COUNTY_JS]) {
     assert.doesNotMatch(src, /—/);
     assert.doesNotMatch(src, /insurance agent/i);
   }
   assert.match(COUNTY_JS, /not an eligibility answer/);
   assert.match(PAGE, /not an NDMC rating/, "the stress table says whose rule it is");
-  const ld = PAGE.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1];
+  const ld = RAIN.match(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/)[1];
   JSON.parse(ld);
 });
 
@@ -94,7 +97,7 @@ async function open(browser, port, width = 1280, qs = "") {
   const errors = [];
   pg.on("pageerror", (e) => errors.push(String(e)));
   await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
-  await pg.goto(`http://127.0.0.1:${port}/drought-monitor${qs}`);
+  await pg.goto(`http://127.0.0.1:${port}/rain${qs}#drought`);
   await pg.waitForSelector("#dm-county-q");
   return { pg, errors };
 }

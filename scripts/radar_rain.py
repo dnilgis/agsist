@@ -67,7 +67,7 @@ OUT = os.path.join(ROOT, "data", "radar-rain")
 BUCKET = "https://noaa-mrms-pds.s3.amazonaws.com"
 PROD = "CONUS/MultiSensor_QPE_{h:02d}H_Pass2_00.00"
 SOURCE = "NOAA MRMS multi-sensor QPE, Pass 2 (radar corrected with rain gauges), noaa-mrms-pds"
-UA = "agsist.com radar rain (https://agsist.com/rain-radar)"
+UA = "agsist.com radar rain (https://agsist.com/rain)"
 SCHEMA = "agsist-radar-rain/1"
 
 # The MRMS CONUS grid. Anything else is refused.

@@ -210,7 +210,7 @@ HTML = f"""<!DOCTYPE html>
     <div class="prf-spon-p" id="prf-spon-p" hidden></div>
         </div>
       </div>
-      <!-- the one offer to businesses (Sig, Oct 20): under "Find your grid" while no grid is open;
+      <!-- the one offer to businesses (Oct 20): under "Find your grid" while no grid is open;
            prf-sponsor.js moves it under the step 3 answer once one is -->
       <aside class="prf-spon-band prf-spon-offer" aria-label="For businesses"><span class="prf-spon-tag">For businesses</span> <span class="prf-spon-t">Sponsor PRF in your states.<span class="prf-spon-x"> One business per state, on the state page and every county page in it.</span> Price on request.</span> <a href="/prf-sponsor" data-prf-offer data-out="prf-sponsor">See your block and ask &rarr;</a></aside>
     </div>
@@ -298,7 +298,7 @@ HTML = f"""<!DOCTYPE html>
 
     <nav class="prf-links" aria-label="Related tools">
       <a href="/lrp">LRP: price insurance for cattle and hogs</a>
-      <a href="/drought-monitor">Drought Monitor</a>
+      <a href="/rain#drought">Drought Monitor</a>
       <a href="/hail-map">Hail map</a>
       <a href="/farmland-atlas">Farmland Atlas</a>
       <a href="/rent/">Cash rent by county</a>
@@ -323,7 +323,7 @@ HTML = f"""<!DOCTYPE html>
   <script src="/components/prf-math.js?v=3" defer></script>
   <script src="/components/qr.js?v=11" defer></script>
   <script src="/components/prf.js?v=10" defer></script>
-  <script src="/components/prf-outlook.js?v=4" defer></script>
+  <script src="/components/prf-outlook.js?v=5" defer></script>
   <script src="/components/prf-now.js?v=5" defer></script>
   <script src="/components/prf-notice.js?v=2" defer></script>
   <script src="/components/prf-optimize.js?v=6" defer></script>

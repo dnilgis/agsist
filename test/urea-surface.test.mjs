@@ -34,7 +34,7 @@ function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
-    if (p === "/urea") p = "/urea.html";
+    if (p === "/spray") p = "/spray.html";   // urea loss is a tab of /spray since Nov 11, 2026
     const f = normalize(join(ROOT, p));
     if (!f.startsWith(ROOT) || !existsSync(f)) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" });
@@ -73,10 +73,11 @@ async function open(browser, port, { admin1 = "Iowa", name = "Ames", sums = [0, 
     }
     return r.abort();
   });
-  await pg.goto(`http://127.0.0.1:${port}/urea`);
+  await pg.goto(`http://127.0.0.1:${port}/spray#urea`);
+  await pg.waitForSelector("#p-urea[data-ready]");
   await pg.evaluate((t) => { try { localStorage.clear(); if (t) localStorage.setItem("agsist-urea-field", JSON.stringify({ till: t })); } catch (e) {} }, till);
   if (till) await pg.reload();
-  await pg.waitForSelector("#btn-show-zip");
+  await pg.waitForSelector("#u-btn-show-zip");
   await pg.$eval("#zip-row", (e) => { e.style.display = "flex"; });
   await pg.fill("#urea-zip", "50010");
   await pg.press("#urea-zip", "Enter");
@@ -87,7 +88,8 @@ const txt = (pg, sel) => pg.$eval(sel, (e) => e.textContent.trim());
 
 
 
-const HTML = readFileSync(ROOT + "urea.html", "utf8");
+// the urea tab: its markup in spray.html, its code and style in components/fold/ (ids /spray also uses carry u-)
+const HTML = ["spray.html", "components/fold/urea.js", "components/fold/urea.css"].map((f) => readFileSync(ROOT + f, "utf8")).join("\n");
 
 /* 2026-10-29: the National Weather Service grid that replaced Open-Meteo carries no soil moisture, so the surface comes
    only from the reader's pick; with none the score leaves it out and says so. The numbers are the ones the forecast's

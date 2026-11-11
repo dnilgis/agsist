@@ -80,8 +80,8 @@ DESC_PLAIN = {
 # pages whose schema dateModified is stamped with today (price pages get it in
 # the loop above; these get it too because their content changes daily)
 DATEMOD_ONLY = ["index.html", "markets.html", "daily.html",
-                "cash-bids.html", "spray.html", "urea.html",
-                "cot.html", "drought-monitor.html",
+                "cash-bids.html", "spray.html",
+                "cot.html",
                 "hail-map.html"]
 
 # sitemap <lastmod> bump list — the daily-changing URLs Google should recrawl

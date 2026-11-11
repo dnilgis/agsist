@@ -847,7 +847,7 @@ def explore_nav():
             + " &middot; ".join([L("/markets", "Futures"), L("/cash-bids", "Cash Bids"), L("/basis", "Basis vs Normal"),
                                  L("/usda-calendar#priced-in", "What&rsquo;s Priced In"), L("/cot", "COT")])
             + '<br><span style="color:var(--text-dim);font-weight:700">Field:</span> '
-            + " &middot; ".join([L("/conditions", "Crop Conditions Rank"), L("/drought-monitor", "Drought Monitor"),
+            + " &middot; ".join([L("/conditions", "Crop Conditions Rank"), L("/rain#drought", "Drought Monitor"),
                                  L("/hail-map", "Hail Map"), L("/breakeven", "Break-Even"), L("/daily", "Daily Briefing")])
             + "</nav>")
 
