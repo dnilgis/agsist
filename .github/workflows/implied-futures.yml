@@ -30,7 +30,7 @@ concurrency:
 jobs:
   tick:
     if: >-
-      github.event_name == 'workflow_dispatch' || (vars.IMPLIED_FUTURES_LIVE != '0' && (
+      github.event_name == 'workflow_dispatch' || ((vars.IMPLIED_FUTURES_LIVE || 'on') != '0' && (
         contains(github.event.workflow_run.created_at, 'T13:') ||
         contains(github.event.workflow_run.created_at, 'T14:') ||
         contains(github.event.workflow_run.created_at, 'T15:') ||
