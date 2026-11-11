@@ -180,7 +180,7 @@ function serve(extra = {}) {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
     if (p === "/") p = "/index.html";
     if (!extname(p)) p = p.endsWith("/") ? p + "index.html" : p + ".html";
-    if (extra[p]) { res.writeHead(200, { "content-type": "text/html" }); res.end(extra[p]); return; }
+    if (extra[p]) { res.writeHead(200, { "content-type": p.endsWith(".json") ? "application/json" : "text/html" }); res.end(typeof extra[p] === "string" ? extra[p] : JSON.stringify(extra[p])); return; }
     const f = normalize(join(ROOT, p));
     if (!f.startsWith(ROOT) || !existsSync(f) || statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" });
@@ -238,6 +238,82 @@ test("in a browser: the sitewide line lands under the menu without moving the pa
       await ctx.close();
     }
   } finally { await browser.close(); srv.close(); }
+});
+
+/* The state spot is never left empty and never collapses after the first paint: when the page cannot carry its
+   state's card (the page has its own paid sponsor: a sold ribbon, a sold PRF state page; or the sitewide sponsor is on
+   the same screen), the spot keeps its room and says so with no sponsor name; with no state sponsor it shows the open
+   box. Iowa is given a live state sponsor here (a copy of the committed entry), the other sponsors are stubbed. */
+function prfWithSpot() {
+  let h = read("prf/iowa.html");
+  if (!h.includes("data-state-spot")) h = h.replace('<div class="prf-prose">', '<div class="state-spot" data-state-spot="IA"></div>\n    <div class="prf-prose">');
+  return h;
+}
+function rentWithSpotTop() {   // the spot on the first screen, so the sitewide sponsor shares the screen with it
+  const h = read("rent/iowa.html"), i = h.indexOf("</h1>") + 5;
+  return h.slice(0, i) + '<div class="state-spot" data-state-spot="IA"></div>' + h.slice(i);
+}
+test("in a browser: a state spot that cannot carry its card keeps its room and says so; it never sits empty or collapses", { skip, timeout: 240000 }, async () => {
+  const geo = json("data/geo-sponsors.json");
+  const base = geo.sponsors.find((e) => e.headline && e.body);
+  const iaLive = Object.assign({}, geo, { sponsors: [Object.assign({}, base, { id: "iatest", states: ["IA"], active: true, start: null, end: null })] });
+  const noState = Object.assign({}, geo, { sponsors: [] });
+  const ribbon = { slots: { "rent-ia": { company: "Ribbon Co", url: "https://ribbon.example", start: "2026-01-01", active: true } } };
+  const prfSold = { IA: { name: "PRF Agency", url: "https://prf.example", line: "PRF help.", through: "2099-12-31" } };
+  const swSold = Object.assign({}, json("data/sponsor.json"), { active: true, is_house_ad: false, advertiser: "Sitewide Co", cta_url: "https://sitewide.example" });
+  const cases = [
+    ["/rent/iowa", { "/data/page-sponsors.json": ribbon, "/data/geo-sponsors.json": noState }, "open", "a sold ribbon, no Iowa sponsor"],
+    ["/rent/iowa", { "/data/page-sponsors.json": ribbon, "/data/geo-sponsors.json": iaLive }, "other", "a sold ribbon and an Iowa sponsor"],
+    ["/prf/iowa", { "/data/prf-sponsors.json": prfSold, "/data/geo-sponsors.json": iaLive }, "other", "a sold PRF page and an Iowa sponsor"],
+    ["/rent/iowa", { "/data/sponsor.json": swSold, "/data/geo-sponsors.json": iaLive }, "sitewide", "the sitewide sponsor and an Iowa sponsor"],
+    ["/rent/iowa", { "/data/sponsor.json": swSold, "/data/geo-sponsors.json": iaLive, "/rent/iowa.html": rentWithSpotTop() }, "sitewide-top", "the sitewide sponsor and an Iowa sponsor, spot on the first screen"],
+  ];
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const [path, stubs, want, what] of cases) {
+      const srv = await serve(Object.assign({ "/rent/iowa.html": rentWithSpot(), "/prf/iowa.html": prfWithSpot() }, stubs));
+      const port = srv.address().port;
+      try {
+        for (const [w, h] of [[390, 844], [1280, 800]]) {
+          const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width: w, height: h }, isMobile: w < 600, hasTouch: w < 600, timezoneId: "America/Chicago" });
+          await ctx.route("**/*", (r) => (new URL(r.request().url()).hostname !== "127.0.0.1" ? r.abort() : r.continue()));
+          const pg = await ctx.newPage();
+          await pg.addInitScript(() => {
+            window.__spot = [];
+            const tick = () => { const s = document.querySelector("[data-state-spot]"); if (s) window.__spot.push([Math.round(s.getBoundingClientRect().height), s.hidden || !s.getClientRects().length]); requestAnimationFrame(tick); };
+            requestAnimationFrame(tick);
+          });
+          await pg.goto(`http://127.0.0.1:${port}${path}`, { waitUntil: "load" });
+          const tag = `${what} ${w}`;
+          await pg.waitForFunction(() => { const s = document.querySelector("[data-state-spot]"); return s && s.textContent.trim().length > 10; }, null, { timeout: 15000 })
+            .catch(() => { throw new Error(tag + ": the spot was left empty"); });
+          await pg.waitForTimeout(1500);
+          const r = await pg.evaluate(() => {
+            const s = document.querySelector("[data-state-spot]");
+            return { first: s.getBoundingClientRect().top + scrollY < innerHeight, t: ([...s.querySelectorAll("p")].map((x) => x.textContent.trim()).join(" ") || s.textContent).replace(/\s+/g, " ").trim(), hidden: s.hidden || !s.getClientRects().length, h: s.getBoundingClientRect().height,
+              boxes: [...document.querySelectorAll(".geo-spon")].map((b) => !!b.closest("[data-state-spot]")), seen: window.__spot };
+          });
+          assert.equal(r.hidden, false, tag + ": the spot is never hidden");
+          assert.ok(r.seen.every(([sh, hid]) => !hid && sh >= r.seen[0][0] - 1), tag + ": the spot never collapsed after the first paint: " + JSON.stringify([...new Set(r.seen.map((x) => x.join("/")))]));
+          if (want === "sitewide-top") assert.ok(r.first, tag + ": the spot is on the first screen");
+          if (want === "sitewide" && !r.first) {   // below the first screen the card is not on the sitewide sponsor's screen: it fills the spot
+            assert.deepEqual(r.boxes, [true], tag + ": the card fills the spot");
+            await ctx.close();
+            continue;
+          }
+          assert.ok(!/Ribbon Co|PRF Agency|Sitewide Co/.test(r.t) && !r.t.includes(base.headline), tag + ": no sponsor name in the spot: " + r.t);
+          if (want === "open") { assert.ok(r.t.includes("Iowa sponsor spot open."), tag + ": " + r.t); assert.deepEqual(r.boxes, [], tag + ": no state card"); }
+          if (want === "other") { assert.equal(r.t, "Iowa sponsor card It shows on other Iowa pages.", tag); assert.deepEqual(r.boxes, [], tag + ": the page's own sponsor wins"); }
+          if (want === "sitewide" || want === "sitewide-top") {
+            const lower = r.boxes.length === 1;
+            assert.ok(r.boxes.every((x) => !x), tag + ": the card is not in the spot on the sitewide sponsor's screen");
+            assert.equal(r.t, "Iowa sponsor card " + (lower ? "It is further down this page." : "It shows on other Iowa pages."), tag);
+          }
+          await ctx.close();
+        }
+      } finally { srv.close(); }
+    }
+  } finally { await browser.close(); }
 });
 
 test("sponsor pages: no prices in titles or meta descriptions; Root Lot ends Nov 30", () => {

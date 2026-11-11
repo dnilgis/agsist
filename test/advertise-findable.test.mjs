@@ -199,9 +199,14 @@ test("in a browser: an unsold slot shows nothing; a sold one shows the sponsor",
 test("/sponsor: who reads AGSIST sits in the first screen, from the same audience file", () => {
   const h = read("sponsor.html");
   const hero = h.slice(h.indexOf('<section class="sp-hero"'), h.indexOf("</section>", h.indexOf('<section class="sp-hero"')));
-  for (const k of ["engaged", "views", "win"]) assert.match(hero, new RegExp(`<span data-a="${k}">[^<]+</span>`), k);
-  assert.match(h, /href="tel:\+17157972428">715-797-2428<\/a>/);
-  assert.match(h, /href="mailto:sig@agsist\.com/);
+  for (const k of ["engaged", "views", "win"]) assert.match(hero, new RegExp(`<span data-a="${k}">[\\d,]+|<span data-a="${k}">[A-Z][a-z]{2} \\d`), k);
+  assert.ok(hero.indexOf('class="sp-reach"') >= 0 && hero.indexOf('class="sp-reach"') < hero.indexOf('href="#book"'), "the reach line comes before the way to book");
+  assert.match(hero, /href="#book">Book<\/a>/);
+  assert.match(hero, /href="tel:\+17157972428">715-797-2428<\/a>/);
+  assert.match(hero, /href="mailto:sig@agsist\.com/);
   assert.match(h, /data-invoice="sitewide"/);
   assert.match(h, /data-invoice="state"/);
+  // the page refreshes every data-a span from data/audience.json on load
+  assert.match(h, /querySelectorAll\('\[data-a="' \+ k \+ '"\]'\)/);
+  assert.match(h, /fetch\('\/data\/audience\.json'/);
 });

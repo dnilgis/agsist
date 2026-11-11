@@ -20,6 +20,7 @@ test('the Commit step does not rebase', () => {
   assert.ok(at > 0 && script.includes('git push'));
   assert.doesNotMatch(script, /pull --rebase/);
   assert.match(script, /git reset --quiet --hard origin\/main/);
+  assert.doesNotMatch(script, /git add[^\n]*(\|\| true|2>\/dev\/null)/, "a git add that fails is never hidden");
 });
 
 const env = (tmp) => ({ ...process.env, GIT_AUTHOR_NAME: 't', GIT_AUTHOR_EMAIL: 't@t', GIT_COMMITTER_NAME: 't', GIT_COMMITTER_EMAIL: 't@t', RUNNER_TEMP: tmp, GIT_CONFIG_GLOBAL: '/dev/null' });
@@ -28,7 +29,7 @@ const sh = (cmd, cwd, e) => spawnSync('bash', ['-ec', cmd], { cwd, env: e, encod
 test('a push that lost the race is redone on the fresh main, and a same-file case stops quietly', () => {
   const tmp = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), 'sr-commit-'));
   const e = env(tmp);
-  const files = ['data/audience.json', 'data/audience-pages.json', 'sponsor.html', 'sponsor-kit.html'];
+  const files = ['data/audience.json', 'data/audience-pages.json', 'data/sponsor-spots.json', 'sponsor.html', 'sponsor-kit.html'];
   sh(`git init -q --bare -b main o.git && git clone -q o.git a 2>/dev/null && cd a && git checkout -q -B main && mkdir -p data scripts
     for f in ${files.join(' ')}; do echo 1 > $f; done; echo 'pass' > scripts/bake_audience.py
     git add -A && git commit -qm base && git push -q origin main && cd .. && git clone -q o.git b 2>/dev/null && cd b && git checkout -q main`, tmp, e);
@@ -51,7 +52,7 @@ test('a push that lost the race is redone on the fresh main, and a same-file cas
 test('only this run\'s own changes are carried over: an untouched audience file and another run\'s sealed files stay as main has them', () => {
   const tmp = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), 'sr-commit2-'));
   const e = env(tmp);
-  const files = ['data/audience.json', 'data/audience-pages.json', 'sponsor.html', 'sponsor-kit.html'];
+  const files = ['data/audience.json', 'data/audience-pages.json', 'data/sponsor-spots.json', 'sponsor.html', 'sponsor-kit.html'];
   sh(`git init -q --bare -b main o.git && git clone -q o.git a 2>/dev/null && cd a && git checkout -q -B main && mkdir -p data/rp-sealed scripts
     for f in ${files.join(' ')}; do echo 1 > $f; done; echo old > data/rp-sealed/old.bin; echo gone > data/rp-sealed/gone.bin; echo 'pass' > scripts/bake_audience.py
     git add -A && git commit -qm base && git push -q origin main && cd .. && git clone -q o.git b 2>/dev/null && cd b && git checkout -q main`, tmp, e);

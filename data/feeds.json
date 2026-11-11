@@ -210,7 +210,8 @@
    "path": "data/audience.json",
    "pages": [
     "desk.html",
-    "sponsor-report.html"
+    "sponsor-report.html",
+    "sponsor.html"
    ],
    "written_by": [
     "Sponsor reports \u2014 yesterday's numbers, from GA4"

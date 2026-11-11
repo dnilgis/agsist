@@ -146,7 +146,7 @@ test("every link carries the utm tags, appended correctly to any url", () => {
     "https://rootlot.com/a?b=1&utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=reader-state#top");
   const ad = G.toAd(Object.assign({}, ENTRY, { utm_campaign: undefined }), "reader-state");
   assert.match(ad.cta_url, /utm_campaign=geo-rootlot&utm_content=reader-state$/);
-  assert.equal(ad.label, "Sponsor");
+  assert.equal(ad.label, "Supported by");
 });
 
 test("the ad renders through AgsistAd with the slot geo-<id>; the reader's state is in no count", () => {
@@ -155,7 +155,7 @@ test("the ad renders through AgsistAd with the slot geo-<id>; the reader's state
   assert.match(h, /class="sa-ad"/);
   assert.match(h, /data-sponsor-slot="geo-rootlot"/);
   assert.match(h, /data-sponsor-click="geo-rootlot"/);
-  assert.match(h, />Sponsor</);
+  assert.match(h, /<span class="sa-label">Supported by<\/span><span class="sa-by">RootLot<\/span>/, "the label reads Supported by <sponsor> (A19)");
   assert.match(h, /utm_content=state-page/);
   assert.doesNotMatch(h, /\$\d|price|per month/i, "no price text");
   const src = read("components/geo-sponsor.js");
@@ -284,7 +284,7 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
       assert.ok(a, w + ": drawn");
       assert.equal(a.slot, "geo-rootlot");
       assert.equal(a.href, "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=state-page");
-      assert.match(a.text, /Sponsor/); assert.match(a.text, /Put Your Root Down/); assert.match(a.text, /Root Down Now/);
+      assert.match(a.text, /^Supported by\s*Root Lot/); assert.match(a.text, /Put Your Root Down/); assert.match(a.text, /Root Down Now/);
       assert.equal(await pg.$(".geo-spon .sa-phone, .geo-spon .sa-facts"), null, w + ": no phone, no facts row");
       // Nov 5: its logo at the left at a fixed size, the site's ad orange on the button and the outline
       const look = await pg.evaluate(() => {
@@ -314,7 +314,7 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
       assert.deepEqual(look.border, [look.orange, look.orange, look.orange], w + ": the outline is the ad orange");
       assert.equal(look.button, look.orange, w + ": the button is the ad orange");
       assert.equal(look.panelImage, "none", w + ": a quiet panel, no tint");
-      assert.equal(look.label, "Sponsor");
+      assert.equal(look.label, "Supported by", "A19: Supported by <sponsor>");
       // higher than the old slot (the end of the page) and never above the page's answer
       assert.equal(look.next, "H2.", w + ": the box sits at a section break (" + look.next + ")");
       assert.ok(look.answerAbove && look.bylineBelow, w + ": after the answer, before the byline " + JSON.stringify(look));
@@ -366,7 +366,7 @@ test("browser: every paid ad (not only the state sponsor) has the orange outline
       const { ctx, pg } = await open(browser, port, "/rain/iowa/story-county.html", { w, data: { sponsors: [] } });
       const r = await pg.evaluate(async (theme) => {
         document.documentElement.setAttribute("data-theme", theme);
-        await new Promise((ok) => { if (window.AgsistAd) return ok(); const s = document.createElement("script"); s.src = "/components/sponsor-ad.js?v=3"; s.onload = ok; document.head.appendChild(s); });
+        await new Promise((ok) => { if (window.AgsistAd) return ok(); const s = document.createElement("script"); s.src = "/components/sponsor-ad.js?v=4"; s.onload = ok; document.head.appendChild(s); });
         await new Promise((ok) => { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/components/sponsor-ad.css?v=3"; l.onload = ok; document.head.appendChild(l); });
         const box = document.createElement("div");
         box.innerHTML = window.AgsistAd.render({ advertiser: "Any Co", headline: "H", body: "B", cta_url: "https://example.com/", cta_text: "Go" }, "homepage", { slot: "daily-briefing" });
@@ -385,7 +385,7 @@ test("browser: every paid ad (not only the state sponsor) has the orange outline
       assert.equal(r.border, r.orange, tag + ": outline"); assert.equal(r.button, r.orange, tag + ": button");
       assert.equal(r.image, "none", tag + ": quiet panel");
       assert.ok(r.ink >= 4.5, tag + ": button text contrast " + r.ink.toFixed(2) + " (rain pages colour their links)");
-      assert.equal(r.label, "SPONSORED", tag + ": the label stays");
+      assert.equal(r.label, "Supported by", tag + ": the label reads Supported by (A19)");
       await ctx.close();
     }
   });

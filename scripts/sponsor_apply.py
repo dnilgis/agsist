@@ -23,16 +23,16 @@ thing that changes the site:
                                  state that opens soon waits, and a retired tier
                                  (Own a page, Supporter) is no longer sold.
   declined                    -> one polite note to the applicant.
-  live                        -> 3 days before the free month ends, the sponsor
-                                 is asked yes or no (no reply: the ad comes down
-                                 and nothing is owed); on each monthly date
-                                 from then on, the owner gets "send the invoice", with
-                                 an END link for the day someone stops paying.
+  live                        -> on each monthly date after the first month
+                                 (paid at booking), the owner gets "send the
+                                 invoice", with an END link for the day someone
+                                 stops paying.
   ending (the owner clicked END)    -> the ad comes down, the slot is open again.
 
-Billing is a handshake, on purpose: no card, an invoice a month, and a slot
-that goes back on the market if it is not paid. This job never charges anyone;
-it reminds the owner, who invoices the way he already does.
+Terms (rate card of Nov 11, 2026): pay when you book, by card or by a yearly
+invoice sent by mail (net 30); money back if asked inside 30 days; no free month.
+This job never charges anyone; it reminds the owner, who invoices the way he
+already does, and a slot that is not paid goes back on the market.
 
 Order of operations: files are written and PUSHED before the worker is marked,
 so a failed push leaves the application approved and the next run tries again.
@@ -177,6 +177,18 @@ def money(n):
     return "$%d" % n if isinstance(n, int) else "the rate on the card"
 
 
+def terms_price(card, a, slots=()):
+    """The booking price from the card: "$X a month, or $Y a year" (a year costs year_months months)."""
+    n = app_rate(card, a, slots)
+    if not isinstance(n, int):
+        return money(n)
+    ym = (card or {}).get("year_months") or 10
+    return "$%s a month, or $%s a year" % (format(n, ","), format(n * ym, ","))
+
+
+PAY_TERMS = "You pay when you book: by card, or by a yearly invoice we mail you (net 30). Money back if you ask inside 30 days."
+
+
 def fmt(d):
     return d.strftime("%b ") + str(d.day) + d.strftime(", %Y")
 
@@ -222,10 +234,7 @@ def plan(apps, now_ms, today, sold_pages, supporters, card=None, slots=()):
             out.append(("takedown", a))
         elif st == "live" and a.get("start"):
             start = date.fromisoformat(a["start"])
-            free_end = add_months(start, 1) - timedelta(days=1)
-            if not a.get("reminded") and today >= free_end - timedelta(days=3):
-                out.append(("freeending", a))
-            k = (a.get("invoiced") or 0) + 1                 # the next invoice: month k starts start + k months
+            k = (a.get("invoiced") or 0) + 1                 # month 1 is paid at booking; invoice k is for month k + 1
             if today >= add_months(start, k):
                 out.append(("invoice", a))
     return out
@@ -305,7 +314,7 @@ def report_entry(a, ct, state, want, start, root=REPO):
     slug = base if base not in slugs else base + "-" + a["id"][:4]
     e = {"slug": slug, "name": a["company"], "active": True, "start": start.isoformat(),
          "page_slots": list(want), "app": a["id"],
-         "billing": {"tier": ct, "trial_months": 1}}
+         "billing": {"tier": ct}}                  # no free month: billed from its first day
     if state:
         e["billing"]["state"] = state
         e["regions"] = [state]
@@ -494,6 +503,7 @@ def ad_lines(a):
 def emails_for(action, a, base, secret, card, today, sig, slots=()):
     """-> [(to, EmailMessage-kwargs)] for one planned action. Pure."""
     price = money(app_rate(card, a, slots))
+    both = terms_price(card, a, slots)
     # Oct 22: the agsist.com front door asks the worker's page from the browser; base only has to be set
     dec = lambda d: email_links.front("sponsor-decide", [("i", a["id"]), ("d", d), ("t", token(secret, a["id"] + "|sd|" + d))])
     if action == "confirm":
@@ -503,12 +513,12 @@ def emails_for(action, a, base, secret, card, today, sig, slots=()):
         return [(a["email"], dict(subject="Confirm your AGSIST ad", paras=[
             "Hi, thanks for putting %s on AGSIST: %s." % (quoted(a["company"]), what(a)),
             "Click below to confirm it was you. Then it goes to Sig, who reads every ad himself.",
-            "The first month is free. After that it's %s a month, invoiced, and you can cancel any time by replying." % price,
+            "The price is %s. %s" % (both, PAY_TERMS),
             "Didn't ask for this? Ignore this email and nothing happens."], button=("CONFIRM MY AD", go)))]
     if action == "notify":
         lines = ["New AGSIST sponsor waiting for you: %s." % what(a)] + ad_lines(a) + [
             "Contact: %s, %s%s." % (a.get("contact") or "?", a["email"], (", " + a["phone"]) if a.get("phone") else ""),
-            "Price: first month free, then %s a month." % price]
+            "Price: %s. Paid at booking, by card or a yearly invoice by mail (net 30). Money back if they ask inside 30 days." % both]
         ct = card_tier(a)
         if ct is None:
             lines.append("This slot is no longer sold (rate card of Oct 29, 2026). Decline it, or offer a State or Cash Bids slot.")
@@ -519,23 +529,22 @@ def emails_for(action, a, base, secret, card, today, sig, slots=()):
         elif ct not in SELF_SERVE:
             lines.append("Daily Sponsor: approving tells you to set it up by hand (the briefing card has its own proof and approval).")
         else:
-            lines.append("Approve and it goes live within the hour; the free month starts that day.")
+            lines.append("Approve and it goes live within the hour.")
         return [(sig, dict(subject="New sponsor: %s, %s" % (a["company"], what(a)), paras=lines,
                            button=("APPROVE", dec("approve")), links=[("Decline", dec("decline"))]))]
     if action == "golive":
         start = date.fromisoformat(a["start"])
-        free_end = add_months(start, 1) - timedelta(days=1)
+        refund_by = start + timedelta(days=29)
         where = (SITE + "/" + a["_page"].lstrip("/")) if a.get("_page") else SITE
         return [(a["email"], dict(subject="You're live on AGSIST", paras=[
             "%s is now on AGSIST: %s. See it: %s" % (a["company"], what(a), where)] + (
-            ["Your own report page, updated every morning, with the views and clicks on your ad. It is the day-30 report: %s" % a["_portal"]]
+            ["Your own report page, updated every morning, with the views and clicks on your ad: %s" % a["_portal"]]
             if a.get("_portal") else []) + [
-            "Your free month runs %s to %s. Then one email asks yes or no. Say yes and it is %s a month from %s, invoiced, month to month. No reply means the ad comes down and nothing is owed." % (
-                fmt(start), fmt(free_end), price, fmt(free_end + timedelta(days=1))),
+            "Your ad runs from %s at %s. Money back if you ask by %s." % (fmt(start), both, fmt(refund_by)),
             "Want the copy changed, or to stop? Just reply to this email."])),
                 (sig, dict(subject="Live: %s, %s" % (a["company"], what(a)), paras=[
-                    "%s went live today. Free through %s; first invoice (%s) due %s, only after a yes." % (
-                        a["company"], fmt(free_end), price, fmt(free_end + timedelta(days=1)))] + (
+                    "%s went live today at %s. Money back if they ask by %s." % (
+                        a["company"], both, fmt(refund_by))] + (
                     ["Their report page: %s" % a["_portal"]] if a.get("_portal") else []),
                     links=[("End it (frees the slot)", dec("end"))]))]
     if action == "daily":
@@ -558,23 +567,15 @@ def emails_for(action, a, base, secret, card, today, sig, slots=()):
         return [(a["email"], dict(subject="About your AGSIST ad", paras=[
             "Hi %s, thanks for your interest in AGSIST. Sig isn't able to run this one." % (a.get("contact") or "there"),
             "If you'd like to talk it over, just reply to this email."]))]
-    if action == "freeending":
-        start = date.fromisoformat(a["start"])
-        free_end = add_months(start, 1) - timedelta(days=1)
-        return [(a["email"], dict(subject="Your free month on AGSIST ends %s" % fmt(free_end), paras=[
-            "Hi %s, your free month for %s ends %s." % (a.get("contact") or "there", a["company"], fmt(free_end)),
-            "Sig will send your day-30 report. Then one question: keep it, yes or no? Reply yes and it carries on month to month at %s a month, invoiced." % price,
-            "No reply means the ad comes down and nothing is owed. No charge for the free month."]))]
     if action == "invoice":
         start = date.fromisoformat(a["start"])
         k = (a.get("invoiced") or 0) + 1
         p0, p1 = add_months(start, k), add_months(start, k + 1) - timedelta(days=1)
         return [(sig, dict(subject="Invoice due: %s, %s" % (a["company"], price), paras=[
-            "Time to invoice %s for %s: %s, %s to %s (month %d after the free one)." % (
-                a["company"], what(a), price, fmt(p0), fmt(p1), k),
+            "Time to invoice %s for %s: %s, %s to %s (month %d; the first was paid at booking)." % (
+                a["company"], what(a), price, fmt(p0), fmt(p1), k + 1),
             "Bill to: %s, %s%s." % (a.get("contact") or a["company"], a["email"], (", " + a["phone"]) if a.get("phone") else ""),
-            ("Only if they said yes on day 30. No yes means end it: nothing is owed." if k == 1 else
-             "If they don't pay, end it and the slot goes back on the market.")],
+            "Skip it if they paid for the year. If they don't pay, end it and the slot goes back on the market."],
             links=[("End it (frees the slot)", dec("end"))]))]
     if action == "takedown":
         return [(sig, dict(subject="Ended: %s" % a["company"], paras=[
@@ -670,8 +671,6 @@ def main():
                 mark(a, notified=2)
             elif action == "declined":
                 mark(a, m=2)
-            elif action == "freeending":
-                mark(a, reminded=1)
             elif action == "invoice":
                 mark(a, invoiced=(a.get("invoiced") or 0) + 1)
         except Exception as e:                               # noqa: BLE001
@@ -744,10 +743,8 @@ def selftest():
 
     print("\nthe money calendar (start Sep 10)")
     live = lambda **k: A(status="live", start="2026-09-10", **k)
-    ck("free month: Sep 10 - Oct 9", add_months(date(2026, 9, 10), 1) - timedelta(days=1) == date(2026, 10, 9))
-    ck("Oct 7 (2 days before the end): the sponsor is told", P([live()]) == ["freeending"])
-    ck("told once", P([live(reminded=1)]) == [])
-    on = lambda d, **k: [x[0] for x in plan([live(reminded=1, **k)], now_ms, d, empty_sold, empty_sup, card, slots)]
+    ck("no free month: nothing is sent during the first month (paid at booking)", P([live()]) == [])
+    on = lambda d, **k: [x[0] for x in plan([live(**k)], now_ms, d, empty_sold, empty_sup, card, slots)]
     ck("Oct 10: first invoice reminder to Sig", on(date(2026, 10, 10)) == ["invoice"])
     ck("after it is sent, nothing until Nov 10", on(date(2026, 11, 9), invoiced=1) == [] and on(date(2026, 11, 10), invoiced=1) == ["invoice"])
     ck("Jan 31 start: month ends clamp (Feb 28)", add_months(date(2026, 1, 31), 1) == date(2026, 2, 28))
@@ -880,15 +877,16 @@ def selftest():
     em = emails_for("held", A(status="approved", slot="rent-nv"), "https://w.dev", "sec", card, today, "sig@x.com", slots)
     ck("a held state's email goes to Sig only and says nothing went live",
        len(em) == 1 and em[0][0] == "sig@x.com" and "NV" in em[0][1]["subject"] and any("Nothing went live" in p for p in em[0][1]["paras"]))
-    em = emails_for("freeending", A(status="live", start="2026-09-10"), "https://w.dev", "sec", card, today, "sig@x.com")
-    ck("the day-30 email asks yes or no, and no reply owes nothing",
-       any("yes or no" in p for p in em[0][1]["paras"]) and any("No reply means the ad comes down and nothing is owed" in p for p in em[0][1]["paras"]))
+    ck("there is no free-month email", emails_for("freeending", A(status="live", start="2026-09-10"), "https://w.dev", "sec", card, today, "sig@x.com") == [])
     em = emails_for("invoice", A(status="live", start="2026-09-10", invoiced=0), "https://w.dev", "sec", card, today, "sig@x.com")
-    ck("the first invoice only after a yes", any("Only if they said yes" in p for p in em[0][1]["paras"]))
+    ck("the first invoice is for month 2, the first was paid at booking", any("month 2; the first was paid at booking" in p for p in em[0][1]["paras"]))
+    em = emails_for("confirm", A(), "https://w.dev", "sec", card, today, "sig@x.com")
+    ck("the confirm email states the terms: pay at booking, money back inside 30 days, the card's price",
+       any("$49 a month, or $490 a year" in p and PAY_TERMS in p for p in em[0][1]["paras"]), em[0][1]["paras"])
     link = SITE + "/sponsor-report?r=smith-cashbids-" + "0" * 16
     em = emails_for("golive", A(status="live", start="2026-10-07", _page="/cash-bids", _portal=link), "https://w.dev", "sec", card, today, "sig@x.com")
     ck("the go-live email gives the sponsor its own report page", any(link in p for p in em[0][1]["paras"]) and any(link in p for p in em[1][1]["paras"]))
-    ck("and says no reply on day 30 owes nothing", any("No reply means the ad comes down and nothing is owed" in p for p in em[0][1]["paras"]))
+    ck("and says money back by day 30", any("Money back if you ask by Nov 5, 2026" in p for p in em[0][1]["paras"]), em[0][1]["paras"])
     try:
         email_links.check_hosts(msg("al@smith.com", fa="x@agsist.com", **em[0][1]))
         ck("the report link passes the link host check", True)

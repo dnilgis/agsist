@@ -627,7 +627,7 @@
         catch (e) { today = new Date().toISOString().slice(0, 10); }
         var sold = !!sp && sp.active !== false && !!sp.company && /^https?:\/\//.test(sp.url || '') &&
             /^\d{4}-\d{2}-\d{2}$/.test(sp.start || '') && sp.start <= today;
-        if (!sold) geoSponsor(noSponsor, rib);
+        if (!sold || document.querySelector('[data-state-spot]')) geoSponsor(noSponsor, rib);
         if (!sp || sp.active === false || !sp.company || !/^https?:\/\//.test(sp.url || '') ||
             !/^\d{4}-\d{2}-\d{2}$/.test(sp.start || '') || sp.start > today) return;
         rib.classList.add('ag-sponsor-ribbon--sold');

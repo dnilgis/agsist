@@ -110,7 +110,7 @@
   function toAd(e, surface) {
     var logo = /^(\/img\/sponsors\/(?:[a-z0-9_-]+\/)?[a-z0-9._-]+|https:\/\/[^\s"'<>\\`]+)\.(png|jpe?g|webp|svg)$/i.test(e.logo || '') ? e.logo : '';
     return {
-      label: 'Sponsor', advertiser: e.name, headline: e.headline, body: e.body,
+      label: 'Supported by', advertiser: e.name, headline: e.headline, body: e.body,
       facts: Array.isArray(e.facts) ? e.facts.filter(function (f) { return typeof f === 'string' && f; }).slice(0, 4) : [],
       cta_text: e.cta_text || 'Learn more',
       cta_url: withUtm(e.url, e.utm_campaign || ('geo-' + e.id), surface),
@@ -161,10 +161,19 @@
       '<p class="ss-txt">' + nums + (p && !soon ? '$' + num(p) + ' a month, one business.' : 'One business per state.') + '</p>' +
       '<a class="ss-go" href="/sponsor?state=' + st + '#state">See it</a></div>';
   }
+  /* A state page's spot that cannot carry its state's card on this page (the page has its own paid sponsor, or the
+     sitewide sponsor is on the same screen) keeps its room and says so, with no sponsor name: never an empty box,
+     never collapsed after the first paint. */
+  function heldHtml(st, lower) {
+    var name = NAMES[st];
+    if (!name) return '';
+    return '<div class="ss-box ss-held"><p class="ss-tag">' + esc(name) + ' sponsor card</p>' +
+      '<p class="ss-txt">' + (lower ? 'It is further down this page.' : 'It shows on other ' + esc(name) + ' pages.') + '</p></div>';
+  }
   var SAMPLE = { id: 'sample', name: 'Your Business', states: [], headline: 'Your headline here',
     body: 'One or two lines about your business, for readers in this state.', cta_text: 'Visit', url: 'https://agsist.com/sponsor', logo: '' };
 
-  var api = { openHtml: openHtml, statePrice: statePrice, NAMES: NAMES, pageState: pageState, excluded: excluded, today: today, drawable: drawable, live: live, anyLive: anyLive,
+  var api = { openHtml: openHtml, heldHtml: heldHtml, statePrice: statePrice, NAMES: NAMES, pageState: pageState, excluded: excluded, today: today, drawable: drawable, live: live, anyLive: anyLive,
     choose: choose, withUtm: withUtm, toAd: toAd, regionOf: regionOf };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
 
@@ -239,19 +248,27 @@
   function spot() { return doc.querySelector('[data-state-spot]'); }
   function firstScreen(el) { try { return el.getBoundingClientRect().top < (root.innerHeight || doc.documentElement.clientHeight); } catch (x) { return false; } }
   function sitewideSold() { var l = doc.getElementById('ag-sw'); return !!(l && /sw-line--sold/.test(l.className) && shown(l)); }
+  var CSS = '/components/geo-sponsor.css?v=2';
+  function css() { return need('link', 'href', CSS, function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }); }
+  function hold(lower) {
+    var sp = spot(), st = sp && sp.getAttribute('data-state-spot');
+    var html = st ? heldHtml(st, lower) : '';
+    if (html) css().then(function () { sp.innerHTML = html; });
+  }
   function draw(e, surface, rib, preview) {
+    var onSpot = surface === 'state-page' || surface === 'preview-state';
     Promise.all([
       need('link', 'href', '/components/sponsor-ad.css?v=3', function () { return !!doc.querySelector('link[href*="/components/sponsor-ad.css"]'); }),
       need('link', 'href', '/components/geo-sponsor.css?v=2', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
-      need('script', 'src', '/components/sponsor-ad.js?v=3', function () { return !!root.AgsistAd; })
+      need('script', 'src', '/components/sponsor-ad.js?v=4', function () { return !!root.AgsistAd; })
     ]).then(function () {
-      if (!root.AgsistAd || (!preview && soldOnPage())) return;
+      if (!root.AgsistAd || (!preview && soldOnPage())) { if (onSpot) hold(false); return; }
       var html = root.AgsistAd.render(toAd(e, surface), surface, preview ? {} : { slot: 'geo-' + e.id });
       if (!html) return;
       var box = doc.createElement('div');
       box.className = 'geo-spon';
       box.innerHTML = html;
-      var sp = surface === 'state-page' || surface === 'preview-state' ? spot() : null;
+      var sp = onSpot ? spot() : null;
       if (sp && !(sitewideSold() && firstScreen(sp))) {
         box.className = 'geo-spon geo-spon--spot';
         sp.innerHTML = '';
@@ -259,8 +276,8 @@
         return;
       }
       var where = anchor(rib, preview);
+      if (sp) sp.innerHTML = heldHtml(sp.getAttribute('data-state-spot'), !!where);
       if (!where) return;
-      if (sp) sp.hidden = true;
       box.style.cssText = 'margin:1.5rem 0;max-width:760px';
       if (where.mode === 'before') where.el.parentNode.insertBefore(box, where.el); else where.el.appendChild(box);
       if (where.el === rib) rib.hidden = true;
@@ -272,7 +289,7 @@
     if (!sp) return;
     Promise.all([getJSON('/data/rate-card.json', 4000, { cache: 'no-cache' }).catch(function () { return null; }),
                  getJSON('/data/sponsor-spots.json', 4000, { cache: 'no-cache' }).catch(function () { return null; }),
-                 need('link', 'href', '/components/geo-sponsor.css?v=2', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); })]).then(function (r) {
+                 css()]).then(function (r) {
       var html = openHtml(st, r[0], r[1]);
       if (html) sp.innerHTML = html;
     });
@@ -299,14 +316,14 @@
       }
       var e = choose(data, ps, day, false);
       if (ps && !e && spot()) {
-        return prfSold(ps, day).then(function (sold) { if (!sold) drawOpen(ps); });
+        return drawOpen(ps);
       }
       if (!anyLive(data, day)) return;
       var go = e ? Promise.resolve({ e: e, st: ps, s: 'state-page' })
         : lookup().then(function (rc) { var x = choose(data, rc, day, false); return x && { e: x, st: rc, s: 'reader-state' }; });
       return go.then(function (r) {
         if (!r) return;
-        return prfSold(ps || r.st, day).then(function (sold) { if (!sold) draw(r.e, r.s, rib, false); });
+        return prfSold(ps || r.st, day).then(function (sold) { if (!sold) draw(r.e, r.s, rib, false); else if (r.s === 'state-page') hold(false); });
       });
     }).catch(function () { if (ps && spot()) drawOpen(ps); });
   }

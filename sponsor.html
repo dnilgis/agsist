@@ -56,7 +56,8 @@
     .sp-reach{font-size:.98rem;margin:0 0 .6rem;max-width:64ch;}
     .sp-reach strong{color:var(--text);}
     .sp-src{color:var(--text-muted);font-size:.85rem;}
-    .sp-jump a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px;}
+    .sp-jump a,.sp-contact a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px;display:inline-block;padding:12px 0;margin:-12px 0;}
+    .sp-contact{font-size:.92rem;margin:.4rem 0 0;color:var(--text-muted);}
     .sp-h2{font-family:var(--font-display);font-size:1.35rem;color:var(--text);margin:2.2rem 0 .9rem;scroll-margin-top:84px;}
     .sp-spot{border:1px solid var(--border);border-radius:14px;padding:1.2rem 1.25rem 1.3rem;margin:0 0 1.2rem;background:var(--surface);scroll-margin-top:84px;}
     .sp-spot-head{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.3rem 1rem;}
@@ -95,7 +96,7 @@
     .sp-note{max-width:64ch;}
     .sp-form{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem;border:1px solid var(--border);border-radius:14px;padding:1.1rem 1.2rem;background:var(--surface);}
     .sp-form .full{grid-column:1/-1;}
-    @media(max-width:640px){.sp-form{grid-template-columns:1fr;}}
+    @media(max-width:640px){.sp-form{grid-template-columns:1fr;padding:.9rem .75rem;}.sp-form #spa-go{width:100%;}}
     .sp-f label,.sp-f legend{display:block;font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.3rem;}
     .sp-f small{font-weight:500;color:var(--text-muted);}
     fieldset.sp-f{border:0;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;align-items:center;}
@@ -151,6 +152,7 @@
         <p class="sp-sub page-lede">Two spots, one business in each. Pay when you book. Money back if you ask inside 30 days.</p>
         <p class="sp-reach">Readers come here for cash bids, rain, rent and farm numbers: <strong><span data-a="engaged">9,588</span> engaged visits</strong> and <span data-a="views">25,515</span> page views in the 28 days <span data-a="win">Oct 13 to Nov 9, 2026</span>. <span class="sp-src">Google Analytics.</span></p>
         <p class="sp-jump"><a href="#sitewide">Sitewide line</a> &middot; <a href="#state">State card</a> &middot; <a href="#book">Book</a></p>
+        <p class="sp-contact">Rather talk first? Call <a href="tel:+17157972428">715-797-2428</a> or email <a href="mailto:sig@agsist.com?subject=AGSIST%20sponsor%20spot">sig@agsist.com</a>.</p>
       </section>
 
       <h2 class="sp-h2">What you get</h2>
@@ -185,7 +187,7 @@
           <div class="sp-pic-page" aria-hidden="true"><i style="width:60%"></i><i></i></div>
           <div class="sp-pic-card">
             <div class="sp-pic-logo" aria-hidden="true">Logo</div>
-            <div><p class="sp-pic-tag">Sponsor &middot; Your Business</p><p class="sp-pic-h">Your headline here</p><p class="sp-pic-b">One or two lines for readers in your state.</p></div>
+            <div><p class="sp-pic-tag">Supported by Your Business</p><p class="sp-pic-h">Your headline here</p><p class="sp-pic-b">One or two lines for readers in your state.</p></div>
           </div>
           <div class="sp-pic-page" aria-hidden="true"><i style="width:80%"></i><i style="width:66%"></i></div>
           <figcaption>Your card right under the answer on cash bids, cash rent, PRF, ARC or PLC, Farmland Atlas, yield, hail and rain pages for your state.</figcaption>
@@ -224,7 +226,7 @@
         <div class="sp-f full"><label for="spa-headline">Ad line <small>(one line, up to 90 characters)</small></label><input id="spa-headline" maxlength="90"></div>
         <div class="sp-f full"><label for="spa-url">Link</label><input id="spa-url" type="url" maxlength="300" placeholder="https://" autocomplete="url"></div>
         <p class="sp-f full sp-small">A logo or a picture? Pictures are welcome: reply to our email with the file.</p>
-        <label class="sp-f full sp-terms"><input type="checkbox" id="spa-terms"> <span id="spa-terms-text">I understand: we check the ad by hand before it runs. Money back if I ask inside 30 days.</span></label>
+        <label class="sp-f full sp-terms"><input type="checkbox" id="spa-terms" required> <span id="spa-terms-text">I understand: we check the ad by hand before it runs. Money back if I ask inside 30 days.</span></label>
         <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="sp-hp" aria-hidden="true">
         <div class="sp-f full"><button type="submit" class="sp-btn" id="spa-go">Mail me a yearly invoice</button></div>
         <p class="sp-msg full" id="spa-msg" role="status" aria-live="polite"></p>
@@ -281,6 +283,24 @@
 </div>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/sponsor-apply.js?v=10" defer></script>
+  <script>
+  /* The page is written with today's figures (scripts/bake_audience.py, from data/audience.json). On load it
+     re-reads the same file, so the numbers cannot go stale; if the file fails to load, the written text stays. */
+  (function () {
+    var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function d(s) { var p = String(s || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) : ''; }
+    function span(a, b) { return String(a).slice(0, 4) === String(b).slice(0, 4) ? d(a) + ' to ' + d(b) + ', ' + String(b).slice(0, 4) : d(a) + ', ' + String(a).slice(0, 4) + ' to ' + d(b) + ', ' + String(b).slice(0, 4); }
+    function n(x) { return typeof x === 'number' && x > 0 ? x.toLocaleString('en-US') : ''; }
+    function set(k, v) { if (v) [].forEach.call(document.querySelectorAll('[data-a="' + k + '"]'), function (el) { el.textContent = v; }); }
+    fetch('/data/audience.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (a) {
+      var t = a && a.totals && a.totals['28d'];
+      if (!t) return;
+      set('engaged', n(t.engaged)); set('views', n(t.views));
+      var w = (a.ranges || []).filter(function (x) { return x.id === '28d'; })[0];
+      if (w && w.start && w.end) set('win', span(w.start, w.end));
+    });
+  })();
+  </script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>
