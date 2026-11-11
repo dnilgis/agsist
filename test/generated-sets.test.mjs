@@ -142,10 +142,12 @@ test("the guard: data/ids is built on main; a pull request that carries it fails
   assert.match(r.stdout, /^data\/ids is built on main; change the builder and its tests\.$/m);
   assert.match(r.stdout, /changes 2 file\(s\) there, e\.g\. data\/ids\/basis-join\/IA\.json, data\/ids\/elevators\.json \(rebuilt on main by fetch_bids\.yml/);
   assert.doesNotMatch(r.stdout, /generated set\(s\)/, "no page set is named when only data/ids is carried");
-  // any file under data/ids, the hand-kept ones too; nothing next to it (data/idsx) is caught
-  const one = fixture({ "data/ids/parcel-rules.json": "{}\n" });
+  // only what the bids job writes: one built file fails; the hand-kept inputs beside it and look-alike paths pass
+  const one = fixture({ "data/ids/river.json": "{}\n" });
   assert.equal(runGuard(one, { user: { login: "dnilgis" }, labels: [] }).status, 1);
-  const near = fixture({ "data/idsx/a.json": "{}\n", "data/ids.json": "{}\n" });
+  const near = fixture({ "data/idsx/a.json": "{}\n", "data/ids.json": "{}\n", "data/ids/basis-joinx.json": "{}\n",
+    "data/ids/geo-crosswalk.json": "{}\n", "data/ids/ownership-changes.json": "{}\n", "data/ids/parcel-key.js": "//\n",
+    "data/ids/parcel-key-fixtures.json": "{}\n", "data/ids/parcel-rules.json": "{}\n" });
   assert.equal(runGuard(near, { user: { login: "dnilgis" }, labels: [] }).status, 0);
   // both kinds at once: both named
   const both = fixture({ "data/ids/companies.json": "{}\n", "rain/iowa/story-county.html": "new\n" });
@@ -167,6 +169,10 @@ test("data/ids: main rebuilds it on every bids run from the engine copy; the joi
   const G = JSON.parse(py("import generated_sets as G; print(json.dumps(G.BUILT_ON_MAIN))"));
   assert.deepEqual(Object.keys(G), ["data/ids"]);
   const fb = read(".github/workflows/fetch_bids.yml");
+  // the guarded files are exactly what fetch_bids.yml stages under data/ids
+  const staged = new Set();
+  for (const l of fb.split("\n").filter((l) => /git add/.test(l))) for (const m of l.matchAll(/data\/ids\/[\w.-]+/g)) staged.add(m[0]);
+  assert.deepEqual([...staged].sort(), [...G["data/ids"].paths].sort());
   assert.match(fb, /- name: Engine checkout\n        uses: \.\/\.github\/actions\/engine\n/);
   assert.match(fb, /python scripts\/build_ids\.py /);
   assert.match(fb, /python scripts\/build_basis_join\.py /);

@@ -17,8 +17,9 @@ THE RULES IT ENFORCES
              generated pages are built on main; change the builder and its fixture tests only. Two ways past:
              the pull request comes from the data bot, or the lead adds the label regen-ok (rare: a set with no
              main job, or a one-time repair).
-             The same for every file under BUILT_ON_MAIN (data/ids: the elevator ids and basis join, rewritten
-             on main by the bids job every 15 minutes, so a branch that carries them conflicts within minutes).
+             The same for the files in BUILT_ON_MAIN (data/ids: the elevator ids and basis join the bids job
+             rewrites on main every 15 minutes, so a branch that carries them conflicts within minutes; the
+             hand-kept inputs in data/ids are not guarded).
   prebuild   (scripts/dev/checks.sh with AGSIST_GEN_BASE, the PR checks) a pull request that changes an offline
              set's code gets that set rebuilt in the CI copy before the checks, the same way the built files are
              (AGSIST_PREBUILD), so the --check and the tests see what main will serve after the rebuild. Each
@@ -241,10 +242,17 @@ def matches(pats, path):
     return hit
 
 
-# data folders built on main by a job outside SETS: a pull request never carries them, it changes the builder
-# and its tests (the tests build into their own folder). Same two ways past as a set.
+# data built on main by a job outside SETS: a pull request never carries these files, it changes the builder and
+# its tests (the tests build into their own folder). Only what the job writes (fetch_bids.yml git add lines):
+# the hand-kept inputs next to them (geo-crosswalk.json, ownership-changes.json, parcel-*) stay editable.
+# Same two ways past as a set.
 BUILT_ON_MAIN = {
-    "data/ids": "fetch_bids.yml (scripts/build_ids.py, scripts/build_basis_join.py) on every bids run",
+    "data/ids": {
+        "paths": ["data/ids/elevators.json", "data/ids/elevator-ids.json", "data/ids/ambiguous.json",
+                  "data/ids/board-parents.json", "data/ids/companies.json", "data/ids/river.json",
+                  "data/ids/basis-join"],
+        "by": "fetch_bids.yml (scripts/build_ids.py, scripts/build_basis_join.py) on every bids run",
+    },
 }
 
 SHARED_WRITES = {"data/pointers"}   # written by many builders and jobs: staged on main, never guarded
@@ -330,8 +338,8 @@ def guard(files, author="", labels=(), sets=SETS):
         o = owner(f, sets)
         if o:
             hits.setdefault(o, []).append(f)
-        for d in BUILT_ON_MAIN:
-            if _under(f, d):
+        for d, b in BUILT_ON_MAIN.items():
+            if any(_under(f, w) for w in b["paths"]):
                 data.setdefault(d, []).append(f)
     if not hits and not data:
         return True, "no generated page set is changed by hand"
@@ -345,7 +353,7 @@ def guard(files, author="", labels=(), sets=SETS):
         fs = sorted(data[d])
         lines.append("%s is built on main; change the builder and its tests." % d)
         lines.append("  This pull request changes %d file(s) there, e.g. %s (rebuilt on main by %s)." % (
-            len(fs), ", ".join(fs[:3]), BUILT_ON_MAIN[d]))
+            len(fs), ", ".join(fs[:3]), BUILT_ON_MAIN[d]["by"]))
     if hits:
         lines += ["generated pages are built on main; change the builder and its fixture tests only.",
                   "This pull request changes the output of %d generated set(s):" % len(hits)]
