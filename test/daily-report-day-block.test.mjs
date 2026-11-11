@@ -78,12 +78,53 @@ G.check_number_binding(cur, lambda c, m: issues.append(("FAIL", c, m)), lambda c
                        archive_dir=tempfile.mkdtemp(), prices=prices)
 print(json.dumps([i[0] + " " + i[1] for i in issues if i[1].startswith("bind:cents") or i[1].startswith("bind:pct")]))`);
 
-test("gate: Tuesday's report-day settle move, named as Tuesday's, is checked against the block", () => {
-  assert.deepEqual(verdict("Dec corn settled Tuesday up 9¾ cents at $4.49 on the report."), []);
-  assert.deepEqual(verdict("Nov soybeans settled up 42¼ cents on Tuesday."), []);
+test("gate: the report-day settle move, named as Tuesday's, with its contract month, passes", () => {
+  for (const line of [
+    "Dec corn settled Tuesday up 9¾ cents at $4.49.",
+    "Jan soybeans settled Tuesday up 39¾ cents.",
+    "Nov soybeans settled up 42¼ cents on Tuesday.",
+  ]) assert.deepEqual(verdict(line), [], line);
 });
 
-test("gate: the same figure without the day named, or a figure not on file, still fails as before", () => {
-  assert.ok(verdict("Corn is up 9¾ cents.").some((x) => x.startsWith("FAIL bind:cents")));
-  assert.ok(verdict("Soybeans settled Tuesday up 43½ cents at $12.25¾.").some((x) => x.startsWith("FAIL bind:cents")));
+/* Checker lines (board: corn -2.5¢ today, beans -5¢; report day corn +9.75, Nov beans +42.25,
+   Jan +39.75, wheat +4.75). Each must still be flagged by the gate. */
+const MUST_FAIL = [
+  "Corn is up 9¾ cents this morning, after Tuesday's report.",
+  "Corn is up 9¾ cents overnight following Tuesday's WASDE.",
+  "Corn fell 9¾ cents Tuesday.",
+  "Corn lost 2.2% on Tuesday.",
+  "Jan soybeans settled Tuesday up 42¼ cents.",
+  "Nov soybeans settled Tuesday up 39¾ cents.",
+  "March corn settled Tuesday up 9¾ cents.",
+  "Corn could move 9¾ cents on next Tuesday's report.",
+  "Corn may drop 9¾ cents by Tuesday, Nov 17.",
+  "Corn is up 9¾ cents today in a typical post report-day bounce.",
+  "Nov soybeans rose 40¼ cents Tuesday.",
+  "Nov soybeans rose 42¾ cents",
+  "Corn rose 10¼ cents Tuesday.",
+  "Corn is up 9¾ cents.",
+  "Soybeans settled Tuesday up 43½ cents at $12.25¾.",
+];
+
+test("gate: every line that is not plainly the report day's settle move is still flagged", () => {
+  for (const line of MUST_FAIL) {
+    const got = verdict(line);
+    assert.ok(got.length > 0, `not flagged: ${line}`);
+    if (/cents/.test(line)) assert.ok(got.some((x) => x.startsWith("FAIL bind:cents")), `cents not blocking: ${line} ${got}`);
+  }
+});
+
+test("the report-day match itself refuses each checker line", () => {
+  const got = py(FIXTURE + `
+b = rds.build(prices, date(2026, 11, 11), None)
+import briefing_gate as G
+lines = ${JSON.stringify(MUST_FAIL)}
+out = []
+for s in lines:
+    key = "beans" if "oybean" in s else "corn"
+    vals = [v for v, _ in G._cent_claims(s)] + [float(m.group(1)) for m in G.PCT.finditer(s)]
+    kinds = ["cents"] * len(G._cent_claims(s)) + ["pct"] * len(list(G.PCT.finditer(s)))
+    out.append([s for v, k in zip(vals, kinds) if rds.matches(s, key, v, b, k)])
+print(json.dumps([x for x in out if x]))`);
+  assert.deepEqual(got, []);
 });
