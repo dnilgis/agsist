@@ -39,7 +39,7 @@ test("390 px: the button opens the replay; caption, tags, credits and sources fr
   const s = await setup(390);
   try {
     const { pg } = s;
-    await pg.goto(`http://127.0.0.1:${s.port}/rain-radar?lat=${F.FIELD.lat}&lon=${F.FIELD.lon}&label=${encodeURIComponent(F.FIELD.label)}`);
+    await pg.goto(`http://127.0.0.1:${s.port}/rain?lat=${F.FIELD.lat}&lon=${F.FIELD.lon}&label=${encodeURIComponent(F.FIELD.label)}#radar`);
     await pg.waitForSelector("#rr-replay", { state: "visible", timeout: 20000 });
     assert.equal(await pg.evaluate(() => !!window.AgStormReplay), false, "nothing of the replay loads before the tap");
     await pg.click("#rr-replay");
@@ -164,7 +164,7 @@ test("reduced motion: no autoplay, the replay opens on the hail", { skip, timeou
   const s = await setup(390, {}, { reducedMotion: "reduce" });
   try {
     const { pg } = s;
-    await pg.goto(`http://127.0.0.1:${s.port}/rain-radar?lat=${F.FIELD.lat}&lon=${F.FIELD.lon}`);
+    await pg.goto(`http://127.0.0.1:${s.port}/rain?lat=${F.FIELD.lat}&lon=${F.FIELD.lon}#radar`);
     await pg.waitForSelector("#rr-replay", { state: "visible", timeout: 20000 });
     await pg.click("#rr-replay");
     await pg.waitForSelector(".sr", { timeout: 20000 });
