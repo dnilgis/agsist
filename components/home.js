@@ -1921,27 +1921,11 @@ try {
     try{var wl=document.getElementById('wx-loading');if(wl&&/Detecting/.test(wl.textContent||'')&&typeof window.showZipEntry==='function')window.showZipEntry();}catch(e){}
     var bar=document.getElementById('bids-geo-bar');if(bar)bar.style.display='none';
     area.innerHTML='<div class="hn" id="bids-noloc"><p class="hn-h">See the bids near you.</p>'
-      +'<p class="hn-p">Type your ZIP or use your location for the nearest elevators, or pick a state to see its basis now.</p>'
-      +'<div class="hn-pick"><button type="button" class="hn-zip">Enter ZIP</button>'
-      +'<button type="button" class="hn-loc">Use my location</button>'
+      +'<p class="hn-p">Type your ZIP at the top of the page for the nearest elevators, or pick a state to see its basis now.</p>'
+      +'<div class="hn-pick">'
       +'<label class="hn-sl"><span class="visually-hidden">State</span><select class="hn-sel" disabled><option value="">Pick a state</option></select></label></div>'
       +'<div class="hn-out" aria-live="polite"></div></div>';
     var box=area.querySelector('.hn'),sel=box.querySelector('.hn-sel'),doc=null;
-    /* The page has one ZIP box, in the hero band (agsistOpenZip opens and
-       focuses it); the in-card row only when the band is missing. */
-    box.querySelector('.hn-zip').addEventListener('click',function(){
-      if(typeof window.agsistOpenZip==='function'){window.agsistOpenZip();return;}
-      var row=document.getElementById('bids-zip-row'),z=document.getElementById('bids-zip');
-      if(row)row.style.display='block';if(z)z.focus();
-    });
-    /* 2026-10-19: the browser is asked only on this tap. geo.js
-       draws the bids over this box when a place lands, and says so here
-       when none does. */
-    box.querySelector('.hn-loc').addEventListener('click',function(){
-      if(typeof window.requestGeo!=='function'){box.querySelector('.hn-h').textContent='Location is not ready yet. Type your ZIP.';return;}
-      box.querySelector('.hn-h').textContent='Waiting for your location\u2026';
-      window.requestGeo();
-    });
     sel.addEventListener('change',function(){
       var v=sel.value;
       try{if(v){localStorage.setItem('agsist-pd-state',v);localStorage.setItem('agsist-rma-state',AB[v]);}}catch(e){}
