@@ -1,5 +1,7 @@
 name: Funds This Week (by hand)
 
+#   schedule:
+#     - cron: '13 21 * * 1,5'
 
 on:
   workflow_dispatch:
