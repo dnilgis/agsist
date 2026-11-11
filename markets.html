@@ -400,6 +400,9 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
        different months, so label it instead of printing a phantom move */
     if(ce&&roll){ce.textContent='contract roll'+when;ce.className='pc-chg-val roll';ce.style.color='var(--gold,#d4a23f)';return;}
     if(ce&&net!=null){ce.textContent=chgStr(net,pct,isGrain,key)+when;ce.className='pc-chg-val '+chgCls(net);ce.style.color='';}
+    /* no change in the file (withheld: the price and the settle before it are not one pair, price-local.js change):
+       the baked change beside a refreshed price is cleared, never left standing */
+    else if(ce&&val!=null){ce.textContent='';ce.className='pc-chg-val nc';ce.style.color='';}
   }
   function setRange(sym,key,q){
     var d=q[sym];if(!d||d.close==null||d.wk52_lo==null)return;

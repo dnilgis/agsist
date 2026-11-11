@@ -147,7 +147,7 @@
   function roll(quotes, now) {
     var out = {}, k;
     if (!quotes) return quotes;
-    for (k in quotes) out[k] = pairGuard(quotes[k]);
+    for (k in quotes) out[k] = pairGuard(quotes[k], k);
     function dead(x) { return !!(x && x.ticker && expired(x.ticker, now)); }
     for (k in out) if (/^[a-z]+-[a-z]{3}\d{2}$/.test(k) && dead(out[k])) delete out[k];
     for (k in out) {
@@ -191,24 +191,34 @@
      settle, or when that settle disagrees with the one on file for its day.
      Returns { net, pct, vs, kind } or null; vs is the ISO day of the settle
      the change is from ('' when the file does not say). */
-  function pairBad(q) {
+  /* the markets that settle (price_pair.SETTLE_ROOTS); with no key, a futures ticker or a close_kind says so */
+  var SETTLE_ROOTS = { corn: 1, beans: 1, wheat: 1, kcwheat: 1, mplswheat: 1, oats: 1, meal: 1, soyoil: 1, rice: 1, cattle: 1, feeders: 1,
+    hogs: 1, milk: 1, cotton: 1, crude: 1, natgas: 1, gold: 1, silver: 1 };
+  function judged(q, key) {
+    if (key) return !!SETTLE_ROOTS[String(key).split('-')[0]];
+    return !!(q.close_kind || /=F$|\.(CBT|CME|NYM|CMX|NYB)$/.test(String(q.ticker || '')));
+  }
+  var ISO = /^\d{4}-\d\d-\d\d$/;
+  function pairBad(q, key) {
     var cd = q.close_date || '', pd = q.prev_date || '', o = q.open;
     if (num(o) && Math.abs(q.netChange - (q.close - o)) > 0.005) return true;
-    if (!q.close_kind || !/^\d{4}-\d\d-\d\d$/.test(cd) || !/^\d{4}-\d\d-\d\d$/.test(pd)) return false;
-    if (pd >= cd) return true;
+    if (!judged(q, key) || !ISO.test(cd) || !ISO.test(pd)) return false;
+    /* pd must be THE session before cd: a trading day, earlier, with no trading day or settle on file between */
+    if (pd >= cd || !isTradingDay(pd)) return true;
     var seen = Object.keys(q.settles || {}).concat(Object.keys(q.day_last || {}));
     for (var i = 0; i < seen.length; i++) if (seen[i] > pd && seen[i] < cd) return true;
     for (var t = tOf(pd) + DAY, n = 0; t < tOf(cd) && n < 40; t += DAY, n++) if (isTradingDay(isoOf(t))) return true;
+    if (!num(o)) return true;                  /* a change with no previous settle beside it */
     var s = q.settles && q.settles[pd];
-    return num(s) && num(o) && !q.repaired_from && Math.abs(s - o) > 0.005;
+    return num(s) && !q.repaired_from && Math.abs(s - o) > 0.005;
   }
-  function change(q) {
-    if (!q || q.change_withheld || !num(q.close) || !num(q.netChange) || pairBad(q)) return null;
+  function change(q, key) {
+    if (!q || q.change_withheld || !num(q.close) || !num(q.netChange) || pairBad(q, key)) return null;
     return { net: q.netChange, pct: num(q.pctChange) ? q.pctChange : null, vs: q.prev_date || '', kind: q.prev_kind || '' };
   }
   /* a copy of q with no change when change() rejects its pair (roll() applies it to every quote) */
-  function pairGuard(q) {
-    if (!q || typeof q !== 'object' || q.change_withheld || !num(q.netChange) || !num(q.close) || !pairBad(q)) return q;
+  function pairGuard(q, key) {
+    if (!q || typeof q !== 'object' || q.change_withheld || !num(q.netChange) || !num(q.close) || !pairBad(q, key)) return q;
     var c = {}, f;
     for (f in q) c[f] = q[f];
     c.netChange = c.pctChange = c.open = c.prev_date = null;

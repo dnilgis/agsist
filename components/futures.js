@@ -2026,7 +2026,10 @@ AG.json('/data/prices.json')
         __sn.style.minHeight=__sn.offsetHeight+'px';
         __sn.innerHTML=heroLabel+' '+__cr+' '+__v+' <strong>'+grain$(front.close)+'</strong>'+(front.stale?' (last good quote)':'')+(__w?' &middot; '+(__k==='settle'||__k==='updated'?'as of ':__k==='bell'?'at ':'')+__w:'')+'.';
       }
-      var hc=chgTxt(front.netChange,front.pctChange,front.roll);setEl('hero-chg',hc.t,hc.c);
+      /* after the bell the change names its settle where the line has room: "▼ −¼¢ (−0.06%) vs Nov 10" (AgPxStamp.change) */
+      var hc=chgTxt(front.netChange,front.pctChange,front.roll),__hp=window.AgPxStamp&&AgPxStamp.stampParts?AgPxStamp.stampParts(front,data.fetched):null;
+      if(hc.t&&__hp&&__hp.kind==='bell'&&__hp.vs)hc.t+=' vs '+__hp.vs;
+      setEl('hero-chg',hc.t,hc.c);
       /* 2026-10-20: the overnight electronic trade, when the file has one,
          beside the settle (price-local.js overnight). Titles keep the settle. */
       heroOvernight(front);
