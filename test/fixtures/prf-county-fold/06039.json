@@ -1,5 +1,5 @@
 {
- "about": "A county page as it was before the fold (prf/california/madera-county.html, origin/main 9c39a7991be3): its example, figures, tables and paragraphs, and the county view the builder wrote from the same USDA files.",
+ "about": "A county page as it was before the fold (prf/california/madera-county.html, origin/main f053f709b0e7): its example, figures, tables and paragraphs, and the county view the builder wrote from the same USDA files.",
  "page": "prf/california/madera-county.html",
  "old": {
   "example": "<b>Example:</b> the calculator opens on April to May and June to July, and this county does not offer both for grazing, so no example is priced here. The calculator prices the months it does offer.",
@@ -39,8 +39,7 @@
    "At 90% coverage, across the grids that touch the county that price each pair of months (19 in all; a row priced on fewer says how many): first the middle grid for that pair of months (it can be a different grid in each row), then the lowest and highest. The premium is the full rate per $100 of protection; USDA pays 59% at 70%, 59% at 75%, 55% at 80%, 55% at 85%, 51% at 90%. Normal is the grid&rsquo;s average precipitation for those months. A year counts, of the 75 from 1951 to 2025, when the grid&rsquo;s index for those months came in under 90% of normal, which is when a 90% policy pays.",
    "The wettest pair of months here is January to February (6.92 in on the middle of the 19 grids) and the driest is July to August (0.06 in). Coverage costs least in November to December and most in September to October. The months to insure are the ones when a dry spell costs you grass or hay, not the cheapest ones.",
    "The index for each pair of months as a percent of normal (100 is a normal year), on the middle of the 19 grids (each grid has its own; the calculator shows yours). Shaded cells came in under 90%, where a 90% policy on those months would have paid. 2026 shows the 6 pairs of months USDA has published so far.",
-   "Each grid&rsquo;s normal precipitation over a year, its driest year since 1951 as a percent of normal, 2025 as a percent of normal, and how many of 75 years as a whole came in under 90%. The driest year on the record here was 2013.",
-   "At 90% coverage a pair of months pays when the index comes in under 90% of normal. Over 1951 to 2025, on the middle of the grids that price each pair of months, that happened in 36 to 44 of 75 years, depending on the months. Run at 2027 rates, $1 of full premium at 90% would have paid back a middle $0.88 across the county&rsquo;s grids and months. That is the past record, not a forecast."
+   "Each grid&rsquo;s normal precipitation over a year, its driest year since 1951 as a percent of normal, 2025 as a percent of normal, and how many of 75 years as a whole came in under 90%. The driest year on the record here was 2013."
   ]
  },
  "view": {

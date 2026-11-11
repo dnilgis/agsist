@@ -1,5 +1,5 @@
 {
- "about": "A county page as it was before the fold (prf/iowa/adair-county.html, origin/main 9c39a7991be3): its example, figures, tables and paragraphs, and the county view the builder wrote from the same USDA files.",
+ "about": "A county page as it was before the fold (prf/iowa/adair-county.html, origin/main f053f709b0e7): its example, figures, tables and paragraphs, and the county view the builder wrote from the same USDA files.",
  "page": "prf/iowa/adair-county.html",
  "old": {
   "example": "<b>What it costs here at 2027 rates (USDA files read Nov 4, 2026):</b> you pay $444 a year, $4.44 an acre, for 100 acres of grazing at 90% coverage, productivity factor 100, half in April to May and half in June to July, on grid 25342, the middle of the county&rsquo;s 9 grids by premium. USDA pays $461 of the $905 full premium. Run over 1951 to 2025 at 2027 rates, it would have paid in 51 of 75 years, an average of $792 a year, or $7.92 an acre. That average is under the full premium of $905; it comes out above your share only because USDA pays the rest. That is the past record, not a forecast, and it leaves out the administrative fee. Example, not a recommendation.",
@@ -39,8 +39,7 @@
    "At 90% coverage, across the 9 grids that touch the county: first the middle of the 9 for that pair of months (it can be a different grid in each row), then the lowest and highest. The premium is the full rate per $100 of protection; USDA pays 59% at 70%, 59% at 75%, 55% at 80%, 55% at 85%, 51% at 90%. Normal is the grid&rsquo;s average precipitation for those months. A year counts, of the 75 from 1951 to 2025, when the grid&rsquo;s index for those months came in under 90% of normal, which is when a 90% policy pays.",
    "The wettest pair of months here is May to June (9.50 in on the middle of the 9 grids) and the driest is January to February (1.92 in). Coverage costs least in April to May and most in November to December. The months to insure are the ones when a dry spell costs you grass or hay, not the cheapest ones.",
    "The index for each pair of months as a percent of normal (100 is a normal year), on the middle of the 9 grids (each grid has its own; the calculator shows yours). Shaded cells came in under 90%, where a 90% policy on those months would have paid. 2026 shows the 6 pairs of months USDA has published so far.",
-   "Each grid&rsquo;s normal precipitation over a year, its driest year since 1951 as a percent of normal, 2025 as a percent of normal, and how many of 75 years as a whole came in under 90%. The driest year on the record here was 1988.",
-   "At 90% coverage a pair of months pays when the index comes in under 90% of normal. Over 1951 to 2025, on the middle of the 9 grids, that happened in 29 to 37 of 75 years, depending on the months. Run at 2027 rates, $1 of full premium at 90% would have paid back a middle $0.87 across the county&rsquo;s grids and months. That is the past record, not a forecast."
+   "Each grid&rsquo;s normal precipitation over a year, its driest year since 1951 as a percent of normal, 2025 as a percent of normal, and how many of 75 years as a whole came in under 90%. The driest year on the record here was 1988."
   ]
  },
  "view": {

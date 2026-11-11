@@ -241,27 +241,29 @@ test("every state page offers its slot near the top, once, with no price", () =>
   }
 });
 
-test("every county page carries the one-line offer for its own state near the top, and stays small", () => {
+test("every county address forwards to its state page, which carries that state's offer; the forward carries none", () => {
+  /* Nov 2026: the county pages folded into the state pages (scripts/build_prf_counties.py). A county is a
+     view on its state page, under that page's one offer band; the old address is a small forward. */
   let n = 0;
   for (const s of meta.states) {
     const dir = ROOT + "prf/" + slug(s.name);
     if (!existsSync(dir)) continue;
+    const state = readFileSync(ROOT + "prf/" + slug(s.name) + ".html", "utf8");
+    assert.equal((state.match(/data-prf-spon=/g) || []).length, 1, s.name + ": one offer on the state page");
+    assert.ok(state.includes(`data-prf-spon="state" data-prf-st="${s.st}"`), s.name);
+    assert.ok(state.indexOf('data-prf-spon="state"') < state.indexOf('id="county"'), s.name + ": the offer sits above the county view");
     for (const f of readdirSync(dir)) {
       if (!f.endsWith(".html")) continue;
       const rel = "prf/" + slug(s.name) + "/" + f;
       const h = readFileSync(ROOT + rel, "utf8");
-      const line = `<p class="prf-spon-band prf-spon-line" data-prf-spon="county" data-prf-st="${s.st}" data-prf-name="${s.name}"><span class="prf-spon-tag">For businesses</span> <a href="/prf-sponsor?state=${s.st}">Sponsor PRF in ${s.name} &rarr;</a></p>`;
-      const at = h.indexOf(line);
-      assert.ok(at > 0, rel + " lacks its state's offer line");
-      assert.equal((h.match(/data-prf-spon=/g) || []).length, 1, rel + ": one offer per page, not two");
-      assert.ok(at > h.indexOf('class="prf-lede"') && at < h.indexOf("<table"), rel + ": under the opening answer, before the tables");
-      assert.ok(h.includes(JS_TAG), rel);
-      assert.ok(!/founding|price on request/i.test(h), rel);
-      assert.ok(statSync(ROOT + rel).size < 40 * 1024, rel + " is over 40 KB");
+      if (h.includes('name="agsist-pointer"')) continue;   // a county that left USDA's files: a pointer page (test/pointer-pages.test.mjs)
+      assert.ok(h.includes(`url=/prf/${slug(s.name)}?county=${f.slice(0, -5)}#county"`), rel + " forwards to its state page");
+      assert.ok(!/data-prf-spon|prf-sponsor/.test(h), rel + ": no offer on a forward");
+      assert.ok(statSync(ROOT + rel).size < 1536, rel + " is over 1.5 KB");
       n++;
     }
   }
-  assert.equal(n, meta.counts.counties);
+  assert.ok(n >= meta.counts.counties - 50 && n <= meta.counts.counties, "forwards: " + n);
 });
 
 test("/prf: the offer band under Find your grid on the empty page (moved under the answer by script), the sponsor box beside the result, the script before prf.js", () => {

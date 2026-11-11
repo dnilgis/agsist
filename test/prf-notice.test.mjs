@@ -81,25 +81,27 @@ test("/prf: one ask holder under the answer, the component loaded, the byline sa
   assert.ok(read("scripts/make_prf_html.py").includes("data-prf-notice"), "from the generator, not a hand edit");
 });
 
-test("every PRF county page: one ask holder, on the grid its interval card opens on", () => {
+test("every PRF state page: one ask holder under the interval card, following the picked county's grid", () => {
+  /* Nov 2026: the county pages folded into the state pages. The card and the ask sit in the county view's
+     section and follow the picked county's grid (components/prf-county.js sends prf:grid); a forward at
+     each old county address opens the state page on that county. */
+  const meta = JSON.parse(read("data/prf/meta.json"));
   let n = 0;
-  for (const st of fs.readdirSync(path.join(ROOT, "prf"))) {
-    const dir = path.join(ROOT, "prf", st);
-    if (!fs.statSync(dir).isDirectory()) continue;
-    for (const f of fs.readdirSync(dir)) {
-      if (!f.endsWith(".html")) continue;
-      const h = fs.readFileSync(path.join(dir, f), "utf8");
-      const now = /data-grids="([\d,]+)" data-grid="(\d+)"/.exec(h);
-      const ask = [...h.matchAll(/<div class="prf-notice" data-prf-notice data-grid="(\d+)" hidden><\/div><script src="\/components\/prf-notice\.js\?v=\d+" defer><\/script>/g)];
-      assert.equal(ask.length, 1, f);
-      assert.equal(ask[0][1], now[2], st + "/" + f + ": the same grid as the card");
-      assert.ok(now[1].split(",").includes(ask[0][1]), f);
-      assert.ok(h.indexOf("</section>", h.indexOf('id="prf-now"')) < h.indexOf("data-prf-notice"), f + ": under the interval card, outside it");
-      assert.ok(!h.includes("asks for no contact details"), f + ": byline updated");
-      n++;
-    }
+  for (const st of meta.states) {
+    const f = "prf/" + st.name.toLowerCase().replace(/[^a-z0-9]+/g, "-") + ".html";
+    const h = read(f);
+    assert.equal((h.match(/data-prf-notice/g) || []).length, 1, f);
+    assert.ok(h.includes('<div class="prf-notice" data-prf-notice data-grid="" hidden></div>'), f + ": no grid until a county is picked");
+    assert.ok(h.indexOf("</section>", h.indexOf('id="prf-now"')) < h.indexOf("data-prf-notice"), f + ": under the interval card, outside it");
+    assert.ok(h.indexOf('id="prf-now"') > h.indexOf('id="county"') && h.indexOf("data-prf-notice") < h.indexOf('id="months"'), f + ": in the county section");
+    assert.match(h, /<script src="\/components\/prf-notice\.js\?v=\d+" defer><\/script>/, f);
+    assert.ok(h.indexOf("prf-now.js") < h.indexOf("prf-county.js"), f + ": the card listens before the first county is sent");
+    assert.ok(!h.includes("asks for no contact details"), f + ": byline says what the box sends");
+    assert.ok(h.includes("its one email box sends a grid&rsquo;s final index when USDA posts it"), f + ": byline");
+    n++;
   }
-  assert.ok(n > 3000, "county pages: " + n);
+  assert.equal(n, 48);
+  assert.match(read("components/prf-county.js"), /new CustomEvent\('prf:grid', \{ detail: \{ grid: d\.now, st: d\.st \} \}\)/, "the ask follows the county");
 });
 
 test("the sender rides prf.yml after the checked commit, with no new schedule", () => {
@@ -157,7 +159,7 @@ async function open(browser, port, url, posts, width) {
 }
 const AFTER = N.newestFinal(JSON.parse(read("data/prf/meta.json")));
 
-test("county page: the ask follows the card's grid and posts prf:<grid> with after; the briefing box starts empty (Sig, 2026-10-19)", { skip, timeout: 90000 }, async () => {
+test("county address (now the state page on that county): the ask follows the card's grid and posts prf:<grid> with after; the briefing box starts empty (Sig, 2026-10-19)", { skip, timeout: 90000 }, async () => {
   const srv = await serve(), port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
@@ -184,7 +186,7 @@ test("county page: the ask follows the card's grid and posts prf:<grid> with aft
       assert.equal(n.length, 1);
       assert.equal(n[0].body.topic, "prf:30753");
       assert.equal(n[0].body.after, AFTER);
-      assert.equal(n[0].body.source, "page:prf/wisconsin/barron-county");
+      assert.equal(n[0].body.source, "page:prf/wisconsin", "the forward lands on the state page");
       assert.equal(n[0].body.daily, false, "no Daily unless the reader ticks it");
       if (SHOTS) await pg.screenshot({ path: path.join(SHOTS, `county-${width}-done.png`) });
       await pg.context().close();

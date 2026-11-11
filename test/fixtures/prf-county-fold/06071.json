@@ -1,5 +1,5 @@
 {
- "about": "A county page as it was before the fold (prf/california/san-bernardino-county.html, origin/main 9c39a7991be3): its example, figures, tables and paragraphs, and the county view the builder wrote from the same USDA files.",
+ "about": "A county page as it was before the fold (prf/california/san-bernardino-county.html, origin/main f053f709b0e7): its example, figures, tables and paragraphs, and the county view the builder wrote from the same USDA files.",
  "page": "prf/california/san-bernardino-county.html",
  "old": {
   "example": "<b>Example:</b> the calculator opens on April to May and June to July, and this county does not offer both for grazing, so no example is priced here. The calculator prices the months it does offer.",
@@ -40,8 +40,7 @@
    "The wettest pair of months here is January to February (1.67 in on the middle of the 104 grids) and the driest is May to June (0.14 in). Coverage costs least in July to August and most in May to June. The months to insure are the ones when a dry spell costs you grass or hay, not the cheapest ones.",
    "The index for each pair of months as a percent of normal (100 is a normal year), on the middle of the 104 grids (each grid has its own; the calculator shows yours). Shaded cells came in under 90%, where a 90% policy on those months would have paid. 2026 shows the 6 pairs of months USDA has published so far.",
    "Each grid&rsquo;s normal precipitation over a year, its driest year since 1951 as a percent of normal, 2025 as a percent of normal, and how many of 75 years as a whole came in under 90%.",
-   "And 74 more grids: 17162, 17163, 17164, 17450, 17451, 17452, 17453, 17454, 17455, 17456, 17457, 17458, 17459, 17460, 17461, 17462, 17463, 17750, 17751, 17752, 17753, 17754, 17755, 17756, 17757, 17758, 17759, 17760, 17761, 17762, 18050, 18051, 18052, 18053, 18054, 18055, 18056, 18057, 18058, 18059, 18060, 18061, 18062, 18350, 18351, 18352, 18353, 18354, 18355, 18356, 18357, 18358, 18359, 18360, 18361, 18650, 18651, 18652, 18653, 18654, 18655, 18656, 18657, 18658, 18659, 18950, 18951, 18952, 18953, 18954, 18955, 18956, 18957, 18958. Each opens in the <a href=\"/prf?c=06071\" rel=\"nofollow\">calculator</a>.",
-   "At 90% coverage a pair of months pays when the index comes in under 90% of normal. Over 1951 to 2025, on the middle of the grids that price each pair of months, that happened in 40 to 46 of 75 years, depending on the months. Run at 2027 rates, $1 of full premium at 90% would have paid back a middle $0.88 across the county&rsquo;s grids and months. That is the past record, not a forecast."
+   "And 74 more grids: 17162, 17163, 17164, 17450, 17451, 17452, 17453, 17454, 17455, 17456, 17457, 17458, 17459, 17460, 17461, 17462, 17463, 17750, 17751, 17752, 17753, 17754, 17755, 17756, 17757, 17758, 17759, 17760, 17761, 17762, 18050, 18051, 18052, 18053, 18054, 18055, 18056, 18057, 18058, 18059, 18060, 18061, 18062, 18350, 18351, 18352, 18353, 18354, 18355, 18356, 18357, 18358, 18359, 18360, 18361, 18650, 18651, 18652, 18653, 18654, 18655, 18656, 18657, 18658, 18659, 18950, 18951, 18952, 18953, 18954, 18955, 18956, 18957, 18958. Each opens in the <a href=\"/prf?c=06071\" rel=\"nofollow\">calculator</a>."
   ]
  },
  "view": {
