@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 457;  // v457 2026-11-11: home page back to the earlier layout (the answers-first home is withdrawn for a redo). (457, main 456 + 1)
+var CACHE_VERSION = 460;  // v460 2026-11-11: cattle and soybean futures pages. Clearer titles with no price or date, a plain answer in the hero, and the daily USDA cash hog price with the pork cutout and a 30-day chart on the cattle page (new components/hog-cash.js?v=1). (460, next free above main 457 and open 458, 459)
+// var CACHE_VERSION = 457;  // v457 2026-11-11: home page back to the earlier layout (the answers-first home is withdrawn for a redo). (457, main 456 + 1)
 // var CACHE_VERSION = 455;  // v455 2026-11-11: Cash bids, answers first. The median corn bid by state is a map you tap to open the state, with a save-the-picture button; plain words ("median of N elevators"); the companies line, basis links and one sources fold sit below the ZIP and the morning email; the Rain Print link is gone from the page (cb-sample.js?v=9). (455, main 454 + 1)
 // var CACHE_VERSION = 454;  // v454 2026-11-11: Rain Print, the order right under the drawn print: the price, the Christmas order-by date, one main button and the other two choices, a gift link; outside the US and Canada the digital file only (rain-print.js?v=94). (454, main + 1)
 // var CACHE_VERSION = 453;  // v453 2026-11-11: PRF panel. A test idea whose data is not published says so in one plain line and the pick stays the plain one; the panel loads only the test file and the outlook (prf-optimize.js?v=7, prf-optimize-ui.js?v=9). (453, main 452 + 1)
