@@ -57,5 +57,9 @@ test("the confirm and owner emails carry the A17 terms and the rate card's price
   assert.ok(sitewide.text.includes(`$${n(sw.price_month)} a month, or $${n(sw.price_month * card.year_months)} a year`), sitewide.text);
   assert.ok(wi.text.includes(`$${n(st.price_by_state.WI)} a month, or $${n(st.price_by_state.WI * card.year_months)} a year`), wi.text);
   for (const e of out.notify) assert.match(e.text, /Paid at booking, by card or a yearly invoice by mail \(net 30\)\. Money back if they ask inside 30 days\./);
-  for (const e of out.golive) assert.match(e.text, /Money back if (you|they) ask by Dec 1, 2026/);
+  // the fixture's ad starts on START (frozen in PY above); money back runs 30 days, the start day counted
+  const START = /start="(\d{4}-\d{2}-\d{2})"/.exec(PY)[1];
+  const by = new Date(START + "T12:00:00Z"); by.setUTCDate(by.getUTCDate() + 29);
+  const byTxt = by.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric", timeZone: "UTC" });
+  for (const e of out.golive) assert.ok(e.text.includes("ask by " + byTxt + ".") && /Money back if (you|they) ask by/.test(e.text), e.text);
 });
