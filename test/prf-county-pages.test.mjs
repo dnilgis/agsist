@@ -1,87 +1,142 @@
-/* The PRF county pages (prf/<state>/<county>.html, scripts/build_prf_counties.py)
- * held to what a crawler and a reader need without running any script.
+/* The PRF county fold (Nov 2026): the 3,070 county pages (prf/<state>/<county>.html) folded into their
+ * state pages (prf/<state>.html, scripts/build_prf_states.py). A county is now a view on its state page,
+ * laid out by components/prf-county.js from prf/<state>/<county>.json (scripts/build_prf_counties.py);
+ * the old county address is a forward to /prf/<state>?county=<county>#county.
  *
- * WHY. These pages exist to answer "PRF <county>" and "PRF grid <id>" in plain
- * HTML. A generator change that moved the answer into script, dropped a grid
- * number, broke the JSON-LD or left a page out of sitemap-prf.xml would cost
- * the search traffic quietly. This reads the shipped files, not the builder.
+ * WHY. The county pages took few visits for 61 MB and 3,070 addresses. What a county page said must
+ * still be one pick away, with the same numbers, and every old link and bookmark must still land on its
+ * county. This reads the shipped files, and frozen copies of six county pages as they were before the
+ * fold (test/fixtures/prf-county-fold, from the same USDA files), not the builder.
  *
  *   node --test test/prf-county-pages.test.mjs
  */
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { readFileSync, readdirSync, existsSync, statSync } from "node:fs";
+import { createServer } from "node:http";
+import { createRequire } from "node:module";
+import path from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
-const meta = JSON.parse(readFileSync(ROOT + "data/prf/meta.json", "utf8"));
+const read = (f) => readFileSync(ROOT + f, "utf8");
+const meta = JSON.parse(read("data/prf/meta.json"));
 const slug = (s) => s.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
-const sitemap = readFileSync(ROOT + "sitemap-prf.xml", "utf8");
-const locs = new Set([...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]));
-const pages = [];
+const PC = createRequire(import.meta.url)(ROOT + "components/prf-county.js");
+const FIX = ROOT + "test/fixtures/prf-county-fold/";
+const SAMPLES = readdirSync(FIX).filter((f) => /^\d{5}\.json$/.test(f)).map((f) => JSON.parse(readFileSync(FIX + f, "utf8")));
+/* the county addresses sitemap-prf.xml listed the day before the fold */
+const OLD = readFileSync(FIX + "old-county-urls.txt", "utf8").split("\n").filter(Boolean);
+const views = [];
 for (const st of meta.states) {
   const dir = ROOT + "prf/" + slug(st.name);
   if (!existsSync(dir)) continue;
-  for (const f of readdirSync(dir)) if (f.endsWith(".html")) pages.push({ st, rel: "prf/" + slug(st.name) + "/" + f });
+  for (const f of readdirSync(dir)) if (f.endsWith(".json")) views.push({ st, rel: "prf/" + slug(st.name) + "/" + f });
 }
-const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-const [sy, sm, sd] = meta.dates.sales_closing.split("-");
-const SALES = `${MONTHS[+sm - 1]} ${+sd}, ${sy}`;
+const text = (h) => h.replace(/<br>/g, "").replace(/<[^>]+>/g, "").replace(/&mdash;/g, "\u2014").replace(/&ndash;/g, "\u2013")
+  .replace(/&rsquo;/g, "\u2019").replace(/&#x27;/g, "'").replace(/&amp;/g, "&").replace(/\s+/g, " ").trim();
 
-test("one page per county with PRF, each in sitemap-prf.xml", () => {
-  assert.equal(pages.length, meta.counts.counties);
-  assert.equal(locs.size, meta.counts.counties);
-  for (const p of pages) assert.ok(locs.has("https://agsist.com/" + p.rel.replace(/\.html$/, "")), p.rel + " is not in sitemap-prf.xml");
-  assert.ok(readFileSync(ROOT + "robots.txt", "utf8").includes("Sitemap: https://agsist.com/sitemap-prf.xml"), "robots.txt does not name sitemap-prf.xml");
-});
-
-test("the answer is in the HTML: grids by number, county values, the deadline, the tables", () => {
-  const sample = pages.filter((_, i) => i % 97 === 0);
-  assert.ok(sample.length >= 30);
-  for (const p of sample) {
-    const h = readFileSync(ROOT + p.rel, "utf8");
-    const main = h.slice(h.indexOf("<main"), h.indexOf("</main>"));
-    assert.match(main, /<h1>PRF insurance in [^<]+<\/h1>/, p.rel);
-    assert.ok(main.includes(SALES), p.rel + " lacks the sales closing date");
-    /* Oct 20: the grid numbers left the lede for the grids table; the FAQ still names them all */
-    assert.match(main, /<table class="prf-t prf-co-t">[\s\S]*?<th scope="row">\d{4,5}<\/th>/, p.rel + " lacks its grid numbers in the grids table");
-    assert.match(main, /Which PRF grid is [^<]+\?<\/summary><p>Grids? \d{4,5}/, p.rel + " lacks its grid numbers in the FAQ");
-    assert.match(main, /Grazing, county base value per acre<\/dt><dd>\$\d/, p.rel);
-    assert.equal((main.match(/<table /g) || []).length, 3, p.rel + " should carry the month, recent-year and grid tables");
-    assert.ok(statSync(ROOT + p.rel).size < 40 * 1024, p.rel + " is over 40 KB");
+test("every county address the sitemap listed before the fold forwards to its state page, opened on the county, and the county is there", () => {
+  assert.equal(OLD.length, 3070);
+  for (const u of OLD) {
+    const [stSlug, c] = u.split("/");
+    const rel = "prf/" + u + ".html";
+    assert.ok(existsSync(ROOT + rel), rel + " is gone: the old address would 404");
+    const h = read(rel);
+    assert.ok(existsSync(ROOT + "prf/" + stSlug + ".html"), rel + ": no state page to land on");
+    if (h.includes('name="agsist-pointer"')) {   // a county that left USDA's files later: a pointer to a real page
+      assert.match(h, /<meta http-equiv="refresh" content="0; url=\/prf(\/[a-z-]+)?">/, rel);
+      continue;
+    }
+    const to = `/prf/${stSlug}?county=${c}#county`;
+    assert.ok(statSync(ROOT + rel).size < 1536, rel + " is a small forward");
+    assert.ok(h.includes('<meta name="robots" content="noindex, follow">'), rel + ": noindex");
+    assert.ok(h.includes(`<link rel="canonical" href="https://agsist.com/prf/${stSlug}">`), rel + ": canonical to the state page");
+    assert.ok(h.includes(`<meta http-equiv="refresh" content="0; url=${to}">`), rel + ": instant refresh to the county on the state page");
+    assert.ok(h.includes(`<script>location.replace("${to}")</script>`), rel + ": and by script");
+    assert.ok(h.includes(`<a href="${to}">`), rel + ": a link for readers without either");
+    assert.ok(!/[\u2014\u2013]/.test(h), rel + ": no dash");
+    /* the target opens on the county: the state page lists it and its view is there */
+    const state = read("prf/" + stSlug + ".html");
+    assert.ok(state.includes(`<a href="#county=${c}" data-c="${c}">`), rel + ": the state page's county table names " + c);
+    const v = JSON.parse(read("prf/" + u + ".json"));
+    assert.equal(v.v, 1, rel);
   }
 });
 
-test("canonical, title and JSON-LD are right on every page", () => {
-  const titles = new Set();
-  for (const p of pages) {
-    const h = readFileSync(ROOT + p.rel, "utf8");
-    const url = "https://agsist.com/" + p.rel.replace(/\.html$/, "");
-    assert.ok(h.includes(`<link rel="canonical" href="${url}">`), p.rel + " canonical");
-    const t = h.match(/<title>([^<]+)<\/title>/)[1];
-    assert.ok(!titles.has(t), "two pages share the title " + t);
-    titles.add(t);
-    const blocks = [...h.matchAll(/<script type="application\/ld\+json">(.*?)<\/script>/gs)].map((m) => JSON.parse(m[1]));
-    assert.deepEqual(blocks.map((b) => b["@type"]), ["WebPage", "FAQPage", "BreadcrumbList"], p.rel);
-    assert.equal(blocks[2].itemListElement[3].item, url, p.rel + " breadcrumb");
-    assert.ok(blocks[1].mainEntity.length >= 4, p.rel + " FAQ");
+test("no county address in any sitemap; sitemap-prf.xml lists the state pages and the explainer", () => {
+  for (const f of readdirSync(ROOT).filter((f) => /^sitemap.*\.xml$/.test(f))) {
+    const locs = [...read(f).matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+    for (const l of locs) assert.ok(!/^https:\/\/agsist\.com\/prf\/[^/]+\/[^/]+$/.test(l), `${f} lists the county address ${l}`);
   }
-});
-
-test("each state page links every county row to its page", () => {
+  const locs = [...read("sitemap-prf.xml").matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => m[1]);
+  assert.deepEqual(locs.sort(), [...meta.states.map((s) => "https://agsist.com/prf/" + slug(s.name)), "https://agsist.com/prf/how-prf-works"].sort());
+  for (const l of locs) assert.ok(!read("sitemap.xml").includes(`<loc>${l}</loc>`), l + " is in two sitemaps");
+  assert.ok(read("robots.txt").includes("Sitemap: https://agsist.com/sitemap-prf.xml"), "robots.txt names sitemap-prf.xml");
   for (const st of meta.states) {
-    const h = readFileSync(ROOT + "prf/" + slug(st.name) + ".html", "utf8");
-    const n = (h.match(new RegExp(`<th scope="row"><a href="/prf/${slug(st.name)}/`, "g")) || []).length;
-    assert.equal(n, st.counties, st.name);
+    const h = read("prf/" + slug(st.name) + ".html");
+    assert.ok(h.includes(`<link rel="canonical" href="https://agsist.com/prf/${slug(st.name)}">`), st.name + ": the state page keeps its canonical");
   }
 });
 
+test("each state page: the county view's section, every county row opens it, and the script that fills it", () => {
+  for (const st of meta.states) {
+    const s = slug(st.name), h = read("prf/" + s + ".html");
+    assert.ok(h.includes(`<section class="prf-county" id="county" data-prf-county data-state="${s}" aria-labelledby="county-h">`), st.name);
+    assert.equal((h.match(/<th scope="row"><a href="#county=[a-z0-9-]+" data-c="[a-z0-9-]+">/g) || []).length, st.counties, st.name + ": every county row");
+    assert.match(h, /<script src="\/components\/prf-county\.js\?v=\d+" defer><\/script>/, st.name);
+    assert.ok(statSync(ROOT + "prf/" + s + ".html").size < 150 * 1024, st.name + " is over the 150 KB page cap");
+  }
+});
+
+test("one county view per county with PRF, small, and it lays out with the grids, county values and tables", () => {
+  assert.equal(views.length, meta.counts.counties);
+  const sample = views.filter((_, i) => i % 97 === 0);
+  for (const p of views) assert.ok(statSync(ROOT + p.rel).size < 12 * 1024, p.rel + " is over 12 KB");
+  for (const p of sample) {
+    const d = JSON.parse(read(p.rel)), h = PC.render(d);
+    assert.equal(d.cy, meta.crop_year, p.rel);
+    assert.match(h, /<h3 class="prf-cp-h" tabindex="-1">PRF in [^<]+<\/h3>/, p.rel);
+    assert.match(h, /<table class="prf-t prf-co-t">[\s\S]*?<th scope="row">\d{4,5}<\/th>/, p.rel + " lacks its grid numbers in the grids table");
+    assert.match(h, /Grazing, county base value per acre<\/dt><dd>\$\d/, p.rel);
+    assert.equal((h.match(/<table /g) || []).length, 3, p.rel + " should carry the month, recent-year and grid tables");
+    assert.ok(!/\u2014/.test(h.replace(/&mdash;/g, "")), p.rel + ": no em dash typed in");
+  }
+});
+
+test("the view shows a county's numbers exactly as its page did: six counties, frozen from before the fold", () => {
+  assert.ok(SAMPLES.length >= 5);
+  for (const fx of SAMPLES) {
+    const h = PC.render(fx.view), old = fx.old;
+    const ex = h.match(/<p class="prf-note prf-ex"[^>]*>(.*?)<\/p>/s);
+    assert.ok(ex, fx.page + ": no example");
+    assert.equal(ex[1], old.example, fx.page + ": the example");
+    const tables = h.match(/<table [^>]*>.*?<\/table>/gs);
+    assert.deepEqual(tables, old.tables, fx.page + ": the month, recent-year and grid tables, cell for cell");
+    for (const [dt, dd] of old.figs) {
+      if (dt === "Sign-up deadline") continue;   // on the state page, once
+      assert.ok(h.includes(`<div><dt>${dt}</dt><dd>${dd}</dd></div>`), `${fx.page}: ${dt} ${dd}`);
+    }
+    for (const para of old.paras) assert.ok(h.includes(para + "</p>"), `${fx.page}: ${para.slice(0, 80)}`);
+  }
+});
+
+test("the live views are the frozen ones while USDA's files are the same", () => {
+  /* a later data run may move any figure; then there is nothing to hold, and the frozen check above stands */
+  for (const fx of SAMPLES) {
+    const live = JSON.parse(read(fx.page.replace(/\.html$/, ".json")));
+    if (live.read !== fx.view.read || live.open !== fx.view.open) continue;
+    const { story, ...a } = live, { story: s2, ...b } = fx.view;
+    assert.deepEqual(a, b, fx.page);
+  }
+});
+
+import vm from "node:vm";
 /* The labeled 100-acre example under the stat tiles. Worked out again here
  * from USDA's files with components/prf-math.js, apart from the builder, and
  * tied to the calculator's own example (data/prf/facts.json, grid 30454 in
  * Barron County, the figures RMA's tool was matched against): a page that
  * printed another policy's numbers, or rounded its own way, fails. */
-import vm from "node:vm";
 const mctx = { window: {}, Buffer };
 vm.runInNewContext(readFileSync(ROOT + "components/prf-math.js", "utf8"), mctx);
 const M = mctx.window.AgPrfMath;
@@ -113,13 +168,12 @@ test("the example's arithmetic is the calculator's: grid 30454, Barron County, m
   assert.equal(x.paid, f.paid_years); assert.equal(x.years, f.years); assert.equal(Math.round(x.avg), f.avg);
 });
 
-test("each county page prints the 100-acre example on its middle grid by premium, labeled, or says why there is none", () => {
-  const sample = pages.filter((_, i) => i % 61 === 0);
+test("each county view prints the 100-acre example on its middle grid by premium, labeled, or says why there is none", () => {
+  const sample = views.filter((_, i) => i % 61 === 0);
   const byState = {};
   let priced = 0, none = 0;
   for (const p of sample) {
-    const h = readFileSync(ROOT + p.rel, "utf8");
-    const main = h.slice(h.indexOf("<main"), h.indexOf("</main>"));
+    const main = PC.render(JSON.parse(readFileSync(ROOT + p.rel, "utf8")));
     const m = main.match(/<p class="prf-note prf-ex"[^>]*>(.*?)<\/p>/s);
     assert.ok(m, p.rel + " has no example line");
     const sd = byState[p.st.st] || (byState[p.st.st] = JSON.parse(readFileSync(ROOT + "data/prf/s/" + p.st.st + ".json", "utf8")));
@@ -179,9 +233,6 @@ test("every state page says what changed for the crop year, with RMA's sources, 
     assert.equal(strip(vis[1]), ld.acceptedAnswer.text, st.name + " FAQ and JSON-LD differ");
     assert.equal(blocks[0].dateModified, rev > built ? rev : built, st.name + " dateModified");
   }
-  const anyCounty = readFileSync(ROOT + pages[0].rel, "utf8");
-  const wp = JSON.parse(anyCounty.match(/<script type="application\/ld\+json">(.*?)<\/script>/s)[1]);
-  assert.equal(wp.dateModified, rev > built ? rev : built, "county page dateModified");
 });
 
 test("prf.html's JSON-LD carries a dateModified that moved with its wording", () => {
@@ -191,4 +242,65 @@ test("prf.html's JSON-LD carries a dateModified that moved with its wording", ()
   const app = blocks.find((b) => b["@type"] === "WebApplication");
   assert.equal(app.dateModified, rev > built ? rev : built);
   assert.ok(rev >= "2026-10-15", "the folded sections and the pick card changed the page on 2026-10-15");
+});
+
+// ---------------------------------------------------------------- in a browser
+const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
+const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
+let chromium = null;
+try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
+const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
+const SHOTS = process.env.PRF_FOLD_SHOTS || "";
+
+function serve() {
+  const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml", ".png": "image/png" };
+  const srv = createServer((req, res) => {
+    let f = path.normalize(path.join(ROOT, decodeURIComponent(new URL(req.url, "http://x").pathname)));
+    /* as Pages does: /prf/iowa is prf/iowa.html even with a prf/iowa/ folder beside it */
+    if ((!existsSync(f) || statSync(f).isDirectory()) && existsSync(f + ".html")) f += ".html";
+    if (!f.startsWith(ROOT) || !existsSync(f) || statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
+    res.writeHead(200, { "content-type": types[path.extname(f)] || "application/octet-stream" });
+    res.end(readFileSync(f));
+  });
+  return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
+}
+
+test("in a browser: an old county address lands on the state page with that county's numbers, as its page showed them, at 390 and 1280", { skip, timeout: 180000 }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  try {
+    for (const width of [390, 1280]) {
+      const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: 900 } });
+      const pg = await ctx.newPage();
+      const errors = [];
+      pg.on("pageerror", (e) => errors.push(e.message));
+      await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
+      for (const fx of SAMPLES) {
+        const [, st, c] = fx.page.match(/^prf\/([a-z-]+)\/([a-z0-9-]+)\.html$/);
+        await pg.goto(`http://127.0.0.1:${port}/prf/${st}/${c}`, { waitUntil: "load" });
+        await pg.waitForURL(`**/prf/${st}?county=${c}#county`);
+        const cp = pg.locator("[data-pc-body] .prf-cp");
+        await cp.waitFor();
+        assert.equal(await pg.locator("#prf-county-pick").inputValue(), c, fx.page + ": the picker shows the county");
+        const live = JSON.parse(read(fx.page.replace(/\.html$/, ".json")));
+        if (live.read !== fx.view.read || live.open !== fx.view.open) continue;   // USDA's files moved since the freeze
+        assert.equal(await cp.locator(".prf-ex").textContent(), text(fx.old.example), fx.page + ": the example");
+        const tables = await cp.locator("table").evaluateAll((ts) => ts.map((t) => t.textContent));
+        assert.deepEqual(tables.map((t) => t.replace(/\s+/g, " ").trim()), fx.old.tables.map(text), fx.page + ": the tables");
+        const wide = await pg.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
+        assert.equal(wide, false, `${fx.page} at ${width}: no sideways scroll`);
+        if (SHOTS && fx.page.endsWith("adair-county.html")) await pg.screenshot({ path: path.join(SHOTS, `fold-${c}-${width}.png`) });
+      }
+      /* picking another county from the list swaps the view and the address keeps it */
+      await pg.goto(`http://127.0.0.1:${port}/prf/iowa`, { waitUntil: "load" });
+      await pg.locator("#prf-county-pick").selectOption("story-county");
+      await pg.locator("[data-pc-body] .prf-cp-h", { hasText: "Story County, Iowa" }).waitFor();
+      assert.ok(pg.url().endsWith("/prf/iowa#county=story-county"), pg.url());
+      /* and a county name in the table opens it */
+      await pg.locator('a[data-c="polk-county"]').click();
+      await pg.locator("[data-pc-body] .prf-cp-h", { hasText: "Polk County, Iowa" }).waitFor();
+      assert.deepEqual(errors, [], "no script errors");
+      await ctx.close();
+    }
+  } finally { await browser.close(); srv.close(); }
 });

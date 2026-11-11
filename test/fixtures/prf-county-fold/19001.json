@@ -1,0 +1,443 @@
+{
+ "about": "A county page as it was before the fold (prf/iowa/adair-county.html, origin/main f053f709b0e7): its example, figures, tables and paragraphs, and the county view the builder wrote from the same USDA files.",
+ "page": "prf/iowa/adair-county.html",
+ "old": {
+  "example": "<b>What it costs here at 2027 rates (USDA files read Nov 4, 2026):</b> you pay $444 a year, $4.44 an acre, for 100 acres of grazing at 90% coverage, productivity factor 100, half in April to May and half in June to July, on grid 25342, the middle of the county&rsquo;s 9 grids by premium. USDA pays $461 of the $905 full premium. Run over 1951 to 2025 at 2027 rates, it would have paid in 51 of 75 years, an average of $792 a year, or $7.92 an acre. That average is under the full premium of $905; it comes out above your share only because USDA pays the rest. That is the past record, not a forecast, and it leaves out the administrative fee. Example, not a recommendation.",
+  "figs": [
+   [
+    "Grids",
+    "9"
+   ],
+   [
+    "Grazing, county base value per acre",
+    "$80.20"
+   ],
+   [
+    "Hay, non-irrigated, per acre",
+    "$398.00"
+   ],
+   [
+    "Hay, irrigated, per acre",
+    "$122.00"
+   ],
+   [
+    "January to February cap",
+    "25%"
+   ],
+   [
+    "Sign-up deadline",
+    "Dec 1, 2026"
+   ]
+  ],
+  "tables": [
+   "<table class=\"prf-t prf-sub-t prf-iv-t\"><caption class=\"prf-sr\">Each pair of months in Adair County, Iowa at 90% coverage</caption><thead><tr><th scope=\"col\">Months</th><th scope=\"col\">Normal</th><th scope=\"col\">Premium per $100</th><th scope=\"col\">Years under 90%</th></tr></thead><tbody><tr><th scope=\"row\"><abbr title=\"January to February\">Jan-Feb</abbr></th><td>1.92 in</td><td>$18.51<br><span class=\"prf-th-s\">$17.49&ndash;19.82</span></td><td>33<br><span class=\"prf-th-s\">31&ndash;37</span></td></tr><tr><th scope=\"row\"><abbr title=\"February to March\">Feb-Mar</abbr></th><td>3.25 in</td><td>$16.59<br><span class=\"prf-th-s\">$16.07&ndash;17.52</span></td><td>32<br><span class=\"prf-th-s\">30&ndash;35</span></td></tr><tr><th scope=\"row\"><abbr title=\"March to April\">Mar-Apr</abbr></th><td>5.52 in</td><td>$13.66<br><span class=\"prf-th-s\">$13.37&ndash;14.52</span></td><td>29<br><span class=\"prf-th-s\">26&ndash;33</span></td></tr><tr><th scope=\"row\"><abbr title=\"April to May\">Apr-May</abbr></th><td>7.98 in</td><td>$11.75<br><span class=\"prf-th-s\">$11.32&ndash;12.63</span></td><td>29<br><span class=\"prf-th-s\">27&ndash;31</span></td></tr><tr><th scope=\"row\"><abbr title=\"May to June\">May-Jun</abbr></th><td>9.50 in</td><td>$11.85<br><span class=\"prf-th-s\">$11.19&ndash;12.37</span></td><td>30<br><span class=\"prf-th-s\">29&ndash;33</span></td></tr><tr><th scope=\"row\"><abbr title=\"June to July\">Jun-Jul</abbr></th><td>8.90 in</td><td>$13.23<br><span class=\"prf-th-s\">$12.67&ndash;13.83</span></td><td>32<br><span class=\"prf-th-s\">30&ndash;38</span></td></tr><tr><th scope=\"row\"><abbr title=\"July to August\">Jul-Aug</abbr></th><td>8.30 in</td><td>$15.43<br><span class=\"prf-th-s\">$14.94&ndash;16.47</span></td><td>33<br><span class=\"prf-th-s\">32&ndash;37</span></td></tr><tr><th scope=\"row\"><abbr title=\"August to September\">Aug-Sep</abbr></th><td>7.85 in</td><td>$17.30<br><span class=\"prf-th-s\">$15.75&ndash;18.57</span></td><td>37<br><span class=\"prf-th-s\">35&ndash;40</span></td></tr><tr><th scope=\"row\"><abbr title=\"September to October\">Sep-Oct</abbr></th><td>6.15 in</td><td>$17.41<br><span class=\"prf-th-s\">$16.09&ndash;18.05</span></td><td>34<br><span class=\"prf-th-s\">32&ndash;35</span></td></tr><tr><th scope=\"row\"><abbr title=\"October to November\">Oct-Nov</abbr></th><td>4.27 in</td><td>$16.47<br><span class=\"prf-th-s\">$15.05&ndash;18.09</span></td><td>34<br><span class=\"prf-th-s\">32&ndash;37</span></td></tr><tr><th scope=\"row\"><abbr title=\"November to December\">Nov-Dec</abbr></th><td>2.85 in</td><td>$22.61<br><span class=\"prf-th-s\">$21.17&ndash;23.44</span></td><td>36<br><span class=\"prf-th-s\">35&ndash;38</span></td></tr></tbody></table>",
+   "<table class=\"prf-t prf-yr-t\"><caption class=\"prf-sr\">PRF index by pair of months, 2021 to 2026, Adair County, Iowa</caption><thead><tr><th scope=\"col\">Months</th><th scope=\"col\">2021</th><th scope=\"col\">2022</th><th scope=\"col\">2023</th><th scope=\"col\">2024</th><th scope=\"col\">2025</th><th scope=\"col\">2026<br><span class=\"prf-th-s\">so far</span></th></tr></thead><tbody><tr><th scope=\"row\">Jan-Feb</th><td>98</td><td class=\"is-pay\">53</td><td>235</td><td>100</td><td class=\"is-pay\">27</td><td class=\"is-pay\">66</td></tr><tr><th scope=\"row\">Feb-Mar</th><td>124</td><td>111</td><td>113</td><td>104</td><td>99</td><td class=\"is-pay\">82</td></tr><tr><th scope=\"row\">Mar-Apr</th><td class=\"is-pay\">76</td><td>118</td><td class=\"is-pay\">73</td><td>108</td><td>104</td><td>150</td></tr><tr><th scope=\"row\">Apr-May</th><td class=\"is-pay\">68</td><td>93</td><td class=\"is-pay\">67</td><td>140</td><td class=\"is-pay\">64</td><td>119</td></tr><tr><th scope=\"row\">May-Jun</th><td class=\"is-pay\">85</td><td class=\"is-pay\">80</td><td class=\"is-pay\">57</td><td>127</td><td>91</td><td>91</td></tr><tr><th scope=\"row\">Jun-Jul</th><td>106</td><td class=\"is-pay\">62</td><td class=\"is-pay\">67</td><td>91</td><td>179</td><td>104</td></tr><tr><th scope=\"row\">Jul-Aug</th><td>104</td><td class=\"is-pay\">67</td><td class=\"is-pay\">88</td><td>100</td><td>157</td><td>&mdash;</td></tr><tr><th scope=\"row\">Aug-Sep</th><td class=\"is-pay\">51</td><td class=\"is-pay\">71</td><td class=\"is-pay\">86</td><td class=\"is-pay\">61</td><td class=\"is-pay\">76</td><td>&mdash;</td></tr><tr><th scope=\"row\">Sep-Oct</th><td>112</td><td class=\"is-pay\">45</td><td class=\"is-pay\">72</td><td class=\"is-pay\">45</td><td>90</td><td>&mdash;</td></tr><tr><th scope=\"row\">Oct-Nov</th><td>165</td><td class=\"is-pay\">53</td><td class=\"is-pay\">51</td><td>124</td><td>92</td><td>&mdash;</td></tr><tr><th scope=\"row\">Nov-Dec</th><td class=\"is-pay\">59</td><td>116</td><td class=\"is-pay\">72</td><td>170</td><td class=\"is-pay\">63</td><td>&mdash;</td></tr></tbody></table>",
+   "<table class=\"prf-t prf-co-t\"><caption class=\"prf-sr\">PRF grids in Adair County, Iowa</caption><thead><tr><th scope=\"col\">Grid</th><th scope=\"col\">Normal, year</th><th scope=\"col\">Driest year</th><th scope=\"col\">2025</th><th scope=\"col\">Years under 90%</th><th scope=\"col\"><span class=\"prf-sr\">Calculator</span></th></tr></thead><tbody><tr><th scope=\"row\">25342</th><td>34.7 in</td><td>1988, 51%</td><td>87%</td><td>27</td><td><a href=\"/prf?g=25342&amp;c=19001\" rel=\"nofollow\">Open</a></td></tr><tr><th scope=\"row\">25343</th><td>35.0 in</td><td>1988, 52%</td><td>93%</td><td>26</td><td><a href=\"/prf?g=25343&amp;c=19001\" rel=\"nofollow\">Open</a></td></tr><tr><th scope=\"row\">25344</th><td>35.0 in</td><td>1988, 50%</td><td>100%</td><td>30</td><td><a href=\"/prf?g=25344&amp;c=19001\" rel=\"nofollow\">Open</a></td></tr><tr><th scope=\"row\">25642</th><td>34.1 in</td><td>1988, 56%</td><td>98%</td><td>27</td><td><a href=\"/prf?g=25642&amp;c=19001\" rel=\"nofollow\">Open</a></td></tr><tr><th scope=\"row\">25643</th><td>34.5 in</td><td>1988, 56%</td><td>102%</td><td>28</td><td><a href=\"/prf?g=25643&amp;c=19001\" rel=\"nofollow\">Open</a></td></tr><tr><th scope=\"row\">25644</th><td>34.1 in</td><td>1988, 55%</td><td>106%</td><td>27</td><td><a href=\"/prf?g=25644&amp;c=19001\" rel=\"nofollow\">Open</a></td></tr><tr><th scope=\"row\">25942</th><td>33.8 in</td><td>1988, 61%</td><td>105%</td><td>24</td><td><a href=\"/prf?g=25942&amp;c=19001\" rel=\"nofollow\">Open</a></td></tr><tr><th scope=\"row\">25943</th><td>33.6 in</td><td>1988, 60%</td><td>112%</td><td>25</td><td><a href=\"/prf?g=25943&amp;c=19001\" rel=\"nofollow\">Open</a></td></tr><tr><th scope=\"row\">25944</th><td>33.4 in</td><td>1988, 58%</td><td>114%</td><td>25</td><td><a href=\"/prf?g=25944&amp;c=19001\" rel=\"nofollow\">Open</a></td></tr></tbody></table>"
+  ],
+  "paras": [
+   "USDA&rsquo;s 2027 county base values, the same on every grid in the county. Protection per acre is the value times your coverage level times a productivity factor of 60 to 150: grazing at 90% and 100 is $72.18 an acre. USDA sets irrigated hay lower here.",
+   "At 90% coverage, across the 9 grids that touch the county: first the middle of the 9 for that pair of months (it can be a different grid in each row), then the lowest and highest. The premium is the full rate per $100 of protection; USDA pays 59% at 70%, 59% at 75%, 55% at 80%, 55% at 85%, 51% at 90%. Normal is the grid&rsquo;s average precipitation for those months. A year counts, of the 75 from 1951 to 2025, when the grid&rsquo;s index for those months came in under 90% of normal, which is when a 90% policy pays.",
+   "The wettest pair of months here is May to June (9.50 in on the middle of the 9 grids) and the driest is January to February (1.92 in). Coverage costs least in April to May and most in November to December. The months to insure are the ones when a dry spell costs you grass or hay, not the cheapest ones.",
+   "The index for each pair of months as a percent of normal (100 is a normal year), on the middle of the 9 grids (each grid has its own; the calculator shows yours). Shaded cells came in under 90%, where a 90% policy on those months would have paid. 2026 shows the 6 pairs of months USDA has published so far.",
+   "Each grid&rsquo;s normal precipitation over a year, its driest year since 1951 as a percent of normal, 2025 as a percent of normal, and how many of 75 years as a whole came in under 90%. The driest year on the record here was 1988."
+  ]
+ },
+ "view": {
+  "v": 1,
+  "fips": "19001",
+  "name": "Adair County",
+  "state": "Iowa",
+  "st": "IA",
+  "cy": 2027,
+  "y0": 1951,
+  "y1": 2025,
+  "ny": 75,
+  "open": 2026,
+  "read": "Nov 4, 2026",
+  "sub": {
+   "70": 59,
+   "75": 59,
+   "80": 55,
+   "85": 55,
+   "90": 51
+  },
+  "gz": 80.2,
+  "hy": 398.0,
+  "hi": 122.0,
+  "prot": 72.18,
+  "jf": "25%",
+  "grids": [
+   25342,
+   25343,
+   25344,
+   25642,
+   25643,
+   25644,
+   25942,
+   25943,
+   25944
+  ],
+  "now": 25342,
+  "ex": {
+   "grid": 25342,
+   "of": 9,
+   "you": 444,
+   "you_acre": 4.44,
+   "usda": 461,
+   "premium": 905,
+   "paid": 51,
+   "years": 75,
+   "avg": 792,
+   "avg_acre": 7.92
+  },
+  "iv": [
+   {
+    "rate": [
+     17.49,
+     18.51,
+     19.82
+    ],
+    "below": [
+     31,
+     33,
+     37
+    ],
+    "in": 1.92,
+    "n": 9
+   },
+   {
+    "rate": [
+     16.07,
+     16.59,
+     17.52
+    ],
+    "below": [
+     30,
+     32,
+     35
+    ],
+    "in": 3.25,
+    "n": 9
+   },
+   {
+    "rate": [
+     13.37,
+     13.66,
+     14.52
+    ],
+    "below": [
+     26,
+     29,
+     33
+    ],
+    "in": 5.52,
+    "n": 9
+   },
+   {
+    "rate": [
+     11.32,
+     11.75,
+     12.63
+    ],
+    "below": [
+     27,
+     29,
+     31
+    ],
+    "in": 7.98,
+    "n": 9
+   },
+   {
+    "rate": [
+     11.19,
+     11.85,
+     12.37
+    ],
+    "below": [
+     29,
+     30,
+     33
+    ],
+    "in": 9.5,
+    "n": 9
+   },
+   {
+    "rate": [
+     12.67,
+     13.23,
+     13.83
+    ],
+    "below": [
+     30,
+     32,
+     38
+    ],
+    "in": 8.9,
+    "n": 9
+   },
+   {
+    "rate": [
+     14.94,
+     15.43,
+     16.47
+    ],
+    "below": [
+     32,
+     33,
+     37
+    ],
+    "in": 8.3,
+    "n": 9
+   },
+   {
+    "rate": [
+     15.75,
+     17.3,
+     18.57
+    ],
+    "below": [
+     35,
+     37,
+     40
+    ],
+    "in": 7.85,
+    "n": 9
+   },
+   {
+    "rate": [
+     16.09,
+     17.41,
+     18.05
+    ],
+    "below": [
+     32,
+     34,
+     35
+    ],
+    "in": 6.15,
+    "n": 9
+   },
+   {
+    "rate": [
+     15.05,
+     16.47,
+     18.09
+    ],
+    "below": [
+     32,
+     34,
+     37
+    ],
+    "in": 4.27,
+    "n": 9
+   },
+   {
+    "rate": [
+     21.17,
+     22.61,
+     23.44
+    ],
+    "below": [
+     35,
+     36,
+     38
+    ],
+    "in": 2.85,
+    "n": 9
+   }
+  ],
+  "rec": [
+   {
+    "y": 2021,
+    "open": false,
+    "iv": [
+     98,
+     124,
+     76,
+     68,
+     85,
+     106,
+     104,
+     51,
+     112,
+     165,
+     59
+    ]
+   },
+   {
+    "y": 2022,
+    "open": false,
+    "iv": [
+     53,
+     111,
+     118,
+     93,
+     80,
+     62,
+     67,
+     71,
+     45,
+     53,
+     116
+    ]
+   },
+   {
+    "y": 2023,
+    "open": false,
+    "iv": [
+     235,
+     113,
+     73,
+     67,
+     57,
+     67,
+     88,
+     86,
+     72,
+     51,
+     72
+    ]
+   },
+   {
+    "y": 2024,
+    "open": false,
+    "iv": [
+     100,
+     104,
+     108,
+     140,
+     127,
+     91,
+     100,
+     61,
+     45,
+     124,
+     170
+    ]
+   },
+   {
+    "y": 2025,
+    "open": false,
+    "iv": [
+     27,
+     99,
+     104,
+     64,
+     91,
+     179,
+     157,
+     76,
+     90,
+     92,
+     63
+    ]
+   },
+   {
+    "y": 2026,
+    "open": true,
+    "iv": [
+     66,
+     82,
+     150,
+     119,
+     91,
+     104,
+     null,
+     null,
+     null,
+     null,
+     null
+    ]
+   }
+  ],
+  "gr": [
+   [
+    25342,
+    34.7,
+    1988,
+    51,
+    87,
+    27
+   ],
+   [
+    25343,
+    35.0,
+    1988,
+    52,
+    93,
+    26
+   ],
+   [
+    25344,
+    35.0,
+    1988,
+    50,
+    100,
+    30
+   ],
+   [
+    25642,
+    34.1,
+    1988,
+    56,
+    98,
+    27
+   ],
+   [
+    25643,
+    34.5,
+    1988,
+    56,
+    102,
+    28
+   ],
+   [
+    25644,
+    34.1,
+    1988,
+    55,
+    106,
+    27
+   ],
+   [
+    25942,
+    33.8,
+    1988,
+    61,
+    105,
+    24
+   ],
+   [
+    25943,
+    33.6,
+    1988,
+    60,
+    112,
+    25
+   ],
+   [
+    25944,
+    33.4,
+    1988,
+    58,
+    114,
+    25
+   ]
+  ],
+  "links": [
+   [
+    "Adair County in the Farmland Atlas",
+    "/farmland-atlas/iowa/adair-county"
+   ],
+   [
+    "ARC or PLC in Adair County",
+    "/arc-plc/iowa/adair-county"
+   ],
+   [
+    "PRF calculator",
+    "/prf"
+   ]
+  ],
+  "story": ""
+ }
+}

@@ -194,7 +194,7 @@ test("pr-checks: the guard step on pull requests; the shards and other checks re
   assert.equal((pr.match(base) || []).length, 2, "node tests and other checks, never on main-checks.yml's full call");
   const src = read("scripts/dev/checks.sh");
   assert.match(src, /\[ -n "\$\{AGSIST_GEN_BASE:-\}" \]; then\n\s+gp=\$\(python3 scripts\/generated_sets\.py prebuild --base "\$AGSIST_GEN_BASE" 2>&1\)/);
-  assert.ok(src.indexOf("generated_sets.py prebuild") > src.indexOf("main_build.py build"), "after the built files");
+  assert.ok(src.indexOf("generated_sets.py prebuild") < src.indexOf("main_build.py build"), "before the built files: the test map reads the pages, as on main (generated job, then rebuild)");
   assert.ok(src.indexOf("generated_sets.py prebuild") < src.indexOf("run node-test"), "before any check");
 });
 

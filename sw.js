@@ -37,7 +37,10 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 448;  // v448 2026-11-11: Fast Facts My place opens on plain answers: the best corn bid near you, rain this month against normal with one drought line, cash rent and its rank, what farmland sells for; the week map folds under "Show on a map" (here.js?v=49, here.css?v=8, place-top.js?v=1). (448, next free above main and open branches)
+var CACHE_VERSION = 450;  // v450 2026-11-11: PRF county fold. Each PRF state page opens any county in place (prf-county.js?v=1); the old county addresses forward to it. (450, slot given)
+// var CACHE_VERSION = 441;  // v441 2026-11-10: sponsor pages. The elevator listing offer is gone from the sponsor pages and the sign-up form (sponsor-apply.js?v=9). (441, next after main's 440)
+// v442 2026-11-10: basis history starts Oct 12, 2026. The town page box heading and the Fast Facts elevator note name that day (cb-basis-hist.js?v=6, here.js?v=48, bids-homepage.js?v=50); one neutral line on the card alert note (cb-alerts.js?v=6, cb-myelev.js?v=9). (442; 441 is held by another open branch)
+// v448 2026-11-11: Fast Facts My place opens on plain answers: the best corn bid near you, rain this month against normal with one drought line, cash rent and its rank, what farmland sells for; the week map folds under "Show on a map" (here.js?v=49, here.css?v=8, place-top.js?v=1). (448, next free above main and open branches)
 // v444 2026-11-11: one elevator count. Futures pages print elevators with a current bid, the same count as every page (futures.js?v=34). (444)
 // var CACHE_VERSION = 442;  // v442 2026-11-10: basis history starts Oct 12, 2026. The town page box heading and the Fast Facts elevator note name that day (cb-basis-hist.js?v=6, here.js?v=48, bids-homepage.js?v=50); one neutral line on the card alert note (cb-alerts.js?v=6, cb-myelev.js?v=9). (442; 441 is held by another open branch)
 // v441 2026-11-10: sponsor pages. The elevator listing offer is gone from the sponsor pages and the sign-up form (sponsor-apply.js?v=9). (441, next after main's 440)

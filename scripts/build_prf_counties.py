@@ -1,37 +1,45 @@
 #!/usr/bin/env python3
-"""build_prf_counties.py: one PRF page per county, prf/<state>/<county>.html.
+"""build_prf_counties.py: the county view of each PRF state page, and a forward at every old county address.
 
 WHY
-  "PRF <county> county", "PRF grid 30454" and "PRF payout history <county>"
-  are what people type in October and November. /prf is the calculator and
-  /prf/<state> covers the state; these pages answer the county question in
-  plain HTML a crawler can read without running the calculator: the grids that
-  touch the county (by number), USDA's county base values for grazing and hay,
-  what each pair of months costs there at 90% coverage, how often each pair
-  came in under 90% of normal since 1951, what the last five years and this
-  year so far did, and the dates. Every grid opens the calculator on itself.
+  Until Nov 2026 every county had its own page, prf/<state>/<county>.html: 3,070
+  pages, about 61 MB, that took few visits. The county now lives on its state
+  page (prf/<state>.html, scripts/build_prf_states.py): a county picker opens
+  the same answer the county page gave, the grids that touch the county (by
+  number), USDA's county base values for grazing and hay, what each pair of
+  months costs there at 90% coverage, how often each pair came in under 90% of
+  normal since 1951, what the last five years and this year so far did, and the
+  labeled 100-acre example. Every grid opens the calculator on itself.
+
+WHAT THIS WRITES, for every county with PRF
+  prf/<state>/<county>.json   the county view as data (view() below), rounded here
+                              the way the county page printed it and laid out by
+                              components/prf-county.js when a reader picks the
+                              county. About 3 KB.
+  prf/<state>/<county>.html   a forward (under 1.5 KB): noindex, canonical to the
+                              state page, an instant refresh and a script to
+                              /prf/<state>?county=<county>#county, which opens the
+                              state page on that county. Old links and bookmarks keep
+                              working. Forwards stay out of every sitemap.
+  sitemap-prf.xml             the PRF state pages and the explainer, lastmod the date
+                              of the USDA files they were built from.
 
 WHERE THE NUMBERS COME FROM
   data/prf/meta.json and data/prf/s/<ST>.json (USDA's county values and
   limits, copied unchanged), and scripts/prf_county_facts.mjs, which works out
   every count and middle from data/prf/g and data/prf/y with
   components/prf-math.js and prints them. Nothing is computed here; this
-  formats. The county facts are not written to a file, so no extra data is
-  published.
+  formats.
 
   URLs follow the Farmland Atlas (farmland-atlas/data/counties-index.json, by
   county code) so /prf/texas/anderson-county sits beside
   /farmland-atlas/texas/anderson-county and /arc-plc/texas/anderson-county.
 
-SIZE (CLAUDE.md): 3,070 pages. The page carries the answer and the tables a
-  reader needs at first glance; the full year-by-year record and the pricing
-  stay in the calculator, loaded on demand. No static header or footer copy (loader.js
-  fills both); the breadcrumb and the links at the foot give crawlers the way
-  up and across. The build refuses any page
-  over MAX_KB and prints the total. Run scripts/check_site_budget.py after.
+SIZE (CLAUDE.md): the build refuses a county view over MAX_KB and a forward over
+  the pointer cap, and prints the total. Run scripts/check_site_budget.py after.
 
-  python3 scripts/build_prf_counties.py           write prf/<state>/<county>.html and sitemap-prf.xml
-  python3 scripts/build_prf_counties.py --check   exit 1 if any page or the sitemap differs from what this would write
+  python3 scripts/build_prf_counties.py           write prf/<state>/<county>.json and .html, and sitemap-prf.xml
+  python3 scripts/build_prf_counties.py --check   exit 1 if any file or the sitemap differs from what this would write
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
@@ -44,21 +52,14 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, os.path.join(ROOT, "scripts"))
 import build_prf_states as S  # noqa: E402  shared helpers: long_date, money2, slug, boot, text_of
-import inject_static_nav as nav  # noqa: E402
-import html_slim as HS  # noqa: E402  the county set is written slim
+import inject_static_nav as nav  # noqa: E402,F401  the menu files stay this set's code (scripts/generated_sets.py)
 import pointer_pages as PP  # noqa: E402  dropped pages leave a pointer, not a 404
-import cross_links as XL  # noqa: E402  same-county links between the county sets
-import seo_caps as CAPS  # noqa: E402  the site's one title and description cap
-from county_rain import STATES as RAIN_STATES, slug as rain_slug  # noqa: E402  the 50 states with a /rain/<state> page
 
 D = os.path.join(ROOT, "data", "prf")
 OUT = os.path.join(ROOT, "prf")
 SITEMAP = os.path.join(ROOT, "sitemap-prf.xml")
-MAX_KB = 40          # well under the 150 KB set cap; the target is about 20
-MAX_GRID_ROWS = 30   # a county with more grids lists the rest by number
-SHORT_IV = ["Jan-Feb", "Feb-Mar", "Mar-Apr", "Apr-May", "May-Jun", "Jun-Jul", "Jul-Aug", "Aug-Sep", "Sep-Oct", "Oct-Nov", "Nov-Dec"]
+MAX_KB = 12          # one county view (JSON); most are 2 to 4 KB
 e = S.e
-money2 = S.money2
 
 
 def county_facts():
@@ -112,303 +113,90 @@ def county_urls(meta, ATL=None):
     return where, loaded
 
 
-def pct_cell(c):
-    if not c:
-        return "<td>&mdash;</td>"
-    cls = ' class="is-pay"' if c["mid"] < 90 else ""
-    return f"<td{cls}>{c['mid']}</td>"
+def r0(x):
+    """A whole-dollar figure as the county page printed it (Python rounding, f"{x:,.0f}")."""
+    return None if x is None else int(f"{x:.0f}")
 
 
-def dollars(x):
-    return f"${x:,.0f}"
+def r2(x):
+    return None if x is None else float(f"{x:.2f}")
 
 
-def example_html(ex, cy, y0, y1, many, ng, read_day=""):
-    """The labeled 100-acre example (scripts/prf_county_facts.mjs countyExample): the calculator's
-    opening policy, priced on the county's middle grid by premium. Since Oct 20 it is the page's
-    first answer, right under the lede, and it opens with what you pay, dated by the USDA files read."""
-    if not ex:
-        return ('<p class="prf-note prf-ex"><b>Example:</b> the calculator opens on April to May and June to July, and this county '
-                'does not offer both for grazing, so no example is priced here. The calculator prices the months it does offer.</p>')
-    where = (f"grid {ex['grid']}, the middle of the county&rsquo;s {ex['of']} grids by premium" if ex["of"] > 1
-             else f"grid {ex['grid']}")
-    when = f" (USDA files read {read_day})" if read_day else ""
-    return (f'<p class="prf-note prf-ex" id="example"><b>What it costs here at {cy} rates{when}:</b> you pay {dollars(ex["you"])} a year, '
-            f'${ex["you_acre"]:.2f} an acre, for 100 acres of grazing at 90% coverage, productivity factor 100, half in April to May and half in June to July, '
-            f'on {where}. USDA pays {dollars(ex["usda"])} of the {dollars(ex["premium"])} full premium. Run over {y0} to {y1} at {cy} rates, it would have paid in '
-            f'{ex["paid_years"]} of {ex["years"]} years, an average of {dollars(ex["avg"])} a year, or ${ex["avg_acre"]:.2f} an acre. '
-            f'{example_vs_premium(ex)}That is the past record, not a forecast, and it leaves out the administrative fee. Example, not a recommendation.</p>')
+def r1(x):
+    return None if x is None else float(f"{x:.1f}")
 
 
-def example_vs_premium(ex):
-    """Set the average against the full premium, not only the farmer's share: an average above
-    the share and under the premium is the subsidy showing, not the policy beating its price."""
-    avg, prem, you = round(ex["avg"]), round(ex["premium"]), round(ex["you"])
-    if avg < prem:
-        if avg > you:
-            return (f'That average is under the full premium of {dollars(prem)}; it comes out above your share '
-                    f'only because USDA pays the rest. ')
-        return (f'That average is under the full premium of {dollars(prem)}, and under your share too, '
-                f'even with USDA paying the rest. ')
-    return (f'That average is at or above the full premium of {dollars(prem)}, so it covered the whole premium; '
-            f'on your share it looks better still only because USDA pays the rest. ')
-
-
-def page(ctx):
-    meta, cf, st, sd, code, c, fx, name, sl, st_slug, nbrs, links, BOOT = (
-        ctx[k] for k in ("meta", "cf", "st", "sd", "code", "c", "fx", "name", "slug", "st_slug", "nbrs", "links", "BOOT"))
-    stn, stc = st["name"], st["st"]
+def view(ctx):
+    """One county's view as data: the figures the county page printed, rounded here the way it printed
+    them (so the browser formats and never rounds), for components/prf-county.js to lay out. The
+    deadlines, the FAQ and the page furniture stay on the state page around it."""
+    meta, cf, st, sd, code, c, fx, name, links = (ctx[k] for k in ("meta", "cf", "st", "sd", "code", "c", "fx", "name", "links"))
     fips = sd["fips"] + code
-    cy, y0, y1 = meta["crop_year"], cf["years"]["first"], cf["years"]["last"]
-    ny = cf["years"]["n"]
-    sales, acre, bill = (S.long_date(meta["dates"][k]) for k in ("sales_closing", "acreage_reporting", "premium_billing"))
-    sub = meta["subsidy"]
     grids = fx["grids"]
-    ng = len(grids)
     b = c["b"]
-    gz, hy, hi = b[0], b[4], b[1]
     lim = c.get("lim") or next(iter((c.get("limc") or {}).values()), None)
-    jf = (str(lim[0][1]) + "%") if lim and lim[0] else "not offered"
-    url = f"https://agsist.com/prf/{st_slug}/{sl}"
-    full = f"{name}, {stn}"
-    g_list = ", ".join(str(g) for g in grids)
-    g_short = ", ".join(str(g) for g in grids[:6]) + (f" and {ng - 6} more" if ng > 6 else "")
-    # one cap for the site (scripts/seo_caps.py, was 75 here): " | AGSIST" gives way first, then words;
-    # the year stays
-    title = CAPS.fit([f"PRF Insurance in {full}: {cy} Grids and Rates{CAPS.SUFFIX}",
-                      f"PRF Insurance in {full}: {cy} Grids and Rates",
-                      f"PRF Insurance in {full}: {cy} Grids",
-                      f"PRF Insurance, {full}: {cy}",
-                      f"PRF Insurance, {name}, {stc}: {cy}",
-                      f"PRF, {name}, {stc}: {cy}"])
-    desc = (f"PRF insurance in {full} for {cy}: {ng} {'grid' if ng == 1 else 'grids'} ({g_short}), "
-            f"county values {money2(gz)} grazing and {money2(hy) if hy is not None else 'no'} hay per acre, rates by month, history since {y0}.")
-    if len(desc) > CAPS.DESC_MAX:
-        desc = (f"PRF in {full} for {cy}: {ng} {'grid' if ng == 1 else 'grids'}, county values for grazing and hay, "
-                f"rates by month and how often each paid since {y0}.")
-    if len(desc) > CAPS.DESC_MAX:
-        desc = f"PRF in {full}, {cy}: {ng} grids, county values, rates by month and the record since {y0}."
-    calc = f"/prf?c={fips}"
-    # ---- each pair of months
-    def rng(r, f):
-        if not r:
-            return "&mdash;"
-        if r["low"] == r["high"]:
-            return f(r["mid"])
-        return f'{f(r["mid"])}<br><span class="prf-th-s">{f(r["low"])}&ndash;{f(r["high"]).lstrip("$")}</span>'
-    iv_rows = []
-    for i, r in enumerate(fx["intervals"]):
-        # a row priced on fewer grids than the county has says how many (Madera: 4 rows on 3 of 19)
-        few = (f'<br><span class="prf-th-s">{r["n"]} of {ng} grids</span>' if ng > 1 and r.get("n") and r["n"] < ng else "")
-        iv_rows.append(f'<tr><th scope="row"><abbr title="{S.LONG_IV[i]}">{SHORT_IV[i]}</abbr>{few}</th>'
-                       f'<td>{("%.2f in" % r["normal_in"]) if r["normal_in"] is not None else "&mdash;"}</td>'
-                       f'<td>{rng(r["rate"], money2)}</td><td>{rng(r["below"], str)}</td></tr>')
-    many = ng > 1
-    # ---- recent years: rows are intervals, columns are years
-    rec = fx["recent"]
-    so_far = '<br><span class="prf-th-s">so far</span>'
-    yr_head = "".join(f'<th scope="col">{x["year"]}{so_far if x.get("open") else ""}</th>' for x in rec)
-    yr_rows = "".join(f'<tr><th scope="row">{SHORT_IV[i]}</th>{"".join(pct_cell(x["iv"][i]) for x in rec)}</tr>' for i in range(11))
-    open_y = next((x for x in rec if x.get("open")), None)
-    open_n = sum(1 for v in (open_y["iv"] if open_y else []) if v)
-    # ---- the grids
-    grows = []
-    for g in fx["grid_rows"][:MAX_GRID_ROWS]:
-        grows.append(f'<tr><th scope="row">{g["g"]}</th>'
-                     f'<td>{("%.1f in" % g["normal_in"]) if g["normal_in"] is not None else "&mdash;"}</td>'
-                     f'<td>{(str(g["dry_year"]) + ", " + str(g["dry_pct"]) + "%") if g["dry_year"] else "&mdash;"}</td>'
-                     f'<td>{(str(g["last_pct"]) + "%") if g["last_pct"] is not None else "&mdash;"}</td>'
-                     f'<td>{g["years_under_90"] if g["years_under_90"] is not None else "&mdash;"}</td>'
-                     f'<td><a href="/prf?g={g["g"]}&amp;c={fips}" rel="nofollow">Open</a></td></tr>')
-    rest = fx["grid_rows"][MAX_GRID_ROWS:]
-    rest_txt = (f'<p class="prf-fine">And {len(rest)} more grids: {", ".join(str(g["g"]) for g in rest)}. '
-                f'Each opens in the <a href="{calc}" rel="nofollow">calculator</a>.</p>') if rest else ""
-    # ---- figures for the prose
-    mids = [(i, r["rate"]["mid"]) for i, r in enumerate(fx["intervals"]) if r["rate"]]
-    cheap = min(mids, key=lambda t: t[1]) if mids else None
-    dear = max(mids, key=lambda t: t[1]) if mids else None
-    wet = max(((i, r["normal_in"]) for i, r in enumerate(fx["intervals"]) if r["normal_in"] is not None), key=lambda t: t[1], default=None)
-    dry = min(((i, r["normal_in"]) for i, r in enumerate(fx["intervals"]) if r["normal_in"] is not None), key=lambda t: t[1], default=None)
-    dry_years = sorted({g["dry_year"] for g in fx["grid_rows"] if g["dry_year"]})
-    pb = fx["payback_mid_90"]
-    prot = round(gz * 0.9, 2)
-    subrow = ", ".join(f"{int(round(sub[k] * 100))}% at {k}%" for k in sorted(sub, key=int))
-    # Each cell's middle is the median of the county's grids for that pair of months (and year),
-    # so the middle can be a different grid from row to row; say so rather than "the middle grid".
-    mid_word = f"the middle of the {ng} grids" if many else "the grid"
-    # a pair of months not every grid prices: its middle is of the grids that price it
-    all_n = all((r.get("n") or 0) in (0, ng) for r in fx["intervals"])
-
-    def mid_of(i):
-        n = fx["intervals"][i].get("n") or 0
-        return mid_word if (not many or n == ng) else f"the middle of the {n} grids that price those months"
-    mid_any = mid_word if all_n else "the middle of the grids that price each pair of months"
     ex = fx.get("example")
-    faq = [
-        (f"When is the PRF deadline in {name} for {cy}?",
-         f"The sales closing date is {sales}, the same across the country. The acreage report is due {acre}, and the premium is billed no earlier than {bill}."),
-        (f"Which PRF grid is {name} in?",
-         f"{'Grids' if many else 'Grid'} {g_list} {'touch' if many else 'touches'} {name}. A grid is a quarter degree of latitude by a quarter degree of longitude, "
-         f"about 17 miles north to south. Your grid follows from a point inside the acres you insure; type a ZIP or coordinates in the calculator to find it."),
-        (f"How much does PRF cost per acre in {name}?",
-         f"It depends on the grid, the months, the coverage level and your productivity factor. USDA&rsquo;s {cy} county base value is {money2(gz)} an acre for grazing"
-         f"{', ' + money2(hy) + ' for non-irrigated hay' if hy is not None else ''}. At 90% coverage and a productivity factor of 100, grazing land is protected for "
-         f"{money2(prot)} an acre, and the full premium runs {money2(cheap[1]) if cheap else '&mdash;'} to {money2(dear[1]) if dear else '&mdash;'} per $100 of protection "
-         + (f"depending on the months, on {mid_word}. " if all_n or not (cheap and dear) else
-            f"depending on the months: {S.LONG_IV[cheap[0]]} on {mid_of(cheap[0])}, {S.LONG_IV[dear[0]]} on {mid_of(dear[0])}. ")
-         + "USDA pays 51% to 59% of the premium. "
-         + (f"In the example above, 100 acres of grazing at 90% with half in April to May and half in June to July, you pay ${ex['you_acre']:.2f} an acre on grid {ex['grid']}. " if ex else "")
-         + "The calculator gives the figure for your acres and months."),
-        (f"How often has PRF paid in {name}?",
-         f"At 90% coverage a pair of months pays when the index comes in under 90% of normal. Over {y0} to {y1}, on {mid_any}, that happened in "
-         f"{min(r['below']['mid'] for r in fx['intervals'] if r['below'])} to {max(r['below']['mid'] for r in fx['intervals'] if r['below'])} of {ny} years, depending on the months. "
-         + (f"Run at {cy} rates, $1 of full premium at 90% would have paid back a middle ${pb:.2f} across the county&rsquo;s grids and months. " if pb is not None else "")
-         + "That is the past record, not a forecast."),
-    ]
-    faq_html = "".join(f"<details><summary>{q}</summary><p>{a}</p></details>" for q, a in faq)
-    nb_html = (" ".join(f'<a href="{h}">{e(n)}</a>' for n, h in nbrs)) if nbrs else ""
-    more = " &middot; ".join(f'<a href="{h}">{t}</a>' for t, h in links)
-    # The county's own rain page when it is live, else the state rain page (scripts/cross_links.py,
-    # Oct 19, 2026). Rain county pages come and go day to day: this build never reads data/rain,
-    # only whether the page is there, and county-rain.yml re-stamps the link when the rain set moves.
-    rain = (f'<p class="prf-fine">{XL.rain_link(ROOT, rain_slug(RAIN_STATES[stc]), e(RAIN_STATES[stc]), sl, e(name))}</p>'
-            if stc in RAIN_STATES else "")
-    # up to three town bid pages nearest the county middle; restamped daily with the rain link
-    near = XL.near_bids(ROOT, fips, stc, "prf-fine")
-    ld = [
-        {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
-         "dateModified": S.modified(meta), "inLanguage": "en-US", "isPartOf": {"@id": "https://agsist.com/prf#app"},
-         "about": {"@type": "AdministrativeArea", "name": full},
-         "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"},
-         "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}},
-        {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [
-            {"@type": "Question", "name": S.text_of(q), "acceptedAnswer": {"@type": "Answer", "text": S.text_of(a)}} for q, a in faq]},
-        {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [
-            {"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"},
-            {"@type": "ListItem", "position": 2, "name": "PRF insurance calculator", "item": "https://agsist.com/prf"},
-            {"@type": "ListItem", "position": 3, "name": stn, "item": f"https://agsist.com/prf/{st_slug}"},
-            {"@type": "ListItem", "position": 4, "name": name, "item": url}]},
-    ]
-    ldh = "".join('<script type="application/ld+json">' + json.dumps(x, ensure_ascii=False, separators=(",", ":")).replace("</", "<\\/") + "</script>" for x in ld)
-    exh = example_html(fx.get("example"), cy, y0, y1, many, ng, S.long_date(meta["built"][:10]))
-    # "This interval so far" (components/prf-now.js): the numbers come from
-    # data/prf/now/<ST>.json when the reader opens the page, never baked here.
-    ex_g = (fx.get("example") or {}).get("grid")
-    now_g = ex_g if ex_g in grids else grids[len(grids) // 2]
-    now = (f'<section class="prf-now" id="prf-now" data-st="{stc}" data-grids="{",".join(str(g) for g in grids)}" data-grid="{now_g}" aria-labelledby="prf-now-h">'
-           f'<h2 id="prf-now-h">This interval so far</h2>'
-           f'<p class="pn-sub">Where {"a grid in " if many else "the grid in "}{e(name)} stands in the pairs of months still open, before RMA&rsquo;s final index. Preliminary.</p>'
-           f'<p class="pn-pick" data-pn-pick hidden></p>'
-           f'<div data-pn-body><p class="pn-held">Rain so far loads from NOAA&rsquo;s rain data when the page opens.</p></div></section>'
-           f'<script src="/components/prf-now.js?v=5" defer></script>'
-           # the grid index email (components/prf-notice.js, worker topic prf:<grid>): follows the card's grid
-           f'<div class="prf-notice" data-prf-notice data-grid="{now_g}" hidden></div>'
-           f'<script src="/components/prf-notice.js?v=2" defer></script>')
-    # irrigated hay under non-irrigated (2,968 of 3,070 counties for 2027): said, never explained (Oct 20)
-    irr_low = " USDA sets irrigated hay lower here." if hi is not None and hy is not None and hi < hy else ""
-    sod = (f'<p class="prf-note">{stn} has the native sod rule: native sod broken in recent years gets 65% of the protection and 50 points less of USDA&rsquo;s share. '
-           f'The values here are for land the rule does not touch.</p>') if stc in S.SOD else ""
-    return f"""<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <meta name="theme-color" content="#0a0c0d">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/prf.css?v=10">
-  <link rel="icon" href="/img/favicon.ico" sizes="32x32">
-  <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
-  <title>{e(title)}</title>
-  <meta name="description" content="{e(desc)}">
-  <meta name="author" content="Sigurd Lindquist">
-  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
-  <link rel="canonical" href="{url}">
-  <meta property="og:type" content="article">
-  <meta property="og:site_name" content="AGSIST">
-  <meta property="og:title" content="{e(title.replace(' | AGSIST', ''))}">
-  <meta property="og:description" content="{e(desc)}">
-  <meta property="og:url" content="{url}">
-  <meta property="og:image" content="https://agsist.com/img/og/prf.jpg">
-  <meta property="og:image:width" content="1200">
-  <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="{e(title.replace(' | AGSIST', ''))}">
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:image" content="https://agsist.com/img/og/prf.jpg">
-  {BOOT}
-  {ldh}
-</head>
-<body>
-  <a href="#main" class="skip">Skip to content</a>
-  <div id="site-header"></div>
-  <main id="main" class="main" tabindex="-1">
-  <div class="prf prf-st">
-    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/prf">PRF insurance calculator</a> &rsaquo; <a href="/prf/{st_slug}">{e(stn)}</a> &rsaquo; <span aria-current="page">{e(name)}</span></nav>
-    <p class="page-kicker">Crop year {cy} &middot; sign-up deadline {sales}</p>
-    <h1>PRF insurance in {e(full)}: {cy} grids, values and record</h1>
-    <p class="prf-lede">Pasture, Rangeland, Forage (PRF) is USDA&rsquo;s rainfall-index insurance for grazing land and hay ground. USDA&rsquo;s {cy} files offer it in {e(name)} on {('grid ' + g_list) if ng == 1 else (str(ng) + ' grids, each in the <a href="#grids">table of grids</a> below')}. It pays when precipitation in the grid over two months you choose comes in under a set share of normal.</p>
-    {exh}
-    <p><a class="btn btn-primary prf-cta" href="{calc}" rel="nofollow">Open the PRF calculator</a></p>
-    <p class="prf-spon-band prf-spon-line" data-prf-spon="county" data-prf-st="{stc}" data-prf-name="{e(stn)}"><span class="prf-spon-tag">For businesses</span> <a href="/prf-sponsor?state={stc}">Sponsor PRF in {e(stn)} &rarr;</a></p>
-    <dl class="prf-figs prf-st-figs">
-      <div><dt>Grids</dt><dd>{ng}</dd></div>
-      <div><dt>Grazing, county base value per acre</dt><dd>{money2(gz)}</dd></div>
-      <div><dt>Hay, non-irrigated, per acre</dt><dd>{money2(hy)}</dd></div>
-      <div><dt>Hay, irrigated, per acre</dt><dd>{money2(hi)}</dd></div>
-      <div><dt>January to February cap</dt><dd>{jf}</dd></div>
-      <div><dt>Sign-up deadline</dt><dd>{sales}</dd></div>
-    </dl>
-    <p class="prf-fine">USDA&rsquo;s {cy} county base values, the same on every grid in the county. Protection per acre is the value times your coverage level times a productivity factor of 60 to 150: grazing at 90% and 100 is {money2(prot)} an acre.{irr_low}</p>
-    {sod}
-    {now}
-    <div class="prf-prose">
-    <h2 id="months">What each pair of months costs in {e(name)}</h2>
-    <p>At 90% coverage{(', across the ' + str(ng) + ' grids that touch the county: first the middle of the ' + str(ng) + ' for that pair of months (it can be a different grid in each row), then the lowest and highest') if many and all_n else (', across the grids that touch the county that price each pair of months (' + str(ng) + ' in all; a row priced on fewer says how many): first the middle grid for that pair of months (it can be a different grid in each row), then the lowest and highest') if many else ''}. The premium is the full rate per $100 of protection; USDA pays {subrow}. Normal is the grid&rsquo;s average precipitation for those months. A year counts, of the {ny} from {y0} to {y1}, when the grid&rsquo;s index for those months came in under 90% of normal, which is when a 90% policy pays.</p>
-    <div class="prf-scroll" tabindex="0" role="region" aria-label="Each pair of months, scrolls sideways"><table class="prf-t prf-sub-t prf-iv-t"><caption class="prf-sr">Each pair of months in {e(full)} at 90% coverage</caption><thead><tr><th scope="col">Months</th><th scope="col">Normal</th><th scope="col">Premium per $100</th><th scope="col">Years under 90%</th></tr></thead><tbody>{''.join(iv_rows)}</tbody></table></div>
-    <p>{('The wettest pair of months here is ' + S.LONG_IV[wet[0]] + f' ({wet[1]:.2f} in on {mid_word}) and the driest is ' + S.LONG_IV[dry[0]] + f' ({dry[1]:.2f} in). ') if wet and dry else ''}{('Coverage costs least in ' + S.LONG_IV[cheap[0]] + ' and most in ' + S.LONG_IV[dear[0]] + '. ') if cheap and dear and cheap[0] != dear[0] else ''}The months to insure are the ones when a dry spell costs you grass or hay, not the cheapest ones.</p>
+    ex_g = (ex or {}).get("grid")
+    rng = lambda r, f: [f(r["low"]), f(r["mid"]), f(r["high"])] if r else None
+    return {
+        "v": 1, "fips": fips, "name": name, "state": st["name"], "st": st["st"],
+        "cy": meta["crop_year"], "y0": cf["years"]["first"], "y1": cf["years"]["last"], "ny": cf["years"]["n"],
+        "open": cf["open_year"], "read": S.long_date(meta["built"][:10]),
+        "sub": {k: int(round(meta["subsidy"][k] * 100)) for k in sorted(meta["subsidy"], key=int)},
+        "gz": r2(b[0]), "hy": r2(b[4]), "hi": r2(b[1]), "prot": r2(round(b[0] * 0.9, 2)),
+        "jf": (str(lim[0][1]) + "%") if lim and lim[0] else "not offered",
+        "grids": grids,
+        # the grid the "This interval so far" card opens on: the example's grid, else the middle one
+        "now": ex_g if ex_g in grids else grids[len(grids) // 2],
+        "ex": ({"grid": ex["grid"], "of": ex["of"], "you": r0(ex["you"]), "you_acre": r2(ex["you_acre"]), "usda": r0(ex["usda"]),
+                "premium": r0(ex["premium"]), "paid": ex["paid_years"], "years": ex["years"], "avg": r0(ex["avg"]),
+                "avg_acre": r2(ex["avg_acre"])} if ex else None),
+        "iv": [{"rate": rng(r["rate"], r2), "below": rng(r["below"], int), "in": r2(r["normal_in"]), "n": r.get("n") or 0}
+               for r in fx["intervals"]],
+        "rec": [{"y": x["year"], "open": bool(x.get("open")), "iv": [v["mid"] if v else None for v in x["iv"]]} for x in fx["recent"]],
+        "gr": [[g["g"], r1(g["normal_in"]), g["dry_year"], g["dry_pct"], g["last_pct"], g["years_under_90"]] for g in fx["grid_rows"]],
+        "links": [[t, h] for t, h in links],
+        "story": ctx.get("story", "").strip(),
+    }
 
-    <h2 id="record">The last five years in {e(name)}, and {cf['open_year'] or ''} so far</h2>
-    {ctx.get("story", "")}    <p>The index for each pair of months as a percent of normal (100 is a normal year), on {mid_word}{' (each grid has its own; the calculator shows yours)' if many else ''}. Shaded cells came in under 90%, where a 90% policy on those months would have paid.{(' ' + str(cf['open_year']) + ' shows the ' + str(open_n) + ' pairs of months USDA has published so far.') if open_y else ''}</p>
-    <div class="prf-scroll" tabindex="0" role="region" aria-label="Recent years, scrolls sideways"><table class="prf-t prf-yr-t"><caption class="prf-sr">PRF index by pair of months, {rec[0]['year']} to {rec[-1]['year']}, {e(full)}</caption><thead><tr><th scope="col">Months</th>{yr_head}</tr></thead><tbody>{yr_rows}</tbody></table></div>
-    <p class="prf-fine">Every year since {y0}, priced at {cy} rates, is in the <a href="{calc}" rel="nofollow">calculator</a>.</p>
 
-    <h2 id="grids">PRF {'grids' if many else 'grid'} in {e(name)}</h2>
-    <p>Each grid&rsquo;s normal precipitation over a year, its driest year since {y0} as a percent of normal, {y1} as a percent of normal, and how many of {ny} years as a whole came in under 90%.{(' The driest year on the record here was ' + str(dry_years[0]) + '.') if len(dry_years) == 1 else ''}</p>
-    <div class="prf-scroll" tabindex="0" role="region" aria-label="Every grid, scrolls sideways"><table class="prf-t prf-co-t"><caption class="prf-sr">PRF grids in {e(full)}</caption><thead><tr><th scope="col">Grid</th><th scope="col">Normal, year</th><th scope="col">Driest year</th><th scope="col">{y1}</th><th scope="col">Years under 90%</th><th scope="col"><span class="prf-sr">Calculator</span></th></tr></thead><tbody>{''.join(grows)}</tbody></table></div>
-    {rest_txt}
+def forward_to(st_slug, sl):
+    """Where an old county address sends the reader: the state page, opened on the county."""
+    return f"/prf/{st_slug}?county={sl}#county"
 
-    <h2 id="dates">PRF dates for {cy}</h2>
-    <ul>
-      <li><b>{sales}</b>: sales closing. New policies and changes are due at your agent.</li>
-      <li><b>{acre}</b>: acreage report.</li>
-      <li><b>{bill}</b>: premium billed, no earlier than this.</li>
-    </ul>
-    <p>From {cy}, grazing acres need livestock you have an interest in, equal to at least 25% of the stocking rate, or no payment is due and the premium is still owed. PRF pays on the grid&rsquo;s precipitation index, not on your production. <a href="/prf/how-prf-works">How PRF works</a> &middot; <a href="/prf#before">Before you sign</a> &middot; <a href="/prf/{st_slug}">PRF in {e(stn)}</a></p>
 
-    <h2 id="faq">PRF questions in {e(name)}</h2>
-    <div class="prf-faq">{faq_html}</div>
-    </div>
+def forward(st_slug, sl, name, stn):
+    """The page left at an old county address (Nov 2026 fold). Noindex, canonical to the state page,
+    an instant refresh and a script (the script keeps nothing the refresh would not), and one line with
+    a link for readers without either. No pointer marker: it is a forward, not a dropped county, so
+    the Atlas and ARC/PLC county links that point here keep landing on the county."""
+    to = forward_to(st_slug, sl)
+    canon = f"https://agsist.com/prf/{st_slug}"
+    t = e(to)
+    return ("<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
+            "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
+            f"<title>PRF in {e(name)}, {e(stn)}: moved | AGSIST</title>\n"
+            "<meta name=\"robots\" content=\"noindex, follow\">\n"
+            f"<link rel=\"canonical\" href=\"{canon}\">\n"
+            f"<meta http-equiv=\"refresh\" content=\"0; url={t}\">\n"
+            f"<script>location.replace({json.dumps(to)})</script>\n"
+            "</head>\n<body style=\"margin:0;background:#fff;color:#111\">\n"
+            "<main style=\"max-width:600px;margin:0 auto;padding:3rem 1rem;font-family:system-ui,sans-serif\">\n"
+            f"<p>PRF in {e(name)} is now on the <a href=\"{t}\">{e(stn)} PRF page</a>, county by county.</p>\n"
+            "</main>\n</body>\n</html>\n")
 
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and sends no one to any agent; its one email box sends a grid&rsquo;s final index when USDA posts it. Figures from USDA RMA&rsquo;s {cy} Actuarial Data Master and PRF index record, read {S.long_date(meta['built'][:10])}. The index record is what USDA publishes for {cy}; policies in past years were paid on their own rates and data.</p>
-    {('<nav class="prf-links prf-st-links" aria-label="PRF next door"><b>PRF next door:</b> ' + nb_html + '</nav>') if nb_html else ''}
-    <p class="prf-fine">{more}</p>
-    {rain}
-    {near}
-    <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
-  </div>
-  </main>
-  <div id="site-footer"></div>
-  <script src="/components/loader.js?v=19" defer></script>
-  {S.PRF_SPONSOR_JS}
-</body>
-</html>
-"""
+
+def state_urls(meta):
+    """The PRF pages sitemap-prf.xml lists: every state page and the explainer."""
+    return ([f"https://agsist.com/prf/{S.slug(st['name'])}" for st in sorted(meta["states"], key=lambda s: s["name"])]
+            + [f"https://agsist.com/prf/{S.GUIDE_SLUG}"])
 
 
 def sitemap(urls, day):
     body = "".join(f"  <url><loc>{u}</loc><lastmod>{day}</lastmod></url>\n" for u in urls)
     return ('<?xml version="1.0" encoding="UTF-8"?>\n'
-            '<!-- PRF county pages. Written by scripts/build_prf_counties.py; lastmod is the date of the USDA files the pages were built from. -->\n'
+            '<!-- PRF state pages and the explainer. Written by scripts/build_prf_counties.py; lastmod is the date of the USDA files the pages were built from. '
+            'County addresses forward to their state page and stay out of every sitemap. -->\n'
             '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n' + body + "</urlset>\n")
 
 
@@ -417,34 +205,23 @@ def main():
     cf = county_facts()
     if cf.get("built_from") != meta["built"] or cf.get("crop_year") != meta["crop_year"]:
         raise SystemExit("county facts and meta.json are from different builds of data/prf")
-    BOOT = S.boot()
     ATL = atlas_index()
-    NB = {}
-    p = os.path.join(ROOT, "data", "atlas", "neighbors.json")
-    if os.path.exists(p):
-        NB = json.load(open(p))["counties"]
     states = sorted(meta["states"], key=lambda s: s["name"])
-    # the dated lead paragraph (scripts/stories_prf.py): only where a kept story's facts are this page's now
+    # the dated lead paragraph (scripts/stories_prf.py): only where a kept story's facts are this view's now
     import stories_core as SK
     import stories_prf as SP
     STORIES = SK.load(SP)
-    # every county's name and URL first, for the next-door links
     where, loaded = county_urls(meta, ATL)
     want = {}
-    urls = []
-    total = 0
+    total_view = total_fwd = 0
+    big = 0
     for st in states:
         sd = loaded[st["st"]]
         st_slug = S.slug(st["name"])
         for code, c in sorted(sd["counties"].items()):
             fips = sd["fips"] + code
             n, href, sl, _ = where[fips]
-            nbrs = []
-            for nf in NB.get(fips, []):
-                if nf in where:
-                    nn, nh, _, nst = where[nf]
-                    nbrs.append((nn + ("" if nst["st"] == st["st"] else ", " + nst["st"]), nh))
-            links = [(f"PRF in {e(st['name'])}", f"/prf/{st_slug}")]
+            links = []
             for label, top in (("Farmland Atlas", "farmland-atlas"), ("ARC or PLC", "arc-plc")):
                 if os.path.exists(os.path.join(ROOT, top, st_slug, sl + ".html")):
                     links.append((f"{e(n)} in the {label}" if label == "Farmland Atlas" else f"{label} in {e(n)}", f"/{top}/{st_slug}/{sl}"))
@@ -452,16 +229,21 @@ def main():
             story = ""
             if STORIES:
                 story = SP.story_html(STORIES, st["st"], fips, SP.county_facts(meta, cf, st, sd, code, c, cf["counties"][fips], n), meta["built"][:10])
-            body = page({"meta": meta, "cf": cf, "st": st, "sd": sd, "code": code, "c": c, "fx": cf["counties"][fips], "name": n,
-                         "slug": sl, "st_slug": st_slug, "nbrs": nbrs, "links": links, "BOOT": BOOT, "story": story})
-            body = HS.slim(nav.fill_fonts(body))   # no indentation between tags; the same page to readers and crawlers
+            v = view({"meta": meta, "cf": cf, "st": st, "sd": sd, "code": code, "c": c, "fx": cf["counties"][fips], "name": n,
+                      "links": links, "story": story})
+            body = json.dumps(v, ensure_ascii=False, separators=(",", ":")) + "\n"
             size = len(body.encode())
             if size > MAX_KB * 1024:
-                raise SystemExit(f"prf/{st_slug}/{sl}.html would be {size // 1024} KB, over {MAX_KB} KB")
-            total += size
-            want[os.path.join(st_slug, sl + ".html")] = body
-            urls.append("https://agsist.com" + href)
-    sm = sitemap(urls, meta["built"][:10])
+                raise SystemExit(f"prf/{st_slug}/{sl}.json would be {size // 1024} KB, over {MAX_KB} KB")
+            fwd = forward(st_slug, sl, n, st["name"])
+            if len(fwd.encode()) > PP.MAX_BYTES:
+                raise SystemExit(f"prf/{st_slug}/{sl}.html forward would be {len(fwd.encode())} bytes, over {PP.MAX_BYTES}")
+            total_view += size
+            total_fwd += len(fwd.encode())
+            big = max(big, size)
+            want[os.path.join(st_slug, sl + ".json")] = body
+            want[os.path.join(st_slug, sl + ".html")] = fwd
+    sm = sitemap(state_urls(meta), meta["built"][:10])
     check = "--check" in sys.argv
     bad = []
     for rel, body in want.items():
@@ -469,21 +251,23 @@ def main():
         have = open(p, encoding="utf-8").read() if os.path.exists(p) else None
         if have != body:
             if check:
-                # the bids-near line follows the town pages (cross_links --stamp), not this set's data
-                if have is None or XL.steady(have) != XL.steady(body):
-                    bad.append(rel)
+                bad.append(rel)
             else:
                 os.makedirs(os.path.dirname(p), exist_ok=True)
                 open(p, "w", encoding="utf-8").write(body)
-    # pages this build no longer writes (a county dropped from USDA's files)
-    stale = []
+    # files this build no longer writes (a county dropped from USDA's files)
+    stale, stale_json = [], []
     for st in states:
         dd = os.path.join(OUT, S.slug(st["name"]))
         if os.path.isdir(dd):
             for fn in os.listdir(dd):
                 rel = os.path.join(S.slug(st["name"]), fn)
-                if fn.endswith(".html") and rel not in want:
+                if rel in want:
+                    continue
+                if fn.endswith(".html"):
                     stale.append(rel)
+                elif fn.endswith(".json"):
+                    stale_json.append(rel)
     # a county that left USDA's files stays as a pointer to its state page (scripts/pointer_pages.py)
     def prf_parent(rel):
         st_slug = rel.split("/")[1]
@@ -494,18 +278,19 @@ def main():
     if check:
         if have_sm != sm:
             bad.append("sitemap-prf.xml")
-        bad += stale + changed
+        bad += stale + stale_json + changed
         if bad:
-            print("PRF county pages out of date:", ", ".join(bad[:5]), "... run python3 scripts/build_prf_counties.py")
+            print("PRF county files out of date:", ", ".join(bad[:5]), "... run python3 scripts/build_prf_counties.py")
             return 1
-        print(f"{len(want)} county pages and sitemap-prf.xml match data/prf")
+        print(f"{len(want) // 2} county views and forwards and sitemap-prf.xml match data/prf")
         return 0
-    for rel in stale:
+    for rel in stale + stale_json:
         os.remove(os.path.join(OUT, rel))
     if have_sm != sm:
         open(SITEMAP, "w", encoding="utf-8").write(sm)
-    print(f"{len(want)} county pages written to prf/<state>/, {total / 1048576:.1f} MB, largest {max(len(b.encode()) for b in want.values()) // 1024} KB; "
-          f"{len(stale)} stale removed, {len(changed)} pointers written; sitemap-prf.xml {len(urls)} URLs")
+    print(f"{len(want) // 2} county views ({total_view / 1048576:.1f} MB, largest {big // 1024} KB) and forwards ({total_fwd / 1048576:.1f} MB) "
+          f"written to prf/<state>/; {len(stale) + len(stale_json)} stale removed, {len(changed)} pointers written; "
+          f"sitemap-prf.xml {len(state_urls(meta))} URLs")
     return 0
 
 
