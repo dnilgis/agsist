@@ -43,7 +43,7 @@ def css(ids):
             ".ptab-bar a:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}"
             ".ptab-bar svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2}"
             "@media(max-width:480px){.ptab-bar{gap:.15rem;padding:0 .5rem}.ptab-bar a{padding:.3rem .55rem;font-size:.86rem}}"
-            ".ptab{scroll-margin-top:4rem}"
+            ".ptab{scroll-margin-top:4rem}main.ptab-main{padding:0;margin:0;max-width:none}.ptab-bar a:target{outline:0}"
             ".ptabs[data-on]>.ptab{display:none}"
             f"{shown}{{display:block}}"
             ".ptabs[data-on]>.ptab[data-css]:not([data-ready])>*{visibility:hidden}"
