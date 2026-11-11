@@ -33,13 +33,14 @@ const part = (s, from, to) => { const a = s.indexOf(from); assert.ok(a >= 0, fro
 
 test("the live menu: PRF, LRP and Rain Print once, the dropped lines gone, Ag stocks under Futures", () => {
   for (const [name, s] of [["desktop", desk], ["phone", drawer]]) {
-    for (const h of ["/prf", "/lrp", "/rain-print", "/drought-monitor", "/manure-value", "/conditions", "/ag-stocks"]) assert.equal(count(s, h), 1, `${name}: ${h} once`);
+    // Nov 11, 2026: the drought monitor is a tab of /rain ("Rain and drought")
+    for (const h of ["/prf", "/lrp", "/rain-print", "/rain", "/manure-value", "/conditions", "/ag-stocks"]) assert.equal(count(s, h), 1, `${name}: ${h} once`);
     for (const h of ["/cash-bid-index", "/farmland-index", "/usda-quick-stats"]) assert.equal(count(s, h), 0, `${name}: no ${h} line`);
     assert.match(s, /Crop progress, size and yield<\/a>/, `${name}: one crop report line`);
   }
   // drought and manure sit under Field, beside the hail map and nutrient removal
-  assert.match(part(desk, 'id="dd-field"', '<div class="nav-dd"'), /href="\/hail-map"[^]*?Hail map<\/a>\s*<a href="\/drought-monitor"[^]*?href="\/nutrient-removal"[^]*?Nutrient removal<\/a>\s*<a href="\/manure-value"/);
-  assert.match(part(drawer, 'id="dg-field"', "</section>"), /href="\/hail-map"[^]*?Hail map<\/a>\s*<a href="\/drought-monitor"[^]*?href="\/nutrient-removal"[^]*?Nutrient removal<\/a>\s*<a href="\/manure-value"/);
+  assert.match(part(desk, 'id="dd-field"', '<div class="nav-dd"'), /href="\/rain"[^]*?Rain and drought<\/a>\s*<a href="\/hail-map"[^]*?href="\/nutrient-removal"[^]*?Nutrient removal<\/a>\s*<a href="\/manure-value"/);
+  assert.match(part(drawer, 'id="dg-field"', "</section>"), /href="\/rain"[^]*?Rain and drought<\/a>\s*<a href="\/hail-map"[^]*?href="\/nutrient-removal"[^]*?Nutrient removal<\/a>\s*<a href="\/manure-value"/);
   assert.doesNotMatch(part(desk, 'id="dd-livestock"', '<div class="nav-dd"'), /drought-monitor|manure-value/);
   // PRF and LRP stay under Livestock; Money & Land keeps ARC or PLC and the farm bill
   assert.match(part(drawer, 'id="dg-livestock"', "</section>"), /href="\/lrp"[^]*href="\/prf"/);
@@ -49,7 +50,7 @@ test("the live menu: PRF, LRP and Rain Print once, the dropped lines gone, Ag st
   assert.match(drawer, /Wheat<\/a>\s*<a href="\/ag-stocks" class="draw-item"><svg[^>]*><use href="#i-trending-up"\/><\/svg>Ag stocks<\/a>/);
   // the phone panel keeps its Rain Print card; the plain Field line is the copy that went
   assert.match(drawer, /<a href="\/rain-print" class="draw-rp">/);
-  assert.equal((drawer.match(/class="draw-item[^"]*"|class="draw-rp"/g) || []).length, 59, "63 lines to 57, plus Ag stocks, plus Tar spot (Sig, Nov 5)");
+  assert.equal((drawer.match(/class="draw-item[^"]*"|class="draw-rp"/g) || []).length, 55, "63 lines to 57, plus Ag stocks, plus Tar spot (Nov 5), less four weather lines folded into /rain and /spray (Nov 11)");
   assert.ok(existsSync(join(ROOT, "ag-stocks.html")));
 });
 
@@ -57,13 +58,13 @@ test("the no-script header, the footer, its no-script copy and the menu table sa
   const fb = read("components/header-fallback.html");
   assert.match(fb, /<a href="\/wheat-futures-prices">Wheat<\/a> · <a href="\/ag-stocks">Ag stocks<\/a>/);
   assert.match(fb, /<a href="\/conditions">Crop progress, size and yield<\/a>/);
-  assert.match(fb, /<a href="\/hail-map">Hail map<\/a> · <a href="\/drought-monitor">Drought monitor<\/a>/);
+  assert.match(fb, /<a href="\/rain">Rain and drought<\/a> · <a href="\/hail-map">Hail map<\/a>/);
   assert.match(fb, /<a href="\/nutrient-removal">Nutrient removal<\/a> · <a href="\/manure-value">Manure value<\/a>/);
   for (const h of ["/cash-bid-index", "/farmland-index", "/usda-quick-stats"]) assert.equal(count(fb, h), 0, "header-fallback " + h);
   const f = read("components/footer.html"), ff = read("components/footer-fallback.html");
   for (const [n, s] of [["footer", f], ["footer-fallback", ff]]) {
     for (const h of ["/cash-bid-index", "/farmland-index", "/usda-quick-stats"]) assert.equal(count(s, h), 0, `${n}: ${h}`);
-    for (const h of ["/prf", "/lrp", "/rain-print", "/drought-monitor", "/manure-value"]) assert.equal(count(s, h), 1, `${n}: ${h} once`);
+    for (const h of ["/prf", "/lrp", "/rain-print", "/rain", "/manure-value"]) assert.equal(count(s, h), 1, `${n}: ${h} once`);
     assert.match(s, /Crop progress, size and yield<\/a>/, n);
   }
   assert.match(f, /<p class="footer-band-rp"><a href="\/rain-print">/, "the footer's Rain Print line is the band");
@@ -174,12 +175,12 @@ test("menu_click: a tap on a menu link sends its group and name, desktop and pho
         await pg.waitForSelector("#hamburger", { state: "visible", timeout: 15000 });
         await pg.click("#hamburger");
         await pg.waitForFunction(() => document.getElementById("drawer").classList.contains("open"));
-        await pg.click('#drawer a.draw-item[href="/drought-monitor"]');
+        await pg.click('#drawer a.draw-item[href="/rain"]');
         await pg.click("#drawer a.draw-rp");
         await pg.click("#dp-bids");
         await pg.click('#drawer .draw-end a[href="/contact"]');
         const ev = await got();
-        assert.deepEqual(ev.map((e) => [e.menu, e.group, e.label]), [["phone", "Field", "Drought monitor"], ["phone", "Rain Print card", "Rain Print"],
+        assert.deepEqual(ev.map((e) => [e.menu, e.group, e.label]), [["phone", "Field", "Rain and drought"], ["phone", "Rain Print card", "Rain Print"],
           ["phone", "My place", "Bids near me"], ["phone", "More", "Contact"]]);
         assert.ok(await pg.evaluate(() => document.documentElement.scrollWidth <= 390), "no sideways scroll");
       }
