@@ -1196,42 +1196,23 @@ try {
 (function(){
   var el = document.getElementById('idx1-trust-ledger');
   if(!el) return;
-  /* Nov 4, 2026 (site panel, Nov 2 item 22): ONE elevator count on the home page, with one label and one
-     time. A second line (the coverage map's "2,109 of 8,052" from the counts file) sat beside
-     this one with its own time and a different count; the bids file's location count covers both feeds
-     now (2,069 on Nov 4 against 494 when the Oct 1 line was added), so it is the one kept.
-     test/home-one-count.test.mjs holds it. */
-  /* 2026-10-16: the counts only (data/bids-stats.json, under 1 KB, written
-     by scripts/fetch_bids.py on the same run as data/bids.json), not the
-     230 KB bids file. The bids file stays the fallback. */
-  function getj(u){ return fetch(u).then(function(r){
-    if(!r.ok) throw new Error(u + ' ' + r.status);
+  /* ONE elevator count, the same field every page prints: data/elevator-counts.json `bids`
+     (elevators with a current bid on the cash bids pages, and their towns), with its own time.
+     No file or no count: the line says so instead of going blank. test/home-one-count.test.mjs */
+  fetch('/data/elevator-counts.json').then(function(r){
+    if(!r.ok) throw new Error('counts ' + r.status);
     return r.json();
-  }); }
-  getj('/data/bids-stats.json').then(function(d){
-    if(!d || !d.stats || typeof d.stats.total_bids !== 'number') throw new Error('no stats');
-    return d;
-  }).catch(function(){ return getj('/data/bids.json'); }).then(function(d){
-    var stats = d && d.stats;
-    if(!stats || typeof stats.facilities !== 'number' || typeof stats.total_bids !== 'number' || !d.fetched){
+  }).then(function(d){
+    var b = d && d.bids;
+    if(!b || typeof b.elevators !== 'number' || !(b.elevators > 0) || typeof b.towns !== 'number' || !d.generated){
       el.textContent = 'elevator-board stats unavailable this load';
       return;
     }
-    var dt = new Date(d.fetched);
-    /* 2026-10-01: CT, like the card above it, and "locations", not "boards":
-       this file counts every location in the national pull, not only
-       the boards the elevator network reads itself. */
-    var when = isNaN(dt.getTime()) ? d.fetched : dt.toLocaleString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:'America/Chicago'}) + ' CT';
-    /* WAVE1-A: stats.facilities is a count of distinct facility NAMES
-       (scripts/fetch_bids.py), and the file holds both feeds after the merge.
-       stats.locations (name, town, state) is printed when the file has it;
-       until then the name count is labelled as what it is. */
-    var where = typeof stats.locations === 'number'
-      ? stats.locations.toLocaleString('en-US') + ' locations'
-      : stats.facilities.toLocaleString('en-US') + ' elevator company names';
-    var st = window.AgAsOf ? AgAsOf.html(d.fetched, 'bids') : '';
-    el[st ? 'innerHTML' : 'textContent'] = 'Elevator boards read: ' + stats.total_bids.toLocaleString('en-US') + ' bids from '
-      + where + ' · ' + (st || when);
+    var dt = new Date(d.generated);
+    var when = isNaN(dt.getTime()) ? d.generated : dt.toLocaleString('en-US', {month:'short', day:'numeric', hour:'numeric', minute:'2-digit', timeZone:'America/Chicago'}) + ' CT';
+    var st = window.AgAsOf ? AgAsOf.html(d.generated, 'bids') : '';
+    el[st ? 'innerHTML' : 'textContent'] = 'Current cash bids from ' + b.elevators.toLocaleString('en-US') + ' elevators in '
+      + b.towns.toLocaleString('en-US') + ' towns · ' + (st || when);
   }).catch(function(){
     el.textContent = 'elevator-board stats unavailable this load';
   });
