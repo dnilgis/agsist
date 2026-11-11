@@ -13,7 +13,7 @@
 
    WIRING: <section id="county" data-prf-county data-state="iowa"> holds a
    [data-pc-pick] slot (the picker is built here from the county table's
-   links, a[data-c] in #counties, so the list is not in the page twice) and a
+   links (a[data-c], under #counties), so the list is not in the page twice) and a
    [data-pc-body] slot for the view. A county comes from ?county=<slug> (the
    old county addresses forward with it) or #county=<slug> (the table's links).
    On each pick it sends `prf:grid` (detail { grid, st }) so the "This interval
@@ -184,7 +184,7 @@
 
   var CSS = '.prf-county{margin:1.4rem 0;padding:1rem 1.1rem;border:1px solid var(--border,#333);border-radius:10px;background:var(--surface,transparent)}' +
     '.prf-county>h2{margin:0 0 .35rem}.pc-pick{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem .6rem;margin:.4rem 0 .2rem}' +
-    '.pc-pick label{font-weight:600}.pc-pick select{max-width:100%;min-width:0;font:inherit;padding:.4rem .5rem;border-radius:6px}' +
+    '.prf-county{scroll-margin-top:84px}.pc-pick label{font-weight:600}.pc-pick select{width:min(100%,24rem);min-width:0;font:inherit;padding:.4rem .5rem;border-radius:6px}' +
     '.prf-cp{margin-top:1rem;padding-top:.8rem;border-top:1px solid var(--border,#333)}.prf-cp-h{margin:0 0 .4rem;font-size:1.2rem}' +
     '.prf-cp-h:focus{outline:none}.prf-cp-s{margin:1.2rem 0 .4rem;font-size:1.05rem}.pc-held{font-size:.9rem;color:var(--text-muted,#999)}';
 
@@ -204,7 +204,7 @@
     var st = sec.getAttribute('data-state');
     var body = sec.querySelector('[data-pc-body]');
     var slot = sec.querySelector('[data-pc-pick]');
-    var links = Array.prototype.slice.call(document.querySelectorAll('#counties a[data-c]'));
+    var links = Array.prototype.slice.call(document.querySelectorAll('a[data-c]'));
     if (!st || !body || !slot || !links.length) return;
     var names = {};
     var sel = document.createElement('select');

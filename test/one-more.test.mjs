@@ -139,7 +139,8 @@ function serve() {
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
     let f = path.normalize(path.join(ROOT, p));
-    if (!fs.existsSync(f) && fs.existsSync(f + ".html")) f += ".html";
+    /* as Pages does: /prf/iowa is prf/iowa.html even with a prf/iowa/ folder beside it */
+    if ((!fs.existsSync(f) || fs.statSync(f).isDirectory()) && fs.existsSync(f + ".html")) f += ".html";
     if (!f.startsWith(ROOT) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[path.extname(f)] || "application/octet-stream" });
     res.end(fs.readFileSync(f));
@@ -293,7 +294,7 @@ test("town cash bid box: after the Daily, One more? offers a ZIP alert for the t
   } finally { await browser.close(); srv.close(); }
 });
 
-test("PRF county page: the grid notice then One more? with the Daily; the bar still shows there", { skip, timeout: 90000 }, async () => {
+test("PRF county address (now the state page on that county): the grid notice then One more? with the Daily; the bar still shows there", { skip, timeout: 90000 }, async () => {
   const srv = await serve(), port = srv.address().port, posts = [];
   const browser = await chromium.launch({ executablePath: CHROME });
   try {

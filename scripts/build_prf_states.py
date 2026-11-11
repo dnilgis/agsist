@@ -284,7 +284,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
     <div class="prf-faq">{faq_html}</div>
     </div>
 
-    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and asks for no contact details. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here.</p>
+    <p class="prf-byline">By <a href="/about">Sigurd Lindquist</a>, CCA, who owns a licensed crop insurance agency. This page sells no insurance and sends no one to any agent; its one email box sends a grid&rsquo;s final index when USDA posts it. Sponsored space is marked in orange; a sponsor may sell crop insurance, and has no say over any figure here.</p>
     <nav class="prf-links prf-st-links" aria-label="PRF in other states"><a href="/prf">PRF calculator</a> {others}</nav>
     {XL.same_state_row(ROOT, slug(name), e(name), "prf")}
     <p class="rp-promo" data-rain-print-promo="auto" hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
