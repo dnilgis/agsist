@@ -10,7 +10,6 @@ on:
   push:
     branches: [main]
     paths:
-      - 'scripts/build_coverage_map.mjs'
       - 'list-your-elevator.html'
 
 env:

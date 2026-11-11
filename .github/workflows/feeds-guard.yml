@@ -8,7 +8,6 @@ on:
       - 'components/bids-*.js'
       - 'components/cash-bids.js'
       - '.github/workflows/**'
-      - 'scripts/**'
       - 'data/feeds.json'
   pull_request:
     paths: ['**.html', 'scripts/**', 'components/bids-*.js', 'components/cash-bids.js', 'data/feeds.json']

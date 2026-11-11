@@ -149,23 +149,15 @@
   }
 
   /* opt.json and outlook.json, once; both optional, the panel says what is
-     missing. data/prf/climate-indices.json only when a predictor that held up
-     in opt.json needs a NOAA series (PDO, AMO); otherwise it is not fetched. */
+     missing. The climate series and forecast models the test reads are not
+     published, so a predictor that needs them and held up says so in one
+     plain line and the pick stays the plain one. */
   function load(src) {
     if (state.loading) return state.loading;
     function get(u) { return fetch(u).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
     state.loading = Promise.all([get(src + 'opt.json'), get(src + 'outlook.json')]).then(function (r) {
       state.opt = r[0]; state.outlookJson = r[1];
       state.kept = O.keptPredictors(state.opt);
-      var needs = state.kept.some(function (id) { var p = O.predictorById(id); return p && p.needs && p.needs.some(function (n) { return n !== 'seasonal'; }); });
-      var fc = state.kept.some(function (id) { var p = O.predictorById(id); return p && p.family === 'forecast'; });
-      /* a forecast model that held up: its file and the skill table the test
-         wrote for the coming policy year */
-      return Promise.all([needs ? get(src + 'climate-indices.json') : null, fc ? get(src + 'seasonal-fc.json') : null]).then(function (r2) {
-        if (!needs && !fc) return;
-        state.climate = r2[0] || { series: {} };
-        if (fc && r2[1]) { state.climate.seasonal = r2[1]; state.climate.seasonalSkill = state.opt.seasonalSkill || null; }
-      });
     }).then(function () { state.loaded = true; });
     return state.loading;
   }
@@ -224,7 +216,7 @@
     if (state.cache.key === key) return state.cache.res;
     var res = O.recommend({ index: ctx.index, rates: ctx.rates ? ctx.rates[ctx.cov] : null, coverage: ctx.cov, subsidy: ctx.subsidy ? ctx.subsidy[String(ctx.cov)] : null,
                             min: mm.min, max: mm.max, valid: valid, avgMm: ctx.avgMm, lastComplete: ctx.lastComplete, grid: ctx.grid },
-                          { objective: state.objective, enso: enso, outlook: outl.outlook, tilts: state.kept || [], climate: state.climate || null, policyYear: ctx.cropYear || null,
+                          { objective: state.objective, enso: enso, outlook: outl.outlook, tilts: state.kept || [], climate: null, policyYear: ctx.cropYear || null,
                             steadier: !!(state.opt && state.opt.risk && state.opt.risk.held) });
     res.outlookMeta = outl;
     res.ensoUsed = enso;

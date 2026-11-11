@@ -1,6 +1,13 @@
 __pycache__/
 *.pyc
 .DS_Store
+# The code lives on the private engine branch (.github/engine-paths, mode private). Every job and
+# every local session copies it in here (.github/actions/engine/engine.sh); it is never committed.
+/scripts/
+/test/
+/build/
+/.engine-src/
+/.engine-pair/
 # The full national pull. Written by fetch_bids.py for build_basis_map.py and
 # build_basis_history.py to read in the same job, then thrown away with the
 # runner. About 6 MB. The workflow only ever `git add`s explicit paths, so this

@@ -1,8 +1,11 @@
 # Where the collection code lives and which paths it fills in a checkout.
 # Read by .github/actions/engine/engine.sh (the "Engine checkout" step in every
-# workflow job that runs code, and local sessions). Lines: repo, branch, path.
+# workflow job that runs code, and local sessions). Lines: repo, branch, mode, path.
+# mode private: the code is not in this repository; every job and every local
+# session takes it from the engine branch (the ENGINE_MODE variable no longer matters).
 repo dnilgis/feedbag
 branch engine-agsist
+mode private
 path scripts
 path test
 path build

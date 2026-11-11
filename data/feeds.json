@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 96,
- "with_known_cadence": 96,
+ "count": 94,
+ "with_known_cadence": 94,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -2156,34 +2156,6 @@
    "why_quiet": null
   },
   {
-   "path": "data/prf/climate-indices.json",
-   "pages": [
-    "prf.html"
-   ],
-   "written_by": [
-    "climate indices",
-    "prf"
-   ],
-   "touched_by": [
-    "climate indices",
-    "prf",
-    "Rebuild Feed Manifest",
-    "seasonal models"
-   ],
-   "cadence": "2 launches on a fixed schedule at about 5am, 9am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "37 14 9 * *",
-    "23 10 * * 3"
-   ],
-   "max_gap_hours": 168.0,
-   "quiet": "monthly",
-   "why_quiet": "NOAA posts the PDO and AMO once a month, so the climate indices job runs on the 9th and the file moves only when a new month is out."
-  },
-  {
    "path": "data/prf/meta.json",
    "pages": [
     "index.html",
@@ -2268,34 +2240,6 @@
    "max_gap_hours": 119.1,
    "quiet": "weekly",
    "why_quiet": "Checked Thursdays and Fridays; it changes when a source issues. The US Drought Monitor map comes out Thursday mornings, CPC's seasonal outlooks on the third Thursday of the month and the ENSO discussion on the second."
-  },
-  {
-   "path": "data/prf/seasonal-fc.json",
-   "pages": [
-    "prf.html"
-   ],
-   "written_by": [
-    "prf",
-    "seasonal models"
-   ],
-   "touched_by": [
-    "climate indices",
-    "prf",
-    "Rebuild Feed Manifest",
-    "seasonal models"
-   ],
-   "cadence": "2 launches on a fixed schedule at about 5am, 10am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "23 10 * * 3",
-    "41 15 15 11,12 *"
-   ],
-   "max_gap_hours": 168.0,
-   "quiet": "seasonal",
-   "why_quiet": "The PRF test uses one forecast a year from each model, the one started in November, so the seasonal models job runs in mid November and mid December and the file sits still the rest of the year."
   },
   {
    "path": "data/price-stats.json",
