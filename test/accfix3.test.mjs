@@ -131,7 +131,7 @@ test("spray, urea, conditions, cot, scout, pod counts: corrected wording", () =>
   const sp = read("spray.html");
   assert.ok(!sp.includes("Below 30%") && !sp.includes("humidity under 50%"));
   assert.match(sp, /or any calendar cutoff your label or state sets, whichever comes first/);
-  const u = read("urea.html");
+  const u = read("spray.html") + read("components/fold/urea.js");   // the urea tab of /spray since Nov 11, 2026
   assert.ok(!u.includes("0.1–0.4 inches") && !u.includes("most dangerous window") && !u.includes("about two weeks of protection"));
   assert.match(u, /two to 10 weeks \(Montana State, EB0209\)/);
   assert.match(u, /At Moderate or higher \(or on no-till ground,/);
@@ -202,7 +202,7 @@ test("harvest tracker, planting date, rent, crop tour, farm bill, rain, yield es
   assert.match(read("rain-gauge.html"), /You pay only for the digital file or a print\./);
   assert.match(read("yield-estimator.html"), /function spp1\(x\)/);
   assert.equal(Math.round(62.5 * 10) / 10, 62.5);
-  assert.match(read("rain-radar.html"), /about six square miles/);
+  assert.match(read("rain.html"), /about six square miles/);   // the radar tab of /rain since Nov 11, 2026
   assert.ok(2.8 * 2 > 5.5, "2.8 x 2 miles is 5.6 square miles");
   const sc = read("usda-calendar.html");   // the bot scorecard is a section of the calendar since Oct 22, 2026
   assert.ok(!sc.includes("2,736 windows"));

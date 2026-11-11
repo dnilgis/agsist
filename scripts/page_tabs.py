@@ -42,7 +42,10 @@ def css(ids):
             "box-shadow:inset 0 3px 0 var(--gold)}"
             ".ptab-bar a:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}"
             ".ptab-bar svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2}"
-            "@media(max-width:480px){.ptab-bar{gap:.15rem;padding:0 .5rem}.ptab-bar a{padding:.3rem .55rem;font-size:.86rem}}"
+            # phones: the site's 12px gutter sits on <main> (components/styles.css); a panel's own .main wrapper
+            # (a whole page until Nov 11, 2026) adds none on top, as when it was the <main> itself
+            "@media(max-width:480px){.ptab-bar{gap:.15rem;padding:0 .5rem}.ptab-bar a{padding:.3rem .55rem;font-size:.86rem}"
+            ".ptabs>.ptab>.main{padding-left:0!important;padding-right:0!important}}"
             ".ptab{scroll-margin-top:4rem}main.ptab-main{padding:0;margin:0;max-width:none}.ptab-bar a:target{outline:0}"
             ".ptabs[data-on]>.ptab{display:none}"
             f"{shown}{{display:block}}"

@@ -80,7 +80,7 @@ test("crop progress is stamped with the Central-time date", () => {
 });
 
 test("urea: the cheapest N per lb is named from the posted prices, not asserted", () => {
-  const html = read("urea.html");
+  const html = read("spray.html") + read("components/fold/urea.js");   // the urea tab of /spray since Nov 11, 2026
   assert.doesNotMatch(html, /Highest N analysis = lowest cost per lb N/);
   const ctx = {};
   vm.createContext(ctx);

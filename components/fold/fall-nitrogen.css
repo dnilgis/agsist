@@ -57,10 +57,10 @@
 #p-fall-nitrogen .fn-rules b{display:block}
 #p-fall-nitrogen .fn details.fn-all{border:1px solid var(--border);border-radius:10px;padding:.6rem .9rem;margin:.4rem 0 1rem}
 #p-fall-nitrogen .fn details.fn-all summary{cursor:pointer;font-weight:700;color:var(--text);min-height:32px}
-#p-fall-nitrogen .fn-faq details{border-top:1px solid var(--border);padding:.75rem 0}
-#p-fall-nitrogen .fn-faq details:last-child{border-bottom:1px solid var(--border)}
-#p-fall-nitrogen .fn-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem}
-#p-fall-nitrogen .fn-faq details p{margin:.6rem 0 .2rem}
+#p-fall-nitrogen .fn-qs details{border-top:1px solid var(--border);padding:.75rem 0}
+#p-fall-nitrogen .fn-qs details:last-child{border-bottom:1px solid var(--border)}
+#p-fall-nitrogen .fn-qs summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem}
+#p-fall-nitrogen .fn-qs details p{margin:.6rem 0 .2rem}
 #p-fall-nitrogen .fn .src{font-size:.84rem;color:var(--text-muted);margin-top:1.5rem}
 #p-fall-nitrogen .fn .src li{font-size:.84rem;color:var(--text-muted)}
 @media(max-width:420px){#p-fall-nitrogen .fn-t{font-size:.82rem}

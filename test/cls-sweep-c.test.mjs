@@ -15,10 +15,11 @@ import assert from "node:assert/strict";
 import { read, skip, MODES, open } from "./cls-sweep-lib.mjs";
 
 const LIMIT = 0.04;
-const PAGES = ["/urea", "/combine-loss", "/nutrient-removal", "/land-sales/wisconsin/barron-county", "/land-sales/"];
+const PAGES = ["/spray#urea",   // the urea tab of /spray since Nov 11, 2026
+   "/combine-loss", "/nutrient-removal", "/land-sales/wisconsin/barron-county", "/land-sales/"];
 
 test("the holds are in the pages and the builder", () => {
-  const U = read("urea.html"), C = read("combine-loss.html"), N = read("nutrient-removal.html"), L = read("components/land-sales.css");
+  const U = read("spray.html") + read("components/fold/urea.js"), C = read("combine-loss.html"), N = read("nutrient-removal.html"), L = read("components/land-sales.css");
   assert.match(U, /class="hero-sub up-wait" id="urea-price-line"/, "urea: the price line starts held");
   assert.match(U, /\.catch\(letGo\);\}catch\(e\)\{letGo\(\);\}/, "urea: a failed price file lets go of the hold");
   assert.match(C, /document\.documentElement\.setAttribute\('data-cl',clC\)/, "combine loss: the crop is set before paint");
