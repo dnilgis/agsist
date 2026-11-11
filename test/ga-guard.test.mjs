@@ -25,7 +25,7 @@
  * put "bot" in the user agent, so it is excepted. A prerendered page waits
  * until it is shown.
  *
- * Copies: about 14,000 pages plus the builders. Builders that type the guard:
+ * Copies: about 11,600 pages plus the builders (14,000 before the Nov 2026 PRF county fold). Builders that type the guard:
  * GA_SOURCES below. Builders that lift it from store-or-sell.html
  * (make_prf_html.py, build_prf_states.py and its users) or from a built page
  * (cash_bid_index.py) carry no copy of their own; the page check covers them.
@@ -103,7 +103,8 @@ test("every page with Google Analytics carries the one guard, byte for byte", ()
     if (/<script[^>]*src=["'][^"']*googletagmanager/i.test(h)) bad.push(`${rel}: loads gtag.js outside the guard`);
   }
   assert.ok(pages >= 13000, `only ${pages} pages walked; the tree has moved`);
-  assert.ok(guarded >= 13000, `only ${guarded} guarded pages; expected about 14,000`);
+  /* Nov 2026: the 3,070 PRF county pages became small forwards with no GA (the state pages carry it) */
+  assert.ok(guarded >= 11000, `only ${guarded} guarded pages; expected about 11,600`);
   assert.deepEqual(bad.slice(0, 20), [], `${bad.length} problems`);
 });
 
