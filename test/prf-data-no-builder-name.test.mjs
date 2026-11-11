@@ -1,4 +1,6 @@
-/* The published PRF climate and forecast files carry data, not the name of the job that writes them.
+/* The PRF climate and forecast files are model inputs: not in the public tree at all,
+ * saved to the private repo by the jobs that write them, and, wherever they are
+ * written, without the name of the job that writes them.
  *
  *   node --test test/prf-data-no-builder-name.test.mjs
  */
@@ -9,13 +11,17 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-for (const name of ['climate-indices.json', 'seasonal-fc.json']) {
-  test(`data/prf/${name} has no written_by key and no script path`, () => {
-    const file = path.join(root, 'data', 'prf', name);
-    if (!fs.existsSync(file)) return;   // a job may not have written it yet
-    const text = fs.readFileSync(file, 'utf8');
-    const d = JSON.parse(text);
-    assert.ok(!('written_by' in d), 'no written_by key');
-    assert.doesNotMatch(text.slice(0, 4000), /scripts\/[a-z_]+\.(py|mjs|js)/);
+const read = (p) => fs.readFileSync(path.join(root, p), 'utf8');
+for (const [name, wf, script] of [['climate-indices.json', 'climate-indices.yml', 'fetch_climate_indices.py'],
+                                  ['seasonal-fc.json', 'seasonal-models.yml', 'fetch_seasonal_models.py']]) {
+  test(`data/prf/${name} is not published; ${wf} saves it to the private repo`, () => {
+    assert.ok(!fs.existsSync(path.join(root, 'data', 'prf', name)), `data/prf/${name} is gone from the public tree`);
+    const y = read(`.github/workflows/${wf}`);
+    assert.match(y, new RegExp(`push_raw\\.sh "[a-z ]+" private/prf/${name.replace('.', '\\.')}`), 'saved to private-data');
+    assert.doesNotMatch(y, new RegExp(`git add[^\\n]*${name.replace('.', '\\.')}`), 'never committed to main');
+  });
+  test(`${script} writes ${name} with no written_by key`, () => {
+    const py = read(`scripts/${script}`);
+    assert.doesNotMatch(py, /"written_by":/, 'the writer sets no written_by key');
   });
 }

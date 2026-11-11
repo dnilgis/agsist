@@ -45,7 +45,7 @@ function fakeClimate(edit) {
   return { v: 1, series };
 }
 const CLIMATE = fakeClimate();
-/* the tilts that run on the climate file alone; the forecast models need data/prf/seasonal-fc.json
+/* the tilts that run on the climate file alone; the forecast models need the forecast file
    (tested below on a synthetic one) and the coverage pick is not a tilt */
 const RUN = O.PREDICTORS.filter((p) => !p.untestable && !p.stub && !p.structural && p.family !== "forecast").map((p) => p.id);
 
@@ -180,11 +180,13 @@ test("last fall uses Sep-Oct only: Oct-Nov and Nov-Dec of the year before (not f
 
 /* ------------------------------------------------------------ missing data */
 test("no climate file: PDO and AMO are skipped cleanly, the rest still run", () => {
-  assert.match(O.predictorUnavailable("pdo-enso", null), /climate-indices\.json has no PDO/);
+  assert.match(O.predictorUnavailable("pdo-enso", null), /^no PDO series in the data$/);
   assert.match(O.predictorUnavailable("amo", { series: {} }), /no AMO/);
   assert.equal(O.predictorUnavailable("recent30", null), null);
   assert.equal(O.predictorUnavailable("fall", null), null);
-  assert.match(O.predictorUnavailable("fc-ecmwf", CLIMATE), /seasonal-fc\.json has no ecmwf/, "no forecast file, no forecast tilt");
+  assert.match(O.predictorUnavailable("fc-ecmwf", CLIMATE), /^no ecmwf forecasts in the data yet$/, "no forecast file, no forecast tilt");
+  for (const r of [O.predictorUnavailable("pdo-enso", null), O.predictorUnavailable("fc-ecmwf", CLIMATE), O.predictorUnavailable("fc-mmm", null)])
+    assert.doesNotMatch(r, /\.json|scripts\/|data\//, "the reason names no file: " + r);
   assert.match(O.predictorUnavailable("fc-mmm", { series: {}, seasonal: { models: { ecmwf: {} } } }), /two models/);
   const wf = O.walkForward(O.prepare(fxInput(90)), { predictors: RUN, climate: null });
   assert.deepEqual(Array.from(wf.predictors), ["recent15", "recent30", "last30", "fall"]);
@@ -246,12 +248,26 @@ test("only what the published test kept can move the pick", () => {
   assert.ok(/not known yet/.test(f.tiltNotes.join(" ")), f.tiltNotes.join(" "));
   const d = O.recommend(fxInput(90), { backtest: false, tilts: ["last30"], objective: "dry" });
   assert.equal(d.forecast, null, "the tilts were tested on the rate-led pick only");
+  /* a kept idea whose data is not published (the panel passes no climate data): one plain line, no file
+     name, and the pick is the plain one */
+  for (const id of ["pdo-enso", "fc-cfsv2"]) {
+    const u = O.recommend(fxInput(90), { backtest: false, tilts: [id], climate: null, policyYear: 2027 });
+    assert.equal(u.forecast, null, id + ": nothing moves the pick");
+    assert.deepEqual(Array.from(u.rec.split), Array.from(plain.rec.split), id + ": the plain pick");
+    const note = u.tiltNotes.join(" ");
+    assert.match(note, /held up in the test, but this predictor’s data is not published, so it does not move the pick\./, note);
+    assert.doesNotMatch(note, /\.json|scripts\/|data\/|missing \(/, note);
+  }
 });
 
 test("data/prf/opt.json: one plain line for every idea, the family stated, and kept only by the rule", () => {
   const d = JSON.parse(readFileSync(ROOT + "data/prf/opt.json", "utf8"));
   assert.equal(d.family.size, O.FAMILY.length);
-  assert.deepEqual(d.family.members, Array.from(O.FAMILY));
+  assert.equal(d.family.expectedByChanceAt5pct, Math.round(O.FAMILY.length * 0.05 * 10) / 10);
+  /* the member list stays in the code, not the published file; every member
+     (id@coverage) has its line in the file */
+  assert.ok(!("members" in d.family), "the family's member list is not published");
+  for (const m of O.FAMILY) assert.ok(d.predictors[m.split("@")[0]], m + " has a line");
   for (const id of ["enso", ...O.PREDICTORS.map((p) => p.id)]) {
     const p = d.predictors[id];
     assert.ok(p && typeof p.line === "string" && p.line.length > 20, id);
@@ -262,8 +278,14 @@ test("data/prf/opt.json: one plain line for every idea, the family stated, and k
       for (const c of O.FAMILY_COVERAGES) assert.ok(p.byCoverage[c].adj >= p.byCoverage[c].p - 1e-12, `${id}: adjusted odds below raw`);
     } else assert.equal(p.kept, false, id);
   }
-  const climate = existsSync(ROOT + "data/prf/climate-indices.json");
-  assert.equal(d.predictors["pdo-enso"].tested, climate, "PDO is tested exactly when the climate file is there");
+  /* the climate file is a private model input: never in the public tree, and the
+     workflow pulls it from the private repo before the test runs */
+  assert.ok(!existsSync(ROOT + "data/prf/climate-indices.json"), "the climate file is not published");
+  const wf = readFileSync(ROOT + ".github/workflows/climate-indices.yml", "utf8");
+  assert.match(wf, /pull_raw\.sh private\/prf\/climate-indices\.json/);
+  assert.match(wf, /push_raw\.sh "climate indices" private\/prf\/climate-indices\.json/);
+  assert.equal(typeof d.predictors["pdo-enso"].tested, "boolean");
+  if (!d.predictors["pdo-enso"].tested) assert.match(d.predictors["pdo-enso"].line, /not tested yet/, "PDO untested says so");
   assert.equal(d.predictors.fall.tested, true);
   assert.equal(d.predictors.recent15.tested, true);
 });

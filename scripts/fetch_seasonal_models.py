@@ -1,7 +1,10 @@
 #!/usr/bin/env python3
 """Seasonal forecast models, November starts, for the PRF optimizer's backtest.
 
-Writes data/prf/seasonal-fc.json: for each model, its ensemble-mean
+Writes private/prf/seasonal-fc.json (a model input, never published:
+seasonal-models.yml pulls the last copy from the private repo's private-data
+branch before the fetch and saves the new one back there; /private/ is in
+.gitignore): for each model, its ensemble-mean
 precipitation forecast for each PRF interval it reaches, started in November
 of the year before the policy year, averaged over 2-degree boxes on the PRF
 grid's own corner (20N 130W), in whole millimetres over the interval's two
@@ -11,7 +14,7 @@ Never the models' own grids: those stay on the runner.
 components/prf-optimize.js (seasonalRaw, zSeries, forecastSkill) reads it;
 scripts/prf_opt_backtest.mjs tests each model, and their average, as a tilt
 on the rate-led pick, only where and when the model's own earlier forecasts
-tracked the index. The panel on /prf reads it only if one of them held up.
+tracked the index. The panel on /prf never reads it.
 
 SOURCES
   NMME, through the IRI/LDEO Data Library (no key):
@@ -35,7 +38,7 @@ SOURCES
 WHEN A NOVEMBER FORECAST IS OUT
   NMME about Nov 8-10, C3S on the 13th: both before the Dec 1 sales closing.
 
-A model that fails or comes back thin keeps what was already published for it
+A model that fails or comes back thin keeps what was already saved for it
 (merge per model, never replace with less). Exit 1 if any source failed; what
 did come back is written.
 
@@ -64,7 +67,7 @@ import urllib.parse
 import urllib.request
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-OUT = os.path.join(ROOT, "data", "prf", "seasonal-fc.json")
+OUT = os.path.join(ROOT, "private", "prf", "seasonal-fc.json")   # never published
 MAX_BYTES = 2_000_000
 
 LAT0, LON0, BOX_DEG = 20.0, -130.0, 2.0
@@ -316,6 +319,7 @@ def write(models, path=OUT):
     errs = check(doc, len(raw.encode()))
     if errs:
         raise SystemExit("refusing to write: " + "; ".join(errs[:5]))
+    os.makedirs(os.path.dirname(path), exist_ok=True)
     tmp = path + ".tmp"
     with open(tmp, "w") as fh:
         fh.write(raw)
@@ -849,7 +853,7 @@ def selftest():
         assert check(bad), "a short row is caught"
         bad["models"]["nope"] = bad["models"].pop("cfsv2")
         assert any("not a declared model" in e for e in check(bad))
-    # the published file, if any, passes
+    # the saved file, if one was pulled, passes
     if os.path.exists(OUT):
         raw = open(OUT).read()
         assert not check(json.loads(raw), len(raw.encode())), check(json.loads(raw), len(raw.encode()))
