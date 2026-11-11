@@ -103,7 +103,7 @@ def build(now):
     put("/", good(p.get("fetched"), now), "Futures read", "delayed quotes")
 
     fn = load("data/fall-nitrogen.json") or {}
-    put("/fall-nitrogen", good(fn.get("updated_utc"), now), "Soil temps read", "state networks")
+    put("/spray#fall-nitrogen", good(fn.get("updated_utc"), now), "Soil temps read", "state networks")
     for v in (fn.get("counties") or {}).values():
         if isinstance(v, list) and len(v) >= 6:
             bump(v[1], "soil", 1)

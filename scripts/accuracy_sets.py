@@ -99,7 +99,8 @@ SET_DEFS = [
     ("daily", "daily/*.html", "date", ["data/daily-archive/{date}.json"], []),
     ("cattle-auction", "cattle-auction-prices.html", "single", ["data/cattle-auction.json"],
      ["ams-feeder-auction-list", "bench-cattle-auction-prices-1"]),
-    ("drought-county", "drought-monitor.html", "single", ["data/drought/summary.json", "data/drought/county-week.json"],
+    ("drought-county", "rain.html", "single",   # the drought tab of /rain since Nov 11, 2026
+     ["data/drought/summary.json", "data/drought/county-week.json"],
      ["ndmc-fsa-lfp", "usdm-data-services"]),
 ]
 CB_SETS = ("cash-bids-town", "cash-bids-state", "cash-bids-company")
