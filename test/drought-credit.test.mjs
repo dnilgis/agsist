@@ -6,7 +6,8 @@ import assert from "node:assert/strict";
 import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
-const page = readFileSync(fileURLToPath(new URL("../drought-monitor.html", import.meta.url)), "utf8");
+// the drought tab of /rain since Nov 11, 2026 (the old address forwards there)
+const page = readFileSync(fileURLToPath(new URL("../rain.html", import.meta.url)), "utf8");
 
 test("the drought page carries NDMC's credit line, as text", () => {
   assert.ok(page.includes("The U.S. Drought Monitor is jointly produced by the National Drought Mitigation Center at the University of Nebraska-Lincoln, the U.S. Department of Agriculture, the National Oceanic and Atmospheric Administration and NASA. Map and data courtesy of NDMC, via https://droughtmonitor.unl.edu."));

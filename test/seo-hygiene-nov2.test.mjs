@@ -179,6 +179,9 @@ test("spray: FAQPage questions and answers are the visible FAQ", () => {
   for (const m of h.matchAll(/<div class="faq-item"><button class="faq-q"[^>]*>([\s\S]*?)<span class="faq-chevron"[\s\S]*?<div class="faq-a"[^>]*>([\s\S]*?)<\/div><\/div>/g)) {
     vis.set(text(m[1]).trim(), text(m[2]));
   }
+  // Nov 11, 2026: the fall anhydrous tab's questions (its old page's <details> list) share the page's one FAQPage
+  const fn = (h.match(/<div class="fn-qs">([\s\S]*?)<\/div>/) || [])[1] || "";
+  for (const m of fn.matchAll(/<details><summary>([\s\S]*?)<\/summary>([\s\S]*?)<\/details>/g)) vis.set(text(m[1]).trim(), text(m[2]).trim());
   const faq = datasetsOf(h, "FAQPage");
   assert.equal(faq.length, 1);
   const qs = faq[0].mainEntity;

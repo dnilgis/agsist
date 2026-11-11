@@ -124,7 +124,7 @@ test("loader.js signup fallback on agsist.com: the 403 still goes on to the back
    Python checks are not served. A new copy fails here until it is guarded. */
 const CHECK = [/\bliveHost\(\)/, /\^\(www\\\.\)\?agsist\\\.com\$/];
 test("every served file that posts to formspree.io checks for the live host first", () => {
-  const files = execFileSync("git", ["ls-files"], { cwd: ROOT, encoding: "utf8" }).split("\n")
+  const files = execFileSync("git", ["ls-files"], { cwd: ROOT, encoding: "utf8", maxBuffer: 1 << 26 }).split("\n")
     .filter((f) => f && !/^(test|notes)\//.test(f) && !/^scripts\/(test_|dev\/)/.test(f) && /\.(m?js|html?|py|json|txt|xml)$/.test(f));
   const named = [];
   for (const f of files) {

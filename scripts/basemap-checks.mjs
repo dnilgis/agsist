@@ -167,7 +167,7 @@ function checkNoVendors() {
   else ok(`${files} served files read; none names any of ${TILE_VENDORS.length} rented tile hosts`);
   /* the walk must reach the files it exists for */
   const names = new Set(servedFiles());
-  const must = ["field-scout.js", "field-scout-read.js", "field-scout-land.js", "field-scout-layers.js", "components/radar-rain-page.js", "rain-radar.html"];
+  const must = ["field-scout.js", "field-scout-read.js", "field-scout-land.js", "field-scout-layers.js", "components/radar-rain-page.js", "rain.html"];
   const miss = must.filter((f) => existsSync(join(ROOT, f)) && !names.has(f));
   if (miss.length) bad("the scan reads every file that draws a map", "not read: " + miss.join(", "));
   else ok("the scan reads " + must.join(", "));

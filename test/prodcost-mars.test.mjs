@@ -122,7 +122,8 @@ test("Fast Facts: the rows are in the page and the Today card, the heading carri
   assert.doesNotMatch(page, /Current Fertilizer Prices/i, "the heading never says current");
   assert.match(page, /Fertilizer Prices<span id="fert-title-date"><\/span>/);
   assert.match(ff, /getElementById\('fert-title-date'\)[\s\S]{0,80}' as of '\+d\.toLocaleDateString/);
-  for (const s of ["place.js?v=13", "here.js?v=", "fast-facts.js?v=20"]) assert.ok(page.includes("/components/" + s), s);   // here.js: test/changemap.test.mjs owns the exact version
+  for (const s of ["place.js?v=14", "here.js?v=", "fast-facts.js?v=21"])   // v14 and v21: the drought and fall anhydrous links open their tabs (Nov 11, 2026); here.js: test/changemap.test.mjs owns the exact version
+    assert.ok(page.includes("/components/" + s), s);
   assert.ok(Number(/var CACHE_VERSION = (\d+);/.exec(read("sw.js"))[1]) >= 331, "CACHE_VERSION at or past 331");
 });
 

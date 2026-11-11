@@ -13,7 +13,9 @@ const ROOT = path.join(path.dirname(fileURLToPath(import.meta.url)), "..");
 const require = createRequire(import.meta.url);
 const R = require(path.join(ROOT, "components/radar-rain.js"));
 const FIX = path.join(ROOT, "test/fixtures/radar-rain");
-const page = fs.readFileSync(path.join(ROOT, "rain-radar.html"), "utf8");
+// the radar lookup is the first tab of /rain since Nov 11, 2026 (written by scripts/build_county_rain.py from
+// components/fold/radar.part); /rain-radar forwards there with its ?lat=&lon= kept
+const page = fs.readFileSync(path.join(ROOT, "rain.html"), "utf8");
 
 function pyHas() {
   try { execFileSync("python3", ["-c", "import numpy, PIL"], { stdio: "ignore" }); return true; } catch (e) { return false; }
@@ -114,12 +116,13 @@ test("published state files decode and cover the point they claim", async () => 
 
 test("page: one shared page, honest label, the measured numbers, FAQ in structured data", () => {
   assert.match(page, /<title>[^<]*rain[^<]*<\/title>/i);
-  assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/rain-radar">/);
+  assert.match(page, /<link rel="canonical"\s+href="https:\/\/agsist\.com\/rain">/);
+  assert.match(fs.readFileSync(path.join(ROOT, "rain-radar.html"), "utf8"), /url=\/rain#radar/, "the old address forwards to the tab");
   assert.ok(page.includes("NOAA radar and gauge estimate (MRMS), not a rain gauge reading."));
   assert.ok(!/—/.test(page), "no em dashes");
   assert.ok(!/noindex/.test(page));
   assert.ok(page.includes('id="rr-stale"') && page.includes('id="rr-status"') && page.includes('id="rr-locbox"'), "stale, status and location states exist");
-  assert.ok(page.includes("Sigurd Lindquist, CCA"));
+  assert.match(page, /Sigurd Lindquist<\/a>, CCA/);   // the /rain byline
   // every number in "How close" is the measured one in data/radar-rain/validation.json. Since the
   // Nov 9 2026 panel the full check sits in the closed Sources and terms fold at the bottom (Sig,
   // Nov 8) and one line of it stays visible under the tool.

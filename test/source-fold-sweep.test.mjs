@@ -9,8 +9,9 @@ import { fileURLToPath } from "node:url";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const read = (p) => readFileSync(ROOT + p, "utf8");
+// /rain-radar became the radar tab of /rain on Nov 11, 2026: its fold is checked on /rain
 const PAGES = ["usda-calendar", "corn-futures-prices", "soybean-futures-prices", "wheat-futures-prices", "cattle-futures-prices",
-  "milk-prices", "breakeven", "usda-quick-stats", "hay-prices", "fast-facts", "farmland-atlas", "conditions", "cash-lease", "spray", "rain-radar"];   // arc-plc: built on main, read through its builder below
+  "milk-prices", "breakeven", "usda-quick-stats", "hay-prices", "fast-facts", "farmland-atlas", "conditions", "cash-lease", "spray", "rain"];   // arc-plc: built on main, read through its builder below
 const NASS = "This product uses the NASS API but is not endorsed or certified by NASS.";
 const OPEN = /<details\b[^>]*>\s*<summary\b[^>]*>(?:<h2\b[^>]*>)?\s*Sources and terms\s*</g;
 const folds = (h) => [...h.matchAll(OPEN)].map((m) => {
@@ -32,7 +33,7 @@ for (const p of PAGES) {
 
 test("pages that gained the fold hold it once, with their credit line short and in place", () => {
   for (const p of ["corn-futures-prices", "soybean-futures-prices", "wheat-futures-prices", "cattle-futures-prices", "milk-prices", "breakeven",
-    "usda-quick-stats", "hay-prices", "conditions", "cash-lease", "fast-facts", "rain-radar"]) assert.equal(folds(read(p + ".html")).length, 1, p);
+    "usda-quick-stats", "hay-prices", "conditions", "cash-lease", "fast-facts", "rain"]) assert.equal(folds(read(p + ".html")).length, 1, p);
   for (const c of ["corn", "soybean", "wheat", "cattle"]) {
     const h = read(`${c}-futures-prices.html`), f = folds(h)[0].body;
     assert.match(f, /Not financial advice|not financial advice/, `${c}: the not-financial-advice line is in the fold`);

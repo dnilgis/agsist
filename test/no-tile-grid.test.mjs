@@ -12,7 +12,7 @@ import { fileURLToPath } from "node:url";
 import { join } from "node:path";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
-const files = execFileSync("git", ["ls-files", "-z", "--", "*.py", "*.js", "*.mjs", "*.html", "*.css"], { cwd: ROOT, encoding: "utf8" })
+const files = execFileSync("git", ["ls-files", "-z", "--", "*.py", "*.js", "*.mjs", "*.html", "*.css"], { cwd: ROOT, encoding: "utf8", maxBuffer: 1 << 26 })
   .split("\0").filter((f) => f && !/^(vendor|data|test|node_modules)\//.test(f) && !/^scripts\/dev\//.test(f));
 // a table that puts several state codes at [row, col] / (col, row) positions
 const CELLS = /\b(?:WA|OR|CA|ID|MT|IA|IL|TX|FL|NY|ME|VT)["']?\s*[:=]\s*[\[(]\s*\d{1,2}\s*,\s*\d{1,2}\s*[\])]/g;

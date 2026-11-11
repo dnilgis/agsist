@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-"""moved_pages.py: the pages merged into another page on Oct 22 and 23, 2026 (the owner approved the
-seven merges from the Oct 21 pages board, then /foreign-land and /archive), in one table.
+"""moved_pages.py: the pages merged into another page since Oct 22, 2026 (Oct 22 and 23: seven merges, then
+/foreign-land and /archive; Oct 29: two more; Nov 11: four weather pages into tabs of /rain and /spray), in one table.
 
   MOVED       old path -> (new path, section anchor). The one list every builder and test reads.
   repoint(u)  an internal link to an old page -> its new home ("/whats-priced-in#corn" ->
@@ -46,6 +46,13 @@ MOVED = {
                         "The Illinois farmland sale index is on the land sales page now."),
     "/data-sources": ("/editorial-standards", "sources", "data-sources.html",
                       "Where the numbers come from is on the editorial standards page now."),
+    # Nov 11, 2026 (weather, 7 pages to 3): radar rain and the drought monitor are tabs of /rain, urea loss and
+    # fall anhydrous are tabs of /spray (scripts/page_tabs.py)
+    "/rain-radar": ("/rain", "radar", "rain-radar.html", "Rain on your field from radar is on the rain page now."),
+    "/drought-monitor": ("/rain", "drought", "drought-monitor.html", "The drought monitor is on the rain page now."),
+    "/urea": ("/spray", "urea", "urea.html", "Urea loss risk is on the spray page now."),
+    "/fall-nitrogen": ("/spray", "fall-nitrogen", "fall-nitrogen.html",
+                       "Soil temperature for fall anhydrous is on the spray page now."),
 }
 # Spellings that reach the same old page.
 ALIASES = {"/news.html": "/news", "/conditions-yield.html": "/conditions-yield",
@@ -53,7 +60,12 @@ ALIASES = {"/news.html": "/news", "/conditions-yield.html": "/conditions-yield",
            "/pod-counts.html": "/pod-counts", "/hail": "/hail/", "/hail/index.html": "/hail/",
            "/cash-bids/states.html": "/cash-bids/states", "/elevators.html": "/elevators",
            "/foreign-land.html": "/foreign-land", "/archive.html": "/archive",
-           "/farmland-index.html": "/farmland-index", "/data-sources.html": "/data-sources"}
+           "/farmland-index.html": "/farmland-index", "/data-sources.html": "/data-sources",
+           "/rain-radar.html": "/rain-radar", "/drought-monitor.html": "/drought-monitor", "/urea.html": "/urea",
+           "/fall-nitrogen.html": "/fall-nitrogen"}
+
+# the old pages whose home is a tab of another page (components/page-tabs.js)
+TABBED = ("/rain-radar", "/drought-monitor", "/urea", "/fall-nitrogen")
 
 _LINK = re.compile(r"^(/[^?#]*)(\?[^#]*)?(#.*)?$")
 
@@ -79,14 +91,18 @@ def repoint(url):
 
 def stub(old):
     new, anchor, _f, line = MOVED[old]
-    js = new + '"+location.search+(location.hash||"#' + anchor + '")'
+    js = 'location.replace("' + new + '"+location.search+(location.hash||"#' + anchor + '"))'
+    if old in TABBED:
+        # the hash is kept as it is; it may name no tab (/urea#foo), so the stub first leaves the old page's tab in
+        # sessionStorage (components/page-tabs.js opens it when the hash opens nothing, and clears it)
+        js = 'try{sessionStorage.setItem("ptab","' + anchor + '")}catch(e){}' + js
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n<meta charset=\"utf-8\">\n"
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
             f"<title>Moved | AGSIST</title>\n"
             "<meta name=\"robots\" content=\"noindex,follow\">\n"
             f"<link rel=\"canonical\" href=\"https://agsist.com{new}\">\n"
             f"<meta http-equiv=\"refresh\" content=\"0; url={new}#{anchor}\">\n"
-            f"<script>location.replace(\"{js});</script>\n"
+            f"<script>{js};</script>\n"
             "</head>\n<body>\n"
             "<main style=\"max-width:600px;margin:0 auto;padding:3rem 1rem;font-family:Inter,system-ui,sans-serif;text-align:center\">\n"
             f"<p>{line}</p>\n"
@@ -131,6 +147,11 @@ def selftest():
     eq(repoint("/farmland-index#counties"), "/land-sales/#counties")
     eq(repoint("https://agsist.com/data-sources"), "https://agsist.com/editorial-standards#sources")
     eq(repoint("/data-sources.html#yahoo"), "/editorial-standards#yahoo")
+    eq(repoint("/rain-radar?lat=41.9&lon=-93.6"), "/rain?lat=41.9&lon=-93.6#radar")
+    eq(repoint("/drought-monitor"), "/rain#drought")
+    eq(repoint("https://agsist.com/urea"), "https://agsist.com/spray#urea")
+    eq(repoint("/fall-nitrogen.html"), "/spray#fall-nitrogen")
+    eq(repoint("/rain"), "/rain")
     eq(repoint(None), None)
     s = stub("/news")
     assert len(s.encode()) < 1536 and 'content="noindex,follow"' in s and "location.search" in s

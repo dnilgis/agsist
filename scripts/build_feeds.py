@@ -432,6 +432,9 @@ def main():
         # home-planting.js, so dropping that comment dropped the reader.
         own = set(re.findall(r"""<script[^>]+src=["']/(components/(?:(?:home|prf|cot)(?:-[\w-]+)?|cash-bids)\.js)""", text))
         own |= set(re.findall(r"""["']/(components/(?:priced-in|bot-scorecard|coverage-map|elevator-claim|atlas-foreign|daily-archive|ethanol-bids|soil-near)\.js)""", text))
+        # 2026-11-11: /rain and /spray load a tab's own code when the tab opens (components/page-tabs.js reads
+        # the panel's data-js list): components/fold/*.js are those pages' own scripts.
+        own |= set(re.findall(r"""/(components/fold/[\w-]+\.js)""", text))
         for js in sorted(own):
             if os.path.exists(js):
                 text += "\n" + read(js)

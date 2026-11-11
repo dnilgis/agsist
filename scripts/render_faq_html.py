@@ -61,7 +61,6 @@ PAGES = {
     "usda-quick-stats":     ("render", "wrapper_end"),
     "fertilizer":           ("render", '<div class="fert-source">'),
     "fast-facts":           ("render", "main_end"),
-    "drought-monitor":      ("render", "main_end"),
     "crop-tour":            ("render", '<div class="ct-chips">'),
     "yield-estimator":      ("render", '<div class="ye-disclaimer">'),
     "tariffs":              ("render", '<div class="tariff-source">'),
