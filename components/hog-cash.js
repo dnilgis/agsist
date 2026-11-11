@@ -62,8 +62,9 @@
     };
     var c = doc.cutout;
     if (c && iso(c.date) && pos(c.carcass) && !stale(c.date, nowMs)) {
-      out.cutout = { val: money(c.carcass), date: c.date,
-        meta: long(c.date) + (typeof c.change === 'number' && isFinite(c.change) ? ' · ' + (c.change >= 0 ? 'up ' : 'down ') + money(Math.abs(c.change)) + ' on the day' : '') };
+      var cc = typeof c.change === 'number' && isFinite(c.change) ? Math.round(c.change * 100) / 100 : null;
+      out.cutout = { val: money(c.carcass), date: c.date, meta: long(c.date),
+        change: cc === null ? null : (cc ? (cc > 0 ? 'Up ' : 'Down ') + money(Math.abs(cc)) + ' on the day' : 'Unchanged on the day'), down: cc !== null && cc < 0 };
     }
     var newest = out.cutout && out.cutout.date > h.report_date ? out.cutout.date : h.report_date;
     var cs = out.cutout ? series(hist.cutout, 'carcass', newest) : [];
@@ -104,7 +105,10 @@
   function svg(ch, W, H) {
     var g = geom(ch, W, H), s = [];
     s.push('<svg class="hc-svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Cash hog price' + (ch.cutout.length ? ' and pork cutout' : '') + ', ' + long(ch.from) + ' to ' + long(ch.to) + ', dollars per hundredweight, carcass">');
-    s.push('<text class="hc-ax-t" x="' + g.L + '" y="12">$ per cwt, carcass</text>');
+    s.push('<text class="hc-ax-t" x="' + (g.L - 6) + '" y="12" text-anchor="end">$/cwt</text>');
+    var kx = W - g.R;
+    if (ch.cutout.length) { s.push('<text class="hc-key-t" x="' + kx + '" y="12" text-anchor="end">Pork cutout</text><line class="hc-l2 hc-key-l" x1="' + (kx - 92) + '" x2="' + (kx - 76) + '" y1="8" y2="8"/>'); kx -= 104; }
+    s.push('<text class="hc-key-t" x="' + kx + '" y="12" text-anchor="end">Cash hogs</text><line class="hc-l1 hc-key-l" x1="' + (kx - 80) + '" x2="' + (kx - 64) + '" y1="8" y2="8"/>');
     ticks(g.lo, g.hi, 4).forEach(function (v) {
       var y = g.y(v).toFixed(1);
       s.push('<line class="hc-grid" x1="' + g.L + '" x2="' + (W - g.R) + '" y1="' + y + '" y2="' + y + '"/>');
@@ -182,15 +186,16 @@
   function html(v) {
     var s = [];
     s.push('<div class="hc-figs">');
-    s.push('<div class="ct-card"><span class="lbl">Cash hogs, national negotiated</span><div class="ct-price">' + esc(v.hogs.val) + '</div>' +
-      (v.hogs.change ? '<div class="hc-chg ' + (v.hogs.change.by < 0 ? 'dn' : 'up') + '">' + esc(changeLine(v.hogs.change)) + '</div>' : '') +
-      '<div class="ct-read">' + esc(v.hogs.meta) + ' · barrows and gilts, base price · USDA AMS</div></div>');
-    if (v.cutout) s.push('<div class="ct-card"><span class="lbl">Pork cutout</span><div class="ct-price">' + esc(v.cutout.val) + '</div><div class="ct-read">' + esc(v.cutout.meta) + ' · negotiated sales · USDA AMS</div></div>');
+    s.push('<div class="hc-fg"><span class="lbl">Cash hogs</span><div class="ct-price">' + esc(v.hogs.val) + '</div>' +
+      (v.hogs.change ? '<div class="hc-chg ' + (v.hogs.change.by < 0 ? 'dn' : 'up') + '">' + esc(changeLine(v.hogs.change)) + '</div>' : '') + '</div>');
+    if (v.cutout) s.push('<div class="hc-fg"><span class="lbl">Pork cutout</span><div class="ct-price">' + esc(v.cutout.val) + '</div>' +
+      (v.cutout.change ? '<div class="hc-chg ' + (v.cutout.down ? 'dn' : 'up') + '">' + esc(v.cutout.change) + '</div>' : '') + '</div>');
+    s.push('<p class="ct-read hc-meta">Cash hogs: national negotiated base price for barrows and gilts. ' + esc(v.hogs.meta) + '.' +
+      (v.cutout ? ' Pork cutout: negotiated sales, ' + esc(v.cutout.meta) + '.' : '') + ' Source: USDA AMS.</p>');
     s.push('</div>');
     if (v.chart) {
-      s.push('<figure class="hc-fig"><div class="hc-key"><span class="hc-k1">Cash hogs</span>' + (v.chart.cutout.length ? '<span class="hc-k2">Pork cutout</span>' : '') +
-        '<span class="hc-read" aria-live="polite"></span><button type="button" class="hc-save">Save the picture</button></div><div class="hc-plot"></div>' +
-        '<figcaption class="ct-read">Report days, ' + esc(short(v.chart.from)) + ' to ' + esc(long(v.chart.to)) + '. Hogs are dated by the report, the morning after the kill. Source: USDA AMS.</figcaption></figure>');
+      s.push('<figure class="hc-fig"><div class="hc-plot"></div><span class="hc-read" aria-live="polite"></span>' +
+        '<div class="hc-foot"><figcaption class="ct-read">' + esc(short(v.chart.from)) + ' to ' + esc(long(v.chart.to)) + ', report days</figcaption><button type="button" class="hc-save">Save the picture</button></div></figure>');
     }
     return s.join('');
   }
@@ -206,8 +211,8 @@
       var plot = body.querySelector('.hc-plot'), read = body.querySelector('.hc-read'), lastW = 0;
       var draw = function () {
         var W = Math.round(plot.clientWidth); if (!W || W === lastW) return; lastW = W;
-        var H = W < 420 ? 180 : 250;
-        plot.innerHTML = svg(v.chart, W, H);
+        var H = W < 420 ? 160 : 230;
+        plot.innerHTML = svg(v.chart, W, H); plot.appendChild(read);
         var g = geom(v.chart, W, H), hov = plot.querySelector('.hc-hover'), hit = plot.querySelector('.hc-hit');
         var move = function (ev) {
           var r = hit.getBoundingClientRect(), cx = (ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left + g.L;
@@ -220,11 +225,11 @@
           kids[1].setAttribute('cx', X); kids[1].setAttribute('cy', g.y(p.v).toFixed(1));
           kids[2].setAttribute('visibility', q ? 'visible' : 'hidden');
           if (q) { kids[2].setAttribute('cx', X); kids[2].setAttribute('cy', g.y(q.v).toFixed(1)); }
-          hov.setAttribute('visibility', 'visible');
+          hov.setAttribute('visibility', 'visible'); plot.classList.add('hc-on');
           read.textContent = short(p.d) + ': hogs ' + money(p.v) + (q ? ', cutout ' + money(q.v) : '');
         };
         hit.addEventListener('mousemove', move); hit.addEventListener('touchstart', move, { passive: true }); hit.addEventListener('touchmove', move, { passive: true });
-        hit.addEventListener('mouseleave', function () { hov.setAttribute('visibility', 'hidden'); read.textContent = ''; });
+        hit.addEventListener('mouseleave', function () { hov.setAttribute('visibility', 'hidden'); plot.classList.remove('hc-on'); read.textContent = ''; });
       };
       draw();
       if (root.ResizeObserver) new root.ResizeObserver(draw).observe(plot); else root.addEventListener('resize', draw);

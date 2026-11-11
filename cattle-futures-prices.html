@@ -216,7 +216,7 @@ details.fold[hidden]{display:none}
     <div class="ph-info">
       <h1><!--BAKE:cattle-h1-->Feeder cattle futures today, with live cattle and cash prices<!--/BAKE--></h1>
       <div class="ph-exch">Feeder and live cattle futures · $ per cwt (100 lb)</div>
-      <p class="ph-plain">Feeder cattle futures price calves of 700 to 899 lb headed to the feedlot. Live cattle futures price finished cattle ready for the packer. Below them are USDA&rsquo;s cash prices: fed steers, boxed beef and cash hogs. <a href="/cattle-auction-prices">See what cattle brought at sale barns</a>.</p>
+      <p class="ph-plain">Feeder cattle futures price calves of 700 to 899 lb headed to the feedlot; live cattle futures price finished cattle. Below them are USDA&rsquo;s cash prices for fed steers, boxed beef and hogs, and <a href="/cattle-auction-prices">sale barn prices</a>.</p>
     </div>
     <div class="ph-price ph-two">
       <div class="ph-q" id="hero-gf">
@@ -349,29 +349,29 @@ details.fold[hidden]{display:none}
     .hc{--hc1:#b8842a;--hc2:#4f94d8}
     [data-theme="light"] .hc{--hc1:#8a6514;--hc2:#1f66b8}
     .hc-body{display:grid;gap:12px}
-    .hc-figs{display:grid;gap:12px;grid-template-columns:1fr 1fr}
-    .hc-has-chart .hc-figs{grid-template-columns:1fr;align-content:start;gap:4px}
-    @media(min-width:760px){.hc-has-chart .hc-body{grid-template-columns:minmax(15rem,1fr) minmax(0,2.1fr)}}
-    @media(max-width:520px){.hc-figs,.hc-has-chart .hc-figs{grid-template-columns:1fr 1fr;gap:10px}.hc .ct-card{padding:.2rem .1rem}.hc .ct-price{font-size:1.5rem}.hc-fig{padding:.6rem .6rem}}
+    .hc-figs{display:grid;gap:10px 16px;grid-template-columns:1fr 1fr;align-content:start;padding:.4rem .3rem 0}
+    .hc-fg{min-width:0}
+    .hc .lbl{display:block;font-size:0.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);font-weight:700;line-height:1.3}
+    .hc-meta{grid-column:1/-1;margin:0}
+    @media(min-width:760px){.hc-figs{grid-template-columns:auto auto minmax(0,1fr);column-gap:2.2rem;align-items:start}.hc-meta{grid-column:auto;font-size:.85rem;max-width:40rem}}
+    @media(max-width:520px){.hc-figs{padding:.2rem .1rem 0;column-gap:10px}.hc .ct-price{font-size:1.6rem}.hc .hc-chg{font-size:.72rem}.hc .hc-save{font-size:.8rem}#ct-cash .ct-grid{gap:2px}#ct-cash .ct-card{padding:.45rem .2rem}#ct-cash .ct-price{font-size:1.65rem}.hc-fig{padding:.55rem .55rem}.hc-save{padding:.2rem .55rem;min-height:32px}}
+    .hc-foot{display:flex;align-items:center;gap:.5rem 1rem;margin-top:.35rem}.hc-foot figcaption{flex:1 1 auto;margin:0}.hc-save{white-space:nowrap}
     .hc-chg{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.85rem;margin-top:.15rem}
     .hc-chg.up{color:var(--up,#5fc28a)} .hc-chg.dn{color:var(--dn,#d9534f)}
     .hc-fig{margin:0;background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-radius:14px;padding:.8rem .9rem;min-width:0}
-    .hc-key{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1rem;font-size:.8rem;color:var(--text-dim);margin-bottom:.3rem}
-    .hc-k1::before,.hc-k2::before{content:"";display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:6px;background:var(--hc1)}
-    .hc-k2::before{background:var(--hc2)}
-    .hc-read{font-family:'JetBrains Mono',monospace;color:var(--text);min-height:1.2em;flex:1 1 100%;order:3}
+    .hc-read{position:absolute;right:0;top:0;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text);pointer-events:none}
     .hc-save{margin-left:auto;background:none;border:1px solid var(--border,#2a3324);color:var(--gold,#d4a23f);border-radius:8px;padding:.35rem .7rem;font:inherit;font-weight:600;cursor:pointer;min-height:36px}
-    .hc-plot{width:100%;min-height:180px}
+    .hc-plot{position:relative;width:100%;min-height:170px}
     .hc-svg{display:block;overflow:visible}
     .hc-svg text{font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:12px;fill:var(--text-dim,#9bb0a3)}
-    .hc-svg .hc-ax-t{fill:var(--text-muted,#8a948f)}
+    .hc-on .hc-key-t,.hc-on .hc-key-l{visibility:hidden}
+    .hc-svg .hc-ax-t{fill:var(--text-muted,#8a948f)} .hc-svg .hc-key-t{fill:var(--text-dim,#9bb0a3);font-size:12px}
     .hc-grid{stroke:var(--border,#2a3324);stroke-width:1}
     .hc-base{stroke:var(--text-muted,#8a948f);stroke-width:1}
     .hc-l1,.hc-l2{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
     .hc-l1{stroke:var(--hc1)} .hc-l2{stroke:var(--hc2)}
     .hc-l1d{fill:var(--hc1);stroke:var(--surface,#161b14);stroke-width:2} .hc-l2d{fill:var(--hc2);stroke:var(--surface,#161b14);stroke-width:2}
     .hc-cross{stroke:var(--text-muted,#8a948f);stroke-dasharray:3 3}
-    .hc-fig figcaption{margin-top:.35rem}
     </style>
     <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Cash hogs · USDA daily</span><span class="fwd-shape">$/cwt, carcass</span></div>
     <div class="hc-body"></div>
