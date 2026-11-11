@@ -37,7 +37,7 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 452;  // v452 2026-11-11: sponsor spots. One line under the menu on every page and one state card below the answer on state pages, each saying when it is open; one booking page at /sponsor (loader.js, styles.css, geo-sponsor.js?v=4, geo-sponsor.css?v=2, sponsor-apply.js?v=10, home.js?v=27). (452; 450 is main, 451 is held by an open branch)
+var CACHE_VERSION = 452;  // v452 2026-11-11: sponsor spots. One line under the menu on every page and one state card below the answer on state pages, each saying when it is open; one booking page at /sponsor (loader.js, styles.css, geo-sponsor.js?v=4, geo-sponsor.css?v=2, sponsor-apply.js?v=10, sponsor-ad.js?v=4, home.js?v=27). (452; 450 is main, 451 is held by an open branch)
 // v450 2026-11-11: PRF county fold. Each PRF state page opens any county in place (prf-county.js?v=1); the old county addresses forward to it. (450, slot given)
 // var CACHE_VERSION = 441;  // v441 2026-11-10: sponsor pages. The elevator listing offer is gone from the sponsor pages and the sign-up form (sponsor-apply.js?v=9). (441, next after main's 440)
 // v442 2026-11-10: basis history starts Oct 12, 2026. The town page box heading and the Fast Facts elevator note name that day (cb-basis-hist.js?v=6, here.js?v=48, bids-homepage.js?v=50); one neutral line on the card alert note (cb-alerts.js?v=6, cb-myelev.js?v=9). (442; 441 is held by another open branch)
