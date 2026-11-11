@@ -22,7 +22,10 @@ import { execFileSync } from "node:child_process";
 import { extname, join, normalize } from "node:path";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
-const PAGE = readFileSync(ROOT + "drought-monitor.html", "utf8");
+// /drought-monitor is the drought tab of /rain since Nov 11, 2026: its markup is the tab on rain.html (written by
+// scripts/build_county_rain.py from components/fold/drought.html), its code components/fold/drought.js
+const RAIN = readFileSync(ROOT + "rain.html", "utf8");
+const PAGE = RAIN.slice(RAIN.indexOf('<section class="ptab" id="p-drought"'), RAIN.indexOf("</main>")) + "\n<script>" + readFileSync(ROOT + "components/fold/drought.js", "utf8") + "</script>";
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
@@ -123,7 +126,7 @@ async function open(browser, port, width = 1280) {
   const errors = [];
   pg.on("pageerror", (e) => errors.push(String(e)));
   await pg.route("**/*", (r) => (r.request().url().startsWith(`http://127.0.0.1:${port}`) ? r.continue() : r.abort()));
-  await pg.goto(`http://127.0.0.1:${port}/drought-monitor`);
+  await pg.goto(`http://127.0.0.1:${port}/rain#drought`);
   await pg.waitForSelector("#dm-county-q");
   return { pg, errors };
 }

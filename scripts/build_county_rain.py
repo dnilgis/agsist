@@ -62,6 +62,9 @@ import rain_records as RREC  # noqa: E402  dry_rank_ok: a dry rank waits when mi
 
 ROOT = R.ROOT
 MAX_KB = 25
+# rain.html, a root page, holds three tabs since Nov 11, 2026 (radar, by county, drought); the 150 KB cap of
+# scripts/check_site_budget.py is for set pages, this is the hub's own line
+HUB_KB = 100
 CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=8">'
 ORIGIN = "https://agsist.com"
 M3, ML = R.MONTHS, R.MONTHS_LONG
@@ -1327,6 +1330,18 @@ def fold_part(name):
     return s
 
 
+def without_tabs(body, *ids):
+    """the page without the named tab panels (the selftest's wording checks are about the rain pages' own words)"""
+    for i in ids:
+        a = body.find(f'<section class="ptab" id="p-{i}"')
+        if a >= 0:
+            b = body.find('<section class="ptab"', a + 10)
+            if b < 0:
+                b = body.find("</main>", a)
+            body = body[:a] + body[b:]
+    return body
+
+
 def fold_faq():
     """the radar and drought questions, for the hub's FAQPage: the same words the two tabs show"""
     out = []
@@ -1760,7 +1775,8 @@ def selftest():
             if not rel.endswith(".html"):
                 continue
             ok("—" not in body and "&mdash;" not in body, f"{rel}: em dash")
-            ok(len(body.encode()) <= MAX_KB * 1024, f"{rel}: over {MAX_KB} KB")
+            cap = HUB_KB if rel == "rain.html" else MAX_KB
+            ok(len(body.encode()) <= cap * 1024, f"{rel}: over {cap} KB")
             for m in re.finditer(r'<script type="application/ld\+json">(.*?)</script>', body, re.S):
                 try:
                     json.loads(m.group(1))
@@ -1840,7 +1856,8 @@ def selftest():
             _HASH.clear()
         for rel, body in want.items():
             if rel.endswith(".html"):
-                low = S.text_of(re.sub(r"<script.*?</script>", "", body, flags=re.S)).lower()
+                # the hub's drought tab is a weekly map and its radar tab says gauge reports come weekly; the rain pages are daily
+                low = S.text_of(re.sub(r"<script.*?</script>", "", without_tabs(body, "drought", "radar"), flags=re.S)).lower()
                 ok(not re.search(r"\bweekly\b|once a week|every week|mondays?\b", low), f"{rel}: still says weekly or Mondays")
         ok(re.search(r'<meta name="description" content="27\.61 inches of rain at the Ames station in Story County, Iowa, (in 2026|Jan 1 to Oct 12, 2026)', story) is not None, "description carries the number")
         ok("/rain-print?place=Ames%2C+IA&amp;year=2026&amp;station=130203+2" in story, "Rain Print link draws that place and year")
@@ -2056,7 +2073,8 @@ def selftest():
         ok("the NOAA station in" not in want["rain.html"] and "One NOAA station per county" not in want["rain.html"], "hub does not call every gauge NOAA's")
         # the prose never names CoCoRaHS (Oct 15: weather station, volunteer rain gauge); the byline credits it
         # on a gauge's page and nowhere else (CC BY 4.0, Oct 23)
-        bad = [k for k, b in want.items() if "CoCoRaHS" in b.replace("Volunteer gauge data: CoCoRaHS.", "")]
+        # the hub's radar tab names the gauges it was checked against in its own sources
+        bad = [k for k, b in want.items() if "CoCoRaHS" in without_tabs(b, "radar").replace("Volunteer gauge data: CoCoRaHS.", "")]
         ok(not bad, f"no page names CoCoRaHS outside its credit line: {bad[:3]}")
         # the county rain box fold (Nov 3): closed, once per county page, the page's own numbers, the newsletter block
         sj = json.load(open(os.path.join(data, "ia.json"), encoding="utf-8"))["counties"]["19169"]
