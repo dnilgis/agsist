@@ -36,7 +36,7 @@ test('conditions.html still shows the miss, the sample and the period, and no me
   const m = html.match(/backtest average, not this week&rsquo;s number[^<]*</g) || [];
   assert.ok(m.length >= 1, 'a backtest line is on the page');
   for (const line of m) {
-    assert.match(line, /average miss \d+\.\d bu\/ac, \d+ years/);
+    assert.match(line, /off by \d+\.\d bushels an acre a year, \d+ years/);
     assert.match(line, /\d{4}&ndash;\d{4}/);
     assert.doesNotMatch(line, /trend-only|better|states|earlier years only/);
   }

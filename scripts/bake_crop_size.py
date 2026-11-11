@@ -146,7 +146,7 @@ def cell(label, c):
                f'USDA&rsquo;s national yields{tw}. USDA&rsquo;s {ut:.1f} is its weather-adjusted 2026 trend (Feb 2026 '
                f'Outlook Forum, kept in the May WASDE).</div>' if ut is not None else "")
             + f'<div style="font-size:0.765rem;color:#8a948f;margin-top:5px">backtest average, not this week&rsquo;s number{bw}: '
-            f'average miss {c["mae"]:.1f} bu/ac, {c["backtest_years"]} years</div>')
+            f'off by {c["mae"]:.1f} bushels an acre a year, {c["backtest_years"]} years</div>')
 
 
 def week(d):
@@ -284,7 +284,7 @@ def selftest():
     c = cell("Corn", {"nowcast": 180.6, "band80": 6.9, "trend": 188.7, "trend_window": "2010-2025", "mae": 4.2,
                       "backtest_years": 12, "backtest_window": "2011-2024"})
     ck("180.6 " in c and "8.1 below our trend" in c, "the model cell")
-    ck("average miss 4.2 bu/ac, 12 years" in c and "(2011&ndash;2024)" in c, "the record keeps its miss, sample and period")
+    ck("off by 4.2 bushels an acre a year, 12 years" in c and "(2011&ndash;2024)" in c, "the record keeps its miss, sample and period")
     ck("trend-only" not in c and "better)" not in c and "states" not in c, "no method wording in the cell")
     ck("our straight-line trend 188.7" in c, "our trend is labeled as ours")
     ck("2.4 below USDA&rsquo;s 183.0 trend" in c and "weather-adjusted" in c, "USDA's own 2026 trend beside ours")
