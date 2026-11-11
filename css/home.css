@@ -2158,9 +2158,8 @@ html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m
 .hb-zip input:focus-visible{outline:2px solid var(--gold);outline-offset:1px}
 .hb-zip-go{flex:none;min-height:44px;padding:0 1.1rem;font:700 .941rem/1 var(--font-body,Inter,system-ui,sans-serif);color:#0a0c0d;background:var(--gold-fill,var(--gold));border:0;border-radius:6px;cursor:pointer}
 .hb-zip-go:focus-visible{outline:2px solid var(--text);outline-offset:2px}
-.hb-zip-msg{flex-basis:100%;font-size:.824rem;font-weight:600;color:var(--orange)}
+.hb-zip-msg{min-height:1.3em;flex-basis:100%;font-size:.824rem;font-weight:600;color:var(--orange)}
 [data-theme="light"] .hb-zip-msg{color:#86600f}
-.hb-zip-msg:empty{display:none}
 /* The old ZIP rows in the bids and weather cards stay in the page (geo.js
    writes and reads them) but are never shown; the band is the one box. */
 #hero-band~.idx1-shell #bids-zip-row{display:none!important}
