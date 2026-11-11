@@ -72,7 +72,8 @@ OUT = "data/yield-nowcast.json"
 # The public file carries the estimate, its band, the trend and the record; it
 # says what the numbers are, not how they are made. These keys stay in the job log.
 NOTE = ("AGSIST's estimate of US final yield, with its past record. USDA's final yield is written beside it in January, misses included.")
-PRIVATE_KEYS = ("history_source", "loyo_mae", "loyo_band80", "loyo_years")
+PRIVATE_KEYS = ("history_source", "loyo_mae", "loyo_band80", "loyo_years",
+                "band_method", "trend_n", "trend_mae", "skill_pct", "states")
 
 
 def public_view(d):
@@ -81,6 +82,9 @@ def public_view(d):
     out["note"] = NOTE
     out["crops"] = {c: {k: v for k, v in (r or {}).items() if k not in PRIVATE_KEYS}
                     for c, r in (d.get("crops") or {}).items()}
+    if isinstance(d.get("history"), dict):
+        out["history"] = {c: [{k: v for k, v in (h or {}).items() if k not in PRIVATE_KEYS} for h in rows]
+                          for c, rows in d["history"].items()}
     return out
 MIN_STATES = 10
 MIN_YEARS = 12
