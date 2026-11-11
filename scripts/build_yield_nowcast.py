@@ -69,6 +69,19 @@ import sys
 from datetime import datetime, timezone, date
 
 OUT = "data/yield-nowcast.json"
+# The public file carries the estimate, its band, the trend and the record; it
+# says what the numbers are, not how they are made. These keys stay in the job log.
+NOTE = ("AGSIST's estimate of US final yield, with its past record. USDA's final yield is written beside it in January, misses included.")
+PRIVATE_KEYS = ("history_source", "loyo_mae", "loyo_band80", "loyo_years")
+
+
+def public_view(d):
+    """The file as published: the short note, and no study-only keys in crops."""
+    out = dict(d)
+    out["note"] = NOTE
+    out["crops"] = {c: {k: v for k, v in (r or {}).items() if k not in PRIVATE_KEYS}
+                    for c, r in (d.get("crops") or {}).items()}
+    return out
 MIN_STATES = 10
 MIN_YEARS = 12
 STALE_DAYS = 21
@@ -366,7 +379,7 @@ def held_back_record(prev, we, err, recorded):
     if wk < LATE_WEEK or not (prev or {}).get("crops"):
         return None
     last = prev["crops"].get("corn", {}).get("week_ending")
-    out = dict(prev)
+    out = public_view(prev)
     out["held_back"] = {
         "week_ending": we,
         "iso_week": wk,
@@ -423,7 +436,7 @@ def main(force_stale=False):
 
     out = {
         "generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
-        "note": ("AGSIST's estimate of US final yield, with its past record. USDA's final yield is written beside it in January, misses included."),
+        "note": NOTE,
         "crops": {},
         "history": prev.get("history", {"corn": [], "soybeans": []}),
     }
@@ -446,8 +459,8 @@ def main(force_stale=False):
         out["history"][crop] = append_history(out["history"].get(crop, []), r, out["generated"])
         print(f"  {crop}: {r['nowcast']} ±{r['band80']} bu/ac  (trend {r['trend']}, "
               f"MAE {r['mae']} vs trend-only {r['trend_mae']}, skill {r['skill_pct']}%, "
-              f"{r['states']} states, {r['backtest_years']} yrs)")
-    json.dump(out, open(OUT, "w"), indent=1)
+              f"{r['states']} states, {r['backtest_years']} yrs, leave-one-out MAE {r['loyo_mae']})")
+    json.dump(public_view(out), open(OUT, "w"), indent=1)
     print(f"wrote {OUT}")
 
 
@@ -608,6 +621,12 @@ def _selftest():
     chk(hb is not None and hb["held_back"]["states"] == 8 and "states still report corn" in hb["held_back"]["reason"]
         and "backtest_years" not in hb["held_back"] and hb["crops"] == prev_ok["crops"],
         "late season: the state shortfall is recorded and the last nowcast kept")
+    old = {"note": "band80 is the 80th percentile of EXPANDING-WINDOW backtest errors; loyo_* ...",
+           "crops": {"corn": {"week_ending": "2026-10-04", "nowcast": 180.6, "loyo_mae": 3.56,
+                              "loyo_band80": 6.94, "loyo_years": 13, "history_source": "pairs-2000"}}}
+    hb2 = held_back_record(old, "2026-10-25", few, "x") if few else None
+    chk(hb2 is not None and hb2["note"] == NOTE and hb2["crops"]["corn"] == {"week_ending": "2026-10-04", "nowcast": 180.6},
+        "late season: a held-back rewrite also drops the method note and study-only keys")
     chk(held_back_record(prev_ok, "2026-06-28", few, "x") is None, "mid-season: the state shortfall still fails loud")
 
     print("SELFTEST " + ("OK" if ok else "FAILED"))
