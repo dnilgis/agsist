@@ -9,6 +9,7 @@ main.hp{max-width:1280px;margin:0 auto;padding:14px 20px 40px;font-size:1rem;col
 .hp-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md,10px);padding:16px 18px;box-shadow:var(--glow-card);min-width:0}
 .hp-k{font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand);margin:0 0 .45rem;display:flex;justify-content:space-between;gap:.5rem;align-items:baseline;line-height:1.35}
 .hp-k .r,.hp-k>a{color:var(--text-muted);letter-spacing:.04em;text-transform:none;font-weight:600;white-space:nowrap}
+@media (max-width:640px){.hp-k .r{white-space:normal}}
 .hp-k .r a{color:var(--text-muted)}
 .hp-k a:hover,.hp-k a:focus-visible{color:var(--brand)}
 .hp-k h2,.hp-k h3{font:inherit;color:inherit;letter-spacing:inherit;margin:0}
@@ -27,7 +28,9 @@ html[data-theme="light"] .hp-btn.p{background:var(--brand-fill);color:#fff}
 .hp-skel{display:inline-block;width:5.5rem;height:1.1em;border-radius:4px;background:var(--surface3,var(--surface2));vertical-align:middle}
 
 /* sponsor line (components/loader.js puts it in #sw-home) */
-.hp .sw-home{height:var(--sw-h,36px);margin:0 0 12px}
+/* the line sits here, above the ZIP bar, at every width; the header placeholder holds no room for it on this page */
+:root{--sw-h:0px}
+.hp .sw-home{height:36px;margin:0 0 12px}
 .hp .sw-home .sw-line{padding:0;height:100%}
 .hp .sw-home .sw-in{max-width:none;text-align:center}
 
@@ -44,8 +47,10 @@ html[data-theme="light"] .hp-btn.p{background:var(--brand-fill);color:#fff}
 .hp-zmsg{flex-basis:100%;margin:0;font-size:.82rem;color:var(--text-muted);min-height:1.2em;line-height:1.3}
 .hp-zmsg:empty{display:none}
 .hp-zmsg.err{color:var(--red)}
-.hp-chip{display:flex;align-items:center;gap:.75rem;padding:6px 16px 6px 6px;border:1px solid var(--border-g);border-radius:10px;background:rgba(var(--gold-rgb),.07);font-size:.84rem;line-height:1.35;max-width:430px;flex:0 1 auto}
+.hp-chip{display:flex;align-items:center;gap:.75rem;padding:6px 16px 6px 6px;border:1px solid var(--border-g);border-radius:10px;background:rgba(var(--gold-rgb),.07);font-size:.84rem;line-height:1.35;width:430px;flex:0 0 auto;min-height:86px}
 .hp-chip img{width:96px;height:72px;object-fit:cover;border-radius:6px;flex:0 0 auto;background:var(--surface2)}
+.hp-chip>span{min-height:4.1em;display:flex;flex-direction:column;justify-content:center}
+.hp-chip>span>br{display:none}
 .hp-chip b{color:var(--text)}
 .hp-chip .t{color:var(--brand);font-weight:650}
 .hp-chip:hover{border-color:var(--brand)}
@@ -57,7 +62,7 @@ html[data-theme="light"] .hp-btn.p{background:var(--brand-fill);color:#fff}
 
 /* cash bids */
 .hp-best{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 .8rem}
-.hp-tile{display:block;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .7rem;min-height:9.1rem;min-width:0}
+.hp-tile{display:block;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:.6rem .7rem;min-height:10rem;min-width:0}
 a.hp-tile:hover{border-color:var(--border-g)}
 .hp-tile .c{font-family:var(--font-mono);font-size:.68rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
 .hp-tile .p{font-family:var(--font-mono);font-size:1.5rem;font-weight:700;line-height:1.15;white-space:nowrap;min-height:1.75rem}
@@ -185,6 +190,7 @@ html[data-theme="light"] .hp-ask .sa-b{background:var(--brand-fill);color:#fff}
 .hp-today .hap-x{order:3;color:var(--text-muted);font-size:.8rem;display:block}
 .hp-today .hap-x:empty{display:none}
 .hp-today .hap-none,.hp-today .hap-all{display:none}
+.hp-today .hap-top{min-height:7.2rem}
 .hp-today .hp-row{border-top:1px solid var(--border);padding:.55rem 0;font-size:.9rem;line-height:1.35}
 .hp-today .hp-row b{display:block;font-weight:650}
 .hp-today .hp-row span{font-family:var(--font-mono);font-size:.72rem;font-weight:700;color:var(--brand)}
@@ -327,6 +333,7 @@ html:not(.has-zip) .hp-wx .hp-wxnone{display:block}
   .hp-dirg{grid-template-columns:1fr 1fr}
 }
 /* phone */
+@media (max-width:700px){.hp .sw-home{height:54px}}
 @media (max-width:640px){
   main.hp{padding:10px 12px 32px}
   .hp-card{padding:14px 12px}
@@ -335,7 +342,8 @@ html:not(.has-zip) .hp-wx .hp-wxnone{display:block}
   .hp-zip{gap:.5rem .6rem}
   .hp-zip .hp-btn{flex:1 1 auto}
   .hp-place{flex-basis:100%;min-width:0}
-  .hp-chip{max-width:none}
+  .hp-chip{width:auto;max-width:none}
+  .hp-chip>span{min-height:5.4em}
   .hp-g3{display:flex;flex-direction:column;gap:12px}
   .hp-g3 .hp-col{display:contents}
   .hp-bids{order:1}.hp-daily{order:2}.hp-futc{order:3}.hp-today{order:4}
@@ -346,7 +354,7 @@ html:not(.has-zip) .hp-wx .hp-wxnone{display:block}
   .hp-near tbody tr:nth-child(n+5){display:none}
   .hp-chart{aspect-ratio:366/190}
   .hp-tile .p{font-size:1.35rem}
-  .hp-tile{min-height:9.6rem}
+  .hp-tile{min-height:10.6rem}
   .hp-wx{margin-top:12px}
   .hp-wxg{grid-template-columns:1fr;grid-template-areas:"radar" "fc" "rain" "gdu";gap:10px}
   .hp-sub{padding:12px 10px}
