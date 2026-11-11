@@ -37,7 +37,8 @@
 // v8 (2026-07-26): cache bust for the big deploy week — chips, signup bar,
 // nowcast, contrast, iOS text fix, sponsor pricing. Returning phones were
 // pinned to old ?v= assets by cacheFirst; this clears every device's cache.
-var CACHE_VERSION = 453;  // v453 2026-11-11: PRF panel. A test idea whose data is not published says so in one plain line and the pick stays the plain one; the panel loads only the test file and the outlook (prf-optimize.js?v=7, prf-optimize-ui.js?v=9). (453, main 452 + 1)
+var CACHE_VERSION = 454;  // v454 2026-11-11: Rain Print, the order right under the drawn print: the price, the Christmas order-by date, one main button and the other two choices, a gift link; outside the US and Canada the digital file only (rain-print.js?v=94). (454, main + 1)
+// var CACHE_VERSION = 453;  // v453 2026-11-11: PRF panel. A test idea whose data is not published says so in one plain line and the pick stays the plain one; the panel loads only the test file and the outlook (prf-optimize.js?v=7, prf-optimize-ui.js?v=9). (453, main 452 + 1)
 // v452 2026-11-11: sponsor spots. One line under the menu on every page and one state card below the answer on state pages, each saying when it is open; one booking page at /sponsor (loader.js, styles.css, geo-sponsor.js?v=4, geo-sponsor.css?v=2, sponsor-apply.js?v=10, sponsor-ad.js?v=4, home.js?v=27). (452; 450 is main, 451 is held by an open branch)
 // v450 2026-11-11: PRF county fold. Each PRF state page opens any county in place (prf-county.js?v=1); the old county addresses forward to it. (450, slot given)
 // v451 2026-11-11: weather, 7 pages to 3. Radar rain and the drought monitor are tabs of /rain, urea loss and fall anhydrous are tabs of /spray; the old addresses forward to their tab (new components/page-tabs.js?v=2, components/fold/*?v=1; fast-facts.js?v=21, place.js?v=14, place-top.js?v=2, prf-outlook.js?v=5, storm-replay-core.js?v=3). (451, slot given)
