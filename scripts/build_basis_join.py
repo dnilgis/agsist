@@ -47,6 +47,7 @@ Usage: python3 scripts/build_basis_join.py            write data/ids/basis-join/
 """
 try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit before any work
 except ImportError: pass
+import glob
 import json
 import os
 import re
@@ -316,6 +317,18 @@ def selftest():
     assert d["WI.json"]["k"] == {"e1": "WI|COOP X|CHETEK"}, d
     assert d["WI.json"]["multi"] == {"e2": 2}, d
     assert d["index.json"]["counts"] == {"bids_repo_ids": 4, "with_history": 2, "joined": 1, "stitched": 0, "multi": 1}, d
+    # the run joins only keys with rows in the public shards (Nov 11: build_ids keeps a key whose rows left them)
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        os.makedirs(os.path.join(td, "data", "basis"))
+        json.dump({"state": "WI", "f": ["COOP X|CHETEK", "OLD MILL|BARRON"]}, open(os.path.join(td, "data", "basis", "WI.json"), "w"))
+        json.dump({"date": "2026-10-12", "changes": []}, open(os.path.join(td, "data", "basis", "changes-2026-10-12.json"), "w"))
+        json.dump({"states": {}}, open(os.path.join(td, "data", "basis", "index.json"), "w"))
+        sf = shard_facs(td)
+        assert sf == {"WI": {"COOP X|CHETEK", "OLD MILL|BARRON"}}, sf
+        dw = build(el, sf)
+        assert dw["WI.json"]["k"] == {"e1": "WI|COOP X|CHETEK", "e2": "WI|OLD MILL|BARRON"}, dw["WI.json"]
+    assert "build(el, shard_facs(), led)" in open(os.path.abspath(__file__), encoding="utf-8").read()
 
     # STITCHED, real ids (Oct 27 ledger). NuGen Marion: the bids repo folded eetwt0affq into e011hgtdgf by phone;
     # no live row today writes either spelling, so it was in multi. Mid-Iowa Klostermann: its live row picks its
@@ -376,6 +389,24 @@ def selftest():
     print("build_basis_join selftest: ok")
 
 
+def shard_facs(root=ROOT):
+    """{state: {"FACILITY|CITY"}} the public shards hold today. A record keeps basis keys whose rows left the
+    shards (data/basis starts 2026-10-12, build_basis_history.PUBLIC_FROM; build_ids keeps the ledger's keys);
+    only a key with rows here is a history the page can draw, so only those count toward a join."""
+    out = {}
+    for p in glob.glob(os.path.join(root, "data", "basis", "*.json")):
+        name = os.path.basename(p)
+        if len(name) != 7 or not name[:2].isalpha() or not name[:2].isupper():
+            continue
+        try:
+            with open(p, encoding="utf-8") as f:
+                d = json.load(f)
+        except (OSError, ValueError):
+            continue
+        out.setdefault(d.get("state") or name[:2], set()).update(d.get("f") or [])
+    return out
+
+
 def main(argv):
     if "--selftest" in argv:
         return selftest()
@@ -387,7 +418,7 @@ def main(argv):
         return 0
     el = json.load(open(os.path.join(ROOT, "data", "ids", "elevators.json"), encoding="utf-8"))
     led = json.load(open(os.path.join(ROOT, "data", "ids", "elevator-ids.json"), encoding="utf-8"))
-    files = {name: text(doc) for name, doc in build(el, None, led).items()}
+    files = {name: text(doc) for name, doc in build(el, shard_facs(), led).items()}
     have = set(os.listdir(OUT)) if os.path.isdir(OUT) else set()
     if "--check" in argv:
         bad = sorted(n for n in set(files) | have if n not in files or n not in have or open(os.path.join(OUT, n), encoding="utf-8").read() != files[n])
