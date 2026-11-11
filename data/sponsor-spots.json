@@ -1,5 +1,5 @@
 {
- "_": "The numbers the open sponsor spots print. Written by scripts/bake_audience.py from data/audience.json and data/audience-pages.json; do not edit by hand. engaged: GA4 engaged sessions (visits) in the window (a state: visits from that state). views: page views (a state: views of pages about that state).",
+ "_": "The numbers the open sponsor spots print, rebuilt from the site's visit counts; do not edit by hand. engaged: engaged visits in the window (a state: visits from that state). views: page views (a state: views of pages about that state).",
  "window": {
   "start": "2026-10-13",
   "end": "2026-11-09"

@@ -167,8 +167,8 @@ def spots(aud, pages):
             if views.get(code):
                 e["views"] = views[code]
         states[code] = e
-    return {"_": "The numbers the open sponsor spots print. Written by scripts/bake_audience.py from data/audience.json "
-                 "and data/audience-pages.json; do not edit by hand. engaged: GA4 engaged sessions (visits) in the window "
+    return {"_": "The numbers the open sponsor spots print, rebuilt from the site's visit counts; do not edit by hand. "
+                 "engaged: engaged visits in the window "
                  "(a state: visits from that state). views: page views (a state: views of pages about that state).",
             "window": {"start": w.get("start"), "end": w.get("end")} if w.get("start") else None,
             "sitewide": site, "states": states}
