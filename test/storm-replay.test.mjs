@@ -243,15 +243,16 @@ test("every layer and source has an on-screen credit; the page draws them all", 
 
 /* ---------- page weight ---------- */
 test("the replay's code loads only when a reader opens it", () => {
-  for (const page of ["hail-map.html", "rain-radar.html"]) {
-    const html = readFileSync(ROOT + page, "utf8");
+  // the radar lookup is a tab of /rain since Nov 11, 2026: its replay hook is components/fold/radar.js, loaded with the tab
+  for (const page of ["hail-map.html", "rain.html"]) {
+    const html = readFileSync(ROOT + page, "utf8") + (page === "rain.html" ? readFileSync(ROOT + "components/fold/radar.js", "utf8") : "");
     assert.doesNotMatch(html, /<script[^>]+storm-replay/, page + " does not load the replay up front");
-    assert.match(html, /ld\('\/components\/storm-replay-core\.js\?v=2'\)/, page + " loads the core on open");
+    assert.match(html, /ld\('\/components\/storm-replay-core\.js\?v=3'\)/, page + " loads the core on open");
     assert.match(html, /ld\('\/components\/storm-replay\.js\?v=3'\)/, page);
     assert.ok(html.includes("[?&]sr=1(&|$)"), page + " opens a shared replay");
   }
   assert.match(readFileSync(ROOT + "hail-map.html", "utf8"), /id="hm-replay"/);
-  assert.match(readFileSync(ROOT + "rain-radar.html", "utf8"), /id="rr-replay"/);
+  assert.match(readFileSync(ROOT + "rain.html", "utf8"), /id="rr-replay"/);
 });
 
 test("no em dashes and no AI vendor names in the served replay files", () => {

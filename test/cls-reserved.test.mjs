@@ -31,7 +31,9 @@ const FIXTURE = 'test/fixtures/cls-reserved/milk-pre164.html';
 
 /* the pages: the homepage, milk, and every page a cls-* browser test names */
 function clsPages() {
-  const pages = new Set(['index.html', 'milk-prices.html']);
+  // the tabs that were pages with their own CLS test (Nov 11, 2026): "page#tab" is that tab's panel of the page, with the
+  // panel's own code and style (data-js, data-css). The rest of /rain and /spray has not had this sweep yet.
+  const pages = new Set(['index.html', 'milk-prices.html', 'spray.html#urea', 'spray.html#fall-nitrogen', 'rain.html#drought']);
   for (const f of fs.readdirSync(join(ROOT, 'test')).filter((n) => /cls.*\.test\.mjs$/.test(n) && n !== 'cls-reserved.test.mjs')) {
     const src = fs.readFileSync(join(ROOT, 'test', f), 'utf8');
     for (const m of src.matchAll(/["'`/]([a-z0-9][a-z0-9/_-]*\.html)["'`]/g)) if (!m[1].startsWith('components/') && fs.existsSync(join(ROOT, m[1]))) pages.add(m[1]);
@@ -70,8 +72,11 @@ export function scan(html, root = ROOT) {
     const src = /\bsrc=["']([^"']+)["']/.exec(m[1]);
     if (src) { const p = local(src[1]); if (p) scripts.push({ name: clean(src[1]), text: fs.readFileSync(p, 'utf8') }); } else scripts.push({ name: 'inline script', text: m[2] });
   }
+  // a tab's own code and style load when it opens (components/page-tabs.js: data-js, data-css on its panel): read them too
+  for (const m of html.matchAll(/\bdata-js=["']([^"']+)["']/g)) for (const u of m[1].split(/\s+/)) { const p = local(u); if (p && !scripts.some((x) => x.name === clean(u))) scripts.push({ name: clean(u), text: fs.readFileSync(p, 'utf8') }); }
   let css = [...html.matchAll(/<style\b[^>]*>([\s\S]*?)<\/style>/gi)].map((m) => m[1]).join('\n');
   for (const m of html.matchAll(/<link\b[^>]*rel=["']stylesheet["'][^>]*>/gi)) { const h = /href=["']([^"']+)["']/.exec(m[0]); const p = h && local(h[1]); if (p) css += '\n' + fs.readFileSync(p, 'utf8'); }
+  for (const m of html.matchAll(/\bdata-css=["']([^"']+)["']/g)) for (const u of m[1].split(/\s+/)) { const p = local(u); if (p) css += '\n' + fs.readFileSync(p, 'utf8'); }
   css = css.replace(/\/\*[\s\S]*?\*\//g, '');
   const rules = [...css.matchAll(/([^{}@]+)\{([^{}]*)\}/g)].map((m) => ({ sel: m[1].trim(), body: m[2] }));
   const elem = (id) => {
@@ -160,6 +165,16 @@ test('the scan reads the ways pages fill things', () => {
   assert.ok(!('in' in r), 'an input\'s value is not a layout write');
 });
 
+/* a page's text; "page#tab" is one tab's panel of it */
+function pageHtml(p) {
+  const [file, tab] = p.split('#');
+  const h = fs.readFileSync(join(ROOT, file), 'utf8');
+  if (!tab) return h;
+  const a = h.indexOf(`<section class="ptab" id="p-${tab}"`);
+  assert.ok(a >= 0, `${p}: no such tab`);
+  const b = h.indexOf('<section class="ptab"', a + 10);
+  return h.slice(a, b < 0 ? h.indexOf('</main>', a) : b);
+}
 const PAGES = clsPages();
 
 test('every element a script fills or reveals on a CLS-tested page has its space held', () => {
@@ -167,7 +182,7 @@ test('every element a script fills or reveals on a CLS-tested page has its space
   const problems = [];
   for (const p of PAGES) {
     const below = LIST.below_fold[p] || {}, fix = new Set(LIST.to_fix[p] || []);
-    const r = scan(fs.readFileSync(join(ROOT, p), 'utf8')), open = new Set();
+    const r = scan(pageHtml(p)), open = new Set();
     for (const x of r) {
       if (x.reserved) continue;
       open.add(x.id);
@@ -176,7 +191,7 @@ test('every element a script fills or reveals on a CLS-tested page has its space
     for (const id of Object.keys(below).concat([...fix])) if (!open.has(id)) problems.push(`${p} #${id} is listed in test/cls-reserved.json but is held now or gone: take it out`);
   }
   for (const p of Object.keys(LIST.below_fold).concat(Object.keys(LIST.to_fix))) if (!PAGES.includes(p)) problems.push(`test/cls-reserved.json lists ${p}, which no CLS test covers`);
-  if (process.env.CLS_RESERVED_DUMP) fs.writeFileSync(process.env.CLS_RESERVED_DUMP, JSON.stringify(Object.fromEntries(PAGES.map((p) => [p, scan(fs.readFileSync(join(ROOT, p), 'utf8')).filter((x) => !x.reserved).map((x) => x.id)]))));
+  if (process.env.CLS_RESERVED_DUMP) fs.writeFileSync(process.env.CLS_RESERVED_DUMP, JSON.stringify(Object.fromEntries(PAGES.map((p) => [p, scan(pageHtml(p)).filter((x) => !x.reserved).map((x) => x.id)]))));
   assert.deepEqual(problems, []);
 });
 
@@ -246,7 +261,8 @@ test('everything on the below-the-fold list starts 900px or more down, at 390 an
       const ctx = await browser.newContext({ serviceWorkers: 'block', viewport: { width: w, height: 900 } });
       await ctx.route('**/*', (r) => (new URL(r.request().url()).hostname !== '127.0.0.1' ? r.abort() : r.continue()));
       const pg = await ctx.newPage();
-      await pg.goto(`http://127.0.0.1:${srv.address().port}/${page.replace(/index\.html$/, '').replace(/\.html$/, '')}`, { waitUntil: 'load' });
+      const [pfile, ptab] = page.split('#');   // "spray.html#urea": that tab open, as a reader who followed /urea sees it
+      await pg.goto(`http://127.0.0.1:${srv.address().port}/${pfile.replace(/index\.html$/, '').replace(/\.html$/, '')}${ptab ? '#' + ptab : ''}`, { waitUntil: 'load' });
       await pg.waitForTimeout(1500);
       // not shown yet: where it would open. A section the page hides for now (the wheat crop fold once the season's
       // reports stop, a card whose quotes are stale) is opened for the measure and put back, so its rows are measured

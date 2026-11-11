@@ -774,7 +774,7 @@ window.__fsRead = function (FSX) {
       html += '<div class="fs-vigor-say" style="margin-top:.55rem">'+wxSay+'</div>';
       // NOAA's radar and gauge estimate for the field itself is on /rain-radar
       if(FSX.FIELD && isFinite(FSX.FIELD.lat) && isFinite(FSX.FIELD.lng))
-        html += '<div class="fs-vigor-say" style="margin-top:.35rem"><a href="/rain-radar?lat='+FSX.FIELD.lat.toFixed(4)+'&lon='+FSX.FIELD.lng.toFixed(4)+'&label=this%20field" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">Rain on this field from NOAA radar and gauges, 24 hours to this month &rarr;</a></div>';
+        html += '<div class="fs-vigor-say" style="margin-top:.35rem"><a href="/rain?lat='+FSX.FIELD.lat.toFixed(4)+'&lon='+FSX.FIELD.lng.toFixed(4)+'&label=this%20field#radar" target="_blank" rel="noopener" style="color:var(--brand,var(--gold))">Rain on this field from NOAA radar and gauges, 24 hours to this month &rarr;</a></div>';
     } else if(wx && wx.err){
       html += '<div class="fs-err" style="margin-bottom:.6rem">National Weather Service observations not answering right now.'+(wx.wk!=null?' Rain at the county gauge, last 7 reported days: '+esc(wx.wk)+'″.':'')+'</div>';
     } else {

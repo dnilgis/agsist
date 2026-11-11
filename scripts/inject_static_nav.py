@@ -94,7 +94,9 @@ RETIRED = ("/cash-rent", "/land-tenure", "/storage-crunch", "/cash-bids-national
            "/news", "/conditions-yield", "/whats-priced-in", "/scorecard", "/pod-counts", "/hail/",
            "/cash-bids/states", "/elevators", "/foreign-land", "/archive",
            # merged Oct 29, 2026 (consolidation round 2)
-           "/farmland-index", "/data-sources")
+           "/farmland-index", "/data-sources",
+           # Nov 11, 2026 (weather, 7 pages to 3): tabs of /rain and /spray
+           "/rain-radar", "/drought-monitor", "/urea", "/fall-nitrogen")
 RETIRED_TEXT = ("Analyst Estimates",)
 HREF_RE = re.compile(r'<a\b[^>]*\bhref="(/[^"?#]*)(?:[?#][^"]*)?"', re.I)
 

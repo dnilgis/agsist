@@ -45,7 +45,8 @@ test("no spray read in the hero band and no fall N cell in the strip", () => {
 test("the pages that keep them still carry them", () => {
   assert.match(read("spray.html"), /components\/spray-windows\.js|spray-wind\.js/);
   assert.match(read("field-scout-read.js"), /Too windy to spray right now/);
-  assert.match(read("fall-nitrogen.html"), /\/\*falln:start\*\/[\s\S]*\/\*falln:end\*\//);
+  assert.match(read("components/fold/fall-nitrogen.js"), /\/\*falln:start\*\/[\s\S]*\/\*falln:end\*\//);   // the fall anhydrous tab of /spray since Nov 11, 2026
+  assert.match(read("spray.html"), /data-js="\/components\/fold\/fall-nitrogen\.js\?v=\d+"/);
   const pd = read("planting-date.html");
   assert.match(pd, /components\/soil-near\.js\?v=\d+/);
   assert.ok(existsSync(ROOT + "components/soil-near.js"));

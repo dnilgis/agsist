@@ -47,10 +47,10 @@ test("the pages that keep them still carry them", () => {
   const hs = read("components/home-season.js");
   assert.ok(!/'fallN'/.test(hs), "no fall N cell in any month's strip");
   // /fall-nitrogen: the soil view; /planting-date: measured soil at 4 in and the fall anhydrous link
-  assert.match(read("fall-nitrogen.html"), /\/\*falln:start\*\/[\s\S]*\/\*falln:end\*\//);
+  assert.match(read("components/fold/fall-nitrogen.js"), /\/\*falln:start\*\/[\s\S]*\/\*falln:end\*\//);   // the fall anhydrous tab of /spray since Nov 11, 2026
   const pd = read("planting-date.html");
   assert.match(pd, /components\/soil-near\.js\?v=\d+/);
-  assert.match(pd, /<a href="\/fall-nitrogen">Fall anhydrous soil temp<\/a>/);
+  assert.match(pd, /<a href="\/spray#fall-nitrogen">Fall anhydrous soil temp<\/a>/);
   // /spray and Field Scout keep their spray reads
   assert.match(read("spray.html"), /components\/spray-windows\.js|spray-wind\.js/);
   assert.match(read("field-scout-read.js"), /Too windy to spray right now/);
