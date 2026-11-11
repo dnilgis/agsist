@@ -37,7 +37,8 @@
  * components/sponsor-metrics.js under the slot "geo-<id>", unchanged. The
  * reader's state is in no event.
  *
- * ?sponsor-preview=1 on a state page draws a sample sold card in the state spot
+ * ?sponsor-preview=1 (with the sample sitewide line) or ?sponsor-preview=state (the card alone) on a
+ * state page draws a sample sold card in the state spot
  * and counts nothing.
  *
  * Preview for the owner: ?geo-preview=CA on any page (not linked anywhere; pages
@@ -282,7 +283,7 @@
     var ps = pageState(path);
     var slotSt = (spot() && spot().getAttribute('data-state-spot')) || '';
     if (/^[A-Z]{2}$/.test(slotSt)) ps = slotSt;
-    if (ps && /[?&]sponsor-preview=1(?:&|$)/.test(root.location.search)) {
+    if (ps && /[?&]sponsor-preview=(?:1|state)(?:&|$)/.test(root.location.search)) {
       var smp = {}; for (var k in SAMPLE) smp[k] = SAMPLE[k];
       smp.states = [ps];
       draw(smp, 'preview-state', rib, true);
