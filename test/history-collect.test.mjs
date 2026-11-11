@@ -161,7 +161,7 @@ test('implied futures (Sig, Oct 28 2026): no cron, rides Fetch Grain Bids in ses
   const y = read(`${WF}/implied-futures.yml`);
   assert.deepEqual(crons(y), [], 'no schedule of its own');
   assert.match(y, /workflow_run:\s*\n\s*workflows: \["Fetch Grain Bids"\]/, 'clocked by Fetch Grain Bids');
-  assert.match(y, /vars\.IMPLIED_FUTURES_LIVE != '0'/, 'IMPLIED_FUTURES_LIVE=0 stops the chained runs');
+  assert.match(y, /\(vars\.IMPLIED_FUTURES_LIVE \|\| 'on'\) != '0'/, 'IMPLIED_FUTURES_LIVE=0 stops the chained runs; unset runs');
   const hours = [...y.matchAll(/created_at, 'T(\d\d):'\)/g)].map((m) => +m[1]);
   assert.deepEqual(hours, [13, 14, 15, 16, 17, 18, 19], 'runners start only around the CBOT day session');
   assert.match(y, /^permissions:\n\s+contents: read$/m, 'cannot write to this repository');

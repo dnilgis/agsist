@@ -258,34 +258,9 @@
    "why_quiet": null
   },
   {
-   "path": "data/bids-stats.json",
-   "pages": [
-    "index.html"
-   ],
-   "written_by": [
-    "Fetch Grain Bids"
-   ],
-   "touched_by": [
-    "Fetch Grain Bids",
-    "Sitemap lastmod"
-   ],
-   "cadence": "about every 60 minutes",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "7 * * * *"
-   ],
-   "max_gap_hours": 1.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/bids.json",
    "pages": [
-    "cash-bids.html",
-    "index.html"
+    "cash-bids.html"
    ],
    "written_by": [
     "Fetch Grain Bids"
@@ -1031,6 +1006,47 @@
     "37 14 * * 5"
    ],
    "max_gap_hours": 143.2,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/elevator-counts.json",
+   "pages": [
+    "index.html"
+   ],
+   "written_by": [
+    "cash-bid-pages"
+   ],
+   "touched_by": [
+    "ARC/PLC refresh",
+    "cash-bid-pages",
+    "conditions",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
+    "Daily site check",
+    "Dairy prices",
+    "Bake farm-bill page",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Harvest price tracker",
+    "lrp",
+    "Build Price Stats (5-year percentile)",
+    "Fetch Prices",
+    "Monthly county rain email",
+    "Share images",
+    "Sitemap lastmod",
+    "Build State Stats (USDA NASS)",
+    "yield-panel"
+   ],
+   "cadence": "1 launch every day at about 7pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "19 */6 * * *"
+   ],
+   "max_gap_hours": 6.0,
    "quiet": null,
    "why_quiet": null
   },

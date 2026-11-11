@@ -1016,6 +1016,27 @@ def bin_of(x, br):
     return k
 
 
+def pr_attrs(pr):
+    """Rent against price for the state table, which the page builds from the map paths: the median sale (sp),
+    its count (sn), the share for sorting (rp) and as printed (rpt), and the years (yr). Nothing without an answer."""
+    if not pr:
+        return ""
+    if pr.get("high"):
+        return ' data-ph="1"'
+    return ' data-sp="%s" data-sn="%d" data-rp="%s" data-rpt="%s" data-yr="%s"' % (
+        jsround(pr["med"]), pr["n"], round(pr["pct"], 4), esc(pr_pct(pr["pct"])), esc(fmt(pr["years"], 0)))
+
+
+def pr_cells(pr):
+    """The two state-table cells for a county the map does not draw (the same words the page script writes)."""
+    if not pr:
+        return '<td data-v="">n/a</td><td data-v="">n/a</td>'
+    if pr.get("high"):
+        return '<td data-v=""></td><td data-v=""><small>%s</small></td>' % PR_HIGH_WORDS
+    return ('<td data-v="%s">%s <small>%d sale%s</small></td><td data-v="%s">%s <small>about %s yrs</small></td>'
+            % (jsround(pr["med"]), money(pr["med"]), pr["n"], "" if pr["n"] == 1 else "s", round(pr["pct"], 4), esc(pr_pct(pr["pct"])), esc(fmt(pr["years"], 0))))
+
+
 def state_map(W, st, recs):
     """The state, every county a link to its page, coloured by one figure.
     The colours are baked for dry rent (no JavaScript needed); the selector
@@ -1072,6 +1093,7 @@ def state_map(W, st, recs):
                         ("vs", r["value_usd_ac"] if r["value_flag"] else None)):
             if v is not None:
                 at += ' data-%s="%s"' % (code, v)
+        at += pr_attrs(county_price_rent(W, f, st))
         tip = "%s: %s" % (W.label[f], money(rent[f]) if f in rent else "no current rent")
         out.append('<a href="/%s/%s"><path class="%s" d="%s"%s><title>%s</title></path></a>' % (OUT, W.slug[f], q, d, at, esc(tip)))
     leg = ""
@@ -1519,7 +1541,8 @@ def _land_sales_door(W, f, lab, st):
 # sits below. The sale numbers are read from data/land-sales/<st>.json, the file the
 # /land-sales/<county> page is built with (scripts/build_land_sales.py), so the two cannot
 # disagree; test/atlas-land-first.test.mjs compares the pages. No value estimate, no adjustment,
-# no rent-to-price ratio. Other states keep the page as it was.
+# no rent-to-price ratio inside the block (the rent against price line, Nov 11, 2026, sits just below
+# it: price_rent_line). Other states keep the page as it was.
 LF_DISCLAIM = ("Recorded prices. Not an appraisal. No adjustments. A recorded price is what the state's transfer record says was paid "
                "once the sale closed, auction or private; never an asking price.")  # benchmark review, Oct 29, 2026
 
@@ -1620,6 +1643,87 @@ def land_first_rent(rv, ri, rv_old, R, RL=None):
     else:
         v, sub = "n/a", why(R) if not ok(R) else "no county rent published"
     return '<div class="lf-r"><span class="l">Rent</span><span class="r"><b>%s</b><span class="lc"> %s</span></span></div>' % (esc(v), esc(sub))
+
+
+# ---- rent against price (Nov 11, 2026). One line on the county home and two columns on the state page, for a
+# county with PR_MIN_N or more market sales in the 24-month sale file (the same median "Sold for" prints, from
+# data/land-sales/<st>.json) and a USDA NASS county non-irrigated cash rent not more than three survey years
+# old (rent_age.py). Rent as a percent of the median sale price, and the price divided by the rent ("about N
+# years of rent"). Both counts are printed: the number of sales and the rent survey year. The sales are all
+# bare farmland of 20+ acres (cropland, pasture, any irrigation); the rent is non-irrigated cropland, so the
+# line says the land types differ. Only an irrigated rent, an old rent, fewer sales or no sale file: no line.
+PR_MIN_N = 5
+# Farm-priced land only (Nov 11, 2026): rent under 1% of the median sale price (more than 100 years of rent)
+# means the sales are priced well above farm value (development ground), so the county gets no line and the
+# state table says so in place of a share.
+PR_MIN_PCT = 1.0
+PR_HIGH_WORDS = "sale prices well above farm value"
+PR_NOTE = "Sales are bare farmland of every kind; the rent is for non-irrigated cropland."
+PR_TERMS = ("Rent against price: the county's non-irrigated cash rent (USDA NASS county survey, not more than three survey "
+            "years older than the newest) divided by the median price per acre of recorded market sales of bare farmland, "
+            "20 acres or more, over the 24 months the sales line names. Years of rent is that price divided by the rent. "
+            "We show it only with %d or more sales, and only where the rent is at least 1%% of the price (sales priced well above "
+            "farm value, such as building ground, get no line). The two sides are different land: the sales include pasture and any "
+            "irrigated ground, the rent is non-irrigated cropland only. Taxes, upkeep and interest are not counted." % PR_MIN_N)
+
+
+def price_rent(u, rent, latest):
+    """u: the sale file's {"med", "n"}; rent: {"year", "value"} non-irrigated; latest: the newest rent survey year.
+    -> {"med", "n", "rent", "ry", "pct", "years"} or None (fewer than PR_MIN_N sales, no rent, a rent too old,
+    no newest year to judge it by, or a zero)."""
+    if not isinstance(u, dict) or not isinstance(rent, dict) or not latest:
+        return None
+    med, n, rv, ry = u.get("med"), u.get("n"), rent.get("value"), rent.get("year")
+    if med is None or rv is None or not ry or not isinstance(n, int) or n < PR_MIN_N or RA.too_old(ry, latest):
+        return None
+    med, rv = float(med), float(rv)
+    if not (med > 0 and rv > 0 and math.isfinite(med) and math.isfinite(rv)):
+        return None
+    pct = rv / med * 100
+    return {"med": med, "n": n, "rent": rv, "ry": int(ry), "pct": pct, "years": int(math.floor(med / rv + 0.5)), "high": pct < PR_MIN_PCT}
+
+
+def pr_pct(p):
+    """'3.4%'; under 1%, two places ('0.37%') so a small share never reads 0.0% or 0.4% for 0.37."""
+    return ("%s%%" % rfmt(p, 1)) if p >= 1 else ("%s%%" % rfmt(p, 2))
+
+
+def pr_rent(v):
+    """The rent as NASS publishes it: '$238', or '$26.50' for a rent with cents, so the share and the years
+    can be worked again from the printed figures."""
+    return money(v) if float(v) == int(v) else usd2(v)
+
+
+def pr_years(y):
+    return "about %s year%s" % (fmt(y, 0), "" if y == 1 else "s")
+
+
+def county_price_rent(W, f, st=None):
+    """price_rent for one county from the sale file and the county's rent layer (W.C), cached: the county
+    line, the state columns and the page stamp all read this one answer."""
+    cache = W.__dict__.setdefault("_pr", {})
+    if f not in cache:
+        F = land_sales_file(W, st or W.C[f]["state"])
+        thr = str(F.get("through") or "")
+        c = (F.get("counties") or {}).get(f) or {}
+        R = W.C[f].get("rent") or {}
+        pr = price_rent(c.get("usual"), R.get("nonirr") if ok(R) else None, W.rent_latest)
+        if pr and re.match(r"^\d{4}-\d{2}-\d{2}$", thr):
+            pr["span"] = _w24_words(thr)      # the window "Sold for" names: no sale date, no line
+        else:
+            pr = None
+        cache[f] = pr
+    return cache[f]
+
+
+def price_rent_line(pr):
+    """The county line, or "" without an answer or where the sales are priced well above farm value."""
+    if not pr or pr.get("high"):
+        return ""
+    return ('<p class="note" data-pr><b>Rent against price:</b> %s an acre cash rent is %s of the %s median sale price, %s of rent to equal the price. '
+            '%d sale%s, %s; rent USDA NASS %d. %s</p>'
+            % (pr_rent(pr["rent"]), pr_pct(pr["pct"]), money(pr["med"]), pr_years(pr["years"]),
+               pr["n"], "" if pr["n"] == 1 else "s", esc(pr["span"]), pr["ry"], PR_NOTE))
 
 
 # ---- auction results (Nov 7, 2026): the sold and auction results land auction firms publish on their
@@ -2996,8 +3100,9 @@ def county_page(W, f, d, stamp):
     # Indiana has no sales block, so land-sales.js drew its "Latest farm sales" box and the monthly
     # email ask from #ch-live; with the land first the box is not needed, the ask is placed here
     in_ask = ('<div data-land-alert data-source="%s"></div>' % esc(("page:%s/%s" % (OUT, W.slug[f]))[:60])) if lf_html and st == "IN" else ""
+    pr_html = price_rent_line(county_price_rent(W, f, st))
     C_LAND = ('<section class="card" aria-labelledby="c-land"><h2 id="c-land">Land <small>rent, value, sales</small></h2>'
-              + S1 + S2 + sales_block(W, f, lab, st, bool(lf_html)) + in_ask + sales_faq_html + land_sales_line(W, f, lab, st) + "</section>")
+              + ("" if lf_html else pr_html) + S1 + S2 + sales_block(W, f, lab, st, bool(lf_html)) + in_ask + sales_faq_html + land_sales_line(W, f, lab, st) + "</section>")
     # auction results: their own card right after the Land card, never inside it (Nov 7, 2026)
     C_AUC = auction_section(getattr(W, "auctions", {}).get(f))
     arc_link = ('<p class="note">Benchmarks, payments and the choice for each crop: <a href="%s">ARC or PLC in %s</a>.</p>' % (arc_url, esc(lab))) if arc_url else (
@@ -3035,7 +3140,7 @@ def county_page(W, f, d, stamp):
 {XMAS_JS}
 <div class="kick">County farm facts</div>
 <h1>{esc(lab)}, {esc(stn)}</h1>
-{lf_html}<p class="sub">{esc(desc)} Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp_h)}; the rows marked with a date load the newest reading when the page opens.</p>
+{lf_html}{pr_html if lf_html else ""}<p class="sub">{esc(desc)} Bids, weather, crops, land and programs for one county. County averages from public records, not an appraisal of any farm. FIPS {esc(f)}. Figures as of {esc(stamp_h)}; the rows marked with a date load the newest reading when the page opens.</p>
 {btns}
 {stands_html(stands_out(W, f, d))}{story_html}{warn}<div class="two"><div><section class="keys" aria-label="Key figures">{keys}</section></div><div>{locator_svg(W, f)}</div></div>
 <div class="act">
@@ -3056,7 +3161,7 @@ def county_page(W, f, d, stamp):
 <details><summary>Sources and terms</summary>
 <p>Every figure is a county average from the sources below, not an appraisal of any farm. "Figures as of" is the date this page's numbers last changed. {RANK_SENTENCE} Downloads: <a href="/farmland-atlas/data">all counties, CSV</a>.</p>
 <p>{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p>
-<p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: USDA NASS county corn yields. Loss ratio and claims: USDA RMA Summary of Business. Drought: U.S. Drought Monitor. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p></details>
+<p>Rent: USDA NASS Cash Rents Survey, county. Land value: Census of Agriculture, operators' estimate of land and buildings. Yield: USDA NASS county corn yields. Loss ratio and claims: USDA RMA Summary of Business. Drought: U.S. Drought Monitor. July lows: NOAA nClimDiv county monthly minimum temperature. A missing figure is named with its reason (in a table it reads n/a).</p>{("<p>" + esc(PR_TERMS) + "</p>") if pr_html else ""}</details>
 </main>
 <script type="application/json" id="{csv_id}">{rec_json}</script>
 <script src="/farmland-atlas/county.js?v={COUNTY_JS_V}"></script>
@@ -3116,6 +3221,9 @@ def state_page(W, st):
         return (None if n < 3 else (v[(n - 1) // 2] if n % 2 else (v[n // 2 - 1] + v[n // 2]) / 2), n,
                 v[0] if n >= 3 else None, v[-1] if n >= 3 else None)
 
+    # rent against price (Nov 11, 2026): two columns in a state with a sale file, built from the same answer as
+    # the county line (county_price_rent)
+    has_pr = bool(land_sales_file(W, st).get("counties"))
     rows = ""
     for f in fs:
         if f in W.geo:
@@ -3133,6 +3241,13 @@ def state_page(W, st):
             r["corn_yield_median_bu_ac"] if r["corn_yield_median_bu_ac"] is not None else "", f1(r["corn_yield_median_bu_ac"]) if r["corn_yield_median_bu_ac"] is not None else "n/a",
             r["claims_per_100_usd"] if r["claims_per_100_usd"] is not None else "", usd2(r["claims_per_100_usd"]) if r["claims_per_100_usd"] is not None else "n/a",
             r["d2_week_share_pct"] if r["d2_week_share_pct"] is not None else "", (fmt(r["d2_week_share_pct"], 0) + "%") if r["d2_week_share_pct"] is not None else "n/a"))
+        if has_pr:
+            rows = rows[:-len("</tr>")] + pr_cells(county_price_rent(W, f, st)) + "</tr>"
+    pr_th = '<th class="s" scope="col">Median sale, 24 mo</th><th class="s" scope="col">Rent % of sale</th>' if has_pr else ""
+    pr_note = (" Median sale is the median price per acre of recorded market sales of bare farmland, 20 acres or more, over 24 months, "
+               "shown with 5 or more sales. Rent % of sale is the dry rent as a share of that price, with the years of rent it takes to equal it; "
+               "the sales include pasture and any irrigated ground. Where rent is under 1% of the sale price, the sales are priced well above "
+               "farm value and no share is shown.") if has_pr else ""
     facts = ""
     smed = {}
     for label, key_, fm in (("Median dry cash rent", "rent", money), ("Median land and buildings, %s census" % get(W.atlas, "national", "value", "year"), "value", money),
@@ -3178,9 +3293,9 @@ def state_page(W, st):
 {smap}
 <p class="note" id="mn">Dry cash rent, {get(W.atlas, "national", "rent", "year") or W.rent_latest} survey. Five equal-count groups of the state's counties: each swatch shows the range it covers. Grey is a county with no figure. Land values flagged to read with care are left grey.</p>
 <h2>Every county</h2>
-<div class="tw"><table id="t"><thead><tr><th class="s" scope="col">County</th><th class="s" scope="col">Dry rent</th><th class="s" scope="col">Irr. rent</th><th class="s" scope="col">Land value</th><th class="s" scope="col">Median corn yield</th><th class="s" scope="col">Claims per $100</th><th class="s" scope="col">Drought weeks</th></tr></thead><tbody>{rows}</tbody></table></div>
+<div class="tw"><table id="t"><thead><tr><th class="s" scope="col">County</th><th class="s" scope="col">Dry rent</th><th class="s" scope="col">Irr. rent</th><th class="s" scope="col">Land value</th><th class="s" scope="col">Median corn yield</th><th class="s" scope="col">Claims per $100</th><th class="s" scope="col">Drought weeks</th>{pr_th}</tr></thead><tbody>{rows}</tbody></table></div>
 <noscript><p class="note">The county table is built from the map above, which needs JavaScript. Every county on the map is a link, and the CSV download has every row.</p></noscript>
-<p class="note">Rent is dollars per acre, NASS county survey; an older year is shown beside the figure. Land value is the census of agriculture estimate; a star marks a value flagged to read with care. Corn yield is the median of published years. Claims per $100 of coverage are the last ten closed crop years. Drought weeks are the share of weeks since 2000 with half the county or more in D2 drought or worse. n/a means the source withheld the figure or the record does not carry it.</p>
+<p class="note">Rent is dollars per acre, NASS county survey; an older year is shown beside the figure. Land value is the census of agriculture estimate; a star marks a value flagged to read with care. Corn yield is the median of published years. Claims per $100 of coverage are the last ten closed crop years. Drought weeks are the share of weeks since 2000 with half the county or more in D2 drought or worse. n/a means the source withheld the figure or the record does not carry it.{esc(pr_note)}</p>
 {XL.same_state_row(W.root, slugify(stn), esc(stn), "farmland-atlas")}
 <p class="note">{CR.NASS_NOTICE} {CR.AGSIST_CALC}</p>
 </main>
@@ -3216,7 +3331,8 @@ var t=document.getElementById('t'),b=t.tBodies[0],dir={{}};
     var ir=g('ix')!==null?x(g('ix')):c(g('i'),g('i')&&m(g('i')));
     var v=g('v')!==null?c(g('v'),m(g('v'))):(g('vs')!==null?c(g('vs'),m(g('vs'))+' *'):c(null));
     o.push([n,'<tr><td><a href="'+a.getAttribute('href')+'"></a></td>'+r+ir+v
-      +c(g('y'),g('y')&&(Math.round(g('y')*10)/10).toFixed(1))+c(g('c'),g('c')&&'$'+(+g('c')).toFixed(2))+c(g('d'),g('d')&&Math.round(g('d'))+'%')+'</tr>']);
+      +c(g('y'),g('y')&&(Math.round(g('y')*10)/10).toFixed(1))+c(g('c'),g('c')&&'$'+(+g('c')).toFixed(2))+c(g('d'),g('d')&&Math.round(g('d'))+'%')
+      +({'1' if has_pr else '0'}?(g('ph')!==null?'<td data-v=""></td><td data-v=""><small>{PR_HIGH_WORDS}</small></td>':c(g('sp'),g('sp')&&m(g('sp'))+' <small>'+g('sn')+(g('sn')==='1'?' sale':' sales')+'</small>')+c(g('rp'),g('rp')&&g('rpt')+' <small>about '+g('yr')+' yrs</small>')):'')+'</tr>']);
   }});
   o.sort(function(x,y){{return x[0].toLowerCase()<y[0].toLowerCase()?-1:1;}});
   var keep=b.innerHTML;b.innerHTML=o.map(function(x){{return x[1];}}).join('')+keep;
@@ -3443,6 +3559,9 @@ def build(root=".", out_root=None, only=None, quiet=False, today=None, auctions=
             # the auction results card is a figure on the page too (Nov 7, 2026)
             if W.auctions.get(f):
                 fig["auctions"] = W.auctions[f]
+            # rent against price is a figure on the page too (Nov 11, 2026)
+            if county_price_rent(W, f):
+                fig["price_rent"] = county_price_rent(W, f)
             h = hashlib.sha1(json.dumps(fig, sort_keys=True,
                                         default=str).encode("utf-8")).hexdigest()[:12]
             date = page_day(prev.get(f), h, day, W.built)
@@ -3818,6 +3937,23 @@ def selftest():
     check("a null total is refused for Schrader, a link off the firm for the others",
           auction_record(dict(ar, total_sold=None), "2026-11-07") is None
           and auction_record(dict(wr, url="https://example.com/land-auction-results.php"), "2026-11-08") is None)
+    # rent against price (Nov 11, 2026), hand-worked: 238 / 7,919 = 3.005%; 7,919 / 238 = 33.27 -> 33 years
+    p_ = price_rent({"med": 7919, "n": 66}, {"year": 2026, "value": 238.0}, 2026)
+    check("rent against price arithmetic", p_ and abs(p_["pct"] - 3.00543) < 1e-4 and p_["years"] == 33 and pr_pct(p_["pct"]) == "3.0%"
+          and p_["n"] == 66 and p_["ry"] == 2026)
+    p_ = price_rent({"med": 13880, "n": 9}, {"year": 2026, "value": 26.5}, 2026)    # 0.1909%; 523.8 -> 524
+    check("rent against price under 1%: worked, then held back", p_ and pr_pct(p_["pct"]) == "0.19%" and p_["years"] == 524 and p_["high"]
+          and price_rent_line(dict(p_, span="x")) == "" and pr_attrs(p_) == ' data-ph="1"' and PR_HIGH_WORDS in pr_cells(p_)
+          and pr_rent(26.5) == "$26.50" and pr_rent(238.0) == "$238")
+    check("rent against price at 1%: shown", not price_rent({"med": 10000, "n": 5}, {"year": 2026, "value": 100.0}, 2026)["high"]
+          and price_rent({"med": 10000, "n": 5}, {"year": 2026, "value": 99.5}, 2026)["high"])
+    check("rent against price gates", price_rent({"med": 7919, "n": 4}, {"year": 2026, "value": 238.0}, 2026) is None
+          and price_rent({"med": 7919, "n": 5}, {"year": 2026, "value": 238.0}, 2026) is not None
+          and price_rent({"med": 7919, "n": 66}, {"year": 2022, "value": 238.0}, 2026) is None
+          and price_rent({"med": 7919, "n": 66}, {"year": 2023, "value": 238.0}, 2026) is not None
+          and price_rent(None, {"year": 2026, "value": 238.0}, 2026) is None and price_rent({"med": None, "n": 0}, {"year": 2026, "value": 238.0}, 2026) is None
+          and price_rent({"med": 7919, "n": 66}, None, 2026) is None and price_rent({"med": 7919, "n": 66}, {"year": 2026, "value": None}, 2026) is None
+          and price_rent({"med": 7919, "n": 66}, {"year": 2026, "value": 238.0}, 0) is None and price_rent({"med": 0, "n": 66}, {"year": 2026, "value": 238.0}, 2026) is None)
     print("selftest: %s" % ("FAIL (%d)" % len(fails) if fails else "ok"))
     return 1 if fails else 0
 
