@@ -3307,14 +3307,18 @@ def fix_weekday_labels(briefing, today=None):
           r'Fri(?:day)?|Sat(?:urday)?|Sun(?:day)?)')
     MO = (r'(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|'
           r'Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)')
-    pat = re.compile(rf'\b{WD}\.?,?\s+{MO}\.?\s+(\d{{1,2}})\b', re.IGNORECASE)
+    # A day number followed by ".5" or ":30" or "AM" is not a date ("13.5 million", "to 7 AM").
+    NOT_DAY = r'(?!\s*(?:%|¢|cents?\b|[:.]\d|[ap]\.?m\b\.?))'
+    pat = re.compile(rf'\b{WD}\.?,?\s+{MO}\.?\s+(\d{{1,2}})\b' + NOT_DAY, re.IGNORECASE)
     # 2026-11-11: "Thursday or Friday, Nov 12 or 13" (the holiday-week Export
     # Sales line the prompt asks for) was read as "Friday, Nov 12" and became
     # "Thursday or Thursday", which the fact check blocked. In a pair the second
-    # weekday goes with the second day number, so that is the one it is checked
-    # against; the first weekday is checked against the first day number.
+    # weekday goes with the second day number (month repeated or not), so that is
+    # the one it is checked against; the first weekday is checked against the
+    # first day number. A weekday pair whose second day number cannot be read is
+    # left as written: turning it into "Thursday or Thursday" is never right.
     pair_before = re.compile(rf'\b{WD}\.?,?\s*(?:or|and|to|through|-|–)\s*$', re.IGNORECASE)
-    pair_after = re.compile(r'\s*(?:or|and|to|through|-|–)\s*(\d{1,2})\b(?!\s*(?:%|¢|cents?\b|[:.]\d))',
+    pair_after = re.compile(rf'\s*(?:or|and|to|through|-|–)\s*(?:{MO}\.?\s+)?(\d{{1,2}})\b' + NOT_DAY,
                             re.IGNORECASE)
     fixes = []
 
@@ -3339,8 +3343,12 @@ def fix_weekday_labels(briefing, today=None):
         s = m.string
         pb = pair_before.search(s[max(0, m.start() - 24):m.start()])
         pa = pair_after.match(s, m.end())
+        if pb and not pa:
+            return m.group(0)            # a pair with no readable second day: leave it
         if pb and pa:
-            day = int(pa.group(1))       # "Thursday or Friday, Nov 12 or 13": Friday goes with 13
+            day = int(pa.group(2))       # "Thursday or Friday, Nov 12 or 13": Friday goes with 13
+            if pa.group(1) and MONTHS3.get(pa.group(1)[:3].lower()):
+                mi = MONTHS3[pa.group(1)[:3].lower()]
         d = _resolve(mi, day)
         if d is None:
             return m.group(0)

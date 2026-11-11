@@ -31,7 +31,11 @@ A MOVE THAT ALREADY HAPPENED (2026-11-11). The morning after the Nov 10 WASDE
 the model wrote "Tuesday's report gain" and this file dated it as the next
 Tuesday: "Tuesday's (Nov 17) report gain". The fact check blocked every try.
 A possessive weekday followed by a move word (gain, rally, drop, loss and the
-like) names a move that is over, so it gets the most recent such day.
+like) names a move that is over, so it gets the most recent such day, unless
+the words between say it is still to come ("could spark a selloff", "may add to
+gains") or "next" comes before the weekday. "Tuesday's report" with no move
+word is dated by the release calendar: back when usda_dates or data/wasde.json
+shows a major report on the last such day (within 6 days) and none on the next.
 
     python3 scripts/watch_dates.py --selftest
 """
@@ -62,9 +66,16 @@ def date_for(tok, now_ct):
 
 BACK = re.compile(r"^'s\b[^.;]{0,40}?\b(close|closes|closed|settle|settled|settlement|finish|high|low)\b", re.I)
 BACK_BEFORE = re.compile(r"\b(since|last)\s+$", re.I)
-BACK_MOVE = re.compile(r"^'s\b[^.;]{0,30}?\b(gains?|rall(?:y|ied)|jump(?:ed)?|surge[d]?|spike[d]?|rise|climb(?:ed)?|"
+BACK_MOVE = re.compile(r"^'s\b([^.;]{0,30}?)\b(gains?|rall(?:y|ied)|jump(?:ed)?|surge[d]?|spike[d]?|rise|climb(?:ed)?|"
                        r"drop(?:ped)?|loss(?:es)?|slide|decline[d]?|sell-?off|plunge[d]?|bounce[d]?|"
                        r"advance[d]?|selling|buying)\b", re.I)
+# "Friday's CPI could spark a selloff", "Friday's Export Sales may add to gains": the
+# move is still to come, so the weekday keeps its forward date.
+FORWARD_GAP = re.compile(r"\b(could|may|might|would|will|should|to|if|can)\b", re.I)
+NEXT_BEFORE = re.compile(r"\bnext\s+$", re.I)
+# "Tuesday's report", "Tuesday's WASDE report": dated by the release calendar.
+REPORTISH = re.compile(r"^'s\b[^.;]{0,30}?\b(reports?|WASDE|release|numbers|figures|estimates?|"
+                       r"Crop Production|Grain Stocks|Acreage|Prospective Plantings)\b", re.I)
 PRICE = re.compile(r"\$\s?(\d{1,6}(?:,\d{3})*(?:\.\d{1,4})?)")
 
 
@@ -118,11 +129,43 @@ def date_back(tok, now_ct):
     return today - timedelta(days=(today.weekday() - want) % 7)
 
 
+def load_wasde_release(path=None):
+    """The release date data/wasde.json holds (a date), else None."""
+    import json
+    import os
+    path = path or os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "data", "wasde.json")
+    try:
+        with open(path, encoding="utf-8") as f:
+            return datetime.strptime(str((json.load(f) or {}).get("release") or "")[:10], "%Y-%m-%d").date()
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def release_back(tok, now_ct, wasde_release=None):
+    """The most recent past day (1 to 6 days back) a weekday names, when the
+    release calendar (usda_dates, data/wasde.json) shows a major report on it
+    and no release on the next such day; else None (the data cannot tell)."""
+    try:
+        import usda_dates
+    except Exception:  # noqa: BLE001
+        return None
+    today = now_ct.date()
+    back = date_back(tok, now_ct)
+    if back == today:
+        back -= timedelta(days=7)
+    fwd = back + timedelta(days=7)
+    if not (1 <= (today - back).days <= 6):
+        return None
+    on_back = bool(usda_dates.major_reports(back)) or back == wasde_release
+    on_fwd = bool(usda_dates.major_reports(fwd) or usda_dates.weekly_releases(fwd)) or fwd == wasde_release
+    return back if on_back and not on_fwd else None
+
+
 def _md(d):
     return d.strftime("%b ") + str(d.day)
 
 
-def date_text(text, now_ct, style="time", settles=None):
+def date_text(text, now_ct, style="time", settles=None, wasde_release=None):
     """text with its first undated weekday dated. style 'time': "Thursday, Oct 22";
     style 'desc': "Thursday (Oct 22)" (reads inside a sentence, and after a possessive)."""
     if not isinstance(text, str) or DATED.search(text) or SLASH.search(text):
@@ -138,8 +181,16 @@ def date_text(text, now_ct, style="time", settles=None):
             if len(m.group(1)) <= 4:
                 name = name[:3]
             word = name + (m.group(2) or "") + (m.group(3) or "")
-    elif BACK_BEFORE.search(text[:m.start()]) or BACK_MOVE.match(text[m.end(1):]):
+    elif NEXT_BEFORE.search(text[:m.start()]):
+        d = date_for(m.group(1), now_ct)       # "next Tuesday's report": forward, never back
+        if d == now_ct.date():
+            d += timedelta(days=7)
+    elif BACK_BEFORE.search(text[:m.start()]):
         d = date_back(m.group(1), now_ct)
+    elif (BACK_MOVE.match(text[m.end(1):]) and not FORWARD_GAP.search(BACK_MOVE.match(text[m.end(1):]).group(1))):
+        d = date_back(m.group(1), now_ct)
+    elif REPORTISH.match(text[m.end(1):]) and release_back(m.group(1), now_ct, wasde_release):
+        d = release_back(m.group(1), now_ct, wasde_release)
     elif BACK.match(text[m.end(1):]):
         return text, None                  # "Friday's close": which Friday is not ours to guess
     else:
@@ -153,7 +204,7 @@ def date_text(text, now_ct, style="time", settles=None):
     return text[:m.start()] + new + text[m.end():], "%s -> %s" % (m.group(0), word + " " + _md(d) if word != m.group(0) else _md(d))
 
 
-def apply(briefing, now_ct=None, settles=None):
+def apply(briefing, now_ct=None, settles=None, wasde_release=False):
     """Date the weekday in each watch item: in its time line, or in its text when
     the time line names no day. Items already carrying a date are left alone.
     settles: [(dollars, date)], default data/prices.json (load_settles)."""
@@ -161,13 +212,15 @@ def apply(briefing, now_ct=None, settles=None):
         now_ct = _now_ct()
     if settles is None:
         settles = load_settles()
+    if wasde_release is False:
+        wasde_release = load_wasde_release()
     fixes = []
     for item in briefing.get("watch_list") or []:
         if not isinstance(item, dict):
             continue
         t = item.get("time")
         if isinstance(t, str) and WD.search(t):
-            item["time"], f = date_text(t, now_ct, "time", settles)
+            item["time"], f = date_text(t, now_ct, "time", settles, wasde_release)
             if f:
                 fixes.append("time: " + f)
             continue
@@ -175,7 +228,7 @@ def apply(briefing, now_ct=None, settles=None):
             continue
         dsc = item.get("desc")
         if isinstance(dsc, str):
-            item["desc"], f = date_text(dsc, now_ct, "desc", settles)
+            item["desc"], f = date_text(dsc, now_ct, "desc", settles, wasde_release)
             if f:
                 fixes.append("desc: " + f)
     return briefing, fixes
@@ -249,6 +302,15 @@ def selftest():
        and date_text("Beans gave back Monday's drop.", wed, "desc", [])[0] == "Beans gave back Monday's (Nov 9) drop.")
     ck("Nov 11: a forward report day stays forward",
        date_text("Friday's Export Sales report", wed, "desc", [])[0] == "Friday's (Nov 13) Export Sales report")
+    ck("Nov 11: a move still to come keeps the forward date",
+       date_text("Friday's CPI could spark a selloff.", wed, "desc", [])[0] == "Friday's (Nov 13) CPI could spark a selloff."
+       and date_text("Friday's Export Sales may add to gains", wed, "desc", [])[0] == "Friday's (Nov 13) Export Sales may add to gains"
+       and date_text("Next Tuesday's report could erase the gain", wed, "desc", [])[0]
+       == "Next Tuesday's (Nov 17) report could erase the gain")
+    ck("Nov 11: Tuesday's report is the Nov 10 WASDE by the release calendar",
+       date_text("Tuesday's WASDE report", wed, "desc", [], None)[0] == "Tuesday's (Nov 10) WASDE report")
+    ck("Oct 21: Tuesday's report with no release on file stays forward",
+       date_text("Tuesday's report", datetime(2026, 10, 21, 6, 45), "desc", [], None)[0] == "Tuesday's (Oct 27) report")
     print("FAILS=%d" % bad)
     return 1 if bad else 0
 

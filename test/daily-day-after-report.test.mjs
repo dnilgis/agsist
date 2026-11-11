@@ -40,19 +40,32 @@ test("Nov 11: a wrong weekday inside a pair is fixed against its own day number"
   assert.equal(b, "Thursday or Friday, Nov 12 or 13");
 });
 
+test("Nov 11: a pair with the month written twice is left as written, or fixed per day", () => {
+  const [a, b] = fixLabels(["Thursday or Friday, Nov 12 or Nov 13", "Thursday or Thursday, Nov 12 or Nov 13"]);
+  assert.equal(a, "Thursday or Friday, Nov 12 or Nov 13");
+  assert.equal(b, "Thursday or Friday, Nov 12 or Nov 13");
+});
+
+test("Nov 11: a number after 'or' or 'to' that is not a day (13.5 million, 7 AM) is not read as one", () => {
+  const [a, b] = fixLabels(["Monday to Friday, Nov 13 to 7 AM", "Thursday or Friday, Nov 12 or 13.5 million"]);
+  assert.equal(a, "Monday to Friday, Nov 13 to 7 AM");
+  assert.equal(b, "Thursday or Friday, Nov 12 or 13.5 million");
+  assert.doesNotMatch(b, /Thursday or Thursday/);
+});
+
 test("Nov 11: a single wrong weekday is still fixed, and two dated days stay apart", () => {
   const [a, b] = fixLabels(["Friday, Nov 12, 7:30 AM CT", "Thursday, Nov 12 or Friday, Nov 13"]);
   assert.equal(a, "Thursday, Nov 12, 7:30 AM CT");
   assert.equal(b, "Thursday, Nov 12 or Friday, Nov 13");
 });
 
-const watchDates = (descs) => py(`
+const watchDates = (descs, wasde = "None", now = "datetime(2026, 11, 11, 6, 45)") => py(`
 import sys, json
 sys.path.insert(0, ${JSON.stringify(path.join(ROOT, "scripts"))})
-from datetime import datetime
+from datetime import datetime, date
 import watch_dates
 items = [{"time": "Ongoing", "desc": d} for d in ${JSON.stringify(descs)}]
-b, _ = watch_dates.apply({"watch_list": items}, datetime(2026, 11, 11, 6, 45), [])
+b, _ = watch_dates.apply({"watch_list": items}, ${now}, [], ${wasde})
 print(json.dumps([w["desc"] for w in b["watch_list"]]))
 `);
 
@@ -69,4 +82,37 @@ test("Nov 11: Tuesday's report gain is dated Nov 10, never next Tuesday", () => 
 test("Nov 11: a report still to come keeps its forward date", () => {
   const [a] = watchDates(["Friday's Export Sales report could show China buying."]);
   assert.equal(a, "Friday's (Nov 13) Export Sales report could show China buying.");
+});
+
+test("Nov 11: a move word inside a forward line does not turn it back", () => {
+  const lines = {
+    "Monday's Crop Progress could trigger selling.": "Monday's (Nov 16) Crop Progress could trigger selling.",
+    "Friday's CPI could spark a selloff.": "Friday's (Nov 13) CPI could spark a selloff.",
+    "Friday's report could spark a rally": "Friday's (Nov 13) report could spark a rally",
+    "Friday's Export Sales may add to gains": "Friday's (Nov 13) Export Sales may add to gains",
+    "Friday's data could trigger a drop": "Friday's (Nov 13) data could trigger a drop",
+    "Next Tuesday's report could erase the gain": "Next Tuesday's (Nov 17) report could erase the gain",
+    "Friday's report could trigger buying": "Friday's (Nov 13) report could trigger buying",
+    "Thursday's sales may bring a rally": "Thursday's (Nov 12) sales may bring a rally",
+  };
+  for (const wasde of ["None", "date(2026, 11, 10)"]) {
+    const got = watchDates(Object.keys(lines), wasde);
+    assert.deepEqual(got, Object.values(lines), `wasde=${wasde}`);
+  }
+});
+
+test("Nov 11: Tuesday's report, by the release calendar, is the Nov 10 WASDE", () => {
+  const lines = {
+    "Tuesday's report": "Tuesday's (Nov 10) report",
+    "Tuesday's WASDE report": "Tuesday's (Nov 10) WASDE report",
+    "Tuesday's report reaction": "Tuesday's (Nov 10) report reaction",
+  };
+  for (const wasde of ["None", "date(2026, 11, 10)"]) {
+    assert.deepEqual(watchDates(Object.keys(lines), wasde), Object.values(lines), `wasde=${wasde}`);
+  }
+});
+
+test("Oct 21: Tuesday's report with no release on the last Tuesday stays forward", () => {
+  const [a] = watchDates(["Tuesday's report"], "None", "datetime(2026, 10, 21, 6, 45)");
+  assert.equal(a, "Tuesday's (Oct 27) report");
 });
