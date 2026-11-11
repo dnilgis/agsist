@@ -21,6 +21,7 @@ try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit be
 except ImportError: pass
 
 import csv
+import hashlib
 import io
 import json
 import os
@@ -125,7 +126,13 @@ def reduce_year(rows):
 
 
 def events_year(rows, year):
-    """Compact dated/sized events for the point-lookup: [[lat,lon,mag,"MM-DD"],...].
+    """The year's events records with ids, exact duplicates removed."""
+    return events_year_counted(rows, year)[0]
+
+
+def events_year_counted(rows, year):
+    """(records, exact duplicates removed). Compact dated/sized events for the point-lookup:
+    [[lat, lon, mag, "MM-DD", ST, id], ...].
     mag is inches or null (unmeasured). Year lives in the filename, month-day in
     the row — keeps a 15k-report year around ~400 KB raw (~90 KB over the wire).
     This is what makes the map's address lookup and Field Scout's hail history
@@ -149,7 +156,75 @@ def events_year(rows, year):
         m = mag_of(row)
         st = (_get(row, "st", "state") or "").strip().upper()[:2]
         ev.append([lat, lon, (round(m, 2) if m is not None else None), d[5:], st])
-    return ev
+    return finish_events(ev, year)
+
+
+# Report ids and exact duplicates (Nov 10, 2026). IEM's storm report CSV has
+# no id column, so a report's id is built from what the events file keeps:
+# the storm day, the state, the position to 2 decimals and the size. Two rows
+# that agree on all of those are one point on every page that reads the file
+# (the map, the lookup, the storm-day and state pages, the Daily), so the
+# second is dropped and counted: events-2026.json carried 426 of them, e.g. the
+# 0.75 inch report at 35.37 -97.55, Oklahoma, Jan 8, listed twice. The id is
+# appended as a 6th field, so readers that take fields 0 to 4 are unchanged,
+# and a re-run over the same reports in any order gives the same ids.
+EVENT_ID_HEX = 10
+DUP_RULE = ("same storm day, state, position to 2 decimals (about 1 km) and size: "
+            "kept once, the rest removed")
+ID_RULE = ("first %d hex of sha1 of 'YYYY-MM-DD|ST|lat|lon|size' (2 decimals, size empty when "
+           "unmeasured); %d when two keys share the short form" % (EVENT_ID_HEX, 16))
+
+
+def event_key(year, e):
+    """The identity of one events record [lat, lon, size, "MM-DD", ST, ...]."""
+    mag = "" if e[2] is None else "%.2f" % float(e[2])
+    return "%d-%s|%s|%.2f|%.2f|%s" % (int(year), str(e[3]).replace("/", "-"),
+                                      str(e[4] or "").upper(), float(e[0]), float(e[1]), mag)
+
+
+def finish_events(ev, year):
+    """Drop exact duplicates (DUP_RULE) and give every record its id (ID_RULE).
+    Returns (records, removed). Idempotent: a record that already carries an id
+    is keyed on its first five fields again, so running it twice changes nothing."""
+    seen, out = set(), []
+    for e in ev or []:
+        core = list(e[:5])
+        k = event_key(year, core)
+        if k in seen:
+            continue
+        seen.add(k)
+        out.append((k, core))
+    full = {k: hashlib.sha1(k.encode("utf-8")).hexdigest() for k, _ in out}
+    short = {}
+    for k in full:
+        short.setdefault(full[k][:EVENT_ID_HEX], []).append(k)
+    recs = []
+    for k, core in out:
+        h = full[k]
+        recs.append(core + [h[:16] if len(short[h[:EVENT_ID_HEX]]) > 1 else h[:EVENT_ID_HEX]])
+    return recs, len(ev or []) - len(recs)
+
+
+def write_events(y, ev, removed):
+    with open("%s/events-%d.json" % (OUT_DIR, y), "w") as fh:
+        json.dump({"year": y, "n": len(ev), "dup_removed": removed, "dup_rule": DUP_RULE,
+                   "id_rule": ID_RULE, "ev": ev}, fh, separators=(",", ":"))
+
+
+def reid_files(years):
+    """--ids: apply finish_events to the events files on disk (no network).
+    dup_removed adds up over passes, so a file keeps the count of its first pass."""
+    for y in years:
+        path = "%s/events-%d.json" % (OUT_DIR, y)
+        try:
+            with open(path) as fh:
+                d = json.load(fh)
+        except (OSError, ValueError):
+            continue
+        ev, removed = finish_events(d.get("ev") or [], y)
+        total = int(d.get("dup_removed") or 0) + removed
+        write_events(y, ev, total)
+        print("[%d] %d reports, %d exact duplicates removed in all" % (y, len(ev), total))
 
 
 # Storm day: the Storm Prediction Center's convective day, 12:00 UTC to
@@ -486,6 +561,11 @@ def main():
     if "--recent" in sys.argv:
         refresh_recent_only()
         return
+    if "--ids" in sys.argv:
+        # Re-key the events files on disk (no network): ids and duplicates.
+        with open("%s/manifest.json" % OUT_DIR) as fh:
+            reid_files(json.load(fh).get("years") or [])
+        return
     if "--grid" in sys.argv:
         # Rebuild only the grid from the year files on disk (no network).
         with open("%s/manifest.json" % OUT_DIR) as fh:
@@ -543,10 +623,10 @@ def main():
         day_rules[str(y)] = DAY_RULE
         with open("%s/%d.json" % (OUT_DIR, y), "w") as fh:
             json.dump({"year": y, "count": len(pts), "points": pts}, fh, separators=(",", ":"))
-        ev = events_year(rows, y)
-        with open("%s/events-%d.json" % (OUT_DIR, y), "w") as fh:
-            json.dump({"year": y, "n": len(ev), "ev": ev}, fh, separators=(",", ":"))
-        print("[%d] %d hail reports (%d dated events)" % (y, len(pts), len(ev)))
+        ev, removed = events_year_counted(rows, y)
+        write_events(y, ev, removed)
+        print("[%d] %d hail reports (%d dated events, %d exact duplicates removed)"
+              % (y, len(pts), len(ev), removed))
         time.sleep(2)  # be polite to IEM between large requests
 
     write_grid(years)
