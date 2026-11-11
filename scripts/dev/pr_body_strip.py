@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-"""Remove footer lines (ai_footer_check.MARKS) from a pull request body, then re-run a failed guard job.
+"""Remove footer lines (ai_footer_check.MARKS) from a pull request body; re-run the guard job when it failed on the footer step.
 
     python3 scripts/dev/pr_body_strip.py              (pr-body.yml; GH_TOKEN, GITHUB_REPOSITORY, PR, HEAD_SHA)
     python3 scripts/dev/pr_body_strip.py --selftest
 """
+import contextlib
+import io
 import json
 import os
 import sys
@@ -37,39 +39,61 @@ def new_body(body):
     return strip(body)
 
 
+FOOTER_STEP = "no AI footer in the pull request"  # the guard step in pr-checks.yml that reads the body
+
+
 def guard_run(repo, sha, token):
-    """(run id, guard job conclusion or None while it runs) for the newest pr-checks run of sha."""
+    """(run, guard job) for the newest pr-checks run of sha; (None, None) when there is none yet."""
     runs = safe("GET", "/repos/%s/actions/workflows/pr-checks.yml/runs?head_sha=%s&per_page=5" % (repo, sha), token)
     for run in (runs or {}).get("workflow_runs", []):
         jobs = safe("GET", "/repos/%s/actions/runs/%d/jobs?per_page=100" % (repo, run["id"]), token)
         for job in (jobs or {}).get("jobs", []):
             if job.get("name") == "guard":
-                return run["id"], (job.get("conclusion") if job.get("status") == "completed" else None)
+                return run, job
     return None, None
 
 
-def safe(method, path, token, data=None):
-    """call(), but a refused or failed request is a note, not a failure (the body fix already happened)."""
+def footer_step_failed(job):
+    """True when the guard job's failed step is the footer step (a red guard for another reason is left alone)."""
+    return any(st.get("name") == FOOTER_STEP and st.get("conclusion") == "failure" for st in job.get("steps") or [])
+
+
+def safe(method, path, token, data=None, ok=None):
+    """call(), but a refused or failed request is a note, not a failure (the body fix already happened).
+    ok, a list, gets True appended when the request answered."""
     try:
-        return call(method, path, token, data)
+        out = call(method, path, token, data)
+        if ok is not None:
+            ok.append(True)
+        return out
     except Exception as e:  # HTTPError, timeout, bad JSON
         print("note: %s %s did not answer: %s" % (method, path.split("?")[0], str(e)[:80]))
         return None
 
 
-def rerun_guard(repo, sha, token, wait=40, pause=15):
-    """Wait for the guard job of sha; re-run it when it ended red (failure, cancelled, timed_out)."""
-    for _ in range(wait):
-        run_id, concl = guard_run(repo, sha, token)
-        if run_id and concl:
-            if concl in ("failure", "cancelled", "timed_out"):
-                safe("POST", "/repos/%s/actions/runs/%d/rerun-failed-jobs" % (repo, run_id), token)
-                print("guard re-run asked for (run %d, was %s)" % (run_id, concl))
-            else:
-                print("guard: %s" % concl)
-            return 0
-        time.sleep(pause)
-    print("guard did not finish in time; it reads the body when it runs")
+WAIT, PAUSE = 100, 15  # 25 minutes at most (job timeout 30); the selftest sets PAUSE to 0
+
+
+def rerun_guard(repo, sha, token):
+    """Wait for the guard job of sha. When its footer step failed, wait for the whole run to end (GitHub
+    refuses to re-run a job of a run still going), then re-run only the guard job (all-checks follows it)."""
+    for _ in range(WAIT):
+        run, job = guard_run(repo, sha, token)
+        if run and job and job.get("status") == "completed":
+            concl = job.get("conclusion")
+            if concl == "success":
+                print("guard: success")
+                return 0
+            if not footer_step_failed(job):
+                print("guard: %s, not on the footer step; left alone" % concl)
+                return 0
+            if run.get("status") == "completed":
+                ok = []
+                safe("POST", "/repos/%s/actions/jobs/%d/rerun" % (repo, job["id"]), token, ok=ok)
+                print(("guard re-run started (run %d)" if ok else "guard re-run refused (run %d); re-run it by hand") % run["id"])
+                return 0
+        time.sleep(PAUSE)
+    print("the checks run did not end in time; re-run the guard by hand once it ends")
     return 0
 
 
@@ -78,13 +102,19 @@ def main():
     if not (repo and n and token):
         print("no pull request in this run")
         return 0
-    pr = safe("GET", "/repos/%s/pulls/%s" % (repo, n), token) or {}
+    pr = safe("GET", "/repos/%s/pulls/%s" % (repo, n), token)
+    if pr is None:
+        print("could not read the pull request body")
+        return 0
     sha = sha or (pr.get("head") or {}).get("sha", "")
     body = new_body(pr.get("body"))
     if body is not None:
         safe("PATCH", "/repos/%s/pulls/%s" % (repo, n), token, {"body": body})
         after = (safe("GET", "/repos/%s/pulls/%s" % (repo, n), token) or {}).get("body")
-        if after is not None and found(after):
+        if after is None:
+            print("could not read the body back after the edit")
+            return 0
+        if found(after):
             print("::error::the footer came back after the edit")
             return 1
         print("footer lines removed")
@@ -95,35 +125,51 @@ def main():
 
 
 def mock_main_selftest():
-    """main() against a fake API: strip, verify, re-run a red guard; a refused re-run is only a note."""
-    global call
-    real, fails = call, 0
-    for body, guard, refuse, want_calls in [
-        ("Fix.\n\n---\n_Generated by [Claude Code](https://claude.ai/code/x)_", "failure", False, ["PATCH", "POST"]),
-        ("Fix.", "failure", False, ["POST"]),
-        ("Fix.", "success", False, []),
-        ("Fix.\n\n---\n_Generated by [Claude Code](https://claude.ai/code/x)_", "failure", True, ["PATCH", "POST"]),
+    """main() against a fake API: strip, verify, re-run a red guard only for the footer step and only once the
+    run has ended; a refused re-run is reported as refused; an unread body is reported as unread."""
+    global call, PAUSE
+    real, fails, PAUSE = call, 0, 0
+    F = "Fix.\n\n---\n_Generated by [Claude Code](https://claude.ai/code/x)_"
+    # body, guard conclusion, failed step, run statuses seen in turn, refuse POST, refuse GET pulls, calls, line
+    for body, guard, step, runs, refuse, noread, want_calls, want_line in [
+        (F, "failure", FOOTER_STEP, ["completed"], False, False, ["PATCH", "POST"], "guard re-run started"),
+        ("Fix.", "failure", FOOTER_STEP, ["completed"], False, False, ["POST"], "guard re-run started"),
+        ("Fix.", "success", None, ["completed"], False, False, [], "guard: success"),
+        ("Fix.", "failure", "built files", ["completed"], False, False, [], "not on the footer step"),
+        (F, "failure", FOOTER_STEP, ["completed"], True, False, ["PATCH", "POST"], "guard re-run refused"),
+        (F, "failure", FOOTER_STEP, ["in_progress", "in_progress", "completed"], False, False, ["PATCH", "POST"], "guard re-run started"),
+        (F, "failure", FOOTER_STEP, ["in_progress"] * 5, False, False, ["PATCH"], "did not end in time"),
+        (F, "failure", FOOTER_STEP, ["completed"], False, True, [], "could not read the pull request body"),
     ]:
-        state, seen = {"body": body}, []
-        def fake(method, path, token, data=None, state=state, seen=seen, guard=guard, refuse=refuse):
+        state, seen = {"body": body, "runs": list(runs)}, []
+        def fake(method, path, token, data=None, state=state, seen=seen, guard=guard, step=step, refuse=refuse, noread=noread):
             if method != "GET":
                 seen.append(method)
             if method == "POST" and refuse:
-                raise OSError("409 conflict")
+                raise OSError("403 forbidden")
             if method == "PATCH":
                 state["body"] = data["body"]
             if "/pulls/" in path:
+                if noread:
+                    raise OSError("502")
                 return {"body": state["body"], "head": {"sha": "abc"}}
-            if path.endswith("per_page=5") or "/workflows/" in path:
-                return {"workflow_runs": [{"id": 7}]}
-            return {"jobs": [{"name": "guard", "status": "completed", "conclusion": guard}]}
+            if "/workflows/" in path:
+                st = state["runs"].pop(0) if len(state["runs"]) > 1 else state["runs"][0]
+                return {"workflow_runs": [{"id": 7, "status": st}]}
+            steps = [{"name": step, "conclusion": "failure"}] if step else []
+            return {"jobs": [{"id": 9, "name": "guard", "status": "completed", "conclusion": guard, "steps": steps}]}
         call = fake
         os.environ.update(GITHUB_REPOSITORY="o/r", PR="1", HEAD_SHA="abc", GH_TOKEN="t")
-        rc = main()
-        ok = rc == 0 and seen == want_calls and not found(state["body"])
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            rc = main()
+        out = buf.getvalue()
+        ok = rc == 0 and seen == want_calls and want_line in out and (noread or not found(state["body"]))
         fails += not ok
-        print(("ok    " if ok else "FAIL  ") + "main: guard %s, refuse %s -> %s" % (guard, refuse, seen))
-    call = real
+        print(("ok    " if ok else "FAIL  ") + "main: guard %s, step %s, runs %s, refuse %s, noread %s -> %s" % (guard, step, runs[-1], refuse, noread, seen))
+        if not ok:
+            print(out)
+    call, PAUSE = real, 15
     return fails
 
 

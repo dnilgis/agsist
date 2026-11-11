@@ -33,3 +33,13 @@ test('selftest', () => {
   const out = execFileSync('python3', [path.join(root, 'scripts/dev/pr_body_strip.py'), '--selftest'], { encoding: 'utf8' });
   assert.match(out, /FAILS=0/);
 });
+
+test('the step the script waits on is the footer step in pr-checks, and the base is what runs', () => {
+  const step = (py.match(/^FOOTER_STEP = "([^"]+)"/m) || [])[1];
+  assert.ok(step, 'FOOTER_STEP is set');
+  const checks = fs.readFileSync(path.join(root, '.github/workflows/pr-checks.yml'), 'utf8');
+  assert.ok(checks.includes('- name: ' + step + '\n'), 'pr-checks has a step named "' + step + '"');
+  assert.match(wf, /ref: \$\{\{ github\.event\.pull_request\.base\.sha \}\}/, 'the script comes from the base, not the pull request');
+  assert.match(wf, /persist-credentials: false/);
+  for (const run of wf.match(/run: .*/g) || []) assert.doesNotMatch(run, /\$\{\{/, 'no expression inside a run line');
+});
