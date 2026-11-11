@@ -32,7 +32,7 @@ test("tool groups and the cards in each run by 90-day views, new pages last", ()
     ["/hail-map", "/gdu-calculator", "/field-scout", "/planting-date"],
     ["/usda-calendar", "/tariffs", "/", "/hay-prices", "/cattle-auction-prices"],
     ["/usda-quick-stats", "/yield-estimator", "/fast-facts", "/glossary"],  // no sources card (Oct 21)
-    ["/spray", "/fertilizer", "/urea", "/manure-value", "/nutrient-removal", "/fall-nitrogen", "/tar-spot"],  // tar spot added Nov 5, new pages last
+    ["/spray", "/fertilizer", "/spray#urea", "/manure-value", "/nutrient-removal", "/spray#fall-nitrogen", "/tar-spot"],   // urea and fall anhydrous: tabs of /spray since Nov 11, 2026  // tar spot added Nov 5, new pages last
     ["/grain-bin-calculator", "/grain-emc", "/grain-shrink", "/combine-loss", "/harvest-or-wait"],
   ]);
 });
