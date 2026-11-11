@@ -1939,8 +1939,8 @@ function pxWhat(q,fetched,ctf){
   return 'today\u2019s quote'+(fetched&&ctf?' ('+ctf(fetched)+')':'');
 }
 /* The hero line's moment, in the baked seed's words (seed_static.py quote_when,
-   state_words): "Settle Oct 16" | "Read 10:42 am CT, delayed" | "Last trade, 1:20 pm CT bell, vs Nov 10 settle"
-   (the settle its change is from, AgPxStamp.change) | "Last quote".
+   state_words): "Settle Oct 16" | "Read 10:42 am CT, delayed" | "Last trade, 1:20 pm CT bell" | "Last quote".
+   (The settle a change is from is named in the sentence under the hero, below, kept short here: one line at 390 px.)
    Night audit Oct 19, 2026: it called a Friday settle "refreshed" in session
    on a Sunday, and an answer engine can quote that as a live price. */
 function exchWhen(q,fetched){
@@ -1948,7 +1948,7 @@ function exchWhen(q,fetched){
   var p=window.AgPxStamp&&AgPxStamp.stampParts&&q?AgPxStamp.stampParts(q,fetched):null,k=p&&p.kind;
   if(k==='settle')return 'Settle '+p.at;
   if(k==='read')return 'Read '+p.at+', delayed';
-  if(k==='bell')return 'Last trade, '+p.at+' bell'+(p.vs?', vs '+p.vs+' settle':'');
+  if(k==='bell')return 'Last trade, '+p.at+' bell';
   if(k==='overnight')return 'Overnight trade read '+p.at;
   return 'Last quote';
 }

@@ -331,7 +331,8 @@
     if (s.kind === 'settle') return s.at + ' settle';
     if (s.kind === 'read') return 'Read ' + s.at + ', delayed';
     if (s.kind === 'overnight') return 'Overnight, read ' + s.at;
-    if (s.kind === 'bell') return 'Last trade, ' + s.at + ' bell' + (s.vs ? ', vs ' + s.vs + ' settle' : '');
+    /* the settle the change is from is in the title (stamp withChange): a longer line wrapped and moved the page at 390 px */
+    if (s.kind === 'bell') return 'Last trade, ' + s.at + ' bell';
     return 'Updated ' + s.at;
   }
   /* Markup: a <time> (no data-asof, so asof.js leaves the words alone), the short words, the full stamp as its title. */
