@@ -83,25 +83,24 @@
         asOf = c.asOf;
         var main = c.cash != null ? '$' + c.cash.toFixed(2) : c.basis;
         return '<td class="cbs-n"><b>' + esc(main) + '</b><span class="cbs-m">' + (c.cash != null ? esc(c.basis) + ' ' : '') +
-          esc(c.fut + c.label) + '<br>median of ' + c.n + ' elevators</span></td>';
+          esc(c.fut + c.label) + '<br>' + c.n + ' elevators</span></td>';
       }).join('');
       rows += '<tr><th scope="row"><a href="' + esc(bs.states[st].path || '/cash-bids') + '">' + esc(bs.states[st].name) + '</a></th>' + tds + '</tr>';
     });
     var pic = '';
     if (map) {
-      pic = '<figure class="cbs-fig"><figcaption class="cbs-cap">Corn, ' + (map.metric === 'cash' ? 'dollars per bushel' : 'cents per bushel against futures') +
-        (asOf ? ', ' + esc(asOf) : '') + '</figcaption>' +
+      pic = '<figure class="cbs-fig">' +
         '<div class="cbs-map" id="cbs-map" role="group" aria-label="Map of corn median bids by state"><div class="usm"><div class="usm-box"></div><p class="usm-read">&nbsp;</p></div></div>' +
-        '<div class="cbs-leg" aria-hidden="true"><span>' + esc(fmtV(map.lo, map.metric)) + '</span>' +
+        '<div class="cbs-row"><div class="cbs-leg" aria-hidden="true"><span>' + esc(fmtV(map.lo, map.metric)) + '</span>' +
         RAMP.map(function (f) { return '<i style="background:' + f + '"></i>'; }).join('') +
-        '<span>' + esc(fmtV(map.hi, map.metric)) + '</span></div>' +
-        '<p class="cbs-f cbs-src">Source: AGSIST elevator bids and CME futures' + (asOf ? ', ' + esc(asOf) : '') + '.</p>' +
-        '<p class="cbs-kit"><button type="button" class="cb-kit-btn" id="cbs-save">Save the picture</button><span class="skb-st" id="cbs-save-st" role="status" aria-live="polite"></span></p></figure>';
+        '<span>' + esc(fmtV(map.hi, map.metric)) + '' + '</span></div>' +
+        '<button type="button" class="cb-kit-btn" id="cbs-save">Save the picture</button></div>' +
+        '<span class="skb-st" id="cbs-save-st" role="status" aria-live="polite"></span></figure>';
     }
     var line = '<p class="cbs-f">Estimates, not posted bids: ' + (on ? 'futures at ' + esc(on) + ' plus ' : '') + 'each state&rsquo;s median bid at the elevators AGSIST reads' +
-      (asOf ? ', ' + esc(asOf) : '') + '. Your ZIP gives the real bids near you.</p>';
-    return '<h3 class="cbs-h">Median bid by state</h3>' + line + pic +
-      '<table class="cbs-t"><caption class="cbs-cap">' + (mine ? 'Your state first, then the states with the most elevators' : 'The five states with the most elevators') + '</caption><thead><tr><th scope="col">State</th><th scope="col">Corn</th><th scope="col">Soybeans</th></tr></thead><tbody>' + rows + '</tbody></table>';
+      (asOf ? ', ' + esc(asOf) : '') + '.</p>';
+    return '<h3 class="cbs-h">Median corn bid by state</h3>' + line + pic +
+      '<table class="cbs-t">' + (mine ? '<caption class="cbs-cap">Your state first, then the states with the most elevators</caption>' : '') + '<thead><tr><th scope="col">State</th><th scope="col">Corn</th><th scope="col">Soybeans</th></tr></thead><tbody>' + rows + '</tbody></table>';
   }
 
   /* "Save the picture": the map, its title, legend, date and source, as one PNG drawn here (no outside file). */
@@ -215,7 +214,7 @@
       if (md && host) {
         mapLib().then(function (M) {
           if (!M || !host.isConnected) { if (host.parentNode) host.parentNode.removeChild(host.closest('figure') || host); return; }
-          M.mount(host, { states: md.states, selected: md.states[own] ? own : null, name: 'Corn median bid by state', plain: true, hint: 'Tap a state to open its bids.' });
+          M.mount(host, { states: md.states, selected: md.states[own] ? own : null, name: 'Corn median bid by state', plain: true, hint: 'Tap a state to open its bids. ' + (md.metric === 'cash' ? 'Dollars a bushel.' : 'Cents a bushel against futures.') });
         });
         var btn = el.querySelector('#cbs-save'), say = el.querySelector('#cbs-save-st');
         if (btn) btn.addEventListener('click', function () {
