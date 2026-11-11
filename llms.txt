@@ -24,7 +24,7 @@ the as-of date shown with it. Each daily briefing has a permanent dated URL.
 
 Each figure below is read from the same file the site's pages read and carries that file's own date. A page can be newer than this list.
 
-- Cash bids: 23,490 bid prices (crop and delivery period) on the last read of the elevator boards, Nov 10, 2026, 00:14 UTC (https://agsist.com/cash-bids).
+- Cash bids: 23,409 bid prices (crop and delivery period) on the last read of the elevator boards, Nov 11, 2026, 00:07 UTC (https://agsist.com/cash-bids).
 - Elevators with a current bid: 2,065, in 1,626 towns, counted Nov 10, 2026, 01:31 UTC (https://agsist.com/cash-bids).
 - AGSIST Daily: latest issue Nov 10, 2026, at https://agsist.com/daily/2026-11-10 (the newest is always at https://agsist.com/daily).
 - County rain: 2026 totals for each county page, from NOAA daily station records, through Nov 9, 2026 (https://agsist.com/rain).
