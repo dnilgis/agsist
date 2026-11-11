@@ -3308,6 +3308,14 @@ def fix_weekday_labels(briefing, today=None):
     MO = (r'(Jan(?:uary)?|Feb(?:ruary)?|Mar(?:ch)?|Apr(?:il)?|May|Jun(?:e)?|'
           r'Jul(?:y)?|Aug(?:ust)?|Sep(?:t|tember)?|Oct(?:ober)?|Nov(?:ember)?|Dec(?:ember)?)')
     pat = re.compile(rf'\b{WD}\.?,?\s+{MO}\.?\s+(\d{{1,2}})\b', re.IGNORECASE)
+    # 2026-11-11: "Thursday or Friday, Nov 12 or 13" (the holiday-week Export
+    # Sales line the prompt asks for) was read as "Friday, Nov 12" and became
+    # "Thursday or Thursday", which the fact check blocked. In a pair the second
+    # weekday goes with the second day number, so that is the one it is checked
+    # against; the first weekday is checked against the first day number.
+    pair_before = re.compile(rf'\b{WD}\.?,?\s*(?:or|and|to|through|-|–)\s*$', re.IGNORECASE)
+    pair_after = re.compile(r'\s*(?:or|and|to|through|-|–)\s*(\d{1,2})\b(?!\s*(?:%|¢|cents?\b|[:.]\d))',
+                            re.IGNORECASE)
     fixes = []
 
     def _resolve(mon_idx, day):
@@ -3328,6 +3336,11 @@ def fix_weekday_labels(briefing, today=None):
         mi = MONTHS3.get(mon_tok[:3].lower())
         if mi is None:
             return m.group(0)
+        s = m.string
+        pb = pair_before.search(s[max(0, m.start() - 24):m.start()])
+        pa = pair_after.match(s, m.end())
+        if pb and pa:
+            day = int(pa.group(1))       # "Thursday or Friday, Nov 12 or 13": Friday goes with 13
         d = _resolve(mi, day)
         if d is None:
             return m.group(0)
@@ -3338,10 +3351,31 @@ def fix_weekday_labels(briefing, today=None):
             return m.group(0).replace(wd_tok, correct, 1)  # preserve comma + month style
         return m.group(0)
 
+    def _fix_first(text):
+        # the first weekday of a pair, checked against the first day number
+        out, last = [], 0
+        for m in pat.finditer(text):
+            pb = pair_before.search(text[max(0, m.start() - 24):m.start()])
+            if not (pb and pair_after.match(text, m.end())):
+                continue
+            mi = MONTHS3.get(m.group(2)[:3].lower())
+            d = _resolve(mi, int(m.group(3))) if mi else None
+            if d is None:
+                continue
+            tok = pb.group(1)
+            correct = d.strftime('%A')
+            if correct.lower() == WD3.get(tok[:3].lower(), tok).lower():
+                continue
+            at = max(0, m.start() - 24) + pb.start(1)
+            out.append(text[last:at] + correct)
+            last = at + len(tok)
+            fixes.append(f"{tok} {m.group(2)} {m.group(3)} -> {correct}")
+        return "".join(out) + text[last:]
+
     for item in briefing.get("watch_list", []) or []:
         for k in ("time", "desc"):
             if isinstance(item.get(k), str):
-                item[k] = pat.sub(_repl, item[k])
+                item[k] = _fix_first(pat.sub(_repl, item[k]))
     return briefing, fixes
 
 

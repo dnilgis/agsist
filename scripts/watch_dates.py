@@ -27,6 +27,12 @@ day. Without a match, "since Friday" and "last Friday" get the most recent
 Friday; "Friday's close" with no settle on file to tie it to could be either
 Friday, so it is left undated rather than dated wrong.
 
+A MOVE THAT ALREADY HAPPENED (2026-11-11). The morning after the Nov 10 WASDE
+the model wrote "Tuesday's report gain" and this file dated it as the next
+Tuesday: "Tuesday's (Nov 17) report gain". The fact check blocked every try.
+A possessive weekday followed by a move word (gain, rally, drop, loss and the
+like) names a move that is over, so it gets the most recent such day.
+
     python3 scripts/watch_dates.py --selftest
 """
 import re
@@ -56,6 +62,9 @@ def date_for(tok, now_ct):
 
 BACK = re.compile(r"^'s\b[^.;]{0,40}?\b(close|closes|closed|settle|settled|settlement|finish|high|low)\b", re.I)
 BACK_BEFORE = re.compile(r"\b(since|last)\s+$", re.I)
+BACK_MOVE = re.compile(r"^'s\b[^.;]{0,30}?\b(gains?|rall(?:y|ied)|jump(?:ed)?|surge[d]?|spike[d]?|rise|climb(?:ed)?|"
+                       r"drop(?:ped)?|loss(?:es)?|slide|decline[d]?|sell-?off|plunge[d]?|bounce[d]?|"
+                       r"advance[d]?|selling|buying)\b", re.I)
 PRICE = re.compile(r"\$\s?(\d{1,6}(?:,\d{3})*(?:\.\d{1,4})?)")
 
 
@@ -129,7 +138,7 @@ def date_text(text, now_ct, style="time", settles=None):
             if len(m.group(1)) <= 4:
                 name = name[:3]
             word = name + (m.group(2) or "") + (m.group(3) or "")
-    elif BACK_BEFORE.search(text[:m.start()]):
+    elif BACK_BEFORE.search(text[:m.start()]) or BACK_MOVE.match(text[m.end(1):]):
         d = date_back(m.group(1), now_ct)
     elif BACK.match(text[m.end(1):]):
         return text, None                  # "Friday's close": which Friday is not ours to guess
@@ -230,6 +239,16 @@ def selftest():
        data_date("$4.80 Friday", [(4.80, "2026-10-15"), (4.80, "2026-10-16")], sun) is None)
     ck("a settle after the issue day is never used",
        data_date("$4.80 Friday", [(4.80, "2026-10-19")], sun) is None)
+    # 2026-11-11 issue (Wednesday, after the Tuesday Nov 10 WASDE)
+    wed = datetime(2026, 11, 11, 6, 45)
+    ck("Nov 11: Tuesday's report gain is Nov 10, not Nov 17",
+       date_text("Corn has to hold Tuesday's report gain above $4.40.", wed, "desc", [])[0]
+       == "Corn has to hold Tuesday's (Nov 10) report gain above $4.40.")
+    ck("Nov 11: Tuesday's rally and Monday's drop point back",
+       date_text("Tuesday's rally held overnight.", wed, "desc", [])[0] == "Tuesday's (Nov 10) rally held overnight."
+       and date_text("Beans gave back Monday's drop.", wed, "desc", [])[0] == "Beans gave back Monday's (Nov 9) drop.")
+    ck("Nov 11: a forward report day stays forward",
+       date_text("Friday's Export Sales report", wed, "desc", [])[0] == "Friday's (Nov 13) Export Sales report")
     print("FAILS=%d" % bad)
     return 1 if bad else 0
 
