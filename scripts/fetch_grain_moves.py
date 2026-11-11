@@ -30,7 +30,7 @@ columns it does have; its last good file is kept, never overwritten with less.
 
 OUR OWN DATA: the weekly state basis is replayed from data/basis/<ST>.json and
 data/basis/changes-*.json (build_basis_history.py), the AGSIST network's
-record since 2026-06-09. Offline.
+record from PUBLIC_FROM (2026-10-12) on. Offline.
 
 THE CONNECTION is computed here, not on the page (honest-numbers rule 9): for
 groups of USDA regions, weekly basis against its own same-week 5-year normal
@@ -65,6 +65,7 @@ from datetime import date, datetime, timedelta, timezone
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from fetch_transport import same_week_avg_n, iso_year_week  # noqa: E402
 from basis_method import robust_split  # noqa: E402
+from build_basis_history import PUBLIC_FROM  # noqa: E402  the public basis record starts here
 
 REPO = os.environ.get("AGSIST_REPO", ".")
 HOST = "https://agtransport.usda.gov"
@@ -934,10 +935,10 @@ def connection(basis_rows, freight, ours, today):
 
 
 def ours_connection(ours, freight):
-    """Our own weekly state basis (since June 2026) beside freight levels.
+    """Our own weekly state basis (since Oct 12, 2026) beside freight levels.
     Never vs normal: there is no normal yet. Tested through the same gate,
     which it will fail until enough weeks build up; the page says so."""
-    out = {"tests": []}
+    out = {"tests": [], "publicFrom": PUBLIC_FROM}
     for g, states in (("river", RIVER_STATES), ("rail", RAIL_STATES)):
         for crop in ("corn", "soybeans"):
             per = {}
@@ -985,7 +986,8 @@ def our_weekly(repo=REPO, states=OUR_STATES):
     line that changes contract is a new line, not a move."""
     base = os.path.join(repo, "data/basis")
     changes = defaultdict(list)
-    files = sorted(glob.glob(os.path.join(base, "changes-*.json")))
+    files = [p for p in sorted(glob.glob(os.path.join(base, "changes-*.json")))
+             if os.path.basename(p)[8:18] >= PUBLIC_FROM]   # the public record starts on PUBLIC_FROM
     for p in files:
         doc = json.load(open(p))
         dd = doc.get("date") or os.path.basename(p)[8:18]
@@ -1011,10 +1013,12 @@ def our_weekly(repo=REPO, states=OUR_STATES):
             if CATS[ci] not in ("corn", "soybeans"):
                 continue
             facility, city = (fac[fi].split("|", 1) + [""])[:2]
+            if (g(last_i) or "") < PUBLIC_FROM:
+                continue                 # last seen before the public record starts
             key = (st, facility, city, CATS[ci], norm_symbol(sym), month)
             ch = sorted(changes.get(key, []))
             rows.append({"elev": fac[fi], "crop": CATS[ci], "sym": norm_symbol(sym), "cur": cur,
-                         "first": g(first_i), "last": g(last_i), "ch": ch})
+                         "first": max(g(first_i) or PUBLIC_FROM, PUBLIC_FROM), "last": g(last_i), "ch": ch})
         out["states"][st] = rows
     # Fridays from the first change log to the last shard day
     first = os.path.basename(files[0])[8:18]
@@ -1030,7 +1034,7 @@ def our_weekly(repo=REPO, states=OUR_STATES):
     # corn read -$0.15 on 19 elevators against -$0.40 on 68 the Friday before)
     res = {"states": {}, "weeks": fridays, "through": fridays[-1] if fridays else None,
            "method": our_weekly.__doc__.split("\n\n")[0].strip().replace("\n    ", " "),
-           "units": "$/bu, cash minus futures", "since": first}
+           "units": "$/bu, cash minus futures", "since": first, "publicFrom": PUBLIC_FROM}
     for st, rows in out["states"].items():
         res["states"][st] = {}
         for crop in ("corn", "soybeans"):
@@ -1424,25 +1428,33 @@ def selftest():
     with tempfile.TemporaryDirectory() as tmp:
         b = os.path.join(tmp, "data/basis")
         os.makedirs(b)
-        dates = ["2026-06-10", "2026-06-17", "2026-06-20"]
+        dates = ["2026-10-14", "2026-10-21", "2026-10-24"]
         f = [f"E{i}|TOWN" for i in range(6)]
         r = []
-        for i in range(6):   # six elevators on ZCZ26; E0 changes -30 -> -40 on 06-17; E5 a wild outlier
+        for i in range(6):   # six elevators on ZCZ26; E0 changes -30 -> -40 on 10-21; E5 a wild outlier
             cur = -40 if i == 0 else (-300 + 0 if i == 5 else -30 - i)
             r.append([i, 0, "ZCZ6", "NOV26", cur if i != 5 else 120, None, 0, 0, 2])
         r.append([0, 0, "ZCU26", "SEP26", -10, None, 0, 0, 2])   # a second contract, fewer elevators
-        json.dump({"state": "IA", "generated": "2026-06-20", "f": f, "d": dates, "r": r}, open(os.path.join(b, "IA.json"), "w"))
-        json.dump({"date": "2026-06-10", "changes": []}, open(os.path.join(b, "changes-2026-06-10.json"), "w"))
-        json.dump({"date": "2026-06-17", "changes": [["IA", "E0", "TOWN", "corn", "ZCZ26", "NOV26", -30, -40]]},
-                  open(os.path.join(b, "changes-2026-06-17.json"), "w"))
+        json.dump({"state": "IA", "generated": "2026-10-24", "f": f, "d": dates, "r": r}, open(os.path.join(b, "IA.json"), "w"))
+        json.dump({"date": "2026-10-14", "changes": []}, open(os.path.join(b, "changes-2026-10-14.json"), "w"))
+        json.dump({"date": "2026-10-21", "changes": [["IA", "E0", "TOWN", "corn", "ZCZ26", "NOV26", -30, -40]]},
+                  open(os.path.join(b, "changes-2026-10-21.json"), "w"))
+        # before the public record starts: a change log and a row last seen Oct 9 add nothing
+        json.dump({"date": "2026-10-07", "changes": [["IA", "E1", "TOWN", "corn", "ZCZ26", "NOV26", -20, -31]]},
+                  open(os.path.join(b, "changes-2026-10-07.json"), "w"))
+        sh = json.load(open(os.path.join(b, "IA.json")))
+        sh["d"].append("2026-10-09")
+        sh["r"].append([5, 0, "ZCZ26", "NOV26", -90, None, 3, 3, 3])
+        json.dump(sh, open(os.path.join(b, "IA.json"), "w"))
         ow = our_weekly(tmp, ["IA"])
+        assert ow["since"] == "2026-10-14" and ow["publicFrom"] == "2026-10-12", (ow["since"], ow.get("publicFrom"))
         line = ow["states"]["IA"]["corn"]
-        assert [p[0] for p in line] == ["2026-06-12", "2026-06-19"], line
-        # Jun 12: E0 -30, E1..E4 -31..-34, E5 +120 (outlier, more than 75c out): median of 5 = -0.32
+        assert [p[0] for p in line] == ["2026-10-16", "2026-10-23"], line
+        # Oct 16: E0 -30, E1..E4 -31..-34, E5 +120 (outlier, more than 75c out): median of 5 = -0.32
         assert line[0][1] == -0.32 and line[0][2] == 5 and line[0][3] == "ZCZ26", line[0]
-        # Jun 19: E0 now -40: -40,-31,-32,-33,-34 -> -0.33
+        # Oct 23: E0 now -40: -40,-31,-32,-33,-34 -> -0.33
         assert line[1][1] == -0.33, line[1]
-        assert ow["through"] == "2026-06-19"
+        assert ow["through"] == "2026-10-23"
     # whole build from fixtures: every source parses, the files fit, a broken source degrades
     with tempfile.TemporaryDirectory() as tmp:
         fx = make_fixtures(os.path.join(tmp, "fx"))

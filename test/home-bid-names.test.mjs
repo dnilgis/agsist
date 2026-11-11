@@ -68,5 +68,5 @@ test("the card keeps no name rules of its own: it calls elevNames, loaded before
   const H = load({ elevNames: { displayName: (n) => "EXACT:" + n } });
   assert.equal(H.displayName("zShawnee Feed Old"), "EXACT:zShawnee Feed Old", "the shared function is what prints");
   const page = read("index.html");
-  assert.ok(page.indexOf("/components/elev-names.js?v=") > -1 && page.indexOf("/components/elev-names.js?v=") < page.indexOf("/components/bids-homepage.js?v=49\""), "elev-names.js loads before the card");
+  assert.ok(page.indexOf("/components/elev-names.js?v=") > -1 && page.indexOf("/components/elev-names.js?v=") < page.indexOf("/components/bids-homepage.js?v=50\""), "elev-names.js loads before the card");
 });
