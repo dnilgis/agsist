@@ -38,7 +38,8 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
-const STATIC = ["rain-radar.html", "hail-map.html", "drought-monitor.html", "spray.html", "gdu-calculator.html", "field-scout.html"];
+// Nov 11, 2026: /rain-radar and /drought-monitor are tabs of /rain, which carries the banner once (its builder)
+const STATIC = ["hail-map.html", "spray.html", "gdu-calculator.html", "field-scout.html"];
 const NEVER = ["index.html", "daily.html", "rain-print.html", "cash-bids.html", "markets.html"];
 const states = (dir) => readdirSync(ROOT + dir).filter((d) => statSync(ROOT + dir + "/" + d).isDirectory() && /^[a-z-]+$/.test(d));
 
@@ -115,7 +116,7 @@ function serve() {
 
 const rainCounty = "/rain/iowa/" + readdirSync(ROOT + "rain/iowa").filter((f) => /-county\.html$/.test(f)).sort()[0].replace(/\.html$/, "");
 const atlasCounty = "/farmland-atlas/iowa/" + readdirSync(ROOT + "farmland-atlas/iowa").filter((f) => /-county\.html$/.test(f)).sort()[0].replace(/\.html$/, "");
-const BROWSER_PAGES = ["/rain", rainCounty, "/rain-radar", "/hail-map", "/drought-monitor", "/spray", "/gdu-calculator", "/field-scout", atlasCounty];
+const BROWSER_PAGES = ["/rain", rainCounty, "/rain#drought", "/hail-map", "/spray", "/gdu-calculator", "/field-scout", atlasCounty];
 
 async function open(browser, port, path, width, time, storage) {
   const ctx = await browser.newContext({ serviceWorkers: "block", viewport: { width, height: width < 600 ? 844 : 900 },
