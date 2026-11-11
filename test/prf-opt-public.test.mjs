@@ -41,10 +41,13 @@ test("the model inputs are not published; the jobs keep them private and commit 
   assert.ok(/^\/private\/$/m.test(read(".gitignore")), "/private/ stays out of main");
   for (const [wf, own] of [["climate-indices.yml", "climate-indices.json"], ["seasonal-models.yml", "seasonal-fc.json"]]) {
     const y = read(".github/workflows/" + wf);
-    /* both inputs pulled (soft) before the fetch and the test; the job's own file saved back */
+    /* both inputs pulled before the fetch and the test; the job's own file saved back */
     for (const f of ["climate-indices.json", "seasonal-fc.json"]) assert.match(y, new RegExp("pull_raw\\.sh private/prf/" + f.replace(".", "\\.")), wf + " pulls " + f);
     assert.match(y, /RAW_BRANCH: private-data/, wf);
-    assert.match(y, /RAW_SOFT: '1'/, wf + ": a missing input is skipped, as before");
+    // the inputs are seeded privately: a failed pull fails the job, so a private-repo outage never commits an opt.json
+    // tested without them or overwrites the saved models with a thinner fetch
+    const pull = y.slice(y.indexOf('Get the saved model inputs'), y.indexOf('- name: Fetch'));
+    assert.ok(pull.includes('pull_raw.sh private/prf/') && !/RAW_SOFT/.test(pull), wf + ": the input pull is not soft");
     assert.match(y, new RegExp("push_raw\\.sh \"[a-z ]+\" private/prf/" + own.replace(".", "\\.")), wf + " saves " + own + " privately");
     assert.ok(y.indexOf("pull_raw.sh private/prf/") < y.indexOf("prf_opt_backtest.mjs"), wf + ": pulled before the test runs");
     const adds = y.split("\n").filter((l) => /git add /.test(l));

@@ -66,7 +66,6 @@ jobs:
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
           RAW_BRANCH: private-data
-          RAW_SOFT: '1'
         run: |
           bash scripts/pull_raw.sh private/prf/seasonal-fc.json
           bash scripts/pull_raw.sh private/prf/climate-indices.json
