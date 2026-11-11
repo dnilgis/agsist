@@ -3858,13 +3858,10 @@ def coverage_line(companies):
 
 def coverage_faq(companies, counts):
     """(html, text) answering "Do you show my elevator's bids?" from data/elevator-counts.json.
-    Each count is printed only when the file has it; None when it has neither block."""
+    One count: elevators with a current bid (`bids`), the field every page prints; the boards-read
+    tally of the coverage pass is a different number and stays on the coverage map. None without it."""
     b = (counts or {}).get("bids") or {}
-    c = (counts or {}).get("coverage") or {}
     parts = []
-    if c.get("read") and c.get("elevators"):
-        parts.append(f"On its latest full pass the AGSIST network read {c['read']:,} bid boards, out of "
-                     f"{c['elevators']:,} elevators it keeps track of.")
     if b.get("elevators") and b.get("towns"):
         parts.append(f"{b['elevators']:,} elevators in {b['towns']:,} towns have a current bid on these pages.")
     if not parts:
@@ -4693,7 +4690,8 @@ def selftest():
         assert coverage_line([]) == ""
         cnt = {"bids": {"elevators": 1743, "towns": 1369}, "coverage": {"read": 1845, "elevators": 8403}}
         fh, ft = coverage_faq(cos_t, cnt)
-        assert "read 1,845 bid boards, out of 8,403 elevators" in ft and "1,743 elevators in 1,369 towns" in ft, ft
+        assert "1,845" not in ft and "8,403" not in ft and "1,743 elevators in 1,369 towns" in ft, ft   # one count
+        assert coverage_faq(cos_t, {"coverage": {"read": 1845, "elevators": 8403}}) is None
         assert "3 companies with 3 or more locations" in ft and 'href="/list-your-elevator"' in fh, fh
         assert coverage_faq(cos_t, {}) is None and "\u2014" not in fh and "\u2014" not in ft
         ld0 = {"@context": "https://schema.org", "@graph": [{"@type": "FAQPage", "mainEntity": [
@@ -4705,11 +4703,11 @@ def selftest():
                     f'<div><!--CO-FAQ-->old<!--/CO-FAQ--></div>')
         assert stamp_live_coverage(cp, cos_t, cnt) is True
         ch = open(cp).read()
-        assert "old" not in ch and ch.count("1,845") == 2, ch
+        assert "old" not in ch and ch.count("1,743") == 2 and "1,845" not in ch, ch
         ldq = [q["name"] for q in json.loads(re.search(r'json">(.*?)</script>', ch).group(1))["@graph"][0]["mainEntity"]]
         assert ldq == ["Which elevators are covered?", CO_FAQ_Q, "Last?"], ldq
         assert stamp_live_coverage(cp, cos_t, cnt) is False          # same data: unchanged, no duplicate question
-        assert stamp_live_coverage(cp, [], None) is False and "1,845" in open(cp).read()   # no data: old text stays
+        assert stamp_live_coverage(cp, [], None) is False and "1,743" in open(cp).read()   # no data: old text stays
         locs = re.findall(r"<loc>(.*?)</loc>", open(sm).read())
         assert "https://agsist.com/cash-bids/nebraska/fremont" in locs and "https://agsist.com/cash-bids/nebraska/" in locs
         for k in ("not_a_network_board", "not_us_or_not_usd", "price_older_than_cutoff", "stale_or_unconfirmed",

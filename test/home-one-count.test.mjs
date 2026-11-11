@@ -1,8 +1,9 @@
-/* One elevator count on the home page (Nov 4, 2026, site panel; Nov 2 audit item 22).
+/* One elevator count on the home page (Nov 4, 2026; one source for every page, Nov 11).
  *
- * The real case: home showed "2,109 of 8,052 elevators read directly, updated 1:47 pm" beside "23,273 bids
- * from 2,069 locations, updated 6:22 pm": two counts, two labels, two times for one network. The bids file's
- * location count is the one kept; the other line and its fetch of data/elevator-counts.json are gone.
+ * The real cases: home showed "2,109 of 8,052 elevators read directly, updated 1:47 pm" beside "23,273 bids
+ * from 2,069 locations, updated 6:22 pm": two counts, two labels, two times for one network. Then home's
+ * "locations" (2,052) disagreed with the 2,091 elevators on /cash-bids and /basis. Home now prints the one
+ * field every page reads: data/elevator-counts.json `bids` (elevators with a current bid, and towns).
  * Browser run blocks every outside host and service workers (build rule 58).
  *
  *   node --test test/home-one-count.test.mjs
@@ -22,13 +23,15 @@ try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chrom
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 const IDX = readFileSync(join(ROOT, "index.html"), "utf8");
 
-test("the home page source prints one count: no 'read directly' line and no fetch of the second counts file", () => {
+test("the home page source prints one count, from the one counts field", () => {
   const s = IDX.indexOf("var el = document.getElementById('idx1-trust-ledger');");
   assert.ok(s > 0);
   const block = IDX.slice(s, IDX.indexOf("</script>", s));
   assert.doesNotMatch(block, /read directly/);
-  assert.doesNotMatch(block, /elevator-counts\.json|elevator-coverage/);
-  assert.equal((block.match(/bids from '/g) || []).length, 1);
+  assert.doesNotMatch(block, /bids-stats\.json|data\/bids\.json|elevator-coverage|locations/);
+  assert.equal((block.match(/fetch\('\/data\/elevator-counts\.json'\)/g) || []).length, 1);
+  assert.match(block, /b\.elevators\.toLocaleString/);
+  assert.equal((block.match(/elevators in '/g) || []).length, 1);
   assert.doesNotMatch(IDX, /r7-cov'/, "the second line's element is not made any more");
 });
 
@@ -56,13 +59,16 @@ test("home at 390: one elevator count, with one label and one time", { skip }, a
     const asked = [];
     pg.on("request", (r) => asked.push(r.url()));
     await pg.goto(`http://127.0.0.1:${srv.address().port}/`, { waitUntil: "domcontentloaded" });
-    await pg.waitForFunction(() => /bids from [\d,]+ locations/.test(document.getElementById("idx1-trust-ledger").textContent), null, { timeout: 15000 });
+    await pg.waitForFunction(() => /cash bids from [\d,]+ elevators in [\d,]+ towns/.test(document.getElementById("idx1-trust-ledger").textContent), null, { timeout: 15000 });
     await pg.waitForTimeout(800);
     const txt = await pg.evaluate(() => document.body.innerText);
     assert.doesNotMatch(txt, /elevators read directly/);
-    assert.equal((txt.match(/bids from [\d,]+ locations/g) || []).length, 1);
+    assert.equal((txt.match(/cash bids from [\d,]+ elevators in [\d,]+ towns/g) || []).length, 1);
+    assert.doesNotMatch(txt, /bids from [\d,]+ locations/);
+    const c = JSON.parse(readFileSync(join(ROOT, "data/elevator-counts.json"), "utf8"));
+    assert.match(txt, new RegExp(`cash bids from ${c.bids.elevators.toLocaleString("en-US")} elevators in ${c.bids.towns.toLocaleString("en-US")} towns`));
     assert.equal(await pg.$$eval(".r7-cov", (x) => x.length), 0);
-    assert.ok(!asked.some((u) => /elevator-counts\.json|elevator-coverage/.test(u)), "the second counts file is not read");
+    assert.ok(!asked.some((u) => /elevator-coverage|bids-stats\.json|\/data\/bids\.json/.test(u)), "no second counts file is read");
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });

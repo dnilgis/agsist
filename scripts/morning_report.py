@@ -438,6 +438,10 @@ def sec_agsist(src, now, rep):
             lines.append("Late critical jobs: %s." % ", ".join(crit))
             rep.red("Late critical job%s: %s" % ("s" if len(crit) > 1 else "", ", ".join(crit)))
         lines.append("Late, not critical: %s." % (", ".join(late) if late else "none"))
+        # scheduled workflows whose last runs all skipped or did no work (scripts/skip_watch.py)
+        skip = next((w for w in ch.get("workflows") or [] if w.get("workflow") == "skip-only"), None)
+        if skip and skip.get("status") == "late" and skip.get("idle"):
+            lines.append("Only skipping or doing no work in their last 5 runs: %s." % ", ".join(str(x) for x in skip["idle"]))
         if gen and now - gen > timedelta(hours=12):
             lines.append("The job health file is %s old; the check itself may be stuck." % ago(gen, now).replace(" ago", ""))
         size = next((w for w in ch.get("workflows") or [] if w.get("workflow") == "published-size"), None)
@@ -1888,7 +1892,8 @@ def fixtures(now):
     files = {
         "private/data/cron-health.json": json.dumps({"generated_at": iso(h(1)), "late": ["prf.yml", "county-rain.yml"], "late_critical": [],
                                              "workflows": [{"workflow": "published-size", "status": "ok", "total_mb": 736.2,
-                                                            "warn_mb": 850, "fail_mb": 900}]}),
+                                                            "warn_mb": 850, "fail_mb": 900},
+                                                           {"workflow": "skip-only", "status": "late", "idle": ["implied-futures.yml"]}]}),
         "data/prices.json": json.dumps({"fetched": iso(h(0.2))}),
         "data/bids.json": json.dumps({"fetched": iso(h(0.25))}),
         "data/daily.json": json.dumps({"generated_at": iso(h(1))}),
@@ -1960,6 +1965,7 @@ def selftest():
        "- Fetch Grain Bids: failed 3 times, last 5:45 am; still failing. barchart answered 429 for [address]'s ZIP" in t, t)
     ck("the exit-code annotation is skipped; no message falls back to the step",
        "- The wire: failed once, last 1:45 am; passed since. step failed: Build the wire" in t, t)
+    ck("jobs that only skip are named", "Only skipping or doing no work in their last 5 runs: implied-futures.yml." in t, t)
     ck("late jobs and the published size", "Late, not critical: prf.yml, county-rain.yml." in t and
        "Published size: 736 MB of the 1,024 MB Pages limit (warns at 850, red at 900)." in t, t)
     ck("Pages deploy", "Last Pages deploy: built, 6:27 am." in t, t)

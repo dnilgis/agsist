@@ -4,7 +4,10 @@
 
    The ZIP is asked once: a saved ZIP (the keys loader.js reads) opens the place with no
    question, and location is used only when "Use my location" is tapped. Once a place is
-   open the box folds behind "Change place". Four cards follow, one dated, sourced row per
+   open the box folds behind "Change place". The answers come first (Nov 11, 2026: the best corn
+   bid, the state spot, rain this month with one drought line, cash rent, farmland sales; worded by
+   components/place-top.js from the same objects as the rows below), then the week map in a closed
+   fold that loads only when opened. Four cards follow, one dated, sourced row per
    number (#f-corn-bid ... #f-daily). "More about this county" (the year's rain drawn and
    ranked, state ranks, neighbors, the long view, elevators against their neighbors) loads
    only when it is opened or a report is printed. Print is a button beside Change place: the
@@ -16,14 +19,14 @@
    old #state, #us and #print links open My place). */
 (function () {
   'use strict';
-  var P = window.AgPlace, L = window.AGLayers;
+  var P = window.AgPlace, L = window.AGLayers, PT = window.AgPlaceTop;
   if (!P) return;
   var LS_ZIP = 'agsist_user_zip';
   var MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var SALES_JS = '/components/atlas-sales.js?v=67619d60';
   var CL_JS = '/components/change-lines.js?v=5';
   var CM_JS = '/components/changemap.js?v=3';
-  var S = { seq: 0, where: null, prof: null, county: null, pct: null, sales: {}, depth: null, print: { parts: P.PRINT_PARTS.slice(), more: false, rain: false }, started: false, facts: {}, user: false };
+  var S = { top: null, cmWant: null, seq: 0, where: null, prof: null, county: null, pct: null, sales: {}, depth: null, print: { parts: P.PRINT_PARTS.slice(), more: false, rain: false }, started: false, facts: {}, user: false };
   var memo = {};
 
   function $(id) { return document.getElementById(id); }
@@ -348,7 +351,10 @@
     document.documentElement.classList.add('h-has');
     $('h-title').textContent = p.name + ', ' + p.stName;
     var from = w.zip ? 'ZIP ' + w.zip + (w.label && w.label !== 'ZIP ' + w.zip ? ' (' + w.label + ')' : '') : w.how === 'town' ? w.label : w.point ? 'the point ' + w.label : null;
-    $('h-where').textContent = (from ? 'From ' + from + ', in ' + p.name + '. ' : '') + 'County figures; ranks are among ' + p.stName + ' counties.';
+    var town = w.label && !/^ZIP /.test(w.label) ? String(w.label).split(',')[0].trim() : '';
+    $('h-where').textContent = w.zip ? (town ? 'Near ' + town + ', ZIP code ' + w.zip + '.' : 'ZIP code ' + w.zip + '.') : w.how === 'town' ? 'Near ' + w.label + '.' : w.point ? 'From the point ' + w.label + '.' : '';
+    $('h-cm-st').textContent = p.stName;
+    topStart(p);
     $('h-sent').textContent = p.sentence;
     $('h-find').hidden = true;
     $('h-tools').hidden = false;
@@ -380,6 +386,74 @@
     }).join('');
   }
 
+  /* ── the answers at the top (components/place-top.js words them) ─────────── */
+  /* Cards come in as their files answer; a card whose numbers are missing stays hidden, so the top
+     never says a file did not answer. The state spot sits under the first answer. */
+  function topStart(p) {
+    S.top = { st: p.st, stName: p.stName };
+    ['pt-bid', 'pt-rain', 'pt-rent', 'pt-land'].forEach(function (id) { var el = $(id); if (el) { el.hidden = true; el.innerHTML = ''; } });
+    var sp = $('pt-spot');
+    if (sp && sp.getAttribute('data-state-spot') !== p.st) {
+      var had = sp.getAttribute('data-state-spot');
+      sp.innerHTML = ''; sp.setAttribute('data-state-spot', p.st);
+      /* the state sponsor code already ran for another state (or before a place was open): ask it again */
+      var G = window.AgsistGeo;
+      if (G && G.run && window.__geoSponsor && (had || !document.querySelector('.geo-spon'))) { try { G.run(null); } catch (e) { /* no card */ } }
+    }
+  }
+  function src(parts) { return '<p class="pt-src">' + parts.filter(Boolean).join(' &middot; ') + '</p>'; }
+  function head(id, t) { return '<h3 class="pt-h" id="' + id + '-h">' + esc(t) + '</h3>'; }
+  function big(v, unit) { return '<p class="pt-v"><span class="pt-n">' + esc(v) + '</span>' + (unit ? ' <span class="pt-u">' + esc(unit) + '</span>' : '') + '</p>'; }
+  function topBid(t) {
+    var h = head('pt-bid', 'Best corn cash bid near you') + big(t.price, 'a bushel') +
+      '<p class="pt-t">' + esc(t.mi === 0 ? 'Less than a mile away' : t.mi === 1 ? '1 mile away' : t.mi + ' miles away') + (t.delivery ? ', for ' + esc(t.delivery) : '') + '.' +
+      (t.partial ? ' From a short list; not every elevator near you is in it.' : '') + '</p>';
+    if (t.soy) h += '<div class="pt-tiles"><p class="pt-tile"><b>' + esc(t.soy.price) + '</b><span>Best soybean bid, ' + esc(t.soy.mi === 1 ? '1 mile' : t.soy.mi + ' miles') + '</span></p></div>';
+    return h + src([t.posted ? 'Cash bids, read ' + esc(t.posted) : '', '<a href="' + esc(S.top.bidHref || '/cash-bids') + '">See every bid near you</a>']);
+  }
+  function topRain(t, d) {
+    var h = head('pt-rain', t ? 'Rain this month' : 'Drought');
+    if (t) {
+      h += big(t.inches.toFixed(2) + ' in', t.words || '');
+      if (t.normal != null) {
+        var max = Math.max(t.inches, t.normal) || 1;
+        function bar(lbl, v, cls) { return '<div class="pt-bar"><span class="pt-bl">' + esc(lbl) + '</span><span class="pt-bt"><span class="pt-bf ' + cls + '" style="width:' + Math.max(1, Math.round(v / max * 100)) + '%"></span></span><span class="pt-bn">' + v.toFixed(2) + ' in</span></div>'; }
+        h += '<div class="pt-bars" role="img" aria-label="' + esc(t.month + ' so far ' + t.inches.toFixed(2) + ' inches; normal for the same days ' + t.normal.toFixed(2) + ' inches') + '">' + bar(t.mon + ' so far', t.inches, 'pt-now') + bar('Normal', t.normal, 'pt-norm') + '</div>';
+      }
+      if (t.year != null) h += '<p class="pt-t">Since Jan 1: ' + t.year.toFixed(2) + ' inches' + (t.yearWords ? ', ' + esc(t.yearWords) : '') + '.</p>';
+    }
+    if (d) h += '<p class="pt-t pt-dr' + (d.change ? ' pt-' + d.change.split(' ')[0] : '') + '">Drought: ' + esc(d.line.charAt(0).toLowerCase() + d.line.slice(1)) + '</p>';
+    var nm = t && t.normals ? 'Normal: the ' + String(t.normals).replace('-', ' to ') + ' average for the same days' : '';
+    return h + src([t && t.station ? 'Station: ' + esc(t.station) + ', ' + (t.mi === 1 ? '1 mile' : t.mi + ' miles') : '', t ? 'NOAA, ' + esc(t.through) : '', esc(nm), d ? 'U.S. Drought Monitor, ' + esc(mdy(d.valid).replace(/, \d{4}$/, '')) : '']);
+  }
+  function topRent(t) {
+    return head('pt-rent', 'Cash rent') + big(t.value, 'an acre a year') + (t.rank ? '<p class="pt-t">' + esc(t.rank) + '</p>' : '') +
+      src(['Non-irrigated cropland', 'USDA NASS' + (t.year ? ' ' + t.year : '')]);
+  }
+  function topLand(t) {
+    return head('pt-land', 'What farmland sells for') + big(t.price, 'an acre') +
+      '<p class="pt-t">Median of ' + t.n + ' recorded bare farmland sale' + (t.n === 1 ? '' : 's') + ' of ' + t.acres + ' acres or more in this county, ' + esc(t.span) + '.</p>' +
+      src([esc(S.top.stName) + ' deed records through ' + esc(t.thru), '<a href="' + esc(S.top.atlas || '/farmland-atlas') + '">See the sales</a>']);
+  }
+  function drawTop() {
+    var T = S.top, box = $('h-top');
+    if (!T || !box || !PT) return;
+    var cards = { bid: T.bid, rain: T.rain || T.drought, rent: T.rent, land: T.land };
+    var html = { bid: T.bid && topBid(T.bid), rain: cards.rain && topRain(T.rain, T.drought), rent: T.rent && topRent(T.rent), land: T.land && topLand(T.land) };
+    Object.keys(html).forEach(function (k) {
+      var el = $('pt-' + k); if (!el) return;
+      el.hidden = !html[k];
+      if (html[k] && el.innerHTML !== html[k]) el.innerHTML = html[k];
+    });
+    /* keep the page order (place-top.js order); the spot moves under the first answer */
+    var want = PT.order(cards).map(function (k) { return $('pt-' + k); }).filter(Boolean);
+    var now = [].slice.call(box.children).filter(function (el) { return !el.hidden; });
+    if (want.join() !== now.join() || want.some(function (el, i) { return now[i] !== el; })) {
+      want.forEach(function (el) { box.appendChild(el); });
+      ['bid', 'rain', 'rent', 'land'].forEach(function (k) { var el = $('pt-' + k); if (el && el.hidden) box.appendChild(el); });
+    }
+  }
+
   /* The four cards. Every row is in the page already (an anchor a link can open); each fills
      in as its file answers, or says why not. */
   var PLACE_ROWS = ['f-corn-bid', 'f-soy-bid', 'f-corn-basis', 'f-soy-basis', 'f-corn-fut', 'f-soy-fut', 'f-wheat-fut', 'f-rain', 'f-drought', 'f-hail', 'f-progress', 'f-soy-progress',
@@ -393,6 +467,7 @@
     var by = {};
     p.cols.forEach(function (c) { by[c.id] = c; });
     var atlas = p.flags.indexOf('a') >= 0 ? '/farmland-atlas/' + slug + '/' + p.slug : '/farmland-atlas';
+    S.top.rent = PT ? PT.rent(by.rent, p.stName, thisYear()) : null;
     fill('f-rent', P.factCol(by.rent, 'Cash rent', (' ' + P.NO_PAGE.rent + ' ').indexOf(' ' + st + ' ') < 0 ? '/rent/' + slug : atlas, 'Non-irrigated cropland.'));
     var lv = P.factCol(by.land_value, 'Farmland value', atlas, 'Farmer-reported land and buildings, ' + ((by.land_value && by.land_value.year) || 2022) + ' Census.');
     fill('f-land', lv);
@@ -407,14 +482,26 @@
     progress('f-soy-progress', st, 'soybeans');
     getJSON('/data/rain/' + st.toLowerCase() + '.json').then(function (f) {
       if (!mine()) return;
-      fill('f-rain', P.factRain(P.rainSoFar(f, fips), p.flags.indexOf('r') >= 0 ? '/rain/' + slug + '/' + p.slug : '/rain/' + slug));
+      var r = P.rainSoFar(f, fips);
+      fill('f-rain', P.factRain(r, p.flags.indexOf('r') >= 0 ? '/rain/' + slug + '/' + p.slug : '/rain/' + slug));
+      S.top.rain = PT ? PT.rain(r) : null; S.top.rainHref = p.flags.indexOf('r') >= 0 ? '/rain/' + slug + '/' + p.slug : '/rain/' + slug;
+      drawTop();
     });
-    getJSON('/data/drought/county-week.json').then(function (f) { if (mine()) fill('f-drought', P.factDrought(P.droughtNow(f, fips))); });
+    /* one drought object for the top line and the row below it, so the two always say the same */
+    getJSON('/data/drought/county-week.json').then(function (f) {
+      if (!mine()) return;
+      var t = PT && f ? PT.drought(f, fips) : null;
+      S.top.drought = t;
+      fill('f-drought', (t && PT.droughtRow(t)) || P.factDrought(P.droughtNow(f, fips)));
+      drawTop();
+    });
     getJSON('/data/hail/recent.json').then(function (f) {
       if (!mine()) return;
       fill('f-hail', P.factHail(P.hailNear(f, w.lat, w.lng), w.center ? 'the county center' : w.zip ? 'ZIP ' + w.zip : 'this spot', '/hail-map?lat=' + (+w.lat).toFixed(4) + '&lon=' + (+w.lng).toFixed(4)));
     });
+    S.top.atlas = atlas;
     loadSales(fips, st, atlas, mine);
+    drawTop();
     getJSON('/data/arc-plc.json').then(function (f) {
       if (!mine()) return;
       fill('f-arcplc', P.factArcPlc(f, centralDay(), p.flags.indexOf('c') >= 0 ? '/arc-plc/' + slug + '/' + p.slug : '/arc-plc'));
@@ -428,13 +515,16 @@
   /* What changed here this week, with the state map (components/changemap.js), loaded only once a
      place is open. Its files are fetched by state; the reader's point stays in this browser. */
   function changeMap(fips) {
-    var box = $('h-cm'), p = S.prof, w = S.where || {};
+    var box = $('h-cm'), p = S.prof, w = S.where || {}, fold = $('h-cm-fold');
     if (!box || !p) return;
-    /* shown and held at once (here.css .cm-hold), so nothing under it moves when it fills */
+    /* drawn the first time the fold is opened for this place, never before (nothing loads while it is shut) */
     var old = box.querySelector('.cm-box');
     if (old && old.cmMap) { try { old.cmMap.remove(); } catch (e) { /* the old map is gone with its box */ } }
-    box.innerHTML = ''; box.classList.add('cm-hold'); box.hidden = false;
     var top = $('cm-top'); if (top) top.innerHTML = '';
+    if (fold && !fold.open) { S.cmWant = fips; box.innerHTML = ''; box.hidden = true; box.classList.remove('cm-hold'); return; }
+    S.cmWant = null;
+    /* shown and held at once (here.css .cm-hold), so nothing under it moves when it fills */
+    box.innerHTML = ''; box.classList.add('cm-hold'); box.hidden = false;
     function mine() { return S.prof && S.prof.fips === fips; }
     loadScript(CL_JS, function () { return !!window.AgChangeLines; }).then(function (ok) {
       return ok && loadScript(CM_JS, function () { return !!window.AgChangeMap; });
@@ -459,6 +549,8 @@
         /* a state whose files give sale months (Florida): the through date is a month, never a day */
         if (sum && sum.dates === 'month' && fs.date) fs.date = window.AtlasSales.month(sum.through);
         fill('f-sales', fs);
+        S.top.land = PT && sum ? PT.land(sum, fips, window.AtlasSales) : null;
+        drawTop();
       });
     });
   }
@@ -471,6 +563,9 @@
       var b = P.bestBids(snap, lat, lng, 50), when = snap && snap.fetched ? snap.fetched : '';
       fill('f-corn-bid', P.factBid(b.corn, 'corn', from, when, href, partial));
       fill('f-soy-bid', P.factBid(b.soybeans, 'soybeans', from, when, href, partial));
+      /* the top card is worded from this same list of bids, never a second read */
+      S.top.bid = PT ? PT.bid(b, when, partial) : null; S.top.bidHref = href;
+      drawTop();
       if (partial) return { when: when, partial: true };   /* no local middle basis from a short list */
       b.when = when;
       return b;
@@ -957,6 +1052,8 @@
     $('h-map-box').addEventListener('toggle', function () { if ($('h-map-box').open && !$('h-map').firstChild) drawMap(); });
     var more = $('h-more');
     if (more) more.addEventListener('toggle', function () { if (more.open) loadDepth(); });
+    var cmf = $('h-cm-fold');
+    if (cmf) cmf.addEventListener('toggle', function () { if (cmf.open && S.cmWant && S.prof && S.prof.fips === S.cmWant) { track('here_map', {}); changeMap(S.cmWant); } });
     document.addEventListener('click', function (e) {
       var a = e.target.closest && e.target.closest('a[data-fips]');
       if (!a) return;
