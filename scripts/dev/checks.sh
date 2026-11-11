@@ -81,7 +81,9 @@ run ids python3 scripts/build_ids.py --selftest
 run company-ids bash -c "python3 scripts/company_ids.py --selftest && python3 scripts/company_ids.py --check"
 # buyer and seller names out of the county transfer files (scripts/land_names.py, PR 324, Nov 4, 2026)
 run land-names python3 scripts/land_names.py --selftest
-run basis-join bash -c "python3 scripts/build_basis_join.py --selftest && python3 scripts/build_basis_join.py --check"
+# data/ids is built on main by fetch_bids.yml, never in a pull request: build the join into a scratch folder (a
+# builder change is tested on what it makes now; the committed files follow on main's next bids run)
+run basis-join bash -c "python3 scripts/build_basis_join.py --selftest && python3 scripts/build_basis_join.py --out '$OUT/basis-join'"
 # county code table and per data set join rates (scripts/join_report.py FLOORS): a rate below its floor fails
 run geo-crosswalk bash -c "python3 scripts/build_geo_crosswalk.py --selftest && python3 scripts/build_geo_crosswalk.py --check"
 run join-report bash -c "python3 scripts/join_report.py --selftest >/dev/null && python3 scripts/join_report.py"
