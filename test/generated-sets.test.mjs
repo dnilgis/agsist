@@ -133,6 +133,60 @@ test("the guard: a pull request that changes generated pages fails with the rule
   for (const d of [bad, good]) fs.rmSync(d, { recursive: true, force: true });
 });
 
+test("the guard: data/ids is built on main; a pull request that carries it fails, a builder-only change passes", () => {
+  // Nov 11, 2026: the bids job rewrites data/ids every 15 minutes, so a branch that committed rebuilt ids
+  // conflicted with main within minutes (three times on one pull request)
+  const bad = fixture({ "data/ids/elevators.json": "{}\n", "data/ids/basis-join/IA.json": "{}\n", "scripts/build_ids.py": "# x\n" });
+  let r = runGuard(bad, { user: { login: "dnilgis" }, labels: [{ name: "merge-when-green" }] });
+  assert.equal(r.status, 1, r.stdout + r.stderr);
+  assert.match(r.stdout, /^data\/ids is built on main; change the builder and its tests\.$/m);
+  assert.match(r.stdout, /changes 2 file\(s\) there, e\.g\. data\/ids\/basis-join\/IA\.json, data\/ids\/elevators\.json \(rebuilt on main by fetch_bids\.yml/);
+  assert.doesNotMatch(r.stdout, /generated set\(s\)/, "no page set is named when only data/ids is carried");
+  // only what the bids job writes: one built file fails; the hand-kept inputs beside it and look-alike paths pass
+  const one = fixture({ "data/ids/river.json": "{}\n" });
+  assert.equal(runGuard(one, { user: { login: "dnilgis" }, labels: [] }).status, 1);
+  const near = fixture({ "data/idsx/a.json": "{}\n", "data/ids.json": "{}\n", "data/ids/basis-joinx.json": "{}\n",
+    "data/ids/geo-crosswalk.json": "{}\n", "data/ids/ownership-changes.json": "{}\n", "data/ids/parcel-key.js": "//\n",
+    "data/ids/parcel-key-fixtures.json": "{}\n", "data/ids/parcel-rules.json": "{}\n" });
+  assert.equal(runGuard(near, { user: { login: "dnilgis" }, labels: [] }).status, 0);
+  // both kinds at once: both named
+  const both = fixture({ "data/ids/companies.json": "{}\n", "rain/iowa/story-county.html": "new\n" });
+  r = runGuard(both, { user: { login: "dnilgis" }, labels: [] });
+  assert.equal(r.status, 1);
+  assert.match(r.stdout, /^data\/ids is built on main/m);
+  assert.match(r.stdout, /^  rain: 1 file\(s\)/m);
+  r = runGuard(bad, { user: { login: "github-actions[bot]" }, labels: [] });
+  assert.equal(r.status, 0, "the data bot may: " + r.stdout);
+  r = runGuard(bad, { user: { login: "dnilgis" }, labels: [{ name: "regen-ok" }] });
+  assert.equal(r.status, 0, "the lead's regen-ok label lets it through: " + r.stdout);
+  const good = fixture({ "scripts/build_ids.py": "# x\n", "scripts/build_basis_join.py": "# x\n", "test/ids.test.mjs": "//\n" });
+  r = runGuard(good, { user: { login: "dnilgis" }, labels: [] });
+  assert.equal(r.status, 0, r.stdout + r.stderr);
+  for (const d of [bad, one, near, both, good]) fs.rmSync(d, { recursive: true, force: true });
+});
+
+test("data/ids: main rebuilds it on every bids run from the engine copy; the join tests build their own", () => {
+  const G = JSON.parse(py("import generated_sets as G; print(json.dumps(G.BUILT_ON_MAIN))"));
+  assert.deepEqual(Object.keys(G), ["data/ids"]);
+  const fb = read(".github/workflows/fetch_bids.yml");
+  // the guarded files are exactly what fetch_bids.yml stages under data/ids
+  const staged = new Set();
+  for (const l of fb.split("\n").filter((l) => /git add/.test(l))) for (const m of l.matchAll(/data\/ids\/[\w.-]+/g)) staged.add(m[0]);
+  assert.deepEqual([...staged].sort(), [...G["data/ids"].paths].sort());
+  assert.match(fb, /- name: Engine checkout\n        uses: \.\/\.github\/actions\/engine\n/);
+  assert.match(fb, /python scripts\/build_ids\.py /);
+  assert.match(fb, /python scripts\/build_basis_join\.py /);
+  assert.match(fb, /git add -A data\/ids\/basis-join/);
+  // engine-sync refreshes the engine copy on every merge that changes scripts/
+  assert.match(read(".github/workflows/engine-sync.yml"), /branches: \[main\]\n    paths:\n      - "scripts\/\*\*"/);
+  // no check compares the committed join with the builder (a builder change would fail until main's next run)
+  assert.doesNotMatch(read("scripts/dev/checks.sh"), /build_basis_join\.py --check/);
+  for (const t of ["test/basis-stitch.test.mjs", "test/here-first.test.mjs"]) {
+    assert.doesNotMatch(read(t), /build_basis_join\.py", "--check"/, t);
+    assert.match(read(t), /build_basis_join\.py", "--out"/, t);
+  }
+});
+
 test("pr-checks: the guard step on pull requests; the shards and other checks rebuild a changed set in their copy", () => {
   const pr = read(".github/workflows/pr-checks.yml");
   assert.match(pr, /- name: generated pages are built on main\n        if: github\.event_name == 'pull_request'\n        env:\n          GH_TOKEN: \$\{\{ github\.token \}\}\n        run: python3 scripts\/generated_sets\.py guard --base HEAD\^1\n/);
