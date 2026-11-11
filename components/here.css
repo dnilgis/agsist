@@ -219,11 +219,11 @@ html:not([data-fx]) #h-form,html:not([data-fx]) .h-alt,html:not([data-fx]) .h-as
 .pt-n{font-size:clamp(1.9rem,7vw,2.3rem);font-weight:800;color:var(--text);font-variant-numeric:tabular-nums}
 .pt-u{font-size:1rem;color:var(--text-dim);font-weight:600}
 .h .pt-t{margin:0 0 .5rem;font-size:1rem;color:var(--text)}
-.pt-tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.5rem;margin:.2rem 0 .5rem}
+.pt-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,260px));gap:.5rem;margin:.2rem 0 .5rem}
 .h .pt-tile{margin:0;padding:.55rem .7rem;border-radius:8px;background:var(--surface2,color-mix(in srgb,var(--text-muted) 10%,transparent));display:flex;flex-direction:column}
 .pt-tile b{font-size:1.2rem;font-variant-numeric:tabular-nums}
 .pt-tile span{font-size:.85rem;color:var(--text-muted)}
-.pt-bars{display:grid;gap:.35rem;margin:.3rem 0 .6rem}
+.pt-bars{display:grid;gap:.35rem;margin:.3rem 0 .6rem;max-width:560px}
 .pt-bar{display:grid;grid-template-columns:5.5rem 1fr 4.2rem;align-items:center;gap:.5rem;font-size:.9rem;color:var(--text)}
 .pt-bt{display:block;height:12px}
 .pt-bf{display:block;height:100%;border-radius:6px}

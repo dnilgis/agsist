@@ -4,7 +4,10 @@
 
    The ZIP is asked once: a saved ZIP (the keys loader.js reads) opens the place with no
    question, and location is used only when "Use my location" is tapped. Once a place is
-   open the box folds behind "Change place". Four cards follow, one dated, sourced row per
+   open the box folds behind "Change place". The answers come first (Nov 11, 2026: the best corn
+   bid, the state spot, rain this month with one drought line, cash rent, farmland sales; worded by
+   components/place-top.js from the same objects as the rows below), then the week map in a closed
+   fold that loads only when opened. Four cards follow, one dated, sourced row per
    number (#f-corn-bid ... #f-daily). "More about this county" (the year's rain drawn and
    ranked, state ranks, neighbors, the long view, elevators against their neighbors) loads
    only when it is opened or a report is printed. Print is a button beside Change place: the
