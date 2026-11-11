@@ -1021,6 +1021,8 @@ def pr_attrs(pr):
     its count (sn), the share for sorting (rp) and as printed (rpt), and the years (yr). Nothing without an answer."""
     if not pr:
         return ""
+    if pr.get("high"):
+        return ' data-ph="1"'
     return ' data-sp="%s" data-sn="%d" data-rp="%s" data-rpt="%s" data-yr="%s"' % (
         jsround(pr["med"]), pr["n"], round(pr["pct"], 4), esc(pr_pct(pr["pct"])), esc(fmt(pr["years"], 0)))
 
@@ -1029,6 +1031,8 @@ def pr_cells(pr):
     """The two state-table cells for a county the map does not draw (the same words the page script writes)."""
     if not pr:
         return '<td data-v="">n/a</td><td data-v="">n/a</td>'
+    if pr.get("high"):
+        return '<td data-v=""></td><td data-v=""><small>%s</small></td>' % PR_HIGH_WORDS
     return ('<td data-v="%s">%s <small>%d sale%s</small></td><td data-v="%s">%s <small>about %s yrs</small></td>'
             % (jsround(pr["med"]), money(pr["med"]), pr["n"], "" if pr["n"] == 1 else "s", round(pr["pct"], 4), esc(pr_pct(pr["pct"])), esc(fmt(pr["years"], 0))))
 
@@ -1649,11 +1653,17 @@ def land_first_rent(rv, ri, rv_old, R, RL=None):
 # bare farmland of 20+ acres (cropland, pasture, any irrigation); the rent is non-irrigated cropland, so the
 # line says the land types differ. Only an irrigated rent, an old rent, fewer sales or no sale file: no line.
 PR_MIN_N = 5
+# Farm-priced land only (Nov 11, 2026): rent under 1% of the median sale price (more than 100 years of rent)
+# means the sales are priced well above farm value (development ground), so the county gets no line and the
+# state table says so in place of a share.
+PR_MIN_PCT = 1.0
+PR_HIGH_WORDS = "sale prices well above farm value"
 PR_NOTE = "Sales are bare farmland of every kind; the rent is for non-irrigated cropland."
 PR_TERMS = ("Rent against price: the county's non-irrigated cash rent (USDA NASS county survey, not more than three survey "
             "years older than the newest) divided by the median price per acre of recorded market sales of bare farmland, "
             "20 acres or more, over the 24 months the sales line names. Years of rent is that price divided by the rent. "
-            "We show it only with %d or more sales. The two sides are different land: the sales include pasture and any "
+            "We show it only with %d or more sales, and only where the rent is at least 1%% of the price (sales priced well above "
+            "farm value, such as building ground, get no line). The two sides are different land: the sales include pasture and any "
             "irrigated ground, the rent is non-irrigated cropland only. Taxes, upkeep and interest are not counted." % PR_MIN_N)
 
 
@@ -1669,7 +1679,8 @@ def price_rent(u, rent, latest):
     med, rv = float(med), float(rv)
     if not (med > 0 and rv > 0 and math.isfinite(med) and math.isfinite(rv)):
         return None
-    return {"med": med, "n": n, "rent": rv, "ry": int(ry), "pct": rv / med * 100, "years": int(math.floor(med / rv + 0.5))}
+    pct = rv / med * 100
+    return {"med": med, "n": n, "rent": rv, "ry": int(ry), "pct": pct, "years": int(math.floor(med / rv + 0.5)), "high": pct < PR_MIN_PCT}
 
 
 def pr_pct(p):
@@ -1706,8 +1717,8 @@ def county_price_rent(W, f, st=None):
 
 
 def price_rent_line(pr):
-    """The county line, or "" without an answer."""
-    if not pr:
+    """The county line, or "" without an answer or where the sales are priced well above farm value."""
+    if not pr or pr.get("high"):
         return ""
     return ('<p class="note" data-pr><b>Rent against price:</b> %s an acre cash rent is %s of the %s median sale price, %s of rent to equal the price. '
             '%d sale%s, %s; rent USDA NASS %d. %s</p>'
@@ -3235,7 +3246,8 @@ def state_page(W, st):
     pr_th = '<th class="s" scope="col">Median sale, 24 mo</th><th class="s" scope="col">Rent % of sale</th>' if has_pr else ""
     pr_note = (" Median sale is the median price per acre of recorded market sales of bare farmland, 20 acres or more, over 24 months, "
                "shown with 5 or more sales. Rent % of sale is the dry rent as a share of that price, with the years of rent it takes to equal it; "
-               "the sales include pasture and any irrigated ground.") if has_pr else ""
+               "the sales include pasture and any irrigated ground. Where rent is under 1% of the sale price, the sales are priced well above "
+               "farm value and no share is shown.") if has_pr else ""
     facts = ""
     smed = {}
     for label, key_, fm in (("Median dry cash rent", "rent", money), ("Median land and buildings, %s census" % get(W.atlas, "national", "value", "year"), "value", money),
@@ -3319,7 +3331,7 @@ var t=document.getElementById('t'),b=t.tBodies[0],dir={{}};
     var v=g('v')!==null?c(g('v'),m(g('v'))):(g('vs')!==null?c(g('vs'),m(g('vs'))+' *'):c(null));
     o.push([n,'<tr><td><a href="'+a.getAttribute('href')+'"></a></td>'+r+ir+v
       +c(g('y'),g('y')&&(Math.round(g('y')*10)/10).toFixed(1))+c(g('c'),g('c')&&'$'+(+g('c')).toFixed(2))+c(g('d'),g('d')&&Math.round(g('d'))+'%')
-      +({'1' if has_pr else '0'}?c(g('sp'),g('sp')&&m(g('sp'))+' <small>'+g('sn')+(g('sn')==='1'?' sale':' sales')+'</small>')+c(g('rp'),g('rp')&&g('rpt')+' <small>about '+g('yr')+' yrs</small>'):'')+'</tr>']);
+      +({'1' if has_pr else '0'}?(g('ph')!==null?'<td data-v=""></td><td data-v=""><small>{PR_HIGH_WORDS}</small></td>':c(g('sp'),g('sp')&&m(g('sp'))+' <small>'+g('sn')+(g('sn')==='1'?' sale':' sales')+'</small>')+c(g('rp'),g('rp')&&g('rpt')+' <small>about '+g('yr')+' yrs</small>')):'')+'</tr>']);
   }});
   o.sort(function(x,y){{return x[0].toLowerCase()<y[0].toLowerCase()?-1:1;}});
   var keep=b.innerHTML;b.innerHTML=o.map(function(x){{return x[1];}}).join('')+keep;
@@ -3929,7 +3941,11 @@ def selftest():
     check("rent against price arithmetic", p_ and abs(p_["pct"] - 3.00543) < 1e-4 and p_["years"] == 33 and pr_pct(p_["pct"]) == "3.0%"
           and p_["n"] == 66 and p_["ry"] == 2026)
     p_ = price_rent({"med": 13880, "n": 9}, {"year": 2026, "value": 26.5}, 2026)    # 0.1909%; 523.8 -> 524
-    check("rent against price under 1%", p_ and pr_pct(p_["pct"]) == "0.19%" and p_["years"] == 524 and pr_rent(26.5) == "$26.50" and pr_rent(238.0) == "$238")
+    check("rent against price under 1%: worked, then held back", p_ and pr_pct(p_["pct"]) == "0.19%" and p_["years"] == 524 and p_["high"]
+          and price_rent_line(dict(p_, span="x")) == "" and pr_attrs(p_) == ' data-ph="1"' and PR_HIGH_WORDS in pr_cells(p_)
+          and pr_rent(26.5) == "$26.50" and pr_rent(238.0) == "$238")
+    check("rent against price at 1%: shown", not price_rent({"med": 10000, "n": 5}, {"year": 2026, "value": 100.0}, 2026)["high"]
+          and price_rent({"med": 10000, "n": 5}, {"year": 2026, "value": 99.5}, 2026)["high"])
     check("rent against price gates", price_rent({"med": 7919, "n": 4}, {"year": 2026, "value": 238.0}, 2026) is None
           and price_rent({"med": 7919, "n": 5}, {"year": 2026, "value": 238.0}, 2026) is not None
           and price_rent({"med": 7919, "n": 66}, {"year": 2022, "value": 238.0}, 2026) is None

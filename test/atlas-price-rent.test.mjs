@@ -6,7 +6,9 @@
  * "Sold for" prints) and a USDA NASS non-irrigated cash rent not more than three survey years old gets one line:
  * the rent as a percent of the median sale price and about how many years of rent equal the price, with both
  * counts (the number of sales, the rent survey year). The state page gets two sortable columns from the same
- * answer. Under 5 sales, a rent too old, only an irrigated rent, no rent or no sale file: no line.
+ * answer. Under 5 sales, a rent too old, only an irrigated rent, no rent or no sale file: no line. Rent under 1% of
+ * the median (more than 100 years of rent): the sales are priced well above farm value, so no line, and the state
+ * table says so in place of the two figures.
  *
  * These read the builder (scripts/build_atlas_pages.py), never the pages built on main, and work any figure out
  * again from the data file the builder read, so a new month of sales or a new rent survey keeps them honest. */
@@ -35,6 +37,9 @@ P = B.price_rent
 out = {
   "adams": P({"med": 7919, "n": 66}, {"year": 2026, "value": 238.0}, 2026),
   "charlotte": P({"med": 13880, "n": 9}, {"year": 2026, "value": 26.5}, 2026),
+  "addison": P({"med": 3713, "n": 20}, {"year": 2026, "value": 65.5}, 2026),
+  "one": P({"med": 10000, "n": 5}, {"year": 2026, "value": 100.0}, 2026),
+  "under1": P({"med": 10000, "n": 5}, {"year": 2026, "value": 99.5}, 2026),
   "four": P({"med": 7919, "n": 4}, {"year": 2026, "value": 238.0}, 2026),
   "five": P({"med": 7919, "n": 5}, {"year": 2026, "value": 238.0}, 2026),
   "rent2023": P({"med": 7919, "n": 66}, {"year": 2023, "value": 238.0}, 2026),
@@ -46,7 +51,10 @@ out = {
   "nolatest": P({"med": 7919, "n": 66}, {"year": 2026, "value": 238.0}, 0),
 }
 out["pct"] = [B.pr_pct(out["adams"]["pct"]), B.pr_pct(out["charlotte"]["pct"])]
-out["line"] = B.price_rent_line(dict(out["charlotte"], span=${JSON.stringify(SPAN)}))
+out["line"] = B.price_rent_line(dict(out["addison"], span=${JSON.stringify(SPAN)}))
+out["highline"] = B.price_rent_line(dict(out["charlotte"], span=${JSON.stringify(SPAN)}))
+out["highcells"] = B.pr_cells(out["charlotte"])
+out["highattrs"] = B.pr_attrs(out["charlotte"])
 out["none"] = B.price_rent_line(None)
 print(json.dumps(out))`);
   // 238 / 7,919 = 3.0054%; 7,919 / 238 = 33.27, about 33 years
@@ -64,7 +72,16 @@ print(json.dumps(out))`);
   for (const k of ["nosale", "nomedian", "norent", "rentnull", "nolatest"]) assert.equal(r[k], null, k);
   const m = LINE.exec(r.line);
   assert.ok(m, r.line);
-  assert.deepEqual(m.slice(1, 6), ["$26.50", "0.19", "$13,880", "524", "9"]);
+  // 65.50 / 3,713 = 1.764%; 3,713 / 65.5 = 56.7, about 57 years
+  assert.deepEqual(m.slice(1, 6), ["$65.50", "1.8", "$3,713", "57", "20"]);
+  // under 1% of the price: worked out, then held back as priced well above farm value
+  assert.equal(r.charlotte.high, true);
+  assert.equal(r.adams.high, false);
+  assert.equal(r.one.high, false, "exactly 1%: shown");
+  assert.equal(r.under1.high, true, "0.995%: held back");
+  assert.equal(r.highline, "", "no county line");
+  assert.equal(r.highattrs, ' data-ph="1"', "the map path carries only the flag");
+  assert.equal(r.highcells, '<td data-v=""></td><td data-v=""><small>sale prices well above farm value</small></td>');
   assert.equal(m[6], SPAN, "the window as given");
   assert.equal(+m[7], 2026, "the rent year as given");
   assert.equal(r.none, "");
@@ -73,7 +90,7 @@ print(json.dumps(out))`);
 
 test("the builder: a line only with 5+ sales and a current dry rent, worked again from the sale file", () => {
   const out = mkdtempSync(join(os.tmpdir(), "atlas-pr-"));
-  // Adams IL and Alachua FL: lines. Citrus FL: under 5 sales. Iroquois IL: a 2022 rent. Atlantic NJ: only an
+  // Adams IL: a line. Alachua FL: rent 0.37% of the price, priced above farm value. Citrus FL: under 5 sales. Iroquois IL: a 2022 rent. Atlantic NJ: only an
   // irrigated rent. Essex VT: no rent. Story IA: no sale file.
   const cases = { "17001": "illinois/adams-county", "12001": "florida/alachua-county", "12017": "florida/citrus-county",
     "17075": "illinois/iroquois-county", "34001": "new-jersey/atlantic-county", "50009": "vermont/essex-county", "19169": "iowa/story-county" };
@@ -88,7 +105,7 @@ test("the builder: a line only with 5+ sales and a current dry rent, worked agai
       const u = ((file.counties || {})[f] || {}).usual;
       const R = ATLAS[f].rent || {};
       const dry = R.status === "ok" ? R.nonirr : null;
-      const want = !!(u && u.med != null && u.n >= 5 && dry && dry.value != null && dry.year >= LATEST - 3);
+      const want = !!(u && u.med != null && u.n >= 5 && dry && dry.value != null && dry.year >= LATEST - 3 && dry.value / u.med * 100 >= 1);
       wanted += want ? 1 : 0;
       const m = LINE.exec(h);
       assert.equal(!!m, want, `${path}: line ${want ? "expected" : "not expected"}`);
@@ -111,7 +128,7 @@ test("the builder: a line only with 5+ sales and a current dry rent, worked agai
       // the Sources and terms fold stays closed
       assert.match(h, /<details><summary>Sources and terms<\/summary>[\s\S]*Rent against price: the county[\s\S]*?<\/details>/);
     }
-    assert.equal(shown, wanted, "every county the data allow shows its line (Adams IL and Alachua FL on the Nov 2026 files)");
+    assert.equal(shown, wanted, "every county the data allow shows its line (Adams IL on the Nov 2026 files)");
   } finally { rmSync(out, { recursive: true, force: true }); }
 });
 
@@ -123,12 +140,14 @@ for st in ("IL", "IA"):
     h = B.state_page(W, st)
     want = {f: B.county_price_rent(W, f, st) for f in W.by_state[st]}
     out[st] = {"th": "Median sale, 24 mo</th><th class=\\"s\\" scope=\\"col\\">Rent % of sale</th></tr>" in h,
-               "attrs": h.count(" data-sp="), "want": sum(1 for v in want.values() if v),
+               "attrs": h.count(" data-sp="), "want": sum(1 for v in want.values() if v and not v["high"]),
+               "ph": h.count(' data-ph="1"'), "high": sum(1 for v in want.values() if v and v["high"]),
                "under5": sum(1 for f in W.by_state[st] if ((B.land_sales_file(W, st).get("counties") or {}).get(f) or {}).get("usual") is None and want[f]),
-               "js": "about '+g('yr')+' yrs" in h, "pr1": "+(1?c(g('sp')" in h, "note": "shown with 5 or more sales" in h}
+               "js": "about '+g('yr')+' yrs" in h, "pr1": "+(1?(g('ph')!==null?" in h and "sale prices well above farm value</small>" in h, "note": "shown with 5 or more sales" in h}
 print(json.dumps(out))`);
   assert.equal(r.IL.th, true, "Illinois: the two columns");
   assert.equal(r.IL.attrs, r.IL.want, "one map path per county with an answer");
+  assert.equal(r.IL.ph, r.IL.high, "one flag per county priced above farm value");
   assert.ok(r.IL.want >= 1, "Illinois has counties with an answer");
   assert.equal(r.IL.under5, 0, "no answer without a sale median");
   assert.ok(r.IL.js && r.IL.pr1 && r.IL.note, "the page script writes the cells; the note names the gate");
