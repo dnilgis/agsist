@@ -1242,6 +1242,7 @@ def state_page(st, d, pages, none_rows, recs=None, ctxs=None, mod=None):
     <h1>{h1}</h1>
     <p class="rc-answer">{lede}</p>
     {state_records_html(recs, st)}
+    <div class="state-spot" data-state-spot="{st}"></div>
     <div class="rc-scroll" tabindex="0" role="region" aria-label="Every {u1}, scrolls sideways"><table class="rc-t rc-t-wide"><caption class="rc-sr">Rain {'in' if done else 'so far in'} {year} by {u1}, {e(stn)}</caption>
     <thead><tr><th scope="col">{UNIT_HEAD.get(st, "County")}</th><th scope="col">Rain</th><th scope="col">Usual</th><th scope="col">% usual</th><th scope="col">Station</th><th scope="col">Through</th></tr></thead>
     <tbody>{''.join(rows)}</tbody></table></div>
@@ -2146,6 +2147,8 @@ def selftest():
         stp = want.get("rain/iowa.html", "")
         ok("Hamilton County <small>nearest: <a href=" in stp, "no-station county listed with the nearest that has one")
         ok('href="/rain/iowa/story-county"' in stp, "state page links each county")
+        ok(stp.count('data-state-spot="IA"') == 1 and stp.index('class="rc-answer"') < stp.index("data-state-spot") < stp.index('class="rc-scroll"'),
+           "the state spot sits right under the answer")
         sm = want["sitemap-rain.xml"]
         n_pages = sum(1 for k in want if k.endswith(".html"))
         ok(sm.count("<loc>") == n_pages, f"sitemap lists every page ({sm.count('<loc>')} of {n_pages})")

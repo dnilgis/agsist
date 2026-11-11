@@ -6,6 +6,9 @@
  *   tier=state; /cash-bids: tier=cashbids). A retired single page ribbon stays empty.
  *   Rain Print pages: none of it (no sponsor on Rain Print pages).
  *   Cash bid state and town pages: one slot per state (cash-bids-<state>).
+ *   Nov 11, 2026 (two spots): the "Sponsor this page" line is retired. An unsold ribbon shows nothing; the
+ *   sitewide line and the state card say when a spot is open (test/sponsor-reset.test.mjs). A sold ribbon
+ *   from an older deal still draws.
  *
  *   node --test test/advertise-findable.test.mjs
  */
@@ -40,7 +43,7 @@ test("header: Advertise in the bar (wide screens) and beside About in the phone 
   assert.match(read("components/header-fallback.html"), /<a href="\/sponsor">Advertise with AGSIST<\/a>/);
   // loader.js hides the header's sponsor links wherever the page hides /sponsor
   assert.match(loader, /function headerSponsorHide\(hide\)/);
-  assert.match(loader, /loadComponent\('site-header', '\/components\/header\.html', function \(\) \{ initNav\(\); headerSponsorHide\(noSponsor\); \}\)/);
+  assert.match(loader, /loadComponent\('site-header', '\/components\/header\.html', function \(\) \{ sitewide\(noSponsor, swNext, swParent\); initNav\(\); headerSponsorHide\(noSponsor\); \}\)/);
 });
 
 test("footer: Advertise with AGSIST in the always-open bottom row (the data line, so no extra row), before the legal links", () => {
@@ -52,24 +55,20 @@ test("footer: Advertise with AGSIST in the always-open bottom row (the data line
   assert.match(footer, /\.footer-small a\.footer-adv\{display:inline;padding:15px 0;/, "a 44 px tap target that adds no height");
 });
 
-test("open slot: one plain Sponsor this page link with the slot picked, no price, only on a plain unsold ribbon", () => {
-  const a = loader.indexOf("function openSlotLine"), b = loader.indexOf("function fillPageRibbons");
+test("open slot: the Sponsor this page line is retired and its code is gone; the slot list keeps its tier rule", () => {
+  // Nov 11, 2026: ribbon spots are retired as products; an unsold ribbon draws nothing and loader.js carries no open-slot code
+  for (const w of ["openSlotLine", "openSlotTier", "OPEN_SLOT_LINE", "ag-open-slot", "Sponsor this page", "cta_source:\\'open_slot\\'"])
+    assert.ok(!loader.includes(w), "loader.js still carries " + w);
+  const a = loader.indexOf("  function fillPageRibbons"), b = loader.indexOf("rib.classList.add('ag-sponsor-ribbon--sold')");
   assert.ok(a > 0 && b > a, "loader.js moved; update this test");
-  const fn = loader.slice(a, b);
-  assert.match(fn, /\/sponsor-apply\?tier=' \+ tier \+ '&amp;slot=' \+ encodeURIComponent\(id\)/);
-  assert.match(fn, /var tier = openSlotTier\(id\);/);
-  assert.match(fn, /\|\| !tier\) return;/, "a retired slot gets no link");
-  // the loader's rule is the same rule scripts/stamp_rates.py writes into data/sponsor-slots.json
-  const tierOf = new Function("id", loader.slice(loader.indexOf("function openSlotTier"), a) + "return openSlotTier(id);");
+  assert.doesNotMatch(loader.slice(a, b), /rib\.innerHTML|rib\.classList\.add|rib\.setAttribute/, "an unsold ribbon is written to before the sold check");
+  // the slot list scripts/stamp_rates.py writes keeps the tier rule the loader used to share
+  const tierOf = (id) => (id === "cash-bids" ? "cashbids" : /^(cash-bids-[a-z]+(-[a-z]+)*|rent-[a-z]{2})$/.test(id) ? "state" : "");
   const slots = JSON.parse(read("data/sponsor-slots.json")).slots;
   assert.ok(slots.length > 75);
-  for (const e of slots) assert.equal(tierOf(e.id) || null, e.tier, e.id + ": loader and slot list disagree on its tier");
-  assert.equal(tierOf("spray"), "", "a tool page is not sold on its own any more");
-  assert.equal(tierOf("rent-hub"), "");
-  assert.match(fn, />Sponsor this page<\/a>/);
-  assert.match(fn, /rib\.className !== 'ag-sponsor-ribbon'/, "never the homepage card or a PRF slot");
-  assert.doesNotMatch(fn, /\$\d|first month free|price/i, "no price");
-  assert.match(loader, /if \(!noSponsor && \(!sp \|\| sp\.active === false\)\) openSlotLine\(rib, id\);/, "only when unsold and the page takes a sponsor");
+  for (const e of slots) assert.equal(tierOf(e.id) || null, e.tier, e.id + ": the rule and the slot list disagree on its tier");
+  // a sold ribbon from an older deal still draws
+  assert.match(loader, /rib\.classList\.add\('ag-sponsor-ribbon--sold'\)/);
 });
 
 test("cash bid pages: one sponsor slot per state, listed for the sign-up form", () => {
@@ -85,9 +84,9 @@ test("cash bid pages: one sponsor slot per state, listed for the sign-up form", 
   assert.deepEqual(e, { id: "cash-bids-new-york", page: "/cash-bids/new-york", name: "New York cash bids",
     pitch: "Your name beside the cash bids on the New York page and every New York town page. One category-exclusive slot.", tier: "state", state: "NY" });
   assert.equal(out[1], "True");
-  // the form groups them, and the bids job keeps the list in step with the state pages
-  // Oct 29, 2026: the form offers each state once, from the slots the list marks tier "state"
-  assert.match(read("components/sponsor-apply.js"), /if \(s\.tier !== 'state' \|\| !s\.state\) return;/);
+  // the bids job keeps the list in step with the state pages
+  // Nov 11, 2026: the booking form offers every state once, from its own list of the 50 states
+  assert.match(read("components/sponsor-apply.js"), /var STATES = SLUGS\.split\(' '\)/);
   const wf = read(".github/workflows/cash-bid-pages.yml");
   assert.match(wf, /run: python scripts\/stamp_rates\.py\n/);
   assert.match(wf, /git add -A cash-bids data\/pointers data\/sponsor-slots\.json /);
@@ -156,19 +155,17 @@ test("in a browser: phones see Advertise in the footer and the menu, wide screen
   } finally { await browser.close(); srv.close(); }
 });
 
-test("in a browser: an unsold slot shows one Sponsor this page link; a sold one shows the sponsor", { skip, timeout: 90000 }, async () => {
+test("in a browser: an unsold slot shows nothing; a sold one shows the sponsor", { skip, timeout: 90000 }, async () => {
   const srv = await serve(), base = `http://127.0.0.1:${srv.address().port}`;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     let ctx = await context(browser, 390, 844, { slots: {} });
     let pg = await ctx.newPage();
     await pg.goto(base + "/cash-bids");
-    await pg.waitForSelector("aside.ag-sponsor-ribbon--open a.ag-open-slot", { state: "visible", timeout: 15000 });
-    const o = await pg.evaluate(() => { const a = document.querySelector("aside.ag-sponsor-ribbon a"); return [a.getAttribute("href"), a.textContent, a.getBoundingClientRect().height, document.querySelector("aside.ag-sponsor-ribbon").textContent]; });
-    assert.equal(o[0], "/sponsor-apply?tier=cashbids&slot=cash-bids");
-    assert.equal(o[1], "Sponsor this page");
-    assert.ok(o[2] >= 44, `tap target ${o[2]}px`);
-    assert.equal(o[3], "Sponsor this page", "nothing else in the slot: no price");
+    await pg.waitForSelector("footer.footer", { timeout: 15000 });
+    await pg.waitForTimeout(1200);
+    assert.equal(await pg.locator("a.ag-open-slot").count(), 0, "no Sponsor this page line");
+    assert.deepEqual(await shown(pg, "aside.ag-sponsor-ribbon"), [false], "the unsold ribbon stays hidden");
     await ctx.close();
 
     // a retired single page slot (Oct 29, 2026): unsold, and still no link
@@ -199,15 +196,17 @@ test("in a browser: an unsold slot shows one Sponsor this page link; a sold one 
   } finally { await browser.close(); srv.close(); }
 });
 
-test("/sponsor: who reads AGSIST sits in the first screen, from the same audience file as the list below", () => {
+test("/sponsor: who reads AGSIST sits in the first screen, from the same audience file", () => {
   const h = read("sponsor.html");
   const hero = h.slice(h.indexOf('<section class="sp-hero"'), h.indexOf("</section>", h.indexOf('<section class="sp-hero"')));
-  for (const k of ["views", "users", "subs"]) assert.match(hero, new RegExp(`<span data-a="${k}">[\\d,]+</span>`), k);
-  assert.ok(hero.indexOf('class="sp-reach"') < hero.indexOf('class="sp-btn"'), "before the button");
-  assert.match(hero, /<a class="sp-btn" href="\/sponsor-apply">/);
+  for (const k of ["engaged", "views", "win"]) assert.match(hero, new RegExp(`<span data-a="${k}">[\\d,]+|<span data-a="${k}">[A-Z][a-z]{2} \\d`), k);
+  assert.ok(hero.indexOf('class="sp-reach"') >= 0 && hero.indexOf('class="sp-reach"') < hero.indexOf('href="#book"'), "the reach line comes before the way to book");
+  assert.match(hero, /href="#book">Book<\/a>/);
   assert.match(hero, /href="tel:\+17157972428">715-797-2428<\/a>/);
   assert.match(hero, /href="mailto:sig@agsist\.com/);
+  assert.match(h, /data-invoice="sitewide"/);
+  assert.match(h, /data-invoice="state"/);
   // the page refreshes every data-a span from data/audience.json on load
   assert.match(h, /querySelectorAll\('\[data-a="' \+ k \+ '"\]'\)/);
-  assert.match(h, /your state&rsquo;s cash bids page and every town page in it, your state&rsquo;s cash rent page/);
+  assert.match(h, /fetch\('\/data\/audience\.json'/);
 });

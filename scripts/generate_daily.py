@@ -3410,8 +3410,8 @@ SPONSOR_OVERRIDE = None
 
 SPONSOR_HOUSE_AD = {
     "active": False, "label": "SPONSOR \u00b7 1 SLOT", "advertiser": "AGSIST",
-    "headline": "Sponsor the AGSIST Daily Briefing: $149 a month, first month free.",
-    "body": "One ag company per issue. Your message reaches working US producers across grain, cattle, dairy, and specialty operations, who read it every morning before the open. Rate locked in for 12 months from start date. No minimum, cancel anytime. First month free.",
+    "headline": "Sponsor AGSIST: one line under the menu on every page, and in this email.",
+    "body": "One business at a time. Pay when you book, by card or a yearly invoice by mail (net 30). Money back if you ask inside 30 days. Prices at agsist.com/sponsor.",
     "cta_text": "Become the sponsor",
     "cta_url": "mailto:sig@agsist.com?subject=AGSIST%20Daily%20sponsor%20inquiry",
     "disclosure": "One sponsor, one issue. No retargeting. No programmatic auctions. Reply or call 715-797-2428.",
@@ -3622,7 +3622,7 @@ def render_sponsor_block_html(sponsor, surface="archive", slot=None):
     aria = "Sponsor this slot" if house else "Sponsored: " + adv
     h.append(f'<aside class="sa-ad{" sa-ad--house" if house else ""}" aria-label="{html_esc(aria)}"'
              + (f' data-sponsor-slot="{html_esc(slot)}"' if slot else "") + ">")
-    h.append(f'<div class="sa-top"><span class="sa-label">{html_esc(sp.get("label") or "SPONSORED")}</span>'
+    h.append(f'<div class="sa-top"><span class="sa-label">{html_esc((sp.get("label") or "SPONSORED") if house else "Supported by")}</span>'
              + (f'<span class="sa-by">{html_esc(adv)}</span>' if (adv and not house) else "") + "</div>")
     h.append('<div class="sa-main">')
     if sp.get("logo") and not house:

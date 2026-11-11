@@ -76,7 +76,8 @@
          esc(house ? 'Sponsor this slot' : 'Sponsored: ' + adv) + '"' +
          (slot ? ' data-sponsor-slot="' + esc(slot) + '"' : '') + '>';
 
-    h += '<div class="sa-top"><span class="sa-label">' + esc(sp.label || 'SPONSORED') + '</span>' +
+    /* the ad label (Nov 11, 2026): "Supported by <sponsor>" on every paid ad; only the house ad keeps its own label */
+    h += '<div class="sa-top"><span class="sa-label">' + esc(house ? (sp.label || 'SPONSORED') : 'Supported by') + '</span>' +
          ((adv && !house) ? '<span class="sa-by">' + esc(adv) + '</span>' : '') + '</div>';
 
     h += '<div class="sa-main">';

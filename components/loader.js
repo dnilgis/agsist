@@ -499,23 +499,7 @@
     if (!hide) return;
     document.querySelectorAll('#topnav [data-sponsor-link], #drawer [data-sponsor-link]').forEach(function (a) { a.style.setProperty('display', 'none', 'important'); });
   }
-  var COUNTER_URL = '';
   function renderSupporters() {
-    function esc(s) {
-      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-      });
-    }
-    if (COUNTER_URL) {
-      fetch(COUNTER_URL, { cache: 'no-store' })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function (d) {
-          var n = Number(d && d.views);
-          var el = document.querySelector('[data-adviews]');
-          if (el && isFinite(n) && n > 0) el.textContent = n.toLocaleString('en-US');
-        })
-        .catch(function () { });
-    }
     var row = document.getElementById('adspace-row');
     if (!row) return;
     var strip = document.getElementById('footer-adspace');
@@ -569,35 +553,61 @@
       (s.blurb ? '<span class="ad-filled-blurb">' + slotEsc(s.blurb) + '</span>' : '');
   }
   window.AgsistSlots = { ribbon: function (sp, id) { return ribbonInner(sp, id, false); }, supporter: supporterInner };
-  var OPEN_SLOT_LINE = true;
-  function openSlotTier(id) { return id === 'cash-bids' ? 'cashbids' : /^(cash-bids-[a-z]+(-[a-z]+)*|rent-[a-z]{2})$/.test(id) ? 'state' : ''; }
-  function openSlotLine(rib, id) {
-    var tier = openSlotTier(id);
-    if (!OPEN_SLOT_LINE || !rib || rib.className !== 'ag-sponsor-ribbon' || !tier) return;
-    if (!document.getElementById('ag-open-slot-css')) {
-      var st = document.createElement('style');
-      st.id = 'ag-open-slot-css';
-      st.textContent = 'html body aside.ag-sponsor-ribbon.ag-sponsor-ribbon--open:not(.ag-sponsor-ribbon--sold){display:block!important;margin:0;padding:0;border:0;background:none;box-shadow:none;font-size:.78rem;line-height:1.2;color:var(--text-muted)}' +
-        'aside.ag-sponsor-ribbon--open a.ag-open-slot{display:inline;min-height:0;margin:0;padding:14px 0;background:none;border:0;border-radius:0;box-shadow:none;width:auto;color:var(--text-muted)!important;font-weight:600;text-decoration:underline;text-underline-offset:2px;transform:none}' +
-        'aside.ag-sponsor-ribbon--open a.ag-open-slot:hover,aside.ag-sponsor-ribbon--open a.ag-open-slot:focus-visible{color:var(--brand)!important;box-shadow:none;transform:none}' +
-        '@media print{html body aside.ag-sponsor-ribbon.ag-sponsor-ribbon--open:not(.ag-sponsor-ribbon--sold){display:none!important}}';
-      document.head.appendChild(st);
-    }
-    rib.classList.add('ag-sponsor-ribbon--open');
-    rib.setAttribute('aria-label', 'Sponsor this page');
-    rib.innerHTML = '<a class="ag-open-slot" href="' + BASE + '/sponsor-apply?tier=' + tier + '&amp;slot=' + encodeURIComponent(id) +
-      '" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'open_slot\'})">Sponsor this page</a>';
-  }
   var GEO_SKIP = /^\/(rain-print|rp-gift|rain-gauge|gifts-for-farmers|birth-year-weather-gift|wedding-year-weather-gift|farm-anniversary-gifts|farmer-retirement-gifts)(?:[.\/-]|$)/;
   function geoSponsor(noSponsor, rib) {
     if (noSponsor || window.__geoSponsor || GEO_SKIP.test(location.pathname)) return;
     window.__geoSponsor = true;
     var s = document.createElement('script');
-    s.src = BASE + '/components/geo-sponsor.js?v=3';
+    s.src = BASE + '/components/geo-sponsor.js?v=4';
     s.async = true;
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
   }
+  /* Sitewide sponsor line under the nav (not on GEO_SKIP pages): data/sponsor.json sold, else the open spot. */
+  function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
+  function swSold(sp) {
+    return !!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''));
+  }
+  function swLine(sp, card, spots, preview) {
+    if (preview) sp = { active: true, advertiser: 'Your Business', headline: 'Your one line here.', cta_url: 'https://agsist.com/sponsor' };
+    if (swSold(sp)) {
+      var href = sp.cta_url + (sp.cta_url.indexOf('?') < 0 ? '?' : '&') + 'utm_source=agsist&utm_medium=sitewide';
+      return { sold: true, html: '<span class="sw-in"><span class="sw-tag">Sponsor</span>Supported by <b>' + slotEsc(sp.advertiser) + '</b>' +
+        (sp.line || sp.headline ? '. ' + slotEsc(sp.line || sp.headline) : '') + ' <a href="' + slotEsc(href) + '" rel="sponsored noopener" target="_blank"' +
+        (preview ? '' : ' data-sponsor-click="sitewide"') + '>Visit</a></span>' };
+    }
+    var t = card && (card.tiers || []).filter(function (x) { return x.id === 'sitewide'; })[0];
+    var n = spots && spots.sitewide && spots.sitewide.engaged;
+    return { sold: false, html: '<span class="sw-in">Sponsor spot open. ' +
+      (typeof n === 'number' && n > 0 ? n.toLocaleString('en-US') + ' engaged visits in the last 28 days. ' : '') +
+      (t && t.price_month ? '$' + Number(t.price_month).toLocaleString('en-US') + ' a month, one business. ' : '') +
+      '<a href="' + BASE + '/sponsor#sitewide" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'sitewide_open\'})">See it</a></span>' };
+  }
+  function sitewide(noSponsor, before, parent) {
+    if (noSponsor || GEO_SKIP.test(location.pathname) || !parent || document.getElementById('ag-sw') || document.getElementById('site-header') ||
+        (document.body && document.body.classList.contains('no-sw'))) return;
+    var line = document.createElement('aside');
+    line.id = 'ag-sw';
+    line.className = 'sw-line';
+    line.setAttribute('aria-label', 'Sponsor');
+    var home = document.getElementById('sw-home');
+    var inHome = false;
+    try { inHome = !!home && window.getComputedStyle(home).display !== 'none'; } catch (e) {}
+    var nav = document.getElementById('topnav');
+    if (inHome) home.appendChild(line);
+    else if (nav && nav.parentNode === parent) parent.insertBefore(line, nav.nextSibling);
+    else if (before && before.parentNode === parent) parent.insertBefore(line, before); else parent.appendChild(line);
+    var preview = /[?&]sponsor-preview=1(?:&|$)/.test(location.search);
+    Promise.all([swGet('/data/sponsor.json'), swGet('/data/rate-card.json'), swGet('/data/sponsor-spots.json')]).then(function (r) {
+      var o = swLine(r[0], r[1], r[2], preview);
+      if (o.sold) {
+        line.className = 'sw-line sw-line--sold';
+        if (!preview) line.setAttribute('data-sponsor-slot', 'sitewide');
+      }
+      line.innerHTML = o.html;
+    });
+  }
+  window.AgsistSitewide = { line: swLine };
   function fillPageRibbons(noSponsor) {
     var rib = document.querySelector('aside.ag-sponsor-ribbon');
     if (!rib) return geoSponsor(noSponsor, null);
@@ -615,10 +625,9 @@
         var today;
         try { today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date()); }
         catch (e) { today = new Date().toISOString().slice(0, 10); }
-        if (!noSponsor && (!sp || sp.active === false)) openSlotLine(rib, id);
         var sold = !!sp && sp.active !== false && !!sp.company && /^https?:\/\//.test(sp.url || '') &&
             /^\d{4}-\d{2}-\d{2}$/.test(sp.start || '') && sp.start <= today;
-        if (!sold) geoSponsor(noSponsor, rib);
+        if (!sold || document.querySelector('[data-state-spot]')) geoSponsor(noSponsor, rib);
         if (!sp || sp.active === false || !sp.company || !/^https?:\/\//.test(sp.url || '') ||
             !/^\d{4}-\d{2}-\d{2}$/.test(sp.start || '') || sp.start > today) return;
         rib.classList.add('ag-sponsor-ribbon--sold');
@@ -732,7 +741,8 @@
     siteNotice();
     loadSponsorMetrics();
     var noSponsor = pageHidesSponsor();
-    loadComponent('site-header', '/components/header.html', function () { initNav(); headerSponsorHide(noSponsor); });
+    var swPh = document.getElementById('site-header'), swNext = swPh && swPh.nextSibling, swParent = swPh && swPh.parentNode;
+    loadComponent('site-header', '/components/header.html', function () { sitewide(noSponsor, swNext, swParent); initNav(); headerSponsorHide(noSponsor); });
     loadComponent('site-footer', '/components/footer.html', function () {
       foldFooter(); renderSupporters(); footerSponsorHide(noSponsor);
       try { if (window.AgsistSignup && window.AgsistSignup.scan) window.AgsistSignup.scan(); } catch (e) {}

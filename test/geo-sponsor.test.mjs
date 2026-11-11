@@ -31,13 +31,13 @@ const DATA = (o = {}) => ({ sponsors: [Object.assign({}, ENTRY, o)] });
 // the pages draw the shipped RootLot entry, switched on (what readers will see once the owner says start)
 const LIVE = (o = {}) => ({ sponsors: [Object.assign({}, JSON.parse(read("data/geo-sponsors.json")).sponsors.find((x) => x.id === "rootlot"), { active: true }, o)] });
 
-test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), no dates, Sig's copy, its own logo, a facts line, no phone", () => {
+test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), ends Nov 30 (Sig, Nov 11), Sig's copy, its own logo, a facts line, no phone", () => {
   const d = JSON.parse(read("data/geo-sponsors.json"));
   const e = d.sponsors.find((x) => x.id === "rootlot");
   assert.ok(e, "RootLot entry present");
   assert.deepEqual(e.states, ["CA", "NV", "TX"]);
   assert.equal(e.active, true, "Sig said start, Oct 28");
-  assert.equal(e.start, null); assert.equal(e.end, null);
+  assert.equal(e.start, null); assert.match(e.end, /^\d{4}-\d{2}-\d{2}$/, "an end day (Sig, Nov 11: Nov 30)");
   assert.equal(e.headline, "Put Your Root Down");
   // Nov 5: the body is one line of facts from the private notes
   assert.equal(e.body, "Trees and plants \u00b7 Shipped direct from California growers \u00b7 CA, NV and TX");
@@ -59,7 +59,7 @@ test("the shipped RootLot entry: CA, NV, TX, on (Sig said start Oct 28), no date
   for (const st of ["CA", "NV", "TX"]) assert.equal(G.choose(off, st, "2026-10-28", false), null, st + ": off draws nothing");
   assert.equal(G.anyLive(off, "2026-10-28"), false, "no live entry, so no page asks /where");
   // switched on with null dates it runs any day
-  const on = { sponsors: [Object.assign({}, e, { active: true })] };
+  const on = { sponsors: [Object.assign({}, e, { active: true, end: null })] };
   for (const day of ["2026-10-28", "2027-06-01", "2030-01-01"]) assert.equal(G.choose(on, "TX", day), on.sponsors[0]);
   const ad = G.toAd(on.sponsors[0], "state-page");
   assert.equal(ad.cta_url, "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=state-page");
@@ -146,7 +146,7 @@ test("every link carries the utm tags, appended correctly to any url", () => {
     "https://rootlot.com/a?b=1&utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=reader-state#top");
   const ad = G.toAd(Object.assign({}, ENTRY, { utm_campaign: undefined }), "reader-state");
   assert.match(ad.cta_url, /utm_campaign=geo-rootlot&utm_content=reader-state$/);
-  assert.equal(ad.label, "Sponsor");
+  assert.equal(ad.label, "Supported by");
 });
 
 test("the ad renders through AgsistAd with the slot geo-<id>; the reader's state is in no count", () => {
@@ -155,7 +155,7 @@ test("the ad renders through AgsistAd with the slot geo-<id>; the reader's state
   assert.match(h, /class="sa-ad"/);
   assert.match(h, /data-sponsor-slot="geo-rootlot"/);
   assert.match(h, /data-sponsor-click="geo-rootlot"/);
-  assert.match(h, />Sponsor</);
+  assert.match(h, /<span class="sa-label">Supported by<\/span><span class="sa-by">RootLot<\/span>/, "the label reads Supported by <sponsor> (A19)");
   assert.match(h, /utm_content=state-page/);
   assert.doesNotMatch(h, /\$\d|price|per month/i, "no price text");
   const src = read("components/geo-sponsor.js");
@@ -284,7 +284,7 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
       assert.ok(a, w + ": drawn");
       assert.equal(a.slot, "geo-rootlot");
       assert.equal(a.href, "https://rootlot.com/shop?utm_source=agsist&utm_medium=sponsor&utm_campaign=geo-test&utm_content=state-page");
-      assert.match(a.text, /Sponsor/); assert.match(a.text, /Put Your Root Down/); assert.match(a.text, /Root Down Now/);
+      assert.match(a.text, /^Supported by\s*Root Lot/); assert.match(a.text, /Put Your Root Down/); assert.match(a.text, /Root Down Now/);
       assert.equal(await pg.$(".geo-spon .sa-phone, .geo-spon .sa-facts"), null, w + ": no phone, no facts row");
       // Nov 5: its logo at the left at a fixed size, the site's ad orange on the button and the outline
       const look = await pg.evaluate(() => {
@@ -314,7 +314,7 @@ test("browser: a CA county rain page draws the ad with no lookup, below the fold
       assert.deepEqual(look.border, [look.orange, look.orange, look.orange], w + ": the outline is the ad orange");
       assert.equal(look.button, look.orange, w + ": the button is the ad orange");
       assert.equal(look.panelImage, "none", w + ": a quiet panel, no tint");
-      assert.equal(look.label, "Sponsor");
+      assert.equal(look.label, "Supported by", "A19: Supported by <sponsor>");
       // higher than the old slot (the end of the page) and never above the page's answer
       assert.equal(look.next, "H2.", w + ": the box sits at a section break (" + look.next + ")");
       assert.ok(look.answerAbove && look.bylineBelow, w + ": after the answer, before the byline " + JSON.stringify(look));
@@ -366,7 +366,7 @@ test("browser: every paid ad (not only the state sponsor) has the orange outline
       const { ctx, pg } = await open(browser, port, "/rain/iowa/story-county.html", { w, data: { sponsors: [] } });
       const r = await pg.evaluate(async (theme) => {
         document.documentElement.setAttribute("data-theme", theme);
-        await new Promise((ok) => { if (window.AgsistAd) return ok(); const s = document.createElement("script"); s.src = "/components/sponsor-ad.js?v=3"; s.onload = ok; document.head.appendChild(s); });
+        await new Promise((ok) => { if (window.AgsistAd) return ok(); const s = document.createElement("script"); s.src = "/components/sponsor-ad.js?v=4"; s.onload = ok; document.head.appendChild(s); });
         await new Promise((ok) => { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/components/sponsor-ad.css?v=3"; l.onload = ok; document.head.appendChild(l); });
         const box = document.createElement("div");
         box.innerHTML = window.AgsistAd.render({ advertiser: "Any Co", headline: "H", body: "B", cta_url: "https://example.com/", cta_text: "Go" }, "homepage", { slot: "daily-briefing" });
@@ -385,7 +385,7 @@ test("browser: every paid ad (not only the state sponsor) has the orange outline
       assert.equal(r.border, r.orange, tag + ": outline"); assert.equal(r.button, r.orange, tag + ": button");
       assert.equal(r.image, "none", tag + ": quiet panel");
       assert.ok(r.ink >= 4.5, tag + ": button text contrast " + r.ink.toFixed(2) + " (rain pages colour their links)");
-      assert.equal(r.label, "SPONSORED", tag + ": the label stays");
+      assert.equal(r.label, "Supported by", tag + ": the label reads Supported by (A19)");
       await ctx.close();
     }
   });
@@ -409,7 +409,8 @@ test("browser: the home page draws for a CA answer from /where, keeps only CA, a
       console.log(`# CLS / with CA @${w}: total ${c.total.toFixed(4)}, after the ad ${c.afterAd}`);
       await shot(pg, `home-ca-${w}.png`);
       // the next page in the same session does not ask again
-      await pg.goto(`http://127.0.0.1:${port}/rain/iowa.html`, { waitUntil: "load" });
+      // (an Iowa county page: the Iowa state page's own spot is Iowa's, Nov 11, 2026)
+      await pg.goto(`http://127.0.0.1:${port}/rain/iowa/story-county.html`, { waitUntil: "load" });
       await pg.waitForTimeout(1500);
       assert.equal(log.where, 1, "one lookup per session");
       await drawn(pg);
@@ -489,8 +490,9 @@ test("browser: a sold page sponsor wins over the geo ad", { skip, timeout: 12000
     const open2 = await open(browser, port, "/cash-bids/texas/booker.html", { pageSponsors: { slots: {} } });
     await drawn(open2.pg);
     const a = await ad(open2.pg);
-    assert.ok(a, "unsold: the geo ad takes the open line's place");
-    assert.equal(await open2.pg.evaluate(() => document.querySelector("aside.ag-sponsor-ribbon").hidden), true);
+    assert.ok(a, "unsold: the geo ad draws");
+    // Nov 11, 2026: no open line any more; the unsold ribbon shows nothing either way
+    assert.equal(await open2.pg.evaluate(() => { const r = document.querySelector("aside.ag-sponsor-ribbon"); return r.hidden || !r.getClientRects().length; }), true);
     await open2.ctx.close();
   });
 });

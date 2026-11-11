@@ -252,6 +252,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
       <div><dt>Sign-up deadline</dt><dd>{sales}</dd></div>
     </dl>
     {sod}
+    <div class="state-spot" data-state-spot="{code}"></div>
     {county_view(name, code)}
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
