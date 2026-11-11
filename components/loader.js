@@ -632,7 +632,9 @@
     var home = document.getElementById('sw-home');
     var inHome = false;
     try { inHome = !!home && window.getComputedStyle(home).display !== 'none'; } catch (e) {}
+    var nav = document.getElementById('topnav');
     if (inHome) home.appendChild(line);
+    else if (nav && nav.parentNode === parent) parent.insertBefore(line, nav.nextSibling);
     else if (before && before.parentNode === parent) parent.insertBefore(line, before); else parent.appendChild(line);
     var preview = /[?&]sponsor-preview=1(?:&|$)/.test(location.search);
     Promise.all([swGet('/data/sponsor.json'), swGet('/data/rate-card.json'), swGet('/data/sponsor-spots.json')]).then(function (r) {

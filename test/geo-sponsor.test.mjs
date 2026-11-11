@@ -487,8 +487,9 @@ test("browser: a sold page sponsor wins over the geo ad", { skip, timeout: 12000
     const open2 = await open(browser, port, "/cash-bids/texas/booker.html", { pageSponsors: { slots: {} } });
     await drawn(open2.pg);
     const a = await ad(open2.pg);
-    assert.ok(a, "unsold: the geo ad takes the open line's place");
-    assert.equal(await open2.pg.evaluate(() => document.querySelector("aside.ag-sponsor-ribbon").hidden), true);
+    assert.ok(a, "unsold: the geo ad draws");
+    // Nov 11, 2026: no open line any more; the unsold ribbon shows nothing either way
+    assert.equal(await open2.pg.evaluate(() => { const r = document.querySelector("aside.ag-sponsor-ribbon"); return r.hidden || !r.getClientRects().length; }), true);
     await open2.ctx.close();
   });
 });

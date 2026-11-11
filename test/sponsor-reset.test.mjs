@@ -216,9 +216,13 @@ test("in a browser: the sitewide line lands under the menu without moving the pa
         await pg.waitForFunction(() => { const l = document.getElementById("ag-sw"); return l && l.textContent.length > 10; }, null, { timeout: 15000 });
         const r = await pg.evaluate(() => {
           const l = document.getElementById("ag-sw"), nav = document.getElementById("topnav");
-          return { line: l.textContent, after: nav && nav.nextElementSibling === l, tops: [...new Set(window.__mainTops)] };
+          return { line: l.textContent, after: nav && nav.nextElementSibling === l, home: l.parentNode.id === "sw-home",
+            jobs: (() => { const j = document.getElementById("hb-jobs"); return j ? j.getBoundingClientRect().bottom <= l.getBoundingClientRect().top : null; })(),
+            tops: [...new Set(window.__mainTops)] };
         });
-        assert.ok(r.after, path + ": the line sits right under the menu");
+        // on a phone the homepage keeps its three jobs on the first screen: the line sits right under them
+        if (path === "/" && w < 600) assert.ok(r.home && r.jobs, "/ phone: the line sits under the three jobs");
+        else assert.ok(r.after, path + ": the line sits right under the menu");
         assert.ok(r.line.includes("Sponsor spot open.") && r.line.includes("$" + card.tiers[0].price_month + " a month, one business."), r.line);
         if (spots.sitewide.engaged) assert.ok(r.line.includes(spots.sitewide.engaged.toLocaleString("en-US") + " engaged visits in the last 28 days."), r.line);
         assert.ok(r.tops.length <= 1, `${path} ${w}: main moved ${r.tops.join(" > ")}`);
