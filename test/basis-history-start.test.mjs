@@ -40,7 +40,7 @@ const STAMP_BY = "2026-11-14";
 const PAST_STAMP_BY = new Date().toISOString().slice(0, 10) > STAMP_BY;
 
 function tracked(dir) {
-  return execFileSync("git", ["ls-files", "--", dir], { cwd: ROOT, encoding: "utf8" }).split("\n").filter(Boolean);
+  return execFileSync("git", ["ls-files", "--", dir], { cwd: ROOT, encoding: "utf8", maxBuffer: 1 << 26 }).split("\n").filter(Boolean);
 }
 function readJSON(rel) {
   return JSON.parse(fs.readFileSync(path.join(ROOT, rel), "utf8"));

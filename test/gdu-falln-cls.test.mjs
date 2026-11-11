@@ -20,7 +20,9 @@ import { extname, join, normalize } from "node:path";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 const GDU = readFileSync(ROOT + "gdu-calculator.html", "utf8");
-const FN = readFileSync(ROOT + "fall-nitrogen.html", "utf8");
+// /fall-nitrogen is the fall anhydrous tab of /spray since Nov 11, 2026: its style and code are in components/fold/ (its layout
+// check in a browser is in test/weather-fold-nov11.test.mjs)
+const FN = ["components/fold/fall-nitrogen.css", "components/fold/fall-nitrogen.js"].map((f) => readFileSync(ROOT + f, "utf8")).join("\n");
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";
 const CHROME = process.env.CHROMIUM_PATH || "/opt/pw-browsers/chromium";
 let chromium = null;
@@ -71,7 +73,7 @@ async function measure(page, w, h, mobile, twoParts) {
   } finally { await browser.close(); srv.close(); }
 }
 
-for (const [page, twoParts] of [["/gdu-calculator", false], ["/gdu-calculator", true], ["/fall-nitrogen", false]]) {
+for (const [page, twoParts] of [["/gdu-calculator", false], ["/gdu-calculator", true]]) {
   for (const [w, h, mobile] of [[390, 844, true], [1280, 900, false]]) {
     test(`${page}${twoParts ? " (painted in two parts)" : ""} at ${w}px: layout shift under 0.005`, { skip, timeout: 120000 }, async () => {
       const cls = await measure(page, w, h, mobile, twoParts);

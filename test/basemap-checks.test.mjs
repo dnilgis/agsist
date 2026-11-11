@@ -38,7 +38,7 @@ test("the site as it stands: every served file read, no rented tile host, every 
   assert.deepEqual(r.vendors, []);
   assert.deepEqual(r.templates, []);
   const names = new Set(servedFiles(ROOT));
-  for (const f of ["field-scout.js", "field-scout-read.js", "field-scout-land.js", "field-scout-layers.js", "field-scout-extras.js", "components/radar-rain-page.js", "rain-radar.html", "field-scout.html"])
+  for (const f of ["field-scout.js", "field-scout-read.js", "field-scout-land.js", "field-scout-layers.js", "field-scout-extras.js", "components/radar-rain-page.js", "rain.html", "field-scout.html"])
     assert.ok(names.has(f), f + " is scanned");
   assert.ok(r.okTemplates.some((x) => x.startsWith("field-scout.js -> https://basemap.nationalmap.gov/") && x.includes("USGSImageryOnly")), "Field Scout satellite is USGS");
   assert.ok(r.okTemplates.some((x) => x.startsWith("field-scout.js -> https://basemap.nationalmap.gov/") && x.includes("USGSTopo")), "Field Scout map is USGS");

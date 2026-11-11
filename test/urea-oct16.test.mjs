@@ -35,7 +35,7 @@ function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
-    if (p === "/urea") p = "/urea.html";
+    if (p === "/spray") p = "/spray.html";   // urea loss is a tab of /spray since Nov 11, 2026
     const f = normalize(join(ROOT, p));
     if (!f.startsWith(ROOT) || !existsSync(f)) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" });
@@ -74,10 +74,11 @@ async function open(browser, port, { admin1 = "Iowa", name = "Ames", sums = [0, 
     }
     return r.abort();
   });
-  await pg.goto(`http://127.0.0.1:${port}/urea`);
+  await pg.goto(`http://127.0.0.1:${port}/spray#urea`);
+  await pg.waitForSelector("#p-urea[data-ready]");
   await pg.evaluate((t) => { try { localStorage.clear(); if (t) localStorage.setItem("agsist-urea-field", JSON.stringify({ till: t })); } catch (e) {} }, till);
   if (till) await pg.reload();
-  await pg.waitForSelector("#btn-show-zip");
+  await pg.waitForSelector("#u-btn-show-zip");
   await pg.$eval("#zip-row", (e) => { e.style.display = "flex"; });
   await pg.fill("#urea-zip", "50010");
   await pg.press("#urea-zip", "Enter");
@@ -87,7 +88,8 @@ async function open(browser, port, { admin1 = "Iowa", name = "Ames", sums = [0, 
 const txt = (pg, sel) => pg.$eval(sel, (e) => e.textContent.trim());
 
 
-const HTML = readFileSync(ROOT + "urea.html", "utf8");
+// the urea tab: its markup in spray.html, its code and style in components/fold/ (ids /spray also uses carry u-)
+const HTML = ["spray.html", "components/fold/urea.js", "components/fold/urea.css"].map((f) => readFileSync(ROOT + f, "utf8")).join("\n");
 
 test("half an inch tomorrow: spread before the rain, with the chance", { skip }, async () => {
   const srv = await serve(), port = srv.address().port;
@@ -97,8 +99,8 @@ test("half an inch tomorrow: spread before the rain, with the chance", { skip },
     const v = await txt(pg, "#risk-verdict");
     assert.match(v, /^Spread before the rain: 0\.60 in forecast for tomorrow \(70% chance\)/);
     assert.doesNotMatch(v, /wetter window|Do not apply/);
-    assert.equal(await txt(pg, "#rec-head"), "Spread Before the Rain");
-    assert.doesNotMatch(await txt(pg, "#rec-text"), /delay|wetter/i);
+    assert.equal(await txt(pg, "#u-rec-head"), "Spread Before the Rain");
+    assert.doesNotMatch(await txt(pg, "#u-rec-text"), /delay|wetter/i);
     assert.deepEqual(errors, []);
   } finally { await browser.close(); srv.close(); }
 });
@@ -108,7 +110,7 @@ test("no-till: 0.60 in is partial (1.5 in needed on residue); 1.6 in is enough",
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
     const a = await open(browser, port, { sums: [0, 15.24, 0, 0, 0], till: "1.5" });
-    assert.equal(await txt(a.pg, "#rec-head"), "Partial on Residue");
+    assert.equal(await txt(a.pg, "#u-rec-head"), "Partial on Residue");
     assert.match(await txt(a.pg, "#risk-verdict"), /1\.5 in within two days/);
     await a.ctx.close();
     const b = await open(browser, port, { sums: [0, 40.64, 0, 0, 0], till: "1.5" });

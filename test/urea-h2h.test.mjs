@@ -35,7 +35,7 @@ function serve() {
   const types = { ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".html": "text/html", ".woff2": "font/woff2", ".svg": "image/svg+xml" };
   const srv = createServer((req, res) => {
     let p = decodeURIComponent(new URL(req.url, "http://x").pathname);
-    if (p === "/urea") p = "/urea.html";
+    if (p === "/spray") p = "/spray.html";   // urea loss is a tab of /spray since Nov 11, 2026
     const f = normalize(join(ROOT, p));
     if (!f.startsWith(ROOT) || !existsSync(f)) { res.writeHead(404); res.end(); return; }
     res.writeHead(200, { "content-type": types[extname(f)] || "application/octet-stream" });
@@ -74,9 +74,10 @@ async function open(browser, port, { admin1 = "Iowa", name = "Ames", sums = [0, 
     }
     return r.abort();
   });
-  await pg.goto(`http://127.0.0.1:${port}/urea`);
+  await pg.goto(`http://127.0.0.1:${port}/spray#urea`);
+  await pg.waitForSelector("#p-urea[data-ready]");
   await pg.evaluate(() => { try { localStorage.clear(); } catch (e) {} });
-  await pg.waitForSelector("#btn-show-zip");
+  await pg.waitForSelector("#u-btn-show-zip");
   await pg.$eval("#zip-row", (e) => { e.style.display = "flex"; });
   await pg.fill("#urea-zip", "50010");
   await pg.press("#urea-zip", "Enter");
@@ -129,7 +130,7 @@ test("half an inch or more tomorrow counts as incorporating rain in the headline
     assert.match(v, /0\.60 in/);
     assert.match(v, /tomorrow/);
     assert.match(v, /if it comes/);
-    assert.match(await txt(pg, "#factor-section"), /0\.60 in tomorrow/);
+    assert.match(await txt(pg, "#u-factor-section"), /0\.60 in tomorrow/);
   } finally { await browser.close(); srv.close(); }
 });
 

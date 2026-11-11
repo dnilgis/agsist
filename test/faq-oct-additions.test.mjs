@@ -42,13 +42,15 @@ const PAGES = {
   "cash-lease": [8, ["Can I mail the notice to end an Iowa farm lease, and when does it have to go out?", "In Kansas, what happens to the wheat if I give notice after my tenant already planted it?", "How much notice does Wisconsin want to end a year-to-year farm lease?"]],
   "cattle-auction-prices": [10, ["What is value of gain, and how do I use it?", "What's the difference between a large frame and a medium frame calf?", "What makes a calf grade a 3 instead of a 1?", "Will my beef on dairy calves grade a 1?"]],
   "combine-loss": [9, ["Can I just go by the loss monitor in the cab?", "How do I cut shatter loss in soybeans?", "What gap should I run on the deck plates of the corn head?"]],
-  "drought-monitor": [9, ["How many weeks does my county have to be in D2 before LFP kicks in?", "What's the most LFP will pay me in a year?", "Does grazing corn stalks count for LFP if we're in drought?"]],
+  // Nov 11, 2026: the drought monitor is a tab of /rain; its 9 questions join the radar tab's 6 in /rain's one FAQPage
+  "rain": [15, ["How many weeks does my county have to be in D2 before LFP kicks in?", "What's the most LFP will pay me in a year?", "Does grazing corn stalks count for LFP if we're in drought?"]],
   "fast-facts": [6, ["When is it worth spraying Japanese beetles on corn silks?", "When do I start and stop scouting beans for aphids?"]],
   "grain-emc": [11, ["How long will 15% corn keep in the bin?"]],
   "harvest-or-wait": [9, ["Can I just leave my corn standing over winter?", "My corn froze before it was mature. Does it still dry down like the table says?", "How far can I trust my moisture tester on wet corn this time of year?"]],
   "lrp": [12, ["Can I buy LRP on calves that are not born yet?", "Does LRP cover dairy cull cows?", "Can I use LRP if I am selling on a forward contract?"]],
   "planting-date": [8, ["Does planting corn too early mess up my crop insurance?", "Should I switch to an earlier corn hybrid if I'm planting late?", "If my soybeans go in mid-May, do I change maturity group or seeding rate?"]],
-  "spray": [16, ["Where can I see live inversion readings for my state?", "Why is EPA so strict about dicamba drift?", "Which crops can I spray dicamba over the top of?"]],
+  // Nov 11, 2026: /spray's 16, then the urea tab's 6 and the fall anhydrous tab's 6, in one FAQPage
+  "spray": [28, ["Where can I see live inversion readings for my state?", "Why is EPA so strict about dicamba drift?", "Which crops can I spray dicamba over the top of?"]],
   "usda-calendar": [11, ["What happens if I miss the Dec. 11 ARC/PLC deadline for 2026?"]],
   "breakeven": [8, ["How much profit per acre is corn expected to make in 2027?", "How much does a small move in corn price change my return per acre?"]],
   "commodity-loan": [8, ["Will the loan rate stay the same next year or change?", "Can I get a loan on wheat or oats too, or just corn and beans?"]],

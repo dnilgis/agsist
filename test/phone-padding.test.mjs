@@ -146,7 +146,7 @@ const NESTED = [
   ["/combine-loss", "#cl-answer .cl-kv", 332], ["/grain-shrink", "#gs-answer div", 332], ["/commodity-loan", "#lo-answer > div", 332], ["/harvest-or-wait", "#hw-answer > div", 332],
   ["/corn-futures-prices", ".sc-f", 318], ["/soybean-futures-prices", ".sc-f", 318], ["/wheat-futures-prices", ".sc-f", 318],
   ["/cattle-futures-prices", ".ctcot-box", 316], ["/conditions", "#cyn-corn", 334], ["/spray", ".edu-card-tip", 312], ["/spray", ".inv-layer", 310],
-  ["/urea", ".soil-air-card", 336], ["/milk-prices", ".dp-ppd-class", 312], ["/cash-lease", ".np-box", 318], ["/cattle-auction-prices", "#vog-out", 332],
+  ["/spray#urea", ".soil-air-card", 336], ["/milk-prices", ".dp-ppd-class", 312], ["/cash-lease", ".np-box", 318], ["/cattle-auction-prices", "#vog-out", 332],
   ["/developer", "pre#ifr-gdu", 336], ["/field-scout", "#fs-saved", 336],
 ];
 
