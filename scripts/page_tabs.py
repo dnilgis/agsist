@@ -37,7 +37,7 @@ def css(ids):
             ".ptab-bar a{flex:0 0 auto;display:flex;align-items:center;gap:.35rem;min-height:44px;padding:.35rem .85rem;"
             "border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;color:var(--text-dim);font-weight:700;"
             "font-size:.92rem;text-decoration:none;white-space:nowrap;margin-bottom:-1px}"
-            ".ptab-bar a:hover{color:var(--text)}"
+            ".ptab-bar a:hover{color:var(--text)}.ptab-bar a[role=tab]{scroll-margin-top:5rem}"
             ".ptab-bar a[aria-selected=\"true\"]{color:var(--text);background:var(--surface);border-color:var(--border);"
             "box-shadow:inset 0 3px 0 var(--gold)}"
             ".ptab-bar a:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}"
@@ -53,10 +53,11 @@ def css(ids):
 def open_html(ids, default, label, tabs, indent="  "):
     """tabs: [(id, words)] in order. Returns the box's opening tag, the bar and the early pick;
     the caller writes the panels (<section class="ptab" id="p-<id>" role="tabpanel"
-    aria-labelledby="t-<id>">) and closes the box with </div>."""
+    aria-labelledby="<id>">) and closes the box with </div>. Each tab link carries the tab's own name as its id,
+    so /rain#drought (the old page's forward) lands on the tab bar with that tab open."""
     assert [t[0] for t in tabs] == list(ids) and default in ids
     sel = ' aria-selected="true"'
-    links = "".join(f'<a role="tab" id="t-{i}" href="#p-{i}" data-tab="{i}" aria-controls="p-{i}"'
+    links = "".join(f'<a role="tab" id="{i}" href="#p-{i}" data-tab="{i}" aria-controls="p-{i}"'
                     f'{sel if i == default else ""}>{w}</a>' for i, w in tabs)
     return (f'{indent}<div class="ptabs" data-ptabs="{" ".join(ids)}" data-default="{default}">\n'
             f'{indent}  <div class="ptab-bar" role="tablist" aria-label="{label}">{links}</div>\n'
@@ -64,7 +65,7 @@ def open_html(ids, default, label, tabs, indent="  "):
 
 
 def panel_open(i, extra="", indent="  "):
-    return f'{indent}<section class="ptab" id="p-{i}" role="tabpanel" aria-labelledby="t-{i}"{extra}>\n'
+    return f'{indent}<section class="ptab" id="p-{i}" role="tabpanel" aria-labelledby="{i}"{extra}>\n'
 
 
 def selftest():

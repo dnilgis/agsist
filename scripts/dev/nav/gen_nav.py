@@ -40,17 +40,15 @@ LIVESTOCK = [
             ("/prf", "PRF", "i-shield-check")]),
 ]
 FIELD = [
-    ("Weather", [("/rain-radar", "Rain on your field", "i-cloud-rain"),
-                 ("/rain", "Rain by county", "i-map"),
+    # Nov 11, 2026 (weather, 7 pages to 3): radar and drought are tabs of /rain; urea loss and fall
+    # anhydrous are tabs of /spray (scripts/moved_pages.py forwards the old addresses)
+    ("Weather", [("/rain", "Rain and drought", "i-cloud-rain"),
                  ("/hail-map", "Hail map", "i-cloud-hail"),
-                 ("/drought-monitor", "Drought monitor", "i-sun"),
-                 ("/spray", "Spray advisory", "i-spray-can"),
-                 ("/fall-nitrogen", "Soil temp (fall anhydrous)", "i-thermometer"),
+                 ("/spray", "Spray, urea and soil temp", "i-spray-can"),
                  ("/rain-print", "Rain Print", "i-cloud-rain"),
                  ("/rain-gauge", "Rain gauge waitlist", "i-test-tube")]),
     ("Crop", [("/gdu-calculator", "GDU", "i-thermometer"),
               ("/planting-date", "Planting date", "i-calendar-days"),
-              ("/urea", "Urea loss", "i-flask-conical"),
               ("/nutrient-removal", "Nutrient removal", "i-sprout"),
               ("/manure-value", "Manure value", "i-sprout"),
               ("/field-scout", "Field Scout", "i-satellite"),

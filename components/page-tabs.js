@@ -4,10 +4,10 @@
  * Markup (one block per page):
  *   <div class="ptabs" data-ptabs="radar county drought" data-default="radar">
  *     <div class="ptab-bar" role="tablist" aria-label="...">
- *       <a role="tab" id="t-radar" href="#p-radar" data-tab="radar" aria-controls="p-radar">...</a> ...
+ *       <a role="tab" id="radar" href="#p-radar" data-tab="radar" aria-controls="p-radar">...</a> ...
  *     </div>
  *     <script> the early pick (PICK below, copied inline): sets data-on before the panels paint </script>
- *     <section class="ptab" id="p-radar" role="tabpanel" aria-labelledby="t-radar"
+ *     <section class="ptab" id="p-radar" role="tabpanel" aria-labelledby="radar"
  *              data-js="/a.js /b.js" data-css="/c.css /d.css"> ... </section> ...
  *   </div>
  *
@@ -87,7 +87,7 @@
       if (opts.hash) {
         try { history.replaceState(history.state, '', location.pathname + location.search + '#' + id); } catch (e) { location.hash = id; }
       }
-      if (opts.focus) { var t = document.getElementById('t-' + id); if (t) t.focus(); }
+      if (opts.focus) { var t = document.getElementById(id); if (t) t.focus(); }
       if (window.gaEvent && opts.hash) { try { window.gaEvent('page_tab', { tab: id, page: location.pathname }); } catch (e) {} }
     }
 
