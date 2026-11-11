@@ -38,12 +38,8 @@ if [ "$LIST" = 0 ] && picked node-test; then
   # builder-only data moved off main on Nov 4 (test/raw-readers.test.mjs); test/funds-weekly.test.mjs reads this one
   [ -s data/cot-deep.json ] || bash scripts/pull_raw.sh data/cot-deep.json >/dev/null || { echo "FAIL cot-deep-pull (bash scripts/pull_raw.sh data/cot-deep.json)"; fails=$((fails+1)); }
 fi
-# AGSIST_PREBUILD=1 (the PR checks and main-checks.yml set it): first build the files that are built on
-# main (scripts/dev/main_build.py: What's new, the changelog, the test map) in this copy, so every check
-# sees what main will serve. A pull request never commits them (the built-guard line below).
-if [ "$LIST" = 0 ] && [ "${AGSIST_PREBUILD:-}" = 1 ]; then
-  pb=$(python3 scripts/dev/main_build.py build 2>&1) || { echo "FAIL prebuild (python3 scripts/dev/main_build.py build)"; echo "$pb" | tail -25; fails=$((fails+1)); }
-fi
+# Generated pages first, then the built files, as on main (main-checks.yml: the generated job, then the rebuild): the
+# test map reads the pages, so a map built before the pages are regenerated is stale against them (PR #563).
 # AGSIST_GEN_BASE (the PR checks set it): a generated page set whose builder the change touches is rebuilt in this
 # copy too (scripts/generated_sets.py prebuild), so its --check and the tests see what main will serve after
 # the rebuild there. Nothing is committed: generated pages are built on main.
@@ -51,6 +47,12 @@ if [ "$LIST" = 0 ] && [ "${AGSIST_PREBUILD:-}" = 1 ] && [ -n "${AGSIST_GEN_BASE:
   gp=$(python3 scripts/generated_sets.py prebuild --base "$AGSIST_GEN_BASE" 2>&1); grc=$?
   echo "$gp" | grep -E '^prebuild' >&2
   [ $grc = 0 ] || { echo "FAIL gen-prebuild (python3 scripts/generated_sets.py prebuild --base $AGSIST_GEN_BASE)"; echo "$gp" | tail -25; fails=$((fails+1)); }
+fi
+# AGSIST_PREBUILD=1 (the PR checks and main-checks.yml set it): first build the files that are built on
+# main (scripts/dev/main_build.py: What's new, the changelog, the test map) in this copy, so every check
+# sees what main will serve. A pull request never commits them (the built-guard line below).
+if [ "$LIST" = 0 ] && [ "${AGSIST_PREBUILD:-}" = 1 ]; then
+  pb=$(python3 scripts/dev/main_build.py build 2>&1) || { echo "FAIL prebuild (python3 scripts/dev/main_build.py build)"; echo "$pb" | tail -25; fails=$((fails+1)); }
 fi
 NT="$OUT/nt${SHARD:+-${SHARD%/*}of${SHARD#*/}}.out"
 # AGSIST_NO_SKIPS=1 (the PR checks set it): a skipped node test fails node-test too, a skip is not a pass

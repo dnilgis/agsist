@@ -265,6 +265,8 @@ test('the pick: the guard picks, the shards run the pick or every test, and ever
   const src = read('scripts/dev/checks.sh');
   assert.match(src, /AGSIST_PREBUILD:-\}" = 1 \]; then\n\s+pb=\$\(python3 scripts\/dev\/main_build\.py build/);
   for (const n of ['built-guard', 'built-inputs', 'built-files']) assert.ok(list().includes(n), n);
+  // the generated pages are rebuilt before the built files, as on main: the test map reads the pages
+  assert.ok(src.indexOf('generated_sets.py prebuild') < src.indexOf('main_build.py build 2>&1'), 'gen-prebuild runs before the main_build prebuild');
 });
 
 test('main-checks.yml: rebuilds the built files, then every test on that commit, nightly and on each push; red opens the issue', () => {
