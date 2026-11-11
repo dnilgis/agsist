@@ -248,6 +248,16 @@ test("only what the published test kept can move the pick", () => {
   assert.ok(/not known yet/.test(f.tiltNotes.join(" ")), f.tiltNotes.join(" "));
   const d = O.recommend(fxInput(90), { backtest: false, tilts: ["last30"], objective: "dry" });
   assert.equal(d.forecast, null, "the tilts were tested on the rate-led pick only");
+  /* a kept idea whose data is not published (the panel passes no climate data): one plain line, no file
+     name, and the pick is the plain one */
+  for (const id of ["pdo-enso", "fc-cfsv2"]) {
+    const u = O.recommend(fxInput(90), { backtest: false, tilts: [id], climate: null, policyYear: 2027 });
+    assert.equal(u.forecast, null, id + ": nothing moves the pick");
+    assert.deepEqual(Array.from(u.rec.split), Array.from(plain.rec.split), id + ": the plain pick");
+    const note = u.tiltNotes.join(" ");
+    assert.match(note, /held up in the test, but this predictor’s data is not published, so it does not move the pick\./, note);
+    assert.doesNotMatch(note, /\.json|scripts\/|data\/|missing \(/, note);
+  }
 });
 
 test("data/prf/opt.json: one plain line for every idea, the family stated, and kept only by the rule", () => {
