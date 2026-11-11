@@ -727,7 +727,7 @@ def selftest():
        [P([A(status="approved", slot=x)]) for x in ("rent-ca", "rent-nv", "rent-tx", "cash-bids-texas")] == [["held"]] * 4)
     ck("held is said once", P([A(status="approved", slot="rent-ca", notified=2)]) == [])
     ck("approved daily is handed to Sig, never auto-live", P([A(status="approved", tier="daily")]) == ["daily"])
-    ck("a state card booking (state-xx) is handed to Sig, never auto-live", P([A(status="approved", slot="state-ia")]) == ["daily"])
+    ck("a state card booking (state-xx) is handed to the owner, never auto-live", P([A(status="approved", slot="state-ia")]) == ["daily"])
     ck("a Featured elevator is handed to Sig, never auto-live", P([A(status="approved", slot="fe-wi-cadott")]) == ["daily"])
     ck("a retired page slot or Supporter is handed to Sig, never auto-live",
        P([A(status="approved", slot="spray")]) == ["daily"] and P([A(status="approved", tier="supporter", slot="footer")]) == ["daily"])

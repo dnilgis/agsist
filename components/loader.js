@@ -601,7 +601,8 @@
   /* The sitewide sponsor line, under the live nav on every page but Rain Print, gift and gauge pages.
      data/sponsor.json is the sitewide sponsor (it also feeds the Daily line); an open spot prints the
      engaged visits from data/sponsor-spots.json and the price from data/rate-card.json. ?sponsor-preview=1
-     draws a sample sold line and counts nothing. styles.css holds its height in the header placeholder. */
+     draws a sample sold line and counts nothing. styles.css holds its height in the header placeholder; on a phone the homepage holds it in #sw-home,
+     under the three jobs. */
   function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   function swSold(sp) {
     return !!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''));
@@ -628,7 +629,11 @@
     line.id = 'ag-sw';
     line.className = 'sw-line';
     line.setAttribute('aria-label', 'Sponsor');
-    if (before && before.parentNode === parent) parent.insertBefore(line, before); else parent.appendChild(line);
+    var home = document.getElementById('sw-home');
+    var inHome = false;
+    try { inHome = !!home && window.getComputedStyle(home).display !== 'none'; } catch (e) {}
+    if (inHome) home.appendChild(line);
+    else if (before && before.parentNode === parent) parent.insertBefore(line, before); else parent.appendChild(line);
     var preview = /[?&]sponsor-preview=1(?:&|$)/.test(location.search);
     Promise.all([swGet('/data/sponsor.json'), swGet('/data/rate-card.json'), swGet('/data/sponsor-spots.json')]).then(function (r) {
       var o = swLine(r[0], r[1], r[2], preview);

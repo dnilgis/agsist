@@ -158,7 +158,7 @@
     var soon = held(card, st);
     return '<div class="ss-box ss-open"><p class="ss-tag">' + esc(name) + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '.</p>' +
       '<p class="ss-txt">' + nums + (p && !soon ? '$' + num(p) + ' a month, one business.' : 'One business per state.') + '</p>' +
-      '<a class="ss-go" href="/sponsor?state=' + st + '#state" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'state_open\'})">See it</a></div>';
+      '<a class="ss-go" href="/sponsor?state=' + st + '#state">See it</a></div>';
   }
   var SAMPLE = { id: 'sample', name: 'Your Business', states: [], headline: 'Your headline here',
     body: 'One or two lines about your business, for readers in this state.', cta_text: 'Visit', url: 'https://agsist.com/sponsor', logo: '' };
@@ -296,7 +296,7 @@
         return;
       }
       var e = choose(data, ps, day, false);
-      if (ps && !e) {
+      if (ps && !e && spot()) {
         return prfSold(ps, day).then(function (sold) { if (!sold) drawOpen(ps); });
       }
       if (!anyLive(data, day)) return;
@@ -306,7 +306,7 @@
         if (!r) return;
         return prfSold(ps || r.st, day).then(function (sold) { if (!sold) draw(r.e, r.s, rib, false); });
       });
-    }).catch(function () { if (ps) drawOpen(ps); });
+    }).catch(function () { if (ps && spot()) drawOpen(ps); });
   }
   root.AgsistGeo = { run: run };
 })(typeof window !== 'undefined' ? window : this);

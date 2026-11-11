@@ -406,7 +406,8 @@ test("browser: the home page draws for a CA answer from /where, keeps only CA, a
       console.log(`# CLS / with CA @${w}: total ${c.total.toFixed(4)}, after the ad ${c.afterAd}`);
       await shot(pg, `home-ca-${w}.png`);
       // the next page in the same session does not ask again
-      await pg.goto(`http://127.0.0.1:${port}/rain/iowa.html`, { waitUntil: "load" });
+      // (an Iowa county page: the Iowa state page's own spot is Iowa's, Nov 11, 2026)
+      await pg.goto(`http://127.0.0.1:${port}/rain/iowa/story-county.html`, { waitUntil: "load" });
       await pg.waitForTimeout(1500);
       assert.equal(log.where, 1, "one lookup per session");
       await drawn(pg);
