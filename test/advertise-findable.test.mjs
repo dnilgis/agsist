@@ -55,16 +55,18 @@ test("footer: Advertise with AGSIST in the always-open bottom row (the data line
   assert.match(footer, /\.footer-small a\.footer-adv\{display:inline;padding:15px 0;/, "a 44 px tap target that adds no height");
 });
 
-test("open slot: the Sponsor this page line is retired; the loader's tier rule still matches the slot list", () => {
-  const a = loader.indexOf("function openSlotLine"), b = loader.indexOf("function fillPageRibbons");
+test("open slot: the Sponsor this page line is retired and its code is gone; the slot list keeps its tier rule", () => {
+  // Nov 11, 2026: ribbon spots are retired as products; an unsold ribbon draws nothing and loader.js carries no open-slot code
+  for (const w of ["openSlotLine", "openSlotTier", "OPEN_SLOT_LINE", "ag-open-slot", "Sponsor this page", "cta_source:\\'open_slot\\'"])
+    assert.ok(!loader.includes(w), "loader.js still carries " + w);
+  const a = loader.indexOf("  function fillPageRibbons"), b = loader.indexOf("rib.classList.add('ag-sponsor-ribbon--sold')");
   assert.ok(a > 0 && b > a, "loader.js moved; update this test");
-  assert.match(loader, /var OPEN_SLOT_LINE = false;/, "no open-slot line on any ribbon");
-  assert.match(loader.slice(a, b), /if \(!OPEN_SLOT_LINE \|\|/);
-  // the loader's rule is the same rule scripts/stamp_rates.py writes into data/sponsor-slots.json
-  const tierOf = new Function("id", loader.slice(loader.indexOf("function openSlotTier"), a) + "return openSlotTier(id);");
+  assert.doesNotMatch(loader.slice(a, b), /rib\.innerHTML|rib\.classList\.add|rib\.setAttribute/, "an unsold ribbon is written to before the sold check");
+  // the slot list scripts/stamp_rates.py writes keeps the tier rule the loader used to share
+  const tierOf = (id) => (id === "cash-bids" ? "cashbids" : /^(cash-bids-[a-z]+(-[a-z]+)*|rent-[a-z]{2})$/.test(id) ? "state" : "");
   const slots = JSON.parse(read("data/sponsor-slots.json")).slots;
   assert.ok(slots.length > 75);
-  for (const e of slots) assert.equal(tierOf(e.id) || null, e.tier, e.id + ": loader and slot list disagree on its tier");
+  for (const e of slots) assert.equal(tierOf(e.id) || null, e.tier, e.id + ": the rule and the slot list disagree on its tier");
   // a sold ribbon from an older deal still draws
   assert.match(loader, /rib\.classList\.add\('ag-sponsor-ribbon--sold'\)/);
 });

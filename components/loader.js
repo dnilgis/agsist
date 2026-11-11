@@ -499,23 +499,7 @@
     if (!hide) return;
     document.querySelectorAll('#topnav [data-sponsor-link], #drawer [data-sponsor-link]').forEach(function (a) { a.style.setProperty('display', 'none', 'important'); });
   }
-  var COUNTER_URL = '';
   function renderSupporters() {
-    function esc(s) {
-      return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
-        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
-      });
-    }
-    if (COUNTER_URL) {
-      fetch(COUNTER_URL, { cache: 'no-store' })
-        .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-        .then(function (d) {
-          var n = Number(d && d.views);
-          var el = document.querySelector('[data-adviews]');
-          if (el && isFinite(n) && n > 0) el.textContent = n.toLocaleString('en-US');
-        })
-        .catch(function () { });
-    }
     var row = document.getElementById('adspace-row');
     if (!row) return;
     var strip = document.getElementById('footer-adspace');
@@ -569,25 +553,6 @@
       (s.blurb ? '<span class="ad-filled-blurb">' + slotEsc(s.blurb) + '</span>' : '');
   }
   window.AgsistSlots = { ribbon: function (sp, id) { return ribbonInner(sp, id, false); }, supporter: supporterInner };
-  var OPEN_SLOT_LINE = false;
-  function openSlotTier(id) { return id === 'cash-bids' ? 'cashbids' : /^(cash-bids-[a-z]+(-[a-z]+)*|rent-[a-z]{2})$/.test(id) ? 'state' : ''; }
-  function openSlotLine(rib, id) {
-    var tier = openSlotTier(id);
-    if (!OPEN_SLOT_LINE || !rib || rib.className !== 'ag-sponsor-ribbon' || !tier) return;
-    if (!document.getElementById('ag-open-slot-css')) {
-      var st = document.createElement('style');
-      st.id = 'ag-open-slot-css';
-      st.textContent = 'html body aside.ag-sponsor-ribbon.ag-sponsor-ribbon--open:not(.ag-sponsor-ribbon--sold){display:block!important;margin:0;padding:0;border:0;background:none;box-shadow:none;font-size:.78rem;line-height:1.2;color:var(--text-muted)}' +
-        'aside.ag-sponsor-ribbon--open a.ag-open-slot{display:inline;min-height:0;margin:0;padding:14px 0;background:none;border:0;border-radius:0;box-shadow:none;width:auto;color:var(--text-muted)!important;font-weight:600;text-decoration:underline;text-underline-offset:2px;transform:none}' +
-        'aside.ag-sponsor-ribbon--open a.ag-open-slot:hover,aside.ag-sponsor-ribbon--open a.ag-open-slot:focus-visible{color:var(--brand)!important;box-shadow:none;transform:none}' +
-        '@media print{html body aside.ag-sponsor-ribbon.ag-sponsor-ribbon--open:not(.ag-sponsor-ribbon--sold){display:none!important}}';
-      document.head.appendChild(st);
-    }
-    rib.classList.add('ag-sponsor-ribbon--open');
-    rib.setAttribute('aria-label', 'Sponsor this page');
-    rib.innerHTML = '<a class="ag-open-slot" href="' + BASE + '/sponsor-apply?tier=' + tier + '&amp;slot=' + encodeURIComponent(id) +
-      '" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'open_slot\'})">Sponsor this page</a>';
-  }
   var GEO_SKIP = /^\/(rain-print|rp-gift|rain-gauge|gifts-for-farmers|birth-year-weather-gift|wedding-year-weather-gift|farm-anniversary-gifts|farmer-retirement-gifts)(?:[.\/-]|$)/;
   function geoSponsor(noSponsor, rib) {
     if (noSponsor || window.__geoSponsor || GEO_SKIP.test(location.pathname)) return;
@@ -598,11 +563,7 @@
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
   }
-  /* The sitewide sponsor line, under the live nav on every page but Rain Print, gift and gauge pages.
-     data/sponsor.json is the sitewide sponsor (it also feeds the Daily line); an open spot prints the
-     engaged visits from data/sponsor-spots.json and the price from data/rate-card.json. ?sponsor-preview=1
-     draws a sample sold line and counts nothing. styles.css holds its height in the header placeholder; on a phone the homepage holds it in #sw-home,
-     under the three jobs. */
+  /* Sitewide sponsor line under the nav (not on GEO_SKIP pages): data/sponsor.json sold, else the open spot. */
   function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   function swSold(sp) {
     return !!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''));
@@ -664,7 +625,6 @@
         var today;
         try { today = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date()); }
         catch (e) { today = new Date().toISOString().slice(0, 10); }
-        if (!noSponsor && (!sp || sp.active === false)) openSlotLine(rib, id);
         var sold = !!sp && sp.active !== false && !!sp.company && /^https?:\/\//.test(sp.url || '') &&
             /^\d{4}-\d{2}-\d{2}$/.test(sp.start || '') && sp.start <= today;
         if (!sold) geoSponsor(noSponsor, rib);

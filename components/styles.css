@@ -626,10 +626,7 @@ summary:focus-visible, .pc:focus-visible {
 .nav-grp-lbl{font-family:var(--font-mono);font-size:0.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);padding:.55rem 1.1rem .2rem}
 .nav-panel > .nav-grp-lbl:first-child{padding-top:.15rem}
 .draw-grp-lbl{font-family:var(--font-mono);font-size:0.755rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);padding:.5rem 1.1rem .1rem}
-/* The sitewide sponsor line sits under the live nav (components/loader.js puts it there in the same step
-   as the nav). The placeholder holds the nav plus the line, so nothing moves when they land. Pages with
-   no sponsor line (Rain Print, gift and gauge pages) carry body.no-sw. */
-:root{--sw-h:36px}
+:root{--sw-h:36px;--ss-h:204px}
 @media (max-width:700px){:root{--sw-h:54px}}
 body.no-sw{--sw-h:0px}
 #site-header{min-height:calc(74px + var(--sw-h))}
@@ -644,24 +641,11 @@ body.no-sw{--sw-h:0px}
 .sw-line--sold .sw-in b{color:var(--text)}
 .sw-line--sold .sw-in a{color:#e8743a}
 html[data-theme="light"] .sw-line--sold .sw-in a{color:#a8380a}
-@media print{.sw-line{display:none!important}}
-/* The state spot: the box every state page builder writes directly below the main answer. Its height is held
-   from the first paint, so the sponsor card or the open-spot box lands without moving anything
-   (components/geo-sponsor.js fills it). */
-:root{--ss-h:204px}
 @media (max-width:560px){:root{--ss-h:224px}}
 .state-spot{display:block;box-sizing:border-box;min-height:var(--ss-h);max-width:760px;margin:1.25rem 0}
 .state-spot[hidden]{display:none}
 .state-spot .geo-spon{margin:0;max-width:none}
-.ss-box{box-sizing:border-box;min-height:var(--ss-h);display:grid;grid-template-columns:72px 1fr;grid-template-rows:auto auto auto;column-gap:1rem;row-gap:.45rem;align-content:center;padding:1rem 1.25rem;border:1.5px dashed var(--text-dim);border-radius:12px;background:transparent}
-.ss-box::before{content:"+";grid-row:1/4;align-self:center;display:flex;align-items:center;justify-content:center;width:72px;height:72px;border:1.5px dashed var(--text-dim);border-radius:16px;font-size:1.8rem;line-height:1;color:var(--text-dim)}
-.ss-tag{margin:0;font-family:var(--font-mono);font-size:.74rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim)}
-.ss-txt{margin:0;font-size:1rem;line-height:1.5;color:var(--text-muted)}
-.ss-go{justify-self:start;display:inline-flex;align-items:center;min-height:44px;padding:0 1.1rem;border:1.5px solid var(--text-dim);border-radius:8px;font-weight:700;color:var(--text);text-decoration:none;white-space:nowrap}
-.ss-go::after{content:" \2192";margin-left:.35rem}
-.ss-go:hover,.ss-go:focus-visible{border-color:var(--brand);color:var(--brand)}
-@media (max-width:560px){.ss-box{grid-template-columns:52px 1fr;column-gap:.8rem;padding:.95rem 1rem}.ss-box::before{width:52px;height:52px;border-radius:12px;font-size:1.4rem;grid-row:1/3;align-self:start}.ss-go{grid-column:1/3}}
-@media print{.state-spot{display:none!important}}
+@media print{.sw-line,.state-spot{display:none!important}}
 [data-signup-ask]:not([data-sa-ready]):not([data-variant]){display:block;box-sizing:border-box;min-height:122px;margin:14px 0}
 @media (min-width:520px){[data-signup-ask]:not([data-sa-ready]):not([data-variant]){min-height:101px}}
 @media (min-width:900px){[data-signup-ask]:not([data-sa-ready]):not([data-variant]){min-height:73px}}
@@ -696,7 +680,6 @@ td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;
 aside.ag-sponsor-ribbon:not(.ag-sponsor-ribbon--sold):not(.idx1-sponsor){display:none!important}
 .ag-sponsor-ribbon{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .75rem;font-size:.86rem;line-height:1.5;padding:.75rem .9rem .75rem 1rem;margin:1.1rem 0;border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.55);border-left:5px solid var(--ad-orange,#e8743a);border-radius:10px;background:linear-gradient(100deg,rgba(var(--ad-orange-rgb,232,116,58),.17),rgba(var(--ad-orange-rgb,232,116,58),.05) 55%,rgba(var(--ad-orange-rgb,232,116,58),.10));box-shadow:0 2px 14px rgba(var(--ad-orange-rgb,232,116,58),.14);color:var(--text-dim)}
 .ag-sponsor-ribbon .ag-sponsor-tag{display:inline-flex;align-items:center;gap:.4rem;font-family: var(--font-mono);font-size:.72rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:#0d1117;background:var(--ad-orange,#e8743a);border-radius:999px;padding:.22rem .65rem .22rem .5rem;white-space:nowrap}
-.ag-sponsor-ribbon .ag-sponsor-price{font-family: var(--font-mono);font-size:.8rem;font-weight:800;color:var(--text);background:var(--surface,rgba(255,255,255,.04));border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.6);border-radius:6px;padding:.18rem .55rem;white-space:nowrap}
 .ag-sponsor-ribbon a[href]{margin-left:auto;display:inline-flex;align-items:center;min-height:44px;padding:.4rem .95rem;border-radius:8px;background:var(--ad-orange,#e8743a);color:#0d1117!important;font-weight:800;text-decoration:none;white-space:nowrap;transition:transform .15s,box-shadow .15s}
 .ag-sponsor-ribbon a[href]:hover{transform:translateY(-1px);box-shadow:0 4px 14px rgba(var(--ad-orange-rgb,232,116,58),.45)}
 @media(max-width:600px){.ag-sponsor-ribbon a[href]{margin-left:0;width:100%;justify-content:center}}
@@ -704,7 +687,6 @@ aside.ag-sponsor-ribbon:not(.ag-sponsor-ribbon--sold):not(.idx1-sponsor){display
 .ag-sponsor-ribbon--sold{background:var(--surface,transparent);box-shadow:none;border-color:var(--border);border-left-color:var(--ad-orange,#e8743a);color:var(--text-dim)}
 .ag-sponsor-ribbon--sold .ag-sponsor-tag{background:transparent;color:var(--ad-orange-ink,#a8380a);border:1px solid rgba(var(--ad-orange-rgb,232,116,58),.6);padding:.15rem .55rem}
 html:not([data-theme="light"]) .ag-sponsor-ribbon--sold .ag-sponsor-tag{color:var(--ad-orange,#e8743a)}
-.ag-sponsor-ribbon--sold .ag-sponsor-tag::before{display:none}
 .ag-sponsor-ribbon--sold .ag-sponsor-logo{height:28px;width:auto;max-width:110px;object-fit:contain}
 .ag-sponsor-ribbon--sold .ag-sponsor-copy{flex:1 1 16rem;min-width:0}
 .ag-sponsor-ribbon--sold .ag-sponsor-copy b{color:var(--text)}

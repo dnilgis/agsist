@@ -271,7 +271,8 @@
     var sp = spot();
     if (!sp) return;
     Promise.all([getJSON('/data/rate-card.json', 4000, { cache: 'no-cache' }).catch(function () { return null; }),
-                 getJSON('/data/sponsor-spots.json', 4000, { cache: 'no-cache' }).catch(function () { return null; })]).then(function (r) {
+                 getJSON('/data/sponsor-spots.json', 4000, { cache: 'no-cache' }).catch(function () { return null; }),
+                 need('link', 'href', '/components/geo-sponsor.css?v=2', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); })]).then(function (r) {
       var html = openHtml(st, r[0], r[1]);
       if (html) sp.innerHTML = html;
     });
