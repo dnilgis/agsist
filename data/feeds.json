@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 98,
- "with_known_cadence": 98,
+ "count": 97,
+ "with_known_cadence": 97,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -261,34 +261,9 @@
    "why_quiet": null
   },
   {
-   "path": "data/bids-stats.json",
-   "pages": [
-    "index.html"
-   ],
-   "written_by": [
-    "Fetch Grain Bids"
-   ],
-   "touched_by": [
-    "Fetch Grain Bids",
-    "Sitemap lastmod"
-   ],
-   "cadence": "about every 60 minutes",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "7 * * * *"
-   ],
-   "max_gap_hours": 1.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/bids.json",
    "pages": [
-    "cash-bids.html",
-    "index.html"
+    "cash-bids.html"
    ],
    "written_by": [
     "Fetch Grain Bids"
@@ -1040,6 +1015,7 @@
   {
    "path": "data/elevator-counts.json",
    "pages": [
+    "index.html",
     "sponsor-kit.html",
     "sponsor-rates.html"
    ],

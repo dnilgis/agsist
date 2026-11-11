@@ -366,7 +366,7 @@ def place_str(fac, branch, city, st):
     return "|".join(clean(x) for x in (fac, branch or "", city, st))
 
 
-def secondary_keys(root, schedules):
+def secondary_keys(root, schedules, ledger_path=None):
     """[(key, info)] for every AGSIST-side spelling of a facility, and the schedule companies."""
     keys = []
     bids = read_json(os.path.join(root, "data", "bids.json"))
@@ -381,6 +381,7 @@ def secondary_keys(root, schedules):
                          "city": clean(b.get("city")), "st": st, "pt": pt(b.get("lat"), b.get("lon")),
                          "place": place_str(b.get("facility"), b.get("branch"), b.get("city"), st),
                          "elevId": clean(b.get("elevId")) or None}))
+    basis_seen = set()
     for f in sorted(glob.glob(os.path.join(root, "data", "basis", "*.json"))):
         if not re.match(r"^[A-Z]{2}\.json$", os.path.basename(f)):
             continue
@@ -388,8 +389,22 @@ def secondary_keys(root, schedules):
         st = d.get("state") or os.path.basename(f)[:2]
         for fk in d.get("f") or []:
             fac, city = (fk.split("|", 1) + [""])[:2]
+            basis_seen.add(f"basis:{st}|{fk}")
             keys.append((f"basis:{st}|{fk}", {"src": "basis", "operator": clean(fac), "location": "", "city": clean(city),
                                               "st": st, "pt": None}))
+    # A basis key the ledger already holds stays a key of its facility after its rows leave the public
+    # shards (data/basis carries rows from 2026-10-12 on, build_basis_history.PUBLIC_FROM): ids are
+    # permanent, and a facility's record never drops because its history is no longer published. The
+    # key is read the way the shard wrote it (ST|FACILITY|CITY); no date or bid comes with it.
+    lp = ledger_path or os.path.join(root, "data", "ids", "elevator-ids.json")
+    for k in sorted((read_json(lp) if os.path.exists(lp) else {}).get("keys") or {}):
+        if not k.startswith("basis:") or k in basis_seen:
+            continue
+        st, _, fk = k[6:].partition("|")
+        fac, city = (fk.split("|", 1) + [""])[:2]
+        if len(st) == 2 and fac:
+            basis_seen.add(k)
+            keys.append((k, {"src": "basis", "operator": clean(fac), "location": "", "city": clean(city), "st": st, "pt": None}))
     ed = read_json(os.path.join(root, "data", "elevator-directory.json"))
     for e in ed.get("elevators") or []:
         lid = e.get("locationId")
@@ -934,7 +949,7 @@ def build(root, bids_dir, schedules_path, out_dir, today, do_parcels=True, log=p
     directory = bids_repo_doc(bids_dir, "data/directory.json")
     mindex = bids_repo_doc(bids_dir, "data/merged-index.json")
     anchors = anchors_from_bids_repo(directory, mindex)
-    keys, sched = secondary_keys(root, load_schedules(schedules_path))
+    keys, sched = secondary_keys(root, load_schedules(schedules_path), os.path.join(out_dir, "elevator-ids.json"))
     os.makedirs(out_dir, exist_ok=True)
     lpath = os.path.join(out_dir, "elevator-ids.json")
     ledger = load_ledger(lpath)
@@ -1148,6 +1163,20 @@ def selftest():
         d4 = build(root, bdir, sch, out, "2026-10-21", do_parcels=False, log=lambda *_: None)
         new = [r["id"] for r in d4["elevators"] if "WI|NEW YARD|CUMBERLAND" in r["sources"].get("basis", [])]
         ck("new key gets the next id, never a used one", len(new) == 1 and new[0] != aid and new[0] not in ids1)
+        # REAL CASE (Nov 11): the public shards start 2026-10-12 and 834 records (Pearl City Elevator e3j64zn749
+        # among them) left elevators.json with their basis keys. A key the ledger holds keeps its record.
+        bw = read_json(os.path.join(root, "data", "basis", "WI.json"))
+        gone = [fk for fk in bw["f"] if fk != "NEW YARD|CUMBERLAND"]
+        bw["f"] = ["NEW YARD|CUMBERLAND"]
+        json.dump(bw, open(os.path.join(root, "data", "basis", "WI.json"), "w"))
+        d4b = build(root, bdir, sch, out, "2026-10-21", do_parcels=False, log=lambda *_: None)
+        held = {k: read_json(os.path.join(out, "elevator-ids.json"))["keys"][k] for k in ("basis:WI|" + fk for fk in gone)}
+        by4b = {r["id"]: r for r in d4b["elevators"]}
+        ck("a basis key gone from the shards keeps its id and its record names it",
+           gone and all(i in by4b and k[6:] in by4b[i]["sources"].get("basis", []) for k, i in held.items())
+           and {r["id"] for r in d4b["elevators"]} == {r["id"] for r in d4["elevators"]})
+        bw["f"] = ["NEW YARD|CUMBERLAND"] + gone
+        json.dump(bw, open(os.path.join(root, "data", "basis", "WI.json"), "w"))
         # REAL CASE (Oct 27): the bids repo folded known:Roggen Farmers Elevator Association (e8921vvzs3) into its
         # live Roggen board (e7pqw0z5m3) by phone. 141 AGSIST keys still held folded ids like this one.
         directory["elevators"].append({"id": "known:Roggen Farmers Elevator Association|Roggen Elevator - Main Office|Roggen|CO",

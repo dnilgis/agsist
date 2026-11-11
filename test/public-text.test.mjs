@@ -160,7 +160,9 @@ test("public data files gain no method text (the list only goes down)", () => {
   const have = hitsPerFile(git(["grep", "-l", "-I", "-E", METHOD_GREP, "--", "data/*.json", "data/**/*.json"]).split("\n").filter(Boolean));
   const over = Object.entries(have).filter(([f, n]) => n > (allowed[f] || 0)).map(([f, n]) => f + ": " + n + " hit(s), allowed " + (allowed[f] || 0));
   assert.deepEqual(over, [], "name the source in plain words; no script, endpoint or private path in a public data file");
-  const lower = Object.entries(allowed).filter(([f, n]) => (have[f] || 0) < n).map(([f, n]) => f + ": allowed " + n + ", has " + (have[f] || 0));
+  // data/ids is rebuilt on main by the bids job, never in a pull request: a count there that drops (or a file the
+  // rebuild removes) is not asked of this list; a rise still fails above
+  const lower = Object.entries(allowed).filter(([f, n]) => (have[f] || 0) < n && !f.startsWith("data/ids/")).map(([f, n]) => f + ": allowed " + n + ", has " + (have[f] || 0));
   assert.deepEqual(lower, [], "lower these counts in test/public-data-text.json");
   for (const f of ["data/rain-month.json", "data/rain/ia.json", "data/rain/context/ia.json"]) assert.ok(!(f in allowed), f + " stays clean");
 });

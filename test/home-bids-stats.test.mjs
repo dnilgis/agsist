@@ -1,6 +1,6 @@
-/* Homepage without a location: the elevator-boards counts line (it said "All feeds" until Nov 10) reads
- * data/bids-stats.json (under 1 KB), never the 230 KB data/bids.json.
- * scripts/fetch_bids.py writes both on the same run (bids_stats_doc).
+/* The small counts file data/bids-stats.json (under 1 KB, written by scripts/fetch_bids.py on the same run
+ * as data/bids.json; llms.txt reads it). Homepage without a location: its counts line reads the one
+ * elevator count (data/elevator-counts.json), never the 230 KB data/bids.json (Nov 11).
  *
  *   node --test test/home-bids-stats.test.mjs
  */
@@ -48,7 +48,7 @@ function serve() {
   return new Promise((ok) => srv.listen(0, "127.0.0.1", () => ok(srv)));
 }
 
-test("no location at 390: the counts line fills from the stats file and data/bids.json is never fetched", { skip }, async () => {
+test("no location at 390: the counts line fills from the one counts file and data/bids.json is never fetched", { skip }, async () => {
   const srv = await serve();
   const port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
@@ -63,17 +63,17 @@ test("no location at 390: the counts line fills from the stats file and data/bid
       return r.continue();
     });
     await pg.goto(`http://127.0.0.1:${port}/`);
-    await pg.waitForFunction(() => /Elevator boards read: [\d,]+ bids from [\d,]+ locations/.test(document.getElementById("idx1-trust-ledger").textContent), null, { timeout: 15000 });
+    await pg.waitForFunction(() => /Current cash bids from [\d,]+ elevators in [\d,]+ towns/.test(document.getElementById("idx1-trust-ledger").textContent), null, { timeout: 15000 });
     await pg.waitForTimeout(1500);
-    const s = JSON.parse(read("data/bids-stats.json"));
-    assert.match(await pg.textContent("#idx1-trust-ledger"), new RegExp(`Elevator boards read: ${s.stats.total_bids.toLocaleString("en-US")} bids from ${s.stats.locations.toLocaleString("en-US")} locations`));
-    assert.ok(asked.includes("/data/bids-stats.json"));
+    const c = JSON.parse(read("data/elevator-counts.json"));
+    assert.match(await pg.textContent("#idx1-trust-ledger"), new RegExp(`Current cash bids from ${c.bids.elevators.toLocaleString("en-US")} elevators in ${c.bids.towns.toLocaleString("en-US")} towns`));
+    assert.ok(asked.includes("/data/elevator-counts.json"));
     assert.ok(!asked.includes("/data/bids.json"), "the homepage still fetches data/bids.json with no location");
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
 
-test("a missing stats file falls back to data/bids.json, so the line never goes blank", { skip }, async () => {
+test("a missing counts file says so, so the line never goes blank", { skip }, async () => {
   const srv = await serve();
   const port = srv.address().port;
   const browser = await chromium.launch({ executablePath: CHROME });
@@ -83,11 +83,11 @@ test("a missing stats file falls back to data/bids.json, so the line never goes 
     await pg.route("**/*", (r) => {
       const u = r.request().url();
       if (!u.startsWith(`http://127.0.0.1:${port}`)) return r.abort();
-      if (u.endsWith("/data/bids-stats.json")) return r.fulfill({ status: 404, body: "" });
+      if (u.endsWith("/data/elevator-counts.json")) return r.fulfill({ status: 404, body: "" });
       return r.continue();
     });
     await pg.goto(`http://127.0.0.1:${port}/`);
-    await pg.waitForFunction(() => /Elevator boards read: [\d,]+ bids from/.test(document.getElementById("idx1-trust-ledger").textContent), null, { timeout: 15000 });
+    await pg.waitForFunction(() => /elevator-board stats unavailable this load/.test(document.getElementById("idx1-trust-ledger").textContent), null, { timeout: 15000 });
     await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });

@@ -12,6 +12,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import fs, { existsSync, readFileSync } from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import http from "node:http";
 import vm from "node:vm";
@@ -186,9 +187,13 @@ test("elevators against their neighbors, on the network's real rows", () => {
 });
 
 test("the id joins live bids to basis history: match rate on real rows, never on a name", () => {
-  execFileSync("python3", [ROOT + "scripts/build_basis_join.py", "--check"], { stdio: "pipe" });
+  // data/ids is built on main (fetch_bids.yml), never in a pull request: the join is built into its own folder,
+  // so a pull request that changes the builder is tested on what the builder makes now
+  const out = fs.mkdtempSync(path.join(process.env.TMPDIR || os.tmpdir(), "basis-join-"));
+  execFileSync("python3", [ROOT + "scripts/build_basis_join.py", "--out", out], { stdio: "pipe" });
   execFileSync("python3", [ROOT + "scripts/build_basis_join.py", "--selftest"], { stdio: "pipe" });
-  const idx = J("data/ids/basis-join/index.json");
+  const BJ = (f) => JSON.parse(fs.readFileSync(path.join(out, f), "utf8"));
+  const idx = BJ("index.json");
   assert.equal(idx.counts.joined + idx.counts.multi, idx.counts.with_history);
   // the fixture's places (217 real rows near the three test places)
   let withId = 0, joined = 0, multi = 0, nameAgrees = 0;
@@ -196,7 +201,7 @@ test("the id joins live bids to basis history: match rate on real rows, never on
   for (const p of IDX.places) {
     if (!p.elevId) continue;
     withId++;
-    const j = fs.existsSync(ROOT + "data/ids/basis-join/" + p.state + ".json") ? J("data/ids/basis-join/" + p.state + ".json") : { k: {}, multi: {} };
+    const j = fs.existsSync(path.join(out, p.state + ".json")) ? BJ(p.state + ".json") : { k: {}, multi: {} };
     if (j.multi[p.elevId]) multi++;
     const k = j.k[p.elevId];
     if (!k) continue;
@@ -208,6 +213,7 @@ test("the id joins live bids to basis history: match rate on real rows, never on
   assert.ok(joined / withId >= 0.8, `joined ${joined} of ${withId}`);
   assert.ok(nameAgrees / joined >= 0.95, `the joined key is the name key for ${nameAgrees} of ${joined}`);
   console.log(`# basis join on the fixture: ${withId} places with an id, ${joined} joined, ${multi} left out (two or more history names), name key agrees on ${nameAgrees}`);
+  fs.rmSync(out, { recursive: true, force: true });
 });
 
 test("its own history: real rows are too new to compare; the kinds on a hand-built row", () => {
@@ -252,7 +258,7 @@ test("bids-network exports the index and a checked shard getter; versions bumped
   for (const f of ["fast-facts.html", "corn-futures-prices.html", "store-or-sell.html", "combine-loss.html"]) assert.match(read(f), /bids-network\.js\?v=9/, f);   // v8: shards under data/ (Oct 21)
   assert.match(read("components/bids-homepage.js"), /bids-network\.js\?v=9/);
   assert.match(read("fast-facts.html"), /place\.js\?v=14/);   // v14: the drought links open the drought tab of /rain (Nov 11, 2026); v13: a short-list bid row says so (fx/wave1b, Nov 4); v12: the state basis reads 'median of N elevators' (fx/basislabel, Nov 3); v11: factFert takes the USDA dealer survey, factFuel the farm diesel and propane rows (fx/marsfert, Nov 3); v10: deeper() links the county's land sales page, flag l (fx/landnav, Oct 29); v9: basisHistory reads a stitched id's folded boards (fx/basisstitch, Oct 27); v8: state basis middle prints locations and companies (fx/companycount, Oct 27); v7: bestBids uses the shared bid filter (fx/bidfilter, Oct 23); v6: factCustom, the custom combining row (fx/customrates, Oct 23); v5: one past main v4 (fx/fastfacts: Fast Facts row builders, two tabs, Oct 21-22)
-  assert.match(read("fast-facts.html"), /here\.js\?v=48/);   // v48: the elevator history note says Oct 12, 2026 (fx/basis-history-start); v47: rain-county-print.js v49, engine rain-print.js v93 (fx/rp-sma-accumulation: S, M days, A is one report, Nov 9); v46: rain-county-print.js v48, engine rain-print.js v92 (fx/rp-page-fixes: Rain Print panel fixes, Nov 9); v45: fx/landsales-dedupe (atlas-sales.js with IN, NJ, VT); v44: fx/flon (Florida sales); v43: rain-county-print.js v47, engine rain-print.js v91 (fx/framespec2: the maker's frame specs, Nov 4); v42: rain-county-print.js v46, engine rain-print.js v90 (fx/framespec: the frame specs, Nov 4); v41: the bids failure path (fx/wave1b; v40 is fx/rpcolor); v39: change-lines.js v4 (fx/wave1a); v38: the fertilizer row reads data/production-costs.json too, farm diesel and propane rows (fx/marsfert, Nov 3); v37: change-lines.js v3 (fx/landnj, New Jersey sales); // v35: changemap.js v3, the change map on the USGS basemap with its switch (fx/changemap, Oct 29); v34: the county print loader follows rain-county-print v43 (fx/nometeo3); v33: town and ZIP lookups from our own data/places (fx/nometeo, Oct 29); v32: change-lines.js v2 (fx/landvt, Vermont sales); v31: rain-county-print.js v41 (fx/rainswap: the county print leads its page, its picker row ships whole); v30: its own history reads basis-join s before k (fx/basisstitch); v29: loads components/change-lines.js before changemap.js (fx/countyweek); v28: loads components/changemap.js once a place is open (fx/changemap); v27: the buy link under the county Rain Print, engine rain-print.js v85 (fx/promo2); v26: rain-county-print.js v40, engine rain-print.js v84 (fx/batch-oct27: delivery lines follow the picked year; v25 is on fx/promo); v24: the custom combining row reads data/custom-rates/blend.json (fx/customrates, Oct 23); v23: rain-county-print.js v39, engine rain-print.js v80 (fx/ciharden2: the address waits for the typing to stop); v22: rain-county-print.js v38, engine rain-print.js v79 (fx/rpdefaults: every layer on); v21: two tabs and the shared print sheet (fx/fastfacts round 2, Oct 21); v20: Fast Facts My place, State and US tabs (fx/fastfacts, Oct 21);   // v19: rain-county-print.js v36, engine rain-print.js v65 (fx/rpfix: Chetek Oct 21); v17: rain-county-print.js v34, engine rain-print.js v64, art v20 (fx/rptemp: temperature stripes); v16: rain-county-print.js v33, engine rain-print.js v63 (ship23: buying lines, Watch it draw); v15: rain-county-print.js v32, engine rain-print.js v62 (Watch it draw, 2026-10-20); v14: rain-county-print.js v31, engine rain-print.js v61 (digital files, 2026-10-20); v13: rain-county-print.js v30, engine rain-print.js v60 (order tracking, 2026-10-20); v12: rain-county-print.js v29, engine rain-print.js v59 (new maker key, 2026-10-20); v11: rain-county-print.js v28, the county print as a hidden shell (2026-10-20); v10: summer snow traces skipped (v27)
+  assert.match(read("fast-facts.html"), /here\.js\?v=\d+"/);   // the exact version is owned by test/changemap.test.mjs (v49: fx/my-place-answers); v48: the elevator history note says Oct 12, 2026 (fx/basis-history-start); v47: rain-county-print.js v49, engine rain-print.js v93 (fx/rp-sma-accumulation: S, M days, A is one report, Nov 9); v46: rain-county-print.js v48, engine rain-print.js v92 (fx/rp-page-fixes: Rain Print panel fixes, Nov 9); v45: fx/landsales-dedupe (atlas-sales.js with IN, NJ, VT); v44: fx/flon (Florida sales); v43: rain-county-print.js v47, engine rain-print.js v91 (fx/framespec2: the maker's frame specs, Nov 4); v42: rain-county-print.js v46, engine rain-print.js v90 (fx/framespec: the frame specs, Nov 4); v41: the bids failure path (fx/wave1b; v40 is fx/rpcolor); v39: change-lines.js v4 (fx/wave1a); v38: the fertilizer row reads data/production-costs.json too, farm diesel and propane rows (fx/marsfert, Nov 3); v37: change-lines.js v3 (fx/landnj, New Jersey sales); // v35: changemap.js v3, the change map on the USGS basemap with its switch (fx/changemap, Oct 29); v34: the county print loader follows rain-county-print v43 (fx/nometeo3); v33: town and ZIP lookups from our own data/places (fx/nometeo, Oct 29); v32: change-lines.js v2 (fx/landvt, Vermont sales); v31: rain-county-print.js v41 (fx/rainswap: the county print leads its page, its picker row ships whole); v30: its own history reads basis-join s before k (fx/basisstitch); v29: loads components/change-lines.js before changemap.js (fx/countyweek); v28: loads components/changemap.js once a place is open (fx/changemap); v27: the buy link under the county Rain Print, engine rain-print.js v85 (fx/promo2); v26: rain-county-print.js v40, engine rain-print.js v84 (fx/batch-oct27: delivery lines follow the picked year; v25 is on fx/promo); v24: the custom combining row reads data/custom-rates/blend.json (fx/customrates, Oct 23); v23: rain-county-print.js v39, engine rain-print.js v80 (fx/ciharden2: the address waits for the typing to stop); v22: rain-county-print.js v38, engine rain-print.js v79 (fx/rpdefaults: every layer on); v21: two tabs and the shared print sheet (fx/fastfacts round 2, Oct 21); v20: Fast Facts My place, State and US tabs (fx/fastfacts, Oct 21);   // v19: rain-county-print.js v36, engine rain-print.js v65 (fx/rpfix: Chetek Oct 21); v17: rain-county-print.js v34, engine rain-print.js v64, art v20 (fx/rptemp: temperature stripes); v16: rain-county-print.js v33, engine rain-print.js v63 (ship23: buying lines, Watch it draw); v15: rain-county-print.js v32, engine rain-print.js v62 (Watch it draw, 2026-10-20); v14: rain-county-print.js v31, engine rain-print.js v61 (digital files, 2026-10-20); v13: rain-county-print.js v30, engine rain-print.js v60 (order tracking, 2026-10-20); v12: rain-county-print.js v29, engine rain-print.js v59 (new maker key, 2026-10-20); v11: rain-county-print.js v28, the county print as a hidden shell (2026-10-20); v10: summer snow traces skipped (v27)
   assert.match(read("components/here.js"), /css\('\/components\/rain-county\.css\?v=5'\)/);   // loaded with the depth only (Oct 21)   // v5: the month table fits a phone (2026-10-19)
 });
 

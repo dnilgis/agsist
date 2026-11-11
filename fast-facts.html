@@ -11,7 +11,7 @@
 <link rel="stylesheet" href="/components/styles.css?v=28">
 <script src="/components/util.js?v=19"></script>
 <link rel="stylesheet" href="/components/manure-value.css?v=3">
-<link rel="stylesheet" href="/components/here.css?v=7">
+<link rel="stylesheet" href="/components/here.css?v=8">
 <link rel="stylesheet" href="/components/print-sheet.css?v=1">
 <noscript><style>.ff-panel{display:block!important}</style></noscript>
 <noscript><style>html{scroll-behavior:auto!important}</style></noscript>
@@ -434,7 +434,10 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <div id="h-tools" class="h-tools" hidden><button type="button" id="h-change" class="h-change">Change place <span id="h-change-l"></span></button><button type="button" id="h-pr-go" class="h-pr-go"><svg class="ic" aria-hidden="true"><use href="#i-printer"/></svg> Print</button><details id="h-pr-box" class="h-pr-box"><summary>Print options</summary><fieldset><legend>On the paper</legend><label><input type="checkbox" name="part" value="sentence" checked> The summary line</label><label><input type="checkbox" name="part" value="week" checked> The four cards</label><label><input type="checkbox" name="part" value="fingerprint" checked> How it ranks in its state</label><label><input type="checkbox" name="part" value="unusual" checked> Against its neighbors</label><label><input type="checkbox" name="part" value="long" checked> The long view</label><label><input type="checkbox" name="part" value="sources" checked> Sources</label><label><input type="checkbox" id="h-pr-rain"> This year&rsquo;s rain, drawn</label><label class="h-pr-more"><input type="checkbox" id="h-pr-more"> More detail: the table of years</label></fieldset></details></div>
 <div id="h-place" hidden>
 <h2 id="h-title" class="fx-ph" tabindex="-1"></h2><p id="h-where" class="h-where"></p>
+<div id="h-top" class="pt"><section id="pt-bid" class="pt-card" aria-labelledby="pt-bid-h" hidden></section><div id="pt-spot" class="pt-spot" data-state-spot=""></div><section id="pt-rain" class="pt-card" aria-labelledby="pt-rain-h" hidden></section><section id="pt-rent" class="pt-card" aria-labelledby="pt-rent-h" hidden></section><section id="pt-land" class="pt-card" aria-labelledby="pt-land-h" hidden></section></div>
+<details id="h-cm-fold" class="pt-fold"><summary>Show on a map: drought across <span id="h-cm-st">the state</span></summary>
 <div id="h-cm" class="cm" hidden></div>
+</details>
 <div id="h-sec-week" class="fx-cards">
 <section class="fx-card"><h3>Price</h3><div class="fx-row" id="f-corn-bid"><p class="fx-l">Corn bid</p><div class="fx-w"></div></div><div class="fx-row" id="f-soy-bid"><p class="fx-l">Soybean bid</p><div class="fx-w"></div></div><div class="fx-row" id="f-corn-basis"><p class="fx-l">Corn basis</p><div class="fx-w"></div></div><div class="fx-row" id="f-soy-basis"><p class="fx-l">Soybean basis</p><div class="fx-w"></div></div><div class="fx-row" id="f-corn-fut"><p class="fx-l">Corn futures</p><div class="fx-w"></div></div><div class="fx-row" id="f-soy-fut"><p class="fx-l">Soybean futures</p><div class="fx-w"></div></div><div class="fx-row" id="f-wheat-fut"><p class="fx-l">Wheat futures</p><div class="fx-w"></div></div></section>
 <div class="fx-ask" data-signup-ask="This place&rsquo;s top bid and the markets, free, every morning in the AGSIST Daily" data-source="page:fast-facts" data-zip-input="h-q"></div>
@@ -1192,10 +1195,11 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <script src="/components/layers.js?v=1" defer></script>
 <script src="/components/bid-filter.js?v=1" defer></script>
 <script src="/components/place.js?v=14" defer></script>
+<script src="/components/place-top.js?v=1" defer></script>
 <script src="/components/qr.js?v=11" defer></script>
 <script src="/components/bids-network.js?v=9" defer></script>
 <script src="/components/print-sheet.js?v=1" defer></script>
-<script src="/components/bids-fallback.js?v=1" defer></script><script src="/components/here.js?v=48" defer></script>
+<script src="/components/bids-fallback.js?v=1" defer></script><script src="/components/here.js?v=49" defer></script>
 <script src="/components/fert-pick.js?v=1" defer></script>
 <script src="/components/manure-value.js?v=10" defer></script>
 <script src="/components/a2809.js?v=2" defer></script>
