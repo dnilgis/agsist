@@ -32,7 +32,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from basis_method import relative_outlier  # noqa: E402  (the one outlier rule)
-from build_basis_history import row_state, clean_facility  # noqa: E402  (the one rule for a row's state and name)
+from build_basis_history import row_state, clean_facility, PUBLIC_FROM  # noqa: E402  (the one rule for a row's state and name, and the public start)
 
 REPO = os.environ.get("AGSIST_REPO", ".")
 CHANGES_GLOB = os.path.join(REPO, "data/basis/changes-*.json")
@@ -149,6 +149,8 @@ def build(stats=None):
         with open(fp) as f:
             d = json.load(f)
         date = d["date"]
+        if str(date) < PUBLIC_FROM:
+            continue                     # the public record starts on PUBLIC_FROM (build_basis_history.py)
         for row in d["changes"]:
             state, facility, city, commodity, symbol, dm, frm, to = row[:8]   # a ninth column (idx) since Oct 27
             st = row_state(state, city)
@@ -182,6 +184,7 @@ def build(stats=None):
             "generated": None,  # filled by caller at write time
             "units": "integer cents per bushel",
             "note": 'Basis change points from the network cash bids, by elevator and crop.',
+            "publicFrom": PUBLIC_FROM,
             "screened": len(dropped),
             "series": state_out,
         }
@@ -222,6 +225,26 @@ def remove_strays():
     return removed
 
 
+def remove_unwritten(written):
+    """Delete state sparkline files this run did not write: a state with no change logged since
+    PUBLIC_FROM keeps no older file in the public folder. Only a sparkline payload goes. -> [removed]"""
+    keep = {os.path.abspath(p) for p in written}
+    removed = []
+    for name in sorted(os.listdir(OUT_DIR)) if os.path.isdir(OUT_DIR) else []:
+        path = os.path.join(OUT_DIR, name)
+        if not re.fullmatch(r"[A-Z]{2}\.json", name) or os.path.abspath(path) in keep:
+            continue
+        try:
+            with open(path) as f:
+                d = json.load(f)
+        except (OSError, ValueError):
+            continue
+        if isinstance(d, dict) and "series" in d and "units" in d:
+            os.remove(path)
+            removed.append(path)
+    return removed
+
+
 def selftest():
     # A tiny synthetic run: two states, one key repeated across two files,
     # one duplicate-date row that must be dropped, one key over MAX_POINTS
@@ -230,13 +253,13 @@ def selftest():
     with tempfile.TemporaryDirectory() as td:
         os.makedirs(os.path.join(td, "data/basis"))
         # file 1: two real changes, one duplicate date
-        with open(os.path.join(td, "data/basis/changes-2026-01-01.json"), "w") as f:
-            json.dump({"date": "2026-01-01", "changes": [
+        with open(os.path.join(td, "data/basis/changes-2026-10-21.json"), "w") as f:
+            json.dump({"date": "2026-10-21", "changes": [
                 ["IA", "TEST CO-OP", "AMES", "corn", "ZCZ26", "DEC26", -30, -35],
                 ["IA", "TEST CO-OP", "AMES", "corn", "ZCZ26", "DEC26", -30, -35],  # dup same date
             ]}, f)
-        with open(os.path.join(td, "data/basis/changes-2026-01-02.json"), "w") as f:
-            json.dump({"date": "2026-01-02", "changes": [
+        with open(os.path.join(td, "data/basis/changes-2026-10-22.json"), "w") as f:
+            json.dump({"date": "2026-10-22", "changes": [
                 ["IA", "TEST CO-OP", "AMES", "corn", "ZCZ26", "DEC26", -35, -40],
             ]}, f)
         global REPO, CHANGES_GLOB
@@ -250,36 +273,50 @@ def selftest():
         k = key_for("IA", "TEST CO-OP", "AMES", "corn", "ZCZ26", "DEC26")
         pts = out["IA"]["series"][k]
         assert len(pts) == 2, f"expected 2 points (dup dropped), got {len(pts)}: {pts}"
-        assert pts[0] == {"date": "2026-01-01", "cents": -35}, pts[0]
-        assert pts[1] == {"date": "2026-01-02", "cents": -40}, pts[1]
+        assert pts[0] == {"date": "2026-10-21", "cents": -35}, pts[0]
+        assert pts[1] == {"date": "2026-10-22", "cents": -40}, pts[1]
         print("selftest OK: 2 real points, duplicate same-date row dropped, values correct")
+        # the public record starts on PUBLIC_FROM: a change file dated before it adds no point
+        with open(os.path.join(td, "data/basis/changes-2026-10-11.json"), "w") as f:
+            json.dump({"date": "2026-10-11", "changes": [["IA", "TEST CO-OP", "AMES", "corn", "ZCZ26", "DEC26", -40, -38]]}, f)
+        with open(os.path.join(td, "data/basis/changes-2026-10-12.json"), "w") as f:
+            json.dump({"date": "2026-10-12", "changes": [["IA", "TEST CO-OP", "AMES", "corn", "ZCZ26", "DEC26", -38, -36]]}, f)
+        REPO, CHANGES_GLOB = td, os.path.join(td, "data/basis/changes-*.json")
+        out = build()
+        REPO, CHANGES_GLOB = old_repo, old_glob
+        pts = out["IA"]["series"][k]
+        assert {"date": "2026-10-12", "cents": -36} in pts and all(p["date"] != "2026-10-11" for p in pts), pts
+        assert out["IA"]["publicFrom"] == "2026-10-12", out["IA"].get("publicFrom")
+        for n in ("changes-2026-10-11.json", "changes-2026-10-12.json"):
+            os.remove(os.path.join(td, "data/basis", n))
+        print("selftest OK: a change logged before Oct 12, 2026 adds no point")
 
         # the real case (Nov 10): Finley ND's board was logged as "ZFINLEY FARMERS GRAIN & ELEVATOR" until the
         # history was keyed on the cleaned name; its old rows join the new series, and a real Z name stays
-        with open(os.path.join(td, "data/basis/changes-2026-01-03.json"), "w") as f:
-            json.dump({"date": "2026-01-03", "changes": [
+        with open(os.path.join(td, "data/basis/changes-2026-10-23.json"), "w") as f:
+            json.dump({"date": "2026-10-23", "changes": [
                 ["ND", "ZFINLEY FARMERS GRAIN & ELEVATOR", "FINLEY, ND", "corn", "ZCZ26", "11/01/2026", -80, -85],
                 ["MI", "ZEELAND FARM SERVICES", "ZEELAND", "corn", "ZCZ26", "11/01/2026", -50, -55]]}, f)
-        with open(os.path.join(td, "data/basis/changes-2026-01-04.json"), "w") as f:
-            json.dump({"date": "2026-01-04", "changes": [
+        with open(os.path.join(td, "data/basis/changes-2026-10-24.json"), "w") as f:
+            json.dump({"date": "2026-10-24", "changes": [
                 ["ND", "FINLEY FARMERS GRAIN & ELEVATOR", "FINLEY, ND", "corn", "ZCZ26", "11/01/2026", -85, -90]]}, f)
         REPO, CHANGES_GLOB = td, os.path.join(td, "data/basis/changes-*.json")
         st0 = {}
         out = build(st0)
         REPO, CHANGES_GLOB = old_repo, old_glob
         fin = out["ND"]["series"].get(key_for("ND", "FINLEY FARMERS GRAIN & ELEVATOR", "FINLEY, ND", "corn", "ZCZ26", "11/01/2026"))
-        assert fin == [{"date": "2026-01-03", "cents": -85}, {"date": "2026-01-04", "cents": -90}], fin
+        assert fin == [{"date": "2026-10-23", "cents": -85}, {"date": "2026-10-24", "cents": -90}], fin
         assert not any(k.startswith("ND|ZFINLEY") for k in out["ND"]["series"]), out["ND"]["series"].keys()
         assert key_for("MI", "ZEELAND FARM SERVICES", "ZEELAND", "corn", "ZCZ26", "11/01/2026") in out["MI"]["series"]
         assert st0["renamed"] == 1, st0
-        for n in ("changes-2026-01-03.json", "changes-2026-01-04.json"):
+        for n in ("changes-2026-10-23.json", "changes-2026-10-24.json"):
             os.remove(os.path.join(td, "data/basis", n))
         print("selftest OK: an archived copy's logged rows join the elevator's own series")
 
-        # the real case (changes-2026-08-03.json): a row with a blank state is filed by the state
+        # the real case (changes-2026-08-03.json, dated here inside the public record): a row with a blank state is filed by the state
         # in its city field; a row with nothing to read is skipped and counted; neither writes ".json"
         with open(os.path.join(td, "data/basis/changes-2026-08-03.json"), "w") as f:
-            json.dump({"date": "2026-08-03", "changes": [
+            json.dump({"date": "2026-10-26", "changes": [
                 ["", "HILLSIDE GRAIN, LLC", "GOLDEN CITY, MO", "soybeans", "ZSX26", "NOV26", None, -70],
                 ["", "NOWHERE CO", "SOMEWHERE", "corn", "ZCZ26", "DEC26", None, -20],
                 [None, "NOWHERE CO", "", "corn", "ZCZ26", "DEC26", None, -20],
@@ -306,6 +343,13 @@ def selftest():
         gone = remove_strays()
         OUT_DIR = old_out
         assert [os.path.basename(g) for g in gone] == [".json"], gone
+        # a state file this run did not write (no change since PUBLIC_FROM) goes; a written one stays
+        with open(os.path.join(td, "out", "KS.json"), "w") as f:
+            json.dump({"generated": "x", "units": "integer cents per bushel", "series": {"KS|A|B|corn|ZCZ26|DEC26": [{"date": "2026-06-10", "cents": -9}]}}, f)
+        OUT_DIR = os.path.join(td, "out")
+        gone = remove_unwritten(written)
+        OUT_DIR = old_out
+        assert [os.path.basename(g) for g in gone] == ["KS.json"], gone
         assert sorted(os.listdir(os.path.join(td, "out"))) == ["IA.json", "MO.json", "notes.json"]
         try:
             write({"": out["MO"]}, "x")
@@ -364,3 +408,5 @@ if __name__ == "__main__":
     print(f"wrote {len(written)} files to {OUT_DIR}")
     for path in remove_strays():
         print(f"removed {path}: a sparkline file named for no state")
+    for path in remove_unwritten(written):
+        print(f"removed {path}: no change logged in that state since {PUBLIC_FROM}")
