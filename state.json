@@ -6963,7 +6963,7 @@
   "2027_ADMLivestockLrp_Daily_20261106.zip": 1476990,
   "2027_ADMLivestockLrp_Daily_20261109.zip": 1448347,
   "2027_ADMLivestockLrp_Daily_20261110.zip": 1453369,
-  "2027_ADMLivestockLrp_Daily_20261111.zip": 8605
+  "2027_ADMLivestockLrp_Daily_20261111.zip": 1458736
  },
  "listed": {
   "2026_ADMLivestockLrp_Daily_20251027.zip": "2025-10-27T15:34",
@@ -7365,7 +7365,7 @@
   "2027_ADMLivestockLrp_Daily_20261106.zip": "2026-11-06T14:18",
   "2027_ADMLivestockLrp_Daily_20261109.zip": "2026-11-09T14:18",
   "2027_ADMLivestockLrp_Daily_20261110.zip": "2026-11-10T14:19",
-  "2027_ADMLivestockLrp_Daily_20261111.zip": "2026-11-11T08:36"
+  "2027_ADMLivestockLrp_Daily_20261111.zip": "2026-11-11T14:18"
  },
  "sob": {
   "lrp_2003.zip": {
@@ -7472,23 +7472,23 @@
  "stats": {
   "aev_deleted": 0,
   "aev_restated": 923,
-  "aev_rows": 733815,
+  "aev_rows": 733861,
   "last_run": {
    "failed": 0,
    "left": 0,
-   "read": 2,
+   "read": 1,
    "seconds": 1,
    "stopped_for_time": false,
    "unreadable": 0
   },
-  "offer_days_written": 3328,
+  "offer_days_written": 3329,
   "offers_restated": 1,
   "rate_blank": 0,
   "rate_blank_examples": [],
   "rate_cost_off": 37,
   "rate_deleted": 0,
   "rate_price_off": 425998,
-  "rate_rows": 2351948
+  "rate_rows": 2353952
  },
  "unreadable": {
   "2025_ADMLivestockLrp_Daily_20260325.zip": {
@@ -7500,5 +7500,5 @@
    "tries": 3
   }
  },
- "updated": "2026-11-11T15:11:28Z"
+ "updated": "2026-11-11T21:04:31Z"
 }
