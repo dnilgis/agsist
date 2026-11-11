@@ -1,10 +1,9 @@
 name: Freshness — seed static prices, dateModified, sitemap lastmod
-# Freshness: seed static prices, dateModified, sitemap lastmod.
 
 on:
   schedule:
-    - cron: '35 13 * * 1-5'   # 13:35 UTC — pre-open refresh (overnight session closes)
-    - cron: '35 20 * * 1-5'   # 20:35 UTC — post-close (CBOT day session ends 19:20 UTC)
+    - cron: '35 13 * * 1-5'
+    - cron: '35 20 * * 1-5'
     - cron: '50 4 * * 2-6'
     - cron: '50 6 * * 2-6'
   workflow_run:

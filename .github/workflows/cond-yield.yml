@@ -1,5 +1,4 @@
 name: cond-yield
-# cond-yield.
 
 on:
   schedule:

@@ -1,12 +1,10 @@
 name: Infographic pages
-# Infographic pages.
 
 on:
   push:
     branches: [main]
     paths:
       - "data/infographics/**"
-      - "scripts/build_infographic_pages.py"
   workflow_dispatch:
 
 permissions:

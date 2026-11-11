@@ -286,7 +286,7 @@
       + '<li>CPC seasonal outlooks</li>'
       + '<li>CPC ENSO discussion</li>'
       + '<li>US Drought Monitor</li>'
-      + '<li><a href="/drought-monitor">AGSIST drought map</a></li></ul>';
+      + '<li><a href="/rain#drought">AGSIST drought map</a></li></ul>';
 
     h += '<details><summary>Where these figures come from</summary>' + sources(d) + '</details>';
     return h;

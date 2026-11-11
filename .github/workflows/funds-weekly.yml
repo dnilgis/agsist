@@ -1,8 +1,7 @@
 name: Funds This Week (by hand)
-# Funds This Week (by hand).
 
 #   schedule:
-#     - cron: '13 21 * * 1,5'   # Mon and Fri 21:13 UTC: 5:13 PM EDT / 4:13 PM EST,
+#     - cron: '13 21 * * 1,5'
 
 on:
   workflow_dispatch:

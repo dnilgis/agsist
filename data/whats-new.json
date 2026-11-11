@@ -2,6 +2,48 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-11-cash-bids-answers-first",
+   "date": "2026-11-11",
+   "title": "Cash bids: the answer first",
+   "line": "The cash bids page now opens with your ZIP and a map of the median corn bid by state. Tap a state to open it. Save the picture to send it.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-11-land-price-vs-rent",
+   "date": "2026-11-11",
+   "title": "Atlas: land price against rent",
+   "line": "County pages with 5 or more farm sales now show cash rent as a share of the median sale price, and about how many years of rent equal it.",
+   "link": "/farmland-atlas/illinois/adams-county"
+  },
+  {
+   "id": "2026-11-11-prf-county-fold",
+   "date": "2026-11-11",
+   "title": "PRF: every county on its state page",
+   "line": "Each PRF state page now opens any county in place: its grids, what each pair of months costs, the last five years and a priced example. Old county links still work.",
+   "link": "/prf/texas"
+  },
+  {
+   "id": "2026-11-11-rain-print-order-under",
+   "date": "2026-11-11",
+   "title": "Rain Print: order right under the picture",
+   "line": "Once your year draws, the price, the Christmas order-by date and the order buttons sit right under the print, with a one-tap way to make it a gift.",
+   "link": "/rain-print"
+  },
+  {
+   "id": "2026-11-11-weather-fold",
+   "date": "2026-11-11",
+   "title": "Weather: three pages, not seven",
+   "line": "Radar rain and the drought map are tabs on the rain page; urea loss and fall anhydrous soil temps are tabs on the spray page. Old links still work.",
+   "link": "/rain"
+  },
+  {
+   "id": "2026-11-11-one-elevator-count",
+   "date": "2026-11-11",
+   "title": "One elevator count",
+   "line": "The home page, the futures pages and Cash Bids now show the same count: elevators with a current bid, and their towns.",
+   "link": "/cash-bids"
+  },
+  {
    "id": "2026-11-10-arcplc-fixes",
    "date": "2026-11-10",
    "title": "Clearer ARC or PLC answers",

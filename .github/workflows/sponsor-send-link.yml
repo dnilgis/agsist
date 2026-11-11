@@ -1,5 +1,4 @@
 name: Sponsor report link email
-# Sponsor report link email.
 
 run-name: ${{ inputs.dry_run && 'Sponsor report link email (dry run)' || 'Sponsor report link email' }}
 

@@ -2697,6 +2697,8 @@
     setTimeout(fall, WHERE_MS);
     try {
       fetch('https://agsist-api.dnilgis.workers.dev/where', { credentials: 'omit' }).then(function (r) { return r.json(); }).then(function (j) {
+        // outside the US: prints and framed prints don't ship there (syncNow)
+        if (j && j.ok === false) setAway();
         if (done) return;
         var town = j && j.ok && j.city && /^[A-Z]{2}$/.test(j.region_code || '') ? cleanText(j.city + ', ' + j.region_code, LIMITS.place) : '';
         if (!town || mine()) return fall();
@@ -3850,6 +3852,7 @@
       if (SAMPLE) setStatus(EMPTY_STATUS);
       else {
         ga('rain_print_draw', { style: ST.style, near: NEAR && ST.place === NEAR ? 1 : 0, year_kind: yearMode(ST.year, TODAY) || 'done' });
+        DRAW_SENT = true; nowShown();
         syncYearAsk(my);
         // a phone: the keyboard goes once the print is drawn, so the town box doesn't hold the page (2026-10-15)
         if (phone() && doc.activeElement === $('rp-place')) try { $('rp-place').blur(); } catch (err) {}
@@ -4043,6 +4046,129 @@
     if (!fam) { $('rp-fam-more').hidden = true; $('rp-fam').setAttribute('aria-expanded', 'false'); }
     syncMailme(fam && !!DATA && !MAKER);
     syncXmas();
+    syncNow();
+  }
+  /* THE ORDER RIGHT UNDER THE PRINT (2026-11-11). Once the reader's own print
+     is drawn, the first thing under it is the order: one line with the price
+     (shipping included for a print) and the Christmas order-by date from
+     data/rain-print.json, one main button (framed, or the best choice that
+     still makes Christmas, xmasPick), the other two as smaller buttons, and
+     the gift link. Every button goes the one way the step 3 button goes
+     (checkIt: the review sheet, then the payment link with
+     client_reference_id). A reader outside the US and Canada (AWAY, below)
+     sees the digital file only, with where prints ship; so does a design
+     prints can't go to yet (Canada, blockedPick). */
+  var NOW_SENT = false, NOW_READY = false, AWAY = false, PRODUCTS_NOW = ['framed12x18', 'print12x18', 'digital'];
+  var NOW_LINE = { framed12x18: ['Framed, ready to hang, ', ', shipping included.'], print12x18: ['The print on 13 x 19 paper, ', ', shipping included.'],
+    digital: ['The digital file, 12 x 18 in, ', ', by email.'] };
+  var NOW_BTN = { framed12x18: 'Order it framed', print12x18: 'Order the print', digital: 'Order the digital file' };
+  var NOW_ALT = { framed12x18: 'Framed', print12x18: 'Print', digital: 'Digital' };
+  function nowOnly() { return AWAY || blockedPick('framed12x18'); }
+  function nowMain() { return nowOnly() ? 'digital' : xmasPick(TODAY, OJ().j) || 'framed12x18'; }
+  function nowOn() {
+    var paidFor = typeof PAID_SAVED !== 'undefined' && PAID_SAVED && PAID_SAVED.code === encodeCode(ST);
+    var base = !!DATA && !SAMPLE && !BLOCKED && !SHOW_EX && !MAKER && !paidFor && !(typeof GIFT !== 'undefined' && GIFT && (GIFT.usable || GIFT.prepaid));
+    // it comes the moment the reader's print is drawn, and stays through later redraws (its buttons wait while one runs)
+    if (base && !DRAWING) NOW_READY = true;
+    return base && NOW_READY;
+  }
+  /* Where it sits: a phone keeps it under the pinned print, before the steps (inside the pinned part it would
+     cover the screen); a wide screen puts it in the print's column, right under the print. */
+  function placeNow() {
+    var box = $('rp-now'), wall = $('rp-wall'), pv = $('rp-pv');
+    if (!box || !wall || !pv) return;
+    if (phone()) { if (box.previousElementSibling !== pv) pv.parentNode.insertBefore(box, pv.nextSibling); }
+    else if (wall.nextElementSibling !== box) wall.parentNode.insertBefore(box, wall.nextSibling);
+  }
+  /* rain_print_buy_shown: once a visit, when the block is on screen after the draw was counted, so the
+     funnel reads draw, then shown, then buy */
+  var NOW_IN = false, DRAW_SENT = false;
+  function nowShown() {
+    if (NOW_SENT || !NOW_IN || !DRAW_SENT || !$('rp-now').classList.contains('rp-now-on')) return;
+    NOW_SENT = true;
+    ga('rain_print_buy_shown', { choice: nowMain(), away: AWAY ? 1 : 0 });
+  }
+  function syncNow() {
+    var box = $('rp-now');
+    if (!box || !NOW_LINE) return;
+    var on = nowOn();
+    box.classList.toggle('rp-now-on', on);
+    // shown, or plainly not coming (no print, a blocked station): the room kept for it on a link goes
+    if (on || (!DRAWING && (DATA || BLOCKED))) doc.documentElement.classList.add('rp-now-set');
+    if (!on) return;
+    nowShown();
+    var main = nowMain(), only = nowOnly(), w = NOW_LINE[main], p = pickPrice(main);
+    var t = $('rp-now-t');
+    t.textContent = '';
+    t.appendChild(doc.createTextNode(w[0]));
+    var b = doc.createElement('b'); b.setAttribute('data-price', main); b.textContent = p; t.appendChild(b);
+    t.appendChild(doc.createTextNode(w[1]));
+    var gy = giftYear();
+    var when = main === 'digital' ? '' : buyLine(OJ().j, main, TODAY, { gift: gy, settle: !gy && SETTLE, year: pickedYear() });
+    $('rp-now-when').textContent = when;
+    $('rp-now-when').hidden = !when;
+    var go = $('rp-now-go');
+    go.setAttribute('data-now', main);
+    go.textContent = NOW_BTN[main];
+    go.disabled = DRAWING;
+    var alts = $('rp-now-alts');
+    alts.hidden = only;
+    if (!only) {
+      var want = PRODUCTS_NOW.filter(function (id) { return id !== main; });
+      var have = Array.prototype.map.call(alts.querySelectorAll('button'), function (x) { return x.getAttribute('data-now'); });
+      if (have.join() !== want.join()) alts.innerHTML = want.map(function (id) {
+        return '<button type="button" class="btn btn-secondary rp-now-alt" data-now="' + id + '">' + NOW_ALT[id] + ' <b data-price="' + id + '"></b></button>';
+      }).join('');
+      Array.prototype.forEach.call(alts.querySelectorAll('button'), function (x) {
+        var id = x.getAttribute('data-now');
+        x.querySelector('b').textContent = pickPrice(id);
+        x.disabled = DRAWING;
+      });
+    }
+    var away = $('rp-now-away');
+    if (AWAY) {
+      var ca = PRICES && PRICES.canada && PRICES.canada.ships === true;
+      away.innerHTML = 'Prints and framed prints ship to addresses in the US' + (ca ? ' and Canada' : '') + '. Sending one there? <a href="#rp-buy">Order it below</a>.';
+    } else if (only) away.textContent = L('Prints and framed prints: shipping to Canada starts soon.', 'Tirages et tirages encadr\u00e9s : envoi au Canada bient\u00f4t.');
+    else away.textContent = '';
+    away.hidden = !away.textContent;
+    var gift = $('rp-now-gift');
+    gift.parentNode.hidden = !pgOffered();
+    var g = pgOn();
+    gift.setAttribute('aria-pressed', g ? 'true' : 'false');
+    gift.textContent = g ? 'Gift: on. Their name and your note go in before you pay.' : 'Making it for someone? Make it a gift';
+  }
+  function nowOrder(id) {
+    if (DRAWING || PRODUCTS.indexOf(id) < 0) return;
+    endExample();
+    PICK_CHOSEN = true;
+    setPick(id);
+    if (DATA) updateUrl();
+    ga('rain_print_pick', { choice: id, where: 'now' });
+    checkIt();
+  }
+  function nowGift() {
+    if (DRAWING || !pgOffered()) return;
+    $('rp-pg-on').checked = true;
+    $('ro-isgift').checked = true;
+    if (!$('rp-pg-deliver').value) $('rp-pg-deliver').value = 'recipient';
+    syncAddress(); pgSync(); syncNow();
+    checkIt();
+  }
+  /* Outside the US and Canada: the subs worker's /where answers ok:false for
+     anyone outside the US (a real answer, not a failure or a slow one), and
+     the browser's own time zone is not one used in the US or Canada. Both, or
+     nothing changes: a US reader is never shown the file alone by mistake. */
+  var US_CA_TZ = /^(America|US|Canada)\/|^Pacific\/(Honolulu|Guam|Saipan|Pago_Pago|Midway|Wake|Johnston)$/;
+  function awayZone() {
+    var tz = '';
+    try { tz = String(Intl.DateTimeFormat().resolvedOptions().timeZone || ''); } catch (e) { tz = ''; }
+    return !!tz && !US_CA_TZ.test(tz) && !/^(Etc\/|UTC$|GMT$|Universal$|Zulu$)/.test(tz);
+  }
+  function setAway() {
+    if (AWAY || !awayZone()) return;
+    AWAY = true;
+    if (!PICK_CHOSEN) setPick('digital'); else syncNow();
   }
   /* EMAIL ME THIS DESIGN (2026-10-20): the reader's own address, nothing
      ticked. The worker (v5.43, POST /rp-remind) keeps the design code and
@@ -5721,6 +5847,12 @@
   radios('rp-product').concat(radios('rp-pproduct')).forEach(function (r) { r.addEventListener('change', function () { if (r.checked) { endExample(); PICK_CHOSEN = true; setPick(r.value); if (DATA) updateUrl(); ga('rain_print_pick', { choice: r.value, where: r.name === 'rp-pproduct' ? 'review' : 'step3' }); } }); });
   $('rp-pay').addEventListener('click', checkIt);
   $('rp-bar-go').addEventListener('click', checkIt);
+  // the order under the print: each button picks its product and goes the step 3 way; the link turns the gift on
+  $('rp-now').addEventListener('click', function (e) {
+    var b = e.target && e.target.closest ? e.target.closest('button[data-now]') : null;
+    if (b) nowOrder(b.getAttribute('data-now'));
+  });
+  $('rp-now-gift').addEventListener('click', nowGift);
   $('rp-noname-add').addEventListener('click', function () {
     $('rp-noname').hidden = true;
     try { $('rp-name').scrollIntoView({ behavior: smooth(), block: 'center' }); } catch (e) {}
@@ -5791,7 +5923,7 @@
   $('rp-pg-on').addEventListener('change', function () {
     $('ro-isgift').checked = $('rp-pg-on').checked;
     if ($('rp-pg-on').checked && !$('rp-pg-deliver').value) $('rp-pg-deliver').value = 'recipient';
-    syncAddress(); pgSync(); proofSay('');
+    syncAddress(); pgSync(); proofSay(''); syncNow();
     if ($('rp-pg-on').checked) try { $('rp-pg-to').focus({ preventScroll: false }); } catch (e) {}
   });
   Object.keys(PG_MIRROR).forEach(function (k) {
@@ -5929,6 +6061,8 @@
   (function () {
     var tick = false;
     var later = function () { if (tick) return; tick = true; (root.requestAnimationFrame || setTimeout)(function () { tick = false; syncStrip(); syncBar(); }); };
+    placeNow();
+    root.addEventListener('resize', placeNow);
     root.addEventListener('scroll', later, { passive: true });
     root.addEventListener('resize', later);
     if (root.IntersectionObserver) new root.IntersectionObserver(function (es) {
@@ -5936,6 +6070,10 @@
       // the funnel: the pay button came on screen, once a visit (sample says whether it was still the sample)
       if (PAY_SEEN && !STEP3_SENT) { STEP3_SENT = true; ga('rain_print_step3', { choice: PICK, sample: SAMPLE ? 1 : 0 }); }
     }).observe($('rp-pay-wrap'));
+    // the funnel: draw, then the order under the print on screen (once a visit), then buy
+    if (root.IntersectionObserver) new root.IntersectionObserver(function (es) {
+      NOW_IN = es[es.length - 1].isIntersecting; nowShown();
+    }).observe($('rp-now'));
     var typing = function (el) { return el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName) && !/^(radio|checkbox|button|submit|file)$/i.test(el.type || '') && !$('rp-proof').contains(el); };
     /* The bar goes the moment a box has the keyboard and comes back a moment
        after it leaves, so it never pops up under a finger that is already on

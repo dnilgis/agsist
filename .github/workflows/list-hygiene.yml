@@ -1,10 +1,8 @@
 name: List cleanup
-# List cleanup.
 
 on:
   schedule:
     - cron: "23 13 * * *"
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

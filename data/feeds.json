@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 98,
- "with_known_cadence": 98,
+ "count": 94,
+ "with_known_cadence": 94,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -210,8 +210,6 @@
    "path": "data/audience.json",
    "pages": [
     "desk.html",
-    "sponsor-kit.html",
-    "sponsor-rates.html",
     "sponsor-report.html",
     "sponsor.html"
    ],
@@ -261,34 +259,9 @@
    "why_quiet": null
   },
   {
-   "path": "data/bids-stats.json",
-   "pages": [
-    "index.html"
-   ],
-   "written_by": [
-    "Fetch Grain Bids"
-   ],
-   "touched_by": [
-    "Fetch Grain Bids",
-    "Sitemap lastmod"
-   ],
-   "cadence": "about every 60 minutes",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "7 * * * *"
-   ],
-   "max_gap_hours": 1.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/bids.json",
    "pages": [
-    "cash-bids.html",
-    "index.html"
+    "cash-bids.html"
    ],
    "written_by": [
     "Fetch Grain Bids"
@@ -1015,7 +988,7 @@
   {
    "path": "data/drought/summary.json",
    "pages": [
-    "drought-monitor.html"
+    "rain.html"
    ],
    "written_by": [
     "Drought county week"
@@ -1040,8 +1013,7 @@
   {
    "path": "data/elevator-counts.json",
    "pages": [
-    "sponsor-kit.html",
-    "sponsor-rates.html"
+    "index.html"
    ],
    "written_by": [
     "cash-bid-pages"
@@ -1162,8 +1134,8 @@
   {
    "path": "data/fall-nitrogen.json",
    "pages": [
-    "fall-nitrogen.html",
-    "planting-date.html"
+    "planting-date.html",
+    "spray.html"
    ],
    "written_by": [
     "Fall nitrogen soil temperature"
@@ -1248,7 +1220,7 @@
    "path": "data/fertilizer-prices.json",
    "pages": [
     "fertilizer.html",
-    "urea.html"
+    "spray.html"
    ],
    "written_by": [
     "Fertilizer co-op posted prices"
@@ -2022,8 +1994,8 @@
   {
    "path": "data/outlooks/manifest.json",
    "pages": [
-    "drought-monitor.html",
-    "index.html"
+    "index.html",
+    "rain.html"
    ],
    "written_by": [
     "Fetch Outlooks (NOAA + USDM)"
@@ -2047,8 +2019,7 @@
   {
    "path": "data/page-sponsors.json",
    "pages": [
-    "desk.html",
-    "sponsor.html"
+    "desk.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -2185,34 +2156,6 @@
    "why_quiet": null
   },
   {
-   "path": "data/prf/climate-indices.json",
-   "pages": [
-    "prf.html"
-   ],
-   "written_by": [
-    "climate indices",
-    "prf"
-   ],
-   "touched_by": [
-    "climate indices",
-    "prf",
-    "Rebuild Feed Manifest",
-    "seasonal models"
-   ],
-   "cadence": "2 launches on a fixed schedule at about 5am, 9am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "37 14 9 * *",
-    "23 10 * * 3"
-   ],
-   "max_gap_hours": 168.0,
-   "quiet": "monthly",
-   "why_quiet": "NOAA posts the PDO and AMO once a month, so the climate indices job runs on the 9th and the file moves only when a new month is out."
-  },
-  {
    "path": "data/prf/meta.json",
    "pages": [
     "index.html",
@@ -2297,34 +2240,6 @@
    "max_gap_hours": 119.1,
    "quiet": "weekly",
    "why_quiet": "Checked Thursdays and Fridays; it changes when a source issues. The US Drought Monitor map comes out Thursday mornings, CPC's seasonal outlooks on the third Thursday of the month and the ENSO discussion on the second."
-  },
-  {
-   "path": "data/prf/seasonal-fc.json",
-   "pages": [
-    "prf.html"
-   ],
-   "written_by": [
-    "prf",
-    "seasonal models"
-   ],
-   "touched_by": [
-    "climate indices",
-    "prf",
-    "Rebuild Feed Manifest",
-    "seasonal models"
-   ],
-   "cadence": "2 launches on a fixed schedule at about 5am, 10am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "23 10 * * 3",
-    "41 15 15 11,12 *"
-   ],
-   "max_gap_hours": 168.0,
-   "quiet": "seasonal",
-   "why_quiet": "The PRF test uses one forecast a year from each model, the one started in November, so the seasonal models job runs in mid November and mid December and the file sits still the rest of the year."
   },
   {
    "path": "data/price-stats.json",
@@ -2490,10 +2405,7 @@
   {
    "path": "data/rate-card.json",
    "pages": [
-    "sponsor-kit.html",
-    "sponsor-rates.html",
-    "sponsor-report.html",
-    "sponsor.html"
+    "sponsor-report.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -2577,31 +2489,6 @@
    "why_quiet": null
   },
   {
-   "path": "data/sponsor-slots.json",
-   "pages": [
-    "sponsor.html"
-   ],
-   "written_by": [
-    "cash-bid-pages"
-   ],
-   "touched_by": [
-    "cash-bid-pages",
-    "Rebuild Feed Manifest",
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
-   "cadence": "1 launch every day at about 7pm Central",
-   "curated": true,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "19 */6 * * *"
-   ],
-   "max_gap_hours": 6.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/sponsor.json",
    "pages": [
     "desk.html",
@@ -2626,8 +2513,7 @@
    "path": "data/sponsors.json",
    "pages": [
     "desk.html",
-    "sponsor-report.html",
-    "sponsor.html"
+    "sponsor-report.html"
    ],
    "written_by": [],
    "touched_by": [

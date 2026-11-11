@@ -1,5 +1,4 @@
 name: Generate RSS Feed
-# Generate RSS Feed.
 
 on:
   push:

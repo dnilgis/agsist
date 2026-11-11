@@ -1,5 +1,4 @@
 name: Fetch Grain Bids
-# Fetch Grain Bids.
 
 on:
   schedule:

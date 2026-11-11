@@ -1,5 +1,4 @@
 name: Fetch COT Data
-# Fetch COT Data.
 
 on:
   schedule:

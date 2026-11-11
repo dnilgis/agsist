@@ -86,7 +86,7 @@
   html.rp-from-link .rp-art.rp-empty .rp-placeholder::after{content:"Drawing the print from the link\2026";font-size:var(--fs-sm)}
   @media(max-width:899px){
     html.rp-from-link .rp-flow{display:contents}
-    html.rp-from-link .rp-pv{order:1}
+    html.rp-from-link .rp-pv,html.rp-from-link .rp-now{order:1}
     html.rp-from-link .rp-top{order:2}
     html.rp-from-link .rp-stepcol{order:3}
     /* the line under the frame names the print once it is drawn: room for two lines from the start, so a long town doesn't push the page down */
@@ -150,6 +150,37 @@
   .rp-view .rp-seg label:first-child span{border-radius:var(--r-sm) 0 0 var(--r-sm)}
   .rp-view .rp-seg label:last-child span{border-radius:0 var(--r-sm) var(--r-sm) 0;margin-left:-1px}
   .rp-sample-use{font:inherit;font-weight:600;min-height:var(--btn-h);padding:0 .15rem;background:none;border:0;color:var(--link);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
+  /* right after the print is drawn: the order, under the print, before the layers and the steps */
+  .rp-now{margin:.75rem 0 0;padding:12px 14px 6px;border:1px solid var(--border);border-left:4px solid var(--brand);border-radius:var(--r-md);background:var(--surface)}
+  .rp-now:not(.rp-now-on),.rp-now-alts[hidden],.rp-now-gift[hidden]{display:none}
+  .rp-now-t{margin:0;font-size:var(--fs-md);font-weight:600;line-height:1.4;color:var(--text)}
+  .rp-now-t b,.rp-now-alt b{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
+  .rp-now-when{display:block;margin:.2rem 0 0;font-size:var(--fs-sm);font-weight:400;line-height:1.45;color:var(--text-dim)}
+  .rp-now-away{margin:.2rem 0 0;font-size:var(--fs-sm);line-height:1.45;color:var(--text-dim)}
+  .rp-now-when[hidden],.rp-now-away[hidden]{display:none}
+  .rp-now-away a{color:var(--link);text-decoration:underline;text-underline-offset:2px}
+  .rp-now-acts{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:.65rem 0 0}
+  .rp-now-go{flex:1 1 210px;min-height:48px}
+  .rp-now-alts{display:flex;gap:.5rem;flex:1 1 210px}
+  .rp-now-alt{flex:1 1 0;min-height:44px;padding-left:.6rem;padding-right:.6rem;font-size:var(--fs-sm);white-space:nowrap}
+  .rp-now-gift{margin:.25rem 0 0;font-size:var(--fs-sm)}
+  .rp-now-gift .rp-linkbtn{min-height:44px}
+  /* a phone: under the pinned print, before the steps; one row of buttons, so the steps start close under it */
+  @media(max-width:899px){
+    .rp-now{margin:-12px 0 -10px;padding:6px 12px 3px;border-width:0 0 0 4px}
+    .rp-now-t{font-size:var(--fs-xs);line-height:1.35}
+    .rp-now-when{display:inline;margin:0;font-size:inherit;line-height:inherit}
+    .rp-now-away{margin:.1rem 0 0;font-size:var(--fs-xs)}
+    .rp-now-acts{flex-wrap:nowrap;gap:.35rem;margin:.25rem 0 0}
+    .rp-now-go{flex:1 1 auto;min-width:0;min-height:44px;padding:0 .6rem;font-size:var(--fs-sm);white-space:nowrap}
+    .rp-now-alts{flex:0 0 auto;gap:.35rem}
+    .rp-now-alt{flex:0 0 auto;padding:0 .5rem;font-size:var(--fs-xs)}
+    .rp-now-gift{margin:-6px 0 -8px;font-size:var(--fs-xs)}
+    .rp-now-t{min-height:2.7em}
+    /* a link that names a design or a place draws by itself: the block's room is kept from the first paint, so the
+       steps under it never jump when it comes (the script marks the page rp-now-set once it knows) */
+    html.rp-from-link:not(.rp-now-set) .rp-now:not(.rp-now-on),html.rp-tool-first:not(.rp-now-set) .rp-now:not(.rp-now-on){display:block;visibility:hidden}
+  }
   .rp-pending{margin:.5rem 0 0;padding:7px 11px;border-left:3px solid var(--brand);border-radius:0 var(--r-8) var(--r-8) 0;background:var(--surface);font-size:var(--fs-sm);line-height:1.45;color:var(--text)}
 
   /* the flow: the print, then the three steps; on a wide screen the print
@@ -767,7 +798,7 @@
   #site-footer a[href^="/sponsor"],#site-footer a[href^="/sponsor"]+.footer-sep,#site-footer #footer-adspace{display:none!important}
   </style>
 </head>
-<body>
+<body class="no-sw">
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header">
 <!-- static-nav:header -->
@@ -779,7 +810,7 @@
       <nav aria-label="AGSIST main navigation" style="font-family:'JetBrains Mono',monospace;font-size:0.775rem;line-height:2;color:var(--text-muted)">
         <b>Prices:</b> Near you: <a href="/cash-bids">Cash bids near me</a> · <a href="/basis">Bids and basis by state</a> · <a href="/grain-transport">Grain on the move</a> · <a href="/fertilizer">Fertilizer prices</a> · Futures: <a href="/corn-futures-prices">Corn</a> · <a href="/soybean-futures-prices">Soybeans</a> · <a href="/wheat-futures-prices">Wheat</a> · <a href="/ag-stocks">Ag stocks</a> · <a href="/harvest-price-tracker">Harvest price tracker</a> · <a href="/markets">All markets</a> · Reports: <a href="/usda-calendar">USDA calendar and what&rsquo;s priced in</a> · <a href="/conditions">Crop progress, size and yield</a> · <a href="/crop-tour">Crop tour</a> · <a href="/cot">Fund positions (COT)</a> · <a href="/tariffs">Tariffs and trade</a><br>
         <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
-        <b>Field:</b> Weather: <a href="/rain-radar">Rain on your field</a> · <a href="/rain">Rain by county</a> · <a href="/hail-map">Hail map</a> · <a href="/drought-monitor">Drought monitor</a> · <a href="/spray">Spray advisory</a> · <a href="/fall-nitrogen">Soil temp (fall anhydrous)</a> · <a href="/rain-print">Rain Print</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · Crop: <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/urea">Urea loss</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · Harvest and bins: <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a><br>
+        <b>Field:</b> Weather: <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-print">Rain Print</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · Crop: <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · Harvest and bins: <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a><br>
         <b>Money &amp; Land:</b> Land: <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · Programs: <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · Selling: <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
         <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/daily#past">Past briefings</a><br>
         <b>My place:</b> <a href="/fast-facts">Everything near me</a><br>
@@ -842,6 +873,16 @@
         </figure>
         <p class="rp-say" id="rp-say" aria-live="polite">Tap a layer to put it on the print.</p>
         <p class="rp-pending" id="rp-pending" aria-live="polite" hidden></p>
+      </div>
+      <!-- the order under the drawn print: here on a phone, under the pinned print; on a wide screen the script moves it into the print column, right under the print -->
+      <div class="rp-now" id="rp-now">
+        <p class="rp-now-t"><span id="rp-now-t">Framed, ready to hang, <b data-price="framed12x18">$89</b>, shipping included.</span> <span class="rp-now-when" id="rp-now-when" hidden></span></p>
+        <div class="rp-now-acts">
+          <button type="button" class="btn btn-primary rp-now-go" id="rp-now-go" data-now="framed12x18">Order it framed</button>
+          <span class="rp-now-alts" id="rp-now-alts"><button type="button" class="btn btn-secondary rp-now-alt" data-now="print12x18">Print <b data-price="print12x18">$45</b></button><button type="button" class="btn btn-secondary rp-now-alt" data-now="digital">Digital <b data-price="digital">$19</b></button></span>
+        </div>
+        <p class="rp-now-away" id="rp-now-away" hidden></p>
+        <p class="rp-now-gift" id="rp-now-gift-wrap"><button type="button" class="rp-linkbtn" id="rp-now-gift" aria-pressed="false">Making it for someone? Make it a gift</button></p>
       </div>
 
       <div class="rp-stepcol" id="rp-stepcol">
@@ -1192,10 +1233,10 @@
       <p class="rp-byline">By <a href="/about">Sigurd Lindquist</a>, CCA</p>
     </section>
 
-    <p class="rp-also" style="margin:1rem 0 0;font-size:.9rem;color:var(--text-dim)">How much rain has your county had this year? <a href="/rain" style="color:var(--brand)">See every county</a>. Rain on one field this week? <a href="/rain-radar" style="color:var(--brand)">Radar rain on your field</a>.</p>
+    <p class="rp-also" style="margin:1rem 0 0;font-size:.9rem;color:var(--text-dim)">How much rain has your county had this year? <a href="/rain" style="color:var(--brand)">See every county</a>. Rain on one field this week? <a href="/rain#radar" style="color:var(--brand)">Radar rain on your field</a>.</p>
     <nav class="rp-links" aria-label="Related pages">
       <a href="/hail-map">Hail map</a>
-      <a href="/drought-monitor">Drought monitor</a>
+      <a href="/rain#drought">Drought monitor</a>
       <a href="/prf">PRF rainfall insurance</a>
       <a href="/gdu-calculator">GDU calculator</a>
       <a href="/editorial-standards#sources">Where the numbers come from</a>
@@ -1224,7 +1265,7 @@
     <b>Daily:</b> <a href="/daily">Today&rsquo;s briefing</a> · <a href="/daily#past">Past briefings</a> · <a href="/rain-print">Rain Print: your farm’s year of rain, framed</a><br>
     <b>Prices:</b> <a href="/cash-bids">Cash bids near me</a> · <a href="/basis">Bids and basis by state</a> · <a href="/grain-transport">Grain on the move</a> · <a href="/fertilizer">Fertilizer prices</a> · <a href="/corn-futures-prices">Corn</a> · <a href="/soybean-futures-prices">Soybeans</a> · <a href="/wheat-futures-prices">Wheat</a> · <a href="/harvest-price-tracker">Harvest price tracker</a> · <a href="/markets">All markets</a> · <a href="/usda-calendar">USDA calendar and what&rsquo;s priced in</a> · <a href="/conditions">Crop progress, size and yield</a> · <a href="/crop-tour">Crop tour</a> · <a href="/cot">Fund positions (COT)</a> · <a href="/tariffs">Tariffs and trade</a><br>
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
-    <b>Field:</b> <a href="/rain-radar">Rain on your field</a> · <a href="/rain">Rain by county</a> · <a href="/hail-map">Hail map</a> · <a href="/drought-monitor">Drought monitor</a> · <a href="/spray">Spray advisory</a> · <a href="/fall-nitrogen">Soil temp (fall anhydrous)</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/urea">Urea loss</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
+    <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
     <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
@@ -1290,7 +1331,7 @@
   <script src="/components/rp-short.js?v=7" defer></script>
   <script src="/components/rp-canada.js?v=5" defer></script>
   <script src="/components/rain-print-art.js?v=23" defer></script>
-  <script src="/components/rain-print.js?v=93" defer></script>
+  <script src="/components/rain-print.js?v=94" defer></script>
   <script src="/components/rain-print-draw.js?v=5" defer></script>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/rp-gift.js?v=10" defer></script>

@@ -1,12 +1,10 @@
 name: storage
-# storage.
 
 on:
   schedule:
     - cron: "35 7 20 1 *"
     - cron: "35 7 1,14 10 *"
     - cron: "35 7 14 11 *"
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

@@ -1,5 +1,4 @@
 name: Rebuild Archive HTML (one-time)
-# Rebuild Archive HTML (one-time).
 
 on:
   workflow_dispatch:

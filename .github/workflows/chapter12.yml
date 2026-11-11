@@ -1,5 +1,4 @@
 name: Chapter 12 filings
-# Chapter 12 filings.
 
 on:
   workflow_dispatch:

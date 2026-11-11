@@ -1,5 +1,4 @@
 name: fetch-wasde-pdf
-# fetch-wasde-pdf.
 
 on:
   workflow_dispatch:

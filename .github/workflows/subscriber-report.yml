@@ -1,5 +1,4 @@
 name: Subscriber report
-# Subscriber report.
 
 on:
   workflow_dispatch:

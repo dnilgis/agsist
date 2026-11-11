@@ -1,5 +1,4 @@
 name: Regrade Archive Pages
-# Regrade Archive Pages.
 
 on:
   workflow_dispatch:

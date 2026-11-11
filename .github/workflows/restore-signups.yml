@@ -1,5 +1,4 @@
 name: Add the signups kept during the worker block (one-time)
-# Add the signups kept during the worker block (one-time).
 
 on:
   workflow_dispatch:

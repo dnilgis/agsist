@@ -1,15 +1,12 @@
 name: Build Analyst Scorecard
-# Build Analyst Scorecard.
 
 on:
   push:
     branches: [main]
     paths:
       - "data/analyst-estimates.json"
-      - "scripts/build_analyst_scorecard.py"
   schedule:
-    - cron: "25 11 * * *"   # 11:25 UTC daily — rolls the "next report" panel as dates pass
-  # cron above, by either trigger, do the work within 360 minutes
+    - cron: "25 11 * * *"
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

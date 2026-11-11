@@ -1,5 +1,4 @@
 name: COT Release Watch
-# COT Release Watch.
 
 on:
   schedule:

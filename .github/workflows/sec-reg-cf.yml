@@ -1,5 +1,4 @@
 name: SEC Reg CF (private ag raises)
-# SEC Reg CF (private ag raises).
 
 on:
   workflow_dispatch:

@@ -1,5 +1,4 @@
 name: Tools hub dates
-# Tools hub dates.
 
 on:
   workflow_dispatch:

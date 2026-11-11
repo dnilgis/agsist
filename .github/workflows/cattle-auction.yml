@@ -1,5 +1,4 @@
 name: Cattle auction prices
-# Cattle auction prices.
 
 on:
   workflow_dispatch:
@@ -15,7 +14,6 @@ on:
   schedule:
     - cron: '23 1 * * 2-6'
     - cron: '37 14 * * 1-5'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

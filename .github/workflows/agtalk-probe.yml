@@ -1,5 +1,4 @@
 name: agtalk-probe
-# agtalk-probe.
 
 on:
   workflow_dispatch:

@@ -1,5 +1,4 @@
 name: Schedule guard — the briefing's own shape
-# Schedule guard: the briefing's own shape.
 
 on:
   push:
@@ -9,8 +8,6 @@ on:
       - '.github/workflows/prices.yml'
       - '.github/workflows/schedule-guard.yml'
       - '.github/workflows/weekend-heartbeat.yml'
-      - 'scripts/test_daily_schedule.py'
-      - 'scripts/test_briefing_gate.py'
   pull_request:
     paths:
       - '.github/workflows/daily.yml'

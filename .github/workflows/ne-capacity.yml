@@ -1,5 +1,4 @@
 name: Nebraska licensed storage
-# Nebraska licensed storage.
 
 on:
   workflow_dispatch:

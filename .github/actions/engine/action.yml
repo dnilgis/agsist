@@ -4,7 +4,8 @@ description: >-
   mode empty: this repository's own copy (nothing changes). mode private: the
   engine branch of the private repo, checked out with PRIVATE_REPO_TOKEN and
   copied into place; a run on a branch (a pull request's head, or a dispatch on
-  it) uses the engine branch of the same name when there is one. A failed
+  it) uses the engine branch of the same name when there is one. With "mode
+  private" in .github/engine-paths the code is not in this repository at all. A failed
   checkout fails the job here, before any step can read or publish data.
 inputs:
   token:
@@ -44,8 +45,10 @@ runs:
         path: .engine-pair
         persist-credentials: false
 
+    # the default engine branch, always in private mode: with a paired branch it is what overlay compares that
+    # branch with (the files it changes feed the test pick; the code is not in this repository's diff)
     - id: checkout
-      if: steps.plan.outputs.private == 'true' && steps.paired.outcome != 'success'
+      if: steps.plan.outputs.private == 'true'
       continue-on-error: true
       uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683  # v4.2.2
       with:

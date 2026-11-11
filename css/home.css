@@ -2594,3 +2594,13 @@ html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--c
 /* the top band reached the old 16px gutter's 12px with -4px margins; the gutter is 12px now */
 .hero-band{margin-left:0;margin-right:0}
 }
+
+/* The sitewide sponsor line on phones (Nov 11, 2026): the three jobs keep the first screen, so on the homepage
+   the line sits right under them in #sw-home instead of under the menu (components/loader.js). The header
+   placeholder holds no room for it here; #sw-home holds its own. */
+.sw-home{display:none}
+@media (max-width:520px){
+  :root{--sw-h:0px}
+  .sw-home{display:block;height:54px;margin:.6rem 0 .2rem}
+  .sw-home .sw-line{height:54px;padding:4px 0}
+}

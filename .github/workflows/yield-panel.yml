@@ -1,14 +1,11 @@
 name: yield-panel
-# yield-panel.
 
 on:
   push:
     branches: [main]
     paths:
       - 'data/yield-benchmarks.json'
-      - 'scripts/build_yield_benchmarks.py'
       - 'conditions.html'
-      - 'scripts/bake_crop_size.py'
   schedule:
     - cron: '24 4 * * *'
   workflow_run:

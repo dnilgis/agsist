@@ -1,5 +1,4 @@
 name: North Dakota and Wisconsin licensed storage
-# North Dakota and Wisconsin licensed storage.
 
 on:
   workflow_dispatch:

@@ -1,5 +1,4 @@
 name: Hay prices
-# Hay prices.
 
 on:
   workflow_dispatch:
@@ -11,7 +10,6 @@ on:
   schedule:
     - cron: '23 20 27-31 * *'
     - cron: '23 14 1,2 * *'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

@@ -1,5 +1,4 @@
 name: merge-when-green
-# merge-when-green.
 
 on:
   workflow_run:

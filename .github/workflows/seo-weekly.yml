@@ -1,5 +1,4 @@
 name: SEO weekly (index check + what to fix)
-# SEO weekly (index check + what to fix).
 
 on:
   schedule:

@@ -1,5 +1,4 @@
 name: Cron health
-# Cron health.
 
 on:
   workflow_run:

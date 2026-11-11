@@ -1,5 +1,4 @@
 name: Fetch Outlooks (NOAA + USDM)
-# Fetch Outlooks (NOAA + USDM).
 
 on:
   schedule:

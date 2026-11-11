@@ -1,5 +1,4 @@
 name: probe-feeds
-# probe-feeds.
 
 on:
   workflow_dispatch:

@@ -1175,20 +1175,8 @@ window.hydrateDaily = function(data) {
         if(spHref){spTeaser.href=spHref;spTeaser.target='_blank';spTeaser.rel='sponsored noopener';spTeaser.setAttribute('data-sponsor-click','daily-briefing');}
         else{spTeaser.removeAttribute('target');spTeaser.removeAttribute('rel');spTeaser.removeAttribute('data-sponsor-click');spTeaser.href='/sponsor';}
       }
-      /* The homepage sponsor strip, outside the fold. Same fields and the same
-         tagged homepage link as the ad above; measured as its own slot. The
-         teaser pill would say the same name a line higher, so it steps aside. */
-      var tw=el('idx1-sponsor-wrap'),tb=el('idx1-sponsor'),tE=window.AgsistAd?window.AgsistAd.esc:escHtml;
-      if(tw&&tb){
-        var tHead=sp.headline||sp.tagline||'',tCta=sp.cta_text||'Learn more',tExt=/^https?:/i.test(spHref);
-        tb.setAttribute('data-sponsor-slot','homepage-top');
-        tb.innerHTML='<span class="ag-sponsor-tag">Sponsor</span>'+
-          (sp.logo?'<span class="idx1-sp-logo"><img src="'+tE(sp.logo)+'" alt="'+tE(spNm+' logo')+'" width="56" height="28" loading="lazy" decoding="async" onerror="this.parentNode.remove()"></span>':'')+
-          '<span class="idx1-sp-txt"><strong>'+tE(spNm)+'</strong>'+(tHead?' <span class="idx1-sp-head">'+tE(tHead)+'</span>':'')+'</span>'+
-          (spHref?' <a class="idx1-sp-cta" href="'+tE(spHref)+'" rel="sponsored noopener"'+(tExt?' target="_blank"':'')+' data-sponsor-click="homepage-top">'+tE(tCta)+' &rarr;</a>':'');
-        tw.hidden=false;
-        if(spTeaser){spTeaser.style.display='none';if(spTeaser.parentNode&&spTeaser.parentNode.classList.contains('s7-adrow'))spTeaser.parentNode.style.display='none';}
-      }
+      /* The homepage sponsor strip is retired (Nov 11, 2026): the sitewide line under the menu carries the
+         same sponsor on every page, so the strip would repeat the name. idx1-sponsor-wrap stays hidden. */
       // Inline attribution above greeting — paid state
       if(spAttr&&spNm){
         spAttr.style.display='inline-flex';

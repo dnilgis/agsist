@@ -1,5 +1,4 @@
 name: Fetch Crop Progress
-# Fetch Crop Progress.
 
 on:
   schedule:
