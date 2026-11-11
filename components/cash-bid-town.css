@@ -83,3 +83,11 @@ h3{font-size:.98rem;margin:16px 0 4px;color:var(--text)}
 .cbt-later{margin:8px 0 0}
 .cbt-later summary{cursor:pointer;min-height:44px;box-sizing:border-box;padding:10px 0;color:var(--gold);font-size:.92rem;font-weight:600}
 .cbt-hb-l{display:block}
+/* wide screens: the town page uses its width (best table and elevator cards side by side) */
+@media (min-width:1000px){
+.cbt-wrap:has(.cbt-best){max-width:1100px}
+.cbt-els{display:grid;grid-template-columns:1fr 1fr;gap:0 16px;align-items:start}
+.cbt-bt th.n,.cbt-bt td.n{width:20%}
+.cbt-bt td:first-child{width:60%}
+.cbt-hb{max-width:620px}
+}
