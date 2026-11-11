@@ -209,7 +209,6 @@ def main():
         raise SystemExit("FATAL: NASS_API_KEY not set")
     out = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
            "source": "USDA NASS weekly crop condition + annual state yield (YEAR only), 2000-present",
-           "note": ('Fit by state and week from USDA NASS conditions and yields. States and weeks without enough history are left out.'),
            "min_n": MIN_N, "crops": {}}
     total = 0
     cached = {}
@@ -228,7 +227,6 @@ def main():
     json.dump(out, open(OUT, "w"), separators=(",", ":"))
     print(f"wrote {OUT} ({total} state-crop fits)")
     pairs_out = {"generated": out["generated"],
-                 "note": 'Condition and final yield history from USDA NASS, rebuilt weekly.',
                  "crops": {slug: emit_pairs(*cached[slug]) for slug in cached}}
     json.dump(pairs_out, open(PAIRS_OUT, "w"), separators=(",", ":"))
     print(f"wrote {PAIRS_OUT} ({sum(len(c['states']) for c in pairs_out['crops'].values())} state panels)")

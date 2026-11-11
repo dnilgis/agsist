@@ -1,5 +1,4 @@
 name: lrp
-# lrp.
 
 on:
   schedule:

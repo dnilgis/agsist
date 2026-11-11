@@ -1,10 +1,8 @@
 name: seasonal models
-# seasonal models.
 
 on:
   schedule:
     - cron: "41 15 15 11,12 *"
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

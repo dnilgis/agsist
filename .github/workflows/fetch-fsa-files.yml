@@ -1,5 +1,4 @@
 name: fetch-fsa-files
-# fetch-fsa-files.
 
 on:
   workflow_dispatch:

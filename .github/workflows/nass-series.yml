@@ -1,5 +1,4 @@
 name: Build NASS Series
-# Build NASS Series.
 
 on:
   push:
@@ -8,7 +7,6 @@ on:
       - "scripts/build_nass_series.py"
   schedule:
     - cron: "45 12 16 * *"
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

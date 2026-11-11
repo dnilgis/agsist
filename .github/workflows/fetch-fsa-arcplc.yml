@@ -1,11 +1,9 @@
 name: fetch-fsa-arcplc
-# fetch-fsa-arcplc.
 
 on:
   workflow_dispatch:
   schedule:
     - cron: "37 13 * * 1"
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

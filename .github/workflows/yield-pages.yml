@@ -1,5 +1,4 @@
 name: State yield pages
-# State yield pages.
 
 on:
   push:

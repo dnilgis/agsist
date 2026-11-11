@@ -1,5 +1,4 @@
 name: IndexNow Submit
-# IndexNow Submit.
 
 on:
   push:

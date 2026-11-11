@@ -1,5 +1,4 @@
 name: Rebuild Feed Manifest
-# Rebuild Feed Manifest.
 
 on:
   workflow_dispatch:

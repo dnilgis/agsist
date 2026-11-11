@@ -1,5 +1,4 @@
 name: Subscriber counts
-# Subscriber counts: saved to the private repo, never printed to the job log.
 
 on:
   workflow_dispatch:

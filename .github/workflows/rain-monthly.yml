@@ -1,5 +1,4 @@
 name: Monthly county rain email
-# Monthly county rain email.
 
 on:
   schedule:

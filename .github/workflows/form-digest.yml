@@ -1,5 +1,4 @@
 name: Site forms digest
-# Site forms digest.
 
 on:
   schedule:

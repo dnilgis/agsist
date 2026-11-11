@@ -1,7 +1,5 @@
 name: Engine sync
-# Engine sync.
 
-# - It never force-pushes; a push race fetches the engine branch again and
 
 on:
   push:

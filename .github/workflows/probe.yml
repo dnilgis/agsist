@@ -1,5 +1,4 @@
 name: probe-sources
-# probe-sources.
 
 on:
   workflow_dispatch:

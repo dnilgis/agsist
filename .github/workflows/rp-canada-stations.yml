@@ -1,11 +1,9 @@
 name: Rain Print Canada stations
-# Rain Print Canada stations.
 
 on:
   workflow_dispatch:
   schedule:
     - cron: '23 9 3 * *'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

@@ -1,5 +1,4 @@
 name: Cache check (manual)
-# Cache check (manual).
 
 on:
   workflow_dispatch:

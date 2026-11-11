@@ -1,5 +1,4 @@
 name: Bake farm-bill page
-# Bake farm-bill page.
 
 on:
   push:

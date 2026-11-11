@@ -1,5 +1,4 @@
 name: Sitemap lastmod
-# Sitemap lastmod.
 
 on:
   push:
@@ -7,8 +6,7 @@ on:
     paths:
       - "**.html"
   schedule:
-    - cron: "17 9 * * *"   # 09:17 UTC daily — refreshes data-driven pages on their cadence
-  # cron above, by either trigger, do the work within 360 minutes
+    - cron: "17 9 * * *"
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

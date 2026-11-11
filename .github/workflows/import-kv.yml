@@ -1,5 +1,4 @@
 name: Import subscribers to KV (one-time)
-# Import subscribers to KV (one-time).
 
 on:
   workflow_dispatch:
