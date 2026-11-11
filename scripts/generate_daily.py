@@ -2868,6 +2868,22 @@ def _timing_px(k, v):
     return f"{v:,.2f}"
 
 
+def report_day_block(today, prices_path=None):
+    """2026-11-11: the morning after a USDA report day the writer gets that
+    day's settles, weekday and date written out, as their own block
+    (scripts/report_day_settles.py builds it from prices.json settles only; the fact
+    check reads it in the saved user message and briefing_gate rebuilds it).
+    Empty when the last session was not a report day."""
+    try:
+        import report_day_settles as rds
+        with open(prices_path or (REPO_ROOT / "data" / "prices.json")) as f:
+            prices = json.load(f)
+        return rds.text(rds.build(prices, today, rds.load_wasde_release()))
+    except Exception as _e:
+        print(f"  [warn] report-day block skipped ({type(_e).__name__}: {_e})")
+        return ""
+
+
 def price_timing_block(timing):
     """The prompt's statement of when the prices are from. Empty when settled."""
     if not timing or timing.get("settled"):
@@ -2989,6 +3005,9 @@ def call_claude(price_data, surprises, news_block, seasonal_ctx, todays_quote, p
     _tb = price_timing_block(_timing)
     if _tb:
         locked_table += "\n\n" + _tb
+    _rd = report_day_block(now.date())
+    if _rd:
+        locked_table += "\n\n" + _rd
     market_note = f"\nMARKET STATUS: {market_status['note']}\n" if market_status["is_closed"] else ""
     past_section = f"\n{past_dailies_block}\n" if past_dailies_block else ""
 
