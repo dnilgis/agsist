@@ -1,5 +1,4 @@
 name: SEO guard
-# SEO guard.
 
 on:
   push:

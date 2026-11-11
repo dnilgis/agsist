@@ -1,5 +1,4 @@
 name: conditions
-# conditions.
 
 on:
   schedule:

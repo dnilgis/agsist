@@ -1,5 +1,4 @@
 name: Generate Daily Briefing
-# Generate Daily Briefing.
 
 run-name: ${{ github.event_name == 'workflow_dispatch' && format('Generate Daily Briefing (manual, send_email={0}, heartbeat={1}, test_to_sig={2})', inputs.send_email, inputs.heartbeat, inputs.test_to_sig) || 'Generate Daily Briefing' }}
 

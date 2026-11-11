@@ -1,5 +1,4 @@
 name: API jobs (one-time)
-# API jobs (one-time).
 
 on:
   push:

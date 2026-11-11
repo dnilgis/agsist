@@ -1,5 +1,4 @@
 name: ARC/PLC signup reminder
-# ARC/PLC signup reminder.
 
 on:
   schedule:

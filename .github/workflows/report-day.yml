@@ -1,5 +1,4 @@
 name: Report day — USDA vs the trade email
-# Report day: USDA vs the trade email.
 
 on:
   workflow_run:

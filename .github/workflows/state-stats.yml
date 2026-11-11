@@ -1,5 +1,4 @@
 name: Build State Stats (USDA NASS)
-# Build State Stats (USDA NASS).
 
 on:
   push:

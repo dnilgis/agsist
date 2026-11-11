@@ -1,5 +1,4 @@
 name: Farm credit by Fed district
-# Farm credit by Fed district.
 
 on:
   workflow_dispatch:

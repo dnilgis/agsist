@@ -1,5 +1,4 @@
 name: preship
-# preship.
 
 on:
   push:

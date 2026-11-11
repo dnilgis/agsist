@@ -1,5 +1,4 @@
 name: Elevator watch emails
-# Elevator watch emails.
 
 on:
   schedule:

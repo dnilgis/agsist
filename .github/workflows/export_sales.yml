@@ -1,5 +1,4 @@
 name: Fetch Export Sales
-# Fetch Export Sales.
 
 on:
   schedule:

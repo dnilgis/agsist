@@ -1,5 +1,4 @@
 name: rain print examples
-# rain print examples.
 
 on:
   workflow_dispatch:

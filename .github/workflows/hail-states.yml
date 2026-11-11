@@ -1,10 +1,8 @@
 name: Hail state pages — generate from monthly data
-# Hail state pages: generate from monthly data.
 
 on:
   schedule:
-    - cron: '20 6 2 * *'   # 06:20 UTC on the 2nd — after the monthly hail data lands on the 1st
-  # cron above, by either trigger, do the work within 360 minutes
+    - cron: '20 6 2 * *'
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

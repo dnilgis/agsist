@@ -1,5 +1,4 @@
 name: Share images
-# Share images.
 
 on:
   push:
@@ -13,7 +12,6 @@ on:
       - '.github/workflows/share-images.yml'
   schedule:
     - cron: '23 12 * * *'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

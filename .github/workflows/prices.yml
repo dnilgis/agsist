@@ -1,5 +1,4 @@
 name: Fetch Prices
-# Fetch Prices.
 
 on:
   workflow_dispatch:

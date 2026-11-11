@@ -1,5 +1,4 @@
 name: History backfill (dispatch only)
-# History backfill (dispatch only).
 
 on:
   workflow_dispatch:

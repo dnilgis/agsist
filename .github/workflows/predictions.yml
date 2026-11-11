@@ -1,5 +1,4 @@
 name: Prediction bot — call and grade
-# Prediction bot: call and grade.
 
 on:
   schedule:
@@ -7,7 +6,6 @@ on:
     - cron: '41 20 * * 1-5'
     - cron: '41 22 * * 1-5'
     - cron: '41 23 * * 1-5'
-  # cron above, by either trigger, do the work within 50 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

@@ -1,5 +1,4 @@
 name: Tariff data check
-# Tariff data check.
 
 on:
   push:

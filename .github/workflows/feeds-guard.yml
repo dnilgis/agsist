@@ -1,5 +1,4 @@
 name: Feed manifest — every published number is accounted for
-# Feed manifest: every published number is accounted for.
 
 on:
   push:

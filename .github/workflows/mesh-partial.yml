@@ -1,5 +1,4 @@
 name: MESH partial — last 24h live layer
-# MESH partial: last 24h live layer.
 
 on:
   workflow_dispatch:
