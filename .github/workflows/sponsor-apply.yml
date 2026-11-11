@@ -1,5 +1,4 @@
 name: Sponsor sign-ups
-# Sponsor sign-ups.
 
 on:
   schedule:

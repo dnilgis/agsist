@@ -1,5 +1,4 @@
 name: main-checks
-# main-checks.
 
 on:
   push:

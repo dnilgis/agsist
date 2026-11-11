@@ -1,5 +1,4 @@
 name: Site size budget
-# Site size budget.
 
 on:
   push:

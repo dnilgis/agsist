@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 97,
- "with_known_cadence": 97,
+ "count": 96,
+ "with_known_cadence": 96,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -210,8 +210,6 @@
    "path": "data/audience.json",
    "pages": [
     "desk.html",
-    "sponsor-kit.html",
-    "sponsor-rates.html",
     "sponsor-report.html",
     "sponsor.html"
    ],
@@ -1015,9 +1013,7 @@
   {
    "path": "data/elevator-counts.json",
    "pages": [
-    "index.html",
-    "sponsor-kit.html",
-    "sponsor-rates.html"
+    "index.html"
    ],
    "written_by": [
     "cash-bid-pages"
@@ -2023,8 +2019,7 @@
   {
    "path": "data/page-sponsors.json",
    "pages": [
-    "desk.html",
-    "sponsor.html"
+    "desk.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -2466,10 +2461,7 @@
   {
    "path": "data/rate-card.json",
    "pages": [
-    "sponsor-kit.html",
-    "sponsor-rates.html",
-    "sponsor-report.html",
-    "sponsor.html"
+    "sponsor-report.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -2553,31 +2545,6 @@
    "why_quiet": null
   },
   {
-   "path": "data/sponsor-slots.json",
-   "pages": [
-    "sponsor.html"
-   ],
-   "written_by": [
-    "cash-bid-pages"
-   ],
-   "touched_by": [
-    "cash-bid-pages",
-    "Rebuild Feed Manifest",
-    "Sponsor reports \u2014 yesterday's numbers, from GA4"
-   ],
-   "cadence": "1 launch every day at about 7pm Central",
-   "curated": true,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "19 */6 * * *"
-   ],
-   "max_gap_hours": 6.0,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/sponsor.json",
    "pages": [
     "desk.html",
@@ -2602,8 +2569,7 @@
    "path": "data/sponsors.json",
    "pages": [
     "desk.html",
-    "sponsor-report.html",
-    "sponsor.html"
+    "sponsor-report.html"
    ],
    "written_by": [],
    "touched_by": [

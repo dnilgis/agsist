@@ -1,5 +1,4 @@
 name: Rebuild Call Scorecard
-# Rebuild Call Scorecard.
 
 on:
   workflow_dispatch:

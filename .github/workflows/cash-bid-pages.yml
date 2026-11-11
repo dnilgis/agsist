@@ -1,5 +1,4 @@
 name: cash-bid-pages
-# cash-bid-pages.
 
 on:
   workflow_run:

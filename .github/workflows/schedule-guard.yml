@@ -1,5 +1,4 @@
 name: Schedule guard — the briefing's own shape
-# Schedule guard: the briefing's own shape.
 
 on:
   push:

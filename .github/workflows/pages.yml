@@ -1,5 +1,4 @@
 name: Pages (site only)
-# Pages (site only).
 
 on:
   push:

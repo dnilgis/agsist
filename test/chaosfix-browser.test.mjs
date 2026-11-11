@@ -247,9 +247,10 @@ test("chaos-7: elevator files that 404, come back cut off or empty show 'Unable 
         clock: bidsClock(), routes: PX(0),
         bids: (p, raw) => (p.startsWith("data/merged/") ? f(raw) : J(raw)),
       });
-      /* the page's own answer, not the shell's "Find elevators near you" placeholder (also a .cb-empty, in the
-         HTML until the bids load fails): read before the fetch failed, it was the placeholder (CI, Oct 22) */
-      await pg.waitForFunction(() => { const e = document.querySelector("#cb-results .cb-empty"); return e && !/Find elevators near you/.test(e.textContent); }, null, { timeout: 40000 });
+      /* the page's own answer, not the shell's placeholder (also a .cb-empty, in the HTML until the bids load
+         fails: the sample table and no heading since Nov 11, 2026): read before the fetch failed, it was the
+         placeholder (CI, Oct 22). Every answer the page writes has a heading and no sample table. */
+      await pg.waitForFunction(() => { const e = document.querySelector("#cb-results .cb-empty"); return e && !e.querySelector("#cb-sample") && !!e.querySelector("h2"); }, null, { timeout: 40000 });
       const t = await pg.textContent("#cb-results .cb-empty");
       assert.match(t, /Unable to Load Bids/, `${w} ${name}: ${t}`);
       assert.doesNotMatch(t, /No current bids/);

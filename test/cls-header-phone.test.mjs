@@ -37,9 +37,11 @@ let chromium = null;
 try { if (existsSync(PW)) ({ chromium } = await import(PW)); } catch (e) { chromium = null; }
 const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not found here" : false;
 
-test("styles.css holds the phone placeholder to the live nav's 62px, once", () => {
+test("styles.css holds the phone placeholder to the live nav's 62px plus the sitewide line, once", () => {
   const css = strip(read("components/styles.css"));
-  assert.match(css, /@media \(max-width:520px\)\{#site-header\{min-height:62px;height:62px;overflow:hidden\}\}/);
+  // Nov 11, 2026: the sitewide line (--sw-h, 0 on pages without it) lands under the nav in the same step
+  assert.match(css, /@media \(max-width:520px\)\{#site-header\{min-height:calc\(62px \+ var\(--sw-h\)\);height:calc\(62px \+ var\(--sw-h\)\);overflow:hidden\}\}/);
+  assert.equal((css.match(/#site-header\{min-height:calc\(62px/g) || []).length, 1, "once");
   // home.css no longer carries its own copy of the same rule
   assert.doesNotMatch(strip(read("css/home.css")), /#site-header\{height:62px/);
 });
@@ -110,7 +112,8 @@ test("browser: no header shift at 390, default and large font, on a county rain 
         const r = await headerShift(browser, port, path, font);
         const at = `${path} (default font ${font}px)`;
         assert.ok(Math.abs(r.after - r.before) < 0.5, `${at}: <main> moved ${(r.after - r.before).toFixed(1)}px when the live nav landed (placeholder ${r.placeholder}px, nav ${r.nav}px)`);
-        assert.equal(r.placeholder, 62, `${at}: the placeholder is the live nav's height`);
+        // the live nav (62px) plus the sitewide line under it (54px on a phone, Nov 11, 2026)
+        assert.equal(r.placeholder, 62 + 54, `${at}: the placeholder is the live nav's height plus the sitewide line`);
       }
     }
   } finally { await browser.close(); srv.close(); }

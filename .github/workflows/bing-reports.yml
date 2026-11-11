@@ -1,5 +1,4 @@
 name: Bing reports (on request)
-# Bing reports (on request).
 
 on:
   workflow_dispatch:

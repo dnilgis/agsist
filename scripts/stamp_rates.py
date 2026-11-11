@@ -48,7 +48,7 @@ def label(card, tier):
     t = next((x for x in card["tiers"] if x["id"] == tier), None)
     if t is None:
         raise SystemExit("data-rate=%r: no such tier in data/rate-card.json" % tier)
-    return "$%d/mo &middot; first month free" % t["price_month"]
+    return "$%d a month" % t["price_month"]
 
 
 def pages():

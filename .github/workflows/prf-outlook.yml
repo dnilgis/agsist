@@ -1,11 +1,9 @@
 name: prf outlook
-# prf outlook.
 
 on:
   schedule:
     - cron: "47 15 * * 4"
     - cron: "17 11 * * 5"
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

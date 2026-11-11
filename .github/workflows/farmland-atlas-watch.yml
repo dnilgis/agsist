@@ -1,5 +1,4 @@
 name: Farmland Atlas watch emails
-# Farmland Atlas watch emails.
 
 on:
   schedule:

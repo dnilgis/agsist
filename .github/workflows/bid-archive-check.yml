@@ -1,10 +1,8 @@
 name: Bid archive check (monthly)
-# Bid archive check (monthly): one day of raw bid snapshots against the committed town pages.
 
 on:
   schedule:
     - cron: '19 10 6 * *'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

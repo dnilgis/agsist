@@ -1,5 +1,4 @@
 name: pr-checks
-# pr-checks.
 
 on:
   pull_request:

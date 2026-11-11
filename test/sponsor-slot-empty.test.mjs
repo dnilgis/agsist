@@ -18,8 +18,12 @@ test("the real pages: unsold ribbons are empty asides with only a slot id", () =
     assert.match(m[1], new RegExp(`data-slot="${id}"`), f);
     assert.ok(!/first month free|data-rate=|\$29\/mo/.test(h), f + " still carries a slot price");
   }
-  // the sponsor kit page keeps its prices
-  assert.match(readFileSync(ROOT + "sponsor.html", "utf8"), /\$29/);
+  // the booking page keeps its prices: every spot on the rate card (Nov 11, 2026: sitewide and state)
+  const sp = readFileSync(ROOT + "sponsor.html", "utf8");
+  const card = JSON.parse(readFileSync(ROOT + "data/rate-card.json", "utf8"));
+  assert.deepEqual(card.tiers.map((t) => t.id), ["sitewide", "state"]);
+  for (const t of card.tiers) assert.ok(sp.includes("$" + t.price_month.toLocaleString("en-US") + " a month"), "sponsor.html prices the " + t.name);
+  assert.ok(!/\$29\b/.test(sp), "sponsor.html still carries the retired $29 price");
 });
 
 test("loader.js fills a sold slot from data-slot alone", async () => {

@@ -176,7 +176,7 @@ LINES = {
     "glossary": ("Glossary", "Basis, WASDE, settle, carry and other farm market words in plain terms."),
     "privacy": ("Privacy", "What the site collects, who handles it and how long it is kept."),
     "scorecard": ("Scorecard", "The prediction bot's calls, graded by code against the closes."),
-    "sponsor": ("Sponsor", "A footer spot, your own page, or the daily briefing."),
+    "sponsor": ("Sponsor", "One line on every page, or one card per state."),
     "spray": ("Spray conditions", "Wind, temperature, humidity and inversion risk where you are."),
     "status": ("Status", "Whether every data feed on the site is fresh right now."),
     "store-or-sell": ("Store or sell", "What holding grain pays at your own elevator, after storage and interest."),

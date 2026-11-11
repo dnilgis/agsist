@@ -24,7 +24,6 @@ const LEFT = {
   'corn-futures-prices.html': 'PR #210 (quickwins) edits this page and components/futures.js; nc-chg is rewritten by futures.js',
   'soybean-futures-prices.html': 'fx/curtain edits this page and scripts/seed_static.py (the nc-line and corn-line seeds)',
   'milk-prices.html': 'fx/curtain edits this page and scripts/seed_static.py (the dp-spread seed; milk-prices.html sets dp-spread-words itself)',
-  'sponsor.html': 'fx/curtain edits this page; the span is filled by script (textContent)',
 };
 // </b> + <span> on pages fx/curtain (PR #223) edits (build rule 26: they ship in that change, not here).
 const LEFT_B = {

@@ -1,5 +1,4 @@
 name: WASDE archive (dispatch only)
-# WASDE archive (dispatch only).
 
 on:
   workflow_dispatch:

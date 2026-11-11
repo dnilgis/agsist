@@ -1,5 +1,4 @@
 name: CCC loan rates
-# CCC loan rates.
 
 on:
   workflow_dispatch:
@@ -11,7 +10,6 @@ on:
   schedule:
     - cron: '23 14 1-5 * *'
     - cron: '23 14 15 * *'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

@@ -394,6 +394,7 @@ def page_html(abbr, name, rows, years, dmg_in, today, span=None, sdays=None, st_
         "<div class=\"hs-tw\"><table><thead><tr><th>County</th><th class=\"num\">Reports</th><th class=\"num\">Avg/yr</th><th>Peak</th><th class=\"num\">% \u2265" + inch(dmg_in) + "\u2033</th></tr></thead>"
         "<tbody>" + (trs or '<tr><td colspan="5">Too few reports to rank counties.</td></tr>') + "</tbody></table></div>\n"
         "<p class=\"hs-note\">Peak is the county's month with the most reports. % \u2265" + inch(dmg_in) + "\u2033 is the share of its reports with stones " + size_line(dmg_in) + ". Crops can be hurt by smaller hail.</p>\n"
+        + "<div class=\"state-spot\" data-state-spot=\"" + abbr + "\"></div>\n"
         + key_figs
         + storm_days_html(name, sdays) +
         "<h2>" + esc(name) + " hail: the questions people ask</h2>\n"

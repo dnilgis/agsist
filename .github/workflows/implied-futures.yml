@@ -1,5 +1,4 @@
 name: Implied futures shadow test
-# Implied futures shadow test.
 
 on:
   workflow_run:

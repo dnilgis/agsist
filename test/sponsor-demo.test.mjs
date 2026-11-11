@@ -142,7 +142,10 @@ test("browser: the demo says what it is, shows real readers and zero ad counts, 
   const r = "tscdemo-2222222222222222";
   const file = JSON.parse(read(DEMO_FILE));
   // the page ends on the day by itself too: shown against a file that is still full
-  const live = { ...file, expires: "2099-12-31" };
+  // the report job writes today's rate card into every report (build_sponsor_report.rate_card() reads
+  // data/rate-card.json); the frozen Nov 4 file carries the card of that day, so it gets today's card here
+  const live = { ...file, expires: "2099-12-31", rateCard: JSON.parse(read("data/rate-card.json")) };
+  assert.deepEqual(py("print(json.dumps(b.rate_card()))"), live.rateCard, "the job writes data/rate-card.json as it is");
   // the reports come from the subs worker (GET /sponsor-report, Nov 4, 2026), stubbed here per link
   const REPORTS = { [r]: live, "tscdemo-0000000000000000": { ...file, expires: "2026-01-01" },
     "tscdemo-1111111111111111": { schema: "agsist-sponsor-report/1", slug: "tscdemo", demo: true, demoEnded: true, expires: "2026-11-28" } };

@@ -1,10 +1,8 @@
 name: MESH radar hail swaths — daily
-# MESH radar hail swaths: daily.
 
 on:
   schedule:
-    - cron: '25 8 * * *'   # 08:25 UTC — previous UTC day complete and archived
-  # cron above, by either trigger, do the work within 360 minutes
+    - cron: '25 8 * * *'
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

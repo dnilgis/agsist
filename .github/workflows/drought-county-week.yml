@@ -1,5 +1,4 @@
 name: Drought county week
-# Drought county week.
 
 on:
   workflow_dispatch:
@@ -11,7 +10,6 @@ on:
   schedule:
     - cron: '52 13 * * 4'
     - cron: '37 14 * * 5'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

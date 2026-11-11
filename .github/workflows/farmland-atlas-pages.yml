@@ -1,5 +1,4 @@
 name: farmland-atlas-pages
-# farmland-atlas-pages.
 
 on:
   workflow_run:

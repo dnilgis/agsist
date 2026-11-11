@@ -1,5 +1,4 @@
 name: sitemap-add
-# sitemap-add.
 
 on:
   workflow_dispatch:

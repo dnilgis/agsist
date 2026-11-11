@@ -64,6 +64,13 @@ function serve(opts = {}) {
       setTimeout(() => res.end(s.slice(end)), opts.split);
       return;
     }
+    if (opts.spot && p === opts.spot.path) {
+      /* the state spot as scripts/build_county_rain.py writes it, right under the answer line, for a page
+         built before the builder change (the PR checks rebuild these pages with the branch's builder) */
+      let s = body.toString("utf8");
+      if (!s.includes("data-state-spot")) { const a = s.indexOf('<p class="rc-answer">'), e = s.indexOf("</p>", a) + 4; s = s.slice(0, e) + `\n    <div class="state-spot" data-state-spot="${opts.spot.st}"></div>` + s.slice(e); }
+      res.writeHead(200, { "content-type": type }); res.end(s); return;
+    }
     const send = () => { res.writeHead(200, { "content-type": type }); res.end(body); };
     if (p === "/data/prices.json" && opts.hold) setTimeout(send, opts.hold); else send();
   });
@@ -99,7 +106,7 @@ async function open(browser, port, path, width, height, o = {}) {
     /* when the state sponsor box lands, and where */
     new MutationObserver((ms) => {
       for (const m of ms) for (const n of m.addedNodes) if (n.nodeType === 1 && n.classList.contains("geo-spon") && !window.__geo)
-        window.__geo = { t: performance.now(), top: n.getBoundingClientRect().top, vh: innerHeight };
+        window.__geo = { t: performance.now(), top: n.getBoundingClientRect().top, vh: innerHeight, spot: !!n.closest("[data-state-spot]") };
     }).observe(document, { childList: true, subtree: true });
   });
   await pg.goto(`http://127.0.0.1:${port}${path}`);
@@ -108,6 +115,7 @@ async function open(browser, port, path, width, height, o = {}) {
   const r = await pg.evaluate(() => ({
     shifts: window.__shifts, geo: window.__geo || null,
     boxes: document.querySelectorAll(".geo-spon").length,
+    hasSpot: !!document.querySelector("[data-state-spot]"),
     nozip: !!document.querySelector("#hero-band.hb-nozip"),
     ovn: [...document.querySelectorAll("#hb-fc-s .hb-ovn, #hb-fs-s .hb-ovn")].map((e) => e.textContent),
   }));
@@ -147,28 +155,49 @@ test("homepage: the evening overnight line under the futures lands in space held
   }
 });
 
-test("state sponsor: forced to a sponsor state it draws below the fold and moves nothing; another state draws nothing", { skip, timeout: 300000 }, async () => {
+/* Nov 11, 2026: a state page that carries the state spot (the box every state page builder writes right under
+   the main answer) shows the state's sponsor card IN that spot, on the first screen by design; the spot holds its
+   height from the first paint, so nothing moves. A page without the spot keeps the old rule: below the fold. The
+   rain page is also served once with the spot added as its builder writes it, so both rules run on every machine. */
+test("state sponsor: forced to a sponsor state it draws in the page's state spot, or else below the fold, and moves nothing; another state draws nothing", { skip, timeout: 300000 }, async () => {
   const data = JSON.parse(readFileSync(join(ROOT, "data/geo-sponsors.json"), "utf8"));
   // the committed entry, switched on whatever its flag says today, so the slot is measured even between tests
   const e = Object.assign({}, (data.sponsors || []).find((s) => s.headline && s.body && Array.isArray(s.states) && s.states.length), { active: true, start: null, end: null });
   assert.ok(e.id, "data/geo-sponsors.json has an entry with copy to draw");
   const st = e.states[0], other = ["OH", "IA", "WI", "MN"].find((x) => e.states.indexOf(x) < 0);
   const SLUG = { CA: "california", NV: "nevada", TX: "texas", OR: "oregon" }[st];
-  const srv = await serve({ geo: Object.assign({}, data, { sponsors: [e] }) }), port = srv.address().port;
+  const geo = Object.assign({}, data, { sponsors: [e] });
+  const runs = [[{ geo }, [["/", st, true], ["/", other, false]]]];
+  if (SLUG) {
+    const pages = [`/rain/${SLUG}`, `/prf/${SLUG}`, `/yield/${SLUG}`].filter((p) => existsSync(join(ROOT, p.slice(1) + ".html")));
+    runs[0][1].push(...pages.map((p) => [p, other, true]));
+    if (pages.includes(`/rain/${SLUG}`)) runs.push([{ geo, spot: { path: `/rain/${SLUG}.html`, st } }, [[`/rain/${SLUG}`, other, true, "spot"]]]);
+  }
+  let spotRuns = 0;
   const browser = await chromium.launch({ executablePath: CHROME });
   try {
-    const cases = [["/", st, true], ["/", other, false]];
-    if (SLUG) for (const p of [`/rain/${SLUG}`, `/prf/${SLUG}`, `/yield/${SLUG}`]) if (existsSync(join(ROOT, p.slice(1) + ".html"))) cases.push([p, other, true]);
-    for (const [path, where, want] of cases) {
-      for (const [w, h] of SIZES) {
-        const r = await open(browser, port, path, w, h, { where, wait: 4000 });
-        const tag = `${path} /where=${where} ${w}`;
-        if (!want) { assert.equal(r.boxes, 0, `${tag}: no sponsor for this state`); continue; }
-        assert.equal(r.boxes, 1, `${tag}: the ${e.id} box draws`);
-        assert.ok(r.geo && r.geo.top >= r.geo.vh, `${tag}: drawn below the fold (${JSON.stringify(r.geo)})`);
-        const after = r.shifts.filter((x) => x.main && x.t >= r.geo.t - 20);
-        assert.ok(sum(after) < 0.001, `${tag}: something on screen moved when the box landed: ${show(after)}`);
-      }
+    for (const [opts, cases] of runs) {
+      const srv = await serve(opts), port = srv.address().port;
+      try {
+        for (const [path, where, want, must] of cases) {
+          for (const [w, h] of SIZES) {
+            const r = await open(browser, port, path, w, h, { where, wait: 4000 });
+            const tag = `${path} /where=${where} ${w}${must ? " (" + must + ")" : ""}`;
+            if (!want) { assert.equal(r.boxes, 0, `${tag}: no sponsor for this state`); continue; }
+            assert.equal(r.boxes, 1, `${tag}: the ${e.id} box draws`);
+            if (must === "spot") assert.ok(r.hasSpot, `${tag}: the page carries the state spot`);
+            if (r.hasSpot) {
+              spotRuns++;
+              assert.ok(r.geo && r.geo.spot, `${tag}: drawn in the state spot under the answer (${JSON.stringify(r.geo)})`);
+            } else {
+              assert.ok(r.geo && !r.geo.spot && r.geo.top >= r.geo.vh, `${tag}: drawn below the fold (${JSON.stringify(r.geo)})`);
+            }
+            const after = r.shifts.filter((x) => x.main && x.t >= r.geo.t - 20);
+            assert.ok(sum(after) < 0.001, `${tag}: something on screen moved when the box landed: ${show(after)}`);
+          }
+        }
+      } finally { srv.close(); }
     }
-  } finally { await browser.close(); srv.close(); }
+    if (SLUG && existsSync(join(ROOT, `rain/${SLUG}.html`))) assert.ok(spotRuns >= 2, "the state spot case ran at 390 and 1280");
+  } finally { await browser.close(); }
 });

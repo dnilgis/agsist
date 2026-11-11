@@ -1,5 +1,4 @@
 name: Monthly land sale email
-# Monthly land sale email.
 
 on:
   schedule:

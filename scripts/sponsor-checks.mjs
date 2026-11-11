@@ -353,12 +353,16 @@ check("every page that ships the ribbon puts it below the H1 and the breadcrumb"
     assert.ok(bc < 0 || rib > bc, f + ": the ribbon comes before the breadcrumb");
   }
 });
-check("the rent page generator writes the ribbon after the verdict and the state tiles", () => {
+/* Nov 11, 2026: the single-page state ribbon is retired as a product; the state
+   card takes its place right under a state page's answer. The hub page (no state)
+   keeps its empty ribbon slot after the state tiles. */
+check("the rent page generator writes the state card after the verdict, and the hub ribbon after the state tiles", () => {
   const g = R("scripts/build_state_rent_pages.py");
-  for (const block of ["{hero}", "{tile_html}"]) {
+  for (const [block, next, what] of [["{hero}", '<div class="state-spot" data-state-spot="{st}"></div>', "the state card"],
+                                     ["{tile_html}", '<aside class="ag-sponsor-ribbon" data-slot="rent-hub"></aside>', "the hub ribbon"]]) {
     const i = g.indexOf("\n  " + block + "\n");
     assert.ok(i > 0, block + " is no longer a line of its own in the page template");
-    assert.ok(g.slice(i + block.length + 4).trimStart().startsWith('<aside class="ag-sponsor-ribbon"'), "the ribbon does not follow " + block);
+    assert.ok(g.slice(i + block.length + 4).trimStart().startsWith(next), what + " does not follow " + block);
   }
 });
 check("the ribbon's link is a 44px tap target", () => {

@@ -1,5 +1,4 @@
 name: Infographic pages
-# Infographic pages.
 
 on:
   push:

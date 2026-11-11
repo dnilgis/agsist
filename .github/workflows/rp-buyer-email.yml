@@ -1,5 +1,4 @@
 name: Rain Print buyer email
-# Rain Print buyer email.
 
 on:
   workflow_dispatch:

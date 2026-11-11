@@ -1,9 +1,8 @@
 name: Daily site check
-# Daily site check.
 
 on:
   schedule:
-    - cron: '37 11 * * *'     # 11:37 UTC, after the morning price, bids and Daily runs
+    - cron: '37 11 * * *'
   workflow_dispatch:
     inputs:
       dry:

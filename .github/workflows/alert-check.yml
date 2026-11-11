@@ -1,5 +1,4 @@
 name: Hail alert check
-# Hail alert check.
 
 on:
   workflow_dispatch:

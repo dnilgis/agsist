@@ -1,5 +1,4 @@
 name: Render audit — what a farmer's browser actually gets
-# Render audit: what a farmer's browser actually gets.
 
 on:
   schedule:

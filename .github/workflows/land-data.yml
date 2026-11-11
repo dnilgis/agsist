@@ -1,5 +1,4 @@
 name: Land data (parcel services + transfers)
-# Land data (parcel services + transfers).
 
 on:
   workflow_dispatch:
@@ -18,7 +17,6 @@ on:
         default: "services"
   schedule:
     - cron: '23 9 3 * *'
-  # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
     workflows: ["Fetch Grain Bids"]
     types: [completed]

@@ -2507,6 +2507,7 @@ def state_page(st, S, D, ch, nav_states):
   wheat {usd(y6['wheat']['erp']['erp'])}. 2026 ARC-CO benchmark price: corn {usd(y6['corn']['bp']['value'])}, soybeans {usd(y6['soybeans']['bp']['value'])}, wheat {usd(y6['wheat']['bp']['value'])}.
   When the county yield comes in at its benchmark, ARC-CO pays when the season-average price ends at {c2(trigger_c(y6['corn']))} or lower for corn,
   {c2(trigger_c(y6['soybeans']))} for soybeans and {c2(trigger_c(y6['wheat']))} for wheat.</p>{XC.state_crops_line(D, S)}</div>
+  <div class="state-spot" data-state-spot="{st}"></div>
   <h2 id="counties">{table_h}</h2>
   <p class="ap-small">{table_note}</p>
   {table_html}
@@ -4095,6 +4096,8 @@ def selftest():
         assert cp.count("data-rain-print-promo") == 1 and cp.count(RP_SEE) == 1 and cp.count(RP_PROMO_JS) == 1, "county see line"
         assert cp.index(RP_SEE) < cp.index("</main>") and ('class="ap-faq' not in cp or cp.index(RP_SEE) > cp.index('class="ap-faq')), "see line after the questions"
         sp, sm = state_page("WI", S, D, ("", "", ""), [S])
+        # the state spot sits right under the short answer (the county picker and the prices), above the county table
+        assert sp.count('data-state-spot="WI"') == 1 and sp.index('class="ap-quick"') < sp.index("data-state-spot") < sp.index('id="counties"'), "state spot"
         # the benchmark and both practices are in the page (Key numbers); the working behind them (Olympic average,
         # trigger yield, break-even) is in data/arc-plc/math/WI.json, which components/arc-plc-math.js lays out on open
         # (test/arc-plc-math.test.mjs renders it against the old server-rendered math)
