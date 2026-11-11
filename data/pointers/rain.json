@@ -25,6 +25,10 @@
    "to": "/rain/georgia",
    "since": "2026-10-14"
   },
+  "rain/georgia/candler-county.html": {
+   "to": "/rain/georgia",
+   "since": "2026-11-11"
+  },
   "rain/georgia/murray-county.html": {
    "to": "/rain/georgia",
    "since": "2026-10-14"
@@ -60,6 +64,14 @@
   "rain/maryland/talbot-county.html": {
    "to": "/rain/maryland",
    "since": "2026-10-19"
+  },
+  "rain/michigan/wexford-county.html": {
+   "to": "/rain/michigan",
+   "since": "2026-11-11"
+  },
+  "rain/minnesota/pope-county.html": {
+   "to": "/rain/minnesota",
+   "since": "2026-11-11"
   },
   "rain/mississippi/copiah-county.html": {
    "to": "/rain/mississippi",
