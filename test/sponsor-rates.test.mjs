@@ -7,6 +7,8 @@
  *     (scripts/bake_audience.py --check), or drawn at load time from data/sponsor-spots.json; none is typed;
  *   - prices and terms typed into /sponsor are the rate card's (data/rate-card.json); no free month;
  *   - real links: a phone number, an email, and the booking form on the page;
+ *   - ?ref=<slug> (lower case letters, digits, dashes, at most 40) rides on every email subject and the form's note;
+ *     anything else is ignored; nothing is stored;
  *   - in a browser at 390 and 1280: the old address lands on /sponsor with its query, a state's numbers and
  *     price come from the data files (the home state's numbers are withheld), no sideways scroll; with the
  *     data files missing, the typed prices stay and no number is made up.
@@ -175,5 +177,42 @@ test("no rate card file, no spots file: the typed prices stay, the state line ma
     assert.ok(s.line.startsWith("Iowa:"), s.line);
     assert.doesNotMatch(s.line, /\d/, "a number without its data file: " + s.line);
     assert.ok(s.sw <= s.cw);
+  } finally { await browser.close(); srv.close(); }
+});
+
+test("?ref: a valid slug reaches every email subject and the form's note; anything else is ignored; nothing is stored", { skip }, async () => {
+  const srv = await serve(), port = srv.address().port;
+  const browser = await chromium.launch({ executablePath: CHROME });
+  const SUBJ = "mailto:sig@agsist.com?subject=AGSIST%20sponsor%20spot";
+  const faq = (page) => page.evaluate(() => document.querySelector('.sp-faq a[href^="mailto:"]').getAttribute("href"));
+  try {
+    let { ctx, page } = await open(browser, port, { path: "/sponsor-rates?ref=valley-coop-2" });
+    assert.equal(await page.evaluate(() => location.pathname + location.search), "/sponsor?ref=valley-coop-2");
+    assert.equal(await faq(page), SUBJ + encodeURIComponent(": valley-coop-2"));
+    // the form's note carries it to the worker
+    let posted = null;
+    await ctx.route(/^https:\/\/agsist-api\.dnilgis\.workers\.dev\/sponsor-apply$/, (r) => { posted = JSON.parse(r.request().postData()); r.fulfill({ status: 200, contentType: "application/json", headers: { "access-control-allow-origin": "*" }, body: '{"ok":true}' }); });
+    await page.evaluate(() => {
+      document.querySelector('input[name=tier][value="state"]').checked = true;
+      const sel = document.getElementById("spa-state"); sel.value = "IA";
+      for (const [id, v] of [["spa-company", "Valley Coop"], ["spa-contact", "Pat"], ["spa-email", "pat@example.com"], ["spa-headline", "Fair bids every day"], ["spa-url", "https://example.com"]]) document.getElementById(id).value = v;
+      document.getElementById("spa-terms").checked = true;
+    });
+    await page.click("#spa-go");
+    await page.waitForFunction(() => !document.getElementById("spa-done").hidden || /reach/.test(document.getElementById("spa-msg").textContent), null, { timeout: 10000 });
+    assert.ok(posted, "the form posted");
+    assert.equal(posted.body, "How I pay: yearly invoice by mail. Ref: valley-coop-2");
+    assert.deepEqual(await ctx.cookies(), [], "no cookie set");
+    const stored = await page.evaluate(() => { try { return Object.keys(localStorage).concat(Object.keys(sessionStorage)).filter((k) => /ref/i.test(k)); } catch (e) { return []; } });
+    assert.deepEqual(stored, [], "ref not stored");
+    await ctx.close();
+    for (const bad of ["Valley-Coop", "a_b", "x%3Cb%3E", "a".repeat(41), "", "ok%20no"]) {
+      ({ ctx, page } = await open(browser, port, { path: "/sponsor?ref=" + bad }));
+      assert.equal(await faq(page), SUBJ, "ref " + bad + " ignored");
+      await ctx.close();
+    }
+    ({ ctx, page } = await open(browser, port, { path: "/sponsor?ref=" + "b".repeat(40) }));
+    assert.equal(await faq(page), SUBJ + encodeURIComponent(": " + "b".repeat(40)), "40 characters is allowed");
+    await ctx.close();
   } finally { await browser.close(); srv.close(); }
 });
