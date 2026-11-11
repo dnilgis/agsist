@@ -610,6 +610,7 @@ def build_state_page(name, inp, ctx):
   Updated {fmt_date(updated)}.</p>
   <div class="yl-hero">{cards}</div>
   {season_html}
+  <div class="state-spot" data-state-spot="{st}"></div>
   <h2 id="by-year">{esc(name)} yield by year</h2>
   <p class="yl-sub">Newest first. Bushels per acre{"; planted acres in millions" if has_acres else ""}. Source: USDA NASS Quick Stats, state level.
   n/a: NASS published no figure for that year. Pending: not yet released (corn and soybeans come out in January).</p>
@@ -769,6 +770,8 @@ def selftest():
            '<p class="yl-fc"><b>2026 USDA October forecast:</b> corn <b>219 bu</b>, soybeans <b>64 bu</b> per acre.' in ia
            and ia.find('class="yl-fc"') < ia.find('class="yl-hero"'))
         ck("no forecast line without a forecast", 'class="yl-fc"' not in ut and 'class="yl-fc"' not in ks)
+        ck("the state spot sits right under the answer cards", ia.count('data-state-spot="IA"') == 1
+           and ia.find('class="yl-hero"') < ia.find("data-state-spot") < ia.find('id="by-year"'))
         ck("same-year disagreement hidden + warned", "35</b>" not in ks and any("KS wheat 2026" in w for w in warn), warn)
         ck("county ranking uses newest corn year only", ia.find("Adams County") < ia.find("Adair County")
            < ia.find("Appanoose County") and "999" not in ia)

@@ -1201,6 +1201,7 @@ def build_state_page(st, d, s, all_states, aslug=None):
   <p class="sub">{name} cash rent by county, per acre per year: every USDA-published county rate, free, from
   the NASS Cash Rents Survey. <span id="rs-seed"><!--SEED:rentstate-->{seed}<!--/SEED--></span></p>
   {hero}
+  <div class="state-spot" data-state-spot="{st}"></div>
   <aside class="ag-sponsor-ribbon" data-slot="rent-{st.lower()}"></aside>{ground_html}
   <h2 id="counties" style="scroll-margin-top:80px">Every county, {yr}</h2>
   <p class="sub">Tap a column heading to sort. Greyed values are the county&rsquo;s most recent published year where {yr}
@@ -1543,6 +1544,7 @@ def selftest():
         # the one signup ask: under the hero figures, before the county table, topic rent:ia
         assert ia.count("data-signup-ask") == 1 and 'data-topic="rent:ia"' in ia, "IA rent ask"
         assert ia.index("The median Iowa county paid") < ia.index("data-signup-ask") < ia.index('class="rs-hero"'), "rent ask sits right under the median card"
+        assert ia.count('data-state-spot="IA"') == 1 and ia.rindex('class="rs-hero"') < ia.index('data-state-spot') < ia.index('id="counties"'), "the state spot sits right under the answer"
         assert ia.index("data-signup-ask") < ia.index('id="counties"'), "rent ask sits under the median card, above the table"
         assert 'data-signup-ask="Email me when USDA updates Iowa cash rents."' in ia
         assert "September 1" in ia, "IA termination notice missing"

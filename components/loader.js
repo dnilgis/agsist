@@ -569,7 +569,7 @@
       (s.blurb ? '<span class="ad-filled-blurb">' + slotEsc(s.blurb) + '</span>' : '');
   }
   window.AgsistSlots = { ribbon: function (sp, id) { return ribbonInner(sp, id, false); }, supporter: supporterInner };
-  var OPEN_SLOT_LINE = true;
+  var OPEN_SLOT_LINE = false;
   function openSlotTier(id) { return id === 'cash-bids' ? 'cashbids' : /^(cash-bids-[a-z]+(-[a-z]+)*|rent-[a-z]{2})$/.test(id) ? 'state' : ''; }
   function openSlotLine(rib, id) {
     var tier = openSlotTier(id);
@@ -598,6 +598,48 @@
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
   }
+  /* The sitewide sponsor line, under the live nav on every page but Rain Print, gift and gauge pages.
+     data/sponsor.json is the sitewide sponsor (it also feeds the Daily line); an open spot prints the
+     engaged readers from data/sponsor-spots.json and the price from data/rate-card.json. ?sponsor-preview=1
+     draws a sample sold line and counts nothing. styles.css holds its height in the header placeholder. */
+  function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
+  function swSold(sp) {
+    return !!(sp && sp.active === true && !sp.is_house_ad && sp.advertiser && /^https:\/\/[^\s"'<>]+$/.test(sp.cta_url || ''));
+  }
+  function swLine(sp, card, spots, preview) {
+    if (preview) sp = { active: true, advertiser: 'Your Business', headline: 'Your one line here.', cta_url: 'https://agsist.com/sponsor' };
+    if (swSold(sp)) {
+      var href = sp.cta_url + (sp.cta_url.indexOf('?') < 0 ? '?' : '&') + 'utm_source=agsist&utm_medium=sitewide';
+      return { sold: true, html: '<span class="sw-in"><span class="sw-tag">Sponsor</span>Supported by <b>' + slotEsc(sp.advertiser) + '</b>' +
+        (sp.line || sp.headline ? '. ' + slotEsc(sp.line || sp.headline) : '') + ' <a href="' + slotEsc(href) + '" rel="sponsored noopener" target="_blank"' +
+        (preview ? '' : ' data-sponsor-click="sitewide"') + '>Visit</a></span>' };
+    }
+    var t = card && (card.tiers || []).filter(function (x) { return x.id === 'sitewide'; })[0];
+    var n = spots && spots.sitewide && spots.sitewide.readers;
+    return { sold: false, html: '<span class="sw-in">Sponsor spot open. ' +
+      (typeof n === 'number' && n > 0 ? n.toLocaleString('en-US') + ' readers in the last 28 days. ' : '') +
+      (t && t.price_month ? '$' + Number(t.price_month).toLocaleString('en-US') + ' a month, one business. ' : '') +
+      '<a href="' + BASE + '/sponsor#sitewide" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'sitewide_open\'})">See it</a></span>' };
+  }
+  function sitewide(noSponsor, before, parent) {
+    if (noSponsor || GEO_SKIP.test(location.pathname) || !parent || document.getElementById('ag-sw') || document.getElementById('site-header') ||
+        (document.body && document.body.classList.contains('no-sw'))) return;
+    var line = document.createElement('aside');
+    line.id = 'ag-sw';
+    line.className = 'sw-line';
+    line.setAttribute('aria-label', 'Sponsor');
+    if (before && before.parentNode === parent) parent.insertBefore(line, before); else parent.appendChild(line);
+    var preview = /[?&]sponsor-preview=1(?:&|$)/.test(location.search);
+    Promise.all([swGet('/data/sponsor.json'), swGet('/data/rate-card.json'), swGet('/data/sponsor-spots.json')]).then(function (r) {
+      var o = swLine(r[0], r[1], r[2], preview);
+      if (o.sold) {
+        line.className = 'sw-line sw-line--sold';
+        if (!preview) line.setAttribute('data-sponsor-slot', 'sitewide');
+      }
+      line.innerHTML = o.html;
+    });
+  }
+  window.AgsistSitewide = { line: swLine };
   function fillPageRibbons(noSponsor) {
     var rib = document.querySelector('aside.ag-sponsor-ribbon');
     if (!rib) return geoSponsor(noSponsor, null);
@@ -732,7 +774,8 @@
     siteNotice();
     loadSponsorMetrics();
     var noSponsor = pageHidesSponsor();
-    loadComponent('site-header', '/components/header.html', function () { initNav(); headerSponsorHide(noSponsor); });
+    var swPh = document.getElementById('site-header'), swNext = swPh && swPh.nextSibling, swParent = swPh && swPh.parentNode;
+    loadComponent('site-header', '/components/header.html', function () { sitewide(noSponsor, swNext, swParent); initNav(); headerSponsorHide(noSponsor); });
     loadComponent('site-footer', '/components/footer.html', function () {
       foldFooter(); renderSupporters(); footerSponsorHide(noSponsor);
       try { if (window.AgsistSignup && window.AgsistSignup.scan) window.AgsistSignup.scan(); } catch (e) {}

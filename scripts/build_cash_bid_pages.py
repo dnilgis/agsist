@@ -1556,6 +1556,13 @@ def sponsor_slot(ssl):
     return f'<aside class="ag-sponsor-ribbon" data-slot="cash-bids-{ssl}"></aside>'
 
 
+# The state spot (Nov 11, 2026): one box directly below the page's main answer, the same on the state page and
+# every town page. components/geo-sponsor.js fills it with the state's sponsor, or shows that the spot is open;
+# components/styles.css holds its height from the first paint.
+def state_spot(st):
+    return f'<div class="state-spot" data-state-spot="{st}"></div>'
+
+
 def page_end(ftr, table=False, signup=False, hist=False, promo=False, buyers=False, share=False, skb=False):
     # the Bids near kit runs before the signup box script: an arrival from its picture, sheet or QR code is marked
     # on the box's source before the box reads it
@@ -2940,6 +2947,7 @@ def build_town_page(t, ctx):
   {jump}
   {''.join(secs[:1])}
   {cmp_html}
+  {state_spot(st)}
   {top_html}
   <a class="cbt-live" href="{esc(live)}">Live bids near {esc(z or t['name'])} &rarr;</a>
   {box}
@@ -3703,6 +3711,7 @@ def build_state_index(st, metas, ctx, unplaced=(), near=(), summ=None, town_path
   elevator&rsquo;s own bid board. This is the network&rsquo;s sample, not every elevator in {esc(sname)}; the
   <a href="/cash-bids">live cash bids page</a> finds the ones nearest your ZIP.</p>
   {best_html}
+  {state_spot(st)}
   {basis_section(st, summ, pg, town_paths)}
   {el_html}
   {faq_html(qs, sname)}
@@ -4821,6 +4830,7 @@ def selftest():
     assert "rain-print-promo.js" in page_end("", promo=True) and "rain-print-promo.js" not in page_end("")
     # the sponsor slot: one per state, empty (no text, no price), the same form as every other page
     assert sponsor_slot("north-dakota") == '<aside class="ag-sponsor-ribbon" data-slot="cash-bids-north-dakota"></aside>'
+    assert state_spot("ND") == '<div class="state-spot" data-state-spot="ND"></div>'
     import build_company_pages as CO      # the company pages, built inside build_all()
     CO.selftest()
     # sets pass 2026-10-18: two spring wheat contracts that both read "Dec '26" are told apart by exchange

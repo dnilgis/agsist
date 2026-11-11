@@ -251,6 +251,7 @@ def page(st, meta, facts, sd, states, BOOT, where=None):
       <div><dt>Sign-up deadline</dt><dd>{sales}</dd></div>
     </dl>
     {sod}
+    <div class="state-spot" data-state-spot="{code}"></div>
     <div class="prf-prose">
     <h2 id="months">What each pair of months costs in {e(name)}</h2>
     <p>At 90% coverage, across the {n_grid:,} grids that touch a {e(name)} county with PRF. The premium is the full rate per $100 of protection; USDA pays {subrow}. Each figure is the middle of the grids for that pair of months, so a row&rsquo;s middle can be a different grid from the next row&rsquo;s.</p>

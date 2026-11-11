@@ -14,7 +14,16 @@
  *     the state is one of its states, utm_content=reader-state.
  * No active entry, no lookup. A failed or slow answer draws nothing.
  *
- * Where: below the fold only, so nothing on screen moves when it lands. The
+ * Where, on a page about one state (Nov 11, 2026): in the page's state spot, the
+ * [data-state-spot] box each page builder writes directly below the main answer.
+ * The box holds its height from the first paint (components/styles.css), so the
+ * card lands without moving anything. With no live sponsor for that state the
+ * spot shows that it is open: the state's readers and page views from
+ * data/sponsor-spots.json and its price from data/rate-card.json. Two sponsor
+ * names never share a screen: when the sitewide line is sold and the spot is in
+ * the first screen, a sold state card goes to the first place below the fold.
+ *
+ * Where, on any other page: below the fold only, so nothing on screen moves when it lands. The
  * first of these, in page order, that is still below the fold when the ad is
  * ready: a section heading of the main column that comes after the page's main
  * answer (rain pages, Nov 5: the ad used to sit at the very end of a long page),
@@ -27,6 +36,9 @@
  * whole card opening the one counted link); views and clicks through
  * components/sponsor-metrics.js under the slot "geo-<id>", unchanged. The
  * reader's state is in no event.
+ *
+ * ?sponsor-preview=1 on a state page draws a sample sold card in the state spot
+ * and counts nothing.
  *
  * Preview for the owner: ?geo-preview=CA on any page (not linked anywhere; pages
  * carry their canonical URL, so the flag is never indexed). It draws even an
@@ -110,7 +122,48 @@
     return (j && j.ok === true && /^[A-Z]{2}$/.test(j.region_code || '')) ? j.region_code : '-';
   }
 
-  var api = { pageState: pageState, excluded: excluded, today: today, drawable: drawable, live: live, anyLive: anyLive,
+  var NAMES = {};
+  SLUGS.split(' ').forEach(function (p) {
+    var kv = p.split(':');
+    NAMES[kv[1]] = kv[0].split('-').map(function (w) { return w.charAt(0).toUpperCase() + w.slice(1); }).join(' ');
+  });
+  function esc(x) {
+    return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+  /* the state's monthly price from data/rate-card.json, or 0 */
+  function statePrice(card, st) {
+    var t = card && (card.tiers || []).filter(function (x) { return x.id === 'state'; })[0];
+    if (!t) return 0;
+    return (t.price_by_state && t.price_by_state[st]) || t.price_month || 0;
+  }
+  function held(card, st) {
+    var t = card && (card.tiers || []).filter(function (x) { return x.id === 'state'; })[0];
+    return !!(t && (t.opens_soon || []).indexOf(st) >= 0);
+  }
+  function num(n) { return Number(n).toLocaleString('en-US'); }
+  /* The open state spot: "<State> sponsor spot open. N readers in <State> and M views of
+     <State> pages in the last 28 days. $X a month, one business. See it". A figure the
+     files do not hold is left out. */
+  function openHtml(st, card, spots) {
+    var name = NAMES[st];
+    if (!name) return '';
+    var e = (spots && spots.states && spots.states[st]) || {};
+    var r = typeof e.readers === 'number' && e.readers > 0, v = typeof e.views === 'number' && e.views > 0;
+    var nums = r && v ? num(e.readers) + ' readers in ' + name + ' and ' + num(e.views) + ' views of ' + name + ' pages in the last 28 days. '
+      : r ? num(e.readers) + ' readers in ' + name + ' in the last 28 days. '
+      : v ? num(e.views) + ' views of ' + name + ' pages in the last 28 days. ' : '';
+    var p = statePrice(card, st);
+    var soon = held(card, st);
+    return '<div class="ss-box ss-open"><p class="ss-tag">' + esc(name) + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '.</p>' +
+      '<p class="ss-txt">' + nums + (p && !soon ? '$' + num(p) + ' a month, one business. ' : soon ? 'One business per state. ' : '') +
+      '<a class="ss-go" href="/sponsor?state=' + st + '#state" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'state_open\'})">See it</a></p></div>';
+  }
+  var SAMPLE = { id: 'sample', name: 'Your Business', states: [], headline: 'Your headline here',
+    body: 'One or two lines about your business, for readers in this state.', cta_text: 'Visit', url: 'https://agsist.com/sponsor', logo: '' };
+
+  var api = { openHtml: openHtml, statePrice: statePrice, NAMES: NAMES, pageState: pageState, excluded: excluded, today: today, drawable: drawable, live: live, anyLive: anyLive,
     choose: choose, withUtm: withUtm, toAd: toAd, regionOf: regionOf };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
 
@@ -136,7 +189,7 @@
   }
   function shown(el) { try { return el.getClientRects().length > 0; } catch (e) { return false; } }
   function soldOnPage() {
-    var l = doc.querySelectorAll('[data-sponsor-slot]');
+    var l = doc.querySelectorAll('[data-sponsor-slot]:not(#ag-sw)');
     for (var i = 0; i < l.length; i++) if (shown(l[i])) return true;
     return false;
   }
@@ -182,45 +235,78 @@
     if (!main || (!force && main.getBoundingClientRect().bottom < fold)) return null;
     return { el: main, mode: 'append' };
   }
+  function spot() { return doc.querySelector('[data-state-spot]'); }
+  function firstScreen(el) { try { return el.getBoundingClientRect().top < (root.innerHeight || doc.documentElement.clientHeight); } catch (x) { return false; } }
+  function sitewideSold() { var l = doc.getElementById('ag-sw'); return !!(l && /sw-line--sold/.test(l.className) && shown(l)); }
   function draw(e, surface, rib, preview) {
     Promise.all([
       need('link', 'href', '/components/sponsor-ad.css?v=3', function () { return !!doc.querySelector('link[href*="/components/sponsor-ad.css"]'); }),
-      need('link', 'href', '/components/geo-sponsor.css?v=1', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
+      need('link', 'href', '/components/geo-sponsor.css?v=2', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
       need('script', 'src', '/components/sponsor-ad.js?v=3', function () { return !!root.AgsistAd; })
     ]).then(function () {
       if (!root.AgsistAd || (!preview && soldOnPage())) return;
       var html = root.AgsistAd.render(toAd(e, surface), surface, preview ? {} : { slot: 'geo-' + e.id });
       if (!html) return;
-      var where = anchor(rib, preview);
-      if (!where) return;
       var box = doc.createElement('div');
       box.className = 'geo-spon';
-      box.style.cssText = 'margin:1.5rem 0;max-width:760px';
       box.innerHTML = html;
+      var sp = surface === 'state-page' || surface === 'preview-state' ? spot() : null;
+      if (sp && !(sitewideSold() && firstScreen(sp))) {
+        box.className = 'geo-spon geo-spon--spot';
+        sp.innerHTML = '';
+        sp.appendChild(box);
+        return;
+      }
+      var where = anchor(rib, preview);
+      if (!where) return;
+      if (sp) sp.hidden = true;
+      box.style.cssText = 'margin:1.5rem 0;max-width:760px';
       if (where.mode === 'before') where.el.parentNode.insertBefore(box, where.el); else where.el.appendChild(box);
       if (where.el === rib) rib.hidden = true;
     }).catch(function () {});
+  }
+  /* The open spot on a state page: no live sponsor for this state. */
+  function drawOpen(st) {
+    var sp = spot();
+    if (!sp) return;
+    Promise.all([getJSON('/data/rate-card.json', 4000, { cache: 'no-cache' }).catch(function () { return null; }),
+                 getJSON('/data/sponsor-spots.json', 4000, { cache: 'no-cache' }).catch(function () { return null; })]).then(function (r) {
+      var html = openHtml(st, r[0], r[1]);
+      if (html) sp.innerHTML = html;
+    });
   }
   function run(rib) {
     var path = root.location.pathname;
     if (excluded(path)) return;
     var pv = /[?&]geo-preview=([A-Za-z]{2})(?:&|$)/.exec(root.location.search);
+    var ps = pageState(path);
+    var slotSt = (spot() && spot().getAttribute('data-state-spot')) || '';
+    if (/^[A-Z]{2}$/.test(slotSt)) ps = slotSt;
+    if (ps && /[?&]sponsor-preview=1(?:&|$)/.test(root.location.search)) {
+      var smp = {}; for (var k in SAMPLE) smp[k] = SAMPLE[k];
+      smp.states = [ps];
+      draw(smp, 'preview-state', rib, true);
+      return;
+    }
     var day = today();
     getJSON('/data/geo-sponsors.json', 4000, { cache: 'no-cache' }).then(function (data) {
       if (pv) {
         var p = choose(data, pv[1].toUpperCase(), day, true);
-        if (p) draw(p, 'preview', rib, true);
+        if (p) draw(p, ps ? 'preview-state' : 'preview', rib, true);
         return;
       }
+      var e = choose(data, ps, day, false);
+      if (ps && !e) {
+        return prfSold(ps, day).then(function (sold) { if (!sold) drawOpen(ps); });
+      }
       if (!anyLive(data, day)) return;
-      var ps = pageState(path), e = choose(data, ps, day, false);
       var go = e ? Promise.resolve({ e: e, st: ps, s: 'state-page' })
         : lookup().then(function (rc) { var x = choose(data, rc, day, false); return x && { e: x, st: rc, s: 'reader-state' }; });
       return go.then(function (r) {
         if (!r) return;
         return prfSold(ps || r.st, day).then(function (sold) { if (!sold) draw(r.e, r.s, rib, false); });
       });
-    }).catch(function () {});
+    }).catch(function () { if (ps) drawOpen(ps); });
   }
   root.AgsistGeo = { run: run };
 })(typeof window !== 'undefined' ? window : this);
