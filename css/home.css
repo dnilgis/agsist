@@ -2646,8 +2646,8 @@ html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--c
 #hero-band .af-wx .hb-cell{border-top:0;padding:4px 0}
 /* the farmland sale: the price, one short line, one picture */
 #hero-band .af>.job-land{padding:8px 14px 6px}
-#hero-band .af .hl-k{min-height:0;-webkit-line-clamp:2}
-#hero-band .af .hl-s{min-height:0;-webkit-line-clamp:3}
+#hero-band .af .hl-k{-webkit-line-clamp:2}
+#hero-band .af .hl-s{min-height:4.2em;-webkit-line-clamp:3}
 .hl-pic{margin:6px 0 2px;color:var(--text-dim)}
 /* the small charts */
 .hb-pic-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px}
