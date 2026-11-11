@@ -15,7 +15,7 @@
 <script src="/components/util.js?v=20"></script>
 <script src="/components/asof.js?v=1"></script>
 <script src="/components/price-local.js?v=13"></script>
-<link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
+<link rel="stylesheet" href="/components/ag-chart.css?v=1"><link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -346,40 +346,29 @@ details.fold[hidden]{display:none}
   </section>
   <section class="fwd-card hc" id="hog-cash" hidden aria-label="Cash hogs and pork cutout">
     <style>
-    .hc{--hc1:#b8842a;--hc2:#4f94d8}
-    [data-theme="light"] .hc{--hc1:#8a6514;--hc2:#1f66b8}
-    .hc-body{display:grid;gap:12px}
+    .hc{--hc1:#c08a2c;--hc2:#4f94d8;--hc-gap-op:.22}
+    [data-theme="light"] .hc{--hc1:#8a6514;--hc2:#1f66b8;--hc-gap-op:.16}
+    .hc-body{display:grid;gap:8px}
+    .hc-head{font-size:1.15rem;line-height:1.35;font-weight:800;color:var(--text);margin:.1rem 0 0;letter-spacing:-.005em}
+    .hc-take{font-size:.95rem;line-height:1.45;color:var(--text-dim);margin:0}
+    .hc-take:empty{display:none}
+    .hc-fig{margin:.2rem 0 0;min-width:0}
+    .hc-fig figcaption{margin-top:.35rem}
     .hc-figs{display:grid;gap:10px 16px;grid-template-columns:1fr 1fr;align-content:start;padding:.4rem .3rem 0}
     .hc-fg{min-width:0}
     .hc .lbl{display:block;font-size:0.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);font-weight:700;line-height:1.3}
     .hc-meta{grid-column:1/-1;margin:0}
-    @media(min-width:760px){.hc-figs{grid-template-columns:auto auto minmax(0,1fr);column-gap:2.2rem;align-items:start}.hc-meta{grid-column:auto;font-size:.85rem;max-width:40rem}}
-    @media(max-width:520px){.hc-figs{padding:.2rem .1rem 0;column-gap:10px}.hc .ct-price{font-size:1.6rem}.hc .hc-chg{font-size:.72rem}.hc .hc-save{font-size:.8rem}#ct-cash .ct-grid{gap:2px}#ct-cash .ct-card{padding:.45rem .2rem}#ct-cash .ct-price{font-size:1.65rem}.hc-fig{padding:.55rem .55rem}.hc-save{padding:.2rem .55rem;min-height:32px}}
-    .hc-foot{display:flex;align-items:center;gap:.5rem 1rem;margin-top:.35rem}.hc-foot figcaption{flex:1 1 auto;margin:0}.hc-save{white-space:nowrap}
     .hc-chg{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.85rem;margin-top:.15rem}
     .hc-chg.up{color:var(--up,#5fc28a)} .hc-chg.dn{color:var(--dn,#d9534f)}
-    .hc-fig{margin:0;background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-radius:14px;padding:.8rem .9rem;min-width:0}
-    .hc-read{position:absolute;right:0;top:0;font-family:'JetBrains Mono',monospace;font-size:.78rem;color:var(--text);pointer-events:none}
-    .hc-save{margin-left:auto;background:none;border:1px solid var(--border,#2a3324);color:var(--gold,#d4a23f);border-radius:8px;padding:.35rem .7rem;font:inherit;font-weight:600;cursor:pointer;min-height:36px}
-    .hc-plot{position:relative;width:100%;min-height:170px}
-    .hc-svg{display:block;overflow:visible}
-    .hc-svg text{font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:12px;fill:var(--text-dim,#9bb0a3)}
-    .hc-on .hc-key-t,.hc-on .hc-key-l{visibility:hidden}
-    .hc-svg .hc-ax-t{fill:var(--text-muted,#8a948f)} .hc-svg .hc-key-t{fill:var(--text-dim,#9bb0a3);font-size:12px}
-    .hc-grid{stroke:var(--border,#2a3324);stroke-width:1}
-    .hc-base{stroke:var(--text-muted,#8a948f);stroke-width:1}
-    .hc-l1,.hc-l2{fill:none;stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
-    .hc-l1{stroke:var(--hc1)} .hc-l2{stroke:var(--hc2)}
-    .hc-l1d{fill:var(--hc1);stroke:var(--surface,#161b14);stroke-width:2} .hc-l2d{fill:var(--hc2);stroke:var(--surface,#161b14);stroke-width:2}
-    .hc-cross{stroke:var(--text-muted,#8a948f);stroke-dasharray:3 3}
+    @media(min-width:760px){.hc-figs{grid-template-columns:auto auto minmax(0,1fr);column-gap:2.2rem;align-items:start}.hc-meta{grid-column:auto;font-size:.85rem;max-width:40rem}.hc-head{font-size:1.3rem}}
+    @media(max-width:520px){.hc-figs{padding:.2rem .1rem 0;column-gap:10px}.hc .ct-price{font-size:1.6rem}.hc .hc-chg{font-size:.72rem}#ct-cash .ct-grid{grid-template-columns:1fr 1fr;gap:10px}#ct-cash .ct-card{padding:.3rem .1rem}#ct-cash .lbl{display:block;font-size:.7rem;line-height:1.3}#ct-cash .ct-price{font-size:1.45rem}#ct-cash .ct-read{font-size:.74rem}.hc.fwd-card,#ct-cash.fwd-card{padding:10px 11px}.hc-head{font-size:1.02rem}.hc-take{font-size:.86rem}}
     </style>
-    <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Cash hogs · USDA daily</span><span class="fwd-shape">$/cwt, carcass</span></div>
+    <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Cash hogs · USDA daily</span><span class="agc-tools hc-tools"></span></div>
     <div class="hc-body"></div>
   </section>
-  <script src="/components/hog-cash.js?v=1" defer></script>
+  <script src="/components/ag-chart.js?v=1" defer></script><script src="/components/hog-cash.js?v=2" defer></script>
   <aside class="ya" data-your-state="cattle" data-v="2" hidden></aside><script src="/components/your-state.js?v=1" defer></script>
   <section class="fx" data-feeder="index" id="feeder-index" hidden aria-label="AGSIST USDA feeder steer index"></section>
-  <p class="method-note" style="margin:.5rem 0 1rem">Selling feeders? <a href="/cattle-auction-prices">Sale barn prices near you</a>: steers and heifers by weight class at USDA-reported auctions.</p>
   <script>
   (function(){
     /*cash:start*/
