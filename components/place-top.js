@@ -54,7 +54,7 @@
     return { id: 'drought', k: k, words: words, rest: rest, change: change, line: words + ' ' + rest, valid: d.valid };
   }
   function droughtRow(t) {
-    var src = ['U.S. Drought Monitor', '/drought-monitor'];
+    var src = ['U.S. Drought Monitor', '/rain#drought'];
     if (!t) return null;
     return { label: 'Drought', value: t.words, date: t.valid, join: ' ', ctx: t.rest, src: src, paper: 'U.S. Drought Monitor' };
   }
