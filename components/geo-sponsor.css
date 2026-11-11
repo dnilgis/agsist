@@ -44,3 +44,10 @@
   .geo-spon .sa-ad:has(.sa-logo) .sa-by{display:inline}
 }
 @media (prefers-reduced-motion:reduce){.geo-spon .sa-ad,.geo-spon .sa-cta-arrow{transition:none}.geo-spon .sa-ad:hover .sa-cta-arrow{transform:none}}
+/* In the state spot (Nov 11, 2026): the card fills the spot's held height (components/styles.css --ss-h)
+   and never grows past it. */
+.geo-spon--spot .sa-ad{box-sizing:border-box;min-height:var(--ss-h,204px);max-height:var(--ss-h,204px);overflow:hidden;display:flex;flex-direction:column;justify-content:center}
+.geo-spon--spot .sa-headline{font-size:clamp(1.25rem,2.2vw,1.6rem)}
+.geo-spon--spot .sa-body{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.geo-spon--spot .sa-actions{margin-top:.6rem}
+@media (max-width:560px){.geo-spon--spot .sa-headline{font-size:1.2rem}}

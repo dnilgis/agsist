@@ -157,8 +157,8 @@
     var p = statePrice(card, st);
     var soon = held(card, st);
     return '<div class="ss-box ss-open"><p class="ss-tag">' + esc(name) + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '.</p>' +
-      '<p class="ss-txt">' + nums + (p && !soon ? '$' + num(p) + ' a month, one business. ' : soon ? 'One business per state. ' : '') +
-      '<a class="ss-go" href="/sponsor?state=' + st + '#state" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'state_open\'})">See it</a></p></div>';
+      '<p class="ss-txt">' + nums + (p && !soon ? '$' + num(p) + ' a month, one business.' : 'One business per state.') + '</p>' +
+      '<a class="ss-go" href="/sponsor?state=' + st + '#state" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'state_open\'})">See it</a></div>';
   }
   var SAMPLE = { id: 'sample', name: 'Your Business', states: [], headline: 'Your headline here',
     body: 'One or two lines about your business, for readers in this state.', cta_text: 'Visit', url: 'https://agsist.com/sponsor', logo: '' };
