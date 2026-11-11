@@ -290,9 +290,11 @@
      "Overnight trade read 11:45 pm CT; quotes delayed 10 to 25 min" (overnight() hero) |
      "Last trade at the 1:20 pm CT bell, change from the Nov 10 settle; settle not posted yet" |
      "Updated 1:46 am CT" */
-  function stamp(q, fetched, now) {
+  /* withChange: the stamp sits beside a printed change (html()), so after the bell it names the settle that change is from */
+  function stamp(q, fetched, now, withChange) {
     var s = stampParts(q, fetched, now);
     if (!s) return '';
+    if (!withChange) s.vs = '';
     if (s.kind === 'settle') return s.at + ' settle';
     if (s.kind === 'read') return 'Read ' + s.at + '; ' + delayWords(q);
     if (s.kind === 'overnight') return 'Overnight trade read ' + s.at + '; ' + delayWords(q);
@@ -334,7 +336,7 @@
   }
   /* Markup: a <time> (no data-asof, so asof.js leaves the words alone), the short words, the full stamp as its title. */
   function html(q, fetched, now) {
-    var s = shortStamp(q, fetched, now), full = stamp(q, fetched, now);
+    var s = shortStamp(q, fetched, now), full = stamp(q, fetched, now, true);
     if (!s) return '';
     var sp = stampParts(q, fetched, now), t = sp && sp.kind === 'bell' ? q.close_time : (fetched || (q && q.close_time) || '');
     var dt = (q && q.close_kind === 'settle' && (q.settle_date || q.close_date)) || t;
