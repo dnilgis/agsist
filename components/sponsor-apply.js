@@ -29,6 +29,19 @@
   }).sort(function (a, b) { return a.name < b.name ? -1 : 1; });
   var S = { card: null, spots: null, swTaken: false, taken: {} };
   var preview = /[?&]sponsor-preview=1(?:&|$)/.test(location.search);
+  /* ?ref=<slug> from an outreach link (lower case letters, digits and dashes, at most 40; anything else is
+     ignored, nothing is stored): it rides on every email link's subject and in the form's note. */
+  var REF = (/[?&]ref=([a-z0-9-]{1,40})(?:&|$)/.exec(location.search) || [])[1] || '';
+  function refMail(scope) {
+    if (!REF || !scope) return;
+    [].forEach.call(scope.querySelectorAll('a[href^="mailto:sig@agsist.com?subject="]'), function (a) {
+      if (a.hasAttribute('data-ref')) return;
+      var m = /^(mailto:sig@agsist\.com\?subject=)([^&]*)(.*)$/.exec(a.getAttribute('href'));
+      a.setAttribute('href', m[1] + m[2] + encodeURIComponent(': ' + REF) + m[3]);
+      a.setAttribute('data-ref', '1');
+    });
+  }
+  refMail(document);
 
   function get(u) { return fetch(u, { cache: 'no-cache' }).then(function (r) { if (!r.ok) throw 0; return r.json(); }).catch(function () { return null; }); }
   function tier(id) { return S.card && (S.card.tiers || []).filter(function (t) { return t.id === id; })[0]; }
@@ -86,6 +99,7 @@
       st.innerHTML = open ? '' : spot === 'sitewide'
         ? 'Taken right now. <a href="mailto:sig@agsist.com?subject=AGSIST%20sitewide%20spot">Ask to be next.</a>'
         : (c && soon(c) ? 'This state opens soon.' : 'Taken right now.') + ' <a href="mailto:sig@agsist.com?subject=AGSIST%20state%20spot">Ask to be next.</a>';
+      refMail(st);
     }
     var pay = box.querySelector('[data-pay]'), link = payLink(spot, c);
     if (spot === 'state' && !c) link = '';
@@ -174,7 +188,8 @@
   function fallbackMail(p, what) {
     var lines = ['Spot: ' + what, 'How I pay: ' + p.pay, 'Business: ' + p.company, 'Link: ' + p.url, 'Ad line: ' + p.headline,
       'Name: ' + p.contact, 'Phone: ' + (p.phone || ''), 'Email: ' + p.email];
-    return 'mailto:sig@agsist.com?subject=' + encodeURIComponent('AGSIST sponsor spot: ' + p.company) +
+    if (REF) lines.push('Ref: ' + REF);
+    return 'mailto:sig@agsist.com?subject=' + encodeURIComponent('AGSIST sponsor spot: ' + p.company + (REF ? ': ' + REF : '')) +
       '&body=' + encodeURIComponent(lines.join('\n'));
   }
 
@@ -185,7 +200,7 @@
     var s = byCode(c);
     var pay = (form.querySelector('input[name=pay]:checked') || {}).value === 'card' ? 'paid by card' : 'yearly invoice by mail';
     var p = { tier: t === 'sitewide' ? 'daily' : 'page', slot: t === 'state' && s ? 'state-' + s.code.toLowerCase() : '',
-      company: val('spa-company'), url: val('spa-url'), headline: val('spa-headline'), body: 'How I pay: ' + pay,
+      company: val('spa-company'), url: val('spa-url'), headline: val('spa-headline'), body: 'How I pay: ' + pay + (REF ? '. Ref: ' + REF : ''),
       contact: val('spa-contact'), phone: val('spa-phone'), email: val('spa-email'), logo: '',
       terms: $('spa-terms').checked, _gotcha: (form.querySelector('[name=_gotcha]') || {}).value || '', pay: pay };
     var miss = [];
