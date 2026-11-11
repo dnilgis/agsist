@@ -23,10 +23,12 @@ const MOVED = JSON.parse(execFileSync("python3", ["-c",
 // the file a site path is served from ("/land-sales/" is land-sales/index.html)
 const fileOf = (u) => (u.endsWith("/") ? u.slice(1) + "index.html" : u.slice(1) + ".html");
 
-test("the table: twelve merges, each into a page that exists", () => {
+test("the table: sixteen merges, each into a page that exists", () => {
   // Oct 29, 2026 (consolidation round 2): /farmland-index into the land sales hub, /data-sources into the editorial standards
+  // Nov 11, 2026 (weather, 7 pages to 3): radar and drought into tabs of /rain, urea and fall anhydrous into tabs of /spray
   assert.deepEqual(Object.keys(MOVED).sort(), ["/archive", "/cash-bids/states", "/conditions-yield", "/elevators",
-    "/foreign-land", "/hail/", "/news", "/pod-counts", "/scorecard", "/whats-priced-in", "/farmland-index", "/data-sources"].sort());
+    "/foreign-land", "/hail/", "/news", "/pod-counts", "/scorecard", "/whats-priced-in", "/farmland-index", "/data-sources",
+    "/rain-radar", "/drought-monitor", "/urea", "/fall-nitrogen"].sort());
   for (const [old, [to, anchor, file]] of Object.entries(MOVED)) {
     assert.ok(existsSync(path.join(ROOT, fileOf(to))), old + " -> " + to + " exists");
     assert.ok(existsSync(path.join(ROOT, file)), old + " forward page " + file);
@@ -77,7 +79,7 @@ test("nothing links to an old address: chrome, sitemaps, llms.txt, search, Next 
     }
   })("");
   assert.deepEqual(bad, [], "pages linking to an old address");
-  assert.match(read("scripts/inject_static_nav.py"), /"\/news", "\/conditions-yield", "\/whats-priced-in", "\/scorecard", "\/pod-counts", "\/hail\/",\s+"\/cash-bids\/states", "\/elevators", "\/foreign-land", "\/archive",\s+(?:#[^\n]*\s+)?"\/farmland-index", "\/data-sources"\)/);
+  assert.match(read("scripts/inject_static_nav.py"), /"\/news", "\/conditions-yield", "\/whats-priced-in", "\/scorecard", "\/pod-counts", "\/hail\/",\s+"\/cash-bids\/states", "\/elevators", "\/foreign-land", "\/archive",\s+(?:#[^\n]*\s+)?"\/farmland-index", "\/data-sources",\s+(?:#[^\n]*\s+)?"\/rain-radar", "\/drought-monitor", "\/urea", "\/fall-nitrogen"\)/);
 });
 
 test("the menu and footer name the merged pages by what they hold now", () => {
