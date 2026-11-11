@@ -2,7 +2,7 @@
  "totals": {
   "long": 992,
   "instr": 55,
-  "terms": 1773,
+  "terms": 1772,
   "dash": 0
  },
  "files": {
@@ -157,20 +157,12 @@
    "long": 4,
    "terms": 9
   },
-  "drought-monitor.html": {
-   "long": 5
-  },
   "editorial-standards.html": {
    "long": 4,
    "terms": 8
   },
   "embed/arc-plc.html": {
    "terms": 2
-  },
-  "fall-nitrogen.html": {
-   "long": 9,
-   "instr": 1,
-   "terms": 7
   },
   "farm-anniversary-gifts.html": {
    "long": 5,
@@ -338,14 +330,10 @@
    "instr": 1,
    "terms": 62
   },
-  "rain-radar.html": {
-   "long": 10,
-   "instr": 1,
-   "terms": 7
-  },
   "rain.html": {
-   "long": 1,
-   "terms": 133
+   "long": 16,
+   "instr": 1,
+   "terms": 140
   },
   "soybean-futures-prices.html": {
    "long": 8,
@@ -363,9 +351,9 @@
    "terms": 5
   },
   "spray.html": {
-   "long": 18,
-   "instr": 7,
-   "terms": 15
+   "long": 54,
+   "instr": 8,
+   "terms": 27
   },
   "store-or-sell.html": {
    "long": 7,
@@ -383,10 +371,6 @@
   "tools.html": {
    "long": 7,
    "terms": 8
-  },
-  "urea.html": {
-   "long": 27,
-   "terms": 6
   },
   "usda-calendar.html": {
    "long": 40,
