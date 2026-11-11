@@ -4084,7 +4084,7 @@
      funnel reads draw, then shown, then buy */
   var NOW_IN = false, DRAW_SENT = false;
   function nowShown() {
-    if (NOW_SENT || !NOW_IN || !DRAW_SENT || $('rp-now').hidden) return;
+    if (NOW_SENT || !NOW_IN || !DRAW_SENT || !$('rp-now').classList.contains('rp-now-on')) return;
     NOW_SENT = true;
     ga('rain_print_buy_shown', { choice: nowMain(), away: AWAY ? 1 : 0 });
   }
@@ -4092,8 +4092,11 @@
     var box = $('rp-now');
     if (!box || !NOW_LINE) return;
     var on = nowOn();
-    box.hidden = !on;
+    box.classList.toggle('rp-now-on', on);
+    // shown, or plainly not coming (no print, a blocked station): the room kept for it on a link goes
+    if (on || (!DRAWING && (DATA || BLOCKED))) doc.documentElement.classList.add('rp-now-set');
     if (!on) return;
+    nowShown();
     var main = nowMain(), only = nowOnly(), w = NOW_LINE[main], p = pickPrice(main);
     var t = $('rp-now-t');
     t.textContent = '';

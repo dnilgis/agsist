@@ -104,7 +104,7 @@ async function withPage(fn, { width = 390, height = 844, where = "", tz = "Ameri
     await fn(page, `http://127.0.0.1:${port}`, errors, stripe);
   } finally { await browser.close(); srv.close(); }
 }
-const drawn = (page) => page.waitForFunction(() => document.querySelector("#rp-art svg") && !document.getElementById("rp-go").disabled && !document.getElementById("rp-now").hidden, null, { timeout: 30000 });
+const drawn = (page) => page.waitForFunction(() => document.querySelector("#rp-art svg") && !document.getElementById("rp-go").disabled && document.getElementById("rp-now").classList.contains("rp-now-on"), null, { timeout: 30000 });
 const events = (page) => page.evaluate(() => (window.dataLayer || []).filter((a) => a && a[0] === "event").map((a) => [a[1], a[2] || {}]));
 const designUrl = (base) => base + "/rain-print.html?" + new URLSearchParams({ place: "Chetek, WI", year: String(DRAWN), station: "471667 2", style: "r1", name: "Olson Home Place" });
 // the reader types the town and presses Draw (the bare page asks /where first)
@@ -123,8 +123,9 @@ const JS = readFileSync(ROOT + "components/rain-print.js", "utf8");
 const HTML = readFileSync(ROOT + "rain-print.html", "utf8");
 
 test("the block's words: no em dash, no I, no countdown, and prices come from the file", () => {
-  const m = /<div class="rp-now" id="rp-now" hidden>[\s\S]*?\n      <\/div>\n/.exec(HTML);
-  assert.ok(m, "the block is in the page, hidden until a print is drawn");
+  const m = /<div class="rp-now" id="rp-now">[\s\S]*?\n      <\/div>\n/.exec(HTML);
+  assert.ok(m, "the block is in the page");
+  assert.match(HTML, /\.rp-now:not\(\.rp-now-on\)[^{]*\{display:none\}/, "hidden until a print is drawn");
   const start = JS.indexOf("var NOW_SENT"), end = JS.indexOf("function setAway");
   assert.ok(start > 0 && end > start);
   const words = (m[0] + JS.slice(start, end).replace(/\/\*[\s\S]*?\*\//g, "").replace(/\/\/.*$/gm, "")).replace(/<[^>]+>/g, " ");

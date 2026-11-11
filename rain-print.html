@@ -152,7 +152,7 @@
   .rp-sample-use{font:inherit;font-weight:600;min-height:var(--btn-h);padding:0 .15rem;background:none;border:0;color:var(--link);text-decoration:underline;text-underline-offset:2px;cursor:pointer}
   /* right after the print is drawn: the order, under the print, before the layers and the steps */
   .rp-now{margin:.75rem 0 0;padding:12px 14px 6px;border:1px solid var(--border);border-left:4px solid var(--brand);border-radius:var(--r-md);background:var(--surface)}
-  .rp-now[hidden],.rp-now-alts[hidden],.rp-now-gift[hidden]{display:none}
+  .rp-now:not(.rp-now-on),.rp-now-alts[hidden],.rp-now-gift[hidden]{display:none}
   .rp-now-t{margin:0;font-size:var(--fs-md);font-weight:600;line-height:1.4;color:var(--text)}
   .rp-now-t b,.rp-now-alt b{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
   .rp-now-when{display:block;margin:.2rem 0 0;font-size:var(--fs-sm);font-weight:400;line-height:1.45;color:var(--text-dim)}
@@ -176,6 +176,10 @@
     .rp-now-alts{flex:0 0 auto;gap:.35rem}
     .rp-now-alt{flex:0 0 auto;padding:0 .5rem;font-size:var(--fs-xs)}
     .rp-now-gift{margin:-6px 0 -8px;font-size:var(--fs-xs)}
+    .rp-now-t{min-height:2.7em}
+    /* a link that names a design or a place draws by itself: the block's room is kept from the first paint, so the
+       steps under it never jump when it comes (the script marks the page rp-now-set once it knows) */
+    html.rp-from-link:not(.rp-now-set) .rp-now:not(.rp-now-on),html.rp-tool-first:not(.rp-now-set) .rp-now:not(.rp-now-on){display:block;visibility:hidden}
   }
   .rp-pending{margin:.5rem 0 0;padding:7px 11px;border-left:3px solid var(--brand);border-radius:0 var(--r-8) var(--r-8) 0;background:var(--surface);font-size:var(--fs-sm);line-height:1.45;color:var(--text)}
 
@@ -871,7 +875,7 @@
         <p class="rp-pending" id="rp-pending" aria-live="polite" hidden></p>
       </div>
       <!-- the order under the drawn print: here on a phone, under the pinned print; on a wide screen the script moves it into the print column, right under the print -->
-      <div class="rp-now" id="rp-now" hidden>
+      <div class="rp-now" id="rp-now">
         <p class="rp-now-t"><span id="rp-now-t">Framed, ready to hang, <b data-price="framed12x18">$89</b>, shipping included.</span> <span class="rp-now-when" id="rp-now-when" hidden></span></p>
         <div class="rp-now-acts">
           <button type="button" class="btn btn-primary rp-now-go" id="rp-now-go" data-now="framed12x18">Order it framed</button>
