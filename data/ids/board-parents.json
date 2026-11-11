@@ -3,7 +3,7 @@
  "generated": "2026-11-11",
  "note": "Parent company and destination buyer per live bids board (key: the board id, the bid row's `source`), from evidence on the board itself, never a name alone. parent: the firm that runs the board (pv: board-page:<host> = listed on that firm's own cash bid page; chs-brand = a CHS-branded unit; change:<id> = a dated ownership change in data/ids/ownership-changes.json). dest: the buyer the board's location names (dv: location); a co-op's delivered bid, never a company join. No entry = no evidence.",
  "counts": {
-  "live_boards": 2152,
+  "live_boards": 2195,
   "with_parent": 133,
   "with_dest": 114,
   "parent_by_rule": {
@@ -13,14 +13,14 @@
   },
   "dest_by_brand": {
    "ADM": 26,
-   "AGP": 26,
+   "AGP": 25,
    "Big River": 4,
    "Bunge": 4,
    "CGB": 9,
    "Cargill": 16,
    "Green Plains": 3,
    "Ingredion": 1,
-   "Marquis": 4,
+   "Marquis": 5,
    "POET": 11,
    "Valero": 4,
    "Viserion": 6
@@ -963,11 +963,6 @@
    "dest": "Viserion",
    "dv": "location"
   },
-  "fullcircleag-agpaberdeen": {
-   "elevId": "ebn7vhdmrb",
-   "dest": "AGP",
-   "dv": "location"
-  },
   "hovenequity-agpdirectship": {
    "elevId": "e5x4qs87tx",
    "dest": "AGP",
@@ -1225,6 +1220,11 @@
   },
   "rivervalleycoop-marquisenergy": {
    "elevId": "em86kw2svr",
+   "dest": "Marquis",
+   "dv": "location"
+  },
+  "seatonvilleelevator-marquis": {
+   "elevId": "efaz6et1h4",
    "dest": "Marquis",
    "dv": "location"
   },
