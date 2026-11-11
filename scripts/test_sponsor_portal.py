@@ -128,7 +128,7 @@ def _fake_rows():
     rows = []
     for d in ("2026-10-26", "2026-10-27", "2026-10-28", "2026-10-29", "2026-10-30", "2026-10-31"):
         rows += [
-            {"date": d, "page": "/", "slot": "homepage-top", "event": "sponsor_viewable", "region": "Iowa", "n": 10},
+            {"date": d, "page": "/", "slot": "sitewide", "event": "sponsor_viewable", "region": "Iowa", "n": 10},
             {"date": d, "page": "/daily", "slot": "daily-page", "event": "sponsor_viewable", "region": "Iowa", "n": 5},
             {"date": d, "page": "/", "slot": "daily-briefing", "event": "sponsor_click", "region": "Iowa", "n": 1},
             {"date": d, "page": "/rain/texas", "slot": "geo-bee", "event": "sponsor_viewable", "region": "Texas", "n": 100},
@@ -168,7 +168,7 @@ def page_slot_tests():
             {"date": d, "page": "/cash-bids/iowa", "slot": "page:cash-bids-iowa", "event": "sponsor_viewable", "region": "Iowa", "n": 300},
             {"date": d, "page": "/cash-bids", "slot": "page:cash-bids", "event": "sponsor_viewable", "region": "Iowa", "n": 900},
             {"date": d, "page": "/spray", "slot": "page:spray", "event": "sponsor_viewable", "region": "Ohio", "n": 4000},
-            {"date": d, "page": "/", "slot": "homepage-top", "event": "sponsor_viewable", "region": "Wisconsin", "n": 10},
+            {"date": d, "page": "/", "slot": "sitewide", "event": "sponsor_viewable", "region": "Wisconsin", "n": 10},
             {"date": d, "page": "/rain/texas", "slot": "geo-bee", "event": "sponsor_viewable", "region": "Texas", "n": 100},
             {"date": d, "page": "/cash-bids/wisconsin", "slot": bsr.NOT_SET, "event": "sponsor_viewable", "region": "Wisconsin", "n": 7},
         ]
@@ -207,8 +207,8 @@ def slot_tests():
     check(bsr.SLOT_DIMENSION == "customEvent:slot" and bsr.SLOT_SINCE == "2026-10-29",
           "the slot is the registered custom dimension, filled from Oct 29, 2026")
     check(bsr.sponsor_slots(B) == ["geo-bee"], "a state-targeted sponsor's slot is geo-<id>", bsr.sponsor_slots(B))
-    check(bsr.sponsor_slots(A) == ["daily-briefing", "homepage-top", "daily-page", "daily-archive"],
-          "the daily sponsor's slots are the four surfaces its ad is drawn on", bsr.sponsor_slots(A))
+    check(bsr.sponsor_slots(A) == ["daily-briefing", "sitewide", "daily-page", "daily-archive"],
+          "the sitewide sponsor's slots are the four surfaces its ad is drawn on", bsr.sponsor_slots(A))
 
     # COUNT THE COPIES: every slot name the site sends, read from the files
     # that send it, is either one of a sponsor's or named as nobody's report.
@@ -583,7 +583,7 @@ def main():
               "%s carries no contact or invoice address" % f_.name)
     check("d.contact" not in html and "invoice_contact" not in html, "the portal page prints no contact field")
     tiers_ = [t["id"] for t in json.loads((ROOT / "data" / "rate-card.json").read_text())["tiers"]]
-    check("founding" not in tiers_ and "daily" in tiers_, "the Daily tier is called daily, never founding", tiers_)
+    check(tiers_ == ["sitewide", "state"], "two spots only: sitewide and state; no Daily, Cash Bids, page or founding tier", tiers_)
 
     # ---- A STATE-TARGETED SPONSOR ON A FREE TEST (Oct 28, 2026: RootLot) --
     print("\na state-targeted sponsor on a free test")

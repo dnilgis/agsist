@@ -82,21 +82,22 @@ NOT_SET = "(not set)"
 # draws each ad (scripts/test_sponsor_portal.py reads those files and fails on
 # a slot name that is not accounted for here):
 #   daily-briefing  index.html #dsp-filled, components/home.js teaser click
-#   homepage-top    components/home.js homepage strip, its click too
+#   sitewide        components/loader.js sitewide line under the menu, its click too
 #   daily-page      daily.html (AgsistAd.render ... {slot:'daily-page'})
 #   daily-archive   scripts/generate_daily.py archive pages
 #   geo-<id>        components/geo-sponsor.js, one per data/geo-sponsors.json entry
 #   footer-strip    components/loader.js footer supporter (data/supporters.json)
 #   page:<id>       components/loader.js page ribbon (data/page-sponsors.json)
 #   prf-<kind>:<st> components/prf-sponsor.js PRF state sponsor (data/prf-sponsors.json)
-# The daily briefing sponsor (data/sponsor.json) is drawn on the first four.
+# The sitewide sponsor (data/sponsor.json, Nov 11, 2026; before then the Daily
+# sponsor, whose homepage strip "homepage-top" is retired) is drawn on the first four.
 # A page ribbon sold through /sponsor-apply (rate card of Oct 29, 2026: a State
 # Sponsor's state ribbons, the Cash Bids Sponsor's /cash-bids ribbon) is that
 # sponsor's: scripts/sponsor_apply.py writes "page_slots" into its entry in
 # data/sponsors.json, and sponsor_slots() gives it page:<id> for each. A state's
 # town pages carry the state page's slot id, so their events are the state's.
 # A page ribbon nobody holds, the footer strip and PRF go to nobody.
-DAILY_SLOTS = ("daily-briefing", "homepage-top", "daily-page", "daily-archive")
+DAILY_SLOTS = ("daily-briefing", "sitewide", "daily-page", "daily-archive")
 GEO_SLOT_PREFIX = "geo-"
 PAGE_SLOT_PREFIX = "page:"
 UNREPORTED_SLOTS = ("footer-strip",)
