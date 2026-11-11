@@ -56,6 +56,7 @@ import seo_caps as CAPS  # noqa: E402  the site's one title and description cap 
 import pointer_pages as PP  # noqa: E402
 import nearest_towns as NT  # noqa: E402  town bid pages nearest the county middle (Oct 23, 2026)
 import inject_static_nav as nav  # noqa: E402
+import page_tabs as PT  # noqa: E402  the tab bar /rain shares with /spray (Nov 11, 2026)
 import county_stories as CS  # noqa: E402
 import rain_records as RREC  # noqa: E402  dry_rank_ok: a dry rank waits when missing days could undo it
 
@@ -698,13 +699,13 @@ GAUGE_LINE = 'Your own <a href="/rain-gauge">rain gauge</a> can read differently
 
 
 def radar_line(st, name, stw):
-    """One line to /rain-radar (NOAA MRMS radar and gauge estimate) at the
-    county's station. MRMS covers the lower 48 only, so none in AK or HI."""
+    """One line to the radar tab of /rain (NOAA MRMS radar and gauge estimate; /rain-radar until
+    Nov 11, 2026) at the county's station. MRMS covers the lower 48 only, so none in AK or HI."""
     ll = stw.get("ll")
     if st in ("AK", "HI") or not ll:
         return ""
     q = urllib.parse.urlencode({"lat": f"{ll[1]:.3f}", "lon": f"{ll[0]:.3f}", "label": f"{name}, near the {stw.get('name') or 'county'} gauge"})
-    return f'<p class="rc-radar"><a href="/rain-radar?{e(q)}">Rain on your field in the last 7 days, from radar</a></p>'
+    return f'<p class="rc-radar"><a href="/rain?{e(q)}#radar">Rain on your field in the last 7 days, from radar</a></p>'
 
 
 def year_ask(name, year, fips):
@@ -1301,6 +1302,42 @@ SAVED_JS = ("(function(){var b=document.getElementById('rc-mine'),P=window.AgSav
             "b.appendChild(a);b.appendChild(document.createTextNode('.'));b.hidden=false;}).catch(function(){});}"
             "try{P.full().then(show,function(){});}catch(e){}})();")
 
+# Nov 11, 2026 (weather fold, 7 pages to 3): /rain holds three tabs. The radar lookup (/rain-radar until then) opens
+# first, as it had the most readers; rain by county is the second; the drought monitor (/drought-monitor) the third.
+# The two old pages forward to their tab (scripts/moved_pages.py). Their markup, style and code are kept as files in
+# components/fold/ and read here, so the hub stays one page this builder writes. The radar style is inlined (it is
+# the tab that opens first); the drought tab's style and code, and the radar's code, load when the tab first opens
+# (components/page-tabs.js), so a closed tab costs nothing.
+FOLD = os.path.join(os.path.dirname(HERE), "components", "fold")
+TABS = [("radar", "Your field (radar)"), ("county", "By county"), ("drought", "Drought")]
+TAB_IDS = [t[0] for t in TABS]
+RADAR_JS = "/vendor/leaflet-1.9.4/leaflet.js /components/radar-rain.js?v=1 /components/fold/radar.js?v=1 /components/radar-rain-page.js?v=10"
+DROUGHT_JS = "/components/asof.js?v=1 /components/fold/drought.js?v=1 /components/drought-county.js?v=2"
+DROUGHT_CSS = "/components/fold/drought.css?v=1"
+
+
+def fold_part(name):
+    """a panel file from components/fold/, without its first comment line"""
+    with open(os.path.join(FOLD, name), encoding="utf-8") as fh:
+        s = fh.read()
+    if s.startswith("<!--"):
+        s = s[s.index("-->") + 3:].lstrip("\n")
+    elif s.startswith("/*"):
+        s = s[s.index("*/") + 2:].lstrip("\n")
+    return s
+
+
+def fold_faq():
+    """the radar and drought questions, for the hub's FAQPage: the same words the two tabs show"""
+    out = []
+    for name, pat in (("radar.html", r"<details><summary>(.*?)</summary><p>(.*?)</p></details>"),
+                      ("drought.html", r'<details><summary>(.*?)</summary><div class="agf-a">(.*?)</div></details>')):
+        for q, a in re.findall(pat, fold_part(name), re.S):
+            out.append({"@type": "Question", "name": S.text_of(q).strip(),
+                        "acceptedAnswer": {"@type": "Answer", "text": S.text_of(a).strip()}})
+    return out
+
+
 PICK_JS = ("(function(){var f=document.getElementById('rc-pick');if(!f)return;"
            "f.addEventListener('submit',function(e){e.preventDefault();var v=f.elements.st.value;if(v)location.href=v;});})();")
 
@@ -1327,27 +1364,36 @@ def hub_page(files, built, recs=None, context=None, mod=None):
     sofar = "" if done else "so far "
     yin = "in " + yw if yw[0].isdigit() else yw
     desc = (f"Rain {sofar}{yin} for {total:,} US counties, from a weather station in each county: inches, percent of a usual year, month by month.")
+    desc = desc + " Plus radar rain at your field and this week's drought map."
     ld = [
         {"@context": "https://schema.org", "@type": "WebPage", "@id": url, "url": url, "name": title.replace(" | AGSIST", ""), "description": desc,
          "dateModified": mod or built, "inLanguage": "en-US", "author": AUTHOR, "publisher": PUBLISHER},
-        crumbs_ld([("Home", ORIGIN + "/"), ("Rain by county", url)]),
+        crumbs_ld([("Home", ORIGIN + "/"), ("Rain", url)]),
+        {"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": fold_faq()},
     ]
-    page = head(title, desc, url, ld, img=share_img(None)) + f"""
+    extra = ('\n  <link rel="stylesheet" href="/vendor/leaflet-1.9.4/leaflet.css">'
+             f'\n  <style>.rc.rc-top{{padding-bottom:0}}{PT.css(TAB_IDS)}\n{fold_part("radar.css")}</style>')
+    page = head(title, desc, url, ld, img=share_img(None), extra=extra) + f"""
 <body>
   <a href="#main" class="skip">Skip to content</a>
   <div id="site-header"></div>
   <main id="main" class="main" tabindex="-1">
-  <div class="rc">
-    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <span aria-current="page">Rain by county</span></nav>
+  <div class="rc rc-top">
+    <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <span aria-current="page">Rain</span></nav>
     {XMAS_JS}
-    <h1>{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h1>
+    <h1>How much rain fell on your field and in your county?</h1>
+  </div>
+{PT.open_html(TAB_IDS, "radar", "Rain at your field, by county, and drought", TABS)}{PT.panel_open("radar", f' data-js="{RADAR_JS}"', indent="  ")}<p class="ptab-note" data-ptab-note hidden></p>
+{fold_part("radar.html")}  </section>
+{PT.panel_open("county", indent="  ")}  <div class="rc">
+    <h2 class="rc-h1">{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h2>
     <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.{" The counties having a record year are below the states." if recs else ""}</p>
     <p class="rc-fine" id="rc-mine" data-st="{e(json.dumps(st_map, separators=(',', ':')))}" hidden></p>
     <form class="rc-pick" id="rc-pick" aria-label="Find your state"><label for="rc-pick-st">State</label><div class="rc-pr"><select id="rc-pick-st" name="st"><option value="">Choose your state</option>{pick_opts}</select><button type="submit">Show counties</button></div><noscript><p class="rc-fine">Without JavaScript, use All states at the bottom of the page.</p></noscript></form>
     <script>{PICK_JS}</script>
     <script src="/components/saved-place.js?v=1"></script>
     <script>{SAVED_JS}</script>
-    <p>Rain on one field in the last day or week? <a href="/rain-radar">Look up radar rain by ZIP</a>.</p>
+    <p>Rain on one field in the last day or week? <a href="/rain#radar">Look up radar rain by ZIP</a>.</p>
 {records_html(recs)}    <details class="rc-more rc-how"><summary>How the numbers are counted</summary><ul class="rc-list">
       <li>One weather station inside each county, reporting at least 90% of the days {"in " + yw if done else "this year"}. A county without one points to the nearest that has one.</li>
       <li>A day not reported is unknown, not dry: it adds to neither the total nor the usual year.</li>
@@ -1356,9 +1402,16 @@ def hub_page(files, built, recs=None, context=None, mod=None):
     </ul></details>
     <details class="rc-all" id="all-states"><summary>All states</summary><ul class="rc-states">{''.join(rows)}</ul></details>
     <p class="rc-fine">Want one year of rain at your place on the wall? <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws it from the same NOAA records.</p>
-    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Daily NOAA records through RCC-ACIS.</p>
   </div>
-{FOOT_NAT}"""
+  </section>
+{PT.panel_open("drought", f' data-css="{DROUGHT_CSS}" data-js="{DROUGHT_JS}"', indent="  ")}<noscript><link rel="stylesheet" href="{DROUGHT_CSS}"></noscript>
+<p class="ptab-note" data-ptab-note hidden></p>
+{fold_part("drought.html")}  </section>
+  </div>
+  <div class="rc">
+    <p class="rc-byline">By <a href="/about">Sigurd Lindquist</a>, CCA. Rain: daily NOAA records through RCC-ACIS and NOAA radar with gauges (MRMS). Drought: the U.S. Drought Monitor (NDMC, USDA, NOAA).</p>
+  </div>
+{FOOT_NAT.replace("</body>", "  " + PT.SCRIPT + chr(10) + "</body>")}"""
     return nav.render(page, "rain.html", nav.block("header"), nav.block("footer"))
 
 

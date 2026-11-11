@@ -8,7 +8,7 @@
  *     </div>
  *     <script> the early pick (PICK below, copied inline): sets data-on before the panels paint </script>
  *     <section class="ptab" id="p-radar" role="tabpanel" aria-labelledby="t-radar"
- *              data-js="/a.js /b.js" data-css="/c.css"> ... </section> ...
+ *              data-js="/a.js /b.js" data-css="/c.css /d.css"> ... </section> ...
  *   </div>
  *
  * The address names the tab: /rain#drought, /spray#urea. The old pages forward there
@@ -53,9 +53,9 @@
   function load(panel) {
     if (panel.getAttribute('data-loading')) return;
     panel.setAttribute('data-loading', '1');
-    var css = panel.getAttribute('data-css'), js = (panel.getAttribute('data-js') || '').split(/\s+/).filter(Boolean);
-    var ready = function () { panel.setAttribute('data-ready', '1'); };
-    if (css) style(css, ready); else ready();
+    var css = (panel.getAttribute('data-css') || '').split(/\s+/).filter(Boolean), js = (panel.getAttribute('data-js') || '').split(/\s+/).filter(Boolean);
+    var left = css.length, ready = function () { if (--left <= 0) panel.setAttribute('data-ready', '1'); };
+    if (css.length) css.forEach(function (h) { style(h, ready); }); else ready();
     js.reduce(function (p, src) { return p.then(function () { return script(src); }); }, Promise.resolve())
       .then(function () { panel.dispatchEvent(new CustomEvent('ptab:loaded', { bubbles: true })); },
             function () {
@@ -96,14 +96,15 @@
       var h = decodeURIComponent((location.hash || '').slice(1));
       if (!h) return false;
       var id = h.replace(/^p-/, '');
-      if (ids.indexOf(id) >= 0) { show(id); return true; }
+      if (ids.indexOf(id) >= 0) { show(id); if (scroll === 'nav') box.scrollIntoView(); return true; }
       var el = document.getElementById(h);
       if (!el || !box.contains(el)) return false;
       for (var i = 0; i < ids.length; i++) {
         var p = panelOf(ids[i]);
         if (p && p.contains(el)) {
           show(ids[i]);
-          if (scroll) { if (el.tagName === 'DETAILS') el.open = true; el.scrollIntoView(); }
+          if (el.tagName === 'DETAILS') el.open = true;
+          if (scroll) el.scrollIntoView();
           return true;
         }
       }
@@ -136,7 +137,7 @@
       show(id, { hash: true });
       box.scrollIntoView();
     });
-    window.addEventListener('hashchange', function () { fromHash(true); });
+    window.addEventListener('hashchange', function () { fromHash('nav'); });
 
     if (!fromHash(true)) show(box.getAttribute('data-on') || box.getAttribute('data-default') || ids[0]);
   }
