@@ -86,7 +86,7 @@
   html.rp-from-link .rp-art.rp-empty .rp-placeholder::after{content:"Drawing the print from the link\2026";font-size:var(--fs-sm)}
   @media(max-width:899px){
     html.rp-from-link .rp-flow{display:contents}
-    html.rp-from-link .rp-pv{order:1}
+    html.rp-from-link .rp-pv,html.rp-from-link .rp-now{order:1}
     html.rp-from-link .rp-top{order:2}
     html.rp-from-link .rp-stepcol{order:3}
     /* the line under the frame names the print once it is drawn: room for two lines from the start, so a long town doesn't push the page down */
@@ -155,7 +155,8 @@
   .rp-now[hidden],.rp-now-alts[hidden],.rp-now-gift[hidden]{display:none}
   .rp-now-t{margin:0;font-size:var(--fs-md);font-weight:600;line-height:1.4;color:var(--text)}
   .rp-now-t b,.rp-now-alt b{font-family:var(--font-mono);font-variant-numeric:tabular-nums}
-  .rp-now-when,.rp-now-away{margin:.2rem 0 0;font-size:var(--fs-sm);line-height:1.45;color:var(--text-dim)}
+  .rp-now-when{display:block;margin:.2rem 0 0;font-size:var(--fs-sm);font-weight:400;line-height:1.45;color:var(--text-dim)}
+  .rp-now-away{margin:.2rem 0 0;font-size:var(--fs-sm);line-height:1.45;color:var(--text-dim)}
   .rp-now-when[hidden],.rp-now-away[hidden]{display:none}
   .rp-now-away a{color:var(--link);text-decoration:underline;text-underline-offset:2px}
   .rp-now-acts{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:.65rem 0 0}
@@ -164,6 +165,18 @@
   .rp-now-alt{flex:1 1 0;min-height:44px;padding-left:.6rem;padding-right:.6rem;font-size:var(--fs-sm);white-space:nowrap}
   .rp-now-gift{margin:.25rem 0 0;font-size:var(--fs-sm)}
   .rp-now-gift .rp-linkbtn{min-height:44px}
+  /* a phone: under the pinned print, before the steps; one row of buttons, so the steps start close under it */
+  @media(max-width:899px){
+    .rp-now{margin:-12px 0 -10px;padding:6px 12px 3px;border-width:0 0 0 4px}
+    .rp-now-t{font-size:var(--fs-xs);line-height:1.35}
+    .rp-now-when{display:inline;margin:0;font-size:inherit;line-height:inherit}
+    .rp-now-away{margin:.1rem 0 0;font-size:var(--fs-xs)}
+    .rp-now-acts{flex-wrap:nowrap;gap:.35rem;margin:.25rem 0 0}
+    .rp-now-go{flex:1 1 auto;min-width:0;min-height:44px;padding:0 .6rem;font-size:var(--fs-sm);white-space:nowrap}
+    .rp-now-alts{flex:0 0 auto;gap:.35rem}
+    .rp-now-alt{flex:0 0 auto;padding:0 .5rem;font-size:var(--fs-xs)}
+    .rp-now-gift{margin:-6px 0 -8px;font-size:var(--fs-xs)}
+  }
   .rp-pending{margin:.5rem 0 0;padding:7px 11px;border-left:3px solid var(--brand);border-radius:0 var(--r-8) var(--r-8) 0;background:var(--surface);font-size:var(--fs-sm);line-height:1.45;color:var(--text)}
 
   /* the flow: the print, then the three steps; on a wide screen the print
@@ -854,18 +867,18 @@
             </span>
           </figcaption>
         </figure>
-        <div class="rp-now" id="rp-now" hidden>
-          <p class="rp-now-t" id="rp-now-t">Framed, ready to hang, <b data-price="framed12x18">$89</b>, shipping included.</p>
-          <p class="rp-now-when" id="rp-now-when" hidden></p>
-          <div class="rp-now-acts">
-            <button type="button" class="btn btn-primary rp-now-go" id="rp-now-go" data-now="framed12x18">Order it framed</button>
-            <span class="rp-now-alts" id="rp-now-alts"><button type="button" class="btn btn-secondary rp-now-alt" data-now="print12x18">Print <b data-price="print12x18">$45</b></button><button type="button" class="btn btn-secondary rp-now-alt" data-now="digital">Digital <b data-price="digital">$19</b></button></span>
-          </div>
-          <p class="rp-now-away" id="rp-now-away" hidden></p>
-          <p class="rp-now-gift" id="rp-now-gift-wrap"><button type="button" class="rp-linkbtn" id="rp-now-gift" aria-pressed="false">Making it for someone? Make it a gift</button></p>
-        </div>
         <p class="rp-say" id="rp-say" aria-live="polite">Tap a layer to put it on the print.</p>
         <p class="rp-pending" id="rp-pending" aria-live="polite" hidden></p>
+      </div>
+      <!-- the order under the drawn print: here on a phone, under the pinned print; on a wide screen the script moves it into the print column, right under the print -->
+      <div class="rp-now" id="rp-now" hidden>
+        <p class="rp-now-t"><span id="rp-now-t">Framed, ready to hang, <b data-price="framed12x18">$89</b>, shipping included.</span> <span class="rp-now-when" id="rp-now-when" hidden></span></p>
+        <div class="rp-now-acts">
+          <button type="button" class="btn btn-primary rp-now-go" id="rp-now-go" data-now="framed12x18">Order it framed</button>
+          <span class="rp-now-alts" id="rp-now-alts"><button type="button" class="btn btn-secondary rp-now-alt" data-now="print12x18">Print <b data-price="print12x18">$45</b></button><button type="button" class="btn btn-secondary rp-now-alt" data-now="digital">Digital <b data-price="digital">$19</b></button></span>
+        </div>
+        <p class="rp-now-away" id="rp-now-away" hidden></p>
+        <p class="rp-now-gift" id="rp-now-gift-wrap"><button type="button" class="rp-linkbtn" id="rp-now-gift" aria-pressed="false">Making it for someone? Make it a gift</button></p>
       </div>
 
       <div class="rp-stepcol" id="rp-stepcol">

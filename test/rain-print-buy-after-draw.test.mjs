@@ -123,7 +123,7 @@ const JS = readFileSync(ROOT + "components/rain-print.js", "utf8");
 const HTML = readFileSync(ROOT + "rain-print.html", "utf8");
 
 test("the block's words: no em dash, no I, no countdown, and prices come from the file", () => {
-  const m = /<div class="rp-now" id="rp-now" hidden>[\s\S]*?\n        <\/div>\n/.exec(HTML);
+  const m = /<div class="rp-now" id="rp-now" hidden>[\s\S]*?\n      <\/div>\n/.exec(HTML);
   assert.ok(m, "the block is in the page, hidden until a print is drawn");
   const start = JS.indexOf("var NOW_SENT"), end = JS.indexOf("function setAway");
   assert.ok(start > 0 && end > start);
@@ -145,15 +145,17 @@ for (const [width, height] of [[390, 844], [1280, 900]]) {
       await page.waitForTimeout(500);
       const pos = await page.evaluate(() => {
         const r = (id) => document.getElementById(id).getBoundingClientRect();
-        const wall = r("rp-wall"), now = r("rp-now");
-        return { next: document.getElementById("rp-wall").nextElementSibling.id, gap: now.top - wall.bottom, nowTop: now.top, nowBottom: now.bottom, nowLeft: now.left, wallLeft: wall.left,
-          layers: r("rp-layers").top, where: r("rp-where").top, design: r("rp-design").top, faq: r("rp-faq-h").top, wide: innerWidth >= 900 };
+        const wide = innerWidth >= 900, above = document.getElementById(wide ? "rp-wall" : "rp-pv"), a = above.getBoundingClientRect(), now = r("rp-now");
+        return { next: above.nextElementSibling.id, gap: now.top - a.bottom, nowBottom: now.bottom, nowLeft: now.left, wallLeft: r("rp-wall").left,
+          layers: r("rp-layers").top, where: r("rp-where").top, design: r("rp-design").top, faq: r("rp-faq-h").top, wide };
       });
-      assert.equal(pos.next, "rp-now", "the block is the print's next sibling");
+      // a phone pins the print under the menu; the block is the first thing under that pinned print, never inside it
+      assert.equal(pos.next, "rp-now", "the block comes right after the print");
       assert.ok(pos.gap >= 0 && pos.gap < 32, "it sits right under the print: gap " + pos.gap);
       assert.ok(pos.nowBottom < pos.faq, "above the questions");
       if (!pos.wide) {
         assert.ok(pos.nowBottom <= pos.where && pos.nowBottom <= pos.layers && pos.nowBottom <= pos.design, "on a phone, before step 1, the layers and the words");
+        assert.equal(await page.$eval("#rp-pv", (pv) => pv.contains(document.getElementById("rp-now"))), false, "not in the pinned part");
       } else {
         assert.ok(Math.abs(pos.nowLeft - pos.wallLeft) < 2, "on a wide screen, in the print's column, under it");
         assert.ok(pos.nowBottom <= height, "and on the first screen: bottom " + pos.nowBottom);

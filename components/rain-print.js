@@ -3852,8 +3852,7 @@
       if (SAMPLE) setStatus(EMPTY_STATUS);
       else {
         ga('rain_print_draw', { style: ST.style, near: NEAR && ST.place === NEAR ? 1 : 0, year_kind: yearMode(ST.year, TODAY) || 'done' });
-        // the order under the print comes now, and stays through later redraws (its buttons wait while one runs)
-        NOW_READY = true; syncNow();
+        DRAW_SENT = true; nowShown();
         syncYearAsk(my);
         // a phone: the keyboard goes once the print is drawn, so the town box doesn't hold the page (2026-10-15)
         if (phone() && doc.activeElement === $('rp-place')) try { $('rp-place').blur(); } catch (err) {}
@@ -4068,7 +4067,26 @@
   function nowMain() { return nowOnly() ? 'digital' : xmasPick(TODAY, OJ().j) || 'framed12x18'; }
   function nowOn() {
     var paidFor = typeof PAID_SAVED !== 'undefined' && PAID_SAVED && PAID_SAVED.code === encodeCode(ST);
-    return NOW_READY && !!DATA && !SAMPLE && !BLOCKED && !SHOW_EX && !MAKER && !paidFor && !(typeof GIFT !== 'undefined' && GIFT && (GIFT.usable || GIFT.prepaid));
+    var base = !!DATA && !SAMPLE && !BLOCKED && !SHOW_EX && !MAKER && !paidFor && !(typeof GIFT !== 'undefined' && GIFT && (GIFT.usable || GIFT.prepaid));
+    // it comes the moment the reader's print is drawn, and stays through later redraws (its buttons wait while one runs)
+    if (base && !DRAWING) NOW_READY = true;
+    return base && NOW_READY;
+  }
+  /* Where it sits: a phone keeps it under the pinned print, before the steps (inside the pinned part it would
+     cover the screen); a wide screen puts it in the print's column, right under the print. */
+  function placeNow() {
+    var box = $('rp-now'), wall = $('rp-wall'), pv = $('rp-pv');
+    if (!box || !wall || !pv) return;
+    if (phone()) { if (box.previousElementSibling !== pv) pv.parentNode.insertBefore(box, pv.nextSibling); }
+    else if (wall.nextElementSibling !== box) wall.parentNode.insertBefore(box, wall.nextSibling);
+  }
+  /* rain_print_buy_shown: once a visit, when the block is on screen after the draw was counted, so the
+     funnel reads draw, then shown, then buy */
+  var NOW_IN = false, DRAW_SENT = false;
+  function nowShown() {
+    if (NOW_SENT || !NOW_IN || !DRAW_SENT || $('rp-now').hidden) return;
+    NOW_SENT = true;
+    ga('rain_print_buy_shown', { choice: nowMain(), away: AWAY ? 1 : 0 });
   }
   function syncNow() {
     var box = $('rp-now');
@@ -6040,6 +6058,8 @@
   (function () {
     var tick = false;
     var later = function () { if (tick) return; tick = true; (root.requestAnimationFrame || setTimeout)(function () { tick = false; syncStrip(); syncBar(); }); };
+    placeNow();
+    root.addEventListener('resize', placeNow);
     root.addEventListener('scroll', later, { passive: true });
     root.addEventListener('resize', later);
     if (root.IntersectionObserver) new root.IntersectionObserver(function (es) {
@@ -6049,9 +6069,7 @@
     }).observe($('rp-pay-wrap'));
     // the funnel: draw, then the order under the print on screen (once a visit), then buy
     if (root.IntersectionObserver) new root.IntersectionObserver(function (es) {
-      if (NOW_SENT || !es[es.length - 1].isIntersecting || $('rp-now').hidden) return;
-      NOW_SENT = true;
-      ga('rain_print_buy_shown', { choice: nowMain(), away: AWAY ? 1 : 0 });
+      NOW_IN = es[es.length - 1].isIntersecting; nowShown();
     }).observe($('rp-now'));
     var typing = function (el) { return el && /^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName) && !/^(radio|checkbox|button|submit|file)$/i.test(el.type || '') && !$('rp-proof').contains(el); };
     /* The bar goes the moment a box has the keyboard and comes back a moment
