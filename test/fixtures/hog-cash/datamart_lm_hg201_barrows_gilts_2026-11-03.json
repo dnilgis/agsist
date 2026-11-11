@@ -1,0 +1,325 @@
+{
+ "reportSection": "Barrows/Gilts",
+ "results": [
+  {
+   "report_date": "11/02/2026",
+   "for_date_begin": "10/30/2026",
+   "purchase_type": "Prod. Sold Negotiated",
+   "head_count": "8,718",
+   "base_price": "64.49",
+   "avg_net_price": "63.83"
+  },
+  {
+   "report_date": "11/02/2026",
+   "for_date_begin": "10/30/2026",
+   "purchase_type": "Prod. Sold Other Market Formula",
+   "head_count": "31,720",
+   "base_price": "62.40",
+   "avg_net_price": "65.12"
+  },
+  {
+   "report_date": "11/02/2026",
+   "for_date_begin": "10/30/2026",
+   "purchase_type": "Prod. Sold Swine or Pork Market Formula",
+   "head_count": "188,056",
+   "base_price": "64.34",
+   "avg_net_price": "65.43"
+  },
+  {
+   "report_date": "11/02/2026",
+   "for_date_begin": "10/30/2026",
+   "purchase_type": "Prod. Sold Other Purchase Arrangement",
+   "head_count": "110,111",
+   "base_price": "72.55",
+   "avg_net_price": "73.92"
+  },
+  {
+   "report_date": "11/02/2026",
+   "for_date_begin": "10/30/2026",
+   "purchase_type": "Prod. Sold Negotiated Formula",
+   "head_count": "2,048",
+   "base_price": null,
+   "avg_net_price": null
+  },
+  {
+   "report_date": "11/02/2026",
+   "for_date_begin": "10/30/2026",
+   "purchase_type": "Prod. Sold (All Purchase Types)",
+   "head_count": "340,653",
+   "base_price": "66.91",
+   "avg_net_price": "68.22"
+  },
+  {
+   "report_date": "11/02/2026",
+   "for_date_begin": "10/30/2026",
+   "purchase_type": "Pack. Sold (All Purchase Types)",
+   "head_count": "47,549",
+   "base_price": "63.44",
+   "avg_net_price": "65.01"
+  },
+  {
+   "report_date": "11/02/2026",
+   "for_date_begin": "10/30/2026",
+   "purchase_type": "Packer Owned",
+   "head_count": "254,826",
+   "base_price": null,
+   "avg_net_price": null
+  },
+  {
+   "report_date": "10/30/2026",
+   "for_date_begin": "10/29/2026",
+   "purchase_type": "Prod. Sold Negotiated",
+   "head_count": "5,992",
+   "base_price": "66.64",
+   "avg_net_price": "64.88"
+  },
+  {
+   "report_date": "10/30/2026",
+   "for_date_begin": "10/29/2026",
+   "purchase_type": "Prod. Sold Other Market Formula",
+   "head_count": "20,457",
+   "base_price": "63.02",
+   "avg_net_price": "65.48"
+  },
+  {
+   "report_date": "10/30/2026",
+   "for_date_begin": "10/29/2026",
+   "purchase_type": "Prod. Sold Swine or Pork Market Formula",
+   "head_count": "133,948",
+   "base_price": "65.38",
+   "avg_net_price": "66.36"
+  },
+  {
+   "report_date": "10/30/2026",
+   "for_date_begin": "10/29/2026",
+   "purchase_type": "Prod. Sold Other Purchase Arrangement",
+   "head_count": "82,798",
+   "base_price": "72.65",
+   "avg_net_price": "73.93"
+  },
+  {
+   "report_date": "10/30/2026",
+   "for_date_begin": "10/29/2026",
+   "purchase_type": "Prod. Sold Negotiated Formula",
+   "head_count": "1,535",
+   "base_price": null,
+   "avg_net_price": null
+  },
+  {
+   "report_date": "10/30/2026",
+   "for_date_begin": "10/29/2026",
+   "purchase_type": "Prod. Sold (All Purchase Types)",
+   "head_count": "244,730",
+   "base_price": "67.73",
+   "avg_net_price": "68.89"
+  },
+  {
+   "report_date": "10/30/2026",
+   "for_date_begin": "10/29/2026",
+   "purchase_type": "Pack. Sold (All Purchase Types)",
+   "head_count": "27,893",
+   "base_price": "64.41",
+   "avg_net_price": "65.98"
+  },
+  {
+   "report_date": "10/30/2026",
+   "for_date_begin": "10/29/2026",
+   "purchase_type": "Packer Owned",
+   "head_count": "179,552",
+   "base_price": null,
+   "avg_net_price": null
+  },
+  {
+   "report_date": "10/29/2026",
+   "for_date_begin": "10/28/2026",
+   "purchase_type": "Prod. Sold Negotiated",
+   "head_count": "4,476",
+   "base_price": "66.23",
+   "avg_net_price": "65.33"
+  },
+  {
+   "report_date": "10/29/2026",
+   "for_date_begin": "10/28/2026",
+   "purchase_type": "Prod. Sold Other Market Formula",
+   "head_count": "20,345",
+   "base_price": "65.31",
+   "avg_net_price": "67.57"
+  },
+  {
+   "report_date": "10/29/2026",
+   "for_date_begin": "10/28/2026",
+   "purchase_type": "Prod. Sold Swine or Pork Market Formula",
+   "head_count": "125,379",
+   "base_price": "66.00",
+   "avg_net_price": "66.93"
+  },
+  {
+   "report_date": "10/29/2026",
+   "for_date_begin": "10/28/2026",
+   "purchase_type": "Prod. Sold Other Purchase Arrangement",
+   "head_count": "73,437",
+   "base_price": "73.91",
+   "avg_net_price": "75.39"
+  },
+  {
+   "report_date": "10/29/2026",
+   "for_date_begin": "10/28/2026",
+   "purchase_type": "Prod. Sold Negotiated Formula",
+   "head_count": "1,111",
+   "base_price": null,
+   "avg_net_price": null
+  },
+  {
+   "report_date": "10/29/2026",
+   "for_date_begin": "10/28/2026",
+   "purchase_type": "Prod. Sold (All Purchase Types)",
+   "head_count": "224,748",
+   "base_price": "68.53",
+   "avg_net_price": "69.80"
+  },
+  {
+   "report_date": "10/29/2026",
+   "for_date_begin": "10/28/2026",
+   "purchase_type": "Pack. Sold (All Purchase Types)",
+   "head_count": "31,904",
+   "base_price": "65.59",
+   "avg_net_price": "67.14"
+  },
+  {
+   "report_date": "10/29/2026",
+   "for_date_begin": "10/28/2026",
+   "purchase_type": "Packer Owned",
+   "head_count": "184,132",
+   "base_price": null,
+   "avg_net_price": null
+  },
+  {
+   "report_date": "10/28/2026",
+   "for_date_begin": "10/27/2026",
+   "purchase_type": "Prod. Sold Negotiated",
+   "head_count": "6,148",
+   "base_price": "66.13",
+   "avg_net_price": "65.15"
+  },
+  {
+   "report_date": "10/28/2026",
+   "for_date_begin": "10/27/2026",
+   "purchase_type": "Prod. Sold Other Market Formula",
+   "head_count": "20,999",
+   "base_price": "67.96",
+   "avg_net_price": "70.01"
+  },
+  {
+   "report_date": "10/28/2026",
+   "for_date_begin": "10/27/2026",
+   "purchase_type": "Prod. Sold Swine or Pork Market Formula",
+   "head_count": "128,257",
+   "base_price": "66.89",
+   "avg_net_price": "67.84"
+  },
+  {
+   "report_date": "10/28/2026",
+   "for_date_begin": "10/27/2026",
+   "purchase_type": "Prod. Sold Other Purchase Arrangement",
+   "head_count": "77,748",
+   "base_price": "74.34",
+   "avg_net_price": "75.74"
+  },
+  {
+   "report_date": "10/28/2026",
+   "for_date_begin": "10/27/2026",
+   "purchase_type": "Prod. Sold Negotiated Formula",
+   "head_count": "956",
+   "base_price": null,
+   "avg_net_price": null
+  },
+  {
+   "report_date": "10/28/2026",
+   "for_date_begin": "10/27/2026",
+   "purchase_type": "Prod. Sold (All Purchase Types)",
+   "head_count": "234,108",
+   "base_price": "69.46",
+   "avg_net_price": "70.68"
+  },
+  {
+   "report_date": "10/28/2026",
+   "for_date_begin": "10/27/2026",
+   "purchase_type": "Pack. Sold (All Purchase Types)",
+   "head_count": "35,723",
+   "base_price": "67.02",
+   "avg_net_price": "68.17"
+  },
+  {
+   "report_date": "10/28/2026",
+   "for_date_begin": "10/27/2026",
+   "purchase_type": "Packer Owned",
+   "head_count": "187,368",
+   "base_price": null,
+   "avg_net_price": null
+  },
+  {
+   "report_date": "10/27/2026",
+   "for_date_begin": "10/26/2026",
+   "purchase_type": "Prod. Sold Negotiated",
+   "head_count": "7,532",
+   "base_price": "66.75",
+   "avg_net_price": "66.27"
+  },
+  {
+   "report_date": "10/27/2026",
+   "for_date_begin": "10/26/2026",
+   "purchase_type": "Prod. Sold Other Market Formula",
+   "head_count": "20,994",
+   "base_price": "66.76",
+   "avg_net_price": "69.04"
+  },
+  {
+   "report_date": "10/27/2026",
+   "for_date_begin": "10/26/2026",
+   "purchase_type": "Prod. Sold Swine or Pork Market Formula",
+   "head_count": "122,906",
+   "base_price": "68.01",
+   "avg_net_price": "69.07"
+  },
+  {
+   "report_date": "10/27/2026",
+   "for_date_begin": "10/26/2026",
+   "purchase_type": "Prod. Sold Other Purchase Arrangement",
+   "head_count": "78,310",
+   "base_price": "74.35",
+   "avg_net_price": "75.77"
+  },
+  {
+   "report_date": "10/27/2026",
+   "for_date_begin": "10/26/2026",
+   "purchase_type": "Prod. Sold Negotiated Formula",
+   "head_count": "945",
+   "base_price": null,
+   "avg_net_price": null
+  },
+  {
+   "report_date": "10/27/2026",
+   "for_date_begin": "10/26/2026",
+   "purchase_type": "Prod. Sold (All Purchase Types)",
+   "head_count": "230,687",
+   "base_price": "70.03",
+   "avg_net_price": "71.33"
+  },
+  {
+   "report_date": "10/27/2026",
+   "for_date_begin": "10/26/2026",
+   "purchase_type": "Pack. Sold (All Purchase Types)",
+   "head_count": "32,711",
+   "base_price": "67.76",
+   "avg_net_price": "69.08"
+  },
+  {
+   "report_date": "10/27/2026",
+   "for_date_begin": "10/26/2026",
+   "purchase_type": "Packer Owned",
+   "head_count": "185,692",
+   "base_price": null,
+   "avg_net_price": null
+  }
+ ]
+}

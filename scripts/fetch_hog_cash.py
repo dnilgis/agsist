@@ -14,6 +14,10 @@ Sources, USDA AMS Livestock Mandatory Reporting, public PDFs (latest issue):
       https://www.ams.usda.gov/mnreports/ams_2498.pdf
     Read: "Today's Estimated Primal Cutout Values", the first dated row.
 
+HISTORY: data/hog-cash.json "history" holds the last 45 days of both figures
+(PDF days win; the LMR DataMart fills missing days while fewer than 15 are
+held). The cattle page draws its 30-day chart from it.
+
 NOT HERE: LM_HG203 (National Daily Direct Hogs Afternoon). USDA stopped it on
 Dec 31, 2020 (DataMart list, probe of 2026-11-03); its successor is LSDLM_HG217
 (MMN 2675), which this file does not read yet.
@@ -266,6 +270,104 @@ def merge(existing, key, parsed, err, now_iso, extra_check=None):
     return doc
 
 
+# ---------------------------------------------------------------- history
+# The last 45 days of the two daily figures, for the small chart on the cattle
+# page. Each report adds its own day; a PDF figure always wins over a DataMart
+# one for the same day. While fewer than BACKFILL_MIN days are held, the LMR
+# DataMart (no key, every call with a date range) fills the missing days from
+# the same two reports: the Nov 2, 2026 Prod. Sold Negotiated row there is the
+# PDF's own 8,718 head at 64.49, and its carcass cutout the PDF's 72.28.
+HIST_DAYS = 45
+BACKFILL_MIN = 15
+DM = {"hogs": ("2511", "Barrows/Gilts"), "cutout": ("2498", "Cutout and Primal Values")}
+NEGOTIATED = "Prod. Sold Negotiated"
+
+
+def _iso(mdy_s):
+    m = re.fullmatch(r"(\d{2})/(\d{2})/(\d{4})", str(mdy_s or "").strip())
+    return "%s-%s-%s" % (m.group(3), m.group(1), m.group(2)) if m else None
+
+
+def _num(s):
+    try:
+        v = float(str(s).replace(",", ""))
+    except (TypeError, ValueError):
+        return None
+    return v if v > 0 else None
+
+
+def entry_of(doc, key):
+    """The history entry the current block gives, or None."""
+    b = (doc or {}).get(key) or {}
+    if key == "hogs":
+        n = b.get("negotiated") or {}
+        if b.get("report_date") and n.get("base") and n.get("head"):
+            return {"d": b["report_date"], "base": n["base"], "head": n["head"]}
+        return None
+    if b.get("date") and b.get("carcass"):
+        return {"d": b["date"], "carcass": b["carcass"]}
+    return None
+
+
+def dm_entries(raw, key):
+    """History entries from one DataMart answer; rows outside the ranges are left out."""
+    try:
+        body = json.loads(raw.decode("utf-8", "replace"))
+    except (ValueError, AttributeError):
+        return []
+    out = {}
+    for r in rows_of(body):
+        d = _iso(r.get("report_date"))
+        if not d:
+            continue
+        if key == "hogs":
+            if str(r.get("purchase_type") or "").strip() != NEGOTIATED:
+                continue
+            base, head = _num(r.get("base_price")), _num(r.get("head_count"))
+            if base is None or head is None or not BASE_RANGE[0] <= base <= BASE_RANGE[1]:
+                continue
+            out[d] = {"d": d, "base": round(base, 2), "head": int(head)}
+        else:
+            c = _num(r.get("pork_carcass"))
+            if c is None or not CUTOUT_RANGE[0] <= c <= CUTOUT_RANGE[1]:
+                continue
+            out[d] = {"d": d, "carcass": round(c, 2)}
+    return [out[d] for d in sorted(out)]
+
+
+def put_history(doc, key, entries, wins):
+    """Add entries to doc["history"][key]; wins=True replaces a held day, False only fills gaps.
+    Keeps HIST_DAYS days back from the newest held day, oldest first."""
+    hist = dict(doc.get("history") or {})
+    held = {e["d"]: e for e in (hist.get(key) or []) if isinstance(e, dict) and e.get("d")}
+    for e in entries:
+        if wins or e["d"] not in held:
+            held[e["d"]] = e
+    if held:
+        newest = datetime.date.fromisoformat(max(held))
+        cut = (newest - datetime.timedelta(days=HIST_DAYS)).isoformat()
+        held = {d: e for d, e in held.items() if d > cut}
+    hist[key] = [held[d] for d in sorted(held)]
+    doc["history"] = hist
+    return doc
+
+
+def backfill(doc, get, today):
+    """Fill missing days from the DataMart while the history is short. Never fails the run."""
+    for key, (sid, section) in DM.items():
+        if len(((doc.get("history") or {}).get(key)) or []) >= BACKFILL_MIN:
+            continue
+        url = "%s/%s/%s?%s" % (DATAMART, sid, urllib.parse.quote(section, safe="/"),
+                               range_q(today - datetime.timedelta(days=HIST_DAYS), today))
+        try:
+            raw, _ = get(url)
+        except Exception:                                 # noqa: BLE001 soft: the chart waits
+            raw = None
+        if raw:
+            put_history(doc, key, dm_entries(raw, key), wins=False)
+    return doc
+
+
 def short(d):
     x = datetime.date.fromisoformat(d)
     return "%s %d" % (x.strftime("%b"), x.day)
@@ -306,8 +408,11 @@ def fetch(key):
     return raw, text, (None if text else "PDF text extraction failed: %s" % e)
 
 
-def run(root, got=None, now=None):
-    """got = {"hogs": (raw, text, err), "cutout": (...)} in tests."""
+def run(root, got=None, now=None, dm_get=None):
+    """got = {"hogs": (raw, text, err), "cutout": (...)} in tests; dm_get answers the
+    DataMart history calls (live by default, none in a test that does not pass one)."""
+    if dm_get is None and got is None:
+        dm_get = lambda u: FD.http_get(u, tries=2, timeout=45)  # noqa: E731
     root = Path(root)
     now = now or datetime.datetime.now(datetime.timezone.utc)
     now_iso = now.strftime("%Y-%m-%dT%H:%M:%SZ")
@@ -327,6 +432,12 @@ def run(root, got=None, now=None):
         doc = merge(doc, key, p, e, now_iso, check)
     if not any(k in doc for k in SRC):
         return None
+    for key in SRC:
+        e = entry_of(doc, key)
+        if e:
+            doc = put_history(doc, key, [e], wins=True)
+    if dm_get:
+        doc = backfill(doc, dm_get, now.date())
     doc["daily_line"] = daily_line(doc)
     doc["updated"] = now_iso
     if doc != existing:
@@ -603,6 +714,68 @@ def selftest():
         ck("run: nothing read and no file, nothing written",
            run(t, got={"hogs": (None, None, "x"), "cutout": (None, None, "y")}) is None
            and not (Path(t) / OUT).exists())
+
+    # history and the DataMart backfill (real answers from the same probe)
+    dmh = (FIX / "datamart_lm_hg201_barrows_gilts_2026-11-03.json").read_bytes()
+    dmc = (FIX / "datamart_lm_pk602_cutout_2026-11-03.json").read_bytes()
+    eh = dm_entries(dmh, "hogs")
+    ck("datamart: Prod. Sold Negotiated rows only, one per report, oldest first",
+       [(e["d"], e["head"], e["base"]) for e in eh] == [
+           ("2026-10-27", 7532, 66.75), ("2026-10-28", 6148, 66.13), ("2026-10-29", 4476, 66.23),
+           ("2026-10-30", 5992, 66.64), ("2026-11-02", 8718, 64.49)], eh)
+    ck("datamart: the Nov 2 row is the PDF's own negotiated figure",
+       eh[-1] == {"d": "2026-11-02", "base": HOGS["negotiated"]["base"], "head": HOGS["negotiated"]["head"]})
+    ec = dm_entries(dmc, "cutout")
+    ck("datamart: carcass cutout by report day, Nov 2 is the PDF's 72.28",
+       [(e["d"], e["carcass"]) for e in ec] == [("2026-10-27", 73.09), ("2026-10-28", 72.45),
+                                                 ("2026-10-29", 70.69), ("2026-10-30", 70.1), ("2026-11-02", 72.28)], ec)
+    ck("datamart: a withheld, zero or out-of-range price is left out",
+       dm_entries(json.dumps({"results": [
+           {"report_date": "11/02/2026", "purchase_type": NEGOTIATED, "head_count": "8,718", "base_price": None},
+           {"report_date": "11/03/2026", "purchase_type": NEGOTIATED, "head_count": "0", "base_price": "60.00"},
+           {"report_date": "11/04/2026", "purchase_type": NEGOTIATED, "head_count": "900", "base_price": "260.00"}]}).encode(),
+           "hogs") == [])
+    ck("datamart: a broken answer gives nothing", dm_entries(b"<html>", "hogs") == [] and dm_entries(None, "cutout") == [])
+    hd = put_history({}, "hogs", eh, wins=False)
+    hd = put_history(hd, "hogs", [{"d": "2026-11-02", "base": 64.0, "head": 1}], wins=False)
+    ck("history: a DataMart day never replaces a held day", hd["history"]["hogs"][-1]["base"] == 64.49)
+    hd = put_history(hd, "hogs", [{"d": "2026-11-02", "base": 64.5, "head": 8720}], wins=True)
+    ck("history: the day's own report replaces it", hd["history"]["hogs"][-1]["base"] == 64.5)
+    hd = put_history(hd, "hogs", [{"d": "2026-12-20", "base": 60.0, "head": 5000}], wins=True)
+    ck("history: only 45 days back from the newest day are kept",
+       [e["d"] for e in hd["history"]["hogs"]] == ["2026-12-20"], hd["history"]["hogs"])
+    with tempfile.TemporaryDirectory() as t:
+        (Path(t) / "data").mkdir()
+        th = (FIX / "lm_hg201_2026-11-02.txt").read_text()
+        tc = (FIX / "lm_pk602_2026-11-02.txt").read_text()
+        urls = []
+
+        def dm(u):
+            urls.append(u)
+            return (dmh if "/2511/" in u else dmc), None
+        doc = run(t, got={"hogs": (b"", th, None), "cutout": (b"", tc, None)},
+                  now=datetime.datetime(2026, 11, 3, 21, 45, tzinfo=datetime.timezone.utc), dm_get=dm)
+        ck("run: the report's day plus the DataMart days, five each",
+           len(doc["history"]["hogs"]) == 5 and len(doc["history"]["cutout"]) == 5
+           and doc["history"]["hogs"][-1] == {"d": "2026-11-02", "base": 64.49, "head": 8718}, doc.get("history"))
+        ck("run: each DataMart call carries a date range and the bare slash",
+           len(urls) == 2 and all("?q=report_date=09/19/2026:11/03/2026" in u for u in urls)
+           and any("/2511/Barrows/Gilts?" in u for u in urls), urls)
+        full = dict(doc, history={k: [{"d": "2026-10-%02d" % i, "base": 60.0, "head": 1, "carcass": 70.0}
+                                      for i in range(1, 16)] for k in SRC})
+        (Path(t) / OUT).write_text(json.dumps(full))
+        urls.clear()
+        run(t, got={"hogs": (b"", th, None), "cutout": (b"", tc, None)},
+            now=datetime.datetime(2026, 11, 3, 21, 45, tzinfo=datetime.timezone.utc), dm_get=dm)
+        ck("run: a full history asks the DataMart nothing", urls == [], urls)
+
+        def down(u):
+            raise OSError("no route")
+        (Path(t) / OUT).unlink()
+        doc = run(t, got={"hogs": (b"", th, None), "cutout": (b"", tc, None)},
+                  now=datetime.datetime(2026, 11, 3, 21, 45, tzinfo=datetime.timezone.utc), dm_get=down)
+        ck("run: a DataMart that does not answer leaves the report's own day and the file written",
+           [e["d"] for e in doc["history"]["hogs"]] == ["2026-11-02"] and (Path(t) / OUT).exists())
 
     # probe
     lst = json.dumps([
