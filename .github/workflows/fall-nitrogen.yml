@@ -86,8 +86,6 @@ jobs:
           set -e
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          # the state table is stamped into the fall anhydrous tab of spray.html; it is re-stamped on the
-          # fresh main below instead of copying the whole page, so nothing else on spray.html is undone
           FILES="data/fall-nitrogen.json"
           rm -rf /tmp/fn && mkdir -p /tmp/fn
           for f in $FILES; do
