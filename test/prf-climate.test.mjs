@@ -42,7 +42,7 @@ function fakeClimate(edit) {
     series[name] = { url: "https://example.invalid/" + name, as_of: "2026-09", monthly };
   }
   if (edit) edit(series);
-  return { v: 1, written_by: "scripts/fetch_climate_indices.py", series };
+  return { v: 1, series };
 }
 const CLIMATE = fakeClimate();
 /* the tilts that run on the climate file alone; the forecast models need data/prf/seasonal-fc.json

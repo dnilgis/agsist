@@ -305,7 +305,6 @@ def check(doc, raw_len=None):
 def write(models, path=OUT):
     doc = {
         "v": 1,
-        "written_by": "scripts/fetch_seasonal_models.py",
         "box_deg": BOX_DEG,
         "init_month": INIT_MONTH,
         "what": "Seasonal forecast models started in November, for the policy year after: ensemble-mean precipitation over each PRF interval's two months, "
