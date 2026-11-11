@@ -3,7 +3,7 @@
 fetch_drought_county_week.py -- this week's Drought Monitor numbers for every
 county, with last week and four weeks back -> data/drought/county-week.json
 
-Read by the county box on drought-monitor.html, only when a reader picks a
+Read by the county box on the drought tab of /rain, only when a reader picks a
 county. One national file, rewritten each Thursday after the map comes out.
 
 ONE SOURCE

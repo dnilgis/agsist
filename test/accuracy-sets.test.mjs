@@ -14,7 +14,7 @@ test("every generated page set is in the sets list, and the prompt has no em das
   const src = readFileSync("scripts/accuracy_sets.py", "utf8");
   for (const g of ["rain/*/*.html", "prf/*/*.html", "prf/*.html", "farmland-atlas/*/*.html", "arc-plc/*/*.html",
                    "hail-map/*.html", "hail/*.html", "yield/*.html", "cash-bids/*/*.html", "cash-bids/company/*.html",
-                   "rent/*.html", "cattle-auction-prices.html", "cash-bids/*/index.html", "drought-monitor.html", "daily/*.html"]) {
+                   "rent/*.html", "cattle-auction-prices.html", "cash-bids/*/index.html", "rain.html", "daily/*.html"]) {
     assert.ok(src.includes(`"${g}"`), `missing set ${g}`);
   }
   assert.ok(!src.includes("—"), "no em dash in the checker prompt");

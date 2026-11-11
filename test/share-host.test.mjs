@@ -51,7 +51,7 @@ test("data/share-host.json names the host and lists only known folders", () => {
 test("both folders are served from agsist-data and none of their files is kept here", () => {
   const doc = JSON.parse(read("data/share-host.json"));
   assert.deepEqual(Object.keys(doc.folders).sort(), ["data/social", "farmland-atlas/og"]);
-  const tracked = execFileSync("git", ["ls-files", "--", "farmland-atlas/og", "data/social"], { cwd: ROOT, encoding: "utf8" });
+  const tracked = execFileSync("git", ["ls-files", "--", "farmland-atlas/og", "data/social"], { cwd: ROOT, encoding: "utf8", maxBuffer: 1 << 26 });
   assert.equal(tracked.trim(), "", "no share image is committed here");
   const ign = read(".gitignore");
   assert.match(ign, /^\/farmland-atlas\/og\/$/m);

@@ -109,7 +109,10 @@ SETS = [
     {"id": "rain", "offline": True, "workflow": "county-rain.yml",
      "build": [[PY, "scripts/build_county_rain.py"]], "check": [[PY, "scripts/build_county_rain.py", "--check"]],
      "outputs": ["rain/**", "sitemap-rain.xml"],
-     "writes": ["rain.html", "data/pointers"], "code": ["scripts/build_county_rain.py"], "inputs": [],
+     "writes": ["rain.html", "data/pointers"],
+     # the radar and drought tabs of /rain (Nov 11, 2026): panel files the builder reads into rain.html
+     "code": ["scripts/build_county_rain.py", "components/fold/radar.part", "components/fold/radar.css",
+              "components/fold/drought.part"], "inputs": [],
      "dependents": ["feeds", "llms"]},
     {"id": "farmland-atlas", "offline": True, "workflow": "farmland-atlas-pages.yml",
      "build": [[PY, "scripts/build_atlas_pages.py"]], "check": None,

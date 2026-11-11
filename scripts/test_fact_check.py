@@ -93,6 +93,16 @@ def main():
     assert fc.weekday_findings([("x", "Thurs., Oct 22")], TODAY) == []
     assert len(fc.weekday_findings([("x", "Saturday, October 17, 2025")], TODAY)) == 1
     assert fc.weekday_findings([("x", "Friday, Jan 8")], dt.date(2026, 12, 30)) == [], "next January"
+    # 2026-11-11 run 43034652997: the holiday-week line, exactly as the prompt asks for it
+    nov11 = dt.date(2026, 11, 11)
+    assert fc.weekday_findings([("watch_list[0].time", "Thursday or Friday, Nov 12 or 13, 7:30 AM CT")], nov11) == [], \
+        "a correct pair is not 'Friday, Nov 12'"
+    assert fc.weekday_findings([("x", "Thursday or Friday, Nov 12 or Nov 13")], nov11) == []
+    assert len(fc.weekday_findings([("x", "Thursday or Thursday, Nov 12 or 13")], nov11)) == 1, "wrong second weekday"
+    assert len(fc.weekday_findings([("x", "Wednesday or Friday, Nov 12 or 13")], nov11)) == 1, "wrong first weekday"
+    assert len(fc.weekday_findings([("x", "Friday, Nov 12, 7:30 AM CT")], nov11)) == 1, "a single wrong weekday"
+    assert len(fc.weekday_findings([("x", "Thursday or Friday, Nov 12 or 13.5 million")], nov11)) == 1, \
+        "no readable second day: checked as a single date, as before"
 
     # 4. a finding whose quote is not in the draft never blocks
     def hallucinating(payload, key):

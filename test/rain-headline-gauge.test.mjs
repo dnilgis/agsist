@@ -128,8 +128,9 @@ test("/rain: records are worded as the code counts them, one radar link, and the
   assert.ok(!h.includes("Records count only full years"));
   assert.match(h, /reported at least 95% of the days to the same date \(3 missed days are always allowed\)/);
   const body = h.slice(h.indexOf('<div class="rc">'), h.indexOf('<p class="rc-byline">'));   // the page's own body, not the menu
-  assert.equal((body.match(/href="\/rain-radar"/g) || []).length, 1);
-  assert.match(body, /<a href="\/rain-radar">Look up radar rain by ZIP<\/a>/);
+  // the radar lookup is a tab of this page since Nov 11, 2026: the line opens it
+  assert.equal((body.match(/href="\/rain#radar"/g) || []).length, 1);
+  assert.match(body, /<a href="\/rain#radar">Look up radar rain by ZIP<\/a>/);
   assert.match(h, /<script src="\/components\/saved-place\.js\?v=1"><\/script>/);
   assert.match(h, /<p class="rc-fine" id="rc-mine" data-st="\{&quot;FL&quot;:\[&quot;florida&quot;,&quot;Florida&quot;\]\}" hidden><\/p>/);
 });

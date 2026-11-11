@@ -43,7 +43,6 @@ CADENCE = {
     "/usda-calendar": 1,  # What's priced in and the bot scorecard live here since Oct 22, 2026
     "/cattle-futures-prices": 1,
     "/crop-tour": 1,
-    "/drought-monitor": 7,
     "/cot": 7,
 }
 

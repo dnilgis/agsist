@@ -32,8 +32,7 @@ test("one cross-promo a page, after the answer, with its script", () => {
   const pages = {
     "conditions.html": ['data-rain-print-promo="auto"', 'class="cd-panel cd-faq-panel"'],
     "spray.html": ['data-rain-print-promo="auto"', 'id="section-faq"'],
-    // /rain-radar: the gauge helper's "auto" line (see, or the gauge hook by date) is its one slot (Oct 23)
-    "rain-radar.html": ['data-rain-print-promo="auto"', 'class="rr-faq"'],
+    // /rain-radar had the gauge helper's "auto" line (Oct 23); since Nov 11, 2026 it is a tab of /rain, whose one promo is its typed Rain Print line
   };
   for (const [f, [slot, after]] of Object.entries(pages)) {
     const h = read(f), m = inMain(h);

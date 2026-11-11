@@ -25,7 +25,8 @@ const skip = !chromium || !existsSync(CHROME) ? "Playwright or Chromium not foun
 
 const header = read("components/header.html"), footer = read("components/footer.html");
 // Pod counts became a section of the crop tour page (Oct 22, 2026), which is in the menu itself
-const NEW_MENU = ["/crop-tour", "/drought-monitor", "/planting-date", "/field-scout", "/urea"];
+// Nov 11, 2026: the drought monitor and urea loss are tabs of /rain and /spray, which the menu names
+const NEW_MENU = ["/crop-tour", "/rain", "/planting-date", "/field-scout", "/spray"];
 
 test("footer-only tools are in the desktop menu, the phone drawer and the no-script header", () => {
   // 2026-10-18 full menu: Drought monitor moved to Livestock, so look across the whole desktop menu

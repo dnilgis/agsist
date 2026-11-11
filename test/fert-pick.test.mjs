@@ -125,12 +125,14 @@ test("every calculator reads prices through the one chooser", () => {
   assert.match(read("components/fast-facts.js"), /AgFertPick\.load\(\)/);
   assert.match(read("components/manure-value.js"), /AgFertPick\.load\(\)/);
   assert.match(read("components/nutrient-removal.js"), /AgFertPick\.load\(\)/);
-  assert.equal((read("urea.html").match(/AgFertPick\.load\(\)/g) || []).length, 2);
+  // urea: the urea tab of /spray since Nov 11, 2026; its code is components/fold/urea.js, loaded after fert-pick.js
+  assert.equal((read("components/fold/urea.js").match(/AgFertPick\.load\(\)/g) || []).length, 2);
   assert.match(read("components/here.js"), /var F = window\.AgFertPick;\s*\(F \? F\.load\(st \|\| null\)/);
   assert.doesNotMatch(read("components/nutrient-removal.js"), /COOPS\[/, "no co-op names on /nutrient-removal");
   for (const [page, before] of [["fast-facts.html", "manure-value.js"], ["manure-value.html", "manure-value.js"], ["nutrient-removal.html", "nutrient-removal.js"]]) {
     const h = read(page);
     assert.ok(h.includes("/components/fert-pick.js?v=") && h.indexOf("/components/fert-pick.js") < h.indexOf("/components/" + before), page);
   }
-  assert.ok(read("urea.html").indexOf("/components/fert-pick.js") < read("urea.html").indexOf("AgFertPick.load()"));
+  const uj = (read("spray.html").match(/id="p-urea"[^>]*data-js="([^"]*)"/) || [])[1] || "";
+  assert.ok(uj.indexOf("/components/fert-pick.js") >= 0 && uj.indexOf("/components/fert-pick.js") < uj.indexOf("/components/fold/urea.js"), "the urea tab loads fert-pick.js before its own code");
 });
