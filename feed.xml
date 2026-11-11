@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Tue, 10 Nov 2026 11:49:20 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 11 Nov 2026 14:19:12 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn slips 2½ cents to $4.46½ after Tuesday's yield cut</title>
+      <link>https://agsist.com/daily/2026-11-11</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-11</guid>
+      <pubDate>Wed, 11 Nov 2026 14:18:21 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Dec corn is at $4.46½ overnight, 2½ cents under Tuesday's $4.49 settle. A Farm Policy News item says USDA's yield cut was bigger than traders expected, and corn had its best day in three months.
+• Cattle up, cash hogs soft
+• Crude firms on Iran doubts
+Read more: https://agsist.com/daily/2026-11-11</description>
+    </item>
     <item>
       <title>WASDE prints at 11 CT; Dec corn is at $4.41½ overnight</title>
       <link>https://agsist.com/daily/2026-11-10</link>
@@ -348,18 +359,6 @@ Read more: https://agsist.com/daily/2026-10-14</description>
 • Cattle and hogs mixed overnight
 • Crude pulls back from Saudi move higher
 Read more: https://agsist.com/daily/2026-10-13</description>
-    </item>
-    <item>
-      <title>Corn steadies near $4.81 after Friday's WASDE hit</title>
-      <link>https://agsist.com/daily/2026-10-12</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-12</guid>
-      <pubDate>Mon, 12 Oct 2026 10:47:45 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Corn is at $4.81 overnight, up 1¼¢ from Friday's $4.79¾ settle, a small bounce after Friday's near 4% drop on USDA's yield number. Soybean meal gained 2.2% to $368.70 while beans slipped to $12.83. Monday's quiet bounce doesn't undo Friday's loss on unpriced corn.
-• Corn finds its feet after WASDE
-• Cattle and feeders keep climbing
-• Crude firms as tankers take more hits
-Read more: https://agsist.com/daily/2026-10-12</description>
     </item>
   </channel>
 </rss>

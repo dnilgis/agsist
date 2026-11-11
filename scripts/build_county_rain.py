@@ -63,10 +63,10 @@ import rain_records as RREC  # noqa: E402  dry_rank_ok: a dry rank waits when mi
 ROOT = R.ROOT
 MAX_KB = 25
 # rain.html, a root page, holds three tabs since Nov 11, 2026 (radar, by county, drought); the 150 KB cap of
-# scripts/check_site_budget.py is for set pages, this is the hub's own line. Measured Nov 11, 2026: 61.3 KB with the
-# radar, county and drought tabs (the county pages' 25 KB cap would not fit the radar and drought panels); the line
-# sits just above that, so growth past it is a decision made in the commit that raises it
-HUB_KB = 65
+# scripts/check_site_budget.py is for set pages, this is the hub's own line. Measured Nov 11, 2026: the committed
+# rain.html is 76.5 KB with the radar, county and drought tabs; the selftest's fixture hub is smaller (61.3 KB, fewer
+# states). The line sits just above the real page, so growth past it is a decision made in the commit that raises it
+HUB_KB = 80
 CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=8">'
 ORIGIN = "https://agsist.com"
 M3, ML = R.MONTHS, R.MONTHS_LONG
