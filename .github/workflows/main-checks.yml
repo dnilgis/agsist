@@ -126,7 +126,7 @@ jobs:
             if git diff --staged --quiet; then
               echo "No change."; echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"; exit 0
             fi
-            git commit -q -m "Built files rebuilt on main (What's new, changelog, test map)"
+            git commit -q -m "Built files rebuilt on main (What's new, changelog)"
             if git push -q origin HEAD:main; then
               echo "Pushed on attempt $i."; echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"; exit 0
             fi

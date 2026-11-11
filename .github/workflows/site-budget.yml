@@ -6,7 +6,6 @@ on:
     paths:
       - '**.html'
       - 'data/**'
-      - 'scripts/check_site_budget.py'
   workflow_dispatch:
 
 permissions:

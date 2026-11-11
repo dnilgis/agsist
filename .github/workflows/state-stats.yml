@@ -1,10 +1,6 @@
 name: Build State Stats (USDA NASS)
 
 on:
-  push:
-    branches: [main]
-    paths:
-      - "scripts/build_state_stats.py"
   schedule:
     - cron: "33 12 15 * *"
   workflow_run:

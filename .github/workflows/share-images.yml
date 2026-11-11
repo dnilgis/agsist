@@ -6,9 +6,6 @@ on:
     paths:
       - '*.html'
       - 'data/farm-bill.json'
-      - 'scripts/share_cards.py'
-      - 'scripts/build_share_images.py'
-      - 'scripts/test_share_images.py'
       - '.github/workflows/share-images.yml'
   schedule:
     - cron: '23 12 * * *'

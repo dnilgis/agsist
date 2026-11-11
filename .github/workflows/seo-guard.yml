@@ -7,7 +7,6 @@ on:
       - '**.html'
       - 'sitemap*.xml'
       - 'robots.txt'
-      - 'scripts/check_seo.py'
   workflow_dispatch:
 
 permissions:

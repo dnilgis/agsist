@@ -6,9 +6,7 @@ on:
     paths:
       - "data/wpi-estimates.json"
       - "data/wpi-history.json"
-      - "scripts/build_whats_priced_in.py"
       - "data/analyst-estimates.json"
-      - "scripts/report_bands.py"
   schedule:
     - cron: "20 11 * * *"
   workflow_run:
