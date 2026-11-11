@@ -14,7 +14,7 @@ const require = createRequire(import.meta.url);
 const R = require(path.join(ROOT, "components/radar-rain.js"));
 const FIX = path.join(ROOT, "test/fixtures/radar-rain");
 // the radar lookup is the first tab of /rain since Nov 11, 2026 (written by scripts/build_county_rain.py from
-// components/fold/radar.html); /rain-radar forwards there with its ?lat=&lon= kept
+// components/fold/radar.part); /rain-radar forwards there with its ?lat=&lon= kept
 const page = fs.readFileSync(path.join(ROOT, "rain.html"), "utf8");
 
 function pyHas() {

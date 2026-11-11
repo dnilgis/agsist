@@ -39,6 +39,9 @@ test("every old weather address forwards to a tab its destination has", () => {
     assert.equal(go("", ""), `${to}#${tab}`, old);
     // a radar link from Field Scout or a county page keeps its spot
     assert.equal(go("?lat=41.9&lon=-93.6&label=Ames", ""), `${to}?lat=41.9&lon=-93.6&label=Ames#${tab}`, old + " keeps the query");
+    // a hash of its own is kept; one that names no tab still lands on this page's tab (?ptab=, dropped by page-tabs.js)
+    assert.equal(go("", "#foo"), `${to}?ptab=${tab}#foo`, old + " keeps its own hash");
+    assert.equal(go("?lat=41.9", "#foo"), `${to}?lat=41.9&ptab=${tab}#foo`, old + " keeps the query and its own hash");
     const page = read(fileOf(to));
     const box = page.match(/<div class="ptabs" data-ptabs="([^"]+)" data-default="([^"]+)">/);
     assert.ok(box, to + " has the tab box");
@@ -89,6 +92,23 @@ test("nothing the site serves links to a folded weather page", () => {
   // the builders that write those links into generated pages and emails
   for (const f of ["scripts/build_county_rain.py", "scripts/build_state_rent_pages.py", "scripts/make_prf_html.py", "scripts/build_search_index.py"])
     assert.doesNotMatch(read(f).replace(/#[^\n]*|"""[\s\S]*?"""/g, ""), /["'(]\/(rain-radar|drought-monitor|urea|fall-nitrogen)["'?#)]/, f);
+});
+
+test("no generator or worker writes an href to a folded page, in any quoting", () => {
+  // scripts/ and workers/ are skipped by the walk above; this reads them for href="/old", href='/old', href=\"/old\"
+  const HREF = /href\s*=\s*\\?["']\/(?:rain-radar|drought-monitor|urea|fall-nitrogen)(?:\.html)?\/?(?=[\\"'?#])/;
+  const bad = [];
+  (function walk(d) {
+    for (const n of readdirSync(join(ROOT, d))) {
+      const p = d + "/" + n;
+      if (statSync(join(ROOT, p)).isDirectory()) { if (n !== "__pycache__" && n !== "node_modules") walk(p); continue; }
+      if (!/\.(py|js|mjs|sh|yml)$/.test(n) || p === "scripts/moved_pages.py") continue;
+      if (HREF.test(read(p))) bad.push(p);
+    }
+  })("scripts");
+  for (const f of readdirSync(join(ROOT, "workers"))) if (/\.js$/.test(f) && HREF.test(read("workers/" + f))) bad.push("workers/" + f);
+  assert.deepEqual(bad, []);
+  assert.match(read("scripts/dev/nav/gen_nav.py"), /href="\/rain#radar" class="draw-pl" id="dp-rain"/, "the phone menu's field-rain link opens the radar tab");
 });
 
 test("the menu: four lines fewer, /rain and /spray named by what they hold", () => {
@@ -160,7 +180,7 @@ test("a closed tab costs nothing: its maps and code load when it opens", () => {
   assert.match(rain, /id="p-radar"[^>]*data-js="\/vendor\/leaflet-1\.9\.4\/leaflet\.js [^"]*\/components\/radar-rain-page\.js\?v=10"/);
   assert.match(spray, /id="p-urea"[^>]*data-css="\/components\/fold\/urea\.css\?v=1" data-js="[^"]*\/components\/fold\/urea\.js\?v=1"/);
   assert.ok(rain.includes('id="dm-map-img"') && /id="dm-map-img"[^>]*loading="lazy"|loading="lazy"[^>]*id="dm-map-img"/.test(rain.replace(/\n\s*/g, " ")), "the drought map image waits for its tab");
-  for (const h of [rain, spray]) assert.ok(h.includes('<script src="/components/page-tabs.js?v=1" defer></script>'));
+  for (const h of [rain, spray]) assert.ok(h.includes('<script src="/components/page-tabs.js?v=2" defer></script>'));
   // the scoped style of a tab never reaches the rest of the page
   for (const [f, id] of [["urea.css", "p-urea"], ["fall-nitrogen.css", "p-fall-nitrogen"], ["drought.css", "p-drought"], ["radar.css", "p-radar"]]) {
     const css = read("components/fold/" + f).replace(/\/\*[\s\S]*?\*\//g, "");
@@ -175,11 +195,11 @@ test("the rain builder writes the tabs from the panel files, and rebuilds when o
   const g = JSON.parse(execFileSync("python3", ["scripts/generated_sets.py", "json"], { cwd: ROOT, encoding: "utf8" }));
   const sets = Array.isArray(g) ? g : g.sets;
   const rain = sets.find((s) => s.id === "rain");
-  for (const f of ["components/fold/radar.html", "components/fold/radar.css", "components/fold/drought.html"])
+  for (const f of ["components/fold/radar.part", "components/fold/radar.css", "components/fold/drought.part"])
     assert.ok(JSON.stringify(rain).includes(f), "rain set code lists " + f);
   const b = read("scripts/build_county_rain.py");
-  assert.match(b, /fold_part\("radar\.html"\)/);
-  assert.match(b, /fold_part\("drought\.html"\)/);
+  assert.match(b, /fold_part\("radar\.part"\)/);
+  assert.match(b, /fold_part\("drought\.part"\)/);
   assert.match(b, /<a href="\/rain\?\{e\(q\)\}#radar">/, "a county page's radar line opens the radar tab at its gauge");
 });
 
@@ -244,6 +264,12 @@ test("in a browser: an old address opens its tab, a tab click loads its code onc
     await pg.waitForFunction(() => document.querySelector("#p-drought[data-ready]"));
     assert.ok(await pg.isVisible("#dm-county-q"), "the county box shows");
     assert.ok(!(await pg.isVisible("#rr-answer")), "the radar panel is closed");
+    // an old address with a hash that is no tab keeps its own tab, and the address drops the helper
+    await pg.goto(`http://127.0.0.1:${port}/urea#foo`);
+    await pg.waitForURL(/\/spray(\?ptab=urea)?#foo$/);
+    await pg.waitForFunction(() => document.querySelector(".ptabs").getAttribute("data-on") === "urea");
+    await pg.waitForFunction(() => !/ptab=/.test(location.search));
+    assert.match(pg.url(), /\/spray#foo$/, "the helper is gone from the address");
     // an old section link inside a tab opens that tab
     await pg.goto(`http://127.0.0.1:${port}/rain#all-states`);
     await pg.waitForFunction(() => document.querySelector(".ptabs").getAttribute("data-on") === "county");

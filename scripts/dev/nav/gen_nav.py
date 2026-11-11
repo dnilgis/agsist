@@ -188,7 +188,7 @@ def drawer(theme_btn_d):
            '    <div class="draw-place-row">\n'
            '      <a href="/fast-facts" class="draw-pl" id="dp-here">' + ic("i-map") + 'Everything near me</a>\n'
            '      <a href="/cash-bids" class="draw-pl" id="dp-bids">' + ic("i-banknote") + 'Bids near me</a>\n'
-           '      <a href="/rain-radar" class="draw-pl" id="dp-rain">' + ic("i-cloud-rain") + 'Rain at my field</a>\n'
+           '      <a href="/rain#radar" class="draw-pl" id="dp-rain">' + ic("i-cloud-rain") + 'Rain at my field</a>\n'
            '      <a href="/rent/" class="draw-pl" id="dp-rent">' + ic("i-map") + 'Rent in my county</a>\n'
            '    </div>\n'
            '  </section>\n']

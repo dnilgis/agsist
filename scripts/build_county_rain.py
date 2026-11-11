@@ -63,8 +63,10 @@ import rain_records as RREC  # noqa: E402  dry_rank_ok: a dry rank waits when mi
 ROOT = R.ROOT
 MAX_KB = 25
 # rain.html, a root page, holds three tabs since Nov 11, 2026 (radar, by county, drought); the 150 KB cap of
-# scripts/check_site_budget.py is for set pages, this is the hub's own line
-HUB_KB = 100
+# scripts/check_site_budget.py is for set pages, this is the hub's own line. Measured Nov 11, 2026: 61.3 KB with the
+# radar, county and drought tabs (the county pages' 25 KB cap would not fit the radar and drought panels); the line
+# sits just above that, so growth past it is a decision made in the commit that raises it
+HUB_KB = 65
 CSS = '<link rel="stylesheet" href="/components/rain-county.css?v=8">'
 ORIGIN = "https://agsist.com"
 M3, ML = R.MONTHS, R.MONTHS_LONG
@@ -1330,23 +1332,20 @@ def fold_part(name):
     return s
 
 
-def without_tabs(body, *ids):
-    """the page without the named tab panels (the selftest's wording checks are about the rain pages' own words)"""
-    for i in ids:
-        a = body.find(f'<section class="ptab" id="p-{i}"')
-        if a >= 0:
-            b = body.find('<section class="ptab"', a + 10)
-            if b < 0:
-                b = body.find("</main>", a)
-            body = body[:a] + body[b:]
-    return body
+def tab_of(body, i):
+    """one tab panel's markup ('' when the page has no such tab)"""
+    a = body.find(f'<section class="ptab" id="p-{i}"')
+    if a < 0:
+        return ""
+    b = body.find('<section class="ptab"', a + 10)
+    return body[a:b] if b >= 0 else body[a:body.find("</main>", a)]
 
 
 def fold_faq():
     """the radar and drought questions, for the hub's FAQPage: the same words the two tabs show"""
     out = []
-    for name, pat in (("radar.html", r"<details><summary>(.*?)</summary><p>(.*?)</p></details>"),
-                      ("drought.html", r'<details><summary>(.*?)</summary><div class="agf-a">(.*?)</div></details>')):
+    for name, pat in (("radar.part", r"<details><summary>(.*?)</summary><p>(.*?)</p></details>"),
+                      ("drought.part", r'<details><summary>(.*?)</summary><div class="agf-a">(.*?)</div></details>')):
         for q, a in re.findall(pat, fold_part(name), re.S):
             out.append({"@type": "Question", "name": S.text_of(q).strip(),
                         "acceptedAnswer": {"@type": "Answer", "text": S.text_of(a).strip()}})
@@ -1399,7 +1398,7 @@ def hub_page(files, built, recs=None, context=None, mod=None):
     <h1>How much rain fell on your field and in your county?</h1>
   </div>
 {PT.open_html(TAB_IDS, "radar", "Rain at your field, by county, and drought", TABS)}{PT.panel_open("radar", f' data-js="{RADAR_JS}"', indent="  ")}<p class="ptab-note" data-ptab-note hidden></p>
-{fold_part("radar.html")}  </section>
+{fold_part("radar.part")}  </section>
 {PT.panel_open("county", indent="  ")}  <div class="rc">
     <h2 class="rc-h1">{f"How much rain did your county get in {yw}?" if done else "How much rain has your county had this year?"}</h2>
     <p class="rc-answer">Pick your state, then your county. Each county page gives the rain {"" if done else "so far "}{"in " + yw if yw[0].isdigit() else yw} at a weather station in that county, against a usual year, month by month.{" The counties having a record year are below the states." if recs else ""}</p>
@@ -1421,7 +1420,7 @@ def hub_page(files, built, recs=None, context=None, mod=None):
   </section>
 {PT.panel_open("drought", f' data-css="{DROUGHT_CSS}" data-js="{DROUGHT_JS}"', indent="  ")}<noscript><link rel="stylesheet" href="{DROUGHT_CSS}"></noscript>
 <p class="ptab-note" data-ptab-note hidden></p>
-{fold_part("drought.html")}  </section>
+{fold_part("drought.part")}  </section>
   </div>
   <div data-next-root></div>
   <div class="rc">
@@ -1777,7 +1776,7 @@ def selftest():
                 continue
             ok("—" not in body and "&mdash;" not in body, f"{rel}: em dash")
             cap = HUB_KB if rel == "rain.html" else MAX_KB
-            ok(len(body.encode()) <= cap * 1024, f"{rel}: over {cap} KB")
+            ok(len(body.encode()) <= cap * 1024, f"{rel}: {len(body.encode()) / 1024:.1f} KB, over {cap} KB")
             for m in re.finditer(r'<script type="application/ld\+json">(.*?)</script>', body, re.S):
                 try:
                     json.loads(m.group(1))
@@ -1857,9 +1856,18 @@ def selftest():
             _HASH.clear()
         for rel, body in want.items():
             if rel.endswith(".html"):
-                # the hub's drought tab is a weekly map and its radar tab says gauge reports come weekly; the rain pages are daily
-                low = S.text_of(re.sub(r"<script.*?</script>", "", without_tabs(body, "drought", "radar"), flags=re.S)).lower()
-                ok(not re.search(r"\bweekly\b|once a week|every week|mondays?\b", low), f"{rel}: still says weekly or Mondays")
+                # the rain pages are daily: no weekly or Monday wording. On the hub that is its county tab (and the page around
+                # the tabs); the drought tab is the weekly Drought Monitor and the radar tab the daily gauge check, so each
+                # of their weekly words must sit in a sentence about the Drought Monitor or, on the radar tab, gauge reports
+                weekly = r"\bweekly\b|once a week|every week|mondays?\b"
+                clean = lambda h: S.text_of(re.sub(r"<script.*?</script>", "", h, flags=re.S))
+                ok(not re.search(weekly, clean(body.replace(tab_of(body, "drought"), "").replace(tab_of(body, "radar"), "")).lower()),
+                   f"{rel}: still says weekly or Mondays")
+                for tid in ("drought", "radar"):
+                    for sent in re.split(r"(?<=[.!?])\s+", clean(tab_of(body, tid))):
+                        if re.search(weekly, sent.lower()):
+                            ok(re.search(r"drought monitor|droughtmonitor|weekly map|weekly since" if tid == "drought" else r"gauge reports", sent, re.I) is not None,
+                               f"{rel}: the {tid} tab says weekly outside the Drought Monitor: {sent[:80]}")
         ok(re.search(r'<meta name="description" content="27\.61 inches of rain at the Ames station in Story County, Iowa, (in 2026|Jan 1 to Oct 12, 2026)', story) is not None, "description carries the number")
         ok("/rain-print?place=Ames%2C+IA&amp;year=2026&amp;station=130203+2" in story, "Rain Print link draws that place and year")
         gc = rain_print_href({"station": {"raw": "GARDEN CITY EXP STN", "sid": "142980 2"}}, "KS", 2026)
@@ -2075,7 +2083,9 @@ def selftest():
         # the prose never names CoCoRaHS (Oct 15: weather station, volunteer rain gauge); the byline credits it
         # on a gauge's page and nowhere else (CC BY 4.0, Oct 23)
         # the hub's radar tab names the gauges it was checked against in its own sources
-        bad = [k for k, b in want.items() if "CoCoRaHS" in without_tabs(b, "radar").replace("Volunteer gauge data: CoCoRaHS.", "")]
+        bad = [k for k, b in want.items()
+               if "CoCoRaHS" in b.replace(" and CoCoRaHS daily reports", "", 1 if k == "rain.html" else 0).replace("Volunteer gauge data: CoCoRaHS.", "")]
+        ok("Gauge comparison: NOAA co-op and CoCoRaHS daily reports." in tab_of(want["rain.html"], "radar"), "the radar tab names its gauge sources")
         ok(not bad, f"no page names CoCoRaHS outside its credit line: {bad[:3]}")
         # the county rain box fold (Nov 3): closed, once per county page, the page's own numbers, the newsletter block
         sj = json.load(open(os.path.join(data, "ia.json"), encoding="utf-8"))["counties"]["19169"]

@@ -64,6 +64,9 @@ ALIASES = {"/news.html": "/news", "/conditions-yield.html": "/conditions-yield",
            "/rain-radar.html": "/rain-radar", "/drought-monitor.html": "/drought-monitor", "/urea.html": "/urea",
            "/fall-nitrogen.html": "/fall-nitrogen"}
 
+# the old pages whose home is a tab of another page (components/page-tabs.js)
+TABBED = ("/rain-radar", "/drought-monitor", "/urea", "/fall-nitrogen")
+
 _LINK = re.compile(r"^(/[^?#]*)(\?[^#]*)?(#.*)?$")
 
 
@@ -89,6 +92,10 @@ def repoint(url):
 def stub(old):
     new, anchor, _f, line = MOVED[old]
     js = new + '"+location.search+(location.hash||"#' + anchor + '")'
+    if old in TABBED:
+        # a hash of its own is kept; it may name no tab (/urea#foo), so the stub also names the old page's tab in ?ptab=
+        # (components/page-tabs.js opens it when the hash opens nothing, then drops it from the address)
+        js = new + '"+(function(h,q){return h?q+(q?"&":"?")+"ptab=' + anchor + '"+h:q+"#' + anchor + '";})(location.hash,location.search)'
     return ("<!DOCTYPE html>\n<html lang=\"en\" data-theme=\"dark\">\n<head>\n<meta charset=\"utf-8\">\n"
             "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">\n"
             f"<title>Moved | AGSIST</title>\n"

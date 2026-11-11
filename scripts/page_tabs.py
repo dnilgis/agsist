@@ -19,7 +19,7 @@ try: import _argguard; _argguard.guard(__file__)  # --help and bad flags exit be
 except ImportError: pass
 import sys
 
-V = 1
+V = 2
 SCRIPT = f'<script src="/components/page-tabs.js?v={V}" defer></script>'
 
 PICK = ("(function(s){var c=s.parentNode,i=c.getAttribute('data-ptabs').split(' '),"

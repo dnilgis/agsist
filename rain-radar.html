@@ -7,7 +7,7 @@
 <meta name="robots" content="noindex,follow">
 <link rel="canonical" href="https://agsist.com/rain">
 <meta http-equiv="refresh" content="0; url=/rain#radar">
-<script>location.replace("/rain"+location.search+(location.hash||"#radar"));</script>
+<script>location.replace("/rain"+(function(h,q){return h?q+(q?"&":"?")+"ptab=radar"+h:q+"#radar";})(location.hash,location.search));</script>
 </head>
 <body>
 <main style="max-width:600px;margin:0 auto;padding:3rem 1rem;font-family:Inter,system-ui,sans-serif;text-align:center">

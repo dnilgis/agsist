@@ -23,7 +23,7 @@ import { extname, join, normalize } from "node:path";
 
 const ROOT = fileURLToPath(new URL("../", import.meta.url));
 // /drought-monitor is the drought tab of /rain since Nov 11, 2026: its markup is the tab on rain.html (written by
-// scripts/build_county_rain.py from components/fold/drought.html), its code components/fold/drought.js
+// scripts/build_county_rain.py from components/fold/drought.part), its code components/fold/drought.js
 const RAIN = readFileSync(ROOT + "rain.html", "utf8");
 const PAGE = RAIN.slice(RAIN.indexOf('<section class="ptab" id="p-drought"'), RAIN.indexOf("</main>")) + "\n<script>" + readFileSync(ROOT + "components/fold/drought.js", "utf8") + "</script>";
 const PW = process.env.PLAYWRIGHT_PATH || "/home/user/node_modules/playwright/index.mjs";

@@ -139,7 +139,17 @@
     });
     window.addEventListener('hashchange', function () { fromHash('nav'); });
 
-    if (!fromHash(true)) show(box.getAttribute('data-on') || box.getAttribute('data-default') || ids[0]);
+    // an old address with a hash of its own (/urea#foo) names its tab in ?ptab=, used when the hash opens none
+    var want = null;
+    try {
+      var qs = new URLSearchParams(location.search);
+      if (qs.has('ptab')) {
+        want = qs.get('ptab'); qs.delete('ptab');
+        var rest = qs.toString();
+        history.replaceState(history.state, '', location.pathname + (rest ? '?' + rest : '') + location.hash);
+      }
+    } catch (e) {}
+    if (!fromHash(true)) show(want && ids.indexOf(want) >= 0 ? want : box.getAttribute('data-on') || box.getAttribute('data-default') || ids[0]);
   }
 
   function init() { [].forEach.call(document.querySelectorAll('.ptabs[data-ptabs]'), setup); }
