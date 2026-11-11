@@ -136,10 +136,7 @@ def cell(label, c):
     if ut is not None:
         vs += " &middot; " + _vs(c["nowcast"] - ut, f"USDA&rsquo;s {ut:.1f} trend")
     tw = f' ({c["trend_window"].replace("-", "&ndash;")} finals)' if c.get("trend_window") else ""
-    bw = ""
-    if c.get("band_method") == "expanding-window":
-        bw = " (earlier years only" + (f', {c["backtest_window"].replace("-", "&ndash;")}' if c.get("backtest_window") else "") + ")"
-    skill = f' ({c["skill_pct"]}% better)' if c.get("skill_pct") is not None else ""
+    bw = f' ({c["backtest_window"].replace("-", "&ndash;")})' if c.get("backtest_window") else ""
     return (f'<div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#8a948f;margin-bottom:4px">{label}</div>'
             f"<div style=\"font-family:'JetBrains Mono',monospace;font-size:1.9rem;font-weight:800;color:#e6ebe9;line-height:1\">{c['nowcast']:.1f} "
             '<span style="font-size:.8rem;font-weight:400;color:#8a948f">bu/ac</span></div>'
@@ -149,7 +146,7 @@ def cell(label, c):
                f'USDA&rsquo;s national yields{tw}. USDA&rsquo;s {ut:.1f} is its weather-adjusted 2026 trend (Feb 2026 '
                f'Outlook Forum, kept in the May WASDE).</div>' if ut is not None else "")
             + f'<div style="font-size:0.765rem;color:#8a948f;margin-top:5px">backtest average, not this week&rsquo;s number{bw}: '
-            f'MAE {c["mae"]:.1f} vs {c["trend_mae"]:.1f} trend-only{skill}, n={c["backtest_years"]} yrs, {c["states"]} states</div>')
+            f'off by {c["mae"]:.1f} bushels an acre a year, {c["backtest_years"]} years</div>')
 
 
 def week(d):
@@ -285,20 +282,21 @@ def selftest():
     ck("USDA 178.5 &rarr; 181.2" in r2 and "USDA correction, Oct 23, 2026" in r2 and "still grades correct" in r2,
        "a corrected USDA figure: the printed numbers stay and the dated correction shows under them")
     c = cell("Corn", {"nowcast": 180.6, "band80": 6.9, "trend": 188.7, "trend_window": "2010-2025", "mae": 4.2,
-                      "trend_mae": 5.5, "skill_pct": 24, "backtest_years": 12, "states": 18,
-                      "band_method": "expanding-window", "backtest_window": "2011-2024"})
-    ck("180.6 " in c and "8.1 below our trend" in c and "(24% better)" in c, "the model cell")
+                      "backtest_years": 12, "backtest_window": "2011-2024"})
+    ck("180.6 " in c and "8.1 below our trend" in c, "the model cell")
+    ck("off by 4.2 bushels an acre a year, 12 years" in c and "(2011&ndash;2024)" in c, "the record keeps its miss, sample and period")
+    ck("trend-only" not in c and "better)" not in c and "states" not in c, "no method wording in the cell")
     ck("our straight-line trend 188.7" in c, "our trend is labeled as ours")
     ck("2.4 below USDA&rsquo;s 183.0 trend" in c and "weather-adjusted" in c, "USDA's own 2026 trend beside ours")
-    b = cell("Soybeans", {"nowcast": 53.5, "band80": 2, "trend": 53.9, "mae": 1, "trend_mae": 1,
-                          "backtest_years": 12, "states": 18})
+    b = cell("Soybeans", {"nowcast": 53.5, "band80": 2, "trend": 53.9, "mae": 1,
+                          "backtest_years": 12})
     ck("USDA&rsquo;s" not in b, "no USDA soybean trend printed until one is checked")
     src = ("<!-- CS:panel -->x<!-- /CS:panel --><!-- CS:week --><!-- /CS:week --><!-- CS:corn --><!-- /CS:corn -->"
            "<!-- CS:beans --><!-- /CS:beans --><!-- CS:record --><!-- /CS:record -->")
-    once = bake(src, pd, {"crops": {"corn": {"nowcast": 1, "band80": 1, "trend": 1, "mae": 1, "trend_mae": 1,
-                                             "backtest_years": 1, "states": 1, "week_ending": "2026-10-04"}}}, dd, "2026-10-10")
-    ck(bake(once, pd, {"crops": {"corn": {"nowcast": 1, "band80": 1, "trend": 1, "mae": 1, "trend_mae": 1,
-                                          "backtest_years": 1, "states": 1, "week_ending": "2026-10-04"}}}, dd, "2026-10-10") == once,
+    once = bake(src, pd, {"crops": {"corn": {"nowcast": 1, "band80": 1, "trend": 1, "mae": 1,
+                                             "backtest_years": 1, "week_ending": "2026-10-04"}}}, dd, "2026-10-10")
+    ck(bake(once, pd, {"crops": {"corn": {"nowcast": 1, "band80": 1, "trend": 1, "mae": 1,
+                                          "backtest_years": 1, "week_ending": "2026-10-04"}}}, dd, "2026-10-10") == once,
        "baking twice changes nothing")
     ck("Nowcast data did not build" in once, "a crop with no model figure says so")
     nd = {"crops": {"corn": {"week_ending": "2026-10-04"}},

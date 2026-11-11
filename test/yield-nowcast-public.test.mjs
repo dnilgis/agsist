@@ -12,7 +12,9 @@ import { fileURLToPath } from 'node:url';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = path.join(root, 'data', 'yield-nowcast.json');
-const PRIVATE = ['history_source', 'loyo_mae', 'loyo_band80', 'loyo_years'];
+const PRIVATE = ['history_source', 'loyo_mae', 'loyo_band80', 'loyo_years', 'band_method', 'trend_n', 'trend_mae', 'skill_pct', 'states'];
+/* the fields a page reads: the estimate, its band, the trend, the record's miss, years and period */
+const SHOWN = ['week_ending', 'nowcast', 'band80', 'mae', 'trend', 'trend_window', 'backtest_years', 'backtest_window', 'unit'];
 const METHOD_WORDS = /percentile|expanding|backtest|leave-one|loyo|trend_mae|skill_pct|append-only|nearest rank/i;
 
 test('the published file carries no method note and no study-only keys', () => {
@@ -24,6 +26,19 @@ test('the published file carries no method note and no study-only keys', () => {
   }
   for (const [crop, r] of Object.entries(d.crops || {})) {
     for (const k of PRIVATE) assert.ok(!(k in (r || {})), `${crop}.${k} is not published`);
+    for (const k of Object.keys(r || {})) assert.ok(SHOWN.includes(k), `${crop}.${k} is not a field a page reads`);
+  }
+  for (const rows of Object.values(d.history || {})) for (const h of rows) for (const k of PRIVATE) assert.ok(!(k in h), `history row has no ${k}`);
+});
+
+test('conditions.html still shows the miss, the sample and the period, and no method wording', () => {
+  const html = fs.readFileSync(path.join(root, 'conditions.html'), 'utf8');
+  const m = html.match(/backtest average, not this week&rsquo;s number[^<]*</g) || [];
+  assert.ok(m.length >= 1, 'a backtest line is on the page');
+  for (const line of m) {
+    assert.match(line, /off by \d+\.\d bushels an acre a year, \d+ years/);
+    assert.match(line, /\d{4}&ndash;\d{4}/);
+    assert.doesNotMatch(line, /trend-only|better|states|earlier years only/);
   }
 });
 

@@ -150,7 +150,7 @@ def fetch_nmme():
 def check(d):
     """Raise if the file is not what the backtest expects."""
     assert d.get("v") == 1, "version"
-    assert d.get("written_by") == "scripts/fetch_climate_indices.py"
+    assert "written_by" not in d, "the published file names no script"
     ser = d.get("series") or {}
     for k, s in ser.items():
         assert k in SOURCES, "unknown series " + k
@@ -203,7 +203,7 @@ def main():
     if not series:
         print("nothing to write")
         return 1
-    d = {"v": 1, "written_by": "scripts/fetch_climate_indices.py",
+    d = {"v": 1,
          "built": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
          "note": "Monthly values; null where the source has none.",
          "series": {k: series[k] for k in sorted(series)}}
@@ -258,7 +258,7 @@ def selftest():
     rows = "\n".join(" %d " % y + " ".join("%.2f" % (0.1 * ((y + m) % 7 - 3)) for m in range(12)) for y in range(1930, 2026))
     s = build_series("pdo", " Year Jan\n" + rows + "\n 2026 0.50 0.40 99.99 99.99 99.99 99.99 99.99 99.99 99.99 99.99 99.99 99.99\n")
     assert s["first_year"] == FIRST_YEAR and s["as_of"] == "2026-02" and len(s["monthly"]) == 2026 - FIRST_YEAR + 1
-    d = {"v": 1, "written_by": "scripts/fetch_climate_indices.py", "series": {"pdo": s}}
+    d = {"v": 1, "series": {"pdo": s}}
     assert check(d)
     try:
         fetch_nmme()
