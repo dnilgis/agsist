@@ -2268,7 +2268,7 @@ html.has-zip .hb-bid .hb-s{min-height:4.2em}
   #hero-band .job-near #hb-soy{padding-left:16px;border-left:1px solid var(--border-2)}
   #hero-band .hb-grid--fut{grid-template-columns:minmax(0,1fr) minmax(0,1fr);max-width:720px}
   #hero-band .hb-grid--fut .hb-fut{grid-column:auto}
-  #hero-band .hb-grid--fut #hb-fs{padding-left:16px;border-left:1px solid var(--border-2)}
+  #hero-band .hb-grid--fut #hb-fs{padding-left:12px;border-left:1px solid var(--border-2)}
 }
 @container hero (min-width:1000px){
   .jobs{grid-template-columns:minmax(0,1.6fr) minmax(0,1fr) minmax(0,1fr);gap:12px}
@@ -2625,11 +2625,11 @@ html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--c
 [data-theme="light"] .hb-loc{color:#86600f}
 .hb-loc:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 /* futures: two prices, one picture under them, the one explaining line, then Today and this week */
-#hero-band .af .hb-grid--fut{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:16px;max-width:none}
+#hero-band .af .hb-grid--fut{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:12px;max-width:none}
 #hero-band .af .hb-grid--fut .hb-fut{grid-column:auto;padding:6px 0 4px;border-top:0;border-left:0}
-#hero-band .af .hb-grid--fut #hb-fs{padding-left:16px;border-left:1px solid var(--border-2)}
+#hero-band .af .hb-grid--fut #hb-fs{padding-left:12px;border-left:1px solid var(--border-2)}
 #hero-band .af .hb-fut .hb-s{min-height:0}
-#hero-band.hb-ovnh .af .hb-fut .hb-s{min-height:5.6em}
+#hero-band.hb-ovnh .af .hb-fut .hb-s{min-height:7.1em}
 #hero-band .af .hb-pic{grid-column:1/-1;margin:0;padding:6px 0 4px;border-top:1px solid var(--border-2);color:var(--text-dim)}
 #hero-band .af .hb-pic[hidden]{display:none}
 #hero-band .af .hb-plain{display:block;grid-column:1/-1;margin:0;padding:6px 0 8px;font-size:.824rem;line-height:1.4;color:var(--text-dim)}
