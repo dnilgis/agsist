@@ -29,11 +29,11 @@ CARD = ROOT / "data" / "rate-card.json"
 SUPPORTERS = ROOT / "data" / "supporters.json"
 PITCH = ROOT / "sponsor.html"
 # Every page that sells a slot or quotes the card (Oct 29, 2026).
-SELLING = ("sponsor.html", "sponsor-apply.html", "sponsor-kit.html", "sponsor-rates.html")
+SELLING = ("sponsor.html",)
 STATE_NAMES = {"IL": "Illinois", "MN": "Minnesota", "WI": "Wisconsin", "TX": "Texas", "CA": "California", "NV": "Nevada"}
-# Plain numbers the pages may print that are not audience figures: terms (5 sponsors, 24 months,
-# 12 for 10, day 30, 28 days, 50 words, 250 KB), never a count of readers or views.
-TERMS = {"5", "10", "12", "24", "28", "30", "50", "250"}
+# Plain numbers the page may print that are not audience figures: terms (10 months, 28 days, 30 days,
+# net 30, 90 characters), never a count of readers or views.
+TERMS = {"10", "28", "30", "90"}
 
 FAILED = []
 
@@ -64,7 +64,7 @@ def stray_numbers(src, prices):
     s = re.sub(r'"(?:url|item|@id|position|price)":\s*"?[^",}]*"?', " ", s)
     s = re.sub(r"<[^>]+>", " ", s)
     s = re.sub(r"&#?[a-z0-9]+;", " ", s)
-    s = re.sub(r"\$(\d+)", lambda m: " " if int(m.group(1)) in prices else m.group(0), s)
+    s = re.sub(r"\$(\d{1,3}(?:,\d{3})+|\d+)", lambda m: " " if int(m.group(1).replace(",", "")) in prices else m.group(0), s)
     s = re.sub(r"\b\d{3}-\d{3}-\d{4}\b|\bW-9\b", " ", s)
     return [x for x in re.findall(r"\$?\d[\d,.]*", s) if x.rstrip(".,") not in TERMS]
 
@@ -76,32 +76,31 @@ def main():
     card = json.loads(CARD.read_text())
     tiers = card.get("tiers") or []
 
-    print("the card is well formed")
-    check(len(tiers) >= 1, "it has tiers")
+    print("the card is well formed: two spots only (Nov 11, 2026)")
     ids = [t.get("id") for t in tiers]
-    check(len(ids) == len(set(ids)), "tier ids are unique", ids)
+    check(ids == ["sitewide", "state"], "the card sells exactly the sitewide line and the state card", ids)
     for t in tiers:
         check(isinstance(t.get("price_month"), int) and t["price_month"] > 0,
               "%s carries a monthly price" % t.get("id"), t.get("price_month"))
-        check("price_week" not in t,
-              "%s carries no leftover weekly price" % t.get("id"),
-              "two prices for one tier is two answers to one question")
+        check("price_week" not in t, "%s carries no leftover weekly price" % t.get("id"))
         check(bool(t.get("placement")), "%s says where the ad goes" % t.get("id"))
+    check(card.get("year_months") == 10, "a year costs 10 months", card.get("year_months"))
+    sw = next((t for t in tiers if t["id"] == "sitewide"), None)
+    check(sw is not None and sw.get("slots") == 1 and sw.get("price_month") == 750, "one sitewide sponsor at $750 a month", sw)
 
-    print("\nevery price in the card is still on the page that sells it")
+    print("\nevery price in the card is on the page that sells it")
     pitch = _text(PITCH)
     prices = {t["price_month"] for t in tiers} | {p for t in tiers for p in (t.get("price_by_state") or {}).values()}
+    prices |= {p * card.get("year_months", 10) for p in prices}
     for t in tiers:
         p = t["price_month"]
-        # "$149 / month", "$149/month", "$149/mo", "$149 a month" all count.
-        pat = re.compile(r"\$%d\s*(?:/\s*mo|\s*(?:per|a)\s+month)" % p)
-        check(bool(pat.search(pitch)),
-              "$%d (%s) appears on sponsor.html" % (p, t["id"]),
-              "not found — the card and the pitch have drifted")
+        pat = re.compile(r"\$%s\s*(?:/\s*mo|\s*(?:per|a)\s+month)" % "{:,}".format(p).replace(",", ","))
+        check(bool(pat.search(pitch)), "$%d (%s) appears on sponsor.html" % (p, t["id"]), "not found: the card and the page have drifted")
+    check(("$%s a year" % "{:,}".format(sw["price_month"] * card["year_months"])) in pitch, "the sitewide year price is on sponsor.html")
 
-    print("\nthe State Sponsor's state prices and the opening note are on the page (Oct 29, 2026)")
+    print("\nthe State Sponsor's state prices and the opening note are on the page")
     st = next((t for t in tiers if t["id"] == "state"), None)
-    check(st is not None, "the card has a State Sponsor")
+    check(st is not None and st.get("one_per_state") is True, "the card has a State Sponsor, one per state")
     if st:
         for code, p in sorted((st.get("price_by_state") or {}).items()):
             check(isinstance(p, int) and p > st["price_month"], "%s pays more than the base state price" % code, p)
@@ -111,45 +110,49 @@ def main():
         m_ = re.search(r"([A-Z][a-z]+(?: [A-Z][a-z]+)*(?:, [A-Z][a-z]+(?: [A-Z][a-z]+)*)*(?: and [A-Z][a-z]+(?: [A-Z][a-z]+)*)?) opens? soon", pitch)
         said = set(re.split(r", | and ", m_.group(1))) if m_ else set()
         check(said == {STATE_NAMES.get(c, c) for c in soon}, "sponsor.html names exactly the states that open soon", (said, soon))
-        # Oct 29, 2026 (option A): a state a state-targeted test runs in is held, not sold.
         geo_ = json.loads((ROOT / "data" / "geo-sponsors.json").read_text())
         held = {c for e in geo_.get("sponsors") or [] if e.get("active") is True for c in e.get("states") or []}
         check(held <= set(soon), "every state an active geo test runs in is held on the card (opens_soon)", (sorted(held), soon))
 
     print("\nthe terms on the card are the terms on the page")
-    for k in ("trial", "day30", "terms", "prepay", "paperwork"):
+    for k in ("pay", "refund", "terms", "prepay", "paperwork", "review"):
         check(bool(card.get(k)), "the card states its %s" % k)
-    check(card.get("paperwork", "x") in pitch, "W-9 line on sponsor.html", card.get("paperwork"))
-    check(re.search(r"12 months for the price of 10|Pay 12 months up front and you pay for 10", pitch) is not None,
-          "the 12-for-10 prepay is on sponsor.html")
-    check("12" in card.get("prepay", "") and "10" in card.get("prepay", ""), "and on the card")
-    f_ = card.get("founding") or {}
-    check(("the first %d paying sponsors keep their price for %d months" % (f_.get("sponsors", 0), f_.get("months", 0))) in pitch,
-          "the founding rate on sponsor.html matches the card", f_)
-    check("No reply means the ad comes down and nothing is owed" in pitch and "day 30" in pitch.lower(),
-          "the day-30 yes or no is on sponsor.html")
-    # Nov 6, 2026: no line about the owner's other businesses on any page that sells a slot.
+    for k in ("trial", "day30", "founding"):
+        check(k not in card, "the card carries no %s (no free month, no day-30 email, no founding rate)" % k)
+    check("W-9 on request" in pitch, "W-9 line on sponsor.html")
+    check("A year costs the same as 10 months" in pitch, "the year-for-10-months term is on sponsor.html")
+    check("Money back if you ask inside 30 days" in pitch, "money back inside 30 days is on sponsor.html")
+    check("net 30" in pitch and "yearly invoice" in pitch, "the mailed yearly invoice (net 30) is on sponsor.html")
+    check("within one business day" in pitch, "live within one business day is on sponsor.html")
+    links = card.get("pay_links") or {}
+    check(set(links) == {"sitewide", "state"}, "card links per spot", sorted(links))
+    for spot, ls in links.items():
+        for k, u in (ls or {}).items():
+            check(u == "" or re.fullmatch(r"https://(?:buy|checkout)\.stripe\.com/[^\s\"'<>]+", u) is not None,
+                  "pay link %s.%s is empty or a Stripe link" % (spot, k), u)
     check("insurance" not in card, "the card carries no insurance line")
-    for page in ("sponsor.html", "sponsor-kit.html", "sponsor-apply.html", "prf-sponsor.html", "prf-sponsor-kit.html", "terms.html"):
+    for page in ("sponsor.html", "prf-sponsor.html", "prf-sponsor-kit.html", "terms.html"):
         t_ = _text(ROOT / page)
         check(not any(x in t_ for x in ("also owns", "may compete", "never takes a sponsor", "Loke Drone")),
               "no owner disclosure on %s" % page)
 
-    print("\nretired tiers are gone from every page that sells (Oct 29, 2026)")
+    print("\nretired spots are gone from the page that sells (Nov 11, 2026)")
     retired = [k for k in (card.get("retired") or {}) if not k.startswith("_")]
-    check(set(retired) == {"page", "supporter"} and not (set(retired) & set(ids)),
-          "Supporter and Own a page are retired, and no live tier reuses their ids", retired)
-    raw_card = CARD.read_text().lower()
-    check("rate locked" not in raw_card and "hail" not in raw_card, "no rate lock and no hail-page note on the card")
+    check(set(retired) == {"daily", "cashbids", "page", "supporter"} and not (set(retired) & set(ids)),
+          "the Daily, Cash Bids, Own a page and Supporter tiers are retired, and no live tier reuses their ids", retired)
     for page in SELLING:
         t_ = _text(ROOT / page)
+        for bad in ("free month", "First month free", "founding", "Founding", "Featured listing", "Daily Sponsor",
+                    "Cash Bids Sponsor", "day 30", "Own a page"):
+            check(bad not in t_, "%s never offers %r" % (page, bad))
         check(re.search(r"\bSupporters?\b", t_) is None, "%s never offers a Supporter spot" % page)
-        check("Own a page" not in t_ and "own page $29" not in t_, "%s never offers Own a page" % page)
-        check(re.search(r"\$15\b", t_) is None, "%s carries no $15 price" % page)
-        check(re.search(r"rate (?:is )?locked", t_, re.I) is None, "%s promises no 12-month rate lock" % page)
-        check("1,615" not in t_ and "citations a day" not in t_, "%s has no undated Bing citation line" % page)
-        for t in tiers:
-            check(t["name"] in t_, "%s names the %s" % (page, t["name"]))
+        check(re.search(r"rate (?:is )?locked", t_, re.I) is None, "%s promises no rate lock" % page)
+    for t in tiers:
+        check(t["name"] in pitch, "sponsor.html names the %s" % t["name"])
+    for stub in ("sponsor-rates.html", "sponsor-kit.html", "sponsor-apply.html"):
+        s_ = (ROOT / stub).read_text()
+        check('location.replace("/sponsor" + location.search' in s_ and 'rel="canonical" href="https://agsist.com/sponsor"' in s_,
+              "%s sends readers to /sponsor and keeps its query" % stub)
     check("<title>Advertise on AGSIST</title>" in PITCH.read_text(), "the page title is Advertise on AGSIST")
 
     print("\nevery number on the sponsor pages is a price, a term, or a figure written in from data/audience.json")

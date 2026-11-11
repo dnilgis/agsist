@@ -9,7 +9,7 @@
  *
  * The form ("Mail me a yearly invoice") goes to the subs worker (/sponsor-apply), which stores
  * tier page|daily: the Sitewide Sponsor travels as tier "daily", a State Sponsor as tier "page"
- * with the slot cash-bids-<state> (scripts/sponsor_apply.py card_tier reads both back). Nothing
+ * with the slot state-<xx> (scripts/sponsor_apply.py card_tier reads both back). Nothing
  * is published from here: the applicant confirms by email, every ad is checked by hand, and it
  * goes live within one business day. If the worker cannot take it, the form offers the same
  * details as an email instead of losing them.
@@ -184,7 +184,7 @@
     var c = t === 'state' ? $('spa-state').value : '';
     var s = byCode(c);
     var pay = (form.querySelector('input[name=pay]:checked') || {}).value === 'card' ? 'paid by card' : 'yearly invoice by mail';
-    var p = { tier: t === 'sitewide' ? 'daily' : 'page', slot: t === 'state' && s ? 'cash-bids-' + s.slug : '',
+    var p = { tier: t === 'sitewide' ? 'daily' : 'page', slot: t === 'state' && s ? 'state-' + s.code.toLowerCase() : '',
       company: val('spa-company'), url: val('spa-url'), headline: val('spa-headline'), body: 'How I pay: ' + pay,
       contact: val('spa-contact'), phone: val('spa-phone'), email: val('spa-email'), logo: '',
       terms: $('spa-terms').checked, _gotcha: (form.querySelector('[name=_gotcha]') || {}).value || '', pay: pay };

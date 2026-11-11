@@ -81,19 +81,23 @@ REPO = Path(__file__).resolve().parent.parent
 SITE = "https://agsist.com"
 ADDRESS = "AGSIST, PO Box 243, Chetek, WI 54728"
 PEND_TTL_MS = 14 * 864e5
-# THE RATE CARD OF OCT 29, 2026 (data/rate-card.json). The subs worker stores an
-# application under tier page|supporter|daily (workers/subs-worker.js); the form
-# sends the new tiers as tier "page" with a slot that says which one:
+# THE RATE CARD OF NOV 11, 2026 (data/rate-card.json): two spots. The subs worker stores an
+# application under tier page|supporter|daily (workers/subs-worker.js). The booking form on
+# /sponsor sends the Sitewide Sponsor as tier "daily" and a State Sponsor as tier "page" with
+# slot cash-bids-<state>. Older applications may still carry:
 #   slot "cash-bids"                      Cash Bids Sponsor
 #   slot "cash-bids-<state>" / "rent-xx"  State Sponsor (a state ribbon in data/sponsor-slots.json)
 #   slot "fe-<st>-<town>"                 Featured elevator on /cash-bids/<state>/<town>
 # card_tier() reads it back. Any other page slot, and every Supporter, is a retired tier.
-TIER_NAME = {"daily": "Daily Sponsor", "state": "State Sponsor", "cashbids": "Cash Bids Sponsor",
+TIER_NAME = {"sitewide": "Sitewide Sponsor", "daily": "Daily Sponsor (no longer sold)", "state": "State Sponsor",
+             "cashbids": "Cash Bids Sponsor (no longer sold)",
              "elevator": "Featured elevator", "page": "Own a page (no longer sold)", "supporter": "Supporter (no longer sold)"}
-# Only these two ever go live on their own. Any other tier (the Daily Sponsor, a
-# Featured elevator, a state that opens soon, or a retired tier) is handed to the owner,
-# never written into the site (Oct 19: the Daily tier id became "daily").
+# Only these two ever go live on their own, and only for an older page-ribbon deal. A booking from
+# the Nov 11, 2026 form (the Sitewide Sponsor, or a State Sponsor with slot state-<xx>) is
+# handed to the owner, who turns on the sitewide line (data/sponsor.json) or the state card
+# (data/geo-sponsors.json) after checking the ad by hand.
 SELF_SERVE = ("state", "cashbids")
+BOOK_STATE = re.compile(r"state-([a-z]{2})")
 FE_SLOT = re.compile(r"fe-([a-z]{2})-([a-z0-9][a-z0-9-]{0,50})")
 STATE_SLOT = re.compile(r"cash-bids-[a-z]+(?:-[a-z]+)*|rent-[a-z]{2}")
 
@@ -129,13 +133,15 @@ def card_tier(a):
     """The rate-card tier an application is for, or None for a retired one."""
     t, slot = a.get("tier"), a.get("slot") or ""
     if t == "daily":
-        return "daily"
+        return "sitewide"
     if t != "page":
         return None
     if slot == "cash-bids":
         return "cashbids"
     if FE_SLOT.fullmatch(slot):
         return "elevator"
+    if BOOK_STATE.fullmatch(slot):
+        return "state"
     if STATE_SLOT.fullmatch(slot):
         return "state"
     return None
@@ -162,7 +168,8 @@ def opens_soon(card, state):
 
 def app_rate(card, a, slots=()):
     ct = card_tier(a)
-    st = state_slots(a.get("slot"), slots)[0] if ct == "state" else None
+    m = BOOK_STATE.fullmatch(a.get("slot") or "")
+    st = (m.group(1).upper() if m else state_slots(a.get("slot"), slots)[0]) if ct == "state" else None
     return rate(card, ct, st) if ct else None
 
 
@@ -194,6 +201,8 @@ def plan(apps, now_ms, today, sold_pages, supporters, card=None, slots=()):
         elif st == "approved":
             ct = card_tier(a)
             state, want = state_slots(a.get("slot"), slots) if ct == "state" else (None, [a.get("slot")])
+            if ct == "state" and BOOK_STATE.fullmatch(a.get("slot") or ""):
+                state = None                          # a state card booking: the owner turns it on by hand
             if ct == "state" and opens_soon(card, state):
                 # HELD (Oct 29, 2026, the owner option A): California, Nevada and Texas are not sold
                 # while the Root Lot test runs there. Refused here, told to the owner, nothing written.
@@ -446,10 +455,14 @@ def msg(to, subject, paras, button=None, fn="AGSIST", fa="", rt=None, links=None
 
 def what(a):
     ct, slot = card_tier(a), a.get("slot") or ""
+    if ct == "sitewide":
+        return "%s (the line under the menu on every page and in the Daily)" % TIER_NAME["sitewide"]
     if ct == "daily":
         return "%s (the Daily briefing and the homepage)" % TIER_NAME["daily"]
     if ct == "cashbids":
         return "%s (/cash-bids)" % TIER_NAME["cashbids"]
+    if ct == "state" and BOOK_STATE.fullmatch(slot or ""):
+        return "%s (the %s state card)" % (TIER_NAME["state"], slot[6:].upper())
     if ct == "state":
         where = ("/cash-bids/%s/ and its town pages, and the state's cash rent page" % slot[len("cash-bids-"):]
                  if slot.startswith("cash-bids-") else "the %s cash rent page and the state's cash bids pages" % slot[5:].upper())
@@ -689,7 +702,7 @@ def selftest():
                           "email": "al@smith.com", "phone": "", "headline": "Seed", "body": "", "url": "https://smith.com",
                           "logo_len": 0}, **k)
     empty_sold, empty_sup = {"slots": {}}, {"cap": 6, "supporters": []}
-    card = {"tiers": [{"id": "daily", "price_month": 149}, {"id": "cashbids", "price_month": 49},
+    card = {"tiers": [{"id": "sitewide", "price_month": 750}, {"id": "cashbids", "price_month": 49},
                       {"id": "state", "price_month": 29, "price_by_state": {"WI": 49, "TX": 49}, "opens_soon": ["CA", "NV", "TX"]},
                       {"id": "elevator", "price_month": 19}]}
     slots = [{"id": "cash-bids", "tier": "cashbids"}, {"id": "spray", "tier": None},
@@ -706,7 +719,7 @@ def selftest():
     ck("confirmed: Sig is told once", P([A(status="confirmed")]) == ["notify"] and P([A(status="confirmed", notified=1)]) == [])
     ck("the form's tiers read back from tier + slot",
        [card_tier(A(slot=x)) for x in ("cash-bids", "cash-bids-north-dakota", "rent-wi", "fe-wi-cadott", "spray", "rent-hub")]
-       == ["cashbids", "state", "state", "elevator", None, None] and card_tier(A(tier="daily", slot="briefing")) == "daily"
+       == ["cashbids", "state", "state", "elevator", None, None] and card_tier(A(tier="daily", slot="briefing")) == "sitewide" and card_tier(A(slot="state-ia")) == "state"
        and card_tier(A(tier="supporter", slot="footer")) is None)
     ck("approved Cash Bids goes live", P([A(status="approved")]) == ["golive"])
     ck("approved State Sponsor goes live", P([A(status="approved", slot="cash-bids-wisconsin")]) == ["golive"])
@@ -714,6 +727,7 @@ def selftest():
        [P([A(status="approved", slot=x)]) for x in ("rent-ca", "rent-nv", "rent-tx", "cash-bids-texas")] == [["held"]] * 4)
     ck("held is said once", P([A(status="approved", slot="rent-ca", notified=2)]) == [])
     ck("approved daily is handed to Sig, never auto-live", P([A(status="approved", tier="daily")]) == ["daily"])
+    ck("a state card booking (state-xx) is handed to Sig, never auto-live", P([A(status="approved", slot="state-ia")]) == ["daily"])
     ck("a Featured elevator is handed to Sig, never auto-live", P([A(status="approved", slot="fe-wi-cadott")]) == ["daily"])
     ck("a retired page slot or Supporter is handed to Sig, never auto-live",
        P([A(status="approved", slot="spray")]) == ["daily"] and P([A(status="approved", tier="supporter", slot="footer")]) == ["daily"])
@@ -740,8 +754,8 @@ def selftest():
 
     print("\nprices from the card")
     ck("State Sponsor in WI is $49, in IA $29", app_rate(card, A(slot="rent-wi"), slots) == 49 and app_rate(card, A(slot="cash-bids-iowa"), slots) == 29)
-    ck("Cash Bids $49, Featured elevator $19, Daily $149",
-       (app_rate(card, A(), slots), app_rate(card, A(slot="fe-wi-cadott"), slots), app_rate(card, A(tier="daily"), slots)) == (49, 19, 149))
+    ck("Cash Bids $49, Featured elevator $19, Sitewide $750, a Wisconsin state card $49",
+       (app_rate(card, A(), slots), app_rate(card, A(slot="fe-wi-cadott"), slots), app_rate(card, A(tier="daily"), slots), app_rate(card, A(slot="state-wi"), slots)) == (49, 19, 750, 49))
     ck("a retired tier has no price", app_rate(card, A(slot="spray"), slots) is None)
 
     print("\nsite writes")
