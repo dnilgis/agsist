@@ -600,7 +600,7 @@
   }
   /* The sitewide sponsor line, under the live nav on every page but Rain Print, gift and gauge pages.
      data/sponsor.json is the sitewide sponsor (it also feeds the Daily line); an open spot prints the
-     engaged readers from data/sponsor-spots.json and the price from data/rate-card.json. ?sponsor-preview=1
+     engaged visits from data/sponsor-spots.json and the price from data/rate-card.json. ?sponsor-preview=1
      draws a sample sold line and counts nothing. styles.css holds its height in the header placeholder. */
   function swGet(u) { return fetch(BASE + u, { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }
   function swSold(sp) {
@@ -615,9 +615,9 @@
         (preview ? '' : ' data-sponsor-click="sitewide"') + '>Visit</a></span>' };
     }
     var t = card && (card.tiers || []).filter(function (x) { return x.id === 'sitewide'; })[0];
-    var n = spots && spots.sitewide && spots.sitewide.readers;
+    var n = spots && spots.sitewide && spots.sitewide.engaged;
     return { sold: false, html: '<span class="sw-in">Sponsor spot open. ' +
-      (typeof n === 'number' && n > 0 ? n.toLocaleString('en-US') + ' readers in the last 28 days. ' : '') +
+      (typeof n === 'number' && n > 0 ? n.toLocaleString('en-US') + ' engaged visits in the last 28 days. ' : '') +
       (t && t.price_month ? '$' + Number(t.price_month).toLocaleString('en-US') + ' a month, one business. ' : '') +
       '<a href="' + BASE + '/sponsor#sitewide" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'sitewide_open\'})">See it</a></span>' };
   }

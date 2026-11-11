@@ -10,8 +10,8 @@ a <span data-a="KEY">...</span> and this writes the current value into it from
 data/audience.json, one dated set for both pages. National numbers only: a
 state's readers are never written into these spans.
 
-    engaged         GA4 engaged readers, the 28-day window (the number every sponsor
-                    sign prints)
+    engaged         GA4 engaged sessions (engaged visits), the 28-day window: the
+                    number every sponsor sign prints
 
     views, users    GA4 page views and readers, the 28-day window
     win             that window, "Sep 29 to Oct 26, 2026"
@@ -25,8 +25,8 @@ refresh the same spans on load, from the same file.
 
 It also writes data/sponsor-spots.json (Nov 11, 2026): the numbers the open
 sponsor spots print, so a page reads one small file instead of the two audience
-files. Sitewide: engaged readers and views, 28 days. Each state: its engaged
-readers (readers whose visit is in that state, data/audience.json) and the views
+files. Sitewide: engaged visits and views, 28 days. Each state: its engaged
+visits (visits from that state, data/audience.json) and the views
 of pages about that state (data/audience-pages.json, the paths the state card
 shows on). The home state's numbers are withheld: they include our own visits.
 
@@ -143,7 +143,7 @@ def spots(aud, pages):
     w = next((r for r in aud.get("ranges") or [] if r.get("id") == WINDOW), None) or {}
     site = {}
     if isinstance(tot.get("engaged"), int) and tot["engaged"] > 0:
-        site["readers"] = tot["engaged"]
+        site["engaged"] = tot["engaged"]
     if isinstance(tot.get("views"), int) and tot["views"] > 0:
         site["views"] = tot["views"]
     cols = pages.get("cols") or []
@@ -154,7 +154,7 @@ def spots(aud, pages):
             m = STATE_PATH.match(str(r[ip]))
             if m and m.group(1) in STATE_SLUGS and isinstance(r[iv], int):
                 views[STATE_SLUGS[m.group(1)]] = views.get(STATE_SLUGS[m.group(1)], 0) + r[iv]
-    readers = {x.get("code"): x.get("engaged") for x in (aud.get("states") or {}).get(WINDOW) or []}
+    engaged = {x.get("code"): x.get("engaged") for x in (aud.get("states") or {}).get(WINDOW) or []}
     home = aud.get("homeState")
     states = {}
     for slug, code in sorted(STATE_SLUGS.items(), key=lambda kv: kv[1]):
@@ -162,14 +162,14 @@ def spots(aud, pages):
         if code == home:
             e["withheld"] = "home state: the numbers include our own visits"
         else:
-            if isinstance(readers.get(code), int) and readers[code] > 0:
-                e["readers"] = readers[code]
+            if isinstance(engaged.get(code), int) and engaged[code] > 0:
+                e["engaged"] = engaged[code]
             if views.get(code):
                 e["views"] = views[code]
         states[code] = e
     return {"_": "The numbers the open sponsor spots print. Written by scripts/bake_audience.py from data/audience.json "
-                 "and data/audience-pages.json; do not edit by hand. readers: engaged readers in the window (a state: "
-                 "readers whose visit is in that state). views: page views (a state: views of pages about that state).",
+                 "and data/audience-pages.json; do not edit by hand. engaged: GA4 engaged sessions (visits) in the window "
+                 "(a state: visits from that state). views: page views (a state: views of pages about that state).",
             "window": {"start": w.get("start"), "end": w.get("end")} if w.get("start") else None,
             "sitewide": site, "states": states}
 
@@ -220,9 +220,9 @@ def selftest():
           ["/cash-bids/iowa/ackley", 1, 2], ["/rain/iowa/story-county", 3, 4], ["/cash-bids", 900, 2000],
           ["/rent/wisconsin", 40, 50], ["/rent/", 5, 6]]}
     sp = spots(aud2, pg)
-    ck("sitewide spot: engaged readers and views", sp["sitewide"] == {"readers": 9418, "views": 24928} and v.get("engaged") is None)
-    ck("a state's spot: readers in the state, views of its pages", sp["states"]["IA"] == {"slug": "iowa", "readers": 335, "views": 88})
-    ck("the home state is withheld", "readers" not in sp["states"]["WI"] and "views" not in sp["states"]["WI"] and sp["states"]["WI"]["withheld"])
+    ck("sitewide spot: engaged visits and views", sp["sitewide"] == {"engaged": 9418, "views": 24928} and v.get("engaged") is None)
+    ck("a state's spot: visits from the state, views of its pages", sp["states"]["IA"] == {"slug": "iowa", "engaged": 335, "views": 88})
+    ck("the home state is withheld", "engaged" not in sp["states"]["WI"] and "views" not in sp["states"]["WI"] and sp["states"]["WI"]["withheld"])
     ck("a state with no figures prints none", sp["states"]["OH"] == {"slug": "ohio"})
     ck("no audience file, no figures", spots({}, None)["sitewide"] == {} and spots({}, None)["window"] is None)
     ck("engaged readers reach the engaged span", values(aud2)["engaged"] == "9,418")

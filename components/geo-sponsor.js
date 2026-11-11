@@ -18,8 +18,8 @@
  * [data-state-spot] box each page builder writes directly below the main answer.
  * The box holds its height from the first paint (components/styles.css), so the
  * card lands without moving anything. With no live sponsor for that state the
- * spot shows that it is open: the state's readers and page views from
- * data/sponsor-spots.json and its price from data/rate-card.json. Two sponsor
+ * spot shows that it is open: the state's engaged visits and page views from
+ * data/sponsor-spots.json (engaged visits from the state, views of its pages) and its price from data/rate-card.json. Two sponsor
  * names never share a screen: when the sitewide line is sold and the spot is in
  * the first screen, a sold state card goes to the first place below the fold.
  *
@@ -143,16 +143,16 @@
     return !!(t && (t.opens_soon || []).indexOf(st) >= 0);
   }
   function num(n) { return Number(n).toLocaleString('en-US'); }
-  /* The open state spot: "<State> sponsor spot open. N readers in <State> and M views of
-     <State> pages in the last 28 days. $X a month, one business. See it". A figure the
+  /* The open state spot: "<State> sponsor spot open. N engaged visits from <State> and M views
+     of <State> pages in the last 28 days. $X a month, one business. See it". A figure the
      files do not hold is left out. */
   function openHtml(st, card, spots) {
     var name = NAMES[st];
     if (!name) return '';
     var e = (spots && spots.states && spots.states[st]) || {};
-    var r = typeof e.readers === 'number' && e.readers > 0, v = typeof e.views === 'number' && e.views > 0;
-    var nums = r && v ? num(e.readers) + ' readers in ' + name + ' and ' + num(e.views) + ' views of ' + name + ' pages in the last 28 days. '
-      : r ? num(e.readers) + ' readers in ' + name + ' in the last 28 days. '
+    var r = typeof e.engaged === 'number' && e.engaged > 0, v = typeof e.views === 'number' && e.views > 0;
+    var nums = r && v ? num(e.engaged) + ' engaged visits from ' + name + ' and ' + num(e.views) + ' views of ' + name + ' pages in the last 28 days. '
+      : r ? num(e.engaged) + ' engaged visits from ' + name + ' in the last 28 days. '
       : v ? num(e.views) + ' views of ' + name + ' pages in the last 28 days. ' : '';
     var p = statePrice(card, st);
     var soon = held(card, st);
