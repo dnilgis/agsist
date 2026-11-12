@@ -1,0 +1,8 @@
+{
+ "id": "2026-11-12-bin-hopper-eave",
+ "date": "2026-11-12",
+ "title": "Grain bin calculator: hopper tape readings",
+ "line": "A hopper bin tape reading past the cylinder is now figured up the cone and says so, instead of showing a full cone. Bin Print uses the same math.",
+ "link": "/grain-bin-calculator",
+ "rank": 3
+}

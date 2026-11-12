@@ -31,6 +31,8 @@
   var RINGS_IN = [32, 44];    // GSI 32 in rings (9 rings = 24'2", 12 = 32'2"); Sukup 44 in sheets
 
   function tanD(a) { return Math.tan(a * Math.PI / 180); }
+  /* Height of a hopper's cone (ft); 0 for an angle that cannot be one. */
+  function coneHeight(d, deg) { return (d > 0 && deg > 0 && deg < 80) ? d / 2 * tanD(deg) : 0; }
   function cone(r, deg) { return Math.PI * r * r * r * tanD(deg) / 3; }
 
   /* Grain that is gH deep at the wall, with a surface (or floor) that changes
@@ -64,6 +66,14 @@
   function hopperBin(o) {
     var r = o.d / 2, gH = Math.max(0, o.grainH || 0), peak = o.peakDeg || PLAIN.peakDeg;
     if (!(r > 0)) return { cyl: 0, adj: 0, hopper: 0, total: 0 };
+    /* Grain below the bottom of the cylinder (grainH < 0 is how many ft below it): the surface is
+       inside the cone, a level fill of height h = hopper height + grainH, radius h / tan(angle).
+       Nov 12, 2026: a tape reading past the cylinder was clamped to 0 and showed the whole cone. */
+    if ((o.grainH || 0) < 0) {
+      var hh = r * tanD(o.hopperDeg) + o.grainH;
+      var pv = hh > 0 ? Math.PI * Math.pow(hh / tanD(o.hopperDeg), 2) * hh / 3 : 0;
+      return { cyl: 0, adj: 0, hopper: pv, total: pv };
+    }
     var hop = cone(r, o.hopperDeg), cyl = Math.PI * r * r * gH, adj = 0;
     if (o.surface === 'peaked') adj = gH > 0 ? cone(r, peak) : 0;
     else if (o.surface === 'draw') adj = wedge(r, gH, tanD(DRAW_DEG) - tanD(o.hopperDeg)) - cyl - hop;
@@ -127,10 +137,12 @@
 
   /* Depth at the wall from a tape: grain sits `below` ft under the eave (or
      under the top of a flat bin). maxH is the eave less any aeration floor.
-     Returns null for a blank or unusable reading. */
-  function depthFromBelow(maxH, below) {
+     Returns null for a blank or unusable reading. With coneH (a hopper's cone height) a reading
+     past the cylinder gives a negative depth, down to -coneH (the hopper bottom); without it, 0. */
+  function depthFromBelow(maxH, below, coneH) {
     if (!(maxH > 0) || !isFinite(below) || below < 0) return null;
-    return Math.max(0, maxH - below);
+    var low = coneH > 0 ? -coneH : 0;      // a hopper bin: the surface can be down in the cone
+    return Math.max(low, maxH - below);    // negative = ft below the bottom of the cylinder
   }
 
   /* Room left in the bin, in bushels on the same basis as the grain now in it.
@@ -157,7 +169,7 @@
 
   w.AgGrainBin = {
     BU_PER_CUFT: BU_PER_CUFT, PLAIN: PLAIN, DEALER: DEALER, DRAW_DEG: DRAW_DEG, RINGS_IN: RINGS_IN,
-    cone: cone, wedge: wedge, roundBin: roundBin, hopperBin: hopperBin, bushels: bushels,
+    cone: cone, coneHeight: coneHeight, wedge: wedge, roundBin: roundBin, hopperBin: hopperBin, bushels: bushels,
     marketBu: marketBu, shrink: shrink, dryingCost: dryingCost, sizeOptions: sizeOptions,
     CHECK_BINS: CHECK_BINS, checkBin: checkBin, ftIn: ftIn,
     depthFromBelow: depthFromBelow, roomLeft: roomLeft
