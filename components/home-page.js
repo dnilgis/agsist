@@ -84,7 +84,7 @@
   /* futures line chart. ds: Dates, vs: dollars, cur: the label on today's point. pal: inline styles (the saved picture) */
   function lineSvg(o) {
     var ds = o.d, vs = o.v, w = o.w, h = o.h, fs = o.fs || 12, pal = o.pal || null, uid = o.uid || 'c';
-    var pl = 50, pr = 96, pt = 18, pb = 28;
+    var pl = Math.max(50, Math.ceil(fs * 4.5)), pr = 96, pt = 18, pb = 28;
     var mn = Math.min.apply(null, vs), mx = Math.max.apply(null, vs);
     var t = nice(mn, mx, [0.05, 0.1, 0.25, 0.5, 1, 2]);
     var y0 = t.lo, y1 = t.hi, t0 = ds[0].getTime(), t1 = ds[ds.length - 1].getTime();
@@ -132,7 +132,7 @@
   /* cumulative this year against normal. xs: day of year; a: this year; b: normal; xl: [[x, label, anchor]] */
   function cumSvg(o) {
     var xs = o.x, a = o.a, b = o.b, w = o.w, h = o.h, fs = o.fs || 12, fmt = o.fmt;
-    var pl = 44, pr = 12, pt = 16, pb = 28;
+    var pl = Math.max(44, Math.ceil(fs * 3.7)), pr = 12, pt = 16, pb = 28;
     var t = nice(0, Math.max(Math.max.apply(null, a), Math.max.apply(null, b)) * 1.04, o.steps);
     var ymax = t.hi, x0 = xs[0], x1 = xs[xs.length - 1];
     var X = function (d) { return pl + (d - x0) / (x1 - x0) * (w - pl - pr); };
@@ -407,7 +407,7 @@
   function paintNear(d) {
     var tb = doc.querySelector('#hp-near tbody'), msg = $('hp-near-msg'), F = fmt();
     if (!tb || !d) return;
-    var rows = Array.isArray(d.near) ? d.near.filter(function (b) { return b && num(b.cash); }).slice(0, 7) : null;
+    var rows = Array.isArray(d.near) ? d.near.filter(function (b) { return b && num(b.cash); }).slice(0, 11) : null;
     if (!rows) { if (d.status === 'failed' && msg) msg.textContent = 'Cash bids did not load. Open the cash bids page, or try again in a minute.'; return; }
     if (msg) msg.textContent = rows.length ? '' : 'No corn or soybean cash bid within ' + (num(d.radiusMi) ? Math.round(d.radiusMi) : 50) + ' miles.';
     var z = (readPlace() || {}).zip || '', out = rows.map(function (b) {
@@ -416,7 +416,7 @@
       return '<tr><td><a href="/cash-bids' + (z ? '?zip=' + z : '') + '">' + esc(b.name) + '</a><span class="s">' + esc(sub) + '</span></td><td class="n">'
         + (F ? F.cash(b.cash, 'hp-frac') : money2(b.cash)) + '<span class="b">' + esc(bw || '\u00a0') + '</span></td></tr>';
     });
-    for (var i = out.length; i < 7; i++) out.push('<tr aria-hidden="true"><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr>');
+    /* the held rows were for loading; a short list ends where it ends (the card's foot sits below the first screen) */
     tb.innerHTML = out.join('');
   }
 
@@ -825,7 +825,8 @@
       html('hp-now-d', '<b>' + esc(WX[c.weather_code] || 'Now') + '</b><br>' + w.map(esc).join('<br>'));
       var times = D.time || [], todayKey = (c.time || '').slice(0, 10), i0 = Math.max(0, times.indexOf(todayKey)), lis = [];
       if (!num((D.temperature_2m_max || [])[i0]) || !num((D.temperature_2m_min || [])[i0])) i0++;   /* today half gone: the grid has no full-day high and low, start tomorrow */
-      for (var i = i0; i < Math.min(times.length, i0 + 7); i++) {
+      for (var i = i0; i < times.length && lis.length < 7; i++) {
+        if (!num((D.temperature_2m_max || [])[i]) && !num((D.temperature_2m_min || [])[i])) continue;   /* a day past the grid's end */
         var dd = utc(times[i]), hi = (D.temperature_2m_max || [])[i], lo = (D.temperature_2m_min || [])[i], pp = (D.precipitation_probability_max || [])[i];
         lis.push('<li><b>' + (times[i] === todayKey ? 'Today' : DOW[dd.getUTCDay()]) + '</b><span class="hi">' + (num(hi) ? Math.round(hi) + '°' : '-') + '</span> <span class="lo">' + (num(lo) ? Math.round(lo) + '°' : '-')
           + '</span><span class="pp">' + (num(pp) ? Math.round(pp) + '%<span class="pw"> rain</span>' : '-') + '</span></li>');

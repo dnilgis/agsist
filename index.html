@@ -163,7 +163,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         </div>
         <div class="hp-haszip">
           <div id="my-elevators" data-myelev="home" hidden></div>
-          <table class="hp-near" id="hp-near"><thead><tr><th scope="col">Closest elevators</th><th scope="col" class="n">Cash bid</th></tr></thead><tbody><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr></tbody></table>
+          <table class="hp-near" id="hp-near"><thead><tr><th scope="col">Closest elevators</th><th scope="col" class="n">Cash bid</th></tr></thead><tbody><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr><tr><td>&nbsp;<span class="s">&nbsp;</span></td><td class="n">&nbsp;<span class="b">&nbsp;</span></td></tr></tbody></table>
           <p class="hp-nearmsg" id="hp-near-msg" role="status"></p>
           <div id="bids-list-area" hidden></div>
           <p class="hp-myhint"><b>My elevators</b><span class="hp-mut"> Star up to 6 on the cash bids page; they show here first.</span></p>
@@ -403,16 +403,21 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <div><h3>Livestock</h3><ul>
         <li><a href="/cattle-auction-prices">Sale barn prices</a></li><li><a href="/cattle-futures-prices">Cattle futures</a></li><li><a href="/milk-prices">Milk</a></li>
         <li><a href="/hay-prices">Hay</a></li><li><a href="/haymow">The Haymow</a></li><li><a href="/lrp">LRP</a></li><li><a href="/prf">PRF</a></li></ul>
-        <h3 style="margin-top:.8rem">The Daily</h3><ul><li><a href="/daily">Today&rsquo;s briefing</a></li><li><a href="/daily#past">Past briefings</a></li></ul></div>
+        <h3 class="hp-dir2">Crop</h3><ul>
+        <li><a href="/conditions">Crop progress and yield</a></li><li><a href="/crop-tour">Crop tour</a></li><li><a href="/planting-date">Planting date</a></li>
+        <li><a href="/yield-estimator">Yield estimator</a></li><li><a href="/tar-spot">Tar spot</a></li></ul></div>
       <div><h3>Field</h3><ul>
         <li><a href="/field-scout">Field Scout</a></li><li><a href="/rain">Rain and drought</a></li><li><a href="/rain-print">Rain Print</a></li><li><a href="/rain-gauge">Rain gauge waitlist</a></li>
         <li><a href="/hail-map">Hail map</a></li><li><a href="/spray">Spray, urea and soil temp</a></li><li><a href="/gdu-calculator">GDU calculator</a></li>
-        <li><a href="/conditions">Crop progress and yield</a></li><li><a href="/crop-tour">Crop tour</a></li><li><a href="/planting-date">Planting date</a></li><li><a href="/yield-estimator">Yield estimator</a></li><li><a href="/tar-spot">Tar spot</a></li><li><a href="/harvest-or-wait">Harvest now or wait</a></li><li><a href="/grain-emc">Grain drying</a></li><li><a href="/grain-shrink">Grain shrink</a></li><li><a href="/grain-bin-calculator">Bin calculator</a></li><li><a href="/combine-loss">Combine loss</a></li><li><a href="/nutrient-removal">Nutrient removal</a></li><li><a href="/manure-value">Manure value</a></li>
-        <li><a href="/tools">All tools</a></li></ul></div>
+        <li><a href="/harvest-or-wait">Harvest now or wait</a></li><li><a href="/nutrient-removal">Nutrient removal</a></li><li><a href="/manure-value">Manure value</a></li>
+        <li><a href="/tools">All tools</a></li></ul>
+        <h3 class="hp-dir2">The Daily</h3><ul><li><a href="/daily">Today&rsquo;s briefing</a></li><li><a href="/daily#past">Past briefings</a></li></ul></div>
       <div><h3>Money and land</h3><ul>
         <li><a href="/land-sales/">Farmland sales</a></li><li><a href="/farmland-atlas">Farmland Atlas</a></li><li><a href="/rent/">Cash rent</a></li>
-        <li><a href="/custom-rates">Custom rates</a></li><li><a href="/cash-lease">Lease form</a></li><li><a href="/arc-plc">ARC or PLC</a></li><li><a href="/farm-bill">Farm bill</a></li><li><a href="/breakeven">Break-even</a></li>
-        <li><a href="/commodity-loan">CCC loan</a></li><li><a href="/fast-facts" id="hp-ff">Fast Facts for your county</a></li></ul></div>
+        <li><a href="/custom-rates">Custom rates</a></li><li><a href="/cash-lease">Lease form</a></li><li><a href="/arc-plc">ARC or PLC</a></li><li><a href="/farm-bill">Farm bill</a></li>
+        <li><a href="/breakeven">Break-even</a></li><li><a href="/commodity-loan">CCC loan</a></li><li><a href="/fast-facts" id="hp-ff">Fast Facts for your county</a></li></ul>
+        <h3 class="hp-dir2">Grain handling</h3><ul>
+        <li><a href="/grain-emc">Grain drying</a></li><li><a href="/grain-shrink">Grain shrink</a></li><li><a href="/grain-bin-calculator">Bin calculator</a></li><li><a href="/combine-loss">Combine loss</a></li></ul></div>
     </div>
   </nav>
 
