@@ -351,7 +351,7 @@
     };
     img.onerror = function () { done(null); };
     var ph = Math.max(200, Math.round(H - y - 76));
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(cfg.groups ? barsSvg(cfg, W - 64, ph, { fs: 22, card: true }) : svg(view, W - 64, ph, { fs: 22, card: true, cfg: cfg }));
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(cfg.svgFor ? cfg.svgFor(W - 64, ph) : svg(view, W - 64, ph, { fs: 22, card: true, cfg: cfg }));
   }
   function ga(n, kit) { try { if (typeof root.gtag === 'function') root.gtag('event', n, { kit: kit }); } catch (e) {} }
 
@@ -451,108 +451,8 @@
     });
   }
 
-  /* ------------------------------------------------------------ grouped bars (Nov 12, 2026)
-     AgChart.mountBars(el, cfg): this period (gold) beside its normal (slate) for each month.
-     cfg: groups [{ lab, a, n, gap, part, text }]  a = this period (null when withheld: drawn as n/a, never a zero),
-              n = the normal (null: no normal bar), part = the month is not over, text = the readout for that month
-          names { a: 'This year label', n: 'Normal label' }, steps (tick steps), fmt(v) axis text, vfmt(v) value text,
-          story() -> { head, take, summary }, headEl / takeEl, tools, share (as for mount), height { phone, wide }
-     Same card, Share and Save as the line charts: cfg.share.date is the data's own day. */
-  var NORM = { page: 'var(--agc-norm,#5b6870)', card: '#7d8b93' }, barN = 0;
-  function nice(lo, hi, steps) {
-    steps = steps || [0.05, 0.1, 0.25, 0.5, 1, 2, 2.5, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000];
-    for (var i = 0; i < steps.length; i++) {
-      var s = steps[i], a = Math.floor(lo / s + 1e-9) * s, b = Math.ceil(hi / s - 1e-9) * s;
-      if ((b - a) / s <= 6) return { step: s, lo: a, hi: b === a ? a + s : b };
-    }
-    return { step: Math.max(hi - lo, 1e-9), lo: lo, hi: hi };
-  }
-  function isN(x) { return typeof x === 'number' && isFinite(x); }
-  function barsGeom(cfg, W, H, fs) {
-    var M = cfg.groups, pl = Math.max(44, Math.ceil(fs * 3.7)), pr = 8, pt = Math.ceil(fs * 2.1), pb = Math.ceil(fs * 2.1), top = 0;
-    M.forEach(function (x) { if (isN(x.a)) top = Math.max(top, x.a); if (isN(x.n)) top = Math.max(top, x.n); });
-    var t = nice(0, Math.max(top, 1e-6) * 1.08, cfg.steps), cw = (W - pl - pr) / M.length, yb = H - pb;
-    var hasN = M.some(function (x) { return isN(x.n); }), bw = Math.max(3, Math.min(cw * 0.36, fs * 1.6));
-    return { M: M, pl: pl, pr: pr, pt: pt, pb: pb, t: t, ymax: t.hi, cw: cw, yb: yb, hasN: hasN, bw: bw,
-      Y: function (v) { return pt + (t.hi - v) / t.hi * (yb - pt); }, cx: function (i) { return pl + cw * (i + 0.5); } };
-  }
-  function barsSvg(cfg, W, H, opt) {
-    var fs = opt.fs || 12, P = opt.card ? CARD : PAGE, g = barsGeom(cfg, W, H, fs), M = g.M, id = 'agcb' + (++barN), o = [];
-    var gold = opt.card ? '#d4a23f' : 'var(--chart-1,var(--gold,#d4a23f))', slate = opt.card ? NORM.card : NORM.page;
-    var f = 'font-size:' + fs + 'px;font-family:' + FONT + ';';
-    o.push('<svg xmlns="http://www.w3.org/2000/svg" class="agc-svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(cfg.label || '') + '">');
-    o.push('<defs><pattern id="' + id + '" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" style="fill:' + P.surf + '"/><line x1="0" y1="0" x2="0" y2="5" style="stroke:' + P.mut + ';stroke-width:1.6"/></pattern></defs>');
-    for (var v = 0; v <= g.ymax + 1e-9; v += g.t.step) {
-      o.push('<line x1="' + g.pl + '" x2="' + (W - g.pr) + '" y1="' + f1(g.Y(v)) + '" y2="' + f1(g.Y(v)) + '" style="stroke:' + P.grid + ';stroke-width:1"/>');
-      o.push(txt(g.pl - 6, g.Y(v) + fs * 0.33, cfg.fmt ? cfg.fmt(v) : String(v), f + 'fill:' + P.dim, 'end'));
-    }
-    o.push('<line x1="' + g.pl + '" x2="' + (W - g.pr) + '" y1="' + g.yb + '" y2="' + g.yb + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
-    var step = M.length > 9 && g.cw < fs * 2.6 ? 2 : 1;
-    M.forEach(function (x, i) {
-      var cx = g.cx(i), xa = g.hasN ? cx - g.bw - 1 : cx - g.bw / 2, xn = cx + 1;
-      if (g.hasN && isN(x.n)) o.push('<rect x="' + f1(xn) + '" y="' + f1(g.Y(x.n)) + '" width="' + f1(g.bw) + '" height="' + f1(Math.max(0, g.yb - g.Y(x.n))) + '" style="fill:' + slate + (x.part ? ';opacity:.7' : '') + '"/>');
-      if (x.gap || !isN(x.a)) o.push('<rect x="' + f1(xa) + '" y="' + (g.yb - 3) + '" width="' + f1(g.bw) + '" height="3" style="fill:url(#' + id + ');stroke:' + P.mut + ';stroke-width:1"/>' + txt(xa + g.bw / 2, g.yb - 7, 'n/a', f + 'fill:' + P.mut, 'middle'));
-      else o.push('<rect x="' + f1(xa) + '" y="' + f1(g.Y(x.a)) + '" width="' + f1(g.bw) + '" height="' + f1(Math.max(0, g.yb - g.Y(x.a))) + '" style="fill:' + gold + (x.part ? ';opacity:.6' : '') + '"/>');
-      if (i % step === 0 || i === M.length - 1) o.push(txt(cx, g.yb + fs * 1.45, x.lab, f + 'fill:' + P.dim, 'middle'));
-    });
-    var L = M.length - 1, last = M[L];
-    if (isN(last.a) && !last.gap) {
-      var xl = g.cx(L) - (g.hasN ? g.bw / 2 + 1 : 0);
-      o.push('<circle cx="' + f1(xl) + '" cy="' + f1(g.Y(last.a) - 5) + '" r="3" style="fill:' + gold + '"/>');
-      o.push(txt(W - g.pr, g.pt - fs * 0.6, last.lab + (last.part ? ' so far' : '') + ': ' + cfg.vfmt(last.a) + (g.hasN && isN(last.n) ? ' (normal ' + cfg.vfmt(last.n) + ')' : ''), f + 'font-weight:700;fill:' + P.ink, 'end'));
-    }
-    if (opt.card) {   /* the key goes in the picture: it has no legend of its own */
-      var kx = g.pl, ky = g.pt - fs * 0.6, na = (cfg.names || {});
-      o.push('<rect x="' + kx + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + gold + '"/>' + txt(kx + fs * 1.1, ky, na.a || '', f + 'fill:' + P.ink));
-      if (g.hasN) { var kx2 = kx + fs * 1.1 + widthOf(na.a || '', fs) + fs * 1.4; o.push('<rect x="' + f1(kx2) + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + slate + '"/>' + txt(kx2 + fs * 1.1, ky, na.n || 'Normal', f + 'fill:' + P.ink)); }
-    }
-    o.push('<rect class="agc-hl" x="0" y="' + g.pt + '" width="' + f1(g.cw) + '" height="' + f1(g.yb - g.pt) + '" visibility="hidden" style="fill:' + P.ink + ';opacity:.08;pointer-events:none"/>');
-    o.push('</svg>');
-    return o.join('');
-  }
-  function mountBars(el, cfg) {
-    var hh = cfg.height || {}, lastW = 0, cur = -1, kit = (cfg.share && cfg.share.file) || 'bars';
-    el.classList.add('agc', 'agc-bars');
-    el.innerHTML = '<div class="agc-plot" tabindex="0" role="group"></div><p class="agc-read" aria-live="polite"></p>';
-    var plot = el.querySelector('.agc-plot'), read = el.querySelector('.agc-read'), n = cfg.groups.length, g = null;
-    var fit = function () { plot.style.height = (el.clientWidth < 520 ? hh.phone || 200 : hh.wide || 250) + 'px'; };
-    fit();
-    function say(i) {
-      var hl = plot.querySelector('.agc-hl'); cur = i;
-      if (i < 0) { read.textContent = cfg.groups[n - 1].text || ''; if (hl) hl.setAttribute('visibility', 'hidden'); return; }
-      read.textContent = cfg.groups[i].text || '';
-      if (hl && g) { hl.setAttribute('x', f1(g.cx(i) - g.cw / 2)); hl.setAttribute('visibility', 'visible'); }
-    }
-    function draw(force) {
-      var W = Math.round(plot.clientWidth); if (!W || (W === lastW && !force)) return; lastW = W; fit();
-      var H = W < 520 ? hh.phone || 200 : hh.wide || 250, fs = W < 520 ? 12.5 : 13, st = cfg.story ? cfg.story() : {};
-      if (cfg.headEl) cfg.headEl.textContent = st.head || '';
-      if (cfg.takeEl) cfg.takeEl.textContent = st.take || '';
-      g = barsGeom(cfg, W, H, fs);
-      plot.innerHTML = barsSvg({ groups: cfg.groups, steps: cfg.steps, fmt: cfg.fmt, vfmt: cfg.vfmt, names: cfg.names, label: st.summary || cfg.label }, W, H, { fs: fs });
-      plot.setAttribute('aria-label', (st.summary || cfg.label || '') + ' Use the arrow keys to read each month.');
-      say(cur);
-    }
-    var at = function (e) { var r = plot.getBoundingClientRect(); return Math.max(0, Math.min(n - 1, Math.floor((e.clientX - r.left - g.pl) / g.cw))); };
-    plot.addEventListener('pointermove', function (e) { if (g && e.clientX - plot.getBoundingClientRect().left >= g.pl) say(at(e)); });
-    plot.addEventListener('pointerdown', function (e) { if (g) say(at(e)); });
-    plot.addEventListener('pointerleave', function () { if (el.ownerDocument.activeElement !== plot) say(-1); });
-    plot.addEventListener('blur', function () { say(-1); });
-    plot.addEventListener('focus', function () { say(cur >= 0 ? cur : n - 1); });
-    plot.addEventListener('keydown', function (e) {
-      var j = e.key === 'ArrowLeft' ? (cur < 0 ? n - 1 : cur) - 1 : e.key === 'ArrowRight' ? (cur < 0 ? n - 1 : cur) + 1 : e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : null;
-      if (e.key === 'Escape') { say(-1); return; }
-      if (j == null) return;
-      e.preventDefault(); say(Math.max(0, Math.min(n - 1, j)));
-    });
-    draw();
-    if (root.ResizeObserver) new root.ResizeObserver(function () { draw(); }).observe(plot); else root.addEventListener('resize', function () { draw(); });
-    if (cfg.tools && cfg.share) tools(cfg, function () { return { to: cfg.share.date }; });
-    return { redraw: function () { draw(true); }, svg: function (W, H, fs) { return barsSvg(cfg, W, H, { fs: fs, card: true }); } };
-  }
-
-  var api = { mount: mount, mountBars: mountBars, barsSvg: barsSvg, barsGeom: barsGeom, svg: svg, layout: layout, card: card, fitLines: fitLines, slice: slice, pairs: pairs, ranges: ranges, readout: readout, gapAt: gapAt, ruleOf: ruleOf,
-    short: short, long: long, money: money };
+  var api = { mount: mount, svg: svg, layout: layout, card: card, fitLines: fitLines, slice: slice, pairs: pairs, ranges: ranges, readout: readout, gapAt: gapAt, ruleOf: ruleOf,
+    short: short, long: long, money: money, tools: tools, PAGE: PAGE, CARD: CARD, FONT: FONT };
   root.AgChart = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);

@@ -957,7 +957,7 @@ try {
     </div>
 <!-- index1:own wx -->
     <section class="hp-card hp-wxa" id="f2" aria-labelledby="hp-wx-h" style="grid-column:1/-1">
-      <div class="hp-k"><h2 id="hp-wx-h">Weather<span id="hp-wx-where"></span></h2><span class="r"><a href="/rain">Rain and drought</a></span></div>
+      <div class="sec-head hp-sech"><h2 class="sec-title" id="hp-wx-h">Weather</h2><a class="hp-sech-a" href="/rain">Rain and drought</a></div>
       <p class="hp-wxmsg" id="hp-wxmsg" role="status"></p>
       <div class="hp-wxnone">
         <p>Type your ZIP at the top of the page for the live radar, your forecast, and this year&rsquo;s rain and corn GDUs against normal, month by month.</p>
@@ -965,26 +965,26 @@ try {
       </div>
       <div class="hp-wxg">
         <div class="hp-sub hp-a-fc">
-          <h3 id="hp-fc-h">Forecast</h3>
+          <h3 id="hp-fc-h">Forecast<span id="hp-wx-where"></span></h3>
           <div class="hp-fc">
             <div class="hp-now" id="hp-now"><svg class="ic hp-nowi" id="hp-now-i" aria-hidden="true"><use href="#i-cloud-sun"/></svg><div class="t" id="hp-now-t">--&deg;</div><div class="d" id="hp-now-d"><b>Forecast</b><br>Loading</div></div>
             <dl class="hp-nowg" id="hp-nowg"><div><dt>Feels like</dt><dd id="hp-nw-f">-</dd></div><div><dt>Wind</dt><dd id="hp-nw-w">-</dd></div><div><dt>Humidity</dt><dd id="hp-nw-h">-</dd></div><div><dt>Dew point</dt><dd id="hp-nw-d">-</dd></div><div><dt id="hp-nw-pk">Chance of rain</dt><dd id="hp-nw-p">-</dd></div></dl>
           </div>
           <ol class="hp-d7" id="hp-d7"><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="pp">&nbsp;</span></li></ol>
           <details class="hp-hourly" id="hp-hourly"><summary>Hourly, the next 24 hours</summary><div class="hp-hr" id="hp-hr" role="group" tabindex="0" aria-label="Hourly forecast, scroll sideways"></div></details>
-          <p class="hp-src" id="hp-fc-src">Each day: high, then the low of the night after; percent: the daytime chance of rain or snow, 6 am to 5 pm. National Weather Service forecast.</p>
+          <p class="hp-src" id="hp-fc-src">Each day: the high, then the low of the night after; percent: the chance of rain or snow, 6 am to 5 pm. National Weather Service.</p>
           <div class="hp-msg" role="status" id="hp-fc-msg"></div>
         </div>
         <div class="hp-sub hp-a-live">
           <h3 id="hp-live-h">Live radar</h3>
-          <p class="lead">The current radar loop around your place. Pinch or scroll to zoom.</p>
-          <div class="hp-live" id="hp-live" tabindex="-1" aria-label="Live radar"><div class="hp-msg" role="status" id="hp-live-msg">The live radar loads when you get here.</div><iframe id="hp-live-f" title="Live radar around your ZIP (Windy)" allow="fullscreen" allowfullscreen referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy" hidden></iframe><button type="button" class="hp-livego" id="hp-livego">Tap to move the map</button><button type="button" class="hp-livedone" id="hp-livedone">Done</button></div>
+          <p class="lead">Radar around your place now. Pinch or scroll to zoom.</p>
+          <div class="hp-live" id="hp-live" tabindex="-1" role="group" aria-label="Live radar"><div class="hp-msg" role="status" id="hp-live-msg">The live radar loads when you get here.</div><iframe id="hp-live-f" title="Live radar around your ZIP (Windy)" allow="fullscreen" allowfullscreen referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy" hidden></iframe><button type="button" class="hp-livego" id="hp-livego">Tap to move the map</button><button type="button" class="hp-livedone" id="hp-livedone">Done</button></div>
           <p class="hp-src">Live radar: Windy.com, from national weather radar. <a href="/rain#radar">Open the radar on the rain page &rarr;</a></p>
         </div>
       </div>
     </section>
     <section class="hp-card hp-wxb" id="hp-wxb" aria-labelledby="hp-wxb-h" style="grid-column:1/-1">
-      <div class="hp-k"><h2 id="hp-wxb-h">This year against normal</h2><span class="r"><a href="/rain">Rain and drought</a></span></div>
+      <div class="sec-head hp-sech"><h2 class="sec-title" id="hp-wxb-h">This year against normal</h2><a class="hp-sech-a" href="/rain">Rain and drought</a></div>
       <div class="hp-wxnone"><p>Set your ZIP for this year&rsquo;s rain and corn GDUs against normal, month by month, for your county.</p></div>
       <div class="hp-wxb-body">
         <div class="hp-sub hp-a-rain">
@@ -1694,6 +1694,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/home-kit.js?v=1" defer></script>
 <!-- index1:own wxjs -->
 <script src="/components/ag-chart.js?v=2" defer></script>
+<script src="/components/ag-bars.js?v=1" defer></script>
 <script src="/components/home-wx.js?v=1" defer></script>
 <!-- /index1:own wxjs -->
 </body>

@@ -10,7 +10,7 @@
                no touches until "Tap to move the map".
      rain, GDU data/rain/<st>.json and data/rain/wx/<st>.json (NOAA daily records through RCC-ACIS) for the reader's
                county; the percent is the file's own, withheld when the file withholds it. The bars are the shared
-               chart kit (components/ag-chart.js, AgChart.mountBars) with its Share and Save the picture.
+               chart kit (components/ag-chart.js with components/ag-bars.js, AgChart.mountBars) with its Share and Save the picture.
    FAIL SOFT: each source that does not answer says so in its own box; the rest of the band carries on. */
 (function (root) {
   'use strict';
@@ -160,7 +160,7 @@
         cells.push('<div><b>' + (j === h0 ? 'Now' : hr12(ht[j])) + '</b>' + wxIcon((H.weather_code || [])[j], (H.is_day || [])[j]) + (num(tt) ? Math.round(tt) + '°' : '-') + '<span class="pp">' + (num(hp) ? Math.round(hp) + '%<span class="visually-hidden"> chance of rain or snow</span>' : '-') + '</span></div>');
       }
       var hr = $('hp-hourly'); if (hr) hr.hidden = !cells.length; if (cells.length) html('hp-hr', cells.join(''));
-      var src = 'Each day: high, then the low of the night after; percent: the daytime chance of rain or snow, 6 am to 5 pm. Now: the forecast for this hour. National Weather Service forecast';
+      var src = 'Each day: the high, then the low of the night after; percent: the chance of rain or snow, 6 am to 5 pm. Now: this hour\u2019s forecast. National Weather Service';
       try { var n = f._nws; if (n && n.updated) src += ', issued ' + new Date(n.updated).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: f.timezone || undefined, timeZoneName: 'short' }); } catch (e) {}
       txt('hp-fc-src', src + '.');
       fcFail(''); var m = $('hp-fc-msg'); if (m) m.style.background = '';
@@ -214,6 +214,7 @@
         placeCheck(zz).then(function (r) { if (r === 'failed') bandFailed('The place for ZIP ' + zz + ' did not load. Try again in a minute.'); else unknownBand(zz); });
         return;
       }
+      var wh = $('hp-wx-where'); if (wh) wh.textContent = p.town ? ', ' + p.town + ', ' + p.state : ', ZIP ' + p.zip;
       if (band.zip === p.zip) return;
       band.zip = p.zip; var seq = ++band.seq;
       var wm0 = $('hp-wxmsg'); if (wm0) wm0.textContent = '';
