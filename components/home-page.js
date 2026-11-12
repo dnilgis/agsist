@@ -434,6 +434,7 @@
   function checkZip(z) {
     placeCheck(z).then(function (r) {
       if ((readPlace() || {}).zip !== z) return;
+      if (r === 'failed') { say('The place for ZIP ' + z + ' did not load. Try again in a minute.', true); return; }
       if (r !== 'unknown') { if (badZip === z) badZip = ''; return; }
       badZip = z; looking = ''; clearTimeout(lookT);
       say('ZIP ' + z + ' is not in our ZIP table. Check the five digits.', true);
@@ -442,9 +443,18 @@
       unknownBand(z);
     });
   }
+  function bandFailed(t) {
+    var wx = $('hp-wx'), wm = $('hp-wxmsg'); if (!wx) return;
+    wx.classList.add('unknown'); liveOff();
+    if (!wm) { wm = doc.createElement('p'); wm.id = 'hp-wxmsg'; wm.className = 'hp-wxmsg'; wm.setAttribute('role', 'status'); wx.insertBefore(wm, wx.querySelector('.hp-wxg')); }
+    wm.textContent = t;
+  }
   function unknownBand(z) {
     var t = 'ZIP ' + z + ' is not in our ZIP table.';
-    fcFail(t); txt('hp-live-msg', t); ['hp-rain-ch', 'hp-gdu-ch'].forEach(function (id) { msgIn(id, t); });
+    /* a11y round 3 (A3): one short message for the whole band, not one in each of its panels */
+    var wx = $('hp-wx'), wm = $('hp-wxmsg');
+    if (wx) { wx.classList.add('unknown'); if (!wm) { wm = doc.createElement('p'); wm.id = 'hp-wxmsg'; wm.className = 'hp-wxmsg'; wm.setAttribute('role', 'status'); var g = wx.querySelector('.hp-wxg'); wx.insertBefore(wm, g); } wm.textContent = t + ' Check the five digits at the top of the page for your forecast, radar, rain and GDUs.'; }
+    fcFail(t); liveOff(); txt('hp-live-msg', t); ['hp-rain-ch', 'hp-gdu-ch'].forEach(function (id) { msgIn(id, t); });
   }
   /* audit A1: bids still loading 6 seconds after a ZIP is in place end in a plain message; a later answer still draws */
   var bidsT = null;
@@ -1045,7 +1055,8 @@
     if (!st) { st = doc.createElement('span'); st.className = 'hp-tst'; st.setAttribute('role', 'status'); row.appendChild(st); }
     st.textContent = t; clearTimeout(st._t); st._t = setTimeout(function () { st.textContent = ''; }, 4000);
   }
-  function fcFail(t) { var m = $('hp-fc-msg'); if (m) { m.textContent = t; m.style.background = 'var(--surface)'; } }
+  /* a11y round 3 (A3): a forecast that does not come says so under its heading; the empty cards go */
+  function fcFail(t) { var m = $('hp-fc-msg'), a = doc.querySelector('.hp-a-fc'); if (m) { m.textContent = t; m.style.background = t ? 'var(--surface)' : ''; } if (a) a.classList.toggle('fcfail', !!t); }
   /* the old home's weather icons (index.html sprite), from the NWS words made into WMO-style codes (components/nws.js) */
   function wxIcon(code, day, cls) {
     var k = code == null ? 'i-cloud-sun' : code === 0 ? (day === 0 ? 'i-moon' : 'i-sun') : code <= 2 ? 'i-cloud-sun' : code === 3 ? 'i-cloud' : code === 45 || code === 48 ? 'i-cloud-fog'
@@ -1085,8 +1096,8 @@
         var dd = utc(times[i]), nl = nightLow(times[i], times[i + 1]), lo = num(nl) ? nl : (D.temperature_2m_min || [])[i + 1];
         var pp = dayPop(times[i]); if (!num(pp)) pp = (D.precipitation_probability_max || [])[i];
         var word = snowy(times[i]) ? 'snow' : 'rain';
-        lis.push('<li><b>' + (times[i] === todayKey ? 'Today' : DOW[dd.getUTCDay()]) + '</b>' + wxIcon((D.weather_code || [])[i], 1) + '<span><span class="hi">' + Math.round(hi) + '°</span> <span class="lo">' + (num(lo) ? Math.round(lo) + '°' : '-')
-          + '</span><span class="vh">, ' + esc(WX[(D.weather_code || [])[i]] || '') + '</span></span><span class="pp">' + (num(pp) ? Math.round(pp) + '% ' + word : '-') + '</span></li>');
+        lis.push('<li><b>' + (times[i] === todayKey ? 'Today' : DOW[dd.getUTCDay()]) + '</b>' + wxIcon((D.weather_code || [])[i], 1) + '<span><span class="vh">high </span><span class="hi">' + Math.round(hi) + '°</span> <span class="vh">, low </span><span class="lo">' + (num(lo) ? Math.round(lo) + '°' : '-')
+          + '</span><span class="vh">, ' + esc(WX[(D.weather_code || [])[i]] || '') + ', </span></span><span class="pp">' + (num(pp) ? Math.round(pp) + '% ' + word + '<span class="vh"> chance</span>' : '-') + '</span></li>');
       }
       if (lis.length) html('hp-d7', lis.join(''));
       /* the next 24 hours from this hour */
@@ -1094,7 +1105,7 @@
       for (var k = 0; k < ht.length; k++) if (String(ht[k]).slice(0, 13) >= now) { h0 = k; break; }
       if (h0 >= 0) for (var j = h0; j < ht.length && cells.length < 24; j++) {
         var tt = (H.temperature_2m || [])[j], hp = (H.precipitation_probability || [])[j];
-        cells.push('<div><b>' + (j === h0 ? 'Now' : hr12(ht[j])) + '</b>' + wxIcon((H.weather_code || [])[j], (H.is_day || [])[j]) + (num(tt) ? Math.round(tt) + '°' : '-') + '<span class="pp">' + (num(hp) ? Math.round(hp) + '%' : '-') + '</span></div>');
+        cells.push('<div><b>' + (j === h0 ? 'Now' : hr12(ht[j])) + '</b>' + wxIcon((H.weather_code || [])[j], (H.is_day || [])[j]) + (num(tt) ? Math.round(tt) + '°' : '-') + '<span class="pp">' + (num(hp) ? Math.round(hp) + '%<span class="vh"> chance of rain or snow</span>' : '-') + '</span></div>');
       }
       var hr = $('hp-hourly'); if (hr) hr.hidden = !cells.length; if (cells.length) html('hp-hr', cells.join(''));
       var src = 'Each day: high, then the low of the night after; percent: the daytime chance of rain or snow, 6 am to 5 pm. Now: the forecast for this hour. National Weather Service forecast';
@@ -1111,18 +1122,29 @@
      (loadBand runs from later()), holds its room, and says so if it does not come in */
   /* round 3 (phones): the map takes no touches until "Tap to move the map", so a thumb scrolling the page is not caught in it */
   function liveTap() { var b = $('hp-livego'), box = $('hp-live'); if (!b || !box) return; b.addEventListener('click', function () { box.classList.add('on'); }); }
+  var liveSeq = 0;
+  /* a11y round 3 (A2, A5): a frame's load event fires on a failed page too, so the host is probed first (a no-cors
+     fetch that rejects when Windy cannot be reached), and each call has its own sequence number so a late timer from an
+     earlier place never writes over a newer one */
   function drawLive(p) {
-    var f = $('hp-live-f'), msg = $('hp-live-msg'); if (!f) return;
-    var la = (+p.lat).toFixed(4), lo = (+p.lon).toFixed(4);
+    var f = $('hp-live-f'), msg = $('hp-live-msg'), box = $('hp-live'); if (!f) return;
+    var la = (+p.lat).toFixed(4), lo = (+p.lon).toFixed(4), mine = ++liveSeq;
     var u = 'https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=7&overlay=radar&product=radar&level=surface'
       + '&lat=' + la + '&lon=' + lo + '&detailLat=' + la + '&detailLon=' + lo + '&detail=false&pressure=false&menu=false&message=false&marker=true&calendar=now&thunder=false';
     if (f.getAttribute('src') === u) return;
-    var done = false;
+    var fail = function () { if (mine !== liveSeq) return; f.removeAttribute('src'); f.hidden = true; if (box) box.classList.add('fail'); if (msg) msg.textContent = 'The live radar did not load. Try again in a few minutes, or open the radar on the rain page.'; };
+    if (box) box.classList.remove('fail', 'ok');
     if (msg) msg.textContent = 'Loading the live radar';
-    f.onload = function () { done = true; f.hidden = false; if (msg) msg.textContent = ''; };
-    f.setAttribute('src', u);
-    setTimeout(function () { if (!done && msg) msg.innerHTML = 'The live radar did not load. <a href="/rain#radar">Open the radar on the rain page &rarr;</a>'; }, 15000);
+    var probe = root.fetch ? timed(fetch('https://embed.windy.com/', { mode: 'no-cors', cache: 'no-store' }), 10000) : Promise.resolve();
+    probe.then(function () {
+      if (mine !== liveSeq) return;
+      var done = false;
+      f.onload = function () { if (mine !== liveSeq) return; done = true; f.hidden = false; if (box) box.classList.add('ok'); if (msg) msg.textContent = ''; };
+      f.hidden = false; f.setAttribute('src', u);
+      setTimeout(function () { if (!done) fail(); }, 15000);
+    }, fail);
   }
+  function liveOff() { liveSeq++; var f = $('hp-live-f'); if (f) { f.removeAttribute('src'); f.hidden = true; } }
   function drawRain(R, p, cf) {
     var c = cf && cf.c;
     if (!c || !Array.isArray(c.cum) || !c.cum.length || !num(c.total)) { msgIn('hp-rain-ch', 'No rain record for this county yet.'); txt('hp-rain-h', 'Rain this year'); return; }
@@ -1230,9 +1252,16 @@
     var p0 = readPlace();
     if (!hasZip(p0)) return;
     fullPlace().then(function (p) {
-      if (!p || !hasZip(p) || p.lat == null || !/^[A-Z]{2}$/.test(p.state || '')) { unknownBand(p && p.zip ? p.zip : ''); return; }
+      if (!p || !hasZip(p) || p.lat == null || !/^[A-Z]{2}$/.test(p.state || '')) {
+        /* a11y round 3 (A6): a ZIP table that did not download is "did not load, try again", not an unknown ZIP */
+        var zz = p && p.zip ? p.zip : '';
+        if (!zz) return;
+        placeCheck(zz).then(function (r) { if (r === 'failed') bandFailed('The place for ZIP ' + zz + ' did not load. Try again in a minute.'); else unknownBand(zz); });
+        return;
+      }
       if (band.zip === p.zip) return;
       band.zip = p.zip; var seq = ++band.seq;
+      var wx0 = $('hp-wx'), wm0 = $('hp-wxmsg'); if (wx0) wx0.classList.remove('unknown'); if (wm0) wm0.textContent = '';
       drawForecast(p, seq);
       drawLive(p);
       getJSON(stateFile('rain/', p.state)).then(function (R) {

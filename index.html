@@ -327,21 +327,21 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <dl class="hp-nowg" id="hp-nowg"><div><dt>Feels like</dt><dd id="hp-nw-f">-</dd></div><div><dt>Wind</dt><dd id="hp-nw-w">-</dd></div><div><dt>Humidity</dt><dd id="hp-nw-h">-</dd></div><div><dt>Dew point</dt><dd id="hp-nw-d">-</dd></div><div><dt>Chance of rain</dt><dd id="hp-nw-p">-</dd></div></dl>
         </div>
         <ol class="hp-d7" id="hp-d7"><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li></ol>
-        <details class="hp-hourly" id="hp-hourly"><summary>Hourly, the next 24 hours</summary><div class="hp-hr" id="hp-hr"></div></details>
+        <details class="hp-hourly" id="hp-hourly"><summary>Hourly, the next 24 hours</summary><div class="hp-hr" id="hp-hr" role="group" tabindex="0" aria-label="Hourly forecast, scroll sideways"></div></details>
         <p class="hp-src" id="hp-fc-src">Each day: high, then the low of the night after; percent: the daytime chance of rain or snow. National Weather Service forecast.</p>
-        <div class="hp-msg" id="hp-fc-msg"></div>
+        <div class="hp-msg" role="status" id="hp-fc-msg"></div>
       </div>
       <div class="hp-sub hp-a-live">
         <h3 id="hp-live-h">Live radar</h3>
         <p class="lead">The current radar loop around your place. Pinch or scroll to zoom.</p>
-        <div class="hp-live" id="hp-live"><div class="hp-msg" id="hp-live-msg">The live radar loads when you get here.</div><iframe id="hp-live-f" title="Live radar around your ZIP (Windy)" allow="fullscreen" allowfullscreen referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy" hidden></iframe><button type="button" class="hp-livego" id="hp-livego">Tap to move the map</button></div>
-        <p class="hp-src">Live radar: Windy.com, from national weather radar.</p>
+        <div class="hp-live" id="hp-live"><div class="hp-msg" role="status" id="hp-live-msg">The live radar loads when you get here.</div><iframe id="hp-live-f" title="Live radar around your ZIP (Windy)" allow="fullscreen" allowfullscreen referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy" hidden></iframe><button type="button" class="hp-livego" id="hp-livego">Tap to move the map</button></div>
+        <p class="hp-src">Live radar: Windy.com, from national weather radar. <a href="/rain#radar">Open the radar on the rain page &rarr;</a></p>
       </div>
       <div class="hp-sub hp-a-rain">
         <h3 id="hp-rain-h">Rain this year</h3>
         <p class="hp-pct" id="hp-rain-pct">&nbsp;</p>
         <div class="hp-key hp-keyb" id="hp-rain-key"><span><i></i><span id="hp-yr">This year</span></span><span><i class="n"></i>Normal (1991 to 2020)</span></div>
-        <div class="hp-cum" id="hp-rain-ch"><div class="hp-msg"></div></div>
+        <div class="hp-cum" id="hp-rain-ch"><div class="hp-msg" role="status"></div></div>
         <div class="hp-tools" data-chart="rain"><button type="button" data-act="share">Share</button><span aria-hidden="true">&middot;</span><button type="button" data-act="save">Save picture</button></div>
         <p class="hp-src" id="hp-rain-src">NOAA daily records via RCC-ACIS.</p>
         <a class="hp-wall" href="/rain-print" data-track="rp-band">Put this year on the wall: a Rain Print of your farm &rarr;</a>
@@ -350,7 +350,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <h3 id="hp-gdu-h">Corn GDUs since May 1</h3>
         <p class="hp-pct" id="hp-gdu-pct">&nbsp;</p>
         <div class="hp-key hp-keyb"><span><i></i><span id="hp-yr2">This year</span></span><span><i class="n"></i>Normal (1991 to 2020)</span></div>
-        <div class="hp-cum" id="hp-gdu-ch"><div class="hp-msg"></div></div>
+        <div class="hp-cum" id="hp-gdu-ch"><div class="hp-msg" role="status"></div></div>
         <div class="hp-tools" data-chart="gdu"><button type="button" data-act="share">Share</button><span aria-hidden="true">&middot;</span><button type="button" data-act="save">Save picture</button></div>
         <p class="hp-src" id="hp-gdu-src">86/50 method, month ends. NOAA daily records via RCC-ACIS.</p>
         <a class="hp-wall q" href="/gdu-calculator" data-track="gdu">GDUs from your own planting date: GDU calculator &rarr;</a>
@@ -415,7 +415,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <div class="hp-k"><span>Farmland sales <span id="hp-land-near">near you</span></span><a href="/land-sales/" id="hp-land-all" data-track="land">Every sale</a></div>
       <h2 class="hp-h" id="hp-land-h">What farmland sold for, county by county</h2>
       <p class="hp-lp" id="hp-land-p">The date, acres and price per acre of every recorded farm sale in IL, IN, NJ, VT, WI and FL. Never who bought or sold.</p>
-      <div class="hp-lchart" id="hp-land-ch"><div class="hp-msg"></div></div>
+      <div class="hp-lchart" id="hp-land-ch"><div class="hp-msg" role="status"></div></div>
       <div class="hp-tools" data-chart="land"><button type="button" data-act="share">Share</button><span aria-hidden="true">&middot;</span><button type="button" data-act="save">Save picture</button></div>
       <p class="hp-src" id="hp-land-src">State transfer records.</p>
       <details class="hp-src hp-lrule" id="hp-land-rule" style="visibility:hidden"><summary>How this sale is picked</summary><span id="hp-land-rule-t"></span></details>
