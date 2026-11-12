@@ -211,7 +211,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 
     <div class="hp-col">
       <section class="hp-card hp-futc hp-grow" id="f-prices" aria-labelledby="hp-fut-h">
-        <div class="hp-k"><h2 id="hp-fut-h">Futures, last 20 weeks</h2><a href="/markets" data-track="markets">All markets</a></div>
+        <div class="hp-k"><h2 id="hp-fut-h">Futures, weekly closes</h2><a href="/markets" data-track="markets">All markets</a></div>
         <div class="hp-fut" id="hb-fc">
           <div class="hp-fh">
             <div><div class="n" id="hb-fc-k"><!--
@@ -437,7 +437,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </details>
     <details class="hp-terms"><summary>Sources and terms</summary><div class="terms">
       <p>Futures: Yahoo Finance, delayed 10 to 25 min. Cash bids: each elevator&rsquo;s own posted board, read by the AGSIST elevator network; miles are straight-line. Forecast: National Weather Service forecast grid. Radar rain: NOAA MRMS multi-sensor estimate. Rain and GDUs: NOAA daily records through RCC-ACIS, against the 1991 to 2020 normal (the 30-year average for each day). Farm sales: state transfer records. USDA reports and NASS (This product uses the NASS API but is not endorsed or certified by NASS.) NOAA CPC.</p>
-      <p id="terms-method">Futures charts: the front month&rsquo;s Friday close for 19 weeks, then today&rsquo;s price of the contract named above the chart, so a contract roll can sit inside the line. Farm sales near you: bare farmland sales of 20 acres or more with a price per acre, over the 24 months on file; the median is the middle sale and the shaded band holds the middle half. With no county on file, the sale shown is the highest price per acre among bare farmland sales recorded in the state in its newest 30 days on file, inside its county&rsquo;s usual range. No buyer or seller names. WASDE grades compare each USDA figure with the average of a published trade survey.</p>
+      <p id="terms-method">Futures charts: the front month&rsquo;s weekly close (the week&rsquo;s last trading day) for the 19 weeks before this one, then today&rsquo;s price of the contract named above the chart, so a contract roll can sit inside the line. Farm sales near you: bare farmland sales of 20 acres or more with a price per acre, over the 24 months on file; the median is the middle sale and the shaded band holds the middle half. With no county on file, the sale shown is a recent farm sale: the highest price per acre among the bare farmland sales of 40 acres or more recorded in the state in its newest 30 days on file that pass the farm-ground tests. A county whose middle price is more than twice the state&rsquo;s is left out as town or development ground, and so is any sale priced at more than twice the state&rsquo;s middle, so higher sales can be on file; sales far outside their county&rsquo;s usual range are left out too. No buyer or seller names. WASDE grades compare each USDA figure with the average of a published trade survey.</p>
       <p>Not financial or trading advice. Check every price with your elevator or broker before you sell.</p>
     </div></details>
   </div>

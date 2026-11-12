@@ -584,7 +584,9 @@
       txt('hb-' + c[1] + '-k', (lab ? lab + ' ' : '') + c[2] + ' futures');
       html('hb-' + c[1] + '-v', '<span class="hb-n">' + A.price(q.close, { style: 'slash', fracClass: 'hb-frac' }) + '</span>');
       var S = root.AgPxStamp || {}, held = !!(q.move_withheld || q.roll);
-      var diff = num(q.netChange) ? q.netChange : (num(q.open) ? q.close - q.open : null), chg = '';
+      /* the change only as AgPxStamp.change pairs it with this price (audit Q16): never close minus open, which is not a day's move */
+      var cc = null; try { cc = S.change ? S.change(q, h.key) : null; } catch (e) { cc = null; }
+      var diff = cc && num(cc.net) ? cc.net : null, chg = '';
       if (held) chg = '<span class="hb-l"><span class="hb-n hb-chg nc">contract roll</span></span>';
       else if (num(diff)) {
         var cl = diff > 0 ? 'up' : diff < 0 ? 'dn' : 'nc';
@@ -653,6 +655,7 @@
       };
     });
     var s0 = STATS && STATS.corn && fridays(STATS.corn.hist_to, 19, tradingFn());
+    var cdh = chartData(CROPS[0]); if (cdh) txt('hp-fut-h', 'Futures, since ' + md(cdh.d[0]));   /* the heading from the chart's own first point, not a week count */
     var cd0 = chartData(CROPS[0]);
     if (s0 && cd0) txt('hp-fut-src', 'Chicago futures; your elevator’s cash bid is futures plus its basis. Weekly closes of the front month, ' + md(s0[0]) + ' to ' + md(s0[18]) + ' (contracts roll inside the line); the last point is today’s price of the contract named above. Yahoo Finance, delayed 10 to 25 min.');
   }
@@ -832,7 +835,10 @@
         var hq = hv && hv.q; if (!hq || !num(hq.close)) return;   /* the price and change of that same contract, so label and price agree */
         var pe = it.querySelector('.t-price'), ce = it.querySelector('.t-chg'), pt = A.price(hq.close, { style: 'slash' }).replace(/<[^>]+>/g, '');
         if (pe && pe.textContent !== pt) { pe.textContent = pt; ch = true; }
-        var n = hq.netChange; if (ce && num(n) && !(hq.move_withheld || hq.roll)) { var t = n === 0 ? 'unch' : (n > 0 ? '\u25b2 +' : '\u25bc \u2212') + A.move(Math.abs(n), { style: 'slash' }); if (ce.textContent !== t) { ce.textContent = t; ce.className = 't-chg ' + (n > 0 ? 'up' : n < 0 ? 'dn' : 'nc'); ch = true; } }
+        /* its change only through AgPxStamp.change (audit Q16): a pair it rejects prints no change */
+        var cv = null; try { cv = !(hq.move_withheld || hq.roll) && root.AgPxStamp && root.AgPxStamp.change ? root.AgPxStamp.change(hq, hv.key) : null; } catch (x) { cv = null; }
+        var n = cv ? cv.net : null, t = !ce ? '' : num(n) ? (n === 0 ? 'unch' : (n > 0 ? '\u25b2 +' : '\u25bc \u2212') + A.move(Math.abs(n), { style: 'slash' })) : (hq.move_withheld || hq.roll ? 'contract roll' : '');
+        if (ce && ce.textContent !== t) { ce.textContent = t; ce.className = 't-chg ' + (num(n) ? (n > 0 ? 'up' : n < 0 ? 'dn' : 'nc') : 'nc'); ch = true; }
       });
     });
     if (ch && typeof root.rebuildTickerLoop === 'function') root.rebuildTickerLoop();
@@ -1000,14 +1006,14 @@
       if (num(c.wind_speed_10m)) w.push('Wind ' + compass(c.wind_direction_10m) + ' ' + Math.round(c.wind_speed_10m) + ' mph');
       if (num(c.relative_humidity_2m)) w.push('Humidity ' + Math.round(c.relative_humidity_2m) + '%');
       /* the grid's forecast for the hour that holds now, not a reading (audit Q15, C14) */
-      html('hp-now-d', '<b>' + esc(WX[c.weather_code] || 'Forecast') + '</b><br>Forecast for this hour<br>' + w.map(esc).join('<br>'));
+      html('hp-now-d', '<b>' + esc(WX[c.weather_code] || 'Forecast') + '</b><br>Hourly forecast<br>' + w.map(esc).join('<br>'));
       var times = D.time || [], todayKey = (c.time || '').slice(0, 10), i0 = Math.max(0, times.indexOf(todayKey)), lis = [];
       if (!num((D.temperature_2m_max || [])[i0]) || !num((D.temperature_2m_min || [])[i0])) i0++;   /* today half gone: the grid has no full-day high and low, start tomorrow */
       for (var i = i0; i < times.length && lis.length < 7; i++) {
         if (!num((D.temperature_2m_max || [])[i]) && !num((D.temperature_2m_min || [])[i])) continue;   /* a day past the grid's end */
         var dd = utc(times[i]), hi = (D.temperature_2m_max || [])[i], lo = (D.temperature_2m_min || [])[i], pp = (D.precipitation_probability_max || [])[i];
         lis.push('<li><b>' + (times[i] === todayKey ? 'Today' : DOW[dd.getUTCDay()]) + '</b><span class="hi">' + (num(hi) ? Math.round(hi) + '°' : '-') + '</span> <span class="lo">' + (num(lo) ? Math.round(lo) + '°' : '-')
-          + '</span><span class="pp">' + (num(pp) ? Math.round(pp) + '%<span class="pw"> chance of rain</span>' : '-') + '</span></li>');
+          + '</span><span class="pp">' + (num(pp) ? Math.round(pp) + '%<span class="vh"> chance of rain</span>' : '-') + '</span></li>');
       }
       if (lis.length) html('hp-d7', lis.join(''));
       var src = 'Percent: chance of rain. National Weather Service forecast';
@@ -1276,10 +1282,10 @@
     var st = have.indexOf(mine) >= 0 ? mine : have.sort(function (a, b) { return leads[a].when < leads[b].when ? 1 : -1; })[0], r = leads[st];
     txt('hp-land-near', NAMES[st] ? 'in ' + NAMES[st] : '');
     var not = mine && sts.indexOf(mine) < 0 && NAMES[mine] ? 'Not yet in ' + NAMES[mine] + '. ' : '';
-    /* audit Q3: the pick is the top price among the sales the lead rule keeps; sales over twice the state's middle are
-       left out, so the card never calls it "the highest" of the 30 days; the rule itself (lead.json "rule", with the
-       cap) is printed under the chart, as the old home page showed it */
-    var w = { h: 'Top bare-land price in ' + NAMES[st] + ': $' + comma(r.ppa) + ' an acre',
+    /* audit Q3: the pick is the top price among the sales the lead rule keeps, but sales over twice the state's middle
+       are left out (higher sales are on file: Will, Kendall, Kane on Nov 12), so the card never says "top" or "highest":
+       it is "a recent farm sale"; the rule itself (lead.json "rule", with the cap) is in the held fold below */
+    var w = { h: 'A recent farm sale in ' + NAMES[st] + ': $' + comma(r.ppa) + ' an acre',
       p: not + Math.round(r.acres) + ' acres in ' + countyName(r.county, st) + ', ' + (r.basis === 'sale date' ? 'sold ' : 'recorded ') + md(utc(r.when)) + '. County median: $' + comma(r.med) + '.',
       rule: typeof r.rule === 'string' ? r.rule : '' };
     countyFile(st, r.county).then(function (F) {
@@ -1354,7 +1360,7 @@
   var PA_BASE = { 'corn': 'Corn', 'corn-dec': 'Corn', 'beans': 'Soybeans', 'beans-nov': 'Soybeans', 'wheat': 'Chicago SRW wheat', 'cattle': 'Live cattle' };
   function alertWords(sym, q, today) {
     var S = root.AgPxStamp, base = PA_BASE[sym] || sym, lab = q && S && S.label ? S.label(q.ticker) : '';
-    if (!lab) return base + ', front month';
+    if (!lab) return base + ', front month' + nextNote(sym);
     var out = base + ', ' + lab, dead = S.deadFrom ? S.deadFrom(q.ticker) : null, dd = utc(dead);
     if (dd && (dd - today) / 864e5 <= 21 && dd > today) {
       var nx = lab.replace(/'(\d\d)$/, function (m0, y) { return "'" + ('0' + ((+y + 1) % 100)).slice(-2); });
@@ -1363,6 +1369,18 @@
       out += ' (rolls to ' + nx + ' after ' + md(lt) + ')';
     }
     return out;
+  }
+  /* round 2: a continuous "front month" option names the contract it moves to when the front month expires, so a roll
+     is not read as a move: the next dated month on file after the headline one ("rolls to Mar '27 at expiry") */
+  function nextNote(sym) {
+    var S = root.AgPxStamp, h = headline(sym), Q = PX && PX.quotes; if (!h || !Q || !S || !S.label) return '';
+    var hm = /([FGHJKMNQUVXZ])(\d\d)\b/.exec(String(h.q.ticker || '')), F = 'FGHJKMNQUVXZ'; if (!hm) return '';
+    var at = (+hm[2]) * 12 + F.indexOf(hm[1]), best = null, bt = Infinity;
+    Object.keys(Q).forEach(function (k) {
+      var m = new RegExp('^' + sym + '-[a-z]{3}\\d\\d$').test(k) && /^[A-Z]{2}([FGHJKMNQUVXZ])(\d\d)\b/.exec(String((Q[k] || {}).ticker || ''));
+      if (!m || !num(Q[k].close)) return; var t = (+m[2]) * 12 + F.indexOf(m[1]); if (t > at && t < bt) { bt = t; best = Q[k]; }
+    });
+    return best ? ' (rolls to ' + S.label(best.ticker) + ' at expiry)' : '';
   }
   function paintAlertOptions() {
     var sel = $('pa-symbol'), Q = PX && PX.quotes; if (!sel || !Q) return;
