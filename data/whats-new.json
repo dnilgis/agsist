@@ -16,6 +16,13 @@
    "link": "/conditions"
   },
   {
+   "id": "2026-11-12-farm-sale-map",
+   "date": "2026-11-12",
+   "title": "Every farm sale on a map",
+   "line": "The land sales page maps each sale of 20 acres or more. Colour shows price per acre against the county median; rings mark unusual and the largest sales.",
+   "link": "/land-sales/#land-map"
+  },
+  {
    "id": "2026-11-11-cash-bids-answers-first",
    "date": "2026-11-11",
    "title": "Cash bids: the answer first",
