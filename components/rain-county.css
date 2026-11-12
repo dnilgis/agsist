@@ -87,7 +87,8 @@
 .rc-find-l small { display: block; color: var(--text-muted); font-size: 14px; line-height: 1.35; margin-top: .1rem; }
 .rc-find-l li.rc-find-more { cursor: default; min-height: 0; font-size: 14px; color: var(--text-muted); border-top: 1px solid var(--border); padding: .5rem .75rem; }
 .rc-find-l li.rc-find-more:hover { background: none; color: var(--text-muted); }
-.rc-find-m { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; line-height: 1.3rem; font-size: var(--fs-xs); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rc .rc-find-m { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; line-height: 1.3rem; color: var(--text-muted); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rc-find-l:not([hidden]) ~ .rc-find-m { opacity: 0; }   /* the open list says the same; the line stays for screen readers */
 .rc-pick button:not(.rc-find-x) { min-width: 9.5rem; }
 .rc-pick button { font-weight: 700; cursor: pointer; color: var(--brand); border-color: var(--brand); white-space: nowrap; padding: 0 1rem; }
 .rc-pick input:focus-visible, .rc-pick select:focus-visible, .rc-pick button:focus-visible, .rc-all summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
