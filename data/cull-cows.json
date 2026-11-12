@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-11T14:43:41Z",
+ "updated": "2026-11-12T01:24:50Z",
  "as_of": "2026-11-11",
  "source": "USDA AMS Livestock, Poultry and Grain Market News, auction reports",
  "classes": {
@@ -22,12 +22,12 @@
   "to": "2026-11-11",
   "barns": 68,
   "min_barns": 3,
-  "median_cwt": 122.01,
+  "median_cwt": 121.83,
   "low_cwt": 105.34,
   "high_cwt": 154.63,
-  "median_per_head": 1523.61,
-  "median_wt": 1256,
-  "head": 1780,
+  "median_per_head": 1516.03,
+  "median_wt": 1261,
+  "head": 1659,
   "states": [
    "AR",
    "CO",
@@ -47,7 +47,7 @@
    "WY"
   ],
   "first_sale": "2026-10-29",
-  "last_sale": "2026-11-10",
+  "last_sale": "2026-11-11",
   "barn_ids": [
    "ada-ok",
    "albany-ky",
@@ -380,7 +380,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -598,7 +598,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -1069,7 +1069,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -1080,6 +1080,216 @@
    "lon": -103.54,
    "id": "la-junta-co",
    "sales": [
+    {
+     "date": "2026-11-10",
+     "receipts": 1443,
+     "report": "1901",
+     "url": "https://mymarketnews.ams.usda.gov/viewReport/1901",
+     "pdf": "https://www.ams.usda.gov/mnreports/ams_1901.pdf",
+     "classes": {
+      "breaker": [
+       {
+        "dressing": "Average",
+        "head": 2,
+        "avg_wt": 1530,
+        "cwt": 132.53,
+        "per_head": 2027.71,
+        "lo": 131.0,
+        "hi": 134.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 15,
+        "avg_wt": 1545,
+        "cwt": 112.21,
+        "per_head": 1733.64,
+        "lo": 109.0,
+        "hi": 116.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low",
+        "head": 6,
+        "avg_wt": 1576,
+        "cwt": 107.7,
+        "per_head": 1697.35,
+        "lo": 105.0,
+        "hi": 109.0,
+        "rows": 1
+       }
+      ],
+      "boner": [
+       {
+        "dressing": "Average",
+        "head": 7,
+        "avg_wt": 1340,
+        "cwt": 125.71,
+        "per_head": 1684.51,
+        "lo": 125.0,
+        "hi": 127.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Average Return to Feed",
+        "head": 32,
+        "avg_wt": 1355,
+        "cwt": 129.0,
+        "per_head": 1747.95,
+        "lo": 126.0,
+        "hi": 136.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High Return to Feed",
+        "head": 9,
+        "avg_wt": 1324,
+        "cwt": 138.34,
+        "per_head": 1831.62,
+        "lo": 137.0,
+        "hi": 141.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 15,
+        "avg_wt": 1389,
+        "cwt": 120.65,
+        "per_head": 1675.83,
+        "lo": 117.0,
+        "hi": 124.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low",
+        "head": 11,
+        "avg_wt": 1397,
+        "cwt": 108.06,
+        "per_head": 1509.6,
+        "lo": 92.0,
+        "hi": 116.0,
+        "rows": 1
+       }
+      ],
+      "lean": [
+       {
+        "dressing": "Average",
+        "head": 46,
+        "avg_wt": 1131,
+        "cwt": 128.77,
+        "per_head": 1456.39,
+        "lo": 126.0,
+        "hi": 138.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Average Return to Feed",
+        "head": 192,
+        "avg_wt": 1155,
+        "cwt": 133.17,
+        "per_head": 1538.11,
+        "lo": 126.0,
+        "hi": 138.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 1,
+        "avg_wt": 1215,
+        "cwt": 141.0,
+        "per_head": 1713.15,
+        "lo": 141.0,
+        "hi": 141.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High Return to Feed",
+        "head": 116,
+        "avg_wt": 1146,
+        "cwt": 141.61,
+        "per_head": 1622.85,
+        "lo": 139.0,
+        "hi": 145.5,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 56,
+        "avg_wt": 1086,
+        "cwt": 120.65,
+        "per_head": 1310.26,
+        "lo": 117.0,
+        "hi": 125.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low Return to Feed",
+        "head": 25,
+        "avg_wt": 1123,
+        "cwt": 121.15,
+        "per_head": 1360.51,
+        "lo": 116.0,
+        "hi": 125.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low",
+        "head": 86,
+        "avg_wt": 1078,
+        "cwt": 103.64,
+        "per_head": 1117.24,
+        "lo": 90.0,
+        "hi": 115.0,
+        "rows": 1
+       }
+      ],
+      "premium-white": [
+       {
+        "dressing": "Very Low",
+        "head": 4,
+        "avg_wt": 1794,
+        "cwt": 110.62,
+        "per_head": 1984.52,
+        "lo": 106.0,
+        "hi": 113.0,
+        "rows": 1
+       }
+      ],
+      "bulls": [
+       {
+        "dressing": "Average",
+        "head": 7,
+        "avg_wt": 1828,
+        "cwt": 155.76,
+        "per_head": 2847.29,
+        "lo": 152.0,
+        "hi": 160.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 8,
+        "avg_wt": 1918,
+        "cwt": 169.95,
+        "per_head": 3259.64,
+        "lo": 163.0,
+        "hi": 175.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 4,
+        "avg_wt": 1344,
+        "cwt": 144.02,
+        "per_head": 1935.63,
+        "lo": 134.0,
+        "hi": 147.5,
+        "rows": 1
+       }
+      ]
+     },
+     "refused": []
+    },
     {
      "date": "2026-11-03",
      "receipts": 1034,
@@ -1279,206 +1489,6 @@
       ]
      },
      "refused": []
-    },
-    {
-     "date": "2026-10-28",
-     "receipts": 1131,
-     "report": "1901",
-     "url": "https://mymarketnews.ams.usda.gov/viewReport/1901",
-     "pdf": "https://www.ams.usda.gov/mnreports/ams_1901.pdf",
-     "classes": {
-      "breaker": [
-       {
-        "dressing": "Average",
-        "head": 4,
-        "avg_wt": 1552,
-        "cwt": 129.34,
-        "per_head": 2007.36,
-        "lo": 127.0,
-        "hi": 135.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 3,
-        "avg_wt": 1541,
-        "cwt": 148.55,
-        "per_head": 2289.16,
-        "lo": 146.0,
-        "hi": 152.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 5,
-        "avg_wt": 1610,
-        "cwt": 118.0,
-        "per_head": 1899.8,
-        "lo": 118.0,
-        "hi": 118.0,
-        "rows": 1
-       }
-      ],
-      "boner": [
-       {
-        "dressing": "Average",
-        "head": 8,
-        "avg_wt": 1407,
-        "cwt": 129.75,
-        "per_head": 1825.58,
-        "lo": 125.0,
-        "hi": 138.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 7,
-        "avg_wt": 1380,
-        "cwt": 142.13,
-        "per_head": 1961.39,
-        "lo": 141.0,
-        "hi": 147.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High Return to Feed",
-        "head": 1,
-        "avg_wt": 1355,
-        "cwt": 141.0,
-        "per_head": 1910.55,
-        "lo": 141.0,
-        "hi": 141.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 15,
-        "avg_wt": 1376,
-        "cwt": 114.0,
-        "per_head": 1568.64,
-        "lo": 110.0,
-        "hi": 123.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Very Low",
-        "head": 7,
-        "avg_wt": 1407,
-        "cwt": 107.83,
-        "per_head": 1517.17,
-        "lo": 104.0,
-        "hi": 109.5,
-        "rows": 1
-       }
-      ],
-      "lean": [
-       {
-        "dressing": "Average",
-        "head": 25,
-        "avg_wt": 1205,
-        "cwt": 134.08,
-        "per_head": 1615.66,
-        "lo": 128.0,
-        "hi": 138.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Average Return to Feed",
-        "head": 58,
-        "avg_wt": 1106,
-        "cwt": 136.41,
-        "per_head": 1508.69,
-        "lo": 128.0,
-        "hi": 139.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High Return to Feed",
-        "head": 93,
-        "avg_wt": 1184,
-        "cwt": 144.3,
-        "per_head": 1708.51,
-        "lo": 140.0,
-        "hi": 157.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 48,
-        "avg_wt": 1106,
-        "cwt": 113.9,
-        "per_head": 1259.73,
-        "lo": 110.0,
-        "hi": 125.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low Return to Feed",
-        "head": 70,
-        "avg_wt": 1040,
-        "cwt": 115.45,
-        "per_head": 1200.68,
-        "lo": 108.5,
-        "hi": 123.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Very Low",
-        "head": 50,
-        "avg_wt": 1081,
-        "cwt": 100.44,
-        "per_head": 1085.76,
-        "lo": 92.0,
-        "hi": 109.0,
-        "rows": 1
-       }
-      ],
-      "premium-white": [
-       {
-        "dressing": "Low",
-        "head": 4,
-        "avg_wt": 1795,
-        "cwt": 116.86,
-        "per_head": 2097.64,
-        "lo": 109.0,
-        "hi": 121.0,
-        "rows": 1
-       }
-      ],
-      "bulls": [
-       {
-        "dressing": "Average",
-        "head": 11,
-        "avg_wt": 1634,
-        "cwt": 154.71,
-        "per_head": 2527.96,
-        "lo": 151.0,
-        "hi": 160.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 14,
-        "avg_wt": 1854,
-        "cwt": 173.39,
-        "per_head": 3214.65,
-        "lo": 167.0,
-        "hi": 177.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 4,
-        "avg_wt": 1240,
-        "cwt": 146.34,
-        "per_head": 1814.62,
-        "lo": 143.0,
-        "hi": 149.0,
-        "rows": 1
-       }
-      ]
-     },
-     "refused": []
     }
    ],
    "slug": "1901",
@@ -1486,7 +1496,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -1497,6 +1507,60 @@
    "lon": -81.86,
    "id": "arcadia-fl",
    "sales": [
+    {
+     "date": "2026-11-11",
+     "receipts": 1008,
+     "report": "1422",
+     "url": "https://mymarketnews.ams.usda.gov/viewReport/1422",
+     "pdf": "https://www.ams.usda.gov/mnreports/ams_1422.pdf",
+     "classes": {
+      "boner": [
+       {
+        "dressing": "Average",
+        "head": 34,
+        "avg_wt": 1162,
+        "cwt": 117.45,
+        "per_head": 1364.77,
+        "lo": 112.0,
+        "hi": 122.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 17,
+        "avg_wt": 1274,
+        "cwt": 127.25,
+        "per_head": 1621.16,
+        "lo": 126.0,
+        "hi": 130.0,
+        "rows": 1
+       }
+      ],
+      "lean": [
+       {
+        "dressing": "Average",
+        "head": 38,
+        "avg_wt": 1094,
+        "cwt": 116.57,
+        "per_head": 1275.28,
+        "lo": 112.0,
+        "hi": 121.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 17,
+        "avg_wt": 1006,
+        "cwt": 103.47,
+        "per_head": 1040.91,
+        "lo": 100.0,
+        "hi": 110.0,
+        "rows": 1
+       }
+      ]
+     },
+     "refused": []
+    },
     {
      "date": "2026-11-09",
      "receipts": 871,
@@ -1550,68 +1614,14 @@
       ]
      },
      "refused": []
-    },
-    {
-     "date": "2026-11-04",
-     "receipts": 877,
-     "report": "1422",
-     "url": "https://mymarketnews.ams.usda.gov/viewReport/1422",
-     "pdf": "https://www.ams.usda.gov/mnreports/ams_1422.pdf",
-     "classes": {
-      "boner": [
-       {
-        "dressing": "Average",
-        "head": 45,
-        "avg_wt": 1225,
-        "cwt": 127.42,
-        "per_head": 1560.89,
-        "lo": 121.0,
-        "hi": 134.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 9,
-        "avg_wt": 1337,
-        "cwt": 137.63,
-        "per_head": 1840.11,
-        "lo": 136.0,
-        "hi": 141.0,
-        "rows": 1
-       }
-      ],
-      "lean": [
-       {
-        "dressing": "Average",
-        "head": 44,
-        "avg_wt": 1380,
-        "cwt": 119.2,
-        "per_head": 1644.96,
-        "lo": 116.0,
-        "hi": 125.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 31,
-        "avg_wt": 1174,
-        "cwt": 110.04,
-        "per_head": 1291.87,
-        "lo": 105.0,
-        "hi": 114.0,
-        "rows": 1
-       }
-      ]
-     },
-     "refused": []
     }
    ],
-   "slug": "1609",
-   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1609",
+   "slug": "1422",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1422",
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -1748,7 +1758,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -2011,7 +2021,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -2024,7 +2034,7 @@
    "status": {
     "ok": false,
     "note": "no slaughter cow table in this run's reports",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -2481,7 +2491,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -2746,7 +2756,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -3029,7 +3039,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -3262,7 +3272,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -3275,7 +3285,7 @@
    "status": {
     "ok": false,
     "note": "no slaughter cow table in this run's reports",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -3286,6 +3296,134 @@
    "lon": -85.14,
    "id": "albany-ky",
    "sales": [
+    {
+     "date": "2026-11-11",
+     "receipts": 388,
+     "report": "2189",
+     "url": "https://mymarketnews.ams.usda.gov/viewReport/2189",
+     "pdf": "https://www.ams.usda.gov/mnreports/ams_2189.pdf",
+     "classes": {
+      "breaker": [
+       {
+        "dressing": "Average",
+        "head": 1,
+        "avg_wt": 1545,
+        "cwt": 111.0,
+        "per_head": 1714.95,
+        "lo": 111.0,
+        "hi": 111.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 1,
+        "avg_wt": 1625,
+        "cwt": 119.0,
+        "per_head": 1933.75,
+        "lo": 119.0,
+        "hi": 119.0,
+        "rows": 1
+       }
+      ],
+      "boner": [
+       {
+        "dressing": "Average",
+        "head": 6,
+        "avg_wt": 1330,
+        "cwt": 108.96,
+        "per_head": 1449.17,
+        "lo": 104.0,
+        "hi": 113.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 2,
+        "avg_wt": 1413,
+        "cwt": 115.51,
+        "per_head": 1632.16,
+        "lo": 115.0,
+        "hi": 116.0,
+        "rows": 1
+       }
+      ],
+      "lean": [
+       {
+        "dressing": "Average",
+        "head": 8,
+        "avg_wt": 1120,
+        "cwt": 99.39,
+        "per_head": 1113.17,
+        "lo": 95.0,
+        "hi": 104.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 4,
+        "avg_wt": 1170,
+        "cwt": 110.76,
+        "per_head": 1295.89,
+        "lo": 106.0,
+        "hi": 115.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 12,
+        "avg_wt": 1132,
+        "cwt": 87.08,
+        "per_head": 985.75,
+        "lo": 80.0,
+        "hi": 92.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low",
+        "head": 3,
+        "avg_wt": 1043,
+        "cwt": 65.95,
+        "per_head": 687.86,
+        "lo": 60.0,
+        "hi": 72.0,
+        "rows": 1
+       }
+      ],
+      "bulls": [
+       {
+        "dressing": "Average",
+        "head": 1,
+        "avg_wt": 1905,
+        "cwt": 162.0,
+        "per_head": 3086.1,
+        "lo": 162.0,
+        "hi": 162.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 4,
+        "avg_wt": 1804,
+        "cwt": 179.44,
+        "per_head": 3237.1,
+        "lo": 175.0,
+        "hi": 184.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 3,
+        "avg_wt": 1630,
+        "cwt": 152.77,
+        "per_head": 2490.15,
+        "lo": 149.0,
+        "hi": 157.0,
+        "rows": 1
+       }
+      ]
+     },
+     "refused": []
+    },
     {
      "date": "2026-11-04",
      "receipts": 255,
@@ -3393,134 +3531,6 @@
       ]
      },
      "refused": []
-    },
-    {
-     "date": "2026-10-28",
-     "receipts": 657,
-     "report": "2189",
-     "url": "https://mymarketnews.ams.usda.gov/viewReport/2189",
-     "pdf": "https://www.ams.usda.gov/mnreports/ams_2189.pdf",
-     "classes": {
-      "breaker": [
-       {
-        "dressing": "Average",
-        "head": 6,
-        "avg_wt": 1528,
-        "cwt": 122.0,
-        "per_head": 1864.16,
-        "lo": 116.0,
-        "hi": 125.0,
-        "rows": 1
-       }
-      ],
-      "boner": [
-       {
-        "dressing": "Average",
-        "head": 15,
-        "avg_wt": 1272,
-        "cwt": 120.73,
-        "per_head": 1535.69,
-        "lo": 117.0,
-        "hi": 127.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 7,
-        "avg_wt": 1326,
-        "cwt": 130.09,
-        "per_head": 1724.99,
-        "lo": 128.0,
-        "hi": 134.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 1,
-        "avg_wt": 1365,
-        "cwt": 110.0,
-        "per_head": 1501.5,
-        "lo": 110.0,
-        "hi": 110.0,
-        "rows": 1
-       }
-      ],
-      "lean": [
-       {
-        "dressing": "Average",
-        "head": 9,
-        "avg_wt": 1097,
-        "cwt": 110.33,
-        "per_head": 1210.32,
-        "lo": 108.0,
-        "hi": 116.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 2,
-        "avg_wt": 1120,
-        "cwt": 124.0,
-        "per_head": 1388.8,
-        "lo": 124.0,
-        "hi": 124.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 7,
-        "avg_wt": 1159,
-        "cwt": 100.59,
-        "per_head": 1165.84,
-        "lo": 96.0,
-        "hi": 104.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Very Low",
-        "head": 3,
-        "avg_wt": 933,
-        "cwt": 79.07,
-        "per_head": 737.72,
-        "lo": 70.0,
-        "hi": 84.0,
-        "rows": 1
-       }
-      ],
-      "bulls": [
-       {
-        "dressing": "Average",
-        "head": 8,
-        "avg_wt": 1676,
-        "cwt": 172.02,
-        "per_head": 2883.06,
-        "lo": 165.0,
-        "hi": 175.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 2,
-        "avg_wt": 2035,
-        "cwt": 183.76,
-        "per_head": 3739.52,
-        "lo": 181.0,
-        "hi": 186.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 3,
-        "avg_wt": 1547,
-        "cwt": 148.85,
-        "per_head": 2302.71,
-        "lo": 131.0,
-        "hi": 157.0,
-        "rows": 1
-       }
-      ]
-     },
-     "refused": []
     }
    ],
    "slug": "2189",
@@ -3528,7 +3538,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -3761,7 +3771,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -3876,7 +3886,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -4109,7 +4119,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -4372,7 +4382,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -4645,7 +4655,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -4904,7 +4914,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -5147,7 +5157,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -5242,7 +5252,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -5535,7 +5545,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -5548,7 +5558,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    },
    "sales": [
     {
@@ -5750,6 +5760,94 @@
    "id": "mount-sterling-ky",
    "sales": [
     {
+     "date": "2026-11-11",
+     "receipts": 508,
+     "report": "2202",
+     "url": "https://mymarketnews.ams.usda.gov/viewReport/2202",
+     "pdf": "https://www.ams.usda.gov/mnreports/ams_2202.pdf",
+     "classes": {
+      "breaker": [
+       {
+        "dressing": "Average",
+        "head": 16,
+        "avg_wt": 1508,
+        "cwt": 119.49,
+        "per_head": 1801.91,
+        "lo": 110.0,
+        "hi": 124.0,
+        "rows": 1
+       }
+      ],
+      "boner": [
+       {
+        "dressing": "Average",
+        "head": 7,
+        "avg_wt": 1276,
+        "cwt": 114.89,
+        "per_head": 1466.0,
+        "lo": 111.0,
+        "hi": 120.0,
+        "rows": 1
+       }
+      ],
+      "lean": [
+       {
+        "dressing": "Average",
+        "head": 10,
+        "avg_wt": 1311,
+        "cwt": 109.13,
+        "per_head": 1430.69,
+        "lo": 104.0,
+        "hi": 115.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 4,
+        "avg_wt": 1034,
+        "cwt": 85.96,
+        "per_head": 888.83,
+        "lo": 80.0,
+        "hi": 90.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low",
+        "head": 3,
+        "avg_wt": 973,
+        "cwt": 61.81,
+        "per_head": 601.41,
+        "lo": 52.0,
+        "hi": 69.0,
+        "rows": 1
+       }
+      ],
+      "bulls": [
+       {
+        "dressing": "Average",
+        "head": 2,
+        "avg_wt": 1615,
+        "cwt": 171.86,
+        "per_head": 2775.54,
+        "lo": 169.0,
+        "hi": 175.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 3,
+        "avg_wt": 1543,
+        "cwt": 157.58,
+        "per_head": 2431.46,
+        "lo": 156.0,
+        "hi": 161.0,
+        "rows": 1
+       }
+      ]
+     },
+     "refused": []
+    },
+    {
      "date": "2026-11-04",
      "receipts": 408,
      "report": "2202",
@@ -5866,114 +5964,6 @@
       ]
      },
      "refused": []
-    },
-    {
-     "date": "2026-10-28",
-     "receipts": 612,
-     "report": "2202",
-     "url": "https://mymarketnews.ams.usda.gov/viewReport/2202",
-     "pdf": "https://www.ams.usda.gov/mnreports/ams_2202.pdf",
-     "classes": {
-      "breaker": [
-       {
-        "dressing": "Average",
-        "head": 5,
-        "avg_wt": 1518,
-        "cwt": 115.45,
-        "per_head": 1752.53,
-        "lo": 110.0,
-        "hi": 120.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 2,
-        "avg_wt": 1390,
-        "cwt": 129.0,
-        "per_head": 1793.1,
-        "lo": 129.0,
-        "hi": 129.0,
-        "rows": 1
-       }
-      ],
-      "boner": [
-       {
-        "dressing": "Average",
-        "head": 2,
-        "avg_wt": 1268,
-        "cwt": 116.65,
-        "per_head": 1479.12,
-        "lo": 112.0,
-        "hi": 122.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 1,
-        "avg_wt": 1145,
-        "cwt": 129.0,
-        "per_head": 1477.05,
-        "lo": 129.0,
-        "hi": 129.0,
-        "rows": 1
-       }
-      ],
-      "lean": [
-       {
-        "dressing": "Average",
-        "head": 8,
-        "avg_wt": 1273,
-        "cwt": 108.16,
-        "per_head": 1376.88,
-        "lo": 99.0,
-        "hi": 120.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 6,
-        "avg_wt": 1101,
-        "cwt": 84.09,
-        "per_head": 925.83,
-        "lo": 76.0,
-        "hi": 92.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Very Low",
-        "head": 1,
-        "avg_wt": 870,
-        "cwt": 40.0,
-        "per_head": 348.0,
-        "lo": 40.0,
-        "hi": 40.0,
-        "rows": 1
-       }
-      ],
-      "bulls": [
-       {
-        "dressing": "Average",
-        "head": 4,
-        "avg_wt": 1825,
-        "cwt": 176.59,
-        "per_head": 3222.77,
-        "lo": 174.0,
-        "hi": 180.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 1,
-        "avg_wt": 1620,
-        "cwt": 188.0,
-        "per_head": 3045.6,
-        "lo": 188.0,
-        "hi": 188.0,
-        "rows": 1
-       }
-      ]
-     },
-     "refused": []
     }
    ],
    "slug": "2202",
@@ -5981,7 +5971,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -6254,7 +6244,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -6465,7 +6455,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -6706,7 +6696,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -6909,7 +6899,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -7162,7 +7152,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -7465,7 +7455,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -7748,7 +7738,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -8041,7 +8031,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -8334,7 +8324,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -8525,7 +8515,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -8892,7 +8882,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -9135,7 +9125,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -9146,6 +9136,144 @@
    "lon": -94.31,
    "id": "joplin-mo",
    "sales": [
+    {
+     "date": "2026-11-11",
+     "receipts": 769,
+     "report": "1797",
+     "url": "https://mymarketnews.ams.usda.gov/viewReport/1797",
+     "pdf": "https://www.ams.usda.gov/mnreports/ams_1797.pdf",
+     "classes": {
+      "breaker": [
+       {
+        "dressing": "Average",
+        "head": 45,
+        "avg_wt": 1506,
+        "cwt": 123.48,
+        "per_head": 1859.61,
+        "lo": 115.0,
+        "hi": 129.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 11,
+        "avg_wt": 1641,
+        "cwt": 134.07,
+        "per_head": 2200.09,
+        "lo": 130.0,
+        "hi": 141.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 22,
+        "avg_wt": 1470,
+        "cwt": 103.42,
+        "per_head": 1520.27,
+        "lo": 90.0,
+        "hi": 113.0,
+        "rows": 1
+       }
+      ],
+      "boner": [
+       {
+        "dressing": "Average",
+        "head": 49,
+        "avg_wt": 1251,
+        "cwt": 122.45,
+        "per_head": 1531.85,
+        "lo": 115.0,
+        "hi": 130.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 16,
+        "avg_wt": 1318,
+        "cwt": 131.93,
+        "per_head": 1738.84,
+        "lo": 130.0,
+        "hi": 135.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 60,
+        "avg_wt": 1224,
+        "cwt": 102.01,
+        "per_head": 1248.6,
+        "lo": 90.0,
+        "hi": 112.5,
+        "rows": 1
+       }
+      ],
+      "lean": [
+       {
+        "dressing": "Average",
+        "head": 33,
+        "avg_wt": 1064,
+        "cwt": 111.67,
+        "per_head": 1188.17,
+        "lo": 107.0,
+        "hi": 120.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 6,
+        "avg_wt": 1002,
+        "cwt": 124.95,
+        "per_head": 1252.0,
+        "lo": 120.0,
+        "hi": 130.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 68,
+        "avg_wt": 1059,
+        "cwt": 95.21,
+        "per_head": 1008.27,
+        "lo": 85.0,
+        "hi": 105.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low",
+        "head": 49,
+        "avg_wt": 1018,
+        "cwt": 76.24,
+        "per_head": 776.12,
+        "lo": 57.5,
+        "hi": 85.0,
+        "rows": 1
+       }
+      ],
+      "bulls": [
+       {
+        "dressing": "Average",
+        "head": 30,
+        "avg_wt": 1820,
+        "cwt": 178.75,
+        "per_head": 3253.25,
+        "lo": 165.0,
+        "hi": 192.5,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 17,
+        "avg_wt": 1592,
+        "cwt": 157.85,
+        "per_head": 2512.97,
+        "lo": 129.0,
+        "hi": 170.0,
+        "rows": 1
+       }
+      ]
+     },
+     "refused": []
+    },
     {
      "date": "2026-11-04",
      "receipts": 921,
@@ -9315,154 +9443,6 @@
       ]
      },
      "refused": []
-    },
-    {
-     "date": "2026-10-28",
-     "receipts": 830,
-     "report": "1797",
-     "url": "https://mymarketnews.ams.usda.gov/viewReport/1797",
-     "pdf": "https://www.ams.usda.gov/mnreports/ams_1797.pdf",
-     "classes": {
-      "breaker": [
-       {
-        "dressing": "Average",
-        "head": 60,
-        "avg_wt": 1459,
-        "cwt": 130.18,
-        "per_head": 1899.33,
-        "lo": 121.0,
-        "hi": 138.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 35,
-        "avg_wt": 1526,
-        "cwt": 140.66,
-        "per_head": 2146.47,
-        "lo": 138.0,
-        "hi": 146.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 22,
-        "avg_wt": 1506,
-        "cwt": 115.85,
-        "per_head": 1744.7,
-        "lo": 105.0,
-        "hi": 121.0,
-        "rows": 1
-       }
-      ],
-      "boner": [
-       {
-        "dressing": "Average",
-        "head": 120,
-        "avg_wt": 1224,
-        "cwt": 127.61,
-        "per_head": 1561.95,
-        "lo": 120.0,
-        "hi": 135.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 36,
-        "avg_wt": 1197,
-        "cwt": 138.83,
-        "per_head": 1661.8,
-        "lo": 135.0,
-        "hi": 145.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 19,
-        "avg_wt": 1248,
-        "cwt": 109.56,
-        "per_head": 1367.31,
-        "lo": 97.5,
-        "hi": 117.5,
-        "rows": 1
-       }
-      ],
-      "lean": [
-       {
-        "dressing": "Average",
-        "head": 29,
-        "avg_wt": 1071,
-        "cwt": 119.85,
-        "per_head": 1283.59,
-        "lo": 115.0,
-        "hi": 125.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 11,
-        "avg_wt": 1020,
-        "cwt": 132.01,
-        "per_head": 1346.5,
-        "lo": 130.0,
-        "hi": 135.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 36,
-        "avg_wt": 1048,
-        "cwt": 105.78,
-        "per_head": 1108.57,
-        "lo": 95.0,
-        "hi": 115.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Very Low",
-        "head": 30,
-        "avg_wt": 965,
-        "cwt": 81.98,
-        "per_head": 791.11,
-        "lo": 62.0,
-        "hi": 92.5,
-        "rows": 1
-       }
-      ],
-      "bulls": [
-       {
-        "dressing": "Average",
-        "head": 27,
-        "avg_wt": 1730,
-        "cwt": 178.68,
-        "per_head": 3091.16,
-        "lo": 170.0,
-        "hi": 191.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High Return to Feed",
-        "head": 4,
-        "avg_wt": 1175,
-        "cwt": 200.0,
-        "per_head": 2350.0,
-        "lo": 200.0,
-        "hi": 200.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 11,
-        "avg_wt": 1464,
-        "cwt": 158.96,
-        "per_head": 2327.17,
-        "lo": 155.0,
-        "hi": 170.0,
-        "rows": 1
-       }
-      ]
-     },
-     "refused": []
     }
    ],
    "slug": "1797",
@@ -9470,7 +9450,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -9703,7 +9683,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -9936,7 +9916,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -9947,6 +9927,124 @@
    "lon": -90.41,
    "id": "farmington-mo",
    "sales": [
+    {
+     "date": "2026-11-11",
+     "receipts": 603,
+     "report": "1812",
+     "url": "https://mymarketnews.ams.usda.gov/viewReport/1812",
+     "pdf": "https://www.ams.usda.gov/mnreports/ams_1812.pdf",
+     "classes": {
+      "breaker": [
+       {
+        "dressing": "Average",
+        "head": 3,
+        "avg_wt": 1402,
+        "cwt": 112.46,
+        "per_head": 1576.69,
+        "lo": 110.0,
+        "hi": 117.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 1,
+        "avg_wt": 1540,
+        "cwt": 122.0,
+        "per_head": 1878.8,
+        "lo": 122.0,
+        "hi": 122.0,
+        "rows": 1
+       }
+      ],
+      "boner": [
+       {
+        "dressing": "Average",
+        "head": 10,
+        "avg_wt": 1261,
+        "cwt": 110.12,
+        "per_head": 1388.61,
+        "lo": 105.0,
+        "hi": 116.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 10,
+        "avg_wt": 1216,
+        "cwt": 121.54,
+        "per_head": 1477.93,
+        "lo": 116.0,
+        "hi": 125.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 1,
+        "avg_wt": 1415,
+        "cwt": 100.0,
+        "per_head": 1415.0,
+        "lo": 100.0,
+        "hi": 100.0,
+        "rows": 1
+       }
+      ],
+      "lean": [
+       {
+        "dressing": "Average",
+        "head": 10,
+        "avg_wt": 1017,
+        "cwt": 92.77,
+        "per_head": 943.47,
+        "lo": 75.0,
+        "hi": 105.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 1,
+        "avg_wt": 970,
+        "cwt": 50.0,
+        "per_head": 485.0,
+        "lo": 50.0,
+        "hi": 50.0,
+        "rows": 1
+       }
+      ],
+      "bulls": [
+       {
+        "dressing": "Average",
+        "head": 2,
+        "avg_wt": 1593,
+        "cwt": 158.46,
+        "per_head": 2524.27,
+        "lo": 157.0,
+        "hi": 160.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 7,
+        "avg_wt": 1909,
+        "cwt": 176.79,
+        "per_head": 3374.92,
+        "lo": 165.0,
+        "hi": 193.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 2,
+        "avg_wt": 1235,
+        "cwt": 138.66,
+        "per_head": 1712.45,
+        "lo": 120.0,
+        "hi": 152.0,
+        "rows": 1
+       }
+      ]
+     },
+     "refused": []
+    },
     {
      "date": "2026-11-04",
      "receipts": 1281,
@@ -10054,134 +10152,6 @@
       ]
      },
      "refused": []
-    },
-    {
-     "date": "2026-10-28",
-     "receipts": 434,
-     "report": "1812",
-     "url": "https://mymarketnews.ams.usda.gov/viewReport/1812",
-     "pdf": "https://www.ams.usda.gov/mnreports/ams_1812.pdf",
-     "classes": {
-      "breaker": [
-       {
-        "dressing": "Average",
-        "head": 1,
-        "avg_wt": 1375,
-        "cwt": 125.0,
-        "per_head": 1718.75,
-        "lo": 125.0,
-        "hi": 125.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 3,
-        "avg_wt": 1368,
-        "cwt": 133.07,
-        "per_head": 1820.4,
-        "lo": 130.0,
-        "hi": 137.0,
-        "rows": 1
-       }
-      ],
-      "boner": [
-       {
-        "dressing": "Average",
-        "head": 11,
-        "avg_wt": 1267,
-        "cwt": 118.72,
-        "per_head": 1504.18,
-        "lo": 117.0,
-        "hi": 125.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 9,
-        "avg_wt": 1247,
-        "cwt": 129.93,
-        "per_head": 1620.23,
-        "lo": 125.0,
-        "hi": 135.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 2,
-        "avg_wt": 1448,
-        "cwt": 110.0,
-        "per_head": 1592.8,
-        "lo": 110.0,
-        "hi": 110.0,
-        "rows": 1
-       }
-      ],
-      "lean": [
-       {
-        "dressing": "Average",
-        "head": 9,
-        "avg_wt": 1091,
-        "cwt": 108.28,
-        "per_head": 1181.33,
-        "lo": 92.0,
-        "hi": 115.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 2,
-        "avg_wt": 963,
-        "cwt": 124.66,
-        "per_head": 1200.48,
-        "lo": 122.0,
-        "hi": 127.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 4,
-        "avg_wt": 969,
-        "cwt": 72.59,
-        "per_head": 703.4,
-        "lo": 60.0,
-        "hi": 80.0,
-        "rows": 1
-       }
-      ],
-      "bulls": [
-       {
-        "dressing": "Average",
-        "head": 3,
-        "avg_wt": 1712,
-        "cwt": 166.6,
-        "per_head": 2852.19,
-        "lo": 165.0,
-        "hi": 167.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 3,
-        "avg_wt": 1697,
-        "cwt": 175.39,
-        "per_head": 2976.37,
-        "lo": 175.0,
-        "hi": 176.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 3,
-        "avg_wt": 1292,
-        "cwt": 153.07,
-        "per_head": 1977.66,
-        "lo": 150.0,
-        "hi": 155.0,
-        "rows": 1
-       }
-      ]
-     },
-     "refused": []
     }
    ],
    "slug": "1812",
@@ -10189,7 +10159,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -10330,7 +10300,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -10497,7 +10467,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -10854,7 +10824,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -11037,7 +11007,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -11292,7 +11262,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -11465,7 +11435,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -11708,7 +11678,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -12033,7 +12003,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -12336,7 +12306,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -12653,7 +12623,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -12758,7 +12728,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -12991,7 +12961,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -13304,7 +13274,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -13315,6 +13285,114 @@
    "lon": -93.53,
    "id": "windsor-mo",
    "sales": [
+    {
+     "date": "2026-11-11",
+     "receipts": 780,
+     "report": "1622",
+     "url": "https://mymarketnews.ams.usda.gov/viewReport/1622",
+     "pdf": "https://www.ams.usda.gov/mnreports/ams_1622.pdf",
+     "classes": {
+      "breaker": [
+       {
+        "dressing": "Average",
+        "head": 11,
+        "avg_wt": 1519,
+        "cwt": 116.76,
+        "per_head": 1773.58,
+        "lo": 113.0,
+        "hi": 124.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 3,
+        "avg_wt": 1512,
+        "cwt": 110.4,
+        "per_head": 1669.25,
+        "lo": 107.0,
+        "hi": 114.0,
+        "rows": 1
+       }
+      ],
+      "boner": [
+       {
+        "dressing": "Average",
+        "head": 4,
+        "avg_wt": 1234,
+        "cwt": 114.86,
+        "per_head": 1417.37,
+        "lo": 110.0,
+        "hi": 118.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 6,
+        "avg_wt": 1281,
+        "cwt": 105.95,
+        "per_head": 1357.22,
+        "lo": 102.0,
+        "hi": 108.0,
+        "rows": 1
+       }
+      ],
+      "lean": [
+       {
+        "dressing": "Average",
+        "head": 9,
+        "avg_wt": 1094,
+        "cwt": 99.49,
+        "per_head": 1088.42,
+        "lo": 97.0,
+        "hi": 106.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 5,
+        "avg_wt": 1121,
+        "cwt": 83.41,
+        "per_head": 935.03,
+        "lo": 80.0,
+        "hi": 89.0,
+        "rows": 1
+       }
+      ],
+      "bulls": [
+       {
+        "dressing": "Average",
+        "head": 6,
+        "avg_wt": 1630,
+        "cwt": 174.98,
+        "per_head": 2852.17,
+        "lo": 168.0,
+        "hi": 183.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 3,
+        "avg_wt": 2207,
+        "cwt": 188.04,
+        "per_head": 4150.04,
+        "lo": 187.0,
+        "hi": 189.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 2,
+        "avg_wt": 1485,
+        "cwt": 160.39,
+        "per_head": 2381.79,
+        "lo": 159.0,
+        "hi": 162.0,
+        "rows": 1
+       }
+      ]
+     },
+     "refused": []
+    },
     {
      "date": "2026-11-04",
      "receipts": 869,
@@ -13442,114 +13520,6 @@
       ]
      },
      "refused": []
-    },
-    {
-     "date": "2026-10-28",
-     "receipts": 1847,
-     "report": "1622",
-     "url": "https://mymarketnews.ams.usda.gov/viewReport/1622",
-     "pdf": "https://www.ams.usda.gov/mnreports/ams_1622.pdf",
-     "classes": {
-      "breaker": [
-       {
-        "dressing": "Average",
-        "head": 7,
-        "avg_wt": 1559,
-        "cwt": 122.43,
-        "per_head": 1908.68,
-        "lo": 119.0,
-        "hi": 127.0,
-        "rows": 1
-       }
-      ],
-      "boner": [
-       {
-        "dressing": "Average",
-        "head": 11,
-        "avg_wt": 1235,
-        "cwt": 121.77,
-        "per_head": 1503.86,
-        "lo": 116.0,
-        "hi": 128.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 1,
-        "avg_wt": 1110,
-        "cwt": 131.0,
-        "per_head": 1454.1,
-        "lo": 131.0,
-        "hi": 131.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 2,
-        "avg_wt": 1173,
-        "cwt": 111.52,
-        "per_head": 1308.13,
-        "lo": 108.0,
-        "hi": 115.0,
-        "rows": 1
-       }
-      ],
-      "lean": [
-       {
-        "dressing": "Average",
-        "head": 2,
-        "avg_wt": 1048,
-        "cwt": 100.2,
-        "per_head": 1050.1,
-        "lo": 95.0,
-        "hi": 105.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 1,
-        "avg_wt": 940,
-        "cwt": 90.0,
-        "per_head": 846.0,
-        "lo": 90.0,
-        "hi": 90.0,
-        "rows": 1
-       }
-      ],
-      "bulls": [
-       {
-        "dressing": "Average",
-        "head": 3,
-        "avg_wt": 1717,
-        "cwt": 182.89,
-        "per_head": 3140.22,
-        "lo": 178.0,
-        "hi": 185.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 2,
-        "avg_wt": 2078,
-        "cwt": 190.71,
-        "per_head": 3962.95,
-        "lo": 190.0,
-        "hi": 191.5,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 2,
-        "avg_wt": 1468,
-        "cwt": 167.5,
-        "per_head": 2458.9,
-        "lo": 165.0,
-        "hi": 170.0,
-        "rows": 1
-       }
-      ]
-     },
-     "refused": []
     }
    ],
    "slug": "1622",
@@ -13557,7 +13527,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -14040,7 +14010,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -14051,6 +14021,207 @@
    "lon": -108.5,
    "id": "billings-mt",
    "sales": [
+    {
+     "date": "2026-11-11",
+     "receipts": 2093,
+     "report": "1774",
+     "url": "https://mymarketnews.ams.usda.gov/viewReport/1774",
+     "pdf": "https://www.ams.usda.gov/mnreports/ams_1774.pdf",
+     "classes": {
+      "boner": [
+       {
+        "dressing": "Average",
+        "head": 3,
+        "avg_wt": 1545,
+        "cwt": 110.86,
+        "per_head": 1712.79,
+        "lo": 108.0,
+        "hi": 115.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Average Return to Feed",
+        "head": 348,
+        "avg_wt": 1354,
+        "cwt": 132.55,
+        "per_head": 1794.73,
+        "lo": 124.0,
+        "hi": 136.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High Return to Feed",
+        "head": 4,
+        "avg_wt": 1364,
+        "cwt": 139.26,
+        "per_head": 1899.51,
+        "lo": 137.0,
+        "hi": 140.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 5,
+        "avg_wt": 1429,
+        "cwt": 95.08,
+        "per_head": 1358.69,
+        "lo": 87.5,
+        "hi": 102.5,
+        "rows": 1
+       },
+       {
+        "dressing": "Low Return to Feed",
+        "head": 39,
+        "avg_wt": 1370,
+        "cwt": 117.91,
+        "per_head": 1615.37,
+        "lo": 110.0,
+        "hi": 123.5,
+        "rows": 1
+       }
+      ],
+      "lean": [
+       {
+        "dressing": "Average",
+        "head": 4,
+        "avg_wt": 1104,
+        "cwt": 108.54,
+        "per_head": 1198.28,
+        "lo": 107.0,
+        "hi": 109.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Average Light Weight",
+        "head": 1,
+        "avg_wt": 965,
+        "cwt": 105.0,
+        "per_head": 1013.25,
+        "lo": 105.0,
+        "hi": 105.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Average Return to Feed",
+        "head": 122,
+        "avg_wt": 1194,
+        "cwt": 130.35,
+        "per_head": 1556.38,
+        "lo": 124.5,
+        "hi": 135.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High Return to Feed",
+        "head": 4,
+        "avg_wt": 1226,
+        "cwt": 137.77,
+        "per_head": 1689.06,
+        "lo": 136.0,
+        "hi": 139.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 9,
+        "avg_wt": 1242,
+        "cwt": 87.42,
+        "per_head": 1085.76,
+        "lo": 85.0,
+        "hi": 97.5,
+        "rows": 1
+       },
+       {
+        "dressing": "Low Light Weight",
+        "head": 2,
+        "avg_wt": 948,
+        "cwt": 88.77,
+        "per_head": 841.54,
+        "lo": 82.5,
+        "hi": 95.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low Return to Feed",
+        "head": 62,
+        "avg_wt": 1150,
+        "cwt": 113.31,
+        "per_head": 1303.07,
+        "lo": 100.0,
+        "hi": 124.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low",
+        "head": 1,
+        "avg_wt": 1190,
+        "cwt": 82.5,
+        "per_head": 981.75,
+        "lo": 82.5,
+        "hi": 82.5,
+        "rows": 1
+       },
+       {
+        "dressing": "Very Low Light Weight",
+        "head": 4,
+        "avg_wt": 942,
+        "cwt": 71.43,
+        "per_head": 672.87,
+        "lo": 65.0,
+        "hi": 75.0,
+        "rows": 1
+       }
+      ],
+      "bulls": [
+       {
+        "dressing": "Average",
+        "head": 33,
+        "avg_wt": 1906,
+        "cwt": 175.83,
+        "per_head": 3351.32,
+        "lo": 172.5,
+        "hi": 181.0,
+        "rows": 1
+       },
+       {
+        "dressing": "High",
+        "head": 17,
+        "avg_wt": 1816,
+        "cwt": 182.53,
+        "per_head": 3314.74,
+        "lo": 182.5,
+        "hi": 183.0,
+        "rows": 1
+       },
+       {
+        "dressing": "Low",
+        "head": 8,
+        "avg_wt": 1908,
+        "cwt": 166.8,
+        "per_head": 3182.54,
+        "lo": 157.5,
+        "hi": 169.5,
+        "rows": 1
+       },
+       {
+        "dressing": "Low Return to Feed",
+        "head": 7,
+        "avg_wt": 1534,
+        "cwt": 162.5,
+        "per_head": 2492.75,
+        "lo": 159.0,
+        "hi": 164.0,
+        "rows": 1
+       }
+      ]
+     },
+     "refused": [
+      {
+       "class": "breaker",
+       "why": "text after the last readable row: '4 1550-2005 1695 111.00-119.00 116.43'"
+      }
+     ]
+    },
     {
      "date": "2026-11-06",
      "receipts": 2343,
@@ -14161,272 +14332,14 @@
        "why": "text between rows that is not a row: '30 990-1244 1156 102.50-124.00 114.89'"
       }
      ]
-    },
-    {
-     "date": "2026-11-04",
-     "receipts": 1878,
-     "report": "1774",
-     "url": "https://mymarketnews.ams.usda.gov/viewReport/1774",
-     "pdf": "https://www.ams.usda.gov/mnreports/ams_1774.pdf",
-     "classes": {
-      "breaker": [
-       {
-        "dressing": "Average Return to Feed",
-        "head": 25,
-        "avg_wt": 1506,
-        "cwt": 138.66,
-        "per_head": 2088.22,
-        "lo": 132.0,
-        "hi": 144.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High Return to Feed",
-        "head": 7,
-        "avg_wt": 1559,
-        "cwt": 147.0,
-        "per_head": 2291.73,
-        "lo": 147.0,
-        "hi": 147.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 13,
-        "avg_wt": 1718,
-        "cwt": 110.01,
-        "per_head": 1889.97,
-        "lo": 105.0,
-        "hi": 115.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low Heavy Weight",
-        "head": 1,
-        "avg_wt": 2095,
-        "cwt": 116.0,
-        "per_head": 2430.2,
-        "lo": 116.0,
-        "hi": 116.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low Return to Feed",
-        "head": 17,
-        "avg_wt": 1501,
-        "cwt": 123.94,
-        "per_head": 1860.34,
-        "lo": 118.0,
-        "hi": 131.0,
-        "rows": 1
-       }
-      ],
-      "boner": [
-       {
-        "dressing": "Average",
-        "head": 21,
-        "avg_wt": 1413,
-        "cwt": 112.47,
-        "per_head": 1589.2,
-        "lo": 107.0,
-        "hi": 116.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Average Return to Feed",
-        "head": 366,
-        "avg_wt": 1390,
-        "cwt": 139.86,
-        "per_head": 1944.05,
-        "lo": 126.0,
-        "hi": 146.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High Return to Feed",
-        "head": 73,
-        "avg_wt": 1358,
-        "cwt": 148.47,
-        "per_head": 2016.22,
-        "lo": 147.0,
-        "hi": 155.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 17,
-        "avg_wt": 1426,
-        "cwt": 102.49,
-        "per_head": 1461.51,
-        "lo": 100.0,
-        "hi": 107.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low Return to Feed",
-        "head": 88,
-        "avg_wt": 1380,
-        "cwt": 117.49,
-        "per_head": 1621.36,
-        "lo": 106.0,
-        "hi": 125.0,
-        "rows": 1
-       }
-      ],
-      "lean": [
-       {
-        "dressing": "Average",
-        "head": 19,
-        "avg_wt": 1167,
-        "cwt": 109.2,
-        "per_head": 1274.36,
-        "lo": 106.0,
-        "hi": 117.5,
-        "rows": 1
-       },
-       {
-        "dressing": "Average Light Weight",
-        "head": 1,
-        "avg_wt": 915,
-        "cwt": 107.5,
-        "per_head": 983.62,
-        "lo": 107.5,
-        "hi": 107.5,
-        "rows": 1
-       },
-       {
-        "dressing": "Average Return to Feed",
-        "head": 184,
-        "avg_wt": 1216,
-        "cwt": 135.03,
-        "per_head": 1641.96,
-        "lo": 124.0,
-        "hi": 144.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High Return to Feed",
-        "head": 18,
-        "avg_wt": 1208,
-        "cwt": 146.6,
-        "per_head": 1770.93,
-        "lo": 145.0,
-        "hi": 150.5,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 52,
-        "avg_wt": 1208,
-        "cwt": 97.18,
-        "per_head": 1173.93,
-        "lo": 90.0,
-        "hi": 105.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low Light Weight",
-        "head": 3,
-        "avg_wt": 932,
-        "cwt": 84.62,
-        "per_head": 788.66,
-        "lo": 80.0,
-        "hi": 88.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low Return to Feed",
-        "head": 122,
-        "avg_wt": 1174,
-        "cwt": 113.73,
-        "per_head": 1335.19,
-        "lo": 100.0,
-        "hi": 122.5,
-        "rows": 1
-       },
-       {
-        "dressing": "Very Low",
-        "head": 17,
-        "avg_wt": 1142,
-        "cwt": 82.1,
-        "per_head": 937.58,
-        "lo": 80.0,
-        "hi": 87.5,
-        "rows": 1
-       }
-      ],
-      "bulls": [
-       {
-        "dressing": "Average",
-        "head": 9,
-        "avg_wt": 1991,
-        "cwt": 174.17,
-        "per_head": 3467.72,
-        "lo": 170.0,
-        "hi": 181.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Average Return to Feed",
-        "head": 6,
-        "avg_wt": 1613,
-        "cwt": 176.79,
-        "per_head": 2851.62,
-        "lo": 172.5,
-        "hi": 180.0,
-        "rows": 1
-       },
-       {
-        "dressing": "High",
-        "head": 2,
-        "avg_wt": 2143,
-        "cwt": 182.9,
-        "per_head": 3919.55,
-        "lo": 182.0,
-        "hi": 184.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low",
-        "head": 10,
-        "avg_wt": 1809,
-        "cwt": 163.2,
-        "per_head": 2952.29,
-        "lo": 155.0,
-        "hi": 168.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low Light Weight",
-        "head": 1,
-        "avg_wt": 1495,
-        "cwt": 150.0,
-        "per_head": 2242.5,
-        "lo": 150.0,
-        "hi": 150.0,
-        "rows": 1
-       },
-       {
-        "dressing": "Low Return to Feed",
-        "head": 6,
-        "avg_wt": 1759,
-        "cwt": 163.88,
-        "per_head": 2882.65,
-        "lo": 157.5,
-        "hi": 169.0,
-        "rows": 1
-       }
-      ]
-     },
-     "refused": []
     }
    ],
-   "slug": "1776",
-   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1776",
+   "slug": "1774",
+   "source_url": "https://mymarketnews.ams.usda.gov/viewReport/1774",
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -14909,7 +14822,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -15242,7 +15155,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -15416,7 +15329,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -15669,7 +15582,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -16182,7 +16095,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -16525,7 +16438,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -16901,7 +16814,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -17297,7 +17210,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -17580,7 +17493,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -18013,7 +17926,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -18426,7 +18339,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -18739,7 +18652,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -18928,7 +18841,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -19159,7 +19072,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -19535,7 +19448,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -19878,7 +19791,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -20017,7 +19930,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -20218,7 +20131,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -20491,7 +20404,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -20862,7 +20775,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   },
   {
@@ -21035,7 +20948,7 @@
    "status": {
     "ok": true,
     "note": "",
-    "checked": "2026-11-11T14:43:41Z"
+    "checked": "2026-11-12T01:24:50Z"
    }
   }
  ]
