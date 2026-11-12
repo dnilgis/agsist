@@ -89,18 +89,18 @@
     return (p[C] !== null && co[CMED] && p[PPA] !== null) ? Math.round((p[PPA] / co[CMED] - 1) * 100) : null;
   }
   function popupHtml(f, p) {
-    var co = f.counties[p[CO]], cn = co[CNAME] + ' County, ' + f.st, h = [];
+    var co = f.counties[p[CO]], cn = co[CNAME] + ' County, ' + f.st, h = [], why = [];
     h.push('<div class="lm-pop">');
     h.push('<p><b>' + (p[PPA] !== null ? usd(p[PPA]) + ' an acre' : 'Price per acre not stated') + '</b><br>' + acres(p[AC]) + ' for ' + usd(p[PR]) + '</p>');
-    h.push('<p>' + day(p[WHEN]) + ' &middot; ' + esc(cn) + ' &middot; ' + esc(KINDW[p[KIND]] || '') + '</p>');
+    h.push('<p>' + day(p[WHEN]) + ' &middot; ' + esc(cn) + ', ' + esc(KINDW[p[KIND]] || '') + '</p>');
     if (p[NM]) {
       h.push('<p>Left out of every median: ' + NMW[p[NM]] + '.</p>');
     } else if (p[C] !== null) {
       var pct = offPct(f, p);
       h.push('<p>' + (pct === 0 ? 'Right at' : Math.abs(pct) + '% ' + (pct > 0 ? 'above' : 'below')) + ' the ' + esc(co[CNAME]) + ' County median of ' + usd(co[CMED]) +
         ' an acre (' + co[CN] + ' bare farmland sales over 24 months; usual range ' + (co[CLO] > 0 ? usd(co[CLO]) + ' to ' : 'up to ') + usd(co[CHI]) + ').</p>');
-      if (p[A] & 1) h.push('<p>Over the usual range. Possible reasons: ' + UP_WHY + '.</p>');
-      if (p[A] & 2) h.push('<p>Under the usual range. Possible reasons: ' + DOWN_WHY + '.</p>');
+      if (p[A] & 1) why.push('<p class="lm-note">Over the usual range. Possible reasons: ' + UP_WHY + '.</p>');
+      if (p[A] & 2) why.push('<p class="lm-note">Under the usual range. Possible reasons: ' + DOWN_WHY + '.</p>');
     } else if (!co[CMED]) {
       h.push('<p>' + esc(co[CNAME]) + ' County has under 5 bare farmland sales in 24 months, so no median.</p>');
     } else {
@@ -109,8 +109,9 @@
     if (p[A] & 4) h.push('<p>Among the largest 1% of ' + NAMES[f.st] + ' sales by price.</p>');
     if (p[A] & 8) h.push('<p>Among the largest 1% of ' + NAMES[f.st] + ' sales by acres.</p>');
     h.push('<p class="lm-note">' + esc(placeNote(p[PC], f.places[p[PN]], co[CNAME])) + '</p>');
-    var L = links(f, p);
-    if (L.length) h.push('<p>' + L.map(function (l) { return '<a href="' + esc(l[1]) + '">' + esc(l[0]) + '</a>'; }).join('') + '</p>');
+    var L0 = links(f, p);
+    if (L0.length) h.push('<p class="lm-go">' + L0.map(function (l) { return '<a href="' + esc(l[1]) + '">' + esc(l[0]) + '</a>'; }).join('') + '</p>');
+    h = h.concat(why);
     h.push('</div>');
     return h.join('');
   }
@@ -201,6 +202,11 @@
     var st = story(files, q.st ? [q.st] : files.map(function (f) { return f.st; }), q.mo);
     headEl.textContent = st.head; takeEl.textContent = st.take;
     if (!map) return;
+    if (fit) {
+      var b = shown.length ? L.latLngBounds(shown.map(function (o) { return [o.p[LAT], o.p[LNG]]; })) : null;
+      if (q.at && fit === 'url') map.setView([q.at[0], q.at[1]], q.at[2], { animate: false });
+      else if (b && b.isValid()) map.fitBounds(b, { padding: [12, 12], animate: false, maxZoom: 11 });
+    }
     var z = map.getZoom();
     pinLayer.clearLayers(); ringLayer.clearLayers(); marks = [];
     var hp = [];
@@ -215,15 +221,15 @@
       if (p[NM]) m = L.circleMarker(at, { radius: r, color: '#7d7d79', weight: 1.5, dashArray: '3 2', fill: true, fillColor: '#ffffff', fillOpacity: 0.15 });
       else if (p[C] === null) m = L.circleMarker(at, { radius: r, color: '#444', weight: 1.2, fillColor: '#ffffff', fillOpacity: 0.9 });
       else m = L.circleMarker(at, { radius: r, color: '#ffffff', weight: 1.2, fillColor: COL[String(p[C])], fillOpacity: 0.92 });
-      m.bindPopup(function () { return popupHtml(o.f, p); }, { maxWidth: 290 });
+      m.bindPopup(function () { return popupHtml(o.f, p); }, { maxWidth: 290, maxHeight: box.clientHeight - 60, autoPanPadding: [10, 10] });
       m.addTo(pinLayer); o.m = m; marks.push(o);
       if (ring) L.circleMarker(at, { radius: r + 3, color: GOLD, weight: 2.5, fill: false, interactive: false }).addTo(ringLayer);
     });
-    if (heat) { heat.setLatLngs(hp); heat.setOptions({ max: q.heat === 'p' ? 1 : 2.5 }); if (z >= PINZ) map.removeLayer(heat); else if (!map.hasLayer(heat)) heat.addTo(map); }
-    if (fit) {
-      var b = shown.length ? L.latLngBounds(shown.map(function (o) { return [o.p[LAT], o.p[LNG]]; })) : null;
-      if (q.at && fit === 'url') map.setView([q.at[0], q.at[1]], q.at[2], { animate: false });
-      else if (b && b.isValid()) map.fitBounds(b, { padding: [12, 12], animate: false, maxZoom: 11 });
+    if (heat) {
+      heat.options.max = q.heat === 'p' ? 1 : 2.5;
+      if (z >= PINZ) { if (map.hasLayer(heat)) map.removeLayer(heat); heat._latlngs = hp; }
+      else if (map.hasLayer(heat)) heat.setLatLngs(hp);
+      else { heat._latlngs = hp; heat.addTo(map); }
     }
     drawList();
   }
