@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-06",
+  "updated": "2026-11-12",
   "marketing_year": "2026/27",
   "note": "USDA FAS Export Sales Reporting.",
   "corn": {
@@ -12,7 +12,8 @@
     "prev_year_cumulative_mt": 37360530,
     "prev_year_week": "2025-10-30",
     "vs_prev_year_pct": -33.6,
-    "unknown_outstanding_mt": 3213399
+    "unknown_outstanding_mt": 3213399,
+    "released_at": "2026-11-05T13:30:00Z"
   },
   "soybeans": {
     "weekly_net_mt": 1456120,
@@ -32,7 +33,8 @@
       "week_ending": "2026-10-29",
       "marketing_year": "2026/27"
     },
-    "unknown_outstanding_mt": 5603500
+    "unknown_outstanding_mt": 5603500,
+    "released_at": "2026-11-05T13:30:00Z"
   },
   "wheat": {
     "weekly_net_mt": 538028,
@@ -76,7 +78,12 @@
         "cumulative_mt": 361722,
         "prev_year_cumulative_mt": 293650
       }
-    }
+    },
+    "released_at": "2026-11-05T13:30:00Z"
   },
-  "report_date": "2026-10-29"
+  "report_date": "2026-10-29",
+  "fetched": "2026-11-12T12:54:42Z",
+  "released_at": "2026-11-05T13:30:00Z",
+  "released_basis": "schedule",
+  "released_rule": "week ending Thursday, released the next Thursday 8:30 am ET (Friday after a Thursday holiday)"
 }
