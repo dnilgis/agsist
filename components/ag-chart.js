@@ -370,7 +370,7 @@
     var t0 = utc(view.from), t1 = utc(view.to), mons = [], t = t0;
     while (new Date(t).getUTCDay() !== 1 && t <= t1) t += 864e5;
     for (; t <= t1; t += 7 * 864e5) mons.push(isoOf(t));
-    var need = fs * 4.8;
+    var need = fs * 6.2;
     if (mons.length > 1 && g.x(mons[1]) - g.x(mons[0]) < need) mons = mons.filter(function (d, i) { return i % 2 === 0; });
     var last = view.to, out = mons.filter(function (d) { return g.x(last) - g.x(d) >= fs * 5.6 && g.x(d) - g.L >= 0; });
     out.push(last);
@@ -390,9 +390,10 @@
       o.push(txt(g.L - fs * 0.5, y + fs * 0.35, cfg.tick ? cfg.tick(v) : '$' + (v % 1 ? v.toFixed(1) : v), f + 'fill:' + P.dim, 'end'));
     });
     o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(g.base) + '" y2="' + f1(g.base) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
-    var marks = [];
+    var marks = [], drawn = {};
     view.series.forEach(function (s) { if (!hide[s.key]) s.points.forEach(function (p) { if (p.m) {
-      o.push('<line class="agc-mk" x1="' + f1(g.x(p.d)) + '" x2="' + f1(g.x(p.d)) + '" y1="' + g.T + '" y2="' + f1(g.base) + '" style="stroke:' + P.mut + ';stroke-dasharray:2 3"/>');
+      if (!drawn[p.d]) o.push('<line class="agc-mk" x1="' + f1(g.x(p.d)) + '" x2="' + f1(g.x(p.d)) + '" y1="' + g.T + '" y2="' + f1(g.base) + '" style="stroke:' + P.mut + ';stroke-dasharray:2 3"/>');
+      drawn[p.d] = 1;
       var t = cfg.markLabel ? cfg.markLabel(p, s) : '';
       if (t && !marks.some(function (m) { return m.d === p.d && m.t === t; })) marks.push({ d: p.d, t: t, x: g.x(p.d) });
     } }); });
