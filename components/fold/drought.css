@@ -18,7 +18,8 @@
 #p-drought #dm-county-out{min-height: 1.55em;}
 #p-drought #dm-map-label{min-height: 1.5rem;}
 #p-drought #dm-next-update{min-height: 1.75rem;}
-#p-drought #dm-valid{min-height: 1.2em;}
+/* the map date is its own line with its room held: inline after the source line it wrapped to a third line at 390 px when it landed and moved everything below (0.0063) */
+#p-drought #dm-valid{display: block; font-size: .78rem; line-height: 1.4; min-height: 1.4em;}
 @media (min-width: 392px){#p-drought .dm-answer{min-height: 11.2em;}
 }
 @media (min-width: 412px){#p-drought .dm-answer{min-height: 9.7em;}
