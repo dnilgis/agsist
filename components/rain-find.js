@@ -107,13 +107,13 @@
     function show() {
       if (!hits.length) { close(); return; }
       var SHOW = show_n(), more = hits.length - SHOW, q = norm(input.value), sq = splitState(input.value);
-      var anyNear = shown().some(function (x) { return x.near; }), h0 = hits[0], tip = (hits.length === 1 && h0.via) ? 'Opens ' + h0.name + '\u2019s rain page, the county ' + h0.via.split(',')[0] + ' sits in.' : 'Tap a county to open its rain page.' + (anyNear ? ' A county with no full-year weather station opens the nearest one that has it.' : '');
+      var anyNear = shown().some(function (x) { return x.near; }), h0 = hits[0], tip = (hits.length === 1 && h0.via) ? h0.via.split('|')[0] + ' is in ' + h0.name + '. Pick it to open its rain page.' : 'Pick a county to open its rain page.';
       list.innerHTML = shown().map(function (h, i) {
         return '<li role="option" id="' + lid + '-' + i + '" aria-selected="' + (i === act) + '" data-i="' + i + '">' + esc(h.name) + ', ' + h.st
-          + (h.via ? ' <small>' + esc(h.via) + '</small>' : '')
-          + (h.near ? ' <small>no full-year station; opens ' + esc(h.near) + '</small>' : '') + '</li>';
-      }).join('') + '<li role="presentation" class="rc-find-more">' + tip + (more > 0 ? ' <span class="rc-nw">' + more + ' more:</span> '
-        + (sq.st ? 'type more of the name.' : 'add the state, e.g. ' + esc(q) + ' ' + (hits.filter(function (x) { return x.st !== localSt(); })[0] || hits[0]).st.toLowerCase() + '.') : '') + '</li>';
+          + (h.via && h.via.split('|')[1] ? '<small>' + esc(h.via.split('|')[1]) + '</small>' : '')
+          + (h.near ? '<small>No full-year station. Opens ' + esc(h.near) + '</small>' : '') + '</li>';
+      }).join('') + '<li role="presentation" class="rc-find-more">' + tip + (more > 0 ? '<span class="rc-more"><span class="rc-nw">' + more + ' more:</span> '
+        + (sq.st ? 'type more of the name.' : 'add the state, e.g. ' + esc(q) + ' ' + (hits.filter(function (x) { return x.st !== localSt(); })[0] || hits[0]).st.toLowerCase() + '.') + '</span>' : '') + '</li>';
       list.hidden = false; input.setAttribute('aria-expanded', 'true');
       if (act >= 0) input.setAttribute('aria-activedescendant', lid + '-' + act); else input.removeAttribute('aria-activedescendant');
     }
@@ -129,7 +129,7 @@
           var h = match(idx, r[4] + ' ' + r[3], r[3]).filter(function (x) { return x.st === r[3]; })[0];
           if (!h) { say('No rain page for ' + r[4] + ', ' + r[3] + '.'); return null; }
           say('ZIP ' + z + ' is in ' + h.name + ', ' + h.st + '.');
-          h.via = 'ZIP ' + z + (r[2] ? ', ' + r[2] : '');
+          h.via = 'ZIP ' + z + '|' + (r[2] || '');
           return h;
         });
     }
