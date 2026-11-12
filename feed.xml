@@ -5,13 +5,25 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Wed, 11 Nov 2026 14:19:12 +0000</lastBuildDate>
+    <lastBuildDate>Thu, 12 Nov 2026 11:49:12 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Hogs near $56 as pork cutout slips; export sales due 7:30</title>
+      <link>https://agsist.com/daily/2026-11-12</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-12</guid>
+      <pubDate>Thu, 12 Nov 2026 11:48:21 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>December hogs settled at $56.03 while the national cash hog price sat at $43.25. That gap is about $12.78 a hundredweight, and futures buyers are paying well over what packers paid on the kill.
+• Hogs: futures above cash
+• Grains: corn flat, beans soft
+• Cattle and crude
+Read more: https://agsist.com/daily/2026-11-12</description>
+    </item>
     <item>
       <title>Corn slips 2½ cents to $4.46½ after Tuesday's yield cut</title>
       <link>https://agsist.com/daily/2026-11-11</link>
@@ -347,18 +359,6 @@ Read more: https://agsist.com/daily/2026-10-15</description>
 • Corn and wheat drift, beans firm
 • Crude pushes toward $95 on Hormuz threats
 Read more: https://agsist.com/daily/2026-10-14</description>
-    </item>
-    <item>
-      <title>Corn and beans drift lower as crop progress looms</title>
-      <link>https://agsist.com/daily/2026-10-13</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-13</guid>
-      <pubDate>Tue, 13 Oct 2026 10:47:39 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>Corn settled Monday at $4.83 and sits at $4.81¼ overnight, down less than two cents, while beans are off almost a nickel at $12.83. Both markets are flat with USDA's record crop numbers already out.
-• Grain finds its footing
-• Cattle and hogs mixed overnight
-• Crude pulls back from Saudi move higher
-Read more: https://agsist.com/daily/2026-10-13</description>
     </item>
   </channel>
 </rss>
