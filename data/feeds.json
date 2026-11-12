@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 89,
- "with_known_cadence": 89,
+ "count": 94,
+ "with_known_cadence": 94,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -471,7 +471,8 @@
   {
    "path": "data/cot-analysis.json",
    "pages": [
-    "cot.html"
+    "cot.html",
+    "index.html"
    ],
    "written_by": [
     "COT Deep History Rebuild",
@@ -584,7 +585,8 @@
    "path": "data/cot.json",
    "pages": [
     "cattle-futures-prices.html",
-    "cot.html"
+    "cot.html",
+    "index.html"
    ],
    "written_by": [
     "COT Release Watch",
@@ -698,7 +700,8 @@
   {
    "path": "data/crop-progress.json",
    "pages": [
-    "conditions.html"
+    "conditions.html",
+    "index.html"
    ],
    "written_by": [
     "conditions",
@@ -1103,6 +1106,7 @@
   {
    "path": "data/export-sales.json",
    "pages": [
+    "index.html",
     "tariffs.html"
    ],
    "written_by": [
@@ -1353,9 +1357,36 @@
    "why_quiet": null
   },
   {
+   "path": "data/hail/recent.json",
+   "pages": [
+    "index.html"
+   ],
+   "written_by": [
+    "Hail data refresh",
+    "MESH radar hail swaths \u2014 daily"
+   ],
+   "touched_by": [
+    "Hail data refresh",
+    "MESH radar hail swaths \u2014 daily"
+   ],
+   "cadence": "2 launches every day at about 1am, 3am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "41 6 1 * *",
+    "25 8 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/harvest-prices.json",
    "pages": [
-    "harvest-price-tracker.html"
+    "harvest-price-tracker.html",
+    "index.html"
    ],
    "written_by": [
     "Harvest price tracker"
@@ -1512,6 +1543,29 @@
     "23 9 3 * *"
    ],
    "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/markets.json",
+   "pages": [
+    "index.html"
+   ],
+   "written_by": [
+    "Fetch Markets"
+   ],
+   "touched_by": [
+    "Fetch Markets"
+   ],
+   "cadence": "1 launch every day at about 4am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "23 9 * * *"
+   ],
+   "max_gap_hours": 24.0,
    "quiet": null,
    "why_quiet": null
   },
@@ -1940,6 +1994,7 @@
   {
    "path": "data/outlooks/manifest.json",
    "pages": [
+    "index.html",
     "rain.html"
    ],
    "written_by": [
@@ -2103,6 +2158,7 @@
   {
    "path": "data/prf/meta.json",
    "pages": [
+    "index.html",
     "prf.html"
    ],
    "written_by": [
@@ -2290,7 +2346,8 @@
   {
    "path": "data/quote-pool.json",
    "pages": [
-    "daily.html"
+    "daily.html",
+    "index.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -2365,9 +2422,29 @@
    "why_quiet": null
   },
   {
+   "path": "data/rma-planting-dates.json",
+   "pages": [
+    "index.html"
+   ],
+   "written_by": [],
+   "touched_by": [
+    "Rebuild Feed Manifest"
+   ],
+   "cadence": "maintained by hand, not on a schedule",
+   "curated": true,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/rma-prices.json",
    "pages": [
-    "harvest-price-tracker.html"
+    "harvest-price-tracker.html",
+    "index.html"
    ],
    "written_by": [
     "RMA price discovery"
@@ -2414,7 +2491,8 @@
   {
    "path": "data/sponsor.json",
    "pages": [
-    "desk.html"
+    "desk.html",
+    "index.html"
    ],
    "written_by": [],
    "touched_by": [
@@ -2494,6 +2572,7 @@
   {
    "path": "data/tariffs.json",
    "pages": [
+    "index.html",
     "tariffs.html"
    ],
    "written_by": [
@@ -2675,6 +2754,48 @@
    "why_quiet": null
   },
   {
+   "path": "data/wasde.json",
+   "pages": [
+    "index.html"
+   ],
+   "written_by": [
+    "bake crop tour",
+    "Report day live: graded result within a minute",
+    "WASDE watch \u2014 grade the report as it lands",
+    "yield-panel"
+   ],
+   "touched_by": [
+    "conditions",
+    "COT Release Watch",
+    "Fetch Crop Progress",
+    "bake crop tour",
+    "Dairy prices",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Fetch Prices",
+    "Report day live: graded result within a minute",
+    "WASDE watch \u2014 grade the report as it lands",
+    "Build What's Priced In",
+    "yield-panel"
+   ],
+   "cadence": "2 launches every day at about 4am, 11pm Central, and more on set days of each month",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "20 9 * * *",
+    "30 1 17-22 8 *",
+    "38 15,16 8-12,30,31 * *",
+    "48 15,16 8-12,30,31 * *",
+    "17 19 7-11,29,30 * *",
+    "*/5 16-17 9-12 * *",
+    "24 4 * * *"
+   ],
+   "max_gap_hours": 19.1,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/whats-new.json",
    "pages": [
     "index.html"
@@ -2736,9 +2857,40 @@
    "why_quiet": null
   },
   {
+   "path": "data/wpi-history.json",
+   "pages": [
+    "index.html"
+   ],
+   "written_by": [
+    "Report day live: graded result within a minute",
+    "WASDE watch \u2014 grade the report as it lands"
+   ],
+   "touched_by": [
+    "COT Release Watch",
+    "Report day live: graded result within a minute",
+    "WASDE watch \u2014 grade the report as it lands",
+    "Build What's Priced In"
+   ],
+   "cadence": "4 launches on set days of each month at about 10am, 11am, 2pm Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "38 15,16 8-12,30,31 * *",
+    "48 15,16 8-12,30,31 * *",
+    "17 19 7-11,29,30 * *",
+    "*/5 16-17 9-12 * *"
+   ],
+   "max_gap_hours": null,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
    "path": "data/yield-nowcast.json",
    "pages": [
-    "conditions.html"
+    "conditions.html",
+    "index.html"
    ],
    "written_by": [
     "cond-yield"
