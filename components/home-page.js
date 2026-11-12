@@ -763,9 +763,34 @@
     g.innerHTML = h; box.hidden = false;
     txt('daily-otp-h', d.otp_week_ahead ? 'Week ahead in ag' : 'Outside the pit: not moving prices today, but worth knowing');
   }
+  /* The Daily's sponsor (data/daily.json "sponsor"), ported from the old home script: only a PAID sponsor draws
+     anything. Unsold, switched off or the house ad: the block in the briefing fold and the credit under the signup
+     stay hidden. One renderer: components/sponsor-ad.js. */
+  function paintSponsor(data) {
+    var sp=data.sponsor,spEl=$('daily-sponsor'),spFilled=$('dsp-filled'),spTeaser=$('daily-teaser-sponsor');
+    if(!spEl)return;
+    var spRow=spTeaser&&spTeaser.parentNode&&spTeaser.parentNode.classList.contains('s7-adrow')?spTeaser.parentNode:null;
+    if(!(sp&&!sp.is_house_ad&&(sp.advertiser||sp.name)&&(sp.headline||sp.tagline))){
+      spEl.style.display='none';
+      if(spFilled){spFilled.style.display='none';spFilled.innerHTML='';}
+      if(spRow)spRow.style.display='none';
+    } else {
+      var spNm=sp.advertiser||sp.name||'',spHref=(sp.cta_urls&&sp.cta_urls.homepage)||sp.cta_url||sp.url||'';
+      spEl.style.display='';
+      spEl.classList.add('filled');
+      if(spFilled){spFilled.style.display='block';spFilled.innerHTML=(root.AgsistAd?root.AgsistAd.render(sp,'homepage',{click:'daily-briefing'}):'');}
+      if(spTeaser){
+        if(spRow)spRow.style.display='';
+        spTeaser.textContent='Sponsored by '+spNm;
+        if(spHref){spTeaser.href=spHref;spTeaser.target='_blank';spTeaser.rel='sponsored noopener';spTeaser.setAttribute('data-sponsor-click','daily-briefing');}
+      }
+    }
+  }
+
   function paintDaily(d) {
     if (!d) return;
     paintStories(d);
+    paintSponsor(d);
     var t = String(d.teaser || d.headline || '').trim(); if (!t) return;
     /* the issue's own date ("Wednesday, November 11, 2026"), else the day it was written, Central */
     var dd = d.date ? new Date(String(d.date).replace(/^[A-Za-z]+,\s*/, '') + ' 12:00 UTC') : null;

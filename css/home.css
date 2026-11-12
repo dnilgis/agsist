@@ -159,6 +159,7 @@ html[data-theme="light"] .ch-tag-t{fill:#fff}
 .hp-ask .sa-m,.hp-ask .sa-z,.hp-ask .sa-n{grid-column:1/-1!important;grid-row:auto!important}
 html[data-theme="light"] .hp-ask .sa-b{background:var(--brand-fill);color:#fff}
 .hp-fine{font-size:.74rem;color:var(--text-muted);margin:.4rem 0 0}
+.hp-daily .s7-adrow{margin:.35rem 0 0;font-size:.76rem}.hp-daily .teaser-sponsor{color:var(--text-muted);display:inline-flex;align-items:center;min-height:44px}.hp-brief .daily-sponsor{margin:.8rem 0}
 .hp-dfold{margin-top:auto;border-top:1px solid var(--border);padding-top:.5rem}
 .hp-daily .hp-dfold{margin-top:.7rem}
 .hp-dfold>summary,.hp-folds summary{cursor:pointer;font-weight:700;color:var(--brand);font-size:.88rem;min-height:44px;display:flex;align-items:center;list-style:none}

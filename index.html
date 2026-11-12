@@ -11,7 +11,7 @@
   <!-- /static-nav:fonts -->
   <link rel="stylesheet" href="/components/styles.css?v=28">
   <link rel="stylesheet" href="/components/sponsor-ad.css?v=3">
-  <link rel="stylesheet" href="/css/home.css?v=44">
+  <link rel="stylesheet" href="/css/home.css?v=45">
   <link rel="stylesheet" href="/components/cb-myelev.css?v=2">
   <script src="/components/saved-place.js?v=1"></script>
   <script src="/components/util.js?v=20"></script>
@@ -253,6 +253,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <p class="hp-dsub">Markets, weather and your top bid near you, in your inbox every morning, weekends too.</p>
         <div class="hp-ask"><div id="hb-ask" data-signup-ask="Get the AGSIST Daily by email" data-source="hero" data-variant="hero" data-stack></div></div>
         <p class="hp-fine">Free. Unsubscribe any time. We never sell your address.</p>
+        <div class="s7-adrow s7-adrow--hb" style="display:none"><a class="teaser-sponsor" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"></a></div>
         <details class="hp-dfold" id="hp-dfold"><summary data-track="daily-fold" data-daily-more>Read today&rsquo;s briefing here</summary>
           <section class="daily-hero hp-brief" id="daily-hero" data-briefing-date="2026-11-11" aria-label="Today&rsquo;s AGSIST Daily">
             <div id="daily-date" class="daily-date">Wednesday, November 11, 2026</div>
@@ -265,6 +266,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             <div id="daily-sec-3" class="daily-sec"><div id="daily-section-3-title" class="daily-sec-label"></div><div id="daily-section-3-body" class="daily-sec-text"></div></div>
             <div id="daily-sec-4" class="daily-sec"><div id="daily-section-4-title" class="daily-sec-label"></div><div id="daily-section-4-body" class="daily-sec-text"></div></div>
             <div class="daily-otp" id="daily-otp" hidden><h3 class="daily-otp-h" id="daily-otp-h">Outside the pit</h3><div id="daily-otp-grid"></div></div>
+            <div class="daily-sponsor" id="daily-sponsor" role="region" aria-label="Sponsor slot" style="display:none">
+              <div class="dsp-filled" id="dsp-filled" style="display:none" data-sponsor-slot="daily-briefing"></div>
+            </div>
             <p class="hp-bl"><a class="hp-lnk" href="/daily">The whole briefing &rarr;</a><a class="hp-lnk" href="/daily#past">Past briefings &rarr;</a></p>
           </section>
         </details>
@@ -510,6 +514,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 <script src="/components/report-live.js?v=1" defer></script>
 <script src="/components/happening.js?v=5" defer></script>
 <script src="/components/sponsor-ad.js?v=4" defer></script>
-<script src="/components/home-page.js?v=1" defer></script>
+<script src="/components/home-page.js?v=2" defer></script>
 </body>
 </html>
