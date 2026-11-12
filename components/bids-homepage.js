@@ -1667,6 +1667,18 @@
       ageUnknown: !!best.fr.ageUnknown
     };
   }
+  function nearList(elevators){
+    var out = [];
+    (elevators || []).slice().sort(function(a,b){ return (a.distance == null ? 999 : a.distance) - (b.distance == null ? 999 : b.distance); }).forEach(function(e){
+      if(out.length >= 8) return;
+      ['corn','soybeans'].forEach(function(c){
+        if(out.length >= 8 || !(e.commodities[c] || []).length) return;
+        var t = null; try{ t = topEntry([e], c); }catch(x){ t = null; }
+        if(t){ t.crop = c; out.push(t); }
+      });
+    });
+    return out;
+  }
   function dispatchTop(detail){
     window.__agsistBidsTop = detail;
     try{ window.dispatchEvent(new CustomEvent('agsist:bids-top', { detail: detail })); }
@@ -1682,6 +1694,10 @@
     var tok = ++topSeq;
     function build(){
       var d = emptyTop(placeOf(ctx.label, ctx.zip), 'ok');
+      if (typeof ctx.count === 'number') d.count = ctx.count;
+      /* Nov 11, 2026: the home page's "Closest elevators" table: each of the nearest boards' own corn and soybean
+         bid, picked by the same rule as the top bids (topEntry on that one board), nearest first. */
+      try{ d.near = nearList(ctx.elevators); }catch(e){ d.near = []; }
       ['corn','soybeans','wheat'].forEach(function(c){ try{ d[c] = topEntry(ctx.elevators, c); }catch(e){ d[c] = null; } });
       dispatchTop(d);
     }
@@ -1804,7 +1820,8 @@
       + '<div class="bh-feed"></div>'
       + '</div>';
 
-    var alreadySignedUp = (typeof window.isSignedUp === 'function') && window.isSignedUp();
+    /* Nov 11, 2026: the home page has its own Daily card beside this list; no second ask here. */
+    var alreadySignedUp = ((typeof window.isSignedUp === 'function') && window.isSignedUp()) || !!document.getElementById('hp-daily');
     if(!alreadySignedUp){
       html += '<div style="margin-top:.5rem;padding:.5rem 0 0;border-top:1px solid var(--border);text-align:center">'
         + '<a href="#signup-compact" id="bids-cta-link" style="color:var(--gold);font-weight:600;font-size:.82rem;text-decoration:none">'
@@ -1816,8 +1833,9 @@
 
     /* The page's feed-count lines (index1: .r7-cov, #idx1-trust-ledger) live
        in How to read. Held by reference so a redraw keeps them. */
+    /* Nov 11, 2026: the rebuilt home page keeps its counts line at the foot of the bids card, in view */
     if(!feedNodes){
-      feedNodes = [document.querySelector('.r7-cov'), document.getElementById('idx1-trust-ledger')].filter(function(x){ return x; });
+      feedNodes = document.querySelector('main.hp') ? [] : [document.querySelector('.r7-cov'), document.getElementById('idx1-trust-ledger')].filter(function(x){ return x; });
     }
     area.innerHTML = html;
     var slot = area.querySelector('.bh-feed');
@@ -1882,6 +1900,7 @@
       }
     }
     lastCtx = ctx;
+    ctx.count = list.length;
     publishTop(ctx);
     var pl = placeOf(ctx.label, zip);
     announce(area, 'Cash bids loaded: ' + list.length + ' elevator' + (list.length === 1 ? '' : 's') + ' within ' + BIDS_RADIUS_MI + ' mi' + (pl ? ' of ' + pl : '') + ', ' + drawn.length + ' shown.');
@@ -1935,7 +1954,8 @@
 
     // Show loading skeleton, unless a degraded card is already up (a quiet redraw).
     if(!degraded || !area.querySelector('.bh-elev')){
-      if(feedNodes === null) feedNodes = [document.querySelector('.r7-cov'), document.getElementById('idx1-trust-ledger')].filter(function(x){ return x; });
+      /* home audit Q9: on the rebuilt home page (main.hp) the elevator count line stays where it is, never moved into the hidden list area */
+      if(feedNodes === null) feedNodes = document.querySelector('main.hp') ? [] : [document.querySelector('.r7-cov'), document.getElementById('idx1-trust-ledger')].filter(function(x){ return x; });
       area.innerHTML = '<div><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap">Loading cash bids</span>'
         + '<div style="height:36px;background:var(--surface2);border-radius:6px;margin-bottom:.4rem;opacity:.4"></div>'
         + '<div style="height:36px;background:var(--surface2);border-radius:6px;margin-bottom:.4rem;opacity:.35"></div>'

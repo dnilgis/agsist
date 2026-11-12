@@ -194,6 +194,7 @@ function requestGeo() {
       // 2026-10-19: said only after a tap that failed, never on a fresh visit.
       var h = document.querySelector('#bids-noloc .hn-h');
       if (h) h.textContent = 'Your location did not come through.';
+      if (typeof window.agsistGeoFailed === 'function') { try { window.agsistGeoFailed(); } catch (e) {} }
     },
     { timeout: 8000, maximumAge: 0 }
   );
@@ -231,7 +232,7 @@ window.agsistSetZip = function(zip) {
     if (el && el.value !== zip) el.value = zip;
   });
   _bidsLoadedThisSession = false;
-  loadWeatherZip();
+  loadWeatherZip(zip);
 };
 
 /* Put the remembered ZIP in every box, so nobody retypes what the page
@@ -261,8 +262,9 @@ function _stateCode(name) {
 }
 window.agsistStateCode = _stateCode;
 
-function loadWeatherZip() {
-  var zip = (document.getElementById('wx-zip') || {}).value;
+/* Nov 11, 2026: the ZIP is passed in (agsistSetZip); a page whose one ZIP box is not #wx-zip (home) still loads. */
+function loadWeatherZip(z) {
+  var zip = z || (document.getElementById('wx-zip') || {}).value;
   if (!zip || zip.length !== 5 || isNaN(zip)) return;
   // our own ZIP table, [lat, lon, town, state code, county] (2026-10-29: no outside geocoder)
   fetch('/data/places/zip/' + zip.slice(0, 2) + '.json')
