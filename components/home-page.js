@@ -546,9 +546,9 @@
      (never the newest alone: one fresh board would make the older ones look current, the Oct 19 boardAge rule). */
   function bidsAsOf(list) {
     var e = $('hp-bids-src'); if (!e) return;
-    var base = e.getAttribute('data-base') || e.textContent; e.setAttribute('data-base', base);
+    var base = e.getAttribute('data-base') || e.innerHTML; e.setAttribute('data-base', base);   /* the definition stays its own span (folded on phones, round 3) */
     var r = postedRange(list.map(function (b) { return b && b.posted; }));
-    e.textContent = (r ? r + '. ' : '') + base;
+    e.innerHTML = (r ? esc(r) + '. ' : '') + base;
   }
   /* ---- no ZIP yet: pick a state, see its median basis (data/basis-states.json, AGSIST network elevators) ----
      Only crops with a median are printed (the file prints one at min_n elevators or more); a thinner corn or soybean
@@ -1020,9 +1020,17 @@
     if (!key) return null;
     for (k in cs) if (county(cs[k].name) === key) return { fips: k, c: cs[k] };
     var none = (R && R.none) || {};
-    for (k in none) if (county(none[k].name) === key && cs[none[k].near]) return { fips: k, c: cs[none[k].near], near: none[k].near, nearName: cs[none[k].near].name };
+    for (k in none) if (county(none[k].name) === key) {
+      if (cs[none[k].near]) return { fips: k, c: cs[none[k].near], near: none[k].near, nearName: cs[none[k].near].name };
+      if (/^\d{5}$/.test(String(none[k].near || ''))) return { fips: k, cross: String(none[k].near) };   /* the nearest gauge is in another state's file */
+    }
     return null;
   }
+  /* state FIPS -> postal code, to find a nearest county across a state line in its own state's file (round 3) */
+  var FIPS_ST = { '01': 'AL', '02': 'AK', '04': 'AZ', '05': 'AR', '06': 'CA', '08': 'CO', '09': 'CT', '10': 'DE', '11': 'DC', '12': 'FL', '13': 'GA', '15': 'HI', '16': 'ID', '17': 'IL', '18': 'IN',
+    '19': 'IA', '20': 'KS', '21': 'KY', '22': 'LA', '23': 'ME', '24': 'MD', '25': 'MA', '26': 'MI', '27': 'MN', '28': 'MS', '29': 'MO', '30': 'MT', '31': 'NE', '32': 'NV', '33': 'NH', '34': 'NJ',
+    '35': 'NM', '36': 'NY', '37': 'NC', '38': 'ND', '39': 'OH', '40': 'OK', '41': 'OR', '42': 'PA', '44': 'RI', '45': 'SC', '46': 'SD', '47': 'TN', '48': 'TX', '49': 'UT', '50': 'VT', '51': 'VA',
+    '53': 'WA', '54': 'WV', '55': 'WI', '56': 'WY' };
   function msgIn(id, t) { var b = $(id); if (!b) return; var m = b.querySelector('.hp-msg'); if (m) m.textContent = t || ''; if (t && CHART_OF[id]) { delete SPECS[CHART_OF[id]]; toolsReady(); } }
   /* audit A5: Share and Save picture show only beside a chart that is drawn (its SPECS entry); hidden, they keep
      their room, and with no script they never show (css/home.css .hp-tools) */
@@ -1058,17 +1066,27 @@
       /* the grid's forecast for the hour that holds now, not a reading (audit Q15, C14) */
       html('hp-now-d', '<b>' + esc(WX[c.weather_code] || 'Forecast') + '</b><br>Hourly forecast');
       txt('hp-nw-f', r(c.apparent_temperature) != null ? r(c.apparent_temperature) + '°' : '-');
-      txt('hp-nw-w', num(c.wind_speed_10m) ? (compass(c.wind_direction_10m) + ' ' + Math.round(c.wind_speed_10m) + ' mph').trim() : '-');
+      txt('hp-nw-w', num(c.wind_speed_10m) ? (Math.round(c.wind_speed_10m) === 0 ? 'Calm' : (compass(c.wind_direction_10m) + ' ' + Math.round(c.wind_speed_10m) + ' mph').trim()) : '-');
       txt('hp-nw-h', r(c.relative_humidity_2m) != null ? r(c.relative_humidity_2m) + '%' : '-');
       txt('hp-nw-d', r(c.dew_point_2m) != null ? r(c.dew_point_2m) + '°' : '-');
       txt('hp-nw-p', r(c.precipitation_probability) != null ? r(c.precipitation_probability) + '%' : '-');
+      /* round 3: each card's chance is the daytime one (6 am to 5 pm, from the hourly grid), so a night block is not
+         counted on two days (the daily max ran midnight to midnight: Sunday night's 40% showed on Monday too); its low is
+         the night after its high, so the pair reads as one day and night; a day with no high is left out, and today
+         stays while it has a high (its low can be past: "-") */
       var times = D.time || [], todayKey = (c.time || '').slice(0, 10), i0 = Math.max(0, times.indexOf(todayKey)), lis = [];
-      if (!num((D.temperature_2m_max || [])[i0]) || !num((D.temperature_2m_min || [])[i0])) i0++;   /* today half gone: the grid has no full-day high and low, start tomorrow */
+      var HT = H.time || [], HP = H.precipitation_probability || [], HTe = H.temperature_2m || [], HC = H.weather_code || [];
+      var dayPop = function (key) { var m = null; for (var q = 0; q < HT.length; q++) { var t = String(HT[q]), hh = +t.slice(11, 13); if (t.slice(0, 10) === key && hh >= 6 && hh <= 17 && num(HP[q])) m = m == null ? HP[q] : Math.max(m, HP[q]); } return m; };
+      var nightLow = function (key, next) { var m = null; for (var q = 0; q < HT.length; q++) { var t = String(HT[q]), hh = +t.slice(11, 13); if (((t.slice(0, 10) === key && hh >= 18) || (next && t.slice(0, 10) === next && hh < 6)) && num(HTe[q])) m = m == null ? HTe[q] : Math.min(m, HTe[q]); } return m; };
+      var snowy = function (key) { for (var q = 0; q < HT.length; q++) { var t = String(HT[q]), hh = +t.slice(11, 13), cc = HC[q]; if (t.slice(0, 10) === key && hh >= 6 && hh <= 17 && ((cc >= 71 && cc <= 77) || cc === 85 || cc === 86)) return true; } return false; };
       for (var i = i0; i < times.length && lis.length < 7; i++) {
-        if (!num((D.temperature_2m_max || [])[i]) && !num((D.temperature_2m_min || [])[i])) continue;   /* a day past the grid's end */
-        var dd = utc(times[i]), hi = (D.temperature_2m_max || [])[i], lo = (D.temperature_2m_min || [])[i], pp = (D.precipitation_probability_max || [])[i];
-        lis.push('<li><b>' + (times[i] === todayKey ? 'Today' : DOW[dd.getUTCDay()]) + '</b>' + wxIcon((D.weather_code || [])[i], 1) + '<span><span class="hi">' + (num(hi) ? Math.round(hi) + '°' : '-') + '</span> <span class="lo">' + (num(lo) ? Math.round(lo) + '°' : '-')
-          + '</span><span class="vh">, ' + esc(WX[(D.weather_code || [])[i]] || '') + '</span></span><span class="pp">' + (num(pp) ? Math.round(pp) + '%<span class="vh"> chance of rain</span>' : '-') + '</span></li>');
+        var hi = (D.temperature_2m_max || [])[i];
+        if (!num(hi)) continue;   /* a day with no high (past the grid's end, or today's high already gone) is left out */
+        var dd = utc(times[i]), nl = nightLow(times[i], times[i + 1]), lo = num(nl) ? nl : (D.temperature_2m_min || [])[i + 1];
+        var pp = dayPop(times[i]); if (!num(pp)) pp = (D.precipitation_probability_max || [])[i];
+        var word = snowy(times[i]) ? 'snow' : 'rain';
+        lis.push('<li><b>' + (times[i] === todayKey ? 'Today' : DOW[dd.getUTCDay()]) + '</b>' + wxIcon((D.weather_code || [])[i], 1) + '<span><span class="hi">' + Math.round(hi) + '°</span> <span class="lo">' + (num(lo) ? Math.round(lo) + '°' : '-')
+          + '</span><span class="vh">, ' + esc(WX[(D.weather_code || [])[i]] || '') + '</span></span><span class="pp">' + (num(pp) ? Math.round(pp) + '% ' + word : '-') + '</span></li>');
       }
       if (lis.length) html('hp-d7', lis.join(''));
       /* the next 24 hours from this hour */
@@ -1079,7 +1097,7 @@
         cells.push('<div><b>' + (j === h0 ? 'Now' : hr12(ht[j])) + '</b>' + wxIcon((H.weather_code || [])[j], (H.is_day || [])[j]) + (num(tt) ? Math.round(tt) + '°' : '-') + '<span class="pp">' + (num(hp) ? Math.round(hp) + '%' : '-') + '</span></div>');
       }
       var hr = $('hp-hourly'); if (hr) hr.hidden = !cells.length; if (cells.length) html('hp-hr', cells.join(''));
-      var src = 'Percent: chance of rain. National Weather Service forecast';
+      var src = 'Each day: high, then the low of the night after; percent: the daytime chance of rain or snow, 6 am to 5 pm. Now: the forecast for this hour. National Weather Service forecast';
       try { var n = f._nws; if (n && n.updated) src += ', issued ' + new Date(n.updated).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: f.timezone || undefined, timeZoneName: 'short' }); } catch (e) {}
       txt('hp-fc-src', src + '.');
       fcFail(''); var m = $('hp-fc-msg'); if (m) m.style.background = '';
@@ -1091,6 +1109,8 @@
   /* owner, Nov 12: the live radar back on the home page, as the old home had it (Windy's radar layer, the same embed
      components/geo.js built), centred on the reader's place; it loads only when the band comes near the screen
      (loadBand runs from later()), holds its room, and says so if it does not come in */
+  /* round 3 (phones): the map takes no touches until "Tap to move the map", so a thumb scrolling the page is not caught in it */
+  function liveTap() { var b = $('hp-livego'), box = $('hp-live'); if (!b || !box) return; b.addEventListener('click', function () { box.classList.add('on'); }); }
   function drawLive(p) {
     var f = $('hp-live-f'), msg = $('hp-live-msg'); if (!f) return;
     var la = (+p.lat).toFixed(4), lo = (+p.lon).toFixed(4);
@@ -1117,16 +1137,23 @@
        null normal on every day, which drew "normal 0.0 in" (audit Q2) */
     var hasN = num(c.usual) && c.usual > 0 && b.slice(1).every(num);
     if (!hasN) b = null;
-    var pct = !hasN ? null : num(c.pct) ? c.pct : Math.round(c.total / c.usual * 100);
+    /* round 3: the file's own percent, never one worked out here: the builder withholds it on a normal under 1.00 in
+       (Jan 1 to 10 printed "239% of normal"); then the card gives inches only */
+    var pct = hasN && num(c.pct) ? c.pct : null;
     /* days the gauge did not report are not rain: say how many (audit Q13) */
     var miss = num(c.missing) && c.missing > 0 ? c.missing : 0;
     var head = 'Rain this year: ' + f1(c.total) + ' in' + (num(pct) ? ', ' + pct + '% of normal' + (end ? ' to ' + md(end) : '') : '') + (miss ? '; ' + miss + ' day' + (miss === 1 ? '' : 's') + ' not reported' : '');
     txt('hp-rain-h', head);
     txt('hp-yr', String(yr));
     var key = $('hp-rain-key');
-    if (key) { var nk = key.lastChild; nk.hidden = !hasN; if (hasN) nk.lastChild.textContent = 'Normal: ' + f1(c.usual) + ' in (1991 to 2020)'; }
+    /* round 3: c.usual is the normal over the days the gauge reported; with days missing the key says so */
+    if (key) { var nk = key.lastChild; nk.hidden = !hasN; if (hasN) nk.lastChild.textContent = (miss ? 'Normal for the days reported: ' : 'Normal: ') + f1(c.usual) + ' in (1991 to 2020)'; }
     /* owner, Nov 12: the old home's month bars, this year against normal, with the percent of normal up top */
-    html('hp-rain-pct', hasN ? '<b class="' + (pct >= 100 ? 'up' : 'dn') + '">' + pct + '%</b>of normal (' + f1(c.usual) + ' in to ' + (end ? md(end) : 'date') + ')' : '<b>' + f1(c.total) + ' in</b>since Jan 1; no normal on file for this gauge');
+    /* round 3: rain's percent in a neutral colour (more rain is not good or bad by itself) */
+    var onDays = miss && num(c.reported) ? ' on the ' + c.reported + ' days reported' : '';
+    html('hp-rain-pct', num(pct) ? '<b>' + pct + '%</b> of normal (' + f1(c.usual) + ' in' + (onDays || (end ? ' to ' + md(end) : '')) + ')'
+      : hasN ? '<b>' + f1(c.total, 2) + ' in</b> since Jan 1; normal ' + f1(c.usual, 2) + ' in' + onDays + ', too small for a percent'
+      : '<b>' + f1(c.total) + ' in</b> since Jan 1; no normal on file for this gauge');
     var box = $('hp-rain-ch'); if (!box) return;
     var MR = (Array.isArray(c.months) ? c.months : []).map(function (r, i) {
       var ok = Array.isArray(r) && num(r[0]);
@@ -1142,8 +1169,8 @@
     chart(box, out);
     var st = c.station || {}, net = st.net === 'cocorahs' ? ' (CoCoRaHS)' : st.net ? ' (NOAA co-op)' : '';
     txt('hp-rain-src', 'Jan 1 to ' + (end ? md(end) : '') + '. ' + (cf.near ? 'No station in ' + countyName(p.county, p.state) + '; nearest county: ' + cf.nearName + '. ' : '') + (st.name ? 'Gauge: ' + st.name + net + '. ' : '') + 'NOAA daily records via RCC-ACIS.');
-    SPECS.rain = function () { return { head: head + ' at ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + ' by month (gold)' + (hasN ? ' against the 1991 to 2020 normal for the same days (dashed)' : ', no normal on file for this gauge') + ', inches',
-      big: function (w, h) { return barSvg(opts(w, h, 16)); }, source: (st.name ? 'Gauge: ' + st.name + net + '. ' : '') + 'NOAA daily records via RCC-ACIS, Jan 1 to ' + (end ? md(end) : '') + '.', file: 'rain', date: end }; };
+    SPECS.rain = function () { return { head: head + (cf.near ? ', nearest gauge to ' : ' at ') + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + ' by month (gold)' + (hasN ? ' against the 1991 to 2020 normal for the same days (dashed)' : ', no normal on file for this gauge') + ', inches',
+      big: function (w, h) { return barSvg(opts(w, h, 16)); }, source: (cf.near ? 'No station in ' + countyName(p.county, p.state) + '; nearest county: ' + cf.nearName + '. ' : '') + (st.name ? 'Gauge: ' + st.name + net + '. ' : '') + 'NOAA daily records via RCC-ACIS, Jan 1 to ' + (end ? md(end) : '') + '.', file: 'rain', date: end }; };
   }
   /* mmdd (1109) of this year -> a date */
   function mmddDate(v, yr) { return num(v) && v >= 101 && v <= 1231 ? new Date(Date.UTC(yr, Math.floor(v / 100) - 1, v % 100)) : null; }
@@ -1153,13 +1180,14 @@
      the first withheld month rather than drawing through it; the normal line only where every plotted month has
      one. 39% of counties had a null normal, and the old loop broke at the first one and said "The corn GDU season
      starts May 1." in November. The end date is the county's own (c.a), not the state file's. */
-  function drawGdu(W, p, fips) {
+  function drawGdu(W, p, fips, cf) {
+    var borrowed = cf && cf.near ? 'No station in ' + countyName(p.county, p.state) + '; nearest county: ' + cf.nearName + '. ' : '';
     var c = W && W.counties && W.counties[fips], yr = (W && W.year) || ctDay().getUTCFullYear();
     txt('hp-yr2', String(yr));
     var today = ctDay(), early = today < new Date(Date.UTC(today.getUTCFullYear(), 4, 15));
     var g = c && Array.isArray(c.g) && num(c.g[0]) ? c.g : null;
     if (!c || !Array.isArray(c.gm) || c.gm.length < 5 || !g) {
-      msgIn('hp-gdu-ch', early && (!c || !Array.isArray(c.gm) || c.gm.length < 5) ? 'The corn GDU season starts May 1.' : c ? 'Not enough days reported at this station to count GDUs.' : 'No GDU record for this county yet.');
+      msgIn('hp-gdu-ch', early && (!c || !Array.isArray(c.gm) || c.gm.length < 5) ? 'The corn GDU season starts May 1.' : c ? 'Not enough days reported at this station to count GDUs.' : 'No temperature station on file for this county.');
       return;
     }
     var end = mmddDate(c.a, yr) || utc(W.edate), ph = phone(), gaps = [];
@@ -1174,12 +1202,17 @@
     if (!MG.some(function (x) { return !x.gap; })) { msgIn('hp-gdu-ch', 'Not enough days reported at this station to count GDUs.'); return; }
     var hasNM = MG.some(function (x) { return num(x.n); });
     var now = g[0], norm = num(g[2]) && g[2] > 0 ? g[2] : null, gp = norm ? (num(g[4]) ? g[4] : Math.round(now / norm * 100)) : null;
-    var head = 'Corn GDUs since May 1: ' + comma(now) + (norm ? ', ' + comma(Math.abs(now - norm)) + (now >= norm ? ' ahead of' : ' behind') + ' normal' : '');
+    var gmiss = num(g[1]) && g[1] > 0 ? g[1] : 0;
+    var head = 'Corn GDUs since May 1: ' + comma(now) + (norm ? ', ' + comma(Math.abs(now - norm)) + (now >= norm ? ' ahead of' : ' behind') + ' normal' : '') + (gmiss ? '; ' + gmiss + ' day' + (gmiss === 1 ? '' : 's') + ' not reported' : '');
     txt('hp-gdu-h', head);
-    html('hp-gdu-pct', norm ? '<b class="' + (gp >= 100 ? 'up' : 'dn') + '">' + gp + '%</b>of normal (' + comma(norm) + ')' : '<b>' + comma(now) + '</b>GDUs; no normal on file for this station');
+    /* round 3: no big percent on a season normal under 100 GDUs (a few May days make a wild percent) */
+    html('hp-gdu-pct', norm && norm >= 100 ? '<b class="' + (gp >= 100 ? 'up' : 'dn') + '">' + gp + '%</b> of normal (' + comma(norm) + ')' : norm ? '<b>' + comma(now) + '</b> GDUs; normal ' + comma(norm) + ' so far' : '<b>' + comma(now) + '</b> GDUs; no normal on file for this station');
     var key = $('hp-gdu-h').parentNode.querySelector('.hp-key');
     if (key) { var nk = key.lastChild; nk.hidden = !hasNM; if (hasNM) nk.lastChild.textContent = 'Normal (1991 to 2020)'; }
-    var tail = gaps.length ? ' Not enough days reported in ' + gaps.join(', ') + '.' : '';
+    /* round 3: the season total counts the reported days of the months the bars mark n/a; the first 28°F freeze, when the file has one */
+    var fz = c.fr && Array.isArray(c.fr.f28) ? mmddDate(c.fr.f28[0], yr) : null;
+    var tail = (gaps.length ? ' Not enough days reported in ' + gaps.join(', ') + ' to draw ' + (gaps.length === 1 ? 'that month' : 'those months') + '; the season total counts the days reported in ' + (gaps.length === 1 ? 'it' : 'them') + (gmiss ? ' (' + gmiss + ' day' + (gmiss === 1 ? '' : 's') + ' missing)' : '') + '.' : '')
+      + (fz && (!end || fz <= end) ? ' First 28°F freeze: ' + md(fz) + '.' : '');
     var box = $('hp-gdu-ch'); if (!box) return;
     var opts = function (w, h, fs, out) { return { m: MG, w: w, h: h, fs: fs, out: out, steps: [50, 100, 250, 500], fmt: function (v) { return comma(v); }, vfmt: function (v) { return comma(v); },
       label: 'Corn growing degree units by month since May 1, ' + yr + ': ' + comma(now) + (norm ? ', ' + gp + ' percent of normal' : '; no 1991 to 2020 normal on file for this station') + '.' }; };
@@ -1188,9 +1221,9 @@
       return r.lab + (r.part ? ' so far' : '') + ': ' + comma(r.a) + ' GDUs' + (num(r.n) ? '; normal ' + comma(r.n) + (r.n >= 50 ? ' (' + Math.round(r.a / r.n * 100) + '%)' : '') : '') + (num(r.rep) && num(r.so) && r.rep < r.so ? '; ' + r.rep + ' of ' + r.so + ' days reported' : ''); };
     chart(box, out);
     var s = c.s && c.s[0] ? 'Station ' + c.s[0] + '. ' : '';
-    txt('hp-gdu-src', 'May 1 to ' + (end ? md(end) : '') + ', 86/50 method, by month.' + tail + ' ' + s + 'NOAA daily records via RCC-ACIS.');
-    SPECS.gdu = function () { return { head: head + ', ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + ' by month (gold)' + (hasNM ? ' against the 1991 to 2020 normal for the same days (dashed)' : ', no normal on file for this station') + ', corn GDUs, 86/50 method',
-      big: function (w, h) { return barSvg(opts(w, h, 16)); }, source: s + 'NOAA daily records via RCC-ACIS, May 1 to ' + (end ? md(end) : '') + ', month ends.', file: 'gdu', date: end }; };
+    txt('hp-gdu-src', 'Counted May 1 through ' + (end ? md(end) : '') + ', 86/50 method, by month.' + tail + ' ' + borrowed + s + 'NOAA daily records via RCC-ACIS.');
+    SPECS.gdu = function () { return { head: head + (borrowed ? ', nearest station to ' : ', ') + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + ' by month (gold)' + (hasNM ? ' against the 1991 to 2020 normal for the same days (dashed)' : ', no normal on file for this station') + ', corn GDUs, 86/50 method',
+      big: function (w, h) { return barSvg(opts(w, h, 16)); }, source: borrowed + s + 'NOAA daily records via RCC-ACIS, May 1 to ' + (end ? md(end) : '') + ', month ends.', file: 'gdu', date: end }; };
   }
 
   function loadBand() {
@@ -1203,11 +1236,21 @@
       drawForecast(p, seq);
       drawLive(p);
       getJSON(stateFile('rain/', p.state)).then(function (R) {
+        var cf = findCounty(R, p.county), wst = p.state;
+        if (!cf || !cf.cross) return [R, cf, wst];
+        /* round 3: the nearest gauge is across the state line: read it from that state's own file */
+        var st2 = FIPS_ST[cf.cross.slice(0, 2)];
+        if (!st2) return [R, null, wst];
+        return getJSON(stateFile('rain/', st2)).then(function (R2) {
+          var c2 = R2 && R2.counties && R2.counties[cf.cross];
+          return c2 ? [R2, { fips: cf.fips, c: c2, near: cf.cross, nearName: c2.name + ', ' + st2 }, st2] : [R, null, wst];
+        }, function () { return [R, null, wst]; });
+      }).then(function (rr) {
         if (seq !== band.seq) return;
-        var cf = findCounty(R, p.county);
+        var R = rr[0], cf = rr[1], wst = rr[2];
         drawRain(R, p, cf);
-        if (!cf) { msgIn('hp-gdu-ch', 'No GDU record for this county yet.'); return; }
-        getJSON(stateFile('rain/wx/', p.state)).then(function (W) { if (seq === band.seq) drawGdu(W, p, cf.near || cf.fips); }, function () { msgIn('hp-gdu-ch', 'The GDU file did not load. Try again later.'); });
+        if (!cf) { msgIn('hp-gdu-ch', 'No temperature station on file for this county.'); return; }
+        getJSON(stateFile('rain/wx/', wst)).then(function (W) { if (seq === band.seq) drawGdu(W, p, cf.near || cf.fips, cf); }, function () { msgIn('hp-gdu-ch', 'The GDU file did not load. Try again later.'); });
       }, function () { msgIn('hp-rain-ch', 'The rain file did not load. Try again later.'); msgIn('hp-gdu-ch', 'The GDU file did not load. Try again later.'); });
     });
   }
@@ -1362,34 +1405,35 @@
   var PA_BASE = { 'corn': 'Corn', 'corn-dec': 'Corn', 'beans': 'Soybeans', 'beans-nov': 'Soybeans', 'wheat': 'Chicago SRW wheat', 'cattle': 'Live cattle' };
   function alertWords(sym, q, today) {
     var S = root.AgPxStamp, base = PA_BASE[sym] || sym, lab = q && S && S.label ? S.label(q.ticker) : '';
-    if (!lab) return base + ', front month' + nextNote(sym);
+    if (!lab) { var nf = nextAfter(sym.split('-')[0], headline(sym.split('-')[0])); return base + ', front month' + (nf ? ' (moves to ' + nf.next + ' before ' + nf.now + ' expires)' : ''); }
     var out = base + ', ' + lab, dead = S.deadFrom ? S.deadFrom(q.ticker) : null, dd = utc(dead);
     if (dd && (dd - today) / 864e5 <= 21 && dd > today) {
-      var nx = lab.replace(/'(\d\d)$/, function (m0, y) { return "'" + ('0' + ((+y + 1) % 100)).slice(-2); });
+      /* round 3: the harvest aliases (corn-dec, beans-nov) roll a year on; any other dated option to the next month on file (cattle Dec -> Feb) */
+      var nx = /-(dec|nov)$/.test(sym) ? lab.replace(/'(\d\d)$/, function (m0, y) { return "'" + ('0' + ((+y + 1) % 100)).slice(-2); }) : ((nextAfter(sym.split('-')[0], { q: q }) || {}).next || '');
       /* its last trading day: the trading day before the first dead day (ZSX26: dead from Nov 15, last trade Fri Nov 13) */
       var lt = addDays(dd, -1), g = 0; while (S.isTradingDay && !S.isTradingDay(lt.toISOString().slice(0, 10)) && g++ < 6) lt = addDays(lt, -1);
-      out += ' (rolls to ' + nx + ' after ' + md(lt) + ')';
+      if (nx) out += ' (rolls to ' + nx + ' after ' + md(lt) + ')';
     }
     return out;
   }
-  /* round 2: a continuous "front month" option names the contract it moves to when the front month expires, so a roll
-     is not read as a move: the next dated month on file after the headline one ("rolls to Mar '27 at expiry") */
-  function nextNote(sym) {
-    var S = root.AgPxStamp, h = headline(sym), Q = PX && PX.quotes; if (!h || !Q || !S || !S.label) return '';
-    var hm = /([FGHJKMNQUVXZ])(\d\d)\b/.exec(String(h.q.ticker || '')), F = 'FGHJKMNQUVXZ'; if (!hm) return '';
+  /* the next dated month on file after a quote's own: {now: "Dec '26", next: "Mar '27"} or null. A continuous series
+     moves to it before the front month expires (round 3: it does not wait for expiry), so a roll is not read as a move */
+  function nextAfter(root0, h) {
+    var S = root.AgPxStamp, Q = PX && PX.quotes; if (!h || !h.q || !Q || !S || !S.label) return null;
+    var hm = /([FGHJKMNQUVXZ])(\d\d)\b/.exec(String(h.q.ticker || '')), F = 'FGHJKMNQUVXZ'; if (!hm) return null;
     var at = (+hm[2]) * 12 + F.indexOf(hm[1]), best = null, bt = Infinity;
     Object.keys(Q).forEach(function (k) {
-      var m = new RegExp('^' + sym + '-[a-z]{3}\\d\\d$').test(k) && /^[A-Z]{2}([FGHJKMNQUVXZ])(\d\d)\b/.exec(String((Q[k] || {}).ticker || ''));
+      var m = new RegExp('^' + root0 + '-[a-z]{3}\\d\\d$').test(k) && /^[A-Z]{2}([FGHJKMNQUVXZ])(\d\d)\b/.exec(String((Q[k] || {}).ticker || ''));
       if (!m || !num(Q[k].close)) return; var t = (+m[2]) * 12 + F.indexOf(m[1]); if (t > at && t < bt) { bt = t; best = Q[k]; }
     });
-    return best ? ' (rolls to ' + S.label(best.ticker) + ' at expiry)' : '';
+    return best ? { now: S.label(h.q.ticker), next: S.label(best.ticker) } : null;
   }
   function paintAlertOptions() {
     var sel = $('pa-symbol'), Q = PX && PX.quotes; if (!sel || !Q) return;
     var today = ctDay();
     Array.prototype.forEach.call(sel.options, function (o) {
       var t = alertWords(o.value, Q[o.value], today);
-      o.textContent = t; o.setAttribute('data-c', t.replace(/ \(rolls to .*\)$/, ''));
+      o.textContent = t; o.setAttribute('data-c', t.replace(/ \((rolls|moves) to .*\)$/, ''));
     });
   }
 
@@ -1413,7 +1457,7 @@
     getJSON('/data/rain-print.json').then(paintRainPrint, function () {});
     later($('hp-wx'), function () { bandStarted = true; loadBand(); });
     later($('hp-land'), function () { landStarted = true; loadLand(); });
-    priceAlert();
+    priceAlert(); liveTap();
     if (PHONE) {
       var redraw = function () { drawCharts(); if (bandStarted) { band.zip = ''; loadBand(); } if (landStarted) loadLand(); };
       if (PHONE.addEventListener) PHONE.addEventListener('change', redraw); else if (PHONE.addListener) PHONE.addListener(redraw);

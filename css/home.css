@@ -503,3 +503,13 @@ html[data-theme="light"] .ch-bn{stroke:#7a868c;stroke-width:.8}
 /* the month-bar charts take the box's own width at a fixed height (home-page.js draws 1 unit = 1 px) */
 #hp-rain-ch,#hp-gdu-ch{aspect-ratio:auto;height:250px}
 @media (max-width:640px){#hp-rain-ch,#hp-gdu-ch{height:200px}}
+/* round 3: the live radar a little shorter on desktop (no dead space under the forecast); on phones it takes no touches
+   until "Tap to move the map", so the page scrolls past it */
+.hp-livego{display:none}
+@media (min-width:981px){.hp-live{aspect-ratio:392/300}}
+@media (max-width:640px){
+  .hp-live iframe{pointer-events:none}.hp-live.on iframe{pointer-events:auto}
+  .hp-livego{display:block;position:absolute;left:50%;bottom:10px;transform:translateX(-50%);min-height:44px;padding:.5rem 1rem;border-radius:22px;border:1px solid var(--border-2);background:var(--surface);color:var(--text);font:700 .86rem var(--font-body);cursor:pointer}
+  .hp-live.on .hp-livego{display:none}
+  .hp-def{display:none}
+}
