@@ -211,7 +211,7 @@ jobs:
           git config user.email "bot@agsist.com"
           git add data/analyst-estimates.json data/wpi-history.json data/wasde.json data/wasde-pdf data/nowcast-direction.json \
                   data/analyst-scorecard.json data/whats-priced-in.json \
-                  cot.html index.html usda-calendar.html 2>/dev/null || true
+                  cot.html index.html index1.html usda-calendar.html 2>/dev/null || true
           if git diff --staged --quiet; then echo "No change (the backup check already committed it)."; exit 0; fi
           git commit -m "report day: graded the ${{ needs.gate.outputs.release }} print"
           for i in 1 2 3 4 5; do
