@@ -12,7 +12,7 @@ on:
         type: string
         default: ""
       task:
-        description: "vt (Vermont transfers only, then the summaries and sale pages), nj (New Jersey only, the same way), fl (Florida only, from the prepared files, to agsist-data), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back); soil-probe, soil:IL, soil:IN, soil:WI or soil-attrs (dispatch only: section soil for each keyed farm sale, BLM PLSS and USDA SSURGO, answers to the raw branch only); soilr-probe, soilr-all or soilr:IL, soilr:IN, soilr:WI (dispatch only: the same from the gridded soil map and the Cropland Data Layer)"
+        description: "vt (Vermont transfers only, then the summaries and sale pages), nj (New Jersey only, the same way), fl (Florida only, from the prepared files, to agsist-data), services, discover (services + county search in every discover state), discover:MN,IA (only those states), transfers (or sales), all, wi-newest (Wisconsin months not on file yet, plus the newest again), wi-transfers (every Wisconsin month; wi-transfers:N for the newest N), or wi-explore (WI screens to a side branch); map-geo (look up the section centers the farm sale map still lacks, then the pages); layers or layers-discover (dispatch only: check the services the Field Scout on-and-around card reads, save their answers to the raw branch); comp-live (dispatch only: open the live comp report and say whether owner, soil and crop history came back); soil-probe, soil:IL, soil:IN, soil:WI or soil-attrs (dispatch only: section soil for each keyed farm sale, BLM PLSS and USDA SSURGO, answers to the raw branch only); soilr-probe, soilr-all or soilr:IL, soilr:IN, soilr:WI (dispatch only: the same from the gridded soil map and the Cropland Data Layer)"
         type: string
         default: "services"
   schedule:
@@ -79,6 +79,7 @@ jobs:
           python3 scripts/dev/quiet.py selftest-fetch-land-sales -- python scripts/fetch_land_sales.py --selftest
           python3 scripts/dev/quiet.py selftest-land-keys -- python scripts/land_keys.py --selftest
           python3 scripts/dev/quiet.py selftest-land-names -- python scripts/land_names.py --selftest
+          python3 scripts/dev/quiet.py selftest-land-map -- python scripts/land_map.py --selftest
           python3 scripts/dev/quiet.py selftest-land-keep-stamp-only -- python scripts/land_keep_stamp_only.py --selftest
           python3 scripts/dev/quiet.py selftest-comp-report-live -- python scripts/comp_report_live.py --selftest
           python3 scripts/dev/quiet.py selftest-wi-retr-browser -- python scripts/wi_retr_browser.py --selftest
@@ -236,6 +237,11 @@ jobs:
       - name: Build the farmland sale index
         if: ${{ !(github.event_name == 'workflow_dispatch' && (inputs.probe || startsWith(inputs.task, 'soil'))) }}
         run: OMP_NUM_THREADS=1 python3 scripts/dev/quiet.py land-index -- python scripts/build_land_index.py
+      - name: Section centers for the farm sale map
+        continue-on-error: true
+        timeout-minutes: 50
+        if: ${{ !(github.event_name == 'workflow_dispatch' && inputs.probe) && (github.event_name == 'schedule' || github.event_name == 'workflow_run' || inputs.task == 'transfers' || inputs.task == 'sales' || inputs.task == 'all' || inputs.task == 'map-geo') }}
+        run: python3 scripts/dev/quiet.py map-sections -- python scripts/land_map.py --fetch IL IN WI --minutes 15 || echo "::warning::sale map sections were not looked up; pins fall back to their town or county"
       - name: Build the farm sale pages
         id: pages
         continue-on-error: true
