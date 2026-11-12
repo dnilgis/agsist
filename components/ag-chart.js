@@ -170,7 +170,11 @@
      inside and the caller should leave a gutter on the right */
   function layout(view, W, H, opt) {
     var fs = opt.fs || 12, hide = opt.hide || {}, cfg = opt.cfg || {}, fmt = fmtOf(cfg), rules = {};
-    var gutter = opt.gutter || 0, g = geom(view, W, H, fs, hide, gutter, cfg.period, !!cfg.gapKey), segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
+    var gutter = opt.gutter || 0, g = geom(view, W, H, fs, hide, gutter, cfg.period, false), kt = '', row2 = false, x0 = opt.card ? 24 : 0, segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
+    if (cfg.gapKey) {
+      kt = cfg.gapKey(view, Math.floor((g.right - g.L + fs) / (fs * 0.53)));
+      if (kt) { var kw0 = widthOf(kt, fs) * 0.94 + fs * 2.2, uw = widthOf(cfg.unit || '', fs), ul = x0 + (uw > g.L - fs ? uw : g.L - x0); row2 = !(g.right - kw0 > ul + fs * 1.5); if (row2) g = geom(view, W, H, fs, hide, gutter, cfg.period, true); }
+    }
     view.series.forEach(function (s) {
       if (!s.points.length || hide[s.key]) return;
       var pts = s.points.map(function (p) { return { d: p.d, v: p.v, x: g.x(p.d), y: g.y(p.v) }; });
@@ -183,20 +187,24 @@
       runs.push({ s: s, pts: run });
       if (!s.faint) pts.forEach(function (p, j) { var r = j === pts.length - 1 ? fs / 3 + 1 : Math.max(1.6, fs / 6); dots.push({ x: p.x, y: p.y, r: r, s: s, last: j === pts.length - 1 }); });
     });
-    // the key for dashed stretches: its own row under the axis title, from the plot's left edge
-    var key = null, gk = cfg.gapKey && segs.some(function (q) { return q.gap && q.s && !q.s.faint; }) ? cfg.gapKey(view) : '';
-    if (gk) {
-      var kw = widthOf(gk, fs) * 0.94 + fs * 2.2;
-      if (kw <= g.right - g.L + fs) { key = { text: gk, x: g.L, ly: fs * 2.15, ty: fs * 2.5, w: kw }; boxes.push({ x0: g.L - 2, x1: g.L + kw + 2, y0: key.ty - fs * 0.95, y1: key.ty + fs * 0.3 }); }
+    // the key for dashed stretches: beside the axis title when it fits, else its own row under it
+    var key = null;
+    if (kt && segs.some(function (q) { return q.gap && q.s && !q.s.faint; })) {
+      var kw = widthOf(kt, fs) * 0.94 + fs * 2.2;
+      key = row2 ? { text: kt, x: x0, ly: fs * 2.15, ty: fs * 2.5, w: kw } : { text: kt, x: g.right - kw, ly: fs * 0.85, ty: fs * 1.2, w: kw };
+      boxes.push({ x0: key.x - 2, x1: key.x + kw + 2, y0: key.ty - fs * 0.8, y1: key.ty + fs * 0.15 });
     }
     var ext = 0;   // a first-point label may dip just under the lowest gridline when the line leaves no room above
     var bound = function (b, outside) {
-      return b.y0 >= fs * 1.6 && b.y1 <= g.base - 1 + ext && (outside ? b.x0 >= g.right + 2 && b.x1 <= W : b.x0 >= g.L + 2 && b.x1 <= g.right);
+      return b.y0 >= fs * (row2 ? 3.05 : 1.6) && b.y1 <= g.base - 1 + ext && (outside ? b.x0 >= g.right + 2 && b.x1 <= W : b.x0 >= g.L + 2 && b.x1 <= g.right);
     };
+    var strict = false, pad = 0;   // strict: also keep off the gridlines; pad: room kept round other labels (a gap label)
     var free = function (b, outside) {
       if (!bound(b, outside)) return false;
-      for (var i = 0; i < boxes.length; i++) if (hitBox(b, boxes[i])) return false;
+      var bp = pad ? { x0: b.x0 - pad, x1: b.x1 + pad, y0: b.y0, y1: b.y1 } : b;
+      for (var i = 0; i < boxes.length; i++) if (hitBox(bp, boxes[i])) return false;
       if (outside) return true;
+      if (strict) for (var t = 0; t < g.tk.length; t++) { var gy = g.y(g.tk[t]); if (gy > b.y0 - 1 && gy < b.y1 + 1) return false; }
       for (var j = 0; j < segs.length; j++) if (hitSeg(b, segs[j])) return false;
       for (var k = 0; k < dots.length; k++) { var d = dots[k]; if (hitBox(b, { x0: d.x - d.r - 1, x1: d.x + d.r + 1, y0: d.y - d.r - 1, y1: d.y + d.r + 1 })) return false; }
       return true;
@@ -206,19 +214,25 @@
       var w = widthOf(L.text, fs, L.bold), step = fs * 0.35, span = g.base - g.T + fs * 2;
       ext = L.kind === 'start' || L.kind === 'gap' ? fs * 0.9 : 0;
       var win = L.win || [L.y - fs * 3, L.y + fs * 3];   // stay near what it names; else go outside
-      for (var n = 0; n * step < span; n++) {
-        for (var si = 0, sgs = n ? (L.down ? [1, -1] : [-1, 1]) : [1]; si < sgs.length; si++) {
-          var sgn = sgs[si], y = L.y + sgn * n * step;
-          if (y < win[0] || y > win[1]) continue;
-          // a centred label slides sideways (a little) to stay inside the plot and off its neighbours
-          for (var dxi = 0; dxi < (L.anchor === 'middle' ? 9 : 1); dxi++) {
-            var lx = L.x + (dxi % 2 ? 1 : -1) * Math.ceil(dxi / 2) * fs * 0.7;
-            if (L.anchor === 'middle') lx = Math.max(g.L + 3 + w / 2, Math.min(g.right - 1 - w / 2, lx));
-            var b = boxOf(lx, y, w, fs, L.anchor);
-            if (free(b)) { boxes.push(b); out.push(Object.assign({}, L, { x: lx, y: y, box: b })); return; }
+      var gap = L.kind === 'gap', passes = gap ? [true] : [true, false];
+      pad = gap ? fs * 1.2 : 0;
+      for (var ps = 0; ps < passes.length; ps++) {
+        strict = passes[ps];   // first off the gridlines; a gap label never sits on one, the others fall back
+        for (var n = 0; n * step < span; n++) {
+          for (var si = 0, sgs = n ? (L.down ? [1, -1] : [-1, 1]) : [1]; si < sgs.length; si++) {
+            var sgn = sgs[si], y = L.y + sgn * n * step;
+            if (y < win[0] || y > win[1]) continue;
+            // a centred label slides sideways (a little) to stay inside the plot and off its neighbours
+            for (var dxi = 0; dxi < (L.anchor === 'middle' ? 7 : 1); dxi++) {
+              var lx = L.x + (dxi % 2 ? 1 : -1) * Math.ceil(dxi / 2) * fs * 0.7;
+              if (L.anchor === 'middle') lx = Math.max(g.L + (gap ? fs : 3) + w / 2, Math.min(g.right - 1 - w / 2, lx));
+              var b = boxOf(lx, y, w, fs, L.anchor);
+              if (free(b)) { boxes.push(b); out.push(Object.assign({}, L, { x: lx, y: y, box: b })); strict = false; pad = 0; return; }
+            }
           }
         }
       }
+      strict = false; pad = 0;
       if (L.optional) return;   // says the same as text elsewhere (the takeaway): left out rather than misplaced
       if (!gutter) { failed.push(L); return; }
       var ox = g.right + fs * 0.6;
@@ -258,13 +272,13 @@
       labels.push({ kind: 'end', off: true, s: s, text: s.name + ' ' + fmt(s.points[s.points.length - 1].v), x: g.right, y: g.T + fs * 0.3, anchor: 'end', bold: true, win: [0, g.base] });
     });
     // "no survey" under each dashed stretch, as near as it fits
-    if (cfg.gapLabel) lay_gaps(segs, cfg, fs).forEach(function (q) { labels.push({ kind: 'gap', s: q.s, text: q.text, x: q.x, y: q.y, anchor: 'middle', optional: true, win: [q.y - fs * 4.4, q.y + fs * 2.2] }); });
+    if (cfg.gapLabel && W >= 500) lay_gaps(segs, cfg, fs).forEach(function (q) { labels.push({ kind: 'gap', s: q.s, text: q.text, x: q.x, y: q.y, anchor: 'middle', optional: true, win: [q.y - fs * 4.4, q.y + fs * 2.2] }); });
     labels.forEach(place);
     if (failed.length && !gutter) {
       var wide = Math.max.apply(null, failed.map(function (L) { return widthOf(L.text, fs, L.bold); }));
       return layout(view, W, H, Object.assign({}, opt, { gutter: Math.min(Math.round(wide + fs * 1.4), Math.round(W * 0.4)) }));
     }
-    return { g: g, segs: segs, dots: dots, runs: runs, labels: out, boxes: boxes, rules: rules, key: key };
+    return { g: g, segs: segs, dots: dots, runs: runs, labels: out, boxes: boxes, rules: rules, key: key, x0: x0 };
   }
 
   /* one label per dashed stretch of a main line: centred under the stretch, text from cfg.gapLabel({ from, to }) */
@@ -290,7 +304,7 @@
     var halo = 'paint-order:stroke;stroke:' + P.surf + ';stroke-width:' + (fs / 3.5).toFixed(1) + 'px;stroke-linejoin:round;';
     o.push('<svg xmlns="http://www.w3.org/2000/svg" class="agc-svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '"' + (opt.label ? ' role="img" aria-label="' + esc(opt.label) + '"' : '') + '>');
     var unitW = widthOf(cfg.unit || '', fs), unitStart = unitW > g.L - fs;   // a long axis title starts at the left edge
-    o.push(txt(unitStart ? 0 : g.L - fs * 0.5, fs * 1.2, cfg.unit || '', f + 'fill:' + P.mut, unitStart ? 'start' : 'end'));
+    o.push(txt(unitStart ? lay.x0 : g.L - fs * 0.5, fs * 1.2, cfg.unit || '', f + 'fill:' + P.mut, unitStart ? 'start' : 'end'));
     g.tk.forEach(function (v) {
       var y = g.y(v);
       o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(y) + '" y2="' + f1(y) + '" style="stroke:' + P.grid + ';stroke-width:1"/>');
@@ -330,7 +344,7 @@
     // the key for dashed stretches (placed in layout so no label lands on it)
     if (lay.key) {
       var K = lay.key;
-      o.push('<line x1="' + f1(K.x) + '" x2="' + f1(K.x + fs * 1.5) + '" y1="' + f1(K.ly) + '" y2="' + f1(K.ly) + '" style="stroke:' + col(view.series.filter(function (q) { return !q.faint && q.points.length; })[0]) + ';stroke-width:2;stroke-opacity:.6;stroke-dasharray:' + fs / 4 + ' ' + fs / 3 + '"/>');
+      o.push('<line x1="' + f1(K.x) + '" x2="' + f1(K.x + fs * 1.5) + '" y1="' + f1(K.ly) + '" y2="' + f1(K.ly) + '" style="stroke:' + col(view.series.filter(function (q) { return !q.faint && q.points.length; })[0]) + ';stroke-width:2;stroke-opacity:.8;stroke-dasharray:' + fs / 4 + ' ' + fs / 3 + '"/>');
       o.push(txt(K.x + fs * 2.2, K.ty, K.text, f + 'fill:' + P.mut, 'start', 'agc-gk'));
     }
     // bands: one polygon per stretch with no missing days
@@ -349,7 +363,7 @@
     lay.runs.filter(function (r) { return r.s.faint; }).concat(lay.runs.filter(function (r) { return !r.s.faint; })).forEach(function (r) {
       if (r.pts.length < 2) return;
       var st = r.s.faint ? 'stroke:' + P.mut + ';stroke-width:' + Math.max(1.5, fs / 8) + ';stroke-dasharray:' + fs / 3 + ' ' + fs / 3
-        : r.gap ? 'stroke:' + col(r.s) + ';stroke-width:' + Math.max(2, lw * 0.85) + ';stroke-opacity:.6;stroke-dasharray:' + fs / 4 + ' ' + fs / 3
+        : r.gap ? 'stroke:' + col(r.s) + ';stroke-width:' + Math.max(2, lw * 0.85) + ';stroke-opacity:.8;stroke-dasharray:' + fs / 4 + ' ' + fs / 3
           : 'stroke:' + col(r.s) + ';stroke-width:' + lw + ';stroke-linejoin:round;stroke-linecap:round';
       o.push('<path class="agc-ln' + (r.gap ? ' agc-gap' : '') + '" d="' + poly(r.pts) + '" style="fill:none;' + st + '"/>');
     });
@@ -427,7 +441,7 @@
       c.toBlob(function (b) { done(b); }, 'image/png');
     };
     img.onerror = function () { done(null); };
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg(view, W - 64, Math.max(200, Math.round(H - y - 76)), { fs: 22, card: true, cfg: cfg }));
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg(view, W - 64, Math.max(200, Math.round(H - y - 76)), { fs: 20, card: true, cfg: cfg }));
   }
   function ga(n, kit) { try { if (typeof root.gtag === 'function') root.gtag('event', n, { kit: kit }); } catch (e) {} }
 
