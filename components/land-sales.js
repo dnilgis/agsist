@@ -564,7 +564,7 @@
       : esc(money(s.ppa)) + ' an acre is ' + pct(s.ppa, u[0]) + ' the county middle of ' + esc(money(u[0])) + ' (' + u[3] + ' figures; middle half ' + esc(money(u[1])) + ' to ' + esc(money(u[2])) + ').';
     var out = [];
     out.push(grp('Auction result', [
-      ['What this is', 'An auction result reported by ' + esc(au[0]) + '.', 'It is not a state transfer return: no recording, township, buyer or seller. The date is the auction day.'],
+      ['What this is', 'An auction result reported by ' + esc(au[0]).replace(/\.$/, '') + '.', 'It is not a state transfer return: no recording, township, buyer or seller. The date is the auction day.'],
       ['Auction day', esc(day(s.when))],
       ['County', esc(s.county + ' County, ' + s.st)],
       ['Acres offered', au[2] != null ? esc(acres(au[2])) : miss('not stated by the company'), 'The company\u2019s headline acres; the acres sold may differ.'],

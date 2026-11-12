@@ -246,6 +246,8 @@
     if (fit) {
       var use = shown;
       if (fit !== 'url' && !q.st && hereSt && root.innerWidth < 700) { var mine = shown.filter(function (o) { return o.f.st === hereSt; }); if (mine.length) use = mine; }
+      /* auction squares sit at county centers across many states: they never stretch the opening view of the sales */
+      var core = use.filter(function (o) { return o.p[KIND] !== 'a'; }); if (core.length) use = core;
       var b = use.length ? L.latLngBounds(use.map(function (o) { return [o.p[LAT], o.p[LNG]]; })) : null;
       if (q.at && fit === 'url') map.setView([q.at[0], q.at[1]], q.at[2], { animate: false });
       else if (b && b.isValid()) map.fitBounds(b, { padding: [8, 8], animate: false, maxZoom: 11 });
@@ -258,14 +260,14 @@
       var gold = odd ? { color: GOLD, weight: bd === 0 ? 1 : bd === 1 ? 2 : 2.5 } : null, fo = bd === 0 && !odd ? 0.7 : 0.92;
       if (p[KIND] === 'a') {
         /* an auction result: a SQUARE, same size rule, same color classes, gold edge when unusual */
-        var sz = Math.round(r * 2 + 2);
+        var sz = Math.max(5, Math.round(r * (bd === 0 ? 1.5 : 1.8) + 1));
         m = L.marker(at, { icon: L.divIcon({ className: 'lm-mk', iconSize: [sz, sz], iconAnchor: [sz / 2, sz / 2],
           html: '<span class="lm-sqm ' + (p[C] === null ? 'lm-wh' : 'lm-c' + p[C]) + (odd ? ' lm-od' : '') + '" style="width:' + sz + 'px;height:' + sz + 'px"></span>' }), keyboard: false });
       } else if (p[NM]) m = L.circleMarker(at, { radius: r, color: '#7d7d79', weight: small ? 1 : 1.5, dashArray: small ? null : '3 2', fill: true, fillColor: '#ffffff', fillOpacity: 0.15 });
       else if (p[C] === null) m = L.circleMarker(at, { radius: r, color: gold ? gold.color : '#444', weight: gold ? gold.weight : (small ? 0.6 : 1.2), fillColor: '#ffffff', fillOpacity: 0.9 });
       else m = L.circleMarker(at, { radius: r, color: gold ? gold.color : '#ffffff', weight: gold ? gold.weight : (small ? 0.6 : 1.2), fillColor: COL[String(p[C])], fillOpacity: fo });
       if (bd === 0) m.on('click', function () { map.setView(at, PINZ, { animate: !reduce }); });
-      else m.bindPopup(function () { return popupHtml(o.f, p); }, { maxWidth: Math.min(290, box.clientWidth - 50), maxHeight: box.clientHeight - 70, autoPan: true, autoPanPadding: [8, 8], keepInView: true });
+      else m.bindPopup(function () { return popupHtml(o.f, p); }, { maxWidth: Math.min(290, box.clientWidth - 50), maxHeight: box.clientHeight - 110, autoPan: true, autoPanPaddingTopLeft: [60, 8], autoPanPaddingBottomRight: [8, 56], keepInView: true });
       m.addTo(pinLayer); o.m = m; marks.push(o);
       /* a cue besides color: from zoom 9 a triangle up (over the range) or down (under) on the pin */
       if (odd && z >= PINZ) L.marker(at, { interactive: false, keyboard: false, icon: L.divIcon({ className: 'lm-mk', iconSize: [14, 14], iconAnchor: [7, 8],
@@ -316,7 +318,8 @@
     x.font = '800 34' + F; x.fillStyle = '#e9edeb'; x.fillText('agsist', 48, 62);
     var aw = x.measureText('agsist').width; x.font = '700 20' + F; x.fillStyle = GOLD; x.fillText('.com', 50 + aw, 62);
     x.font = '600 20' + F; x.fillStyle = 'rgba(233,237,235,.72)'; x.textAlign = 'right'; x.fillText('Farm sales map, newest record ' + day(latest), W - 48, 60); x.textAlign = 'left';
-    var hd = fit(x, st.head, W - 96, [38, 34, 30], '800'), y = 80 + hd.size;
+    var span = (/ (in the \d+ months to [^.]*)\.$/.exec(st.head) || [])[1] || '', headTxt = st.head.replace(/ in the \d+ months to [^.]*\.$/, '.');
+    var hd = fit(x, headTxt, W - 96, [38, 34, 30], '800'), y = 80 + hd.size;
     x.font = '800 ' + hd.size + F; x.fillStyle = '#e9edeb'; hd.lines.forEach(function (l) { x.fillText(l, 48, y); y += hd.size * 1.2; });
     // the pins of the view, on a plain plate (tiles cannot go into a picture)
     var top = y + 6, bot = H - 70, left = 48, right = W - 330, b = map.getBounds();
@@ -350,9 +353,9 @@
     x.beginPath(); x.arc(kx0 + 9, ky - 6, 7, 0, 6.283); x.strokeStyle = GOLD; x.lineWidth = 2.5; x.stroke(); row('Gold edge: unusual'); ky += 29;
     x.beginPath(); x.arc(kx0 + 9, ky - 6, 7, 0, 6.283); x.fillStyle = COL['0']; x.fill(); row('Round: recorded sale'); ky += 29;
     x.fillStyle = COL['0']; x.fillRect(kx0 + 2, ky - 13, 14, 14); row('Square: auction result'); ky += 33;
-    x.font = '700 17' + F; x.fillStyle = '#e9edeb'; x.fillText(n0(shown.filter(function (o) { return !o.p[NM]; }).length) + ' pins in this view', kx0, ky);
+    x.font = '700 17' + F; x.fillStyle = '#e9edeb'; x.fillText(n0(inb.filter(function (o) { return !o.p[NM]; }).length) + ' pins in this view', kx0, ky);
     x.font = '400 16' + F; x.fillStyle = 'rgba(233,237,235,.72)';
-    x.fillText('Sales of 20+ acres, last 24 months: state transfer records and auction company results.', 48, H - 42);
+    x.fillText((span ? span.charAt(0).toUpperCase() + span.slice(1) + '. ' : '') + 'Sales of 20+ acres: state transfer records and auction company results.', 48, H - 42);
     x.font = '700 19' + F; x.fillStyle = GOLD; x.fillText('agsist.com/land-sales', 48, H - 16);
     cv.toBlob(function (bl) { done(bl); }, 'image/png');
   }
