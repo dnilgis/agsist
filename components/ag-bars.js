@@ -20,10 +20,14 @@
     return { step: Math.max(hi - lo, 1e-9), lo: lo, hi: hi };
   }
   function isN(x) { return typeof x === 'number' && isFinite(x); }
+  /* the axis label of a tick: the top one also carries the unit when the config names one (cfg.topUnit) */
+  function tickText(cfg, v, hi) { return (cfg.fmt ? cfg.fmt(v) : String(v)) + (cfg.topUnit && v > hi - 1e-9 ? cfg.topUnit : ''); }
   function barsGeom(cfg, W, H, fs) {
-    var M = cfg.groups, pl = Math.max(44, Math.ceil(fs * 3.7)), pr = 8, pt = Math.ceil(fs * 2.1), pb = Math.ceil(fs * 2.1), top = 0;
+    var M = cfg.groups, pr = 8, pt = Math.ceil(fs * 2.1), pb = Math.ceil(fs * 2.1), top = 0;
     M.forEach(function (x) { if (isN(x.a)) top = Math.max(top, x.a); if (isN(x.n)) top = Math.max(top, x.n); });
-    var t = nice(0, Math.max(top, 1e-6) * 1.08, cfg.steps), cw = (W - pl - pr) / M.length, yb = H - pb;
+    var t = nice(0, Math.max(top, 1e-6) * 1.03, cfg.steps), pl = 44;
+    for (var v0 = 0; v0 <= t.hi + 1e-9; v0 += t.step) pl = Math.max(pl, Math.ceil(widthOf(tickText(cfg, v0, t.hi), fs)) + 12);
+    var cw = (W - pl - pr) / M.length, yb = H - pb;
     var hasN = M.some(function (x) { return isN(x.n); }), bw = Math.max(3, Math.min(cw * 0.36, fs * 1.6));
     return { M: M, pl: pl, pr: pr, pt: pt, pb: pb, t: t, ymax: t.hi, cw: cw, yb: yb, hasN: hasN, bw: bw,
       Y: function (v) { return pt + (t.hi - v) / t.hi * (yb - pt); }, cx: function (i) { return pl + cw * (i + 0.5); } };
@@ -36,21 +40,21 @@
     o.push('<defs><pattern id="' + id + '" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" style="fill:' + P.surf + '"/><line x1="0" y1="0" x2="0" y2="5" style="stroke:' + P.mut + ';stroke-width:1.6"/></pattern></defs>');
     for (var v = 0; v <= g.ymax + 1e-9; v += g.t.step) {
       o.push('<line x1="' + g.pl + '" x2="' + (W - g.pr) + '" y1="' + f1(g.Y(v)) + '" y2="' + f1(g.Y(v)) + '" style="stroke:' + P.grid + ';stroke-width:1"/>');
-      o.push(txt(g.pl - 6, g.Y(v) + fs * 0.33, cfg.fmt ? cfg.fmt(v) : String(v), f + 'fill:' + P.dim, 'end'));
+      o.push(txt(g.pl - 6, g.Y(v) + fs * 0.33, tickText(cfg, v, g.ymax), f + 'fill:' + P.dim, 'end'));
     }
     o.push('<line x1="' + g.pl + '" x2="' + (W - g.pr) + '" y1="' + g.yb + '" y2="' + g.yb + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
     var step = M.length > 9 && g.cw < fs * 2.6 ? 2 : 1;
     M.forEach(function (x, i) {
       var cx = g.cx(i), xa = g.hasN ? cx - g.bw - 1 : cx - g.bw / 2, xn = cx + 1;
       if (g.hasN && isN(x.n)) o.push('<rect x="' + f1(xn) + '" y="' + f1(g.Y(x.n)) + '" width="' + f1(g.bw) + '" height="' + f1(Math.max(0, g.yb - g.Y(x.n))) + '" style="fill:' + slate + (x.part ? ';opacity:.7' : '') + '"/>');
-      if (x.gap || !isN(x.a)) o.push('<rect x="' + f1(xa) + '" y="' + (g.yb - 3) + '" width="' + f1(g.bw) + '" height="3" style="fill:url(#' + id + ');stroke:' + P.mut + ';stroke-width:1"/>' + txt(xa + g.bw / 2, g.yb - 7, 'n/a', f + 'fill:' + P.mut, 'middle'));
+      /* a withheld month is a hatched stub; the word n/a goes beside it only where the months are wide enough to hold it (the key says it otherwise) */
+      if (x.gap || !isN(x.a)) o.push('<rect x="' + f1(xa) + '" y="' + (g.yb - 8) + '" width="' + f1(g.bw) + '" height="8" style="fill:url(#' + id + ');stroke:' + P.mut + ';stroke-width:1"/>' + (g.cw >= 30 ? txt(xa + g.bw / 2, g.yb - 12, 'n/a', f + 'fill:' + P.mut, 'middle') : ''));
       else o.push('<rect x="' + f1(xa) + '" y="' + f1(g.Y(x.a)) + '" width="' + f1(g.bw) + '" height="' + f1(Math.max(0, g.yb - g.Y(x.a))) + '" style="fill:' + gold + (x.part ? ';opacity:.6' : '') + '"/>');
       if (i % step === 0 || i === M.length - 1) o.push(txt(cx, g.yb + fs * 1.45, x.lab, f + 'fill:' + P.dim, 'middle'));
     });
     var L = M.length - 1, last = M[L];
-    if (isN(last.a) && !last.gap) {
-      var xl = g.cx(L) - (g.hasN ? g.bw / 2 + 1 : 0);
-      o.push('<circle cx="' + f1(xl) + '" cy="' + f1(g.Y(last.a) - 5) + '" r="3" style="fill:' + gold + '"/>');
+    /* the last month's figure is written in the saved picture only; on the page the readout under the chart says it once */
+    if (opt.card && isN(last.a) && !last.gap) {
       o.push(txt(W - g.pr, g.pt - fs * 0.6, last.lab + (last.part ? ' so far' : '') + ': ' + cfg.vfmt(last.a) + (g.hasN && isN(last.n) ? ' (normal ' + cfg.vfmt(last.n) + ')' : ''), f + 'font-weight:700;fill:' + P.ink, 'end'));
     }
     if (opt.card) {   /* the key goes in the picture: it has no legend of its own */
@@ -81,7 +85,7 @@
       if (cfg.headEl) cfg.headEl.textContent = st.head || '';
       if (cfg.takeEl) cfg.takeEl.textContent = st.take || '';
       g = barsGeom(cfg, W, H, fs);
-      plot.innerHTML = barsSvg({ groups: cfg.groups, steps: cfg.steps, fmt: cfg.fmt, vfmt: cfg.vfmt, names: cfg.names, label: st.summary || cfg.label }, W, H, { fs: fs });
+      plot.innerHTML = barsSvg({ groups: cfg.groups, steps: cfg.steps, fmt: cfg.fmt, topUnit: cfg.topUnit, vfmt: cfg.vfmt, names: cfg.names, label: st.summary || cfg.label }, W, H, { fs: fs });
       plot.setAttribute('aria-label', (st.summary || cfg.label || '') + ' Use the arrow keys to read each month.');
       say(cur);
     }
