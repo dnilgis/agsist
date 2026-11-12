@@ -133,7 +133,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <!-- Nov 11, 2026: the home page rebuilt. First screen: the ZIP bar, cash bids, futures, the Daily and the week's
        reports. Every card holds its room from first paint (css/home.css); components/home-page.js fills it. -->
   <div class="sw-home" id="sw-home"></div>
-  <script>try{(function(){var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)document.documentElement.classList.add('hp-ovnh');})();}catch(e){}</script>
+  <script>try{(function(){var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);var d=p.weekday;if((m>=1140&&d!=='Fri'&&d!=='Sat')||(m<465&&d!=='Sat'&&d!=='Sun'))document.documentElement.classList.add('hp-ovnh');})();}catch(e){}</script>
 
   <section class="hp-card hp-zipbar" aria-labelledby="hp-h1">
     <div class="hp-zl">
