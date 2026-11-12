@@ -1,38 +1,38 @@
 {
  "schema": "agsist-slaughter/1",
- "generated": "2026-11-11T23:24:38Z",
+ "generated": "2026-11-12T23:32:45Z",
  "note": "USDA's estimated federally inspected slaughter, head. week_ago and year_ago are USDA's figures for the same day; week_to_date runs Monday through this day.",
  "report": "Daily Livestock and Poultry Slaughter",
- "report_date": "2026-11-11",
- "source": "USDA AMS, Daily Livestock and Poultry Slaughter, Nov 11, 2026",
+ "report_date": "2026-11-12",
+ "source": "USDA AMS, Daily Livestock and Poultry Slaughter, Nov 12, 2026",
  "stale": false,
  "cattle": {
-  "date": "2026-11-11",
-  "head": 107000,
-  "week_ago": 109000,
-  "year_ago": 121016,
-  "week_to_date": 325000,
-  "prev_week_to_date": 320000,
-  "year_ago_week_to_date": 349766,
+  "date": "2026-11-12",
+  "head": 110000,
+  "week_ago": 110000,
+  "year_ago": 121719,
+  "week_to_date": 435000,
+  "prev_week_to_date": 430000,
+  "year_ago_week_to_date": 471485,
   "previous": {
-   "date": "2026-11-10",
-   "head": 111000,
+   "date": "2026-11-11",
+   "head": 107000,
    "revised": false
   }
  },
  "hogs": {
-  "date": "2026-11-11",
-  "head": 462000,
-  "week_ago": 495000,
-  "year_ago": 487293,
-  "week_to_date": 1453000,
-  "prev_week_to_date": 1473000,
-  "year_ago_week_to_date": 1435264,
+  "date": "2026-11-12",
+  "head": 487000,
+  "week_ago": 494000,
+  "year_ago": 490941,
+  "week_to_date": 1918000,
+  "prev_week_to_date": 1967000,
+  "year_ago_week_to_date": 1926205,
   "previous": {
-   "date": "2026-11-10",
-   "head": 495000,
-   "revised": false
+   "date": "2026-11-11",
+   "head": 440000,
+   "revised": true
   }
  },
- "daily_line": "Estimated federally inspected slaughter, Wed Nov 11: cattle 107,000 head (109,000 a week ago, 121,016 a year ago); hogs 462,000 head (495,000 a week ago, 487,293 a year ago). USDA AMS, Daily Livestock and Poultry Slaughter, Nov 11, 2026."
+ "daily_line": "Estimated federally inspected slaughter, Thu Nov 12: cattle 110,000 head (110,000 a week ago, 121,719 a year ago); hogs 487,000 head (494,000 a week ago, 490,941 a year ago). USDA AMS, Daily Livestock and Poultry Slaughter, Nov 12, 2026."
 }
