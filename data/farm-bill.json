@@ -1,5 +1,5 @@
 {
- "_comment": "AGSIST farm-bill page data. pills, tldr, next90, compare and tracker are baked into static HTML so crawlers see them. byOperation, detailNote, titles and ledger are NOT baked: components/farm-bill.js fetches this file and renders them only when a reader clicks, so they add nothing to the page weight. HTML entities allowed in text fields. Keep <b> for emphasis.",
+ "_comment": "AGSIST farm-bill page data. pills, tldr, next90, compare and tracker are baked into static HTML so crawlers see them. byOperation, detailNote, titles and ledger are NOT baked: components/farm-bill.js fetches this file and renders them only when a reader clicks, so they add nothing to the page weight. HTML entities allowed in text fields. Keep <b> for emphasis. A past date drops out by itself: each next90 item, and any <span data-until=\"YYYY-MM-DD\"> in a baked field, shows through that day and is gone the next (build_farmbill.py and components/farm-bill.js).",
  "updated": "2026-10-16",
  "updated_display": "Oct 16, 2026",
  "pills": [
@@ -13,7 +13,7 @@
   },
   {
    "cls": "warn",
-   "html": "Extension <b>lapsed Sep 30, 2026</b> &middot; Senate back Nov 9"
+   "html": "Extension <b>lapsed Sep 30, 2026</b><span data-until=\"2026-11-09\"> &middot; Senate back Nov 9</span>"
   }
  ],
  "tldr": [
@@ -35,7 +35,7 @@
   },
   {
    "k": "Next step",
-   "v": "Congress returns <span class=\"num\">Nov 9</span>, after the election. Boozman wants a deal with the House and a Senate floor vote (60 votes) before the permanent-law cliff on <span class=\"num\">Jan 1, 2027</span>."
+   "v": "<span data-until=\"2026-11-09\">Congress returns Nov 9, after the election. </span>Boozman wants a deal with the House and a Senate floor vote (60 votes) before the permanent-law cliff on <span class=\"num\">Jan 1, 2027</span>."
   },
   {
    "k": "Not in either bill",
@@ -123,7 +123,7 @@
   },
   {
    "stage": "Senate floor",
-   "desc": "Needs 60 votes. The Senate left Sep 30 for the midterms without taking it up. It returns Nov 9; Boozman expects a floor vote after the election",
+   "desc": "Needs 60 votes. The Senate left Sep 30 for the midterms without taking it up. <span data-until=\"2026-11-09\">It returns Nov 9. </span>Boozman expects a floor vote after the election",
    "mk": "now",
    "label": "pending"
   },
@@ -135,7 +135,7 @@
   },
   {
    "stage": "Enactment",
-   "desc": "CBO's April score assumed an early-August signing; that window passed. The committee chairs now aim for year's end, in the lame-duck session that starts Nov 9",
+   "desc": "CBO's April score assumed an early-August signing; that window passed. The committee chairs now aim for year's end, in the lame-duck session after the election",
    "mk": "next",
    "label": "ahead"
   },

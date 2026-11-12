@@ -1,7 +1,7 @@
 {
  "_note": "Open and upcoming price discovery windows from the RMA prices file.",
- "updated": "2026-11-11T22:37:11Z",
- "as_of": "2026-11-11",
+ "updated": "2026-11-12T22:53:36Z",
+ "as_of": "2026-11-12",
  "crop_year": 2026,
  "open": [
   {
@@ -25,7 +25,7 @@
    "contract": [
     "December"
    ],
-   "day": 11,
+   "day": 12,
    "span": 30,
    "in_days": null
   },
@@ -49,7 +49,7 @@
    "contract": [
     "December"
    ],
-   "day": 11,
+   "day": 12,
    "span": 30,
    "in_days": null
   },
@@ -71,7 +71,7 @@
    "contract": [
     "December"
    ],
-   "day": 11,
+   "day": 12,
    "span": 30,
    "in_days": null
   },
@@ -94,15 +94,15 @@
     "West Virginia"
    ],
    "n_states": 10,
-   "lo": 12.04,
-   "hi": 12.04,
+   "lo": 12.08,
+   "hi": 12.08,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "January"
    ],
-   "day": 11,
+   "day": 12,
    "span": 30,
    "in_days": null
   }
