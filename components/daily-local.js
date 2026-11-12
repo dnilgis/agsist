@@ -86,14 +86,20 @@
   }
 
   /* the start month of a delivery period as "YYYY-MM"; spot = this month */
-  function periodKey(p, nowMs) {
+  function periodKey(p, nowMs, crop) {
     var s = String(p || ''), m = /^(\d{4})-(\d{2})/.exec(s);
     if (m) return m[1] + '-' + m[2];
     if (/^spot$/i.test(s)) return ctDay(nowMs).slice(0, 7);
-    m = /^newcrop-(\d{4})$/.exec(s);
-    if (m) return m[1] + '-09';
-    return '';
+    /* A harvest-year bid ("newcrop-2026") is a window: this month while it is open
+       (Sep-Dec for corn and soybeans), its first month before it, its last after.
+       It was keyed on September, so from October it read as a month gone and a
+       2027 forward became the soonest bid. One rule: components/bid-period.js
+       (an archived page that does not load it leaves the row unkeyed). */
+    var BP = (typeof window !== 'undefined' && window.AgBidPeriod) || (typeof require === 'function' ? tryRequire() : null);
+    var ss = BP ? BP.season(s, crop, ctDay(nowMs), undefined) : null;
+    return ss ? ss.key : '';
   }
+  function tryRequire() { try { return require('./bid-period.js'); } catch (e) { return null; } }
   function fresh(iso, nowMs) { var t = Date.parse(iso || ''); return !isNaN(t) && nowMs - t <= STALE_H * 36e5 && t - nowMs <= 36e5; }
 
   /* Pure. {corn: {best, nearest, n}, soybeans: ...}; best/nearest are
@@ -115,7 +121,7 @@
         if (town && String(p.operator || '').trim().toLowerCase() === town.toLowerCase()) town = '';
         cands.push({ place: p.place, name: String(p.operator || '').trim(), town: town, state: p.state || '',
           mi: Math.round(d * 10) / 10, cash: n.cash, basisCents: typeof n.basisCents === 'number' ? n.basisCents : null,
-          period: n.period, key: periodKey(n.period, nowMs), pricedAt: p.pricedAt, delivery: n.delivery || '' });
+          period: n.period, key: periodKey(n.period, nowMs, crop), pricedAt: p.pricedAt, delivery: n.delivery || '' });
       });
       if (!cands.length) { out[crop] = { best: null, nearest: null, n: 0 }; return; }
       var thisMonth = ctDay(nowMs).slice(0, 7);
