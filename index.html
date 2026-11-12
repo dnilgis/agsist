@@ -10,7 +10,7 @@
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
   <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/css/home.css?v=45">
+  <link rel="stylesheet" href="/css/home.css?v=46">
   <link rel="stylesheet" href="/components/cb-myelev.css?v=2">
   <script src="/components/saved-place.js?v=1"></script>
   <script src="/components/util.js?v=20"></script>
@@ -250,9 +250,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       <section class="hp-card hp-daily" id="hp-daily" aria-labelledby="hp-daily-h">
         <div class="hp-k"><h2 id="hp-daily-h">The AGSIST Daily, free</h2><a href="/daily#past" data-track="daily">Past briefings</a></div>
         <p class="hp-dh"><span id="daily-card-k">This morning&rsquo;s briefing:</span> <span class="hp-dt" id="daily-card-t">Corn gives back 2½ cents after USDA's bigger yield cut; crude firms as Iran peace hopes fade.</span></p>
-        <p class="hp-dsub">Markets, weather and your top bid near you, in your inbox every morning, weekends too.</p>
-        <div class="hp-ask"><div id="hb-ask" data-signup-ask="Get the AGSIST Daily by email" data-source="hero" data-variant="hero" data-stack></div></div>
-        <p class="hp-fine">Free. Unsubscribe any time. We never sell your address.</p>
+        <p class="hp-dsub" data-signup-hide>Markets, weather and your top bid near you, in your inbox every morning, weekends too.</p>
+        <p class="hp-have" id="hp-have" hidden>You already get the Daily by email. Read today&rsquo;s briefing below or on <a href="/daily">the Daily page</a>.</p>
+        <div class="hp-ask" data-signup-hide><div id="hb-ask" data-signup-ask="Get the AGSIST Daily by email" data-source="hero" data-variant="hero" data-stack></div></div>
+        <p class="hp-fine" data-signup-hide>Free. Unsubscribe any time. We never sell your address.</p>
         <details class="hp-dfold" id="hp-dfold"><summary data-track="daily-fold" data-daily-more>Read today&rsquo;s briefing here</summary>
           <section class="daily-hero hp-brief" id="daily-hero" data-briefing-date="2026-11-11" aria-label="Today&rsquo;s AGSIST Daily">
             <div id="daily-date" class="daily-date">Wednesday, November 11, 2026</div>
@@ -474,7 +475,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </div></details>
   </div>
 
-  <section class="hp-card hp-foot" id="signup" aria-labelledby="hp-foot-h">
+  <section class="hp-card hp-foot" id="signup" data-signup-hide aria-labelledby="hp-foot-h">
     <div><b id="hp-foot-h">The AGSIST Daily</b><span class="hp-mut"> Market news before the open, every morning.</span></div>
     <div class="hp-ask"><div data-signup-ask="Sign up for the AGSIST Daily" data-source="signup-band" data-variant="hero" data-stack></div></div>
   </section>
@@ -542,6 +543,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 <script src="/components/cb-myelev.js?v=9" defer></script>
 <script src="/components/report-live.js?v=1" defer></script>
 <script src="/components/happening.js?v=5" defer></script>
-<script src="/components/home-page.js?v=2" defer></script>
+<script src="/components/home-page.js?v=3" defer></script>
 </body>
 </html>

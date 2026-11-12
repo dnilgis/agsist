@@ -1497,6 +1497,13 @@
     later($('hp-wx'), function () { bandStarted = true; loadBand(); });
     later($('hp-land'), function () { landStarted = true; loadLand(); });
     priceAlert(); liveTap();
+    /* a reader already on the Daily list sees a line, not an empty card (the ask hides itself) */
+    var haveTries = 0;
+    (function have() {
+      var S = root.AgsistSignup, el = $('hp-have');
+      if (el && S && S.isSignedUp) { el.hidden = !S.isSignedUp(); return; }
+      if (++haveTries < 20) setTimeout(have, 300);
+    })();
     if (PHONE) {
       var redraw = function () { drawCharts(); if (bandStarted) { band.zip = ''; loadBand(); } if (landStarted) loadLand(); };
       if (PHONE.addEventListener) PHONE.addEventListener('change', redraw); else if (PHONE.addListener) PHONE.addListener(redraw);
