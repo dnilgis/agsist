@@ -61,11 +61,13 @@
     return { lead: leads[have[0]], st: have[0], covered: sts.indexOf(mine) >= 0, mine: mine || '' };
   }
 
-  /* the words for each line */
+  /* the words for each line. Nov 12: the lead never says "Top" or "highest": the pick leaves out sales over twice
+     the state's middle and far outside their county's range (Illinois, Oct 30: 3 higher sales left out, so the
+     $21,000 shown was not the state's top price). The rule under "How this sale was picked" says how it was chosen. */
   function words(L, p) {
     var r = p.lead, name = NAMES[p.st] || p.st;
     var k = (p.mine && !p.covered && NAMES[p.mine] ? 'Not yet in ' + NAMES[p.mine] + '. ' : '')
-      + 'Top bare-land price in ' + name + ', 30 days to ' + day(r.window[1]);
+      + 'A recent farm sale in ' + name + ', 30 days to ' + day(r.window[1]);
     var pct = num(r.pct), med = num(r.med), n = num(r.n24);
     var vs = med && n ? ' ' + (pct == null || pct === 0 ? 'At' : Math.abs(pct) + '% ' + (pct > 0 ? 'above' : 'under'))
       + ' the county’s middle, ' + money(med) + ' (' + n + ' sales in 24 months).' : '';
