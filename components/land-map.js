@@ -1,14 +1,12 @@
 /* components/land-map.js: every farm sale on a map (land sales hub, Nov 12, 2026).
    The section (#land-map) is written by the land sales builder with a headline, filters, a box of reserved
-   height, a key and an empty list. When the box comes near the screen this loads Leaflet and the heat layer
-   (vendor/), then the state files (data/land-sales/map/<st>.json, one per state, built on main), and draws:
+   height, a key and an empty list. When the box comes near the screen this loads Leaflet (vendor/), then the state files (data/land-sales/map/<st>.json, one per state, built on main), and draws:
      - one pin per sale of 20 acres or more over 24 months, placed at its section, township, town or county
        center (never the parcel; each pin says which), fanned out a little when several share a spot;
      - colour: the sale's price per acre against its own county's 24-month median and usual range;
        size: acres; a gold ring: outside the usual range or among the largest 1% of the state's sales;
        family and other deeds (left out of every median) hollow and grey, off until the reader turns them on;
-     - zoomed out: a heat layer (where sales are, or where prices run over the county median) under the
-       ringed pins; zoomed in, every pin;
+     - zoomed out the same pins as small dots, no blur; a topo or aerial USGS base map;
      - a tap shows date, acres, $/acre, price, the county median and how far off, the placement and only the
        links whose page exists (the sale's row, Field Scout at that spot, the Farmland Atlas county page);
      - the headline and the list of unusual sales follow the filters; Share and Save the picture
@@ -26,9 +24,10 @@
   var NMW = { r: 'a related-party sale', q: 'a quit claim or other non-sale deed', x: 'exempt from the transfer tax', p: 'a part interest' };
   var UP_WHY = 'a house or buildings, timber or hunting ground, a building site or development land, or a neighbor paying more for the piece next door';
   var DOWN_WHY = 'a family or neighbor sale, a part interest, wooded, wet or poorer ground, no road access, or a land contract';
-  var LEAFLET = '/vendor/leaflet-1.9.4/', HEAT = '/vendor/leaflet.heat-0.2.0/leaflet-heat.js';
-  var TILES = 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}';
-  var PINZ = 9;          // zoom from which every pin shows; below it the heat layer and the ringed pins
+  var LEAFLET = '/vendor/leaflet-1.9.4/';
+  var BASES = { topo: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
+    aerial: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}' };
+  var PINZ = 9;          // zoom from which pins take their full size; below it they shrink to dots
   var MIN_ACRES = 20;
   // point columns (scripts/land_map.py PT_COLS)
   var LAT = 0, LNG = 1, K = 2, CO = 3, WHEN = 4, AC = 5, PR = 6, PPA = 7, KIND = 8, C = 9, A = 10, PC = 11, PN = 12, ID = 13, NM = 14;
@@ -106,11 +105,11 @@
     } else {
       h.push('<p>Not judged against the county median: ' + esc(KINDW[p[KIND]] || 'not bare farmland') + '.</p>');
     }
+    var L0 = links(f, p);
+    if (L0.length) h.push('<p class="lm-go">' + L0.map(function (l) { return '<a href="' + esc(l[1]) + '">' + esc(l[0]) + '</a>'; }).join('') + '</p>');
     if (p[A] & 4) h.push('<p>Among the largest 1% of ' + NAMES[f.st] + ' sales by price.</p>');
     if (p[A] & 8) h.push('<p>Among the largest 1% of ' + NAMES[f.st] + ' sales by acres.</p>');
     h.push('<p class="lm-note">' + esc(placeNote(p[PC], f.places[p[PN]], co[CNAME])) + '</p>');
-    var L0 = links(f, p);
-    if (L0.length) h.push('<p class="lm-go">' + L0.map(function (l) { return '<a href="' + esc(l[1]) + '">' + esc(l[0]) + '</a>'; }).join('') + '</p>');
     h = h.concat(why);
     h.push('</div>');
     return h.join('');
@@ -143,8 +142,8 @@
   var headEl = document.getElementById('lm-head'), takeEl = document.getElementById('lm-take'), list = document.getElementById('lm-list'), ln = document.getElementById('lm-ln');
   var tools = document.getElementById('lm-tools'), sumEl = document.getElementById('lm-lh');
   var reduce = false; try { reduce = root.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  var files = [], map = null, heat = null, pinLayer = null, ringLayer = null, shown = [], latest = '', L = null, marks = [];
-  var q = { st: '', mo: +sec.getAttribute('data-open') || 12, amin: MIN_ACRES, amax: 0, odd: false, nm: false, heat: 'n' };
+  var files = [], map = null, tiles = null, pinLayer = null, ringLayer = null, shown = [], latest = '', L = null, marks = [];
+  var q = { st: '', mo: +sec.getAttribute('data-open') || 12, amin: MIN_ACRES, amax: 0, odd: false, nm: false, base: 'topo' };
 
   function readUrl() {
     var s = location.search || '', g = function (k) { var m = new RegExp('[?&]' + k + '=([^&]*)').exec(s); return m ? decodeURIComponent(m[1]) : null; };
@@ -152,17 +151,17 @@
     var mo = +g('mo'); if ([3, 6, 12, 24].indexOf(mo) >= 0) q.mo = mo;
     var a0 = +g('amin'); if ([20, 40, 80, 160, 320].indexOf(a0) >= 0) q.amin = a0;
     var a1 = +g('amax'); if ([40, 80, 160, 320].indexOf(a1) >= 0) q.amax = a1;
-    q.odd = g('odd') === '1'; q.nm = g('nm') === '1'; q.heat = g('heat') === 'p' ? 'p' : 'n';
+    q.odd = g('odd') === '1'; q.nm = g('nm') === '1'; q.base = g('base') === 'aerial' ? 'aerial' : 'topo';
     var at = /^(-?\d+\.?\d*),(-?\d+\.?\d*),(\d+(?:\.\d)?)$/.exec(g('at') || '');
     q.at = at ? [+at[1], +at[2], +at[3]] : null;
   }
   function toForm() {
     form.lst.value = q.st.toLowerCase(); form.lmo.value = String(q.mo); form.lamin.value = String(q.amin); form.lamax.value = q.amax ? String(q.amax) : '';
-    form.lodd.checked = q.odd; form.lnm.checked = q.nm; form.lheat.value = q.heat;
+    form.lodd.checked = q.odd; form.lnm.checked = q.nm;
   }
   function fromForm() {
     q.st = (form.lst.value || '').toUpperCase(); q.mo = +form.lmo.value; q.amin = +form.lamin.value; q.amax = +form.lamax.value || 0;
-    q.odd = form.lodd.checked; q.nm = form.lnm.checked; q.heat = form.lheat.value;
+    q.odd = form.lodd.checked; q.nm = form.lnm.checked;
   }
   function viewUrl() {
     var u = location.origin + location.pathname + '?', p = [];
@@ -172,7 +171,7 @@
     if (q.amax) p.push('amax=' + q.amax);
     if (q.odd) p.push('odd=1');
     if (q.nm) p.push('nm=1');
-    if (q.heat === 'p') p.push('heat=p');
+    if (q.base === 'aerial') p.push('base=aerial');
     if (map) { var c = map.getCenter(); p.push('at=' + c.lat.toFixed(3) + ',' + c.lng.toFixed(3) + ',' + map.getZoom()); }
     return u + p.join('&') + '#land-map';
   }
@@ -193,8 +192,8 @@
   }
   function radius(p, z) {
     var r = 3 + 1.6 * Math.sqrt(p[AC] / MIN_ACRES);
-    if (z < PINZ) r *= 0.75;
-    return Math.max(3, Math.min(13, r));
+    if (z < 7) r *= 0.42; else if (z < PINZ) r *= 0.62;
+    return Math.max(z < PINZ ? 2 : 3, Math.min(13, r));
   }
 
   function draw(fit) {
@@ -209,28 +208,16 @@
     }
     var z = map.getZoom();
     pinLayer.clearLayers(); ringLayer.clearLayers(); marks = [];
-    var hp = [];
-    shown.forEach(function (o) {
-      var p = o.p, at = spot(p), ring = !!(p[A] & 15), all = z >= PINZ;
-      if (!p[NM]) {
-        var w = q.heat === 'p' ? (p[C] !== null && o.f.counties[p[CO]][CMED] ? Math.max(0, Math.min(2, p[PPA] / o.f.counties[p[CO]][CMED] - 1)) : 0) : 0.5;
-        if (w > 0) hp.push([at[0], at[1], w]);
-      }
-      if (!all && !ring) return;
-      var r = radius(p, z), m;
-      if (p[NM]) m = L.circleMarker(at, { radius: r, color: '#7d7d79', weight: 1.5, dashArray: '3 2', fill: true, fillColor: '#ffffff', fillOpacity: 0.15 });
-      else if (p[C] === null) m = L.circleMarker(at, { radius: r, color: '#444', weight: 1.2, fillColor: '#ffffff', fillOpacity: 0.9 });
-      else m = L.circleMarker(at, { radius: r, color: '#ffffff', weight: 1.2, fillColor: COL[String(p[C])], fillOpacity: 0.92 });
-      m.bindPopup(function () { return popupHtml(o.f, p); }, { maxWidth: 290, maxHeight: box.clientHeight - 60, autoPanPadding: [10, 10] });
+    var small = z < PINZ, order = shown.slice().sort(function (a, b) { return (a.p[A] & 15 ? 1 : 0) - (b.p[A] & 15 ? 1 : 0); });
+    order.forEach(function (o) {
+      var p = o.p, at = spot(p), ring = !!(p[A] & 15), r = radius(p, z), w = small ? 0.6 : 1.2, m;
+      if (p[NM]) m = L.circleMarker(at, { radius: r, color: '#7d7d79', weight: small ? 1 : 1.5, dashArray: small ? null : '3 2', fill: true, fillColor: '#ffffff', fillOpacity: 0.15 });
+      else if (p[C] === null) m = L.circleMarker(at, { radius: r, color: '#444', weight: w, fillColor: '#ffffff', fillOpacity: 0.9 });
+      else m = L.circleMarker(at, { radius: r, color: '#ffffff', weight: w, fillColor: COL[String(p[C])], fillOpacity: 0.92 });
+      m.bindPopup(function () { return popupHtml(o.f, p); }, { maxWidth: Math.min(290, box.clientWidth - 50), maxHeight: box.clientHeight - 70, autoPan: true, autoPanPadding: [8, 8], keepInView: true });
       m.addTo(pinLayer); o.m = m; marks.push(o);
-      if (ring) L.circleMarker(at, { radius: r + 3, color: GOLD, weight: 2.5, fill: false, interactive: false }).addTo(ringLayer);
+      if (ring) L.circleMarker(at, { radius: r + (small ? 2 : 3), color: GOLD, weight: small ? 1.6 : 2.5, fill: false, interactive: false }).addTo(ringLayer);
     });
-    if (heat) {
-      heat.options.max = q.heat === 'p' ? 1 : 2.5;
-      if (z >= PINZ) { if (map.hasLayer(heat)) map.removeLayer(heat); heat._latlngs = hp; }
-      else if (map.hasLayer(heat)) heat.setLatLngs(hp);
-      else { heat._latlngs = hp; heat.addTo(map); }
-    }
     drawList();
   }
 
@@ -328,12 +315,31 @@
     });
   }
 
+  function setBase(b) {
+    q.base = b;
+    if (tiles) map.removeLayer(tiles);
+    tiles = L.tileLayer(BASES[b], { maxNativeZoom: 16, maxZoom: 16, attribution: 'Map: USGS' }).addTo(map);
+    tiles.bringToBack();
+    [].slice.call(box.querySelectorAll('.lm-base button')).forEach(function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-b') === b)); });
+  }
+  function baseControl() {
+    var C = L.Control.extend({ options: { position: 'topright' }, onAdd: function () {
+      var d = L.DomUtil.create('div', 'lm-base');
+      d.setAttribute('role', 'group'); d.setAttribute('aria-label', 'Base map');
+      d.innerHTML = '<button type="button" data-b="topo" aria-pressed="' + (q.base === 'topo') + '">Topo</button><button type="button" data-b="aerial" aria-pressed="' + (q.base === 'aerial') + '">Aerial</button>';
+      L.DomEvent.disableClickPropagation(d);
+      [].slice.call(d.querySelectorAll('button')).forEach(function (b) { b.addEventListener('click', function () { setBase(b.getAttribute('data-b')); }); });
+      return d;
+    } });
+    new C().addTo(map);
+  }
+
   function start() {
     loadCss(LEAFLET + 'leaflet.css');
     loadScript(LEAFLET + 'leaflet.js').then(function (ok) {
       if (!ok || !root.L) { wait.textContent = 'The map did not load. Every unusual sale is in the list below, and every sale is on its county page.'; return null; }
       L = root.L;
-      return Promise.all([loadScript(HEAT)].concat((sec.getAttribute('data-files') || '').split(',').filter(Boolean).map(getJSON)));
+      return Promise.all([true].concat((sec.getAttribute('data-files') || '').split(',').filter(Boolean).map(getJSON)));
     }).then(function (got) {
       if (!got) return;
       files = got.slice(1).filter(function (f) { return f && f.pts; });
@@ -342,9 +348,9 @@
       wait.parentNode.removeChild(wait);
       map = L.map(box, { preferCanvas: true, scrollWheelZoom: false, zoomSnap: 0.5, worldCopyJump: false, minZoom: 4, maxZoom: 16 });
       map.attributionControl.setPrefix(false);
-      L.tileLayer(TILES, { maxNativeZoom: 16, maxZoom: 16, attribution: 'Map: USGS' }).addTo(map);
+      setBase(q.base);
+      baseControl();
       pinLayer = L.layerGroup().addTo(map); ringLayer = L.layerGroup().addTo(map);
-      if (L.heatLayer) heat = L.heatLayer([], { radius: 16, blur: 18, minOpacity: 0.25, maxZoom: PINZ, gradient: { 0.2: '#4ea3e0', 0.45: '#f2d36b', 0.7: '#ec7a36', 1: '#b8212f' } });
       map.setView([41, -88], 5, { animate: false });
       draw(q.at ? 'url' : true);
       var lastZ = map.getZoom();
