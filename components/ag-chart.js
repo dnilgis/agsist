@@ -215,7 +215,44 @@
       return true;
     };
     var failed = [];
+    /* a point's own label (series with endText / startText), tried in a fixed order: beside the point, above it, under it,
+       under the bottom gridline, above the top gridline. The first whose text box keeps 6 px from every gridline and clear of
+       the line and dots, and (for the first three) stays within one gridline band of the point, wins; the clearances loosen
+       only when nothing fits. Returns false when nothing does, and the general search below takes over. */
+    var placePt = function (L) {
+      var px = L.pt.x, py = L.pt.y, r = L.pt.r, w = widthOf(L.text, fs, L.bold), end = L.kind === 'end', gys = g.tk.map(function (t) { return g.y(t); });
+      var yb = Math.max.apply(null, gys), yt = Math.min.apply(null, gys), top = row2 ? fs * (2.65 + (krows - 1) * 1.2) + 1 : fs * 1.7, bot = H - fs * 1.25 - 3;
+      var tight = function (x, y) { var x0 = end ? x - w : x; return { x0: x0 - 2, x1: x0 + w + 2, y0: y - fs * 0.76, y1: y + fs * 0.14 }; };
+      var ok = function (t, clr, gm, band) {
+        if (t.x0 < g.L + 2 || t.x1 > W - 2 || t.y0 < top || t.y1 > bot) return false;
+        if (band && (py < t.y0 ? t.y0 - py : py > t.y1 ? py - t.y1 : 0) > bandPx) return false;   // its nearest edge within one band of the point
+        for (var q = 0; q < gys.length; q++) if (gys[q] > t.y0 - gm && gys[q] < t.y1 + gm) return false;
+        var tb = { x0: t.x0 - clr, x1: t.x1 + clr, y0: t.y0 - clr, y1: t.y1 + clr };
+        for (var i = 0; i < boxes.length; i++) if (hitBox(tb, boxes[i])) return false;
+        for (var j = 0; j < segs.length; j++) if (hitSeg(tb, segs[j])) return false;
+        for (var k = 0; k < dots.length; k++) { var d = dots[k]; if (hitBox(tb, { x0: d.x - d.r, x1: d.x + d.r, y0: d.y - d.r, y1: d.y + d.r })) return false; }
+        return true;
+      };
+      var ax = end ? px + r : px + r + fs * 0.4, cands = [];
+      // each place is tried at the point, then slid along the axis a little (away from the plot's edge)
+      var scan = function (y0, dir, n, band) { for (var sh = 0; sh < 9; sh++) for (var k = 0; k < n; k++) cands.push({ x: ax + (end ? -1 : 1) * sh * fs * 0.8, y: y0 + dir * k * 1.5, band: band }); };
+      cands.push({ x: end ? px - r - 4 : px + r + 4, y: py + fs * 0.31, band: true });                         // beside
+      scan(py - r - 4 - fs * 0.14, -1, Math.ceil(bandPx * 1.6 / 1.5), true);                                          // above
+      scan(py + r + 4 + fs * 0.76, 1, Math.ceil(bandPx * 1.6 / 1.5), true);                                           // under
+      if (Math.abs(py - yb) <= bandPx) scan(yb + 6 + fs * 0.76, 1, 8, false);                                   // under the bottom gridline
+      if (Math.abs(py - yt) <= bandPx) scan(yt - 6 - fs * 0.14, -1, 8, false);                                  // above the top gridline
+      var passes = [[5, 6], [3, 6], [1, 6], [0, 6], [0, 4], [0, 2]];
+      for (var ps = 0; ps < passes.length; ps++) for (var c = 0; c < cands.length; c++) {
+        var t = tight(cands[c].x, cands[c].y);
+        if (ok(t, passes[ps][0], passes[ps][1], cands[c].band)) {
+          var b = boxOf(cands[c].x, cands[c].y, w, fs, end ? 'end' : 'start');
+          boxes.push(b); out.push(Object.assign({}, L, { x: cands[c].x, y: cands[c].y, box: b, tight: t })); return true;
+        }
+      }
+      return false;
+    };
     var place = function (L) {
+      if (L.pt && placePt(L)) return;
       var w = widthOf(L.text, fs, L.bold), step = fs * 0.17, span = g.base - g.T + fs * 2;
       ext = L.kind === 'gap' ? fs * 1.4 : L.kind === 'start' ? fs * 0.9 : 0;
       var win = L.win || [L.y - fs * 3, L.y + fs * 3];   // stay near what it names; else go outside
@@ -256,12 +293,12 @@
         var lp = e.s.points[e.s.points.length - 1], pv = e.s.points[e.s.points.length - 2];
         var down = i === 0 && pv && g.y(pv.v) < g.y(e.v) - 2;   // a line falling into its end: the free side is below it
         var y = i === 0 && !down ? g.y(e.v) - fs * 0.6 : g.y(e.v) + fs * 1.3;
-        labels.push({ kind: 'end', s: e.s, text: e.s.endText ? e.s.endText(lp) : e.s.name + ' ' + fmt(e.v), x: ex, y: y, anchor: 'end', bold: true, down: down, win: [g.y(e.v) - bandPx, g.y(e.v) + bandPx + fs * 0.9] });
+        labels.push({ kind: 'end', s: e.s, text: e.s.endText ? e.s.endText(lp) : e.s.name + ' ' + fmt(e.v), x: ex, y: y, anchor: 'end', bold: true, down: down, win: [g.y(e.v) - bandPx, g.y(e.v) + bandPx + fs * 0.9], pt: e.s.endText ? { x: g.x(lp.d), y: g.y(lp.v), r: fs / 3 + 1 } : null });
       });
     // the first point named too, where the series asks for it: its year and value
     main.filter(function (s) { return !hide[s.key] && s.startText && s.points.length > 1; }).forEach(function (s) {
       var p0 = s.points[0], nx = s.points[1], dn = g.y(nx.v) < g.y(p0.v) - 2;   // the line leaves upward: the free side is below
-      labels.push({ kind: 'start', s: s, text: s.startText(p0), x: g.x(p0.d) + fs * 0.7, y: g.y(p0.v) + (dn ? fs * 1.5 : -fs * 0.9), anchor: 'start', bold: true, optional: true, down: dn, win: [g.y(p0.v) - bandPx, g.y(p0.v) + bandPx + fs * 0.9] });
+      labels.push({ kind: 'start', s: s, text: s.startText(p0), x: g.x(p0.d) + fs * 0.7, y: g.y(p0.v) + (dn ? fs * 1.5 : -fs * 0.9), anchor: 'start', bold: true, optional: true, down: dn, win: [g.y(p0.v) - bandPx, g.y(p0.v) + bandPx + fs * 0.9], pt: { x: g.x(p0.d), y: g.y(p0.v), r: Math.max(1.6, fs / 6) } });
     });
     (cfg.bands || []).forEach(function (b) {
       if (hide[b.a] || hide[b.b]) return;
@@ -277,7 +314,9 @@
       labels.push({ kind: 'end', off: true, s: s, text: s.name + ' ' + fmt(s.points[s.points.length - 1].v), x: g.right, y: g.T + fs * 0.3, anchor: 'end', bold: true, win: [0, g.base] });
     });
     // "no survey" under each dashed stretch, as near as it fits
-    if (cfg.gapLabel && W >= 500) lay_gaps(segs, cfg, fs).forEach(function (q) { labels.push({ kind: 'gap', s: q.s, text: q.text, x: q.x, y: q.y, anchor: 'middle', optional: true, win: [q.y - fs * 4.4, q.y + fs * 2.2] }); });
+    var gq = cfg.gapLabel && W >= 500 ? lay_gaps(segs, cfg, fs) : [], gmax = Math.max.apply(null, gq.map(function (q) { return q.y; })), gmin = Math.min.apply(null, gq.map(function (q) { return q.y; }));
+    if (gq.length > 1 && gmax - gmin < fs * 2.2) gq.forEach(function (q) { q.y = gmax; });   // the labels of one chart share a baseline
+    gq.forEach(function (q) { labels.push({ kind: 'gap', s: q.s, text: q.text, x: q.x, y: q.y, anchor: 'middle', optional: true, win: [q.y - fs * 4.4, q.y + fs * 2.2] }); });
     labels.forEach(place);
     if (failed.length) {   // a gutter wide enough for the widest label that fits nowhere inside (asked again if it was too narrow)
       var wide = Math.max.apply(null, failed.map(function (L) { return widthOf(L.text, fs, L.bold); })), want = Math.min(Math.round(wide + fs * 1.4), Math.round(W * 0.4));
@@ -446,7 +485,7 @@
       c.toBlob(function (b) { done(b); }, 'image/png');
     };
     img.onerror = function () { done(null); };
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg(view, W - 64, Math.max(200, Math.round(H - y - 76)), { fs: 20, card: true, cfg: cfg }));
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg(view, W - 64, Math.max(200, Math.round(H - y - 62)), { fs: 18, card: true, cfg: cfg }));
   }
   function ga(n, kit) { try { if (typeof root.gtag === 'function') root.gtag('event', n, { kit: kit }); } catch (e) {} }
 

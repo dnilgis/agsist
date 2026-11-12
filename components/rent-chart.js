@@ -91,7 +91,7 @@
         var y = +day.slice(0, 4), p = ptOf(d, y);
         return p && p[1] != null ? y + ': ' + money(p[1]) + ' an acre, median of ' + p[2] + ' counties' : y + ': ' + (p ? p[2] : 'no figure');
       },
-      height: { phone: 200, wide: 260 },
+      height: { phone: 260, wide: 260 },   // a phone's plot is as tall as the wide one: the labels need the room between gridlines
       headEl: D.getElementById('rc-head'), takeEl: D.getElementById('rc-take'), noteEl: D.getElementById('rc-note'), tools: D.getElementById('rc-tools'),
       share: { url: d.url, title: d.name + ' cash rent by year', file: 'agsist-rent-' + d.slug + '.png', kicker: d.name + ' cash rent', dateText: fl[1] + ' survey',
                source: function (v) { var s = span(v); return 'Source: USDA NASS Cash Rents Survey county estimates, median of published counties, ' + s[0] + '–' + s[1] + '.' + asOf(d); } }
