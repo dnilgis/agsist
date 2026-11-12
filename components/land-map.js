@@ -1,33 +1,38 @@
-/* components/land-map.js: every farm sale on a map (land sales hub, Nov 12, 2026).
+/* components/land-map.js: farm sales of 20 acres or more on a map (land sales hub, Nov 12, 2026).
    The section (#land-map) is written by the land sales builder with a headline, filters, a box of reserved
-   height, a key and an empty list. When the box comes near the screen this loads Leaflet (vendor/), then the state files (data/land-sales/map/<st>.json, one per state, built on main), and draws:
-     - one pin per sale of 20 acres or more over 24 months, placed at its section, township, town or county
+   height, one key, a counts line and an empty list. When the box comes near the screen this loads Leaflet (vendor/), then the state
+   files (data/land-sales/map/<st>.json, one per state, built on main), and draws:
+     - one pin per sale of 20 acres or more over 24 months, placed at its section, township, town, ZIP or county
        center (never the parcel; each pin says which), fanned out a little when several share a spot;
-     - colour: the sale's price per acre against its own county's 24-month median and usual range;
-       size: acres; a gold ring: outside the usual range or among the largest 1% of the state's sales;
-       family and other deeds (left out of every median) hollow and grey, off until the reader turns them on;
-     - zoomed out the same pins as small dots, no blur; a topo or aerial USGS base map;
+     - a round pin is a sale recorded with the state (transfer return); a SQUARE pin is an auction result reported by the
+       auction company (land_auctions.py), at its county center, with its company and result page in the popup;
+     - color: price per acre against the sale's own county's 24-month median and usual range; size: acres;
+     - ONE meaning of unusual: outside the county's usual range. Its pins carry a gold edge (and, from zoom 9, a triangle up for
+       over or down for under); the headline, the lead, the "Unusual only" filter and the list all count the same pins.
+       The largest 1% by price or acres is in the popup only;
+     - white pins are not compared (buildings, forest, auctions of several tracts, counties with under 5 sales) and are counted;
+       family, quit claim and part-interest deeds (left out of every median) are hollow and off until the reader turns them on;
+     - zoomed out the same pins as small dots, no separate ring layer; a tap on a stack zooms in; a topo or aerial USGS base map;
      - a tap shows date, acres, $/acre, price, the county median and how far off, the placement and only the
        links whose page exists (the sale's row, Field Scout at that spot, the Farmland Atlas county page);
-     - the headline and the list of unusual sales follow the filters; Share and Save the picture
+     - the headline, the counts and the list follow the filters (state, months, acres); Share and Save the picture
        (1200 x 630) carry the view. No buyer or seller name is in any file this reads.
-   Exports window.AgLandMap (and module.exports) for the tests: story, popupHtml, links, placeNote, filterPts. */
+   Exports window.AgLandMap (and module.exports) for the tests: story, popupHtml, links, placeNote, filterPts, counts. */
 (function (root) {
   'use strict';
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-  var NAMES = { IL: 'Illinois', IN: 'Indiana', WI: 'Wisconsin', NJ: 'New Jersey', VT: 'Vermont' };
-  var SLUGS = { IL: 'illinois', IN: 'indiana', WI: 'wisconsin', NJ: 'new-jersey', VT: 'vermont' };
   var NUMW = { 2: 'two', 3: 'three', 4: 'four', 5: 'five' };
   var COL = { '-2': '#1f5fa8', '-1': '#4ea3e0', '0': '#b4b2ab', '1': '#ec7a36', '2': '#b8212f' };
   var GOLD = '#d4a23f';
-  var KINDW = { f: 'farmland', b: 'with buildings', w: 'forest', s: 'small parcel' };
+  var KINDW = { f: 'farmland', b: 'with buildings', w: 'forest', s: 'small parcel', a: 'auction result' };
   var NMW = { r: 'a related-party sale', q: 'a quit claim or other non-sale deed', x: 'exempt from the transfer tax', p: 'a part interest' };
   var UP_WHY = 'a house or buildings, timber or hunting ground, a building site or development land, or a neighbor paying more for the piece next door';
   var DOWN_WHY = 'a family or neighbor sale, a part interest, wooded, wet or poorer ground, no road access, or a land contract';
   var LEAFLET = '/vendor/leaflet-1.9.4/';
   var BASES = { topo: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSTopo/MapServer/tile/{z}/{y}/{x}',
     aerial: 'https://basemap.nationalmap.gov/arcgis/rest/services/USGSImageryTopo/MapServer/tile/{z}/{y}/{x}' };
-  var PINZ = 9;          // zoom from which pins take their full size; below it they shrink to dots
+  var PINZ = 9;          // zoom from which pins take their full size and unusual pins carry a triangle; below it they shrink to dots
+  var STACKZ = 7;        // below this zoom a tap on a pin zooms in to it instead of opening one pin of a stack
   var MIN_ACRES = 20;
   // point columns (scripts/land_map.py PT_COLS)
   var LAT = 0, LNG = 1, K = 2, CO = 3, WHEN = 4, AC = 5, PR = 6, PPA = 7, KIND = 8, C = 9, A = 10, PC = 11, PN = 12, ID = 13, NM = 14;
@@ -48,27 +53,30 @@
   function latestOf(files) { var t = ''; files.forEach(function (f) { f.pts.forEach(function (p) { if (p[WHEN] > t) t = p[WHEN]; }); }); return t; }
 
   /* the headline and the line under it (scripts/land_map.py headline writes the same from the same data): each state's
-     last `months` months to its newest record; only bare farmland sales judged against their county median count;
-     "more than 50% above" is strictly over 1.5 times the median */
-  function story(files, states, months) {
-    var sts = files.filter(function (f) { return states.indexOf(f.st) >= 0 && f.pts && f.pts.length; });
-    if (!sts.length) return { head: 'No recorded farm sales to show.', take: '' };
-    var judged = 0, big = 0, odd = 0;
+     last `months` months to its newest record, within the acres chosen; only bare farmland sales recorded with the state and
+     judged against their county count; ONE meaning of unusual: outside the county's usual range (class bits 1 and 2);
+     auction results (kind a) are never in these counts */
+  function acreWords(amin, amax) { return amax ? amin + ' to ' + amax + ' acres' : amin + ' acres or more'; }
+  function story(files, states, months, amin, amax) {
+    amin = amin || MIN_ACRES; amax = amax || 0;
+    var sts = files.filter(function (f) { return states.indexOf(f.st) >= 0 && f.pts && f.pts.some(function (p) { return p[KIND] !== 'a'; }); });
+    if (!sts.length) return { head: 'No state-recorded farm sales to show.', take: '' };
+    var judged = 0, over = 0, under = 0;
     sts.forEach(function (f) {
       var cut = monthsBack(f.through, months);
       f.pts.forEach(function (p) {
-        if (p[NM] || p[WHEN] <= cut || p[C] === null) return;
+        if (p[NM] || p[KIND] === 'a' || p[WHEN] <= cut || p[C] === null || p[AC] < amin || (amax && p[AC] > amax)) return;
         judged++;
-        var co = f.counties[p[CO]];
-        if (p[PPA] !== null && co[CMED] && p[PPA] > 1.5 * co[CMED]) big++;
-        if (p[A] & 3) odd++;
+        if (p[A] & 1) over++;
+        if (p[A] & 2) under++;
       });
     });
-    var where = sts.length === 1 ? NAMES[sts[0].st] : (NUMW[sts.length] || sts.length) + ' states';
+    var where = sts.length === 1 ? sts[0].name : (NUMW[sts.length] || sts.length) + ' states';
     var span = sts.length === 1 ? 'in the ' + months + ' months to ' + day(sts[0].through) : 'in the ' + months + " months to each state's newest record";
-    var head = big ? n0(big) + ' ' + (big === 1 ? 'sale' : 'sales') + ' in ' + where + ' ' + span + " priced more than 50% above their county's median."
-      : n0(judged) + ' bare farmland ' + (judged === 1 ? 'sale' : 'sales') + ' in ' + where + ' ' + span + ", none priced more than 50% above their county's median.";
-    return { head: head, take: n0(odd) + ' of ' + n0(judged) + ' bare farmland sales of ' + MIN_ACRES + " acres or more sold outside their county's usual price range." };
+    var odd = over + under;
+    return { head: n0(odd) + ' of ' + n0(judged) + ' bare farmland ' + (judged === 1 ? 'sale' : 'sales') + ' of ' + acreWords(amin, amax) + ' in ' + where +
+      " sold outside their county's usual price range " + span + '.',
+      take: n0(over) + ' over the range, ' + n0(under) + " under. A gold edge marks them; auction results get one too but are counted apart. The largest 1% by price or acres is in the pin's popup only." };
   }
 
   function placeNote(code, words, county) {
@@ -80,9 +88,9 @@
   /* [[label, href]]: only the links whose page exists (scripts/land_map.py links, the same list) */
   function links(f, p) {
     var co = f.counties[p[CO]], out = [];
-    if (p[ID]) out.push(['Sale details', '/land-sales/' + SLUGS[f.st] + '/' + co[CSLUG] + '#s-' + p[ID]]);
+    if (p[ID]) out.push(['Sale details', '/land-sales/' + f.slug + '/' + co[CSLUG] + '#s-' + p[ID]]);
     if (fieldScoutCovers(p[LAT], p[LNG])) out.push(['Field Scout', '/field-scout?at=' + p[LAT].toFixed(4) + ',' + p[LNG].toFixed(4) + '&fips=' + co[CF]]);
-    if (co[CATLAS]) out.push(['Farmland Atlas', '/farmland-atlas/' + SLUGS[f.st] + '/' + co[CSLUG]]);
+    if (co[CATLAS]) out.push(['Farmland Atlas', '/farmland-atlas/' + f.slug + '/' + co[CSLUG]]);
     return out;
   }
   function offPct(f, p) {
@@ -90,27 +98,32 @@
     return (p[C] !== null && co[CMED] && p[PPA] !== null) ? Math.round((p[PPA] / co[CMED] - 1) * 100) : null;
   }
   function popupHtml(f, p) {
-    var co = f.counties[p[CO]], cn = co[CNAME] + ' County, ' + f.st, h = [], why = [];
+    var co = f.counties[p[CO]], cn = co[CNAME] + ' County, ' + f.st, h = [], why = [], auc = p[KIND] === 'a', au = auc && f.au ? f.au[p[ID]] : null;
+    var basis = f.basis === 'auction' ? ' auction per-acre figures, 24 months' : ' bare farmland sales, 24 months';
     h.push('<div class="lm-pop">');
-    h.push('<p><b>' + (p[PPA] !== null ? usd(p[PPA]) + ' an acre' : 'Price per acre not stated') + '</b>, ' + acres(p[AC]) + ', ' + usd(p[PR]) + '<br>' +
-      day(p[WHEN]) + ', ' + esc(cn) + ', ' + esc(KINDW[p[KIND]] || '') + '</p>');
+    if (auc) h.push('<p class="lm-tag"><b>Auction result</b>' + (au ? ', reported by ' + esc(au[0]) : ', reported by the auction company') + '</p>');
+    h.push('<p><b>' + (p[PPA] !== null ? usd(p[PPA]) + ' an acre' : auc ? 'No single per-acre figure' : 'Price per acre not stated') + '</b>, ' + acres(p[AC]) + ', ' +
+      (p[PR] ? (auc ? usd(p[PR]) + ' total sold' : usd(p[PR])) : 'total sold not published') + '<br>' +
+      (auc ? 'Auction day ' : '') + day(p[WHEN]) + ', ' + esc(cn) + (auc ? '' : ', ' + esc(KINDW[p[KIND]] || '')) + '</p>');
+    if (auc && au && au[2]) h.push('<p>' + esc(au[2]) + '. Each tract\'s figure is in the sale details.</p>');
     if (p[NM]) {
       h.push('<p>Left out of every median: ' + NMW[p[NM]] + '.</p>');
     } else if (p[C] !== null) {
       var pct = offPct(f, p);
       h.push('<p>' + (pct === 0 ? 'Right at' : Math.abs(pct) + '% ' + (pct > 0 ? 'above' : 'below')) + ' the county median of ' + usd(co[CMED]) +
-        ' an acre (' + co[CN] + ' bare farmland sales, 24 months; usual range ' + (co[CLO] > 0 ? usd(co[CLO]) + ' to ' : 'up to ') + usd(co[CHI]) + ').</p>');
+        ' an acre (' + co[CN] + basis + '; usual range ' + (co[CLO] > 0 ? usd(co[CLO]) + ' to ' : 'up to ') + usd(co[CHI]) + ').</p>');
       if (p[A] & 1) why.push('<p class="lm-note">Over the usual range. Possible reasons: ' + UP_WHY + '.</p>');
       if (p[A] & 2) why.push('<p class="lm-note">Under the usual range. Possible reasons: ' + DOWN_WHY + '.</p>');
     } else if (!co[CMED]) {
-      h.push('<p>' + esc(co[CNAME]) + ' County has under 5 bare farmland sales in 24 months, so no median.</p>');
+      h.push('<p>Not compared: ' + esc(co[CNAME]) + ' County has too few ' + (f.basis === 'auction' ? 'auction per-acre figures' : 'bare farmland sales') + ' in 24 months for a median.</p>');
     } else {
-      h.push('<p>Not judged against the county median: ' + esc(KINDW[p[KIND]] || 'not bare farmland') + '.</p>');
+      h.push('<p>Not compared with the county median: ' + (auc ? 'an auction of several tracts has no single per-acre figure' : esc(KINDW[p[KIND]] || 'not bare farmland')) + '.</p>');
     }
     var L0 = links(f, p);
-    if (L0.length) h.push('<p class="lm-go">' + L0.map(function (l) { return '<a href="' + esc(l[1]) + '">' + esc(l[0]) + '</a>'; }).join('') + '</p>');
+    if (au && au[1]) L0.push(['Result on ' + au[0] + "'s site", au[1]]);
+    if (L0.length) h.push('<p class="lm-go">' + L0.map(function (l) { return '<a href="' + esc(l[1]) + '"' + (/^https?:/.test(l[1]) ? ' rel="noopener nofollow"' : '') + '>' + esc(l[0]) + '</a>'; }).join('') + '</p>');
     var top = (p[A] & 4 ? ['price'] : []).concat(p[A] & 8 ? ['acres'] : []);
-    if (top.length) h.push('<p>Among the largest 1% of ' + NAMES[f.st] + ' sales by ' + top.join(' and by ') + '.</p>');
+    if (top.length) h.push('<p>Among the largest 1% of ' + esc(f.name) + ' ' + (f.basis === 'auction' ? 'auction results' : 'sales') + ' by ' + top.join(' and by ') + '.</p>');
     h.push('<p class="lm-note">' + esc(placeNote(p[PC], f.places[p[PN]], co[CNAME])) + '</p>');
     h = h.concat(why);
     h.push('</div>');
@@ -126,14 +139,32 @@
       f.pts.forEach(function (p) {
         if (p[WHEN] <= cut || p[AC] < q.amin || (q.amax && p[AC] > q.amax)) return;
         if (p[NM] && !q.nm) return;
-        if (q.odd && !(p[A] & 15)) return;
+        if (q.odd && !(p[A] & 3)) return;
         out.push({ f: f, p: p });
       });
     });
     return out;
   }
 
-  var api = { story: story, popupHtml: popupHtml, links: links, placeNote: placeNote, filterPts: filterPts, monthsBack: monthsBack, fieldScoutCovers: fieldScoutCovers };
+  /* the counts line under the key, from the pins a filter keeps: how many are on the map, how many are not compared and why,
+     how many are auction results (squares); family, quit claim and part-interest deeds are counted apart */
+  function counts(shown, hiddenNm) {
+    var n = 0, nc = 0, au = 0, nm = 0;
+    shown.forEach(function (o) {
+      var p = o.p;
+      if (p[NM]) { nm++; return; }
+      n++;
+      if (p[KIND] === 'a') au++;
+      if (p[C] === null) nc++;
+    });
+    var t = n0(n) + (n === 1 ? ' pin' : ' pins') + ' with these filters' + (au ? ', ' + n0(au) + ' of them auction results (squares)' : '') + '. ' +
+      n0(nc) + (nc === 1 ? ' is' : ' are') + ' white and not compared: buildings, forest, auctions of several tracts or counties with under 5 sales.';
+    if (nm) t += ' ' + n0(nm) + ' family, quit claim or part-interest ' + (nm === 1 ? 'deed is' : 'deeds are') + ' shown hollow.';
+    else if (hiddenNm) t += ' ' + n0(hiddenNm) + ' family, quit claim or part-interest deeds are hidden until ticked.';
+    return t;
+  }
+
+  var api = { story: story, counts: counts, popupHtml: popupHtml, links: links, placeNote: placeNote, filterPts: filterPts, monthsBack: monthsBack, fieldScoutCovers: fieldScoutCovers };
   root.AgLandMap = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
@@ -145,12 +176,12 @@
   var headEl = document.getElementById('lm-head'), takeEl = document.getElementById('lm-take'), list = document.getElementById('lm-list'), ln = document.getElementById('lm-ln');
   var tools = document.getElementById('lm-tools'), sumEl = document.getElementById('lm-lh');
   var reduce = false; try { reduce = root.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
-  var files = [], map = null, tiles = null, pinLayer = null, ringLayer = null, shown = [], latest = '', L = null, marks = [];
+  var files = [], map = null, tiles = null, pinLayer = null, markLayer = null, shown = [], latest = '', L = null, marks = [], hereSt = '';
   var q = { st: '', mo: +sec.getAttribute('data-open') || 12, amin: MIN_ACRES, amax: 0, odd: false, nm: false, base: 'topo' };
 
   function readUrl() {
     var s = location.search || '', g = function (k) { var m = new RegExp('[?&]' + k + '=([^&]*)').exec(s); return m ? decodeURIComponent(m[1]) : null; };
-    var st = (g('st') || '').toUpperCase(); if (NAMES[st]) q.st = st;
+    var st = (g('st') || '').toUpperCase(); if (/^[A-Z]{2}$/.test(st)) q.st = st;     // checked against the files once they load
     var mo = +g('mo'); if ([3, 6, 12, 24].indexOf(mo) >= 0) q.mo = mo;
     var a0 = +g('amin'); if ([20, 40, 80, 160, 320].indexOf(a0) >= 0) q.amin = a0;
     var a1 = +g('amax'); if ([40, 80, 160, 320].indexOf(a1) >= 0) q.amax = a1;
@@ -198,28 +229,47 @@
     if (z < 7) r *= 0.42; else if (z < PINZ) r *= 0.62;
     return Math.max(z < PINZ ? 2 : 3, Math.min(13, r));
   }
+  function band(z) { return z < STACKZ ? 0 : z < PINZ ? 1 : 2; }
+  /* the saved state of this reader (the weather location the site keeps on the device), when the map has it: a phone opens there */
+  function savedState() {
+    try { var w = JSON.parse(root.localStorage.getItem('agsist-wx-loc') || 'null'); return w && /^[A-Z]{2}$/.test(String(w.state || '').toUpperCase()) ? String(w.state).toUpperCase() : ''; } catch (e) { return ''; }
+  }
 
   function draw(fit) {
     shown = filterPts(files, q);
-    var st = story(files, q.st ? [q.st] : files.map(function (f) { return f.st; }), q.mo);
+    var sts = q.st ? [q.st] : files.map(function (f) { return f.st; });
+    var st = story(files, sts, q.mo, q.amin, q.amax);
     headEl.textContent = st.head; takeEl.textContent = st.take;
+    var ncEl = document.getElementById('lm-nc');
+    if (ncEl) ncEl.textContent = counts(shown, q.nm ? 0 : filterPts(files, { st: q.st, mo: q.mo, amin: q.amin, amax: q.amax, odd: q.odd, nm: true }).length - shown.length);
     if (!map) return;
     if (fit) {
-      var b = shown.length ? L.latLngBounds(shown.map(function (o) { return [o.p[LAT], o.p[LNG]]; })) : null;
+      var use = shown;
+      if (fit !== 'url' && !q.st && hereSt && root.innerWidth < 700) { var mine = shown.filter(function (o) { return o.f.st === hereSt; }); if (mine.length) use = mine; }
+      var b = use.length ? L.latLngBounds(use.map(function (o) { return [o.p[LAT], o.p[LNG]]; })) : null;
       if (q.at && fit === 'url') map.setView([q.at[0], q.at[1]], q.at[2], { animate: false });
-      else if (b && b.isValid()) map.fitBounds(b, { padding: [12, 12], animate: false, maxZoom: 11 });
+      else if (b && b.isValid()) map.fitBounds(b, { padding: [8, 8], animate: false, maxZoom: 11 });
     }
-    var z = map.getZoom();
-    pinLayer.clearLayers(); ringLayer.clearLayers(); marks = [];
-    var small = z < PINZ, order = shown.slice().sort(function (a, b) { return (a.p[A] & 15 ? 1 : 0) - (b.p[A] & 15 ? 1 : 0); });
+    var z = map.getZoom(), bd = band(z);
+    pinLayer.clearLayers(); markLayer.clearLayers(); marks = [];
+    var small = z < PINZ, order = shown.slice().sort(function (a, b) { return (a.p[A] & 3 ? 1 : 0) - (b.p[A] & 3 ? 1 : 0); });
     order.forEach(function (o) {
-      var p = o.p, at = spot(p), ring = !!(p[A] & 15), r = radius(p, z), w = small ? 0.6 : 1.2, m;
-      if (p[NM]) m = L.circleMarker(at, { radius: r, color: '#7d7d79', weight: small ? 1 : 1.5, dashArray: small ? null : '3 2', fill: true, fillColor: '#ffffff', fillOpacity: 0.15 });
-      else if (p[C] === null) m = L.circleMarker(at, { radius: r, color: '#444', weight: w, fillColor: '#ffffff', fillOpacity: 0.9 });
-      else m = L.circleMarker(at, { radius: r, color: '#ffffff', weight: w, fillColor: COL[String(p[C])], fillOpacity: 0.92 });
-      m.bindPopup(function () { return popupHtml(o.f, p); }, { maxWidth: Math.min(290, box.clientWidth - 50), maxHeight: box.clientHeight - 70, autoPan: true, autoPanPadding: [8, 8], keepInView: true });
+      var p = o.p, at = spot(p), odd = !!(p[A] & 3), r = radius(p, z), m;
+      var gold = odd ? { color: GOLD, weight: bd === 0 ? 1 : bd === 1 ? 2 : 2.5 } : null, fo = bd === 0 && !odd ? 0.7 : 0.92;
+      if (p[KIND] === 'a') {
+        /* an auction result: a SQUARE, same size rule, same color classes, gold edge when unusual */
+        var sz = Math.round(r * 2 + 2);
+        m = L.marker(at, { icon: L.divIcon({ className: 'lm-mk', iconSize: [sz, sz], iconAnchor: [sz / 2, sz / 2],
+          html: '<span class="lm-sqm ' + (p[C] === null ? 'lm-wh' : 'lm-c' + p[C]) + (odd ? ' lm-od' : '') + '" style="width:' + sz + 'px;height:' + sz + 'px"></span>' }), keyboard: false });
+      } else if (p[NM]) m = L.circleMarker(at, { radius: r, color: '#7d7d79', weight: small ? 1 : 1.5, dashArray: small ? null : '3 2', fill: true, fillColor: '#ffffff', fillOpacity: 0.15 });
+      else if (p[C] === null) m = L.circleMarker(at, { radius: r, color: gold ? gold.color : '#444', weight: gold ? gold.weight : (small ? 0.6 : 1.2), fillColor: '#ffffff', fillOpacity: 0.9 });
+      else m = L.circleMarker(at, { radius: r, color: gold ? gold.color : '#ffffff', weight: gold ? gold.weight : (small ? 0.6 : 1.2), fillColor: COL[String(p[C])], fillOpacity: fo });
+      if (bd === 0) m.on('click', function () { map.setView(at, PINZ, { animate: !reduce }); });
+      else m.bindPopup(function () { return popupHtml(o.f, p); }, { maxWidth: Math.min(290, box.clientWidth - 50), maxHeight: box.clientHeight - 70, autoPan: true, autoPanPadding: [8, 8], keepInView: true });
       m.addTo(pinLayer); o.m = m; marks.push(o);
-      if (ring) L.circleMarker(at, { radius: r + (small ? 2 : 3), color: GOLD, weight: small ? 1.6 : 2.5, fill: false, interactive: false }).addTo(ringLayer);
+      /* a cue besides color: from zoom 9 a triangle up (over the range) or down (under) on the pin */
+      if (odd && z >= PINZ) L.marker(at, { interactive: false, keyboard: false, icon: L.divIcon({ className: 'lm-mk', iconSize: [14, 14], iconAnchor: [7, 8],
+        html: '<span>' + (p[A] & 1 ? '\u25b2' : '\u25bc') + '</span>' }) }).addTo(markLayer);
     });
     drawList();
   }
@@ -228,8 +278,8 @@
     var odd = shown.filter(function (o) { return !o.p[NM] && (o.p[A] & 3); });
     odd.sort(function (a, b) { return Math.abs(offPct(b.f, b.p) || 0) - Math.abs(offPct(a.f, a.p) || 0); });
     var cap = 60, keep = odd.slice(0, cap);
-    if (sumEl) sumEl.textContent = 'Unusual sales in this view: ' + n0(odd.length);
-    ln.textContent = odd.length ? (odd.length > cap ? 'The ' + cap + ' furthest from their county median of ' + n0(odd.length) + '. Tap one to see it on the map.' : n0(odd.length) + ' in this view. Tap one to see it on the map.') : 'None in this view.';
+    if (sumEl) sumEl.textContent = 'Unusual sales with these filters: ' + n0(odd.length);
+    ln.textContent = odd.length ? (odd.length > cap ? 'The ' + cap + ' furthest from their county median of ' + n0(odd.length) + '. Tap one to see it on the map.' : n0(odd.length) + ' with these filters. Tap one to see it on the map.') : 'None with these filters.';
     list.innerHTML = keep.map(function (o, i) {
       var p = o.p, co = o.f.counties[p[CO]], pct = offPct(o.f, p);
       return '<li><button type="button" data-i="' + i + '"><b>' + usd(p[PPA]) + ' an acre</b>, ' + (pct > 0 ? pct + '% above' : Math.abs(pct) + '% below') + ' the county median. ' +
@@ -261,11 +311,11 @@
   function card(done) {
     var W = 1200, H = 630, cv = document.createElement('canvas'); cv.width = W; cv.height = H;
     var x = cv.getContext('2d'); if (!x || !map) { done(null); return; }
-    var F = 'px Inter, system-ui, sans-serif', st = story(files, q.st ? [q.st] : files.map(function (f) { return f.st; }), q.mo);
+    var F = 'px Inter, system-ui, sans-serif', st = story(files, q.st ? [q.st] : files.map(function (f) { return f.st; }), q.mo, q.amin, q.amax);
     x.fillStyle = '#0a0c0d'; x.fillRect(0, 0, W, H); x.fillStyle = GOLD; x.fillRect(0, 0, W, 10);
     x.font = '800 34' + F; x.fillStyle = '#e9edeb'; x.fillText('agsist', 48, 62);
     var aw = x.measureText('agsist').width; x.font = '700 20' + F; x.fillStyle = GOLD; x.fillText('.com', 50 + aw, 62);
-    x.font = '600 20' + F; x.fillStyle = 'rgba(233,237,235,.72)'; x.textAlign = 'right'; x.fillText('Farm sales map · ' + day(latest), W - 48, 60); x.textAlign = 'left';
+    x.font = '600 20' + F; x.fillStyle = 'rgba(233,237,235,.72)'; x.textAlign = 'right'; x.fillText('Farm sales map, newest record ' + day(latest), W - 48, 60); x.textAlign = 'left';
     var hd = fit(x, st.head, W - 96, [38, 34, 30], '800'), y = 80 + hd.size;
     x.font = '800 ' + hd.size + F; x.fillStyle = '#e9edeb'; hd.lines.forEach(function (l) { x.fillText(l, 48, y); y += hd.size * 1.2; });
     // the pins of the view, on a plain plate (tiles cannot go into a picture)
@@ -278,23 +328,31 @@
     var dot = Math.max(1.6, Math.min(5, 900 / Math.sqrt(inb.length + 1) / 8));
     inb.forEach(function (o) {
       var a = px.apply(null, spot(o.p)), p = o.p;
-      x.beginPath(); x.arc(a[0], a[1], dot * (0.8 + 0.4 * Math.sqrt(p[AC] / 80)), 0, 6.283);
+      var rr = dot * (0.8 + 0.4 * Math.sqrt(p[AC] / 80));
+      if (p[KIND] === 'a') {
+        x.fillStyle = p[C] === null ? 'rgba(235,235,230,.85)' : COL[String(p[C])]; x.fillRect(a[0] - rr, a[1] - rr, rr * 2, rr * 2);
+        x.strokeStyle = p[A] & 3 ? GOLD : 'rgba(255,255,255,.8)'; x.lineWidth = p[A] & 3 ? 2 : 1; x.strokeRect(a[0] - rr, a[1] - rr, rr * 2, rr * 2);
+        return;
+      }
+      x.beginPath(); x.arc(a[0], a[1], rr, 0, 6.283);
       if (p[NM]) { x.strokeStyle = 'rgba(160,160,155,.7)'; x.lineWidth = 1; x.stroke(); return; }
       x.fillStyle = p[C] === null ? 'rgba(235,235,230,.75)' : COL[String(p[C])]; x.fill();
-      if (p[A] & 15) { x.beginPath(); x.arc(a[0], a[1], dot * 1.6 + 2.5, 0, 6.283); x.strokeStyle = GOLD; x.lineWidth = 2; x.stroke(); }
+      if (p[A] & 3) { x.strokeStyle = GOLD; x.lineWidth = 2; x.stroke(); }
     });
-    // key
+    // key: the same one as the page (title, five classes, not compared, gold edge, hollow deeds, the two pin shapes)
     var ky = top + 6, kx0 = right + 36;
-    x.font = '700 20' + F; x.fillStyle = '#e9edeb'; x.fillText('Price per acre vs county median', kx0, ky + 14); ky += 44;
+    x.font = '700 17' + F; x.fillStyle = '#e9edeb'; x.fillText('Price per acre against', kx0, ky + 12); x.fillText("the county's farmland sales", kx0, ky + 34); ky += 62;
+    var row = function (t) { x.font = '400 17' + F; x.fillStyle = 'rgba(233,237,235,.86)'; x.fillText(t, kx0 + 28, ky); };
     [['2', 'Over the usual range'], ['1', 'Upper quarter'], ['0', 'Middle half'], ['-1', 'Lower quarter'], ['-2', 'Under the usual range']].forEach(function (k) {
-      x.beginPath(); x.arc(kx0 + 9, ky - 6, 8, 0, 6.283); x.fillStyle = COL[k[0]]; x.fill();
-      x.font = '400 19' + F; x.fillStyle = 'rgba(233,237,235,.86)'; x.fillText(k[1], kx0 + 28, ky); ky += 34;
+      x.beginPath(); x.arc(kx0 + 9, ky - 6, 7, 0, 6.283); x.fillStyle = COL[k[0]]; x.fill(); row(k[1]); ky += 29;
     });
-    x.beginPath(); x.arc(kx0 + 9, ky - 6, 9, 0, 6.283); x.strokeStyle = GOLD; x.lineWidth = 2.5; x.stroke();
-    x.fillText('Unusual or largest 1%', kx0 + 28, ky); ky += 34;
-    x.fillText(n0(inb.length) + ' sales in this view', kx0, ky + 10);
+    x.beginPath(); x.arc(kx0 + 9, ky - 6, 7, 0, 6.283); x.fillStyle = 'rgba(235,235,230,.85)'; x.fill(); row('Not compared'); ky += 29;
+    x.beginPath(); x.arc(kx0 + 9, ky - 6, 7, 0, 6.283); x.strokeStyle = GOLD; x.lineWidth = 2.5; x.stroke(); row('Gold edge: unusual'); ky += 29;
+    x.beginPath(); x.arc(kx0 + 9, ky - 6, 7, 0, 6.283); x.fillStyle = COL['0']; x.fill(); row('Round: recorded sale'); ky += 29;
+    x.fillStyle = COL['0']; x.fillRect(kx0 + 2, ky - 13, 14, 14); row('Square: auction result'); ky += 33;
+    x.font = '700 17' + F; x.fillStyle = '#e9edeb'; x.fillText(n0(shown.filter(function (o) { return !o.p[NM]; }).length) + ' pins in this view', kx0, ky);
     x.font = '400 16' + F; x.fillStyle = 'rgba(233,237,235,.72)';
-    x.fillText('State transfer records, 20+ acres. Pins at section, town or county center, not the parcel.', 48, H - 42);
+    x.fillText('Sales of 20+ acres, last 24 months: state transfer records and auction company results.', 48, H - 42);
     x.font = '700 19' + F; x.fillStyle = GOLD; x.fillText('agsist.com/land-sales', 48, H - 16);
     cv.toBlob(function (bl) { done(bl); }, 'image/png');
   }
@@ -349,15 +407,18 @@
       if (!files.length) { wait.textContent = 'The sale files did not load. Every sale is on its county page.'; return; }
       latest = latestOf(files);
       wait.parentNode.removeChild(wait);
-      map = L.map(box, { preferCanvas: true, scrollWheelZoom: false, zoomSnap: 0.5, worldCopyJump: false, minZoom: 4, maxZoom: 16 });
+      if (q.st && !files.some(function (f) { return f.st === q.st; })) q.st = '';
+      hereSt = savedState();
+      toForm();
+      map = L.map(box, { renderer: L.canvas({ tolerance: 10 }), scrollWheelZoom: false, zoomSnap: 0.25, worldCopyJump: false, minZoom: 4, maxZoom: 16 });
       map.attributionControl.setPrefix(false);
       setBase(q.base);
       baseControl();
-      pinLayer = L.layerGroup().addTo(map); ringLayer = L.layerGroup().addTo(map);
+      pinLayer = L.layerGroup().addTo(map); markLayer = L.layerGroup().addTo(map);
       map.setView([41, -88], 5, { animate: false });
       draw(q.at ? 'url' : true);
       var lastZ = map.getZoom();
-      map.on('zoomend', function () { var z = map.getZoom(); if ((z >= PINZ) !== (lastZ >= PINZ) || Math.abs(z - lastZ) >= 1) draw(false); lastZ = z; });
+      map.on('zoomend', function () { var z = map.getZoom(); if (band(z) !== band(lastZ) || Math.abs(z - lastZ) >= 1) draw(false); lastZ = z; });
       setupTools();
     });
   }
