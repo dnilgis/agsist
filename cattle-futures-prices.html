@@ -15,29 +15,29 @@
 <script src="/components/util.js?v=20"></script>
 <script src="/components/asof.js?v=1"></script>
 <script src="/components/price-local.js?v=14"></script>
-<link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
+<link rel="stylesheet" href="/components/ag-chart.css?v=1"><link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
 <link rel="manifest" href="/manifest.json">
-<title>Feeder and Live Cattle Futures Prices Today | AGSIST</title>
-<meta name="description" content="Feeder and live cattle futures, quotes delayed 10 to 25 min in session, with 5-year ranges, the feeder-to-live ratio and a cost-of-gain calculator.">
+<title>Feeder Cattle Futures Today: Live Cattle and Cash Prices | AGSIST</title>
+<meta name="description" content="Feeder and live cattle futures, delayed 10 to 25 min, with the day's change, USDA's weekly cash fed steer price, boxed beef and daily cash hog prices.">
 <meta name="keywords" content="live cattle futures price, feeder cattle futures price, cattle futures today, CME cattle futures, LE futures, GF futures, feeder to live ratio, cattle feeding breakeven, cost of gain calculator, cattle on feed, cattle price per cwt, fed cattle price">
 <meta name="author" content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="canonical" href="https://agsist.com/cattle-futures-prices">
 <meta property="og:type" content="website"><meta property="og:site_name" content="AGSIST"><meta property="og:locale" content="en_US">
-<meta property="og:title" content="Feeder and Live Cattle Futures Prices Today | AGSIST">
-<meta property="og:description" content="Feeder and live cattle futures, quotes delayed 10 to 25 min in session, with 5-year ranges, the feeder-to-live ratio and a cost-of-gain calculator.">
+<meta property="og:title" content="Feeder Cattle Futures Today: Live Cattle and Cash Prices | AGSIST">
+<meta property="og:description" content="Feeder and live cattle futures, delayed 10 to 25 min, with the day's change, USDA's weekly cash fed steer price, boxed beef and daily cash hog prices.">
 <meta property="og:url" content="https://agsist.com/cattle-futures-prices">
 <meta property="og:image" content="https://agsist.com/img/og/cattle-futures-prices.jpg?v=423310e4"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta property="og:image:alt" content="Live cattle futures closed the week of Nov 9, 2026 at $214.05; a line of the last 12 months of weekly closes, from $212.95 to $257.45.">
 <meta name="twitter:card" content="summary_large_image"><meta name="twitter:site" content="@agsist"><meta name="twitter:creator" content="@agsist">
-<meta name="twitter:title" content="Feeder and Live Cattle Futures Prices Today | AGSIST">
-<meta name="twitter:description" content="Feeder and live cattle futures, quotes delayed 10 to 25 min in session, with 5-year ranges, the feeder-to-live ratio and a cost-of-gain calculator.">
+<meta name="twitter:title" content="Feeder Cattle Futures Today: Live Cattle and Cash Prices | AGSIST">
+<meta name="twitter:description" content="Feeder and live cattle futures, delayed 10 to 25 min, with the day's change, USDA's weekly cash fed steer price, boxed beef and daily cash hog prices.">
 <meta name="twitter:image" content="https://agsist.com/img/og/cattle-futures-prices.jpg?v=423310e4">
 <script type="application/ld+json">{"@context":"https://schema.org","@graph":[
 {"@type":"WebSite","@id":"https://agsist.com/#website","name":"AGSIST","url":"https://agsist.com/"},
-{"@type":"WebPage","@id":"https://agsist.com/cattle-futures-prices#webpage","url":"https://agsist.com/cattle-futures-prices","name":"Feeder and Live Cattle Futures Prices Today","description":"Delayed CME live cattle and feeder cattle futures with 52-week and 5-year range, feeder/live ratio, and a cattle feeding cost-of-gain breakeven calculator.","isPartOf":{"@id":"https://agsist.com/#website"},"breadcrumb":{"@id":"https://agsist.com/cattle-futures-prices#breadcrumb"}},
+{"@type":"WebPage","@id":"https://agsist.com/cattle-futures-prices#webpage","url":"https://agsist.com/cattle-futures-prices","name":"Feeder Cattle Futures Today: Live Cattle and Cash Prices","description":"Delayed CME live cattle and feeder cattle futures with 52-week and 5-year range, feeder/live ratio, and a cattle feeding cost-of-gain breakeven calculator.","isPartOf":{"@id":"https://agsist.com/#website"},"breadcrumb":{"@id":"https://agsist.com/cattle-futures-prices#breadcrumb"}},
 {"@type":"Organization","@id":"https://agsist.com/#org","name":"AGSIST","url":"https://agsist.com/"},
 {"@type":"BreadcrumbList","@id":"https://agsist.com/cattle-futures-prices#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Cattle Futures Prices","item":"https://agsist.com/cattle-futures-prices"}]},
 {"@type":"Dataset","dateModified":"2026-11-11","name":"Live & Feeder Cattle Futures Prices and 5-Year Range","description":"Delayed CME live cattle (LE) and feeder cattle (GF) futures prices with 52-week and 5-year price range, percentile position, and feeder/live ratio, updated through the trading day.","creator":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com"},"url":"https://agsist.com/cattle-futures-prices","variableMeasured":["Live cattle futures price","Feeder cattle futures price","Feeder/live ratio","52-week range","5-year price percentile"],"isAccessibleForFree":true,"license":"https://agsist.com/terms"},
@@ -71,6 +71,11 @@ details.fold[hidden]{display:none}
 <body>
 <style id="ct-base">
 .ph-two{display:flex;gap:1.6rem;align-items:flex-start}
+.ph-info{flex:1 1 30rem;min-width:0}
+/* the price box keeps one width while the live quote lands, so the heading beside it never rewraps */
+@media(min-width:521px){.ph-price.ph-two{flex:0 0 auto}.ph-two .ph-q{width:13rem}}
+.ph-info .ph-plain{font-size:.95rem;color:var(--text-dim);margin:.6rem 0 0;line-height:1.5;max-width:44rem}
+.ph-info .ph-plain a{color:var(--gold)}
 .ph-q{text-align:right;min-width:0}
 .ph-name{font-size:.8rem;font-weight:700;color:var(--text);margin-bottom:3px;white-space:nowrap}
 .ph-name span{font-weight:400;color:var(--text-dim)}
@@ -211,8 +216,9 @@ details.fold[hidden]{display:none}
 
   <div class="ph">
     <div class="ph-info">
-      <h1><!--BAKE:cattle-h1-->Feeder and live cattle futures prices today<!--/BAKE--></h1>
+      <h1><!--BAKE:cattle-h1-->Feeder cattle futures today, with live cattle and cash prices<!--/BAKE--></h1>
       <div class="ph-exch">Feeder and live cattle futures · $ per cwt (100 lb)</div>
+      <p class="ph-plain">Feeder cattle futures price calves of 700 to 899 lb headed to the feedlot; live cattle futures price finished cattle. Below them are USDA&rsquo;s cash prices for fed steers, boxed beef and hogs, and <a href="/cattle-auction-prices">sale barn prices</a>.</p>
     </div>
     <div class="ph-price ph-two">
       <div class="ph-q" id="hero-gf">
@@ -252,16 +258,14 @@ details.fold[hidden]{display:none}
 --></p>
       <div class="ps"><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span></div>
 
-  <p class="ph-plain" style="font-size:.95rem;color:var(--text-dim);margin:.45rem 0 .2rem;line-height:1.5">Feeder cattle are calves headed to the feedlot; live cattle are finished cattle ready to sell. The settle is the exchange&rsquo;s official closing price for the day. <a href="/cattle-auction-prices">See what cattle brought at sale barns</a>.</p>
   <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.2rem 0 .5rem">Data: CME Group futures via Yahoo Finance, delayed 10 to 25 min. Every source is in Sources and terms at the bottom of the page.</p>
   <!-- ░░ static, AI-readable lead ░░ -->
   <div class="qa">
     <style>
     .qa{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-left:3px solid var(--green,#5fc28a);border-radius:10px;padding:.85rem 1rem;margin:14px 0;font-size:1rem;line-height:1.6;color:var(--text-dim,#9bb0a3)}
     .qa b{color:var(--text,#e7ece8)} .qa a{color:var(--gold,#d4a23f);text-decoration:none} .qa a:hover{text-decoration:underline}
-    .qa-more{margin-top:.35rem} .qa-more summary{cursor:pointer;color:var(--gold,#d4a23f);font-size:.9rem;font-weight:600;min-height:44px;display:flex;align-items:center} .qa-more p{margin:.25rem 0 0}
+    .qa-more{margin-top:0} .qa-more summary{cursor:pointer;color:var(--gold,#d4a23f);font-size:.9rem;font-weight:600;min-height:44px;display:flex;align-items:center} .qa-more p{margin:.25rem 0 0}
     </style>
-    <b>Cattle futures</b> trade on the CME in two contracts: <b>live cattle (LE)</b>: finished, market-ready animals around 1,400 lb, and <b>feeder cattle (GF)</b>: weaned calves headed to the feedlot.
     <details class="qa-more"><summary>Feeder vs live, and what moves cattle</summary><p>Both are quoted in <b>dollars per hundredweight ($/cwt)</b>. Feeder prices lead, because today's feeder is the feedlot's raw material and the live contract is the finished product; the <b>feeder/live ratio</b> shows where value sits between cow-calf producers and feedlots. Cattle prices move on the USDA <b>Cattle on Feed</b> and <b>Inventory</b> reports, beef demand and the boxed-beef cutout, slaughter pace, and <b>corn</b> feed costs, not the monthly WASDE. Compare with <a href="/corn-futures-prices">corn</a> futures (feed cost) and check <a href="/usda-calendar#priced-in">what's priced in</a> for grain reports. Prices below are read about every 15 minutes, delayed 10 to 25 min.</p></details>
   </div>
   <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="cattle-futures-prices"></aside>
@@ -342,9 +346,31 @@ details.fold[hidden]{display:none}
       </div>
     </div>
   </section>
+  <section class="fwd-card hc" id="hog-cash" hidden aria-label="Cash hogs and pork cutout">
+    <style>
+    .hc{--hc1:#c08a2c;--hc2:#4f94d8;--hc-gap-op:.22}
+    [data-theme="light"] .hc{--hc1:#8a6514;--hc2:#1f66b8;--hc-gap-op:.16}
+    .hc-body{display:grid;gap:8px}
+    .hc-head{font-size:1.15rem;line-height:1.35;font-weight:800;color:var(--text);margin:.1rem 0 0;letter-spacing:-.005em}
+    .hc-take{font-size:.95rem;line-height:1.45;color:var(--text-dim);margin:0}
+    .hc-take:empty{display:none}
+    .hc-fig{margin:.2rem 0 0;min-width:0}
+    .hc-fig figcaption{margin-top:.35rem}
+    .hc-figs{display:grid;gap:10px 16px;grid-template-columns:1fr 1fr;align-content:start;padding:.4rem .3rem 0}
+    .hc-fg{min-width:0}
+    .hc .lbl{display:block;font-size:0.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);font-weight:700;line-height:1.3}
+    .hc-meta{grid-column:1/-1;margin:0}
+    .hc-chg{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.85rem;margin-top:.15rem}
+    .hc-chg.up{color:var(--up,#5fc28a)} .hc-chg.dn{color:var(--dn,#d9534f)}
+    @media(min-width:760px){.hc-figs{grid-template-columns:auto auto minmax(0,1fr);column-gap:2.2rem;align-items:start}.hc-meta{grid-column:auto;font-size:.85rem;max-width:40rem}.hc-head{font-size:1.3rem}}
+    @media(max-width:520px){.hc-figs{padding:.2rem .1rem 0;column-gap:10px}.hc .ct-price{font-size:1.6rem}.hc .hc-chg{font-size:.72rem}#ct-cash .ct-grid{grid-template-columns:1fr 1fr;gap:10px}#ct-cash .ct-card{padding:.3rem .1rem}#ct-cash .lbl{display:block;font-size:.7rem;line-height:1.3}#ct-cash .ct-price{font-size:1.45rem}#ct-cash .ct-read{font-size:.74rem}.hc.fwd-card,#ct-cash.fwd-card{padding:10px 11px}.hc-head{font-size:1.02rem}.hc-take{font-size:.86rem}}
+    </style>
+    <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Cash hogs · USDA daily</span><span class="agc-tools hc-tools"></span></div>
+    <div class="hc-body"></div>
+  </section>
+  <script src="/components/ag-chart.js?v=1" defer></script><script src="/components/hog-cash.js?v=2" defer></script>
   <aside class="ya" data-your-state="cattle" data-v="2" hidden></aside><script src="/components/your-state.js?v=1" defer></script>
   <section class="fx" data-feeder="index" id="feeder-index" hidden aria-label="AGSIST USDA feeder steer index"></section>
-  <p class="method-note" style="margin:.5rem 0 1rem">Selling feeders? <a href="/cattle-auction-prices">Sale barn prices near you</a>: steers and heifers by weight class at USDA-reported auctions.</p>
   <script>
   (function(){
     /*cash:start*/
