@@ -4,8 +4,8 @@
    1. AgPxStamp: what the price stamp says. A quote the price file marks a
       settle (close_kind "settle") reads "Oct 16 settle"; a trade reads
       "Read 1:46 pm CT; quotes delayed 10 to 25 min" (when the site read it),
-      or "Last trade at the 1:20 pm CT bell; settle not posted yet" after the
-      close. A quote with no close_kind says "Updated <time> CT". Always
+      or "Last trade at the 1:20 pm CT bell, change from the Nov 10 settle;
+      settle not posted yet" after the close (change(): the one pair rule). A quote with no close_kind says "Updated <time> CT". Always
       Central time, always named.
 
    2. The state line under the price. Only for a reader whose state the site
@@ -147,7 +147,7 @@
   function roll(quotes, now) {
     var out = {}, k;
     if (!quotes) return quotes;
-    for (k in quotes) out[k] = quotes[k];
+    for (k in quotes) out[k] = pairGuard(quotes[k], k);
     function dead(x) { return !!(x && x.ticker && expired(x.ticker, now)); }
     for (k in out) if (/^[a-z]+-[a-z]{3}\d{2}$/.test(k) && dead(out[k])) delete out[k];
     for (k in out) {
@@ -180,18 +180,64 @@
      "settle" or "last" (the day's last trade, before the settle posts).
      An overnight trade is never a settle: titles keep the dated settle
      (seed_static.settled_close). Grain only; livestock has no overnight. */
+  /* THE DAY CHANGE, ONE RULE (Nov 2026; twin of scripts/price_pair.py problem()).
+     A printed change is the shown price against the settle of the session
+     before it: in session the trade, after the bell the day's last trade, once
+     the settle posts the settle, each against the previous session's settle.
+     The price run withholds any other pair (change_withheld, nulls); this
+     checks the file in hand as well, so an older file cannot print one: no
+     change when a trading session (isTradingDay) or a settle on file falls
+     between the two dates, when the change is not the price less the previous
+     settle, or when that settle disagrees with the one on file for its day.
+     Returns { net, pct, vs, kind } or null; vs is the ISO day of the settle
+     the change is from ('' when the file does not say). */
+  /* the markets that settle (price_pair.SETTLE_ROOTS); with no key, a futures ticker or a close_kind says so */
+  var SETTLE_ROOTS = { corn: 1, beans: 1, wheat: 1, kcwheat: 1, mplswheat: 1, oats: 1, meal: 1, soyoil: 1, rice: 1, cattle: 1, feeders: 1,
+    hogs: 1, milk: 1, cotton: 1, crude: 1, natgas: 1, gold: 1, silver: 1 };
+  function judged(q, key) {
+    if (key) return !!SETTLE_ROOTS[String(key).split('-')[0]];
+    return !!(q.close_kind || /=F$|\.(CBT|CME|NYM|CMX|NYB)$/.test(String(q.ticker || '')));
+  }
+  var ISO = /^\d{4}-\d\d-\d\d$/;
+  function pairBad(q, key) {
+    var cd = q.close_date || '', pd = q.prev_date || '', o = q.open;
+    if (num(o) && Math.abs(q.netChange - (q.close - o)) > 0.005) return true;
+    if (!judged(q, key) || !ISO.test(cd) || !ISO.test(pd)) return false;
+    /* pd must be THE session before cd: a trading day, earlier, with no trading day or settle on file between */
+    if (pd >= cd || !isTradingDay(pd)) return true;
+    var seen = Object.keys(q.settles || {}).concat(Object.keys(q.day_last || {}));
+    for (var i = 0; i < seen.length; i++) if (seen[i] > pd && seen[i] < cd) return true;
+    for (var t = tOf(pd) + DAY, n = 0; t < tOf(cd) && n < 40; t += DAY, n++) if (isTradingDay(isoOf(t))) return true;
+    if (!num(o)) return true;                  /* a change with no previous settle beside it */
+    var s = q.settles && q.settles[pd];
+    return num(s) && !q.repaired_from && Math.abs(s - o) > 0.005;
+  }
+  function change(q, key) {
+    if (!q || q.change_withheld || !num(q.close) || !num(q.netChange) || pairBad(q, key)) return null;
+    return { net: q.netChange, pct: num(q.pctChange) ? q.pctChange : null, vs: q.prev_date || '', kind: q.prev_kind || '' };
+  }
+  /* a copy of q with no change when change() rejects its pair (roll() applies it to every quote) */
+  function pairGuard(q, key) {
+    if (!q || typeof q !== 'object' || q.change_withheld || !num(q.netChange) || !num(q.close) || !pairBad(q, key)) return q;
+    var c = {}, f;
+    for (f in q) c[f] = q[f];
+    c.netChange = c.pctChange = c.open = c.prev_date = null;
+    c.change_withheld = 'the change and the price are not one session pair';
+    return c;
+  }
   var OVN_ROOTS = { ZC: 1, ZS: 1, ZW: 1, KE: 1, MW: 1, ZO: 1, ZM: 1, ZL: 1, ZR: 1 };
   function inOvernight(t) { var p = ct(t); if (!p) return false; var m = p.hh * 60 + p.mm; return m >= 19 * 60 || m < 7 * 60 + 45; }
   function num(x) { return typeof x === 'number' && isFinite(x); }
   function overnight(q) {
     if (!q || !OVN_ROOTS[String(q.ticker || '').slice(0, 2)]) return null;
     if (q.settled && num(q.last) && q.last_time && num(q.close)) {
-      return { px: q.last, net: num(q.last_net) ? q.last_net : null, at: q.last_time, hero: false,
+      /* the evening trade's change is from the day's settle; before it posts there is none */
+      return { px: q.last, net: num(q.last_net) && q.close_kind === 'settle' ? q.last_net : null, at: q.last_time, hero: false,
         ref: { px: q.close, date: q.close_date || '', kind: q.close_kind === 'settle' ? 'settle' : 'last' } };
     }
     if (q.close_kind === 'last' && q.close_time && num(q.close) && inOvernight(q.close_time) &&
         num(q.settle) && q.settle_date && q.close_date && q.settle_date < q.close_date && !q.roll) {
-      var net = q.prev_kind === 'settle' && q.prev_date === q.settle_date && num(q.netChange) ? q.netChange : Math.round((q.close - q.settle) * 1e4) / 1e4;
+      var c = change(q), net = c && c.vs === q.settle_date ? c.net : null;
       return { px: q.close, net: net, at: q.close_time, hero: true, ref: { px: q.settle, date: q.settle_date, kind: 'settle' } };
     }
     return null;
@@ -232,7 +278,7 @@
      session, fetch_prices.py). After the bell close_time is the bell itself,
      earlier than the read: that is the day session's last trade.
        {kind:'settle', at:'Oct 16'} | {kind:'read', at:'1:05 pm CT'} |
-       {kind:'overnight', at:'11:45 pm CT'} | {kind:'bell', at:'1:20 pm CT'} |
+       {kind:'overnight', at:'11:45 pm CT'} | {kind:'bell', at:'1:20 pm CT', vs:'Nov 10'} |
        {kind:'updated', at:'1:46 am CT'} | null */
   function stampParts(q, fetched, now) {
     var k = q && q.close_kind;
@@ -240,7 +286,11 @@
     if (k === 'last') {
       var ov = overnight(q), rd = fetched || q.close_time, ctm = q.close_time ? Date.parse(q.close_time) : NaN, ftm = fetched ? Date.parse(fetched) : NaN;
       if (ov && ov.hero) { var o = clock(rd, now); if (o) return { kind: 'overnight', at: o }; }
-      else if (isFinite(ctm) && isFinite(ftm) && ctm < ftm - 60000) { var b = clock(q.close_time, now); if (b) return { kind: 'bell', at: b }; }
+      else if (isFinite(ctm) && isFinite(ftm) && ctm < ftm - 60000) {
+        /* after the bell: the day's last trade; vs names the settle its change is from */
+        var b = clock(q.close_time, now), cv = change(q);
+        if (b) return { kind: 'bell', at: b, vs: cv ? isoDay(cv.vs, now) : '' };
+      }
       else { var r = clock(rd, now); if (r) return { kind: 'read', at: r }; }
     }
     var u = fetched ? clock(fetched, now) : '';
@@ -248,14 +298,18 @@
   }
   /* The stamp for one quote: "Oct 16 settle" | "Read 1:05 pm CT; quotes delayed 10 to 25 min" |
      "Overnight trade read 11:45 pm CT; quotes delayed 10 to 25 min" (overnight() hero) |
-     "Last trade at the 1:20 pm CT bell; settle not posted yet" | "Updated 1:46 am CT" */
-  function stamp(q, fetched, now) {
+     "Last trade at the 1:20 pm CT bell, change from the Nov 10 settle; settle not posted yet" |
+     "Updated 1:46 am CT" */
+  /* withChange: the stamp sits beside a printed change (html()), so after the bell it names the settle that change is from */
+  function stamp(q, fetched, now, withChange) {
     var s = stampParts(q, fetched, now);
     if (!s) return '';
+    if (!withChange) s.vs = '';
     if (s.kind === 'settle') return s.at + ' settle';
     if (s.kind === 'read') return 'Read ' + s.at + '; ' + delayWords(q);
     if (s.kind === 'overnight') return 'Overnight trade read ' + s.at + '; ' + delayWords(q);
-    if (s.kind === 'bell') return DELAY_ROOTS.test(String(q.ticker || '')) ? 'Last trade at the ' + s.at + ' bell; settle not posted yet' : 'Last trade ' + s.at + '; delayed quote';
+    if (s.kind === 'bell') return (DELAY_ROOTS.test(String(q.ticker || '')) ? 'Last trade at the ' + s.at + ' bell' : 'Last trade ' + s.at) +
+      (s.vs ? ', change from the ' + s.vs + ' settle' : '') + (DELAY_ROOTS.test(String(q.ticker || '')) ? '; settle not posted yet' : '; delayed quote');
     return 'Updated ' + s.at;
   }
   /* A whole board: "Oct 16 settle where posted, latest delayed trade otherwise. Read 1:46 am CT" */
@@ -287,12 +341,13 @@
     if (s.kind === 'settle') return s.at + ' settle';
     if (s.kind === 'read') return 'Read ' + s.at + ', delayed';
     if (s.kind === 'overnight') return 'Overnight, read ' + s.at;
+    /* the settle the change is from is in the title (stamp withChange): a longer line wrapped and moved the page at 390 px */
     if (s.kind === 'bell') return 'Last trade, ' + s.at + ' bell';
     return 'Updated ' + s.at;
   }
   /* Markup: a <time> (no data-asof, so asof.js leaves the words alone), the short words, the full stamp as its title. */
   function html(q, fetched, now) {
-    var s = shortStamp(q, fetched, now), full = stamp(q, fetched, now);
+    var s = shortStamp(q, fetched, now), full = stamp(q, fetched, now, true);
     if (!s) return '';
     var sp = stampParts(q, fetched, now), t = sp && sp.kind === 'bell' ? q.close_time : (fetched || (q && q.close_time) || '');
     var dt = (q && q.close_kind === 'settle' && (q.settle_date || q.close_date)) || t;
@@ -453,7 +508,7 @@
     return { key: key, q: d, label: label(d.ticker) || null };
   }
 
-  var api = { headline: headline, harvest: harvest, stamp: stamp, stampParts: stampParts, shortStamp: shortStamp, DELAY: DELAY, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
+  var api = { headline: headline, harvest: harvest, stamp: stamp, stampParts: stampParts, change: change, pairGuard: pairGuard, shortStamp: shortStamp, DELAY: DELAY, overnight: overnight, overnightHtml: overnightHtml, board: board, boardAge: boardAge, settleAge: settleAge, OLD_SESSIONS: OLD_SESSIONS, isTradingDay: isTradingDay, holidayName: holidayName,
     deadFrom: deadFrom, expired: expired, roll: roll, html: html, clock: clock, readState: readState, zipState: zipState, label: label, cell: cell, lines: lines, build: build, nearLine: nearLine, placeholder: placeholder, NAMES: NAMES };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgPxStamp = api;
