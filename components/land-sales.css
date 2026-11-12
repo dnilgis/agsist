@@ -106,6 +106,3 @@
 .ls-all summary { cursor: pointer; font-weight: 600; padding: .6rem 0; margin: .4rem 0; display: list-item; }
 .ls-all h3 { font-size: 1rem; margin: .8rem 0 .3rem; scroll-margin-top: 4.5rem; }
 .ls-all .ls-cos { columns: 2 9em; }
-
-.ls-st-auction { background: #b5702f; color: #fff; border-color: #b5702f; }
-.ls-aucn { margin: .4rem 0; }
