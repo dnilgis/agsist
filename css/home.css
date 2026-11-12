@@ -553,3 +553,14 @@ html[data-theme="light"] .ch-ba.part{opacity:.75}
 #hp-rain-src,#hp-gdu-src{min-height:4.2em}#hp-rain-pct,#hp-gdu-pct{min-height:2.3rem}
 @media (min-width:1181px){#hp-rain-pct,#hp-gdu-pct{height:2.4rem;overflow:hidden}.hp-a-rain h3,.hp-a-gdu h3{height:2.6em;overflow:hidden}#hp-rain-src,#hp-gdu-src{height:4.2em;overflow:hidden}}
 @media (min-width:1181px){.hp-a-rain,.hp-a-gdu{min-height:574px}}
+/* owner, Nov 12 (A34, approved exception to the no-"I" rule, the same line as on /rain-print): fine print under the order */
+.hp-rpfine{margin:.5rem 0 0;font-size:.8rem;color:var(--text-muted)}
+/* a11y re-measure: "Done" on phones hands the scroll back to the page */
+.hp-livedone{display:none}
+@media (max-width:640px){.hp-live.on .hp-livedone{display:block;position:absolute;right:10px;top:10px;min-height:44px;min-width:44px;padding:.4rem .9rem;border-radius:22px;border:1px solid var(--border-2);background:var(--surface);color:var(--text);font:700 .86rem var(--font-body);cursor:pointer;z-index:2}}
+.hp-live:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+/* a11y re-measure (CLS under 0.01 at 1280): the ticker's prices, changes and badge hold their width from the first paint; the markets card its filled height */
+@media (min-width:641px){.prices-strip .t-price{display:inline-block;min-width:9.5ch}.prices-strip .t-chg{display:inline-block;min-width:8ch}#ticker-age{min-width:9.5em}.hp-mkc{min-height:631px}}
+@media (max-width:640px){.hp-mkc{min-height:589px}}
+/* the normal bar edged a shade darker in dark mode, apart from the gold beside it */
+html:not([data-theme="light"]) .ch-bn{stroke:#3e484e;stroke-width:1}

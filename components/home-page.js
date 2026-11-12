@@ -1081,6 +1081,8 @@
       txt('hp-nw-h', r(c.relative_humidity_2m) != null ? r(c.relative_humidity_2m) + '%' : '-');
       txt('hp-nw-d', r(c.dew_point_2m) != null ? r(c.dew_point_2m) + '°' : '-');
       txt('hp-nw-p', r(c.precipitation_probability) != null ? r(c.precipitation_probability) + '%' : '-');
+      var snowSoon = (H.weather_code || []).slice(0, 24).some(function (cc) { return (cc >= 71 && cc <= 77) || cc === 85 || cc === 86; });
+      txt('hp-nw-pk', snowSoon ? 'Chance of rain or snow' : 'Chance of rain');
       /* round 3: each card's chance is the daytime one (6 am to 5 pm, from the hourly grid), so a night block is not
          counted on two days (the daily max ran midnight to midnight: Sunday night's 40% showed on Monday too); its low is
          the night after its high, so the pair reads as one day and night; a day with no high is left out, and today
@@ -1088,16 +1090,19 @@
       var times = D.time || [], todayKey = (c.time || '').slice(0, 10), i0 = Math.max(0, times.indexOf(todayKey)), lis = [];
       var HT = H.time || [], HP = H.precipitation_probability || [], HTe = H.temperature_2m || [], HC = H.weather_code || [];
       var dayPop = function (key) { var m = null; for (var q = 0; q < HT.length; q++) { var t = String(HT[q]), hh = +t.slice(11, 13); if (t.slice(0, 10) === key && hh >= 6 && hh <= 17 && num(HP[q])) m = m == null ? HP[q] : Math.max(m, HP[q]); } return m; };
-      var nightLow = function (key, next) { var m = null; for (var q = 0; q < HT.length; q++) { var t = String(HT[q]), hh = +t.slice(11, 13); if (((t.slice(0, 10) === key && hh >= 18) || (next && t.slice(0, 10) === next && hh < 6)) && num(HTe[q])) m = m == null ? HTe[q] : Math.min(m, HTe[q]); } return m; };
+      /* the night's low only when the grid reaches past midnight into it (the last card's evening alone is not a low) */
+      var nightLow = function (key, next) { var m = null, late = false; for (var q = 0; q < HT.length; q++) { var t = String(HT[q]), hh = +t.slice(11, 13); if (next && t.slice(0, 10) === next && hh < 6) late = true; if (((t.slice(0, 10) === key && hh >= 18) || (next && t.slice(0, 10) === next && hh < 6)) && num(HTe[q])) m = m == null ? HTe[q] : Math.min(m, HTe[q]); } return late ? m : null; };
+      /* the day's icon and words from the same 6 am to 5 pm hours as its chance: the worst code in them */
+      var dayCode = function (key, fb) { var w = null; for (var q = 0; q < HT.length; q++) { var t = String(HT[q]), hh = +t.slice(11, 13), cc = HC[q]; if (t.slice(0, 10) === key && hh >= 6 && hh <= 17 && num(cc) && (w == null || cc > w)) w = cc; } return w == null ? fb : w; };
       var snowy = function (key) { for (var q = 0; q < HT.length; q++) { var t = String(HT[q]), hh = +t.slice(11, 13), cc = HC[q]; if (t.slice(0, 10) === key && hh >= 6 && hh <= 17 && ((cc >= 71 && cc <= 77) || cc === 85 || cc === 86)) return true; } return false; };
       for (var i = i0; i < times.length && lis.length < 7; i++) {
         var hi = (D.temperature_2m_max || [])[i];
         if (!num(hi)) continue;   /* a day with no high (past the grid's end, or today's high already gone) is left out */
-        var dd = utc(times[i]), nl = nightLow(times[i], times[i + 1]), lo = num(nl) ? nl : (D.temperature_2m_min || [])[i + 1];
+        var dd = utc(times[i]), nl = nightLow(times[i], times[i + 1]), lo = nl, dc = dayCode(times[i], (D.weather_code || [])[i]);
         var pp = dayPop(times[i]); if (!num(pp)) pp = (D.precipitation_probability_max || [])[i];
         var word = snowy(times[i]) ? 'snow' : 'rain';
-        lis.push('<li><b>' + (times[i] === todayKey ? 'Today' : DOW[dd.getUTCDay()]) + '</b>' + wxIcon((D.weather_code || [])[i], 1) + '<span><span class="vh">high </span><span class="hi">' + Math.round(hi) + '°</span> <span class="vh">, low </span><span class="lo">' + (num(lo) ? Math.round(lo) + '°' : '-')
-          + '</span><span class="vh">, ' + esc(WX[(D.weather_code || [])[i]] || '') + ', </span></span><span class="pp">' + (num(pp) ? Math.round(pp) + '% ' + word + '<span class="vh"> chance</span>' : '-') + '</span></li>');
+        lis.push('<li><b>' + (times[i] === todayKey ? 'Today' : DOW[dd.getUTCDay()]) + '</b>' + wxIcon(dc, 1) + '<span><span class="vh">high </span><span class="hi">' + Math.round(hi) + '°</span> <span class="vh">, low </span><span class="lo">' + (num(lo) ? Math.round(lo) + '°' : '-')
+          + '</span><span class="vh">, ' + esc(WX[dc] || '') + ', </span></span><span class="pp">' + (num(pp) ? Math.round(pp) + '% ' + word + '<span class="vh"> chance</span>' : '-') + '</span></li>');
       }
       if (lis.length) html('hp-d7', lis.join(''));
       /* the next 24 hours from this hour */
@@ -1121,7 +1126,12 @@
      components/geo.js built), centred on the reader's place; it loads only when the band comes near the screen
      (loadBand runs from later()), holds its room, and says so if it does not come in */
   /* round 3 (phones): the map takes no touches until "Tap to move the map", so a thumb scrolling the page is not caught in it */
-  function liveTap() { var b = $('hp-livego'), box = $('hp-live'); if (!b || !box) return; b.addEventListener('click', function () { box.classList.add('on'); }); }
+  /* a11y re-measure: after the tap, focus goes to the map's box (not lost to the page); "Done" gives the page its scroll back */
+  function liveTap() {
+    var b = $('hp-livego'), d = $('hp-livedone'), box = $('hp-live'); if (!b || !box) return;
+    b.addEventListener('click', function () { box.classList.add('on'); try { box.focus({ preventScroll: true }); } catch (e) { box.focus(); } });
+    if (d) d.addEventListener('click', function () { box.classList.remove('on'); try { b.focus({ preventScroll: true }); } catch (e) { b.focus(); } });
+  }
   var liveSeq = 0;
   /* a11y round 3 (A2, A5): a frame's load event fires on a failed page too, so the host is probed first (a no-cors
      fetch that rejects when Windy cannot be reached), and each call has its own sequence number so a late timer from an
@@ -1184,7 +1194,7 @@
     });
     if (!MR.length) { msgIn('hp-rain-ch', 'No month totals for this county yet.'); return; }
     var opts = function (w, h, fs, out) { return { m: MR, w: w, h: h, fs: fs, out: out, steps: [0.5, 1, 2, 5, 10], fmt: function (v) { return v + ' in'; }, vfmt: function (v) { return f1(v, 2) + ' in'; },
-      label: 'Rain by month, ' + yr + (hasN ? ', against the 1991 to 2020 normal for the same days' : '') + '. Since January 1: ' + f1(c.total) + ' inches' + (hasN ? ', ' + pct + ' percent of normal.' : '; no normal on file for this gauge.') }; };
+      label: 'Rain by month, ' + yr + (hasN ? ', against the 1991 to 2020 normal for the same days' : '') + '. Since January 1: ' + f1(c.total, num(pct) ? 1 : 2) + ' inches' + (num(pct) ? ', ' + pct + ' percent of normal.' : hasN ? '; normal ' + f1(c.usual, 2) + ' inches, too small for a percent.' : '; no normal on file for this gauge.') }; };   /* the same conditions as the visible line (round 3 re-verify) */
     var bw0 = Math.round(box.clientWidth) || (ph ? 366 : 380), out = {}; out.svg = barSvg(opts(bw0, ph ? 200 : 250, 12.5, out));   /* drawn at the box's own width: 1 unit = 1 px, so 12.5 px text is 12.5 px */ out.mode = 'x'; out.label = head + '.';
     out.text = function (i) { var r = MR[i]; if (r.gap) return r.lab + ': not enough days reported';
       return r.lab + (r.part ? ' so far' : '') + ': ' + f1(r.a, 2) + ' in' + (num(r.n) ? '; normal ' + f1(r.n, 2) + ' in' + (r.n >= 1 ? ' (' + Math.round(r.a / r.n * 100) + '%)' : '') : '') + (num(r.rep) && num(r.so) && r.rep < r.so ? '; ' + r.rep + ' of ' + r.so + ' days reported' : ''); };
@@ -1237,7 +1247,7 @@
       + (fz && (!end || fz <= end) ? ' First 28°F freeze: ' + md(fz) + '.' : '');
     var box = $('hp-gdu-ch'); if (!box) return;
     var opts = function (w, h, fs, out) { return { m: MG, w: w, h: h, fs: fs, out: out, steps: [50, 100, 250, 500], fmt: function (v) { return comma(v); }, vfmt: function (v) { return comma(v); },
-      label: 'Corn growing degree units by month since May 1, ' + yr + ': ' + comma(now) + (norm ? ', ' + gp + ' percent of normal' : '; no 1991 to 2020 normal on file for this station') + '.' }; };
+      label: 'Corn growing degree units by month since May 1, ' + yr + ': ' + comma(now) + (norm && norm >= 100 ? ', ' + gp + ' percent of normal' : norm ? '; normal ' + comma(norm) + ' so far' : '; no 1991 to 2020 normal on file for this station') + '.' }; };
     var bw0 = Math.round(box.clientWidth) || (ph ? 366 : 380), out = {}; out.svg = barSvg(opts(bw0, ph ? 200 : 250, 12.5, out));   /* drawn at the box's own width: 1 unit = 1 px, so 12.5 px text is 12.5 px */ out.mode = 'x'; out.label = head + '.';
     out.text = function (i) { var r = MG[i]; if (r.gap) return r.lab + ': not enough days reported';
       return r.lab + (r.part ? ' so far' : '') + ': ' + comma(r.a) + ' GDUs' + (num(r.n) ? '; normal ' + comma(r.n) + (r.n >= 50 ? ' (' + Math.round(r.a / r.n * 100) + '%)' : '') : '') + (num(r.rep) && num(r.so) && r.rep < r.so ? '; ' + r.rep + ' of ' + r.so + ' days reported' : ''); };
