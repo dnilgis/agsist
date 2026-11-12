@@ -16,7 +16,7 @@
               is a gap), or left out: each series by its own normal spacing. A gap is dashed and lighter,
               the band breaks, the readout says "No report ..."
      fmt      v -> value text (default '$' + 2 decimals); tick(v) -> axis text; unit ('$/cwt'); pad: least
-              room above and below the values (0.25)
+              room around the values (0.25); floor: the axis's least value (0 for a count)
      period   'year': one point a year, dated 'YYYY-01-01'; axis, readout and gaps say '2015'
      gapWord  the readout's word for a missing point ('report'; 'survey')
      ranges   [{ label: '3M', days: 92, aria }], days 0 = all; shown only when the held days run past it
@@ -31,8 +31,7 @@
      share    { url, title, file, kicker: card top line, source: card foot line, date: 'YYYY-MM-DD' }
    Labels never overlap a line, a point, another label or the axes: where they belong, nudged, else
    outside on the right. AgChart.svg, card, layout (label boxes,
-   segments, points: the tests check overlaps), slice, pairs, ranges, gapAt, ruleOf, fitLines.
-   Exports window.AgChart (and module.exports). */
+   segments, points: the tests check overlaps), slice, pairs, ranges, gapAt, ruleOf, fitLines on window.AgChart. */
 (function (root) {
   'use strict';
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
@@ -131,10 +130,10 @@
     view.series.forEach(function (s) { if (!hide[s.key]) s.points.forEach(function (p) { all.push(p.v); }); });
     if (!all.length) view.series.forEach(function (s) { s.points.forEach(function (p) { all.push(p.v); }); });
     var lo = Math.min.apply(null, all), hi = Math.max.apply(null, all), pad = Math.max((hi - lo) * 0.03, (cfg || {}).pad || 0.25);
-    lo -= pad; hi += pad;
-    var nt = W / fs < 40 ? 4 : 5, tk = ticks(lo, hi, nt), st = tk.length > 1 ? tk[1] - tk[0] : 1;   // the axis runs to a tick at both ends
+    lo = Math.max(lo - pad, cfg && cfg.floor != null ? cfg.floor : -1e15); hi += pad;
+    var nt = W / fs < 40 ? 4 : 5, tk = ticks(lo, hi, nt), st = tk.length > 1 ? tk[1] - tk[0] : 1;
     lo = Math.min(lo, Math.floor(lo / st) * st); hi = Math.max(hi, Math.ceil(hi / st) * st);
-    var tks = []; for (var tv = lo; tv <= hi + st * 1e-6; tv += st) tks.push(+tv.toFixed(6));   // the drawn ticks: the same step, end to end
+    var tks = []; for (var tv = lo; tv <= hi + st * 1e-6; tv += st) tks.push(+tv.toFixed(6));   // ticks end to end
     var L = Math.round(fs * (W < 420 ? 3.4 : 3.9)), R = Math.round(fs * 0.8) + (gutter || 0), T = Math.round(fs * 3), B = Math.round(fs * 2.2), lab = Math.round(fs * 1.4);
     var t0 = utc(view.from), dt = Math.max(utc(view.to) - t0, 864e5);
     return { L: L, R: R, T: T, B: B, W: W, H: H, fs: fs, lo: lo, hi: hi, nt: nt, tk: tks, base: H - B - fs * 0.6, right: W - R,
@@ -245,7 +244,7 @@
     var lay = layout(view, W, H, opt), g = lay.g, f = 'font-size:' + fs + 'px;font-family:' + FONT + ';', fb = f + 'font-weight:700;', o = [];
     var halo = 'paint-order:stroke;stroke:' + P.surf + ';stroke-width:' + (fs / 3.5).toFixed(1) + 'px;stroke-linejoin:round;';
     o.push('<svg xmlns="http://www.w3.org/2000/svg" class="agc-svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '"' + (opt.label ? ' role="img" aria-label="' + esc(opt.label) + '"' : '') + '>');
-    o.push(txt(g.L - fs * 0.5, fs * 1.2, cfg.unit || '', f + 'fill:' + P.mut, 'end'));
+    o.push(txt(0, fs * 1.2, cfg.unit || '', f + 'fill:' + P.mut, 'start'));
     g.tk.forEach(function (v) {
       var y = g.y(v);
       o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(y) + '" y2="' + f1(y) + '" style="stroke:' + P.grid + ';stroke-width:1"/>');
