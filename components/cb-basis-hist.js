@@ -162,7 +162,7 @@
      Iowa Falls"), by elevNames.boardLabel (components/elev-names.js). No two boards share one: a repeat is told apart
      by the places as the network printed them, then by a number. -> one label per board, in order */
   function labels(boards, town, st) {
-    var out = boards.map(function (b) { return names().boardLabel(b[0], b[1] || [], town, st); }), n = {};
+    var out = boards.map(function (b) { return names().boardLabel ? names().boardLabel(b[0], b[1] || [], town, st) : String(b[0] || ''); }), n = {};
     out.forEach(function (l) { n[l] = (n[l] || 0) + 1; });
     out = out.map(function (l, i) { return n[l] > 1 ? l + ' (' + (boards[i][1] || []).join(', ') + ')' : l; });
     n = {}; out.forEach(function (l) { n[l] = (n[l] || 0) + 1; });
@@ -336,7 +336,7 @@
 
   var css = '.cbh-crop{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--border);--cbh1:#d4a23f;--cbh2:#5fc28a;--cbh3:#6f9fc2;--cbh4:#d9774f;--cbh5:#a7b6bd}' +
     '[data-theme="light"] .cbh-crop{--cbh1:#8a6514;--cbh2:#2e7d4f;--cbh3:#2a6390;--cbh4:#a8431f;--cbh5:#4f5f68}' +
-    '.cbh-kit{min-height:640px}@container (min-width:600px){.cbh-kit{min-height:440px}}.cbh-crop{container-type:inline-size}' +
+    '.cbh-kit{min-height:640px}@container (min-width:720px){.cbh-kit{min-height:440px}}.cbh-crop{container-type:inline-size}' +
     '.cbh-tools{min-height:34px;margin:.3rem 0}.cbh-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--gold,#d4a23f);font-weight:600;font-size:.86rem}.cbh-h4{margin:10px 0 2px;font-size:.86rem}' +
     '.cbh-h{margin:0 0 2px;font-size:1.02rem;font-weight:800;line-height:1.3}.cbh-l{margin:0 0 6px;font-size:.88rem;line-height:1.5;color:var(--text)}' +
     '.cbh-scroll{overflow-x:auto}.cbh-t{width:100%;border-collapse:collapse;font-size:.82rem}' +

@@ -28,7 +28,7 @@
      height   { phone: 200, wide: 280 }, reserved in CSS
    legend   true (several named lines, Nov 12, 2026, E53): no label is drawn inside the plot. From 600 px of chart (and on the
               picture) the names sit in a right gutter (300 px; names wrap, none is cut, a leader line to each line's end),
-              sorted by value then name; under 600 px the plot takes the whole width and a key under it lists every
+              sorted by value then name; under 720 px the plot takes the whole width and a key under it lists every
               line, one 44 px row each: swatch, full name, value (the rows hide and show a line)
    valueAt(key, day) -> a line's value text for the key rows (default: its held value)
    axisTitle  the axis title, top left ('Basis vs futures, cents a bushel'); intTicks: whole-number tick steps (1, 2, 5, 10);
@@ -235,7 +235,7 @@
     if (cur) lines.push(cur);
     return lines;
   }
-  function legendOn(cfg, W, opt) { return !!cfg.legend && (!!opt.card || W >= 600); }
+  function legendOn(cfg, W, opt) { return !!cfg.legend && (!!opt.card || W >= 720); }
   function layout(view, W, H, opt) {
     var fs = opt.fs || 12, hide = opt.hide || {}, cfg = opt.cfg || {}, fmt = fmtOf(cfg), rules = {};
     var gutter = opt.gutter || (legendOn(cfg, W, opt) ? (opt.card ? 400 : 300) : 0), g = geom(view, W, H, fs, hide, gutter, cfg), segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
@@ -557,7 +557,7 @@
       (cfg.legend ? '<div class="agc-key" role="group" aria-label="Lines on the chart" hidden></div>' : '') +
       (cfg.foot ? '<p class="agc-foot">' + esc(cfg.foot) + '</p>' : '') + (cfg.share && cfg.share.source ? '<p class="agc-src">' + esc(cfg.share.source) + '</p>' : '');
     var plot = el.querySelector('.agc-plot'), read = el.querySelector('.agc-read'), keyEl = el.querySelector('.agc-key'), hh = cfg.height || {};
-    var narrow = function (w) { return w < (cfg.legend ? 600 : 520); };
+    var narrow = function (w) { return w < (cfg.legend ? 720 : 520); };
     var fit = function () { plot.style.height = (narrow(cfg.legend ? plot.clientWidth || el.clientWidth : el.clientWidth) ? hh.phone || 200 : hh.wide || 280) + 'px'; };
     fit();
     var keyOn = false;
@@ -586,7 +586,7 @@
       var W = Math.round(plot.clientWidth); if (!W || (W === lastW && !force)) return; lastW = W;
       fit();
       var H = narrow(W) ? hh.phone || 200 : hh.wide || 280, fs = W < 520 ? 12 : 13;
-      keyOn = !!cfg.legend && W < 600;
+      keyOn = !!cfg.legend && W < 720;
       view = slice(cfg, cur.days);
       var st = cfg.story ? cfg.story(view) : {};
       if (cfg.headEl) cfg.headEl.textContent = st.head || '';
