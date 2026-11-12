@@ -17,6 +17,10 @@
    "to": "/rain/arkansas",
    "since": "2026-11-10"
   },
+  "rain/california/sutter-county.html": {
+   "to": "/rain/california",
+   "since": "2026-11-12"
+  },
   "rain/florida/lafayette-county.html": {
    "to": "/rain/florida",
    "since": "2026-11-10"
@@ -28,6 +32,14 @@
   "rain/georgia/candler-county.html": {
    "to": "/rain/georgia",
    "since": "2026-11-11"
+  },
+  "rain/georgia/charlton-county.html": {
+   "to": "/rain/georgia",
+   "since": "2026-11-12"
+  },
+  "rain/georgia/franklin-county.html": {
+   "to": "/rain/georgia",
+   "since": "2026-11-12"
   },
   "rain/georgia/murray-county.html": {
    "to": "/rain/georgia",
@@ -45,9 +57,17 @@
    "to": "/rain/indiana",
    "since": "2026-11-08"
   },
+  "rain/iowa/worth-county.html": {
+   "to": "/rain/iowa",
+   "since": "2026-11-12"
+  },
   "rain/kentucky/carter-county.html": {
    "to": "/rain/kentucky",
    "since": "2026-11-02"
+  },
+  "rain/kentucky/garrard-county.html": {
+   "to": "/rain/kentucky",
+   "since": "2026-11-12"
   },
   "rain/kentucky/wayne-county.html": {
    "to": "/rain/kentucky",
@@ -65,9 +85,17 @@
    "to": "/rain/maryland",
    "since": "2026-10-19"
   },
+  "rain/michigan/crawford-county.html": {
+   "to": "/rain/michigan",
+   "since": "2026-11-12"
+  },
   "rain/michigan/wexford-county.html": {
    "to": "/rain/michigan",
    "since": "2026-11-11"
+  },
+  "rain/minnesota/jackson-county.html": {
+   "to": "/rain/minnesota",
+   "since": "2026-11-12"
   },
   "rain/minnesota/pope-county.html": {
    "to": "/rain/minnesota",
@@ -81,6 +109,14 @@
    "to": "/rain/mississippi",
    "since": "2026-11-01"
   },
+  "rain/mississippi/union-county.html": {
+   "to": "/rain/mississippi",
+   "since": "2026-11-12"
+  },
+  "rain/missouri/clark-county.html": {
+   "to": "/rain/missouri",
+   "since": "2026-11-12"
+  },
   "rain/missouri/dallas-county.html": {
    "to": "/rain/missouri",
    "since": "2026-10-14"
@@ -92,6 +128,46 @@
   "rain/missouri/ripley-county.html": {
    "to": "/rain/missouri",
    "since": "2026-10-14"
+  },
+  "rain/nevada/churchill-county.html": {
+   "to": "/rain/nevada",
+   "since": "2026-11-12"
+  },
+  "rain/north-carolina/bertie-county.html": {
+   "to": "/rain/north-carolina",
+   "since": "2026-11-12"
+  },
+  "rain/north-carolina/northampton-county.html": {
+   "to": "/rain/north-carolina",
+   "since": "2026-11-12"
+  },
+  "rain/north-carolina/stanly-county.html": {
+   "to": "/rain/north-carolina",
+   "since": "2026-11-12"
+  },
+  "rain/north-dakota/grant-county.html": {
+   "to": "/rain/north-dakota",
+   "since": "2026-11-12"
+  },
+  "rain/north-dakota/oliver-county.html": {
+   "to": "/rain/north-dakota",
+   "since": "2026-11-12"
+  },
+  "rain/oklahoma/harper-county.html": {
+   "to": "/rain/oklahoma",
+   "since": "2026-11-12"
+  },
+  "rain/oklahoma/jefferson-county.html": {
+   "to": "/rain/oklahoma",
+   "since": "2026-11-12"
+  },
+  "rain/oklahoma/love-county.html": {
+   "to": "/rain/oklahoma",
+   "since": "2026-11-12"
+  },
+  "rain/oregon/tillamook-county.html": {
+   "to": "/rain/oregon",
+   "since": "2026-11-12"
   },
   "rain/south-carolina/allendale-county.html": {
    "to": "/rain/south-carolina",
@@ -129,6 +205,14 @@
    "to": "/rain/texas",
    "since": "2026-10-14"
   },
+  "rain/texas/donley-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-11-12"
+  },
+  "rain/texas/franklin-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-11-12"
+  },
   "rain/texas/kent-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
@@ -136,6 +220,14 @@
   "rain/texas/san-augustine-county.html": {
    "to": "/rain/texas",
    "since": "2026-10-14"
+  },
+  "rain/texas/sutton-county.html": {
+   "to": "/rain/texas",
+   "since": "2026-11-12"
+  },
+  "rain/virginia/fredericksburg-city.html": {
+   "to": "/rain/virginia",
+   "since": "2026-11-12"
   },
   "rain/virginia/richmond-county.html": {
    "to": "/rain/virginia",
