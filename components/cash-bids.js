@@ -805,8 +805,9 @@ function bidPeriodPast(b){
   /* A HARVEST-YEAR ROW ("Harvest 2026", newcrop-2026) IS A WINDOW, NOT A
      MONTH. Keyed on October it read as closed from November on, so a Harvest
      2027 forward became "soonest delivery" (54728, Nov 12). components/
-     bid-period.js holds the one rule: the feed's periodPast wins, a row without
-     it is open through the crop's harvest window (Sep-Dec corn and soybeans). */
+     bid-period.js holds the one rule: periodPast:true is taken on trust, false
+     is not (the feed sets it false on every season row), so the crop's harvest
+     window decides (Sep-Dec corn and soybeans, Jun-Sep wheat). */
   var BP=typeof window!=='undefined'&&window.AgBidPeriod,ss=BP?BP.rowSeason(b,new Date()):null;
   if(ss)return !ss.open;
   if(b&&b.periodPast===true)return true;
