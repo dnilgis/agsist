@@ -110,10 +110,10 @@
     ND: 'North Dakota', OH: 'Ohio', OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina',
     SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia',
     WI: 'Wisconsin', WY: 'Wyoming' };
-  var CAPS = { ADM: 1, CHS: 1 };
+  var CAPS = { ADM: 1, CHS: 1, POET: 1 };
   function placeKey(s) { return String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
   function siteOf(site, town, st) {
-    var t = String(site || '').replace(/\s+/g, ' ').trim();
+    var t = String(site || '').replace(/\s+-\s+/g, ' ').replace(/\s+/g, ' ').trim();
     if (/^[a-z]{1,4}(?:-[a-z]{1,4})+$/i.test(t)) return 'delivery code ' + t;
     t = niceCase(t);
     var ini = String(town || '').split(/\s+/).filter(Boolean).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
@@ -132,7 +132,7 @@
   }
   function boardLabel(company, places, town, st) {
     var c = displayName(company).replace(/[\s,]+(?:inc|llc|ltd|corp)\.?$/i, '').trim(), tk = placeKey(town);
-    c = niceCase(c).replace(/\bAdm\b/g, 'ADM');
+    c = niceCase(c).replace(/\bAdm\b/g, 'ADM').replace(/\bPoet\b/g, 'POET');
     var sites = (places || []).filter(function (p) { return placeKey(p) !== tk; });
     return sites.length ? c + ', ' + sites.map(function (x) { return siteOf(x, town, String(st || '').toUpperCase()); }).join(' and ') : c;
   }

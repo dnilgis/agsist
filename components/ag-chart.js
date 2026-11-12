@@ -181,19 +181,19 @@
     var tks = []; for (var tv = lo; tv <= hi + st * 1e-6; tv += st) tks.push(+tv.toFixed(6));   // the drawn ticks: the same step, end to end
     var L = Math.round(fs * (W < 420 ? 3.4 : 3.9)), R = Math.round(fs * 0.8) + (gutter || 0), T = Math.round(fs * 3), B = Math.round(fs * 2.2), lab = Math.round(fs * 1.4);
     if (cfg.tick && cfg.legend) L = Math.ceil(Math.max.apply(null, tks.map(function (v) { return widthOf(cfg.tick(v), fs, true); })) + fs * 1.1);   // room for the longest tick
-    var bandB = below ? Math.round(fs * 2.4) : 0, bandT = above ? Math.round(fs * 2.4) : 0;
+    var bandB = below ? Math.round(fs * 3.4) : 0, bandT = above ? Math.round(fs * 3.4) : 0;
     T += bandT; lab += bandB;
-    var t0 = utc(view.from), dt = Math.max(utc(view.to) - t0, 864e5);
+    var t0 = utc(view.from), dt = Math.max(utc(view.to) - t0, 864e5), pl = cfg.legend ? Math.round(fs * 0.9) : 0;   // room between the axis and the first point
     var yIn = function (v) { return T + (hi - v) / (hi - lo) * (H - T - B - lab); };
     return { L: L, R: R, T: T, B: B, W: W, H: H, fs: fs, lo: lo, hi: hi, nt: nt, tk: tks, base: H - B - fs * 0.6, right: W - R,
       clip: cl ? { lo: cl.lo, hi: cl.hi, below: below, above: above, ranges: cl.ranges, yLo: yIn(lo), yHi: yIn(hi), bandB: bandB, bandT: bandT } : null,
-      x: function (d) { return L + (utc(d) - t0) / dt * (W - L - R); },
+      x: function (d) { return L + pl + (utc(d) - t0) / dt * (W - L - R - pl); },
       y: function (v) {
-        if (cl && v < cl.lo - 1e-9 && below) return yIn(lo) + bandB * 0.62;
-        if (cl && v > cl.hi + 1e-9 && above) return T - bandT * 0.55;
+        if (cl && v < lo - 1e-9 && below) return yIn(lo) + bandB * 0.3;
+        if (cl && v > hi + 1e-9 && above) return T - bandT * 0.4;
         return yIn(v);
       },
-      day: function (px) { return isoOf(t0 + Math.round((px - L) / (W - L - R) * dt / 864e5) * 864e5); } };
+      day: function (px) { return isoOf(t0 + Math.round((px - L - pl) / (W - L - R - pl) * dt / 864e5) * 864e5); } };
   }
   function widthOf(s, fs, bold) { return String(s).length * fs * (bold ? 0.6 : 0.56); }
   /* the box of a text drawn at baseline y, anchored at x */
@@ -218,7 +218,7 @@
       Object.keys(by).forEach(function (v) { if (by[v].length > 1) by[v].forEach(function (k) { tied[k] = 1; }); });
     });
     var keys = main.map(function (s) { return s.key; }).filter(function (k) { return tied[k]; }), off = {};
-    keys.forEach(function (k, i) { off[k] = (i - (keys.length - 1) / 2) * 2.5; });
+    keys.forEach(function (k, i) { off[k] = (i - (keys.length - 1) / 2) * 3.5; });
     return off;
   }
   /* the order the names are listed in: the value now, best first, then the name; hidden lines last */
@@ -233,12 +233,17 @@
     var lines = [], cur = '';
     String(text).split(' ').forEach(function (w) { var x = cur ? cur + ' ' + w : w; if (widthOf(x, fs, bold) > maxW && cur) { lines.push(cur); cur = w; } else cur = x; });
     if (cur) lines.push(cur);
+    if (lines.length === 2) {   // two lines: break where they are most alike, not after the longest first line
+      var ws = String(text).split(' '), best = lines, bw = Math.max(widthOf(lines[0], fs, bold), widthOf(lines[1], fs, bold));
+      for (var k = 1; k < ws.length; k++) { var a = ws.slice(0, k).join(' '), b = ws.slice(k).join(' '), m = Math.max(widthOf(a, fs, bold), widthOf(b, fs, bold)); if (m < bw - 0.5 && m <= maxW) { bw = m; best = [a, b]; } }
+      lines = best;
+    }
     return lines;
   }
   function legendOn(cfg, W, opt) { return !!cfg.legend && (!!opt.card || W >= 720); }
   function layout(view, W, H, opt) {
     var fs = opt.fs || 12, hide = opt.hide || {}, cfg = opt.cfg || {}, fmt = fmtOf(cfg), rules = {};
-    var gutter = opt.gutter || (legendOn(cfg, W, opt) ? (opt.card ? 400 : 300) : 0), g = geom(view, W, H, fs, hide, gutter, cfg), segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
+    var gutter = opt.gutter || (legendOn(cfg, W, opt) ? (opt.card ? 420 : 340) : 0), g = geom(view, W, H, fs, hide, gutter, cfg), segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
     var off = cfg.legend ? tieOffsets(view, hide) : {};
     view.series.forEach(function (s) {
       if (!s.points.length || hide[s.key]) return;
@@ -267,7 +272,7 @@
       // the latest dot sits at the line's right end (today for a held line), the small ones at each logged change
       if (!s.faint) {
         pts.forEach(function (p, j) { dots.push({ x: p.x, y: p.y, r: Math.max(1.6, fs / 6), s: s, last: false }); });
-        if (cfg.legend) dots.push({ x: endX, y: z.y, r: fs / 4 + 1.2, s: s, last: true });
+        if (cfg.legend) dots.push({ x: endX, y: z.y, r: fs / 5 + 1.2, s: s, last: true });
         else dots[dots.length - 1] = { x: z.x, y: z.y, r: fs / 3 + 1, s: s, last: true };
       }
     });
@@ -370,11 +375,11 @@
     var t0 = utc(view.from), t1 = utc(view.to), mons = [], t = t0;
     while (new Date(t).getUTCDay() !== 1 && t <= t1) t += 864e5;
     for (; t <= t1; t += 7 * 864e5) mons.push(isoOf(t));
-    var need = fs * 6.2;
-    if (mons.length > 1 && g.x(mons[1]) - g.x(mons[0]) < need) mons = mons.filter(function (d, i) { return i % 2 === 0; });
-    var last = view.to, out = mons.filter(function (d) { return g.x(last) - g.x(d) >= fs * 5.6 && g.x(d) - g.L >= 0; });
-    out.push(last);
-    return out;
+    // evenly spaced: every Monday, or every second one (counted back from the last) when they would crowd
+    if (mons.length > 1 && g.x(mons[1]) - g.x(mons[0]) < fs * 6.2) mons = mons.filter(function (d, i) { return (mons.length - 1 - i) % 2 === 0; });
+    // the last day joins when it has room; otherwise the latest dot and the words say it
+    if (!mons.length || g.x(view.to) - g.x(mons[mons.length - 1]) >= fs * 6.2) mons.push(view.to);
+    return mons;
   }
   /* opt: { fs, hide: {key: true}, card: true (literal colours), hover: true, label, cfg } */
   function svg(view, W, H, opt) {
@@ -392,7 +397,7 @@
     o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(g.base) + '" y2="' + f1(g.base) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
     var marks = [], drawn = {};
     view.series.forEach(function (s) { if (!hide[s.key]) s.points.forEach(function (p) { if (p.m) {
-      if (!drawn[p.d]) o.push('<line class="agc-mk" x1="' + f1(g.x(p.d)) + '" x2="' + f1(g.x(p.d)) + '" y1="' + g.T + '" y2="' + f1(g.base) + '" style="stroke:' + P.mut + ';stroke-dasharray:2 3"/>');
+      if (!drawn[p.d]) o.push('<line class="agc-mk" x1="' + f1(g.x(p.d)) + '" x2="' + f1(g.x(p.d)) + '" y1="' + g.T + '" y2="' + f1(g.clip && g.clip.below ? g.clip.yLo : g.base) + '" style="stroke:' + P.mut + ';stroke-dasharray:2 3"/>');
       drawn[p.d] = 1;
       var t = cfg.markLabel ? cfg.markLabel(p, s) : '';
       if (t && !marks.some(function (m) { return m.d === p.d && m.t === t; })) marks.push({ d: p.d, t: t, x: g.x(p.d) });
@@ -402,7 +407,7 @@
       var ms = fs - 1, mw = function (t) { return widthOf(t, ms) + 8; }, merged = [];
       marks.forEach(function (m) {
         var last = merged[merged.length - 1];
-        if (last && (m.x - last.x < mw(last.t) + 6 || Math.abs(m.x - last.x) < 30)) { last.t = cfg.markMany || 'reference changed'; last.many = true; } else merged.push({ d: m.d, t: m.t, x: m.x });
+        if (last && (m.x - last.x < mw(last.t) + 6 || Math.abs(m.x - last.x) < 30)) { last.n = (last.n || 1) + 1; last.t = (cfg.markMany || 'reference changed') + ' (' + last.n + ' dates)'; } else merged.push({ d: m.d, t: m.t, x: m.x });
       });
       var prev = -1e9;
       merged.forEach(function (m) {
@@ -447,16 +452,18 @@
         o.push('<polygon class="agc-band" points="' + top.concat(bot).join(' ') + '" style="fill:' + (opt.card ? b.card || (ser(view, b.a) || {}).card || '#5ea4ea' : b.color) + ';fill-opacity:' + (opt.card ? b.cardOpacity || 0.26 : b.opacity || 0.2) + '"/>');
       });
     });
-    if (g.clip && (g.clip.below || g.clip.above)) {   // the break: a zigzag on the axis, a light rule, and what was left off the scale in words
-      var drawBreak = function (y, label) {
-        o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(y) + '" y2="' + f1(y) + '" style="stroke:' + P.mut + ';stroke-width:1;stroke-dasharray:1 4"/>');
+    if (g.clip && (g.clip.below || g.clip.above)) {   // the break: a solid rule with a zigzag on the axis, and the stray bid named in words
+      var drawBreak = function (y, lines, x0, y0) {
+        o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(y) + '" y2="' + f1(y) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
         o.push('<path d="M' + f1(g.L - 6) + ' ' + f1(y + 3) + 'L' + f1(g.L - 2) + ' ' + f1(y - 1) + 'L' + f1(g.L + 2) + ' ' + f1(y + 3) + 'L' + f1(g.L + 6) + ' ' + f1(y - 1) + '" style="fill:none;stroke:' + P.dim + ';stroke-width:1.5"/>');
-        if (label) { var wl = widthOf(label.t, fs), lx = Math.max(g.L + 6, label.x), endA = lx + wl > g.right - 6; o.push(txt(endA ? g.right - 6 : lx, label.y, label.t, f + 'fill:' + P.dim + ';' + halo, endA ? 'end' : 'start', 'agc-off')); }
+        lines.forEach(function (l, i) { o.push(txt(x0, y0 + i * fs * 1.2, l, f + 'fill:' + P.dim + ';' + halo, 'start', 'agc-off')); });
       };
+      var nameOfK = function (k) { var q = ser(view, k); return q ? q.name : ''; };
       var lows = g.clip.ranges.filter(function (r) { return r.v < g.clip.lo; }), highs = g.clip.ranges.filter(function (r) { return r.v > g.clip.hi; });
-      var say = function (rs) { return rs.map(function (r) { return fmtOf(cfg)(r.v) + ', ' + (r.from === r.to ? dayOf(cfg, r.from) : dayOf(cfg, r.from) + ' to ' + dayOf(cfg, r.to)); }).join('; ') + ' (off the scale)'; };
-      if (g.clip.below && lows.length) drawBreak(g.clip.yLo + g.clip.bandB * 0.08, { t: say(lows), x: lows.length === 1 ? g.x(lows[0].from) - fs * 0.5 : g.L + 6, y: g.clip.yLo + g.clip.bandB * 0.62 + fs * 1.25 });
-      if (g.clip.above && highs.length) drawBreak(g.clip.yHi - g.clip.bandT * 0.08, { t: say(highs), x: highs.length === 1 ? g.x(highs[0].from) - fs * 0.5 : g.L + 6, y: g.clip.yHi - g.clip.bandT * 0.55 - fs * 0.9 });
+      var say = function (rs) { return rs.map(function (r) { return nameOfK(r.k) + ': ' + fmtOf(cfg)(r.v) + ', ' + (r.from === r.to ? dayOf(cfg, r.from) : dayOf(cfg, r.from) + ' to ' + dayOf(cfg, r.to)); }).join('; ') + ' (off the scale)'; };
+      var room = g.right - g.L - 14;
+      if (g.clip.below && lows.length) drawBreak(g.clip.yLo + g.clip.bandB * 0.16, wrapText(say(lows), fs, room), g.L + 8, g.clip.yLo + g.clip.bandB * 0.3 + fs * 1.3);
+      if (g.clip.above && highs.length) drawBreak(g.clip.yHi - g.clip.bandT * 0.08, wrapText(say(highs), fs, room), g.L + 8, g.clip.yHi - g.clip.bandT * 0.4 - fs * 0.2);
     }
     var lw = Math.max(2, fs / 6);
     lay.runs.filter(function (r) { return r.s.faint; }).concat(lay.runs.filter(function (r) { return !r.s.faint; })).forEach(function (r) {
@@ -470,7 +477,7 @@
         if (r.note.x1 - r.note.x0 >= nw + 6) o.push(txt((r.note.x0 + r.note.x1) / 2, r.note.y + fs * 1.15, cfg.gapNote, 'font-size:' + (fs - 1) + 'px;font-family:' + FONT + ';fill:' + P.dim + ';' + halo, 'middle', 'agc-gn'));
       }
     });
-    lay.dots.forEach(function (d) { o.push('<circle class="agc-dot' + (d.last ? ' agc-last' : '') + '" cx="' + f1(d.x) + '" cy="' + f1(d.y) + '" r="' + f1(d.r) + '" style="fill:' + col(d.s) + (d.last ? ';stroke:' + P.surf + ';stroke-width:' + (cfg.legend ? 1.5 : 2) : '') + '"/>'); });
+    lay.dots.forEach(function (d) { o.push('<circle class="agc-dot' + (d.last ? ' agc-last' : '') + '" cx="' + f1(d.x) + '" cy="' + f1(d.y) + '" r="' + f1(d.r) + '" style="fill:' + col(d.s) + (d.last ? ';stroke:' + P.surf + ';stroke-width:' + (cfg.legend ? 1 : 2) : '') + '"/>'); });
     if (opt.hover) {
       o.push('<g class="agc-hov" visibility="hidden"><line y1="' + g.T + '" y2="' + f1(g.base) + '" style="stroke:' + P.mut + ';stroke-dasharray:3 3"/>' +
         view.series.filter(function (s) { return !s.faint && s.points.length; }).map(function (s) { return '<circle r="4" data-k="' + esc(s.key) + '" style="fill:' + col(s) + ';stroke:' + P.surf + ';stroke-width:2"/>'; }).join('') + '</g>');
@@ -481,7 +488,7 @@
       var leader = '';
       if (it.ye != null) {
         var ly = it.y + lh * 0.62, xe = it.xe + (cfg.legend ? 7 : 5), xm = g.right + 8;
-        leader = '<path class="agc-lead" d="M' + f1(xe) + ' ' + f1(it.ye) + 'L' + f1(Math.max(xe, xm)) + ' ' + f1(it.ye) + 'L' + f1(lay.legend.x - 6) + ' ' + f1(ly) + '" style="fill:none;stroke:' + c + ';stroke-width:1;stroke-opacity:.55"/>';
+        leader = '<path class="agc-lead" d="M' + f1(xe) + ' ' + f1(it.ye) + 'L' + f1(Math.max(xe, xm)) + ' ' + f1(it.ye) + 'L' + f1(lay.legend.x - 6) + ' ' + f1(ly) + '" style="fill:none;stroke:' + c + ';stroke-width:1.5;stroke-opacity:.8"/>';
       }
       var fl = 'font-size:' + lf + 'px;font-family:' + FONT + ';font-weight:700;fill:' + c + (off ? ';opacity:.5;text-decoration:line-through' : '');
       o.push('<g class="agc-tog agc-leg"' + (tog ? ' data-k="' + esc(it.s.key) + '" tabindex="0" role="button" aria-pressed="' + !off + '" aria-label="' + (off ? 'Show ' : 'Hide ') + esc(it.lines.join(' ')) + '"' : '') + '>' + leader +
@@ -523,7 +530,7 @@
     var mark = 50 + aw + x.measureText('.com').width + 32;
     var k = fitLines(meas('600'), (sh.kicker ? sh.kicker + ' · ' : '') + (sh.date ? long(sh.date) : cfg.period === 'year' ? dayOf(cfg, view.to) : long(view.to)), W - 48 - mark, [20, 18, 16], 1);
     x.font = '600 ' + k.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.72)'; x.textAlign = 'right'; x.fillText(k.lines[0], W - 48, 60); x.textAlign = 'left';
-    var hd = fitLines(meas('800'), st.head, W - 96, [38, 34, 30, 27], 2), y = 80 + hd.size;
+    var hd = fitLines(meas('800'), st.head, W - 96, [38, 34, 30, 28], 1); if (hd.over) hd = fitLines(meas('800'), st.head, W - 96, [38, 34, 30, 27], 2); var y = 80 + hd.size;
     x.font = '800 ' + hd.size + 'px ' + FONT; x.fillStyle = '#e9edeb';
     hd.lines.forEach(function (l) { x.fillText(l, 48, y); y += hd.size * 1.2; });
     if (st.take) {
@@ -532,11 +539,11 @@
       tk.lines.forEach(function (l, i) { x.fillText(l, 48, y + 2 + i * tk.size * 1.25); }); y += tk.lines.length * tk.size * 1.25 + 8;
     }
     var src = fitLines(meas('400'), sh.source || '', W - 96, [18, 16, 15, 14], 1), url = fitLines(meas('700'), String(sh.url || '').replace(/^https?:\/\//, ''), W - 96, [20, 18], 1);
-    var foot = cfg.foot ? fitLines(meas('400'), cfg.foot, W - 96, [16, 15, 14], 1) : null, below = foot ? 100 : 76;
+    var foot = cfg.foot ? fitLines(meas('400'), cfg.foot, W - 96, [18, 17, 16, 15], 1) : null, below = foot ? 104 : 76;
     var img = new root.Image();
     img.onload = function () {
       x.drawImage(img, 24, y + 4);
-      if (foot) { x.font = '400 ' + foot.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.72)'; x.fillText(foot.lines[0], 48, H - 70); }
+      if (foot) { x.font = '400 ' + foot.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.72)'; x.fillText(foot.lines[0], 48, H - 72); }
       x.font = '400 ' + src.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.72)'; x.fillText(src.lines[0], 48, H - 46);
       x.font = '700 ' + url.size + 'px ' + FONT; x.fillStyle = '#d4a23f'; x.fillText(url.lines[0], 48, H - 18);
       c.toBlob(function (b) { done(b); }, 'image/png');

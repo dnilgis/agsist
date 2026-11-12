@@ -155,7 +155,7 @@
      each with its own dash so the lines survive colour blindness and print. A dotted stretch is a gap. */
   var LINES_MAX = 5, ADJ = { corn: 'corn', soybeans: 'soybean', wheat: 'wheat' };
   var PAL = ['#d4a23f', '#5fc28a', '#6f9fc2', '#d9774f', '#a7b6bd'];
-  var DASH = ['', '12 5', '3 3', '12 4 3 4', '6 3'];
+  var DASH = ['', '14 6', '7 4', '14 4 3 4', '4 3 12 3'];
   var FULL_MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   function dayBefore(d) { return new Date(Date.parse(d) - 864e5).toISOString().slice(0, 10); }
   /* One name per board, every word spelled out: the company and the site it posts for ("Mid-Iowa Cooperative, Cargill
@@ -227,10 +227,10 @@
       var first = pts[k], ch = last.v - first.v, cw = conWords(last.con, crop), ref = fullMon(last.dm) + ' delivery' + (cw ? ', against ' + cw : '');
       if (first !== last) {
         head = Crop + ' basis at ' + l.long + (ch ? (ch > 0 ? ' firmed ' : ' weakened ') + Math.abs(ch) + '¢' : ' held at ' + basisText(last.v)) + ' since ' + dayText(first.d);
-        take = basisText(last.v) + ' on ' + dayText(to) + ', from ' + basisText(first.v) + '. ' + ref + '. Counted on one delivery month and one contract.';
+        take = basisText(last.v) + ' on ' + dayText(to) + ', from ' + basisText(first.v) + '. ' + ref + '.' + (forCard ? ' 1 elevator shown.' : ' Counted on one delivery month and one contract.');
       } else {
         head = Crop + ' basis at ' + l.long + ': ' + basisText(last.v);
-        take = ref + '. Unchanged since ' + dayText(last.d) + '. A basis holds until the elevator changes it.';
+        take = forCard ? ref + '. Unchanged since ' + dayText(last.d) + '. 1 elevator shown.' : ref + '. Unchanged since ' + dayText(last.d) + '. A basis holds until the elevator changes it.';
       }
     } else {
       held.sort(function (a, b) { return b.p.v - a.p.v; });
@@ -253,7 +253,7 @@
       markLabel: function (p) { return p.ml || ''; },
       valueAt: function (key, d) { var p = byKey[key] && heldOn(byKey[key], d); return p ? basisText(p.v) : ''; },
       keyNote: '· touch the chart for another day',
-      foot: 'Fine dots along a line: no bid posted. Grey vertical line: the delivery month or futures contract changed.',
+      foot: [c.lines.some(function (l) { return l.line.points.some(function (p) { return p.b; }); }) ? 'Fine dots along a line: no bid posted.' : '', c.lines.some(function (l) { return l.line.points.some(function (p) { return p.m; }); }) ? 'Grey vertical line: the delivery month or futures contract changed.' : ''].filter(Boolean).join(' '),
       ranges: [{ label: '2 weeks', days: 14, aria: 'two weeks' }, { label: '1 month', days: 31, aria: 'one month' }, { label: all, days: 0, aria: 'every day logged' }],
       range: all, height: { phone: 250, wide: 300 },
       story: function (v, forCard) { return story(c, town, v.from, v.to, forCard); },
@@ -319,7 +319,8 @@
       var canon = box.ownerDocument.querySelector('link[rel="canonical"]'), url = canon ? canon.href : String(location.href).split('#')[0];
       cs.forEach(function (c, i) {
         var bl = body.querySelector('.cbh-crop[data-crop="' + i + '"]');
-        K.mount(bl.querySelector('.cbh-kit'), config(c, town, { head: bl.querySelector('.cbh-h'), take: bl.querySelector('.cbh-l'), tools: bl.querySelector('.cbh-tools') }, url, from || first));
+        var kit = bl.querySelector('.cbh-kit'); if (kit.clientWidth && kit.clientWidth < 720) kit.style.minHeight = (40 + 250 + 60 + 49 * c.lines.length + 70) + 'px';
+        K.mount(kit, config(c, town, { head: bl.querySelector('.cbh-h'), take: bl.querySelector('.cbh-l'), tools: bl.querySelector('.cbh-tools') }, url, from || first));
       });
     });
     return cs;
@@ -336,7 +337,7 @@
 
   var css = '.cbh-crop{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--border);--cbh1:#d4a23f;--cbh2:#5fc28a;--cbh3:#6f9fc2;--cbh4:#d9774f;--cbh5:#a7b6bd}' +
     '[data-theme="light"] .cbh-crop{--cbh1:#8a6514;--cbh2:#2e7d4f;--cbh3:#2a6390;--cbh4:#a8431f;--cbh5:#4f5f68}' +
-    '.cbh-kit{min-height:640px}@container (min-width:720px){.cbh-kit{min-height:440px}}.cbh-crop{container-type:inline-size}' +
+    '.cbh-kit{min-height:400px}@container (min-width:720px){.cbh-kit{min-height:440px}}.cbh-crop{container-type:inline-size}' +
     '.cbh-tools{min-height:34px;margin:.3rem 0}.cbh-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--gold,#d4a23f);font-weight:600;font-size:.86rem}.cbh-h4{margin:10px 0 2px;font-size:.86rem}' +
     '.cbh-h{margin:0 0 2px;font-size:1.02rem;font-weight:800;line-height:1.3}.cbh-l{margin:0 0 6px;font-size:.88rem;line-height:1.5;color:var(--text)}' +
     '.cbh-scroll{overflow-x:auto}.cbh-t{width:100%;border-collapse:collapse;font-size:.82rem}' +
