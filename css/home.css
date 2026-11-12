@@ -24,7 +24,7 @@ main.hp{max-width:1280px;margin:0 auto;padding:14px 20px 40px;font-size:1rem;col
 .hp-btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;min-height:44px;padding:.5rem .95rem;border-radius:8px;font:700 .88rem var(--font-body);white-space:nowrap;cursor:pointer;border:1px solid var(--border-2);background:none;color:var(--text)}
 .hp-btn:hover{border-color:var(--brand)}
 .hp-btn.p{background:var(--btn-primary-bg,var(--gold-fill));color:var(--btn-primary-ink,#0a0c0d);border-color:transparent}
-html[data-theme="light"] .hp-btn.p{background:var(--brand-fill);color:#fff}
+html[data-theme="light"] .hp-btn.p{background:var(--brand);color:#fff}
 .hp-skel{display:inline-block;width:5.5rem;height:1.1em;border-radius:4px;background:var(--surface3,var(--surface2));vertical-align:middle}
 
 /* sponsor line (components/loader.js puts it in #sw-home) */
@@ -157,7 +157,7 @@ html[data-theme="light"] .ch-tag-t{fill:#fff}
 .hp-ask .sa-in:focus{outline:2px solid var(--gold)!important;outline-offset:1px}
 .hp-ask .sa-b{grid-column:2!important;grid-row:1!important;min-height:46px;padding:0 1rem!important;border-radius:8px}
 .hp-ask .sa-m,.hp-ask .sa-z,.hp-ask .sa-n{grid-column:1/-1!important;grid-row:auto!important}
-html[data-theme="light"] .hp-ask .sa-b{background:var(--brand-fill);color:#fff}
+html[data-theme="light"] .hp-ask .sa-b{background:var(--brand);color:#fff}
 .hp-fine{font-size:.74rem;color:var(--text-muted);margin:.4rem 0 0}
 .hp-dfold{margin-top:auto;border-top:1px solid var(--border);padding-top:.5rem}
 .hp-daily .hp-dfold{margin-top:.7rem}
@@ -390,7 +390,7 @@ html:not(.has-zip) .hp-wx .hp-wxnone{display:block}
 .hp-take{margin:0;font-size:.84rem;line-height:1.35;color:var(--text-dim);font-weight:600;min-height:1.15em}
 .hp-tools{display:flex;justify-content:flex-end;align-items:center;gap:.35rem;font-family:var(--font-mono);font-size:.72rem;color:var(--text-muted);margin:.35rem 0 0;white-space:nowrap}
 .hp-takerow .hp-tools{margin:0}
-.hp-tools button{background:none;border:0;padding:0 .1rem;min-height:44px;font:inherit;font-weight:700;color:var(--brand);cursor:pointer}
+.hp-tools button{background:none;border:0;padding:0 .1rem;min-height:44px;min-width:44px;font:inherit;font-weight:700;color:var(--brand);cursor:pointer}
 .hp-tools button:hover,.hp-tools button:focus-visible{text-decoration:underline;text-underline-offset:2px}
 .hp-chart,.hp-cum,.hp-lchart,.hp-rmap{touch-action:pan-y}
 .hp-chart:focus-visible,.hp-cum:focus-visible,.hp-lchart:focus-visible,.hp-rmap:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:6px}
@@ -438,3 +438,19 @@ html:not(.has-zip) .hp-wx .hp-wxnone{display:block}
 @media (max-width:1180px){.hp-near tbody tr:nth-child(n+8){display:none}}
 @media (max-width:640px){.hp-ovnh .hp-fh .r{min-height:3.3em}}
 .hp-lrule{display:inline}.hp-lrule>summary{display:inline;cursor:pointer;color:var(--brand);text-decoration:underline}
+/* audit A4: a failed or empty list says so once; the held rows keep their room, unseen */
+.hp-near.hp-nfail thead,.hp-near.hp-nfail tbody tr+tr{visibility:hidden}
+.hp-near.hp-nfail th,.hp-near.hp-nfail td{border-color:transparent!important}
+.hp-near .hp-nf{font-size:.9rem;color:var(--text-muted);white-space:normal;padding:.6rem 0;border:0}
+/* audit A5/A7: Share and Save picture only beside a drawn chart (home-page.js adds .on); no script, no dead buttons */
+.hp-tools{visibility:hidden}.hp-tools.on{visibility:visible}
+.hp-tools .hp-tst{font-weight:400;white-space:normal}
+html:not(.hp-js) [data-hp-loc],html:not(.hp-js) #ticker-pause,html:not(.hp-js) #pa-form{display:none!important}
+/* audit A6/A8: focus lands below the sticky header; light-theme button ink and placeholders at 4.5:1 or more */
+html{scroll-padding-top:130px}
+@media (max-width:640px){html{scroll-padding-top:110px}}
+.hp input::placeholder,.hp textarea::placeholder{color:var(--text-muted);opacity:1}
+/* audit A9: every link at least 24px tall to a finger. Inline padding grows the tap area, not the line, so nothing
+   moves; block links get a minimum height. */
+.hp :where(p,td,li,h3,span,div)>a:not([class]),.hp a.hp-lnk,.hp-today .gs-src,.sw-line a{padding-block:4px}
+.hp .hp-bl .hp-lnk{display:inline-flex;align-items:center;min-height:24px}

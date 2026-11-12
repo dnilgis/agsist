@@ -57,6 +57,7 @@ try{var _w=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if(_w&&/^\d
 if(_w&&_w.zipTyped&&/^\d{5}$/.test(String(_w.zip||''))&&_w.lat!=null&&_w.lon!=null&&!(typeof _w.ts==='number'&&Date.now()-_w.ts<18e5)){_w.ts=Date.now();localStorage.setItem('agsist-wx-loc',JSON.stringify(_w));}}catch(e){}
 /* wave1-E: theme before first paint. Saved choice first, else the device's
    prefers-color-scheme, else dark. components/loader.js applies the same rule. */
+document.documentElement.classList.add('hp-js');/* audit A7: controls that need a script show only with one */
 try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}
 </script>
 </head>
@@ -137,9 +138,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <section class="hp-card hp-zipbar" aria-labelledby="hp-h1">
     <div class="hp-zl">
       <h1 class="hp-h1" id="hp-h1">Cash bids, grain prices and farm weather near you</h1>
-      <form class="hp-zip" id="hb-zip-form" novalidate>
+      <form class="hp-zip" id="hb-zip-form" action="/cash-bids" method="get" novalidate>
         <label for="hb-zip">ZIP</label>
-        <input type="text" id="hb-zip" name="zip" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" enterkeyhint="go" placeholder="ZIP code" aria-describedby="hb-zip-msg">
+        <input type="text" id="hb-zip" name="zip" maxlength="10" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" enterkeyhint="go" placeholder="ZIP code" aria-describedby="hb-zip-msg">
         <button type="submit" class="hp-btn p" id="hb-zip-go">Show</button>
         <button type="button" class="hp-btn" data-hp-loc id="hb-loc"><span aria-hidden="true">&#8982;</span> Use my location</button>
         <span class="hp-place" id="hb-place" aria-live="polite"><span class="hp-haszip" id="hb-place-t">Your area</span><span class="hp-nozip hp-mut">Type your ZIP for bids, weather and land near you</span></span>
@@ -147,7 +148,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       </form>
     </div>
     <a class="hp-chip" id="hp-rpchip" href="#rp" data-track="rp-chip">
-      <picture><source srcset="/img/photos/rain-print-photo-chetek-2025-800.webp" type="image/webp"><img src="/img/photos/rain-print-photo-chetek-2025-800.jpg" width="96" height="72" alt="A framed Rain Print on a wall" decoding="async"></picture>
+      <picture><source srcset="/img/photos/rain-print-photo-chetek-2025-192.webp" type="image/webp"><img src="/img/photos/rain-print-photo-chetek-2025-192.jpg" width="96" height="72" alt="A framed Rain Print on a wall" decoding="async"></picture>
       <span><b>A year of rain on your farm, framed.</b><br><span class="t" id="hp-rpchip-t">Rain Print: design yours &rarr;</span></span>
     </a>
   </section>

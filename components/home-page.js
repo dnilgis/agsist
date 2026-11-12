@@ -343,12 +343,13 @@
     var t = $('hb-place-t');
     if (t) {
       if (looking) t.textContent = 'Looking up ZIP ' + looking;
+      else if (z && badZip === p.zip) t.textContent = '';
       else if (z) {
         t.textContent = p.town ? p.town + (p.state ? ', ' + p.state : '') : 'ZIP ' + p.zip;
         if (p.county) { var c = doc.createElement('span'); c.className = 'c'; c.textContent = ' · ' + countyName(p.county, p.state); t.appendChild(c); }
       } else t.textContent = '';
     }
-    txt('hp-bids-near', z ? 'near ' + p.zip : 'near you');
+    txt('hp-bids-near', z && badZip !== p.zip ? 'near ' + p.zip : 'near you');
     txt('hp-wx-where', z ? ', ' + p.zip : '');
     var href = z ? '/cash-bids?zip=' + p.zip : '/cash-bids';
     ['hp-bids-all', 'hp-t-corn', 'hp-t-soy'].forEach(function (id) { var a = $(id); if (a) a.setAttribute('href', href); });
@@ -373,7 +374,8 @@
   function sendZip(z) { if (typeof root.agsistSetZip === 'function') { root.agsistSetZip(z); return true; } return false; }
   function submitZip(ev) {
     if (ev) ev.preventDefault();
-    var inp = $('hb-zip'), z = String(inp && inp.value || '').replace(/\D/g, '');
+    /* audit A10: a pasted ZIP with spaces or a ZIP+4 ("61701-1234") is read as its five digits, never cut short */
+    var inp = $('hb-zip'), raw = String(inp && inp.value || '').replace(/\D/g, ''), z = raw.length === 9 ? raw.slice(0, 5) : raw;
     if (z.length !== 5) { say('Enter a 5-digit ZIP code.', true); if (inp) { inp.setAttribute('aria-invalid', 'true'); inp.focus(); } return; }
     if (inp) { inp.removeAttribute('aria-invalid'); inp.value = z; inp.blur(); }
     say('');
@@ -383,7 +385,41 @@
     if (!sendZip(z)) { var n = 0; (function wait() { if (sendZip(z)) return; if (++n < 40) setTimeout(wait, 250); })(); }
     fullPlace().then(function () { if (looking === z) { looking = ''; say(''); } landed(); });
     clearTimeout(lookT);
-    lookT = setTimeout(function () { if (looking === z) { looking = ''; paintPlace(); say('ZIP ' + z + ' did not load. Check it, or try again in a minute.', true); } }, 12000);
+    /* audit A1: an answer within about 6 seconds, never "Loading" for good */
+    lookT = setTimeout(function () { if (looking === z) { looking = ''; paintPlace(); say('ZIP ' + z + ' did not load. Check it, or try again in a minute.', true); } }, 6000);
+    checkZip(z); watchBids();
+  }
+  /* audit A1: a ZIP that is not in our ZIP table says so at once, and the cards stop loading; a table that does not
+     load is a failure, not an unknown ZIP */
+  function placeCheck(z) {
+    return getJSON('/data/places/zip/' + z.slice(0, 2) + '.json', 8000).then(function (t) { return t && Array.isArray(t[z]) ? 'ok' : 'unknown'; },
+      function (e) { return e && /HTTP 404/.test(String(e.message)) ? 'unknown' : 'failed'; });
+  }
+  var badZip = '';
+  function checkZip(z) {
+    placeCheck(z).then(function (r) {
+      if ((readPlace() || {}).zip !== z) return;
+      if (r !== 'unknown') { if (badZip === z) badZip = ''; return; }
+      badZip = z; looking = ''; clearTimeout(lookT);
+      say('ZIP ' + z + ' is not in our ZIP table. Check the five digits.', true);
+      txt('hp-bids-near', 'near you'); txt('hb-place-t', '');
+      var d = { status: 'unknown', zip: z }; paintTiles(d); paintNear(d);
+      unknownBand(z);
+    });
+  }
+  function unknownBand(z) {
+    var t = 'ZIP ' + z + ' is not in our ZIP table.';
+    fcFail(t); txt('hp-rr-msg', t); ['hp-rain-ch', 'hp-gdu-ch'].forEach(function (id) { msgIn(id, t); });
+  }
+  /* audit A1: bids still loading 6 seconds after a ZIP is in place end in a plain message; a later answer still draws */
+  var bidsT = null;
+  function watchBids() {
+    clearTimeout(bidsT);
+    bidsT = setTimeout(function () {
+      var p = readPlace(); if (!hasZip(p) || badZip === p.zip) return;
+      var stuck = ['hp-t-corn-p', 'hp-t-soy-p'].some(function (id) { var e = $(id); return e && e.querySelector('.hp-haszip .hp-skel, .hp-skel') && !/\d/.test(e.textContent); });
+      if (stuck) { var d = { status: 'failed' }; paintTiles(d); paintNear(d); }
+    }, 6000);
   }
   function useLocation() {
     say('Finding your location…');
@@ -431,16 +467,23 @@
       var st = d.status || 'none';
       if (st === 'pending') { html(id + '-p', '<span class="hp-skel" aria-hidden="true"></span><span class="vh">Loading</span>'); txt(id + '-e', ''); txt(id + '-x', ''); return; }
       html(id + '-p', '<span class="hp-mut">-</span>');
-      txt(id + '-e', st === 'failed' ? 'Cash bids did not load.' : st === 'nozip' ? 'Type your ZIP above.' : 'No ' + w + ' bid within ' + r + ' miles.');
-      txt(id + '-x', st === 'failed' ? 'Try again in a minute, or open the cash bids page.' : '');
+      /* audit A4: a failure is said once, in the list under the tiles, not in each tile again */
+      txt(id + '-e', st === 'failed' || st === 'unknown' ? '' : st === 'nozip' ? 'Type your ZIP above.' : 'No ' + w + ' bid within ' + r + ' miles.');
+      txt(id + '-x', '');
     });
   }
   function paintNear(d) {
     var tb = doc.querySelector('#hp-near tbody'), msg = $('hp-near-msg'), F = fmt();
     if (!tb || !d) return;
     var rows = Array.isArray(d.near) ? d.near.filter(function (b) { return b && num(b.cash); }).slice(0, 11) : null;
-    if (!rows) { if (d.status === 'failed' && msg) msg.textContent = 'Cash bids did not load. Open the cash bids page, or try again in a minute.'; return; }
-    if (msg) msg.textContent = rows.length ? '' : 'No corn or soybean cash bid within ' + (num(d.radiusMi) ? Math.round(d.radiusMi) : 50) + ' miles.';
+    if (!rows) {
+      if (d.status === 'failed') nearFail('Cash bids did not load. Open the cash bids page, or try again in a minute.');
+      else if (d.status === 'unknown') nearFail('No cash bids: ZIP ' + (d.zip || '') + ' is not in our ZIP table. Check the five digits.');
+      return;
+    }
+    nearOk();
+    if (!rows.length) { nearFail('No corn or soybean cash bid within ' + (num(d.radiusMi) ? Math.round(d.radiusMi) : 50) + ' miles.'); return; }
+    if (msg) msg.textContent = '';
     var z = (readPlace() || {}).zip || '', out = rows.map(function (b) {
       var sub = [num(b.mi) ? miles(b.mi) : '', (b.crop === 'soybeans' ? 'soybeans' : 'corn') + (b.month ? ', ' + b.month : '')].filter(Boolean).join(' \u00b7 ');
       var bw = basisWords(b.basis, b.ref, headLabel(b.crop)) + (b.posted && F && !postedToday(b.posted) ? ' \u00b7 posted ' + F.day(b.posted) : '');
@@ -451,6 +494,16 @@
     tb.innerHTML = out.join('');
     bidsAsOf(rows.concat([d.corn, d.soybeans]));
   }
+  /* audit A4: one message where the list would be; the empty rows and the column heads are hidden but keep their room
+     (the card below does not move) */
+  function nearFail(t) {
+    var tb = doc.querySelector('#hp-near tbody'), msg = $('hp-near-msg'), tab = $('hp-near');
+    if (tab) tab.classList.add('hp-nfail');
+    if (tb && tb.rows.length) { tb.rows[0].innerHTML = '<td colspan="2" class="hp-nf">' + esc(t) + '</td>'; }
+    else if (tb) tb.innerHTML = '<tr><td colspan="2" class="hp-nf">' + esc(t) + '</td></tr>';
+    if (msg) { msg.textContent = t; msg.classList.add('vh'); }   /* said to a screen reader (role=status), shown once in the list */
+  }
+  function nearOk() { var tab = $('hp-near'), msg = $('hp-near-msg'); if (tab) tab.classList.remove('hp-nfail'); if (msg) msg.classList.remove('vh'); }
   /* the headline futures month a crop's basis is quoted against ("Dec '26"), for basisWords */
   function headLabel(crop) { if (!PX) return null; var h = headline(crop === 'soybeans' ? 'beans' : 'corn'); return h && h.label ? String(h.label) : null; }
   function postedToday(iso) { var t = new Date(iso); return !isNaN(t) && ctDay(t).getTime() === ctDay().getTime(); }
@@ -615,6 +668,7 @@
   var SPECS = {};
   var NS = 'http://www.w3.org/2000/svg';
   function chart(box, c) {
+    setTimeout(toolsReady, 0);   /* the caller sets its SPECS entry right after drawing */
     if (!box) return;
     var old = box.querySelector('svg'); if (old) old.parentNode.removeChild(old);
     box.insertAdjacentHTML('afterbegin', c.svg);
@@ -685,7 +739,7 @@
   }
   function act(btn) {
     var name = btn.closest('[data-chart]').getAttribute('data-chart'), how = btn.getAttribute('data-act'), mk = SPECS[name];
-    if (!mk) { btn.textContent = 'Not ready yet'; return; }
+    if (!mk) { toolSay(btn, 'The chart is not drawn yet.'); return; }
     var sp = mk(), file = 'agsist-' + sp.file + '-' + ctDay().toISOString().slice(0, 10) + '.png', url = 'https://agsist.com/?utm_source=share&utm_medium=picture&utm_campaign=home-' + sp.file;
     card(sp).then(function (blob) {
       var f = null; try { f = new File([blob], file, { type: 'image/png' }); } catch (e) {}
@@ -698,7 +752,7 @@
       var a = doc.createElement('a'); a.href = URL.createObjectURL(blob); a.download = file;
       doc.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
       ga('picture_download', { kit: 'home-' + sp.file });
-    }, function () { btn.textContent = 'Picture not ready'; });
+    }, function () { toolSay(btn, 'The picture could not be made. Try again.'); });
   }
 
   /* ---- the price ticker (the strip under the menu): what geo.js does not write ----
@@ -731,6 +785,18 @@
     var live = !!(sp && sp.kind === 'read' && PX.fetched && Date.now() - Date.parse(PX.fetched) <= 45 * 60000);
     tb.textContent = two[0]; tb.appendChild(doc.createElement('br')); tb.appendChild(doc.createTextNode(String(two[1]).replace(/ CT$/, '')));
     if (box) { box.classList.toggle('stale', !live); if (full) box.title = full; }
+  }
+  /* the price file did not load (audit A3/A10): the ticker says so, its empty tiles go, and the baked overnight line
+     (a time-bound read from the bake) is hidden, keeping its room */
+  function pricesFailed() {
+    paintTickerAge(true);
+    var ch = false;
+    Array.prototype.forEach.call(doc.querySelectorAll('.prices-strip [data-sym]'), function (it) {
+      var pe = it.querySelector('.t-price'); if (pe && /\d/.test(pe.textContent)) return;
+      if (!it.classList.contains('t-noq')) { it.classList.add('t-noq'); ch = true; }
+    });
+    Array.prototype.forEach.call(doc.querySelectorAll('.hb-ovn'), function (e) { e.style.visibility = 'hidden'; });
+    if (ch && typeof root.rebuildTickerLoop === 'function') root.rebuildTickerLoop();
   }
   function paintTicker() {
     var A = root.AG && root.AG.px, Q = PX && PX.quotes; if (!A || !Q) return;
@@ -903,7 +969,20 @@
     for (k in none) if (county(none[k].name) === key && cs[none[k].near]) return { fips: k, c: cs[none[k].near], near: none[k].near, nearName: cs[none[k].near].name };
     return null;
   }
-  function msgIn(id, t) { var b = $(id); if (!b) return; var m = b.querySelector('.hp-msg'); if (m) m.textContent = t || ''; }
+  function msgIn(id, t) { var b = $(id); if (!b) return; var m = b.querySelector('.hp-msg'); if (m) m.textContent = t || ''; if (t && CHART_OF[id]) { delete SPECS[CHART_OF[id]]; toolsReady(); } }
+  /* audit A5: Share and Save picture show only beside a chart that is drawn (its SPECS entry); hidden, they keep
+     their room, and with no script they never show (css/home.css .hp-tools) */
+  var CHART_OF = { 'hp-ch-corn': 'corn', 'hp-ch-soy': 'soy', 'hp-rain-ch': 'rain', 'hp-gdu-ch': 'gdu', 'hp-rmap': 'radar', 'hp-land-ch': 'land' };
+  function toolsReady() {
+    Array.prototype.forEach.call(doc.querySelectorAll('.hp-tools[data-chart]'), function (t) { t.classList.toggle('on', !!SPECS[t.getAttribute('data-chart')]); });
+  }
+  /* a short word on a tool, said in its row's status line and gone after a few seconds */
+  function toolSay(btn, t) {
+    var row = btn.closest('.hp-tools'); if (!row) return;
+    var st = row.querySelector('.hp-tst');
+    if (!st) { st = doc.createElement('span'); st.className = 'hp-tst'; st.setAttribute('role', 'status'); row.appendChild(st); }
+    st.textContent = t; clearTimeout(st._t); st._t = setTimeout(function () { st.textContent = ''; }, 4000);
+  }
   function fcFail(t) { var m = $('hp-fc-msg'); if (m) { m.textContent = t; m.style.background = 'var(--surface)'; } }
   function drawForecast(p, seq) {
     if (!root.AgNWS) { fcFail('The forecast did not load. Try again in a few minutes.'); return; }
@@ -1104,9 +1183,7 @@
     var p0 = readPlace();
     if (!hasZip(p0)) return;
     fullPlace().then(function (p) {
-      if (!p || !hasZip(p) || p.lat == null || !/^[A-Z]{2}$/.test(p.state || '')) {
-        ['hp-rain-ch', 'hp-gdu-ch'].forEach(function (id) { msgIn(id, 'This ZIP is not in our place table.'); }); return;
-      }
+      if (!p || !hasZip(p) || p.lat == null || !/^[A-Z]{2}$/.test(p.state || '')) { unknownBand(p && p.zip ? p.zip : ''); return; }
       if (band.zip === p.zip) return;
       band.zip = p.zip; var seq = ++band.seq;
       drawForecast(p, seq);
@@ -1294,7 +1371,7 @@
     Array.prototype.forEach.call(doc.querySelectorAll('[data-hp-loc]'), function (b) { b.addEventListener('click', useLocation); });
     doc.addEventListener('click', function (e) { var b = e.target.closest && e.target.closest('.hp-tools [data-act]'); if (b) act(b); });
     paintPlace(); fullPlace().then(function (p) { paintPlace(p); });
-    if (!hasZip(readPlace())) noloc();
+    if (!hasZip(readPlace())) noloc(); else { checkZip(readPlace().zip); watchBids(); }
     root.addEventListener('agsist-place', function () { paintPlace(); });
     root.addEventListener('storage', function () { paintPlace(); });
     root._AGSIST_GEO_CALLBACKS = root._AGSIST_GEO_CALLBACKS || [];
@@ -1302,7 +1379,7 @@
     root.addEventListener('agsist:bids-top', function (e) { paintTiles(e.detail); paintNear(e.detail); });
     if (root.__agsistBidsTop) { paintTiles(root.__agsistBidsTop); paintNear(root.__agsistBidsTop); }
     Promise.all([getJSON('/data/prices.json').catch(function () { return null; }), getJSON('/data/price-stats.json').catch(function () { return null; })]).then(function (r) {
-      PX = r[0]; RQ = null; STATS = r[1]; if (!PX) paintTickerAge(true); paintHeader(); paintAlertOptions(); drawCharts(); paintMarkets(); try { paintTicker(); setTimeout(paintTicker, 1500); } catch (e) {}
+      PX = r[0]; RQ = null; STATS = r[1]; if (!PX) pricesFailed(); paintHeader(); paintAlertOptions(); drawCharts(); paintMarkets(); try { paintTicker(); setTimeout(paintTicker, 1500); } catch (e) {}
     });
     getJSON('/data/daily.json').then(paintDaily, function () {});
     getJSON('/data/rain-print.json').then(paintRainPrint, function () {});
