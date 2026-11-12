@@ -795,6 +795,7 @@ function monthFloorKey(){
    the first -- and did, in three places on three pages. Where the field is
    present it is used; where it is not, the key is read as before, so this is
    correct both before and after the merge starts publishing it. */
+function seasonOf(b){return window.AgBidPeriod?AgBidPeriod.rowSeason(b,new Date()):null;}
 function bidPeriodPast(b){
   /* ONE-WAY ON PURPOSE. The feed knows things this page cannot -- it read the
      board -- so `true` is taken on trust. `false` is not: it was decided by
@@ -802,6 +803,13 @@ function bidPeriodPast(b){
      week behind the person reading this page, and believing it would let a
      closed month be ranked as the nearest one. Where the feed says false the
      page checks for itself. */
+  /* A HARVEST-YEAR ROW ("Harvest 2026", newcrop-2026) IS A WINDOW, NOT A
+     MONTH. Keyed on October it read as closed from November on, so a Harvest
+     2027 forward became "soonest delivery" (54728, Nov 12). components/
+     bid-period.js holds the one rule: the feed's periodPast wins, a row without
+     it is open through the crop's harvest window (Sep-Dec corn and soybeans). */
+  var ss=seasonOf(b);
+  if(ss)return !ss.open;
   if(b&&b.periodPast===true)return true;
   /* A TWO-MONTH WINDOW HAS GONE WHEN ITS LAST MONTH HAS, not its first.
      "Sep-Oct 26" is still open in October; keyed on September it read as
@@ -821,16 +829,16 @@ function deliveryRank(b){
    classified that label when it built the row, and this page carries the
    answer across as deliveryPeriod. Reading it is not a guess.
      spot            -> this month. It is grain the elevator will take now.
-     newcrop-YYYY    -> that year's October, the first month of its harvest
-                        window, which is what harvestKeys() already means by it.
+     newcrop-YYYY    -> its harvest window (components/bid-period.js): this month
+                        while the window is open, its first month before it.
      YYYY-MM/YYYY-MM -> the first month of the pair, the soonest it can be hauled.
    Anything else still returns '' and still sorts last, which is the only
    honest place for a row whose delivery nobody can read. */
 function periodFallbackKey(b){
   var p=String(b&&b.deliveryPeriod||'');
   if(p==='spot')return monthFloorKey();
-  var nc=/^newcrop-(\d{4})$/.exec(p);
-  if(nc)return nc[1]+'-10';
+  var ss=seasonOf(b);
+  if(ss)return ss.key;
   var pair=/^(\d{4})-(\d{2})\//.exec(p);
   if(pair)return pair[1]+'-'+pair[2];
   return '';
