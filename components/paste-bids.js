@@ -17,12 +17,13 @@
 (function (root) {
   'use strict';
 
-  /* dnilgis/bids sources/newcoop-*.json: id and locationId, Oct 20 2026.
-     The board prints 69 headings; these 66 are the ones bids reads. */
+  /* dnilgis/bids sources/newcoop-*.json: id and locationId, Nov 12 2026.
+     The board prints 69 headings and bids reads all 69 (Cainsville, Morton Mills
+     and Mt. Ayr were added Nov 12; until then the paste listed them as unmatched). */
   var NEWCOOP_BOARDS = [
     ['newcoop-afton', 'Afton'], ['newcoop-algona', 'Algona'], ['newcoop-anita', 'Anita'], ['newcoop-anthon', 'Anthon'],
     ['newcoop-badger', 'Badger'], ['newcoop-barnum', 'Barnum'], ['newcoop-belmond', 'Belmond'], ['newcoop-blairsburg', 'Blairsburg'],
-    ['newcoop-blencoe', 'Blencoe'], ['newcoop-bode', 'Bode'], ['newcoop-britt', 'Britt'], ['newcoop-chariton', 'Chariton'],
+    ['newcoop-blencoe', 'Blencoe'], ['newcoop-bode', 'Bode'], ['newcoop-britt', 'Britt'], ['newcoop-cainsville', 'Cainsville'], ['newcoop-chariton', 'Chariton'],
     ['newcoop-churdan', 'Churdan'], ['newcoop-clare', 'Clare'], ['newcoop-clearfield', 'Clearfield'], ['newcoop-cooper', 'Cooper'],
     ['newcoop-correctionville', 'Correctionville'], ['newcoop-creston1', 'Creston 1'], ['newcoop-creston2', 'Creston 2'],
     ['newcoop-daviscity', 'Davis City'], ['newcoop-dickens', 'Dickens'], ['newcoop-dows', 'Dows'], ['newcoop-duncombe', 'Duncombe'],
@@ -31,7 +32,8 @@
     ['newcoop-humboldt', 'Humboldt'], ['newcoop-humeston', 'Humeston'], ['newcoop-klemme', 'Klemme'], ['newcoop-knierim', 'Knierim'],
     ['newcoop-knoke', 'Knoke'], ['newcoop-lamoni', 'Lamoni'], ['newcoop-lanesboro', 'Lanesboro'], ['newcoop-langdon', 'Langdon'],
     ['newcoop-lanyon', 'Lanyon'], ['newcoop-lidderdale', 'Lidderdale'], ['newcoop-lohrville', 'Lohrville'], ['newcoop-luverne', 'LuVerne'],
-    ['newcoop-mallard', 'Mallard'], ['newcoop-mapleton', 'Mapleton'], ['newcoop-milford', 'Milford'], ['newcoop-onawa', 'Onawa'],
+    ['newcoop-mallard', 'Mallard'], ['newcoop-mapleton', 'Mapleton'], ['newcoop-milford', 'Milford'], ['newcoop-mortonmills', 'Morton Mills'], ['newcoop-mtayr', 'Mt. Ayr'],
+    ['newcoop-onawa', 'Onawa'],
     ['newcoop-osceola', 'Osceola'], ['newcoop-otho', 'Otho'], ['newcoop-palmer', 'Palmer'], ['newcoop-pierson', 'Pierson'],
     ['newcoop-pomeroy', 'Pomeroy'], ['newcoop-rands', 'Rands'], ['newcoop-redoak', 'Red Oak'], ['newcoop-roelyn', 'Roelyn'],
     ['newcoop-rowan', 'Rowan'], ['newcoop-sloan', 'Sloan'], ['newcoop-superior', 'Superior'], ['newcoop-ute', 'Ute'],
@@ -211,7 +213,7 @@
 
   /* Whether a read is clean enough to save with no one looking: every check
      read() makes passed, and every board we have for the site came through
-     with rows (NEW Cooperative: 66 of 66). Anything less waits for Save. */
+     with rows (NEW Cooperative: 69 of 69). Anything less waits for Save. */
   function clean(site, r) {
     var boards = ((SITES[site] || {}).boards || []).length;
     if (!r || r.error) return { ok: false, why: (r && r.error) || 'Nothing was read.' };
