@@ -14,7 +14,7 @@
    window.AgRainFind = { match, norm } (node: module.exports, for the tests). */
 (function (root) {
   'use strict';
-  var MAX = 40, SHOW = 5;   // match keeps up to MAX; the list shows SHOW rows and says how many more
+  var MAX = 40;   // match keeps up to MAX; the list shows SHOW rows and says how many more
   var STNAME = { AL: 'alabama', AK: 'alaska', AZ: 'arizona', AR: 'arkansas', CA: 'california', CO: 'colorado', CT: 'connecticut',
     DE: 'delaware', FL: 'florida', GA: 'georgia', HI: 'hawaii', ID: 'idaho', IL: 'illinois', IN: 'indiana', IA: 'iowa',
     KS: 'kansas', KY: 'kentucky', LA: 'louisiana', ME: 'maine', MD: 'maryland', MA: 'massachusetts', MI: 'michigan',
@@ -101,18 +101,19 @@
     input.setAttribute('aria-controls', lid); input.setAttribute('aria-expanded', 'false');
 
     function say(t) { msg.textContent = t || ''; }
-    function shown() { return hits.slice(0, SHOW); }
+    function show_n() { return (root.innerWidth || 1000) < 600 ? 4 : 5; }
+    function shown() { return hits.slice(0, show_n()); }
     function close() { list.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); act = -1; }
     function show() {
       if (!hits.length) { close(); return; }
-      var more = hits.length - SHOW, q = norm(input.value), sq = splitState(input.value);
-      var h0 = hits[0], tip = (hits.length === 1 && h0.via) ? 'Opens ' + h0.name + '\u2019s rain page, the county ' + h0.via.split(',')[0] + ' sits in.' : 'Tap a county to open its rain page.';
+      var SHOW = show_n(), more = hits.length - SHOW, q = norm(input.value), sq = splitState(input.value);
+      var anyNear = shown().some(function (x) { return x.near; }), h0 = hits[0], tip = (hits.length === 1 && h0.via) ? 'Opens ' + h0.name + '\u2019s rain page, the county ' + h0.via.split(',')[0] + ' sits in.' : 'Tap a county to open its rain page.' + (anyNear ? ' A county with no full-year weather station opens the nearest one that has it.' : '');
       list.innerHTML = shown().map(function (h, i) {
         return '<li role="option" id="' + lid + '-' + i + '" aria-selected="' + (i === act) + '" data-i="' + i + '">' + esc(h.name) + ', ' + h.st
           + (h.via ? ' <small>' + esc(h.via) + '</small>' : '')
-          + (h.near ? ' <small>No station with a full year. Opens ' + esc(h.near) + ', the nearest.</small>' : '') + '</li>';
+          + (h.near ? ' <small>no full-year station; opens ' + esc(h.near) + '</small>' : '') + '</li>';
       }).join('') + '<li role="presentation" class="rc-find-more">' + tip + (more > 0 ? ' <span class="rc-nw">' + more + ' more:</span> '
-        + (sq.st ? 'type more of the name.' : 'add the state, e.g. ' + esc(q) + ' ' + hits[0].st.toLowerCase() + '.') : '') + '</li>';
+        + (sq.st ? 'type more of the name.' : 'add the state, e.g. ' + esc(q) + ' ' + (hits.filter(function (x) { return x.st !== localSt(); })[0] || hits[0]).st.toLowerCase() + '.') : '') + '</li>';
       list.hidden = false; input.setAttribute('aria-expanded', 'true');
       if (act >= 0) input.setAttribute('aria-activedescendant', lid + '-' + act); else input.removeAttribute('aria-activedescendant');
     }
