@@ -130,7 +130,7 @@
     labs.push([ds[ds.length - 1], md(ds[ds.length - 1]), 'end']);
     labs.forEach(function (L) {
       var x = X(L[0]);
-      if (L[2] === 'middle' && (x - X(ds[0]) < 52 || X(ds[ds.length - 1]) - x < 50)) return;
+      if (L[2] === 'middle' && (x - X(ds[0]) < Math.max(52, fs * 4.2) || X(ds[ds.length - 1]) - x < Math.max(50, fs * 6.4))) return;   /* no month label crowding the end date at phone sizes */
       o2.push('<line class="ch-tick"' + attr(pal, 'base') + ' x1="' + x.toFixed(1) + '" x2="' + x.toFixed(1) + '" y1="' + yb + '" y2="' + (yb + 4) + '"/>');
       o2.push('<text class="ch-ax"' + attr(pal, 'ax') + ' x="' + x.toFixed(1) + '" y="' + (yb + 17) + '" text-anchor="' + L[2] + '">' + L[1] + '</text>');
     });
