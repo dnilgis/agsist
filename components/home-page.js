@@ -1149,7 +1149,10 @@
     txt('hp-land-src', 'Each dot is one sale; bigger dots are more acres. Shaded: the middle half of sales.'
       + (ch.off ? ' ' + ch.off + ' sale' + (ch.off === 1 ? '' : 's') + ' outside $' + comma(ch.bottom) + ' to $' + comma(ch.top) + ' ' + (ch.off === 1 ? 'is' : 'are') + ' off the chart.' : '')
       + ' ' + src + ' transfer records, ' + MON[from.getUTCMonth()] + ' ' + from.getUTCFullYear() + ' to ' + MON[to.getUTCMonth()] + ' ' + to.getUTCFullYear() + '. No names.'
-      + (words.rule ? ' How the sale above is picked: ' + words.rule : ''));
+      );
+    /* the lead rule (audit Q3), folded so the card keeps its height: the cap that leaves higher sales out is in it */
+    var ls = $('hp-land-src');
+    if (ls && words.rule) { var dt = doc.createElement('details'), sm = doc.createElement('summary'), rp = doc.createElement('span'); dt.className = 'hp-lrule'; sm.textContent = 'How this sale is picked'; rp.textContent = ' ' + words.rule; dt.appendChild(sm); dt.appendChild(rp); ls.appendChild(doc.createTextNode(' ')); ls.appendChild(dt); }
     var all = $('hp-land-all'); if (all && NAMES[st]) all.setAttribute('href', '/land-sales/' + slug(NAMES[st]) + '/' + slug(cn));
     SPECS.land = function () { return { head: head + (words.h ? '' : ', ' + st), sub: (words.h ? cn + ': e' : 'E') + 'very bare farmland sale with acres and price over 24 months, price per acre; line: the county median; shaded: the middle half',
       big: function (w, h) { return landSvg(opts(w, h, 16)).svg; }, source: src + ' transfer records, ' + MON[from.getUTCMonth()] + ' ' + from.getUTCFullYear() + ' to ' + MON[to.getUTCMonth()] + ' ' + to.getUTCFullYear() + '. No names.', file: 'farm-sales', date: to }; };
@@ -1199,7 +1202,7 @@
       if (!drawLand(F, L, st, ring, w)) throw new Error('few');
       var all = $('hp-land-all'); if (all && r.url) all.setAttribute('href', r.url);
     }).catch(function () {
-      txt('hp-land-h', w.h); txt('hp-land-p', w.p); if (w.rule) txt('hp-land-src', 'How this sale is picked: ' + w.rule); msgIn('hp-land-ch', 'The county chart did not load.');
+      txt('hp-land-h', w.h); txt('hp-land-p', w.p);  msgIn('hp-land-ch', 'The county chart did not load.');
     });
   }
 
@@ -1270,7 +1273,9 @@
     var out = base + ', ' + lab, dead = S.deadFrom ? S.deadFrom(q.ticker) : null, dd = utc(dead);
     if (dd && (dd - today) / 864e5 <= 21 && dd > today) {
       var nx = lab.replace(/'(\d\d)$/, function (m0, y) { return "'" + ('0' + ((+y + 1) % 100)).slice(-2); });
-      out += ' (rolls to ' + nx + ' after ' + md(addDays(dd, -1)) + ')';
+      /* its last trading day: the trading day before the first dead day (ZSX26: dead from Nov 15, last trade Fri Nov 13) */
+      var lt = addDays(dd, -1), g = 0; while (S.isTradingDay && !S.isTradingDay(lt.toISOString().slice(0, 10)) && g++ < 6) lt = addDays(lt, -1);
+      out += ' (rolls to ' + nx + ' after ' + md(lt) + ')';
     }
     return out;
   }
