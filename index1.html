@@ -1354,7 +1354,7 @@ try {
       var symbol=sym.value, direction=dir.value;
       var targetCents=Math.round(dollars*100);
       var label=((window.__r7paLabel&&window.__r7paLabel(symbol))||PA_LABELS[symbol]||symbol)+' '+(direction==='above'?'above':'below')+' $'+dollars.toFixed(2);
-      var pid=paId(symbol,direction,targetCents);
+      var pid=paId((window.__r7paKey&&window.__r7paKey(symbol))||symbol,direction,targetCents);
       go.disabled=true; go.textContent='Sending…'; status.textContent=''; status.style.color='var(--text-muted)';
       fetch(PA_WORKER+'/price-watch-subscribe',{
         method:'POST',
@@ -1637,7 +1637,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
     <a href="/privacy" style="color:var(--gold);text-decoration:underline;">Privacy Policy</a>
     <details class="hp-terms" style="flex-basis:100%"><summary style="cursor:pointer;color:var(--text-dim)">Sources and terms</summary>
       <p style="margin:.4rem 0 0">Prices from Yahoo Finance, delayed 10 to 25 min &middot; Cash bids via the AGSIST elevator network &middot; Weather: National Weather Service forecast grid, PRISM daily history (RCC-ACIS), soil at the nearest USCRN, SCAN, Iowa State or Wisconet station &middot; USDA NASS (This product uses the NASS API but is not endorsed or certified by NASS.) &middot; NOAA CPC</p>
-      <p style="margin:.4rem 0 0" id="terms-method">Farmland sale at the top: the highest price per acre among bare farmland sales recorded in the state in its newest 30 days on file, inside the county&rsquo;s usual range; no buyer or seller names. Export sales: USDA reports metric tons; shown in bushels (39.368 a ton for corn, 36.744 for soybeans and wheat); commitments are shipments so far plus sales not yet shipped. Funds: the CFTC Commitments of Traders report, managed money (hedge funds and commodity trading advisers), net futures positions as of Tuesday, in contracts; not a headcount of who is long or short, and not a trading signal. The &ldquo;Since&rdquo; price line compares the front-month price now with its close on the report&rsquo;s Tuesday, so a contract roll in between is inside the number. <span id="nc-method">Yield nowcast: built from the weekly USDA crop ratings, state by state, weighted by acres; the 80% band means that in 8 of every 10 of <span id="nc-years">12</span> past years, each estimated from earlier years only, the estimate at the same week missed USDA&rsquo;s final yield by no more than this. The band gets narrower as the season goes on. It is withheld once the ratings are two weeks old.</span> WASDE grades compare each USDA figure with the average of a published trade survey.</p>
+      <p style="margin:.4rem 0 0" id="terms-method">Farmland sale at the top: the highest price per acre among bare farmland sales recorded in the state in its newest 30 days on file, inside the county&rsquo;s usual range and at no more than twice the state&rsquo;s middle price, so a higher sale can be left out; no buyer or seller names. Export sales: USDA reports metric tons; shown in bushels (39.368 a ton for corn, 36.744 for soybeans and wheat); commitments are shipments so far plus sales not yet shipped. Funds: the CFTC Commitments of Traders report, managed money (hedge funds and commodity trading advisers), net futures positions as of Tuesday, in contracts; not a headcount of who is long or short, and not a trading signal. The &ldquo;Since&rdquo; price line compares the front-month price now with its close on the report&rsquo;s Tuesday, so a contract roll in between is inside the number. <span id="nc-method">Yield nowcast: built from the weekly USDA crop ratings, state by state, weighted by acres; the 80% band means that in 8 of every 10 of <span id="nc-years">12</span> past years, each estimated from earlier years only, the estimate at the same week missed USDA&rsquo;s final yield by no more than this. The band gets narrower as the season goes on. It is withheld once the ratings are two weeks old.</span> WASDE grades compare each USDA figure with the average of a published trade survey.</p>
       <p style="margin:.4rem 0 0">Not financial or trading advice. Verify all prices with your elevator or broker before marketing decisions.</p>
     </details>
   </div>
@@ -1679,7 +1679,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
   </script>
 <script src="/components/loader.js?v=19" defer></script>
 <script src="/components/nws.js?v=1" defer></script>
-<script src="/components/geo.js?v=39" defer></script>
+<script src="/components/geo.js?v=40" defer></script>
 <script src="/components/elev-names.js?v=2" defer></script>
 <script src="/components/bids-fallback.js?v=1" defer></script>
 <script src="/components/bids-homepage.js?v=51" defer></script>
@@ -1689,8 +1689,8 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/home-yield.js?v=14" defer></script>
 <script src="/components/report-live.js?v=1" defer></script>
 <script src="/components/cot-glance.js?v=6"></script>
-<script src="/components/home.js?v=27"></script>
-<script src="/components/home-land.js?v=2" defer></script>
+<script src="/components/home.js?v=29"></script>
+<script src="/components/home-land.js?v=4" defer></script>
 <script src="/components/happening.js?v=5" defer></script>
 <script src="/components/home-planting.js?v=8" defer></script>
 <script src="/components/home-season.js?v=13" defer></script>

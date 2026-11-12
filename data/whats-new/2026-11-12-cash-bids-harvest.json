@@ -1,0 +1,8 @@
+{
+ "id": "2026-11-12-cash-bids-harvest",
+ "date": "2026-11-12",
+ "title": "Cash bids count harvest bids that are still open",
+ "line": "A Harvest 2026 bid now counts as a current bid through December, so a 2027 contract is no longer shown as your best or soonest price.",
+ "link": "/cash-bids",
+ "rank": 3
+}
