@@ -227,21 +227,35 @@
       var first = pts[k], ch = last.v - first.v, cw = conWords(last.con, crop), ref = fullMon(last.dm) + ' delivery' + (cw ? ', against ' + cw : '');
       if (first !== last) {
         head = Crop + ' basis at ' + l.long + (ch ? (ch > 0 ? ' firmed ' : ' weakened ') + Math.abs(ch) + '¢' : ' held at ' + basisText(last.v)) + ' since ' + dayText(first.d);
-        take = basisText(last.v) + ' on ' + dayText(to) + ', from ' + basisText(first.v) + '. ' + ref + '.' + (forCard ? ' 1 elevator shown.' : ' Counted on one delivery month and one contract.');
+        take = basisText(last.v) + ' on ' + dayText(to) + ', from ' + basisText(first.v) + '. ' + ref + '.' + (forCard ? ' 1\u00a0elevator\u00a0shown.' : ' Counted on one delivery month and one contract.');
       } else {
         head = Crop + ' basis at ' + l.long + ': ' + basisText(last.v);
-        take = forCard ? ref + '. Unchanged since ' + dayText(last.d) + '. 1 elevator shown.' : ref + '. Unchanged since ' + dayText(last.d) + '. A basis holds until the elevator changes it.';
+        take = forCard ? ref + '. Unchanged since ' + dayText(last.d) + '. 1\u00a0elevator\u00a0shown.' : ref + '. Unchanged since ' + dayText(last.d) + '. A basis holds until the elevator changes it.';
       }
     } else {
       held.sort(function (a, b) { return b.p.v - a.p.v; });
       var best = held[0], lo = held[held.length - 1].p.v, ties = held.filter(function (x) { return x.p.v === best.p.v; }).length;
       head = 'Best ' + crop + ' basis' + (place ? ' near ' + place : '') + ': ' + basisText(best.p.v) + ' at ' + (ties > 1 ? ties + ' elevators' : best.l.long);
-      var shown = c.hidden ? c.lines.length + ' of ' + c.all.length + ' elevators shown.' + (forCard ? '' : ' Every one is in the tables below.') : '';
+      var shown = c.lines.length + '\u00a0of\u00a0' + c.all.length + ' elevators\u00a0shown.' + (c.hidden && !forCard ? ' Every one is in the tables below.' : '');
+      var cons = {}; held.forEach(function (x) { if (x.p.con) cons[x.p.con] = 1; }); cons = Object.keys(cons);
+      var cw = cons.length === 1 ? conWords(cons[0], crop) : '';
       take = (best.p.v === lo ? (held.length === 2 ? 'Both' : 'All ' + held.length) + ' elevators at ' + basisText(lo) : held.length + ' elevators from ' + basisText(lo) + ' to ' + basisText(best.p.v)) +
-        ' on ' + dayText(to) + (forCard ? '.' : ', each for its nearest delivery month.') + (shown ? ' ' + shown : '');
+        ' on ' + dayText(to) + ', each for its nearest delivery month' + (cw ? ', against ' + cw : '') + '.' + ' ' + shown;
     }
     return { head: head, take: take, summary: head + '. ' + take };
   }
+  /* the words under the chart: only what is drawn in it */
+  function footOf(c) {
+    var gaps = c.lines.some(function (l) { return l.line.points.some(function (p) { return p.b; }); }), marks = {}, first = '', ties = false, late = [];
+    c.lines.forEach(function (l) { l.line.points.forEach(function (p) { if (p.m) marks[p.d] = 1; }); if (!first || l.line.points[0].d < first) first = l.line.points[0].d; });
+    c.lines.forEach(function (l) { if (l.line.points[0].d > dayAfter(first, 3)) late.push(l.name + ' ' + dayText(l.line.points[0].d)); });
+    var days = {}; c.lines.forEach(function (l) { l.line.points.forEach(function (p) { days[p.d] = 1; }); });
+    Object.keys(days).concat(c.end).forEach(function (d) { var by = {}; c.lines.forEach(function (l) { var p = heldOn(l, d); if (p) by[p.v] = (by[p.v] || 0) + 1; }); Object.keys(by).forEach(function (v) { if (by[v] > 1) ties = true; }); });
+    var n = Object.keys(marks).length;
+    return [gaps ? 'Thin dashed line: no bid posted.' : '', n ? (n === 1 ? 'Dotted vertical line: ' : 'Dotted vertical lines: ') + 'the delivery month or futures contract changed.' : '',
+      ties ? 'Lines at the same value are drawn side by side.' : '', late.length ? 'First bid logged: ' + late.join('; ') + '.' : ''].filter(Boolean).join(' ');
+  }
+  function dayAfter(d, n) { return new Date(Date.parse(d) + n * 864e5).toISOString().slice(0, 10); }
   function config(c, town, els, url, since) {
     var slug = String(town || 'town').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''), place = c.place || town || '', Crop = ADJ[c.crop].replace(/^./, function (x) { return x.toUpperCase(); });
     var all = since ? 'Since ' + dayText(since) : 'All logged days', byKey = {};
@@ -253,7 +267,7 @@
       markLabel: function (p) { return p.ml || ''; },
       valueAt: function (key, d) { var p = byKey[key] && heldOn(byKey[key], d); return p ? basisText(p.v) : ''; },
       keyNote: '· touch the chart for another day',
-      foot: [c.lines.some(function (l) { return l.line.points.some(function (p) { return p.b; }); }) ? 'Fine dots along a line: no bid posted.' : '', c.lines.some(function (l) { return l.line.points.some(function (p) { return p.m; }); }) ? 'Grey vertical line: the delivery month or futures contract changed.' : ''].filter(Boolean).join(' '),
+      foot: footOf(c),
       ranges: [{ label: '2 weeks', days: 14, aria: 'two weeks' }, { label: '1 month', days: 31, aria: 'one month' }, { label: all, days: 0, aria: 'every day logged' }],
       range: all, height: { phone: 250, wide: 300 },
       story: function (v, forCard) { return story(c, town, v.from, v.to, forCard); },
@@ -308,7 +322,7 @@
     var lab = labels(boards, town, st), none = boards.map(function (b, i) { return lab[i]; }).filter(function (l) { return !got[l]; });
     var since = from ? fullDay(from) : (first ? dayText(first) : '');
     var intro = '<p class="cbt-sub">Basis for the nearest delivery month on each date' + (since ? ', since ' + since : '') +
-      '. Only the days a basis changed are logged: it held flat between dots. Fine dots along a line are the days no open delivery month had a logged basis. A grey vertical line is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price. Every elevator for a crop is in one chart, on one scale. A bid far off the others for a few days is drawn in a break under the chart and named, so the rest stay readable.</p>';
+      '. Only the days a basis changed are logged: it held flat between dots. A thin dashed stretch is the days no open delivery month had a logged basis. A dotted vertical line is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price. Every elevator for a crop is in one chart, on one scale. Each name is the company, then the place it posts for. A bid far off the others for a few days is drawn in a break under the chart and named, so the rest stay readable.</p>';
     var html = intro + cs.map(function (c, i) { return blockOf(c, town, i); }).join('');
     if (none.length) html += '<p class="cbt-sub">No basis change logged' + (since ? ' since ' + since : '') + ' for ' + esc(none.join(', ')) + '.</p>';
     body.innerHTML = html;

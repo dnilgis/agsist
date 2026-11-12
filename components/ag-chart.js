@@ -218,7 +218,7 @@
       Object.keys(by).forEach(function (v) { if (by[v].length > 1) by[v].forEach(function (k) { tied[k] = 1; }); });
     });
     var keys = main.map(function (s) { return s.key; }).filter(function (k) { return tied[k]; }), off = {};
-    keys.forEach(function (k, i) { off[k] = (i - (keys.length - 1) / 2) * 3.5; });
+    keys.forEach(function (k, i) { off[k] = (i - (keys.length - 1) / 2) * 1.8; });
     return off;
   }
   /* the order the names are listed in: the value now, best first, then the name; hidden lines last */
@@ -342,7 +342,7 @@
   }
   /* the names in the right gutter: wrapped, in value order, each pulled apart from the next, with the y of its line's end */
   function legendLayout(view, g, runs, off, hide, fmt, opt, fs) {
-    var order = listOrder(view, hide), card = !!opt.card, x0 = g.right + (card ? 26 : 22), maxW = g.W - x0 - 2;
+    var order = listOrder(view, hide), card = !!opt.card, x0 = g.right + (card ? 26 : 22), maxW = g.W - x0 - 30;
     var ends = {}; runs.forEach(function (r) { if (!r.gap && !r.s.faint) { var p = r.pts[r.pts.length - 1]; ends[r.s.key] = p; } });
     var fl = card ? [18, 17, 16, 15] : [fs], items, lh, top = g.T, bot = g.base;
     for (var f = 0; f < fl.length; f++) {
@@ -407,14 +407,14 @@
       var ms = fs - 1, mw = function (t) { return widthOf(t, ms) + 8; }, merged = [];
       marks.forEach(function (m) {
         var last = merged[merged.length - 1];
-        if (last && (m.x - last.x < mw(last.t) + 6 || Math.abs(m.x - last.x) < 30)) { last.n = (last.n || 1) + 1; last.t = (cfg.markMany || 'reference changed') + ' (' + last.n + ' dates)'; } else merged.push({ d: m.d, t: m.t, x: m.x });
+        if (last && (m.x - last.x < mw(last.t) + 6 || Math.abs(m.x - last.x) < 30)) { last.ds = last.ds.concat(m.d); last.t = (cfg.markMany || 'Reference changed') + ': ' + last.ds.map(function (d) { return dayOf(cfg, d); }).join(', '); } else merged.push({ d: m.d, t: m.t, x: m.x, ds: [m.d] });
       });
       var prev = -1e9;
       merged.forEach(function (m) {
-        var w = mw(m.t), right = m.x + 4 + w > g.right, x = right ? m.x - 4 : m.x + 4;
-        if (!right && x < prev + 6) return;
-        prev = right ? x : x + w;
-        o.push(txt(x, fs * 2.5, m.t, 'font-size:' + ms + 'px;font-family:' + FONT + ';fill:' + P.dim + ';' + halo, right ? 'end' : 'start', 'agc-mkl'));
+        var w = mw(m.t), x = Math.max(g.L, Math.min(m.x + 4, g.right - w + 8));
+        if (x < prev + 6) return;
+        prev = x + w;
+        o.push(txt(x, fs * 2.5, m.t, 'font-size:' + ms + 'px;font-family:' + FONT + ';fill:' + P.dim + ';' + halo, 'start', 'agc-mkl'));
       });
     }
     // dates under the axis: evenly spread, each on the nearest report day (any line's; a held line's end), with room
@@ -428,7 +428,11 @@
       if (!dts.length || (dd > dts[dts.length - 1] && g.x(dd) - g.x(dts[dts.length - 1]) >= fs * (i === want - 1 ? 6.6 : 4.4))) dts.push(dd);
       else if (i === want - 1 && dts.length > 1 && dd > dts[dts.length - 1]) dts[dts.length - 1] = dd;   // the latest day always closes the axis
     }
-    dts.forEach(function (d, j) { var x = g.x(d); o.push(txt(x, H - fs * 0.5, dayOf(cfg, d), f + 'fill:' + P.dim, j === dts.length - 1 ? 'end' : (x - g.L < fs * 2 ? 'start' : 'middle'))); });
+    dts.forEach(function (d, j) {
+      var x = g.x(d), last = j === dts.length - 1 && d === view.to;
+      if (cfg.weekly) o.push('<line x1="' + f1(x) + '" x2="' + f1(x) + '" y1="' + f1(g.base) + '" y2="' + f1(g.base + 4) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
+      o.push(txt(x, H - fs * 0.5, dayOf(cfg, d), f + 'fill:' + P.dim, cfg.weekly ? (last && x + widthOf(dayOf(cfg, d), fs) / 2 > g.right + 4 ? 'end' : 'middle') : j === dts.length - 1 ? 'end' : (x - g.L < fs * 2 ? 'start' : 'middle')));
+    });
     // the top row, right: a faint line's key, or the note that it is not held yet
     var kx = g.right;
     view.series.filter(function (s) { return s.faint && (s.note || s.pending); }).forEach(function (s) {
@@ -469,7 +473,7 @@
     lay.runs.filter(function (r) { return r.s.faint; }).concat(lay.runs.filter(function (r) { return !r.s.faint; })).forEach(function (r) {
       if (r.pts.length < 2) return;
       var st = r.s.faint ? 'stroke:' + P.mut + ';stroke-width:' + Math.max(1.5, fs / 8) + ';stroke-dasharray:' + fs / 3 + ' ' + fs / 3
-        : r.gap ? 'stroke:' + col(r.s) + ';stroke-width:' + Math.max(1.5, lw * 0.75) + ';stroke-opacity:' + (cfg.legend ? '.75;stroke-linecap:round;stroke-dasharray:0.1 ' + (fs / 2.4).toFixed(1) : '.5;stroke-dasharray:' + fs / 4 + ' ' + fs / 3)
+        : r.gap ? 'stroke:' + col(r.s) + ';stroke-width:' + Math.max(1.5, lw * 0.75) + ';stroke-opacity:' + (cfg.legend ? '.7;stroke-width:1;stroke-dasharray:' + (fs / 2.2).toFixed(1) + ' ' + (fs / 3.2).toFixed(1) : '.5;stroke-dasharray:' + fs / 4 + ' ' + fs / 3)
           : 'stroke:' + col(r.s) + ';stroke-width:' + lw + ';stroke-linejoin:round;stroke-linecap:' + (r.s.dash ? 'butt' : 'round') + (r.s.dash ? ';stroke-dasharray:' + dashOf(r.s.dash, fs) : '');
       o.push('<path class="agc-ln' + (r.gap ? ' agc-gap' : '') + '" d="' + poly(r.pts) + '" style="fill:none;' + st + '"/>');
       if (r.note && cfg.gapNote) {   // the words under a dashed stretch, when they fit under it
@@ -493,7 +497,8 @@
       var fl = 'font-size:' + lf + 'px;font-family:' + FONT + ';font-weight:700;fill:' + c + (off ? ';opacity:.5;text-decoration:line-through' : '');
       o.push('<g class="agc-tog agc-leg"' + (tog ? ' data-k="' + esc(it.s.key) + '" tabindex="0" role="button" aria-pressed="' + !off + '" aria-label="' + (off ? 'Show ' : 'Hide ') + esc(it.lines.join(' ')) + '"' : '') + '>' + leader +
         (tog ? '<rect x="' + f1(b.x0) + '" y="' + f1(b.y0) + '" width="' + f1(b.x1 - b.x0) + '" height="' + f1(b.y1 - b.y0) + '" fill="transparent"/>' : '') +
-        it.lines.map(function (l, i) { return txt(it.x, it.y + lf * 0.98 + i * lh, l, fl, 'start'); }).join('') + '</g>');
+        '<line x1="' + f1(it.x) + '" x2="' + f1(it.x + 20) + '" y1="' + f1(it.y + lh * 0.62) + '" y2="' + f1(it.y + lh * 0.62) + '" style="stroke:' + c + ';stroke-width:2.2' + (it.s.dash ? ';stroke-dasharray:' + dashOf(it.s.dash, 13) : '') + '"/><circle cx="' + f1(it.x + 22) + '" cy="' + f1(it.y + lh * 0.62) + '" r="3" style="fill:' + c + '"/>' +
+        it.lines.map(function (l, i) { return txt(it.x + 30, it.y + lf * 0.98 + i * lh, l, fl, 'start'); }).join('') + '</g>');
     });
     lay.labels.forEach(function (L) {
       if (L.kind === 'band') { o.push(txt(L.x, L.y, L.text, (L.bold ? fb : f) + halo + 'fill:' + P.ink, L.anchor, 'agc-bl')); return; }

@@ -115,7 +115,7 @@
   function siteOf(site, town, st) {
     var t = String(site || '').replace(/\s+-\s+/g, ' ').replace(/\s+/g, ' ').trim();
     if (/^[a-z]{1,4}(?:-[a-z]{1,4})+$/i.test(t)) return 'delivery code ' + t;
-    t = niceCase(t);
+    t = niceCase(t).replace(/\s*\(([^)]*)\)/g, function (m, w) { return ' ' + (/^beans$/i.test(w.trim()) ? 'soybeans' : w.trim().toLowerCase()); }).trim();
     var ini = String(town || '').split(/\s+/).filter(Boolean).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
     var words = t.split(' ');
     words = words.map(function (w, i) {
@@ -134,7 +134,9 @@
     var c = displayName(company).replace(/[\s,]+(?:inc|llc|ltd|corp)\.?$/i, '').trim(), tk = placeKey(town);
     c = niceCase(c).replace(/\bAdm\b/g, 'ADM').replace(/\bPoet\b/g, 'POET');
     var sites = (places || []).filter(function (p) { return placeKey(p) !== tk; });
-    return sites.length ? c + ', ' + sites.map(function (x) { return siteOf(x, town, String(st || '').toUpperCase()); }).join(' and ') : c;
+    c = c.replace(/\bCoop(?:erative)?\b/g, 'Co-op');
+    var out = sites.map(function (x) { return siteOf(x, town, String(st || '').toUpperCase()).replace(/\bCoop(?:erative)?\b/g, 'Co-op'); }).join(' and ');
+    return out ? c + ', ' + out : (town ? c + ', ' + town : c);   // always the company, then the place it posts for
   }
   var api = { setNames: setNames, archiveClean: archiveClean, displayName: displayName, cleanPlace: cleanPlace,
     basisName: basisName, facKey: facKey, mergeKey: mergeKey, nameKey: nameKey, tradeKey: tradeKey, niceCase: niceCase, boardLabel: boardLabel, states: STATES };
