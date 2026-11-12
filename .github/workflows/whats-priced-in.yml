@@ -91,7 +91,7 @@ jobs:
             cp /tmp/wpi.json "$FILE"
             python scripts/prerender_wpi_scorecard.py || true
             python scripts/bake_seo.py --page usda-calendar.html || true
-            git add "$FILE" cot.html index.html usda-calendar.html
+            git add "$FILE" cot.html index.html index1.html usda-calendar.html
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -m "Update what's priced in $(date -u +%Y-%m-%dT%H:%M:%SZ)"
             if git push origin "HEAD:$BR"; then echo "Pushed on attempt $i."; exit 0; fi

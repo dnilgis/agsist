@@ -490,7 +490,7 @@ jobs:
         run: |
           git config user.name "AGSIST Bot"
           git config user.email "bot@agsist.com"
-          git add data/daily.json data/daily-edge.json data/daily-archive/ daily/ daily.html feed.xml sitemap.xml sitemap-news.xml index.html usda-calendar.html cot.html data/prices.json
+          git add data/daily.json data/daily-edge.json data/daily-archive/ daily/ daily.html feed.xml sitemap.xml sitemap-news.xml index.html index1.html usda-calendar.html cot.html data/prices.json
           git diff --staged --quiet || git commit -m "AGSIST Daily — $(date -u +%Y-%m-%d)"
           for i in 1 2 3; do
             git rebase --abort 2>/dev/null || true
