@@ -68,8 +68,17 @@
 .rc-pr { display: flex; gap: .5rem; margin-top: .2rem; max-width: 30rem; }
 .rc-pick select, .rc-pick button { font: inherit; font-size: 1rem; box-sizing: border-box; height: 2.75rem; border-radius: var(--r-md, 8px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .5rem; }
 .rc-pick select { flex: 1; min-width: 0; }
+/* Find a county (rain-find.js, Nov 12 2026): the matches sit over the page, the message line keeps its room */
+.rc-find { position: relative; padding-bottom: 1.3rem; }
+.rc-pick input { font: inherit; font-size: 1rem; box-sizing: border-box; height: 2.75rem; border-radius: var(--r-md, 8px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .6rem; flex: 1; min-width: 0; }
+.rc-find-l { position: absolute; left: 0; right: 0; max-width: 30rem; z-index: 30; margin: .2rem 0 0; padding: .25rem 0; list-style: none; background: var(--surface); border: 1px solid var(--border-g, var(--border)); border-radius: var(--r-md, 8px); box-shadow: 0 8px 24px rgba(0,0,0,.25); max-height: 20rem; overflow-y: auto; }
+.rc-find-l[hidden] { display: none; }
+.rc-find-l li { padding: .6rem .75rem; cursor: pointer; min-height: 44px; box-sizing: border-box; }
+.rc-find-l li[aria-selected="true"], .rc-find-l li:hover { background: var(--bg); color: var(--brand); }
+.rc-find-l small { display: block; color: var(--text-muted); font-size: var(--fs-xs); }
+.rc-find-m { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; line-height: 1.3rem; font-size: var(--fs-xs); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .rc-pick button { font-weight: 700; cursor: pointer; color: var(--brand); border-color: var(--brand); white-space: nowrap; padding: 0 1rem; }
-.rc-pick select:focus-visible, .rc-pick button:focus-visible, .rc-all summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
+.rc-pick input:focus-visible, .rc-pick select:focus-visible, .rc-pick button:focus-visible, .rc-all summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 .rc-all summary { cursor: pointer; font-weight: 600; padding: .6rem 0; margin: .4rem 0; display: list-item; }
 .rc-byline { font-size: var(--fs-xs); color: var(--text-muted); margin: 1.8rem 0 0; padding-top: .9rem; border-top: 1px solid var(--border); max-width: 60em; }
 @media (max-width: 560px) {
