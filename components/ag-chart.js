@@ -20,6 +20,8 @@
               the readout says "No report ...".
      fmt      v -> text for values (default '$' + 2 decimals); tick(v) -> axis text (default '$' + v)
      unit     axis unit, top left ('$/cwt')
+     period   'year': one point a year, dated 'YYYY-01-01'; axis, readout and gaps say '2015', not 'Oct 27'
+     gapWord  the readout's word for a missing point ('report'; 'survey')
      ranges   [{ label: '3M', days: 92, aria: 'three months' }], days 0 = all held; a button shows only
               when the held days run past it and leave minPoints in it; 'All' always
      range    the label to open on (falls back to the longest shown)
@@ -51,6 +53,7 @@
   function isoOf(t) { return new Date(t).toISOString().slice(0, 10); }
   function short(s) { return MON[+s.slice(5, 7) - 1] + ' ' + (+s.slice(8, 10)); }
   function long(s) { return short(s) + ', ' + s.slice(0, 4); }
+  function dayOf(cfg, s) { return cfg && cfg.period === 'year' ? s.slice(0, 4) : short(s); }
   function money(v) { return '$' + v.toFixed(2); }
   function fmtOf(cfg) { return cfg.fmt || money; }
   function f1(v) { return v.toFixed(1); }
@@ -91,7 +94,11 @@
   }
   function gapAt(cfg, pts, d) {
     for (var i = 1; i < pts.length; i++) {
-      if (pts[i - 1].d < d && d < pts[i].d) { var m = missing(pts[i - 1].d, pts[i].d, ruleOf(cfg, pts)); return m ? { from: m[0], to: m[1] } : null; }
+      if (pts[i - 1].d < d && d < pts[i].d) {
+        var m = missing(pts[i - 1].d, pts[i].d, ruleOf(cfg, pts)); if (!m) return null;
+        if (cfg.period === 'year') { var y0 = +pts[i - 1].d.slice(0, 4) + 1, y1 = +pts[i].d.slice(0, 4) - 1; return y1 < y0 ? null : { from: y0 + '-01-01', to: y1 + '-01-01' }; }
+        return { from: m[0], to: m[1] };
+      }
     }
     return null;
   }
@@ -113,10 +120,10 @@
   function readout(cfg, view, d) {
     var main = view.series.filter(function (s) { return !s.faint && s.points.length; });
     var gp = main.length && gapAt(cfg, main[0].points, d);
-    if (gp) return 'No report ' + short(gp.from) + (gp.to !== gp.from ? ' to ' + short(gp.to) : '');
+    if (gp) return 'No ' + (cfg.gapWord || 'report') + ' ' + dayOf(cfg, gp.from) + (gp.to !== gp.from ? ' to ' + dayOf(cfg, gp.to) : '');
     if (cfg.readout) return cfg.readout(view, d);
     var p0 = near(main[0].points, d);
-    return short(p0.d) + ': ' + main.map(function (s) { var p = near(s.points, p0.d); return p && p.d === p0.d ? s.name + ' ' + fmtOf(cfg)(p.v) : ''; }).filter(Boolean).join(' · ');
+    return dayOf(cfg, p0.d) + ': ' + main.map(function (s) { var p = near(s.points, p0.d); return p && p.d === p0.d ? s.name + ' ' + fmtOf(cfg)(p.v) : ''; }).filter(Boolean).join(' · ');
   }
 
   /* ------------------------------------------------------------ geometry and label placement */
@@ -258,7 +265,7 @@
       if (!dts.length || (dd > dts[dts.length - 1] && g.x(dd) - g.x(dts[dts.length - 1]) >= fs * 4.4)) dts.push(dd);
       else if (i === want - 1 && dts.length > 1 && dd > dts[dts.length - 1]) dts[dts.length - 1] = dd;   // the latest day always closes the axis
     }
-    dts.forEach(function (d, j) { var x = g.x(d); o.push(txt(x, H - fs * 0.5, short(d), f + 'fill:' + P.dim, j === dts.length - 1 ? 'end' : (x - g.L < fs * 2 ? 'start' : 'middle'))); });
+    dts.forEach(function (d, j) { var x = g.x(d); o.push(txt(x, H - fs * 0.5, dayOf(cfg, d), f + 'fill:' + P.dim, j === dts.length - 1 ? 'end' : (x - g.L < fs * 2 ? 'start' : 'middle'))); });
     // the top row, right: a faint line's key, or the note that it is not held yet
     var kx = g.right;
     view.series.filter(function (s) { return s.faint && (s.note || s.pending); }).forEach(function (s) {
@@ -332,7 +339,7 @@
     x.font = '800 34px ' + FONT; x.fillStyle = '#e9edeb'; x.fillText('agsist', 48, 62);
     var aw = x.measureText('agsist').width; x.font = '700 20px ' + FONT; x.fillStyle = '#d4a23f'; x.fillText('.com', 50 + aw, 62);
     var mark = 50 + aw + x.measureText('.com').width + 32;
-    var k = fitLines(meas('600'), (sh.kicker ? sh.kicker + ' · ' : '') + long(sh.date || view.to), W - 48 - mark, [20, 18, 16], 1);
+    var k = fitLines(meas('600'), (sh.kicker ? sh.kicker + ' · ' : '') + (sh.date ? long(sh.date) : cfg.period === 'year' ? dayOf(cfg, view.to) : long(view.to)), W - 48 - mark, [20, 18, 16], 1);
     x.font = '600 ' + k.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.72)'; x.textAlign = 'right'; x.fillText(k.lines[0], W - 48, 60); x.textAlign = 'left';
     var hd = fitLines(meas('800'), st.head, W - 96, [38, 34, 30, 27], 2), y = 80 + hd.size;
     x.font = '800 ' + hd.size + 'px ' + FONT; x.fillStyle = '#e9edeb';
@@ -451,7 +458,7 @@
   }
 
   var api = { mount: mount, svg: svg, layout: layout, card: card, fitLines: fitLines, slice: slice, pairs: pairs, ranges: ranges, readout: readout, gapAt: gapAt, ruleOf: ruleOf,
-    short: short, long: long, money: money };
+    short: short, long: long, money: money, dayOf: dayOf };
   root.AgChart = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
