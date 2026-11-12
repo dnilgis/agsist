@@ -144,11 +144,12 @@
     view.series.forEach(function (s) { if (!hide[s.key]) s.points.forEach(function (p) { all.push(p.v); }); });
     if (!all.length) view.series.forEach(function (s) { s.points.forEach(function (p) { all.push(p.v); }); });
     var lo = Math.min.apply(null, all), hi = Math.max.apply(null, all), pad = Math.max((hi - lo) * 0.03, 0.25);
-    lo -= pad; hi += pad;
-    var nt = 5, tk = ticks(lo, hi, nt), st = tk.length > 1 ? tk[1] - tk[0] : 1;   // the axis runs to a tick at both ends
-    lo = Math.min(lo, Math.floor(lo / st) * st); hi = Math.max(hi, Math.ceil(hi / st) * st);
-    var tks = []; for (var tv = lo; tv <= hi + st * 1e-6; tv += st) tks.push(+tv.toFixed(6));   // the drawn ticks: the same step, end to end
-    var L = Math.round(fs * (W < 420 ? 3.4 : 3.9)), R = Math.round(fs * (period === 'year' ? 1.7 : 0.8)) + (gutter || 0), T = Math.round(fs * (keyRow ? 3.7 : 3)), B = Math.round(fs * 2.2), lab = Math.round(fs * 1.4);
+    var dLo = lo, dHi = hi; lo -= pad; hi += pad;
+    var nt = 5, tk = ticks(lo, hi, nt), st = tk.length > 1 ? tk[1] - tk[0] : 1;
+    var tLo = Math.floor(dLo / st + 1e-9) * st, tHi = Math.ceil(dHi / st - 1e-9) * st;   // gridlines from the one under the lowest value to the one over the highest, none unused
+    lo = tLo; hi = tHi;   // the axis runs from gridline to gridline
+    var tks = []; for (var tv = tLo; tv <= tHi + st * 1e-6; tv += st) tks.push(+tv.toFixed(6));
+    var L = Math.round(fs * (W < 420 ? 3.4 : 3.9)), R = Math.round(fs * (period === 'year' ? 1.7 : 0.8)) + (gutter || 0), T = Math.round(fs * (3 + (keyRow === 2 ? 1.9 + 0.6 : keyRow ? 0.7 + 1.1 : 1.1))), B = Math.round(fs * 2.2), lab = Math.round(fs * 1.4);
     var t0 = utc(view.from), dt = Math.max(utc(view.to) - t0, 864e5);
     return { L: L, R: R, T: T, B: B, W: W, H: H, fs: fs, lo: lo, hi: hi, nt: nt, tk: tks, st: st, base: H - B - fs * 0.6, right: W - R,
       x: function (d) { return L + (utc(d) - t0) / dt * (W - L - R); },
@@ -170,10 +171,11 @@
      inside and the caller should leave a gutter on the right */
   function layout(view, W, H, opt) {
     var fs = opt.fs || 12, hide = opt.hide || {}, cfg = opt.cfg || {}, fmt = fmtOf(cfg), rules = {};
-    var gutter = opt.gutter || 0, g = geom(view, W, H, fs, hide, gutter, cfg.period, false), kt = '', row2 = false, x0 = opt.card ? 24 : 0, segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
+    var gutter = opt.gutter || 0, g = geom(view, W, H, fs, hide, gutter, cfg.period, false), kt = '', row2 = false, krows = 0, x0 = opt.card ? 24 : 0, segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
     if (cfg.gapKey) {
       kt = cfg.gapKey(view, Math.floor((g.right - g.L + fs) / (fs * 0.53)));
-      if (kt) { var kw0 = widthOf(kt, fs) * 0.94 + fs * 2.2, uw = widthOf(cfg.unit || '', fs), ul = x0 + (uw > g.L - fs ? uw : g.L - x0); row2 = !(g.right - kw0 > ul + fs * 1.5); if (row2) g = geom(view, W, H, fs, hide, gutter, cfg.period, true); }
+      krows = kt ? kt.split('\n').length : 0;
+      if (kt) { var kw0 = Math.max.apply(null, kt.split('\n').map(function (q) { return widthOf(q, fs); })) * 0.94 + fs * 2.2, uw = widthOf(cfg.unit || '', fs), ul = x0 + (uw > g.L - fs ? uw : g.L - x0); row2 = !(g.right - kw0 > ul + fs * 1.5); if (row2) g = geom(view, W, H, fs, hide, gutter, cfg.period, krows); }
     }
     view.series.forEach(function (s) {
       if (!s.points.length || hide[s.key]) return;
@@ -190,13 +192,13 @@
     // the key for dashed stretches: beside the axis title when it fits, else its own row under it
     var key = null;
     if (kt && segs.some(function (q) { return q.gap && q.s && !q.s.faint; })) {
-      var kw = widthOf(kt, fs) * 0.94 + fs * 2.2;
+      var kw = Math.max.apply(null, kt.split('\n').map(function (q) { return widthOf(q, fs); })) * 0.94 + fs * 2.2;
       key = row2 ? { text: kt, x: x0, ly: fs * 2.15, ty: fs * 2.5, w: kw } : { text: kt, x: g.right - kw, ly: fs * 0.85, ty: fs * 1.2, w: kw };
-      boxes.push({ x0: key.x - 2, x1: key.x + kw + 2, y0: key.ty - fs * 0.8, y1: key.ty + fs * 0.15 });
+      boxes.push({ x0: key.x - 2, x1: key.x + kw + 2, y0: key.ty - fs * 0.8, y1: key.ty + (krows - 1) * fs * 1.2 + fs * 0.15 });
     }
     var ext = 0;   // a first-point label may dip just under the lowest gridline when the line leaves no room above
     var bound = function (b, outside) {
-      return b.y0 >= fs * (row2 ? 3.05 : 1.6) && b.y1 <= g.base - 1 + ext && (outside ? b.x0 >= g.right + 2 && b.x1 <= W : b.x0 >= g.L + 2 && b.x1 <= g.right);
+      return b.y0 >= fs * (row2 ? 1.85 + krows * 1.2 : 1.6) && b.y1 <= g.base - 1 + ext && (outside ? b.x0 >= g.right + 2 && b.x1 <= W : b.x0 >= g.L + 2 && b.x1 <= g.right);
     };
     var strict = false, pad = 0;   // strict: also keep off the gridlines; pad: room kept round other labels (a gap label)
     var free = function (b, outside) {
@@ -204,15 +206,18 @@
       var bp = pad ? { x0: b.x0 - pad, x1: b.x1 + pad, y0: b.y0, y1: b.y1 } : b;
       for (var i = 0; i < boxes.length; i++) if (hitBox(bp, boxes[i])) return false;
       if (outside) return true;
-      if (strict) for (var t = 0; t < g.tk.length; t++) { var gy = g.y(g.tk[t]); if (gy > b.y0 - 1 && gy < b.y1 + 1) return false; }
+      if (strict) {   // no gridline within a margin (up to 6 px, less where the bands are tight) of the text
+        var band = g.tk.length > 1 ? Math.abs(g.y(g.tk[1]) - g.y(g.tk[0])) : 99, m = Math.max(1, Math.min(6, (band - (b.y1 - b.y0)) / 2 - 0.5));
+        for (var t = 0; t < g.tk.length; t++) { var gy = g.y(g.tk[t]); if (gy > b.y0 - m && gy < b.y1 + m) return false; }
+      }
       for (var j = 0; j < segs.length; j++) if (hitSeg(b, segs[j])) return false;
       for (var k = 0; k < dots.length; k++) { var d = dots[k]; if (hitBox(b, { x0: d.x - d.r - 1, x1: d.x + d.r + 1, y0: d.y - d.r - 1, y1: d.y + d.r + 1 })) return false; }
       return true;
     };
     var failed = [];
     var place = function (L) {
-      var w = widthOf(L.text, fs, L.bold), step = fs * 0.35, span = g.base - g.T + fs * 2;
-      ext = L.kind === 'start' || L.kind === 'gap' ? fs * 0.9 : 0;
+      var w = widthOf(L.text, fs, L.bold), step = fs * 0.17, span = g.base - g.T + fs * 2;
+      ext = L.kind === 'gap' ? fs * 1.4 : L.kind === 'start' ? fs * 0.9 : 0;
       var win = L.win || [L.y - fs * 3, L.y + fs * 3];   // stay near what it names; else go outside
       var gap = L.kind === 'gap', passes = gap ? [true] : [true, false];
       pad = gap ? fs * 1.2 : 0;
@@ -244,19 +249,19 @@
       }
       failed.push(L);
     };
-    var ex = g.x(view.to) - fs * 0.8;
+    var ex = g.x(view.to) - fs * 0.8, bandPx = g.tk.length > 1 ? Math.abs(g.y(g.tk[1]) - g.y(g.tk[0])) : fs * 3;   // a point's own label stays within one gridline band of it
     var main = view.series.filter(function (s) { return !s.faint && s.points.length; });
     main.filter(function (s) { return !hide[s.key]; }).map(function (s) { return { s: s, v: s.points[s.points.length - 1].v }; })
       .sort(function (a, b) { return b.v - a.v; }).forEach(function (e, i) {
         var lp = e.s.points[e.s.points.length - 1], pv = e.s.points[e.s.points.length - 2];
         var down = i === 0 && pv && g.y(pv.v) < g.y(e.v) - 2;   // a line falling into its end: the free side is below it
         var y = i === 0 && !down ? g.y(e.v) - fs * 0.6 : g.y(e.v) + fs * 1.3;
-        labels.push({ kind: 'end', s: e.s, text: e.s.endText ? e.s.endText(lp) : e.s.name + ' ' + fmt(e.v), x: ex, y: y, anchor: 'end', bold: true, down: down });
+        labels.push({ kind: 'end', s: e.s, text: e.s.endText ? e.s.endText(lp) : e.s.name + ' ' + fmt(e.v), x: ex, y: y, anchor: 'end', bold: true, down: down, win: [g.y(e.v) - bandPx, g.y(e.v) + bandPx + fs * 0.9] });
       });
     // the first point named too, where the series asks for it: its year and value
     main.filter(function (s) { return !hide[s.key] && s.startText && s.points.length > 1; }).forEach(function (s) {
       var p0 = s.points[0], nx = s.points[1], dn = g.y(nx.v) < g.y(p0.v) - 2;   // the line leaves upward: the free side is below
-      labels.push({ kind: 'start', s: s, text: s.startText(p0), x: g.x(p0.d) + fs * 0.7, y: g.y(p0.v) + (dn ? fs * 1.5 : -fs * 0.9), anchor: 'start', bold: true, optional: true, down: dn });
+      labels.push({ kind: 'start', s: s, text: s.startText(p0), x: g.x(p0.d) + fs * 0.7, y: g.y(p0.v) + (dn ? fs * 1.5 : -fs * 0.9), anchor: 'start', bold: true, optional: true, down: dn, win: [g.y(p0.v) - bandPx, g.y(p0.v) + bandPx + fs * 0.9] });
     });
     (cfg.bands || []).forEach(function (b) {
       if (hide[b.a] || hide[b.b]) return;
@@ -274,9 +279,9 @@
     // "no survey" under each dashed stretch, as near as it fits
     if (cfg.gapLabel && W >= 500) lay_gaps(segs, cfg, fs).forEach(function (q) { labels.push({ kind: 'gap', s: q.s, text: q.text, x: q.x, y: q.y, anchor: 'middle', optional: true, win: [q.y - fs * 4.4, q.y + fs * 2.2] }); });
     labels.forEach(place);
-    if (failed.length && !gutter) {
-      var wide = Math.max.apply(null, failed.map(function (L) { return widthOf(L.text, fs, L.bold); }));
-      return layout(view, W, H, Object.assign({}, opt, { gutter: Math.min(Math.round(wide + fs * 1.4), Math.round(W * 0.4)) }));
+    if (failed.length) {   // a gutter wide enough for the widest label that fits nowhere inside (asked again if it was too narrow)
+      var wide = Math.max.apply(null, failed.map(function (L) { return widthOf(L.text, fs, L.bold); })), want = Math.min(Math.round(wide + fs * 1.4), Math.round(W * 0.4));
+      if (want > gutter) return layout(view, W, H, Object.assign({}, opt, { gutter: want }));
     }
     return { g: g, segs: segs, dots: dots, runs: runs, labels: out, boxes: boxes, rules: rules, key: key, x0: x0 };
   }
@@ -287,7 +292,7 @@
     segs.forEach(function (sg) {
       if (!sg.gap || !sg.s || sg.s.faint) return;
       var gp = gapAt(cfg, sg.s.points, isoOf(utc(sg.d1) + 864e5)), t = gp && cfg.gapLabel(gp);
-      if (t) out.push({ s: sg.s, text: t, x: (sg.x1 + sg.x2) / 2, y: Math.max(sg.y1, sg.y2) + fs * 1.5 });
+      if (t) out.push({ s: sg.s, text: t, x: (sg.x1 + sg.x2) / 2, y: Math.max(sg.y1, sg.y2) + fs * 1.2 });
     });
     return out;
   }
@@ -345,7 +350,7 @@
     if (lay.key) {
       var K = lay.key;
       o.push('<line x1="' + f1(K.x) + '" x2="' + f1(K.x + fs * 1.5) + '" y1="' + f1(K.ly) + '" y2="' + f1(K.ly) + '" style="stroke:' + col(view.series.filter(function (q) { return !q.faint && q.points.length; })[0]) + ';stroke-width:2;stroke-opacity:.8;stroke-dasharray:' + fs / 4 + ' ' + fs / 3 + '"/>');
-      o.push(txt(K.x + fs * 2.2, K.ty, K.text, f + 'fill:' + P.mut, 'start', 'agc-gk'));
+      K.text.split('\n').forEach(function (q, qi) { o.push(txt(K.x + fs * 2.2, K.ty + qi * fs * 1.2, q, f + 'fill:' + P.mut, 'start', 'agc-gk')); });
     }
     // bands: one polygon per stretch with no missing days
     (cfg.bands || []).forEach(function (b) {

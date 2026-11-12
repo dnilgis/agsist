@@ -43,6 +43,10 @@
   function gapKeyFit(d, y0, y1, room) {
     var k = gapKey(d, y0, y1), g = gapYears(d, y0, y1);
     if (!k || k.length <= room) return k;
+    if (g.ns.length && g.np.length) {   // two lines, the years kept
+      var a = 'Dashed: no USDA survey (' + g.ns.join(', ') + ');', b = 'no county published (' + g.np.join(', ') + ')';
+      if (a.length <= room && b.length <= room) return a + '\n' + b;
+    }
     k = g.ns.length && g.np.length ? 'Dashed: no survey, or no county published' : g.ns.length ? 'Dashed: no USDA survey' : 'Dashed: no county published';
     return k.length <= room ? k : '';
   }
