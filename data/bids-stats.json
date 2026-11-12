@@ -1,1 +1,1 @@
-{"schema":"agsist-bids-stats/1","fetched":"2026-11-12T07:37:40Z","note":"Counts from the cash bids file, taken on the same run.","stats":{"total_bids":23488,"facilities":354,"locations":2057,"states":30}}
+{"schema":"agsist-bids-stats/1","fetched":"2026-11-12T07:52:37Z","note":"Counts from the cash bids file, taken on the same run.","stats":{"total_bids":23471,"facilities":351,"locations":2054,"states":30}}
