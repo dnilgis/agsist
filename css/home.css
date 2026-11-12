@@ -423,6 +423,8 @@ html:not(.has-zip) .hp-wx .hp-wxnone{display:block}
 /* outside the day session the live draw adds the overnight trade under each futures price; the cell holds its room */
 .hp-fh .hb-ovn{display:block;font-size:.72rem;line-height:1.35;color:var(--text-muted);margin-top:.15rem}
 .hp-ovnh .hp-fh .r{min-height:8em}
+/* the overnight read shows only in the overnight hours its room is held for (the class from the inline clock check): a stale overnight line in the day moved the first screen */
+html:not(.hp-ovnh) .hp-fh .hb-ovn{display:none}
 .hp-fut.px-old .hp-big{color:var(--text-muted)}
 .hp-pl{margin:.7rem 0 0;padding:.5rem .7rem;border-radius:8px;background:var(--surface2);font-size:.82rem;line-height:1.45;color:var(--text-dim)}
 .hp-pl[hidden]{display:none}

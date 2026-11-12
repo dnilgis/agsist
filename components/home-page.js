@@ -610,7 +610,14 @@
   function headline(crop) {
     try { var S = root.AgPxStamp, q = PX && PX.quotes; if (!S || !q) return null; if (S.roll) q = S.roll(q); return root.AgPxStamp.headline({ quotes: q, nearby: PX.nearby }, crop); } catch (e) { return null; }
   }
-  function lastWeekday() { var t = ctDay(), dw = t.getUTCDay(); return addDays(t, dw === 6 ? -1 : dw === 0 ? -2 : 0).toISOString().slice(0, 10); }
+  /* the trading day before today, Central (weekends and exchange holidays skipped): a quote closed on it is the latest
+     session's until today's settles, so overnight and before the open it is not an old price (Nov 12: "Last close"
+     showed in the small hours and moved the first screen) */
+  function prevSession() {
+    var S = root.AgPxStamp, d = addDays(ctDay(), -1), g = 0;
+    while (g++ < 7) { var iso = d.toISOString().slice(0, 10), w = d.getUTCDay(); if (w > 0 && w < 6 && (!S || !S.isTradingDay || S.isTradingDay(iso))) return iso; d = addDays(d, -1); }
+    return d.toISOString().slice(0, 10);
+  }
   function paintHeader() {
     var A = root.AG && root.AG.px;
     if (!PX || !A) return;
@@ -633,7 +640,7 @@
       /* the stamp says when the quote is from; a settle carries its own year and age, and the cell greys once it is
          OLD_SESSIONS behind (components/price-local.js); an older close than the file's day says "Last close" */
       var sa = q.close_kind === 'settle' && S.settleAge ? S.settleAge(q.settle_date || q.close_date) : null;
-      var old = !sa && (q.stale === true || (PX.stale_keys || []).indexOf(h.key) >= 0 || (q.close_date && q.close_date < lastWeekday()));
+      var old = !sa && (q.stale === true || (PX.stale_keys || []).indexOf(h.key) >= 0 || (q.close_date && q.close_date < prevSession()));
       var cell = $('hb-' + c[1]); if (cell) cell.classList.toggle('px-old', !!(sa && sa.old));
       var stamp = ''; try { stamp = S.html ? S.html(q, PX.fetched) : esc(S.shortStamp(q, PX.fetched)); } catch (e) {}
       var age = old ? '<span class="hb-l hb-old">Last close' + (q.close_date ? ' \u00b7 ' + md(utc(q.close_date)) : '') + '</span>' : (stamp ? '<span class="hb-l hb-age">' + stamp + '</span>' : '');
