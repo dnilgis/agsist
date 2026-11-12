@@ -1233,13 +1233,16 @@
       + (ch.off ? ' ' + ch.off + ' sale' + (ch.off === 1 ? '' : 's') + ' outside $' + comma(ch.bottom) + ' to $' + comma(ch.top) + ' ' + (ch.off === 1 ? 'is' : 'are') + ' off the chart.' : '')
       + ' ' + src + ' transfer records, ' + MON[from.getUTCMonth()] + ' ' + from.getUTCFullYear() + ' to ' + MON[to.getUTCMonth()] + ' ' + to.getUTCFullYear() + '. No names.'
       );
-    /* the lead rule (audit Q3), folded so the card keeps its height: the cap that leaves higher sales out is in it */
-    var ls = $('hp-land-src');
-    if (ls && words.rule) { var dt = doc.createElement('details'), sm = doc.createElement('summary'), rp = doc.createElement('span'); dt.className = 'hp-lrule'; sm.textContent = 'How this sale is picked'; rp.textContent = ' ' + words.rule; dt.appendChild(sm); dt.appendChild(rp); ls.appendChild(doc.createTextNode(' ')); ls.appendChild(dt); }
+    /* the lead rule (audit Q3), folded in the line index.html holds for it, so the card keeps its height */
+    landRule(words.rule);
     var all = $('hp-land-all'); if (all && NAMES[st]) all.setAttribute('href', '/land-sales/' + slug(NAMES[st]) + '/' + slug(cn));
     SPECS.land = function () { return { head: head + (words.h ? '' : ', ' + st), sub: (words.h ? cn + ': e' : 'E') + 'very bare farmland sale with acres and price over 24 months, price per acre; line: the county median; shaded: the middle half',
       big: function (w, h) { return landSvg(opts(w, h, 16)).svg; }, source: src + ' transfer records, ' + MON[from.getUTCMonth()] + ' ' + from.getUTCFullYear() + ' to ' + MON[to.getUTCMonth()] + ' ' + to.getUTCFullYear() + '. No names.', file: 'farm-sales', date: to }; };
     return true;
+  }
+  function landRule(rule) {
+    var lr = $('hp-land-rule'); if (!lr) return;
+    txt('hp-land-rule-t', rule ? ' ' + rule : ''); lr.style.visibility = rule ? '' : 'hidden'; if (!rule) lr.open = false;
   }
   function countyFile(st, name) {
     return getJSON(stateFile('rain/', st)).then(function (R) {
@@ -1285,7 +1288,7 @@
       if (!drawLand(F, L, st, ring, w)) throw new Error('few');
       var all = $('hp-land-all'); if (all && r.url) all.setAttribute('href', r.url);
     }).catch(function () {
-      txt('hp-land-h', w.h); txt('hp-land-p', w.p);  msgIn('hp-land-ch', 'The county chart did not load.');
+      txt('hp-land-h', w.h); txt('hp-land-p', w.p); landRule(w.rule); msgIn('hp-land-ch', 'The county chart did not load.');
     });
   }
 
@@ -1295,7 +1298,6 @@
   /* ---- price alert: same double opt-in as before (workers/subs-worker.js WATCH A PRICE TARGET) ---- */
   function priceAlert() {
     var PA_WORKER = 'https://agsist-api.dnilgis.workers.dev';
-    var PA_LABELS = { 'corn': 'Corn', 'corn-dec': 'Corn (new crop)', 'beans': 'Soybeans', 'beans-nov': 'Soybeans (new crop)', 'wheat': 'Chicago SRW wheat', 'cattle': 'Live Cattle' };
     function paId(symbol, direction, targetCents) {
       var s = (symbol + '|' + direction + '|' + targetCents).toUpperCase();
       var h = 0x811c9dc5;
@@ -1316,7 +1318,7 @@
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(addr)) return fail('Enter a real email address.', email);
       [tgt, email].forEach(function (f) { f.removeAttribute('aria-invalid'); });
       var symbol = sym.value, direction = dir.value, targetCents = Math.round(dollars * 100);
-      var opt = sym.options[sym.selectedIndex], named = opt && opt.getAttribute('data-c') ? opt.getAttribute('data-c') : (PA_LABELS[symbol] || symbol);
+      var opt = sym.options[sym.selectedIndex], named = opt && opt.getAttribute('data-c') ? opt.getAttribute('data-c') : ((PA_BASE[symbol] || symbol) + (/-(dec|nov)$/.test(symbol) ? ' (new crop)' : ''));
       var label = named + ' ' + (direction === 'above' ? 'above' : 'below') + ' $' + dollars.toFixed(2);
       go.disabled = true; go.textContent = 'Sending…'; status.textContent = ''; status.style.color = 'var(--text-muted)';
       fetch(PA_WORKER + '/price-watch-subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' },

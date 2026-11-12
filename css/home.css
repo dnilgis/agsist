@@ -443,7 +443,7 @@ html:not(.has-zip) .hp-wx .hp-wxnone{display:block}
 /* closest elevators: up to 11 rows beside the futures on a wide screen, 7 on a tablet, 4 on a phone */
 @media (max-width:1180px){.hp-near tbody tr:nth-child(n+8){display:none}}
 @media (max-width:640px){.hp-ovnh .hp-fh .r{min-height:3.3em}}
-.hp-lrule{display:inline}.hp-lrule>summary{display:inline;cursor:pointer;color:var(--brand);text-decoration:underline}
+.hp-lrule{margin-top:.2rem}.hp-lrule>summary{cursor:pointer;color:var(--brand);text-decoration:underline;min-height:24px;display:inline-flex;align-items:center}
 /* audit A4: a failed or empty list says so once; the held rows keep their room, unseen */
 .hp-near.hp-nfail thead,.hp-near.hp-nfail tbody tr+tr{visibility:hidden}
 .hp-near.hp-nfail th,.hp-near.hp-nfail td{border-color:transparent!important}
