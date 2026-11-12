@@ -107,12 +107,12 @@
     function show() {
       if (!hits.length) { close(); return; }
       var SHOW = show_n(), more = hits.length - SHOW, q = norm(input.value), sq = splitState(input.value);
-      var anyNear = shown().some(function (x) { return x.near; }), h0 = hits[0], tip = (hits.length === 1 && h0.via) ? h0.via.split('|')[0] + ' is in ' + h0.name + '. Pick it to open its rain page.' : 'Pick a county to open its rain page.';
+      var anyNear = shown().some(function (x) { return x.near; }), h0 = hits[0], tip = (hits.length === 1 && h0.via) ? h0.via.split('|')[0] + ' is in ' + h0.name + '.</span><span class="rc-more">Pick it to open its rain page.' : 'Pick a county to open its rain page.';
       list.innerHTML = shown().map(function (h, i) {
         return '<li role="option" id="' + lid + '-' + i + '" aria-selected="' + (i === act) + '" data-i="' + i + '">' + esc(h.name) + ', ' + h.st
           + (h.via && h.via.split('|')[1] ? '<small>' + esc(h.via.split('|')[1]) + '</small>' : '')
-          + (h.near ? '<small>No full-year station. Opens ' + esc(h.near) + '</small>' : '') + '</li>';
-      }).join('') + '<li role="presentation" class="rc-find-more">' + tip + (more > 0 ? '<span class="rc-more"><span class="rc-nw">' + more + ' more:</span> '
+          + (h.near ? '<small>No full-year station. Opens ' + esc(h.near) + '.</small>' : '') + '</li>';
+      }).join('') + '<li role="presentation" class="rc-find-more"><span class="rc-more">' + tip + '</span>' + (more > 0 ? '<span class="rc-more"><span class="rc-nw">' + more + ' more:</span> '
         + (sq.st ? 'type more of the name.' : 'add the state, e.g. ' + esc(q) + ' ' + (hits.filter(function (x) { return x.st !== localSt(); })[0] || hits[0]).st.toLowerCase() + '.') + '</span>' : '') + '</li>';
       list.hidden = false; input.setAttribute('aria-expanded', 'true');
       if (act >= 0) input.setAttribute('aria-activedescendant', lid + '-' + act); else input.removeAttribute('aria-activedescendant');

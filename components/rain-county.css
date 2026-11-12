@@ -87,7 +87,7 @@
 .rc-more { display: block; }
 .rc-find-l li:hover { background: var(--bg); }
 .rc-find-l li[aria-selected="true"] { background: var(--bg); color: var(--brand); box-shadow: inset 3px 0 0 var(--brand); }
-.rc-find-l small { display: block; margin-left: 0; color: var(--text-muted); font-size: 13.5px; letter-spacing: -.01em; white-space: nowrap; line-height: 1.35; }
+.rc-find-l small { display: block; margin-left: 0; color: var(--text-muted); font-size: 13.5px; line-height: 1.35; }
 .rc-find-l li.rc-find-more { cursor: default; min-height: 0; font-size: 14px; line-height: 1.4; color: var(--text); border-top: 1px solid var(--border); padding: .5rem .75rem; }
 .rc-find-l li.rc-find-more:hover { background: none; color: var(--text); }
 .rc .rc-find-m { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; line-height: 1.3rem; color: var(--text-muted); font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
