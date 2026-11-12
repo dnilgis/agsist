@@ -24,7 +24,7 @@
     return d.pts.filter(function (p) { return p[1] != null; }).map(function (p) { return { d: p[0] + '-01-01', v: p[1] }; });
   }
   function countOf(d, year) { var p = ptOf(d, year); return p && p[1] != null ? p[2] : null; }
-  function dayText(s) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ''); return m ? MON[+m[2] - 1] + ' ' + (+m[3]) + ', ' + m[1] : ''; }
+  function dayText(s) { var m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ''); return m ? MON[+m[2] - 1] + '\u00a0' + (+m[3]) + ',\u00a0' + m[1] : ''; }
   function asOf(d) { var t = dayText(d.gen); return t ? ' Data as of ' + t + '.' : ''; }
   function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
   function firstLast(d) { var h = d.pts.filter(function (p) { return p[1] != null; }); return h.length ? [h[0][0], h[h.length - 1][0]] : [0, 0]; }
@@ -36,25 +36,27 @@
   }
   /* 'Dashed: no USDA survey (2015, 2018)' for the years shown; '' when nothing is dashed */
   function gapKey(d, y0, y1) {
-    var g = gapYears(d, y0, y1), a = g.ns.length ? 'no USDA survey (' + g.ns.join(', ') + ')' : '', b = g.np.length ? 'too few counties published (' + g.np.join(', ') + ')' : '';
-    return a || b ? 'Dashed: ' + (a && b ? a + ' or ' + b : a || b) : '';
+    var g = gapYears(d, y0, y1), a = g.ns.length ? 'no USDA survey (' + g.ns.join(', ') + ')' : '', b = g.np.length ? 'no county published (' + g.np.join(', ') + ')' : '';
+    return a || b ? 'Dashed: ' + (a && b ? a + '; ' + b : a || b) : '';
   }
+  /* the same, short, for the key on the chart itself when both kinds of dashed year are there */
+  function gapKeyShort(d, y0, y1) { var g = gapYears(d, y0, y1); return g.ns.length && g.np.length ? 'Dashed: no survey, or no county published' : gapKey(d, y0, y1); }
   /* the words under the chart: what is plotted, the dashes, the source */
   function note(d, from, to) {
     var y0 = +String(from).slice(0, 4), y1 = +String(to).slice(0, 4), k = gapKey(d, y0, y1);
     return 'Median of the counties USDA published each year, ' + d.land + ', dollars an acre. ' + (k ? k + '. ' : '') +
-      'Source: USDA NASS Cash Rents Survey, county medians, ' + y0 + '–' + y1 + '.' + asOf(d);
+      'Source: USDA NASS Cash Rents Survey, county estimates, ' + y0 + '–' + y1 + '.' + asOf(d);
   }
   /* the words for a range from its first year to its last */
   function story(d, from, to) {
     var y0 = +String(from).slice(0, 4), y1 = +String(to).slice(0, 4), p0 = ptOf(d, y0), p1 = ptOf(d, y1);
     if (!p1 || p1[1] == null || !p0 || p0[1] == null) return { head: '', take: '', summary: '', note: '' };
     var c = d.chg[String(y0)], head, take;
-    if (y0 < y1) head = d.name + ' ' + d.noun + ' rent: ' + money(p0[1]) + ' an acre in ' + y0 + ', ' + money(p1[1]) + ' in ' + y1 + ', ' + move(100 * (p1[1] - p0[1]) / p0[1]);
-    else head = d.name + ' ' + d.noun + ' rent: ' + money(p1[1]) + ' an acre in ' + y1;
-    if (y0 === y1) take = 'The median of ' + p1[2] + ' counties.';
-    else if (c) take = 'Like for like, the ' + c[1] + ' counties published in both years went from a median of ' + money(c[2]) + ' to ' + money(c[3]) + ', ' + move(c[0]) + '.';
-    else take = 'Too few counties were published in both ' + y0 + ' and ' + y1 + ' to state a like-for-like change.';
+    if (y0 < y1) {
+      head = d.name + ' ' + d.noun + ' rent: ' + money(p0[1]) + ' an acre in ' + y0 + (c ? '' : ' (' + p0[2] + ' counties)') + ', ' + money(p1[1]) + ' in ' + y1 + (c ? ', ' + move(100 * (p1[1] - p0[1]) / p0[1]) : ' (' + p1[2] + ' counties)');
+      take = c ? 'In the ' + c[1] + ' counties published both years, the median went from ' + money(c[2]) + ' to ' + money(c[3]) + ', ' + move(100 * (c[3] - c[2]) / c[2]) + '.'
+        : 'Too few counties were published in both years to compare like for like, so no change is stated.';
+    } else { head = d.name + ' ' + d.noun + ' rent: ' + money(p1[1]) + ' an acre in ' + y1; take = 'The median of ' + p1[2] + ' counties.'; }
     return { head: head, take: take, summary: head + '. ' + take, note: note(d, from, to) };
   }
   function tick(v, st) { return '$' + (st % 1 ? v.toFixed(2) : v.toLocaleString('en-US')); }
@@ -64,14 +66,14 @@
     return {
       series: [{ key: 'r', name: d.name, points: series(d), color: 'var(--green,#5fc28a)', card: '#5fc28a', toggle: false,
                  endText: function (p) { return yearOf(p) + ': ' + money(p.v); }, startText: function (p) { return yearOf(p) + ': ' + money(p.v); } }],
-      period: 'year', gapWord: 'survey', unit: cap(d.land) + ', $ an acre',
+      period: 'year', gapWord: 'survey', unit: cap(d.land).replace(/-/g, '\u2011') + ', $ an acre',
       fmt: money, tick: tick,
       gapLabel: function (g) {
         var y = +g.from.slice(0, 4), e = +g.to.slice(0, 4), why = {};
         for (; y <= e; y++) { var p = ptOf(d, y); why[p ? p[2] : 'x'] = 1; }
         return why['no survey'] && Object.keys(why).length === 1 ? 'no survey' : why['not published'] && Object.keys(why).length === 1 ? 'not published' : 'no figure';
       },
-      gapKey: function (v) { var s = span(v); return gapKey(d, s[0], s[1]); },
+      gapKey: function (v) { var s = span(v); return gapKeyShort(d, s[0], s[1]); },
       ranges: [{ label: '5 years', days: 5 * 366, aria: 'five years' }, { label: '10 years', days: 10 * 366, aria: 'ten years' }, { label: 'Since ' + fl[0], days: 0, aria: 'every survey year' }],
       range: 'Since ' + fl[0],
       story: function (v) { return story(d, v.from, v.to); },
@@ -82,7 +84,7 @@
       height: { phone: 200, wide: 260 },
       headEl: D.getElementById('rc-head'), takeEl: D.getElementById('rc-take'), noteEl: D.getElementById('rc-note'), tools: D.getElementById('rc-tools'),
       share: { url: d.url, title: d.name + ' cash rent by year', file: 'agsist-rent-' + d.slug + '.png', kicker: d.name + ' cash rent', dateText: fl[1] + ' survey',
-               source: function (v) { var s = span(v); return 'Source: USDA NASS Cash Rents Survey, county medians, ' + s[0] + '–' + s[1] + '.' + asOf(d); } }
+               source: function (v) { var s = span(v); return 'Source: USDA NASS Cash Rents Survey county estimates, median of published counties, ' + s[0] + '–' + s[1] + '.' + asOf(d); } }
     };
   }
   function start() {

@@ -139,7 +139,7 @@
     var out = []; for (var t = Math.ceil(lo / st) * st; t <= hi + 1e-9; t += st) out.push(+t.toFixed(6));
     return out;
   }
-  function geom(view, W, H, fs, hide, gutter, period) {
+  function geom(view, W, H, fs, hide, gutter, period, keyRow) {
     var all = [];
     view.series.forEach(function (s) { if (!hide[s.key]) s.points.forEach(function (p) { all.push(p.v); }); });
     if (!all.length) view.series.forEach(function (s) { s.points.forEach(function (p) { all.push(p.v); }); });
@@ -148,7 +148,7 @@
     var nt = 5, tk = ticks(lo, hi, nt), st = tk.length > 1 ? tk[1] - tk[0] : 1;   // the axis runs to a tick at both ends
     lo = Math.min(lo, Math.floor(lo / st) * st); hi = Math.max(hi, Math.ceil(hi / st) * st);
     var tks = []; for (var tv = lo; tv <= hi + st * 1e-6; tv += st) tks.push(+tv.toFixed(6));   // the drawn ticks: the same step, end to end
-    var L = Math.round(fs * (W < 420 ? 3.4 : 3.9)), R = Math.round(fs * (period === 'year' ? 1.7 : 0.8)) + (gutter || 0), T = Math.round(fs * 3), B = Math.round(fs * 2.2), lab = Math.round(fs * 1.4);
+    var L = Math.round(fs * (W < 420 ? 3.4 : 3.9)), R = Math.round(fs * (period === 'year' ? 1.7 : 0.8)) + (gutter || 0), T = Math.round(fs * (keyRow ? 3.7 : 3)), B = Math.round(fs * 2.2), lab = Math.round(fs * 1.4);
     var t0 = utc(view.from), dt = Math.max(utc(view.to) - t0, 864e5);
     return { L: L, R: R, T: T, B: B, W: W, H: H, fs: fs, lo: lo, hi: hi, nt: nt, tk: tks, st: st, base: H - B - fs * 0.6, right: W - R,
       x: function (d) { return L + (utc(d) - t0) / dt * (W - L - R); },
@@ -170,7 +170,7 @@
      inside and the caller should leave a gutter on the right */
   function layout(view, W, H, opt) {
     var fs = opt.fs || 12, hide = opt.hide || {}, cfg = opt.cfg || {}, fmt = fmtOf(cfg), rules = {};
-    var gutter = opt.gutter || 0, g = geom(view, W, H, fs, hide, gutter, cfg.period), segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
+    var gutter = opt.gutter || 0, g = geom(view, W, H, fs, hide, gutter, cfg.period, !!cfg.gapKey), segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
     view.series.forEach(function (s) {
       if (!s.points.length || hide[s.key]) return;
       var pts = s.points.map(function (p) { return { d: p.d, v: p.v, x: g.x(p.d), y: g.y(p.v) }; });
@@ -183,13 +183,11 @@
       runs.push({ s: s, pts: run });
       if (!s.faint) pts.forEach(function (p, j) { var r = j === pts.length - 1 ? fs / 3 + 1 : Math.max(1.6, fs / 6); dots.push({ x: p.x, y: p.y, r: r, s: s, last: j === pts.length - 1 }); });
     });
-    // the key for dashed stretches: top row, right, beside the axis title; else its own row under it when the plot is tall enough; else left to the note
+    // the key for dashed stretches: its own row under the axis title, from the plot's left edge
     var key = null, gk = cfg.gapKey && segs.some(function (q) { return q.gap && q.s && !q.s.faint; }) ? cfg.gapKey(view) : '';
     if (gk) {
-      var uw = widthOf(cfg.unit || '', fs), ul = uw > g.L - fs ? uw : g.L, kw = widthOf(gk, fs) * 0.94 + fs * 2.2, kx = g.right - kw;
-      if (kx > ul + fs * 1.5) key = { text: gk, x: kx, ly: fs * 0.85, ty: fs * 1.2, w: kw };
-      else if (fs >= 13 && kw <= g.right - fs) key = { text: gk, x: kx, ly: fs * 2.15, ty: fs * 2.5, w: kw };
-      if (key) boxes.push({ x0: key.x - 2, x1: g.right + 2, y0: key.ty - fs * 0.95, y1: key.ty + fs * 0.3 });
+      var kw = widthOf(gk, fs) * 0.94 + fs * 2.2;
+      if (kw <= g.right - g.L + fs) { key = { text: gk, x: g.L, ly: fs * 2.15, ty: fs * 2.5, w: kw }; boxes.push({ x0: g.L - 2, x1: g.L + kw + 2, y0: key.ty - fs * 0.95, y1: key.ty + fs * 0.3 }); }
     }
     var ext = 0;   // a first-point label may dip just under the lowest gridline when the line leaves no room above
     var bound = function (b, outside) {
@@ -206,11 +204,11 @@
     var failed = [];
     var place = function (L) {
       var w = widthOf(L.text, fs, L.bold), step = fs * 0.35, span = g.base - g.T + fs * 2;
-      ext = L.kind === 'start' ? fs * 0.9 : 0;
+      ext = L.kind === 'start' || L.kind === 'gap' ? fs * 0.9 : 0;
       var win = L.win || [L.y - fs * 3, L.y + fs * 3];   // stay near what it names; else go outside
       for (var n = 0; n * step < span; n++) {
-        for (var sgn = n ? -1 : 1; sgn <= 1; sgn += 2) {
-          var y = L.y + sgn * n * step;
+        for (var si = 0, sgs = n ? (L.down ? [1, -1] : [-1, 1]) : [1]; si < sgs.length; si++) {
+          var sgn = sgs[si], y = L.y + sgn * n * step;
           if (y < win[0] || y > win[1]) continue;
           // a centred label slides sideways (a little) to stay inside the plot and off its neighbours
           for (var dxi = 0; dxi < (L.anchor === 'middle' ? 9 : 1); dxi++) {
@@ -236,14 +234,15 @@
     var main = view.series.filter(function (s) { return !s.faint && s.points.length; });
     main.filter(function (s) { return !hide[s.key]; }).map(function (s) { return { s: s, v: s.points[s.points.length - 1].v }; })
       .sort(function (a, b) { return b.v - a.v; }).forEach(function (e, i) {
-        var y = i === 0 ? g.y(e.v) - fs * 0.6 : g.y(e.v) + fs * 1.3;
-        var lp = e.s.points[e.s.points.length - 1];
-        labels.push({ kind: 'end', s: e.s, text: e.s.endText ? e.s.endText(lp) : e.s.name + ' ' + fmt(e.v), x: ex, y: y, anchor: 'end', bold: true });
+        var lp = e.s.points[e.s.points.length - 1], pv = e.s.points[e.s.points.length - 2];
+        var down = i === 0 && pv && g.y(pv.v) < g.y(e.v) - 2;   // a line falling into its end: the free side is below it
+        var y = i === 0 && !down ? g.y(e.v) - fs * 0.6 : g.y(e.v) + fs * 1.3;
+        labels.push({ kind: 'end', s: e.s, text: e.s.endText ? e.s.endText(lp) : e.s.name + ' ' + fmt(e.v), x: ex, y: y, anchor: 'end', bold: true, down: down });
       });
     // the first point named too, where the series asks for it: its year and value
     main.filter(function (s) { return !hide[s.key] && s.startText && s.points.length > 1; }).forEach(function (s) {
-      var p0 = s.points[0];
-      labels.push({ kind: 'start', s: s, text: s.startText(p0), x: g.x(p0.d) + fs * 0.7, y: g.y(p0.v) - fs * 0.9, anchor: 'start', bold: true, optional: true });
+      var p0 = s.points[0], nx = s.points[1], dn = g.y(nx.v) < g.y(p0.v) - 2;   // the line leaves upward: the free side is below
+      labels.push({ kind: 'start', s: s, text: s.startText(p0), x: g.x(p0.d) + fs * 0.7, y: g.y(p0.v) + (dn ? fs * 1.5 : -fs * 0.9), anchor: 'start', bold: true, optional: true, down: dn });
     });
     (cfg.bands || []).forEach(function (b) {
       if (hide[b.a] || hide[b.b]) return;
@@ -259,7 +258,7 @@
       labels.push({ kind: 'end', off: true, s: s, text: s.name + ' ' + fmt(s.points[s.points.length - 1].v), x: g.right, y: g.T + fs * 0.3, anchor: 'end', bold: true, win: [0, g.base] });
     });
     // "no survey" under each dashed stretch, as near as it fits
-    if (cfg.gapLabel) lay_gaps(segs, cfg, fs).forEach(function (q) { labels.push({ kind: 'gap', s: q.s, text: q.text, x: q.x, y: q.y, anchor: 'middle', optional: true, win: [q.y - fs * 2.2, q.y + fs * 2.2] }); });
+    if (cfg.gapLabel) lay_gaps(segs, cfg, fs).forEach(function (q) { labels.push({ kind: 'gap', s: q.s, text: q.text, x: q.x, y: q.y, anchor: 'middle', optional: true, win: [q.y - fs * 4.4, q.y + fs * 2.2] }); });
     labels.forEach(place);
     if (failed.length && !gutter) {
       var wide = Math.max.apply(null, failed.map(function (L) { return widthOf(L.text, fs, L.bold); }));
@@ -304,12 +303,9 @@
       // whole years, an even step that lands on the latest year: every year up to ten, else 3 (wide) or 6 (phone)
       var y0 = +view.from.slice(0, 4), y1 = +view.to.slice(0, 4), span = y1 - y0, wide = (g.right - g.L) / fs >= 34, stp = span <= 10 ? 1 : wide ? 3 : 6;
       while (span / stp + 1 > (wide ? 11 : 6) && span > 10) stp += 3;
-      var per = (g.right - g.L) / Math.max(1, span) * stp;
+      while (stp < 3 && span > 1 && (g.right - g.L) / span * stp < fs * 3.6) stp++;   // four-digit years need their room: every second year, never short years
       var yl = []; for (var yy = y1; yy >= y0; yy -= stp) yl.unshift(yy);
-      yl.forEach(function (yv) {
-        var lt = per >= fs * 3.6 ? String(yv) : '\u2019' + String(yv).slice(2);
-        o.push(txt(g.x(yv + '-01-01'), H - fs * 0.5, lt, f + 'fill:' + P.dim, 'middle'));
-      });
+      yl.forEach(function (yv) { o.push(txt(g.x(yv + '-01-01'), H - fs * 0.5, String(yv), f + 'fill:' + P.dim, 'middle')); });
       want = 0;
     }
     var rep0 = (view.series.filter(function (s) { return !s.faint && s.points.length; })[0] || { points: [] }).points;
@@ -334,7 +330,7 @@
     // the key for dashed stretches (placed in layout so no label lands on it)
     if (lay.key) {
       var K = lay.key;
-      o.push('<line x1="' + f1(K.x) + '" x2="' + f1(K.x + fs * 1.5) + '" y1="' + f1(K.ly) + '" y2="' + f1(K.ly) + '" style="stroke:' + P.mut + ';stroke-width:2;stroke-opacity:.8;stroke-dasharray:' + fs / 4 + ' ' + fs / 3 + '"/>');
+      o.push('<line x1="' + f1(K.x) + '" x2="' + f1(K.x + fs * 1.5) + '" y1="' + f1(K.ly) + '" y2="' + f1(K.ly) + '" style="stroke:' + col(view.series.filter(function (q) { return !q.faint && q.points.length; })[0]) + ';stroke-width:2;stroke-opacity:.6;stroke-dasharray:' + fs / 4 + ' ' + fs / 3 + '"/>');
       o.push(txt(K.x + fs * 2.2, K.ty, K.text, f + 'fill:' + P.mut, 'start', 'agc-gk'));
     }
     // bands: one polygon per stretch with no missing days
