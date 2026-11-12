@@ -106,11 +106,13 @@
     function show() {
       if (!hits.length) { close(); return; }
       var more = hits.length - SHOW, q = norm(input.value), sq = splitState(input.value);
+      var tip = 'Tap a county to open its rain page.';
       list.innerHTML = shown().map(function (h, i) {
         return '<li role="option" id="' + lid + '-' + i + '" aria-selected="' + (i === act) + '" data-i="' + i + '">' + esc(h.name) + ', ' + h.st
+          + (h.via ? ' <small>' + esc(h.via) + '</small>' : '')
           + (h.near ? ' <small>No station with a full year. Opens ' + esc(h.near) + ', the nearest.</small>' : '') + '</li>';
-      }).join('') + (more > 0 ? '<li role="presentation" class="rc-find-more">' + more + ' more: '
-        + (sq.st ? 'type more of the name' : 'add the state, e.g. ' + esc(q) + ' ' + hits[0].st.toLowerCase()) + '</li>' : '');
+      }).join('') + '<li role="presentation" class="rc-find-more">' + tip + (more > 0 ? ' ' + more + ' more: '
+        + (sq.st ? 'type more of the name.' : 'add the state, e.g. ' + esc(q) + ' ' + hits[0].st.toLowerCase() + '.') : '') + '</li>';
       list.hidden = false; input.setAttribute('aria-expanded', 'true');
       if (act >= 0) input.setAttribute('aria-activedescendant', lid + '-' + act); else input.removeAttribute('aria-activedescendant');
     }
@@ -126,6 +128,7 @@
           var h = match(idx, r[4] + ' ' + r[3], r[3]).filter(function (x) { return x.st === r[3]; })[0];
           if (!h) { say('No rain page for ' + r[4] + ', ' + r[3] + '.'); return null; }
           say('ZIP ' + z + ' is in ' + h.name + ', ' + h.st + '.');
+          h.via = 'ZIP ' + z + (r[2] ? ', ' + r[2] : '');
           return h;
         });
     }
