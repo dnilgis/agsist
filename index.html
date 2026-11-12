@@ -1354,7 +1354,7 @@ try {
       var symbol=sym.value, direction=dir.value;
       var targetCents=Math.round(dollars*100);
       var label=((window.__r7paLabel&&window.__r7paLabel(symbol))||PA_LABELS[symbol]||symbol)+' '+(direction==='above'?'above':'below')+' $'+dollars.toFixed(2);
-      var pid=paId(symbol,direction,targetCents);
+      var pid=paId((window.__r7paKey&&window.__r7paKey(symbol))||symbol,direction,targetCents);
       go.disabled=true; go.textContent='Sending…'; status.textContent=''; status.style.color='var(--text-muted)';
       fetch(PA_WORKER+'/price-watch-subscribe',{
         method:'POST',

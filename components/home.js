@@ -1861,6 +1861,9 @@ try {
      that today's price has not already crossed. */
   var BASE={'corn':'Corn, front month','corn-dec':'Corn','beans':'Soybeans, front month','beans-nov':'Soybeans','wheat':'Chicago SRW wheat, front month','cattle':'Live cattle, front month'};
   window.__r7paLabel=function(v){var o=document.querySelector('#pa-symbol option[value="'+v+'"]');return o?(o.getAttribute('data-short')||o.textContent):v;};
+  /* Nov 12: a dated option's alert id is made from its contract (beans-nov27), so Nov '26 and Nov '27 at one target
+     are two alerts, not one (the worker keeps the first of an id). null for a front-month option: its id stays as it was. */
+  window.__r7paKey=function(v){var o=document.querySelector('#pa-symbol option[value="'+v+'"]');return (o&&/-[a-z]{3}$/.test(v)&&o.getAttribute('data-key'))||null;};
   pricesOnce().then(function(pd){
     var sel=$('pa-symbol'),dir=$('pa-direction'),tgt=$('pa-target'),now=$('r7-pa-now');if(!sel||!pd||!pd.quotes)return;
     /* 2026-10-17: an expired month (Dec '26 after its last trade) rolls to the next live one, the
