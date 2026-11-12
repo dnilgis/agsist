@@ -90,13 +90,13 @@
     list.setAttribute('aria-label', 'Matching counties');
     var msg = doc.createElement('p');
     msg.className = 'rc-find-m'; msg.setAttribute('aria-live', 'polite');
-    form.appendChild(list); form.appendChild(msg);
+    form.appendChild(msg);
     /* our own clear button (the browser's stock one is blue and off the palette); the input sits in a wrapper */
     var wrap = doc.createElement('span'), clr = doc.createElement('button');
     wrap.className = 'rc-find-w'; input.parentNode.insertBefore(wrap, input); wrap.appendChild(input);
     clr.type = 'button'; clr.className = 'rc-find-x'; clr.hidden = true; clr.setAttribute('aria-label', 'Clear');
     clr.innerHTML = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
-    wrap.appendChild(clr);
+    wrap.appendChild(clr); wrap.appendChild(list);   // the list sits under the input, as wide as it
     input.setAttribute('role', 'combobox'); input.setAttribute('aria-autocomplete', 'list');
     input.setAttribute('aria-controls', lid); input.setAttribute('aria-expanded', 'false');
 
@@ -106,7 +106,7 @@
     function show() {
       if (!hits.length) { close(); return; }
       var more = hits.length - SHOW, q = norm(input.value), sq = splitState(input.value);
-      var tip = 'Tap a county to open its rain page.';
+      var h0 = hits[0], tip = (hits.length === 1 && h0.via) ? 'Opens ' + h0.name + '\u2019s rain page, the county ' + h0.via.split(',')[0] + ' sits in.' : 'Tap a county to open its rain page.';
       list.innerHTML = shown().map(function (h, i) {
         return '<li role="option" id="' + lid + '-' + i + '" aria-selected="' + (i === act) + '" data-i="' + i + '">' + esc(h.name) + ', ' + h.st
           + (h.via ? ' <small>' + esc(h.via) + '</small>' : '')
