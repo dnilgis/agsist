@@ -564,3 +564,24 @@ html[data-theme="light"] .ch-ba.part{opacity:.75}
 @media (max-width:640px){.hp-mkc{min-height:589px}}
 /* the normal bar edged a shade darker in dark mode, apart from the gold beside it */
 html:not([data-theme="light"]) .ch-bn{stroke:#3e484e;stroke-width:1}
+/* Your markets (Nov 12): the line under the futures heading and its panel, which floats over the card (takes no room) */
+.hp-futc{position:relative}
+.hp-mkp{position:relative;margin:0 0 .4rem}
+html:not(.hp-js) .hp-mkp{display:none}
+.hp-mkp-now{margin:0;font-size:.82rem;line-height:1.35;color:var(--text-muted)}
+.hp-mkp-now #hp-mkp-t{font-weight:600;color:var(--text-dim)}
+#hp-mkp-b{background:none;border:0;padding:0 .3rem;margin:-12px 0;min-height:44px;min-width:44px;font:inherit;font-weight:700;color:var(--brand);cursor:pointer;text-decoration:underline;text-underline-offset:2px}
+#hp-mkp-b[aria-expanded="true"]{text-decoration:none}
+.hp-mkp-pop{position:absolute;left:0;top:calc(100% + 4px);z-index:30;width:min(19rem,100%);background:var(--surface);border:1px solid var(--border-2,var(--border));border-radius:10px;box-shadow:0 10px 30px rgba(0,0,0,.35);padding:.7rem .9rem .8rem}
+.hp-mkp-pop[hidden]{display:none}
+.hp-mkp-pop fieldset{border:0;margin:0;padding:0;min-width:0}
+.hp-mkp-pop legend{padding:0;margin:0 0 .15rem;font-size:.84rem;font-weight:700;color:var(--text)}
+.hp-mkp-pop label{display:flex;align-items:center;gap:.6rem;min-height:44px;font-size:.92rem;color:var(--text);cursor:pointer}
+.hp-mkp-pop input{width:1.15rem;height:1.15rem;margin:0;accent-color:var(--brand);flex:none}
+.hp-mkp-pop label:has(input:disabled){color:var(--text-muted);cursor:default}
+.hp-mkp-msg{margin:.2rem 0 0;font-size:.78rem;line-height:1.35;color:var(--text-dim);min-height:2.7em}
+.hp-mkp-row{display:flex;justify-content:space-between;gap:.5rem;margin-top:.35rem}
+.hp-mkp-row .hp-btn{font-size:.84rem;padding:.4rem .75rem}
+.hp-mkp-fine{margin:.45rem 0 0;font-size:.74rem;color:var(--text-muted)}
+.hp-fh .hb-none{font-size:1rem;font-weight:600;color:var(--text-muted)}
+@media (min-width:641px){.hp-futc .hp-take{min-height:4.05em}}

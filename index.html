@@ -10,7 +10,7 @@
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
   <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/css/home.css?v=45">
+  <link rel="stylesheet" href="/css/home.css?v=46">
   <link rel="stylesheet" href="/components/cb-myelev.css?v=2">
   <script src="/components/saved-place.js?v=1"></script>
   <script src="/components/util.js?v=20"></script>
@@ -212,6 +212,21 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     <div class="hp-col">
       <section class="hp-card hp-futc hp-grow" id="f-prices" aria-labelledby="hp-fut-h">
         <div class="hp-k"><h2 id="hp-fut-h">Futures, weekly closes</h2><a href="/markets" data-track="markets">All markets</a></div>
+        <div class="hp-mkp" id="hp-mkp">
+          <p class="hp-mkp-now"><span id="hp-mkp-t">Your markets: Corn, Soybeans</span> <button type="button" id="hp-mkp-b" aria-expanded="false" aria-controls="hp-mkp-pop">Change<span class="vh"> the two markets on these charts</span></button></p>
+          <div class="hp-mkp-pop" id="hp-mkp-pop" hidden>
+            <fieldset><legend>Pick two markets for these charts</legend>
+              <label><input type="checkbox" value="corn"> Corn</label>
+              <label><input type="checkbox" value="soybean"> Soybeans</label>
+              <label><input type="checkbox" value="wheat"> Wheat (Chicago SRW)</label>
+              <label><input type="checkbox" value="cattle"> Live cattle</label>
+              <label><input type="checkbox" value="feeders"> Feeder cattle</label>
+            </fieldset>
+            <p class="hp-mkp-msg" role="status" aria-live="polite"></p>
+            <div class="hp-mkp-row"><button type="button" class="hp-btn" data-mkp="reset">Back to corn and soybeans</button><button type="button" class="hp-btn p" data-mkp="done">Done</button></div>
+            <p class="hp-mkp-fine">Saved on this device. No account.</p>
+          </div>
+        </div>
         <div class="hp-fut" id="hb-fc">
           <div class="hp-fh">
             <div><div class="n" id="hb-fc-k"><!--
@@ -241,6 +256,15 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <div class="hp-chart" id="hp-ch-soy"><div class="hp-cmsg"></div></div>
         </div>
         <p class="pl-line hp-pl" data-state-bid="corn soybeans" hidden></p>
+        <script>/* the reader's two markets (components/home-page.js MKT): a slot holding another market than the page was built with drops the built price until its own arrives */
+        try{(function(){var M={corn:['Corn','corn',0],soybean:['Soybeans','soybean',0],wheat:['Wheat','Chicago wheat',0],cattle:['Live cattle','live cattle',1],feeders:['Feeder cattle','feeder cattle',1]},O=['corn','soybean','wheat','cattle','feeders'],D=['corn','soybean'],p=[],s='';
+        try{s=localStorage.getItem('agsist-home-markets')||'';}catch(e){}
+        s.split(',').forEach(function(k){k=k.trim();if(M[k]&&p.indexOf(k)<0)p.push(k);});
+        if(p.length!==2)return;p.sort(function(a,b){return O.indexOf(a)-O.indexOf(b);});
+        var t=document.getElementById('hp-mkp-t');if(t)t.textContent='Your markets: '+M[p[0]][0]+', '+M[p[1]][0];
+        ['fc','fs'].forEach(function(id,i){var k=p[i],m=M[k];if(k===D[i])return;var g=function(x){return document.getElementById('hb-'+id+x);},u=document.querySelector('#hb-'+id+' .hp-big .u');
+        if(g('-k'))g('-k').textContent=m[0]+' futures';if(g('-v'))g('-v').innerHTML='<span class="hb-n"><span class="hp-skel" aria-hidden="true"></span><span class="vh">Loading</span></span>';if(g('-s'))g('-s').innerHTML='&nbsp;';if(u)u.textContent=m[2]?'per cwt':'per bushel';});
+        var l=document.querySelector('#f-prices .pl-line');if(l)l.setAttribute('data-state-bid',p.filter(function(k){return k==='corn'||k==='soybean';}).map(function(k){return k==='soybean'?'soybeans':k;}).join(' '));})();}catch(e){}</script>
         <script>try{AgPxStamp.reserve(document.querySelector('#f-prices .pl-line'));}catch(e){}</script>
         <p class="hp-src" id="hp-fut-src">Chicago futures; your elevator&rsquo;s cash bid is futures plus its basis. Weekly closes of the front month (contracts roll inside the line), then today&rsquo;s price of the contract named above. Yahoo Finance, delayed 10 to 25 min.</p>
       </section>
@@ -542,6 +566,6 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 <script src="/components/cb-myelev.js?v=9" defer></script>
 <script src="/components/report-live.js?v=1" defer></script>
 <script src="/components/happening.js?v=5" defer></script>
-<script src="/components/home-page.js?v=2" defer></script>
+<script src="/components/home-page.js?v=3" defer></script>
 </body>
 </html>

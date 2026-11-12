@@ -104,12 +104,13 @@
   function money2(v) { return '$' + f1(v, 2); }
   function attr(pal, k) { return pal && pal[k] ? ' style="' + pal[k] + '"' : ''; }
 
-  /* futures line chart. ds: Dates, vs: dollars, cur: the label on today's point. pal: inline styles (the saved picture) */
+  /* futures line chart. ds: Dates, vs: dollars, cur: the label on today's point. pal: inline styles (the saved picture).
+     A market other than a grain passes its own axis label (ax(v, step)), price (px(v)) and tick steps (MKT below). */
   function lineSvg(o) {
     var ds = o.d, vs = o.v, w = o.w, h = o.h, fs = o.fs || 12, pal = o.pal || null, uid = o.uid || 'c';
     var pl = Math.max(50, Math.ceil(fs * 4.5)), pr = 96, pt = 18, pb = 28;
     var mn = Math.min.apply(null, vs), mx = Math.max.apply(null, vs);
-    var t = nice(mn, mx, [0.05, 0.1, 0.25, 0.5, 1, 2]);
+    var t = nice(mn, mx, o.steps || [0.05, 0.1, 0.25, 0.5, 1, 2]), ax = o.ax || money2, pxf = o.px || pxSlash;
     var y0 = t.lo, y1 = t.hi, t0 = ds[0].getTime(), t1 = ds[ds.length - 1].getTime();
     var X = function (d) { return pl + (d.getTime() - t0) / (t1 - t0) * (w - pl - pr); };
     var Y = function (v) { return pt + (y1 - v) / (y1 - y0) * (h - pt - pb); };
@@ -118,7 +119,7 @@
     for (var v = y0; v <= y1 + 1e-9; v += t.step) {
       var y = Y(v);
       o2.push('<line class="ch-grid"' + attr(pal, 'grid') + ' x1="' + pl + '" x2="' + (w - pr + 8) + '" y1="' + y.toFixed(1) + '" y2="' + y.toFixed(1) + '"/>');
-      o2.push('<text class="ch-ax"' + attr(pal, 'ax') + ' x="' + (pl - 8) + '" y="' + (y + 4).toFixed(1) + '" text-anchor="end">' + money2(v) + '</text>');
+      o2.push('<text class="ch-ax"' + attr(pal, 'ax') + ' x="' + (pl - 8) + '" y="' + (y + 4).toFixed(1) + '" text-anchor="end">' + esc(ax(v, t.step)) + '</text>');
     }
     var yb = h - pb;
     o2.push('<line class="ch-base"' + attr(pal, 'base') + ' x1="' + pl + '" x2="' + (w - pr + 8) + '" y1="' + yb + '" y2="' + yb + '"/>');
@@ -141,7 +142,7 @@
     if (hi < vs.length - 1) {
       o2.push('<circle class="ch-hi"' + attr(pal, 'hi') + ' cx="' + xh.toFixed(1) + '" cy="' + yh.toFixed(1) + '" r="3"/>');
       var anc = xh < pl + 60 ? 'start' : 'middle';
-      o2.push('<text class="ch-note"' + attr(pal, 'note') + ' x="' + xh.toFixed(1) + '" y="' + (yh - 8).toFixed(1) + '" text-anchor="' + anc + '">High ' + pxSlash(vs[hi]) + ', ' + md(ds[hi]) + '</text>');
+      o2.push('<text class="ch-note"' + attr(pal, 'note') + ' x="' + xh.toFixed(1) + '" y="' + (yh - 8).toFixed(1) + '" text-anchor="' + anc + '">High ' + esc(pxf(vs[hi])) + ', ' + md(ds[hi]) + '</text>');
     }
     var xc = X(ds[ds.length - 1]), yc = Y(vs[vs.length - 1]);
     o2.push('<line class="ch-cur-l"' + attr(pal, 'curl') + ' x1="' + pl + '" x2="' + xc.toFixed(1) + '" y1="' + yc.toFixed(1) + '" y2="' + yc.toFixed(1) + '"/>');
@@ -322,9 +323,49 @@
     s.push('<text x="' + (W - 48) + '" y="' + (H - 40) + '" fill="#d4a23f" font-size="24" font-weight="700" text-anchor="end">agsist.com</text></svg>');
     return s.join('');
   }
+
+  /* ---------- "Your markets": which two markets fill the two futures slots (owner, Nov 12) ----------
+     The markets with weekly closes in data/price-stats.json. Grains are quoted in cents in data/prices.json and print
+     to the quarter cent (AG.px); cattle are quoted in dollars per cwt and print to the board's tick, never more than
+     three places ($218.975). Only corn and soybeans carry the state basis line under the charts. The choice is saved
+     on this device (localStorage MK_KEY, "corn,soybean"); anything else, or no storage, is corn and soybeans. */
+  var MKT = {
+    corn: { px: 'corn', name: 'Corn', word: 'corn', chart: 'Corn', unit: 'per bushel', per: 'a bushel', cents: true, basis: 'corn' },
+    soybean: { px: 'beans', name: 'Soybeans', word: 'soybean', chart: 'Soybean', unit: 'per bushel', per: 'a bushel', cents: true, basis: 'soybeans' },
+    wheat: { px: 'wheat', name: 'Wheat', pick: 'Wheat (Chicago SRW)', word: 'Chicago wheat', chart: 'Chicago wheat', unit: 'per bushel', per: 'a bushel', cents: true },
+    cattle: { px: 'cattle', name: 'Live cattle', word: 'live cattle', chart: 'Live cattle', unit: 'per cwt', per: 'per cwt', cents: false },
+    feeders: { px: 'feeders', name: 'Feeder cattle', word: 'feeder cattle', chart: 'Feeder cattle', unit: 'per cwt', per: 'per cwt', cents: false }
+  };
+  var MK_ORDER = ['corn', 'soybean', 'wheat', 'cattle', 'feeders'], MK_DEFAULT = ['corn', 'soybean'], MK_KEY = 'agsist-home-markets';
+  var CWT_STEPS = [0.5, 1, 2, 2.5, 5, 10, 20, 25, 50, 100];
+  /* "cattle,feeders" -> ['cattle', 'feeders']; two different known markets in the menu's order, else the default */
+  function mkParse(s) {
+    var out = [];
+    String(s == null ? '' : s).split(',').forEach(function (k) { k = k.trim(); if (MKT[k] && out.indexOf(k) < 0) out.push(k); });
+    if (out.length !== 2) return MK_DEFAULT.slice();
+    return out.sort(function (a, b) { return MK_ORDER.indexOf(a) - MK_ORDER.indexOf(b); });
+  }
+  /* dollars per cwt to the tick: two places, three when the price has a half tick ($218.975), a true minus */
+  function cwt(v, o) {
+    if (!num(v)) return '';
+    var r = Math.round(Math.abs(v) * 1000) / 1000, t = r.toFixed(3);
+    if (t.slice(-1) === '0') t = r.toFixed(2);
+    var sg = o && o.sign ? (v > 0 && r ? '+' : v < 0 && r ? '−' : '') : (v < 0 && r ? '−' : '');
+    return sg + '$' + t;
+  }
+  /* one market's printers. A: AG.px in the page (null in node: whole cents). price(d) and move(d) take dollars. */
+  function mkFmt(key, A) {
+    var m = MKT[key] || MKT.corn;
+    if (!m.cents) return { price: function (d) { return cwt(d); }, move: function (d) { return cwt(d, { sign: true }); },
+      ax: function (v, step) { return step >= 1 ? '$' + Math.round(v) : cwt(v); }, steps: CWT_STEPS };
+    return { price: function (d) { return A && A.priceDollars ? A.priceDollars(d, { style: 'slash' }).replace(/<[^>]+>/g, '') : money2(d); },
+      move: function (d) { return A && A.move ? A.move(d * 100, { style: 'slash', sign: true }) : (d > 0 ? '+' : d < 0 ? '−' : '') + Math.round(Math.abs(d) * 100) + '¢'; },
+      ax: money2, steps: null };
+  }
   var words = { basis: basisWords, county: countyName, quarters: quarters };
 
-  var api = { postedRange: postedRange, takeaway: takeaway, barSvg: barSvg, lineSvg: lineSvg, cumSvg: cumSvg, landSvg: landSvg, cardSvg: cardSvg, nice: nice, fridays: fridays, county: county, words: words };
+  var api = { postedRange: postedRange, takeaway: takeaway, barSvg: barSvg, lineSvg: lineSvg, cumSvg: cumSvg, landSvg: landSvg, cardSvg: cardSvg, nice: nice, fridays: fridays, county: county, words: words,
+    markets: { MKT: MKT, ORDER: MK_ORDER, DEFAULT: MK_DEFAULT, KEY: MK_KEY, parse: mkParse, fmt: mkFmt, cwt: cwt } };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgHomePage = api;
   var doc = root.document;
@@ -613,7 +654,15 @@
 
   /* ---- futures: the header from data/prices.json, the charts from data/price-stats.json ---- */
   var PX = null, STATS = null;
-  var CROPS = [['corn', 'fc', 'corn', 'hp-ch-corn', 'Corn'], ['beans', 'fs', 'soybean', 'hp-ch-soy', 'Soybean']];
+  /* the two slots on the card; which market fills each is the reader's choice (MKT, mkParse). The element ids keep
+     their first names (hb-fc, hp-ch-corn) whatever market a slot holds; SPECS and the Share buttons go by slot. */
+  var SLOTS = [{ id: 'fc', box: 'hp-ch-corn', spec: 'corn' }, { id: 'fs', box: 'hp-ch-soy', spec: 'soy' }];
+  var PICK = mkRead(), SWAPPED = false;
+  function mkRead() { try { return mkParse(root.localStorage.getItem(MK_KEY)); } catch (e) { return MK_DEFAULT.slice(); } }
+  function mkSave(p) { try { if (p.join(',') === MK_DEFAULT.join(',')) root.localStorage.removeItem(MK_KEY); else root.localStorage.setItem(MK_KEY, p.join(',')); } catch (e) {} }
+  function slots() { return SLOTS.map(function (s, i) { return { id: s.id, box: s.box, spec: s.spec, key: PICK[i], m: MKT[PICK[i]] }; }); }
+  /* a slot still shows what the page was built with (the seeded corn or soybean price) until the reader swaps */
+  function seeded(c) { return !SWAPPED && c.key === MK_DEFAULT[c.id === 'fc' ? 0 : 1]; }
   /* expired contracts roll off (AgPxStamp.roll: corn-dec on Jan 2 is the next live Dec), then the headline contract */
   function headline(crop) {
     try { var S = root.AgPxStamp, q = PX && PX.quotes; if (!S || !q) return null; if (S.roll) q = S.roll(q); return root.AgPxStamp.headline({ quotes: q, nearby: PX.nearby }, crop); } catch (e) { return null; }
@@ -626,15 +675,25 @@
     while (g++ < 7) { var iso = d.toISOString().slice(0, 10), w = d.getUTCDay(); if (w > 0 && w < 6 && (!S || !S.isTradingDay || S.isTradingDay(iso))) return iso; d = addDays(d, -1); }
     return d.toISOString().slice(0, 10);
   }
+  /* a slot with no quote for its market says so; the seeded price of another market never sits under its name */
+  function noQuote(c, t) {
+    txt('hb-' + c.id + '-k', c.m.chart + ' futures');
+    html('hb-' + c.id + '-v', '<span class="hb-n hb-none">' + esc(t) + '</span>');
+    html('hb-' + c.id + '-s', '&nbsp;');
+    var cell = $('hb-' + c.id); if (cell) cell.classList.remove('px-old');
+  }
   function paintHeader() {
     var A = root.AG && root.AG.px;
-    if (!PX || !A) return;
-    CROPS.forEach(function (c) {
-      var h = headline(c[0]); if (!h || !h.q || !num(h.q.close)) return;
-      var q = h.q;
-      var tm = /^Z[CS]([FGHJKMNQUVXZ])(\d{2})/.exec(String(q.ticker || '')), lab = tm ? MON['FGHJKMNQUVXZ'.indexOf(tm[1])] + ' \u2019' + tm[2] : (h.label ? String(h.label).replace(/'/g, '\u2019') : '');
-      txt('hb-' + c[1] + '-k', (lab ? lab + ' ' : '') + c[2] + ' futures');
-      html('hb-' + c[1] + '-v', '<span class="hb-n">' + A.price(q.close, { style: 'slash', fracClass: 'hb-frac' }) + '</span>');
+    slots().forEach(function (c) {
+      var cell = $('hb-' + c.id), u = cell && cell.querySelector('.hp-big .u');
+      if (u) u.textContent = c.m.unit;
+      if (cell) cell.setAttribute('data-mk', c.key);
+      if (!PX || !A) { if (!seeded(c)) noQuote(c, PX ? 'No quote' : 'Prices did not load'); return; }
+      var h = headline(c.m.px); if (!h || !h.q || !num(h.q.close)) { if (!seeded(c)) noQuote(c, 'No quote'); return; }
+      var q = h.q, F = mkFmt(c.key, A), dol = function (x) { return c.m.cents ? x / 100 : x; };
+      var tm = /^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})/.exec(String(q.ticker || '')), lab = tm ? MON['FGHJKMNQUVXZ'.indexOf(tm[1])] + ' ’' + tm[2] : (h.label ? String(h.label).replace(/'/g, '’') : '');
+      txt('hb-' + c.id + '-k', (lab ? lab + ' ' : '') + c.m.word + ' futures');
+      html('hb-' + c.id + '-v', '<span class="hb-n">' + (c.m.cents ? A.price(q.close, { style: 'slash', fracClass: 'hb-frac' }) : esc(F.price(q.close))) + '</span>');
       var S = root.AgPxStamp || {}, held = !!(q.move_withheld || q.roll);
       /* the change only as AgPxStamp.change pairs it with this price (audit Q16): never close minus open, which is not a day's move */
       var cc = null; try { cc = S.change ? S.change(q, h.key) : null; } catch (e) { cc = null; }
@@ -642,74 +701,143 @@
       if (held) chg = '<span class="hb-l"><span class="hb-n hb-chg nc">contract roll</span></span>';
       else if (num(diff)) {
         var cl = diff > 0 ? 'up' : diff < 0 ? 'dn' : 'nc';
-        var ar = diff > 0 ? '<span aria-hidden="true">\u25b2 </span><span class="vh">up </span>' : diff < 0 ? '<span aria-hidden="true">\u25bc </span><span class="vh">down </span>' : '';
-        chg = '<span class="hb-l"><span class="hb-n hb-chg ' + cl + '">' + ar + A.move(diff, { style: 'slash', sign: true }) + '</span></span>';
+        var ar = diff > 0 ? '<span aria-hidden="true">▲ </span><span class="vh">up </span>' : diff < 0 ? '<span aria-hidden="true">▼ </span><span class="vh">down </span>' : '';
+        chg = '<span class="hb-l"><span class="hb-n hb-chg ' + cl + '">' + ar + esc(F.move(dol(diff))) + '</span></span>';
       }
       /* the stamp says when the quote is from; a settle carries its own year and age, and the cell greys once it is
          OLD_SESSIONS behind (components/price-local.js); an older close than the file's day says "Last close" */
       var sa = q.close_kind === 'settle' && S.settleAge ? S.settleAge(q.settle_date || q.close_date) : null;
       var old = !sa && (q.stale === true || (PX.stale_keys || []).indexOf(h.key) >= 0 || (q.close_date && q.close_date < prevSession()));
-      var cell = $('hb-' + c[1]); if (cell) cell.classList.toggle('px-old', !!(sa && sa.old));
+      if (cell) cell.classList.toggle('px-old', !!(sa && sa.old));
       var stamp = ''; try { stamp = S.html ? S.html(q, PX.fetched) : esc(S.shortStamp(q, PX.fetched)); } catch (e) {}
-      var age = old ? '<span class="hb-l hb-old">Last close' + (q.close_date ? ' \u00b7 ' + md(utc(q.close_date)) : '') + '</span>' : (stamp ? '<span class="hb-l hb-age">' + stamp + '</span>' : '');
+      var age = old ? '<span class="hb-l hb-old">Last close' + (q.close_date ? ' · ' + md(utc(q.close_date)) : '') + '</span>' : (stamp ? '<span class="hb-l hb-age">' + stamp + '</span>' : '');
       var ov = '';
-      try { if (!old && !held && S.overnightHtml) ov = S.overnightHtml(q, function (x) { return A.price(x, { style: 'slash' }); }, function (n) { return A.move(n, { style: 'slash', sign: true }); }, null, { short: true }); } catch (e) {}
-      html('hb-' + c[1] + '-s', chg + age + (ov ? '<span class="hb-l hb-ovn">' + ov + '</span>' : '') || '&nbsp;');
+      try { if (!old && !held && S.overnightHtml) ov = S.overnightHtml(q, function (x) { return c.m.cents ? A.price(x, { style: 'slash' }) : F.price(x); }, function (n) { return c.m.cents ? A.move(n, { style: 'slash', sign: true }) : F.move(n); }, null, { short: true }); } catch (e) {}
+      html('hb-' + c.id + '-s', chg + age + (ov ? '<span class="hb-l hb-ovn">' + ov + '</span>' : '') || '&nbsp;');
     });
   }
   function chartData(c) {
-    var key = c[0] === 'corn' ? 'corn' : 'soybean', s = STATS && STATS[key], h = headline(c[0]);
+    var s = STATS && STATS[c.key], h = headline(c.m.px);
     if (!s || !Array.isArray(s.hist) || s.hist.length < 19 || !h || !num(h.q.close)) return null;
     var ds = fridays(s.hist_to, 19, tradingFn()), vs = s.hist.slice(-19);
     if (!ds || vs.some(function (v) { return !num(v) || v <= 0; })) return null;
     var today = utc(h.q.close_date) || ctDay();
     if ((today.getTime() - ds[ds.length - 1].getTime()) / 864e5 > 21) return null;   /* the history is old: no chart */
     if (today.getTime() <= ds[ds.length - 1].getTime()) return null;
-    var A = root.AG && root.AG.px, cur = A ? A.priceDollars(h.q.close / 100, { style: 'slash' }).replace(/<[^>]+>/g, '') : money2(h.q.close / 100);
-    return { d: ds.concat([today]), v: vs.concat([h.q.close / 100]), cur: cur, label: h.label || '' };
+    var F = mkFmt(c.key, root.AG && root.AG.px), now = c.m.cents ? h.q.close / 100 : h.q.close;
+    return { d: ds.concat([today]), v: vs.concat([now]), cur: F.price(now), label: h.label || '', fmt: F.price, F: F };
   }
   function tradingFn() { var S = root.AgPxStamp; return S && S.isTradingDay ? S.isTradingDay : null; }
   function pxSlash(v) { var A = root.AG && root.AG.px; return A && A.priceDollars ? A.priceDollars(v, { style: 'slash' }).replace(/<[^>]+>/g, '') : money2(v); }
   /* one line the chart says, from its own numbers (audit Q5): the move since the first weekly close, named by its
      date, and the distance from the highest weekly close. "At its high" only when today's price is the top of the
-     line; today's price is never called a weekly close. */
+     line; today's price is never called a weekly close. cd.fmt prints the market's price (pxSlash for a grain). */
   function takeaway(cd) {
-    var vs = cd.v, n = vs.length, last = vs[n - 1], first = vs[0], hi = 0;
+    var vs = cd.v, n = vs.length, last = vs[n - 1], first = vs[0], hi = 0, P = cd.fmt || pxSlash;
     for (var i = 1; i < n - 1; i++) if (vs[i] > vs[hi]) hi = i;
     var ch = (last - first) / first * 100, off = (vs[hi] - last) / vs[hi] * 100;
     var a = Math.abs(ch) < 0.5 ? 'About even with ' + md(cd.d[0]) : (ch > 0 ? 'Up ' : 'Down ') + Math.round(Math.abs(ch)) + '% since ' + md(cd.d[0]);
-    var b = last >= vs[hi] ? ', above every weekly close on the chart.' : off < 0.5 ? ', within half a percent of the highest weekly close (' + pxSlash(vs[hi]) + ', ' + md(cd.d[hi]) + ').'
-      : '; ' + Math.round(off) + '% under the highest weekly close, ' + pxSlash(vs[hi]) + ' on ' + md(cd.d[hi]) + '.';
+    var b = last >= vs[hi] ? ', above every weekly close on the chart.' : off < 0.5 ? ', within half a percent of the highest weekly close (' + P(vs[hi]) + ', ' + md(cd.d[hi]) + ').'
+      : '; ' + Math.round(off) + '% under the highest weekly close, ' + P(vs[hi]) + ' on ' + md(cd.d[hi]) + '.';
     return a + b;
   }
   function chartLabel(c, cd) {
-    var vs = cd.v, ds = cd.d, hi = 0; for (var i = 1; i < vs.length; i++) if (vs[i] > vs[hi]) hi = i;
-    return c[4] + ' futures, front-month weekly closes: ' + pxSlash(vs[0]) + ' on ' + md(ds[0]) + ', today ' + pxSlash(vs[vs.length - 1]) + ' on ' + md(ds[ds.length - 1]) + '; highest ' + pxSlash(vs[hi]) + ' on ' + md(ds[hi]) + '.';
+    var vs = cd.v, ds = cd.d, hi = 0, P = cd.fmt || pxSlash; for (var i = 1; i < vs.length; i++) if (vs[i] > vs[hi]) hi = i;
+    return c.m.chart + ' futures, front-month weekly closes, ' + c.m.unit + ': ' + P(vs[0]) + ' on ' + md(ds[0]) + ', today ' + P(vs[vs.length - 1]) + ' on ' + md(ds[ds.length - 1]) + '; highest ' + P(vs[hi]) + ' on ' + md(ds[hi]) + '.';
   }
   function drawCharts() {
-    var ph = phone();
-    CROPS.forEach(function (c) {
-      var box = $(c[3]); if (!box) return;
+    var ph = phone(), list = slots();
+    list.forEach(function (c) {
+      var box = $(c.box); if (!box) return;
+      box.setAttribute('data-mk', c.key);
       var cd = chartData(c), msg = box.querySelector('.hp-cmsg');
-      var old = box.querySelector('svg'); if (old) old.parentNode.removeChild(old);
-      if (!cd) { if (msg) msg.textContent = (STATS ? 'No chart: the weekly price history is not current.' : 'No chart: the price history did not load.'); return; }
+      if (!cd) {
+        var old = box.querySelector('svg'); if (old) old.parentNode.removeChild(old);
+        var ro = box.querySelector('.hp-ro'); if (ro) ro.hidden = true;
+        txt('hp-take-' + c.id, '');
+        delete SPECS[c.spec]; toolsReady();
+        if (msg) msg.textContent = (STATS ? 'No ' + c.m.word + ' chart: the weekly price history is not current.' : 'No chart: the price history did not load.');
+        return;
+      }
       if (msg) msg.textContent = '';
-      var take = takeaway(cd), A = root.AG && root.AG.px, out = {};
-      txt('hp-take-' + c[1], take);
-      var svg = lineSvg({ d: cd.d, v: cd.v, w: ph ? 366 : 446, h: ph ? 190 : 290, fs: fsFor(c[3], ph ? 366 : 446), uid: c[1] + (ph ? 'm' : 'd'), cur: cd.cur, label: chartLabel(c, cd), out: out });
+      var take = takeaway(cd), F = cd.F, out = {};
+      txt('hp-take-' + c.id, take);
+      var svg = lineSvg({ d: cd.d, v: cd.v, w: ph ? 366 : 446, h: ph ? 190 : 290, fs: fsFor(c.box, ph ? 366 : 446), uid: c.id + (ph ? 'm' : 'd'), cur: cd.cur, label: chartLabel(c, cd), out: out, ax: F.ax, px: F.price, steps: F.steps });
       out.svg = svg; out.mode = 'x'; out.label = chartLabel(c, cd);
-      out.text = function (i) { var v = cd.v[i]; return md(cd.d[i]) + (i === cd.v.length - 1 ? ', today: ' : ', weekly close: ') + (A ? A.priceDollars(v, { style: 'slash' }).replace(/<[^>]+>/g, '') : money2(v)); };
+      out.text = function (i) { return md(cd.d[i]) + (i === cd.v.length - 1 ? ', today: ' : ', weekly close: ') + F.price(cd.v[i]) + ' ' + c.m.unit; };
       chart(box, out);
-      SPECS[c[1] === 'fc' ? 'corn' : 'soy'] = function () {
-        return { head: c[4] + ' futures ' + cd.cur + ' a bushel: ' + take.charAt(0).toLowerCase() + take.slice(1), sub: 'Front-month weekly closes since ' + md(cd.d[0]) + ' (contracts roll inside the line), then today' + (cd.label ? '\u2019s ' + cd.label + ' contract' : ''),
-          big: function (w, h) { return lineSvg({ d: cd.d, v: cd.v, w: w, h: h, fs: 16, uid: 'k' + c[1], cur: cd.cur, label: chartLabel(c, cd) }); },
-          source: 'Chicago futures, Yahoo Finance, delayed 10 to 25 min. A cash bid is futures plus the elevator\u2019s basis.', file: c[2] + '-futures', date: cd.d[cd.d.length - 1] };
+      var grain = !!c.m.cents;
+      SPECS[c.spec] = function () {
+        return { head: c.m.chart + ' futures ' + cd.cur + ' ' + c.m.per + ': ' + take.charAt(0).toLowerCase() + take.slice(1), sub: 'Front-month weekly closes since ' + md(cd.d[0]) + ' (contracts roll inside the line), then today' + (cd.label ? '’s ' + cd.label + ' contract' : ''),
+          big: function (w, h) { return lineSvg({ d: cd.d, v: cd.v, w: w, h: h, fs: 16, uid: 'k' + c.id, cur: cd.cur, label: chartLabel(c, cd), ax: F.ax, px: F.price, steps: F.steps }); },
+          source: 'Chicago futures, Yahoo Finance, delayed 10 to 25 min.' + (grain ? ' A cash bid is futures plus the elevator’s basis.' : ' Dollars per hundredweight.'), file: c.key + '-futures', date: cd.d[cd.d.length - 1] };
       };
     });
-    var s0 = STATS && STATS.corn && fridays(STATS.corn.hist_to, 19, tradingFn());
-    var cdh = chartData(CROPS[0]); if (cdh) txt('hp-fut-h', 'Futures, since ' + md(cdh.d[0]));   /* the heading from the chart's own first point, not a week count */
-    var cd0 = chartData(CROPS[0]);
-    if (s0 && cd0) txt('hp-fut-src', 'Chicago futures; your elevator’s cash bid is futures plus its basis. Weekly closes of the front month, ' + md(s0[0]) + ' to ' + md(s0[18]) + ' (contracts roll inside the line); the last point is today’s price of the contract named above. Yahoo Finance, delayed 10 to 25 min.');
+    /* the heading and the source line from the first slot's own points, not a week count */
+    var cd0 = chartData(list[0]), s0 = cd0 && STATS[list[0].key] && fridays(STATS[list[0].key].hist_to, 19, tradingFn());
+    var anyGrain = list.some(function (c) { return c.m.cents; });
+    if (cd0) txt('hp-fut-h', 'Futures, since ' + md(cd0.d[0]));
+    if (s0 && cd0) txt('hp-fut-src', 'Chicago futures' + (anyGrain ? '; your elevator’s cash bid is futures plus its basis' : '') + '. Weekly closes of the front month, ' + md(s0[0]) + ' to ' + md(s0[18]) + ' (contracts roll inside the line); the last point is today’s price of the contract named above. Yahoo Finance, delayed 10 to 25 min.');
+  }
+
+  /* ---- "Your markets: Corn, Soybeans  Change": the reader picks the two markets for the slots ----
+     The panel floats over the card (no room taken, nothing moves); the second tick applies at once and the slots
+     redraw in place in the room they hold. Escape, Done or a click outside closes it and focus goes back to Change. */
+  function mkNames(p) { return p.map(function (k) { return MKT[k].name; }).join(', '); }
+  function mkPaintNow() { txt('hp-mkp-t', 'Your markets: ' + mkNames(PICK)); }
+  function mkApply(p) {
+    PICK = p.slice(); SWAPPED = true; mkSave(PICK); mkPaintNow();
+    paintHeader(); drawCharts(); paintBasisLine();
+    ga('home_markets', { pair: PICK.join('-') });
+  }
+  /* the state basis line under the charts is for corn and soybeans only; it keeps its room while hidden on a swap */
+  function paintBasisLine() {
+    var el = doc.querySelector('#f-prices .pl-line'); if (!el) return;
+    var crops = PICK.map(function (k) { return MKT[k].basis; }).filter(Boolean);
+    el.setAttribute('data-state-bid', crops.join(' '));
+    var keep = function () { var h = el.getBoundingClientRect().height; if (h > 0) el.style.minHeight = h + 'px'; };
+    if (!crops.length) { if (!el.hidden) { keep(); el.innerHTML = ''; el.style.visibility = 'hidden'; el.setAttribute('aria-hidden', 'true'); } return; }
+    var S = root.AgPxStamp, st = ''; try { st = S && S.readState ? S.readState(root.localStorage) : ''; } catch (e) { st = ''; }
+    if (!st || !S || !S.build) return;
+    getJSON('/data/basis-states.json', 8000).then(function (bs) {
+      var h = ''; try { h = S.build(bs, PX, st, crops); } catch (e) { h = ''; }
+      if (PICK.map(function (k) { return MKT[k].basis; }).filter(Boolean).join(' ') !== crops.join(' ')) return;   /* a later pick won */
+      if (h) { if (!el.hidden) keep(); el.innerHTML = h; el.hidden = false; el.style.visibility = ''; el.removeAttribute('aria-hidden'); el.classList.remove('pl-wait'); }
+      else if (!el.hidden) { keep(); el.innerHTML = ''; el.style.visibility = 'hidden'; el.setAttribute('aria-hidden', 'true'); }
+    }, function () {});
+  }
+  function picker() {
+    var btn = $('hp-mkp-b'), pop = $('hp-mkp-pop'); if (!btn || !pop) return;
+    var boxes = Array.prototype.slice.call(pop.querySelectorAll('input[type="checkbox"]')), say = pop.querySelector('.hp-mkp-msg');
+    function ticked() { return boxes.filter(function (b) { return b.checked; }).map(function (b) { return b.value; }); }
+    function sync() {
+      var t = ticked();
+      boxes.forEach(function (b) { b.disabled = t.length >= 2 && !b.checked; });
+      if (say) say.textContent = t.length >= 2 ? 'Showing ' + mkNames(mkParse(t.join(','))) + '. Untick one to pick another.' : t.length === 1 ? 'Pick one more.' : 'Pick two markets.';
+    }
+    function open() {
+      boxes.forEach(function (b) { b.checked = PICK.indexOf(b.value) >= 0; });
+      sync(); pop.hidden = false; btn.setAttribute('aria-expanded', 'true');
+      var f = boxes.filter(function (b) { return !b.disabled; })[0]; if (f) f.focus();
+    }
+    function close(back) { if (pop.hidden) return; pop.hidden = true; btn.setAttribute('aria-expanded', 'false'); if (back) btn.focus(); }
+    btn.addEventListener('click', function () { if (pop.hidden) open(); else close(true); });
+    boxes.forEach(function (b) {
+      b.addEventListener('change', function () {
+        var t = ticked(); sync();
+        if (t.length === 2) { var p = mkParse(t.join(',')); if (p.join(',') !== PICK.join(',')) mkApply(p); }
+      });
+    });
+    pop.addEventListener('click', function (e) {
+      var a = e.target.closest && e.target.closest('[data-mkp]'); if (!a) return;
+      if (a.getAttribute('data-mkp') === 'reset') { boxes.forEach(function (b) { b.checked = MK_DEFAULT.indexOf(b.value) >= 0; }); sync(); if (PICK.join(',') !== MK_DEFAULT.join(',')) mkApply(MK_DEFAULT); }
+      else close(true);
+    });
+    pop.addEventListener('keydown', function (e) { if (e.key === 'Escape') { e.preventDefault(); close(true); } });
+    btn.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(false); });
+    doc.addEventListener('click', function (e) { if (!pop.hidden && !pop.contains(e.target) && e.target !== btn) close(false); });
+    pop.addEventListener('focusout', function (e) { var to = e.relatedTarget; if (to && !pop.contains(to) && to !== btn) close(false); });
+    mkPaintNow();
   }
 
   /* ---- one small chart helper (every chart on this page goes through it; it can move onto a shared chart kit) ----
@@ -1496,7 +1624,7 @@
     getJSON('/data/rain-print.json').then(paintRainPrint, function () {});
     later($('hp-wx'), function () { bandStarted = true; loadBand(); });
     later($('hp-land'), function () { landStarted = true; loadLand(); });
-    priceAlert(); liveTap();
+    priceAlert(); liveTap(); picker();
     if (PHONE) {
       var redraw = function () { drawCharts(); if (bandStarted) { band.zip = ''; loadBand(); } if (landStarted) loadLand(); };
       if (PHONE.addEventListener) PHONE.addEventListener('change', redraw); else if (PHONE.addListener) PHONE.addListener(redraw);
