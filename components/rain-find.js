@@ -101,13 +101,20 @@
     input.setAttribute('aria-controls', lid); input.setAttribute('aria-expanded', 'false');
 
     function say(t) { msg.textContent = t || ''; }
+    /* what this place calls a county: the form says (state and county pages), else the matches do (the hub) */
+    function unit() {
+      var u = form.getAttribute('data-unit');
+      if (u) return u;
+      var w = hits.map(function (x) { var m = /\b(Parish|Borough)$/.exec(x.name); return m ? m[1].toLowerCase() : 'county'; });
+      return w.length && w.every(function (x) { return x === w[0]; }) ? w[0] : 'county';
+    }
     function show_n() { return (root.innerWidth || 1000) < 600 ? 4 : 5; }
     function shown() { return hits.slice(0, show_n()); }
     function close() { list.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); act = -1; }
     function show() {
       if (!hits.length) { close(); return; }
       var SHOW = show_n(), more = hits.length - SHOW, q = norm(input.value), sq = splitState(input.value);
-      var anyNear = shown().some(function (x) { return x.near; }), h0 = hits[0], tip = (hits.length === 1 && h0.via) ? h0.via.split('|')[0] + ' is in ' + h0.name + '.</span><span class="rc-more">Pick it to open its rain page.' : 'Pick a county to open its rain page.';
+      var anyNear = shown().some(function (x) { return x.near; }), h0 = hits[0], tip = (hits.length === 1 && h0.via) ? h0.via.split('|')[0] + ' is in ' + h0.name + '.</span><span class="rc-more">Pick it to open its rain page.' : 'Pick a ' + unit() + ' to open its rain page.';
       list.innerHTML = shown().map(function (h, i) {
         return '<li role="option" id="' + lid + '-' + i + '" aria-selected="' + (i === act) + '" data-i="' + i + '">' + esc(h.name) + ', ' + h.st
           + (h.via && h.via.split('|')[1] ? '<small>' + esc(h.via.split('|')[1]) + '</small>' : '')
@@ -125,7 +132,7 @@
         .then(function (a) {
           if (my !== seq) return null;
           var idx = a[0], t = a[1], r = t && t[z];
-          if (!idx || !Array.isArray(r) || !r[3] || !r[4]) { say('No county found for ZIP ' + z + '. Try the county name.'); return null; }
+          if (!idx || !Array.isArray(r) || !r[3] || !r[4]) { say('No ' + unit() + ' found for ZIP ' + z + '. Try the name.'); return null; }
           var h = match(idx, r[4] + ' ' + r[3], r[3]).filter(function (x) { return x.st === r[3]; })[0];
           if (!h) { say('No rain page for ' + r[4] + ', ' + r[3] + '.'); return null; }
           say('ZIP ' + z + ' is in ' + h.name + ', ' + h.st + '.');
@@ -142,9 +149,9 @@
       if (norm(v).length < 2) { hits = []; close(); return; }
       loadIdx().then(function (idx) {
         if (my !== seq) return;
-        if (!idx) { say('The county list did not load. Try again in a moment.'); return; }
+        if (!idx) { say('The list did not load. Try again in a moment.'); return; }
         hits = match(idx, v, localSt());
-        if (!hits.length) say('No county by that name has a rain page.');
+        if (!hits.length) say('No ' + unit() + ' by that name has a rain page.');
         show();
       });
     }
