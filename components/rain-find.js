@@ -111,7 +111,7 @@
         return '<li role="option" id="' + lid + '-' + i + '" aria-selected="' + (i === act) + '" data-i="' + i + '">' + esc(h.name) + ', ' + h.st
           + (h.via ? ' <small>' + esc(h.via) + '</small>' : '')
           + (h.near ? ' <small>No station with a full year. Opens ' + esc(h.near) + ', the nearest.</small>' : '') + '</li>';
-      }).join('') + '<li role="presentation" class="rc-find-more">' + tip + (more > 0 ? ' ' + more + ' more: '
+      }).join('') + '<li role="presentation" class="rc-find-more">' + tip + (more > 0 ? ' <span class="rc-nw">' + more + ' more:</span> '
         + (sq.st ? 'type more of the name.' : 'add the state, e.g. ' + esc(q) + ' ' + hits[0].st.toLowerCase() + '.') : '') + '</li>';
       list.hidden = false; input.setAttribute('aria-expanded', 'true');
       if (act >= 0) input.setAttribute('aria-activedescendant', lid + '-' + act); else input.removeAttribute('aria-activedescendant');
