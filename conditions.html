@@ -19,15 +19,15 @@
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
   <link rel="manifest" href="/manifest.json">
 
-  <title>Crop Progress, Week Ending Oct 25: Corn 56% Good-Excellent | AGSIST</title>
-  <meta name="description" content="US corn is 56% good to excellent; soybeans 57%. Every state ranked against its own record, and every yield forecast.">
+  <title>Corn 81% Harvested, Soybeans 92%: Crop Progress, Week Ending Nov 8</title>
+  <meta name="description" content="US corn is 81% harvested against a 86% five-year average, soybeans 92%. Corn was 56% good to excellent in the week ending Oct 25.">
   <link rel="canonical" href="https://agsist.com/conditions">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="AGSIST">
-  <meta property="og:title" content="Crop Progress, Week Ending Oct 25: Corn 56% Good-Excellent | AGSIST">
-  <meta property="og:description" content="US corn is 56% good to excellent; soybeans 57%. Every state ranked against its own record, and every yield forecast.">
-<meta name="twitter:title"       content="Crop Progress, Week Ending Oct 25: Corn 56% Good-Excellent | AGSIST">
-<meta name="twitter:description" content="US corn is 56% good to excellent; soybeans 57%. Every state ranked against its own record, and every yield forecast.">
+  <meta property="og:title" content="Corn 81% Harvested, Soybeans 92%: Crop Progress, Week Ending Nov 8">
+  <meta property="og:description" content="US corn is 81% harvested against a 86% five-year average, soybeans 92%. Corn was 56% good to excellent in the week ending Oct 25.">
+<meta name="twitter:title"       content="Corn 81% Harvested, Soybeans 92%: Crop Progress, Week Ending Nov 8">
+<meta name="twitter:description" content="US corn is 81% harvested against a 86% five-year average, soybeans 92%. Corn was 56% good to excellent in the week ending Oct 25.">
   <meta property="og:url" content="https://agsist.com/conditions">
   <meta property="og:image" content="https://agsist.com/img/og/conditions.jpg?v=55cd872f">
   <meta property="og:image:alt" content="US corn is 81% harvested, week ending Nov 8, 2026.">
@@ -66,7 +66,7 @@
     .tblscroll table#cd-h-table{min-width:0}
     #cd-h-table th{letter-spacing:.04em;padding:8px 6px;white-space:nowrap}
     #cd-h-table td{padding:7px 6px}
-    @media (max-width:480px){#cd-h-table th{letter-spacing:0;padding:8px 4px;font-size:.7rem}#cd-h-table td{padding:7px 4px}}
+    @media (max-width:480px){#cd-h-table th{letter-spacing:0;padding:8px 4px;font-size:.7rem}#cd-h-table td{padding:7px 4px}#cd-h-table .cd-wb{display:none}}
     .cd-seed{font-size:13.4px;line-height:1.7;color:#8a948f;margin:0 0 6px}
     .cd-tabs{display:flex;gap:8px;margin:0 0 14px}
     .cd-tab{font-family:'JetBrains Mono',monospace;font-size:0.775rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid #3a4345;background:transparent;color:#8a948f;cursor:pointer}
@@ -679,11 +679,11 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
     if(la)cols.push(['avg','5-yr avg',1],['gap','vs avg',1]);
     var h='<caption>'+cname+' harvested, week ending '+niceDate(rd)+'</caption><tr>'+cols.map(function(c){
       var on=c[0]===hv.key;
-      return '<th data-k="'+c[0]+'"'+(c[2]?' style="text-align:right"':'')+' aria-sort="'+(on?(hv.dir>0?'ascending':'descending'):'none')+'">'+c[1]+(on?(hv.dir>0?' \u25b4':' \u25be'):'')+'</th>';}).join('')+'</tr>';
+      return '<th data-k="'+c[0]+'"'+(c[0]==='pw'?' class="cd-wb"':'')+(c[2]?' style="text-align:right"':'')+' aria-sort="'+(on?(hv.dir>0?'ascending':'descending'):'none')+'">'+c[1]+(on?(hv.dir>0?' \u25b4':' \u25be'):'')+'</th>';}).join('')+'</tr>';
     rows.forEach(function(r){
       var cls=r.gap==null?'':(r.gap<=-10?' lo':(r.gap>=10?' hi':''));
       h+='<tr><td>'+r.name+'</td><td class="num">'+pc(r.pct)+'</td>'
-        +(lw?'<td class="num">'+pc(r.pw)+'</td>':'')
+        +(lw?'<td class="num cd-wb">'+pc(r.pw)+'</td>':'')
         +(ly?'<td class="num">'+pc(r.py)+'</td>':'')
         +(la?'<td class="num" style="color:#8a948f">'+pc(r.avg)+'</td>'
         +'<td class="num'+cls+'">'+(r.gap==null?'':(r.gap>0?'+':r.gap<0?'\u2212':'')+Math.abs(r.gap)+' pts')+'</td>':'')+'</tr>';

@@ -219,10 +219,10 @@
       <div id="by-root" class="by-root"><noscript><p class="by-fine">Bin Print needs JavaScript turned on.</p></noscript></div>
       <div class="gb-ask" aria-live="off" aria-atomic="false"><div data-stack data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:grain-bin-calculator"></div></div>
     </section>
-    <script src="/components/grain-bin.js?v=3"></script>
+    <script src="/components/grain-bin.js?v=4"></script>
     <script src="/components/grain-shrink.js?v=4"></script>
     <script src="/components/share-kit.js?v=1"></script>
-    <script src="/components/bin-yard.js?v=2"></script>
+    <script src="/components/bin-yard.js?v=3"></script>
     <div class="grid-2">
 
       <!-- INPUT PANEL -->
@@ -725,13 +725,17 @@
   function onDepth(){$('belowEave').value=''; calc();}  // calc() calls syncDepth() which calls showDepth()
   function onBelow(){calc();}
   function belowFt(){var v=parseFloat($('belowEave').value); return (isFinite(v)&&v>=0)?v:null;}
+  // A hopper's cone height (ft): a tape reading past the cylinder lands in the cone.
+  function coneFt(){
+    return shape()==='hopper'?G.coneHeight(parseFloat($('hdiameter').value), parseFloat($('hopperangle').value)):0;
+  }
 
   function showDepth(){
     var maxH=parseFloat($('grain-depth').dataset.maxH)||0;
-    var b=G.depthFromBelow(maxH, belowFt());
-    if(b!==null) $('grain-depth').value=maxH>0?Math.round(b/maxH*100):0;
-    var pct=b!==null&&maxH>0?b/maxH*100:(parseFloat($('grain-depth').value)||0);
-    var ft=(b!==null?b:pct/100*maxH).toFixed(1);
+    var b=G.depthFromBelow(maxH, belowFt(), coneFt());
+    if(b!==null) $('grain-depth').value=maxH>0?Math.max(0,Math.round(b/maxH*100)):0;
+    var pct=b!==null&&maxH>0?Math.max(0,b/maxH*100):(parseFloat($('grain-depth').value)||0);
+    var ft=(b!==null?Math.max(0,b):pct/100*maxH).toFixed(1);
     var pctLabel=Math.round(pct)+'%';
     $('depth-val').textContent=ft+' ft \u2022 '+pctLabel;
     // v2: update ARIA value text so screen readers announce feet, not percent
@@ -742,8 +746,8 @@
 
   function grainFt(){
     var maxH=parseFloat($('grain-depth').dataset.maxH)||0;
-    var b=G.depthFromBelow(maxH, belowFt());
-    if(b!==null) return b;
+    var b=G.depthFromBelow(maxH, belowFt(), coneFt());
+    if(b!==null) return b;      // negative: the surface is that far down in the hopper cone
     var pct=parseFloat($('grain-depth').value)||0;
     return pct/100*maxH;
   }
@@ -929,6 +933,11 @@
       $('room-peak-row').style.display='';
       note='A full peak is the bin filled to the eave and peaked at '+peakDeg+'&deg;: '+fN(rm.full)+' bu. Leave room under the roof for the spreader and air.';
     }
+    if(sh==='hopper'&&gH<0){
+      var ch=coneFt();
+      note=(-gH>=ch-1e-9?'The distance you typed is at or past the hopper bottom, so the bin is shown empty. ':
+        'The distance you typed is '+(-gH).toFixed(1)+' ft past the cylinder, so the grain is '+(ch+gH).toFixed(1)+' ft up the hopper cone, figured as a level fill. ')+note;
+    }
     $('room-note').innerHTML=note;
   }
 
@@ -942,7 +951,10 @@
     // The hopper cone holds grain even when the cylinder is empty, so it is drawn full
     if(sh==='hopper'){
       $('svg-hopper-outline').setAttribute('d','M '+BL+' '+BB+' L '+BM+' '+(BB+30)+' L '+BR+' '+BB);
-      $('svg-hopper-grain').setAttribute('d',bu>0?'M '+(BL+2)+' '+BB+' L '+BM+' '+(BB+28)+' L '+(BR-2)+' '+BB+' Z':'');
+      var pf=1, ch0=coneFt();      // fraction of the cone that holds grain: 1 unless the tape went past the cylinder
+      if(gH<0&&ch0>0) pf=Math.max(0,(ch0+gH)/ch0);
+      var gy=BB+28*(1-pf), gx=(BR-BM-2)*pf;
+      $('svg-hopper-grain').setAttribute('d',bu>0&&pf>0?'M '+(BM-gx)+' '+gy+' L '+BM+' '+(BB+28)+' L '+(BM+gx)+' '+gy+' Z':'');
     }else{
       $('svg-hopper-outline').setAttribute('d','');
       $('svg-hopper-grain').setAttribute('d','');

@@ -2,6 +2,20 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-12-bin-hopper-eave",
+   "date": "2026-11-12",
+   "title": "Grain bin calculator: hopper tape readings",
+   "line": "A hopper bin tape reading past the cylinder is now figured up the cone and says so, instead of showing a full cone. Bin Print uses the same math.",
+   "link": "/grain-bin-calculator"
+  },
+  {
+   "id": "2026-11-12-conditions-state-harvest",
+   "date": "2026-11-12",
+   "title": "Crop conditions: every state's harvest pace",
+   "line": "The state harvest table on the conditions page now lists every state USDA reports, corn and soybeans, against its five-year average. The title names the harvest week.",
+   "link": "/conditions"
+  },
+  {
    "id": "2026-11-11-cash-bids-answers-first",
    "date": "2026-11-11",
    "title": "Cash bids: the answer first",
@@ -56,13 +70,6 @@
    "title": "Weather: three pages, not seven",
    "line": "Radar rain and the drought map are tabs on the rain page; urea loss and fall anhydrous soil temps are tabs on the spray page. Old links still work.",
    "link": "/rain"
-  },
-  {
-   "id": "2026-11-11-home-rebuilt",
-   "date": "2026-11-11",
-   "title": "Home page: rebuilt",
-   "line": "Cash bids, futures charts, the Daily and this week's reports up top; your forecast, radar rain and rain against normal below, then markets and farm sales.",
-   "link": "/"
   },
   {
    "id": "2026-11-11-one-elevator-count",
