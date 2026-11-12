@@ -72,6 +72,8 @@ details.fold[hidden]{display:none}
 <style id="ct-base">
 .ph-two{display:flex;gap:1.6rem;align-items:flex-start}
 .ph-info{flex:1 1 30rem;min-width:0}
+/* the price box keeps one width while the live quote lands, so the heading beside it never rewraps */
+@media(min-width:521px){.ph-price.ph-two{flex:0 0 auto}.ph-two .ph-q{width:13rem}}
 .ph-info .ph-plain{font-size:.95rem;color:var(--text-dim);margin:.6rem 0 0;line-height:1.5;max-width:44rem}
 .ph-info .ph-plain a{color:var(--gold)}
 .ph-q{text-align:right;min-width:0}
