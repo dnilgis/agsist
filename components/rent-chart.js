@@ -40,7 +40,16 @@
     return a || b ? 'Dashed: ' + (a && b ? a + '; ' + b : a || b) : '';
   }
   /* the same, short, for the key on the chart itself when both kinds of dashed year are there */
-  function gapKeyShort(d, y0, y1) { var g = gapYears(d, y0, y1); return g.ns.length && g.np.length ? 'Dashed: no survey, or no county published' : gapKey(d, y0, y1); }
+  function gapKeyFit(d, y0, y1, room) {
+    var k = gapKey(d, y0, y1), g = gapYears(d, y0, y1);
+    if (!k || k.length <= room) return k;
+    if (g.ns.length && g.np.length) {   // two lines, the years kept
+      var a = 'Dashed: no USDA survey (' + g.ns.join(', ') + ');', b = 'no county published (' + g.np.join(', ') + ')';
+      if (a.length <= room && b.length <= room) return a + '\n' + b;
+    }
+    k = g.ns.length && g.np.length ? 'Dashed: no survey, or no county published' : g.ns.length ? 'Dashed: no USDA survey' : 'Dashed: no county published';
+    return k.length <= room ? k : '';
+  }
   /* the words under the chart: what is plotted, the dashes, the source */
   function note(d, from, to) {
     var y0 = +String(from).slice(0, 4), y1 = +String(to).slice(0, 4), k = gapKey(d, y0, y1);
@@ -53,7 +62,8 @@
     if (!p1 || p1[1] == null || !p0 || p0[1] == null) return { head: '', take: '', summary: '', note: '' };
     var c = d.chg[String(y0)], head, take;
     if (y0 < y1) {
-      head = d.name + ' ' + d.noun + ' rent: ' + money(p0[1]) + ' an acre in ' + y0 + (c ? '' : ' (' + p0[2] + ' counties)') + ', ' + money(p1[1]) + ' in ' + y1 + (c ? ', ' + move(100 * (p1[1] - p0[1]) / p0[1]) : ' (' + p1[2] + ' counties)');
+      var cn = !c || p0[2] < 10 || p1[2] < 10 || Math.min(p0[2], p1[2]) * 2 < Math.max(p0[2], p1[2]);   // counties named when few, or when one year has under half the other's
+      head = d.name + ' ' + d.noun + ' rent: ' + money(p0[1]) + ' an acre in ' + y0 + (cn ? ' (' + p0[2] + ' counties)' : '') + ', ' + money(p1[1]) + ' in ' + y1 + (cn ? ' (' + p1[2] + ' counties)' : '') + (c ? ', ' + move(100 * (p1[1] - p0[1]) / p0[1]) : '');
       take = c ? 'In the ' + c[1] + ' counties published both years, the median went from ' + money(c[2]) + ' to ' + money(c[3]) + ', ' + move(100 * (c[3] - c[2]) / c[2]) + '.'
         : 'Too few counties were published in both years to compare like for like, so no change is stated.';
     } else { head = d.name + ' ' + d.noun + ' rent: ' + money(p1[1]) + ' an acre in ' + y1; take = 'The median of ' + p1[2] + ' counties.'; }
@@ -73,7 +83,7 @@
         for (; y <= e; y++) { var p = ptOf(d, y); why[p ? p[2] : 'x'] = 1; }
         return why['no survey'] && Object.keys(why).length === 1 ? 'no survey' : why['not published'] && Object.keys(why).length === 1 ? 'not published' : 'no figure';
       },
-      gapKey: function (v) { var s = span(v); return gapKeyShort(d, s[0], s[1]); },
+      gapKey: function (v, room) { var s = span(v); return gapKeyFit(d, s[0], s[1], room || 99); },
       ranges: [{ label: '5 years', days: 5 * 366, aria: 'five years' }, { label: '10 years', days: 10 * 366, aria: 'ten years' }, { label: 'Since ' + fl[0], days: 0, aria: 'every survey year' }],
       range: 'Since ' + fl[0],
       story: function (v) { return story(d, v.from, v.to); },
