@@ -474,14 +474,19 @@
   /* ---- futures: the header from data/prices.json, the charts from data/price-stats.json ---- */
   var PX = null, STATS = null;
   var CROPS = [['corn', 'fc', 'corn', 'hp-ch-corn', 'Corn'], ['beans', 'fs', 'soybean', 'hp-ch-soy', 'Soybean']];
-  function headline(crop) { try { return root.AgPxStamp && root.AgPxStamp.headline(PX, crop); } catch (e) { return null; } }
+  /* expired contracts roll off (AgPxStamp.roll: corn-dec on Jan 2 is the next live Dec), then the headline contract */
+  function headline(crop) {
+    try { var S = root.AgPxStamp, q = PX && PX.quotes; if (!S || !q) return null; if (S.roll) q = S.roll(q); return root.AgPxStamp.headline({ quotes: q, nearby: PX.nearby }, crop); } catch (e) { return null; }
+  }
+  function lastWeekday() { var t = ctDay(), dw = t.getUTCDay(); return addDays(t, dw === 6 ? -1 : dw === 0 ? -2 : 0).toISOString().slice(0, 10); }
   function paintHeader() {
     var A = root.AG && root.AG.px;
     if (!PX || !A) return;
     CROPS.forEach(function (c) {
       var h = headline(c[0]); if (!h || !h.q || !num(h.q.close)) return;
       var q = h.q;
-      txt('hb-' + c[1] + '-k', (h.label ? String(h.label).replace(/'/g, '\u2019') + ' ' : '') + c[2] + ' futures');
+      var tm = /^Z[CS]([FGHJKMNQUVXZ])(\d{2})/.exec(String(q.ticker || '')), lab = tm ? MON['FGHJKMNQUVXZ'.indexOf(tm[1])] + ' \u2019' + tm[2] : (h.label ? String(h.label).replace(/'/g, '\u2019') : '');
+      txt('hb-' + c[1] + '-k', (lab ? lab + ' ' : '') + c[2] + ' futures');
       html('hb-' + c[1] + '-v', '<span class="hb-n">' + A.price(q.close, { style: 'slash', fracClass: 'hb-frac' }) + '</span>');
       var S = root.AgPxStamp || {}, held = !!(q.move_withheld || q.roll);
       var diff = num(q.netChange) ? q.netChange : (num(q.open) ? q.close - q.open : null), chg = '';
@@ -494,7 +499,7 @@
       /* the stamp says when the quote is from; a settle carries its own year and age, and the cell greys once it is
          OLD_SESSIONS behind (components/price-local.js); an older close than the file's day says "Last close" */
       var sa = q.close_kind === 'settle' && S.settleAge ? S.settleAge(q.settle_date || q.close_date) : null;
-      var old = !sa && (q.stale === true || (PX.stale_keys || []).indexOf(h.key) >= 0);
+      var old = !sa && (q.stale === true || (PX.stale_keys || []).indexOf(h.key) >= 0 || (q.close_date && q.close_date < lastWeekday()));
       var cell = $('hb-' + c[1]); if (cell) cell.classList.toggle('px-old', !!(sa && sa.old));
       var stamp = ''; try { stamp = S.html ? S.html(q, PX.fetched) : esc(S.shortStamp(q, PX.fetched)); } catch (e) {}
       var age = old ? '<span class="hb-l hb-old">Last close' + (q.close_date ? ' \u00b7 ' + md(utc(q.close_date)) : '') + '</span>' : (stamp ? '<span class="hb-l hb-age">' + stamp + '</span>' : '');
@@ -649,6 +654,62 @@
     }, function () { btn.textContent = 'Picture not ready'; });
   }
 
+  /* ---- the price ticker (the strip under the menu): what geo.js does not write ----
+     Each label names its contract month (the price file's nearby label for corn, soybeans, wheat and cattle; the
+     earliest dated contract for the rows priced here); the deferred tiles name theirs; KC, MGEX, cotton and rice get
+     their price and change here; a tile with no quote in the file is hidden, not shown as a dash. */
+  var TICK = { corn: 'Corn', beans: 'Soybeans', wheat: 'Chicago SRW wheat', kcwheat: 'KC HRW wheat', mplswheat: 'MGEX HRS wheat', oats: 'Oats', cotton: 'Cotton',
+    rice: 'Rough rice', cattle: 'Live cattle', feeders: 'Feeder cattle', hogs: 'Lean hogs', milk: 'Class III milk', meal: 'Soybean meal' };
+  var OWN = { kcwheat: 'g', mplswheat: 'g', cotton: 'cl', rice: 'd' };
+  var M3 = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
+  function cmKey(k) { var m = /-(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)(\d\d)$/.exec(k || ''); return m ? MON[M3.indexOf(m[1])] + " '" + m[2] : null; }
+  function frontKey(k) {
+    var q = PX.quotes, best = null, bt = Infinity;
+    Object.keys(q).forEach(function (x) {
+      var m = /-(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)(\d\d)$/.exec(x), y = q[x];
+      if (!m || x.indexOf(k + '-') !== 0 || x.length !== k.length + 6 || !y || y.close == null || y.stale === true) return;
+      var t = +m[2] * 12 + M3.indexOf(m[1]); if (t < bt) { bt = t; best = x; }
+    });
+    return best;
+  }
+  function byTicker(qq) { var r = null; if (qq && qq.ticker) Object.keys(PX.quotes).some(function (x) { var lb = cmKey(x); if (lb && PX.quotes[x] && PX.quotes[x].ticker === qq.ticker) { r = lb; return true; } return false; }); return r; }
+  function paintTicker() {
+    var A = root.AG && root.AG.px, Q = PX && PX.quotes; if (!A || !Q) return;
+    var qa = function (sel) { return Array.prototype.slice.call(doc.querySelectorAll(sel)); }, ch = false;
+    Object.keys(TICK).forEach(function (k) {
+      var own = OWN[k], fk = own ? frontKey(k) : null, q = fk ? Q[fk] : (Q[k + '-nearby'] && Q[k + '-nearby'].close != null ? Q[k + '-nearby'] : Q[k]);
+      var nb = PX.nearby && PX.nearby[k] && PX.nearby[k].label, mon = fk ? cmKey(fk) : (nb && nb !== 'nearby' && nb !== 'most-active' ? nb : byTicker(Q[k]));
+      var has = !!(q && q.close != null);
+      qa('.prices-strip [data-sym="' + k + '"]').forEach(function (it) {
+        if (it.classList.contains('t-noq') === has) { it.classList.toggle('t-noq', !has); ch = true; }
+        if (!has) return;
+        var lb = it.querySelector('.t-label'), want = TICK[k] + ' ' + (mon || 'front month');
+        if (lb && lb.textContent !== want) { lb.textContent = want; ch = true; }
+        if (!own) return;
+        var pe = it.querySelector('.t-price'), ce = it.querySelector('.t-chg');
+        var pt = own === 'g' ? A.price(q.close, { style: 'slash' }).replace(/<[^>]+>/g, '') : own === 'cl' ? f1(q.close, 2) + '\u00a2' : '$' + f1(q.close, 2);
+        if (pe && pe.textContent !== pt) { pe.textContent = pt; ch = true; }
+        var n = q.netChange, t = '', c = 'nc';
+        if (q.move_withheld || q.roll) t = 'contract roll';
+        else if (num(n)) { c = n > 0 ? 'up' : n < 0 ? 'dn' : 'nc'; t = n === 0 ? 'unch' : (n > 0 ? '\u25b2 +' : '\u25bc \u2212') + (own === 'g' ? A.move(Math.abs(n), { style: 'slash' }) : own === 'cl' ? f1(Math.abs(n), 2) + '\u00a2' : '$' + f1(Math.abs(n), 2)); }
+        if (ce && ce.textContent !== t) { ce.textContent = t; ce.className = 't-chg ' + c; ch = true; }
+      });
+    });
+    /* the deferred tiles name the next harvest contract after the headline (AgPxStamp.harvest: Nov '27 soybeans once Jan '27 leads) */
+    [['corn-dec', 'Corn deferred', 'Corn ', 'corn'], ['beans-nov', 'Soybeans deferred', 'Soybeans ', 'beans']].forEach(function (d) {
+      var hv = null; try { hv = root.AgPxStamp && root.AgPxStamp.harvest ? root.AgPxStamp.harvest(PX, d[3]) : null; } catch (e) { hv = null; }
+      var lb = hv && hv.label ? String(hv.label).replace(/\u2019/g, "'") : byTicker(Q[d[0]]); if (!lb) return;
+      qa('.prices-strip [data-sym="' + d[0] + '"]').forEach(function (it) {
+        var e = it.querySelector('.t-label'); if (e && e.textContent !== d[2] + lb) { e.textContent = d[2] + lb; ch = true; }
+        var hq = hv && hv.q; if (!hq || !num(hq.close)) return;   /* the price and change of that same contract, so label and price agree */
+        var pe = it.querySelector('.t-price'), ce = it.querySelector('.t-chg'), pt = A.price(hq.close, { style: 'slash' }).replace(/<[^>]+>/g, '');
+        if (pe && pe.textContent !== pt) { pe.textContent = pt; ch = true; }
+        var n = hq.netChange; if (ce && num(n) && !(hq.move_withheld || hq.roll)) { var t = n === 0 ? 'unch' : (n > 0 ? '\u25b2 +' : '\u25bc \u2212') + A.move(Math.abs(n), { style: 'slash' }); if (ce.textContent !== t) { ce.textContent = t; ce.className = 't-chg ' + (n > 0 ? 'up' : n < 0 ? 'dn' : 'nc'); ch = true; } }
+      });
+    });
+    if (ch && typeof root.rebuildTickerLoop === 'function') root.rebuildTickerLoop();
+  }
+
   /* ---- more markets ---- */
   var MK = { wheat: 'c', kcwheat: 'c', oats: 'c', meal: 'd', soyoil: 'c2', cattle: 'd', feeders: 'd', hogs: 'd', milk: 'd' };
   function paintMarkets() {
@@ -677,7 +738,7 @@
   /* the briefing's top stories under the fold. Each title links to the publisher's own news story (often through
      Google News), the same link the email carries. News links, not links to a data source, so the Oct 29
      no-data-source-links rule does not apply here. */
-  function storyLink(u) {
+  function storyLink(u){
     u = (u == null ? '' : String(u)).trim();
     if (!u || u.length > 800 || /\s/.test(u) || u.slice(0, 8).toLowerCase() !== 'https://') return '';
     if ((u.split('/')[2] || '').indexOf('@') >= 0) return '';
@@ -1021,7 +1082,8 @@
     var PA_WORKER = 'https://agsist-api.dnilgis.workers.dev';
     var PA_LABELS = { 'corn': 'Corn', 'corn-dec': 'Corn (new crop)', 'beans': 'Soybeans', 'beans-nov': 'Soybeans (new crop)', 'wheat': 'Chicago SRW wheat', 'cattle': 'Live Cattle' };
     function paId(symbol, direction, targetCents) {
-      var s = (symbol + '|' + direction + '|' + targetCents).toUpperCase(), h = 0x811c9dc5;
+      var s = (symbol + '|' + direction + '|' + targetCents).toUpperCase();
+      var h = 0x811c9dc5;
       for (var i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); }
       return ('00000000' + (h >>> 0).toString(16)).slice(-8);
     }
@@ -1082,7 +1144,7 @@
     root.addEventListener('agsist:bids-top', function (e) { paintTiles(e.detail); paintNear(e.detail); });
     if (root.__agsistBidsTop) { paintTiles(root.__agsistBidsTop); paintNear(root.__agsistBidsTop); }
     Promise.all([getJSON('/data/prices.json').catch(function () { return null; }), getJSON('/data/price-stats.json').catch(function () { return null; })]).then(function (r) {
-      PX = r[0]; STATS = r[1]; paintHeader(); drawCharts(); paintMarkets();
+      PX = r[0]; STATS = r[1]; paintHeader(); drawCharts(); paintMarkets(); try { paintTicker(); setTimeout(paintTicker, 1500); } catch (e) {}
     });
     getJSON('/data/daily.json').then(paintDaily, function () {});
     getJSON('/data/rain-print.json').then(paintRainPrint, function () {});
