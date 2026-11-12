@@ -157,12 +157,12 @@
     q.at = at ? [+at[1], +at[2], +at[3]] : null;
   }
   function toForm() {
-    form.st.value = q.st.toLowerCase(); form.mo.value = String(q.mo); form.amin.value = String(q.amin); form.amax.value = q.amax ? String(q.amax) : '';
-    form.odd.checked = q.odd; form.nm.checked = q.nm; form.heat.value = q.heat;
+    form.lst.value = q.st.toLowerCase(); form.lmo.value = String(q.mo); form.lamin.value = String(q.amin); form.lamax.value = q.amax ? String(q.amax) : '';
+    form.lodd.checked = q.odd; form.lnm.checked = q.nm; form.lheat.value = q.heat;
   }
   function fromForm() {
-    q.st = (form.st.value || '').toUpperCase(); q.mo = +form.mo.value; q.amin = +form.amin.value; q.amax = +form.amax.value || 0;
-    q.odd = form.odd.checked; q.nm = form.nm.checked; q.heat = form.heat.value;
+    q.st = (form.lst.value || '').toUpperCase(); q.mo = +form.lmo.value; q.amin = +form.lamin.value; q.amax = +form.lamax.value || 0;
+    q.odd = form.lodd.checked; q.nm = form.lnm.checked; q.heat = form.lheat.value;
   }
   function viewUrl() {
     var u = location.origin + location.pathname + '?', p = [];
@@ -353,7 +353,7 @@
   }
 
   readUrl(); toForm();
-  form.addEventListener('change', function (ev) { fromForm(); q.at = null; draw(ev.target && (ev.target.name === 'st' || ev.target.name === 'mo') ? true : false); });
+  form.addEventListener('change', function (ev) { fromForm(); q.at = null; draw(ev.target && (ev.target.name === 'lst' || ev.target.name === 'lmo') ? true : false); });
   form.addEventListener('submit', function (ev) { ev.preventDefault(); });
   near(box, start);
 })(typeof window !== 'undefined' ? window : globalThis);
