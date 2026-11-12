@@ -95,5 +95,5 @@ h3{font-size:.98rem;margin:16px 0 4px;color:var(--text)}
 /* the Rain Print gift line is filled in by script after first paint (components/rain-print-promo.js): its slot keeps the room
    (one line, two on a phone) so the blocks below it do not move when it appears; the script's own margin and size are set here too */
 .cbt-wrap .rp-promo{margin:1.2rem 0 .8rem;font-size:.9rem;line-height:1.5}
-.cbt-wrap .rp-promo[hidden]{display:block;visibility:hidden;min-height:1.35rem}
+.cbt-wrap .rp-promo[hidden]{display:block!important;visibility:hidden;min-height:1.35rem}   /* !important: over styles.css [hidden]{display:none!important}, which hid the slot */
 @media (max-width:640px){.cbt-wrap .rp-promo[hidden]{min-height:2.7rem}}

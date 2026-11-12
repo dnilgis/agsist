@@ -1,6 +1,6 @@
 /* fold/drought.js: the drought tab on /rain (was the inline scripts of /drought-monitor until Nov 11, 2026),
  * in their old order. Loaded by components/page-tabs.js the first time the tab opens. */
-fetch("/data/outlooks/manifest.json").then(function(r){return r.json()}).then(function(m){var f=(m&&m.files)||{};var d=(f["usdm_latest.png"]&&f["usdm_latest.png"].data_valid)||(m&&m.usdm_latest&&m.usdm_latest.data_valid)||(m&&m.data_valid);if(d){var v=document.getElementById("dm-valid"),h=window.AgAsOf?AgAsOf.html(d,"drought",{prefix:"Map valid"}):"";if(h)v.innerHTML=" · "+h;else v.textContent=" · map valid "+d;window.__dmValid=d;var mv=document.getElementById("dm-map-valid");if(mv)mv.textContent=", valid "+d;}}).catch(function(){});
+fetch("/data/outlooks/manifest.json").then(function(r){return r.json()}).then(function(m){var f=(m&&m.files)||{};var d=(f["usdm_latest.png"]&&f["usdm_latest.png"].data_valid)||(m&&m.usdm_latest&&m.usdm_latest.data_valid)||(m&&m.data_valid);if(d){var v=document.getElementById("dm-valid"),h=window.AgAsOf?AgAsOf.html(d,"drought",{prefix:"Map valid"}):"";if(h)v.innerHTML=h;else v.textContent="Map valid "+d;window.__dmValid=d;var mv=document.getElementById("dm-map-valid");if(mv)mv.textContent=", valid "+d;}}).catch(function(){});
 /* Headline: NDMC's own percent of the Lower 48 (and, in the state view, of each state) in
      each category, from data/drought/summary.json (scripts/fetch_drought_county_week.py, each
      Thursday). Only subtraction is done here. Until the file exists the line above stays as written. */
