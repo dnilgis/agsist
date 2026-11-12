@@ -496,3 +496,12 @@ html{scroll-padding-top:130px}
 .ch-bx{fill:url(#hpnd);stroke:var(--border-2);stroke-width:1}
 .ch-bl{fill:var(--text);font-family:var(--font-mono);font-weight:700}
 @media (max-width:640px){.hp-nowg{grid-template-columns:1fr 1fr}.hp-d7 li{column-gap:.4rem}.hp-d7 .ic{margin:0}}
+/* the futures header holds the after-the-bell stamp ("Last trade, Nov 11, 1:20 pm CT bell", three short lines) under
+   the change from the first paint, so the price beside it does not drop when the stamp is written (cls-geocls) */
+@media (min-width:641px){.hp-fh{min-height:5.4rem}}
+/* the Daily's kicker on its own line, small: its time ("This morning's briefing, 8:18 am CT:") is written after the
+   first paint, and inline it pushed the teaser's words down a line (cls-geocls) */
+#daily-card-k{display:block;font-size:.8rem;font-weight:700;color:var(--text-muted);font-family:var(--font-mono);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* a row's basis words and posted day wrap inside the cash column, never past the card's edge (every board posted the day before reads "· posted Nov 11") */
+.hp-near{table-layout:fixed}.hp-near th:first-child,.hp-near td:first-child{width:52%}
+.hp-near .n .b{white-space:normal;overflow-wrap:anywhere}
