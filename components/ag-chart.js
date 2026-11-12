@@ -25,7 +25,7 @@
      tools    element for the buttons: Share (or Copy link) and Save the picture; the readout moves into it
      share    { url, title, file, kicker, source (text or fn(view)), date or dateText }, foot: a note under the chart and picture
      legend   several named lines, E53: nothing is labelled inside the plot. From 720 px (and on the picture) the names wrap
-              in a right gutter, best value first, a leader from each line's own end dot; under 720 px a key below the plot
+              in a right gutter, best value first, beside each line's end (colour and dash tell them apart; end dots that touch sit in a row to the right, each joined to its line); under 720 px a key below the plot
               has one 44 px row each (swatch, full name, value; rows hide and show a line). One line is named in the plot.
               valueAt(key, day) feeds the key rows; intTicks, fixedTicks; weekly (Monday ticks); clip (a stray stretch is
               drawn in a marked break and named; clipMin); markLabel(p, s), markMany: words on the thin vertical marks
@@ -172,10 +172,10 @@
     var nt = 5, tk = ticks(lo, hi, nt, cfg.intTicks), st = tk.length > 1 ? tk[1] - tk[0] : 1;   // the axis runs to a tick at both ends
     lo = Math.min(lo, Math.floor(lo / st) * st); hi = Math.max(hi, Math.ceil(hi / st) * st);
     var tks = []; for (var tv = lo; tv <= hi + st * 1e-6; tv += st) tks.push(+tv.toFixed(6));   // the drawn ticks: the same step, end to end
-    var L = Math.round(fs * (W < 420 ? 3.4 : 3.9)), R = Math.round(fs * (cfg.period === 'year' ? 1.7 : 0.8)) + (gutter || 0), T = Math.round(fs * (cfg.gapKey ? 3.7 : cfg.legend ? 3.5 : 3)), B = Math.round(fs * 2.2), lab = Math.round(fs * 1.4);
+    var L = Math.round(fs * (W < 420 ? 3.4 : 3.9)), R = Math.round(fs * (cfg.period === 'year' ? 1.7 : 0.8)) + (gutter || 0), T = Math.round(fs * (cfg.gapKey ? 3.7 : cfg.legend ? 3.5 : 3)) + (cfg.legend ? 8 : 0), B = Math.round(fs * 2.2), lab = Math.round(fs * 1.4);
     if (cfg.tick && cfg.legend) L = Math.ceil(Math.max.apply(null, tks.map(function (v) { return widthOf(cfg.tick(v, 5), fs, true); })) + fs * 1.1);   // room for the longest tick
     var nl = function (lo2) { var rs = cl ? cl.ranges.filter(function (r) { return lo2 ? r.v < cl.lo : r.v > cl.hi; }) : []; return rs.length ? wrapText(breakNote(view, rs, cfg), fs, W - L - R - 14 - Math.round(fs * 0.9)).length : 1; };
-    var bandB = below ? Math.round(fs * (1.5 + 1.2 * nl(1))) : 0, bandT = above ? Math.round(fs * (1.5 + 1.2 * nl(0))) : 0;
+    var bandB = below ? Math.round(fs * (1.5 + 1.2 * nl(1))) + 10 : 0, bandT = above ? Math.round(fs * (1.5 + 1.2 * nl(0))) : 0;
     T += bandT; lab += bandB;
     var t0 = utc(view.from), dt = Math.max(utc(view.to) - t0, 864e5), pl = cfg.legend ? Math.round(fs * 0.9) : 0;   // room between the axis and the first point
     var yIn = function (v) { return T + (hi - v) / (hi - lo) * (H - T - B - lab); };
@@ -204,13 +204,13 @@
   /* everything drawn, then the labels in order of importance; returns null when a label fits nowhere
      inside and the caller should leave a gutter on the right */
   /* lines that share a value on a day are drawn a little apart, so none hides another: -> { key: px } */
-  /* lines that end on one value are drawn a little apart (at most a third of a unit in all) and their end dots side by side;
-     a line that ends elsewhere is never moved. -> { off: { key: px }, fan: { key: rank } } */
+  /* lines that end on one value are drawn a little apart (at most a third of a unit in all); a line that ends elsewhere is
+     never moved. -> { key: px } */
   function tieOffsets(view, hide, ppu) {
-    var by = {}, off = {}, fan = {};
+    var by = {}, off = {};
     view.series.forEach(function (s) { if (!s.faint && s.points.length && !hide[s.key]) (by[s.points[s.points.length - 1].v] = by[s.points[s.points.length - 1].v] || []).push(s.key); });
-    Object.keys(by).forEach(function (v) { var k = by[v], sp = Math.max(0.6, Math.min(1.8, 0.3 * ppu / Math.max(1, k.length - 1))); if (k.length > 1) k.forEach(function (key, i) { off[key] = (i - (k.length - 1) / 2) * sp; fan[key] = i; }); });
-    return { off: off, fan: fan };
+    Object.keys(by).forEach(function (v) { var k = by[v], sp = Math.max(0.6, Math.min(1.8, 0.3 * ppu / Math.max(1, k.length - 1))); if (k.length > 1) k.forEach(function (key, i) { off[key] = (i - (k.length - 1) / 2) * sp; }); });
+    return off;
   }
   /* the order the names are listed in: the value now, best first, then the name; hidden lines last */
   function listOrder(view, hide) {
@@ -235,8 +235,8 @@
   function manyOf(view) { return view.series.filter(function (s) { return !s.faint && s.points.length; }).length > 1; }
   function layout(view, W, H, opt) {
     var fs = opt.fs || 12, hide = opt.hide || {}, cfg = opt.cfg || {}, fmt = fmtOf(cfg), rules = {};
-    var many = manyOf(view), gutter = opt.gutter || (many && legendOn(cfg, W, opt) ? (opt.card ? 420 : 340) : 0), g = geom(view, W, H, fs, hide, gutter, cfg), segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
-    var tie = cfg.legend ? tieOffsets(view, hide, g.ppu) : { off: {}, fan: {} }, off = tie.off, endDot = {};
+    var many = manyOf(view), gutter = (opt.gutter || (many && legendOn(cfg, W, opt) ? (opt.card ? 470 : 340) : 0)) + (opt.dw || 0), g = geom(view, W, H, fs, hide, gutter, cfg), segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
+    var off = cfg.legend ? tieOffsets(view, hide, g.ppu) : {}, endDot = {}, ends = [];
     view.series.forEach(function (s) {
       if (!s.points.length || hide[s.key]) return;
       var dy = off[s.key] || 0;
@@ -264,10 +264,16 @@
       // the latest dot sits at the line's right end (today for a held line), the small ones at each logged change
       if (!s.faint) {
         pts.forEach(function (p, j) { dots.push({ x: p.x, y: p.y, r: Math.max(1.6, fs / 6), s: s, last: false }); });
-        if (cfg.legend) { var ex0 = endX - (tie.fan[s.key] || 0) * (fs / 5 + 1.2) * 2.3; endDot[s.key] = { x: ex0, y: z.y }; dots.push({ x: ex0, y: z.y, r: fs / 5 + 1.2, s: s, last: true }); }
+        if (cfg.legend) { endDot[s.key] = z.y; ends.push({ x: endX, ex: endX, y: z.y, r: fs / 5 + 1.2, s: s, last: true }); dots.push(ends[ends.length - 1]); }
         else dots[dots.length - 1] = { x: z.x, y: z.y, r: fs / 3 + 1, s: s, last: true };
       }
     });
+    // end dots: never left of their own line's end; any that would touch (a dot across and 2 px) move right in turn, joined to their line
+    ends.sort(function (a, b) { return a.y - b.y; }).forEach(function (e, i) {
+      var q = 2 * e.r + 2; while (ends.slice(0, i).some(function (p) { return Math.hypot(p.x - e.x, p.y - e.y) < q; })) e.x += 1;
+    });
+    var dw = Math.ceil(Math.max.apply(null, ends.map(function (e) { return e.x - g.right; }).concat(0)));
+    if (dw > (opt.dw || 0)) return layout(view, W, H, Object.assign({}, opt, { dw: dw }));
     // the key for dashed stretches: its own row under the axis title, from the plot's left edge
     var key = null, gk = cfg.gapKey && segs.some(function (q) { return q.gap && q.s && !q.s.faint; }) ? cfg.gapKey(view) : '';
     if (gk) {
@@ -367,19 +373,13 @@
   }
   /* the names in the right gutter: wrapped, in value order, each pulled apart from the next, with the y of its line's end */
   function legendLayout(view, g, ends, hide, fmt, opt, fs) {
-    var order = listOrder(view, hide), card = !!opt.card, x0 = g.right + (card ? 26 : 22), maxW = g.W - x0 - 30;
-    var fl = card ? [17, 16] : [fs], items, lh, top = g.T, bot = g.base;
-    for (var f = 0; f < fl.length; f++) {
-      var lfs = fl[f]; lh = lfs * 1.25;
-      items = order.map(function (s) {
-        var val = fmt(s.points[s.points.length - 1].v), nm = s.name, ci = nm.indexOf(', '), one = nm + ' ' + val, fitL = function (t) { return widthOf(t, lfs, true) <= maxW ? [t] : wrapText(t, lfs, maxW, true); };
-        var lines = widthOf(one, lfs, true) <= maxW ? [one] : ci > 0 ? fitL(nm.slice(0, ci + 1)).concat(fitL(nm.slice(ci + 2) + ' ' + val)) : fitL(one);   // one rule: whole on one line, else break after the company
-        var e = ends[s.key], hid = !!hide[s.key];
-        return { s: s, lines: lines, h: lines.length * lh, ye: e ? e.y : null, xe: e ? e.x : null, hidden: hid, fs: lfs };
-      });
-      var need = items.reduce(function (a, it) { return a + it.h + lfs * 0.5; }, 0);
-      if (need <= bot - top + lfs || f === fl.length - 1) break;
-    }
+    var order = listOrder(view, hide), card = !!opt.card, x0 = g.right + (opt.dw || 0) + (card ? 26 : 22), maxW = g.W - x0 - 30;
+    var lfs = card ? 16 : fs, lh = lfs * 1.25, top = card ? 0 : g.T, bot = g.base;   // one size on the picture: nothing shrinks
+    var items = order.map(function (s) {
+      var val = fmt(s.points[s.points.length - 1].v), nm = s.name, ci = nm.indexOf(', '), one = nm + ' ' + val, fitL = function (t) { return widthOf(t, lfs, true) <= maxW ? [t] : wrapText(t, lfs, maxW, true); };
+      var lines = widthOf(one, lfs, true) <= maxW ? [one] : ci > 0 ? fitL(nm.slice(0, ci + 1)).concat(fitL(nm.slice(ci + 2) + ' ' + val)) : fitL(one);   // one rule: whole on one line, else break after the company
+      return { s: s, lines: lines, h: lines.length * lh, ye: ends[s.key], hidden: !!hide[s.key], fs: lfs };
+    });
     // vertical positions: as near each line's end as the others allow, kept inside the plot
     var gap = items.length ? items[0].fs * 0.5 : 0, y = top;
     items.forEach(function (it) { var want = (it.ye == null ? bot : it.ye) - it.h / 2; it.y = Math.max(y, want); y = it.y + it.h + gap; });
@@ -394,15 +394,15 @@
   function dashOf(d, fs) { var k = fs / 13; return String(d).split(' ').map(function (n) { return (+n * k).toFixed(1); }).join(' '); }
   function poly(pts) { return pts.map(function (p, i) { return (i ? 'L' : 'M') + f1(p.x) + ' ' + f1(p.y); }).join(''); }
 
-  /* date ticks on Mondays, every second Monday when they would crowd, and the last day closing the axis */
+  /* date ticks on Mondays, every second Monday when they would crowd */
   function weeklyTicks(view, g, fs) {
     var t0 = utc(view.from), t1 = utc(view.to), mons = [], t = t0;
     while (new Date(t).getUTCDay() !== 1 && t <= t1) t += 864e5;
     for (; t <= t1; t += 7 * 864e5) mons.push(isoOf(t));
     // evenly spaced: every Monday, or every second one (counted back from the last) when they would crowd
     if (mons.length > 1 && g.x(mons[1]) - g.x(mons[0]) < fs * 6.2) mons = mons.filter(function (d, i) { return (mons.length - 1 - i) % 2 === 0; });
-    // the last day joins when it has room; otherwise the latest dot and the words say it
-    if (!mons.length || g.x(view.to) - g.x(mons[mons.length - 1]) >= fs * 6.2) mons.push(view.to);
+    // one rule: the axis ends on the last Monday, on every chart; the latest dot and the words give the latest day (a range with no Monday gets its last day)
+    if (!mons.length) mons.push(view.to);
     return mons;
   }
   /* opt: { fs, hide: {key: true}, card: true (literal colours), hover: true, label, cfg } */
@@ -433,14 +433,14 @@
       var ms = fs - 1, mw = function (t) { return widthOf(t, ms) + 8; }, merged = [];
       marks.forEach(function (m) {
         var last = merged[merged.length - 1];
-        if (last && (m.x - last.x < mw(last.t) + 6 || Math.abs(m.x - last.x) < 30)) { last.ds = last.ds.concat(m.d); last.t = (cfg.markMany || 'Reference changed') + ': ' + last.ds.map(function (d) { return dayOf(cfg, d); }).join(', '); } else merged.push({ d: m.d, t: m.t, x: m.x, ds: [m.d] });
+        if (last && (m.x - last.x < mw(last.t) + 6 || Math.abs(m.x - last.x) < 30)) { last.ds = last.ds.concat(m.d); last.x1 = m.x; last.t = (cfg.markMany || 'Reference changed') + ': ' + last.ds.map(function (d) { return dayOf(cfg, d); }).join(', '); } else merged.push({ d: m.d, t: m.t, x: m.x, x1: m.x, ds: [m.d] });
       });
       var prev = -1e9;
       merged.forEach(function (m) {
-        var w = mw(m.t), x = Math.max(g.L, Math.min(m.x + 4, g.right - w + 8));
+        var w = mw(m.t), x = m.ds.length > 1 ? Math.max(g.L, Math.min((m.x + m.x1) / 2 - w / 2 + 4, g.right - w + 8)) : Math.max(g.L, Math.min(m.x + 4, g.right - w + 8));   // several lines: the words sit over them
         if (x < prev + 6) return;
         prev = x + w;
-        o.push(txt(x, fs * 2.5, m.t, 'font-size:' + ms + 'px;font-family:' + FONT + ';fill:' + P.dim + ';' + halo, 'start', 'agc-mkl'));
+        o.push(txt(x, fs * 2.5 + (cfg.legend ? 8 : 0), m.t, 'font-size:' + ms + 'px;font-family:' + FONT + ';fill:' + P.dim + ';' + halo, 'start', 'agc-mkl'));
       });
     }
     // dates under the axis: evenly spread, each on the nearest report day (any line's; a held line's end), with room
@@ -520,6 +520,7 @@
         if (r.note.x1 - r.note.x0 >= nw + 6) o.push(txt((r.note.x0 + r.note.x1) / 2, r.note.y + fs * 1.15, cfg.gapNote, 'font-size:' + (fs - 1) + 'px;font-family:' + FONT + ';fill:' + P.dim + ';' + halo, 'middle', 'agc-gn'));
       }
     });
+    lay.dots.filter(function (d) { return d.last && d.x > d.ex; }).sort(function (a, b) { return b.x - a.x; }).forEach(function (d) { o.push('<line class="agc-jn" x1="' + f1(d.ex) + '" x2="' + f1(d.x) + '" y1="' + f1(d.y) + '" y2="' + f1(d.y) + '" style="stroke:' + col(d.s) + ';stroke-width:' + lw + ';stroke-linecap:round"/>'); });
     lay.dots.forEach(function (d) { o.push('<circle class="agc-dot' + (d.last ? ' agc-last' : '') + '" cx="' + f1(d.x) + '" cy="' + f1(d.y) + '" r="' + f1(d.r) + '" style="fill:' + col(d.s) + (d.last ? ';stroke:' + P.surf + ';stroke-width:' + (cfg.legend ? 1 : 2) : '') + '"/>'); });
     if (opt.hover) {
       o.push('<g class="agc-hov" visibility="hidden"><line y1="' + g.T + '" y2="' + f1(g.base) + '" style="stroke:' + P.mut + ';stroke-dasharray:3 3"/>' +
@@ -528,13 +529,8 @@
     }
     if (lay.legend) lay.legend.items.forEach(function (it) {
       var tog = it.s.toggle !== false && !opt.card, off = it.hidden, c = col(it.s), lf = it.fs, lh = lf * 1.25, b = it.box;
-      var leader = '';
-      if (it.ye != null) {
-        var ly = it.y + lh * 0.62, xe = it.xe + (cfg.legend ? 7 : 5), xm = g.right + 8;
-        leader = '<path class="agc-lead" d="M' + f1(xe) + ' ' + f1(it.ye) + 'L' + f1(Math.max(xe, xm)) + ' ' + f1(it.ye) + 'L' + f1(lay.legend.x - 6) + ' ' + f1(ly) + '" style="fill:none;stroke:' + c + ';stroke-width:1.5;stroke-opacity:.8"/>';
-      }
       var fl = 'font-size:' + lf + 'px;font-family:' + FONT + ';font-weight:700;fill:' + c + (off ? ';opacity:.5;text-decoration:line-through' : '');
-      o.push('<g class="agc-tog agc-leg"' + (tog ? ' data-k="' + esc(it.s.key) + '" tabindex="0" role="button" aria-pressed="' + !off + '" aria-label="' + (off ? 'Show ' : 'Hide ') + esc(it.lines.join(' ')) + '"' : '') + '>' + leader +
+      o.push('<g class="agc-tog agc-leg"' + (tog ? ' data-k="' + esc(it.s.key) + '" tabindex="0" role="button" aria-pressed="' + !off + '" aria-label="' + (off ? 'Show ' : 'Hide ') + esc(it.lines.join(' ')) + '"' : '') + '>' +
         (tog ? '<rect x="' + f1(b.x0) + '" y="' + f1(b.y0) + '" width="' + f1(b.x1 - b.x0) + '" height="' + f1(b.y1 - b.y0) + '" fill="transparent"/>' : '') +
         '<line x1="' + f1(it.x) + '" x2="' + f1(it.x + 20) + '" y1="' + f1(it.y + lh * 0.62) + '" y2="' + f1(it.y + lh * 0.62) + '" style="stroke:' + c + ';stroke-width:2.2' + (it.s.dash ? ';stroke-dasharray:' + dashOf(it.s.dash, 13) : '') + '"/><circle cx="' + f1(it.x + 22) + '" cy="' + f1(it.y + lh * 0.62) + '" r="3" style="fill:' + c + '"/>' +
         it.lines.map(function (l, i) { return txt(it.x + 30, it.y + lf * 0.98 + i * lh, l, fl, 'start'); }).join('') + '</g>');

@@ -202,6 +202,10 @@
         var pts = nearestSeries(keysFor(data, b[0], b[1] || [], c[0]), end), ln = pts.length && lineOf(pts, end);
         if (ln) lines.push({ key: 'e' + i, name: lab[i], long: lab[i], full: lab[i], rows: pts, line: ln });
       });
+      lines.forEach(function (l) {   // a chart of one crop needs no crop word: "Cargill Cedar Rapids (soybeans)" on a soybean chart is "Cargill Cedar Rapids"
+        var n = l.name.replace(new RegExp(' \\(' + c[0] + '\\)$', 'i'), '');
+        if (n !== l.name && !lines.some(function (o) { return o !== l && o.name === n; })) l.name = l.long = l.full = n;
+      });
       if (!lines.length) return;
       var now = function (l) { return l.line.tailGap ? -1e9 : l.line.points[l.line.points.length - 1].v; };
       lines.sort(function (a, b) { return now(b) - now(a); });
@@ -227,10 +231,10 @@
       var first = pts[k], ch = last.v - first.v, cw = conWords(last.con ? [last.con] : [], crop), ref = fullMon(last.dm) + ' delivery' + (cw ? ', against ' + cw : '');
       if (first !== last) {
         head = Crop + ' basis at ' + l.long + (ch ? (ch > 0 ? ' firmed ' : ' weakened ') + Math.abs(ch) + '¢' : ' held at ' + basisText(last.v)) + ' since ' + dayText(first.d);
-        take = basisText(last.v) + ' on ' + dayText(to) + ', from ' + basisText(first.v) + '. ' + ref + '.' + (forCard ? ' 1\u00a0elevator shown.' : ' Counted on one delivery month and one contract.');
+        take = basisText(last.v) + ' on ' + dayText(to) + ', from ' + basisText(first.v) + '. ' + ref + '. Counted on one delivery month and one contract.';
       } else {
         head = Crop + ' basis at ' + l.long + ': ' + basisText(last.v);
-        take = forCard ? ref + '. Unchanged since ' + dayText(last.d) + '. 1\u00a0elevator shown.' : ref + '. Unchanged since ' + dayText(last.d) + '. A basis holds until the elevator changes it.';
+        take = ref + '. Unchanged since ' + dayText(last.d) + '. A basis holds until the elevator changes it.';
       }
     } else {
       held.sort(function (a, b) { return b.p.v - a.p.v; });
@@ -248,7 +252,8 @@
   function footOf(c) {
     var gaps = c.lines.some(function (l) { return l.line.points.some(function (p) { return p.b; }); }), marks = {}, first = '', ties = false, late = [];
     c.lines.forEach(function (l) { l.line.points.forEach(function (p) { if (p.m) marks[p.d] = 1; }); if (!first || l.line.points[0].d < first) first = l.line.points[0].d; });
-    c.lines.forEach(function (l) { if (l.line.points[0].d > dayAfter(first, 1)) late.push(l.name + ' ' + dayText(l.line.points[0].d)); });
+    c.lines.forEach(function (l) { if (l.line.points[0].d > dayAfter(first, 1)) late.push({ d: l.line.points[0].d, t: l.name + ' ' + dayText(l.line.points[0].d) }); });
+    late = late.sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : a.t < b.t ? -1 : 1; }).map(function (x) { return x.t; });
     var days = {}; c.lines.forEach(function (l) { l.line.points.forEach(function (p) { days[p.d] = 1; }); });
     Object.keys(days).concat(c.end).forEach(function (d) { var by = {}; c.lines.forEach(function (l) { var p = heldOn(l, d); if (p) by[p.v] = (by[p.v] || 0) + 1; }); Object.keys(by).forEach(function (v) { if (by[v] > 1) ties = true; }); });
     var n = Object.keys(marks).length;
