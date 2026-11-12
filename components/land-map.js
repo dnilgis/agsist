@@ -1,7 +1,7 @@
 /* components/land-map.js: every farm sale on a map (land sales hub, Nov 12, 2026).
    The section (#land-map) is written by the land sales builder with a headline, filters, a box of reserved
    height, a key and an empty list. When the box comes near the screen this loads Leaflet and the heat layer
-   (vendor/), then the state files (data/land/map/<st>.json, one per state, built on main), and draws:
+   (vendor/), then the state files (data/land-sales/map/<st>.json, one per state, built on main), and draws:
      - one pin per sale of 20 acres or more over 24 months, placed at its section, township, town or county
        center (never the parcel; each pin says which), fanned out a little when several share a spot;
      - colour: the sale's price per acre against its own county's 24-month median and usual range;

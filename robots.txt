@@ -8,6 +8,8 @@ Disallow: /test/
 # Buyer and seller names stay out of search; county summaries hold no names.
 Disallow: /data/land/
 Allow: /data/land/*/summary.json
+# The farm sale map's pin files (section and town points): out of search too.
+Disallow: /data/land-sales/map/
 
 # Sitemaps
 Sitemap: https://agsist.com/sitemap.xml
