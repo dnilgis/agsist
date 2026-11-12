@@ -19,13 +19,24 @@
               room above and below the values (0.25)
      period   'year': one point a year, dated 'YYYY-01-01'; axis, readout and gaps say '2015'
      gapWord  the readout's word for a missing point ('report'; 'survey')
-     ranges   [{ label: '3M', days: 92, aria }], days 0 = all; shown only when the held days run past it
-              with minPoints (5) in it; 'All' always. range: the label to open on
-     story(view, forCard) -> { head, take, summary } for the range shown (forCard: the picture's own words) (view = { series, from, to, days }); head
-              and take go into cfg.headEl / cfg.takeEl, summary is the SVG's aria-label
-     readout(view, day) -> the readout line (default: each value that day); ownGaps: true, it names
-              missing days itself (else the first line's gaps speak for all)
-     height   { phone: 200, wide: 280 }, reserved in CSS
+     ranges   [{ label: '3M', days: 92, aria: 'three months' }], days 0 = all held; a button shows only
+              when the held days run past it and leave minPoints in it; 'All' always
+     range    the label to open on (falls back to the longest shown)
+     minPoints  fewest points a drawn series needs (5)
+     story(view) -> { head, take, summary, note }  from the range shown; view = { series, from, to, days }
+              head, take and note go into cfg.headEl / cfg.takeEl / cfg.noteEl, summary is the SVG's aria-label
+     series[].startText(p) / endText(p)  text of the first / last point's label (the last defaults to
+              name + value; a first label is drawn only when startText is given)
+     gapLabel({ from, to })  small text under each dashed stretch ('no survey'); gapKey(view)  the key on the
+              top row, right, when it fits ('Dashed: no USDA survey (2015, 2018)')
+     tick     v, step -> axis text; a step that is not whole needs two decimals on every tick
+     readout(view, day) -> text for the readout line (default: each series' value that day)
+     height   { phone: 200, wide: 280 }   reserved in CSS too (ag-chart.css), so nothing shifts
+     tools    element for the buttons (optional): Share (the picture and the link together, where the
+              device can share files), else Copy link; and Save the picture. The readout line moves into it,
+              left, with the buttons right on the same row (wrapping under it on a phone)
+     share    { url, title, file: 'name.png', kicker: card top line, source: card foot line,
+                date: 'YYYY-MM-DD' shown on the card, or dateText: the words shown instead ('2026 survey') }
    legend   true (several named lines, Nov 12, 2026, E53): no label is drawn inside the plot. From 600 px of chart (and on the
               picture) the names sit in a right gutter (300 px; names wrap, none is cut, a leader line to each line's end),
               sorted by value then name; under 720 px the plot takes the whole width and a key under it lists every
@@ -39,12 +50,12 @@
    markLabel(point, series) -> the words on a thin vertical mark; markMany: the words when marks crowd ('reference changed')
    gapNote    words under a dashed stretch of a step line ('no bid posted'); foot: a note under the picture and the page chart
    series     also { dash: '9 4' } so a line survives colour blindness and print
-     tools    element for the buttons: Share (picture and link, where files can be shared) or Copy link,
-              and Save the picture
-     share    { url, title, file, kicker: card top line, source: the source line (card foot and under the chart), date: 'YYYY-MM-DD' }
-   Labels never overlap a line, a point, another label or the axes: where they belong, nudged, else
-   outside on the right. AgChart.svg, card, layout (label boxes,
-   segments, points: the tests check overlaps), slice, pairs, ranges, gapAt, ruleOf, fitLines.
+   Labels (line names, band labels) are placed so none overlaps a line, a point, another label or the
+   axes: first where they belong, then nudged up or down inside the plot, else set outside the plot on
+   the right (the plot narrows to make room).
+   AgChart.svg(view, W, H, opt), AgChart.card(cfg, view, done(blob)) draw; AgChart.layout(...) returns
+   the placed label boxes and the drawn segments and points (the tests check overlaps on it);
+   AgChart.slice, pairs, ranges, gapAt, ruleOf, fitLines are the helpers the tests use.
    Exports window.AgChart (and module.exports). */
 (function (root) {
   'use strict';
@@ -176,16 +187,16 @@
     if (cl) { below = lo < cl.lo; above = hi > cl.hi; lo = cl.lo; hi = cl.hi; }
     var pad = Math.max((hi - lo) * 0.03, cfg.pad || 0.25);
     lo -= pad; hi += pad;
-    var nt = cfg.fixedTicks ? 5 : W / fs < 40 ? 4 : 5, tk = ticks(lo, hi, nt, cfg.intTicks), st = tk.length > 1 ? tk[1] - tk[0] : 1;   // the axis runs to a tick at both ends
+    var nt = 5, tk = ticks(lo, hi, nt, cfg.intTicks), st = tk.length > 1 ? tk[1] - tk[0] : 1;   // the axis runs to a tick at both ends
     lo = Math.min(lo, Math.floor(lo / st) * st); hi = Math.max(hi, Math.ceil(hi / st) * st);
     var tks = []; for (var tv = lo; tv <= hi + st * 1e-6; tv += st) tks.push(+tv.toFixed(6));   // the drawn ticks: the same step, end to end
-    var L = Math.round(fs * (W < 420 ? 3.4 : 3.9)), R = Math.round(fs * 0.8) + (gutter || 0), T = Math.round(fs * 3), B = Math.round(fs * 2.2), lab = Math.round(fs * 1.4);
-    if (cfg.tick && cfg.legend) L = Math.ceil(Math.max.apply(null, tks.map(function (v) { return widthOf(cfg.tick(v), fs, true); })) + fs * 1.1);   // room for the longest tick
+    var L = Math.round(fs * (W < 420 ? 3.4 : 3.9)), R = Math.round(fs * (cfg.period === 'year' ? 1.7 : 0.8)) + (gutter || 0), T = Math.round(fs * (cfg.gapKey ? 3.7 : cfg.legend ? 3.5 : 3)), B = Math.round(fs * 2.2), lab = Math.round(fs * 1.4);
+    if (cfg.tick && cfg.legend) L = Math.ceil(Math.max.apply(null, tks.map(function (v) { return widthOf(cfg.tick(v, 5), fs, true); })) + fs * 1.1);   // room for the longest tick
     var bandB = below ? Math.round(fs * 3.4) : 0, bandT = above ? Math.round(fs * 3.4) : 0;
     T += bandT; lab += bandB;
     var t0 = utc(view.from), dt = Math.max(utc(view.to) - t0, 864e5), pl = cfg.legend ? Math.round(fs * 0.9) : 0;   // room between the axis and the first point
     var yIn = function (v) { return T + (hi - v) / (hi - lo) * (H - T - B - lab); };
-    return { L: L, R: R, T: T, B: B, W: W, H: H, fs: fs, lo: lo, hi: hi, nt: nt, tk: tks, base: H - B - fs * 0.6, right: W - R,
+    return { L: L, R: R, T: T, B: B, W: W, H: H, fs: fs, lo: lo, hi: hi, nt: nt, tk: tks, st: st, base: H - B - fs * 0.6, right: W - R,
       clip: cl ? { lo: cl.lo, hi: cl.hi, below: below, above: above, ranges: cl.ranges, yLo: yIn(lo), yHi: yIn(hi), bandB: bandB, bandT: bandT } : null,
       x: function (d) { return L + pl + (utc(d) - t0) / dt * (W - L - R - pl); },
       y: function (v) {
@@ -197,7 +208,7 @@
   }
   function widthOf(s, fs, bold) { return String(s).length * fs * (bold ? 0.6 : 0.56); }
   /* the box of a text drawn at baseline y, anchored at x */
-  function boxOf(x, y, w, fs, anchor) { var x0 = anchor === 'end' ? x - w : x; return { x0: x0 - 2, x1: x0 + w + 2, y0: y - fs * 0.95, y1: y + fs * 0.3 }; }
+  function boxOf(x, y, w, fs, anchor) { var x0 = anchor === 'end' ? x - w : anchor === 'middle' ? x - w / 2 : x; return { x0: x0 - 2, x1: x0 + w + 2, y0: y - fs * 0.95, y1: y + fs * 0.3 }; }
   function hitBox(a, b) { return a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1; }
   function hitSeg(b, s) {
     var xa = Math.max(b.x0, Math.min(s.x1, s.x2)), xb = Math.min(b.x1, Math.max(s.x1, s.x2));
@@ -258,12 +269,12 @@
           if (gx > q.x) { segs.push({ x1: q.x, y1: q.y, x2: gx, y2: q.y, key: s.key }); run.push(hold); }
           runs.push({ s: s, pts: run });
           var corner = { x: pts[i].x, y: q.y };
-          segs.push({ x1: gx, y1: q.y, x2: corner.x, y2: q.y, key: s.key, gap: true }, { x1: corner.x, y1: q.y, x2: pts[i].x, y2: pts[i].y, key: s.key, gap: true });
+          segs.push({ x1: gx, y1: q.y, x2: corner.x, y2: q.y, key: s.key, gap: true, s: s, d1: pts[i - 1].d }, { x1: corner.x, y1: q.y, x2: pts[i].x, y2: pts[i].y, key: s.key, gap: true });
           runs.push({ s: s, pts: [hold, corner, pts[i]], gap: true, note: { x0: gx, x1: corner.x, y: q.y } });
           run = [pts[i]]; continue;
         }
         if (s.step && !gap) { q = { x: pts[i].x, y: q.y }; segs.push({ x1: pts[i - 1].x, y1: q.y, x2: q.x, y2: q.y, key: s.key }); run.push(q); }
-        segs.push({ x1: q.x, y1: q.y, x2: pts[i].x, y2: pts[i].y, key: s.key, gap: !!gap });
+        segs.push({ x1: q.x, y1: q.y, x2: pts[i].x, y2: pts[i].y, key: s.key, gap: !!gap, s: s, d1: pts[i - 1].d });
         if (gap) { runs.push({ s: s, pts: run }); runs.push({ s: s, pts: [pts[i - 1], pts[i]], gap: true }); run = [pts[i]]; } else run.push(pts[i]);
       }
       var z = pts[pts.length - 1], endX = z.x;
@@ -276,8 +287,15 @@
         else dots[dots.length - 1] = { x: z.x, y: z.y, r: fs / 3 + 1, s: s, last: true };
       }
     });
+    // the key for dashed stretches: its own row under the axis title, from the plot's left edge
+    var key = null, gk = cfg.gapKey && segs.some(function (q) { return q.gap && q.s && !q.s.faint; }) ? cfg.gapKey(view) : '';
+    if (gk) {
+      var kw = widthOf(gk, fs) * 0.94 + fs * 2.2;
+      if (kw <= g.right - g.L + fs) { key = { text: gk, x: g.L, ly: fs * 2.15, ty: fs * 2.5, w: kw }; boxes.push({ x0: g.L - 2, x1: g.L + kw + 2, y0: key.ty - fs * 0.95, y1: key.ty + fs * 0.3 }); }
+    }
+    var ext = 0;   // a first-point label may dip just under the lowest gridline when the line leaves no room above
     var bound = function (b, outside) {
-      return b.y0 >= fs * 1.6 && b.y1 <= g.base - 1 && (outside ? b.x0 >= g.right + 2 && b.x1 <= W : b.x0 >= g.L + 2 && b.x1 <= g.right);
+      return b.y0 >= fs * 1.6 && b.y1 <= g.base - 1 + ext && (outside ? b.x0 >= g.right + 2 && b.x1 <= W : b.x0 >= g.L + 2 && b.x1 <= g.right);
     };
     var free = function (b, outside) {
       if (!bound(b, outside)) return false;
@@ -290,12 +308,19 @@
     var failed = [];
     var place = function (L) {
       var w = widthOf(L.text, fs, L.bold), step = fs * 0.35, span = g.base - g.T + fs * 2;
+      ext = L.kind === 'start' || L.kind === 'gap' ? fs * 0.9 : 0;
       var win = L.win || [L.y - fs * 3, L.y + fs * 3];   // stay near what it names; else go outside
       for (var n = 0; n * step < span; n++) {
-        for (var sgn = n ? -1 : 1; sgn <= 1; sgn += 2) {
-          var y = L.y + sgn * n * step, b = boxOf(L.x, y, w, fs, L.anchor);
+        for (var si = 0, sgs = n ? (L.down ? [1, -1] : [-1, 1]) : [1]; si < sgs.length; si++) {
+          var sgn = sgs[si], y = L.y + sgn * n * step;
           if (y < win[0] || y > win[1]) continue;
-          if (free(b)) { boxes.push(b); out.push(Object.assign({}, L, { x: L.x, y: y, box: b })); return; }
+          // a centred label slides sideways (a little) to stay inside the plot and off its neighbours
+          for (var dxi = 0; dxi < (L.anchor === 'middle' ? 9 : 1); dxi++) {
+            var lx = L.x + (dxi % 2 ? 1 : -1) * Math.ceil(dxi / 2) * fs * 0.7;
+            if (L.anchor === 'middle') lx = Math.max(g.L + 3 + w / 2, Math.min(g.right - 1 - w / 2, lx));
+            var b = boxOf(lx, y, w, fs, L.anchor);
+            if (free(b)) { boxes.push(b); out.push(Object.assign({}, L, { x: lx, y: y, box: b })); return; }
+          }
         }
       }
       if (L.optional) return;   // says the same as text elsewhere (the takeaway): left out rather than misplaced
@@ -317,9 +342,16 @@
     }
     main.filter(function (s) { return !hide[s.key]; }).map(function (s) { return { s: s, v: s.points[s.points.length - 1].v }; })
       .sort(function (a, b) { return b.v - a.v; }).forEach(function (e, i) {
-        var y = i === 0 ? g.y(e.v) - fs * 0.6 : g.y(e.v) + fs * 1.3;
-        labels.push({ kind: 'end', s: e.s, text: e.s.name + ' ' + fmt(e.v), x: ex, y: y, anchor: 'end', bold: true });
+        var lp = e.s.points[e.s.points.length - 1], pv = e.s.points[e.s.points.length - 2];
+        var down = i === 0 && pv && g.y(pv.v) < g.y(e.v) - 2;   // a line falling into its end: the free side is below it
+        var y = i === 0 && !down ? g.y(e.v) - fs * 0.6 : g.y(e.v) + fs * 1.3;
+        labels.push({ kind: 'end', s: e.s, text: e.s.endText ? e.s.endText(lp) : e.s.name + ' ' + fmt(e.v), x: ex, y: y, anchor: 'end', bold: true, down: down });
       });
+    // the first point named too, where the series asks for it: its year and value
+    main.filter(function (s) { return !hide[s.key] && s.startText && s.points.length > 1; }).forEach(function (s) {
+      var p0 = s.points[0], nx = s.points[1], dn = g.y(nx.v) < g.y(p0.v) - 2;   // the line leaves upward: the free side is below
+      labels.push({ kind: 'start', s: s, text: s.startText(p0), x: g.x(p0.d) + fs * 0.7, y: g.y(p0.v) + (dn ? fs * 1.5 : -fs * 0.9), anchor: 'start', bold: true, optional: true, down: dn });
+    });
     (cfg.bands || []).forEach(function (b) {
       if (hide[b.a] || hide[b.b]) return;
       var pp = pairs(view, b); if (pp.length < 2) return;
@@ -333,12 +365,24 @@
     main.filter(function (s) { return hide[s.key]; }).forEach(function (s) {
       labels.push({ kind: 'end', off: true, s: s, text: s.name + ' ' + fmt(s.points[s.points.length - 1].v), x: g.right, y: g.T + fs * 0.3, anchor: 'end', bold: true, win: [0, g.base] });
     });
+    // "no survey" under each dashed stretch, as near as it fits
+    if (cfg.gapLabel) lay_gaps(segs, cfg, fs).forEach(function (q) { labels.push({ kind: 'gap', s: q.s, text: q.text, x: q.x, y: q.y, anchor: 'middle', optional: true, win: [q.y - fs * 4.4, q.y + fs * 2.2] }); });
     labels.forEach(place);
     if (failed.length && !gutter) {
       var wide = Math.max.apply(null, labels.map(function (L) { return widthOf(L.text, fs, L.bold); }));
       return layout(view, W, H, Object.assign({}, opt, { gutter: Math.min(Math.round(wide + fs * 1.4), Math.round(W * 0.4)) }));
     }
-    return { g: g, segs: segs, dots: dots, runs: runs, labels: out, boxes: boxes, rules: rules, off: off };
+    return { g: g, segs: segs, dots: dots, runs: runs, labels: out, boxes: boxes, rules: rules, off: off, key: key };
+  }
+  /* one label per dashed stretch of a main line: centred under the stretch, text from cfg.gapLabel({ from, to }) */
+  function lay_gaps(segs, cfg, fs) {
+    var out = [];
+    segs.forEach(function (sg) {
+      if (!sg.gap || !sg.s || sg.s.faint) return;
+      var gp = gapAt(cfg, sg.s.points, isoOf(utc(sg.d1) + 864e5)), t = gp && cfg.gapLabel(gp);
+      if (t) out.push({ s: sg.s, text: t, x: (sg.x1 + sg.x2) / 2, y: Math.max(sg.y1, sg.y2) + fs * 1.5 });
+    });
+    return out;
   }
   /* the names in the right gutter: wrapped, in value order, each pulled apart from the next, with the y of its line's end */
   function legendLayout(view, g, runs, off, hide, fmt, opt, fs) {
@@ -388,13 +432,14 @@
     var lay = layout(view, W, H, opt), g = lay.g, f = 'font-size:' + fs + 'px;font-family:' + FONT + ';', fb = f + 'font-weight:700;', o = [];
     var halo = 'paint-order:stroke;stroke:' + P.surf + ';stroke-width:' + (fs / 3.5).toFixed(1) + 'px;stroke-linejoin:round;';
     o.push('<svg xmlns="http://www.w3.org/2000/svg" class="agc-svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '"' + (opt.label ? ' role="img" aria-label="' + esc(opt.label) + '"' : '') + '>');
-    o.push(cfg.axisTitle ? txt(0, fs * 1.2, cfg.axisTitle, f + 'fill:' + P.dim, 'start', 'agc-at') : txt(g.L - fs * 0.5, fs * 1.2, cfg.unit || '', f + 'fill:' + P.mut, 'end'));
+    var unitW = widthOf(cfg.unit || '', fs), unitStart = unitW > g.L - fs;   // a long axis title starts at the left edge
+    o.push(cfg.axisTitle ? txt(0, fs * 1.2, cfg.axisTitle, f + 'fill:' + P.dim, 'start', 'agc-at') : txt(unitStart ? 0 : g.L - fs * 0.5, fs * 1.2, cfg.unit || '', f + 'fill:' + P.mut, unitStart ? 'start' : 'end'));
     g.tk.forEach(function (v) {
       var y = g.y(v);
       o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(y) + '" y2="' + f1(y) + '" style="stroke:' + P.grid + ';stroke-width:1"/>');
-      o.push(txt(g.L - fs * 0.5, y + fs * 0.35, cfg.tick ? cfg.tick(v) : '$' + (v % 1 ? v.toFixed(1) : v), f + 'fill:' + P.dim, 'end'));
+      o.push(txt(g.L - fs * 0.5, y + fs * 0.35, cfg.tick ? cfg.tick(v, g.st) : '$' + (g.st % 1 ? v.toFixed(2) : v), f + 'fill:' + P.dim, 'end'));
     });
-    o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(g.base) + '" y2="' + f1(g.base) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
+    if (cfg.weekly) o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(g.base) + '" y2="' + f1(g.base) + '" style="stroke:' + P.grid + ';stroke-width:1"/>');   // a ruled axis only where ticks hang from it
     var marks = [], drawn = {};
     view.series.forEach(function (s) { if (!hide[s.key]) s.points.forEach(function (p) { if (p.m) {
       if (!drawn[p.d]) o.push('<line class="agc-mk" x1="' + f1(g.x(p.d)) + '" x2="' + f1(g.x(p.d)) + '" y1="' + g.T + '" y2="' + f1(g.clip && g.clip.below ? g.clip.yLo : g.base) + '" style="stroke:' + P.mut + ';stroke-dasharray:2 3"/>');
@@ -419,6 +464,15 @@
     }
     // dates under the axis: evenly spread, each on the nearest report day (any line's; a held line's end), with room
     var days = Math.round((utc(view.to) - utc(view.from)) / 864e5), want = Math.min(days + 1, (g.right - g.L) / fs < 34 ? 3 : 6), dts = [];
+    if (cfg.period === 'year') {
+      // whole years, an even step that lands on the latest year: every year up to ten, else 3 (wide) or 6 (phone)
+      var y0 = +view.from.slice(0, 4), y1 = +view.to.slice(0, 4), span = y1 - y0, wide = (g.right - g.L) / fs >= 34, stp = span <= 10 ? 1 : wide ? 3 : 6;
+      while (span / stp + 1 > (wide ? 11 : 6) && span > 10) stp += 3;
+      while (stp < 3 && span > 1 && (g.right - g.L) / span * stp < fs * 3.6) stp++;   // four-digit years need their room: every second year, never short years
+      var yl = []; for (var yy = y1; yy >= y0; yy -= stp) yl.unshift(yy);
+      yl.forEach(function (yv) { o.push(txt(g.x(yv + '-01-01'), H - fs * 0.5, String(yv), f + 'fill:' + P.dim, 'middle')); });
+      want = 0;
+    }
     var rep0 = [];
     view.series.forEach(function (s) { if (!s.faint) rep0 = rep0.concat(s.points, s.until ? [{ d: view.to }] : []); });
     if (cfg.weekly) dts = weeklyTicks(view, g, fs);
@@ -444,6 +498,12 @@
       if (on) o.push('<line x1="' + f1(kx - kw - fs * 2) + '" x2="' + f1(kx - kw - fs * 0.6) + '" y1="' + f1(fs * 0.85) + '" y2="' + f1(fs * 0.85) + '" style="stroke:' + P.mut + ';stroke-width:2;stroke-dasharray:' + fs / 3 + ' ' + fs / 4 + '"/>');
       o.push(txt(kx, fs * 1.2, t, 'font-size:' + ks.toFixed(1) + 'px;font-family:' + FONT + ';fill:' + (on ? P.dim : P.mut) + (on ? '' : ';font-style:italic'), 'end', on ? '' : 'agc-pending'));
     });
+    // the key for dashed stretches (placed in layout so no label lands on it)
+    if (lay.key) {
+      var K = lay.key;
+      o.push('<line x1="' + f1(K.x) + '" x2="' + f1(K.x + fs * 1.5) + '" y1="' + f1(K.ly) + '" y2="' + f1(K.ly) + '" style="stroke:' + col(view.series.filter(function (q) { return !q.faint && q.points.length; })[0]) + ';stroke-width:2;stroke-opacity:.6;stroke-dasharray:' + fs / 4 + ' ' + fs / 3 + '"/>');
+      o.push(txt(K.x + fs * 2.2, K.ty, K.text, f + 'fill:' + P.mut, 'start', 'agc-gk'));
+    }
     // bands: one polygon per stretch with no missing days
     (cfg.bands || []).forEach(function (b) {
       if (hide[b.a] || hide[b.b]) return;
@@ -501,8 +561,9 @@
         it.lines.map(function (l, i) { return txt(it.x + 30, it.y + lf * 0.98 + i * lh, l, fl, 'start'); }).join('') + '</g>');
     });
     lay.labels.forEach(function (L) {
+      if (L.kind === 'gap') { o.push(txt(L.x, L.y, L.text, f + halo + 'fill:' + P.dim, 'middle', 'agc-gl')); return; }
       if (L.kind === 'band') { o.push(txt(L.x, L.y, L.text, (L.bold ? fb : f) + halo + 'fill:' + P.ink, L.anchor, 'agc-bl')); return; }
-      var off = !!L.off, tog = L.s.toggle !== false && !opt.card, b = L.box;
+      var off = !!L.off, tog = L.kind !== 'start' && L.s.toggle !== false && !opt.card, b = L.box;
       o.push('<g class="agc-tog"' + (tog ? ' data-k="' + esc(L.s.key) + '" tabindex="0" role="button" aria-pressed="' + !off + '" aria-label="' + (off ? 'Show ' : 'Hide ') + esc(L.text) + '"' : '') + '>' +
         (tog ? '<rect x="' + f1(b.x0) + '" y="' + f1(b.y0) + '" width="' + f1(b.x1 - b.x0) + '" height="' + f1(b.y1 - b.y0) + '" fill="transparent"/>' : '') +
         txt(L.x, L.y, L.text, fb + halo + 'fill:' + col(L.s) + (off ? ';opacity:.5;text-decoration:line-through' : ''), L.anchor) + '</g>');
@@ -514,13 +575,23 @@
   /* ------------------------------------------------------------ the picture: exactly 1200 x 630 */
   /* the largest size in sizes at which text wraps into maxLines within maxW; when even the smallest size
      needs more lines, it takes them (over: true): a word is never cut and no ellipsis is drawn. measure(text, size) -> px */
-  function fitLines(measure, text, maxW, sizes, maxLines) {
+  function fitLines(measure, text, maxW, sizes, maxLines, balance) {
     var lines = [];
     for (var i = 0; i < sizes.length; i++) {
       lines = []; var cur = '';
       String(text || '').split(' ').forEach(function (w) { var x = cur ? cur + ' ' + w : w; if (measure(x, sizes[i]) > maxW && cur) { lines.push(cur); cur = w; } else cur = x; });
       if (cur) lines.push(cur);
-      if (lines.length <= maxLines && lines.every(function (l) { return measure(l, sizes[i]) <= maxW; })) return { size: sizes[i], lines: lines };
+      if (lines.length <= maxLines && lines.every(function (l) { return measure(l, sizes[i]) <= maxW; })) {
+        if (balance && lines.length === 2) {   // the split that leaves the two lines nearest in width, no single word left alone
+          var ws = String(text).split(' '), best = null;
+          for (var k = 1; k < ws.length; k++) {
+            var a = ws.slice(0, k).join(' '), b = ws.slice(k).join(' '), m = Math.max(measure(a, sizes[i]), measure(b, sizes[i]));
+            if (m <= maxW && (!best || m < best.m)) best = { m: m, lines: [a, b] };
+          }
+          if (best) lines = best.lines;
+        }
+        return { size: sizes[i], lines: lines };
+      }
     }
     return { size: sizes[sizes.length - 1], lines: lines, over: true };
   }
@@ -533,9 +604,9 @@
     x.font = '800 34px ' + FONT; x.fillStyle = '#e9edeb'; x.fillText('agsist', 48, 62);
     var aw = x.measureText('agsist').width; x.font = '700 20px ' + FONT; x.fillStyle = '#d4a23f'; x.fillText('.com', 50 + aw, 62);
     var mark = 50 + aw + x.measureText('.com').width + 32;
-    var k = fitLines(meas('600'), (sh.kicker ? sh.kicker + ' · ' : '') + (sh.date ? long(sh.date) : cfg.period === 'year' ? dayOf(cfg, view.to) : long(view.to)), W - 48 - mark, [20, 18, 16], 1);
+    var k = fitLines(meas('600'), (sh.kicker ? sh.kicker + ' · ' : '') + (sh.dateText || (sh.date ? long(sh.date) : cfg.period === 'year' ? dayOf(cfg, view.to) : long(view.to))), W - 48 - mark, [20, 18, 16], 1);
     x.font = '600 ' + k.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.72)'; x.textAlign = 'right'; x.fillText(k.lines[0], W - 48, 60); x.textAlign = 'left';
-    var hd = fitLines(meas('800'), st.head, W - 96, [38, 34, 30, 28], 1); if (hd.over) hd = fitLines(meas('800'), st.head, W - 96, [38, 34, 30, 27], 2); var y = 80 + hd.size;
+    var hd = fitLines(meas('800'), st.head, W - 96, [38, 34, 30, 28], 1); if (hd.over) hd = fitLines(meas('800'), st.head, W - 96, [38, 34, 30, 27], 2, true); var y = 80 + hd.size;
     x.font = '800 ' + hd.size + 'px ' + FONT; x.fillStyle = '#e9edeb';
     hd.lines.forEach(function (l) { x.fillText(l, 48, y); y += hd.size * 1.2; });
     if (st.take) {
@@ -543,7 +614,7 @@
       x.font = '400 ' + tk.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.86)';
       tk.lines.forEach(function (l, i) { x.fillText(l, 48, y + 2 + i * tk.size * 1.25); }); y += tk.lines.length * tk.size * 1.25 + 8;
     }
-    var src = fitLines(meas('400'), sh.source || '', W - 96, [18, 16, 15, 14], 1), url = fitLines(meas('700'), String(sh.url || '').replace(/^https?:\/\//, ''), W - 96, [20, 18], 1);
+    var src = fitLines(meas('400'), typeof sh.source === 'function' ? sh.source(view) : sh.source || '', W - 96, [18, 16, 15, 14], 1), url = fitLines(meas('700'), String(sh.url || '').replace(/^https?:\/\//, ''), W - 96, [20, 18], 1);
     var foot = cfg.foot ? fitLines(meas('400'), cfg.foot, W - 96, [18, 17, 16, 15], 1) : null, below = foot ? 104 : 76;
     var img = new root.Image();
     img.onload = function () {
@@ -604,6 +675,7 @@
       var st = cfg.story ? cfg.story(view) : {};
       if (cfg.headEl) cfg.headEl.textContent = st.head || '';
       if (cfg.takeEl) cfg.takeEl.textContent = st.take || '';
+      if (cfg.noteEl) cfg.noteEl.textContent = st.note || '';
       var opt = { fs: fs, hide: hide, hover: true, label: st.summary, cfg: cfg };
       plot.innerHTML = svg(view, W, H, opt);
       var lay = layout(view, W, H, opt), g = lay.g, hov = plot.querySelector('.agc-hov'), hit = plot.querySelector('.agc-hit');
@@ -677,14 +749,15 @@
     });
     draw();
     if (root.ResizeObserver) new root.ResizeObserver(function () { draw(); }).observe(plot); else root.addEventListener('resize', function () { draw(); });
-    if (cfg.tools && cfg.share) tools(cfg, function () { return view; });
+    if (cfg.tools && cfg.share) tools(cfg, function () { return view; }, cfg.legend ? null : read);
     return { redraw: function () { draw(true); }, state: function () { return { view: view, hide: hide, range: cur.label }; } };
   }
-  function tools(cfg, getView) {
+  function tools(cfg, getView, read) {
     var T = cfg.tools, sh = cfg.share, nav = root.navigator || {}, canFiles = false, D = T.ownerDocument;
     try { canFiles = !!(nav.share && nav.canShare && root.File && nav.canShare({ files: [new root.File([''], 'x.png', { type: 'image/png' })] })); } catch (e) {}
     T.innerHTML = (canFiles ? '<button type="button" class="agc-btn agc-share">Share</button>' : '<button type="button" class="agc-btn agc-copy">Copy link</button>') +
       '<button type="button" class="agc-btn agc-save">Save the picture</button>';
+    if (read) T.insertBefore(read, T.firstChild);   // the readout left, the buttons right, one row
     var save = function (b) { var a = D.createElement('a'); a.href = URL.createObjectURL(b); a.download = sh.file || 'agsist-chart.png'; D.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500); };
     var flash = function (b, t) { var o = b.textContent; b.textContent = t; setTimeout(function () { b.textContent = o; }, 1800); };
     T.querySelector('.agc-save').addEventListener('click', function () { card(cfg, getView(), function (b) { if (b) { save(b); ga('picture_download', sh.file); } }); });

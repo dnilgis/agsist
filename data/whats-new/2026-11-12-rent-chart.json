@@ -2,7 +2,7 @@
  "id": "2026-11-12-rent-chart",
  "date": "2026-11-12",
  "title": "State cash rent by year, as a chart",
- "line": "Each state rent page draws median county rent since 2008, says how much it moved in the same counties, and saves as a picture to share.",
+ "line": "Each state rent page charts median county rent since 2008 with the first and last year labelled, and says how much it moved in the same counties.",
  "link": "/rent/iowa#rent-history",
  "rank": 3
 }
