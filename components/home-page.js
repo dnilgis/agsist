@@ -189,6 +189,42 @@
   }
 
   /* every recorded farmland sale over 24 months, price per acre, with the county median and its middle half */
+  /* month bars against normal (the old home's season chart, owner Nov 12): for each month this year's total (gold)
+     beside its 1991 to 2020 normal for the same reported days (dashed box). o.m: [{lab, a, n (null: none on file),
+     part (the month still running), gap (withheld: not enough days)}]; o.fmt(v) the axis words; o.vfmt(v) a bar's
+     value; the month still running is lighter and its bar carries its value. No normal anywhere: no normal boxes. */
+  function barSvg(o) {
+    var M = o.m, w = o.w, h = o.h, fs = o.fs || 12, pl = Math.max(44, Math.ceil(fs * 3.7)), pr = 8, pt = Math.ceil(fs * 2.1), pb = 26;
+    var hasN = M.some(function (x) { return num(x.n); });
+    var top = 0; M.forEach(function (x) { if (num(x.a)) top = Math.max(top, x.a); if (num(x.n)) top = Math.max(top, x.n); });
+    var t = nice(0, Math.max(top, 1e-6) * 1.08, o.steps), ymax = t.hi;
+    var cw = (w - pl - pr) / M.length, Y = function (v) { return pt + (ymax - v) / ymax * (h - pt - pb); }, yb = h - pb;
+    var s = ['<svg class="ch" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + w + ' ' + h + '" role="img" aria-label="' + esc(o.label) + '" style="font-size:' + fs + 'px">'];
+    for (var v = 0; v <= ymax + 1e-9; v += t.step) {
+      s.push('<line class="ch-grid" x1="' + pl + '" x2="' + (w - pr) + '" y1="' + Y(v).toFixed(1) + '" y2="' + Y(v).toFixed(1) + '"/>');
+      s.push('<text class="ch-ax" x="' + (pl - 6) + '" y="' + (Y(v) + 4).toFixed(1) + '" text-anchor="end">' + o.fmt(v) + '</text>');
+    }
+    s.push('<line class="ch-base" x1="' + pl + '" x2="' + (w - pr) + '" y1="' + yb + '" y2="' + yb + '"/>');
+    var pts = [], step = M.length > 9 && cw < fs * 2.6 ? 2 : 1;
+    M.forEach(function (x, i) {
+      var cx = pl + cw * (i + 0.5), bw = Math.max(4, cw * 0.62), nw = Math.min(cw * 0.86, bw + 6);
+      if (hasN && num(x.n)) s.push('<rect class="ch-bn" x="' + (cx - nw / 2).toFixed(1) + '" y="' + Y(x.n).toFixed(1) + '" width="' + nw.toFixed(1) + '" height="' + Math.max(0, yb - Y(x.n)).toFixed(1) + '"/>');
+      if (x.gap || !num(x.a)) s.push('<rect class="ch-bx" x="' + (cx - bw / 2).toFixed(1) + '" y="' + (yb - 3) + '" width="' + bw.toFixed(1) + '" height="3"/><text class="ch-ax" x="' + cx.toFixed(1) + '" y="' + (yb - 7) + '" text-anchor="middle">n/a</text>');
+      else s.push('<rect class="ch-ba' + (x.part ? ' part' : '') + '" x="' + (cx - bw / 2).toFixed(1) + '" y="' + Y(x.a).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(0, yb - Y(x.a)).toFixed(1) + '"/>');
+      if ((i % step === 0) || i === M.length - 1) s.push('<text class="ch-ax" x="' + cx.toFixed(1) + '" y="' + (yb + 17) + '" text-anchor="middle">' + esc(x.lab) + '</text>');
+      pts.push({ x: cx, y: num(x.a) ? Y(x.a) : yb, i: i });
+    });
+    /* the latest month named on its bar, and marked */
+    var L = M.length - 1, xl = pl + cw * (L + 0.5);
+    if (num(M[L].a) && !M[L].gap) {
+      s.push('<circle class="ch-cur" cx="' + xl.toFixed(1) + '" cy="' + Y(M[L].a).toFixed(1) + '" r="3"/>');
+      /* its value in the top right corner, clear of every bar: "Nov so far: 0.68 in" */
+      s.push('<text class="ch-bl" x="' + (w - pr).toFixed(1) + '" y="' + (pt - 8) + '" text-anchor="end">' + esc(M[L].lab + (M[L].part ? ' so far' : '') + ': ' + o.vfmt(M[L].a)) + '</text>');
+    }
+    if (o.out) { o.out.w = w; o.out.h = h; o.out.top = pt; o.out.bottom = yb; o.out.pts = pts; }
+    s.push('</svg>');
+    return s.join('');
+  }
   function landSvg(o) {
     var rows = o.rows, w = o.w, h = o.h, fs = o.fs || 12, med = o.med, q1 = o.q1, q3 = o.q3;
     var pl = 58, pr = 14, pt = 14, pb = 28;
@@ -263,6 +299,7 @@
     + '.ch-cur-o{fill:none;stroke:#d4a23f;stroke-width:1.5;opacity:.6}.ch-tag-t{fill:#0a0c0d;font-weight:700}.ch-band{fill:#d4a23f;opacity:.14}'
     + '.ch-dot{fill:#6f9fc2;fill-opacity:.6;stroke:#101415;stroke-width:1}.ch-med{stroke:#d4a23f;stroke-width:2}.ch-val{fill:#e9edeb;font-weight:700}'
     + '.ch-norm{fill:none;stroke:#6f9fc2;stroke-width:2;stroke-dasharray:5 4}.ch-normdot{fill:#6f9fc2}.rmap-bg{fill:#161b1c}.rmap-gr{stroke:#22292b}'
+    + '.ch-bn{fill:#6f9fc2;fill-opacity:.16;stroke:#6f9fc2;stroke-width:1.2;stroke-dasharray:3 2}.ch-ba{fill:#d4a23f}.ch-ba.part{opacity:.55}.ch-bx{fill:#3a4346}.ch-bl{fill:#e9edeb;font-weight:700}'
     + '.rmap-st{fill:none;stroke:#e9edeb;stroke-opacity:.55;stroke-width:1.4}.rmap-t,.rmap-me{fill:#e9edeb;font-weight:700;paint-order:stroke;stroke:#161b1c;stroke-width:3px}.rmap-tdot{fill:#e9edeb}';
   function wrap(t, n) {
     var words = String(t).split(' '), lines = [''];
@@ -288,7 +325,7 @@
   }
   var words = { basis: basisWords, county: countyName, quarters: quarters };
 
-  var api = { postedRange: postedRange, takeaway: takeaway, lineSvg: lineSvg, cumSvg: cumSvg, landSvg: landSvg, cardSvg: cardSvg, nice: nice, fridays: fridays, county: county, words: words };
+  var api = { postedRange: postedRange, takeaway: takeaway, barSvg: barSvg, lineSvg: lineSvg, cumSvg: cumSvg, landSvg: landSvg, cardSvg: cardSvg, nice: nice, fridays: fridays, county: county, words: words };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgHomePage = api;
   var doc = root.document;
@@ -409,7 +446,7 @@
   }
   function unknownBand(z) {
     var t = 'ZIP ' + z + ' is not in our ZIP table.';
-    fcFail(t); txt('hp-rr-msg', t); ['hp-rain-ch', 'hp-gdu-ch'].forEach(function (id) { msgIn(id, t); });
+    fcFail(t); txt('hp-rr-msg', t); txt('hp-live-msg', t); ['hp-rain-ch', 'hp-gdu-ch'].forEach(function (id) { msgIn(id, t); });
   }
   /* audit A1: bids still loading 6 seconds after a ZIP is in place end in a plain message; a later answer still draws */
   var bidsT = null;
@@ -996,26 +1033,47 @@
     st.textContent = t; clearTimeout(st._t); st._t = setTimeout(function () { st.textContent = ''; }, 4000);
   }
   function fcFail(t) { var m = $('hp-fc-msg'); if (m) { m.textContent = t; m.style.background = 'var(--surface)'; } }
+  /* the old home's weather icons (index.html sprite), from the NWS words made into WMO-style codes (components/nws.js) */
+  function wxIcon(code, day, cls) {
+    var k = code == null ? 'i-cloud-sun' : code === 0 ? (day === 0 ? 'i-moon' : 'i-sun') : code <= 2 ? 'i-cloud-sun' : code === 3 ? 'i-cloud' : code === 45 || code === 48 ? 'i-cloud-fog'
+      : code >= 51 && code <= 57 ? 'i-cloud-sun-rain' : code >= 61 && code <= 67 ? 'i-cloud-rain' : code >= 71 && code <= 77 ? 'i-snowflake' : code >= 80 && code <= 82 ? 'i-cloud-sun-rain'
+      : code === 85 || code === 86 ? 'i-snowflake' : code >= 95 ? 'i-cloud-lightning' : 'i-cloud-sun';
+    return '<svg class="ic' + (cls ? ' ' + cls : '') + '" aria-hidden="true"><use href="#' + k + '"/></svg>';
+  }
+  function hr12(iso) { var h = +String(iso).slice(11, 13); return h === 0 ? '12 am' : h === 12 ? 'noon' : (h % 12) + (h < 12 ? ' am' : ' pm'); }
+  /* owner, Nov 12: the old home's fuller forecast: now (icon, temperature, feels like, wind, humidity, dew point,
+     chance of rain), the days with icons, highs, lows and chance of rain, and the next 24 hours behind a fold */
   function drawForecast(p, seq) {
     if (!root.AgNWS) { fcFail('The forecast did not load. Try again in a few minutes.'); return; }
     root.AgNWS.forecast(p.lat, p.lon, { days: 8 }).then(function (f) {
       if (seq !== band.seq) return;
-      var c = f.current || {}, D = f.daily || {};
+      var c = f.current || {}, D = f.daily || {}, H = f.hourly || {}, r = function (v) { return num(v) ? Math.round(v) : null; };
       txt('hp-now-t', num(c.temperature_2m) ? Math.round(c.temperature_2m) + '°' : '--°');
-      var w = [];
-      if (num(c.wind_speed_10m)) w.push('Wind ' + compass(c.wind_direction_10m) + ' ' + Math.round(c.wind_speed_10m) + ' mph');
-      if (num(c.relative_humidity_2m)) w.push('Humidity ' + Math.round(c.relative_humidity_2m) + '%');
+      var ni = $('hp-now-i'); if (ni) ni.outerHTML = wxIcon(c.weather_code, c.is_day, 'hp-nowi').replace('<svg ', '<svg id="hp-now-i" ');
       /* the grid's forecast for the hour that holds now, not a reading (audit Q15, C14) */
-      html('hp-now-d', '<b>' + esc(WX[c.weather_code] || 'Forecast') + '</b><br>Hourly forecast<br>' + w.map(esc).join('<br>'));
+      html('hp-now-d', '<b>' + esc(WX[c.weather_code] || 'Forecast') + '</b><br>Hourly forecast');
+      txt('hp-nw-f', r(c.apparent_temperature) != null ? r(c.apparent_temperature) + '°' : '-');
+      txt('hp-nw-w', num(c.wind_speed_10m) ? (compass(c.wind_direction_10m) + ' ' + Math.round(c.wind_speed_10m) + ' mph').trim() : '-');
+      txt('hp-nw-h', r(c.relative_humidity_2m) != null ? r(c.relative_humidity_2m) + '%' : '-');
+      txt('hp-nw-d', r(c.dew_point_2m) != null ? r(c.dew_point_2m) + '°' : '-');
+      txt('hp-nw-p', r(c.precipitation_probability) != null ? r(c.precipitation_probability) + '%' : '-');
       var times = D.time || [], todayKey = (c.time || '').slice(0, 10), i0 = Math.max(0, times.indexOf(todayKey)), lis = [];
       if (!num((D.temperature_2m_max || [])[i0]) || !num((D.temperature_2m_min || [])[i0])) i0++;   /* today half gone: the grid has no full-day high and low, start tomorrow */
       for (var i = i0; i < times.length && lis.length < 7; i++) {
         if (!num((D.temperature_2m_max || [])[i]) && !num((D.temperature_2m_min || [])[i])) continue;   /* a day past the grid's end */
         var dd = utc(times[i]), hi = (D.temperature_2m_max || [])[i], lo = (D.temperature_2m_min || [])[i], pp = (D.precipitation_probability_max || [])[i];
-        lis.push('<li><b>' + (times[i] === todayKey ? 'Today' : DOW[dd.getUTCDay()]) + '</b><span class="hi">' + (num(hi) ? Math.round(hi) + '°' : '-') + '</span> <span class="lo">' + (num(lo) ? Math.round(lo) + '°' : '-')
-          + '</span><span class="pp">' + (num(pp) ? Math.round(pp) + '%<span class="vh"> chance of rain</span>' : '-') + '</span></li>');
+        lis.push('<li><b>' + (times[i] === todayKey ? 'Today' : DOW[dd.getUTCDay()]) + '</b>' + wxIcon((D.weather_code || [])[i], 1) + '<span><span class="hi">' + (num(hi) ? Math.round(hi) + '°' : '-') + '</span> <span class="lo">' + (num(lo) ? Math.round(lo) + '°' : '-')
+          + '</span><span class="vh">, ' + esc(WX[(D.weather_code || [])[i]] || '') + '</span></span><span class="pp">' + (num(pp) ? Math.round(pp) + '%<span class="vh"> chance of rain</span>' : '-') + '</span></li>');
       }
       if (lis.length) html('hp-d7', lis.join(''));
+      /* the next 24 hours from this hour */
+      var ht = H.time || [], h0 = -1, now = String(c.time || '').slice(0, 13), cells = [];
+      for (var k = 0; k < ht.length; k++) if (String(ht[k]).slice(0, 13) >= now) { h0 = k; break; }
+      if (h0 >= 0) for (var j = h0; j < ht.length && cells.length < 24; j++) {
+        var tt = (H.temperature_2m || [])[j], hp = (H.precipitation_probability || [])[j];
+        cells.push('<div><b>' + (j === h0 ? 'Now' : hr12(ht[j])) + '</b>' + wxIcon((H.weather_code || [])[j], (H.is_day || [])[j]) + (num(tt) ? Math.round(tt) + '°' : '-') + '<span class="pp">' + (num(hp) ? Math.round(hp) + '%' : '-') + '</span></div>');
+      }
+      var hr = $('hp-hourly'); if (hr) hr.hidden = !cells.length; if (cells.length) html('hp-hr', cells.join(''));
       var src = 'Percent: chance of rain. National Weather Service forecast';
       try { var n = f._nws; if (n && n.updated) src += ', issued ' + new Date(n.updated).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: f.timezone || undefined, timeZoneName: 'short' }); } catch (e) {}
       txt('hp-fc-src', src + '.');
@@ -1024,6 +1082,21 @@
       if (seq !== band.seq) return;
       fcFail(e && e.outside ? 'The National Weather Service has no forecast for this point.' : 'The National Weather Service forecast did not answer. Try again in a few minutes.');
     });
+  }
+  /* owner, Nov 12: the live radar back on the home page, as the old home had it (Windy's radar layer, the same embed
+     components/geo.js built), centred on the reader's place; it loads only when the band comes near the screen
+     (loadBand runs from later()), holds its room, and says so if it does not come in */
+  function drawLive(p) {
+    var f = $('hp-live-f'), msg = $('hp-live-msg'); if (!f) return;
+    var la = (+p.lat).toFixed(4), lo = (+p.lon).toFixed(4);
+    var u = 'https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=7&overlay=radar&product=radar&level=surface'
+      + '&lat=' + la + '&lon=' + lo + '&detailLat=' + la + '&detailLon=' + lo + '&detail=false&pressure=false&menu=false&message=false&marker=true&calendar=now&thunder=false';
+    if (f.getAttribute('src') === u) return;
+    var done = false;
+    if (msg) msg.textContent = 'Loading the live radar';
+    f.onload = function () { done = true; f.hidden = false; if (msg) msg.textContent = ''; };
+    f.setAttribute('src', u);
+    setTimeout(function () { if (!done && msg) msg.innerHTML = 'The live radar did not load. <a href="/rain#radar">Open the radar on the rain page &rarr;</a>'; }, 15000);
   }
   function drawRain(R, p, cf) {
     var c = cf && cf.c;
@@ -1047,16 +1120,25 @@
     txt('hp-yr', String(yr));
     var key = $('hp-rain-key');
     if (key) { var nk = key.lastChild; nk.hidden = !hasN; if (hasN) nk.lastChild.textContent = 'Normal: ' + f1(c.usual) + ' in (1991 to 2020)'; }
+    /* owner, Nov 12: the old home's month bars, this year against normal, with the percent of normal up top */
+    html('hp-rain-pct', hasN ? '<b class="' + (pct >= 100 ? 'up' : 'dn') + '">' + pct + '%</b>of normal (' + f1(c.usual) + ' in to ' + (end ? md(end) : 'date') + ')' : '<b>' + f1(c.total) + ' in</b>since Jan 1; no normal on file for this gauge');
     var box = $('hp-rain-ch'); if (!box) return;
-    var opts = function (w, h, fs, uid, out) { return { x: xs, a: a, b: b, w: w, h: h, fs: fs, uid: uid, out: out, fmt: function (v) { return v + ' in'; }, steps: [1, 2, 5, 10, 20], xl: xl,
-      now: f1(c.total) + ' in', norm: hasN ? 'normal ' + f1(c.usual) : '', label: 'Rain since January 1: ' + f1(c.total) + ' inches' + (hasN ? '; normal to date ' + f1(c.usual) + ' inches.' : '; no 1991 to 2020 normal on file for this gauge.') }; };
-    var out = {}; out.svg = cumSvg(opts(ph ? 366 : 380, ph ? 200 : 250, fsFor('hp-rain-ch', ph ? 366 : 380), 'rn' + (ph ? 'm' : 'd'), out)); out.mode = 'x'; out.label = head + '.';
-    out.text = function (i) { return (i ? md(addDays(new Date(Date.UTC(yr, 0, 1)), xs[i])) : 'Jan 1') + ': ' + f1(a[i]) + ' in' + (b ? '; normal ' + f1(b[i]) + ' in' : ''); };
+    var MR = (Array.isArray(c.months) ? c.months : []).map(function (r, i) {
+      var ok = Array.isArray(r) && num(r[0]);
+      return { lab: MON[i], a: ok ? r[0] : null, n: hasN && ok && num(r[1]) ? r[1] : null, gap: !ok, rep: ok ? r[2] : null, so: ok ? r[3] : null,
+        part: end && i === end.getUTCMonth() && end.getUTCDate() < new Date(Date.UTC(yr, i + 1, 0)).getUTCDate() };
+    });
+    if (!MR.length) { msgIn('hp-rain-ch', 'No month totals for this county yet.'); return; }
+    var opts = function (w, h, fs, out) { return { m: MR, w: w, h: h, fs: fs, out: out, steps: [0.5, 1, 2, 5, 10], fmt: function (v) { return v + ' in'; }, vfmt: function (v) { return f1(v, 2) + ' in'; },
+      label: 'Rain by month, ' + yr + (hasN ? ', against the 1991 to 2020 normal for the same days' : '') + '. Since January 1: ' + f1(c.total) + ' inches' + (hasN ? ', ' + pct + ' percent of normal.' : '; no normal on file for this gauge.') }; };
+    var out = {}; out.svg = barSvg(opts(ph ? 366 : 380, ph ? 200 : 250, fsFor('hp-rain-ch', ph ? 366 : 380), out)); out.mode = 'x'; out.label = head + '.';
+    out.text = function (i) { var r = MR[i]; if (r.gap) return r.lab + ': not enough days reported';
+      return r.lab + (r.part ? ' so far' : '') + ': ' + f1(r.a, 2) + ' in' + (num(r.n) ? '; normal ' + f1(r.n, 2) + ' in' + (r.n >= 1 ? ' (' + Math.round(r.a / r.n * 100) + '%)' : '') : '') + (num(r.rep) && num(r.so) && r.rep < r.so ? '; ' + r.rep + ' of ' + r.so + ' days reported' : ''); };
     chart(box, out);
     var st = c.station || {}, net = st.net === 'cocorahs' ? ' (CoCoRaHS)' : st.net ? ' (NOAA co-op)' : '';
     txt('hp-rain-src', 'Jan 1 to ' + (end ? md(end) : '') + '. ' + (cf.near ? 'No station in ' + countyName(p.county, p.state) + '; nearest county: ' + cf.nearName + '. ' : '') + (st.name ? 'Gauge: ' + st.name + net + '. ' : '') + 'NOAA daily records via RCC-ACIS.');
-    SPECS.rain = function () { return { head: head + ' at ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + (hasN ? ' (gold) against the 1991 to 2020 normal (dashed)' : ', no normal on file for this gauge') + ', inches since Jan 1',
-      big: function (w, h) { return cumSvg(opts(w, h, 16, 'krn')); }, source: (st.name ? 'Gauge: ' + st.name + net + '. ' : '') + 'NOAA daily records via RCC-ACIS, Jan 1 to ' + (end ? md(end) : '') + '.', file: 'rain', date: end }; };
+    SPECS.rain = function () { return { head: head + ' at ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + ' by month (gold)' + (hasN ? ' against the 1991 to 2020 normal for the same days (dashed)' : ', no normal on file for this gauge') + ', inches',
+      big: function (w, h) { return barSvg(opts(w, h, 16)); }, source: (st.name ? 'Gauge: ' + st.name + net + '. ' : '') + 'NOAA daily records via RCC-ACIS, Jan 1 to ' + (end ? md(end) : '') + '.', file: 'rain', date: end }; };
   }
   /* mmdd (1109) of this year -> a date */
   function mmddDate(v, yr) { return num(v) && v >= 101 && v <= 1231 ? new Date(Date.UTC(yr, Math.floor(v / 100) - 1, v % 100)) : null; }
@@ -1075,35 +1157,35 @@
       msgIn('hp-gdu-ch', early && (!c || !Array.isArray(c.gm) || c.gm.length < 5) ? 'The corn GDU season starts May 1.' : c ? 'Not enough days reported at this station to count GDUs.' : 'No GDU record for this county yet.');
       return;
     }
-    var end = mmddDate(c.a, yr) || utc(W.edate), xs = [doy(new Date(Date.UTC(yr, 4, 1)))], a = [0], b = [0], nOk = true, gap = null;
+    var end = mmddDate(c.a, yr) || utc(W.edate), ph = phone(), gaps = [];
+    /* owner, Nov 12: month bars from May, this year against normal; a withheld month is a gap marked n/a, never a zero */
+    var MG = [];
     for (var m = 4; m < c.gm.length; m++) {
-      var gm = c.gm[m];
-      if (!Array.isArray(gm) || !num(gm[0])) { gap = MON[m]; break; }
-      var mend = m === c.gm.length - 1 && end ? doy(end) : doy(new Date(Date.UTC(yr, m + 1, 0)));
-      xs.push(mend); a.push(a[a.length - 1] + gm[0]);
-      if (num(gm[1]) && nOk) b.push(b[b.length - 1] + gm[1]); else nOk = false;
+      var gm = c.gm[m], ok = Array.isArray(gm) && num(gm[0]);
+      if (!ok) gaps.push(MON[m]);
+      MG.push({ lab: MON[m], a: ok ? gm[0] : null, n: ok && num(gm[1]) ? gm[1] : null, gap: !ok, rep: ok ? gm[2] : null, so: ok ? gm[3] : null,
+        part: m === c.gm.length - 1 && end && end.getUTCDate() < new Date(Date.UTC(yr, m + 1, 0)).getUTCDate() });
     }
-    if (xs.length < 2) { msgIn('hp-gdu-ch', 'Not enough days reported at this station to count GDUs.'); return; }
-    if (!nOk) b = null;
-    var now = g[0], norm = num(g[2]) && g[2] > 0 ? g[2] : null, ph = phone(), lastX = xs[xs.length - 1], plotEnd = addDays(new Date(Date.UTC(yr, 0, 1)), lastX);
-    var xl = [[xs[0], 'May 1', 'start']];
-    [[6, 'Jul'], [8, 'Sep']].forEach(function (mm) { var x = doy(new Date(Date.UTC(yr, mm[0], 1))); if (x < lastX - 35) xl.push([x, mm[1], 'middle']); });
-    xl.push([lastX, md(plotEnd), 'end']);
+    if (!MG.some(function (x) { return !x.gap; })) { msgIn('hp-gdu-ch', 'Not enough days reported at this station to count GDUs.'); return; }
+    var hasNM = MG.some(function (x) { return num(x.n); });
+    var now = g[0], norm = num(g[2]) && g[2] > 0 ? g[2] : null, gp = norm ? (num(g[4]) ? g[4] : Math.round(now / norm * 100)) : null;
     var head = 'Corn GDUs since May 1: ' + comma(now) + (norm ? ', ' + comma(Math.abs(now - norm)) + (now >= norm ? ' ahead of' : ' behind') + ' normal' : '');
     txt('hp-gdu-h', head);
+    html('hp-gdu-pct', norm ? '<b class="' + (gp >= 100 ? 'up' : 'dn') + '">' + gp + '%</b>of normal (' + comma(norm) + ')' : '<b>' + comma(now) + '</b>GDUs; no normal on file for this station');
     var key = $('hp-gdu-h').parentNode.querySelector('.hp-key');
-    if (key) { var nk = key.lastChild; nk.hidden = !b; if (b && norm) nk.lastChild.textContent = 'Normal: ' + comma(norm) + ' (1991 to 2020)'; }
-    var tail = gap ? ' The chart stops at ' + md(plotEnd) + ': not enough days reported in ' + gap + '.' : '';
+    if (key) { var nk = key.lastChild; nk.hidden = !hasNM; if (hasNM) nk.lastChild.textContent = 'Normal (1991 to 2020)'; }
+    var tail = gaps.length ? ' Not enough days reported in ' + gaps.join(', ') + '.' : '';
     var box = $('hp-gdu-ch'); if (!box) return;
-    var opts = function (w, h, fs, uid, out) { return { x: xs, a: a, b: b, w: w, h: h, fs: fs, uid: uid, out: out, fmt: function (v) { return v ? (v >= 1000 ? (v / 1000) + 'k' : String(v)) : '0'; },
-      steps: [100, 250, 500, 1000], xl: xl, now: comma(a[a.length - 1]) + ' GDUs', norm: b ? 'normal ' + comma(b[b.length - 1]) : '', label: 'Corn growing degree units since May 1: ' + comma(now) + (norm ? '; normal ' + comma(norm) : '; no 1991 to 2020 normal on file for this station') + '.' }; };
-    var out = {}; out.svg = cumSvg(opts(ph ? 366 : 380, ph ? 200 : 250, fsFor('hp-gdu-ch', ph ? 366 : 380), 'gd' + (ph ? 'm' : 'd'), out)); out.mode = 'x'; out.label = head + '.';
-    out.text = function (i) { return (i ? md(addDays(new Date(Date.UTC(yr, 0, 1)), xs[i])) : 'May 1') + ': ' + comma(a[i]) + ' GDUs' + (b ? '; normal ' + comma(b[i]) : ''); };
+    var opts = function (w, h, fs, out) { return { m: MG, w: w, h: h, fs: fs, out: out, steps: [50, 100, 250, 500], fmt: function (v) { return comma(v); }, vfmt: function (v) { return comma(v); },
+      label: 'Corn growing degree units by month since May 1, ' + yr + ': ' + comma(now) + (norm ? ', ' + gp + ' percent of normal' : '; no 1991 to 2020 normal on file for this station') + '.' }; };
+    var out = {}; out.svg = barSvg(opts(ph ? 366 : 380, ph ? 200 : 250, fsFor('hp-gdu-ch', ph ? 366 : 380), out)); out.mode = 'x'; out.label = head + '.';
+    out.text = function (i) { var r = MG[i]; if (r.gap) return r.lab + ': not enough days reported';
+      return r.lab + (r.part ? ' so far' : '') + ': ' + comma(r.a) + ' GDUs' + (num(r.n) ? '; normal ' + comma(r.n) + (r.n >= 50 ? ' (' + Math.round(r.a / r.n * 100) + '%)' : '') : '') + (num(r.rep) && num(r.so) && r.rep < r.so ? '; ' + r.rep + ' of ' + r.so + ' days reported' : ''); };
     chart(box, out);
     var s = c.s && c.s[0] ? 'Station ' + c.s[0] + '. ' : '';
-    txt('hp-gdu-src', 'May 1 to ' + (end ? md(end) : '') + ', 86/50 method, month ends.' + tail + ' ' + s + 'NOAA daily records via RCC-ACIS.');
-    SPECS.gdu = function () { return { head: head + ', ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + (b ? ' (gold) against the 1991 to 2020 normal (dashed)' : ', no normal on file for this station') + ', corn GDUs, 86/50 method',
-      big: function (w, h) { return cumSvg(opts(w, h, 16, 'kgd')); }, source: s + 'NOAA daily records via RCC-ACIS, May 1 to ' + (end ? md(end) : '') + ', month ends.', file: 'gdu', date: end }; };
+    txt('hp-gdu-src', 'May 1 to ' + (end ? md(end) : '') + ', 86/50 method, by month.' + tail + ' ' + s + 'NOAA daily records via RCC-ACIS.');
+    SPECS.gdu = function () { return { head: head + ', ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + ' by month (gold)' + (hasNM ? ' against the 1991 to 2020 normal for the same days (dashed)' : ', no normal on file for this station') + ', corn GDUs, 86/50 method',
+      big: function (w, h) { return barSvg(opts(w, h, 16)); }, source: s + 'NOAA daily records via RCC-ACIS, May 1 to ' + (end ? md(end) : '') + ', month ends.', file: 'gdu', date: end }; };
   }
   function drawRadar(p, seq) {
     var st = p.state;
@@ -1199,6 +1281,7 @@
       if (band.zip === p.zip) return;
       band.zip = p.zip; var seq = ++band.seq;
       drawForecast(p, seq);
+      drawLive(p);
       drawRadar(p, seq);
       getJSON(stateFile('rain/', p.state)).then(function (R) {
         if (seq !== band.seq) return;

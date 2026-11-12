@@ -285,13 +285,47 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </div>
   </div>
 
+  <!-- weather icons (the old home's set): components/home-page.js wxIcon -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" /></symbol><symbol id="i-cloud-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2" />
+  <path d="m4.93 4.93 1.41 1.41" />
+  <path d="M20 12h2" />
+  <path d="m19.07 4.93-1.41 1.41" />
+  <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" />
+  <path d="M13 22H7a5 5 0 1 1 4.9-6H13a3 3 0 0 1 0 6Z" /></symbol><symbol id="i-cloud-sun-rain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v2" />
+  <path d="m4.93 4.93 1.41 1.41" />
+  <path d="M20 12h2" />
+  <path d="m19.07 4.93-1.41 1.41" />
+  <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" />
+  <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" />
+  <path d="M11 20v2" />
+  <path d="M7 19v2" /></symbol><symbol id="i-cloud-fog" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242" />
+  <path d="M16 17H7" />
+  <path d="M17 21H9" /></symbol><symbol id="i-cloud-lightning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16.326A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 .5 8.973" />
+  <path d="m13 12-3 5h4l-3 5" /></symbol><symbol id="i-snowflake" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m10 20-1.25-2.5L6 18" />
+  <path d="M10 4 8.75 6.5 6 6" />
+  <path d="m14 20 1.25-2.5L18 18" />
+  <path d="m14 4 1.25 2.5L18 6" />
+  <path d="m17 21-3-6h-4" />
+  <path d="m17 3-3 6 1.5 3" />
+  <path d="M2 12h6.5L10 9" />
+  <path d="m20 10-1.5 2 1.5 2" />
+  <path d="M22 12h-6.5L14 15" />
+  <path d="m4 10 1.5 2L4 14" />
+  <path d="m7 21 3-6-1.5-3" />
+  <path d="m7 3 3 6h4" /></symbol><symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.985 12.486a9 9 0 1 1-9.473-9.472c.405-.022.617.46.402.803a6 6 0 0 0 8.268 8.268c.344-.215.825-.004.803.401" /></symbol><symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></symbol><symbol id="i-cloud-rain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14.9A7 7 0 1 1 15.7 8h1.8a4.5 4.5 0 0 1 2.5 8.2"/><path d="M16 14v6M8 14v6M12 16v6"/></symbol></defs></svg>
   <section class="hp-card hp-wx" id="hp-wx" aria-labelledby="hp-wx-h">
     <div class="hp-k"><h2 id="hp-wx-h">Weather and season<span id="hp-wx-where"></span></h2><span class="r"><a href="/rain#radar">Radar rain map</a> &middot; <a href="/rain">Rain and drought</a></span></div>
     <div class="hp-wxnone">
-      <p>Type your ZIP at the top of the page for your 7-day forecast, a radar rain map of the last 7 days, and this year&rsquo;s rain and corn GDUs against normal.</p>
+      <p>Type your ZIP at the top of the page for the live radar, your forecast, a radar rain map of the last 7 days, and this year&rsquo;s rain and corn GDUs against normal, month by month.</p>
       <button type="button" class="hp-btn" data-hp-loc><span aria-hidden="true">&#8982;</span> Use my location</button>
     </div>
     <div class="hp-wxg">
+      <div class="hp-sub hp-a-live">
+        <h3 id="hp-live-h">Live radar</h3>
+        <p class="lead">The current radar loop around your place. Pinch or scroll to zoom.</p>
+        <div class="hp-live" id="hp-live"><div class="hp-msg" id="hp-live-msg">The live radar loads when you get here.</div><iframe id="hp-live-f" title="Live radar around your ZIP (Windy)" allow="fullscreen" allowfullscreen referrerpolicy="no-referrer" hidden></iframe></div>
+        <p class="hp-src">Live radar: Windy.com, from national weather radar.</p>
+      </div>
       <div class="hp-sub hp-a-radar">
         <h3 id="hp-rr-h">Radar rain, last 7 days</h3>
         <p class="lead" id="hp-rr-lead">Each square is about 2.8 by 2 miles.</p>
@@ -301,16 +335,20 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
         <p class="hp-src">NOAA MRMS multi-sensor rain estimate (radar corrected with gauges). State lines from the US Census Bureau.</p>
       </div>
       <div class="hp-sub hp-a-fc">
+        <h3 id="hp-fc-h">Forecast</h3>
         <div class="hp-fc">
-          <div class="hp-now" id="hp-now"><div class="t" id="hp-now-t">--&deg;</div><div class="d" id="hp-now-d"><b>Forecast</b><br>Loading</div></div>
-          <ol class="hp-d7" id="hp-d7"><li><b>&nbsp;</b>--<br>&nbsp;</li><li><b>&nbsp;</b>--<br>&nbsp;</li><li><b>&nbsp;</b>--<br>&nbsp;</li><li><b>&nbsp;</b>--<br>&nbsp;</li><li><b>&nbsp;</b>--<br>&nbsp;</li><li><b>&nbsp;</b>--<br>&nbsp;</li><li><b>&nbsp;</b>--<br>&nbsp;</li></ol>
+          <div class="hp-now" id="hp-now"><svg class="ic hp-nowi" id="hp-now-i" aria-hidden="true"><use href="#i-cloud-sun"/></svg><div class="t" id="hp-now-t">--&deg;</div><div class="d" id="hp-now-d"><b>Forecast</b><br>Loading</div></div>
+          <dl class="hp-nowg" id="hp-nowg"><div><dt>Feels like</dt><dd id="hp-nw-f">-</dd></div><div><dt>Wind</dt><dd id="hp-nw-w">-</dd></div><div><dt>Humidity</dt><dd id="hp-nw-h">-</dd></div><div><dt>Dew point</dt><dd id="hp-nw-d">-</dd></div><div><dt>Chance of rain</dt><dd id="hp-nw-p">-</dd></div></dl>
         </div>
+        <ol class="hp-d7" id="hp-d7"><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span> <span class="lo">&nbsp;</span><span class="pp">&nbsp;</span></li></ol>
+        <details class="hp-hourly" id="hp-hourly"><summary>Hourly, the next 24 hours</summary><div class="hp-hr" id="hp-hr"></div></details>
         <p class="hp-src" id="hp-fc-src">Percent: chance of rain. National Weather Service forecast.</p>
         <div class="hp-msg" id="hp-fc-msg"></div>
       </div>
       <div class="hp-sub hp-a-rain">
         <h3 id="hp-rain-h">Rain this year</h3>
-        <div class="hp-key" id="hp-rain-key"><span><i></i><span id="hp-yr">This year</span></span><span><i class="n"></i>Normal (1991 to 2020)</span></div>
+        <p class="hp-pct" id="hp-rain-pct">&nbsp;</p>
+        <div class="hp-key hp-keyb" id="hp-rain-key"><span><i></i><span id="hp-yr">This year</span></span><span><i class="n"></i>Normal (1991 to 2020)</span></div>
         <div class="hp-cum" id="hp-rain-ch"><div class="hp-msg"></div></div>
         <div class="hp-tools" data-chart="rain"><button type="button" data-act="share">Share</button><span aria-hidden="true">&middot;</span><button type="button" data-act="save">Save picture</button></div>
         <p class="hp-src" id="hp-rain-src">NOAA daily records via RCC-ACIS.</p>
@@ -318,7 +356,8 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
       </div>
       <div class="hp-sub hp-a-gdu">
         <h3 id="hp-gdu-h">Corn GDUs since May 1</h3>
-        <div class="hp-key"><span><i></i><span id="hp-yr2">This year</span></span><span><i class="n"></i>Normal (1991 to 2020)</span></div>
+        <p class="hp-pct" id="hp-gdu-pct">&nbsp;</p>
+        <div class="hp-key hp-keyb"><span><i></i><span id="hp-yr2">This year</span></span><span><i class="n"></i>Normal (1991 to 2020)</span></div>
         <div class="hp-cum" id="hp-gdu-ch"><div class="hp-msg"></div></div>
         <div class="hp-tools" data-chart="gdu"><button type="button" data-act="share">Share</button><span aria-hidden="true">&middot;</span><button type="button" data-act="save">Save picture</button></div>
         <p class="hp-src" id="hp-gdu-src">86/50 method, month ends. NOAA daily records via RCC-ACIS.</p>

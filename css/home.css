@@ -216,11 +216,11 @@ html[data-theme="light"] .hp-ask .sa-b{background:var(--brand);color:#fff}
 
 /* weather band */
 .hp-wx{margin-top:16px;contain:layout}
-.hp-wxg{display:grid;grid-template-columns:420px 1fr 1fr;grid-template-areas:"radar fc fc" "radar rain gdu";gap:14px}
+.hp-wxg{display:grid;grid-template-columns:420px 1fr 1fr;grid-template-areas:"live fc fc" "radar rain gdu";gap:14px}
 .hp-sub{border:1px solid var(--border);border-radius:8px;padding:12px 14px;background:var(--surface);min-width:0;position:relative}
 .hp-sub h3{font-size:.95rem;font-weight:750;line-height:1.3;margin:0 0 .15rem;min-height:1.3em}
 .hp-sub .lead{font-size:.82rem;color:var(--text-muted);line-height:1.4;margin:0 0 .4rem;min-height:2.8em}
-.hp-a-radar{grid-area:radar}.hp-a-fc{grid-area:fc}.hp-a-rain{grid-area:rain}.hp-a-gdu{grid-area:gdu}
+.hp-a-live{grid-area:live}.hp-a-radar{grid-area:radar}.hp-a-fc{grid-area:fc}.hp-a-rain{grid-area:rain}.hp-a-gdu{grid-area:gdu}
 .hp-rmap{position:relative;width:100%;aspect-ratio:392/352;border-radius:6px;overflow:hidden;background:var(--surface2)}
 .hp-rmap svg{position:absolute;inset:0;width:100%;height:100%;display:block;font-family:var(--font-body)}
 .rmap-bg{fill:var(--surface2)}
@@ -233,18 +233,20 @@ html[data-theme="light"] .hp-ask .sa-b{background:var(--brand);color:#fff}
 .hp-rleg span{display:inline-flex;align-items:center;gap:.25rem}
 .hp-rleg i{width:14px;height:10px;border-radius:2px;display:inline-block}
 .hp-rleg i.nd{background:repeating-linear-gradient(45deg,#969696 0 2px,#6e6e6e 2px 4px);opacity:.75}
-.hp-fc{display:grid;grid-template-columns:220px 1fr;gap:16px;align-items:center;min-height:84px}
+.hp-fc{display:grid;grid-template-columns:minmax(200px,1fr) 1.4fr;gap:16px;align-items:center;min-height:84px}
 .hp-now{display:flex;gap:.8rem;align-items:center}
 .hp-now .t{font-family:var(--font-mono);font-size:2.6rem;font-weight:700;line-height:1;white-space:nowrap}
 .hp-now .d{font-size:.84rem;color:var(--text-muted);line-height:1.4}
 .hp-now .d b{color:var(--text);font-size:.95rem}
-.hp-d7{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;margin:0;padding:0;list-style:none}
+.hp-d7{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;text-align:center;margin:.7rem 0 0;padding:0;list-style:none}
 .hp-d7 li{background:var(--surface2);border-radius:8px;padding:.45rem .2rem;font-family:var(--font-mono);font-size:.74rem;line-height:1.4;min-width:0}
 .hp-d7 b{display:block;font-size:.84rem;color:var(--text)}
 .hp-d7 .hi{color:var(--text);font-weight:700}.hp-d7 .lo{color:var(--text-muted)}
 .hp-d7 .pp{display:block;color:var(--blue);font-size:.72rem}
 .hp-key{display:flex;flex-wrap:wrap;gap:.2rem 1rem;font-size:.74rem;color:var(--text-muted);font-family:var(--font-mono);margin:.1rem 0 .3rem;min-height:1.4em}
 .hp-key i{display:inline-block;width:16px;height:0;border-top:2.5px solid var(--chart-1,var(--gold));vertical-align:middle;margin-right:.3rem}
+.hp-keyb i{width:12px;height:12px;border:0;border-radius:2px;background:var(--chart-1,var(--gold));vertical-align:-1px}
+.hp-keyb i.n{background:none;border:1.5px dashed var(--chart-2,var(--blue))}
 .hp-key i.n{border-top:2px dashed var(--chart-2,var(--blue))}
 .hp-cum{position:relative;width:100%;aspect-ratio:380/250}
 .hp-cum svg{position:absolute;inset:0;width:100%;height:100%;display:block}
@@ -334,7 +336,7 @@ html:not(.has-zip) .hp-wx .hp-wxnone{display:block}
   .hp-g3{grid-template-columns:1fr 1fr}
   .hp-g3>.hp-col:nth-child(3){grid-column:1/-1;flex-direction:row}
   .hp-g3>.hp-col:nth-child(3)>*{flex:1 1 0}
-  .hp-wxg{grid-template-columns:1fr 1fr;grid-template-areas:"fc fc" "radar radar" "rain gdu"}
+  .hp-wxg{grid-template-columns:1fr 1fr;grid-template-areas:"fc fc" "live radar" "rain gdu"}
   .hp-rmap{max-width:520px}
   .hp-g3b{grid-template-columns:1fr 1fr}
   .hp-dirg{grid-template-columns:1fr 1fr}
@@ -370,11 +372,16 @@ html:not(.has-zip) .hp-wx .hp-wxnone{display:block}
   .hp-tile .p{font-size:1.35rem}
   .hp-tile{min-height:10.6rem}
   .hp-wx{margin-top:12px}
-  .hp-wxg{grid-template-columns:1fr;grid-template-areas:"radar" "fc" "rain" "gdu";gap:10px}
+  .hp-wxg{grid-template-columns:1fr;grid-template-areas:"live" "fc" "radar" "rain" "gdu";gap:10px}
   .hp-sub{padding:12px 0 2px;border:0;border-top:1px solid var(--border);border-radius:0}
   .hp-wxg>.hp-sub:first-child{border-top:0;padding-top:0}
   .hp-fc{grid-template-columns:1fr;gap:10px}
-  .hp-d7{gap:3px}.hp-d7 li{font-size:.72rem;padding:.4rem .1rem}.hp-d7 b{font-size:.74rem}
+  /* the days as rows on a phone: day, icon, high and low, chance of rain, each readable at 390 */
+  .hp-d7{grid-template-columns:1fr;gap:4px}
+  .hp-d7 li{display:grid;grid-template-columns:3.2rem 1.6rem 1fr auto;align-items:center;text-align:left;font-size:.86rem;padding:.4rem .6rem;min-height:2.6rem}
+  .hp-d7 b{font-size:.9rem}.hp-d7 .ic{margin:0}.hp-d7 .pp{display:inline;font-size:.84rem}
+  .hp-nowg{grid-template-columns:1fr 1fr}
+  .hp-live{aspect-ratio:366/300}
   .hp-d7 .pw{display:none}
   .hp-rmap{aspect-ratio:366/330}
   .hp-cum{aspect-ratio:366/200}
@@ -460,3 +467,30 @@ html{scroll-padding-top:130px}
    moves; block links get a minimum height. */
 .hp :where(p,td,li,h3,span,div)>a:not([class]),.hp a.hp-lnk,.hp-today .gs-src,.sw-line a{padding-block:4px}
 .hp .hp-bl .hp-lnk{display:inline-flex;align-items:center;min-height:24px}
+/* owner round (Nov 12): the live radar, the fuller forecast, and rain and GDUs as month bars against normal */
+.hp-live{position:relative;width:100%;aspect-ratio:392/330;border-radius:6px;overflow:hidden;background:var(--surface2)}
+.hp-live iframe{position:absolute;inset:0;width:100%;height:100%;border:0;display:block}.hp-live iframe[hidden]{display:none}
+.hp-live .hp-msg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:1rem;color:var(--text-muted);font-size:.9rem}
+.hp-a-fc h3,.hp-a-live h3{margin:0 0 .4rem}
+.hp .ic{width:1.15em;height:1.15em;display:inline-block;vertical-align:-.2em;stroke:currentColor}
+.hp-nowi{width:2.6rem!important;height:2.6rem!important;color:var(--gold);flex:0 0 auto}
+.hp-nowg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px 12px;margin:0;font-size:.82rem}
+.hp-nowg div{background:var(--surface2);border-radius:8px;padding:.4rem .55rem;min-width:0}
+.hp-nowg dt{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)}
+.hp-nowg dd{margin:0;font-weight:700;font-family:var(--font-mono);font-size:.92rem}
+.hp-d7 .ic{display:block;margin:.2rem auto;width:1.5em;height:1.5em;color:var(--gold)}
+.hp-hourly{margin-top:.6rem}
+.hp-hourly>summary{cursor:pointer;font-weight:700;color:var(--brand);font-size:.86rem;min-height:44px;display:inline-flex;align-items:center}
+.hp-hr{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(3.4rem,1fr);gap:4px;overflow-x:auto;padding-bottom:.3rem;font-family:var(--font-mono);font-size:.76rem;text-align:center}
+.hp-hr div{background:var(--surface2);border-radius:6px;padding:.35rem .2rem}
+.hp-hr b{display:block;font-size:.72rem;color:var(--text-muted);font-weight:600}
+.hp-hr .ic{display:block;margin:.15rem auto;color:var(--gold)}
+.hp-hr .pp{display:block;color:var(--blue);font-size:.72rem}
+.hp-pct{margin:.1rem 0 .25rem;font-size:.9rem;color:var(--text-muted);min-height:1.9rem;line-height:1.9rem}
+.hp-pct b{font-family:var(--font-mono);font-size:1.6rem;color:var(--text);margin-right:.35rem;vertical-align:-.1rem}
+.hp-pct b.up{color:var(--green)}.hp-pct b.dn{color:var(--orange,#c0602a)}
+.ch-bn{fill:rgba(111,159,194,.12);stroke:var(--chart-2,var(--blue));stroke-width:1.2;stroke-dasharray:3 2}
+.ch-ba{fill:var(--chart-1,var(--gold))}.ch-ba.part{opacity:.55}
+.ch-bx{fill:url(#hpnd);stroke:var(--border-2);stroke-width:1}
+.ch-bl{fill:var(--text);font-family:var(--font-mono);font-weight:700}
+@media (max-width:640px){.hp-nowg{grid-template-columns:1fr 1fr}.hp-d7 li{column-gap:.4rem}.hp-d7 .ic{margin:0}}
