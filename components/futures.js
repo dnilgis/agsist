@@ -1940,6 +1940,7 @@ function pxWhat(q,fetched,ctf){
 }
 /* The hero line's moment, in the baked seed's words (seed_static.py quote_when,
    state_words): "Settle Oct 16" | "Read 10:42 am CT, delayed" | "Last trade, 1:20 pm CT bell" | "Last quote".
+   (The settle a change is from is named in the sentence under the hero, below, kept short here: one line at 390 px.)
    Night audit Oct 19, 2026: it called a Friday settle "refreshed" in session
    on a Sunday, and an answer engine can quote that as a live price. */
 function exchWhen(q,fetched){
@@ -2020,12 +2021,15 @@ AG.json('/data/prices.json')
       var __sn=document.querySelector('.px-seed-note');
       if(__sn){
         var __p=window.AgPxStamp&&AgPxStamp.stampParts?AgPxStamp.stampParts(front,data.fetched):null,__k=__p&&__p.kind;
-        var __v=__k==='settle'?'settled at':__k==='overnight'?'traded overnight near':__k==='read'||__k==='bell'?'last traded near':'last quoted near',__w=__p?(__k==='read'||__k==='overnight'?'read '+__p.at:__k==='bell'?'the '+__p.at+' bell':__p.at):'';
+        var __v=__k==='settle'?'settled at':__k==='overnight'?'traded overnight near':__k==='read'||__k==='bell'?'last traded near':'last quoted near',__w=__p?(__k==='read'||__k==='overnight'?'read '+__p.at:__k==='bell'?'the '+__p.at+' bell'+(__p.vs?', change from the '+__p.vs+' settle':''):__p.at):'';
         var __cr={corn:'corn',beans:'soybeans',wheat:'wheat'}[CROP_KEY]||CROP.label.toLowerCase();
         __sn.style.minHeight=__sn.offsetHeight+'px';
         __sn.innerHTML=heroLabel+' '+__cr+' '+__v+' <strong>'+grain$(front.close)+'</strong>'+(front.stale?' (last good quote)':'')+(__w?' &middot; '+(__k==='settle'||__k==='updated'?'as of ':__k==='bell'?'at ':'')+__w:'')+'.';
       }
-      var hc=chgTxt(front.netChange,front.pctChange,front.roll);setEl('hero-chg',hc.t,hc.c);
+      /* after the bell the change names its settle where the line has room: "▼ −¼¢ (−0.06%) vs Nov 10" (AgPxStamp.change) */
+      var hc=chgTxt(front.netChange,front.pctChange,front.roll),__hp=window.AgPxStamp&&AgPxStamp.stampParts?AgPxStamp.stampParts(front,data.fetched):null;
+      if(hc.t&&__hp&&__hp.kind==='bell'&&__hp.vs)hc.t+=' vs '+__hp.vs;
+      setEl('hero-chg',hc.t,hc.c);
       /* 2026-10-20: the overnight electronic trade, when the file has one,
          beside the settle (price-local.js overnight). Titles keep the settle. */
       heroOvernight(front);

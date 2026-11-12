@@ -1,7 +1,7 @@
 {
  "_note": "Open and upcoming price discovery windows from the RMA prices file.",
- "updated": "2026-11-10T22:49:52Z",
- "as_of": "2026-11-10",
+ "updated": "2026-11-11T22:37:11Z",
+ "as_of": "2026-11-11",
  "crop_year": 2026,
  "open": [
   {
@@ -17,15 +17,15 @@
     "Washington"
    ],
    "n_states": 4,
-   "lo": 4.43,
-   "hi": 4.43,
+   "lo": 4.44,
+   "hi": 4.44,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "December"
    ],
-   "day": 10,
+   "day": 11,
    "span": 30,
    "in_days": null
   },
@@ -49,7 +49,7 @@
    "contract": [
     "December"
    ],
-   "day": 10,
+   "day": 11,
    "span": 30,
    "in_days": null
   },
@@ -63,15 +63,15 @@
     "Michigan"
    ],
    "n_states": 1,
-   "lo": 0.1905,
-   "hi": 0.1905,
+   "lo": 0.1909,
+   "hi": 0.1909,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "December"
    ],
-   "day": 10,
+   "day": 11,
    "span": 30,
    "in_days": null
   },
@@ -94,15 +94,15 @@
     "West Virginia"
    ],
    "n_states": 10,
-   "lo": 12.01,
-   "hi": 12.01,
+   "lo": 12.04,
+   "hi": 12.04,
    "exch": [
     "CBOT"
    ],
    "contract": [
     "January"
    ],
-   "day": 10,
+   "day": 11,
    "span": 30,
    "in_days": null
   }
