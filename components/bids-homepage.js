@@ -1954,7 +1954,8 @@
 
     // Show loading skeleton, unless a degraded card is already up (a quiet redraw).
     if(!degraded || !area.querySelector('.bh-elev')){
-      if(feedNodes === null) feedNodes = [document.querySelector('.r7-cov'), document.getElementById('idx1-trust-ledger')].filter(function(x){ return x; });
+      /* home audit Q9: on the rebuilt home page (main.hp) the elevator count line stays where it is, never moved into the hidden list area */
+      if(feedNodes === null) feedNodes = document.querySelector('main.hp') ? [] : [document.querySelector('.r7-cov'), document.getElementById('idx1-trust-ledger')].filter(function(x){ return x; });
       area.innerHTML = '<div><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap">Loading cash bids</span>'
         + '<div style="height:36px;background:var(--surface2);border-radius:6px;margin-bottom:.4rem;opacity:.4"></div>'
         + '<div style="height:36px;background:var(--surface2);border-radius:6px;margin-bottom:.4rem;opacity:.35"></div>'

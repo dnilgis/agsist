@@ -71,11 +71,19 @@
     }
     return { step: span, lo: lo, hi: hi };
   }
-  /* the Friday close date of each weekly bar: weekly bars are dated by their Monday (hist_to is the current week's) */
-  function fridays(histTo, n) {
-    var to = utc(histTo); if (!to) return null;
+  /* the close date of each weekly bar: weekly bars are dated by their Monday (hist_to is the current week's), and a
+     week closes on its last trading day: Friday, or Thursday Jul 2 when Jul 3 is the holiday (audit Q6). trading(iso)
+     is AgPxStamp.isTradingDay in the page; with none, Saturday and Sunday alone are skipped. A hist_to that is not a
+     Monday is not a weekly bar date: no dates. */
+  function fridays(histTo, n, trading) {
+    var to = utc(histTo); if (!to || to.getUTCDay() !== 1) return null;
+    var ok = trading || function (iso) { var w = utc(iso).getUTCDay(); return w > 0 && w < 6; };
     var out = [];
-    for (var i = n; i >= 1; i--) out.push(addDays(to, -7 * i + 4));
+    for (var i = n; i >= 1; i--) {
+      var d = addDays(to, -7 * i + 4), g = 0;
+      while (!ok(d.toISOString().slice(0, 10)) && g++ < 4) d = addDays(d, -1);
+      out.push(d);
+    }
     return out;
   }
   function money2(v) { return '$' + f1(v, 2); }
@@ -133,7 +141,8 @@
   function cumSvg(o) {
     var xs = o.x, a = o.a, b = o.b, w = o.w, h = o.h, fs = o.fs || 12, fmt = o.fmt;
     var pl = Math.max(44, Math.ceil(fs * 3.7)), pr = 12, pt = 16, pb = 28;
-    var t = nice(0, Math.max(Math.max.apply(null, a), Math.max.apply(null, b)) * 1.04, o.steps);
+    /* b null: no normal on file for this place, so no normal line, dot or label (never a normal of zero) */
+    var t = nice(0, Math.max(Math.max.apply(null, a), b ? Math.max.apply(null, b) : 0) * 1.04, o.steps);
     var ymax = t.hi, x0 = xs[0], x1 = xs[xs.length - 1];
     var X = function (d) { return pl + (d - x0) / (x1 - x0) * (w - pl - pr); };
     var Y = function (v) { return pt + (ymax - v) / ymax * (h - pt - pb); };
@@ -148,16 +157,16 @@
       s.push('<text class="ch-ax" x="' + X(L[0]).toFixed(1) + '" y="' + (h - pb + 17) + '" text-anchor="' + L[2] + '">' + L[1] + '</text>');
     });
     var pa = xs.map(function (x, i) { return X(x).toFixed(1) + ',' + Y(a[i]).toFixed(1); }).join(' ');
-    var pn = xs.map(function (x, i) { return X(x).toFixed(1) + ',' + Y(b[i]).toFixed(1); }).join(' ');
+    var pn = b ? xs.map(function (x, i) { return X(x).toFixed(1) + ',' + Y(b[i]).toFixed(1); }).join(' ') : '';
     s.push('<polygon fill="url(#g' + o.uid + ')" points="' + X(x0).toFixed(1) + ',' + Y(0).toFixed(1) + ' ' + pa + ' ' + X(x1).toFixed(1) + ',' + Y(0).toFixed(1) + '"/>');
-    s.push('<polyline class="ch-norm" points="' + pn + '"/><polyline class="ch-line" points="' + pa + '"/>');
+    s.push((b ? '<polyline class="ch-norm" points="' + pn + '"/>' : '') + '<polyline class="ch-line" points="' + pa + '"/>');
     if (o.out) { o.out.w = w; o.out.h = h; o.out.top = pt; o.out.bottom = h - pb; o.out.pts = xs.map(function (x, i) { return { x: X(x), y: Y(a[i]), i: i }; }); }
-    var xe = X(x1), ye = Y(a[a.length - 1]), yn = Y(b[b.length - 1]);
+    var xe = X(x1), ye = Y(a[a.length - 1]), yn = b ? Y(b[b.length - 1]) : h;
     s.push('<circle class="ch-cur-o" cx="' + xe.toFixed(1) + '" cy="' + ye.toFixed(1) + '" r="6"/><circle class="ch-cur" cx="' + xe.toFixed(1) + '" cy="' + ye.toFixed(1) + '" r="3.5"/>');
-    s.push('<circle class="ch-normdot" cx="' + xe.toFixed(1) + '" cy="' + yn.toFixed(1) + '" r="3"/>');
+    if (b) s.push('<circle class="ch-normdot" cx="' + xe.toFixed(1) + '" cy="' + yn.toFixed(1) + '" r="3"/>');
     var above = ye <= yn;
     s.push('<text class="ch-val" x="' + (xe - 10).toFixed(1) + '" y="' + (above ? ye - 10 : ye + 18).toFixed(1) + '" text-anchor="end">' + esc(o.now) + '</text>');
-    if (o.norm && Math.abs(ye - yn) > 14) s.push('<text class="ch-note" x="' + (xe - 10).toFixed(1) + '" y="' + (above ? yn + 18 : yn - 10).toFixed(1) + '" text-anchor="end">' + esc(o.norm) + '</text>');
+    if (b && o.norm && Math.abs(ye - yn) > 14) s.push('<text class="ch-note" x="' + (xe - 10).toFixed(1) + '" y="' + (above ? yn + 18 : yn - 10).toFixed(1) + '" text-anchor="end">' + esc(o.norm) + '</text>');
     s.push('</svg>');
     return s.join('');
   }
@@ -219,10 +228,15 @@
     return wh && part ? wh + ' ' + part : (part || String(wh));
   }
   /* "10¢ over Dec" from a basis in dollars and the contract it is priced on */
-  function basisWords(dollars, ref) {
+  /* basis in words against its futures month (audit Q10): a month worked out from the price, not read from the
+     board ("Dec '26 (inferred)"), keeps a "~"; the year stays unless it is the headline contract's (head, "Dec '26") */
+  function basisWords(dollars, ref, head) {
     if (!num(dollars)) return '';
     var c = Math.round(dollars * 400) / 4;
-    var r = String(ref || '').replace(/ \(inferred\)$/, '').replace(/\s*[’']\d\d$/, '');
+    var raw = String(ref || '').replace(/\u2019/g, "'"), inf = / \(inferred\)$/.test(raw);
+    var r = raw.replace(/ \(inferred\)$/, '');
+    if (head && r === String(head).replace(/\u2019/g, "'")) r = r.replace(/\s*'\d\d$/, '');
+    if (r && inf) r = '~' + r;
     if (c === 0) return 'even with ' + (r || 'futures');
     return quarters(c) + '¢ ' + (c > 0 ? 'over ' : 'under ') + (r || 'futures');
   }
@@ -379,7 +393,7 @@
     if (!d || typeof d !== 'object') return;
     var F = fmt(), r = num(d.radiusMi) ? Math.round(d.radiusMi) : 50;
     if (d.place) landed();
-    if (num(d.count) && d.count > 0) txt('hp-bids-all', 'All ' + d.count + ' bids');
+    if (num(d.count) && d.count > 0) txt('hp-bids-all', 'All ' + d.count + ' elevator' + (d.count === 1 ? '' : 's'));
     Object.keys(TILE).forEach(function (k) {
       var id = TILE[k][0], w = TILE[k][1], b = d[k], el = $(id);
       if (!el) return;
@@ -390,8 +404,8 @@
         var bits = [];
         if (num(b.mi)) bits.push(miles(b.mi));
         if (b.month) bits.push(b.month);
-        var bw = basisWords(b.basis, b.ref); if (bw) bits.push(bw);
-        if (b.stale && b.posted && F) { bits.push('posted ' + F.day(b.posted)); el.classList.add('old'); }
+        var bw = basisWords(b.basis, b.ref, headLabel(k)); if (bw) bits.push(bw);
+        if (b.posted && F && !postedToday(b.posted)) { bits.push('posted ' + F.day(b.posted)); if (b.stale) el.classList.add('old'); }
         txt(id + '-x', bits.join(' · '));
         el.setAttribute('data-board-key', b.boardKey || '');
         return;
@@ -412,12 +426,25 @@
     if (msg) msg.textContent = rows.length ? '' : 'No corn or soybean cash bid within ' + (num(d.radiusMi) ? Math.round(d.radiusMi) : 50) + ' miles.';
     var z = (readPlace() || {}).zip || '', out = rows.map(function (b) {
       var sub = [num(b.mi) ? miles(b.mi) : '', (b.crop === 'soybeans' ? 'soybeans' : 'corn') + (b.month ? ', ' + b.month : '')].filter(Boolean).join(' \u00b7 ');
-      var bw = basisWords(b.basis, b.ref) + (b.stale && b.posted && F ? ' \u00b7 posted ' + F.day(b.posted) : '');
+      var bw = basisWords(b.basis, b.ref, headLabel(b.crop)) + (b.posted && F && !postedToday(b.posted) ? ' \u00b7 posted ' + F.day(b.posted) : '');
       return '<tr><td><a href="/cash-bids' + (z ? '?zip=' + z : '') + '">' + esc(b.name) + '</a><span class="s">' + esc(sub) + '</span></td><td class="n">'
         + (F ? F.cash(b.cash, 'hp-frac') : money2(b.cash)) + '<span class="b">' + esc(bw || '\u00a0') + '</span></td></tr>';
     });
     /* the held rows were for loading; a short list ends where it ends (the card's foot sits below the first screen) */
     tb.innerHTML = out.join('');
+    bidsAsOf(rows.concat([d.corn, d.soybeans]));
+  }
+  /* the headline futures month a crop's basis is quoted against ("Dec '26"), for basisWords */
+  function headLabel(crop) { if (!PX) return null; var h = headline(crop === 'soybeans' ? 'beans' : 'corn'); return h && h.label ? String(h.label) : null; }
+  function postedToday(iso) { var t = new Date(iso); return !isNaN(t) && ctDay(t).getTime() === ctDay().getTime(); }
+  /* audit Q9: a fresh cash bid says when: the newest board time among the bids shown, Central */
+  function bidsAsOf(list) {
+    var newest = 0;
+    list.forEach(function (b) { var t = b && b.posted ? Date.parse(b.posted) : NaN; if (isFinite(t) && t > newest) newest = t; });
+    var e = $('hp-bids-src'); if (!e) return;
+    var base = e.getAttribute('data-base') || e.textContent; e.setAttribute('data-base', base);
+    var at = ''; try { at = newest && root.AgPxStamp && root.AgPxStamp.clock ? root.AgPxStamp.clock(new Date(newest).toISOString()) : ''; } catch (x) { at = ''; }
+    e.textContent = (at ? 'Bids as of ' + at + ', the newest board time shown. ' : '') + base;
   }
 
   /* ---- no ZIP yet: pick a state, see its median basis (data/basis-states.json, AGSIST network elevators) ----
@@ -511,7 +538,7 @@
   function chartData(c) {
     var key = c[0] === 'corn' ? 'corn' : 'soybean', s = STATS && STATS[key], h = headline(c[0]);
     if (!s || !Array.isArray(s.hist) || s.hist.length < 19 || !h || !num(h.q.close)) return null;
-    var ds = fridays(s.hist_to, 19), vs = s.hist.slice(-19);
+    var ds = fridays(s.hist_to, 19, tradingFn()), vs = s.hist.slice(-19);
     if (!ds || vs.some(function (v) { return !num(v) || v <= 0; })) return null;
     var today = utc(h.q.close_date) || ctDay();
     if ((today.getTime() - ds[ds.length - 1].getTime()) / 864e5 > 21) return null;   /* the history is old: no chart */
@@ -519,18 +546,23 @@
     var A = root.AG && root.AG.px, cur = A ? A.priceDollars(h.q.close / 100, { style: 'slash' }).replace(/<[^>]+>/g, '') : money2(h.q.close / 100);
     return { d: ds.concat([today]), v: vs.concat([h.q.close / 100]), cur: cur, label: h.label || '' };
   }
-  /* one line the chart says, from its own numbers: the move over the 20 weeks and the distance from the high */
+  function tradingFn() { var S = root.AgPxStamp; return S && S.isTradingDay ? S.isTradingDay : null; }
+  function pxSlash(v) { var A = root.AG && root.AG.px; return A && A.priceDollars ? A.priceDollars(v, { style: 'slash' }).replace(/<[^>]+>/g, '') : money2(v); }
+  /* one line the chart says, from its own numbers (audit Q5): the move since the first weekly close, named by its
+     date, and the distance from the highest weekly close. "At its high" only when today's price is the top of the
+     line; today's price is never called a weekly close. */
   function takeaway(cd) {
-    var vs = cd.v, last = vs[vs.length - 1], first = vs[0], hi = 0;
-    for (var i = 1; i < vs.length; i++) if (vs[i] > vs[hi]) hi = i;
+    var vs = cd.v, n = vs.length, last = vs[n - 1], first = vs[0], hi = 0;
+    for (var i = 1; i < n - 1; i++) if (vs[i] > vs[hi]) hi = i;
     var ch = (last - first) / first * 100, off = (vs[hi] - last) / vs[hi] * 100;
-    var a = Math.abs(ch) < 0.5 ? 'About even with 20 weeks ago' : (ch > 0 ? 'Up ' : 'Down ') + Math.round(Math.abs(ch)) + '% from 20 weeks ago';
-    var b = hi === vs.length - 1 || off < 0.5 ? ', at its 20-week high.' : '; ' + Math.round(off) + '% under the ' + md(cd.d[hi]) + ' high of ' + money2(vs[hi]) + '.';
+    var a = Math.abs(ch) < 0.5 ? 'About even with ' + md(cd.d[0]) : (ch > 0 ? 'Up ' : 'Down ') + Math.round(Math.abs(ch)) + '% since ' + md(cd.d[0]);
+    var b = last >= vs[hi] ? ', above every weekly close on the chart.' : off < 0.5 ? ', within half a percent of the highest weekly close (' + pxSlash(vs[hi]) + ', ' + md(cd.d[hi]) + ').'
+      : '; ' + Math.round(off) + '% under the highest weekly close, ' + pxSlash(vs[hi]) + ' on ' + md(cd.d[hi]) + '.';
     return a + b;
   }
   function chartLabel(c, cd) {
     var vs = cd.v, ds = cd.d, hi = 0; for (var i = 1; i < vs.length; i++) if (vs[i] > vs[hi]) hi = i;
-    return c[4] + ' futures, 20 weeks: ' + money2(vs[0]) + ' on ' + md(ds[0]) + ', ' + money2(vs[vs.length - 1]) + ' on ' + md(ds[ds.length - 1]) + '; high ' + money2(vs[hi]) + ' on ' + md(ds[hi]) + '.';
+    return c[4] + ' futures, front-month weekly closes: ' + pxSlash(vs[0]) + ' on ' + md(ds[0]) + ', today ' + pxSlash(vs[vs.length - 1]) + ' on ' + md(ds[ds.length - 1]) + '; highest ' + pxSlash(vs[hi]) + ' on ' + md(ds[hi]) + '.';
   }
   function drawCharts() {
     var ph = phone();
@@ -544,17 +576,17 @@
       txt('hp-take-' + c[1], take);
       var svg = lineSvg({ d: cd.d, v: cd.v, w: ph ? 366 : 446, h: ph ? 190 : 290, fs: fsFor(c[3], ph ? 366 : 446), uid: c[1] + (ph ? 'm' : 'd'), cur: cd.cur, label: chartLabel(c, cd), out: out });
       out.svg = svg; out.mode = 'x'; out.label = chartLabel(c, cd);
-      out.text = function (i) { var v = cd.v[i]; return md(cd.d[i]) + (i === cd.v.length - 1 ? ', today: ' : ', Friday close: ') + (A ? A.priceDollars(v, { style: 'slash' }).replace(/<[^>]+>/g, '') : money2(v)); };
+      out.text = function (i) { var v = cd.v[i]; return md(cd.d[i]) + (i === cd.v.length - 1 ? ', today: ' : ', weekly close: ') + (A ? A.priceDollars(v, { style: 'slash' }).replace(/<[^>]+>/g, '') : money2(v)); };
       chart(box, out);
       SPECS[c[1] === 'fc' ? 'corn' : 'soy'] = function () {
-        return { head: c[4] + ' futures ' + cd.cur + ' a bushel: ' + take.charAt(0).toLowerCase() + take.slice(1), sub: (cd.label ? cd.label + ' contract today; ' : '') + 'Friday closes of the front month, last 20 weeks',
+        return { head: c[4] + ' futures ' + cd.cur + ' a bushel: ' + take.charAt(0).toLowerCase() + take.slice(1), sub: 'Front-month weekly closes since ' + md(cd.d[0]) + ' (contracts roll inside the line), then today' + (cd.label ? '\u2019s ' + cd.label + ' contract' : ''),
           big: function (w, h) { return lineSvg({ d: cd.d, v: cd.v, w: w, h: h, fs: 16, uid: 'k' + c[1], cur: cd.cur, label: chartLabel(c, cd) }); },
           source: 'Chicago futures, Yahoo Finance, delayed 10 to 25 min. A cash bid is futures plus the elevator\u2019s basis.', file: c[2] + '-futures' };
       };
     });
-    var s0 = STATS && STATS.corn && fridays(STATS.corn.hist_to, 19);
+    var s0 = STATS && STATS.corn && fridays(STATS.corn.hist_to, 19, tradingFn());
     var cd0 = chartData(CROPS[0]);
-    if (s0 && cd0) txt('hp-fut-src', 'Chicago futures; your elevator’s cash bid is futures plus its basis. Friday closes of the front month, ' + md(s0[0]) + ' to ' + md(s0[18]) + '; the last point is today’s price of the contract named above. Yahoo Finance, delayed 10 to 25 min.');
+    if (s0 && cd0) txt('hp-fut-src', 'Chicago futures; your elevator’s cash bid is futures plus its basis. Weekly closes of the front month, ' + md(s0[0]) + ' to ' + md(s0[18]) + ' (contracts roll inside the line); the last point is today’s price of the contract named above. Yahoo Finance, delayed 10 to 25 min.');
   }
 
   /* ---- one small chart helper (every chart on this page goes through it; it can move onto a shared chart kit) ----
@@ -673,25 +705,40 @@
     return best;
   }
   function byTicker(qq) { var r = null; if (qq && qq.ticker) Object.keys(PX.quotes).some(function (x) { var lb = cmKey(x); if (lb && PX.quotes[x] && PX.quotes[x].ticker === qq.ticker) { r = lb; return true; } return false; }); return r; }
+  /* the badge at the ticker's end (#ticker-age): what the prices are, in two short lines, the full stamp as its title.
+     The old home script wrote it; the rebuilt page had left it at its "..." placeholder (audit A3). */
+  function paintTickerAge(failed) {
+    var tb = $('ticker-age'); if (!tb) return;
+    var box = tb.parentNode, S = root.AgPxStamp, f = !failed && PX ? front('corn') : null, sp = null, full = '';
+    try { sp = f && S && S.stampParts ? S.stampParts(f.q, PX.fetched) : null; full = f && S && S.stamp ? S.stamp(f.q, PX.fetched) : ''; } catch (e) { sp = null; }
+    var two = !sp ? ['Not loaded', 'yet'] : sp.kind === 'settle' ? ['Settle', sp.at] : sp.kind === 'bell' ? ['Last trade', sp.at] : sp.kind === 'overnight' ? ['Overnight', sp.at]
+      : sp.kind === 'read' ? ['Delayed', '10 to 25 min'] : ['As of', sp.at];
+    var live = !!(sp && sp.kind === 'read' && PX.fetched && Date.now() - Date.parse(PX.fetched) <= 45 * 60000);
+    tb.textContent = two[0]; tb.appendChild(doc.createElement('br')); tb.appendChild(doc.createTextNode(String(two[1]).replace(/ CT$/, '')));
+    if (box) { box.classList.toggle('stale', !live); if (full) box.title = full; }
+  }
   function paintTicker() {
     var A = root.AG && root.AG.px, Q = PX && PX.quotes; if (!A || !Q) return;
     var qa = function (sel) { return Array.prototype.slice.call(doc.querySelectorAll(sel)); }, ch = false;
+    paintTickerAge();
     Object.keys(TICK).forEach(function (k) {
-      var own = OWN[k], fk = own ? frontKey(k) : null, q = fk ? Q[fk] : (Q[k + '-nearby'] && Q[k + '-nearby'].close != null ? Q[k + '-nearby'] : Q[k]);
-      var nb = PX.nearby && PX.nearby[k] && PX.nearby[k].label, mon = fk ? cmKey(fk) : (nb && nb !== 'nearby' && nb !== 'most-active' ? nb : byTicker(Q[k]));
+      var own = OWN[k], fk = own ? frontKey(k) : null, f = front(k), q = fk ? Q[fk] : (f ? f.q : null);
+      var mon = fk ? cmKey(fk) : (f && f.mon ? f.mon : null);
       var has = !!(q && q.close != null);
       qa('.prices-strip [data-sym="' + k + '"]').forEach(function (it) {
         if (it.classList.contains('t-noq') === has) { it.classList.toggle('t-noq', !has); ch = true; }
         if (!has) return;
-        var lb = it.querySelector('.t-label'), want = TICK[k] + ' ' + (mon || 'front month');
+        /* a continuous series with no dated twin (cotton CT=F) names no month: which contract it holds is not on file */
+        var lb = it.querySelector('.t-label'), want = TICK[k] + (mon ? ' ' + mon : '');
         if (lb && lb.textContent !== want) { lb.textContent = want; ch = true; }
         if (!own) return;
         var pe = it.querySelector('.t-price'), ce = it.querySelector('.t-chg');
-        var pt = own === 'g' ? A.price(q.close, { style: 'slash' }).replace(/<[^>]+>/g, '') : own === 'cl' ? f1(q.close, 2) + '\u00a2' : '$' + f1(q.close, 2);
+        var pt = own === 'g' ? A.price(q.close, { style: 'slash' }).replace(/<[^>]+>/g, '') : own === 'cl' ? f1(q.close, 2) + '¢' : '$' + f1(q.close, 2);
         if (pe && pe.textContent !== pt) { pe.textContent = pt; ch = true; }
-        var n = q.netChange, t = '', c = 'nc';
+        var cv = null; if (fk) { try { cv = root.AgPxStamp && root.AgPxStamp.change ? root.AgPxStamp.change(q, fk) : null; } catch (e) { cv = null; } }
+        var n = cv ? cv.net : null, t = '', c = 'nc';
         if (q.move_withheld || q.roll) t = 'contract roll';
-        else if (num(n)) { c = n > 0 ? 'up' : n < 0 ? 'dn' : 'nc'; t = n === 0 ? 'unch' : (n > 0 ? '\u25b2 +' : '\u25bc \u2212') + (own === 'g' ? A.move(Math.abs(n), { style: 'slash' }) : own === 'cl' ? f1(Math.abs(n), 2) + '\u00a2' : '$' + f1(Math.abs(n), 2)); }
+        else if (num(n)) { c = n > 0 ? 'up' : n < 0 ? 'dn' : 'nc'; t = n === 0 ? 'unch' : (n > 0 ? '▲ +' : '▼ −') + (own === 'g' ? A.move(Math.abs(n), { style: 'slash' }) : own === 'cl' ? f1(Math.abs(n), 2) + '¢' : '$' + f1(Math.abs(n), 2)); }
         if (ce && ce.textContent !== t) { ce.textContent = t; ce.className = 't-chg ' + c; ch = true; }
       });
     });
@@ -710,28 +757,56 @@
     if (ch && typeof root.rebuildTickerLoop === 'function') root.rebuildTickerLoop();
   }
 
+  /* ---- one quote per market: the front month, never a continuous series that has rolled ahead of it ----
+     Audit Nov 12: KC wheat read KE=F, already the March contract, at $6.49 1/2 with a +15 1/4 change measured from
+     December's close, while the front month (Dec '26) was $6.39 1/2 +5 1/4. Every row now takes the rolled file's
+     -nearby alias (AgPxStamp.headline: the nearby, else the nearest dated month, else the continuous series), names its
+     month, and prints the change only when AgPxStamp.change accepts the pair. A continuous series with no dated twin
+     (cotton CT=F) prints its price with no change and no month: which contract it is cannot be confirmed. */
+  var RQ = null;
+  function rolledQuotes() {
+    if (!RQ) { try { RQ = root.AgPxStamp && root.AgPxStamp.roll ? root.AgPxStamp.roll(PX.quotes) : PX.quotes; } catch (e) { RQ = PX.quotes; } }
+    return RQ;
+  }
+  function front(k) {
+    var S = root.AgPxStamp, Q = rolledQuotes(), h = null;
+    try { h = S && S.headline ? S.headline({ quotes: Q, nearby: PX.nearby }, k) : null; } catch (e) { h = null; }
+    if (!h) { var c = Q && (Q[k + '-nearby'] && num(Q[k + '-nearby'].close) ? k + '-nearby' : k); h = c && Q[c] && num(Q[c].close) ? { key: c, q: Q[c], label: null } : null; }
+    if (!h || !h.q || !num(h.q.close)) return null;
+    var cont = h.key === k && /=F$/.test(String(h.q.ticker || ''));
+    var c2 = null;
+    if (!cont && !(h.q.move_withheld || h.q.roll)) { try { c2 = S && S.change ? S.change(h.q, h.key) : (num(h.q.netChange) ? { net: h.q.netChange } : null); } catch (e) { c2 = null; } }
+    return { key: h.key, q: h.q, mon: h.label ? String(h.label).replace(/’/g, "'") : null, chg: c2, cont: cont, roll: !!(h.q.move_withheld || h.q.roll) };
+  }
+
   /* ---- more markets ---- */
-  var MK = { wheat: 'c', kcwheat: 'c', oats: 'c', meal: 'd', soyoil: 'c2', cattle: 'd', feeders: 'd', hogs: 'd', milk: 'd' };
+  var MK = { wheat: 'c', kcwheat: 'c', oats: 'c', meal: 'd', soyoil: 'c2', cattle: 't', feeders: 't', hogs: 't', milk: 'd' };
   function paintMarkets() {
-    var A = root.AG && root.AG.px, q = PX && PX.quotes;
-    if (!q || !A) return;
-    var rows = doc.querySelectorAll('#hp-mk tbody tr'), n = 0;
+    var A = root.AG && root.AG.px;
+    if (!PX || !PX.quotes || !A) return;
+    var rows = doc.querySelectorAll('#hp-mk tbody tr'), n = 0, keys = [];
     Array.prototype.forEach.call(rows, function (tr) {
-      var k = tr.getAttribute('data-k'), d = q[k], kind = MK[k], td = tr.querySelectorAll('td');
-      if (!d || !num(d.close) || td.length < 3) return;
-      var last = kind === 'c' ? A.price(d.close, { style: 'slash' }).replace(/<[^>]+>/g, '') : kind === 'c2' ? f1(d.close, 2) + '¢' : '$' + Number(d.close).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-      var v = num(d.netChange) ? d.netChange : null, ch = '<span class="nc">-</span>';
+      var k = tr.getAttribute('data-k'), f = front(k), kind = MK[k], td = tr.querySelectorAll('td');
+      if (!f || td.length < 3) return;
+      var d = f.q;
+      /* livestock to the board's tick (three places: $218.975, not $218.98) */
+      var last = kind === 'c' ? A.price(d.close, { style: 'slash' }).replace(/<[^>]+>/g, '') : kind === 'c2' ? f1(d.close, 2) + '¢'
+        : kind === 't' ? A.cash(d.close) : '$' + Number(d.close).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      var v = f.chg && num(f.chg.net) ? f.chg.net : null, ch = '<span class="nc">-</span>';
       /* a move the price run withheld (a change that crosses contracts near expiry) prints the price and no change */
-      if (d.move_withheld || d.roll) ch = '<span class="nc">contract roll</span>';
+      if (f.roll) ch = '<span class="nc">contract roll</span>';
       else if (v != null) {
         if (Math.abs(v) < 1e-9) ch = '<span class="nc">unch.</span>';
         else ch = '<span class="' + (v > 0 ? 'up' : 'dn') + '"><span aria-hidden="true">' + (v > 0 ? '▲' : '▼') + '</span><span class="vh">' + (v > 0 ? 'up' : 'down') + '</span> '
-          + (kind === 'c' ? quarters(v) + '¢' : kind === 'c2' ? f1(Math.abs(v), 2) + '¢' : f1(Math.abs(v), 2)) + '</span>';
+          + (kind === 'c' ? quarters(v) + '¢' : kind === 'c2' ? f1(Math.abs(v), 2) + '¢' : kind === 't' ? A.cash(Math.abs(v), { dollar: false }) : f1(Math.abs(v), 2)) + '</span>';
       }
-      td[1].textContent = last; td[2].innerHTML = ch; n++;
+      var sm = td[0].querySelector('.s'), unit = sm ? (sm.getAttribute('data-unit') || sm.textContent) : '';
+      if (sm) { sm.setAttribute('data-unit', unit); sm.textContent = (f.mon ? f.mon + ', ' : '') + unit; }
+      td[1].textContent = last; td[2].innerHTML = ch; n++; keys.push(f.key);
     });
-    var when = ''; try { when = root.AgPxStamp.shortStamp(q.wheat || q.cattle, PX.fetched); } catch (e) {}
-    if (n) txt('hp-mk-src', 'Front month' + (when ? ', ' + when : '') + '. Yahoo Finance, delayed 10 to 25 min. Energy, metals and export sales are on All markets.');
+    /* each row's own time: milk is a settle a day older than the grain trade, so one row's stamp cannot stand for all */
+    var when = ''; try { when = root.AgPxStamp.board(rolledQuotes(), keys, PX.fetched); } catch (e) {}
+    if (n) txt('hp-mk-src', 'Front month' + (when ? '. ' + when : '') + '. Yahoo Finance, delayed 10 to 25 min. Energy, metals and export sales are on All markets.');
   }
 
   /* ---- the Daily card ---- */
@@ -796,7 +871,9 @@
     var dd = d.date ? new Date(String(d.date).replace(/^[A-Za-z]+,\s*/, '') + ' 12:00 UTC') : null;
     var gen = dd && !isNaN(dd) ? new Date(Date.UTC(dd.getUTCFullYear(), dd.getUTCMonth(), dd.getUTCDate())) : (d.generated_at ? ctDay(new Date(d.generated_at)) : null), today = ctDay();
     txt('daily-card-t', t);
-    txt('daily-card-k', gen && gen.getTime() === today.getTime() ? 'Today:' : (gen ? 'Latest issue, ' + md(gen) + (gen.getUTCFullYear() !== today.getUTCFullYear() ? ', ' + gen.getUTCFullYear() : '') + ':' : 'Latest issue:'));
+    /* audit Q8: the teaser is the morning's words, and its move is the morning's; next to a live price it must say when */
+    var at = ''; try { at = d.generated_at && root.AgPxStamp && root.AgPxStamp.clock ? root.AgPxStamp.clock(d.generated_at) : ctClock(d.generated_at || ''); } catch (e) { at = ''; }
+    txt('daily-card-k', gen && gen.getTime() === today.getTime() ? 'This morning\u2019s briefing' + (at ? ', ' + at : '') + ':' : (gen ? 'Latest issue, ' + md(gen) + (gen.getUTCFullYear() !== today.getUTCFullYear() ? ', ' + gen.getUTCFullYear() : '') + ':' : 'Latest issue:'));
   }
 
   /* ---- Rain Print (data/rain-print.json: prices and the real order-by date) ---- */
@@ -876,55 +953,85 @@
     var xl = [[0, 'Jan 1', 'start']];
     [[3, 'Apr'], [6, 'Jul'], [9, 'Oct']].forEach(function (m) { var x = doy(new Date(Date.UTC(yr, m[0], 1))); if (x < lastX - 40 && x > 40) xl.push([x, m[1], 'middle']); });
     xl.push([lastX, end ? md(end) : '', 'end']);
-    var pct = num(c.pct) ? c.pct : (c.usual ? Math.round(c.total / c.usual * 100) : null);
-    txt('hp-rain-h', 'Rain this year: ' + f1(c.total) + ' in' + (num(pct) ? ', ' + pct + '% of normal' : ''));
+    /* the normal only where the file has one for every point: 18 of 93 Illinois counties carry usual null and a
+       null normal on every day, which drew "normal 0.0 in" (audit Q2) */
+    var hasN = num(c.usual) && c.usual > 0 && b.slice(1).every(num);
+    if (!hasN) b = null;
+    var pct = !hasN ? null : num(c.pct) ? c.pct : Math.round(c.total / c.usual * 100);
+    /* days the gauge did not report are not rain: say how many (audit Q13) */
+    var miss = num(c.missing) && c.missing > 0 ? c.missing : 0;
+    var head = 'Rain this year: ' + f1(c.total) + ' in' + (num(pct) ? ', ' + pct + '% of normal' + (end ? ' to ' + md(end) : '') : '') + (miss ? '; ' + miss + ' day' + (miss === 1 ? '' : 's') + ' not reported' : '');
+    txt('hp-rain-h', head);
     txt('hp-yr', String(yr));
-    var key = $('hp-rain-key'); if (key && num(c.usual)) key.lastChild.lastChild.textContent = 'Normal: ' + f1(c.usual) + ' in (1991 to 2020)';
+    var key = $('hp-rain-key');
+    if (key) { var nk = key.lastChild; nk.hidden = !hasN; if (hasN) nk.lastChild.textContent = 'Normal: ' + f1(c.usual) + ' in (1991 to 2020)'; }
     var box = $('hp-rain-ch'); if (!box) return;
-    var head = 'Rain this year: ' + f1(c.total) + ' in' + (num(pct) ? ', ' + pct + '% of normal' : '');
     var opts = function (w, h, fs, uid, out) { return { x: xs, a: a, b: b, w: w, h: h, fs: fs, uid: uid, out: out, fmt: function (v) { return v + ' in'; }, steps: [1, 2, 5, 10, 20], xl: xl,
-      now: f1(c.total) + ' in', norm: num(c.usual) ? 'normal ' + f1(c.usual) : '', label: 'Rain since January 1: ' + f1(c.total) + ' inches; normal to date ' + f1(c.usual) + ' inches.' }; };
+      now: f1(c.total) + ' in', norm: hasN ? 'normal ' + f1(c.usual) : '', label: 'Rain since January 1: ' + f1(c.total) + ' inches' + (hasN ? '; normal to date ' + f1(c.usual) + ' inches.' : '; no 1991 to 2020 normal on file for this gauge.') }; };
     var out = {}; out.svg = cumSvg(opts(ph ? 366 : 380, ph ? 200 : 250, fsFor('hp-rain-ch', ph ? 366 : 380), 'rn' + (ph ? 'm' : 'd'), out)); out.mode = 'x'; out.label = head + '.';
-    out.text = function (i) { return (i ? md(addDays(new Date(Date.UTC(yr, 0, 1)), xs[i])) : 'Jan 1') + ': ' + f1(a[i]) + ' in; normal ' + f1(b[i]) + ' in'; };
+    out.text = function (i) { return (i ? md(addDays(new Date(Date.UTC(yr, 0, 1)), xs[i])) : 'Jan 1') + ': ' + f1(a[i]) + ' in' + (b ? '; normal ' + f1(b[i]) + ' in' : ''); };
     chart(box, out);
     var st = c.station || {}, net = st.net === 'cocorahs' ? ' (CoCoRaHS)' : st.net ? ' (NOAA co-op)' : '';
     txt('hp-rain-src', 'Jan 1 to ' + (end ? md(end) : '') + '. ' + (cf.near ? 'No station in ' + countyName(p.county, p.state) + '; nearest county: ' + cf.nearName + '. ' : '') + (st.name ? 'Gauge: ' + st.name + net + '. ' : '') + 'NOAA daily records via RCC-ACIS.');
-    SPECS.rain = function () { return { head: head + ' at ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + ' (gold) against the 1991 to 2020 normal (dashed), inches since Jan 1',
+    SPECS.rain = function () { return { head: head + ' at ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + (hasN ? ' (gold) against the 1991 to 2020 normal (dashed)' : ', no normal on file for this gauge') + ', inches since Jan 1',
       big: function (w, h) { return cumSvg(opts(w, h, 16, 'krn')); }, source: (st.name ? 'Gauge: ' + st.name + net + '. ' : '') + 'NOAA daily records via RCC-ACIS, Jan 1 to ' + (end ? md(end) : '') + '.', file: 'rain' }; };
   }
+  /* mmdd (1109) of this year -> a date */
+  function mmddDate(v, yr) { return num(v) && v >= 101 && v <= 1231 ? new Date(Date.UTC(yr, Math.floor(v / 100) - 1, v % 100)) : null; }
+  /* Corn GDUs since May 1 (audit Q4/A2). The headline is the file's season figure "g" ([total, days missing, normal
+     over the same reported days, years, pct]; "m" when withheld for missing days). The chart plots the monthly
+     totals "gm" ([total, normal or null, days reported, days so far]; null when the month is withheld) and stops at
+     the first withheld month rather than drawing through it; the normal line only where every plotted month has
+     one. 39% of counties had a null normal, and the old loop broke at the first one and said "The corn GDU season
+     starts May 1." in November. The end date is the county's own (c.a), not the state file's. */
   function drawGdu(W, p, fips) {
     var c = W && W.counties && W.counties[fips], yr = (W && W.year) || ctDay().getUTCFullYear();
     txt('hp-yr2', String(yr));
-    if (!c || !Array.isArray(c.gm) || c.gm.length < 5 || !Array.isArray(c.g)) { msgIn('hp-gdu-ch', c && Array.isArray(c.gm) && c.gm.length < 5 ? 'The corn GDU season starts May 1.' : 'No GDU record for this county yet.'); return; }
-    var end = utc(W.edate), xs = [doy(new Date(Date.UTC(yr, 4, 1)))], a = [0], b = [0];
-    for (var m = 4; m < c.gm.length; m++) {
-      var g = c.gm[m]; if (!Array.isArray(g) || !num(g[0]) || !num(g[1])) break;
-      var mend = m === c.gm.length - 1 && end ? doy(end) : doy(new Date(Date.UTC(yr, m + 1, 0)));
-      xs.push(mend); a.push(a[a.length - 1] + g[0]); b.push(b[b.length - 1] + g[1]);
+    var today = ctDay(), early = today < new Date(Date.UTC(today.getUTCFullYear(), 4, 15));
+    var g = c && Array.isArray(c.g) && num(c.g[0]) ? c.g : null;
+    if (!c || !Array.isArray(c.gm) || c.gm.length < 5 || !g) {
+      msgIn('hp-gdu-ch', early && (!c || !Array.isArray(c.gm) || c.gm.length < 5) ? 'The corn GDU season starts May 1.' : c ? 'Not enough days reported at this station to count GDUs.' : 'No GDU record for this county yet.');
+      return;
     }
-    if (xs.length < 2) { msgIn('hp-gdu-ch', 'The corn GDU season starts May 1.'); return; }
-    var now = c.g[0], norm = c.g[2], ph = phone(), lastX = xs[xs.length - 1];
+    var end = mmddDate(c.a, yr) || utc(W.edate), xs = [doy(new Date(Date.UTC(yr, 4, 1)))], a = [0], b = [0], nOk = true, gap = null;
+    for (var m = 4; m < c.gm.length; m++) {
+      var gm = c.gm[m];
+      if (!Array.isArray(gm) || !num(gm[0])) { gap = MON[m]; break; }
+      var mend = m === c.gm.length - 1 && end ? doy(end) : doy(new Date(Date.UTC(yr, m + 1, 0)));
+      xs.push(mend); a.push(a[a.length - 1] + gm[0]);
+      if (num(gm[1]) && nOk) b.push(b[b.length - 1] + gm[1]); else nOk = false;
+    }
+    if (xs.length < 2) { msgIn('hp-gdu-ch', 'Not enough days reported at this station to count GDUs.'); return; }
+    if (!nOk) b = null;
+    var now = g[0], norm = num(g[2]) && g[2] > 0 ? g[2] : null, ph = phone(), lastX = xs[xs.length - 1], plotEnd = addDays(new Date(Date.UTC(yr, 0, 1)), lastX);
     var xl = [[xs[0], 'May 1', 'start']];
     [[6, 'Jul'], [8, 'Sep']].forEach(function (mm) { var x = doy(new Date(Date.UTC(yr, mm[0], 1))); if (x < lastX - 35) xl.push([x, mm[1], 'middle']); });
-    xl.push([lastX, end ? md(end) : '', 'end']);
-    var head = 'Corn GDUs since May 1: ' + comma(now) + (num(norm) ? ', ' + comma(Math.abs(now - norm)) + (now >= norm ? ' ahead of' : ' behind') + ' normal' : '');
+    xl.push([lastX, md(plotEnd), 'end']);
+    var head = 'Corn GDUs since May 1: ' + comma(now) + (norm ? ', ' + comma(Math.abs(now - norm)) + (now >= norm ? ' ahead of' : ' behind') + ' normal' : '');
     txt('hp-gdu-h', head);
-    var key = $('hp-gdu-h').parentNode.querySelector('.hp-key'); if (key && num(norm)) key.lastChild.lastChild.textContent = 'Normal: ' + comma(norm) + ' (1991 to 2020)';
+    var key = $('hp-gdu-h').parentNode.querySelector('.hp-key');
+    if (key) { var nk = key.lastChild; nk.hidden = !b; if (b && norm) nk.lastChild.textContent = 'Normal: ' + comma(norm) + ' (1991 to 2020)'; }
+    /* the first 28F freeze of the fall ends the crop's season; GDUs after it are still counted here, and the note says so */
+    var fz = c.fr && Array.isArray(c.fr.f28) ? mmddDate(c.fr.f28[0], yr) : null;
+    var tail = (gap ? ' The chart stops at ' + md(plotEnd) + ': not enough days reported in ' + gap + '.' : '') + (fz && (!end || fz <= end) ? ' First 28°F freeze: ' + md(fz) + '; the count goes on after it.' : '');
     var box = $('hp-gdu-ch'); if (!box) return;
     var opts = function (w, h, fs, uid, out) { return { x: xs, a: a, b: b, w: w, h: h, fs: fs, uid: uid, out: out, fmt: function (v) { return v ? (v >= 1000 ? (v / 1000) + 'k' : String(v)) : '0'; },
-      steps: [100, 250, 500, 1000], xl: xl, now: comma(now) + ' GDUs', norm: num(norm) ? 'normal ' + comma(norm) : '', label: 'Corn growing degree units since May 1: ' + comma(now) + '; normal ' + comma(norm) + '.' }; };
+      steps: [100, 250, 500, 1000], xl: xl, now: comma(a[a.length - 1]) + ' GDUs', norm: b ? 'normal ' + comma(b[b.length - 1]) : '', label: 'Corn growing degree units since May 1: ' + comma(now) + (norm ? '; normal ' + comma(norm) : '; no 1991 to 2020 normal on file for this station') + '.' }; };
     var out = {}; out.svg = cumSvg(opts(ph ? 366 : 380, ph ? 200 : 250, fsFor('hp-gdu-ch', ph ? 366 : 380), 'gd' + (ph ? 'm' : 'd'), out)); out.mode = 'x'; out.label = head + '.';
-    out.text = function (i) { return (i ? md(addDays(new Date(Date.UTC(yr, 0, 1)), xs[i])) : 'May 1') + ': ' + comma(a[i]) + ' GDUs; normal ' + comma(b[i]); };
+    out.text = function (i) { return (i ? md(addDays(new Date(Date.UTC(yr, 0, 1)), xs[i])) : 'May 1') + ': ' + comma(a[i]) + ' GDUs' + (b ? '; normal ' + comma(b[i]) : ''); };
     chart(box, out);
     var s = c.s && c.s[0] ? 'Station ' + c.s[0] + '. ' : '';
-    txt('hp-gdu-src', 'May 1 to ' + (end ? md(end) : '') + ', 86/50 method, month ends. ' + s + 'NOAA daily records via RCC-ACIS.');
-    SPECS.gdu = function () { return { head: head + ', ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + ' (gold) against the 1991 to 2020 normal (dashed), corn GDUs, 86/50 method',
+    txt('hp-gdu-src', 'May 1 to ' + (end ? md(end) : '') + ', 86/50 method, month ends.' + tail + ' ' + s + 'NOAA daily records via RCC-ACIS.');
+    SPECS.gdu = function () { return { head: head + ', ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + (b ? ' (gold) against the 1991 to 2020 normal (dashed)' : ', no normal on file for this station') + ', corn GDUs, 86/50 method',
       big: function (w, h) { return cumSvg(opts(w, h, 16, 'kgd')); }, source: s + 'NOAA daily records via RCC-ACIS, May 1 to ' + (end ? md(end) : '') + ', month ends.', file: 'gdu' }; };
   }
   function drawRadar(p, seq) {
     var st = p.state;
     script('/components/radar-rain.js?v=1', function () { return !!root.AgRadarRain; })
-      .then(function () { return Promise.all([getBin(stateFile('radar-rain/', st, '.bin')).then(root.AgRadarRain.parse), getJSON('/data/us-states.geo.json').catch(function () { return null; }), getJSON('/data/places/zip/' + p.zip.slice(0, 2) + '.json').catch(function () { return null; })]); })
+      /* audit Q11: the state file whose box holds the reader's point with the most room (AgRadarRain.pickState on the
+         index), not the saved state's: near a border the saved state's grid ends inside the map */
+      .then(function () { return getJSON('/data/radar-rain/index.json').then(function (ix) { return root.AgRadarRain.pickState(ix, +p.lat, +p.lon) || st; }, function () { return st; }); })
+      .then(function (pst) { return Promise.all([getBin(stateFile('radar-rain/', pst, '.bin')).then(root.AgRadarRain.parse), getJSON('/data/us-states.geo.json').catch(function () { return null; }), getJSON('/data/places/zip/' + p.zip.slice(0, 2) + '.json').catch(function () { return null; })]); })
       .then(function (r) {
         if (seq !== band.seq) return;
         var h = r[0].header, q = r[0].grids['7d'], win = (h.windows || []).filter(function (w) { return w.id === '7d'; })[0];
@@ -938,10 +1045,12 @@
           var cw = cb - ca + 1, rh = rb - ra + 1, cv = doc.createElement('canvas'); cv.width = cw; cv.height = rh;
           var ctx = cv.getContext('2d'), im = ctx.createImageData(cw, rh);
           for (var rr = 0; rr < rh; rr++) for (var cc = 0; cc < cw; cc++) {
-            var R = ra + rr, C = ca + cc; if (R < 0 || R >= h.ny || C < 0 || C >= h.nx) continue;
-            var v = q[R * h.nx + C]; if (!(v >= 1)) continue;
+            /* outside the file's grid or a no-data cell (-1): drawn as no data (NODATA, in the legend), never as dry */
+            var R = ra + rr, C = ca + cc, out = R < 0 || R >= h.ny || C < 0 || C >= h.nx, v = out ? -1 : q[R * h.nx + C], o = (rr * cw + cc) * 4;
+            if (v < 0) { var stripe = ((rr + cc) % 4) < 2; im.data[o] = stripe ? 150 : 110; im.data[o + 1] = stripe ? 150 : 110; im.data[o + 2] = stripe ? 150 : 110; im.data[o + 3] = 150; continue; }
+            if (!(v >= 1)) continue;
             var col = null; for (var k = 0; k < RR_COLORS.length; k++) if (v >= RR_COLORS[k][0]) col = RR_COLORS[k][1];
-            var o = (rr * cw + cc) * 4; im.data[o] = parseInt(col.slice(1, 3), 16); im.data[o + 1] = parseInt(col.slice(3, 5), 16); im.data[o + 2] = parseInt(col.slice(5, 7), 16); im.data[o + 3] = 200;
+            im.data[o] = parseInt(col.slice(1, 3), 16); im.data[o + 1] = parseInt(col.slice(3, 5), 16); im.data[o + 2] = parseInt(col.slice(5, 7), 16); im.data[o + 3] = 200;
           }
           ctx.putImageData(im, 0, 0);
           var ix = X(h.x0 + (ca - 0.5) * h.d), iy = Y(h.y0 - (ra - 0.5) * h.d), iw = X(h.x0 + (cb + 0.5) * h.d) - ix, ihh = Y(h.y0 - (rb + 0.5) * h.d) - iy;
@@ -1052,7 +1161,7 @@
       + (ch.off ? ' ' + ch.off + ' sale' + (ch.off === 1 ? '' : 's') + ' outside $' + comma(ch.bottom) + ' to $' + comma(ch.top) + ' ' + (ch.off === 1 ? 'is' : 'are') + ' off the chart.' : '')
       + ' ' + src + ' transfer records, ' + MON[from.getUTCMonth()] + ' ' + from.getUTCFullYear() + ' to ' + MON[to.getUTCMonth()] + ' ' + to.getUTCFullYear() + '. No names.');
     var all = $('hp-land-all'); if (all && NAMES[st]) all.setAttribute('href', '/land-sales/' + slug(NAMES[st]) + '/' + slug(cn));
-    SPECS.land = function () { return { head: head + (words.h ? '' : ', ' + st), sub: 'Every bare farmland sale over 24 months, price per acre; line: the county median; shaded: the middle half',
+    SPECS.land = function () { return { head: head + (words.h ? '' : ', ' + st), sub: (words.h ? cn + ': e' : 'E') + 'very bare farmland sale with acres and price over 24 months, price per acre; line: the county median; shaded: the middle half',
       big: function (w, h) { return landSvg(opts(w, h, 16)).svg; }, source: src + ' transfer records, ' + MON[from.getUTCMonth()] + ' ' + from.getUTCFullYear() + ' to ' + MON[to.getUTCMonth()] + ' ' + to.getUTCFullYear() + '. No names.', file: 'farm-sales' }; };
     return true;
   }
@@ -1088,8 +1197,12 @@
     var st = have.indexOf(mine) >= 0 ? mine : have.sort(function (a, b) { return leads[a].when < leads[b].when ? 1 : -1; })[0], r = leads[st];
     txt('hp-land-near', NAMES[st] ? 'in ' + NAMES[st] : '');
     var not = mine && sts.indexOf(mine) < 0 && NAMES[mine] ? 'Not yet in ' + NAMES[mine] + '. ' : '';
-    var w = { h: 'Top bare-land price in ' + NAMES[st] + ': $' + comma(r.ppa) + ' an acre',
-      p: not + Math.round(r.acres) + ' acres in ' + countyName(r.county, st) + ', ' + (r.basis === 'sale date' ? 'sold ' : 'recorded ') + md(utc(r.when)) + ', the highest of the 30 days to ' + md(utc(r.window[1])) + '. County median: $' + comma(r.med) + '.' };
+    /* audit Q3: never "the highest": the lead file's pick leaves out sales over twice the state middle, so higher
+       sales exist. Lead with the state's middle price; the sale is "a recent farm sale". */
+    var ff = L && L.farm_filter && L.farm_filter[st], smed = ff && num(ff.state_med) ? ff.state_med : null;
+    var sale = Math.round(r.acres) + ' acres in ' + countyName(r.county, st) + ', ' + (r.basis === 'sale date' ? 'sold ' : 'recorded ') + md(utc(r.when)) + ', $' + comma(r.ppa) + ' an acre';
+    var w = smed ? { h: NAMES[st] + ' farmland: middle price $' + comma(smed) + ' an acre', p: not + 'A recent farm sale: ' + sale + '. County median: $' + comma(r.med) + '.' }
+      : { h: 'A recent farm sale in ' + NAMES[st] + ': $' + comma(r.ppa) + ' an acre', p: not + sale + '. County median: $' + comma(r.med) + '.' };
     countyFile(st, r.county).then(function (F) {
       if (seq !== landSeq) return;
       var ring = { d: utc(r.when), ppa: r.ppa };
@@ -1170,7 +1283,7 @@
     root.addEventListener('agsist:bids-top', function (e) { paintTiles(e.detail); paintNear(e.detail); });
     if (root.__agsistBidsTop) { paintTiles(root.__agsistBidsTop); paintNear(root.__agsistBidsTop); }
     Promise.all([getJSON('/data/prices.json').catch(function () { return null; }), getJSON('/data/price-stats.json').catch(function () { return null; })]).then(function (r) {
-      PX = r[0]; STATS = r[1]; paintHeader(); drawCharts(); paintMarkets(); try { paintTicker(); setTimeout(paintTicker, 1500); } catch (e) {}
+      PX = r[0]; RQ = null; STATS = r[1]; if (!PX) paintTickerAge(true); paintHeader(); drawCharts(); paintMarkets(); try { paintTicker(); setTimeout(paintTicker, 1500); } catch (e) {}
     });
     getJSON('/data/daily.json').then(paintDaily, function () {});
     getJSON('/data/rain-print.json').then(paintRainPrint, function () {});

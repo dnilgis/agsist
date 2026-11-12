@@ -1165,7 +1165,9 @@ function fetchAllPrices() {
          consumer of `quotes.<crop>` on this page gets the real front month,
          and record the contract so labels can name it. */
       window.AGSIST_NEARBY = window.AGSIST_NEARBY || {};
-      ['corn', 'beans', 'wheat', 'cattle'].forEach(function(c) {
+      /* Nov 12 2026 (home audit Q1/Q16): every market with a -nearby alias, not just these four. KE=F had rolled to
+         March while December still traded, so the ticker printed March's price with a change from December's close. */
+      ['corn', 'beans', 'wheat', 'cattle', 'kcwheat', 'mplswheat', 'oats', 'meal', 'soyoil', 'feeders', 'hogs', 'milk', 'rice', 'cotton'].forEach(function(c) {
         var nb = quotes[c + '-nearby'];
         if (nb && nb.close != null) {
           quotes[c] = nb;
