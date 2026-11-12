@@ -1,5 +1,5 @@
 {
-  "fetched_at": "2026-11-08T13:50:37+00:00",
+  "fetched_at": "2026-11-12T18:35:33+00:00",
   "files": {
     "noaa_prcp_30day.gif": {
       "bytes": 258820,
@@ -36,11 +36,11 @@
       "status": "ok"
     },
     "usdm_latest.png": {
-      "bytes": 396692,
-      "changed": false,
-      "data_valid": "2026-11-03",
-      "sha256": "5b0c847431ab7c2b803d5dcd5e683287b992024c88a4ca3aa54c16b962b12cba",
-      "source": "https://droughtmonitor.unl.edu/data/png/20261103/20261103_usdm.png",
+      "bytes": 395653,
+      "changed": true,
+      "data_valid": "2026-11-10",
+      "sha256": "380b2461c708aaded402f4a55c2ce863459725f7e418a9825f9d5303081059e4",
+      "source": "https://droughtmonitor.unl.edu/data/png/20261110/20261110_usdm.png",
       "status": "ok"
     }
   }

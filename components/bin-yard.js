@@ -116,7 +116,7 @@
   function calc(it) {
     var G = GB(), maxH = heightFt(it), crop = CROPS[it.crop] || CROPS.corn;
     var gH = 0, filled = it.fm !== 'none' && fin(it.fv);
-    if (filled) gH = it.fm === 'below' ? G.depthFromBelow(maxH, it.fv) : Math.min(it.fv, maxH);
+    if (filled) gH = it.fm === 'below' ? G.depthFromBelow(maxH, it.fv, it.t === 'hopper' ? G.coneHeight(it.d, it.hop) : 0) : Math.min(it.fv, maxH);   // a hopper tape past the cylinder lands in the cone (negative gH)
     if (gH === null) { gH = 0; filled = false; }
     var cap, now, perFt, pack = 0, basis = G.PLAIN;
     if (it.t === 'flat') {
@@ -129,7 +129,7 @@
       cap = rm.full; now = filled ? rm.now : 0;
       perFt = G.bushels(G.roundBin({ d: it.d, grainH: 1, surface: 'level' }).total, pack);
     }
-    return { maxH: maxH, grainH: gH, filled: filled, capacity: cap, perFt: perFt, now: now,
+    return { maxH: maxH, grainH: Math.max(0, gH), filled: filled, capacity: cap, perFt: perFt, now: now,
       open: Math.max(0, cap - now), market: G.marketBu(now, it.tw, crop.lb), lb: crop.lb,
       peakDeg: basis.peakDeg, pack: pack };
   }
