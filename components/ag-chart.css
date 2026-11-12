@@ -15,3 +15,8 @@
 .agc-btn{font:inherit;font-size:.82rem;font-weight:600;background:none;border:1px solid var(--border);color:var(--gold,#d4a23f);border-radius:8px;padding:.25rem .7rem;min-height:34px;cursor:pointer;white-space:nowrap}
 .agc-tools{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
 @media(max-width:560px){.agc-plot{height:200px}.agc-read{font-size:.74rem;font-family:inherit}.agc-rg{min-width:40px;padding:.2rem .6rem}}
+/* grouped bars (AgChart.mountBars): the normal's slate, the keyboard focus ring, a readout that may wrap to two lines */
+:root{--agc-norm:#5b6870}html[data-theme="light"]{--agc-norm:#a3afb5}
+.agc-bars .agc-plot:focus-visible{outline:2px solid var(--gold,#d4a23f);outline-offset:3px;border-radius:6px}
+.agc-bars .agc-plot{touch-action:pan-y}
+.agc-bars .agc-read{height:auto;min-height:2.6em;white-space:normal;overflow:visible;line-height:1.3}
