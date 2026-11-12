@@ -47,26 +47,28 @@
   }
   function latestOf(files) { var t = ''; files.forEach(function (f) { f.pts.forEach(function (p) { if (p[WHEN] > t) t = p[WHEN]; }); }); return t; }
 
-  /* the headline and the line under it (scripts/land_map.py headline writes the same from the same data) */
+  /* the headline and the line under it (scripts/land_map.py headline writes the same from the same data): each state's
+     last `months` months to its newest record; only bare farmland sales judged against their county median count;
+     "more than 50% above" is strictly over 1.5 times the median */
   function story(files, states, months) {
-    var sts = files.filter(function (f) { return states.indexOf(f.st) >= 0; });
-    var latest = latestOf(sts);
-    if (!latest) return { head: 'No recorded farm sales to show.', take: '' };
-    var cut = monthsBack(latest, months), n = 0, big = 0, odd = 0;
+    var sts = files.filter(function (f) { return states.indexOf(f.st) >= 0 && f.pts && f.pts.length; });
+    if (!sts.length) return { head: 'No recorded farm sales to show.', take: '' };
+    var judged = 0, big = 0, odd = 0;
     sts.forEach(function (f) {
+      var cut = monthsBack(f.through, months);
       f.pts.forEach(function (p) {
-        if (p[NM] || p[WHEN] <= cut) return;
-        n++;
+        if (p[NM] || p[WHEN] <= cut || p[C] === null) return;
+        judged++;
         var co = f.counties[p[CO]];
-        if (p[C] !== null && p[PPA] !== null && co[CMED] && p[PPA] >= 1.5 * co[CMED]) big++;
+        if (p[PPA] !== null && co[CMED] && p[PPA] > 1.5 * co[CMED]) big++;
         if (p[A] & 3) odd++;
       });
     });
     var where = sts.length === 1 ? NAMES[sts[0].st] : (NUMW[sts.length] || sts.length) + ' states';
-    var span = months === 1 ? 'in the last month' : 'in the last ' + months + ' months';
+    var span = sts.length === 1 ? 'in the ' + months + ' months to ' + day(sts[0].through) : 'in the ' + months + " months to each state's newest record";
     var head = big ? n0(big) + ' ' + (big === 1 ? 'sale' : 'sales') + ' in ' + where + ' ' + span + " priced more than 50% above their county's median."
-      : n0(n) + ' farm ' + (n === 1 ? 'sale' : 'sales') + ' in ' + where + ' ' + span + ", none priced more than 50% above their county's median.";
-    return { head: head, take: n0(odd) + ' of ' + n0(n) + ' sales of ' + MIN_ACRES + " acres or more sold outside their county's usual price range." };
+      : n0(judged) + ' bare farmland ' + (judged === 1 ? 'sale' : 'sales') + ' in ' + where + ' ' + span + ", none priced more than 50% above their county's median.";
+    return { head: head, take: n0(odd) + ' of ' + n0(judged) + ' bare farmland sales of ' + MIN_ACRES + " acres or more sold outside their county's usual price range." };
   }
 
   function placeNote(code, words, county) {
@@ -116,10 +118,11 @@
   }
 
   /* the pins a filter keeps: [{f, p}] */
-  function filterPts(files, q, latest) {
-    var cut = monthsBack(latest, q.mo), out = [];
+  function filterPts(files, q) {
+    var out = [];
     files.forEach(function (f) {
       if (q.st && f.st !== q.st) return;
+      var cut = monthsBack(f.through, q.mo);
       f.pts.forEach(function (p) {
         if (p[WHEN] <= cut || p[AC] < q.amin || (q.amax && p[AC] > q.amax)) return;
         if (p[NM] && !q.nm) return;
@@ -197,7 +200,7 @@
   }
 
   function draw(fit) {
-    shown = filterPts(files, q, latest);
+    shown = filterPts(files, q);
     var st = story(files, q.st ? [q.st] : files.map(function (f) { return f.st; }), q.mo);
     headEl.textContent = st.head; takeEl.textContent = st.take;
     if (!map) return;
