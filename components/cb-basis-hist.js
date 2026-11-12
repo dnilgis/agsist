@@ -41,7 +41,7 @@
     if (names()) return Promise.resolve(names());
     if (!namesReady) namesReady = new Promise(function (ok) {
       var sc = document.createElement('script');
-      sc.src = '/components/elev-names.js?v=2';
+      sc.src = '/components/elev-names.js?v=3';
       sc.onload = function () { ok(window.elevNames || null); };
       sc.onerror = function () { ok(null); };
       document.head.appendChild(sc);
@@ -144,120 +144,206 @@
     return out;
   }
 
-  /* ONE SCALE PER TOWN AND CROP (Nov 4, 2026, site panel). Each elevator's chart used to take its own
-     low, high and start date, so a 15-cent swing filled the same height as a 30-cent one and two lines
-     side by side could not be compared. scaleFor() takes every elevator's points for one crop in the town:
-     the low and high rounded out to 5 cents, the first logged date to the log's last run. The axis values
-     print beside each chart (HTML, since the chart stretches to the page). */
-  function scaleFor(sets, endDate) {
-    var lo = Infinity, hi = -Infinity, d0 = '', d1 = endDate || '';
-    sets.forEach(function (pts) {
-      pts.forEach(function (p) {
-        if (!d0 || p.date < d0) d0 = p.date;
-        if (p.date > d1) d1 = p.date;
-        if (p.gap) return;
-        if (p.cents < lo) lo = p.cents;
-        if (p.cents > hi) hi = p.cents;
-      });
-    });
-    if (!isFinite(lo)) return null;
-    lo = Math.floor(lo / 5) * 5; hi = Math.ceil(hi / 5) * 5;
-    if (lo === hi) { lo -= 5; hi += 5; }
-    return { lo: lo, hi: hi, d0: d0, d1: d1 };
+  /* ONE CHART PER CROP (Nov 12, 2026; E51, the shared chart kit components/ag-chart.js). Every elevator in the
+     town with a logged basis for the crop is a line in one chart, so they share one scale and one time span by
+     construction (the Nov 4 panel rule). Each line is a step (a basis holds flat until its next change) held to
+     the log's last run, named at its right end with its basis now; a stretch when no open delivery month had a
+     logged basis is a gap; a thin mark is where the delivery month or the futures contract changed. The
+     headline and takeaway are computed from the range shown; a change is only ever counted on one delivery
+     month and one contract. At most LINES_MAX lines (LINES_NARROW on a narrow phone; the best basis now); every elevator keeps its table. */
+  /* The site's own inks (the kit's page colours are CSS variables, the picture's are these): gold, green, blue, rust, slate,
+     each with its own dash so the lines survive colour blindness and print. A dotted stretch is a gap. */
+  var LINES_MAX = 5, ADJ = { corn: 'corn', soybeans: 'soybean', wheat: 'wheat' };
+  var PAL = ['#d4a23f', '#5fc28a', '#6f9fc2', '#d9774f', '#a7b6bd'];
+  var DASH = ['', '14 6', '7 4', '14 4 3 4', '4 3 12 3'];
+  var FULL_MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function dayBefore(d) { return new Date(Date.parse(d) - 864e5).toISOString().slice(0, 10); }
+  /* One name per board, every word spelled out: the company and the site it posts for ("Mid-Iowa Cooperative, Cargill
+     Iowa Falls"), by elevNames.boardLabel (components/elev-names.js). No two boards share one: a repeat is told apart
+     by the places as the network printed them, then by a number. -> one label per board, in order */
+  function labels(boards, town, st) {
+    var out = boards.map(function (b) { return names().boardLabel ? names().boardLabel(b[0], b[1] || [], town, st) : String(b[0] || ''); }), n = {};
+    out.forEach(function (l) { n[l] = (n[l] || 0) + 1; });
+    out = out.map(function (l, i) { return n[l] > 1 ? l + ' (' + (boards[i][1] || []).join(', ') + ')' : l; });
+    n = {}; out.forEach(function (l) { n[l] = (n[l] || 0) + 1; });
+    var k = {}; return out.map(function (l) { if (n[l] < 2) return l; k[l] = (k[l] || 0) + 1; return l + ' (listing ' + k[l] + ')'; });
   }
-  var CH_H = 84, CH_PT = 8, CH_PB = 8;
-  function axis(sc) {
-    var Yp = function (c) { return ((CH_PT + (sc.hi - c) * (CH_H - CH_PT - CH_PB) / (sc.hi - sc.lo)) / CH_H * 100).toFixed(1); };
-    var ys = [sc.hi, sc.lo];
-    if (sc.lo < 0 && sc.hi > 0 && Math.min(sc.hi, -sc.lo) >= (sc.hi - sc.lo) * 0.2) ys.splice(1, 0, 0);
-    return '<div class="cbh-ya" aria-hidden="true">' + ys.map(function (c) { return '<span style="top:' + Yp(c) + '%">' + basisText(c) + '</span>'; }).join('') + '</div>';
+  function conWords(cons, crop) {   /* ["Mar '27"] -> "March 2027 corn futures"; two -> "November 2026 and January 2027 soybean futures" */
+    var w = [].concat(cons).map(function (con) { var m = /^([A-Z][a-z]{2}) '(\d{2})$/.exec(con || ''), i = m ? MON.indexOf(m[1]) : -1; return i < 0 ? '' : FULL_MON[i] + ' 20' + m[2]; }).filter(Boolean);
+    return w.length ? w.join(w.length > 2 ? ', ' : ' and ') + ' ' + crop + ' futures' : '';
   }
-  function chart(pts, endDate, label, sc) {
-    var w = 320, h = CH_H, pl = 4, pr = 4, pt = CH_PT, pb = CH_PB;
-    var lo = sc.lo, hi = sc.hi, vals = pts.filter(function (p) { return !p.gap; });
-    var lastD = pts[pts.length - 1].date;
-    var t0 = Date.parse(sc.d0), t1 = Date.parse(sc.d1 > lastD ? sc.d1 : lastD);
-    if (!(t1 > t0)) t1 = t0 + 864e5;
-    var X = function (d) { return (pl + (Date.parse(d) - t0) * (w - pl - pr) / (t1 - t0)).toFixed(1); };
-    var Y = function (c) { return (pt + (hi - c) * (h - pt - pb) / (hi - lo)).toFixed(1); };
-    var s = '', segs = [], cur = null, prev = null;
+  function fullMon(dm) { return FULL_MON[+dm.slice(5, 7) - 1] + (dm.slice(0, 4) === REF_YEAR ? '' : ' ' + dm.slice(0, 4)); }
+  /* nearestSeries() rows -> the kit's points: b on the first value after a gap (the day the gap began), m where
+     the month or contract changed; until: held to the log's last run, or to the day before a gap at the end */
+  function lineOf(pts, end) {
+    var points = [], gapFrom = null, prev = null;
     pts.forEach(function (p) {
-      if (p.gap) { if (cur) { cur.push(X(p.date) + ',' + Y(prev.cents)); segs.push(cur); cur = null; } prev = null; return; }
-      if (cur && prev) {
-        cur.push(X(p.date) + ',' + Y(prev.cents));
-        if (p.con !== prev.con || p.dm !== prev.dm)
-          s += '<line x1="' + X(p.date) + '" y1="' + pt + '" x2="' + X(p.date) + '" y2="' + (h - pb) + '" stroke="var(--border)" stroke-width="1" stroke-dasharray="2,3" vector-effect="non-scaling-stroke"/>';
-      } else cur = [];
-      cur.push(X(p.date) + ',' + Y(p.cents));
-      prev = p;
+      if (p.gap) { gapFrom = p.date; return; }
+      var q = { d: p.date, v: p.cents, dm: p.dm, con: p.con };
+      if (gapFrom && prev) q.b = gapFrom;
+      else if (prev && (prev.dm !== p.dm || prev.con !== p.con)) {
+        q.m = true;
+        q.ml = prev.dm !== p.dm ? monText(p.dm) + ' delivery starts' : 'now vs ' + (/^[A-Z][a-z]{2}/.exec(p.con || '') || ['the next'])[0] + ' futures';
+      }
+      gapFrom = null; points.push(q); prev = q;
     });
-    if (cur) { if (endDate > lastD) cur.push(X(endDate) + ',' + Y(prev.cents)); segs.push(cur); }
-    if (lo <= 0 && hi >= 0) s += '<line x1="0" y1="' + Y(0) + '" x2="' + w + '" y2="' + Y(0) + '" stroke="var(--border)" stroke-width="1" vector-effect="non-scaling-stroke"/>';
-    segs.forEach(function (sg) { s += '<polyline points="' + sg.join(' ') + '" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'; });
-    /* a dot per logged change: a zero-length round-capped line stays round when the chart is stretched to the page's width */
-    vals.forEach(function (p) { s += '<line x1="' + X(p.date) + '" y1="' + Y(p.cents) + '" x2="' + X(p.date) + '" y2="' + Y(p.cents) + '" stroke="var(--gold)" stroke-width="6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>'; });
-    return '<div class="cbh-ch">' + axis(sc) + '<svg class="cbh-svg" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" role="img" aria-label="' + esc(label) + '">' + s + '</svg>' +
-      '<div class="cbh-xa" aria-hidden="true"><span>' + dayText(sc.d0) + '</span><span>' + dayText(sc.d1 > lastD ? sc.d1 : lastD) + '</span></div></div>';
+    if (!points.length) return null;
+    var last = points[points.length - 1].d, until = gapFrom ? dayBefore(gapFrom) : end;
+    return { points: points, until: until > last ? until : '', tailGap: gapFrom || '' };
   }
-
-  function cropBlock(name, cropLabel, pts, endDate, sc) {
-    var vals = pts.filter(function (p) { return !p.gap; });
-    var first = vals[0], last = vals[vals.length - 1], tail = pts[pts.length - 1];
-    var cents = vals.map(function (p) { return p.cents; });
-    var head = '<h3 class="cbh-h">' + esc(name) + ': ' + esc(cropLabel.toLowerCase()) + '</h3>';
-    var now = tail.gap ? 'Last logged ' + basisText(last.cents) + ' for ' + monText(last.dm) + ' delivery' + (last.con ? ' vs ' + esc(last.con) : '') +
-      ' on ' + dayText(last.date) + '; nothing logged for ' + monText(tail.dm) + ' or later since ' + dayText(tail.date) + '. ' :
-      basisText(last.cents) + ' for ' + monText(last.dm) + ' delivery' + (last.con ? ' vs ' + esc(last.con) : '') + ' since ' + dayText(last.date) + '. ';
-    var lead = '<p class="cbh-l">' + now + (vals.length > 1 ? 'From ' + basisText(first.cents) + ' on ' + dayText(first.date) +
-      '; low ' + basisText(Math.min.apply(null, cents)) + ', high ' + basisText(Math.max.apply(null, cents)) + '.' : 'The only change logged.') + '</p>';
-    var svg = vals.length > 1 ? chart(pts, endDate, cropLabel + ' basis at ' + name + ' from ' + dayText(first.date) + ' to ' + dayText(last.date) + ', ' + basisText(first.cents) + ' to ' + basisText(last.cents) + ', on a scale from ' + basisText(sc.lo) + ' to ' + basisText(sc.hi), sc || scaleFor([pts], endDate)) : '';
-    var rows = pts.slice(-TABLE_MAX).reverse().map(function (p) {
+  /* -> [{ crop, label, lines: [{ key, name, full, line }], hidden, end, from }] */
+  function crops(data, boards, town, max, st) {
+    max = max || LINES_MAX;
+    var end = String(data.generated || '').slice(0, 10), out = [], lab = labels(boards, town, st), sn = (names().states || {})[String(st || '').toUpperCase()];
+    var place = town ? town + (sn ? ', ' + sn : '') : '';
+    CROPS.forEach(function (c) {
+      var lines = [];
+      boards.forEach(function (b, i) {
+        var pts = nearestSeries(keysFor(data, b[0], b[1] || [], c[0]), end), ln = pts.length && lineOf(pts, end);
+        if (ln) lines.push({ key: 'e' + i, name: lab[i], long: lab[i], full: lab[i], rows: pts, line: ln });
+      });
+      lines.forEach(function (l) {   // a chart of one crop needs no crop word: "Cargill Cedar Rapids (soybeans)" on a soybean chart is "Cargill Cedar Rapids"
+        var n = l.name.replace(new RegExp(' \\(' + c[0] + '\\)$', 'i'), '');
+        if (n !== l.name && !lines.some(function (o) { return o !== l && o.name === n; })) l.name = l.long = l.full = n;
+      });
+      if (!lines.length) return;
+      var now = function (l) { return l.line.tailGap ? -1e9 : l.line.points[l.line.points.length - 1].v; };
+      lines.sort(function (a, b) { return now(b) - now(a); });
+      out.push({ crop: c[0], label: c[1], lines: lines.slice(0, max), all: lines, hidden: Math.max(0, lines.length - max), end: end, place: place });
+    });
+    return out;
+  }
+  function upTo(l, d) { var p = null; l.line.points.forEach(function (q) { if (q.d <= d) p = q; }); return p; }
+  /* the basis a line held on day d, or null (not logged yet, or in a gap) */
+  function heldOn(l, d) {
+    var p = upTo(l, d), pts = l.line.points, nx = p && pts[pts.indexOf(p) + 1];
+    if (!p || (nx && nx.b && d >= nx.b) || (l.line.tailGap && d >= l.line.tailGap)) return null;
+    return p;
+  }
+  /* forCard: the picture's words (it has no tables below it) */
+  function story(c, town, from, to, forCard) {
+    var crop = ADJ[c.crop], Crop = crop.charAt(0).toUpperCase() + crop.slice(1), place = c.place || town, held = c.lines.map(function (l) { return { l: l, p: heldOn(l, to) }; }).filter(function (x) { return x.p; });
+    if (!held.length) return { head: Crop + ' basis' + (place ? ' near ' + place : '') + ': nothing logged for an open month on ' + dayText(to), take: '', summary: '' };
+    var head, take;
+    if (c.lines.length === 1) {
+      var l = held[0].l, pts = l.line.points, k = pts.indexOf(held[0].p), last = pts[k];
+      while (k > 0 && !pts[k].b && !pts[k].m && pts[k - 1].d >= from) k--;
+      var first = pts[k], ch = last.v - first.v, cw = conWords(last.con ? [last.con] : [], crop), ref = fullMon(last.dm) + ' delivery' + (cw ? ', against ' + cw : '');
+      if (first !== last) {
+        head = Crop + ' basis at ' + l.long + (ch ? (ch > 0 ? ' firmed ' : ' weakened ') + Math.abs(ch) + '¢' : ' held at ' + basisText(last.v)) + ' since ' + dayText(first.d);
+        take = basisText(last.v) + ' on ' + dayText(to) + ', from ' + basisText(first.v) + '. ' + ref + '. Counted on one delivery month and one contract.';
+      } else {
+        head = Crop + ' basis at ' + l.long + ': ' + basisText(last.v);
+        take = ref + '. Unchanged since ' + dayText(last.d) + '. A basis holds until the elevator changes it.';
+      }
+    } else {
+      held.sort(function (a, b) { return b.p.v - a.p.v; });
+      var best = held[0], lo = held[held.length - 1].p.v, ties = held.filter(function (x) { return x.p.v === best.p.v; }).length;
+      head = 'Best ' + crop + ' basis' + (place ? ' near ' + place : '') + ': ' + basisText(best.p.v) + ' at ' + (ties > 1 ? ties + ' elevators' : best.l.long);
+      var shown = c.lines.length + ' of ' + c.all.length + ' elevators shown.' + (c.hidden && !forCard ? ' Every one is in the tables below.' : '');
+      var cons = {}; held.forEach(function (x) { if (x.p.con) cons[x.p.con] = 1; }); cons = Object.keys(cons).sort(function (x, y) { return x.slice(-2) + MON.indexOf(x.slice(0, 3)) / 100 < y.slice(-2) + MON.indexOf(y.slice(0, 3)) / 100 ? -1 : 1; });
+      var cw = conWords(cons, crop);
+      take = (best.p.v === lo ? (held.length === 2 ? 'Both' : 'All ' + held.length) + ' elevators at ' + basisText(lo) : held.length + ' elevators from ' + basisText(lo) + ' to ' + basisText(best.p.v)) +
+        ' on ' + dayText(to).replace(' ', '\u00a0') + ', each for its nearest delivery month' + (cw ? ', against ' + cw : '') + '.' + ' ' + shown;
+    }
+    return { head: head, take: take, summary: head + '. ' + take };
+  }
+  /* the words under the chart: only what is drawn in it */
+  function footOf(c) {
+    var gaps = c.lines.some(function (l) { return l.line.points.some(function (p) { return p.b; }); }), marks = {}, first = '', ties = false, late = [];
+    c.lines.forEach(function (l) { l.line.points.forEach(function (p) { if (p.m) marks[p.d] = 1; }); if (!first || l.line.points[0].d < first) first = l.line.points[0].d; });
+    c.lines.forEach(function (l) { if (l.line.points[0].d > dayAfter(first, 1)) late.push({ d: l.line.points[0].d, t: l.name + ' ' + dayText(l.line.points[0].d) }); });
+    late = late.sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : a.t < b.t ? -1 : 1; }).map(function (x) { return x.t; });
+    var days = {}; c.lines.forEach(function (l) { l.line.points.forEach(function (p) { days[p.d] = 1; }); });
+    Object.keys(days).concat(c.end).forEach(function (d) { var by = {}; c.lines.forEach(function (l) { var p = heldOn(l, d); if (p) by[p.v] = (by[p.v] || 0) + 1; }); Object.keys(by).forEach(function (v) { if (by[v] > 1) ties = true; }); });
+    var n = Object.keys(marks).length;
+    return [gaps ? 'Thin dashed line: no bid posted.' : '', n ? (n === 1 ? 'Dotted vertical line: ' : 'Dotted vertical lines: ') + 'the delivery month or futures contract changed.' : '',
+      ties ? 'Lines at the same value are drawn side by side.' : '', late.length ? 'First bid logged: ' + late.join('; ') + '.' : ''].filter(Boolean).join(' ');
+  }
+  function dayAfter(d, n) { return new Date(Date.parse(d) + n * 864e5).toISOString().slice(0, 10); }
+  function config(c, town, els, url, since) {
+    var slug = String(town || 'town').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''), place = c.place || town || '', Crop = ADJ[c.crop].replace(/^./, function (x) { return x.toUpperCase(); });
+    var all = since ? 'Since ' + dayText(since) : 'All logged days', byKey = {};
+    c.lines.forEach(function (l) { byKey[l.key] = l; });
+    return {
+      series: c.lines.map(function (l, i) { return { key: l.key, name: l.name, points: l.line.points, until: l.line.until, step: true, dash: DASH[i % DASH.length], color: 'var(--cbh' + (i % 5 + 1) + ')', card: PAL[i % 5] }; }),
+      gaps: 1e6, ownGaps: true, minPoints: 1, pad: 2, unit: '¢/bu', axisTitle: 'Basis vs futures, ¢/bu', fmt: basisText, tick: basisText,
+      legend: true, intTicks: true, fixedTicks: true, weekly: true, clip: true, gapNote: 'no bid posted', markMany: 'Delivery month changed',
+      markLabel: function (p) { return p.ml || ''; },
+      valueAt: function (key, d) { var p = byKey[key] && heldOn(byKey[key], d); return p ? basisText(p.v) : ''; },
+      keyNote: '· touch the chart for another day',
+      foot: footOf(c),
+      ranges: [{ label: '2 weeks', days: 14, aria: 'two weeks' }, { label: '1 month', days: 31, aria: 'one month' }, { label: all, days: 0, aria: 'every day logged' }],
+      range: all, height: { phone: 250, wide: 300 },
+      story: function (v, forCard) { return story(c, town, v.from, v.to, forCard); },
+      readout: function (v, d) {
+        var t = c.lines.map(function (l) { var p = heldOn(l, d); return p ? l.name + ' ' + basisText(p.v) : ''; }).filter(Boolean);
+        return dayText(d) + ': ' + (t.length ? t.join(' · ') : 'nothing logged for an open month');
+      },
+      headEl: els.head, takeEl: els.take, tools: els.tools,
+      share: { url: url, title: ADJ[c.crop] + ' basis' + (place ? ' near ' + place : ''), file: 'agsist-basis-' + slug + '-' + c.crop + '.png',
+               kicker: (place ? place + ' · ' : '') + ADJ[c.crop] + ' basis', source: 'Source: posted elevator bids, logged by AGSIST' + (since ? ', since ' + fullDay(since) : ''), date: c.end }
+    };
+  }
+  function table(l) {
+    var pts = l.rows, rows = pts.slice(-TABLE_MAX).reverse().map(function (p) {
       if (p.gap) return '<tr><td>' + dayText(p.date) + '</td><td>' + monText(p.dm) + '</td><td class="n cbh-mut">none</td><td><span class="cbh-mut">not logged</span></td></tr>';
       return '<tr><td>' + dayText(p.date) + '</td><td>' + monText(p.dm) + '</td><td class="n">' + basisText(p.cents) + '</td><td>' + (p.con ? esc(p.con) : '<span class="cbh-mut">not named</span>') + '</td></tr>';
-    }).join('');
-    var n = pts.length - TABLE_MAX;
-    var more = n > 0 ? '<p class="cbh-mut">' + n + ' earlier ' + (n === 1 ? 'row is' : 'rows are') + ' in the line above.</p>' : '';
-    return '<div class="cbh-crop">' + head + lead + svg +
-      '<div class="cbh-scroll"><table class="cbh-t"><thead><tr><th>Changed</th><th>Delivery</th><th class="n">Basis</th><th>vs futures</th></tr></thead><tbody>' + rows + '</tbody></table></div>' + more + '</div>';
+    }).join(''), n = pts.length - TABLE_MAX;
+    return '<h4 class="cbh-h4">' + esc(l.full) + '</h4><div class="cbh-scroll"><table class="cbh-t"><thead><tr><th>Changed</th><th>Delivery</th><th class="n">Basis</th><th>vs futures</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      (n > 0 ? '<p class="cbh-mut">' + n + ' earlier ' + (n === 1 ? 'row is' : 'rows are') + ' in the chart above.</p>' : '');
+  }
+  function blockOf(c, town, i) {
+    var lo = c.lines.reduce(function (a, l) { return l.line.points[0].d < a ? l.line.points[0].d : a; }, c.end), st = story(c, town, lo, c.end);
+    return '<div class="cbh-crop" data-crop="' + i + '"><h3 class="cbh-h">' + esc(st.head) + '</h3><p class="cbh-l">' + esc(st.take) + '</p>' +
+      '<div class="cbh-kit"></div><div class="agc-tools cbh-tools"></div>' +
+      '<details class="cbh-more"><summary>Every change, elevator by elevator</summary>' + c.all.map(table).join('') + '</details></div>';
+  }
+
+  var kitReady = null;
+  function needKit() {
+    if (typeof window === 'undefined') return Promise.resolve(null);
+    if (window.AgChart) return Promise.resolve(window.AgChart);
+    if (!kitReady) kitReady = new Promise(function (ok) {
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/ag-chart.css?v=2'; document.head.appendChild(l);
+      var sc = document.createElement('script'); sc.src = '/components/ag-chart.js?v=5';
+      sc.onload = function () { ok(window.AgChart || null); }; sc.onerror = function () { ok(null); };
+      document.head.appendChild(sc);
+    });
+    return kitReady;
   }
 
   function render(box, data) {
     var body = box.querySelector('.cbt-hist-body');
     var boards = [];
     try { boards = JSON.parse(box.getAttribute('data-boards') || '[]'); } catch (e) { boards = []; }
-    if (!data || !data.series) { body.innerHTML = '<p class="cbt-sub">The basis log could not be loaded. Try again later.</p>'; return; }
-    var end = String(data.generated || '').slice(0, 10), first = '';
+    if (!data || !data.series) { body.innerHTML = '<p class="cbt-sub">The basis log could not be loaded. Try again later.</p>'; return []; }
+    var end = String(data.generated || '').slice(0, 10), town = box.getAttribute('data-town') || '';
     var from = /^\d{4}-\d{2}-\d{2}$/.test(String(data.publicFrom || '')) ? data.publicFrom : '';
     if (/^\d{4}/.test(end)) REF_YEAR = end.slice(0, 4);
-    var html = '', none = [], got = {}, ser = {}, scales = {};
-    boards.forEach(function (b, i) {
-      CROPS.forEach(function (c) {
-        var pts = nearestSeries(keysFor(data, b[0], b[1] || [], c[0]), end);
-        if (!pts.length) return;
-        got[i] = 1;
-        (ser[c[0]] = ser[c[0]] || []).push(pts);
-        if (!first || pts[0].date < first) first = pts[0].date;
-      });
-    });
-    CROPS.forEach(function (c) { if (ser[c[0]]) scales[c[0]] = scaleFor(ser[c[0]], end); });
-    boards.forEach(function (b, i) {
-      if (!got[i]) { none.push(b[0]); return; }
-      CROPS.forEach(function (c) {
-        var pts = nearestSeries(keysFor(data, b[0], b[1] || [], c[0]), end);
-        if (pts.length) html += cropBlock(b[0], c[1], pts, end, scales[c[0]]);
-      });
-    });
+    var st = String(box.getAttribute('data-basis-hist') || '').toUpperCase();
+    var cs = crops(data, boards, town, LINES_MAX, st), first = '', got = {};
+    cs.forEach(function (c) { c.all.forEach(function (l) { got[l.full] = 1; if (!first || l.rows[0].date < first) first = l.rows[0].date; }); });
+    var lab = labels(boards, town, st), none = boards.map(function (b, i) { return lab[i]; }).filter(function (l) { return !got[l]; });
     var since = from ? fullDay(from) : (first ? dayText(first) : '');
     var intro = '<p class="cbt-sub">Basis for the nearest delivery month on each date' + (since ? ', since ' + since : '') +
-      '. Only the days a basis changed are logged: it held flat between dots. A break in the line is a stretch when no open delivery month had a logged basis yet. A thin mark is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price. Every elevator\'s chart for a crop shares one scale and one time span, so the lines compare.</p>';
+      '. Only the days a basis changed are logged: it held flat between dots. A thin dashed stretch is the days no open delivery month had a logged basis. A dotted vertical line is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price. Every elevator for a crop is in one chart, on one scale. Each name is the company, then the place it posts for. A bid far off the others for a few days is drawn in a break under the chart and named, so the rest stay readable.</p>';
+    var html = intro + cs.map(function (c, i) { return blockOf(c, town, i); }).join('');
     if (none.length) html += '<p class="cbt-sub">No basis change logged' + (since ? ' since ' + since : '') + ' for ' + esc(none.join(', ')) + '.</p>';
-    body.innerHTML = intro + html;
-    /* the heading names where the public log starts, else the log's own first date (2026-10-17: the heading said
-       June over a log from Aug 27) */
+    body.innerHTML = html;
     var sum = box.querySelector('summary');
     if (sum && since) sum.textContent = 'Basis since ' + since;
+    if (box.ownerDocument) needKit().then(function (K) {
+      if (!K) return;
+      var canon = box.ownerDocument.querySelector('link[rel="canonical"]'), url = canon ? canon.href : String(location.href).split('#')[0];
+      cs.forEach(function (c, i) {
+        var bl = body.querySelector('.cbh-crop[data-crop="' + i + '"]');
+        var kit = bl.querySelector('.cbh-kit'); if (kit.clientWidth && kit.clientWidth < 720) kit.style.minHeight = (40 + 250 + 60 + 49 * c.lines.length + 70) + 'px';
+        K.mount(kit, config(c, town, { head: bl.querySelector('.cbh-h'), take: bl.querySelector('.cbh-l'), tools: bl.querySelector('.cbh-tools') }, url, from || first));
+      });
+    });
+    return cs;
   }
-
   function open(box) {
     if (box.getAttribute('data-loaded')) return;
     box.setAttribute('data-loaded', '1');
@@ -268,17 +354,15 @@
     Promise.all([cache[st], needNames()]).then(function (r) { render(box, r[1] ? r[0] : null); });
   }
 
-  var css = '.cbh-crop{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--border)}' +
-    '.cbh-h{margin:0 0 2px;font-size:.95rem}.cbh-l{margin:0 0 6px;font-size:.88rem;line-height:1.5;color:var(--text)}' +
-    '.cbh-ch{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:6px;margin:4px 0 6px}' +
-    '.cbh-ya{position:relative;height:84px;min-width:2.6em;font-family:\'JetBrains Mono\',monospace;font-size:.72rem;color:var(--text-muted)}' +
-    '.cbh-ya span{position:absolute;right:0;transform:translateY(-50%);white-space:nowrap;line-height:1}' +
-    '.cbh-svg{display:block;width:100%;height:84px}' +
-    '.cbh-xa{grid-column:2;display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-muted);margin-top:2px}' +
+  var css = '.cbh-crop{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--border);--cbh1:#d4a23f;--cbh2:#5fc28a;--cbh3:#6f9fc2;--cbh4:#d9774f;--cbh5:#a7b6bd}' +
+    '[data-theme="light"] .cbh-crop{--cbh1:#8a6514;--cbh2:#2e7d4f;--cbh3:#2a6390;--cbh4:#a8431f;--cbh5:#4f5f68}' +
+    '.cbh-kit{min-height:400px}@container (min-width:720px){.cbh-kit{min-height:440px}}.cbh-crop{container-type:inline-size}' +
+    '.cbh-tools{min-height:34px;margin:.3rem 0}.cbh-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--gold,#d4a23f);font-weight:600;font-size:.86rem}.cbh-h4{margin:10px 0 2px;font-size:.86rem}' +
+    '.cbh-h{margin:0 0 2px;font-size:1.02rem;font-weight:800;line-height:1.3}.cbh-l{margin:0 0 6px;font-size:.88rem;line-height:1.5;color:var(--text)}' +
     '.cbh-scroll{overflow-x:auto}.cbh-t{width:100%;border-collapse:collapse;font-size:.82rem}' +
     '.cbh-t th{text-align:left;color:var(--text-muted);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-bottom:1px solid var(--border)}' +
     '.cbh-t td{padding:4px 6px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap}' +
-    '.cbh-t .n{text-align:right;font-family:\'JetBrains Mono\',monospace}.cbh-mut{color:var(--text-dim);font-size:.8rem}';
+    '.cbh-t .n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}.cbh-mut{color:var(--text-dim);font-size:.8rem}';
 
   function init() {
     var boxes = document.querySelectorAll('details[data-basis-hist]');
@@ -291,7 +375,7 @@
   }
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, scaleFor: scaleFor, chart: chart, render: render };
+    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, lineOf: lineOf, crops: crops, story: story, config: config, heldOn: heldOn, labels: labels, render: render };
   } else if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else { init(); }
