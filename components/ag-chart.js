@@ -188,7 +188,7 @@
     if (gk) {
       var uw = widthOf(cfg.unit || '', fs), ul = uw > g.L - fs ? uw : g.L, kw = widthOf(gk, fs) * 0.94 + fs * 2.2, kx = g.right - kw;
       if (kx > ul + fs * 1.5) key = { text: gk, x: kx, ly: fs * 0.85, ty: fs * 1.2, w: kw };
-      else if (g.T >= fs * 2.9 && kw <= g.right - fs) key = { text: gk, x: kx, ly: fs * 2.15, ty: fs * 2.5, w: kw };
+      else if (fs >= 13 && kw <= g.right - fs) key = { text: gk, x: kx, ly: fs * 2.15, ty: fs * 2.5, w: kw };
       if (key) boxes.push({ x0: key.x - 2, x1: g.right + 2, y0: key.ty - fs * 0.95, y1: key.ty + fs * 0.3 });
     }
     var ext = 0;   // a first-point label may dip just under the lowest gridline when the line leaves no room above
