@@ -1,45 +1,37 @@
-/* components/ag-chart.js: the shared chart kit (Nov 11, 2026). Every chart on the site meets one bar:
-   a headline computed from the data, lines named at their right end with the latest value, labelled
-   axes and dates, every report day marked, missing days shown as missing, a hover / tap readout, a
-   Share button and a save-the-picture card that stands alone, keyboard and screen reader use, reduced
-   motion respected, a reserved height. Plain SVG and JS, no library. Styles: components/ag-chart.css.
-
-   AgChart.mount(el, cfg) draws into el (an empty element) and returns { redraw, state }.
+/* components/ag-chart.js: the shared chart kit (Nov 11, 2026). Every chart: a headline from the data, lines
+   named at their right end with the latest value, labelled axes and dates, every report day marked, missing
+   days shown as missing, a hover / tap readout, Share and a save-the-picture card that stands alone,
+   keyboard and screen reader use, reduced motion, a reserved height. Plain SVG and JS, no library.
+   Styles: components/ag-chart.css. AgChart.mount(el, cfg) draws into an empty el, returns { redraw, state }.
    cfg:
-     series   [{ key, name, points: [{ d: 'YYYY-MM-DD', v: number }], color: CSS colour for the page,
-                 card: colour for the picture, faint: true (dashed, muted, drawn under, keyed on the top
-                 row), note: the faint line's key text, pending: text shown on the top row while a faint
-                 line has no points yet (pendingShort for narrow charts), toggle: false (no hide/show) }]
-     bands    [{ a: key, b: key, color, card, opacity, cardOpacity,
-                 end(p), start(p): label text for the band's last and first shared day,
-                 p = { d, a, b, v: a minus b } }]   the shaded area between two series (not across missing days)
-     gaps     what counts as missing days between two points: 'weekdays' (a weekday with no point, for
-              daily reports), a number of calendar days (a longer step is a gap), or left out: each series
-              is read on its own normal spacing (a weekday report without weekends as 'weekdays', else a step
-              past 1.5 times its usual one). A gap is drawn dashed and lighter, the band breaks there, and
-              the readout says "No report ...".
-     fmt      v -> text for values (default '$' + 2 decimals); tick(v) -> axis text (default '$' + v)
-     unit     axis unit, top left ('$/cwt')
-     period   'year': one point a year, dated 'YYYY-01-01'; axis, readout and gaps say '2015', not 'Oct 27'
+     series   [{ key, name, points: [{ d: 'YYYY-MM-DD', v }], color (page CSS), card (picture colour),
+                 faint: true (dashed, muted, under, keyed on the top row; note: its key; pending: the top
+                 row while it has no points, pendingShort when narrow), toggle: false (no hide/show),
+                 step: true (a value holds flat to the next point), until: 'YYYY-MM-DD' (held flat to it) }]
+              a point may carry b: 'YYYY-MM-DD' (nothing held from that day to it: a gap) and m: true (a
+              thin mark: what the value is quoted against changed there)
+     bands    [{ a: key, b: key, color, card, opacity, cardOpacity, end(p), start(p): label text for the
+                 last and first shared day, p = { d, a, b, v: a minus b } }]  shaded between two series
+     gaps     missing days: 'weekdays' (a weekday with no point), a number of calendar days (a longer step
+              is a gap), or left out: each series by its own normal spacing. A gap is dashed and lighter,
+              the band breaks, the readout says "No report ..."
+     fmt      v -> value text (default '$' + 2 decimals); tick(v) -> axis text; unit ('$/cwt'); pad: least
+              room above and below the values (0.25)
+     period   'year': one point a year, dated 'YYYY-01-01'; axis, readout and gaps say '2015'
      gapWord  the readout's word for a missing point ('report'; 'survey')
-     ranges   [{ label: '3M', days: 92, aria: 'three months' }], days 0 = all held; a button shows only
-              when the held days run past it and leave minPoints in it; 'All' always
-     range    the label to open on (falls back to the longest shown)
-     minPoints  fewest points a drawn series needs (5)
-     story(view) -> { head, take, summary }  from the range shown; view = { series, from, to, days }
-              head and take go into cfg.headEl / cfg.takeEl, summary is the SVG's aria-label
-     readout(view, day) -> text for the readout line (default: each series' value that day)
-     height   { phone: 200, wide: 280 }   reserved in CSS too (ag-chart.css), so nothing shifts
-     tools    element for the buttons (optional): Share (the picture and the link together, where the
-              device can share files), else Copy link; and Save the picture
-     share    { url, title, file: 'name.png', kicker: card top line, source: card foot line,
-                date: 'YYYY-MM-DD' shown on the card }
-   Labels (line names, band labels) are placed so none overlaps a line, a point, another label or the
-   axes: first where they belong, then nudged up or down inside the plot, else set outside the plot on
-   the right (the plot narrows to make room).
-   AgChart.svg(view, W, H, opt), AgChart.card(cfg, view, done(blob)) draw; AgChart.layout(...) returns
-   the placed label boxes and the drawn segments and points (the tests check overlaps on it);
-   AgChart.slice, pairs, ranges, gapAt, ruleOf, fitLines are the helpers the tests use.
+     ranges   [{ label: '3M', days: 92, aria }], days 0 = all; shown only when the held days run past it
+              with minPoints (5) in it; 'All' always. range: the label to open on
+     story(view) -> { head, take, summary } for the range shown (view = { series, from, to, days }); head
+              and take go into cfg.headEl / cfg.takeEl, summary is the SVG's aria-label
+     readout(view, day) -> the readout line (default: each value that day); ownGaps: true, it names
+              missing days itself (else the first line's gaps speak for all)
+     height   { phone: 200, wide: 280 }, reserved in CSS
+     tools    element for the buttons: Share (picture and link, where files can be shared) or Copy link,
+              and Save the picture
+     share    { url, title, file, kicker: card top line, source: card foot line, date: 'YYYY-MM-DD' }
+   Labels never overlap a line, a point, another label or the axes: where they belong, nudged, else
+   outside on the right. AgChart.svg, card, layout (label boxes,
+   segments, points: the tests check overlaps), slice, pairs, ranges, gapAt, ruleOf, fitLines.
    Exports window.AgChart (and module.exports). */
 (function (root) {
   'use strict';
@@ -59,7 +51,7 @@
   function f1(v) { return v.toFixed(1); }
 
   /* ------------------------------------------------------------ data */
-  function lastDay(cfg) { var t = ''; cfg.series.forEach(function (s) { if (!s.faint && s.points.length) t = s.points[s.points.length - 1].d > t ? s.points[s.points.length - 1].d : t; }); return t; }
+  function lastDay(cfg) { var t = ''; cfg.series.forEach(function (s) { if (!s.faint && s.points.length) { var e = s.until || s.points[s.points.length - 1].d; if (e > t) t = e; } }); return t; }
   function slice(cfg, days) {
     var to = lastDay(cfg), cut = days ? isoOf(utc(to) - days * 864e5) : '', min = cfg.minPoints || 5;
     var series = cfg.series.map(function (s) {
@@ -95,6 +87,7 @@
   function gapAt(cfg, pts, d) {
     for (var i = 1; i < pts.length; i++) {
       if (pts[i - 1].d < d && d < pts[i].d) {
+        if (pts[i].b) return d >= pts[i].b ? { from: pts[i].b, to: isoOf(utc(pts[i].d) - 864e5) } : null;
         var m = missing(pts[i - 1].d, pts[i].d, ruleOf(cfg, pts)); if (!m) return null;
         if (cfg.period === 'year') { var y0 = +pts[i - 1].d.slice(0, 4) + 1, y1 = +pts[i].d.slice(0, 4) - 1; return y1 < y0 ? null : { from: y0 + '-01-01', to: y1 + '-01-01' }; }
         return { from: m[0], to: m[1] };
@@ -119,7 +112,7 @@
   function near(pts, d) { var b = null; pts.forEach(function (p) { if (!b || Math.abs(utc(p.d) - utc(d)) < Math.abs(utc(b.d) - utc(d))) b = p; }); return b; }
   function readout(cfg, view, d) {
     var main = view.series.filter(function (s) { return !s.faint && s.points.length; });
-    var gp = main.length && gapAt(cfg, main[0].points, d);
+    var gp = main.length && !cfg.ownGaps && gapAt(cfg, main[0].points, d);
     if (gp) return 'No ' + (cfg.gapWord || 'report') + ' ' + dayOf(cfg, gp.from) + (gp.to !== gp.from ? ' to ' + dayOf(cfg, gp.to) : '');
     if (cfg.readout) return cfg.readout(view, d);
     var p0 = near(main[0].points, d);
@@ -133,11 +126,11 @@
     var out = []; for (var t = Math.ceil(lo / st) * st; t <= hi + 1e-9; t += st) out.push(+t.toFixed(6));
     return out;
   }
-  function geom(view, W, H, fs, hide, gutter) {
+  function geom(view, W, H, fs, hide, gutter, cfg) {
     var all = [];
     view.series.forEach(function (s) { if (!hide[s.key]) s.points.forEach(function (p) { all.push(p.v); }); });
     if (!all.length) view.series.forEach(function (s) { s.points.forEach(function (p) { all.push(p.v); }); });
-    var lo = Math.min.apply(null, all), hi = Math.max.apply(null, all), pad = Math.max((hi - lo) * 0.03, 0.25);
+    var lo = Math.min.apply(null, all), hi = Math.max.apply(null, all), pad = Math.max((hi - lo) * 0.03, (cfg || {}).pad || 0.25);
     lo -= pad; hi += pad;
     var nt = W / fs < 40 ? 4 : 5, tk = ticks(lo, hi, nt), st = tk.length > 1 ? tk[1] - tk[0] : 1;   // the axis runs to a tick at both ends
     lo = Math.min(lo, Math.floor(lo / st) * st); hi = Math.max(hi, Math.ceil(hi / st) * st);
@@ -164,16 +157,19 @@
      inside and the caller should leave a gutter on the right */
   function layout(view, W, H, opt) {
     var fs = opt.fs || 12, hide = opt.hide || {}, cfg = opt.cfg || {}, fmt = fmtOf(cfg), rules = {};
-    var gutter = opt.gutter || 0, g = geom(view, W, H, fs, hide, gutter), segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
+    var gutter = opt.gutter || 0, g = geom(view, W, H, fs, hide, gutter, cfg), segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
     view.series.forEach(function (s) {
       if (!s.points.length || hide[s.key]) return;
       var pts = s.points.map(function (p) { return { d: p.d, v: p.v, x: g.x(p.d), y: g.y(p.v) }; });
       var run = [pts[0]], rule = rules[s.key] = ruleOf(cfg, s.points);
       for (var i = 1; i < pts.length; i++) {
-        var gap = !s.faint && missing(pts[i - 1].d, pts[i].d, rule);
-        segs.push({ x1: pts[i - 1].x, y1: pts[i - 1].y, x2: pts[i].x, y2: pts[i].y, key: s.key, gap: !!gap });
+        var gap = !s.faint && (s.points[i].b || missing(pts[i - 1].d, pts[i].d, rule)), q = pts[i - 1];
+        if (s.step && !gap) { q = { x: pts[i].x, y: q.y }; segs.push({ x1: pts[i - 1].x, y1: q.y, x2: q.x, y2: q.y, key: s.key }); run.push(q); }
+        segs.push({ x1: q.x, y1: q.y, x2: pts[i].x, y2: pts[i].y, key: s.key, gap: !!gap });
         if (gap) { runs.push({ s: s, pts: run }); runs.push({ s: s, pts: [pts[i - 1], pts[i]], gap: true }); run = [pts[i]]; } else run.push(pts[i]);
       }
+      var z = pts[pts.length - 1];
+      if (s.until > z.d) { q = { x: g.x(s.until), y: z.y }; segs.push({ x1: z.x, y1: z.y, x2: q.x, y2: q.y, key: s.key }); run.push(q); }
       runs.push({ s: s, pts: run });
       if (!s.faint) pts.forEach(function (p, j) { var r = j === pts.length - 1 ? fs / 3 + 1 : Math.max(1.6, fs / 6); dots.push({ x: p.x, y: p.y, r: r, s: s, last: j === pts.length - 1 }); });
     });
@@ -232,7 +228,7 @@
     });
     labels.forEach(place);
     if (failed.length && !gutter) {
-      var wide = Math.max.apply(null, failed.map(function (L) { return widthOf(L.text, fs, L.bold); }));
+      var wide = Math.max.apply(null, labels.map(function (L) { return widthOf(L.text, fs, L.bold); }));
       return layout(view, W, H, Object.assign({}, opt, { gutter: Math.min(Math.round(wide + fs * 1.4), Math.round(W * 0.4)) }));
     }
     return { g: g, segs: segs, dots: dots, runs: runs, labels: out, boxes: boxes, rules: rules };
@@ -256,13 +252,15 @@
       o.push(txt(g.L - fs * 0.5, y + fs * 0.35, cfg.tick ? cfg.tick(v) : '$' + (v % 1 ? v.toFixed(1) : v), f + 'fill:' + P.dim, 'end'));
     });
     o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(g.base) + '" y2="' + f1(g.base) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
-    // dates under the axis: evenly spread, each moved to the nearest report day, never closer than a label's room
+    view.series.forEach(function (s) { if (!hide[s.key]) s.points.forEach(function (p) { if (p.m) o.push('<line class="agc-mk" x1="' + f1(g.x(p.d)) + '" x2="' + f1(g.x(p.d)) + '" y1="' + g.T + '" y2="' + f1(g.base) + '" style="stroke:' + P.mut + ';stroke-dasharray:2 3"/>'); }); });
+    // dates under the axis: evenly spread, each on the nearest report day (any line's; a held line's end), with room
     var days = Math.round((utc(view.to) - utc(view.from)) / 864e5), want = Math.min(days + 1, (g.right - g.L) / fs < 34 ? 3 : 6), dts = [];
-    var rep0 = (view.series.filter(function (s) { return !s.faint && s.points.length; })[0] || { points: [] }).points;
+    var rep0 = [];
+    view.series.forEach(function (s) { if (!s.faint) rep0 = rep0.concat(s.points, s.until ? [{ d: view.to }] : []); });
     for (var i = 0; i < want; i++) {
       var dd = isoOf(utc(view.from) + Math.round(i * days / Math.max(1, want - 1)) * 864e5), np = rep0.length ? near(rep0, dd) : null;
       if (np) dd = np.d;
-      if (!dts.length || (dd > dts[dts.length - 1] && g.x(dd) - g.x(dts[dts.length - 1]) >= fs * 4.4)) dts.push(dd);
+      if (!dts.length || (dd > dts[dts.length - 1] && g.x(dd) - g.x(dts[dts.length - 1]) >= fs * (i === want - 1 ? 6.6 : 4.4))) dts.push(dd);
       else if (i === want - 1 && dts.length > 1 && dd > dts[dts.length - 1]) dts[dts.length - 1] = dd;   // the latest day always closes the axis
     }
     dts.forEach(function (d, j) { var x = g.x(d); o.push(txt(x, H - fs * 0.5, dayOf(cfg, d), f + 'fill:' + P.dim, j === dts.length - 1 ? 'end' : (x - g.L < fs * 2 ? 'start' : 'middle'))); });
@@ -389,7 +387,7 @@
       var move = function (ev) {
         var r = plot.getBoundingClientRect(), d = g.day((ev.touches ? ev.touches[0].clientX : ev.clientX) - r.left);
         var main = view.series.filter(function (s) { return !s.faint && s.points.length; });
-        if (gapAt(cfg, main[0].points, d)) { hov.setAttribute('visibility', 'hidden'); read.textContent = readout(cfg, view, d); return; }
+        if (!cfg.ownGaps && gapAt(cfg, main[0].points, d)) { hov.setAttribute('visibility', 'hidden'); read.textContent = readout(cfg, view, d); return; }
         var p0 = near(main[0].points, d), X = f1(g.x(p0.d));
         hov.firstChild.setAttribute('x1', X); hov.firstChild.setAttribute('x2', X);
         [].slice.call(hov.querySelectorAll('circle')).forEach(function (cEl) {

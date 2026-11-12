@@ -144,120 +144,167 @@
     return out;
   }
 
-  /* ONE SCALE PER TOWN AND CROP (Nov 4, 2026, site panel). Each elevator's chart used to take its own
-     low, high and start date, so a 15-cent swing filled the same height as a 30-cent one and two lines
-     side by side could not be compared. scaleFor() takes every elevator's points for one crop in the town:
-     the low and high rounded out to 5 cents, the first logged date to the log's last run. The axis values
-     print beside each chart (HTML, since the chart stretches to the page). */
-  function scaleFor(sets, endDate) {
-    var lo = Infinity, hi = -Infinity, d0 = '', d1 = endDate || '';
-    sets.forEach(function (pts) {
-      pts.forEach(function (p) {
-        if (!d0 || p.date < d0) d0 = p.date;
-        if (p.date > d1) d1 = p.date;
-        if (p.gap) return;
-        if (p.cents < lo) lo = p.cents;
-        if (p.cents > hi) hi = p.cents;
-      });
-    });
-    if (!isFinite(lo)) return null;
-    lo = Math.floor(lo / 5) * 5; hi = Math.ceil(hi / 5) * 5;
-    if (lo === hi) { lo -= 5; hi += 5; }
-    return { lo: lo, hi: hi, d0: d0, d1: d1 };
+  /* ONE CHART PER CROP (Nov 12, 2026; E51, the shared chart kit components/ag-chart.js). Every elevator in the
+     town with a logged basis for the crop is a line in one chart, so they share one scale and one time span by
+     construction (the Nov 4 panel rule). Each line is a step (a basis holds flat until its next change) held to
+     the log's last run, named at its right end with its basis now; a stretch when no open delivery month had a
+     logged basis is a gap; a thin mark is where the delivery month or the futures contract changed. The
+     headline and takeaway are computed from the range shown; a change is only ever counted on one delivery
+     month and one contract. At most LINES_MAX lines (LINES_NARROW on a narrow phone; the best basis now); every elevator keeps its table. */
+  var LINES_MAX = 5, LINES_NARROW = 3, NAME_MAX = 18, NAME_NARROW = 11, ADJ = { corn: 'corn', soybeans: 'soybean', wheat: 'wheat' };
+  var PAL = ['#e0ac45', '#5ea4ea', '#5fc28a', '#e07a8a', '#b48ee0'];
+  function dayBefore(d) { return new Date(Date.parse(d) - 864e5).toISOString().slice(0, 10); }
+  /* "Innovative Ag Services Iowa Falls" in Iowa Falls -> "Innovative Ag Services"; a second board of the same
+     company in town is told apart by its other place ("Innovative Ag Services, Poet IF") */
+  function nameOf(b, town, dup, whole, most) {
+    most = most || NAME_MAX;
+    var n = String(b[0] || ''), t = String(town || '');
+    if (t && n.length > t.length + 2 && n.toUpperCase().slice(-t.length) === t.toUpperCase()) n = n.slice(0, -t.length).replace(/[\s,-]+$/, '');
+    var other = (b[1] || []).filter(function (c) { return normKey(c) !== normKey(t); })[0], w = n.split(/\s+/);
+    if (whole) return dup && other ? n + ' (' + other + ')' : n;   // the headline and the picture: the whole name
+    // two boards of one company: its initials and the other place ("IAS Poet IF"), so the names differ
+    if (dup && other) n = (w.length > 1 ? w.filter(function (x) { return !/^(of|and|the|&)$/i.test(x); }).map(function (x) { return x.charAt(0).toUpperCase(); }).join('') : n) + ' ' + other;
+    return n.length > most ? n.slice(0, most - 1).replace(/\s+$/, '') + '…' : n;
   }
-  var CH_H = 84, CH_PT = 8, CH_PB = 8;
-  function axis(sc) {
-    var Yp = function (c) { return ((CH_PT + (sc.hi - c) * (CH_H - CH_PT - CH_PB) / (sc.hi - sc.lo)) / CH_H * 100).toFixed(1); };
-    var ys = [sc.hi, sc.lo];
-    if (sc.lo < 0 && sc.hi > 0 && Math.min(sc.hi, -sc.lo) >= (sc.hi - sc.lo) * 0.2) ys.splice(1, 0, 0);
-    return '<div class="cbh-ya" aria-hidden="true">' + ys.map(function (c) { return '<span style="top:' + Yp(c) + '%">' + basisText(c) + '</span>'; }).join('') + '</div>';
-  }
-  function chart(pts, endDate, label, sc) {
-    var w = 320, h = CH_H, pl = 4, pr = 4, pt = CH_PT, pb = CH_PB;
-    var lo = sc.lo, hi = sc.hi, vals = pts.filter(function (p) { return !p.gap; });
-    var lastD = pts[pts.length - 1].date;
-    var t0 = Date.parse(sc.d0), t1 = Date.parse(sc.d1 > lastD ? sc.d1 : lastD);
-    if (!(t1 > t0)) t1 = t0 + 864e5;
-    var X = function (d) { return (pl + (Date.parse(d) - t0) * (w - pl - pr) / (t1 - t0)).toFixed(1); };
-    var Y = function (c) { return (pt + (hi - c) * (h - pt - pb) / (hi - lo)).toFixed(1); };
-    var s = '', segs = [], cur = null, prev = null;
+  /* nearestSeries() rows -> the kit's points: b on the first value after a gap (the day the gap began), m where
+     the month or contract changed; until: held to the log's last run, or to the day before a gap at the end */
+  function lineOf(pts, end) {
+    var points = [], gapFrom = null, prev = null;
     pts.forEach(function (p) {
-      if (p.gap) { if (cur) { cur.push(X(p.date) + ',' + Y(prev.cents)); segs.push(cur); cur = null; } prev = null; return; }
-      if (cur && prev) {
-        cur.push(X(p.date) + ',' + Y(prev.cents));
-        if (p.con !== prev.con || p.dm !== prev.dm)
-          s += '<line x1="' + X(p.date) + '" y1="' + pt + '" x2="' + X(p.date) + '" y2="' + (h - pb) + '" stroke="var(--border)" stroke-width="1" stroke-dasharray="2,3" vector-effect="non-scaling-stroke"/>';
-      } else cur = [];
-      cur.push(X(p.date) + ',' + Y(p.cents));
-      prev = p;
+      if (p.gap) { gapFrom = p.date; return; }
+      var q = { d: p.date, v: p.cents, dm: p.dm, con: p.con };
+      if (gapFrom && prev) q.b = gapFrom;
+      else if (prev && (prev.dm !== p.dm || prev.con !== p.con)) q.m = true;
+      gapFrom = null; points.push(q); prev = q;
     });
-    if (cur) { if (endDate > lastD) cur.push(X(endDate) + ',' + Y(prev.cents)); segs.push(cur); }
-    if (lo <= 0 && hi >= 0) s += '<line x1="0" y1="' + Y(0) + '" x2="' + w + '" y2="' + Y(0) + '" stroke="var(--border)" stroke-width="1" vector-effect="non-scaling-stroke"/>';
-    segs.forEach(function (sg) { s += '<polyline points="' + sg.join(' ') + '" fill="none" stroke="var(--gold)" stroke-width="2" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>'; });
-    /* a dot per logged change: a zero-length round-capped line stays round when the chart is stretched to the page's width */
-    vals.forEach(function (p) { s += '<line x1="' + X(p.date) + '" y1="' + Y(p.cents) + '" x2="' + X(p.date) + '" y2="' + Y(p.cents) + '" stroke="var(--gold)" stroke-width="6" stroke-linecap="round" vector-effect="non-scaling-stroke"/>'; });
-    return '<div class="cbh-ch">' + axis(sc) + '<svg class="cbh-svg" viewBox="0 0 ' + w + ' ' + h + '" preserveAspectRatio="none" role="img" aria-label="' + esc(label) + '">' + s + '</svg>' +
-      '<div class="cbh-xa" aria-hidden="true"><span>' + dayText(sc.d0) + '</span><span>' + dayText(sc.d1 > lastD ? sc.d1 : lastD) + '</span></div></div>';
+    if (!points.length) return null;
+    var last = points[points.length - 1].d, until = gapFrom ? dayBefore(gapFrom) : end;
+    return { points: points, until: until > last ? until : '', tailGap: gapFrom || '' };
   }
-
-  function cropBlock(name, cropLabel, pts, endDate, sc) {
-    var vals = pts.filter(function (p) { return !p.gap; });
-    var first = vals[0], last = vals[vals.length - 1], tail = pts[pts.length - 1];
-    var cents = vals.map(function (p) { return p.cents; });
-    var head = '<h3 class="cbh-h">' + esc(name) + ': ' + esc(cropLabel.toLowerCase()) + '</h3>';
-    var now = tail.gap ? 'Last logged ' + basisText(last.cents) + ' for ' + monText(last.dm) + ' delivery' + (last.con ? ' vs ' + esc(last.con) : '') +
-      ' on ' + dayText(last.date) + '; nothing logged for ' + monText(tail.dm) + ' or later since ' + dayText(tail.date) + '. ' :
-      basisText(last.cents) + ' for ' + monText(last.dm) + ' delivery' + (last.con ? ' vs ' + esc(last.con) : '') + ' since ' + dayText(last.date) + '. ';
-    var lead = '<p class="cbh-l">' + now + (vals.length > 1 ? 'From ' + basisText(first.cents) + ' on ' + dayText(first.date) +
-      '; low ' + basisText(Math.min.apply(null, cents)) + ', high ' + basisText(Math.max.apply(null, cents)) + '.' : 'The only change logged.') + '</p>';
-    var svg = vals.length > 1 ? chart(pts, endDate, cropLabel + ' basis at ' + name + ' from ' + dayText(first.date) + ' to ' + dayText(last.date) + ', ' + basisText(first.cents) + ' to ' + basisText(last.cents) + ', on a scale from ' + basisText(sc.lo) + ' to ' + basisText(sc.hi), sc || scaleFor([pts], endDate)) : '';
-    var rows = pts.slice(-TABLE_MAX).reverse().map(function (p) {
+  /* -> [{ crop, label, lines: [{ key, name, full, line }], hidden, end, from }] */
+  function crops(data, boards, town, max) {
+    max = max || LINES_MAX;
+    var end = String(data.generated || '').slice(0, 10), out = [], seen = {};
+    boards.forEach(function (b) { var k = normFac(b[0]); seen[k] = (seen[k] || 0) + 1; });
+    CROPS.forEach(function (c) {
+      var lines = [];
+      boards.forEach(function (b, i) {
+        var pts = nearestSeries(keysFor(data, b[0], b[1] || [], c[0]), end), ln = pts.length && lineOf(pts, end);
+        if (ln) lines.push({ key: 'e' + i, name: nameOf(b, town, seen[normFac(b[0])] > 1, false, max < LINES_MAX ? NAME_NARROW : NAME_MAX), long: nameOf(b, town, seen[normFac(b[0])] > 1, true), full: b[0], rows: pts, line: ln });
+      });
+      if (!lines.length) return;
+      var now = function (l) { return l.line.tailGap ? -1e9 : l.line.points[l.line.points.length - 1].v; };
+      lines.sort(function (a, b) { return now(b) - now(a); });
+      out.push({ crop: c[0], label: c[1], lines: lines.slice(0, max), all: lines, hidden: Math.max(0, lines.length - max), end: end });
+    });
+    return out;
+  }
+  function upTo(l, d) { var p = null; l.line.points.forEach(function (q) { if (q.d <= d) p = q; }); return p; }
+  /* the basis a line held on day d, or null (not logged yet, or in a gap) */
+  function heldOn(l, d) {
+    var p = upTo(l, d), pts = l.line.points, nx = p && pts[pts.indexOf(p) + 1];
+    if (!p || (nx && nx.b && d >= nx.b) || (l.line.tailGap && d >= l.line.tailGap)) return null;
+    return p;
+  }
+  function story(c, town, from, to) {
+    var crop = ADJ[c.crop], Crop = crop.charAt(0).toUpperCase() + crop.slice(1), held = c.lines.map(function (l) { return { l: l, p: heldOn(l, to) }; }).filter(function (x) { return x.p; });
+    if (!held.length) return { head: Crop + ' basis: nothing logged for an open month on ' + dayText(to), take: '', summary: '' };
+    var head, take;
+    if (c.lines.length === 1) {
+      var l = held[0].l, pts = l.line.points, k = pts.indexOf(held[0].p), last = pts[k];
+      while (k > 0 && !pts[k].b && !pts[k].m && pts[k - 1].d >= from) k--;
+      var first = pts[k], ch = last.v - first.v, ref = monText(last.dm) + ' delivery' + (last.con ? ' vs ' + last.con : '');
+      if (first !== last) {
+        head = Crop + ' basis at ' + l.long + (ch ? (ch > 0 ? ' firmed ' : ' weakened ') + Math.abs(ch) + '¢' : ' held at ' + basisText(last.v)) + ' since ' + dayText(first.d);
+        take = basisText(last.v) + ' for ' + ref + ' on ' + dayText(to) + ', from ' + basisText(first.v) + '. Counted on one delivery month and one contract.';
+      } else {
+        head = Crop + ' basis at ' + l.long + ': ' + basisText(last.v) + ' for ' + ref;
+        take = 'Unchanged since ' + dayText(last.d) + '. A basis holds until the elevator changes it.';
+      }
+    } else {
+      held.sort(function (a, b) { return b.p.v - a.p.v; });
+      var best = held[0], lo = held[held.length - 1].p.v, ties = held.filter(function (x) { return x.p.v === best.p.v; }).length;
+      head = 'Best ' + crop + ' basis' + (town ? ' in ' + town : '') + ': ' + basisText(best.p.v) + ' at ' + (ties > 1 ? ties + ' elevators' : best.l.long);
+      take = (best.p.v === lo ? (held.length === 2 ? 'Both' : 'All ' + held.length) + ' elevators at ' + basisText(lo) : held.length + ' elevators from ' + basisText(lo) + ' to ' + basisText(best.p.v)) +
+        ' on ' + dayText(to) + ', each for its nearest delivery month.' + (c.hidden ? ' ' + c.hidden + ' more in the tables below.' : '');
+    }
+    return { head: head, take: take, summary: head + '. ' + take };
+  }
+  function config(c, town, els, url) {
+    var slug = String(town || 'town').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+    return {
+      series: c.lines.map(function (l, i) { return { key: l.key, name: l.name, points: l.line.points, until: l.line.until, step: true, color: 'var(--cbh' + (i + 1) + ')', card: PAL[i] }; }),
+      gaps: 1e6, ownGaps: true, minPoints: 1, pad: 2, unit: '¢/bu', fmt: basisText, tick: basisText,
+      ranges: [{ label: '2W', days: 14, aria: 'two weeks' }, { label: '1M', days: 31, aria: 'one month' }, { label: 'All', days: 0, aria: 'every day logged' }],
+      range: 'All', height: { phone: 200, wide: 240 },
+      story: function (v) { return story(c, town, v.from, v.to); },
+      readout: function (v, d) {
+        var t = c.lines.map(function (l) { var p = heldOn(l, d); return p ? l.name + ' ' + basisText(p.v) : ''; }).filter(Boolean);
+        return dayText(d) + ': ' + (t.length ? t.join(' · ') : 'nothing logged for an open month');
+      },
+      headEl: els.head, takeEl: els.take, tools: els.tools,
+      share: { url: url, title: ADJ[c.crop] + ' basis' + (town ? ' in ' + town : ''), file: 'agsist-basis-' + slug + '-' + c.crop + '.png',
+               kicker: ADJ[c.crop].replace(/^./, function (x) { return x.toUpperCase(); }) + ' basis' + (town ? ', ' + town : ''), source: 'Source: posted elevator bids, logged by AGSIST', date: c.end }
+    };
+  }
+  function table(l) {
+    var pts = l.rows, rows = pts.slice(-TABLE_MAX).reverse().map(function (p) {
       if (p.gap) return '<tr><td>' + dayText(p.date) + '</td><td>' + monText(p.dm) + '</td><td class="n cbh-mut">none</td><td><span class="cbh-mut">not logged</span></td></tr>';
       return '<tr><td>' + dayText(p.date) + '</td><td>' + monText(p.dm) + '</td><td class="n">' + basisText(p.cents) + '</td><td>' + (p.con ? esc(p.con) : '<span class="cbh-mut">not named</span>') + '</td></tr>';
-    }).join('');
-    var n = pts.length - TABLE_MAX;
-    var more = n > 0 ? '<p class="cbh-mut">' + n + ' earlier ' + (n === 1 ? 'row is' : 'rows are') + ' in the line above.</p>' : '';
-    return '<div class="cbh-crop">' + head + lead + svg +
-      '<div class="cbh-scroll"><table class="cbh-t"><thead><tr><th>Changed</th><th>Delivery</th><th class="n">Basis</th><th>vs futures</th></tr></thead><tbody>' + rows + '</tbody></table></div>' + more + '</div>';
+    }).join(''), n = pts.length - TABLE_MAX;
+    return '<h4 class="cbh-h4">' + esc(l.full) + '</h4><div class="cbh-scroll"><table class="cbh-t"><thead><tr><th>Changed</th><th>Delivery</th><th class="n">Basis</th><th>vs futures</th></tr></thead><tbody>' + rows + '</tbody></table></div>' +
+      (n > 0 ? '<p class="cbh-mut">' + n + ' earlier ' + (n === 1 ? 'row is' : 'rows are') + ' in the chart above.</p>' : '');
+  }
+  function blockOf(c, town, i) {
+    var lo = c.lines.reduce(function (a, l) { return l.line.points[0].d < a ? l.line.points[0].d : a; }, c.end), st = story(c, town, lo, c.end);
+    return '<div class="cbh-crop" data-crop="' + i + '"><h3 class="cbh-h">' + esc(st.head) + '</h3><p class="cbh-l">' + esc(st.take) + '</p>' +
+      '<div class="cbh-kit"></div><div class="agc-tools cbh-tools"></div>' +
+      '<details class="cbh-more"><summary>Every change, elevator by elevator</summary>' + c.all.map(table).join('') + '</details></div>';
+  }
+
+  var kitReady = null;
+  function needKit() {
+    if (typeof window === 'undefined') return Promise.resolve(null);
+    if (window.AgChart) return Promise.resolve(window.AgChart);
+    if (!kitReady) kitReady = new Promise(function (ok) {
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/ag-chart.css?v=1'; document.head.appendChild(l);
+      var sc = document.createElement('script'); sc.src = '/components/ag-chart.js?v=3';
+      sc.onload = function () { ok(window.AgChart || null); }; sc.onerror = function () { ok(null); };
+      document.head.appendChild(sc);
+    });
+    return kitReady;
   }
 
   function render(box, data) {
     var body = box.querySelector('.cbt-hist-body');
     var boards = [];
     try { boards = JSON.parse(box.getAttribute('data-boards') || '[]'); } catch (e) { boards = []; }
-    if (!data || !data.series) { body.innerHTML = '<p class="cbt-sub">The basis log could not be loaded. Try again later.</p>'; return; }
-    var end = String(data.generated || '').slice(0, 10), first = '';
+    if (!data || !data.series) { body.innerHTML = '<p class="cbt-sub">The basis log could not be loaded. Try again later.</p>'; return []; }
+    var end = String(data.generated || '').slice(0, 10), town = box.getAttribute('data-town') || '';
     var from = /^\d{4}-\d{2}-\d{2}$/.test(String(data.publicFrom || '')) ? data.publicFrom : '';
     if (/^\d{4}/.test(end)) REF_YEAR = end.slice(0, 4);
-    var html = '', none = [], got = {}, ser = {}, scales = {};
-    boards.forEach(function (b, i) {
-      CROPS.forEach(function (c) {
-        var pts = nearestSeries(keysFor(data, b[0], b[1] || [], c[0]), end);
-        if (!pts.length) return;
-        got[i] = 1;
-        (ser[c[0]] = ser[c[0]] || []).push(pts);
-        if (!first || pts[0].date < first) first = pts[0].date;
-      });
-    });
-    CROPS.forEach(function (c) { if (ser[c[0]]) scales[c[0]] = scaleFor(ser[c[0]], end); });
-    boards.forEach(function (b, i) {
-      if (!got[i]) { none.push(b[0]); return; }
-      CROPS.forEach(function (c) {
-        var pts = nearestSeries(keysFor(data, b[0], b[1] || [], c[0]), end);
-        if (pts.length) html += cropBlock(b[0], c[1], pts, end, scales[c[0]]);
-      });
-    });
+    // under 360 px of chart, three lines and shorter names: five full names do not fit beside the plot
+    var cs = crops(data, boards, town, body.clientWidth && body.clientWidth < 360 ? LINES_NARROW : LINES_MAX), first = '', got = {};
+    cs.forEach(function (c) { c.all.forEach(function (l) { got[l.full] = 1; if (!first || l.rows[0].date < first) first = l.rows[0].date; }); });
+    var none = boards.filter(function (b) { return !got[b[0]]; }).map(function (b) { return b[0]; });
     var since = from ? fullDay(from) : (first ? dayText(first) : '');
     var intro = '<p class="cbt-sub">Basis for the nearest delivery month on each date' + (since ? ', since ' + since : '') +
-      '. Only the days a basis changed are logged: it held flat between dots. A break in the line is a stretch when no open delivery month had a logged basis yet. A thin mark is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price. Every elevator\'s chart for a crop shares one scale and one time span, so the lines compare.</p>';
+      '. Only the days a basis changed are logged: it held flat between dots. A dashed stretch is when no open delivery month had a logged basis. A thin mark is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price. Every elevator for a crop is in one chart, on one scale.</p>';
+    var html = intro + cs.map(function (c, i) { return blockOf(c, town, i); }).join('');
     if (none.length) html += '<p class="cbt-sub">No basis change logged' + (since ? ' since ' + since : '') + ' for ' + esc(none.join(', ')) + '.</p>';
-    body.innerHTML = intro + html;
-    /* the heading names where the public log starts, else the log's own first date (2026-10-17: the heading said
-       June over a log from Aug 27) */
+    body.innerHTML = html;
     var sum = box.querySelector('summary');
     if (sum && since) sum.textContent = 'Basis since ' + since;
+    if (box.ownerDocument) needKit().then(function (K) {
+      if (!K) return;
+      var canon = box.ownerDocument.querySelector('link[rel="canonical"]'), url = canon ? canon.href : String(location.href).split('#')[0];
+      cs.forEach(function (c, i) {
+        var bl = body.querySelector('.cbh-crop[data-crop="' + i + '"]');
+        K.mount(bl.querySelector('.cbh-kit'), config(c, town, { head: bl.querySelector('.cbh-h'), take: bl.querySelector('.cbh-l'), tools: bl.querySelector('.cbh-tools') }, url));
+      });
+    });
+    return cs;
   }
-
   function open(box) {
     if (box.getAttribute('data-loaded')) return;
     box.setAttribute('data-loaded', '1');
@@ -268,13 +315,11 @@
     Promise.all([cache[st], needNames()]).then(function (r) { render(box, r[1] ? r[0] : null); });
   }
 
-  var css = '.cbh-crop{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--border)}' +
-    '.cbh-h{margin:0 0 2px;font-size:.95rem}.cbh-l{margin:0 0 6px;font-size:.88rem;line-height:1.5;color:var(--text)}' +
-    '.cbh-ch{display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:6px;margin:4px 0 6px}' +
-    '.cbh-ya{position:relative;height:84px;min-width:2.6em;font-family:\'JetBrains Mono\',monospace;font-size:.72rem;color:var(--text-muted)}' +
-    '.cbh-ya span{position:absolute;right:0;transform:translateY(-50%);white-space:nowrap;line-height:1}' +
-    '.cbh-svg{display:block;width:100%;height:84px}' +
-    '.cbh-xa{grid-column:2;display:flex;justify-content:space-between;font-size:.72rem;color:var(--text-muted);margin-top:2px}' +
+  var css = '.cbh-crop{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--border);--cbh1:#c08a2c;--cbh2:#4f94d8;--cbh3:#3fa86c;--cbh4:#d0607a;--cbh5:#9a74cc}' +
+    '[data-theme="light"] .cbh-crop{--cbh1:#8a6514;--cbh2:#1f66b8;--cbh3:#1e7a46;--cbh4:#a8324e;--cbh5:#6a46a0}' +
+    '.cbh-kit{min-height:263px}@container (min-width:520px){.cbh-kit{min-height:305px}}.cbh-crop{container-type:inline-size}' +
+    '.cbh-tools{min-height:34px;margin:.3rem 0}.cbh-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--gold,#d4a23f);font-weight:600;font-size:.86rem}.cbh-h4{margin:10px 0 2px;font-size:.86rem}' +
+    '.cbh-h{margin:0 0 2px;font-size:1.02rem;font-weight:800;line-height:1.3}.cbh-l{margin:0 0 6px;font-size:.88rem;line-height:1.5;color:var(--text)}' +
     '.cbh-scroll{overflow-x:auto}.cbh-t{width:100%;border-collapse:collapse;font-size:.82rem}' +
     '.cbh-t th{text-align:left;color:var(--text-muted);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-bottom:1px solid var(--border)}' +
     '.cbh-t td{padding:4px 6px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap}' +
@@ -291,7 +336,7 @@
   }
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, scaleFor: scaleFor, chart: chart, render: render };
+    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, lineOf: lineOf, crops: crops, story: story, config: config, heldOn: heldOn, nameOf: nameOf, render: render };
   } else if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else { init(); }
