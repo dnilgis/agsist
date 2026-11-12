@@ -41,7 +41,7 @@
     if (names()) return Promise.resolve(names());
     if (!namesReady) namesReady = new Promise(function (ok) {
       var sc = document.createElement('script');
-      sc.src = '/components/elev-names.js?v=2';
+      sc.src = '/components/elev-names.js?v=3';
       sc.onload = function () { ok(window.elevNames || null); };
       sc.onerror = function () { ok(null); };
       document.head.appendChild(sc);
@@ -151,21 +151,28 @@
      logged basis is a gap; a thin mark is where the delivery month or the futures contract changed. The
      headline and takeaway are computed from the range shown; a change is only ever counted on one delivery
      month and one contract. At most LINES_MAX lines (LINES_NARROW on a narrow phone; the best basis now); every elevator keeps its table. */
-  var LINES_MAX = 5, LINES_NARROW = 3, NAME_MAX = 18, NAME_NARROW = 11, ADJ = { corn: 'corn', soybeans: 'soybean', wheat: 'wheat' };
-  var PAL = ['#e0ac45', '#5ea4ea', '#5fc28a', '#e07a8a', '#b48ee0'];
+  /* The site's own inks (the kit's page colours are CSS variables, the picture's are these): gold, green, blue, rust, slate,
+     each with its own dash so the lines survive colour blindness and print. A dotted stretch is a gap. */
+  var LINES_MAX = 5, ADJ = { corn: 'corn', soybeans: 'soybean', wheat: 'wheat' };
+  var PAL = ['#d4a23f', '#5fc28a', '#6f9fc2', '#d9774f', '#a7b6bd'];
+  var DASH = ['', '12 5', '3 3', '12 4 3 4', '6 3'];
+  var FULL_MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   function dayBefore(d) { return new Date(Date.parse(d) - 864e5).toISOString().slice(0, 10); }
-  /* "Innovative Ag Services Iowa Falls" in Iowa Falls -> "Innovative Ag Services"; a second board of the same
-     company in town is told apart by its other place ("Innovative Ag Services, Poet IF") */
-  function nameOf(b, town, dup, whole, most) {
-    most = most || NAME_MAX;
-    var n = String(b[0] || ''), t = String(town || '');
-    if (t && n.length > t.length + 2 && n.toUpperCase().slice(-t.length) === t.toUpperCase()) n = n.slice(0, -t.length).replace(/[\s,-]+$/, '');
-    var other = (b[1] || []).filter(function (c) { return normKey(c) !== normKey(t); })[0], w = n.split(/\s+/);
-    if (whole) return dup && other ? n + ' (' + other + ')' : n;   // the headline and the picture: the whole name
-    // two boards of one company: its initials and the other place ("IAS Poet IF"), so the names differ
-    if (dup && other) n = (w.length > 1 ? w.filter(function (x) { return !/^(of|and|the|&)$/i.test(x); }).map(function (x) { return x.charAt(0).toUpperCase(); }).join('') : n) + ' ' + other;
-    return n.length > most ? n.slice(0, most - 1).replace(/\s+$/, '') + '…' : n;
+  /* One name per board, every word spelled out: the company and the site it posts for ("Mid-Iowa Cooperative, Cargill
+     Iowa Falls"), by elevNames.boardLabel (components/elev-names.js). No two boards share one: a repeat is told apart
+     by the places as the network printed them, then by a number. -> one label per board, in order */
+  function labels(boards, town, st) {
+    var out = boards.map(function (b) { return names().boardLabel(b[0], b[1] || [], town, st); }), n = {};
+    out.forEach(function (l) { n[l] = (n[l] || 0) + 1; });
+    out = out.map(function (l, i) { return n[l] > 1 ? l + ' (' + (boards[i][1] || []).join(', ') + ')' : l; });
+    n = {}; out.forEach(function (l) { n[l] = (n[l] || 0) + 1; });
+    var k = {}; return out.map(function (l) { if (n[l] < 2) return l; k[l] = (k[l] || 0) + 1; return l + ' (listing ' + k[l] + ')'; });
   }
+  function conWords(con, crop) {   /* "Mar '27" -> "March 2027 corn futures" */
+    var m = /^([A-Z][a-z]{2}) '(\d{2})$/.exec(con || ''), i = m ? MON.indexOf(m[1]) : -1;
+    return i < 0 ? '' : FULL_MON[i] + ' 20' + m[2] + ' ' + crop + ' futures';
+  }
+  function fullMon(dm) { return FULL_MON[+dm.slice(5, 7) - 1] + (dm.slice(0, 4) === REF_YEAR ? '' : ' ' + dm.slice(0, 4)); }
   /* nearestSeries() rows -> the kit's points: b on the first value after a gap (the day the gap began), m where
      the month or contract changed; until: held to the log's last run, or to the day before a gap at the end */
   function lineOf(pts, end) {
@@ -174,7 +181,10 @@
       if (p.gap) { gapFrom = p.date; return; }
       var q = { d: p.date, v: p.cents, dm: p.dm, con: p.con };
       if (gapFrom && prev) q.b = gapFrom;
-      else if (prev && (prev.dm !== p.dm || prev.con !== p.con)) q.m = true;
+      else if (prev && (prev.dm !== p.dm || prev.con !== p.con)) {
+        q.m = true;
+        q.ml = prev.dm !== p.dm ? monText(p.dm) + ' delivery starts' : 'now vs ' + (/^[A-Z][a-z]{2}/.exec(p.con || '') || ['the next'])[0] + ' futures';
+      }
       gapFrom = null; points.push(q); prev = q;
     });
     if (!points.length) return null;
@@ -182,20 +192,20 @@
     return { points: points, until: until > last ? until : '', tailGap: gapFrom || '' };
   }
   /* -> [{ crop, label, lines: [{ key, name, full, line }], hidden, end, from }] */
-  function crops(data, boards, town, max) {
+  function crops(data, boards, town, max, st) {
     max = max || LINES_MAX;
-    var end = String(data.generated || '').slice(0, 10), out = [], seen = {};
-    boards.forEach(function (b) { var k = normFac(b[0]); seen[k] = (seen[k] || 0) + 1; });
+    var end = String(data.generated || '').slice(0, 10), out = [], lab = labels(boards, town, st), sn = (names().states || {})[String(st || '').toUpperCase()];
+    var place = town ? town + (sn ? ', ' + sn : '') : '';
     CROPS.forEach(function (c) {
       var lines = [];
       boards.forEach(function (b, i) {
         var pts = nearestSeries(keysFor(data, b[0], b[1] || [], c[0]), end), ln = pts.length && lineOf(pts, end);
-        if (ln) lines.push({ key: 'e' + i, name: nameOf(b, town, seen[normFac(b[0])] > 1, false, max < LINES_MAX ? NAME_NARROW : NAME_MAX), long: nameOf(b, town, seen[normFac(b[0])] > 1, true), full: b[0], rows: pts, line: ln });
+        if (ln) lines.push({ key: 'e' + i, name: lab[i], long: lab[i], full: lab[i], rows: pts, line: ln });
       });
       if (!lines.length) return;
       var now = function (l) { return l.line.tailGap ? -1e9 : l.line.points[l.line.points.length - 1].v; };
       lines.sort(function (a, b) { return now(b) - now(a); });
-      out.push({ crop: c[0], label: c[1], lines: lines.slice(0, max), all: lines, hidden: Math.max(0, lines.length - max), end: end });
+      out.push({ crop: c[0], label: c[1], lines: lines.slice(0, max), all: lines, hidden: Math.max(0, lines.length - max), end: end, place: place });
     });
     return out;
   }
@@ -206,45 +216,54 @@
     if (!p || (nx && nx.b && d >= nx.b) || (l.line.tailGap && d >= l.line.tailGap)) return null;
     return p;
   }
-  function story(c, town, from, to) {
-    var crop = ADJ[c.crop], Crop = crop.charAt(0).toUpperCase() + crop.slice(1), held = c.lines.map(function (l) { return { l: l, p: heldOn(l, to) }; }).filter(function (x) { return x.p; });
-    if (!held.length) return { head: Crop + ' basis: nothing logged for an open month on ' + dayText(to), take: '', summary: '' };
+  /* forCard: the picture's words (it has no tables below it) */
+  function story(c, town, from, to, forCard) {
+    var crop = ADJ[c.crop], Crop = crop.charAt(0).toUpperCase() + crop.slice(1), place = c.place || town, held = c.lines.map(function (l) { return { l: l, p: heldOn(l, to) }; }).filter(function (x) { return x.p; });
+    if (!held.length) return { head: Crop + ' basis' + (place ? ' near ' + place : '') + ': nothing logged for an open month on ' + dayText(to), take: '', summary: '' };
     var head, take;
     if (c.lines.length === 1) {
       var l = held[0].l, pts = l.line.points, k = pts.indexOf(held[0].p), last = pts[k];
       while (k > 0 && !pts[k].b && !pts[k].m && pts[k - 1].d >= from) k--;
-      var first = pts[k], ch = last.v - first.v, ref = monText(last.dm) + ' delivery' + (last.con ? ' vs ' + last.con : '');
+      var first = pts[k], ch = last.v - first.v, cw = conWords(last.con, crop), ref = fullMon(last.dm) + ' delivery' + (cw ? ', against ' + cw : '');
       if (first !== last) {
         head = Crop + ' basis at ' + l.long + (ch ? (ch > 0 ? ' firmed ' : ' weakened ') + Math.abs(ch) + '¢' : ' held at ' + basisText(last.v)) + ' since ' + dayText(first.d);
-        take = basisText(last.v) + ' for ' + ref + ' on ' + dayText(to) + ', from ' + basisText(first.v) + '. Counted on one delivery month and one contract.';
+        take = basisText(last.v) + ' on ' + dayText(to) + ', from ' + basisText(first.v) + '. ' + ref + '. Counted on one delivery month and one contract.';
       } else {
-        head = Crop + ' basis at ' + l.long + ': ' + basisText(last.v) + ' for ' + ref;
-        take = 'Unchanged since ' + dayText(last.d) + '. A basis holds until the elevator changes it.';
+        head = Crop + ' basis at ' + l.long + ': ' + basisText(last.v);
+        take = ref + '. Unchanged since ' + dayText(last.d) + '. A basis holds until the elevator changes it.';
       }
     } else {
       held.sort(function (a, b) { return b.p.v - a.p.v; });
       var best = held[0], lo = held[held.length - 1].p.v, ties = held.filter(function (x) { return x.p.v === best.p.v; }).length;
-      head = 'Best ' + crop + ' basis' + (town ? ' in ' + town : '') + ': ' + basisText(best.p.v) + ' at ' + (ties > 1 ? ties + ' elevators' : best.l.long);
+      head = 'Best ' + crop + ' basis' + (place ? ' near ' + place : '') + ': ' + basisText(best.p.v) + ' at ' + (ties > 1 ? ties + ' elevators' : best.l.long);
+      var shown = c.hidden ? c.lines.length + ' of ' + c.all.length + ' elevators shown.' + (forCard ? '' : ' Every one is in the tables below.') : '';
       take = (best.p.v === lo ? (held.length === 2 ? 'Both' : 'All ' + held.length) + ' elevators at ' + basisText(lo) : held.length + ' elevators from ' + basisText(lo) + ' to ' + basisText(best.p.v)) +
-        ' on ' + dayText(to) + ', each for its nearest delivery month.' + (c.hidden ? ' ' + c.hidden + ' more in the tables below.' : '');
+        ' on ' + dayText(to) + (forCard ? '.' : ', each for its nearest delivery month.') + (shown ? ' ' + shown : '');
     }
     return { head: head, take: take, summary: head + '. ' + take };
   }
-  function config(c, town, els, url) {
-    var slug = String(town || 'town').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+  function config(c, town, els, url, since) {
+    var slug = String(town || 'town').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, ''), place = c.place || town || '', Crop = ADJ[c.crop].replace(/^./, function (x) { return x.toUpperCase(); });
+    var all = since ? 'Since ' + dayText(since) : 'All logged days', byKey = {};
+    c.lines.forEach(function (l) { byKey[l.key] = l; });
     return {
-      series: c.lines.map(function (l, i) { return { key: l.key, name: l.name, points: l.line.points, until: l.line.until, step: true, color: 'var(--cbh' + (i + 1) + ')', card: PAL[i] }; }),
-      gaps: 1e6, ownGaps: true, minPoints: 1, pad: 2, unit: '¢/bu', fmt: basisText, tick: basisText,
-      ranges: [{ label: '2W', days: 14, aria: 'two weeks' }, { label: '1M', days: 31, aria: 'one month' }, { label: 'All', days: 0, aria: 'every day logged' }],
-      range: 'All', height: { phone: 200, wide: 240 },
-      story: function (v) { return story(c, town, v.from, v.to); },
+      series: c.lines.map(function (l, i) { return { key: l.key, name: l.name, points: l.line.points, until: l.line.until, step: true, dash: DASH[i % DASH.length], color: 'var(--cbh' + (i % 5 + 1) + ')', card: PAL[i % 5] }; }),
+      gaps: 1e6, ownGaps: true, minPoints: 1, pad: 2, unit: '¢/bu', axisTitle: 'Basis vs futures, ¢/bu', fmt: basisText, tick: basisText,
+      legend: true, intTicks: true, fixedTicks: true, weekly: true, clip: true, gapNote: 'no bid posted', markMany: 'delivery month changed',
+      markLabel: function (p) { return p.ml || ''; },
+      valueAt: function (key, d) { var p = byKey[key] && heldOn(byKey[key], d); return p ? basisText(p.v) : ''; },
+      keyNote: '· touch the chart for another day',
+      foot: 'Fine dots along a line: no bid posted. Grey vertical line: the delivery month or futures contract changed.',
+      ranges: [{ label: '2 weeks', days: 14, aria: 'two weeks' }, { label: '1 month', days: 31, aria: 'one month' }, { label: all, days: 0, aria: 'every day logged' }],
+      range: all, height: { phone: 250, wide: 300 },
+      story: function (v, forCard) { return story(c, town, v.from, v.to, forCard); },
       readout: function (v, d) {
         var t = c.lines.map(function (l) { var p = heldOn(l, d); return p ? l.name + ' ' + basisText(p.v) : ''; }).filter(Boolean);
         return dayText(d) + ': ' + (t.length ? t.join(' · ') : 'nothing logged for an open month');
       },
       headEl: els.head, takeEl: els.take, tools: els.tools,
-      share: { url: url, title: ADJ[c.crop] + ' basis' + (town ? ' in ' + town : ''), file: 'agsist-basis-' + slug + '-' + c.crop + '.png',
-               kicker: ADJ[c.crop].replace(/^./, function (x) { return x.toUpperCase(); }) + ' basis' + (town ? ', ' + town : ''), source: 'Source: posted elevator bids, logged by AGSIST', date: c.end }
+      share: { url: url, title: ADJ[c.crop] + ' basis' + (place ? ' near ' + place : ''), file: 'agsist-basis-' + slug + '-' + c.crop + '.png',
+               kicker: (place ? place + ' · ' : '') + ADJ[c.crop] + ' basis', source: 'Source: posted elevator bids, logged by AGSIST' + (since ? ', since ' + fullDay(since) : ''), date: c.end }
     };
   }
   function table(l) {
@@ -267,8 +286,8 @@
     if (typeof window === 'undefined') return Promise.resolve(null);
     if (window.AgChart) return Promise.resolve(window.AgChart);
     if (!kitReady) kitReady = new Promise(function (ok) {
-      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/ag-chart.css?v=1'; document.head.appendChild(l);
-      var sc = document.createElement('script'); sc.src = '/components/ag-chart.js?v=3';
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/ag-chart.css?v=2'; document.head.appendChild(l);
+      var sc = document.createElement('script'); sc.src = '/components/ag-chart.js?v=4';
       sc.onload = function () { ok(window.AgChart || null); }; sc.onerror = function () { ok(null); };
       document.head.appendChild(sc);
     });
@@ -283,13 +302,13 @@
     var end = String(data.generated || '').slice(0, 10), town = box.getAttribute('data-town') || '';
     var from = /^\d{4}-\d{2}-\d{2}$/.test(String(data.publicFrom || '')) ? data.publicFrom : '';
     if (/^\d{4}/.test(end)) REF_YEAR = end.slice(0, 4);
-    // under 360 px of chart, three lines and shorter names: five full names do not fit beside the plot
-    var cs = crops(data, boards, town, body.clientWidth && body.clientWidth < 360 ? LINES_NARROW : LINES_MAX), first = '', got = {};
+    var st = String(box.getAttribute('data-basis-hist') || '').toUpperCase();
+    var cs = crops(data, boards, town, LINES_MAX, st), first = '', got = {};
     cs.forEach(function (c) { c.all.forEach(function (l) { got[l.full] = 1; if (!first || l.rows[0].date < first) first = l.rows[0].date; }); });
-    var none = boards.filter(function (b) { return !got[b[0]]; }).map(function (b) { return b[0]; });
+    var lab = labels(boards, town, st), none = boards.map(function (b, i) { return lab[i]; }).filter(function (l) { return !got[l]; });
     var since = from ? fullDay(from) : (first ? dayText(first) : '');
     var intro = '<p class="cbt-sub">Basis for the nearest delivery month on each date' + (since ? ', since ' + since : '') +
-      '. Only the days a basis changed are logged: it held flat between dots. A dashed stretch is when no open delivery month had a logged basis. A thin mark is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price. Every elevator for a crop is in one chart, on one scale.</p>';
+      '. Only the days a basis changed are logged: it held flat between dots. Fine dots along a line are the days no open delivery month had a logged basis. A grey vertical line is where the delivery month or the futures contract changed, so the step there is partly a new reference, not only a new price. Every elevator for a crop is in one chart, on one scale. A bid far off the others for a few days is drawn in a break under the chart and named, so the rest stay readable.</p>';
     var html = intro + cs.map(function (c, i) { return blockOf(c, town, i); }).join('');
     if (none.length) html += '<p class="cbt-sub">No basis change logged' + (since ? ' since ' + since : '') + ' for ' + esc(none.join(', ')) + '.</p>';
     body.innerHTML = html;
@@ -300,7 +319,7 @@
       var canon = box.ownerDocument.querySelector('link[rel="canonical"]'), url = canon ? canon.href : String(location.href).split('#')[0];
       cs.forEach(function (c, i) {
         var bl = body.querySelector('.cbh-crop[data-crop="' + i + '"]');
-        K.mount(bl.querySelector('.cbh-kit'), config(c, town, { head: bl.querySelector('.cbh-h'), take: bl.querySelector('.cbh-l'), tools: bl.querySelector('.cbh-tools') }, url));
+        K.mount(bl.querySelector('.cbh-kit'), config(c, town, { head: bl.querySelector('.cbh-h'), take: bl.querySelector('.cbh-l'), tools: bl.querySelector('.cbh-tools') }, url, from || first));
       });
     });
     return cs;
@@ -315,15 +334,15 @@
     Promise.all([cache[st], needNames()]).then(function (r) { render(box, r[1] ? r[0] : null); });
   }
 
-  var css = '.cbh-crop{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--border);--cbh1:#c08a2c;--cbh2:#4f94d8;--cbh3:#3fa86c;--cbh4:#d0607a;--cbh5:#9a74cc}' +
-    '[data-theme="light"] .cbh-crop{--cbh1:#8a6514;--cbh2:#1f66b8;--cbh3:#1e7a46;--cbh4:#a8324e;--cbh5:#6a46a0}' +
-    '.cbh-kit{min-height:263px}@container (min-width:520px){.cbh-kit{min-height:305px}}.cbh-crop{container-type:inline-size}' +
+  var css = '.cbh-crop{margin:12px 0 4px;padding-top:10px;border-top:1px solid var(--border);--cbh1:#d4a23f;--cbh2:#5fc28a;--cbh3:#6f9fc2;--cbh4:#d9774f;--cbh5:#a7b6bd}' +
+    '[data-theme="light"] .cbh-crop{--cbh1:#8a6514;--cbh2:#2e7d4f;--cbh3:#2a6390;--cbh4:#a8431f;--cbh5:#4f5f68}' +
+    '.cbh-kit{min-height:640px}@container (min-width:600px){.cbh-kit{min-height:440px}}.cbh-crop{container-type:inline-size}' +
     '.cbh-tools{min-height:34px;margin:.3rem 0}.cbh-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--gold,#d4a23f);font-weight:600;font-size:.86rem}.cbh-h4{margin:10px 0 2px;font-size:.86rem}' +
     '.cbh-h{margin:0 0 2px;font-size:1.02rem;font-weight:800;line-height:1.3}.cbh-l{margin:0 0 6px;font-size:.88rem;line-height:1.5;color:var(--text)}' +
     '.cbh-scroll{overflow-x:auto}.cbh-t{width:100%;border-collapse:collapse;font-size:.82rem}' +
     '.cbh-t th{text-align:left;color:var(--text-muted);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:4px 6px;border-bottom:1px solid var(--border)}' +
     '.cbh-t td{padding:4px 6px;border-bottom:1px solid var(--border);color:var(--text);white-space:nowrap}' +
-    '.cbh-t .n{text-align:right;font-family:\'JetBrains Mono\',monospace}.cbh-mut{color:var(--text-dim);font-size:.8rem}';
+    '.cbh-t .n{text-align:right;font-variant-numeric:tabular-nums;font-weight:700}.cbh-mut{color:var(--text-dim);font-size:.8rem}';
 
   function init() {
     var boxes = document.querySelectorAll('details[data-basis-hist]');
@@ -336,7 +355,7 @@
   }
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, lineOf: lineOf, crops: crops, story: story, config: config, heldOn: heldOn, nameOf: nameOf, render: render };
+    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, lineOf: lineOf, crops: crops, story: story, config: config, heldOn: heldOn, labels: labels, render: render };
   } else if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else { init(); }

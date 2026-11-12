@@ -93,8 +93,51 @@
     return s.toLowerCase().replace(/(^|[\s\-'(/.])([a-z])/g, function (m, a, b) { return a + b.toUpperCase(); })
       .replace(/\b(Llc|Inc|Co-op|Coop)\b/g, function (w) { return { Llc: 'LLC', Inc: 'Inc', 'Co-op': 'Co-op', Coop: 'Coop' }[w]; });
   }
+
+  /* A board's chart label: the company, then the delivery site it posts for, every word spelled out (Nov 12, 2026, E53).
+     boardLabel(company, places, town, st) -> "Mid-Iowa Cooperative, Cargill Iowa Falls". places is the board's list
+     of place names as the network writes them (the town itself is one of them). Display only, so no Python twin.
+     The rules never invent a name:
+       - the town in the list is the page's town, not a site; the others are the delivery sites
+       - the page's own state code ("Ia") is spelled out when the town's name follows or it ends the site
+       - initials of the town ("IF", "Cr") are the town's name; ADM and CHS are capitals
+       - a coded site with no words in it ("Ds-crg-cr") is shown as printed and called a delivery code
+       - a company's legal tail ("Inc") is dropped; nothing else is cut, shortened or abbreviated */
+  var STATES = { AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California', CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware',
+    FL: 'Florida', GA: 'Georgia', HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa', KS: 'Kansas', KY: 'Kentucky',
+    LA: 'Louisiana', ME: 'Maine', MD: 'Maryland', MA: 'Massachusetts', MI: 'Michigan', MN: 'Minnesota', MS: 'Mississippi', MO: 'Missouri',
+    MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey', NM: 'New Mexico', NY: 'New York', NC: 'North Carolina',
+    ND: 'North Dakota', OH: 'Ohio', OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina',
+    SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia',
+    WI: 'Wisconsin', WY: 'Wyoming' };
+  var CAPS = { ADM: 1, CHS: 1 };
+  function placeKey(s) { return String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+  function siteOf(site, town, st) {
+    var t = String(site || '').replace(/\s+/g, ' ').trim();
+    if (/^[a-z]{1,4}(?:-[a-z]{1,4})+$/i.test(t)) return 'delivery code ' + t;
+    t = niceCase(t);
+    var ini = String(town || '').split(/\s+/).filter(Boolean).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
+    var words = t.split(' ');
+    words = words.map(function (w, i) {
+      var u = w.toUpperCase();
+      if (CAPS[u]) return u;
+      if (ini.length > 1 && u === ini) return town;
+      if (st && STATES[st] && u === st && /^[A-Z][A-Za-z]?$/.test(w) && w !== w.toLowerCase()) {
+        var rest = placeKey(words.slice(i + 1).join(' ')), whole = placeKey(STATES[st] + ' ' + words.slice(i + 1).join(' '));
+        if (i === words.length - 1 || (placeKey(town) && whole.indexOf(placeKey(town)) >= 0 && rest)) return STATES[st];
+      }
+      return w;
+    });
+    return words.join(' ');
+  }
+  function boardLabel(company, places, town, st) {
+    var c = displayName(company).replace(/[\s,]+(?:inc|llc|ltd|corp)\.?$/i, '').trim(), tk = placeKey(town);
+    c = niceCase(c).replace(/\bAdm\b/g, 'ADM');
+    var sites = (places || []).filter(function (p) { return placeKey(p) !== tk; });
+    return sites.length ? c + ', ' + sites.map(function (x) { return siteOf(x, town, String(st || '').toUpperCase()); }).join(' and ') : c;
+  }
   var api = { setNames: setNames, archiveClean: archiveClean, displayName: displayName, cleanPlace: cleanPlace,
-    basisName: basisName, facKey: facKey, mergeKey: mergeKey, nameKey: nameKey, tradeKey: tradeKey, niceCase: niceCase };
+    basisName: basisName, facKey: facKey, mergeKey: mergeKey, nameKey: nameKey, tradeKey: tradeKey, niceCase: niceCase, boardLabel: boardLabel, states: STATES };
   root.elevNames = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : this);
