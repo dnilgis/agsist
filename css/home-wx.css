@@ -42,8 +42,8 @@ html:not(.has-zip) .hp-card .hp-wxnone{display:block}
 .hp-nowg div{background:var(--surface2);border-radius:8px;padding:.4rem .55rem;min-width:0}
 .hp-nowg dt{font-family:var(--font-mono);font-size:.72rem;letter-spacing:0;text-transform:uppercase;color:var(--text-muted);line-height:1.25}
 .hp-nowg dd{margin:0;font-weight:700;font-family:var(--font-mono);font-size:.92rem}
-.hp-d7{display:grid;grid-template-columns:1fr;gap:4px;margin:.7rem 0 0;padding:0;list-style:none;align-content:start;min-height:calc(7 * 2.35rem + 6 * 4px)}
-.hp-d7 li{display:grid;grid-template-columns:3.2rem 1.6rem 1fr auto;align-items:center;column-gap:.4rem;background:var(--surface2);border-radius:8px;padding:.4rem .6rem;min-height:2.35rem;font-family:var(--font-mono);font-size:.86rem;line-height:1.4;min-width:0}
+.hp-d7{display:grid;grid-template-columns:1fr;gap:4px;margin:.7rem 0 0;padding:0;list-style:none;align-content:start;min-height:calc(7 * 2.2rem + 6 * 4px)}
+.hp-d7 li{display:grid;grid-template-columns:3.2rem 1.6rem 1fr auto;align-items:center;column-gap:.4rem;background:var(--surface2);border-radius:8px;padding:.3rem .6rem;min-height:2.2rem;font-family:var(--font-mono);font-size:.86rem;line-height:1.4;min-width:0}
 .hp-d7 b{font-size:.9rem;color:var(--text)}
 .hp-d7 .ic{display:block;margin:0;width:1.5em;height:1.5em;color:var(--gold)}
 .hp-d7 .hi{color:var(--text);font-weight:700}.hp-d7 .lo{color:var(--text-muted)}
@@ -109,7 +109,7 @@ html:not(.has-zip) .hp-card .hp-wxnone{display:block}
   #dash-grid>#f2.hp-wxa{grid-column:2!important;grid-row:2!important;align-self:stretch;margin-bottom:24px;display:flex;flex-direction:column}
   #f2 .hp-wxg{display:flex;flex-direction:column;flex:1;min-height:0}
   #f2 .hp-a-live{flex:1;min-height:0}
-  #f2 .hp-a-live .hp-live{aspect-ratio:auto;flex:1;min-height:230px}
+  #f2 .hp-a-live .hp-live{aspect-ratio:auto;flex:1;min-height:210px}
   #dash-grid>#hp-wxb{grid-column:1/3!important;grid-row:3!important;margin-bottom:24px}
   .hp-wxb-body{grid-template-columns:1fr 1fr;gap:24px}
   .hp-wxb-body .hp-sub+.hp-sub{margin-top:0;padding-top:0;border-top:0}

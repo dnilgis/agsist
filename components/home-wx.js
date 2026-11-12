@@ -160,7 +160,7 @@
         cells.push('<div><b>' + (j === h0 ? 'Now' : hr12(ht[j])) + '</b>' + wxIcon((H.weather_code || [])[j], (H.is_day || [])[j]) + (num(tt) ? Math.round(tt) + '°' : '-') + '<span class="pp">' + (num(hp) ? Math.round(hp) + '%<span class="visually-hidden"> chance of rain or snow</span>' : '-') + '</span></div>');
       }
       var hr = $('hp-hourly'); if (hr) hr.hidden = !cells.length; if (cells.length) html('hp-hr', cells.join(''));
-      var src = 'Each day: the high, then the low of the night after; percent: the chance of rain or snow, 6 am to 5 pm. Now: this hour\u2019s forecast. National Weather Service';
+      var src = 'High, then the low of the night after; percent: chance of rain or snow, 6 am to 5 pm. National Weather Service';
       try { var n = f._nws; if (n && n.updated) src += ', issued ' + new Date(n.updated).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: f.timezone || undefined, timeZoneName: 'short' }); } catch (e) {}
       txt('hp-fc-src', src + '.');
       fcFail(''); var m = $('hp-fc-msg'); if (m) m.style.background = '';
