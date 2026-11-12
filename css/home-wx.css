@@ -39,7 +39,7 @@ html:not(.has-zip) .hp-card .hp-wxnone{display:block}
 .hp-nowg div{background:var(--surface2);border-radius:8px;padding:.4rem .55rem;min-width:0}
 .hp-nowg dt{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted);line-height:1.25}
 .hp-nowg dd{margin:0;font-weight:700;font-family:var(--font-mono);font-size:.92rem}
-.hp-d7{display:grid;grid-template-columns:1fr;gap:4px;margin:.7rem 0 0;padding:0;list-style:none}
+.hp-d7{display:grid;grid-template-columns:1fr;gap:4px;margin:.7rem 0 0;padding:0;list-style:none;align-content:start;min-height:calc(7 * 2.6rem + 6 * 4px)}
 .hp-d7 li{display:grid;grid-template-columns:3.2rem 1.6rem 1fr auto;align-items:center;column-gap:.4rem;background:var(--surface2);border-radius:8px;padding:.4rem .6rem;min-height:2.6rem;font-family:var(--font-mono);font-size:.86rem;line-height:1.4;min-width:0}
 .hp-d7 b{font-size:.9rem;color:var(--text)}
 .hp-d7 .ic{display:block;margin:0;width:1.5em;height:1.5em;color:var(--gold)}
@@ -88,7 +88,7 @@ html:not(.has-zip) .hp-card .hp-wxnone{display:block}
 @media (max-width:640px){
   .hp-card{padding:14px 11px}
   .hp-live iframe{pointer-events:none}.hp-live.on iframe{pointer-events:auto}
-  .hp-livego{display:block;position:absolute;left:50%;bottom:10px;transform:translateX(-50%);min-height:44px;padding:.5rem 1rem;border-radius:22px;border:1px solid var(--border-2);background:var(--surface);color:var(--text);font:700 .86rem var(--font-body);cursor:pointer;z-index:2}
+  .hp-livego{display:block;position:absolute;left:50%;bottom:10px;transform:translateX(-50%);white-space:nowrap;min-height:44px;padding:.5rem 1rem;border-radius:22px;border:1px solid var(--border-2);background:var(--surface);color:var(--text);font:700 .86rem var(--font-body);cursor:pointer;z-index:2}
   .hp-live.on .hp-livego{display:none}
   .hp-live.on .hp-livedone{display:block;position:absolute;right:10px;top:10px;min-height:44px;min-width:44px;padding:.4rem .9rem;border-radius:22px;border:1px solid var(--border-2);background:var(--surface);color:var(--text);font:700 .86rem var(--font-body);cursor:pointer;z-index:2}
   .hp-live{aspect-ratio:366/300}
