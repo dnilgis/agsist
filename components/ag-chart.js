@@ -13,9 +13,11 @@
      bands    [{ a: key, b: key, color, card, opacity, cardOpacity,
                  end(p), start(p): label text for the band's last and first shared day,
                  p = { d, a, b, v: a minus b } }]   the shaded area between two series (not across missing days)
-     gaps     what counts as missing days between two points: 'weekdays' (default: a weekday with no
-              point, for daily reports) or a number of calendar days (a longer step is a gap). A gap is
-              drawn dashed and lighter, the band breaks there, and the readout says "No report ...".
+     gaps     what counts as missing days between two points: 'weekdays' (a weekday with no point, for
+              daily reports), a number of calendar days (a longer step is a gap), or left out: each series
+              is read on its own normal spacing (a weekday report without weekends as 'weekdays', else a step
+              past 1.5 times its usual one). A gap is drawn dashed and lighter, the band breaks there, and
+              the readout says "No report ...".
      fmt      v -> text for values (default '$' + 2 decimals); tick(v) -> axis text (default '$' + v)
      unit     axis unit, top left ('$/cwt')
      ranges   [{ label: '3M', days: 92, aria: 'three months' }], days 0 = all held; a button shows only
@@ -26,7 +28,8 @@
               head and take go into cfg.headEl / cfg.takeEl, summary is the SVG's aria-label
      readout(view, day) -> text for the readout line (default: each series' value that day)
      height   { phone: 200, wide: 280 }   reserved in CSS too (ag-chart.css), so nothing shifts
-     tools    element for the Share / Copy link and Save the picture buttons (optional)
+     tools    element for the buttons (optional): Share (the picture and the link together, where the
+              device can share files), else Copy link; and Save the picture
      share    { url, title, file: 'name.png', kicker: card top line, source: card foot line,
                 date: 'YYYY-MM-DD' shown on the card }
    Labels (line names, band labels) are placed so none overlaps a line, a point, another label or the
@@ -34,7 +37,7 @@
    the right (the plot narrows to make room).
    AgChart.svg(view, W, H, opt), AgChart.card(cfg, view, done(blob)) draw; AgChart.layout(...) returns
    the placed label boxes and the drawn segments and points (the tests check overlaps on it);
-   AgChart.slice, pairs, ranges, gapAt, fitLines are the helpers the tests use.
+   AgChart.slice, pairs, ranges, gapAt, ruleOf, fitLines are the helpers the tests use.
    Exports window.AgChart (and module.exports). */
 (function (root) {
   'use strict';
@@ -73,9 +76,22 @@
     for (var t = t0 + 864e5; t < t1; t += 864e5) { var w = new Date(t).getUTCDay(); if (w && w !== 6) { first = first || isoOf(t); last = isoOf(t); } }
     return first ? [first, last] : null;
   }
+  /* the gap rule for one series: cfg.gaps, else its own normal spacing */
+  function ruleOf(cfg, pts) {
+    if (cfg.gaps) return cfg.gaps;
+    var st = [], wk = false;
+    for (var i = 0; i < pts.length; i++) {
+      var w = new Date(utc(pts[i].d)).getUTCDay(); if (!w || w === 6) wk = true;
+      if (i) st.push((utc(pts[i].d) - utc(pts[i - 1].d)) / 864e5);
+    }
+    if (!st.length) return 'weekdays';
+    st.sort(function (a, b) { return a - b; });
+    var med = st[Math.floor(st.length / 2)];
+    return med <= 1 && !wk ? 'weekdays' : Math.max(1, Math.floor(med * 1.5));
+  }
   function gapAt(cfg, pts, d) {
     for (var i = 1; i < pts.length; i++) {
-      if (pts[i - 1].d < d && d < pts[i].d) { var m = missing(pts[i - 1].d, pts[i].d, cfg.gaps || 'weekdays'); return m ? { from: m[0], to: m[1] } : null; }
+      if (pts[i - 1].d < d && d < pts[i].d) { var m = missing(pts[i - 1].d, pts[i].d, ruleOf(cfg, pts)); return m ? { from: m[0], to: m[1] } : null; }
     }
     return null;
   }
@@ -139,12 +155,12 @@
   /* everything drawn, then the labels in order of importance; returns null when a label fits nowhere
      inside and the caller should leave a gutter on the right */
   function layout(view, W, H, opt) {
-    var fs = opt.fs || 12, hide = opt.hide || {}, cfg = opt.cfg || {}, fmt = fmtOf(cfg), rule = cfg.gaps || 'weekdays';
+    var fs = opt.fs || 12, hide = opt.hide || {}, cfg = opt.cfg || {}, fmt = fmtOf(cfg), rules = {};
     var gutter = opt.gutter || 0, g = geom(view, W, H, fs, hide, gutter), segs = [], dots = [], runs = [], boxes = [], labels = [], out = [];
     view.series.forEach(function (s) {
       if (!s.points.length || hide[s.key]) return;
       var pts = s.points.map(function (p) { return { d: p.d, v: p.v, x: g.x(p.d), y: g.y(p.v) }; });
-      var run = [pts[0]];
+      var run = [pts[0]], rule = rules[s.key] = ruleOf(cfg, s.points);
       for (var i = 1; i < pts.length; i++) {
         var gap = !s.faint && missing(pts[i - 1].d, pts[i].d, rule);
         segs.push({ x1: pts[i - 1].x, y1: pts[i - 1].y, x2: pts[i].x, y2: pts[i].y, key: s.key, gap: !!gap });
@@ -211,7 +227,7 @@
       var wide = Math.max.apply(null, failed.map(function (L) { return widthOf(L.text, fs, L.bold); }));
       return layout(view, W, H, Object.assign({}, opt, { gutter: Math.min(Math.round(wide + fs * 1.4), Math.round(W * 0.4)) }));
     }
-    return { g: g, segs: segs, dots: dots, runs: runs, labels: out, boxes: boxes, rule: rule };
+    return { g: g, segs: segs, dots: dots, runs: runs, labels: out, boxes: boxes, rules: rules };
   }
 
   /* ------------------------------------------------------------ the SVG */
@@ -249,8 +265,8 @@
     // bands: one polygon per stretch with no missing days
     (cfg.bands || []).forEach(function (b) {
       if (hide[b.a] || hide[b.b]) return;
-      var pp = pairs(view, b), parts = [], cur = [];
-      pp.forEach(function (p, k) { if (k && missing(pp[k - 1].d, p.d, lay.rule)) { parts.push(cur); cur = []; } cur.push(p); });
+      var pp = pairs(view, b), parts = [], cur = [], rule = lay.rules[b.a] || ruleOf(cfg, pp);
+      pp.forEach(function (p, k) { if (k && missing(pp[k - 1].d, p.d, rule)) { parts.push(cur); cur = []; } cur.push(p); });
       parts.push(cur);
       parts.forEach(function (pt) {
         if (pt.length < 2) return;
@@ -407,7 +423,7 @@
   function tools(cfg, getView) {
     var T = cfg.tools, sh = cfg.share, nav = root.navigator || {}, canFiles = false, D = T.ownerDocument;
     try { canFiles = !!(nav.share && nav.canShare && root.File && nav.canShare({ files: [new root.File([''], 'x.png', { type: 'image/png' })] })); } catch (e) {}
-    T.innerHTML = (nav.share ? '<button type="button" class="agc-btn agc-share">Share</button>' : '<button type="button" class="agc-btn agc-copy">Copy link</button>') +
+    T.innerHTML = (canFiles ? '<button type="button" class="agc-btn agc-share">Share</button>' : '<button type="button" class="agc-btn agc-copy">Copy link</button>') +
       '<button type="button" class="agc-btn agc-save">Save the picture</button>';
     var save = function (b) { var a = D.createElement('a'); a.href = URL.createObjectURL(b); a.download = sh.file || 'agsist-chart.png'; D.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500); };
     var flash = function (b, t) { var o = b.textContent; b.textContent = t; setTimeout(function () { b.textContent = o; }, 1800); };
@@ -426,7 +442,7 @@
     });
   }
 
-  var api = { mount: mount, svg: svg, layout: layout, card: card, fitLines: fitLines, slice: slice, pairs: pairs, ranges: ranges, readout: readout, gapAt: gapAt,
+  var api = { mount: mount, svg: svg, layout: layout, card: card, fitLines: fitLines, slice: slice, pairs: pairs, ranges: ranges, readout: readout, gapAt: gapAt, ruleOf: ruleOf,
     short: short, long: long, money: money };
   root.AgChart = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
