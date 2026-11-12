@@ -38,6 +38,8 @@
 .rc-t th:first-child, .rc-t td:first-child { text-align: left; }
 .rc-t td:first-child { white-space: normal; }
 .rc-t tbody th { text-align: left; font-weight: 400; white-space: normal; }
+/* the first header may wrap ("Borough or census area" would push the percent column off a 390 px screen) */
+.rc-t thead th:first-child { white-space: normal; }
 .rc-t td:first-child .rc-n, .rc-t th:first-child .rc-n { white-space: nowrap; }
 .rc-t thead th { color: var(--text-muted); font-weight: 600; font-size: var(--fs-xs); }
 .rc-t .rc-n { display: block; color: var(--text-muted); font-size: var(--fs-xs); }
@@ -47,7 +49,9 @@
 .rc-up { color: var(--green); }
 .rc-dn { color: var(--orange); }
 .rc-list { padding-left: 1.15rem; max-width: 46em; }
-.rc-list li { margin: 0 0 .35rem; }
+.rc-list li { margin: 0 0 .35rem; text-wrap: pretty; }
+/* the Near a record intro runs as wide as the page intro above it (.rc-answer: 40em of 1.18rem = 47.2rem) */
+.rc-rec-intro { max-width: 47.2rem; }
 .rc-cta { margin: 1.8rem 0 .5rem; padding: 1rem 1.1rem; border: 1px solid var(--border-g); border-radius: var(--r-lg); background: var(--surface); max-width: 46em; }
 .rc-cta h2 { margin: 0 0 .35rem; font-size: var(--fs-lg); }
 .rc-cta p { margin: 0 0 .7rem; color: var(--text-dim); }
