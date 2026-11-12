@@ -118,7 +118,7 @@
       list.innerHTML = shown().map(function (h, i) {
         return '<li role="option" id="' + lid + '-' + i + '" aria-selected="' + (i === act) + '" data-i="' + i + '">' + esc(h.name) + ', ' + h.st
           + (h.via && h.via.split('|')[1] ? '<small>' + esc(h.via.split('|')[1]) + '</small>' : '')
-          + (h.near ? '<small>No full-year station. Opens ' + esc(h.near) + '.</small>' : '') + '</li>';
+          + (h.near ? '<small><span class="rc-s">No full-year station.</span> <span class="rc-s">Opens ' + esc(h.near) + '.</span></small>' : '') + '</li>';
       }).join('') + '<li role="presentation" class="rc-find-more"><span class="rc-more">' + tip + '</span>' + (more > 0 ? '<span class="rc-more"><span class="rc-nw">' + more + ' more:</span> '
         + (sq.st ? 'type more of the name.' : 'add the state, e.g. ' + esc(q) + ' ' + (hits.filter(function (x) { return x.st !== localSt(); })[0] || hits[0]).st.toLowerCase() + '.') + '</span>' : '') + '</li>';
       list.hidden = false; input.setAttribute('aria-expanded', 'true');

@@ -84,7 +84,8 @@
 .rc-find-l[hidden] { display: none; }
 .rc-find-l li { padding: .6rem .65rem; cursor: pointer; min-height: 44px; box-sizing: border-box; }
 .rc-nw { white-space: nowrap; }
-.rc-more { display: block; }
+.rc-more { display: block; text-wrap: balance; }
+.rc-s { display: inline-block; }
 .rc-find-l li:hover { background: var(--bg); }
 .rc-find-l li[aria-selected="true"] { background: var(--bg); color: var(--brand); box-shadow: inset 3px 0 0 var(--brand); }
 .rc-find-l small { display: block; margin-left: 0; color: var(--text-muted); font-size: 13.5px; line-height: 1.35; }
