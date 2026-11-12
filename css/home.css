@@ -551,3 +551,5 @@ html[data-theme="light"] .ch-ba.part{opacity:.75}
 /* the rain and GDU headlines hold two lines from the first paint (their numbers arrive later) */
 .hp-a-rain h3,.hp-a-gdu h3{min-height:2.6em}
 #hp-rain-src,#hp-gdu-src{min-height:4.2em}#hp-rain-pct,#hp-gdu-pct{min-height:2.3rem}
+@media (min-width:1181px){#hp-rain-pct,#hp-gdu-pct{height:2.4rem;overflow:hidden}.hp-a-rain h3,.hp-a-gdu h3{height:2.6em;overflow:hidden}#hp-rain-src,#hp-gdu-src{height:4.2em;overflow:hidden}}
+@media (min-width:1181px){.hp-a-rain,.hp-a-gdu{min-height:574px}}

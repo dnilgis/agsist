@@ -1013,7 +1013,7 @@
        (gauge_window from..until, Central, inclusive); outside it the line keeps its room, unseen */
     var gh = R.gauge_hook, gw = R.gauge_window || {}, g0 = utc(gw.from), g1 = utc(gw.until), ge = $('hp-gauge');
     if (ge && gh && gh.line && gh.link && g0 && g1 && today >= g0 && today <= g1) {
-      txt('hp-gauge-t', gh.line); txt('hp-gauge-l', gh.link + ' →'); ge.style.visibility = '';
+      txt('hp-gauge-t', gh.line); txt('hp-gauge-l', gh.link + ' →'); ge.hidden = false;
     }
   }
 
