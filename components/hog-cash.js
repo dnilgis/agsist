@@ -93,12 +93,12 @@
       series: [
         { key: 'cutout', name: 'Cutout', points: ch.cutout, color: 'var(--hc2)', card: '#5ea4ea' },
         { key: 'hogs', name: 'Cash hogs', points: ch.hogs, color: 'var(--hc1)', card: '#e0ac45' },
-        { key: 'ly', name: 'Cash hogs a year ago', points: ch.ly, faint: true, note: 'Cash hogs a year ago' }
+        { key: 'ly', name: 'Cash hogs a year ago', points: ch.ly, faint: true, note: 'Cash hogs a year ago', pending: 'Year-ago line appears once those days are held', pendingShort: 'Year-ago line: not held yet' }
       ],
       bands: [{ a: 'cutout', b: 'hogs', color: 'var(--hc2)', opacity: 'var(--hc-gap-op)', card: '#5ea4ea', cardOpacity: 0.26,
         end: function (p) { return 'Gap ' + money(Math.abs(p.v)); },
         start: function (p) { return 'Gap ' + money(Math.abs(p.v)) + ' on ' + short(p.d); } }],
-      unit: '$/cwt',
+      unit: '$/cwt', gaps: 'weekdays',
       ranges: RANGES.map(function (r) { return { label: r[0], days: r[1], aria: r[2] }; }),
       range: '3M', minPoints: CHART_MIN, height: { phone: 185, wide: 280 },
       story: story,
@@ -130,9 +130,11 @@
     }
     var g = gapsOf(view), take = '';
     if (g.length >= 2) {
-      var g0 = g[0], g1 = g[g.length - 1], d = Math.round((g1.v - g0.v) * 100) / 100;
-      take = 'The pork cutout is ' + money(Math.abs(g1.v)) + (g1.v >= 0 ? ' above' : ' below') + ' cash hogs on ' + short(g1.d) + ', ' +
-        (d ? (d > 0 ? 'up' : 'down') + ' from ' + money(Math.abs(g0.v)) + ' on ' + short(g0.d) : 'the same as on ' + short(g0.d)) + '.';
+      var g0 = g[0], g1 = g[g.length - 1];
+      var side = function (v) { return v >= 0 ? ' above' : ' below'; }, a1 = Math.abs(g1.v), a0 = Math.abs(g0.v);
+      take = 'The pork cutout is ' + money(a1) + side(g1.v) + ' cash hogs on ' + short(g1.d) +
+        ((g1.v >= 0) !== (g0.v >= 0) ? '; on ' + short(g0.d) + ' it was ' + money(a0) + side(g0.v) + '.'
+          : ', ' + (Math.round((a1 - a0) * 100) ? (a1 > a0 ? 'up' : 'down') + ' from ' + money(a0) + ' on ' + short(g0.d) : 'the same as on ' + short(g0.d)) + '.');
     }
     return { head: head + '.', take: take,
       summary: head + '. ' + (take ? take + ' ' : '') + 'Latest: cash hogs ' + money(h1.v) + ' on ' + long(h1.d) +
