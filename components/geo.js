@@ -888,6 +888,24 @@ function lookupBids() {
 // ─────────────────────────────────────────────────────────────────
 // PRICE CONFIGURATION
 // ─────────────────────────────────────────────────────────────────
+/* The markets whose quotes.<root> is swapped for quotes['<root>-nearby'] (fetchAllPrices). */
+var NEARBY_ROOTS = ['corn', 'beans', 'wheat', 'cattle', 'kcwheat', 'oats', 'meal', 'soyoil', 'feeders', 'hogs', 'milk'];
+/* quotes.<root> becomes the front month (quotes['<root>-nearby']) for every root above, and NB[root] its
+   contract label. Mutates quotes and NB; test/home-numbers.test.mjs runs it on the Nov 12 file. */
+function nearbySwap(quotes, nearby, NB) {
+  NEARBY_ROOTS.forEach(function(c) {
+    var nb = quotes[c + '-nearby'];
+    if (nb && nb.close != null) {
+      quotes[c] = nb;
+      NB[c] = nb.contract || (nearby && nearby[c] && nearby[c].label) || 'nearby';
+    } else if (nearby && nearby[c] && nearby[c].close != null) {
+      // an older file kept cattle's front month only in the nearby block
+      quotes[c] = nearby[c];
+      NB[c] = nearby[c].label || 'nearby';
+    }
+  });
+  return quotes;
+}
 var PRICE_MAP = {
   'corn':       { label:'Corn',          priceEl:'pcp-corn-near', chgEl:'pcc-corn-near', dec:2, grain:true  },
   'corn-dec':   { label:"Corn Dec'26",   priceEl:'pcp-corn-dec',  chgEl:'pcc-corn-dec',  dec:2, grain:true  },
@@ -1165,19 +1183,12 @@ function fetchAllPrices() {
          consumer of `quotes.<crop>` on this page gets the real front month,
          and record the contract so labels can name it. */
       window.AGSIST_NEARBY = window.AGSIST_NEARBY || {};
-      ['corn', 'beans', 'wheat', 'cattle'].forEach(function(c) {
-        var nb = quotes[c + '-nearby'];
-        if (nb && nb.close != null) {
-          quotes[c] = nb;
-          window.AGSIST_NEARBY[c] = nb.contract ||
-            (data.nearby && data.nearby[c] && data.nearby[c].label) || 'nearby';
-        } else if (data.nearby && data.nearby[c] && data.nearby[c].close != null) {
-          // fetch_prices only publishes a -nearby alias for the grains; cattle
-          // has to come out of the nearby block directly.
-          quotes[c] = data.nearby[c];
-          window.AGSIST_NEARBY[c] = data.nearby[c].label || 'nearby';
-        }
-      });
+      /* Nov 12: every market with a front-month alias, not the four grains and
+         cattle only. KC wheat's continuous series (KE=F) traded Mar '27 at
+         $6.29 1/2 on Nov 12 with a change of -10c against Dec '26's settle,
+         while Dec '26 itself was $6.19, down 20 1/2c; oats, meal and soy oil
+         roll the same way before their front month expires. */
+      nearbySwap(quotes, data.nearby, window.AGSIST_NEARBY);
       // Name the contract on the card instead of the generic "Front Month",
       // so a reader can see WHICH month the number belongs to.
       [['corn','pcp-corn-near'],['beans','pcp-bean-near'],

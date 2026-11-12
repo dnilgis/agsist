@@ -1439,7 +1439,9 @@ var CFG={wheat:{g:1},oats:{g:1},meal:{},cattle:{tk:1},feeders:{tk:1},hogs:{tk:1}
   /* WAVE1-C 2026-10-03. own: geo.js has no PRICE_MAP entry for these, so
      this script writes their price and ticker cells itself. cl: cents per
      pound (cotton). */
-  kcwheat:{g:1,own:1},mplswheat:{g:1,own:1},cotton:{cl:1,own:1},rice:{own:1}};
+  kcwheat:{g:1,own:1},mplswheat:{g:1,own:1},cotton:{cl:1,own:1},
+  /* Nov 12: rough rice trades in half cents a cwt; $18.64 for 18.635 was off the tick. tk prints it as traded. */
+  rice:{own:1,tk:1}};
 var TICK={corn:'Corn',beans:'Soybeans',wheat:'Chicago SRW wheat',kcwheat:'KC HRW wheat',mplswheat:'MGEX HRS wheat',oats:'Oats',cotton:'Cotton',rice:'Rough rice',cattle:'Live cattle',feeders:'Feeder cattle',hogs:'Lean hogs',milk:'Class III milk',meal:'Soybean meal'};
 /* WAVE1-C: the whole prices.json, for the keys geo.js does not hand over
    (absent quotes, withheld_keys, spreads). Null until it loads. */
@@ -1533,7 +1535,7 @@ function rangeFmt(k,v,dir){
   return c.bp?s+'%':c.nod?s:'$'+s;
 }
 /* WAVE1-C: own-key price text, and the em dash with its reason. */
-function ownPrice(k,q){var c=CFG[k];return c.g?null:c.cl?(+q.close).toFixed(2)+'\u00a2':'$'+(+q.close).toFixed(2);}
+function ownPrice(k,q){var c=CFG[k];return c.g?null:c.cl?(+q.close).toFixed(2)+'\u00a2':c.tk?AG.px.cash(+q.close):'$'+(+q.close).toFixed(2);}
 function whyNone(k){var w=D&&D.withheld_keys&&D.withheld_keys[k];return w?'Held back: '+w:(NOQ[k]||'No quote on file');}
 function renderMissing(row,k){
   var why=whyNone(k),pp=row.querySelector('.pc-price');
@@ -1569,11 +1571,26 @@ function noQuoteNote(){
    '' when the row matches the badge. */
 var MN3=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 function md(iso){var m=/^(\d{4})-(\d{2})-(\d{2})/.exec(iso||'');return m?MN3[+m[2]-1]+' '+(+m[3]):'';}
+/* "1:05 pm CT" when q's last trade is from another minute than corn's B and corn's day session has ended
+   (B traded at or after the 1:20 pm CT bell, or B.settled), else ''. In session the badge says "Delayed",
+   not a time, so no row needs one. */
+function ownClock(q,B){
+  function hm(iso){var t=new Date(iso||'');if(isNaN(t.getTime()))return null;var p={};
+    new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',hour:'numeric',minute:'2-digit',hourCycle:'h23'}).formatToParts(t).forEach(function(x){p[x.type]=x.value;});
+    return {m:(+p.hour%24)*60+(+p.minute),t:((+p.hour%12)||12)+':'+p.minute+' '+(+p.hour<12?'am':'pm')+' CT'};}
+  var a=hm(q.close_time),b=hm(B.close_time);
+  if(!a||!b||a.m===b.m)return '';
+  return (B.settled||b.m>=13*60+20)?a.t:'';
+}
 function dtNote(k,q){
   if(!D||!D.quotes||!q||q.close==null)return '';
   var B=D.quotes['corn-nearby']||D.quotes.corn;if(!B)return '';
   var stale=q.stale===true||(D.stale_keys||[]).indexOf(k)>-1;
   var qd=q.settle_date&&q.close_kind==='settle'?q.settle_date:q.close_date,bd=B.settle_date&&B.close_kind==='settle'?B.settle_date:B.close_date;
+  /* Nov 12: after the grain bell the ticker badge says "As of 1:20 pm CT", the corn trade's time. A last trade
+     from another time (livestock 1:05 pm, milk 1:46 pm) carries its own, so no row wears corn's clock. */
+  var tn=(!stale&&q.close_kind==='last'&&B.close_kind==='last'&&qd===bd)?ownClock(q,B):'';
+  if(tn)return 'Last trade '+tn;
   if(!stale&&(q.close_kind||null)===(B.close_kind||null)&&qd===bd)return '';
   var dl=md(qd),t=q.close_kind==='settle'?(dl?dl+' settle':'Settle'):q.close_kind==='last'?'Last trade'+(dl?' '+dl:''):(dl?'As of '+dl:'');
   if(stale)t+=(t?', ':'')+'not updated this run';
@@ -1704,7 +1721,8 @@ function loadD(){
 function fallback(){
   AG.json('/data/prices.json').then(function(d){
     if(!d||have)return;var q=d.quotes||{};if(window.AgPxStamp&&AgPxStamp.roll)q=AgPxStamp.roll(q);
-    ['corn','beans','wheat','cattle'].forEach(function(c){var nb=q[c+'-nearby'];if(nb&&nb.close!=null)q[c]=nb;if(d.nearby&&d.nearby[c]&&d.nearby[c].label)NB[c]=d.nearby[c].label;});
+    /* Nov 12: every root with a front-month alias, as geo.js nearbySwap (KE=F was Mar '27 beside Dec '26's change) */
+    ['corn','beans','wheat','cattle','kcwheat','oats','meal','soyoil','feeders','hogs','milk'].forEach(function(c){var nb=q[c+'-nearby'];if(nb&&nb.close!=null)q[c]=nb;if(d.nearby&&d.nearby[c]&&d.nearby[c].label)NB[c]=d.nearby[c].label;});
     Q=q;have=true;renderAll();
   }).catch(function(){});
 }
@@ -1779,6 +1797,24 @@ try {
       if(y.close===x.close&&y.open===x.open&&y.netChange===x.netChange)hit=tickMonth(y.ticker);});
     return hit;
   }
+  /* Nov 12: a dated option (corn-dec, beans-nov) names one contract in its label, and the alert follows that
+     month (scripts/send_price_watch.py watched_key), never the alias after it rolls. On Nov 12 the file's
+     beans-nov was Nov '26, last trade Nov 13: a month that stops trading within 7 days is replaced by the same
+     month a year on when the file carries it, else the option is dropped.
+     -> {key:'beans-nov27', mon:"Nov '27"}, or null. deadFrom: AgPxStamp.deadFrom; todayIso: Central date. */
+  function paDated(q,k,deadFrom,todayIso){
+    var FC='FGHJKMNQUVXZ',M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function parse(x){var m=x&&x.close!=null&&/^[A-Z]{2}([FGHJKMNQUVXZ])(\d{2})\b/.exec(String(x.ticker||''));return m?{i:FC.indexOf(m[1]),y:+m[2],t:x.ticker}:null;}
+    function yy(n){return ('0'+n).slice(-2);}
+    var root=k.split('-')[0],p=parse(q[k]);if(!p)return null;
+    var d=typeof deadFrom==='function'?deadFrom(p.t):null;
+    if(d&&todayIso&&(Date.parse(d+'T00:00:00Z')-Date.parse(todayIso+'T00:00:00Z'))/864e5<=7){
+      var n=parse(q[root+'-'+M[p.i].toLowerCase()+yy(p.y+1)]);
+      if(!n||n.i!==p.i)return null;
+      p=n;
+    }
+    return {key:root+'-'+M[p.i].toLowerCase()+yy(p.y),mon:M[p.i]+" '"+yy(p.y)};
+  }
   function ctStamp(iso){var d=new Date(iso);if(!iso||isNaN(d))return '';
     try{return d.toLocaleString('en-US',{month:'short',day:'numeric',hour:'numeric',minute:'2-digit',timeZone:'America/Chicago'})+' CT';}catch(e){return '';}}
   /* 34.75 cents -> "34 3/4" (the ticker's own way of writing eighths of a cent). */
@@ -1836,18 +1872,22 @@ try {
        a duplicate; the dated one stays, because it does not roll. */
     [['corn','corn-dec'],['beans','beans-nov']].forEach(function(pr){var a=contractOf(q,pr[0]),b=contractOf(q,pr[1]);
       if(a&&a===b){var o=sel.querySelector('option[value="'+pr[0]+'"]');if(o){if(sel.value===pr[0])sel.value=pr[1];o.parentNode.removeChild(o);}}});
-    Array.prototype.forEach.call(sel.options,function(o){var k=o.value,mon=contractOf(q,k);if(!mon||!BASE[k])return;
-      var dated=/-[a-z]{3}$/.test(k);
+    var today='';try{today=new Intl.DateTimeFormat('en-CA',{timeZone:'America/Chicago'}).format(new Date());}catch(e){}
+    Array.prototype.slice.call(sel.options).forEach(function(o){var k=o.value,mon=contractOf(q,k);if(!mon||!BASE[k])return;
+      var dated=/-[a-z]{3}$/.test(k),dd=dated?paDated(q,k,PS&&PS.deadFrom,today):null;
+      if(dated&&!dd){if(sel.value===k)sel.selectedIndex=o.index?0:1;o.parentNode.removeChild(o);return;}
+      if(dd){mon=dd.mon;o.setAttribute('data-key',dd.key);}
       o.textContent=dated?BASE[k]+' '+mon:BASE[k]+' (now '+mon+', follows the roll)';
       o.setAttribute('data-short',dated?BASE[k]+' '+mon:BASE[k]);});
-    function ex(){var x=q[sel.value];
+    function key(){var o=sel.options[sel.selectedIndex];return (o&&o.getAttribute('data-key'))||sel.value;}
+    function ex(){var x=q[key()];
       if(!x||x.close==null){tgt.placeholder='Target';if(now)now.textContent='';return;}
       var p=x.close/(sel.value==='cattle'?1:100),step=sel.value==='cattle'?5:0.25;
       var t=dir.value==='above'?Math.floor(p/step+1)*step:Math.ceil(p/step-1)*step;
       tgt.placeholder=t.toFixed(2);
       /* Grains trade in quarter cents: $5.08\u00bd, not $5.08 (toFixed dropped the half). */
-      var nowTxt=sel.value==='cattle'?'$'+p.toFixed(2):AG.px.price(x.close);
-      if(now){var mon=contractOf(q,sel.value);var stamp=stampOf(x);now.textContent='Now '+nowTxt+(mon?', '+mon:'')+(stamp?' · '+stamp:'');}}
+      var nowTxt=sel.value==='cattle'?AG.px.cash(p):AG.px.price(x.close);   /* cattle to the tick: $218.975, not $218.98 */
+      if(now){var mon=contractOf(q,key());var stamp=stampOf(x);now.textContent='Now '+nowTxt+(mon?', '+mon:'')+(stamp?' · '+stamp:'');}}
     sel.addEventListener('change',ex);dir.addEventListener('change',ex);ex();
   });
 
