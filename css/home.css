@@ -359,7 +359,13 @@ html:not(.has-zip) .hp-wx .hp-wxnone{display:block}
   .hp-fh{grid-template-columns:1fr}
   .hp-fh .r{text-align:left;display:flex;flex-wrap:wrap;gap:0 .5rem;align-items:baseline;width:100%;max-width:none;padding-top:0}
   .hp-fh .r .hb-ovn{flex-basis:100%}
-  .hp-near tbody tr:nth-child(n+5){display:none}
+  /* audit S3: the Daily's signup within two 667px phone screens: three nearest boards (the rest are one tap away on
+     All cash bids), the My elevators hint left to the cash bids page, and with no ZIP the tiles hold only their words */
+  .hp-near tbody tr:nth-child(n+4){display:none}
+  .hp-bids:has(#my-elevators[hidden]) .hp-myhint{display:none}
+  html:not(.has-zip) .hp-tile{min-height:5.2rem}
+  .hp-near td{height:3.05rem;padding:.42rem 0}
+  .hp-bidlinks{gap:0 1.2rem;margin-top:.35rem}.hp-bidlinks a{min-height:32px}
   .hp-chart{aspect-ratio:366/190}
   .hp-tile .p{font-size:1.35rem}
   .hp-tile{min-height:10.6rem}
