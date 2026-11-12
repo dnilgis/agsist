@@ -192,8 +192,7 @@
     if (!isDate(g) || !n) return '';
     var days = Math.round((Date.parse(g + 'T12:00:00Z') - Date.parse(n + 'T12:00:00Z')) / 86400000);
     if (!(days > 7)) return '';
-    return ' The co-ops were checked ' + esc(shortDate(g, false)) + ' and have posted no newer price than ' + esc(shortDate(n, false)) +
-      ', so the newest price here is ' + days + ' days old.';
+    return ' No co-op has posted a newer price than ' + esc(shortDate(n, false)) + ', so the newest price here is ' + days + ' days old.';
   }
 
   /* The top of the page: the co-op price cards. '' when there is nothing real. */
