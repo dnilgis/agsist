@@ -141,7 +141,7 @@
   if (!sec) return;
   var form = document.getElementById('lm-f'), box = document.getElementById('lm-box'), wait = document.getElementById('lm-wait');
   var headEl = document.getElementById('lm-head'), takeEl = document.getElementById('lm-take'), list = document.getElementById('lm-list'), ln = document.getElementById('lm-ln');
-  var tools = document.getElementById('lm-tools');
+  var tools = document.getElementById('lm-tools'), sumEl = document.getElementById('lm-lh');
   var reduce = false; try { reduce = root.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
   var files = [], map = null, heat = null, pinLayer = null, ringLayer = null, shown = [], latest = '', L = null, marks = [];
   var q = { st: '', mo: +sec.getAttribute('data-open') || 12, amin: MIN_ACRES, amax: 0, odd: false, nm: false, heat: 'n' };
@@ -238,6 +238,7 @@
     var odd = shown.filter(function (o) { return !o.p[NM] && (o.p[A] & 3); });
     odd.sort(function (a, b) { return Math.abs(offPct(b.f, b.p) || 0) - Math.abs(offPct(a.f, a.p) || 0); });
     var cap = 60, keep = odd.slice(0, cap);
+    if (sumEl) sumEl.textContent = 'Unusual sales in this view: ' + n0(odd.length);
     ln.textContent = odd.length ? (odd.length > cap ? 'The ' + cap + ' furthest from their county median of ' + n0(odd.length) + '. Tap one to see it on the map.' : n0(odd.length) + ' in this view. Tap one to see it on the map.') : 'None in this view.';
     list.innerHTML = keep.map(function (o, i) {
       var p = o.p, co = o.f.counties[p[CO]], pct = offPct(o.f, p);
