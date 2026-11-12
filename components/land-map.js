@@ -90,14 +90,14 @@
   function popupHtml(f, p) {
     var co = f.counties[p[CO]], cn = co[CNAME] + ' County, ' + f.st, h = [], why = [];
     h.push('<div class="lm-pop">');
-    h.push('<p><b>' + (p[PPA] !== null ? usd(p[PPA]) + ' an acre' : 'Price per acre not stated') + '</b><br>' + acres(p[AC]) + ' for ' + usd(p[PR]) + '</p>');
-    h.push('<p>' + day(p[WHEN]) + ' &middot; ' + esc(cn) + ', ' + esc(KINDW[p[KIND]] || '') + '</p>');
+    h.push('<p><b>' + (p[PPA] !== null ? usd(p[PPA]) + ' an acre' : 'Price per acre not stated') + '</b>, ' + acres(p[AC]) + ', ' + usd(p[PR]) + '<br>' +
+      day(p[WHEN]) + ', ' + esc(cn) + ', ' + esc(KINDW[p[KIND]] || '') + '</p>');
     if (p[NM]) {
       h.push('<p>Left out of every median: ' + NMW[p[NM]] + '.</p>');
     } else if (p[C] !== null) {
       var pct = offPct(f, p);
-      h.push('<p>' + (pct === 0 ? 'Right at' : Math.abs(pct) + '% ' + (pct > 0 ? 'above' : 'below')) + ' the ' + esc(co[CNAME]) + ' County median of ' + usd(co[CMED]) +
-        ' an acre (' + co[CN] + ' bare farmland sales over 24 months; usual range ' + (co[CLO] > 0 ? usd(co[CLO]) + ' to ' : 'up to ') + usd(co[CHI]) + ').</p>');
+      h.push('<p>' + (pct === 0 ? 'Right at' : Math.abs(pct) + '% ' + (pct > 0 ? 'above' : 'below')) + ' the county median of ' + usd(co[CMED]) +
+        ' an acre (' + co[CN] + ' bare farmland sales, 24 months; usual range ' + (co[CLO] > 0 ? usd(co[CLO]) + ' to ' : 'up to ') + usd(co[CHI]) + ').</p>');
       if (p[A] & 1) why.push('<p class="lm-note">Over the usual range. Possible reasons: ' + UP_WHY + '.</p>');
       if (p[A] & 2) why.push('<p class="lm-note">Under the usual range. Possible reasons: ' + DOWN_WHY + '.</p>');
     } else if (!co[CMED]) {
@@ -107,8 +107,8 @@
     }
     var L0 = links(f, p);
     if (L0.length) h.push('<p class="lm-go">' + L0.map(function (l) { return '<a href="' + esc(l[1]) + '">' + esc(l[0]) + '</a>'; }).join('') + '</p>');
-    if (p[A] & 4) h.push('<p>Among the largest 1% of ' + NAMES[f.st] + ' sales by price.</p>');
-    if (p[A] & 8) h.push('<p>Among the largest 1% of ' + NAMES[f.st] + ' sales by acres.</p>');
+    var top = (p[A] & 4 ? ['price'] : []).concat(p[A] & 8 ? ['acres'] : []);
+    if (top.length) h.push('<p>Among the largest 1% of ' + NAMES[f.st] + ' sales by ' + top.join(' and by ') + '.</p>');
     h.push('<p class="lm-note">' + esc(placeNote(p[PC], f.places[p[PN]], co[CNAME])) + '</p>');
     h = h.concat(why);
     h.push('</div>');
@@ -323,7 +323,7 @@
     [].slice.call(box.querySelectorAll('.lm-base button')).forEach(function (x) { x.setAttribute('aria-pressed', String(x.getAttribute('data-b') === b)); });
   }
   function baseControl() {
-    var C = L.Control.extend({ options: { position: 'topright' }, onAdd: function () {
+    var C = L.Control.extend({ options: { position: 'bottomleft' }, onAdd: function () {
       var d = L.DomUtil.create('div', 'lm-base');
       d.setAttribute('role', 'group'); d.setAttribute('aria-label', 'Base map');
       d.innerHTML = '<button type="button" data-b="topo" aria-pressed="' + (q.base === 'topo') + '">Topo</button><button type="button" data-b="aerial" aria-pressed="' + (q.base === 'aerial') + '">Aerial</button>';
