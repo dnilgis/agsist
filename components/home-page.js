@@ -11,8 +11,8 @@
                 month's weekly closes): 19 Friday closes plus today's price, on a labelled dollar axis with dates.
      the Daily  data/daily.json: its teaser, a line with no price in it.
      markets    data/prices.json front months.
-     weather    the National Weather Service grid (components/nws.js), live in the browser; radar rain from
-                data/radar-rain/<st>.bin (NOAA MRMS); rain and GDUs against normal from data/rain/<st>.json and
+     weather    the National Weather Service grid (components/nws.js), live in the browser;
+                the live radar (Windy embed, lazy); rain and GDUs against normal from data/rain/<st>.json and
                 data/rain/wx/<st>.json (NOAA daily records through RCC-ACIS) for the reader's county.
      land       data/land-sales/<st>/<fips>.json for the reader's county; else data/land-sales/lead.json.
      Rain Print data/rain-print.json: prices and the real order-by date.
@@ -29,8 +29,6 @@
     NM: 'New Mexico', NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio', OK: 'Oklahoma', OR: 'Oregon',
     PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina', SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah',
     VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming' };
-  var RR_COLORS = [[1, '#d9f0d3'], [10, '#a6dba0'], [25, '#5aae61'], [50, '#4eb3d3'], [100, '#2b8cbe'],
-    [150, '#0868ac'], [200, '#6a51a3'], [300, '#ae017e'], [400, '#f768a1']];
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function num(x) { return typeof x === 'number' && isFinite(x); }
@@ -206,20 +204,21 @@
     }
     s.push('<line class="ch-base" x1="' + pl + '" x2="' + (w - pr) + '" y1="' + yb + '" y2="' + yb + '"/>');
     var pts = [], step = M.length > 9 && cw < fs * 2.6 ? 2 : 1;
+    /* owner, Nov 12: a true double bar per month, this year (gold, left) beside its normal (solid slate, right) */
     M.forEach(function (x, i) {
-      var cx = pl + cw * (i + 0.5), bw = Math.max(4, cw * 0.62), nw = Math.min(cw * 0.86, bw + 6);
-      if (hasN && num(x.n)) s.push('<rect class="ch-bn" x="' + (cx - nw / 2).toFixed(1) + '" y="' + Y(x.n).toFixed(1) + '" width="' + nw.toFixed(1) + '" height="' + Math.max(0, yb - Y(x.n)).toFixed(1) + '"/>');
-      if (x.gap || !num(x.a)) s.push('<rect class="ch-bx" x="' + (cx - bw / 2).toFixed(1) + '" y="' + (yb - 3) + '" width="' + bw.toFixed(1) + '" height="3"/><text class="ch-ax" x="' + cx.toFixed(1) + '" y="' + (yb - 7) + '" text-anchor="middle">n/a</text>');
-      else s.push('<rect class="ch-ba' + (x.part ? ' part' : '') + '" x="' + (cx - bw / 2).toFixed(1) + '" y="' + Y(x.a).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(0, yb - Y(x.a)).toFixed(1) + '"/>');
+      var cx = pl + cw * (i + 0.5), bw = Math.max(3, Math.min(cw * 0.36, fs * 1.6)), xa = hasN ? cx - bw - 1 : cx - bw / 2, xn = cx + 1;
+      if (hasN && num(x.n)) s.push('<rect class="ch-bn' + (x.part ? ' part' : '') + '" x="' + xn.toFixed(1) + '" y="' + Y(x.n).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(0, yb - Y(x.n)).toFixed(1) + '"/>');
+      if (x.gap || !num(x.a)) s.push('<rect class="ch-bx" x="' + xa.toFixed(1) + '" y="' + (yb - 3) + '" width="' + bw.toFixed(1) + '" height="3"/><text class="ch-ax" x="' + (xa + bw / 2).toFixed(1) + '" y="' + (yb - 7) + '" text-anchor="middle">n/a</text>');
+      else s.push('<rect class="ch-ba' + (x.part ? ' part' : '') + '" x="' + xa.toFixed(1) + '" y="' + Y(x.a).toFixed(1) + '" width="' + bw.toFixed(1) + '" height="' + Math.max(0, yb - Y(x.a)).toFixed(1) + '"/>');
       if ((i % step === 0) || i === M.length - 1) s.push('<text class="ch-ax" x="' + cx.toFixed(1) + '" y="' + (yb + 17) + '" text-anchor="middle">' + esc(x.lab) + '</text>');
       pts.push({ x: cx, y: num(x.a) ? Y(x.a) : yb, i: i });
     });
     /* the latest month named on its bar, and marked */
-    var L = M.length - 1, xl = pl + cw * (L + 0.5);
+    var L = M.length - 1, xl = pl + cw * (L + 0.5) - (hasN ? Math.max(3, Math.min(cw * 0.36, fs * 1.6)) / 2 + 1 : 0);
     if (num(M[L].a) && !M[L].gap) {
-      s.push('<circle class="ch-cur" cx="' + xl.toFixed(1) + '" cy="' + Y(M[L].a).toFixed(1) + '" r="3"/>');
+      s.push('<circle class="ch-cur" cx="' + xl.toFixed(1) + '" cy="' + (Y(M[L].a) - 5).toFixed(1) + '" r="3"/>');
       /* its value in the top right corner, clear of every bar: "Nov so far: 0.68 in" */
-      s.push('<text class="ch-bl" x="' + (w - pr).toFixed(1) + '" y="' + (pt - 8) + '" text-anchor="end">' + esc(M[L].lab + (M[L].part ? ' so far' : '') + ': ' + o.vfmt(M[L].a)) + '</text>');
+      s.push('<text class="ch-bl" x="' + (w - pr).toFixed(1) + '" y="' + (pt - 8) + '" text-anchor="end">' + esc(M[L].lab + (M[L].part ? ' so far' : '') + ': ' + o.vfmt(M[L].a) + (hasN && num(M[L].n) ? ' (normal ' + o.vfmt(M[L].n) + ')' : '')) + '</text>');
     }
     if (o.out) { o.out.w = w; o.out.h = h; o.out.top = pt; o.out.bottom = yb; o.out.pts = pts; }
     s.push('</svg>');
@@ -299,7 +298,7 @@
     + '.ch-cur-o{fill:none;stroke:#d4a23f;stroke-width:1.5;opacity:.6}.ch-tag-t{fill:#0a0c0d;font-weight:700}.ch-band{fill:#d4a23f;opacity:.14}'
     + '.ch-dot{fill:#6f9fc2;fill-opacity:.6;stroke:#101415;stroke-width:1}.ch-med{stroke:#d4a23f;stroke-width:2}.ch-val{fill:#e9edeb;font-weight:700}'
     + '.ch-norm{fill:none;stroke:#6f9fc2;stroke-width:2;stroke-dasharray:5 4}.ch-normdot{fill:#6f9fc2}.rmap-bg{fill:#161b1c}.rmap-gr{stroke:#22292b}'
-    + '.ch-bn{fill:#6f9fc2;fill-opacity:.16;stroke:#6f9fc2;stroke-width:1.2;stroke-dasharray:3 2}.ch-ba{fill:#d4a23f}.ch-ba.part{opacity:.55}.ch-bx{fill:#3a4346}.ch-bl{fill:#e9edeb;font-weight:700}'
+    + '.ch-bn{fill:#5b6870}.ch-bn.part{opacity:.7}.ch-ba{fill:#d4a23f}.ch-ba.part{opacity:.55}.ch-bx{fill:#3a4346}.ch-bl{fill:#e9edeb;font-weight:700}'
     + '.rmap-st{fill:none;stroke:#e9edeb;stroke-opacity:.55;stroke-width:1.4}.rmap-t,.rmap-me{fill:#e9edeb;font-weight:700;paint-order:stroke;stroke:#161b1c;stroke-width:3px}.rmap-tdot{fill:#e9edeb}';
   function wrap(t, n) {
     var words = String(t).split(' '), lines = [''];
@@ -345,7 +344,6 @@
       .then(null, function (e) { delete memo[u]; throw e; });
     return memo[u];
   }
-  function getBin(u) { return timed(fetch(u).then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.arrayBuffer(); }), 20000); }
   function script(src, test) {
     if (test()) return Promise.resolve();
     return new Promise(function (ok, no) {
@@ -446,7 +444,7 @@
   }
   function unknownBand(z) {
     var t = 'ZIP ' + z + ' is not in our ZIP table.';
-    fcFail(t); txt('hp-rr-msg', t); txt('hp-live-msg', t); ['hp-rain-ch', 'hp-gdu-ch'].forEach(function (id) { msgIn(id, t); });
+    fcFail(t); txt('hp-live-msg', t); ['hp-rain-ch', 'hp-gdu-ch'].forEach(function (id) { msgIn(id, t); });
   }
   /* audit A1: bids still loading 6 seconds after a ZIP is in place end in a plain message; a later answer still draws */
   var bidsT = null;
@@ -1028,7 +1026,7 @@
   function msgIn(id, t) { var b = $(id); if (!b) return; var m = b.querySelector('.hp-msg'); if (m) m.textContent = t || ''; if (t && CHART_OF[id]) { delete SPECS[CHART_OF[id]]; toolsReady(); } }
   /* audit A5: Share and Save picture show only beside a chart that is drawn (its SPECS entry); hidden, they keep
      their room, and with no script they never show (css/home.css .hp-tools) */
-  var CHART_OF = { 'hp-ch-corn': 'corn', 'hp-ch-soy': 'soy', 'hp-rain-ch': 'rain', 'hp-gdu-ch': 'gdu', 'hp-rmap': 'radar', 'hp-land-ch': 'land' };
+  var CHART_OF = { 'hp-ch-corn': 'corn', 'hp-ch-soy': 'soy', 'hp-rain-ch': 'rain', 'hp-gdu-ch': 'gdu', 'hp-land-ch': 'land' };
   function toolsReady() {
     Array.prototype.forEach.call(doc.querySelectorAll('.hp-tools[data-chart]'), function (t) { t.classList.toggle('on', !!SPECS[t.getAttribute('data-chart')]); });
   }
@@ -1138,7 +1136,7 @@
     if (!MR.length) { msgIn('hp-rain-ch', 'No month totals for this county yet.'); return; }
     var opts = function (w, h, fs, out) { return { m: MR, w: w, h: h, fs: fs, out: out, steps: [0.5, 1, 2, 5, 10], fmt: function (v) { return v + ' in'; }, vfmt: function (v) { return f1(v, 2) + ' in'; },
       label: 'Rain by month, ' + yr + (hasN ? ', against the 1991 to 2020 normal for the same days' : '') + '. Since January 1: ' + f1(c.total) + ' inches' + (hasN ? ', ' + pct + ' percent of normal.' : '; no normal on file for this gauge.') }; };
-    var out = {}; out.svg = barSvg(opts(ph ? 366 : 380, ph ? 200 : 250, fsFor('hp-rain-ch', ph ? 366 : 380), out)); out.mode = 'x'; out.label = head + '.';
+    var bw0 = Math.round(box.clientWidth) || (ph ? 366 : 380), out = {}; out.svg = barSvg(opts(bw0, ph ? 200 : 250, 12.5, out));   /* drawn at the box's own width: 1 unit = 1 px, so 12.5 px text is 12.5 px */ out.mode = 'x'; out.label = head + '.';
     out.text = function (i) { var r = MR[i]; if (r.gap) return r.lab + ': not enough days reported';
       return r.lab + (r.part ? ' so far' : '') + ': ' + f1(r.a, 2) + ' in' + (num(r.n) ? '; normal ' + f1(r.n, 2) + ' in' + (r.n >= 1 ? ' (' + Math.round(r.a / r.n * 100) + '%)' : '') : '') + (num(r.rep) && num(r.so) && r.rep < r.so ? '; ' + r.rep + ' of ' + r.so + ' days reported' : ''); };
     chart(box, out);
@@ -1185,7 +1183,7 @@
     var box = $('hp-gdu-ch'); if (!box) return;
     var opts = function (w, h, fs, out) { return { m: MG, w: w, h: h, fs: fs, out: out, steps: [50, 100, 250, 500], fmt: function (v) { return comma(v); }, vfmt: function (v) { return comma(v); },
       label: 'Corn growing degree units by month since May 1, ' + yr + ': ' + comma(now) + (norm ? ', ' + gp + ' percent of normal' : '; no 1991 to 2020 normal on file for this station') + '.' }; };
-    var out = {}; out.svg = barSvg(opts(ph ? 366 : 380, ph ? 200 : 250, fsFor('hp-gdu-ch', ph ? 366 : 380), out)); out.mode = 'x'; out.label = head + '.';
+    var bw0 = Math.round(box.clientWidth) || (ph ? 366 : 380), out = {}; out.svg = barSvg(opts(bw0, ph ? 200 : 250, 12.5, out));   /* drawn at the box's own width: 1 unit = 1 px, so 12.5 px text is 12.5 px */ out.mode = 'x'; out.label = head + '.';
     out.text = function (i) { var r = MG[i]; if (r.gap) return r.lab + ': not enough days reported';
       return r.lab + (r.part ? ' so far' : '') + ': ' + comma(r.a) + ' GDUs' + (num(r.n) ? '; normal ' + comma(r.n) + (r.n >= 50 ? ' (' + Math.round(r.a / r.n * 100) + '%)' : '') : '') + (num(r.rep) && num(r.so) && r.rep < r.so ? '; ' + r.rep + ' of ' + r.so + ' days reported' : ''); };
     chart(box, out);
@@ -1194,92 +1192,7 @@
     SPECS.gdu = function () { return { head: head + ', ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + ' by month (gold)' + (hasNM ? ' against the 1991 to 2020 normal for the same days (dashed)' : ', no normal on file for this station') + ', corn GDUs, 86/50 method',
       big: function (w, h) { return barSvg(opts(w, h, 16)); }, source: s + 'NOAA daily records via RCC-ACIS, May 1 to ' + (end ? md(end) : '') + ', month ends.', file: 'gdu', date: end }; };
   }
-  function drawRadar(p, seq) {
-    var st = p.state;
-    script('/components/radar-rain.js?v=1', function () { return !!root.AgRadarRain; })
-      /* audit Q11: the state file whose box holds the reader's point with the most room (AgRadarRain.pickState on the
-         index), not the saved state's: near a border the saved state's grid ends inside the map */
-      .then(function () { return getJSON('/data/radar-rain/index.json').then(function (ix) { return root.AgRadarRain.pickState(ix, +p.lat, +p.lon) || st; }, function () { return st; }); })
-      .then(function (pst) { return Promise.all([getBin(stateFile('radar-rain/', pst, '.bin')).then(root.AgRadarRain.parse), getJSON('/data/us-states.geo.json').catch(function () { return null; }), getJSON('/data/places/zip/' + p.zip.slice(0, 2) + '.json').catch(function () { return null; })]); })
-      .then(function (r) {
-        if (seq !== band.seq) return;
-        var h = r[0].header, q = r[0].grids['7d'], win = (h.windows || []).filter(function (w) { return w.id === '7d'; })[0];
-        if (!q || !win) throw new Error('no-window');
-        var ph = phone(), lat = +p.lat, lon = +p.lon;
-        function build(W, H, fs) {
-          var lonSpan = 3.1, latSpan = lonSpan * (H / W) * Math.cos(lat * Math.PI / 180);
-          var lon0 = lon - lonSpan / 2, lon1 = lon + lonSpan / 2, lat0 = lat - latSpan / 2, lat1 = lat + latSpan / 2;
-          var X = function (lo) { return (lo - lon0) / (lon1 - lon0) * W; }, Y = function (la) { return (lat1 - la) / (lat1 - lat0) * H; };
-          var ca = Math.floor((lon0 - h.x0) / h.d), cb = Math.ceil((lon1 - h.x0) / h.d), ra = Math.floor((h.y0 - lat1) / h.d), rb = Math.ceil((h.y0 - lat0) / h.d);
-          var cw = cb - ca + 1, rh = rb - ra + 1, cv = doc.createElement('canvas'); cv.width = cw; cv.height = rh;
-          var ctx = cv.getContext('2d'), im = ctx.createImageData(cw, rh);
-          for (var rr = 0; rr < rh; rr++) for (var cc = 0; cc < cw; cc++) {
-            /* outside the file's grid or a no-data cell (-1): drawn as no data (NODATA, in the legend), never as dry */
-            var R = ra + rr, C = ca + cc, out = R < 0 || R >= h.ny || C < 0 || C >= h.nx, v = out ? -1 : q[R * h.nx + C], o = (rr * cw + cc) * 4;
-            if (v < 0) { var stripe = ((rr + cc) % 4) < 2; im.data[o] = stripe ? 150 : 110; im.data[o + 1] = stripe ? 150 : 110; im.data[o + 2] = stripe ? 150 : 110; im.data[o + 3] = 150; continue; }
-            if (!(v >= 1)) continue;
-            var col = null; for (var k = 0; k < RR_COLORS.length; k++) if (v >= RR_COLORS[k][0]) col = RR_COLORS[k][1];
-            im.data[o] = parseInt(col.slice(1, 3), 16); im.data[o + 1] = parseInt(col.slice(3, 5), 16); im.data[o + 2] = parseInt(col.slice(5, 7), 16); im.data[o + 3] = 200;
-          }
-          ctx.putImageData(im, 0, 0);
-          var ix = X(h.x0 + (ca - 0.5) * h.d), iy = Y(h.y0 - (ra - 0.5) * h.d), iw = X(h.x0 + (cb + 0.5) * h.d) - ix, ihh = Y(h.y0 - (rb + 0.5) * h.d) - iy;
-          var s = ['<svg class="ch" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="Radar rain, last 7 days, around ZIP ' + esc(p.zip) + '" style="font-size:' + fs + 'px"><rect class="rmap-bg" width="' + W + '" height="' + H + '"/>'];
-          for (var gl = Math.ceil(lon0); gl <= lon1; gl++) s.push('<line class="rmap-gr" x1="' + X(gl).toFixed(1) + '" x2="' + X(gl).toFixed(1) + '" y1="0" y2="' + H + '"/>');
-          for (var gt = Math.ceil(lat0); gt <= lat1; gt++) s.push('<line class="rmap-gr" x1="0" x2="' + W + '" y1="' + Y(gt).toFixed(1) + '" y2="' + Y(gt).toFixed(1) + '"/>');
-          s.push('<image href="' + cv.toDataURL() + '" x="' + ix.toFixed(1) + '" y="' + iy.toFixed(1) + '" width="' + iw.toFixed(1) + '" height="' + ihh.toFixed(1) + '" preserveAspectRatio="none" style="image-rendering:pixelated"/>');
-          var G = r[1];
-          if (G && G.features) {
-            var d = [];
-            G.features.forEach(function (f) {
-              var g = f.geometry; if (!g) return;
-              var polys = g.type === 'MultiPolygon' ? g.coordinates : [g.coordinates];
-              polys.forEach(function (poly) { poly.forEach(function (ring) {
-                var inb = ring.some(function (pt) { return pt[0] > lon0 - 1 && pt[0] < lon1 + 1 && pt[1] > lat0 - 1 && pt[1] < lat1 + 1; });
-                if (inb) d.push('M' + ring.map(function (pt) { return X(pt[0]).toFixed(1) + ',' + Y(pt[1]).toFixed(1); }).join('L') + 'Z');
-              }); });
-            });
-            if (d.length) s.push('<path class="rmap-st" d="' + d.join('') + '"/>');
-          }
-          var Z = r[2], towns = {}, mx = X(lon), my = Y(lat);
-          if (Z) Object.keys(Z).forEach(function (zz) {
-            var t = Z[zz]; if (!Array.isArray(t) || !t[2]) return;
-            var k2 = t[2] + '|' + t[3]; if (!towns[k2]) towns[k2] = { n: t[2], c: 0, la: 0, lo: 0 };
-            towns[k2].c++; towns[k2].la += +t[0]; towns[k2].lo += +t[1];
-          });
-          var own = String(p.town || '').toLowerCase(), list = Object.keys(towns).map(function (k3) { var t = towns[k3]; return { n: t.n, c: t.c, x: X(t.lo / t.c), y: Y(t.la / t.c) }; })
-            .filter(function (t) { return t.x > 20 && t.x < W - 20 && t.y > 16 && t.y < H - 10 && t.n.toLowerCase() !== own; })
-            .sort(function (a2, b2) { return b2.c - a2.c; }), keep = [];
-          list.forEach(function (t) {
-            if (keep.length >= 6 || t.c < 2) return;
-            if (Math.hypot(t.x - mx, t.y - my) < 55) return;
-            if (keep.some(function (k4) { return Math.abs(k4.x - t.x) < 95 && Math.abs(k4.y - t.y) < 22; })) return;
-            keep.push(t);
-          });
-          keep.forEach(function (t) {
-            var right = t.x > W - 90;
-            s.push('<circle class="rmap-tdot" cx="' + t.x.toFixed(1) + '" cy="' + t.y.toFixed(1) + '" r="2.5"/><text class="rmap-t" x="' + (t.x + (right ? -6 : 6)).toFixed(1) + '" y="' + (t.y + 4).toFixed(1) + '" text-anchor="' + (right ? 'end' : 'start') + '">' + esc(t.n) + '</text>');
-          });
-          s.push('<circle cx="' + mx.toFixed(1) + '" cy="' + my.toFixed(1) + '" r="7" fill="#ffd23f" stroke="#111" stroke-width="2"/><text class="rmap-me" x="' + (mx + 11).toFixed(1) + '" y="' + (my + 4).toFixed(1) + '">' + esc(p.zip) + '</text></svg>');
-          return { svg: s.join(''), w: W, h: H, lon0: lon0, lon1: lon1, lat0: lat0, lat1: lat1 };
-        }
-        var mp = build(ph ? 366 : 392, ph ? 330 : 352, fsFor('hp-rmap', ph ? 366 : 392));
-        var here = root.AgRadarRain.lookup(h, q, lat, lon);
-        var head = 'Radar rain, last 7 days: ' + (here == null ? 'no reading' : f1(here / 100, 2) + ' in') + ' at ' + p.zip;
-        txt('hp-rr-h', head);
-        txt('hp-rr-msg', '');
-        chart($('hp-rmap'), { svg: mp.svg, w: mp.w, h: mp.h, mode: 'map', label: head + '.', at: function (vx, vy) {
-          var lo = mp.lon0 + vx / mp.w * (mp.lon1 - mp.lon0), la = mp.lat1 - vy / mp.h * (mp.lat1 - mp.lat0), v = root.AgRadarRain.lookup(h, q, la, lo);
-          return v == null ? 'No radar reading here' : f1(v / 100, 2) + ' in, last 7 days';
-        } });
-        var start = new Date(win.start), endT = new Date(win.end), ageH = (Date.now() - endT.getTime()) / 36e5;
-        var sq = (h.d * 69).toFixed(1) + ' by ' + (h.d * 69 * Math.cos(lat * Math.PI / 180)).toFixed(1) + ' miles';
-        txt('hp-rr-lead', md(ctDay(start)) + ' to ' + md(ctDay(endT)) + ', ' + ctClock(win.end) + '. ' + (ageH > 9 ? 'Last good read; the newer one is late. ' : '') + 'Each square is about ' + sq + '.');
-        SPECS.radar = function () { return { head: head, sub: md(ctDay(start)) + ' to ' + md(ctDay(endT)) + ', ' + ctClock(win.end) + ', around ZIP ' + p.zip,
-          big: function () { return build(392, 352, 13).svg; }, side: ['Rain, inches, last 7 days', '0.01 and 0.1: pale greens', '0.25: green', '0.5, 1 and 1.5: blues', '2: purple', '3: magenta', '4 and more: pink', 'Dark: under 0.01', 'Striped: no radar data'],
-          source: 'NOAA MRMS multi-sensor rain estimate (radar corrected with gauges). Each square is about ' + sq + '.', file: 'radar-rain', date: ctDay(endT) }; };
-      })
-      .catch(function () { if (seq === band.seq) txt('hp-rr-msg', 'The radar rain map did not load for this state.'); });
-  }
+
   function loadBand() {
     var p0 = readPlace();
     if (!hasZip(p0)) return;
@@ -1289,7 +1202,6 @@
       band.zip = p.zip; var seq = ++band.seq;
       drawForecast(p, seq);
       drawLive(p);
-      drawRadar(p, seq);
       getJSON(stateFile('rain/', p.state)).then(function (R) {
         if (seq !== band.seq) return;
         var cf = findCounty(R, p.county);
