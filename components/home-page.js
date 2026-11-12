@@ -60,6 +60,23 @@
     } catch (e) { return ''; }
   }
 
+  /* "7:05 am", Central */
+  function ctHm(d) {
+    var p = {};
+    new Intl.DateTimeFormat('en-US', { timeZone: 'America/Chicago', hour: 'numeric', minute: '2-digit', hourCycle: 'h23' }).formatToParts(d).forEach(function (x) { p[x.type] = x.value; });
+    var h = +p.hour % 24; return ((h % 12) || 12) + ':' + p.minute + (h < 12 ? ' am' : ' pm');
+  }
+  /* "Bids posted Nov 11, 7:05 am to 3:37 pm CT" from the boards' posted times (ISO; nulls skipped) */
+  function postedRange(times) {
+    var ts = (times || []).map(function (t) { return t ? Date.parse(t) : NaN; }).filter(isFinite);
+    if (!ts.length) return '';
+    try {
+      var lo = new Date(Math.min.apply(null, ts)), hi = new Date(Math.max.apply(null, ts)), dl = md(ctDay(lo)), dh = md(ctDay(hi));
+      if (lo.getTime() === hi.getTime()) return 'Bid' + (ts.length > 1 ? 's' : '') + ' posted ' + dl + ', ' + ctHm(lo) + ' CT';
+      return 'Bids posted ' + dl + ', ' + ctHm(lo) + ' to ' + (dl === dh ? '' : dh + ', ') + ctHm(hi) + ' CT';
+    } catch (e) { return ''; }
+  }
+
   /* ---------- charts (pure; the tests run them in node) ---------- */
   /* a tick step that gives 4 to 7 lines over lo..hi */
   function nice(lo, hi, steps) {
@@ -126,7 +143,7 @@
     if (hi < vs.length - 1) {
       o2.push('<circle class="ch-hi"' + attr(pal, 'hi') + ' cx="' + xh.toFixed(1) + '" cy="' + yh.toFixed(1) + '" r="3"/>');
       var anc = xh < pl + 60 ? 'start' : 'middle';
-      o2.push('<text class="ch-note"' + attr(pal, 'note') + ' x="' + xh.toFixed(1) + '" y="' + (yh - 8).toFixed(1) + '" text-anchor="' + anc + '">High ' + money2(vs[hi]) + ', ' + md(ds[hi]) + '</text>');
+      o2.push('<text class="ch-note"' + attr(pal, 'note') + ' x="' + xh.toFixed(1) + '" y="' + (yh - 8).toFixed(1) + '" text-anchor="' + anc + '">High ' + pxSlash(vs[hi]) + ', ' + md(ds[hi]) + '</text>');
     }
     var xc = X(ds[ds.length - 1]), yc = Y(vs[vs.length - 1]);
     o2.push('<line class="ch-cur-l"' + attr(pal, 'curl') + ' x1="' + pl + '" x2="' + xc.toFixed(1) + '" y1="' + yc.toFixed(1) + '" y2="' + yc.toFixed(1) + '"/>');
@@ -271,7 +288,7 @@
   }
   var words = { basis: basisWords, county: countyName, quarters: quarters };
 
-  var api = { lineSvg: lineSvg, cumSvg: cumSvg, landSvg: landSvg, cardSvg: cardSvg, nice: nice, fridays: fridays, county: county, words: words };
+  var api = { postedRange: postedRange, takeaway: takeaway, lineSvg: lineSvg, cumSvg: cumSvg, landSvg: landSvg, cardSvg: cardSvg, nice: nice, fridays: fridays, county: county, words: words };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
   root.AgHomePage = api;
   var doc = root.document;
@@ -437,16 +454,14 @@
   /* the headline futures month a crop's basis is quoted against ("Dec '26"), for basisWords */
   function headLabel(crop) { if (!PX) return null; var h = headline(crop === 'soybeans' ? 'beans' : 'corn'); return h && h.label ? String(h.label) : null; }
   function postedToday(iso) { var t = new Date(iso); return !isNaN(t) && ctDay(t).getTime() === ctDay().getTime(); }
-  /* audit Q9: a fresh cash bid says when: the newest board time among the bids shown, Central */
+  /* audit Q9: the bids shown say when they were posted: the oldest to the newest board time among them, Central
+     (never the newest alone: one fresh board would make the older ones look current, the Oct 19 boardAge rule). */
   function bidsAsOf(list) {
-    var newest = 0;
-    list.forEach(function (b) { var t = b && b.posted ? Date.parse(b.posted) : NaN; if (isFinite(t) && t > newest) newest = t; });
     var e = $('hp-bids-src'); if (!e) return;
     var base = e.getAttribute('data-base') || e.textContent; e.setAttribute('data-base', base);
-    var at = ''; try { at = newest && root.AgPxStamp && root.AgPxStamp.clock ? root.AgPxStamp.clock(new Date(newest).toISOString()) : ''; } catch (x) { at = ''; }
-    e.textContent = (at ? 'Bids as of ' + at + ', the newest board time shown. ' : '') + base;
+    var r = postedRange(list.map(function (b) { return b && b.posted; }));
+    e.textContent = (r ? r + '. ' : '') + base;
   }
-
   /* ---- no ZIP yet: pick a state, see its median basis (data/basis-states.json, AGSIST network elevators) ----
      Only crops with a median are printed (the file prints one at min_n elevators or more); a thinner corn or soybean
      line is counted, not priced. The pick is remembered on this browser for the planting and RMA pages too. */
@@ -581,7 +596,7 @@
       SPECS[c[1] === 'fc' ? 'corn' : 'soy'] = function () {
         return { head: c[4] + ' futures ' + cd.cur + ' a bushel: ' + take.charAt(0).toLowerCase() + take.slice(1), sub: 'Front-month weekly closes since ' + md(cd.d[0]) + ' (contracts roll inside the line), then today' + (cd.label ? '\u2019s ' + cd.label + ' contract' : ''),
           big: function (w, h) { return lineSvg({ d: cd.d, v: cd.v, w: w, h: h, fs: 16, uid: 'k' + c[1], cur: cd.cur, label: chartLabel(c, cd) }); },
-          source: 'Chicago futures, Yahoo Finance, delayed 10 to 25 min. A cash bid is futures plus the elevator\u2019s basis.', file: c[2] + '-futures' };
+          source: 'Chicago futures, Yahoo Finance, delayed 10 to 25 min. A cash bid is futures plus the elevator\u2019s basis.', file: c[2] + '-futures', date: cd.d[cd.d.length - 1] };
       };
     });
     var s0 = STATS && STATS.corn && fridays(STATS.corn.hist_to, 19, tradingFn());
@@ -660,7 +675,7 @@
     function hide() { var ro = box.querySelector('.hp-ro'), g = box.querySelector('.ch-pickg'); if (ro) ro.hidden = true; if (g) g.style.display = 'none'; }
   }
   function card(sp) {
-    var W = 1200, H = 630, svg = cardSvg(sp, ctDay());
+    var W = 1200, H = 630, svg = cardSvg(sp, sp.date instanceof Date && !isNaN(sp.date) ? sp.date : ctDay());   /* the data's own day (audit Q15) */
     return new Promise(function (ok, no) {
       var img = new Image();
       img.onload = function () { var cv = doc.createElement('canvas'); cv.width = W; cv.height = H; cv.getContext('2d').drawImage(img, 0, 0); cv.toBlob(function (b) { b ? ok(b) : no(new Error('blob')); }, 'image/png'); };
@@ -838,34 +853,9 @@
     g.innerHTML = h; box.hidden = false;
     txt('daily-otp-h', d.otp_week_ahead ? 'Week ahead in ag' : 'Outside the pit: not moving prices today, but worth knowing');
   }
-  /* The Daily's sponsor (data/daily.json "sponsor"), ported from the old home script: only a PAID sponsor draws
-     anything. Unsold, switched off or the house ad: the block in the briefing fold and the credit under the signup
-     stay hidden. One renderer: components/sponsor-ad.js. */
-  function paintSponsor(data) {
-    var sp=data.sponsor,spEl=$('daily-sponsor'),spFilled=$('dsp-filled'),spTeaser=$('daily-teaser-sponsor');
-    if(!spEl)return;
-    var spRow=spTeaser&&spTeaser.parentNode&&spTeaser.parentNode.classList.contains('s7-adrow')?spTeaser.parentNode:null;
-    if(!(sp&&!sp.is_house_ad&&(sp.advertiser||sp.name)&&(sp.headline||sp.tagline))){
-      spEl.style.display='none';
-      if(spFilled){spFilled.style.display='none';spFilled.innerHTML='';}
-      if(spRow)spRow.style.display='none';
-    } else {
-      var spNm=sp.advertiser||sp.name||'',spHref=(sp.cta_urls&&sp.cta_urls.homepage)||sp.cta_url||sp.url||'';
-      spEl.style.display='';
-      spEl.classList.add('filled');
-      if(spFilled){spFilled.style.display='block';spFilled.innerHTML=(root.AgsistAd?root.AgsistAd.render(sp,'homepage',{click:'daily-briefing'}):'');}
-      if(spTeaser){
-        if(spRow)spRow.style.display='';
-        spTeaser.textContent='Sponsored by '+spNm;
-        if(spHref){spTeaser.href=spHref;spTeaser.target='_blank';spTeaser.rel='sponsored noopener';spTeaser.setAttribute('data-sponsor-click','daily-briefing');}
-      }
-    }
-  }
-
   function paintDaily(d) {
     if (!d) return;
     paintStories(d);
-    paintSponsor(d);
     var t = String(d.teaser || d.headline || '').trim(); if (!t) return;
     /* the issue's own date ("Wednesday, November 11, 2026"), else the day it was written, Central */
     var dd = d.date ? new Date(String(d.date).replace(/^[A-Za-z]+,\s*/, '') + ' 12:00 UTC') : null;
@@ -924,14 +914,15 @@
       var w = [];
       if (num(c.wind_speed_10m)) w.push('Wind ' + compass(c.wind_direction_10m) + ' ' + Math.round(c.wind_speed_10m) + ' mph');
       if (num(c.relative_humidity_2m)) w.push('Humidity ' + Math.round(c.relative_humidity_2m) + '%');
-      html('hp-now-d', '<b>' + esc(WX[c.weather_code] || 'Now') + '</b><br>' + w.map(esc).join('<br>'));
+      /* the grid's forecast for the hour that holds now, not a reading (audit Q15, C14) */
+      html('hp-now-d', '<b>' + esc(WX[c.weather_code] || 'Forecast') + '</b><br>Forecast for this hour<br>' + w.map(esc).join('<br>'));
       var times = D.time || [], todayKey = (c.time || '').slice(0, 10), i0 = Math.max(0, times.indexOf(todayKey)), lis = [];
       if (!num((D.temperature_2m_max || [])[i0]) || !num((D.temperature_2m_min || [])[i0])) i0++;   /* today half gone: the grid has no full-day high and low, start tomorrow */
       for (var i = i0; i < times.length && lis.length < 7; i++) {
         if (!num((D.temperature_2m_max || [])[i]) && !num((D.temperature_2m_min || [])[i])) continue;   /* a day past the grid's end */
         var dd = utc(times[i]), hi = (D.temperature_2m_max || [])[i], lo = (D.temperature_2m_min || [])[i], pp = (D.precipitation_probability_max || [])[i];
         lis.push('<li><b>' + (times[i] === todayKey ? 'Today' : DOW[dd.getUTCDay()]) + '</b><span class="hi">' + (num(hi) ? Math.round(hi) + '°' : '-') + '</span> <span class="lo">' + (num(lo) ? Math.round(lo) + '°' : '-')
-          + '</span><span class="pp">' + (num(pp) ? Math.round(pp) + '%<span class="pw"> rain</span>' : '-') + '</span></li>');
+          + '</span><span class="pp">' + (num(pp) ? Math.round(pp) + '%<span class="pw"> chance of rain</span>' : '-') + '</span></li>');
       }
       if (lis.length) html('hp-d7', lis.join(''));
       var src = 'Percent: chance of rain. National Weather Service forecast';
@@ -974,7 +965,7 @@
     var st = c.station || {}, net = st.net === 'cocorahs' ? ' (CoCoRaHS)' : st.net ? ' (NOAA co-op)' : '';
     txt('hp-rain-src', 'Jan 1 to ' + (end ? md(end) : '') + '. ' + (cf.near ? 'No station in ' + countyName(p.county, p.state) + '; nearest county: ' + cf.nearName + '. ' : '') + (st.name ? 'Gauge: ' + st.name + net + '. ' : '') + 'NOAA daily records via RCC-ACIS.');
     SPECS.rain = function () { return { head: head + ' at ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + (hasN ? ' (gold) against the 1991 to 2020 normal (dashed)' : ', no normal on file for this gauge') + ', inches since Jan 1',
-      big: function (w, h) { return cumSvg(opts(w, h, 16, 'krn')); }, source: (st.name ? 'Gauge: ' + st.name + net + '. ' : '') + 'NOAA daily records via RCC-ACIS, Jan 1 to ' + (end ? md(end) : '') + '.', file: 'rain' }; };
+      big: function (w, h) { return cumSvg(opts(w, h, 16, 'krn')); }, source: (st.name ? 'Gauge: ' + st.name + net + '. ' : '') + 'NOAA daily records via RCC-ACIS, Jan 1 to ' + (end ? md(end) : '') + '.', file: 'rain', date: end }; };
   }
   /* mmdd (1109) of this year -> a date */
   function mmddDate(v, yr) { return num(v) && v >= 101 && v <= 1231 ? new Date(Date.UTC(yr, Math.floor(v / 100) - 1, v % 100)) : null; }
@@ -1011,9 +1002,7 @@
     txt('hp-gdu-h', head);
     var key = $('hp-gdu-h').parentNode.querySelector('.hp-key');
     if (key) { var nk = key.lastChild; nk.hidden = !b; if (b && norm) nk.lastChild.textContent = 'Normal: ' + comma(norm) + ' (1991 to 2020)'; }
-    /* the first 28F freeze of the fall ends the crop's season; GDUs after it are still counted here, and the note says so */
-    var fz = c.fr && Array.isArray(c.fr.f28) ? mmddDate(c.fr.f28[0], yr) : null;
-    var tail = (gap ? ' The chart stops at ' + md(plotEnd) + ': not enough days reported in ' + gap + '.' : '') + (fz && (!end || fz <= end) ? ' First 28°F freeze: ' + md(fz) + '; the count goes on after it.' : '');
+    var tail = gap ? ' The chart stops at ' + md(plotEnd) + ': not enough days reported in ' + gap + '.' : '';
     var box = $('hp-gdu-ch'); if (!box) return;
     var opts = function (w, h, fs, uid, out) { return { x: xs, a: a, b: b, w: w, h: h, fs: fs, uid: uid, out: out, fmt: function (v) { return v ? (v >= 1000 ? (v / 1000) + 'k' : String(v)) : '0'; },
       steps: [100, 250, 500, 1000], xl: xl, now: comma(a[a.length - 1]) + ' GDUs', norm: b ? 'normal ' + comma(b[b.length - 1]) : '', label: 'Corn growing degree units since May 1: ' + comma(now) + (norm ? '; normal ' + comma(norm) : '; no 1991 to 2020 normal on file for this station') + '.' }; };
@@ -1023,7 +1012,7 @@
     var s = c.s && c.s[0] ? 'Station ' + c.s[0] + '. ' : '';
     txt('hp-gdu-src', 'May 1 to ' + (end ? md(end) : '') + ', 86/50 method, month ends.' + tail + ' ' + s + 'NOAA daily records via RCC-ACIS.');
     SPECS.gdu = function () { return { head: head + ', ' + countyName(p.county, p.state) + ', ' + p.state, sub: String(yr) + (b ? ' (gold) against the 1991 to 2020 normal (dashed)' : ', no normal on file for this station') + ', corn GDUs, 86/50 method',
-      big: function (w, h) { return cumSvg(opts(w, h, 16, 'kgd')); }, source: s + 'NOAA daily records via RCC-ACIS, May 1 to ' + (end ? md(end) : '') + ', month ends.', file: 'gdu' }; };
+      big: function (w, h) { return cumSvg(opts(w, h, 16, 'kgd')); }, source: s + 'NOAA daily records via RCC-ACIS, May 1 to ' + (end ? md(end) : '') + ', month ends.', file: 'gdu', date: end }; };
   }
   function drawRadar(p, seq) {
     var st = p.state;
@@ -1106,8 +1095,8 @@
         var sq = (h.d * 69).toFixed(1) + ' by ' + (h.d * 69 * Math.cos(lat * Math.PI / 180)).toFixed(1) + ' miles';
         txt('hp-rr-lead', md(ctDay(start)) + ' to ' + md(ctDay(endT)) + ', ' + ctClock(win.end) + '. ' + (ageH > 9 ? 'Last good read; the newer one is late. ' : '') + 'Each square is about ' + sq + '.');
         SPECS.radar = function () { return { head: head, sub: md(ctDay(start)) + ' to ' + md(ctDay(endT)) + ', ' + ctClock(win.end) + ', around ZIP ' + p.zip,
-          big: function () { return build(392, 352, 13).svg; }, side: ['Rain, inches, last 7 days', '0.01 to 0.1: pale green', '0.25 to 0.5: green to blue', '1 to 2: blue to purple', '3 and more: magenta and pink', 'Dark: under 0.01'],
-          source: 'NOAA MRMS multi-sensor rain estimate (radar corrected with gauges). Each square is about ' + sq + '.', file: 'radar-rain' }; };
+          big: function () { return build(392, 352, 13).svg; }, side: ['Rain, inches, last 7 days', '0.01 and 0.1: pale greens', '0.25: green', '0.5, 1 and 1.5: blues', '2: purple', '3: magenta', '4 and more: pink', 'Dark: under 0.01', 'Striped: no radar data'],
+          source: 'NOAA MRMS multi-sensor rain estimate (radar corrected with gauges). Each square is about ' + sq + '.', file: 'radar-rain', date: ctDay(endT) }; };
       })
       .catch(function () { if (seq === band.seq) txt('hp-rr-msg', 'The radar rain map did not load for this state.'); });
   }
@@ -1159,10 +1148,11 @@
       text: function (i) { var r = rows[i]; return md(r.d) + ', ' + r.d.getUTCFullYear() + ': ' + Math.round(r.acres) + ' acres, $' + comma(r.ppa) + ' an acre'; } });
     txt('hp-land-src', 'Each dot is one sale; bigger dots are more acres. Shaded: the middle half of sales.'
       + (ch.off ? ' ' + ch.off + ' sale' + (ch.off === 1 ? '' : 's') + ' outside $' + comma(ch.bottom) + ' to $' + comma(ch.top) + ' ' + (ch.off === 1 ? 'is' : 'are') + ' off the chart.' : '')
-      + ' ' + src + ' transfer records, ' + MON[from.getUTCMonth()] + ' ' + from.getUTCFullYear() + ' to ' + MON[to.getUTCMonth()] + ' ' + to.getUTCFullYear() + '. No names.');
+      + ' ' + src + ' transfer records, ' + MON[from.getUTCMonth()] + ' ' + from.getUTCFullYear() + ' to ' + MON[to.getUTCMonth()] + ' ' + to.getUTCFullYear() + '. No names.'
+      + (words.rule ? ' How the sale above is picked: ' + words.rule : ''));
     var all = $('hp-land-all'); if (all && NAMES[st]) all.setAttribute('href', '/land-sales/' + slug(NAMES[st]) + '/' + slug(cn));
     SPECS.land = function () { return { head: head + (words.h ? '' : ', ' + st), sub: (words.h ? cn + ': e' : 'E') + 'very bare farmland sale with acres and price over 24 months, price per acre; line: the county median; shaded: the middle half',
-      big: function (w, h) { return landSvg(opts(w, h, 16)).svg; }, source: src + ' transfer records, ' + MON[from.getUTCMonth()] + ' ' + from.getUTCFullYear() + ' to ' + MON[to.getUTCMonth()] + ' ' + to.getUTCFullYear() + '. No names.', file: 'farm-sales' }; };
+      big: function (w, h) { return landSvg(opts(w, h, 16)).svg; }, source: src + ' transfer records, ' + MON[from.getUTCMonth()] + ' ' + from.getUTCFullYear() + ' to ' + MON[to.getUTCMonth()] + ' ' + to.getUTCFullYear() + '. No names.', file: 'farm-sales', date: to }; };
     return true;
   }
   function countyFile(st, name) {
@@ -1197,19 +1187,19 @@
     var st = have.indexOf(mine) >= 0 ? mine : have.sort(function (a, b) { return leads[a].when < leads[b].when ? 1 : -1; })[0], r = leads[st];
     txt('hp-land-near', NAMES[st] ? 'in ' + NAMES[st] : '');
     var not = mine && sts.indexOf(mine) < 0 && NAMES[mine] ? 'Not yet in ' + NAMES[mine] + '. ' : '';
-    /* audit Q3: never "the highest": the lead file's pick leaves out sales over twice the state middle, so higher
-       sales exist. Lead with the state's middle price; the sale is "a recent farm sale". */
-    var ff = L && L.farm_filter && L.farm_filter[st], smed = ff && num(ff.state_med) ? ff.state_med : null;
-    var sale = Math.round(r.acres) + ' acres in ' + countyName(r.county, st) + ', ' + (r.basis === 'sale date' ? 'sold ' : 'recorded ') + md(utc(r.when)) + ', $' + comma(r.ppa) + ' an acre';
-    var w = smed ? { h: NAMES[st] + ' farmland: middle price $' + comma(smed) + ' an acre', p: not + 'A recent farm sale: ' + sale + '. County median: $' + comma(r.med) + '.' }
-      : { h: 'A recent farm sale in ' + NAMES[st] + ': $' + comma(r.ppa) + ' an acre', p: not + sale + '. County median: $' + comma(r.med) + '.' };
+    /* audit Q3: the pick is the top price among the sales the lead rule keeps; sales over twice the state's middle are
+       left out, so the card never calls it "the highest" of the 30 days; the rule itself (lead.json "rule", with the
+       cap) is printed under the chart, as the old home page showed it */
+    var w = { h: 'Top bare-land price in ' + NAMES[st] + ': $' + comma(r.ppa) + ' an acre',
+      p: not + Math.round(r.acres) + ' acres in ' + countyName(r.county, st) + ', ' + (r.basis === 'sale date' ? 'sold ' : 'recorded ') + md(utc(r.when)) + '. County median: $' + comma(r.med) + '.',
+      rule: typeof r.rule === 'string' ? r.rule : '' };
     countyFile(st, r.county).then(function (F) {
       if (seq !== landSeq) return;
       var ring = { d: utc(r.when), ppa: r.ppa };
       if (!drawLand(F, L, st, ring, w)) throw new Error('few');
       var all = $('hp-land-all'); if (all && r.url) all.setAttribute('href', r.url);
     }).catch(function () {
-      txt('hp-land-h', w.h); txt('hp-land-p', w.p); msgIn('hp-land-ch', 'The county chart did not load.');
+      txt('hp-land-h', w.h); txt('hp-land-p', w.p); if (w.rule) txt('hp-land-src', 'How this sale is picked: ' + w.rule); msgIn('hp-land-ch', 'The county chart did not load.');
     });
   }
 
@@ -1240,7 +1230,8 @@
       if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(addr)) return fail('Enter a real email address.', email);
       [tgt, email].forEach(function (f) { f.removeAttribute('aria-invalid'); });
       var symbol = sym.value, direction = dir.value, targetCents = Math.round(dollars * 100);
-      var label = (PA_LABELS[symbol] || symbol) + ' ' + (direction === 'above' ? 'above' : 'below') + ' $' + dollars.toFixed(2);
+      var opt = sym.options[sym.selectedIndex], named = opt && opt.getAttribute('data-c') ? opt.getAttribute('data-c') : (PA_LABELS[symbol] || symbol);
+      var label = named + ' ' + (direction === 'above' ? 'above' : 'below') + ' $' + dollars.toFixed(2);
       go.disabled = true; go.textContent = 'Sending…'; status.textContent = ''; status.style.color = 'var(--text-muted)';
       fetch(PA_WORKER + '/price-watch-subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email: addr, pid: paId(symbol, direction, targetCents), symbol: symbol, direction: direction, target_cents: targetCents, label: label }) })
@@ -1269,6 +1260,29 @@
     [tgt, email].forEach(function (el) { el.addEventListener('keydown', function (e) { if (e.key === 'Enter') submit(); }); });
   }
 
+  /* audit Q12: each alert option names the contract the alert service watches (its key in data/prices.json, read
+     raw as the service reads it): "Soybeans, Nov '26 (rolls to Nov '27 after Nov 13)" when the dated month expires
+     within three weeks, "front month" for a continuous series whose month is not on file. The six symbols stay. */
+  var PA_BASE = { 'corn': 'Corn', 'corn-dec': 'Corn', 'beans': 'Soybeans', 'beans-nov': 'Soybeans', 'wheat': 'Chicago SRW wheat', 'cattle': 'Live cattle' };
+  function alertWords(sym, q, today) {
+    var S = root.AgPxStamp, base = PA_BASE[sym] || sym, lab = q && S && S.label ? S.label(q.ticker) : '';
+    if (!lab) return base + ', front month';
+    var out = base + ', ' + lab, dead = S.deadFrom ? S.deadFrom(q.ticker) : null, dd = utc(dead);
+    if (dd && (dd - today) / 864e5 <= 21 && dd > today) {
+      var nx = lab.replace(/'(\d\d)$/, function (m0, y) { return "'" + ('0' + ((+y + 1) % 100)).slice(-2); });
+      out += ' (rolls to ' + nx + ' after ' + md(addDays(dd, -1)) + ')';
+    }
+    return out;
+  }
+  function paintAlertOptions() {
+    var sel = $('pa-symbol'), Q = PX && PX.quotes; if (!sel || !Q) return;
+    var today = ctDay();
+    Array.prototype.forEach.call(sel.options, function (o) {
+      var t = alertWords(o.value, Q[o.value], today);
+      o.textContent = t; o.setAttribute('data-c', t.replace(/ \(rolls to .*\)$/, ''));
+    });
+  }
+
   /* ---- start ---- */
   function start() {
     var f = $('hb-zip-form'); if (f) f.addEventListener('submit', submitZip);
@@ -1283,7 +1297,7 @@
     root.addEventListener('agsist:bids-top', function (e) { paintTiles(e.detail); paintNear(e.detail); });
     if (root.__agsistBidsTop) { paintTiles(root.__agsistBidsTop); paintNear(root.__agsistBidsTop); }
     Promise.all([getJSON('/data/prices.json').catch(function () { return null; }), getJSON('/data/price-stats.json').catch(function () { return null; })]).then(function (r) {
-      PX = r[0]; RQ = null; STATS = r[1]; if (!PX) paintTickerAge(true); paintHeader(); drawCharts(); paintMarkets(); try { paintTicker(); setTimeout(paintTicker, 1500); } catch (e) {}
+      PX = r[0]; RQ = null; STATS = r[1]; if (!PX) paintTickerAge(true); paintHeader(); paintAlertOptions(); drawCharts(); paintMarkets(); try { paintTicker(); setTimeout(paintTicker, 1500); } catch (e) {}
     });
     getJSON('/data/daily.json').then(paintDaily, function () {});
     getJSON('/data/rain-print.json').then(paintRainPrint, function () {});
