@@ -115,7 +115,9 @@
   function siteOf(site, town, st) {
     var t = String(site || '').replace(/\s+-\s+/g, ' ').replace(/\s+/g, ' ').trim();
     if (/^[a-z]{1,4}(?:-[a-z]{1,4})+$/i.test(t)) return 'delivery code ' + t;
-    t = niceCase(t).replace(/\s*\(([^)]*)\)/g, function (m, w) { return ' ' + (/^beans$/i.test(w.trim()) ? 'soybeans' : w.trim().toLowerCase()); }).trim();
+    var qual = /^(.*?)\s*\(([^)]*)\)\s*$/.exec(t);   // "Cargill (Beans)": the place stays in the name, the word in brackets after it
+    if (qual && town && qual[1]) t = qual[1] + ' ' + town + ' (' + (/^beans$/i.test(qual[2].trim()) ? 'soybeans' : qual[2].trim().toLowerCase()) + ')';
+    t = niceCase(t);
     var ini = String(town || '').split(/\s+/).filter(Boolean).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
     var words = t.split(' ');
     words = words.map(function (w, i) {

@@ -168,9 +168,9 @@
     n = {}; out.forEach(function (l) { n[l] = (n[l] || 0) + 1; });
     var k = {}; return out.map(function (l) { if (n[l] < 2) return l; k[l] = (k[l] || 0) + 1; return l + ' (listing ' + k[l] + ')'; });
   }
-  function conWords(con, crop) {   /* "Mar '27" -> "March 2027 corn futures" */
-    var m = /^([A-Z][a-z]{2}) '(\d{2})$/.exec(con || ''), i = m ? MON.indexOf(m[1]) : -1;
-    return i < 0 ? '' : FULL_MON[i] + ' 20' + m[2] + ' ' + crop + ' futures';
+  function conWords(cons, crop) {   /* ["Mar '27"] -> "March 2027 corn futures"; two -> "November 2026 and January 2027 soybean futures" */
+    var w = [].concat(cons).map(function (con) { var m = /^([A-Z][a-z]{2}) '(\d{2})$/.exec(con || ''), i = m ? MON.indexOf(m[1]) : -1; return i < 0 ? '' : FULL_MON[i] + ' 20' + m[2]; }).filter(Boolean);
+    return w.length ? w.join(w.length > 2 ? ', ' : ' and ') + ' ' + crop + ' futures' : '';
   }
   function fullMon(dm) { return FULL_MON[+dm.slice(5, 7) - 1] + (dm.slice(0, 4) === REF_YEAR ? '' : ' ' + dm.slice(0, 4)); }
   /* nearestSeries() rows -> the kit's points: b on the first value after a gap (the day the gap began), m where
@@ -224,23 +224,23 @@
     if (c.lines.length === 1) {
       var l = held[0].l, pts = l.line.points, k = pts.indexOf(held[0].p), last = pts[k];
       while (k > 0 && !pts[k].b && !pts[k].m && pts[k - 1].d >= from) k--;
-      var first = pts[k], ch = last.v - first.v, cw = conWords(last.con, crop), ref = fullMon(last.dm) + ' delivery' + (cw ? ', against ' + cw : '');
+      var first = pts[k], ch = last.v - first.v, cw = conWords(last.con ? [last.con] : [], crop), ref = fullMon(last.dm) + ' delivery' + (cw ? ', against ' + cw : '');
       if (first !== last) {
         head = Crop + ' basis at ' + l.long + (ch ? (ch > 0 ? ' firmed ' : ' weakened ') + Math.abs(ch) + '¢' : ' held at ' + basisText(last.v)) + ' since ' + dayText(first.d);
-        take = basisText(last.v) + ' on ' + dayText(to) + ', from ' + basisText(first.v) + '. ' + ref + '.' + (forCard ? ' 1\u00a0elevator\u00a0shown.' : ' Counted on one delivery month and one contract.');
+        take = basisText(last.v) + ' on ' + dayText(to) + ', from ' + basisText(first.v) + '. ' + ref + '.' + (forCard ? ' 1\u00a0elevator shown.' : ' Counted on one delivery month and one contract.');
       } else {
         head = Crop + ' basis at ' + l.long + ': ' + basisText(last.v);
-        take = forCard ? ref + '. Unchanged since ' + dayText(last.d) + '. 1\u00a0elevator\u00a0shown.' : ref + '. Unchanged since ' + dayText(last.d) + '. A basis holds until the elevator changes it.';
+        take = forCard ? ref + '. Unchanged since ' + dayText(last.d) + '. 1\u00a0elevator shown.' : ref + '. Unchanged since ' + dayText(last.d) + '. A basis holds until the elevator changes it.';
       }
     } else {
       held.sort(function (a, b) { return b.p.v - a.p.v; });
       var best = held[0], lo = held[held.length - 1].p.v, ties = held.filter(function (x) { return x.p.v === best.p.v; }).length;
       head = 'Best ' + crop + ' basis' + (place ? ' near ' + place : '') + ': ' + basisText(best.p.v) + ' at ' + (ties > 1 ? ties + ' elevators' : best.l.long);
-      var shown = c.lines.length + '\u00a0of\u00a0' + c.all.length + ' elevators\u00a0shown.' + (c.hidden && !forCard ? ' Every one is in the tables below.' : '');
-      var cons = {}; held.forEach(function (x) { if (x.p.con) cons[x.p.con] = 1; }); cons = Object.keys(cons);
-      var cw = cons.length === 1 ? conWords(cons[0], crop) : '';
+      var shown = c.lines.length + ' of ' + c.all.length + ' elevators shown.' + (c.hidden && !forCard ? ' Every one is in the tables below.' : '');
+      var cons = {}; held.forEach(function (x) { if (x.p.con) cons[x.p.con] = 1; }); cons = Object.keys(cons).sort(function (x, y) { return x.slice(-2) + MON.indexOf(x.slice(0, 3)) / 100 < y.slice(-2) + MON.indexOf(y.slice(0, 3)) / 100 ? -1 : 1; });
+      var cw = conWords(cons, crop);
       take = (best.p.v === lo ? (held.length === 2 ? 'Both' : 'All ' + held.length) + ' elevators at ' + basisText(lo) : held.length + ' elevators from ' + basisText(lo) + ' to ' + basisText(best.p.v)) +
-        ' on ' + dayText(to) + ', each for its nearest delivery month' + (cw ? ', against ' + cw : '') + '.' + ' ' + shown;
+        ' on ' + dayText(to).replace(' ', '\u00a0') + ', each for its nearest delivery month' + (cw ? ', against ' + cw : '') + '.' + ' ' + shown;
     }
     return { head: head, take: take, summary: head + '. ' + take };
   }
@@ -248,7 +248,7 @@
   function footOf(c) {
     var gaps = c.lines.some(function (l) { return l.line.points.some(function (p) { return p.b; }); }), marks = {}, first = '', ties = false, late = [];
     c.lines.forEach(function (l) { l.line.points.forEach(function (p) { if (p.m) marks[p.d] = 1; }); if (!first || l.line.points[0].d < first) first = l.line.points[0].d; });
-    c.lines.forEach(function (l) { if (l.line.points[0].d > dayAfter(first, 3)) late.push(l.name + ' ' + dayText(l.line.points[0].d)); });
+    c.lines.forEach(function (l) { if (l.line.points[0].d > dayAfter(first, 1)) late.push(l.name + ' ' + dayText(l.line.points[0].d)); });
     var days = {}; c.lines.forEach(function (l) { l.line.points.forEach(function (p) { days[p.d] = 1; }); });
     Object.keys(days).concat(c.end).forEach(function (d) { var by = {}; c.lines.forEach(function (l) { var p = heldOn(l, d); if (p) by[p.v] = (by[p.v] || 0) + 1; }); Object.keys(by).forEach(function (v) { if (by[v] > 1) ties = true; }); });
     var n = Object.keys(marks).length;
@@ -263,7 +263,7 @@
     return {
       series: c.lines.map(function (l, i) { return { key: l.key, name: l.name, points: l.line.points, until: l.line.until, step: true, dash: DASH[i % DASH.length], color: 'var(--cbh' + (i % 5 + 1) + ')', card: PAL[i % 5] }; }),
       gaps: 1e6, ownGaps: true, minPoints: 1, pad: 2, unit: '¢/bu', axisTitle: 'Basis vs futures, ¢/bu', fmt: basisText, tick: basisText,
-      legend: true, intTicks: true, fixedTicks: true, weekly: true, clip: true, gapNote: 'no bid posted', markMany: 'delivery month changed',
+      legend: true, intTicks: true, fixedTicks: true, weekly: true, clip: true, gapNote: 'no bid posted', markMany: 'Delivery month changed',
       markLabel: function (p) { return p.ml || ''; },
       valueAt: function (key, d) { var p = byKey[key] && heldOn(byKey[key], d); return p ? basisText(p.v) : ''; },
       keyNote: '· touch the chart for another day',
