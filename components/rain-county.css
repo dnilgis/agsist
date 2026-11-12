@@ -57,9 +57,9 @@
 .rc-faq details { border-bottom: 1px solid var(--border); padding: .55rem 0; max-width: 46em; }
 .rc-faq summary { cursor: pointer; font-weight: 600; }
 .rc-faq p { margin: .45rem 0 0; color: var(--text-dim); }
-.rc-next { display: flex; flex-wrap: wrap; gap: .5rem; padding: 0; list-style: none; margin: .4rem 0 0; }
-.rc-next a.rc-nb { display: inline-block; padding: .45rem .7rem; border: 1px solid var(--border); border-radius: var(--r-md); text-decoration: none; min-height: 44px; box-sizing: border-box; }
-.rc-next small { color: var(--text-muted); margin-left: .15rem; }
+.rc-next { max-width: 48rem; display: grid; grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr)); gap: .5rem; padding: 0; list-style: none; margin: .4rem 0 0; }
+.rc-next a.rc-nb { display: block; padding: .45rem .7rem; border: 1px solid var(--border); border-radius: var(--r-md); text-decoration: none; min-height: 44px; box-sizing: border-box; }
+.rc-next small { display: block; color: var(--text-muted); font-size: 14px; line-height: 1.35; }
 .rc-states { columns: 3 14em; padding: 0; list-style: none; }
 .rc-states li { break-inside: avoid; padding: .3rem 0; }
 .rc-states small { color: var(--text-muted); }
@@ -70,14 +70,25 @@
 .rc-pick select { flex: 1; min-width: 0; }
 /* Find a county (rain-find.js, Nov 12 2026): the matches sit over the page, the message line keeps its room */
 .rc-find { position: relative; padding-bottom: 1.3rem; }
-.rc-next + .rc-find { margin-top: 1rem; }
+.rc-next + .rc-find { margin-top: 1.5rem; margin-bottom: 1rem; }
+.rc-find label { font-size: 15px; color: var(--text); margin-bottom: .1rem; }
+.rc-find-w { position: relative; flex: 1; min-width: 0; display: block; }
+.rc-find-w input { width: 100%; padding-right: 2.75rem; }
+.rc-find-w input::-webkit-search-cancel-button, .rc-find-w input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
+.rc-pick .rc-find-x { position: absolute; right: 0; top: 0; width: 2.75rem; min-width: 0; height: 2.75rem; display: flex; align-items: center; justify-content: center; background: none; border: 0; padding: 0; color: var(--text-muted); cursor: pointer; border-radius: var(--r-md, 8px); }
+.rc-pick .rc-find-x[hidden] { display: none; }
+.rc-pick .rc-find-x:hover { color: var(--text); }
+.rc-pick .rc-find-x:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
 .rc-pick input { font: inherit; font-size: 1rem; box-sizing: border-box; height: 2.75rem; border-radius: var(--r-md, 8px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .6rem; flex: 1; min-width: 0; }
-.rc-find-l { position: absolute; left: 0; right: 0; max-width: 30rem; z-index: 30; margin: .2rem 0 0; padding: .25rem 0; list-style: none; background: var(--surface); border: 1px solid var(--border-g, var(--border)); border-radius: var(--r-md, 8px); box-shadow: 0 8px 24px rgba(0,0,0,.25); max-height: 20rem; overflow-y: auto; }
+.rc-find-l { position: absolute; left: 0; right: 0; max-width: 30rem; z-index: 30; margin: .2rem 0 0; padding: .25rem 0; list-style: none; background: var(--surface); border: 1px solid var(--border-g, var(--border)); border-radius: var(--r-md, 8px); box-shadow: 0 8px 24px rgba(0,0,0,.25); max-height: min(22rem, 60vh); overflow-y: auto; }
 .rc-find-l[hidden] { display: none; }
 .rc-find-l li { padding: .6rem .75rem; cursor: pointer; min-height: 44px; box-sizing: border-box; }
 .rc-find-l li[aria-selected="true"], .rc-find-l li:hover { background: var(--bg); color: var(--brand); }
-.rc-find-l small { display: block; color: var(--text-muted); font-size: var(--fs-xs); }
+.rc-find-l small { display: block; color: var(--text-muted); font-size: 14px; line-height: 1.35; margin-top: .1rem; }
+.rc-find-l li.rc-find-more { cursor: default; min-height: 0; font-size: 14px; color: var(--text-muted); border-top: 1px solid var(--border); padding: .5rem .75rem; }
+.rc-find-l li.rc-find-more:hover { background: none; color: var(--text-muted); }
 .rc-find-m { position: absolute; left: 0; right: 0; bottom: 0; margin: 0; line-height: 1.3rem; font-size: var(--fs-xs); color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rc-pick button:not(.rc-find-x) { min-width: 9.5rem; }
 .rc-pick button { font-weight: 700; cursor: pointer; color: var(--brand); border-color: var(--brand); white-space: nowrap; padding: 0 1rem; }
 .rc-pick input:focus-visible, .rc-pick select:focus-visible, .rc-pick button:focus-visible, .rc-all summary:focus-visible { outline: 2px solid var(--brand); outline-offset: 2px; }
 .rc-all summary { cursor: pointer; font-weight: 600; padding: .6rem 0; margin: .4rem 0; display: list-item; }

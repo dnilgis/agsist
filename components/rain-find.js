@@ -14,7 +14,7 @@
    window.AgRainFind = { match, norm } (node: module.exports, for the tests). */
 (function (root) {
   'use strict';
-  var MAX = 8;
+  var MAX = 40, SHOW = 5;   // match keeps up to MAX; the list shows SHOW rows and says how many more
   var STNAME = { AL: 'alabama', AK: 'alaska', AZ: 'arizona', AR: 'arkansas', CA: 'california', CO: 'colorado', CT: 'connecticut',
     DE: 'delaware', FL: 'florida', GA: 'georgia', HI: 'hawaii', ID: 'idaho', IL: 'illinois', IN: 'indiana', IA: 'iowa',
     KS: 'kansas', KY: 'kentucky', LA: 'louisiana', ME: 'maine', MD: 'maryland', MA: 'massachusetts', MI: 'michigan',
@@ -91,17 +91,26 @@
     var msg = doc.createElement('p');
     msg.className = 'rc-find-m'; msg.setAttribute('aria-live', 'polite');
     form.appendChild(list); form.appendChild(msg);
+    /* our own clear button (the browser's stock one is blue and off the palette); the input sits in a wrapper */
+    var wrap = doc.createElement('span'), clr = doc.createElement('button');
+    wrap.className = 'rc-find-w'; input.parentNode.insertBefore(wrap, input); wrap.appendChild(input);
+    clr.type = 'button'; clr.className = 'rc-find-x'; clr.hidden = true; clr.setAttribute('aria-label', 'Clear');
+    clr.innerHTML = '<svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 3.5l9 9M12.5 3.5l-9 9" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>';
+    wrap.appendChild(clr);
     input.setAttribute('role', 'combobox'); input.setAttribute('aria-autocomplete', 'list');
     input.setAttribute('aria-controls', lid); input.setAttribute('aria-expanded', 'false');
 
     function say(t) { msg.textContent = t || ''; }
+    function shown() { return hits.slice(0, SHOW); }
     function close() { list.hidden = true; input.setAttribute('aria-expanded', 'false'); input.removeAttribute('aria-activedescendant'); act = -1; }
     function show() {
       if (!hits.length) { close(); return; }
-      list.innerHTML = hits.map(function (h, i) {
+      var more = hits.length - SHOW, q = norm(input.value), sq = splitState(input.value);
+      list.innerHTML = shown().map(function (h, i) {
         return '<li role="option" id="' + lid + '-' + i + '" aria-selected="' + (i === act) + '" data-i="' + i + '">' + esc(h.name) + ', ' + h.st
-          + (h.near ? ' <small>no gauge with a full year here; nearest: ' + esc(h.near) + '</small>' : '') + '</li>';
-      }).join('');
+          + (h.near ? ' <small>No station with a full year. Opens ' + esc(h.near) + ', the nearest.</small>' : '') + '</li>';
+      }).join('') + (more > 0 ? '<li role="presentation" class="rc-find-more">' + more + ' more: '
+        + (sq.st ? 'type more of the name' : 'add the state, e.g. ' + esc(q) + ' ' + hits[0].st.toLowerCase()) + '</li>' : '');
       list.hidden = false; input.setAttribute('aria-expanded', 'true');
       if (act >= 0) input.setAttribute('aria-activedescendant', lid + '-' + act); else input.removeAttribute('aria-activedescendant');
     }
@@ -123,6 +132,7 @@
     function update() {
       var v = input.value.trim(), my = ++seq;
       act = -1;
+      clr.hidden = !input.value;
       if (/^\d{5}$/.test(v)) { hits = []; close(); zip(v).then(function (h) { if (h) { hits = [h]; show(); } }); return; }
       say('');
       if (norm(v).length < 2) { hits = []; close(); return; }
@@ -140,10 +150,12 @@
       if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
         if (!hits.length) return;
         ev.preventDefault();
-        act = ev.key === 'ArrowDown' ? (act + 1) % hits.length : (act <= 0 ? hits.length - 1 : act - 1);
+        var n = shown().length;
+        act = ev.key === 'ArrowDown' ? (act + 1) % n : (act <= 0 ? n - 1 : act - 1);
         show();
       } else if (ev.key === 'Escape') { close(); }
     });
+    clr.addEventListener('click', function () { input.value = ''; hits = []; say(''); close(); clr.hidden = true; input.focus(); });
     list.addEventListener('mousedown', function (ev) { ev.preventDefault(); });
     list.addEventListener('click', function (ev) {
       var li = ev.target.closest ? ev.target.closest('li[data-i]') : null;
