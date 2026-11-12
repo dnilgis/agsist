@@ -134,9 +134,10 @@
     lo -= pad; hi += pad;
     var nt = W / fs < 40 ? 4 : 5, tk = ticks(lo, hi, nt), st = tk.length > 1 ? tk[1] - tk[0] : 1;   // the axis runs to a tick at both ends
     lo = Math.min(lo, Math.floor(lo / st) * st); hi = Math.max(hi, Math.ceil(hi / st) * st);
+    var tks = []; for (var tv = lo; tv <= hi + st * 1e-6; tv += st) tks.push(+tv.toFixed(6));   // the drawn ticks: the same step, end to end
     var L = Math.round(fs * (W < 420 ? 3.4 : 3.9)), R = Math.round(fs * 0.8) + (gutter || 0), T = Math.round(fs * 3), B = Math.round(fs * 2.2), lab = Math.round(fs * 1.4);
     var t0 = utc(view.from), dt = Math.max(utc(view.to) - t0, 864e5);
-    return { L: L, R: R, T: T, B: B, W: W, H: H, fs: fs, lo: lo, hi: hi, nt: nt, base: H - B - fs * 0.6, right: W - R,
+    return { L: L, R: R, T: T, B: B, W: W, H: H, fs: fs, lo: lo, hi: hi, nt: nt, tk: tks, base: H - B - fs * 0.6, right: W - R,
       x: function (d) { return L + (utc(d) - t0) / dt * (W - L - R); },
       y: function (v) { return T + (hi - v) / (hi - lo) * (H - T - B - lab); },
       day: function (px) { return isoOf(t0 + Math.round((px - L) / (W - L - R) * dt / 864e5) * 864e5); } };
@@ -242,14 +243,21 @@
     var halo = 'paint-order:stroke;stroke:' + P.surf + ';stroke-width:' + (fs / 3.5).toFixed(1) + 'px;stroke-linejoin:round;';
     o.push('<svg xmlns="http://www.w3.org/2000/svg" class="agc-svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '"' + (opt.label ? ' role="img" aria-label="' + esc(opt.label) + '"' : '') + '>');
     o.push(txt(g.L - fs * 0.5, fs * 1.2, cfg.unit || '', f + 'fill:' + P.mut, 'end'));
-    ticks(g.lo, g.hi, g.nt).forEach(function (v) {
+    g.tk.forEach(function (v) {
       var y = g.y(v);
       o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(y) + '" y2="' + f1(y) + '" style="stroke:' + P.grid + ';stroke-width:1"/>');
       o.push(txt(g.L - fs * 0.5, y + fs * 0.35, cfg.tick ? cfg.tick(v) : '$' + (v % 1 ? v.toFixed(1) : v), f + 'fill:' + P.dim, 'end'));
     });
     o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(g.base) + '" y2="' + f1(g.base) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
+    // dates under the axis: evenly spread, each moved to the nearest report day, never closer than a label's room
     var days = Math.round((utc(view.to) - utc(view.from)) / 864e5), want = Math.min(days + 1, (g.right - g.L) / fs < 34 ? 3 : 6), dts = [];
-    for (var i = 0; i < want; i++) dts.push(isoOf(utc(view.from) + Math.round(i * days / Math.max(1, want - 1)) * 864e5));
+    var rep0 = (view.series.filter(function (s) { return !s.faint && s.points.length; })[0] || { points: [] }).points;
+    for (var i = 0; i < want; i++) {
+      var dd = isoOf(utc(view.from) + Math.round(i * days / Math.max(1, want - 1)) * 864e5), np = rep0.length ? near(rep0, dd) : null;
+      if (np) dd = np.d;
+      if (!dts.length || (dd > dts[dts.length - 1] && g.x(dd) - g.x(dts[dts.length - 1]) >= fs * 4.4)) dts.push(dd);
+      else if (i === want - 1 && dts.length > 1 && dd > dts[dts.length - 1]) dts[dts.length - 1] = dd;   // the latest day always closes the axis
+    }
     dts.forEach(function (d, j) { var x = g.x(d); o.push(txt(x, H - fs * 0.5, short(d), f + 'fill:' + P.dim, j === dts.length - 1 ? 'end' : (x - g.L < fs * 2 ? 'start' : 'middle'))); });
     // the top row, right: a faint line's key, or the note that it is not held yet
     var kx = g.right;
