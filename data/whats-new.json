@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-12-arc-plc-signup-source",
+   "date": "2026-11-12",
+   "title": "ARC/PLC: signup dates show their source",
+   "line": "The ARC/PLC signup box, with the Dec 11 deadline for 2026, now names where the dates come from: FSA's ARC/PLC page and its Sep 15, 2026 release.",
+   "link": "/arc-plc"
+  },
+  {
    "id": "2026-11-12-bin-hopper-eave",
    "date": "2026-11-12",
    "title": "Grain bin calculator: hopper tape readings",
@@ -9,11 +16,32 @@
    "link": "/grain-bin-calculator"
   },
   {
+   "id": "2026-11-12-cash-bids-harvest",
+   "date": "2026-11-12",
+   "title": "Cash bids count harvest bids that are still open",
+   "line": "A Harvest 2026 bid now counts as a current bid through December, so a 2027 contract is no longer shown as your best or soonest price.",
+   "link": "/cash-bids"
+  },
+  {
    "id": "2026-11-12-conditions-state-harvest",
    "date": "2026-11-12",
    "title": "Crop conditions: every state's harvest pace",
    "line": "The state harvest table on the conditions page now lists every state USDA reports, corn and soybeans, against its five-year average. The title names the harvest week.",
    "link": "/conditions"
+  },
+  {
+   "id": "2026-11-12-farm-bill-dates",
+   "date": "2026-11-12",
+   "title": "Farm bill: past dates drop off",
+   "line": "The farm bill page's next 90 days list and status lines now drop a date once it has passed, so election day and the Senate's return no longer show as coming up.",
+   "link": "/farm-bill"
+  },
+  {
+   "id": "2026-11-12-home-numbers",
+   "date": "2026-11-12",
+   "title": "Home page prices, checked",
+   "line": "Every market row shows its front month with that contract's own change and trade time, rice and cattle print to the tick, and price alerts name the contract.",
+   "link": "/#f-prices"
   },
   {
    "id": "2026-11-12-farm-sale-map",
