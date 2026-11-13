@@ -380,7 +380,7 @@
     var S = { from: m.y0, to: m.y1, county: null, hover: null, tap: null, list: null, byName: {}, loading: null, from0: '' };
     var sel = D.getElementById('rc-county'), rec = D.getElementById('rc-rec'), key = D.getElementById('rc-key-c'), lastW = 0, cur = null;
     var rank = function (y, v) { if (!S.list) return null; var all = []; S.list.forEach(function (c) { var w = c.v[y - m.y0]; if (w != null) all.push(w); }); return rankOf(all, v); };
-    var say = function (y, rest) { read.textContent = readout(m, y, { county: S.county, tap: S.tap, rank: rank, range: rest && S.from !== m.y0 ? S.from + ' to ' + S.to + ' shown.' : '' }); };
+    var say = function (y, rest) { read.textContent = readout(m, y, { county: S.county, tap: S.tap, rank: rank, range: rest && !S.county && S.from !== m.y0 ? S.from + ' to ' + S.to + ' shown.' : '' }); };
     var idle = function () { say(S.tap ? S.tap.y : S.to, !S.tap); };
     function draw(force) {
       var W = Math.round(plot.clientWidth); if (!W || (W === lastW && !force)) return; lastW = W;
