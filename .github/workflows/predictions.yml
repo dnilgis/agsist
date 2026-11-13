@@ -21,6 +21,7 @@ jobs:
   gate:
     if: github.event.workflow_run.name != 'Tick 03' || contains(github.event.workflow_run.display_title, ' predictions.yml ')
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -58,6 +59,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     concurrency:
       group: prediction-bot
       cancel-in-progress: false

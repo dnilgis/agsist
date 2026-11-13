@@ -23,6 +23,7 @@ jobs:
   upstream:
     if: github.event.workflow_run.conclusion != 'skipped'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -42,6 +43,7 @@ jobs:
     needs: upstream
     if: needs.upstream.outputs.go == '1' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       go: ${{ steps.g.outputs.go }}
     steps:
@@ -71,6 +73,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     concurrency:
       group: bake-crop-tour
       cancel-in-progress: false

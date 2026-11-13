@@ -28,6 +28,7 @@ jobs:
   gate:
     if: github.event.workflow_run.name != 'Tick 03' || contains(github.event.workflow_run.display_title, ' wasde-watch.yml ')
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       go: ${{ steps.g.outputs.go }}
     steps:

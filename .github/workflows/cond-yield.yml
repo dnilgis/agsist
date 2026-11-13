@@ -17,6 +17,7 @@ jobs:
   upstream:
     if: github.event.workflow_run.conclusion != 'skipped' && (github.event.workflow_run.name != 'Tick 04' || contains(github.event.workflow_run.display_title, ' cond-yield.yml '))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -36,6 +37,7 @@ jobs:
     needs: upstream
     if: needs.upstream.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
     outputs:

@@ -20,6 +20,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: preship
+  cancel-in-progress: false
+
 jobs:
   preship:
     runs-on: ubuntu-24.04

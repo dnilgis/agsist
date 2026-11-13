@@ -30,6 +30,9 @@ jobs:
     if: github.event.workflow_run.name != 'Tick 04' || contains(github.event.workflow_run.display_title, ' main-checks.yml ')
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    concurrency:
+      group: main-checks-gate
+      cancel-in-progress: false
     permissions:
       actions: read
       contents: read

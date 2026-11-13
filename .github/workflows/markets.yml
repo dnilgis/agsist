@@ -12,6 +12,7 @@ jobs:
   gate:
     if: github.event.workflow_run.name != 'Tick 07' || contains(github.event.workflow_run.display_title, ' markets.yml ')
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -42,6 +43,10 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    concurrency:
+      group: markets
+      cancel-in-progress: false
+    timeout-minutes: 180
     permissions:
       contents: write
 

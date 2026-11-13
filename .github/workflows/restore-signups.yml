@@ -10,6 +10,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: restore-signups
+  cancel-in-progress: false
+
 jobs:
   restore:
     runs-on: ubuntu-latest

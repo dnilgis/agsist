@@ -18,6 +18,7 @@ jobs:
   gate:
     if: github.event.workflow_run.name != 'Tick 13' || contains(github.event.workflow_run.display_title, ' schrader-capture.yml ')
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read

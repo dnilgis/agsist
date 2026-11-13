@@ -39,6 +39,7 @@ jobs:
         contains(github.event.workflow_run.created_at, 'T22:') ||
         contains(github.event.workflow_run.created_at, 'T23:'))))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       contents: read
     outputs:

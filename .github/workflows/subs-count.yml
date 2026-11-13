@@ -6,6 +6,10 @@ on:
 permissions:
   contents: read
 
+concurrency:
+  group: subs-count
+  cancel-in-progress: false
+
 jobs:
   count:
     runs-on: ubuntu-latest

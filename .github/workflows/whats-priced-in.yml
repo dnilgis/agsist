@@ -21,6 +21,7 @@ jobs:
   gate:
     if: github.event.workflow_run.name != 'Tick 08' || contains(github.event.workflow_run.display_title, ' whats-priced-in.yml ')
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -51,6 +52,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     concurrency:
       group: whats-priced-in
       cancel-in-progress: false

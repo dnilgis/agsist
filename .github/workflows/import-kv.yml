@@ -5,9 +5,14 @@ on:
 
 permissions: {}
 
+concurrency:
+  group: import-kv
+  cancel-in-progress: false
+
 jobs:
   import:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     steps:
       - name: Import
         env:
