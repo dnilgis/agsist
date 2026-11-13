@@ -46,7 +46,7 @@
     a.href = ORIGIN + cfg.link + '?utm_source=embed';
     a.target = '_blank';
     a.rel = 'noopener';
-    a.textContent = 'Powered by AGSIST';
+    a.textContent = 'From AGSIST';
     a.style.cssText = 'display:block;max-width:480px;margin:4px auto 0;text-align:right;'
       + 'font:600 11px system-ui,-apple-system,sans-serif;color:#4aab4c;text-decoration:none;';
     node.appendChild(a);

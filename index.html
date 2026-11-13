@@ -250,7 +250,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
     <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
     <h1 class="hb-h1">Cash bids near you, grain prices, the morning briefing and USDA report days. Free.</h1>
-    <h2 class="visually-hidden" id="hb-h">Today at a glance</h2>
+    <h2 class="visually-hidden" id="hb-h">Today</h2>
     <!-- 2026-11-02 (go): the first screen is three jobs, near me, sell grain, my field.
          The futures and every other destination stay on the page, lower down. -->
     <div class="jobs" id="hb-jobs">
