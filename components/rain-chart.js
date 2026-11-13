@@ -1,15 +1,16 @@
 /* components/rain-chart.js: the enhanced rain running-total chart (Nov 13 2026).
  *
- * One drawing for every plain "rain so far" chart on the site: a big headline ("57% less" over "than a normal
- * year so far"), this year's line against the dashed normal line with the gap shaded between them, a three line
- * key (this year so far, a normal year by then, the gap), "Jan 1" and the last day under the axis, the year
- * and the place. Few labels, all large.
+ * One drawing for every plain "rain so far" chart on the site: a big headline (the page's own "43% of normal" over
+ * "so far"), a key in a band above the plot (this year, the normal by the same day, the gap), this year's line
+ * against the dashed normal line with the gap shaded between them, "Jan 1" and the last day under the axis, and the
+ * months' first letters, quiet, under those. Few labels, all large. (The year and the place are the page's own H1.)
  *
  * It is the layout of the Daily's "Print of the day" picture (scripts/print_email_art.js), moved here so the
  * email and the pages share ONE copy of the drawing. The email asks for its own measures (spec EMAIL: 560 wide,
- * the height follows the picture); a page asks for one of two fixed designs (PHONE 400 wide, WIDE 640 wide) whose
- * height never depends on the data, so the page can hold the room from the first paint (CSS aspect-ratio, no
- * layout shift) and the browser scales the drawing to the column.
+ * the year and place under the chart, the height follows the picture); a page asks for one of two fixed designs
+ * (PHONE 400 wide, WIDE 640 wide) whose height never depends on the figures (only on whether the page has a normal
+ * to draw), so the page can hold the room from the first paint (CSS aspect-ratio, no layout shift) and the browser
+ * scales the drawing to the column. A county page's chart is always the phone design (see designFor).
  *
  * It works out no figure of its own: the totals, the normal, the percent and the last day are the page's (data-
  * fields written by the page builder from the same numbers the page prints). The only arithmetic is the gap,
@@ -319,7 +320,7 @@
       var yy = keyed.ky + FS + 2 - Math.round(FS * 0.36) + ri * rowH, X0k = keyed.kx, SW = spec.sw;
       if (r.sw === 'rain') o += '<path d="M' + X0k + ',' + n2(yy) + 'H' + (X0k + SW) + '"' + fp('stroke', 'rain') + ' stroke-width="4.5" stroke-linecap="round" fill="none"/>';
       else if (r.sw === 'usual') o += '<path d="M' + X0k + ',' + n2(yy) + 'H' + (X0k + SW) + '"' + fp('stroke', 'mute') + ' stroke-width="2.5" stroke-dasharray="8 6" fill="none"/>';
-      else o += '<rect x="' + X0k + '" y="' + n2(yy - 8) + '" width="' + SW + '" height="16"' + fp('fill', r.sw === 'wet' ? 'wet' : 'dry') + fp('stroke', r.sw === 'wet' ? 'wetEdge' : 'dryEdge') + ' stroke-width="1"/>';
+      else o += '<rect x="' + X0k + '" y="' + n2(yy - 8) + '" width="' + SW + '" height="16" fill="' + C[r.sw === 'wet' ? 'wet' : 'dry'] + '" stroke="' + C[r.sw === 'wet' ? 'wetEdge' : 'dryEdge'] + '" stroke-width="1"/>';   // (the email's literal colours)
     });
     texts.forEach(function (t) {
       o += '<text x="' + n2(t.x) + '" y="' + n2(t.y) + '"' + (spec.vars ? ' class="rce-f-' + t.fill + '" style="font-family:' + t.fam + '"' : ' font-family="' + t.fam.replace(/"/g, '') + '"') +
@@ -388,7 +389,7 @@
     m.letters = [];
     for (var lm = 0; lm < 12; lm++) {
       var d0 = Math.round((Date.UTC(year, lm, 1) - Date.UTC(year, 0, 1)) / 864e5), d1 = Math.min(Math.round((Date.UTC(year, lm + 1, 1) - Date.UTC(year, 0, 1)) / 864e5), m.xn);
-      if (d0 >= m.xn - 6) break;
+      if (m.xn - d0 < 15) break;   // the last month's letter only once 15 days of it are in (it would crowd the end of the axis)
       m.letters.push((d0 + d1) / 2);
     }
     return m;
