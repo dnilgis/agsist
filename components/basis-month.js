@@ -55,6 +55,11 @@
     /* the futures month most lines hold on the last day: the headline compares only bids on it */
     var conN = {}; lines.forEach(function (l) { var p = held(l, end); if (p && p.con) conN[p.con] = (conN[p.con] || 0) + 1; });
     var refCon = Object.keys(conN).sort(function (a, b) { return conN[b] - conN[a] || (a < b ? -1 : 1); })[0] || '';
+    // the last day is the table's bid, so the headline's futures month is the table's (round 6: Mechanicsburg's log
+    // ends on November futures, its bid today is on January)
+    // (a log that names no futures month for this crop in town is not compared by month at all: Dunlap, Colwell)
+    var named = lines.some(function (l) { return l.line.points.some(function (q) { return q.con; }); });
+    if (today && today.n && today.con && named) refCon = today.con;
     /* a board's futures month on the last day is the table's (today.terms: line key -> "Jan '27"); where the log's last
        point is on another month, the log did not record the move (a change of futures with the cents unchanged is never
        logged), so from the day after that point the line's terms are not known and it leaves the band (round 5); a log that names no
@@ -77,10 +82,11 @@
       if (!keep.length) { days.push({ d: d, gap: true }); continue; }
       var hi = Math.max.apply(null, keep.map(function (x) { return x.v; })), lo = Math.min.apply(null, keep.map(function (x) { return x.v; }));
       var same = keep.filter(function (x) { return !refCon || x.con === refCon; });
+      var hiR = same.length ? Math.max.apply(null, same.map(function (x) { return x.v; })) : null;
       days.push({ d: d, hi: hi, lo: lo, n: keep.length, top: keep.filter(function (x) { return x.v === hi; }).map(function (x) { return x.l.name; }), all: vs,
-                  hiR: same.length ? Math.max.apply(null, same.map(function (x) { return x.v; })) : null, keys: keep.map(function (x) { return x.l.key; }) });
+                  hiR: hiR, hc: hiR == null ? '' : same.filter(function (x) { return x.v === hiR; })[0].con || '', keys: keep.map(function (x) { return x.l.key; }) });
     }
-    if (today && today.n && days.length && days[days.length - 1].d === end) { var pv = days[days.length - 1]; days[days.length - 1] = { d: end, hi: today.hi, lo: today.lo, n: today.n, top: today.top, all: [], hiR: today.hi, keys: pv.keys || [] }; }
+    if (today && today.n && days.length && days[days.length - 1].d === end) { var pv = days[days.length - 1]; days[days.length - 1] = { d: end, hi: today.hi, lo: today.lo, n: today.n, top: today.top, all: [], hiR: today.hi, hc: today.con || '', keys: pv.keys || [] }; }
     /* the changeovers: a day when two or more lines (or three in ten posting) moved to a new delivery month or a new
        futures month. They are marked on the picture; the headline never compares across a futures change, nor across a
        delivery change that moved the best bid 5 cents or more that day (round 3: soybeans "rose" 30 cents because
@@ -107,6 +113,13 @@
       var jump = b4 && at && !b4.gap && !at.gap && b4.hiR != null && at.hiR != null ? Math.abs(at.hiR - b4.hiR) : 0;
       if ((mk.kind === 'con' && mk.to === refCon) || (mk.kind === 'dm' && jump >= 5)) { if (mk.d > start) start = mk.d; mk.cut = true; }
     });
+    /* the stretch the headline tells runs back from the last day only while the log has a bid on today's futures month:
+       a day with bids but none on it (the only lines on another month) ends it (round 6: never join today's bid to a
+       stretch on another futures month). Days with no bid at all do not end it. */
+    if (refCon) for (var bi = days.length - 1; bi >= 0 && days[bi].d > start; bi--) {
+      var bd = days[bi];
+      if (!bd.gap && bd.hiR == null) { start = addDay(bd.d, 1); break; }
+    }
     /* from the cut on, the band holds only bids on the headline's futures month, so its top edge is the headline's best;
        a line still on another futures month leaves it and is named (round 4: Linn Co-op on November futures drew the
        gold line at 11 under under a headline about January futures) */
@@ -114,42 +127,43 @@
     if (start > first) days.forEach(function (x, i) {
       if (x.gap || x.d < start || !x.all.length) return;
       var on = x.all.filter(function (z) { return z.con === refCon && (!strays[z.l.key] || strays[z.l.key].d.indexOf(x.d) < 0); });
-      x.all.forEach(function (z) { if (z.con !== refCon && terms[z.l.key] !== refCon) (off[z.l.key] = off[z.l.key] || { name: z.l.name, con: z.con }); });
+      x.all.forEach(function (z) { if (z.con !== refCon && terms[z.l.key] !== refCon && !unknown[z.l.key]) (off[z.l.key] = off[z.l.key] || { name: z.l.name, con: z.con }); });
       if (!on.length) { days[i] = { d: x.d, gap: true }; return; }
       var h2 = Math.max.apply(null, on.map(function (z) { return z.v; }));
-      days[i] = { d: x.d, hi: h2, lo: Math.min.apply(null, on.map(function (z) { return z.v; })), n: on.length, top: on.filter(function (z) { return z.v === h2; }).map(function (z) { return z.l.name; }), all: x.all, hiR: h2, keys: on.map(function (z) { return z.l.key; }) };
+      days[i] = { d: x.d, hi: h2, lo: Math.min.apply(null, on.map(function (z) { return z.v; })), n: on.length, top: on.filter(function (z) { return z.v === h2; }).map(function (z) { return z.l.name; }), all: x.all, hiR: h2, hc: refCon, keys: on.map(function (z) { return z.l.key; }) };
     });
     var offList = Object.keys(off).map(function (k) { return off[k]; });
     var win = days.filter(function (x) { return !x.gap && x.d >= start && x.hiR != null; });
     var keysIn = {}; days.forEach(function (x) { if (!x.gap && x.d >= start) (x.keys || []).forEach(function (k) { keysIn[k] = 1; }); });
     var nIn = Object.keys(keysIn).length || lines.length;
-    var sl = Object.keys(strays).map(function (k) { var s = strays[k], a = s.d[0], b = s.d[s.d.length - 1]; return s.l.name + ' at ' + word(s.v[0]) + (a === b ? ', ' + dd(a) : ', ' + dd(a) + ' to ' + dd(b)); });
+    var sl = Object.keys(strays).filter(function (k) { return !unknown[k] && !off[k]; }).map(function (k) { var s = strays[k], a = s.d[0], b = s.d[s.d.length - 1]; return s.l.name + ' at ' + word(s.v[0]) + (a === b ? ', ' + dd(a) : ', ' + dd(a) + ' to ' + dd(b)); });
     if (!win.length) return { lines: lines, days: days, marks: marks, head: 'No ' + adj + ' basis logged in ' + town + ' since ' + dd(first), take: '', first: first, end: end, strays: sl, start: start, n: 0 };
     var logged = days.filter(function (x) { return !x.gap; });
-    if (logged.length < 3) {
-      var last = logged[logged.length - 1];
-      return { lines: lines, days: days, marks: [], short: true, head: 'Logged since ' + dd(logged[0].d) + ': ' + word(last.hi) + '. Too short to chart yet.', take: '', cardTake: '', first: first, end: end, strays: sl, start: start, n: last.n, off: [] };
+    if (logged.length < 3 || win.length < 3) {
+      var onTerms = logged.length >= 3, last = onTerms ? win[win.length - 1] : logged[logged.length - 1];
+      return { lines: lines, days: days, marks: [], short: true, head: onTerms && conWord(refCon) && win.length === 1 && win[0].d === end ? 'Today: ' + word(last.hiR) + ' on ' + conWord(refCon) + ' futures. Too few days logged on ' + conWord(refCon) + ' futures to chart yet.' :
+        (onTerms && conWord(refCon) ? 'Logged on ' + conWord(refCon) + ' futures since ' + dd(win[0].d) : 'Logged since ' + dd(logged[0].d)) + ': ' + word(onTerms ? last.hiR : last.hi) + '. Too short to chart yet.', take: '', cardTake: '', first: first, end: end, strays: sl, start: start, n: last.n, off: [] };
     }
-    var now = win[win.length - 1], mn = win[0], mx = win[0], st0 = win[0];
+    var now = win[win.length - 1], mn = win[0], mx = win[0], st0 = win[0], told;
     win.forEach(function (x) { if (x.hiR < mn.hiR) mn = x; if (x.hiR > mx.hiR) mx = x; });
     // after a changeover the sentence opens on the stretch it compares: "Since Nov 2, on January futures, the best ..."
     var rise = now.hiR - mn.hiR, fall = mx.hiR - now.hiR, head, cut = start > first;
     var base = (cut ? 'Since ' + dd(start) + (conWord(refCon) ? ', on ' + conWord(refCon) + ' futures, the' : ', the') : 'The') + ' best ' + adj + ' bid in ' + town, since = '';
-    if (mn !== st0 && mn !== now && Math.abs(now.hiR - st0.hiR) <= 5 && st0.hiR - mn.hiR >= 5 && now.hiR - mn.hiR >= 5) head = base + ' fell to ' + word(mn.hiR) + ' on ' + dd(mn.d) + ' and is back to ' + word(now.hiR) + since + '.';
-    else if (rise >= 3 && rise >= fall) head = base + ' rose from ' + word(mn.hiR) + ' on ' + dd(mn.d) + ' to ' + word(now.hiR) + ' now' + since + '.';
-    else if (fall >= 3) head = base + ' fell from ' + word(mx.hiR) + ' on ' + dd(mx.d) + ' to ' + word(now.hiR) + ' now' + since + '.';
-    else head = base + (mn.hiR === mx.hiR ? ' held at ' + word(mn.hiR) : ' held between ' + word(mn.hiR) + ' and ' + word(mx.hiR)) + (cut ? '.' : ' since ' + dd(win[0].d) + '.');
+    if (mn !== st0 && mn !== now && Math.abs(now.hiR - st0.hiR) <= 5 && st0.hiR - mn.hiR >= 5 && now.hiR - mn.hiR >= 5) told = [mn, now], head = base + ' fell to ' + word(mn.hiR) + ' on ' + dd(mn.d) + ' and is back to ' + word(now.hiR) + since + '.';
+    else if (rise >= 3 && rise >= fall) told = [mn, now], head = base + ' rose from ' + word(mn.hiR) + ' on ' + dd(mn.d) + ' to ' + word(now.hiR) + ' now' + since + '.';
+    else if (fall >= 3) told = [mx, now], head = base + ' fell from ' + word(mx.hiR) + ' on ' + dd(mx.d) + ' to ' + word(now.hiR) + ' now' + since + '.';
+    else told = [mn, mx], head = base + (mn.hiR === mx.hiR ? ' held at ' + word(mn.hiR) : ' held between ' + word(mn.hiR) + ' and ' + word(mx.hiR)) + (cut ? '.' : ' since ' + dd(win[0].d) + '.');
     // at most four lines on a phone (about 170 characters)
     // the elevators drawn in the band in the stretch (the last day is the table's, every bid in town)
     var inBand = {}; days.forEach(function (x) { if (!x.gap && x.d >= start && x.d < end) (x.keys || []).forEach(function (k) { inBand[k] = 1; }); });
     var nBand = Object.keys(inBand).length;
     var take = (nIn === 1 ? 'One elevator in town posting since ' + dd(start) + '; the gold line is its bid.' :
-      cut && nBand < nIn ? nBand + ' of ' + nIn + ' elevators posting since ' + dd(start) + ' are logged on ' + (conWord(refCon) || 'these') + ' futures; the band runs from their lowest to highest bid.' :
+      cut && nBand < nIn ? nBand + ' of ' + nIn + ' elevators posting since ' + dd(start) + (nBand === 1 ? ' is' : ' are') + ' logged on ' + (conWord(refCon) || 'these') + ' futures; ' + (nBand === 1 ? 'the gold line is its bid.' : 'the band runs from their lowest to highest bid.') :
       'Lowest to highest bid in town each day, ' + nIn + ' elevators posting since ' + dd(start) + '; top edge: the best.') +
       (marks.length ? ' Dotted lines: a new delivery or futures month.' : '') + (start === first && refCon && conWord(refCon) ? ' All on ' + conWord(refCon) + ' futures.' : '');
     var cardTake = take;
     var unk = Object.keys(unknown).map(function (k) { return unknown[k]; });
-    return { lines: lines, days: days, marks: marks, off: offList, unknown: unk, nBand: nBand, head: head, take: take, cardTake: cardTake, first: first, end: end, now: now, strays: sl, start: start, n: nIn, refCon: refCon };
+    return { lines: lines, days: days, marks: marks, off: offList, unknown: unk, nBand: nBand, head: head, told: told, take: take, cardTake: cardTake, first: first, end: end, now: now, strays: sl, start: start, n: nIn, refCon: refCon };
   }
 
   /* -> { svg, x(d), day(px) } at W x H. opt: { card, fs, show: {key: 1}, state: {median, lo, hi, n, label, name}, hover } */
@@ -265,9 +279,12 @@
   }
 
   function noteText(m, stt) {
+    // one reason per board, and no brackets without a month in them (round 6: "Viserion Grain ()")
+    var offK = (m.off || []).filter(function (z) { return conWord(z.con); }), offU = (m.off || []).filter(function (z) { return !conWord(z.con); });
     return BD.hy('Each elevator’s basis for its nearest open delivery month, logged on the days it changed; it holds flat between changes. When a month closes the next one takes over, so a step there is partly a new month. ' +
         ((m.marks || []).length ? 'Dotted lines: ' + m.marks.map(function (k) { return k.text; }).join('; ') + '. ' : '') +
-        ((m.off || []).length ? 'Not in the band from ' + dd(m.start) + ', on another futures month: ' + m.off.map(function (z) { return z.name + ' (' + conWord(z.con) + ')'; }).join('; ') + '. ' : '') +
+        (offK.length ? 'Not in the band from ' + dd(m.start) + ', on another futures month: ' + offK.map(function (z) { return z.name + ' (' + conWord(z.con) + ')'; }).join('; ') + '. ' : '') +
+        (offU.length ? 'Not in the band from ' + dd(m.start) + ', futures month not logged: ' + offU.map(function (z) { return z.name; }).join('; ') + '. ' : '') +
         ((m.unknown || []).length ? 'Terms not logged, so not in the band: ' + m.unknown.map(function (z) { return z.name + ', ' + dd(z.from) + (z.to !== z.from ? ' to ' + dd(z.to) : '') + ' (on ' + conWord(z.con) + ' futures on ' + dd(m.end) + ')'; }).join('; ') + '. ' : '') +
         (m.strays.length ? 'Kept out of the band, far from the others: ' + m.strays.join('; ') + '. ' : '') +
         (stt ? 'Bracket: ' + stt.name + ' today, ' + stt.n + ' bids against ' + stt.label + ' futures, middle ' + word(stt.median) + '. ' : '') +
