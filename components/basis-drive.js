@@ -660,7 +660,7 @@
         if (hist) hist.hidden = v !== 'hist';
         if (v === 'hist' && MONTH_V2) month();
         else if (v === 'hist') { var dt = hist && hist.querySelector('details'); if (dt && !dt.open) dt.open = true; }   // the history box, as it has been
-        else if (p) { var st = story(p, cfg); head.textContent = hy(st.head); take.textContent = hy(st.take); }
+        else draw(true);   // back on the distance view: drawn again for the crop pressed now (a redraw is skipped while hidden)
         ga('basis_drive_view');
       });
     });

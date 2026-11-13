@@ -88,6 +88,13 @@
     if ((m = /^([A-Z]{3})[A-Z]*\s+'?(\d{2})\b/.exec(t)) && (mi = MM.indexOf(m[1])) >= 0) return MON[mi] + " '" + m[2];
     return '';
   }
+  /* the log's run time -> its day in Central time, the network's day (Nov 13, 2026: a run at 02:02 UTC on Nov 13 is the
+     evening of Nov 12; the box named a day that had not started). US DST rule, no Intl needed under node. */
+  function ctDay(iso) {
+    var t = new Date(iso); if (isNaN(t)) return String(iso || '').slice(0, 10);
+    var y = t.getUTCFullYear(), a = Date.UTC(y, 2, 8 + (7 - new Date(Date.UTC(y, 2, 8)).getUTCDay()) % 7, 8), b = Date.UTC(y, 10, 1 + (7 - new Date(Date.UTC(y, 10, 1)).getUTCDay()) % 7, 7);
+    return new Date(t.getTime() - (t.getTime() >= a && t.getTime() < b ? 5 : 6) * 36e5).toISOString().slice(0, 10);
+  }
   function dayText(d) { return MON[+d.slice(5, 7) - 1] + ' ' + (+d.slice(8, 10)); }
   function fullDay(d) { return dayText(d) + ', ' + d.slice(0, 4); }
   function monText(dm) { return MON[+dm.slice(5, 7) - 1] + (dm.slice(0, 4) === REF_YEAR ? '' : ' ' + dm.slice(0, 4)); }
@@ -195,7 +202,7 @@
   /* -> [{ crop, label, lines: [{ key, name, full, line }], hidden, end, from }] */
   function crops(data, boards, town, max, st) {
     max = max || LINES_MAX;
-    var end = String(data.generated || '').slice(0, 10), out = [], lab = labels(boards, town, st), sn = (names().states || {})[String(st || '').toUpperCase()];
+    var end = ctDay(data.generated), out = [], lab = labels(boards, town, st), sn = (names().states || {})[String(st || '').toUpperCase()];
     var place = town ? town + (sn ? ', ' + sn : '') : '';
     CROPS.forEach(function (c) {
       var lines = [];
@@ -331,7 +338,7 @@
     var boards = [];
     try { boards = JSON.parse(box.getAttribute('data-boards') || '[]'); } catch (e) { boards = []; }
     if (!data || !data.series) { body.innerHTML = '<p class="cbt-sub">The basis log could not be loaded. Try again later.</p>'; return []; }
-    var end = String(data.generated || '').slice(0, 10), town = box.getAttribute('data-town') || townOf(boards);
+    var end = ctDay(data.generated), town = box.getAttribute('data-town') || townOf(boards);
     var from = /^\d{4}-\d{2}-\d{2}$/.test(String(data.publicFrom || '')) ? data.publicFrom : '';
     if (/^\d{4}/.test(end)) REF_YEAR = end.slice(0, 4);
     var st = String(box.getAttribute('data-basis-hist') || '').toUpperCase();
@@ -392,7 +399,7 @@
   }
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, lineOf: lineOf, crops: crops, story: story, config: config, heldOn: heldOn, labels: labels, townOf: townOf, footOf: footOf, render: render };
+    module.exports = { ctDay: ctDay, normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, lineOf: lineOf, crops: crops, story: story, config: config, heldOn: heldOn, labels: labels, townOf: townOf, footOf: footOf, render: render };
   } else if (document.readyState === 'loading') {
     window.CbBasisHist = { crops: crops, heldOn: heldOn, labels: labels };   // the town page's month view (components/basis-month.js) reads the log the same way
     document.addEventListener('DOMContentLoaded', init);
