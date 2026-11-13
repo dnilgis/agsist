@@ -31,8 +31,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <style>
@@ -48,21 +48,21 @@
     .sb b{color:var(--text)}
     .sb .fine{font-size:.86rem;color:var(--text-muted)}
     .sb .src{font-size:.84rem;color:var(--text-muted)}
-    .sb-box{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:.9rem 1rem;margin:0 0 .6rem}
+    .sb-box{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:.9rem 1rem;margin:0 0 .6rem}
     .sb-empty h2{margin:0 0 .4rem;font-size:1.25rem}
     .sb-empty p{margin:0 0 .5rem}
     .sb-loc{display:flex;flex-wrap:wrap;gap:.5rem .6rem;align-items:center;margin:0 0 .6rem}
-    .sb-loc input{width:7rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem}
+    .sb-loc input{width:7rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-size:1rem}
     .sb-sel{display:inline-flex;align-items:center;gap:.4rem;font-size:.88rem;color:var(--text-muted)}
-    .sb-sel select{min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem}
-    .sb-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
+    .sb-sel select{min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-size:1rem}
+    .sb-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
     .sb-btn.go{background:var(--gold-fill);color:#111;border-color:var(--gold-fill)}
     .sb-ctl{display:flex;flex-wrap:wrap;gap:.5rem .8rem}
-    .sb-seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:100%}
+    .sb-seg{display:inline-flex;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;max-width:100%}
     .sb-seg button{min-height:42px;padding:0 .8rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
     .sb-seg button+button{border-left:1px solid var(--border)}
     .sb-seg button[aria-pressed="true"]{background:var(--gold-fill);color:#111}
-    .sb-glance{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;background:var(--surface);padding:.6rem .85rem;margin:.6rem 0 .8rem;font-size:.9rem;line-height:1.5}
+    .sb-glance{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-md);background:var(--surface);padding:.6rem .85rem;margin:.6rem 0 .8rem;font-size:.9rem;line-height:1.5}
     .sb-glance .sb-gh{margin:0 0 .3rem;color:var(--text-dim)}.sb-glance .sb-gh b{color:var(--text)}
     .sb-glance ul{margin:0;padding:0;list-style:none}.sb-glance li{margin:.15rem 0;color:var(--text-dim)}.sb-glance li b{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:700}
     .sb-glance li b:first-child{font-family:inherit}
@@ -78,17 +78,17 @@
     .sb-status{font-size:.86rem;color:var(--text-muted);margin:.5rem 0 0}
     .sb-status.err{color:var(--red)}
     .sb-status:empty{display:none}
-    .sb-card{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:.8rem 1rem .4rem;margin:0 0 1rem}
+    .sb-card{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);padding:.8rem 1rem .4rem;margin:0 0 1rem}
     .sb-card h3{margin:0;font-size:1.08rem;color:var(--text)}
     .sb-card .sb-where{margin:0 0 .3rem;font-size:.86rem;color:var(--text-muted)}
     .sb-card .sb-sale{margin:0 0 .4rem;font-size:.9rem}
-    .sb-old{display:inline-block;margin-left:.3rem;padding:0 .4rem;border:1px solid var(--gold);border-radius:6px;font-size:.78rem;color:var(--gold)}
+    .sb-old{display:inline-block;margin-left:.3rem;padding:0 .4rem;border:1px solid var(--gold);border-radius:var(--r-md);font-size:.78rem;color:var(--gold)}
     .sb-none{font-size:.9rem}
     .sb-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
     .sb-t{border-collapse:collapse;width:100%;font-size:.88rem;margin:.1rem 0 .5rem}
     .sb-t th,.sb-t td{padding:.4rem .45rem;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
     .sb-t th:first-child{text-align:left}
-    .sb-t thead th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .sb-t thead th{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted);vertical-align:bottom}
     .sb-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
     .sb-t td small,.sb-t th small{display:block;color:var(--text-muted);font-size:.74em;font-weight:400}
     .sb-t thead th small{text-transform:none;letter-spacing:0}
@@ -100,14 +100,14 @@
     .sb-own{border-style:dashed}
     .sb-day{color:var(--text-muted,inherit);font-size:.85rem}
     .sb-barns li{break-inside:avoid;font-size:.9rem}
-    .sb-vog{font-size:.9rem;margin:.1rem 0 .5rem;padding:.45rem .6rem;border-left:3px solid var(--gold);background:var(--bg);border-radius:0 6px 6px 0}
+    .sb-vog{font-size:.9rem;margin:.1rem 0 .5rem;padding:.45rem .6rem;border-left:3px solid var(--gold);background:var(--bg);border-radius:0 var(--r-md) var(--r-md) 0}
     .sb-vogc{scroll-margin-top:84px}
     .sb-vogc h2{margin:0 0 .4rem;font-size:1.15rem}
     .sb-vogc p{margin:0 0 .5rem;font-size:.92rem}
     .sb-vogc input{width:6.5rem}
     .sb-vogc select{max-width:100%}
     .sb-vogc .sb-sel{flex-wrap:wrap}
-    .sb-vogout{padding:.55rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);line-height:1.5}
+    .sb-vogout{padding:.55rem .7rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);line-height:1.5}
     .sb-vogc .src{font-size:.8rem;color:var(--text-muted)}
     .sb-faq details{border-top:1px solid var(--border);padding:.75rem 0}
     .sb-faq details:last-child{border-bottom:1px solid var(--border)}
@@ -176,7 +176,7 @@
       <div id="sb-results"></div>
       <p id="sb-asof" class="src"></p>
 
-      <!-- ai-answer:screwworm --><section class="ai-answer" id="answer-screwworm" aria-labelledby="answer-screwworm-h" data-checked="2026-10-28" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-screwworm-h" style="font-size:1.1rem;margin:0 0 .4rem">What does New World screwworm mean for cattle prices?</h2><p style="margin:0 0 .5rem">The price effect runs through the border: cattle from Mexico were shut out over New World screwworm from November 22, 2024, and USDA then raised its 2025 forecast for 750 to 800 pound feeder steers by $15 per cwt, a forecast, not a measured effect (ERS, December 16, 2024). USDA is now reopening border ports to Mexican cattle in phases: Douglas, AZ on August 24, 2026, Santa Teresa, NM on September 24, Columbus, NM on October 26, and Nogales, AZ planned for November 30. Inside the U.S., APHIS confirmed the first wildlife case on October 21, 2026, an elk on a game ranch in Pecos County, Texas, and Texas is changing its infested zone around it. On October 28, 2026, APHIS confirmed the first case in Arizona, a dog in Cochise County, and set a 20 km infested zone around it. APHIS keeps the case count and the zone map on its status page, linked below.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 28, 2026. Sources: ERS Livestock, Dairy, and Poultry Outlook, Dec 16, 2024 &middot; <a href="https://direct.aphis.usda.gov/animals/animal-health/livestock-and-poultry-disease/stop-screwworm/current-status" rel="noopener" style="text-decoration:underline">APHIS, current status of New World screwworm</a> &middot; <a href="https://direct.aphis.usda.gov/news/agency-announcements/usda-confirms-first-detection-new-world-screwworm-us-wildlife" rel="noopener" style="text-decoration:underline">APHIS, first detection in U.S. wildlife, Oct 21, 2026</a> &middot; <a href="https://direct.aphis.usda.gov/news/agency-announcements/usda-confirms-new-world-screwworm-arizona" rel="noopener" style="text-decoration:underline">APHIS, first detection in Arizona, Oct 28, 2026</a></p></section><!-- /ai-answer:screwworm -->
+      <!-- answer:screwworm --><section class="qa-answer" id="answer-screwworm" aria-labelledby="answer-screwworm-h" data-checked="2026-10-28" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-screwworm-h" style="font-size:1.1rem;margin:0 0 .4rem">What does New World screwworm mean for cattle prices?</h2><p style="margin:0 0 .5rem">The price effect runs through the border: cattle from Mexico were shut out over New World screwworm from November 22, 2024, and USDA then raised its 2025 forecast for 750 to 800 pound feeder steers by $15 per cwt, a forecast, not a measured effect (ERS, December 16, 2024). USDA is now reopening border ports to Mexican cattle in phases: Douglas, AZ on August 24, 2026, Santa Teresa, NM on September 24, Columbus, NM on October 26, and Nogales, AZ planned for November 30. Inside the U.S., APHIS confirmed the first wildlife case on October 21, 2026, an elk on a game ranch in Pecos County, Texas, and Texas is changing its infested zone around it. On October 28, 2026, APHIS confirmed the first case in Arizona, a dog in Cochise County, and set a 20 km infested zone around it. APHIS keeps the case count and the zone map on its status page, linked below.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 28, 2026. Sources: ERS Livestock, Dairy, and Poultry Outlook, Dec 16, 2024 &middot; <a href="https://direct.aphis.usda.gov/animals/animal-health/livestock-and-poultry-disease/stop-screwworm/current-status" rel="noopener" style="text-decoration:underline">APHIS, current status of New World screwworm</a> &middot; <a href="https://direct.aphis.usda.gov/news/agency-announcements/usda-confirms-first-detection-new-world-screwworm-us-wildlife" rel="noopener" style="text-decoration:underline">APHIS, first detection in U.S. wildlife, Oct 21, 2026</a> &middot; <a href="https://direct.aphis.usda.gov/news/agency-announcements/usda-confirms-new-world-screwworm-arizona" rel="noopener" style="text-decoration:underline">APHIS, first detection in Arizona, Oct 28, 2026</a></p></section><!-- /answer:screwworm -->
       <section id="vog" class="sb-box sb-vogc" hidden>
         <h2>Background or sell at weaning?</h2>
         <p>Value of gain is what buyers at one sale paid for each pound a calf added: the heavier class&#x27;s dollars a head minus the lighter class&#x27;s, over the pounds between them. Gain pays when the value of gain is above your cost of gain. Steers or heifers and the grade follow the buttons above.</p>
@@ -302,10 +302,10 @@
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/cattle-auction.js?v=9" defer></script>
-  <script src="/components/feeder-index.js?v=7" defer></script>
-  <script src="/components/cull-cows.js?v=2" defer></script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/feeder-index.js?v=8" defer></script>
+  <script src="/components/cull-cows.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

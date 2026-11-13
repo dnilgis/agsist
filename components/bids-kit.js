@@ -28,7 +28,7 @@
   var QR_CAP = 'Scan for the live bids';
   var NOTICE = 'Not a contract. Call before you haul.';
   var SRC = 'Prices as each elevator posted them on its own bid board, read by the AGSIST elevator network. Times are Central.';
-  var CSS = '/components/bids-kit.css?v=1', QR_JS = '/components/qr.js?v=11';
+  var CSS = '/components/bids-kit.css?v=2', QR_JS = '/components/qr.js?v=11';
   var SK_CSS = '/components/share-kit.css?v=1', SK_JS = '/components/share-kit.js?v=1';
   var CROPS = [['corn', 'Corn'], ['soybeans', 'Soybeans']];
 

@@ -31,7 +31,7 @@
   var NASS_NOTICE = 'This product uses the NASS API but is not endorsed or certified by NASS.';
   var CALC = 'Averages, trends and ratios are calculations by AGSIST.';
   var QR_CAP = 'Scan for this county’s live page';
-  var CSS = '/components/county-print.css?v=2', QR_JS = '/components/qr.js?v=11';
+  var CSS = '/components/county-print.css?v=3', QR_JS = '/components/qr.js?v=11';
   var SK_CSS = '/components/share-kit.css?v=1', SK_JS = '/components/share-kit.js?v=1';
 
   function esc(s) { return SK().esc(s); }

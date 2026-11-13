@@ -24,7 +24,7 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="canonical" href="https://agsist.com/newsletter-block">
@@ -35,16 +35,16 @@
     .nlb a{color:var(--link,var(--brand));text-underline-offset:2px}
     .nlb-pick{display:flex;flex-wrap:wrap;gap:.5rem .8rem;margin:.8rem 0 1rem}
     .nlb-pick label{display:flex;flex-direction:column;gap:.2rem;font-size:.8rem;color:var(--text-muted);flex:1 1 200px;min-width:0}
-    .nlb-pick select{font:inherit;font-size:1rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);width:100%}
-    .nlb-out{min-height:250px;background:#fff;color:#222;border-radius:8px;padding:.6rem .9rem .8rem;margin:.4rem 0 .6rem}
+    .nlb-pick select{font:inherit;font-size:1rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);color:var(--text);width:100%}
+    .nlb-out{min-height:250px;background:#fff;color:#222;border-radius:var(--r-md);padding:.6rem .9rem .8rem;margin:.4rem 0 .6rem}
     .nlb-out p{margin:0 0 .45rem;color:#222}
         .nlb-out .s{font-size:.84rem;color:#555}
     .nlb-act{display:flex;flex-direction:column;gap:.45rem;margin:.6rem 0 .4rem;max-width:420px}
-    .nlb-act button,.nlb-act a{font:inherit;font-size:.95rem;min-height:44px;padding:0 .9rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);cursor:pointer;display:flex;align-items:center;text-decoration:none;text-align:left}
+    .nlb-act button,.nlb-act a{font:inherit;font-size:.95rem;min-height:44px;padding:0 .9rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);color:var(--text);cursor:pointer;display:flex;align-items:center;text-decoration:none;text-align:left}
     .nlb-act button:first-child{background:var(--gold-fill);color:#111;border-color:var(--gold-fill);font-weight:700}
     .nlb-act button[disabled],.nlb-act a[aria-disabled="true"]{opacity:.5;cursor:default;pointer-events:none}
     .nlb-st{min-height:1.4em;font-size:.86rem;color:var(--text-muted);margin:.2rem 0 .8rem}
-    .nlb-img{display:block;width:100%;max-width:600px;height:auto;aspect-ratio:1200/630;border:1px solid var(--border);border-radius:6px;background:var(--surface)}
+    .nlb-img{display:block;width:100%;max-width:600px;height:auto;aspect-ratio:1200/630;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface)}
     .nlb-note{margin:1.5rem 0 0;font-size:.9rem}.nlb-note summary{cursor:pointer;color:var(--text);min-height:44px;display:flex;align-items:center}
     .nlb h2{font-size:1.05rem;margin:1.5rem 0 .4rem;color:var(--text)}
   </style>
@@ -111,7 +111,7 @@
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/newsletter-block.js?v=2" defer></script>
 </body>
 </html>

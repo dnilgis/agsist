@@ -30,8 +30,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <style>
@@ -43,12 +43,12 @@
 .gt p,.gt li{font-size:.96rem;line-height:1.6;color:var(--text-dim)}
 .gt a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
 .gt b,.gt strong{color:var(--text)}
-.gt-kick{font-family:'JetBrains Mono',monospace;font-size:.72rem!important;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)!important;margin:0 0 .35rem}
-.gt-ans{font-size:1.05rem!important;color:var(--text)!important;margin:.2rem 0 .3rem;padding:.7rem .85rem;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;background:var(--surface)}
+.gt-kick{font-family:var(--font-body);font-size:.72rem!important;letter-spacing:0;text-transform:none;color:var(--text-muted)!important;margin:0 0 .35rem}
+.gt-ans{font-size:1.05rem!important;color:var(--text)!important;margin:.2rem 0 .3rem;padding:.7rem .85rem;border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-md);background:var(--surface)}
 .gt-bl{font-size:.92rem!important;color:var(--text)!important;margin:.35rem 0 .3rem}
 .gt-mut{font-size:.82rem!important;color:var(--text-muted)!important}
 .gt-tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:.6rem;margin:.8rem 0 .4rem}
-.gt-tile{border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:.7rem .8rem .65rem;min-width:0}
+.gt-tile{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);padding:.7rem .8rem .65rem;min-width:0}
 .gt-tile p{margin:0}
 .gt-tl{font-size:.8rem!important;color:var(--text-muted)!important;font-weight:600}
 .gt-tv{font-family:'JetBrains Mono',monospace;font-size:1.55rem!important;font-weight:700;color:var(--text)!important;line-height:1.25!important;margin:.15rem 0 .1rem!important}
@@ -56,14 +56,14 @@
 .gt-tc{font-size:.84rem!important;color:var(--text)!important}
 .gt-tm{font-size:.76rem!important;color:var(--text-muted)!important;margin-top:.25rem!important}
 .gt-miss .gt-tv{color:var(--text-muted)!important}
-.gt-old,.gt-bad{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;padding:.05rem .35rem;border-radius:4px;background:rgba(var(--gold-rgb),.18);color:var(--gold)}
+.gt-old,.gt-bad{display:inline-block;font-size:.66rem;font-weight:700;letter-spacing:0;text-transform:none;padding:.05rem .35rem;border-radius:4px;background:var(--surface2);color:var(--text-dim)}
 .gt-up{color:var(--orange)}.gt-dn{color:var(--green)}
-.gt-panel{border:1px solid var(--border);border-radius:10px;background:var(--surface);padding:.75rem .85rem;margin:.7rem 0}
+.gt-panel{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);padding:.75rem .85rem;margin:.7rem 0}
 .gt-panel h3{margin-top:.1rem}
 .gt-v{font-weight:700;color:var(--text)!important;margin:.2rem 0!important}
 .gt-stat{font-family:'JetBrains Mono',monospace;font-size:.76rem!important;color:var(--text-muted)!important;margin:.1rem 0 .4rem!important}
 .gt-tabs{display:flex;gap:.4rem;margin:.6rem 0}
-.gt-tab{font:inherit;font-size:.85rem;padding:.4rem .8rem;border-radius:999px;border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;min-height:36px}
+.gt-tab{font:inherit;font-size:.85rem;padding:.4rem .8rem;border-radius:var(--r-lg);border:1px solid var(--border);background:transparent;color:var(--text-dim);cursor:pointer;min-height:36px}
 .gt-tab[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:#fff}
 .gt-ch{width:100%;height:auto;display:block;overflow:visible}
 .gt-ch text{font-family:'JetBrains Mono',monospace;font-size:10.5px;fill:var(--text-muted)}
@@ -137,8 +137,8 @@
       <p>The elevator's bid is roughly what grain is worth where it is going, minus the cost to get it there. So freight is one of the things inside your basis. Here is how closely the two have moved together, week by week, in regions that ship mostly by river and in regions that ship mostly by rail.</p>
       <div class="gt-tabs" role="group" aria-label="Crop" id="gt-crop"><button type="button" class="gt-tab" data-c="corn" aria-pressed="true">Corn</button><button type="button" class="gt-tab" data-c="soybeans" aria-pressed="false">Soybeans</button></div>
       <div id="gt-conn" aria-live="polite"><p class="gt-mut">Loading the record&hellip;</p></div>
-      <h3>The elevators AGSIST reads, since June 2026</h3>
-      <p>Our own record is the middle basis each week at the elevators we read in each state. It is short: we started keeping it on June 9, 2026. It is shown beside freight here, and will be tested the same way once it has enough weeks.</p>
+      <h3>The elevators AGSIST reads</h3>
+      <p>Our own record is the middle basis each week at the elevators we read in each state. It is short: the record starts June 9, 2026. It is shown beside freight here, and will be tested the same way once it has enough weeks.</p>
       <div id="gt-ours" aria-live="polite"><p class="gt-mut">Loading&hellip;</p></div>
       <p class="gt-mut">Moving together is not the same as one causing the other. Harvest, storage space, a plant bidding nearby and export demand all move basis too, and often at the same time as freight.</p>
     </section>
@@ -349,6 +349,6 @@
   var more=$('gt-more'),moreDone=0;if(more)more.addEventListener('toggle',function(){if(!more.open||moreDone)return;moreDone=1;loadSeries(MORE).then(function(){$('gt-charts-more').innerHTML=MORE.map(card).join('')||'<p class="gt-mut">None of these could be read yet.</p>';});});
 })();
   </script>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
 </body>
 </html>

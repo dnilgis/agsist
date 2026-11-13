@@ -31,8 +31,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <style>
@@ -46,13 +46,13 @@
     .hp a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
     .hp b{color:var(--text)}
     .hp-lede{font-size:1rem!important}
-    .hp-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:0 0 .8rem}
+    .hp-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin:0 0 .8rem}
     .hp-seg[hidden]{display:none}
     .hp-seg button{flex:1 1 0;min-height:44px;padding:0 .5rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
     .hp-seg button+button{border-left:1px solid var(--border)}
     .hp-seg button[aria-pressed="true"]{background:var(--gold-fill);color:#111}
-    .hp-empty{background:var(--surface);border:1px dashed var(--border);border-radius:12px;padding:1rem 1.1rem;color:var(--text-dim)}
-    .hp-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:.8rem 1rem .6rem;margin:0 0 .4rem}
+    .hp-empty{background:var(--surface);border:1px dashed var(--border);border-radius:var(--r-lg);padding:1rem 1.1rem;color:var(--text-dim)}
+    .hp-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:.8rem 1rem .6rem;margin:0 0 .4rem}
     .hp-answer p{margin:0 0 .35rem}
     .hp-k{font-size:.85rem!important;color:var(--text-muted)!important;font-weight:700}
     .hp-big{font-size:clamp(1.9rem,8vw,2.5rem)!important;font-weight:800;line-height:1.1!important;color:var(--text)!important;font-family:'JetBrains Mono',monospace}
@@ -62,7 +62,7 @@
     .hp-fine{font-size:.82rem!important;color:var(--text-muted)!important}
     .hp-warn{color:var(--text)!important;border-left:3px solid var(--gold);padding-left:.5rem}
     .hp-flag{font-family:inherit;font-size:.78rem;color:var(--text-muted);font-style:italic;white-space:normal}
-    .hp-chart{outline-offset:4px;border-radius:6px;touch-action:pan-y}
+    .hp-chart{outline-offset:4px;border-radius:var(--r-md);touch-action:pan-y}
     .hp-chart svg{display:block;height:auto;overflow:visible}
     .hp-line{fill:none;stroke:var(--green);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
     .hp-dot{fill:var(--green);stroke:var(--bg);stroke-width:2}
@@ -72,13 +72,13 @@
     .hp-tip{font-size:.86rem!important;color:var(--text)!important;min-height:1.5em;margin:.2rem 0 .6rem!important}
     .hp-bale{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .7rem;margin:0 0 .5rem!important}
     .hp-bale label{display:inline-flex;align-items:center;gap:.35rem;font-size:.88rem;color:var(--text-dim)}
-    .hp-bale input{width:5.5rem;min-height:42px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
+    .hp-bale input{width:5.5rem;min-height:42px;padding:0 .5rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
     .hp-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
     .hp-t{border-collapse:collapse;width:100%;font-size:.9rem;margin:.2rem 0 .6rem}
     .hp-t caption{text-align:left;font-size:.85rem;color:var(--text-muted);padding:0 0 .3rem}
     .hp-t th,.hp-t td{padding:.45rem .4rem;border-bottom:1px solid var(--border);text-align:right;vertical-align:middle}
     .hp-t th:first-child{text-align:left}
-    .hp-t thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .hp-t thead th{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted);vertical-align:bottom}
     .hp-t thead th button{background:none;border:0;padding:.2rem 0;min-height:36px;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;text-align:inherit}
     .hp-t thead th button[aria-pressed="true"]{color:var(--text)}
     .hp-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
@@ -93,7 +93,7 @@
     .hp .src{font-size:.84rem;color:var(--text-muted);margin-top:1.5rem}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
     .hp-ams h2,.hp #nass{margin-top:1.4rem}
-    .hp-ams-tag{display:inline-block;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:.1rem .4rem;border-radius:5px;background:var(--gold-fill);color:#111;margin-right:.3rem;vertical-align:1px;font-style:normal}
+    .hp-ams-tag{display:inline-block;font-size:.68rem;font-weight:800;text-transform:none;letter-spacing:0;padding:.1rem .4rem;border-radius:var(--r-md);background:var(--gold-fill);color:#111;margin-right:.3rem;vertical-align:1px;font-style:normal}
     .hp-ams-tag-n{background:var(--surface);color:var(--text);border:1px solid var(--border)}
     .hp-ams-empty{padding:.6rem .8rem!important;font-size:.9rem!important;margin:0 0 .4rem!important}
     /* the AMS tables (1,200 to 1,800 px) replace the placeholder after the files land: until then the box holds a
@@ -101,8 +101,8 @@
     #hp-ams-live.hp-ams-wait{min-height:100vh}
     .hp-ams-pick{margin:.2rem 0 .5rem!important}
     .hp-ams-pick label{display:inline-flex;align-items:center;gap:.45rem;font-size:.9rem;color:var(--text-dim)}
-    .hp-ams-pick select{min-height:42px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:.95rem;max-width:15rem}
-    .hp-ams-rep{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:.7rem .8rem .3rem}
+    .hp-ams-pick select{min-height:42px;padding:0 .5rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font:inherit;font-size:.95rem;max-width:15rem}
+    .hp-ams-rep{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:.7rem .8rem .3rem}
     .hp-ams-rep p{margin:0 0 .45rem}
     .hp-ams-k{font-weight:700;color:var(--text)!important;font-size:.95rem!important}
     .hp-ams-when{font-size:.88rem!important;color:var(--text)!important}
@@ -112,7 +112,7 @@
     .hp-ams-rep .hp-ams-t td{white-space:nowrap}.hp-ams-rep .hp-ams-t td.tl{white-space:normal}
     .hp-ams-tn{display:none}
     @media(max-width:520px){.hp-ams-rep .hp-ams-t td{white-space:normal}.hp-ams-t .hp-ams-q{display:none}.hp-ams-tn{display:inline}.hp-ams-t td.tl{min-width:0}.hp-ams-rep{padding:.6rem .5rem .3rem}.hp-ams-t th[scope=row]{font-size:.8rem;width:5.2rem}.hp-ams-t td{font-size:.82rem}}
-    .hp-ams-t tr.hp-ams-g th{background:var(--bg);text-align:left;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--gold)}
+    .hp-ams-t tr.hp-ams-g th{background:var(--bg);text-align:left;font-size:.78rem;font-weight:800;text-transform:none;letter-spacing:0;color:var(--gold)}
     .hp-ams-nass{font-size:.88rem!important;color:var(--text)!important;border-top:1px dashed var(--border);padding-top:.45rem}
     @media(max-width:420px){.hp-t{font-size:.84rem}.hp-t th,.hp-t td{padding:.4rem .25rem}.hp-seg button{font-size:.86rem}}
   </style>
@@ -216,7 +216,7 @@
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/hay-ams.js?v=9" defer></script>
   <script>
 /*hay:start*/
@@ -405,6 +405,6 @@ function haySpark(months, vals, w, h, big) {
     .catch(function () {});
 })();
   </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

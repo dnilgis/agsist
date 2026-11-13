@@ -34,8 +34,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <script src="/components/util.js?v=19"></script>
@@ -50,15 +50,15 @@
     .nr ul{padding-left:1.2rem;margin:.3rem 0 1rem}
     .nr b{color:var(--text)}
     .nr a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
-    .nr-answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:1rem 1.1rem;margin:0 0 1rem}
+    .nr-answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:1rem 1.1rem;margin:0 0 1rem}
     .nr-answer p{margin:.5rem 0 0;color:var(--text)}
     .nr-pair{display:flex;flex-wrap:wrap;gap:.6rem 1.6rem;align-items:flex-end}
-    .nr-k{display:block;font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+    .nr-k{display:block;font-size:.74rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)}
     .nr-num{display:block;font-family:'JetBrains Mono',monospace;font-size:clamp(1.5rem,6vw,2.1rem);font-weight:800;color:var(--text);line-height:1.15}
     .nr-num small{font-size:.9rem;font-weight:600;color:var(--text-dim);font-family:var(--font-body)}
     .nr-gold{color:var(--gold)!important}
     .nr .nr-prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:0 0 .4rem;padding:0;list-style:none}
-    .nr .nr-prices li{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .6rem;font-size:.8rem;line-height:1.35;color:var(--text-muted)}
+    .nr .nr-prices li{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.5rem .6rem;font-size:.8rem;line-height:1.35;color:var(--text-muted)}
     /* the price lines hold their filled height before the price list lands (CLS sweep Nov 10) */
     .nr-wait .nr-answer>p:not(.nr-fine),.nr-wait .nr-prices,.nr-wait [data-nr-ans]{visibility:hidden}
     .nr-answer>p:not(.nr-fine){min-height:82px}.nr .nr-prices{min-height:139px}
@@ -72,29 +72,29 @@
     .nr-t tr.nr-alt th,.nr-t tr.nr-alt td{font-style:italic;color:var(--text-muted)}
     .nr-math summary{cursor:pointer;color:var(--gold);font-weight:600;padding:.3rem 0;min-height:32px}
     .nr-math li{font-size:.85rem;line-height:1.5}
-    .nr-calc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;margin:.6rem 0 1rem}
+    .nr-calc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem;margin:.6rem 0 1rem}
     .nr-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem .8rem}
     .nr-form label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;font-weight:600;color:var(--text-muted)}
     .nr-form label[hidden]{display:none}
     .nr-form .nr-wide{grid-column:1/-1}
-    .nr-form input,.nr-form select{min-height:44px;padding:0 .55rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:1rem;width:100%;box-sizing:border-box}
+    .nr-form input,.nr-form select{min-height:44px;padding:0 .55rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font:inherit;font-size:1rem;width:100%;box-sizing:border-box}
     .nr-form input{font-family:'JetBrains Mono',monospace}
     .nr-big{display:flex;flex-wrap:wrap;gap:.6rem 1.6rem;margin:1rem 0 .6rem}
     .nr-big b{font-family:'JetBrains Mono',monospace;font-size:1.35rem;color:var(--text)}
     .nr-sale{border-top:1px solid var(--border);margin-top:.8rem;padding-top:.6rem}
-    .nr-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:10px;margin:.4rem 0 .8rem;background:var(--surface)}
+    .nr-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);margin:.4rem 0 .8rem;background:var(--surface)}
     .nr-tw:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     .nr-t{border-collapse:collapse;width:100%;font-size:.88rem}
     .nr-tw .nr-t{min-width:600px}
     .nr-t th,.nr-t td{padding:.5rem .6rem;border-bottom:1px solid var(--border);text-align:right}
-    .nr-t thead th{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .nr-t thead th{font-size:.78rem;font-weight:700;text-transform:none;letter-spacing:0;color:var(--text-muted);vertical-align:bottom}
     .nr-t th[scope="row"],.nr-t td.tl,.nr-t thead th:first-child{text-align:left}
     .nr-t th[scope="row"]{font-weight:600;color:var(--text)}
     .nr-t th[scope="row"] span{display:block;font-size:.76rem;font-weight:400;color:var(--text-muted)}
     .nr-t td{font-family:'JetBrains Mono',monospace;color:var(--text);white-space:nowrap}
     .nr-t td.tl{font-family:var(--font-body);color:var(--text-muted);font-size:.8rem;white-space:normal}
     .nr-t td.hi{color:var(--gold);font-weight:700}
-    .nr-t tr.nr-g th{background:var(--bg);text-align:left;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--gold)}
+    .nr-t tr.nr-g th{background:var(--bg);text-align:left;font-size:.78rem;font-weight:800;text-transform:none;letter-spacing:0;color:var(--gold)}
     .nr-res td{white-space:normal}
     .nr-faq details{border-top:1px solid var(--border);padding:.75rem 0}
     .nr-faq details:last-child{border-bottom:1px solid var(--border)}
@@ -241,10 +241,10 @@
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/fert-pick.js?v=1" defer></script>
   <script src="/components/nutrient-removal.js?v=4" defer></script>
-  <script>/* near-coop: the Your area box loads only for a reader with a saved location */try{if(localStorage.getItem('agsist-wx-loc')||localStorage.getItem('agsist_zip')){var s=document.createElement('script');s.src='/components/near-coop.js?v=3';document.head.appendChild(s);}}catch(e){}</script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script>/* near-coop: the Your area box loads only for a reader with a saved location */try{if(localStorage.getItem('agsist-wx-loc')||localStorage.getItem('agsist_zip')){var s=document.createElement('script');s.src='/components/near-coop.js?v=4';document.head.appendChild(s);}}catch(e){}</script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

@@ -422,7 +422,7 @@ window.__fsRead = function (FSX) {
           return;
         }
         var html='<div class="fs-rotation">'+ codes.map(function(code,i){
-          var info = code ? crop(code) : {l:'-',e:'·',c:'#333'};
+          var info = code ? crop(code) : {l:'-',c:'#333'};
           return '<div class="fs-rot-year">'+
             '<div class="fs-rot-chip" aria-hidden="true" style="background:'+hexA(info.c,.18)+';border-color:'+hexA(info.c,.5)+'">'+esc(info.l.charAt(0))+'</div>'+
             '<div class="fs-rot-crop">'+esc(info.l)+'</div>'+

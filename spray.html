@@ -12,13 +12,13 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=28">
-<link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=29">
+<link rel="stylesheet" href="/components/asof.css?v=2">
 <script src="/components/util.js?v=17"></script>
 <script src="/components/asof.js?v=1"></script>
 <script src="/components/nws.js?v=1"></script>
-<link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script><script>/* a saved location: the forecast panel shows and the setup box does not, from first paint (autoLoad swapped them after paint and the page jumped) */try{var _l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if((_l&&_l.lat&&_l.lon)||/[?&]f=-?\d/.test(location.search))document.documentElement.classList.add('spray-has-loc');}catch(e){}</script>
+<link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script><script>/* a saved location: the forecast panel shows and the setup box does not, from first paint (autoLoad swapped them after paint and the page jumped) */try{var _l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if((_l&&_l.lat&&_l.lon)||/[?&]f=-?\d/.test(location.search))document.documentElement.classList.add('spray-has-loc');}catch(e){}</script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -126,7 +126,7 @@ body {
 
 /* ── Hero ─────────────────────────────────────────────────────────── */
 .hero {
-  background: linear-gradient(160deg, var(--bg2) 0%, var(--surface) 100%);
+  background:var(--bg2);
   border-bottom: 2px solid var(--border);
   padding: 3rem 1.5rem 2.5rem;
   padding-left: max(1.5rem, env(safe-area-inset-left));
@@ -145,9 +145,9 @@ body {
 }
 .hero-eyebrow {
   display: inline-flex; align-items: center; gap: .45rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size:0.77rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--green); background: rgba(58,139,60,.06);
+  font-family:var(--font-body);
+  font-size:0.77rem; font-weight: 700; letter-spacing:0; text-transform:none;
+  color:var(--text-dim); background: var(--surface2);
   border: 1px solid rgba(58,139,60,.18); border-radius: 3px;
   padding: .3rem .75rem; margin-bottom: .85rem;
 }
@@ -155,7 +155,7 @@ body {
   font-family:var(--font-display);
   font-size: clamp(1.8rem, 4vw, 3.2rem);
   font-weight: 700; line-height: 1.15; color: var(--text);
-  margin-bottom: .85rem; text-transform: uppercase; letter-spacing: .01em;
+  margin-bottom: .85rem; text-transform:none; letter-spacing:0;
 }
 .hero-title span { color: var(--green); }
 .hero-sub {
@@ -165,20 +165,20 @@ body {
 /* ── Status Panel (hero right) ────────────────────────────────────── */
 .status-panel {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1.5rem; text-align: center;
+  border-radius: var(--r-md,3px); padding: 1.5rem; text-align: center;
   min-width: 0;
   transition: border-color .2s;
 }
 .status-lbl {
   display: flex; align-items: center; justify-content: center; gap: .4rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size:0.77rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  font-family:var(--font-body);
+  font-size:0.77rem; font-weight: 700; letter-spacing:0; text-transform:none;
   color: var(--text-muted); margin-bottom: 1rem;
 }
 .status-icon { font-size: 3.5rem; line-height: 1; margin-bottom: .6rem; }
 .status-main {
   font-family:var(--font-display); font-size: 1.7rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .03em; margin-bottom: .4rem;
+  text-transform:none; letter-spacing:0; margin-bottom: .4rem;
 }
 .status-main.good    { color: var(--green); }
 .status-main.marginal{ color: var(--gold); }
@@ -201,7 +201,7 @@ body {
 /* ── Location Setup Card ──────────────────────────────────────────── */
 .loc-setup {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 2rem; text-align: center;
+  border-radius: var(--r-md,3px); padding: 2rem; text-align: center;
   max-width: 560px; margin: 0 auto 1.5rem;
 }
 .loc-setup h2, .loc-setup h3 { font-size: 1.05rem; font-family: inherit; font-weight: 700; color: var(--text); margin-bottom: .55rem; }
@@ -264,17 +264,17 @@ body {
   flex-shrink: 0;
   width: 2.5rem;
   align-self: stretch;
-  background: linear-gradient(to left, var(--bg, #0e0e0c) 20%, transparent);
+  background:var(--bg, #0e0e0c);
   pointer-events: none;
 }
 .jump-link {
-  font-family: 'JetBrains Mono', monospace;
+  font-family:var(--font-body);
   font-size:0.77rem; font-weight: 700; color: var(--text-muted);
   text-decoration: none; padding: .35rem .75rem;
   border: 2px solid var(--border); border-radius: var(--r-sm, 4px);
   transition: border-color .15s, color .15s;
   white-space: nowrap; flex-shrink: 0;
-  text-transform: uppercase; letter-spacing: .3px;
+  text-transform:none; letter-spacing:0;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
@@ -302,9 +302,9 @@ body {
   margin-bottom: .85rem; flex-wrap: wrap; gap: .5rem;
 }
 .section-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size:0.77rem; font-weight: 700; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--text-muted);
+  font-family:var(--font-body);
+  font-size:0.77rem; font-weight: 700; letter-spacing:0;
+  text-transform:none; color: var(--text-muted);
 }
 .section-link {
   font-size:0.78rem; color: var(--text-muted); background: none;
@@ -322,7 +322,7 @@ body {
 }
 .fcard {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1rem 1.1rem;
+  border-radius: var(--r-md,3px); padding: 1rem 1.1rem;
   transition: border-color .2s;
   min-width: 0;
   overflow: hidden;
@@ -341,15 +341,15 @@ body {
 }
 .fcard-icon { font-size: 1rem; flex-shrink: 0; }
 .fchip {
-  font-family: 'JetBrains Mono', monospace;
-  font-size:0.755rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  font-family:var(--font-body);
+  font-size:0.755rem; font-weight: 700; letter-spacing:0; text-transform:none;
   padding: .18rem .5rem; border-radius: 3px;
   white-space: nowrap; flex-shrink: 0;
 }
-.fchip.good    { background: rgba(58,139,60,.10);  color: var(--green); }
-.fchip.marginal{ background: rgba(var(--gold-rgb),.10);  color: var(--gold); }
-.fchip.poor    { background: rgba(184,76,42,.10);   color: var(--red); }
-.fchip.frozen  { background: rgba(74,143,186,.10);  color: var(--blue); }
+.fchip.good    { background: var(--surface2);  color: var(--green); }
+.fchip.marginal{ background: var(--surface2);  color: var(--gold); }
+.fchip.poor    { background: var(--surface2);   color: var(--red); }
+.fchip.frozen  { background: var(--surface2);  color: var(--blue); }
 .fchip.na      { background: var(--surface2); color: var(--text-muted); }
 .fcard-val {
   font-family:var(--font-display); font-size: 1.9rem; font-weight: 700;
@@ -371,13 +371,13 @@ body {
 /* ── Hourly Spray Window ─────────────────────────────────────────── */
 .window-wrap {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1.1rem;
+  border-radius: var(--r-md,3px); padding: 1.1rem;
   margin-bottom: 1.5rem;
   /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .hourly-scroll child */
 }
 .window-head {
-  font-family: 'JetBrains Mono', monospace;
-  font-size:0.77rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  font-family:var(--font-body);
+  font-size:0.77rem; font-weight: 700; letter-spacing:0; text-transform:none;
   color: var(--text-muted); margin-bottom: .75rem;
 }
 .hourly-scroll {
@@ -394,10 +394,10 @@ body {
   border: 2px solid var(--border); min-width: 58px; text-align: center;
   transition: border-color .15s;
 }
-.hr-item.good     { background: rgba(58,139,60,.05);  border-color: rgba(58,139,60,.22); }
-.hr-item.marginal { background: rgba(var(--gold-rgb),.05); border-color: rgba(var(--gold-rgb),.22); }
-.hr-item.poor     { background: rgba(184,76,42,.05);  border-color: rgba(184,76,42,.22); }
-.hr-item.frozen   { background: rgba(74,143,186,.05); border-color: rgba(74,143,186,.22); }
+.hr-item.good     { background: var(--surface2);  border-color: rgba(58,139,60,.22); }
+.hr-item.marginal { background: var(--surface2); border-color: rgba(var(--gold-rgb),.22); }
+.hr-item.poor     { background: var(--surface2);  border-color: rgba(184,76,42,.22); }
+.hr-item.frozen   { background: var(--surface2); border-color: rgba(74,143,186,.22); }
 .hr-time  { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; color: var(--text-muted); font-weight: 600; }
 .hr-icon  { font-size: 1rem; line-height: 1; }
 .hr-wind  { font-family: 'JetBrains Mono', monospace; font-size:0.775rem; color: var(--text-dim); font-weight: 600; }
@@ -406,10 +406,10 @@ body {
   font-size:0.755rem; font-weight: 700; letter-spacing: .04em;
   padding: .1rem .3rem; border-radius: 3px;
 }
-.hr-badge.good     { background: rgba(58,139,60,.12); color: var(--green); }
-.hr-badge.marginal { background: rgba(var(--gold-rgb),.12); color: var(--gold); }
-.hr-badge.poor     { background: rgba(184,76,42,.12);  color: var(--red); }
-.hr-badge.frozen   { background: rgba(74,143,186,.12); color: var(--blue); }
+.hr-badge.good     { background: var(--surface2); color: var(--green); }
+.hr-badge.marginal { background: var(--surface2); color: var(--gold); }
+.hr-badge.poor     { background: var(--surface2);  color: var(--red); }
+.hr-badge.frozen   { background: var(--surface2); color: var(--blue); }
 .window-legend {
   font-size:0.77rem; color: var(--text-muted); margin-top: .6rem; line-height: 1.5;
 }
@@ -417,13 +417,13 @@ body {
 /* ── Education Section ───────────────────────────────────────────── */
 .edu {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1.5rem; margin-bottom: 1.5rem;
+  border-radius: var(--r-md,3px); padding: 1.5rem; margin-bottom: 1.5rem;
   min-width: 0; overflow: hidden;
 }
 .edu-title {
   font-family:var(--font-body,'Inter',system-ui,sans-serif);
-  font-size:1rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--green); margin-bottom: 1.25rem; opacity: .9;
+  font-size:1rem; font-weight: 700; letter-spacing:0; text-transform:none;
+  color:var(--text-dim); margin-bottom: 1.25rem; opacity: .9;
 }
 .edu-grid {
   display: grid;
@@ -442,23 +442,23 @@ body {
 }
 .edu-card-text  { font-size:1rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .7rem; overflow-wrap: break-word; }
 .edu-card-tip   { font-size:1rem; font-weight: 700; padding: .25rem .55rem; border-radius: 3px; display: inline-block; }
-.edu-card-tip-green  { background: rgba(62,207,110,.12); color: var(--green); }
-.edu-card-tip-gold   { background: rgba(230,176,66,.12); color: var(--gold); }
-.edu-card-tip-red    { background: rgba(240,96,96,.12); color: var(--red); }
-.edu-card-tip-blue   { background: rgba(91,163,224,.12); color: var(--blue); }
+.edu-card-tip-green  { background: var(--surface2); color: var(--green); }
+.edu-card-tip-gold   { background: var(--surface2); color: var(--gold); }
+.edu-card-tip-red    { background: var(--surface2); color: var(--red); }
+.edu-card-tip-blue   { background: var(--surface2); color: var(--blue); }
 
 .fcard-net { font-size:.78rem; line-height:1.45; color:var(--text-dim); margin:.45rem 0 0; }
 .fcard-net a { color:var(--gold); font-weight:600; }
 /* ── Inversion Diagram Box ───────────────────────────────────────── */
 .inv-box {
   background: var(--surface2); border: 2px solid rgba(184,76,42,.18);
-  border-radius: var(--r-md, 6px); padding: 1.25rem; margin-top: 1rem;
+  border-radius: var(--r-md,3px); padding: 1.25rem; margin-top: 1rem;
   overflow: hidden;
 }
 .inv-title {
-  font-family: 'JetBrains Mono', monospace;
+  font-family:var(--font-body);
   font-size:0.78rem; font-weight: 700; color: var(--red);
-  letter-spacing: .08em; text-transform: uppercase;
+  letter-spacing:0; text-transform:none;
   margin-bottom: 1rem; opacity: .9;
 }
 .inv-grid {
@@ -476,9 +476,9 @@ body {
   flex-wrap: wrap; gap: .25rem;
   min-width: 0;
 }
-.inv-layer-warm  { background: rgba(200,122,40,.08); border: 1px solid rgba(200,122,40,.2); margin-bottom: .3rem; }
-.inv-layer-cool  { background: rgba(74,143,186,.08); border: 1px solid rgba(74,143,186,.2); border-top: none; border-bottom: none; padding: 1rem .75rem; margin-bottom: .3rem; }
-.inv-layer-ground{ background: rgba(58,139,60,.08); border: 1px solid rgba(58,139,60,.2); }
+.inv-layer-warm  { background: var(--surface2); border: 1px solid rgba(200,122,40,.2); margin-bottom: .3rem; }
+.inv-layer-cool  { background: var(--surface2); border: 1px solid rgba(74,143,186,.2); border-top: none; border-bottom: none; padding: 1rem .75rem; margin-bottom: .3rem; }
+.inv-layer-ground{ background: var(--surface2); border: 1px solid rgba(58,139,60,.2); }
 .inv-layer-label { font-size:0.78rem; font-weight: 700; }
 .inv-layer-label-warm  { color: var(--orange); }
 .inv-layer-label-cool  { color: var(--blue); }
@@ -500,7 +500,7 @@ body {
 .inv-detect-text strong { color: var(--text); }
 .inv-warning {
   margin-top: .85rem; padding: .65rem .85rem;
-  background: rgba(184,76,42,.06); border: 1px solid rgba(184,76,42,.18);
+  background: var(--surface2); border: 1px solid rgba(184,76,42,.18);
   border-radius: var(--r-sm, 4px); font-size:0.795rem; color: var(--text-dim); line-height: 1.6;
 }
 .inv-warning-label { color: var(--red); }
@@ -511,7 +511,7 @@ body {
 .mix-section { margin-top: 2.5rem; min-width: 0; }
 .mix-card {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1.5rem;
+  border-radius: var(--r-md,3px); padding: 1.5rem;
   /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .nozzle-table-wrap child */
 }
 .mix-intro {
@@ -526,7 +526,7 @@ body {
   grid-template-columns: 44px minmax(0,1fr);
   gap: .85rem; align-items: start;
   padding: .85rem; background: var(--surface2);
-  border: var(--card-bw) solid var(--border); border-radius: var(--r-md, 6px);
+  border: var(--card-bw) solid var(--border); border-radius: var(--r-md,3px);
   transition: border-color .2s;
   min-width: 0;
 }
@@ -534,19 +534,19 @@ body {
 .mix-num {
   width: 44px; height: 44px;
   display: flex; align-items: center; justify-content: center;
-  border-radius: var(--r-md, 6px);
+  border-radius: var(--r-md,3px);
   font-family: 'JetBrains Mono', monospace;
   font-size: 1rem; font-weight: 800; flex-shrink: 0;
 }
-.mix-num-1 { background: rgba(74,143,186,.10); color: var(--blue); }
-.mix-num-2 { background: rgba(var(--gold-rgb),.10); color: var(--gold); }
-.mix-num-3 { background: rgba(159,122,234,.10); color: #9f7aea; }
-.mix-num-4 { background: rgba(200,122,40,.10); color: var(--orange); }
-.mix-num-5 { background: rgba(58,139,60,.10); color: var(--green); }
-.mix-num-6 { background: rgba(184,76,42,.10); color: var(--red); }
-.mix-num-7 { background: rgba(74,143,186,.10); color: var(--blue); }
-.mix-num-8 { background: rgba(var(--gold-rgb),.10); color: var(--gold); }
-.mix-num-9 { background: rgba(58,139,60,.10); color: var(--green); }
+.mix-num-1 { background: var(--surface2); color: var(--blue); }
+.mix-num-2 { background: var(--surface2); color: var(--gold); }
+.mix-num-3 { background: var(--surface2); color: #9f7aea; }
+.mix-num-4 { background: var(--surface2); color: var(--orange); }
+.mix-num-5 { background: var(--surface2); color: var(--green); }
+.mix-num-6 { background: var(--surface2); color: var(--red); }
+.mix-num-7 { background: var(--surface2); color: var(--blue); }
+.mix-num-8 { background: var(--surface2); color: var(--gold); }
+.mix-num-9 { background: var(--surface2); color: var(--green); }
 .mix-step-name { font-size: .85rem; font-weight: 700; color: var(--text); margin-bottom: .25rem; }
 .mix-step-what { font-size:0.795rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .35rem; overflow-wrap: break-word; }
 .mix-step-why  { font-size:0.78rem; color: var(--text-muted); line-height: 1.55;  }
@@ -562,12 +562,12 @@ body {
 }
 .mix-tip-title { font-weight: 700; margin-bottom: .25rem; }
 .mix-tip-do {
-  background: rgba(58,139,60,.05); border: 1px solid rgba(58,139,60,.18);
+  background: var(--surface2); border: 1px solid rgba(58,139,60,.18);
   color: var(--text-dim);
 }
 .mix-tip-do .mix-tip-title { color: var(--green); }
 .mix-tip-dont {
-  background: rgba(184,76,42,.05); border: 1px solid rgba(184,76,42,.18);
+  background: var(--surface2); border: 1px solid rgba(184,76,42,.18);
   color: var(--text-dim);
 }
 .mix-tip-dont .mix-tip-title { color: var(--red); }
@@ -583,7 +583,7 @@ body {
 }
 .tip-card {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1.15rem;
+  border-radius: var(--r-md,3px); padding: 1.15rem;
   transition: border-color .2s;
   min-width: 0; overflow: hidden;
 }
@@ -610,16 +610,16 @@ body {
   top: 0; right: 0; bottom: 0;
   width: 32px;
   pointer-events: none;
-  background: linear-gradient(to left, var(--surface, #0e0e0c), transparent);
+  background:var(--surface);
 }
 .nozzle-table {
   width: 100%; border-collapse: collapse; font-size:0.795rem;
 }
 .nozzle-table th {
   text-align: left;
-  font-family: 'JetBrains Mono', monospace;
+  font-family:var(--font-body);
   font-size:0.755rem; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
+  letter-spacing:0; text-transform:none;
   color: var(--text-muted); padding: .55rem .65rem;
   border-bottom: 2px solid var(--border); white-space: nowrap;
 }
@@ -635,9 +635,9 @@ body {
   font-size:0.755rem; font-weight: 700;
   padding: .15rem .4rem; border-radius: 3px; white-space: nowrap;
 }
-.nt-badge.low  { background: rgba(58,139,60,.10); color: var(--green); }
-.nt-badge.med  { background: rgba(var(--gold-rgb),.10); color: var(--gold); }
-.nt-badge.high { background: rgba(184,76,42,.10);  color: var(--red); }
+.nt-badge.low  { background: var(--surface2); color: var(--green); }
+.nt-badge.med  { background: var(--surface2); color: var(--gold); }
+.nt-badge.high { background: var(--surface2);  color: var(--red); }
 .nozzle-table-note {
   font-size:1rem; color: var(--text-muted); margin-top: .65rem; line-height: 1.6;
 }
@@ -655,15 +655,15 @@ body {
 }
 .sc {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1.1rem 1.2rem;
+  border-radius: var(--r-md,3px); padding: 1.1rem 1.2rem;
   min-width: 0;
   /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .day-strip child.
      border-radius does not require overflow:hidden in modern browsers. */
 }
 .sc-title {
-  font-family: 'JetBrains Mono', monospace;
-  font-size:0.76rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--green); margin-bottom: .9rem; opacity: .9;
+  font-family:var(--font-body);
+  font-size:0.76rem; font-weight: 700; letter-spacing:0; text-transform:none;
+  color:var(--text-dim); margin-bottom: .9rem; opacity: .9;
 }
 
 /* ── Recommendation Box ──────────────────────────────────────────── */
@@ -671,10 +671,10 @@ body {
   border-radius: var(--r-sm, 4px); padding: 1rem; margin-bottom: .7rem;
   border: 2px solid var(--border);
 }
-.rec.good    { background: rgba(58,139,60,.05);  border-color: rgba(58,139,60,.22); }
-.rec.marginal{ background: rgba(var(--gold-rgb),.05); border-color: rgba(var(--gold-rgb),.22); }
-.rec.poor    { background: rgba(184,76,42,.05);  border-color: rgba(184,76,42,.22); }
-.rec.frozen  { background: rgba(74,143,186,.05); border-color: rgba(74,143,186,.22); }
+.rec.good    { background: var(--surface2);  border-color: rgba(58,139,60,.22); }
+.rec.marginal{ background: var(--surface2); border-color: rgba(var(--gold-rgb),.22); }
+.rec.poor    { background: var(--surface2);  border-color: rgba(184,76,42,.22); }
+.rec.frozen  { background: var(--surface2); border-color: rgba(74,143,186,.22); }
 .rec-h { font-size: .9rem; font-weight: 700; margin-bottom: .45rem; }
 .rec-h.good    { color: var(--green); }
 .rec-h.marginal{ color: var(--gold); }
@@ -697,7 +697,7 @@ body {
   background: var(--surface2); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-sm, 4px); text-align: center;
 }
-.day-name   { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); white-space:nowrap; }
+.day-name   { font-family:var(--font-body); font-size:0.755rem; font-weight: 700; text-transform:none; letter-spacing:0; color: var(--text-muted); white-space:nowrap; }
 @media (max-width:420px){ .day-name { letter-spacing:0; } }
 .day-icon   { font-size: 1.2rem; line-height: 1; }
 .day-wind   { font-family: 'JetBrains Mono', monospace; font-size:0.763rem; color: var(--text-muted); }
@@ -706,10 +706,10 @@ body {
   font-size:0.755rem; font-weight: 700; padding: .12rem .3rem;
   border-radius: 3px; letter-spacing: .03em;
 }
-.day-rating.good    { background: rgba(58,139,60,.10); color: var(--green); }
-.day-rating.marginal{ background: rgba(var(--gold-rgb),.10); color: var(--gold); }
-.day-rating.poor    { background: rgba(184,76,42,.10);  color: var(--red); }
-.day-rating.frozen  { background: rgba(74,143,186,.10); color: var(--blue); }
+.day-rating.good    { background: var(--surface2); color: var(--green); }
+.day-rating.marginal{ background: var(--surface2); color: var(--gold); }
+.day-rating.poor    { background: var(--surface2);  color: var(--red); }
+.day-rating.frozen  { background: var(--surface2); color: var(--blue); }
 
 /* ── Pre-Spray Checklist ─────────────────────────────────────────── */
 .checklist-item {
@@ -746,7 +746,7 @@ body {
 .cross-link {
   display: flex; align-items: flex-start; gap: .9rem;
   padding: 1rem 1.1rem; background: var(--surface);
-  border: var(--card-bw) solid var(--border); border-radius: var(--r-md, 6px);
+  border: var(--card-bw) solid var(--border); border-radius: var(--r-md,3px);
   text-decoration: none; transition: border-color .15s, background .15s;
   min-width: 0; overflow: hidden;
 }
@@ -911,15 +911,15 @@ body {
 
 
 /* Folds: long background sections, closed by default. Native <details>; every word stays in the HTML. */
-details.fold{border:1px solid var(--border);border-radius:10px;background:var(--surface);margin:1rem 0}
-details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:10px;color:var(--text)}
+details.fold{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);margin:1rem 0}
+details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:var(--r-lg);color:var(--text)}
 details.fold>summary::-webkit-details-marker{display:none}
 details.fold>summary>*{grid-column:1}
 details.fold>summary::after{content:"";grid-column:2;grid-row:1 / span 2;width:.6rem;height:.6rem;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:translateY(-25%) rotate(45deg);transition:transform .15s}
 details.fold[open]>summary::after{transform:translateY(25%) rotate(-135deg)}
 details.fold>summary:hover{background:var(--surface2)}
 details.fold>summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-details.fold[open]>summary{border-bottom:1px solid var(--border);border-radius:10px 10px 0 0}
+details.fold[open]>summary{border-bottom:1px solid var(--border);border-radius:var(--r-lg) var(--r-lg) 0 0}
 details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!important;border:0!important}
 .fold-title{display:block;font-weight:700;line-height:1.35}
 .fold-hint{display:block;margin-top:.2rem;font-size:.84rem;font-weight:400;line-height:1.45;color:var(--text-muted);letter-spacing:normal;text-transform:none}
@@ -945,16 +945,16 @@ details.fold>summary>.nozzle-card-head{font-size:1rem}
 <style>
 h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head,h3.s-card-title,h3.sc-title{margin:0;font-size:inherit;font-weight:inherit;line-height:inherit;}
 .zip-in,.spray-zip-input{font-size:1rem!important;}
-.dicamba-box{background:rgba(240,96,96,.07);border:1.5px solid rgba(240,96,96,.3);border-radius:12px;padding:1.4rem 1.5rem;margin-bottom:1.5rem}
-.dicamba-box-head{font-size:0.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:.8rem;display:flex;align-items:center;gap:.45rem}
+.dicamba-box{background:var(--surface2);border:1.5px solid rgba(240,96,96,.3);border-radius:var(--r-lg);padding:1.4rem 1.5rem;margin-bottom:1.5rem}
+.dicamba-box-head{font-size:0.78rem;font-weight:800;letter-spacing:0;text-transform:none;color:var(--red);margin-bottom:.8rem;display:flex;align-items:center;gap:.45rem}
 .dicamba-rules{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.7rem}
 @media(max-width:600px){.dicamba-rules{grid-template-columns:minmax(0,1fr)}}
-.dicamba-rule{background:rgba(240,96,96,.06);border:1px solid rgba(240,96,96,.15);border-radius:8px;padding:.7rem .85rem;font-size:.8rem;line-height:1.6;color:var(--text-dim)}
+.dicamba-rule{background:var(--surface2);border:1px solid rgba(240,96,96,.15);border-radius:var(--r-md);padding:.7rem .85rem;font-size:.8rem;line-height:1.6;color:var(--text-dim)}
 .dicamba-rule strong{color:var(--text);display:block;margin-bottom:.15rem}
-.rfp-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;border:1px solid var(--border);margin-bottom:1.5rem;max-width:100%}
+.rfp-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r-lg);border:1px solid var(--border);margin-bottom:1.5rem;max-width:100%}
 .rfp-table{width:100%;border-collapse:collapse;font-size:0.797rem}
-.rfp-table thead tr{background:rgba(58,139,60,.12)}
-.rfp-table th{padding:.65rem .85rem;text-align:left;font-size:0.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
+.rfp-table thead tr{background:var(--surface2)}
+.rfp-table th{padding:.65rem .85rem;text-align:left;font-size:0.765rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);white-space:nowrap}
 .rfp-table td{padding:.6rem .85rem;border-top:1px solid var(--border);color:var(--text-dim);vertical-align:top}
 .rfp-table td:first-child{color:var(--text);font-weight:600}
 .rfp-table td:nth-child(2),.rfp-table td:nth-child(3){white-space:nowrap;width:1%}
@@ -965,19 +965,19 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 @media(max-width:640px){.nozzle-table th:nth-child(2),.nozzle-table td:nth-child(2),.nozzle-table th:nth-child(5),.nozzle-table td:nth-child(5){display:none}.nozzle-table .nt-type{white-space:normal;font-size:0.78rem}.nozzle-table td{padding:.5rem .55rem;font-size:0.78rem}.nozzle-table th{padding:.5rem .55rem;font-size:0.75rem}}
 .season-section{margin-bottom:2rem}
 .season-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem}
-.season-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem}
-.season-card.season-now{border-color:var(--gold)}.season-now-tag{margin-left:.35rem;padding:.05rem .4rem;border-radius:10px;background:var(--gold);color:var(--bg);font-size:0.7rem;letter-spacing:.06em}
-.season-card-month{font-size:0.77rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
+.season-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.9rem 1rem}
+.season-card.season-now{border-color:var(--gold)}.season-now-tag{margin-left:.35rem;padding:.05rem .4rem;border-radius:var(--r-lg);background:var(--gold);color:var(--bg);font-size:0.7rem;letter-spacing:.06em}
+.season-card-month{font-size:0.77rem;font-weight:800;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-bottom:.3rem}
 .season-card-title{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.4rem}
 .season-card-body{font-size:0.795rem;color:var(--text-dim);line-height:1.65}
-.season-card-tag{display:inline-block;margin-top:.5rem;padding:.15rem .55rem;border-radius:20px;font-size:0.76rem;font-weight:700;letter-spacing:.06em}
-.tag-pre{background:rgba(91,163,224,.15);color:var(--blue)}
-.tag-post{background:rgba(62,207,110,.15);color:var(--green)}
-.tag-fung{background:rgba(230,176,66,.15);color:var(--gold)}
-.tag-burn{background:rgba(240,96,96,.15);color:var(--red)}
+.season-card-tag{display:inline-block;margin-top:.5rem;padding:.15rem .55rem;border-radius:var(--r-lg);font-size:0.76rem;font-weight:700;letter-spacing:.06em}
+.tag-pre{background:var(--surface2);color:var(--blue)}
+.tag-post{background:var(--surface2);color:var(--green)}
+.tag-fung{background:var(--surface2);color:var(--gold)}
+.tag-burn{background:var(--surface2);color:var(--red)}
 .faq-section{margin-bottom:2rem}
 .faq-list{display:flex;flex-direction:column;gap:.6rem}
-.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
 .faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 1.1rem;background:none;border:none;color:var(--text);font-size:1rem;font-weight:700;text-align:left;cursor:pointer;touch-action:manipulation;min-height:44px;}
 .faq-q:hover{background:rgba(255,255,255,.035)}
 .faq-chevron{color:var(--text-muted);font-size:0.787rem;transition:transform .2s;flex-shrink:0}
@@ -988,7 +988,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 @media(max-width:480px){.edu-card{padding-left:12px;padding-right:12px}.inv-box{padding-left:12px;padding-right:12px}.edu-card-tip{padding-left:8px;padding-right:8px}.inv-layer{padding-left:8px;padding-right:8px}}
 </style>
 <noscript><style>.fade-up{opacity:1;transform:none}</style></noscript>
-<style>.ptab-bar{display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:none;max-width:1100px;margin:.6rem auto .2rem;padding:0 1rem;border-bottom:1px solid var(--border)}.ptab-bar::-webkit-scrollbar{display:none}.ptab-bar a{flex:0 0 auto;display:flex;align-items:center;gap:.35rem;min-height:44px;padding:.35rem .85rem;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;color:var(--text-dim);font-weight:700;font-size:.92rem;text-decoration:none;white-space:nowrap;margin-bottom:-1px}.ptab-bar a:hover{color:var(--text)}.ptab-bar a[role=tab]{scroll-margin-top:5rem}.ptab-bar a[aria-selected="true"]{color:var(--text);background:var(--surface);border-color:var(--border);box-shadow:inset 0 3px 0 var(--gold)}.ptab-bar a:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}.ptab-bar svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2}@media(max-width:480px){.ptab-bar{gap:.15rem;padding:0 .5rem}.ptab-bar a{padding:.3rem .55rem;font-size:.86rem}.ptabs>.ptab>.main{padding-left:0!important;padding-right:0!important}.ptabs>.ptab>.main>:is(.ls-w,.prf,.rc,.rg,.sos,.pg,.le,.hb,.wrap,article),.ptabs>.ptab>:is(.rc,article,.dm-page),.ptabs>.ptab>.fn-wrap>article{padding-left:max(0px,calc(var(--gutter,12px) - (100vw - 100%) / 2))!important;padding-right:max(0px,calc(var(--gutter,12px) - (100vw - 100%) / 2))!important}}.ptab{scroll-margin-top:4rem}main.ptab-main{padding:0;margin:0;max-width:none}.ptab-bar a:target{outline:0}.ptabs[data-on]>.ptab{display:none}.ptabs[data-on="spray"]>#p-spray,.ptabs[data-on="urea"]>#p-urea,.ptabs[data-on="fall-nitrogen"]>#p-fall-nitrogen{display:block}.ptabs[data-on]>.ptab[data-css]:not([data-ready])>*{visibility:hidden}.ptab-note{max-width:780px;margin:1rem auto;padding:0 1rem;color:var(--red)}</style>
+<style>.ptab-bar{display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:none;max-width:1100px;margin:.6rem auto .2rem;padding:0 1rem;border-bottom:1px solid var(--border)}.ptab-bar::-webkit-scrollbar{display:none}.ptab-bar a{flex:0 0 auto;display:flex;align-items:center;gap:.35rem;min-height:44px;padding:.35rem .85rem;border:1px solid transparent;border-bottom:0;border-radius:var(--r-md) var(--r-md) 0 0;color:var(--text-dim);font-weight:700;font-size:.92rem;text-decoration:none;white-space:nowrap;margin-bottom:-1px}.ptab-bar a:hover{color:var(--text)}.ptab-bar a[role=tab]{scroll-margin-top:5rem}.ptab-bar a[aria-selected="true"]{color:var(--text);background:var(--surface);border-color:var(--border);box-shadow:inset 0 3px 0 var(--gold)}.ptab-bar a:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}.ptab-bar svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2}@media(max-width:480px){.ptab-bar{gap:.15rem;padding:0 .5rem}.ptab-bar a{padding:.3rem .55rem;font-size:.86rem}.ptabs>.ptab>.main{padding-left:0!important;padding-right:0!important}.ptabs>.ptab>.main>:is(.ls-w,.prf,.rc,.rg,.sos,.pg,.le,.hb,.wrap,article),.ptabs>.ptab>:is(.rc,article,.dm-page),.ptabs>.ptab>.fn-wrap>article{padding-left:max(0px,calc(var(--gutter,12px) - (100vw - 100%) / 2))!important;padding-right:max(0px,calc(var(--gutter,12px) - (100vw - 100%) / 2))!important}}.ptab{scroll-margin-top:4rem}main.ptab-main{padding:0;margin:0;max-width:none}.ptab-bar a:target{outline:0}.ptabs[data-on]>.ptab{display:none}.ptabs[data-on="spray"]>#p-spray,.ptabs[data-on="urea"]>#p-urea,.ptabs[data-on="fall-nitrogen"]>#p-fall-nitrogen{display:block}.ptabs[data-on]>.ptab[data-css]:not([data-ready])>*{visibility:hidden}.ptab-note{max-width:780px;margin:1rem auto;padding:0 1rem;color:var(--red)}</style>
 </head>
 <body>
 <style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}.wl-dot{display:inline-block;width:.7em;height:.7em;border-radius:50%;vertical-align:-.05em;margin-right:.2em}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-alarm-clock" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" />
@@ -1137,7 +1137,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" />
   <path d="M11 20v2" />
   <path d="M7 19v2" /></symbol><symbol id="sp-shield" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /></symbol></svg>
-<noscript><div style="text-align:center;padding:2rem;font-family:sans-serif;color:#ccc;background:#111;margin:1rem">JavaScript is required for real-time spray conditions. Please enable JavaScript in your browser.</div></noscript>
+<noscript><div style="text-align:center;padding:2rem;font-family:sans-serif;color:#ccc;background:#111;margin:1rem">JavaScript is required for current spray conditions. Please enable JavaScript in your browser.</div></noscript>
 <a href="#main" class="skip">Skip to content</a>
 <div id="site-header">
 <!-- static-nav:header -->
@@ -1174,31 +1174,31 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     </div>
     <div class="status-panel" id="status-panel" aria-live="polite" role="status">
       <div class="status-lbl"><span class="live-dot" aria-hidden="true"></span>Current spray status</div>
-      <div class="status-icon" id="st-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg></div>
+      <div class="status-icon" id="st-icon" aria-hidden="true"></div>
       <div class="status-main marginal" id="st-main">Detecting&hellip;</div>
       <div class="status-sub" id="st-sub">Getting your local conditions</div>
-      <div class="status-loc" id="st-loc"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> Locating&hellip;</div>
+      <div class="status-loc" id="st-loc">Locating&hellip;</div>
       <div class="status-ts" id="st-ts"></div>
     </div>
   </div>
 </section>
 <div class="main">
   <nav class="jump-nav" aria-label="Page sections">
-    <a href="#section-conditions" class="jump-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg> Conditions</a>
-    <a href="#section-factors" class="jump-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-graduation-cap"/></svg> Conditions explained</a>
-    <a href="#section-mixorder" class="jump-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Tank mix order</a>
-    <a href="#section-tips" class="jump-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-lightbulb"/></svg> Sprayer tips</a>
-    <a href="#section-nozzles" class="jump-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hammer"/></svg> Nozzles</a>
-    <a href="#section-season" class="jump-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> Spray calendar</a>
-    <a href="#section-faq" class="jump-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-help"/></svg> FAQ</a>
+    <a href="#section-conditions" class="jump-link">Conditions</a>
+    <a href="#section-factors" class="jump-link">Conditions explained</a>
+    <a href="#section-mixorder" class="jump-link">Tank mix order</a>
+    <a href="#section-tips" class="jump-link">Sprayer tips</a>
+    <a href="#section-nozzles" class="jump-link">Nozzles</a>
+    <a href="#section-season" class="jump-link">Spray calendar</a>
+    <a href="#section-faq" class="jump-link">FAQ</a>
   </nav>
-<script src="/components/rp-xmas.js?v=1"></script>
+<script src="/components/rp-xmas.js?v=2"></script>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="spray"></aside>
   <div class="loc-setup" id="loc-setup">
-    <h2><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg> Set your location</h2>
+    <h2>Set your location</h2>
     <p>Wind and humidity change from one field to the next. Share your location or enter a ZIP for wind, temperature, humidity and inversion risk estimated for your spot.</p>
     <div class="loc-btns">
-      <button class="btn-g" id="btn-geo" style="min-height:44px;"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> Use My Location</button>
+      <button class="btn-g" id="btn-geo" style="min-height:44px;">Use My Location</button>
       <button class="btn-q" id="btn-show-zip" style="min-height:44px;">Enter ZIP Instead</button>
     </div>
     <div class="zip-row" id="spray-zip-row">
@@ -1210,49 +1210,49 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   <p class="static-brief" style="font-size:.85rem;color:var(--text-dim);line-height:1.7;margin:.9rem auto 0;padding:0 1.5rem;max-width:1200px">Extension guidance is to spray in a 3&ndash;10 mph wind, under about 85&deg;F and above about 40% relative humidity; your product label's limits come first. Winds under 3 mph signal possible thermal inversion: fine droplets can ride stable air off-target for miles. Over 10&ndash;15 mph, mechanical drift takes over. Mid-morning, after overnight inversions break and dew dries, is usually the safest window. Dicamba and 2,4-D ester can also volatilize off the leaf for hours once temperatures pass about 85&deg;F. Always confirm the wind, temperature, and buffer limits on your product label before spraying.</p>
   <div class="pg">
     <div>
-      <div id="factor-section" style="display:none"><div class="s-card" id="product-tune" style="margin-bottom:1rem"><div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-dna"/></svg> Tune to Your Product (optional)</div><label style="display:flex;flex-direction:column;gap:.3rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Herbicide / product<select id="in-product" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="general" selected>General guidance (no product)</option><option value="enlist">Enlist One / Enlist Duo (2,4-D choline)</option><option value="dicamba">Engenia / Stryax / Tavium (dicamba OTT)</option><option value="glyphosate">Glyphosate (Roundup PowerMAX, etc.)</option><option value="24d_ester">2,4-D / 2,4-D ester (generic Group 4)</option><option value="contact">Contact products (Liberty, Cobra, Gramoxone)</option></select></label><label id="state-wrap" style="display:none;flex-direction:column;gap:.3rem;margin-top:.6rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">State dicamba rules<select id="in-state" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="">Label only (no stricter state rule)</option><option value="MN">Minnesota: over 85&deg;F, no; June 12 / June 30 cutoffs</option><option value="IL">Illinois: over 85&deg;F, no; June 20 cutoff</option></select></label><div id="product-note" style="font-size:1rem;color:var(--text-dim);line-height:1.6;margin-top:.5rem;display:none"></div><div style="font-size:0.76rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem"><strong>The label is the law.</strong> These thresholds reflect federal label guidance and may be outdated or superseded by your state’s rules and your product’s current label. State restrictions are often stricter. Always read and follow the actual label and check Bulletins Live! Two before applying.</div></div>
+      <div id="factor-section" style="display:none"><div class="s-card" id="product-tune" style="margin-bottom:1rem"><div class="s-card-title">Tune to Your Product (optional)</div><label style="display:flex;flex-direction:column;gap:.3rem;font-size:0.765rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700">Herbicide / product<select id="in-product" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="general" selected>General guidance (no product)</option><option value="enlist">Enlist One / Enlist Duo (2,4-D choline)</option><option value="dicamba">Engenia / Stryax / Tavium (dicamba OTT)</option><option value="glyphosate">Glyphosate (Roundup PowerMAX, etc.)</option><option value="24d_ester">2,4-D / 2,4-D ester (generic Group 4)</option><option value="contact">Contact products (Liberty, Cobra, Gramoxone)</option></select></label><label id="state-wrap" style="display:none;flex-direction:column;gap:.3rem;margin-top:.6rem;font-size:0.765rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700">State dicamba rules<select id="in-state" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="">Label only (no stricter state rule)</option><option value="MN">Minnesota: over 85&deg;F, no; June 12 / June 30 cutoffs</option><option value="IL">Illinois: over 85&deg;F, no; June 20 cutoff</option></select></label><div id="product-note" style="font-size:1rem;color:var(--text-dim);line-height:1.6;margin-top:.5rem;display:none"></div><div style="font-size:0.76rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem"><strong>The label is the law.</strong> These thresholds reflect federal label guidance and may be outdated or superseded by your state’s rules and your product’s current label. State restrictions are often stricter. Always read and follow the actual label and check Bulletins Live! Two before applying.</div></div>
         <div class="section-bar" id="section-conditions">
           <div class="section-label">Factor Breakdown</div>
           <button class="section-link" id="btn-change-loc" style="min-height:44px;">Change location</button>
         </div>
         <div class="factors">
-          <div class="fcard" id="fc-wind"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wind"/></svg></span>Wind Speed</div><span class="fchip na" id="fc-wind-chip">-</span></div><div class="fcard-val" id="fc-wind-val">-- mph</div><div class="fcard-desc" id="fc-wind-desc">Ideal: 3&ndash;10 mph. Below 3 mph, inversion risk rises. Above 10 mph, mechanical drift moves spray off-target.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-wind-bar" style="width:0%;background:var(--green)"></div></div></div>
-          <div class="fcard" id="fc-dir"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-compass"/></svg></span>Wind Direction</div><span class="fchip marginal" id="fc-dir-chip">Check</span></div><div class="fcard-val" id="fc-dir-val">--&deg;</div><div class="fcard-desc" id="fc-dir-desc">Not scored. Check that the wind is blowing away from neighboring fields, waterways, homes, and sensitive crops.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dir-bar" style="width:50%;background:var(--gold-fill,var(--gold))"></div></div></div>
-          <div class="fcard" id="fc-temp"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg></span>Temperature</div><span class="fchip na" id="fc-temp-chip">-</span></div><div class="fcard-val" id="fc-temp-val">--&deg;F</div><div class="fcard-desc" id="fc-temp-desc">Spray between 50&ndash;85&deg;F. Heat causes volatilization of dicamba/2,4-D; cold slows uptake and risks frost injury.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-temp-bar" style="width:0%;background:var(--green)"></div></div></div>
-          <div class="fcard" id="fc-humid"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg></span>Humidity</div><span class="fchip na" id="fc-humid-chip">-</span></div><div class="fcard-val" id="fc-humid-val">--%</div><div class="fcard-desc" id="fc-humid-desc">Target 40&ndash;90% RH. Below 40%, droplets evaporate before reaching the leaf. Above 90%, leaves may be wet or near dew. Check the canopy before contact products.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-humid-bar" style="width:0%;background:var(--green)"></div></div></div>
-          <div class="fcard" id="fc-dt"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-tornado"/></svg></span>Delta T</div><span class="fchip na" id="fc-dt-chip">-</span></div><div class="fcard-val" id="fc-dt-val">-</div><div class="fcard-desc" id="fc-dt-desc">Delta T is a dryness score: how fast spray droplets shrink and blow away before they land. It&rsquo;s the number professional applicators watch. Ideal 3.6&ndash;14.4&deg;F (2&ndash;8&deg;C). Above 18&deg;F (10&deg;C), droplets evaporate before reaching the target and drift; below 3.6&deg;F (2&deg;C) means very humid air or inversion risk.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dt-bar" style="width:0%;background:var(--green)"></div></div></div>
-          <div class="fcard" id="fc-inv"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-fog"/></svg></span>Thermal Inversion</div><span class="fchip na" id="fc-inv-chip">-</span></div><div class="fcard-val" id="fc-inv-val">-</div><div class="fcard-desc" id="fc-inv-desc">Inversions trap fine spray droplets near the ground, causing them to drift unpredictably, sometimes miles.</div><p class="fcard-net" id="fc-inv-net" hidden></p><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-inv-bar" style="width:25%;background:var(--gold-fill,var(--gold))"></div></div></div>
-          <div class="fcard" id="fc-dew"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg></span>Dew point risk</div><span class="fchip na" id="fc-dew-chip">-</span></div><div class="fcard-val" id="fc-dew-val">--&deg;F dew</div><div class="fcard-desc" id="fc-dew-desc">If temp approaches dew point, dew formation is imminent. Spraying onto wet leaves reduces efficacy of contact herbicides.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dew-bar" style="width:0%;background:var(--green)"></div></div></div>
-          <div class="fcard" id="fc-precip" style="display:none"><div class="fcard-head"><div class="fcard-name"><span class="fcard-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg></span>Precipitation</div><span class="fchip poor" id="fc-precip-chip">Active</span></div><div class="fcard-val" id="fc-precip-val">Rain</div><div class="fcard-desc" id="fc-precip-desc">Active precipitation washes product off leaves before absorption. Wait for dry conditions and foliage to dry.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-precip-bar" style="width:90%;background:var(--red)"></div></div></div>
+          <div class="fcard" id="fc-wind"><div class="fcard-head"><div class="fcard-name">Wind Speed</div><span class="fchip na" id="fc-wind-chip">-</span></div><div class="fcard-val" id="fc-wind-val">-- mph</div><div class="fcard-desc" id="fc-wind-desc">Ideal: 3&ndash;10 mph. Below 3 mph, inversion risk rises. Above 10 mph, mechanical drift moves spray off-target.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-wind-bar" style="width:0%;background:var(--green)"></div></div></div>
+          <div class="fcard" id="fc-dir"><div class="fcard-head"><div class="fcard-name">Wind Direction</div><span class="fchip marginal" id="fc-dir-chip">Check</span></div><div class="fcard-val" id="fc-dir-val">--&deg;</div><div class="fcard-desc" id="fc-dir-desc">Not scored. Check that the wind is blowing away from neighboring fields, waterways, homes, and sensitive crops.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dir-bar" style="width:50%;background:var(--gold-fill,var(--gold))"></div></div></div>
+          <div class="fcard" id="fc-temp"><div class="fcard-head"><div class="fcard-name">Temperature</div><span class="fchip na" id="fc-temp-chip">-</span></div><div class="fcard-val" id="fc-temp-val">--&deg;F</div><div class="fcard-desc" id="fc-temp-desc">Spray between 50&ndash;85&deg;F. Heat causes volatilization of dicamba/2,4-D; cold slows uptake and risks frost injury.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-temp-bar" style="width:0%;background:var(--green)"></div></div></div>
+          <div class="fcard" id="fc-humid"><div class="fcard-head"><div class="fcard-name">Humidity</div><span class="fchip na" id="fc-humid-chip">-</span></div><div class="fcard-val" id="fc-humid-val">--%</div><div class="fcard-desc" id="fc-humid-desc">Target 40&ndash;90% RH. Below 40%, droplets evaporate before reaching the leaf. Above 90%, leaves may be wet or near dew. Check the canopy before contact products.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-humid-bar" style="width:0%;background:var(--green)"></div></div></div>
+          <div class="fcard" id="fc-dt"><div class="fcard-head"><div class="fcard-name">Delta T</div><span class="fchip na" id="fc-dt-chip">-</span></div><div class="fcard-val" id="fc-dt-val">-</div><div class="fcard-desc" id="fc-dt-desc">Delta T is a dryness score: how fast spray droplets shrink and blow away before they land. It&rsquo;s the number professional applicators watch. Ideal 3.6&ndash;14.4&deg;F (2&ndash;8&deg;C). Above 18&deg;F (10&deg;C), droplets evaporate before reaching the target and drift; below 3.6&deg;F (2&deg;C) means very humid air or inversion risk.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dt-bar" style="width:0%;background:var(--green)"></div></div></div>
+          <div class="fcard" id="fc-inv"><div class="fcard-head"><div class="fcard-name">Thermal Inversion</div><span class="fchip na" id="fc-inv-chip">-</span></div><div class="fcard-val" id="fc-inv-val">-</div><div class="fcard-desc" id="fc-inv-desc">Inversions trap fine spray droplets near the ground, causing them to drift unpredictably, sometimes miles.</div><p class="fcard-net" id="fc-inv-net" hidden></p><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-inv-bar" style="width:25%;background:var(--gold-fill,var(--gold))"></div></div></div>
+          <div class="fcard" id="fc-dew"><div class="fcard-head"><div class="fcard-name">Dew point risk</div><span class="fchip na" id="fc-dew-chip">-</span></div><div class="fcard-val" id="fc-dew-val">--&deg;F dew</div><div class="fcard-desc" id="fc-dew-desc">If temp approaches dew point, dew formation is imminent. Spraying onto wet leaves reduces efficacy of contact herbicides.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-dew-bar" style="width:0%;background:var(--green)"></div></div></div>
+          <div class="fcard" id="fc-precip" style="display:none"><div class="fcard-head"><div class="fcard-name">Precipitation</div><span class="fchip poor" id="fc-precip-chip">Active</span></div><div class="fcard-val" id="fc-precip-val">Rain</div><div class="fcard-desc" id="fc-precip-desc">Active precipitation washes product off leaves before absorption. Wait for dry conditions and foliage to dry.</div><div class="fcard-bar"><div class="fcard-bar-fill" id="fc-precip-bar" style="width:90%;background:var(--red)"></div></div></div>
         </div>
         <div class="window-wrap">
-          <div class="window-head"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-timer"/></svg></span> 24-hour spray window</div>
+          <div class="window-head"> 24-hour spray window</div>
           <div class="window-summary" id="window-summary" role="status" style="font-size:.85rem;color:var(--text-dim);margin:.15rem 0 .5rem;line-height:1.5"></div>
           <div class="hourly-scroll" id="hourly-strip" aria-busy="true"><span class="sr-only">Loading forecast</span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span><span class="st-sk hr-sk" aria-hidden="true"></span></div>
-          <div class="window-legend"><span class="wl-dot" style="background:var(--green,#4aab4c)"></span> Good window &middot; <span class="wl-dot" style="background:var(--gold-fill,var(--gold,#d4a23f))"></span> Marginal, proceed with care &middot; <span class="wl-dot" style="background:var(--red,#e0685f)"></span> Do not spray &middot; <svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> Frozen &middot; Scroll to see full 24h</div>
+          <div class="window-legend"><span class="wl-dot" style="background:var(--green,#4aab4c)"></span> Good window &middot; <span class="wl-dot" style="background:var(--gold-fill,var(--gold,#d4a23f))"></span> Marginal, proceed with care &middot; <span class="wl-dot" style="background:var(--red,#e0685f)"></span> Do not spray &middot; Frozen &middot; Scroll to see full 24h</div>
           <p class="sp-model" id="sp-model" hidden></p>
         </div>
         <section class="sw-sec" id="wind" aria-labelledby="sw-h">
-          <h2 class="window-head sw-h" id="sw-h"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wind"/></svg></span> Wind at your field, next 48 hours</h2>
+          <h2 class="window-head sw-h" id="sw-h"> Wind at your field, next 48 hours</h2>
           <p class="sw-lede">The forecast wind around your field, hour by hour, coloured by the spray band at the boom, with the best spray windows below it. Check your product label.</p>
           <div id="sw-root" class="sw-root" aria-busy="true"><p class="sw-ph">The wind map loads when you get here.</p></div>
         </section>
-        <script>/* The wind view's code (components/spray-wind.js, Leaflet, the map) loads only once a field is set and the reader nears this section, or at once for a shared ?f= link. */(function(){var done=false;function go(){if(done||!window.AgSprayField)return;done=true;var s=document.createElement('script');s.src='/components/spray-wind.js?v=3';s.defer=true;document.head.appendChild(s);}function arm(){if(done)return;if(/[?&]f=/.test(location.search)||location.hash==='#wind'){go();return;}var el=document.getElementById('wind');if(!el||!('IntersectionObserver' in window)){go();return;}var io=new IntersectionObserver(function(es){if(es.some(function(x){return x.isIntersecting;})){io.disconnect();go();}},{rootMargin:'400px 0px'});io.observe(el);}document.addEventListener('agsist:spray-field',arm);if(window.AgSprayField)arm();})();</script>
+        <script>/* The wind view's code (components/spray-wind.js, Leaflet, the map) loads only once a field is set and the reader nears this section, or at once for a shared ?f= link. */(function(){var done=false;function go(){if(done||!window.AgSprayField)return;done=true;var s=document.createElement('script');s.src='/components/spray-wind.js?v=4';s.defer=true;document.head.appendChild(s);}function arm(){if(done)return;if(/[?&]f=/.test(location.search)||location.hash==='#wind'){go();return;}var el=document.getElementById('wind');if(!el||!('IntersectionObserver' in window)){go();return;}var io=new IntersectionObserver(function(es){if(es.some(function(x){return x.isIntersecting;})){io.disconnect();go();}},{rootMargin:'400px 0px'});io.observe(el);}document.addEventListener('agsist:spray-field',arm);if(window.AgSprayField)arm();})();</script>
       </div>
       <div class="edu has-fold fade-up" id="section-factors">
         <details class="fold">
-          <summary><h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-graduation-cap"/></svg></span> What each condition does</h2> <span class="fold-hint">Wind, temperature, humidity, inversions, time of day and the label, plus how to spot an inversion in the field.</span></summary>
+          <summary><h2 class="edu-title"> What each condition does</h2> <span class="fold-hint">Wind, temperature, humidity, inversions, time of day and the label, plus how to spot an inversion in the field.</span></summary>
           <div class="fold-body">
         <div class="edu-grid">
-          <div class="edu-card"><div class="edu-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wind"/></svg></div><div class="edu-card-title">The Wind Window: 3&ndash;10 mph</div><div class="edu-card-text">Calm conditions under 3 mph allow fine droplets to hang in the air and drift unpredictably. Over 10 mph, mechanical drift carries droplets off-target. </div><div class="edu-card-tip edu-card-tip-green">Ideal: 3&ndash;10 mph &middot; Consistent direction</div></div>
-          <div class="edu-card"><div class="edu-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg></div><div class="edu-card-title">Temperature &amp; Volatilization</div><div class="edu-card-text">Heat causes certain active ingredients (particularly dicamba, 2,4-D ester, and clopyralid) to volatilize off the leaf surface hours after application. The hotter the day, the more of it moves.</div><div class="edu-card-tip edu-card-tip-gold">Dicamba over the top: 85&deg;F is the 2026 state cutoff in Minnesota and Illinois (Minnesota Department of Agriculture, Feb 2026); the 2026 labels stop at a 95&deg;F forecast high. See the dicamba rules below.</div></div>
-          <div class="edu-card"><div class="edu-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg></div><div class="edu-card-title">Humidity and droplet evaporation</div><div class="edu-card-text">In low humidity (under 40%), fine spray droplets evaporate rapidly in flight. Match nozzle size to conditions: larger droplets resist evaporation but may reduce canopy penetration.</div><div class="edu-card-tip edu-card-tip-red">Below 40% RH: use larger nozzles</div></div>
-          <div class="edu-card"><div class="edu-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-fog"/></svg></div><div class="edu-card-title">Thermal Inversions</div><div class="edu-card-text">A thermal inversion forms when warm air sits above cooler air near the ground, trapping spray droplets in a stable layer. Indicators: smoke that flattens horizontally, dust that hangs sideways, early morning mist in low spots.</div><div class="edu-card-tip edu-card-tip-red">Can drift miles. No label override</div></div>
-          <div class="edu-card"><div class="edu-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-alarm-clock"/></svg></div><div class="edu-card-title">Best times of day to spray</div><div class="edu-card-text">Mid-morning (9am&ndash;noon) is typically the best window: overnight inversions have broken, temperatures are still moderate, winds are picking up, and morning dew has dried. Evening applications carry high inversion risk.</div><div class="edu-card-tip edu-card-tip-green">Best window: 9am&ndash;noon in most conditions</div></div>
-          <div class="edu-card"><div class="edu-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-tag"/></svg></div><div class="edu-card-title">The label is the law</div><div class="edu-card-text">Every pesticide label specifies wind speed limits, temperature restrictions, and mandatory buffer distances. This tool provides general guidance, but the product label is the legal requirement and the final word.</div><div class="edu-card-tip edu-card-tip-blue">Label requirements supersede all general guidance</div></div>
+          <div class="edu-card"><div class="edu-card-title">The Wind Window: 3&ndash;10 mph</div><div class="edu-card-text">Calm conditions under 3 mph allow fine droplets to hang in the air and drift unpredictably. Over 10 mph, mechanical drift carries droplets off-target. </div><div class="edu-card-tip edu-card-tip-green">Ideal: 3&ndash;10 mph &middot; Consistent direction</div></div>
+          <div class="edu-card"><div class="edu-card-title">Temperature &amp; Volatilization</div><div class="edu-card-text">Heat causes certain active ingredients (particularly dicamba, 2,4-D ester, and clopyralid) to volatilize off the leaf surface hours after application. The hotter the day, the more of it moves.</div><div class="edu-card-tip edu-card-tip-gold">Dicamba over the top: 85&deg;F is the 2026 state cutoff in Minnesota and Illinois (Minnesota Department of Agriculture, Feb 2026); the 2026 labels stop at a 95&deg;F forecast high. See the dicamba rules below.</div></div>
+          <div class="edu-card"><div class="edu-card-title">Humidity and droplet evaporation</div><div class="edu-card-text">In low humidity (under 40%), fine spray droplets evaporate rapidly in flight. Match nozzle size to conditions: larger droplets resist evaporation but may reduce canopy penetration.</div><div class="edu-card-tip edu-card-tip-red">Below 40% RH: use larger nozzles</div></div>
+          <div class="edu-card"><div class="edu-card-title">Thermal Inversions</div><div class="edu-card-text">A thermal inversion forms when warm air sits above cooler air near the ground, trapping spray droplets in a stable layer. Indicators: smoke that flattens horizontally, dust that hangs sideways, early morning mist in low spots.</div><div class="edu-card-tip edu-card-tip-red">Can drift miles. No label override</div></div>
+          <div class="edu-card"><div class="edu-card-title">Best times of day to spray</div><div class="edu-card-text">Mid-morning (9am&ndash;noon) is typically the best window: overnight inversions have broken, temperatures are still moderate, winds are picking up, and morning dew has dried. Evening applications carry high inversion risk.</div><div class="edu-card-tip edu-card-tip-green">Best window: 9am&ndash;noon in most conditions</div></div>
+          <div class="edu-card"><div class="edu-card-title">The label is the law</div><div class="edu-card-text">Every pesticide label specifies wind speed limits, temperature restrictions, and mandatory buffer distances. This tool provides general guidance, but the product label is the legal requirement and the final word.</div><div class="edu-card-tip edu-card-tip-blue">Label requirements supersede all general guidance</div></div>
         </div>
         <div class="inv-box">
-          <h3 class="inv-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-fog"/></svg></span> Thermal inversions</h3>
+          <h3 class="inv-title"> Thermal inversions</h3>
           <div class="inv-grid">
             <div>
               <div class="inv-intro">A thermal inversion traps fine spray droplets in a shallow, stable air layer close to the ground. Those droplets ride horizontal air movement and can drift miles before settling on sensitive crops, waterways, or residences.</div>
@@ -1270,7 +1270,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
                 <div class="inv-detect-item"><span class="inv-detect-arrow">&rarr;</span><span class="inv-detect-text"><strong>Ground fog:</strong> Low mist clinging to drainage areas indicates stable, non-mixing air.</span></div>
                 <div class="inv-detect-item"><span class="inv-detect-arrow">&rarr;</span><span class="inv-detect-text"><strong>Time of day:</strong> Any calm, clear evening after sunset creates near-surface inversion conditions.</span></div>
               </div>
-              <div class="inv-warning"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-octagon-alert"/></svg></span> <strong class="inv-warning-label">Do not spray</strong> when any inversion indicator is present, regardless of what the wind meter reads.</div>
+              <div class="inv-warning"> <strong class="inv-warning-label">Do not spray</strong> when any inversion indicator is present, regardless of what the wind meter reads.</div>
             </div>
           </div>
         </div>
@@ -1279,7 +1279,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       </div>
       <div class="fade-up" style="margin-bottom:2rem">
         <div class="dicamba-box">
-          <h2 class="dicamba-box-head"><svg class="ic-sp" aria-hidden="true"><use href="#sp-octagon-alert"/></svg> Dicamba application rules</h2>
+          <h2 class="dicamba-box-head">Dicamba application rules</h2>
           <p style="font-size:.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:.9rem">Dicamba drift has kept these products in court and under EPA review for years. These are EPA label requirements. Violations carry civil and criminal penalties. Verify against your specific product label before every application.</p>
           <div class="dicamba-rules">
             <div class="dicamba-rule"><strong>Wind Speed</strong>Under 10 mph at application time. No gusty, variable wind conditions. Measure at boom height, not cab height.</div>
@@ -1294,7 +1294,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
         </div>
       </div>
       <div class="fade-up" style="margin-bottom:2rem">
-        <h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg></span> Rain-free period by herbicide class</h2>
+        <h2 class="edu-title"> Rain-free period by herbicide class</h2>
         <p style="font-size:.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:.9rem">How long a product needs on the leaf before rain. The times come from product labels and two extension tables: Michigan State&rsquo;s 2025 Weed Control Guide (Table 11) and the University of Arkansas soybean herbicide chart. Where they disagree I show both. Checked October 2026. Your product label is the authority.</p>
         <div class="rfp-table-wrap" tabindex="0" role="region" aria-label="Rain-free period by herbicide class (scrolls sideways)">
           <table class="rfp-table">
@@ -1317,44 +1317,44 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   .smc,.scal{--c-green:#6ab04c;--c-gold:#e6b042;--c-up:#4aab4c;--c-warn:#d9534f;
     --c-panel:var(--card,#161b14);--c-panel2:var(--card-2,#1d2419);--c-line:var(--border,#2a3324);
     --c-txt:var(--text,#e7ece8);--c-mut:var(--text-muted,#9bb0a3);}
-  .smc{background:var(--c-panel);border:1px solid var(--c-line);border-radius:16px;padding:1.1rem 1rem 1.2rem;margin:1.25rem 0;}
+  .smc{background:var(--c-panel);border:1px solid var(--c-line);border-radius:var(--r-lg);padding:1.1rem 1rem 1.2rem;margin:1.25rem 0;}
   .smc *,.scal *{box-sizing:border-box;}
   .smc-h,.scal-h{display:flex;align-items:center;gap:.5rem;font-family:var(--font-display);font-weight:700;font-size:1.3rem;margin:0 0 .2rem;color:var(--c-txt);}
   .smc-sub,.scal-sub{color:var(--c-mut);font-size:.92rem;line-height:1.45;margin:0 0 1rem;}
   .smc-seg,.scal-seg{display:flex;gap:.4rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--card-r);padding:.3rem;margin-bottom:1rem;}
-  .smc-seg button,.scal-seg button{flex:1;min-height:46px;border:none;border-radius:9px;background:transparent;color:var(--c-mut);font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;}
+  .smc-seg button,.scal-seg button{flex:1;min-height:46px;border:none;border-radius:var(--r-lg);background:transparent;color:var(--c-mut);font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;}
   .smc-seg button[aria-pressed="true"],.scal-seg button[aria-pressed="true"]{background:var(--c-green);color:#0f140c;}
   .smc-grid,.scal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem;}
-  .smc-field label,.scal-field label{display:block;font-size:0.795rem;text-transform:uppercase;letter-spacing:.03em;color:var(--c-mut);font-weight:700;margin-bottom:.3rem;}
+  .smc-field label,.scal-field label{display:block;font-size:0.795rem;text-transform:none;letter-spacing:0;color:var(--c-mut);font-weight:700;margin-bottom:.3rem;}
   .smc-field .hint,.scal-field .hint{font-size:0.78rem;color:var(--c-mut);text-transform:none;letter-spacing:0;font-weight:400;}
-  .smc input,.smc select,.scal input,.scal select{width:100%;min-height:50px;font-size:1.05rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:10px;color:var(--c-txt);padding:.55rem .65rem;font-family:inherit;-webkit-appearance:none;appearance:none;}
+  .smc input,.smc select,.scal input,.scal select{width:100%;min-height:50px;font-size:1.05rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--r-lg);color:var(--c-txt);padding:.55rem .65rem;font-family:inherit;-webkit-appearance:none;appearance:none;}
   .smc input[type=number],.scal input[type=number]{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;}
   .smc input::placeholder{color:var(--c-mut);opacity:.7;}
   .smc input:focus,.smc select:focus,.scal input:focus,.scal select:focus{outline:none;border-color:var(--c-green);}
   .smc input:focus-visible,.smc select:focus-visible,.scal input:focus-visible,.scal select:focus-visible,.zip-in:focus-visible{outline:2px solid var(--c-green,var(--green));outline-offset:2px;}
   .smc select,.scal select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239bb0a3' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .7rem center;padding-right:1.8rem;}
   .smc-prodhd{display:flex;justify-content:space-between;align-items:baseline;margin:.4rem 0 .35rem;}
-  .smc-prodhd .lbl{font-size:0.795rem;text-transform:uppercase;letter-spacing:.03em;color:var(--c-mut);font-weight:700;}
-  .smc-help{font-size:0.79rem;color:var(--c-mut);line-height:1.4;margin:0 0 .6rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:8px;padding:.5rem .6rem;}
+  .smc-prodhd .lbl{font-size:0.795rem;text-transform:none;letter-spacing:0;color:var(--c-mut);font-weight:700;}
+  .smc-help{font-size:0.79rem;color:var(--c-mut);line-height:1.4;margin:0 0 .6rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--r-md);padding:.5rem .6rem;}
   .smc-help b{color:var(--c-txt);}
   .smc-prod{background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--card-r);padding:.7rem .7rem .6rem;margin-bottom:.6rem;}
   .smc-prod-top{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem;}
   .smc-prod-top input{flex:1;min-height:44px;}
-  .smc-prod-rm{flex:0 0 auto;min-width:44px;min-height:44px;border:1px solid var(--c-line);background:transparent;color:var(--c-mut);border-radius:9px;font-size:1.2rem;cursor:pointer;line-height:1;}
+  .smc-prod-rm{flex:0 0 auto;min-width:44px;min-height:44px;border:1px solid var(--c-line);background:transparent;color:var(--c-mut);border-radius:var(--r-lg);font-size:1.2rem;cursor:pointer;line-height:1;}
   .smc-prod-rm:hover{border-color:var(--c-warn);color:var(--c-warn);}
   .smc-rate{display:grid;grid-template-columns:1fr 1.4fr;gap:.5rem;}
-  .smc-add{width:100%;min-height:48px;border:1px dashed var(--c-line);background:transparent;color:var(--c-green);font-weight:700;font-size:.95rem;border-radius:11px;cursor:pointer;font-family:inherit;margin-bottom:1rem;}
+  .smc-add{width:100%;min-height:48px;border:1px dashed var(--c-line);background:transparent;color:var(--c-green);font-weight:700;font-size:.95rem;border-radius:var(--r-lg);cursor:pointer;font-family:inherit;margin-bottom:1rem;}
   .smc-add:hover,.scal-add:hover{border-color:var(--c-green);}
-  .smc-out,.scal-out{background:var(--c-panel2);border:1px solid var(--c-line);border-radius:13px;padding:.9rem 1rem;}
+  .smc-out,.scal-out{background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--r-lg);padding:.9rem 1rem;}
   .smc-out-hd,.scal-out-hd{font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:var(--c-txt);margin-bottom:.7rem;display:flex;align-items:center;gap:.4rem;}
   .smc-kpis{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.5rem;}
-  .smc-kpi{background:var(--c-panel);border:1px solid var(--c-line);border-radius:10px;padding:.6rem .7rem;}
-  .smc-kpi .k{font-size:0.78rem;text-transform:uppercase;letter-spacing:.03em;color:var(--c-mut);font-weight:700;}
+  .smc-kpi{background:var(--c-panel);border:1px solid var(--c-line);border-radius:var(--r-lg);padding:.6rem .7rem;}
+  .smc-kpi .k{font-size:0.78rem;text-transform:none;letter-spacing:0;color:var(--c-mut);font-weight:700;}
   .smc-kpi .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.25rem;color:var(--c-gold);margin-top:.1rem;line-height:1.1;}
   .smc-kpi .v small{font-size:0.775rem;color:var(--c-mut);font-weight:400;}
   .smc-kpi .sub{font-size:0.77rem;color:var(--c-mut);margin-top:.15rem;}
   .smc-tbl{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.5rem;}
-  .smc-tbl th{text-align:left;font-size:0.77rem;text-transform:uppercase;letter-spacing:.03em;color:var(--c-mut);font-weight:700;padding:.3rem .3rem;border-bottom:1px solid var(--c-line);}
+  .smc-tbl th{text-align:left;font-size:0.77rem;text-transform:none;letter-spacing:0;color:var(--c-mut);font-weight:700;padding:.3rem .3rem;border-bottom:1px solid var(--c-line);}
   .smc-tbl th.r,.smc-tbl td.r{text-align:right;}
   .smc-tbl td{padding:.5rem .3rem;border-bottom:1px solid var(--c-line);vertical-align:top;}
   .smc-tbl tr:last-child td{border-bottom:none;}
@@ -1363,23 +1363,23 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   .smc-tbl .conv{display:block;font-family:'JetBrains Mono',monospace;font-size:0.775rem;color:var(--c-mut);font-weight:400;white-space:nowrap;}
   .smc-water td{border-top:2px solid var(--c-line);}
   .smc-water .pn{color:var(--c-green);}
-  .smc-partial{background:var(--c-panel);border:1px solid var(--c-gold);border-radius:11px;padding:.7rem .8rem;margin-top:.8rem;}
-  .smc-partial-hd{font-size:.8rem;font-weight:700;color:var(--c-gold);text-transform:uppercase;letter-spacing:.03em;margin-bottom:.45rem;}
+  .smc-partial{background:var(--c-panel);border:1px solid var(--c-gold);border-radius:var(--r-lg);padding:.7rem .8rem;margin-top:.8rem;}
+  .smc-partial-hd{font-size:.8rem;font-weight:700;color:var(--c-gold);text-transform:none;letter-spacing:0;margin-bottom:.45rem;}
   .smc-partial-row{display:flex;justify-content:space-between;gap:.6rem;font-size:.88rem;padding:.2rem 0;border-bottom:1px solid var(--c-line);}
   .smc-partial-row:last-child{border-bottom:none;}
   .smc-partial-row .pn{color:var(--c-txt);}
   .smc-partial-row .amt{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--c-txt);}
   .smc-acts{display:flex;gap:.5rem;margin-top:.9rem;}
-  .smc-acts button{flex:1;min-height:46px;border:1px solid var(--c-line);background:var(--c-panel);color:var(--c-txt);border-radius:10px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;}
+  .smc-acts button{flex:1;min-height:46px;border:1px solid var(--c-line);background:var(--c-panel);color:var(--c-txt);border-radius:var(--r-lg);font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;}
   .smc-acts button:hover{border-color:var(--c-green);color:var(--c-green);}
-  .smc-warn{display:none;font-size:.82rem;color:var(--c-warn);background:rgba(217,83,79,.1);border:1px solid rgba(217,83,79,.3);border-radius:9px;padding:.5rem .7rem;margin-top:.7rem;}
+  .smc-warn{display:none;font-size:.82rem;color:var(--c-warn);background:var(--surface2);border:1px solid rgba(217,83,79,.3);border-radius:var(--r-lg);padding:.5rem .7rem;margin-top:.7rem;}
   .smc-warn.show{display:block;}
   .smc-note{font-size:1rem;color:var(--c-mut);line-height:1.45;margin-top:.8rem;}
   .smc-note b{color:var(--c-txt);}
   .smc-disc,.scal-disc{font-size:0.785rem;color:var(--c-mut);line-height:1.45;margin-top:.9rem;border-top:1px solid var(--c-line);padding-top:.7rem;}
-  .scal{background:var(--c-panel);border:1px solid var(--c-line);border-radius:16px;padding:1.1rem 1rem 1.2rem;margin:1.25rem 0;}
+  .scal{background:var(--c-panel);border:1px solid var(--c-line);border-radius:var(--r-lg);padding:1.1rem 1rem 1.2rem;margin:1.25rem 0;}
   .scal-add{display:none;}
-  .scal-res{background:var(--c-panel2);border:1px solid var(--c-line);border-radius:13px;padding:1rem;text-align:center;}
+  .scal-res{background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--r-lg);padding:1rem;text-align:center;}
   .scal-res .big{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:2.4rem;color:var(--c-gold);line-height:1;}
   .scal-res .big small{font-size:1rem;color:var(--c-mut);font-weight:400;}
   .scal-res .lbl{font-size:.85rem;color:var(--c-txt);margin-top:.4rem;}
@@ -1392,7 +1392,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   [data-theme="light"] .smc-add,[data-theme="light"] .smc-water .pn{color:#256b42}
   </style>
 
-  <h2 class="smc-h" id="smc-h"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calculator"/></svg></span> Spray mix calculator</h2>
+  <h2 class="smc-h" id="smc-h"> Spray mix calculator</h2>
   <p class="smc-sub">Carrier rate is how much water you spray per acre (usually 10&ndash;20). Tank size is your sprayer's tank. Set it to yours, even a small 3-point tank works. Enter each product's label rate and get exactly how much of every product and how much water goes in each tank, including the <b style="color:var(--c-txt)">partial last tank</b> so you don't over-mix, plus whole-field totals. Works in oz, pints, quarts, gallons, pounds, %&nbsp;v/v, and per-100-gallon rates.</p>
 
   <div class="smc-seg" role="group" aria-label="Planning mode">
@@ -1412,12 +1412,12 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   <button type="button" class="smc-add" id="smc-add">+ Add product</button>
 
   <div class="smc-out" id="smc-out">
-    <div class="smc-out-hd"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-paint-bucket"/></svg></span> <span id="smc-out-title">Per tank</span></div>
+    <div class="smc-out-hd"> <span id="smc-out-title">Per tank</span></div>
     <div class="smc-kpis" id="smc-kpis"></div>
     <table class="smc-tbl"><thead id="smc-thead"></thead><tbody id="smc-rows"></tbody></table>
     <div id="smc-partial"></div>
     <div class="smc-warn" id="smc-warn"></div>
-    <div class="smc-acts"><button type="button" id="smc-copy"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Copy mix sheet</button><button type="button" id="smc-print"><svg class="ic-sp" aria-hidden="true"><use href="#sp-printer"/></svg> Print</button></div>
+    <div class="smc-acts"><button type="button" id="smc-copy">Copy mix sheet</button><button type="button" id="smc-print">Print</button></div>
     <div class="smc-note" id="smc-note"></div>
   </div>
 
@@ -1426,7 +1426,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 <!-- ░░░░░░░░░░ /MIX ░░░░░░░░░░ -->
 
 <section class="scal" id="sprayer-calibration-calculator" aria-labelledby="scal-h">
-  <h2 class="scal-h" id="scal-h"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-target"/></svg></span> Sprayer calibration calculator</h2>
+  <h2 class="scal-h" id="scal-h"> Sprayer calibration calculator</h2>
   <p class="scal-sub">Are you really applying the rate you think? Check your actual gallons per acre from ground speed, nozzle spacing, and measured output, or work backward to the nozzle output a target rate needs. Uses the standard broadcast formula: <b style="color:var(--c-txt)">GPA = 5940 × GPM ÷ (MPH × spacing)</b>.</p>
 
   <div class="scal-seg" role="group" aria-label="Calibration mode">
@@ -1543,19 +1543,19 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     }).join('');
     // water row
     var wPerTank=E?DASH:(fmt(waterFor(s.apt,s.tank))+' gal'),wField=FE?DASH:(fmt(waterFor(s.acres,s.gpa*s.acres))+' gal');
-    if(s.byField){body+='<tr class="smc-water"><td class="pn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg> Water (carrier)</td><td class="r"><span class="amt">'+wPerTank+'</span></td><td class="r"><span class="amt">'+wField+'</span></td></tr>';}
-    else{body+='<tr class="smc-water"><td class="pn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg> Water (carrier)</td><td class="r"><span class="amt">'+wPerTank+'</span></td></tr>';}
+    if(s.byField){body+='<tr class="smc-water"><td class="pn">Water (carrier)</td><td class="r"><span class="amt">'+wPerTank+'</span></td><td class="r"><span class="amt">'+wField+'</span></td></tr>';}
+    else{body+='<tr class="smc-water"><td class="pn">Water (carrier)</td><td class="r"><span class="amt">'+wPerTank+'</span></td></tr>';}
     document.getElementById('smc-rows').innerHTML=body||'<tr><td colspan="3" class="conv">Add a product to see the mix.</td></tr>';
     // partial tank panel
     var pe=document.getElementById('smc-partial');
     if(s.hasPartial){
       var prows=products.map(function(p){var a=outStr(amtFor(p,s.partialAc,s.partialGal));if(!a)return '';return '<div class="smc-partial-row"><span class="pn">'+escH(p.name||'Product')+'</span><span class="amt">'+a.amt+'</span></div>';}).join('');
-      prows+='<div class="smc-partial-row"><span class="pn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg> Water</span><span class="amt">'+fmt(waterFor(s.partialAc,s.partialGal))+' gal</span></div>';
-      pe.innerHTML='<div class="smc-partial"><div class="smc-partial-hd"><svg class="ic-sp" aria-hidden="true"><use href="#sp-arrow-down"/></svg> Last (partial) tank, covers '+fmt(s.partialAc)+' ac</div>'+prows+'</div>';
+      prows+='<div class="smc-partial-row"><span class="pn">Water</span><span class="amt">'+fmt(waterFor(s.partialAc,s.partialGal))+' gal</span></div>';
+      pe.innerHTML='<div class="smc-partial"><div class="smc-partial-hd">Last (partial) tank, covers '+fmt(s.partialAc)+' ac</div>'+prows+'</div>';
     } else pe.innerHTML='';
     // warning
     var liqGal=E?0:(s.tank-waterFor(s.apt,s.tank));var w=document.getElementById('smc-warn');
-    if(!E&&liqGal>s.tank*0.5){w.innerHTML='<svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> Liquid product is over half the tank, double-check your rates or tank size.';w.classList.add('show');}else w.classList.remove('show');
+    if(!E&&liqGal>s.tank*0.5){w.innerHTML='Liquid product is over half the tank, double-check your rates or tank size.';w.classList.add('show');}else w.classList.remove('show');
     // note
     document.getElementById('smc-note').innerHTML=E?('Mix not calculated, '+E+'.'):(s.byField&&s.acErr)?('Per-tank amounts shown. Whole-field totals not calculated, '+s.acErr+'.'):s.byField
       ? 'Mix '+(s.hasPartial?('<b>'+s.fullTanks+'</b> full tank'+(s.fullTanks===1?'':'s')+' at the amounts above, then one partial tank scaled to <b>'+fmt(s.partialAc)+' ac</b>'):('<b>'+s.tanksTotal+'</b> full tank'+(s.tanksTotal===1?'':'s')))+'. Copy or print the sheet to take to the shed.'
@@ -1630,21 +1630,21 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 
       <section class="spr-prep" aria-labelledby="spr-prep-h">
         <style>
-        .spr-prep{--p-gold:#e6b042;--p-panel:var(--card,#161b14);--p-panel2:var(--card-2,#1d2419);--p-line:var(--border,#2a3324);--p-txt:var(--text,#e7ece8);--p-mut:var(--text-muted,#9bb0a3);background:var(--p-panel);border:1px solid var(--p-line);border-radius:14px;padding:1rem 1.05rem;margin:1.25rem 0;}
+        .spr-prep{--p-gold:#e6b042;--p-panel:var(--card,#161b14);--p-panel2:var(--card-2,#1d2419);--p-line:var(--border,#2a3324);--p-txt:var(--text,#e7ece8);--p-mut:var(--text-muted,#9bb0a3);background:var(--p-panel);border:1px solid var(--p-line);border-radius:var(--r-lg);padding:1rem 1.05rem;margin:1.25rem 0;}
         .spr-prep h3{font-family:var(--font-display);font-weight:700;font-size:1.15rem;margin:0 0 .6rem;color:var(--p-txt);display:flex;align-items:center;gap:.4rem;}
-        .spr-prep details{border:1px solid var(--p-line);border-radius:10px;background:var(--p-panel2);margin:0 0 .7rem;padding:0 .9rem;}
+        .spr-prep details{border:1px solid var(--p-line);border-radius:var(--r-lg);background:var(--p-panel2);margin:0 0 .7rem;padding:0 .9rem;}
         .spr-prep summary{cursor:pointer;list-style:none;padding:.8rem 0;font-weight:700;color:var(--p-txt);font-size:1rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;min-height:44px;}
         .spr-prep summary::-webkit-details-marker{display:none;}
         .spr-prep summary::after{content:"+";color:var(--p-gold);font-weight:700;font-size:1.3rem;line-height:1;}
         .spr-prep details[open] summary::after{content:"\2212";}
         .spr-prep ol{margin:0 0 .9rem;padding:0 0 0 1.2rem;color:var(--p-mut);font-size:.88rem;line-height:1.6;}
         .spr-prep ol li{margin-bottom:.4rem;} .spr-prep ol li b{color:var(--p-txt);}
-        .spr-prep .dw{font-size:.88rem;color:var(--p-mut);line-height:1.55;background:var(--p-panel2);border:1px solid var(--p-line);border-left:3px solid var(--p-gold);border-radius:10px;padding:.7rem .85rem;}
+        .spr-prep .dw{font-size:.88rem;color:var(--p-mut);line-height:1.55;background:var(--p-panel2);border:1px solid var(--p-line);border-left:3px solid var(--p-gold);border-radius:var(--r-lg);padding:.7rem .85rem;}
         .spr-prep .dw a{color:var(--p-gold);font-weight:700;text-decoration:none;} .spr-prep .dw a:hover{text-decoration:underline;} .spr-prep .dw b{color:var(--p-txt);}
         
   [data-theme="light"] .spr-prep{--p-gold:#8a6514}
   </style>
-        <h3 id="spr-prep-h"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg></span> Before you load the tank</h3>
+        <h3 id="spr-prep-h"> Before you load the tank</h3>
         <details>
           <summary>How to run a jar test (compatibility check)</summary>
           <ol>
@@ -1660,16 +1660,16 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 
       <div class="mix-section fade-up" id="section-mixorder">
         <details class="fold">
-          <summary><h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg></span> Tank mix order</h2> <span class="fold-hint">The nine-step loading order, with what to always do and never do.</span></summary>
+          <summary><h2 class="edu-title"> Tank mix order</h2> <span class="fold-hint">The nine-step loading order, with what to always do and never do.</span></summary>
           <div class="fold-body">
         <div class="mix-card">
           <div class="mix-intro">Getting the mix order wrong causes clumping, gelling, clogged nozzles, reduced efficacy, and crop damage. Always do a jar test first.</div>
           <div class="mix-steps">
-            <div class="mix-step"><div class="mix-num mix-num-1">1</div><div><div class="mix-step-name"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg> Water: fill tank 50–75%</div><div class="mix-step-what">Fill the spray tank halfway to three-quarters with clean water.</div><div class="mix-step-why">Starting with water ensures even dispersion and prevents incompatibility reactions.</div></div></div>
+            <div class="mix-step"><div class="mix-num mix-num-1">1</div><div><div class="mix-step-name">Water: fill tank 50–75%</div><div class="mix-step-what">Fill the spray tank halfway to three-quarters with clean water.</div><div class="mix-step-why">Starting with water ensures even dispersion and prevents incompatibility reactions.</div></div></div>
             <div class="mix-step"><div class="mix-num mix-num-2">2</div><div><div class="mix-step-name"> Water Conditioners &amp; AMS</div><div class="mix-step-what">Add ammonium sulfate (AMS) at 8.5&ndash;17 lbs per 100 gallons. Add pH buffers if water is hard or alkaline. <strong>Exception: never add AMS to an OTT dicamba load (Stryax, Engenia, Tavium). The label prohibits it; use the required VRA + DRA instead.</strong></div><div class="mix-step-why">AMS binds calcium and magnesium ions that tie up glyphosate and other weak-acid herbicides.</div></div></div>
             <div class="mix-step"><div class="mix-num mix-num-3">3</div><div><div class="mix-step-name"> Start Agitation</div><div class="mix-step-what">Begin continuous mechanical or hydraulic agitation before adding any pesticide products.</div><div class="mix-step-why">Agitation keeps dry particles suspended and prevents settling and gelling.</div></div></div>
             <div class="mix-step"><div class="mix-num mix-num-4">4</div><div><div class="mix-step-name"> Dry Formulations (WP, WDG, DF)</div><div class="mix-step-what">Add wettable powders and water-dispersible granules first among the pesticide products.</div><div class="mix-step-why">Dry formulations need the most water volume and agitation to disperse properly.</div></div></div>
-            <div class="mix-step"><div class="mix-num mix-num-5">5</div><div><div class="mix-step-name"><svg class="ic-sp" aria-hidden="true"><use href="#sp-dna"/></svg> Liquid flowables and suspension concentrates (SC)</div><div class="mix-step-what">Add suspension concentrates and flowable formulations. Shake containers first.</div><div class="mix-step-why">Flowables disperse better in water that already contains dissolved dry products.</div></div></div>
+            <div class="mix-step"><div class="mix-num mix-num-5">5</div><div><div class="mix-step-name">Liquid flowables and suspension concentrates (SC)</div><div class="mix-step-what">Add suspension concentrates and flowable formulations. Shake containers first.</div><div class="mix-step-why">Flowables disperse better in water that already contains dissolved dry products.</div></div></div>
             <div class="mix-step"><div class="mix-num mix-num-6">6</div><div><div class="mix-step-name"> Emulsifiable Concentrates (EC)</div><div class="mix-step-what">Add EC formulations dissolved in oil-based solvent with emulsifiers.</div><div class="mix-step-why">ECs create an oil-in-water emulsion; position minimizes compatibility risks.</div></div></div>
             <div class="mix-step"><div class="mix-num mix-num-7">7</div><div><div class="mix-step-name"> Water-Soluble Liquids (SL, S)</div><div class="mix-step-what">Add soluble liquid formulations. These include many glyphosate formulations.</div><div class="mix-step-why">Soluble liquids mix readily and are least likely to cause compatibility issues.</div></div></div>
             <div class="mix-step"><div class="mix-num mix-num-8">8</div><div><div class="mix-step-name"> Adjuvants, surfactants and crop oils</div><div class="mix-step-what">Add NIS, COC, MSO, drift reduction agents, defoamers, and compatibility agents last.</div><div class="mix-step-why">Adjuvants affect the surface tension of the entire spray solution.</div></div></div>
@@ -1684,7 +1684,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
               <strong>Record everything</strong>: products, rates, order, weather. Required for most certifications.
             </div>
             <div class="mix-tip mix-tip-dont">
-              <div class="mix-tip-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-octagon-alert"/></svg> Never Do</div>
+              <div class="mix-tip-title">Never Do</div>
               <strong>Never mix concentrates directly</strong>: violent reactions, gelling, and equipment damage.<br><br>
               <strong>Never skip agitation</strong>: some products separate in under 5 minutes.<br><br>
               <strong>Never add dry products to an oily mix</strong>: always add dries before ECs.<br><br>
@@ -1697,24 +1697,24 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       </div>
       <div class="tips-section fade-up" id="section-tips">
         <details class="fold">
-          <summary><h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-lightbulb"/></svg></span> Sprayer tips</h2> <span class="fold-hint">Nozzles, speed and pressure, carrier volume, AMS, adjuvants, cleanout, records, boom height and resistance.</span></summary>
+          <summary><h2 class="edu-title"> Sprayer tips</h2> <span class="fold-hint">Nozzles, speed and pressure, carrier volume, AMS, adjuvants, cleanout, records, boom height and resistance.</span></summary>
           <div class="fold-body">
         <div class="tips-grid">
-          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hammer"/></svg></div><div class="tip-card-title">Nozzle Selection</div><div class="tip-card-text">Air induction nozzles (AITTJ, AI, TTI) produce larger, air-filled droplets that resist drift and are required on most dicamba labels. Flat fan nozzles give better coverage for contact herbicides but produce more fines. Dual-fan nozzles split the pattern for better canopy penetration.</div><div class="tip-card-detail"><strong>Rule of thumb:</strong> In wind over 8 mph or humidity under 40%, move up one nozzle size from your standard.</div></div>
-          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></div><div class="tip-card-title">Speed &amp; Pressure</div><div class="tip-card-text">Higher pressure creates smaller droplets, and bumping pressure up meaningfully increases the share of drift-prone fine droplets. Keep pressure at the low end of the nozzle manufacturer&rsquo;s recommended range.</div><div class="tip-card-detail"><strong>Target:</strong> 30&ndash;40 PSI for most flat fans, 40&ndash;60 PSI for air induction. Boom height: 18&ndash;20 inches above target for 110&deg; nozzles.</div></div>
-          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg></div><div class="tip-card-title">Carrier volume: more water, better coverage</div><div class="tip-card-text">University extension trials generally find higher carrier volumes (15&ndash;20 GPA) improve both contact and systemic herbicide performance. More water means more droplets reaching the target and better canopy penetration.</div><div class="tip-card-detail"><strong>Contact herbicides</strong> benefit most from 15+ GPA. <strong>Systemic herbicides</strong> are more forgiving at 10&ndash;15 GPA.</div></div>
+          <div class="tip-card"><div class="tip-card-title">Nozzle Selection</div><div class="tip-card-text">Air induction nozzles (AITTJ, AI, TTI) produce larger, air-filled droplets that resist drift and are required on most dicamba labels. Flat fan nozzles give better coverage for contact herbicides but produce more fines. Dual-fan nozzles split the pattern for better canopy penetration.</div><div class="tip-card-detail"><strong>Rule of thumb:</strong> In wind over 8 mph or humidity under 40%, move up one nozzle size from your standard.</div></div>
+          <div class="tip-card"><div class="tip-card-title">Speed &amp; Pressure</div><div class="tip-card-text">Higher pressure creates smaller droplets, and bumping pressure up meaningfully increases the share of drift-prone fine droplets. Keep pressure at the low end of the nozzle manufacturer&rsquo;s recommended range.</div><div class="tip-card-detail"><strong>Target:</strong> 30&ndash;40 PSI for most flat fans, 40&ndash;60 PSI for air induction. Boom height: 18&ndash;20 inches above target for 110&deg; nozzles.</div></div>
+          <div class="tip-card"><div class="tip-card-title">Carrier volume: more water, better coverage</div><div class="tip-card-text">University extension trials generally find higher carrier volumes (15&ndash;20 GPA) improve both contact and systemic herbicide performance. More water means more droplets reaching the target and better canopy penetration.</div><div class="tip-card-detail"><strong>Contact herbicides</strong> benefit most from 15+ GPA. <strong>Systemic herbicides</strong> are more forgiving at 10&ndash;15 GPA.</div></div>
           <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"></div><div class="tip-card-title">AMS (Ammonium Sulfate)</div><div class="tip-card-text">Ammonium sulfate binds hard-water cations that antagonize glyphosate, and improves glyphosate performance on tough weeds like waterhemp and Palmer amaranth even in soft water. Never add AMS to an OTT dicamba load. The label prohibits it.</div><div class="tip-card-detail"><strong>Rates:</strong> 8.5&ndash;17 lbs dry AMS per 100 gallons. <strong>Always add AMS before herbicide.</strong></div></div>
-          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-alarm-clock"/></svg></div><div class="tip-card-title">Spray timing: weed size matters more than speed</div><div class="tip-card-text">Spraying 2-inch waterhemp works far better than spraying 6-inch waterhemp with the same product and rate. Scout fields and prioritize those closest to the weed size threshold.</div><div class="tip-card-detail"><strong>Target weed height:</strong> Most POST herbicides are labeled for 2&ndash;4 inch weeds.</div></div>
+          <div class="tip-card"><div class="tip-card-title">Spray timing: weed size matters more than speed</div><div class="tip-card-text">Spraying 2-inch waterhemp works far better than spraying 6-inch waterhemp with the same product and rate. Scout fields and prioritize those closest to the weed size threshold.</div><div class="tip-card-detail"><strong>Target weed height:</strong> Most POST herbicides are labeled for 2&ndash;4 inch weeds.</div></div>
           <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"></div><div class="tip-card-title">Adjuvant Selection: NIS vs. COC vs. MSO</div><div class="tip-card-text">Adjuvants are helpers added to the tank so spray sticks to and soaks into the leaf. NIS (nonionic surfactant) reduces surface tension at 0.25% v/v. COC (crop oil concentrate) penetrates waxy cuticles at 1% v/v. MSO (methylated seed oil) gets through waxy leaves faster still, with more risk of crop injury.</div><div class="tip-card-detail"><strong>When in doubt, read the label.</strong> Using COC when the label calls for NIS can cause crop injury.</div></div>
-          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-shower-head"/></svg></div><div class="tip-card-title">Tank cleanout: prevent carryover damage</div><div class="tip-card-text">Dicamba, sulfonylureas, and fomesafen bind to tank walls and hoses. A simple water rinse will not remove them. Clean thoroughly between every product change.</div><div class="tip-card-detail"><strong>Cleanout protocol:</strong> Drain &rarr; Rinse &rarr; Fill 10% with water + tank cleaner, agitate 15 min, spray through boom, drain &rarr; Repeat rinse.</div></div>
-          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg></div><div class="tip-card-title">Spray Records</div><div class="tip-card-text">Detailed spray records are legally required in most states and are your first line of defense if a neighbor alleges drift damage. Records also let you compare product performance across fields and years.</div><div class="tip-card-detail"><strong>Record every application:</strong> Date, time, products, rates, carrier volume, nozzle, pressure, speed, wind, temp, humidity, field, crop stage, weeds, adjuvants, applicator license.</div></div>
-          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-ruler"/></svg></div><div class="tip-card-title">Boom height: every inch counts</div><div class="tip-card-text">A higher boom gives fine droplets more time in the wind. On rough fields, slow down: boom bounce at speed launches drift-prone fines.</div><div class="tip-card-detail"><strong>Measure it:</strong> 18&ndash;20 inches for 110&deg; nozzles, 24 inches for 80&deg; nozzles.</div></div>
-          <div class="tip-card"><div class="tip-card-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-dna"/></svg></div><div class="tip-card-title">Resistance Management</div><div class="tip-card-text">Waterhemp, Palmer amaranth, and marestail now have populations resistant to 5+ herbicide groups in parts of the Midwest. Rotating modes of action is the only way to preserve the chemistry that still works.</div><div class="tip-card-detail"><strong>Practical rotation:</strong> Use PRE residuals (Group 15 + Group 14 or 27) to reduce POST weed pressure.</div></div>
+          <div class="tip-card"><div class="tip-card-title">Tank cleanout: prevent carryover damage</div><div class="tip-card-text">Dicamba, sulfonylureas, and fomesafen bind to tank walls and hoses. A simple water rinse will not remove them. Clean thoroughly between every product change.</div><div class="tip-card-detail"><strong>Cleanout protocol:</strong> Drain &rarr; Rinse &rarr; Fill 10% with water + tank cleaner, agitate 15 min, spray through boom, drain &rarr; Repeat rinse.</div></div>
+          <div class="tip-card"><div class="tip-card-title">Spray Records</div><div class="tip-card-text">Detailed spray records are legally required in most states and are your first line of defense if a neighbor alleges drift damage. Records also let you compare product performance across fields and years.</div><div class="tip-card-detail"><strong>Record every application:</strong> Date, time, products, rates, carrier volume, nozzle, pressure, speed, wind, temp, humidity, field, crop stage, weeds, adjuvants, applicator license.</div></div>
+          <div class="tip-card"><div class="tip-card-title">Boom height: every inch counts</div><div class="tip-card-text">A higher boom gives fine droplets more time in the wind. On rough fields, slow down: boom bounce at speed launches drift-prone fines.</div><div class="tip-card-detail"><strong>Measure it:</strong> 18&ndash;20 inches for 110&deg; nozzles, 24 inches for 80&deg; nozzles.</div></div>
+          <div class="tip-card"><div class="tip-card-title">Resistance Management</div><div class="tip-card-text">Waterhemp, Palmer amaranth, and marestail now have populations resistant to 5+ herbicide groups in parts of the Midwest. Rotating modes of action is the only way to preserve the chemistry that still works.</div><div class="tip-card-detail"><strong>Practical rotation:</strong> Use PRE residuals (Group 15 + Group 14 or 27) to reduce POST weed pressure.</div></div>
         </div>
           </div>
         </details>
         <details class="fold" style="margin-top:1rem">
-          <summary><h3 class="nozzle-card-head"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hammer"/></svg></span> Nozzle types compared</h3> <span class="fold-hint">Droplet size, drift risk, coverage and dicamba approval for five nozzle types.</span></summary>
+          <summary><h3 class="nozzle-card-head"> Nozzle types compared</h3> <span class="fold-hint">Droplet size, drift risk, coverage and dicamba approval for five nozzle types.</span></summary>
           <div class="fold-body">
         <div class="mix-card" id="section-nozzles">
           <div class="nozzle-card-sub">Droplet size classification follows ASABE S572.3. Always verify against the specific product label.</div>
@@ -1737,7 +1737,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       </div>
       <div class="season-section fade-up" id="section-season">
         <details class="fold">
-          <summary><h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg></span> Seasonal spray calendar: Corn Belt and Upper Midwest</h2> <span class="fold-hint">Application windows by month, April through October, for corn and soybeans.</span></summary>
+          <summary><h2 class="edu-title"> Seasonal spray calendar: Corn Belt and Upper Midwest</h2> <span class="fold-hint">Application windows by month, April through October, for corn and soybeans.</span></summary>
           <div class="fold-body">
         <p style="font-size:.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:.9rem">Application windows by month for corn and soybean producers. Timing and conditions shift year to year. Use this as a planning reference and always confirm current conditions before application.</p>
         <div class="season-grid">
@@ -1768,7 +1768,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
         </details>
       </div>
       <div class="faq-section fade-up" id="section-faq">
-        <h2 class="edu-title"><span aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-help"/></svg></span> Common questions</h2>
+        <h2 class="edu-title"> Common questions</h2>
         <div class="faq-list" id="faq-list">
           <div class="faq-item"><button class="faq-q" aria-expanded="false">What wind speed is safe for spraying herbicides?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">The ideal window is <strong>3 to 10 mph</strong>. Below 3 mph, calm air allows thermal inversions to trap fine droplets near the ground, they drift unpredictably. Above 10 mph, mechanical drift carries product off-target. Above 15 mph, most applications should stop. Dicamba labels legally require winds under 10 mph. Always measure at boom height, not in the cab.</div></div>
           <div class="faq-item"><button class="faq-q" aria-expanded="false">What is a thermal inversion and how do I know if one is present?<span class="faq-chevron" aria-hidden="true">&#9658;</span></button><div class="faq-a">An inversion occurs when warm air traps cooler air (and your spray) near the ground in a stable, non-mixing layer. Spray droplets can drift miles horizontally. Look for: <strong>smoke that rises then flattens</strong>, dust that hangs sideways rather than dispersing, or ground fog in low spots and drainage areas. Inversions are most common on calm, clear evenings after sunset. If you see any of these signs, do not spray. No label override exists for inversion conditions.</div></div>
@@ -1794,13 +1794,13 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       </details>
     </div>
     <div class="sidebar fade-up" id="edu2">
-      <div class="sc sc-live"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Recommendation</div><div class="rec marginal" id="rec-box"><div class="rec-h marginal" id="rec-head">Awaiting Location</div><div class="rec-t" id="rec-text">Set your location above to get a spray read for your field.</div></div></div>
-      <div class="sc sc-live"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> 5-day spray outlook</div><div class="day-strip" id="day-strip"><div class="day-item"><div class="day-name">Today</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating"></div><div class="day-wind"></div></div><div class="day-item"><div class="day-name">Day 2</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating"></div><div class="day-wind"></div></div><div class="day-item"><div class="day-name">Day 3</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating"></div><div class="day-wind"></div></div><div class="day-item"><div class="day-name">Day 4</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating"></div><div class="day-wind"></div></div><div class="day-item"><div class="day-name">Day 5</div><div class="day-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="day-rating"></div><div class="day-wind"></div></div></div><div style="font-size:0.77rem;color:var(--text-muted);margin-top:.6rem;line-height:1.6">Based on forecast wind, temp, and humidity. Always verify conditions on the day of application.</div></div>
-      <div class="sc" id="signup-card"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-mail"/></svg> Get the AGSIST Daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:0.795rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, what to watch, and farm weather, every morning. Available at no charge.</p><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="width:100%;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,#1a1a14);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" style="width:100%;padding:.6rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-size:var(--btn-fs);font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free &rarr;</button><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
+      <div class="sc sc-live"><div class="sc-title">Recommendation</div><div class="rec marginal" id="rec-box"><div class="rec-h marginal" id="rec-head">Awaiting Location</div><div class="rec-t" id="rec-text">Set your location above to get a spray read for your field.</div></div></div>
+      <div class="sc sc-live"><div class="sc-title">5-day spray outlook</div><div class="day-strip" id="day-strip"><div class="day-item"><div class="day-name">Today</div><div class="day-rating"></div><div class="day-wind"></div></div><div class="day-item"><div class="day-name">Day 2</div><div class="day-rating"></div><div class="day-wind"></div></div><div class="day-item"><div class="day-name">Day 3</div><div class="day-rating"></div><div class="day-wind"></div></div><div class="day-item"><div class="day-name">Day 4</div><div class="day-rating"></div><div class="day-wind"></div></div><div class="day-item"><div class="day-name">Day 5</div><div class="day-rating"></div><div class="day-wind"></div></div></div><div style="font-size:0.77rem;color:var(--text-muted);margin-top:.6rem;line-height:1.6">Based on forecast wind, temp, and humidity. Always verify conditions on the day of application.</div></div>
+      <div class="sc" id="signup-card"><div class="sc-title">Get the AGSIST Daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:0.795rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, what to watch, and farm weather, every morning. Available at no charge.</p><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="width:100%;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,#1a1a14);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" style="width:100%;padding:.6rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-size:var(--btn-fs);font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free &rarr;</button><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
       <div class="sc"><div class="sc-title">&#10003; Pre-Spray Checklist</div><div style="display:flex;flex-direction:column;gap:.5rem"><label class="checklist-item"><input type="checkbox"><span>Wind 3&ndash;10 mph, consistent direction away from sensitive areas</span></label><label class="checklist-item"><input type="checkbox"><span>Temperature 50&ndash;85&deg;F (check specific product label)</span></label><label class="checklist-item"><input type="checkbox"><span>Humidity above 40% RH (adjust nozzle if dry)</span></label><label class="checklist-item"><input type="checkbox"><span>No inversion indicators (smoke, hanging dust, ground fog)</span></label><label class="checklist-item"><input type="checkbox"><span>Leaves are dry: no dew, no recent rain on canopy</span></label><label class="checklist-item"><input type="checkbox"><span>Re-read product label restrictions before starting</span></label><label class="checklist-item"><input type="checkbox"><span>Notified neighbors / checked buffer zones</span></label><label class="checklist-item"><input type="checkbox"><span>Equipment calibrated: nozzles clean, pressure checked</span></label><label class="checklist-item"><input type="checkbox"><span>Jar test completed for new tank mix combinations</span></label><label class="checklist-item"><input type="checkbox"><span>Spray records sheet ready (wind, temp, products, rates)</span></label></div></div>
-      <div class="sc"><div class="sc-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Quick mix order</div><div class="qmix-list"><div class="qmix-item"><span class="qmix-num" style="color:var(--blue)">1.</span><span class="qmix-text">Water (50&ndash;75%)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--gold)">2.</span><span class="qmix-text">AMS / water conditioner</span></div><div class="qmix-item"><span class="qmix-num" style="color:#9f7aea">3.</span><span class="qmix-text">Agitation ON</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--orange)">4.</span><span class="qmix-text">Dry (WP, WDG, DF)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--green)">5.</span><span class="qmix-text">Liquid flowables (SC)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--red)">6.</span><span class="qmix-text">Emulsifiable (EC)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--blue)">7.</span><span class="qmix-text">Soluble liquids (SL)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--gold)">8.</span><span class="qmix-text">Adjuvants / surfactants</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--green)">9.</span><span class="qmix-text">Top off water</span></div></div><div class="qmix-footer">Always jar test new combinations. <a href="#section-mixorder">Full guide &#8593;</a></div></div>
-      <a href="/spray#urea" class="cross-link"><span class="cross-link-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg></span><div><div class="cross-link-title">Planning to spread urea</div><div class="cross-link-text">Warm, windy days and damp soil surfaces lose urea to the air. Check the risk before you spread.</div></div><span class="cross-link-arrow" aria-hidden="true">&rarr;</span></a>
-      <a href="/breakeven" class="cross-link"><span class="cross-link-icon" aria-hidden="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg></span><div><div class="cross-link-title">Breakeven Calculator</div><div class="cross-link-text">Know your cost per acre before you make input decisions. Run the numbers on your operation.</div></div><span class="cross-link-arrow" aria-hidden="true">&rarr;</span></a>
+      <div class="sc"><div class="sc-title">Quick mix order</div><div class="qmix-list"><div class="qmix-item"><span class="qmix-num" style="color:var(--blue)">1.</span><span class="qmix-text">Water (50&ndash;75%)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--gold)">2.</span><span class="qmix-text">AMS / water conditioner</span></div><div class="qmix-item"><span class="qmix-num" style="color:#9f7aea">3.</span><span class="qmix-text">Agitation ON</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--orange)">4.</span><span class="qmix-text">Dry (WP, WDG, DF)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--green)">5.</span><span class="qmix-text">Liquid flowables (SC)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--red)">6.</span><span class="qmix-text">Emulsifiable (EC)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--blue)">7.</span><span class="qmix-text">Soluble liquids (SL)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--gold)">8.</span><span class="qmix-text">Adjuvants / surfactants</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--green)">9.</span><span class="qmix-text">Top off water</span></div></div><div class="qmix-footer">Always jar test new combinations. <a href="#section-mixorder">Full guide &#8593;</a></div></div>
+      <a href="/spray#urea" class="cross-link"><div><div class="cross-link-title">Planning to spread urea</div><div class="cross-link-text">Warm, windy days and damp soil surfaces lose urea to the air. Check the risk before you spread.</div></div><span class="cross-link-arrow" aria-hidden="true">&rarr;</span></a>
+      <a href="/breakeven" class="cross-link"><div><div class="cross-link-title">Breakeven Calculator</div><div class="cross-link-text">Know your cost per acre before you make input decisions. Run the numbers on your operation.</div></div><span class="cross-link-arrow" aria-hidden="true">&rarr;</span></a>
     </div>
   </div>
 </div>
@@ -1810,20 +1810,20 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   .spr-rel{--r-line:var(--border,#2a3324);--r-txt:var(--text,#e7ece8);--r-mut:var(--text-muted,#9bb0a3);--r-surface:var(--card,#161b14);--r-green:#6ab04c;max-width:900px;margin:1.25rem auto 0;padding:0 1rem 1.5rem;}
   .spr-rel h2{font-family:var(--font-display);font-weight:700;font-size:1.2rem;margin:0 0 .8rem;color:var(--r-txt);}
   .spr-rel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem;}
-  .spr-rel a{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--r-surface);border:1px solid var(--r-line);border-radius:10px;padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center;transition:border-color .2s;}
+  .spr-rel a{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--r-surface);border:1px solid var(--r-line);border-radius:var(--r-lg);padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center;transition:border-color .2s;}
   .spr-rel a:hover{border-color:var(--r-green);}
   .spr-rel .i{font-size:1.3rem;margin-bottom:.25rem;} .spr-rel .n{font-size:.85rem;font-weight:700;color:var(--r-txt);} .spr-rel .d{font-size:0.775rem;color:var(--r-mut);margin-top:.1rem;}
   </style>
   <h2 id="spr-rel-h">More AGSIST tools</h2>
   <div class="spr-rel-grid">
-    <a href="/cash-bids"><span class="i"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg></span><span class="n">Cash Bids</span><span class="d">Local elevator prices</span></a>
-    <a href="/corn-futures-prices"><span class="i"><svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg></span><span class="n">Corn Futures</span><span class="d">Live CBOT + market read</span></a>
-    <a href="/usda-calendar#priced-in"><span class="i"><svg class="ic-sp" aria-hidden="true"><use href="#sp-target"/></svg></span><span class="n">What&rsquo;s Priced In</span><span class="d">USDA report odds</span></a>
-    <a href="/breakeven"><span class="i"><svg class="ic-sp" aria-hidden="true"><use href="#sp-ruler"/></svg></span><span class="n">Break-Even</span><span class="d">Is this profitable?</span></a>
-    <a href="/daily"><span class="i"><svg class="ic-sp" aria-hidden="true"><use href="#sp-inbox"/></svg></span><span class="n">Daily Briefing</span><span class="d">Markets every morning</span></a>
-    <a href="/usda-calendar"><span class="i"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg></span><span class="n">USDA Calendar</span><span class="d">Next report date</span></a>
-    <a href="/gdu-calculator"><span class="i"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg></span><span class="n">GDU Calculator</span><span class="d">Crop stage timing</span></a>
-    <a href="/fertilizer"><span class="i"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg></span><span class="n">Fertilizer Prices</span><span class="d">Benchmark N-P-K</span></a>
+    <a href="/cash-bids"><span class="n">Cash Bids</span><span class="d">Local elevator prices</span></a>
+    <a href="/corn-futures-prices"><span class="n">Corn Futures</span><span class="d">Live CBOT + market read</span></a>
+    <a href="/usda-calendar#priced-in"><span class="n">What&rsquo;s Priced In</span><span class="d">USDA report odds</span></a>
+    <a href="/breakeven"><span class="n">Break-Even</span><span class="d">Is this profitable?</span></a>
+    <a href="/daily"><span class="n">Daily Briefing</span><span class="d">Markets every morning</span></a>
+    <a href="/usda-calendar"><span class="n">USDA Calendar</span><span class="d">Next report date</span></a>
+    <a href="/gdu-calculator"><span class="n">GDU Calculator</span><span class="d">Crop stage timing</span></a>
+    <a href="/fertilizer"><span class="n">Fertilizer Prices</span><span class="d">Benchmark N-P-K</span></a>
   </div>
   <script>(function(){var g=document.querySelector('.spr-rel');if(g)g.addEventListener('click',function(e){var a=e.target.closest('a[href^="/"]');if(a&&window.gaEvent)gaEvent('spray_related',{to:a.getAttribute('href')});});var dw=document.getElementById('spr-dw');if(dw)dw.addEventListener('click',function(){if(window.gaEvent)gaEvent('spray_outbound',{to:'driftwatch'});});})();</script>
 </section>
@@ -1836,7 +1836,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     <div>
       <div class="hero-eyebrow page-kicker"><span class="live-dot"></span>Risk check</div>
       <h2 class="hero-title">Urea <span>volatilization</span><br>risk monitor</h2>
-      <p class="hero-sub page-lede">Nitrogen lost to the air is money left in the field. Montana State trials lost 10 to 20% of the N from urea spread on a dry surface with only light rain after, and 30 to 44% from urea spread on wet or snowy ground that dried slowly. Most of the loss runs over the two to three weeks after spreading, faster when it is warm. Get your real-time N-loss risk score before you spread.</p>
+      <p class="hero-sub page-lede">Nitrogen lost to the air is money left in the field. Montana State trials lost 10 to 20% of the N from urea spread on a dry surface with only light rain after, and 30 to 44% from urea spread on wet or snowy ground that dried slowly. Most of the loss runs over the two to three weeks after spreading, faster when it is warm. Get your N-loss risk score before you spread.</p>
       <p class="hero-sub up-wait" id="urea-price-line" hidden style="margin-top:.4rem"></p>
     </div>
     <div class="risk-panel" id="risk-panel" aria-live="polite" role="status">
@@ -1851,24 +1851,24 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <div class="gauge-unit">/ 100</div>
         </div>
       </div>
-      <div class="risk-badge moderate" id="risk-badge"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg> Loading…</div>
+      <div class="risk-badge moderate" id="risk-badge">Loading…</div>
       <div class="risk-verdict" id="risk-verdict">Getting your local conditions…</div>
-      <div class="risk-location" id="risk-location"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> Detecting location</div>
+      <div class="risk-location" id="risk-location">Detecting location</div>
       <p class="risk-method method-note" style="font-size:.72rem;color:var(--text-muted);margin:.55rem 0 0;line-height:1.5">Higher score = more N lost to the air. Under 30 is lower risk; over 55, protect it or wait. <b>Method:</b> weighted estimate, temp 35%, humidity 25%, wind 20%, rain 20% (the forecast amount for today and tomorrow when it is &frac14; inch or more, otherwise the 48-hour chance), adjusted for your soil pH and residue, then for the soil surface (dry 0.6, moist 1.0, wet 1.2, from your pick (the National Weather Service forecast has no soil moisture); Montana State calls surface moisture likely the most important condition); an AGSIST rule of thumb with our own bands, not a validated model &middot; <b>Sources:</b> National Weather Service forecast grid (NDFD); rain thresholds from Hargrove 1988 and Ferguson et al. 1984; loss figures, timing and the residue rain need from Montana State University (<a href="https://landresources.montana.edu/soilfertility/soilscoop/ss_uvol.html" target="_blank" rel="noopener">Soil Scoop</a>, EB0209)</p>
     </div>
   </div>
 </section>
 <div class="main">
   <nav class="jump-nav" aria-label="Page sections">
-    <a href="#edu1" class="jump-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> The Science</a>
-    <a href="#section-nsources" class="jump-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> N Sources</a>
-    <a href="#u-section-faq" class="jump-link"><svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-help"/></svg> FAQ</a>
+    <a href="#edu1" class="jump-link">The Science</a>
+    <a href="#section-nsources" class="jump-link">N Sources</a>
+    <a href="#u-section-faq" class="jump-link">FAQ</a>
   </nav>
   <div class="loc-setup" id="u-loc-setup">
-    <h2><svg class="ic-sp" aria-hidden="true"><use href="#sp-globe"/></svg> Set your location</h2>
-    <p>Urea volatilization risk is highly location-specific: temperature, humidity, wind, and incoming rain all interact. Allow location access for accurate real-time conditions at your field.</p>
+    <h2>Set your location</h2>
+    <p>Urea volatilization risk is highly location-specific: temperature, humidity, wind, and incoming rain all interact. Allow location access for accurate current conditions at your field.</p>
     <div class="loc-btn-row">
-      <button class="btn-primary" id="u-btn-geo" style="min-height:44px"><svg class="ic-sp" aria-hidden="true"><use href="#sp-map-pin"/></svg> Use My Location</button>
+      <button class="btn-primary" id="u-btn-geo" style="min-height:44px">Use My Location</button>
       <button class="btn-secondary" id="u-btn-show-zip" style="min-height:44px">Enter ZIP Instead</button>
     </div>
     <div class="zip-row" id="zip-row">
@@ -1881,54 +1881,54 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   <div class="page-grid">
     <div>
       <div class="tg-banner" id="tg-banner" role="status" aria-live="polite">
-        <span class="tg-icon" id="tg-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg></span>
+        <span class="tg-icon" id="tg-icon"></span>
         <div id="tg-text">Below freezing: urease works very slowly, so loss starts slowly, but Montana State trials still averaged 18% and up to 44% loss from urea broadcast between October and April. Risk score is capped at 8. NBPT still helps; runoff on slopes is a second concern.</div>
       </div>
       <div id="u-factor-section" style="display:none">
-        <div class="s-card" id="field-tune" style="margin-bottom:1rem"><div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-target"/></svg> Tune to Your Field (optional)</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:.6rem"><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil pH<select id="in-ph" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / 6.5–7.0</option><option value="0.7">Acidic (under 6.0)</option><option value="0.85">Slightly acidic (6.0–6.5)</option><option value="1.25">Neutral–alkaline (7.0–7.5)</option><option value="1.55">Alkaline (over 7.5)</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Tillage / residue<select id="in-till" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / reduced-till</option><option value="0.7">Conventional (bare, tilled)</option><option value="1.5">No-till / heavy residue</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil temp °F (optional)<input type="number" id="in-soil" inputmode="numeric" placeholder="uses air temp" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil surface now<select id="in-surf" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="" selected>Not picked (the forecast has no soil moisture)</option><option value="dry">Dry: a granule would not dissolve</option><option value="moist">Moist soil or heavy dew</option><option value="wet">Wet, or snow on it</option></select></label></div><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem">These refine the score for your field. Soil pH and residue are the two biggest levers in the volatilization science. A soil-surface probe reading, if you have one, overrides the air-temperature estimate. What you see on the surface overrides the forecast&rsquo;s soil moisture.</div></div>
+        <div class="s-card" id="field-tune" style="margin-bottom:1rem"><div class="s-card-title">Tune to Your Field (optional)</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:.6rem"><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700">Soil pH<select id="in-ph" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / 6.5–7.0</option><option value="0.7">Acidic (under 6.0)</option><option value="0.85">Slightly acidic (6.0–6.5)</option><option value="1.25">Neutral–alkaline (7.0–7.5)</option><option value="1.55">Alkaline (over 7.5)</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700">Tillage / residue<select id="in-till" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / reduced-till</option><option value="0.7">Conventional (bare, tilled)</option><option value="1.5">No-till / heavy residue</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700">Soil temp °F (optional)<input type="number" id="in-soil" inputmode="numeric" placeholder="uses air temp" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700">Soil surface now<select id="in-surf" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="" selected>Not picked (the forecast has no soil moisture)</option><option value="dry">Dry: a granule would not dissolve</option><option value="moist">Moist soil or heavy dew</option><option value="wet">Wet, or snow on it</option></select></label></div><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem">These refine the score for your field. Soil pH and residue are the two biggest levers in the volatilization science. A soil-surface probe reading, if you have one, overrides the air-temperature estimate. What you see on the surface overrides the forecast&rsquo;s soil moisture.</div></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem">
-          <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)">Risk factor breakdown</div>
+          <div style="font-size:0.77rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)">Risk factor breakdown</div>
           <button id="u-btn-change-loc" style="font-size:0.78rem;color:var(--text-muted);background:none;border:none;text-decoration:underline;cursor:pointer;min-height:44px">Change location</button>
         </div>
         <div class="factors-grid">
           <div class="factor" id="f-temp">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg></span>Temperature</div><span class="factor-score mod" id="fs-temp">MODERATE</span></div>
+            <div class="factor-head"><div class="factor-title">Temperature</div><span class="factor-score mod" id="fs-temp">MODERATE</span></div>
             <div class="factor-val" id="fv-temp">--°F</div>
             <div class="factor-desc" id="fd-temp">Warm soil raises the risk: Montana State lists soil above 50°F as high risk (Soil Scoop) and above 70°F in EB0209 (2020). Cold soil slows urease, but not to zero.</div>
             <div class="factor-bar"><div class="factor-bar-fill" id="fb-temp" style="width:0%"></div></div>
           </div>
           <div class="factor" id="f-humid">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg></span>Atmospheric Humidity</div><span class="factor-score low" id="fs-humid">LOW</span></div>
+            <div class="factor-head"><div class="factor-title">Atmospheric Humidity</div><span class="factor-score low" id="fs-humid">LOW</span></div>
             <div class="factor-val" id="fv-humid">--%</div>
             <div class="factor-desc" id="fd-humid">Humidity of the air. The surface itself is its own card (what you pick above: the National Weather Service forecast has no soil moisture). Moist (not saturated) surfaces accelerate urease activity. Dry air slows dissolution; very humid air correlates with wet surfaces where volatilization continues.</div>
             <div class="factor-bar"><div class="factor-bar-fill" id="fb-humid" style="width:0%"></div></div>
           </div>
           <div class="factor" id="f-wind">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wind"/></svg></span>Wind Speed</div><span class="factor-score low" id="fs-wind">LOW</span></div>
+            <div class="factor-head"><div class="factor-title">Wind Speed</div><span class="factor-score low" id="fs-wind">LOW</span></div>
             <div class="factor-val" id="fv-wind">-- mph</div>
             <div class="factor-desc" id="fd-wind">Wind continuously disperses the ammonia layer above the soil surface, maintaining the concentration gradient that pulls more N into the air.</div>
             <div class="factor-bar"><div class="factor-bar-fill" id="fb-wind" style="width:0%"></div></div>
           </div>
           <div class="factor" id="f-surf">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg></span>Soil Surface</div><span class="factor-score note" id="fs-surf">NOTE</span></div>
+            <div class="factor-head"><div class="factor-title">Soil Surface</div><span class="factor-score note" id="fs-surf">NOTE</span></div>
             <div class="factor-val" id="fv-surf">--</div>
             <div class="factor-desc" id="fd-surf">Montana State calls surface soil moisture likely the most important risk condition. Urea on a dry surface can sit undissolved for a week or more with little loss; on a moist or wet surface it dissolves and starts losing.</div>
             <div class="factor-bar"><div class="factor-bar-fill" id="fb-surf" style="width:0%"></div></div>
           </div>
           <div class="factor" id="f-rain">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg></span>Rain Forecast</div><span class="factor-score low" id="fs-rain">LOW</span></div>
+            <div class="factor-head"><div class="factor-title">Rain Forecast</div><span class="factor-score low" id="fs-rain">LOW</span></div>
             <div class="factor-val" id="fv-rain">--%</div>
             <div class="factor-desc" id="fd-rain">½ inch within 48h incorporates urea and stops volatilization. Less than ¼ inch can wet the surface and accelerate loss without moving N into soil.</div>
             <div class="factor-bar"><div class="factor-bar-fill" id="fb-rain" style="width:0%"></div></div>
           </div>
           <div class="factor">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg></span>Soil pH</div><span class="factor-score note">NOTE</span></div>
+            <div class="factor-head"><div class="factor-title">Soil pH</div><span class="factor-score note">NOTE</span></div>
             <div class="factor-val">Variable</div>
             <div class="factor-desc">Higher pH shifts more of the ammonium that urease releases into ammonia gas, the form that escapes to the air. Extension trials generally show markedly higher loss as pH climbs above 7, and above pH 7.5 in warm, moist conditions losses can be severe. Know your field pH.</div>
             <div class="factor-bar"><div class="factor-bar-fill" style="width:55%;background:var(--risk-mod)"></div></div>
           </div>
           <div class="factor">
-            <div class="factor-head"><div class="factor-title"><span class="factor-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg></span>Crop Residue</div><span class="factor-score hig" id="fs-res">HIGH (no-till)</span></div>
+            <div class="factor-head"><div class="factor-title">Crop Residue</div><span class="factor-score hig" id="fs-res">HIGH (no-till)</span></div>
             <div class="factor-val" id="fv-res">Higher risk</div>
             <div class="factor-desc" id="fd-res">Crop residue holds urease enzyme, and urea sitting on a corn stalk never reaches soil. Montana State says it takes about 1.5 in of water within two days to move urea off residue, against 0.5 in on bare or tilled soil. The score multiplies by 1.5 on no-till, a rule of thumb.</div>
             <div class="factor-bar"><div class="factor-bar-fill" id="fb-res" style="width:75%;background:var(--risk-high)"></div></div>
@@ -1936,7 +1936,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
         </div>
       </div>
       <div class="soil-air-box fade-up">
-        <h2 class="soil-air-head"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg> Air temperature vs. soil surface temperature</h2>
+        <h2 class="soil-air-head">Air temperature vs. soil surface temperature</h2>
         <div class="soil-air-grid">
           <div class="soil-air-card">
             <div class="soil-air-card-title">Air Temperature</div>
@@ -1950,7 +1950,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
         <div style="margin-top:.85rem;font-size:0.797rem;color:var(--text-dim);line-height:1.65"><strong style="color:var(--text)">In spring:</strong> when daytime air hits 50–55°F but soils are still cold from winter (under 40°F), risk is lower than the score suggests. Once soils warm above 50°F (earlier in the southern US, late spring further north) risk rises quickly and the score becomes your most reliable guide.</div>
       </div>
       <div class="fade-up" id="section-nsources" style="margin-bottom:2rem">
-        <h2 class="edu-head" style="margin-bottom:.9rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Urea vs. UAN vs. polymer-coated urea: picking the N source</h2>
+        <h2 class="edu-head" style="margin-bottom:.9rem">Urea vs. UAN vs. polymer-coated urea: picking the N source</h2>
         <p style="font-size:.82rem;color:var(--text-dim);line-height:1.7;margin-bottom:.9rem">All three are common nitrogen sources for corn and small grains. Volatilization risk, application flexibility, and cost differ significantly. Match the product to your application method and timing window.</p>
         <div class="n-compare-wrap">
           <table class="n-compare-table">
@@ -1966,9 +1966,9 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       </div>
       <p style="font-size:.82rem;color:var(--text-dim);line-height:1.6;margin:-.5rem 0 1.5rem">Weighing urea against UAN or coated urea on price? Co-op posted N-P-K prices are on the <a href="/fertilizer" style="color:var(--green)">fertilizer price page</a>.</p>
       <div class="edu-section fade-up" id="edu1">
-        <h2 class="edu-head"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Why urea volatilizes</h2>
+        <h2 class="edu-head">Why urea volatilizes</h2>
         <div class="chem-box">
-          <div style="font-size:0.775rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.85rem">The volatilization reaction</div>
+          <div style="font-size:0.775rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.85rem">The volatilization reaction</div>
           <div class="chem-eq">
             <span class="molecule">CO(NH₂)₂</span>
             <span class="arrow">+ H₂O</span>
@@ -1987,15 +1987,15 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <div class="chem-note">Urease enzyme, present in soil and especially in crop residue, converts urea to ammonia. At the soil surface, that ammonia gas escapes into the air rather than converting to plant-available ammonium (NH₄⁺).</div>
         </div>
         <div class="edu-grid">
-          <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg></div><div class="edu-card-title">Temperature</div><div class="edu-card-text">Urease works faster as soil warms. Montana State lists soil above 50°F as a high-risk condition (Soil Scoop) and above 70°F in its volatilization guide (EB0209, updated 2020). The warmer it is, the less time you have to get rain or tillage on it. Cold weather helps, but below freezing urease only slows down. It does not stop. Urea broadcast between October and April averaged 18% and up to 44% loss in Montana State trials.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">Higher as soil warms</div></div>
-          <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-droplet"/></svg></div><div class="edu-card-title">Moisture</div><div class="edu-card-text">The worst case in Montana State's trials: urea spread on a wet or snowy surface that then dries slowly with little or no rain (30 to 44% of the N lost). Light rain under about 1/4 inch is also risky: enough to dissolve the granule and start the enzyme, not enough to move N below the surface.</div><div class="edu-card-risk" style="background:rgba(230,176,66,.12);color:var(--risk-mod)">¼” rain without ½” = worst case</div></div>
-          <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wind"/></svg></div><div class="edu-card-title">Wind</div><div class="edu-card-text">Ammonia gas builds up in a thin layer above the soil surface. Wind continuously removes that layer, maintaining the concentration gradient that pulls more N from the soil into the air. Even light winds of 3–5 mph keep volatilization moving at full speed.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">Amplifies all other risk factors</div></div>
-          <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-sprout"/></svg></div><div class="edu-card-title">Soil pH</div><div class="edu-card-text">Alkaline soils (pH 7+) favor ammonia gas over the stable, plant-available ammonium ion. At pH 7.5, extension trials commonly report losses of 30–50% of surface-applied urea in warm, moist conditions.</div><div class="edu-card-risk" style="background:rgba(240,96,96,.12);color:var(--risk-extreme)">pH 7.5+ = extreme background risk</div></div>
-          <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg></div><div class="edu-card-title">Crop Residue</div><div class="edu-card-text">Urea granules sitting on stalk fragments or leaf litter are in direct contact with residue urease and never reach soil. Montana State puts the water needed to move urea off residue at about 1.5 in within two days, against 0.5 in on bare or tilled soil.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">No-till: assume higher risk</div></div>
-          <div class="edu-card"><div class="edu-card-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg></div><div class="edu-card-title">The two to three week window</div><div class="edu-card-text">Most volatilization from urea runs over the two to three weeks after application (Montana State EB0209), faster when it is warm and the surface is moist. Manitoba Agriculture reports losses measured over 5 and 7 days. A dry spell after spreading is not a safe spell: the first rain or heavy dew that wets the granules without moving them in starts the loss.</div><div class="edu-card-risk" style="background:rgba(230,176,66,.12);color:var(--risk-mod)">Two to three weeks of exposure</div></div>
+          <div class="edu-card"><div class="edu-card-title">Temperature</div><div class="edu-card-text">Urease works faster as soil warms. Montana State lists soil above 50°F as a high-risk condition (Soil Scoop) and above 70°F in its volatilization guide (EB0209, updated 2020). The warmer it is, the less time you have to get rain or tillage on it. Cold weather helps, but below freezing urease only slows down. It does not stop. Urea broadcast between October and April averaged 18% and up to 44% loss in Montana State trials.</div><div class="edu-card-risk" style="background:var(--surface2);color:var(--risk-high)">Higher as soil warms</div></div>
+          <div class="edu-card"><div class="edu-card-title">Moisture</div><div class="edu-card-text">The worst case in Montana State's trials: urea spread on a wet or snowy surface that then dries slowly with little or no rain (30 to 44% of the N lost). Light rain under about 1/4 inch is also risky: enough to dissolve the granule and start the enzyme, not enough to move N below the surface.</div><div class="edu-card-risk" style="background:var(--surface2);color:var(--risk-mod)">¼” rain without ½” = worst case</div></div>
+          <div class="edu-card"><div class="edu-card-title">Wind</div><div class="edu-card-text">Ammonia gas builds up in a thin layer above the soil surface. Wind continuously removes that layer, maintaining the concentration gradient that pulls more N from the soil into the air. Even light winds of 3–5 mph keep volatilization moving at full speed.</div><div class="edu-card-risk" style="background:var(--surface2);color:var(--risk-high)">Amplifies all other risk factors</div></div>
+          <div class="edu-card"><div class="edu-card-title">Soil pH</div><div class="edu-card-text">Alkaline soils (pH 7+) favor ammonia gas over the stable, plant-available ammonium ion. At pH 7.5, extension trials commonly report losses of 30–50% of surface-applied urea in warm, moist conditions.</div><div class="edu-card-risk" style="background:var(--surface2);color:var(--risk-extreme)">pH 7.5+ = extreme background risk</div></div>
+          <div class="edu-card"><div class="edu-card-title">Crop Residue</div><div class="edu-card-text">Urea granules sitting on stalk fragments or leaf litter are in direct contact with residue urease and never reach soil. Montana State puts the water needed to move urea off residue at about 1.5 in within two days, against 0.5 in on bare or tilled soil.</div><div class="edu-card-risk" style="background:var(--surface2);color:var(--risk-high)">No-till: assume higher risk</div></div>
+          <div class="edu-card"><div class="edu-card-title">The two to three week window</div><div class="edu-card-text">Most volatilization from urea runs over the two to three weeks after application (Montana State EB0209), faster when it is warm and the surface is moist. Manitoba Agriculture reports losses measured over 5 and 7 days. A dry spell after spreading is not a safe spell: the first rain or heavy dew that wets the granules without moving them in starts the loss.</div><div class="edu-card-risk" style="background:var(--surface2);color:var(--risk-mod)">Two to three weeks of exposure</div></div>
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.5rem;margin-bottom:1.5rem">
-          <h3 style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:.85rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-shield"/></svg> NBPT urease inhibitor: what it does</h3>
+          <h3 style="font-size:0.77rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--orange);margin-bottom:.85rem">NBPT urease inhibitor: what it does</h3>
           <div class="stab-grid">
             <div>
               <div style="font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.5rem">What NBPT Does</div>
@@ -2006,13 +2006,13 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
               <div style="font-size:.83rem;color:var(--text-dim);line-height:1.75">Montana State's guide names no-till residue, soil above pH 7.0 and no incorporation rain as the conditions where NBPT matters most (C. Jones, EB0209, updated June 2020). Get a quote for the product and rate you would use. Divide it by what your N costs a pound. The answer is how many pounds of N it has to save an acre.</div>
             </div>
           </div>
-          <div style="margin-top:1.1rem;padding:.8rem 1rem;background:rgba(62,207,110,.06);border:1px solid rgba(62,207,110,.15);border-radius:7px;font-size:.82rem;color:var(--text-dim);line-height:1.65">
+          <div style="margin-top:1.1rem;padding:.8rem 1rem;background:var(--surface2);border:1px solid rgba(62,207,110,.15);border-radius:var(--r-md);font-size:.82rem;color:var(--text-dim);line-height:1.65">
             You will not need it on every load; use the score to decide which ones.
           </div>
         </div>
       </div>
       <div class="faq-section fade-up" id="u-section-faq">
-        <h2 class="edu-head" style="margin-bottom:.9rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-help"/></svg> Common questions</h2>
+        <h2 class="edu-head" style="margin-bottom:.9rem">Common questions</h2>
         <div class="faq-list" id="u-faq-list">
           <div class="faq-item"><button class="faq-q" aria-expanded="false">At what temperature does urea volatilization become a real risk?<span class="faq-chevron" aria-hidden="true">▶</span></button><div class="faq-a">Risk rises as the soil warms. Montana State lists soil above <strong>50°F</strong> as a high-risk condition (MSU Extension Soil Scoop), and its volatilization guide uses above 70°F soil (C. Jones, EB0209, updated June 2020). The warmer the surface, the faster loss starts. Below 40°F, urease enzyme activity is slow. Below 32°F urease works very slowly, so loss starts slowly, but it does not stop. Montana State University field trials found an average 18% and up to 44% of the N lost from urea broadcast between October and April, highest on a moist or snowy surface with no rain or only sprinkles for the next 2 to 3 weeks. A urease inhibitor (NBPT) still helps. Runoff on slopes is a second concern on frozen ground. Do not assume cold months are safe: Montana State found losses from fall and winter broadcast can run higher than from spring broadcast. The soil vs. air temperature section above has more.</div></div>
           <div class="faq-item"><button class="faq-q" aria-expanded="false">How much rain do I need to incorporate urea and stop volatilization?<span class="faq-chevron" aria-hidden="true">▶</span></button><div class="faq-a"><strong>At least ½ inch within 48 hours</strong> will incorporate urea into the soil and stop the volatilization reaction. This is the incorporation threshold: once N is in the soil, it converts to ammonium (NH₄⁺) and is protected. <strong>Less than ¼ inch can actually make things worse</strong>: just enough moisture to dissolve the granule and activate the urease enzyme, but not enough to move N below the surface. If the forecast shows scattered showers under ¼ inch, that is not your incorporation event.</div></div>
@@ -2025,43 +2025,43 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     </div>
     <div class="sidebar fade-up" id="u-edu2">
       <div class="s-card">
-        <div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Recommendation</div>
+        <div class="s-card-title">Recommendation</div>
         <div class="rec-box moderate" id="u-rec-box">
           <div class="rec-head moderate" id="u-rec-head">Awaiting Location</div>
-          <div class="rec-text" id="u-rec-text">Set your location above to get a real-time application recommendation based on local conditions.</div>
+          <div class="rec-text" id="u-rec-text">Set your location above to get an application recommendation based on local conditions.</div>
         </div>
       </div>
       <div class="s-card">
-        <div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-calendar"/></svg> 5-day volatilization forecast</div>
+        <div class="s-card-title">5-day volatilization forecast</div>
         <div class="forecast-strip" id="fc-strip">
-          <div class="fc-day"><div class="fc-day-name">Today</div><div class="fc-day-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
-          <div class="fc-day"><div class="fc-day-name">Day 2</div><div class="fc-day-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
-          <div class="fc-day"><div class="fc-day-name">Day 3</div><div class="fc-day-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
-          <div class="fc-day"><div class="fc-day-name">Day 4</div><div class="fc-day-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
-          <div class="fc-day"><div class="fc-day-name">Day 5</div><div class="fc-day-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-hourglass"/></svg></div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
+          <div class="fc-day"><div class="fc-day-name">Today</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
+          <div class="fc-day"><div class="fc-day-name">Day 2</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
+          <div class="fc-day"><div class="fc-day-name">Day 3</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
+          <div class="fc-day"><div class="fc-day-name">Day 4</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
+          <div class="fc-day"><div class="fc-day-name">Day 5</div><div class="fc-day-risk moderate">--</div><div class="fc-day-temp">--/--</div></div>
         </div>
         <div style="font-size:0.77rem;color:var(--text-muted);margin-top:.65rem;line-height:1.6">Based on forecast temperature and rain. Scores are temperature-gated. Daily strip uses actual forecast precipitation totals when available.</div>
       </div>
       <div class="s-card">
-        <div class="s-card-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Rules of Thumb</div>
+        <div class="s-card-title">Rules of Thumb</div>
         <div style="display:flex;flex-direction:column;gap:.55rem">
           <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-low);flex-shrink:0">✓</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Apply before ½”+ rain</strong>: incorporation within 48h shuts down volatilization</span></div>
           <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-extreme);flex-shrink:0">✗</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Avoid 70°F+ days</strong> for surface urea: urease runs hot and fast</span></div>
           <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-extreme);flex-shrink:0">✗</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Never rely on ¼” rain</strong>: it activates urea without incorporating it</span></div>
-          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-high);flex-shrink:0"><svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg></span><span style="color:var(--text-dim)"><strong style="color:var(--text)">No-till ground</strong>: Montana State says to add NBPT to surface urea; assume a higher loss rate than tilled soil</span></div>
-          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-high);flex-shrink:0"><svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg></span><span style="color:var(--text-dim)"><strong style="color:var(--text)">pH above 7.0</strong>: Montana State lists it as a high-risk condition for surface urea</span></div>
+          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--text-dim)"><strong style="color:var(--text)">No-till ground</strong>: Montana State says to add NBPT to surface urea; assume a higher loss rate than tilled soil</span></div>
+          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--text-dim)"><strong style="color:var(--text)">pH above 7.0</strong>: Montana State lists it as a high-risk condition for surface urea</span></div>
           <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--risk-low);flex-shrink:0">✓</span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Cool mornings under 50°F</strong>: lowest risk window, especially in early spring</span></div>
-          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--blue);flex-shrink:0"><svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg></span><span style="color:var(--text-dim)"><strong style="color:var(--text)">Frozen ground</strong>: urease is very slow, not stopped: Montana State trials averaged 18% (up to 44%) loss, October to April. NBPT still helps; watch for runoff on slopes</span></div>
+          <div style="display:flex;gap:.55rem;align-items:flex-start;font-size:.81rem"><span style="color:var(--text-dim)"><strong style="color:var(--text)">Frozen ground</strong>: urease is very slow, not stopped: Montana State trials averaged 18% (up to 44%) loss, October to April. NBPT still helps; watch for runoff on slopes</span></div>
         </div>
       </div>
       <div class="stabilizer-cta">
-        <div class="stab-badge"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> Break-even arithmetic</div>
+        <div class="stab-badge">Break-even arithmetic</div>
         <div class="stab-title">Is a urease inhibitor worth it today?</div>
         <div class="stab-text">Losing 15 lbs N/acre to volatilization costs 15 times what your N costs a pound. Get a quote for the product and rate you would use. Divide it by your cost per pound of N. The answer is how many pounds it must save. Montana State names no-till residue and high-pH soil as the conditions where it matters most.</div>
-        <a href="/breakeven" class="stab-roi-btn" style="display:inline-block;padding:.6rem 1.2rem;background:var(--orange);color:#fff;border-radius:7px;font-size:.82rem;font-weight:700;text-decoration:none;transition:opacity .15s">Open Break-Even Calculator →</a>
+        <a href="/breakeven" class="stab-roi-btn" style="display:inline-block;padding:.6rem 1.2rem;background:var(--orange);color:#fff;border-radius:var(--r-md);font-size:.82rem;font-weight:700;text-decoration:none;transition:opacity .15s">Open Break-Even Calculator →</a>
       </div>
       <a href="/spray#spray" class="cross-link">
-        <span class="cross-link-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg></span>
+        
         <div><div class="cross-link-title">Also spraying today</div><div class="cross-link-text">Check the spray advisory for wind speed, inversion risk, and a 24-hour spray window forecast.</div></div>
         <span class="cross-link-arrow">→</span>
       </a>
@@ -2070,10 +2070,10 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   <section class="urea-rel" aria-labelledby="urea-rel-h" style="margin-top:1.5rem">
     <h2 id="urea-rel-h" style="font-family:var(--font-display);font-weight:700;font-size:1.2rem;margin:0 0 .8rem;color:var(--text)">More AGSIST tools</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem">
-      <a href="/fast-facts" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:1.3rem;margin-bottom:.25rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg></span><span style="font-size:.85rem;font-weight:700;color:var(--text)">Fast Facts</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">N rates, P&amp;K, GDU</span></a>
-      <a href="/fertilizer" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:1.3rem;margin-bottom:.25rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg></span><span style="font-size:.85rem;font-weight:700;color:var(--text)">Fertilizer Prices</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">Co-op posted N-P-K</span></a>
-      <a href="/gdu-calculator" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:1.3rem;margin-bottom:.25rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg></span><span style="font-size:.85rem;font-weight:700;color:var(--text)">GDU Calculator</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">Crop stage timing</span></a>
-      <a href="/cash-bids" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:1.3rem;margin-bottom:.25rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg></span><span style="font-size:.85rem;font-weight:700;color:var(--text)">Cash Bids</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">Local elevator prices</span></a>
+      <a href="/fast-facts" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:.85rem;font-weight:700;color:var(--text)">Fast Facts</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">N rates, P&amp;K, GDU</span></a>
+      <a href="/fertilizer" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:.85rem;font-weight:700;color:var(--text)">Fertilizer Prices</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">Co-op posted N-P-K</span></a>
+      <a href="/gdu-calculator" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:.85rem;font-weight:700;color:var(--text)">GDU Calculator</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">Crop stage timing</span></a>
+      <a href="/cash-bids" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:.85rem;font-weight:700;color:var(--text)">Cash Bids</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">Local elevator prices</span></a>
     </div>
   </section>
 <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
@@ -2178,9 +2178,9 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19" defer></script>
-<script src="/components/rain-print-promo.js?v=6" defer></script>
-<script src="/components/geo.js?v=39" defer></script>
+<script src="/components/loader.js?v=20" defer></script>
+<script src="/components/rain-print-promo.js?v=7" defer></script>
+<script src="/components/geo.js?v=41" defer></script>
 <script>
 (function(){
   'use strict';
@@ -2196,7 +2196,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   var prefersReducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(!prefersReducedMotion){var io=new IntersectionObserver(function(e){e.forEach(function(x){if(x.isIntersecting){x.target.classList.add('vis');io.unobserve(x.target);}});},{threshold:.08});document.querySelectorAll('.fade-up').forEach(function(el){io.observe(el);});}
   else{document.querySelectorAll('.fade-up').forEach(function(el){el.classList.add('vis');});}
-  var WX={0:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-sun"/></svg>',1:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-sun"/></svg>',2:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-sun"/></svg>',3:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud"/></svg>',45:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-fog"/></svg>',48:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-fog"/></svg>',51:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-umbrella"/></svg>',53:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg>',55:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg>',61:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-umbrella"/></svg>',63:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg>',65:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-lightning"/></svg>',71:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-snow"/></svg>',73:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg>',75:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg>',80:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-umbrella"/></svg>',81:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-rain"/></svg>',82:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-lightning"/></svg>',95:'<svg class="ic-sp" aria-hidden="true"><use href="#sp-cloud-lightning"/></svg>'};
+  var WX={0:'',1:'',2:'',3:'',45:'',48:'',51:'',53:'',55:'',61:'',63:'',65:'',71:'',73:'',75:'',80:'',81:'',82:'',95:''};
   var WX_PRECIP={51:'Light drizzle',53:'Moderate drizzle',55:'Heavy drizzle',61:'Light rain',63:'Moderate rain',65:'Heavy rain',71:'Light snow',73:'Moderate snow',75:'Heavy snow',80:'Light showers',81:'Moderate showers',82:'Heavy showers',95:'Thunderstorm'};
   /* spray-rules:start */
   function windRating(mph){if(mph<3)return'poor';if(mph<=10)return'good';if(mph<=15)return'marginal';return'poor';}
@@ -2351,8 +2351,8 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     var m=firstRun('marginal');
     if(m){el.innerHTML='No good window in the next 24 hrs, best is marginal: <strong style="color:var(--gold)">'+hrs[m.s].t+(m.e>m.s?'–'+hrs[m.e].t:'')+'</strong>. Review the factors before proceeding.';return;}
     el.textContent='No spray window in the next 24 hours.';}
-  function buildHourly(hourly,daily,now){var strip=document.getElementById('hourly-strip');if(!strip||!hourly||!hourly.time)return;strip.innerHTML='';strip.removeAttribute('aria-busy');var hrs=[],count=0;now=now||new Date();function at(a,i){return a?num(a[i]):null;}for(var i=0;i<hourly.time.length&&count<24;i++){var t=new Date(hourly.time[i]);if(t<now)continue;count++;var h=t.getHours(),wind=at(hourly.wind_speed_10m,i),gust=at(hourly.wind_gusts_10m,i),tRaw=at(hourly.temperature_2m,i),temp=tRaw==null?null:Math.round(tRaw),humid=at(hourly.relative_humidity_2m,i),code=at(hourly.weather_code,i),dewRaw=at(hourly.dew_point_2m,i),dew=dewRaw==null?null:Math.round(dewRaw),cloud=at(hourly.cloud_cover,i);var Ph=currentProduct(),tNext=(i+1<hourly.time.length)?at(hourly.temperature_2m,i+1):null,htrend=(tRaw!=null&&tNext!=null)?Math.round((tNext-tRaw)*10)/10:null;var wR=wind==null?'na':windRatingG(wind,gust,Ph),tR=temp==null?'na':tempRatingP(temp,Ph),hR=humid==null?'na':humidRating(humid),iR=wind==null?'na':inversionRisk(wind,h,cloud,htrend),dR=(temp==null||dew==null)?'na':dewRisk(temp,dew),hdt=(temp==null||humid==null)?null:deltaTC(temp,humid),hdtR=hdt==null?'na':deltaTRating(hdt),overall=overallRating(wR,tR,hR,iR,dR,code,hdtR);var dst=dicambaStatus(Ph,daily,t,36e5,currentState(),temp);overall=applyDicamba(overall,dst);var timeStr=t.toLocaleTimeString('en-US',{hour:'numeric',hour12:true}).replace(' ','');var bw=boomWind(wind),windTxt=bw==null?'-':Math.round(bw)+' mph';var el=document.createElement('div');el.className='hr-item '+overall;el.title=timeStr+': Wind about '+windTxt+' at boom height ('+(wind==null?'-':Math.round(wind)+' mph')+' at 10 m'+(gust!=null?', gusts '+Math.round(gust):'')+'), '+(temp==null?'-':temp+'\u00b0F')+', '+(humid==null?'-':humid+'% RH')+', \u0394T '+(hdt==null?'-':fmtDeltaT(hdt))+(dst&&overall!=='frozen'?(', '+dicambaLine(dst)):'');el.innerHTML='<div class="hr-time">'+timeStr+'</div><div class="hr-icon" aria-hidden="true">'+(WX[code]||'<svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg>')+'</div><div class="hr-wind">'+windTxt+'</div><div class="hr-badge '+overall+'">'+ratingAbbr(overall)+'</div>';strip.appendChild(el);hrs.push({t:timeStr,o:overall});}renderWindowSummary(hrs);return hrs;}
-  function buildDayStrip(daily){var strip=document.getElementById('day-strip');if(!strip||!daily)return;var dnames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];strip.innerHTML='';var Pd=currentProduct();for(var i=0;i<5&&daily.time&&i<daily.time.length;i++){var d=new Date(daily.time[i]+'T12:00:00'),name=i===0?'Today':dnames[d.getDay()],wx=daily.weather_code?daily.weather_code[i]:null,wm=daily.wind_speed_10m_max?daily.wind_speed_10m_max[i]:null,gm=daily.wind_gusts_10m_max?num(daily.wind_gusts_10m_max[i]):null,tm=daily.temperature_2m_max?daily.temperature_2m_max[i]:null,dh=null;var known=(wm!=null&&tm!=null),overall='',label='-';if(known){var wR=windRatingG(wm,gm,Pd),tR=tempRatingP(tm,Pd);overall=tR==='frozen'?'frozen':((wR==='poor'||tR==='poor')?'poor':((wR==='marginal'||tR==='marginal')?'marginal':'good'));if(overall!=='frozen'&&wx!=null&&wx>=51&&wx<=95)overall='poor';var dh=(Pd===PRODUCTS.dicamba&&overall!=='frozen')?dicambaDay(daily,i,currentState()):null;overall=applyDicamba(overall,dh);label=ratingAbbr(overall);}var dTitle=!known?'Temperature or wind not available for this day':(dh?dicambaLine(dh):'');var el=document.createElement('div');el.className='day-item';el.innerHTML='<div class="day-name">'+name+'</div><div class="day-icon" aria-hidden="true">'+(WX[wx]||'<svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg>')+'</div><div class="day-rating '+overall+'"'+(dTitle?(' title="'+dTitle.replace(/"/g,'&quot;')+'"'):'')+'>'+label+'</div><div class="day-wind">'+(wm!=null?Math.round(boomWind(wm))+' mph':'-')+'</div>';strip.appendChild(el);}}
+  function buildHourly(hourly,daily,now){var strip=document.getElementById('hourly-strip');if(!strip||!hourly||!hourly.time)return;strip.innerHTML='';strip.removeAttribute('aria-busy');var hrs=[],count=0;now=now||new Date();function at(a,i){return a?num(a[i]):null;}for(var i=0;i<hourly.time.length&&count<24;i++){var t=new Date(hourly.time[i]);if(t<now)continue;count++;var h=t.getHours(),wind=at(hourly.wind_speed_10m,i),gust=at(hourly.wind_gusts_10m,i),tRaw=at(hourly.temperature_2m,i),temp=tRaw==null?null:Math.round(tRaw),humid=at(hourly.relative_humidity_2m,i),code=at(hourly.weather_code,i),dewRaw=at(hourly.dew_point_2m,i),dew=dewRaw==null?null:Math.round(dewRaw),cloud=at(hourly.cloud_cover,i);var Ph=currentProduct(),tNext=(i+1<hourly.time.length)?at(hourly.temperature_2m,i+1):null,htrend=(tRaw!=null&&tNext!=null)?Math.round((tNext-tRaw)*10)/10:null;var wR=wind==null?'na':windRatingG(wind,gust,Ph),tR=temp==null?'na':tempRatingP(temp,Ph),hR=humid==null?'na':humidRating(humid),iR=wind==null?'na':inversionRisk(wind,h,cloud,htrend),dR=(temp==null||dew==null)?'na':dewRisk(temp,dew),hdt=(temp==null||humid==null)?null:deltaTC(temp,humid),hdtR=hdt==null?'na':deltaTRating(hdt),overall=overallRating(wR,tR,hR,iR,dR,code,hdtR);var dst=dicambaStatus(Ph,daily,t,36e5,currentState(),temp);overall=applyDicamba(overall,dst);var timeStr=t.toLocaleTimeString('en-US',{hour:'numeric',hour12:true}).replace(' ','');var bw=boomWind(wind),windTxt=bw==null?'-':Math.round(bw)+' mph';var el=document.createElement('div');el.className='hr-item '+overall;el.title=timeStr+': Wind about '+windTxt+' at boom height ('+(wind==null?'-':Math.round(wind)+' mph')+' at 10 m'+(gust!=null?', gusts '+Math.round(gust):'')+'), '+(temp==null?'-':temp+'\u00b0F')+', '+(humid==null?'-':humid+'% RH')+', \u0394T '+(hdt==null?'-':fmtDeltaT(hdt))+(dst&&overall!=='frozen'?(', '+dicambaLine(dst)):'');el.innerHTML='<div class="hr-time">'+timeStr+'</div><div class="hr-icon" aria-hidden="true">'+(WX[code]||'')+'</div><div class="hr-wind">'+windTxt+'</div><div class="hr-badge '+overall+'">'+ratingAbbr(overall)+'</div>';strip.appendChild(el);hrs.push({t:timeStr,o:overall});}renderWindowSummary(hrs);return hrs;}
+  function buildDayStrip(daily){var strip=document.getElementById('day-strip');if(!strip||!daily)return;var dnames=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];strip.innerHTML='';var Pd=currentProduct();for(var i=0;i<5&&daily.time&&i<daily.time.length;i++){var d=new Date(daily.time[i]+'T12:00:00'),name=i===0?'Today':dnames[d.getDay()],wx=daily.weather_code?daily.weather_code[i]:null,wm=daily.wind_speed_10m_max?daily.wind_speed_10m_max[i]:null,gm=daily.wind_gusts_10m_max?num(daily.wind_gusts_10m_max[i]):null,tm=daily.temperature_2m_max?daily.temperature_2m_max[i]:null,dh=null;var known=(wm!=null&&tm!=null),overall='',label='-';if(known){var wR=windRatingG(wm,gm,Pd),tR=tempRatingP(tm,Pd);overall=tR==='frozen'?'frozen':((wR==='poor'||tR==='poor')?'poor':((wR==='marginal'||tR==='marginal')?'marginal':'good'));if(overall!=='frozen'&&wx!=null&&wx>=51&&wx<=95)overall='poor';var dh=(Pd===PRODUCTS.dicamba&&overall!=='frozen')?dicambaDay(daily,i,currentState()):null;overall=applyDicamba(overall,dh);label=ratingAbbr(overall);}var dTitle=!known?'Temperature or wind not available for this day':(dh?dicambaLine(dh):'');var el=document.createElement('div');el.className='day-item';el.innerHTML='<div class="day-name">'+name+'</div><div class="day-icon" aria-hidden="true">'+(WX[wx]||'')+'</div><div class="day-rating '+overall+'"'+(dTitle?(' title="'+dTitle.replace(/"/g,'&quot;')+'"'):'')+'>'+label+'</div><div class="day-wind">'+(wm!=null?Math.round(boomWind(wm))+' mph':'-')+'</div>';strip.appendChild(el);}}
   /* Factor cards: a skeleton while the forecast loads, a plain line if it fails.
      The cards themselves stay hidden until there is a reading to put in them. */
   var FC_STATE='ok';
@@ -2519,7 +2519,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   openTo(location.hash);
 })();
 </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 <script src="/components/page-tabs.js?v=2" defer></script>
 </body>
 </html>

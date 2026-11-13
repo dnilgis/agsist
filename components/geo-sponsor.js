@@ -259,7 +259,7 @@
   function spot() { return doc.querySelector('[data-state-spot]'); }
   function firstScreen(el) { try { return el.getBoundingClientRect().top < (root.innerHeight || doc.documentElement.clientHeight); } catch (x) { return false; } }
   function sitewideSold() { var l = doc.getElementById('ag-sw'); return !!(l && /sw-line--sold/.test(l.className) && shown(l)); }
-  var CSS = '/components/geo-sponsor.css?v=3';
+  var CSS = '/components/geo-sponsor.css?v=4';
   function css() { return need('link', 'href', CSS, function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }); }
   function hold(lower) {
     var sp = spot(), st = sp && sp.getAttribute('data-state-spot');
@@ -269,8 +269,8 @@
   function draw(e, surface, rib, preview) {
     var onSpot = surface === 'state-page' || surface === 'preview-state';
     Promise.all([
-      need('link', 'href', '/components/sponsor-ad.css?v=3', function () { return !!doc.querySelector('link[href*="/components/sponsor-ad.css"]'); }),
-      need('link', 'href', '/components/geo-sponsor.css?v=3', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
+      need('link', 'href', '/components/sponsor-ad.css?v=4', function () { return !!doc.querySelector('link[href*="/components/sponsor-ad.css"]'); }),
+      need('link', 'href', '/components/geo-sponsor.css?v=4', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
       need('script', 'src', '/components/sponsor-ad.js?v=4', function () { return !!root.AgsistAd; })
     ]).then(function () {
       if (!root.AgsistAd || (!preview && soldOnPage())) { if (onSpot) hold(false); return; }

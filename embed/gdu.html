@@ -15,30 +15,30 @@
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;background:transparent;}
   .w{font-family:system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;background:var(--bg);color:var(--text);
-     border:1px solid var(--border);border-radius:12px;padding:14px 15px;max-width:480px;margin:0 auto;}
+     border:1px solid var(--border);border-radius:var(--r-lg);padding:14px 15px;max-width:480px;margin:0 auto;}
   .w-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;}
   .w-brand{font-family:Georgia,serif;font-weight:bold;letter-spacing:2px;color:var(--green);font-size:15px;}
   .w-brand small{display:block;font-family:'Courier New',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);font-weight:normal;margin-top:2px;}
-  .w-tag{font-family:'Courier New',monospace;font-size:9px;letter-spacing:1px;color:var(--gold);text-transform:uppercase;font-weight:bold;}
+  .w-tag{font-family:'Courier New',monospace;font-size:9px;letter-spacing:0;color:var(--gold);text-transform:none;font-weight:bold;}
   .pills{display:flex;gap:6px;margin-bottom:11px;}
   .pill{flex:1;min-height:40px;border:2px solid var(--border);background:var(--bg);color:var(--dim);
-        border-radius:8px;font-weight:700;font-size:12px;cursor:pointer;}
-  .pill[aria-pressed="true"]{border-color:var(--gold);background:rgba(230,176,66,.12);color:var(--text);}
+        border-radius:var(--r-md);font-weight:700;font-size:12px;cursor:pointer;}
+  .pill[aria-pressed="true"]{border-color:var(--gold);background:var(--surface2);color:var(--text);}
   .row{display:flex;gap:8px;}
   .fg{margin-bottom:9px;flex:1;}
-  label{display:block;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);margin-bottom:3px;}
-  input{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);
+  label{display:block;font-size:10px;font-weight:700;letter-spacing:0;text-transform:none;color:var(--dim);margin-bottom:3px;}
+  input{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--r-md);color:var(--text);
         font-family:'Courier New',monospace;font-size:15px;padding:7px 8px;outline:none;}
   input:focus{border-color:var(--gold);}
-  .btn{width:100%;min-height:44px;border:0;border-radius:8px;background:var(--gold-fill,var(--gold));color:#0a1a0a;
+  .btn{width:100%;min-height:44px;border:0;border-radius:var(--r-md);background:var(--gold-fill,var(--gold));color:#0a1a0a;
        font-weight:800;font-size:13px;cursor:pointer;margin:3px 0 8px;}
   .btn:disabled{opacity:.5;cursor:not-allowed;}
   .status{font-size:11px;color:var(--muted);text-align:center;min-height:14px;margin-bottom:8px;line-height:1.4;}
   .status.ok{color:var(--green);} .status.err{color:var(--red);}
-  .res{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:13px;text-align:center;margin-bottom:10px;}
+  .res{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:13px;text-align:center;margin-bottom:10px;}
   .big{font-family:Georgia,serif;font-size:38px;font-weight:800;line-height:1;color:var(--text);}
   .big small{font-size:12px;color:var(--dim);font-weight:normal;}
-  .stage{display:inline-block;margin-top:7px;padding:3px 12px;border-radius:20px;background:rgba(230,176,66,.12);
+  .stage{display:inline-block;margin-top:7px;padding:3px 12px;border-radius:var(--r-lg);background:var(--surface2);
          border:1px solid rgba(230,176,66,.35);font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--gold);}
   .rr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px;}
   .rr:last-child{border-bottom:0;} .rr .l{color:var(--dim);} .rr .v{font-family:'Courier New',monospace;font-weight:700;}
@@ -81,7 +81,7 @@
   <div class="rr"><span class="l" id="mat-l">Est. maturity (black layer)</span><span class="v" id="mat" style="color:var(--green)">-</span></div>
   <div class="rr"><span class="l">Frost risk</span><span class="v" id="frostv">Add frost date</span></div>
 
-  <div class="foot"><span class="src">Weather: PRISM (Oregon State) via RCC-ACIS</span> <a id="pb" href="https://agsist.com/gdu-calculator?utm_source=embed" target="_blank" rel="noopener">Powered by AGSIST →</a></div>
+  <div class="foot"><span class="src">Weather: PRISM (Oregon State) via RCC-ACIS</span> <a id="pb" href="https://agsist.com/gdu-calculator?utm_source=embed" target="_blank" rel="noopener">From AGSIST →</a></div>
 </div>
 
 <script>
