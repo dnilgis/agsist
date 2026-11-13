@@ -243,8 +243,9 @@
     }
     if (m.over) yrs.forEach(function (y) {   // counties above the axis's end: counted, not drawn
       var n = m.over[String(y)]; if (!n) return;
-      var yy = g.T + fs * 0.85, size = fs * 0.92, t = [n + ' higher', '+' + n].filter(function (s) { return wid(s, size) <= g.slot - 4 && free(g.x(y), yy, s, size, 'middle'); })[0];
-      if (t) put(g.x(y), yy, t, size, 'k-m s h', 'middle', false, 'label');
+      var size = fs * 0.92, yy = g.T - size * 0.45, t = null;   // just over the top gridline, clear of the dashes under it
+      [n + ' higher', '+' + n].forEach(function (s) { if (!t && wid(s, size) <= g.slot - 2 && free(g.x(y), yy, s, size, 'middle')) t = s; });
+      if (t) put(g.x(y), yy, t, size, 'k-m s', 'middle', false, 'label');
     });
     // the corn strip: the price received each crop year, dark when over $5
     if (g.strip) {
