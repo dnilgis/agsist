@@ -26,3 +26,7 @@
 .agc-kn{overflow-wrap:break-word;min-width:0}.agc-kv{font-weight:700;font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap;padding-left:6px}
 .agc-ksw{display:block;overflow:visible}
 .agc-foot,.agc-src{margin:.45rem 0 0;font-size:.78rem;line-height:1.45;color:var(--text-dim)}
+/* the running-total line (AgChart.mountRun): the keyboard focus ring, no scroll capture on touch, a readout that may wrap to two lines */
+.agc-bars .agc-plot:focus-visible{outline:2px solid var(--gold,#d4a23f);outline-offset:3px;border-radius:6px}
+.agc-bars .agc-plot{touch-action:pan-y}
+.agc-bars .agc-read{height:auto;min-height:2.6em;white-space:normal;overflow:visible;line-height:1.3}

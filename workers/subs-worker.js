@@ -15,6 +15,13 @@
  *   counts lower than it is, and a restart forgets it. One fixed log line per trip, when its hold
  *   ends, with the number of calls refused in the hold. No new binding or secret. Every other
  *   route answers as before.
+ * v5.69 (2026-11-13): HARVEST FUEL RELIEF NOTICE. /notice takes one more topic, hfr: one email when
+ *   USDA posts Harvest Fuel Relief payment rates or sign-up dates (the ask on /harvest-fuel-relief). Same
+ *   record as every notice: note:<email>.t.hfr = {ts, src}, no Daily unless the reader ticks the box. The
+ *   topic is a fixed word, validated like rain-gauge and milk-month; a made-up variant (hfr:x) is refused.
+ *   GET /notice-list?topic=hfr lists it for whoever mails it; /count notices {hfr: n} counts it; no
+ *   address leaves the Worker. /notice-unsubscribe with &topic=hfr names the list and stops only it.
+ *   No new binding or secret. Every other route and topic answers as before.
  * v5.68 (2026-11-13): SPONSORS PAY BY CHECK OR BANK WIRE. The sponsor confirm pages no longer
  *   promise a free first month (no free months, Nov 13): they say the ad is paid by check or bank
  *   wire from the invoice we email at booking, and that the ad goes live the day payment arrives
@@ -1581,11 +1588,16 @@ const landMonth = rainMonth;   // v5.55: a landsales month follows the same rule
 const MILK_MONTH = "milk-month";
 const MILK_MONTH_ASK = "Stop the milk price day email for this address?";
 const MILK_MONTH_DONE = "Stopped. No more milk price day emails.";
+// v5.69: hfr, the Harvest Fuel Relief rates and sign-up dates email (one list, no month or place in the topic)
+const HFR = "hfr";
+const HFR_ASK = "Stop the Harvest Fuel Relief email for this address?";
+const HFR_DONE = "Stopped. No more Harvest Fuel Relief emails.";
 const CR_STATES = new Set("al ak az ar ca co ct de fl ga hi id il in ia ks ky la me md ma mi mn ms mo mt ne nv nh nj nm ny nc nd oh ok or pa ri sc sd tn tx ut vt va wa wv wi wy".split(" "));
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
   if (t === "rain-gauge") return t;
   if (t === MILK_MONTH) return t;   // v5.58
+  if (t === HFR) return t;   // v5.69
   // v5.55: landsales:<ZIP>:<10|25|50>
   const ls = /^landsales:(\d{5}):(\d{2})$/.exec(t);
   if (ls) return ls[1] !== "00000" && LAND_MILES.includes(+ls[2]) ? t : null;
@@ -3719,7 +3731,7 @@ async function handle(req, env) {
       if (!valid || one === null) return stopInvalid();
       if (req.method === "GET") {
         const action = act(e, t, "", one ? "&topic=" + encodeURIComponent(one) : "");
-        return htmlPage(one ? (LIST_ASK[one] || (one === LAND_ALL ? LAND_ASK : one.startsWith("rain-month:") ? RAIN_MONTH_ASK : one === MILK_MONTH ? MILK_MONTH_ASK : "Stop this notice for this address?")) : "Stop every AGSIST notice for this address?",
+        return htmlPage(one ? (LIST_ASK[one] || (one === LAND_ALL ? LAND_ASK : one.startsWith("rain-month:") ? RAIN_MONTH_ASK : one === MILK_MONTH ? MILK_MONTH_ASK : one === HFR ? HFR_ASK : "Stop this notice for this address?")) : "Stop every AGSIST notice for this address?",
           "<p>" + escHtml(e) + "</p>" +
           "<form method=\"POST\" action=\"" + action + "\">" +
           "<button type=\"submit\" style=\"font:inherit;padding:10px 22px;cursor:pointer\">Yes, stop it</button></form>" +
@@ -3743,6 +3755,7 @@ async function handle(req, env) {
         if (one === LAND_ALL) return htmlPage(LAND_DONE);
         if (one && one.startsWith("rain-month:")) return htmlPage(RAIN_MONTH_DONE);
         if (one === MILK_MONTH) return htmlPage(MILK_MONTH_DONE);   // v5.58
+        if (one === HFR) return htmlPage(HFR_DONE);   // v5.69
         return htmlPage(one ? "Stopped. No email about this one." : "Stopped. No more AGSIST notices.");
       }
     }
