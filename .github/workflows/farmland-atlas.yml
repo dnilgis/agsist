@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "17 9 12 * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 06"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -38,7 +38,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 06' || (contains(github.event.workflow_run.display_title, ' farmland-atlas.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
