@@ -251,6 +251,8 @@
   .cr-t.cr-full td.av,.crd-t td{white-space:normal;min-width:5.5rem}
   .cr-t.cr-full td.av small{display:inline}
   .cr-t td.av .mdn,.cr-t td.av .rgm{white-space:nowrap}
+  /* a long median ("median $0.72 per horsepower-hour, few answers", Missouri) wraps between words inside a floor that keeps a short one ("most common $150.00") whole */
+  .cr-t td.av .mdn{white-space:normal;min-width:11.5em}
   .cr-t thead th{letter-spacing:0;font-size:.66rem}
   .crq{padding:.8rem 12px}
   .crq-r{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n x" "q q" "v v"}
@@ -259,4 +261,6 @@
   .crs-bar .cr-btn{flex:1 1 auto;padding:0 .6rem}
   .crs-bar p{flex:1 0 100%}
 }
+/* the narrowest phones (under 360 px): the range and median lines may wrap between words, so the four columns fit */
+@media (max-width:359px){.cr-t td.av .rgm,.cr-t td.av .mdn{white-space:normal;min-width:0}}
 @media print{.crq,.crt,#cr-sheet-state,.crh-pick,.crh-chips,.crn,.crn-tools,.crs-bar,.cr-faq,.cr-actions,.crd-act,.crc-sb{display:none!important}html,body,main{background:#fff!important;color:#000!important}.crc.shut .cro-l{display:block!important}.cr p,.cr li,.cr b,.cr-t td,.cr-t th{color:#000!important}}
