@@ -32,7 +32,7 @@
      print is drawn, false when it is not (the plain chart stays). The county page's own
      #rc-print mounts itself, as before. */
   root.AgRainCountyPrint = { unpack: unpack, daysOf: daysOf, usualOf: usualOf, mount: mount };   // for test/rain-county-print.test.mjs
-  var ART = '/components/rain-print-art.js?v=23', ENGINE = '/components/rain-print.js?v=94';
+  var ART = '/components/rain-print-art.js?v=24', ENGINE = '/components/rain-print.js?v=94';
   // "Watch it draw" (2026-10-20): loaded only when a reader taps it
   var DRAW = '/components/rain-print-draw.js?v=5';
   var MISS_BLOCK = 31, MIN_DAYS = 60;
@@ -133,8 +133,8 @@
       var svg = A.render(lastInput = {
         style: style, year: year, place: D.place, name: '', dedication: '',
         days: S.days, D: S.d, showDry: S.RP.showDry(S.d), axisLen: S.preview ? (isLeap(year) ? 366 : 365) : S.d.n,
-        ov: S.ov, ovNote: S.ov ? (D.norm === '1991-2020' ? 'Usual: NOAA 1991 to 2020 normals, on the days reported' : 'Usual: NOAA 30-year normals, on the days reported') : '',
-        showNormals: !!S.ov, markers: [], records: [], qr: null,
+        ov: S.ov, ovNote: S.ov ? (D.norm === '1991-2020' ? 'Normal: NOAA 1991 to 2020, on the days reported' : 'Normal: NOAA 30-year, on the days reported') : '',
+        showNormals: !!S.ov, loc: { word: 'normal' }, markers: [], records: [], qr: null,
         preview: S.preview ? { last: S.days[S.days.length - 1].date } : null,
         gauge: D.gauge || '', logo: null, watermark: false, bleed: 0, idPrefix: 'rc'
       });

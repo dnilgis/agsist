@@ -1,18 +1,18 @@
 {
  "note": "From the co-op posted prices only. Nothing typed by hand, no other source blended in.",
- "updated": "2026-10-12",
+ "updated": "2026-11-11",
  "prices": [
   {
    "key": "urea",
    "name": "Urea",
    "symbol": "46-0-0",
-   "price": 615.95,
+   "price": 610.0,
    "unit": "$/ton",
-   "as_of": "2026-10-06",
-   "oldest": "2026-09-24",
+   "as_of": "2026-11-11",
+   "oldest": "2026-10-01",
    "src": "coop",
    "n": 5,
-   "low": 608.0,
+   "low": 572.3,
    "high": 840.0,
    "region": "Kansas and Wisconsin",
    "coops": [
@@ -22,8 +22,8 @@
     "farmerscoop-columbus-ks",
     "synergy-wi"
    ],
-   "src_label": "Kansas and Wisconsin co-ops, middle of 5, posted Sep 24 to Oct 6, 2026",
-   "short_label": "Kansas and Wisconsin co-ops, Sep 24 to Oct 6",
+   "src_label": "Kansas and Wisconsin co-ops, middle of 5, posted Oct 1 to Nov 11, 2026",
+   "short_label": "Kansas and Wisconsin co-ops, Oct 1 to Nov 11",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   },
   {
@@ -32,8 +32,8 @@
    "symbol": "82-0-0",
    "price": 832.1,
    "unit": "$/ton",
-   "as_of": "2026-10-06",
-   "oldest": "2026-09-24",
+   "as_of": "2026-11-11",
+   "oldest": "2026-10-01",
    "src": "coop",
    "n": 4,
    "low": 817.0,
@@ -45,18 +45,18 @@
     "mulvane-ks",
     "farmerscoop-columbus-ks"
    ],
-   "src_label": "Kansas co-ops, middle of 4, posted Sep 24 to Oct 6, 2026",
-   "short_label": "Kansas co-ops, Sep 24 to Oct 6",
+   "src_label": "Kansas co-ops, middle of 4, posted Oct 1 to Nov 11, 2026",
+   "short_label": "Kansas co-ops, Oct 1 to Nov 11",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   },
   {
    "key": "uan28",
    "name": "UAN 28%",
    "symbol": "28-0-0",
-   "price": 415.33,
+   "price": 417.45,
    "unit": "$/ton",
-   "as_of": "2026-10-06",
-   "oldest": "2026-09-24",
+   "as_of": "2026-11-11",
+   "oldest": "2026-10-01",
    "src": "coop",
    "n": 4,
    "low": 400.0,
@@ -68,38 +68,38 @@
     "mulvane-ks",
     "farmerscoop-columbus-ks"
    ],
-   "src_label": "Kansas co-ops, middle of 4, posted Sep 24 to Oct 6, 2026",
-   "short_label": "Kansas co-ops, Sep 24 to Oct 6",
+   "src_label": "Kansas co-ops, middle of 4, posted Oct 1 to Nov 11, 2026",
+   "short_label": "Kansas co-ops, Oct 1 to Nov 11",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   },
   {
    "key": "uan32",
    "name": "UAN 32%",
    "symbol": "32-0-0",
-   "price": 451.05,
+   "price": 455.9,
    "unit": "$/ton",
-   "as_of": "2026-09-24",
-   "oldest": "2026-09-24",
+   "as_of": "2026-11-11",
+   "oldest": "2026-11-11",
    "src": "coop",
    "n": 1,
-   "low": 451.05,
-   "high": 451.05,
+   "low": 455.9,
+   "high": 455.9,
    "region": "Kansas",
    "coops": [
     "farmerscoop-columbus-ks"
    ],
-   "src_label": "Farmers Coop, Kansas, posted Sep 24, 2026",
-   "short_label": "Farmers Coop, Sep 24",
+   "src_label": "Farmers Coop, Kansas, posted Nov 11, 2026",
+   "short_label": "Farmers Coop, Nov 11",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   },
   {
    "key": "dap",
    "name": "DAP",
    "symbol": "18-46-0",
-   "price": 936.05,
+   "price": 931.2,
    "unit": "$/ton",
-   "as_of": "2026-10-06",
-   "oldest": "2026-09-24",
+   "as_of": "2026-11-11",
+   "oldest": "2026-10-06",
    "src": "coop",
    "n": 3,
    "low": 921.5,
@@ -110,8 +110,8 @@
     "mulvane-ks",
     "farmerscoop-columbus-ks"
    ],
-   "src_label": "Kansas co-ops, middle of 3, posted Sep 24 to Oct 6, 2026",
-   "short_label": "Kansas co-ops, Sep 24 to Oct 6",
+   "src_label": "Kansas co-ops, middle of 3, posted Oct 6 to Nov 11, 2026",
+   "short_label": "Kansas co-ops, Oct 6 to Nov 11",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   },
   {
@@ -141,8 +141,8 @@
    "symbol": "0-0-60",
    "price": 470.4,
    "unit": "$/ton",
-   "as_of": "2026-10-06",
-   "oldest": "2026-09-24",
+   "as_of": "2026-11-11",
+   "oldest": "2026-10-01",
    "src": "coop",
    "n": 4,
    "low": 460.0,
@@ -154,28 +154,28 @@
     "mulvane-ks",
     "farmerscoop-columbus-ks"
    ],
-   "src_label": "Kansas co-ops, middle of 4, posted Sep 24 to Oct 6, 2026",
-   "short_label": "Kansas co-ops, Sep 24 to Oct 6",
+   "src_label": "Kansas co-ops, middle of 4, posted Oct 1 to Nov 11, 2026",
+   "short_label": "Kansas co-ops, Oct 1 to Nov 11",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   },
   {
    "key": "ams",
    "name": "AMS",
    "symbol": "21-0-0-24S",
-   "price": 509.25,
+   "price": 538.35,
    "unit": "$/ton",
-   "as_of": "2026-09-24",
-   "oldest": "2026-09-24",
+   "as_of": "2026-11-11",
+   "oldest": "2026-11-11",
    "src": "coop",
    "n": 1,
-   "low": 509.25,
-   "high": 509.25,
+   "low": 538.35,
+   "high": 538.35,
    "region": "Kansas",
    "coops": [
     "farmerscoop-columbus-ks"
    ],
-   "src_label": "Farmers Coop, Kansas, posted Sep 24, 2026",
-   "short_label": "Farmers Coop, Sep 24",
+   "src_label": "Farmers Coop, Kansas, posted Nov 11, 2026",
+   "short_label": "Farmers Coop, Nov 11",
    "url": "https://agsist.com/fertilizer#fert-coops-more-h"
   },
   {
@@ -221,22 +221,22 @@
  ],
  "per_lb": {
   "n": {
-   "usd": 0.6695,
+   "usd": 0.663,
    "from": "urea",
-   "as_of": "2026-10-06",
-   "how": "urea $615.95 a ton / (2,000 lb x 46% N) = $0.67 a lb of N (Kansas and Wisconsin co-ops, middle of 5, posted Sep 24 to Oct 6, 2026)"
+   "as_of": "2026-11-11",
+   "how": "urea $610.00 a ton / (2,000 lb x 46% N) = $0.66 a lb of N (Kansas and Wisconsin co-ops, middle of 5, posted Oct 1 to Nov 11, 2026)"
   },
   "p": {
-   "usd": 0.8007,
+   "usd": 0.8021,
    "from": "map",
    "as_of": "2026-10-12",
-   "how": "MAP $980.00 a ton, less 220 lb of N at the urea price ($147), / 1040 lb of P2O5 = $0.80 a lb of P2O5 (Kansas co-ops, average of 2, posted Oct 6 to Oct 12, 2026)"
+   "how": "MAP $980.00 a ton, less 220 lb of N at the urea price ($146), / 1040 lb of P2O5 = $0.80 a lb of P2O5 (Kansas co-ops, average of 2, posted Oct 6 to Oct 12, 2026)"
   },
   "k": {
    "usd": 0.392,
    "from": "potash",
-   "as_of": "2026-10-06",
-   "how": "potash $470.40 a ton / (2,000 lb x 60% K2O) = $0.39 a lb of K2O (Kansas co-ops, middle of 4, posted Sep 24 to Oct 6, 2026)"
+   "as_of": "2026-11-11",
+   "how": "potash $470.40 a ton / (2,000 lb x 60% K2O) = $0.39 a lb of K2O (Kansas co-ops, middle of 4, posted Oct 1 to Nov 11, 2026)"
   }
  },
  "programs": {
@@ -245,8 +245,8 @@
    "n_lb": 162,
    "p_lb": 68,
    "k_lb": 52,
-   "per_acre": 183,
-   "as_of": "2026-10-12"
+   "per_acre": 182,
+   "as_of": "2026-11-11"
   },
   "soybeans": {
    "yield": 55,
@@ -254,17 +254,17 @@
    "p_lb": 44,
    "k_lb": 77,
    "per_acre": 65,
-   "as_of": "2026-10-12"
+   "as_of": "2026-11-11"
   },
   "wheat": {
    "yield": 70,
    "n_lb": 84,
    "p_lb": 35,
    "k_lb": 24,
-   "per_acre": 94,
-   "as_of": "2026-10-12"
+   "per_acre": 93,
+   "as_of": "2026-11-11"
   }
  },
  "notes": [],
- "generated": "2026-11-12T13:55:46Z"
+ "generated": "2026-11-13T13:55:17Z"
 }
