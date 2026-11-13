@@ -16,8 +16,8 @@
 <link rel="manifest"                            href="/manifest.json">
 
 <title>Embed Tools and Data Feeds: AGSIST Developer Docs</title>
-<meta name="description" content="Put the AGSIST GDU calculator or the ARC or PLC calculator on your site with an iframe or one script, subscribe to the USDA report calendar or the Daily feed, or download the Farmland Atlas data. No account needed.">
-<meta name="keywords"    content="AGSIST developer docs, agricultural widget embed, GDU calculator widget, ARC PLC calculator embed, farm market data JSON feed">
+<meta name="description" content="Put the AGSIST GDU calculator or the ARC or PLC calculator on your site with an iframe or one script, subscribe to the USDA report calendar or the Daily feed. No account needed.">
+<meta name="keywords"    content="AGSIST developer docs, agricultural widget embed, GDU calculator widget, ARC PLC calculator embed, farm market data feed">
 <meta name="author"      content="Sigurd Lindquist">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 <link rel="canonical"    href="https://agsist.com/developer">
@@ -143,7 +143,7 @@
 <div class="dev-page">
 
 <h1>Embed tools and data feeds</h1>
-<p class="sub page-lede">AGSIST publishes embeddable agricultural tools, a USDA report calendar and data files for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or read the files and build your own display.</p>
+<p class="sub page-lede">AGSIST publishes embeddable agricultural tools, a USDA report calendar and the Daily feed for ag media, extension services, co-ops, and farm websites. Add a widget with one script, or add the calendar or the feed to your reader.</p>
 
 <div class="dev-lead">Three are live: the GDU calculator, the ARC or PLC calculator and the county rain box. All load from a single file: <code>https://agsist.com/embed.js</code>. Add the script once, then drop a <code>data-agsist-widget</code> div wherever you want a tool. The script injects the live tool in an iframe, adds a crawlable &ldquo;Powered by AGSIST&rdquo; link in your page, and resizes the frame to fit. Prefer a plain iframe? Each tool below has one ready to copy.</div>
 
@@ -284,7 +284,7 @@
   </div>
 </div>
 
-<h2 id="feeds" style="scroll-margin-top:80px">Feeds and data files</h2>
+<h2 id="feeds" style="scroll-margin-top:80px">Feeds</h2>
 <p>Read these directly if you'd rather build your own display than use a widget.</p>
 
 <div class="ep-list">
@@ -295,14 +295,6 @@
       <span class="ep-path">https://agsist.com/feed.xml</span>
     </div>
     <p class="ep-desc">The AGSIST Daily morning briefing as an RSS feed: each issue's headline, a short summary and its permanent dated link. Works in any feed reader, or as a headline block on an ag-facing page.</p>
-  </div>
-
-  <div class="ep-item">
-    <div class="ep-top">
-      <span class="ep-method">CSV</span>
-      <span class="ep-path">https://agsist.com/farmland-atlas/data</span>
-    </div>
-    <p class="ep-desc">The Farmland Atlas county data as CSV files, one for the whole country and one per state, with what each column means. Licensed CC BY 4.0: credit &ldquo;AGSIST (agsist.com)&rdquo; with a link. <a href="/farmland-atlas/data">Farmland Atlas data downloads</a></p>
   </div>
 
   <div class="ep-item">
@@ -326,7 +318,7 @@
 </ul>
 
 <h2 id="licence">Licence</h2>
-<p>AGSIST&#8217;s own writing, design, code, name, and logo are &copy; Sigurd Lindquist, all rights reserved. AGSIST-compiled datasets (the Farmland Atlas and its CSV files) are CC BY 4.0: credit &#8220;AGSIST (agsist.com)&#8221; with a link. Third-party data shown on the site (futures prices, elevator bids, weather and the rest) is not AGSIST&#8217;s to license, and no right to redistribute it is given here.</p>
+<p>AGSIST&#8217;s own writing, design, code, name, and logo are &copy; Sigurd Lindquist, all rights reserved. AGSIST-compiled data (the Farmland Atlas and the rest) is not offered for download and carries no open license; see the <a href="/terms#licence">terms</a>. Third-party data shown on the site (futures prices, elevator bids, weather and the rest) is not AGSIST&#8217;s to license, and no right to redistribute it is given here.</p>
 
 <h2>Data sources</h2>
 <p>Each page names its sources beside its numbers. The <a href="/editorial-standards#sources">editorial standards</a> list where the numbers come from.</p>
