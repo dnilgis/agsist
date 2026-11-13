@@ -369,10 +369,12 @@
      earlier place never writes over a newer one */
   function drawLive(p) {
     var f = $('hp-live-f'), msg = $('hp-live-msg'), box = $('hp-live'); if (!f) return;
-    var la = (+p.lat).toFixed(4), lo = (+p.lon).toFixed(4), mine = ++liveSeq;
+    var la = (+p.lat).toFixed(4), lo = (+p.lon).toFixed(4), mine;
     var u = 'https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=7&overlay=radar&product=radar&level=surface'
       + '&lat=' + la + '&lon=' + lo + '&detailLat=' + la + '&detailLon=' + lo + '&detail=false&pressure=false&menu=false&message=false&marker=true&calendar=now&thunder=false';
+    /* a frame already on this place is left alone: starting a new sequence number here would make the load of the one in flight count as stale */
     if (f.getAttribute('src') === u) return;
+    mine = ++liveSeq;
     var fail = function () { if (mine !== liveSeq) return; f.removeAttribute('src'); f.hidden = true; if (box) box.classList.add('fail'); if (msg) msg.textContent = 'The live radar did not load. Try again in a few minutes, or open the radar on the rain page.'; };
     if (box) box.classList.remove('fail', 'ok');
     if (msg) msg.textContent = 'Loading the live radar';

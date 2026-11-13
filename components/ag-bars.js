@@ -179,6 +179,11 @@
     var ex = W - g.pr + 8, ya0 = g.Y(last[1]), yn0 = nlast ? g.Y(nlast[1]) : null, ta = ya0, tn = yn0, minGap = fs * 3.4;
     if (yn0 != null && Math.abs(ya0 - yn0) < minGap) { var md = (ya0 + yn0) / 2, half = minGap / 2; ta = ya0 <= yn0 ? md - half : md + half; tn = ya0 <= yn0 ? md + half : md - half; }
     ta = Math.max(ta, fs * 1.1); if (tn != null) { tn = Math.max(tn, fs * 1.1); if (Math.abs(ta - tn) < minGap) { if (ta <= tn) tn = ta + minGap; else ta = tn + minGap; } }
+    /* an end label moved more than about 20 px off its dot is joined to it by a short hairline */
+    var endHair = [];
+    if (Math.abs(ta - ya0) > 20) endHair.push([g.X(last[0]) + 4, ya0, ex - 3, ta - fs * 0.45]);
+    if (nlast && Math.abs(tn - yn0) > 20) endHair.push([g.X(nlast[0]) + 4, yn0, ex - 3, tn - fs * 0.45]);
+    endHair.forEach(function (h) { o.push('<line x1="' + f1(h[0]) + '" x2="' + f1(h[2]) + '" y1="' + f1(h[1]) + '" y2="' + f1(h[3]) + '" style="stroke:' + P.mut + ';stroke-width:1"/>'); });
     o.push(circle(g.X(last[0]), ya0, P.ink, card));
     o.push(txt(ex, ta - fs * 0.15, g.endLab[0], fb + 'fill:' + P.ink));
     o.push(txt(ex, ta + fs * 1.05, cfg.names.a, f + 'fill:' + P.dim));
