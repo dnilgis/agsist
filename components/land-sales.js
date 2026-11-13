@@ -266,7 +266,7 @@
       /* a state whose file names no one (Florida, New Jersey: names null): no button that would load nothing */
       + (NONAMES ? '' : '<td>' + (f.names && o.kind !== 'a' ? '<button type="button" class="ls-nm" data-ls-id="' + esc(o.id) + '" data-ls-f="' + esc(f.names) + '">Show buyer and seller</button>' : '') + '</td>') + '</tr>';
   }
-  function listRows(f) { var C = f.cols && f.cols.length ? f.cols : LIST_COLS; return (f.s || []).map(function (a) { var o = {}; for (var i = 0; i < C.length; i++) o[C[i]] = a[i]; if (f.lx && f.lx[o.id]) o.lx = f.lx[o.id]; if (f.au && f.au[o.id]) o.au = f.au[o.id]; return o; }); }
+  function listRows(f) { var C = f.cols && f.cols.length ? f.cols : LIST_COLS; return (f.s || []).map(function (a) { var o = {}; for (var i = 0; i < C.length; i++) o[C[i]] = a[i]; if (f.lx && f.lx[o.id]) o.lx = f.lx[o.id]; if (f.au && f.au[o.id]) { o.au = f.au[o.id]; if (o.au[1]) AUURL[o.id] = o.au[1]; } return o; }); }
   function fullList(box) {
     if (box.getAttribute('data-ls-done')) return;
     box.setAttribute('data-ls-done', '1');
@@ -425,7 +425,7 @@
     return '<dl class="ls-dl">' + rows.filter(Boolean).map(function (r) { return '<dt>' + esc(r[0]) + '</dt><dd>' + r[1] + (r[2] ? '<span class="ls-dn">' + esc(r[2]) + '</span>' : '') + '</dd>'; }).join('') + '</dl>';
   }
   function grp(t, rows) { return '<h3 class="ls-dh">' + esc(t) + '</h3>' + dl(rows); }
-  function pct(a, b) { var p = Math.round((a / b - 1) * 100); return p === 0 ? 'right at' : p > 1000 ? 'more than 10 times' : Math.abs(p) + '% ' + (p > 0 ? 'above' : 'below'); }
+  function pct(a, b) { var p = Math.round((a / b - 1) * 100); return p === 0 ? 'right at' : p > 1000 ? 'about ' + Math.round(p / 100 + 1).toLocaleString('en-US') + ' times' : Math.abs(p) + '% ' + (p > 0 ? 'above' : 'below'); }
   function clsWords(c, T) { return String(c || '').split(/[\s,;/]+/).filter(Boolean).map(function (x) { return T[x.toUpperCase()] || ('class ' + x); }).join(', '); }
   function flagsOf(conv) {
     var parts = String(conv || '').split('; ').map(function (x) { return x.trim(); }).filter(Boolean);
@@ -563,9 +563,17 @@
     if (ps.length >= 2) return T.length + ' tracts, ' + money(Math.min.apply(null, ps)) + ' to ' + money(Math.max.apply(null, ps)) + ' an acre';
     return T.length + ' tracts, ' + (ps.length ? money(ps[0]) + ' an acre on one' : 'no per-acre figure printed');
   }
+  /* a result page that more than one result of the page names is the company's whole list, not that result (rows on the page, and the list file's rows) */
+  var AUURL = {};
+  function urlShared(url) {
+    var n = 0;
+    Array.prototype.forEach.call(document.querySelectorAll('[data-ls]'), function (el) { var o = saleOf(el); if (o && o.au && o.au[1]) AUURL[o.id] = o.au[1]; });
+    Object.keys(AUURL).forEach(function (k) { if (AUURL[k] === url) n++; });
+    return n > 1;
+  }
   function auctionPanel(s) {
     var au = s.au, T = au[4] || [], u = s.u, n = T.length, one = n === 1 ? T[0] : null;
-    var link = au[1] && /^https?:\/\//.test(au[1]) ? '<a href="' + esc(au[1]) + '" rel="noopener nofollow">Result on ' + esc(au[0]) + '&rsquo;s site</a>' : '';
+    var link = au[1] && /^https?:\/\//.test(au[1]) ? '<a href="' + esc(au[1]) + '" rel="noopener nofollow">' + (urlShared(au[1]) ? 'Results list on ' : 'Result on ') + esc(au[0]) + '&rsquo;s site</a>' : '';
     var w = s.w24, inWin = !w || (s.when >= w[0] && s.when <= w[1]), small = au[2] != null && au[2] < 20;
     var basis = u ? (u[4] ? u[3] + ' auction per-acre figures from ' + u[4] + ' auctions' : u[3] + ' bare farmland sales') : '';
     var cmp = !inWin ? 'Not compared: auction day ' + esc(day(s.when)) + ' is ' + (s.when < w[0] ? 'older than' : 'after the end of') + ' the 24-month window the middle covers (' + esc(day(w[0]) + ' to ' + day(w[1])) + ').'
@@ -586,8 +594,9 @@
       ['Source', link || esc(au[0])]
     ]));
     if (n > 1 || (one && (one[1] != null || one[2] != null))) {
-      out.push(grp(n > 1 ? 'Tracts' : 'Tract', T.map(function (t) {
-        return ['Tract ' + esc(t[0]), (t[1] != null ? esc(money(t[1])) + ' sold' : miss('sold figure not printed')) + ', ' + (t[2] != null ? esc(money(t[2])) + ' an acre' : miss('no per-acre figure'))];
+      var joint1 = T.some(function (t) { return /[+\-,]/.test(String(t[0])); });
+      out.push(grp(n > 1 || joint1 ? 'Tracts' : 'Tract', T.map(function (t) {
+        return [(/[+\-,]/.test(String(t[0])) ? 'Tracts ' : 'Tract ') + esc(t[0]), (t[1] != null ? esc(money(t[1])) + ' sold' : miss('sold figure not printed')) + ', ' + (t[2] != null ? esc(money(t[2])) + ' an acre' : miss('no per-acre figure'))];
       })));
     }
     out.push(grp('How it compares', [
