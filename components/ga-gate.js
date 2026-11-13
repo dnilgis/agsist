@@ -1,6 +1,6 @@
 /* agsist GA gate (2026-11-13, honest numbers, round 2). Readers anywhere
  * count; data centers, automated browsers and visits with no real reading
- * mostly do not (Sig, Nov 13: "i want honest numbers"). The inline
+ * mostly do not (Nov 13: count real readers only). The inline
  * agsist-ga-guard in every page's head loads this file on the reader's first
  * scroll, tap or key press, and only when its own rules (Global Privacy
  * Control, the /privacy switch, navigator.webdriver and bot user agents,
