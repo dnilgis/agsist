@@ -638,16 +638,17 @@
           if (near && okRect(rc2)) { put(c, t, rc2, x, y); return; }
         }
         if (!important) { missed.push(c); return; }
-        for (var rad = 12; rad <= 60; rad += 8) for (var a = 0; a < 16; a++) {
+        for (var pass = 0; pass < 2; pass++) for (var rad = 12; rad <= (pass ? 60 : 110); rad += 8) for (var a = 0; a < 16; a++) {   // first on the county's own ground, then anywhere
           var ang = a * Math.PI / 8, x2 = mx + (b[2] - b[0]) / 2 * Math.cos(ang) + rad * Math.cos(ang) - w / 2, y2 = my + (b[3] - b[1]) / 2 * Math.sin(ang) + rad * Math.sin(ang) + size / 2, rc3 = rectAt(x2, y2);
-          if (inside(rc3) && !hits(rc3, tk)) { var ex = Math.max(rc3[0], Math.min(rc3[2], mx)), ey = Math.max(rc3[1], Math.min(rc3[3], my));
+          if (inside(rc3) && !hits(rc3, tk) && (pass || okRect(rc3))) { var ex = Math.max(rc3[0], Math.min(rc3[2], mx)), ey = Math.max(rc3[1], Math.min(rc3[3], my));
             put(c, t, rc3, x2, y2, { leader: [ex, ey, Math.max(b[0], Math.min(b[2], ex)), Math.max(b[1], Math.min(b[3], ey))] }); return; }
         }
         var bestP = null;
         for (var gy = b[1] - 40; gy <= b[3] + 40 - size; gy += 6) for (var gx = b[0] - 60; gx <= b[2] + 60 - w - 8; gx += 6) {
           var rc4 = [gx - 3, gy - 3, gx + w + 3, gy + size + 3];
           if (!inside(rc4) || hits(rc4, tk.slice(taken.length)) || colorPin(rc4)) continue;
-          var cv = cover(rc4); if (!bestP || cv < bestP.cv) bestP = { cv: cv, rc: rc4, x: gx, y: gy + size - 3 };
+          var cv = cover(rc4) + (onOwn(st, rc4[0], (rc4[1] + rc4[3]) / 2) && onOwn(st, rc4[2], (rc4[1] + rc4[3]) / 2) ? 0 : 1000);   // on the county's own ground first
+          if (!bestP || cv < bestP.cv) bestP = { cv: cv, rc: rc4, x: gx, y: gy + size - 3 };
         }
         if (bestP) put(c, t, bestP.rc, bestP.x, bestP.y, { plate: true }); else missed.push(c);
       });
