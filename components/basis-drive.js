@@ -24,7 +24,11 @@
   'use strict';
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var FULL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
-  var NEAR_MI = 40;                       // the page's own nearby radius (build_cash_bid_pages.NEARBY_MI)
+  var NEAR_MI = 40;
+  /* THE SWITCH for the second view's new drawing, the month in one band (components/basis-month.js). Off (Nov 13): the
+     "Since Oct 12" button opens the history box as it has been (components/cb-basis-hist.js), and basis-month.js is
+     never loaded. On only where a page sets window.BASIS_MONTH_V2 = true (no page does; its tests do). */
+  var MONTH_V2 = typeof window !== 'undefined' && window.BASIS_MONTH_V2 === true;                       // the page's own nearby radius (build_cash_bid_pages.NEARBY_MI)
   var CROPS = [['corn', 'Corn', 'corn', 'is'], ['soybeans', 'Soybeans', 'soybean', 'are']];
   var FONT = 'Inter, system-ui, -apple-system, Segoe UI, sans-serif';
   // the page's colours are the site's tokens; the picture's are the kit card's (components/ag-chart.js card)
@@ -355,11 +359,12 @@
       if (!q) return null;
       var cx = Math.max(b.x0, Math.min(b.x1, q.x)), cy = q.y < b.y0 ? b.y0 : q.y > b.y1 ? b.y1 : q.y;
       if (Math.hypot(cx - q.x, cy - q.y) < q.r + fs) return null;
+      if (cx === q.x && Math.abs(cy - q.y) < q.r + fs * 2.4) return null;   // a label right over (or under) its dot, within a line: no leader
       if (cy !== q.y && Math.abs(cx - q.x) < 10) cx = Math.abs(b.x0 - q.x) > Math.abs(b.x1 - q.x) ? b.x0 + 2 : b.x1 - 2;   // a slant, to a corner
       var d = Math.hypot(cx - q.x, cy - q.y), ux = (cx - q.x) / d, uy = (cy - q.y) / d;
       var a = [q.x + ux * (q.r + 2), q.y + uy * (q.r + 2)], e = [cx - ux * 4, cy - uy * 4], pts = [];
       for (var f = 0; f <= 1 - 2 / Math.max(4, d); f += 3 / Math.max(3, d)) pts.push({ x0: a[0] + (e[0] - a[0]) * f - 1, x1: a[0] + (e[0] - a[0]) * f + 1, y0: a[1] + (e[1] - a[1]) * f - 1, y1: a[1] + (e[1] - a[1]) * f + 1 });
-      if (pts.some(function (z) { return labs.some(function (l) { return hit(l, z); }) || obst.some(function (o) { return o.dot && o.q !== q && hit(o, z); }); })) return false;
+      if (pts.some(function (z) { return labs.some(function (l) { return hit(l, z); }) || obst.some(function (o) { return ((o.dot && o.q !== q) || o.rule) && hit(o, z); }); })) return false;   // nor across the median or the even rule
       return { d: 'M' + fx(a[0]) + ' ' + fx(a[1]) + 'L' + fx(e[0]) + ' ' + fx(e[1]), pts: pts };
     };
     var place = function (lines, cands, cls, minX, must, q, own) {
@@ -651,9 +656,11 @@
     views.forEach(function (b) {
       b.addEventListener('click', function () {
         var v = b.getAttribute('data-view'); views.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
-        box.classList.toggle('bd-on-hist', v === 'hist');
+        box.classList.toggle('bd-on-hist', v === 'hist'); box.classList.toggle('bd-old', v === 'hist' && !MONTH_V2);
         if (hist) hist.hidden = v !== 'hist';
-        if (v === 'hist') month(); else if (p) { var st = story(p, cfg); head.textContent = hy(st.head); take.textContent = hy(st.take); }
+        if (v === 'hist' && MONTH_V2) month();
+        else if (v === 'hist') { var dt = hist && hist.querySelector('details'); if (dt && !dt.open) dt.open = true; }   // the history box, as it has been
+        else if (p) { var st = story(p, cfg); head.textContent = hy(st.head); take.textContent = hy(st.take); }
         ga('basis_drive_view');
       });
     });

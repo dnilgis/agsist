@@ -217,7 +217,7 @@
     if (!H || !det) return { crop: function () {}, save: function () {} };
     var boards = []; try { boards = JSON.parse(det.getAttribute('data-boards') || '[]'); } catch (e) {}
     var st = String(det.getAttribute('data-basis-hist') || '').toUpperCase(), town = det.getAttribute('data-town') || o.cfg.town;
-    det.hidden = true;
+    det.hidden = true; el.classList.add('bm-on');
     var wrap = root.document.createElement('div'); wrap.className = 'bm';
     wrap.innerHTML = '<p class="bd-axis bm-axis"></p><div class="bd-plot bm-plot" tabindex="0" role="group" aria-label="Arrow keys step through the days"></div>' +
       '<p class="bd-read bm-read" aria-live="polite"></p><details class="bm-more"><summary></summary><div class="bm-boards" role="group" aria-label="Draw one elevator&rsquo;s line"></div></details><p class="bd-note bm-note"></p>';
