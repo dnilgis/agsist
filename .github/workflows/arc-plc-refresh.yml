@@ -88,14 +88,23 @@ jobs:
       - name: Selftest
         run: python scripts/build_arc_plc.py --selftest
 
-      - name: Pillow, for the share image
+      - name: Pillow, for the share image and the county cards
         continue-on-error: true
         run: pip install --quiet pillow==12.3.0
+
+      - name: Check out the county cards (agsist-data)
+        id: cards
+        continue-on-error: true
+        env:
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+        run: bash scripts/agsist_data.sh checkout "$RUNNER_TEMP/agsist-data"
 
       - name: Build and commit
         id: commit
         env:
           SNAP: ${{ needs.gate.outputs.snap }}
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+          CARDS_OK: ${{ steps.cards.outcome }}
         run: |
           set -e
           git config user.name "AGSIST Bot"
@@ -103,6 +112,14 @@ jobs:
           for i in 1 2 3 4 5; do
             if [ "$SNAP" = "1" ]; then python scripts/build_arc_plc.py --snapshot-prices; else python scripts/build_arc_plc.py; fi
             python scripts/build_share_images.py --only arc-plc || true
+            if [ "$CARDS_OK" = "success" ]; then
+              cards_bad=0
+              python scripts/build_local_cards.py arc --out "$RUNNER_TEMP/agsist-data/arc-plc/og" || cards_bad=1
+              bash scripts/agsist_data.sh sync --soft --keep --from "$RUNNER_TEMP/agsist-data" arc-plc/og || cards_bad=1
+              if [ "$cards_bad" = 1 ] && python3 scripts/share_host.py seeded | grep -q "arc-plc/og"; then
+                echo "::error::the county cards did not reach agsist-data; no page is committed"; exit 1
+              fi
+            fi
             python scripts/generated_sets.py dependents arc-plc --stage || true
             git add -A -- arc-plc.html arc-plc data/pointers data/arc-plc.json data/arc-plc data/arc-plc-prices.json data/breakeven \
                           embed/arc-plc.html sitemap-arc-plc.xml llms.txt components/arc-plc-form.js img/og/arc-plc.jpg

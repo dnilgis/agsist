@@ -67,13 +67,37 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Pillow, for the selftest and the bid cards
+        run: pip install --quiet pillow==12.3.0
+
       - name: Selftest (gate)
         run: python scripts/build_cash_bid_pages.py --selftest
+
+      - name: Check out the bid cards (agsist-data)
+        continue-on-error: true
+        env:
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+        run: |
+          bash scripts/agsist_data.sh checkout "$RUNNER_TEMP/agsist-data"
+          echo "CARD_DIR=$RUNNER_TEMP/agsist-data" >> "$GITHUB_ENV"
+          echo "CARD_TODO=$RUNNER_TEMP/cards-todo.json" >> "$GITHUB_ENV"
 
       - name: Build pages from the network feed
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: python scripts/build_cash_bid_pages.py --print-new /tmp/new-urls.txt
+
+      - name: Draw the bid cards and push them to agsist-data
+        if: env.CARD_DIR != ''
+        env:
+          AGSIST_DATA_TOKEN: ${{ secrets.AGSIST_DATA_TOKEN }}
+        run: |
+          cards_bad=0
+          python scripts/build_local_cards.py draw --out "$CARD_DIR/cash-bids/og" --todo "$CARD_TODO" || cards_bad=1
+          bash scripts/agsist_data.sh sync --soft --keep --from "$CARD_DIR" cash-bids/og || cards_bad=1
+          if [ "$cards_bad" = 1 ] && python3 scripts/share_host.py seeded | grep -q "cash-bids/og"; then
+            echo "::error::the bid cards did not reach agsist-data; no page is committed"; exit 1
+          fi
 
       - name: Sponsor slot list
         run: python scripts/stamp_rates.py
