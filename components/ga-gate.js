@@ -1,9 +1,12 @@
-/* agsist GA gate (2026-11-13, honest numbers). Readers anywhere count; data
- * centers, automated browsers and visits with no real reading do not (Sig,
- * Nov 13: "i want honest numbers"). The inline agsist-ga-guard in every
- * page's head loads this file on the reader's first scroll, tap or key press,
- * and only when its own rules (Global Privacy Control, the /privacy switch,
- * navigator.webdriver and bot user agents, prerender) already allow analytics.
+/* agsist GA gate (2026-11-13, honest numbers, round 2). Readers anywhere
+ * count; data centers, automated browsers and visits with no real reading
+ * mostly do not (Sig, Nov 13: "i want honest numbers"). The inline
+ * agsist-ga-guard in every page's head loads this file on the reader's first
+ * scroll, tap or key press, and only when its own rules (Global Privacy
+ * Control, the /privacy switch, navigator.webdriver and bot user agents,
+ * prerender) already allow analytics.
+ *
+ * Only on agsist.com: a copy of a page on another host never loads GA.
  *
  * Four layers, all before gtag.js is fetched:
  *
@@ -13,38 +16,48 @@
  *    score 2 each; no plugins on desktop Chrome, an empty language list, a
  *    window with no outer size, desktop Chrome without window.chrome, and a
  *    user agent whose system differs from navigator.platform score 1 each.
- *    2 or more: no GA, and the worker is not asked. One odd value alone (a
- *    privacy setting, a PDF policy) does not drop a reader.
+ *    2 or more: no GA, the worker is not asked, and the tab keeps
+ *    agsist-ga-ok = 0 so /privacy says analytics is off. One odd value alone
+ *    (a privacy setting, a PDF policy) does not drop a reader.
  *
  * 2. Engagement bar, on this page, counted from the moment this file runs.
- *    All three: (a) 5 seconds with the page visible; (b) trusted (isTrusted)
- *    input of at least two different kinds out of: scroll by wheel or touch
- *    (or a scroll within 1.5 s of an arrow, Page, Space, Home or End key, so
- *    keyboard-only and screen-reader users count), pointer movement, a key
- *    press, a click or press; (c) a scroll of a
- *    quarter of the page's scrollable height, made while the reader was
- *    giving input, or real pointer movement (150 px over 4 or more moves,
- *    finger travel included). Script-made events (isTrusted false) count for
- *    nothing.
+ *    The main path needs all three:
+ *    (a) 5 seconds with the page visible;
+ *    (b) trusted (isTrusted) input of two different kinds out of: scroll (a
+ *        wheel or touch scroll, or the page scrolling within 1.5 s of any
+ *        other trusted input: Tab, arrows, a scroll bar drag), pointer
+ *        movement, a key press, a click or press. On a page that cannot
+ *        scroll, 3 key presses 1 s apart stand in for the scroll;
+ *    (c) a quarter of the page scrolled within 1.5 s of trusted input, or
+ *        150 px of pointer or finger travel over 4 or more moves, or 3 key
+ *        presses, or 3 presses (taps) 1 s apart.
+ *    A slow path for screen readers in browse mode, which pass the page no
+ *    keys: 15 seconds visible and the page moved by 3 scrolls at least 2 s
+ *    apart. No signal there is one a script cannot copy; it is kept so those
+ *    readers count. Script-made events (isTrusted false) count for nothing.
  *
  * 3. The subs worker (agsist-api), GET /ga-ok, asked once when this file runs:
- *    {"ok":false} for a cloud or hosting network, or a network and city
- *    sending a burst of fresh visits (v5.70). A clear answer is kept for the
- *    tab in sessionStorage (agsist-ga-ok, 1 or 0); a failure is not kept.
+ *    {"ok":false} for a cloud or hosting network (the main network cut), and
+ *    as a backstop for a network and city sending a burst of fresh checks in
+ *    one minute (v5.70). A clear answer is kept for the tab in sessionStorage
+ *    (agsist-ga-ok, 1 or 0); a failure is not kept. The gate waits for the
+ *    answer until the bar is met, and at least 8 s from the start, so a slow
+ *    answer (a slow proxy exit) is still used, never skipped.
  *
  * 4. Fail closed only for doubtful visits. An error, an odd answer, no fetch
- *    or no answer within 3 seconds loads GA only for a visit with an
- *    automation score of 0 that has passed the bar. Oct 21 (the worker was
- *    blocked for a day and GA counted nobody): an outage never blanks a clean,
- *    engaged reader.
+ *    or no answer by then loads GA only for a visit with an automation score
+ *    of 0 that has passed the bar. Oct 21 (the worker was blocked for a day
+ *    and GA counted nobody): an outage never blanks a clean, engaged reader.
  *
- * No replay. The guard's stub queues gtag() calls in window.dataLayer, and
- * gtag.js sends the whole queue when it loads. Before loading, this file
- * drops every queued event except page_view (the config line's own), so an
- * event a page fired before the bar (an ask shown on load, a grid from the
- * address) is never sent afterwards as if a reader had seen it. Events after
- * the bar are sent as usual. The honest reading: event counts are counts for
- * visits that passed the bar, from the moment they passed it.
+ * The queue. The guard's stub queues gtag() calls in window.dataLayer and
+ * gtag.js sends the whole queue when it loads. A visit that passes the bar is
+ * a reader, so what that reader was shown before it passed (an ask, a sponsor
+ * slot, a sale on return from checkout) is sent as it stands. A visit that
+ * never passes never loads gtag.js, and its queue is never sent.
+ *
+ * Right before gtag.js is added, the /privacy switch, the guard's flag and
+ * Global Privacy Control are read again: a switch turned off in another tab
+ * while this page waited wins.
  *
  * Tagging. Every hit carries ga_gate (ok, cached, timeout, error, badreply:
  * how the visit got in) and ga_auto (the score, 0 or 1), as an event
@@ -54,13 +67,22 @@
 (function (w, d) {
   var K = 'agsist-ga-ok', API = 'https://agsist-api.dnilgis.workers.dev/ga-ok';
   var SRC = 'https://www.googletagmanager.com/gtag/js?id=G-6KXCTD5Z9H';
-  var VISIBLE_MS = 5000, WAIT_MS = 3000, DEPTH = 0.25, MOVE_PX = 150, MOVES = 4, INPUT_MS = 1500;
+  var VISIBLE_MS = 5000, WAIT_MS = 8000, DEPTH = 0.25, MOVE_PX = 150, MOVES = 4, INPUT_MS = 1500;
+  var KEYS = 3, PRESSES = 3, SPACED_MS = 1000, SLOW_MS = 15000, SLOW_SCROLLS = 3, SLOW_GAP_MS = 2000;
   var n = w.navigator || {};
   if (w.agsistGaOff === true || w.agsistGaGate) return;
   w.agsistGaGate = 1;
-  /* the /privacy switch may have been set on this page after the guard ran */
-  try { if (w.localStorage.getItem('agsist-ga-off') === '1') return; } catch (e) {}
-  if (n.globalPrivacyControl === true) return;
+  function switchedOff() {
+    if (w.agsistGaOff === true || n.globalPrivacyControl === true) return true;
+    /* the /privacy switch may have been set on this page, or in another tab, after the guard ran */
+    try { if (w.localStorage.getItem('agsist-ga-off') === '1') return true; } catch (e) {}
+    return false;
+  }
+  if (switchedOff()) return;
+  var host = '';
+  try { host = String(w.location.hostname || ''); } catch (e) {}
+  if (host !== 'agsist.com' && host !== 'www.agsist.com') return;
+  function keep(v) { try { w.sessionStorage.setItem(K, v); } catch (e) {} }
 
   // ------------------------------------------------------------ 1. the score
   var AUTO_GLOBALS = ['__nightmare', '_phantom', 'callPhantom', '__phantomas', '_selenium', 'calledSelenium',
@@ -106,7 +128,7 @@
     return s;
   }
   var score = autoScore();
-  if (score >= 2) return;
+  if (score >= 2) { keep('0'); return; }
 
   var kept = null;
   try { kept = w.sessionStorage.getItem(K); } catch (e) {}
@@ -114,24 +136,41 @@
 
   // ----------------------------------------------------- 2. the engagement bar
   var clock = w.performance && typeof w.performance.now === 'function' ? function () { return w.performance.now(); } : function () { return Date.now(); };
-  var shownMs = 0, shownFrom = d.visibilityState === 'hidden' ? null : clock();
-  var kinds = {}, kindCount = 0, moved = 0, moves = 0, lastInput = -1e9, lastScrollKey = -1e9, depthMet = false;
-  /* keys that scroll a page: a keyboard-only reader (screen readers included) scrolls with these */
-  var SCROLL_KEYS = /^(ArrowDown|ArrowUp|ArrowLeft|ArrowRight|Down|Up|Left|Right|PageDown|PageUp|Home|End| |Spacebar)$/;
-  var lastPt = null, lastTouch = null, barTimer = null, met = false, done = false, answer = null;
+  var started = clock();
+  var shownMs = 0, shownFrom = d.visibilityState === 'hidden' ? null : started;
+  var kinds = {}, kindCount = 0, moved = 0, moves = 0, lastInput = -1e9, depthMet = false;
+  var keyPresses = 0, spacedKeys = 0, lastSpacedKey = -1e9, spacedPresses = 0, lastSpacedPress = -1e9;
+  var slowScrolls = 0, lastSlowScroll = -1e9, lastY = null;
+  var lastPt = null, lastTouch = null, barTimer = null, waitTimer = null, met = false, done = false, answer = null;
   function shown() { return shownMs + (shownFrom === null ? 0 : clock() - shownFrom); }
   function kind(k) { if (!kinds[k]) { kinds[k] = 1; kindCount++; } }
   function travel(dx, dy) {
     var dist = Math.sqrt(dx * dx + dy * dy);
     if (dist > 0) { moved += dist; moves++; }
   }
+  function metrics() {
+    var de = d.documentElement || {}, b = d.body || {};
+    return {
+      y: w.scrollY || w.pageYOffset || de.scrollTop || 0,
+      room: Math.max(de.scrollHeight || 0, b.scrollHeight || 0) - (w.innerHeight || de.clientHeight || 0)
+    };
+  }
   function onInput(e) {
     if (!e || e.isTrusted !== true || done) return;
     var t = e.type, now = clock();
     if (t === 'wheel' || t === 'touchmove') kind('scroll');
     else if (t === 'pointermove') kind('pointer');
-    else if (t === 'keydown') { kind('key'); if (SCROLL_KEYS.test(String(e.key))) lastScrollKey = now; }
-    else if (t === 'click' || t === 'pointerdown') kind('press');
+    else if (t === 'keydown') {
+      kind('key');
+      if (!e.repeat) {
+        keyPresses++;
+        if (now - lastSpacedKey >= SPACED_MS) { spacedKeys++; lastSpacedKey = now; }
+      }
+    }
+    else if (t === 'click' || t === 'pointerdown') {
+      kind('press');
+      if (t === 'pointerdown' && now - lastSpacedPress >= SPACED_MS) { spacedPresses++; lastSpacedPress = now; }
+    }
     if (t === 'pointermove') {
       var x = +e.clientX, y = +e.clientY, pt = String(e.pointerType || 'mouse');
       if (isFinite(x) && isFinite(y)) {
@@ -148,19 +187,21 @@
     if (t !== 'touchstart') lastInput = now;
     check();
   }
-  function onScroll(e) {
-    if (!e || done) return;
-    /* a trusted scroll right after a scrolling key is the scroll kind: keyboard-only readers count */
-    if (e.isTrusted === true && clock() - lastScrollKey <= INPUT_MS) kind('scroll');
-    if (depthMet) { check(); return; }
-    /* a scroll counts toward depth only while the reader is giving trusted input; window.scrollTo alone does not */
-    if (clock() - lastInput > INPUT_MS) return;
-    try {
-      var de = d.documentElement || {}, b = d.body || {};
-      var y = w.scrollY || w.pageYOffset || de.scrollTop || 0;
-      var room = Math.max(de.scrollHeight || 0, b.scrollHeight || 0) - (w.innerHeight || de.clientHeight || 0);
-      if (room > 0 && y / room >= DEPTH) depthMet = true;
-    } catch (x) {}
+  function onScroll() {
+    if (done) return;
+    /* the browser marks every scroll event trusted, window.scrollTo included, so a
+       scroll counts only near trusted input: a key (Tab, arrows), a pointer, a press */
+    var now = clock(), m;
+    try { m = metrics(); } catch (x) { return; }
+    if (now - lastInput <= INPUT_MS) {
+      kind('scroll');
+      if (m.room > 0 && m.y / m.room >= DEPTH) depthMet = true;
+    }
+    /* the slow path (screen readers in browse mode): the page really moved, 2 s or more apart */
+    if (lastY === null || m.y !== lastY) {
+      if (lastY !== null && now - lastSlowScroll >= SLOW_GAP_MS) { slowScrolls++; lastSlowScroll = now; }
+      lastY = m.y;
+    }
     check();
   }
   function onVisibility() {
@@ -182,31 +223,35 @@
     done = true;
     listen(false);
     if (barTimer) { w.clearTimeout(barTimer); barTimer = null; }
+    if (waitTimer) { w.clearTimeout(waitTimer); waitTimer = null; }
   }
   function barMet() {
-    return shown() >= VISIBLE_MS && kindCount >= 2 && (depthMet || (moved >= MOVE_PX && moves >= MOVES));
+    var t = shown(), k = kindCount, room = 1;
+    try { room = metrics().room; } catch (e) {}
+    /* a page that cannot scroll: 3 key presses 1 s apart stand in for the scroll */
+    if (!kinds.scroll && room <= 0 && spacedKeys >= KEYS) k++;
+    var main = t >= VISIBLE_MS && k >= 2 &&
+      (depthMet || (moved >= MOVE_PX && moves >= MOVES) || keyPresses >= KEYS || spacedPresses >= PRESSES);
+    return main || (t >= SLOW_MS && slowScrolls >= SLOW_SCROLLS);
   }
   function check() {
     if (done) return;
     if (!met && barMet()) met = true;
     if (met) { decide(); return; }
-    /* wake when the visible time runs out, in case the reader has already done the rest and then sits reading */
+    /* wake when the visible time runs out (5 s, then 15 s), in case the reader has already done the rest */
     if (shownFrom !== null && !barTimer) {
-      var left = VISIBLE_MS - shown();
+      var s = shown(), left = s < VISIBLE_MS ? VISIBLE_MS - s : SLOW_MS - s;
       if (left > 0) barTimer = w.setTimeout(function () { barTimer = null; check(); }, Math.ceil(left) + 20);
     }
   }
 
-  // ---------------------------------------------- 4. decide, and no replay
+  // ------------------------------------------------------------ 4. decide
   function args() { return arguments; }
   function isArgs(x) { return Object.prototype.toString.call(x) === '[object Arguments]'; }
   function load(how) {
     stop();
-    var q = w.dataLayer = w.dataLayer || [], i, at = -1, x;
-    for (i = q.length - 1; i >= 0; i--) {
-      x = q[i];
-      if (isArgs(x) ? (x[0] === 'event' && x[1] !== 'page_view') : (x && typeof x === 'object' && 'event' in x)) q.splice(i, 1);
-    }
+    if (switchedOff()) return;
+    var q = w.dataLayer = w.dataLayer || [], i, at = -1;
     for (i = 0; i < q.length; i++) { if (isArgs(q[i]) && q[i][0] === 'config') { at = i; break; } }
     var tag = { ga_gate: how, ga_auto: String(score) };
     var sets = [args('set', 'user_properties', tag), args('set', tag)];
@@ -217,15 +262,24 @@
     (d.head || d.documentElement).appendChild(s);
   }
   function decide() {
-    if (done || !met || answer === null) return;
+    if (done || !met) return;
+    if (answer === null) {
+      /* keep waiting for the worker until 8 s from the start; a late answer is used */
+      var left = WAIT_MS - (clock() - started);
+      if (left > 0) { if (!waitTimer) waitTimer = w.setTimeout(function () { waitTimer = null; settle('timeout'); }, Math.ceil(left)); return; }
+      settle('timeout');
+      return;
+    }
     if (answer === 'ok' || answer === 'cached') { load(answer); return; }
     if (answer === 'no') { stop(); return; }
     /* timeout, error, badreply: only a clean visit (the bar is already met) */
     if (score === 0) load(answer); else stop();
   }
+  var ac = null;
   function settle(a) {
     if (answer !== null) return;
     answer = a;
+    if (a === 'timeout' && ac) { try { ac.abort(); } catch (e) {} }
     if (a === 'no') { stop(); return; }
     decide();
   }
@@ -235,21 +289,19 @@
   if (kept === '1') settle('cached');
   else if (typeof w.fetch !== 'function') settle('error');
   else {
-    var ac = typeof w.AbortController === 'function' ? new w.AbortController() : null;
-    var timer = w.setTimeout(function () { if (ac) ac.abort(); settle('timeout'); }, WAIT_MS);
+    ac = typeof w.AbortController === 'function' ? new w.AbortController() : null;
     var bad = false;
     try {
       w.fetch(API, { credentials: 'omit', cache: 'default', signal: ac ? ac.signal : undefined })
         .then(function (r) { if (!r || !r.ok) { bad = true; return null; } return r.json(); })
         .then(function (j) {
           if (answer !== null) return;
-          w.clearTimeout(timer);
           if (!j || typeof j.ok !== 'boolean') { settle(bad ? 'error' : 'badreply'); return; }
-          try { w.sessionStorage.setItem(K, j.ok ? '1' : '0'); } catch (e) {}
+          keep(j.ok ? '1' : '0');
           settle(j.ok ? 'ok' : 'no');
         })
-        .catch(function (e) { if (answer !== null) return; w.clearTimeout(timer); settle(e && e.name === 'SyntaxError' ? 'badreply' : 'error'); });
-    } catch (e) { w.clearTimeout(timer); settle('error'); }
+        .catch(function (e) { if (answer !== null) return; settle(e && e.name === 'SyntaxError' ? 'badreply' : 'error'); });
+    } catch (e) { settle('error'); }
   }
   check();
 })(window, document);
