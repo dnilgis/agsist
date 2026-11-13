@@ -209,7 +209,7 @@
     return t;
   }
 
-  var api = { pictureModel: pictureModel, stateSpots: stateSpots, pointInRing: pointInRing, viewHead: viewHead, footNote: footNote, auctionOnly: auctionOnly, urlShared: urlShared, KT_AUC: KT_AUC, KNOT_AUC: KNOT_AUC, ringOffsets: ringOffsets, story: story, counts: counts, offWords: offWords, throughNote: throughNote, popupHtml: popupHtml, links: links, placeNote: placeNote, filterPts: filterPts, monthsBack: monthsBack, fieldScoutCovers: fieldScoutCovers };
+  var api = { windowLine: windowLine, pictureModel: pictureModel, stateSpots: stateSpots, pointInRing: pointInRing, viewHead: viewHead, footNote: footNote, auctionOnly: auctionOnly, urlShared: urlShared, KT_AUC: KT_AUC, KNOT_AUC: KNOT_AUC, ringOffsets: ringOffsets, story: story, counts: counts, offWords: offWords, throughNote: throughNote, popupHtml: popupHtml, links: links, placeNote: placeNote, filterPts: filterPts, monthsBack: monthsBack, fieldScoutCovers: fieldScoutCovers };
   root.AgLandMap = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   if (typeof document === 'undefined') return;
@@ -274,10 +274,10 @@
   }
   /* an auction is placed at its county center, so squares of one county share a spot: from zoom 7 they sit on a small ring around it,
      laid out in screen pixels (the same order every time: newest first, as the file is sorted), so each sale is its own pin */
-  function ringOffsets(n, sz) {
+  function ringOffsets(n, sz, turn) {
     if (n < 2) return [[0, 0]];
     var R = Math.max(14, sz + 4, n * (sz + 3) / 6.2832), out = [];
-    for (var i = 0; i < n; i++) { var t = -Math.PI / 2 + i * 6.2832 / n; out.push([R * Math.cos(t), R * Math.sin(t)]); }
+    for (var i = 0; i < n; i++) { var t = -Math.PI / 2 + (turn || 0) + i * 6.2832 / n; out.push([R * Math.cos(t), R * Math.sin(t)]); }
     return out;
   }
   function ringAuctions(list, z) {
@@ -486,6 +486,8 @@
   }
   function auctionOnly(scope) { return !!scope.length && scope.every(function (f) { return f.basis === 'auction'; }); }
   function stateNames(scope) { var n = scope.map(function (f) { return f.name; }).sort(); return n.length < 2 ? n.join('') : n.slice(0, -1).join(', ') + ' and ' + n[n.length - 1]; }
+  /* the picture's top-right line: the window of the filters, never only the day the records run to (a reader cannot tell 12 months from 24 otherwise) */
+  function windowLine(mo, thr) { return 'Farm sales map, ' + mo + ' months' + (thr ? ' to ' + thr : ''); }
   function footNote(scope, thr) {
     return (thr ? 'Records through ' + thr + '. ' : '') + (auctionOnly(scope) ? 'Auction company results of 20+ acres. No state transfer returns for ' + stateNames(scope) + ' on this site yet.'
       : 'Sales of 20+ acres: state transfer records and auction company results.');
@@ -511,13 +513,26 @@
     var groups = {}, pins = inb.map(function (o) {
       var a = px(o.lat, o.lng), rr = dot * (0.8 + 0.4 * Math.sqrt(o.p[AC] / 80)), r = { o: o, x: a[0], y: a[1], rr: rr };
       if (o.p[KIND] === 'a' && !o.p[NM]) { var k = o.p[LAT] + ',' + o.p[LNG]; (groups[k] = groups[k] || []).push(r); }
+      r.rect = [r.x - rr - 2, r.y - rr - 2, r.x + rr + 2, r.y + rr + 2];
       return r;
     });
-    Object.keys(groups).forEach(function (k) {
-      var g = groups[k]; if (g.length < 2) return;
+    /* biggest rings first; each ring starts at the first of eight turns (the same order every time) where it clears the pins already laid and stays on the plate */
+    var inGroup = function (r) { var g = groups[r.o.p[LAT] + ',' + r.o.p[LNG]]; return r.o.p[KIND] === 'a' && !r.o.p[NM] && g && g.length > 1; };
+    var laid = pins.filter(function (r) { return !inGroup(r); });
+    var rectOf = function (r, x, y) { return [x - r.rr - 2, y - r.rr - 2, x + r.rr + 2, y + r.rr + 2]; };
+    Object.keys(groups).map(function (k) { return groups[k]; }).filter(function (g) { return g.length > 1; }).sort(function (a, b) { return b.length - a.length; }).forEach(function (g) {
       var sz = 0; g.forEach(function (r) { sz = Math.max(sz, 2 * r.rr); });
-      var off = ringOffsets(g.length, sz);
-      g.forEach(function (r, i) { r.cx = r.x; r.cy = r.y; r.x += off[i][0]; r.y += off[i][1]; r.ringed = true; });
+      var best = null, bs = 1e9;
+      for (var t = 0; t < 8 && bs > 0; t++) {
+        var off = ringOffsets(g.length, sz, t * Math.PI / 4), bad = 0;
+        g.forEach(function (r, i) {
+          var rc = rectOf(r, r.x + off[i][0], r.y + off[i][1]);
+          if (rc[0] < left || rc[2] > right || rc[1] < top || rc[3] > bot) bad += 3;
+          laid.forEach(function (o) { if (rc[0] < o.rect[2] && rc[2] > o.rect[0] && rc[1] < o.rect[3] && rc[3] > o.rect[1]) bad++; });
+        });
+        if (bad < bs) { bs = bad; best = off; }
+      }
+      g.forEach(function (r, i) { r.cx = r.x; r.cy = r.y; r.x += best[i][0]; r.y += best[i][1]; r.ringed = true; r.rect = rectOf(r, r.x, r.y); laid.push(r); });
     });
     var taken = [];
     pins.forEach(function (r) { r.rect = [r.x - r.rr - 2, r.y - r.rr - 2, r.x + r.rr + 2, r.y + r.rr + 2]; taken.push(r.rect); });
@@ -595,7 +610,7 @@
     x.font = '800 34' + F; x.fillStyle = '#e9edeb'; x.fillText('agsist', 48, 62);
     var aw = x.measureText('agsist').width; x.font = '700 20' + F; x.fillStyle = GOLD; x.fillText('.com', 50 + aw, 62);
     var thr = throughNote(scope);
-    x.font = '600 20' + F; x.fillStyle = 'rgba(233,237,235,.72)'; x.textAlign = 'right'; x.fillText('Farm sales map, ' + q.mo + ' months' + (thr ? ' to ' + thr : ''), W - 48, 60); x.textAlign = 'left';
+    x.font = '600 20' + F; x.fillStyle = 'rgba(233,237,235,.72)'; x.textAlign = 'right'; x.fillText(windowLine(q.mo, thr), W - 48, 60); x.textAlign = 'left';
     var headTxt = full ? st.head.replace(/ in the \d+ months to [^.]*\.$/, '.') : viewHead(pins, q.amin, q.amax);
     var hd = fit(x, headTxt, W - 96, [38, 34, 30], '800'), y = 80 + hd.size;
     x.font = '800 ' + hd.size + F; x.fillStyle = '#e9edeb'; hd.lines.forEach(function (l) { x.fillText(l, 48, y); y += hd.size * 1.2; });
