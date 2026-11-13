@@ -98,7 +98,7 @@
       r.town = r.inTown ? cfg.town : (townOf[r.path] || r.site);
       r.name = label({ elevator: r.elevator, site: r.site }, r.town, r.st);
     });
-    var ok = rows.filter(function (r) { return !r.flag; }), left = rows.filter(function (r) { return r.flag === 'suspect' || r.flag === 'outlier'; }).length;
+    var ok = rows.filter(function (r) { return !r.flag; }), bad = rows.filter(function (r) { return r.flag === 'suspect' || r.flag === 'outlier'; }), left = bad.length;
     /* the delivery month and futures contract most bids in town carry (none in town: most bids nearby); a tie goes to
        the state's own headline contract, then the nearer month, then the nearer contract */
     var count = function (rs) { var n = {}; rs.forEach(function (r) { if (r.dm && r.vs) { var k = r.dm + '|' + r.vs; n[k] = (n[k] || 0) + 1; } }); return n; };
@@ -115,7 +115,7 @@
     var town = on.filter(function (r) { return r.inTown; }).sort(function (a, b) { return b.c - a.c || (b.w || 0) - (a.w || 0) || (a.name < b.name ? -1 : 1); });
     var out = on.filter(function (r) { return !r.inTown; }).sort(function (a, b) { return a.mi - b.mi || b.c - a.c || (a.name < b.name ? -1 : 1); });
     var c = CROPS.filter(function (x) { return x[0] === crop; })[0] || [crop, crop, crop];
-    return { crop: crop, Crop: c[1], adj: c[2], town: town, out: out, all: town.concat(out), ref: ref, other: other, left: left,
+    return { crop: crop, Crop: c[1], adj: c[2], town: town, out: out, all: town.concat(out), ref: ref, other: other, left: left, leftIn: bad.some(function (r) { return r.inTown; }),
              med: med && ref && med.label === ref.vs ? med : null, prev: prev };
   }
   function bestOf(rs) { return rs.reduce(function (b, r) { return !b || r.c > b.c || (r.c === b.c && (r.mi || 0) < (b.mi || 0)) ? r : b; }, null); }
@@ -147,9 +147,12 @@
       else if (dc === 0) head += 'The best bid outside town is the same, ' + word(bo.c) + ', ' + mi(bo.mi) + ' out.';
       else head += 'The best bid within ' + NEAR_MI + ' miles is ' + word(bo.c) + ', ' + mi(bo.mi) + ' away, ' + num(dc) + (dc === 1 ? ' cent' : ' cents') + ' over the bid in town.';
     } else if (bt) {
-      head = C + ' is ' + word(bt.c) + ' in ' + place + '. No other elevator within ' + NEAR_MI + ' miles posted a bid on the same terms.';
+      var elsewhere = p.other.some(function (r) { return !r.inTown; });
+      head = C + ' is ' + word(bt.c) + ' in ' + place + '. No other elevator within ' + NEAR_MI + ' miles posted a ' + p.adj + ' bid' +
+        (elsewhere ? ' for ' + dmFull(p.ref.dm, yr) + ' delivery against ' + conMon(p.ref.vs) + ' futures.' : '.');
     } else {
-      head = 'No ' + p.adj + ' bid in ' + place + ' on these terms today. The best within ' + NEAR_MI + ' miles is ' + word(bo.c) + ', ' + mi(bo.mi) + ' out.';
+      var here = p.other.some(function (r) { return r.inTown; }) || p.leftIn;
+      head = 'No ' + (here ? 'comparable ' : '') + p.adj + ' bid in ' + place + ' today. The best within ' + NEAR_MI + ' miles is ' + word(bo.c) + ', ' + mi(bo.mi) + ' out.';
     }
     var n = p.all.length, terms = (p.ref ? dmFull(p.ref.dm, yr) + ' delivery' : '') + (conFull(p.ref && p.ref.vs) ? ', against ' + conFull(p.ref.vs) + ' ' + p.adj + ' futures' : '');
     var take = (n === 1 ? 'One ' + p.adj + ' bid' : n + ' ' + p.adj + ' bids') + ' within ' + NEAR_MI + ' miles, as of ' + day(cfg.date) + (terms ? ', ' + (n === 1 ? '' : 'all ') + 'for ' + terms : '') + '.';
@@ -248,14 +251,18 @@
     var dots = [], best = bestOf(p.all), bestC = best ? best.c : null;
     var stT = T.length > 1 ? Math.min(step, (ZA - 2 * pad - 2 * r0) / (T.length - 1)) : step, rT = Math.min(r0, Math.max(1.6, (stT - 0.8) / 2));
     T.forEach(function (r, i) { dots.push({ x: L + pad + rT + i * stT, y: Y(r.c), r: rT, d: r }); });
-    var placed = [];
+    // outside town: each dot at its miles, or the nearest free place sideways (alternating right and left, never past
+    // the plot), so no two dots touch; the readout gives each one's own miles
+    var placed = [], xmax = phone ? W - r0 - 2 : W - R - 4 - r0;
     O.forEach(function (r) {
-      var q = { x: Xm(r.mi), y: Y(r.c), r: r0, d: r }, clash = function () { return placed.some(function (z) { return Math.abs(z.x - q.x) < 2 * r0 + 1 && Math.abs(z.y - q.y) < 2 * r0 + 1; }); };
-      var tries = 0; while (clash() && tries++ < 200) q.x += 1;
+      var base = Xm(r.mi), y = Y(r.c), q = { x: base, y: y, r: r0, d: r };
+      for (var k = 0; k < 400; k++) {
+        var x = base + (k % 2 ? (k + 1) / 2 : -k / 2) * 0.5;
+        if (x < x0 - r0 || x > xmax) continue;
+        if (!placed.some(function (z) { return Math.hypot(z.x - x, z.y - y) < 2 * r0 + 1; })) { q.x = x; break; }
+      }
       placed.push(q); dots.push(q);
     });
-    var over = placed.reduce(function (m, q) { return Math.max(m, q.x + r0 - (phone ? x1 + 4 : W - R - 4)); }, 0);
-    if (over > 0) placed.forEach(function (q) { if (q.x > x1 - 60) q.x -= over; });
     dots.forEach(function (q) {
       var prev = q.d.w == null ? null : Math.round((q.d.c - q.d.w) * 10) / 10;
       if (prev != null && prev !== q.d.c) { P.wk.push(V0(q.x, Y(prev), q.y)); add({ x0: q.x - 1.5, x1: q.x + 1.5, y0: Math.min(Y(prev), q.y), y1: Math.max(Y(prev), q.y) }); }
@@ -383,7 +390,7 @@
   function axisText(p) { return p.Crop + ' basis, cents a bushel over or under ' + (conMon(p.ref && p.ref.vs) || 'the') + ' futures'; }
   function cardText(p, cfg) {
     var st = story(p, cfg);
-    return { head: st.head, take: st.take, kicker: cfg.town + ', ' + (cfg.st || '') + ' · ' + p.adj + ' basis by distance', source: 'Posted elevator bids, read by AGSIST' + (readDays(p) ? ' ' + readDays(p) : '') + (p.med && p.med.usdaShort ? '. ' + p.med.usdaShort : '') + '. No freight cost taken off.' };
+    return { head: st.head, take: st.take, kicker: cfg.town + ', ' + (cfg.st || '') + ' · ' + p.adj + ' basis by distance', source: (p.prev && p.all.some(function (r) { return r.w != null; }) ? 'Each line runs from where that bid was on ' + day(p.prev) + '. ' : '') + 'Posted elevator bids, read by AGSIST' + (readDays(p) ? ' ' + readDays(p) : '') + (p.med && p.med.usdaShort ? '. ' + p.med.usdaShort : '') + '. No freight cost taken off.' };
   }
 
   /* The page's box carries only what is its own (st, town, path, ll, from, states, crops, hist). The state's name,
@@ -411,24 +418,35 @@
   }
 
   /* ---------------------------------------------------------------- the page */
+  /* the longest-first word wrap the kit's card uses (components/ag-chart.js fitLines), here so the box needs no kit */
+  function fitLines(measure, text, maxW, sizes, maxLines) {
+    var lines = [];
+    for (var i = 0; i < sizes.length; i++) {
+      lines = []; var cur = '';
+      String(text || '').split(' ').forEach(function (w) { var x = cur ? cur + ' ' + w : w; if (measure(x, sizes[i]) > maxW && cur) { lines.push(cur); cur = w; } else cur = x; });
+      if (cur) lines.push(cur);
+      if (lines.length <= maxLines && lines.every(function (l) { return measure(l, sizes[i]) <= maxW; })) return { size: sizes[i], lines: lines };
+    }
+    return { size: sizes[sizes.length - 1], lines: lines.slice(0, maxLines) };
+  }
   function ga(n) { try { if (typeof root.gtag === 'function') root.gtag('event', n, { kit: 'basis-drive' }); } catch (e) {} }
   function card(p, cfg, done) {
     var D = root.document, W = 1200, H = 630, c = D.createElement('canvas'); c.width = W; c.height = H;
-    var x = c.getContext('2d'), AC = root.AgChart; if (!x || !root.Image) { done(null); return; }
+    var x = c.getContext('2d'); if (!x || !root.Image) { done(null); return; }
     var ct2 = cardText(p, cfg), meas = function (wt) { return function (s, size) { x.font = wt + ' ' + size + 'px ' + FONT; return x.measureText(s).width; }; };
-    var fit = AC && AC.fitLines ? AC.fitLines : function (m, s, w, sizes) { return { size: sizes[sizes.length - 1], lines: [s] }; };
+    var fit = fitLines;
     x.fillStyle = CARD.bg; x.fillRect(0, 0, W, H); x.fillStyle = CARD.gold; x.fillRect(0, 0, W, 10);
     x.font = '800 34px ' + FONT; x.fillStyle = CARD.ink; x.fillText('agsist', 48, 62);
     var aw = x.measureText('agsist').width; x.font = '700 20px ' + FONT; x.fillStyle = CARD.gold; x.fillText('.com', 50 + aw, 62);
     var mark = 50 + aw + x.measureText('.com').width + 32, kk = fit(meas('600'), ct2.kicker + ' · ' + day(cfg.date) + ', ' + String(cfg.date).slice(0, 4), W - 48 - mark, [20, 18, 16], 1);
     x.font = '600 ' + kk.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.72)'; x.textAlign = 'right'; x.fillText(hy(kk.lines[0]), W - 48, 60); x.textAlign = 'left';
-    var hd = fit(meas('800'), ct2.head, W - 96, [36, 32, 29, 27], 2, true), y = 82 + hd.size;
+    var hd = fit(meas('800'), ct2.head, W - 96, [36, 32, 29, 27], 2), y = 82 + hd.size;
     x.font = '800 ' + hd.size + 'px ' + FONT; x.fillStyle = CARD.ink;
     hd.lines.forEach(function (l) { x.fillText(hy(l), 48, y); y += hd.size * 1.18; });
     var tk = fit(meas('400'), ct2.take, W - 96, [21, 19, 18], 2);
     x.font = '400 ' + tk.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.86)';
     tk.lines.forEach(function (l, i) { x.fillText(hy(l), 48, y + i * tk.size * 1.25); }); y += (tk.lines.length - 1) * tk.size * 1.25 + 10;
-    var src = fit(meas('400'), ct2.source, W - 96, [17, 16, 15], 1), url = String(cfg.url || '').replace(/^https?:\/\//, '');
+    var src = fit(meas('400'), ct2.source, W - 96, [17, 16, 15, 14], 1), url = String(cfg.url || '').replace(/^https?:\/\//, '');
     var ph = Math.max(220, Math.round(H - y - 70)), pic = svg(p, cfg, W - 48, { card: true, fs: 16, h: ph });
     var img = new root.Image();
     img.onload = function () {
