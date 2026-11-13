@@ -2989,7 +2989,6 @@
   {
    "path": "data/yield-nowcast.json",
    "pages": [
-    "conditions.html",
     "index.html"
    ],
    "written_by": [

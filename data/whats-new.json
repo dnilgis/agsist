@@ -9,6 +9,13 @@
    "link": "/farmland-atlas/data"
   },
   {
+   "id": "2026-11-13-cash-bid-titles-short",
+   "date": "2026-11-13",
+   "title": "Cash bid page titles fit in a search result",
+   "line": "Town and company cash bid pages now have shorter titles that show whole, and a town with no bid today no longer says today. Morton Mills, Iowa has its own page.",
+   "link": "/cash-bids"
+  },
+  {
    "id": "2026-11-13-daily-archive",
    "date": "2026-11-13",
    "title": "Daily archive: last 30 days",
@@ -84,6 +91,13 @@
    "title": "Farm bill status, checked",
    "line": "The farm bill page now shows S. 5526 on the Senate calendar with no vote scheduled, and the ARC/PLC signup box sends you to your county FSA office first.",
    "link": "/farm-bill"
+  },
+  {
+   "id": "2026-11-12-state-sales-pages",
+   "date": "2026-11-12",
+   "title": "Farmland sales by state",
+   "line": "Each state with farm sale records now has its own page: the median price per acre, every county and the newest sales. ARC or PLC and PRF lead with their sign-up dates.",
+   "link": "/land-sales/wisconsin/"
   },
   {
    "id": "2026-11-12-farm-sale-map",
