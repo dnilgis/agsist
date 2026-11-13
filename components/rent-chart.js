@@ -139,17 +139,6 @@
       out.push('<line x1="' + g.L + '" x2="' + f1(g.W - g.R) + '" y1="' + f1(yy) + '" y2="' + f1(yy) + '" style="stroke:' + P.grid + '"/>');
       put(g.L - 7, yy + fs * 0.33, tickText(g.sc, v), fs, P.mut, 'end', false, 'tick');
     });
-    // years with no figure, named in the column
-    yrs.forEach(function (y) {
-      if (medAt(m, y)) return;
-      var why = m.why[String(y)] === 'no survey' ? ['no', 'survey'] : ['none', 'published'], x = g.x(y), size = fs * 0.92;
-      if (wid(why[1], size) <= g.slot - 2) { put(x, g.T + g.HM - size * 1.55, why[0], size, P.mut, 'middle'); put(x, g.T + g.HM - size * 0.35, why[1], size, P.mut, 'middle'); }
-      else {
-        var s = why.join(' '), yb = g.T + g.HM - 4;
-        boxes.push({ x0: x - size * 0.5, x1: x + size * 0.5, y0: yb - wid(s, size), y1: yb, s: s, kind: 'label' });
-        out.push('<text transform="translate(' + f1(x + size * 0.36) + ' ' + f1(yb) + ') rotate(-90)" style="' + st(size, P.mut) + '">' + esc(s) + '</text>');
-      }
-    });
     // the dashes: the sprite, through a viewBox on the years shown
     var sw = Math.min(0.56, g.tw / g.slot);
     out.push('<svg x="' + g.L + '" y="' + g.T + '" width="' + f1(g.slot * g.n) + '" height="' + g.HM + '" viewBox="' + (g.from - m.y0) + ' 0 ' + g.n + ' ' + UNITS + '" preserveAspectRatio="none" overflow="hidden">' +
@@ -177,6 +166,18 @@
     var cv = o.county ? function (y) { var v = o.county.v[y - m.y0]; return v == null ? null : v; } : null;
     var cpts = cv ? line(cv, P.acc, g.phone ? 2 : 2.2, g.phone ? 2.2 : 2.8, 'county') : [];
     var mpts = line(function (y) { var q = medAt(m, y); return q ? q[0] : null; }, P.ink, 2.4, g.phone ? 2.4 : 3.1, 'median');
+    // years with no figure, named in the column
+    var gaps = function () { yrs.forEach(function (y) {
+      if (medAt(m, y)) return;
+      var why = m.why[String(y)] === 'no survey' ? ['no', 'survey'] : ['none', 'published'], x = g.x(y), size = fs * 0.92;
+      if (wid(why[1], size) <= g.slot - 2) { put(x, g.T + g.HM - size * 1.55, why[0], size, P.mut, 'middle', false, 'label', halo); put(x, g.T + g.HM - size * 0.35, why[1], size, P.mut, 'middle', false, 'label', halo); }
+      else {
+        var s = why.join(' '), yb = g.T + g.HM - 4;
+        boxes.push({ x0: x - size * 0.5, x1: x + size * 0.5, y0: yb - wid(s, size), y1: yb, s: s, kind: 'label' });
+        out.push('<text transform="translate(' + f1(x + size * 0.36) + ' ' + f1(yb) + ') rotate(-90)"' + halo + ' style="' + st(size, P.mut) + '">' + esc(s) + '</text>');
+      }
+    }); };
+    gaps();
     if (o.tap && o.tap.y >= g.from && o.tap.y <= g.to) {
       var tx0 = g.x(o.tap.y), ty = g.y(o.tap.v), tw = Math.max(g.tw, 10);
       out.push('<line class="rc-tap" x1="' + f1(tx0 - tw / 2 - 2) + '" x2="' + f1(tx0 + tw / 2 + 2) + '" y1="' + f1(ty) + '" y2="' + f1(ty) + '" style="stroke:' + P.ink + ';stroke-width:3;stroke-linecap:round"/>');
