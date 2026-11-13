@@ -104,6 +104,7 @@ jobs:
     needs: [print-of-day]
     if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.test_to_sig == true }}
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     permissions:
       contents: read
     steps:
@@ -163,6 +164,7 @@ jobs:
   gate:
     if: ${{ inputs.test_to_sig != true }}
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     permissions:
       contents: read
     outputs:
@@ -276,6 +278,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.skip != '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     permissions:
       contents: write
       actions: read
