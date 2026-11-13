@@ -1,6 +1,14 @@
-/* components/ag-bars.js: grouped bars for the shared chart kit (Nov 12, 2026). Adds AgChart.mountBars and AgChart.barsSvg
-   to components/ag-chart.js, which it needs loaded first: the card, Share and Save the picture are the kit's own.
-*/
+/* components/ag-bars.js: the running-total line for the shared chart kit (Nov 13, 2026). Adds AgChart.mountRun and
+   AgChart.runSvg to components/ag-chart.js, which it needs loaded first: the saved picture, Share and Copy link
+   are the kit's own.
+
+   One line for this year's running total over a second line for the normal's running total, the gap between them
+   shaded flat, each line named at its right end, the stretches that made the year drawn heavier with the month's
+   own numbers on them. Nothing here works a number out: the caller hands in points and words.
+
+   cfg: { this: [[x, y]], norm: [[x, y]] | null, dotted: [[xa, xb]], x0, x1, ticks: [{ a, b, lab }], marks: [{ a, b, text }],
+          freeze: { x, text } | null, fmt(v) axis text, topUnit, vfmt(v) text for an end, names: { a, n }, gapWords,
+          steps, label, read(x, a, n) -> readout text, whenOf(x) -> date text } */
 (function (root) {
   'use strict';
   var K = root.AgChart || (typeof module !== 'undefined' && module.exports && require('./ag-chart.js'));
@@ -8,11 +16,10 @@
   var PAGE = K.PAGE, CARD = K.CARD, FONT = K.FONT, tools = K.tools;
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function f1(v) { return v.toFixed(1); }
-  function widthOf(s, fs) { return String(s).length * fs * 0.64; }
-  /* the key's words are measured at what this face sets them at: about half the font size a character */
-  function keyW(s, fs) { return String(s).length * fs * 0.52; }
+  function isN(x) { return typeof x === 'number' && isFinite(x); }
+  /* text measured at what this face sets it at (about 0.56 of the size a character; the gutter allows 0.64) */
+  function widthOf(s, fs, k) { return String(s).length * fs * (k || 0.56); }
   function txt(x, y, s, st, anchor) { return '<text x="' + f1(x) + '" y="' + f1(y) + '"' + (anchor ? ' text-anchor="' + anchor + '"' : '') + ' style="' + st + '">' + esc(s) + '</text>'; }
-  var NORM = { page: 'var(--agc-norm,#5b6870)', card: '#7d8b93' }, barN = 0;
   function nice(lo, hi, steps) {
     steps = steps || [0.05, 0.1, 0.25, 0.5, 1, 2, 2.5, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000, 2000, 2500, 5000, 10000];
     for (var i = 0; i < steps.length; i++) {
@@ -21,98 +28,162 @@
     }
     return { step: Math.max(hi - lo, 1e-9), lo: lo, hi: hi };
   }
-  function isN(x) { return typeof x === 'number' && isFinite(x); }
-  /* the axis label of a tick: the top one also carries the unit when the config names one (cfg.topUnit) */
-  function tickText(cfg, v, hi) { return (cfg.fmt ? cfg.fmt(v) : String(v)) + (cfg.topUnit && v > hi - 1e-9 ? cfg.topUnit : ''); }
-  function barsGeom(cfg, W, H, fs) {
-    var M = cfg.groups, pr = 8, pt = Math.ceil(fs * 2.1), pb = Math.ceil(fs * 2.1), top = 0;
-    M.forEach(function (x) { if (isN(x.a)) top = Math.max(top, x.a); if (isN(x.n)) top = Math.max(top, x.n); });
-    var t = nice(0, Math.max(top, 1e-6) * 1.03, cfg.steps), pl = 44;
-    for (var v0 = 0; v0 <= t.hi + 1e-9; v0 += t.step) pl = Math.max(pl, Math.ceil(widthOf(tickText(cfg, v0, t.hi), fs)) + (fs >= 20 ? 26 : 12));   /* the picture's gutter keeps its widest label inside the picture's own margin */
-    var cw = (W - pl - pr) / M.length, yb = H - pb;
-    var hasN = M.some(function (x) { return isN(x.n); }), bw = Math.max(3, Math.min(cw * 0.36, fs * 1.6));
-    return { M: M, pl: pl, pr: pr, pt: pt, pb: pb, t: t, ymax: t.hi, cw: cw, yb: yb, hasN: hasN, bw: bw,
-      Y: function (v) { return pt + (t.hi - v) / t.hi * (yb - pt); }, cx: function (i) { return pl + cw * (i + 0.5); } };
+  /* the value of a polyline at x (linear between its points; null outside) */
+  function at(pts, x) {
+    if (!pts || !pts.length || x < pts[0][0] - 1e-9 || x > pts[pts.length - 1][0] + 1e-9) return null;
+    for (var i = 1; i < pts.length; i++) if (x <= pts[i][0] + 1e-9) {
+      var a = pts[i - 1], b = pts[i]; return b[0] === a[0] ? b[1] : a[1] + (b[1] - a[1]) * (x - a[0]) / (b[0] - a[0]);
+    }
+    return pts[pts.length - 1][1];
   }
-  function barsSvg(cfg, W, H, opt) {
-    var fs = opt.fs || 12, P = opt.card ? CARD : PAGE, g = barsGeom(cfg, W, H, fs), M = g.M, id = 'agcb' + (++barN), o = [];
-    var gold = opt.card ? '#d4a23f' : 'var(--chart-1,var(--gold,#d4a23f))', slate = opt.card ? NORM.card : NORM.page;
-    var f = 'font-size:' + fs + 'px;font-family:' + FONT + ';';
+  function tickText(cfg, v, hi) { return (cfg.fmt ? cfg.fmt(v) : String(v)) + (cfg.topUnit && v > hi - 1e-9 ? cfg.topUnit : ''); }
+
+  function runGeom(cfg, W, H, fs) {
+    var top = 0;
+    (cfg.this || []).forEach(function (p) { if (isN(p[1])) top = Math.max(top, p[1]); });
+    (cfg.norm || []).forEach(function (p) { if (isN(p[1])) top = Math.max(top, p[1]); });
+    var t = nice(0, Math.max(top, 1e-6) * 1.03, cfg.steps), pl = 44;
+    for (var v0 = 0; v0 <= t.hi + 1e-9; v0 += t.step) pl = Math.max(pl, Math.ceil(widthOf(tickText(cfg, v0, t.hi), fs, 0.64)) + (fs >= 20 ? 26 : 12));
+    var wide = W >= 520, ends = [cfg.names && cfg.names.a || '', cfg.names && cfg.names.n || ''];
+    var endLab = [cfg.vfmt ? cfg.vfmt(cfg.this[cfg.this.length - 1][1]) : '', cfg.norm ? cfg.vfmt(cfg.norm[cfg.norm.length - 1][1]) : ''];
+    var pr = Math.ceil(Math.max(widthOf(endLab[0], fs, 0.6), widthOf(endLab[1], fs, 0.6), widthOf(ends[0], fs), widthOf(ends[1], fs))) + 14;
+    var pt = Math.ceil(fs * 1.6), pb = Math.ceil(fs * 2.1), yb = H - pb, x0 = cfg.x0, x1 = cfg.x1;
+    return { pl: pl, pr: pr, pt: pt, pb: pb, yb: yb, t: t, ymax: t.hi, x0: x0, x1: x1, wide: wide, endLab: endLab,
+      X: function (x) { return pl + (x - x0) / (x1 - x0) * (W - pl - pr); }, Y: function (v) { return pt + (t.hi - v) / t.hi * (yb - pt); } };
+  }
+  function pathOf(g, pts) { return pts.map(function (p, i) { return (i ? 'L' : 'M') + f1(g.X(p[0])) + ' ' + f1(g.Y(p[1])); }).join(''); }
+  /* the part of a polyline between xa and xb, ends interpolated */
+  function sub(pts, xa, xb) {
+    var o = [[xa, at(pts, xa)]];
+    pts.forEach(function (p) { if (p[0] > xa + 1e-9 && p[0] < xb - 1e-9) o.push(p); });
+    o.push([xb, at(pts, xb)]);
+    return o.filter(function (p) { return isN(p[1]); });
+  }
+
+  function runSvg(cfg, W, H, opt) {
+    opt = opt || {};
+    var fs = opt.fs || 12, P = opt.card ? CARD : PAGE, g = runGeom(cfg, W, H, fs), o = [], card = !!opt.card;
+    var gold = card ? '#d4a23f' : 'var(--chart-1,var(--gold,#d4a23f))', grey = card ? '#9aa7ae' : 'var(--agc-norm,#5b6870)', halo = 'paint-order:stroke;stroke:' + (card ? '#0a0c0d' : 'var(--surface)') + ';stroke-width:3px;stroke-linejoin:round;';
+    var f = 'font-size:' + fs + 'px;font-family:' + FONT + ';', fb = f + 'font-weight:700;';
+    var T = cfg.this, N = cfg.norm, last = T[T.length - 1], nlast = N ? N[N.length - 1] : null;
     o.push('<svg xmlns="http://www.w3.org/2000/svg" class="agc-svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '" role="img" aria-label="' + esc(cfg.label || '') + '">');
-    o.push('<defs><pattern id="' + id + '" width="5" height="5" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="5" height="5" style="fill:' + P.surf + '"/><line x1="0" y1="0" x2="0" y2="5" style="stroke:' + P.mut + ';stroke-width:1.6"/></pattern></defs>');
     for (var v = 0; v <= g.ymax + 1e-9; v += g.t.step) {
-      o.push('<line x1="' + g.pl + '" x2="' + (W - g.pr) + '" y1="' + f1(g.Y(v)) + '" y2="' + f1(g.Y(v)) + '" style="stroke:' + P.grid + ';stroke-width:1"/>');
+      o.push('<line x1="' + g.pl + '" x2="' + f1(W - g.pr) + '" y1="' + f1(g.Y(v)) + '" y2="' + f1(g.Y(v)) + '" style="stroke:' + P.grid + ';stroke-width:1"/>');
       o.push(txt(g.pl - 6, g.Y(v) + fs * 0.33, tickText(cfg, v, g.ymax), f + 'fill:' + P.dim, 'end'));
     }
-    o.push('<line x1="' + g.pl + '" x2="' + (W - g.pr) + '" y1="' + g.yb + '" y2="' + g.yb + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
-    var step = M.length > 9 && g.cw < fs * 2.6 ? 2 : 1;
-    M.forEach(function (x, i) {
-      var cx = g.cx(i), xa = g.hasN ? cx - g.bw - 1 : cx - g.bw / 2, xn = cx + 1;
-      if (g.hasN && isN(x.n)) o.push('<rect x="' + f1(xn) + '" y="' + f1(g.Y(x.n)) + '" width="' + f1(g.bw) + '" height="' + f1(Math.max(0, g.yb - g.Y(x.n))) + '" style="fill:' + slate + (x.part ? ';opacity:.7' : '') + '"/>');
-      /* a withheld month is a hatched stub; the word n/a goes beside it only where the months are wide enough to hold it (the key says it otherwise) */
-      if (x.gap || !isN(x.a)) o.push('<rect x="' + f1(xa) + '" y="' + (g.yb - 8) + '" width="' + f1(g.bw) + '" height="8" style="fill:url(#' + id + ');stroke:' + P.mut + ';stroke-width:1"/>' + (g.cw >= 30 ? txt(xa + g.bw / 2, g.yb - 12, 'n/a', f + 'fill:' + P.mut, 'middle') : ''));
-      else o.push('<rect x="' + f1(xa) + '" y="' + f1(g.Y(x.a)) + '" width="' + f1(g.bw) + '" height="' + f1(Math.max(0, g.yb - g.Y(x.a))) + '" style="fill:' + gold + (x.part ? ';opacity:.6' : '') + '"/>');
-      if (i % step === 0 || i === M.length - 1) o.push(txt(cx, g.yb + fs * 1.45, x.lab, f + 'fill:' + P.dim, 'middle'));
+    o.push('<line x1="' + g.pl + '" x2="' + f1(W - g.pr) + '" y1="' + g.yb + '" y2="' + g.yb + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
+    /* month names under the plot, every other one when they would touch */
+    var ticks = cfg.ticks || [], mid = function (t) { return g.X((t.a + t.b) / 2); }, step = ticks.length > 1 && Math.abs(g.X(ticks[1].a) - g.X(ticks[0].a)) < fs * 2.9 ? 2 : 1;
+    ticks.forEach(function (t, i) {
+      o.push('<line x1="' + f1(g.X(t.a)) + '" x2="' + f1(g.X(t.a)) + '" y1="' + g.yb + '" y2="' + (g.yb + 4) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
+      if (i % step === 0) o.push(txt(mid(t), g.yb + fs * 1.45, t.lab, f + 'fill:' + P.dim, 'middle'));
     });
-    var L = M.length - 1, last = M[L];
-    /* the last month's figure is written in the saved picture only; on the page the readout under the chart says it once */
-    if (opt.card && isN(last.a) && !last.gap) {
-      /* the figure at the top right; when it would run into the key's swatches the normal's part is left to the page's readout */
-      var na0 = cfg.names || {}, keyEnd = g.pl + fs * 1.1 + keyW(na0.a || '', fs) + fs * 1.4 + (g.hasN ? fs * 1.1 + keyW(na0.n || 'Normal', fs) + fs * 1.4 : 0) + (last.part ? fs * 1.1 + keyW(last.lab + ' so far', fs) : 0);
-      var full = last.lab + ': ' + cfg.vfmt(last.a) + (g.hasN && isN(last.n) ? ' (normal ' + cfg.vfmt(last.n) + ')' : ''), short = last.lab + ': ' + cfg.vfmt(last.a);
-      o.push(txt(W - g.pr, g.pt - fs * 0.6, keyEnd + fs * 2 + keyW(full, fs) * 0.9 > W - g.pr ? short : full, f + 'font-weight:700;fill:' + P.ink, 'end'));
+    /* the gap, one flat neutral, only where both lines are drawn */
+    if (N) {
+      var xs = T.map(function (p) { return p[0]; }).filter(function (x) { return at(N, x) != null; }), up = [], dn = [];
+      xs.forEach(function (x) { up.push([x, at(T, x)]); dn.unshift([x, at(N, x)]); });
+      if (up.length > 1) o.push('<path d="' + pathOf(g, up.concat(dn)) + 'Z" style="fill:' + (card ? 'rgba(154,167,174,.22)' : 'var(--agc-gap,rgba(128,140,148,.22))') + ';stroke:none"/>');
+      o.push('<path d="' + pathOf(g, N) + '" style="fill:none;stroke:' + grey + ';stroke-width:' + (card ? 3 : 2) + ';stroke-linejoin:round"/>');
     }
-    if (opt.card) {   /* the key goes in the picture: it has no legend of its own */
-      var kx = g.pl, ky = g.pt - fs * 0.6, na = (cfg.names || {});
-      o.push('<rect x="' + kx + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + gold + '"/>' + txt(kx + fs * 1.1, ky, na.a || '', f + 'fill:' + P.ink));
-      if (g.hasN) { var kx2 = kx + fs * 1.1 + keyW(na.a || '', fs) + fs * 1.4; o.push('<rect x="' + f1(kx2) + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + slate + '"/>' + txt(kx2 + fs * 1.1, ky, na.n || 'Normal', f + 'fill:' + P.ink)); }
-      if (last.part && isN(last.a) && !last.gap) { var kx3 = (g.hasN ? kx + fs * 1.1 + keyW(na.a || '', fs) + fs * 1.4 + fs * 1.1 + keyW(na.n || 'Normal', fs) + fs * 1.4 : kx + fs * 1.1 + keyW(na.a || '', fs) + fs * 1.4); o.push('<rect x="' + f1(kx3) + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + gold + ';opacity:.6"/>' + txt(kx3 + fs * 1.1, ky, last.lab + ' so far', f + 'fill:' + P.ink)); }
+    /* the stretches that made the year: gold under the ink line */
+    (cfg.marks || []).forEach(function (m) { o.push('<path d="' + pathOf(g, sub(T, m.a, m.b)) + '" style="fill:none;stroke:' + gold + ';stroke-width:' + (card ? 9 : 6) + ';stroke-linecap:round;stroke-linejoin:round"/>'); });
+    /* this year: ink, dotted where the file withholds the days */
+    var dots = cfg.dotted || [];
+    if (!dots.length) o.push('<path d="' + pathOf(g, T) + '" style="fill:none;stroke:' + P.ink + ';stroke-width:' + (card ? 4.5 : 2.6) + ';stroke-linejoin:round;stroke-linecap:round"/>');
+    else {
+      var edges = [T[0][0]]; dots.forEach(function (d) { edges.push(d[0], d[1]); }); edges.push(last[0]);
+      for (var i = 0; i < edges.length; i += 2) o.push('<path d="' + pathOf(g, sub(T, edges[i], edges[i + 1])) + '" style="fill:none;stroke:' + P.ink + ';stroke-width:' + (card ? 4.5 : 2.6) + ';stroke-linecap:round"/>');
+      dots.forEach(function (d) { o.push('<path d="' + pathOf(g, sub(T, d[0], d[1])) + '" style="fill:none;stroke:' + P.ink + ';stroke-width:' + (card ? 3 : 2) + ';stroke-dasharray:2 5;stroke-linecap:round"/>'); });
     }
-    o.push('<rect class="agc-hl" x="0" y="' + g.pt + '" width="' + f1(g.cw) + '" height="' + f1(g.yb - g.pt) + '" visibility="hidden" style="fill:' + P.ink + ';opacity:.08;pointer-events:none"/>');
+    /* the first 28 degree freeze: a thin rule with its words */
+    if (cfg.freeze && cfg.freeze.x > g.x0 && cfg.freeze.x < g.x1) {
+      var fx = g.X(cfg.freeze.x), left = fx + widthOf(cfg.freeze.text, fs - 1) + 6 > W - g.pr;
+      o.push('<line x1="' + f1(fx) + '" x2="' + f1(fx) + '" y1="' + g.pt + '" y2="' + g.yb + '" style="stroke:' + P.mut + ';stroke-width:1;stroke-dasharray:3 3"/>');
+      o.push(txt(fx + (left ? -4 : 4), g.yb - 6, cfg.freeze.text, f + 'font-size:' + (fs - 1) + 'px;fill:' + P.dim + ';' + halo, left ? 'end' : 'start'));
+    }
+    /* the marks' words: under the lower of the two lines, where the running lines leave room, from the stretch's middle to the right,
+       joined to it by a hairline; one below another when they would touch */
+    var placed = [];
+    (cfg.marks || []).forEach(function (m) {
+      var xm = (m.a + m.b) / 2, va = at(T, xm), vn = N ? at(N, xm) : null, low = g.Y(vn == null ? va : Math.min(va, vn)), w = widthOf(m.text, fs - 1, 0.58);
+      var x = g.X(xm) + 5, anchor = 'start', maxR = W - g.pr - 2;
+      if (x + w > maxR) { x = maxR; anchor = 'end'; }
+      var y = low + fs * 2, l = anchor === 'end' ? x - w : x, r = anchor === 'end' ? x : x + w;
+      for (var k = 0; k < placed.length; k++) if (l < placed[k].r + 8 && r > placed[k].l - 8 && Math.abs(y - placed[k].y) < fs * 1.35) { y += fs * 1.4; k = -1; }
+      placed.push({ l: l, r: r, y: y });
+      o.push('<line x1="' + f1(g.X(xm)) + '" x2="' + f1(g.X(xm)) + '" y1="' + f1(low + 3) + '" y2="' + f1(y - fs * 0.95) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
+      o.push(txt(x, y, m.text, f + 'font-size:' + (fs - 1) + 'px;font-weight:700;fill:' + P.ink + ';' + halo, anchor));
+    });
+    /* the lines named at their ends, with the value; the gap in words between them where there is room */
+    var ex = W - g.pr + 8, ya0 = g.Y(last[1]), yn0 = nlast ? g.Y(nlast[1]) : null, ta = ya0, tn = yn0, minGap = fs * 2.7;
+    if (yn0 != null && Math.abs(ya0 - yn0) < minGap) { var mid = (ya0 + yn0) / 2, half = minGap / 2; ta = ya0 <= yn0 ? mid - half : mid + half; tn = ya0 <= yn0 ? mid + half : mid - half; }
+    o.push(circle(g.X(last[0]), ya0, P.ink, card));
+    o.push(txt(ex, ta - fs * 0.15, g.endLab[0], fb + 'fill:' + P.ink));
+    o.push(txt(ex, ta + fs * 1.05, cfg.names.a, f + 'fill:' + P.dim));
+    if (nlast) {
+      o.push(circle(g.X(nlast[0]), yn0, grey, card));
+      o.push(txt(ex, tn - fs * 0.15, g.endLab[1], fb + 'fill:' + grey));
+      o.push(txt(ex, tn + fs * 1.05, cfg.names.n, f + 'fill:' + P.dim));
+    }
+    /* the gap in words, top left where the running lines have not yet climbed */
+    if (N && cfg.gapWords) {
+      var gw = String(cfg.gapWords), room = W - g.pl - g.pr - 16, parts = widthOf(gw, fs, 0.6) > room ? gw.split(/ (?=ahead of|behind)/) : [gw];
+      parts.forEach(function (sx, j) { o.push(txt(g.pl + 8, g.pt + fs * 1.2 + j * fs * 1.25, sx, fb + 'fill:' + P.ink + ';' + halo)); });
+    }
+    o.push('<g class="agc-hv" visibility="hidden" style="pointer-events:none"><line class="hv-l" y1="' + g.pt + '" y2="' + g.yb + '" style="stroke:' + P.ink + ';stroke-width:1;opacity:.55"/><circle class="hv-a" r="4" style="fill:' + P.ink + '"/>' + (N ? '<circle class="hv-n" r="4" style="fill:' + grey + '"/>' : '') + '</g>');
     o.push('</svg>');
     return o.join('');
   }
-  function mountBars(el, cfg) {
-    var hh = cfg.height || {}, lastW = 0, cur = -1, kit = (cfg.share && cfg.share.file) || 'bars';
-    el.classList.add('agc', 'agc-bars');
+  function circle(x, y, fill, card) { return '<circle cx="' + f1(x) + '" cy="' + f1(y) + '" r="' + (card ? 6 : 3.5) + '" style="fill:' + fill + '"/>'; }
+
+  function mountRun(el, cfg) {
+    var hh = cfg.height || {}, lastW = 0, cur = -1, g = null, T = cfg.this, N = cfg.norm;
+    el.classList.add('agc', 'agc-bars', 'agc-run');
     el.innerHTML = '<div class="agc-plot" tabindex="0" role="group"></div><p class="agc-read" aria-live="polite"></p>';
-    var plot = el.querySelector('.agc-plot'), read = el.querySelector('.agc-read'), n = cfg.groups.length, g = null;
-    var fit = function () { plot.style.height = (el.clientWidth < 520 ? hh.phone || 200 : hh.wide || 250) + 'px'; };
+    var plot = el.querySelector('.agc-plot'), read = el.querySelector('.agc-read');
+    var fit = function () { plot.style.height = (el.clientWidth < 520 ? hh.phone || 230 : hh.wide || 260) + 'px'; };
     fit();
     function say(i) {
-      var hl = plot.querySelector('.agc-hl'); cur = i;
-      if (i < 0) { read.textContent = cfg.groups[n - 1].text || ''; if (hl) hl.setAttribute('visibility', 'hidden'); return; }
-      read.textContent = cfg.groups[i].text || '';
-      if (hl && g) { hl.setAttribute('x', f1(g.cx(i) - g.cw / 2)); hl.setAttribute('visibility', 'visible'); }
+      cur = i;
+      var hv = plot.querySelector('.agc-hv'), p = T[i < 0 ? T.length - 1 : i], a = p[1], n = N ? at(N, p[0]) : null;
+      read.textContent = cfg.read(p[0], a, n);
+      if (!hv || !g) return;
+      if (i < 0) { hv.setAttribute('visibility', 'hidden'); return; }
+      var x = g.X(p[0]); hv.setAttribute('visibility', 'visible');
+      var l = hv.querySelector('.hv-l'); l.setAttribute('x1', f1(x)); l.setAttribute('x2', f1(x));
+      var ca = hv.querySelector('.hv-a'); ca.setAttribute('cx', f1(x)); ca.setAttribute('cy', f1(g.Y(a)));
+      var cn = hv.querySelector('.hv-n'); if (cn && n != null) { cn.setAttribute('cx', f1(x)); cn.setAttribute('cy', f1(g.Y(n))); }
     }
     function draw(force) {
       var W = Math.round(plot.clientWidth); if (!W || (W === lastW && !force)) return; lastW = W; fit();
-      var H = W < 520 ? hh.phone || 200 : hh.wide || 250, fs = W < 520 ? 12.5 : 13, st = cfg.story ? cfg.story() : {};
-      if (cfg.headEl) cfg.headEl.textContent = st.head || '';
-      if (cfg.takeEl) cfg.takeEl.textContent = st.take || '';
-      g = barsGeom(cfg, W, H, fs);
-      plot.innerHTML = barsSvg({ groups: cfg.groups, steps: cfg.steps, fmt: cfg.fmt, topUnit: cfg.topUnit, vfmt: cfg.vfmt, names: cfg.names, label: st.summary || cfg.label }, W, H, { fs: fs });
-      plot.setAttribute('aria-label', (st.summary || cfg.label || '') + ' Use the arrow keys to read each month.');
+      var H = W < 520 ? hh.phone || 230 : hh.wide || 260, fs = W < 520 ? 12.5 : 13;
+      g = runGeom(cfg, W, H, fs);
+      plot.innerHTML = runSvg(cfg, W, H, { fs: fs });
+      plot.setAttribute('aria-label', (cfg.label || '') + ' Use the arrow keys to read along the year.');
       say(cur);
     }
-    var at = function (e) { var r = plot.getBoundingClientRect(); return Math.max(0, Math.min(n - 1, Math.floor((e.clientX - r.left - g.pl) / g.cw))); };
-    plot.addEventListener('pointermove', function (e) { if (g && e.clientX - plot.getBoundingClientRect().left >= g.pl) say(at(e)); });
-    plot.addEventListener('pointerdown', function (e) { if (g) say(at(e)); });
+    var near = function (e) {
+      var r = plot.getBoundingClientRect(), x = g.x0 + (e.clientX - r.left - g.pl) / (r.width - g.pl - g.pr) * (g.x1 - g.x0), b = 0;
+      T.forEach(function (p, i) { if (Math.abs(p[0] - x) < Math.abs(T[b][0] - x)) b = i; });
+      return b;
+    };
+    plot.addEventListener('pointermove', function (e) { if (g && e.clientX - plot.getBoundingClientRect().left >= g.pl) say(near(e)); });
+    plot.addEventListener('pointerdown', function (e) { if (g) say(near(e)); });
     plot.addEventListener('pointerleave', function () { if (el.ownerDocument.activeElement !== plot) say(-1); });
     plot.addEventListener('blur', function () { say(-1); });
-    plot.addEventListener('focus', function () { say(cur >= 0 ? cur : n - 1); });
+    plot.addEventListener('focus', function () { say(cur >= 0 ? cur : T.length - 1); });
     plot.addEventListener('keydown', function (e) {
-      var j = e.key === 'ArrowLeft' ? (cur < 0 ? n - 1 : cur) - 1 : e.key === 'ArrowRight' ? (cur < 0 ? n - 1 : cur) + 1 : e.key === 'Home' ? 0 : e.key === 'End' ? n - 1 : null;
+      var c = cur < 0 ? T.length - 1 : cur, j = e.key === 'ArrowLeft' ? c - 1 : e.key === 'ArrowRight' ? c + 1 : e.key === 'Home' ? 0 : e.key === 'End' ? T.length - 1 : null;
       if (e.key === 'Escape') { say(-1); return; }
       if (j == null) return;
-      e.preventDefault(); say(Math.max(0, Math.min(n - 1, j)));
+      e.preventDefault(); say(Math.max(0, Math.min(T.length - 1, j)));
     });
     draw();
     if (root.ResizeObserver) new root.ResizeObserver(function () { draw(); }).observe(plot); else root.addEventListener('resize', function () { draw(); });
-    cfg.svgFor = function (W, H) { return barsSvg(cfg, W, H, { fs: 22, card: true }); };
+    cfg.svgFor = function (W, H) { return runSvg(cfg, W, H, { fs: 22, card: true }); };
     if (cfg.tools && cfg.share) tools(cfg, function () { return { to: cfg.share.date }; });
     return { redraw: function () { draw(true); } };
   }
 
-  K.mountBars = mountBars; K.barsSvg = barsSvg; K.barsGeom = barsGeom;
+  K.mountRun = mountRun; K.runSvg = runSvg; K.runGeom = runGeom; K.runAt = at;
 })(typeof window !== 'undefined' ? window : globalThis);

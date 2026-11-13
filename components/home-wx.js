@@ -103,7 +103,87 @@
     }
     return { rows: rows, window: conus ? win : null, snow: snowAny, mixed: mixed, nightTo: nightTo, conus: conus };
   }
-  if (typeof module === 'object' && module.exports) module.exports = { dayRows: dayRows, srcText: srcText };
+
+  /* ---- this year against normal: the points of the two running-total lines and the words around them ----
+     Pure, so the tests read them. Nothing is worked out beyond a sum or a difference of the file's own figures.
+     x is days elapsed since Jan 1 (Jan 1 morning is 0, the end of Jan 31 is 31). */
+  var MONTH_FULL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function xStart(yr, m) { return doy(new Date(Date.UTC(yr, m, 1))); }
+  function whenOf(yr, x) { var d = new Date(Date.UTC(yr, 0, 1) + (x - 1) * 864e5); return MON[d.getUTCMonth()] + ' ' + d.getUTCDate(); }
+  function madeMonths(rows, gap) {
+    if (!rows.length || !num(gap) || Math.round(Math.abs(gap) * 10) === 0) return [];
+    var s = gap > 0 ? 1 : -1;
+    return rows.filter(function (r) { return num(r.a) && num(r.n) && s * (r.a - r.n) > 0; })
+      .sort(function (p, q) { return s * ((q.a - q.n) - (p.a - p.n)); })
+      .filter(function (r) { return s * (r.a - r.n) >= Math.abs(gap) * 0.15; }).slice(0, 2);
+  }
+  function monthsSentence(made, gap) {
+    if (!made.length) return '';
+    var part = made.reduce(function (t, r) { return t + Math.abs(r.a - r.n); }, 0) / Math.abs(gap);
+    return (gap > 0 ? (part >= 0.5 ? 'Most of it came in ' : 'The biggest months were ') : (part >= 0.5 ? 'Most of the shortfall came in ' : 'The biggest short months were '))
+      + made.map(function (r) { return r.full; }).join(' and ') + '.';
+  }
+  /* the gap in words: "10.3 inches ahead of normal", "332 GDUs behind normal", "right on normal" */
+  function gapWords(gap, unit) {
+    if (!num(gap)) return '';
+    var d = unit === 'in' ? f1(Math.abs(gap), 1) : comma(Math.abs(gap));
+    if (+d === 0) return 'right on normal';
+    return d + (unit === 'in' ? ' inches' : ' GDUs') + (gap > 0 ? ' ahead of' : ' behind') + ' normal';
+  }
+  function insertAt(pts, x, y) {
+    if (pts.some(function (p) { return Math.abs(p[0] - x) < 1e-9; })) return;
+    pts.push([x, y]); pts.sort(function (a, b) { return a[0] - b[0]; });
+  }
+  function rainRun(c, yr, end) {
+    if (!c || !Array.isArray(c.cum) || !c.cum.length || !num(c.total)) return null;
+    var hasN = num(c.usual) && c.usual > 0 && c.cum.every(function (r) { return num(r[2]); });
+    var T = [[0, 0]], N = hasN ? [[0, 0]] : null;
+    c.cum.forEach(function (r) { T.push([r[0] + 1, r[1]]); if (N) N.push([r[0] + 1, r[2]]); });
+    var lx = T[T.length - 1][0];
+    if (num(c.days) && c.days > lx) { T.push([c.days, c.total]); if (N) N.push([c.days, c.usual]); lx = c.days; }
+    var endM = end ? end.getUTCMonth() : 11, rows = [], A = 0, B = 0, okA = true, okB = hasN;
+    (Array.isArray(c.months) ? c.months : []).slice(0, endM + 1).forEach(function (r, m) {
+      var good = Array.isArray(r) && num(r[0]);
+      rows.push({ m: m, lab: MON[m], full: MONTH_FULL[m], a: good ? r[0] : null, n: good && hasN && num(r[1]) ? r[1] : null, x0: xStart(yr, m), x1: Math.min(xStart(yr, m + 1), lx) });
+    });
+    rows.forEach(function (r) { if (num(r.a)) A += r.a; else okA = false; if (num(r.n)) B += r.n; else okB = false; });
+    /* the months' own sums land on the line only when they add to the total */
+    if (rows.length && okA && Math.abs(A - c.total) < 0.06) { var sa = 0; rows.forEach(function (r) { sa += r.a; if (r.x1 < lx) insertAt(T, r.x1, sa); }); } else rows = [];
+    if (N && rows.length && okB && Math.abs(B - c.usual) < 0.06) { var sb = 0; rows.forEach(function (r) { sb += r.n; if (r.x1 < lx) insertAt(N, r.x1, sb); }); }
+    var gap = hasN ? c.total - c.usual : null, made = madeMonths(rows, gap);
+    return { T: T, N: N, total: c.total, usual: hasN ? c.usual : null, gap: gap, rows: rows, made: made, x0: 0, x1: lx,
+      ticks: Array.apply(null, Array(endM + 1)).map(function (_, m) { return { a: xStart(yr, m), b: Math.min(xStart(yr, m + 1), lx), lab: MON[m] }; }) };
+  }
+  /* corn GDUs from May 1: the running total through each month end (the file holds months, not days). One withheld month
+     is filled from the season total less the other months (the days that were reported); two or more are not drawn. */
+  function gduRun(c, yr, end) {
+    var g = c && Array.isArray(c.g) && num(c.g[0]) ? c.g : null;
+    if (!g || !Array.isArray(c.gm) || c.gm.length < 5) return null;
+    var endM = end ? end.getUTCMonth() : 10, normT = num(g[2]) && g[2] > 0 ? g[2] : null, rows = [], lx = end ? doy(end) + 1 : xStart(yr, endM + 1);
+    c.gm.slice(4, endM + 1).forEach(function (r, i) {
+      var m = 4 + i, good = Array.isArray(r) && num(r[0]);
+      rows.push({ m: m, lab: MON[m], full: MONTH_FULL[m], a: good ? r[0] : null, n: good && num(r[1]) ? r[1] : null, gap: !good, x0: Math.max(xStart(yr, m), xStart(yr, 4)), x1: Math.min(xStart(yr, m + 1), lx) });
+    });
+    var gaps = rows.filter(function (r) { return r.gap; });
+    if (!rows.length || gaps.length > 1) return { tooMany: gaps.length > 1 };
+    var sumA = 0, sumN = 0, nOk = true;
+    rows.forEach(function (r) { if (!r.gap) { sumA += r.a; if (num(r.n)) sumN += r.n; else nOk = false; } });
+    if (gaps.length) {
+      gaps[0].a = g[0] - sumA; gaps[0].filled = true;
+      if (gaps[0].a < 0) return { tooMany: true };
+      if (normT != null && nOk) gaps[0].n = normT - sumN; else nOk = false;
+    }
+    var hasN = normT != null && nOk && rows.every(function (r) { return num(r.n); });
+    var A = 0, B = 0; rows.forEach(function (r) { A += r.a; if (hasN) B += r.n; });
+    if (Math.abs(A - g[0]) > 2 || (hasN && Math.abs(B - normT) > 2)) return null;
+    var x0 = xStart(yr, 4), T = [[x0, 0]], N = hasN ? [[x0, 0]] : null, a = 0, b = 0;
+    rows.forEach(function (r) { a += r.a; T.push([r.x1, a]); if (N) { b += r.n; N.push([r.x1, b]); } });
+    var gap = hasN ? g[0] - normT : null, fz = c.fr && Array.isArray(c.fr.f28) && num(c.fr.f28[0]) && c.fr.f28[0] >= 101 && c.fr.f28[0] <= 1231 ? new Date(Date.UTC(yr, Math.floor(c.fr.f28[0] / 100) - 1, c.fr.f28[0] % 100)) : null;
+    return { T: T, N: N, total: g[0], usual: hasN ? normT : null, gap: gap, rows: rows, made: madeMonths(rows, gap), x0: x0, x1: lx,
+      dotted: gaps.map(function (r) { return [r.x0, r.x1]; }), freeze: fz && end && fz <= end ? { x: doy(fz) + 1, text: 'First 28°F freeze, ' + MON[fz.getUTCMonth()] + ' ' + fz.getUTCDate() } : null,
+      ticks: rows.map(function (r) { return { a: r.x0, b: r.x1, lab: r.lab }; }) };
+  }
+  if (typeof module === 'object' && module.exports) module.exports = { dayRows: dayRows, srcText: srcText, rainRun: rainRun, gduRun: gduRun, madeMonths: madeMonths, monthsSentence: monthsSentence, gapWords: gapWords, whenOf: whenOf };
   if (!doc || !doc.getElementById('hp-wxb')) return;
 
   function ctDay(t) {
@@ -340,12 +420,6 @@
   function bandFailed(t) { bandMsg(t); }
   function unknownBand(z) { bandMsg('ZIP ' + z + ' is not in our ZIP table. Check the five digits at the top of the page for your forecast, radar, rain and GDUs.', 'ZIP ' + z + ' is not in our ZIP table.'); }
 
-  /* the key above a chart: this year's gold, the normal's slate, and the hatched n/a only when a month is withheld */
-  function keyFor(id, yr, normText, gaps, part) {
-    var k = $(id); if (!k) return;
-    k.innerHTML = '<span><i></i>' + esc(yr) + '</span>' + (normText ? '<span><i class="n"></i>' + esc(normText) + '</span>' : '')
-      + (part ? '<span><i class="p"></i>' + esc(part) + ' so far</span>' : '') + (gaps ? '<span><i class="x"></i>n/a: too few days reported</span>' : '');
-  }
   /* the station line, one form on both charts: "Station: town, ST, 4 mi NE." (the file words it "4 miles northeast of Town" or "Town, 2.7 mi NE") */
   var DIRS = { north: 'N', south: 'S', east: 'E', west: 'W', northeast: 'NE', northwest: 'NW', southeast: 'SE', southwest: 'SW' };
   function stationText(name, st) {
@@ -356,115 +430,76 @@
     else t = name + ', ' + st;
     return 'Station: ' + t + '. ';
   }
-  function mountChart(boxId, G, o) {
+  /* the marks' words on the line: "Aug: 13.3 in, normal 4.1" */
+  function markText(r, fmt, unit) { return r.lab + ': ' + fmt(r.a) + unit + ', normal ' + fmt(r.n); }
+  function mountRunChart(boxId, run, o) {
     var box = $(boxId), x = box && box.querySelector('.hp-bx'), tl = box && box.parentNode.querySelector('.hp-tools');
-    if (!x || !root.AgChart || !root.AgChart.mountBars) { msgIn(boxId, 'The chart did not load. Try again in a few minutes.'); return; }
+    if (!x || !root.AgChart || !root.AgChart.mountRun) { msgIn(boxId, 'The chart did not load. Try again in a few minutes.'); return; }
     var m = box.querySelector('.hp-msg'); if (m) m.textContent = '';
     box.classList.remove('empty'); box.parentNode.classList.remove('nochart');
     if (tl) tl.innerHTML = '';
-    var iso = o.end ? o.end.toISOString().slice(0, 10) : ctDay().toISOString().slice(0, 10);
-    root.AgChart.mountBars(x, { groups: G, steps: o.steps, fmt: o.fmt, topUnit: o.topUnit, vfmt: o.vfmt, names: o.names, label: o.label,
+    var yr = o.yr, iso = o.end ? o.end.toISOString().slice(0, 10) : ctDay().toISOString().slice(0, 10);
+    var gw = run.N ? gapWords(run.gap, o.unit) : '';
+    root.AgChart.mountRun(x, { this: run.T, norm: run.N, dotted: run.dotted, x0: run.x0, x1: run.x1, ticks: run.ticks, freeze: run.freeze,
+      marks: run.made.map(function (r) { return { a: r.x0, b: r.x1, text: markText(r, o.fmt, o.unit === 'in' ? ' in' : '') }; }),
+      fmt: o.axis, topUnit: o.topUnit, vfmt: function (v) { return o.fmt(v) + (o.unit === 'in' ? ' in' : ' GDUs'); }, steps: o.steps, names: { a: String(yr), n: 'Normal' }, gapWords: gw, label: o.label,
+      read: function (xx, a, n) { return whenOf(yr, xx) + ': ' + o.fmt(a) + (o.unit === 'in' ? ' in' : ' GDUs') + ' so far' + (n != null ? '; normal ' + o.fmt(n) + (o.unit === 'in' ? ' in' : ' GDUs') + '; ' + gapWords(a - n, o.unit) : ''); },
+      height: { phone: 250, wide: 250 }, tools: tl,
       story: function () { return { head: o.cardHead, take: o.sub, summary: o.label }; },
-      tools: tl, height: { phone: 230, wide: 230 },
-      share: { url: 'https://agsist.com/?utm_source=share&utm_medium=picture&utm_campaign=home-' + o.file, title: o.cardHead, file: 'agsist-' + o.file + '-' + iso + '.png',
-        kicker: o.kicker, source: o.source, date: iso } });
+      share: { url: 'https://agsist.com/?utm_source=share&utm_medium=picture&utm_campaign=home-' + o.file, title: o.cardHead, file: 'agsist-' + o.file + '-' + iso + '.png', kicker: o.kicker, source: o.source, date: iso } });
   }
-  function monthRows(arr, from, yr, end, hasN, ix) {
-    var rows = [];
-    for (var i = from; i < arr.length; i++) {
-      var r = arr[i], ok = Array.isArray(r) && num(r[0]);
-      rows.push({ lab: MON[i], a: ok ? r[0] : null, n: hasN && ok && num(r[1]) ? r[1] : null, gap: !ok, rep: ok ? r[2] : null, so: ok ? r[3] : null,
-        part: !!end && i === end.getUTCMonth() && end.getUTCDate() < new Date(Date.UTC(yr, i + 1, 0)).getUTCDate() });
-    }
-    return rows;
-  }
-  function readoutFor(G, fmt, unit, pctMin) {
-    G.forEach(function (r) {
-      r.text = r.gap ? r.lab + ': not enough days reported'
-        : r.lab + (r.part ? ' so far' : '') + ': ' + fmt(r.a) + unit + (num(r.n) ? '; normal ' + fmt(r.n) + unit + (r.n >= pctMin ? ' (' + Math.round(r.a / r.n * 100) + '%)' : '') : '')
-          + (num(r.rep) && num(r.so) && r.rep < r.so ? '; ' + r.rep + ' of ' + r.so + ' days reported' : '');
-    });
-  }
+  function townOf(p) { return p.town || countyName(p.county, p.state); }
   function drawRain(R, p, cf, wst) {
     var c = cf && cf.c;
-    if (!c || !Array.isArray(c.cum) || !c.cum.length || !num(c.total)) { msgIn('hp-rain-ch', 'No rain record for this county yet.'); txt('hp-rain-h', 'Rain this year'); html('hp-rain-pct', '&nbsp;'); return; }
-    var yr = R.year || (utc(c.as_of) || ctDay()).getUTCFullYear(), end = utc(c.as_of || R.edate);
-    /* the normal only where the file has one for every point: 18 of 93 Illinois counties carry usual null and a null
-       normal on every day, which drew "normal 0.0 in" */
-    var b = c.cum.map(function (r) { return r[2]; });
-    var hasN = num(c.usual) && c.usual > 0 && b.every(num);
+    var yr = R.year || (c && utc(c.as_of) || ctDay()).getUTCFullYear(), end = c && utc(c.as_of || R.edate), run = rainRun(c, yr, end);
+    if (!run) { msgIn('hp-rain-ch', 'No rain record for this county yet.'); txt('hp-rain-h', 'Rain this year'); txt('hp-rain-lead', ''); return; }
+    var miss = num(c.missing) && c.missing > 0 ? c.missing : 0, missText = miss ? miss + ' day' + (miss === 1 ? '' : 's') + ' not reported' : '';
+    var place = (cf.near ? 'Near ' : '') + countyName(p.county, p.state) + ', ' + p.state, when = end ? ' to ' + md(end) : '';
+    var hasN = run.N != null, gw = hasN ? gapWords(run.gap, 'in') : '';
+    txt('hp-rain-h', hasN ? (run.gap === 0 || +f1(Math.abs(run.gap)) === 0 ? townOf(p) + ' is right on normal for rain this year' : townOf(p) + ' is ' + f1(Math.abs(run.gap)) + ' inches of rain ' + (run.gap > 0 ? 'ahead of' : 'behind') + ' normal this year') : 'Rain this year in ' + townOf(p) + ': ' + f1(c.total) + ' in' + when);
     /* the file's own percent, never one worked out here: the builder withholds it on a normal under 1.00 in */
-    var pct = hasN && num(c.pct) ? c.pct : null;
-    /* days the gauge did not report are not rain: say how many */
-    var miss = num(c.missing) && c.missing > 0 ? c.missing : 0;
-    var missText = miss ? miss + ' day' + (miss === 1 ? '' : 's') + ' not reported' : '';
-    /* the picture has no big line under it, so its heading carries the percent too; on the page the percent is said once, in the big line */
-    var place = (cf.near ? 'Near ' : '') + countyName(p.county, p.state) + ', ' + p.state;
-    var head = place + ': rain this year ' + f1(c.total) + ' in' + (num(pct) ? ', ' + pct + '% of normal' : '') + (end ? ' to ' + md(end) : '') + (missText ? '; ' + missText : '');
-    txt('hp-rain-h', 'Rain this year: ' + f1(c.total) + ' in' + (end ? ' to ' + md(end) : ''));
-    var normKey = hasN ? (miss ? 'Normal for the days reported, 1991 to 2020' : 'Normal 1991 to 2020') : '';
-    var onDays = miss && num(c.reported) ? ' on the ' + c.reported + ' days reported' : '';
-    /* rain's percent in a neutral colour: more rain is not good or bad by itself */
-    html('hp-rain-pct', num(pct) ? '<b>' + pct + '%</b> of normal (' + f1(c.usual) + ' in' + onDays + ')'
-      : hasN ? 'Normal ' + f1(c.usual, 2) + ' in' + onDays + ', too small for a percent.'
-      : 'No normal on file for this gauge.');
-    var G = monthRows(Array.isArray(c.months) ? c.months : [], 0, yr, end, hasN);
-    if (!G.length) { msgIn('hp-rain-ch', 'No month totals for this county yet.'); return; }
-    var gaps = G.some(function (r) { return r.gap; });
-    keyFor('hp-rain-key', yr, normKey, gaps, G[G.length - 1].part ? G[G.length - 1].lab : '');
-    readoutFor(G, function (v) { return f1(v, 2); }, ' in', 1);
+    var pct = hasN && num(c.pct) ? c.pct : null, sent = monthsSentence(run.made, run.gap);
+    txt('hp-rain-lead', hasN ? (num(pct) ? pct + '% of normal. ' : '') + sent + (sent || num(pct) ? '' : 'Normal for the same days is ' + f1(c.usual, 1) + ' in.') : 'No normal on file for this gauge.');
     var st = c.station || {}, net = st.net === 'cocorahs' ? ' (CoCoRaHS)' : st.net ? ' (NOAA co-op)' : '', gauge = stationText(st.name, wst || p.state).replace(/\. $/, net + '. ').replace(/^Station:/, 'Gauge:');
     var borrowed = cf.near ? 'No station in ' + countyName(p.county, p.state) + '; nearest county: ' + cf.nearName + '. ' : '';
-    var label = 'Rain by month, ' + yr + (hasN ? ', against the 1991 to 2020 normal for the same days' : '') + '. Since January 1: ' + f1(c.total, num(pct) ? 1 : 2) + ' inches'
-      + (num(pct) ? ', ' + pct + ' percent of normal.' : hasN ? '; normal ' + f1(c.usual, 2) + ' inches, too small for a percent.' : '; no normal on file for this gauge.');
-    mountChart('hp-rain-ch', G, { steps: [0.5, 1, 2, 5, 10], fmt: function (v) { return String(v); }, topUnit: ' in', vfmt: function (v) { return f1(v, 2) + ' in'; },
-      names: { a: String(yr), n: hasN ? 'Normal 1991 to 2020' : '' }, label: label, end: end, file: 'rain',
-      cardHead: head,
-      sub: String(yr) + ' by month (gold)' + (hasN ? ' against the 1991 to 2020 normal for the same days (slate)' : ', no normal on file for this gauge') + ', inches',
+    var onDays = miss ? ' for the days reported' : '', normNote = hasN ? 'Normal: the 1991 to 2020 average' + onDays + '; the years behind it are not on file here. ' : '';
+    var label = 'Running total of rain this year, Jan 1' + when + ': ' + f1(c.total) + ' inches' + (hasN ? ' against a normal of ' + f1(c.usual) + ', ' + gw + '.' : '; no normal on file for this gauge.') + (sent ? ' ' + sent : '');
+    mountRunChart('hp-rain-ch', run, { yr: yr, unit: 'in', end: end, file: 'rain', steps: [0.5, 1, 2, 5, 10], axis: function (v) { return String(v); }, topUnit: ' in', fmt: function (v) { return f1(v, 1); }, label: label,
+      cardHead: place + ': ' + (hasN ? 'rain is ' + gw + ' this year, ' + f1(c.total) + ' in against ' + f1(c.usual) + ' in' : 'rain this year ' + f1(c.total) + ' in') + when + (missText ? '; ' + missText : ''),
+      sub: 'Running total since Jan 1: ' + yr + ' (dark)' + (hasN ? ', normal 1991 to 2020 (grey)' : ', no normal on file') + (run.made.length ? ', months that made the year (gold)' : ''),
       kicker: cf.near ? 'Rain near ' + countyName(p.county, p.state) + ', ' + p.state : 'Rain, ' + countyName(p.county, p.state) + ', ' + p.state,
-      source: borrowed + gauge + 'NOAA daily records via RCC-ACIS, Jan 1 to ' + (end ? md(end) : '') + '.' });
-    txt('hp-rain-src', 'Jan 1 to ' + (end ? md(end) : '') + '. ' + (missText ? missText[0].toUpperCase() + missText.slice(1) + '. ' : '') + borrowed + gauge + 'NOAA daily records via RCC-ACIS.');
+      source: borrowed + gauge + 'NOAA daily records via RCC-ACIS, Jan 1' + when + '.' });
+    txt('hp-rain-src', 'Jan 1' + when + '. ' + (missText ? missText[0].toUpperCase() + missText.slice(1) + '. ' : '') + normNote + borrowed + gauge + 'NOAA daily records via RCC-ACIS.');
   }
   /* Corn GDUs since May 1. The headline is the file's season figure "g" ([total, days missing, normal over the same
-     reported days, years, pct]; "m" when withheld for missing days). The bars are the monthly totals "gm" ([total,
-     normal or null, days reported, days so far]; null when the month is withheld: drawn as n/a, never a zero). The end
-     date is the county's own (c.a), not the state file's. */
+     reported days, years, pct]); the line runs through the monthly totals "gm" ([total, normal or null, days
+     reported, days so far]; null when the month is withheld). The end date is the county's own (c.a). */
   function drawGdu(W, p, fips, cf, wst) {
     var borrowed = cf && cf.near ? 'No station in ' + countyName(p.county, p.state) + '; nearest county: ' + cf.nearName + '. ' : '';
     var c = W && W.counties && W.counties[fips], yr = (W && W.year) || ctDay().getUTCFullYear();
     var today = ctDay(), early = today < new Date(Date.UTC(today.getUTCFullYear(), 4, 15));
-    var g = c && Array.isArray(c.g) && num(c.g[0]) ? c.g : null;
-    if (!c || !Array.isArray(c.gm) || c.gm.length < 5 || !g) {
-      msgIn('hp-gdu-ch', early && (!c || !Array.isArray(c.gm) || c.gm.length < 5) ? 'The corn GDU season starts May 1.' : c ? 'Not enough days reported at this station to count GDUs.' : 'No temperature station on file for ' + countyName(p.county, p.state) + (cf && cf.near ? ' or the nearest county.' : '.'));
-      html('hp-gdu-pct', '&nbsp;'); return;
+    var end = c && (mmddDate(c.a, yr) || utc(W.edate)), run = gduRun(c, yr, end);
+    if (!run || run.tooMany) {
+      msgIn('hp-gdu-ch', run && run.tooMany ? 'Too many months have too few days reported at this station to draw the season.' : early && (!c || !Array.isArray(c.gm) || c.gm.length < 5) ? 'The corn GDU season starts May 1.' : c ? 'Not enough days reported at this station to count GDUs.' : 'No temperature station on file for ' + countyName(p.county, p.state) + (cf && cf.near ? ' or the nearest county.' : '.'));
+      txt('hp-gdu-lead', ''); return;
     }
-    var end = mmddDate(c.a, yr) || utc(W.edate), gaps = [];
-    var G = monthRows(c.gm, 4, yr, end, true);
-    G.forEach(function (x) { if (x.gap) gaps.push(x.lab); });
-    if (!G.some(function (x) { return !x.gap; })) { msgIn('hp-gdu-ch', 'Not enough days reported at this station to count GDUs.'); return; }
-    var hasNM = G.some(function (x) { return num(x.n); });
+    var g = c.g, gmiss = num(g[1]) && g[1] > 0 ? g[1] : 0, gmissText = gmiss ? gmiss + ' day' + (gmiss === 1 ? '' : 's') + ' not reported' : '';
+    var hasN = run.N != null, gw = hasN ? gapWords(run.gap, 'gdu') : '', place = (cf && cf.near ? 'Near ' : '') + countyName(p.county, p.state) + ', ' + p.state, when = end ? ' to ' + md(end) : '';
+    txt('hp-gdu-h', hasN ? (gw === 'right on normal' ? townOf(p) + ' is right on normal for corn GDUs this year' : townOf(p) + ' is ' + gw.replace(' GDUs', ' corn GDUs') + ' this year') : 'Corn GDUs since May 1 in ' + townOf(p) + ': ' + comma(g[0]));
     /* the file's own percent, never one worked out here: it is withheld on a small normal or missing days */
-    var now = g[0], norm = num(g[2]) && g[2] > 0 ? g[2] : null, gp = norm && num(g[4]) ? g[4] : null;
-    var gmiss = num(g[1]) && g[1] > 0 ? g[1] : 0, gmissText = gmiss ? gmiss + ' day' + (gmiss === 1 ? '' : 's') + ' not reported' : '';
-    var place = (cf && cf.near ? 'Near ' : '') + countyName(p.county, p.state) + ', ' + p.state;
-    var head = place + ': ' + comma(now) + ' corn GDUs since May 1' + (norm ? ' (' + comma(Math.abs(now - norm)) + (now >= norm ? ' ahead of' : ' behind') + ' normal)' : '') + (gmissText ? '; ' + gmissText : '');
-    txt('hp-gdu-h', 'Corn GDUs since May 1: ' + comma(now));
-    var gap = norm ? ', ' + comma(Math.abs(now - norm)) + (now >= norm ? ' ahead' : ' behind') : '';
-    /* no big percent on a season normal under 100 GDUs (a few May days make a wild percent) or when the file withholds it */
-    html('hp-gdu-pct', norm && norm >= 100 && num(gp) ? '<b class="' + (gp >= 100 ? 'up' : 'dn') + '">' + gp + '%</b> of normal (' + comma(norm) + ')' + gap : norm ? 'Normal ' + comma(norm) + ' so far' + gap + '.' : 'No normal on file for this station.');
-    keyFor('hp-gdu-key', yr, hasNM ? (gmiss ? 'Normal for the days reported, 1991 to 2020' : 'Normal 1991 to 2020') : '', gaps.length > 0, G[G.length - 1].part ? G[G.length - 1].lab : '');
-    var fz = c.fr && Array.isArray(c.fr.f28) ? mmddDate(c.fr.f28[0], yr) : null;
-    var tail = (gaps.length ? ' ' + gaps.join(', ') + (gaps.length === 1 ? ' is' : ' are') + ' left off the chart: too few days reported. The season total counts the ' + (gaps.length === 1 ? gaps[0] + ' days' : 'days') + ' that were reported' + (gmiss ? '; ' + gmiss + ' day' + (gmiss === 1 ? ' is' : 's are') + ' missing' : '') + '.' : '')
-      + (fz && (!end || fz <= end) ? ' First 28°F freeze: ' + md(fz) + (end && fz < end ? '; the count runs past it' : '') + '.' : '');
-    readoutFor(G, comma, ' GDUs', 50);
+    var gp = hasN && num(g[4]) && run.usual >= 100 ? g[4] : null, sent = monthsSentence(run.made, run.gap);
+    txt('hp-gdu-lead', hasN ? (num(gp) ? gp + '% of normal. ' : '') + sent : 'No normal on file for this station.');
     var s = c.s && c.s[0] ? stationText(c.s[0], wst || p.state) : 'Station name not on file. ';
-    var label = 'Corn growing degree units by month since May 1, ' + yr + ': ' + comma(now) + (norm && norm >= 100 && num(gp) ? ', ' + gp + ' percent of normal' : norm ? '; normal ' + comma(norm) + ' so far' : '; no 1991 to 2020 normal on file for this station') + '.';
-    mountChart('hp-gdu-ch', G, { steps: [50, 100, 200, 250, 500], fmt: comma, topUnit: ' GDUs', vfmt: function (v) { return comma(v) + ' GDUs'; }, names: { a: String(yr), n: hasNM ? 'Normal 1991 to 2020' : '' }, label: label, end: end, file: 'gdu',
-      cardHead: head,
-      sub: String(yr) + ' by month (gold)' + (hasNM ? ' against the 1991 to 2020 normal for the same days (slate)' : ', no normal on file for this station') + ', corn GDUs, 86/50 method',
+    var gaps = run.rows.filter(function (r) { return r.gap; }), fz = run.freeze;
+    var tail = (gaps.length ? ' ' + gaps[0].lab + ' is drawn dotted: too few days reported, so its figure is the season total less the other months.' : '')
+      + (fz ? ' ' + fz.text.replace('First 28°F freeze, ', 'First 28°F freeze: ') + '; the count runs past it.' : '');
+    var label = 'Running total of corn growing degree units since May 1, ' + yr + when + ': ' + comma(g[0]) + (hasN ? ' against a normal of ' + comma(run.usual) + ', ' + gw + '.' : '; no 1991 to 2020 normal on file for this station.') + (sent ? ' ' + sent : '');
+    mountRunChart('hp-gdu-ch', run, { yr: yr, unit: 'gdu', end: end, file: 'gdu', steps: [100, 200, 250, 500, 1000], axis: function (v) { return comma(v); }, topUnit: ' GDUs', fmt: comma, label: label,
+      cardHead: place + ': ' + (hasN ? 'corn GDUs are ' + gw.replace(' GDUs', '') + ' this year, ' + comma(g[0]) + ' against ' + comma(run.usual) : comma(g[0]) + ' corn GDUs since May 1') + (gmissText ? '; ' + gmissText : ''),
+      sub: 'Running total since May 1: ' + yr + ' (dark)' + (hasN ? ', normal 1991 to 2020 (grey)' : ', no normal on file') + (run.made.length ? ', months that made it (gold)' : ''),
       kicker: cf && cf.near ? 'Corn GDUs near ' + countyName(p.county, p.state) + ', ' + p.state : 'Corn GDUs, ' + countyName(p.county, p.state) + ', ' + p.state,
-      source: borrowed + s + (fz && end && fz < end ? 'First 28°F freeze ' + md(fz) + '; the count runs past it. ' : '') + 'NOAA daily records via RCC-ACIS, May 1 to ' + (end ? md(end) : '') + ', by month.' });
-    txt('hp-gdu-src', 'Counted May 1 through ' + (end ? md(end) : '') + ', 86/50 method, by month.' + (gmissText && !gaps.length ? ' ' + gmissText[0].toUpperCase() + gmissText.slice(1) + '.' : '') + tail + ' ' + borrowed + s + 'NOAA daily records via RCC-ACIS.');
+      source: borrowed + s + (fz ? fz.text.replace('First 28°F freeze, ', 'First 28°F freeze ') + '; the count runs past it. ' : '') + 'NOAA daily records via RCC-ACIS, May 1' + when + ', by month.' });
+    txt('hp-gdu-src', 'Counted May 1' + when + ', 86/50 method, month by month.' + (gmissText && !gaps.length ? ' ' + gmissText[0].toUpperCase() + gmissText.slice(1) + '.' : '') + tail + (hasN ? ' Normal: the 1991 to 2020 average' + (gmiss ? ' for the days reported' : '') + '; the years behind it are not on file here.' : '') + ' ' + borrowed + s + 'NOAA daily records via RCC-ACIS.');
   }
 
   /* ---- place and start ---- */
