@@ -1,5 +1,5 @@
 {
- "_about": "Short dated answers to the questions farmers ask search assistants, one block per topic, baked into the page that owns it by scripts/build_ai_answers.py (arc-plc.html by scripts/build_arc_plc.py). Plain text only; every number names its primary source in sources; read = the date we read that copy. The block prints the oldest read date as 'Last checked'. review_by = when the answer goes stale (next report, vote or deadline); the daily site check lists answers past it. A withheld answer renders nothing until its sources are read. Queries from Bing AI Performance, Oct 28, 2026.",
+ "_about": "Short dated answers to the questions farmers ask search assistants, one block per topic, baked into the page that owns it by scripts/build_ai_answers.py (arc-plc.html by scripts/build_arc_plc.py). Plain text only; every number names its primary source in sources; read = the date we read that copy. The block prints the oldest read date as 'Last checked'. review_by = when the answer goes stale (next report, vote or deadline); the daily site check lists answers past it. A withheld answer renders nothing until its sources are read. Queries from Bing AI Performance, Oct 28, 2026. price_answers: the dated 'price today' answer for the price pages; its text is written from data/prices.json by build_ai_answers.price_blocks, never typed, and a crop with a stale quote is left out.",
  "answers": [
   {
    "id": "farm-bill-status",
@@ -12,23 +12,24 @@
    ],
    "question": "Where does the 2026 farm bill stand?",
    "status": "live",
-   "review_by": "2026-11-09",
+   "review_by": "2026-12-11",
    "text": [
     "It has not passed.",
     "The House passed H.R. 7567, the Farm, Food, and National Security Act of 2026, 224 to 200 on April 30, 2026, and the Senate received it May 19.",
-    "The Senate Agriculture Committee reported its own bill, S. 5526, the Agricultural Act of 2026, on September 24, 2026; in the Congress bill record of October 28, its last action is still a place on the Senate calendar, with no floor vote.",
+    "The Senate Agriculture Committee held its business meeting on its own bill, S. 5526, the Agricultural Act of 2026, on September 16; the bill was reported to the Senate, read twice and placed on the legislative calendar, Calendar No. 683, on September 24, 2026.",
+    "Being on the calendar does not schedule a vote. We found no next step on either committee's schedule or in Senate floor information as of November 12.",
     "Whether the two become one law, and when, is not decided."
    ],
    "sources": [
     {
-     "name": "H.R. 7567 bill status, all actions (GPO)",
-     "url": "https://www.govinfo.gov/bulkdata/BILLSTATUS/119/hr/BILLSTATUS-119hr7567.xml",
-     "read": "2026-10-28"
+     "name": "S. 5526 all actions (Congress.gov, checked against GPO records and the Senate Agriculture Committee)",
+     "url": "https://www.congress.gov/bill/119th-congress/senate-bill/5526",
+     "read": "2026-11-12"
     },
     {
-     "name": "S. 5526 bill status, all actions (GPO)",
-     "url": "https://www.govinfo.gov/bulkdata/BILLSTATUS/119/s/BILLSTATUS-119s5526.xml",
-     "read": "2026-10-28"
+     "name": "H.R. 7567 all actions (Congress.gov)",
+     "url": "https://www.congress.gov/bill/119th-congress/house-bill/7567",
+     "read": "2026-11-12"
     }
    ]
   },
@@ -41,7 +42,7 @@
    ],
    "question": "What did the latest USDA crop report say, and when is the next one?",
    "status": "live",
-   "review_by": "2026-11-10",
+   "review_by": "2026-12-10",
    "sources": [
     {
      "name": "NASS 2026 release calendar",
@@ -60,18 +61,18 @@
    ],
    "question": "How are tariffs hitting farmers' sales?",
    "status": "live",
-   "review_by": "2026-11-10",
+   "review_by": "2026-12-10",
    "text": [
-    "USDA's October 9 WASDE projects 2026/27 U.S. soybean exports at 1.695 billion bushels, up from 1.515 billion in 2025/26 but still below the 1.892 billion of 2024/25.",
-    "Corn exports are projected at 3.300 billion bushels, after 3.429 billion in 2025/26.",
-    "USDA puts the 2026/27 season-average farm price at $12.00 for soybeans and $4.70 for corn.",
+    "USDA's November 10 WASDE projects 2026/27 U.S. soybean exports at 1.720 billion bushels, up from 1.515 billion in 2025/26 but still below the 1.892 billion of 2024/25; that is 25 million more than the October forecast.",
+    "Corn exports are projected at 3.275 billion bushels, 25 million less than in October and below the 3.429 billion of 2025/26.",
+    "USDA puts the 2026/27 season-average farm price at $12.10 for soybeans and $4.60 for corn.",
     "The tariff rates in force and USDA's weekly count of soybeans sold to China are in the sections below; I have not seen a USDA figure for what tariffs cost a farm, so this page does not print one."
    ],
    "sources": [
     {
-     "name": "USDA WASDE-676, Oct 9, 2026",
-     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf",
-     "read": "2026-10-28"
+     "name": "USDA WASDE-677, Nov 10, 2026",
+     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1126.pdf",
+     "read": "2026-11-13"
     }
    ]
   },
@@ -123,11 +124,11 @@
    ],
    "question": "Where do cattle markets stand?",
    "status": "live",
-   "review_by": "2026-11-10",
+   "review_by": "2026-12-10",
    "text": [
     "Today's futures prices are at the top of this page; behind them is a small herd.",
     "NASS counted 94.2 million cattle and calves on U.S. farms on July 1, 2026, with 28.5 million beef cows, down 1% from a year earlier, and a 2026 calf crop of 32.5 million head, down 2%.",
-    "USDA's October 9 WASDE left its cattle price forecasts unchanged and puts the 2026 average 5-area fed steer price at $237.56 per cwt, against $224.37 in 2025; that is a forecast."
+    "USDA's November 10 WASDE lowered its cattle price forecast for 2026, on a readily available supply of market-ready cattle this fall, and puts the 2026 average 5-area fed steer price at $236.31 per cwt (October forecast: $237.56), against $224.37 in 2025; that is a forecast."
    ],
    "sources": [
     {
@@ -136,9 +137,9 @@
      "read": "2026-10-18"
     },
     {
-     "name": "USDA WASDE-676, Oct 9, 2026",
-     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf",
-     "read": "2026-10-28"
+     "name": "USDA WASDE-677, Nov 10, 2026",
+     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1126.pdf",
+     "read": "2026-11-13"
     }
    ]
   },
@@ -150,17 +151,17 @@
    ],
    "question": "Is there a beef shortage?",
    "status": "live",
-   "review_by": "2026-11-10",
+   "review_by": "2026-12-10",
    "text": [
     "There is less U.S. beef, and imports are filling part of the gap.",
-    "USDA's October 9 WASDE forecasts 2026 U.S. beef production at 24.87 billion pounds, down 4.6% from 26.07 billion in 2025, and cut it from September on fewer steers and heifers going to slaughter and lighter carcasses.",
-    "Beef imports are forecast at 6.35 billion pounds, up 17.8% from 5.39 billion, and beef use per person at 58.9 pounds, against 59.2 in 2025."
+    "USDA's November 10 WASDE forecasts 2026 U.S. beef production at 24.83 billion pounds, down 4.8% from 26.07 billion in 2025, and cut it from October on a slower pace of fed cattle marketings and lighter dressed weights.",
+    "Beef imports are forecast at 6.44 billion pounds, up 19.5% from 5.39 billion, and beef use per person at 59.1 pounds, against 59.2 in 2025."
    ],
    "sources": [
     {
-     "name": "USDA WASDE-676, Oct 9, 2026 (U.S. meats supply and use)",
-     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf",
-     "read": "2026-10-28"
+     "name": "USDA WASDE-677, Nov 10, 2026 (U.S. meats supply and use)",
+     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1126.pdf",
+     "read": "2026-11-13"
     }
    ]
   },
@@ -277,6 +278,77 @@
    "review_by": "2027-01-31",
    "text": [],
    "sources": []
+  }
+ ],
+ "price_answers": [
+  {
+   "id": "price-corn",
+   "page": "corn-futures-prices.html",
+   "crops": [
+    "corn"
+   ],
+   "question": "What is the corn price today?",
+   "queries": [
+    "corn prices today",
+    "corn price today",
+    "corn futures price"
+   ]
+  },
+  {
+   "id": "price-beans",
+   "page": "soybean-futures-prices.html",
+   "crops": [
+    "beans"
+   ],
+   "question": "What is the soybean price today?",
+   "queries": [
+    "soybean price today",
+    "soybean futures price",
+    "cbot soybeans"
+   ]
+  },
+  {
+   "id": "price-wheat",
+   "page": "wheat-futures-prices.html",
+   "crops": [
+    "wheat"
+   ],
+   "question": "What is the wheat price today?",
+   "queries": [
+    "wheat prices today",
+    "wheat futures price",
+    "chicago wheat price"
+   ]
+  },
+  {
+   "id": "price-markets",
+   "page": "markets.html",
+   "crops": [
+    "corn",
+    "beans",
+    "wheat"
+   ],
+   "question": "What are corn, soybean and wheat prices today?",
+   "queries": [
+    "grain prices today",
+    "commodity prices today",
+    "cbot grain prices"
+   ]
+  },
+  {
+   "id": "price-home",
+   "page": "index.html",
+   "crops": [
+    "corn",
+    "beans",
+    "wheat"
+   ],
+   "question": "What are grain prices today?",
+   "queries": [
+    "corn prices today",
+    "grain prices today",
+    "farm grain prices today"
+   ]
   }
  ]
 }

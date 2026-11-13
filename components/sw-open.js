@@ -1,4 +1,4 @@
-/* The open sitewide sponsor strip sells itself (Sig, Nov 13, 2026). components/loader.js loads this only when the
+/* The open sitewide sponsor strip sells itself (decided Nov 13, 2026). components/loader.js loads this only when the
  * sitewide spot is unsold, into the line it already holds the room for (styles.css --sw-h), so nothing moves.
  * It says what is for sale and prints the week's proof numbers from data/sponsor-spots.json (scripts/bake_audience.py:
  * engaged visits and Bing AI answer citations over 30 days, each source's own dates in the title) and one button to

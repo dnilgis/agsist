@@ -146,8 +146,8 @@
   function num(n) { return Number(n).toLocaleString('en-US'); }
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   function dayTxt(s) { var p = String(s || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) : ''; }
-  /* The open state spot sells itself (Sig, Nov 13): what the buyer gets (the card on that state's pages and for its
-     readers), that STATE's own engaged visits over the week's window (data/sponsor-spots.json proof.states) with its
+  /* The open state spot sells itself (decided Nov 13): what the buyer gets (the card on that state's pages and for its
+     readers), that STATE's own engaged visits over GA4's own window (data/sponsor-spots.json proof.states) with its
      dates, and the sitewide totals labelled as all of AGSIST (Bing named on its figure). A state with no figure of its
      own shows none; under SMALL visits the sitewide totals come first and the state's own figure follows, named as the
      state's. One button to /sponsor with the state picked. No price. */

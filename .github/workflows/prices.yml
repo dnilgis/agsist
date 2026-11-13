@@ -17,6 +17,7 @@ concurrency:
 jobs:
   hours:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions: {}
     outputs:
       open: ${{ steps.h.outputs.open }}

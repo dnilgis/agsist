@@ -899,29 +899,6 @@
     try { if (window.AgQR) q = window.AgQR.svg(url, 'QR code for this policy on agsist.com'); } catch (e) { q = ''; }
     $('prf-pq').innerHTML = q + '<p class="prf-pq-t"><b>Scan to open this policy live.</b> Or go to agsist.com/prf and look up grid ' + S.grid + '.</p>';
   }
-  function download(name, text) {
-    var blob = new Blob([text], { type: 'text/csv' });
-    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
-    document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 500);
-  }
-  function csvHead(extra) {
-    var c = county();
-    return '# AGSIST agsist.com/prf. Grid ' + S.grid + '; ' + c.n + ' County ' + S.st + '; ' + useName().replace(/,/g, '') + '; ' + S.acres + ' acres; share ' + S.share + '%. ' + extra
-      + ' Crop year ' + meta.crop_year + ' rates and county values on every year. Not what PRF paid in those years.\n';
-  }
-  function csv(R) {
-    var used = R.pol.rows.filter(function (r) { return r.pct > 0; });
-    var out = [['year'].concat(used.reduce(function (a, r) { return a.concat([LABELS[r.i] + ' percent of normal', LABELS[r.i] + ' would have paid']); }, []), ['would have paid', 'you pay (producer premium)', 'after premium', 'counted in totals'])];
-    function row(h, counted) {
-      out.push([h.year].concat(h.cells.reduce(function (a, c) { return a.concat([c.index == null ? '' : pctOfNormal(c.index), c.paid == null ? '' : c.paid]); }, []),
-        [h.indemnity == null ? '' : h.indemnity, R.pol.total.producer, h.net == null ? '' : h.net, counted ? 'yes' : 'no']));
-    }
-    R.hist.forEach(function (h) { row(h, true); });
-    R.open.forEach(function (h) { row(h, false); });
-    var head = csvHead((S.B ? 'Setup ' + S.on + '. ' : '') + R.setup.cov + '% coverage; productivity factor ' + R.setup.pf + '; ' + splitWords(R.setup).replace(/,/g, ';') + '.');
-    download('prf-grid-' + S.grid + (S.B ? '-setup-' + S.on.toLowerCase() : '') + '.csv', head + out.map(function (r) { return r.join(','); }).join('\n') + '\n');
-    track('prf_csv', { grid: S.grid, what: 'policy' });
-  }
 
   /* ---------------------------------------------------------------- the policy, interval by interval */
   function drawPolicy(R) {
@@ -977,20 +954,13 @@
     if (!$('prf-idx-d').open) { box.innerHTML = ''; return; }
     var g = openGrid(S.grid), s = cur();
     if (!g || g.stale) { box.innerHTML = ''; return; }
-    var h = '<p class="prf-fine"><button type="button" class="btn btn-secondary" id="prf-idx-csv">Download this table (CSV)</button></p><div class="prf-scroll prf-scroll-tall" tabindex="0" role="region" aria-label="Table, scrolls both ways"><table class="prf-t prf-t-idx"><caption class="prf-cap">Grid ' + S.grid + ': precipitation as a percent of normal, every interval, every year. Shaded cells are under ' + s.cov + ', where a policy at ' + s.cov + '% coverage pays.</caption><thead><tr><th scope="col">Year</th>'
+    var h = '<div class="prf-scroll prf-scroll-tall" tabindex="0" role="region" aria-label="Table, scrolls both ways"><table class="prf-t prf-t-idx"><caption class="prf-cap">Grid ' + S.grid + ': precipitation as a percent of normal, every interval, every year. Shaded cells are under ' + s.cov + ', where a policy at ' + s.cov + '% coverage pays.</caption><thead><tr><th scope="col">Year</th>'
       + LABELS.map(function (l) { return '<th scope="col">' + nw(l) + '</th>'; }).join('') + '</tr></thead><tbody>';
     indexRows().reverse().forEach(function (r) {
       h += '<tr' + (r.open ? ' class="is-open"' : '') + '><th scope="row">' + r.year + '</th>' + r.v.map(function (v) { return '<td' + (v != null && v < s.cov / 100 - 1e-12 ? ' class="is-pay"' : '') + '>' + pctOfNormal(v) + '</td>'; }).join('') + '</tr>';
     });
     h += '</tbody></table></div><p class="prf-fine">USDA’s ' + meta.crop_year + ' record for this grid. A dash is an interval not yet published.</p>';
     box.innerHTML = h;
-  }
-  function csvIndex() {
-    var out = [['year'].concat(LABELS)];
-    indexRows().forEach(function (r) { out.push([r.year].concat(r.v.map(function (v) { return v == null ? '' : pctOfNormal(v); }))); });
-    download('prf-grid-' + S.grid + '-index.csv', '# AGSIST agsist.com/prf. Grid ' + S.grid + '. Precipitation as a percent of the ' + meta.years.first + ' to ' + meta.years.last_complete + ' average, by two-month interval. USDA RMA, crop year ' + meta.crop_year + ' record.\n'
-      + out.map(function (r) { return r.join(','); }).join('\n') + '\n');
-    track('prf_csv', { grid: S.grid, what: 'index' });
   }
 
   /* ---------------------------------------------------------------- the five coverage levels */
@@ -1206,7 +1176,6 @@
       if (t) { S.win = +t.getAttribute('data-win'); render(); track('prf_window', { years: S.win || 'all' }); return; }
       t = cl('[data-yr]');
       if (t && chartState) { pickYear(chartState.k == null ? (+t.getAttribute('data-yr') > 0 ? 0 : chartState.hist.length - 1) : chartState.k + +t.getAttribute('data-yr')); return; }
-      if (cl('#prf-idx-csv')) { csvIndex(); return; }
       t = cl('a[data-out]');
       if (t) track('prf_out', { to: t.getAttribute('data-out') });
     });
@@ -1292,7 +1261,6 @@
     var ch = $('prf-chart');
     ch.addEventListener('pointermove', chartMove); ch.addEventListener('pointerdown', chartMove);
     window.addEventListener('resize', chartResize);
-    $('prf-csv').addEventListener('click', function () { if (lastR && lastR.ok) csv(lastR); });
     /* Print is one Letter page (Oct 18): the AGSIST header with the grid, county, state and a QR code back here, the policy as chosen,
        the answer, the chart, every year's payout, the conditions and sources, a sold state's sponsor box (prf-sponsor.js), the byline. */
     $('prf-print').addEventListener('click', function () { render(); track('prf_print', { grid: S.grid }); window.print(); });
