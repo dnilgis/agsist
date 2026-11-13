@@ -38,8 +38,9 @@
   var PINZ = 9;          // zoom from which pins take their full size and unusual pins carry a triangle; below it they shrink to dots
   var STACKZ = 7;        // below this zoom a tap on a pin zooms in to it instead of opening one pin of a stack
   var MIN_ACRES = 20;
-  /* the saved picture of the view (Save the picture, and Share with the picture). false hides both and leaves Copy link: one switch, no other change */
-  var SAVE_PICTURE = true;
+  /* the saved picture of the view (Save the picture, and Share with the picture). false hides both and leaves Copy link: one switch, no other change.
+     OFF (Nov 13, 2026) until a critic passes the picture; the pictureModel code below stays and is tested. */
+  var SAVE_PICTURE = false;
   // point columns (scripts/land_map.py PT_COLS)
   var LAT = 0, LNG = 1, K = 2, CO = 3, WHEN = 4, AC = 5, PR = 6, PPA = 7, KIND = 8, C = 9, A = 10, PC = 11, PN = 12, ID = 13, NM = 14;
   // county columns (CO_COLS)
