@@ -103,17 +103,25 @@
     }
     /* the marks' words: under the lower of the two lines, where the running lines leave room, from the stretch's middle to the right,
        joined to it by a hairline; one below another when they would touch */
-    var placed = [];
+    var placed = [], leaders = [], words = [];
     (cfg.marks || []).forEach(function (m) {
-      var xm = (m.a + m.b) / 2, va = at(T, xm), vn = N ? at(N, xm) : null, low = g.Y(vn == null ? va : Math.min(va, vn)), w = widthOf(m.text, fs - 1, 0.58);
+      var xm = (m.a + m.b) / 2, va = at(T, xm), vn = N ? at(N, xm) : null, low = g.Y(vn == null ? va : Math.min(va, vn)), high = g.Y(vn == null ? va : Math.max(va, vn)), w = widthOf(m.text, fs - 1, 0.58);
       var x = g.X(xm) + 5, anchor = 'start', maxR = W - g.pr - 2;
       if (x + w > maxR) { x = maxR; anchor = 'end'; }
-      var y = low + fs * 2, l = anchor === 'end' ? x - w : x, r = anchor === 'end' ? x : x + w;
-      for (var k = 0; k < placed.length; k++) if (l < placed[k].r + 8 && r > placed[k].l - 8 && Math.abs(y - placed[k].y) < fs * 1.35) { y += fs * 1.4; k = -1; }
-      placed.push({ l: l, r: r, y: y });
-      o.push('<line x1="' + f1(g.X(xm)) + '" x2="' + f1(g.X(xm)) + '" y1="' + f1(low + 3) + '" y2="' + f1(y - fs * 0.95) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
-      o.push(txt(x, y, m.text, f + 'font-size:' + (fs - 1) + 'px;font-weight:700;fill:' + P.ink + ';' + halo, anchor));
+      var two = low + fs * 2 > g.yb - 3 ? String(m.text).split(', normal ') : null;   /* over the upper line the words go on two short lines, clear of the climbing lines */
+      if (two && two.length === 2) { two[1] = 'normal ' + two[1]; w = Math.max(widthOf(two[0], fs - 1, 0.58), widthOf(two[1], fs - 1, 0.58)); if (anchor === 'start') x = g.X(xm) + 5; }
+      /* under the lower line; over the upper one when there is no room above the axis */
+      var below = low + fs * 2 <= g.yb - 3, y = below ? low + fs * 2 : high - fs * 0.9, dir = below ? 1 : -1, l = anchor === 'end' ? x - w : x, r = anchor === 'end' ? x : x + w;
+      for (var k = 0; k < placed.length; k++) if (l < placed[k].r + 8 && r > placed[k].l - 8 && Math.abs(y - placed[k].y) < fs * 1.35) { y += dir * fs * 1.4; k = -1; }
+      placed.push({ l: l, r: r, y: y, xm: g.X(xm), y1: below ? low + 3 : y + 3, y2: below ? y - fs * 0.95 : high - 3 });
+      if (two && two.length === 2) { words.push(txt(x, y - fs * 1.2, two[0], f + 'font-size:' + (fs - 1) + 'px;font-weight:700;fill:' + P.ink + ';' + halo, anchor)); words.push(txt(x, y, two[1], f + 'font-size:' + (fs - 1) + 'px;font-weight:700;fill:' + P.ink + ';' + halo, anchor)); }
+      else words.push(txt(x, y, m.text, f + 'font-size:' + (fs - 1) + 'px;font-weight:700;fill:' + P.ink + ';' + halo, anchor));
     });
+    placed.forEach(function (p, i) {   /* a hairline that would run through another mark's words is left out */
+      var hit = placed.some(function (q, j) { return j !== i && p.xm > q.l - 2 && p.xm < q.r + 2 && q.y - fs * 1.1 < Math.max(p.y1, p.y2) + 1 && q.y + 3 > Math.min(p.y1, p.y2); });
+      if (!hit) leaders.push('<line x1="' + f1(p.xm) + '" x2="' + f1(p.xm) + '" y1="' + f1(p.y1) + '" y2="' + f1(p.y2) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
+    });
+    o.push.apply(o, leaders); o.push.apply(o, words);   /* the hairlines first, so a word's halo clears the one behind it */
     /* the lines named at their ends, with the value; the gap in words between them where there is room */
     var ex = W - g.pr + 8, ya0 = g.Y(last[1]), yn0 = nlast ? g.Y(nlast[1]) : null, ta = ya0, tn = yn0, minGap = fs * 2.7;
     if (yn0 != null && Math.abs(ya0 - yn0) < minGap) { var mid = (ya0 + yn0) / 2, half = minGap / 2; ta = ya0 <= yn0 ? mid - half : mid + half; tn = ya0 <= yn0 ? mid + half : mid - half; }
@@ -122,7 +130,7 @@
     o.push(txt(ex, ta + fs * 1.05, cfg.names.a, f + 'fill:' + P.dim));
     if (nlast) {
       o.push(circle(g.X(nlast[0]), yn0, grey, card));
-      o.push(txt(ex, tn - fs * 0.15, g.endLab[1], fb + 'fill:' + grey));
+      o.push(txt(ex, tn - fs * 0.15, g.endLab[1], fb + 'fill:' + P.dim));
       o.push(txt(ex, tn + fs * 1.05, cfg.names.n, f + 'fill:' + P.dim));
     }
     /* the gap in words, top left where the running lines have not yet climbed */

@@ -455,8 +455,8 @@
     if (!run) { msgIn('hp-rain-ch', 'No rain record for this county yet.'); txt('hp-rain-h', 'Rain this year'); txt('hp-rain-lead', ''); return; }
     var miss = num(c.missing) && c.missing > 0 ? c.missing : 0, missText = miss ? miss + ' day' + (miss === 1 ? '' : 's') + ' not reported' : '';
     var place = (cf.near ? 'Near ' : '') + countyName(p.county, p.state) + ', ' + p.state, when = end ? ' to ' + md(end) : '';
-    var hasN = run.N != null, gw = hasN ? gapWords(run.gap, 'in') : '';
-    txt('hp-rain-h', hasN ? (run.gap === 0 || +f1(Math.abs(run.gap)) === 0 ? townOf(p) + ' is right on normal for rain this year' : townOf(p) + ' is ' + f1(Math.abs(run.gap)) + ' inches of rain ' + (run.gap > 0 ? 'ahead of' : 'behind') + ' normal this year') : 'Rain this year in ' + townOf(p) + ': ' + f1(c.total) + ' in' + when);
+    var hasN = run.N != null, gw = hasN ? gapWords(run.gap, 'in') : '', who = cf.near ? 'The gauge nearest ' + townOf(p) : townOf(p);
+    txt('hp-rain-h', hasN ? (run.gap === 0 || +f1(Math.abs(run.gap)) === 0 ? who + ' is right on normal for rain this year' : who + ' is ' + f1(Math.abs(run.gap)) + ' inches of rain ' + (run.gap > 0 ? 'ahead of' : 'behind') + ' normal this year') : 'Rain this year in ' + townOf(p) + ': ' + f1(c.total) + ' in' + when);
     /* the file's own percent, never one worked out here: the builder withholds it on a normal under 1.00 in */
     var pct = hasN && num(c.pct) ? c.pct : null, sent = monthsSentence(run.made, run.gap);
     txt('hp-rain-lead', hasN ? (num(pct) ? pct + '% of normal. ' : '') + sent + (sent || num(pct) ? '' : 'Normal for the same days is ' + f1(c.usual, 1) + ' in.') : 'No normal on file for this gauge.');
@@ -484,8 +484,8 @@
       txt('hp-gdu-lead', ''); return;
     }
     var g = c.g, gmiss = num(g[1]) && g[1] > 0 ? g[1] : 0, gmissText = gmiss ? gmiss + ' day' + (gmiss === 1 ? '' : 's') + ' not reported' : '';
-    var hasN = run.N != null, gw = hasN ? gapWords(run.gap, 'gdu') : '', place = (cf && cf.near ? 'Near ' : '') + countyName(p.county, p.state) + ', ' + p.state, when = end ? ' to ' + md(end) : '';
-    txt('hp-gdu-h', hasN ? (gw === 'right on normal' ? townOf(p) + ' is right on normal for corn GDUs this year' : townOf(p) + ' is ' + gw.replace(' GDUs', ' corn GDUs') + ' this year') : 'Corn GDUs since May 1 in ' + townOf(p) + ': ' + comma(g[0]));
+    var who = cf && cf.near ? 'The station nearest ' + townOf(p) : townOf(p), hasN = run.N != null, gw = hasN ? gapWords(run.gap, 'gdu') : '', place = (cf && cf.near ? 'Near ' : '') + countyName(p.county, p.state) + ', ' + p.state, when = end ? ' to ' + md(end) : '';
+    txt('hp-gdu-h', hasN ? (gw === 'right on normal' ? who + ' is right on normal for corn GDUs this year' : who + ' is ' + gw.replace(' GDUs', ' corn GDUs') + ' this year') : 'Corn GDUs since May 1 in ' + townOf(p) + ': ' + comma(g[0]));
     /* the file's own percent, never one worked out here: it is withheld on a small normal or missing days */
     var gp = hasN && num(g[4]) && run.usual >= 100 ? g[4] : null, sent = monthsSentence(run.made, run.gap);
     txt('hp-gdu-lead', hasN ? (num(gp) ? gp + '% of normal. ' : '') + sent : 'No normal on file for this station.');
