@@ -98,7 +98,8 @@
     var take = 'The band runs from the lowest to the highest bid in town each day, ' + nIn + (nIn === 1 ? ' elevator' : ' elevators') + ' posting since ' + dd(start) + ', each for its nearest delivery month; its top edge is the best bid.' +
       (marks.length ? ' Dotted lines mark where the delivery month or the futures month changed.' : '') +
       (start > first ? ' The headline compares only bids since ' + dd(start) + ', on the same terms.' : refCon ? ' Every bid here is on ' + conWord(refCon) + ' futures.' : '');
-    return { lines: lines, days: days, marks: marks, head: head, take: take, first: first, end: end, now: now, strays: sl, start: start, n: nIn, refCon: refCon };
+    var cardTake = nIn + (nIn === 1 ? ' elevator' : ' elevators') + ' posting since ' + dd(start) + (marks.length ? '. Dotted lines: a new delivery or futures month' : '') + (start > first ? '; only bids since ' + dd(start) + ', on the same terms, are compared.' : '.');
+    return { lines: lines, days: days, marks: marks, head: head, take: take, cardTake: cardTake, first: first, end: end, now: now, strays: sl, start: start, n: nIn, refCon: refCon };
   }
 
   /* -> { svg, x(d), day(px) } at W x H. opt: { card, fs, show: {key: 1}, state: {median, lo, hi, n, label, name}, hover } */
@@ -113,6 +114,9 @@
     if (top - bot < 30) bot = top - 30;
     var stp = (top - bot) / 10 > (phone ? 6 : 9) ? 20 : 10; if (stp === 20) { top = Math.ceil(top / 20) * 20; bot = Math.floor(bot / 20) * 20; }
     var ticks = []; for (var v = top; v >= bot; v -= stp) ticks.push(v);
+    // room at the top for the changeover names, clear of the best line (one band more where it runs too near the top)
+    var nMk = (m.marks || []).length, maxHi = Math.max.apply(null, live.map(function (x) { return x.hi; }).concat(-1e9));
+    if (nMk && (maxHi - bot) / (top - bot) > 1 - (nMk * fs * 1.3 + fs) / Math.max(1, H - fb * 1.6 - fs * 2.6)) { top += stp; ticks.unshift(top); }
     var L = Math.ceil(Math.max.apply(null, ticks.map(function (t) { return BD.widthOf(word(t), fs, t === 0); }))) + 10;
     var R = stt ? (phone ? Math.ceil(Math.max(BD.widthOf(word(stt.median), fs, true), BD.widthOf(stt.short, fs, true)) + 30) : Math.round(fs * 14)) : 12, y0 = Math.round(fb * 1.6), y1 = H - Math.round(fs * 2.6);
     var t0 = Date.parse(m.first), t1 = Date.parse(m.end), X = function (d) { return L + (Date.parse(d) - t0) / Math.max(864e5, t1 - t0) * (W - L - R - 8); };
@@ -150,7 +154,7 @@
       var x0t = x + w + 6 > W - R ? x - 4 - w : x + 4;
       while (mrow.some(function (z) { return z.row === row && x0t < z.x1 + 6 && x0t + w > z.x0 - 6; })) row++;
       mrow.push({ row: row, x0: x0t, x1: x0t + w });
-      mk += '<path class="bm-mk" d="M' + f1(x) + ' ' + f1(y0) + 'V' + f1(y1) + '"/>';
+      mk += '<path class="bm-mk" d="M' + f1(x) + ' ' + f1(y0) + 'V' + f1(y1) + '"/>'; lab.push({ x0: x - 2, x1: x + 2, y0: y0, y1: y1 });
       o.push(t(x0t, y0 + fs + row * fs * 1.3, txt, 'm h'));
       lab.push({ x0: x0t - 2, x1: x0t + w + 2, y0: y0 + row * fs * 1.3, y1: y0 + fs + 4 + row * fs * 1.3 });
     });
@@ -255,7 +259,7 @@
       save: function (url) {
         if (!m) return;
         var stt = stateOf(), cfg = Object.assign({}, o.cfg, { url: url });
-        BD.frame({ head: m.head, take: m.take, kicker: town + ', ' + st + ' · ' + ADJ[cur] + ' basis since ' + dd(m.first), source: 'The band: lowest to highest bid in town each day; gold, the best. Posted elevator bids, logged by AGSIST.' },
+        BD.frame({ head: m.head, take: m.cardTake, kicker: town + ', ' + st + ' · ' + ADJ[cur] + ' basis since ' + dd(m.first), source: 'The band: lowest to highest bid in town each day; gold, the best. Posted elevator bids, logged by AGSIST.' },
           cfg, function (w, h) { return svg(m, w, h, { card: true, fs: 16, held: H.heldOn, show: show, state: stt }).svg; }, function (b) {
             if (!b) return; var a = root.document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'agsist-basis-month-' + String(o.cfg.path || 'town').split('/').pop() + '-' + cur + '.png';
             root.document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500);
