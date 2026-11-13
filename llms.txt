@@ -3,9 +3,8 @@
 > AGSIST (agsist.com) is a free, no-login farm market site for working US
 > producers: cash grain bids and basis near you, futures prices, USDA report
 > data, crop size, weather and field conditions, farm programs, and a daily
-> morning briefing. Built and maintained by one person: Sigurd Lindquist,
-> Certified Crop Adviser (CCA), Chetek, Wisconsin, who also works at Farmers
-> First Agri Service.
+> morning briefing. Built and maintained by AGSIST in Chetek,
+> Wisconsin.
 
 How fresh the numbers are: futures prices and cash bids refresh about every 15
 minutes. Prices are delayed exchange quotes from the Yahoo Finance feed, not an
@@ -74,7 +73,7 @@ Each figure below is read from the same file the site's pages read and carries t
 - [Planting Date Calculator](https://agsist.com/planting-date): soil temperature and 5-day soil forecast at your ZIP, nearest NOAA station frost odds, county final planting dates, and yield loss by planting week (UMN, UW)
 - [Rain by County](https://agsist.com/rain): rain so far this year at a weather station in each county: inches, percent of a usual year and month by month, dated through the last day read, at /rain/<state>/<county>; on /rain itself, tabs for rain on your field from radar (the last 24 hours, 3 days, 7 days and this month at any spot in the lower 48, from NOAA MRMS radar corrected with rain gauges, at /rain#radar) and this week's US Drought Monitor map with your county (at /rain#drought)
 - [Rain Print](https://agsist.com/rain-print): one year of daily rain at the nearest weather station, drawn as wall art with your farm name and dates; free to make, prints for sale
-- [Gifts for Farmers](https://agsist.com/gifts-for-farmers): Sig's gift ideas for a farmer: a Rain Print of the year they still talk about, with the Christmas order-by dates, then plain gear and time gifts; no store links
+- [Gifts for Farmers](https://agsist.com/gifts-for-farmers): Gift ideas for a farmer: a Rain Print of the year they still talk about, with the Christmas order-by dates, then plain gear and time gifts; no store links
 - [Editorial Standards](https://agsist.com/editorial-standards): How the AGSIST Daily is made, where the numbers come from (the main data sources), sponsors, and how corrections work
 - [Rain Print for Businesses](https://agsist.com/rain-print-business): Customer Christmas gifts for co-ops and elevators: a Rain Print of each customer's own town and year, from 5 prints, delivered prices, one proof sheet, net 30
 - [Farmer Retirement Gifts](https://agsist.com/farmer-retirement-gifts): Gift ideas for a retiring farmer, with a Rain Print of a year on the farm as one option; no store links
@@ -82,7 +81,7 @@ Each figure below is read from the same file the site's pages read and carries t
 - [Birth Year Weather Gift](https://agsist.com/birth-year-weather-gift): A Rain Print of the year someone was born: every rain and snow at the nearest weather station, with the birthday marked
 - [Wedding Year Weather Gift](https://agsist.com/wedding-year-weather-gift): A Rain Print of the year a couple married: every rain and snow at the nearest weather station, with the wedding day marked
 - [PRF State Sponsor](https://agsist.com/prf-sponsor): how a business sponsors the PRF pages for one or more states: what the sponsor slot shows and how to ask; price on request
-- [Rain Gauge (in the works)](https://agsist.com/rain-gauge): a rain gauge Sig is building: a clear tube in front of a printed scale, read by eye or logged with a phone photo, field by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email
+- [Rain Gauge (in the works)](https://agsist.com/rain-gauge): a rain gauge AGSIST is building: a clear tube in front of a printed scale, read by eye or logged with a phone photo, field by field; a prototype now, aiming for before planting 2027, no price set; waitlist by email
 - [Field Scout](https://agsist.com/field-scout): draw a field and see its soils, crop history, weather, drought and nearby bids
 - [Fertilizer Prices](https://agsist.com/fertilizer): the middle cash price per ton that farm co-ops post for anhydrous, urea, UAN, DAP, potash and more, read each weekday from their own websites and credited by name, each price with its region and date
 - [Ag Fast Facts](https://agsist.com/fast-facts): one place by ZIP, town or county: the best corn and soybean bids within 50 miles, state basis, futures, rain since Jan 1, drought, hail, crop progress, cash rent, land value, recorded sales, insurance losses, ARC or PLC sign-up, the next USDA report and posted fertilizer, every row dated and sourced, with the state and US figures beside the place; and the on-farm reference tables: corn N rates, P and K by soil test, crop removal, manure nutrients, crop stages, pest thresholds, herbicide groups, conversions; each tab has its own #link

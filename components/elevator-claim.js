@@ -172,7 +172,7 @@
       .then(function () {
         ga('claim_submit', { result: 'ok' });
         sec.classList.add('sent');
-        out.innerHTML = '<div class="cl-msg ok"><p><b>Sent.</b> Sig has your claim for ' + esc(x.elevator) +
+        out.innerHTML = '<div class="cl-msg ok"><p><b>Sent.</b> AGSIST has your claim for ' + esc(x.elevator) +
           ' in ' + esc(x.town) + ', ' + esc(x.state) + '.</p><p>He replies to ' + esc(x.email) +
           ' to confirm you work there. Nothing changes on the site until then.</p></div>';
         try { out.querySelector('.cl-msg').setAttribute('tabindex', '-1'); out.querySelector('.cl-msg').focus(); } catch (err) {}
