@@ -33,7 +33,7 @@
      picture is an image with no page around it: it carries its own colours (the kit card's) in a style block. */
   var CARD = { ink: '#e9edeb', mid: 'rgba(233,237,235,.66)', grid: 'rgba(132,160,168,.22)', rule: 'rgba(132,160,168,.45)', zone: '#14191b', gold: '#d4a23f', bg: '#0a0c0d' };
   function cardStyle(c) {
-    return '<style>text{fill:' + c.ink + '}.m{fill:' + c.mid + '}.g{fill:' + c.gold + '}.b{font-weight:700}.B{font-size:1.08em}.h{paint-order:stroke;stroke:' + c.bg + ';stroke-width:3px;stroke-linejoin:round}.z{fill:' + c.zone + '}' +
+    return '<style>.e{text-anchor:end}.c{text-anchor:middle}text{fill:' + c.ink + '}.m{fill:' + c.mid + '}.g{fill:' + c.gold + '}.b{font-weight:700}.B{font-size:1.08em}.h{paint-order:stroke;stroke:' + c.bg + ';stroke-width:3px;stroke-linejoin:round}.z{fill:' + c.zone + '}' +
       '.gr,.ev,.ax,.md,.wk,.dr,.di,.dg,path{fill:none}.gr{stroke:' + c.grid + '}.ev,.ax{stroke:' + c.rule + '}.ev{stroke-width:1.4}.md{stroke:' + c.ink + ';stroke-width:1.2;stroke-dasharray:5 4}' +
       '.wk{stroke:' + c.mid + ';stroke-width:1.6}.dr,.di,.dg{stroke-linecap:round}.dr{stroke:' + c.bg + '}.di{stroke:' + c.ink + '}.dg{stroke:' + c.gold + '}</style>';
   }
@@ -246,6 +246,7 @@
   /* -> { svg, dots: [{x, y, r, i}], H, W } at width W. opt: { fs, card, h } */
   function svg(p, cfg, W, opt) {
     opt = opt || {};
+    var fx = opt.int ? function (v) { return String(Math.round(v)); } : f1;   // the printed pictures: whole pixels, fewer bytes on 1,400 pages
     var phone = W < 640, card = !!opt.card, fs = opt.fs || (phone ? 12 : 13), fb = fs + 1, H = opt.h || (phone ? 400 : 460);
     var T = p.town, O = p.out, A = p.alt || [], st = cfg.stName || cfg.st, o = [], obst = [], labs = [], gut = [];
     var minWk = phone && !card ? 10 : 0.05;   // a phone draws the week's line only for a move of 10 cents or more (the key says so)
@@ -271,12 +272,12 @@
     var x0 = L + ZA + GX, x1 = W - R - (phone ? 10 : 14), Xm = function (m) { return x0 + Math.max(0, Math.min(NEAR_MI, m)) / NEAR_MI * (x1 - x0); };
     var add = function (b) { obst.push(b); };
     var t = function (x, y, s, cls, anchor) {
-      var c = [/gold/.test(cls) ? 'g' : /mid/.test(cls) ? 'm' : '', /(^| )b( |$)/.test(cls) ? 'b' : '', /big/.test(cls) ? 'B' : '', /(^| )h( |$)/.test(cls) ? 'h' : ''].filter(Boolean).join(' ');
-      return '<text x="' + f1(x) + '" y="' + f1(y) + '"' + (anchor === 'end' ? ' text-anchor="end"' : anchor === 'middle' ? ' text-anchor="middle"' : '') + (c ? ' class="' + c + '"' : '') + '>' + esc(hy(s)) + '</text>';
+      var c = [/gold/.test(cls) ? 'g' : /mid/.test(cls) ? 'm' : '', /(^| )b( |$)/.test(cls) ? 'b' : '', /big/.test(cls) ? 'B' : '', /(^| )h( |$)/.test(cls) ? 'h' : '', anchor === 'end' ? 'e' : anchor === 'middle' ? 'c' : ''].filter(Boolean).join(' ');
+      return '<text x="' + fx(x) + '" y="' + fx(y) + '"' + (c ? ' class="' + c + '"' : '') + '>' + esc(hy(s)) + '</text>';
     };
-    var P = { gr: [], ev: [], ax: [], md: [], wk: [] }, H0 = function (y, a, b) { return 'M' + f1(a) + ' ' + f1(y) + 'H' + f1(b); }, V0 = function (x, a, b) { return 'M' + f1(x) + ' ' + f1(a) + 'V' + f1(b); };
+    var P = { gr: [], ev: [], ax: [], md: [], wk: [] }, H0 = function (y, a, b) { return 'M' + fx(a) + ' ' + fx(y) + 'H' + fx(b); }, V0 = function (x, a, b) { return 'M' + fx(x) + ' ' + fx(a) + 'V' + fx(b); };
     // the in-town zone, the grid, the axis words
-    var zone = T.length ? '<rect class="z" x="' + L + '" y="' + y0 + '" width="' + f1(ZA) + '" height="' + f1(y1 - y0) + '"/>' : '';
+    var zone = T.length ? '<rect class="z" x="' + L + '" y="' + y0 + '" width="' + fx(ZA) + '" height="' + fx(y1 - y0) + '"/>' : '';
     ticks.forEach(function (c) {
       var y = Y(c), ev = c === 0;
       P[ev ? 'ev' : 'gr'].push(H0(y, L, phone ? x1 : W - R));
@@ -437,21 +438,21 @@
     if (T.length) o.push(t(L + ZA / 2, y1 + fs + 6, T.length === 1 ? '1 bid' : T.length + ' bids', 'mid', 'middle'));
     var aria = p.Crop + ' basis by distance from ' + cfg.town + ': ' + drawn(p) + ' bids within ' + NEAR_MI + ' miles' + (p.med ? ', with the ' + st + ' median' : '') + '.';
     // the lines first, then the dots (a ring of the page colour round each; an open dot is a ring of ink), then the words
-    var rIn = dots.filter(function (q) { return q.d.inTown; }), ro = rIn.length ? rIn[0].r : r0, wd = function (r) { return f1(2 * r); };
+    var rIn = dots.filter(function (q) { return q.d.inTown; }), ro = rIn.length ? rIn[0].r : r0, wd = function (r) { return fx(2 * r); };
     var dp = function (cls, pts) { return pts.length ? '<path class="' + cls + '" d="' + pts.join('') + '"/>' : ''; };
     var lines = ['gr', 'ev', 'ax', 'md', 'wk'].map(function (k) { return dp(k, P[k]); }).join('');
     var uid = 'bd' + (opt.id || 'p'), defs = [], dd = '', sets = [[tq, ro], [oq, r0], [aq, r0]];
     sets.forEach(function (sx, a) {
       var r = sx[1];
       [['di', function (q) { return !q.gold; }], ['dg', function (q) { return q.gold; }]].forEach(function (k, b) {
-        var pts = sx[0].filter(k[1]).map(function (q) { return 'M' + f1(q.x) + ' ' + f1(q.y) + 'h0'; }); if (!pts.length) return;
+        var pts = sx[0].filter(k[1]).map(function (q) { return 'M' + fx(q.x) + ' ' + fx(q.y) + 'h0'; }); if (!pts.length) return;
         var id = uid + a + b; defs.push('<path id="' + id + '" d="' + pts.join('') + '"/>');
-        dd += '<use href="#' + id + '" class="dr" style="stroke-width:' + f1(2 * r + 3) + '"/><use href="#' + id + '" class="' + k[0] + '" style="stroke-width:' + wd(r) + '"/>' +
-          (a === 2 ? '<use href="#' + id + '" class="dr" style="stroke-width:' + f1(2 * r - 3) + '"/>' : '');
+        dd += '<use href="#' + id + '" class="dr" style="stroke-width:' + fx(2 * r + 3) + '"/><use href="#' + id + '" class="' + k[0] + '" style="stroke-width:' + wd(r) + '"/>' +
+          (a === 2 ? '<use href="#' + id + '" class="dr" style="stroke-width:' + fx(2 * r - 3) + '"/>' : '');
       });
     });
     dd = (defs.length ? '<defs>' + defs.join('') + '</defs>' : '') + dd;
-    var s = '<svg class="bd-svg' + (opt.cls ? ' ' + opt.cls : '') + '" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(aria) + '" style="font-size:' + fs + 'px' + (card ? ';font-family:' + FONT : '') + '">' +
+    var s = '<svg class="bd-svg' + (opt.cls ? ' ' + opt.cls : '') + '"' + (card ? ' xmlns="http://www.w3.org/2000/svg"' : '') + ' viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(aria) + '" style="font-size:' + fs + 'px' + (card ? ';font-family:' + FONT : '') + '">' +
       (card ? cardStyle(CARD) : '') + zone + lines + dd + o.join('') + '</svg>';
     return { svg: s, dots: dots.map(function (q) { return { x: q.x, y: q.y, r: q.r, i: q.i, base: q.d.inTown ? null : Xm(q.d.mi), over: !!q.over }; }), H: H, W: W, gut: gut, labs: labs, order: dots.map(function (q) { return q.d; }), over: over, minWk: minWk, cap: cap, x0: x0, x1: x1 };
   }
@@ -494,7 +495,7 @@
     /* two pictures for the page without script: the phone's, and one for a wide column (round 1: a desktop reader got
        the phone picture alone at the left); the page shows one by its width until the script draws at the box's own */
     var cfg = prep(cfg0, docs, bs), p = pick(docs, cfg, crop), st = story(p, cfg), short = !p.out.length && !p.alt.length;
-    var pw = svg(p, cfg, W || 358, { cls: 'bd-sp', id: 'p', h: short ? 240 : 400 }), ww = svg(p, cfg, 760, { cls: 'bd-sw', id: 'w', h: short ? 300 : 460 });
+    var pw = svg(p, cfg, W || 358, { cls: 'bd-sp', id: 'p', h: short ? 240 : 400, int: true }), ww = svg(p, cfg, 760, { cls: 'bd-sw', id: 'w', h: short ? 300 : 460, int: true });
     var k = firstDot(p), rd = readout(p, p.all[k]);
     return { crop: crop, n: drawn(p), inTown: p.town.length, out: p.out.length, alt: p.alt.length, short: short, head: st.head, take: st.take, axis: axisText(p),
              prev: moved(p) ? day(p.prev) : '', key: keyHtml(p), svg: pw.svg + ww.svg, read: rd, note: note(p, cfg), first: k };
