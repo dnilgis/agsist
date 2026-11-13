@@ -82,24 +82,42 @@
       var jump = b4 && at && !b4.gap && !at.gap && b4.hiR != null && at.hiR != null ? Math.abs(at.hiR - b4.hiR) : 0;
       if ((mk.kind === 'con' && mk.to === refCon) || (mk.kind === 'dm' && jump >= 5)) { if (mk.d > start) start = mk.d; mk.cut = true; }
     });
+    /* from the cut on, the band holds only bids on the headline's futures month, so its top edge is the headline's best;
+       a line still on another futures month leaves it and is named (round 4: Linn Co-op on November futures drew the
+       gold line at 11 under under a headline about January futures) */
+    var off = {};
+    if (start > first) days.forEach(function (x, i) {
+      if (x.gap || x.d < start || !x.all.length) return;
+      var on = x.all.filter(function (z) { return z.con === refCon && (!strays[z.l.key] || strays[z.l.key].d.indexOf(x.d) < 0); });
+      x.all.forEach(function (z) { if (z.con !== refCon) (off[z.l.key] = off[z.l.key] || { name: z.l.name, con: z.con }); });
+      if (!on.length) { days[i] = { d: x.d, gap: true }; return; }
+      var h2 = Math.max.apply(null, on.map(function (z) { return z.v; }));
+      days[i] = { d: x.d, hi: h2, lo: Math.min.apply(null, on.map(function (z) { return z.v; })), n: on.length, top: on.filter(function (z) { return z.v === h2; }).map(function (z) { return z.l.name; }), all: x.all, hiR: h2, keys: on.map(function (z) { return z.l.key; }) };
+    });
+    var offList = Object.keys(off).map(function (k) { return off[k]; });
     var win = days.filter(function (x) { return !x.gap && x.d >= start && x.hiR != null; });
     var keysIn = {}; days.forEach(function (x) { if (!x.gap && x.d >= start) (x.keys || []).forEach(function (k) { keysIn[k] = 1; }); });
     var nIn = Object.keys(keysIn).length || lines.length;
     var sl = Object.keys(strays).map(function (k) { var s = strays[k], a = s.d[0], b = s.d[s.d.length - 1]; return s.l.name + ' at ' + word(s.v[0]) + (a === b ? ', ' + dd(a) : ', ' + dd(a) + ' to ' + dd(b)); });
     if (!win.length) return { lines: lines, days: days, marks: marks, head: 'No ' + adj + ' basis logged in ' + town + ' since ' + dd(first), take: '', first: first, end: end, strays: sl, start: start, n: 0 };
+    var logged = days.filter(function (x) { return !x.gap; });
+    if (logged.length < 3) {
+      var last = logged[logged.length - 1];
+      return { lines: lines, days: days, marks: [], short: true, head: 'Logged since ' + dd(logged[0].d) + ': ' + word(last.hi) + '. Too short to chart yet.', take: '', cardTake: '', first: first, end: end, strays: sl, start: start, n: last.n, off: [] };
+    }
     var now = win[win.length - 1], mn = win[0], mx = win[0], st0 = win[0];
     win.forEach(function (x) { if (x.hiR < mn.hiR) mn = x; if (x.hiR > mx.hiR) mx = x; });
     var rise = now.hiR - mn.hiR, fall = mx.hiR - now.hiR, head, base = 'The best ' + adj + ' bid in ' + town;
-    var since = start > first ? ', on ' + (conWord(refCon) || 'one') + ' futures since ' + dd(start) : '';
+    var since = start > first ? (conWord(refCon) ? ', on ' + conWord(refCon) + ' futures since ' : ', since ') + dd(start) : '';
     if (mn !== st0 && mn !== now && Math.abs(now.hiR - st0.hiR) <= 5 && st0.hiR - mn.hiR >= 5 && now.hiR - mn.hiR >= 5) head = base + ' fell to ' + word(mn.hiR) + ' on ' + dd(mn.d) + ' and is back to ' + word(now.hiR) + since + '.';
     else if (rise >= 3 && rise >= fall) head = base + ' rose from ' + word(mn.hiR) + ' on ' + dd(mn.d) + ' to ' + word(now.hiR) + ' now' + since + '.';
     else if (fall >= 3) head = base + ' fell from ' + word(mx.hiR) + ' on ' + dd(mx.d) + ' to ' + word(now.hiR) + ' now' + since + '.';
-    else head = base + ' held between ' + word(mn.hiR) + ' and ' + word(mx.hiR) + (start > first ? ' on ' + (conWord(refCon) || 'one') + ' futures' : '') + ' since ' + dd(win[0].d) + '.';
-    var take = 'The band runs from the lowest to the highest bid in town each day, ' + nIn + (nIn === 1 ? ' elevator' : ' elevators') + ' posting since ' + dd(start) + ', each for its nearest delivery month; its top edge is the best bid.' +
-      (marks.length ? ' Dotted lines mark where the delivery month or the futures month changed.' : '') +
-      (start > first ? ' The headline compares only bids since ' + dd(start) + ', on the same terms.' : refCon ? ' Every bid here is on ' + conWord(refCon) + ' futures.' : '');
+    else head = base + ' held between ' + word(mn.hiR) + ' and ' + word(mx.hiR) + (start > first && conWord(refCon) ? ' on ' + conWord(refCon) + ' futures' : '') + ' since ' + dd(win[0].d) + '.';
+    // at most four lines on a phone (about 170 characters)
+    var take = 'Lowest to highest bid in town each day, ' + nIn + (nIn === 1 ? ' elevator' : ' elevators') + ' posting since ' + dd(start) + '; top edge: the best.' +
+      (marks.length ? ' Dotted lines: a new delivery or futures month.' : '') + (start === first && refCon && conWord(refCon) ? ' All on ' + conWord(refCon) + ' futures.' : '');
     var cardTake = nIn + (nIn === 1 ? ' elevator' : ' elevators') + ' posting since ' + dd(start) + (marks.length ? '. Dotted lines: a new delivery or futures month' : '') + (start > first ? '; only bids since ' + dd(start) + ', on the same terms, are compared.' : '.');
-    return { lines: lines, days: days, marks: marks, head: head, take: take, cardTake: cardTake, first: first, end: end, now: now, strays: sl, start: start, n: nIn, refCon: refCon };
+    return { lines: lines, days: days, marks: marks, off: offList, head: head, take: take, cardTake: cardTake, first: first, end: end, now: now, strays: sl, start: start, n: nIn, refCon: refCon };
   }
 
   /* -> { svg, x(d), day(px) } at W x H. opt: { card, fs, show: {key: 1}, state: {median, lo, hi, n, label, name}, hover } */
@@ -123,7 +141,12 @@
     var Y = function (c) { return y0 + (top - c) / (top - bot) * (y1 - y0); };
     var o = [], P = { gr: [], ev: [] };
     var t = function (x, y, s, cls, anchor) { return '<text x="' + f1(x) + '" y="' + f1(y) + '"' + (anchor ? ' text-anchor="' + anchor + '"' : '') + (cls ? ' class="' + cls + '"' : '') + '>' + esc(BD.hy(s)) + '</text>'; };
-    ticks.forEach(function (c) { var y = Y(c); P[c === 0 ? 'ev' : 'gr'].push('M' + L + ' ' + f1(y) + 'H' + f1(W - R)); o.push(t(L - 8, y + fs * 0.36, word(c), c === 0 ? 'b' : 'm', 'end')); });
+    /* every word is a box: the placer keeps the words on the data off each other, off the tick and date words, off the
+       best line and inside the plot (round 4: names on the tick words and cut at the plot edge at 320) */
+    var obst = [], labs = [], tw = function (x, y, s, bold, anchor) { var w = BD.widthOf(s, fs, bold), x0 = anchor === 'end' ? x - w : anchor === 'middle' ? x - w / 2 : x; return { x0: x0 - 2, x1: x0 + w + 2, y0: y - fs, y1: y + 3 }; };
+    ticks.forEach(function (c) { var y = Y(c); P[c === 0 ? 'ev' : 'gr'].push('M' + L + ' ' + f1(y) + 'H' + f1(W - R)); o.push(t(L - 8, y + fs * 0.36, word(c), c === 0 ? 'b' : 'm', 'end')); obst.push(tw(L - 8, y + fs * 0.36, word(c), c === 0, 'end')); });
+    var PB = { x0: L + 2, x1: W - R - 2, y0: y0 - 2, y1: y1 + 2 }, inP = function (b) { return b.x0 >= PB.x0 && b.x1 <= PB.x1 && b.y0 >= PB.y0 && b.y1 <= PB.y1; };
+    var free = function (b) { return inP(b) && !obst.concat(labs).some(function (z) { return BD.hit(z, b); }); };
     // the band and its top edge, a step that holds each day until the next; a day with nothing logged breaks both
     var runs = [], cur = null;
     m.days.forEach(function (x) { if (x.gap) { cur = null; return; } if (!cur) runs.push(cur = []); cur.push(x); });
@@ -134,6 +157,7 @@
       band += 'M' + up.map(function (p) { return f1(p[0]) + ' ' + f1(p[1]); }).join('L') + 'L' + dn.reverse().map(function (p) { return f1(p[0]) + ' ' + f1(p[1]); }).join('L') + 'Z';
       topLine += 'M' + up.map(function (p) { return f1(p[0]) + ' ' + f1(p[1]); }).join('L');
     });
+    runs.forEach(function (r) { r.forEach(function (x, i) { var xa = X(x.d), xb = i < r.length - 1 ? X(r[i + 1].d) : X(x.d); obst.push({ x0: Math.min(xa, xb) - 1, x1: Math.max(xa, xb) + 1, y0: Y(x.hi) - 2, y1: Y(x.hi) + 2, line: 1 }); if (i) obst.push({ x0: xa - 2, x1: xa + 2, y0: Math.min(Y(x.hi), Y(r[i - 1].hi)), y1: Math.max(Y(x.hi), Y(r[i - 1].hi)), line: 1 }); }); });
     // an elevator's own line, when its name is pressed
     var own = '';
     m.lines.forEach(function (l) {
@@ -148,21 +172,24 @@
       own += '<path class="bm-own" d="' + d + '"/>';
     });
     // the changeovers: a dotted rule each, named at the top of the plot (two rows where names would meet)
-    var mk = '', mrow = [], lab = [];
+    var mk = '', named = 0;
+    (m.marks || []).forEach(function (k) { var x = X(k.d); mk += '<path class="bm-mk" d="M' + f1(x) + ' ' + f1(y0) + 'V' + f1(y1) + '"/>'; obst.push({ x0: x - 1.5, x1: x + 1.5, y0: y0, y1: y1, rule: 1 }); });
     (m.marks || []).forEach(function (k) {
-      var x = X(k.d), txt = phone ? k.text.replace(/^(\w{3})\w* (delivery|futures) from (.*)$/, '$1 $2, $3') : k.text, w = BD.widthOf(txt, fs, false), row = 0;
-      var x0t = x + w + 6 > W - R ? x - 4 - w : x + 4;
-      while (mrow.some(function (z) { return z.row === row && x0t < z.x1 + 6 && x0t + w > z.x0 - 6; })) row++;
-      mrow.push({ row: row, x0: x0t, x1: x0t + w });
-      mk += '<path class="bm-mk" d="M' + f1(x) + ' ' + f1(y0) + 'V' + f1(y1) + '"/>'; lab.push({ x0: x - 2, x1: x + 2, y0: y0, y1: y1 });
-      o.push(t(x0t, y0 + fs + row * fs * 1.3, txt, 'm h'));
-      lab.push({ x0: x0t - 2, x1: x0t + w + 2, y0: y0 + row * fs * 1.3, y1: y0 + fs + 4 + row * fs * 1.3 });
+      var x = X(k.d), txts = phone ? [k.text.replace(/^(\w{3})\w* (delivery|futures) from (.*)$/, '$1 $2, $3')] : [k.text, k.text.replace(/^(\w{3})\w* (delivery|futures) from (.*)$/, '$1 $2, $3')];
+      for (var ti = 0; ti < txts.length; ti++) {
+        var w = BD.widthOf(txts[ti], fs, false);
+        for (var row = 0; row < 4; row++) {
+          var y = y0 + fs + 2 + row * fs * 1.3, ok = null;
+          [x + 5, x - 5 - w].forEach(function (x0t) { if (ok) return; var b = { x0: x0t - 2, x1: x0t + w + 2, y0: y - fs, y1: y + 3 }; if (free(b)) ok = { x: x0t, b: b }; });
+          if (ok) { o.push(t(ok.x, y, txts[ti], 'm')); labs.push(ok.b); named++; ti = txts.length; break; }
+        }
+      }
     });
     // the date axis: Mondays, every other one where they would crowd
     var mons = [], d0 = m.first;
     for (var d = d0; d <= m.end; d = addDay(d, 1)) if (new Date(d + 'T00:00:00Z').getUTCDay() === 1) mons.push(d);
     if (mons.length > 1 && X(mons[1]) - X(mons[0]) < fs * 4.5) mons = mons.filter(function (x, i) { return i % 2 === 0; });
-    mons.forEach(function (x) { o.push(t(X(x), y1 + fs + 6, dd(x), 'm', 'middle')); });
+    mons.forEach(function (x) { o.push(t(X(x), y1 + fs + 6, dd(x), 'm', 'middle')); obst.push(tw(X(x), y1 + fs + 6, dd(x), false, 'middle')); });
     // words on the data: the best line named at its right end; the low point named
     var now = m.now;
     if (now) {
@@ -174,16 +201,16 @@
         var hiS = Math.max.apply(null, span.map(function (x) { return x.hi; }).concat(now.hi)), loS = Math.min.apply(null, span.map(function (x) { return x.lo; }).concat(now.lo));
         var cands = [Y(hiS) - 8 - hh, Y(loS) + fb + 6, Y(loS) + 2 * fb + 10].filter(function (y) { return y - fb >= y0 - 4 && y + hh <= y1 - 2; });
         for (var ci = 0; ci < cands.length; ci++) {
-          var bb = { x0: ex - bw, x1: ex, y0: cands[ci] - fb, y1: cands[ci] + hh + 4 };
-          if (!lab.some(function (z) { return BD.hit(z, bb); })) { ls.forEach(function (z, j) { o.push(t(ex, cands[ci] + j * lh2, z, 'g b B', 'end')); }); lab.push(bb); done = true; break; }
+          var bb = { x0: ex - bw - 2, x1: ex + 2, y0: cands[ci] - fb, y1: cands[ci] + hh + 4 };
+          if (free(bb)) { ls.forEach(function (z, j) { o.push(t(ex, cands[ci] + j * lh2, z, 'g b B', 'end')); }); labs.push(bb); done = true; break; }
         }
       }
-      if (!done) { var ey0 = Y(now.hi) - 8; o.push(t(ex, ey0, 'Best in town: ' + word(now.hi), 'g b B h', 'end')); lab.push({ x0: ex - 160, x1: ex, y0: ey0 - fb, y1: ey0 + 4 }); }
+      // no free place: the readout and the headline carry it
       var mn = m.days.filter(function (x) { return !x.gap; }).reduce(function (a, x) { return !a || x.hi < a.hi ? x : a; }, null);
       if (mn && mn.hi < now.hi - 2) {
         var txt = dd(mn.d) + ': ' + word(mn.hi), w = BD.widthOf(txt, fs, false), mx = Math.max(L + w / 2 + 2, Math.min(W - R - w / 2 - 4, X(mn.d))), my = Y(mn.hi) + fs + 8;
-        var bx = { x0: mx - w / 2, x1: mx + w / 2, y0: my - fs, y1: my + 2 };
-        if (!lab.some(function (z) { return BD.hit(z, bx); })) o.push(t(mx, my, txt, 'h', 'middle'));   // under the low point, on a halo over the band
+        var bx = { x0: mx - w / 2 - 2, x1: mx + w / 2 + 2, y0: my - fs, y1: my + 3 };
+        if (free(bx)) { o.push(t(mx, my, txt, 'h', 'middle')); labs.push(bx); }   // under the low point, on a halo over the band
       }
     }
     // the state today, as a bracket at the right edge: its range and its middle bid
@@ -202,7 +229,7 @@
       (card ? BD.cardStyle(BD.CARD) + '<style>.bm-band{fill:rgba(233,237,235,.16)}.bm-top{fill:none;stroke:' + BD.CARD.gold + ';stroke-width:2.5}.bm-own{fill:none;stroke:' + BD.CARD.ink + ';stroke-width:1.4}.h{paint-order:stroke;stroke:' + BD.CARD.bg + ';stroke-width:3px}.bm-br{fill:none;stroke:' + BD.CARD.ink + ';stroke-width:1.4}.bm-mk{fill:none;stroke:' + BD.CARD.mid + ';stroke-width:1;stroke-dasharray:2 3}</style>' : '') +
       dp('gr', P.gr) + dp('ev', P.ev) + '<path class="bm-band" d="' + band + '"/>' + mk + own + '<path class="bm-top" d="' + topLine + '"/>' +
       '<line class="bm-hair" x1="0" x2="0" y1="' + y0 + '" y2="' + y1 + '" visibility="hidden"/>' + o.join('') + '</svg>';
-    return { svg: s, X: X, L: L, R: R, W: W, y0: y0, y1: y1, day: function (px) { var f = (px - L) / Math.max(1, W - L - R - 8); var d = new Date(t0 + Math.round(f * (t1 - t0) / 864e5) * 864e5).toISOString().slice(0, 10); return d < m.first ? m.first : d > m.end ? m.end : d; } };
+    return { svg: s, labs: labs, obst: obst, plot: PB, named: named, X: X, L: L, R: R, W: W, y0: y0, y1: y1, day: function (px) { var f = (px - L) / Math.max(1, W - L - R - 8); var d = new Date(t0 + Math.round(f * (t1 - t0) / 864e5) * 864e5).toISOString().slice(0, 10); return d < m.first ? m.first : d > m.end ? m.end : d; } };
   }
 
   function readout(m, d, held, show) {
@@ -215,7 +242,8 @@
   function mount(el, o) {
     var H = root.CbBasisHist, det = el.querySelector('details[data-basis-hist]');
     if (!H || !det) return { crop: function () {}, save: function () {} };
-    var boards = []; try { boards = JSON.parse(det.getAttribute('data-boards') || '[]'); } catch (e) {}
+    var boards = [], relay = []; try { boards = JSON.parse(det.getAttribute('data-boards') || '[]'); relay = JSON.parse(det.getAttribute('data-relay') || '[]'); } catch (e) {}
+    boards = boards.filter(function (b, i) { return relay.indexOf(i) < 0; });   // a relayed board is drawn once, by the elevator
     var st = String(det.getAttribute('data-basis-hist') || '').toUpperCase(), town = det.getAttribute('data-town') || o.cfg.town;
     det.hidden = true; el.classList.add('bm-on');
     var wrap = root.document.createElement('div'); wrap.className = 'bm';
@@ -231,7 +259,7 @@
     };
     var say = function (d) { var r = readout(m, d, H.heldOn, show); read.innerHTML = '<b>' + esc(r[0]) + '</b> ' + esc(BD.hy(r[1])); };
     var draw = function (force) {
-      var W = Math.round(plot.clientWidth); if (!W || !m || (W === lastW && !force)) return; lastW = W;
+      var W = Math.round(plot.clientWidth); if (!W || !m || m.short || (W === lastW && !force)) return; lastW = W;
       pic = svg(m, W, plot.clientHeight || 400, { show: show, held: H.heldOn, state: stateOf() });
       plot.innerHTML = pic.svg; say(sel || m.end);
     };
@@ -241,12 +269,17 @@
       if (!c) { plot.innerHTML = ''; read.textContent = 'No ' + ADJ[cur] + ' basis logged in ' + town + ' yet.'; o.head.textContent = 'No ' + ADJ[cur] + ' basis logged in ' + town + ' yet'; o.take.textContent = ''; return; }
       m = model(c, H.heldOn, town, data.publicFrom, o.today ? o.today(cur, ctDay(data.generated)) : null);
       o.head.textContent = BD.hy(m.head); o.take.textContent = BD.hy(m.take);
+      // a log of fewer than three days: the one sentence, no chart
+      [plot, list.parentNode, q('.bm-axis')].forEach(function (e) { e.hidden = !!m.short; });
+      if (m.short) { plot.innerHTML = ''; pic = null; read.textContent = ''; noteEl.textContent = 'Source: posted elevator bids, logged by AGSIST.'; return; }
       q('.bm-axis').textContent = (cur === 'soybeans' ? 'Soybean' : ADJ[cur].replace(/^./, function (x) { return x.toUpperCase(); })) + ' basis in ' + town + ', cents a bushel over or under futures, since ' + dd(m.first);
       q('.bm-more summary').textContent = 'Draw one elevator’s own line (' + m.lines.length + ' since ' + dd(m.first) + ')';
       list.innerHTML = m.lines.map(function (l) { return '<button type="button" data-k="' + esc(l.key) + '" aria-pressed="' + (!!show[l.key]) + '">' + esc(BD.hy(l.name)) + '</button>'; }).join('');
       [].slice.call(list.querySelectorAll('button')).forEach(function (b) { b.addEventListener('click', function () { var k = b.getAttribute('data-k'); show[k] = !show[k]; b.setAttribute('aria-pressed', String(!!show[k])); draw(true); }); });
       var stt = stateOf();
       noteEl.textContent = BD.hy('Each elevator’s basis for its nearest open delivery month, logged on the days it changed; it holds flat between changes. When a month closes the next one takes over, so a step there is partly a new month. ' +
+        ((m.marks || []).length ? 'Dotted lines: ' + m.marks.map(function (k) { return k.text; }).join('; ') + '. ' : '') +
+        ((m.off || []).length ? 'Not in the band from ' + dd(m.start) + ', on another futures month: ' + m.off.map(function (z) { return z.name + ' (' + conWord(z.con) + ')'; }).join('; ') + '. ' : '') +
         (m.strays.length ? 'Kept out of the band, far from the others: ' + m.strays.join('; ') + '. ' : '') +
         (stt ? 'Bracket: ' + stt.name + ' today, ' + stt.n + ' bids against ' + stt.label + ' futures, middle ' + word(stt.median) + '. ' : '') +
         'Source: posted elevator bids, logged by AGSIST since ' + dd(m.first) + ', ' + m.first.slice(0, 4) + '.');
