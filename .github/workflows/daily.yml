@@ -68,6 +68,12 @@ jobs:
           python3 scripts/print_of_day.py --date "$d" --out "$RUNNER_TEMP/pick.json"
           PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" node scripts/render_print_of_day.mjs "$RUNNER_TEMP/pick.json" "daily/img/print-$d.png"
           python3 scripts/print_of_day.py --compress "daily/img/print-$d.png"
+          fe="daily/img/print-email-$d.png"
+          if PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" timeout 60 node scripts/render_print_email.mjs "$RUNNER_TEMP/pick.json" "$fe" && python3 scripts/print_of_day.py --compress "$fe"; then
+            echo "email=1" >> "$GITHUB_OUTPUT"
+          else
+            rm -f "$fe"; echo "::warning::no email-width picture today; the email shows the full print"
+          fi
           echo "date=$d" >> "$GITHUB_OUTPUT"
       - name: Put the picture on agsist.com and wait until it is served
         id: live
@@ -78,12 +84,14 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}
         run: |
-          d="${{ steps.draw.outputs.date }}"; f="daily/img/print-$d.png"
+          d="${{ steps.draw.outputs.date }}"; f="daily/img/print-$d.png"; fe="daily/img/print-email-$d.png"
           cp "$f" "$RUNNER_TEMP/print.png"
+          [ "${{ steps.draw.outputs.email }}" = "1" ] && [ -f "$fe" ] && cp "$fe" "$RUNNER_TEMP/print-email.png" || fe=""
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           for i in 1 2 3; do
             git fetch -q origin main && git checkout -q -B pod origin/main && mkdir -p daily/img && cp "$RUNNER_TEMP/print.png" "$f" \
+              && { [ -z "$fe" ] || { cp "$RUNNER_TEMP/print-email.png" "$fe" && git add "$fe"; }; } \
               && git add "$f" && { git diff --cached --quiet || git commit -q -m "Daily print of the day $d"; } \
               && git push -q origin HEAD:main && break
             echo "push attempt $i failed; retrying"; sleep 15
@@ -93,8 +101,10 @@ jobs:
           url="https://agsist.com/$f"
           for i in $(seq 1 40); do
             if curl -fsS -o "$RUNNER_TEMP/live.png" "$url" && cmp -s "$RUNNER_TEMP/live.png" "$RUNNER_TEMP/print.png"; then
-              python3 -c "import json,sys; p=json.load(open(sys.argv[1])); p['image_url']=sys.argv[2]; print('pick='+json.dumps(p,separators=(',',':')))" "$RUNNER_TEMP/pick.json" "$url" >> "$GITHUB_OUTPUT"
-              echo "live: $url"; exit 0
+              eurl=""
+              if [ -n "$fe" ] && curl -fsS -o "$RUNNER_TEMP/live-email.png" "https://agsist.com/$fe" && cmp -s "$RUNNER_TEMP/live-email.png" "$RUNNER_TEMP/print-email.png"; then eurl="https://agsist.com/$fe"; fi
+              python3 -c "import json,sys; p=json.load(open(sys.argv[1])); p['image_url']=sys.argv[2]; e=sys.argv[3]; p.update({'email_image_url': e} if e else {}); print('pick='+json.dumps(p,separators=(',',':')))" "$RUNNER_TEMP/pick.json" "$url" "$eurl" >> "$GITHUB_OUTPUT"
+              echo "live: $url $eurl"; exit 0
             fi
             sleep 15
           done
@@ -318,9 +328,17 @@ jobs:
           PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" node scripts/render_print_of_day.mjs "$RUNNER_TEMP/pick.json" "$f"
           python3 scripts/print_of_day.py --compress "$f"
           cp "$f" "$RUNNER_TEMP/print.png"
+          # email-width picture; never stops the run (no file: full print)
+          fe="daily/img/print-email-$d.png"
+          if PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" timeout 60 node scripts/render_print_email.mjs "$RUNNER_TEMP/pick.json" "$fe" && python3 scripts/print_of_day.py --compress "$fe"; then
+            cp "$fe" "$RUNNER_TEMP/print-email.png"; echo "emailfile=$fe" >> "$GITHUB_OUTPUT"
+          else
+            rm -f "$fe"; echo "::warning::no email-width picture today; the email shows the full print"
+          fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "$f"
+          [ -f "$fe" ] && git add "$fe"
           git diff --cached --quiet || git commit -q -m "Daily print of the day $d"
           pushed=0
           for n in 1 2 3 4 5; do
@@ -546,12 +564,15 @@ jobs:
         timeout-minutes: 4
         env:
           F: ${{ steps.podraw.outputs.file }}
+          EF: ${{ steps.podraw.outputs.emailfile }}
         run: |
           url="https://agsist.com/$F"
           for i in $(seq 1 12); do
             if curl -fsS -m 20 -o "$RUNNER_TEMP/live.png" "$url" && cmp -s "$RUNNER_TEMP/live.png" "$RUNNER_TEMP/print.png"; then
-              python3 -c "import json,sys; p=json.load(open(sys.argv[1])); p['image_url']=sys.argv[2]; json.dump(p, open(sys.argv[3],'w'))" "$RUNNER_TEMP/pick.json" "$url" "$RUNNER_TEMP/print-of-day.json"
-              echo "live: $url"; exit 0
+              eurl=""
+              if [ -n "$EF" ] && curl -fsS -m 20 -o "$RUNNER_TEMP/live-email.png" "https://agsist.com/$EF" && cmp -s "$RUNNER_TEMP/live-email.png" "$RUNNER_TEMP/print-email.png"; then eurl="https://agsist.com/$EF"; fi
+              python3 -c "import json,sys; p=json.load(open(sys.argv[1])); p['image_url']=sys.argv[2]; e=sys.argv[4]; p.update({'email_image_url': e} if e else {}); json.dump(p, open(sys.argv[3],'w'))" "$RUNNER_TEMP/pick.json" "$url" "$RUNNER_TEMP/print-of-day.json" "$eurl"
+              echo "live: $url $eurl"; exit 0
             fi
             sleep 15
           done
