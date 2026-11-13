@@ -166,7 +166,9 @@
   function todayOf(p, d) {
     if (!p.town.length) return null;
     var hi = Math.max.apply(null, p.town.map(function (r) { return r.c; })), lo = Math.min.apply(null, p.town.map(function (r) { return r.c; }));
-    return { d: d, hi: hi, lo: lo, n: p.town.length, top: p.town.filter(function (r) { return r.c === hi; }).map(function (r) { return r.name; }) };
+    return { d: d, hi: hi, lo: lo, n: p.town.length, top: p.town.filter(function (r) { return r.c === hi; }).map(function (r) { return r.name; }),
+             // each bid in town today with its futures month, so the month view can take a board's terms from the table
+             rows: p.town.concat(p.other.filter(function (r) { return r.inTown; })).map(function (r) { return { elevator: r.elevator, site: r.site, vs: r.vs }; }) };
   }
   /* a week's line is drawn only where the bid moved */
   function moved(p) { return !!p.prev && p.all.some(function (r) { return r.w != null && r.w !== 0; }); }

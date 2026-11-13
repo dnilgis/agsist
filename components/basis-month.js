@@ -28,6 +28,20 @@
   function addDay(d, n) { return new Date(Date.parse(d + 'T00:00:00Z') + n * 864e5).toISOString().slice(0, 10); }
   /* a UTC time -> its day in Central time, the network's day (BasisDrive.ct) */
   function ctDay(iso) { var t = BD.ct(new Date(iso)); return t.y + '-' + (t.m < 9 ? '0' : '') + (t.m + 1) + '-' + (t.d < 10 ? '0' : '') + t.d; }
+  /* each line's futures month today from the table: its board (company and site) matched to a table row in town,
+     by the site first, else the company alone when it has one row. -> { line key: "Jan '27" } */
+  function termsOf(lines, boards, rows, town) {
+    var H = root.CbBasisHist || (typeof require === 'function' ? require('./cb-basis-hist.js') : null), out = {};
+    if (!H || !H.normFac) return out;
+    lines.forEach(function (l) {
+      var b = boards[+String(l.key).slice(1)]; if (!b) return;
+      var op = H.normFac(b[0]), places = (b[1] || []).map(H.normKey), mine = rows.filter(function (r) { return H.normFac(r.elevator) === op; });
+      var hit = mine.filter(function (r) { return places.indexOf(H.normKey(r.site)) >= 0 && H.normKey(r.site) !== H.normKey(town); });
+      if (!hit.length && mine.length === 1) hit = mine;
+      if (hit.length === 1 && hit[0].vs) out[l.key] = hit[0].vs;
+    });
+    return out;
+  }
   function median(a) { var s = a.slice().sort(function (x, y) { return x - y; }), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
 
   /* c: one crop from CbBasisHist.crops(); held(l, d): CbBasisHist.heldOn. today: the town's bids the distance view
@@ -41,9 +55,19 @@
     /* the futures month most lines hold on the last day: the headline compares only bids on it */
     var conN = {}; lines.forEach(function (l) { var p = held(l, end); if (p && p.con) conN[p.con] = (conN[p.con] || 0) + 1; });
     var refCon = Object.keys(conN).sort(function (a, b) { return conN[b] - conN[a] || (a < b ? -1 : 1); })[0] || '';
+    /* a board's futures month on the last day is the table's (today.terms: line key -> "Jan '27"); where the log's last
+       point is on another month, the log did not record the move (a change of futures with the cents unchanged is never
+       logged), so from the day after that point the line's terms are not known and it leaves the band (round 5) */
+    var terms = {}, lastOf = {}, unknown = {}; if (today && today.terms) for (var tk in today.terms) terms[tk] = today.terms[tk];
+    lines.forEach(function (l) { var pts = l.line.points; lastOf[l.key] = pts[pts.length - 1]; if (!held(l, addDay(end, -1))) delete terms[l.key]; });   // only a line the log still holds
     var days = [], strays = {};
     for (var d = first; d <= end; d = addDay(d, 1)) {
-      var vs = lines.map(function (l) { var p = held(l, d); return p ? { l: l, v: p.v, con: p.con, dm: p.dm } : null; }).filter(Boolean);
+      var vs = lines.map(function (l) {
+        var p = held(l, d); if (!p) return null;
+        var tc = terms[l.key], lp = lastOf[l.key];
+        if (tc && p.con !== tc && d > lp.d && d < end) { var u = unknown[l.key] = unknown[l.key] || { name: l.name, from: d, to: d, con: tc }; u.to = d; return null; }
+        return { l: l, v: p.v, con: p.con, dm: p.dm };
+      }).filter(Boolean);
       var keep = vs;
       if (vs.length >= 3) {
         var md = median(vs.map(function (x) { return x.v; }));
@@ -89,7 +113,7 @@
     if (start > first) days.forEach(function (x, i) {
       if (x.gap || x.d < start || !x.all.length) return;
       var on = x.all.filter(function (z) { return z.con === refCon && (!strays[z.l.key] || strays[z.l.key].d.indexOf(x.d) < 0); });
-      x.all.forEach(function (z) { if (z.con !== refCon) (off[z.l.key] = off[z.l.key] || { name: z.l.name, con: z.con }); });
+      x.all.forEach(function (z) { if (z.con !== refCon && terms[z.l.key] !== refCon) (off[z.l.key] = off[z.l.key] || { name: z.l.name, con: z.con }); });
       if (!on.length) { days[i] = { d: x.d, gap: true }; return; }
       var h2 = Math.max.apply(null, on.map(function (z) { return z.v; }));
       days[i] = { d: x.d, hi: h2, lo: Math.min.apply(null, on.map(function (z) { return z.v; })), n: on.length, top: on.filter(function (z) { return z.v === h2; }).map(function (z) { return z.l.name; }), all: x.all, hiR: h2, keys: on.map(function (z) { return z.l.key; }) };
@@ -113,12 +137,18 @@
     if (mn !== st0 && mn !== now && Math.abs(now.hiR - st0.hiR) <= 5 && st0.hiR - mn.hiR >= 5 && now.hiR - mn.hiR >= 5) head = base + ' fell to ' + word(mn.hiR) + ' on ' + dd(mn.d) + ' and is back to ' + word(now.hiR) + since + '.';
     else if (rise >= 3 && rise >= fall) head = base + ' rose from ' + word(mn.hiR) + ' on ' + dd(mn.d) + ' to ' + word(now.hiR) + ' now' + since + '.';
     else if (fall >= 3) head = base + ' fell from ' + word(mx.hiR) + ' on ' + dd(mx.d) + ' to ' + word(now.hiR) + ' now' + since + '.';
-    else head = base + ' held between ' + word(mn.hiR) + ' and ' + word(mx.hiR) + (cut ? '.' : ' since ' + dd(win[0].d) + '.');
+    else head = base + (mn.hiR === mx.hiR ? ' held at ' + word(mn.hiR) : ' held between ' + word(mn.hiR) + ' and ' + word(mx.hiR)) + (cut ? '.' : ' since ' + dd(win[0].d) + '.');
     // at most four lines on a phone (about 170 characters)
-    var take = (nIn === 1 ? 'One elevator in town posting since ' + dd(start) + '; the gold line is its bid.' : 'Lowest to highest bid in town each day, ' + nIn + ' elevators posting since ' + dd(start) + '; top edge: the best.') +
+    // the elevators drawn in the band in the stretch (the last day is the table's, every bid in town)
+    var inBand = {}; days.forEach(function (x) { if (!x.gap && x.d >= start && x.d < end) (x.keys || []).forEach(function (k) { inBand[k] = 1; }); });
+    var nBand = Object.keys(inBand).length;
+    var take = (nIn === 1 ? 'One elevator in town posting since ' + dd(start) + '; the gold line is its bid.' :
+      cut && nBand < nIn ? nBand + ' of ' + nIn + ' elevators posting since ' + dd(start) + ' are logged on ' + (conWord(refCon) || 'these') + ' futures; the band runs from their lowest to highest bid.' :
+      'Lowest to highest bid in town each day, ' + nIn + ' elevators posting since ' + dd(start) + '; top edge: the best.') +
       (marks.length ? ' Dotted lines: a new delivery or futures month.' : '') + (start === first && refCon && conWord(refCon) ? ' All on ' + conWord(refCon) + ' futures.' : '');
-    var cardTake = nIn + (nIn === 1 ? ' elevator' : ' elevators') + ' posting since ' + dd(start) + (marks.length ? '. Dotted lines: a new delivery or futures month' : '') + (start > first ? '; only bids since ' + dd(start) + ', on the same terms, are compared.' : '.');
-    return { lines: lines, days: days, marks: marks, off: offList, head: head, take: take, cardTake: cardTake, first: first, end: end, now: now, strays: sl, start: start, n: nIn, refCon: refCon };
+    var cardTake = take;
+    var unk = Object.keys(unknown).map(function (k) { return unknown[k]; });
+    return { lines: lines, days: days, marks: marks, off: offList, unknown: unk, nBand: nBand, head: head, take: take, cardTake: cardTake, first: first, end: end, now: now, strays: sl, start: start, n: nIn, refCon: refCon };
   }
 
   /* -> { svg, x(d), day(px) } at W x H. opt: { card, fs, show: {key: 1}, state: {median, lo, hi, n, label, name}, hover } */
@@ -233,6 +263,15 @@
     return { svg: s, labs: labs, obst: obst, plot: PB, named: named, X: X, L: L, R: R, W: W, y0: y0, y1: y1, day: function (px) { var f = (px - L) / Math.max(1, W - L - R - 8); var d = new Date(t0 + Math.round(f * (t1 - t0) / 864e5) * 864e5).toISOString().slice(0, 10); return d < m.first ? m.first : d > m.end ? m.end : d; } };
   }
 
+  function noteText(m, stt) {
+    return BD.hy('Each elevator’s basis for its nearest open delivery month, logged on the days it changed; it holds flat between changes. When a month closes the next one takes over, so a step there is partly a new month. ' +
+        ((m.marks || []).length ? 'Dotted lines: ' + m.marks.map(function (k) { return k.text; }).join('; ') + '. ' : '') +
+        ((m.off || []).length ? 'Not in the band from ' + dd(m.start) + ', on another futures month: ' + m.off.map(function (z) { return z.name + ' (' + conWord(z.con) + ')'; }).join('; ') + '. ' : '') +
+        ((m.unknown || []).length ? 'Terms not logged, so not in the band: ' + m.unknown.map(function (z) { return z.name + ', ' + dd(z.from) + (z.to !== z.from ? ' to ' + dd(z.to) : '') + ' (on ' + conWord(z.con) + ' futures on ' + dd(m.end) + ')'; }).join('; ') + '. ' : '') +
+        (m.strays.length ? 'Kept out of the band, far from the others: ' + m.strays.join('; ') + '. ' : '') +
+        (stt ? 'Bracket: ' + stt.name + ' today, ' + stt.n + ' bids against ' + stt.label + ' futures, middle ' + word(stt.median) + '. ' : '') +
+        'Source: posted elevator bids, logged by AGSIST since ' + dd(m.first) + ', ' + m.first.slice(0, 4) + '.');
+  }
   function readout(m, d, held, show) {
     var x = m.days.filter(function (z) { return z.d === d; })[0];
     if (!x || x.gap) return [dd(d) + ':', 'nothing logged for an open month.'];
@@ -268,7 +307,9 @@
       var all = H.crops(data, boards, town, 99, st);
       c = all.filter(function (x) { return x.crop === cur; })[0];
       if (!c) { plot.innerHTML = ''; read.textContent = 'No ' + ADJ[cur] + ' basis logged in ' + town + ' yet.'; o.head.textContent = 'No ' + ADJ[cur] + ' basis logged in ' + town + ' yet'; o.take.textContent = ''; return; }
-      m = model(c, H.heldOn, town, data.publicFrom, o.today ? o.today(cur, ctDay(data.generated)) : null);
+      var td = o.today ? o.today(cur, ctDay(data.generated)) : null;
+      if (td && td.rows) td.terms = termsOf(c.all, boards, td.rows, town);
+      m = model(c, H.heldOn, town, data.publicFrom, td);
       o.head.textContent = BD.hy(m.head); o.take.textContent = BD.hy(m.take);
       // a log of fewer than three days: the one sentence, no chart
       [plot, list.parentNode, q('.bm-axis'), read].forEach(function (e) { e.hidden = !!m.short; });
@@ -278,12 +319,7 @@
       list.innerHTML = m.lines.map(function (l) { return '<button type="button" data-k="' + esc(l.key) + '" aria-pressed="' + (!!show[l.key]) + '">' + esc(BD.hy(l.name)) + '</button>'; }).join('');
       [].slice.call(list.querySelectorAll('button')).forEach(function (b) { b.addEventListener('click', function () { var k = b.getAttribute('data-k'); show[k] = !show[k]; b.setAttribute('aria-pressed', String(!!show[k])); draw(true); }); });
       var stt = stateOf();
-      noteEl.textContent = BD.hy('Each elevator’s basis for its nearest open delivery month, logged on the days it changed; it holds flat between changes. When a month closes the next one takes over, so a step there is partly a new month. ' +
-        ((m.marks || []).length ? 'Dotted lines: ' + m.marks.map(function (k) { return k.text; }).join('; ') + '. ' : '') +
-        ((m.off || []).length ? 'Not in the band from ' + dd(m.start) + ', on another futures month: ' + m.off.map(function (z) { return z.name + ' (' + conWord(z.con) + ')'; }).join('; ') + '. ' : '') +
-        (m.strays.length ? 'Kept out of the band, far from the others: ' + m.strays.join('; ') + '. ' : '') +
-        (stt ? 'Bracket: ' + stt.name + ' today, ' + stt.n + ' bids against ' + stt.label + ' futures, middle ' + word(stt.median) + '. ' : '') +
-        'Source: posted elevator bids, logged by AGSIST since ' + dd(m.first) + ', ' + m.first.slice(0, 4) + '.');
+      noteEl.textContent = noteText(m, stt);
       draw(true);
     };
     var move = function (ev) { if (!pic) return; var rc = plot.getBoundingClientRect(), px = ((ev.touches ? ev.touches[0].clientX : ev.clientX) - rc.left) * pic.W / rc.width; sel = pic.day(px); hair(); say(sel); };
@@ -309,6 +345,6 @@
     return api;
   }
 
-  var api = { model: model, svg: svg, readout: readout, mount: mount, ctDay: ctDay };
+  var api = { model: model, svg: svg, readout: readout, noteText: noteText, mount: mount, ctDay: ctDay, termsOf: termsOf };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.BasisMonth = api;
 })(typeof window !== 'undefined' ? window : globalThis);
