@@ -3,7 +3,7 @@
  * Everything a buyer sees here is read, not typed:
  *   prices, terms               data/rate-card.json (sponsors pay by check or bank wire only, Nov 13, 2026:
  *                               nothing on this page takes a card or links to a payment)
- *   numbers                     data/sponsor-spots.json (engaged visits and page views, 28 days)
+ *   numbers                     data/sponsor-spots.json (proof.states: each state's own engaged visits, the week's window)
  *   sitewide taken              data/sponsor.json (the sitewide sponsor, active)
  *   states taken                data/geo-sponsors.json (a live entry for that state)
  *
@@ -51,6 +51,8 @@
   function statePrice(c) { var t = tier('state'); return t ? ((t.price_by_state && t.price_by_state[c]) || t.price_month) : 0; }
   function soon(c) { var t = tier('state'); return !!(t && (t.opens_soon || []).indexOf(c) >= 0); }
   function stateOpen(c) { return !!c && !soon(c) && !S.taken[c]; }
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function dayTxt(x) { var p = String(x || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) : ''; }
   function val(id) { return ($(id).value || '').trim(); }
   function today() {
     try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date()); }
@@ -71,12 +73,12 @@
   function stateLine(c) {
     var s = byCode(c), el = $('sp-state-live');
     if (!s) { el.textContent = 'Pick a state to see its numbers and price.'; return; }
-    var e = (S.spots && S.spots.states && S.spots.states[c]) || {};
-    var nums = '';
-    if (typeof e.engaged === 'number' && e.engaged > 0 && typeof e.views === 'number' && e.views > 0)
-      nums = n(e.engaged) + ' engaged visits from ' + s.name + ' and ' + n(e.views) + ' views of ' + s.name + ' pages in the last 28 days. ';
-    else if (typeof e.engaged === 'number' && e.engaged > 0) nums = n(e.engaged) + ' engaged visits from ' + s.name + ' in the last 28 days. ';
-    else if (typeof e.views === 'number' && e.views > 0) nums = n(e.views) + ' views of ' + s.name + ' pages in the last 28 days. ';
+    /* the state's own engaged visits over the week's window (data/sponsor-spots.json proof.states); state-level only */
+    var ps = (S.spots && S.spots.proof && S.spots.proof.states) || {};
+    var e = ps.engaged && ps.engaged[c];
+    var nums = typeof e === 'number' && e > 0 && ps.start && ps.end
+      ? n(e) + ' engaged visits from ' + s.name + ' readers, ' + dayTxt(ps.start) + ' to ' + dayTxt(ps.end) + ' (' + n(Math.round(e / (ps.days || 30))) + ' a day). '
+      : '';
     var p = statePrice(c);
     el.innerHTML = '<b>' + s.name + ':</b> ' + nums +
       (soon(c) ? 'This state opens soon.' : S.taken[c] ? 'Taken right now.' : p ? '$' + n(p) + ' a month or $' + n(p * months()) + ' a year.' : '');
