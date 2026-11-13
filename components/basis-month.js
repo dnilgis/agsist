@@ -107,12 +107,13 @@
     }
     var now = win[win.length - 1], mn = win[0], mx = win[0], st0 = win[0];
     win.forEach(function (x) { if (x.hiR < mn.hiR) mn = x; if (x.hiR > mx.hiR) mx = x; });
-    var rise = now.hiR - mn.hiR, fall = mx.hiR - now.hiR, head, base = 'The best ' + adj + ' bid in ' + town;
-    var since = start > first ? (conWord(refCon) ? ', on ' + conWord(refCon) + ' futures since ' : ', since ') + dd(start) : '';
+    // after a changeover the sentence opens on the stretch it compares: "Since Nov 2, on January futures, the best ..."
+    var rise = now.hiR - mn.hiR, fall = mx.hiR - now.hiR, head, cut = start > first;
+    var base = (cut ? 'Since ' + dd(start) + (conWord(refCon) ? ', on ' + conWord(refCon) + ' futures, the' : ', the') : 'The') + ' best ' + adj + ' bid in ' + town, since = '';
     if (mn !== st0 && mn !== now && Math.abs(now.hiR - st0.hiR) <= 5 && st0.hiR - mn.hiR >= 5 && now.hiR - mn.hiR >= 5) head = base + ' fell to ' + word(mn.hiR) + ' on ' + dd(mn.d) + ' and is back to ' + word(now.hiR) + since + '.';
     else if (rise >= 3 && rise >= fall) head = base + ' rose from ' + word(mn.hiR) + ' on ' + dd(mn.d) + ' to ' + word(now.hiR) + ' now' + since + '.';
     else if (fall >= 3) head = base + ' fell from ' + word(mx.hiR) + ' on ' + dd(mx.d) + ' to ' + word(now.hiR) + ' now' + since + '.';
-    else head = base + ' held between ' + word(mn.hiR) + ' and ' + word(mx.hiR) + (start > first && conWord(refCon) ? ' on ' + conWord(refCon) + ' futures' : '') + ' since ' + dd(win[0].d) + '.';
+    else head = base + ' held between ' + word(mn.hiR) + ' and ' + word(mx.hiR) + (cut ? '.' : ' since ' + dd(win[0].d) + '.');
     // at most four lines on a phone (about 170 characters)
     var take = 'Lowest to highest bid in town each day, ' + nIn + (nIn === 1 ? ' elevator' : ' elevators') + ' posting since ' + dd(start) + '; top edge: the best.' +
       (marks.length ? ' Dotted lines: a new delivery or futures month.' : '') + (start === first && refCon && conWord(refCon) ? ' All on ' + conWord(refCon) + ' futures.' : '');
@@ -270,7 +271,7 @@
       m = model(c, H.heldOn, town, data.publicFrom, o.today ? o.today(cur, ctDay(data.generated)) : null);
       o.head.textContent = BD.hy(m.head); o.take.textContent = BD.hy(m.take);
       // a log of fewer than three days: the one sentence, no chart
-      [plot, list.parentNode, q('.bm-axis')].forEach(function (e) { e.hidden = !!m.short; });
+      [plot, list.parentNode, q('.bm-axis'), read].forEach(function (e) { e.hidden = !!m.short; });
       if (m.short) { plot.innerHTML = ''; pic = null; read.textContent = ''; noteEl.textContent = 'Source: posted elevator bids, logged by AGSIST.'; return; }
       q('.bm-axis').textContent = (cur === 'soybeans' ? 'Soybean' : ADJ[cur].replace(/^./, function (x) { return x.toUpperCase(); })) + ' basis in ' + town + ', cents a bushel over or under futures, since ' + dd(m.first);
       q('.bm-more summary').textContent = 'Draw one elevator’s own line (' + m.lines.length + ' since ' + dd(m.first) + ')';
