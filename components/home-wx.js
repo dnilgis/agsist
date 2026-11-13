@@ -128,7 +128,21 @@
     if (!num(gap)) return '';
     var d = unit === 'in' ? f1(Math.abs(gap), 1) : comma(Math.abs(gap));
     if (+d === 0) return 'right on normal';
-    return d + (unit === 'in' ? ' inches' : ' GDUs') + (gap > 0 ? ' ahead of' : ' behind') + ' normal';
+    return d + ' ' + unitWord(d, unit) + (gap > 0 ? ' ahead of' : ' behind') + ' normal';
+  }
+  /* the unit in words, singular for exactly one: "1.0 inch", "1 GDU" */
+  function unitWord(shown, unit) { return unit === 'in' ? (+shown === 1 ? 'inch' : 'inches') : (+shown === 1 ? 'GDU' : 'GDUs'); }
+  function ordinal(n) { var t = n % 100, u = n % 10; return n + (t >= 11 && t <= 13 ? 'th' : u === 1 ? 'st' : u === 2 ? 'nd' : u === 3 ? 'rd' : 'th'); }
+  /* where this year sits in the gauge's own record, from data/rain/context (the pipeline's count), only when that file is from the state file's fetch;
+     a dry-side rank waits when missing days could undo it */
+  function rankSentence(ctx, R, fips, c, end) {
+    var r = ctx && R && ctx.fetched && ctx.fetched === R.fetched && ctx.counties && ctx.counties[fips] ? ctx.counties[fips].rank : null;
+    if (!r || !num(r.n) || !num(r.wetter) || !num(r.drier) || !end) return '';
+    if (r.drier < r.wetter && c && num(c.missing) && c.missing > 0) return '';
+    var day = md(end);
+    return (r.wetter === 0 ? 'The most rain by ' + day + ' in ' + r.n + ' years on record here (' + r.first + ' on).'
+      : r.drier === 0 ? 'The least rain by ' + day + ' in ' + r.n + ' years on record here (' + r.first + ' on).'
+      : ordinal(r.wetter + 1) + ' wettest by ' + day + ' of ' + r.n + ' years on record here (' + r.first + ' on).');
   }
   function insertAt(pts, x, y) {
     if (pts.some(function (p) { return Math.abs(p[0] - x) < 1e-9; })) return;
@@ -180,10 +194,10 @@
     rows.forEach(function (r) { a += r.a; T.push([r.x1, a]); if (N) { b += r.n; N.push([r.x1, b]); } });
     var gap = hasN ? g[0] - normT : null, fz = c.fr && Array.isArray(c.fr.f28) && num(c.fr.f28[0]) && c.fr.f28[0] >= 101 && c.fr.f28[0] <= 1231 ? new Date(Date.UTC(yr, Math.floor(c.fr.f28[0] / 100) - 1, c.fr.f28[0] % 100)) : null;
     return { T: T, N: N, total: g[0], usual: hasN ? normT : null, gap: gap, rows: rows, made: madeMonths(rows, gap), x0: x0, x1: lx,
-      dotted: gaps.map(function (r) { return [r.x0, r.x1]; }), freeze: fz && end && fz <= end ? { x: doy(fz) + 1, text: 'First 28°F freeze, ' + MON[fz.getUTCMonth()] + ' ' + fz.getUTCDate() } : null,
+      dotted: gaps.map(function (r) { return [r.x0, r.x1]; }), freeze: fz && end && fz <= end ? { x: doy(fz) + 1, text: 'First 28°F freeze, ' + MON[fz.getUTCMonth()] + ' ' + fz.getUTCDate(), short: 'Freeze ' + MON[fz.getUTCMonth()] + ' ' + fz.getUTCDate() } : null,
       ticks: rows.map(function (r) { return { a: r.x0, b: r.x1, lab: r.lab }; }) };
   }
-  if (typeof module === 'object' && module.exports) module.exports = { dayRows: dayRows, srcText: srcText, rainRun: rainRun, gduRun: gduRun, madeMonths: madeMonths, monthsSentence: monthsSentence, gapWords: gapWords, whenOf: whenOf };
+  if (typeof module === 'object' && module.exports) module.exports = { dayRows: dayRows, srcText: srcText, rainRun: rainRun, gduRun: gduRun, madeMonths: madeMonths, monthsSentence: monthsSentence, gapWords: gapWords, whenOf: whenOf, rankSentence: rankSentence, unitWord: unitWord, ordinal: ordinal };
   if (!doc || !doc.getElementById('hp-wxb')) return;
 
   function ctDay(t) {
@@ -391,7 +405,7 @@
       }).then(function (rr) {
         if (seq !== band.seq) return;
         var R = rr[0], cf = rr[1], wst = rr[2];
-        drawRain(R, p, cf, wst);
+        getJSON(stateFile('rain/context/', wst), 8000).then(function (x) { return x; }, function () { return null; }).then(function (ctx) { if (seq === band.seq) drawRain(R, p, cf, wst, ctx); });
         if (!cf) { msgIn('hp-gdu-ch', 'No temperature station on file for ' + countyName(p.county, p.state) + '.'); return; }
         getJSON(stateFile('rain/wx/', wst)).then(function (W) { if (seq === band.seq) drawGdu(W, p, cf.near || cf.fips, cf, wst); }, function () { msgIn('hp-gdu-ch', 'The GDU file did not load. Try again later.'); });
       }, function () { msgIn('hp-rain-ch', 'The rain file did not load. Try again later.'); msgIn('hp-gdu-ch', 'The GDU file did not load. Try again later.'); });
@@ -442,14 +456,15 @@
     var gw = run.N ? gapWords(run.gap, o.unit) : '';
     root.AgChart.mountRun(x, { this: run.T, norm: run.N, dotted: run.dotted, x0: run.x0, x1: run.x1, ticks: run.ticks, freeze: run.freeze,
       marks: run.made.map(function (r) { return { a: r.x0, b: r.x1, text: markText(r, o.fmt, o.unit === 'in' ? ' in' : '') }; }),
-      fmt: o.axis, topUnit: o.topUnit, vfmt: function (v) { return o.fmt(v) + (o.unit === 'in' ? ' in' : ' GDUs'); }, steps: o.steps, names: { a: String(yr), n: 'Normal' }, gapWords: gw, label: o.label,
-      read: function (xx, a, n) { return whenOf(yr, xx) + ': ' + o.fmt(a) + (o.unit === 'in' ? ' in' : ' GDUs') + ' so far' + (n != null ? '; normal ' + o.fmt(n) + (o.unit === 'in' ? ' in' : ' GDUs') + '; ' + gapWords(a - n, o.unit) : ''); },
+      fmt: o.axis, topUnit: o.topUnit, vfmt: function (v) { return o.fmt(v) + (o.unit === 'in' ? ' in' : ' GDUs'); }, names: { a: String(yr), n: 'Normal' }, gapWords: gw, label: o.label,
+      read: function (xx, a, n) { var w = function (v) { return o.fmt(v) + ' ' + unitWord(o.fmt(v), o.unit); }; return whenOf(yr, xx) + ': ' + w(a) + ' so far' + (n != null ? '; normal ' + w(n) + '; ' + gapWords(a - n, o.unit) : ''); },
+      rest: 'Drag along the line to read any date.', steps: o.steps, maxTicks: o.maxTicks, headroom: o.headroom,
       height: { phone: 250, wide: 250 }, tools: tl,
       story: function () { return { head: o.cardHead, take: o.sub, summary: o.label }; },
       share: { url: 'https://agsist.com/?utm_source=share&utm_medium=picture&utm_campaign=home-' + o.file, title: o.cardHead, file: 'agsist-' + o.file + '-' + iso + '.png', kicker: o.kicker, source: o.source, date: iso } });
   }
   function townOf(p) { return p.town || countyName(p.county, p.state); }
-  function drawRain(R, p, cf, wst) {
+  function drawRain(R, p, cf, wst, ctx) {
     var c = cf && cf.c;
     var yr = R.year || (c && utc(c.as_of) || ctDay()).getUTCFullYear(), end = c && utc(c.as_of || R.edate), run = rainRun(c, yr, end);
     if (!run) { msgIn('hp-rain-ch', 'No rain record for this county yet.'); txt('hp-rain-h', 'Rain this year'); txt('hp-rain-lead', ''); return; }
@@ -459,14 +474,15 @@
     txt('hp-rain-h', hasN ? (run.gap === 0 || +f1(Math.abs(run.gap)) === 0 ? who + ' is right on normal for rain this year' : who + ' is ' + f1(Math.abs(run.gap)) + ' inches of rain ' + (run.gap > 0 ? 'ahead of' : 'behind') + ' normal this year') : 'Rain this year in ' + townOf(p) + ': ' + f1(c.total) + ' in' + when);
     /* the file's own percent, never one worked out here: the builder withholds it on a normal under 1.00 in */
     var pct = hasN && num(c.pct) ? c.pct : null, sent = monthsSentence(run.made, run.gap);
-    txt('hp-rain-lead', hasN ? (num(pct) ? pct + '% of normal. ' : '') + sent + (sent || num(pct) ? '' : 'Normal for the same days is ' + f1(c.usual, 1) + ' in.') : 'No normal on file for this gauge.');
+    var rank = rankSentence(ctx, R, cf.near || cf.fips, c, end);
+    txt('hp-rain-lead', (hasN ? (num(pct) ? pct + '% of normal. ' : '') + sent + (sent || num(pct) ? '' : 'Normal for the same days is ' + f1(c.usual, 1) + ' in.') : 'No normal on file for this gauge.') + (rank ? ' ' + rank : ''));
     var st = c.station || {}, net = st.net === 'cocorahs' ? ' (CoCoRaHS)' : st.net ? ' (NOAA co-op)' : '', gauge = stationText(st.name, wst || p.state).replace(/\. $/, net + '. ').replace(/^Station:/, 'Gauge:');
     var borrowed = cf.near ? 'No station in ' + countyName(p.county, p.state) + '; nearest county: ' + cf.nearName + '. ' : '';
-    var onDays = miss ? ' for the days reported' : '', normNote = hasN ? 'Normal: the 1991 to 2020 average' + onDays + '; the years behind it are not on file here. ' : '';
+    var onDays = miss ? ' for the days reported' : '', normNote = hasN ? 'Normal: the 1991 to 2020 average' + onDays + '. ' : '';
     var label = 'Running total of rain this year, Jan 1' + when + ': ' + f1(c.total) + ' inches' + (hasN ? ' against a normal of ' + f1(c.usual) + ', ' + gw + '.' : '; no normal on file for this gauge.') + (sent ? ' ' + sent : '');
     mountRunChart('hp-rain-ch', run, { yr: yr, unit: 'in', end: end, file: 'rain', steps: [0.5, 1, 2, 5, 10], axis: function (v) { return String(v); }, topUnit: ' in', fmt: function (v) { return f1(v, 1); }, label: label,
       cardHead: place + ': ' + (hasN ? 'rain is ' + gw + ' this year, ' + f1(c.total) + ' in against ' + f1(c.usual) + ' in' : 'rain this year ' + f1(c.total) + ' in') + when + (missText ? '; ' + missText : ''),
-      sub: 'Running total since Jan 1: ' + yr + ' (dark)' + (hasN ? ', normal 1991 to 2020 (grey)' : ', no normal on file') + (run.made.length ? ', months that made the year (gold)' : ''),
+      sub: 'Running total since Jan 1, ' + yr + (hasN ? ', against the 1991 to 2020 normal' : ', no normal on file') + (run.made.length ? '; gold marks the months that made the year' : ''),
       kicker: cf.near ? 'Rain near ' + countyName(p.county, p.state) + ', ' + p.state : 'Rain, ' + countyName(p.county, p.state) + ', ' + p.state,
       source: borrowed + gauge + 'NOAA daily records via RCC-ACIS, Jan 1' + when + '.' });
     txt('hp-rain-src', 'Jan 1' + when + '. ' + (missText ? missText[0].toUpperCase() + missText.slice(1) + '. ' : '') + normNote + borrowed + gauge + 'NOAA daily records via RCC-ACIS.');
@@ -494,12 +510,12 @@
     var tail = (gaps.length ? ' ' + gaps[0].lab + ' is drawn dotted: too few days reported, so its figure is the season total less the other months.' : '')
       + (fz ? ' ' + fz.text.replace('First 28°F freeze, ', 'First 28°F freeze: ') + '; the count runs past it.' : '');
     var label = 'Running total of corn growing degree units since May 1, ' + yr + when + ': ' + comma(g[0]) + (hasN ? ' against a normal of ' + comma(run.usual) + ', ' + gw + '.' : '; no 1991 to 2020 normal on file for this station.') + (sent ? ' ' + sent : '');
-    mountRunChart('hp-gdu-ch', run, { yr: yr, unit: 'gdu', end: end, file: 'gdu', steps: [100, 200, 250, 500, 1000], axis: function (v) { return comma(v); }, topUnit: ' GDUs', fmt: comma, label: label,
+    mountRunChart('hp-gdu-ch', run, { yr: yr, unit: 'gdu', end: end, file: 'gdu', steps: [250, 500, 1000], maxTicks: 8, headroom: 1.015, axis: function (v) { return comma(v); }, topUnit: ' GDUs', fmt: comma, label: label,
       cardHead: place + ': ' + (hasN ? 'corn GDUs are ' + gw.replace(' GDUs', '') + ' this year, ' + comma(g[0]) + ' against ' + comma(run.usual) : comma(g[0]) + ' corn GDUs since May 1') + (gmissText ? '; ' + gmissText : ''),
-      sub: 'Running total since May 1: ' + yr + ' (dark)' + (hasN ? ', normal 1991 to 2020 (grey)' : ', no normal on file') + (run.made.length ? ', months that made it (gold)' : ''),
+      sub: 'Running total since May 1, ' + yr + (hasN ? ', against the 1991 to 2020 normal' : ', no normal on file') + (run.made.length ? '; gold marks the months that made it' : ''),
       kicker: cf && cf.near ? 'Corn GDUs near ' + countyName(p.county, p.state) + ', ' + p.state : 'Corn GDUs, ' + countyName(p.county, p.state) + ', ' + p.state,
       source: borrowed + s + (fz ? fz.text.replace('First 28°F freeze, ', 'First 28°F freeze ') + '; the count runs past it. ' : '') + 'NOAA daily records via RCC-ACIS, May 1' + when + ', by month.' });
-    txt('hp-gdu-src', 'Counted May 1' + when + ', 86/50 method, month by month.' + (gmissText && !gaps.length ? ' ' + gmissText[0].toUpperCase() + gmissText.slice(1) + '.' : '') + tail + (hasN ? ' Normal: the 1991 to 2020 average' + (gmiss ? ' for the days reported' : '') + '; the years behind it are not on file here.' : '') + ' ' + borrowed + s + 'NOAA daily records via RCC-ACIS.');
+    txt('hp-gdu-src', 'Counted May 1' + when + ', 86/50 method, month by month.' + (gmissText && !gaps.length ? ' ' + gmissText[0].toUpperCase() + gmissText.slice(1) + '.' : '') + tail + (hasN ? ' Normal: the 1991 to 2020 average' + (gmiss ? ' for the days reported' : '') + '.' : '') + ' ' + borrowed + s + 'NOAA daily records via RCC-ACIS.');
   }
 
   /* ---- place and start ---- */
