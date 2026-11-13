@@ -1,38 +1,25 @@
 {
  "_note": "From the market administrator's own releases. Never typed by hand.",
  "latest": {
-  "adv_butterfat": 1.5164,
-  "adv_class3_skim": 11.76,
-  "adv_class4_skim": 12.16,
+  "adv_butterfat": 1.5024,
+  "adv_class3_skim": 11.18,
+  "adv_class4_skim": 14.12,
   "base_zone": "Cook County, IL",
-  "class1": 20.24,
-  "class1_bf": 1.5484,
+  "class1": 22.08,
+  "class1_bf": 1.5344,
   "class1_diff": 3.2,
-  "class1_skim": 15.36,
-  "class3": 16.04,
-  "class4": 18.94,
-  "month_key": "2026-09",
-  "mover": 12.16,
+  "class1_skim": 17.32,
+  "class3": 15.16,
+  "class4": 20.54,
+  "month_key": "2026-10",
+  "mover": 14.12,
   "mover_higher_of": true,
-  "ppd": 0.58,
-  "released_ppd": "2026-10-12",
-  "scc": 0.00078,
-  "uniform": 16.62
+  "ppd": 0.75,
+  "released_ppd": "2026-11-11",
+  "scc": 0.00072,
+  "uniform": 15.91
  },
  "next_class1": [
-  {
-   "adv_butterfat": 1.5024,
-   "adv_class3_skim": 11.18,
-   "adv_class4_skim": 14.12,
-   "class1": 22.08,
-   "class1_bf": 1.5344,
-   "class1_diff": 3.2,
-   "class1_skim": 17.32,
-   "month_key": "2026-10",
-   "mover": 14.12,
-   "mover_higher_of": true,
-   "released": "2026-09-23"
-  },
   {
    "adv_butterfat": 1.373,
    "adv_class3_skim": 10.38,
@@ -48,14 +35,6 @@
   }
  ],
  "ppd_history": [
-  {
-   "central": "agree",
-   "class3": 22.85,
-   "month_key": "2024-10",
-   "ppd": -0.47,
-   "released_ppd": "2024-11-11",
-   "uniform": 22.38
-  },
   {
    "central": "agree",
    "class3": 19.95,
@@ -239,32 +218,39 @@
    "ppd": 0.58,
    "released_ppd": "2026-10-12",
    "uniform": 16.62
+  },
+  {
+   "class3": 15.16,
+   "month_key": "2026-10",
+   "ppd": 0.75,
+   "released_ppd": "2026-11-11",
+   "uniform": 15.91
   }
  ],
- "read": "2026-11-10",
+ "read": "2026-11-13",
  "source": "Upper Midwest Market Administrator (Federal Order 30)",
  "source_url": "https://www.fmma30.com/",
  "status": {
-  "at": "2026-11-10T14:27:42Z",
+  "at": "2026-11-13T15:14:47Z",
   "ok": true
  },
  "year_ago": {
-  "adv_butterfat": 2.7669,
-  "adv_class3_skim": 7.54,
-  "adv_class4_skim": 9.34,
+  "adv_butterfat": 2.3881,
+  "adv_class3_skim": 10.03,
+  "adv_class4_skim": 9.26,
   "base_zone": "Cook County, IL",
-  "class1": 21.9,
-  "class1_bf": 2.7989,
+  "class1": 21.24,
+  "class1_bf": 2.4201,
   "class1_diff": 3.2,
-  "class1_skim": 12.54,
-  "class3": 17.59,
-  "class4": 16.17,
-  "month_key": "2025-09",
-  "mover": 9.34,
+  "class1_skim": 13.23,
+  "class3": 16.91,
+  "class4": 14.3,
+  "month_key": "2025-10",
+  "mover": 10.03,
   "mover_higher_of": true,
-  "ppd": 0.35,
-  "released_ppd": "2025-10-11",
-  "scc": 0.0009,
-  "uniform": 17.94
+  "ppd": 0.14,
+  "released_ppd": "2025-11-12",
+  "scc": 0.00087,
+  "uniform": 17.05
  }
 }
