@@ -41,7 +41,7 @@
 .mye-save.pinned .mye-ic{fill:currentColor}
 [data-theme="light"] .mye-save.pinned{color:#86600f;border-color:#86600f}
 .elev-card{scroll-margin-top:84px}
-.elev-card.mye-flash{box-shadow:0 0 0 3px var(--gold);transition:box-shadow .3s}
+.elev-card.mye-flash{outline:3px solid var(--gold);outline-offset:0;transition:outline-color .3s}
 @media(prefers-reduced-motion:reduce){.elev-card.mye-flash{transition:none}}
 @media print{.mye,.elev-acts{display:none!important}}
 

@@ -37,7 +37,7 @@
 .nav-panel.nav-cols{display:grid;grid-template-columns:repeat(var(--cols,2),minmax(190px,auto));column-gap:.25rem;width:max-content;max-width:calc(100vw - 32px)}
 .nav-panel.nav-cols-3{--cols:3}
 .nav-panel .nav-moved{grid-column:1/-1}
-.nav-q{padding:.55rem 1.1rem .2rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
+.nav-q{padding:.55rem 1.1rem .2rem;font-family:var(--font-body);font-size:.78rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);white-space:nowrap}
 .nav-panel a{padding:.5rem 1.1rem}
 .nav-two{display:flex;flex-direction:column;gap:.1rem;line-height:1.2;min-width:0}
 .nav-sub{font-size:.74rem;font-weight:400;color:var(--text-muted);white-space:normal}
@@ -89,7 +89,7 @@
 @media (max-width:480px){.drawer{width:100vw;border-left:0}}
 .drawer .draw-sec{padding:.35rem 0 .5rem}
 .drawer .draw-lbl{display:flex;align-items:center;gap:.4rem;margin:0;padding:.55rem 1.1rem .15rem}
-.draw-sub{margin:0;padding:.45rem 1.1rem .1rem;font-family:var(--font-mono);font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.draw-sub{margin:0;padding:.45rem 1.1rem .1rem;font-family:var(--font-body);font-size:.78rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)}
 .draw-sub[hidden]{display:none}
 .draw-links{display:grid;grid-template-columns:1fr 1fr;column-gap:.25rem}
 .draw-links .draw-item{min-height:44px;padding:.45rem .5rem .45rem 1.1rem;font-size:.86rem;line-height:1.25;gap:.45rem}
@@ -100,7 +100,7 @@
 .draw-srch-btn:hover,.draw-srch-btn:focus-visible{border-color:var(--brand);color:var(--text)}
 .draw-srch-btn svg{width:18px;height:18px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round}
 .draw-place{padding:.4rem 1.1rem .7rem;border-bottom:1px solid var(--border)}
-.draw-place-h{display:flex;align-items:baseline;gap:.5rem;margin:0 0 .4rem;font-family:var(--font-mono);font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--brand)}
+.draw-place-h{display:flex;align-items:baseline;gap:.5rem;margin:0 0 .4rem;font-family:var(--font-body);font-size:.78rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--brand)}
 .draw-place-z{font-family:var(--font-body);font-size:.78rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-muted)}
 .draw-place-row{display:grid;grid-template-columns:repeat(2,1fr);gap:.4rem}
 .draw-pl{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:.25rem;min-height:56px;padding:.45rem .55rem;border:1px solid var(--border);border-radius:var(--r-sm);font-size:.8rem;font-weight:600;line-height:1.2;color:var(--text);text-decoration:none}

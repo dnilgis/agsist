@@ -10,13 +10,13 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=28">
-<link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=29">
+<link rel="stylesheet" href="/components/asof.css?v=2">
 <script src="/components/util.js?v=20"></script>
-<script src="/components/price-local.js?v=14"></script>
+<script src="/components/price-local.js?v=15"></script>
 <script src="/components/asof.js?v=1"></script>
-<link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script><script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
+<link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script><script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -53,10 +53,10 @@
 .ps-dot{width:6px;height:6px;border-radius:50%;background:var(--green)}
 /* status row holds still: on a phone the status line and the session badge each get their own fixed row, so the skeleton, the live timer and the badge swap in place (was a 0.5 layout shift) */
 @media(max-width:560px){.ps{flex-direction:column;align-items:stretch;flex-wrap:nowrap}.ps>#status,.ps>#status-timer{min-height:22px;display:flex;align-items:center;gap:6px}.ps>.session-badge{margin-left:0;align-self:flex-start;min-height:55px;box-sizing:border-box}}
-.js .ps-dot{animation:pulse 2s infinite}
+.js .ps-dot{}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
 .sk{color:var(--text-dim)}
-.js .sk{animation:blink 1.4s ease-in-out infinite}
+.js .sk{}
 /* with script on, the live cards replace this table, so it never takes room at first paint (hiding it later moved the page up 113 px, CLS 0.28 at 1280 px); a failed load shows it again (futures.js) */.js .seed-tbl-wrap{display:none}
 .seed-tbl-wrap table{width:100%;border-collapse:collapse;font-size:.85rem;margin:.4rem 0}.seed-tbl-wrap caption{font-size:1rem;color:var(--text-dim);text-align:left;padding:.2rem 0}.seed-tbl-wrap td,.seed-tbl-wrap th{padding:.25rem .5rem;border-bottom:1px solid var(--border,rgba(128,128,128,.25));text-align:left}
 .nc-glance{font-size:0.785rem;color:var(--text-dim);margin:.35rem 0 0;font-family:'JetBrains Mono',monospace}
@@ -110,7 +110,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .tv-fallback{display:none;align-items:center;justify-content:center;height:200px;flex-direction:column;gap:.5rem;font-size:.8rem;color:var(--text-muted);text-align:center;padding:1rem}
 .tv-fallback a{color:var(--gold)}
 .tv-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.75rem;height:100%;padding:1rem;font-size:.85rem;color:var(--text-muted);text-align:center}
-.tv-load{min-height:44px;padding:.55rem 1.1rem;border:1px solid var(--border-2);border-radius:var(--r-sm,6px);background:transparent;color:var(--gold);font:inherit;font-weight:600;cursor:pointer}
+.tv-load{min-height:44px;padding:.55rem 1.1rem;border:1px solid var(--border-2);border-radius:var(--r-sm,2px);background:transparent;color:var(--gold);font:inherit;font-weight:600;cursor:pointer}
 .tv-load:disabled{opacity:.6;cursor:default}
 .seas-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:13px 14px;margin-bottom:14px}
 .seas-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;flex-wrap:wrap;gap:4px}
@@ -243,7 +243,7 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .session-badge{display:inline-flex;align-items:center;gap:6px;overflow-wrap:normal;word-break:keep-all;font-size:.82rem;font-weight:700;text-transform:none;letter-spacing:0;padding:4px 9px;border-radius:var(--r-sm);margin-left:auto;font-family:var(--font-body)}
 .session-badge .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
 .session-badge.open{background:none;color:var(--green);border:1px solid var(--border-2)}
-.session-badge.open .dot{background:var(--green);animation:pulse 2s infinite}
+.session-badge.open .dot{background:var(--green);}
 .session-badge.overnight{background:none;color:var(--gold);border:1px solid var(--border-2)}
 .session-badge.overnight .dot{background:var(--gold-fill,var(--gold))}
 .session-badge.closed{background:none;color:var(--text-muted);border:1px solid var(--border-2)}
@@ -260,9 +260,8 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .mr-sec-body strong{color:var(--text);font-weight:700}
 
 /* NEW v13: WASDE imminence — when within 7 days */
-.snap-cat.imminent{background:rgba(230,176,66,.15);border:1px solid rgba(230,176,66,.4);color:var(--gold);padding:5px 9px;border-radius:var(--r-md);font-weight:700;animation:wasdePulse 3s ease-in-out infinite}
+.snap-cat.imminent{background:var(--surface2);border:1px solid var(--border-2);color:var(--text);padding:5px 9px;border-radius:var(--r-md);font-weight:700}
 .snap-cat.imminent strong{color:var(--gold)}
-@keyframes wasdePulse{0%,100%{box-shadow:0 0 0 0 rgba(230,176,66,0)}50%{box-shadow:0 0 0 4px rgba(230,176,66,.08)}}
 
 /* NEW v13: Sigurd trust block */
 
@@ -796,7 +795,7 @@ details.fold[hidden]{display:none}
     </div>
   </div>
 
-  <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
+  <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=7" defer></script>
 
 
   <!--usda-cal-sub--><p class="cal-sub" style="font-size:.8rem;color:var(--text-dim);margin:.6rem 0 .3rem;line-height:1.6">USDA report dates on your phone: <a href="webcal://agsist.com/usda-calendar-grain.ics" onclick="try{gtag('event','ics_subscribe',{method:'webcal',calendar:'grain',from:'corn-futures'})}catch(e){}">Subscribe</a> &middot; <a href="https://calendar.google.com/calendar/render?cid=webcal%3A%2F%2Fagsist.com%2Fusda-calendar-grain.ics" target="_blank" rel="noopener" aria-label="Add to Google Calendar" onclick="try{gtag('event','ics_subscribe',{method:'google',calendar:'grain',from:'corn-futures'})}catch(e){}">Google</a></p>
@@ -850,11 +849,11 @@ details.fold[hidden]{display:none}
 <!-- /static-nav:footer -->
 </div>
 <script src="/components/bids-network.js?v=9" defer></script>
-<script src="/components/loader.js?v=19" defer></script>
-<script src="/components/geo.js?v=39" defer></script>
+<script src="/components/loader.js?v=20" defer></script>
+<script src="/components/geo.js?v=41" defer></script>
 <script>window.AGSIST_FUTURES='corn'</script>
-<script src="/components/storesell.js?v=9"></script><script src="/components/bid-filter.js?v=1"></script><script src="/components/futures.js?v=36"></script>
+<script src="/components/storesell.js?v=10"></script><script src="/components/bid-filter.js?v=1"></script><script src="/components/futures.js?v=37"></script>
 
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

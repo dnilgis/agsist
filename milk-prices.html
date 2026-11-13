@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <script>/* agsist-inter-gate: font-display:optional as the page's own rule. If Inter is not ready in 100 ms, the page keeps the stand-in for the whole visit, so a slow file cannot swap in later and rewrap the text (CLS 0.05 at 1280 when the file took seconds). Fails soft: no document.fonts, the font swaps as before. */
 try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('inter-late');},100);d.fonts.load('400 1em Inter').then(function(){clearTimeout(t);},function(){});})(document);}catch(_){}</script>
   <script src="/components/util.js?v=17"></script>
@@ -275,7 +275,7 @@ try{(function(d){var t=setTimeout(function(){d.documentElement.classList.add('in
   .dp-tl-item:not(:last-child)::before{content:'';position:absolute;left:5px;top:16px;bottom:-4px;
     width:1px;background:var(--border-2);}
   .dp-tl-dot{width:11px;height:11px;border-radius:50%;background:var(--gold-fill,var(--gold));margin-top:5px;flex-shrink:0;
-    box-shadow:0 0 0 3px rgba(var(--gold-rgb),.15);position:relative;z-index:1;}
+    position:relative;z-index:1;}
   .dp-tl-body{min-width:0;}
   .dp-tl-date{font-family:var(--font-body);font-size:0.75rem;font-weight:700;letter-spacing:0;
     text-transform:none;color:var(--text-dim);margin-bottom:.2rem;}
@@ -1150,7 +1150,7 @@ c.addEventListener('input',function(){run(true);});l.addEventListener('input',fu
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19"></script>
+<script src="/components/loader.js?v=20"></script>
 <script>
 (function(){
   'use strict';
@@ -1692,7 +1692,7 @@ d.addEventListener('click',function(e){var a=e.target&&e.target.closest&&e.targe
 window.addEventListener('hashchange',go);if(location.hash)go();})(document);}catch(_){}</script>
   <script src="/components/milk-tools.js?v=5" defer></script>
   <script src="/components/milk-herds.js?v=1" defer></script>
-  <script src="/components/cull-cows.js?v=2" defer></script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/cull-cows.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

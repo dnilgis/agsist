@@ -8,10 +8,10 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=29">
 <link rel="stylesheet" href="/components/share-kit.css?v=1">
-<link rel="stylesheet" href="/components/cot-print.css?v=6">
+<link rel="stylesheet" href="/components/cot-print.css?v=7">
 <!-- Nov 8: no first paint until the release bar and the market chips are parsed whole (Chrome lifts the block when
      the expected element opens, so it names the chart headline, the first element after the chips). A paint between two
      parser chunks drew the bar before its 44px link: the bar was 22px tall and its centred clock icon dropped 11px when
@@ -540,7 +540,7 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 .cc-tip{position:absolute;z-index:3;pointer-events:none;padding:.4rem .55rem;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface3);color:var(--text);font-size:.8rem;line-height:1.45;white-space:nowrap;box-shadow:none;font-variant-numeric:tabular-nums}
 .cc-src{font-size:.78rem;line-height:1.5;color:var(--text-muted);margin:.45rem 0 .4rem;min-height:7.5em}
 .cc-acts{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem}
-.cc-btn{min-height:44px;padding:0 1rem;border:1px solid var(--border-2);border-radius:var(--btn-r,6px);background:var(--surface2);color:var(--text);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
+.cc-btn{min-height:44px;padding:0 1rem;border:1px solid var(--border-2);border-radius:var(--btn-r,3px);background:var(--surface2);color:var(--text);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
 .cc-btn:hover{border-color:var(--gold)}
 .cc-note{font-size:.85rem;color:var(--text-dim);min-width:6em}
 @media(min-width:701px){.cc-chips{flex-wrap:wrap;overflow:visible;margin:0 0 .45rem;padding:0}.cc-plot{height:340px}.cc-head{min-height:2.8em;font-size:1.08rem}.cc-src{min-height:3em}}
@@ -874,7 +874,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     </div>
   </div>
 
-  <aside class="ya" data-your-area="cot" hidden></aside><script src="/components/your-area.js?v=4" defer></script>
+  <aside class="ya" data-your-area="cot" hidden></aside><script src="/components/your-area.js?v=5" defer></script>
 
   <!-- Summary cards -->
   <h2 class="cot-section-title">Fund positioning by commodity</h2>
@@ -1006,13 +1006,13 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19"></script>
+<script src="/components/loader.js?v=20"></script>
 
 <script src="/components/cot-glance.js?v=6"></script>
 <script src="/components/share-kit.js?v=1"></script>
 <script src="/components/cot-kit.js?v=3"></script>
 <script src="/components/cot-chart.js?v=13"></script>
-<script src="/components/cot-page.js?v=12"></script>
+<script src="/components/cot-page.js?v=13"></script>
 <script src="/components/qr.js?v=11"></script>
 <script src="/components/cot-print.js?v=5"></script>
 <script src="/components/cot-share.js?v=2"></script>
@@ -1036,6 +1036,6 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
   openTo(location.hash);
 })();
 </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

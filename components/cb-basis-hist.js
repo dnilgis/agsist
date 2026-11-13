@@ -320,7 +320,7 @@
     if (typeof window === 'undefined') return Promise.resolve(null);
     if (window.AgChart) return Promise.resolve(window.AgChart);
     if (!kitReady) kitReady = new Promise(function (ok) {
-      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/ag-chart.css?v=2'; document.head.appendChild(l);
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = '/components/ag-chart.css?v=3'; document.head.appendChild(l);
       var sc = document.createElement('script'); sc.src = '/components/ag-chart.js?v=5';
       sc.onload = function () { ok(window.AgChart || null); }; sc.onerror = function () { ok(null); };
       document.head.appendChild(sc);

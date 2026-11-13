@@ -6,7 +6,7 @@
    WIRING: one plain (not deferred) script tag inside <main>, near the top (on
    /hail-map under the map and its 5-year controls, on county rain pages under
    the print and its sell block, so a phone's first screen keeps those):
-     <script src="/components/rp-xmas.js?v=1"></script>
+     <script src="/components/rp-xmas.js?v=2"></script>
    It writes the line just before itself while the page is still being read,
    so the line is there at the first paint and nothing below it ever moves
    (no fetch, no late fill). Outside the dates, or hidden by the reader,

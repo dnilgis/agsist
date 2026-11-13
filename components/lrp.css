@@ -19,7 +19,7 @@
 .lrp-t{border-collapse:collapse;width:100%;font-size:.88rem;margin:.2rem 0 .7rem}
 .lrp-t th,.lrp-t td{padding:.4rem .45rem;border-bottom:1px solid var(--border);text-align:right;vertical-align:top}
 .lrp-t th:first-child{text-align:left}
-.lrp-t thead th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom;font-weight:700}
+.lrp-t thead th{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted);vertical-align:bottom;font-weight:700}
 .lrp-t td{font-family:'JetBrains Mono',monospace;color:var(--text);font-variant-numeric:tabular-nums}
 .lrp-rec th[scope=row]{white-space:nowrap;color:var(--text-dim);font-weight:600}
 .lrp-rec td b{display:block;font-weight:700}
@@ -107,7 +107,7 @@
 .lrp .lrp-ask{color:var(--text-muted)}
 .lrp-two{border-collapse:collapse;width:100%;margin:0 0 .45rem}
 .lrp-two th,.lrp-two td{text-align:left;vertical-align:top;padding:.35rem .3rem;border-bottom:1px solid var(--border)}
-.lrp-two thead th{font-size:.7rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);font-weight:700;padding-top:0}
+.lrp-two thead th{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted);font-weight:700;padding-top:0}
 .lrp-two tbody th{font-family:'JetBrains Mono',monospace;font-size:1.05rem;color:var(--text);white-space:nowrap}
 .lrp-two td b{font-family:'JetBrains Mono',monospace;font-size:1.05rem;color:var(--text);font-variant-numeric:tabular-nums}
 .lrp-two span{display:block;font-size:.74rem;color:var(--text-muted);font-weight:400;font-family:inherit;line-height:1.35}

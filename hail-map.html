@@ -32,11 +32,11 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
+  <link rel="stylesheet" href="/components/asof.css?v=2">
   <script src="/components/asof.js?v=1"></script>
-<link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
+<link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script>
   <script src="/components/util.js?v=17"></script>
   <script>/* agsist-hail-hold: a plain /hail-map opens on the now card, so its room is held before paint (see .hm-hold). Cleared when a year or the swaths open, or after 15 s if the card never comes. */
 try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.get('view')||'').toLowerCase();['year','swath','swaths','lat','lon','day','mi'].forEach(function(k){if(q.has(k))h=false;});if(v&&v!=='now')h=false;if(h){d.documentElement.classList.add('hm-hold');setTimeout(function(){d.documentElement.classList.remove('hm-hold');},15000);}})(document);}catch(_){}</script>
@@ -84,14 +84,14 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     .hm-states-links a:hover{color:var(--brand,#d4a23f)}
     .hm-meshnav{display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;margin:.7rem 0 .2rem;padding:.5rem .7rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-radius:var(--r-md)}
     .hm-live24{border-color:var(--brand,#d4a23f)!important;color:var(--brand,#d4a23f)!important;position:relative}
-    .hm-live24::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--brand-fill,var(--brand,#d4a23f));margin-right:.45rem;animation:hmpulse 1.6s ease-in-out infinite}
+    .hm-live24::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--brand-fill,var(--brand,#d4a23f));margin-right:.45rem;}
     @keyframes hmpulse{0%,100%{opacity:.35}50%{opacity:1}}
     .hm-meshnav button{min-height:40px;min-width:40px;background:none;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:var(--r-md);color:var(--text,#e6ebe9);font-family:'JetBrains Mono',monospace;font-size:0.785rem;font-weight:700;cursor:pointer;padding:.35rem .6rem}
     .hm-meshnav button:disabled{opacity:.35;cursor:default}
     .hm-livebar{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin:.7rem 0 .2rem;padding:.5rem .7rem;background:var(--surface,#101415);border:1px solid var(--border,rgba(132,160,168,.12));border-radius:var(--r-md)}
     .hm-warnbtn{min-height:44px;background:none;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:var(--r-md);color:var(--text-dim,#8a948f);font-family:'JetBrains Mono',monospace;font-size:0.785rem;font-weight:700;cursor:pointer;padding:.35rem .7rem}
     .hm-warnbtn.hot{border-color:#e31a1c;color:#ff6b61;position:relative}
-    .hm-warnbtn.hot::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#e31a1c;margin-right:.45rem;animation:hmpulse 1.2s ease-in-out infinite}
+    .hm-warnbtn.hot::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#e31a1c;margin-right:.45rem;}
     .hm-warnbtn[aria-pressed="true"]{background:rgba(227,26,28,.12)}
     .hm-livebar-note{flex:1 1 auto;font-size:1rem;color:var(--text-dim,#8a948f);font-family:var(--font-body,'Inter',system-ui,sans-serif);line-height:1.5}
     .hm-zoomstorms{background:none;border:none;color:var(--brand,#d4a23f);text-decoration:underline;cursor:pointer;font:inherit;padding:0}
@@ -596,7 +596,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
         <div class="hm-src">Source: NWS Local Storm Reports via the Iowa Environmental Mesonet. <span id="hm-gen"></span> &nbsp;&middot;&nbsp; <a href="/field-scout">Draw one field in Field Scout &rarr;</a></div>
       </div>
 
-      <script src="/components/rp-xmas.js?v=1"></script>
+      <script src="/components/rp-xmas.js?v=2"></script>
       <section class="hm-cty" aria-labelledby="hm-cty-h">
         <div class="hm-cty-head">
           <h2 id="hm-cty-h">Top hail counties: <span id="hm-cty-state">by state</span></h2>
@@ -720,7 +720,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
 
   <script src="/vendor/leaflet-1.9.4/leaflet.js"></script>
   <script src="/vendor/leaflet.heat-0.2.0/leaflet-heat.js"></script>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/qr.js?v=11" defer></script>
   <script src="/components/report-link.js?v=3" defer></script>
   <script src="/components/print-qr.js?v=1" defer></script>
@@ -2665,6 +2665,6 @@ p=p||ld('/components/storm-replay-core.js?v=3').then(function(){return window.Ag
 p.then(function(){if(note)note.textContent='';window.AgStormReplay.open(o||{});},function(){p=null;if(note)note.textContent='The replay did not load. Check your signal and try again.';});};
 if(/[?&]sr=1(&|$)/.test(location.search))window.addEventListener('load',function(){window.agsistStormReplay({});});})();</script>
 <script>document.getElementById('hm-replay').addEventListener('click',function(){var p=window.agsistHailPin;if(p)window.agsistStormReplay({lat:p.lat,lon:p.lon,label:p.label},document.getElementById('hm-replay-note'));});</script>
-<script src="/components/next-links.js?v=3" defer></script>
+<script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

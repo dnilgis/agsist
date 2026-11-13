@@ -17,7 +17,7 @@
 .ap-loc svg{width:18px;height:18px;flex:none}
 .ap-loc[disabled]{opacity:.7;cursor:progress}
 .ap-find-msg{min-height:1.5em;margin:.45rem 0 .3rem!important;font-size:var(--fs-sm);color:var(--text-dim)}
-.ap-find-msg.is-on{background:rgba(var(--brand-rgb),.10);border-left:3px solid var(--brand-fill);border-radius:var(--r-sm);padding:.45rem .65rem}
+.ap-find-msg.is-on{background:var(--surface2);border-left:3px solid var(--brand-fill);border-radius:var(--r-sm);padding:.45rem .65rem}
 @media (min-width:620px){.ap-find-g{grid-template-columns:1fr 1fr auto}.ap-loc{grid-column:auto;width:auto;padding-left:1rem;padding-right:1rem}}
 
 /* Lower / About the same / Higher */

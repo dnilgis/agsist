@@ -70,7 +70,7 @@
 .rc-pick { margin: 0 0 1rem; }
 .rc-pick label { display: block; font-size: var(--fs-sm); color: var(--text-muted); }
 .rc-pr { display: flex; gap: .5rem; margin-top: .2rem; max-width: 30rem; }
-.rc-pick select, .rc-pick button { font: inherit; font-size: 1rem; box-sizing: border-box; height: 2.75rem; border-radius: var(--r-md, 8px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .5rem; }
+.rc-pick select, .rc-pick button { font: inherit; font-size: 1rem; box-sizing: border-box; height: 2.75rem; border-radius: var(--r-md,3px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .5rem; }
 .rc-pick select { flex: 1; min-width: 0; }
 /* Find a county (rain-find.js, Nov 12 2026): the matches sit over the page, the message line keeps its room */
 .rc-find { position: relative; padding-bottom: 1.3rem; }
@@ -79,12 +79,12 @@
 .rc-find-w { position: relative; flex: 1; min-width: 0; display: block; }
 .rc-find-w input { width: 100%; padding-right: 2.75rem; }
 .rc-find-w input::-webkit-search-cancel-button, .rc-find-w input::-webkit-search-decoration { -webkit-appearance: none; appearance: none; display: none; }
-.rc-pick .rc-find-x { position: absolute; right: 0; top: 0; width: 2.75rem; min-width: 0; height: 2.75rem; display: flex; align-items: center; justify-content: center; background: none; border: 0; padding: 0; color: var(--text); cursor: pointer; border-radius: var(--r-md, 8px); }
+.rc-pick .rc-find-x { position: absolute; right: 0; top: 0; width: 2.75rem; min-width: 0; height: 2.75rem; display: flex; align-items: center; justify-content: center; background: none; border: 0; padding: 0; color: var(--text); cursor: pointer; border-radius: var(--r-md,3px); }
 .rc-pick .rc-find-x[hidden] { display: none; }
 .rc-pick .rc-find-x:hover { color: var(--text); }
 .rc-pick .rc-find-x:focus-visible { outline: 2px solid var(--brand); outline-offset: -2px; }
-.rc-pick input { font: inherit; font-size: 1rem; box-sizing: border-box; height: 2.75rem; border-radius: var(--r-md, 8px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .6rem; flex: 1; min-width: 0; }
-.rc-find-l { position: static; margin: 0; border-top-left-radius: 0; border-top-right-radius: 0; padding: .25rem 0; list-style: none; background: var(--surface); border: 1px solid var(--brand); border-radius: var(--r-md, 8px); box-shadow: none; max-height: min(22rem, 60vh); overflow-y: auto; }
+.rc-pick input { font: inherit; font-size: 1rem; box-sizing: border-box; height: 2.75rem; border-radius: var(--r-md,3px); border: 1px solid var(--border-g, var(--border)); background: var(--surface); color: var(--text); padding: 0 .6rem; flex: 1; min-width: 0; }
+.rc-find-l { position: static; margin: 0; border-top-left-radius: 0; border-top-right-radius: 0; padding: .25rem 0; list-style: none; background: var(--surface); border: 1px solid var(--brand); border-radius: var(--r-md,3px); box-shadow: none; max-height: min(22rem, 60vh); overflow-y: auto; }
 .rc-find-l[hidden] { display: none; }
 .rc-find-l li { padding: .6rem .65rem; cursor: pointer; min-height: 44px; box-sizing: border-box; }
 .rc-nw { white-space: nowrap; }

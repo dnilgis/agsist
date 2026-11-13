@@ -48,7 +48,7 @@
 .sa-label{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.66rem;font-weight:700;
   letter-spacing:0;text-transform:none;color:var(--sa-acc);
   padding:.2rem .5rem;border:1px solid rgba(var(--sa-acc-rgb),.5);border-radius:4px;
-  background:rgba(var(--sa-acc-rgb),.08);line-height:1.3}
+  background:var(--surface2);line-height:1.3}
 .sa-by{font-family:var(--font-mono,'JetBrains Mono',monospace);font-size:.72rem;font-weight:600;
   letter-spacing:.03em;color:var(--sa-mute)}
 .sa-main{display:flex;gap:1.1rem;align-items:flex-start}
@@ -67,7 +67,7 @@
 .sa-body{font-size:.94rem;line-height:1.62;color:var(--sa-dim);margin:0;max-width:62ch}
 .sa-facts{list-style:none;display:flex;flex-wrap:wrap;gap:.45rem;margin:1rem 0 0;padding:0}
 .sa-facts li{display:block;padding:.34rem .62rem;
-  border:1px solid var(--sa-line);border-radius:var(--r-lg);background:rgba(var(--sa-acc-rgb),.05);
+  border:1px solid var(--sa-line);border-radius:var(--r-lg);background:var(--surface2);
   font-size:.78rem;line-height:1.2;color:var(--sa-dim);white-space:nowrap}
 .sa-facts b{white-space:nowrap;margin-right:.1rem;font-family:var(--font-mono,'JetBrains Mono',monospace);font-weight:800;
   font-size:.86rem;color:var(--sa-text);font-variant-numeric:tabular-nums}
@@ -127,7 +127,7 @@ aside.sa-ad a.sa-cta,aside.sa-ad a.sa-cta:visited,aside.sa-ad a.sa-cta:hover,asi
 @media (prefers-reduced-motion:reduce){.sa-cta,.sa-cta-arrow{transition:none}.sa-cta:hover{transform:none}}
 [data-theme="light"] .sa-ad{background:var(--sa-bg)}
 [data-theme="light"] .sa-logo{box-shadow:0 0 0 1px rgba(0,0,0,.09)}
-[data-theme="light"] .sa-label{color:#a8380a;border-color:rgba(168,56,10,.45);background:rgba(232,116,58,.08)}
+[data-theme="light"] .sa-label{color:#a8380a;border-color:rgba(168,56,10,.45);background:var(--surface2)}
 [data-theme="light"] .sa-phone:hover{color:#a8380a}
 
 /* 2026-10-11: an unsold slot shows nothing. The

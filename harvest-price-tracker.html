@@ -27,7 +27,7 @@
   /* a reader with a chosen or saved state gets that state's view once the data lands: hold its layout from the first paint */
   try{var hpS=localStorage.getItem('agsist-pd-state'),hpW=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');
     if(hpS||(hpW&&/^[A-Z]{2}$/.test(hpW.state||hpW.st||hpW.abbr||''))) document.documentElement.classList.add('hp-st','hp-st-wait');}catch(e){}</script>
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <script src="/components/util.js?v=17"></script>
 <style>
 :root{--pd-gold:#d4a23f;--pd-gold2:#e6b042;--pd-green:#5fc28a;--pd-green2:#4aab4c;
@@ -106,8 +106,7 @@
 .pd-step:first-child .pd-dot{margin-left:0;}
 .pd-step:last-child .pd-dot{margin-right:0;}
 .pd-step.done .pd-dot{background:var(--pd-gold);border-color:var(--pd-gold);font-weight:700;}
-.pd-step.now .pd-dot{background:var(--pd-txt);border-color:var(--pd-txt);
-  box-shadow:0 0 0 4px rgba(231,236,232,.10);}
+.pd-step.now .pd-dot{background:var(--pd-txt);border-color:var(--pd-txt);}
 .pd-step h4{margin:0 0 .1rem;font-family:var(--pd-mono);font-size:.66rem;font-weight:700;
   letter-spacing:0;text-transform:none;color:var(--pd-mut);}
 .pd-step p{margin:0 0 .15rem;font-size:.76rem;color:var(--pd-mut);font-family:var(--pd-mono);}
@@ -317,7 +316,6 @@ table.hp-hist td.up{color:var(--pd-green);} table.hp-hist td.dn{color:var(--pd-r
   --pd-green:var(--green);--pd-red:var(--red);--pd-bg:var(--bg);--pd-p1:var(--card,var(--surface));
   --pd-p2:var(--surface2);--pd-line:var(--border-2);--pd-txt:var(--text);--pd-mut:var(--text-muted);
   --pd-dim:var(--text-muted)}
-[data-theme="light"] .pd-step.now .pd-dot{box-shadow:0 0 0 4px rgba(22,26,24,.10)}
 [data-theme="light"] .pd-pill.wait{background:rgba(22,26,24,.04)}
 [data-theme="light"] .dn-t td{border-bottom-color:var(--border)}
 [data-theme="light"] .pd-map .pd-st.sel{outline-color:var(--text)}
@@ -1482,7 +1480,7 @@ window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);
 <script>/* print sheet: every drawer open, so the FAQ and history print in full */
 window.addEventListener('beforeprint',function(){ Array.prototype.forEach.call(document.querySelectorAll('#main details'),function(x){ if(!x.open){ x.open=true; x.setAttribute('data-print-open',''); } }); });
 window.addEventListener('afterprint',function(){ Array.prototype.forEach.call(document.querySelectorAll('#main details[data-print-open]'),function(x){ x.open=false; x.removeAttribute('data-print-open'); }); });</script>
-<script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/next-links.js?v=3" defer></script>
+<script src="/components/loader.js?v=20" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

@@ -61,7 +61,7 @@
 .ss-go::after{content:" \2192";margin-left:.35rem}
 .ss-go:hover,.ss-go:focus-visible{border-color:var(--brand);color:var(--brand)}
 /* The open card sells itself (Nov 13, 2026): flat orange panel, the state's own number, one filled button. */
-.ss-box.ss-open{grid-template-columns:1fr;row-gap:.55rem;padding:.85rem 1.25rem;border:1px solid rgba(var(--ad-orange-rgb),.55);border-radius:var(--r-sm,4px);background:rgba(var(--ad-orange-rgb),.07)}
+.ss-box.ss-open{grid-template-columns:1fr;row-gap:.55rem;padding:.85rem 1.25rem;border:1px solid rgba(var(--ad-orange-rgb),.55);border-radius:var(--r-sm,4px);background:var(--surface2)}
 .ss-box.ss-open::before{content:none;display:none}
 .ss-box.ss-open p{margin:0}
 .ss-box.ss-open{align-content:center}

@@ -9,9 +9,9 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
+  <link rel="stylesheet" href="/components/asof.css?v=2">
   <script src="/components/asof.js?v=1"></script>
   <script src="/components/util.js?v=17"></script>
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
@@ -273,7 +273,7 @@ html[data-theme="light"] #crop-size [style*="border:1px solid #2a3133"],html[dat
 html[data-theme="light"] #crop-size #cy-nowcast{background:var(--border-2)!important}
 html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1!important}
 @media(max-width:640px){#crop-size select.cy-btn{font-size:16px}}
-#crop-size .cy-fold{border:1px solid var(--border,#1a1f20);border-radius:var(--card-r,12px);margin:22px 0;padding:0 16px}
+#crop-size .cy-fold{border:1px solid var(--border,#1a1f20);border-radius:var(--card-r,4px);margin:22px 0;padding:0 16px}
 #crop-size .cy-fold>summary{cursor:pointer;list-style:none;min-height:44px;display:flex;flex-direction:column;justify-content:center;gap:2px;padding:12px 0}
 #crop-size .cy-fold>summary::-webkit-details-marker{display:none}
 #crop-size .cy-fold-t{font-size:1.05rem;font-weight:700;color:var(--text,#e6ebe9)}
@@ -401,7 +401,7 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
     <!-- CS:record --><div id="cyn-record" style="background:#0d1112;border:1px solid #1a1f20;border-radius:var(--r-lg);padding:12px 14px;margin-top:12px"><div style="font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:7px">On the record: direction vs USDA&rsquo;s next print</div><div style="font-size:0.78rem;color:#8a948f;margin-bottom:8px">Locked from the live model before each WASDE, graded by subtraction after it. Record so far: <b style="color:#e6ebe9">3 of 6</b> correct (3 reports; 2 calls on a defective input, graded as called). Corn and soybeans on one report come from one model run, so the independent sample is the number of reports.</div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"><span style="color:#e6ebe9">2026-10-09 beans <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 53.7 &middot; ratings week of Sep 13 &middot; locked Oct 6 &middot; vs USDA 52.8</span></span><span><span style="color:#8a948f">USDA 52.8 &rarr; 53.1</span> <b style="color:#5fc28a">CORRECT</b></span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"><span style="color:#e6ebe9">2026-10-09 corn <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 182.6 &middot; ratings week of Sep 13 &middot; locked Oct 6 &middot; vs USDA 178.5</span></span><span><span style="color:#8a948f">USDA 178.5 &rarr; 181.2</span> <b style="color:#5fc28a">CORRECT</b></span><span style="flex-basis:100%;color:var(--gold)">USDA correction, Oct 23, 2026: NASS corrected its September 11 Crop Production corn yield to 178.8 bu/acre, from 178.5 as first printed. Against 178.8: USDA 178.8 to 181.2, up; the call still grades correct.</span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d;opacity:.85"><span style="color:#e6ebe9">2026-10-09 beans <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 53.7 &middot; ratings week of Sep 13 &middot; locked Sep 15 &middot; vs USDA 52.7</span></span><span><span style="color:#8a948f">superseded: locked against 52.7, not the print in force; re-locked 2026-10-06 before the report, same call</span></span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d;opacity:.85"><span style="color:#e6ebe9">2026-10-09 corn <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 182.6 &middot; ratings week of Sep 13 &middot; locked Sep 15 &middot; vs USDA 180.7</span></span><span><span style="color:#8a948f">superseded: locked against 180.7, not the print in force; re-locked 2026-10-06 before the report, same call</span></span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"><span style="color:#e6ebe9">2026-09-11 beans <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 54.1 &middot; ratings week of Aug 16 &middot; locked Aug 18 &middot; vs USDA 52.7</span></span><span><span style="color:#8a948f">USDA 52.7 &rarr; 52.8</span> <b style="color:#5fc28a">CORRECT</b></span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"><span style="color:#e6ebe9">2026-09-11 corn <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 182.6 &middot; ratings week of Aug 16 &middot; locked Aug 18 &middot; vs USDA 180.7</span></span><span><span style="color:#8a948f">USDA 180.7 &rarr; 178.5</span> <b style="color:#e0685f">INCORRECT</b></span><span style="flex-basis:100%;color:var(--gold)">USDA correction, Oct 23, 2026: NASS corrected its September 11 Crop Production corn yield to 178.8 bu/acre, from 178.5 as first printed. Against 178.8: USDA 180.7 to 178.8, down; the call still grades incorrect.</span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"><span style="color:#e6ebe9">2026-08-12 beans <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 53.8 &middot; ratings week of Aug 9 &middot; locked Aug 11 &middot; vs USDA 53.0</span></span><span><span style="color:#8a948f">USDA 53.0 &rarr; 52.7</span> <b style="color:#e0685f">INCORRECT</b> <span style="color:var(--gold)" title="Computed on a history file that carried in-season forecasts as finals; corrected 2026-08-16. Graded as called, not voided.">defective input</span></span></div><div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;font-family:'JetBrains Mono',monospace;font-size:0.775rem;padding:4px 0;border-top:1px solid #171c1d"><span style="color:#e6ebe9">2026-08-12 corn <b style="color:#5fc28a">&#9650; UP</b> <span style="color:#8a948f">model 183.6 &middot; ratings week of Aug 9 &middot; locked Aug 11 &middot; vs USDA 183.0</span></span><span><span style="color:#8a948f">USDA 183.0 &rarr; 180.7</span> <b style="color:#e0685f">INCORRECT</b> <span style="color:var(--gold)" title="Computed on a history file that carried in-season forecasts as finals; corrected 2026-08-16. Graded as called, not voided.">defective input</span></span></div></div><!-- /CS:record -->
     <div style="font-size:0.795rem;color:#8a948f;line-height:1.65;margin-top:10px">Every state&rsquo;s fit on this page, pointed at this week&rsquo;s ratings and weighted by planted acres. The band is the 80th percentile of the model&rsquo;s own misses at this week in a pseudo real-time backtest: each past year is estimated from earlier years only, the way it would have looked that season, never from the years after it. It earns its width from that backtest, and the number of years behind it is printed on each card: a dozen or so, so the band is coarse. The trend is a straight line through every USDA final since 2010. Each weekly number is kept and graded against USDA&rsquo;s final yield in January, misses included.</div>
   </section>
-  <aside class="ya" data-your-state="cy" data-v="1" hidden></aside><script src="/components/your-state.js?v=1" defer></script>
+  <aside class="ya" data-your-state="cy" data-v="1" hidden></aside><script src="/components/your-state.js?v=2" defer></script>
 
   <details class="cy-fold" id="research">
   <summary><span class="cy-fold-t">Do crop ratings predict yield? The research</span><span class="cy-fold-h">How much the weekly Good+Excellent rating has explained of each state&rsquo;s final yield, week by week, as far back as USDA&rsquo;s file goes.</span></summary>
@@ -502,8 +502,8 @@ html[data-theme="light"] #crop-size #cyn-record [style*="opacity:.85"]{opacity:1
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19"></script>
-<script src="/components/rain-print-promo.js?v=6" defer></script>
+<script src="/components/loader.js?v=20"></script>
+<script src="/components/rain-print-promo.js?v=7" defer></script>
 <script src="/components/usmap.js?v=1"></script>
 <script>
 (function(){
@@ -835,6 +835,6 @@ var cyFit=(function(){var p=null,q=[];
 })();
 
 </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

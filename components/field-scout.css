@@ -629,7 +629,7 @@
     .fs-bk-link{background:none;border:none;padding:.6rem .1rem;min-height:44px;color:var(--brand,var(--gold));font:inherit;font-weight:700;text-decoration:underline;cursor:pointer}
     .fs-bk-remind{margin:.75rem 0 0;font-size:.84rem;color:var(--text-dim);line-height:1.5;border-left:3px solid var(--brand,var(--gold));padding:.1rem 0 .1rem .6rem}
     .fs-bk-remind .fs-bk-link{min-height:0;padding:0 .2rem;font-weight:400;color:var(--text-muted)}
-    .fs-restore{flex:1 1 100%;margin-top:.8rem;background:var(--surface);border:1px solid var(--brand,var(--gold));border-radius:var(--card-r,10px);padding:.9rem 1rem;color:var(--text);min-width:0;overflow-wrap:anywhere}
+    .fs-restore{flex:1 1 100%;margin-top:.8rem;background:var(--surface);border:1px solid var(--brand,var(--gold));border-radius:var(--card-r,4px);padding:.9rem 1rem;color:var(--text);min-width:0;overflow-wrap:anywhere}
     .fs-restore-h{margin:0 0 .3rem;font-size:1rem;outline:none}
     .fs-restore-sub{margin:.2rem 0 .6rem;font-size:.84rem;color:var(--text-dim);line-height:1.5}
     .fs-restore-grp{margin-top:.7rem}

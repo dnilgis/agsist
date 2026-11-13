@@ -6,7 +6,7 @@
 .sw-map.sw-bare{background:#eef0ea}
 .sw-map .leaflet-control-attribution{font-size:.66rem}
 .sw-cv{position:absolute;inset:0;z-index:450;pointer-events:none}
-.sw-haze{position:absolute;inset:0;z-index:440;background:rgba(107,63,196,.16);pointer-events:none}
+.sw-haze{position:absolute;inset:0;z-index:440;background:rgba(107,63,196,.16);pointer-events:none} /* plain-look-ok: smoke layer on the map, a data layer */
 .sw-hz{position:absolute;left:.5rem;right:.5rem;bottom:1.7rem;z-index:465;background:rgba(255,255,255,.95);border-left:5px solid #6b3fc4;border-radius:var(--r-md);padding:.35rem .55rem;font-size:.8rem;font-weight:700;color:#2c1666;line-height:1.35;pointer-events:none}
 .sw-hz[hidden]{display:none}
 .sw-haze[hidden]{display:none}

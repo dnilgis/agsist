@@ -14,7 +14,7 @@ h1{font-size:1.5rem;margin:14px 0 4px;line-height:1.25} h2{font-size:1.1rem;marg
 .cbt-posted b{color:var(--text);font-weight:600}
 .cbt-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table.cbt-t{width:100%;border-collapse:collapse;font-size:.88rem}
-.cbt-t th{text-align:left;color:var(--text-muted);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:6px 6px;border-bottom:1px solid var(--border)}
+.cbt-t th{text-align:left;color:var(--text-muted);font-size:.78rem;letter-spacing:0;text-transform:none;padding:6px 6px;border-bottom:1px solid var(--border)}
 .cbt-t td{padding:6px 6px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:top}
 .cbt-t td.n,.cbt-t th.n{text-align:right;white-space:nowrap}
 .cbt-t td.n{font-family:'JetBrains Mono',monospace}

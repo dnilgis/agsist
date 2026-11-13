@@ -7,8 +7,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=29">
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
@@ -58,7 +58,7 @@
 
 .gdu-hero { padding: 1rem 0 .8rem; border-bottom: 1px solid var(--border); margin-bottom: 1.1rem; }
 .gdu-eyebrow { font-size:0.755rem; font-weight:700; letter-spacing:0; text-transform:none; color:var(--text-dim); margin-bottom:.25rem; }
-.gdu-hero h1 { font-family:var(--font-display); font-size:1.65rem; font-weight:800; text-transform:uppercase; color:var(--text); margin:0 0 .3rem; line-height:1.1; }
+.gdu-hero h1 { font-family:var(--font-display); font-size:1.65rem; font-weight:800; text-transform:none; color:var(--text); margin:0 0 .3rem; line-height:1.1; }
 .gdu-hero p { font-size:1rem; color:var(--text-dim); line-height:1.6; max-width:660px; margin:0; }
 
 .gdu-layout { display:grid; grid-template-columns:minmax(0,1fr); gap:1.25rem; }
@@ -101,7 +101,7 @@
 .crop-pills { display:flex; gap:.4rem; margin-bottom:1rem; }
 .crop-pill { flex:1; padding:.5rem .6rem; border-radius:var(--r-md); border:2px solid var(--border); background:var(--bg); color:var(--text-dim); font-family:'JetBrains Mono',monospace; font-size:0.775rem; font-weight:700; letter-spacing:.04em; cursor:pointer; transition:all .15s; text-align:center; min-height:44px; display:flex; align-items:center; justify-content:center; gap:.3rem; }
 .crop-pill:hover { border-color:var(--gold); }
-.crop-pill.active { border-color:var(--gold); background:rgba(230,176,66,.12); color:var(--text); }
+.crop-pill.active { border-color:var(--gold); background:var(--surface2); color:var(--text); }
 
 /* Fetch button — the hero feature */
 .fetch-btn {width:100%;padding:.75rem 1rem;border-radius:var(--btn-r);border:none;background:var(--btn-primary-bg);color:var(--btn-primary-ink);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;letter-spacing:0;cursor:pointer;transition:opacity .15s;min-height:48px;display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:.75rem;text-transform:none}
@@ -134,7 +134,7 @@ html.gdu-late #gdu-mat-card{order:-1}
 .gauge-center-val { position:absolute; bottom:0; left:50%; transform:translateX(-50%); text-align:center; width:160px; }
 .gauge-num { font-family:var(--font-display); font-size:2.4rem; font-weight:800; color:var(--text); line-height:1; }
 .gauge-unit { font-size:0.755rem; color:var(--text-dim); }
-.gauge-stage { display:inline-flex; align-items:center; gap:.4rem; margin-top:.65rem; padding:.3rem .9rem; background:rgba(230,176,66,.12); border:1px solid rgba(230,176,66,.35); border-radius:var(--r-lg); font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:700; color:var(--gold); }
+.gauge-stage { display:inline-flex; align-items:center; gap:.4rem; margin-top:.65rem; padding:.3rem .9rem; background:var(--surface2); border:1px solid rgba(230,176,66,.35); border-radius:var(--r-lg); font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:700; color:var(--gold); }
 
 /* Progress bar */
 .prog-wrap { margin:1rem 0 .4rem; }
@@ -156,8 +156,8 @@ html.gdu-late #gdu-mat-card{order:-1}
 /* ── MILESTONES ───────────────────────────────────────────────────────── */
 .milestones-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(110px,1fr)); gap:.5rem; margin-top:.75rem; }
 .ms { background:var(--bg); border:2px solid var(--border); border-radius:var(--r-md); padding:.65rem .7rem; text-align:center; transition:all .2s; }
-.ms.reached { border-color:var(--green); background:rgba(58,139,60,.07); }
-.ms.current { border-color:var(--gold); background:rgba(230,176,66,.1); }
+.ms.reached { border-color:var(--green); background:var(--surface2); }
+.ms.current { border-color:var(--gold); background:var(--surface2); }
 .ms-icon { font-size:.9rem; margin-bottom:.15rem; }
 .ms-stage { font-family:'JetBrains Mono',monospace; font-size:0.78rem; font-weight:900; color:var(--text); }
 .ms-gdu { font-size:0.755rem; color:var(--text-muted); margin:.1rem 0; }
@@ -169,12 +169,12 @@ html.gdu-late #gdu-mat-card{order:-1}
 
 .ref-table-wrap { overflow-x:auto; }
 .ref-table { width:100%; border-collapse:collapse; font-size:0.785rem; }
-.ref-table th { background:rgba(230,176,66,.1); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:700; letter-spacing:.08em; text-transform:uppercase; padding:.45rem .55rem; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
+.ref-table th { background:var(--surface2); color:var(--text); font-family:var(--font-body); font-size:0.755rem; font-weight:700; letter-spacing:0; text-transform:none; padding:.45rem .55rem; text-align:left; border-bottom:1px solid var(--border); white-space:nowrap; }
 .ref-table td { padding:.38rem .55rem; border-bottom:1px solid rgba(255,255,255,.04); color:var(--text-dim); font-size:0.785rem; }
 .ref-table td:first-child { font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--gold); }
 .ref-table td:nth-child(2) { font-family:'JetBrains Mono',monospace; color:var(--text); }
 .ref-table tr:last-child td { border-bottom:none; }
-.ref-table tr.hi td { background:rgba(230,176,66,.06); }
+.ref-table tr.hi td { background:var(--surface2); }
 .ref-table tr:hover td { background:rgba(255,255,255,.03); }
 
 /* ── INFO BOXES ───────────────────────────────────────────────────────── */
@@ -185,7 +185,7 @@ html.gdu-late #gdu-mat-card{order:-1}
 
 /* WI avg table */
 .wi-avg-table { width:100%; border-collapse:collapse; font-size:0.785rem; }
-.wi-avg-table th { background:rgba(230,176,66,.1); color:var(--gold); font-family:'JetBrains Mono',monospace; font-size:0.755rem; padding:.4rem .5rem; text-align:left; border-bottom:1px solid var(--border); }
+.wi-avg-table th { background:var(--surface2); color:var(--text); font-family:'JetBrains Mono',monospace; font-size:0.755rem; padding:.4rem .5rem; text-align:left; border-bottom:1px solid var(--border); }
 .wi-avg-table td { padding:.35rem .5rem; border-bottom:1px solid rgba(255,255,255,.04); }
 .wi-avg-table td:first-child { color:var(--text); font-weight:600; }
 .wi-avg-table td:nth-child(4) { font-family:'JetBrains Mono',monospace; font-weight:700; color:var(--gold); }
@@ -198,11 +198,11 @@ html.gdu-late #gdu-mat-card{order:-1}
 .formula-card { background:var(--bg); border:1px solid var(--border); border-radius:var(--r-md); padding:.85rem .9rem; }
 .formula-card-title { font-size:0.755rem; font-weight:700; letter-spacing:0; text-transform:none; color:var(--text-dim); margin-bottom:.5rem; }
 .formula-card p { font-size:0.787rem; color:var(--text-dim); line-height:1.6; margin:0; }
-.formula-card code { font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--green); background:rgba(58,139,60,.1); padding:.1rem .3rem; border-radius:3px; }
+.formula-card code { font-family:'JetBrains Mono',monospace; font-size:0.78rem; color:var(--green); background:var(--surface2); padding:.1rem .3rem; border-radius:3px; }
 html[data-theme="light"] .formula-card code { color:#276c43; }
 
 /* ── LIVE BADGE ───────────────────────────────────────────────────────── */
-.live-badge { display:inline-flex; align-items:center; gap:.3rem; font-size:0.755rem; font-weight:700; letter-spacing:0; text-transform:none; color:var(--text-dim); background:rgba(58,139,60,.1); border:1px solid rgba(58,139,60,.3); border-radius:var(--r-lg); padding:.15rem .5rem; }
+.live-badge { display:inline-flex; align-items:center; gap:.3rem; font-size:0.755rem; font-weight:700; letter-spacing:0; text-transform:none; color:var(--text-dim); background:var(--surface2); border:1px solid rgba(58,139,60,.3); border-radius:var(--r-lg); padding:.15rem .5rem; }
 
 
 /* ── RESPONSIVE ───────────────────────────────────────────────────────── */
@@ -305,7 +305,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 
 <main id="main" tabindex="-1" class="gdu-page">
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; GDU Calculator</nav>
-<script src="/components/rp-xmas.js?v=1"></script>
+<script src="/components/rp-xmas.js?v=2"></script>
 
 <div class="gdu-hero">
   <div class="gdu-eyebrow page-kicker"> Heat units from your weather, any US location</div>
@@ -641,7 +641,7 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19" defer></script>
+<script src="/components/loader.js?v=20" defer></script>
 <script src="/components/gdu-stages.js?v=1"></script>
 <script src="/components/prism.js?v=1"></script>
 <script>
@@ -1262,6 +1262,6 @@ calcGDU();
 
 })();
 </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

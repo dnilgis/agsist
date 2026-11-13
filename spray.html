@@ -12,13 +12,13 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=28">
-<link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=29">
+<link rel="stylesheet" href="/components/asof.css?v=2">
 <script src="/components/util.js?v=17"></script>
 <script src="/components/asof.js?v=1"></script>
 <script src="/components/nws.js?v=1"></script>
-<link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script><script>/* a saved location: the forecast panel shows and the setup box does not, from first paint (autoLoad swapped them after paint and the page jumped) */try{var _l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if((_l&&_l.lat&&_l.lon)||/[?&]f=-?\d/.test(location.search))document.documentElement.classList.add('spray-has-loc');}catch(e){}</script>
+<link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script><script>/* a saved location: the forecast panel shows and the setup box does not, from first paint (autoLoad swapped them after paint and the page jumped) */try{var _l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');if((_l&&_l.lat&&_l.lon)||/[?&]f=-?\d/.test(location.search))document.documentElement.classList.add('spray-has-loc');}catch(e){}</script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -165,7 +165,7 @@ body {
 /* ── Status Panel (hero right) ────────────────────────────────────── */
 .status-panel {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1.5rem; text-align: center;
+  border-radius: var(--r-md,3px); padding: 1.5rem; text-align: center;
   min-width: 0;
   transition: border-color .2s;
 }
@@ -201,7 +201,7 @@ body {
 /* ── Location Setup Card ──────────────────────────────────────────── */
 .loc-setup {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 2rem; text-align: center;
+  border-radius: var(--r-md,3px); padding: 2rem; text-align: center;
   max-width: 560px; margin: 0 auto 1.5rem;
 }
 .loc-setup h2, .loc-setup h3 { font-size: 1.05rem; font-family: inherit; font-weight: 700; color: var(--text); margin-bottom: .55rem; }
@@ -322,7 +322,7 @@ body {
 }
 .fcard {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1rem 1.1rem;
+  border-radius: var(--r-md,3px); padding: 1rem 1.1rem;
   transition: border-color .2s;
   min-width: 0;
   overflow: hidden;
@@ -371,7 +371,7 @@ body {
 /* ── Hourly Spray Window ─────────────────────────────────────────── */
 .window-wrap {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1.1rem;
+  border-radius: var(--r-md,3px); padding: 1.1rem;
   margin-bottom: 1.5rem;
   /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .hourly-scroll child */
 }
@@ -417,7 +417,7 @@ body {
 /* ── Education Section ───────────────────────────────────────────── */
 .edu {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1.5rem; margin-bottom: 1.5rem;
+  border-radius: var(--r-md,3px); padding: 1.5rem; margin-bottom: 1.5rem;
   min-width: 0; overflow: hidden;
 }
 .edu-title {
@@ -452,7 +452,7 @@ body {
 /* ── Inversion Diagram Box ───────────────────────────────────────── */
 .inv-box {
   background: var(--surface2); border: 2px solid rgba(184,76,42,.18);
-  border-radius: var(--r-md, 6px); padding: 1.25rem; margin-top: 1rem;
+  border-radius: var(--r-md,3px); padding: 1.25rem; margin-top: 1rem;
   overflow: hidden;
 }
 .inv-title {
@@ -511,7 +511,7 @@ body {
 .mix-section { margin-top: 2.5rem; min-width: 0; }
 .mix-card {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1.5rem;
+  border-radius: var(--r-md,3px); padding: 1.5rem;
   /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .nozzle-table-wrap child */
 }
 .mix-intro {
@@ -526,7 +526,7 @@ body {
   grid-template-columns: 44px minmax(0,1fr);
   gap: .85rem; align-items: start;
   padding: .85rem; background: var(--surface2);
-  border: var(--card-bw) solid var(--border); border-radius: var(--r-md, 6px);
+  border: var(--card-bw) solid var(--border); border-radius: var(--r-md,3px);
   transition: border-color .2s;
   min-width: 0;
 }
@@ -534,7 +534,7 @@ body {
 .mix-num {
   width: 44px; height: 44px;
   display: flex; align-items: center; justify-content: center;
-  border-radius: var(--r-md, 6px);
+  border-radius: var(--r-md,3px);
   font-family: 'JetBrains Mono', monospace;
   font-size: 1rem; font-weight: 800; flex-shrink: 0;
 }
@@ -583,7 +583,7 @@ body {
 }
 .tip-card {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1.15rem;
+  border-radius: var(--r-md,3px); padding: 1.15rem;
   transition: border-color .2s;
   min-width: 0; overflow: hidden;
 }
@@ -655,7 +655,7 @@ body {
 }
 .sc {
   background: var(--surface); border: var(--card-bw) solid var(--border);
-  border-radius: var(--r-md, 6px); padding: 1.1rem 1.2rem;
+  border-radius: var(--r-md,3px); padding: 1.1rem 1.2rem;
   min-width: 0;
   /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .day-strip child.
      border-radius does not require overflow:hidden in modern browsers. */
@@ -746,7 +746,7 @@ body {
 .cross-link {
   display: flex; align-items: flex-start; gap: .9rem;
   padding: 1rem 1.1rem; background: var(--surface);
-  border: var(--card-bw) solid var(--border); border-radius: var(--r-md, 6px);
+  border: var(--card-bw) solid var(--border); border-radius: var(--r-md,3px);
   text-decoration: none; transition: border-color .15s, background .15s;
   min-width: 0; overflow: hidden;
 }
@@ -1192,7 +1192,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     <a href="#section-season" class="jump-link">Spray calendar</a>
     <a href="#section-faq" class="jump-link">FAQ</a>
   </nav>
-<script src="/components/rp-xmas.js?v=1"></script>
+<script src="/components/rp-xmas.js?v=2"></script>
   <aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="spray"></aside>
   <div class="loc-setup" id="loc-setup">
     <h2>Set your location</h2>
@@ -1237,7 +1237,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <p class="sw-lede">The forecast wind around your field, hour by hour, coloured by the spray band at the boom, with the best spray windows below it. Check your product label.</p>
           <div id="sw-root" class="sw-root" aria-busy="true"><p class="sw-ph">The wind map loads when you get here.</p></div>
         </section>
-        <script>/* The wind view's code (components/spray-wind.js, Leaflet, the map) loads only once a field is set and the reader nears this section, or at once for a shared ?f= link. */(function(){var done=false;function go(){if(done||!window.AgSprayField)return;done=true;var s=document.createElement('script');s.src='/components/spray-wind.js?v=3';s.defer=true;document.head.appendChild(s);}function arm(){if(done)return;if(/[?&]f=/.test(location.search)||location.hash==='#wind'){go();return;}var el=document.getElementById('wind');if(!el||!('IntersectionObserver' in window)){go();return;}var io=new IntersectionObserver(function(es){if(es.some(function(x){return x.isIntersecting;})){io.disconnect();go();}},{rootMargin:'400px 0px'});io.observe(el);}document.addEventListener('agsist:spray-field',arm);if(window.AgSprayField)arm();})();</script>
+        <script>/* The wind view's code (components/spray-wind.js, Leaflet, the map) loads only once a field is set and the reader nears this section, or at once for a shared ?f= link. */(function(){var done=false;function go(){if(done||!window.AgSprayField)return;done=true;var s=document.createElement('script');s.src='/components/spray-wind.js?v=4';s.defer=true;document.head.appendChild(s);}function arm(){if(done)return;if(/[?&]f=/.test(location.search)||location.hash==='#wind'){go();return;}var el=document.getElementById('wind');if(!el||!('IntersectionObserver' in window)){go();return;}var io=new IntersectionObserver(function(es){if(es.some(function(x){return x.isIntersecting;})){io.disconnect();go();}},{rootMargin:'400px 0px'});io.observe(el);}document.addEventListener('agsist:spray-field',arm);if(window.AgSprayField)arm();})();</script>
       </div>
       <div class="edu has-fold fade-up" id="section-factors">
         <details class="fold">
@@ -2178,9 +2178,9 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19" defer></script>
-<script src="/components/rain-print-promo.js?v=6" defer></script>
-<script src="/components/geo.js?v=39" defer></script>
+<script src="/components/loader.js?v=20" defer></script>
+<script src="/components/rain-print-promo.js?v=7" defer></script>
+<script src="/components/geo.js?v=41" defer></script>
 <script>
 (function(){
   'use strict';
@@ -2519,7 +2519,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   openTo(location.hash);
 })();
 </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 <script src="/components/page-tabs.js?v=2" defer></script>
 </body>
 </html>
