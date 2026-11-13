@@ -582,7 +582,7 @@
     var COUNTY_CAP = 12, COUNTY_MAX = 40, names = [], countyCount = order.length;
     if (countyCount <= COUNTY_MAX) order.slice(0, COUNTY_CAP).forEach(function (c) {
       var t = c.o.f.counties[c.o.p[CO]][CNAME] + ' County', done = false, st = c.o.f.st;
-      [true, false].forEach(function (mustOwn) {
+      [true].forEach(function (mustOwn) {   // only on the county's own state: a name across the line is worse than none (the key counts it)
         [15, 13].forEach(function (size) {
           if (done) return;
           var w = measure(t, size, '600'), b = c.b, my = (b[1] + b[3]) / 2;
@@ -698,7 +698,7 @@
     x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.strokeStyle = GOLD; x.lineWidth = 2.5; x.stroke(); row('Gold edge: unusual'); ky += 26;
     x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.strokeStyle = '#e9edeb'; x.lineWidth = 1.5; x.stroke(); row('Round: recorded sale'); ky += 26;
     x.strokeStyle = '#e9edeb'; x.lineWidth = 1.5; x.strokeRect(kx0 + 2.5, ky - 12, 13, 13); row('Square: auction result'); ky += 30;
-    x.font = '700 17' + F; x.fillStyle = '#e9edeb'; x.fillText(pins.length === total ? n0(total) + ' pins in this view' : n0(pins.length) + ' of ' + n0(total) + ' pins in this view', kx0, ky); ky += 22;
+    x.font = '700 17' + F; x.fillStyle = '#e9edeb'; x.fillText(pins.length === total ? n0(total) + (total === 1 ? ' pin' : ' pins') + ' in this view' : n0(pins.length) + ' of ' + n0(total) + ' pins in this view', kx0, ky); ky += 22;
     x.font = '400 14' + F; x.fillStyle = 'rgba(233,237,235,.72)';
     if (model.countyCount > 40) { x.fillText(n0(model.countyCount) + ' counties', kx0, ky); ky += 20; }
     else if (model.moreCounties > 0) { x.fillText('+ ' + n0(model.moreCounties) + (model.moreCounties === 1 ? ' more county' : ' more counties'), kx0, ky); ky += 20; }
