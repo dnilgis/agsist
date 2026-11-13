@@ -174,10 +174,10 @@
     if (big) {
       var byVal = sts.slice().sort(function (x, y) { return op.by[x][0] - op.by[y][0] || (x < y ? -1 : 1); });
       lo = byVal[0]; hi = byVal[byVal.length - 1]; loPc = pc(op.by[lo][0]); hiPc = pc(op.by[hi][0]);
-      if (hiPc - loPc >= 40) cls += ' two';
     }
-    var h = '<span class="' + cls + '" aria-hidden="true"><u class="crb-in">';
-    if (vals.length >= 2) h += '<s style="left:' + pc(Math.min.apply(null, vals)) + '%;width:' + Math.round(100 * (Math.max.apply(null, vals) - Math.min.apply(null, vals)) / top) + '%"></s>';
+    /* the layout of the two names is set by layBars() from measured widths; stacked is safe until it runs */
+    var h = '<span class="' + cls + '"' + (big ? ' data-lay="stack"' : '') + ' aria-hidden="true"><u class="crb-in">';
+    if (vals.length >= 2) h += '<s style="left:' + pc(Math.min.apply(null, vals)) + '%;width:' + (pc(Math.max.apply(null, vals)) - pc(Math.min.apply(null, vals))) + '%"></s>';
     sts.forEach(function (s) { h += '<i style="left:' + pc(op.by[s][0]) + '%"' + (s === me ? ' class="me"' : '') + '></i>'; });
     if (op.md != null) h += '<b style="left:' + pc(op.md) + '%"></b>';
     var tl = function (st, w) { return esc(stName(st)) + ' ' + money(op.by[st][0], op.u) + ' ' + w; };
@@ -185,8 +185,24 @@
     h += '</u>';
     /* the scale, said out loud: zero at the left, a round figure at the right end (same as the builder) */
     h += '<em class="crb-0">$0</em><em class="crb-t">' + scaleLabel(top, op.u) + '</em>';
-    if (big) h += '<em class="crb-lh">' + tl(lo, 'lowest') + ', ' + tl(hi, 'highest') + '</em>';
+    if (big) h += '<em class="crb-lh">' + tl(lo, 'lowest') + ', ' + tl(hi, 'highest') + '</em><em class="crb-sl">' + tl(lo, 'lowest') + '</em><em class="crb-sh">' + tl(hi, 'highest') + '</em>';
     return h + '</span>';
+  }
+  /* The big bar names its lowest and highest state. Which layout fits depends on the names and the width, so measure:
+     a label under each dot when the two clear each other by 12 px, else one right-aligned line when it fits the bar,
+     else two stacked right-aligned lines. Runs after the bar is drawn and when the window changes size. */
+  function layBars() {
+    all('.crb-l').forEach(function (bar) {
+      if (!bar.offsetParent || !bar.querySelector('.crb-lh')) return;
+      var r = bar.getBoundingClientRect();
+      var inside = function (e) { var q = e.getBoundingClientRect(); return q.left >= r.left - 1 && q.right <= r.right + 1; };
+      bar.setAttribute('data-lay', 'dots');
+      var lo = bar.querySelector('.crb-lo'), hi = bar.querySelector('.crb-hi');
+      if (lo.getBoundingClientRect().right + 12 <= hi.getBoundingClientRect().left && inside(lo) && inside(hi)) return;
+      bar.setAttribute('data-lay', 'line');
+      if (inside(bar.querySelector('.crb-lh'))) return;
+      bar.setAttribute('data-lay', 'stack');
+    });
   }
   /* the reader's survey's own number for a job: [values, unit, kind] or null */
   function stateVal(op) {
@@ -266,6 +282,7 @@
     var old = $('cr-answer').querySelector('.crb-l');
     var nb = document.createElement('div'); nb.innerHTML = bar(op, 'crb crb-l', st);
     if (old && nb.firstChild) old.parentNode.replaceChild(nb.firstChild, old);
+    layBars();
     var dl = diy(k, op), dx = $('cr-diy');
     if (dx) { dx.textContent = dl.join(' '); dx.hidden = !dl.length; }
     $('cr-cost').innerHTML = costLine(op, k);
@@ -893,7 +910,10 @@
       });
   }
   if (typeof window !== 'undefined') {
-    window.AgCustomRates = { matches: matches, money: money, stem: stem, cells: cells, usdaDiesel: usdaDiesel, quoteTotals: quoteTotals, sheet: function () { return S.b ? stateSheetSpec() : null; }, quote: function () { return S.b ? quoteSpec() : null; }, quoteList: function () { return S.quote.slice(); } };
+    window.AgCustomRates = { hero: hero, layBars: layBars, matches: matches, money: money, stem: stem, cells: cells, usdaDiesel: usdaDiesel, quoteTotals: quoteTotals, sheet: function () { return S.b ? stateSheetSpec() : null; }, quote: function () { return S.b ? quoteSpec() : null; }, quoteList: function () { return S.quote.slice(); } };
+    var rzT = null;
+    if (window.addEventListener) window.addEventListener('resize', function () { clearTimeout(rzT); rzT = setTimeout(layBars, 120); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layBars);
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
   }
 })();
