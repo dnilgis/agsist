@@ -89,6 +89,7 @@ jobs:
           grep -qx './.well-known/security.txt' "$RUNNER_TEMP/members.txt" || { echo "::error::the artifact has no .well-known/security.txt"; exit 1; }
           grep -qx './index.html' "$RUNNER_TEMP/members.txt" || { echo "::error::the artifact has no index.html"; exit 1; }
           if grep -qE '^\./(scripts|test|workers|\.github)/' "$RUNNER_TEMP/members.txt"; then echo "::error::tooling is in the artifact"; exit 1; fi
+          if grep -qE '^\./(CLAUDE\.md|CLAUDE\.local\.md|AGENTS\.md|GEMINI\.md|\.cursorrules|\.windsurfrules|\.mcp\.json|\.aider\.conf\.yml|\.claude/|\.cursor/)' "$RUNNER_TEMP/members.txt"; then echo "::error::a coding-tool file is in the artifact"; exit 1; fi
           echo "artifact: $(wc -l < "$RUNNER_TEMP/members.txt") members"
       - id: deploy
         if: steps.moved.outputs.go == '1'
