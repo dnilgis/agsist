@@ -1835,9 +1835,9 @@ window.__fsRead = function (FSX) {
     var harvested = over && nd && v!=null && v<0.3;
     var seasonOver = over && v!=null && v>=0.3;
     if(harvested){
-      headWord='Crop vigor: harvested or near bare'; headCol='var(--dim)';
+      headWord='Crop vigor: harvested or near bare'; headCol='var(--text-muted,#8a8f8c)';
     } else if(seasonOver){
-      headWord='Crop vigor: season over'; headCol='var(--dim)';
+      headWord='Crop vigor: season over'; headCol='var(--text-muted,#8a8f8c)';
     } else if(dryDown){
       // September on a row crop: a falling NDVI is the crop maturing. Saying "Developing" or
       // "Low" here reads as a problem. It isn't one.
