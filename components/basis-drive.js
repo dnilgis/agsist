@@ -264,7 +264,7 @@
     var y0 = TOP, y1 = H - BOT, Y = function (c) { return y0 + (top - c) / (top - bot) * (y1 - y0); };
     // room over the best dots for their words: one more step on top when they sit too near it
     var vmax = Math.max.apply(null, vals);
-    if (Y(vmax) - y0 < fb * (phone ? 2.2 : 3.4) + 10) { top += stepT; ticks.unshift(top); L = Math.ceil(Math.max.apply(null, ticks.map(function (t) { return widthOf(word(t), fs, t === 0); }))) + 10; }
+    for (var bump = 0; bump < 3 && Y(vmax) - y0 < fb * (phone ? 2.2 : 3.4) + 10; bump++) { top += stepT; ticks.unshift(top); L = Math.ceil(Math.max.apply(null, ticks.map(function (t) { return widthOf(word(t), fs, t === 0); }))) + 10; }
     var r0 = card ? 7 : phone ? 3.8 : 5.2, gap = phone ? 1.6 : 3, step = 2 * r0 + gap;
     var pad = phone ? 8 : 16;
     var ZA = T.length ? Math.max(phone ? 92 : 150, Math.min(phone ? 132 : 260, T.length * step + 2 * pad + (phone ? 0 : 40))) : 0;
