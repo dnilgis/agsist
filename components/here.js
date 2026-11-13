@@ -662,7 +662,7 @@
 
   /* The county station's year of rain, drawn by the county rain page's own Rain Print, and
      ranked against the same days of every earlier year the station kept in full (NOAA). */
-  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=51';
+  var ACIS = 'https://data.rcc-acis.org/StnData', RCP = '/components/rain-county-print.js?v=50';
   var porMemo = {};
   function porRows(sid) {
     if (porMemo[sid]) return porMemo[sid];
@@ -749,27 +749,18 @@
     return '/rain-print?' + q.toString();
   }
   function drawFigure(fig) {
-    var cap = 'Inches of rain added up day by day from Jan 1' + (fig.usual != null ? ', solid line, against the normal year at this ' + fig.noun + ' (dashed), counted on the same days' : '') + '. Days with no report add nothing.';
+    var cap = 'Inches of rain added up day by day from Jan 1' + (fig.usual != null ? ', solid line, against the usual year at this ' + fig.noun + ' (dashed), counted on the same days' : '') + '. Days with no report add nothing.';
     var pcap = 'Every day of ' + fig.year + (fig.done ? '' : ' so far') + ' at this ' + fig.noun + ', drawn by Rain Print. A gap is a day with no report.' + (fig.done ? '' : ' The empty months are still to come.') +
-      (fig.mn ? ' The dashed line is the normal year: NOAA&rsquo;s ' + (fig.norm === '1991-2020' ? '1991 to 2020' : '30-year') + ' normals for this ' + fig.noun + ', added up over the days it reported.' : '');
-    // Nov 13 2026 (the owner: on a phone the enhanced chart first, the Rain Print right below; wider, the print first). Up to 560 px (here.css's
-    // phone layout) the chart is a block above the print with its own caption; wider it is the print's placeholder, drawn in the print's
-    // box at once (never an empty box) and replaced when the print has drawn, as the plain chart was. On a phone the print opens in Roots, not
-    // Staircase, so the running-total picture is not shown twice (the owner, Nov 13).
-    var phone = !!(window.matchMedia && window.matchMedia('(max-width: 560px)').matches), chartBox = P.rainChartBox(fig);
-    $('h-rp-box').innerHTML = (phone ? '<figure class="rc-chart h-rce" id="h-rce">' + chartBox + '<figcaption>' + esc(cap) + '</figcaption></figure>' : '') +
-      '<figure class="rc-chart rc-print h-rp" id="h-rp" data-st="' + esc(fig.st) + '" data-fips="' + esc(fig.fips) + '" data-year="' + fig.year + '" data-days="' + fig.days + '" data-total="' + fig.total.toFixed(2) + '" data-place="' + esc(fig.place) + '" data-gauge="' + esc(fig.gauge) + '"' +
+      (fig.mn ? ' The dashed line is the usual year: NOAA&rsquo;s ' + (fig.norm === '1991-2020' ? '1991 to 2020' : '30-year') + ' normals for this ' + fig.noun + ', added up over the days it reported.' : '');
+    $('h-rp-box').innerHTML = '<figure class="rc-chart rc-print h-rp" id="h-rp" data-st="' + esc(fig.st) + '" data-fips="' + esc(fig.fips) + '" data-year="' + fig.year + '" data-days="' + fig.days + '" data-total="' + fig.total.toFixed(2) + '" data-place="' + esc(fig.place) + '" data-gauge="' + esc(fig.gauge) + '"' +
       (fig.mn ? ' data-mn="' + esc(fig.mn) + '" data-usual="' + fig.usual.toFixed(2) + '" data-norm="' + esc(fig.norm) + '"' : '') + '>' +
-      '<div class="rc-print-styles" role="group" aria-label="Print style" hidden><button type="button" data-style="r1" aria-pressed="' + (phone ? 'false' : 'true') + '">Staircase</button><button type="button" data-style="r2" aria-pressed="' + (phone ? 'true' : 'false') + '">Roots</button><button type="button" class="rc-zoom" aria-pressed="false">Up close</button></div>' +
-      '<div class="rc-print-art">' + (phone ? '' : chartBox) + '</div><figcaption>' + (phone ? '' : '<span class="rc-cap-chart">' + esc(cap) + '</span>') + '<span class="rc-cap-print" hidden>' + pcap + '</span></figcaption></figure>' +
+      '<div class="rc-print-styles" role="group" aria-label="Print style" hidden><button type="button" data-style="r1" aria-pressed="true">Staircase</button><button type="button" data-style="r2" aria-pressed="false">Roots</button><button type="button" class="rc-zoom" aria-pressed="false">Up close</button></div>' +
+      '<div class="rc-print-art">' + P.rainChart(fig) + '</div><figcaption><span class="rc-cap-chart">' + esc(cap) + '</span><span class="rc-cap-print" hidden>' + pcap + '</span></figcaption></figure>' +
       '<p class="h-rp-buy"><a href="' + esc(rpHref(fig)) + '" data-placement="fast-facts">Make this one with your name &rarr;</a></p>';
     var el = $('h-rp'), buy = document.querySelector('.h-rp-buy a');
     if (buy) buy.addEventListener('click', function () { track('rain_print_promo_click', { placement: 'fast-facts', page: location.pathname }); });
-    // the chart draws at once (components/rain-chart.js is loaded with the page; loaded here if it is not)
-    var cb = document.querySelector('#h-rp-box .rce');
-    if (cb) loadScript('/components/rain-chart.js?v=1', function () { return !!(window.AgRainChart && window.AgRainChart.mount); }).then(function (ok) { if (ok && cb.isConnected) window.AgRainChart.mount(cb); });
     loadScript(RCP, function () { return !!(window.AgRainCountyPrint && window.AgRainCountyPrint.mount); }).then(function (ok) {
-      if (ok && el.isConnected) return window.AgRainCountyPrint.mount(el);
+      if (ok && el.isConnected) window.AgRainCountyPrint.mount(el);
     });
   }
 

@@ -30,7 +30,7 @@
  * ─────────────────────────────────────────────────────────────────
  * BUMP THIS ON EVERY DEPLOY:
  */
-var CACHE_VERSION = 497;  // v497 2026-11-13: one deploy: the plain look (no icons, glow, glass, gradients or round tiles; styles.css, loader.js and most page assets bumped), custom rates fixes (custom-rates.js?v=9, custom-rates.css?v=7), the enhanced rain chart first on a phone (new components/rain-chart.js?v=1, place.js?v=15, here.js?v=50, rain-county-print.js?v=51), Field Scout season card (field-scout.js?v=40, field-scout-read.js?v=26), Fast Facts #tables jump, Daily theme, chart of the day and weather line (util.js?v=21, daily-edge.js?v=3), sponsor totals, the embed tools and newsletter block retired, the owner's name off public pages, SEO round 3. (497, next above main 496)
+var CACHE_VERSION = 497;  // v497 2026-11-13: one deploy: the plain look (no icons, glow, glass, gradients or round tiles; styles.css, loader.js and most page assets bumped), custom rates fixes (custom-rates.js?v=9, custom-rates.css?v=7), Fast Facts My place assets (here.js?v=50, here.css?v=9), Field Scout season card (field-scout.js?v=40, field-scout-read.js?v=26), Fast Facts #tables jump, Daily theme, chart of the day and weather line (util.js?v=21, daily-edge.js?v=3), sponsor totals, the embed tools and newsletter block retired, the owner's name off public pages, SEO round 3. (497, next above main 496)
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;
