@@ -37,6 +37,13 @@
    "link": "/sponsor"
   },
   {
+   "id": "2026-11-12-seo-four",
+   "date": "2026-11-12",
+   "title": "Find the tools",
+   "line": "Rain, land sale, ARC or PLC and PRF pages now link to cash bids, corn futures, fertilizer prices and the bin calculator.",
+   "link": "/fertilizer"
+  },
+  {
    "id": "2026-11-12-alert-expiry",
    "date": "2026-11-12",
    "title": "Price alerts end with their contract",
@@ -102,7 +109,7 @@
   {
    "id": "2026-11-12-state-sales-pages",
    "date": "2026-11-12",
-   "title": "Farmland sales by state",
+   "title": "A farm sales page for each state",
    "line": "Each state with farm sale records now has its own page: the median price per acre, every county and the newest sales. ARC or PLC and PRF lead with their sign-up dates.",
    "link": "/land-sales/wisconsin/"
   },
