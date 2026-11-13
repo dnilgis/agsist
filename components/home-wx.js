@@ -144,6 +144,18 @@
     var of = 'the ' + r.n + ' years with a full count since ' + r.first + '.';
     return (r.wetter === 0 ? 'The most rain by ' + day + ' in ' + of : r.drier === 0 ? 'The least rain by ' + day + ' in ' + of : ordinal(r.wetter + 1) + ' wettest by ' + day + ' of ' + of);
   }
+  /* the saved picture's sub line when months are left off the plot: their figures must be there once, the line must fit uncut, and when no month is
+     named on the plot the line says what gold means. fits(text) says whether a line fits; d the left-off months' sentences, dt their short forms. */
+  function cardTake(sub, d, dt, nMarks, fits) {
+    if (!d.length) return sub;
+    var base = String(sub).replace(/;? ?gold marks.*$/, ''), what = /since May/.test(sub) ? 'season' : 'year', gold = 'Gold marks the months that made the ' + what + '.';
+    var all = d.length >= nMarks, tries = [];
+    if (!all) tries.push(base + '. ' + d.join(' '));
+    tries.push(gold + ' ' + d.join(' '));
+    tries.push('Gold marks ' + dt.map(function (t) { return t.replace(': ', ' '); }).join('; ') + '.');
+    for (var i = 0; i < tries.length; i++) if (fits(tries[i])) return tries[i];
+    return tries[tries.length - 1];
+  }
   function insertAt(pts, x, y) {
     if (pts.some(function (p) { return Math.abs(p[0] - x) < 1e-9; })) return;
     pts.push([x, y]); pts.sort(function (a, b) { return a[0] - b[0]; });
@@ -197,7 +209,7 @@
       dotted: gaps.map(function (r) { return [r.x0, r.x1]; }), freeze: fz && end && fz <= end ? { x: doy(fz) + 1, text: 'First 28°F freeze, ' + MON[fz.getUTCMonth()] + ' ' + fz.getUTCDate(), short: 'Freeze ' + MON[fz.getUTCMonth()] + ' ' + fz.getUTCDate() } : null,
       ticks: rows.map(function (r) { return { a: r.x0, b: r.x1, lab: r.lab }; }) };
   }
-  if (typeof module === 'object' && module.exports) module.exports = { dayRows: dayRows, srcText: srcText, rainRun: rainRun, gduRun: gduRun, madeMonths: madeMonths, monthsSentence: monthsSentence, gapWords: gapWords, whenOf: whenOf, rankSentence: rankSentence, unitWord: unitWord, ordinal: ordinal };
+  if (typeof module === 'object' && module.exports) module.exports = { dayRows: dayRows, srcText: srcText, rainRun: rainRun, gduRun: gduRun, madeMonths: madeMonths, monthsSentence: monthsSentence, gapWords: gapWords, whenOf: whenOf, cardTake: cardTake, rankSentence: rankSentence, unitWord: unitWord, ordinal: ordinal };
   if (!doc || !doc.getElementById('hp-wxb')) return;
 
   function ctDay(t) {
@@ -463,10 +475,11 @@
       read: function (xx, a, n) { var w = function (v) { return o.fmt(v) + ' ' + unitWord(o.fmt(v), o.unit); }, sh = function (v) { return parseFloat(String(o.fmt(v)).replace(/,/g, '')); }; return whenOf(yr, xx) + ': ' + w(a) + ' so far' + (n != null ? '; normal ' + w(n) + '; ' + gapWords(sh(a) - sh(n), o.unit) : ''); },
       rest: 'Drag along the line to read any date.', steps: o.steps, maxTicks: o.maxTicks, headroom: o.headroom,
       height: { phone: 250, wide: 250 }, tools: tl,
-      story: function () {
-        /* the picture's sub line also carries the figures of any month whose words have no clean place at the picture's size */
-        var d = []; try { root.AgChart.runSvg(rc, 1136, 340, { fs: 22, card: true }); d = root.AgChart.runInfo().dropped || []; } catch (e) {}
-        return { head: o.cardHead, take: d.length ? String(o.sub).replace(/;? ?gold marks.*$/, '') + '. ' + d.join(' ') : o.sub,   /* with figures to carry, the colour note makes way so the line is not cut */ summary: o.label };
+      story: function () { return { head: o.cardHead, take: o.sub, summary: o.label }; },
+      /* the picture's plot height is known only once its headline is laid out, so the left-off months are worked out at that height */
+      takeFor: function (ph, fits) {
+        var d = [], dt = []; try { root.AgChart.runSvg(rc, 1136, ph, { fs: 22, card: true }); var inf = root.AgChart.runInfo(); d = inf.dropped || []; dt = inf.droppedText || []; } catch (e) {}
+        return cardTake(o.sub, d, dt, rc.marks.length, fits);
       },
       share: { url: 'https://agsist.com/?utm_source=share&utm_medium=picture&utm_campaign=home-' + o.file, title: o.cardHead, file: 'agsist-' + o.file + '-' + iso + '.png', kicker: o.kicker, source: o.source, date: iso } };
     root.AgChart.mountRun(x, rc);

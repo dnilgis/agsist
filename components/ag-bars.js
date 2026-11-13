@@ -139,7 +139,7 @@
     }
     /* the marks' words: each one off both lines (6 px clear, bold measured at 0.62 of the size), off the other labels, and joined to its stretch by a
        hairline that crosses nothing: it runs from the line nearest the label, and a place whose hairline would cross another label, hairline or line is not chosen */
-    var mid = (g.x0 + g.x1) / 2, words = [], leaders = [], segs = [], dropped = [];
+    var mid = (g.x0 + g.x1) / 2, words = [], leaders = [], segs = [], dropped = [], droppedText = [], hairs = [];
     function segCross(x0, y0, x1, y1) {
       var n = 0, len = Math.hypot(x1 - x0, y1 - y0), steps = Math.max(2, Math.ceil(len / 2));
       for (var i = 0; i <= steps; i++) {
@@ -169,8 +169,8 @@
           if (cost < bestN) { bestN = cost; best = { b: b, lines: lines, x: x, rt: rt, y0: yTop + fs1 * 0.85, up: up, sy: sy, ex0: ex0, ey0: ey0 }; }
         }); });
       });
-      if (!best) { dropped.push(m.fig || m.text); return; }
-      boxes.push(best.b);
+      if (!best) { dropped.push(m.fig || m.text); droppedText.push(m.text); return; }
+      boxes.push(best.b); hairs.push({ len: Math.hypot(best.ex0 - px, best.ey0 - best.sy), two: best.lines.length === 2 });
       best.lines.forEach(function (l, j) { words.push(txt(best.x, best.y0 + j * fs * 1.2, l, f + 'font-size:' + fs1 + 'px;font-weight:700;fill:' + P.ink + ';' + halo, best.rt ? 'start' : 'end')); });
       if (Math.hypot(best.ex0 - px, best.ey0 - best.sy) > 7) { leaders.push('<line x1="' + f1(px) + '" x2="' + f1(best.ex0) + '" y1="' + f1(best.sy) + '" y2="' + f1(best.ey0) + '" style="stroke:' + P.mut + ';stroke-width:1"/>'); segs.push([px, best.sy, best.ex0, best.ey0]); }
     });
@@ -193,7 +193,7 @@
         gl.forEach(function (l, j) { o.push(txt(ex, gy + j * fs * 1.2, l, fb + 'fill:' + P.ink)); });
       }
     }
-    lastInfo = { dropped: dropped, boxes: boxes.slice(), pts: pts, freeze: frz, plot: inPlot, marks: boxes.slice(frz == null ? 0 : 1) };
+    lastInfo = { hairs: hairs, dropped: dropped, droppedText: droppedText,  boxes: boxes.slice(), pts: pts, freeze: frz, plot: inPlot, marks: boxes.slice(frz == null ? 0 : 1) };
     o.push('<g class="agc-hv" visibility="hidden" style="pointer-events:none"><line class="hv-l" y1="' + g.pt + '" y2="' + g.yb + '" style="stroke:' + P.ink + ';stroke-width:1;opacity:.55"/><circle class="hv-a" r="4" style="fill:' + P.ink + '"/>' + (N ? '<circle class="hv-n" r="4" style="fill:' + grey + '"/>' : '') + '</g>');
     o.push('</svg>');
     return o.join('');

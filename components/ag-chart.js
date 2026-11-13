@@ -337,6 +337,9 @@
     var hd = fitLines(meas('800'), st.head, W - 96, [38, 34, 30, 27], 2), y = 80 + hd.size;
     x.font = '800 ' + hd.size + 'px ' + FONT; x.fillStyle = '#e9edeb';
     hd.lines.forEach(function (l) { x.fillText(l, 48, y); y += hd.size * 1.2; });
+    /* a chart that lays words out for the picture's real plot height gets it here, and a way to ask whether a line fits without being cut */
+    var ph0 = Math.max(200, Math.round(H - (y + 25 + 10) - 76));
+    if (cfg.takeFor) st.take = cfg.takeFor(ph0, function (t) { return !fitLines(meas('400'), t, W - 96, [25, 22, 20], 1).cut; });
     if (st.take) {
       var tk = fitLines(meas('400'), st.take, W - 96, [25, 22, 20], 1);
       x.font = '400 ' + tk.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.86)'; x.fillText(tk.lines[0], 48, y + 2); y += tk.size + 10;
@@ -350,7 +353,7 @@
       c.toBlob(function (b) { done(b); }, 'image/png');
     };
     img.onerror = function () { done(null); };
-    var ph = Math.max(200, Math.round(H - y - 76));
+    var ph = cfg.takeFor ? ph0 : Math.max(200, Math.round(H - y - 76));
     img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(cfg.svgFor ? cfg.svgFor(W - 64, ph) : svg(view, W - 64, ph, { fs: 22, card: true, cfg: cfg }));
   }
   function ga(n, kit) { try { if (typeof root.gtag === 'function') root.gtag('event', n, { kit: kit }); } catch (e) {} }
