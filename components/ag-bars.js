@@ -1,6 +1,6 @@
 /* components/ag-bars.js: the running-total line for the shared chart kit (Nov 13, 2026). Adds AgChart.mountRun and
-   AgChart.runSvg to components/ag-chart.js, which it needs loaded first: the saved picture, Share and Copy link
-   are the kit's own.
+   AgChart.runSvg to components/ag-chart.js, which it needs loaded first. Its saved picture, Share and Copy link are its own (runCard,
+   runTools below), because the picture's plot height decides which months' words fit and the kit's card does not offer that.
 
    One line for this year's running total over a second line for the normal's running total, the gap between them
    shaded flat, each line named at its right end, the stretches that made the year drawn heavier with the month's
@@ -13,7 +13,13 @@
   'use strict';
   var K = root.AgChart || (typeof module !== 'undefined' && module.exports && require('./ag-chart.js'));
   if (!K) return;
-  var PAGE = K.PAGE, CARD = K.CARD, FONT = K.FONT, tools = K.tools;
+  /* the page and picture colours, the font, and the saved picture and its buttons: this chart's own, so the kit's card code is not touched */
+  var FONT = 'Inter, system-ui, -apple-system, Segoe UI, sans-serif';
+  var PAGE = { ink: 'var(--text)', dim: 'var(--text-dim)', mut: 'var(--text-muted)', grid: 'var(--border)', surf: 'var(--surface)' };
+  var CARD = { ink: '#e9edeb', dim: 'rgba(233,237,235,.78)', mut: 'rgba(233,237,235,.55)', grid: 'rgba(233,237,235,.13)', surf: '#0a0c0d' };
+  var MONS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function longDate(s) { return MONS[+s.slice(5, 7) - 1] + ' ' + (+s.slice(8, 10)) + ', ' + s.slice(0, 4); }
+  function ga(n, kit) { try { if (typeof root.gtag === 'function') root.gtag('event', n, { kit: kit }); } catch (e) {} }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function f1(v) { return v.toFixed(1); }
   function isN(x) { return typeof x === 'number' && isFinite(x); }
@@ -205,6 +211,76 @@
   }
   function circle(x, y, fill, card) { return '<circle cx="' + f1(x) + '" cy="' + f1(y) + '" r="' + (card ? 6 : 3.5) + '" style="fill:' + fill + '"/>'; }
 
+  function fitRun(measure, text, maxW, sizes, maxLines) {
+    var lines = [];
+    for (var i = 0; i < sizes.length; i++) {
+      lines = []; var cur = '';
+      String(text || '').split(' ').forEach(function (w) { var x = cur ? cur + ' ' + w : w; if (measure(x, sizes[i]) > maxW && cur) { lines.push(cur); cur = w; } else cur = x; });
+      if (cur) lines.push(cur);
+      if (lines.length <= maxLines && lines.every(function (l) { return measure(l, sizes[i]) <= maxW; })) return { size: sizes[i], lines: lines };
+    }
+    var sz = sizes[sizes.length - 1], keep = lines.slice(0, maxLines), last = keep[keep.length - 1] || '';
+    while (last && measure(last + '…', sz) > maxW) last = last.replace(/\s*\S+$/, '');
+    keep[keep.length - 1] = last + '…';
+    return { size: sz, lines: keep, cut: true };
+  }
+
+  function runCard(cfg, view, done) {
+    var D = root.document, W = 1200, H = 630, c = D.createElement('canvas'); c.width = W; c.height = H;
+    var x = c.getContext('2d'); if (!x || !root.Image) { done(null); return; }
+    var st = cfg.story ? cfg.story(view) : {}, sh = cfg.share || {};
+    var meas = function (wt) { return function (s, size) { x.font = wt + ' ' + size + 'px ' + FONT; return x.measureText(s).width; }; };
+    x.fillStyle = '#0a0c0d'; x.fillRect(0, 0, W, H); x.fillStyle = '#d4a23f'; x.fillRect(0, 0, W, 10);
+    x.font = '800 34px ' + FONT; x.fillStyle = '#e9edeb'; x.fillText('agsist', 48, 62);
+    var aw = x.measureText('agsist').width; x.font = '700 20px ' + FONT; x.fillStyle = '#d4a23f'; x.fillText('.com', 50 + aw, 62);
+    var mark = 50 + aw + x.measureText('.com').width + 32;
+    var k = fitRun(meas('600'), (sh.kicker ? sh.kicker + ' · ' : '') + longDate(sh.date || view.to), W - 48 - mark, [20, 18, 16], 1);
+    x.font = '600 ' + k.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.72)'; x.textAlign = 'right'; x.fillText(k.lines[0], W - 48, 60); x.textAlign = 'left';
+    var hd = fitRun(meas('800'), st.head, W - 96, [38, 34, 30, 27], 2), y = 80 + hd.size;
+    x.font = '800 ' + hd.size + 'px ' + FONT; x.fillStyle = '#e9edeb';
+    hd.lines.forEach(function (l) { x.fillText(l, 48, y); y += hd.size * 1.2; });
+    /* a chart that lays words out for the picture's real plot height gets it here, and a way to ask whether a line fits without being cut */
+    var ph0 = Math.max(200, Math.round(H - (y + 25 + 10) - 76));
+    if (cfg.takeFor) st.take = cfg.takeFor(ph0, function (t) { return !fitRun(meas('400'), t, W - 96, [25, 22, 20], 1).cut; });
+    if (st.take) {
+      var tk = fitRun(meas('400'), st.take, W - 96, [25, 22, 20], 1);
+      x.font = '400 ' + tk.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.86)'; x.fillText(tk.lines[0], 48, y + 2); y += tk.size + 10;
+    }
+    var src = fitRun(meas('400'), sh.source || '', W - 96, [18, 16, 15], 1), url = fitRun(meas('700'), String(sh.url || '').replace(/^https?:\/\//, '').replace(/\?.*$/, '').replace(/\/$/, ''), W - 96, [20, 18], 1);
+    var img = new root.Image();
+    img.onload = function () {
+      x.drawImage(img, 24, y + 4);
+      x.font = '400 ' + src.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.72)'; x.fillText(src.lines[0], 48, H - 46);
+      x.font = '700 ' + url.size + 'px ' + FONT; x.fillStyle = '#d4a23f'; x.fillText(url.lines[0], 48, H - 18);
+      c.toBlob(function (b) { done(b); }, 'image/png');
+    };
+    img.onerror = function () { done(null); };
+    var ph = cfg.takeFor ? ph0 : Math.max(200, Math.round(H - y - 76));
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(cfg.svgFor(W - 64, ph));
+  }
+
+  function runTools(cfg, getView) {
+    var T = cfg.tools, sh = cfg.share, nav = root.navigator || {}, canFiles = false, D = T.ownerDocument;
+    try { canFiles = !!(nav.share && nav.canShare && root.File && nav.canShare({ files: [new root.File([''], 'x.png', { type: 'image/png' })] })); } catch (e) {}
+    T.innerHTML = (canFiles ? '<button type="button" class="agc-btn agc-share">Share</button>' : '<button type="button" class="agc-btn agc-copy">Copy link</button>') +
+      '<button type="button" class="agc-btn agc-save">Save the picture</button>';
+    var save = function (b) { var a = D.createElement('a'); a.href = URL.createObjectURL(b); a.download = sh.file || 'agsist-chart.png'; D.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500); };
+    var flash = function (b, t) { var o = b.textContent; b.textContent = t; setTimeout(function () { b.textContent = o; }, 1800); };
+    T.querySelector('.agc-save').addEventListener('click', function () { runCard(cfg, getView(), function (b) { if (b) { save(b); ga('picture_download', sh.file); } }); });
+    var cp = T.querySelector('.agc-copy');
+    if (cp) cp.addEventListener('click', function () { try { nav.clipboard.writeText(sh.url).then(function () { flash(cp, 'Link copied'); }, function () { flash(cp, sh.url); }); } catch (e) { flash(cp, sh.url); } });
+    var sb = T.querySelector('.agc-share');
+    if (sb) sb.addEventListener('click', function () {
+      ga('share_open', sh.file);
+      var v = getView(), st = cfg.story ? cfg.story(v) : {};
+      runCard(cfg, v, function (b) {
+        var data = { title: sh.title, text: st.head, url: sh.url };
+        try { if (b && canFiles) data.files = [new root.File([b], sh.file || 'agsist-chart.png', { type: 'image/png' })]; } catch (e) {}
+        nav.share(data).then(function () { ga('share_done', sh.file); }, function (e) { if (!(e && e.name === 'AbortError') && b) save(b); });
+      });
+    });
+  }
+
   function mountRun(el, cfg) {
     var hh = cfg.height || {}, lastW = 0, cur = -1, g = null, T = cfg.this, N = cfg.norm;
     el.classList.add('agc', 'agc-bars', 'agc-run');
@@ -251,9 +327,9 @@
     draw();
     if (root.ResizeObserver) new root.ResizeObserver(function () { draw(); }).observe(plot); else root.addEventListener('resize', function () { draw(); });
     cfg.svgFor = function (W, H) { return runSvg(cfg, W, H, { fs: 22, card: true }); };
-    if (cfg.tools && cfg.share) tools(cfg, function () { return { to: cfg.share.date }; });
+    if (cfg.tools && cfg.share) runTools(cfg, function () { return { to: cfg.share.date }; });
     return { redraw: function () { draw(true); } };
   }
 
-  K.runInfo = function () { return lastInfo; }; K.mountRun = mountRun; K.runSvg = runSvg; K.runGeom = runGeom; K.runAt = at;
+  K.runInfo = function () { return lastInfo; }; K.runCard = runCard; K.mountRun = mountRun; K.runSvg = runSvg; K.runGeom = runGeom; K.runAt = at;
 })(typeof window !== 'undefined' ? window : globalThis);

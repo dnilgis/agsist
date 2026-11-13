@@ -599,16 +599,12 @@
     var hd = fitLines(meas('800'), st.head, W - 96, [38, 34, 30, 28], 1); if (hd.over) hd = fitLines(meas('800'), st.head, W - 96, [38, 34, 30, 27], 2, true); var y = 80 + hd.size;
     x.font = '800 ' + hd.size + 'px ' + FONT; x.fillStyle = '#e9edeb';
     hd.lines.forEach(function (l) { x.fillText(hy(l), 48, y); y += hd.size * 1.2; });
-    /* a chart that lays words out for the picture's real plot height (cfg.takeFor) is given that height and a way to ask whether a line fits uncut;
-       its sub line is one line at 25, 22 or 20 px, so the height is the room under that line. Without takeFor nothing here changes. */
-    var ph0 = Math.max(200, Math.round(H - (y + 25 * 1.25 + 8) - (cfg.foot ? 76 + 22 * 2 + 6 : 66)));
-    if (cfg.takeFor) st.take = cfg.takeFor(ph0, function (t) { return !fitLines(meas('400'), t, W - 96, [25, 22, 20], 1).over; });
     if (st.take) {
-      var tk = cfg.takeFor ? fitLines(meas('400'), st.take, W - 96, [25, 22, 20], 1) : fitLines(meas('400'), st.take, W - 96, [25, 22, 20, 18], 2);
+      var tk = fitLines(meas('400'), st.take, W - 96, [25, 22, 20, 18], 2);
       x.font = '400 ' + tk.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.86)';
       tk.lines.forEach(function (l, i) { x.fillText(hy(l), 48, y + 2 + i * tk.size * 1.25); }); y += tk.lines.length * tk.size * 1.25 + 8;
     }
-    var src = fitLines(meas('400'), typeof sh.source === 'function' ? sh.source(view) : sh.source || '', W - 96, [17, 16, 15], 1), url = fitLines(meas('700'), String(sh.url || '').replace(/^https?:\/\//, '').replace(/\?.*$/, '').replace(/\/$/, ''), W - 96, [20, 18], 1);
+    var src = fitLines(meas('400'), typeof sh.source === 'function' ? sh.source(view) : sh.source || '', W - 96, [17, 16, 15], 1), url = fitLines(meas('700'), String(sh.url || '').replace(/^https?:\/\//, ''), W - 96, [20, 18], 1);
     var foot = cfg.foot ? fitLines(meas('400'), footOf(cfg, view), W - 96, [17, 16, 15], 2) : null, below = foot ? 76 + 22 * foot.lines.length + 6 : 66;
     var img = new root.Image();
     img.onload = function () {
@@ -619,8 +615,7 @@
       c.toBlob(function (b) { done(b); }, 'image/png');
     };
     img.onerror = function () { done(null); };
-    var ph = cfg.takeFor ? ph0 : Math.max(200, Math.round(H - y - below));
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(cfg.svgFor ? cfg.svgFor(W - 64, ph) : svg(view, W - 64, ph, { fs: cfg.legend ? 17 : 18, card: true, cfg: cfg }));
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg(view, W - 64, Math.max(200, Math.round(H - y - below)), { fs: cfg.legend ? 17 : 18, card: true, cfg: cfg }));
   }
   function ga(n, kit) { try { if (typeof root.gtag === 'function') root.gtag('event', n, { kit: kit }); } catch (e) {} }
 
@@ -769,7 +764,7 @@
   }
 
   var api = { mount: mount, svg: svg, layout: layout, card: card, fitLines: fitLines, slice: slice, pairs: pairs, ranges: ranges, readout: readout, gapAt: gapAt, ruleOf: ruleOf,
-    short: short, long: long, money: money, dayOf: dayOf, hy: hy, tools: tools, PAGE: PAGE, CARD: CARD, FONT: FONT };
+    short: short, long: long, money: money, dayOf: dayOf, hy: hy };
   root.AgChart = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : globalThis);
