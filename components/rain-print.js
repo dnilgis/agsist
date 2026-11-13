@@ -3996,7 +3996,7 @@
   }
   /* The frame color (Nov 4): one pair under the picker, one on the
      review sheet and one on the order form, all the same choice; shown for
-     the framed print only. The mockup above follows it. */
+     the framed print only. (2026-11-13: the mockup picture is gone.) */
   function setFrame(c) {
     FRAME = frameColor(c);
     syncFrame();
@@ -4018,7 +4018,7 @@
     $('rp-promise').textContent = promiseLine(PICK);
     /* One gift instruction, said once (2026-10-17, gift-buyers panel): with a
        payment link, the line above Pay says what to do on the next screen, and
-       the line under the mockup goes. Without one, the order form takes it. */
+       the line under the pay button goes. Without one, the order form takes it. */
     var giftOff = januaryGift() || !!(GIFT && GIFT.usable);
     $('rp-gift-line').textContent = 'It\u2019s a gift? Say so on the order form, with their name and your note.';
     $('rp-gift-line').hidden = giftOff || link;
@@ -5810,7 +5810,7 @@
     if (!ded.value.trim() || ded.value === OCC_LINE) { ded.value = o.line; OCC_LINE = o.line; cleanField('rp-ded'); }
     occDay(o.day);
     syncRows(); syncDates(); restyle();
-    $('rp-occ-say').textContent = o.say;
+    var say = $('rp-occ-say'); if (say) say.textContent = o.say;
     if (o.day) { var mo = '', dyv = ''; for (var i = 1; i <= LIMITS.markers; i++) if ($('rp-m' + i + 'l').value === o.day) { mo = $('rp-m' + i + 'mo').value; dyv = $('rp-m' + i + 'dy').value; } if (!mo && !dyv) dateSay(o.day + ' is day 1. Now pick its month and day.'); }
     if (!quiet) ga('rain_print_occasion', { occasion: key });
   }
