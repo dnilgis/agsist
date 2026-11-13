@@ -24,15 +24,15 @@ main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
 h1{font-size:1.35rem;margin:0 0 .3rem}
 h2{font-size:1.05rem;margin:0 0 .6rem}
 p{margin:.3rem 0;color:var(--dim)}
-section{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;margin:14px 0}
+section{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-md);padding:14px;margin:14px 0}
 label{display:block;font-size:.85rem;font-weight:600;margin:.55rem 0 .15rem}
-input,select,textarea{font:inherit;width:100%;box-sizing:border-box;min-height:38px;padding:.35rem .5rem;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--text)}
+input,select,textarea{font:inherit;width:100%;box-sizing:border-box;min-height:38px;padding:.35rem .5rem;border:1px solid var(--line);border-radius:var(--r-md);background:var(--bg);color:var(--text)}
 textarea{min-height:70px}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
 @media(max-width:560px){.row{grid-template-columns:1fr}}
 .chk{display:flex;align-items:center;gap:.5rem;font-weight:400;margin:.5rem 0}
 .chk input{width:auto;min-height:0}
-button{font:inherit;font-weight:600;min-height:40px;padding:0 1rem;margin-top:.8rem;border-radius:5px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+button{font:inherit;font-weight:600;min-height:40px;padding:0 1rem;margin-top:.8rem;border-radius:var(--r-md);border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
 :root[data-theme="dark"] button{color:#10151a}
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]) button{color:#10151a}}
 .out{margin-top:.7rem;white-space:pre-wrap;word-break:break-word;font-size:.9rem}

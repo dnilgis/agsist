@@ -61,46 +61,46 @@
 @media print{.ff-tabs,.ff-hero p,.skip,#site-header,#site-footer{display:none!important;}.ff-panel{display:block!important;page-break-inside:avoid;}.ff-page{padding:0;max-width:100%;}}
 .ff-page{max-width:980px;margin:0 auto;padding:0 1rem 4rem;}
 .ff-hero{padding:var(--page-top) 0 1rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
-.ff-eyebrow{font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem;}
-.ff-hero .ff-h{font-family:var(--font-display);font-size:1.7rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;}
+.ff-eyebrow{font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-bottom:.3rem;}
+.ff-hero .ff-h{font-family:var(--font-display);font-size:1.7rem;font-weight:800;text-transform:none;color:var(--text);margin:0 0 .3rem;}
 .ff-hero p{font-size:.82rem;color:var(--text-dim);line-height:1.55;max-width:680px;margin:0;}
-.ff-tabs{display:flex;flex-wrap:nowrap;gap:.3rem;margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:60;background:linear-gradient(var(--bg,#0a0c0d) 82%,transparent);padding:.5rem 0 .7rem;}
+.ff-tabs{display:flex;flex-wrap:nowrap;gap:.3rem;margin-bottom:1.5rem;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch;position:sticky;top:0;z-index:60;background:var(--bg,#0a0c0d);padding:.5rem 0 .7rem;}
 .ff-tabs::-webkit-scrollbar{display:none}
 .ff-strip{display:grid;grid-template-columns:repeat(2,1fr);gap:.5rem;margin:0 0 .8rem;}
 @media(min-width:640px){.ff-strip{grid-template-columns:repeat(3,1fr)}}
-.ff-tile{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.6rem .75rem;}
-.ff-tile .k{font-family:'JetBrains Mono',monospace;font-size:0.74rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
+.ff-tile{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.6rem .75rem;}
+.ff-tile .k{font-family:var(--font-body);font-size:0.74rem;letter-spacing:0;text-transform:none;color:var(--text-muted);}
 .ff-tile .v{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:800;margin-top:.12rem;color:var(--text);}
 .ff-tile .v.gold{color:var(--gold)}
 .ff-tile .n{font-size:0.75rem;color:var(--text-muted);margin-top:.08rem}
 .ff-tile .n.warn{color:var(--gold)}
-.ff-week{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.75rem .9rem;margin-bottom:1rem;display:flex;gap:.85rem;align-items:baseline;flex-wrap:wrap}
+.ff-week{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.75rem .9rem;margin-bottom:1rem;display:flex;gap:.85rem;align-items:baseline;flex-wrap:wrap}
 .ff-week .wk{font-family:'JetBrains Mono',monospace;font-weight:800;color:var(--gold);font-size:1rem;white-space:nowrap}
 .ff-week p{margin:0;font-size:.8rem;color:var(--text-dim);line-height:1.5}
 .ff-week a{color:var(--gold);text-decoration:none;font-weight:700}
-.ff-tab{padding:.4rem .8rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:background 0.15s,color 0.15s,border-color 0.15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
+.ff-tab{padding:.4rem .8rem;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:background 0.15s,color 0.15s,border-color 0.15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
 .ff-tab:hover{border-color:var(--gold);color:var(--text);}
 .ff-tab.active{background:var(--gold-fill,var(--gold));color:#0a1a0a;border-color:var(--gold);}
 .ff-panel{display:none;}
 .ff-panel.active{display:block;}
-.ff-h2{font-family:var(--font-display);font-size:1.1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:1.5rem 0 .75rem;}
+.ff-h2{font-family:var(--font-display);font-size:1.1rem;font-weight:700;text-transform:none;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:1.5rem 0 .75rem;}
 .ff-h2:first-child{margin-top:0;}
-.ff-h3{font-family:var(--font-display);font-size:.9rem;font-weight:700;text-transform:uppercase;color:var(--gold);margin:1.2rem 0 .5rem;}
+.ff-h3{font-family:var(--font-display);font-size:.9rem;font-weight:700;text-transform:none;color:var(--text-dim);margin:1.2rem 0 .5rem;}
 .ff-sub{font-size:0.795rem;color:var(--text-dim);margin-bottom:.9rem;line-height:1.55;}
 .ff-g2{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;}
 .ff-g3{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;}
 @media(min-width:580px){.ff-g2{grid-template-columns:repeat(2,minmax(0,1fr))}.ff-g3{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:800px){.ff-g3{grid-template-columns:repeat(3,minmax(0,1fr))}.ff-g4{grid-template-columns:repeat(4,minmax(0,1fr))}}
-.ff-card{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:8px;padding:1rem 1.1rem;}
+.ff-card{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--r-md);padding:1rem 1.1rem;}
 .ff-card-head{display:flex;align-items:center;gap:.4rem;margin-bottom:.75rem;}
 .ff-card-icon{font-size:1.1rem;}
-.ff-card-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
+.ff-card-title{font-family:var(--font-body);font-size:0.763rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);}
 .ff-row{display:flex;justify-content:space-between;align-items:baseline;padding:.28rem 0;border-bottom:1px solid rgba(255,255,255,.04);gap:.5rem;}
 .ff-row:last-child{border-bottom:none;}
 .ff-rl{font-size:0.792rem;color:var(--text-dim);flex:1;}
 .ff-rv{font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:700;color:var(--text);text-align:right;}
 .ff-rv.gold{color:var(--gold);}.ff-rv.green{color:var(--green);}.ff-rv.dim{color:var(--text-muted);}.ff-rv.red{color:#e05c5c;}
-.ff-tw{overflow-x:auto;border-radius:8px;border:2px solid var(--border);margin-bottom:1rem;}
+.ff-tw{overflow-x:auto;border-radius:var(--r-md);border:2px solid var(--border);margin-bottom:1rem;}
 .ff-t{width:100%;border-collapse:collapse;font-size:0.787rem;}
 .ff-t th{background:rgba(230,176,66,.1);color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.5rem .6rem;text-align:center;border-bottom:1px solid var(--border);white-space:nowrap;}
 .ff-t th.tl{text-align:left;}
@@ -114,37 +114,37 @@
 html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--green:#276c43;color:#276c43}
 .ff-t .hi{color:var(--gold);font-weight:700;}.ff-t .ze{color:var(--text-muted);}.ff-t .re{color:#e05c5c;}.ff-t .gr{color:var(--green);}.ff-t .act{background:rgba(230,176,66,.12)!important;}
 .ff-calc{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--card-r);padding:1.2rem 1.3rem;margin-bottom:1rem;}
-.ff-calc-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.9rem;}
+.ff-calc-title{font-family:var(--font-body);font-size:0.763rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-bottom:.9rem;}
 .ff-cr{display:flex;flex-wrap:wrap;gap:.75rem;align-items:flex-end;margin-bottom:.75rem;}
 .ff-cf{display:flex;flex-direction:column;gap:.3rem;min-width:120px;}
-.ff-cl{font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);}
-.ff-ci{background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.42rem .6rem;width:100%;outline:none;box-sizing:border-box;}
+.ff-cl{font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);}
+.ff-ci{background:var(--bg);border:2px solid var(--border);border-radius:var(--r-md);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.42rem .6rem;width:100%;outline:none;box-sizing:border-box;}
 .ff-ci:focus{border-color:var(--gold);}
-.ff-cs{background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;padding:.42rem .6rem;width:100%;outline:none;cursor:pointer;box-sizing:border-box;}
+.ff-cs{background:var(--bg);border:2px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:1rem;padding:.42rem .6rem;width:100%;outline:none;cursor:pointer;box-sizing:border-box;}
 .ff-cs:focus{border-color:var(--gold);}
-.ff-res{background:rgba(230,176,66,.08);border:1px solid rgba(230,176,66,.25);border-radius:8px;padding:.9rem 1.1rem;margin-top:.5rem;display:flex;flex-wrap:wrap;gap:1.2rem;}
+.ff-res{background:rgba(230,176,66,.08);border:1px solid rgba(230,176,66,.25);border-radius:var(--r-md);padding:.9rem 1.1rem;margin-top:.5rem;display:flex;flex-wrap:wrap;gap:1.2rem;}
 .ff-ri{display:flex;flex-direction:column;gap:.2rem;}
-.ff-ril{font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim);}
+.ff-ril{font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);}
 .ff-riv{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:900;color:var(--gold);}
 .ff-riv.green{color:var(--green);}.ff-riv.red{color:#e05c5c;}.ff-riv.dim{color:var(--text-muted);}
 .ff-cn{font-size:0.78rem;color:var(--text-dim);margin-top:.5rem;line-height:1.5;}
-.ff-note{background:rgba(58,139,60,.08);border-left:3px solid var(--green);border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:1rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
+.ff-note{background:rgba(58,139,60,.08);border-left:3px solid var(--green);border-radius:0 var(--r-md) var(--r-md) 0;padding:.6rem .9rem;font-size:1rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
 .ff-note strong{color:var(--text);}
 .ff-note a{color:var(--text);text-decoration:underline;text-underline-offset:2px;}
-.ff-warn{background:rgba(230,176,66,.08);border-left:3px solid var(--gold);border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:0.79rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
+.ff-warn{background:rgba(230,176,66,.08);border-left:3px solid var(--gold);border-radius:0 var(--r-md) var(--r-md) 0;padding:.6rem .9rem;font-size:0.79rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
 .ff-warn strong{color:var(--gold);}
-.ff-alert{background:rgba(224,92,92,.08);border-left:3px solid #e05c5c;border-radius:0 6px 6px 0;padding:.6rem .9rem;font-size:0.79rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
+.ff-alert{background:rgba(224,92,92,.08);border-left:3px solid #e05c5c;border-radius:0 var(--r-md) var(--r-md) 0;padding:.6rem .9rem;font-size:0.79rem;color:var(--text-dim);line-height:1.55;margin-bottom:.75rem;}
 .ff-alert strong{color:#e05c5c;}
-.live-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:0.755rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--green);background:rgba(58,139,60,.1);border:1px solid rgba(58,139,60,.3);border-radius:20px;padding:.18rem .6rem;vertical-align:middle;}
+.live-badge{display:inline-flex;align-items:center;gap:.35rem;font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);background:rgba(58,139,60,.1);border:1px solid rgba(58,139,60,.3);border-radius:var(--r-lg);padding:.18rem .6rem;vertical-align:middle;}
 .live-badge .b-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite;display:inline-block;flex-shrink:0;}
-.fert-banner{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:10px;padding:.85rem 1.1rem;margin-bottom:1.1rem;}
+.fert-banner{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--r-lg);padding:.85rem 1.1rem;margin-bottom:1.1rem;}
 .fert-banner-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.65rem;}
-.fert-banner-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);}
+.fert-banner-title{font-family:var(--font-body);font-size:0.763rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);}
 .fert-banner-date{font-size:0.755rem;color:var(--text-muted);}
 .fert-pills{display:flex;flex-wrap:wrap;gap:.4rem;}
 .fert-deriv{list-style:none;margin:.6rem 0 0;padding:0;font-size:.78rem;color:var(--text-muted);line-height:1.5}.fert-deriv li{margin:.15rem 0}
 
-.fert-pill{display:flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.3rem .6rem;cursor:pointer;transition:all .15s;min-height:44px;}
+.fert-pill{display:flex;align-items:center;gap:.4rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:.3rem .6rem;cursor:pointer;transition:all .15s;min-height:44px;}
 .fert-pill:hover{border-color:var(--gold);}
 .fert-pill.active{border-color:var(--gold);background:rgba(230,176,66,.08);}
 .fert-pill-body{display:flex;flex-direction:column;}
@@ -153,7 +153,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .fert-pill-price{white-space:nowrap;font-family:'JetBrains Mono',monospace;font-size:.82rem;font-weight:900;color:var(--gold);margin-left:auto;}
 #pk-cats td{white-space:nowrap;}
 .sv-wrap{position:relative;margin:1rem 0;}
-.sv-track{height:8px;border-radius:4px;background:linear-gradient(90deg,#1b3a10,#2d6e1f,#5fc28a,#5aaa5c,#d4a23f,#d4902a,#c07020,#a84030);margin-bottom:.5rem;}
+.sv-track{height:8px;border-radius:4px;background:var(--border-2);margin-bottom:.5rem;}
 .sv-marks{display:flex;overflow-x:auto;padding-bottom:.3rem;}
 
 .sv-mark{flex:1;min-width:36px;min-height:44px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;}
@@ -163,7 +163,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .sv-mark.key.active .sv-dot{background:var(--gold-fill,var(--gold));border-color:var(--gold);}
 .sv-lbl{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;color:var(--text-dim);text-align:center;}
 .sv-gdu{font-size:0.755rem;color:var(--text-muted);text-align:center;}
-.sv-detail{background:rgba(230,176,66,.07);border:1px solid rgba(230,176,66,.2);border-radius:8px;padding:.75rem 1rem;margin-top:.6rem;min-height:60px;}
+.sv-detail{background:rgba(230,176,66,.07);border:1px solid rgba(230,176,66,.2);border-radius:var(--r-md);padding:.75rem 1rem;margin-top:.6rem;min-height:60px;}
 .sv-detail-stage{font-family:'JetBrains Mono',monospace;font-size:0.787rem;font-weight:900;color:var(--gold);margin-bottom:.25rem;}
 .sv-detail-gdu{font-size:0.763rem;color:var(--text-muted);margin-bottom:.3rem;}
 .sv-detail-desc{font-size:1rem;color:var(--text);line-height:1.55;}
@@ -184,41 +184,41 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .eco-price-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem;margin-bottom:1.2rem;}
 @media(min-width:500px){.eco-price-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
 @media(min-width:700px){.eco-price-grid{grid-template-columns:repeat(6,minmax(0,1fr));}}
-.eco-price-card{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:8px;padding:.7rem .75rem;text-align:center;}
-.eco-price-label{font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
+.eco-price-card{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--r-md);padding:.7rem .75rem;text-align:center;}
+.eco-price-label{font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.3rem;}
 .eco-price-val{font-family:'JetBrains Mono',monospace;font-size:1.3rem;font-weight:900;color:var(--gold);}
 .eco-price-unit{font-size:0.755rem;color:var(--text-muted);}
 .eco-section{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--card-r);padding:1.2rem 1.3rem;margin-bottom:1rem;}
-.eco-section-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;}
+.eco-section-title{font-family:var(--font-body);font-size:0.763rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-bottom:1rem;}
 .eco-cost-row{display:flex;align-items:center;gap:.5rem;padding:.4rem 0;border-bottom:1px solid rgba(255,255,255,.04);flex-wrap:wrap;}
 .eco-cost-row:last-child{border-bottom:none;}
 .eco-cost-label{font-size:0.795rem;color:var(--text-dim);flex:1;min-width:100px;}
 .eco-cost-inputs{display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;}
-.eco-cost-mini{background:var(--bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.3rem .5rem;width:80px;outline:none;text-align:right;box-sizing:border-box;}
+.eco-cost-mini{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.3rem .5rem;width:80px;outline:none;text-align:right;box-sizing:border-box;}
 .eco-cost-mini:focus{border-color:var(--gold);}
 .eco-cost-unit{font-size:0.77rem;color:var(--text-muted);white-space:nowrap;}
 .eco-cost-result{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:700;color:var(--text);min-width:70px;text-align:right;}
 .eco-cost-result.em{color:var(--gold);}
-.eco-total-bar{background:rgba(230,176,66,.1);border:1px solid rgba(230,176,66,.3);border-radius:8px;padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-top:.6rem;flex-wrap:wrap;gap:.4rem;}
+.eco-total-bar{background:rgba(230,176,66,.1);border:1px solid rgba(230,176,66,.3);border-radius:var(--r-md);padding:.75rem 1rem;display:flex;justify-content:space-between;align-items:center;margin-top:.6rem;flex-wrap:wrap;gap:.4rem;}
 .eco-total-label{font-size:.8rem;font-weight:600;color:var(--text-dim);}
 .eco-total-val{font-family:'JetBrains Mono',monospace;font-size:1.35rem;font-weight:900;color:var(--gold);}
-.pk-cost-bar{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.6rem;padding:.65rem .85rem;background:rgba(58,139,60,.06);border:1px solid rgba(58,139,60,.2);border-radius:8px;align-items:center;}
+.pk-cost-bar{display:flex;flex-wrap:wrap;gap:.6rem;margin-top:.6rem;padding:.65rem .85rem;background:rgba(58,139,60,.06);border:1px solid rgba(58,139,60,.2);border-radius:var(--r-md);align-items:center;}
 .pk-cost-item{display:flex;flex-direction:column;gap:.1rem;}
-.pk-ci-label{font-size:0.755rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);}
+.pk-ci-label{font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);}
 .pk-ci-val{font-family:'JetBrains Mono',monospace;font-size:.88rem;font-weight:700;color:var(--gold);}
 .ff-state-picker{margin-bottom:1.25rem;}
-.ff-spl{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);display:block;margin-bottom:.4rem;}
+.ff-spl{font-family:var(--font-body);font-size:0.763rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);display:block;margin-bottom:.4rem;}
 .ff-scontent{display:grid;grid-template-columns:minmax(0,1fr);gap:1rem;}
 @media(min-width:700px){.ff-scontent{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media(min-width:1000px){.ff-scontent{grid-template-columns:repeat(3,minmax(0,1fr))}}
-.ff-shdr{grid-column:1/-1;background:linear-gradient(135deg,var(--surface),rgba(230,176,66,.04));border:2px solid var(--border);border-radius:10px;padding:1.1rem 1.3rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
-.ff-sname{font-family:var(--font-display);font-size:1.6rem;font-weight:800;text-transform:uppercase;color:var(--text);}
+.ff-shdr{grid-column:1/-1;background:var(--surface);border:2px solid var(--border);border-radius:var(--r-lg);padding:1.1rem 1.3rem;display:flex;align-items:center;gap:1rem;flex-wrap:wrap;}
+.ff-sname{font-family:var(--font-display);font-size:1.6rem;font-weight:800;text-transform:none;color:var(--text);}
 .ff-smeta{font-size:.8rem;color:var(--text-dim);line-height:1.6;}
-.rp{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;padding:.2rem .55rem;border-radius:20px;border:1px solid;margin-left:auto;}
+.rp{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;padding:.2rem .55rem;border-radius:var(--r-lg);border:1px solid;margin-left:auto;}
 .rp.corn{color:var(--gold);background:rgba(230,176,66,.1);border-color:rgba(230,176,66,.3);}
 .rp.beans{color:var(--green);background:rgba(58,139,60,.1);border-color:rgba(58,139,60,.3);}
 .rp.wheat{color:#ca8a3c;background:rgba(202,138,60,.1);border-color:rgba(202,138,60,.3);}
-.ff-print-btn{padding:.55rem 1.2rem;border-radius:6px;border:2px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px;}
+.ff-print-btn{padding:.55rem 1.2rem;border-radius:var(--r-md);border:2px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.775rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px;}
 .ff-print-btn:hover{border-color:var(--gold);color:var(--gold);}
 .ff-source{font-size:0.763rem;color:var(--text-muted);text-align:center;margin-top:1.5rem;}
 .ff-source a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
@@ -250,8 +250,8 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 }
 
 
-.ff-ans{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;background:var(--surface);padding:.85rem 1rem 1rem;margin:0 0 .8rem;}
-.ff-ans-t{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:0;}
+.ff-ans{border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;background:var(--surface);padding:.85rem 1rem 1rem;margin:0 0 .8rem;}
+.ff-ans-t{font-family:var(--font-body);font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);margin:0;}
 .ff-ans-out{display:flex;align-items:flex-end;gap:.4rem 1rem;flex-wrap:wrap;margin:.3rem 0 .2rem;}
 .ff-ans-big{font-family:'JetBrains Mono',monospace;font-size:2.9rem;font-weight:800;line-height:1;color:var(--gold);}
 .ff-ans-big .u{font-size:.95rem;font-weight:700;color:var(--text);margin-left:.35rem;letter-spacing:0;}
@@ -283,11 +283,11 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 .ff-src-list li{margin:.25rem 0;}
 .ff-src-list a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
 .ff-sources{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1rem 1.2rem;margin:1.5rem 0 0;}
-.ff-sources h2{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;margin:0 0 .3rem;}
+.ff-sources h2{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:0;text-transform:none;margin:0 0 .3rem;}
 .ff-sources p{font-size:.8rem;color:var(--text-dim);line-height:1.55;margin:.3rem 0;}
 @media(max-width:540px){
   .ff-strip{grid-template-columns:repeat(3,minmax(0,1fr));gap:.3rem;}
-  .ff-tile{padding:.4rem .45rem;border-radius:8px;}
+  .ff-tile{padding:.4rem .45rem;border-radius:var(--r-md);}
   .ff-tile .k{font-size:0.68rem;letter-spacing:.04em;}
   .ff-tile .v{font-size:.92rem;}
   .ff-tile .n{font-size:0.66rem;line-height:1.25;}
@@ -431,7 +431,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <section class="fx-panel h" id="place" role="tabpanel" aria-labelledby="fx-t-place">
 <div id="h-find"><p class="h-ask" id="h-ask">Your ZIP, once. It stays on this device.</p><form id="h-form" class="h-box" role="search" autocomplete="off"><label for="h-q" class="sr-only">ZIP, town and state, or county</label><input id="h-q" type="text" inputmode="search" placeholder="ZIP, town and state, or county" maxlength="80" aria-describedby="h-status"><button type="submit">Show this place</button></form><div class="h-alt"><button type="button" id="h-locate">Use my location</button><details id="h-map-box"><summary>Pick on a map</summary><div id="h-map"></div></details><button type="button" id="h-keep" class="h-keep" hidden>Keep <span id="h-keep-l"></span></button></div><noscript><p>Looking up a place needs JavaScript. The reference tables are on this page too.</p></noscript></div>
 <p id="h-status" class="h-status" role="status" aria-live="polite"></p><div id="h-choices" class="h-chips"></div>
-<div id="h-tools" class="h-tools" hidden><button type="button" id="h-change" class="h-change">Change place <span id="h-change-l"></span></button><button type="button" id="h-pr-go" class="h-pr-go"><svg class="ic" aria-hidden="true"><use href="#i-printer"/></svg> Print</button><details id="h-pr-box" class="h-pr-box"><summary>Print options</summary><fieldset><legend>On the paper</legend><label><input type="checkbox" name="part" value="sentence" checked> The summary line</label><label><input type="checkbox" name="part" value="week" checked> The four cards</label><label><input type="checkbox" name="part" value="fingerprint" checked> How it ranks in its state</label><label><input type="checkbox" name="part" value="unusual" checked> Against its neighbors</label><label><input type="checkbox" name="part" value="long" checked> The long view</label><label><input type="checkbox" name="part" value="sources" checked> Sources</label><label><input type="checkbox" id="h-pr-rain"> This year&rsquo;s rain, drawn</label><label class="h-pr-more"><input type="checkbox" id="h-pr-more"> More detail: the table of years</label></fieldset></details></div>
+<div id="h-tools" class="h-tools" hidden><button type="button" id="h-change" class="h-change">Change place <span id="h-change-l"></span></button><button type="button" id="h-pr-go" class="h-pr-go">Print</button><details id="h-pr-box" class="h-pr-box"><summary>Print options</summary><fieldset><legend>On the paper</legend><label><input type="checkbox" name="part" value="sentence" checked> The summary line</label><label><input type="checkbox" name="part" value="week" checked> The four cards</label><label><input type="checkbox" name="part" value="fingerprint" checked> How it ranks in its state</label><label><input type="checkbox" name="part" value="unusual" checked> Against its neighbors</label><label><input type="checkbox" name="part" value="long" checked> The long view</label><label><input type="checkbox" name="part" value="sources" checked> Sources</label><label><input type="checkbox" id="h-pr-rain"> This year&rsquo;s rain, drawn</label><label class="h-pr-more"><input type="checkbox" id="h-pr-more"> More detail: the table of years</label></fieldset></details></div>
 <div id="h-place" hidden>
 <h2 id="h-title" class="fx-ph" tabindex="-1"></h2><p id="h-where" class="h-where"></p>
 <div id="h-top" class="pt"><section id="pt-bid" class="pt-card" aria-labelledby="pt-bid-h" hidden></section><div id="pt-spot" class="pt-spot" data-state-spot=""></div><section id="pt-rain" class="pt-card" aria-labelledby="pt-rain-h" hidden></section><section id="pt-rent" class="pt-card" aria-labelledby="pt-rent-h" hidden></section><section id="pt-land" class="pt-card" aria-labelledby="pt-land-h" hidden></section></div>
@@ -464,14 +464,14 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </section>
 <div class="fx-panel" id="tables" role="tabpanel" aria-labelledby="fx-t-tables">
 <div class="ff-hero">
-  <div class="ff-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Reference tables, with current prices</div>
+  <div class="ff-eyebrow page-kicker">Reference tables, with current prices</div>
   <h2 class="ff-h">Fast Facts: farm reference tables</h2>
   <p class="page-lede">How much N to put on corn at posted prices, then P and K by soil test, manure, lime, crop stages, pest thresholds and conversions.</p>
   <div class="ff-meta">Updated Oct 22, 2026; tables checked Oct 16, 2026 &middot; rates from UW Extension A2809 (Wisconsin) unless a table names another source &middot; <a href="#ff-sources">Sources</a></div>
 </div>
 
 <section class="ff-ans" id="ff-ans" aria-labelledby="ff-ans-t">
-  <h2 class="ff-ans-t" id="ff-ans-t"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Corn N rate at posted prices</h2>
+  <h2 class="ff-ans-t" id="ff-ans-t">Corn N rate at posted prices</h2>
   <div class="ff-ans-out" aria-live="polite">
     <div class="ff-ans-big"><span id="ans-rate">-</span><span class="u" id="ans-unit" hidden>lb N/ac</span></div>
     <div class="ff-ans-side"><div id="ans-range"></div><div id="ans-cost"></div></div>
@@ -506,22 +506,22 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </div>
 <div class="ff-week" id="ff-week" hidden><span class="wk" id="ffw-num"></span><p id="ffw-txt"></p></div>
 <nav class="ff-tabs" role="tablist" aria-label="Fast Facts sections">
-  <button id="tab-btn-nitrogen"   class="ff-tab active" role="tab" aria-selected="true"  aria-controls="tab-nitrogen"   data-tab="nitrogen"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Nitrogen</button>
-  <button id="tab-btn-economics"  class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-economics"  data-tab="economics"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg> Economics</button>
-  <button id="tab-btn-pk"         class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-pk"         data-tab="pk"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> P &amp; K</button>
-  <button id="tab-btn-removal"    class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-removal"    data-tab="removal"><svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg> Crop Removal</button>
-  <button id="tab-btn-manure"     class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-manure"     data-tab="manure"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg> Manure</button>
-  <button id="tab-btn-soilhealth" class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-soilhealth" data-tab="soilhealth"><svg class="ic" aria-hidden="true"><use href="#i-flask-conical"/></svg> Soil Health</button>
-  <button id="tab-btn-stages"     class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-stages"     data-tab="stages"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg> Crop Stages</button>
-  <button id="tab-btn-pest"       class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-pest"       data-tab="pest"><svg class="ic" aria-hidden="true"><use href="#i-bug"/></svg> Pest &amp; Weed</button>
-  <button id="tab-btn-reference"  class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-reference"  data-tab="reference"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg> Reference</button>
-  <button id="tab-btn-statestats" class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-statestats" data-tab="statestats"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg> State Stats</button>
+  <button id="tab-btn-nitrogen"   class="ff-tab active" role="tab" aria-selected="true"  aria-controls="tab-nitrogen"   data-tab="nitrogen">Nitrogen</button>
+  <button id="tab-btn-economics"  class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-economics"  data-tab="economics">Economics</button>
+  <button id="tab-btn-pk"         class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-pk"         data-tab="pk">P &amp; K</button>
+  <button id="tab-btn-removal"    class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-removal"    data-tab="removal">Crop Removal</button>
+  <button id="tab-btn-manure"     class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-manure"     data-tab="manure">Manure</button>
+  <button id="tab-btn-soilhealth" class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-soilhealth" data-tab="soilhealth">Soil Health</button>
+  <button id="tab-btn-stages"     class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-stages"     data-tab="stages">Crop Stages</button>
+  <button id="tab-btn-pest"       class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-pest"       data-tab="pest">Pest &amp; Weed</button>
+  <button id="tab-btn-reference"  class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-reference"  data-tab="reference">Reference</button>
+  <button id="tab-btn-statestats" class="ff-tab" role="tab" aria-selected="false" aria-controls="tab-statestats" data-tab="statestats">State Stats</button>
 </nav>
 
 <div class="ff-panel active" id="tab-nitrogen" role="tabpanel" aria-labelledby="tab-btn-nitrogen" tabindex="0">
 <div class="fert-banner" id="fert-banner">
   <div class="fert-banner-head">
-    <span class="fert-banner-title"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg> Fertilizer Prices<span id="fert-title-date"></span></span>
+    <span class="fert-banner-title">Fertilizer Prices<span id="fert-title-date"></span></span>
     <span class="fert-banner-date" id="fert-date">Loading&hellip;</span>
   </div>
   <div class="fert-pills" id="fert-pills"><span style="font-size:0.78rem;color:var(--text-muted)">Loading prices&hellip;</span></div>
@@ -560,7 +560,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-cn">Red clover and birdsfoot trefoil: 80% of the alfalfa credit for a like stand. Second year after a good or fair stand: 50 lb N/ac on medium and fine soils, none on sands. A2809 Table 9.4.</div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-leaf"/></svg></span><span class="ff-card-title">Green Manure and Field Crop Credits</span></div>
+    <div class="ff-card-head"><span class="ff-card-title">Green Manure and Field Crop Credits</span></div>
     <div class="ff-row"><span class="ff-rl">Alfalfa green manure, over 6"</span><span class="ff-rv">60&ndash;100 lb N/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Red clover green manure, over 6"</span><span class="ff-rv">50&ndash;80 lb N/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Sweet clover green manure, over 6"</span><span class="ff-rv">80&ndash;120 lb N/ac</span></div>
@@ -608,7 +608,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <div class="ff-h2">Input Cost Builder</div>
 <p class="ff-sub">Your cost per acre. The N, P and K rates come from the N box at the top and the corn P and K by soil test, priced at the posted prices; type over any box. Seed, chemical, rent and other are yours to fill in.</p>
 <div class="eco-section">
-  <div class="eco-section-title"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn: Cost Per Acre</div>
+  <div class="eco-section-title">Corn: Cost Per Acre</div>
   <div class="eco-cost-row"><span class="eco-cost-label">Nitrogen: <span id="eco-n-source-label" style="color:var(--gold)">from the N box</span></span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-n-rate" type="number" value="" placeholder="-" step="5" min="0" max="400" aria-label="N rate lb/ac"><span class="eco-cost-unit">lb N/ac &times;</span><input class="eco-cost-mini" id="eco-n-pplb" type="number" value="" placeholder="-" step="0.01" min="0.10" max="3.00" aria-label="$/lb N"><span class="eco-cost-unit">$/lb N =</span><span class="eco-cost-result em" id="eco-n-cost">-</span></div></div>
   <div class="eco-cost-row"><span class="eco-cost-label">Phosphate (P&#x2082;O&#x2085;): MAP or DAP, its N credited</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-p-rate" type="number" value="" placeholder="-" step="5" min="0" max="300" aria-label="P rate"><span class="eco-cost-unit">lb/ac &times;</span><input class="eco-cost-mini" id="eco-p-pplb" type="number" value="" placeholder="-" step="0.01" min="0.10" max="3.00" aria-label="$/lb P2O5"><span class="eco-cost-unit">$/lb =</span><span class="eco-cost-result em" id="eco-p-cost">-</span></div></div>
   <div class="eco-cost-row"><span class="eco-cost-label">Potash (K&#x2082;O): MOP</span><div class="eco-cost-inputs"><input class="eco-cost-mini" id="eco-k-rate" type="number" value="" placeholder="-" step="5" min="0" max="400" aria-label="K rate"><span class="eco-cost-unit">lb/ac &times;</span><input class="eco-cost-mini" id="eco-k-pplb" type="number" value="" placeholder="-" step="0.01" min="0.10" max="2.00" aria-label="$/lb K2O"><span class="eco-cost-unit">$/lb =</span><span class="eco-cost-result em" id="eco-k-cost">-</span></div></div>
@@ -628,7 +628,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <div class="ff-h2">Soil Test Interpreter</div>
 <p class="ff-sub">Enter your soil tests. Get the P&#x2082;O&#x2085; and K&#x2082;O rate from UW Extension A2809 (Wisconsin): soil test categories from Tables 7.1 and 7.2, rates from Table 7.4. P is the Bray P1 test. Other states set their own categories, so check yours.</p>
 <div class="ff-calc">
-  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-calculator"/></svg> Soil Test &rarr; Recommendation Calculator</div>
+  <div class="ff-calc-title">Soil Test &rarr; Recommendation Calculator</div>
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="st-crop">Crop</label><select class="ff-cs" id="st-crop"><option value="corn">Corn Grain</option><option value="corn_silage">Corn Silage</option><option value="soybean">Soybean</option><option value="alfalfa">Alfalfa, established</option><option value="alfalfa_seeding">Alfalfa, seeding year</option></select></div>
     <div class="ff-cf"><label class="ff-cl" for="st-yield">Yield Goal (<span id="st-yield-unit">bu/ac</span>)</label><input class="ff-ci" id="st-yield" type="number" value="200" step="5" min="1" max="400"></div>
@@ -798,7 +798,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <p class="ff-sub">A2809 Table 4.2, lb per unit of yield at the moisture shown. <a href="/nutrient-removal">Nutrient removal value</a> prices what a field hauls off.</p>
 <div class="ff-h2">Nutrient Removal Calculator</div>
 <div class="ff-calc">
-  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-share-2"/></svg> Field Nutrient Export Estimator</div>
+  <div class="ff-calc-title">Field Nutrient Export Estimator</div>
   <div class="ff-cr">
     <div class="ff-cf" style="min-width:190px"><label class="ff-cl" for="rem-crop">Crop</label>
       <select class="ff-cs" id="rem-crop">
@@ -824,7 +824,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <div class="ff-note"><strong>Formula:</strong> Count plants in that row length &times; 1,000 = plants/acre. Count at least 3 rows.</div>
 <div class="ff-h2">Bu/Acre Calculator: Shelled Corn</div>
 <div class="ff-calc">
-  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn Yield Calculator</div>
+  <div class="ff-calc-title">Corn Yield Calculator</div>
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="corn-lbs">lbs Harvested</label><input class="ff-ci" id="corn-lbs" type="number" value="12580" step="100"></div>
     <div class="ff-cf"><label class="ff-cl" for="corn-moist">Moisture %</label><input class="ff-ci" id="corn-moist" type="number" value="21.35" step="0.1" min="10" max="40"></div>
@@ -874,7 +874,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 
 <div class="ff-h2">Application Rate Calculator</div>
 <div class="ff-calc">
-  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg> Application Rate Calculator</div>
+  <div class="ff-calc-title">Application Rate Calculator</div>
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="man-loads"># Loads</label><input class="ff-ci" id="man-loads" type="number" value="20" step="1" min="1"></div>
     <div class="ff-cf"><label class="ff-cl" for="man-size">Load Size</label><input class="ff-ci" id="man-size" type="number" value="6" step="0.5" min="0.1"></div>
@@ -891,7 +891,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <div class="ff-h2">Soil pH Targets</div>
 <div class="ff-g2">
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg></span><span class="ff-card-title">Target pH by Crop (mineral soils)</span></div>
+    <div class="ff-card-head"><span class="ff-card-title">Target pH by Crop (mineral soils)</span></div>
     <div class="ff-row"><span class="ff-rl">Alfalfa</span><span class="ff-rv gold">6.8</span></div>
     <div class="ff-row"><span class="ff-rl">Barley</span><span class="ff-rv gold">6.6</span></div>
     <div class="ff-row"><span class="ff-rl">Red clover, soybean</span><span class="ff-rv gold">6.3</span></div>
@@ -900,7 +900,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-cn" style="margin-top:.45rem">Organic soils: 5.6 for these crops but alfalfa. Lime for the highest target in the next 4 years. A2809 Table 4.2 and Chapter 5.</div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg></span><span class="ff-card-title">Liming Rules (A2809)</span></div>
+    <div class="ff-card-head"><span class="ff-card-title">Liming Rules (A2809)</span></div>
     <div class="ff-row"><span class="ff-rl">Lime when water pH is</span><span class="ff-rv">0.2+ below target</span></div>
     <div class="ff-row"><span class="ff-rl">Most lime at once</span><span class="ff-rv">12 ton/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Most lime at once, potatoes</span><span class="ff-rv">8 ton/ac</span></div>
@@ -912,7 +912,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </div>
 <div class="ff-h2">Lime Requirement Calculator</div>
 <div class="ff-calc">
-  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-axe"/></svg> Lime Rate (UW A2809 Table 5.1: water pH and buffer pH)</div>
+  <div class="ff-calc-title">Lime Rate (UW A2809 Table 5.1: water pH and buffer pH)</div>
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="lime-wph">Water pH</label><input class="ff-ci" id="lime-wph" type="number" value="6.0" step="0.1" min="4.0" max="8.0"></div>
     <div class="ff-cf"><label class="ff-cl" for="lime-buf">Buffer pH</label><input class="ff-ci" id="lime-buf" type="number" value="6.5" step="0.1" min="5.0" max="7.5"></div>
@@ -959,7 +959,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </tbody></table></div>
 <div class="ff-g2">
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-flask-conical"/></svg></span><span class="ff-card-title">Who needs it (Table 8.3)</span></div>
+    <div class="ff-card-head"><span class="ff-card-title">Who needs it (Table 8.3)</span></div>
     <div class="ff-row"><span class="ff-rl">Corn grain</span><span class="ff-rv">Zn high &middot; S medium</span></div>
     <div class="ff-row"><span class="ff-rl">Corn silage</span><span class="ff-rv">Zn high &middot; S high</span></div>
     <div class="ff-row"><span class="ff-rl">Soybean grain</span><span class="ff-rv">Mn high &middot; Zn medium</span></div>
@@ -967,7 +967,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-row"><span class="ff-rl">Wheat, oats</span><span class="ff-rv">Mn high</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg></span><span class="ff-card-title">How much (A2809 Ch. 8)</span></div>
+    <div class="ff-card-head"><span class="ff-card-title">How much (A2809 Ch. 8)</span></div>
     <div class="ff-row"><span class="ff-rl">Zinc, low test, banded</span><span class="ff-rv">2&ndash;4 lb/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Zinc, low test, broadcast</span><span class="ff-rv">4&ndash;8 lb/ac</span></div>
     <div class="ff-row"><span class="ff-rl">Manganese, low test, high need</span><span class="ff-rv">5 lb/ac in the row</span></div>
@@ -995,7 +995,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 </div>
 <div class="ff-h2">GDU Calculator</div>
 <div class="ff-calc">
-  <div class="ff-calc-title"><svg class="ic" aria-hidden="true"><use href="#i-sun"/></svg> Daily GDU (Base 50&deg;F)</div>
+  <div class="ff-calc-title">Daily GDU (Base 50&deg;F)</div>
   <div class="ff-cr">
     <div class="ff-cf"><label class="ff-cl" for="gdu-max">Daily Max (&deg;F)</label><input class="ff-ci" id="gdu-max" type="number" value="82" step="1" min="50" max="120"></div>
     <div class="ff-cf"><label class="ff-cl" for="gdu-min">Daily Min (&deg;F)</label><input class="ff-ci" id="gdu-min" type="number" value="58" step="1" min="20" max="100"></div>
@@ -1045,7 +1045,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <div class="ff-h2">Quick Reference: Conversion Factors</div>
 <div class="ff-g3">
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg></span><span class="ff-card-title">Volume / Weight</span></div>
+    <div class="ff-card-head"><span class="ff-card-title">Volume / Weight</span></div>
     <div class="ff-row"><span class="ff-rl">1 bushel corn</span><span class="ff-rv">56 lb</span></div>
     <div class="ff-row"><span class="ff-rl">1 bushel soybeans</span><span class="ff-rv">60 lb</span></div>
     <div class="ff-row"><span class="ff-rl">1 bushel wheat</span><span class="ff-rv">60 lb</span></div>
@@ -1056,7 +1056,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-row"><span class="ff-rl">1 MT (metric ton)</span><span class="ff-rv">2,205 lb</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-map"/></svg></span><span class="ff-card-title">Land / Area</span></div>
+    <div class="ff-card-head"><span class="ff-card-title">Land / Area</span></div>
     <div class="ff-row"><span class="ff-rl">1 acre</span><span class="ff-rv">43,560 ft&sup2;</span></div>
     <div class="ff-row"><span class="ff-rl">1 acre</span><span class="ff-rv">0.4047 ha</span></div>
     <div class="ff-row"><span class="ff-rl">1 section</span><span class="ff-rv">640 acres</span></div>
@@ -1067,7 +1067,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-row"><span class="ff-rl">1 rod</span><span class="ff-rv">16.5 ft</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></span><span class="ff-card-title">Grain Moisture Math</span></div>
+    <div class="ff-card-head"><span class="ff-card-title">Grain Moisture Math</span></div>
     <div class="ff-row"><span class="ff-rl">Corn dry @ 15.5%</span><span class="ff-rv dim">harvest wt &times; (100-moist)/(100-15.5)</span></div>
     <div class="ff-row"><span class="ff-rl">Soybean dry @ 13.0%</span><span class="ff-rv dim">harvest wt &times; (100-moist)/87</span></div>
     <div class="ff-row"><span class="ff-rl">Water shrink, corn to 15.5%</span><span class="ff-rv">1.18% a point (100 &divide; 84.5)</span></div>
@@ -1077,7 +1077,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-row"><span class="ff-rl">1 gal liquid propane</span><span class="ff-rv">4.24 lb / 91,500 BTU</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg></span><span class="ff-card-title">Rate / Application</span></div>
+    <div class="ff-card-head"><span class="ff-card-title">Rate / Application</span></div>
     <div class="ff-row"><span class="ff-rl">Product for a set a.i. rate</span><span class="ff-rv">a.i. rate &divide; (% a.i. &divide; 100)</span></div>
     <div class="ff-row"><span class="ff-rl">gal/ac &rarr; oz/1000 ft&sup2;</span><span class="ff-rv dim">gal/ac &divide; 43.56 &times; 128</span></div>
     <div class="ff-row"><span class="ff-rl">1 ppm, top 6&ndash;7 in. of soil</span><span class="ff-rv">~2 lb/acre</span></div>
@@ -1085,7 +1085,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-row"><span class="ff-rl">Nozzle output (GPM)</span><span class="ff-rv dim">GPA&times;mph&times;spacing(in)/5940; oz/min = GPM&times;128</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-star"/></svg></span><span class="ff-card-title">Temperature</span></div>
+    <div class="ff-card-head"><span class="ff-card-title">Temperature</span></div>
     <div class="ff-row"><span class="ff-rl">Soil temp ideal corn germination</span><span class="ff-rv gold">50&deg;F+</span></div>
     <div class="ff-row"><span class="ff-rl">Soil temp ideal soybean germ.</span><span class="ff-rv gold">50&deg;F+</span></div>
     <div class="ff-row"><span class="ff-rl">Corn growing point below ground</span><span class="ff-rv">until V5 (UMN)</span></div>
@@ -1094,7 +1094,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
     <div class="ff-row"><span class="ff-rl">&deg;F &rarr; &deg;C</span><span class="ff-rv dim">(&deg;F &minus; 32) &divide; 1.8</span></div>
   </div>
   <div class="ff-card">
-    <div class="ff-card-head"><span class="ff-card-icon"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg></span><span class="ff-card-title">Extension &amp; Reference</span></div>
+    <div class="ff-card-head"><span class="ff-card-title">Extension &amp; Reference</span></div>
     <div class="ff-row"><span class="ff-rl">USDA NASS Quick Stats</span><span class="ff-rv dim">quickstats.nass.usda.gov</span></div>
     <div class="ff-row"><span class="ff-rl">USDA Economic Research Service</span><span class="ff-rv dim">ers.usda.gov</span></div>
     <div class="ff-row"><span class="ff-rl">Cooperative Extension (find your state)</span><span class="ff-rv dim">nifa.usda.gov/extension</span></div>
@@ -1115,14 +1115,14 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
   <tr><td class="tl">Jun 4</td><td class="re">76%</td><td class="re">84%</td></tr>
 </tbody></table></div>
 <p class="ff-sub">Percent of the most grain those trials made. Source: <a href="https://extension.umn.edu/corn-planting/planting-date-considerations-corn">UMN Extension, Planting date considerations for corn</a>. Farther south the drop starts later; your state's extension has its own trials.</p>
-<button onclick="window.print()" class="ff-print-btn"><svg class="ic" aria-hidden="true"><use href="#i-printer"/></svg> Print This Reference Page</button>
+<button onclick="window.print()" class="ff-print-btn">Print This Reference Page</button>
 </div>
 <div class="ff-panel" id="tab-statestats" role="tabpanel" aria-labelledby="tab-btn-statestats" tabindex="0" aria-hidden="true">
 <div class="ff-h2">Crop size by state</div>
 <p class="ff-sub">Corn, soybean and wheat acres, yield and production for each state, from USDA NASS, live on one page per state. Pick a state for its link. U.S. totals and every state side by side: <a href="/usda-quick-stats">Yield by state</a>.</p>
 <div class="ff-state-picker">
   <label class="ff-spl" for="ff-state-select">State</label>
-  <select id="ff-state-select" style="font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.55rem .7rem;min-height:44px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:6px;min-width:200px">
+  <select id="ff-state-select" style="font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.55rem .7rem;min-height:44px;background:var(--surface);color:var(--text);border:1px solid var(--border);border-radius:var(--r-md);min-width:200px">
     <option value="AL">Alabama</option><option value="AK">Alaska</option><option value="AZ">Arizona</option><option value="AR">Arkansas</option><option value="CA">California</option><option value="CO">Colorado</option><option value="CT">Connecticut</option><option value="DE">Delaware</option><option value="FL">Florida</option><option value="GA">Georgia</option><option value="HI">Hawaii</option><option value="ID">Idaho</option><option value="IL">Illinois</option><option value="IN">Indiana</option><option value="IA" selected>Iowa</option><option value="KS">Kansas</option><option value="KY">Kentucky</option><option value="LA">Louisiana</option><option value="ME">Maine</option><option value="MD">Maryland</option><option value="MA">Massachusetts</option><option value="MI">Michigan</option><option value="MN">Minnesota</option><option value="MS">Mississippi</option><option value="MO">Missouri</option><option value="MT">Montana</option><option value="NE">Nebraska</option><option value="NV">Nevada</option><option value="NH">New Hampshire</option><option value="NJ">New Jersey</option><option value="NM">New Mexico</option><option value="NY">New York</option><option value="NC">North Carolina</option><option value="ND">North Dakota</option><option value="OH">Ohio</option><option value="OK">Oklahoma</option><option value="OR">Oregon</option><option value="PA">Pennsylvania</option><option value="RI">Rhode Island</option><option value="SC">South Carolina</option><option value="SD">South Dakota</option><option value="TN">Tennessee</option><option value="TX">Texas</option><option value="UT">Utah</option><option value="VT">Vermont</option><option value="VA">Virginia</option><option value="WA">Washington</option><option value="WV">West Virginia</option><option value="WI">Wisconsin</option><option value="WY">Wyoming</option>
   </select>
 </div>
@@ -1137,7 +1137,7 @@ html[data-theme="light"] .ff-t .tg td.tl,html[data-theme="light"] .live-badge{--
 <!--FAQ:START-->
 <style>
 .agf{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin:1.5rem 0 0}
-.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
+.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text);margin:0 0 .4rem}
 .agf details{border-top:1px solid var(--border)}
 .agf details:first-of-type{border-top:0}
 .agf summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.85rem 0;font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}

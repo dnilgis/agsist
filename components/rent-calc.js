@@ -27,7 +27,7 @@
   var CSS='.rc{margin:.6rem 0 1rem}.rc .rc-in{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem;margin:.6rem 0}'
     +'@media(max-width:560px){.rc .rc-in{grid-template-columns:1fr}}'
     +'.rc label{display:block;font-size:.74rem;color:var(--text-dim);margin:0 0 .25rem}'
-    +'.rc input{width:100%;box-sizing:border-box;background:var(--surface,#12161a);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font-mono);font-size:16px;padding:.5rem .6rem;min-height:40px}'
+    +'.rc input{width:100%;box-sizing:border-box;background:var(--surface,#12161a);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-family:var(--font-mono);font-size:16px;padding:.5rem .6rem;min-height:40px}'
     +'.rc input:focus{outline:2px solid var(--gold);outline-offset:1px}'
     +'.rc .rc-h{font-size:.72rem;color:var(--text-muted);margin-top:.2rem;line-height:1.35}'
     +'.rc .rc-v{font-family:var(--font-mono);font-size:2rem;font-weight:700;line-height:1.1;margin:.4rem 0 .2rem}'

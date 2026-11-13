@@ -14,7 +14,7 @@
 .skbs-bar{height:5pt;background:#8a6514}
 .skbs-top{display:flex;align-items:center;gap:.18in;padding:.08in 0 .07in;border-bottom:2.5pt solid #000}
 .skbs-ttl{flex:1;min-width:0}
-.skbs-kick{font-size:9pt;font-weight:800;letter-spacing:.16em;text-transform:uppercase;color:#8a6514}
+.skbs-kick{font-size:9pt;font-weight:800;letter-spacing:0;text-transform:none;color:#8a6514}
 .skbs-h1{font-size:26pt;font-weight:800;line-height:1.05;letter-spacing:-.02em;margin:.02in 0 .04in!important}
 .skbs-date{font-size:11pt;font-weight:600}
 .skbs-brand{flex:none;text-align:right;align-self:flex-start;padding-right:.04in}

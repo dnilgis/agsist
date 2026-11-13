@@ -1,5 +1,4 @@
 {
- "_about": "Short dated answers to the questions farmers ask search assistants, one block per topic, baked into the page that owns it by scripts/build_ai_answers.py (arc-plc.html by scripts/build_arc_plc.py). Plain text only; every number names its primary source in sources; read = the date we read that copy. The block prints the oldest read date as 'Last checked'. review_by = when the answer goes stale (next report, vote or deadline); the daily site check lists answers past it. A withheld answer renders nothing until its sources are read. Queries from Bing AI Performance, Oct 28, 2026.",
  "answers": [
   {
    "id": "farm-bill-status",
