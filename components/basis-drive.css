@@ -1,8 +1,9 @@
 /* components/basis-drive.css: the bids-by-distance box on a cash-bids town page (components/basis-drive.js).
    Plain words for buttons (the one pressed is bold with a 2 px rule under it), square corners, the site's tokens. */
 .bd{margin:var(--sp-lg) 0;padding-top:var(--sp-md);border-top:1px solid var(--border)}
-.bd-h{margin:0 0 var(--sp-xs);font-size:var(--fs-lg);font-weight:800;line-height:var(--lh-snug);max-width:46em}
-.bd-take{margin:0 0 var(--sp-sm);font-size:var(--fs-sm);line-height:1.5;color:var(--text-dim);max-width:52em}
+.bd-h{margin:0 0 var(--sp-xs);font-size:var(--fs-xl);font-weight:800;line-height:1.2;max-width:22em}
+@media(min-width:640px){.bd-h{font-size:calc(var(--fs-xl) * 1.3)}}
+.bd-take{margin:0 0 var(--sp-md);font-size:var(--fs-sm);line-height:1.5;color:var(--text-dim);max-width:52em}
 .bd-ctls{display:flex;flex-wrap:wrap;gap:var(--sp-xs) var(--sp-lg);margin:0 0 var(--sp-sm)}
 .bd-crop,.bd-view{display:flex;gap:var(--sp-md)}
 .bd-ctls button{display:inline-flex;align-items:flex-end;padding-bottom:6px !important;font:inherit;font-size:var(--fs-sm);color:var(--text-muted);background:none;border:0;border-bottom:2px solid transparent;border-radius:0;padding:0;min-height:44px;cursor:pointer}
@@ -12,10 +13,15 @@
 .bd-axis,.bd-key{margin:0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.4}
 .bd-key{display:flex;align-items:center;gap:var(--sp-xs);margin:2px 0 var(--sp-xs)}
 .bd-key[hidden]{display:none}
+.bd-kg{color:var(--gold);font-weight:700}.bd-kph{display:none}.bd.bd-narrow .bd-kph{display:inline}
+@media(max-width:799px){.bd:not(.bd-js) .bd-kph{display:inline}}
 .bd-key svg{flex:none}.bd-kl{stroke:var(--text-muted);stroke-width:1.6}.bd-kd{fill:var(--text)}
-.bd-plot{height:400px;overflow:hidden}
-@media(min-width:640px){.bd-plot{height:460px}}
+.bd-plot{height:400px;overflow:hidden}.bd-plot.bd-short{height:240px}
+@media(min-width:640px){.bd-plot{height:460px}.bd-plot.bd-short{height:300px}}
 .bd-plot svg{display:block;height:100%;width:auto;max-width:100%}
+/* the printed pictures: the phone's under 800 px, the wide one from there, until the script draws its own */
+.bd-plot .bd-sw{display:none}
+@media(min-width:800px){.bd-plot .bd-sp{display:none}.bd-plot .bd-sw{display:block}}
 .bd-svg text{fill:var(--text)}.bd-svg .m{fill:var(--text-muted)}.bd-svg .g{fill:var(--gold)}.bd-svg .b{font-weight:700}.bd-svg .B{font-size:1.08em}
 .bd-svg .z{fill:var(--bg2)}.bd-svg .h{paint-order:stroke;stroke:var(--bg);stroke-width:3px;stroke-linejoin:round}
 .bd-svg path{fill:none}.bd-svg .gr{stroke:var(--border)}.bd-svg .ev,.bd-svg .ax{stroke:var(--border-2)}.bd-svg .ev{stroke-width:1.4}
@@ -25,9 +31,18 @@
 .bd-read{margin:var(--sp-xs) 0 0;padding:var(--sp-xs) 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:var(--fs-sm);line-height:1.45;color:var(--text)}
 .bd-read{box-sizing:border-box;min-height:calc(4 * 1.45em + 2 * var(--sp-xs) + 2px)}
 @media(min-width:640px){.bd-read{min-height:calc(2 * 1.45em + 2 * var(--sp-xs) + 2px)}}
-.bd-hint{color:var(--text-muted)}
+.bd-hint{color:var(--text-muted)}.bd-hc{display:none}
+@media(hover:hover) and (pointer:fine){.bd-ht{display:none}.bd-hc{display:inline}}
 .bd-note{margin:var(--sp-sm) 0 0;font-size:var(--fs-xs);line-height:1.5;color:var(--text-dim);max-width:60em}
 .bd-tools{display:flex;gap:var(--sp-lg);margin:var(--sp-xs) 0 0}
-.bd-tools button{font:inherit;font-size:var(--fs-sm);font-weight:600;color:var(--gold);background:none;border:0;border-bottom:1px solid currentColor;border-radius:0;padding:0;min-height:44px;cursor:pointer}
+.bd-tools button{font:inherit;font-size:var(--fs-sm);font-weight:600;color:var(--gold);background:none;border:0;border-radius:0;padding:0;min-height:44px;cursor:pointer;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+/* the second view: the month in one band (components/basis-month.js) */
 .bd-on-hist .bd-main{display:none}
-.bd-hist .cbt-hist{margin-top:0}
+.bd-hist details[data-basis-hist]{display:none}
+.bm-svg .bm-band{fill:var(--border-2)}.bm-svg .bm-top{fill:none;stroke:var(--gold);stroke-width:2.5}.bm-svg .bm-own{fill:none;stroke:var(--text);stroke-width:1.4}
+.bm-svg .bm-br{fill:none;stroke:var(--text);stroke-width:1.4}.bm-svg .bm-hair{stroke:var(--text-muted);stroke-width:1}
+.bm-boards{display:flex;flex-wrap:wrap;gap:0 var(--sp-md);align-items:baseline;margin:var(--sp-xs) 0 0;font-size:var(--fs-xs)}
+.bm-lab{color:var(--text-muted)}
+.bm-boards button{font:inherit;color:var(--text-muted);background:none;border:0;border-radius:0;padding:0;min-height:44px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.bm-boards button[aria-pressed="true"]{color:var(--text);font-weight:700}
+.bm-boards button:focus-visible,.bm-plot:focus-visible{outline:2px solid var(--gold);outline-offset:2px}

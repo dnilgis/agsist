@@ -394,6 +394,7 @@
   if (typeof module !== 'undefined' && module.exports) {
     module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, lineOf: lineOf, crops: crops, story: story, config: config, heldOn: heldOn, labels: labels, townOf: townOf, footOf: footOf, render: render };
   } else if (document.readyState === 'loading') {
+    window.CbBasisHist = { crops: crops, heldOn: heldOn, labels: labels };   // the town page's month view (components/basis-month.js) reads the log the same way
     document.addEventListener('DOMContentLoaded', init);
-  } else { init(); }
+  } else { window.CbBasisHist = { crops: crops, heldOn: heldOn, labels: labels }; init(); }
 })();

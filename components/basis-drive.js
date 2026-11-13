@@ -77,18 +77,39 @@
   /* docs: {ST: data/state-basis/<ST>.json}; cfg: the page's own box (path, town, st, ll [lat, lon], date, med).
      -> per crop { crop, Crop, adj, town: [dot], out: [dot], ref: {dm, vs}, med, other: [dot], left: n, all: [dot], prev }
      a dot: { name, town, path, cash, c (cents), w (cents in a week or null), mi, inTown, priced, dm, vs } */
+  /* A row whose delivery site names another town on the state's list ("Dunkerton Co-op | ADM Cedar Rapids Corn",
+     pinned at Dunkerton) is a price paid at that town's plant, not at the elevator's pin: it is left off the picture and
+     named under it (round 1: it was drawn 39 miles out and called out). Worked out once per table. */
+  function elsewhere(doc, ix) {
+    if (doc._at) return doc._at;
+    var towns = (doc.towns || []).filter(function (t) { return String(t[1]).length >= 4; }).map(function (t) { return { name: t[1], low: String(t[1]).toLowerCase(), path: t[0], lat: t[2], lon: t[3] }; });
+    var own = {}; (doc.towns || []).forEach(function (t) { own[t[0]] = String(t[1]).toLowerCase(); });
+    doc._at = doc.rows.map(function (r) {
+      var site = ' ' + String(r[ix.town] || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ') + ' ', mine = own[r[ix.path]] || '', best = null;
+      towns.forEach(function (t) {
+        if (t.low === mine || mine.indexOf(t.low) >= 0 || t.low.indexOf(mine) >= 0 && mine) return;
+        if (site.indexOf(' ' + t.low.replace(/[^a-z0-9]+/g, ' ') + ' ') < 0) return;
+        if (typeof r[ix.lat] === 'number' && miles(r[ix.lat], r[ix.lon], t.lat, t.lon) > 80) return;
+        if (!best || t.low.length > best.low.length) best = t;
+      });
+      return best ? best.name : '';
+    });
+    return doc._at;
+  }
   function pick(docs, cfg, crop) {
-    var rows = [], prev = '', townOf = {};
+    var rows = [], prev = '', townOf = {}, away = [];
     Object.keys(docs || {}).sort().forEach(function (st) {
       var doc = docs[st]; if (!doc || !doc.cols) return;
       var ix = {}; doc.cols.forEach(function (k, i) { ix[k] = i; });
       if (doc.prev && (!prev || doc.prev > prev)) prev = doc.prev;
       (doc.towns || []).forEach(function (t) { townOf[t[0]] = t[1]; });
-      doc.rows.forEach(function (r) {
+      var at = ix.town != null ? elsewhere(doc, ix) : [];
+      doc.rows.forEach(function (r, j) {
         if (r[ix.crop] !== crop || r[ix.relay]) return;
         var inTown = !!cfg.path && r[ix.path] === cfg.path, lat = r[ix.lat], lon = r[ix.lon];
         var d = typeof lat === 'number' && typeof lon === 'number' && cfg.ll ? miles(cfg.ll[0], cfg.ll[1], lat, lon) : null;
         if (!inTown && (d == null || d > NEAR_MI)) return;
+        if (at[j]) { away.push({ elevator: r[ix.elevator], site: r[ix.town], at: at[j] }); return; }
         rows.push({ elevator: r[ix.elevator], site: r[ix.town], path: r[ix.path], cash: r[ix.cash], c: cents(r[ix.basis]),
           w: r[ix.wow_cents] == null ? null : Math.round(r[ix.wow_cents] * 10) / 10, mi: d, inTown: inTown, priced: r[ix.priced],
           dm: r[ix.dm] || '', vs: r[ix.vs] || '', flag: r[ix.flag] || '', st: st });
@@ -112,14 +133,24 @@
     var ref = refK ? { dm: refK.split('|')[0], vs: refK.split('|')[1] } : null;
     var on = ref ? ok.filter(function (r) { return r.dm === ref.dm && r.vs === ref.vs; }) : [];
     var other = rows.filter(function (r) { return (!r.flag || r.flag === 'nocon') && on.indexOf(r) < 0; });
+    /* no neighbour on the town's own month, and several on another month against the same futures: those are drawn as
+       open dots, named by their month (round 1: Columbia City's chart was empty beside 11 November bids) */
+    var alt = [], altDm = '';
+    if (ref && !on.some(function (r) { return !r.inTown; })) {
+      var am = {}; ok.forEach(function (r) { if (!r.inTown && r.vs === ref.vs && r.dm && r.dm !== ref.dm) am[r.dm] = (am[r.dm] || 0) + 1; });
+      altDm = Object.keys(am).sort(function (a, b) { return am[b] - am[a] || (a < b ? -1 : 1); })[0] || '';
+      if (altDm && am[altDm] >= 2) { alt = ok.filter(function (r) { return !r.inTown && r.vs === ref.vs && r.dm === altDm; }).sort(function (a, b) { return a.mi - b.mi || b.c - a.c; }); alt.forEach(function (r) { r.alt = true; }); other = other.filter(function (r) { return alt.indexOf(r) < 0; }); }
+      else altDm = '';
+    }
     var town = on.filter(function (r) { return r.inTown; }).sort(function (a, b) { return b.c - a.c || (b.w || 0) - (a.w || 0) || (a.name < b.name ? -1 : 1); });
     var out = on.filter(function (r) { return !r.inTown; }).sort(function (a, b) { return a.mi - b.mi || b.c - a.c || (a.name < b.name ? -1 : 1); });
     var c = CROPS.filter(function (x) { return x[0] === crop; })[0] || [crop, crop, crop];
-    return { crop: crop, Crop: c[1], adj: c[2], verb: c[3] || 'is', town: town, out: out, all: town.concat(out), ref: ref, other: other, left: left, leftIn: bad.some(function (r) { return r.inTown; }),
+    return { crop: crop, Crop: c[1], adj: c[2], verb: c[3] || 'is', town: town, out: out, alt: alt, altDm: altDm, all: town.concat(out, alt), ref: ref, other: other, away: away, left: left, leftIn: bad.some(function (r) { return r.inTown; }),
              med: med && ref && med.label === ref.vs ? med : null, prev: prev };
   }
   /* a week's line is drawn only where the bid moved */
   function moved(p) { return !!p.prev && p.all.some(function (r) { return r.w != null && r.w !== 0; }); }
+  function drawn(p) { return p.town.length + p.out.length; }
   function bestOf(rs) { return rs.reduce(function (b, r) { return !b || r.c > b.c || (r.c === b.c && (r.mi || 0) < (b.mi || 0)) ? r : b; }, null); }
   function lowOf(rs) { return rs.reduce(function (b, r) { return !b || r.c < b.c ? r : b; }, null); }
   function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many || one + 's'); }
@@ -143,7 +174,16 @@
     var C = p.Crop, place = cfg.town, T = p.town, O = p.out, bt = bestOf(T), bo = bestOf(O), yr = String(cfg.date || '').slice(0, 4);
     var head;
     if (!bt && !bo) return { head: 'No ' + p.adj + ' bids in or near ' + place + ' to compare today', take: '' };
-    if (bt && bo) {
+    /* a bid left off (another futures month) that pays more cash outside town than any drawn: the headline compares
+       on cash and says so (round 1: Alburnett's $11.81 soybeans, 13 miles out, on November futures) */
+    var oc = p.other.filter(function (r) { return !r.inTown && r.mi != null && r.vs && p.ref && r.vs !== p.ref.vs; }).reduce(function (b, r) { return !b || r.cash > b.cash || (r.cash === b.cash && r.mi < b.mi) ? r : b; }, null);
+    var maxO = O.reduce(function (m, r) { return Math.max(m, r.cash); }, -1);
+    if (oc && oc.cash > maxO + 0.004 && bt) {
+      head = C + ' ' + p.verb + ' ' + word(bt.c) + ' in ' + place + ', up to ' + cash(T.reduce(function (m, r) { return Math.max(m, r.cash); }, 0)) + ' cash. The best cash bid outside town is ' + cash(oc.cash) + ', ' + mi(oc.mi) + ' out at ' + oc.town + ', priced on ' + conMon(oc.vs) + ' futures.';
+    } else if (bt && !O.length && p.alt.length) {
+      var ba = bestOf(p.alt);
+      head = C + ' ' + p.verb + ' ' + word(bt.c) + ' in ' + place + ' for ' + dmFull(p.ref.dm, yr) + ' delivery. Nearby elevators bid for ' + dmFull(p.altDm, yr) + ': the best is ' + word(ba.c) + ', ' + mi(ba.mi) + ' out.';
+    } else if (bt && bo) {
       head = C + ' ' + p.verb + ' ' + word(bt.c) + ' in ' + place + '. ';
       var dc = Math.round((bo.c - bt.c) * 10) / 10;
       if (dc < 0) head += 'The best bid outside town is ' + word(bo.c) + ', ' + mi(bo.mi) + ' out.';
@@ -157,8 +197,10 @@
       var here = p.other.some(function (r) { return r.inTown; }) || p.leftIn;
       head = 'No ' + (here ? 'comparable ' : '') + p.adj + ' bid in ' + place + ' today. The best within ' + NEAR_MI + ' miles is ' + word(bo.c) + ', ' + mi(bo.mi) + ' out.';
     }
-    var n = p.all.length, terms = (p.ref ? dmFull(p.ref.dm, yr) + ' delivery' : '') + (conFull(p.ref && p.ref.vs) ? ', against ' + conFull(p.ref.vs) + ' ' + p.adj + ' futures' : '');
+    var n = drawn(p), terms = (p.ref ? dmFull(p.ref.dm, yr) + ' delivery' : '') + (conFull(p.ref && p.ref.vs) ? ', against ' + conFull(p.ref.vs) + ' ' + p.adj + ' futures' : '');
     var take = (n === 1 ? 'One ' + p.adj + ' bid' : n + ' ' + p.adj + ' bids') + ' within ' + NEAR_MI + ' miles, as of ' + day(cfg.date) + (terms ? ', ' + (n === 1 ? '' : 'all ') + 'for ' + terms : '') + '.';
+    if (p.alt.length) take += ' Open dots: ' + plural(p.alt.length, 'bid') + ' for ' + dmFull(p.altDm, yr) + ' delivery on the same futures.';
+    if (oc && oc.cash > maxO + 0.004 && bt && bo) take += ' On ' + conMon(p.ref.vs) + ' futures the best outside town is ' + word(bo.c) + ' at ' + bo.town + ', ' + mi(bo.mi) + ' out.';
     var wk = week(T); if (wk) take += ' ' + wk;
     return { head: head, take: take };
   }
@@ -166,8 +208,8 @@
   /* the readout line for one dot -> [bold, rest] */
   function readout(p, r) {
     if (!r) return ['', ''];
-    var where = r.inTown ? 'in town' : mi(r.mi);
-    var rest = cash(r.cash) + ' cash, ' + word(r.c) + (conMon(r.vs) ? ' ' + conMon(r.vs) : '') + ', ' + where + ', posted ' + day(r.priced) + '.';
+    var where = r.inTown ? 'in town' : mi(r.mi), yr = String(r.priced || '').slice(0, 4);
+    var rest = cash(r.cash) + ' cash, ' + word(r.c) + (conMon(r.vs) ? ' ' + conMon(r.vs) : '') + ', ' + where + (r.alt ? ', for ' + dmFull(r.dm, yr) + ' delivery' : '') + ', posted ' + day(r.priced) + '.';
     rest += r.w == null ? ' No matching bid a week before.' : ' A week before: ' + word(Math.round((r.c - r.w) * 10) / 10) + '.';
     return [r.name + ':', rest];
   }
@@ -186,12 +228,13 @@
     if (p.all.length) s.push('Each dot is one posted ' + p.adj + ' bid: cash minus ' + (conFull(p.ref.vs) || p.ref.vs) + ' futures.');
     if (moved(p)) s.push('Its line runs from its basis on ' + day(p.prev) + '.');
     else if (p.prev && p.all.some(function (r) { return r.w != null; })) s.push('No bid here moved from where it was on ' + day(p.prev) + '.');
-    if (p.out.length) s.push('Miles are straight-line from ' + (cfg.from || 'the town') + ' to each elevator’s pin; dots that would touch sit side by side.');
+    if (p.out.length || p.alt.length) s.push('Miles are straight-line from ' + (cfg.from || 'the town') + ' to each elevator’s pin. Dots that would touch are moved apart by at most half a mile; where that is not enough they overlap, and the readout steps through each.');
     if (p.med) s.push(st + ' median: ' + word(cents(p.med.median)) + ', ' + plural(p.med.n, p.adj + ' bid') + ' against ' + conMon(p.ref.vs) + ' futures.' + (p.med.usda ? ' ' + p.med.usda : ''));
     if (p.other.length) {
       var nm = p.other.map(function (r) { return r.name; }), k = nm.length;
       s.push('Not on the chart, a different delivery month or futures: ' + (k > 4 ? nm.slice(0, 4).join('; ') + ' and ' + (k - 4) + ' more' : nm.join('; ')) + '.');
     }
+    if (p.away.length) { var aw = p.away.map(function (r) { return r.elevator + ' for delivery at ' + r.at; }); s.push('Left off, a price paid at another town’s plant: ' + aw.join('; ') + '.'); }
     if (p.left) s.push(plural(p.left, 'bid') + ' that did not check out against the others ' + (p.left === 1 ? 'is' : 'are') + ' left out.');
     s.push('No freight cost is taken off. Source: posted elevator bids, read by AGSIST' + (readDays(p) ? ' ' + readDays(p) : '') + '. Call the elevator to confirm before you haul.');
     return s.join(' ');
@@ -203,21 +246,25 @@
   /* -> { svg, dots: [{x, y, r, i}], H, W } at width W. opt: { fs, card, h } */
   function svg(p, cfg, W, opt) {
     opt = opt || {};
-    var phone = W < 640, fs = opt.fs || (phone ? 12 : 13), fb = fs + 1, H = opt.h || (phone ? 400 : 460);
-    var T = p.town, O = p.out, st = cfg.stName || cfg.st, o = [], obst = [], labs = [];
+    var phone = W < 640, card = !!opt.card, fs = opt.fs || (phone ? 12 : 13), fb = fs + 1, H = opt.h || (phone ? 400 : 460);
+    var T = p.town, O = p.out, A = p.alt || [], st = cfg.stName || cfg.st, o = [], obst = [], labs = [], gut = [];
+    var minWk = phone && !card ? 10 : 0.05;   // a phone draws the week's line only for a move of 10 cents or more (the key says so)
     var vals = [];
-    p.all.forEach(function (r) { vals.push(r.c); if (r.w != null) vals.push(Math.round((r.c - r.w) * 10) / 10); });
+    p.all.forEach(function (r) { vals.push(r.c); if (r.w != null && Math.abs(r.w) >= minWk) vals.push(Math.round((r.c - r.w) * 10) / 10); });
     if (p.med) vals.push(cents(p.med.median));
     if (!vals.length) vals = [0];
     var top = Math.ceil((Math.max.apply(null, vals) + 3) / 10) * 10, bot = Math.floor((Math.min.apply(null, vals) - 3) / 10) * 10;
     if (top - bot < 30) bot = top - 30;
-    var stepT = (top - bot) / 10 > (phone ? 7 : 9) ? 20 : 10;
+    var stepT = (top - bot) / 10 > (phone || H < 300 ? 6 : 9) ? 20 : 10;
     if (stepT === 20) { top = Math.ceil(top / 20) * 20; bot = Math.floor(bot / 20) * 20; }
     var ticks = []; for (var v = top; v >= bot; v -= stepT) ticks.push(v);
     var L = Math.ceil(Math.max.apply(null, ticks.map(function (t) { return widthOf(word(t), fs, t === 0); }))) + 10;
     var R = phone ? 6 : Math.round(fs * 13.5), TOP = Math.round(fb * 2), BOT = Math.round(fs * 3.4);
     var y0 = TOP, y1 = H - BOT, Y = function (c) { return y0 + (top - c) / (top - bot) * (y1 - y0); };
-    var r0 = opt.card ? 7 : phone ? 3.8 : 5.2, gap = phone ? 1.6 : 3, step = 2 * r0 + gap;
+    // room over the best dots for their words: one more step on top when they sit too near it
+    var vmax = Math.max.apply(null, vals);
+    if (Y(vmax) - y0 < fb * 2.2 + 8) { top += stepT; ticks.unshift(top); L = Math.ceil(Math.max.apply(null, ticks.map(function (t) { return widthOf(word(t), fs, t === 0); }))) + 10; }
+    var r0 = card ? 7 : phone ? 3.8 : 5.2, gap = phone ? 1.6 : 3, step = 2 * r0 + gap;
     var pad = phone ? 8 : 16;
     var ZA = T.length ? Math.max(phone ? 92 : 150, Math.min(phone ? 132 : 260, T.length * step + 2 * pad + (phone ? 0 : 40))) : 0;
     var GX = T.length ? (phone ? 12 : 28) : 0;
@@ -227,22 +274,23 @@
       var c = [/gold/.test(cls) ? 'g' : /mid/.test(cls) ? 'm' : '', /(^| )b( |$)/.test(cls) ? 'b' : '', /big/.test(cls) ? 'B' : '', /(^| )h( |$)/.test(cls) ? 'h' : ''].filter(Boolean).join(' ');
       return '<text x="' + f1(x) + '" y="' + f1(y) + '"' + (anchor === 'end' ? ' text-anchor="end"' : anchor === 'middle' ? ' text-anchor="middle"' : '') + (c ? ' class="' + c + '"' : '') + '>' + esc(hy(s)) + '</text>';
     };
-    var P = { gr: [], ev: [], ax: [], md: [], wk: [], dr: [], di: [], dg: [] }, H0 = function (y, a, b) { return 'M' + f1(a) + ' ' + f1(y) + 'H' + f1(b); }, V0 = function (x, a, b) { return 'M' + f1(x) + ' ' + f1(a) + 'V' + f1(b); };
+    var P = { gr: [], ev: [], ax: [], md: [], wk: [] }, H0 = function (y, a, b) { return 'M' + f1(a) + ' ' + f1(y) + 'H' + f1(b); }, V0 = function (x, a, b) { return 'M' + f1(x) + ' ' + f1(a) + 'V' + f1(b); };
     // the in-town zone, the grid, the axis words
-    if (T.length) o.push('<rect class="z" x="' + L + '" y="' + y0 + '" width="' + f1(ZA) + '" height="' + f1(y1 - y0) + '"/>');
+    var zone = T.length ? '<rect class="z" x="' + L + '" y="' + y0 + '" width="' + f1(ZA) + '" height="' + f1(y1 - y0) + '"/>' : '';
     ticks.forEach(function (c) {
       var y = Y(c), ev = c === 0;
       P[ev ? 'ev' : 'gr'].push(H0(y, L, phone ? x1 : W - R));
       o.push(t(L - 8, y + fs * 0.36, word(c), ev ? 'b' : 'mid', 'end'));
     });
-    var townHead = 'In ' + cfg.town;
     if (T.length) {
+      var townHead = 'In ' + cfg.town;
       if (widthOf(townHead, fb, true) > ZA + GX - 4) townHead = 'In town';
       o.push(t(L + ZA / 2, y0 - fb * 0.7, townHead, 'b big', 'middle'));
     }
-    if (O.length) {
-      var m0 = Math.round(O[0].mi), m1 = Math.round(O[O.length - 1].mi), span = m0 === m1 ? mi(O[0].mi) + ' out' : m0 + ' to ' + m1 + ' miles out';
-      var oh = phone ? span : (O.length === 1 ? 'One elevator ' : 'Elevators ') + span;
+    var OA = O.length ? O : A;
+    if (OA.length) {
+      var m0 = Math.round(OA[0].mi), m1 = Math.round(OA[OA.length - 1].mi), span = m0 === m1 ? mi(OA[0].mi) + ' out' : m0 + ' to ' + m1 + ' miles out';
+      var oh = O.length ? (phone ? span : (O.length === 1 ? 'One elevator ' : 'Elevators ') + span) : dmFull(p.altDm, String(cfg.date).slice(0, 4)) + ' delivery, ' + span;
       o.push(t((x0 + x1) / 2, y0 - fb * 0.7, oh, 'b big', 'middle'));
     } else {
       var nt = phone ? ['No other bid within', NEAR_MI + ' miles to compare'] : ['No other elevator within ' + NEAR_MI + ' miles', 'posted a bid to compare'];
@@ -251,164 +299,174 @@
     // the state's middle bid on the same futures month: one dashed rule
     var ym = p.med ? Y(cents(p.med.median)) : null;
     if (p.med) P.md.push(H0(ym, L, phone ? x1 : W - R));
-    // the dots: in town side by side, best first; outside by miles, nudged apart where they would touch
-    var dots = [], best = bestOf(p.all), bestC = best ? best.c : null;
+    // the dots: in town side by side, best first; outside at their miles
+    var dots = [], best = bestOf(T.concat(O)), bestC = best ? best.c : null;
     var stT = T.length > 1 ? Math.min(step, (ZA - 2 * pad - 2 * r0) / (T.length - 1)) : step, rT = Math.min(r0, Math.max(1.6, (stT - 0.8) / 2));
-    T.forEach(function (r, i) { dots.push({ x: L + pad + rT + i * stT, y: Y(r.c), r: rT, d: r }); });
-    // outside town: each dot at its miles, or the nearest free place sideways (alternating right and left, never past
-    // the plot), so no two dots touch; the readout gives each one's own miles
-    var placed = [], xmax = phone ? W - r0 - 2 : W - R - 4 - r0;
-    O.forEach(function (r) {
-      var base = Xm(r.mi), y = Y(r.c), q = { x: base, y: y, r: r0, d: r };
-      for (var k = 0; k < 400; k++) {
+    T.forEach(function (r) { dots.push({ x: L + pad + rT, y: Y(r.c), r: rT, d: r }); });
+    T.forEach(function (r, i) { dots[i].x = L + pad + rT + i * stT; });
+    // outside town: at its miles, or moved sideways by at most half a mile where it would touch another; where that is
+    // not enough it overlaps (round 1: dots were pushed miles off and past the 40 tick)
+    var cap = 0.5 / NEAR_MI * (x1 - x0), placed = [], over = 0;
+    O.concat(A).forEach(function (r) {
+      var base = Xm(r.mi), y = Y(r.c), q = { x: base, y: y, r: r0, d: r }, ok = false;
+      var clash = function (x) { return placed.some(function (z) { return Math.hypot(z.x - x, z.y - y) < 2 * r0 + 1; }); };
+      for (var k = 0; k <= 2 * Math.floor(cap / 0.5); k++) {
         var x = base + (k % 2 ? (k + 1) / 2 : -k / 2) * 0.5;
-        if (x < x0 - r0 || x > xmax) continue;
-        if (!placed.some(function (z) { return Math.hypot(z.x - x, z.y - y) < 2 * r0 + 1; })) { q.x = x; break; }
+        if (x < x0 || x > x1) continue;
+        if (!clash(x)) { q.x = x; ok = true; break; }
       }
+      if (!ok) { q.x = Math.max(x0, Math.min(x1, base)); q.over = true; over++; }
       placed.push(q); dots.push(q);
     });
     dots.forEach(function (q) {
       var prev = q.d.w == null ? null : Math.round((q.d.c - q.d.w) * 10) / 10;
-      if (prev != null && prev !== q.d.c) { P.wk.push(V0(q.x, Y(prev), q.y)); add({ x0: q.x - 1.5, x1: q.x + 1.5, y0: Math.min(Y(prev), q.y), y1: Math.max(Y(prev), q.y) }); }
+      if (prev != null && Math.abs(q.d.w) >= minWk) { P.wk.push(V0(q.x, Y(prev), q.y)); add({ x0: q.x - 1.5, x1: q.x + 1.5, y0: Math.min(Y(prev), q.y), y1: Math.max(Y(prev), q.y) }); }
     });
     dots.forEach(function (q, i) {
-      q.i = i; q.gold = q.d.c === bestC;
-      var pt = 'M' + f1(q.x) + ' ' + f1(q.y) + 'h0'; P.dr.push(pt); P[q.gold ? 'dg' : 'di'].push(pt);
+      q.i = i; q.gold = !q.d.alt && q.d.c === bestC;
       add({ x0: q.x - q.r - 1, x1: q.x + q.r + 1, y0: q.y - q.r - 1, y1: q.y + q.r + 1 });
     });
-    // the words on the data: each tries its places in order and is left off (the readout has it) when none is free
-    var inPlot = function (b) { return b.x0 >= L - 2 && b.x1 <= (phone ? W - 2 : W - 2) && b.y0 >= y0 - 2 && b.y1 <= y1 + 2; };
-    var place = function (lines, cands, cls) {
+    // the words on the data: each tries its places in order; the best bid's words are placed first and never left off
+    var inPlot = function (b) { return b.x0 >= L - 2 && b.x1 <= W - 2 && b.y0 >= y0 - 2 && b.y1 <= y1 + 2; };
+    var place = function (lines, cands, cls, minX, must) {
       var lh = fs * 1.3, w = Math.max.apply(null, lines.map(function (s, k) { var cl = cls[k] || ''; return widthOf(s, /big/.test(cl) ? fb : fs, /(^| )b( |$)/.test(cl)); }));
+      var box = function (c) { var x = c.anchor === 'end' ? c.x - w : c.anchor === 'middle' ? c.x - w / 2 : c.anchor === 'clamp' ? Math.min(Math.max(c.x - w / 2, minX == null ? L + 2 : minX + 2), W - 4 - w) : c.x; return { x: x, b: { x0: x - 2, x1: x + w + 2, y0: c.y - fs - 1, y1: c.y + (lines.length - 1) * lh + 4 } }; };
       for (var k = 0; k < cands.length; k++) {
-        var c = cands[k], x = c.anchor === 'end' ? c.x - w : c.anchor === 'middle' ? c.x - w / 2 : c.x;
-        var b = { x0: x - 2, x1: x + w + 2, y0: c.y - fs - 1, y1: c.y + (lines.length - 1) * lh + 4 };
-        if ((c.free || inPlot(b)) && !obst.concat(labs).some(function (z) { return hit(z, b); })) {
-          lines.forEach(function (s, j) { o.push(t(x, c.y + j * lh, s, cls[j] || '', '')); });
-          labs.push(b); return true;
+        var bb = box(cands[k]);
+        if (minX != null && bb.b.x0 < minX) continue;
+        if (inPlot(bb.b) && !obst.concat(labs).some(function (z) { return hit(z, bb.b); })) {
+          lines.forEach(function (s, j) { o.push(t(bb.x, cands[k].y + j * lh, s, cls[j] || '', '')); });
+          labs.push(bb.b); return true;
+        }
+      }
+      if (must) {   // no free place: the first one that stays in the picture, on a halo
+        for (k = 0; k < cands.length; k++) {
+          bb = box(cands[k]);
+          if (inPlot(bb.b) && (minX == null || bb.b.x0 >= minX) && !labs.some(function (z) { return hit(z, bb.b); })) {
+            lines.forEach(function (s, j) { o.push(t(bb.x, cands[k].y + j * lh, s, (cls[j] || '') + ' h', '')); });
+            labs.push(bb.b); return true;
+          }
+        }
+        for (k = 0; k < cands.length; k++) {   // the last resort: the first place inside the picture, whatever it covers
+          bb = box(cands[k]);
+          if (inPlot(bb.b)) { lines.forEach(function (s, j) { o.push(t(bb.x, cands[k].y + j * lh, s, (cls[j] || '') + ' h', '')); }); labs.push(bb.b); return true; }
         }
       }
       return false;
     };
-    var near = function (q, w, lines) {   // around a dot: above right, above left, below right, below left, right, left
-      var lh = fs * 1.3, hgt = lines * lh, g = q.r + 6;
-      return [{ x: q.x - q.r, y: q.y - g - hgt + lh * 0.8 }, { x: q.x + q.r, y: q.y - g - hgt + lh * 0.8, anchor: 'end' }, { x: q.x + g, y: q.y + fs * 0.35 },
-              { x: q.x - q.r, y: q.y + g + fs }, { x: q.x + q.r, y: q.y + g + fs, anchor: 'end' }, { x: q.x - g, y: q.y + fs * 0.35, anchor: 'end' }];
+    var near = function (q, lines) {   // around a dot: above right, above left, right, below right, below left, left, then further out
+      var lh = fs * 1.3, hgt = lines * lh, g = q.r + 6, up = q.y - g - hgt + lh * 0.8, dn = q.y + g + fs;
+      return [{ x: q.x - q.r, y: up }, { x: q.x + q.r, y: up, anchor: 'end' }, { x: q.x + g, y: q.y + fs * 0.35 - (lines - 1) * lh / 2 },
+              { x: q.x - q.r, y: dn }, { x: q.x + q.r, y: dn, anchor: 'end' }, { x: q.x - g, y: q.y + fs * 0.35, anchor: 'end' },
+              { x: q.x - q.r, y: up - lh }, { x: q.x + q.r, y: up - lh, anchor: 'end' }, { x: q.x - q.r, y: up - 2 * lh }, { x: q.x + g, y: up }, { x: q.x - g, y: up, anchor: 'end' },
+              { x: q.x - q.r, y: dn + lh }, { x: q.x + q.r, y: dn + lh, anchor: 'end' },
+              { x: q.x, y: up, anchor: 'clamp' }, { x: q.x, y: dn, anchor: 'clamp' }, { x: q.x, y: up - lh, anchor: 'clamp' }, { x: q.x, y: dn + lh, anchor: 'clamp' }, { x: q.x, y: up - 2 * lh, anchor: 'clamp' }, { x: q.x + g, y: q.y - lh * (lines + 0.2) }, { x: q.x + g, y: q.y - lh * (lines + 1.2) }, { x: q.x - g, y: q.y - lh * (lines + 0.2), anchor: 'end' },
+              { x: q.x, y: up - 3 * lh, anchor: 'clamp' }, { x: q.x, y: up - 4 * lh, anchor: 'clamp' }, { x: q.x, y: dn + 2 * lh, anchor: 'clamp' }];
     };
     var golds = dots.filter(function (q) { return q.gold; });
-    var tq = dots.filter(function (q) { return q.d.inTown; }), oq = dots.filter(function (q) { return !q.d.inTown; });
-    // 1. the best bid, in the accent: over the best dots in town, or at the best one outside
+    var tq = dots.filter(function (q) { return q.d.inTown; }), oq = dots.filter(function (q) { return !q.d.inTown && !q.d.alt; }), aq = dots.filter(function (q) { return q.d.alt; });
+    var outX = T.length ? L + ZA + 2 : null;   // a bid outside town is never named inside the town's band
+    // 1. the best bid, in the accent: over the best dots in town, with their count
     if (golds.length && golds[0].d.inTown) {
-      var gk = golds.filter(function (q) { return q.d.inTown; }).length, gtxt = word(bestC) + (gk > 1 && !phone ? ': ' + gk + ' bids' : '');
-      place([gtxt], [{ x: golds[0].x - golds[0].r, y: golds[0].y - golds[0].r - 8 }, { x: golds[0].x - golds[0].r, y: golds[0].y - golds[0].r - 8 - fs }, { x: golds[0].x - golds[0].r, y: golds[0].y + golds[0].r + fb + 4 }], ['gold b big']);
+      var gk = golds.filter(function (q) { return q.d.inTown; }).length, g0 = golds[0], gtxt = word(bestC) + (gk > 1 ? ': ' + gk + ' bids' : '');
+      var gc = [{ x: g0.x - g0.r, y: g0.y - g0.r - 8 }, { x: g0.x - g0.r, y: g0.y - g0.r - 8 - fs }, { x: g0.x - g0.r, y: g0.y + g0.r + fb + 4 }, { x: g0.x - g0.r, y: g0.y - g0.r - 8 - 2 * fs }];
+      if (!place([gtxt], gc, ['gold b big']) && gk > 1) place([word(bestC)], gc, ['gold b big'], null, true);
     }
-    // 2. the best bid outside town
+    // 2. the best bid outside town (in the accent when it is the best within 40 miles)
     var bo = oq.filter(function (q) { return q.d === bestOf(O); })[0];
     if (bo) {
       var ow = bo.d.town, gcls = bo.gold ? 'gold b big' : 'b big';
-      if (phone) place([ow + ', ' + word(bo.d.c)], near(bo, 0, 1), [gcls]);
-      else place([bo.gold ? 'Best bid within ' + NEAR_MI + ' miles' : 'Best bid outside town', ow + ', ' + mi(bo.d.mi) + ': ' + word(bo.d.c)], near(bo, 0, 2), ['', gcls]);
+      if (phone) place([ow + ', ' + word(bo.d.c)], near(bo, 1), [gcls], outX, true);
+      else place([bo.gold ? 'Best bid within ' + NEAR_MI + ' miles' : 'Best bid outside town', ow + ', ' + mi(bo.d.mi) + ': ' + word(bo.d.c)], near(bo, 2), ['', gcls], outX, true);
     }
-    // 3. the lowest in town
-    if (tq.length > 1) {
-      var lt = tq[tq.length - 1];
-      if (lt.d.c !== bestC) {
-        var ltx = phone ? ['Lowest in town: ' + word(lt.d.c)] : ['Lowest in town:', word(lt.d.c)];
-        var lc = [{ x: lt.x + lt.r + 8, y: lt.y + fs * 0.35 }, { x: L + 6, y: y1 - 8 - (ltx.length - 1) * fs * 1.3 }, { x: lt.x + lt.r + 8, y: lt.y + fs * 1.5 }].concat(near(lt, 0, ltx.length));
-        place(ltx, lc, ['', '']);
-      }
-    }
-    // 4. the state median, and 5. the lowest outside town: in the right gutter from 640 px, inside on a phone
+    var ba = aq.filter(function (q) { return q.d === bestOf(A); })[0];
+    if (ba) place([ba.d.town + ', ' + word(ba.d.c)], near(ba, 1), ['b big'], outX, true);
+    // 3. the state median: in the right margin from 640 px (with the lowest outside town), on one line above its rule on a phone
     var lo = oq.length > 1 ? oq.filter(function (q) { return q.d.c === lowOf(O).c; }) : [];
     if (lo.length && lo[0].d.c === bestC) lo = [];
     var loTowns = lo.map(function (q) { return q.d.town; }).filter(function (x, i, a) { return a.indexOf(x) === i; });
     var loWho = loTowns.length > 2 ? plural(lo.length, 'elevator') : list(loTowns);
     if (!phone) {
-      var gx = W - R + 12, items = [];
-      if (p.med) items.push({ y: ym, lines: [st + ' median', word(cents(p.med.median)), plural(p.med.n, 'bid') + ', ' + day(cfg.date)].concat(p.med.usdaShort ? [p.med.usdaShort] : []), cls: ['b big', 'b big', 'mid', 'mid'] });
+      var gx = W - R + 12, items = [], lh = fs * 1.3, room = R - 16;
+      if (p.med) items.push({ y: ym, lines: [st + ' median', word(cents(p.med.median))].concat(card ? [] : [plural(p.med.n, 'bid') + ', ' + day(cfg.date)].concat(p.med.usdaShort ? [p.med.usdaShort] : [])), cls: ['b big', 'b big', 'mid', 'mid'] });
       if (lo.length) items.push({ y: lo[0].y, lines: ['Lowest: ' + word(lo[0].d.c)].concat(loWho ? [loWho] : []), cls: ['b big', 'mid'] });
-      var lh = fs * 1.3;
       items.forEach(function (it) {
         var ls = [], cs = [];
         it.lines.forEach(function (s, j) {
           var cl = it.cls[j] || '', cur = '';
-          s.split(' ').forEach(function (w) { var x = cur ? cur + ' ' + w : w; if (cur && widthOf(x, /big/.test(cl) ? fb : fs, /(^| )b( |$)/.test(cl)) > R - 16) { ls.push(cur); cs.push(cl); cur = w; } else cur = x; });
+          s.split(' ').forEach(function (w) { var x = cur ? cur + ' ' + w : w; if (cur && widthOf(x, /big/.test(cl) ? fb : fs, /(^| )b( |$)/.test(cl)) > room) { ls.push(cur); cs.push(cl); cur = w; } else cur = x; });
           if (cur) { ls.push(cur); cs.push(cl); }
         });
         it.lines = ls; it.cls = cs; it.h = ls.length * lh; it.top = it.y - it.h / 2;
       });
+      // stacked top down clear of each other, then, if the last runs past the plot, pushed back up as a block, never into each other
       items.sort(function (a, b) { return a.top - b.top; });
-      items.forEach(function (it, i) { if (i && it.top < items[i - 1].top + items[i - 1].h + fs * 1.2) it.top = items[i - 1].top + items[i - 1].h + fs * 1.2; it.top = Math.max(y0, Math.min(it.top, y1 - it.h)); });
-      items.forEach(function (it) {
-        it.lines.forEach(function (s, j) { o.push(t(gx, it.top + fs + j * lh, s, it.cls[j], '')); });
-      });
-    } else {
-      if (p.med) {
-        var mt = st + ' median: ' + word(cents(p.med.median)), mw = widthOf(mt, fs, true);
-        var mc = [];   // along the rule, above then below, left to right: the rule is always named
-        for (var mx = L + 6; mx <= x1 - mw; mx += 12) mc.push({ x: mx, y: ym - 6 }, { x: mx, y: ym + fs + 4 });
-        var m1 = st + ' median', m2 = word(cents(p.med.median)), mc2 = [];   // or in two lines, the words above the rule and the number under it
-        for (mx = L + 6; mx <= x1 - widthOf(m1, fs, true); mx += 12) mc2.push({ x: mx, y: ym - 6 });
-        var two = function () {
-          for (var k = 0; k < mc2.length; k++) {
-            var c = mc2[k], w1 = widthOf(m1, fs, true), w2 = widthOf(m2, fs, true);
-            var b1 = { x0: c.x - 2, x1: c.x + w1 + 2, y0: c.y - fs - 1, y1: c.y + 3 }, b2 = { x0: c.x - 2, x1: c.x + w2 + 2, y0: ym + 3, y1: ym + fs + 7 };
-            if (inPlot(b1) && inPlot(b2) && !obst.concat(labs).some(function (z) { return hit(z, b1) || hit(z, b2); })) {
-              o.push(t(c.x, c.y, m1, 'b', '')); o.push(t(c.x, ym + fs + 4, m2, 'b', '')); labs.push(b1, b2); return true;
-            }
-          }
-          return false;
-        };
-        if (!place([mt], mc, ['b']) && !two()) { o.push(t(L + 6, ym - 6, mt, 'b h', '')); labs.push({ x0: L + 4, x1: L + 8 + mw, y0: ym - 6 - fs, y1: ym - 2 }); }   // no free place: over the dots, on a halo
-      }
-      if (lo.length) {
-        var lw = 'Lowest: ' + (loWho ? loWho + ', ' : '') + word(lo[0].d.c), lww = widthOf(lw, fs);
-        if (lww > x1 - x0 + ZA) lw = 'Lowest outside town: ' + word(lo[0].d.c);
-        place([lw], [{ x: x1 + 4, y: y1 - 8, anchor: 'end' }, { x: x1 + 4, y: lo[0].y + lo[0].r + fs + 6, anchor: 'end' }].concat(near(lo[0], 0, 1)), ['']);
+      var sp = fs * 1.2;
+      items.forEach(function (it, i) { it.top = Math.max(it.top, y0, i ? items[i - 1].top + items[i - 1].h + sp : -1e9); });
+      for (var i = items.length - 1; i >= 0; i--) { var lim = i === items.length - 1 ? y1 - items[i].h : items[i + 1].top - sp - items[i].h; if (items[i].top > lim) items[i].top = lim; }
+      items.forEach(function (it) { gut.push({ y0: it.top, y1: it.top + it.h }); it.lines.forEach(function (s, j) { o.push(t(gx, it.top + fs + j * lh, s, it.cls[j], '')); }); });
+    } else if (p.med) {
+      var mt = st + ' median: ' + word(cents(p.med.median)), mw = widthOf(mt, fs, true), mc = [];
+      for (var mx = L + 6; mx <= x1 - mw; mx += 12) mc.push({ x: mx, y: ym - 6 });
+      for (mx = L + 6; mx <= x1 - mw; mx += 12) mc.push({ x: mx, y: ym + fs + 4 });
+      place([mt], mc, ['b'], null, true);
+    }
+    // 4. the biggest move in a week outside town, 10 cents or more
+    var mv = oq.filter(function (q) { return q.d.w != null && Math.abs(q.d.w) >= 10 && q !== bo && lo.indexOf(q) < 0; }).sort(function (a, b) { return Math.abs(b.d.w) - Math.abs(a.d.w) || a.d.mi - b.d.mi; })[0];
+    if (mv) {
+      var mvt = (mv.d.w > 0 ? 'up ' : 'down ') + num(Math.abs(mv.d.w)) + ' in a week';
+      if (phone) place([mv.d.town + ', ' + mvt], near(mv, 1), [''], outX);
+      else place([mv.d.town + ': ' + word(mv.d.c) + ',', mvt], near(mv, 2), ['', ''], outX);
+    }
+    // 5. the lowest in town, beside its dot
+    if (tq.length > 1) {
+      var lt = tq[tq.length - 1];
+      if (lt.d.c !== bestC) {
+        var ltx = phone ? ['Lowest in town: ' + word(lt.d.c)] : ['Lowest in town:', word(lt.d.c)];
+        place(ltx, [{ x: lt.x + lt.r + 8, y: lt.y + fs * 0.35 }, { x: lt.x + lt.r + 8, y: lt.y + fs * 1.5 }].concat(near(lt, ltx.length)), ['', '']);
       }
     }
-    // 6. the biggest move in a week outside town, when it is big and there is room (wide only)
-    if (!phone) {
-      var mv = oq.filter(function (q) { return q.d.w != null && Math.abs(q.d.w) >= 10 && q !== bo && lo.indexOf(q) < 0; }).sort(function (a, b) { return Math.abs(b.d.w) - Math.abs(a.d.w); })[0];
-      if (mv) place([mv.d.town + ': ' + word(mv.d.c) + ',', (mv.d.w > 0 ? 'up ' : 'down ') + num(mv.d.w) + ' in a week'], near(mv, 0, 2).slice(2).concat(near(mv, 0, 2).slice(0, 2)), ['', '']);
-    }
+    // 6. on a phone, the lowest outside town beside its dot, or left to the readout
+    if (phone && lo.length) place(['Lowest: ' + word(lo[0].d.c)], near(lo[0], 1), [''], outX);
     // the miles axis, and the count under the town zone
     P.ax.push(H0(y1, x0, x1));
-    [0, 10, 20, 30, 40].forEach(function (m) {
-      var x = Xm(m);
-      P.ax.push(V0(x, y1, y1 + 5));
-      o.push(t(x, y1 + fs + 6, String(m), 'mid', 'middle'));
-    });
+    [0, 10, 20, 30, 40].forEach(function (m) { var x = Xm(m); P.ax.push(V0(x, y1, y1 + 5)); o.push(t(x, y1 + fs + 6, String(m), 'mid', 'middle')); });
     var axt = 'Miles from ' + cfg.town + ', straight line';
     if (widthOf(axt, fs) > x1 - x0 + GX + ZA) axt = 'Miles, straight line';
     o.push(t(x1 + (phone ? 4 : 6), y1 + fs * 2.6 + 4, axt, 'mid', 'end'));
     if (T.length) o.push(t(L + ZA / 2, y1 + fs + 6, T.length === 1 ? '1 bid' : T.length + ' bids', 'mid', 'middle'));
-    var aria = p.Crop + ' basis by distance from ' + cfg.town + ': ' + p.all.length + ' bids within ' + NEAR_MI + ' miles' + (p.med ? ', with the ' + st + ' median' : '') + '.';
-    // the lines first, then the dots (a ring of the page colour round each, so dots side by side stay apart), then the words
+    var aria = p.Crop + ' basis by distance from ' + cfg.town + ': ' + drawn(p) + ' bids within ' + NEAR_MI + ' miles' + (p.med ? ', with the ' + st + ' median' : '') + '.';
+    // the lines first, then the dots (a ring of the page colour round each; an open dot is a ring of ink), then the words
     var rIn = dots.filter(function (q) { return q.d.inTown; }), ro = rIn.length ? rIn[0].r : r0, wd = function (r) { return f1(2 * r); };
     var dp = function (cls, pts) { return pts.length ? '<path class="' + cls + '" d="' + pts.join('') + '"/>' : ''; };
-    var dpts = function (k, inTown) { return dots.filter(function (q) { return q.d.inTown === inTown && (k === 'dg') === q.gold; }).map(function (q) { return 'M' + f1(q.x) + ' ' + f1(q.y) + 'h0'; }); };
     var lines = ['gr', 'ev', 'ax', 'md', 'wk'].map(function (k) { return dp(k, P[k]); }).join('');
-    // each set of dots is one path, drawn twice: a ring of the page colour, then the dot (<use> of the same points)
-    var uid = 'bd' + (opt.id || 'p'), defs = [], dd = '';
-    [true, false].forEach(function (inT, a) {
-      var r = inT ? ro : r0;
-      ['di', 'dg'].forEach(function (k, b) {
-        var pts = dpts(k, inT); if (!pts.length) return;
+    var uid = 'bd' + (opt.id || 'p'), defs = [], dd = '', sets = [[tq, ro], [oq, r0], [aq, r0]];
+    sets.forEach(function (sx, a) {
+      var r = sx[1];
+      [['di', function (q) { return !q.gold; }], ['dg', function (q) { return q.gold; }]].forEach(function (k, b) {
+        var pts = sx[0].filter(k[1]).map(function (q) { return 'M' + f1(q.x) + ' ' + f1(q.y) + 'h0'; }); if (!pts.length) return;
         var id = uid + a + b; defs.push('<path id="' + id + '" d="' + pts.join('') + '"/>');
-        dd += '<use href="#' + id + '" class="dr" style="stroke-width:' + f1(2 * r + 3) + '"/><use href="#' + id + '" class="' + k + '" style="stroke-width:' + wd(r) + '"/>';
+        dd += '<use href="#' + id + '" class="dr" style="stroke-width:' + f1(2 * r + 3) + '"/><use href="#' + id + '" class="' + k[0] + '" style="stroke-width:' + wd(r) + '"/>' +
+          (a === 2 ? '<use href="#' + id + '" class="dr" style="stroke-width:' + f1(2 * r - 3) + '"/>' : '');
       });
     });
     dd = (defs.length ? '<defs>' + defs.join('') + '</defs>' : '') + dd;
-    var zone = o.length && /^<rect/.test(o[0]) ? o.shift() : '';
-    var s = '<svg class="bd-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(aria) + '" style="font-size:' + fs + 'px' + (opt.card ? ';font-family:' + FONT : '') + '">' +
-      (opt.card ? cardStyle(CARD) : '') + zone + lines + dd + o.join('') + '</svg>';
-    return { svg: s, dots: dots.map(function (q) { return { x: q.x, y: q.y, r: q.r, i: q.i }; }), H: H, W: W, order: dots.map(function (q) { return q.d; }) };
+    var s = '<svg class="bd-svg' + (opt.cls ? ' ' + opt.cls : '') + '" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(aria) + '" style="font-size:' + fs + 'px' + (card ? ';font-family:' + FONT : '') + '">' +
+      (card ? cardStyle(CARD) : '') + zone + lines + dd + o.join('') + '</svg>';
+    return { svg: s, dots: dots.map(function (q) { return { x: q.x, y: q.y, r: q.r, i: q.i, base: q.d.inTown ? null : Xm(q.d.mi), over: !!q.over }; }), H: H, W: W, gut: gut, labs: labs, order: dots.map(function (q) { return q.d; }), over: over, minWk: minWk, cap: cap, x0: x0, x1: x1 };
   }
 
   /* the default dot the readout opens on: the best bid outside town, else the best in town */
   function firstDot(p) { var b = bestOf(p.out) || bestOf(p.town); return b ? p.all.indexOf(b) : -1; }
   function axisText(p) { return p.adj.charAt(0).toUpperCase() + p.adj.slice(1) + ' basis, cents a bushel over or under ' + (conMon(p.ref && p.ref.vs) || 'the') + ' futures'; }
+  /* the key above the picture: what a dot, the gold, an open dot and a line mean, only what this view draws. The words
+     in .bd-kph show only where the phone rule (a line for a move of 10 cents or more) applies. -> HTML */
+  function keyHtml(p) {
+    var yr = String(p.prev || '').slice(0, 4), parts = ['dot: today&rsquo;s bid', '<span class="bd-kg">gold</span>: the best within ' + NEAR_MI + ' miles'];
+    if (p.alt && p.alt.length) parts.push('open dot: ' + esc(dmFull(p.altDm, yr)) + ' delivery');
+    if (moved(p)) parts.push('line: its move since ' + esc(day(p.prev)) + '<span class="bd-kph">, when 10 cents or more</span>');
+    return parts.join('; ');
+  }
   function cardText(p, cfg) {
     var st = story(p, cfg);
     return { head: st.head, take: st.take, kicker: cfg.town + ', ' + (cfg.st || '') + ' · ' + p.adj + ' basis by distance', source: (moved(p) ? 'Each line runs from where that bid was on ' + day(p.prev) + '. ' : '') + 'Posted elevator bids, read by AGSIST' + (readDays(p) ? ' ' + readDays(p) : '') + (p.med && p.med.usdaShort ? '. ' + p.med.usdaShort : '') + '. No freight cost taken off.' };
@@ -433,9 +491,13 @@
   }
   /* the builder's entry: everything the page prints for one crop, the picture at phone width */
   function render(docs, cfg0, crop, W, bs) {
-    var cfg = prep(cfg0, docs, bs), p = pick(docs, cfg, crop), st = story(p, cfg), pic = svg(p, cfg, W || 358, {}), k = firstDot(p), rd = readout(p, p.all[k]);
-    return { crop: crop, n: p.all.length, inTown: p.town.length, out: p.out.length, head: st.head, take: st.take, axis: axisText(p),
-             prev: moved(p) ? day(p.prev) : '', svg: pic.svg, read: rd, note: note(p, cfg), first: k };
+    /* two pictures for the page without script: the phone's, and one for a wide column (round 1: a desktop reader got
+       the phone picture alone at the left); the page shows one by its width until the script draws at the box's own */
+    var cfg = prep(cfg0, docs, bs), p = pick(docs, cfg, crop), st = story(p, cfg), short = !p.out.length && !p.alt.length;
+    var pw = svg(p, cfg, W || 358, { cls: 'bd-sp', id: 'p', h: short ? 240 : 400 }), ww = svg(p, cfg, 760, { cls: 'bd-sw', id: 'w', h: short ? 300 : 460 });
+    var k = firstDot(p), rd = readout(p, p.all[k]);
+    return { crop: crop, n: drawn(p), inTown: p.town.length, out: p.out.length, alt: p.alt.length, short: short, head: st.head, take: st.take, axis: axisText(p),
+             prev: moved(p) ? day(p.prev) : '', key: keyHtml(p), svg: pw.svg + ww.svg, read: rd, note: note(p, cfg), first: k };
   }
 
   /* ---------------------------------------------------------------- the page */
@@ -451,10 +513,12 @@
     return { size: sizes[sizes.length - 1], lines: lines.slice(0, maxLines) };
   }
   function ga(n) { try { if (typeof root.gtag === 'function') root.gtag('event', n, { kit: 'basis-drive' }); } catch (e) {} }
-  function card(p, cfg, done) {
+  function card(p, cfg, done) { frame(cardText(p, cfg), cfg, function (w, h) { return svg(p, cfg, w, { card: true, fs: 16, h: h }).svg; }, done); }
+  /* the 1200 x 630 picture: the kit card's frame, the headline and take, a picture drawn by draw(width, height), the source */
+  function frame(ct2, cfg, draw, done) {
     var D = root.document, W = 1200, H = 630, c = D.createElement('canvas'); c.width = W; c.height = H;
     var x = c.getContext('2d'); if (!x || !root.Image) { done(null); return; }
-    var ct2 = cardText(p, cfg), meas = function (wt) { return function (s, size) { x.font = wt + ' ' + size + 'px ' + FONT; return x.measureText(s).width; }; };
+    var meas = function (wt) { return function (s, size) { x.font = wt + ' ' + size + 'px ' + FONT; return x.measureText(s).width; }; };
     var fit = fitLines;
     x.fillStyle = CARD.bg; x.fillRect(0, 0, W, H); x.fillStyle = CARD.gold; x.fillRect(0, 0, W, 10);
     x.font = '800 34px ' + FONT; x.fillStyle = CARD.ink; x.fillText('agsist', 48, 62);
@@ -468,7 +532,7 @@
     x.font = '400 ' + tk.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.86)';
     tk.lines.forEach(function (l, i) { x.fillText(hy(l), 48, y + i * tk.size * 1.25); }); y += (tk.lines.length - 1) * tk.size * 1.25 + 10;
     var src = fit(meas('400'), ct2.source, W - 96, [17, 16, 15, 14], 1), url = String(cfg.url || '').replace(/^https?:\/\//, '');
-    var ph = Math.max(220, Math.round(H - y - 70)), pic = svg(p, cfg, W - 48, { card: true, fs: 16, h: ph });
+    var ph = Math.max(220, Math.round(H - y - 70)), pic = { svg: draw(W - 48, ph) };
     var img = new root.Image();
     img.onload = function () {
       x.drawImage(img, 24, y);
@@ -483,13 +547,13 @@
   function mount(box) {
     var cfg; try { cfg = JSON.parse(box.getAttribute('data-drive') || '{}'); } catch (e) { return; }
     var q = function (s) { return box.querySelector(s); };
-    var plot = q('.bd-plot'), read = q('.bd-read'), head = q('.bd-h'), take = q('.bd-take'), axis = q('.bd-axis'), noteEl = q('.bd-note'), keyPrev = q('.bd-kp');
+    var plot = q('.bd-plot'), read = q('.bd-read'), head = q('.bd-h'), take = q('.bd-take'), axis = q('.bd-axis'), noteEl = q('.bd-note'), keyT = q('.bd-kt');
     var urlC = ''; try { urlC = new URLSearchParams(root.location.search).get('crop') || ''; } catch (e) {}
     if (!cfg.url) { var cn = root.document.querySelector('link[rel="canonical"]'); cfg.url = cn ? cn.href : String(root.location.href).split(/[?#]/)[0]; }
     var docs = null, cur = cfg.crops && cfg.crops.indexOf(urlC) >= 0 ? urlC : (cfg.crops || ['corn'])[0], p = null, pic = null, sel = -1, lastW = 0;
     var say = function (k) {
       var rd = readout(p, p.all[k]);
-      read.innerHTML = rd[0] ? '<b>' + esc(hy(rd[0])) + '</b> ' + esc(hy(rd[1])) + ' <span class="bd-hint">Tap a dot to read an elevator.</span>' : '';
+      read.innerHTML = rd[0] ? '<b>' + esc(hy(rd[0])) + '</b> ' + esc(hy(rd[1])) + ' <span class="bd-hint bd-ht">Tap a dot to read an elevator.</span><span class="bd-hint bd-hc">Click a dot or use the arrow keys.</span>' : '';
     };
     var mark = function () {
       var s = plot.querySelector('.bd-sel'); if (s) s.remove();
@@ -502,9 +566,10 @@
     var draw = function (force) {
       var W = Math.round(plot.clientWidth); if (!W || !docs || (W === lastW && !force)) return; lastW = W;
       p = pick(docs, cfg, cur);
+      box.classList.toggle('bd-narrow', W < 640); plot.classList.toggle('bd-short', !p.out.length && !p.alt.length);
       var st = story(p, cfg);
       head.textContent = hy(st.head); take.textContent = hy(st.take); axis.textContent = axisText(p); noteEl.textContent = hy(note(p, cfg));
-      if (keyPrev) { keyPrev.textContent = moved(p) ? 'where it was a week before, ' + day(p.prev) : ''; keyPrev.closest('.bd-key').hidden = !moved(p); }
+      if (keyT) keyT.innerHTML = keyHtml(p);
       pic = svg(p, cfg, W, { h: plot.clientHeight || undefined });
       plot.innerHTML = pic.svg;
       // the readout holds the room of its longest line, so nothing under it moves when a dot is read
@@ -530,7 +595,7 @@
     [].slice.call(box.querySelectorAll('.bd-crop button')).forEach(function (b, i, all) {
       b.addEventListener('click', function () {
         cur = b.getAttribute('data-crop'); all.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
-        sel = -1; draw(true); ga('basis_drive_crop');
+        sel = -1; draw(true); if (box.classList.contains('bd-on-hist')) month(); ga('basis_drive_crop');
         try { var u = new URL(root.location.href); if (cur === (cfg.crops || [])[0]) u.searchParams.delete('crop'); else u.searchParams.set('crop', cur); root.history.replaceState(null, '', u.toString()); } catch (e) {}
       });
       b.setAttribute('aria-pressed', String(b.getAttribute('data-crop') === cur));
@@ -540,10 +605,20 @@
       b.addEventListener('click', function () {
         var v = b.getAttribute('data-view'); views.forEach(function (o) { o.setAttribute('aria-pressed', String(o === b)); });
         box.classList.toggle('bd-on-hist', v === 'hist');
-        if (hist) { hist.hidden = v !== 'hist'; var dt = hist.querySelector('details'); if (dt && v === 'hist' && !dt.open) dt.open = true; }
+        if (hist) hist.hidden = v !== 'hist';
+        if (v === 'hist') month(); else if (p) { var st = story(p, cfg); head.textContent = hy(st.head); take.textContent = hy(st.take); }
         ga('basis_drive_view');
       });
     });
+    /* the second view, the month in one band (components/basis-month.js, loaded the first time it is asked for) */
+    var monthApi = null, monthLoading = null;
+    var month = function () {
+      if (!hist) return;
+      var go = function () { if (root.BasisMonth) { monthApi = monthApi || root.BasisMonth.mount(hist, { cfg: cfg, crop: cur, head: head, take: take, bs: bsDoc }); monthApi.crop(cur); } };
+      if (root.BasisMonth) return go();
+      if (!monthLoading) monthLoading = new Promise(function (ok) { var sc = root.document.createElement('script'); sc.src = '/components/basis-month.js?v=1'; sc.onload = ok; sc.onerror = ok; root.document.head.appendChild(sc); });
+      monthLoading.then(go);
+    };
     var tools = q('.bd-tools');
     if (tools) {
       var link = function () { var u = (cfg.url || String(root.location.href).split('#')[0].split('?')[0]) + (cur !== (cfg.crops || [])[0] ? '?crop=' + cur : '') + '#drive'; return u; };
@@ -552,6 +627,7 @@
       if (cp) cp.addEventListener('click', function () { var u = link(); try { root.navigator.clipboard.writeText(u).then(function () { flash(cp, 'Link copied'); }, function () { flash(cp, u); }); } catch (e) { flash(cp, u); } ga('basis_drive_link'); });
       if (sv) sv.addEventListener('click', function () {
         if (!p) return;
+        if (box.classList.contains('bd-on-hist') && monthApi) { monthApi.save(link().replace(/#drive$/, '')); return; }
         card(p, Object.assign({}, cfg, { url: link().replace(/#drive$/, '') }), function (b) {
           if (!b) return;
           var a = root.document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'agsist-basis-by-distance-' + String(cfg.path || 'town').split('/').pop() + '-' + cur + '.png';
@@ -571,12 +647,11 @@
           if (root.ResizeObserver) new root.ResizeObserver(function () { draw(); }).observe(plot); else root.addEventListener('resize', function () { draw(); });
         });
     };
-    if (root.IntersectionObserver) { var io = new root.IntersectionObserver(function (es) { if (es.some(function (e) { return e.isIntersecting; })) { io.disconnect(); load(); } }, { rootMargin: '400px' }); io.observe(box); }
-    else load();
+    load();   // at once: the printed picture is a stand-in, not the view (round 1: a desktop reader saw it until scrolling near)
   }
   function init() { [].slice.call(root.document.querySelectorAll('[data-drive]')).forEach(mount); }
 
-  var api = { prep: prep, readDays: readDays, pick: pick, story: story, svg: svg, readout: readout, note: note, render: render, cardText: cardText, word: word, miles: miles, cents: cents, firstDot: firstDot, axisText: axisText, NEAR_MI: NEAR_MI };
+  var api = { frame: frame, cardStyle: cardStyle, CARD: CARD, esc: esc, hy: hy, day: day, ct: ct, widthOf: widthOf, hit: hit, f1: f1, prep: prep, keyHtml: keyHtml, readDays: readDays, pick: pick, story: story, svg: svg, readout: readout, note: note, render: render, cardText: cardText, word: word, miles: miles, cents: cents, firstDot: firstDot, axisText: axisText, NEAR_MI: NEAR_MI };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else {
     root.BasisDrive = api;
