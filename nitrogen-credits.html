@@ -147,7 +147,7 @@
           <label id="nc-year-l" hidden>Which year after the stand
             <select id="nc-year"><option value="1">First year after</option><option value="2">Second year after</option></select></label>
           <label id="nc-stand-l" hidden>Stand when it came out
-            <select id="nc-stand"><option value="good">Good, 4 or more plants per sq ft</option><option value="fair">Fair, 1.5 to 4 plants</option><option value="poor">Poor, under 1.5 plants</option></select></label>
+            <select id="nc-stand"><option value="good">Good, more than 4 plants per sq ft</option><option value="fair">Fair, 1.5 to 4 plants</option><option value="poor">Poor, under 1.5 plants</option></select></label>
           <label id="nc-regrow-l" hidden>Regrowth at plow-down or kill
             <select id="nc-regrow"><option value="gt8">Over 8 inches</option><option value="lt8">Under 8 inches</option></select></label>
           <label id="nc-gm-crop-l" hidden>Green manure crop
@@ -186,11 +186,11 @@
 
       <h2 id="how">How to use the answer</h2>
       <p>Take the corn nitrogen rate for your soil and last crop, then subtract this total. The corn rate table in A2809 (Table 6.1) says to subtract these credits where corn follows a forage legume, a legume vegetable or a green manure crop, or where manure has been spread. For soybean before corn there is nothing to subtract, because the corn rate for that row was worked out from corn after soybean. Use first-year available N from manure, not the total N in the load.</p>
-      <p>Where a green manure range is given, the calculator shows both ends and uses the one A2809 names for your seeding date. Where A2809 prints no number for your case, the calculator says so instead of filling one in.</p>
+      <p>Where a green manure range is given, the calculator shows both ends and counts the one A2809 names for your seeding date. For vetch over 12 inches A2809 names no end, so it counts the low end and says so. Where A2809 prints no number for your case, the calculator says so instead of filling one in.</p>
 
       <h2 id="tables">The tables behind it</h2>
-      <div class="pg-tw" tabindex="0" role="region" aria-label="Table 9.4 forage legume N credits table, scrolls sideways"><table class="pg-t"><thead><tr><th>Stand, first year</th><th>Loam, regrowth over 8 in</th><th>Loam, under 8 in</th><th>Sand, over 8 in</th><th>Sand, under 8 in</th></tr></thead><tbody><tr><th scope="row">Alfalfa, good (4+ plants/ft&sup2;)</th><td>190</td><td>150</td><td>140</td><td>100</td></tr><tr><th scope="row">Alfalfa, fair (1.5 to 4 plants/ft&sup2;)</th><td>160</td><td>120</td><td>110</td><td>70</td></tr><tr><th scope="row">Alfalfa, poor (under 1.5 plants/ft&sup2;)</th><td>130</td><td>90</td><td>80</td><td>40</td></tr><tr><th scope="row">Vetch</th><td>160</td><td>90</td><td>110</td><td>40</td></tr></tbody></table></div>
-      <p class="pg-cap">Table 9.4, lb N per acre to subtract from the corn rate, first year. Red clover and birdsfoot trefoil: 80% of the alfalfa figure for a like stand. Second year after a good or fair stand: 50 lb on medium and fine soils, none on sands. UW Extension A2809 (Laboski and Peters), edition R-11-2012, the copy UW posted in March 2026 (read Oct 16, 2026).</p>
+      <div class="pg-tw" tabindex="0" role="region" aria-label="Table 9.4 forage legume N credits table, scrolls sideways"><table class="pg-t sm"><thead><tr><th>Stand, first year</th><th>Loam over 8 in</th><th>Loam under 8 in</th><th>Sand over 8 in</th><th>Sand under 8 in</th></tr></thead><tbody><tr><th scope="row">Alfalfa, good (over 4 plants/ft&sup2;)</th><td>190</td><td>150</td><td>140</td><td>100</td></tr><tr><th scope="row">Alfalfa, fair (1.5 to 4 plants/ft&sup2;)</th><td>160</td><td>120</td><td>110</td><td>70</td></tr><tr><th scope="row">Alfalfa, poor (under 1.5 plants/ft&sup2;)</th><td>130</td><td>90</td><td>80</td><td>40</td></tr><tr><th scope="row">Vetch</th><td>160</td><td>90</td><td>110</td><td>40</td></tr></tbody></table></div>
+      <p class="pg-cap">Table 9.4, lb N per acre to subtract from the corn rate, first year, by regrowth height at plow-down or kill. Red clover and birdsfoot trefoil: 80% of the alfalfa figure for a like stand. Second year after a good or fair stand: 50 lb on medium and fine soils, none on sands. UW Extension A2809 (Laboski and Peters), edition R-11-2012, the copy UW posted in March 2026 (read Oct 16, 2026).</p>
       <div class="pg-tw" tabindex="0" role="region" aria-label="Table 9.5 green manure N credits table, scrolls sideways"><table class="pg-t sm"><thead><tr><th>Green manure</th><th>Under 6 in of growth</th><th>Over 6 in of growth</th></tr></thead><tbody><tr><th scope="row">Alfalfa</th><td>40</td><td>60 to 100</td></tr><tr><th scope="row">Red clover</th><td>40</td><td>50 to 80</td></tr><tr><th scope="row">Sweet clover</th><td>40</td><td>80 to 120</td></tr><tr><th scope="row">Vetch</th><td>40</td><td>40 to 90</td></tr></tbody></table></div>
       <p class="pg-cap">Table 9.5, lb N per acre. For the top of a range, use spring seedings plowed down the next spring; for the bottom, fall seedings. Vetch with more than 12 in of top growth before tillage: 110 to 160 lb. UW Extension A2809 (Laboski and Peters), edition R-11-2012, the copy UW posted in March 2026 (read Oct 16, 2026).</p>
       <div class="pg-tw" tabindex="0" role="region" aria-label="Table 9.6 field crop legume N credits table, scrolls sideways"><table class="pg-t sm"><thead><tr><th>Previous crop</th><th>Medium and fine soils</th><th>Sandy soils</th></tr></thead><tbody><tr><th scope="row">Soybean</th><td>20</td><td>0</td></tr><tr><th scope="row">Pea, snap bean, lima bean or dry bean</th><td>20</td><td>0</td></tr></tbody></table></div>
@@ -232,7 +232,7 @@
 <!-- /static-nav:footer -->
 </div>
     <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/a2809.js?v=1" defer></script>
+  <script src="/components/a2809.js?v=3" defer></script>
   <script src="/components/nitrogen-credits.js?v=1" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>

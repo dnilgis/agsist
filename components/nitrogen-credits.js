@@ -36,17 +36,17 @@ function legume(){
     var crop=$('nc-gm-crop').value, g=$('nc-gm-grow').value;
     if(g==='tallest'){
       if(crop!=='vetch')return {lo:0,hi:0,lines:[['Green manure','"Over 12 inches" has a figure for vetch only, so none counted']]};
-      var t=A.GREEN_MANURE.vetch.tallest;return {lo:t[0],hi:t[1],lines:[['Vetch green manure over 12 in',t[0]+' to '+t[1]+' lb']]};
+      var t=A.GREEN_MANURE.vetch.tallest;return {lo:t[0],hi:t[0],range:[t[0],t[1]],counted:'low end',lines:[['Vetch green manure over 12 in','range '+t[0]+' to '+t[1]+' lb; A2809 names no end, so the low end, '+t[0]+' lb, is counted']]};
     }
     var gm=A.greenManureCredit({crop:crop,tall:g==='tall',spring:$('nc-gm-seed').value==='spring'});
     if(g==='short')return {lo:gm.lo,hi:gm.hi,lines:[['Green manure under 6 in',gm.lo+' lb']]};
     var pick=gm.pick;
-    return {lo:pick,hi:pick,range:[gm.lo,gm.hi],lines:[['Green manure over 6 in, '+($('nc-gm-seed').value==='spring'?'spring seeding':'fall seeding'),pick+' lb (range '+gm.lo+' to '+gm.hi+')']]};
+    return {lo:pick,hi:pick,range:[gm.lo,gm.hi],counted:($('nc-gm-seed').value==='spring'?'top of the range, the end A2809 names for spring seedings plowed down the next spring':'bottom of the range, the end A2809 names for fall seedings'),lines:[['Green manure over 6 in, '+($('nc-gm-seed').value==='spring'?'spring seeding':'fall seeding'),pick+' lb (range '+gm.lo+' to '+gm.hi+')']]};
   }
   if(p==='soybean'||p==='legume_veg'){
     var n=A.fieldLegumeCredit({crop:p,soil:soil,next:$('nc-next').value});
     var nx=$('nc-next').value;
-    if(nx==='corn'||nx==='wheat')return {lo:0,hi:0,lines:[[PREV_NAMES[p],'none: the corn and wheat rates after soybean already count it']]};
+    if(p==='soybean'&&(nx==='corn'||nx==='wheat'))return {lo:0,hi:0,lines:[[PREV_NAMES[p],'none: the corn and wheat rates after soybean already count it']]};
     return {lo:n,hi:n,lines:[[PREV_NAMES[p],n+' lb'+(soil==='sand'?' (none on sands)':'')]]};
   }
   return {lo:0,hi:0,lines:[]};
@@ -71,7 +71,7 @@ function run(){
   $('nc-total').innerHTML=total+' <small>lb N per acre</small>';
   var price=+$('nc-price').value, dollars=price>0?' At $'+price.toFixed(2)+' a pound of N that is about $'+Math.round(total*price)+' an acre of fertilizer you do not need to buy.':'';
   var sum=lines.length?'That is the sum of the lines below.'+dollars:'Pick a field history and, if you spread manure, the manure. The answer fills in here.';
-  if(L.range&&L.range[0]!==L.range[1])sum+=' The green manure range is '+L.range[0]+' to '+L.range[1]+', so the total could be as low as '+(total-L.hi+L.range[0])+'.';
+  if(L.range&&L.range[0]!==L.range[1])sum+=' The green manure range is '+L.range[0]+' to '+L.range[1]+' lb and the total counts the '+L.counted+'. Across the whole range the total runs '+(total-L.hi+L.range[0])+' to '+(total-L.hi+L.range[1])+'.';
   $('nc-sum').textContent=sum;
   $('nc-res').innerHTML=lines.length?'<ul>'+lines.map(function(l){return '<li><span>'+esc(l[0])+'</span><b>'+esc(l[1])+'</b></li>';}).join('')+'</ul>':'';
 }

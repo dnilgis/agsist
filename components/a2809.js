@@ -3,8 +3,9 @@
    the tables /fast-facts uses for corn N, for P and K and for lime. Typed from the
    2012 printing (R-11-2012), the copy UW posted in March 2026 as A2809-web.pdf
    (https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf, read Oct 16, 2026).
-   It is NOT the 2026 online edition: UW posted updated N, P and K rates in 2026
+   It is NOT the 2026 online edition: UW announced updated N, P and K rates in 2026
    (Updates to A2809, Ruark, read Oct 18, 2026) and those tables are not typed here yet.
+   UW announced them in that talk; the online Corn chapter was still unposted when read Nov 13, 2026.
 
    Corn N:
      Table 6.1  MRTN rate and profitable range by soil, previous crop and
@@ -267,7 +268,9 @@ function greenManureCredit(o){
 /* fieldLegumeCredit({crop:'soybean'|'legume_veg', soil, next:'corn'|'wheat'|'other'}) -> lb N/a */
 function fieldLegumeCredit(o){
   var c=FIELD_LEGUME[o.crop]; if(!c)return null;
-  if(o.next==='corn'||o.next==='wheat')return 0;                  /* already in the Table 6.1 rows */
+  /* Table 9.6 footnote a: the soybean credit does not apply to corn or wheat after soybean (those rates
+     already count it). A pea or bean crop is not excluded: it takes its 20 lb on medium and fine soils. */
+  if(o.crop==='soybean'&&(o.next==='corn'||o.next==='wheat'))return 0;
   return c[o.soil==='sand'?'sand':'fine'];
 }
 /* manureN({type, rate, incorp:'none'|'h1_72'|'h1', yearsAgo:0|1|2, totalN}) -> lb N/a credited this year.
