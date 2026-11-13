@@ -157,7 +157,7 @@
     });
     o.push.apply(o, leaders); o.push.apply(o, words);
     /* the lines named at their right ends with the value; the gap in words under them, in the same column */
-    var ex = W - g.pr + 8, ya0 = g.Y(last[1]), yn0 = nlast ? g.Y(nlast[1]) : null, ta = ya0, tn = yn0, minGap = fs * 2.7;
+    var ex = W - g.pr + 8, ya0 = g.Y(last[1]), yn0 = nlast ? g.Y(nlast[1]) : null, ta = ya0, tn = yn0, minGap = fs * 3.4;
     if (yn0 != null && Math.abs(ya0 - yn0) < minGap) { var md = (ya0 + yn0) / 2, half = minGap / 2; ta = ya0 <= yn0 ? md - half : md + half; tn = ya0 <= yn0 ? md + half : md - half; }
     ta = Math.max(ta, fs * 1.1); if (tn != null) tn = Math.max(tn, fs * 1.1);
     o.push(circle(g.X(last[0]), ya0, P.ink, card));
