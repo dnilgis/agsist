@@ -115,7 +115,7 @@
     else if (fall >= 3) head = base + ' fell from ' + word(mx.hiR) + ' on ' + dd(mx.d) + ' to ' + word(now.hiR) + ' now' + since + '.';
     else head = base + ' held between ' + word(mn.hiR) + ' and ' + word(mx.hiR) + (cut ? '.' : ' since ' + dd(win[0].d) + '.');
     // at most four lines on a phone (about 170 characters)
-    var take = 'Lowest to highest bid in town each day, ' + nIn + (nIn === 1 ? ' elevator' : ' elevators') + ' posting since ' + dd(start) + '; top edge: the best.' +
+    var take = (nIn === 1 ? 'One elevator in town posting since ' + dd(start) + '; the gold line is its bid.' : 'Lowest to highest bid in town each day, ' + nIn + ' elevators posting since ' + dd(start) + '; top edge: the best.') +
       (marks.length ? ' Dotted lines: a new delivery or futures month.' : '') + (start === first && refCon && conWord(refCon) ? ' All on ' + conWord(refCon) + ' futures.' : '');
     var cardTake = nIn + (nIn === 1 ? ' elevator' : ' elevators') + ' posting since ' + dd(start) + (marks.length ? '. Dotted lines: a new delivery or futures month' : '') + (start > first ? '; only bids since ' + dd(start) + ', on the same terms, are compared.' : '.');
     return { lines: lines, days: days, marks: marks, off: offList, head: head, take: take, cardTake: cardTake, first: first, end: end, now: now, strays: sl, start: start, n: nIn, refCon: refCon };
