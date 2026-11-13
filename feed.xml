@@ -5,13 +5,24 @@
     <link>https://agsist.com/daily</link>
     <description>Free morning market briefing for grain and livestock farmers: overnight futures, USDA reports and the news behind the moves. Posted most days between 5:45 and 6:30 a.m. Central, by Sigurd Lindquist, CCA.</description>
     <language>en-us</language>
-    <lastBuildDate>Thu, 12 Nov 2026 11:49:12 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 13 Nov 2026 11:49:31 +0000</lastBuildDate>
     <atom:link href="https://agsist.com/feed.xml" rel="self" type="application/rss+xml"/>
     <image>
       <url>https://agsist.com/img/og/agsist.jpg</url>
       <title>AGSIST Daily</title>
       <link>https://agsist.com/daily</link>
     </image>
+    <item>
+      <title>Corn, beans and wheat firm overnight after Thursday's drop</title>
+      <link>https://agsist.com/daily/2026-11-13</link>
+      <guid isPermaLink="true">https://agsist.com/daily/2026-11-13</guid>
+      <pubDate>Fri, 13 Nov 2026 11:48:31 +0000</pubDate>
+      <dc:creator>Sigurd Lindquist</dc:creator>
+      <description>Dec corn is at $4.48¼ overnight, up 5¾ cents after two straight lower closes. Jan beans are at $12.37¼ and Dec wheat at $5.95. Thursday's selling got partly undone before the weekend, but corn still sits near its recent low.
+• Grains bounce overnight
+• Hogs and cattle
+Read more: https://agsist.com/daily/2026-11-13</description>
+    </item>
     <item>
       <title>Hogs near $56 as pork cutout slips; export sales due 7:30</title>
       <link>https://agsist.com/daily/2026-11-12</link>
@@ -348,17 +359,6 @@ Read more: https://agsist.com/daily/2026-10-16</description>
 • Cattle and hogs ease back slightly
 • Crude slips as Trump weighs easing tanker sanctions
 Read more: https://agsist.com/daily/2026-10-15</description>
-    </item>
-    <item>
-      <title>Crude tops $95 on more tanker threats; grain holds steady</title>
-      <link>https://agsist.com/daily/2026-10-14</link>
-      <guid isPermaLink="true">https://agsist.com/daily/2026-10-14</guid>
-      <pubDate>Wed, 14 Oct 2026 10:47:30 +0000</pubDate>
-      <dc:creator>Sigurd Lindquist</dc:creator>
-      <description>WTI crude is at $95.36 overnight, up 1.3%, after Iran told Reuters its forces plan to intensify strikes on tankers in the Strait of Hormuz. Corn and wheat drifted lower overnight while beans firmed to $12.90½. Diesel costs for fall fieldwork are the thing to watch, not the grain board.
-• Corn and wheat drift, beans firm
-• Crude pushes toward $95 on Hormuz threats
-Read more: https://agsist.com/daily/2026-10-14</description>
     </item>
   </channel>
 </rss>
