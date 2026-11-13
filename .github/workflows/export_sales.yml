@@ -7,17 +7,19 @@ on:
     - cron: '33 14 * * 4'
     - cron: '20 13 * * 5'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 09"]
     types: [completed]
   workflow_dispatch:
 
 concurrency:
-  group: export-sales
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 09' && !(contains(github.event.workflow_run.display_title, ' export_sales.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && format('export-sales-{0}', github.run_id) || 'export-sales' }}
   cancel-in-progress: false
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 09' || (contains(github.event.workflow_run.display_title, ' export_sales.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -51,6 +53,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     permissions:
       contents: write
 
