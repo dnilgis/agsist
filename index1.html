@@ -90,6 +90,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 </script>
 
 
+<!-- index1:own wxhead -->
+<!-- index1:diverged -->
+<link rel="stylesheet" href="/components/ag-chart.css?v=3"><link rel="stylesheet" href="/css/home-wx.css?v=1">
+<!-- /index1:own wxhead -->
 </head>
 <body>
 <a href="#main" class="skip">Skip to content</a>
@@ -952,68 +956,57 @@ try {
         <span class="bidnet-go" aria-hidden="true">&rarr;</span>
       </a>
     </div>
-    <div class="fade-up" id="f2" style="transition-delay:.08s;grid-column:1/-1">
-      <div class="sec-head"><h2 class="sec-title">Local Conditions</h2></div>
-      <div class="card wx-card wx-tight"><div class="card-body">
-        <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
-          <div style="font-size:1.882rem" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></div>
-          <div style="font-size:.824rem;color:var(--text-dim);text-align:center">Weather and season totals for your spot.</div>
-          <button id="btn-allow-loc" style="padding:.65rem 1.25rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Use my location</button>
-          <button id="btn-zip-instead" style="background:none;border:none;color:var(--text-muted);font-size:.824rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP instead</button>
-        </div>
-        <div id="wx-zip-entry" style="display:none;margin-bottom:.85rem">
-          <p class="wx-zip-ask">Set your ZIP at the top of the page for local weather and season totals. <button type="button" class="wx-zip-ask-b" onclick="if(window.agsistOpenZip)window.agsistOpenZip()">Set ZIP</button></p>
-          <div class="wx-zip-old" hidden>
-            <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
-            <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Go</button>
-          </div>
-        </div>
-        <div id="wx-data" style="display:none">
-          <div class="wx-hero">
-            <div class="wx-icon" id="wx-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div>
-            <div>
-              <div class="wx-temp"><span id="wx-temp">--</span></div>
-              <div class="wx-desc" id="wx-desc">Current conditions</div>
-              <div class="wx-loc" id="wx-loc"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Locating...</div>
-              <div class="asof-line" id="wx-asof" hidden></div>
-            </div>
-          </div>
-          <div class="wx-grid">
-            <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div><div class="wstat" id="s7-wx-low-w"><div class="wstat-lbl">Overnight low</div><div class="wstat-val" id="s7-wx-low"><span class="s7-nl">Not loaded yet</span></div></div>
-          </div>
-          <div id="wx-forecast" style="display:none"></div>
-          <section class="wx-season" aria-labelledby="wxs-h"><h3 class="wxs-h" id="wxs-h">Season so far, against normal</h3>
-            <div id="wx-season"><div class="wxs-grid wxs-skel" aria-hidden="true"><div class="wxs-t"></div><div class="wxs-t"></div><div class="wxs-t"></div><div class="wxs-t"></div></div></div>
-          </section>
-          <div class="wx-summary-card">
-            <div class="wx-summary-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> 5-Day Forecast</div>
-            <div id="wx-forecast-7day" class="wx-7day-strip">
-              <div class="wx-7day-cell"><div class="wx-7day-name">Today</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">-</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">-</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">-</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">-</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-            </div>
-            <div class="wx-foot"><button class="wx-hourly-toggle" id="wx-hourly-toggle" aria-expanded="false" aria-controls="wx-hourly-panel">&#x25BC; Hourly</button><span class="wx-locrow"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> <span id="wx-loc-label">Set location above</span> <button type="button" id="btn-change-loc" class="wx-locb">Change location</button></span></div>
-            <div class="wx-hourly-panel" id="wx-hourly-panel" role="region" aria-label="24-hour hourly forecast">
-              <div class="wx-hourly-strip" id="wx-hourly-strip"></div>
-            </div>
-          </div>
-        </div>
-      </div></div>
-    </div>
-    <details class="m-fold m-fold--radar" id="radar-fold" open><summary class="m-fold-sum"><span>Radar</span></summary>
-    <div class="radar-section fade-up" id="f-radar">
-      <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="M20 12h2" /> <path d="m19.07 4.93-1.41 1.41" /> <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" /> <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" /> <path d="M11 20v2" /> <path d="M7 19v2" /></svg>Radar</h2><span class="sec-all radar-by">Live, from Windy</span></div>
-      <div class="radar-card">
-        <div class="s7-radar-empty" aria-hidden="true">Not loaded yet</div>
-        <iframe id="windy-frame" src="" data-src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=radar&product=radar&level=surface&lat=42.0&lon=-93.5&detailLat=42.0&detailLon=-93.5&detail=false&pressure=false&menu=false&message=false&marker=false&calendar=now&thunder=false" width="100%" style="border:none;display:block;min-height:320px;height:100%;aspect-ratio:unset" loading="lazy" title="Live Radar: Windy" allow="geolocation; fullscreen" allowfullscreen></iframe>
+<!-- index1:own wx -->
+    <section class="hp-card hp-wxa" id="f2" aria-labelledby="hp-wx-h" style="grid-column:1/-1">
+      <div class="sec-head hp-sech"><h2 class="sec-title" id="hp-wx-h">Weather</h2><a class="hp-sech-a" href="/rain">Rain and drought</a></div>
+      <p class="hp-wxmsg" id="hp-wxmsg" role="status"></p>
+      <div class="hp-wxnone">
+        <p>Type your ZIP at the top of the page for the live radar, your forecast, and this year&rsquo;s rain and corn GDUs against normal, month by month.</p>
+        <button type="button" class="hp-btn p" data-hp-zip>Set ZIP</button><button type="button" class="hp-btn" data-hp-loc><span aria-hidden="true">&#8982;</span> Use my location</button>
       </div>
-    </div>
-    </details>
+      <div class="hp-wxg">
+        <div class="hp-sub hp-a-fc">
+          <h3 id="hp-fc-h">Forecast<span id="hp-wx-where"></span></h3>
+          <div class="hp-fc">
+            <div class="hp-now" id="hp-now"><svg class="ic hp-nowi" id="hp-now-i" aria-hidden="true"><use href="#i-cloud-sun"/></svg><div class="t" id="hp-now-t">--<span class="dg">&deg;</span></div><div class="d" id="hp-now-d"><b>Forecast</b><br>Loading</div></div>
+            <dl class="hp-nowg" id="hp-nowg"><div><dt>Feels like</dt><dd id="hp-nw-f">-</dd></div><div><dt>Wind</dt><dd id="hp-nw-w">-</dd></div><div><dt>Humidity</dt><dd id="hp-nw-h">-</dd></div><div><dt>Dew point</dt><dd id="hp-nw-d">-</dd></div><div><dt id="hp-nw-pk">Chance of rain</dt><dd id="hp-nw-p">-</dd></div></dl>
+          </div>
+          <div class="hp-d7h" id="hp-d7h" aria-hidden="true"><span>Day</span><span></span><span>High</span><span>Low</span><span class="p" id="hp-d7h-p">Rain</span><span class="w">Wind</span></div>
+          <ol class="hp-d7" id="hp-d7"><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li></ol>
+          <p class="hp-src" id="hp-fc-src">High, then the low of the night after it. Percent: chance of rain, in the forecast&rsquo;s daytime period. National Weather Service.</p>
+          <details class="hp-hourly" id="hp-hourly"><summary>Hourly, the next 24 hours</summary><p class="hp-hcap">Percent: chance of rain or snow that hour.</p><div class="hp-hr" id="hp-hr" role="group" tabindex="0" aria-label="Hourly forecast, scroll sideways"></div></details>
+          <div class="hp-msg" role="status" id="hp-fc-msg"></div>
+        </div>
+        <div class="hp-sub hp-a-live">
+          <div class="hp-h3row"><h3 id="hp-live-h">Live radar around your place</h3><a class="hp-radlink" href="/rain#radar">Open on the rain page &rarr;</a></div>
+          <div class="hp-live" id="hp-live" tabindex="-1" role="group" aria-label="Live radar"><div class="hp-msg" role="status" id="hp-live-msg">The live radar loads when you get here.</div><iframe id="hp-live-f" title="Live radar around your ZIP (Windy)" allow="fullscreen" allowfullscreen referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy" hidden></iframe><button type="button" class="hp-livego" id="hp-livego"><span class="t">Tap to move the map</span><span class="c">Click to move the map</span></button><button type="button" class="hp-livedone" id="hp-livedone">Done</button></div>
+          <p class="hp-src">Live radar: Windy.com, from national weather radar.</p>
+        </div>
+      </div>
+    </section>
+    <section class="hp-card hp-wxb" id="hp-wxb" aria-labelledby="hp-wxb-h" style="grid-column:1/-1">
+      <h2 class="hp-run-h" id="hp-wxb-h">This year against normal</h2>
+      <div class="hp-wxnone"><p>Set your ZIP for this year&rsquo;s rain and corn GDUs against normal, for your county.</p></div>
+      <div class="hp-wxb-body">
+        <div class="hp-sub hp-a-rain">
+          <h3 id="hp-rain-h">Rain this year</h3>
+          <p class="hp-lead" id="hp-rain-lead">&nbsp;</p>
+          <div class="hp-cum" id="hp-rain-ch"><div class="hp-msg" role="status"></div><div class="hp-bx"></div></div>
+          <div class="hp-tools" id="hp-rain-tools"></div>
+          <p class="hp-src" id="hp-rain-src">NOAA daily records via RCC-ACIS.</p>
+          <a class="hp-wall" href="/rain-print" data-track="rp-band">Put this year on the wall: a Rain Print of your farm &rarr;</a>
+        </div>
+        <div class="hp-sub hp-a-gdu">
+          <h3 id="hp-gdu-h">Corn GDUs since May 1</h3>
+          <p class="hp-lead" id="hp-gdu-lead">&nbsp;</p>
+          <div class="hp-cum" id="hp-gdu-ch"><div class="hp-msg" role="status"></div><div class="hp-bx"></div></div>
+          <div class="hp-tools" id="hp-gdu-tools"></div>
+          <p class="hp-src" id="hp-gdu-src">86/50 method, by month. NOAA daily records via RCC-ACIS.</p>
+          <a class="hp-wall q" href="/gdu-calculator" data-track="gdu">GDUs from your own planting date: GDU calculator &rarr;</a>
+        </div>
+      </div>
+    </section>
+<!-- /index1:own wx -->
 
   <div class="price-cards-section fade-up" id="f-prices">
 
@@ -1699,5 +1692,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/season-wx.js?v=2" defer></script>
 <script src="/components/next-links.js?v=3" defer></script>
 <script src="/components/home-kit.js?v=1" defer></script>
+<!-- index1:own wxjs -->
+<script src="/components/ag-chart.js?v=5" defer></script>
+<script src="/components/ag-bars.js?v=1" defer></script>
+<script src="/components/home-wx.js?v=1" defer></script>
+<!-- /index1:own wxjs -->
 </body>
 </html>
