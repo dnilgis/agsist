@@ -39,7 +39,7 @@ on:
 jobs:
   print-of-day:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.test_to_sig == true && inputs.send_email == true && inputs.format != 'current' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # Playwright 1.56.1 cannot install its browser deps on ubuntu-latest (26.04)
     timeout-minutes: 25
     permissions:
       contents: write
@@ -292,7 +292,7 @@ jobs:
   generate:
     needs: gate
     if: needs.gate.outputs.skip != '1'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # the print of the day installs Playwright; ubuntu-latest (26.04) has no deps for 1.56.1
     timeout-minutes: 120
     permissions:
       contents: write
@@ -397,23 +397,28 @@ jobs:
           [ -n "$f" ] || { echo "no chart of the day today"; exit 0; }
           if [ ! -f "$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" ]; then
             npm install --silent --prefix "$RUNNER_TEMP/pw" playwright@1.56.1 >/dev/null
-            "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium >/dev/null
           fi
+          # the browser too, every time: the print step's install can have failed and left the package without Chromium
+          "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium >/dev/null
           PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" node scripts/render_daily_chart.mjs data/daily.json "$f"
           python3 scripts/print_of_day.py --compress "$f"
           cp "$f" "$RUNNER_TEMP/chart.png"
-          # pushed now, as the print of the day is, so the site serves it well before the send's live check
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "$f"
-          git diff --cached --quiet || git commit -q -m "Daily chart of the day $(basename "$f" .png | cut -c7-)"
+          # pushed now so the site serves it well before the send's live check, from a second worktree on origin/main:
+          # the job's own tree (Generate's output, GATE 1's repaired prices) is never pulled or rebased here
+          w="$RUNNER_TEMP/chart-push"
           pushed=0
           for n in 1 2 3 4 5; do
-            if git push -q; then pushed=1; break; fi
-            git pull -q --rebase --autostash origin main || { echo "Rebase failed."; exit 1; }
+            rm -rf "$w"; git worktree prune
+            git fetch -q origin main && git worktree add -q --detach "$w" origin/main || { sleep 3; continue; }
+            mkdir -p "$w/$(dirname "$f")" && cp "$RUNNER_TEMP/chart.png" "$w/$f"
+            git -C "$w" -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" add "$f"
+            git -C "$w" diff --cached --quiet || git -C "$w" -c user.name="github-actions[bot]" -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+              commit -q -m "Daily chart of the day $(basename "$f" .png | cut -c7-)"
+            if git -C "$w" push -q origin HEAD:main; then pushed=1; break; fi
             sleep $((RANDOM % 4 + 2))
           done
-          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
+          rm -rf "$w"; git worktree prune
+          [ "$pushed" = 1 ] || { echo "Failed to push the chart after 5 attempts."; exit 1; }
           bash .github/pages-kick.sh
           echo "file=$f" >> "$GITHUB_OUTPUT"
 
