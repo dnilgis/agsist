@@ -1,5 +1,5 @@
 {
- "_about": "Short dated answers to the questions farmers ask search assistants, one block per topic, baked into the page that owns it by scripts/build_ai_answers.py (arc-plc.html by scripts/build_arc_plc.py). Plain text only; every number names its primary source in sources; read = the date we read that copy. The block prints the oldest read date as 'Last checked'. review_by = when the answer goes stale (next report, vote or deadline); the daily site check lists answers past it. A withheld answer renders nothing until its sources are read. Queries from Bing AI Performance, Oct 28, 2026.",
+ "_about": "Short dated answers to the questions farmers ask search assistants, one block per topic, baked into the page that owns it by scripts/build_ai_answers.py (arc-plc.html by scripts/build_arc_plc.py). Plain text only; every number names its primary source in sources; read = the date we read that copy. The block prints the oldest read date as 'Last checked'. review_by = when the answer goes stale (next report, vote or deadline); the daily site check lists answers past it. A withheld answer renders nothing until its sources are read. Queries from Bing AI Performance, Oct 28, 2026. price_answers: the dated 'price today' answer for the price pages; its text is written from data/prices.json by build_ai_answers.price_blocks, never typed, and a crop with a stale quote is left out.",
  "answers": [
   {
    "id": "farm-bill-status",
@@ -73,8 +73,7 @@
      "url": "https://www.usda.gov/oce/commodity/wasde/wasde1126.pdf",
      "read": "2026-11-13"
     }
-   ],
-   "dated": "Figures as USDA printed them Nov 10, 2026, read Nov 13, 2026; the next WASDE is Dec 10."
+   ]
   },
   {
    "id": "usda-payments",
@@ -141,8 +140,7 @@
      "url": "https://www.usda.gov/oce/commodity/wasde/wasde1126.pdf",
      "read": "2026-11-13"
     }
-   ],
-   "dated": "Herd count from the NASS Cattle report of Jul 24, 2026 (read Oct 18); price forecast as USDA printed it Nov 10, 2026 (read Nov 13). The next WASDE is Dec 10."
+   ]
   },
   {
    "id": "beef-supply",
@@ -164,8 +162,7 @@
      "url": "https://www.usda.gov/oce/commodity/wasde/wasde1126.pdf",
      "read": "2026-11-13"
     }
-   ],
-   "dated": "Figures as USDA printed them Nov 10, 2026, read Nov 13, 2026; the next WASDE is Dec 10."
+   ]
   },
   {
    "id": "argentina-beef",
@@ -280,6 +277,77 @@
    "review_by": "2027-01-31",
    "text": [],
    "sources": []
+  }
+ ],
+ "price_answers": [
+  {
+   "id": "price-corn",
+   "page": "corn-futures-prices.html",
+   "crops": [
+    "corn"
+   ],
+   "question": "What is the corn price today?",
+   "queries": [
+    "corn prices today",
+    "corn price today",
+    "corn futures price"
+   ]
+  },
+  {
+   "id": "price-beans",
+   "page": "soybean-futures-prices.html",
+   "crops": [
+    "beans"
+   ],
+   "question": "What is the soybean price today?",
+   "queries": [
+    "soybean price today",
+    "soybean futures price",
+    "cbot soybeans"
+   ]
+  },
+  {
+   "id": "price-wheat",
+   "page": "wheat-futures-prices.html",
+   "crops": [
+    "wheat"
+   ],
+   "question": "What is the wheat price today?",
+   "queries": [
+    "wheat prices today",
+    "wheat futures price",
+    "chicago wheat price"
+   ]
+  },
+  {
+   "id": "price-markets",
+   "page": "markets.html",
+   "crops": [
+    "corn",
+    "beans",
+    "wheat"
+   ],
+   "question": "What are corn, soybean and wheat prices today?",
+   "queries": [
+    "grain prices today",
+    "commodity prices today",
+    "cbot grain prices"
+   ]
+  },
+  {
+   "id": "price-home",
+   "page": "index.html",
+   "crops": [
+    "corn",
+    "beans",
+    "wheat"
+   ],
+   "question": "What are grain prices today?",
+   "queries": [
+    "corn prices today",
+    "grain prices today",
+    "farm grain prices today"
+   ]
   }
  ]
 }
