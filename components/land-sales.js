@@ -22,7 +22,11 @@
   'use strict';
   if (window.AgLandSales) { window.AgLandSales.scan(); return; }
   var STATES = { IL: 'illinois', WI: 'wisconsin', IN: 'indiana', VT: 'vermont', NJ: 'new-jersey', FL: 'florida' };
-  var NAMES = { IL: 'Illinois', WI: 'Wisconsin', IN: 'Indiana', VT: 'Vermont', NJ: 'New Jersey', FL: 'Florida' };
+  var NAMES = { AL: 'Alabama', AK: 'Alaska', AZ: 'Arizona', AR: 'Arkansas', CA: 'California', CO: 'Colorado', CT: 'Connecticut', DE: 'Delaware', FL: 'Florida', GA: 'Georgia',
+    HI: 'Hawaii', ID: 'Idaho', IL: 'Illinois', IN: 'Indiana', IA: 'Iowa', KS: 'Kansas', KY: 'Kentucky', LA: 'Louisiana', ME: 'Maine', MD: 'Maryland', MA: 'Massachusetts',
+    MI: 'Michigan', MN: 'Minnesota', MS: 'Mississippi', MO: 'Missouri', MT: 'Montana', NE: 'Nebraska', NV: 'Nevada', NH: 'New Hampshire', NJ: 'New Jersey', NM: 'New Mexico',
+    NY: 'New York', NC: 'North Carolina', ND: 'North Dakota', OH: 'Ohio', OK: 'Oklahoma', OR: 'Oregon', PA: 'Pennsylvania', RI: 'Rhode Island', SC: 'South Carolina',
+    SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia', WI: 'Wisconsin', WY: 'Wyoming' };
   /* Florida (Nov 5, 2026): its files give the sale month, not the day, so its dates show as months; its county
      transfer files are on agsist-data (FSLand.LAND_HOST), and a big county keeps older years in their own files */
   var MONTH = { FL: 1 };
@@ -249,6 +253,7 @@
   var STEP = 50;
   var LIST_COLS = ['id', 'when', 'recorded', 'acres', 'price', 'ppa', 'place', 'kind', 'flag'];
   function acresCell(a) { return a == null ? 'not stated' : (Math.round(a * 10) / 10).toLocaleString('en-US'); }
+  var NONAMES = false;   /* a table with no Names column (a page of auction results only) */
   function listRow(o, f) {
     var flag = o.flag === 1 ? 'Unusual price: above the county’s usual' : o.flag === -1 ? 'Unusual price: below the county’s usual' : '';
     if (o.cu) flag = (flag ? flag + '; ' : '') + 'Enrolled in current use';   /* Vermont: current use enrollment, a fact per sale */
@@ -259,7 +264,7 @@
       + '<td class="n">' + esc(acresCell(o.acres)) + '</td><td class="n">' + esc(money(o.price)) + '</td><td class="n">' + esc(o.ppa != null ? money(o.ppa) : '') + '</td>'
       + '<td>' + esc((f.kinds && f.kinds[o.kind]) || '') + '</td><td>' + esc([flag, o.kind === 'a' && o.au ? tractWords(o.au) : ''].filter(Boolean).join('; ')) + '</td>'
       /* a state whose file names no one (Florida, New Jersey: names null): no button that would load nothing */
-      + '<td>' + (f.names && o.kind !== 'a' ? '<button type="button" class="ls-nm" data-ls-id="' + esc(o.id) + '" data-ls-f="' + esc(f.names) + '">Show buyer and seller</button>' : '') + '</td></tr>';
+      + (NONAMES ? '' : '<td>' + (f.names && o.kind !== 'a' ? '<button type="button" class="ls-nm" data-ls-id="' + esc(o.id) + '" data-ls-f="' + esc(f.names) + '">Show buyer and seller</button>' : '') + '</td>') + '</tr>';
   }
   function listRows(f) { var C = f.cols && f.cols.length ? f.cols : LIST_COLS; return (f.s || []).map(function (a) { var o = {}; for (var i = 0; i < C.length; i++) o[C[i]] = a[i]; if (f.lx && f.lx[o.id]) o.lx = f.lx[o.id]; if (f.au && f.au[o.id]) o.au = f.au[o.id]; return o; }); }
   function fullList(box) {
@@ -269,6 +274,7 @@
     var tb = document.querySelector('#ls-all tbody'), more = document.querySelector('.ls-more'), sel = box.querySelector('select.ls-fk');
     if (!tb || !/^\/data\/land-sales\/[a-z]{2}\/\d{5}\.json$/.test(url || '')) return;
     var btn = more ? more.querySelector('button.ls-mo') : null, shown = more ? +more.getAttribute('data-ls-shown') || STEP : total, kind = '';
+    var th = tb.parentNode && tb.parentNode.tHead; NONAMES = !!th && !/Names/.test(th.textContent);
     box.hidden = false;
     if (btn) btn.hidden = false;
     function words(n, of) { return 'Showing the newest ' + n + ' of ' + of + (kind ? ' ' + ((sel && sel.options[sel.selectedIndex].text.toLowerCase()) || '') : '') + ' sales. '; }
@@ -412,14 +418,14 @@
   function attrs(o, st, fips, county, u, w24, rec) {
     /* data-ls and data-ls-c for a card drawn here, the same shape the builder writes on a row */
     return ' data-ls="' + esc(JSON.stringify(DCOLS.map(function (k) { return o[k] == null ? null : o[k]; }))) + '" data-ls-c="'
-      + esc(JSON.stringify([st, fips, county, u ? [u.med, u.q1, u.q3, u.n] : null, w24 || null, rec ? 1 : 0])) + '"';
+      + esc(JSON.stringify([st, fips, county, u ? [u.med, u.q1, u.q3, u.n].concat(u.auctions ? [u.auctions] : []) : null, w24 || null, rec ? 1 : 0])) + '"';
   }
   function miss(t) { return '<span class="ls-miss">' + esc(t) + '</span>'; }
   function dl(rows) {
     return '<dl class="ls-dl">' + rows.filter(Boolean).map(function (r) { return '<dt>' + esc(r[0]) + '</dt><dd>' + r[1] + (r[2] ? '<span class="ls-dn">' + esc(r[2]) + '</span>' : '') + '</dd>'; }).join('') + '</dl>';
   }
   function grp(t, rows) { return '<h3 class="ls-dh">' + esc(t) + '</h3>' + dl(rows); }
-  function pct(a, b) { var p = Math.round((a / b - 1) * 100); return p === 0 ? 'right at' : Math.abs(p) + '% ' + (p > 0 ? 'above' : 'below'); }
+  function pct(a, b) { var p = Math.round((a / b - 1) * 100); return p === 0 ? 'right at' : p > 1000 ? 'more than 10 times' : Math.abs(p) + '% ' + (p > 0 ? 'above' : 'below'); }
   function clsWords(c, T) { return String(c || '').split(/[\s,;/]+/).filter(Boolean).map(function (x) { return T[x.toUpperCase()] || ('class ' + x); }).join(', '); }
   function flagsOf(conv) {
     var parts = String(conv || '').split('; ').map(function (x) { return x.trim(); }).filter(Boolean);
@@ -560,8 +566,14 @@
   function auctionPanel(s) {
     var au = s.au, T = au[4] || [], u = s.u, n = T.length, one = n === 1 ? T[0] : null;
     var link = au[1] && /^https?:\/\//.test(au[1]) ? '<a href="' + esc(au[1]) + '" rel="noopener nofollow">Result on ' + esc(au[0]) + '&rsquo;s site</a>' : '';
-    var cmp = !u ? miss('no county middle to set it beside') : s.ppa == null ? 'Middle ' + esc(money(u[0])) + ' an acre on ' + u[3] + ' figures; this auction has no single price per acre to set beside it.'
-      : esc(money(s.ppa)) + ' an acre is ' + pct(s.ppa, u[0]) + ' the county middle of ' + esc(money(u[0])) + ' (' + u[3] + ' figures; middle half ' + esc(money(u[1])) + ' to ' + esc(money(u[2])) + ').';
+    var w = s.w24, inWin = !w || (s.when >= w[0] && s.when <= w[1]), small = au[2] != null && au[2] < 20;
+    var basis = u ? (u[4] ? u[3] + ' auction per-acre figures from ' + u[4] + ' auctions' : u[3] + ' bare farmland sales') : '';
+    var cmp = !inWin ? 'Not compared: auction day ' + esc(day(s.when)) + ' is ' + (s.when < w[0] ? 'older than' : 'after the end of') + ' the 24-month window the middle covers (' + esc(day(w[0]) + ' to ' + day(w[1])) + ').'
+      : small ? 'Not compared: under 20 acres.'
+      : !u ? miss('no county middle to set it beside') : s.ppa == null ? 'Middle ' + esc(money(u[0])) + ' an acre on ' + basis + '; this auction has no single price per acre to set beside it.'
+      : esc(money(s.ppa)) + ' an acre is ' + pct(s.ppa, u[0]) + ' the county middle of ' + esc(money(u[0])) + ' (' + basis + '; middle half ' + esc(money(u[1])) + ' to ' + esc(money(u[2])) + ').';
+    var nm = NAMES[s.st] || s.st, joint = one && /[+\-,]/.test(String(one[0]));
+    var ppaNote = s.ppa != null ? (joint ? 'The company\u2019s own figure for tracts ' + String(one[0]) + ', sold together.' : 'The company\u2019s own figure.') : n > 1 ? 'The total is never divided by the headline acres here: the acres offered need not be the acres sold.' : null;
     var out = [];
     out.push(grp('Auction result', [
       ['What this is', 'An auction result reported by ' + esc(au[0]).replace(/\.$/, '') + '.', 'It is not a state transfer return: no recording, township, buyer or seller. The date is the auction day.'],
@@ -570,7 +582,7 @@
       ['Acres offered', au[2] != null ? esc(acres(au[2])) : miss('not stated by the company'), 'The company\u2019s headline acres; the acres sold may differ.'],
       ['Total sold', au[3] != null ? esc(money(au[3])) : miss('not published by the company')],
       ['Price per acre', s.ppa != null ? esc(money(s.ppa)) : n > 1 ? 'No single figure: each tract is listed below' : miss('not printed by the company'),
-        s.ppa != null ? 'The company\u2019s own figure for its one tract.' : n > 1 ? 'The total is never divided by the headline acres here: the acres offered need not be the acres sold.' : null],
+        ppaNote],
       ['Source', link || esc(au[0])]
     ]));
     if (n > 1 || (one && (one[1] != null || one[2] != null))) {
@@ -579,8 +591,8 @@
       })));
     }
     out.push(grp('How it compares', [
-      ['County middle, 24 months', cmp, 'The county\u2019s own middle (state transfer returns where the state has them, else the auction companies\u2019 per-acre figures), ' + (s.w24 ? day(s.w24[0]) + ' to ' + day(s.w24[1]) : '24 months') + '.'],
-      ['Unusual price', s.flag === 1 ? 'Yes, well above the county\u2019s usual' : s.flag === -1 ? 'Yes, well below the county\u2019s usual' : s.ppa == null ? miss('only an auction with one printed per-acre figure is judged') : 'No']
+      ['County middle, 24 months', cmp, (u && u[4] ? 'From auction results only; no state transfer returns for ' + nm + ' are on this site yet. ' : 'From ' + nm + ' transfer returns only; auction results are not in it. ') + (w ? day(w[0]) + ' to ' + day(w[1]) : '24 months') + '.'],
+      ['Unusual price', s.flag === 1 ? 'Yes, well above the county\u2019s usual' : s.flag === -1 ? 'Yes, well below the county\u2019s usual' : !inWin ? miss('not judged: outside those 24 months') : small ? miss('not judged: under 20 acres') : s.ppa == null ? miss('only an auction with one printed per-acre figure is judged') : 'No']
     ]));
     return out.join('');
   }
