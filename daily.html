@@ -1259,7 +1259,7 @@ function renderToday(data,why){
   if(cd&&typeof cd.svg==='string'&&cd.svg.indexOf('<svg xmlns="http://www.w3.org/2000/svg"')===0&&!/<script|\son\w+=/i.test(cd.svg)&&/^daily\/img\/chart-\d{4}-\d{2}-\d{2}\.png$/.test(String(cd.image||''))){
     var cdd=String(cd.date||'').slice(0,10).split('-'),MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     chart='<figure class="dv3-chart" style="--dc-ar:600/'+(parseInt(cd.h,10)||360)+'"><figcaption class="dv3-chart-head"><span class="dv3-chart-lab">Chart of the day</span>'+escHtml(cd.takeaway)+'</figcaption>'+
-      '<div class="dv3-chart-art">'+cd.svg+'</div><p class="dv3-chart-src">Source: '+escHtml(cd.source)+'. '+(cdd.length===3?MN[+cdd[1]-1]+' '+(+cdd[2])+'. ':'')+
+      '<div class="dv3-chart-art">'+cd.svg+'</div><p class="dv3-chart-src">Source: '+escHtml(cd.source)+'. '+(cdd.length===3&&String(cd.source||'').indexOf(MN[+cdd[1]-1]+' '+(+cdd[2]))<0?MN[+cdd[1]-1]+' '+(+cdd[2])+'. ':'')+
       '<a href="/'+cd.image+'" download>Save the picture</a></p></figure>';
   }
   var lead='';
