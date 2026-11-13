@@ -21,8 +21,8 @@
 .rc-key>.rc-key-c[hidden]{display:flex}
 .rc-key svg{flex:none;overflow:visible}
 .rc-plot{position:relative;height:var(--rc-hp);touch-action:pan-y;-webkit-tap-highlight-color:transparent}
-.rc-plot svg{display:block;width:100%;height:100%;overflow:visible}
-.rc-plot svg:focus{outline:none}.rc-plot svg:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
+.rc-plot>svg{display:block;width:100%;height:100%;overflow:visible}
+.rc-plot>svg:focus{outline:none}.rc-plot>svg:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
 .rc-plot .rc-w{display:none}
 .rc-sprite{position:absolute;width:0;height:0;overflow:hidden}
 .rc-read{font-size:var(--fs-xs);line-height:1.45;margin:var(--sp-xs) 0 0;padding:var(--sp-xs) 0;border-top:1px solid var(--border-2);border-bottom:1px solid var(--border-2);min-height:calc(3 * 1.45em + 2 * var(--sp-xs));font-variant-numeric:tabular-nums;box-sizing:border-box}

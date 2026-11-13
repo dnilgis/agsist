@@ -70,8 +70,8 @@
     var Ht = o.h || H[mode][strip ? 0 : 1];
     var from = o.from || m.y0, to = o.to || m.y1, n = to - from + 1;
     var L = Math.round(fs * (phone ? 3.4 : 3.9)), R = phone ? 6 : Math.round(fs * (card ? 9.6 : 13.2));
-    var T = Math.round(fs * (phone ? 2.6 : 2.7)), GAP = strip ? Math.round(fs * (phone ? 3.2 : 3.5)) : 0;
-    var HS = strip ? Math.round(Ht * (phone ? 0.135 : 0.155)) : 0, XA = Math.round(fs * 1.9);
+    var T = Math.round(fs * (phone ? 2.6 : 2.7)), GAP = strip ? Math.round(fs * (phone ? 3.2 : card ? 2.6 : 3.5)) : 0;
+    var HS = strip ? Math.round(Ht * (phone ? 0.135 : card ? 0.13 : 0.155)) : 0, XA = Math.round(fs * 1.9);
     var HM = Ht - T - GAP - HS - XA, pw = W - L - R, slot = pw / n, sc = scale(m);
     return {
       fs: fs, phone: phone, card: card, strip: strip, W: W, H: Ht, L: L, R: R, T: T, GAP: GAP, HS: HS, XA: XA, HM: HM,
@@ -311,11 +311,8 @@
     x.font = '800 ' + hd.size + 'px ' + F; x.fillStyle = CARD.ink;
     hd.lines.forEach(function (l) { x.fillText(l, 48, yy); yy += hd.size * 1.18; });
     var who = st.county ? st.county.name + ' ' + m.cnoun : '';
-    var sub = 'Each dash is one ' + m.cnoun.toLowerCase() + ', $ an acre. Ink line: the median ' + m.cnoun.toLowerCase() + '.' + (who ? ' Gold line: ' + who + '.' : '') + (m.hot.length ? ' Shaded: corn over $5.' : '');
-    var sb = fit('400', sub, W - 96, [19, 18, 17, 16], 1);
-    if (sb) { x.font = '400 ' + sb.size + 'px ' + F; x.fillStyle = CARD.dim; x.fillText(sb.lines[0], 48, yy + 2); yy += sb.size + 6; }
-    var src = 'Source: USDA NASS Cash Rents Survey county estimates' + (m.hot.length ? ' and prices received' : '') + ', ' + m.y0 + '–' + m.y1 + '.';
-    var hgt = Math.round(Hc - yy - 70), r = render(m, W - 48, 'wide', { card: true, fs: 16, h: hgt, cols: st.cols, county: st.county, from: st.from, to: st.to });
+    var src = 'Each dash is one ' + m.cnoun.toLowerCase() + '\u2019s rent, $ an acre. Source: USDA NASS Cash Rents Survey county estimates' + (m.hot.length ? ' and prices received' : '') + ', ' + m.y0 + '–' + m.y1 + '.';
+    var hgt = Math.round(Hc - yy - 66), r = render(m, W - 48, 'wide', { card: true, fs: 15, h: hgt, cols: st.cols, county: st.county, from: st.from, to: st.to });
     var img = new root.Image();
     img.onload = function () {
       x.drawImage(img, 18, yy + 2);
@@ -364,7 +361,7 @@
       if (sel) sel.value = c ? c.name : '';
       if (key) { key.hidden = !c; var kn = key.querySelector('span'); if (kn && c) kn.textContent = c.name + ' ' + m.cnoun; }
       if (rec) {
-        var a = null; if (c) [].slice.call(D.querySelectorAll('#counties a')).forEach(function (e) { if (!a && norm(e.textContent) === norm(c.name)) a = e; });
+        var a = null; if (c) [].slice.call(D.querySelectorAll('#rs-table a')).forEach(function (e) { if (!a && norm(e.textContent) === norm(c.name)) a = e; });
         rec.style.visibility = a ? 'visible' : 'hidden'; if (a) { rec.href = a.getAttribute('href'); rec.textContent = m.cnoun + ' record'; rec.setAttribute('aria-label', 'Farmland Atlas record for ' + c.name + ' ' + m.cnoun); }
       }
       draw(true); idle();
