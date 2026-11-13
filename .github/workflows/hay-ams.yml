@@ -15,7 +15,7 @@ on:
     - cron: '17 23 * * 1-5'
     - cron: '41 14 * * 6'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 14"]
     types: [completed]
 
 permissions:
@@ -23,7 +23,9 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 14' || (contains(github.event.workflow_run.display_title, ' hay-ams.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -55,6 +57,7 @@ jobs:
     needs: gate
     if: needs.gate.outputs.go == '1'
     runs-on: ubuntu-latest
+    timeout-minutes: 35
     concurrency:
       group: hay-ams
       cancel-in-progress: false
