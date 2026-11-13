@@ -105,8 +105,8 @@
   }
 
   function placeNote(code, words, county, ring) {
-    if (ring === 'auction') return 'Placed at county center: the company gives the county only, so this pin is at the center of ' + county + ' County, not the exact parcel.' +
-      ' Auctions in the same county sit in a small ring around that center, so each has its own pin.';
+    if (ring === 'auction' || ring === 'auction-ring') return 'Placed at county center: the company gives the county only, so this pin is at the center of ' + county + ' County, not the exact parcel.' +
+      (ring === 'auction-ring' ? ' Auctions in the same county sit in a small ring around that center, so each has its own pin.' : '');
     if (code === 's' || code === 'm') return 'Placed at the center of ' + words + ', not the exact parcel.';
     if (code === 'z') return 'Placed at the middle of the ' + words + ' ZIP code, not the exact parcel.';
     return 'Placed at the center of ' + county + ' County, not the exact parcel.';
@@ -156,7 +156,7 @@
     if (L0.length) h.push('<p class="lm-go">' + L0.map(function (l) { return '<a href="' + esc(l[1]) + '"' + (/^https?:/.test(l[1]) ? ' rel="noopener nofollow"' : '') + '>' + esc(l[0]) + '</a>'; }).join('') + '</p>');
     var top = (p[A] & 4 ? ['price'] : []).concat(p[A] & 8 ? ['acres'] : []);
     if (top.length) h.push('<p>Among the largest 1% of ' + esc(f.name) + ' ' + (f.basis === 'auction' ? 'auction results' : 'sales') + ' by ' + top.join(' and by ') + '.</p>');
-    h.push('<p class="lm-note">' + esc(placeNote(p[PC], f.places[p[PN]], co[CNAME], auc && p[PC] === 'c' ? 'auction' : '')) + '</p>');
+    h.push('<p class="lm-note">' + esc(placeNote(p[PC], f.places[p[PN]], co[CNAME], auc && p[PC] === 'c' ? (ring ? 'auction-ring' : 'auction') : '')) + '</p>');
     h = h.concat(why);
     h.push('</div>');
     return h.join('');
@@ -508,7 +508,7 @@
     });
     x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.fillStyle = '#ffffff'; x.fill(); x.strokeStyle = NOTC; x.lineWidth = 1.5; x.stroke(); row('Not compared (white)'); ky += 26;
     x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.strokeStyle = GOLD; x.lineWidth = 2.5; x.stroke(); row('Gold edge: unusual'); ky += 26;
-    x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.strokeStyle = '#e9edeb'; x.lineWidth = 1.5; x.stroke(); row('Round: sale recorded with the state'); ky += 26;
+    x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.strokeStyle = '#e9edeb'; x.lineWidth = 1.5; x.stroke(); row('Round: recorded sale'); ky += 26;
     x.strokeStyle = '#e9edeb'; x.lineWidth = 1.5; x.strokeRect(kx0 + 2.5, ky - 12, 13, 13); row('Square: auction result'); ky += 30;
     x.font = '700 17' + F; x.fillStyle = '#e9edeb'; x.fillText(pins.length === total ? n0(total) + ' pins in this view' : n0(pins.length) + ' of ' + n0(total) + ' pins in this view', kx0, ky); ky += 22;
     x.font = '400 14' + F; x.fillStyle = 'rgba(233,237,235,.72)'; x.fillText('Pins at county, town or section', kx0, ky); x.fillText('centers, never the parcel.', kx0, ky + 18);
