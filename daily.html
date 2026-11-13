@@ -107,8 +107,6 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-hero-left .dv3-eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--gold-fill,var(--gold));}
 .dv3-hero-left .dv3-sub{font-size:.82rem;color:var(--text-dim);line-height:1.55;margin:0;}
 .dv3-hero-left .dv3-sub a{color:var(--gold);text-decoration:underline;text-underline-offset:3px}
-.dv3-hero-meta{font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:var(--text-muted);margin-top:.4rem;letter-spacing:.04em;}
-.dv3-hero-meta b{color:var(--green);font-weight:700;}
 .dv3-subscribe-btn{padding:.5rem 1.1rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;cursor:pointer;text-transform:none;letter-spacing:0;white-space:nowrap;transition:filter .15s;min-height:44px}
 .dv3-subscribe-btn:hover{filter:brightness(.94)}
 
@@ -349,7 +347,6 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 /* chaos-4: a plain line shows if the skeleton is still up after 8 s, with or without script */
 .dv3-sk-slow{opacity:0;animation:dv3-slow 0s 8s forwards;margin:1rem 0 0;font-size:.95rem;color:var(--text-dim)}.dv3-sk-slow a{color:var(--gold)}@keyframes dv3-slow{to{opacity:1}}
 .dv3-sk{min-height:900px}.dv3-sk-hl{height:1.55rem;margin:.6rem 0}.dv3-sk-box{height:150px;margin-top:1.25rem;border-radius:10px}
-.dv3-hero-meta{min-height:1.65em}@media(max-width:520px){.dv3-hero-meta{min-height:3.3em}}
 .dv3-loading-spinner{width:24px;height:24px;border:2px solid var(--border);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;margin:0 auto .75rem;}
 @keyframes spin{to{transform:rotate(360deg);}}
 
@@ -617,7 +614,6 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
       <div class="dv3-eyebrow page-kicker"><span class="dv3-eyebrow-dot"></span> AGSIST Daily &middot; Every morning before the open</div>
       <h1>Daily Ag Briefing</h1>
       <p class="dv3-sub page-lede">Grain and livestock markets in a few minutes, before the open, and <a href="#moved">what just moved</a> since. Free, no account needed.</p>
-      <div class="dv3-hero-meta" id="dv3-hero-meta" aria-live="polite"></div>
     </div>
     <button class="dv3-subscribe-btn" id="dv3-sub-btn"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get it in your inbox</button>
   </div>
@@ -722,7 +718,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 
   <section class="arc-static" id="arc-static" aria-label="Briefings from the last 30 days, newest first">
 <!--SEED:archivelist-->
-<details class="arc-static-group" open><summary><h2 class="arc-static-month">November 2026</h2><span class="arc-month-count">12 briefings</span></summary>
+<details class="arc-static-group" open><summary><h2 class="arc-static-month">November 2026</h2></summary>
 <ul class="arc-static-list">
 <li><a href="/daily/2026-11-12"><time datetime="2026-11-12">Thu Nov 12, 2026</time> &middot; Hogs near $56 as pork cutout slips; export sales due 7:30</a></li>
 <li><a href="/daily/2026-11-11"><time datetime="2026-11-11">Wed Nov 11, 2026</time> &middot; Corn slips 2½ cents to $4.46½ after Tuesday's yield cut</a></li>
@@ -737,7 +733,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 <li><a href="/daily/2026-11-02"><time datetime="2026-11-02">Mon Nov 2, 2026</time> &middot; Crude drops 4.6% to $99.38; cattle futures fell Friday</a></li>
 <li><a href="/daily/2026-11-01"><time datetime="2026-11-01">Sun Nov 1, 2026</time> &middot; Corn ends the week at $4.47¾; crude up 2.1% to $104.12</a></li>
 </ul></details>
-<details class="arc-static-group"><summary><h2 class="arc-static-month">October 2026</h2><span class="arc-month-count">18 briefings</span></summary>
+<details class="arc-static-group"><summary><h2 class="arc-static-month">October 2026</h2></summary>
 <ul class="arc-static-list">
 <li><a href="/daily/2026-10-31"><time datetime="2026-10-31">Sat Oct 31, 2026</time> &middot; Corn ends the week at $4.47¾; crude up 2.1% to $104.12</a></li>
 <li><a href="/daily/2026-10-30"><time datetime="2026-10-30">Fri Oct 30, 2026</time> &middot; Crude up 2.2% to $104.27 as Houthis hit Saudi sites</a></li>
@@ -1432,7 +1428,6 @@ var DV3_RECENT_N=7; // keep in step with DAILY_RECENT_N in scripts/generate_dail
 // ── archive ───────────────────────────────────────────────────────────
 function renderArchive(){
   var grid=document.getElementById('dv3-arc-grid');
-  var heroMeta=document.getElementById('dv3-hero-meta');
   if(!grid)return;
 
   fetch('/data/daily-archive/index.json',{cache:'no-store'})
@@ -1442,11 +1437,6 @@ function renderArchive(){
         // Keep the baked recent list (SEED:dailyrecent) if there is one.
         if(!grid.querySelector('a.dv3-arc-card'))grid.innerHTML='<p style="color:var(--text-muted);font-size:.82rem;grid-column:1/-1">The archive didn\'t load. Refresh to try again.</p>';
         return;
-      }
-      // Hero meta: briefings published count
-      if(heroMeta){
-        var count=manifest.briefings.length;
-        heroMeta.innerHTML='<svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> <b>'+count+'</b> briefing'+(count===1?'':'s')+' published';
       }
       dv3Perm.index=manifest.briefings;
       dv3Perm.check();
