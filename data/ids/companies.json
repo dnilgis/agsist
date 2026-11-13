@@ -1,6 +1,6 @@
 {
 "schema": "agsist-companies/1",
-"generated": "2026-11-12",
+"generated": "2026-11-13",
 "note": "Company ids for elevator facilities (data/ids/elevators.json), on evidence only (Sig, Nov 9 2026): a shared phone, a shared website or domain, the board's own parent page (board-parents.json board-page) or a dated ownership change (ownership-changes.json), never a name alone. links: [type, value, facilities], facilities left out when the link covers the whole company; a phone value is # plus the first 10 hex of sha256 of its 10 digits. held: shared values that link nothing (a hub on 3+ posted names, or one phone between two posted names). A facility with no company id has no evidence linking it, which does not mean it is its own firm. Company names are the facilities' posted names. Ids are never reused: ledger.retired lists every id gone (into = merged into that id). Rules: scripts/company_ids.py.",
 "counts": {"facilities":3763,"facilities_with_company":2232,"companies":209,"links_by_type":{"phone":111,"website":169,"board-page":1,"change":1},"held":34,"held_hub":3,"chs_brand_boards_not_linked_by_brand":128,"dest_phones_skipped":94,"rows_other_name_skipped":0,"ids_minted_ever":209,"ids_retired_ever":0},
 "companies": {
