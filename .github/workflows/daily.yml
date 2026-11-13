@@ -328,7 +328,7 @@ jobs:
           PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" node scripts/render_print_of_day.mjs "$RUNNER_TEMP/pick.json" "$f"
           python3 scripts/print_of_day.py --compress "$f"
           cp "$f" "$RUNNER_TEMP/print.png"
-          # the email's own picture of the same year, drawn for 560 px (never stops the run: no file, the email keeps the full print)
+          # email-width picture; never stops the run (no file: full print)
           fe="daily/img/print-email-$d.png"
           if PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" timeout 60 node scripts/render_print_email.mjs "$RUNNER_TEMP/pick.json" "$fe" && python3 scripts/print_of_day.py --compress "$fe"; then
             cp "$fe" "$RUNNER_TEMP/print-email.png"; echo "emailfile=$fe" >> "$GITHUB_OUTPUT"
