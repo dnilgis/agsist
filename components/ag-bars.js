@@ -26,7 +26,7 @@
     var M = cfg.groups, pr = 8, pt = Math.ceil(fs * 2.1), pb = Math.ceil(fs * 2.1), top = 0;
     M.forEach(function (x) { if (isN(x.a)) top = Math.max(top, x.a); if (isN(x.n)) top = Math.max(top, x.n); });
     var t = nice(0, Math.max(top, 1e-6) * 1.03, cfg.steps), pl = 44;
-    for (var v0 = 0; v0 <= t.hi + 1e-9; v0 += t.step) pl = Math.max(pl, Math.ceil(widthOf(tickText(cfg, v0, t.hi), fs)) + 12);
+    for (var v0 = 0; v0 <= t.hi + 1e-9; v0 += t.step) pl = Math.max(pl, Math.ceil(widthOf(tickText(cfg, v0, t.hi), fs)) + (fs >= 20 ? 26 : 12));   /* the picture's gutter keeps its widest label inside the picture's own margin */
     var cw = (W - pl - pr) / M.length, yb = H - pb;
     var hasN = M.some(function (x) { return isN(x.n); }), bw = Math.max(3, Math.min(cw * 0.36, fs * 1.6));
     return { M: M, pl: pl, pr: pr, pt: pt, pb: pb, t: t, ymax: t.hi, cw: cw, yb: yb, hasN: hasN, bw: bw,
@@ -61,6 +61,7 @@
       var kx = g.pl, ky = g.pt - fs * 0.6, na = (cfg.names || {});
       o.push('<rect x="' + kx + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + gold + '"/>' + txt(kx + fs * 1.1, ky, na.a || '', f + 'fill:' + P.ink));
       if (g.hasN) { var kx2 = kx + fs * 1.1 + widthOf(na.a || '', fs) + fs * 1.4; o.push('<rect x="' + f1(kx2) + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + slate + '"/>' + txt(kx2 + fs * 1.1, ky, na.n || 'Normal', f + 'fill:' + P.ink)); }
+      if (last.part && isN(last.a) && !last.gap) { var kx3 = (g.hasN ? kx + fs * 1.1 + widthOf(na.a || '', fs) + fs * 1.4 + fs * 1.1 + widthOf(na.n || 'Normal', fs) + fs * 1.4 : kx + fs * 1.1 + widthOf(na.a || '', fs) + fs * 1.4); o.push('<rect x="' + f1(kx3) + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + gold + ';opacity:.6"/>' + txt(kx3 + fs * 1.1, ky, last.lab + ' so far', f + 'fill:' + P.ink)); }
     }
     o.push('<rect class="agc-hl" x="0" y="' + g.pt + '" width="' + f1(g.cw) + '" height="' + f1(g.yb - g.pt) + '" visibility="hidden" style="fill:' + P.ink + ';opacity:.08;pointer-events:none"/>');
     o.push('</svg>');

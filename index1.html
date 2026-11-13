@@ -820,6 +820,7 @@ try {
       if(c===66||c===67)return 'Freezing rain';if(c===61)return 'Light rain';if(c===63)return 'Rain';if(c===65)return 'Heavy rain';
       if(c===71)return 'Light snow';if(c===73)return 'Snow';if(c===75)return 'Heavy snow';if(c===77)return 'Sleet';
       if(c>=80&&c<=82)return 'Showers';if(c===85||c===86)return 'Snow showers';if(c>=95)return 'Thunderstorms';return '';}
+    window.AgSkyWords=wxWords;   /* components/home-wx.js prints the weather band's sky words with this same function */
     /* the site's own line icons (the sprite on this page); no emoji */
     function wxGlyph(c,night){var g=c==null?'':c<=1?(night?'i-moon':'i-sun'):c===2?(night?'i-cloud':'i-cloud-sun'):c===3?'i-cloud':(c===45||c===48)?'i-cloud-fog':(c>=71&&c<=77)||c===85||c===86?'i-snowflake':c>=95?'i-cloud-lightning':'i-cloud-rain';
       return g?'<svg class="hb-wxg" aria-hidden="true"><use href="#'+g+'"/></svg>':'';}

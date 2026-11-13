@@ -49,31 +49,30 @@ html:not(.has-zip) .hp-card .hp-wxnone{display:block}
 .hp-nowg dd{margin:0;font-weight:700;font-family:var(--font-mono);font-size:.84rem}
 .hp-a-fc{container-type:inline-size}
 /* one row per day: day, icon, high, low, chance of rain and amount; wind joins the row where the column is wide enough, and sits on a second line under it where it is not */
-.hp-d7h,.hp-d7 li{display:grid;grid-template-columns:3.5rem 1.4rem 1.9rem 1.9rem minmax(0,1fr);align-items:center;column-gap:.2rem;min-width:0}
+.hp-d7h,.hp-d7 li{display:grid;grid-template-columns:4.1rem 1.4rem 1.9rem 1.9rem minmax(0,1fr);align-items:center;column-gap:.15rem;min-width:0}
 .hp-d7h{margin:.7rem 0 .25rem;padding:0 .6rem;font-family:var(--font-mono);font-size:.72rem;line-height:1.3;color:var(--text-muted);font-weight:600}
 .hp-d7h .p,.hp-d7h .w{justify-self:end;white-space:nowrap}.hp-d7h .w{display:none}
 .hp-d7{display:grid;grid-template-columns:1fr;gap:4px;margin:0;padding:0;list-style:none;align-content:start;min-height:calc(7 * 2rem + 6 * 4px)}
-.hp-d7 li{background:var(--surface2);border-radius:8px;padding:.3rem .6rem;min-height:2rem;font-family:var(--font-mono);font-size:.86rem;line-height:1.4}
+.hp-d7 li{background:var(--surface2);border-radius:var(--r-sm,8px);padding:.3rem .6rem;min-height:2rem;font-family:var(--font-mono);font-size:.86rem;line-height:1.4}
 .hp-d7 b{font-size:.9rem;color:var(--text);white-space:nowrap}
 .hp-d7 .ic{display:block;margin:0;width:1.4em;height:1.4em;color:var(--gold)}
 .hp-d7 .hi{color:var(--text);font-weight:700}.hp-d7 .lo{color:var(--text-muted)}
-.hp-d7 li.tn b{font-size:.8rem}
-.hp-d7 .pp{color:var(--blue);font-size:.75rem;text-align:right;white-space:nowrap;min-width:0}
+.hp-d7 .pp{color:var(--blue);font-size:.72rem;text-align:right;white-space:nowrap;min-width:0}
 .hp-d7 .am{color:var(--text-muted)}
 .hp-d7 .ex{grid-column:3/-1;display:flex;gap:.7rem;min-width:0;font-size:.76rem;color:var(--text-muted);white-space:nowrap;overflow:hidden}
 .hp-d7 .wd{overflow:hidden;text-overflow:ellipsis}
 .hp-d7 .wn{overflow:hidden;text-overflow:ellipsis}
 @container (min-width:370px){
-  .hp-d7h,.hp-d7 li{grid-template-columns:3.5rem 1.4rem 1.9rem 1.9rem minmax(0,1fr) 6rem}
+  .hp-d7h,.hp-d7 li{grid-template-columns:4.1rem 1.4rem 1.9rem 1.9rem minmax(0,1fr) 6rem}
   .hp-d7h .w{display:block}
   .hp-d7 .ex{display:contents}
-  .hp-d7 .pp{margin-right:.3rem}
-  .hp-d7h .p{margin-right:.3rem}
+  .hp-d7 .pp{margin-right:.2rem}
+  .hp-d7h .p{margin-right:.2rem}
   .hp-d7 .wd{position:absolute;width:1px;height:1px;margin:-1px;clip:rect(0 0 0 0)}
   .hp-d7 .wn{font-size:.74rem;color:var(--text-muted);white-space:nowrap;text-align:right}
 }
 @container (min-width:600px){
-  .hp-d7h,.hp-d7 li{grid-template-columns:3.5rem 1.4rem 1.9rem 1.9rem minmax(0,1fr) auto 6rem}
+  .hp-d7h,.hp-d7 li{grid-template-columns:4.1rem 1.4rem 1.9rem 1.9rem minmax(0,1fr) auto 6rem}
   .hp-d7 .wd{position:static;width:auto;height:auto;margin:0;clip:auto;grid-column:5;grid-row:1;font-size:.8rem;color:var(--text-muted);white-space:nowrap}
   .hp-d7 .pp{grid-column:6}.hp-d7 .wn{grid-column:7}
   .hp-d7h .p{grid-column:6}.hp-d7h .w{grid-column:7}
@@ -102,10 +101,10 @@ html:not(.has-zip) .hp-card .hp-wxnone{display:block}
 .hp-live:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
 .hp-live iframe{pointer-events:none}.hp-live.on iframe{pointer-events:auto}
 .hp-livedone{display:none}
-.hp-livego{display:block;position:absolute;left:50%;bottom:10px;transform:translateX(-50%);white-space:nowrap;min-height:44px;padding:.5rem 1rem;border-radius:22px;border:1px solid var(--border-2);background:var(--surface);color:var(--text);font:700 .86rem var(--font-body);cursor:pointer;z-index:2}
+.hp-livego{display:block;position:absolute;left:50%;bottom:10px;transform:translateX(-50%);white-space:nowrap;min-height:44px;padding:.5rem 1rem;border-radius:var(--r-pill,22px);border:1px solid var(--border-2);background:var(--surface);color:var(--text);font:700 .86rem var(--font-body);cursor:pointer;z-index:2}
 .hp-livego .c{display:none}
 .hp-live.on .hp-livego{display:none}
-.hp-live.on .hp-livedone{display:block;position:absolute;right:10px;top:10px;min-height:44px;min-width:44px;padding:.4rem .9rem;border-radius:22px;border:1px solid var(--border-2);background:var(--surface);color:var(--text);font:700 .86rem var(--font-body);cursor:pointer;z-index:2}
+.hp-live.on .hp-livedone{display:block;position:absolute;right:10px;top:10px;min-height:44px;min-width:44px;padding:.4rem .9rem;border-radius:var(--r-pill,22px);border:1px solid var(--border-2);background:var(--surface);color:var(--text);font:700 .86rem var(--font-body);cursor:pointer;z-index:2}
 /* charts */
 .hp-pct{margin:.1rem 0 .25rem;font-size:.9rem;color:var(--text-muted);min-height:2.3rem;line-height:1.9rem}
 .hp-pct b{font-family:var(--font-mono);font-size:1.6rem;color:var(--text);margin-right:.35rem;vertical-align:-.1rem}
@@ -118,6 +117,7 @@ html:not(.has-zip) .hp-card .hp-wxnone{display:block}
 .hp-cum{position:relative;width:100%;min-height:calc(var(--hpw-h) + 2.9em)}
 .hp-cum .hp-bx{min-width:0}
 .hp-cum.empty{min-height:6rem}
+.hp-sub.nochart .hp-pct,.hp-sub.nochart .hp-key,.hp-sub.nochart .hp-tools{display:none}
 .hp-sub.nochart .hp-src{min-height:0}
 .hp-sub.nochart #hp-rain-src,.hp-sub.nochart #hp-gdu-src{min-height:0}
 .hp-cum .agc-read{font-family:var(--font-mono);font-size:.78rem}
@@ -133,9 +133,11 @@ html:not(.has-zip) .hp-card .hp-wxnone{display:block}
   .hp-card{padding:14px 11px}
   html[data-look="bands"] #hp-wxb{padding:0 var(--card-pad-x,11px) 14px!important}
   .hp-live{aspect-ratio:366/300}
+  .hp-cum.empty{min-height:0}
+  .hp-cum.empty .hp-msg{position:static;justify-content:flex-start;text-align:left;padding:.3rem 0 .2rem}
 }
 /* 641 to 1239: the forecast beside the radar, the two charts side by side */
-@media (min-width:641px){.hp-livego .t{display:none}.hp-livego .c{display:inline}.hp-key{min-height:calc(3em + .2rem);align-content:flex-start}.hp-wxb-body .hp-sub{display:flex;flex-direction:column}.hp-wxb-body .hp-wall{margin-top:auto}}
+@media (min-width:641px){.hp-livego .t{display:none}.hp-livego .c{display:inline}.hp-key{min-height:calc(3em + .2rem);align-content:flex-start}.hp-wxb-body .hp-sub{display:flex;flex-direction:column}.hp-wxb-body .hp-wall{margin-top:auto}.hp-wxb-body .hp-src{margin-bottom:.55rem}}
 @media (min-width:641px) and (max-width:1239px){
   #f2 .hp-wxg{display:grid;grid-template-columns:1fr 1fr;gap:18px}
   #f2 .hp-sub+.hp-sub{margin-top:0;padding-top:0;border-top:0}
