@@ -33,7 +33,7 @@
      picture is an image with no page around it: it carries its own colours (the kit card's) in a style block. */
   var CARD = { ink: '#e9edeb', mid: 'rgba(233,237,235,.66)', grid: 'rgba(132,160,168,.22)', rule: 'rgba(132,160,168,.45)', zone: '#14191b', gold: '#d4a23f', bg: '#0a0c0d' };
   function cardStyle(c) {
-    return '<style>text{fill:' + c.ink + '}.m{fill:' + c.mid + '}.g{fill:' + c.gold + '}.b{font-weight:700}.B{font-size:1.08em}.z{fill:' + c.zone + '}' +
+    return '<style>text{fill:' + c.ink + '}.m{fill:' + c.mid + '}.g{fill:' + c.gold + '}.b{font-weight:700}.B{font-size:1.08em}.h{paint-order:stroke;stroke:' + c.bg + ';stroke-width:3px;stroke-linejoin:round}.z{fill:' + c.zone + '}' +
       '.gr,.ev,.ax,.md,.wk,.dr,.di,.dg,path{fill:none}.gr{stroke:' + c.grid + '}.ev,.ax{stroke:' + c.rule + '}.ev{stroke-width:1.4}.md{stroke:' + c.ink + ';stroke-width:1.2;stroke-dasharray:5 4}' +
       '.wk{stroke:' + c.mid + ';stroke-width:1.6}.dr,.di,.dg{stroke-linecap:round}.dr{stroke:' + c.bg + '}.di{stroke:' + c.ink + '}.dg{stroke:' + c.gold + '}</style>';
   }
@@ -220,7 +220,7 @@
     var x0 = L + ZA + GX, x1 = W - R - (phone ? 10 : 14), Xm = function (m) { return x0 + Math.max(0, Math.min(NEAR_MI, m)) / NEAR_MI * (x1 - x0); };
     var add = function (b) { obst.push(b); };
     var t = function (x, y, s, cls, anchor) {
-      var c = [/gold/.test(cls) ? 'g' : /mid/.test(cls) ? 'm' : '', /(^| )b( |$)/.test(cls) ? 'b' : '', /big/.test(cls) ? 'B' : ''].filter(Boolean).join(' ');
+      var c = [/gold/.test(cls) ? 'g' : /mid/.test(cls) ? 'm' : '', /(^| )b( |$)/.test(cls) ? 'b' : '', /big/.test(cls) ? 'B' : '', /(^| )h( |$)/.test(cls) ? 'h' : ''].filter(Boolean).join(' ');
       return '<text x="' + f1(x) + '" y="' + f1(y) + '"' + (anchor === 'end' ? ' text-anchor="end"' : anchor === 'middle' ? ' text-anchor="middle"' : '') + (c ? ' class="' + c + '"' : '') + '>' + esc(hy(s)) + '</text>';
     };
     var P = { gr: [], ev: [], ax: [], md: [], wk: [], dr: [], di: [], dg: [] }, H0 = function (y, a, b) { return 'M' + f1(a) + ' ' + f1(y) + 'H' + f1(b); }, V0 = function (x, a, b) { return 'M' + f1(x) + ' ' + f1(a) + 'V' + f1(b); };
@@ -241,7 +241,7 @@
       var oh = phone ? span : (O.length === 1 ? 'One elevator ' : 'Elevators ') + span;
       o.push(t((x0 + x1) / 2, y0 - fb * 0.7, oh, 'b big', 'middle'));
     } else {
-      var nt = phone ? ['No bid on the same', 'terms within ' + NEAR_MI + ' miles'] : ['No other elevator within ' + NEAR_MI + ' miles', 'posted a bid on the same terms'];
+      var nt = phone ? ['No other bid within', NEAR_MI + ' miles to compare'] : ['No other elevator within ' + NEAR_MI + ' miles', 'posted a bid to compare'];
       nt.forEach(function (s, i) { o.push(t((x0 + x1) / 2, (y0 + y1) / 2 + (i - 0.5) * fs * 1.4, s, 'mid', 'middle')); });
     }
     // the state's middle bid on the same futures month: one dashed rule
@@ -324,21 +324,26 @@
       if (p.med) items.push({ y: ym, lines: [st + ' median', word(cents(p.med.median)), plural(p.med.n, 'bid') + ', ' + day(cfg.date)].concat(p.med.usdaShort ? [p.med.usdaShort] : []), cls: ['b big', 'b big', 'mid', 'mid'] });
       if (lo.length) items.push({ y: lo[0].y, lines: ['Lowest: ' + word(lo[0].d.c)].concat(loWho ? [loWho] : []), cls: ['b big', 'mid'] });
       var lh = fs * 1.3;
-      items.forEach(function (it) { it.h = it.lines.length * lh; it.top = it.y - it.h / 2; });
-      items.sort(function (a, b) { return a.top - b.top; });
-      items.forEach(function (it, i) { if (i && it.top < items[i - 1].top + items[i - 1].h + fs * 0.8) it.top = items[i - 1].top + items[i - 1].h + fs * 0.8; it.top = Math.max(y0, Math.min(it.top, y1 - it.h)); });
       items.forEach(function (it) {
-        var k = 0;
+        var ls = [], cs = [];
         it.lines.forEach(function (s, j) {
-          var cl = it.cls[j] || '', ws = s.split(' '), cur = '';
-          ws.forEach(function (w) { var x = cur ? cur + ' ' + w : w; if (cur && widthOf(x, /big/.test(cl) ? fb : fs, /(^| )b( |$)/.test(cl)) > R - 16) { o.push(t(gx, it.top + fs + k++ * lh, cur, cl, '')); cur = w; } else cur = x; });
-          if (cur) o.push(t(gx, it.top + fs + k++ * lh, cur, cl, ''));
+          var cl = it.cls[j] || '', cur = '';
+          s.split(' ').forEach(function (w) { var x = cur ? cur + ' ' + w : w; if (cur && widthOf(x, /big/.test(cl) ? fb : fs, /(^| )b( |$)/.test(cl)) > R - 16) { ls.push(cur); cs.push(cl); cur = w; } else cur = x; });
+          if (cur) { ls.push(cur); cs.push(cl); }
         });
+        it.lines = ls; it.cls = cs; it.h = ls.length * lh; it.top = it.y - it.h / 2;
+      });
+      items.sort(function (a, b) { return a.top - b.top; });
+      items.forEach(function (it, i) { if (i && it.top < items[i - 1].top + items[i - 1].h + fs * 1.2) it.top = items[i - 1].top + items[i - 1].h + fs * 1.2; it.top = Math.max(y0, Math.min(it.top, y1 - it.h)); });
+      items.forEach(function (it) {
+        it.lines.forEach(function (s, j) { o.push(t(gx, it.top + fs + j * lh, s, it.cls[j], '')); });
       });
     } else {
       if (p.med) {
         var mt = st + ' median ' + word(cents(p.med.median)), mw = widthOf(mt, fs, true);
-        place([mt], [{ x: L + 6, y: ym - 6 }, { x: L + 6, y: ym + fs + 4 }, { x: x1 - mw, y: ym - 6 }, { x: x1 - mw, y: ym + fs + 4 }, { x: (L + x1) / 2 - mw / 2, y: ym - 6 }, { x: (L + x1) / 2 - mw / 2, y: ym + fs + 4 }], ['b']);
+        var mc = [];   // along the rule, above then below, left to right: the rule is always named
+        for (var mx = L + 6; mx <= x1 - mw; mx += 12) mc.push({ x: mx, y: ym - 6 }, { x: mx, y: ym + fs + 4 });
+        if (!place([mt], mc, ['b'])) { o.push(t(L + 6, ym - 6, mt, 'b h', '')); labs.push({ x0: L + 4, x1: L + 8 + mw, y0: ym - 6 - fs, y1: ym - 2 }); }   // no free place: over the dots, on a halo
       }
       if (lo.length) {
         var lw = 'Lowest: ' + (loWho ? loWho + ', ' : '') + word(lo[0].d.c), lww = widthOf(lw, fs);
@@ -487,8 +492,9 @@
       pic = svg(p, cfg, W, { h: plot.clientHeight || undefined });
       plot.innerHTML = pic.svg;
       // the readout holds the room of its longest line, so nothing under it moves when a dot is read
-      var keep = sel >= 0 && p.all[sel] ? sel : firstDot(p), hmax = 0; read.style.minHeight = '0';
-      p.all.forEach(function (r, k) { say(k); hmax = Math.max(hmax, read.offsetHeight); });
+      read.style.minHeight = ''; var base = parseFloat(root.getComputedStyle(read).minHeight) || 0;
+      var keep = sel >= 0 && p.all[sel] ? sel : firstDot(p), hmax = base; read.style.minHeight = '0';
+      p.all.forEach(function (r, k) { say(k); hmax = Math.max(hmax, read.getBoundingClientRect().height); });
       read.style.minHeight = hmax + 'px'; sel = -1; choose(keep);
     };
     var near = function (ev) {
