@@ -18,8 +18,10 @@
  *
  * 2. Engagement bar, on this page, counted from the moment this file runs.
  *    All three: (a) 5 seconds with the page visible; (b) trusted (isTrusted)
- *    input of at least two different kinds out of: scroll by wheel or touch,
- *    pointer movement, a key press, a click or press; (c) a scroll of a
+ *    input of at least two different kinds out of: scroll by wheel or touch
+ *    (or a scroll within 1.5 s of an arrow, Page, Space, Home or End key, so
+ *    keyboard-only and screen-reader users count), pointer movement, a key
+ *    press, a click or press; (c) a scroll of a
  *    quarter of the page's scrollable height, made while the reader was
  *    giving input, or real pointer movement (150 px over 4 or more moves,
  *    finger travel included). Script-made events (isTrusted false) count for
@@ -113,7 +115,9 @@
   // ----------------------------------------------------- 2. the engagement bar
   var clock = w.performance && typeof w.performance.now === 'function' ? function () { return w.performance.now(); } : function () { return Date.now(); };
   var shownMs = 0, shownFrom = d.visibilityState === 'hidden' ? null : clock();
-  var kinds = {}, kindCount = 0, moved = 0, moves = 0, lastInput = -1e9, depthMet = false;
+  var kinds = {}, kindCount = 0, moved = 0, moves = 0, lastInput = -1e9, lastScrollKey = -1e9, depthMet = false;
+  /* keys that scroll a page: a keyboard-only reader (screen readers included) scrolls with these */
+  var SCROLL_KEYS = /^(ArrowDown|ArrowUp|ArrowLeft|ArrowRight|Down|Up|Left|Right|PageDown|PageUp|Home|End| |Spacebar)$/;
   var lastPt = null, lastTouch = null, barTimer = null, met = false, done = false, answer = null;
   function shown() { return shownMs + (shownFrom === null ? 0 : clock() - shownFrom); }
   function kind(k) { if (!kinds[k]) { kinds[k] = 1; kindCount++; } }
@@ -126,7 +130,7 @@
     var t = e.type, now = clock();
     if (t === 'wheel' || t === 'touchmove') kind('scroll');
     else if (t === 'pointermove') kind('pointer');
-    else if (t === 'keydown') kind('key');
+    else if (t === 'keydown') { kind('key'); if (SCROLL_KEYS.test(String(e.key))) lastScrollKey = now; }
     else if (t === 'click' || t === 'pointerdown') kind('press');
     if (t === 'pointermove') {
       var x = +e.clientX, y = +e.clientY, pt = String(e.pointerType || 'mouse');
@@ -145,7 +149,10 @@
     check();
   }
   function onScroll(e) {
-    if (!e || done || depthMet) return;
+    if (!e || done) return;
+    /* a trusted scroll right after a scrolling key is the scroll kind: keyboard-only readers count */
+    if (e.isTrusted === true && clock() - lastScrollKey <= INPUT_MS) kind('scroll');
+    if (depthMet) { check(); return; }
     /* a scroll counts toward depth only while the reader is giving trusted input; window.scrollTo alone does not */
     if (clock() - lastInput > INPUT_MS) return;
     try {
