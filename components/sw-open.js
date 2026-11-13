@@ -13,7 +13,7 @@
      figures, short names: "Bing AI citations", and from 1001 to 1180 px "AI answer visits"); at 1000 px and under two
      lines in 54 px, with "one line on every page.", "Bing and Copilot" and the engine named (861 to 1000 px). The long
      names give way to short true ones as the line narrows, then the AI visits figure goes (640 px and under), the button
-     reads "Advertise here" (540 px and under) and under 380 px the list figure goes too. Never cut
+     reads "Advertise here" (540 px and under) and under 390 px the list figure goes too. Never cut
      with an ellipsis: what does not fit is left out whole. Copilot is always named in the title.
      Measured clean from 320 to 1440 px with every figure one digit longer than today. */
   var CSS = '.sw-in.sw-open{display:flex;align-items:center;gap:10px;padding:3px 4px 3px 10px;border:1px solid rgba(var(--ad-orange-rgb),.55);border-radius:var(--r-sm,4px);background:rgba(var(--ad-orange-rgb),.08);color:var(--text-dim);font-size:.8rem;line-height:1.3}' +
@@ -32,7 +32,7 @@
     '.sw-cs{display:none}' +
     '@media (max-width:640px){.sw-av,.sw-what{display:none}.sw-pp .sw-l{display:none}.sw-pp .sw-s{display:inline}}' +
     '@media (max-width:540px){.sw-in.sw-open a.sw-cta{width:6.4em;padding:2px 6px;overflow-wrap:normal;word-break:normal;hyphens:none}.sw-cl{display:none}.sw-cs{display:inline}}' +
-    '@media (max-width:379px){.sw-pp{display:none}.sw-in.sw-open{gap:5px;padding-left:7px}.sw-in.sw-open a.sw-cta{padding:2px 4px;width:6em}}';
+    '@media (max-width:389px){.sw-pp{display:none}.sw-in.sw-open{gap:5px;padding-left:7px}.sw-in.sw-open a.sw-cta{padding:2px 4px;width:6em}}';
 
   function esc(x) {
     return String(x == null ? '' : x).replace(/[&<>"']/g, function (c) {
