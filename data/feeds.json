@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 99,
- "with_known_cadence": 99,
+ "count": 98,
+ "with_known_cadence": 98,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -157,33 +157,6 @@
    "why_quiet": null
   },
   {
-   "path": "data/atlas/atlas.json",
-   "pages": [
-    "farmland-atlas.html"
-   ],
-   "written_by": [
-    "API jobs (one-time)",
-    "farmland-atlas"
-   ],
-   "touched_by": [
-    "Accuracy pass",
-    "API jobs (one-time)",
-    "farmland-atlas",
-    "State yield pages"
-   ],
-   "cadence": "1 launch monthly, on day 12 at about 4am Central",
-   "curated": false,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [
-    "17 9 12 * *"
-   ],
-   "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
-  },
-  {
    "path": "data/atlas/more.json",
    "pages": [
     "farmland-atlas.html"
@@ -210,8 +183,7 @@
    "path": "data/audience.json",
    "pages": [
     "desk.html",
-    "sponsor-report.html",
-    "sponsor.html"
+    "sponsor-report.html"
    ],
    "written_by": [
     "Sponsor reports \u2014 yesterday's numbers, from GA4"
@@ -377,6 +349,7 @@
     "conditions.html"
    ],
    "written_by": [
+    "Clock",
     "cond-yield",
     "conditions"
    ],
@@ -392,6 +365,7 @@
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -589,6 +563,7 @@
     "index.html"
    ],
    "written_by": [
+    "Clock",
     "COT Release Watch",
     "Fetch COT Data"
    ],
@@ -606,6 +581,7 @@
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -704,6 +680,7 @@
     "index.html"
    ],
    "written_by": [
+    "Clock",
     "conditions",
     "Fetch Crop Progress"
    ],
@@ -721,6 +698,7 @@
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -804,40 +782,6 @@
    "max_gap_hours": 127.7,
    "quiet": "weekly",
    "why_quiet": "USDA Crop Progress is a Monday afternoon release, in season only."
-  },
-  {
-   "path": "data/custom-rates/index.json",
-   "pages": [
-    "custom-rates.html"
-   ],
-   "written_by": [],
-   "touched_by": [
-    "ARC/PLC refresh",
-    "Cash Bid Index",
-    "cash-bid-pages",
-    "county rain",
-    "farmland-atlas-pages",
-    "Hail state pages \u2014 generate from monthly data",
-    "Infographic pages",
-    "Land data (parcel services + transfers)",
-    "main-checks",
-    "MESH radar hail swaths \u2014 daily",
-    "pr-checks",
-    "prf",
-    "Monthly county rain email",
-    "Rebuild Feed Manifest",
-    "state-rent-pages",
-    "State yield pages"
-   ],
-   "cadence": "maintained by hand, not on a schedule",
-   "curated": true,
-   "planned": false,
-   "external": false,
-   "url": null,
-   "crons": [],
-   "max_gap_hours": null,
-   "quiet": null,
-   "why_quiet": null
   },
   {
    "path": "data/daily-archive/index.json",
@@ -2172,6 +2116,7 @@
     "usda-calendar.html"
    ],
    "written_by": [
+    "Clock",
     "Prediction bot \u2014 call and grade"
    ],
    "touched_by": [
@@ -2186,6 +2131,7 @@
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -2539,7 +2485,8 @@
    ],
    "written_by": [],
    "touched_by": [
-    "Rebuild Feed Manifest"
+    "Rebuild Feed Manifest",
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
@@ -2613,6 +2560,29 @@
    "url": null,
    "crons": [
     "10 22 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/sponsor-spots.json",
+   "pages": [
+    "prf-sponsor.html"
+   ],
+   "written_by": [
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "touched_by": [
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "cadence": "1 launch every day at about 6am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "12 11 * * *"
    ],
    "max_gap_hours": 24.0,
    "quiet": null,
@@ -3019,10 +2989,10 @@
   {
    "path": "data/yield-nowcast.json",
    "pages": [
-    "conditions.html",
     "index.html"
    ],
    "written_by": [
+    "Clock",
     "cond-yield"
    ],
    "touched_by": [
@@ -3037,6 +3007,7 @@
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",

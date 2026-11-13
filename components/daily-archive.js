@@ -62,8 +62,7 @@ function render(){
     groups[e.monthKey].push(e);
   });
 
-  var totalWeekday = filtered.filter(function(e){return !e.isWkend;}).length;
-  if(statsEl) statsEl.innerHTML = '<span class="arc-stats-count"><strong>'+filtered.length+'</strong> briefing'+(filtered.length!==1?'s':'')+' &middot; <strong>'+totalWeekday+'</strong> market day'+(totalWeekday!==1?'s':'')+'</span>';
+  if(statsEl) statsEl.innerHTML = '';
 
   var html='';
   // Months fold. With no search or month picked, only the newest month is
@@ -72,7 +71,7 @@ function render(){
   order.forEach(function(mk, gi){
     var grp = groups[mk];
     html += '<details class="arc-month-group"'+((openAll||gi===0)?' open':'')+'>';
-    html += '<summary><div class="arc-month-label"><span>'+monthDisplay(mk)+'</span><span class="arc-month-count">'+grp.length+' briefing'+(grp.length!==1?'s':'')+'</span></div></summary>';
+    html += '<summary><div class="arc-month-label"><span>'+monthDisplay(mk)+'</span></div></summary>';
     html += '<div class="arc-grid">';
     grp.forEach(function(e){
       var hasHL = e.headline && e.headline.trim();
@@ -143,6 +142,14 @@ function load(){ return fetch('/data/daily-archive/index.json', {cache:'no-store
   .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
   .then(function(manifest){
     var briefings = (manifest && manifest.briefings) || [];
+    // Only the last 30 days are listed. Counted from the newest issue's own date,
+    // not the clock. Older issue pages stay up, indexed and in the sitemap; they are just not listed here.
+    var WINDOW_DAYS = 30, newest = 0;
+    briefings.forEach(function(b){ var t = parseDateOnly(b.date); if(t && t.getTime() > newest) newest = t.getTime(); });
+    if(newest){
+      var floor = newest - (WINDOW_DAYS - 1) * 86400000 - 43200000;
+      briefings = briefings.filter(function(b){ var t = parseDateOnly(b.date); return t && t.getTime() >= floor; });
+    }
 
     allEntries = briefings.map(function(item){
       var d = parseDateOnly(item.date);
