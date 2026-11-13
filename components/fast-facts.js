@@ -387,6 +387,8 @@ function calcNC(){
   function t(id,v){var e=g(id);if(e)e.textContent=v;}
   /* 2026-11-04 (site panel): the unit shows only beside a rate; "-lb N/ac" read as a negative rate */
   function rateUnit(on){var u=g('ans-unit');if(u)u.hidden=!on;}
+  /* no answer yet: the rate, range and ratio blocks hide and only the prompt shows (Nov 13: no empty boxes) */
+  function wait(on){var a=g('ff-ans');if(a)a.classList.toggle('ff-ans-wait',on);}
   var fertSel=g('nc-fert');if(!fertSel)return;
   var corn=parseFloat(g('nc-corn').value)||0;
   // The Custom option carries value="0", and 0 is falsy, so `||46` swallowed it and
@@ -404,7 +406,7 @@ function calcNC(){
   document.querySelectorAll('#nc-table td.act').forEach(function(td){td.classList.remove('act');});
   if(!(ton>0)||!(pct>0)){
     // No posted price for this form and none typed: say so rather than price at a made-up number.
-    t('nc-nlb','-');t('nc-ratio','-');t('nc-col','-');t('ans-rate','-');rateUnit(false);t('ans-range','');t('ans-cost','');
+    wait(true);t('nc-nlb','-');t('nc-ratio','-');t('nc-col','-');t('ans-rate','-');rateUnit(false);t('ans-range','');t('ans-cost','');
     t('ans-line',ton>0?'Type the % N of your product.':'Type your N price per ton (a co-op posted price fills in when there is one for this form).');
     t('ans-src','');
     return;
@@ -412,7 +414,7 @@ function calcNC(){
   var pplb=ton/(2000*pct/100);
   t('nc-nlb','$'+pplb.toFixed(2));
   if(!(corn>0)){
-    t('nc-ratio','-');t('nc-col','-');t('ans-rate','-');rateUnit(false);t('ans-range','');t('ans-cost','');
+    wait(true);t('nc-ratio','-');t('nc-col','-');t('ans-rate','-');rateUnit(false);t('ans-range','');t('ans-cost','');
     var sv=(g('ans-state')||{}).value||'';
     t('ans-line',!cornTyped&&sv===''?'Pick your state: the corn price is December futures less your state\u2019s elevator basis this week. Or pick Futures only, or type your own corn price.':'Type your corn price per bushel.');t('ans-src','');
     return;
@@ -420,14 +422,14 @@ function calcNC(){
   var ratio=pplb/corn;
   var A=window.AgA2809, r=A?A.nRate({row:rowKey(),ratio:ratio}):null;
   t('nc-ratio',ratio.toFixed(3));
-  if(!r){t('nc-col','-');t('ans-rate','-');rateUnit(false);return;}
+  if(!r){wait(true);t('nc-col','-');t('ans-rate','-');rateUnit(false);return;}
   var colTxt=r.col.toFixed(2);
   t('nc-col',colTxt);
   var thId='nth-'+colTxt.replace('0.','');var th=g(thId);if(th)th.classList.add('act');
   var ci=A.N_RATIOS.indexOf(r.col);
   var tr=document.querySelector('#nc-table tr[data-row="'+rowKey()+'"]');
   if(tr&&tr.children[ci+1])tr.children[ci+1].classList.add('act');
-  t('ans-rate',String(r.rate));rateUnit(true);
+  t('ans-rate',String(r.rate));rateUnit(true);wait(false);
   ecoFill('eco-n-rate',r.rate);ecoFill('eco-n-pplb',pplb.toFixed(2));
   if(!ECO_TYPED['eco-n-pplb']){var nl=g('eco-n-source-label');if(nl)nl.textContent=(isCustom?pct+'% N':fertSel.options[fertSel.selectedIndex].text)+' at $'+Math.round(ton)+'/ton';}
   if(typeof updateEcoCosts==='function')updateEcoCosts();

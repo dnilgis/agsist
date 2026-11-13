@@ -1,8 +1,8 @@
 {
  "schema": "agsist-feeds/1",
  "note": "Derived, never typed.",
- "count": 97,
- "with_known_cadence": 97,
+ "count": 98,
+ "with_known_cadence": 98,
  "feeds": [
   {
    "path": "data/afida/county.json",
@@ -183,8 +183,7 @@
    "path": "data/audience.json",
    "pages": [
     "desk.html",
-    "sponsor-report.html",
-    "sponsor.html"
+    "sponsor-report.html"
    ],
    "written_by": [
     "Sponsor reports \u2014 yesterday's numbers, from GA4"
@@ -2486,7 +2485,8 @@
    ],
    "written_by": [],
    "touched_by": [
-    "Rebuild Feed Manifest"
+    "Rebuild Feed Manifest",
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
    ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
@@ -2560,6 +2560,29 @@
    "url": null,
    "crons": [
     "10 22 * * *"
+   ],
+   "max_gap_hours": 24.0,
+   "quiet": null,
+   "why_quiet": null
+  },
+  {
+   "path": "data/sponsor-spots.json",
+   "pages": [
+    "prf-sponsor.html"
+   ],
+   "written_by": [
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "touched_by": [
+    "Sponsor reports \u2014 yesterday's numbers, from GA4"
+   ],
+   "cadence": "1 launch every day at about 6am Central",
+   "curated": false,
+   "planned": false,
+   "external": false,
+   "url": null,
+   "crons": [
+    "12 11 * * *"
    ],
    "max_gap_hours": 24.0,
    "quiet": null,

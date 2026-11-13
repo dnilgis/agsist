@@ -1,17 +1,17 @@
 /* The booking page (/sponsor), Nov 11, 2026: two spots, one business in each.
  *
  * Everything a buyer sees here is read, not typed:
- *   prices, terms, card links   data/rate-card.json (pay_links: an empty link means card payment
- *                               is not open yet; the button says so and the invoice path still works)
- *   numbers                     data/sponsor-spots.json (engaged visits and page views, 28 days)
+ *   prices, terms               data/rate-card.json (sponsors pay by check or bank wire only, Nov 13, 2026:
+ *                               nothing on this page takes a card or links to a payment)
+ *   numbers                     data/sponsor-spots.json (proof.states: each state's own engaged visits, GA4's own window, updated each day)
  *   sitewide taken              data/sponsor.json (the sitewide sponsor, active)
  *   states taken                data/geo-sponsors.json (a live entry for that state)
  *
- * The form ("Mail me a yearly invoice") goes to the subs worker (/sponsor-apply), which stores
+ * The form ("Book this spot") goes to the subs worker (/sponsor-apply), which stores
  * tier page|daily: the Sitewide Sponsor travels as tier "daily", a State Sponsor as tier "page"
  * with the slot state-<xx> (scripts/sponsor_apply.py card_tier reads both back). Nothing
  * is published from here: the applicant confirms by email, every ad is checked by hand, and it
- * goes live within one business day. If the worker cannot take it, the form offers the same
+ * goes live the day the check or wire arrives (live on receipt). If the worker cannot take it, the form offers the same
  * details as an email instead of losing them.
  *
  * ?sponsor-preview=1 shows the sitewide spot as taken (a picture of a sold spot) and sends nothing.
@@ -49,20 +49,14 @@
   function n(x) { return Number(x).toLocaleString('en-US'); }
   function byCode(c) { return STATES.filter(function (s) { return s.code === c; })[0]; }
   function statePrice(c) { var t = tier('state'); return t ? ((t.price_by_state && t.price_by_state[c]) || t.price_month) : 0; }
-  function big(c) { var t = tier('state'); return !!(t && t.price_by_state && t.price_by_state[c]); }
   function soon(c) { var t = tier('state'); return !!(t && (t.opens_soon || []).indexOf(c) >= 0); }
   function stateOpen(c) { return !!c && !soon(c) && !S.taken[c]; }
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function dayTxt(x) { var p = String(x || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) : ''; }
   function val(id) { return ($(id).value || '').trim(); }
   function today() {
     try { return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Chicago' }).format(new Date()); }
     catch (e) { return new Date().toISOString().slice(0, 10); }
-  }
-  /* a card payment link from the rate card, or '' while card payment is not open */
-  function payLink(spot, c) {
-    var l = (S.card && S.card.pay_links && S.card.pay_links[spot]) || {};
-    var k = spot === 'state' && big(c) ? 'big_' : '';
-    var u = l[k + 'month'] || l[k + 'year'] || '';
-    return /^https:\/\/(buy\.stripe\.com|checkout\.stripe\.com)\/[^\s"'<>]+$/.test(u) ? u : '';
   }
 
   function fillSelect(sel, withBlank) {
@@ -79,12 +73,12 @@
   function stateLine(c) {
     var s = byCode(c), el = $('sp-state-live');
     if (!s) { el.textContent = 'Pick a state to see its numbers and price.'; return; }
-    var e = (S.spots && S.spots.states && S.spots.states[c]) || {};
-    var nums = '';
-    if (typeof e.engaged === 'number' && e.engaged > 0 && typeof e.views === 'number' && e.views > 0)
-      nums = n(e.engaged) + ' engaged visits from ' + s.name + ' and ' + n(e.views) + ' views of ' + s.name + ' pages in the last 28 days. ';
-    else if (typeof e.engaged === 'number' && e.engaged > 0) nums = n(e.engaged) + ' engaged visits from ' + s.name + ' in the last 28 days. ';
-    else if (typeof e.views === 'number' && e.views > 0) nums = n(e.views) + ' views of ' + s.name + ' pages in the last 28 days. ';
+    /* the state's own engaged visits over GA4's own window, updated each day (data/sponsor-spots.json proof.states); state-level only */
+    var ps = (S.spots && S.spots.proof && S.spots.proof.states) || {};
+    var e = ps.engaged && ps.engaged[c];
+    var nums = typeof e === 'number' && e > 0 && ps.start && ps.end
+      ? n(e) + ' engaged visits from ' + s.name + ' readers, ' + dayTxt(ps.start) + ' to ' + dayTxt(ps.end) + ' (' + n(Math.round(e / (ps.days || 30))) + ' a day). '
+      : '';
     var p = statePrice(c);
     el.innerHTML = '<b>' + s.name + ':</b> ' + nums +
       (soon(c) ? 'This state opens soon.' : S.taken[c] ? 'Taken right now.' : p ? '$' + n(p) + ' a month or $' + n(p * months()) + ' a year.' : '');
@@ -100,15 +94,6 @@
         ? 'Taken right now. <a href="mailto:sig@agsist.com?subject=AGSIST%20sitewide%20spot">Ask to be next.</a>'
         : (c && soon(c) ? 'This state opens soon.' : 'Taken right now.') + ' <a href="mailto:sig@agsist.com?subject=AGSIST%20state%20spot">Ask to be next.</a>';
       refMail(st);
-    }
-    var pay = box.querySelector('[data-pay]'), link = payLink(spot, c);
-    if (spot === 'state' && !c) link = '';
-    if (link) {
-      pay.href = link; pay.removeAttribute('aria-disabled'); pay.textContent = 'Pay by card';
-      pay.target = '_blank'; pay.rel = 'noopener';
-    } else {
-      pay.href = '#book'; pay.setAttribute('aria-disabled', 'true'); pay.textContent = 'Card payment opens soon';
-      pay.removeAttribute('target'); pay.removeAttribute('rel');
     }
   }
 
@@ -165,21 +150,6 @@
     a.addEventListener('click', function () {
       var spot = a.getAttribute('data-invoice');
       pick(spot, spot === 'state' ? $('sp-state').value : '');
-      var pr = form.querySelector('input[name=pay][value="invoice"]');
-      if (pr) pr.checked = true;
-    });
-  });
-  [].forEach.call(document.querySelectorAll('[data-pay]'), function (a) {
-    a.addEventListener('click', function (e) {
-      if (a.getAttribute('aria-disabled') === 'true') {
-        e.preventDefault();
-        var spot = a.getAttribute('data-pay');
-        pick(spot, spot === 'state' ? $('sp-state').value : '');
-        msg('Card payment opens soon. Send this form for a yearly invoice by mail.');
-        $('book').scrollIntoView({ behavior: 'smooth' });
-      } else {
-        try { if (typeof gtag === 'function') gtag('event', 'sponsor_pay_click', { spot: a.getAttribute('data-pay') }); } catch (x) {}
-      }
     });
   });
 
@@ -198,7 +168,8 @@
     var t = (form.querySelector('input[name=tier]:checked') || {}).value || '';
     var c = t === 'state' ? $('spa-state').value : '';
     var s = byCode(c);
-    var pay = (form.querySelector('input[name=pay]:checked') || {}).value === 'card' ? 'paid by card' : 'yearly invoice by mail';
+    /* check or bank wire only (Nov 13, 2026): the one choice is how often we invoice */
+    var pay = (form.querySelector('input[name=pay]:checked') || {}).value === 'year' ? 'yearly invoice, check or bank wire' : 'monthly invoice, check or bank wire';
     var p = { tier: t === 'sitewide' ? 'daily' : 'page', slot: t === 'state' && s ? 'state-' + s.code.toLowerCase() : '',
       company: val('spa-company'), url: val('spa-url'), headline: val('spa-headline'), body: 'How I pay: ' + pay + (REF ? '. Ref: ' + REF : ''),
       contact: val('spa-contact'), phone: val('spa-phone'), email: val('spa-email'), logo: '',

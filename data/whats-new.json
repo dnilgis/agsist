@@ -9,6 +9,13 @@
    "link": "/farmland-atlas/data"
   },
   {
+   "id": "2026-11-13-basis-by-distance",
+   "date": "2026-11-13",
+   "title": "Is the drive worth it: town basis by distance",
+   "line": "Town cash bid pages now show every bid in town and out to 40 miles by distance, where each was a week ago, and the state middle.",
+   "link": "/cash-bids/iowa/cedar-rapids"
+  },
+  {
    "id": "2026-11-13-cash-bid-titles-short",
    "date": "2026-11-13",
    "title": "Cash bid page titles fit in a search result",
@@ -23,11 +30,46 @@
    "link": "/daily#past"
   },
   {
+   "id": "2026-11-13-nitrogen-credits-insects",
+   "date": "2026-11-13",
+   "title": "Nitrogen credits and insect thresholds",
+   "line": "New pages: a nitrogen credit calculator for alfalfa, manure and green manure, and corn and soybean insect thresholds, every number with its source and date.",
+   "link": "/nitrogen-credits"
+  },
+  {
    "id": "2026-11-13-price-answers",
    "date": "2026-11-13",
    "title": "Today's price, in words",
    "line": "Corn, soybean and wheat pages, the markets board and the home page now say today's price in plain text, with the contract month, trade time and source.",
    "link": "/corn-futures-prices"
+  },
+  {
+   "id": "2026-11-13-rent-chart",
+   "date": "2026-11-13",
+   "title": "Every county's rent, and what corn was doing",
+   "line": "Each state rent page shows every county's rent since 2008 as a dash, the median county, your own county in gold, and the years corn paid over $5.",
+   "link": "/rent/illinois#rent-history"
+  },
+  {
+   "id": "2026-11-13-sponsor-pay",
+   "date": "2026-11-13",
+   "title": "Sponsors pay by check or wire",
+   "line": "Sponsor spots are paid by check or bank wire from the invoice we email, at the posted price.",
+   "link": "/sponsor"
+  },
+  {
+   "id": "2026-11-13-agronomy-hub",
+   "date": "2026-11-13",
+   "title": "Agronomy, by the question you are asking",
+   "line": "New Agronomy page: nitrogen, P and K, manure, planting, pests and harvest in one place, university sources only, each dated. Fast Facts tabs now say what they hold.",
+   "link": "/agronomy"
+  },
+  {
+   "id": "2026-11-12-seo-four",
+   "date": "2026-11-12",
+   "title": "Find the tools",
+   "line": "Rain, land sale, ARC or PLC and PRF pages now link to cash bids, corn futures, fertilizer prices and the bin calculator.",
+   "link": "/fertilizer"
   },
   {
    "id": "2026-11-12-alert-expiry",
@@ -93,11 +135,25 @@
    "link": "/farm-bill"
   },
   {
+   "id": "2026-11-12-rain-find",
+   "date": "2026-11-12",
+   "title": "Rain by county: find any county",
+   "line": "Type a county or a ZIP on any rain page to open that county's rain. More neighbors under Next door, and the site search now finds every county rain page.",
+   "link": "/rain"
+  },
+  {
    "id": "2026-11-12-state-sales-pages",
    "date": "2026-11-12",
-   "title": "Farmland sales by state",
+   "title": "A farm sales page for each state",
    "line": "Each state with farm sale records now has its own page: the median price per acre, every county and the newest sales. ARC or PLC and PRF lead with their sign-up dates.",
    "link": "/land-sales/wisconsin/"
+  },
+  {
+   "id": "2026-11-12-town-basis-chart",
+   "date": "2026-11-12",
+   "title": "Town basis history, one chart per crop",
+   "line": "The basis history box on a town cash bid page now puts every elevator on one chart, says who pays the best basis, and saves as a picture.",
+   "link": "/cash-bids/iowa/iowa-falls"
   },
   {
    "id": "2026-11-12-farm-sale-map",
