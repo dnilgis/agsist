@@ -206,7 +206,7 @@
 
   <script>
 (function(){
-  var D='/data/transport/moves/';
+  var D='/data/transport/moves/';   // reads data/transport/moves/index.json and one file per series
   function get(p){return fetch(D+p,{cache:'no-store'}).then(function(r){return r.ok?r.json():null;}).catch(function(){return null;});}
   function $(id){return document.getElementById(id);}
   function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
