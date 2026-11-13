@@ -38,7 +38,7 @@
         var old = document.getElementById('signup-queued'); if (old) old.remove();
         var bar = document.createElement('div');
         bar.id = 'signup-queued'; bar.setAttribute('role', 'status');
-        bar.style.cssText = 'background:#1f5130;color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9990;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+        bar.style.cssText = 'background:#1f5130;color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9990;text-align:center';
         bar.textContent = QUEUED + ' No need to look for a confirmation email for now.';
         var x = document.createElement('button');
         x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.textContent = '×';
@@ -713,7 +713,7 @@
         var bar = document.createElement('div');
         bar.id = 'site-notice';
         bar.setAttribute('role', 'status');
-        bar.style.cssText = 'background:#7a4b00;color:#fff;font-size:0.92rem;line-height:1.4;padding:8px 44px 8px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9980;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+        bar.style.cssText = 'background:#7a4b00;color:#fff;font-size:0.92rem;line-height:1.4;padding:8px 44px 8px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9980;text-align:center';
         var msg = document.createElement('span');
         msg.textContent = n.text;
         bar.appendChild(msg);

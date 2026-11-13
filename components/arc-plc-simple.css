@@ -82,7 +82,7 @@
 .ap-sheet-body{background:#e9ece8;color:#000;margin:0}
 .ap-sheet-bar{max-width:8.5in;margin:12px auto;padding:0 16px;display:flex;justify-content:space-between;align-items:center;gap:1rem;flex-wrap:wrap}
 .ap-sheet-bar a{color:#000;font-weight:600;min-height:44px;display:inline-flex;align-items:center}
-.ap-sheet{box-sizing:border-box;width:8.5in;max-width:100%;min-height:11in;margin:0 auto 24px;background:#fff;color:#000;padding:.55in .6in;font-family:var(--font-body);display:flex;flex-direction:column;box-shadow:0 2px 14px rgba(0,0,0,.25)}
+.ap-sheet{box-sizing:border-box;width:8.5in;max-width:100%;min-height:11in;margin:0 auto 24px;background:#fff;color:#000;padding:.55in .6in;font-family:var(--font-body);display:flex;flex-direction:column;border:1px solid var(--border)}
 .sh-top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;border-bottom:4px solid #000;padding-bottom:.12in}
 .sh-kick{font-family:var(--font-mono);font-size:10pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin:0}
 .sh-county{font-size:34pt;font-weight:800;line-height:1;margin:.05in 0 .06in;letter-spacing:-.02em;color:#000}

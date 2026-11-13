@@ -5,7 +5,7 @@
 .srch{position:fixed;z-index:9995;left:50%;top:72px;transform:translateX(-50%);
   width:min(640px,calc(100vw - 32px));max-height:calc(100vh - 110px);display:flex;flex-direction:column;
   background:var(--surface,#101415);color:var(--text,#e9edeb);border:1px solid var(--border,rgba(132,160,168,.25));
-  border-radius:var(--r-lg,14px);box-shadow:0 24px 60px -20px rgba(0,0,0,.6);overflow:hidden}
+  border-radius:var(--r-lg);overflow:hidden}
 .srch[hidden],.srch-ov[hidden]{display:none}
 .srch-bar{display:flex;align-items:center;gap:.5rem;padding:.55rem .6rem .55rem .9rem;border-bottom:1px solid var(--border,rgba(132,160,168,.25))}
 .srch-ic{width:20px;height:20px;flex:0 0 auto;fill:none;stroke:var(--text-muted,#999);stroke-width:2;stroke-linecap:round}

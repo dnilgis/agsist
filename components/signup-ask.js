@@ -300,7 +300,7 @@
     '.sa-optmsg{font-size:.875rem;line-height:1.4;margin-top:4px}',
     '.sa-optmsg.is-ok{color:var(--green)}.sa-optmsg.is-err{color:var(--red)}',
     /* the second-visit bar */
-    '.sa-bar{position:fixed;left:0;right:0;bottom:0;z-index:9990;box-sizing:border-box;padding:8px max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:var(--surface,#fff);border-top:2px solid var(--gold);box-shadow:0 -4px 18px rgba(0,0,0,.18);font-family:var(--font-body,Inter,system-ui,sans-serif);color:var(--text)}',
+    '.sa-bar{position:fixed;left:0;right:0;bottom:0;z-index:9990;box-sizing:border-box;padding:8px max(16px,env(safe-area-inset-right)) max(8px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left));background:var(--surface,#fff);border-top:2px solid var(--gold);font-family:var(--font-body,Inter,system-ui,sans-serif);color:var(--text)}',
     '.sa-bar.is-off{visibility:hidden;transform:translateY(110%)}',
     '@media (prefers-reduced-motion:no-preference){.sa-bar{transition:transform .3s ease,visibility .3s}}',
     '.sa-bar-in{display:flex;align-items:center;gap:6px 12px;max-width:1180px;margin:0 auto}',

@@ -13,7 +13,7 @@
  *     is counted exactly as a button tap).
  */
 .geo-spon .sa-ad{padding:1.1rem 1.25rem 1.15rem 1.45rem;cursor:pointer;transition:border-color .15s,box-shadow .15s}
-.geo-spon .sa-ad:hover{border-color:var(--sa-acc-hi);box-shadow:0 0 0 1px var(--sa-acc-hi),0 10px 28px -14px rgba(0,0,0,.55)}
+.geo-spon .sa-ad:hover{border-color:var(--sa-acc-hi);box-shadow:0 0 0 1px var(--sa-acc-hi)}
 .geo-spon .sa-ad:has(.sa-cta:focus-visible){outline:2px solid var(--sa-text);outline-offset:3px}
 .geo-spon .sa-top{margin-bottom:.7rem}
 .geo-spon .sa-ad .sa-by{display:inline;color:var(--sa-dim)}

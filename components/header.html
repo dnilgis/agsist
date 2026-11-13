@@ -77,7 +77,7 @@
 .zip-chip:hover,.zip-chip:focus-visible,.zip-chip[aria-expanded="true"]{border-color:var(--brand);color:var(--brand)}
 .zip-chip svg{width:16px;height:16px;flex:0 0 auto;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .zip-chip-t{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.zip-pop{position:absolute;top:calc(100% + 8px);right:0;z-index:520;width:280px;padding:.8rem .9rem;background:var(--surface);border:2px solid var(--border-g,var(--border));border-radius:var(--r-md);box-shadow:0 8px 32px rgba(0,0,0,.35)}
+.zip-pop{position:absolute;top:calc(100% + 8px);right:0;z-index:520;width:280px;padding:.8rem .9rem;background:var(--surface);border:2px solid var(--border-g,var(--border));border-radius:var(--r-md)}
 .zip-pop[hidden]{display:none}
 .zip-f label{display:block;font-size:.8rem;font-weight:600;color:var(--text);margin-bottom:.4rem}
 .zip-row{display:flex;gap:.4rem}
@@ -148,113 +148,113 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
     </a>
     <div class="nav-menu">
       <div class="nav-dd" id="dd-markets">
-        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-markets-panel"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-candlestick"/></svg>Prices<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-markets-panel">Prices<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div id="dd-markets-panel" class="nav-panel nav-cols nav-cols-3">
           <div class="nav-col">
             <div class="nav-q">Near you</div>
-            <a href="/cash-bids"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Cash bids near me</a>
-            <a href="/basis"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Bids and basis by state</a>
-            <a href="/grain-transport"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Grain on the move</a>
-            <a href="/fertilizer"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-leaf"/></svg>Fertilizer prices</a>
+            <a href="/cash-bids">Cash bids near me</a>
+            <a href="/basis">Bids and basis by state</a>
+            <a href="/grain-transport">Grain on the move</a>
+            <a href="/fertilizer">Fertilizer prices</a>
           </div>
           <div class="nav-col">
             <div class="nav-q">Futures</div>
-            <a href="/corn-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-corn"/></svg>Corn</a>
-            <a href="/soybean-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bean"/></svg>Soybeans</a>
-            <a href="/wheat-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wheat"/></svg>Wheat</a>
-            <a href="/ag-stocks"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trending-up"/></svg>Ag stocks</a>
-            <a href="/harvest-price-tracker"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trending-up"/></svg>Harvest price tracker</a>
-            <a href="/markets" class="all"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-candlestick"/></svg>All markets &rarr;</a>
+            <a href="/corn-futures-prices">Corn</a>
+            <a href="/soybean-futures-prices">Soybeans</a>
+            <a href="/wheat-futures-prices">Wheat</a>
+            <a href="/ag-stocks">Ag stocks</a>
+            <a href="/harvest-price-tracker">Harvest price tracker</a>
+            <a href="/markets" class="all">All markets &rarr;</a>
           </div>
           <div class="nav-col">
             <div class="nav-q">Reports</div>
-            <a href="/usda-calendar"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg>USDA calendar and what&rsquo;s priced in</a>
-            <a href="/conditions"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Crop progress, size and yield</a>
-            <a href="/crop-tour"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Crop tour</a>
-            <a href="/cot"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Fund positions (COT)</a>
-            <a href="/tariffs"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-landmark"/></svg>Tariffs and trade</a>
+            <a href="/usda-calendar">USDA calendar and what&rsquo;s priced in</a>
+            <a href="/conditions">Crop progress, size and yield</a>
+            <a href="/crop-tour">Crop tour</a>
+            <a href="/cot">Fund positions (COT)</a>
+            <a href="/tariffs">Tariffs and trade</a>
           </div>
         </div>
       </div>
       <div class="nav-dd" id="dd-livestock">
-        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-livestock-panel"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-beef"/></svg>Livestock<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-livestock-panel">Livestock<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div id="dd-livestock-panel" class="nav-panel">
           <div class="nav-col">
-            <a href="/cattle-auction-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-beef"/></svg>Sale barn prices</a>
-            <a href="/cattle-futures-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-candlestick"/></svg>Cattle futures</a>
-            <a href="/milk-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-milk"/></svg>Milk</a>
-            <a href="/hay-prices"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Hay</a>
-            <a href="/haymow"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg><span class="nav-two"><span>The Haymow</span><span class="nav-sub">Hay for sale and wanted</span></span></a>
-            <a href="/lrp"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>LRP</a>
-            <a href="/prf"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>PRF</a>
+            <a href="/cattle-auction-prices">Sale barn prices</a>
+            <a href="/cattle-futures-prices">Cattle futures</a>
+            <a href="/milk-prices">Milk</a>
+            <a href="/hay-prices">Hay</a>
+            <a href="/haymow"><span class="nav-two"><span>The Haymow</span><span class="nav-sub">Hay for sale and wanted</span></span></a>
+            <a href="/lrp">LRP</a>
+            <a href="/prf">PRF</a>
           </div>
         </div>
       </div>
       <div class="nav-dd" id="dd-field">
-        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-field-panel"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tractor"/></svg>Field<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-field-panel">Field<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div id="dd-field-panel" class="nav-panel nav-cols nav-cols-3">
           <div class="nav-col">
             <div class="nav-q">Weather</div>
-            <a href="/rain"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain and drought</a>
-            <a href="/hail-map"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-hail"/></svg>Hail map</a>
-            <a href="/spray"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-spray-can"/></svg>Spray, urea and soil temp</a>
-            <a href="/rain-print"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain Print</a>
-            <a href="/rain-gauge"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-test-tube"/></svg>Rain gauge waitlist</a>
+            <a href="/rain">Rain and drought</a>
+            <a href="/hail-map">Hail map</a>
+            <a href="/spray">Spray, urea and soil temp</a>
+            <a href="/rain-print">Rain Print</a>
+            <a href="/rain-gauge">Rain gauge waitlist</a>
           </div>
           <div class="nav-col">
             <div class="nav-q">Crop</div>
-            <a href="/gdu-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-thermometer"/></svg>GDU</a>
-            <a href="/planting-date"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar-days"/></svg>Planting date</a>
-            <a href="/nutrient-removal"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Nutrient removal</a>
-            <a href="/manure-value"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Manure value</a>
-            <a href="/field-scout"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-satellite"/></svg>Field Scout</a>
-            <a href="/yield-estimator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-package"/></svg>Yield estimator</a>
-            <a href="/tar-spot"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-spray-can"/></svg>Tar spot</a>
+            <a href="/gdu-calculator">GDU</a>
+            <a href="/planting-date">Planting date</a>
+            <a href="/nutrient-removal">Nutrient removal</a>
+            <a href="/manure-value">Manure value</a>
+            <a href="/field-scout">Field Scout</a>
+            <a href="/yield-estimator">Yield estimator</a>
+            <a href="/tar-spot">Tar spot</a>
           </div>
           <div class="nav-col">
             <div class="nav-q">Harvest and bins</div>
-            <a href="/harvest-or-wait"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tractor"/></svg>Harvest now or wait</a>
-            <a href="/grain-emc"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-thermometer"/></svg>Grain drying (EMC)</a>
-            <a href="/grain-shrink"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Grain shrink</a>
-            <a href="/grain-bin-calculator"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Bin calculator</a>
-            <a href="/combine-loss"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tractor"/></svg>Combine loss</a>
-            <a href="/tools" class="all"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calculator"/></svg>All tools &rarr;</a>
+            <a href="/harvest-or-wait">Harvest now or wait</a>
+            <a href="/grain-emc">Grain drying (EMC)</a>
+            <a href="/grain-shrink">Grain shrink</a>
+            <a href="/grain-bin-calculator">Bin calculator</a>
+            <a href="/combine-loss">Combine loss</a>
+            <a href="/tools" class="all">All tools &rarr;</a>
           </div>
         </div>
       </div>
       <div class="nav-dd" id="dd-money">
-        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-money-panel"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calculator"/></svg>Money &amp; Land<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-money-panel">Money &amp; Land<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div id="dd-money-panel" class="nav-panel nav-cols nav-cols-3">
           <p class="nav-moved" data-nav-moved data-until="2026-11-01" hidden><span>Harvest tools moved to Field</span><button type="button" class="nav-moved-x" aria-label="Dismiss: harvest tools moved to Field"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg></button></p>
           <div class="nav-col">
             <div class="nav-q">Land</div>
-            <a href="/land-sales/"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-land-plot"/></svg>Farmland sales</a>
-            <a href="/rent/"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Cash rent</a>
-            <a href="/farmland-atlas"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Farmland Atlas</a>
-            <a href="/custom-rates"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Custom rates</a>
-            <a href="/cash-lease"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>Lease form</a>
+            <a href="/land-sales/">Farmland sales</a>
+            <a href="/rent/">Cash rent</a>
+            <a href="/farmland-atlas">Farmland Atlas</a>
+            <a href="/custom-rates">Custom rates</a>
+            <a href="/cash-lease">Lease form</a>
           </div>
           <div class="nav-col">
             <div class="nav-q">Programs</div>
-            <a href="/arc-plc"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calculator"/></svg>ARC or PLC</a>
-            <a href="/farm-bill"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>Farm bill</a>
+            <a href="/arc-plc">ARC or PLC</a>
+            <a href="/farm-bill">Farm bill</a>
           </div>
           <div class="nav-col">
             <div class="nav-q">Selling</div>
-            <a href="/store-or-sell"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Sell or store</a>
-            <a href="/breakeven"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scale"/></svg>Break-even</a>
-            <a href="/commodity-loan"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>CCC loan</a>
+            <a href="/store-or-sell">Sell or store</a>
+            <a href="/breakeven">Break-even</a>
+            <a href="/commodity-loan">CCC loan</a>
           </div>
         </div>
       </div>
       <div class="nav-dd" id="dd-daily">
-        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-daily-panel"><svg class="nav-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sunrise"/></svg>Daily<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+        <button class="nav-btn" aria-haspopup="true" aria-expanded="false" aria-controls="dd-daily-panel">Daily<svg class="chevron" width="10" height="6" viewBox="0 0 10 6" fill="none" aria-hidden="true"><path d="M1 1l4 4 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
         <div id="dd-daily-panel" class="nav-panel">
           <div class="nav-col">
-            <a href="/daily"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sunrise"/></svg>Today&rsquo;s briefing</a>
+            <a href="/daily">Today&rsquo;s briefing</a>
             <div class="nav-q nav-q-ask">Get it by email</div>
             <div class="nav-ask" data-signup-hide><div data-signup-ask="Free, every morning: the markets and your top local bid" data-source="menu-desk" data-reports="0"></div></div>
-            <a href="/daily#past"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-archive"/></svg>Past briefings</a>
+            <a href="/daily#past">Past briefings</a>
           </div>
         </div>
       </div>
@@ -295,117 +295,117 @@ html.drawer-open .sa-bar,html.drawer-open .agsb,html.drawer-open .pwa-hint{displ
   <section class="draw-place" aria-labelledby="dp-h">
     <h2 class="draw-place-h" id="dp-h">My place <span class="draw-place-z" id="dp-zip"></span></h2>
     <div class="draw-place-row">
-      <a href="/fast-facts" class="draw-pl" id="dp-here"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Everything near me</a>
-      <a href="/cash-bids" class="draw-pl" id="dp-bids"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Bids near me</a>
-      <a href="/rain#radar" class="draw-pl" id="dp-rain"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain at my field</a>
-      <a href="/rent/" class="draw-pl" id="dp-rent"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Rent in my county</a>
+      <a href="/fast-facts" class="draw-pl" id="dp-here">Everything near me</a>
+      <a href="/cash-bids" class="draw-pl" id="dp-bids">Bids near me</a>
+      <a href="/rain#radar" class="draw-pl" id="dp-rain">Rain at my field</a>
+      <a href="/rent/" class="draw-pl" id="dp-rent">Rent in my county</a>
     </div>
   </section>
   <section class="draw-sec draw-grp" aria-labelledby="dg-markets">
-    <h2 class="draw-lbl" id="dg-markets"><svg class="draw-lbl-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-candlestick"/></svg>Prices</h2>
+    <h2 class="draw-lbl" id="dg-markets">Prices</h2>
     <h3 class="draw-sub">Near you</h3>
     <div class="draw-links">
-      <a href="/cash-bids" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Cash bids near me</a>
-      <a href="/basis" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Bids and basis by state</a>
-      <a href="/grain-transport" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Grain on the move</a>
-      <a href="/fertilizer" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-leaf"/></svg>Fertilizer prices</a>
+      <a href="/cash-bids" class="draw-item">Cash bids near me</a>
+      <a href="/basis" class="draw-item">Bids and basis by state</a>
+      <a href="/grain-transport" class="draw-item">Grain on the move</a>
+      <a href="/fertilizer" class="draw-item">Fertilizer prices</a>
     </div>
     <h3 class="draw-sub">Futures</h3>
     <div class="draw-links">
-      <a href="/corn-futures-prices" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-corn"/></svg>Corn</a>
-      <a href="/soybean-futures-prices" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-bean"/></svg>Soybeans</a>
-      <a href="/wheat-futures-prices" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wheat"/></svg>Wheat</a>
-      <a href="/ag-stocks" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trending-up"/></svg>Ag stocks</a>
-      <a href="/harvest-price-tracker" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-trending-up"/></svg>Harvest price tracker</a>
-      <a href="/markets" class="draw-item draw-all"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-candlestick"/></svg>All markets &rarr;</a>
+      <a href="/corn-futures-prices" class="draw-item">Corn</a>
+      <a href="/soybean-futures-prices" class="draw-item">Soybeans</a>
+      <a href="/wheat-futures-prices" class="draw-item">Wheat</a>
+      <a href="/ag-stocks" class="draw-item">Ag stocks</a>
+      <a href="/harvest-price-tracker" class="draw-item">Harvest price tracker</a>
+      <a href="/markets" class="draw-item draw-all">All markets &rarr;</a>
     </div>
     <h3 class="draw-sub">Reports</h3>
     <div class="draw-links">
-      <a href="/usda-calendar" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar"/></svg>USDA calendar and what&rsquo;s priced in</a>
-      <a href="/conditions" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sun"/></svg>Crop progress, size and yield</a>
-      <a href="/crop-tour" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Crop tour</a>
-      <a href="/cot" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Fund positions (COT)</a>
-      <a href="/tariffs" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-landmark"/></svg>Tariffs and trade</a>
+      <a href="/usda-calendar" class="draw-item">USDA calendar and what&rsquo;s priced in</a>
+      <a href="/conditions" class="draw-item">Crop progress, size and yield</a>
+      <a href="/crop-tour" class="draw-item">Crop tour</a>
+      <a href="/cot" class="draw-item">Fund positions (COT)</a>
+      <a href="/tariffs" class="draw-item">Tariffs and trade</a>
     </div>
   </section>
   <section class="draw-sec draw-grp" aria-labelledby="dg-livestock">
-    <h2 class="draw-lbl" id="dg-livestock"><svg class="draw-lbl-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-beef"/></svg>Livestock</h2>
+    <h2 class="draw-lbl" id="dg-livestock">Livestock</h2>
     <div class="draw-links">
-      <a href="/cattle-auction-prices" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-beef"/></svg>Sale barn prices</a>
-      <a href="/cattle-futures-prices" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-candlestick"/></svg>Cattle futures</a>
-      <a href="/milk-prices" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-milk"/></svg>Milk</a>
-      <a href="/hay-prices" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Hay</a>
-      <a href="/haymow" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg><span class="nav-two"><span>The Haymow</span><span class="nav-sub">Hay for sale and wanted</span></span></a>
-      <a href="/lrp" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>LRP</a>
-      <a href="/prf" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-shield-check"/></svg>PRF</a>
+      <a href="/cattle-auction-prices" class="draw-item">Sale barn prices</a>
+      <a href="/cattle-futures-prices" class="draw-item">Cattle futures</a>
+      <a href="/milk-prices" class="draw-item">Milk</a>
+      <a href="/hay-prices" class="draw-item">Hay</a>
+      <a href="/haymow" class="draw-item"><span class="nav-two"><span>The Haymow</span><span class="nav-sub">Hay for sale and wanted</span></span></a>
+      <a href="/lrp" class="draw-item">LRP</a>
+      <a href="/prf" class="draw-item">PRF</a>
     </div>
   </section>
   <section class="draw-sec draw-grp" aria-labelledby="dg-field">
-    <h2 class="draw-lbl" id="dg-field"><svg class="draw-lbl-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tractor"/></svg>Field</h2>
+    <h2 class="draw-lbl" id="dg-field">Field</h2>
     <h3 class="draw-sub">Weather</h3>
     <div class="draw-links">
-      <a href="/rain" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-rain"/></svg>Rain and drought</a>
-      <a href="/hail-map" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-cloud-hail"/></svg>Hail map</a>
-      <a href="/spray" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-spray-can"/></svg>Spray, urea and soil temp</a>
-      <a href="/rain-gauge" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-test-tube"/></svg>Rain gauge waitlist</a>
+      <a href="/rain" class="draw-item">Rain and drought</a>
+      <a href="/hail-map" class="draw-item">Hail map</a>
+      <a href="/spray" class="draw-item">Spray, urea and soil temp</a>
+      <a href="/rain-gauge" class="draw-item">Rain gauge waitlist</a>
     </div>
     <h3 class="draw-sub">Crop</h3>
     <div class="draw-links">
-      <a href="/gdu-calculator" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-thermometer"/></svg>GDU</a>
-      <a href="/planting-date" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calendar-days"/></svg>Planting date</a>
-      <a href="/nutrient-removal" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Nutrient removal</a>
-      <a href="/manure-value" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sprout"/></svg>Manure value</a>
-      <a href="/field-scout" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-satellite"/></svg>Field Scout</a>
-      <a href="/yield-estimator" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-package"/></svg>Yield estimator</a>
-      <a href="/tar-spot" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-spray-can"/></svg>Tar spot</a>
+      <a href="/gdu-calculator" class="draw-item">GDU</a>
+      <a href="/planting-date" class="draw-item">Planting date</a>
+      <a href="/nutrient-removal" class="draw-item">Nutrient removal</a>
+      <a href="/manure-value" class="draw-item">Manure value</a>
+      <a href="/field-scout" class="draw-item">Field Scout</a>
+      <a href="/yield-estimator" class="draw-item">Yield estimator</a>
+      <a href="/tar-spot" class="draw-item">Tar spot</a>
     </div>
     <h3 class="draw-sub">Harvest and bins</h3>
     <div class="draw-links">
-      <a href="/harvest-or-wait" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tractor"/></svg>Harvest now or wait</a>
-      <a href="/grain-emc" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-thermometer"/></svg>Grain drying (EMC)</a>
-      <a href="/grain-shrink" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Grain shrink</a>
-      <a href="/grain-bin-calculator" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Bin calculator</a>
-      <a href="/combine-loss" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-tractor"/></svg>Combine loss</a>
-      <a href="/tools" class="draw-item draw-all"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calculator"/></svg>All tools &rarr;</a>
+      <a href="/harvest-or-wait" class="draw-item">Harvest now or wait</a>
+      <a href="/grain-emc" class="draw-item">Grain drying (EMC)</a>
+      <a href="/grain-shrink" class="draw-item">Grain shrink</a>
+      <a href="/grain-bin-calculator" class="draw-item">Bin calculator</a>
+      <a href="/combine-loss" class="draw-item">Combine loss</a>
+      <a href="/tools" class="draw-item draw-all">All tools &rarr;</a>
     </div>
   </section>
   <section class="draw-sec draw-grp" aria-labelledby="dg-money">
-    <h2 class="draw-lbl" id="dg-money"><svg class="draw-lbl-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calculator"/></svg>Money &amp; Land</h2>
+    <h2 class="draw-lbl" id="dg-money">Money &amp; Land</h2>
     <p class="nav-moved" data-nav-moved data-until="2026-11-01" hidden><span>Harvest tools moved to Field</span><button type="button" class="nav-moved-x" aria-label="Dismiss: harvest tools moved to Field"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-x"/></svg></button></p>
     <h3 class="draw-sub">Land</h3>
     <div class="draw-links">
-      <a href="/land-sales/" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-land-plot"/></svg>Farmland sales</a>
-      <a href="/rent/" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Cash rent</a>
-      <a href="/farmland-atlas" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-map"/></svg>Farmland Atlas</a>
-      <a href="/custom-rates" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>Custom rates</a>
-      <a href="/cash-lease" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>Lease form</a>
+      <a href="/land-sales/" class="draw-item">Farmland sales</a>
+      <a href="/rent/" class="draw-item">Cash rent</a>
+      <a href="/farmland-atlas" class="draw-item">Farmland Atlas</a>
+      <a href="/custom-rates" class="draw-item">Custom rates</a>
+      <a href="/cash-lease" class="draw-item">Lease form</a>
     </div>
     <h3 class="draw-sub">Programs</h3>
     <div class="draw-links">
-      <a href="/arc-plc" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-calculator"/></svg>ARC or PLC</a>
-      <a href="/farm-bill" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scroll-text"/></svg>Farm bill</a>
+      <a href="/arc-plc" class="draw-item">ARC or PLC</a>
+      <a href="/farm-bill" class="draw-item">Farm bill</a>
     </div>
     <h3 class="draw-sub">Selling</h3>
     <div class="draw-links">
-      <a href="/store-or-sell" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-warehouse"/></svg>Sell or store</a>
-      <a href="/breakeven" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-scale"/></svg>Break-even</a>
-      <a href="/commodity-loan" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-banknote"/></svg>CCC loan</a>
+      <a href="/store-or-sell" class="draw-item">Sell or store</a>
+      <a href="/breakeven" class="draw-item">Break-even</a>
+      <a href="/commodity-loan" class="draw-item">CCC loan</a>
     </div>
   </section>
   <section class="draw-sec draw-grp" aria-labelledby="dg-daily">
-    <h2 class="draw-lbl" id="dg-daily"><svg class="draw-lbl-ic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sunrise"/></svg>Daily</h2>
+    <h2 class="draw-lbl" id="dg-daily">Daily</h2>
     <div class="draw-links">
-      <a href="/daily" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-sunrise"/></svg>Today&rsquo;s briefing</a>
-      <a href="/daily#past" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-archive"/></svg>Past briefings</a>
+      <a href="/daily" class="draw-item">Today&rsquo;s briefing</a>
+      <a href="/daily#past" class="draw-item">Past briefings</a>
     </div>
     <h3 class="draw-sub" data-signup-hide>Get it by email</h3>
     <div class="nav-ask" data-signup-hide><div data-signup-ask="Free, every morning: the markets and your top local bid" data-source="menu-phone" data-reports="0"></div></div>
   </section>
   <a href="/rain-print" class="draw-rp"><span class="draw-rp-k">Rain Print</span><span class="draw-rp-t">Your farm&rsquo;s year of rain, framed</span><span class="draw-rp-go" aria-hidden="true">&rarr;</span></a>
   <div class="draw-sec draw-end">
-    <a href="/about" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-book-open"/></svg>About</a>
-    <a href="/sponsor" class="draw-item" data-sponsor-link onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'menu_phone'})"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-chart-column"/></svg>Advertise with AGSIST</a>
-    <a href="/contact" class="draw-item"><svg class="lic" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-mail"/></svg>Contact</a>
+    <a href="/about" class="draw-item">About</a>
+    <a href="/sponsor" class="draw-item" data-sponsor-link onclick="if(typeof gtag==='function')gtag('event','sponsor_cta_click',{cta_source:'menu_phone'})">Advertise with AGSIST</a>
+    <a href="/contact" class="draw-item">Contact</a>
     <div class="draw-theme">
       <span id="theme-lbl-d">Display mode</span>
       <button class="theme-btn" id="theme-btn-d" aria-label="Toggle theme">

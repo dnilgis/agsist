@@ -92,7 +92,7 @@
 .rc-print-styles button { font: inherit; font-size: var(--fs-sm); min-height: 44px; padding: .3rem .85rem; border-radius: var(--r-pill); border: 1px solid var(--border-g); background: var(--surface); color: var(--text); cursor: pointer; }
 .rc-print-styles button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
 .rc-print-styles .rc-zoom { margin-left: auto; }
-.rc-print-on .rc-print-art { background: #fff; border: 1px solid var(--border); border-radius: 4px; box-shadow: 0 6px 18px rgba(0,0,0,.18); overflow: hidden; }
+.rc-print-on .rc-print-art { background: #fff; border: 1px solid var(--border); border-radius: 4px; overflow: hidden; }
 .rc-print-on .rc-print-art svg { max-width: none; width: 100%; }
 /* a phone: the whole sheet fits; "Up close" shows it three times bigger to swipe across */
 .rc-print-zoom .rc-print-art { overflow-x: auto; -webkit-overflow-scrolling: touch; }

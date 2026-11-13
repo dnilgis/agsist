@@ -125,7 +125,7 @@
 .crc-sb{display:flex;align-items:center;width:100%;min-height:44px;padding:.3rem 0;border:0;background:none;color:var(--link,var(--brand));font:inherit;font-size:.9rem;font-weight:600;text-align:left;text-decoration:underline;text-underline-offset:2px;cursor:pointer}
 
 /* my sheet */
-.crs-bar{position:sticky;bottom:.6rem;z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:1rem 0;padding:.55rem .8rem;border:1px solid var(--gold);border-radius:12px;background:var(--surface);box-shadow:var(--shadow-lg,0 6px 24px rgba(0,0,0,.25))}
+.crs-bar{position:sticky;bottom:.6rem;z-index:20;display:flex;flex-wrap:wrap;align-items:center;gap:.5rem;margin:1rem 0;padding:.55rem .8rem;border:1px solid var(--gold);border-radius:var(--r-lg);background:var(--surface)}
 .crs-bar[hidden]{display:none}
 .crs-bar p{margin:0 auto 0 0!important;font-size:.92rem!important;color:var(--text)!important}
 

@@ -311,7 +311,7 @@
 @media(max-width:720px){
 .ratio-cot-grid{grid-template-columns:minmax(0,1fr)}
 }
-.ratio-widget{background:linear-gradient(135deg,var(--surface) 0%,rgba(34,197,94,.025) 100%);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-direction:column;}
+.ratio-widget{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-direction:column;}
 .ratio-widget-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem;}
 .ratio-widget-title{font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
 .ratio-verdict{display:inline-flex;align-items:center;gap:.35rem;padding:.25rem .65rem;border-radius:20px;font-size:.824rem;font-weight:700;letter-spacing:.03em;border:1px solid;transition:all .3s;}
@@ -323,7 +323,7 @@
 @media(max-width:480px){
 .ratio-widget{padding:.75rem .85rem;}
 }
-.cot-widget{background:linear-gradient(135deg,var(--surface) 0%,rgba(91,163,224,.025) 100%);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-direction:column;}
+.cot-widget{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-direction:column;}
 .cot-widget-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem;}
 .cot-widget-title{font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
 .cot-caption{font-size:.84rem;color:var(--text-muted);line-height:1.45;margin-bottom:.5rem;padding-bottom:.5rem;border-bottom:1px solid var(--border);}
@@ -413,9 +413,9 @@
 .noscript-banner{background:var(--gold-fill,var(--gold));color:#0a0c0d;text-align:center;padding:.75rem 1rem;font-size:.824rem;font-weight:600}
 .km-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.75rem .9rem;display:flex;flex-direction:column;gap:.38rem;text-decoration:none;color:inherit;cursor:pointer;transition:border-color .15s,transform .1s;position:relative;overflow:hidden;}
 .km-card::before{content:"";position:absolute;top:0;left:0;right:0;height:2px;opacity:0;transition:opacity .2s}
-.km-card[data-tier="1"]::before{background:linear-gradient(90deg,var(--green),transparent)}
-.km-card[data-tier="2"]::before{background:linear-gradient(90deg,var(--gold),transparent)}
-.km-card[data-tier="3"]::before{background:linear-gradient(90deg,var(--blue),transparent)}
+.km-card[data-tier="1"]::before{background:var(--green)}
+.km-card[data-tier="2"]::before{background:var(--gold)}
+.km-card[data-tier="3"]::before{background:var(--blue)}
 .km-card:hover{transform:translateY(-1px)}
 .km-card[data-tier="1"]:hover{border-color:rgba(34,197,94,.35)}
 .km-card[data-tier="2"]:hover{border-color:rgba(var(--gold-rgb),.35)}
@@ -439,7 +439,7 @@
 @media(max-width:640px){
 .crop-export-grid{grid-template-columns:minmax(0,1fr)}
 }
-.crop-widget{background:linear-gradient(135deg,var(--surface) 0%,rgba(34,197,94,.025) 100%);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-direction:column;}
+.crop-widget{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-direction:column;}
 .crop-widget-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem;}
 .crop-widget-title{font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
 .crop-week-badge{font-family:"JetBrains Mono",monospace;font-size:.765rem;color:var(--text-muted);padding:.15rem .4rem;border:1px solid var(--border);border-radius:4px;}
@@ -471,7 +471,7 @@
 @media(max-width:480px){
 .crop-widget{padding:.75rem .85rem;}
 }
-.export-widget{background:linear-gradient(135deg,var(--surface) 0%,rgba(59,130,246,.025) 100%);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-direction:column;}
+.export-widget{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-direction:column;}
 .export-widget-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.4rem;margin-bottom:.6rem;}
 .export-widget-title{font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
 .export-mkt-yr{font-family:"JetBrains Mono",monospace;font-size:.765rem;color:var(--text-muted);padding:.15rem .4rem;border:1px solid var(--border);border-radius:4px;}
@@ -517,7 +517,7 @@
 /* daily-spattr legacy CSS retained for compat; element removed in v4.3 */
 .daily-spattr{display:none}
 /* v4.3: takeaway card — committable statement between lead and sponsor */
-.daily-takeaway{margin:1rem 0 .25rem;padding:.95rem 1.1rem;background:linear-gradient(135deg,rgba(var(--gold-rgb),.08) 0%,rgba(var(--gold-rgb),.02) 60%,var(--surface2) 100%);border:1px solid rgba(var(--gold-rgb),.3);border-left:4px solid var(--gold);border-radius:8px}
+.daily-takeaway{margin:1rem 0 .25rem;padding:.95rem 1.1rem;background:var(--surface);border:1px solid rgba(var(--gold-rgb),.3);border-left:4px solid var(--gold);border-radius:8px}
 .daily-takeaway-label{display:inline-block;font-family:"JetBrains Mono",monospace;font-size:.765rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
 .daily-takeaway-text{font-family:var(--font-display);font-size:1rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em}
 @media(max-width:640px){
@@ -561,19 +561,19 @@
 .daily-thread-marker{display:none;flex-direction:column;align-items:flex-start;gap:.3rem;margin-bottom:.45rem;padding:.45rem .75rem .5rem;background:rgba(91,163,224,.06);border:1px solid rgba(91,163,224,.22);border-radius:10px;font-family:"JetBrains Mono",monospace;font-size:.824rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--blue);max-width:fit-content;line-height:1.5}
 .daily-thread-marker .dtm-day{color:var(--blue);font-weight:800;white-space:nowrap;flex-shrink:0}
 .daily-thread-marker .dtm-q{color:var(--text-dim);text-transform:none;letter-spacing:0;font-weight:600;min-width:0}
-.daily-yc{display:none;margin:.85rem 0 1rem;padding:.75rem .9rem;background:linear-gradient(135deg,var(--surface) 0%,rgba(255,255,255,.02) 100%);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px}
+.daily-yc{display:none;margin:.85rem 0 1rem;padding:.75rem .9rem;background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px}
 .daily-yc-pill{display:inline-flex;align-items:center;gap:.3rem;padding:.18rem .55rem;border-radius:20px;font-family:"JetBrains Mono",monospace;font-size:.765rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;border:1px solid;white-space:nowrap}
 .yc-pill--good{color:var(--green);background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.28)}
 .yc-pill--bad{color:#ef4444;background:rgba(239,68,68,.08);border-color:rgba(239,68,68,.28)}
 .yc-pill--pending{color:var(--gold);background:rgba(var(--gold-rgb),.08);border-color:rgba(var(--gold-rgb),.28)}
 .daily-yc-note{color:var(--text-muted);}
-.daily-spread{display:none;margin:1rem 0;padding:.85rem 1rem;background:linear-gradient(135deg,var(--surface) 0%,rgba(160,120,200,.04) 100%);border:1px solid rgba(160,120,200,.22);border-radius:8px}
+.daily-spread{display:none;margin:1rem 0;padding:.85rem 1rem;background:var(--surface);border:1px solid rgba(160,120,200,.22);border-radius:8px}
 .daily-spread-head{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.4rem;flex-wrap:wrap}
 .daily-spread-label{font-family:"JetBrains Mono",monospace;font-size:.765rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#a87cd6}
 .daily-spread-level{font-family:"JetBrains Mono",monospace;font-size:.824rem;font-weight:700;color:var(--text)}
 .daily-spread-title{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.3rem;line-height:1.4}
 .daily-spread-body{font-size:.824rem;line-height:1.65;color:var(--text-dim)}
-.daily-basis{display:none;margin:1rem 0;padding:.85rem 1rem;background:linear-gradient(135deg,var(--surface) 0%,rgba(185,122,58,.04) 100%);border:1px solid rgba(185,122,58,.28);border-radius:8px}
+.daily-basis{display:none;margin:1rem 0;padding:.85rem 1rem;background:var(--surface);border:1px solid rgba(185,122,58,.28);border-radius:8px}
 .daily-basis-label{font-family:"JetBrains Mono",monospace;font-size:.765rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:#c98a4a;margin-bottom:.4rem}
 .daily-basis-headline{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:.3rem;line-height:1.4}
 .daily-basis-body{font-size:.824rem;line-height:1.65;color:var(--text-dim)}
@@ -584,10 +584,9 @@
 .daily-byline a:hover{text-decoration:underline}
 :root{--ad-orange:#e8743a;--ad-orange-rgb:232,116,58;--ad-orange-hi:#f2935f}
 /* v4.1 sponsor block — billboard for empty state, restrained for paid sponsor */
-.daily-sponsor{position:relative;margin:1.25rem 0 1.5rem;padding:1.5rem 1.75rem;background:linear-gradient(135deg,rgba(var(--ad-orange-rgb),.10) 0%,rgba(var(--ad-orange-rgb),.02) 50%,var(--surface) 100%);border:2px solid var(--ad-orange);border-radius:12px;box-shadow:0 0 0 1px rgba(var(--ad-orange-rgb),.15),0 8px 24px rgba(0,0,0,.25)}
+.daily-sponsor{position:relative;margin:1.25rem 0 1.5rem;padding:1.5rem 1.75rem;background:var(--surface);border:1px solid var(--ad-orange);border-left:5px solid var(--ad-orange);border-radius:var(--r-md)}
 .daily-hero.dismissed .daily-sponsor{display:none}
 .dsp-empty,.dsp-filled{display:block}
-@keyframes dsp-pulse{0%,100%{opacity:0;transform:scale(1)}50%{opacity:.45;transform:scale(1.06)}}
 /* Filled state — subdued so sponsor brand can breathe */
 /* Filled: the ad draws its own card (components/sponsor-ad.css), so the slot
      frame steps out of the way instead of boxing a box. */
@@ -605,7 +604,6 @@
 .teaser-sponsor.empty-state:hover{opacity:1;color:#0d1117;background:var(--ad-orange);border-color:var(--ad-orange)}
 .teaser-sponsor.has-sponsor{opacity:.9}
 .teaser-sponsor-tag{font-size:.765rem;opacity:.85;padding-left:.4rem;margin-left:.35rem;border-left:1px solid rgba(var(--ad-orange-rgb),.4)}
-@keyframes tsp-pulse{0%,100%{box-shadow:0 0 0 3px rgba(var(--ad-orange-rgb),.18)}50%{box-shadow:0 0 0 5px rgba(var(--ad-orange-rgb),.04)}}
 @media(max-width:600px){
 .teaser-sponsor-tag{display:none}
 }
@@ -635,7 +633,7 @@
 .daily-share-btn .dsb-lbl{font-size:.765rem}
 }
 /* PWA install hint — banner + visual modal (v2, May 4 2026) */
-.pwa-hint{position:fixed;bottom:0;left:0;right:0;z-index:1000;background:linear-gradient(180deg,rgba(58,139,60,.96) 0%,rgba(38,90,40,.98) 100%);border-top:2px solid var(--gold);padding:.85rem 1rem;padding-bottom:max(.85rem,env(safe-area-inset-bottom));display:none;align-items:center;gap:.75rem;flex-wrap:wrap;box-shadow:0 -6px 20px rgba(0,0,0,.4);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#fff}
+.pwa-hint{position:fixed;bottom:0;left:0;right:0;z-index:1000;background:var(--surface);border-top:2px solid var(--gold);padding:.85rem 1rem;padding-bottom:max(.85rem,env(safe-area-inset-bottom));display:none;align-items:center;gap:.75rem;flex-wrap:wrap;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color:#fff}
 .pwa-hint.show{display:flex;animation:pwa-slide-up .35s ease-out}
 @keyframes pwa-slide-up{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
 .pwa-hint-icon{font-size:1.294rem;line-height:1;flex-shrink:0}
@@ -663,10 +661,10 @@
 .pwa-modal{display:none!important}
 }
 /* Visual instruction modal */
-.pwa-modal{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,.78);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);overflow-y:auto;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+.pwa-modal{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;padding:1rem;background:rgba(0,0,0,.78);overflow-y:auto;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 .pwa-modal.show{display:flex;animation:pwa-fade-in .25s ease-out}
 @keyframes pwa-fade-in{from{opacity:0}to{opacity:1}}
-.pwa-modal-card{position:relative;background:#0a0c0d;border:1px solid rgba(var(--gold-rgb),.45);border-radius:14px;max-width:430px;width:100%;max-height:calc(100vh - 2rem);overflow-y:auto;box-shadow:0 20px 50px rgba(0,0,0,.6);color:#fff}
+.pwa-modal-card{position:relative;background:#0a0c0d;border:1px solid rgba(var(--gold-rgb),.45);border-radius:14px;max-width:430px;width:100%;max-height:calc(100vh - 2rem);overflow-y:auto;color:#fff}
 .pwa-modal-close{position:absolute;top:.6rem;right:.6rem;background:rgba(255,255,255,.1);border:none;width:36px;height:36px;border-radius:50%;color:#fff;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:2;transition:background .15s}
 .pwa-modal-close:hover{background:rgba(255,255,255,.22)}
 .pwa-modal-head{padding:1.4rem 1.4rem 1rem;border-bottom:1px solid rgba(var(--gold-rgb),.18);text-align:center}
@@ -687,8 +685,7 @@
 .pwa-visual svg{display:block;max-width:100%;height:auto}
 /* Pulsing finger / arrow indicator on the diagram */
 @keyframes pwa-pulse-tap{0%,100%{transform:translate(0,0);opacity:1}50%{transform:translate(0,3px);opacity:.55}}
-@keyframes pwa-pulse-glow{0%,100%{filter:drop-shadow(0 0 0 rgba(var(--gold-rgb),.9))}50%{filter:drop-shadow(0 0 6px rgba(var(--gold-rgb),.95))}}
-.pwa-arrow-anim{animation:pwa-pulse-tap 1.4s ease-in-out infinite,pwa-pulse-glow 1.4s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
+.pwa-arrow-anim{animation:pwa-pulse-tap 1.4s ease-in-out infinite;transform-origin:center;transform-box:fill-box}
 .pwa-modal-footer{padding:.85rem 1.2rem 1.2rem;text-align:center;border-top:1px solid rgba(255,255,255,.06);background:rgba(0,0,0,.25)}
 .pwa-modal-footer-text{font-size:.824rem;color:rgba(255,255,255,.62);line-height:1.5}
 .pwa-modal-footer-text strong{color:var(--gold);font-weight:600}
@@ -1010,7 +1007,7 @@ html.has-zip #bids-list-area:has(.bids-skeleton){min-height:760px}
    from data/rate-card.json by scripts/stamp_rates.py), on every screen size.
    #0d1117 on --ad-orange is 6.4:1. A paid sponsor's label stays small. */
 #daily-teaser-sponsor.empty-state{display:inline-flex!important;align-items:center;gap:.45rem;font-size:.86rem!important;font-weight:800!important;letter-spacing:.02em!important;text-transform:none!important;
-  color:#0d1117!important;background:var(--ad-orange)!important;border:0!important;border-radius:999px;padding:.42rem .95rem .42rem .8rem!important;box-shadow:0 3px 16px rgba(var(--ad-orange-rgb),.35)!important;text-decoration:none;min-height:36px}
+  color:#0d1117!important;background:var(--ad-orange)!important;border:0!important;border-radius:var(--r-pill);padding:.42rem .95rem .42rem .8rem!important;text-decoration:none;min-height:36px}
 #daily-teaser-sponsor.empty-state:hover{color:#0d1117!important;background:var(--ad-orange-hi)!important;text-decoration:none;transform:translateY(-1px)}
 /* The owner's rule: anything that sells or shows paid space is ad orange, always.
    Light theme needs a darker orange to stay readable as text (4.5:1). */
@@ -1259,7 +1256,7 @@ html[data-theme="light"] .teaser-action{color:#86600f!important;border-color:#86
 #idx1-trust-ledger{border-top:0!important;padding-top:4px!important}
 /* Tooltips: theme colours (the box was hard-coded #161b1c, unreadable in
    light theme at 1:1), and an open tip rises above the next card. */
-.tip-t{background:var(--surface2)!important;color:var(--text)!important;border-color:var(--border-2)!important;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.tip-t{background:var(--surface2)!important;color:var(--text)!important;border-color:var(--border-2)!important}
 .fade-up:has(.tip-t:not([hidden])),.card:has(.tip-t:not([hidden])){position:relative;z-index:61}
 /* Light-theme contrast, measured against the real background (before ->
    after): skip links 3.48 -> 5.69, subbar chip words 2.58 -> 6.11 (#2d5d82),
@@ -1300,9 +1297,8 @@ details>summary:hover{color:var(--text)}
    (their inline outline:none beat the page's :focus-visible). */
 .idx1-shell input:not([type=checkbox]):not([type=radio]):not([type=range]),.idx1-shell select{border-color:var(--ui-field)!important}
 #bids-zip:focus,#wx-zip:focus{outline:2px solid var(--gold)!important;outline-offset:2px}
-/* Range tracks. The price-card track keeps its red-gold-green gradient
-   (2026-10-03); the label sits on its own line instead of an
-   ellipsis. */
+/* Range tracks: a plain grey track with a dot; the label sits on its own
+   line instead of an ellipsis. */
 .idx1-shell .pc-range-labels{display:grid!important;grid-template-columns:auto 1fr auto;row-gap:2px}
 .idx1-shell .pc-range-labels>span:nth-child(2){grid-row:1;grid-column:1/-1;text-align:left!important;overflow:visible!important;text-overflow:clip!important;white-space:normal!important}
 .idx1-shell .pc-range-labels>span:first-child{grid-row:2;grid-column:1}
@@ -1465,7 +1461,7 @@ details.wr>summary{align-items:center!important}
 .idx1-extras-line{max-width:1400px;margin:.4rem auto 0;padding:0 1rem;font-family:"JetBrains Mono",monospace;font-size:.706rem;color:var(--text-dim)}
 /* Pinned to the bottom of the screen (2026-10-24): Chrome fires beforeinstallprompt whenever it likes, and in the
    page flow the banner pushed the hero down 56px (CLS 0.145 at 1280 in CI). Fixed, it moves nothing. */
-.idx1-home-prompt{display:flex;align-items:center;gap:.6rem;position:fixed;left:0;right:0;bottom:0;z-index:60;margin:0;padding:.55rem 1rem calc(.55rem + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border);box-shadow:0 -2px 10px rgba(0,0,0,.12)}
+.idx1-home-prompt{display:flex;align-items:center;gap:.6rem;position:fixed;left:0;right:0;bottom:0;z-index:60;margin:0;padding:.55rem 1rem calc(.55rem + env(safe-area-inset-bottom));background:var(--surface);border-top:1px solid var(--border)}
 /* v4.5 weather legibility pass — dissolve box-in-box, full-bleed on phones, bigger type */
 .wx-card #wx-data .wx-summary-card{background:none;border:0;border-radius:0;padding:1rem 0 0;border-top:1px solid var(--border)}
 .wx-card .wx-7day-strip{gap:.45rem}
@@ -1527,7 +1523,7 @@ details.wr>summary{align-items:center!important}
    inside it. An earlier attempt inserted them inside the grid's .fade-up
    wrappers: the div count stayed balanced while the nesting scrambled.
    Div balance is not a structure check — verify parentElement in a browser. */
-.wr{background:linear-gradient(180deg,rgba(var(--gold-rgb),.06),transparent);border:1px solid rgba(var(--gold-rgb),.28);border-radius:12px;padding:.9rem 1rem;margin:0 0 var(--sp-xl)}
+.wr{background:var(--surface);border:1px solid rgba(var(--gold-rgb),.28);border-radius:12px;padding:.9rem 1rem;margin:0 0 var(--sp-xl)}
 .wr>summary{cursor:pointer;display:flex;align-items:baseline;gap:.5rem;flex-wrap:wrap;list-style:none;padding:0;min-height:44px}
 .wr>summary::-webkit-details-marker{display:none}
 .wr>summary::marker{content:""}
@@ -1685,7 +1681,6 @@ h3:where(.pc-section-lbl,.idx1-extras-title,.s7-ck){font-family:inherit;letter-s
 /* ===== WAVE3-M: header opacity, daily briefing failure state */
 /* The sticky nav sits under the sticky preview flag; its .92 alpha let the
    page scroll through it. Opaque, from the surface token, both themes. */
-.nav,[data-theme="light"] .nav{background:var(--surface);-webkit-backdrop-filter:none;backdrop-filter:none}
 /* daily.json failed: keep the headline and the link to /daily, hide the empty
    briefing furniture around them. */
 #daily-hero.daily-failed .daily-left>:not(#daily-headline):not(#daily-lead),
@@ -2119,9 +2114,8 @@ html[data-look] #f1 .bh-elev>div:first-child>div:first-child{font-size:1rem;font
 html[data-look="bands"] .sec-head,html[data-look="bands"] .m-fold:not(.m-fold--calc)>summary.m-fold-sum{margin-left:-14px!important;margin-right:-14px!important;padding-left:14px!important;padding-right:14px!important}
 html[data-look="bands"] :is(#s7-month,#f1,#f2,#wire-band,#f-prices,#idx1-land,.m-fold--tools,.m-fold--radar,.m-fold--noaa,.m-fold--read,.m-fold--faq,#signup-full,#f5,.m-fold--cot,#f-rail-scorecard,.m-fold--alert,#f-rail-scorecard-teaser){padding:0 14px 14px!important}
 }
-/* 52-week range bars in the price tables: the same red-to-gold-to-green
-   gradient as the price cards (the owner's preference, 2026-10-03). */
-#f-prices .r7-bar{height:4px!important;border-radius:2px;background:linear-gradient(to right,var(--red),var(--gold) 50%,var(--green))!important}
+/* 52-week range track: plain grey, same as the price cards. */
+#f-prices .r7-bar{height:2px!important;border-radius:1px;background:var(--border-2)!important}
 #f-prices .r7-dot{box-shadow:0 0 0 2px var(--surface2)}
 /* Rail headers: in a 340px rail with panel padding, "Upcoming USDA Reports"
    wrapped onto two lines beside its link. The title keeps one line; the
@@ -2517,7 +2511,7 @@ rect.wxs-cy.wxs-part{stroke:var(--wxs-y)}
 .cot-gl-r{text-align:right}
 .cot-gl-a b{text-decoration:underline;text-decoration-color:var(--border-g);text-underline-offset:3px}
 .cot-gl-a:hover b{text-decoration-color:var(--gold)}
-.cot-glance[aria-busy="true"] .cot-gl-line{background:linear-gradient(var(--border),var(--border)) 0 .35em/80% .7em no-repeat;opacity:.5}
+.cot-glance[aria-busy="true"] .cot-gl-line{opacity:.5}
 .cot-ask,.cot-detail{margin-top:.25rem}
 .cot-ask>summary,.cot-detail>summary{cursor:pointer;font-size:.8rem;color:var(--text-muted);padding:.45rem 0;min-height:24px;list-style:none}
 .cot-ask>summary{color:var(--gold);font-weight:700}

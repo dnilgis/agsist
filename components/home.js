@@ -468,7 +468,7 @@ try {
    as is, so there is one filter, not a second copy here that drifts. */
 var MAX_CARDS=4;
 function pc(n){return n>=70?'var(--green)':n>=50?'var(--gold)':n>=30?'var(--text-dim)':'#ef4444';}
-function barBg(n){var rgb=n>=70?'34,197,94':n>=50?'218,165,32':n>=30?'140,140,130':'239,68,68';return'linear-gradient(90deg,rgba('+rgb+',.9),rgba('+rgb+',.3))';}
+function barBg(n){var rgb=n>=70?'34,197,94':n>=50?'218,165,32':n>=30?'140,140,130':'239,68,68';return'rgb('+rgb+')';}
 function tLeft(iso){if(!iso)return'';try{var d=(new Date(iso).getTime()-Date.now())/86400000;if(d<0)return'';if(d<1)return'Today';if(d<2)return'Tomorrow';if(d<=30)return Math.round(d)+'d left';return'~'+Math.round(d/30)+'mo';}catch(e){return'';}}
 var TIER_COLORS={1:'color:var(--green);border-color:rgba(34,197,94,.25);background:rgba(34,197,94,.06)',2:'color:var(--gold);border-color:rgba(var(--gold-rgb),.25);background:rgba(var(--gold-rgb),.06)',3:'color:var(--blue);border-color:rgba(91,163,224,.25);background:rgba(91,163,224,.06)'};
 var TIER_LABELS={1:'DIRECT AG',2:'TRADE / ENERGY',3:'MACRO'};
