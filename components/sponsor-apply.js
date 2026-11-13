@@ -2,7 +2,7 @@
  *
  * Everything a buyer sees here is read, not typed:
  *   prices, terms               data/rate-card.json (sponsors pay by check or bank wire only, Nov 13, 2026:
- *                               no card, no payment link; any pay_links key in the card is ignored)
+ *                               nothing on this page takes a card or links to a payment)
  *   numbers                     data/sponsor-spots.json (engaged visits and page views, 28 days)
  *   sitewide taken              data/sponsor.json (the sitewide sponsor, active)
  *   states taken                data/geo-sponsors.json (a live entry for that state)

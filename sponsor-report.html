@@ -616,26 +616,16 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       approved: !!(ap && ap.proof && code && ap.proof === code),
       stale: !!(ap && ap.proof && code && ap.proof !== code),
       live: !!(c && c.live),
-      trialW: (isFinite(+bill.trial_weeks) && +bill.trial_weeks >= 0) ? Math.floor(+bill.trial_weeks) : 0,
-      /* 2026-10-07: the free period is a month (data/sponsors.json billing.trial_months).
-         trial_weeks still works for a deal written before the change. */
-      trialM: (isFinite(+bill.trial_months) && +bill.trial_months > 0) ? Math.floor(+bill.trial_months) : 0,
       lockM: (isFinite(+bill.rate_lock_months) && +bill.rate_lock_months > 0) ? Math.floor(+bill.rate_lock_months) : null,
       start: okDate(d.start) ? d.start : null
     };
     if (s.start) {
-      s.firstBilled = s.trialM ? addMonths(s.start, s.trialM) : addDays(s.start, s.trialW * 7);
-      s.trialEnd = (s.trialM || s.trialW) ? addDays(s.firstBilled, -1) : null;
+      /* No free months (Nov 13, 2026): billing starts the day the ad goes live. A trial_months or
+         trial_weeks left in a record is ignored, never shown as a free period. */
+      s.firstBilled = s.start;
       s.lockEnd = s.lockM ? addDays(addMonths(s.start, s.lockM), -1) : null;
       s.dayN = Math.floor((D(TODAY) - D(s.start)) / 864e5) + 1;
-      s.inTrial = !!(s.trialEnd && TODAY >= s.start && TODAY <= s.trialEnd);
-      s.trialLeft = s.inTrial ? Math.floor((D(s.trialEnd) - D(TODAY)) / 864e5) + 1 : 0;
     }
-    s.free = s.trialM ? (s.trialM === 1 ? 'first month' : 'first ' + s.trialM + ' months')
-                      : (s.trialW ? 'first ' + s.trialW + ' weeks' : '');
-    s.freeLabel = s.trialM ? (s.trialM === 1 ? '1 free month' : s.trialM + ' free months')
-                           : (s.trialW ? s.trialW + ' free weeks' : 'Free period');
-    s.freeSpan = s.trialM ? (s.trialM === 1 ? 'One month' : s.trialM + ' months') : s.trialW + ' weeks';
     return s;
   }
 
@@ -858,8 +848,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       st = { cls: '', pill: 'Not started', p: 'Your ad is being written. It appears here for your approval before anything runs.' };
     } else if (s.live && (okDate(d.liveSince) || s.start)) {
       st = { cls: 'is-ok', pill: 'Live since ' + esc(fmt(okDate(d.liveSince) ? d.liveSince : s.start, true)),
-             p: (s.inTrial ? 'Free period: ' + s.trialLeft + ' day' + (s.trialLeft === 1 ? '' : 's') + ' left, through ' + esc(fmt(s.trialEnd, true)) + '. ' : '') +
-                'Numbers update every morning, through yesterday.' };
+             p: 'Numbers update every morning, through yesterday.' };
     } else if (s.live) {
       st = { cls: 'is-ok', pill: 'Live', p: d.totals && d.totals.viewable > 0 ? 'Numbers update every morning, through yesterday.' : 'Your ad is running. No full day counted yet, so the counts read 0 until the first morning after one.' };
     } else if (!d.pending && !d.demo && ((d.totals && d.totals.viewable > 0) || (okDate(d.liveSince) && okDate(d.through) && d.liveSince <= d.through))) {
@@ -901,8 +890,9 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
       { t: 'Ad written', d: s.c ? 'Proof ' + s.code : 'In progress', done: !!s.c },
       { t: 'You approve', d: s.approved ? (fmt(s.ap.on, true) || 'Approved') : (s.stale ? 'Needs a new yes' : 'One press'), done: s.approved || s.live },
       { t: 'Goes live', d: s.start ? fmt(s.start, true) : (d.geo ? (s.live ? 'Live now' : 'When Sig switches it on') : 'Next briefing after approval'), done: s.live && (!!s.start || !!d.geo) },
-      { t: s.freeLabel, d: s.trialEnd ? 'Through ' + fmt(s.trialEnd, true) : 'From the first day', done: !!(s.trialEnd && TODAY > s.trialEnd), money: true },
-      { t: 'Billing starts', d: s.firstBilled ? fmt(s.firstBilled, true) : 'After the free period', done: !!(s.firstBilled && TODAY >= s.firstBilled), money: true }
+      { t: 'Billing starts', d: s.firstBilled ? fmt(s.firstBilled, true) : 'The day it goes live', done: !!(s.firstBilled && TODAY >= s.firstBilled), money: true },
+      /* Check or bank wire only (Nov 13, 2026): the invoice we email carries the mailing address and wire instructions. */
+      { t: 'Pay the invoice', d: 'Check or bank wire', done: false, money: true }
     ];
     /* A FREE TEST: the money steps keep their places, muted, and say so. */
     if (d.freeTest) steps.forEach(function (x) { if (x.money) { x.d = FREE; x.done = false; x.muted = true; } });
@@ -1418,7 +1408,7 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
           '<ul><li>' + esc(x.placement || '') + '</li>' + (x.price_by_state ? '<li>' + esc(stateNote(x)) + '</li>' : '') + (x.note ? '<li>' + esc(x.note) + '</li>' : '') + '</ul></div>';
       });
       b += '</div>';
-      if (rc.trial || rc.terms) b += '<p class="cp-small cp-muted" style="margin:.6rem 0 0">' + esc([rc.trial, rc.day30, rc.terms, rc.prepay, rc.founding && rc.founding.text, rc.paperwork].filter(Boolean).join(' ')) + '</p>';
+      if (rc.terms || rc.pay) b += '<p class="cp-small cp-muted" style="margin:.6rem 0 0">' + esc([rc.terms, rc.prepay, rc.pay, rc.paperwork].filter(Boolean).join(' ')) + '</p>';
       return b + '</div></details>';
     }
     var bsum = d.freeTest ? FREE : (t ? esc(t.name) + ' &middot; ' + esc(priceText(t, d, s)) + ' a month' + (rc.currency && rc.currency !== 'USD' ? ' ' + esc(rc.currency) : '') : 'Plan not recorded yet');
@@ -1435,24 +1425,20 @@ table.cp-t{width:100%;border-collapse:collapse;font-size:.88rem;margin:.9rem 0 0
          (ownPriceNote(t, d, s) ? '<p class="cp-small">' + esc(ownPriceNote(t, d, s)) + '</p>'
            : (t.price_by_state && !ownPrices(t, d, s) ? '<p class="cp-small">' + esc(stateNote(t, d.regions)) + '</p>' : '')) +
          '<ul>' +
-         /* Only a deal with a free period says so, with its own end date when the ad has started (Nov 4). */
-         (s.trialEnd ? '<li>Free through ' + esc(fmt(s.trialEnd, true)) + ', then month to month</li>'
-           : s.free ? '<li>' + s.free.charAt(0).toUpperCase() + s.free.slice(1) + ' free, then month to month</li>' : '') +
          (s.lockM ? '<li>Rate locked for ' + esc(s.lockM) + ' months from your start date</li>' : '') +
-         (rc.terms ? '<li>' + esc((s.free ? '' : 'Month to month. ') + String(rc.terms).replace(/^Month to month after that\.\s*/, '')) + '</li>' : '') +
+         (rc.terms ? '<li>' + esc('Month to month. ' + String(rc.terms).replace(/^Month to month after that\.\s*/, '')) + '</li>' : '') +
+         (rc.pay ? '<li>' + esc(rc.pay) + '</li>' : '') +
          (t.exclusive ? '<li>Exclusive: ' + (t.one_per_state ? 'one business per state' : t.id === 'daily' ? 'one sponsor per issue' : 'one sponsor only') + '</li>' : '') +
          '</ul></div>';
     var tl = [];
     if (s.start) {
       tl.push([s.start, 'Your ad goes live', (d.geo ? 'The first day your ad shows.' : 'The first briefing with your ad.') + ' The results counter starts here.', TODAY === s.start]);
-      if (s.trialEnd) tl.push([s.trialEnd, 'Last free day', s.freeSpan + ' at no charge, ' + fmt(s.start) + ' to ' + fmt(s.trialEnd) + '.', s.inTrial]);
-      /* No free period: the first billed month starts the day the ad goes live (audit, Nov 4). */
-      tl.push([s.firstBilled, 'First billed month', priceText(t, d, s) + ' a month from ' + (s.trialEnd ? 'here' : 'your first day') + ', month to month.', TODAY >= s.firstBilled && (!s.lockEnd || TODAY <= s.lockEnd)]);
+      /* The first billed month starts the day the ad goes live (audit, Nov 4; no free months, Nov 13). */
+      tl.push([s.firstBilled, 'First billed month', priceText(t, d, s) + ' a month from your first day, month to month.', TODAY >= s.firstBilled && (!s.lockEnd || TODAY <= s.lockEnd)]);
       if (s.lockEnd) tl.push([s.lockEnd, 'Rate lock ends', 'Your ' + priceText(t, d, s) + '-a-month ' + t.name.toLowerCase() + ' rate holds through this date.', false]);
     } else {
       tl.push([null, 'Your ad goes live', 'The morning after you approve. That date sets everything below.', false]);
-      if (s.trialM || s.trialW) tl.push([null, s.freeLabel, 'From the first day your ad runs.', false]);
-      tl.push([null, 'First billed month', ((s.trialM || s.trialW) ? 'The day after the free period ends' : 'The day your ad goes live') + ', at ' + priceText(t, d, s) + ' a month.', false]);
+      tl.push([null, 'First billed month', 'The day your ad goes live, at ' + priceText(t, d, s) + ' a month.', false]);
       if (s.lockM) tl.push([null, 'Rate lock', 'Your rate holds for ' + s.lockM + ' months from the start date.', false]);
     }
     /* A free test is never billed, so its schedule carries no billing date (it read "First billed month Oct 28, $29"). */

@@ -5,6 +5,9 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.68 (2026-11-13): SPONSORS PAY BY CHECK OR BANK WIRE. The sponsor confirm pages no longer
+ *   promise a free first month (no free months, Nov 13): they say the ad is paid by check or bank
+ *   wire from the invoice we email. No new binding or secret. Every other route answers as before.
  * v5.67 (2026-11-10): REPORT-DAY RESULT. POST /report-live takes the graded result of a USDA
  *   report from the report-day job (.github/workflows/report-day-live.yml, scripts/report_live.py)
  *   in one fixed shape (rows of USDA's figure against the trade, counts, the WASDE balance lines,
@@ -4517,12 +4520,12 @@ async function handle(req, env) {
         if (req.method !== "POST")
           return htmlPage("Confirm your AGSIST ad: " + what,
             "<form method=post><button style=\"font-size:16px;padding:10px 18px\">Yes, send it to Sig</button></form>" +
-            "<p>Your first month is free. Nothing runs until Sig has looked at it.</p>");
+            "<p>Nothing runs until Sig has looked at it. You pay by check or bank wire: the invoice we email has the mailing address and wire instructions.</p>");
         r.status = "confirmed"; r.cts = Date.now();
         await env.SUBS.put("sapp:" + id, JSON.stringify(r));
         return htmlPage("Thanks. Sig has your ad.",
-          "<p>He reviews every ad himself, usually the same day, and you'll get an email when it's live. " +
-          "Your free month starts the day it runs.</p>");
+          "<p>He reviews every ad himself, usually the same day, and you'll get an email when it's live, " +
+          "with the invoice. Pay it by check or bank wire.</p>");
       }
       const ok = SAPP_DECISIONS[d].from.includes(r.status);
       if (!ok) return htmlPage("Nothing to do: this application is " + escHtml(r.status) + ".");
