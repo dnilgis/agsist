@@ -53,7 +53,7 @@
     <h2 id="dm-county-h" style="font-size:1rem;margin:0 0 .35rem">Is your county in drought this week?</h2>
     <p style="margin:0 0 .55rem;font-size:.85rem;color:var(--text-dim)">This week&rsquo;s share in each category, how long it has run, rain this year and the record since 2000. NDMC county numbers and the county&rsquo;s rain gauge.</p>
     <label for="dm-county-q" style="display:block;font-size:.8rem;font-weight:700;margin-bottom:.25rem">County</label>
-    <input id="dm-county-q" type="search" autocomplete="off" placeholder="Type a county, like Story" style="width:100%;max-width:420px;box-sizing:border-box;padding:.55rem .7rem;min-height:44px;border:1px solid var(--border);border-radius:6px;background:var(--bg);color:var(--text);font:inherit">
+    <input id="dm-county-q" type="search" autocomplete="off" placeholder="Type a county, like Story" style="width:100%;max-width:420px;box-sizing:border-box;padding:.55rem .7rem;min-height:44px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font:inherit">
     <div id="dm-county-list" style="display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.45rem"></div>
     <div id="dm-county-out" aria-live="polite" style="margin-top:.6rem;font-size:.88rem;line-height:1.55"></div>
   </section>
@@ -177,7 +177,7 @@
 <!--FAQ:START-->
 <style>
 .agf{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin:1.5rem 0 0}
-.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
+.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text);margin:0 0 .4rem}
 .agf details{border-top:1px solid var(--border)}
 .agf details:first-of-type{border-top:0}
 .agf summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.85rem 0;font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111a0a">
   <title>Tar spot of corn: identify, scout, spray or not, break-even | AGSIST</title>
   <meta name="description" content="Tar spot of corn in plain words: where it is, how to tell it from rust, when to scout, when a fungicide pays, a spray break-even calculator, and myths.">
-  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="author"      content="AGSIST">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <link rel="canonical"    href="https://agsist.com/tar-spot">
   <meta property="og:type"         content="website">
@@ -30,8 +30,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -52,38 +52,38 @@
     .ts-lead{font-size:1.02rem!important;color:var(--text)!important}
     .ts-jump{display:flex;flex-wrap:wrap;gap:.35rem;list-style:none;padding:0!important;margin:0 0 1.2rem!important}
     .ts-jump li{margin:0}
-    .ts-jump a{display:inline-flex;align-items:center;min-height:36px;padding:0 .7rem;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--text);font-size:.84rem;text-decoration:none}
+    .ts-jump a{display:inline-flex;align-items:center;min-height:36px;padding:0 .7rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);color:var(--text);font-size:.84rem;text-decoration:none}
     .ts-src{font-size:.84rem!important;color:var(--text-muted)!important}
-    .ts-note{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:.75rem 1rem;margin:0 0 1rem}
+    .ts-note{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:.75rem 1rem;margin:0 0 1rem}
     .ts-note p{margin:0;color:var(--text)}
     .ts-gal{display:grid;grid-template-columns:repeat(2,1fr);gap:.7rem;margin:.4rem 0 .4rem;align-items:start}
     .ts-gal figure{margin:0;min-width:0}
-    .ts-gal a{display:block;border-radius:8px;overflow:hidden;border:1px solid var(--border)}
+    .ts-gal a{display:block;border-radius:var(--r-md);overflow:hidden;border:1px solid var(--border)}
     .ts-gal img{display:block;width:100%;height:auto}
     .ts-gal figcaption{font-size:.8rem;line-height:1.35;color:var(--text-muted);margin-top:.3rem}
     @media (min-width:640px){.ts-gal{grid-template-columns:repeat(4,1fr)}}
-    .ts-calc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:.9rem;margin:1rem 0}
+    .ts-calc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.9rem;margin:1rem 0}
     .ts-calc h3{margin:0 0 .6rem;font-size:1.05rem}
-    .ts-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:0 0 .8rem}
+    .ts-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin:0 0 .8rem}
     .ts-seg button{flex:1 1 0;min-height:48px;padding:0 .4rem;border:0;background:var(--bg);color:var(--text-dim);font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
     .ts-seg button+button{border-left:1px solid var(--border)}
     .ts-seg button[aria-pressed="true"]{background:var(--gold-fill);color:#111}
     .ts-in{display:grid;grid-template-columns:repeat(auto-fill,minmax(8.5rem,1fr));gap:.6rem .9rem;margin:0 0 .6rem;align-items:end}
     .ts-in label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;color:var(--text-muted)}
-    .ts-in input,.ts-in select{width:100%;min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;box-sizing:border-box}
+    .ts-in input,.ts-in select{width:100%;min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;box-sizing:border-box}
     .ts-in select{font-family:inherit;font-size:.92rem}
     .ts-in input[aria-invalid="true"]{border-color:var(--red)}
-    .ts-btn{min-height:44px;padding:0 .9rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:.86rem;font-weight:700;cursor:pointer}
-    .ts-answer{background:var(--bg);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:.8rem 1rem;margin:.6rem 0 .4rem}
+    .ts-btn{min-height:44px;padding:0 .9rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font:inherit;font-size:.86rem;font-weight:700;cursor:pointer}
+    .ts-answer{background:var(--bg);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:.8rem 1rem;margin:.6rem 0 .4rem}
     .ts-v{display:block;font-size:clamp(1.3rem,6vw,1.8rem);font-weight:800;line-height:1.15;color:var(--text);margin:0 0 .35rem}
     .ts-answer p{margin:.3rem 0 0;font-size:.94rem;color:var(--text)}
-    .ts-eq{display:block;padding:.5rem .7rem;margin:.5rem 0 0;background:var(--surface);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-word}
+    .ts-eq{display:block;padding:.5rem .7rem;margin:.5rem 0 0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);font-family:'JetBrains Mono',monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-word}
     .ts-eq:empty,.ts-answer p:empty{display:none}
-    .ts details.box{border:1px solid var(--border);border-radius:10px;padding:.15rem .9rem;margin:.6rem 0;background:var(--bg)}
+    .ts details.box{border:1px solid var(--border);border-radius:var(--r-lg);padding:.15rem .9rem;margin:.6rem 0;background:var(--bg)}
     .ts details.box>summary{cursor:pointer;min-height:46px;display:flex;align-items:center;font-weight:700;color:var(--text)}
     .ts-t{border-collapse:collapse;width:100%;font-size:.88rem;margin:.2rem 0 .8rem}
     .ts-t th,.ts-t td{padding:.45rem .5rem;border-bottom:1px solid var(--border);text-align:left;vertical-align:top}
-    .ts-t thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .ts-t thead th{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted);vertical-align:bottom}
     .ts-t td{color:var(--text)}
     .ts-t.num td{font-family:'JetBrains Mono',monospace;text-align:right}
     .ts-t.num th:first-child,.ts-t.num td:first-child{text-align:left}
@@ -99,8 +99,8 @@
     html:not([data-ts="second"]) .second-only,html[data-ts="second"] .one-only{display:none!important}
     @media print{#site-header,#site-footer,.skip,.breadcrumb,.ts-jump,.ts-seg,.ts-btn,[data-signup-ask]{display:none!important}html,body,main{background:#fff!important;color:#000!important}.ts p,.ts li,.ts b,.ts-v{color:#000!important}}
   </style>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "@id": "https://agsist.com/tar-spot#article", "headline": "Tar spot of corn: what to look for, and when a spray pays", "url": "https://agsist.com/tar-spot", "description": "Tar spot of corn in plain words: where it is, how to tell it from rust, when to scout, when a fungicide pays, a spray break-even calculator, and myths.", "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": "2026-11-05", "dateModified": "2026-11-05", "inLanguage": "en-US", "about": {"@type": "Thing", "name": "Tar spot of corn"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://agsist.com/tools"}, {"@type": "ListItem", "position": 3, "name": "Tar spot", "item": "https://agsist.com/tar-spot"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where is tar spot now?", "acceptedAnswer": {"@type": "Answer", "text": "Tar spot was first confirmed in the United States in 2015, in Indiana and Illinois. It has since spread through the Corn Belt and beyond: North Dakota State University found it in nine North Dakota counties in 2024, and NC State Extension confirmed North Carolina's first case, in Randolph County, in 2026. The Crop Protection Network keeps the county map of confirmed finds."}}, {"@type": "Question", "name": "What does tar spot look like?", "acceptedAnswer": {"@type": "Answer", "text": "Small, raised black spots that sit in the leaf tissue and feel bumpy, like flecks of tar. They do not rub off. A tan or yellow halo (a fisheye) may show around some spots, but it does not have to be there. Look at both sides of the lower, ear and upper leaves."}}, {"@type": "Question", "name": "How do I tell tar spot from rust or insect droppings?", "acceptedAnswer": {"@type": "Answer", "text": "Insect droppings wipe off with a wet thumb; tar spot does not. Rust pustules break open and shed orange or brown spores, but late in the season rust can form dark spots that also stay put, so the scrape test is not the final word. If you are not sure, or it is the first find in your county, send a sample to your state's plant diagnostic lab."}}, {"@type": "Question", "name": "When should I spray fungicide for tar spot?", "acceptedAnswer": {"@type": "Answer", "text": "University guidance puts the main decision from tassel (VT) through milk (R3), when tar spot is in the field or close by, the weather favors it and the hybrid is susceptible. A pass much earlier can wear off before the disease period. Later passes have less yield left to protect. Check the label for rates, crop stage limits and days to harvest."}}, {"@type": "Question", "name": "Does a second fungicide pass for tar spot pay?", "acceptedAnswer": {"@type": "Answer", "text": "Only if the extra bushels it adds over one pass cover its own cost. Better disease control is not the same as more grain: in recent Purdue (2024) and Wisconsin (2025) trials, fungicide held tar spot down while the yield gains were too small to call real. Compare a second pass with one pass, not with untreated corn. The calculator on this page does that arithmetic."}}, {"@type": "Question", "name": "How many bushels does a fungicide pass need to break even?", "acceptedAnswer": {"@type": "Answer", "text": "Divide the cost of the pass by your corn price. A $32 an acre pass (product plus application) at $4 corn needs 8 bushels an acre. Add any bushels the trip itself knocks down. That is arithmetic, not a promise the pass will save that much."}}, {"@type": "Question", "name": "Does tar spot make mycotoxins in corn silage?", "acceptedAnswer": {"@type": "Answer", "text": "Do not assume it does. The Crop Protection Network's tar spot overview warns about fast drydown, not a tar spot toxin. Dead leaves can make the plant dry down fast, so check whole-plant moisture before you chop. If a feed test finds a toxin such as DON, look for the ear rot that makes it."}}]}]}</script>
-<link rel="stylesheet" href="/components/src-fold.css?v=1">
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "Article", "@id": "https://agsist.com/tar-spot#article", "headline": "Tar spot of corn: what to look for, and when a spray pays", "url": "https://agsist.com/tar-spot", "description": "Tar spot of corn in plain words: where it is, how to tell it from rust, when to scout, when a fungicide pays, a spray break-even calculator, and myths.", "author": {"@id":"https://agsist.com/#organization"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": "2026-11-05", "dateModified": "2026-11-05", "inLanguage": "en-US", "about": {"@type": "Thing", "name": "Tar spot of corn"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://agsist.com/tools"}, {"@type": "ListItem", "position": 3, "name": "Tar spot", "item": "https://agsist.com/tar-spot"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where is tar spot now?", "acceptedAnswer": {"@type": "Answer", "text": "Tar spot was first confirmed in the United States in 2015, in Indiana and Illinois. It has since spread through the Corn Belt and beyond: North Dakota State University found it in nine North Dakota counties in 2024, and NC State Extension confirmed North Carolina's first case, in Randolph County, in 2026. The Crop Protection Network keeps the county map of confirmed finds."}}, {"@type": "Question", "name": "What does tar spot look like?", "acceptedAnswer": {"@type": "Answer", "text": "Small, raised black spots that sit in the leaf tissue and feel bumpy, like flecks of tar. They do not rub off. A tan or yellow halo (a fisheye) may show around some spots, but it does not have to be there. Look at both sides of the lower, ear and upper leaves."}}, {"@type": "Question", "name": "How do I tell tar spot from rust or insect droppings?", "acceptedAnswer": {"@type": "Answer", "text": "Insect droppings wipe off with a wet thumb; tar spot does not. Rust pustules break open and shed orange or brown spores, but late in the season rust can form dark spots that also stay put, so the scrape test is not the final word. If you are not sure, or it is the first find in your county, send a sample to your state's plant diagnostic lab."}}, {"@type": "Question", "name": "When should I spray fungicide for tar spot?", "acceptedAnswer": {"@type": "Answer", "text": "University guidance puts the main decision from tassel (VT) through milk (R3), when tar spot is in the field or close by, the weather favors it and the hybrid is susceptible. A pass much earlier can wear off before the disease period. Later passes have less yield left to protect. Check the label for rates, crop stage limits and days to harvest."}}, {"@type": "Question", "name": "Does a second fungicide pass for tar spot pay?", "acceptedAnswer": {"@type": "Answer", "text": "Only if the extra bushels it adds over one pass cover its own cost. Better disease control is not the same as more grain: in recent Purdue (2024) and Wisconsin (2025) trials, fungicide held tar spot down while the yield gains were too small to call real. Compare a second pass with one pass, not with untreated corn. The calculator on this page does that arithmetic."}}, {"@type": "Question", "name": "How many bushels does a fungicide pass need to break even?", "acceptedAnswer": {"@type": "Answer", "text": "Divide the cost of the pass by your corn price. A $32 an acre pass (product plus application) at $4 corn needs 8 bushels an acre. Add any bushels the trip itself knocks down. That is arithmetic, not a promise the pass will save that much."}}, {"@type": "Question", "name": "Does tar spot make mycotoxins in corn silage?", "acceptedAnswer": {"@type": "Answer", "text": "Do not assume it does. The Crop Protection Network's tar spot overview warns about fast drydown, not a tar spot toxin. Dead leaves can make the plant dry down fast, so check whole-plant moisture before you chop. If a feed test finds a toxin such as DON, look for the ear rot that makes it."}}]}]}</script>
+<link rel="stylesheet" href="/components/src-fold.css?v=2">
 <script src="/components/src-fold.js?v=1" defer></script>
 </head>
 <body>
@@ -235,7 +235,7 @@
         <p class="ts-src" style="margin:.5rem 0 0">This is arithmetic, not a promise that a spray will save those bushels. No trial set gives a dependable chance that a pass pays in your field.</p>
       </section>
 
-      <h3>Break-even at a glance</h3>
+      <h3>Break-even table</h3>
       <div class="ts-tw"><table class="ts-t num"><caption class="sr-only">Bushels an acre to break even by cost of the pass and corn price</caption>
         <thead><tr><th scope="col">Cost of the pass</th><th scope="col">$3.50 corn</th><th scope="col">$4.00</th><th scope="col">$4.50</th><th scope="col">$5.00</th></tr></thead>
         <tbody>
@@ -336,7 +336,6 @@
         <li><a href="/gdu-calculator">GDU and crop stage</a></li>
       </ul>
     </article>
-  <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
   <div id="site-footer">
 <!-- static-nav:footer -->
@@ -348,15 +347,15 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/grain-shrink.js?v=4" defer></script>
-  <script src="/components/rate-hint.js?v=1" defer></script>
+  <script src="/components/rate-hint.js?v=2" defer></script>
   <script src="/components/tar-spot.js?v=1" defer></script>
 </body>
 </html>

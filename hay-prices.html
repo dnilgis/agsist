@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111a0a">
   <title>Hay prices by state: alfalfa and other hay, $ per ton | AGSIST</title>
   <meta name="description" content="Hay prices by state from USDA: this week's AMS hay trades by grade and bale type, and NASS monthly prices for alfalfa and other hay, dollars a ton, with three years of history.">
-  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="author"      content="AGSIST">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <link rel="canonical"    href="https://agsist.com/hay-prices">
   <meta property="og:type"         content="website">
@@ -31,8 +31,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <style>
@@ -46,13 +46,13 @@
     .hp a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
     .hp b{color:var(--text)}
     .hp-lede{font-size:1rem!important}
-    .hp-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:0 0 .8rem}
+    .hp-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin:0 0 .8rem}
     .hp-seg[hidden]{display:none}
     .hp-seg button{flex:1 1 0;min-height:44px;padding:0 .5rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
     .hp-seg button+button{border-left:1px solid var(--border)}
     .hp-seg button[aria-pressed="true"]{background:var(--gold-fill);color:#111}
-    .hp-empty{background:var(--surface);border:1px dashed var(--border);border-radius:12px;padding:1rem 1.1rem;color:var(--text-dim)}
-    .hp-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:.8rem 1rem .6rem;margin:0 0 .4rem}
+    .hp-empty{background:var(--surface);border:1px dashed var(--border);border-radius:var(--r-lg);padding:1rem 1.1rem;color:var(--text-dim)}
+    .hp-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:.8rem 1rem .6rem;margin:0 0 .4rem}
     .hp-answer p{margin:0 0 .35rem}
     .hp-k{font-size:.85rem!important;color:var(--text-muted)!important;font-weight:700}
     .hp-big{font-size:clamp(1.9rem,8vw,2.5rem)!important;font-weight:800;line-height:1.1!important;color:var(--text)!important;font-family:'JetBrains Mono',monospace}
@@ -62,7 +62,7 @@
     .hp-fine{font-size:.82rem!important;color:var(--text-muted)!important}
     .hp-warn{color:var(--text)!important;border-left:3px solid var(--gold);padding-left:.5rem}
     .hp-flag{font-family:inherit;font-size:.78rem;color:var(--text-muted);font-style:italic;white-space:normal}
-    .hp-chart{outline-offset:4px;border-radius:6px;touch-action:pan-y}
+    .hp-chart{outline-offset:4px;border-radius:var(--r-md);touch-action:pan-y}
     .hp-chart svg{display:block;height:auto;overflow:visible}
     .hp-line{fill:none;stroke:var(--green);stroke-width:2;stroke-linejoin:round;stroke-linecap:round}
     .hp-dot{fill:var(--green);stroke:var(--bg);stroke-width:2}
@@ -72,13 +72,13 @@
     .hp-tip{font-size:.86rem!important;color:var(--text)!important;min-height:1.5em;margin:.2rem 0 .6rem!important}
     .hp-bale{display:flex;flex-wrap:wrap;align-items:center;gap:.3rem .7rem;margin:0 0 .5rem!important}
     .hp-bale label{display:inline-flex;align-items:center;gap:.35rem;font-size:.88rem;color:var(--text-dim)}
-    .hp-bale input{width:5.5rem;min-height:42px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
+    .hp-bale input{width:5.5rem;min-height:42px;padding:0 .5rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
     .hp-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
     .hp-t{border-collapse:collapse;width:100%;font-size:.9rem;margin:.2rem 0 .6rem}
     .hp-t caption{text-align:left;font-size:.85rem;color:var(--text-muted);padding:0 0 .3rem}
     .hp-t th,.hp-t td{padding:.45rem .4rem;border-bottom:1px solid var(--border);text-align:right;vertical-align:middle}
     .hp-t th:first-child{text-align:left}
-    .hp-t thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .hp-t thead th{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted);vertical-align:bottom}
     .hp-t thead th button{background:none;border:0;padding:.2rem 0;min-height:36px;color:inherit;font:inherit;text-transform:inherit;letter-spacing:inherit;cursor:pointer;text-align:inherit}
     .hp-t thead th button[aria-pressed="true"]{color:var(--text)}
     .hp-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
@@ -93,7 +93,7 @@
     .hp .src{font-size:.84rem;color:var(--text-muted);margin-top:1.5rem}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
     .hp-ams h2,.hp #nass{margin-top:1.4rem}
-    .hp-ams-tag{display:inline-block;font-size:.68rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:.1rem .4rem;border-radius:5px;background:var(--gold-fill);color:#111;margin-right:.3rem;vertical-align:1px;font-style:normal}
+    .hp-ams-tag{display:inline-block;font-size:.68rem;font-weight:800;text-transform:none;letter-spacing:0;padding:.1rem .4rem;border-radius:var(--r-md);background:var(--gold-fill);color:#111;margin-right:.3rem;vertical-align:1px;font-style:normal}
     .hp-ams-tag-n{background:var(--surface);color:var(--text);border:1px solid var(--border)}
     .hp-ams-empty{padding:.6rem .8rem!important;font-size:.9rem!important;margin:0 0 .4rem!important}
     /* the AMS tables (1,200 to 1,800 px) replace the placeholder after the files land: until then the box holds a
@@ -101,8 +101,8 @@
     #hp-ams-live.hp-ams-wait{min-height:100vh}
     .hp-ams-pick{margin:.2rem 0 .5rem!important}
     .hp-ams-pick label{display:inline-flex;align-items:center;gap:.45rem;font-size:.9rem;color:var(--text-dim)}
-    .hp-ams-pick select{min-height:42px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:.95rem;max-width:15rem}
-    .hp-ams-rep{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:.7rem .8rem .3rem}
+    .hp-ams-pick select{min-height:42px;padding:0 .5rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font:inherit;font-size:.95rem;max-width:15rem}
+    .hp-ams-rep{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:.7rem .8rem .3rem}
     .hp-ams-rep p{margin:0 0 .45rem}
     .hp-ams-k{font-weight:700;color:var(--text)!important;font-size:.95rem!important}
     .hp-ams-when{font-size:.88rem!important;color:var(--text)!important}
@@ -112,12 +112,12 @@
     .hp-ams-rep .hp-ams-t td{white-space:nowrap}.hp-ams-rep .hp-ams-t td.tl{white-space:normal}
     .hp-ams-tn{display:none}
     @media(max-width:520px){.hp-ams-rep .hp-ams-t td{white-space:normal}.hp-ams-t .hp-ams-q{display:none}.hp-ams-tn{display:inline}.hp-ams-t td.tl{min-width:0}.hp-ams-rep{padding:.6rem .5rem .3rem}.hp-ams-t th[scope=row]{font-size:.8rem;width:5.2rem}.hp-ams-t td{font-size:.82rem}}
-    .hp-ams-t tr.hp-ams-g th{background:var(--bg);text-align:left;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--gold)}
+    .hp-ams-t tr.hp-ams-g th{background:var(--bg);text-align:left;font-size:.78rem;font-weight:800;text-transform:none;letter-spacing:0;color:var(--gold)}
     .hp-ams-nass{font-size:.88rem!important;color:var(--text)!important;border-top:1px dashed var(--border);padding-top:.45rem}
     @media(max-width:420px){.hp-t{font-size:.84rem}.hp-t th,.hp-t td{padding:.4rem .25rem}.hp-seg button{font-size:.86rem}}
   </style>
   <noscript><style>#hp-ams-live.hp-ams-wait{min-height:0}</style></noscript>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "@id": "https://agsist.com/hay-prices#page", "name": "Hay prices by state: alfalfa and other hay, $ per ton", "url": "https://agsist.com/hay-prices", "description": "Hay prices by state from USDA: this week's AMS hay trades by grade and bale type, and NASS monthly prices for alfalfa and other hay, dollars a ton, with three years of history.", "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": "2026-10-16", "dateModified": "2026-10-16", "inLanguage": "en-US"}, {"@type": "Dataset", "@id": "https://agsist.com/hay-prices#data", "name": "Hay prices received by state, monthly, $ per ton", "description": "USDA NASS prices received by farmers for alfalfa hay, other hay and all hay, monthly, by state and US, newest month plus 36 months, from the Agricultural Prices report via Quick Stats.", "url": "https://agsist.com/hay-prices", "isBasedOn": "https://quickstats.nass.usda.gov/", "creator": {"@type": "Organization", "name": "USDA National Agricultural Statistics Service"}, "license": "https://agsist.com/terms"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Markets", "item": "https://agsist.com/markets"}, {"@type": "ListItem", "position": 3, "name": "Hay prices", "item": "https://agsist.com/hay-prices"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is a ton of hay worth right now?", "acceptedAnswer": {"@type": "Answer", "text": "Two numbers answer it. The AMS hay reports at the top give this week’s trades in your state by grade and bale type, with the report date. The NASS box below gives last month’s average price received for all hay sold, with the same month a year ago. Good hay brings more than the NASS average and poor hay less, so price a load from the AMS grade that matches yours."}}, {"@type": "Question", "name": "What is “other hay”?", "acceptedAnswer": {"@type": "Answer", "text": "All hay that is not alfalfa or an alfalfa mix: grass, clover, small grain and wild hay. “All hay” is alfalfa and other hay together."}}, {"@type": "Question", "name": "Why is my state missing or blank?", "acceptedAnswer": {"@type": "Answer", "text": "NASS publishes hay prices only for the states and months where it has enough sales to report. Some months it withholds a state’s number so no single farm’s sales can be worked out from it. The page leaves those blank and says why. It never fills them in."}}, {"@type": "Question", "name": "How do I turn a price per ton into a price per bale?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply the price per ton by the bale weight in pounds and divide by 2,000. A 1,200 lb round bale at $180 a ton is 180 x 1,200 / 2,000 = $108 a bale. Weigh a few bales if you can; guessed weights are often off by a couple hundred pounds. Type a bale weight above the table and the page does the math for every state."}}, {"@type": "Question", "name": "Why is the USDA price lower than what hay brings at the sale barn?", "acceptedAnswer": {"@type": "Answer", "text": "It averages every ton sold, every quality and bale type, across the state, and it is a month behind. Auctions and the AMS reports often draw the hay people want to show off. In South Dakota in October 2026, for one, AMS saw alfalfa trade by grade well over the August NASS average. The AMS section at the top shows each grade and bale type on its own so you can match your hay to it."}}, {"@type": "Question", "name": "When does this page update?", "acceptedAnswer": {"@type": "Answer", "text": "USDA NASS puts out Agricultural Prices near the end of each month. The page reads it in the last days of the month and again early the next month. Every number carries the month it is for and the day USDA released it."}}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "@id": "https://agsist.com/hay-prices#page", "name": "Hay prices by state: alfalfa and other hay, $ per ton", "url": "https://agsist.com/hay-prices", "description": "Hay prices by state from USDA: this week's AMS hay trades by grade and bale type, and NASS monthly prices for alfalfa and other hay, dollars a ton, with three years of history.", "author": {"@id":"https://agsist.com/#organization"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": "2026-10-16", "dateModified": "2026-10-16", "inLanguage": "en-US"}, {"@type": "Dataset", "@id": "https://agsist.com/hay-prices#data", "name": "Hay prices received by state, monthly, $ per ton", "description": "USDA NASS prices received by farmers for alfalfa hay, other hay and all hay, monthly, by state and US, newest month plus 36 months, from the Agricultural Prices report via Quick Stats.", "url": "https://agsist.com/hay-prices", "isBasedOn": "https://quickstats.nass.usda.gov/", "creator": {"@type": "Organization", "name": "USDA National Agricultural Statistics Service"}, "license": "https://agsist.com/terms"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Markets", "item": "https://agsist.com/markets"}, {"@type": "ListItem", "position": 3, "name": "Hay prices", "item": "https://agsist.com/hay-prices"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "What is a ton of hay worth right now?", "acceptedAnswer": {"@type": "Answer", "text": "Two numbers answer it. The AMS hay reports at the top give this week’s trades in your state by grade and bale type, with the report date. The NASS box below gives last month’s average price received for all hay sold, with the same month a year ago. Good hay brings more than the NASS average and poor hay less, so price a load from the AMS grade that matches yours."}}, {"@type": "Question", "name": "What is “other hay”?", "acceptedAnswer": {"@type": "Answer", "text": "All hay that is not alfalfa or an alfalfa mix: grass, clover, small grain and wild hay. “All hay” is alfalfa and other hay together."}}, {"@type": "Question", "name": "Why is my state missing or blank?", "acceptedAnswer": {"@type": "Answer", "text": "NASS publishes hay prices only for the states and months where it has enough sales to report. Some months it withholds a state’s number so no single farm’s sales can be worked out from it. The page leaves those blank and says why. It never fills them in."}}, {"@type": "Question", "name": "How do I turn a price per ton into a price per bale?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply the price per ton by the bale weight in pounds and divide by 2,000. A 1,200 lb round bale at $180 a ton is 180 x 1,200 / 2,000 = $108 a bale. Weigh a few bales if you can; guessed weights are often off by a couple hundred pounds. Type a bale weight above the table and the page does the math for every state."}}, {"@type": "Question", "name": "Why is the USDA price lower than what hay brings at the sale barn?", "acceptedAnswer": {"@type": "Answer", "text": "It averages every ton sold, every quality and bale type, across the state, and it is a month behind. Auctions and the AMS reports often draw the hay people want to show off. In South Dakota in October 2026, for one, AMS saw alfalfa trade by grade well over the August NASS average. The AMS section at the top shows each grade and bale type on its own so you can match your hay to it."}}, {"@type": "Question", "name": "When does this page update?", "acceptedAnswer": {"@type": "Answer", "text": "USDA NASS puts out Agricultural Prices near the end of each month. The page reads it in the last days of the month and again early the next month. Every number carries the month it is for and the day USDA released it."}}]}]}</script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -195,7 +195,6 @@
         <li><a href="/usda-calendar">USDA report calendar</a></li>
       </ul>
     </article>
-  <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 <details class="hp-terms" style="max-width:1100px;margin:1.2rem auto;padding:0 12px;font-size:.78rem;line-height:1.6;color:var(--text-muted)"><summary style="cursor:pointer;color:var(--text-dim);min-height:44px;display:flex;align-items:center">Sources and terms</summary>
 <p style="margin:.4rem 0 0">USDA National Agricultural Statistics Service, <i>Agricultural Prices</i>, read through Quick Stats: prices received for hay, alfalfa hay and other hay (excluding alfalfa), $ per ton, monthly, by state and US. This product uses the NASS API but is not endorsed or certified by NASS. Averages, trends, ranks and estimates are calculations by AGSIST.</p>
 </details>
@@ -210,13 +209,13 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/hay-ams.js?v=9" defer></script>
   <script>
 /*hay:start*/
@@ -405,6 +404,6 @@ function haySpark(months, vals, w, h, big) {
     .catch(function () {});
 })();
   </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

@@ -330,7 +330,7 @@
   function arc() { getJSON('/data/arc-plc.json').then(function (f) { fill('arc', P.factArcPlc(f, centralDay(), D.arc || '/arc-plc')); }); }
 
   function start() {
-    loadScript('/components/place.js?v=14', function () { return !!window.AgPlace; }).then(function (ok) {
+    loadScript('/components/place.js?v=15', function () { return !!window.AgPlace; }).then(function (ok) {
       if (!ok) { fail(ALL, 'this part did not load; try again in a minute'); return; }
       P = window.AgPlace;
       if (lat == null || lng == null) fail(['corn-bid', 'soy-bid', 'lf-bid'], 'no county middle on file to measure from');

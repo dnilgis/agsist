@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111a0a">
   <title>Harvest corn now or wait? Drying cost vs field loss calculator</title>
   <meta name="description" content="Harvest now or let corn dry in the field: the drying bill today against the bill after 7 to 14 days of drydown, with your LP price, your bid and your own field loss.">
-  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="author"      content="AGSIST">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <link rel="canonical"    href="https://agsist.com/harvest-or-wait">
   <meta property="og:type"         content="website">
@@ -31,8 +31,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <style>
@@ -49,48 +49,48 @@
     .hw-lede{font-size:1rem!important;color:var(--text)!important}
     .hw-in{display:flex;flex-wrap:wrap;gap:.6rem .9rem;margin:0 0 .6rem;align-items:flex-end}
     .hw-in label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;color:var(--text-muted)}
-    .hw-in input,.hw-in select{width:6.4rem;min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
+    .hw-in input,.hw-in select{width:6.4rem;min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
     .hw-in select{width:auto;font-family:inherit;font-size:.92rem}
     .hw-in input[aria-invalid="true"]{border-color:var(--red)}
     .hw-in .wide{width:8.6rem}
-    .hw-box{background:var(--bg);border:1px dashed var(--border);border-radius:10px;padding:.6rem .8rem;margin:0 0 .8rem}
+    .hw-box{background:var(--bg);border:1px dashed var(--border);border-radius:var(--r-lg);padding:.6rem .8rem;margin:0 0 .8rem}
     .hw-box>p{margin:.25rem 0;font-size:.86rem}
-    .hw-box h2{font-size:.92rem;margin:.1rem 0 .5rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted)}
-    .hw-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
+    .hw-box h2{font-size:.92rem;margin:.1rem 0 .5rem;text-transform:none;letter-spacing:0;color:var(--text-muted)}
+    .hw-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
     .hw-btn.go{background:var(--gold-fill);color:#111;border-color:var(--gold-fill)}
     .hw-btn.sm{min-height:36px;padding:0 .7rem;font-size:.85rem;font-weight:600}
-    .hw-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:0 0 .7rem}
+    .hw-seg{display:flex;width:100%;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin:0 0 .7rem}
     .hw-seg button{flex:1 1 0;min-height:44px;padding:0 .4rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
     .hw-seg button+button{border-left:1px solid var(--border)}
     .hw-seg button[aria-pressed="true"]{background:var(--gold-fill);color:#111}
     .hw-rad{display:flex;flex-direction:column;gap:.35rem;margin:.2rem 0 .5rem}
     .hw-rad label{display:block;position:relative;padding:.35rem 0 .35rem 30px;font-size:.92rem;line-height:2.3;color:var(--text-dim)}
     .hw-rad input[type=radio]{position:absolute;left:0;top:.75rem;width:20px;height:20px;margin:0}
-    .hw-rad input[type=number]{width:5.4rem;min-height:38px;padding:0 .45rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.95rem}
-    .hw-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:0 12px 12px 0;padding:.85rem 1rem .9rem;margin:0 0 .7rem}
+    .hw-rad input[type=number]{width:5.4rem;min-height:38px;padding:0 .45rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:.95rem}
+    .hw-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:.85rem 1rem .9rem;margin:0 0 .7rem}
     .hw-answer.v-wait{border-left-color:var(--green)} .hw-answer.v-now{border-left-color:var(--gold)} .hw-answer.v-even{border-left-color:var(--blue,var(--border))}
     .hw-v{display:block;font-size:clamp(1.3rem,5.6vw,1.8rem);font-weight:800;line-height:1.18;color:var(--text);margin:0 0 .4rem}
     .hw-answer p{margin:.3rem 0 0;font-size:.94rem;line-height:1.5;color:var(--text)}
     .hw-answer p.fine{font-size:.82rem;color:var(--text-muted)}
-    .hw-est{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);border:1px solid var(--border);border-radius:5px;padding:.05rem .35rem;margin:0 0 .4rem}
+    .hw-est{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:0;text-transform:none;color:var(--text-muted);border:1px solid var(--border);border-radius:var(--r-md);padding:.05rem .35rem;margin:0 0 .4rem}
     .hw-kv{display:grid;grid-template-columns:repeat(auto-fit,minmax(8.5rem,1fr));gap:.5rem;margin:.6rem 0 0}
-    .hw-kv div{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.45rem .6rem}
+    .hw-kv div{background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);padding:.45rem .6rem}
     .hw-kv b{display:block;font-family:'JetBrains Mono',monospace;font-size:1.05rem}
     .hw-kv span{font-size:.76rem;color:var(--text-muted)}
     .hw-src{font-size:.84rem!important;color:var(--text-muted)!important}
     .hw-status{font-size:.86rem;color:var(--text-muted);margin:.3rem 0 0}
     .hw-status.err{color:var(--red)}
     .hw-status:empty{display:none}
-    .hw details.box{border:1px solid var(--border);border-radius:10px;padding:.15rem .95rem;margin:.6rem 0;background:var(--surface)}
+    .hw details.box{border:1px solid var(--border);border-radius:var(--r-lg);padding:.15rem .95rem;margin:.6rem 0;background:var(--surface)}
     .hw details.box>summary{cursor:pointer;min-height:46px;display:flex;align-items:center;font-weight:700;color:var(--text)}
     .hw-t{border-collapse:collapse;width:100%;font-size:.88rem;margin:.2rem 0 .8rem}
     .hw-t th,.hw-t td{padding:.4rem .5rem;border-bottom:1px solid var(--border);text-align:right}
     .hw-t th:first-child{text-align:left;white-space:nowrap}
-    .hw-t thead th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .hw-t thead th{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted);vertical-align:bottom}
     .hw-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
     .hw-t tr.pick td,.hw-t tr.pick th{background:var(--surface2,var(--surface))}
     .hw-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
-    .hw .eq{display:block;padding:.55rem .7rem;margin:.3rem 0 .8rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-word}
+    .hw .eq{display:block;padding:.55rem .7rem;margin:.3rem 0 .8rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);font-family:'JetBrains Mono',monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-word}
     .hw-faq details{border-top:1px solid var(--border);padding:.75rem 0}
     .hw-faq details:last-child{border-bottom:1px solid var(--border)}
     .hw-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem}
@@ -102,8 +102,8 @@
   /* phone width: nested cards add no extra side padding (narrow cards, Nov 9) */
 @media(max-width:480px){.hw-answer{padding-left:12px;padding-right:12px}}
 </style>
-  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://agsist.com/harvest-or-wait#app","name":"Harvest now or wait: corn drying cost vs field loss","url":"https://agsist.com/harvest-or-wait","description":"Harvest now or let corn dry in the field: the drying bill today against the bill after 7 to 14 days of drydown, with your LP price, your bid and your own field loss.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true,"author":{"@type":"Person","name":"Sigurd Lindquist","jobTitle":"Certified Crop Adviser (CCA)","url":"https://agsist.com/about"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-16","dateModified":"2026-10-16","inLanguage":"en-US"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Harvest now or wait","item":"https://agsist.com/harvest-or-wait"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How fast does corn dry down in the field?","acceptedAnswer":{"@type":"Answer","text":"About 4.5 points a week in September, 2.5 in October, 1 in November and 0.5 in December. That is NDSU's table (Hellevang, 2009), and Iowa State used the same rates in 2022. NDSU also puts October at 0.3 to 0.4 points a day and November at 0.15 to 0.2. Their example: 35% corn on October 11 dries to about 27% by November 1 and about 22% by December 1. The weekly rates give 27.7% and 23.5%."}},{"@type":"Question","name":"How much LP does it take to dry a point of corn?","acceptedAnswer":{"@type":"Answer","text":"Iowa State's average is 0.018 gallons a bushel a point in a high-temperature dryer, anywhere from 0.010 to 0.025 depending on the dryer and the weather. Taking 5 points out of 1,000 bushels is about 90 gallons. Purdue's GQ-3 table works out to 0.017 to 0.020 gallons a bushel a point drying to 15%."}},{"@type":"Question","name":"When does waiting on field drydown stop paying?","acceptedAnswer":{"@type":"Answer","text":"When the corn stops drying or the field starts losing more than the drying saves. Corn dries toward the air's equilibrium moisture, which NDSU puts near 16% in October, 19% in November and 20% in December, and it dries slower each week. NDSU says field drying is normally cheaper than the dryer until mid to late October and the dryer is cheaper after that."}},{"@type":"Question","name":"What field loss should I put in?","acceptedAnswer":{"@type":"Answer","text":"Yours. Stalk strength, lodging, ear drop, deer and the weather decide it, and they differ field to field. Leave it blank and the page shows the loss that would eat the drying savings. Purdue's GQ-3 example: drying 28% corn to 15% instead of 22% corn cost $7.02 an acre more in fuel and electricity at 130 bushels, so a field loss of 3.5 bushels an acre at $2 corn would pay for drying the wetter corn."}},{"@type":"Question","name":"Does the weather forecast change the estimate?","acceptedAnswer":{"@type":"Answer","text":"Not yet. The page shows the forecast heat for each of the next 7 days (as far as the National Weather Service forecast runs), but the moisture estimate uses the published monthly rates or your own rate. Some guides predict drydown from growing degree days; the page will use that once we have read the rule in the original publication."}},{"@type":"Question","name":"Where does the bid come from?","acceptedAnswer":{"@type":"Answer","text":"Type your own, or enter your ZIP and the page uses the nearest elevator's posted corn bid from the same boards as the cash bids page. With no ZIP, pick a state and the page uses the latest corn futures settle less that state's median basis, labeled as such."}},{"@type":"Question","name":"Can I just leave my corn standing over winter?","acceptedAnswer":{"@type":"Answer","text":"Some do. NDSU found losses over winter were generally small where the stalks were still strong in November. Push on the stalks before you decide, because weak stalks are the ones that go down. Field drying is extremely slow in winter, and NDSU puts the floor at about 20% moisture."}},{"@type":"Question","name":"My corn froze before it was mature. Does it still dry down like the table says?","acceptedAnswer":{"@type":"Answer","text":"Probably slower. NDSU says immature corn dries more slowly in the field than mature corn, and frosted high moisture corn can mold on the stalk. If yours froze before black layer, expect it to dry slower than the table and put in a slower rate of your own."}},{"@type":"Question","name":"How far can I trust my moisture tester on wet corn this time of year?","acceptedAnswer":{"@type":"Answer","text":"Not far on wet or cold corn. NDSU says readings above 25% should only be taken as estimates, and meters normally are not accurate on grain below about 40 F. Put the sample in a sealed bag, let it warm to room temperature, then test it."}}]}]}</script>
-<link rel="stylesheet" href="/components/src-fold.css?v=1">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://agsist.com/harvest-or-wait#app","name":"Harvest now or wait: corn drying cost vs field loss","url":"https://agsist.com/harvest-or-wait","description":"Harvest now or let corn dry in the field: the drying bill today against the bill after 7 to 14 days of drydown, with your LP price, your bid and your own field loss.","applicationCategory":"UtilitiesApplication","operatingSystem":"Any (web browser)","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"isAccessibleForFree":true,"author":{"@id":"https://agsist.com/#organization"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"},"datePublished":"2026-10-16","dateModified":"2026-10-16","inLanguage":"en-US"},{"@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Tools","item":"https://agsist.com/tools"},{"@type":"ListItem","position":3,"name":"Harvest now or wait","item":"https://agsist.com/harvest-or-wait"}]},{"@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How fast does corn dry down in the field?","acceptedAnswer":{"@type":"Answer","text":"About 4.5 points a week in September, 2.5 in October, 1 in November and 0.5 in December. That is NDSU's table (Hellevang, 2009), and Iowa State used the same rates in 2022. NDSU also puts October at 0.3 to 0.4 points a day and November at 0.15 to 0.2. Their example: 35% corn on October 11 dries to about 27% by November 1 and about 22% by December 1. The weekly rates give 27.7% and 23.5%."}},{"@type":"Question","name":"How much LP does it take to dry a point of corn?","acceptedAnswer":{"@type":"Answer","text":"Iowa State's average is 0.018 gallons a bushel a point in a high-temperature dryer, anywhere from 0.010 to 0.025 depending on the dryer and the weather. Taking 5 points out of 1,000 bushels is about 90 gallons. Purdue's GQ-3 table works out to 0.017 to 0.020 gallons a bushel a point drying to 15%."}},{"@type":"Question","name":"When does waiting on field drydown stop paying?","acceptedAnswer":{"@type":"Answer","text":"When the corn stops drying or the field starts losing more than the drying saves. Corn dries toward the air's equilibrium moisture, which NDSU puts near 16% in October, 19% in November and 20% in December, and it dries slower each week. NDSU says field drying is normally cheaper than the dryer until mid to late October and the dryer is cheaper after that."}},{"@type":"Question","name":"What field loss should I put in?","acceptedAnswer":{"@type":"Answer","text":"Yours. Stalk strength, lodging, ear drop, deer and the weather decide it, and they differ field to field. Leave it blank and the page shows the loss that would eat the drying savings. Purdue's GQ-3 example: drying 28% corn to 15% instead of 22% corn cost $7.02 an acre more in fuel and electricity at 130 bushels, so a field loss of 3.5 bushels an acre at $2 corn would pay for drying the wetter corn."}},{"@type":"Question","name":"Does the weather forecast change the estimate?","acceptedAnswer":{"@type":"Answer","text":"Not yet. The page shows the forecast heat for each of the next 7 days (as far as the National Weather Service forecast runs), but the moisture estimate uses the published monthly rates or your own rate. Some guides predict drydown from growing degree days; the page will use that once we have read the rule in the original publication."}},{"@type":"Question","name":"Where does the bid come from?","acceptedAnswer":{"@type":"Answer","text":"Type your own, or enter your ZIP and the page uses the nearest elevator's posted corn bid from the same boards as the cash bids page. With no ZIP, pick a state and the page uses the latest corn futures settle less that state's median basis, labeled as such."}},{"@type":"Question","name":"Can I just leave my corn standing over winter?","acceptedAnswer":{"@type":"Answer","text":"Some do. NDSU found losses over winter were generally small where the stalks were still strong in November. Push on the stalks before you decide, because weak stalks are the ones that go down. Field drying is extremely slow in winter, and NDSU puts the floor at about 20% moisture."}},{"@type":"Question","name":"My corn froze before it was mature. Does it still dry down like the table says?","acceptedAnswer":{"@type":"Answer","text":"Probably slower. NDSU says immature corn dries more slowly in the field than mature corn, and frosted high moisture corn can mold on the stalk. If yours froze before black layer, expect it to dry slower than the table and put in a slower rate of your own."}},{"@type":"Question","name":"How far can I trust my moisture tester on wet corn this time of year?","acceptedAnswer":{"@type":"Answer","text":"Not far on wet or cold corn. NDSU says readings above 25% should only be taken as estimates, and meters normally are not accurate on grain below about 40 F. Put the sample in a sealed bag, let it warm to room temperature, then test it."}}]}]}</script>
+<link rel="stylesheet" href="/components/src-fold.css?v=2">
 <script src="/components/src-fold.js?v=1" defer></script>
 </head>
 <body>
@@ -257,7 +257,6 @@
       </ul>
     </article>
     <div data-signup-ask="Email me my top local bid and the markets, every morning" data-source="page:harvest-or-wait"></div>
-  <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
   <div id="site-footer">
 <!-- static-nav:footer -->
@@ -269,19 +268,19 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/bids-network.js?v=9" defer></script>
   <script src="/components/grain-shrink.js?v=4" defer></script>
   <script src="/components/harvest-wait.js?v=1" defer></script>
   <script src="/components/nws.js?v=1" defer></script>
   <script src="/components/harvest-wait-ui.js?v=5" defer></script>
-  <script src="/components/next-links.js?v=3" defer></script>
-<script src="/components/rate-hint.js?v=1" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
+<script src="/components/rate-hint.js?v=2" defer></script>
 </body>
 </html>

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111a0a">
   <title>Nutrient Removal Calculator: P and K in Stalks, Silage, Straw, Hay</title>
   <meta name="description" content="What leaves the field when you bale corn stalks, chop silage, bale straw or sell hay: lb of P2O5 and K2O per ton and acre, priced at posted co-op fertilizer prices.">
-  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="author"      content="AGSIST">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <link rel="canonical"    href="https://agsist.com/nutrient-removal">
 
@@ -34,11 +34,11 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <script src="/components/util.js?v=19"></script>
+  <script src="/components/util.js?v=21"></script>
   <style>
     .nr{max-width:780px;margin:0 auto;padding:1.4rem 1rem 4rem}
     .nr .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
@@ -50,15 +50,15 @@
     .nr ul{padding-left:1.2rem;margin:.3rem 0 1rem}
     .nr b{color:var(--text)}
     .nr a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
-    .nr-answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:1rem 1.1rem;margin:0 0 1rem}
+    .nr-answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:1rem 1.1rem;margin:0 0 1rem}
     .nr-answer p{margin:.5rem 0 0;color:var(--text)}
     .nr-pair{display:flex;flex-wrap:wrap;gap:.6rem 1.6rem;align-items:flex-end}
-    .nr-k{display:block;font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+    .nr-k{display:block;font-size:.74rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)}
     .nr-num{display:block;font-family:'JetBrains Mono',monospace;font-size:clamp(1.5rem,6vw,2.1rem);font-weight:800;color:var(--text);line-height:1.15}
     .nr-num small{font-size:.9rem;font-weight:600;color:var(--text-dim);font-family:var(--font-body)}
     .nr-gold{color:var(--gold)!important}
     .nr .nr-prices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.5rem;margin:0 0 .4rem;padding:0;list-style:none}
-    .nr .nr-prices li{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .6rem;font-size:.8rem;line-height:1.35;color:var(--text-muted)}
+    .nr .nr-prices li{margin:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.5rem .6rem;font-size:.8rem;line-height:1.35;color:var(--text-muted)}
     /* the price lines hold their filled height before the price list lands (CLS sweep Nov 10) */
     .nr-wait .nr-answer>p:not(.nr-fine),.nr-wait .nr-prices,.nr-wait [data-nr-ans]{visibility:hidden}
     .nr-answer>p:not(.nr-fine){min-height:82px}.nr .nr-prices{min-height:139px}
@@ -72,29 +72,29 @@
     .nr-t tr.nr-alt th,.nr-t tr.nr-alt td{font-style:italic;color:var(--text-muted)}
     .nr-math summary{cursor:pointer;color:var(--gold);font-weight:600;padding:.3rem 0;min-height:32px}
     .nr-math li{font-size:.85rem;line-height:1.5}
-    .nr-calc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;margin:.6rem 0 1rem}
+    .nr-calc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem;margin:.6rem 0 1rem}
     .nr-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem .8rem}
     .nr-form label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;font-weight:600;color:var(--text-muted)}
     .nr-form label[hidden]{display:none}
     .nr-form .nr-wide{grid-column:1/-1}
-    .nr-form input,.nr-form select{min-height:44px;padding:0 .55rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:1rem;width:100%;box-sizing:border-box}
+    .nr-form input,.nr-form select{min-height:44px;padding:0 .55rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font:inherit;font-size:1rem;width:100%;box-sizing:border-box}
     .nr-form input{font-family:'JetBrains Mono',monospace}
     .nr-big{display:flex;flex-wrap:wrap;gap:.6rem 1.6rem;margin:1rem 0 .6rem}
     .nr-big b{font-family:'JetBrains Mono',monospace;font-size:1.35rem;color:var(--text)}
     .nr-sale{border-top:1px solid var(--border);margin-top:.8rem;padding-top:.6rem}
-    .nr-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:10px;margin:.4rem 0 .8rem;background:var(--surface)}
+    .nr-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);margin:.4rem 0 .8rem;background:var(--surface)}
     .nr-tw:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     .nr-t{border-collapse:collapse;width:100%;font-size:.88rem}
     .nr-tw .nr-t{min-width:600px}
     .nr-t th,.nr-t td{padding:.5rem .6rem;border-bottom:1px solid var(--border);text-align:right}
-    .nr-t thead th{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .nr-t thead th{font-size:.78rem;font-weight:700;text-transform:none;letter-spacing:0;color:var(--text-muted);vertical-align:bottom}
     .nr-t th[scope="row"],.nr-t td.tl,.nr-t thead th:first-child{text-align:left}
     .nr-t th[scope="row"]{font-weight:600;color:var(--text)}
     .nr-t th[scope="row"] span{display:block;font-size:.76rem;font-weight:400;color:var(--text-muted)}
     .nr-t td{font-family:'JetBrains Mono',monospace;color:var(--text);white-space:nowrap}
     .nr-t td.tl{font-family:var(--font-body);color:var(--text-muted);font-size:.8rem;white-space:normal}
     .nr-t td.hi{color:var(--gold);font-weight:700}
-    .nr-t tr.nr-g th{background:var(--bg);text-align:left;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--gold)}
+    .nr-t tr.nr-g th{background:var(--bg);text-align:left;font-size:.78rem;font-weight:800;text-transform:none;letter-spacing:0;color:var(--gold)}
     .nr-res td{white-space:normal}
     .nr-faq details{border-top:1px solid var(--border);padding:.75rem 0}
     .nr-faq details:last-child{border-bottom:1px solid var(--border)}
@@ -103,7 +103,7 @@
     .nr .nr-related{display:flex;flex-wrap:wrap;gap:.4rem .9rem;margin:.4rem 0 0;padding:0;list-style:none}
     @media(max-width:480px){.nr .nr-prices li{font-size:.74rem;padding:.45rem .5rem}.nr .nr-prices b{font-size:1rem}.nr-form{grid-template-columns:1fr 1fr}}
   </style>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "@id": "https://agsist.com/nutrient-removal#app", "name": "Nutrient removal value calculator", "url": "https://agsist.com/nutrient-removal", "applicationCategory": "BusinessApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "What leaves the field when you bale corn stalks, chop silage, bale straw or sell hay: lb of P2O5 and K2O per ton and acre, priced at posted co-op fertilizer prices.", "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": "2026-10-16", "dateModified": "2026-10-16", "isAccessibleForFree": true, "citation": "https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://agsist.com/tools"}, {"@type": "ListItem", "position": 3, "name": "Nutrient removal value", "item": "https://agsist.com/nutrient-removal"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How much P and K is in a ton of corn stalks?", "acceptedAnswer": {"@type": "Answer", "text": "UW Extension A2809 puts corn stover at 4.6 lb of P₂O₅ and 32 lb of K₂O per ton of dry matter (Table 4.2). A ton of bales at 15% moisture is 0.85 dry ton, so about 3.9 lb of P₂O₅ and 27 lb of K₂O. At 3 dry tons an acre that is about 14 lb of P₂O₅ and 96 lb of K₂O leaving each acre. Potash is most of the dollar value."}}, {"@type": "Question", "name": "What is the fertilizer value of a bale of corn stalks?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply the dry tons in the bale by 4.6 lb of P₂O₅ and 32 lb of K₂O, then by the price of a pound of each. A 1,000 lb bale at 15% moisture is 850 lb of dry matter, 0.425 dry ton: about 2 lb of P₂O₅ and 13.6 lb of K₂O. The calculator on this page prices it at the co-op prices posted through the date shown above. Weigh a few of your own bales; weight and moisture move the answer more than anything else."}}, {"@type": "Question", "name": "Why is nitrogen not counted?", "acceptedAnswer": {"@type": "Answer", "text": "The source for these pounds, UW Extension A2809, gives P₂O₅ and K₂O removal for every crop but no N or S removal per ton. We do not fill in a number we have not read in a published table. Nitrogen in stalks and straw is also mostly tied up in residue and is not there for next year's crop the way a pound of fertilizer N is, so P and K are the honest replacement cost."}}, {"@type": "Question", "name": "How much P and K does corn silage take off?", "acceptedAnswer": {"@type": "Answer", "text": "A2809 lists corn silage at 3.6 lb of P₂O₅ and 8.3 lb of K₂O per ton at 65% moisture. A 20 ton crop takes about 72 lb of P₂O₅ and 166 lb of K₂O an acre, more than twice the potash that 180 bushels of grain take (52 lb), because the stalks and leaves leave too."}}, {"@type": "Question", "name": "How much do soybeans, wheat and hay remove?", "acceptedAnswer": {"@type": "Answer", "text": "Per A2809 Table 4.2: soybeans 0.8 lb P₂O₅ and 1.4 lb K₂O a bushel; wheat 0.5 and 0.35 a bushel, wheat straw 6 and 28 per dry ton; oat straw 9.4 and 47; alfalfa 13 and 60 per dry ton; grass hay 15 and 55 per dry ton."}}, {"@type": "Question", "name": "Where do the fertilizer prices come from?", "acceptedAnswer": {"@type": "Answer", "text": "From the same list as the fertilizer prices page: the middle cash price that farm co-ops post on their own websites (Kansas co-ops, and Kansas and Wisconsin co-ops for urea), read each weekday, with the co-ops and the date on every price. Phosphate is MAP (DAP if no co-op posts MAP) with its nitrogen credited at the urea price, potash is potash. That is the same pick the fertilizer prices page, Fast Facts and the manure calculator use, so every page shows one phosphate price. Your dealer's price will differ; the math is shown so you can redo it."}}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebApplication", "@id": "https://agsist.com/nutrient-removal#app", "name": "Nutrient removal value calculator", "url": "https://agsist.com/nutrient-removal", "applicationCategory": "BusinessApplication", "operatingSystem": "Any", "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}, "description": "What leaves the field when you bale corn stalks, chop silage, bale straw or sell hay: lb of P2O5 and K2O per ton and acre, priced at posted co-op fertilizer prices.", "author": {"@id":"https://agsist.com/#organization"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": "2026-10-16", "dateModified": "2026-10-16", "isAccessibleForFree": true, "citation": "https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf"}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Tools", "item": "https://agsist.com/tools"}, {"@type": "ListItem", "position": 3, "name": "Nutrient removal value", "item": "https://agsist.com/nutrient-removal"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "How much P and K is in a ton of corn stalks?", "acceptedAnswer": {"@type": "Answer", "text": "UW Extension A2809 puts corn stover at 4.6 lb of P₂O₅ and 32 lb of K₂O per ton of dry matter (Table 4.2). A ton of bales at 15% moisture is 0.85 dry ton, so about 3.9 lb of P₂O₅ and 27 lb of K₂O. At 3 dry tons an acre that is about 14 lb of P₂O₅ and 96 lb of K₂O leaving each acre. Potash is most of the dollar value."}}, {"@type": "Question", "name": "What is the fertilizer value of a bale of corn stalks?", "acceptedAnswer": {"@type": "Answer", "text": "Multiply the dry tons in the bale by 4.6 lb of P₂O₅ and 32 lb of K₂O, then by the price of a pound of each. A 1,000 lb bale at 15% moisture is 850 lb of dry matter, 0.425 dry ton: about 2 lb of P₂O₅ and 13.6 lb of K₂O. The calculator on this page prices it at the co-op prices posted through the date shown above. Weigh a few of your own bales; weight and moisture move the answer more than anything else."}}, {"@type": "Question", "name": "Why is nitrogen not counted?", "acceptedAnswer": {"@type": "Answer", "text": "The source for these pounds, UW Extension A2809, gives P₂O₅ and K₂O removal for every crop but no N or S removal per ton. We do not fill in a number we have not read in a published table. Nitrogen in stalks and straw is also mostly tied up in residue and is not there for next year's crop the way a pound of fertilizer N is, so P and K are the honest replacement cost."}}, {"@type": "Question", "name": "How much P and K does corn silage take off?", "acceptedAnswer": {"@type": "Answer", "text": "A2809 lists corn silage at 3.6 lb of P₂O₅ and 8.3 lb of K₂O per ton at 65% moisture. A 20 ton crop takes about 72 lb of P₂O₅ and 166 lb of K₂O an acre, more than twice the potash that 180 bushels of grain take (52 lb), because the stalks and leaves leave too."}}, {"@type": "Question", "name": "How much do soybeans, wheat and hay remove?", "acceptedAnswer": {"@type": "Answer", "text": "Per A2809 Table 4.2: soybeans 0.8 lb P₂O₅ and 1.4 lb K₂O a bushel; wheat 0.5 and 0.35 a bushel, wheat straw 6 and 28 per dry ton; oat straw 9.4 and 47; alfalfa 13 and 60 per dry ton; grass hay 15 and 55 per dry ton."}}, {"@type": "Question", "name": "Where do the fertilizer prices come from?", "acceptedAnswer": {"@type": "Answer", "text": "From the same list as the fertilizer prices page: the middle cash price that farm co-ops post on their own websites (Kansas co-ops, and Kansas and Wisconsin co-ops for urea), read each weekday, with the co-ops and the date on every price. Phosphate is MAP (DAP if no co-op posts MAP) with its nitrogen credited at the urea price, potash is potash. That is the same pick the fertilizer prices page, Fast Facts and the manure calculator use, so every page shows one phosphate price. Your dealer's price will differ; the math is shown so you can redo it."}}]}]}</script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -221,9 +221,8 @@
         <li><a href="/fast-facts#pk">P and K by soil test</a></li>
         <li><a href="/breakeven">Break-even</a></li>
       </ul>
-      <p class="nr-fine" style="margin-top:2rem">Book values are averages. A forage test of your own hay or stalks beats the book. Questions or a number that looks wrong: <a href="/contact">contact me</a>. Sig</p>
+      <p class="nr-fine" style="margin-top:2rem">Book values are averages. A forage test of your own hay or stalks beats the book. Questions or a number that looks wrong: <a href="/contact">contact us</a>.</p>
     </article>
-  <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
   <div id="site-footer">
 <!-- static-nav:footer -->
@@ -235,16 +234,16 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/fert-pick.js?v=1" defer></script>
   <script src="/components/nutrient-removal.js?v=4" defer></script>
-  <script>/* near-coop: the Your area box loads only for a reader with a saved location */try{if(localStorage.getItem('agsist-wx-loc')||localStorage.getItem('agsist_zip')){var s=document.createElement('script');s.src='/components/near-coop.js?v=3';document.head.appendChild(s);}}catch(e){}</script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script>/* near-coop: the Your area box loads only for a reader with a saved location */try{if(localStorage.getItem('agsist-wx-loc')||localStorage.getItem('agsist_zip')){var s=document.createElement('script');s.src='/components/near-coop.js?v=4';document.head.appendChild(s);}}catch(e){}</script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

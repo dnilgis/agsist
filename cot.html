@@ -8,17 +8,17 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=29">
 <link rel="stylesheet" href="/components/share-kit.css?v=1">
-<link rel="stylesheet" href="/components/cot-print.css?v=6">
+<link rel="stylesheet" href="/components/cot-print.css?v=7">
 <!-- Nov 8: no first paint until the release bar and the market chips are parsed whole (Chrome lifts the block when
      the expected element opens, so it names the chart headline, the first element after the chips). A paint between two
      parser chunks drew the bar before its 44px link: the bar was 22px tall and its centred clock icon dropped 11px when
      the link came (the 5.78e-6 shift test/cot-how.test.mjs saw on a loaded runner); a paint inside the link slid it
      sideways, and a paint inside the last chip let it sit on the first row before its words wrapped it to the next. -->
 <link rel="expect" href="#cc-head" blocking="render">
-  <script src="/components/util.js?v=17"></script>
+  <script src="/components/util.js?v=21"></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
@@ -28,7 +28,7 @@
 <title>CFTC COT Report, Nov 3: Managed Money Near Flat in Corn | AGSIST</title>
 <meta name="description" content="CFTC Commitments of Traders, Nov 3, 2026: managed money near flat in corn (net long 8,795 contracts, under 2.0% of open interest).">
 <meta name="keywords"    content="CFTC commitment of traders, COT report corn, managed money positioning, grain fund positioning, soybean COT, wheat COT, KC wheat HRW COT, soybean meal COT, soybean oil COT, live cattle COT, feeder cattle COT, lean hogs COT, Class III milk COT, speculative positioning">
-<meta name="author"      content="Farmers First Agri Service, AGSIST">
+<meta name="author"      content="AGSIST">
 <meta name="robots"      content="index, follow">
 <link rel="canonical"    href="https://agsist.com/cot">
 
@@ -63,7 +63,7 @@
       "isPartOf": { "@type": "WebSite", "@id": "https://agsist.com/#website", "url": "https://agsist.com/", "name": "AGSIST" },
       "datePublished": "2025-09-01",
       "dateModified": "2026-11-13",
-      "author": { "@type": "Person", "name": "Sigurd Lindquist", "url": "https://agsist.com/about", "email": "sig@agsist.com" },
+      "author": { "@id":"https://agsist.com/#organization"},
       "publisher": { "@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/" },
       "breadcrumb": {
         "@type": "BreadcrumbList",
@@ -114,14 +114,14 @@
 .cot-insight { font-size:0.765rem; line-height:1.5; color:var(--text-dim); margin-top:.5rem; padding-top:.5rem; border-top:1px solid var(--border); }
 .cot-insight b { color:var(--text); font-weight:700; }
 .cot-insight .up { color:var(--green); } .cot-insight .dn { color:#ef4444; }
-.cot-read { border:1px solid rgba(var(--gold-rgb),.3); background:rgba(var(--gold-rgb),.05); border-radius:10px; padding:.9rem 1.1rem; margin-bottom:1.25rem; }
-.cot-read-tag { font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:800; letter-spacing:.08em; text-transform:uppercase; color:var(--gold); margin-bottom:.35rem; }
+.cot-read { border:1px solid var(--border-2); background:var(--surface2); border-radius:var(--r-lg); padding:.9rem 1.1rem; margin-bottom:1.25rem; }
+.cot-read-tag { font-family:var(--font-body); font-size:0.755rem; font-weight:800; letter-spacing:0; text-transform:none; color:var(--text-dim); margin-bottom:.35rem; }
 .cot-read-body { font-size:.86rem; line-height:1.6; color:var(--text); }
 .cot-read-body b { color:var(--gold); }
 .cot-read-line { margin:0 0 .4rem; }
 .cot-read-line:last-child { margin-bottom:0; }
-.cot-read-also { margin-top:.6rem; padding-top:.55rem; border-top:1px solid rgba(var(--gold-rgb),.2); color:var(--text-dim); }
-.cot-read-also-tag { display:block; font-size:.72rem; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--text-muted); margin-bottom:.15rem; }
+.cot-read-also { margin-top:.6rem; padding-top:.55rem; border-top:1px solid var(--border-2); color:var(--text-dim); }
+.cot-read-also-tag { display:block; font-size:.72rem; font-weight:700; letter-spacing:0; text-transform:none; color:var(--text-muted); margin-bottom:.15rem; }
 .cot-read.cot-read-held { border-color:var(--border); background:rgba(128,128,128,.06); }
 .cot-read.cot-read-held .cot-read-tag { color:var(--text-muted); }
 .cot-read.cot-read-held .cot-read-body { color:var(--text-dim); }
@@ -135,8 +135,8 @@
   margin-bottom: 1.4rem;
 }
 .cot-eyebrow {
-  font-size:0.755rem; font-weight: 700; letter-spacing: .12em;
-  text-transform: uppercase; color: var(--gold);
+  font-size:0.755rem; font-weight: 700; letter-spacing:0;
+  text-transform:none; color:var(--text-dim);
   display: flex; align-items: center; gap: .4rem; margin-bottom: .3rem;
 }
 .cot-page-title {
@@ -157,11 +157,11 @@
 /* ── Verdict banner ── */
 .cot-verdict-banner {
   display: flex; flex-direction: column; gap: .5rem;
-  padding: .9rem 1.1rem; border-radius: 10px; margin-bottom: 1.25rem;
+  padding: .9rem 1.1rem; border-radius:var(--r-lg); margin-bottom: 1.25rem;
   border: 1px solid;
 }
-.cot-verdict-banner.long  { background: rgba(74,171,76,.06);  border-color: rgba(74,171,76,.2);  }
-.cot-verdict-banner.short { background: rgba(239,68,68,.06);  border-color: rgba(239,68,68,.2);  }
+.cot-verdict-banner.long  { background: var(--surface2);  border-color: var(--border-2);  }
+.cot-verdict-banner.short { background: var(--surface2);  border-color: var(--border-2);  }
 .cot-verdict-banner.mixed { background: var(--surface);       border-color: var(--border);       }
 .cvb-badge {
   font-family:var(--font-display); font-size: 1.2rem; font-weight: 800;
@@ -182,7 +182,7 @@
   display: grid; grid-template-columns: repeat(3, 1fr); gap: .65rem; margin-bottom: 1.4rem;
 }
 @media (max-width: 540px) { .cot-summary-grid { grid-template-columns: 1fr; } }
-.cot-group-head { grid-column: 1/-1; font-family:'JetBrains Mono',monospace; font-size:0.755rem; font-weight:800; letter-spacing:.12em; text-transform:uppercase; color:var(--text-muted); margin:.55rem 0 -.15rem; }
+.cot-group-head { grid-column: 1/-1; font-family:var(--font-body); font-size:0.755rem; font-weight:800; letter-spacing:0; text-transform:none; color:var(--text-muted); margin:.55rem 0 -.15rem; }
 .cot-group-head:first-child { margin-top:0; }
 .cot-card[role="button"] { cursor:pointer; transition:border-color .15s; }
 .cot-card[role="button"]:hover { border-color:var(--gold); }
@@ -191,7 +191,7 @@
 .cvb-countdown:not(:empty)::before { content:'·'; margin-right:.5rem; color:var(--text-muted); font-weight:400; }
 
 .cot-card {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 8px;
+  background: var(--surface); border: 1px solid var(--border); border-radius:var(--r-md);
   padding: .85rem 1rem;
 }
 .cot-card-head {
@@ -200,11 +200,11 @@
 }
 .cot-card-name { font-size:0.78rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: .3rem; }
 .cot-card-verdict {
-  font-size:0.755rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
-  padding: .12rem .45rem; border-radius: 12px; border: 1px solid;
+  font-size:0.755rem; font-weight: 700; letter-spacing:0; text-transform:none;
+  padding: .12rem .45rem; border-radius:var(--r-lg); border: 1px solid;
 }
-.cot-card-verdict.long  { color: var(--green); background: rgba(74,171,76,.08);  border-color: rgba(74,171,76,.25); }
-.cot-card-verdict.short { color: #ef4444;      background: rgba(239,68,68,.08);  border-color: rgba(239,68,68,.25); }
+.cot-card-verdict.long  { color: var(--green); background: var(--surface2);  border-color: var(--border-2); }
+.cot-card-verdict.short { color: #ef4444;      background: var(--surface2);  border-color: var(--border-2); }
 .cot-card-verdict.flat  { color: var(--text-muted); background: var(--surface2); border-color: var(--border); }
 
 .cot-card-net {
@@ -225,10 +225,10 @@
   background: var(--surface2); overflow: visible; margin-bottom: .22rem;
 }
 .cot-card-fill  { position: absolute; top: 0; height: 100%; border-radius: 4px; }
-.cot-card-zero  { position: absolute; top: -3px; width: 2px; height: 13px; background: rgba(255,255,255,.2); border-radius: 1px; z-index: 1; }
+.cot-card-zero  { position: absolute; top: -3px; width: 2px; height: 13px; background: var(--text-muted); border-radius: 1px; z-index: 1; }
 .cot-card-dot   {
   position: absolute; top: 50%; width: 11px; height: 11px; border-radius: 50%;
-  border: 2px solid var(--surface); box-shadow: 0 0 0 1.5px var(--border);
+  border: 2px solid var(--surface); box-shadow:0 0 0 1.5px var(--border);
   transform: translate(-50%,-50%); z-index: 2;
 }
 .cot-card-range-labels {
@@ -249,12 +249,12 @@
 [data-theme="light"] .cx-pick button[aria-pressed="true"] { color:#735410; }
 [data-theme="light"] .cx-hz button[aria-pressed="true"] { color:#256b41; }
 .cot-explainer {
-  background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+  background: var(--surface); border: 1px solid var(--border); border-radius:var(--r-lg);
   padding: 1rem 1.1rem; margin-bottom: 1.25rem;
 }
 .cot-explainer-title {
-  font-size:1rem; font-weight: 700; letter-spacing: .1em;
-  text-transform: uppercase; color: var(--blue); margin-bottom: .65rem;
+  font-size:1rem; font-weight: 700; letter-spacing:0;
+  text-transform:none; color: var(--blue); margin-bottom: .65rem;
 }
 .cot-explainer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; }
 @media (max-width: 520px) { .cot-explainer-grid { grid-template-columns: 1fr; } }
@@ -291,10 +291,10 @@
 
 .cx { display:none; margin:1.75rem 0; }
 .cx.on { display:block; }
-.cx-h { font-family:var(--font-display); font-size:1.05rem; font-weight:800; text-transform:uppercase;
-        letter-spacing:.02em; color:var(--text); margin:0 0 .2rem; }
+.cx-h { font-family:var(--font-display); font-size:1.05rem; font-weight:800; text-transform:none;
+        letter-spacing:0; color:var(--text); margin:0 0 .2rem; }
 .cx-sub { font-size:.875rem; color:var(--text-muted); line-height:1.6; margin:0 0 .85rem; max-width:66ch; }
-.cx-panel { background:var(--surface); border:1px solid var(--border); border-radius:10px; padding:1rem 1.1rem; }
+.cx-panel { background:var(--surface); border:1px solid var(--border); border-radius:var(--r-lg); padding:1rem 1.1rem; }
 .cx-mono { font-family:'JetBrains Mono',monospace; }
 .cx-hot { color:var(--gold); } .cx-cold { color:var(--cx-cold); }
 .cx-up { color:var(--green); } .cx-dn { color:var(--red); }
@@ -304,7 +304,7 @@
 .cx-board-wrap { position:relative; }
 .cx-board { width:100%; height:auto; display:block; touch-action:manipulation; }
 .cx-board text { font-family:'JetBrains Mono',monospace; }
-.cx-quad { font-size:9px; fill:var(--text-muted); opacity:.75; letter-spacing:.06em; text-transform:uppercase; }
+.cx-quad { font-size:9px; fill:var(--text-muted); opacity:.75; letter-spacing:0; text-transform:none; }
 .cx-axis { stroke:var(--border); stroke-width:1; }
 .cx-axlab { font-size:9.5px; fill:var(--text-muted); }
 .cx-dot { cursor:pointer; }
@@ -317,22 +317,21 @@
 /* ── selector ── */
 .cx-pick { display:flex; flex-wrap:wrap; gap:.4rem; margin:0 0 .9rem; }
 .cx-pick button { font-family:'JetBrains Mono',monospace; font-size:.72rem; font-weight:700; letter-spacing:.03em;
-  padding:.45rem .6rem; min-height:40px; border-radius:6px; cursor:pointer;
+  padding:.45rem .6rem; min-height:40px; border-radius:var(--r-md); cursor:pointer;
   background:var(--surface2); color:var(--text-dim); border:1px solid var(--border); }
-.cx-pick button[aria-pressed="true"] { background:rgba(var(--gold-rgb),.14); color:var(--gold); border-color:rgba(var(--gold-rgb),.45); }
+.cx-pick button[aria-pressed="true"] { background:var(--surface2); color:var(--gold); border-color:rgba(var(--gold-rgb),.45); }
 .cx-pick button:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
 
 /* ── stat rows ── */
 .cx-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(158px,1fr)); gap:.65rem; margin:.2rem 0 1rem; }
-.cx-stat { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:.6rem .7rem; }
-.cx-stat dt { font-size:.7rem; text-transform:uppercase; letter-spacing:.06em; color:var(--text-muted); margin:0 0 .25rem; }
+.cx-stat { background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-md); padding:.6rem .7rem; }
+.cx-stat dt { font-size:.7rem; text-transform:none; letter-spacing:0; color:var(--text-muted); margin:0 0 .25rem; }
 .cx-stat dd { margin:0; font-family:'JetBrains Mono',monospace; font-size:1.02rem; font-weight:700; color:var(--text); line-height:1.25; }
 .cx-stat .cx-note { display:block; font-family:var(--font-body); font-size:.71rem; font-weight:400; color:var(--text-muted); margin-top:.25rem; line-height:1.45; }
 
 /* ── capacity gauge ── */
 .cx-gauge { margin:.2rem 0 1.1rem; }
-.cx-gauge-bar { position:relative; height:26px; border-radius:6px; background:
-   linear-gradient(90deg, rgba(91,163,224,.22) 0%, rgba(128,128,128,.10) 50%, rgba(212,162,63,.22) 100%);
+.cx-gauge-bar { position:relative; height:26px; border-radius:var(--r-md); background:var(--border-2);
    border:1px solid var(--border); }
 .cx-gauge-mark { position:absolute; top:-4px; bottom:-4px; width:2px; background:var(--text); }
 .cx-gauge-zero { position:absolute; top:0; bottom:0; width:1px; background:var(--border); }
@@ -350,20 +349,20 @@
 
 .cx-hz { display:flex; flex-wrap:wrap; gap:.35rem; margin:.1rem 0 .8rem; }
 .cx-hz button { font-family:'JetBrains Mono',monospace; font-size:.72rem; padding:.35rem .6rem; min-height:34px;
-  border-radius:5px; background:var(--surface2); border:1px solid var(--border); color:var(--text-dim); cursor:pointer; }
-.cx-hz button[aria-pressed="true"] { background:rgba(var(--green-rgb),.14); color:var(--green); border-color:rgba(var(--green-rgb),.4); }
+  border-radius:var(--r-md); background:var(--surface2); border:1px solid var(--border); color:var(--text-dim); cursor:pointer; }
+.cx-hz button[aria-pressed="true"] { background:var(--surface2); color:var(--green); border-color:rgba(var(--green-rgb),.4); }
 .cx-hz button:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
 
 /* ── verdict chips ── */
-.cx-chip { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.68rem; font-weight:700;
-  letter-spacing:.05em; text-transform:uppercase; padding:.2rem .45rem; border-radius:4px; border:1px solid; }
-.cx-chip.pass { color:var(--green); border-color:rgba(var(--green-rgb),.45); background:rgba(var(--green-rgb),.10); }
+.cx-chip { display:inline-block; font-family:var(--font-body); font-size:.78rem; font-weight:700;
+  letter-spacing:0; text-transform:none; padding:.2rem .45rem; border-radius:4px; border:1px solid; }
+.cx-chip.pass { color:var(--green); border-color:rgba(var(--green-rgb),.45); background:var(--surface2); }
 .cx-chip.weak { color:var(--text-muted); border-color:var(--border); background:rgba(128,128,128,.08); }
 .cx-chip.none { color:var(--text-muted); border-color:var(--border); background:transparent; }
 
 .cx-question { font-size:.83rem; line-height:1.65; color:var(--text-dim); margin:.15rem 0 .55rem; }
 .cx-question b { color:var(--text); }
-.cx-withheld { border:1px dashed var(--border); border-radius:8px; padding:.75rem .85rem; font-size:.8rem;
+.cx-withheld { border:1px dashed var(--border); border-radius:var(--r-md); padding:.75rem .85rem; font-size:.8rem;
   line-height:1.6; color:var(--text-muted); background:rgba(128,128,128,.05); }
 .cx-withheld b { color:var(--text-dim); }
 
@@ -371,7 +370,7 @@
 .cx-tw { overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .cx-table { width:100%; border-collapse:collapse; font-family:'JetBrains Mono',monospace; font-size:.875rem; }
 .cx-table th, .cx-table td { padding:.42rem .5rem; text-align:right; border-bottom:1px solid var(--border); white-space:nowrap; }
-.cx-table th { color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:.04em; font-size:.875rem; }
+.cx-table th { color:var(--text-muted); font-weight:700; text-transform:none; letter-spacing:0; font-size:.875rem; }
 .cx-table th:first-child, .cx-table td:first-child { text-align:left; }
 .cx-table tbody tr:last-child td { border-bottom:none; }
 /* A withheld-row note is prose: let it wrap inside the table instead of
@@ -404,19 +403,19 @@
 .cx-body { font-size:.86rem; line-height:1.7; color:var(--text-dim); margin:.2rem 0 .8rem; max-width:70ch; }
 .cx-foot { font-size:.74rem; line-height:1.6; color:var(--text-muted); margin:.5rem 0 0; max-width:74ch; }
 .cx-foot b { color:var(--text-dim); }
-.cx-h4 { font-family:var(--font-display); font-size:.88rem; font-weight:800; text-transform:uppercase;
-  letter-spacing:.02em; color:var(--text); margin:1.4rem 0 .25rem; }
+.cx-h4 { font-family:var(--font-display); font-size:.88rem; font-weight:800; text-transform:none;
+  letter-spacing:0; color:var(--text); margin:1.4rem 0 .25rem; }
 .cx-market { font-family:var(--font-display); font-size:1rem; font-weight:800; color:var(--text);
   margin:0 0 .5rem; display:flex; flex-wrap:wrap; align-items:baseline; gap:.5rem; }
 .cx-market-date { font-family:'JetBrains Mono',monospace; font-size:.7rem; font-weight:400;
   text-transform:none; letter-spacing:0; color:var(--text-muted); }
 
 .cx-verdict { font-size:.88rem; line-height:1.65; color:var(--text-dim); margin:0 0 .8rem;
-  padding:.7rem .85rem; border-radius:8px; border:1px solid var(--border);
+  padding:.7rem .85rem; border-radius:var(--r-md); border:1px solid var(--border);
   background:rgba(128,128,128,.06); border-left:3px solid var(--text-muted); }
 .cx-verdict b { color:var(--text); }
-.cx-verdict.pass { border-left-color:var(--green); background:rgba(var(--green-rgb),.07); }
-.cx-verdict.warn { border-left-color:var(--gold); background:rgba(var(--gold-rgb),.06); }
+.cx-verdict.pass { border-left-color:var(--green); background:var(--surface2); }
+.cx-verdict.warn { border-left-color:var(--gold); background:var(--surface2); }
 
 .cx-result { font-size:.84rem; line-height:1.7; color:var(--text-dim); margin:.2rem 0 .5rem; max-width:74ch; }
 .cx-result b { color:var(--text); }
@@ -426,7 +425,7 @@
 .cx-study + .cx-study { border-top:1px solid var(--border); padding-top:1rem; }
 
 .cx-two { display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:.8rem; margin:0 0 .9rem; }
-.cx-big { background:var(--surface2); border:1px solid var(--border); border-radius:8px; padding:.75rem .85rem; }
+.cx-big { background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-md); padding:.75rem .85rem; }
 .cx-big-n { display:block; font-family:'JetBrains Mono',monospace; font-size:1.9rem; font-weight:700;
   color:var(--text); line-height:1; }
 .cx-big-l { display:block; font-size:.74rem; color:var(--text-muted); margin-top:.35rem; line-height:1.5; }
@@ -434,7 +433,7 @@
 .cx-ranked { display:none; list-style:none; margin:0; padding:0; }
 .cx-ranked li { margin:0 0 .3rem; }
 .cx-rank { width:100%; display:flex; align-items:center; gap:.55rem; min-height:44px; cursor:pointer;
-  background:var(--surface2); border:1px solid var(--border); border-radius:7px; padding:.5rem .6rem;
+  background:var(--surface2); border:1px solid var(--border); border-radius:var(--r-md); padding:.5rem .6rem;
   color:var(--text-dim); font-size:.8rem; text-align:left; }
 .cx-rank:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
 .cx-rank-dot { width:9px; height:9px; border-radius:50%; flex:0 0 auto; }
@@ -460,8 +459,8 @@
   .cx-market-date { flex-basis:100%; }
 }
 
-.cot-card-unit { font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:.04em;
-  text-transform:uppercase; color:var(--text-muted); margin:-.15rem 0 .3rem; }
+.cot-card-unit { font-family:var(--font-body); font-size:.68rem; letter-spacing:0;
+  text-transform:none; color:var(--text-muted); margin:-.15rem 0 .3rem; }
 
 .cx-three { display:grid; grid-template-columns:repeat(auto-fit,minmax(180px,1fr)); gap:.8rem; margin:0 0 .9rem; }
 .cx-big-ci { display:block; font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--text-muted); margin-top:.15rem; }
@@ -473,15 +472,15 @@
 
 
 /* Folds: long background sections, closed by default. Native <details>; every word stays in the HTML. */
-details.fold{border:1px solid var(--border);border-radius:10px;background:var(--surface);margin:1rem 0}
-details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:10px;color:var(--text)}
+details.fold{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);margin:1rem 0}
+details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:var(--r-lg);color:var(--text)}
 details.fold>summary::-webkit-details-marker{display:none}
 details.fold>summary>*{grid-column:1}
 details.fold>summary::after{content:"";grid-column:2;grid-row:1 / span 2;width:.6rem;height:.6rem;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:translateY(-25%) rotate(45deg);transition:transform .15s}
 details.fold[open]>summary::after{transform:translateY(25%) rotate(-135deg)}
 details.fold>summary:hover{background:var(--surface2)}
 details.fold>summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-details.fold[open]>summary{border-bottom:1px solid var(--border);border-radius:10px 10px 0 0}
+details.fold[open]>summary{border-bottom:1px solid var(--border);border-radius:var(--r-lg) var(--r-lg) 0 0}
 details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!important;border:0!important}
 .fold-title{display:block;font-weight:700;line-height:1.35}
 .fold-hint{display:block;margin-top:.2rem;font-size:.84rem;font-weight:400;line-height:1.45;color:var(--text-muted);letter-spacing:normal;text-transform:none}
@@ -496,22 +495,22 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 @media(max-width:640px){.cx-hz button,.cx-link{min-height:40px}}
 /* At a glance (2026-11-04): one line per market, then the details behind a tap */
 .cot-section-title {
-  font-size:0.78rem; font-weight: 700; letter-spacing: .08em;
-  text-transform: uppercase; color: var(--text-muted); margin: 0 0 .7rem;
+  font-size:0.78rem; font-weight: 700; letter-spacing:0;
+  text-transform:none; color: var(--text-muted); margin: 0 0 .7rem;
 }
 .cg{margin:0 0 1rem}
-.cc{margin:0 0 1rem;padding:.75rem .85rem .7rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.cc{margin:0 0 1rem;padding:.75rem .85rem .7rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface)}
 .cc-chips{display:flex;gap:.4rem;overflow-x:auto;scrollbar-width:thin;margin:0 -.85rem .45rem;padding:0 .85rem .2rem;scroll-padding:0 .85rem}
-.cc-chip{flex:none;min-height:44px;padding:0 .85rem;border:1px solid var(--border-2);border-radius:999px;background:transparent;color:var(--text-dim);font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap}
+.cc-chip{flex:none;min-height:44px;padding:0 .85rem;border:1px solid var(--border-2);border-radius:var(--r-lg);background:transparent;color:var(--text-dim);font:inherit;font-size:.85rem;font-weight:600;cursor:pointer;white-space:nowrap}
 .cc{--cmp-1:#d4a23f;--cmp-2:#62aee0;--cmp-3:#e07a9a}
 [data-theme="light"] .cc{--cmp-1:#8a6514;--cmp-2:#1f5f9a;--cmp-3:#a8335c}
-.cc-cmp{flex:none;min-height:44px;padding:0 .95rem;margin-right:.35rem;border:1px dashed var(--border-2);border-radius:999px;background:transparent;color:var(--text);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap}
+.cc-cmp{flex:none;min-height:44px;padding:0 .95rem;margin-right:.35rem;border:1px dashed var(--border-2);border-radius:var(--r-lg);background:transparent;color:var(--text);font:inherit;font-size:.85rem;font-weight:700;cursor:pointer;white-space:nowrap}
 .cc-cmp:hover{border-color:var(--gold)}
 .cc-cmp[aria-pressed="true"]{border-style:solid;border-color:var(--gold);box-shadow:inset 0 0 0 1px var(--gold)}
 .cc-cmp:focus-visible{outline:2px solid var(--green);outline-offset:2px}
 .cc.cmp .cc-chip[aria-pressed="true"]{background:transparent;color:var(--text);border-color:var(--c);box-shadow:inset 0 0 0 1px var(--c)}
 .cc.cmp .cc-chip[aria-pressed="true"]::before{content:"";display:inline-block;width:.6rem;height:.6rem;border-radius:50%;background:var(--c);margin-right:.4rem}
-.cc-toast{position:absolute;z-index:4;left:0;right:0;top:0;margin:0;padding:.45rem .6rem;border:1px solid var(--gold);border-radius:6px;background:var(--surface3);color:var(--text);font-size:.85rem;line-height:1.4;pointer-events:none}
+.cc-toast{position:absolute;z-index:4;left:0;right:0;top:0;margin:0;padding:.45rem .6rem;border:1px solid var(--gold);border-radius:var(--r-md);background:var(--surface3);color:var(--text);font-size:.85rem;line-height:1.4;pointer-events:none}
 .cc-toast[hidden]{display:none}
 .cc-sw{display:inline-block;width:.6rem;height:.6rem;border-radius:50%;margin-right:.4rem}
 .cc-chip:hover{border-color:var(--gold);color:var(--text)}
@@ -524,35 +523,35 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 .cc-answer{margin:0 0 .55rem;font-size:.92rem;line-height:1.5;color:var(--text);min-height:7.5em}
 @media(min-width:701px){.cc-answer{min-height:3em}}
 /* The release bar (2026-11-06). */
-.cot-rel{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .8rem;margin:0 0 .8rem;padding:.6rem .85rem;border-radius:10px;background:#d4a23f;color:#111;font-weight:800;font-size:1rem;line-height:1.35}
+.cot-rel{display:flex;flex-wrap:wrap;align-items:center;gap:.35rem .8rem;margin:0 0 .8rem;padding:.6rem .85rem;border-radius:var(--r-lg);background:#d4a23f;color:#111;font-weight:800;font-size:1rem;line-height:1.35}
 .cot-rel-t{flex:1 1 14rem;font-variant-numeric:tabular-nums}
 .cot-rel-ic{flex:none;width:22px;height:22px}
-.cot-rel-a{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 .9rem;border-radius:8px;background:#111;color:#fff;font-size:.88rem;font-weight:800;text-decoration:none}
+.cot-rel-a{flex:none;display:inline-flex;align-items:center;min-height:44px;padding:0 .9rem;border-radius:var(--r-md);background:#111;color:#fff;font-size:.88rem;font-weight:800;text-decoration:none}
 .cot-rel-a:hover{background:#000;color:#fff;text-decoration:underline}
 .cot-rel-a:focus-visible{outline:3px solid #111;outline-offset:2px}
 [data-theme="light"] .cot-rel{background:#f2c35b;color:#111}
 .cot-rel[data-state="due"],.cot-rel[data-state="updated"]{background:#3fae6a;color:#06140b}
 .cot-rel[data-state="late"]{background:#e07b39;color:#140800}
 .cc-head b{font-weight:800}
-.cc-plot{position:relative;height:300px;touch-action:pan-y;cursor:crosshair;border-radius:6px}
+.cc-plot{position:relative;height:300px;touch-action:pan-y;cursor:crosshair;border-radius:var(--r-md)}
 .cc-svg{display:block;width:100%;height:100%;overflow:visible;font-family:var(--font-body);font-variant-numeric:tabular-nums}
 .cc-msg{position:absolute;inset:0;margin:0;display:flex;align-items:center;justify-content:center;font-size:.85rem;color:var(--text-muted)}
 .cc-msg[hidden]{display:none}
-.cc-tip{position:absolute;z-index:3;pointer-events:none;padding:.4rem .55rem;border:1px solid var(--border-2);border-radius:6px;background:var(--surface3);color:var(--text);font-size:.8rem;line-height:1.45;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.3);font-variant-numeric:tabular-nums}
+.cc-tip{position:absolute;z-index:3;pointer-events:none;padding:.4rem .55rem;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface3);color:var(--text);font-size:.8rem;line-height:1.45;white-space:nowrap;box-shadow:none;font-variant-numeric:tabular-nums}
 .cc-src{font-size:.78rem;line-height:1.5;color:var(--text-muted);margin:.45rem 0 .4rem;min-height:7.5em}
 .cc-acts{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem}
-.cc-btn{min-height:44px;padding:0 1rem;border:1px solid var(--border-2);border-radius:var(--btn-r,6px);background:var(--surface2);color:var(--text);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
+.cc-btn{min-height:44px;padding:0 1rem;border:1px solid var(--border-2);border-radius:var(--btn-r,3px);background:var(--surface2);color:var(--text);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
 .cc-btn:hover{border-color:var(--gold)}
 .cc-note{font-size:.85rem;color:var(--text-dim);min-width:6em}
 @media(min-width:701px){.cc-chips{flex-wrap:wrap;overflow:visible;margin:0 0 .45rem;padding:0}.cc-plot{height:340px}.cc-head{min-height:2.8em;font-size:1.08rem}.cc-src{min-height:3em}}
 @media print{.cc-acts,.cc-chips{display:none}}
-.cc-dlg{width:min(30rem,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:0;border:1px solid var(--border-2);border-radius:12px;background:var(--surface);color:var(--text);overflow:auto}
+.cc-dlg{width:min(30rem,calc(100vw - 32px));max-height:calc(100dvh - 32px);padding:0;border:1px solid var(--border-2);border-radius:var(--r-lg);background:var(--surface);color:var(--text);overflow:auto}
 .cc-dlg::backdrop{background:rgba(0,0,0,.6)}
 .cc-dlg-in{padding:1rem}
 .cc-dlg-h{margin:0 0 .25rem;font-size:1.1rem;font-weight:800;line-height:1.3}
 .cc-dlg-p{margin:0 0 .7rem;font-size:.88rem;line-height:1.45;color:var(--text-dim)}
 .cc-dlg-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(8.5rem,1fr));gap:.45rem}
-.cc-pk{min-height:48px;padding:0 .8rem;border:1px solid var(--border-2);border-radius:8px;background:var(--surface2);color:var(--text);font:inherit;font-size:.95rem;font-weight:700;cursor:pointer;text-align:left}
+.cc-pk{min-height:48px;padding:0 .8rem;border:1px solid var(--border-2);border-radius:var(--r-md);background:var(--surface2);color:var(--text);font:inherit;font-size:.95rem;font-weight:700;cursor:pointer;text-align:left}
 .cc-pk:hover,.cc-pk[aria-pressed="true"]{border-color:var(--gold)}
 .cc-pk[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--gold)}
 .cc-pk:focus-visible,.cc-dlg-more>summary:focus-visible{outline:2px solid var(--green);outline-offset:2px}
@@ -561,15 +560,15 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 .cc-dlg-wall{margin:.7rem 0 0;padding:.7rem 0 0;border-top:1px solid var(--border)}
 .cc-pk-wall{width:100%}
 .cc-pv{margin:.7rem 0 0;text-align:center}
-.cc-pv img{display:block;width:auto;max-width:100%;height:auto;max-height:46vh;margin:0 auto;border-radius:6px;border:1px solid var(--border)}
+.cc-pv img{display:block;width:auto;max-width:100%;height:auto;max-height:46vh;margin:0 auto;border-radius:var(--r-md);border:1px solid var(--border)}
 .cc-dlg-note{margin:.5rem 0 0;font-size:.85rem;line-height:1.45;color:var(--text-dim);min-height:1.45em}
 .cc-dlg-acts{display:flex;flex-wrap:wrap;gap:.5rem;justify-content:flex-end;margin-top:.6rem}
 .cc-send{border-color:var(--gold);background:var(--gold-fill,var(--gold));color:#0a0c0d}
-.cg-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em;color:var(--text);margin:0 0 .25rem}
+.cg-h{font-family:var(--font-display);font-size:1.05rem;font-weight:800;text-transform:none;letter-spacing:0;color:var(--text);margin:0 0 .25rem}
 /* the baked summary shows with scripts off and until the live report renders; cot-page.js adds cot-live to <html> then */
 html.cot-live .cg-baked{display:none}
 .cg-verdict{margin:0 0 .55rem;font-size:.85rem;line-height:1.5;min-height:1.5em;color:var(--text-dim);font-weight:700;white-space:nowrap;overflow:hidden}
-.cg-all{margin:0 0 1rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.cg-all{margin:0 0 1rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface)}
 .cg-all>summary{display:flex;align-items:center;min-height:44px;padding:0 .85rem;cursor:pointer;font-weight:700;color:var(--gold)}
 .cg-key{font-size:.8rem;line-height:1.5;color:var(--text-muted);margin:0 .85rem .4rem}
 .cg-tw{overflow-x:auto}
@@ -590,12 +589,12 @@ html.cot-live .cg-baked{display:none}
 .cq:not(:has(.cq-i)){display:none}
 .cq-body{display:grid;gap:.6rem}
 @media(min-width:701px){.cq-body{grid-template-columns:1fr 1fr}.cq-arch{grid-column:1/-1}}
-.cq-i{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.7rem .9rem;background:var(--surface)}
-.cq-k{margin:0 0 .3rem;font-size:.75rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)}
+.cq-i{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-md);padding:.7rem .9rem;background:var(--surface)}
+.cq-k{margin:0 0 .3rem;font-size:.75rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)}
 .cq-q{margin:0 0 .3rem;font-size:1rem;font-weight:800;line-height:1.35;color:var(--text)}
 .cq-a,.cq-f{margin:0;font-size:.9rem;line-height:1.5;color:var(--text-dim)}
 .cq-a b{color:var(--gold)}
-.cq-arch{border:1px solid var(--border);border-radius:8px;background:var(--surface)}
+.cq-arch{border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface)}
 .cq-arch>summary{display:flex;align-items:center;min-height:44px;padding:0 .9rem;cursor:pointer;font-weight:700;color:var(--gold)}
 .cq-ol{margin:0;padding:0 .9rem .7rem 2.1rem;font-size:.85rem;line-height:1.5;color:var(--text-dim)}
 .cq-ol li{margin:0 0 .35rem}
@@ -611,7 +610,7 @@ html.cot-live .cg-baked{display:none}
 .cm-k{display:inline-flex;align-items:center;justify-content:center;width:30px;height:20px;border-radius:3px;font-size:.72rem;font-weight:700}
 .cm-lt{flex:1 1 14rem;margin-left:.5rem}
 .cm-li{flex:1 1 100%;display:flex;align-items:center;gap:.5rem;margin-top:.15rem}
-.cc-kind{margin:.1rem 0 0;font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.cc-kind{margin:.1rem 0 0;font-size:.72rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)}
 .cm-grid{display:block}
 @media(min-width:1000px){.cm-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:1rem;align-items:start}.cm-grid .cm-detail{margin-top:2.4rem}}
 .cm-wrap{margin:0 0 .6rem}
@@ -637,7 +636,7 @@ html.cot-live .cg-baked{display:none}
 .cm-b[aria-pressed="true"]{outline:3px solid var(--gold);outline-offset:-1px;position:relative;z-index:1}
 .cm-b:focus-visible{outline:3px solid var(--gold);outline-offset:1px}
 .cm-t tbody tr:nth-child(5n) td,.cm-t tbody tr:nth-child(5n) th{border-bottom:0}
-.cm-detail{min-height:11.5rem;margin:0 0 1rem;padding:.75rem .85rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.cm-detail{min-height:11.5rem;margin:0 0 1rem;padding:.75rem .85rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface)}
 .cd-h{font-size:.9rem;font-weight:700;color:var(--text-dim);margin:0 0 .2rem}
 .cd-big{margin:0 0 .25rem;font-size:.85rem;color:var(--text-muted)}
 .cd-big span{display:block}
@@ -654,7 +653,7 @@ html.cot-live .cg-baked{display:none}
 .cd-rng{margin:.15rem 0 0;font-size:.78rem;color:var(--text-muted);font-variant-numeric:tabular-nums}
 .co-cards{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:.5rem}
 @media(min-width:701px){.co-cards{grid-template-columns:repeat(3,1fr)}}
-.cu{padding:.6rem .75rem;border:1px solid var(--border);border-left:3px solid var(--border-2);border-radius:8px;background:var(--surface)}
+.cu{padding:.6rem .75rem;border:1px solid var(--border);border-left:3px solid var(--border-2);border-radius:var(--r-md);background:var(--surface)}
 .cu[data-k]{cursor:pointer}
 .cu-more{display:none}
 .co-cards.all .cu-more{display:block}
@@ -666,7 +665,7 @@ html.cot-live .cg-baked{display:none}
 .co-more{margin:.5rem 0 0}
 .co-body{padding:0 .85rem .75rem;font-size:.85rem;line-height:1.55;color:var(--text-dim)}
 .co-body p{margin:0 0 .55rem}
-.co-mkt{margin:.2rem 0 1rem;padding:.75rem .85rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.co-mkt{margin:.2rem 0 1rem;padding:.75rem .85rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface)}
 .co-oi,.co-conc,.co-note{font-size:.85rem;line-height:1.5;color:var(--text-dim);margin:0 0 .5rem}
 .co-note{color:var(--text-muted)}
 .co-oi b{color:var(--text);font-variant-numeric:tabular-nums}
@@ -683,7 +682,7 @@ html.cot-live .cg-baked{display:none}
 @media(max-width:400px){.cm-c0{width:4.6rem}.cm-r{font-size:.75rem}.cm-g{font-size:.72rem}.cm-b{font-size:.8rem}.co-t{font-size:.8rem}.co-t th,.co-t td{padding:0 .25rem}}
 details.fold.cot-all[open]{border:0;background:none}
 details.fold.cot-all>.fold-body{padding:1rem 0 0}
-.cot-all>summary .cg-more-h{font-family:var(--font-display);font-size:1rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em}
+.cot-all>summary .cg-more-h{font-family:var(--font-display);font-size:1rem;font-weight:800;text-transform:none;letter-spacing:0}
 </style>
 </head>
 
@@ -819,7 +818,7 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     </details>
     <div data-signup-ask="Get this every Friday by email" data-topic="cot" data-source="cot-weekly:cot" data-btn="Email me" data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Fund positions in every market, in one short email after each weekly CFTC report (the Monday after, in a holiday week). Free, its own list." class="cg-ask" id="cot-signup"></div>
     <!-- the summary baked in for crawlers and no-script readers, under the chart so the live swap moves nothing above it -->
-  <div id="cot-baked" class="cg-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, November 03, 2026</b>, released Friday, November 6: <b>Corn</b> funds near flat (net long 8,795 contracts, under 2.0% of open interest), −72,318 on the week; <b>Soybeans</b> funds net long 142,727 contracts, −51,054 on the week; <b>Chicago wheat</b> funds net short 87,126 contracts, −12,520 on the week; <b>KC wheat</b> funds near flat (net short 5,109 contracts, under 2.0% of open interest), −4,592 on the week; <b>Minneapolis wheat</b> funds net short 9,735 contracts, −6,022 on the week; <b>Soymeal</b> funds net long 108,367 contracts, −60,347 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
+  <div id="cot-baked" class="cg-baked" style="border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-md);padding:.75rem .95rem;margin:0 0 1rem;font-size:.9rem;line-height:1.65;color:var(--text-dim)"><!-- PRERENDER:cot-summary -->Managed-money positioning on <b>Tuesday, November 03, 2026</b>, released Friday, November 6: <b>Corn</b> funds near flat (net long 8,795 contracts, under 2.0% of open interest), −72,318 on the week; <b>Soybeans</b> funds net long 142,727 contracts, −51,054 on the week; <b>Chicago wheat</b> funds net short 87,126 contracts, −12,520 on the week; <b>KC wheat</b> funds near flat (net short 5,109 contracts, under 2.0% of open interest), −4,592 on the week; <b>Minneapolis wheat</b> funds net short 9,735 contracts, −6,022 on the week; <b>Soymeal</b> funds net long 108,367 contracts, −60,347 on the week. Full 52-week context, price overlay, and every market below.<!-- /PRERENDER:cot-summary --></div>
   </section>
 
   <!-- Last week's question, this week's answer (kit v2 part 2, Nov 6): about fund positions only, picked and
@@ -875,12 +874,12 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     </div>
   </div>
 
-  <aside class="ya" data-your-area="cot" hidden></aside><script src="/components/your-area.js?v=4" defer></script>
+  <aside class="ya" data-your-area="cot" hidden></aside><script src="/components/your-area.js?v=5" defer></script>
 
   <!-- Summary cards -->
   <h2 class="cot-section-title">Fund positioning by commodity</h2>
   <div class="cot-summary-grid" id="cot-summary-grid"></div>
-  <div class="method-note" id="cot-method"><b>Sources</b> · CFTC Disaggregated Commitments of Traders, futures only, all contract months. Each card names the year its market's record starts. · Reviewed by Sigurd Lindquist, CCA</div>
+  <div class="method-note" id="cot-method"><b>Sources</b> · CFTC Disaggregated Commitments of Traders, futures only, all contract months. Each card names the year its market's record starts.</div>
 
 
   <section class="cx" id="cx-board-sec" aria-labelledby="cx-board-h">
@@ -1001,19 +1000,19 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19"></script>
+<script src="/components/loader.js?v=20"></script>
 
 <script src="/components/cot-glance.js?v=6"></script>
 <script src="/components/share-kit.js?v=1"></script>
 <script src="/components/cot-kit.js?v=3"></script>
 <script src="/components/cot-chart.js?v=13"></script>
-<script src="/components/cot-page.js?v=12"></script>
+<script src="/components/cot-page.js?v=13"></script>
 <script src="/components/qr.js?v=11"></script>
 <script src="/components/cot-print.js?v=5"></script>
 <script src="/components/cot-share.js?v=2"></script>
@@ -1037,6 +1036,6 @@ details.fold.cot-all>.fold-body{padding:1rem 0 0}
   openTo(location.hash);
 })();
 </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

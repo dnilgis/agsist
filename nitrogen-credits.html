@@ -33,11 +33,11 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
-  <script src="/components/util.js?v=19"></script>
+  <script src="/components/util.js?v=21"></script>
   <style>
     .pg{max-width:780px;margin:0 auto;padding:1.4rem 1rem 4rem}
     .pg .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
@@ -50,25 +50,25 @@
     .pg b{color:var(--text)}
     .pg a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
     .pg .lede{font-size:1.05rem;color:var(--text)}
-    .pg-answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 12px 12px 0;padding:1rem 1.1rem;margin:0 0 1rem}
+    .pg-answer{background:var(--surface);border:1px solid var(--border);border-left:4px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:1rem 1.1rem;margin:0 0 1rem}
     .pg-answer p{margin:.4rem 0 0;color:var(--text)}
-    .pg-k{display:block;font-size:.74rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+    .pg-k{display:block;font-size:.78rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)}
     .pg-num{display:block;font-family:'JetBrains Mono',monospace;font-size:clamp(1.6rem,7vw,2.3rem);font-weight:800;color:var(--gold);line-height:1.15}
     .pg-num small{font-size:.9rem;font-weight:600;color:var(--text-dim);font-family:var(--font-body)}
-    .pg-calc{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:1rem;margin:.6rem 0 1rem}
+    .pg-calc{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1rem;margin:.6rem 0 1rem}
     .pg-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.6rem .8rem}
     .pg-form label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;font-weight:600;color:var(--text-muted)}
     .pg-form label[hidden]{display:none}
     .pg-form .wide{grid-column:1/-1}
-    .pg-form input,.pg-form select{min-height:44px;padding:0 .55rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:1rem;width:100%;box-sizing:border-box}
+    .pg-form input,.pg-form select{min-height:44px;padding:0 .55rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font:inherit;font-size:1rem;width:100%;box-sizing:border-box}
     .pg-form input{font-family:'JetBrains Mono',monospace}
     .pg-fs{border:0;border-top:1px solid var(--border);margin:1rem 0 0;padding:.7rem 0 0}
-    .pg-fs legend{font-size:.78rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);padding:0 .4rem 0 0}
+    .pg-fs legend{font-size:.78rem;font-weight:800;letter-spacing:0;text-transform:none;color:var(--gold);padding:0 .4rem 0 0}
     .pg-res{margin:1rem 0 0}
     .pg-res ul{list-style:none;padding:0;margin:.4rem 0 0}
     .pg-res li{display:block;border-bottom:1px solid var(--border);padding:.55rem 0;font-size:.95rem;color:var(--text-dim)}
     .pg-res li b{display:block;font-family:'JetBrains Mono',monospace;font-size:.9rem;margin-top:.15rem;overflow-wrap:anywhere}
-    .pg-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:10px;margin:.4rem 0 .5rem;background:var(--surface)}
+    .pg-tw{overflow-x:auto;-webkit-overflow-scrolling:touch;border:1px solid var(--border);border-radius:var(--r-lg);margin:.4rem 0 .5rem;background:var(--surface)}
     .pg-tw:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
     .pg-t{border-collapse:collapse;width:100%;font-size:.88rem}
     .pg-tw .pg-t{min-width:560px}
@@ -76,7 +76,7 @@
     .pg-t th small{display:block;font-weight:400;font-size:.72rem;color:var(--text-muted)}
     .pg-t.sm th,.pg-t.sm td{padding:.45rem .4rem;font-size:.82rem}
     .pg-t th,.pg-t td{padding:.5rem .6rem;border-bottom:1px solid var(--border);text-align:right;vertical-align:top}
-    .pg-t thead th{font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .pg-t thead th{font-size:.78rem;font-weight:700;text-transform:none;letter-spacing:0;color:var(--text-muted);vertical-align:bottom}
     .pg-t th[scope="row"],.pg-t td.tl,.pg-t thead th:first-child{text-align:left}
     .pg-t th[scope="row"]{font-weight:600;color:var(--text)}
     .pg-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
@@ -84,7 +84,7 @@
     .pg-t td.hi{color:var(--gold);font-weight:700}
     .pg-t tr.old td,.pg-t tr.old th{color:var(--text-muted)}
     .pg-cap{font-size:.82rem;line-height:1.5;color:var(--text-muted);margin:0 0 1.2rem}
-    .pg-flag{display:inline-block;font-size:.7rem;font-weight:800;letter-spacing:.05em;text-transform:uppercase;border:1px solid var(--gold);color:var(--gold);border-radius:4px;padding:0 .35rem;margin-left:.3rem;vertical-align:middle}
+    .pg-flag{display:inline-block;font-size:.78rem;font-weight:800;letter-spacing:0;text-transform:none;border:1px solid var(--gold);color:var(--gold);border-radius:4px;padding:0 .35rem;margin-left:.3rem;vertical-align:middle}
     .pg-fine{font-size:.85rem!important;color:var(--text-muted)!important}
     .pg-faq details{border-top:1px solid var(--border);padding:.75rem 0}
     .pg-faq details:last-child{border-bottom:1px solid var(--border)}
@@ -228,15 +228,15 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-    <script src="/components/loader.js?v=19" defer></script>
+    <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/a2809.js?v=3" defer></script>
   <script src="/components/nitrogen-credits.js?v=2" defer></script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

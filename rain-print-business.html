@@ -33,8 +33,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <style>
@@ -51,14 +51,14 @@
     .rbz-list,.rbz-steps{padding-left:1.2rem;margin:.3rem 0 1rem}
     .rbz-list li,.rbz-steps li{margin:.45rem 0}
     .rbz-ctas{display:flex;flex-wrap:wrap;gap:.6rem;align-items:center;margin:1.2rem 0 .6rem}
-    .rbz-go,.rbz-ghost,.rbz-pick{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 1.2rem;border-radius:6px;font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
+    .rbz-go,.rbz-ghost,.rbz-pick{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 1.2rem;border-radius:var(--r-md);font:inherit;font-weight:700;text-decoration:none;cursor:pointer}
     .rbz-go{color:#14110a!important;background:var(--gold-fill,var(--brand));border:none}
     .rbz-go:disabled{opacity:.6;cursor:default}
     .rbz-from{font-weight:600;color:var(--text)}
     .rbz-ghost,.rbz-pick{color:var(--text)!important;background:var(--surface);border:1px solid var(--border)}
     .rbz-pick{min-height:40px;padding:0 .9rem;font-weight:600;font-size:.9rem}
     .rbz-go:focus-visible,.rbz-ghost:focus-visible,.rbz-pick:focus-visible,.rbz-file:focus-visible+.rbz-pick{outline:2px solid var(--brand);outline-offset:2px}
-    .rbz-date{border-left:3px solid var(--brand);padding:.45rem .8rem;background:var(--surface);border-radius:0 6px 6px 0;font-weight:600;color:var(--text)!important}
+    .rbz-date{border-left:3px solid var(--brand);padding:.45rem .8rem;background:var(--surface);border-radius:0 var(--r-md) var(--r-md) 0;font-weight:600;color:var(--text)!important}
     .rbz-fig{margin:1.4rem 0}
     .rbz-fig img{display:block;width:100%;height:auto;border-radius:4px;border:1px solid var(--border)}
     .rbz-fig figcaption{font-size:.8rem;color:var(--text-muted);margin-top:.35rem}
@@ -76,7 +76,7 @@
     .rbz-tiers .rbz-off{display:block;font-size:.75rem;font-weight:400;color:var(--text-muted)}
     @media (max-width:560px){
       .rbz-tiers thead{display:none}
-      .rbz-tiers tr{display:block;border:1px solid var(--border);border-radius:6px;margin:0 0 .6rem;padding:.3rem .2rem}
+      .rbz-tiers tr{display:block;border:1px solid var(--border);border-radius:var(--r-md);margin:0 0 .6rem;padding:.3rem .2rem}
       .rbz-tiers th,.rbz-tiers td{display:flex;justify-content:space-between;border:none;padding:.3rem .6rem;text-align:right}
       .rbz-tiers td::before{content:attr(data-label);font-family:Inter,system-ui,sans-serif;color:var(--text-muted);font-size:.85rem;text-align:left;padding-right:.8rem}
     }
@@ -84,8 +84,8 @@
     .rbz .rbz-call{font-size:.92rem;margin:.6rem 0 1.4rem}
     .rbz-call a,.rbz-out a[href^="tel:"]{white-space:nowrap}
     .rbz .rbz-sample{font-size:.95rem;margin-top:.4rem}
-    .rbz-priv{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.8rem 1rem}
-    .rbz-box{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:1.1rem 1.1rem 1.2rem;margin:2rem 0 0;scroll-margin-top:80px}
+    .rbz-priv{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.8rem 1rem}
+    .rbz-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:1.1rem 1.1rem 1.2rem;margin:2rem 0 0;scroll-margin-top:80px}
     .rbz-box h2{margin-top:0}
     .rbz-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem 1rem}
     @media (max-width:560px){.rbz-grid{grid-template-columns:1fr}}
@@ -94,14 +94,14 @@
     @media (max-width:560px){.rbz-gap{display:none}}
     .rbz-f{display:flex;flex-direction:column;gap:.3rem}
     .rbz-f span,.rbz-lh,.rbz fieldset legend{font-size:.85rem;font-weight:600;color:var(--text)}
-    .rbz input[type=text],.rbz input[type=email],.rbz input[type=tel],.rbz input[type=number],.rbz textarea{width:100%;box-sizing:border-box;min-height:44px;padding:.55rem .7rem;font:inherit;font-size:16px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:6px}
+    .rbz input[type=text],.rbz input[type=email],.rbz input[type=tel],.rbz input[type=number],.rbz textarea{width:100%;box-sizing:border-box;min-height:44px;padding:.55rem .7rem;font:inherit;font-size:16px;color:var(--text);background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md)}
     .rbz textarea{min-height:auto;font-family:'JetBrains Mono',monospace;font-size:14px}
     .rbz input:focus-visible,.rbz textarea:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
     .rbz fieldset{border:none;margin:0;padding:0}
     .rbz-seg{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:.35rem}
     .rbz-seg label{position:relative}
     .rbz-seg input{position:absolute;opacity:0;width:1px;height:1px}
-    .rbz-seg span{display:inline-flex;align-items:center;min-height:40px;padding:0 .85rem;border:1px solid var(--border);border-radius:20px;font-size:.9rem;color:var(--text-dim);cursor:pointer;background:var(--bg)}
+    .rbz-seg span{display:inline-flex;align-items:center;min-height:40px;padding:0 .85rem;border:1px solid var(--border);border-radius:var(--r-lg);font-size:.9rem;color:var(--text-dim);cursor:pointer;background:var(--bg)}
     .rbz-seg input:checked+span{border-color:var(--brand);color:var(--text);font-weight:600;box-shadow:inset 0 0 0 1px var(--brand)}
     .rbz-seg input:focus-visible+span{outline:2px solid var(--brand);outline-offset:2px}
     .rbz-file{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden}
@@ -111,7 +111,7 @@
     .rbz-msg:empty{display:none}
     .rbz-bad{color:#e8806f!important}
     .rbz-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-    .rbz-out{margin-top:1rem;padding:.8rem 1rem;border-radius:8px;border:1px solid var(--border);background:var(--bg)}
+    .rbz-out{margin-top:1rem;padding:.8rem 1rem;border-radius:var(--r-md);border:1px solid var(--border);background:var(--bg)}
     .rbz-out.ok{border-color:var(--brand)}
     .rbz-out textarea{margin-top:.5rem}
     .rbz-faq details{border-top:1px solid var(--border);padding:.7rem 0}
@@ -302,19 +302,19 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/form-post.js?v=9" defer></script>
-  <script src="/components/outbox.js?v=3" defer></script>
+  <script src="/components/outbox.js?v=4" defer></script>
   <script src="/components/rp-logo.js?v=4" defer></script>
   <script src="/components/rain-print.js?v=94" defer></script>
   <script src="/components/rp-business.js?v=9" defer></script>
-  <script src="/components/rp-letterzoom.js?v=1" defer></script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/rp-letterzoom.js?v=2" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

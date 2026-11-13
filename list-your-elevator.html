@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111a0a">
   <title>Post Your Elevator's Cash Bids on AGSIST, Free</title>
   <meta name="description" content="Run a grain elevator? Post your own cash bids on AGSIST for free, fix your name, town or phone, and see on the map which elevators we read.">
-  <meta name="author"      content="Sigurd Lindquist, Farmers First Agri Service">
+  <meta name="author"      content="AGSIST">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical"    href="https://agsist.com/list-your-elevator">
 
@@ -33,8 +33,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
@@ -53,7 +53,7 @@
     .le li b{color:var(--text)}
     .le-ways{list-style:none;padding:0;margin:.4rem 0 1rem;border-top:1px solid var(--border)}
     .le-ways li{padding:.85rem 0;border-bottom:1px solid var(--border);margin:0}
-    .le-ways .k{display:block;font-family:var(--font-mono);font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem}
+    .le-ways .k{display:block;font-family:var(--font-body);font-size:.75rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.2rem}
     .le-go{display:inline-flex;align-items:center;min-height:44px;padding:.6rem 1.2rem;border-radius:var(--btn-r);background:var(--btn-primary-bg);color:var(--btn-primary-ink)!important;font-weight:700;text-decoration:none;margin:.4rem 0 .2rem}
     .le-sig{color:var(--text-muted);font-size:.9rem}
     .le-from{border-left:2px solid var(--gold);padding:.5rem .8rem;margin:0 0 1.2rem;color:var(--text)!important;font-size:.95rem!important}
@@ -65,7 +65,7 @@
     .cl-form{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.25rem;max-width:760px;margin-top:1rem}
     .cl-f{display:flex;flex-direction:column;gap:.35rem;min-width:0}
     .cl-f.full{grid-column:1/-1}
-    .cl-f label,.cl-f legend{font-family:var(--font-mono);font-size:.75rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);padding:0}
+    .cl-f label,.cl-f legend{font-family:var(--font-body);font-size:.75rem;font-weight:600;letter-spacing:0;text-transform:none;color:var(--text-muted);padding:0}
     .cl-f .opt{text-transform:none;letter-spacing:0;font-weight:400}
     .cl-f input,.cl-f select,.cl-f textarea{background:var(--bg);border:1px solid var(--border-2);border-radius:var(--r-sm);padding:.6rem .75rem;font-family:var(--font-body);font-size:.95rem;color:var(--text);min-height:44px;width:100%;box-sizing:border-box}
     .cl-f textarea{min-height:90px;resize:vertical}
@@ -102,16 +102,16 @@
     /* Coverage map and claiming a board: their own page, /elevators, until Oct 22, 2026 */
 @media(max-width:600px){.el-cov{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:.8rem;margin-bottom:1.1rem}
 .el-cov-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.9rem 1rem}
-.el-cov-k{font-family:var(--font-mono);font-size:0.745rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.el-cov-k{font-family:var(--font-body);font-size:0.745rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-bottom:.4rem}
 .el-cov-v{font-size:.84rem;color:var(--text-dim);line-height:1.5}
 .el-cov-v strong{color:var(--text);font-weight:600}
-.el-thin{background:rgba(212,162,63,.05);border:1px solid var(--border-2);border-left:2px solid var(--gold);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:.85rem 1.1rem;font-size:.84rem;color:var(--text-dim);line-height:1.6;margin:0 0 .4rem}
+.el-thin{background:var(--surface2);border:1px solid var(--border-2);border-left:2px solid var(--gold);border-radius:0 var(--r-sm) var(--r-sm) 0;padding:.85rem 1.1rem;font-size:.84rem;color:var(--text-dim);line-height:1.6;margin:0 0 .4rem}
 .el-thin strong{color:var(--text)}
 .el-thin a{color:var(--gold)}
 .el-disc{margin-top:1.4rem;font-size:0.765rem;color:var(--text-muted);line-height:1.7;padding:.8rem 1rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r-sm)}
 .el-disc a{color:var(--gold)}
 .covmap-tilewarn{margin:.6rem 0 0;padding:.6rem .8rem;border:1px solid var(--gold,#d4a23f);
-  border-left:3px solid var(--gold,#d4a23f);border-radius:6px;background:var(--surface,#141918);
+  border-left:3px solid var(--gold,#d4a23f);border-radius:var(--r-md);background:var(--surface,#141918);
   color:var(--text-dim,#8a948f);font-size:.82rem;line-height:1.45;max-width:62ch}
 .el-map-lede{color:var(--text-dim,#8a948f);max-width:62ch;margin:.4rem 0 1rem;line-height:1.65}
 .el-map-wrap{position:relative;border:1px solid var(--border,#2a3230);border-radius:var(--card-r);overflow:hidden}
@@ -119,14 +119,14 @@
 .el-map-hint{position:absolute;right:.55rem;bottom:.55rem;z-index:500;pointer-events:none;
   font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.06em;
   background:rgba(8,12,11,.72);color:#cbd5d1;border:1px solid rgba(255,255,255,.1);
-  border-radius:5px;padding:.2rem .45rem;transition:opacity .3s}
+  border-radius:var(--r-md);padding:.2rem .45rem;transition:opacity .3s}
 #cov-map.leaflet-container:hover ~ .el-map-hint{opacity:0}
 .el-map-wrap:has(#cov-fallback:not([hidden])) .el-map-hint{display:none}
 @media(max-width:640px){#cov-map{height:min(60vh,420px)}}
 .el-map-fallback{padding:1.2rem;color:var(--text-dim,#8a948f);font-size:.9rem}
 .el-map-key{display:flex;flex-wrap:wrap;gap:.5rem;margin:.7rem 0 0}
 .el-key{display:inline-flex;align-items:center;gap:.42rem;background:none;border:1px solid var(--border,#2a3230);
-  border-radius:20px;padding:.3rem .8rem;min-height:40px;color:var(--text-dim,#8a948f);font-size:.8rem;cursor:pointer;
+  border-radius:var(--r-lg);padding:.3rem .8rem;min-height:40px;color:var(--text-dim,#8a948f);font-size:.8rem;cursor:pointer;
   font-family:inherit;transition:opacity .15s}
 .el-key[aria-pressed="false"]{opacity:.4}
 .el-key b{color:var(--text,#e8ede9);font-variant-numeric:tabular-nums}
@@ -134,7 +134,7 @@
 .el-key-read .el-dot,.el-dot-read{background:#3a8b3c}
 .el-key-quiet .el-dot,.el-dot-quiet{background:#d4a23f}
 .el-key-known .el-dot,.el-dot-known{background:#6b7280}
-.el-map-panel{margin-top:.7rem;border:1px solid var(--border,#2a3230);border-radius:10px;padding:.8rem .9rem;
+.el-map-panel{margin-top:.7rem;border:1px solid var(--border,#2a3230);border-radius:var(--r-lg);padding:.8rem .9rem;
   background:var(--surface,#141918)}
 .el-panel-head{font-weight:700;font-size:.9rem;margin-bottom:.45rem}
 .el-panel-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:.3rem;
@@ -150,7 +150,7 @@
 .el-map-foot{font-size:.78rem;color:var(--text-muted,#6d7671);margin:.55rem 0 0;line-height:1.6;max-width:70ch}}
 .cl{margin:2.4rem 0 1.8rem;padding-top:1.5rem;border-top:1px solid var(--border-2);scroll-margin-top:84px}
 .cl-alias{display:block;height:0;overflow:hidden}
-.cl-kick{font-family:var(--font-mono);font-size:.75rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .5rem}
+.cl-kick{font-family:var(--font-body);font-size:.75rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin:0 0 .5rem}
 .cl-lede{font-size:1rem;color:var(--text-dim);line-height:1.6;max-width:62ch;margin:0 0 1.5rem}
 .cl-net{font-family:var(--font-body);font-size:.875rem;color:var(--text-muted);line-height:1.6;margin:0 0 1.5rem;max-width:70ch}
 .cl-net .num{font-family:var(--font-mono);font-variant-numeric:tabular-nums;color:var(--text);font-weight:600}
@@ -159,7 +159,7 @@
 @media(min-width:800px){.cl-pts{grid-template-columns:repeat(3,1fr)}
 .cl-pt{padding:1rem 1.5rem 1rem 0}
 .cl-pt+.cl-pt{padding-left:1.5rem;border-left:1px solid var(--border)}}
-.cl-pt-k{font-family:var(--font-mono);font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .4rem}
+.cl-pt-k{font-family:var(--font-body);font-size:.75rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin:0 0 .4rem}
 .cl-pt-h{font-family:var(--font-display);font-size:1.05rem;font-weight:700;color:var(--text);margin:0 0 .35rem;line-height:1.3}
 .cl-pt p{font-size:.875rem;color:var(--text-dim);line-height:1.6;margin:0}
 .cl-pt ul{margin:.1rem 0 0;padding:0 0 0 1.05rem;font-size:.875rem;color:var(--text-dim);line-height:1.6}
@@ -194,11 +194,7 @@
     "@type": "WebSite",
     "url": "https://agsist.com/"
    },
-   "author": {
-    "@type": "Person",
-    "name": "Sigurd Lindquist",
-    "url": "https://agsist.com/about"
-   }
+   "author": {"@id":"https://agsist.com/#organization"}
   },
   {
    "@type": "FAQPage",
@@ -438,7 +434,7 @@
           </div>
           <div class="cl-go">
             <button type="submit" class="cl-btn" id="le-send">Send the request</button>
-            <p class="cl-note">It comes to me, Sig. I use your phone and email only to set this up. Nothing goes on the site until I have talked with the elevator.</p>
+            <p class="cl-note">It comes to AGSIST. I use your phone and email only to set this up. Nothing goes on the site until I have talked with the elevator.</p>
           </div>
         </form>
         <div class="cl-out" id="le-out" aria-live="polite"></div>
@@ -616,7 +612,7 @@
       <label class="cl-chk"><input type="checkbox" name="hosted_board" value="yes"> Tell me about a hosted bid board for our website</label>
       <div class="cl-go">
         <button type="submit" class="cl-btn" id="cl-send">Claim our board</button>
-        <p class="cl-note">Goes to Sig at <a href="mailto:sig@agsist.com">sig@agsist.com</a>. Nothing changes on the site until he confirms it with you.</p>
+        <p class="cl-note">Goes to AGSIST at <a href="mailto:sig@agsist.com">sig@agsist.com</a>. Nothing changes on the site until AGSIST confirms it with you.</p>
       </div>
     </form>
     <div class="cl-out" id="cl-out" role="status" aria-live="polite"></div>
@@ -639,7 +635,7 @@
       <div class="el-disc">
     Cash bids are read from each elevator's own posted board and can trail a change the elevator has not posted yet. Confirm the price with the elevator before you deliver. AGSIST is not a licensed commodity broker and this is not trading advice. Contact: <a href="mailto:sig@agsist.com" style="color:var(--gold)">sig@agsist.com</a> &middot; <a href="tel:+17157972428" style="color:var(--gold)">715-797-2428</a>
   </div>
-      <p class="le-sig">Sigurd Lindquist, AGSIST. <a href="mailto:sig@agsist.com">sig@agsist.com</a> &middot; <a href="tel:+17157972428">715-797-2428</a></p>
+      <p class="le-sig">AGSIST. <a href="mailto:sig@agsist.com">sig@agsist.com</a> &middot; <a href="tel:+17157972428">715-797-2428</a></p>
     </div>
   </main>
   <div id="site-footer">
@@ -652,7 +648,7 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
@@ -660,8 +656,8 @@
 </div>
   <script src="/components/form-post.js?v=9"></script>
   <script src="/components/elev-names.js?v=2"></script>
-  <script src="/components/list-elevator.js?v=3"></script>
-  <script src="/components/elevator-claim.js?v=1"></script>
+  <script src="/components/list-elevator.js?v=4"></script>
+  <script src="/components/elevator-claim.js?v=2"></script>
   <script>
   /* The coverage map loads Leaflet and its data only when a reader nears it, or opens the page on it. */
   (function(){
@@ -675,7 +671,7 @@
     else load();
   })();
   </script>
-  <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

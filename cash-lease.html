@@ -9,9 +9,9 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <script src="/components/util.js?v=17"></script>
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
+  <script src="/components/util.js?v=21"></script>
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -40,7 +40,7 @@
   <style>
     .cl-wrap{max-width:940px;margin:0 auto;padding:24px 16px 60px}
     .cl-hero{padding:26px 0 2px}
-    .cl-kicker{font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
+    .cl-kicker{font-family:var(--font-body);font-size:0.77rem;letter-spacing:0;text-transform:none;color:var(--text-dim);margin:0 0 10px}
     .cl-hero h1{font-family:var(--font-display);font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0 0 12px;color:#e6ebe9}
     .cl-sub{font-size:1.02rem;line-height:1.7;color:#8a948f;max-width:760px;margin:0}
     .cl-sub strong{color:#e6ebe9}
@@ -49,25 +49,25 @@
     
     .cl-panel{background:#101415;border:1px solid #1a1f20;border-radius:var(--card-r);margin-top:26px;overflow:hidden}
     .cl-panel-hd{padding:14px 18px;border-bottom:1px solid #1a1f20}
-    .cl-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+    .cl-panel-t{font-family:var(--font-body);font-size:0.78rem;letter-spacing:0;text-transform:none;color:var(--text-dim)}
     .cl-panel-b{padding:18px}
     .cl-types{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
-    .cl-type{background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:14px 16px}
+    .cl-type{background:#0d1112;border:1px solid #1a1f20;border-radius:var(--r-lg);padding:14px 16px}
     .cl-type h3{margin:0 0 8px;font-size:1rem;color:#e6ebe9;font-family:var(--font-display)}
     .cl-type p{margin:0 0 8px;font-size:.88rem;line-height:1.65;color:#8a948f}
-    .cl-risk{font-family:'JetBrains Mono',monospace;font-size:0.76rem;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:9px}
+    .cl-risk{font-family:var(--font-body);font-size:0.76rem;letter-spacing:0;text-transform:none;padding:3px 8px;border-radius:4px;display:inline-block;margin-bottom:9px}
     .cl-risk--tenant{color:#e0685f;border:1px solid rgba(224,104,95,.4)}
     .cl-risk--shared{color:var(--gold);border:1px solid rgba(212,162,63,.4)}
     .cl-risk--owner{color:#5fc28a;border:1px solid rgba(95,194,138,.4)}
-    .cl-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:1rem;line-height:1.65;color:#8a948f;margin:16px 0}
+    .cl-note{background:var(--surface2);border:1px solid var(--border-2);border-radius:var(--r-lg);padding:12px 16px;font-size:1rem;line-height:1.65;color:#8a948f;margin:16px 0}
     .cl-note strong{color:var(--gold)}
-    .cl-warn{background:rgba(224,104,95,.06);border:1px solid rgba(224,104,95,.35);border-radius:10px;padding:12px 16px;font-size:.88rem;line-height:1.65;color:#8a948f;margin:16px 0}
+    .cl-warn{background:var(--surface2);border:1px solid var(--border-2);border-radius:var(--r-lg);padding:12px 16px;font-size:.88rem;line-height:1.65;color:#8a948f;margin:16px 0}
     .cl-warn strong{color:#e0685f}
     /* ---- the lease itself ---- */
-    .lease{background:#0d1112;border:1px solid #1a1f20;border-radius:10px;padding:26px 26px 30px;line-height:1.75;color:#c9d1cd;font-size:.94rem}
+    .lease{background:#0d1112;border:1px solid #1a1f20;border-radius:var(--r-lg);padding:26px 26px 30px;line-height:1.75;color:#c9d1cd;font-size:.94rem}
     .lease h2{font-family:var(--font-display);text-align:center;font-size:1.25rem;letter-spacing:.06em;color:#e6ebe9;margin:0 0 4px}
     .lease .lease-sub{text-align:center;font-size:0.795rem;color:#8a948f;margin:0 0 22px}
-    .lease h3{font-size:.82rem;font-family:'JetBrains Mono',monospace;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin:22px 0 8px}
+    .lease h3{font-size:.82rem;font-family:var(--font-body);letter-spacing:0;text-transform:none;color:var(--text-dim);margin:22px 0 8px}
     .lease ol{padding-left:20px;margin:6px 0}
     .lease li{margin:5px 0}
     .lf{display:inline-block;background:transparent;border:none;border-bottom:1px solid #3a4345;color:#e6ebe9;font:inherit;padding:1px 6px;min-width:60px}
@@ -76,7 +76,7 @@
     .lf-med{width:200px}
     .lf-sm{width:110px}
     .lf-xs{width:72px}
-    .lf-area{display:block;width:100%;background:transparent;border:1px solid #3a4345;border-radius:6px;color:#e6ebe9;font:inherit;padding:8px 10px;min-height:74px;margin-top:6px}
+    .lf-area{display:block;width:100%;background:transparent;border:1px solid #3a4345;border-radius:var(--r-md);color:#e6ebe9;font:inherit;padding:8px 10px;min-height:74px;margin-top:6px}
     .lf-area:focus{outline:none;border-color:#d4a23f}
     .pm{display:none}
     .cl-fmsg{color:var(--gold);font-size:.8em;margin-left:6px}
@@ -85,8 +85,8 @@
     .sigline{border-bottom:1px solid #3a4345;height:34px}
     .siglbl{font-size:0.78rem;color:#8a948f;margin-top:4px;font-family:'JetBrains Mono',monospace;letter-spacing:.08em}
     .cl-actions{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}
-    .cl-btn{font:inherit;font-size:.85rem;padding:9px 18px;border-radius:8px;border:1px solid #d4a23f;background:rgba(212,162,63,.1);color:var(--gold);cursor:pointer}
-    .cl-btn:hover{background:rgba(212,162,63,.2)}
+    .cl-btn{font:inherit;font-size:.85rem;padding:9px 18px;border-radius:var(--r-md);border:1px solid #d4a23f;background:var(--surface2);color:var(--gold);cursor:pointer}
+    .cl-btn:hover{background:var(--surface2)}
     .cl-btn--ghost{border-color:#3a4345;background:transparent;color:#8a948f}
     .cl-faq details{border-bottom:1px solid #1a1f20;padding:10px 0}
     .cl-faq summary{cursor:pointer;color:#e6ebe9;font-size:1rem}
@@ -118,7 +118,7 @@
       .lf-area{height:auto;min-height:74px;overflow:visible}
       .pm-hide{display:none !important}
       .pm{display:inline;white-space:pre-wrap;overflow-wrap:anywhere;color:#000;border-bottom:1px solid #000;padding:0 4px}
-      div.pm{display:block;border:1px solid #000;border-radius:6px;padding:8px 10px;margin-top:6px}
+      div.pm{display:block;border:1px solid #000;border-radius:var(--r-md);padding:8px 10px;margin-top:6px}
       .cl-fmsg{display:none !important}
       .sigline{border-bottom-color:#000}
       .siglbl{color:#333}
@@ -155,14 +155,14 @@
     .cl-law{display:inline-block;margin-left:4px;font-family:'JetBrains Mono',monospace;font-size:.78em}
     .cl-law a,.cl-nwhen a{color:var(--gold)}
     .cl-ngrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px 14px;margin:12px 0}
-    .cl-ngrid label{display:flex;flex-direction:column;gap:4px;font-family:'JetBrains Mono',monospace;font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
-    .cl-ngrid input,.cl-ngrid select{font:inherit;font-family:var(--font-body,system-ui,sans-serif);font-size:.95rem;letter-spacing:0;text-transform:none;color:var(--text,#e6ebe9);background:transparent;border:1px solid #3a4345;border-radius:6px;padding:8px 10px;min-height:40px}
+    .cl-ngrid label{display:flex;flex-direction:column;gap:4px;font-family:var(--font-body);font-size:.72rem;letter-spacing:0;text-transform:none;color:var(--text-dim)}
+    .cl-ngrid input,.cl-ngrid select{font:inherit;font-family:var(--font-body,system-ui,sans-serif);font-size:.95rem;letter-spacing:0;text-transform:none;color:var(--text,#e6ebe9);background:transparent;border:1px solid #3a4345;border-radius:var(--r-md);padding:8px 10px;min-height:40px}
     .cl-ngrid select option{color:#000}
-    .cl-nwhen{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:.95rem;line-height:1.65;color:var(--text-muted,#8a948f);margin:14px 0}
+    .cl-nwhen{background:var(--surface2);border:1px solid var(--border-2);border-radius:var(--r-lg);padding:12px 16px;font-size:.95rem;line-height:1.65;color:var(--text-muted,#8a948f);margin:14px 0}
     .cl-nwhen strong{color:var(--gold)}
     .cl-nwhen .cl-ndate{font-family:var(--font-display);font-size:1.5rem;color:var(--text,#e6ebe9);display:block;margin:2px 0}
     .cl-nwhen ul{margin:6px 0 0;padding-left:20px}
-    .notice-paper{background:#fff;color:#111;border-radius:6px;padding:28px 30px;line-height:1.6;font-size:.95rem;max-width:720px;margin:6px auto 0}
+    .notice-paper{background:#fff;color:#111;border-radius:var(--r-md);padding:28px 30px;line-height:1.6;font-size:.95rem;max-width:720px;margin:6px auto 0}
     .notice-paper h2{text-align:center;font-family:var(--font-display);font-size:1.15rem;letter-spacing:.06em;margin:0 0 18px;color:#111}
     .notice-paper p{margin:0 0 12px}
     .notice-paper .np-b{border-bottom:1px solid #111;padding:0 4px}
@@ -240,7 +240,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
 /* phone width: nested cards add no extra side padding (narrow cards, Nov 9) */
 @media(max-width:480px){.notice-paper{padding-left:10px;padding-right:10px}.notice-paper .np-box{padding-left:8px;padding-right:8px}}
 </style>
-<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"BreadcrumbList","@id":"https://agsist.com/cash-lease#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Cash Farm Lease","item":"https://agsist.com/cash-lease"}]}]}</script>
+<script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebApplication","@id":"https://agsist.com/cash-lease#app","name":"Farm cash lease form","url":"https://agsist.com/cash-lease","description":"A free fillable, printable two-page cash farm lease, with every lease type explained and your state's notice deadlines.","applicationCategory":"BusinessApplication","operatingSystem":"Any","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"publisher":{"@type":"Organization","name":"AGSIST","url":"https://agsist.com/"}},{"@type":"BreadcrumbList","@id":"https://agsist.com/cash-lease#breadcrumb","itemListElement":[{"@type":"ListItem","position":1,"name":"Home","item":"https://agsist.com/"},{"@type":"ListItem","position":2,"name":"Cash Farm Lease","item":"https://agsist.com/cash-lease"}]}]}</script>
 </head>
 <body>
 <div id="site-header">
@@ -268,7 +268,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
   <header class="cl-hero">
     <p class="cl-kicker page-kicker">Lease paperwork &middot; Keep it simple</p>
     <h1>A farm lease you can actually read</h1>
-    <p class="cl-sub page-lede">Most ground in this country changes hands on a handshake and a memory. A handshake is a fine way to agree, and a terrible way to remember. Below: <strong>every lease type explained</strong>, and a <strong>fillable, printable two-page cash lease</strong> that says what it means. It takes about five minutes, and you both sign it.</p>
+    <p class="cl-sub page-lede"><!--BAKE:rent-answer-->Before you sign, check the rent: the USDA NASS 2026 Cash Rents Survey has rates for 2,359 counties in 45 states (read Oct 6, 2026), on the <a href="/rent/">county cash rent pages</a>.<!--/BAKE--> Most ground in this country changes hands on a handshake and a memory. A handshake is a fine way to agree, and a terrible way to remember. Below: <strong>every lease type explained</strong>, and a <strong>fillable, printable two-page cash lease</strong> that says what it means. It takes about five minutes, and you both sign it.</p>
     <p class="cl-jump"><a href="#lease-form">Fill in the lease</a> &middot; <a href="#notice">Notice to end a lease, and the date to serve it by</a></p>
     <p class="cl-by">State notice rules rechecked Oct 15, 2026</p>
   </header>
@@ -320,7 +320,7 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     <div class="cl-panel-hd"><span class="cl-panel-t" id="cl-lease-t">The lease: fill it in, print it, sign it</span></div>
     <div class="cl-panel-b">
       <div class="cl-actions no-print" style="align-items:center">
-        <label for="cl-state-sel" style="font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)">Your state</label>
+        <label for="cl-state-sel" style="font-family:var(--font-body);font-size:0.77rem;letter-spacing:0;text-transform:none;color:var(--gold)">Your state</label>
         <select id="cl-state-sel" class="cl-btn cl-btn--ghost" style="cursor:pointer" aria-label="Select your state to adapt the termination section"></select>
         <button class="cl-btn" id="cl-print" type="button">Print / save as PDF</button>
         <button class="cl-btn cl-btn--ghost" id="cl-clear" type="button">Clear form</button>
@@ -471,7 +471,6 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     </div>
     </details>
   </section>
-<p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
 
 <div id="site-footer">
@@ -484,13 +483,13 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19"></script>
+<script src="/components/loader.js?v=20"></script>
 <script>
 (function(){
   'use strict';
@@ -761,6 +760,6 @@ html[data-theme="light"] .cl-btn{border-color:var(--gold-fill)}
   nrender();
 })();
 </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

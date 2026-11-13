@@ -83,17 +83,13 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install
-        run: pip install openpyxl==3.1.5 pypdf==6.17.0
+        run: pip install openpyxl==3.1.5 pypdf==6.17.0 pillow==12.3.0
       - name: FSA files from raw
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/pull_raw.sh data/fsa
       - name: Selftest
         run: python scripts/build_arc_plc.py --selftest
-
-      - name: Pillow, for the share image and the county cards
-        continue-on-error: true
-        run: pip install --quiet pillow==12.3.0
 
       - name: Check out the county cards (agsist-data)
         id: cards
@@ -125,7 +121,7 @@ jobs:
             fi
             python scripts/generated_sets.py dependents arc-plc --stage || true
             git add -A -- arc-plc.html arc-plc data/pointers data/arc-plc.json data/arc-plc data/arc-plc-prices.json data/breakeven \
-                          embed/arc-plc.html sitemap-arc-plc.xml llms.txt components/arc-plc-form.js img/og/arc-plc.jpg
+                          sitemap-arc-plc.xml llms.txt components/arc-plc-form.js img/og/arc-plc.jpg
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -q -m "arc-plc: rebuilt $(date -u +%Y-%m-%d)"
             if git push; then

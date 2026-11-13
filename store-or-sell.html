@@ -7,15 +7,15 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
   <link rel="manifest"                            href="/manifest.json">
   <title>Store or Sell? Grain Carry After Storage and Interest | AGSIST</title>
   <meta name="description" content="Should you store grain or sell at harvest? Your elevator&#39;s own later bids, minus storage, interest and shrink, in cents a bushel. Corn, soybeans and wheat.">
-  <meta name="author" content="Sigurd Lindquist">
+  <meta name="author" content="AGSIST">
   <meta name="robots"      content="index, follow, max-snippet:-1, max-image-preview:large">
   <link rel="canonical"    href="https://agsist.com/store-or-sell">
   <meta property="og:type"         content="website">
@@ -43,10 +43,10 @@
   .sos-lede{color:var(--text-muted);line-height:1.6;margin:0 0 1rem}
   .sos-form{display:flex;flex-wrap:wrap;gap:.6rem;align-items:flex-end;margin:0 0 1rem}
   .sos-form label,.sos-costs label{display:flex;flex-direction:column;gap:4px;font-size:.8rem;color:var(--text-muted)}
-  .sos-form input,.sos-form select,.sos-costs input{font-size:1rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text);width:100%;box-sizing:border-box}
+  .sos-form input,.sos-form select,.sos-costs input{font-size:1rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);color:var(--text);width:100%;box-sizing:border-box}
   .sos-form label{flex:1 1 120px}
-  .sos-form button{min-height:44px;padding:0 1.1rem;border-radius:8px;border:2px solid var(--gold);background:transparent;color:var(--gold);font-weight:700;font-size:1rem;cursor:pointer}
-  .sos-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:14px 16px;margin:0 0 1rem}
+  .sos-form button{min-height:44px;padding:0 1.1rem;border-radius:var(--r-md);border:2px solid var(--gold);background:transparent;color:var(--gold);font-weight:700;font-size:1rem;cursor:pointer}
+  .sos-card{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-lg);padding:14px 16px;margin:0 0 1rem}
   .sos-line{font-size:1.2rem;font-weight:700;line-height:1.4;margin:0 0 .4rem;color:var(--text);min-height:3.4em}
   .sos-up{color:var(--green)} .sos-dn{color:var(--red,#ef4444)}
   /* the answer card holds its filled height before the bids land (CLS sweep Nov 10) */
@@ -56,22 +56,23 @@
   .sos-note,.sos-fine{color:var(--text-muted);font-size:.85rem;line-height:1.55;margin:.3rem 0 0}
   .sos-costs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.6rem;margin:.4rem 0 .3rem;align-items:end}
   .sos h2{font-size:1.05rem;margin:1.2rem 0 .4rem}
-  .sos details{border:1px solid var(--border);border-radius:10px;padding:0 14px;margin:0 0 .7rem;background:var(--surface)}
+  .sos details{border:1px solid var(--border);border-radius:var(--r-lg);padding:0 14px;margin:0 0 .7rem;background:var(--surface)}
   .sos summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600;color:var(--text)}
   .sos details[open]>summary{border-bottom:1px solid var(--border);margin-bottom:.6rem}
   .sos-tw{overflow-x:auto}
   table.sos-t{width:100%;border-collapse:collapse;font-size:.9rem;margin:0 0 .6rem}
     .sos-t th,.sos-t td{padding:6px;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
-  .sos-t th:first-child{text-align:left} .sos-t thead th{font-size:.7rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted)}
+  .sos-t th:first-child{text-align:left} .sos-t thead th{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted)}
   .sos-t td{font-family:'JetBrains Mono',monospace}
-  .sos-on{background:color-mix(in srgb,var(--gold) 12%,transparent)}
+  .sos-on{background:var(--surface2)}
+  .sos-on>:first-child{border-left:3px solid var(--gold)}
   .sos-pick{background:none;border:0;color:var(--text);font:inherit;cursor:pointer;min-height:36px;padding:0;text-decoration:underline dotted}
   .sos-mo{color:var(--text-dim);font-size:.78rem}
   .sos-others{margin:0 0 .6rem;padding-left:1.1rem;line-height:1.55;font-size:.9rem} .sos-others li{margin:0 0 .5rem}
   .sos-math{font-family:'JetBrains Mono',monospace;font-size:.8rem;white-space:pre-wrap;color:var(--text);margin:0 0 .6rem;overflow-x:auto}
   .sos-faq p{color:var(--text-muted);line-height:1.6;margin:0 0 .8rem}
   .sos-links{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0;font-size:.85rem}
-  .sos-links a{display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:999px;padding:0 .8rem;color:var(--gold);text-decoration:none}
+  .sos-links a{display:inline-flex;align-items:center;min-height:44px;border:1px solid var(--border);border-radius:var(--r-lg);padding:0 .8rem;color:var(--gold);text-decoration:none}
   @media(max-width:480px){.sos-line{font-size:1.08rem;min-height:4.2em} .sos-t th,.sos-t td{padding:6px 4px} .sos-costs label{font-size:.74rem}}
 :where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-muted);margin-top:.75rem} /* fallback until styles.css lands; zero specificity */
   </style>
@@ -126,7 +127,7 @@
     <details id="sos-others-wrap" hidden><summary>Other elevators near you</summary><ul class="sos-others" id="sos-others"></ul></details>
     <details><summary>What the board pays to store</summary><p class="sos-note" id="sos-futures" style="margin-bottom:.8rem">Loading futures prices.</p></details>
     <details><summary>Show the math</summary><pre class="sos-math" id="sos-math"></pre>
-      <p class="sos-fine" style="margin-bottom:.8rem">Net = carry &minus; storage &times; months &minus; price now &times; rate &times; months / 12 &minus; shrink &times; later price. Carry is the elevator&rsquo;s later posted bid minus its bid for delivery now, both read from the same board at the same time. A month in next year&rsquo;s crop is new crop, not storage, and is left out. When the answer is the board, storage and interest count from this month once the crop is in, because a bid for delivery now is priced off the nearest contract. Bids from the AGSIST elevator network; futures are Yahoo Finance delayed quotes, labeled as closes only once read after the 1:20 pm CT day close, and never CME settlements. For planning only; call the elevator before you count on a bid.</p><div class="method-note">Reviewed by Sigurd Lindquist, CCA</div>
+      <p class="sos-fine" style="margin-bottom:.8rem">Net = carry &minus; storage &times; months &minus; price now &times; rate &times; months / 12 &minus; shrink &times; later price. Carry is the elevator&rsquo;s later posted bid minus its bid for delivery now, both read from the same board at the same time. A month in next year&rsquo;s crop is new crop, not storage, and is left out. When the answer is the board, storage and interest count from this month once the crop is in, because a bid for delivery now is priced off the nearest contract. Bids from the AGSIST elevator network; futures are Yahoo Finance delayed quotes, labeled as closes only once read after the 1:20 pm CT day close, and never CME settlements. For planning only; call the elevator before you count on a bid.</p>
     </details>
     <h2>Common questions</h2>
     <details class="sos-faq"><summary>How do I know if storing grain pays?</summary><p>Take the elevator's posted bid for the later month, subtract its bid for delivery now: that is the carry. Then take off what holding costs you: storage for each month, interest on the money the grain is worth today, and any shrink. If what is left is above zero, storing pays at today's bids. This page does that arithmetic with your elevator's own posted bids.</p></details>
@@ -156,17 +157,17 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/util.js?v=17"></script>
+  <script src="/components/loader.js?v=20" defer></script>
+  <script src="/components/util.js?v=21"></script>
   <script src="/components/bids-network.js?v=9"></script>
-  <script src="/components/storesell.js?v=9"></script>
+  <script src="/components/storesell.js?v=10"></script>
   <script src="/components/store-or-sell.js?v=8"></script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

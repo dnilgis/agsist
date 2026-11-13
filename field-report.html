@@ -16,7 +16,7 @@
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agsist.com/img/og/field-scout.jpg?v=f03a4649">
   <meta name="description" content="A free printable land report for one field: parcel and owner of record, recorded transfers, sold land nearby, soils, crop history, flood zones and wetlands. No sign-up.">
-  <meta name="author" content="Sigurd Lindquist">
+  <meta name="author" content="AGSIST">
   <meta name="robots" content="noindex, follow">
   <script>/* agsist-theme-early: saved theme, else the device's, set before first paint so pages do not flash the wrong color. loader.js applies the same rule. */try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=window.matchMedia&&matchMedia('(prefers-color-scheme: light)').matches?'light':'dark';document.documentElement.setAttribute('data-theme',_t);}catch(e){}</script><script>/* agsist-ga-guard 2026-10-20b: rules in /components/ga-gate.js */(function(w,d,n){var off=false,i,s,u;w.dataLayer=w.dataLayer||[];if(typeof w.gtag!=='function'){w.gtag=function(){w.dataLayer.push(arguments);};}try{off=w.localStorage.getItem('agsist-ga-off')==='1';}catch(e){}if(n.globalPrivacyControl===true){off=true;}u=n.userAgent||'';if(n.webdriver===true||(/HeadlessChrome|PhantomJS|Lighthouse|bot|crawler|spider/i.test(u)&&!/cubot/i.test(u))){off=true;}w.agsistGaOff=off;w.gtag('set','allow_google_signals',false);w.gtag('set','allow_ad_personalization_signals',false);if(off){return;}i=function(){if(s||d.prerendering){return;}s=d.createElement('script');s.src='/components/ga-gate.js?v=1';(d.head||d.documentElement).appendChild(s);};['scroll','pointerdown','keydown','touchstart'].forEach(function(t){w.addEventListener(t,i,{capture:true,passive:true});});})(window,document,navigator);</script>
   <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());/* the field outline is in the URL; Analytics gets the bare path only (land audit 2026-10-18) */gtag('set',{page_location:location.origin+location.pathname});gtag('config','G-6KXCTD5Z9H',{page_location:location.origin+location.pathname,page_referrer:document.referrer?document.referrer.split('?')[0]:''});</script>
@@ -24,7 +24,7 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <style>
@@ -37,14 +37,14 @@
     .frp .fs-src{font-size:.76rem;color:var(--text-muted);margin-top:.3rem}
     .frp .fs-loading{font-size:.85rem;color:var(--text-muted)}
     .frp-act{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 1rem}
-    .frp-act button,.frp-act a{font:inherit;font-size:.9rem;min-height:42px;padding:0 .9rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+    .frp-act button,.frp-act a{font:inherit;font-size:.9rem;min-height:42px;padding:0 .9rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
     .frp-act button{background:var(--gold-fill);color:#111;border-color:var(--gold-fill);font-weight:700}
     .frp-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.5rem;margin:.4rem 0}
-    .frp-sum div{border:1px solid var(--border);border-radius:8px;padding:.5rem .65rem;background:var(--surface)}
+    .frp-sum div{border:1px solid var(--border);border-radius:var(--r-md);padding:.5rem .65rem;background:var(--surface)}
     .frp-sum b{display:block;font-family:var(--font-mono);font-size:1.15rem;color:var(--text)}
-    .frp-sum span{font-size:.74rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
-    .frp-rot{display:flex;flex-wrap:wrap;gap:.3rem}.frp-rot span{font-size:.82rem;border:1px solid var(--border);border-radius:6px;padding:.15rem .45rem;color:var(--text)}
-    .frp-err{border:1px dashed var(--border);border-radius:8px;padding:.7rem .8rem;color:var(--text-dim);font-size:.9rem}
+    .frp-sum span{font-size:.74rem;color:var(--text-muted);text-transform:none;letter-spacing:0}
+    .frp-rot{display:flex;flex-wrap:wrap;gap:.3rem}.frp-rot span{font-size:.82rem;border:1px solid var(--border);border-radius:var(--r-md);padding:.15rem .45rem;color:var(--text)}
+    .frp-err{border:1px dashed var(--border);border-radius:var(--r-md);padding:.7rem .8rem;color:var(--text-dim);font-size:.9rem}
 .frp-err a{text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
     @media print{
       body>*:not(main),#site-header,#site-footer,.skip,.frp-act,.fl-tabs,.no-print{display:none!important}
@@ -106,7 +106,6 @@
         <p>Parcel lines and owner of record: the state or county's own free public parcel service, read when this page opened. Transfers and sales: the state's public transfer returns. Soils: USDA NRCS soil survey (SSURGO). Crop history: USDA NASS Cropland Data Layer. Flood: FEMA National Flood Hazard Layer. Wetlands: USFWS National Wetlands Inventory. Ground height: USGS 3DEP. Each piece shows as missing when its source did not answer; nothing is filled in by estimate. This is a starting read, not an appraisal, a title search or a survey.</p>
       </div>
     </article>
-  <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
   <div id="site-footer">
 <!-- static-nav:footer -->
@@ -118,13 +117,13 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/field-scout-land.js?v=20" defer></script>
   <script src="/components/qr.js?v=11" defer></script>
   <script src="/components/report-link.js?v=3" defer></script>

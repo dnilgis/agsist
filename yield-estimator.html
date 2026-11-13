@@ -7,8 +7,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=29">
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
@@ -17,7 +17,7 @@
 <title>Soybean Yield Calculator: Pod Count to Bu/Acre, Free | AGSIST</title>
 <meta name="description" content="Free soybean yield calculator: 132,000 plants, 30 pods, 2.5 seeds per pod and 3,000 seeds/lb is 55 bu/acre. Type your own pod counts. Corn ear counts too.">
 <meta name="keywords" content="corn yield estimator, soybean yield estimator, field yield estimate, ear count yield calculator, yield check corn, pre-harvest yield estimate, kernel row yield, pod count soybean yield">
-<meta name="author" content="Sigurd Lindquist">
+<meta name="author" content="AGSIST">
 <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
 <link rel="canonical" href="https://agsist.com/yield-estimator">
 <meta property="og:type"         content="website">
@@ -42,7 +42,7 @@
 {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"How do I estimate corn yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"The ear count method: count ears in 1/1000 acre of row (17.4 ft of 30-inch row), then count kernel rows and kernels per row on 10 ears that are neither the biggest nor the smallest. Purdue's R.L. Nielsen counts every fifth ear in the row instead (Yield Component Method, updated August 2021). Formula: ears × kernel rows × kernels per row / 85, for a 1/1000-acre sample. The 85 stands for 85,000 kernels per bushel, and kernel weight is the one guess in the method. Purdue's Bob Nielsen says to work it three times, at 65, 75 and 85, and to use 90 to 100 after a stressful grain fill; his recent trials averaged about 76,000 kernels per bushel. 90,000 was the method's original figure. The estimator shows the yield at 75,000, 85,000 and 95,000 side by side and puts 85,000, the middle one, in the headline. Count at least 5 sites and the estimator averages them. Enter these counts in the AGSIST Yield Estimator for a field estimate."}},{"@type":"Question","name":"How accurate is the pre-harvest yield estimate?","acceptedAnswer":{"@type":"Answer","text":"The yield component method is accurate to roughly plus or minus 20 bushels per acre, a figure commonly cited in extension guides. Accuracy improves if you sample at least 5 locations and 10 ears per location, and estimate at the milk (R3) stage or later. Because kernel weight varies, the estimator shows the yield at 75,000, 85,000 and 95,000 kernels per bushel side by side."}},{"@type":"Question","name":"How do I estimate soybean yield before harvest?","acceptedAnswer":{"@type":"Answer","text":"Count plants per acre, then count pods per plant and seeds per pod on 10 representative plants. Formula: plants/ac × pods/plant × seeds/pod / (seeds/lb × 60). The AGSIST estimator calculates this automatically."}}]}
 </script>
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST Corn & Soybean Yield Estimator","url":"https://agsist.com/yield-estimator","applicationCategory":"Agricultural yield calculator","operatingSystem":"Web browser","description":"Free pre-harvest yield estimator for corn (ear-count / yield-component method) and soybeans (pod-count method).","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},"featureList":["Corn ear-count yield estimate","Soybean pod-count yield estimate","Average of up to 10 sample sites per field, every site listed","Corn yield at 75,000, 85,000 and 95,000 kernels per bushel side by side"],"dateModified":"2026-10-16"}
+{"@context":"https://schema.org","@type":"WebApplication","name":"AGSIST Corn & Soybean Yield Estimator","url":"https://agsist.com/yield-estimator","applicationCategory":"Agricultural yield calculator","operatingSystem":"Web browser","description":"Free pre-harvest yield estimator for corn (ear-count / yield-component method) and soybeans (pod-count method).","offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"author":{"@id":"https://agsist.com/#organization"},"featureList":["Corn ear-count yield estimate","Soybean pod-count yield estimate","Average of up to 10 sample sites per field, every site listed","Corn yield at 75,000, 85,000 and 95,000 kernels per bushel side by side"],"dateModified":"2026-10-16"}
 </script>
 
 <style>
@@ -54,10 +54,10 @@
 .ye-page{max-width:860px;margin:0 auto;padding:0 1rem 3.5rem;}
 
 .ye-hero{padding:1rem 0 .6rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem;}
-.ye-eyebrow{font-size:0.763rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.25rem;}
+.ye-eyebrow{font-size:0.763rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-bottom:.25rem;}
 .ye-hero h1{font-family:var(--font-display);font-size:1.65rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .3rem;line-height:1.1;}
 .ye-hero .page-lede{font-size:1rem;color:var(--text-dim);line-height:1.5;max-width:640px;margin:0;}
-.inl-ye{color:var(--gold);border-bottom:1px solid rgba(212,162,63,.35)}
+.inl-ye{color:var(--gold);border-bottom:1px solid var(--border-2)}
 .inl-ye:hover{border-bottom-color:var(--gold)}
 .ye-more{margin-top:.35rem;font-size:.9rem;color:var(--text-dim);line-height:1.55;max-width:640px}
 .ye-more summary{cursor:pointer;color:var(--gold);font-size:.9rem;font-weight:600;min-height:44px;display:flex;align-items:center}
@@ -65,8 +65,8 @@
 .ye-top{margin:0 0 .8rem}
 .ye-top+.ye-plain{margin:0 0 .9rem}
 .ye-sites{display:flex;flex-wrap:wrap;gap:.4rem;align-items:center;margin:0 0 .9rem}
-.ye-site{min-height:44px;padding:.35rem .8rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;cursor:pointer}
-.ye-site.on{border-color:var(--gold);color:var(--gold);background:rgba(230,176,66,.08)}
+.ye-site{min-height:44px;padding:.35rem .8rem;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:.8rem;font-weight:700;cursor:pointer}
+.ye-site.on{border-color:var(--gold);color:var(--gold);background:var(--surface2)}
 .ye-site.add{border-style:dashed}
 .ye-site.rm{color:var(--text-muted);font-weight:400}
 .ye-site-note{font-size:.85rem;color:var(--text-muted);flex-basis:100%}
@@ -86,23 +86,23 @@
 @media(max-width:600px){.ye-eyebrow{display:none}.ye-panel-head .badge{display:none}.ye-method{padding:.9rem .85rem}.ye-tabs{margin-bottom:1rem}.ye-panel-head{margin-bottom:.7rem}}
 .ye-tab .ic-sp{margin-right:.4em}
 .ye-plain{margin:.55rem 0 0;font-size:1rem;line-height:1.5;color:var(--text)}
-.ye-math{margin-top:.85rem;padding:.2rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:8px}
-.ye-math summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:0.8rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted)}
+.ye-math{margin-top:.85rem;padding:.2rem 1rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md)}
+.ye-math summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-size:0.8rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)}
 .ye-math-body{font-family:'JetBrains Mono',monospace;font-size:0.8rem;color:var(--text-dim);line-height:1.7;padding-bottom:.6rem}
 
 .ye-tabs{display:flex;gap:.4rem;margin-bottom:1.4rem;flex-wrap:wrap;}
-.ye-tab{padding:.45rem .9rem;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
+.ye-tab{padding:.45rem .9rem;border-radius:var(--r-lg);border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.06em;cursor:pointer;transition:all .15s;white-space:nowrap;min-height:44px;display:inline-flex;align-items:center;}
 .ye-tab:hover{border-color:var(--gold);color:var(--text);}
 .ye-tab.active{background:var(--gold-fill,var(--gold));color:#0a1a0a;border-color:var(--gold);}
 .ye-panel{display:none;}
 .ye-panel.active{display:block;}
 .ye-panel-head{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;margin-bottom:1.1rem;}
-.ye-panel-head h2{font-family:var(--font-display);font-size:1.1rem;font-weight:700;text-transform:uppercase;color:var(--text);margin:0;}
-.badge{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:.2rem .6rem;border-radius:20px;background:rgba(230,176,66,.12);color:var(--gold);border:1px solid rgba(230,176,66,.3);}
+.ye-panel-head h2{font-family:var(--font-display);font-size:1.1rem;font-weight:700;text-transform:none;color:var(--text);margin:0;}
+.badge{font-family:var(--font-body);font-size:0.75rem;font-weight:700;letter-spacing:0;text-transform:none;padding:.2rem .6rem;border-radius:var(--r-lg);background:var(--surface2);color:var(--text-dim);border:1px solid var(--border-2);}
 .ye-panel-body{display:flex;flex-direction:column;gap:1rem;}
 
 .ye-method{background:var(--surface);border:var(--card-bw) solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;}
-.ye-method-title{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.85rem;}
+.ye-method-title{font-family:var(--font-body);font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-bottom:.85rem;}
 
 .mn-type-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.4rem;margin-bottom:.75rem;}
 @media(min-width:480px){.mn-type-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
@@ -111,36 +111,36 @@
 @media(min-width:520px){.mn-result-grid{grid-template-columns:repeat(4,minmax(0,1fr));}}
 
 
-.mn-type-btn{padding:.45rem .6rem;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text-dim);font-size:0.775rem;font-weight:600;cursor:pointer;transition:all .15s;text-align:left;min-height:44px;}
+.mn-type-btn{padding:.45rem .6rem;border-radius:var(--r-md);border:1px solid var(--border);background:var(--bg);color:var(--text-dim);font-size:0.775rem;font-weight:600;cursor:pointer;transition:all .15s;text-align:left;min-height:44px;}
 .mn-type-btn:hover{border-color:var(--gold);color:var(--text);}
-.mn-type-btn.active{border-color:var(--gold);background:rgba(230,176,66,.1);color:var(--text);}
+.mn-type-btn.active{border-color:var(--gold);background:var(--surface2);color:var(--text);}
 
 .field-row{display:grid;grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:.65rem .9rem;align-items:start;margin-bottom:.65rem;}
 .field-group.span-all{grid-column:1/-1}
 .field-group{display:flex;flex-direction:column;gap:.28rem;}
-.field-label{font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-dim);}
-.field-input{background:var(--bg);border:2px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.4rem .6rem;width:90px;min-height:44px;outline:none;box-sizing:border-box;}
+.field-label{font-size:0.75rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);}
+.field-input{background:var(--bg);border:2px solid var(--border);border-radius:var(--r-md);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem;padding:.4rem .6rem;width:90px;min-height:44px;outline:none;box-sizing:border-box;}
 .field-input:focus{border-color:var(--gold);}
 .field-input.wide{width:100%;max-width:200px;}
 .field-note{font-size:.88rem;line-height:1.4;color:var(--text-muted);margin-top:.1rem;}
 
-.result-bar{background:linear-gradient(135deg,rgba(58,139,60,.08),rgba(230,176,66,.04));border:2px solid rgba(58,139,60,.3);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-wrap:wrap;gap:1.2rem;align-items:center;margin-top:.65rem;}
+.result-bar{background:var(--surface);border:2px solid var(--border-2);border-radius:var(--r-lg);padding:.9rem 1.1rem;display:flex;flex-wrap:wrap;gap:1.2rem;align-items:center;margin-top:.65rem;}
 .result-item{display:flex;flex-direction:column;gap:.15rem;}
-.result-label{font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
+.result-label{font-size:0.75rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);}
 .result-value{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:var(--gold);}
 .result-value.green{color:var(--green);}
 .result-value.dim{color:var(--text-muted);font-size:1rem;}
 .result-sub{font-size:0.755rem;color:var(--text-dim);}
 
-.mn-result-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.65rem .75rem;text-align:center;}
-.mn-result-label{font-size:0.745rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.3rem;}
+.mn-result-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.65rem .75rem;text-align:center;}
+.mn-result-label{font-size:0.745rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.3rem;}
 .mn-result-val{font-family:'JetBrains Mono',monospace;font-size:1rem;font-weight:900;color:var(--gold);}
 .mn-result-unit{font-size:0.75rem;color:var(--text-muted);}
 
 .quickfill-row{display:flex;flex-wrap:wrap;gap:.4rem;margin-bottom:.2rem;}
-.qf-btn{padding:.35rem .75rem;border-radius:6px;border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px;display:inline-flex;align-items:center;}
+.qf-btn{padding:.35rem .75rem;border-radius:var(--r-md);border:1px solid var(--border);background:var(--surface);color:var(--text-dim);font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;cursor:pointer;transition:all .15s;min-height:44px;display:inline-flex;align-items:center;}
 .qf-btn:hover{border-color:var(--gold);color:var(--gold);}
-.qf-label{font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.4rem;}
+.qf-label{font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.4rem;}
 
 
 .ye-next{margin:1rem 0 0;font-size:.95rem;line-height:1.6;color:var(--text-dim);}
@@ -150,7 +150,7 @@
 .ye-source a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px;}
 .ye-source a:hover{text-decoration:underline;}
 
-.ye-disclaimer{font-size:0.763rem;color:var(--text-muted);line-height:1.55;margin-top:1rem;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:8px;}
+.ye-disclaimer{font-size:0.763rem;color:var(--text-muted);line-height:1.55;margin-top:1rem;padding:.7rem .9rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);}
 @media (prefers-reduced-motion: reduce){ *{transition:none !important;animation:none !important;} }
 /* method-note fallback until the shared rule lands; :where() has zero specificity, so styles.css wins */
 :where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-dim);margin:.75rem 0 0}
@@ -203,7 +203,7 @@
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> → Yield estimator</nav>
 
   <div class="ye-hero">
-    <div class="ye-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Pre-harvest field estimate</div>
+    <div class="ye-eyebrow page-kicker">Pre-harvest field estimate</div>
     <h1>Soybean and corn<br>yield calculator</h1>
     <p class="page-lede">Free soybean yield calculator: type plants per acre, pods per plant and seeds per pod for bushels per acre before harvest. Corn works from ear counts.</p>
     <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">Data: your own field counts, run through the yield component method university extension publishes.</p>
@@ -215,8 +215,8 @@
   </div>
 
   <nav class="ye-tabs" role="tablist" aria-label="Crop estimator tabs">
-    <button class="ye-tab active" id="ye-tab-bean"      data-tab="bean"      role="tab" aria-selected="true"  aria-controls="ye-bean"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybeans</button>
-    <button class="ye-tab"        id="ye-tab-corn"      data-tab="corn"      role="tab" aria-selected="false" aria-controls="ye-corn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</button>
+    <button class="ye-tab active" id="ye-tab-bean"      data-tab="bean"      role="tab" aria-selected="true"  aria-controls="ye-bean">Soybeans</button>
+    <button class="ye-tab"        id="ye-tab-corn"      data-tab="corn"      role="tab" aria-selected="false" aria-controls="ye-corn">Corn</button>
   </nav>
 
   <!-- CORN TAB -->
@@ -255,7 +255,7 @@
         <p class="ye-start">The boxes start with example counts. Type your own. Test weight does not enter this method.</p>
         <div class="ye-sites" id="c-sites" role="group" aria-label="Sample sites in this field"></div>
         <div class="ye-stab" id="c-site-table"></div>
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1: count ears</div>
+        <div class="ye-method-title">Step 1: count ears</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="c-row-width">Row Width (inches)</label>
@@ -275,7 +275,7 @@
           </div>
         </div>
 
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 2: count kernels (10 representative ears)</div>
+        <div class="ye-method-title">Step 2: count kernels (10 representative ears)</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="c-kernel-rows">Kernel Rows</label>
@@ -300,11 +300,11 @@
           </div>
         </div>
 
-        <div class="ye-method-title" style="margin-top:1rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Or try a typical scenario</div>
+        <div class="ye-method-title" style="margin-top:1rem">Or try a typical scenario</div>
         <div class="quickfill-row">
-          <button class="qf-btn" id="qf-corn-high" title="~220 bu/ac at 85,000 kernels per bushel"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> High Yield ~220 bu</button>
-          <button class="qf-btn" id="qf-corn-avg"  title="~180 bu/ac at 85,000 kernels per bushel"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Average ~180 bu</button>
-          <button class="qf-btn" id="qf-corn-low"  title="~130 bu/ac at 85,000 kernels per bushel"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Low ~130 bu</button>
+          <button class="qf-btn" id="qf-corn-high" title="~220 bu/ac at 85,000 kernels per bushel">High Yield ~220 bu</button>
+          <button class="qf-btn" id="qf-corn-avg"  title="~180 bu/ac at 85,000 kernels per bushel">Average ~180 bu</button>
+          <button class="qf-btn" id="qf-corn-low"  title="~130 bu/ac at 85,000 kernels per bushel">Low ~130 bu</button>
         </div>
 
         <details class="ye-math"><summary>Show the math</summary>
@@ -313,11 +313,11 @@
             <span style="color:var(--text-muted);font-size:0.763rem">Ear count &times; 1000 = ears/acre (1/1000 acre row method). The 85 stands for 85,000 kernels in a 56-lb bushel. The method started with 90,000. Purdue&rsquo;s Bob Nielsen works it at 65, 75 and 85 thousand, uses 90 to 100 after a stressful grain fill, and saw 67,000 to 94,000 in recent trials, about 76,000 on average. The 75k &middot; 85k &middot; 95k box shows the same counts at three kernel weights. That spread is not the field error. Valid from the milk (R3) stage on. Test weight is not part of the formula. With several sites, each site&rsquo;s yield is worked out and the field number is their plain average. Worked example: 32 ears &times; 16 rows &times; 35 kernels &divide; 85 = 211 bu/ac.</span>
           </div>
         </details>
-        <p class="method-note"><b>Method:</b> ears times kernel rows times kernels per row, divided by 85 (or the kernels per bushel you pick, in thousands), for a 1/1000-acre sample; every result also shown at 75,000, 85,000 and 95,000 kernels per bushel; field error is about &plusmn;20 bu/ac &middot; <b>Sources:</b> <a href="https://www.agry.purdue.edu/ext/corn/news/timeless/YldEstMethod.html" rel="noopener">Purdue</a> (Nielsen, &ldquo;Estimating Corn Grain Yield Prior to Harvest&rdquo;), Iowa State, Ohio State and Penn State Extension &middot; Reviewed Oct 16, 2026 by Sigurd Lindquist, CCA</p>
+        <p class="method-note"><b>Method:</b> ears times kernel rows times kernels per row, divided by 85 (or the kernels per bushel you pick, in thousands), for a 1/1000-acre sample; every result also shown at 75,000, 85,000 and 95,000 kernels per bushel; field error is about &plusmn;20 bu/ac &middot; <b>Sources:</b> <a href="https://www.agry.purdue.edu/ext/corn/news/timeless/YldEstMethod.html" rel="noopener">Purdue</a> (Nielsen, &ldquo;Estimating Corn Grain Yield Prior to Harvest&rdquo;), Iowa State, Ohio State and Penn State Extension &middot; Reviewed Oct 16, 2026</p>
       </div>
 
       <div class="ye-method">
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg> Field sampling</div>
+        <div class="ye-method-title">Field sampling</div>
         <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.5rem;">
           <div style="font-size:0.795rem;color:var(--text-dim);line-height:1.6">
             &#8226; Sample at least <strong>5 locations</strong> per field, at least 200 feet apart and away from field edges.<br>
@@ -368,7 +368,7 @@
         <p class="ye-start">The boxes start with example counts, not an average. Type your own.</p>
         <div class="ye-sites" id="b-sites" role="group" aria-label="Sample sites in this field"></div>
         <div class="ye-stab" id="b-site-table"></div>
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1: count plants</div>
+        <div class="ye-method-title">Step 1: count plants</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="b-row-width">Row Width (inches)</label>
@@ -386,7 +386,7 @@
           </div>
         </div>
 
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 2: count pods and seeds (10 plants)</div>
+        <div class="ye-method-title">Step 2: count pods and seeds (10 plants)</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="b-pods-plant">Pods per Plant</label>
@@ -405,11 +405,11 @@
           </div>
         </div>
 
-        <div class="ye-method-title" style="margin-top:1rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Or try an example stand</div>
+        <div class="ye-method-title" style="margin-top:1rem">Or try an example stand</div>
         <div class="quickfill-row">
-          <button class="qf-btn" id="qf-bean-high" title="Example: 130k plants, 36 pods, 2.5 seeds, 3,000 seeds/lb"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Strong stand ~65 bu</button>
-          <button class="qf-btn" id="qf-bean-avg"  title="Example: 132k plants, 30 pods, 2.5 seeds, 3,000 seeds/lb"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Good stand ~55 bu</button>
-          <button class="qf-btn" id="qf-bean-low"  title="Example: 120k plants, 25 pods, 2.4 seeds, 3,000 seeds/lb"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Stressed ~40 bu</button>
+          <button class="qf-btn" id="qf-bean-high" title="Example: 130k plants, 36 pods, 2.5 seeds, 3,000 seeds/lb">Strong stand ~65 bu</button>
+          <button class="qf-btn" id="qf-bean-avg"  title="Example: 132k plants, 30 pods, 2.5 seeds, 3,000 seeds/lb">Good stand ~55 bu</button>
+          <button class="qf-btn" id="qf-bean-low"  title="Example: 120k plants, 25 pods, 2.4 seeds, 3,000 seeds/lb">Stressed ~40 bu</button>
         </div>
 
         <details class="ye-math"><summary>Show the math</summary>
@@ -419,7 +419,7 @@
           </div>
         </details>
         <p class="ye-pods">Do pod counts predict yield at all? We checked 28 state-years of crop tour pod counts against USDA&rsquo;s final yields: <a href="/crop-tour#pod-counts">what pod counts actually predict</a>.</p>
-        <p class="method-note"><b>Method:</b> plants per acre times pods per plant times seeds per pod, divided by seeds per pound times 60; with several sites, the plain average of each site&rsquo;s yield; the range moves seed size 500 per pound either side of your entry &middot; <b>Sources:</b> Purdue, Iowa State, Ohio State and Penn State Extension; Michigan State for soybean accuracy (&plusmn;25% or worse before R6) &middot; Reviewed Oct 16, 2026 by Sigurd Lindquist, CCA</p>
+        <p class="method-note"><b>Method:</b> plants per acre times pods per plant times seeds per pod, divided by seeds per pound times 60; with several sites, the plain average of each site&rsquo;s yield; the range moves seed size 500 per pound either side of your entry &middot; <b>Sources:</b> Purdue, Iowa State, Ohio State and Penn State Extension; Michigan State for soybean accuracy (&plusmn;25% or worse before R6) &middot; Reviewed Oct 16, 2026</p>
       </div>
     </div>
   </div>
@@ -430,7 +430,7 @@
 <!--FAQ:START-->
 <style>
 .agf{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin:1.5rem 0 0}
-.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
+.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text);margin:0 0 .4rem}
 .agf details{border-top:1px solid var(--border)}
 .agf details:first-of-type{border-top:0}
 .agf summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.85rem 0;font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}
@@ -457,7 +457,7 @@
     <a href="/">&#8592; AGSIST Dashboard</a> &middot;
     <a href="/fast-facts">Fast Facts</a> &middot;
     <a href="/breakeven">Break-Even Calculator</a> &middot;
-    Built by <a href="/about">Sigurd Lindquist</a> &middot; <a href="tel:+17157972428">715-797-2428</a>
+    Questions? Call or text <a href="tel:+17157972428">715-797-2428</a>
   </div>
 
 </main>
@@ -472,13 +472,13 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19" defer></script>
+<script src="/components/loader.js?v=20" defer></script>
 
 <script src="/components/yield-est.js?v=2"></script>
 <script>
@@ -775,6 +775,6 @@ calcBean();
 })();
 </script>
 
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

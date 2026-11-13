@@ -33,8 +33,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
@@ -47,8 +47,8 @@
   .rg-sec{margin:3rem 0 0}
   .rg-sec>.sec-h{margin:0 0 .5rem}
   .rg-sec>.sec-h+.rg-p{margin-bottom:1.2rem}
-  .rg-tag{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--font-mono);font-size:var(--fs-2xs);font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--brand);margin:0 0 .5rem}
-  .rg-tag::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand-fill);box-shadow:0 0 0 3px rgba(var(--brand-rgb),.22)}
+  .rg-tag{display:inline-flex;align-items:center;gap:.45rem;font-family:var(--font-body);font-size:var(--fs-2xs);font-weight:700;letter-spacing:0;text-transform:none;color:var(--brand);margin:0 0 .5rem}
+  .rg-tag::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--brand-fill)}
 
   /* hero: words and the form on the left, the render on the right; on a phone
      the waitlist form comes right after the lede, then the render (Oct 19) */
@@ -60,7 +60,7 @@
   .rg-fig{margin:0 -16px 0;position:relative}
   .rg-fig img{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:cover}
   .rg-fig figcaption{padding:.45rem 16px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
-  .rg-cbadge{position:absolute;top:12px;left:12px;padding:.2rem .55rem;border-radius:var(--r-pill);background:rgba(10,12,13,.62);color:#f2efe6;font-family:var(--font-mono);font-size:var(--fs-2xs);font-weight:700;letter-spacing:.12em;text-transform:uppercase;backdrop-filter:blur(4px)}
+  .rg-cbadge{position:absolute;top:12px;left:12px;padding:.2rem .55rem;border-radius:var(--r-pill);background:#0a0c0d;color:#f2efe6;font-family:var(--font-body);font-size:var(--fs-2xs);font-weight:700;letter-spacing:0;text-transform:none}
   /* on a phone the badge covered the funnel; the caption and the label above the title already say prototype */
   @media(max-width:899px){.rg-cbadge{display:none}}
   @media(max-width:899px){.rg-hero>.rg-side{margin-top:1.4rem}}
@@ -69,7 +69,7 @@
   @media(min-width:900px){
     .rg-hero{grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);grid-template-areas:"tag side" "h1 side" "lede side" "form side";grid-template-rows:auto auto auto 1fr;align-items:start;margin-top:.6rem}
     .rg-fig{margin:0}
-    .rg-fig img{border-radius:var(--r-lg);aspect-ratio:auto;box-shadow:0 1px 2px rgba(0,0,0,.2),0 18px 36px -18px rgba(0,0,0,.55)}
+    .rg-fig img{border-radius:var(--r-lg);aspect-ratio:auto;border:1px solid var(--border-2)}
     .rg-fig figcaption{padding:.55rem 2px 0}
     .rg-status{margin:1rem 0 0}
   }
@@ -125,9 +125,9 @@
   .rg-step figure{margin:0 0 .8rem}
   .rg-card-fig img{display:block;width:100%;height:auto;border-radius:var(--r-lg)}
   .rg-card-fig figcaption,.rg-front figcaption{margin:.45rem 2px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
-  .rg-phone{max-width:240px;margin:0 auto;padding:5px;border-radius:30px;background:#191c1d;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08),0 1px 2px rgba(0,0,0,.25),0 16px 30px -16px rgba(0,0,0,.6)}
+  .rg-phone{max-width:240px;margin:0 auto;padding:5px;border-radius:var(--r-lg);background:#191c1d;border:1px solid var(--border-2)}
   [data-theme="light"] .rg-phone{background:#1d2021}
-  .rg-phone img{display:block;width:100%;height:auto;border-radius:25px}
+  .rg-phone img{display:block;width:100%;height:auto;border-radius:var(--r-lg)}
   #main .rg .rg-step h3{display:flex;align-items:center;gap:.5rem;margin:0 0 .3rem;font-size:var(--fs-md);line-height:1.3}
   .rg-step p{margin:0;color:var(--text-dim);font-size:var(--fs-sm);line-height:1.55}
   .rp-n{flex:none;display:inline-flex;align-items:center;justify-content:center;width:1.6em;height:1.6em;border-radius:50%;background:var(--brand-fill);color:#0a0c0d;font-family:var(--font-mono);font-size:.78em;font-weight:700}
@@ -177,7 +177,7 @@
   /* a product: heading, picture, the rest on a phone; words left, picture right when wide */
   .rg-pair{display:grid;gap:0;grid-template-areas:"head" "fig" "body";align-items:start}
   .rg-pair>.rg-head{grid-area:head}.rg-pair>figure{grid-area:fig;margin:0 0 1.2rem}.rg-pair>.rg-body{grid-area:body}
-  .rg-pair img{display:block;width:100%;height:auto;border-radius:var(--r-lg);box-shadow:0 1px 2px rgba(0,0,0,.2),0 18px 36px -18px rgba(0,0,0,.55)}
+  .rg-pair img{display:block;width:100%;height:auto;border-radius:var(--r-lg);border:1px solid var(--border-2)}
   .rg-pair figcaption{margin:.45rem 2px 0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.45}
   @media(min-width:900px){.rg-pair{grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);grid-template-areas:"head fig" "body fig";grid-template-rows:auto 1fr;column-gap:2.6rem}.rg-pair>figure{margin:0;align-self:center}}
   #main .rg .rg-pair h2{margin:0 0 .5rem}
@@ -187,7 +187,7 @@
   .rg-list b{color:var(--text)}
   .rg-price{margin:0 0 .4rem;font-weight:600;color:var(--text);line-height:1.5}
   .rg-xmas{margin:0 0 .9rem;font-size:var(--fs-sm);color:var(--text-dim);line-height:1.5}
-  .rg-go-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;box-sizing:border-box;border-radius:6px;background:var(--brand-fill,var(--brand));color:#0a1206!important;font-weight:700;font-size:var(--fs-sm);text-decoration:none}
+  .rg-go-link{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:.55rem 1.1rem;box-sizing:border-box;border-radius:var(--r-md);background:var(--brand-fill,var(--brand));color:#0a1206!important;font-weight:700;font-size:var(--fs-sm);text-decoration:none}
   .rg-go-link:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
   @media(max-width:520px){.rg-go-link{width:100%}}
   /* questions */
@@ -477,14 +477,14 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
-  <script src="/components/rain-print-promo.js?v=6" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
+  <script src="/components/rain-print-promo.js?v=7" defer></script>
   <script>
   (function () {
     'use strict';
@@ -605,6 +605,6 @@
     return 'Digital file $' + cfg.digital + ', print $' + cfg.print12x18 + ', framed $' + cfg.framed12x18 + '. Shipping included in the 50 states.';
   }
   </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

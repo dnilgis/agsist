@@ -31,13 +31,13 @@ main{max-width:900px;margin:0 auto;padding:20px 16px 60px}
 h1{font-size:1.35rem;margin:0 0 .3rem}
 h2{font-size:1.05rem;margin:0 0 .6rem}
 p{margin:.3rem 0;color:var(--dim)}
-section{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;margin:14px 0}
+section{background:var(--panel);border:1px solid var(--line);border-radius:var(--r-md);padding:14px;margin:14px 0}
 label{display:block;font-size:.85rem;font-weight:600;margin:.55rem 0 .15rem}
-input,select{font:inherit;font-size:16px;width:100%;box-sizing:border-box;min-height:40px;padding:.35rem .5rem;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--text)}
+input,select{font:inherit;font-size:16px;width:100%;box-sizing:border-box;min-height:40px;padding:.35rem .5rem;border:1px solid var(--line);border-radius:var(--r-md);background:var(--bg);color:var(--text)}
 .row{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
 .row3{display:grid;grid-template-columns:2fr 1fr 1fr;gap:0 12px}
 @media(max-width:560px){.row,.row3{grid-template-columns:1fr}}
-button{font:inherit;font-weight:600;min-height:40px;padding:0 1rem;margin-top:.8rem;border-radius:5px;border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
+button{font:inherit;font-weight:600;min-height:40px;padding:0 1rem;margin-top:.8rem;border-radius:var(--r-md);border:1px solid var(--accent);background:var(--accent);color:#fff;cursor:pointer}
 button.quiet{background:none;color:var(--accent)}
 button.small{min-height:34px;margin:.15rem .25rem .15rem 0;padding:0 .6rem;font-size:.85rem}
 :root[data-theme="dark"] button:not(.quiet){color:#10151a}
@@ -48,7 +48,7 @@ button.small{min-height:34px;margin:.15rem .25rem .15rem 0;padding:0 .6rem;font-
 #p-res{font-weight:600;font-size:.95rem}
 button:disabled{opacity:.65;cursor:progress}
 .out a{color:var(--accent)}
-.link{display:block;font-family:ui-monospace,monospace;font-size:.85rem;padding:.5rem;border:1px dashed var(--line);border-radius:5px;margin:.4rem 0;word-break:break-all;color:var(--text)}
+.link{display:block;font-family:ui-monospace,monospace;font-size:.85rem;padding:.5rem;border:1px dashed var(--line);border-radius:var(--r-md);margin:.4rem 0;word-break:break-all;color:var(--text)}
 .tok-row{display:flex;gap:8px;align-items:center}
 .tok-row input{flex:1}
 .tok-row button{margin-top:0}
@@ -68,12 +68,12 @@ th{font-size:.78rem;color:var(--dim);font-weight:600}
 .match{border-left:3px solid var(--line);padding:.3rem .6rem;margin:.4rem 0;font-size:.88rem}
 .match.hit{border-left-color:var(--ok)}
 .tag{display:inline-block;font-size:.75rem;font-weight:600;border:1px solid var(--line);border-radius:3px;padding:0 .35rem;margin-left:.3rem;color:var(--dim)}
-.banner{border:1px solid var(--accent);border-radius:5px;padding:.5rem .7rem;margin:.2rem 0 .6rem;font-size:.9rem}
+.banner{border:1px solid var(--accent);border-radius:var(--r-md);padding:.5rem .7rem;margin:.2rem 0 .6rem;font-size:.9rem}
 .banner[hidden]{display:none}
 .chk{display:flex;align-items:center;gap:.4rem;font-weight:400;margin:.6rem 0 0}
 .chk input{width:auto;min-height:0}
-textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5rem;border:1px solid var(--line);border-radius:5px;background:var(--bg);color:var(--text);font-family:ui-monospace,monospace}
-.btnlink{display:inline-flex;align-items:center;min-height:40px;padding:0 1rem;border:1px solid var(--accent);border-radius:5px;color:var(--accent);font-weight:600;text-decoration:none;box-sizing:border-box}
+textarea{font:inherit;font-size:16px;width:100%;box-sizing:border-box;padding:.5rem;border:1px solid var(--line);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-family:ui-monospace,monospace}
+.btnlink{display:inline-flex;align-items:center;min-height:40px;padding:0 1rem;border:1px solid var(--accent);border-radius:var(--r-md);color:var(--accent);font-weight:600;text-decoration:none;box-sizing:border-box}
 .pv{font-size:.9rem;margin:.5rem 0}
 .pv ul{margin:.3rem 0 .3rem 1.1rem;padding:0}
 .pv li{margin:.1rem 0}

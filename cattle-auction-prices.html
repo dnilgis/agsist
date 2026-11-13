@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111a0a">
   <title>Feeder cattle sale barn prices near you: auction prices by weight</title>
   <meta name="description" content="Feeder cattle sale barn prices near your ZIP: the latest USDA-reported auction prices for steers and heifers, 300 to 899 lb, in $/cwt and $/head.">
-  <meta name="author"      content="Sigurd Lindquist">
+  <meta name="author"      content="AGSIST">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large">
   <link rel="canonical"    href="https://agsist.com/cattle-auction-prices">
   <meta property="og:type"         content="website">
@@ -31,8 +31,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <style>
@@ -48,21 +48,21 @@
     .sb b{color:var(--text)}
     .sb .fine{font-size:.86rem;color:var(--text-muted)}
     .sb .src{font-size:.84rem;color:var(--text-muted)}
-    .sb-box{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 12px 12px 0;padding:.9rem 1rem;margin:0 0 .6rem}
+    .sb-box{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--gold);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:.9rem 1rem;margin:0 0 .6rem}
     .sb-empty h2{margin:0 0 .4rem;font-size:1.25rem}
     .sb-empty p{margin:0 0 .5rem}
     .sb-loc{display:flex;flex-wrap:wrap;gap:.5rem .6rem;align-items:center;margin:0 0 .6rem}
-    .sb-loc input{width:7rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem}
+    .sb-loc input{width:7rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-size:1rem}
     .sb-sel{display:inline-flex;align-items:center;gap:.4rem;font-size:.88rem;color:var(--text-muted)}
-    .sb-sel select{min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem}
-    .sb-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
+    .sb-sel select{min-height:44px;padding:0 .5rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-size:1rem}
+    .sb-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
     .sb-btn.go{background:var(--gold-fill);color:#111;border-color:var(--gold-fill)}
     .sb-ctl{display:flex;flex-wrap:wrap;gap:.5rem .8rem}
-    .sb-seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:100%}
+    .sb-seg{display:inline-flex;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;max-width:100%}
     .sb-seg button{min-height:42px;padding:0 .8rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}
     .sb-seg button+button{border-left:1px solid var(--border)}
     .sb-seg button[aria-pressed="true"]{background:var(--gold-fill);color:#111}
-    .sb-glance{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:8px;background:var(--surface);padding:.6rem .85rem;margin:.6rem 0 .8rem;font-size:.9rem;line-height:1.5}
+    .sb-glance{border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:var(--r-md);background:var(--surface);padding:.6rem .85rem;margin:.6rem 0 .8rem;font-size:.9rem;line-height:1.5}
     .sb-glance .sb-gh{margin:0 0 .3rem;color:var(--text-dim)}.sb-glance .sb-gh b{color:var(--text)}
     .sb-glance ul{margin:0;padding:0;list-style:none}.sb-glance li{margin:.15rem 0;color:var(--text-dim)}.sb-glance li b{color:var(--text);font-family:'JetBrains Mono',monospace;font-weight:700}
     .sb-glance li b:first-child{font-family:inherit}
@@ -78,17 +78,17 @@
     .sb-status{font-size:.86rem;color:var(--text-muted);margin:.5rem 0 0}
     .sb-status.err{color:var(--red)}
     .sb-status:empty{display:none}
-    .sb-card{border:1px solid var(--border);border-radius:12px;background:var(--surface);padding:.8rem 1rem .4rem;margin:0 0 1rem}
+    .sb-card{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);padding:.8rem 1rem .4rem;margin:0 0 1rem}
     .sb-card h3{margin:0;font-size:1.08rem;color:var(--text)}
     .sb-card .sb-where{margin:0 0 .3rem;font-size:.86rem;color:var(--text-muted)}
     .sb-card .sb-sale{margin:0 0 .4rem;font-size:.9rem}
-    .sb-old{display:inline-block;margin-left:.3rem;padding:0 .4rem;border:1px solid var(--gold);border-radius:6px;font-size:.78rem;color:var(--gold)}
+    .sb-old{display:inline-block;margin-left:.3rem;padding:0 .4rem;border:1px solid var(--gold);border-radius:var(--r-md);font-size:.78rem;color:var(--gold)}
     .sb-none{font-size:.9rem}
     .sb-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
     .sb-t{border-collapse:collapse;width:100%;font-size:.88rem;margin:.1rem 0 .5rem}
     .sb-t th,.sb-t td{padding:.4rem .45rem;border-bottom:1px solid var(--border);text-align:right;white-space:nowrap}
     .sb-t th:first-child{text-align:left}
-    .sb-t thead th{font-size:.72rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .sb-t thead th{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted);vertical-align:bottom}
     .sb-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
     .sb-t td small,.sb-t th small{display:block;color:var(--text-muted);font-size:.74em;font-weight:400}
     .sb-t thead th small{text-transform:none;letter-spacing:0}
@@ -100,14 +100,14 @@
     .sb-own{border-style:dashed}
     .sb-day{color:var(--text-muted,inherit);font-size:.85rem}
     .sb-barns li{break-inside:avoid;font-size:.9rem}
-    .sb-vog{font-size:.9rem;margin:.1rem 0 .5rem;padding:.45rem .6rem;border-left:3px solid var(--gold);background:var(--bg);border-radius:0 6px 6px 0}
+    .sb-vog{font-size:.9rem;margin:.1rem 0 .5rem;padding:.45rem .6rem;border-left:3px solid var(--gold);background:var(--bg);border-radius:0 var(--r-md) var(--r-md) 0}
     .sb-vogc{scroll-margin-top:84px}
     .sb-vogc h2{margin:0 0 .4rem;font-size:1.15rem}
     .sb-vogc p{margin:0 0 .5rem;font-size:.92rem}
     .sb-vogc input{width:6.5rem}
     .sb-vogc select{max-width:100%}
     .sb-vogc .sb-sel{flex-wrap:wrap}
-    .sb-vogout{padding:.55rem .7rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);line-height:1.5}
+    .sb-vogout{padding:.55rem .7rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);line-height:1.5}
     .sb-vogc .src{font-size:.8rem;color:var(--text-muted)}
     .sb-faq details{border-top:1px solid var(--border);padding:.75rem 0}
     .sb-faq details:last-child{border-bottom:1px solid var(--border)}
@@ -118,7 +118,7 @@
   /* phone width: nested cards add no extra side padding (narrow cards, Nov 9) */
 @media(max-width:480px){.sb-box{padding-left:12px;padding-right:12px}}
 </style>
-  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "@id": "https://agsist.com/cattle-auction-prices#page", "name": "Feeder cattle sale barn prices near you: auction prices by weight", "url": "https://agsist.com/cattle-auction-prices", "description": "Feeder cattle sale barn prices near your ZIP: the latest USDA-reported auction prices for steers and heifers, 300 to 899 lb, in $/cwt and $/head.", "author": {"@type": "Person", "name": "Sigurd Lindquist", "jobTitle": "Certified Crop Adviser (CCA)", "url": "https://agsist.com/about"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": "2026-10-16", "dateModified": "2026-10-20", "inLanguage": "en-US", "image": "https://agsist.com/img/og/agsist.jpg", "isBasedOn": {"@type": "Dataset", "name": "USDA AMS livestock auction reports", "url": "https://mymarketnews.ams.usda.gov/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Markets", "item": "https://agsist.com/markets"}, {"@type": "ListItem", "position": 3, "name": "Sale barn prices", "item": "https://agsist.com/cattle-auction-prices"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where do these prices come from?", "acceptedAnswer": {"@type": "Answer", "text": "USDA Agricultural Marketing Service market reporters attend the sale and report what sold: head count, weight range, average weight, price range and weighted average price for each group. AGSIST reads those public reports. The barns do not send prices here. Barns USDA does not report are listed with their sale day and a link to their own report, and no price from a barn's own report shows here until that reading has been checked."}}, {"@type": "Question", "name": "What does Medium and Large 1 mean?", "acceptedAnswer": {"@type": "Answer", "text": "It is the USDA feeder cattle grade. Medium and Large is the frame size, and 1 is the thickest muscling of the grades. Medium and Large 1-2 mixes in cattle a little thinner than a straight 1, so it usually sells a bit under the 1s at the same weight."}}, {"@type": "Question", "name": "How do I get from dollars per hundredweight to dollars per head?", "acceptedAnswer": {"@type": "Answer", "text": "A hundredweight (cwt) is 100 lb. Multiply the price by the weight and divide by 100. A 550 lb steer at $350.00 per cwt brings 350 x 5.5 = $1,925 before commission and other sale charges."}}, {"@type": "Question", "name": "Why is my check different from the barn average?", "acceptedAnswer": {"@type": "Answer", "text": "The average covers every lot in that class that day, heavy and light, plain and fancy. Your calves' weight, flesh, fill, uniformity and lot size all move the price, and the check also has commission, yardage, brand inspection and checkoff taken out."}}, {"@type": "Question", "name": "What is value of gain, and how do I use it?", "acceptedAnswer": {"@type": "Answer", "text": "It is what the market paid for each pound a calf put on, read from one sale. At the South Dakota weekly auctions of Oct 18, 2026, 552 lb steers averaged $2,516 a head and 844 lb steers $3,050: $534 more for 292 more lb, or $1.83 a lb. If your cost of gain is under the value of gain, backgrounding pays at those prices. If it is over, selling at weaning weight brings more."}}, {"@type": "Question", "name": "How often does this update?", "acceptedAnswer": {"@type": "Answer", "text": "The reports are checked twice each weekday. A barn changes when USDA posts a newer sale for it. Most barns sell once a week, so expect each barn's numbers to be up to a week old."}}, {"@type": "Question", "name": "Why is my barn not listed?", "acceptedAnswer": {"@type": "Answer", "text": "USDA reports on a set of auctions, not every barn. Barns it does not report, like the Wisconsin and Minnesota barns, are listed with their sale day and a link to their own report. If your barn is missing, tell me through the contact page and I will add it."}}, {"@type": "Question", "name": "What's the difference between a large frame and a medium frame calf?", "acceptedAnswer": {"@type": "Answer", "text": "Frame tells the buyer how big the calf will finish. In USDA feeder cattle grades, large frame steers and heifers are not expected to grade Choice until they pass 1,250 and 1,150 lb live. Medium frame steers get there at 1,100 to 1,250 lb and heifers at 1,000 to 1,150 lb."}}, {"@type": "Question", "name": "What makes a calf grade a 3 instead of a 1?", "acceptedAnswer": {"@type": "Answer", "text": "Thickness. USDA says a No. 3 is thin through the forequarter and the middle of the round, thin in the forearm and gaskin, with a sunken look to the back and loin and the legs set close together, front and rear. A No. 4 is thinner than a 3."}}, {"@type": "Question", "name": "Will my beef on dairy calves grade a 1?", "acceptedAnswer": {"@type": "Answer", "text": "Maybe not. USDA says a No. 1 usually shows mostly beef breeding. A No. 2 usually shows a high share of beef breeding, and a little dairy may show. So a calf where you can see some dairy often lands in the 2s."}}]}]}</script>
+  <script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebPage", "@id": "https://agsist.com/cattle-auction-prices#page", "name": "Feeder cattle sale barn prices near you: auction prices by weight", "url": "https://agsist.com/cattle-auction-prices", "description": "Feeder cattle sale barn prices near your ZIP: the latest USDA-reported auction prices for steers and heifers, 300 to 899 lb, in $/cwt and $/head.", "author": {"@id":"https://agsist.com/#organization"}, "publisher": {"@type": "Organization", "name": "AGSIST", "url": "https://agsist.com/"}, "datePublished": "2026-10-16", "dateModified": "2026-10-20", "inLanguage": "en-US", "image": "https://agsist.com/img/og/agsist.jpg", "isBasedOn": {"@type": "Dataset", "name": "USDA AMS livestock auction reports", "url": "https://mymarketnews.ams.usda.gov/"}}, {"@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://agsist.com/"}, {"@type": "ListItem", "position": 2, "name": "Markets", "item": "https://agsist.com/markets"}, {"@type": "ListItem", "position": 3, "name": "Sale barn prices", "item": "https://agsist.com/cattle-auction-prices"}]}, {"@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "Where do these prices come from?", "acceptedAnswer": {"@type": "Answer", "text": "USDA Agricultural Marketing Service market reporters attend the sale and report what sold: head count, weight range, average weight, price range and weighted average price for each group. AGSIST reads those public reports. The barns do not send prices here. Barns USDA does not report are listed with their sale day and a link to their own report, and no price from a barn's own report shows here until that reading has been checked."}}, {"@type": "Question", "name": "What does Medium and Large 1 mean?", "acceptedAnswer": {"@type": "Answer", "text": "It is the USDA feeder cattle grade. Medium and Large is the frame size, and 1 is the thickest muscling of the grades. Medium and Large 1-2 mixes in cattle a little thinner than a straight 1, so it usually sells a bit under the 1s at the same weight."}}, {"@type": "Question", "name": "How do I get from dollars per hundredweight to dollars per head?", "acceptedAnswer": {"@type": "Answer", "text": "A hundredweight (cwt) is 100 lb. Multiply the price by the weight and divide by 100. A 550 lb steer at $350.00 per cwt brings 350 x 5.5 = $1,925 before commission and other sale charges."}}, {"@type": "Question", "name": "Why is my check different from the barn average?", "acceptedAnswer": {"@type": "Answer", "text": "The average covers every lot in that class that day, heavy and light, plain and fancy. Your calves' weight, flesh, fill, uniformity and lot size all move the price, and the check also has commission, yardage, brand inspection and checkoff taken out."}}, {"@type": "Question", "name": "What is value of gain, and how do I use it?", "acceptedAnswer": {"@type": "Answer", "text": "It is what the market paid for each pound a calf put on, read from one sale. At the South Dakota weekly auctions of Oct 18, 2026, 552 lb steers averaged $2,516 a head and 844 lb steers $3,050: $534 more for 292 more lb, or $1.83 a lb. If your cost of gain is under the value of gain, backgrounding pays at those prices. If it is over, selling at weaning weight brings more."}}, {"@type": "Question", "name": "How often does this update?", "acceptedAnswer": {"@type": "Answer", "text": "The reports are checked twice each weekday. A barn changes when USDA posts a newer sale for it. Most barns sell once a week, so expect each barn's numbers to be up to a week old."}}, {"@type": "Question", "name": "Why is my barn not listed?", "acceptedAnswer": {"@type": "Answer", "text": "USDA reports on a set of auctions, not every barn. Barns it does not report, like the Wisconsin and Minnesota barns, are listed with their sale day and a link to their own report. If your barn is missing, tell me through the contact page and I will add it."}}, {"@type": "Question", "name": "What's the difference between a large frame and a medium frame calf?", "acceptedAnswer": {"@type": "Answer", "text": "Frame tells the buyer how big the calf will finish. In USDA feeder cattle grades, large frame steers and heifers are not expected to grade Choice until they pass 1,250 and 1,150 lb live. Medium frame steers get there at 1,100 to 1,250 lb and heifers at 1,000 to 1,150 lb."}}, {"@type": "Question", "name": "What makes a calf grade a 3 instead of a 1?", "acceptedAnswer": {"@type": "Answer", "text": "Thickness. USDA says a No. 3 is thin through the forequarter and the middle of the round, thin in the forearm and gaskin, with a sunken look to the back and loin and the legs set close together, front and rear. A No. 4 is thinner than a 3."}}, {"@type": "Question", "name": "Will my beef on dairy calves grade a 1?", "acceptedAnswer": {"@type": "Answer", "text": "Maybe not. USDA says a No. 1 usually shows mostly beef breeding. A No. 2 usually shows a high share of beef breeding, and a little dairy may show. So a calf where you can see some dairy often lands in the 2s."}}]}]}</script>
 </head>
 <body>
   <a href="#main" class="skip">Skip to content</a>
@@ -146,7 +146,7 @@
     <article class="sb">
       <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> &rarr; <a href="/markets">Markets</a> &rarr; Sale barn prices</nav>
       <h1>Feeder cattle sale barn prices near you</h1>
-      <p class="by">Prices reported by USDA AMS market reporters at the sale, not by the barns. Ranges a barn posts itself are marked as the barn&#x27;s.</p>
+      <p class="by"><!--BAKE:auction-week-->Latest USDA AMS auction reports: sales through Nov 13, 2026, from 21 states (read Nov 13, 2026).<!--/BAKE--> Prices reported by USDA AMS market reporters at the sale, not by the barns. Ranges a barn posts itself are marked as the barn&#x27;s.</p>
       <div id="sb-glance" class="sb-glance" aria-live="polite" hidden><p class="sb-gh"><b>Cattle prices today:</b> the biggest USDA state auction reports load here</p></div>
       <script>/* sb-wait (Nov 10 CLS sweep): with scripts on, the controls and the price glance hold their room from the first paint, and the empty box shows only if the file does not load. The glance shows when no ZIP or state is saved. If cattle-auction.js has not let go after 8 s (blocked or failed), the page lets go itself: the empty box shows and the held controls go. */(function(a){var s=null;try{s=JSON.parse(localStorage.getItem('agsist-salebarn')||'null');}catch(e){}a.classList.add('sb-wait');if(!(s&&(/^\d{5}$/.test(s.zip||'')||/^[A-Z]{2}$/.test(s.state||''))))a.classList.add('sb-gwait','sb-ghold');setTimeout(function(){if(!a.classList.contains('sb-wait'))return;var h=document.getElementById('sb-head');if(h)h.textContent='';a.classList.remove('sb-wait','sb-gwait');},8000);})(document.currentScript.parentNode);</script>
       <p class="sb-lede">The latest USDA-reported auction prices for feeder steers and heifers at the barns closest to you: each 100 lb class from 300 to 899 lb, with head count, the weighted average in dollars per hundredweight, the range, about what a calf brought per head, and the change from that barn's last sale once USDA has posted two.</p>
@@ -176,7 +176,7 @@
       <div id="sb-results"></div>
       <p id="sb-asof" class="src"></p>
 
-      <!-- ai-answer:screwworm --><section class="ai-answer" id="answer-screwworm" aria-labelledby="answer-screwworm-h" data-checked="2026-10-28" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-screwworm-h" style="font-size:1.1rem;margin:0 0 .4rem">What does New World screwworm mean for cattle prices?</h2><p style="margin:0 0 .5rem">The price effect runs through the border: cattle from Mexico were shut out over New World screwworm from November 22, 2024, and USDA then raised its 2025 forecast for 750 to 800 pound feeder steers by $15 per cwt, a forecast, not a measured effect (ERS, December 16, 2024). USDA is now reopening border ports to Mexican cattle in phases: Douglas, AZ on August 24, 2026, Santa Teresa, NM on September 24, Columbus, NM on October 26, and Nogales, AZ planned for November 30. Inside the U.S., APHIS confirmed the first wildlife case on October 21, 2026, an elk on a game ranch in Pecos County, Texas, and Texas is changing its infested zone around it. On October 28, 2026, APHIS confirmed the first case in Arizona, a dog in Cochise County, and set a 20 km infested zone around it. APHIS keeps the case count and the zone map on its status page, linked below.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 28, 2026. Sources: ERS Livestock, Dairy, and Poultry Outlook, Dec 16, 2024 &middot; <a href="https://direct.aphis.usda.gov/animals/animal-health/livestock-and-poultry-disease/stop-screwworm/current-status" rel="noopener" style="text-decoration:underline">APHIS, current status of New World screwworm</a> &middot; <a href="https://direct.aphis.usda.gov/news/agency-announcements/usda-confirms-first-detection-new-world-screwworm-us-wildlife" rel="noopener" style="text-decoration:underline">APHIS, first detection in U.S. wildlife, Oct 21, 2026</a> &middot; <a href="https://direct.aphis.usda.gov/news/agency-announcements/usda-confirms-new-world-screwworm-arizona" rel="noopener" style="text-decoration:underline">APHIS, first detection in Arizona, Oct 28, 2026</a></p></section><!-- /ai-answer:screwworm -->
+      <!-- answer:screwworm --><section class="qa-answer" id="answer-screwworm" aria-labelledby="answer-screwworm-h" data-checked="2026-10-28" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-screwworm-h" style="font-size:1.1rem;margin:0 0 .4rem">What does New World screwworm mean for cattle prices?</h2><p style="margin:0 0 .5rem">The price effect runs through the border: cattle from Mexico were shut out over New World screwworm from November 22, 2024, and USDA then raised its 2025 forecast for 750 to 800 pound feeder steers by $15 per cwt, a forecast, not a measured effect (ERS, December 16, 2024). USDA is now reopening border ports to Mexican cattle in phases: Douglas, AZ on August 24, 2026, Santa Teresa, NM on September 24, Columbus, NM on October 26, and Nogales, AZ planned for November 30. Inside the U.S., APHIS confirmed the first wildlife case on October 21, 2026, an elk on a game ranch in Pecos County, Texas, and Texas is changing its infested zone around it. On October 28, 2026, APHIS confirmed the first case in Arizona, a dog in Cochise County, and set a 20 km infested zone around it. APHIS keeps the case count and the zone map on its status page, linked below.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 28, 2026. Sources: ERS Livestock, Dairy, and Poultry Outlook, Dec 16, 2024 &middot; <a href="https://direct.aphis.usda.gov/animals/animal-health/livestock-and-poultry-disease/stop-screwworm/current-status" rel="noopener" style="text-decoration:underline">APHIS, current status of New World screwworm</a> &middot; <a href="https://direct.aphis.usda.gov/news/agency-announcements/usda-confirms-first-detection-new-world-screwworm-us-wildlife" rel="noopener" style="text-decoration:underline">APHIS, first detection in U.S. wildlife, Oct 21, 2026</a> &middot; <a href="https://direct.aphis.usda.gov/news/agency-announcements/usda-confirms-new-world-screwworm-arizona" rel="noopener" style="text-decoration:underline">APHIS, first detection in Arizona, Oct 28, 2026</a></p></section><!-- /answer:screwworm -->
       <section id="vog" class="sb-box sb-vogc" hidden>
         <h2>Background or sell at weaning?</h2>
         <p>Value of gain is what buyers at one sale paid for each pound a calf added: the heavier class&#x27;s dollars a head minus the lighter class&#x27;s, over the pounds between them. Gain pays when the value of gain is above your cost of gain. Steers or heifers and the grade follow the buttons above.</p>
@@ -275,7 +275,6 @@
       </div>
 
       <p class="src">Source: USDA Agricultural Marketing Service, Livestock, Poultry and Grain Market News, livestock auction reports. Prices are as reported by USDA market reporters; AGSIST pools the rows into 100 lb classes and does the $/head math. Not affiliated with any barn.</p>
-      <p class="by">Sigurd Lindquist, CCA, Chetek, Wisconsin</p>
 
       <h2>Related</h2>
       <ul class="rel">
@@ -296,16 +295,16 @@
     <b>Livestock:</b> <a href="/cattle-auction-prices">Sale barn prices</a> · <a href="/cattle-futures-prices">Cattle futures</a> · <a href="/milk-prices">Milk</a> · <a href="/hay-prices">Hay</a> · <a href="/haymow">The Haymow</a> · <a href="/lrp">LRP</a> · <a href="/prf">PRF</a><br>
     <b>Field:</b> <a href="/rain">Rain and drought</a> · <a href="/hail-map">Hail map</a> · <a href="/spray">Spray, urea and soil temp</a> · <a href="/rain-gauge">Rain gauge waitlist</a> · <a href="/gdu-calculator">GDU</a> · <a href="/planting-date">Planting date</a> · <a href="/nutrient-removal">Nutrient removal</a> · <a href="/manure-value">Manure value</a> · <a href="/field-scout">Field Scout</a> · <a href="/yield-estimator">Yield estimator</a> · <a href="/tar-spot">Tar spot</a> · <a href="/harvest-or-wait">Harvest now or wait</a> · <a href="/grain-emc">Grain drying (EMC)</a> · <a href="/grain-shrink">Grain shrink</a> · <a href="/grain-bin-calculator">Bin calculator</a> · <a href="/combine-loss">Combine loss</a> · <a href="/tools">All tools</a> · <a href="/fast-facts">Fast Facts</a><br>
     <b>Money &amp; Land:</b> <a href="/land-sales/">Farmland sales</a> · <a href="/rent/">Cash rent</a> · <a href="/farmland-atlas">Farmland Atlas</a> · <a href="/custom-rates">Custom rates</a> · <a href="/cash-lease">Lease form</a> · <a href="/arc-plc">ARC or PLC</a> · <a href="/farm-bill">Farm bill</a> · <a href="/store-or-sell">Sell or store</a> · <a href="/breakeven">Break-even</a> · <a href="/commodity-loan">CCC loan</a><br>
-    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a> · <a href="/developer">Embeds</a><br>
+    <b>Work with us:</b> <a href="/sponsor">Advertise</a> · <a href="/rain-print-business">Rain Print for business</a> · <a href="/prf-sponsor">PRF sponsor</a> · <a href="/list-your-elevator">List your elevator, free</a><br>
     <b>About:</b> <a href="/about">About</a> · <a href="/editorial-standards">Editorial standards</a> · <a href="/contact">Contact</a> · <a href="/changelog">What&rsquo;s new</a><br>
     <a href="/privacy">Privacy</a> · <a href="/accessibility">Accessibility</a> · <a href="/terms">Terms</a>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/cattle-auction.js?v=9" defer></script>
-  <script src="/components/feeder-index.js?v=7" defer></script>
-  <script src="/components/cull-cows.js?v=2" defer></script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/feeder-index.js?v=8" defer></script>
+  <script src="/components/cull-cows.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

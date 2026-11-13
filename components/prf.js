@@ -29,12 +29,12 @@
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
-  function usd(v) { if (v == null || !isFinite(v)) return '—'; var n = Math.round(v); return (n < 0 ? '−' : '') + '$' + Math.abs(n).toLocaleString('en-US'); }
+  function usd(v) { if (v == null || !isFinite(v)) return 'n/a'; var n = Math.round(v); return (n < 0 ? '−' : '') + '$' + Math.abs(n).toLocaleString('en-US'); }
   function half(x, places) { var f = Math.pow(10, places); return Math.floor(Math.abs(x) * f + 0.5 + 1e-7) / f * (x < 0 ? -1 : 1); }
-  function usd2(v) { if (v == null || !isFinite(v)) return '—'; v = half(v, 2); return (v < 0 ? '−' : '') + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
-  function signed(v) { if (v == null || !isFinite(v)) return '—'; var n = Math.round(v); return (n > 0 ? '+' : n < 0 ? '−' : '') + '$' + Math.abs(n).toLocaleString('en-US'); }
-  function pctOfNormal(v) { return v == null ? '—' : half(v * 100, 1).toFixed(1); }
-  var DASH = '\u2014';
+  function usd2(v) { if (v == null || !isFinite(v)) return 'n/a'; v = half(v, 2); return (v < 0 ? '−' : '') + '$' + Math.abs(v).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
+  function signed(v) { if (v == null || !isFinite(v)) return 'n/a'; var n = Math.round(v); return (n > 0 ? '+' : n < 0 ? '−' : '') + '$' + Math.abs(n).toLocaleString('en-US'); }
+  function pctOfNormal(v) { return v == null ? 'n/a' : half(v * 100, 1).toFixed(1); }
+  var DASH = 'n/a';
   function nw(t) { return '<span class="prf-nw">' + t + '</span>'; }
   function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many); }
   function track(name, p) { try { if (typeof window.gtag === 'function') window.gtag('event', name, p || {}); } catch (e) {} }
