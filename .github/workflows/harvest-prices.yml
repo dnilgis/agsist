@@ -9,7 +9,7 @@ on:
     types: [completed]
 
 concurrency:
-  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 14' && !contains(github.event.workflow_run.display_title, ' harvest-prices.yml '))) && format('harvest-prices-{0}', github.run_id) || 'harvest-prices' }}
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 14' && !(contains(github.event.workflow_run.display_title, ' harvest-prices.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && format('harvest-prices-{0}', github.run_id) || 'harvest-prices' }}
   cancel-in-progress: false
 
 permissions:
@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   gate:
-    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 14' || contains(github.event.workflow_run.display_title, ' harvest-prices.yml '))
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 14' || (contains(github.event.workflow_run.display_title, ' harvest-prices.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

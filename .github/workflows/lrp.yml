@@ -29,7 +29,7 @@ permissions:
 jobs:
   gate:
     if: >-
-      ((github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 03' || contains(github.event.workflow_run.display_title, ' lrp.yml '))) && (
+      ((github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 03' || (contains(github.event.workflow_run.display_title, ' lrp.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && (
       github.event_name == 'schedule' || (github.event_name == 'workflow_run' && (
         contains(github.event.workflow_run.created_at, 'T15:0') ||
         contains(github.event.workflow_run.created_at, 'T15:1') ||

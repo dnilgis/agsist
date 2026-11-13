@@ -6,10 +6,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: cache-probe
-  cancel-in-progress: false
-
 jobs:
   probe:
     runs-on: ubuntu-latest

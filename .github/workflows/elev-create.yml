@@ -17,10 +17,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: elev-create
-  cancel-in-progress: false
-
 jobs:
   create:
     runs-on: ubuntu-latest

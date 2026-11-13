@@ -5,10 +5,6 @@ on:
 
 permissions: {}
 
-concurrency:
-  group: import-kv
-  cancel-in-progress: false
-
 jobs:
   import:
     runs-on: ubuntu-latest

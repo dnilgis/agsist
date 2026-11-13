@@ -13,10 +13,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: probe
-  cancel-in-progress: false
-
 jobs:
   probe:
     runs-on: ubuntu-latest

@@ -14,12 +14,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 04' && !contains(github.event.workflow_run.display_title, ' weekend-heartbeat.yml '))) && format('weekend-heartbeat-{0}', github.run_id) || 'weekend-heartbeat' }}
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 04' && !(contains(github.event.workflow_run.display_title, ' weekend-heartbeat.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && format('weekend-heartbeat-{0}', github.run_id) || 'weekend-heartbeat' }}
   cancel-in-progress: false
 
 jobs:
   knock:
-    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 04' || contains(github.event.workflow_run.display_title, ' weekend-heartbeat.yml '))
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 04' || (contains(github.event.workflow_run.display_title, ' weekend-heartbeat.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

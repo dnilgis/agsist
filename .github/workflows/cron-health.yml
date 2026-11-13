@@ -13,12 +13,12 @@ permissions:
   actions: read
 
 concurrency:
-  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 02' && !contains(github.event.workflow_run.display_title, ' cron-health.yml '))) && format('cron-health-{0}', github.run_id) || 'cron-health' }}
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 02' && !(contains(github.event.workflow_run.display_title, ' cron-health.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && format('cron-health-{0}', github.run_id) || 'cron-health' }}
   cancel-in-progress: false
 
 jobs:
   gate:
-    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 02' || contains(github.event.workflow_run.display_title, ' cron-health.yml '))
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 02' || (contains(github.event.workflow_run.display_title, ' cron-health.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
@@ -181,6 +181,7 @@ jobs:
           SEND_DAILY_CAP: ${{ vars.SEND_DAILY_CAP }}
           BREVO_MONTHLY: ${{ vars.BREVO_MONTHLY }}
           BREVO_RENEW_DAY: ${{ vars.BREVO_RENEW_DAY }}
+          CLOCK_LIVE: ${{ vars.CLOCK_LIVE }}
         run: python3 scripts/cron_health.py --out private/data/cron-health.json
 
       - name: Save

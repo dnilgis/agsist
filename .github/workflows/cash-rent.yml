@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   gate:
-    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 11' || contains(github.event.workflow_run.display_title, ' cash-rent.yml '))
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 11' || (contains(github.event.workflow_run.display_title, ' cash-rent.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

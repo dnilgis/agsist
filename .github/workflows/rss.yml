@@ -8,10 +8,6 @@ on:
       - 'data/daily-archive/*.json'
   workflow_dispatch:
 
-concurrency:
-  group: rss
-  cancel-in-progress: false
-
 jobs:
   rss:
     runs-on: ubuntu-latest

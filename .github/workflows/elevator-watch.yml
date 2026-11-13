@@ -14,7 +14,7 @@ on:
     types: [completed]
 
 concurrency:
-  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 01' && !contains(github.event.workflow_run.display_title, ' elevator-watch.yml '))) && format('elevator-watch-{0}', github.run_id) || 'elevator-watch' }}
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 01' && !(contains(github.event.workflow_run.display_title, ' elevator-watch.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && format('elevator-watch-{0}', github.run_id) || 'elevator-watch' }}
   cancel-in-progress: false
 
 permissions:
@@ -24,7 +24,7 @@ jobs:
   watch:
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    if: ${{ ((github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 01' || contains(github.event.workflow_run.display_title, ' elevator-watch.yml '))) && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
+    if: ${{ ((github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 01' || (contains(github.event.workflow_run.display_title, ' elevator-watch.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success') }}
     steps:
       - uses: actions/checkout@v4
         with:

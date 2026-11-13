@@ -7,10 +7,6 @@ on:
     paths: ["data/fsa/urls.txt"]
 permissions:
   contents: write
-concurrency:
-  group: fetch-fsa-files
-  cancel-in-progress: false
-
 jobs:
   fetch:
     runs-on: ubuntu-latest

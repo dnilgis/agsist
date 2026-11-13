@@ -21,10 +21,6 @@ on:
 permissions:
   contents: read
 
-concurrency:
-  group: prf-page
-  cancel-in-progress: false
-
 jobs:
   check:
     runs-on: ubuntu-latest

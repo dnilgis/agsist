@@ -46,6 +46,7 @@ jobs:
           mode: ${{ vars.ENGINE_MODE }}
       - name: Which chained workflows have work
         id: plan
+        timeout-minutes: 5
         env:
           GH_TOKEN: ${{ github.token }}
           FETCH_CONCLUSION: ${{ github.event.workflow_run.conclusion }}
@@ -61,6 +62,7 @@ jobs:
           done
           cat "$RUNNER_TEMP/plan.tsv"
       - name: Start the ticks
+        id: start
         if: ${{ !cancelled() }}
         env:
           GH_TOKEN: ${{ secrets.CLOCK_TOKEN }}
@@ -79,7 +81,7 @@ jobs:
           done < "$RUNNER_TEMP/plan.tsv"
           exit $fail
       - name: Tell the owner the ticks did not start
-        if: ${{ failure() }}
+        if: ${{ failure() && steps.start.outcome == 'failure' }}
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
