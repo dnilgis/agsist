@@ -1,6 +1,17 @@
 {
   "briefings": [
     {
+      "date": "2026-11-13",
+      "date_display": "Friday, November 13, 2026",
+      "headline": "Corn, beans and wheat firm overnight after Thursday's drop",
+      "teaser": "Grains bounce overnight after a down day; hogs sit near $55 and USDA says cash hogs are far lower.",
+      "market_mood": "cautious",
+      "surprise_count": 0,
+      "sections": 2,
+      "url": "/daily/2026-11-13",
+      "market_closed": false
+    },
+    {
       "date": "2026-11-12",
       "date_display": "Thursday, November 12, 2026",
       "headline": "Hogs near $56 as pork cutout slips; export sales due 7:30",
@@ -2789,5 +2800,5 @@
       "url": "/daily/2026-03-04"
     }
   ],
-  "updated": "2026-11-12T11:48:26.699098+00:00"
+  "updated": "2026-11-13T11:48:36.848637+00:00"
 }
