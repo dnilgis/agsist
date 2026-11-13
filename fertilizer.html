@@ -363,7 +363,7 @@
     <div class="calc-inputs">
       <div class="calc-field"><label for="calc-crop">Crop</label><select id="calc-crop"><option value="corn">Corn</option><option value="soybean">Soybeans</option><option value="wheat">Wheat</option></select></div>
       <div class="calc-field"><label for="calc-yield">Yield goal (bu/acre)</label><input id="calc-yield" type="number" inputmode="numeric" min="0" step="5" value="180"></div>
-      <div class="calc-field" id="calc-nrate-row"><label for="calc-nrate">N rate (lb N/bu)</label><input id="calc-nrate" type="number" inputmode="decimal" min="0" step="0.05" value="0.9"></div>
+      <div class="calc-field" id="calc-nrate-row"><label for="calc-nrate">N rate (lb N/bu, yield-goal method)</label><input id="calc-nrate" type="number" inputmode="decimal" min="0" step="0.05" value="0.9"></div>
       <div class="calc-field"><label for="calc-acres">Acres (optional)</label><input id="calc-acres" type="number" inputmode="numeric" min="0" step="10" value=""></div>
       <div class="calc-field"><label for="calc-psrc">Phosphate from</label><select id="calc-psrc"><option value="">Cheapest per lb</option></select></div>
       <div class="calc-field" id="calc-nsrc-row"><label for="calc-nsrc">Nitrogen from</label><select id="calc-nsrc"><option value="">Cheapest per lb</option></select></div>
@@ -374,7 +374,7 @@
       <summary>How this is calculated</summary>
       <div class="calc-method-body">
         <p>Cost per pound of nutrient = price &#xF7; (2000 lb/ton &#xD7; grade %). Each nutrient is sourced from the cheapest product carrying it; nitrogen already supplied by your phosphate source (e.g. MAP) is credited before pricing urea.</p>
-        <p>Crop removal (lb/bu): <code>Corn P&#x2082;O&#x2085; 0.38, K&#x2082;O 0.29 &middot; Soybeans 0.80 / 1.40 &middot; Wheat 0.50 / 0.35</code>: grain removal from UW Extension A2809 Table 4.2, the same numbers the <a href="/nutrient-removal">nutrient removal calculator</a> uses. Nitrogen uses a yield-goal rate (default 0.9 lb N/bu corn, adjustable; soybeans fix their own N), so the N line is a budget estimate, not a rate recommendation. Most Corn Belt extension services set corn N rates with the <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">Corn N Rate Calculator (MRTN)</a>. These are benchmarks, not a soil-test recommendation. Your soil tests, credits, and agronomist override them.</p>
+        <p>Crop removal (lb/bu): <code>Corn P&#x2082;O&#x2085; 0.38, K&#x2082;O 0.29 &middot; Soybeans 0.80 / 1.40 &middot; Wheat 0.50 / 0.35</code>: grain removal from UW Extension A2809 Table 4.2, the same numbers the <a href="/nutrient-removal">nutrient removal calculator</a> uses. Nitrogen uses a yield-goal rate (default 0.9 lb N/bu corn, adjustable; soybeans fix their own N). That is the older method, and Corn Belt universities no longer recommend it for corn: they set the rate from replicated trials with the <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">Corn N Rate Calculator (MRTN)</a> instead. The N line here is a budget placeholder, not a rate. These are benchmarks, not a soil-test recommendation. Your soil tests, credits, and agronomist override them.</p>
       </div>
     </details>
   </section>
@@ -407,7 +407,7 @@
     </div>
     <div class="fe-card">
       <h3>Timing fertilizer purchases</h3>
-      <p>Historically, fall and early winter offer softer urea and phosphate prices before spring demand builds. But natural gas direction, global supply, and tariffs can override seasonal patterns. A common approach: lock in 50&#x2013;60% of needs in fall at a price you can live with, leave the rest flexible for spring.</p>
+      <p>Historically, fall and early winter offer softer urea and phosphate prices before spring demand builds. But natural gas direction, global supply, and tariffs can override seasonal patterns.</p>
     </div>
     <div class="fe-card">
       <h3>How these prices affect break-evens</h3>
@@ -510,7 +510,7 @@ function mainlyN(pr){return !!(pr.grade&&pr.grade.N>0&&pr.grade.N>pr.grade.P&&pr
 function straightN(pr){return !!(pr.grade&&pr.grade.N>0&&!(pr.grade.P>0)&&!(pr.grade.K>0));}
 function primary(products,nut,ok){var b=null;products.forEach(function(p){if(ok&&!ok(p))return;if(p.grade&&p.grade[nut]>0&&(b===null||p.grade[nut]>b.grade[nut]))b=p;});return b;}
 function cheapest(products,nut,ok){var best=null;products.forEach(function(pr){if(!pr.grade||!pr.grade[nut]||pr.price==null)return;if(ok&&!ok(pr))return;var c=costPerLb(pr.price,pr.grade[nut]);if(c!=null&&(best===null||c<best.cost))best={name:pr.name,cost:c,product:pr};});return best;}
-var CROPS={corn:{label:'Corn',nRate:0.90,p2o5:0.38,k2o:0.29,sNeed:18,fixesN:false},soybean:{label:'Soybeans',nRate:0.00,p2o5:0.80,k2o:1.40,sNeed:12,fixesN:true},wheat:{label:'Wheat',nRate:1.20,p2o5:0.50,k2o:0.35,sNeed:12,fixesN:false}};
+var CROPS={corn:{label:'Corn',nRate:0.90,p2o5:0.38,k2o:0.29,sNeed:10,fixesN:false},soybean:{label:'Soybeans',nRate:0.00,p2o5:0.80,k2o:1.40,sNeed:0,fixesN:true},wheat:{label:'Wheat',nRate:1.20,p2o5:0.50,k2o:0.35,sNeed:0,fixesN:false}};
 function chosen(products,name,nut){if(!name)return null;var pr=null;products.forEach(function(x){if(!pr&&x.name===name&&x.grade&&x.grade[nut]>0&&validPrice(x.price)&&(nut!=='N'||mainlyN(x)))pr=x;});return pr?{name:pr.name,cost:costPerLb(pr.price,pr.grade[nut]),product:pr,picked:true}:null;}
 /* sourcesFor(): the products a reader may pick for P or N (a real price, the nutrient in it; N only from a mainly-N product). */
 function sourcesFor(products,nut){return products.filter(function(x){return x.grade&&x.grade[nut]>0&&validPrice(x.price)&&(nut!=='N'||mainlyN(x));}).map(function(x){return x.name;});}
@@ -594,9 +594,9 @@ function runCalc(){
   var incTxt='incomplete, quote missing<small> '+prog.missing.map(esc).join(', ')+'</small>'+partTxt;
   var totalAc=a>0&&!inc?'<div class="calc-total-acres">Across <strong>'+fmtLb(a)+' acres</strong>: <strong>'+money(prog.costPerAcre*a)+'</strong> total</div>':'';
   var sLine=(prog.sSupplied>0&&!inc)?'You\u2019re also getting <strong>'+Math.round(prog.sSupplied)+' lb/acre sulfur</strong>'+(prog.mgSupplied>0?' and '+Math.round(prog.mgSupplied)+' lb Mg':'')+' from this program.':'';
-  var sAdv=(prog.sSupplied<prog.sNeed)?' Most '+prog.crop.toLowerCase()+' wants roughly '+prog.sNeed+' lb S/acre. Consider moving some nitrogen to ammonium sulfate to close the gap.':'';
+  var sAdv=(prog.sNeed>0&&prog.sSupplied<prog.sNeed)?' UW Extension A2809 (chapter 8) gives 10 to 25 lb S/acre for corn where a need is shown; a tissue test shows whether yours is.':'';
   var nNote=c.fixesN?'<div class="calc-note">Soybeans fix their own nitrogen; no N purchase needed. This bill is phosphate and potash to replace what '+y+'-bu beans remove.</div>':'';
-  out.innerHTML=(c.fixesN?'':'<div class="calc-needs"><span>N budget estimate, not a rate recommendation: about</span> <b>'+fmtLb(prog.Nreq)+' lb N</b> <span>at '+prog.nRate+' lb per bushel. For a corn rate, use the <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">MRTN calculator</a>.</span></div>')+'<div class="calc-needs"><span>'+(c.fixesN?'This crop needs about':'Also about')+'</span> <b>'+fmtLb(prog.Preq)+' lb P\u2082O\u2085</b> &middot; <b>'+fmtLb(prog.Kreq)+' lb K\u2082O</b> <span>per acre</span></div>'+
+  out.innerHTML=(c.fixesN?'':'<div class="calc-needs"><span>N budget placeholder from the yield-goal method, not a rate recommendation: about</span> <b>'+fmtLb(prog.Nreq)+' lb N</b> <span>at '+prog.nRate+' lb per bushel. For a corn rate, use the trial-based <a href="https://cnrc.agron.iastate.edu/" target="_blank" rel="noopener">MRTN calculator</a>.</span></div>')+'<div class="calc-needs"><span>'+(c.fixesN?'This crop needs about':'Also about')+'</span> <b>'+fmtLb(prog.Preq)+' lb P\u2082O\u2085</b> &middot; <b>'+fmtLb(prog.Kreq)+' lb K\u2082O</b> <span>per acre</span></div>'+
     '<table class="calc-prog"><thead><tr><th scope="col">Nutrient</th><th scope="col">Source</th><th scope="col">Rate</th><th scope="col" class="r">$/acre</th></tr></thead><tbody>'+progRows+'</tbody></table>'+
     '<div class="calc-headline"><div><span>Fertility cost'+(app>0?', with your application':', product only')+'</span><strong>'+(inc?incTxt:money2(prog.costPerAcre)+'<small> /acre</small>')+'</strong></div><div><span>Per bushel</span><strong>'+(inc?'incomplete, quote missing':money2(prog.costPerBu)+'<small> /bu</small>')+'</strong></div></div>'+
     missNote+totalAc+nNote+(app>0?'':'<div class="calc-note">Product only. Type what applying costs you per acre above to add it; AGSIST does not supply an application cost.</div>')+(sLine?'<div class="calc-note">'+sLine+sAdv+'</div>':(!inc&&prog.costPerAcre>0&&sAdv?'<div class="calc-note">This program supplies no sulfur.'+sAdv+'</div>':''))+
