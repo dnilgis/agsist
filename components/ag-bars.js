@@ -89,12 +89,15 @@
       o.push(txt(g.pl - 6, g.Y(v) + fs * 0.33, tickText(cfg, v, g.ymax), f + 'fill:' + P.dim, 'end'));
     }
     o.push('<line x1="' + g.pl + '" x2="' + f1(W - g.pr) + '" y1="' + g.yb + '" y2="' + g.yb + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
-    /* month names under the plot: each one only where it clears the one before it */
-    var ticks = cfg.ticks || [], lastR = -1e9;
+    /* month names under the plot: one even step for the whole axis (every month, every 2nd or every 3rd), the smallest that keeps every name
+       clear of the next; the last month, a stub, is named only where it is as wide as its name */
+    var ticks = cfg.ticks || [], cxs = ticks.map(function (t) { return g.X((t.a + t.b) / 2); }), maxW = 0, step = 1;
+    ticks.forEach(function (t) { maxW = Math.max(maxW, widthOf(t.lab, fs, 0.6)); });
+    for (; step < ticks.length; step++) { var okS = true; for (var q = step; q < ticks.length; q += step) if (cxs[q] - cxs[q - step] < maxW + fs * 0.9) okS = false; if (okS) break; }
     ticks.forEach(function (t, ti) {
-      var cx = g.X((t.a + t.b) / 2), w = widthOf(t.lab, fs, 0.6);
+      var w = widthOf(t.lab, fs, 0.6), stub = ti === ticks.length - 1 && g.X(t.b) - g.X(t.a) < w * 0.9;
       o.push('<line x1="' + f1(g.X(t.a)) + '" x2="' + f1(g.X(t.a)) + '" y1="' + g.yb + '" y2="' + (g.yb + 4) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
-      if (cx - w / 2 >= lastR + fs * 0.6 && (ti < ticks.length - 1 || g.X(t.b) - g.X(t.a) >= w * 0.9)) { o.push(txt(cx, g.yb + fs * 1.45, t.lab, f + 'fill:' + P.dim, 'middle')); lastR = cx + w / 2; }
+      if (ti % step === 0 && !stub) o.push(txt(cxs[ti], g.yb + fs * 1.45, t.lab, f + 'fill:' + P.dim, 'middle'));
     });
     if (N) {
       var xs = T.map(function (p) { return p[0]; }).filter(function (x) { return at(N, x) != null; }), up = [], dn = [];
@@ -133,33 +136,46 @@
       o.push('<line x1="' + f1(fx) + '" x2="' + f1(fx) + '" y1="' + g.pt + '" y2="' + g.yb + '" style="stroke:' + P.mut + ';stroke-width:1;stroke-dasharray:3 3"/>');
       o.push(txt(pick.c[0], pick.c[1], pick.text, f + 'font-size:' + fs1 + 'px;fill:' + P.dim + ';' + halo, pick.c[2]));
     }
-    /* the marks' words: a late month upper left of its stretch, an early one lower right, never on either line, each with its own hairline */
-    var mid = (g.x0 + g.x1) / 2, words = [], leaders = [];
+    /* the marks' words: each one off both lines (6 px clear, bold measured at 0.62 of the size), off the other labels, and joined to its stretch by a
+       hairline that crosses nothing: it runs from the line nearest the label, and a place whose hairline would cross another label, hairline or line is not chosen */
+    var mid = (g.x0 + g.x1) / 2, words = [], leaders = [], segs = [];
+    function segCross(x0, y0, x1, y1) {
+      var n = 0, len = Math.hypot(x1 - x0, y1 - y0), steps = Math.max(2, Math.ceil(len / 2));
+      for (var i = 0; i <= steps; i++) {
+        var x = x0 + (x1 - x0) * i / steps, y = y0 + (y1 - y0) * i / steps, d0 = Math.hypot(x - x0, y - y0);
+        if (d0 > 5) for (var j = 0; j < pts.length; j++) if (Math.abs(pts[j][0] - x) < 2.5 && Math.abs(pts[j][1] - y) < 2.5) { n++; break; }
+        for (var k = 0; k < boxes.length; k++) if (x > boxes[k].l - 3 && x < boxes[k].r + 3 && y > boxes[k].t - 3 && y < boxes[k].b + 3) { n++; break; }
+      }
+      segs.forEach(function (q) { if (ccw(x0, y0, q[0], q[1], q[2], q[3]) && ccw(x1, y1, q[0], q[1], q[2], q[3]) !== ccw(x0, y0, q[0], q[1], q[2], q[3]) && ccw(x0, y0, x1, y1, q[0], q[1]) !== ccw(x0, y0, x1, y1, q[2], q[3])) n += 20; });
+      return n;
+    }
+    function ccw(ax, ay, bx, by, cx, cy) { return (cy - ay) * (bx - ax) > (by - ay) * (cx - ax); }
     (cfg.marks || []).forEach(function (m) {
       var xm = (m.a + m.b) / 2, va = at(T, xm), vn = N ? at(N, xm) : null, px = g.X(xm), py = g.Y(va), lowY = g.Y(vn == null ? va : Math.min(va, vn)), highY = g.Y(vn == null ? va : Math.max(va, vn));
       var one = [m.text], two = String(m.text).split(', normal '); if (two.length === 2) two[1] = 'normal ' + two[1]; else two = null;
       var late = xm > mid, order = late ? ['UL', 'LR', 'LL', 'UR'] : ['LR', 'UL', 'UR', 'LL'], best = null, bestN = 1e9;
       [one, two].forEach(function (lines) {
         if (!lines) return;
-        var w = Math.max.apply(null, lines.map(function (l) { return widthOf(l, fs1, 0.58); })), h = lines.length * fs * 1.2;
-        order.forEach(function (side) { for (var k = 0; k < 8; k++) [0, 22, 44, 66].forEach(function (dx) {
+        var w = Math.max.apply(null, lines.map(function (l) { return widthOf(l, fs1, 0.62); })), h = lines.length * fs * 1.2;
+        order.forEach(function (side) { for (var k = 0; k < 14; k++) [0, 12, 24, 36, 48, 60, 80, 100, 120].forEach(function (dx) {
           var up = side[0] === 'U', rt = side[1] === 'R', x = rt ? px + 4 + dx : px - 4 - dx, bot = highY - fs * 0.55 - k * fs * 1.3, yTop = up ? bot - h : lowY + fs * 0.55 + k * fs * 1.3;
           var b = { l: rt ? x : x - w, r: rt ? x + w : x, t: yTop, b: yTop + h };
-          var nHit = hits(b, pts, 3) + (fits(b) ? 0 : 50) + boxes.filter(function (q) { return overlap(b, q, 5); }).length * 20 + (frz != null && b.l - 6 < frz && b.r + 6 > frz ? 30 : 0);
-          if (nHit + dx * 0.02 + k * 0.5 < bestN) { bestN = nHit + dx * 0.02 + k * 0.5; best = { b: b, lines: lines, x: x, rt: rt, y0: yTop + fs1 * 0.85 }; }
+          var sy = up ? highY : lowY, ex0 = Math.max(b.l, Math.min(b.r, px)), ey0 = up ? b.b : b.t;
+          var nHit = hits(b, pts, 6) + (fits(b) ? 0 : 400) + boxes.filter(function (q) { return overlap(b, q, 5); }).length * 600 + (frz != null && b.l - 6 < frz && b.r + 6 > frz ? 300 : 0);
+          if (Math.hypot(ex0 - px, ey0 - sy) > 7) nHit += segCross(px, sy, ex0, ey0) * 4;
+          if (nHit + dx * 0.02 + k * 0.5 < bestN) { bestN = nHit + dx * 0.02 + k * 0.5; best = { b: b, lines: lines, x: x, rt: rt, y0: yTop + fs1 * 0.85, up: up, sy: sy, ex0: ex0, ey0: ey0 }; }
         }); });
       });
       if (!best) return;
       boxes.push(best.b);
       best.lines.forEach(function (l, j) { words.push(txt(best.x, best.y0 + j * fs * 1.2, l, f + 'font-size:' + fs1 + 'px;font-weight:700;fill:' + P.ink + ';' + halo, best.rt ? 'start' : 'end')); });
-      var ex0 = Math.max(best.b.l, Math.min(best.b.r, px)), ey0 = py < best.b.t ? best.b.t : py > best.b.b ? best.b.b : py;
-      if (Math.hypot(ex0 - px, ey0 - py) > 7) leaders.push('<line x1="' + f1(px) + '" x2="' + f1(ex0) + '" y1="' + f1(py) + '" y2="' + f1(ey0) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
+      if (Math.hypot(best.ex0 - px, best.ey0 - best.sy) > 7) { leaders.push('<line x1="' + f1(px) + '" x2="' + f1(best.ex0) + '" y1="' + f1(best.sy) + '" y2="' + f1(best.ey0) + '" style="stroke:' + P.mut + ';stroke-width:1"/>'); segs.push([px, best.sy, best.ex0, best.ey0]); }
     });
     o.push.apply(o, leaders); o.push.apply(o, words);
     /* the lines named at their right ends with the value; the gap in words under them, in the same column */
     var ex = W - g.pr + 8, ya0 = g.Y(last[1]), yn0 = nlast ? g.Y(nlast[1]) : null, ta = ya0, tn = yn0, minGap = fs * 3.4;
     if (yn0 != null && Math.abs(ya0 - yn0) < minGap) { var md = (ya0 + yn0) / 2, half = minGap / 2; ta = ya0 <= yn0 ? md - half : md + half; tn = ya0 <= yn0 ? md + half : md - half; }
-    ta = Math.max(ta, fs * 1.1); if (tn != null) tn = Math.max(tn, fs * 1.1);
+    ta = Math.max(ta, fs * 1.1); if (tn != null) { tn = Math.max(tn, fs * 1.1); if (Math.abs(ta - tn) < minGap) { if (ta <= tn) tn = ta + minGap; else ta = tn + minGap; } }
     o.push(circle(g.X(last[0]), ya0, P.ink, card));
     o.push(txt(ex, ta - fs * 0.15, g.endLab[0], fb + 'fill:' + P.ink));
     o.push(txt(ex, ta + fs * 1.05, cfg.names.a, f + 'fill:' + P.dim));

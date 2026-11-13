@@ -140,9 +140,9 @@
     if (!r || !num(r.n) || !num(r.wetter) || !num(r.drier) || !end) return '';
     if (r.drier < r.wetter && c && num(c.missing) && c.missing > 0) return '';
     var day = md(end);
-    return (r.wetter === 0 ? 'The most rain by ' + day + ' in ' + r.n + ' years on record here (' + r.first + ' on).'
-      : r.drier === 0 ? 'The least rain by ' + day + ' in ' + r.n + ' years on record here (' + r.first + ' on).'
-      : ordinal(r.wetter + 1) + ' wettest by ' + day + ' of ' + r.n + ' years on record here (' + r.first + ' on).');
+    /* only years with a full count are in it, as on the county page */
+    var of = 'the ' + r.n + ' years with a full count since ' + r.first + '.';
+    return (r.wetter === 0 ? 'The most rain by ' + day + ' in ' + of : r.drier === 0 ? 'The least rain by ' + day + ' in ' + of : ordinal(r.wetter + 1) + ' wettest by ' + day + ' of ' + of);
   }
   function insertAt(pts, x, y) {
     if (pts.some(function (p) { return Math.abs(p[0] - x) < 1e-9; })) return;
@@ -457,7 +457,7 @@
     root.AgChart.mountRun(x, { this: run.T, norm: run.N, dotted: run.dotted, x0: run.x0, x1: run.x1, ticks: run.ticks, freeze: run.freeze,
       marks: run.made.map(function (r) { return { a: r.x0, b: r.x1, text: markText(r, o.fmt, o.unit === 'in' ? ' in' : '') }; }),
       fmt: o.axis, topUnit: o.topUnit, vfmt: function (v) { return o.fmt(v) + (o.unit === 'in' ? ' in' : ' GDUs'); }, names: { a: String(yr), n: 'Normal' }, gapWords: gw, label: o.label,
-      read: function (xx, a, n) { var w = function (v) { return o.fmt(v) + ' ' + unitWord(o.fmt(v), o.unit); }; return whenOf(yr, xx) + ': ' + w(a) + ' so far' + (n != null ? '; normal ' + w(n) + '; ' + gapWords(a - n, o.unit) : ''); },
+      read: function (xx, a, n) { var w = function (v) { return o.fmt(v) + ' ' + unitWord(o.fmt(v), o.unit); }, sh = function (v) { return o.unit === 'in' ? Math.round(v * 10) / 10 : Math.round(v); }; return whenOf(yr, xx) + ': ' + w(a) + ' so far' + (n != null ? '; normal ' + w(n) + '; ' + gapWords(sh(a) - sh(n), o.unit) : ''); },
       rest: 'Drag along the line to read any date.', steps: o.steps, maxTicks: o.maxTicks, headroom: o.headroom,
       height: { phone: 250, wide: 250 }, tools: tl,
       story: function () { return { head: o.cardHead, take: o.sub, summary: o.label }; },
