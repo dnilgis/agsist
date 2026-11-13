@@ -118,6 +118,8 @@
     return { crop: crop, Crop: c[1], adj: c[2], verb: c[3] || 'is', town: town, out: out, all: town.concat(out), ref: ref, other: other, left: left, leftIn: bad.some(function (r) { return r.inTown; }),
              med: med && ref && med.label === ref.vs ? med : null, prev: prev };
   }
+  /* a week's line is drawn only where the bid moved */
+  function moved(p) { return !!p.prev && p.all.some(function (r) { return r.w != null && r.w !== 0; }); }
   function bestOf(rs) { return rs.reduce(function (b, r) { return !b || r.c > b.c || (r.c === b.c && (r.mi || 0) < (b.mi || 0)) ? r : b; }, null); }
   function lowOf(rs) { return rs.reduce(function (b, r) { return !b || r.c < b.c ? r : b; }, null); }
   function plural(n, one, many) { return n + ' ' + (n === 1 ? one : many || one + 's'); }
@@ -181,7 +183,8 @@
   function note(p, cfg) {
     var s = [], yr = String(cfg.date || '').slice(0, 4), st = cfg.stName || cfg.st;
     if (p.all.length) s.push('Each dot is one posted ' + p.adj + ' bid: cash minus ' + (conFull(p.ref.vs) || p.ref.vs) + ' futures.');
-    if (p.all.some(function (r) { return r.w != null; }) && p.prev) s.push('Its line runs from its basis on ' + day(p.prev) + '.');
+    if (moved(p)) s.push('Its line runs from its basis on ' + day(p.prev) + '.');
+    else if (p.prev && p.all.some(function (r) { return r.w != null; })) s.push('No bid here moved from where it was on ' + day(p.prev) + '.');
     if (p.out.length) s.push('Miles are straight-line from ' + (cfg.from || 'the town') + ' to each elevator’s pin; dots that would touch sit side by side.');
     if (p.med) s.push(st + ' median: ' + word(cents(p.med.median)) + ', ' + plural(p.med.n, p.adj + ' bid') + ' against ' + conMon(p.ref.vs) + ' futures.' + (p.med.usda ? ' ' + p.med.usda : ''));
     if (p.other.length) {
@@ -407,7 +410,7 @@
   function axisText(p) { return p.adj.charAt(0).toUpperCase() + p.adj.slice(1) + ' basis, cents a bushel over or under ' + (conMon(p.ref && p.ref.vs) || 'the') + ' futures'; }
   function cardText(p, cfg) {
     var st = story(p, cfg);
-    return { head: st.head, take: st.take, kicker: cfg.town + ', ' + (cfg.st || '') + ' · ' + p.adj + ' basis by distance', source: (p.prev && p.all.some(function (r) { return r.w != null; }) ? 'Each line runs from where that bid was on ' + day(p.prev) + '. ' : '') + 'Posted elevator bids, read by AGSIST' + (readDays(p) ? ' ' + readDays(p) : '') + (p.med && p.med.usdaShort ? '. ' + p.med.usdaShort : '') + '. No freight cost taken off.' };
+    return { head: st.head, take: st.take, kicker: cfg.town + ', ' + (cfg.st || '') + ' · ' + p.adj + ' basis by distance', source: (moved(p) ? 'Each line runs from where that bid was on ' + day(p.prev) + '. ' : '') + 'Posted elevator bids, read by AGSIST' + (readDays(p) ? ' ' + readDays(p) : '') + (p.med && p.med.usdaShort ? '. ' + p.med.usdaShort : '') + '. No freight cost taken off.' };
   }
 
   /* The page's box carries only what is its own (st, town, path, ll, from, states, crops, hist). The state's name,
@@ -431,7 +434,7 @@
   function render(docs, cfg0, crop, W, bs) {
     var cfg = prep(cfg0, docs, bs), p = pick(docs, cfg, crop), st = story(p, cfg), pic = svg(p, cfg, W || 358, {}), k = firstDot(p), rd = readout(p, p.all[k]);
     return { crop: crop, n: p.all.length, inTown: p.town.length, out: p.out.length, head: st.head, take: st.take, axis: axisText(p),
-             prev: p.prev ? day(p.prev) : '', svg: pic.svg, read: rd, note: note(p, cfg), first: k };
+             prev: moved(p) ? day(p.prev) : '', svg: pic.svg, read: rd, note: note(p, cfg), first: k };
   }
 
   /* ---------------------------------------------------------------- the page */
@@ -500,7 +503,7 @@
       p = pick(docs, cfg, cur);
       var st = story(p, cfg);
       head.textContent = hy(st.head); take.textContent = hy(st.take); axis.textContent = axisText(p); noteEl.textContent = hy(note(p, cfg));
-      if (keyPrev) { keyPrev.textContent = p.prev ? 'where it was a week before, ' + day(p.prev) : ''; keyPrev.parentNode.hidden = !p.prev; }
+      if (keyPrev) { keyPrev.textContent = moved(p) ? 'where it was a week before, ' + day(p.prev) : ''; keyPrev.closest('.bd-key').hidden = !moved(p); }
       pic = svg(p, cfg, W, { h: plot.clientHeight || undefined });
       plot.innerHTML = pic.svg;
       // the readout holds the room of its longest line, so nothing under it moves when a dot is read
