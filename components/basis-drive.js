@@ -129,12 +129,13 @@
   function week(rs) {
     var ws = rs.filter(function (r) { return r.w != null; }).map(function (r) { return r.w; });
     if (!ws.length) return '';
-    var lo = Math.min.apply(null, ws), hi = Math.max.apply(null, ws), who = rs.length === 1 ? 'The bid in town' : ws.length === rs.length ? 'Bids in town' : ws.length + ' of ' + rs.length + ' bids in town';
+    var lo = Math.min.apply(null, ws), hi = Math.max.apply(null, ws), one = rs.length === 1, who = one ? 'The bid in town' : 'Bids in town';
+    var tail = ws.length < rs.length ? ' (' + ws.length + ' of ' + rs.length + ' posted both weeks).' : '.';
     var span = function (a, b) { return a === b ? num(a) + (Math.abs(a) === 1 ? ' cent' : ' cents') : num(a) + ' to ' + num(b) + ' cents'; };
-    if (hi === 0 && lo === 0) return who + ' held where ' + (ws.length === 1 ? 'it was' : 'they were') + ' a week before.';
-    if (lo >= 0) return who + ' rose ' + span(lo === 0 && ws.length > 1 ? 0 : lo, hi) + ' in a week.';
-    if (hi <= 0) return who + ' fell ' + span(-hi, -lo) + ' in a week.';
-    return who + ' moved from ' + num(-lo) + ' down to ' + num(hi) + ' up in a week.';
+    if (hi === 0 && lo === 0) return who + ' held where ' + (one ? 'it was' : 'they were') + ' a week before' + tail;
+    if (lo >= 0) return who + ' rose ' + span(lo, hi) + ' in a week' + tail;
+    if (hi <= 0) return who + ' fell ' + span(-hi, -lo) + ' in a week' + tail;
+    return who + ' moved from ' + num(-lo) + ' down to ' + num(hi) + ' up in a week' + tail;
   }
 
   /* The headline is the finding, from the data shown; the take says what is plotted. */
