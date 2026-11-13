@@ -1,0 +1,94 @@
+name: Harvest Fuel Relief email
+
+on:
+  workflow_dispatch:
+    inputs:
+      mailing:
+        description: "Id for this mailing, e.g. rates-2026-11 (a finished id is never sent again)"
+        type: string
+        required: true
+      subject:
+        description: "Subject line and headline, 8 to 90 characters, no dashes or links"
+        type: string
+        required: true
+      body:
+        description: "Up to three short lines. Blank = the page's answer line and its Where it stands table"
+        type: string
+        default: ""
+      dry_run:
+        description: "Report counts and a preview; send, mark and record nothing"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: hfr-notice
+  cancel-in-progress: false
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          sparse-checkout: |
+            scripts
+            data/hfr-sent.json
+            harvest-fuel-relief.html
+            workers
+            .github
+      - name: Engine checkout
+        uses: ./.github/actions/engine
+        with:
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          mode: ${{ vars.ENGINE_MODE }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Checks (gate)
+        run: python3 scripts/send_hfr_notice.py --selftest
+      - name: Send
+        env:
+          LIST_URL: ${{ secrets.LIST_URL }}
+          LIST_TOKEN: ${{ secrets.LIST_TOKEN }}
+          PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          UNSUB_SECRET: ${{ secrets.UNSUB_SECRET }}
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER || secrets.GMAIL_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
+          FROM_ADDR: ${{ secrets.FROM_ADDR }}
+          REPLY_TO: ${{ secrets.REPLY_TO }}
+          HFR_NOTICE_LIVE: ${{ vars.HFR_NOTICE_LIVE }}
+          MAILING: ${{ inputs.mailing }}
+          SUBJECT: ${{ inputs.subject }}
+          BODY: ${{ inputs.body }}
+          DRY: ${{ inputs.dry_run }}
+        run: |
+          set -- --mailing "$MAILING" --subject "$SUBJECT"
+          if [ -n "$BODY" ]; then set -- "$@" --body "$BODY"; fi
+          if [ "$DRY" = "false" ]; then set -- "$@" --send; fi
+          python3 scripts/send_hfr_notice.py "$@"
+      - name: Record the mailing
+        if: ${{ !cancelled() && inputs.dry_run == false }}
+        run: |
+          if [ -n "$(git status --porcelain data/hfr-sent.json)" ]; then
+            git config user.name  "agsist-bot"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/hfr-sent.json
+            git commit -m "chore: record Harvest Fuel Relief mailing [skip ci]"
+            pushed=0
+            for n in 1 2 3 4 5; do
+              if git push; then pushed=1; break; fi
+              echo "Push race on attempt $n; rebasing..."
+              git pull --rebase --autostash origin main || { echo "Rebase failed."; exit 1; }
+              sleep $((RANDOM % 4 + 2))
+            done
+            [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
+          else
+            echo "Nothing recorded."
+          fi
