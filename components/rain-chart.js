@@ -351,7 +351,8 @@
   }
 
   /* The model for one figure. D carries: year, place, total, usual (empty: no normal), pct (empty: no fair percent),
-     asof (the last day reported, ISO), days, miss (days not reported), noun, wk ("doy,total,usual;..." in hundredths,
+     asof (the last day reported, ISO), days, miss (days not reported), noun, over ("1": the season is over, as the Field
+     Scout card says after the freeze, so the words say "through <last day>", never "so far"), wk ("doy,total,usual;..." in hundredths,
      one point a week and the last day, the points the page's old chart drew). */
   function fromData(D) {
     var year = +D.year, total = +D.total, hasU = numOk(D.usual), usual = hasU ? +D.usual : null;
@@ -372,9 +373,11 @@
       yText: T + ' in this year',
       startText: 'Jan 1', endText: fmtDate(D.asof)
     };
-    // the headline says the page's own sentence: "150% of normal" (the page prints the percent that way), then "so far"
-    if (pctOk) { m.headBig = (+D.pct) + '% of normal'; m.headSmall = preview ? 'so far' : 'this year'; }
-    else { m.headBig = T + ' inches'; m.headSmall = preview ? 'of rain so far' : 'of rain this year'; }
+    // the headline says the page's own sentence: "150% of normal" (the page prints the percent that way), then "so far";
+    // once the season is over (D.over), "through Nov 5": the year is not done, but the season it describes is
+    var upTo = D.over === '1' ? 'through ' + fmtDate(D.asof) : 'so far';
+    if (pctOk) { m.headBig = (+D.pct) + '% of normal'; m.headSmall = preview ? upTo : 'this year'; }
+    else { m.headBig = T + ' inches'; m.headSmall = preview ? 'of rain ' + upTo : 'of rain this year'; }
     if (ncum) {
       var gap = usual - total, U = commas(usual.toFixed(dp)), gAbs = Math.abs(gap), gmin = numOk(D.gapmin) ? +D.gapmin : 0.5;   // D.gapmin: the smallest difference the page itself prints (Field Scout: 0.25)
       m.uText = preview ? U + ' in normal by ' + fmtDate(D.asof) : U + ' in a normal year' + (+D.miss > 0 ? ', same days' : '');
@@ -401,7 +404,7 @@
     var gap = m.ncum ? (+D.usual) - (+D.total) : 0, gAbs = Math.abs(gap);
     return 'Running total of rain ' + (D.where || 'at the ' + noun + ' in ' + D.place) + ', ' + D.year + ': ' + m.total + ' inches through ' + fmtDate(D.asof) + up +
       (m.ncum && gAbs >= 0.005 ? ', ' + commas(gAbs.toFixed(dp)) + ' inches ' + (gap > 0 ? 'less' : 'more') + ' than a normal year' : '') +
-      (m.pct != null ? '. ' + m.pct + '% of normal' + (+D.days < (isLeap(+D.year) ? 366 : 365) ? ' so far' : '') + '.' : '.');
+      (m.pct != null ? '. ' + m.pct + '% of normal' + (+D.days < (isLeap(+D.year) ? 366 : 365) ? (D.over === '1' ? ' through ' + fmtDate(D.asof) : ' so far') : '') + '.' : '.');
   }
 
   var CSS = '.rce-art svg{display:block;width:100%;height:auto}.rce svg text{font-family:var(--font-body,system-ui,sans-serif)}' +

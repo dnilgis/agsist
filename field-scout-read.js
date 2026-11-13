@@ -846,7 +846,7 @@ window.__fsRead = function (FSX) {
     var wk=(function(){ var pt=0, pu=0; return cum.map(function(r){ var t=Math.round(r[1]*100), u=Math.round(r[2]*100), o=(t-pt)+','+(u-pu); pt=t; pu=u; return o; }).join(';'); })();   // the days implied (Jan 7 and every 7), the first value whole and the rest the week's change: as the county pages write it
     return '<div class="fs-chart-title">Rain at the county gauge: Jan 1 to date</div>'+
       '<div class="rce rce-fs" data-year="'+(s.pYear||s.year)+'" data-place="'+q(s.station+' gauge')+'" data-where="'+q('at the '+s.station+' gauge'+(mi?', '+mi:''))+'" data-total="'+s.pNow.toFixed(2)+'" data-usual="'+s.pNorm.toFixed(2)+'"'+
-        (s.pct!=null?' data-pct="'+Math.round(s.pct)+'"':'')+' data-gapmin="0.25" data-asof="'+q(s.thru)+'" data-days="'+(s.pDays||0)+'" data-miss="'+(s.pMiss||0)+'" data-noun="gauge" data-wk="'+wk+'"><div class="rce-art"></div></div>';
+        (s.pct!=null?' data-pct="'+Math.round(s.pct)+'"':'')+' data-gapmin="0.25"'+(seasonPhase(todayIso(), s).phase==='after'?' data-over="1"':'')+' data-asof="'+q(s.thru)+'" data-days="'+(s.pDays||0)+'" data-miss="'+(s.pMiss||0)+'" data-noun="gauge" data-wk="'+wk+'"><div class="rce-art"></div></div>';
   }
   // draw the enhanced chart(s) inside a card once the component is there (loaded on first use)
   function mountRce(root){
