@@ -197,9 +197,9 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 .dv3-sec-bottomline{font-family:'JetBrains Mono',monospace;font-size:0.79rem;font-weight:700;color:var(--text);padding:.5rem .75rem;background:var(--surface);border-radius:4px;border-left:1px solid var(--border-2);margin-bottom:.5rem;line-height:1.45;}
 .dv3-sec-action{font-size:.8rem;font-weight:600;color:var(--green);padding:.45rem .7rem;background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-md);line-height:1.45;}
 .dv3-sec--heat{border-color:var(--border-2) !important;}
-.dv3-sec--heat::after{content:'Top story';position:absolute;top:-.7rem;left:.75rem;font-family:var(--font-body);font-size:.85rem;font-weight:700;letter-spacing:0;color:var(--text);background:var(--surface);padding:0 .45rem;}
+.dv3-sec--heat::after{content:'Top story';position:absolute;top:-.7rem;left:.75rem;font-family:var(--font-body);font-size:.85rem;font-weight:700;letter-spacing:0;color:var(--text);background:var(--surface2);padding:0 .45rem;}
 .dv3-sec--surprise{border-color:var(--border-2) !important;}
-.dv3-sec--surprise::before{content:'Overnight surprise';position:absolute;top:-.7rem;right:.75rem;font-family:var(--font-body);font-size:.85rem;font-weight:700;letter-spacing:0;color:var(--text);background:var(--surface);padding:0 .45rem;}
+.dv3-sec--surprise::before{content:'Overnight surprise';position:absolute;top:-.7rem;right:.75rem;font-family:var(--font-body);font-size:.85rem;font-weight:700;letter-spacing:0;color:var(--text);background:var(--surface2);padding:0 .45rem;}
 
 /* TMYK */
 .dv3-tmyk{background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-md);padding:1rem 1.15rem;margin:1rem 0 1.25rem;}
@@ -1494,7 +1494,7 @@ function renderToday(data,why){
       var it=otpItems[i]||{};
       var otpTitle=(it.title||'').trim();
       var otpBody=(it.body||'').trim();
-      var otpTag=(it.tag||'').trim().toUpperCase();
+      var otpTag=(it.tag||'').trim();
       if(!otpTitle && !otpBody)continue;
       var tagH=otpTag?'<span class="dv3-otp-tag">'+escHtml(otpTag)+'</span>':'';
       /* Story links go to the publisher's own news story (often through Google
@@ -1511,7 +1511,7 @@ function renderToday(data,why){
     if(otpRendered.length){
       /* otp_week_ahead, not marketClosed: set by the generator only when the
          item names a dated upcoming event (generate_daily.mark_week_ahead). */
-      var otpLabel=data.otp_week_ahead?'WEEK AHEAD IN AG':'OUTSIDE THE PIT';
+      var otpLabel=data.otp_week_ahead?'Week ahead in ag':'Outside the pit';
       var otpSub=data.otp_week_ahead?'Coming up next week.':'Not moving prices today, but worth knowing.';
       outsidePit='<div class="dv3-otp" aria-label="'+otpLabel+'">'+
         '<div class="dv3-otp-header">'+
