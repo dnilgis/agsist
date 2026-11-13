@@ -136,7 +136,6 @@ Each figure below is read from the same file the site's pages read and carries t
 ## About this site
 
 - [Farm Market Glossary](https://agsist.com/glossary): plain definitions of basis, cash bid, futures, settle, nearby, carry, WASDE, ending stocks, managed money, NASS, RMA, FSA, CRP, cwt, shrink and other words the site uses
-- [Embed Tools and Data Feeds](https://agsist.com/developer): embeddable GDU and ARC or PLC widgets, the USDA report calendar files to subscribe to, the Daily RSS feed and this file
 - [Changelog](https://agsist.com/changelog): dated list of site changes
 - [About](https://agsist.com/about): who builds AGSIST and why
 - [Contact](https://agsist.com/contact): sig@agsist.com

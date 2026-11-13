@@ -121,7 +121,7 @@ jobs:
             fi
             python scripts/generated_sets.py dependents arc-plc --stage || true
             git add -A -- arc-plc.html arc-plc data/pointers data/arc-plc.json data/arc-plc data/arc-plc-prices.json data/breakeven \
-                          embed/arc-plc.html sitemap-arc-plc.xml llms.txt components/arc-plc-form.js img/og/arc-plc.jpg
+                          sitemap-arc-plc.xml llms.txt components/arc-plc-form.js img/og/arc-plc.jpg
             if git diff --staged --quiet; then echo "No change."; exit 0; fi
             git commit -q -m "arc-plc: rebuilt $(date -u +%Y-%m-%d)"
             if git push; then
