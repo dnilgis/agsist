@@ -146,19 +146,29 @@
     var yrs = []; for (var y = g.from; y <= g.to; y++) yrs.push(y);
     var bottom = g.strip ? g.sb : g.T + g.HM, P = g.plan, bs = P.size / fs;
     var sz = function (k) { return Math.round(k * 100) / 100 === 1 ? '' : ' style="font-size:' + (Math.round(k * 1000) / 1000) + 'em"'; };
-    // corn over $5: shaded years, every band named the same way
+    // counties above a capped axis's end: counted, not drawn; placed before anything else, so they are never left out
+    if (m.over) yrs.forEach(function (y) {
+      var n = m.over[String(y)]; if (!n) return;
+      var size = fs * 0.92, yy = g.T - size * 0.45, t = wid(n + ' higher', size) <= g.slot - 2 ? n + ' higher' : '+' + n;   // just over the top gridline
+      put(g.x(y), yy, t, size, 'k-m s oc', 'middle', false, 'label');
+    });
+    // corn over $5: shaded years, every band named the same way; a name slides along its band to clear the counts,
+    // or gives way to them
     m.hot.forEach(function (r) {
       var a = Math.max(r[0], g.from), b = Math.min(r[1], g.to); if (a > b) return;
       var x0 = g.L + (a - g.from) * g.slot, w = (b - a + 1) * g.slot, cx = x0 + w / 2, lh = P.size * 1.18;
       out.push('<rect class="z" x="' + f1(x0) + '" y="0" width="' + f1(w) + '" height="' + f1(bottom) + '"/>');
-      var line1 = P.size * 1.05;
-      if (P.lines === 1) { box(cx, line1, 'Corn over $5', P.size, 'middle', true, 'band'); out.push('<text x="' + f1(cx) + '" y="' + f1(line1) + '" class="k-i b c"' + sz(bs) + '>Corn over $5</text>'); }
-      if (P.lines === 2 && wid('over $5', P.size, true) <= w - 4) ['Corn', 'over $5'].forEach(function (t, i) { box(cx, line1 + i * lh, t, P.size, 'middle', true, 'band'); out.push('<text x="' + f1(cx) + '" y="' + f1(line1 + i * lh) + '" class="k-i b c"' + sz(bs) + '>' + esc(t) + '</text>'); });
-      if (P.short && m.short[0] >= a && m.short[0] <= b) {
-        var ys = line1 + P.lines * lh;
-        box(cx, ys, P.short, P.size * 0.92, 'middle', false, 'band');
-        out.push('<text x="' + f1(cx) + '" y="' + f1(ys) + '" class="c"' + sz(bs * 0.92) + '>' + esc(P.short) + '</text>');
-      }
+      var line1 = P.size * 1.05, lines = P.lines === 1 ? ['Corn over $5'] : P.lines === 2 && wid('over $5', P.size, true) <= w - 4 ? ['Corn', 'over $5'] : [];
+      var rows = lines.map(function (t, i) { return [t, line1 + i * lh, P.size, true]; });
+      if (P.short && m.short[0] >= a && m.short[0] <= b) rows.push([P.short, line1 + P.lines * lh, P.size * 0.92, false]);
+      var fits = function (x) { return rows.every(function (q) { var hw = wid(q[0], q[2], q[3]) / 2; return x - hw >= x0 + 2 && x + hw <= x0 + w - 2 && free(x, q[1], q[0], q[2], 'middle', q[3]); }); };
+      var at = null;
+      for (var d = 0; d <= w / 2 && at === null; d += 2) { if (fits(cx - d)) at = cx - d; else if (fits(cx + d)) at = cx + d; }
+      if (at === null && rows.length > lines.length && lines.length) { rows.pop(); for (d = 0; d <= w / 2 && at === null; d += 2) { if (fits(cx - d)) at = cx - d; else if (fits(cx + d)) at = cx + d; } }
+      if (at !== null) rows.forEach(function (q) {
+        box(at, q[1], q[0], q[2], 'middle', q[3], 'band');
+        out.push('<text x="' + f1(at) + '" y="' + f1(q[1]) + '" class="' + (q[3] ? 'k-i b c' : 'c') + '"' + sz(bs * (q[3] ? 1 : 0.92)) + '>' + esc(q[0]) + '</text>');
+      });
     });
     // the year read: a flat tint down its column (the plot and the strip, not the strip's title)
     if (o.hover != null && o.hover >= g.from && o.hover <= g.to) {
@@ -194,10 +204,15 @@
     var cpts = o.county ? line(function (y) { var v = o.county.v[y - m.y0]; return v == null ? null : v; }, 'c', g.phone ? 2.2 : 2.8) : [];
     var mpts = line(function (y) { return hasMed(m, y) ? medAt(m, y)[0] : null; }, 'm', g.phone ? 2.4 : 3.1);
     // years with no figure, named in the column, over the lines with a halo
-    yrs.forEach(function (y) {
-      if (medAt(m, y)) return;
+    // the ones that fit their own column first, so a wider one set level after them never lands on them
+    yrs.filter(function (y) { return !medAt(m, y) && wid(m.why[String(y)] === 'no survey' ? 'survey' : 'published', fs * 0.92) <= g.slot - 2; })
+      .concat(yrs.filter(function (y) { return !medAt(m, y) && wid(m.why[String(y)] === 'no survey' ? 'survey' : 'published', fs * 0.92) > g.slot - 2; })).forEach(function (y) {
       var why = m.why[String(y)] === 'no survey' ? ['no', 'survey'] : ['none', 'published'], x = g.x(y), size = fs * 0.92;
-      if (wid(why[1], size) <= g.slot - 2 || (!g.phone && wid(why[1], size) <= g.slot * 1.7 && (y === g.from || medAt(m, y - 1)) && (y === g.to || medAt(m, y + 1)) && free(x, g.T + g.HM - size * 0.35, why[1], size, 'middle'))) { put(x, g.T + g.HM - size * 1.55, why[0], size, 'k-m s h', 'middle'); put(x, g.T + g.HM - size * 0.35, why[1], size, 'k-m s h', 'middle'); }
+      var base = g.T + g.HM - size * 0.35, lift = null;
+      if (wid(why[1], size) <= g.slot - 2) lift = 0;
+      else if (!g.phone && wid(why[1], size) <= g.slot * 1.9)   // level at the foot of its column, or two lines higher when a neighbour's words sit there
+        [0, size * 2.6, size * 5.2].forEach(function (d) { if (lift === null && free(x, base - d, why[1], size, 'middle') && free(x, base - d - size * 1.2, why[0], size, 'middle')) lift = d; });
+      if (lift !== null) { put(x, base - lift - size * 1.2, why[0], size, 'k-m s h', 'middle'); put(x, base - lift, why[1], size, 'k-m s h', 'middle'); }
       else up(x, g.T + g.HM - 4, why.join(' '), size, 'k-m s h');
     });
     if (o.tap && o.tap.y >= g.from && o.tap.y <= g.to) {
@@ -225,7 +240,7 @@
         nm.push(cur);
         blocks.push({ want: g.y(cl[1]), lines: nm.map(function (s) { return [s, 'k-a e', true]; }).concat([[money(cl[1]) + (cl[0] === g.to ? '' : ' in ' + cl[0]), 'k-a e', true]]) });
       }
-      blocks.forEach(function (b) { b.h = b.lines.length * lh; b.top = b.want - lh * 0.75; });
+      blocks.forEach(function (b) { b.h = b.lines.length * lh; b.top = Math.max(b.want - lh * 0.75, m.over ? g.T + 2 : -1e9); });   // under the count row
       blocks.sort(function (a, b) { return a.want - b.want; });
       for (var k = 1; k < blocks.length; k++) { var pb = blocks[k - 1]; if (blocks[k].top < pb.top + pb.h + 6) blocks[k].top = pb.top + pb.h + 6; }
       var over = blocks.length ? blocks[blocks.length - 1].top + blocks[blocks.length - 1].h - (g.T + g.HM) : 0;
@@ -241,12 +256,6 @@
       if (ml) endLab(rx, g.y(ml[1]), cl ? below : !(pv && pv[1] < ml[1]), money(ml[1]), 'k-i v h');   // alone: over it when the line comes up from the left, under when it comes down
       if (cl) endLab(cl[0] === g.to ? rx : g.x(cl[0]) + g.tw / 2, g.y(cl[1]), !below, money(cl[1]), 'k-a v h');
     }
-    if (m.over) yrs.forEach(function (y) {   // counties above the axis's end: counted, not drawn
-      var n = m.over[String(y)]; if (!n) return;
-      var size = fs * 0.92, yy = g.T - size * 0.45, t = null;   // just over the top gridline, clear of the dashes under it
-      [n + ' higher', '+' + n].forEach(function (s) { if (!t && wid(s, size) <= g.slot - 2 && free(g.x(y), yy, s, size, 'middle')) t = s; });
-      if (t) put(g.x(y), yy, t, size, 'k-m s', 'middle', false, 'label');
-    });
     // the corn strip: the price received each crop year, dark when over $5
     if (g.strip) {
       var s0 = g.T + g.HM + g.GAP, pv = yrs.map(function (y) { return priceAt(m, y); }).filter(function (p) { return p != null; });
