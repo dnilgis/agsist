@@ -37,6 +37,13 @@
    "link": "/corn-futures-prices"
   },
   {
+   "id": "2026-11-13-rent-chart",
+   "date": "2026-11-13",
+   "title": "Every county's rent, and what corn was doing",
+   "line": "Each state rent page shows every county's rent since 2008 as a dash, the median county, your own county in gold, and the years corn paid over $5.",
+   "link": "/rent/illinois#rent-history"
+  },
+  {
    "id": "2026-11-13-sponsor-pay",
    "date": "2026-11-13",
    "title": "Sponsors pay by check or wire",
@@ -133,6 +140,13 @@
    "title": "A farm sales page for each state",
    "line": "Each state with farm sale records now has its own page: the median price per acre, every county and the newest sales. ARC or PLC and PRF lead with their sign-up dates.",
    "link": "/land-sales/wisconsin/"
+  },
+  {
+   "id": "2026-11-12-town-basis-chart",
+   "date": "2026-11-12",
+   "title": "Town basis history, one chart per crop",
+   "line": "The basis history box on a town cash bid page now puts every elevator on one chart, says who pays the best basis, and saves as a picture.",
+   "link": "/cash-bids/iowa/iowa-falls"
   },
   {
    "id": "2026-11-12-farm-sale-map",
