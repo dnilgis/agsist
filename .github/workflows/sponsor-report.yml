@@ -6,7 +6,7 @@ on:
     - cron: '12 11 * * *'
   # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
-    workflows: ["Tick 08"]
+    workflows: ["Fetch Grain Bids", "Tick 08"]
     types: [completed]
   workflow_dispatch:
   push:
@@ -29,7 +29,7 @@ env:
 
 jobs:
   gate:
-    if: github.event.workflow_run.name != 'Tick 08' || contains(github.event.workflow_run.display_title, ' sponsor-report.yml ')
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 08' || contains(github.event.workflow_run.display_title, ' sponsor-report.yml '))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

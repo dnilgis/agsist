@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '41 * * * *'
   workflow_run:
-    workflows: ["Tick 01"]
+    workflows: ["Fetch Grain Bids", "Tick 01"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -14,7 +14,7 @@ on:
         default: false
 
 concurrency:
-  group: ${{ github.event.workflow_run.name == 'Tick 01' && !contains(github.event.workflow_run.display_title, ' form-digest.yml ') && format('form-digest-{0}', github.run_id) || 'form-digest' }}
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 01' && !contains(github.event.workflow_run.display_title, ' form-digest.yml '))) && format('form-digest-{0}', github.run_id) || 'form-digest' }}
   cancel-in-progress: false
 
 permissions:
@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   run:
-    if: github.event.workflow_run.name != 'Tick 01' || contains(github.event.workflow_run.display_title, ' form-digest.yml ')
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 01' || contains(github.event.workflow_run.display_title, ' form-digest.yml '))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:

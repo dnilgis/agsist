@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '17 22 * * 1-5'
   workflow_run:
-    workflows: ["Tick 14"]
+    workflows: ["Fetch Grain Bids", "Tick 14"]
     types: [completed]
   workflow_dispatch:
 
@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   gate:
-    if: github.event.workflow_run.name != 'Tick 14' || contains(github.event.workflow_run.display_title, ' agstocks.yml ')
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 14' || contains(github.event.workflow_run.display_title, ' agstocks.yml '))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

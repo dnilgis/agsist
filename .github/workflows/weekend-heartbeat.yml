@@ -5,7 +5,7 @@ on:
     - cron: '11 14 * * 0,6'
     - cron: '2 15 * * 0,6'
   workflow_run:
-    workflows: ["Tick 04"]
+    workflows: ["Fetch Grain Bids", "Tick 04"]
     types: [completed]
   workflow_dispatch:
 
@@ -14,12 +14,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: ${{ github.event.workflow_run.name == 'Tick 04' && !contains(github.event.workflow_run.display_title, ' weekend-heartbeat.yml ') && format('weekend-heartbeat-{0}', github.run_id) || 'weekend-heartbeat' }}
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 04' && !contains(github.event.workflow_run.display_title, ' weekend-heartbeat.yml '))) && format('weekend-heartbeat-{0}', github.run_id) || 'weekend-heartbeat' }}
   cancel-in-progress: false
 
 jobs:
   knock:
-    if: github.event.workflow_run.name != 'Tick 04' || contains(github.event.workflow_run.display_title, ' weekend-heartbeat.yml ')
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 04' || contains(github.event.workflow_run.display_title, ' weekend-heartbeat.yml '))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     steps:

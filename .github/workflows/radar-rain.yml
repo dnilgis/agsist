@@ -15,7 +15,7 @@ on:
   schedule:
     - cron: '17 1,7,13,19 * * *'
   workflow_run:
-    workflows: ["Tick 04"]
+    workflows: ["Fetch Grain Bids", "Tick 04"]
     types: [completed]
 
 permissions:
@@ -23,7 +23,7 @@ permissions:
 
 jobs:
   gate:
-    if: github.event.workflow_run.name != 'Tick 04' || contains(github.event.workflow_run.display_title, ' radar-rain.yml ')
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 04' || contains(github.event.workflow_run.display_title, ' radar-rain.yml '))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

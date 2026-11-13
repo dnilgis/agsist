@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '40 11,12 * * *'
   workflow_run:
-    workflows: ["Tick 04"]
+    workflows: ["Fetch Grain Bids", "Tick 04"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -14,7 +14,7 @@ on:
         default: false
 
 concurrency:
-  group: ${{ github.event.workflow_run.name == 'Tick 04' && !contains(github.event.workflow_run.display_title, ' morning-report.yml ') && format('morning-report-{0}', github.run_id) || 'morning-report' }}
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 04' && !contains(github.event.workflow_run.display_title, ' morning-report.yml '))) && format('morning-report-{0}', github.run_id) || 'morning-report' }}
   cancel-in-progress: false
 
 permissions:
@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   gate:
-    if: github.event.workflow_run.name != 'Tick 04' || contains(github.event.workflow_run.display_title, ' morning-report.yml ')
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 04' || contains(github.event.workflow_run.display_title, ' morning-report.yml '))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

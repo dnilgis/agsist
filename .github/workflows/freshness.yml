@@ -7,7 +7,7 @@ on:
     - cron: '50 4 * * 2-6'
     - cron: '50 6 * * 2-6'
   workflow_run:
-    workflows: ["Tick 10"]
+    workflows: ["Fetch Grain Bids", "Tick 10"]
     types: [completed]
   workflow_dispatch:
 
@@ -15,12 +15,12 @@ permissions:
   contents: write
 
 concurrency:
-  group: ${{ github.event.workflow_run.name == 'Tick 10' && !contains(github.event.workflow_run.display_title, ' freshness.yml ') && format('freshness-{0}', github.run_id) || 'freshness' }}
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 10' && !contains(github.event.workflow_run.display_title, ' freshness.yml '))) && format('freshness-{0}', github.run_id) || 'freshness' }}
   cancel-in-progress: false
 
 jobs:
   gate:
-    if: github.event.workflow_run.name != 'Tick 10' || contains(github.event.workflow_run.display_title, ' freshness.yml ')
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 10' || contains(github.event.workflow_run.display_title, ' freshness.yml '))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:

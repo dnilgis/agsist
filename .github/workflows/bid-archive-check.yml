@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '19 10 6 * *'
   workflow_run:
-    workflows: ["Tick 07"]
+    workflows: ["Fetch Grain Bids", "Tick 07"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -22,7 +22,7 @@ permissions:
 
 jobs:
   gate:
-    if: github.event.workflow_run.name != 'Tick 07' || contains(github.event.workflow_run.display_title, ' bid-archive-check.yml ')
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 07' || contains(github.event.workflow_run.display_title, ' bid-archive-check.yml '))
     runs-on: ubuntu-latest
     timeout-minutes: 30
     permissions:
