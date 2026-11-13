@@ -1,6 +1,6 @@
 /* The county rain box (Nov 3, 2026).
  *
- * One line for a county: "Story County, IA: 53.72 in of rain since Jan 1, 156% of usual, through Nov 2."
+ * One line for a county: "Story County, IA: 53.72 in of rain since Jan 1, 156% of normal, through Nov 2."
  * Two users, one copy of the wording:
  *   embed/rain.html          the box other sites put in an iframe (reads data/rain/<st>.json)
  *   rain/<state>/<county>    the closed fold "Put this on your site or in your newsletter"; the line itself is
@@ -23,10 +23,10 @@
   }
   function shortDate(iso) { var p = String(iso).split("-"); return M3[+p[1] - 1] + " " + (+p[2]); }
   function done(d) { return /-12-31$/.test(String(d && d.edate || "")); }
-  /* "Story County, IA: 53.72 in of rain since Jan 1, 156% of usual, through Nov 2." */
+  /* "Story County, IA: 53.72 in of rain since Jan 1, 156% of normal, through Nov 2." */
   function line(c, st, d) {
     var thru = shortDate(c.as_of) + (done(d) ? ", " + d.year : "");
-    var pct = (c.pct === null || c.pct === undefined) ? "" : ", " + c.pct + "% of usual";
+    var pct = (c.pct === null || c.pct === undefined) ? "" : ", " + c.pct + "% of normal";
     return c.name + ", " + st + ": " + Number(c.total).toFixed(2) + " in of rain since Jan 1" + pct + ", through " + thru + ".";
   }
   function source(c) { return "NOAA daily records" + (c.station && c.station.net === "cocorahs" ? ", CoCoRaHS volunteer gauge" : ""); }
