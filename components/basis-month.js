@@ -23,11 +23,16 @@
   function f1(v) { return BD.f1(v); }
   function dd(d) { return MON[+d.slice(5, 7) - 1] + ' ' + (+d.slice(8, 10)); }
   function addDay(d, n) { return new Date(Date.parse(d + 'T00:00:00Z') + n * 864e5).toISOString().slice(0, 10); }
+  /* a UTC time -> its day in Central time, the network's day (BasisDrive.ct) */
+  function ctDay(iso) { var t = BD.ct(new Date(iso)); return t.y + '-' + (t.m < 9 ? '0' : '') + (t.m + 1) + '-' + (t.d < 10 ? '0' : '') + t.d; }
   function median(a) { var s = a.slice().sort(function (x, y) { return x - y; }), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
 
-  /* c: one crop from CbBasisHist.crops(); held(l, d): CbBasisHist.heldOn. -> the band, day by day, and the story */
-  function model(c, held, town, from) {
-    var lines = c.all, end = c.end, first = '';
+  /* c: one crop from CbBasisHist.crops(); held(l, d): CbBasisHist.heldOn. today: the town's bids the distance view
+     draws ({ d: 'YYYY-MM-DD' in Central time, hi, lo, n, top: [names] }), which stand for the last day, so the two views
+     of one box agree on it (round 2: the log's UTC stamp named a Nov 13 that had not started, counted a relay, and
+     rounded a half cent apart from the table). -> the band, day by day, and the story */
+  function model(c, held, town, from, today) {
+    var lines = c.all, end = today && today.d ? today.d : c.end, first = '';
     lines.forEach(function (l) { var d0 = l.line.points[0].d; if (!first || d0 < first) first = d0; });
     if (from && from > first) first = from;
     var days = [], strays = {};
@@ -40,14 +45,17 @@
       }
       if (!keep.length) { days.push({ d: d, gap: true }); continue; }
       var hi = Math.max.apply(null, keep.map(function (x) { return x.v; })), lo = Math.min.apply(null, keep.map(function (x) { return x.v; }));
-      days.push({ d: d, hi: hi, lo: lo, n: keep.length, top: keep.filter(function (x) { return x.v === hi; }).map(function (x) { return x.l; }), all: vs });
+      days.push({ d: d, hi: hi, lo: lo, n: keep.length, top: keep.filter(function (x) { return x.v === hi; }).map(function (x) { return x.l.name; }), all: vs });
     }
+    if (today && today.n && days.length && days[days.length - 1].d === end) days[days.length - 1] = { d: end, hi: today.hi, lo: today.lo, n: today.n, top: today.top, all: [] };
     var live = days.filter(function (x) { return !x.gap; });
     if (!live.length) return { lines: lines, days: days, head: 'No ' + ADJ[c.crop] + ' basis logged in ' + town + ' since ' + dd(first), take: '', first: first, end: end, strays: [] };
     var now = live[live.length - 1], mn = live[0], mx = live[0];
     live.forEach(function (x) { if (x.hi < mn.hi) mn = x; if (x.hi > mx.hi) mx = x; });
-    var rise = now.hi - mn.hi, fall = mx.hi - now.hi, adj = ADJ[c.crop], head;
-    if (rise >= 3 && rise >= fall) head = 'The best ' + adj + ' bid in ' + town + ' rose from ' + word(mn.hi) + ' on ' + dd(mn.d) + ' to ' + word(now.hi) + ' now.';
+    var rise = now.hi - mn.hi, fall = mx.hi - now.hi, adj = ADJ[c.crop], head, st0 = live[0];
+    // a V: a low between a start and an end within a few cents of each other tells the fall and the return
+    if (mn !== st0 && mn !== now && Math.abs(now.hi - st0.hi) <= 5 && st0.hi - mn.hi >= 5 && now.hi - mn.hi >= 5) head = 'The best ' + adj + ' bid in ' + town + ' fell to ' + word(mn.hi) + ' on ' + dd(mn.d) + ' and is back to ' + word(now.hi) + '.';
+    else if (rise >= 3 && rise >= fall) head = 'The best ' + adj + ' bid in ' + town + ' rose from ' + word(mn.hi) + ' on ' + dd(mn.d) + ' to ' + word(now.hi) + ' now.';
     else if (fall >= 3) head = 'The best ' + adj + ' bid in ' + town + ' fell from ' + word(mx.hi) + ' on ' + dd(mx.d) + ' to ' + word(now.hi) + ' now.';
     else head = 'The best ' + adj + ' bid in ' + town + ' held between ' + word(mn.hi) + ' and ' + word(mx.hi) + ' since ' + dd(live[0].d) + '.';
     var take = 'The band runs from the lowest to the highest of ' + lines.length + (lines.length === 1 ? ' elevator' : ' elevators') + ' in town each day, each for its nearest delivery month; its top edge is the best bid.';
@@ -137,7 +145,7 @@
   function readout(m, d, held, show) {
     var x = m.days.filter(function (z) { return z.d === d; })[0];
     if (!x || x.gap) return [dd(d) + ':', 'nothing logged for an open month.'];
-    var who = x.top.map(function (l) { return l.name; }), extra = m.lines.filter(function (l) { return show[l.key]; }).map(function (l) { var p = held(l, d); return l.name + ' ' + (p ? word(p.v) : 'none'); });
+    var who = x.top, extra = m.lines.filter(function (l) { return show[l.key]; }).map(function (l) { var p = held(l, d); return l.name + ' ' + (p ? word(p.v) : 'none'); });
     return [dd(d) + ':', 'best ' + word(x.hi) + ' (' + (who.length > 2 ? who.length + ' elevators' : who.join(' and ')) + '), lowest ' + word(x.lo) + ', ' + x.n + (x.n === 1 ? ' elevator' : ' elevators') + ' posting.' + (extra.length ? ' ' + extra.join('; ') + '.' : '')];
   }
 
@@ -168,7 +176,7 @@
       var all = H.crops(data, boards, town, 99, st);
       c = all.filter(function (x) { return x.crop === cur; })[0];
       if (!c) { plot.innerHTML = ''; read.textContent = 'No ' + ADJ[cur] + ' basis logged in ' + town + ' yet.'; o.head.textContent = 'No ' + ADJ[cur] + ' basis logged in ' + town + ' yet'; o.take.textContent = ''; return; }
-      m = model(c, H.heldOn, town, data.publicFrom);
+      m = model(c, H.heldOn, town, data.publicFrom, o.today ? o.today(cur, ctDay(data.generated)) : null);
       o.head.textContent = BD.hy(m.head); o.take.textContent = BD.hy(m.take);
       q('.bm-axis').textContent = (cur === 'soybeans' ? 'Soybean' : ADJ[cur].replace(/^./, function (x) { return x.toUpperCase(); })) + ' basis in ' + town + ', cents a bushel over or under futures, since ' + dd(m.first);
       q('.bm-more summary').textContent = 'Draw one elevator’s own line (' + m.lines.length + ')';
@@ -204,6 +212,6 @@
     return api;
   }
 
-  var api = { model: model, svg: svg, readout: readout, mount: mount };
+  var api = { model: model, svg: svg, readout: readout, mount: mount, ctDay: ctDay };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.BasisMonth = api;
 })(typeof window !== 'undefined' ? window : globalThis);

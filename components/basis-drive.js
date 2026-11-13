@@ -35,7 +35,7 @@
   function cardStyle(c) {
     return '<style>.e{text-anchor:end}.c{text-anchor:middle}text{fill:' + c.ink + '}.m{fill:' + c.mid + '}.g{fill:' + c.gold + '}.b{font-weight:700}.B{font-size:1.08em}.h{paint-order:stroke;stroke:' + c.bg + ';stroke-width:3px;stroke-linejoin:round}.z{fill:' + c.zone + '}' +
       '.gr,.ev,.ax,.md,.wk,.dr,.di,.dg,path{fill:none}.gr{stroke:' + c.grid + '}.ev,.ax{stroke:' + c.rule + '}.ev{stroke-width:1.4}.md{stroke:' + c.ink + ';stroke-width:1.2;stroke-dasharray:5 4}' +
-      '.wk{stroke:' + c.mid + ';stroke-width:1.6}.ld{stroke:' + c.mid + ';stroke-width:1}.dr,.di,.dg{stroke-linecap:round}.dr{stroke:' + c.bg + '}.di{stroke:' + c.ink + '}.dg{stroke:' + c.gold + '}</style>';
+      '.wk{stroke:' + c.mid + ';stroke-width:1.6}.ld{stroke:' + c.mid + ';stroke-width:1.2;stroke-dasharray:2 3}.dr,.di,.dg{stroke-linecap:round}.dr{stroke:' + c.bg + '}.di{stroke:' + c.ink + '}.dg{stroke:' + c.gold + '}</style>';
   }
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -148,6 +148,22 @@
     return { crop: crop, Crop: c[1], adj: c[2], verb: c[3] || 'is', town: town, out: out, alt: alt, altDm: altDm, all: town.concat(out, alt), ref: ref, other: other, away: away, left: left, leftIn: bad.some(function (r) { return r.inTown; }),
              med: med && ref && med.label === ref.vs ? med : null, prev: prev };
   }
+  /* A bid left off (another futures month) that pays more cash outside town than any drawn: the headline compares on
+     cash, in town and out, and says so (round 1: Alburnett's $11.81 soybeans; round 2: Linn Co-op's $12.06 in town) */
+  function cashLead(p) {
+    if (!p.ref) return null;
+    var oc = p.other.filter(function (r) { return !r.inTown && r.mi != null && r.vs && r.vs !== p.ref.vs; }).reduce(function (b, r) { return !b || r.cash > b.cash || (r.cash === b.cash && r.mi < b.mi) ? r : b; }, null);
+    var maxO = p.out.reduce(function (m, r) { return Math.max(m, r.cash); }, -1);
+    return oc && oc.cash > maxO + 0.004 ? oc : null;
+  }
+  /* the highest cash in town on any futures month (the drawn bids and those left off for another month) */
+  function townCash(p) { return p.town.concat(p.other.filter(function (r) { return r.inTown; })).reduce(function (b, r) { return !b || r.cash > b.cash ? r : b; }, null); }
+  /* the town's drawn bids as the month view's last day: { d, hi, lo, n, top } (d: the build's day in Central time) */
+  function todayOf(p, d) {
+    if (!p.town.length) return null;
+    var hi = Math.max.apply(null, p.town.map(function (r) { return r.c; })), lo = Math.min.apply(null, p.town.map(function (r) { return r.c; }));
+    return { d: d, hi: hi, lo: lo, n: p.town.length, top: p.town.filter(function (r) { return r.c === hi; }).map(function (r) { return r.name; }) };
+  }
   /* a week's line is drawn only where the bid moved */
   function moved(p) { return !!p.prev && p.all.some(function (r) { return r.w != null && r.w !== 0; }); }
   function drawn(p) { return p.town.length + p.out.length; }
@@ -174,12 +190,9 @@
     var C = p.Crop, place = cfg.town, T = p.town, O = p.out, bt = bestOf(T), bo = bestOf(O), yr = String(cfg.date || '').slice(0, 4);
     var head;
     if (!bt && !bo) return { head: 'No ' + p.adj + ' bids in or near ' + place + ' to compare today', take: '' };
-    /* a bid left off (another futures month) that pays more cash outside town than any drawn: the headline compares
-       on cash and says so (round 1: Alburnett's $11.81 soybeans, 13 miles out, on November futures) */
-    var oc = p.other.filter(function (r) { return !r.inTown && r.mi != null && r.vs && p.ref && r.vs !== p.ref.vs; }).reduce(function (b, r) { return !b || r.cash > b.cash || (r.cash === b.cash && r.mi < b.mi) ? r : b; }, null);
-    var maxO = O.reduce(function (m, r) { return Math.max(m, r.cash); }, -1);
-    if (oc && oc.cash > maxO + 0.004 && bt) {
-      head = C + ' ' + p.verb + ' ' + word(bt.c) + ' in ' + place + ', up to ' + cash(T.reduce(function (m, r) { return Math.max(m, r.cash); }, 0)) + ' cash. The best cash bid outside town is ' + cash(oc.cash) + ' at ' + oc.town + ', ' + mi(oc.mi) + ' out, on ' + conMon(oc.vs) + ' futures.';
+    var oc = cashLead(p), tc = oc && bt ? townCash(p) : null;
+    if (oc && bt) {
+      head = C + ' ' + (p.verb === 'are' ? 'pay' : 'pays') + ' up to ' + cash(tc.cash) + ' cash in ' + place + '. The best cash bid outside town is ' + cash(oc.cash) + ' at ' + oc.town + ', ' + mi(oc.mi) + ' out.';
     } else if (bt && !O.length && p.alt.length) {
       var ba = bestOf(p.alt);
       head = C + ' ' + p.verb + ' ' + word(bt.c) + ' in ' + place + ' for ' + dmFull(p.ref.dm, yr) + ' delivery. Nearby elevators bid for ' + dmFull(p.altDm, yr) + ': the best is ' + word(ba.c) + ', ' + mi(ba.mi) + ' out.';
@@ -200,7 +213,7 @@
     var n = drawn(p), terms = (p.ref ? dmFull(p.ref.dm, yr) + ' delivery' : '') + (conFull(p.ref && p.ref.vs) ? ', against ' + conFull(p.ref.vs) + ' ' + p.adj + ' futures' : '');
     var take = (n === 1 ? 'One ' + p.adj + ' bid' : n + ' ' + p.adj + ' bids') + ' within ' + NEAR_MI + ' miles, as of ' + day(cfg.date) + (terms ? ', ' + (n === 1 ? '' : 'all ') + 'for ' + terms : '') + '.';
     if (p.alt.length) take += ' Open dots: ' + plural(p.alt.length, 'bid') + ' for ' + dmFull(p.altDm, yr) + ' delivery on the same futures.';
-    if (oc && oc.cash > maxO + 0.004 && bt && bo) take += ' On ' + conMon(p.ref.vs) + ' futures the best outside town is ' + word(bo.c) + ' at ' + bo.town + ', ' + mi(bo.mi) + ' out.';
+    if (oc && bt) take += ' Cash on any futures month: ' + cash(tc.cash) + ' in town (' + conMon(tc.vs) + ' futures), ' + cash(oc.cash) + ' at ' + oc.town + ' (' + conMon(oc.vs) + ').' + (bo ? ' On ' + conMon(p.ref.vs) + ' futures the best outside town is ' + word(bo.c) + ' at ' + bo.town + ', ' + mi(bo.mi) + ' out.' : '');
     var wk = week(T); if (wk) take += ' ' + wk;
     return { head: head, take: take };
   }
@@ -264,8 +277,9 @@
     var y0 = TOP, y1 = H - BOT, Y = function (c) { return y0 + (top - c) / (top - bot) * (y1 - y0); };
     // room over the best dots for their words: one more step on top when they sit too near it
     var vmax = Math.max.apply(null, vals);
-    for (var bump = 0; bump < 3 && Y(vmax) - y0 < fb * (phone ? 2.2 : 3.4) + 10; bump++) { top += stepT; ticks.unshift(top); L = Math.ceil(Math.max.apply(null, ticks.map(function (t) { return widthOf(word(t), fs, t === 0); }))) + 10; }
-    var r0 = card ? 7 : phone ? 3.8 : 5.2, gap = phone ? 1.6 : 3, step = 2 * r0 + gap;
+    // one band of headroom when the best dots sit under the top; more only when a label that must be drawn found no free place
+    for (var bump = 0; bump < 1 + (opt.bump || 0) && (bump >= 1 || Y(vmax) - y0 < fb + 14); bump++) { top += stepT; ticks.unshift(top); L = Math.ceil(Math.max.apply(null, ticks.map(function (t) { return widthOf(word(t), fs, t === 0); }))) + 10; }
+    var r0 = card ? 5.5 : phone ? 3.2 : 5.2, gap = phone ? 1.6 : 3, step = 2 * r0 + gap;   // a ring of the ground colour round each, so dots that overlap still read as two
     var pad = phone ? 8 : 16;
     var ZA = T.length ? Math.max(phone ? 92 : 150, Math.min(phone ? 132 : 260, T.length * step + 2 * pad + (phone ? 0 : 40))) : 0;
     var GX = T.length ? (phone ? 12 : 28) : 0;
@@ -283,16 +297,19 @@
       P[ev ? 'ev' : 'gr'].push(H0(y, L, phone ? x1 : W - R));
       o.push(t(L - 8, y + fs * 0.36, word(c), ev ? 'b' : 'mid', 'end'));
     });
-    if (T.length) {
-      var townHead = 'In ' + cfg.town;
-      if (widthOf(townHead, fb, true) > ZA + GX - 4) townHead = 'In town';
-      o.push(t(L + ZA / 2, y0 - fb * 0.7, townHead, 'b big', 'middle'));
-    }
+    var head = function (cands, cx, lo, hi) {   // the first wording that fits between lo and hi, centred on cx where it can be
+      for (var i = 0; i < cands.length; i++) {
+        var w = widthOf(cands[i], fb, true), x = Math.max(lo + w / 2 + 3, Math.min(hi - w / 2 - 3, cx));
+        if (w + 6 <= hi - lo || i === cands.length - 1) { o.push(t(x, y0 - fb * 0.7, cands[i], 'b big', 'middle')); labs.push({ x0: x - w / 2 - 2, x1: x + w / 2 + 2, y0: y0 - fb * 1.7, y1: y0 - 2, head: 1 }); return; }
+      }
+    };
+    if (T.length) head(['In ' + cfg.town, 'In town'], L + ZA / 2, L, L + ZA + GX / 2);
     var OA = O.length ? O : A;
     if (OA.length) {
-      var m0 = Math.round(OA[0].mi), m1 = Math.round(OA[OA.length - 1].mi), span = m0 === m1 ? mi(OA[0].mi) + ' out' : m0 + ' to ' + m1 + ' miles out';
-      var oh = O.length ? (phone ? span : (O.length === 1 ? 'One elevator ' : 'Elevators ') + span) : dmFull(p.altDm, String(cfg.date).slice(0, 4)) + ' delivery, ' + span;
-      o.push(t((x0 + x1) / 2, y0 - fb * 0.7, oh, 'b big', 'middle'));
+      var m0 = Math.round(OA[0].mi), m1 = Math.round(OA[OA.length - 1].mi), span = m0 === m1 ? mi(OA[0].mi) : m0 + ' to ' + m1 + ' miles', mon = dmFull(p.altDm, String(cfg.date).slice(0, 4));
+      var smi = m0 === m1 ? m0 + ' mi' : m0 + ' to ' + m1 + ' mi';
+      head(O.length ? [(O.length === 1 ? 'One elevator ' : 'Elevators ') + span + ' out', span + ' out', span, smi] : [mon + ' delivery, ' + span + ' out', mon + ', ' + span, mon.slice(0, 3) + ', ' + smi, smi],
+        (x0 + x1) / 2, L + ZA + GX / 2, W - 2);
     } else {
       var nt = phone ? ['No other bid within', NEAR_MI + ' miles to compare'] : ['No other elevator within ' + NEAR_MI + ' miles', 'posted a bid to compare'];
       nt.forEach(function (s, i) { o.push(t((x0 + x1) / 2, (y0 + y1) / 2 + (i - 0.5) * fs * 1.4, s, 'mid', 'middle')); });
@@ -325,16 +342,23 @@
     });
     dots.forEach(function (q, i) {
       q.i = i; q.gold = !q.d.alt && q.d.c === bestC;
-      add({ x0: q.x - q.r - 1, x1: q.x + q.r + 1, y0: q.y - q.r - 1, y1: q.y + q.r + 1 });
+      add({ x0: q.x - q.r - 1, x1: q.x + q.r + 1, y0: q.y - q.r - 1, y1: q.y + q.r + 1, dot: 1, q: q });
     });
     // the words on the data: each tries its places in order; the best bid's words are placed first and never left off
     var inPlot = function (b) { return b.x0 >= L - 2 && b.x1 <= W - 2 && b.y0 >= y0 - 2 && b.y1 <= y1 + 2; };
-    var leader = function (q, b) {   // words set away from their dot get a thin line to it
-      if (!q) return;
-      var cx = Math.max(b.x0, Math.min(b.x1, q.x)), cy = q.y < b.y0 ? b.y0 : q.y > b.y1 ? b.y1 : q.y, dist = Math.hypot(cx - q.x, cy - q.y);
-      if (dist < q.r + fs) return;
-      var ux = (cx - q.x) / dist, uy = (cy - q.y) / dist;
-      P.ld.push('M' + fx(q.x + ux * (q.r + 2)) + ' ' + fx(q.y + uy * (q.r + 2)) + 'L' + fx(cx - ux * 2) + ' ' + fx(cy - uy * 2));
+    /* words set away from their dot get a leader: a thin dotted slant from the dot to the label's nearest corner (never
+       straight up over the dot, where a line means where the bid was a week before). null: no leader needed;
+       false: the leader would cross a label or a dot, so the place is refused */
+    var leaderOf = function (q, b) {
+      if (!q) return null;
+      var cx = Math.max(b.x0, Math.min(b.x1, q.x)), cy = q.y < b.y0 ? b.y0 : q.y > b.y1 ? b.y1 : q.y;
+      if (Math.hypot(cx - q.x, cy - q.y) < q.r + fs) return null;
+      if (cy !== q.y && Math.abs(cx - q.x) < 10) cx = Math.abs(b.x0 - q.x) > Math.abs(b.x1 - q.x) ? b.x0 + 2 : b.x1 - 2;   // a slant, to a corner
+      var d = Math.hypot(cx - q.x, cy - q.y), ux = (cx - q.x) / d, uy = (cy - q.y) / d;
+      var a = [q.x + ux * (q.r + 2), q.y + uy * (q.r + 2)], e = [cx - ux * 4, cy - uy * 4], pts = [];
+      for (var f = 0; f <= 1 - 2 / Math.max(4, d); f += 3 / Math.max(3, d)) pts.push({ x0: a[0] + (e[0] - a[0]) * f - 1, x1: a[0] + (e[0] - a[0]) * f + 1, y0: a[1] + (e[1] - a[1]) * f - 1, y1: a[1] + (e[1] - a[1]) * f + 1 });
+      if (pts.some(function (z) { return labs.some(function (l) { return hit(l, z); }) || obst.some(function (o) { return o.dot && o.q !== q && hit(o, z); }); })) return false;
+      return { d: 'M' + fx(a[0]) + ' ' + fx(a[1]) + 'L' + fx(e[0]) + ' ' + fx(e[1]), pts: pts };
     };
     var place = function (lines, cands, cls, minX, must, q) {
       var lh = fs * 1.3, w = Math.max.apply(null, lines.map(function (s, k) { var cl = cls[k] || ''; return widthOf(s, /big/.test(cl) ? fb : fs, /(^| )b( |$)/.test(cl)); }));
@@ -343,10 +367,14 @@
         var bb = box(cands[k]);
         if (minX != null && bb.b.x0 < minX) continue;
         if (inPlot(bb.b) && !obst.concat(labs).some(function (z) { return hit(z, bb.b); })) {
+          var ld = leaderOf(q, bb.b);
+          if (ld === false) continue;
           lines.forEach(function (s, j) { o.push(t(bb.x, cands[k].y + j * lh, s, cls[j] || '', '')); });
-          labs.push(bb.b); leader(q, bb.b); return true;
+          labs.push(bb.b); if (ld) { P.ld.push(ld.d); ld.pts.forEach(function (z) { z.leader = 1; z.of = bb.b; obst.push(z); }); }
+          return true;
         }
       }
+      if (must && lines.length > 1 && place(lines.slice(-1), cands, cls.slice(-1), minX, false, q)) return true;   // its last line alone, where both do not fit
       if (must) {   // no free place: the first one that stays in the picture, on a halo
         for (k = 0; k < cands.length; k++) {
           bb = box(cands[k]);
@@ -369,11 +397,12 @@
               { x: q.x - q.r, y: up - lh }, { x: q.x + q.r, y: up - lh, anchor: 'end' }, { x: q.x - q.r, y: up - 2 * lh }, { x: q.x + g, y: up }, { x: q.x - g, y: up, anchor: 'end' },
               { x: q.x - q.r, y: dn + lh }, { x: q.x + q.r, y: dn + lh, anchor: 'end' },
               { x: q.x, y: up, anchor: 'clamp' }, { x: q.x, y: dn, anchor: 'clamp' }, { x: q.x, y: up - lh, anchor: 'clamp' }, { x: q.x, y: dn + lh, anchor: 'clamp' }, { x: q.x, y: up - 2 * lh, anchor: 'clamp' }, { x: q.x + g, y: q.y - lh * (lines + 0.2) }, { x: q.x + g, y: q.y - lh * (lines + 1.2) }, { x: q.x - g, y: q.y - lh * (lines + 0.2), anchor: 'end' },
-              { x: q.x, y: up - 3 * lh, anchor: 'clamp' }, { x: q.x, y: up - 4 * lh, anchor: 'clamp' }, { x: q.x, y: dn + 2 * lh, anchor: 'clamp' }];
+              { x: q.x, y: up - 3 * lh, anchor: 'clamp' }, { x: q.x, y: up - 4 * lh, anchor: 'clamp' }, { x: q.x, y: dn + 2 * lh, anchor: 'clamp' },
+              { x: W - 4, y: up, anchor: 'end' }, { x: W - 4, y: up - lh, anchor: 'end' }, { x: W - 4, y: up - 2 * lh, anchor: 'end' }, { x: W - 4, y: dn, anchor: 'end' }];
     };
     var golds = dots.filter(function (q) { return q.gold; });
     var tq = dots.filter(function (q) { return q.d.inTown; }), oq = dots.filter(function (q) { return !q.d.inTown && !q.d.alt; }), aq = dots.filter(function (q) { return q.d.alt; });
-    var outX = T.length ? L + ZA + 2 : null;   // a bid outside town is never named inside the town's band
+    var outX = T.length ? L + ZA + 2 : null, cashLeadR = cashLead(p);   // a bid outside town is never named inside the town's band
     // 1. the best bid, in the accent: over the best dots in town, with their count
     if (golds.length && golds[0].d.inTown) {
       var gk = golds.filter(function (q) { return q.d.inTown; }).length, g0 = golds[0], gtxt = word(bestC) + (gk > 1 ? ': ' + gk + ' bids' : '');
@@ -384,8 +413,10 @@
     var bo = oq.filter(function (q) { return q.d === bestOf(O); })[0];
     if (bo) {
       var ow = bo.d.town, gcls = bo.gold ? 'gold b big' : 'b big';
-      if (phone) place([ow + ', ' + word(bo.d.c)], near(bo, 1), [gcls], outX, card, bo);   // a phone with no free place leaves it to the headline and the readout, which opens on it
-      else place([bo.gold ? 'Best bid within ' + NEAR_MI + ' miles' : 'Best bid outside town', ow + ', ' + mi(bo.d.mi) + ': ' + word(bo.d.c)], near(bo, 2), ['', gcls], outX, true, bo);
+      // a page with no free place leaves it to the headline and the readout, which opens on it; the card always names it
+      if (phone) place([ow + ', ' + word(bo.d.c)], near(bo, 1), [gcls], outX, card, bo);
+      else if (!place([bo.gold ? 'Best bid within ' + NEAR_MI + ' miles' : cashLeadR ? 'Best on ' + conMon(p.ref.vs) + ' futures' : 'Best bid outside town', ow + ', ' + mi(bo.d.mi) + ': ' + word(bo.d.c)], near(bo, 2), ['', gcls], outX, false, bo))
+        place([ow + ', ' + word(bo.d.c)], near(bo, 1), [gcls], outX, card, bo);
     }
     var ba = aq.filter(function (q) { return q.d === bestOf(A); })[0];
     if (ba) place([ba.d.town + ', ' + word(ba.d.c)], near(ba, 1), ['b big'], outX, !phone || card, ba);
@@ -427,7 +458,7 @@
       var lt = tq[tq.length - 1];
       if (lt.d.c !== bestC) {
         var ltx = phone ? ['Lowest in town: ' + word(lt.d.c)] : ['Lowest in town:', word(lt.d.c)];
-        place(ltx, [{ x: lt.x + lt.r + 8, y: lt.y + fs * 0.35 }, { x: lt.x + lt.r + 8, y: lt.y + fs * 1.5 }].concat(near(lt, ltx.length)), ['', '']);
+        place(ltx, [{ x: lt.x + lt.r + 8, y: lt.y + fs * 0.35 - (ltx.length - 1) * fs * 0.65 }, { x: lt.x + lt.r + 8, y: lt.y + fs * 1.5 }, { x: lt.x - lt.r, y: lt.y + lt.r + fs + 6 }], ['', '']);   // beside its dots or not at all
       }
     }
     // 6. on a phone, the lowest outside town beside its dot, or left to the readout
@@ -455,6 +486,7 @@
       });
     });
     dd = (defs.length ? '<defs>' + defs.join('') + '</defs>' : '') + dd;
+    if (labs.some(function (b) { return b.forced; }) && (opt.bump || 0) < 2) { var o2 = {}, kk; for (kk in opt) o2[kk] = opt[kk]; o2.bump = (opt.bump || 0) + 1; return svg(p, cfg, W, o2); }
     var s = '<svg class="bd-svg' + (opt.cls ? ' ' + opt.cls : '') + '"' + (card ? ' xmlns="http://www.w3.org/2000/svg"' : '') + ' viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(aria) + '" style="font-size:' + fs + 'px' + (card ? ';font-family:' + FONT : '') + '">' +
       (card ? cardStyle(CARD) : '') + zone + lines + dd + o.join('') + '</svg>';
     return { svg: s, dots: dots.map(function (q) { return { x: q.x, y: q.y, r: q.r, i: q.i, base: q.d.inTown ? null : Xm(q.d.mi), over: !!q.over }; }), H: H, W: W, gut: gut, labs: labs, obst: obst, medDrawn: medDrawn, plotBox: { x0: L - 2, x1: W - 2, y0: y0 - 2, y1: y1 + 2 }, order: dots.map(function (q) { return q.d; }), over: over, minWk: minWk, cap: cap, x0: x0, x1: x1 };
@@ -619,7 +651,9 @@
     var monthApi = null, monthLoading = null;
     var month = function () {
       if (!hist) return;
-      var go = function () { if (root.BasisMonth) { monthApi = monthApi || root.BasisMonth.mount(hist, { cfg: cfg, crop: cur, head: head, take: take, bs: bsDoc }); monthApi.crop(cur); } };
+      // the last day of the month view is the town's bids this view draws, so the two views agree on it
+      var today = function (crop, d) { var pp = pick(docs, cfg, crop); return todayOf(pp, d); };
+      var go = function () { if (root.BasisMonth) { monthApi = monthApi || root.BasisMonth.mount(hist, { cfg: cfg, crop: cur, head: head, take: take, bs: bsDoc, today: today }); monthApi.crop(cur); } };
       if (root.BasisMonth) return go();
       if (!monthLoading) monthLoading = new Promise(function (ok) { var sc = root.document.createElement('script'); sc.src = '/components/basis-month.js?v=1'; sc.onload = ok; sc.onerror = ok; root.document.head.appendChild(sc); });
       monthLoading.then(go);
@@ -656,7 +690,7 @@
   }
   function init() { [].slice.call(root.document.querySelectorAll('[data-drive]')).forEach(mount); }
 
-  var api = { frame: frame, cardStyle: cardStyle, CARD: CARD, esc: esc, hy: hy, day: day, ct: ct, widthOf: widthOf, hit: hit, f1: f1, prep: prep, keyHtml: keyHtml, readDays: readDays, pick: pick, story: story, svg: svg, readout: readout, note: note, render: render, cardText: cardText, word: word, miles: miles, cents: cents, firstDot: firstDot, axisText: axisText, NEAR_MI: NEAR_MI };
+  var api = { todayOf: todayOf, frame: frame, cardStyle: cardStyle, CARD: CARD, esc: esc, hy: hy, day: day, ct: ct, widthOf: widthOf, hit: hit, f1: f1, prep: prep, keyHtml: keyHtml, readDays: readDays, pick: pick, story: story, svg: svg, readout: readout, note: note, render: render, cardText: cardText, word: word, miles: miles, cents: cents, firstDot: firstDot, axisText: axisText, NEAR_MI: NEAR_MI };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else {
     root.BasisDrive = api;

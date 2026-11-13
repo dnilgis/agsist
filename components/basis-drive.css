@@ -22,7 +22,7 @@
 .bd-svg text{fill:var(--text)}.bd-svg .m{fill:var(--text-muted)}.bd-svg .g{fill:var(--gold)}.bd-svg .b{font-weight:700}.bd-svg .B{font-size:1.08em}
 .bd-svg .e{text-anchor:end}.bd-svg .c{text-anchor:middle}.bd-svg .z{fill:var(--bg2)}.bd-svg .h{paint-order:stroke;stroke:var(--bg);stroke-width:3px;stroke-linejoin:round}
 .bd-svg path{fill:none}.bd-svg .gr{stroke:var(--border)}.bd-svg .ev,.bd-svg .ax{stroke:var(--border-2)}.bd-svg .ev{stroke-width:1.4}
-.bd-svg .md{stroke:var(--text);stroke-width:1.2;stroke-dasharray:5 4}.bd-svg .wk{stroke:var(--text-muted);stroke-width:1.6}.bd-svg .ld{stroke:var(--text-muted);stroke-width:1}
+.bd-svg .md{stroke:var(--text);stroke-width:1.2;stroke-dasharray:5 4}.bd-svg .wk{stroke:var(--text-muted);stroke-width:1.6}.bd-svg .ld{stroke:var(--text-muted);stroke-width:1;stroke-dasharray:1.5 2.5;opacity:.8}
 .bd-svg .dr,.bd-svg .di,.bd-svg .dg{stroke-linecap:round}.bd-svg .dr{stroke:var(--bg)}.bd-svg .di{stroke:var(--text)}.bd-svg .dg{stroke:var(--gold)}
 .bd-sel{fill:none;stroke:var(--text);stroke-width:2}
 .bd-read{margin:var(--sp-xs) 0 0;padding:var(--sp-xs) 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:var(--fs-sm);line-height:1.45;color:var(--text)}
