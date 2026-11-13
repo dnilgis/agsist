@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-12-arc-plc-signup-source",
+   "date": "2026-11-12",
+   "title": "ARC/PLC: signup dates show their source",
+   "line": "The ARC/PLC signup box, with the Dec 11 deadline for 2026, now names where the dates come from: FSA's ARC/PLC page and its Sep 15, 2026 release.",
+   "link": "/arc-plc"
+  },
+  {
    "id": "2026-11-12-bin-hopper-eave",
    "date": "2026-11-12",
    "title": "Grain bin calculator: hopper tape readings",
