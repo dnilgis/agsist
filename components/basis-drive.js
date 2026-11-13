@@ -179,7 +179,7 @@
     var oc = p.other.filter(function (r) { return !r.inTown && r.mi != null && r.vs && p.ref && r.vs !== p.ref.vs; }).reduce(function (b, r) { return !b || r.cash > b.cash || (r.cash === b.cash && r.mi < b.mi) ? r : b; }, null);
     var maxO = O.reduce(function (m, r) { return Math.max(m, r.cash); }, -1);
     if (oc && oc.cash > maxO + 0.004 && bt) {
-      head = C + ' ' + p.verb + ' ' + word(bt.c) + ' in ' + place + ', up to ' + cash(T.reduce(function (m, r) { return Math.max(m, r.cash); }, 0)) + ' cash. The best cash bid outside town is ' + cash(oc.cash) + ', ' + mi(oc.mi) + ' out at ' + oc.town + ', priced on ' + conMon(oc.vs) + ' futures.';
+      head = C + ' ' + p.verb + ' ' + word(bt.c) + ' in ' + place + ', up to ' + cash(T.reduce(function (m, r) { return Math.max(m, r.cash); }, 0)) + ' cash. The best cash bid outside town is ' + cash(oc.cash) + ' at ' + oc.town + ', ' + mi(oc.mi) + ' out, on ' + conMon(oc.vs) + ' futures.';
     } else if (bt && !O.length && p.alt.length) {
       var ba = bestOf(p.alt);
       head = C + ' ' + p.verb + ' ' + word(bt.c) + ' in ' + place + ' for ' + dmFull(p.ref.dm, yr) + ' delivery. Nearby elevators bid for ' + dmFull(p.altDm, yr) + ': the best is ' + word(ba.c) + ', ' + mi(ba.mi) + ' out.';
