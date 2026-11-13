@@ -64,14 +64,6 @@
   "cash-bids/texas/morton.html": {
    "to": "/cash-bids/texas/dumas",
    "since": "2026-10-20"
-  },
-  "cash-bids/wisconsin/granton.html": {
-   "to": "/cash-bids/wisconsin/",
-   "since": "2026-11-13"
-  },
-  "cash-bids/wisconsin/thorp.html": {
-   "to": "/cash-bids/wisconsin/",
-   "since": "2026-11-13"
   }
  }
 }

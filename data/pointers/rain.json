@@ -37,10 +37,6 @@
    "to": "/rain/georgia",
    "since": "2026-11-12"
   },
-  "rain/georgia/franklin-county.html": {
-   "to": "/rain/georgia",
-   "since": "2026-11-12"
-  },
   "rain/georgia/murray-county.html": {
    "to": "/rain/georgia",
    "since": "2026-10-14"
@@ -109,6 +105,10 @@
    "to": "/rain/mississippi",
    "since": "2026-11-01"
   },
+  "rain/mississippi/jefferson-county.html": {
+   "to": "/rain/mississippi",
+   "since": "2026-11-13"
+  },
   "rain/mississippi/union-county.html": {
    "to": "/rain/mississippi",
    "since": "2026-11-12"
@@ -131,10 +131,6 @@
   },
   "rain/nevada/churchill-county.html": {
    "to": "/rain/nevada",
-   "since": "2026-11-12"
-  },
-  "rain/north-carolina/bertie-county.html": {
-   "to": "/rain/north-carolina",
    "since": "2026-11-12"
   },
   "rain/north-carolina/northampton-county.html": {
