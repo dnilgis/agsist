@@ -161,6 +161,7 @@
     T += bandT; lab += bandB;
     var t0 = utc(view.from), dt = Math.max(utc(view.to) - t0, 864e5), pl = cfg.legend ? Math.round(fs * 0.9) : 0;
     var yIn = function (v) { return T + (hi - v) / (hi - lo) * (H - T - B - lab); };
+    if (cl && (H - T - B - lab) / (tks.length - 1) < fs * 1.3) return geom(view, W, H, fs, hide, gutter, Object.assign({}, cfg, { clip: 0 }), keyRow);   // a break that leaves the bands too thin to read: the whole scale instead
     return { L: L, R: R, T: T, B: B, W: W, H: H, fs: fs, lo: lo, hi: hi, nt: nt, tk: tks, st: st, base: H - B - fs * 0.6, right: W - R,
       ppu: (H - T - B - lab) / (hi - lo),
       clip: cl ? { lo: cl.lo, hi: cl.hi, below: below, above: above, ranges: cl.ranges, yLo: yIn(lo), yHi: yIn(hi), bandB: bandB, bandT: bandT } : null,
@@ -374,6 +375,13 @@
     if (gq.length > 1 && gmax - gmin < fs * 2.2) gq.forEach(function (q) { q.y = gmax; });   // the labels of one chart share a baseline
     gq.forEach(function (q) { labels.push({ kind: 'gap', s: q.s, text: q.text, x: q.x, y: q.y, anchor: 'middle', optional: true, win: [q.y - fs * 4.4, q.y + fs * 2.2] }); });
     labels.forEach(place);
+    var gl = out.filter(function (L) { return L.kind === 'gap'; }), gy = Math.max.apply(null, gl.map(function (L) { return L.y; }));
+    gl.forEach(function (L) {   // gap labels a few px apart share one baseline where the move keeps them clear
+      var d = gy - L.y, b = { x0: L.box.x0, x1: L.box.x1, y0: L.box.y0 + d, y1: L.box.y1 + d };
+      boxes.splice(boxes.indexOf(L.box), 1); strict = true;
+      if (d && d < fs * 0.5 && free(b)) { L.y = gy; L.box = b; }
+      strict = false; boxes.push(L.box);
+    });
     if (cfg.legend && left.some(function (L) { return L.kind === 'end'; })) return layout(view, W, H, Object.assign({}, opt, { leg: 1 }));   // one line the plot cannot name: named beside it, as several are
     if (failed.length) {
       var wide = Math.max.apply(null, failed.map(function (L) { return widthOf(L.text, fs, L.bold); })), want = Math.min(Math.round(wide + fs * 1.4), Math.round(W * 0.4));
