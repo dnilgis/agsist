@@ -15,6 +15,7 @@
 <link rel="stylesheet" href="/components/print-sheet.css?v=1">
 <noscript><style>.ff-panel{display:block!important}</style></noscript>
 <noscript><style>html{scroll-behavior:auto!important}</style></noscript>
+<script>/* /fast-facts#tables lands on the panel with an instant jump. The site sets html{scroll-behavior:smooth}, so the browser animated the fragment scroll and a phone at 390 px was measured (and, on a slow load, first seen) mid-scroll, with the rate lower on screen by however far the animation had got. The smooth setting returns once the page has loaded. */(function(d){var r=d.documentElement;if(!/^#/.test(location.hash))return;r.style.scrollBehavior='auto';function back(){setTimeout(function(){r.style.scrollBehavior='';},0);}if(d.readyState==='complete')back();else addEventListener('load',back);})(document);</script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon"                    href="/img/apple-touch-icon.png">
