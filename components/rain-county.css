@@ -160,3 +160,8 @@
 
 .rc-links a { display: inline-block; }   /* the link row breaks between links, not inside one (Nov 13, critic r11) */
 .rc-faq + .rc-byline { border-top: 0; }   /* the fold above already ends in the rule */
+@media (max-width: 560px) {
+  .rc-links .rc-dot { display: none; }   /* one link a line: a dot would separate nothing */
+  .rc-links a { display: block; }
+}
+.rc-none li small a { white-space: nowrap; }   /* each nearest-county link stays whole in "without a page" */
