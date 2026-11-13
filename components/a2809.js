@@ -1,8 +1,10 @@
 /* components/a2809.js -- UW Extension A2809 (Laboski and Peters), "Nutrient
    application guidelines for field, vegetable, and fruit crops in Wisconsin",
    the tables /fast-facts uses for corn N, for P and K and for lime. Typed from the
-   Mar 2026 web edition (https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf,
-   copy read Oct 16, 2026); its text matches the 2012 printing on these tables.
+   2012 printing (R-11-2012), the copy UW posted in March 2026 as A2809-web.pdf
+   (https://cropsandsoils.extension.wisc.edu/files/2026/03/A2809-web.pdf, read Oct 16, 2026).
+   It is NOT the 2026 online edition: UW posted updated N, P and K rates in 2026
+   (Updates to A2809, Ruark, read Oct 18, 2026) and those tables are not typed here yet.
 
    Corn N:
      Table 6.1  MRTN rate and profitable range by soil, previous crop and
