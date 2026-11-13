@@ -2,6 +2,41 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-13-atlas-data-page",
+   "date": "2026-11-13",
+   "title": "Farmland Atlas data page",
+   "line": "The Atlas data page now explains every county column, its unit and its source, and how to cite a page. The CSV files are retired; read, print or share any county page.",
+   "link": "/farmland-atlas/data"
+  },
+  {
+   "id": "2026-11-13-cash-bid-titles-short",
+   "date": "2026-11-13",
+   "title": "Cash bid page titles fit in a search result",
+   "line": "Town and company cash bid pages now have shorter titles that show whole, and a town with no bid today no longer says today. Morton Mills, Iowa has its own page.",
+   "link": "/cash-bids"
+  },
+  {
+   "id": "2026-11-13-daily-archive",
+   "date": "2026-11-13",
+   "title": "Daily archive: last 30 days",
+   "line": "The past briefings list on the Daily page now shows the last 30 days. Older issues keep their pages, so search still finds them. The standards page says how it is made.",
+   "link": "/daily#past"
+  },
+  {
+   "id": "2026-11-13-price-answers",
+   "date": "2026-11-13",
+   "title": "Today's price, in words",
+   "line": "Corn, soybean and wheat pages, the markets board and the home page now say today's price in plain text, with the contract month, trade time and source.",
+   "link": "/corn-futures-prices"
+  },
+  {
+   "id": "2026-11-12-alert-expiry",
+   "date": "2026-11-12",
+   "title": "Price alerts end with their contract",
+   "line": "When the contract a price alert watches stops trading, you get one email saying it ended, and the alert no longer counts toward your limit.",
+   "link": "/#f-price-alert"
+  },
+  {
    "id": "2026-11-12-arc-plc-signup-source",
    "date": "2026-11-12",
    "title": "ARC/PLC: signup dates show their source",
@@ -14,6 +49,13 @@
    "title": "Grain bin calculator: hopper tape readings",
    "line": "A hopper bin tape reading past the cylinder is now figured up the cone and says so, instead of showing a full cone. Bin Print uses the same math.",
    "link": "/grain-bin-calculator"
+  },
+  {
+   "id": "2026-11-12-cash-bid-titles",
+   "date": "2026-11-12",
+   "title": "Elevator cash bids are easier to find",
+   "line": "Each company and town cash bid page now says cash bids today with the elevator name, town and state in its title, so a search for your elevator finds its page.",
+   "link": "/cash-bids"
   },
   {
    "id": "2026-11-12-cash-bids-harvest",
@@ -42,6 +84,13 @@
    "title": "Home page prices, checked",
    "line": "Every market row shows its front month with that contract's own change and trade time, rice and cattle print to the tick, and price alerts name the contract.",
    "link": "/#f-prices"
+  },
+  {
+   "id": "2026-11-12-policy-status",
+   "date": "2026-11-12",
+   "title": "Farm bill status, checked",
+   "line": "The farm bill page now shows S. 5526 on the Senate calendar with no vote scheduled, and the ARC/PLC signup box sends you to your county FSA office first.",
+   "link": "/farm-bill"
   },
   {
    "id": "2026-11-12-farm-sale-map",
