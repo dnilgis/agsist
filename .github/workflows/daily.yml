@@ -137,12 +137,27 @@ jobs:
           bash scripts/fetch_private.sh raw || exit 0
           f=$(git ls-tree --name-only origin/raw daily-fact-check/ | grep "/$d-" | sort -t- -k4,4n | tail -1)
           if [ -n "$f" ]; then git show "origin/raw:$f" > "$RUNNER_TEMP/fact-check.json"; echo "saved fact check: $f"; else echo "no saved fact check for $d"; fi
+      - name: The chart of the day, when it is on agsist.com (v2)
+        if: ${{ inputs.format != 'current' }}
+        continue-on-error: true
+        timeout-minutes: 2
+        run: |
+          f=$(python3 -c "import json; print((json.load(open('data/daily.json')).get('chart_of_day') or {}).get('image') or '')")
+          [ -n "$f" ] || { echo "no chart of the day in the newest issue"; exit 0; }
+          url="https://agsist.com/$f"
+          if curl -fsS -m 20 -o /dev/null "$url"; then
+            python3 -c "import json,sys; c=json.load(open('data/daily.json'))['chart_of_day']; o={k: c.get(k) for k in ('alt','takeaway','source','date','template')}; o['image_url']=sys.argv[1]; o['page_url']='https://agsist.com/daily'; json.dump(o, open(sys.argv[2],'w'))" "$url" "$RUNNER_TEMP/chart-of-day.json"
+            echo "chart: $url"
+          else
+            echo "the chart of the day is not on agsist.com; the test copy goes without it"
+          fi
       - name: Send the Daily to Sig only, from the private copy of the list
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
         env:
           TEST_TO_SIG:  '1'
           DAILY_FORMAT: ${{ inputs.format || vars.DAILY_FORMAT || 'v2' }}
           PRINT_OF_DAY: ${{ runner.temp }}/print-of-day.json
+          CHART_OF_DAY: ${{ runner.temp }}/chart-of-day.json
           FACT_CHECK_JSON: ${{ runner.temp }}/fact-check.json
           LIST_SOURCE:  backup
           LOCAL_BIDS:   '1'
@@ -369,6 +384,39 @@ jobs:
           BRIEFING_MODEL: ${{ vars.BRIEFING_MODEL }}
         run: python scripts/generate_daily.py
 
+      - name: Chart of the day, drawn and put on agsist.com (never holds the send)
+        id: chartdraw
+        if: ${{ (github.event_name == 'schedule' || inputs.send_email == true) && (inputs.format || vars.DAILY_FORMAT || 'v2') == 'v2' }}
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PAGES_FROM_ACTIONS: ${{ vars.PAGES_FROM_ACTIONS }}
+        run: |
+          f=$(python3 -c "import json; print((json.load(open('data/daily.json')).get('chart_of_day') or {}).get('image') or '')")
+          [ -n "$f" ] || { echo "no chart of the day today"; exit 0; }
+          if [ ! -f "$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" ]; then
+            npm install --silent --prefix "$RUNNER_TEMP/pw" playwright@1.56.1 >/dev/null
+            "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium >/dev/null
+          fi
+          PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" node scripts/render_daily_chart.mjs data/daily.json "$f"
+          python3 scripts/print_of_day.py --compress "$f"
+          cp "$f" "$RUNNER_TEMP/chart.png"
+          # pushed now, as the print of the day is, so the site serves it well before the send's live check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "$f"
+          git diff --cached --quiet || git commit -q -m "Daily chart of the day $(basename "$f" .png | cut -c7-)"
+          pushed=0
+          for n in 1 2 3 4 5; do
+            if git push -q; then pushed=1; break; fi
+            git pull -q --rebase --autostash origin main || { echo "Rebase failed."; exit 1; }
+            sleep $((RANDOM % 4 + 2))
+          done
+          [ "$pushed" = 1 ] || { echo "Failed to push after 5 attempts."; exit 1; }
+          bash .github/pages-kick.sh
+          echo "file=$f" >> "$GITHUB_OUTPUT"
+
       - name: Run critic pass
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
@@ -485,23 +533,6 @@ jobs:
             echo "no daily/${d}.html — skipping sitemap add"
           fi
 
-      - name: Chart of the day, drawn (never holds the send)
-        id: chartdraw
-        if: ${{ (github.event_name == 'schedule' || inputs.send_email == true) && (inputs.format || vars.DAILY_FORMAT || 'v2') == 'v2' }}
-        continue-on-error: true
-        timeout-minutes: 4
-        run: |
-          f=$(python3 -c "import json; print((json.load(open('data/daily.json')).get('chart_of_day') or {}).get('image') or '')")
-          [ -n "$f" ] || { echo "no chart of the day today"; exit 0; }
-          if [ ! -f "$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" ]; then
-            npm install --silent --prefix "$RUNNER_TEMP/pw" playwright@1.56.1 >/dev/null
-            "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium >/dev/null
-          fi
-          PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" node scripts/render_daily_chart.mjs data/daily.json "$f"
-          python3 scripts/print_of_day.py --compress "$f"
-          cp "$f" "$RUNNER_TEMP/chart.png"
-          echo "file=$f" >> "$GITHUB_OUTPUT"
-
       - name: Commit and push
         id: commit
         env:
@@ -577,19 +608,19 @@ jobs:
       - name: Chart of the day, is it live
         if: ${{ steps.chartdraw.outcome == 'success' && steps.chartdraw.outputs.file != '' }}
         continue-on-error: true
-        timeout-minutes: 2
+        timeout-minutes: 3
         env:
           F: ${{ steps.chartdraw.outputs.file }}
         run: |
           url="https://agsist.com/$F"
-          for i in 1 2 3 4 5; do
+          for i in 1 2 3 4; do
             if curl -fsS -m 15 -o "$RUNNER_TEMP/chart-live.png" "$url" && cmp -s "$RUNNER_TEMP/chart-live.png" "$RUNNER_TEMP/chart.png"; then
               python3 -c "import json,sys; c=json.load(open('data/daily.json'))['chart_of_day']; o={k: c.get(k) for k in ('alt','takeaway','source','date','template')}; o['image_url']=sys.argv[1]; o['page_url']=sys.argv[2]; json.dump(o, open(sys.argv[3],'w'))" "$url" "https://agsist.com/daily/$(TZ=America/Chicago date +%F)" "$RUNNER_TEMP/chart-of-day.json"
               echo "live: $url"; exit 0
             fi
             sleep 12
           done
-          echo "::warning::the chart of the day was not served by agsist.com in a minute; the email goes without it"
+          echo "::warning::the chart of the day was not served by agsist.com in time; the email goes without it"
 
       - name: Send daily email
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
