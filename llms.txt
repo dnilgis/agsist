@@ -3,8 +3,9 @@
 > AGSIST (agsist.com) is a free, no-login farm market site for working US
 > producers: cash grain bids and basis near you, futures prices, USDA report
 > data, crop size, weather and field conditions, farm programs, and a daily
-> morning briefing. Built and maintained by AGSIST in Chetek,
-> Wisconsin.
+> morning briefing. Built and maintained by one person: Sigurd Lindquist,
+> Certified Crop Adviser (CCA), Chetek, Wisconsin, who also works at Farmers
+> First Agri Service.
 
 How fresh the numbers are: futures prices and cash bids refresh about every 15
 minutes. Prices are delayed exchange quotes from the Yahoo Finance feed, not an
