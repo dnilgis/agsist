@@ -149,17 +149,23 @@
   /* The open state spot sells itself (Sig, Nov 13): that STATE's own engaged visits (readers in the state) over the
      week's window in data/sponsor-spots.json proof.states, its dates, and one button to /sponsor with the state
      picked. State-level only: a state without its own figure prints none, never a national one. No price here. */
+  var SMALL = 100;   /* under this many visits from the state, the sitewide numbers lead (Sig, Nov 13: a tiny number works against the sale) */
   function openHtml(st, card, spots) {
     var name = NAMES[st];
     if (!name) return '';
-    var ps = (spots && spots.proof && spots.proof.states) || {};
+    var pr = (spots && spots.proof) || {}, ls = (spots && spots.lists) || {}, ps = pr.states || {};
     var e = ps.engaged && ps.engaged[st];
     var has = typeof e === 'number' && e > 0 && ps.start && ps.end && ps.days > 0;
     var soon = held(card, st);
-    var nums = has ? '<b>' + num(e) + '</b> engaged visits from ' + esc(name) + ' readers, ' + dayTxt(ps.start) + ' to ' + dayTxt(ps.end) +
-      ' (' + num(Math.round(e / ps.days)) + ' a day). ' : '';
+    var stTxt = has ? '<b>' + num(e) + '</b> engaged visits from ' + esc(name) + ' readers, ' + dayTxt(ps.start) + ' to ' + dayTxt(ps.end) + '.' : '';
+    var site = [];
+    if (pr.engaged && pr.engaged.total > 0) site.push('<b>' + num(pr.engaged.total) + '</b> engaged visits');
+    if (pr.ai && pr.ai.total > 0) site.push('<b>' + num(pr.ai.total) + '</b> AI answer citations');
+    var lst = ls.people > 0 ? '<b>' + num(ls.people) + '</b> on our email lists' : ls.daily > 0 ? '<b>' + num(ls.daily) + '</b> on the Daily email' : '';
+    var siteTxt = site.length ? 'All of AGSIST, last 30 days: ' + site.join(', ') + (lst ? '; ' + lst + ' today' : '') + '.' : (lst ? 'All of AGSIST: ' + lst + '.' : '');
+    var body = has && e >= SMALL ? stTxt + (siteTxt ? ' ' + siteTxt : '') : siteTxt + (stTxt ? ' ' + esc(name) + ' alone: ' + stTxt.replace(' from ' + esc(name) + ' readers', '') : '');
     return '<div class="ss-box ss-open"><p class="ss-tag">' + esc(name) + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '</p>' +
-      '<p class="ss-txt">' + nums + 'One business per state.</p>' +
+      '<p class="ss-txt">' + (body || 'One business per state.') + '</p>' +
       '<a class="ss-go" href="/sponsor?state=' + st + '#state">Sponsor ' + esc(name) + ' on AGSIST</a></div>';
   }
   /* A state page's spot that cannot carry its state's card on this page (the page has its own paid sponsor, or the

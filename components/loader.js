@@ -576,21 +576,7 @@
         (sp.line || sp.headline ? '. ' + slotEsc(sp.line || sp.headline) : '') + ' <a href="' + slotEsc(href) + '" rel="sponsored noopener" target="_blank"' +
         (preview ? '' : ' data-sponsor-click="sitewide"') + '>Visit</a></span>' };
     }
-    /* The open spot sells itself (Sig, Nov 13): the week's proof numbers from data/sponsor-spots.json (30 days, each
-       source's own dates in the title) and one button. No price here; the price is on /sponsor. */
-    var pr = (spots && spots.proof) || {}, ls = (spots && spots.lists) || {}, bits = [], tip = [];
-    function num(x) { return typeof x === 'number' && x > 0 ? x.toLocaleString('en-US') : ''; }
-    function win(o) { return o && o.start && o.end ? o.start + ' to ' + o.end : ''; }
-    function lab(l, sh) { return '<span class="sw-l">' + l + '</span><span class="sw-s">' + sh + '</span>'; }
-    if (num(pr.engaged && pr.engaged.total)) { bits.push('<b>' + num(pr.engaged.total) + '</b> ' + lab('engaged visits', 'visits')); tip.push('Engaged visits ' + win(pr.engaged) + ', Google Analytics'); }
-    var lists = num(ls.people) ? [num(ls.people), lab('on our email lists', 'on our lists')] : num(ls.daily) ? [num(ls.daily), lab('on the Daily email', 'on the Daily')] : null;
-    if (num(pr.ai && pr.ai.total)) { bits.push('<b>' + num(pr.ai.total) + '</b> ' + lab('AI answer citations', 'AI citations')); tip.push('Bing AI answer citations ' + win(pr.ai) + ', Bing Webmaster'); }
-    var nums = bits.length ? bits.join('<i aria-hidden="true"> &middot; </i>') + ' <span class="sw-when">' + lab('in 30 days', '(30 days)') + '</span>' : '';
-    if (lists) { nums += (nums ? '<i aria-hidden="true"> &middot; </i>' : '') + '<b>' + lists[0] + '</b> ' + lists[1]; tip.push('Email list count of ' + ls.asOf); }
-    var tag = '<span class="sw-pitch"><span class="sw-hook">Your business here.</span> ' +
-      (nums ? '<span class="sw-nums">' + nums + '</span>' : 'One line on every page.') + '</span>';
-    return { sold: false, html: '<span class="sw-in sw-open"' + (tip.length ? ' title="' + slotEsc(tip.join('. ') + '.') + '"' : '') + '>' + tag +
-      '<a class="sw-cta" href="' + BASE + '/sponsor#sitewide" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'sitewide_open\'})">Put your business here</a></span>' };
+    return { sold: false, html: '' };
   }
   function sitewide(noSponsor, before, parent) {
     if (noSponsor || GEO_SKIP.test(location.pathname) || !parent || document.getElementById('ag-sw') || document.getElementById('site-header') ||
@@ -613,7 +599,12 @@
         line.className = 'sw-line sw-line--sold';
         if (!preview) line.setAttribute('data-sponsor-slot', 'sitewide');
       }
-      line.innerHTML = o.html;
+      if (o.sold) { line.innerHTML = o.html; return; }
+      var f = function () { try { line.innerHTML = window.AgsistSwOpen.html(r[2], BASE); } catch (e) {} };
+      if (window.AgsistSwOpen) return f();
+      var s = document.createElement('script');
+      s.src = BASE + '/components/sw-open.js?v=1'; s.async = true; s.onload = f;
+      document.head.appendChild(s);
     });
   }
   window.AgsistSitewide = { line: swLine };

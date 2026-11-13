@@ -61,14 +61,15 @@
 .ss-go::after{content:" \2192";margin-left:.35rem}
 .ss-go:hover,.ss-go:focus-visible{border-color:var(--brand);color:var(--brand)}
 /* The open card sells itself (Nov 13, 2026): flat orange panel, the state's own number, one filled button. */
-.ss-box.ss-open{border:1px solid rgba(var(--ad-orange-rgb),.55);background:rgba(var(--ad-orange-rgb),.07)}
-.ss-box.ss-open::before{border:1px solid rgba(var(--ad-orange-rgb),.55);color:var(--ad-orange)}
-.ss-open .ss-tag{color:var(--text)}
+.ss-box.ss-open{grid-template-columns:1fr;border:1px solid rgba(var(--ad-orange-rgb),.55);background:rgba(var(--ad-orange-rgb),.07)}
+.ss-box.ss-open::before{content:none;display:none}
+.ss-open .ss-tag{font-family:var(--font-body);font-size:1.05rem;letter-spacing:0;text-transform:none;color:var(--text)}
+.ss-open .ss-go{grid-column:1/-1}
 .ss-open .ss-txt b{color:var(--text);font-variant-numeric:tabular-nums}
-.ss-open .ss-go{border:0;background:var(--ad-orange);color:#1a0d05}
-.ss-open .ss-go:hover,.ss-open .ss-go:focus-visible{background:var(--ad-orange-hi);color:#1a0d05}
-html[data-theme="light"] .ss-open .ss-go{background:var(--ad-orange-ink);color:#fff}
-html[data-theme="light"] .ss-open .ss-go:hover,html[data-theme="light"] .ss-open .ss-go:focus-visible{background:#8a2e08;color:#fff}
+.ss-box.ss-open a.ss-go{border:0;background:var(--ad-orange);color:#1a0d05}
+.ss-box.ss-open a.ss-go:hover,.ss-box.ss-open a.ss-go:focus-visible{background:var(--ad-orange-hi);color:#1a0d05}
+html[data-theme="light"] .ss-box.ss-open a.ss-go{background:var(--ad-orange-ink);color:#fff}
+html[data-theme="light"] .ss-box.ss-open a.ss-go:hover,html[data-theme="light"] .ss-box.ss-open a.ss-go:focus-visible{background:#8a2e08;color:#fff}
 @media (max-width:560px){.ss-box{grid-template-columns:52px 1fr;column-gap:.8rem;padding:.95rem 1rem}.ss-box::before{width:52px;height:52px;border-radius:12px;font-size:1.4rem;grid-row:1/3;align-self:start}.ss-go{grid-column:1/3}}
-@media (max-width:560px){.ss-box.ss-open{row-gap:.35rem;padding:.85rem 1rem}.ss-open .ss-txt{font-size:.92rem;line-height:1.4}}
+@media (max-width:560px){.ss-box.ss-open{row-gap:.35rem;padding:.8rem 1rem}.ss-open .ss-txt{font-size:.88rem;line-height:1.38}.ss-open .ss-go{white-space:normal;min-height:40px;max-width:100%;padding:.35rem .9rem}.ss-open .ss-go::after{content:none}}
 .ss-box.ss-open{max-height:var(--ss-h);overflow:hidden}
