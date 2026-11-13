@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-13-daily-archive",
+   "date": "2026-11-13",
+   "title": "Daily archive: last 30 days",
+   "line": "The past briefings list on the Daily page now shows the last 30 days. Older issues keep their pages, so search still finds them. The standards page says how it is made.",
+   "link": "/daily#past"
+  },
+  {
    "id": "2026-11-12-arc-plc-signup-source",
    "date": "2026-11-12",
    "title": "ARC/PLC: signup dates show their source",
