@@ -155,9 +155,9 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .faq-item.open .faq-a{max-height:500px}
 .faq-a-inner{padding:0 14px 12px;font-size:1rem;color:var(--text-dim);line-height:1.68}
-.rl{font-size:0.77rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin:14px 0 6px}
-.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:6px}
-.ra{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-decoration:none;transition:border-color .2s;min-height:44px;justify-content:center}
+.rl{font-size:1rem;color:var(--text);font-weight:700;margin:14px 0 6px}
+.rg{display:flex;flex-wrap:wrap;gap:.2rem 1.2rem}
+.ra{display:inline-flex;align-items:baseline;gap:.4rem;text-decoration:underline;text-underline-offset:2px;min-height:44px;align-items:center}
 .ra:hover{border-color:var(--border-g)}.ra-i{font-size:1.2rem;margin-bottom:3px}.ra-n{font-size:.8rem;font-weight:600;color:var(--text)}.ra-d{font-size:0.763rem;color:var(--text-dim);margin-top:1px}
 .disc{font-size:0.77rem;color:var(--text-dim);text-align:center;padding:8px;border-top:1px solid var(--border);margin-top:14px}
 @media(max-width:520px){.ph{padding:.9rem 1rem;display:block}.ph-price{margin:.65rem 0 0;text-align:left;display:flex;align-items:baseline;flex-wrap:wrap;column-gap:.55rem}.ph-val{font-size:1.9rem}.ph-unit{order:2}.ph-chg{order:3;flex-basis:100%;margin-top:4px}.cg{grid-template-columns:repeat(2,minmax(0,1fr))}.rat-row{grid-template-columns:1fr}}
@@ -248,13 +248,13 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 
 
 /* NEW v13: Market session status badge */
-.session-badge{display:inline-flex;align-items:center;gap:6px;overflow-wrap:normal;word-break:keep-all;font-size:0.755rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;padding:4px 9px;border-radius:12px;margin-left:auto;font-family:'JetBrains Mono',monospace}
+.session-badge{display:inline-flex;align-items:center;gap:6px;overflow-wrap:normal;word-break:keep-all;font-size:.82rem;font-weight:700;text-transform:none;letter-spacing:0;padding:4px 9px;border-radius:var(--r-sm);margin-left:auto;font-family:var(--font-body)}
 .session-badge .dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.session-badge.open{background:rgba(58,139,60,.15);color:var(--green);border:1px solid rgba(58,139,60,.4)}
+.session-badge.open{background:none;color:var(--green);border:1px solid var(--border-2)}
 .session-badge.open .dot{background:var(--green);animation:pulse 2s infinite}
-.session-badge.overnight{background:rgba(230,176,66,.12);color:var(--gold);border:1px solid rgba(230,176,66,.35)}
+.session-badge.overnight{background:none;color:var(--gold);border:1px solid var(--border-2)}
 .session-badge.overnight .dot{background:var(--gold-fill,var(--gold))}
-.session-badge.closed{background:var(--surface2);color:var(--text-muted);border:1px solid var(--border)}
+.session-badge.closed{background:none;color:var(--text-muted);border:1px solid var(--border-2)}
 .session-badge.closed .dot{background:var(--text-muted)}
 /* the badge keeps one box before and after futures.js writes it (the longest state fits in 24rem), so it no longer slides 8 to 16 px when the label lands */@media(min-width:561px){.session-badge{box-sizing:border-box;width:24rem;max-width:100%;justify-content:center}}
 .session-sub{font-size:0.77rem;color:var(--text-dim);font-weight:500;text-transform:none;letter-spacing:0;margin-left:4px}@media(max-width:560px){.session-badge{flex-wrap:wrap;row-gap:2px;white-space:normal}.session-badge>.session-sub{flex-basis:100%;margin-left:0}}
@@ -338,7 +338,7 @@ details.fold[open]>summary.fold-sum::after{transform:rotate(-135deg);margin-top:
 .fold-t{font-weight:700;color:var(--text);font-size:.95rem}.fold-d{font-size:.8rem;color:var(--text-dim);line-height:1.4}
 details.fold>.fold-body{padding:0 .6rem .6rem}details.fold>.fold-body>*:last-child{margin-bottom:0}
 details.fold[hidden]{display:none}
-@media(max-width:520px){.seas-chart{gap:2px}.seas-mo{font-size:.66rem;white-space:nowrap}.fold-body .seas-wrap{padding:10px 8px}.rg .ra{display:grid;grid-template-columns:auto 1fr;align-items:center;justify-items:start;text-align:left;column-gap:8px;padding:8px 10px}.rg .ra-i{margin:0;grid-row:span 2}.rg .ra-n{font-size:.85rem}.rg .ra-d{font-size:.74rem}}
+@media(max-width:520px){.seas-chart{gap:2px}.seas-mo{font-size:.66rem;white-space:nowrap}.fold-body .seas-wrap{padding:10px 8px}}
 /* phone width: nested cards add no extra side padding (narrow cards, Nov 9) */
 @media(max-width:480px){.sc-factors{grid-template-columns:1fr}.scorecard{padding-left:8px;padding-right:8px}.sc-f{padding-left:8px;padding-right:8px}}
 </style>
@@ -862,7 +862,6 @@ details.fold[hidden]{display:none}
   </a>
 
   <div class="author-block">
-    <div class="author-avatar" aria-hidden="true">SL</div>
     <div class="author-text">
       <div class="author-name">Built by Sigurd Lindquist</div>
       <div class="author-meta">Questions, corrections, partnership? <a href="mailto:sig@agsist.com">sig@agsist.com</a> · <a href="/about">About AGSIST</a></div>

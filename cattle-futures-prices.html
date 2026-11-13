@@ -65,7 +65,7 @@ details.fold[open]>summary.fold-sum::after{transform:rotate(-135deg);margin-top:
 .fold-t{font-weight:700;color:var(--text);font-size:.95rem}.fold-d{font-size:.8rem;color:var(--text-dim);line-height:1.4}
 details.fold>.fold-body{padding:0 .6rem .6rem}details.fold>.fold-body>*:last-child{margin-bottom:0}
 details.fold[hidden]{display:none}
-@media(max-width:520px){.seas-chart{gap:2px}.seas-mo{font-size:.66rem;white-space:nowrap}.fold-body .seas-wrap{padding:10px 8px}.rg .ra{display:grid;grid-template-columns:auto 1fr;align-items:center;justify-items:start;text-align:left;column-gap:8px;padding:8px 10px}.rg .ra-i{margin:0;grid-row:span 2}.rg .ra-n{font-size:.85rem}.rg .ra-d{font-size:.74rem}}
+@media(max-width:520px){.seas-chart{gap:2px}.seas-mo{font-size:.66rem;white-space:nowrap}.fold-body .seas-wrap{padding:10px 8px}}
 </style>
 </head>
 <body>
@@ -105,9 +105,9 @@ details.fold[hidden]{display:none}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .faq-item.open .faq-a{max-height:900px}
 .faq-a-inner{padding:0 14px 12px;font-size:1rem;color:var(--text-dim);line-height:1.68}
-.rl{font-size:0.77rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin:14px 0 6px}
-.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:6px}
-.ra{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-decoration:none;transition:border-color .2s;min-height:44px;justify-content:center}
+.rl{font-size:1rem;color:var(--text);font-weight:700;margin:14px 0 6px}
+.rg{display:flex;flex-wrap:wrap;gap:.2rem 1.2rem}
+.ra{display:inline-flex;align-items:baseline;gap:.4rem;text-decoration:underline;text-underline-offset:2px;min-height:44px;align-items:center}
 .ra:hover{border-color:var(--border-g)}
 .ra-i{font-size:1.2rem;margin-bottom:3px}
 .ra-n{font-size:.8rem;font-weight:600;color:var(--text)}
@@ -661,7 +661,6 @@ details.fold[hidden]{display:none}
   </div>
 
   <div class="author-block">
-    <div class="author-avatar" aria-hidden="true">SL</div>
     <div class="author-text">
       <div class="author-name">Built by Sigurd Lindquist</div>
       <div class="author-meta">CCA · cattle, dairy &amp; grain producers nationwide. Questions, corrections, partnership? <a href="mailto:sig@agsist.com">sig@agsist.com</a> · <a href="/about">About AGSIST</a></div>
