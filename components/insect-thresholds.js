@@ -11,10 +11,10 @@ function aphidCall(o){
   var avg=+o.avg, pct=+o.pct, st=o.stage||'r1_r5';
   if(st==='r65')return {call:'past', why:'Past R6.5, when pods and leaves begin to yellow. UMN says scouting runs until then.'};
   if(st==='r6')return {call:'no-threshold', why:'No economic threshold has been developed for R6 (UMN). Early R6 may need treatment if the aphids are very large in number and the plants are under other stress. That is a judgment call, not a number. UW A3646 says that once pods reach full seed it is too late to protect yield and treatment is not recommended.'};
-  if(!(avg>=0)||!(pct>=0)||o.avg===''||o.pct==='')return {call:'missing', why:'Enter the average aphids per plant and the percent of plants with aphids.'};
+  if(!(avg>=0)||!(pct>=0)||o.avg===''||o.pct==='')return {call:'missing', why:'Enter the mean aphids per plant and the percent of plants with aphids.'};
   var a=avg>=ET.avg, p=pct>ET.pct, r=o.rising===true;
-  var miss=[]; if(!a)miss.push('the average is under 250 per plant'); if(!p)miss.push('80 percent of plants or fewer have aphids'); if(!r)miss.push(o.rising===false?'numbers are not rising':'you have not said whether numbers are rising');
-  if(a&&p&&r)return {call:'treat', why:'All three conditions are met: 250 or more aphids per plant on average, more than 80 percent of plants infested, and rising. Iowa State and UMN both give this as the threshold through R5.'};
+  var miss=[]; if(!a)miss.push('the mean is under 250 per plant'); if(!p)miss.push('80 percent of plants or fewer have aphids'); if(!r)miss.push(o.rising===false?'numbers are not rising':'you have not said whether numbers are rising');
+  if(a&&p&&r)return {call:'treat', why:'All three conditions are met: a mean of 250 or more aphids per plant, more than 80 percent of plants infested, and rising. Iowa State and UMN both give this as the threshold through R5.'};
   return {call:'not-yet', why:'Not at the threshold: '+miss.join('; ')+'. All three must be true before treating. Count a representative set of plants through the field, not the border.'};
 }
 var api={ET:ET, aphidCall:aphidCall};
