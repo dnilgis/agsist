@@ -111,17 +111,18 @@
     SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia',
     WI: 'Wisconsin', WY: 'Wyoming' };
   var CAPS = { ADM: 1, CHS: 1, POET: 1 };
-  /* The one table of the parts of a delivery code the network writes in short ("Ds-crg-cr"). DS is the network's prefix for a
-     direct-ship destination (its other codes are DS-SHELLROCK, DS-PINE LAKE, DS-STARCH); CRG is Cargill. '' is a part with no
-     certain reading: that code is shown as printed and called a delivery code. Town initials and ADM are read by the rules above. */
-  var CODE = { DS: 'direct ship to', CRG: 'Cargill', PEN: '' };
+  /* The one table of the parts of a delivery code the network writes in short ("Ds-adm"). DS is the network's own prefix for a
+     direct-ship destination (its facility type "Direct Ship"; codes DS-SHELLROCK, DS-PINE LAKE, DS-STARCH), read as
+     scripts/build_cash_bid_pages.py ds_name reads it. '' is a part with no certain reading (CRG, PEN): that code is shown as
+     printed and called a delivery code, so it matches the bid table's row. ADM and the town's initials follow the rules above. */
+  var CODE = { DS: 'direct ship', CRG: '', PEN: '' };
   function placeKey(s) { return String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
   function siteOf(site, town, st) {
     var t = String(site || '').replace(/\s+-\s+/g, ' ').replace(/\s+/g, ' ').trim();
     var ini = String(town || '').split(/\s+/).filter(Boolean).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
     if (/^[a-z]{1,4}(?:-[a-z]{1,4})+$/i.test(t)) {
       var parts = t.split('-').map(function (p) { var u = p.toUpperCase(); return CODE[u] || (CAPS[u] ? u : ini.length > 1 && u === ini ? town : ''); });
-      return parts.indexOf('') < 0 ? parts.join(' ') : 'delivery code ' + t;
+      return parts.indexOf('') < 0 ? parts[0] + (parts.length > 1 ? ', ' + parts.slice(1).join(' ') : '') : 'delivery code ' + t;   // "direct ship, ADM"
     }
     var qual = /^(.*?)\s*\(([^)]*)\)\s*$/.exec(t);   // "Cargill (Beans)": the place stays in the name, the word in brackets after it
     if (qual && town && qual[1]) t = qual[1] + ' ' + town + ' (' + (/^beans$/i.test(qual[2].trim()) ? 'soybeans' : qual[2].trim().toLowerCase()) + ')';

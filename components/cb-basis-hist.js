@@ -278,8 +278,9 @@
       range: all, height: { phone: 250, wide: 300 },
       story: function (v, forCard) { return story(c, town, v.from, v.to, forCard); },
       readout: function (v, d) {
-        var t = c.lines.map(function (l) { var p = heldOn(l, d); return p ? l.name + ' ' + basisText(p.v) : ''; }).filter(Boolean);
-        return dayText(d) + ': ' + (t.length ? t.join(' · ') : 'nothing logged for an open month');
+        // each "name basis" holds together and a line breaks only after a separator, never inside a name or before a dot
+        var t = c.lines.map(function (l) { var p = heldOn(l, d); return p ? (l.name + ' ' + basisText(p.v)).replace(/ /g, '\u00a0') : ''; }).filter(Boolean);
+        return dayText(d) + ': ' + (t.length ? t.join('\u00a0· ') : 'nothing logged for an open month');
       },
       headEl: els.head, takeEl: els.take, tools: els.tools,
       share: { url: url, title: ADJ[c.crop] + ' basis' + (place ? ' near ' + place : ''), file: 'agsist-basis-' + slug + '-' + c.crop + '.png',

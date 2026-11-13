@@ -278,36 +278,39 @@
       return true;
     };
     var failed = [], left = [], top0 = row2 ? fs * (2.65 + (krows - 1) * 1.2) + 1 : fs * 1.7;
-    // A first or last point's label (E53 round 6): the nearest slot to its own point that keeps 6 px from every gridline,
-    // the line, every dot and every label, sits within one band of its point (or just under the bottom / over the top
-    // gridline), moves at most two steps sideways, and has no other point nearer to it than its own.
+    // First/last point label (E53 r7): nearest slot 6 px off gridlines, dots, line and labels, within a band (or past the
+    // edge gridline), two steps sideways, no other point nearer by over 6 px. Else a first label is left out; a last one
+    // tries 3 px to line and labels, then two bands, then without the other-point test (it prints its year).
     var placePt = function (L) {
       var P = L.pt, px = P.x, py = P.y, r = P.r, w = widthOf(L.text, fs, L.bold), end = L.kind === 'end', gys = g.tk.map(function (t) { return g.y(t); });
-      var yb = Math.max.apply(null, gys), yt = Math.min.apply(null, gys), top = top0, bot = H - fs * 1.25 - 3, M = 6, best = null;
+      var yb = Math.max.apply(null, gys), yt = Math.min.apply(null, gys), bot = H - fs * 1.25 - 3, M = 6, best = null, C, BP;
       var dist = function (t, x, y) { return Math.hypot(Math.max(t.x0 - x, 0, x - t.x1), Math.max(t.y0 - y, 0, y - t.y1)); };
       var at = function (x0, y, band) {   // x0: the text's left edge, y: its baseline
         var t = { x0: x0 - 2, x1: x0 + w + 2, y0: y - fs * 0.76, y1: y + fs * 0.14 }, own = dist(t, px, py), i;
-        if ((best && own >= best.own) || t.x0 < g.L + 2 || t.x1 > W - 2 || t.y0 < top || t.y1 > bot) return;
-        if (band && (py < t.y0 ? t.y0 - py : py > t.y1 ? py - t.y1 : 0) > bandPx) return;
+        if ((best && own >= best.own) || t.x0 < g.L + 2 || t.x1 > W - 2 || t.y0 < top0 || t.y1 > bot) return;
+        if (band && (py < t.y0 ? t.y0 - py : py > t.y1 ? py - t.y1 : 0) > BP) return;
         for (i = 0; i < gys.length; i++) if (gys[i] > t.y0 - M && gys[i] < t.y1 + M) return;
-        var tb = { x0: t.x0 - M, x1: t.x1 + M, y0: t.y0 - M, y1: t.y1 + M };
+        var tb = { x0: t.x0 - C, x1: t.x1 + C, y0: t.y0 - C, y1: t.y1 + C };
         for (i = 0; i < boxes.length; i++) if (hitBox(tb, boxes[i])) return;
         for (i = 0; i < segs.length; i++) if (hitSeg(tb, segs[i])) return;
-        for (i = 0; i < dots.length; i++) { var d = dots[i], dd = dist(t, d.x, d.y); if (dd < d.r + M || (dd < own && Math.hypot(d.x - px, d.y - py) > 0.5)) return; }
-        best = { t: t, x: end ? x0 + w : x0, y: y, own: own };
+        for (i = 0; i < dots.length; i++) { var d = dots[i], dd = dist(t, d.x, d.y); if (dd < d.r + M || (lv < 3 && dd < own - M && Math.hypot(d.x - px, d.y - py) > 0.5)) return; }
+        best = { t: t, x: end ? x0 + w : x0, y: y, own: own, lv: lv };
       };
-      var dir = end ? -1 : 1, k, sh, y;
-      for (k = 0; k <= bandPx + fs; k += 0.5) for (y = -1; y <= 1; y += 2) for (sh = -2; sh < 3; sh++) {
-        var o = dir * sh * fs * 0.8, yy = py + fs * 0.31 + y * k;
-        at((end ? px + r - w : px - r) + o, yy, true);                              // over or under the point
-        at((end ? px - r - M - 2 - w : px + r + M + 2) + o, yy, true);              // beside it
-        if (Math.abs(py - yb) <= bandPx) at((end ? px + r - w : px + r + M + 2) + o, yb + M + fs * 0.76 + k, false);   // under the bottom gridline
-        if (Math.abs(py - yt) <= bandPx) at((end ? px + r - w : px + r + M + 2) + o, yt - M - fs * 0.14 - k, false);   // over the top gridline
+      var dir = end ? -1 : 1, k, sh, y, lv, xa = end ? px + r - w : px - r, xb = end ? px - r - M - 2 - w : px + r + M + 2, xg = end ? xa : xb;
+      for (lv = 0; lv < (end ? 4 : 1) && !best; lv++) {
+        C = lv ? 3 : M; BP = (lv > 1 ? 2 : 1) * bandPx;
+        for (k = 0; k <= BP + fs; k += 0.5) for (y = -1; y <= 1; y += 2) for (sh = -2; sh < 3; sh++) {
+          var o = dir * sh * fs * 0.8, yy = py + fs * 0.31 + y * k;
+          at(xa + o, yy, true);
+          at(xb + o, yy, true);
+          if (Math.abs(py - yb) <= BP) at(xg + o, yb + M + fs * 0.76 + k, false);
+          if (Math.abs(py - yt) <= BP) at(xg + o, yt - M - fs * 0.14 - k, false);
+        }
+        gys.forEach(function (gy) { for (sh = -2; sh < 3; sh++) [xa, xb].forEach(function (x) { x += dir * sh * fs * 0.8; at(x, gy + M + fs * 0.76, true); at(x, gy - M - fs * 0.14, true); }); });   // flush to a gridline
       }
-      gys.forEach(function (gy) { for (sh = -2; sh < 3; sh++) [end ? px + r - w : px - r, end ? px - r - M - 2 - w : px + r + M + 2].forEach(function (x) { x += dir * sh * fs * 0.8; at(x, gy + M + fs * 0.76, true); at(x, gy - M - fs * 0.14, true); }); });   // flush to a gridline's margin
       if (!best) return false;
       var b = boxOf(best.x, best.y, w, fs, end ? 'end' : 'start');
-      boxes.push(b); out.push(Object.assign({}, L, { x: best.x, y: best.y, box: b, tight: best.t })); return true;
+      boxes.push(b); out.push(Object.assign({}, L, { x: best.x, y: best.y, box: b, tight: best.t, lv: best.lv })); return true;
     };
     var place = function (L) {
       if (L.pt) { if (!placePt(L)) left.push(L); return; }   // no slot meets the rule: left out (the headline and readout carry it)
@@ -379,7 +382,7 @@
     gl.forEach(function (L) {   // gap labels a few px apart share one baseline where the move keeps them clear
       var d = gy - L.y, b = { x0: L.box.x0, x1: L.box.x1, y0: L.box.y0 + d, y1: L.box.y1 + d };
       boxes.splice(boxes.indexOf(L.box), 1); strict = true;
-      if (d && d < fs * 0.5 && free(b)) { L.y = gy; L.box = b; }
+      if (d && d < fs * 2.5 && free(b)) { L.y = gy; L.box = b; }
       strict = false; boxes.push(L.box);
     });
     if (cfg.legend && left.some(function (L) { return L.kind === 'end'; })) return layout(view, W, H, Object.assign({}, opt, { leg: 1 }));   // one line the plot cannot name: named beside it, as several are
@@ -434,7 +437,7 @@
     var halo = 'paint-order:stroke;stroke:' + P.surf + ';stroke-width:' + (fs / 3.5).toFixed(1) + 'px;stroke-linejoin:round;';
     o.push('<svg xmlns="http://www.w3.org/2000/svg" class="agc-svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + ' ' + H + '"' + (opt.label ? ' role="img" aria-label="' + esc(opt.label) + '"' : '') + '>');
     var unitW = widthOf(cfg.unit || '', fs), unitStart = unitW > g.L - fs;   // a long axis title starts at the left edge
-    o.push(cfg.axisTitle ? txt(0, fs * 1.2, cfg.axisTitle, f + 'fill:' + P.dim, 'start', 'agc-at') : txt(unitStart ? lay.x0 : g.L - fs * 0.5, fs * 1.2, cfg.unit || '', f + 'fill:' + P.mut, unitStart ? 'start' : 'end'));
+    o.push(cfg.axisTitle ? txt(opt.card ? 24 : 0, fs * 1.2, cfg.axisTitle, f + 'fill:' + P.dim, 'start', 'agc-at') : txt(unitStart ? lay.x0 : g.L - fs * 0.5, fs * 1.2, cfg.unit || '', f + 'fill:' + P.mut, unitStart ? 'start' : 'end'));
     g.tk.forEach(function (v) {
       var y = g.y(v);
       o.push('<line x1="' + g.L + '" x2="' + f1(g.right) + '" y1="' + f1(y) + '" y2="' + f1(y) + '" style="stroke:' + P.grid + ';stroke-width:1"/>');
