@@ -8,8 +8,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=29" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=29">
+  <link rel="preload" href="/components/styles.css?v=30" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=30">
 <link rel="stylesheet" href="/components/asof.css?v=2">
 <script src="/components/saved-place.js?v=1"></script><script src="/components/asof.js?v=1"></script>
 <link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script><script>try{if(/(^|;\s*)agsist_subscribed=/.test(document.cookie)||localStorage.getItem('agsist_subscribed')==='1')document.documentElement.classList.add('sa-subbed')}catch(e){}</script>
@@ -163,7 +163,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .wtd-icon{font-size:1.3rem;flex-shrink:0}
 .wtd-title{font-family:var(--font-display);font-size:1rem;font-weight:700;text-transform:none;letter-spacing:0;color:var(--text)}
 .wtd-sub{font-size:0.785rem;color:var(--text-muted);margin-top:.04rem}
-.wtd-badge{font-family:var(--font-body);font-size:0.75rem;font-weight:700;letter-spacing:0;text-transform:none;padding:.18rem .5rem;border-radius:var(--r-lg);background:var(--surface2);color:var(--text-dim);border:1px solid rgba(230,176,66,.3);white-space:nowrap;flex-shrink:0}
+.wtd-badge{font-family:var(--font-body);font-size:0.75rem;font-weight:700;letter-spacing:0;text-transform:none;padding:.18rem .5rem;border-radius:var(--r-lg);background:var(--surface2);color:var(--text-dim);border:1px solid var(--border-2);white-space:nowrap;flex-shrink:0}
 .wtd-body{padding:1rem 1.1rem}
 .wtd-note{font-size:1rem;color:var(--text-dim);line-height:1.6;margin-bottom:1rem;padding:.65rem .85rem;background:var(--surface2);border-radius:var(--r-md);border-left:3px solid rgba(230,176,66,.4)}
 .wtd-note strong{color:var(--text)}
@@ -180,7 +180,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .wtd-comm-btn.active.wheat{background:var(--surface2);color:#ca8a3c;border-color:rgba(202,138,60,.5)}
 /* High contrast (forced colors, 2026-10-17): the picked crop was told apart by background color only, which forced colors removes */
 @media (forced-colors:active){.cb-filt[aria-pressed="true"],.cb-filt.active,.wtd-comm-btn.active{outline:3px solid Highlight;outline-offset:2px;border-color:Highlight;text-decoration:underline;text-underline-offset:3px}}
-.wtd-winner-banner{background:var(--surface2);border:1px solid rgba(58,139,60,.3);border-radius:var(--r-md);padding:.6rem .85rem;margin-bottom:.85rem;font-size:.82rem;color:var(--green);display:flex;align-items:center;gap:.5rem}
+.wtd-winner-banner{background:var(--surface2);border:1px solid var(--border-2);border-radius:var(--r-md);padding:.6rem .85rem;margin-bottom:.85rem;font-size:.82rem;color:var(--green);display:flex;align-items:center;gap:.5rem}
 .wtd-winner-banner strong{color:var(--text);white-space:nowrap}
 /* MEASURED AT 390px: the banner is display:flex with flex-wrap unset, so every
    text node and every <strong> became its own flex item and was crushed to its
@@ -264,7 +264,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .faq-a,.cb-hero-sub,.bm-intro,.cb-info p{max-width:72ch}
 .bm-intro,.cb-hero-sub{margin-left:auto;margin-right:auto}
 .elev-card{background:var(--surface);border:2px solid var(--border);border-radius:var(--r-lg);overflow:hidden;transition:border-color .15s;position:relative;contain:layout style}
-.elev-card:hover{border-color:rgba(var(--gold-rgb),.3)}
+.elev-card:hover{border-color:var(--border-2)}
 .elev-card.pinned{border-color:var(--gold);box-shadow:0 0 0 2px rgba(230,176,66,.15)}
 .elev-head{padding:.85rem 1rem .7rem;display:flex;align-items:flex-start;justify-content:space-between;gap:.5rem;border-bottom:1px solid var(--border)}
 .elev-info{flex:1;min-width:0}
@@ -473,7 +473,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .basis-q{background:none;border:0;padding:0;margin:0;font:inherit;color:inherit;letter-spacing:inherit;text-transform:inherit;line-height:1.1;min-height:44px;min-width:44px;display:inline-flex;align-items:center;cursor:help;border-bottom:0;text-decoration:underline dotted;text-underline-offset:3px}
 .basis-q:hover,.basis-q:focus-visible{color:var(--text-dim)}
 .bid-row-labels span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.wtd-toggle{display:none;width:100%;align-items:center;justify-content:center;gap:.5rem;background:var(--surface2);border:none;border-top:2px solid rgba(230,176,66,.35);color:var(--text-dim);font-family:var(--font-body);font-size:0.78rem;font-weight:700;letter-spacing:0;text-transform:none;padding:.8rem 1rem;cursor:pointer;min-height:44px;transition:color .15s}
+.wtd-toggle{display:none;width:100%;align-items:center;justify-content:center;gap:.5rem;background:var(--surface2);border:none;border-top:2px solid var(--border-2);color:var(--text-dim);font-family:var(--font-body);font-size:0.78rem;font-weight:700;letter-spacing:0;text-transform:none;padding:.8rem 1rem;cursor:pointer;min-height:44px;transition:color .15s}
 .wtd-toggle:hover{color:var(--gold)}
 .wtd-toggle-chev{transition:transform .2s;display:inline-block}
 .wtd-toggle.open .wtd-toggle-chev{transform:rotate(180deg)}
@@ -489,20 +489,20 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .market-badge{font-family:var(--font-body);font-size:0.75rem;font-weight:700;letter-spacing:0;text-transform:none;padding:.14rem .48rem;border-radius:var(--r-lg);white-space:nowrap}
 .market-badge.open{background:var(--surface2);color:var(--green);border:1px solid rgba(58,139,60,.4)}
 .market-badge.day{background:var(--surface2);color:var(--green);border:1px solid rgba(58,139,60,.4)}
-.market-badge.overnight{background:var(--surface2);color:var(--gold);border:1px solid rgba(var(--gold-rgb),.35)}
+.market-badge.overnight{background:var(--surface2);color:var(--gold);border:1px solid var(--border-2)}
 .market-badge.pause{background:var(--surface2);color:var(--text-dim);border:1px solid var(--border)}
 .market-badge.closed{background:rgba(255,255,255,.05);color:var(--text-muted);border:1px solid var(--border)}
 .bbc-actions{display:flex;gap:.35rem;margin-top:.45rem;flex-wrap:wrap}
 .bbc-call-btn,.bbc-dir-btn{display:inline-flex;align-items:center;gap:.2rem;font-family:var(--font-body);font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;padding:.28rem .6rem;border-radius:var(--r-md);text-decoration:none;min-height:44px;min-width:44px;justify-content:center;transition:opacity .15s}
 .bbc-call-btn{background:var(--surface2);color:var(--green);border:1px solid rgba(58,139,60,.4)}
-.bbc-dir-btn{background:var(--surface2);color:var(--blue,#4a8fba);border:1px solid rgba(74,143,186,.35)}
+.bbc-dir-btn{background:var(--surface2);color:var(--blue,#4a8fba);border:1px solid var(--border-2)}
 .bbc-call-btn:hover,.bbc-dir-btn:hover{opacity:.8}
 .bbc-scroll-hint{display:none;text-align:center;font-family:var(--font-body);font-size:0.75rem;letter-spacing:0;text-transform:none;color:var(--text-muted);margin:.3rem 0 .2rem;opacity:.7}
 @media(max-width:719px){.bbc-scroll-hint{display:block}}
 .elev-actions{display:flex;gap:.4rem;padding:.4rem 1rem;border-bottom:1px solid var(--border);flex-wrap:wrap;align-items:center}
-.elev-call-btn{display:inline-flex;align-items:center;gap:.25rem;background:var(--surface2);border:1px solid rgba(58,139,60,.35);border-radius:var(--r-md);color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;text-decoration:none;padding:.28rem .65rem;min-height:44px;min-width:44px;justify-content:center;letter-spacing:.04em;transition:background .15s}
+.elev-call-btn{display:inline-flex;align-items:center;gap:.25rem;background:var(--surface2);border:1px solid var(--border-2);border-radius:var(--r-md);color:var(--green);font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;text-decoration:none;padding:.28rem .65rem;min-height:44px;min-width:44px;justify-content:center;letter-spacing:.04em;transition:background .15s}
 .elev-call-btn:hover{background:var(--surface2)}
-.elev-dir-btn{display:inline-flex;align-items:center;gap:.25rem;background:var(--surface2);border:1px solid rgba(74,143,186,.3);border-radius:var(--r-md);color:var(--blue,#4a8fba);font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;text-decoration:none;padding:.28rem .65rem;min-height:44px;min-width:44px;justify-content:center;letter-spacing:.04em;transition:background .15s}
+.elev-dir-btn{display:inline-flex;align-items:center;gap:.25rem;background:var(--surface2);border:1px solid var(--border-2);border-radius:var(--r-md);color:var(--blue,#4a8fba);font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;text-decoration:none;padding:.28rem .65rem;min-height:44px;min-width:44px;justify-content:center;letter-spacing:.04em;transition:background .15s}
 .elev-dir-btn:hover{background:var(--surface2)}
 [data-theme="light"] .elev-dir-btn,[data-theme="light"] .bbc-dir-btn{color:#2d5f86}[data-theme="light"] .elev-call-btn,[data-theme="light"] .bbc-call-btn{color:#1f6b40}
 .bid-del-spot{color:var(--green);font-weight:700;font-size:0.78rem;letter-spacing:.04em}

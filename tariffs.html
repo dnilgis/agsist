@@ -8,8 +8,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=29" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=29">
+  <link rel="preload" href="/components/styles.css?v=30" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=30">
   <script src="/components/util.js?v=17"></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -126,9 +126,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
   display: flex; align-items: flex-start; gap: .85rem;
   padding: .85rem 1rem; border-radius:var(--r-lg); margin-bottom: 1.25rem; border: 1px solid;
 }
-.tariff-status-banner.elevated { background: var(--surface2);  border-color: rgba(239,68,68,.22); }
-.tariff-status-banner.normal   { background: var(--surface2);  border-color: rgba(34,197,94,.20); }
-.tariff-status-banner.mixed    { background: var(--surface2); border-color: rgba(212,162,63,.20); }
+.tariff-status-banner.elevated { background: var(--surface2);  border-color: var(--border-2); }
+.tariff-status-banner.normal   { background: var(--surface2);  border-color: var(--border-2); }
+.tariff-status-banner.mixed    { background: var(--surface2); border-color: var(--border-2); }
 .tsb-icon { font-size: 1.5rem; flex-shrink: 0; line-height: 1; margin-top: .05rem; }
 .tsb-body { flex: 1; }
 .tsb-label { font-family:var(--font-display); font-size: 1.1rem; font-weight: 700; line-height: 1; margin-bottom: .2rem; }
@@ -211,9 +211,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
   display: inline-flex; align-items: center; padding: .15rem .48rem; border-radius: 4px;
   font-size:0.755rem; font-weight: 700; letter-spacing:0; text-transform:none; border: 1px solid;
 }
-.tt-badge.elevated { color:var(--tf-red); background: var(--surface2); border-color: rgba(239,68,68,.22); }
-.tt-badge.normal   { color: var(--green); background: var(--surface2); border-color: rgba(34,197,94,.2); }
-.tt-badge.mixed    { color: var(--gold); background: var(--surface2); border-color: rgba(212,162,63,.22); }
+.tt-badge.elevated { color:var(--tf-red); background: var(--surface2); border-color: var(--border-2); }
+.tt-badge.normal   { color: var(--green); background: var(--surface2); border-color: var(--border-2); }
+.tt-badge.mixed    { color: var(--gold); background: var(--surface2); border-color: var(--border-2); }
 /* .8rem to match the table. It was 1rem — the annotation set larger than the
    numbers it annotates, which inverted the hierarchy and cost it extra lines. */
 .tt-note { font-size:.8rem; color: var(--text-muted); line-height:1.6; }
@@ -271,7 +271,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .te-card p  { font-size:0.79rem; color: var(--text-muted); line-height: 1.62; margin: 0; }
 
 /* Basis-channel callout */
-.tariff-wi-mn { display: flex; gap: .7rem; align-items: flex-start; padding: .85rem 1rem; background: var(--surface2); border: 1px solid rgba(58,139,60,.18); border-radius:var(--r-md); margin-bottom: 1.1rem; font-size: .8rem; color: var(--text-dim); line-height: 1.6; }
+.tariff-wi-mn { display: flex; gap: .7rem; align-items: flex-start; padding: .85rem 1rem; background: var(--surface2); border: 1px solid var(--border-2); border-radius:var(--r-md); margin-bottom: 1.1rem; font-size: .8rem; color: var(--text-dim); line-height: 1.6; }
 .tariff-wi-mn strong { color: var(--green); }
 .tariff-wi-mn a { text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px; }
 
