@@ -125,6 +125,8 @@
 .r-val.red { color:#e05c5c; }
 
 /* ── GAUGE ────────────────────────────────────────────────────────────── */
+html.gdu-late .gdu-results{display:flex;flex-direction:column}
+html.gdu-late #gdu-mat-card{order:-1}
 .gauge-wrap { background:var(--surface); border:var(--card-bw) solid var(--border); border-radius:var(--card-r); padding:1.25rem 1.3rem; margin-bottom:1.1rem; }
 .gauge-center { display:flex; flex-direction:column; align-items:center; }
 .gauge-arc { position:relative; width:200px; height:108px; overflow:hidden; }
@@ -403,6 +405,9 @@ html[data-theme="light"] .formula-card code { color:#276c43; }
 
   </div>
 
+  <script>/* Nov 13 2026: September to November the maturity card comes first. The script below moved it after the first paint
+     under a slow CPU (CI: the gauge sat at y435, then went to y882, CLS 0.08 at 1280). The class is set before the results exist and
+     the order is CSS, so the first paint is already in the right order. */try{var gm=new Date().getMonth();if(gm>=8&&gm<=10)document.documentElement.className+=' gdu-late';}catch(e){}</script>
   <div class="gdu-results" id="gdu-results">
     <!-- Arc Gauge -->
     <div class="gauge-wrap">
