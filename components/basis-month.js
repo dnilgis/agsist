@@ -57,7 +57,8 @@
     var refCon = Object.keys(conN).sort(function (a, b) { return conN[b] - conN[a] || (a < b ? -1 : 1); })[0] || '';
     /* a board's futures month on the last day is the table's (today.terms: line key -> "Jan '27"); where the log's last
        point is on another month, the log did not record the move (a change of futures with the cents unchanged is never
-       logged), so from the day after that point the line's terms are not known and it leaves the band (round 5) */
+       logged), so from the day after that point the line's terms are not known and it leaves the band (round 5); a log that names no
+       futures month for a board (con '') is not a move and keeps its line */
     var terms = {}, lastOf = {}, unknown = {}; if (today && today.terms) for (var tk in today.terms) terms[tk] = today.terms[tk];
     lines.forEach(function (l) { var pts = l.line.points; lastOf[l.key] = pts[pts.length - 1]; if (!held(l, addDay(end, -1))) delete terms[l.key]; });   // only a line the log still holds
     var days = [], strays = {};
@@ -65,7 +66,7 @@
       var vs = lines.map(function (l) {
         var p = held(l, d); if (!p) return null;
         var tc = terms[l.key], lp = lastOf[l.key];
-        if (tc && p.con !== tc && d > lp.d && d < end) { var u = unknown[l.key] = unknown[l.key] || { name: l.name, from: d, to: d, con: tc }; u.to = d; return null; }
+        if (tc && p.con && p.con !== tc && d > lp.d && d < end) { var u = unknown[l.key] = unknown[l.key] || { name: l.name, from: d, to: d, con: tc }; u.to = d; return null; }
         return { l: l, v: p.v, con: p.con, dm: p.dm };
       }).filter(Boolean);
       var keep = vs;
