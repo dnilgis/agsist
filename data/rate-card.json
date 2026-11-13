@@ -1,9 +1,9 @@
 {
-  "_": "THE ONE DEFINITION OF WHAT A SPONSOR SPOT COSTS. Read by sponsor.html (the booking page), components/sponsor-apply.js (the booking form), components/loader.js (the sitewide line), components/geo-sponsor.js (the state card), each sponsor's own portal and scripts/sponsor_apply.py. scripts/test_rate_card.py fails if a price or term here is not on sponsor.html. Two spots only. Prices are MONTHLY (price_month); a year costs price_month times year_months. A State Sponsor costs price_month in most states and price_by_state where listed; a state in opens_soon is shown but not taken yet (California, Nevada and Texas, held while the state test there runs; scripts/test_rate_card.py holds this list to every active entry in data/geo-sponsors.json). pay_links holds the card payment links per spot and term; an empty link means card payment is not open yet and the mailed invoice is the way to book. Change a price HERE first, then run scripts/stamp_rates.py.",
+  "_": "THE ONE DEFINITION OF WHAT A SPONSOR SPOT COSTS. Read by sponsor.html (the booking page), components/sponsor-apply.js (the booking form), components/loader.js (the sitewide line), components/geo-sponsor.js (the state card), each sponsor's own portal and scripts/sponsor_apply.py. scripts/test_rate_card.py fails if a price or term here is not on sponsor.html. Two spots only. Prices are MONTHLY (price_month); a year costs price_month times year_months. A State Sponsor costs price_month in most states and price_by_state where listed; a state in opens_soon is shown but not taken yet (California, Nevada and Texas, held while the state test there runs; scripts/test_rate_card.py holds this list to every active entry in data/geo-sponsors.json). Sponsors pay by check or bank wire only (Nov 13, 2026): no card payment, no payment links, no free month and no discount; the invoice we email carries the mailing address and wire instructions, and the site never shows bank details. Change a price HERE first, then run scripts/stamp_rates.py.",
   "_updated": "2026-11-11",
   "currency": "USD",
   "year_months": 10,
-  "pay": "Pay when you book: by card, or ask for a yearly invoice by mail (net 30).",
+  "pay": "Pay by check or bank wire. We email an invoice with the mailing address and wire instructions.",
   "refund": "Money back if you ask inside 30 days.",
   "terms": "Month to month or by the year. Cancel any time.",
   "prepay": "A year costs the same as 10 months.",
@@ -30,10 +30,6 @@
       "placement": "One card below the main answer on every page about that state, and for readers in that state on other pages. One business per state."
     }
   ],
-  "pay_links": {
-    "sitewide": {"month": "", "year": ""},
-    "state": {"month": "", "year": "", "big_month": "", "big_year": ""}
-  },
   "retired": {
     "_": "Tier ids that older records may still carry. Not sold since Nov 11, 2026: the sitewide sponsor took the Daily line, and the state card took the state and Cash Bids ribbons.",
     "daily": "Daily Sponsor",
