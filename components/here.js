@@ -601,7 +601,7 @@
     drawFingerprint(p);
     drawUnusual(p);
     drawLong(S.county);
-    S.depth = Promise.all([css('/components/rain-county.css?v=5'), drawFirst(p), loadElev(p.fips, S.where)]);
+    S.depth = Promise.all([css('/components/rain-county.css?v=15'), drawFirst(p), loadElev(p.fips, S.where)]);
     return S.depth;
   }
   function drawFingerprint(p) {
@@ -752,28 +752,23 @@
     var cap = 'Inches of rain added up day by day from Jan 1' + (fig.usual != null ? ', solid line, against the normal year at this ' + fig.noun + ' (dashed), counted on the same days' : '') + '. Days with no report add nothing.';
     var pcap = 'Every day of ' + fig.year + (fig.done ? '' : ' so far') + ' at this ' + fig.noun + ', drawn by Rain Print. A gap is a day with no report.' + (fig.done ? '' : ' The empty months are still to come.') +
       (fig.mn ? ' The dashed line is the usual year: NOAA&rsquo;s ' + (fig.norm === '1991-2020' ? '1991 to 2020' : '30-year') + ' normals for this ' + fig.noun + ', added up over the days it reported.' : '');
-    // Nov 13 2026 (Sig: on a phone the enhanced chart first, the Rain Print right below; wider, the print first): the chart is a figure of
-    // its own before the print's, shown at once up to 560 px (here.css) and, wider, only if the print cannot be drawn
-    $('h-rp-box').innerHTML = '<figure class="rc-chart rce-top h-rce" id="h-rce">' + P.rainChartBox(fig) + '<figcaption>' + esc(cap) + '</figcaption></figure>' +
+    // Nov 13 2026 (Sig: on a phone the enhanced chart first, the Rain Print right below; wider, the print first). Up to 560 px (here.css's
+    // phone layout) the chart is a block above the print with its own caption; wider it is the print's placeholder, drawn in the print's
+    // box at once (never an empty box) and replaced when the print has drawn, as the plain chart was.
+    var phone = !!(window.matchMedia && window.matchMedia('(max-width: 560px)').matches), chartBox = P.rainChartBox(fig);
+    $('h-rp-box').innerHTML = (phone ? '<figure class="rc-chart h-rce" id="h-rce">' + chartBox + '<figcaption>' + esc(cap) + '</figcaption></figure>' : '') +
       '<figure class="rc-chart rc-print h-rp" id="h-rp" data-st="' + esc(fig.st) + '" data-fips="' + esc(fig.fips) + '" data-year="' + fig.year + '" data-days="' + fig.days + '" data-total="' + fig.total.toFixed(2) + '" data-place="' + esc(fig.place) + '" data-gauge="' + esc(fig.gauge) + '"' +
       (fig.mn ? ' data-mn="' + esc(fig.mn) + '" data-usual="' + fig.usual.toFixed(2) + '" data-norm="' + esc(fig.norm) + '"' : '') + '>' +
       '<div class="rc-print-styles" role="group" aria-label="Print style" hidden><button type="button" data-style="r1" aria-pressed="true">Staircase</button><button type="button" data-style="r2" aria-pressed="false">Roots</button><button type="button" class="rc-zoom" aria-pressed="false">Up close</button></div>' +
-      '<div class="rc-print-art"></div><figcaption><span class="rc-cap-print" hidden>' + pcap + '</span></figcaption></figure>' +
+      '<div class="rc-print-art">' + (phone ? '' : chartBox) + '</div><figcaption>' + (phone ? '' : '<span class="rc-cap-chart">' + esc(cap) + '</span>') + '<span class="rc-cap-print" hidden>' + pcap + '</span></figcaption></figure>' +
       '<p class="h-rp-buy"><a href="' + esc(rpHref(fig)) + '" data-placement="fast-facts">Make this one with your name &rarr;</a></p>';
     var el = $('h-rp'), buy = document.querySelector('.h-rp-buy a');
     if (buy) buy.addEventListener('click', function () { track('rain_print_promo_click', { placement: 'fast-facts', page: location.pathname }); });
-    function drawChart() {
-      var r = el.isConnected && document.querySelector('#h-rce .rce');
-      if (!r) return;
-      loadScript('/components/rain-chart.js?v=1', function () { return !!(window.AgRainChart && window.AgRainChart.mount); }).then(function (ok) {
-        if (ok && r.isConnected) window.AgRainChart.mount(r);
-      });
-    }
-    function showChart() { var c = $('h-rce'); if (c) c.classList.add('h-show'); }   // wider than a phone: the print could not be drawn
-    drawChart();
+    // the chart draws at once (components/rain-chart.js is loaded with the page; loaded here if it is not)
+    var cb = document.querySelector('#h-rp-box .rce');
+    if (cb) loadScript('/components/rain-chart.js?v=1', function () { return !!(window.AgRainChart && window.AgRainChart.mount); }).then(function (ok) { if (ok && cb.isConnected) window.AgRainChart.mount(cb); });
     loadScript(RCP, function () { return !!(window.AgRainCountyPrint && window.AgRainCountyPrint.mount); }).then(function (ok) {
-      if (!ok || !el.isConnected) { showChart(); return; }
-      return window.AgRainCountyPrint.mount(el).then(function (drawn) { if (!drawn) showChart(); });
+      if (ok && el.isConnected) return window.AgRainCountyPrint.mount(el);
     });
   }
 

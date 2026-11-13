@@ -31,12 +31,14 @@
   /* the email: 560 wide at 2x, grows to fit (the Daily's picture; unchanged by the move) */
   var EMAIL = { W: 560, PADX: 22, bigMax: 48, bigMin: 38, SM: 24, plotH: 220, gapTop: 44, keyFS: 22, rowH: 34, sw: 34, axisFS: 20, yearFS: 52,
     placeMax: 24, placeMin: 18, gapMin: 24, colors: EMAIL_COLORS, serif: SERIF, sans: SANS, fixed: false };
-  /* the pages: two designs, each with a height that never depends on the data. Sizes are in design units; the
-     page scales the drawing to the column (phone 288 to 479 px wide: 0.72 to 1.2; wide 480 to 680: 0.75 to 1.06). */
-  var PHONE = { W: 400, PADX: 16, bigMax: 40, bigMin: 28, SM: 20, plotH: 232, gapTop: 22, keyFS: 19, keyMin: 15, rowH: 29, sw: 30, axisFS: 18, yearFS: 38,
-    placeMax: 20, placeMin: 16, gapMin: 18, clearPad: 10, vars: true, fixed: true, name: 'phone' };
-  var WIDE = { W: 640, PADX: 24, bigMax: 54, bigMin: 34, SM: 26, plotH: 300, gapTop: 26, keyFS: 24, keyMin: 17, rowH: 38, sw: 40, axisFS: 20, yearFS: 50,
-    placeMax: 26, placeMin: 15, gapMin: 22, clearPad: 10, vars: true, fixed: true, name: 'wide' };
+  /* the pages: two designs, each with a height that never depends on the figures (only on whether the page has a normal to draw).
+     Sizes are in design units; the page scales the drawing to its column. The key (this year, a normal year, the gap) always
+     sits in a band above the plot, so it can never meet a line, and the plot gets the height a foot line would have taken (the
+     page's own H1 already says the year and the place). The wide design adds quiet month ticks on the baseline. */
+  var PHONE = { W: 400, PADX: 16, bigMax: 40, bigMin: 28, SM: 20, plotH: 300, gapTop: 10, keyFS: 19, keyMin: 17, rowH: 29, sw: 30, axisFS: 18,
+    band: true, vars: true, fixed: true, name: 'phone' };
+  var WIDE = { W: 640, PADX: 24, bigMax: 54, bigMin: 34, SM: 26, plotH: 340, gapTop: 12, keyFS: 24, keyMin: 19, rowH: 38, sw: 40, axisFS: 20,
+    band: true, ticks: true, vars: true, fixed: true, name: 'wide' };
 
   var n2 = function (v) { return +(+v).toFixed(2); };
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
@@ -65,8 +67,100 @@
     return t0 <= t1;
   }
 
+  /* does the same two-line shading as the email's; shared so the gap is drawn one way */
+  function shade(ptsY, ptsN, n, fp) {
+    var runs = [], cur = null, bands = '';
+    var sgn = function (k) { var d = (k === 0 ? 0 : ptsN[k][1] - ptsY[k][1]); return d < -1e-9 ? 1 : d > 1e-9 ? -1 : 0; };
+    var push = function (s, a, b) { if (!cur || cur.s !== s) { cur = { s: s, top: [], bot: [] }; runs.push(cur); } cur.top.push(a); cur.bot.push(b); };
+    for (var k = 1; k <= n; k++) {
+      var s1 = sgn(k), s0 = k === 1 ? s1 : sgn(k - 1);
+      var u0 = ptsN[k - 1], u1 = ptsN[k], v0 = ptsY[k - 1], v1 = ptsY[k];
+      if (s1 !== 0 && s0 !== 0 && s1 !== s0) {
+        var d0 = u0[1] - v0[1], d1 = u1[1] - v1[1], t = d0 / (d0 - d1), cx = u0[0] + (u1[0] - u0[0]) * t, cy = u0[1] + (u1[1] - u0[1]) * t;
+        push(s0, u0, v0); push(s0, [cx, cy], [cx, cy]);
+        cur = null; push(s1, [cx, cy], [cx, cy]); push(s1, u1, v1);
+      } else if (s1 !== 0) { if (k === 1 || !cur) push(s1, u0, v0); push(s1, u1, v1); }
+      else cur = null;
+    }
+    runs.forEach(function (r) {
+      if (r.top.length < 2) return;
+      var dd = 'M' + r.top.map(function (p) { return n2(p[0]) + ',' + n2(p[1]); }).join('L') + 'L' +
+        r.bot.slice().reverse().map(function (p) { return n2(p[0]) + ',' + n2(p[1]); }).join('L') + 'Z';
+      bands += '<path d="' + dd + '"' + fp('fill', r.s === 1 ? 'dry' : 'wet') + '/>';
+    });
+    return bands;
+  }
+
+  /* The page chart: headline, the key in a band, the plot, "Jan 1" and the last day. Heights depend only on whether there is a normal. */
+  function buildBand(m, measure, spec) {
+    build.why = '';
+    var W = spec.W, PADX = spec.PADX;
+    var hasN = !!(m && m.ncum && m.usual > 0);
+    if (!m || !m.cum || m.cum.length < 2 || (hasN && m.ncum.length !== m.cum.length) || !m.headBig) { build.why = 'no series'; return null; }
+    var FAM = 'var(--font-body,system-ui,sans-serif)', mfont = spec.measureFamily || null;
+    var meas = function (t, size, w) { return measure(t, (w || 400) + ' ' + size + 'px ' + (mfont ? mfont.sans : FAM)); };
+    var fp = function (kind, c) { return ' class="rce-' + (kind === 'fill' ? 'f' : 's') + '-' + c + '"'; };
+    var texts = [], maxW = W - 2 * PADX;
+    // the headline: two rows always
+    var big = spec.bigMax;
+    while (big > spec.bigMin && meas(m.headBig, big, 700) > maxW) big -= 2;
+    var y = 22 + Math.round(spec.bigMax * 0.8);
+    texts.push({ t: m.headBig, x: PADX, y: y, size: big, w: 700, fill: 'ink', k: 'headline' });
+    y += 10 + Math.round(spec.SM * 0.95);
+    texts.push({ t: m.headSmall || '', x: PADX, y: y, size: spec.SM, w: 500, fill: 'ink', k: 'headline2' });
+    var headBottom = y + 8;
+    // the key
+    var rows = [];
+    if (hasN) {
+      rows.push({ t: m.yText, w: 700, fill: 'rain', sw: 'rain', k: 'end' }, { t: m.uText, w: 500, fill: 'mute', sw: 'usual', k: 'end' });
+      if (m.gapText) rows.push({ t: m.gapText, w: 700, fill: 'ink', sw: m.cum[m.cum.length - 1] > m.ncum[m.ncum.length - 1] ? 'wet' : 'dry', k: 'gap' });
+    }
+    var FS = spec.keyFS, sw = spec.sw + 10, rowH = spec.rowH;
+    var keyW = function () { return sw + 12 + Math.max.apply(null, rows.map(function (r) { return meas(r.t, FS, r.w); })); };
+    while (rows.length && keyW() > maxW && FS > spec.keyMin) FS -= 1;
+    var bandTop = headBottom + 6, bandH = rows.length ? rows.length * rowH + 6 : 0;
+    var PT = bandTop + bandH + spec.gapTop;
+    var PB = headBottom + 6 + (hasN ? 3 * rowH + 6 : 0) + spec.gapTop + spec.plotH;      // the same for every page with a normal, whatever rows it has
+    // the plot: Jan 1 at the left edge to the last reported day at the right edge
+    var X0 = PADX, X1 = W - PADX - 16, n = m.cum.length, xn = m.xn || n, maxV = 0.01;
+    m.cum.concat(hasN ? m.ncum : []).forEach(function (v) { if (v > maxV) maxV = v; });
+    var xs = function (v) { return X0 + (X1 - X0) * v / xn; }, ys = function (v) { return PB - (PB - PT) * v / maxV; };
+    var xAt = function (i) { return m.x ? m.x[i - 1] : i; };
+    var ptsY = [[xs(0), ys(0)]], ptsN = [[xs(0), ys(0)]];
+    for (var i = 0; i < n; i++) { ptsY.push([xs(xAt(i + 1)), ys(m.cum[i])]); if (hasN) ptsN.push([xs(xAt(i + 1)), ys(m.ncum[i])]); }
+    var bands = hasN ? shade(ptsY, ptsN, n, fp) : '';
+    var pl = function (pts) { return 'M' + pts.map(function (p) { return n2(p[0]) + ',' + n2(p[1]); }).join('L'); };
+    // rows of the key, then the two ends of the axis
+    rows.forEach(function (r, ri) { texts.push({ t: r.t, x: X0 + sw + 12, y: bandTop + FS + 2 + ri * rowH, size: FS, w: r.w, fill: r.fill, k: r.k }); });
+    var AF = spec.axisFS, ay = PB + AF + 8;
+    texts.push({ t: m.startText, x: X0, y: ay, size: AF, w: 500, fill: 'mute', k: 'start' });
+    if (m.endText) texts.push({ t: m.endText, x: X1 + 2, y: ay, size: AF, w: 500, fill: 'mute', anchor: 'end', k: 'end-date' });
+    var H = ay + 14;
+    var o = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" role="img"' + (m.svgAttrs || '') + '>' + (m.svgHead || '') + bands;
+    o += '<path d="M' + X0 + ',' + PB + 'H' + (X1 + 2) + '"' + fp('stroke', 'ink') + ' stroke-width="1.5" fill="none"/>';
+    if (spec.ticks && m.ticks && m.ticks.length) o += '<path d="' + m.ticks.map(function (v) { return 'M' + n2(xs(v)) + ',' + PB + 'v6'; }).join('') + '"' + fp('stroke', 'mute') + ' stroke-width="1.5" fill="none"/>';
+    if (hasN) o += '<path d="' + pl(ptsN) + '" fill="none"' + fp('stroke', 'mute') + ' stroke-width="2.5" stroke-dasharray="8 6" stroke-linejoin="round"/>';
+    o += '<path d="' + pl(ptsY) + '" fill="none"' + fp('stroke', 'rain') + ' stroke-width="4.5" stroke-linejoin="round" stroke-linecap="round"/>';
+    o += '<circle cx="' + n2(ptsY[n][0]) + '" cy="' + n2(ptsY[n][1]) + '" r="5.5"' + fp('fill', 'rain') + '/>';
+    if (hasN) o += '<circle cx="' + n2(ptsN[n][0]) + '" cy="' + n2(ptsN[n][1]) + '" r="4.5"' + fp('fill', 'mute') + '/>';
+    rows.forEach(function (r, ri) {
+      var yy = bandTop + FS + 2 - Math.round(FS * 0.36) + ri * rowH, SW = spec.sw;
+      if (r.sw === 'rain') o += '<path d="M' + X0 + ',' + n2(yy) + 'H' + (X0 + SW) + '"' + fp('stroke', 'rain') + ' stroke-width="4.5" stroke-linecap="round" fill="none"/>';
+      else if (r.sw === 'usual') o += '<path d="M' + X0 + ',' + n2(yy) + 'H' + (X0 + SW) + '"' + fp('stroke', 'mute') + ' stroke-width="2.5" stroke-dasharray="8 6" fill="none"/>';
+      else o += '<rect x="' + X0 + '" y="' + n2(yy - 8) + '" width="' + SW + '" height="16"' + fp('fill', r.sw === 'wet' ? 'wet' : 'dry') + fp('stroke', r.sw === 'wet' ? 'wetEdge' : 'dryEdge') + ' stroke-width="1"/>';
+    });
+    texts.forEach(function (t) {
+      if (!t.t) return;
+      o += '<text x="' + n2(t.x) + '" y="' + n2(t.y) + '"' + fp('fill', t.fill) + ' font-size="' + t.size + '" font-weight="' + t.w + '"' + (t.anchor ? ' text-anchor="end"' : '') + '>' + esc(t.t) + '</text>';
+    });
+    o += '</svg>';
+    return { svg: o, W: W, H: H, texts: texts.map(function (t) { return { t: t.t, k: t.k, size: t.size, x: t.x, y: t.y, anchor: t.anchor || 'start' }; }), notes: [],
+      plot: { X0: X0, X1: X1, PT: PT, PB: PB }, keyAt: { x: X0, y: bandTop, band: true }, hasN: hasN };
+  }
+
   function build(m, measure, spec, extra) {
     spec = spec || EMAIL;
+    if (spec.band) return buildBand(m, measure, spec);
     build.why = '';
     var W = spec.W, PADX = spec.PADX, fixed = !!spec.fixed, C = spec.colors || EMAIL_COLORS;
     var SERIFF = spec.serif || (spec.vars ? 'var(--font-display,system-ui,sans-serif)' : SERIF), SANSF = spec.sans || (spec.vars ? 'var(--font-body,system-ui,sans-serif)' : SANS);
@@ -148,7 +242,7 @@
     // chart (the email's picture grows by it; a page's chart gets shorter by it, the page's height never moves).
     var segs = [];
     for (var q = 1; q <= n; q++) { segs.push([ptsY[q - 1], ptsY[q]]); if (hasN) segs.push([ptsN[q - 1], ptsN[q]]); }
-    var gapPx = hasN ? Math.abs(ptsY[n][1] - ptsN[n][1]) : 0, gapText = hasN && (gapPx >= spec.gapMin || m.gapAlways) ? m.gapText : '';
+    var gapPx = hasN ? Math.abs(ptsY[n][1] - ptsN[n][1]) : 0, gapText = hasN && gapPx >= spec.gapMin ? m.gapText : '';
     var rowH = spec.rowH, sw = spec.sw + (fixed ? 10 : 10), FS = spec.keyFS;
     var rows = [{ t: m.yText, w: 600, fill: 'rain', sw: 'rain', k: 'end' }];
     if (hasN) rows.push({ t: m.uText, w: 500, fill: 'mute', sw: 'usual', k: 'end' });
@@ -246,9 +340,10 @@
      percent of normal. Under a 3% difference it says about a normal year; past double, "2.1 times". */
   function verdictOf(pct, preview) {
     if (!numOk(pct)) return null;
-    var d = +pct - 100, soFar = preview ? ' so far' : '';
+    var d = +pct - 100, soFar = preview ? ' so far' : '', ratio = +pct / 100;
     if (Math.abs(d) <= 3) return 'About a normal year' + soFar;
-    if (d > 100) return (1 + d / 100).toFixed(1) + ' times a normal year' + soFar;
+    // one rule for "times": from 1.95 on, "Twice" for 1.95 to 2.05, else one decimal ("2.6 times")
+    if (ratio >= 1.95) return (ratio <= 2.05 ? 'Twice' : ratio.toFixed(1) + ' times') + ' a normal year' + soFar;
     return Math.abs(d) + '% ' + (d < 0 ? 'less' : 'more') + ' than a normal year' + soFar;
   }
 
@@ -272,25 +367,28 @@
     if (pctOk) { m.headBig = (+D.pct) + '% of normal'; m.headSmall = preview ? 'so far' : 'this year'; }
     else { m.headBig = T + ' inches'; m.headSmall = preview ? 'of rain so far' : 'of rain this year'; }
     if (ncum) {
-      var gap = usual - total, U = commas(usual.toFixed(dp)), gAbs = numOk(D.gap) ? +D.gap : Math.abs(gap);   // D.gap: the page's own difference, when it prints one
+      var gap = usual - total, U = commas(usual.toFixed(dp)), gAbs = Math.abs(gap), gmin = numOk(D.gapmin) ? +D.gapmin : 0.5;   // D.gapmin: the smallest difference the page itself prints (Field Scout: 0.25)
       m.uText = U + ' in a normal year' + (preview ? ' by then' : +D.miss > 0 ? ', same days' : '');
-      m.gapAlways = numOk(D.gap);   // the page prints this difference itself: the key says it too, as far as the page does (0.25 in, as its own words)
-      m.gapText = gAbs >= (m.gapAlways ? 0.25 : 0.5) ? commas(gAbs.toFixed(dp)) + ' in' + (gap > 0 ? ' short' : ' more') : '';
+      // on the pages the gap row carries the page's own percent too: "15.88 in more, 150% of normal"
+      m.gapText = gAbs >= gmin ? commas(gAbs.toFixed(dp)) + ' in' + (gap > 0 ? ' short' : ' more') + (pctOk ? ', ' + (+D.pct) + '% of normal' : '') : '';
     }
     m.total = T; m.pct = numOk(D.pct) ? +D.pct : null;
+    // quiet month ticks on the baseline (the wide design): the first of each month after Jan 1 that is not within 12 days of the last day
+    m.ticks = [];
+    for (var mo = 1; mo < 12; mo++) { var dd = Math.round((Date.UTC(year, mo, 1) - Date.UTC(year, 0, 1)) / 864e5); if (dd < m.xn - 12) m.ticks.push(dd); }
     return m;
   }
 
   /* The text alternative: the page's own figures in one sentence. */
   function describe(D, m) {
     var noun = D.noun || 'station', dp = numOk(D.dec) ? +D.dec : 2, up = m.ncum ? ', against ' + commas((+D.usual).toFixed(dp)) + ' inches in a normal year by then' : '';
-    var gap = m.ncum ? (+D.usual) - (+D.total) : 0, gAbs = numOk(D.gap) ? +D.gap : Math.abs(gap);
+    var gap = m.ncum ? (+D.usual) - (+D.total) : 0, gAbs = Math.abs(gap);
     return 'Running total of rain ' + (D.where || 'at the ' + noun + ' in ' + D.place) + ', ' + D.year + ': ' + m.total + ' inches through ' + fmtDate(D.asof) + up +
       (m.ncum && gAbs >= 0.005 ? ', ' + commas(gAbs.toFixed(dp)) + ' inches ' + (gap > 0 ? 'less' : 'more') + ' than a normal year' : '') +
       (m.pct != null ? '. ' + m.pct + '% of normal' + (+D.days < (isLeap(+D.year) ? 366 : 365) ? ' so far' : '') + '.' : '.');
   }
 
-  var CSS = '.rce-art svg{display:block;width:100%;height:auto}' +
+  var CSS = '.rce-art svg{display:block;width:100%;height:auto}.rce svg text{font-family:var(--font-body,system-ui,sans-serif)}' +
     '.rce{--rce-ink:var(--text,#161a18);--rce-mute:var(--text-muted,#5e6475);--rce-rain:var(--blue,#6f9fc2);--rce-dry:rgba(200,178,140,.30);--rce-wet:rgba(111,159,194,.30);--rce-dry-edge:rgba(200,178,140,.55);--rce-wet-edge:rgba(111,159,194,.6)}' +
     '[data-theme="light"] .rce,.rce[data-theme="light"]{--rce-rain:#2b5c8a;--rce-mute:#4f5668;--rce-dry:#ece6de;--rce-wet:#e3ebf3;--rce-dry-edge:#cfc6ba;--rce-wet-edge:#b9c7d6}' +
     '.rce-f-ink{fill:var(--rce-ink)}.rce-f-mute{fill:var(--rce-mute)}.rce-f-rain{fill:var(--rce-rain)}.rce-f-dry{fill:var(--rce-dry)}.rce-f-wet{fill:var(--rce-wet)}' +
@@ -303,7 +401,7 @@
 
   var mq = null;
   function wideNow() {
-    try { mq = mq || root.matchMedia('(min-width: 480px)'); return mq.matches; } catch (e) { return true; }
+    try { mq = mq || root.matchMedia('(min-width: 561px)'); return mq.matches; } catch (e) { return true; }
   }
   /* Widths are measured on a hidden SVG text in the page itself, so they are the widths of the font the browser really
      draws with. (A canvas measured Inter at 266 px where the page, whose font-display is optional, had drawn the same
@@ -337,7 +435,7 @@
      on a wide screen gets the phone design and its larger labels. */
   function designFor(el, box) {
     if (el.classList && el.classList.contains('rce-fs')) {
-      var w = box.getBoundingClientRect().width;
+      var w = el.clientWidth;      // the same width the stylesheet's container query holds the room by
       if (w > 0) return w >= 480 ? 'wide' : 'phone';
     }
     return wideNow() ? 'wide' : 'phone';
@@ -363,23 +461,10 @@
     return out;
   }
   var DRAWN = [];
-  /* On a county page wider than a phone the chart waits unseen until the print has drawn or given up (rain-county.css). If the
-     print's script never answers, show the chart anyway once the print's box is near the screen. */
-  function watchPrint(el) {
-    var fig = el.closest && el.closest('.rce-top') && root.document.getElementById('rc-print');   // the print's figure, right after the chart's
-    if (!fig) return;
-    var tries = 0;
-    (function look() {
-      if (/\brc-print-(on|off)\b/.test(fig.className) || ++tries > 12) return;
-      var r = fig.getBoundingClientRect();
-      if (tries >= 2 && r.top < (root.innerHeight || 800) + 400 && r.bottom > -400) fig.classList.add('rce-late');
-      else root.setTimeout(look, 3000);
-    })();
-  }
   function mount(el) {
     if (!el || !el.dataset) return null;
     var out = draw(el);
-    if (DRAWN.indexOf(el) < 0) { DRAWN.push(el); watchPrint(el); if (root.addEventListener && !mount.rz) { mount.rz = 1; root.addEventListener('resize', onResize); } }
+    if (DRAWN.indexOf(el) < 0) { DRAWN.push(el); if (root.addEventListener && !mount.rz) { mount.rz = 1; root.addEventListener('resize', onResize); } }
     return out;
   }
   var rzT = null;
@@ -396,7 +481,7 @@
     var doc = root.document;
     if (!doc) return;
     Array.prototype.forEach.call(doc.querySelectorAll('.rce[data-wk]'), mount);
-    try { (mq = mq || root.matchMedia('(min-width: 480px)')).addEventListener('change', redrawAll); } catch (e) {}
+    try { (mq = mq || root.matchMedia('(min-width: 561px)')).addEventListener('change', redrawAll); } catch (e) {}
     // the page's own font arrives after the first draw: lay it out once more, same height, same place
     if (doc.fonts && doc.fonts.ready) doc.fonts.ready.then(redrawAll, function () {});
   }

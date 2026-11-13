@@ -600,7 +600,7 @@
     var hasUs = f.usual != null && f.cum.every(function (p) { return p[2] != null; });
     var wk = f.cum.map(function (p) { return p[0] + ',' + Math.round(p[1] * 100) + (hasUs ? ',' + Math.round(p[2] * 100) : ''); }).join(';');
     var q = function (v) { return String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); };
-    return '<div class="rce" data-year="' + f.year + '" data-place="' + q(f.place) + '" data-total="' + f.total.toFixed(2) + '"' +
+    return '<div class="rce' + (hasUs ? '' : ' rce-p') + '" data-year="' + f.year + '" data-place="' + q(f.place) + '" data-total="' + f.total.toFixed(2) + '"' +
       (hasUs ? ' data-usual="' + f.usual.toFixed(2) + '"' : '') + (hasUs && f.pct != null ? ' data-pct="' + f.pct + '"' : '') +
       ' data-asof="' + q(f.asOf) + '" data-days="' + f.days + '" data-miss="' + (f.missing || 0) + '" data-noun="' + f.noun + '" data-wk="' + wk + '"><div class="rce-art"></div></div>';
   }
