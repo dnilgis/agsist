@@ -579,7 +579,7 @@
     var cmp = !inWin ? 'Not compared: auction day ' + esc(day(s.when)) + ' is ' + (s.when < w[0] ? 'older than' : 'after the end of') + ' the 24-month window the middle covers (' + esc(day(w[0]) + ' to ' + day(w[1])) + ').'
       : small ? 'Not compared: under 20 acres.'
       : !u ? miss('no county middle to set it beside') : s.ppa == null ? 'Middle ' + esc(money(u[0])) + ' an acre on ' + basis + '; this auction has no single price per acre to set beside it.'
-      : esc(money(s.ppa)) + ' an acre is ' + pct(s.ppa, u[0]) + ' the county middle of ' + esc(money(u[0])) + ' (' + basis + '; middle half ' + esc(money(u[1])) + ' to ' + esc(money(u[2])) + ').';
+      : esc(money(s.ppa)) + ' an acre is ' + pct(s.ppa, u[0]) + (u[4] ? ' the county\u2019s auction middle of ' : ' the county middle of ') + esc(money(u[0])) + ' (' + basis + '; middle half ' + esc(money(u[1])) + ' to ' + esc(money(u[2])) + ').';
     var nm = NAMES[s.st] || s.st, joint = one && /[+\-,]/.test(String(one[0]));
     var ppaNote = s.ppa != null ? (joint ? 'The company\u2019s own figure for tracts ' + String(one[0]) + ', sold together.' : 'The company\u2019s own figure.') : n > 1 ? 'The total is never divided by the headline acres here: the acres offered need not be the acres sold.' : null;
     var out = [];
@@ -600,7 +600,7 @@
       })));
     }
     out.push(grp('How it compares', [
-      ['County middle, 24 months', cmp, (u && u[4] ? 'From auction results only; no state transfer returns for ' + nm + ' are on this site yet. ' : 'From ' + nm + ' transfer returns only; auction results are not in it. ') + (w ? day(w[0]) + ' to ' + day(w[1]) : '24 months') + '.'],
+      [u && u[4] ? 'Auction middle, 24 months' : 'County middle, 24 months', cmp, (u && u[4] ? 'From auction results only; no state transfer returns for ' + nm + ' are on this site yet. ' : 'From ' + nm + ' transfer returns only; auction results are not in it. ') + (w ? day(w[0]) + ' to ' + day(w[1]) : '24 months') + '.'],
       ['Unusual price', s.flag === 1 ? 'Yes, well above the county\u2019s usual' : s.flag === -1 ? 'Yes, well below the county\u2019s usual' : !inWin ? miss('not judged: outside those 24 months') : small ? miss('not judged: under 20 acres') : s.ppa == null ? miss('only an auction with one printed per-acre figure is judged') : 'No']
     ]));
     return out.join('');

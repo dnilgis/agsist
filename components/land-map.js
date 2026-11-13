@@ -38,6 +38,8 @@
   var PINZ = 9;          // zoom from which pins take their full size and unusual pins carry a triangle; below it they shrink to dots
   var STACKZ = 7;        // below this zoom a tap on a pin zooms in to it instead of opening one pin of a stack
   var MIN_ACRES = 20;
+  /* the saved picture of the view (Save the picture, and Share with the picture). false hides both and leaves Copy link: one switch, no other change */
+  var SAVE_PICTURE = true;
   // point columns (scripts/land_map.py PT_COLS)
   var LAT = 0, LNG = 1, K = 2, CO = 3, WHEN = 4, AC = 5, PR = 6, PPA = 7, KIND = 8, C = 9, A = 10, PC = 11, PN = 12, ID = 13, NM = 14;
   // county columns (CO_COLS)
@@ -205,7 +207,7 @@
       n0(nc) + (nc === 1 ? ' is' : ' are') + ' white and not compared: ' + why + '.';
     if (nm) t += ' ' + n0(nm) + ' family, quit claim or part-interest ' + (nm === 1 ? 'deed is' : 'deeds are') + ' shown hollow.';
     else if (hiddenNm) t += ' ' + n0(hiddenNm) + ' family, quit claim or part-interest deeds are hidden until ticked.';
-    if (off) t += ' ' + n0(off) + ' auction ' + (off === 1 ? 'square is' : 'squares are') + ' outside this view: ' + (st ? 'zoom out to see them.' : 'zoom out or pick a state.');
+    if (off) t += ' ' + n0(off) + ' auction ' + (off === 1 ? 'square is' : 'squares are') + ' outside this view: ' + (st ? (off === 1 ? 'zoom out to see it.' : 'zoom out to see them.') : 'zoom out or pick a state.');
     return t;
   }
 
@@ -274,9 +276,9 @@
   }
   /* an auction is placed at its county center, so squares of one county share a spot: from zoom 7 they sit on a small ring around it,
      laid out in screen pixels (the same order every time: newest first, as the file is sorted), so each sale is its own pin */
-  function ringOffsets(n, sz, turn) {
+  function ringOffsets(n, sz, turn, radius) {
     if (n < 2) return [[0, 0]];
-    var R = Math.max(14, sz + 4, n * (sz + 3) / 6.2832), out = [];
+    var R = radius || Math.max(14, sz + 4, n * (sz + 3) / 6.2832), out = [];
     for (var i = 0; i < n; i++) { var t = -Math.PI / 2 + (turn || 0) + i * 6.2832 / n; out.push([R * Math.cos(t), R * Math.sin(t)]); }
     return out;
   }
@@ -467,7 +469,7 @@
       var mlng = inside.reduce(function (s, c) { return s + c[0]; }, 0) / inside.length, mlat = inside.reduce(function (s, c) { return s + c[1]; }, 0) / inside.length;
       if (pointInRing(mlng, mlat, ring)) { var run = runAt(ring, mlat, x0, x1, mlng); if (run) spots.push({ lng: mlng, lat: mlat, run: run }); }
     }
-    [0.5, 0.16, 0.84, 0.32, 0.68].forEach(function (fr) {
+    [0.5, 0.16, 0.84, 0.32, 0.68, 0.08, 0.92, 0.24, 0.76, 0.4, 0.6].forEach(function (fr) {
       var lat = y1 - fr * (y1 - y0), run = runAt(ring, lat, x0, x1, null);
       if (run && run[1] > run[0]) spots.push({ lng: (run[0] + run[1]) / 2, lat: lat, run: run });
     });
@@ -506,39 +508,70 @@
     var sc = Math.min((right - left) / spanX, (bot - top) / spanY);
     var ox = left + (right - left) / 2, oy = top + (bot - top) / 2;
     var px = function (lat, lng) { return [ox + (lng - cx) * kx * sc, oy - (lat - cy) * sc]; };
+    var inv = function (x, y) { return [cx + (x - ox) / (kx * sc), cy - (y - oy) / sc]; };      // [lng, lat]
     var nPins = inb.filter(function (o) { return !o.p[NM]; }).length;
     var dot = Math.max(2.2, Math.min(nPins < 30 ? 7 : 6, 700 / Math.sqrt(inb.length + 1) / 8));
     var halfX = (right - left) / 2 / (kx * sc) + 0.1, halfY = (bot - top) / 2 / sc + 0.1, win = { cx: cx, cy: cy, halfX: halfX, halfY: halfY };
-    // pins: auctions that share a spot (the county center) go on a ring, in plate pixels, newest first
+    var tight = { cx: cx, cy: cy, halfX: (right - left) / 2 / (kx * sc), halfY: (bot - top) / 2 / sc };
+    var feats = (shapes || []).filter(function (f) { return (f.properties || {}).iso_a2 !== 'CA'; });
+    var ringOfSt = {};
+    feats.forEach(function (f) { var best = null, ba = -1; rings(f).forEach(function (r) { var a = ringArea(r); if (a > ba) { ba = a; best = r; } }); if (best) ringOfSt[(f.properties || {}).postal] = best; });
+    var onOwn = function (st, x, y) { var r = ringOfSt[st]; if (!r) return true; var g = inv(x, y); return pointInRing(g[0], g[1], r); };
+    // the state outlines to draw: every ring whose bounding box meets the plate window (a long straight border has no vertex inside it)
+    var drawn = [];
+    (shapes || []).forEach(function (f) {
+      var rs = rings(f).filter(function (r) {
+        var mn = 1e9, mx = -1e9, nn = 1e9, nx = -1e9; r.forEach(function (c) { mn = Math.min(mn, c[0]); mx = Math.max(mx, c[0]); nn = Math.min(nn, c[1]); nx = Math.max(nx, c[1]); });
+        return !(mx < cx - halfX || mn > cx + halfX || nx < cy - halfY || nn > cy + halfY);
+      });
+      if (rs.length) drawn.push({ name: (f.properties || {}).name, rings: rs });
+    });
+    // pins: a pin sharing a point with others (a township center) is spread on the map's own spiral in plate pixels when the view is small;
+    // auctions that share a spot (the county center) go on a ring, in plate pixels, newest first
     var groups = {}, pins = inb.map(function (o) {
-      var a = px(o.lat, o.lng), rr = dot * (0.8 + 0.4 * Math.sqrt(o.p[AC] / 80)), r = { o: o, x: a[0], y: a[1], rr: rr };
+      var a = (nPins < 30 && o.p[K]) ? px(o.p[LAT], o.p[LNG]) : px(o.lat, o.lng), rr = dot * (0.8 + 0.4 * Math.sqrt(o.p[AC] / 80)), r = { o: o, x: a[0], y: a[1], rr: rr };
+      if (nPins < 30 && o.p[K] && o.p[KIND] !== 'a') { var t = o.p[K] * 2.399963, d = dot * 1.9 * Math.sqrt(o.p[K]); r.x += d * Math.cos(t); r.y -= d * Math.sin(t); }
       if (o.p[KIND] === 'a' && !o.p[NM]) { var k = o.p[LAT] + ',' + o.p[LNG]; (groups[k] = groups[k] || []).push(r); }
       r.rect = [r.x - rr - 2, r.y - rr - 2, r.x + rr + 2, r.y + rr + 2];
       return r;
     });
-    /* biggest rings first; each ring starts at the first of eight turns (the same order every time) where it clears the pins already laid and stays on the plate */
+    /* rings: singles first, then the rings with only white squares, then the rings with a colored one (so those get the clear spots and paint last).
+       A ring starts at the smallest radius and the first of sixteen turns where no square touches a laid pin, leaves the plate or leaves its own state;
+       if none, the radius grows by 4 px up to three square widths, and the least bad one is kept. */
     var inGroup = function (r) { var g = groups[r.o.p[LAT] + ',' + r.o.p[LNG]]; return r.o.p[KIND] === 'a' && !r.o.p[NM] && g && g.length > 1; };
     var laid = pins.filter(function (r) { return !inGroup(r); });
     var rectOf = function (r, x, y) { return [x - r.rr - 2, y - r.rr - 2, x + r.rr + 2, y + r.rr + 2]; };
-    Object.keys(groups).map(function (k) { return groups[k]; }).filter(function (g) { return g.length > 1; }).sort(function (a, b) { return b.length - a.length; }).forEach(function (g) {
-      var sz = 0; g.forEach(function (r) { sz = Math.max(sz, 2 * r.rr); });
-      var best = null, bs = 1e9;
-      for (var t = 0; t < 8 && bs > 0; t++) {
-        var off = ringOffsets(g.length, sz, t * Math.PI / 4), bad = 0;
-        g.forEach(function (r, i) {
-          var rc = rectOf(r, r.x + off[i][0], r.y + off[i][1]);
-          if (rc[0] < left || rc[2] > right || rc[1] < top || rc[3] > bot) bad += 3;
-          laid.forEach(function (o) { if (rc[0] < o.rect[2] && rc[2] > o.rect[0] && rc[1] < o.rect[3] && rc[3] > o.rect[1]) bad++; });
-        });
-        if (bad < bs) { bs = bad; best = off; }
-      }
-      g.forEach(function (r, i) { r.cx = r.x; r.cy = r.y; r.x += best[i][0]; r.y += best[i][1]; r.ringed = true; r.rect = rectOf(r, r.x, r.y); laid.push(r); });
-    });
+    var colored = function (g) { return g.some(function (r) { return r.o.p[C] !== null || (r.o.p[A] & 3); }); };
+    Object.keys(groups).map(function (k) { return groups[k]; }).filter(function (g) { return g.length > 1; })
+      .sort(function (a, b) { return (colored(a) ? 1 : 0) - (colored(b) ? 1 : 0) || b.length - a.length; }).forEach(function (g) {
+        var n = g.length, sz = 0; g.forEach(function (r) { sz = Math.max(sz, 2 * r.rr); });
+        var R0 = n === 2 ? sz / 2 + 3 : Math.max(sz / 2 + 3, (sz + 5) / (2 * Math.sin(Math.PI / n))), best = null, bs = 1e9, st = g[0].o.f.st;
+        for (var R = R0; R <= Math.max(R0, 3 * sz) && bs > 0; R += 4) {
+          for (var h = 0; h < 17 && bs > 0; h++) {
+            var lean = h > 8 ? 1 : 0.5, sx = h ? lean * R * Math.cos((h - 1) * Math.PI / 4) : 0, sy = h ? lean * R * Math.sin((h - 1) * Math.PI / 4) : 0;   // the ring's center may lean up to one radius
+            for (var t = 0; t < 16 && bs > 0; t++) {
+              var off = ringOffsets(n, sz, t * Math.PI / 8, R).map(function (o) { return [o[0] + sx, o[1] + sy]; }), bad = h ? 1 : 0, mine = [];
+              g.forEach(function (r, i) {
+                var x = r.x + off[i][0], y = r.y + off[i][1], rc = rectOf(r, x, y);
+                mine.forEach(function (o) { if (rc[0] < o[2] && rc[2] > o[0] && rc[1] < o[3] && rc[3] > o[1]) bad += 10; });
+                mine.push(rc);
+                if (rc[0] < left || rc[2] > right || rc[1] < top || rc[3] > bot) bad += 10;
+                if (!onOwn(st, x, y)) bad += 3;
+                laid.forEach(function (o) { if (rc[0] < o.rect[2] && rc[2] > o.rect[0] && rc[1] < o.rect[3] && rc[3] > o.rect[1]) bad += 10; });
+              });
+              if (bad < bs) { bs = bad; best = off; }
+            }
+          }
+        }
+        g.forEach(function (r, i) { r.cx = r.x; r.cy = r.y; r.x += best[i][0]; r.y += best[i][1]; r.ringed = true; r.rect = rectOf(r, r.x, r.y); laid.push(r); });
+      });
     var taken = [];
     pins.forEach(function (r) { r.rect = [r.x - r.rr - 2, r.y - r.rr - 2, r.x + r.rr + 2, r.y + r.rr + 2]; taken.push(r.rect); });
     var hits = function (rc, list) { for (var i = 0; i < list.length; i++) { var o = list[i]; if (rc[0] < o[2] && rc[2] > o[0] && rc[1] < o[3] && rc[3] > o[1]) return true; } return false; };
+    var grow = function (rc, d) { return [rc[0] - d, rc[1] - d, rc[2] + d, rc[3] + d]; };
     var inside = function (rc) { return rc[0] >= left && rc[2] <= right && rc[1] >= top && rc[3] <= bot; };
-    // county names: colored and gold-edged counties first, then by pin count; right, left, above, below of the county's own pins, 15 px then 13 px
+    // county names: none past 40 counties in view (then the key says how many); colored and gold-edged counties first, then by pin count; of the sides right, left,
+    // above, below of the county's own pins the ones that keep the name inside the county's own state come first; 15 px then 13 px
     var cos = {}, real = pins.filter(function (r) { return !r.o.p[NM]; });
     real.forEach(function (r) {
       var k = r.o.f.st + r.o.p[CO], c = cos[k] || (cos[k] = { o: r.o, n: 0, gold: false, col: false, b: [1e9, 1e9, -1e9, -1e9] });
@@ -546,50 +579,54 @@
       c.b = [Math.min(c.b[0], r.rect[0]), Math.min(c.b[1], r.rect[1]), Math.max(c.b[2], r.rect[2]), Math.max(c.b[3], r.rect[3])];
     });
     var order = Object.keys(cos).map(function (k) { return cos[k]; }).sort(function (a, b) { return ((a.gold || a.col) ? 0 : 1) - ((b.gold || b.col) ? 0 : 1) || (a.gold ? 0 : 1) - (b.gold ? 0 : 1) || b.n - a.n; });
-    var COUNTY_CAP = 12, names = [];
-    order.slice(0, COUNTY_CAP).forEach(function (c) {
-      var t = c.o.f.counties[c.o.p[CO]][CNAME] + ' County', done = false;
-      [15, 13].forEach(function (size) {
-        if (done) return;
-        var w = measure(t, size, '600'), b = c.b, my = (b[1] + b[3]) / 2;
-        [[b[2] + 4, my + size * 0.35], [b[0] - 4 - w, my + size * 0.35], [(b[0] + b[2]) / 2 - w / 2, b[1] - 4], [(b[0] + b[2]) / 2 - w / 2, b[3] + 4 + size]].forEach(function (pos) {
+    var COUNTY_CAP = 12, COUNTY_MAX = 40, names = [], countyCount = order.length;
+    if (countyCount <= COUNTY_MAX) order.slice(0, COUNTY_CAP).forEach(function (c) {
+      var t = c.o.f.counties[c.o.p[CO]][CNAME] + ' County', done = false, st = c.o.f.st;
+      [true, false].forEach(function (mustOwn) {
+        [15, 13].forEach(function (size) {
           if (done) return;
-          var rc = [pos[0] - 2, pos[1] - size, pos[0] + w + 2, pos[1] + 4];
-          if (!inside(rc) || hits(rc, taken)) return;
-          taken.push(rc); names.push({ text: t, x: pos[0], y: pos[1], size: size, rect: rc, st: c.o.f.st, co: c.o.p[CO] }); done = true;
-        });
-      });
-    });
-    var moreCounties = order.length - names.length;
-    // state names after the pins and the county names: a dark plate under a state that has pins, the state's own ground, never Canada
-    var withPins = {}; real.forEach(function (r) { withPins[r.o.f.st] = true; });
-    var states = [], placed = [];
-    var tryState = function (f, hasPins) {
-      var ss = stateSpots(f, win); if (!ss) return;
-      var nm = (f.properties || {}).name || '', pc = (f.properties || {}).postal || '';
-      var made = null;
-      [0, 1].forEach(function (pass) {
-        if (made || (pass === 1 && !hasPins)) return;
-        ss.spots.forEach(function (sp) {
-          if (made) return;
-          var a = px(sp.lat, sp.lng), runPx = (sp.run[1] - sp.run[0]) * kx * sc;
-          [[nm.toUpperCase(), 15], [pc, 14]].forEach(function (v) {
-            if (made || !v[0]) return;
-            var w = measure(v[0], v[1], '700'); if (v[0] === nm.toUpperCase() && w + 16 > runPx) return;
-            var pad = hasPins ? 4 : 2, rc = [a[0] - w / 2 - pad, a[1] - v[1] - pad + 4, a[0] + w / 2 + pad, a[1] + 4 + pad];
-            if (!inside(rc) || hits(rc, placed)) return;
-            if (hits(rc, names.map(function (n) { return n.rect; }))) return;
-            if (pass === 0 && hits(rc, pins.map(function (r) { return r.rect; }))) return;
-            made = { name: nm, code: pc, text: v[0], size: v[1], x: a[0] - w / 2, y: a[1], w: w, rect: rc, plate: hasPins, lng: sp.lng, lat: sp.lat, ring: ss.ring, st: pc, hasPins: hasPins };
+          var w = measure(t, size, '600'), b = c.b, my = (b[1] + b[3]) / 2;
+          [[b[2] + 4, my + size * 0.35], [b[0] - 4 - w, my + size * 0.35], [(b[0] + b[2]) / 2 - w / 2, b[1] - 4], [(b[0] + b[2]) / 2 - w / 2, b[3] + 4 + size]].forEach(function (pos) {
+            if (done) return;
+            var rc = [pos[0] - 2, pos[1] - size, pos[0] + w + 2, pos[1] + 4];
+            if (!inside(rc) || hits(rc, taken)) return;
+            if (mustOwn && !(onOwn(st, rc[0], (rc[1] + rc[3]) / 2) && onOwn(st, rc[2], (rc[1] + rc[3]) / 2))) return;
+            taken.push(rc); names.push({ text: t, x: pos[0], y: pos[1], size: size, rect: rc, st: c.o.f.st, co: c.o.p[CO] }); done = true;
           });
         });
       });
+    });
+    var moreCounties = countyCount <= COUNTY_MAX ? order.length - names.length : 0;
+    // state names after the pins and the county names. A name must fit its run of the state (run >= text + 12) and sits centered in it, wholly on its own
+    // ground; more than three states with pins: two-letter codes for all. It keeps 14 px off county names, never covers a square or another state's pin,
+    // and takes the place that covers the fewest pins of its own state (center first on a tie). A state with no pins is named only where nothing is touched.
+    var withPins = {}; real.forEach(function (r) { withPins[r.o.f.st] = true; });
+    var codes = Object.keys(withPins).length > 3, states = [], placed = [];
+    var cnames = names.map(function (n) { return grow(n.rect, 14); });
+    var tryState = function (f, hasPins) {
+      var ss = stateSpots(f, tight); if (!ss) return;
+      var nm = (f.properties || {}).name || '', pc = (f.properties || {}).postal || '', made = null;
+      (codes ? [[pc, 14]] : [[nm.toUpperCase(), 15], [pc, 14]]).forEach(function (v) {
+        if (made || !v[0]) return;
+        var w = measure(v[0], v[1], '700'), best = null;
+        ss.spots.forEach(function (sp) {
+          var runPx = (sp.run[1] - sp.run[0]) * kx * sc; if (runPx < w + 12) return;
+          var a = px(sp.lat, (sp.run[0] + sp.run[1]) / 2), pad = hasPins ? 4 : 2, rc = [a[0] - w / 2 - pad, a[1] - v[1] - pad + 4, a[0] + w / 2 + pad, a[1] + 4 + pad];
+          if (!inside(rc) || hits(rc, placed) || hits(rc, cnames)) return;
+          var my = (rc[1] + rc[3]) / 2, ok = [[rc[0], rc[1]], [rc[2], rc[1]], [rc[0], rc[3]], [rc[2], rc[3]], [rc[0], my], [rc[2], my]].every(function (q) { var g = inv(q[0], q[1]); return pointInRing(g[0], g[1], ss.ring); });
+          if (!ok) return;
+          var cov = 0, bad = false;
+          pins.forEach(function (r) { if (rc[0] < r.rect[2] && rc[2] > r.rect[0] && rc[1] < r.rect[3] && rc[3] > r.rect[1]) { cov++; if (r.o.p[KIND] === 'a' || r.o.f.st !== pc) bad = true; } });
+          if (bad || (!hasPins && cov)) return;
+          if (!best || cov < best.cov) best = { cov: cov, name: nm, code: pc, text: v[0], size: v[1], x: a[0] - w / 2, y: a[1], w: w, rect: rc, plate: hasPins, lng: (sp.run[0] + sp.run[1]) / 2, lat: sp.lat, ring: ss.ring, st: pc, hasPins: hasPins };
+        });
+        made = best;
+      });
       if (made) { placed.push(made.rect); states.push(made); }
     };
-    var feats = (shapes || []).filter(function (f) { return (f.properties || {}).iso_a2 !== 'CA'; });
     feats.filter(function (f) { return withPins[(f.properties || {}).postal]; }).forEach(function (f) { tryState(f, true); });
     feats.filter(function (f) { return !withPins[(f.properties || {}).postal]; }).forEach(function (f) { tryState(f, false); });
-    return { px: px, sc: sc, kx: kx, cx: cx, cy: cy, win: win, dot: dot, pins: pins, counties: names, moreCounties: moreCounties, states: states, plate: plate };
+    return { px: px, inv: inv, sc: sc, kx: kx, cx: cx, cy: cy, win: win, dot: dot, pins: pins, drawn: drawn, counties: names, countyCount: countyCount, moreCounties: moreCounties, states: states, plate: plate };
   }
   function card(done) {
     if (!map) { done(null); return; }
@@ -622,21 +659,14 @@
     x.lineJoin = 'round';
     x.fillStyle = '#141a18'; x.fillRect(left - 8, top - 8, right - left + 16, bot - top + 16);
     x.save(); x.beginPath(); x.rect(left - 8, top - 8, right - left + 16, bot - top + 16); x.clip();
-    (shapes || []).forEach(function (f) {
-      var rs = rings(f); if (!rs.length) return;
-      var any = false;
+    model.drawn.forEach(function (d) {
       x.beginPath();
-      rs.forEach(function (r) {
-        var inside = r.some(function (c) { return Math.abs(c[0] - cx) < halfX && Math.abs(c[1] - cy) < halfY; });
-        var minx = 1e9, maxx = -1e9, miny = 1e9, maxy = -1e9; r.forEach(function (c) { minx = Math.min(minx, c[0]); maxx = Math.max(maxx, c[0]); miny = Math.min(miny, c[1]); maxy = Math.max(maxy, c[1]); });
-        if (!inside && !(minx < cx - halfX && maxx > cx + halfX && miny < cy - halfY && maxy > cy + halfY)) return;
-        any = true;
-        r.forEach(function (c, i) { var a = px(c[1], c[0]); if (i) x.lineTo(a[0], a[1]); else x.moveTo(a[0], a[1]); }); x.closePath();
-      });
-      if (any) { x.fillStyle = '#1b2220'; x.fill(); x.strokeStyle = 'rgba(233,237,235,.38)'; x.lineWidth = 1.2; x.stroke(); }
+      d.rings.forEach(function (r) { r.forEach(function (c, i) { var a = px(c[1], c[0]); if (i) x.lineTo(a[0], a[1]); else x.moveTo(a[0], a[1]); }); x.closePath(); });
+      x.fillStyle = '#1b2220'; x.fill(); x.strokeStyle = 'rgba(233,237,235,.38)'; x.lineWidth = 1.2; x.stroke();
     });
     var NOTC = '#8a8f8c';
-    var drawOrder = model.pins.slice().sort(function (a, c) { return (a.o.p[A] & 3 ? 1 : 0) - (c.o.p[A] & 3 ? 1 : 0); });
+    var rankOf = function (r) { return r.o.p[A] & 3 ? 2 : r.o.p[C] !== null ? 1 : 0; };   // white first, colored over them, gold edges last
+    var drawOrder = model.pins.map(function (r, i) { return [r, i]; }).sort(function (a, c) { return rankOf(a[0]) - rankOf(c[0]) || a[1] - c[1]; }).map(function (e) { return e[0]; });
     drawOrder.forEach(function (r) {
       var p = r.o.p, rr = r.rr, odd = !!(p[A] & 3);
       if (p[KIND] === 'a') {
@@ -670,7 +700,8 @@
     x.strokeStyle = '#e9edeb'; x.lineWidth = 1.5; x.strokeRect(kx0 + 2.5, ky - 12, 13, 13); row('Square: auction result'); ky += 30;
     x.font = '700 17' + F; x.fillStyle = '#e9edeb'; x.fillText(pins.length === total ? n0(total) + ' pins in this view' : n0(pins.length) + ' of ' + n0(total) + ' pins in this view', kx0, ky); ky += 22;
     x.font = '400 14' + F; x.fillStyle = 'rgba(233,237,235,.72)';
-    if (model.moreCounties > 0) { x.fillText('+ ' + n0(model.moreCounties) + (model.moreCounties === 1 ? ' more county' : ' more counties'), kx0, ky); ky += 20; }
+    if (model.countyCount > 40) { x.fillText(n0(model.countyCount) + ' counties', kx0, ky); ky += 20; }
+    else if (model.moreCounties > 0) { x.fillText('+ ' + n0(model.moreCounties) + (model.moreCounties === 1 ? ' more county' : ' more counties'), kx0, ky); ky += 20; }
     x.fillText('Pins at county, town or section', kx0, ky); x.fillText('centers, never the parcel.', kx0, ky + 18);
     x.font = '400 16' + F; x.fillStyle = 'rgba(233,237,235,.72)';
     x.fillText(footNote(scope, thr), 48, H - 42);
@@ -680,10 +711,12 @@
   function setupTools() {
     var nav = root.navigator || {}, canFiles = false;
     try { canFiles = !!(nav.share && nav.canShare && root.File && nav.canShare({ files: [new root.File([''], 'x.png', { type: 'image/png' })] })); } catch (e) {}
-    tools.innerHTML = (canFiles ? '<button type="button" class="lm-share">Share</button>' : '<button type="button" class="lm-copy">Copy link</button>') + '<button type="button" class="lm-save">Save the picture</button>';
+    if (!SAVE_PICTURE) canFiles = false;
+    tools.innerHTML = (canFiles ? '<button type="button" class="lm-share">Share</button>' : '<button type="button" class="lm-copy">Copy link</button>') + (SAVE_PICTURE ? '<button type="button" class="lm-save">Save the picture</button>' : '');
     var save = function (b) { var a = document.createElement('a'); a.href = URL.createObjectURL(b); a.download = 'agsist-farm-sales-map.png'; document.body.appendChild(a); a.click(); setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1500); };
     var flash = function (b, t) { var o = b.textContent; b.textContent = t; setTimeout(function () { b.textContent = o; }, 1800); };
-    tools.querySelector('.lm-save').addEventListener('click', function () { card(function (b) { if (b) save(b); }); });
+    var sv = tools.querySelector('.lm-save');
+    if (sv) sv.addEventListener('click', function () { card(function (b) { if (b) save(b); }); });
     var cp = tools.querySelector('.lm-copy');
     if (cp) cp.addEventListener('click', function () { var u = viewUrl(); try { nav.clipboard.writeText(u).then(function () { flash(cp, 'Link copied'); }, function () { flash(cp, 'Copy failed'); }); } catch (e) { flash(cp, 'Copy failed'); } });
     var sb = tools.querySelector('.lm-share');
