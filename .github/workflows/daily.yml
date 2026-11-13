@@ -482,6 +482,23 @@ jobs:
             echo "no daily/${d}.html — skipping sitemap add"
           fi
 
+      - name: Chart of the day, drawn (never holds the send)
+        id: chartdraw
+        if: ${{ (github.event_name == 'schedule' || inputs.send_email == true) && (inputs.format || vars.DAILY_FORMAT || 'v2') == 'v2' }}
+        continue-on-error: true
+        timeout-minutes: 4
+        run: |
+          f=$(python3 -c "import json; print((json.load(open('data/daily.json')).get('chart_of_day') or {}).get('image') or '')")
+          [ -n "$f" ] || { echo "no chart of the day today"; exit 0; }
+          if [ ! -f "$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" ]; then
+            npm install --silent --prefix "$RUNNER_TEMP/pw" playwright@1.56.1 >/dev/null
+            "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium >/dev/null
+          fi
+          PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" node scripts/render_daily_chart.mjs data/daily.json "$f"
+          python3 scripts/print_of_day.py --compress "$f"
+          cp "$f" "$RUNNER_TEMP/chart.png"
+          echo "file=$f" >> "$GITHUB_OUTPUT"
+
       - name: Commit and push
         id: commit
         env:
@@ -554,11 +571,29 @@ jobs:
           done
           echo "::warning::the print of the day was not served by agsist.com in 3 minutes; the email goes without it"
 
+      - name: Chart of the day, is it live
+        if: ${{ steps.chartdraw.outcome == 'success' && steps.chartdraw.outputs.file != '' }}
+        continue-on-error: true
+        timeout-minutes: 2
+        env:
+          F: ${{ steps.chartdraw.outputs.file }}
+        run: |
+          url="https://agsist.com/$F"
+          for i in 1 2 3 4 5; do
+            if curl -fsS -m 15 -o "$RUNNER_TEMP/chart-live.png" "$url" && cmp -s "$RUNNER_TEMP/chart-live.png" "$RUNNER_TEMP/chart.png"; then
+              python3 -c "import json,sys; c=json.load(open('data/daily.json'))['chart_of_day']; o={k: c.get(k) for k in ('alt','takeaway','source','date','template')}; o['image_url']=sys.argv[1]; o['page_url']=sys.argv[2]; json.dump(o, open(sys.argv[3],'w'))" "$url" "https://agsist.com/daily/$(TZ=America/Chicago date +%F)" "$RUNNER_TEMP/chart-of-day.json"
+              echo "live: $url"; exit 0
+            fi
+            sleep 12
+          done
+          echo "::warning::the chart of the day was not served by agsist.com in a minute; the email goes without it"
+
       - name: Send daily email
         if: ${{ github.event_name == 'schedule' || inputs.send_email == true }}
         env:
           DAILY_FORMAT: ${{ inputs.format || vars.DAILY_FORMAT || 'v2' }}
           PRINT_OF_DAY: ${{ runner.temp }}/print-of-day.json
+          CHART_OF_DAY: ${{ runner.temp }}/chart-of-day.json
           OWNER_TO:     ${{ secrets.SIG_TO }}
           LOCAL_BIDS:   ${{ steps.localbid.outcome == 'success' && '1' || '0' }}
           SMTP_HOST:    ${{ secrets.SMTP_HOST }}

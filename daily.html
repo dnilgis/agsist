@@ -141,6 +141,11 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-surprise-banner .surprise-text strong{color:var(--gold);font-weight:700;}
 
 .dv3-today-lead{font-size:1rem;color:var(--text-dim);line-height:1.75;margin:.5rem 0 1rem;}
+/* 2026-11-13: the chart of the day, the same SVG the email's picture is drawn from (scripts/daily_chart.py) */
+.dv3-chart{margin:.4rem 0 1.2rem;max-width:640px}.dv3-chart-head{font-size:.95rem;line-height:1.45;color:var(--text);margin:0 0 .5rem}
+.dv3-chart-lab{display:block;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}
+.dv3-chart-art{aspect-ratio:var(--dc-ar,600/360)}.dv3-chart-art svg{display:block;width:100%;height:auto;border:1px solid var(--border);border-radius:6px}
+.dv3-chart-src{font-size:.8rem;color:var(--text-muted);margin:.4rem 0 0}
 
 /* Top bar: number + quote */
 .dv3-topbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.9rem;margin:1rem 0 1.25rem;}
@@ -1248,6 +1253,15 @@ function renderToday(data,why){
   }
 
   // Lead paragraph
+  // the chart of the day: our own SVG from data/daily.json (built by code, text escaped there), or nothing
+  var chart='';
+  var cd=data.chart_of_day;
+  if(cd&&typeof cd.svg==='string'&&cd.svg.indexOf('<svg xmlns="http://www.w3.org/2000/svg"')===0&&!/<script|\son\w+=/i.test(cd.svg)&&/^daily\/img\/chart-\d{4}-\d{2}-\d{2}\.png$/.test(String(cd.image||''))){
+    var cdd=String(cd.date||'').slice(0,10).split('-'),MN=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    chart='<figure class="dv3-chart" style="--dc-ar:600/'+(parseInt(cd.h,10)||360)+'"><figcaption class="dv3-chart-head"><span class="dv3-chart-lab">Chart of the day</span>'+escHtml(cd.takeaway)+'</figcaption>'+
+      '<div class="dv3-chart-art">'+cd.svg+'</div><p class="dv3-chart-src">Source: '+escHtml(cd.source)+'. '+(cdd.length===3?MN[+cdd[1]-1]+' '+(+cdd[2])+'. ':'')+
+      '<a href="/'+cd.image+'" download>Save the picture</a></p></figure>';
+  }
   var lead='';
   if(data.lead){lead='<p class="dv3-today-lead">'+mdInline(data.lead)+'</p>';}
   else if(data.body){
@@ -1609,7 +1623,7 @@ function renderToday(data,why){
   var perm=iso?'<div class="dv3-perm"><a href="/daily/'+escHtml(iso)+'">Permalink to this briefing \u2192</a></div>':'';
 
   /* 2026-10-03: the sponsor follows the sections, away from The Action. */
-  el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+edgeH+hclock+sparks+topbar+yc+sections+sponsor+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
+  el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+chart+edgeH+hclock+sparks+topbar+yc+sections+sponsor+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
 
   // Point the permalink (and the share links) at the file that exists, once
   // the archive index says which candidate date that is.
