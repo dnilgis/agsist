@@ -7,7 +7,9 @@
  *   every push to main that touches this file. No more pasting into the dashboard.
  * v5.68 (2026-11-13): SPONSORS PAY BY CHECK OR BANK WIRE. The sponsor confirm pages no longer
  *   promise a free first month (no free months, Nov 13): they say the ad is paid by check or bank
- *   wire from the invoice we email. No new binding or secret. Every other route answers as before.
+ *   wire from the invoice we email. GET /count also answers people: the addresses on any list
+ *   (sub:, alert:, ewatch:, pwatch:, watch:, note:), each once, as one number; no address is sent.
+ *   No new binding or secret. Every other route answers as before.
  * v5.67 (2026-11-10): REPORT-DAY RESULT. POST /report-live takes the graded result of a USDA
  *   report from the report-day job (.github/workflows/report-day-live.yml, scripts/report_live.py)
  *   in one fixed shape (rows of USDA's figure against the trade, counts, the WASDE balance lines,
@@ -2726,6 +2728,19 @@ async function noticeCounts(env) {
   return { notice: keys.length, notices: by, lists };
 }
 
+// v5.68: unique addresses across every list, for the one "on our lists" figure. Counts only.
+const PEOPLE_PREFIXES = ["sub:", "alert:", "ewatch:", "pwatch:", "watch:", "note:"];
+async function peopleCount(env) {
+  const seen = new Set();
+  for (const pre of PEOPLE_PREFIXES) {
+    for (const k of await listKeys(env, pre)) {
+      const e = k.slice(pre.length).trim().toLowerCase();
+      if (e.includes("@")) seen.add(e);
+    }
+  }
+  return seen.size;
+}
+
 async function formCounts(env) {
   const out = {};
   for (const kind of Object.keys(FORM_KINDS)) out[kind] = (await listKeys(env, "form:" + kind + ":")).length;
@@ -3975,6 +3990,9 @@ async function handle(req, env) {
         ewatch: (await listKeys(env, "ewatch:")).length,
         pwatch: (await listKeys(env, "pwatch:")).length,
         watch: (await listKeys(env, "watch:")).length,
+        // v5.68: people on any list, each address once (the Daily, hail alerts, elevator watch, price
+        // targets, county watch and every notice topic). A count only; no address leaves the Worker.
+        people: await peopleCount(env),
         by_source: bySource,
         // v5.13: whether UNSUB_SECRET is set on this Worker. A boolean, never the value.
         secret: typeof env.UNSUB_SECRET === "string" && env.UNSUB_SECRET.length > 0,

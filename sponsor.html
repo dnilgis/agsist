@@ -56,6 +56,12 @@
     .sp-reach{font-size:.98rem;margin:0 0 .6rem;max-width:64ch;}
     .sp-reach strong{color:var(--text);}
     .sp-src{color:var(--text-muted);font-size:.85rem;}
+    .sp-proof{list-style:none;margin:.2rem 0 .9rem;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.6rem;}
+    .sp-proof li{border:1px solid var(--border);border-radius:8px;padding:.7rem .8rem;background:var(--bg-card,transparent);display:flex;flex-direction:column;gap:.15rem;min-width:0;}
+    .sp-proof b{font-family:var(--font-mono);font-size:1.45rem;line-height:1.1;color:var(--text);font-weight:700;}
+    .sp-proof-l{font-size:.9rem;font-weight:600;color:var(--text);line-height:1.25;}
+    .sp-proof small{font-size:.76rem;color:var(--text-muted);line-height:1.35;}
+    @media (max-width:760px){.sp-proof{grid-template-columns:repeat(2,minmax(0,1fr));}}
     .sp-jump a,.sp-contact a{color:var(--text-dim);text-decoration:underline;text-underline-offset:2px;display:inline-block;padding:12px 0;margin:-12px 0;}
     .sp-contact{font-size:.92rem;margin:.4rem 0 0;color:var(--text-muted);}
     .sp-h2{font-family:var(--font-display);font-size:1.35rem;color:var(--text);margin:2.2rem 0 .9rem;scroll-margin-top:84px;}
@@ -150,7 +156,13 @@
       <section class="sp-hero" aria-labelledby="sp-h1">
         <h1 class="sp-h1" id="sp-h1">Advertise on AGSIST</h1>
         <p class="sp-sub page-lede">Two spots, one business in each. Pay by check or bank wire. Money back if you ask inside 30 days.</p>
-        <p class="sp-reach">Readers come here for cash bids, rain, rent and farm numbers: <strong><span data-a="engaged">9,672</span> engaged visits</strong> and <span data-a="views">25,836</span> page views in the 28 days <span data-a="win">Oct 14 to Nov 10, 2026</span>. <span class="sp-src">Google Analytics.</span></p>
+        <p class="sp-reach">Readers come here for cash bids, rain, rent and farm numbers. The last 30 days:</p>
+        <ul class="sp-proof" aria-label="AGSIST readers, last 30 days">
+          <li><b><span data-a="eng">10,363</span></b><span class="sp-proof-l">engaged visits</span><small><span data-a="engDay">345</span> a day, <span data-a="engWin">Oct 12 to Nov 10, 2026</span>. Google Analytics.</small></li>
+          <li><b><span data-a="srch">11,609</span></b><span class="sp-proof-l">search clicks</span><small><span data-a="srchG">7,908</span> from Google, <span data-a="srchB">3,701</span> from Bing, <span data-a="srchWin">Oct 12 to Nov 10, 2026</span>. Search Console (US) and Bing Webmaster.</small></li>
+          <li><b><span data-a="ai">73,428</span></b><span class="sp-proof-l">times Bing&rsquo;s AI answers cited AGSIST</span><small><span data-a="aiDay">2,448</span> a day, <span data-a="aiWin">Oct 10 to Nov 8, 2026</span>. Bing Webmaster.</small></li>
+          <li><b><span data-a="listN">242</span></b><span class="sp-proof-l"><span data-a="listLabel">people get the AGSIST Daily email</span></span><small><span data-a="listNote">Counted Nov 12, 2026.</span></small></li>
+        </ul>
         <p class="sp-jump"><a href="#sitewide">Sitewide line</a> &middot; <a href="#state">State card</a> &middot; <a href="#book">Book</a></p>
         <p class="sp-contact">Rather talk first? Call <a href="tel:+17157972428">715-797-2428</a> or email <a href="mailto:sig@agsist.com?subject=AGSIST%20sponsor%20spot">sig@agsist.com</a>.</p>
       </section>
@@ -169,7 +181,7 @@
           <div class="sp-pic-page" aria-hidden="true"><i></i><i style="width:72%"></i><i style="width:84%"></i></div>
           <figcaption>Your name and one line, under the menu on every page. Readers see it first.</figcaption>
         </figure>
-        <p class="sp-live">Last 28 days: <b><span data-a="engaged">9,672</span> engaged visits</b>, <span data-a="views">25,836</span> page views.</p>
+        <p class="sp-live">Last 30 days: <b><span data-a="eng">10,363</span> engaged visits</b> and <span data-a="srch">11,609</span> search clicks (<span data-a="srchWin">Oct 12 to Nov 10, 2026</span>).</p>
         <p class="sp-status" data-status="sitewide" hidden></p>
         <div class="sp-btns" data-btns="sitewide">
           <a class="sp-btn" href="#book" data-invoice="sitewide">Book this spot</a>
@@ -281,24 +293,6 @@
 </div>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/sponsor-apply.js?v=11" defer></script>
-  <script>
-  /* The page is written with today's figures (scripts/bake_audience.py, from data/audience.json). On load it
-     re-reads the same file, so the numbers cannot go stale; if the file fails to load, the written text stays. */
-  (function () {
-    var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-    function d(s) { var p = String(s || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) : ''; }
-    function span(a, b) { return String(a).slice(0, 4) === String(b).slice(0, 4) ? d(a) + ' to ' + d(b) + ', ' + String(b).slice(0, 4) : d(a) + ', ' + String(a).slice(0, 4) + ' to ' + d(b) + ', ' + String(b).slice(0, 4); }
-    function n(x) { return typeof x === 'number' && x > 0 ? x.toLocaleString('en-US') : ''; }
-    function set(k, v) { if (v) [].forEach.call(document.querySelectorAll('[data-a="' + k + '"]'), function (el) { el.textContent = v; }); }
-    fetch('/data/audience.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (a) {
-      var t = a && a.totals && a.totals['28d'];
-      if (!t) return;
-      set('engaged', n(t.engaged)); set('views', n(t.views));
-      var w = (a.ranges || []).filter(function (x) { return x.id === '28d'; })[0];
-      if (w && w.start && w.end) set('win', span(w.start, w.end));
-    });
-  })();
-  </script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
 </html>

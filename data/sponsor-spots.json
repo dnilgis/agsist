@@ -8,6 +8,37 @@
   "engaged": 9672,
   "views": 25836
  },
+ "proof": {
+  "refreshed": "2026-11-12",
+  "days": 30,
+  "engaged": {
+   "start": "2026-10-12",
+   "end": "2026-11-10",
+   "total": 10363,
+   "perDay": 345,
+   "source": "Google Analytics"
+  },
+  "search": {
+   "start": "2026-10-12",
+   "end": "2026-11-10",
+   "total": 11609,
+   "perDay": 387,
+   "google": 7908,
+   "bing": 3701,
+   "source": "Google Search Console (US) and Bing Webmaster"
+  },
+  "ai": {
+   "start": "2026-10-10",
+   "end": "2026-11-08",
+   "total": 73428,
+   "perDay": 2448,
+   "source": "Bing Webmaster AI Performance"
+  }
+ },
+ "lists": {
+  "asOf": "2026-11-12",
+  "daily": 242
+ },
  "states": {
   "AK": {
    "slug": "alaska",
