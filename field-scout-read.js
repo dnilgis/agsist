@@ -347,7 +347,7 @@ window.__fsRead = function (FSX) {
     var key=b.getAttribute('data-crop'), q=b.closest('.fs-crop-q'), host=q&&q.parentNode;
     if(q) q.outerHTML=cropChips();
     var nb=host&&host.querySelector('.fs-crop-chip[data-crop="'+key+'"]'); if(nb) nb.focus();   // keep keyboard focus
-    if(FSX.FIELD.indices) renderIndices(FSX.FIELD.indices);   // the vigor words depend on the crop
+    if(FSX.FIELD.indices) renderIndices(applyVet(FSX.FIELD.indices));   // the vigor words depend on the crop
     recomputeInsight(); renderRisk();
     var cy=FSX.FIELD.county; if(cy&&cy.abbr){ loadMarketCard(FSX.fieldGen, cy.abbr, cy.st); loadCondCard(FSX.fieldGen, cy.abbr, cy.st); }
     ga('field_crop_set', { crop: key });
@@ -640,34 +640,150 @@ window.__fsRead = function (FSX) {
         station:rec.station.name, mi:mi, borrowed:via?(rec.name||'a neighboring county'):null, normals:R.normals||'1991-2020', wk:wk };
     });
   }
-  function gridGdu(c){
-    var yNow=new Date().getFullYear();
+  // The PRISM rows only (this year and the five before); the sums are gduFromRows, so the
+  // heat units can be cut at the same day as the rain.
+  function gridRows(c){
     var end=new Date(Date.now()-2*864e5).toISOString().slice(0,10);   // the PRISM day lands a day or two late
+    var yNow=new Date().getFullYear();
     var params=JSON.stringify({ loc:c.lng.toFixed(3)+','+c.lat.toFixed(3), grid:'21', sdate:(yNow-5)+'-01-01', edate:end, elems:'maxt,mint' });
     return fetchT(ACIS_GRID+'?params='+encodeURIComponent(params), 15000).then(function(r){ if(!r.ok) throw new Error(r.status); return r.json(); }).then(function(j){
       if(!j || !Array.isArray(j.data) || !j.data.length) return null;
       var rows=j.data.filter(function(r){ return r && +r[1]>-998 && +r[2]>-998; });
-      if(!rows.length) return null;
-      var cutoffIso=rows[rows.length-1][0], cutoff=cutoffIso.slice(5);
-      var plantMD = c.lat>=44 ? '05-05' : c.lat>=41 ? '04-28' : c.lat>=38 ? '04-18' : '04-08';
-      var acc={}, gCum={};
-      rows.forEach(function(r){
-        var md=String(r[0]).slice(5), yr=+String(r[0]).slice(0,4); if(md>cutoff) return;
-        var hi=Math.min(+r[1],86), lo=Math.max(+r[2],50), g=Math.max(0,(hi+lo)/2-50);
-        if(!acc[yr]){ acc[yr]={gdu:0,gduP:0}; gCum[yr]={}; }
-        acc[yr].gdu+=g; if(md>=plantMD){ acc[yr].gduP+=g; gCum[yr][md]=acc[yr].gduP; }
-      });
-      var ys=Object.keys(acc).map(Number).sort(function(a,b){return a-b;}), cur=ys[ys.length-1];
-      var prior=ys.filter(function(y){ return y<cur; });
-      if(cur!==yNow || prior.length<3) return null;
-      var gNorm=prior.reduce(function(a,y){ return a+acc[y].gdu; },0)/prior.length;
-      return { gNow:acc[cur].gdu, gNorm:gNorm, gDep:acc[cur].gdu-gNorm, gPlant:acc[cur].gduP, plantMD:plantMD, gCumMap:gCum[cur]||null, n:prior.length, gThru:cutoffIso };
+      return rows.length ? rows : null;
     });
   }
+  // FS-SEASON-BEGIN
+  // Pure: the clock and the data come in as arguments, so the tests run it as it stands.
+  var SEASON_MON=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  function isoLabel(iso){ var m=/^\d{4}-(\d\d)-(\d\d)/.exec(String(iso||'')); return m ? SEASON_MON[+m[1]-1]+' '+(+m[2]) : ''; }
+  // "the 1991-2020 normal" for gauge rain; the GDU line keeps its own "N-year average"
+  function pLbl(se){ return se&&se.pLbl ? 'the '+se.pLbl : 'normal'; }
+  // Heat units from Jan 1 (base 50 F, 86 F cap) for this year and the years before, all cut at the
+  // same calendar day. cutoffIso (the rain gauge's last day) pulls the heat units back to the same day
+  // when it is earlier than the last grid day, so the card compares like with like. frost: the first
+  // 28 F night on or after Aug 15 this year, whatever the cutoff (the freeze happened either way).
+  function gduFromRows(rows, yNow, lat, cutoffIso){
+    if(!rows || !rows.length) return null;
+    var cutoffIso0=rows[rows.length-1][0], cutoffIso1=cutoffIso0;
+    if(cutoffIso && String(cutoffIso).slice(0,4)===cutoffIso0.slice(0,4) && cutoffIso<cutoffIso0) cutoffIso1=String(cutoffIso).slice(0,10);
+    var cutoff=cutoffIso1.slice(5);
+    var plantMD = lat>=44 ? '05-05' : lat>=41 ? '04-28' : lat>=38 ? '04-18' : '04-08';
+    var acc={}, gCum={}, frost=null;
+    rows.forEach(function(r){
+      var iso=String(r[0]), md=iso.slice(5), yr=+iso.slice(0,4);
+      if(yr===yNow && !frost && iso>=yNow+'-08-15' && +r[2]<=28) frost=iso;
+      if(md>cutoff) return;
+      var hi=Math.min(+r[1],86), lo=Math.max(+r[2],50), g=Math.max(0,(hi+lo)/2-50);
+      if(!acc[yr]){ acc[yr]={gdu:0,gduP:0}; gCum[yr]={}; }
+      acc[yr].gdu+=g; if(md>=plantMD){ acc[yr].gduP+=g; gCum[yr][md]=acc[yr].gduP; }
+    });
+    var ys=Object.keys(acc).map(Number).sort(function(a,b){return a-b;}), cur=ys[ys.length-1];
+    var prior=ys.filter(function(y){ return y<cur; });
+    if(cur!==yNow || prior.length<3) return null;
+    var gNorm=prior.reduce(function(a,y){ return a+acc[y].gdu; },0)/prior.length;
+    return { gNow:acc[cur].gdu, gNorm:gNorm, gDep:acc[cur].gdu-gNorm, gPlant:acc[cur].gduP, plantMD:plantMD, gCumMap:gCum[cur]||null, n:prior.length, gThru:cutoffIso1, frost:frost };
+  }
+  // Which part of the year the card describes. 'after' from the first 28 F night on or after Aug 15
+  // (frost ends a corn or bean crop), or from Nov 1 when no frost record answered (harvest is done
+  // across the Corn Belt by then); 'before' from Jan 1 until the planting date the card already uses.
+  function seasonPhase(todayIso, s){
+    var md=String(todayIso).slice(5,10);
+    if(s && s.frost) return { phase:'after', why:'frost', frost:s.frost };
+    if(md>='11-01') return { phase:'after', why:'calendar', frost:null };
+    if(md<((s&&s.plantMD)||'05-01')) return { phase:'before', why:'planting', frost:null };
+    return { phase:'in', why:null, frost:null };
+  }
+  // The one plain sentence under the two figures. In season it is the crop's read; after the
+  // freeze or harvest it describes the season that was; before planting, the ground going in.
+  // It states what has happened and never what the weather will do.
+  function seasonSay(s, ph){
+    if(!s) return '';
+    var wet=s.pDep!=null&&s.pDep>=1, dry=s.pDep!=null&&s.pDep<=-1, hot=s.gDep!=null&&s.gDep>=75, cool=s.gDep!=null&&s.gDep<=-75, say='';
+    var phase=ph?ph.phase:'in';
+    if(phase==='before'){
+      var rp='', hp='';
+      if(s.pDep!=null){
+        rp = wet ? 'Rain since Jan 1 is running '+s.pDep.toFixed(1)+'″ above '+pLbl(s)+', so the ground goes into planting wetter than usual. '
+           : dry ? 'Rain since Jan 1 is running '+Math.abs(s.pDep).toFixed(1)+'″ below '+pLbl(s)+', so the ground goes into planting drier than usual. '
+           : 'Rain since Jan 1 is close to '+pLbl(s)+'. ';
+      }
+      if(s.gDep!=null){
+        hp = hot ? 'Heat units so far are ahead of the last '+s.n+' years.' : cool ? 'Heat units so far are behind the last '+s.n+' years.' : 'Heat units so far are close to the last '+s.n+' years.';
+      }
+      if(!rp && !hp) return '';
+      return 'Planting is still ahead and the season is not decided. '+rp+hp+' Neither says how summer will go.';
+    }
+    if(phase==='after'){
+      var lead = ph.frost ? 'The season ended with the first hard freeze, '+isoLabel(ph.frost)+'. ' : 'The season is over. ';
+      if(hot&&dry) say='It ran hot and dry: heat ran ahead of the last '+s.n+' years and rain finished behind normal, the combination that tests a crop. The combine has the answer.';
+      else if(hot&&wet) say='It ran warm and well-watered: fast development with moisture to back it, about the best combination there is.';
+      else if(cool&&wet) say='It ran cool and wet: development ran behind, and low ground may have struggled with the surplus.';
+      else if(cool&&dry) say='It ran cool and dry: slow development, though the moisture deficit bit less at that pace.';
+      else if(hot) say='Heat ran ahead of the last '+s.n+' years, so development was ahead of the calendar.';
+      else if(cool) say='Heat units lagged the last '+s.n+' years, so development ran a few days behind.';
+      else if(wet) say='Rain finished ahead of '+pLbl(s)+' at the county gauge: moisture was banked, not a limiting factor.';
+      else if(dry) say='Rain finished behind '+pLbl(s)+' at the county gauge, a shortfall to weigh against this year’s yield.';
+      else if(s.pDep!=null&&s.gDep!=null) say='Rain was close to normal and heat close to the last '+s.n+' years, an unremarkable season in the best sense.';
+      return say ? lead+say : '';
+    }
+    if(hot&&dry) say='A hot, dry season so far: the crop is developing fast into a moisture deficit, the combination to watch closest.';
+    else if(hot&&wet) say='Warm and well-watered, fast development with moisture to back it. About the best combination there is.';
+    else if(cool&&wet) say='A cool, wet season: development is running behind, and low ground may be struggling with the surplus.';
+    else if(cool&&dry) say='Cool and dry: slow development, but the moisture deficit bites less at this pace.';
+    else if(hot) say='Heat is running ahead of the last '+s.n+' years; development is ahead of the calendar.';
+    else if(cool) say='Heat units are lagging the last '+s.n+' years. Expect development a few days behind.';
+    else if(wet) say='Rain is running ahead of '+pLbl(s)+' at the county gauge: moisture is banked, not a limiting factor so far.';
+    else if(dry) say='Rain is running behind '+pLbl(s)+' at the county gauge, not acute yet, but the deficit is the number to watch.';
+    else if(s.pDep!=null&&s.gDep!=null) say='Rain is close to normal and heat close to the last '+s.n+' years, an unremarkable season in the best sense.';
+    return say;
+  }
+  // Satellite passes the page will not call crop vigor. The mean over a field comes from the pixels
+  // the mask lets through; snow, haze or a thin slice of the field can leave a sliver (a tree line, a
+  // ditch) that reads like a dense canopy. A held pass is dropped from the series whole: its other
+  // indices came from the same pixels. Reasons: 'ceiling' (no field average of Sentinel-2 reaches
+  // 0.95), 'snow' (mean snow index over 0.4), 'thin' (under half the field clear), 'offseason' (a row
+  // crop at 0.85 or more from Nov 1), 'jump' (row crop or small grain, from Sep 20: up 0.25 or more
+  // to 0.70 or more within 30 days of the last pass kept; harvested ground does not green up like that).
+  function vetPasses(series, cls, todayIso){
+    var kept=[], held=[];
+    (series||[]).forEach(function(r){
+      var v=r.ndvi, why=null;
+      if(v!=null){
+        var md=String(r.date||'').slice(5,10);
+        var late=(cls==='row'||cls==='smallgrain') && md>='09-20';
+        if(v>0.95) why='ceiling';
+        else if(r.ndsi!=null && r.ndsi>0.4) why='snow';
+        else if(r.valid!=null && r.valid<0.5) why='thin';
+        else if(cls==='row' && md>='11-01' && v>=0.85) why='offseason';
+        else if(late && v>=0.70 && kept.length){
+          var prev=null; for(var i=kept.length-1;i>=0;i--){ if(kept[i].ndvi!=null){ prev=kept[i]; break; } }
+          if(prev){
+            var days=(Date.parse(r.date+'T12:00:00Z')-Date.parse(prev.date+'T12:00:00Z'))/864e5;
+            if(days<=30 && v-prev.ndvi>=0.25) why='jump';
+          }
+        }
+      }
+      if(why) held.push({ date:r.date, ndvi:v, why:why }); else kept.push(r);
+    });
+    return { kept:kept, held:held };
+  }
+  // One honest line for the held passes that came after the last pass kept, or '' when there are none.
+  function heldNote(held, kept){
+    var lastKept=kept&&kept.length?kept[kept.length-1].date:'';
+    var h=(held||[]).filter(function(x){ return x.date>lastKept; });
+    if(!h.length) return '';
+    var x=h[h.length-1], why=
+      x.why==='snow' ? 'snow was on the ground that day.' :
+      x.why==='thin' ? 'under half of the field was clear that day, so the average would not describe it.' :
+      'a field average that high this late is not crop vigor. Snow, haze or an image problem is likelier, so it is not counted.';
+    return h.length===1 ? 'The '+isoLabel(x.date)+' pass (NDVI '+x.ndvi.toFixed(2)+') was held back: '+why
+      : h.length+' passes were held back, the latest on '+isoLabel(x.date)+' (NDVI '+x.ndvi.toFixed(2)+'): '+why;
+  }
+  // FS-SEASON-END
   function loadSeason(c){
     var gen = FSX.fieldGen;
     var rainP = waitCountyFips(20000).then(function(cy){ return cy ? gaugeRain(cy) : null; }).catch(function(){ return null; });
-    var gduP = gridGdu(c).catch(function(){ return null; });
+    var gduP = gridRows(c).catch(function(){ return null; });
     rainP.then(function(r){
       if(gen!==FSX.fieldGen || !r || !r.wk) return;
       var w=window.__fsWx||{}; w.wk=r.wk.inches.toFixed(2); w.wkAt=r.wk.through; w.wkStn=r.station; w.wkMi=r.mi; window.__fsWx=w;
@@ -675,20 +791,20 @@ window.__fsRead = function (FSX) {
     });
     Promise.all([rainP, gduP]).then(function(x){
       if(gen !== FSX.fieldGen) return;
-      var r=x[0], g=x[1];
+      // the heat units stop on the rain gauge's last day, so the two figures end on the same date
+      var r=x[0], g=x[1] ? gduFromRows(x[1], new Date().getFullYear(), c.lat, r?r.thru:null) : null;
       if(!r && !g){ FSX.FIELD.season=null; recomputeInsight(); renderRisk(); setErr('fs-season','The county rain gauge record and the heat-unit grid did not answer just now.'); return; }
       var se={ year:new Date().getFullYear(), n:g?g.n:null, gauge:!!r, pLbl: r ? r.normals+' normal' : null };
       if(r){ se.pNow=r.total; se.pNorm=r.usual; se.pDep=r.total-r.usual; se.pct=r.pct; se.thru=r.thru; se.station=r.station; se.mi=r.mi; se.borrowed=r.borrowed; se.cum=r.cum; }
       else { se.pNow=null; se.pNorm=null; se.pDep=null; }
-      if(g){ se.gNow=g.gNow; se.gNorm=g.gNorm; se.gDep=g.gDep; se.gPlant=g.gPlant; se.plantMD=g.plantMD; se.gCumMap=g.gCumMap; se.gThru=g.gThru; if(!se.thru) se.thru=g.gThru; }
-      else { se.gNow=null; se.gNorm=null; se.gDep=null; se.gPlant=null; se.gCumMap=null; }
+      if(g){ se.gNow=g.gNow; se.gNorm=g.gNorm; se.gDep=g.gDep; se.gPlant=g.gPlant; se.plantMD=g.plantMD; se.gCumMap=g.gCumMap; se.gThru=g.gThru; se.frost=g.frost; if(!se.thru) se.thru=g.gThru; }
+      else { se.gNow=null; se.gNorm=null; se.gDep=null; se.gPlant=null; se.gCumMap=null; se.frost=null; }
       FSX.FIELD.season=se;
       recomputeInsight(); renderRisk();
       setBody('fs-season', seasonHtml(se));
+      if(FSX.FIELD.indices) renderIndices(FSX.FIELD.indices);   // the vigor words depend on whether the season is over
     });
   }
-  // "the 1991-2020 normal" for gauge rain; the GDU line keeps its own "N-year average"
-  function pLbl(se){ return se&&se.pLbl ? 'the '+se.pLbl : 'normal'; }
 
   function seasonHtml(s){
     var fmtDate=function(iso){ var d=new Date(iso+'T00:00'); return d.toLocaleDateString(undefined,{month:'short',day:'numeric'}); };
@@ -701,17 +817,7 @@ window.__fsRead = function (FSX) {
     else blocks.push('<div class="fs-stat"><div class="fs-stat-v">-</div><div class="fs-stat-l">Rain since Jan 1 &nbsp;·&nbsp; no county gauge record</div></div>');
     if(s.gNow!=null) blocks.push('<div class="fs-stat"><div class="fs-stat-v">'+Math.round(s.gNow)+'</div><div class="fs-stat-l">GDUs YTD &nbsp;·&nbsp; '+depG(s.gDep)+'</div></div>');
     else blocks.push('<div class="fs-stat"><div class="fs-stat-v">-</div><div class="fs-stat-l">GDUs YTD &nbsp;·&nbsp; the grid did not answer</div></div>');
-    var wet=s.pDep!=null&&s.pDep>=1, dry=s.pDep!=null&&s.pDep<=-1, hot=s.gDep!=null&&s.gDep>=75, cool=s.gDep!=null&&s.gDep<=-75, say;
-    if(hot&&dry) say='A hot, dry season so far: the crop is developing fast into a moisture deficit, the combination to watch closest.';
-    else if(hot&&wet) say='Warm and well-watered, fast development with moisture to back it. About the best combination there is.';
-    else if(cool&&wet) say='A cool, wet season: development is running behind, and low ground may be struggling with the surplus.';
-    else if(cool&&dry) say='Cool and dry: slow development, but the moisture deficit bites less at this pace.';
-    else if(hot) say='Heat is running ahead of the last '+s.n+' years; development is ahead of the calendar.';
-    else if(cool) say='Heat units are lagging the last '+s.n+' years. Expect development a few days behind.';
-    else if(wet) say='Rain is running ahead of '+pLbl(s)+' at the county gauge: moisture is banked, not a limiting factor so far.';
-    else if(dry) say='Rain is running behind '+pLbl(s)+' at the county gauge, not acute yet, but the deficit is the number to watch.';
-    else if(s.pDep!=null&&s.gDep!=null) say='Rain is close to normal and heat close to the last '+s.n+' years, an unremarkable season in the best sense.';
-    else say='';
+    var say=seasonSay(s, seasonPhase(todayIso(), s));
     var src=[];
     if(s.pNow!=null) src.push('Rain: the '+esc(s.station)+' gauge'+(s.mi!=null?', '+Math.round(s.mi)+' mi from this field':'')+(s.borrowed?' (no gauge reports in this county; this is '+esc(s.borrowed)+'’s)':'')+', Jan 1 through '+fmtDate(s.thru)+', against its '+esc(s.pLbl)+' (NOAA daily records via RCC-ACIS)');
     if(s.gNow!=null) src.push('GDUs: PRISM daily grid via RCC-ACIS, an estimate, this year vs the '+s.n+' before, Jan 1 through '+fmtDate(s.gThru)+', base 50°F');
@@ -1385,6 +1491,9 @@ window.__fsRead = function (FSX) {
     postJSON(FS_WORKER + '/indices', { ring: ring })
       .then(function(d){
         if(gen!==FSX.fieldGen) return;
+        // passes the page will not call crop vigor (snow, haze, a thin slice of the field) are held
+        // back here, once, so the card, the first screen, the read and the map replay agree
+        applyVet(d);
         FSX.FIELD.indices = d;
         renderIndices(d);
         recomputeInsight();
@@ -1394,6 +1503,16 @@ window.__fsRead = function (FSX) {
         if(gen!==FSX.fieldGen) return;
         setBody('fs-vigor','<div class="fs-caveat">Satellite crop-vigor isn\u2019t loading right now. You can still toggle the <b>Crop vigor</b> map layer to see it on the map, or check back after the next clear sky.</div>');
       });
+  }
+
+  // Vet the worker's series for the field's crop. The raw series is kept, so a crop change
+  // (hay, small grain) vets it again from the start.
+  function applyVet(d){
+    if(!d || !Array.isArray(d.series||d.rawSeries)) return d;
+    if(!d.rawSeries) d.rawSeries=d.series;
+    var vp=vetPasses(d.rawSeries, fieldCropClass(), todayIso());
+    d.series=vp.kept; d.held=vp.held; d.latest=vp.kept.length?vp.kept[vp.kept.length-1]:null;
+    return d;
   }
 
   function idxTrend(series, key){
@@ -1469,6 +1588,8 @@ window.__fsRead = function (FSX) {
   }
   function grainRipening(){ var m=new Date().getMonth()+1; return m>=5&&m<=9; }  // May–Sep: southern winter wheat browns in May–Jun, northern grain Jul–Sep
   function offSeason(){ var m=new Date().getMonth()+1; return m>=11||m<=3; }      // Nov–Mar
+  function todayIso(){ return new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10); }   // the reader's own calendar day
+  function fieldPhase(){ return seasonPhase(todayIso(), FSX.FIELD&&FSX.FIELD.season).phase; }
   function vigorWord(v){
     if(v==null) return 'No clear read';
     var cls=fieldCropClass();
@@ -1659,8 +1780,11 @@ window.__fsRead = function (FSX) {
 
   function renderIndices(d){
     var series=(d && d.series) || [];
+    var heldTxt=heldNote(d&&d.held, series);
     if(!series.length){
-      setBody('fs-vigor','<div class="fs-caveat">No clear satellite pass for this field yet this season; clouds block the read. Check back after the next clear day, or toggle the <b>Crop vigor</b> map layer.</div>');
+      setBody('fs-vigor', d&&d.held&&d.held.length
+        ? '<div class="fs-caveat">No satellite pass this season is one this page will call crop vigor.'+(heldTxt?' '+esc(heldTxt):'')+'</div>'
+        : '<div class="fs-caveat">No clear satellite pass for this field yet this season; clouds block the read. Check back after the next clear day, or toggle the <b>Crop vigor</b> map layer.</div>');
       return;
     }
     var last=d.latest || series[series.length-1];
@@ -1703,15 +1827,22 @@ window.__fsRead = function (FSX) {
     var headWord = winterHead ? winterHead.w : ('Crop vigor: '+vigorWord(v));
     var headCol  = winterHead ? winterHead.c : vCol;
     var mNow=new Date().getMonth()+1;
-    var dryDown = !winterHead && fieldCropClass()==='row' && mNow>=9 && mNow<=11 && nd && nd.dir==='easing' && nd.peak>=0.6;
-    var harvested = dryDown && v!=null && v<0.3;
+    // Past the freeze (or Nov 1) a row crop is off the field: what is left to read is residue or cover,
+    // never "the canopy maturing before harvest". The drying-down words are for September and October
+    // before the freeze.
+    var over = fieldPhase()==='after' && fieldCropClass()==='row' && !winterHead;
+    var dryDown = !winterHead && !over && fieldCropClass()==='row' && mNow>=9 && mNow<=11 && nd && nd.dir==='easing' && nd.peak>=0.6;
+    var harvested = over && nd && v!=null && v<0.3;
+    var seasonOver = over && v!=null && v>=0.3;
     if(harvested){
-      headWord='Crop vigor: harvested or near bare'; headCol='var(--dim)';
+      headWord='Crop vigor: harvested or near bare'; headCol='var(--text-muted,#8a8f8c)';
+    } else if(seasonOver){
+      headWord='Crop vigor: season over'; headCol='var(--text-muted,#8a8f8c)';
     } else if(dryDown){
       // September on a row crop: a falling NDVI is the crop maturing. Saying "Developing" or
       // "Low" here reads as a problem. It isn't one.
       headWord='Crop vigor: drying down'; headCol='var(--gold,#d4a23f)';
-    } else if(!winterHead && baseV!=null && v!=null && baseV-v>=0.06 && v>=0.45){
+    } else if(!winterHead && !over && baseV!=null && v!=null && baseV-v>=0.06 && v>=0.45){
       // "Strong" next to "behind normal" contradicted itself; the comparison wins.
       headWord='Crop vigor: '+vigorWord(v).toLowerCase()+', behind normal'; headCol='var(--gold,#d4a23f)';
     }
@@ -1723,11 +1854,12 @@ window.__fsRead = function (FSX) {
         (v!=null?'<span class="fs-vigor-num">NDVI '+v.toFixed(2)+'</span>':'')+
       '</div>'+
       (nd?'<div class="fs-vigor-spark">'+sparkline(series,'ndvi',vCol,baseV)+'<span class="fs-spark-cap">vigor over the season'+(baseV!=null?' &middot; grey ring = this field\u2019s normal for the date':'')+'</span></div>':'')+
-      '<p class="fs-vigor-say">'+(winterHead?winterHead.s:(harvested?'Down from a '+nd.peak.toFixed(2)+' peak on '+ixDate(nd.peakDate)+' to bare-ground levels: the crop is off or nearly so':dryDown?'Down from a '+nd.peak.toFixed(2)+' peak on '+ixDate(nd.peakDate)+'. On a row crop this late, that is the canopy maturing and browning, which is what should happen before harvest':vigorSentence(v)+vTrend)+'.')+'</p>'+
-      (normLine?'<p class="fs-vigor-say">'+normLine+'</p>':'')+
+      '<p class="fs-vigor-say">'+(winterHead?winterHead.s:(seasonOver?'Down from a '+nd.peak.toFixed(2)+' peak on '+ixDate(nd.peakDate)+'. The season is over: this late the satellite is reading leftover canopy, residue or cover, not crop vigor':harvested?'Down from a '+nd.peak.toFixed(2)+' peak on '+ixDate(nd.peakDate)+' to bare-ground levels: the crop is off or nearly so':dryDown?'Down from a '+nd.peak.toFixed(2)+' peak on '+ixDate(nd.peakDate)+'. On a row crop this late, that is the canopy maturing and browning, which is what should happen before harvest':vigorSentence(v)+vTrend)+'.')+'</p>'+
+      (normLine&&!over?'<p class="fs-vigor-say">'+normLine+'</p>':'')+
       (varLine?'<p class="fs-vigor-say">'+varLine+'</p>':'')+
-      (mLine?'<p class="fs-vigor-say">'+mLine+'</p>':'')+
-      (nLine?'<p class="fs-vigor-say">'+nLine+'</p>':'')+
+      (mLine&&!over?'<p class="fs-vigor-say">'+mLine+'</p>':'')+
+      (heldTxt?'<p class="fs-vigor-say fs-vigor-held" style="color:var(--text-muted)">'+esc(heldTxt)+'</p>':'')+
+      (nLine&&!over?'<p class="fs-vigor-say">'+nLine+'</p>':'')+
       '<div class="fs-vigor-fresh"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> Last clear pass <b>'+ixDate(last.date)+'</b> ('+ixDaysAgo(last.date)+') </div>'+
       (series.length>=2?'<a href="#" class="fs-god-link fs-replay-btn" data-god="ndvi"><svg class="fs-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="6 3 20 12 6 21 6 3"/></svg> Replay '+series.length+' passes on the map: watch the season</a>':'')+
       '<details class="fs-vigor-more"><summary>Show all indices for the latest pass</summary>'+
@@ -2123,13 +2255,15 @@ window.__fsRead = function (FSX) {
     var isCorn = thisYearCorn();
     var cornSure = !!(FSX.FIELD.thisYear && FSX.FIELD.thisYear.src==='you');
     // Stage GDUs count from a latitude-banded planting proxy (se.gPlant), not Jan 1.
-    var cropStage = (se && se.gPlant!=null && isCorn) ? estCornStage(se.gPlant) : null;
+    // Before planting and after the freeze there is no crop stage to read from heat units.
+    var phase = fieldPhase();
+    var cropStage = (se && se.gPlant!=null && isCorn && phase==='in') ? estCornStage(se.gPlant) : null;
     function pollenWindow(){ return cropStage && !cropStage.pastPollen ? cropStage.daysToPollen : null; }
     // Late season: corn at dent or later, or any row crop from September on. A canopy that
     // is drying down is doing its job, and rain or nitrogen no longer changes the yield
     // (panel 9/20: the Read called normal September senescence stress).
     var mon=new Date().getMonth()+1;
-    var lateSeason = (cropStage && cropStage.dent) || (mon>=9 && mon<=11 && fieldCropClass()==='row');
+    var lateSeason = phase==='after' || (cropStage && cropStage.dent) || (mon>=9 && mon<=11 && fieldCropClass()==='row');
     function pacePhrase(){
       if(!se||se.gDep==null) return null;
       var dd=Math.abs(Math.round(se.gDep/GDU_PER_DAY));
@@ -2175,8 +2309,8 @@ window.__fsRead = function (FSX) {
             : cap(cornIf+'that heat-unit pace puts development around <strong>'+cropStage.label+'</strong>, roughly '+cropStage.daysToPollen+' day'+(cropStage.daysToPollen===1?'':'s')+' from pollination at a typical midsummer pace.'));
       var pp=pacePhrase();
       lines.push(stg+(pp?' The season is '+pp+'.':'')+' <span class="fs-approx">(approximate, modeled from temperature'+plantHedge+', not field scouting)</span>');
-    } else if(se && se.gDep!=null && Math.abs(se.gDep)>=100){
-      var pp2=pacePhrase(); if(pp2) lines.push('Heat-unit accumulation is '+pp2+' this season.');
+    } else if(se && se.gDep!=null && Math.abs(se.gDep)>=100 && phase!=='before'){
+      var pp2=pacePhrase(); if(pp2) lines.push(phase==='after' ? 'Heat units finished the season '+(se.gDep>0?'ahead of':'behind')+' the '+se.n+'-year average, by about '+Math.abs(Math.round(se.gDep/GDU_PER_DAY))+' days at a typical midsummer pace.' : 'Heat-unit accumulation is '+pp2+' this season.');
     }
 
     var nFix='';
@@ -2233,16 +2367,18 @@ window.__fsRead = function (FSX) {
       lines.push('The season ran '+Math.abs(se.pDep).toFixed(1)+'\u2033 drier than '+pLbl(se)+' at the county gauge; this late, rain no longer changes this year\u2019s crop, but it sets the soil profile for next spring.');
     } else if(se){
       var dryEnough=se.pDep<=-2, wetEnough=se.pDep>=2, hot=se.gDep>=100, cool=se.gDep<=-100;
-      if(dryEnough && hot && !inDrought){
+      if(dryEnough && hot && !inDrought && phase==='in'){
         push({ sev:4, act:true, topic:'moisture', tag:'a widening rain deficit',
           title:'the crop is developing fast into a moisture deficit. Watch it closely',
           detail:'Rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> '+pLbl(se)+' while GDUs run '+Math.round(se.gDep)+' ahead of the '+se.n+'-year average: fast development into a drying profile.',
           watch: pollenWindow()!=null ? 'The next 2–3 weeks toward pollination (~'+pollenWindow()+' days out) are when a deficit bites hardest.' : 'A timely rain over the next two weeks matters most.' });
-      } else if(dryEnough && !inDrought){
+      } else if(dryEnough && !inDrought && phase!=='after'){
         push({ sev:3, act:false, topic:'moisture', tag:'a dry start',
           title:'the field is starting dry: keep an eye on moisture',
           detail:'Season-to-date rain is <strong>'+Math.abs(se.pDep).toFixed(1)+'″ below</strong> '+pLbl(se)+'.',
           watch:'Watch the forecast; a return to normal rainfall still recovers this.' });
+      } else if(wetEnough && phase==='after'){
+        lines.push('Rain finished '+se.pDep.toFixed(1)+'\u2033 above '+pLbl(se)+' at the county gauge.');
       } else if(wetEnough && cool){
         lines.push('A wet, cool start: rain '+se.pDep.toFixed(1)+'″ above '+pLbl(se)+' and GDUs '+Math.round(se.gDep)+' behind, so development is running slow.');
       } else if(wetEnough){
@@ -2263,7 +2399,9 @@ window.__fsRead = function (FSX) {
       var nrmYrs=(ixNrm && ixNrm.years && ixNrm.years.length)?ixNrm.years.length+'-year ':'';
       var cropCls=fieldCropClass();
       var normTrig = (cropCls==='hay') ? -0.12 : -0.06;   // hay sawtooths against its own normal
-      if(lateSeason && ixV!=null && cropCls==='row'){
+      if(phase==='after' && ixV!=null && cropCls==='row'){
+        lines.push('The last clear satellite pass (NDVI '+ixV.toFixed(2)+') reads leftover canopy, residue or cover. The growing season is over, so it is not a vigor read.');
+      } else if(lateSeason && ixV!=null && cropCls==='row'){
         lines.push('The satellite shows the canopy '+(ixTr&&ixTr.dir==='easing'?'drying down':'holding')+' (NDVI '+ixV.toFixed(2)+(belowNorm!=null?', '+(belowNorm<-0.05?'below':belowNorm>0.05?'above':'close to')+' this field\u2019s other years at this date':'')+'). This late in the season that is maturity, not stress; what moves money now is harvest timing and the bid.');
       } else if(belowNorm!=null && belowNorm<=normTrig && !(cropCls==='smallgrain'&&grainRipening())){
         push({ sev: ixPrime?4:3, act:true, topic:'vigor', tag:'a canopy running below its own normal',
