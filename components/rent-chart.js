@@ -146,7 +146,8 @@
         : '<use href="#rc-cols" class="rc-dashes" stroke-width="' + sw.toFixed(3) + '" style="stroke:' + P.ink + ';stroke-opacity:.32;fill:none"/>') + '</svg>');
     if (o.hover != null && o.hover >= g.from && o.hover <= g.to) {
       var hx = g.L + (o.hover - g.from) * g.slot;
-      out.push('<rect class="rc-hov" x="' + f1(hx + 1) + '" y="' + f1(g.T - 4) + '" width="' + f1(g.slot - 2) + '" height="' + f1(bottom - g.T + 4) + '" style="fill:none;stroke:' + P.ink + ';stroke-opacity:.55"/>');
+      var hb = function (y0, y1) { return '<rect x="' + f1(hx + 1) + '" y="' + f1(y0) + '" width="' + f1(g.slot - 2) + '" height="' + f1(y1 - y0) + '"/>'; };   // the plot and the strip, not the strip's title
+      out.push('<g class="rc-hov" style="fill:none;stroke:' + P.ink + ';stroke-opacity:.55">' + hb(g.T - 4, g.T + g.HM + 4) + (g.strip ? hb(g.T + g.HM + g.GAP - 2, g.sb) : '') + '</g>');
     }
     // a line over the years: solid between neighbouring years, dotted across a year with no figure
     var line = function (vals, color, wd, r, key) {
