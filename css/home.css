@@ -33,7 +33,7 @@
 .watch-desc{font-size:1rem}
 .btn-gold{font-size:.824rem}
 .btn-dismiss{font-size:.824rem}
-.sec-title{font-size:.824rem}
+.sec-title{font-size:1rem}
 .sec-all{font-size:.824rem}
 .pc-section-lbl{font-size:.765rem}
 .pc-name{font-size:.824rem}
@@ -1325,7 +1325,7 @@ details>summary:hover{color:var(--text)}
 /* Mono for numbers, not for sentences. */
 .r7-cov,#idx1-trust-ledger,.s7-line small{font-family:var(--font-body,"Inter",system-ui,sans-serif)!important}
 /* Section labels: tracking .14em to .08em. Same words, less shouting. */
-.sec-title,.daily-eyebrow{letter-spacing:.08em!important}
+.daily-eyebrow{letter-spacing:.08em!important}
 /* Header: the briefing eyebrow was a bordered chip that looked like a
    button and did nothing. The empty "Become a sponsor" row was a strip of
    its own; the same offer sits in the briefing header. A sold slot is not

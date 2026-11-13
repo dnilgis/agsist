@@ -249,7 +249,7 @@ button:focus:not(:focus-visible), a:focus:not(:focus-visible) { outline: none }
 .btn-dismiss:hover { border-color: var(--border-g); color: var(--text-dim) }
 .main { max-width: 1400px; margin: 0 auto; padding: var(--sp-xl) var(--sp-lg); min-width: 0; overflow-x: clip; overflow-wrap: anywhere; }
 .sec-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: .6rem; gap: .5rem }
-.sec-title { display: flex; align-items: center; gap: .6rem; font-family: var(--font-mono); font-size:0.78rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--brand); margin: 0; }
+.sec-title { display: flex; align-items: center; gap: .6rem; font-family: var(--font-body); font-size:1rem; font-weight: 700; letter-spacing: 0; text-transform: none; color: var(--text); margin: 0; }
 .sec-title img { height: 24px; width: 24px; object-fit: contain; border-radius: 3px; background: #f5f1e8; padding: 2px }
 .sec-all { font-size: .8rem; color: var(--text-muted); transition: color .15s; white-space: nowrap; flex-shrink: 0 }
 .sec-all:hover { color: var(--brand) }
