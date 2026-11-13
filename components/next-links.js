@@ -48,7 +48,7 @@
     '.next-links li:last-child{margin:0}' +
     '.next-links li:not(:last-child)::after{content:",";color:var(--text-dim)}' +
     '.next-links li:last-child::after{content:".";color:var(--text-dim)}' +
-    '.next-links a.nx-c{display:inline;color:var(--link,var(--gold));text-decoration:underline;text-underline-offset:2px}' +
+    '.next-links a.nx-c{display:inline;padding:0!important;min-height:0!important;border:0!important;background:none!important;color:var(--link,var(--gold));text-decoration:underline;text-underline-offset:2px}' +
     '.next-links a.nx-c:focus-visible{outline:2px solid var(--gold,#d4a23f);outline-offset:2px}' +
     '.next-links .nx-w{display:none}' +
     '.next-links .nx-ask{display:block;margin-top:1rem}';
