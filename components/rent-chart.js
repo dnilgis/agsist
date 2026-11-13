@@ -47,6 +47,7 @@
     var tk = []; for (var v = a + st; v < b + 1e-9; v += st) tk.push(Math.round(v * 100) / 100);
     return { lo: a, hi: b, step: st, ticks: tk };
   }
+  function tickText(sc, v) { return '$' + (sc.step % 1 ? v.toFixed(2) : v.toLocaleString('en-US')); }
   function unit(sc, v) { return Math.round(UNITS * (sc.hi - v) / (sc.hi - sc.lo)); }
 
   /* the sprite: one stroke per year, a dash at each county's rent (equal or touching rents run together) */
@@ -69,10 +70,21 @@
     var card = !!o.card, fs = o.fs || FS[mode], phone = mode === 'phone', strip = m.price.length > 0;
     var Ht = o.h || H[mode][strip ? 0 : 1];
     var from = o.from || m.y0, to = o.to || m.y1, n = to - from + 1;
-    var L = Math.round(fs * (phone ? 3.4 : 3.9)), R = phone ? 6 : Math.round(fs * (card ? 9.6 : 13.2));
+    var sc = scale(m), tl = 0;
+    sc.ticks.forEach(function (v) { tl = Math.max(tl, wid(tickText(sc, v), fs)); });
+    var L = Math.round(Math.max(fs * 2.6, tl + 10)), R = 6;
+    if (!phone) {   // the right gutter holds the end labels: as wide as their longest line, the county name wrapped at 12 font sizes
+      var lm = null; for (var yy = to; yy >= from && !lm; yy--) if (medAt(m, yy)) lm = [yy, medAt(m, yy)];
+      var need = lm ? Math.max(wid('Median ' + m.cnoun.toLowerCase(), fs * 1.06, true), wid(money(lm[1][0]) + ' an acre', fs * 1.06, true), wid(lm[1][1] + ' ' + many(m, lm[1][1]) + ', ' + lm[0], fs)) : 0;
+      if (o.county) {
+        var lc = null; for (var yc = to; yc >= from && !lc; yc--) if (o.county.v[yc - m.y0] != null) lc = [yc, o.county.v[yc - m.y0]];
+        need = Math.max(need, Math.min(wid(o.county.name + ' ' + m.cnoun, fs * 1.06, true), fs * 12), lc ? wid(money(lc[1]) + (lc[0] === to ? '' : ' in ' + lc[0]), fs * 1.06, true) : 0);
+      }
+      R = Math.round(Math.min(fs * 14, Math.max(fs * 8, need + 18)));
+    }
     var T = Math.round(fs * (phone ? 2.6 : 2.7)), GAP = strip ? Math.round(fs * (phone ? 3.2 : card ? 2.6 : 3.5)) : 0;
     var HS = strip ? Math.round(Ht * (phone ? 0.135 : card ? 0.13 : 0.155)) : 0, XA = Math.round(fs * 1.9);
-    var HM = Ht - T - GAP - HS - XA, pw = W - L - R, slot = pw / n, sc = scale(m);
+    var HM = Ht - T - GAP - HS - XA, pw = W - L - R, slot = pw / n;
     return {
       fs: fs, phone: phone, card: card, strip: strip, W: W, H: Ht, L: L, R: R, T: T, GAP: GAP, HS: HS, XA: XA, HM: HM,
       from: from, to: to, n: n, slot: slot, sc: sc, tw: Math.min(slot * 0.56, card ? 26 : 28),
@@ -125,7 +137,7 @@
     g.sc.ticks.forEach(function (v) {
       var yy = g.y(v);
       out.push('<line x1="' + g.L + '" x2="' + f1(g.W - g.R) + '" y1="' + f1(yy) + '" y2="' + f1(yy) + '" style="stroke:' + P.grid + '"/>');
-      put(g.L - 7, yy + fs * 0.33, '$' + (g.sc.step % 1 ? v.toFixed(2) : v.toLocaleString('en-US')), fs, P.mut, 'end', false, 'tick');
+      put(g.L - 7, yy + fs * 0.33, tickText(g.sc, v), fs, P.mut, 'end', false, 'tick');
     });
     // years with no figure, named in the column
     yrs.forEach(function (y) {
@@ -171,8 +183,9 @@
     }
     // names and values: the first median point; the last points named at their ends
     if (mpts.length) {
-      var f = mpts[0], fx = g.x(f[0]) - g.tw / 2, fy = g.y(f[1]) + fs * 1.65, fsz = fs * 1.02;
-      put(fx, fy, money(f[1]), fsz, P.ink, 'start', true, 'value', halo);
+      var f = mpts[0], fx = g.x(f[0]) - g.tw / 2, fsz = fs * 1.02, fv = money(f[1]);
+      var fys = [g.y(f[1]) + fs * 1.65, g.y(f[1]) - fs * 0.8].filter(function (y) { return y > g.T + fs && y < g.T + g.HM && free(fx, y, fv, fsz, 'start', true); });
+      if (fys.length) put(fx, fys[0], fv, fsz, P.ink, 'start', true, 'value', halo);
     }
     var lastOf = function (pts) { return pts.length ? pts[pts.length - 1] : null; };
     var ml = lastOf(mpts), cl = lastOf(cpts), cn = o.county ? o.county.name + ' ' + m.cnoun : '';
@@ -196,8 +209,12 @@
       blocks.forEach(function (b) { b.lines.forEach(function (l, i) { put(ex, b.top + fs * 0.95 + i * lh, l[0], fs * (l[2] ? 1.06 : 1), l[1], 'start', l[2], 'end'); }); });
     } else {
       var rx = g.x(g.to) + g.tw / 2, below = !cl || (ml && ml[1] <= cl[1]);
-      if (ml) put(rx, g.y(ml[1]) + (below ? fs * 1.6 : -fs * 0.75), money(ml[1]), fs * 1.02, P.ink, 'end', true, 'value', halo);
-      if (cl) put(cl[0] === g.to ? rx : g.x(cl[0]) + g.tw / 2, g.y(cl[1]) + (below ? -fs * 0.75 : fs * 1.6), money(cl[1]), fs * 1.02, P.acc, 'end', true, 'value', halo);
+      var endLab = function (x, yv, first, s, fill) {   // its own side first, the other side if that is taken, else left out
+        var ys2 = [yv + (first ? fs * 1.6 : -fs * 0.75), yv + (first ? -fs * 0.75 : fs * 1.6)].filter(function (y) { return y > g.T + fs * 0.6 && y < g.T + g.HM + fs * 0.5 && free(x, y, s, fs * 1.02, 'end', true); });
+        if (ys2.length) put(x, ys2[0], s, fs * 1.02, fill, 'end', true, 'value', halo);
+      };
+      if (ml) endLab(rx, g.y(ml[1]), below, money(ml[1]), P.ink);
+      if (cl) endLab(cl[0] === g.to ? rx : g.x(cl[0]) + g.tw / 2, g.y(cl[1]), !below, money(cl[1]), P.acc);
     }
     // the corn strip: the price received each crop year, dark when over $5
     if (g.strip) {
