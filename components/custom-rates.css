@@ -190,8 +190,17 @@
 .crbp-r p{margin:0 0 .4rem!important;font-size:.9rem}
 .crbp-r small{color:var(--text-muted)}
 .crbp-o{color:var(--text)!important}
+.crbp-r .cr-qty{flex-wrap:nowrap}
 @media(max-width:699px){
   .crh-count{order:3;margin:.55rem 0 0!important}
+  .crh{scroll-margin-top:76px}
+  /* the State by state table fits 390: the year under the state name, tighter cells, "not in survey" wraps (Nov 13) */
+  .cr-sum th[scope="row"] small{display:block}
+  .cr-sum th[scope="row"],.cr-sum thead th:first-child{max-width:6.6rem;white-space:normal}
+  .cr-sum th,.cr-sum td{padding-left:.22rem;padding-right:.22rem}
+  .cr-sum td{font-size:.8rem}
+  .cr-sum td .na{display:block;white-space:normal;text-align:right;line-height:1.15}
+  #main .cr-sum thead th{font-family:var(--font-body,inherit);text-transform:none;letter-spacing:0;font-size:.75rem}
   .cro-b .crb i{width:6px;height:6px;margin:-3px 0 0 -3px}
   .cro-b .crb i.me{width:11px;height:11px;margin:-5.5px 0 0 -5.5px}
   .crbp{padding:.8rem 12px}
