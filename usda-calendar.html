@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=30" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=30">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <link rel="apple-touch-icon"                     href="/img/apple-touch-icon.png">
@@ -1040,7 +1040,7 @@ details.fold>summary>h2.cal-section-head{font-family:var(--font-display);font-si
         <p class="tr-note"><b>The forecast record.</b> Every forecast is locked before the outcome is known and graded after it, beside a plain baseline that is fixed in advance and never changed. Locked counts every forecast written down, including ones still waiting for their outcome. A call that lands exactly on its entry price counts as neither right nor wrong and is left out of the direction count. Average miss is the gap to the outcome as a share of the outcome. Status: Live beats its baseline and is still being made; Quiet misses one of those and keeps grading in the open; Building has too few graded calls to say; Retired is no longer made and its record stays.</p>
         <p class="tr-note"><b>The prediction bot.</b> A simple rule built on fund positioning and the recent price trend, written down before its first live call (Oct 3, 2026) and not changed since. Any change gets a new version and a record of its own. A call is graded on the close of its grading day only. The odds shown are the chance pure guessing does at least as well, allowing for the number of records checked.</p>
         <p class="tr-note">Record last updated <span id="pb-updated"><!--
---><!--SEED:pb:pb-updated-->2026-11-120:00:54 UTC<!--/SEED--><!--
+--><!--SEED:pb:pb-updated-->2026-11-13 20:00:54 UTC<!--/SEED--><!--
 --></span>. This product uses the NASS API but is not endorsed or certified by NASS. A map of expectations and a record of forecasts, not a trade recommendation or financial advice: a four-week direction call says nothing about where to price your grain. Verify prices with your elevator or broker. Questions: <a href="mailto:sig@agsist.com">sig@agsist.com</a>.</p>
       </details>
     </div>
@@ -1497,7 +1497,7 @@ details.fold>summary>h2.cal-section-head{font-family:var(--font-display);font-si
 /* What's priced in and the bot scorecard redraw from their data files once a reader nears them,
    or at once when the page opens on one of their links. The baked HTML shows until then. */
 (function(){
-  var MAP={'priced-in':['/components/util.js?v=18','/components/report-live.js?v=1','/components/priced-in.js?v=5'],'scorecard':['/components/util.js?v=18','/components/bot-scorecard.js?v=2']};
+  var MAP={'priced-in':['/components/util.js?v=21','/components/report-live.js?v=1','/components/priced-in.js?v=5'],'scorecard':['/components/util.js?v=21','/components/bot-scorecard.js?v=2']};
   var P={};
   function js(src){ if(!P[src]) P[src]=new Promise(function(ok,no){ var s=document.createElement('script'); s.src=src; s.onload=ok; s.onerror=no; document.body.appendChild(s); }); return P[src]; }
   function go(sec){ if(!sec||sec.getAttribute('data-live')) return; sec.setAttribute('data-live','1');
