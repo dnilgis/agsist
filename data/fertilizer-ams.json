@@ -3,9 +3,9 @@
  "report_id": "3195",
  "url": "https://www.ams.usda.gov/mnreports/ams_3195.pdf",
  "page": "https://mymarketnews.ams.usda.gov/viewReport/3195",
- "report_date": "2026-10-30",
+ "report_date": "2026-11-13",
  "terms": "Distributor (Dollars Per Ton)",
- "fetched": "2026-10-30T23:54:01Z",
+ "fetched": "2026-11-13T20:31:55Z",
  "products": [
   {
    "key": "anhydrous",
@@ -70,7 +70,7 @@
  ],
  "status": {
   "ok": true,
-  "checked": "2026-11-09T15:25:55Z",
+  "checked": "2026-11-13T20:31:55Z",
   "note": null
  }
 }

@@ -10,10 +10,10 @@
     "IA"
    ],
    "cadence": "biweekly",
-   "week_begin": "2026-10-26",
-   "week_end": "2026-10-30",
-   "published": "2026-10-30",
-   "credit": "USDA AMS, Iowa Production Cost Report (Bi-Weekly), Oct 30, 2026",
+   "week_begin": "2026-11-09",
+   "week_end": "2026-11-13",
+   "published": "2026-11-13",
+   "credit": "USDA AMS, Iowa Production Cost Report (Bi-Weekly), Nov 13, 2026",
    "items": [
     {
      "key": "anhydrous",
@@ -22,9 +22,9 @@
      "unit": "$/ton",
      "freight": "F.O.B.",
      "low": 892.0,
-     "high": 915.0,
-     "avg": 902.33,
-     "change": -3.17,
+     "high": 1060.0,
+     "avg": 941.75,
+     "change": 39.42,
      "thin": false
     },
     {
@@ -33,10 +33,10 @@
      "commod": "Fuels",
      "unit": "$/gal",
      "freight": "F.O.B.",
-     "low": 5.5,
-     "high": 5.75,
-     "avg": 5.65,
-     "change": 0.16,
+     "low": 5.22,
+     "high": 5.39,
+     "avg": 5.28,
+     "change": -0.37,
      "thin": false
     },
     {
@@ -46,9 +46,9 @@
      "unit": "$/ton",
      "freight": "F.O.B.",
      "low": 951.0,
-     "high": 989.0,
-     "avg": 976.0,
-     "change": 4.33,
+     "high": 1015.0,
+     "avg": 984.0,
+     "change": 8.0,
      "thin": false
     },
     {
@@ -57,10 +57,10 @@
      "commod": "Fertilizer",
      "unit": "$/ton",
      "freight": "F.O.B.",
-     "low": 480.0,
-     "high": 520.0,
-     "avg": 499.8,
-     "change": 5.8,
+     "low": 489.0,
+     "high": 540.0,
+     "avg": 507.8,
+     "change": 8.0,
      "thin": false
     },
     {
@@ -69,10 +69,10 @@
      "commod": "Fuels",
      "unit": "$/gal",
      "freight": "F.O.B.",
-     "low": 1.58,
-     "high": 1.84,
-     "avg": 1.69,
-     "change": 0.1,
+     "low": 1.7,
+     "high": 1.99,
+     "avg": 1.83,
+     "change": 0.14,
      "thin": false
     },
     {
@@ -84,7 +84,7 @@
      "low": 435.0,
      "high": 585.0,
      "avg": 510.0,
-     "change": 22.0,
+     "change": 0.0,
      "thin": false
     }
    ]
@@ -97,10 +97,10 @@
     "NC"
    ],
    "cadence": "weekly",
-   "week_begin": "2026-10-26",
-   "week_end": "2026-10-30",
-   "published": "2026-10-30",
-   "credit": "USDA AMS, North Carolina Production Cost Report (Weekly), Oct 30, 2026",
+   "week_begin": "2026-11-09",
+   "week_end": "2026-11-13",
+   "published": "2026-11-13",
+   "credit": "USDA AMS, North Carolina Production Cost Report (Weekly), Nov 13, 2026",
    "items": [
     {
      "key": "ams",
@@ -156,10 +156,10 @@
      "commod": "Fuels",
      "unit": "$/gal",
      "freight": "F.O.B.",
-     "low": 5.2,
-     "high": 6.0,
-     "avg": 5.4,
-     "change": -0.06,
+     "low": 4.73,
+     "high": 5.0,
+     "avg": 4.89,
+     "change": -0.51,
      "thin": false
     },
     {
@@ -183,7 +183,7 @@
      "low": 510.0,
      "high": 595.0,
      "avg": 557.67,
-     "change": 3.33,
+     "change": 0.0,
      "thin": false
     },
     {
@@ -192,10 +192,10 @@
      "commod": "Fuels",
      "unit": "$/gal",
      "freight": "F.O.B.",
-     "low": 1.55,
-     "high": 1.81,
-     "avg": 1.7,
-     "change": 0.09,
+     "low": 1.73,
+     "high": 1.78,
+     "avg": 1.75,
+     "change": 0.06,
      "thin": false
     },
     {
@@ -206,8 +206,8 @@
      "freight": "F.O.B.",
      "low": 490.0,
      "high": 900.0,
-     "avg": 633.33,
-     "change": 3.33,
+     "avg": 635.0,
+     "change": 1.67,
      "thin": false
     },
     {
@@ -232,10 +232,10 @@
     "IL"
    ],
    "cadence": "biweekly",
-   "week_begin": "2026-10-26",
-   "week_end": "2026-10-30",
-   "published": "2026-10-30",
-   "credit": "USDA AMS, Illinois Production Cost Report (Bi-weekly), Oct 30, 2026",
+   "week_begin": "2026-11-09",
+   "week_end": "2026-11-13",
+   "published": "2026-11-13",
+   "credit": "USDA AMS, Illinois Production Cost Report (Bi-weekly), Nov 13, 2026",
    "items": [
     {
      "key": "anhydrous",
@@ -246,7 +246,7 @@
      "low": 850.0,
      "high": 1060.0,
      "avg": 981.11,
-     "change": 33.61,
+     "change": 0.0,
      "thin": false
     },
     {
@@ -255,10 +255,10 @@
      "commod": "Fuels",
      "unit": "$/gal",
      "freight": "F.O.B.",
-     "low": 5.16,
-     "high": 5.92,
-     "avg": 5.55,
-     "change": 0.01,
+     "low": 4.45,
+     "high": 5.21,
+     "avg": 4.82,
+     "change": -0.73,
      "thin": false
     },
     {
@@ -270,7 +270,7 @@
      "low": 840.0,
      "high": 995.0,
      "avg": 932.14,
-     "change": 2.86,
+     "change": 0.0,
      "thin": false
     },
     {
@@ -279,10 +279,10 @@
      "commod": "Fuels",
      "unit": "$/gal",
      "freight": "F.O.B.",
-     "low": 5.59,
-     "high": 5.88,
-     "avg": 5.71,
-     "change": -0.05,
+     "low": 4.84,
+     "high": 5.44,
+     "avg": 5.07,
+     "change": -0.64,
      "thin": false
     },
     {
@@ -306,7 +306,7 @@
      "low": 480.0,
      "high": 550.0,
      "avg": 517.73,
-     "change": 2.73,
+     "change": 0.0,
      "thin": false
     },
     {
@@ -355,10 +355,10 @@
     "OK"
    ],
    "cadence": "biweekly",
-   "week_begin": "2026-10-26",
-   "week_end": "2026-10-30",
-   "published": "2026-10-30",
-   "credit": "USDA AMS, Oklahoma Production Cost Report (Bi-Weekly), Oct 30, 2026",
+   "week_begin": "2026-11-09",
+   "week_end": "2026-11-13",
+   "published": "2026-11-13",
+   "credit": "USDA AMS, Oklahoma Production Cost Report (Bi-Weekly), Nov 13, 2026",
    "items": [
     {
      "key": "10-34-0",
@@ -381,7 +381,7 @@
      "low": 550.0,
      "high": 595.0,
      "avg": 573.0,
-     "change": 20.0,
+     "change": 0.0,
      "thin": false
     },
     {
@@ -393,7 +393,7 @@
      "low": 780.0,
      "high": 950.0,
      "avg": 860.5,
-     "change": -5.83,
+     "change": 0.0,
      "thin": false
     },
     {
@@ -438,10 +438,10 @@
      "commod": "Fertilizer",
      "unit": "$/ton",
      "freight": "F.O.B.",
-     "low": 671.0,
-     "high": 803.0,
-     "avg": 740.57,
-     "change": 0.0,
+     "low": 694.0,
+     "high": 810.0,
+     "avg": 755.88,
+     "change": 15.3,
      "thin": false
     },
     {
@@ -452,8 +452,8 @@
      "freight": "F.O.B.",
      "low": 820.0,
      "high": 1179.0,
-     "avg": 976.55,
-     "change": 9.5,
+     "avg": 984.05,
+     "change": 7.5,
      "thin": false
     },
     {
@@ -462,10 +462,10 @@
      "commod": "Fuels",
      "unit": "$/gal",
      "freight": "F.O.B.",
-     "low": 5.3,
-     "high": 5.79,
-     "avg": 5.54,
-     "change": 0.08,
+     "low": 4.99,
+     "high": 5.72,
+     "avg": 5.42,
+     "change": -0.12,
      "thin": false
     },
     {
@@ -487,9 +487,9 @@
      "unit": "$/ton",
      "freight": "F.O.B.",
      "low": 850.0,
-     "high": 975.0,
-     "avg": 945.75,
-     "change": 3.5,
+     "high": 1020.0,
+     "avg": 950.13,
+     "change": 4.38,
      "thin": false
     },
     {
@@ -498,10 +498,10 @@
      "commod": "Fertilizer",
      "unit": "$/ton",
      "freight": "F.O.B.",
-     "low": 470.0,
+     "low": 463.0,
      "high": 565.0,
-     "avg": 501.77,
-     "change": 0.59,
+     "avg": 500.86,
+     "change": -0.91,
      "thin": false
     },
     {
@@ -511,9 +511,9 @@
      "unit": "$/gal",
      "freight": "F.O.B.",
      "low": 2.21,
-     "high": 2.5,
-     "avg": 2.41,
-     "change": 0.17,
+     "high": 2.69,
+     "avg": 2.46,
+     "change": 0.05,
      "thin": false
     },
     {
@@ -524,8 +524,8 @@
      "freight": "F.O.B.",
      "low": 355.0,
      "high": 540.0,
-     "avg": 424.3,
-     "change": 4.2,
+     "avg": 434.8,
+     "change": 10.5,
      "thin": false
     },
     {
@@ -534,10 +534,10 @@
      "commod": "Fertilizer",
      "unit": "$/ton",
      "freight": "F.O.B.",
-     "low": 410.0,
+     "low": 425.0,
      "high": 650.0,
-     "avg": 499.29,
-     "change": 4.57,
+     "avg": 513.57,
+     "change": 14.29,
      "thin": false
     },
     {
@@ -547,9 +547,9 @@
      "unit": "$/ton",
      "freight": "F.O.B.",
      "low": 585.0,
-     "high": 775.0,
-     "avg": 639.44,
-     "change": 1.36,
+     "high": 810.0,
+     "avg": 643.04,
+     "change": 3.6,
      "thin": false
     }
    ]
@@ -563,10 +563,10 @@
     "WA"
    ],
    "cadence": "biweekly",
-   "week_begin": "2026-10-26",
-   "week_end": "2026-10-30",
-   "published": "2026-10-30",
-   "credit": "USDA AMS, Pacific Northwest Production Cost Report (Bi-Weekly), Oct 30, 2026",
+   "week_begin": "2026-11-09",
+   "week_end": "2026-11-13",
+   "published": "2026-11-13",
+   "credit": "USDA AMS, Pacific Northwest Production Cost Report (Bi-Weekly), Nov 13, 2026",
    "items": [
     {
      "key": "ams",
@@ -610,10 +610,10 @@
      "commod": "Fuels",
      "unit": "$/gal",
      "freight": "Delivered",
-     "low": 5.97,
-     "high": 6.42,
-     "avg": 6.16,
-     "change": 0.18,
+     "low": 5.77,
+     "high": 5.97,
+     "avg": 5.87,
+     "change": -0.29,
      "thin": false
     },
     {
@@ -660,8 +660,8 @@
      "freight": "Delivered",
      "low": 1.97,
      "high": 2.38,
-     "avg": 2.17,
-     "change": -0.4,
+     "avg": 2.18,
+     "change": 0.0,
      "thin": false
     },
     {
@@ -795,16 +795,16 @@
  },
  "daily_line": {
   "key": "diesel",
-  "date": "2026-10-30",
-  "text": "Farm diesel in USDA's dealer survey: Iowa $5.65 a gallon, Illinois $5.71, Oklahoma $5.54, North Carolina $5.40, Inter-Mountain West $6.03 delivered, Pacific Northwest $6.16 delivered (USDA AMS production cost reports, Oct 30)."
+  "date": "2026-11-13",
+  "text": "Farm diesel in USDA's dealer survey: Iowa $5.28 a gallon, Illinois $5.07, Oklahoma $5.42, North Carolina $4.89, Pacific Northwest $5.87 delivered (USDA AMS production cost reports, Nov 13)."
  },
  "status": {
   "ok": true,
-  "checked": "2026-11-09T15:25:55Z",
+  "checked": "2026-11-13T20:31:55Z",
   "notes": {
    "3657": "Calcium Nitrate: 31.0-31.0 outside the sane band (100, 3000), left out; Liquid Nitrogen (32-0-0): unit 'Dollars Per Gallon' not expected, left out"
   },
-  "reconcile": "Illinois 2026-10-30: PDF and MARS agree on 6 products"
+  "reconcile": "Illinois 2026-11-13: PDF and MARS agree on 6 products"
  },
- "generated": "2026-11-03T02:16:18Z"
+ "generated": "2026-11-13T20:31:55Z"
 }
