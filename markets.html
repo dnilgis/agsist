@@ -48,6 +48,7 @@
 
 /* the status line is a full sentence (the same words the build bakes): let it drop under the title instead of squeezing the title into broken words */
 .sec-head:has(> #price-data-status){flex-wrap:wrap;align-items:baseline}
+#mk-lede{color:var(--text);font-weight:600}
 #price-data-status{min-height:1.75em} /* holds its line before the board script rewrites the baked stamp (CLS sweep Nov 10 2026) */
 /* Nov 13 2026: the board script adds "oldest settle Nov 11, 2 days old" to the stamp once a settle is a day or more behind the reader's clock,
    which CI and a weekend visit both reach. At 390 that is a fourth line (66 to 88 px, CLS 0.018 in test/state-line-cls). The box holds the longest
@@ -529,8 +530,10 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
       Array.prototype.forEach.call(document.querySelectorAll('.pc'),function(c){c.classList.toggle('px-old',!!(ba&&ba.old));});
       if(stampH)status.innerHTML=stampH+' &middot; each change line carries its own close date';
       /* the lede's last-read time follows the status line (seed_static.py mk_lede bakes the same words) */
-      var lr=document.getElementById('mk-lede-read'),rm=bw&&/Read ([^;]*)$/.exec(bw);
-      if(lr&&rm){lr.textContent=rm[1];lr.setAttribute('datetime',data.fetched);}
+      /* always with its date, as the build bakes it ("Nov 13, 5:01 am CT"); the status line drops the date on the same day */
+      var lr=document.getElementById('mk-lede-read');
+      if(lr){try{var rp={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',month:'short',day:'numeric',hour:'numeric',minute:'2-digit',hour12:true}).formatToParts(new Date(data.fetched)).forEach(function(x){rp[x.type]=x.value;});
+        if(rp.month&&rp.hour&&rp.dayPeriod){lr.textContent=rp.month+' '+rp.day+', '+rp.hour+':'+rp.minute+'\u00a0'+rp.dayPeriod.toLowerCase()+' CT';lr.setAttribute('datetime',data.fetched);}}catch(e){}}
     }
   }).catch(function(){
     var s=document.getElementById('price-data-status');
