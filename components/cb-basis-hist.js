@@ -250,13 +250,19 @@
     return { head: head, take: take, summary: head + '. ' + take };
   }
   /* the words under the chart: only what is drawn in it */
-  function footOf(c) {
-    var gaps = c.lines.some(function (l) { return l.line.points.some(function (p) { return p.b; }); }), marks = {}, first = '', ties = false, late = [];
-    c.lines.forEach(function (l) { l.line.points.forEach(function (p) { if (p.m) marks[p.d] = 1; }); if (!first || l.line.points[0].d < first) first = l.line.points[0].d; });
-    c.lines.forEach(function (l) { if (l.line.points[0].d > dayAfter(first, 1)) late.push({ d: l.line.points[0].d, t: l.name + ' ' + dayText(l.line.points[0].d) }); });
+  /* The note under the chart names only what is drawn in the view shown (v: the kit's slice; none: the whole log): a gap
+     whose stretch is in view, a dotted line in view, a first bid logged inside the view, a tie on a day in view. */
+  function footOf(c, v) {
+    var from = v ? v.from : '', to = v ? v.to : c.end, pts = function (l) { var s = v && v.series.filter(function (q) { return q.key === l.key; })[0]; return s ? s.points : v ? [] : l.line.points; };
+    var gaps = false, marks = {}, first = '', ties = false, late = [], days = {};
+    c.lines.forEach(function (l) {
+      var ps = pts(l);
+      ps.forEach(function (p, i) { if (p.b && i) gaps = true; if (p.m) marks[p.d] = 1; days[p.d] = 1; });
+      if (!first || l.line.points[0].d < first) first = l.line.points[0].d;
+    });
+    c.lines.forEach(function (l) { var d0 = l.line.points[0].d; if (d0 > dayAfter(first, 1) && d0 > from && d0 <= to) late.push({ d: d0, t: l.name + ' ' + dayText(d0) }); });
     late = late.sort(function (a, b) { return a.d < b.d ? -1 : a.d > b.d ? 1 : a.t < b.t ? -1 : 1; }).map(function (x) { return x.t; });
-    var days = {}; c.lines.forEach(function (l) { l.line.points.forEach(function (p) { days[p.d] = 1; }); });
-    Object.keys(days).concat(c.end).forEach(function (d) { var by = {}; c.lines.forEach(function (l) { var p = heldOn(l, d); if (p) by[p.v] = (by[p.v] || 0) + 1; }); Object.keys(by).forEach(function (v) { if (by[v] > 1) ties = true; }); });
+    Object.keys(days).concat(to).forEach(function (d) { if (d < from) return; var by = {}; c.lines.forEach(function (l) { var p = heldOn(l, d); if (p) by[p.v] = (by[p.v] || 0) + 1; }); Object.keys(by).forEach(function (x) { if (by[x] > 1) ties = true; }); });
     var n = Object.keys(marks).length;
     return [gaps ? 'Thin dashed line: no bid posted.' : '', n ? (n === 1 ? 'Dotted vertical line: ' : 'Dotted vertical lines: ') + 'the delivery month or futures contract changed.' : '',
       ties ? 'Lines at the same value are drawn side by side.' : '', late.length ? 'First bid logged: ' + late.join('; ') + '.' : ''].filter(Boolean).join(' ');
@@ -273,7 +279,7 @@
       markLabel: function (p) { return p.ml || ''; },
       valueAt: function (key, d) { var p = byKey[key] && heldOn(byKey[key], d); return p ? basisText(p.v) : ''; },
       keyNote: '· touch the chart for another day',
-      foot: footOf(c),
+      foot: function (v) { return footOf(c, v); },
       ranges: [{ label: '2 weeks', days: 14, aria: 'two weeks' }, { label: '1 month', days: 31, aria: 'one month' }, { label: all, days: 0, aria: 'every day logged' }],
       range: all, height: { phone: 250, wide: 300 },
       story: function (v, forCard) { return story(c, town, v.from, v.to, forCard); },
@@ -386,7 +392,7 @@
   }
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, lineOf: lineOf, crops: crops, story: story, config: config, heldOn: heldOn, labels: labels, townOf: townOf, render: render };
+    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, lineOf: lineOf, crops: crops, story: story, config: config, heldOn: heldOn, labels: labels, townOf: townOf, footOf: footOf, render: render };
   } else if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else { init(); }
