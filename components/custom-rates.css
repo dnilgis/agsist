@@ -65,9 +65,15 @@
 .crb em{position:absolute;top:calc(100% + 4px);font-style:normal;font-size:.75rem;line-height:1;color:var(--text-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .crb .crb-0{left:0}
 .crb .crb-t{right:0}
-.crb .crb-lo,.crb .crb-hi{top:calc(100% + 24px);color:var(--text)}
-.crb .crb-lo{left:0}
-.crb .crb-hi{right:0}
+.crb u{text-decoration:none}
+/* the dots, band and tick sit in a box inset by half a dot, so the highest dot never sits on the rounded end */
+.crb-in{position:absolute;left:4px;right:4px;top:0;bottom:0;text-decoration:none}
+.crb-l .crb-in{left:6px;right:6px}
+/* the big bar names its lowest and highest state: one right-aligned line, or a label under each dot on a wide screen when they are far apart */
+.crb .crb-lh,.crb .crb-lo,.crb .crb-hi{top:calc(100% + 24px);color:var(--text)}
+.crb .crb-lh{right:0}
+.crb .crb-lo,.crb .crb-hi{display:none}
+@media(min-width:700px){.crb.two .crb-lo,.crb.two .crb-hi{display:block;top:calc(100% + 20px)}.crb.two .crb-lh{display:none}}
 .cro-b .crb{margin-bottom:1.15rem}
 .crb-l s{border-radius:8px}
 .crb-l i{width:11px;height:11px;margin:-5.5px 0 0 -5.5px}
@@ -208,6 +214,8 @@
   .cr-sum td .na{display:block;white-space:normal;text-align:right;line-height:1.15}
   #main .cr-sum thead th{font-family:var(--font-body,inherit);text-transform:none;letter-spacing:0;font-size:.75rem}
   .crb-l i{width:8px;height:8px;margin:-4px 0 0 -4px}
+  .crb-l .crb-in{left:4px;right:4px}
+  .crb-in{left:3px;right:3px}
   .cro-b .crb i{width:6px;height:6px;margin:-3px 0 0 -3px}
   .cro-b .crb i.me{width:11px;height:11px;margin:-5.5px 0 0 -5.5px}
   .crbp{padding:.8rem 12px}

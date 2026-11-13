@@ -158,6 +158,7 @@
     if (op.n === 1) { var st = Object.keys(op.by)[0]; return [money(op.by[st][0], op.u), stName(st) + ' only']; }
     return ['', 'not in a current survey'];
   }
+  var KEY_TEXT = 'Each dot is a state survey\'s average and the tall line is the middle. The bar starts at zero.', GOLD_TEXT = ' Your state is the gold dot.';
   /* where a bar's scale ends: the next round figure above the highest state (same rule as the builder) */
   function scaleTop(m) {
     var step = m >= 20 ? 5 : m >= 2 ? 1 : m >= 1 ? 0.25 : 0.05;
@@ -169,17 +170,22 @@
     if (!sts.length) return '';
     var vals = sts.map(function (s) { return op.by[s][0]; }), top = scaleTop(Math.max.apply(null, vals));
     var pc = function (v) { return Math.round(100 * v / top); };
-    var h = '<span class="' + cls + '" aria-hidden="true">';
+    var big = /\bcrb-l\b/.test(cls) && vals.length >= 2, lo, hi, loPc, hiPc;
+    if (big) {
+      var byVal = sts.slice().sort(function (x, y) { return op.by[x][0] - op.by[y][0] || (x < y ? -1 : 1); });
+      lo = byVal[0]; hi = byVal[byVal.length - 1]; loPc = pc(op.by[lo][0]); hiPc = pc(op.by[hi][0]);
+      if (hiPc - loPc >= 40) cls += ' two';
+    }
+    var h = '<span class="' + cls + '" aria-hidden="true"><u class="crb-in">';
     if (vals.length >= 2) h += '<s style="left:' + pc(Math.min.apply(null, vals)) + '%;width:' + Math.round(100 * (Math.max.apply(null, vals) - Math.min.apply(null, vals)) / top) + '%"></s>';
     sts.forEach(function (s) { h += '<i style="left:' + pc(op.by[s][0]) + '%"' + (s === me ? ' class="me"' : '') + '></i>'; });
     if (op.md != null) h += '<b style="left:' + pc(op.md) + '%"></b>';
+    var tl = function (st, w) { return esc(stName(st)) + ' ' + money(op.by[st][0], op.u) + ' ' + w; };
+    if (big) h += '<em class="crb-lo" style="left:' + loPc + '%">' + tl(lo, 'lowest') + '</em><em class="crb-hi" style="right:' + (100 - hiPc) + '%">' + tl(hi, 'highest') + '</em>';
+    h += '</u>';
     /* the scale, said out loud: zero at the left, a round figure at the right end (same as the builder) */
     h += '<em class="crb-0">$0</em><em class="crb-t">' + scaleLabel(top, op.u) + '</em>';
-    if (/\bcrb-l\b/.test(cls) && vals.length >= 2) {
-      var byVal = sts.slice().sort(function (x, y) { return op.by[x][0] - op.by[y][0] || (x < y ? -1 : 1); });
-      var lo = byVal[0], hi = byVal[byVal.length - 1];
-      h += '<em class="crb-lo">Low: ' + esc(stName(lo)) + ' ' + money(op.by[lo][0], op.u) + '</em><em class="crb-hi">High: ' + esc(stName(hi)) + ' ' + money(op.by[hi][0], op.u) + '</em>';
-    }
+    if (big) h += '<em class="crb-lh">' + tl(lo, 'lowest') + ', ' + tl(hi, 'highest') + '</em>';
     return h + '</span>';
   }
   /* the reader's survey's own number for a job: [values, unit, kind] or null */
@@ -255,6 +261,8 @@
       var cue = mine(op);
       $('cr-me').innerHTML = (cue == null ? '<button type="button" class="cr-cue" data-pick="1">Pick your state</button> to see its own survey first.' : esc(cue)) + links;
     }
+    var key = document.querySelector('.crh-key');
+    if (key) key.textContent = KEY_TEXT + (me && me[2] === 'by' ? GOLD_TEXT : '');
     var old = $('cr-answer').querySelector('.crb-l');
     var nb = document.createElement('div'); nb.innerHTML = bar(op, 'crb crb-l', st);
     if (old && nb.firstChild) old.parentNode.replaceChild(nb.firstChild, old);
@@ -366,7 +374,7 @@
       var rows = d.rows.filter(function (r) { return r.c === c; });
       var shown = S.q ? rows.filter(function (r) { return matches(S.q, r.s + ' ' + r.o + ' ' + r.u); }) : rows;
       box.innerHTML = head(rows.length) + (shown.length ?
-        '<div class="cr-tw"><table class="cr-t cr-full"><caption>' + esc(d.name) + ', ' + (d.rate_year ? d.rate_year + ' rates' : d.survey_year) + ', as the survey printed it: average' + (d.rows.some(function (r) { return r.md != null; }) ? ', median' : '') + ' and ' + esc(d.spread_label) + '.' + (d.counts === false ? ' This survey does not print how many answered each job.' : ' Answers = how many reported that job.') + '</caption>' +
+        '<div class="cr-tw"><table class="cr-t cr-full"><caption>' + esc(d.name) + ', ' + (d.rate_year ? d.rate_year + ' rates' : d.survey_year) + ', as the survey printed it: average' + (d.rows.some(function (r) { return r.md != null; }) ? ', median' : '') + ' and ' + esc(d.spread_label) + '.' + (d.counts === false ? ' This survey does not print how many answered each job.' : ' Answers is how many reported that job.') + '</caption>' +
         '<thead><tr><th scope="col">Job</th><th scope="col">Average</th><th scope="col" class="rg">Range</th><th scope="col">Answers</th></tr></thead><tbody>' + lineRows(d, shown) + '</tbody></table></div>' +
         (d.page === false ? '<p class="fine">' + esc(d.range_note) + '</p>' : '<p class="fine"><a href="/custom-rates/' + esc(d.slug) + '">' + esc(d.name) + '\'s whole survey on one page</a></p>')
         : '<p class="fine">No ' + esc(d.name) + ' job matches "' + esc(S.q) + '" in this category.</p>');
