@@ -58,7 +58,7 @@ html:not(.has-zip) .hp-card .hp-wxnone{display:block}
 .hp-d7 .ic{display:block;margin:0;width:1.4em;height:1.4em;color:var(--gold)}
 .hp-d7 .hi{color:var(--text);font-weight:700}.hp-d7 .lo{color:var(--text-muted)}
 .hp-d7 li.tn b{font-size:.8rem}
-.hp-d7 .pp{color:var(--blue);font-size:.78rem;text-align:right;white-space:nowrap;min-width:0}
+.hp-d7 .pp{color:var(--blue);font-size:.75rem;text-align:right;white-space:nowrap;min-width:0}
 .hp-d7 .am{color:var(--text-muted)}
 .hp-d7 .ex{grid-column:3/-1;display:flex;gap:.7rem;min-width:0;font-size:.76rem;color:var(--text-muted);white-space:nowrap;overflow:hidden}
 .hp-d7 .wd{overflow:hidden;text-overflow:ellipsis}
@@ -67,6 +67,8 @@ html:not(.has-zip) .hp-card .hp-wxnone{display:block}
   .hp-d7h,.hp-d7 li{grid-template-columns:3.5rem 1.4rem 1.9rem 1.9rem minmax(0,1fr) 6rem}
   .hp-d7h .w{display:block}
   .hp-d7 .ex{display:contents}
+  .hp-d7 .pp{margin-right:.3rem}
+  .hp-d7h .p{margin-right:.3rem}
   .hp-d7 .wd{position:absolute;width:1px;height:1px;margin:-1px;clip:rect(0 0 0 0)}
   .hp-d7 .wn{font-size:.74rem;color:var(--text-muted);white-space:nowrap;text-align:right}
 }
