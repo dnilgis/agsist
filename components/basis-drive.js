@@ -340,7 +340,7 @@
       });
     } else {
       if (p.med) {
-        var mt = st + ' median ' + word(cents(p.med.median)), mw = widthOf(mt, fs, true);
+        var mt = st + ' median: ' + word(cents(p.med.median)), mw = widthOf(mt, fs, true);
         var mc = [];   // along the rule, above then below, left to right: the rule is always named
         for (var mx = L + 6; mx <= x1 - mw; mx += 12) mc.push({ x: mx, y: ym - 6 }, { x: mx, y: ym + fs + 4 });
         var m1 = st + ' median', m2 = word(cents(p.med.median)), mc2 = [];   // or in two lines, the words above the rule and the number under it
