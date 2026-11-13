@@ -1,5 +1,5 @@
 {
- "updated": "2026-11-12T23:26:21Z",
+ "updated": "2026-11-12T23:56:16Z",
  "source": "USDA AMS Livestock, Poultry and Grain Market News, state hay reports",
  "note": "Confirmed trades as AMS reports them, $ per ton, by grade and bale type. Each report has its own date. Not blended with the NASS monthly prices in hay-prices.json.",
  "reports": [
@@ -149,9 +149,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3183",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3183.pdf",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -159,25 +159,20 @@
    "state": "AL",
    "state_name": "Alabama",
    "title": "Alabama Direct Report (Bi-Weekly)",
-   "heading": "Direct Hay Weighted Average Report for week ending 10/30/2026",
-   "date": "2026-10-29",
-   "week_ending": "2026-10-30",
-   "last_reported": "2026-10-12",
+   "heading": "Direct Hay Weighted Average Report for week ending 11/13/2026",
+   "date": "2026-11-12",
+   "week_ending": "2026-11-13",
+   "last_reported": "2026-10-26",
    "tons": {
     "hay": {
-     "week": 1308.0,
-     "last": 735.0,
-     "year": 1276.0
+     "week": 1391.0,
+     "last": 1308.0,
+     "year": 1340.0
     },
     "straw": {
-     "week": 13.0,
+     "week": 26.0,
      "last": 13.0,
-     "year": 0.0
-    },
-    "total": {
-     "week": 1321.0,
-     "last": 748.0,
-     "year": 1276.0
+     "year": 30.0
     }
    },
    "comment": "Hay prices steady. Trade moderate, with moderate supply and moderate demand.",
@@ -190,7 +185,7 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Medium Round",
-     "qty": 7.0,
+     "qty": 3.5,
      "lo": 150.0,
      "hi": 150.0,
      "avg": 150.0,
@@ -205,10 +200,10 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Small Square",
-     "qty": 0.75,
+     "qty": 2.0,
      "lo": 400.0,
      "hi": 400.0,
-     "avg": null,
+     "avg": 400.0,
      "freight": "F.O.B.",
      "desc": ""
     },
@@ -220,10 +215,10 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Large Round",
-     "qty": 72.75,
-     "lo": 160.0,
+     "qty": 25.5,
+     "lo": 200.0,
      "hi": 200.0,
-     "avg": 171.11,
+     "avg": 200.0,
      "freight": "F.O.B.",
      "desc": ""
     },
@@ -235,10 +230,10 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Medium Round",
-     "qty": 211.5,
+     "qty": 109.0,
      "lo": 150.0,
      "hi": 200.0,
-     "avg": 162.43,
+     "avg": 169.44,
      "freight": "F.O.B.",
      "desc": ""
     },
@@ -250,25 +245,10 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Small Square",
-     "qty": 311.75,
+     "qty": 324.0,
      "lo": 280.0,
      "hi": 440.0,
-     "avg": 328.97,
-     "freight": "F.O.B.",
-     "desc": ""
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Bermuda Grass",
-     "grade": "Good",
-     "basis": "trade",
-     "region": "Southeast",
-     "bale": "Large Round",
-     "qty": 56.25,
-     "lo": 100.0,
-     "hi": 100.0,
-     "avg": 100.0,
+     "avg": 327.95,
      "freight": "F.O.B.",
      "desc": ""
     },
@@ -280,10 +260,10 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Medium Round",
-     "qty": 573.5,
+     "qty": 817.5,
      "lo": 100.0,
      "hi": 120.0,
-     "avg": 109.56,
+     "avg": 110.43,
      "freight": "F.O.B.",
      "desc": ""
     },
@@ -295,10 +275,25 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Medium Round",
-     "qty": 75.0,
+     "qty": 90.0,
      "lo": 80.0,
      "hi": 80.0,
      "avg": 80.0,
+     "freight": "F.O.B.",
+     "desc": ""
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Peanut",
+     "grade": "Good",
+     "basis": "trade",
+     "region": "Southeast",
+     "bale": "Medium Round",
+     "qty": 20.0,
+     "lo": 70.0,
+     "hi": 70.0,
+     "avg": 70.0,
      "freight": "F.O.B.",
      "desc": ""
     },
@@ -310,7 +305,7 @@
      "basis": "trade",
      "region": "Southeast",
      "bale": "Small Square",
-     "qty": 13.25,
+     "qty": 26.25,
      "lo": 300.0,
      "hi": 300.0,
      "avg": 300.0,
@@ -330,9 +325,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3050",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3050.pdf",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -342,7 +337,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-12T23:26:21Z"
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -596,9 +591,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2935",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_2935.pdf",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -1662,9 +1657,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2885",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_2885.pdf",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -1672,9 +1667,9 @@
    "state": "IA",
    "state_name": "Iowa",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    },
    "title": "Iowa Direct Hay Report",
    "heading": "Direct Hay Weighted Average Report for week ending 11/6/2026",
@@ -1765,7 +1760,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-12T23:26:21Z"
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -1774,8 +1769,8 @@
    "state_name": "Missouri",
    "status": {
     "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "note": "no Per Ton hay or straw rows",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -1874,9 +1869,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3095",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3095.pdf",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -1885,8 +1880,8 @@
    "state_name": "Texas",
    "status": {
     "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "note": "no Per Ton hay or straw rows",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -2030,9 +2025,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2905",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_2905.pdf",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -2040,29 +2035,39 @@
    "state": "WY",
    "state_name": "Wyoming",
    "title": "Wyoming Direct Hay Report",
-   "heading": "Direct Hay Weighted Average Report for week ending 10/30/2026",
-   "date": "2026-10-29",
-   "week_ending": "2026-10-30",
-   "last_reported": "2026-10-12",
+   "heading": "Direct Hay Weighted Average Report for week ending 11/13/2026",
+   "date": "2026-11-12",
+   "week_ending": "2026-11-13",
+   "last_reported": "2026-10-26",
    "tons": {
     "hay": {
-     "week": 750.0,
-     "last": 2435.0,
-     "year": 570.0
-    },
-    "straw": {
-     "week": 0.0,
-     "last": 350.0,
-     "year": 40.0
+     "week": 1385.0,
+     "last": 750.0,
+     "year": 1335.0
     },
     "total": {
-     "week": 750.0,
-     "last": 2785.0,
-     "year": 610.0
+     "week": 1385.0,
+     "last": 750.0,
+     "year": 1335.0
     }
    },
-   "comment": "Compared to the last report all prices are steady. Demand was moderate. Some previously spoken loads of hay have been turned back by out of state buyers due to the increase of diesel fuel and freight charges they can not afford to ship the hay halfway across the USA anymore.",
+   "comment": "Compared to the last report hay prices sold steady. Demand remains good so far this fall on large and small squares. Some producers are going to carry over some tonnage into the new year for cash flow reasons. Other producers have most of their hay sold and are waiting for trucks for delivery. Rather warm temps across the state and has some agriculture people a little worried.",
    "rows": [
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Alfalfa",
+     "grade": "Good/Premium",
+     "basis": "trade",
+     "region": "East",
+     "bale": "Large Square 3x4",
+     "qty": 175.0,
+     "lo": 330.0,
+     "hi": 330.0,
+     "avg": 330.0,
+     "freight": "F.O.B.-Farm/Ranch",
+     "desc": ""
+    },
     {
      "kind": "hay",
      "organic": false,
@@ -2071,7 +2076,7 @@
      "basis": "trade",
      "region": "East",
      "bale": "Large Square 3x4",
-     "qty": 600.0,
+     "qty": 200.0,
      "lo": 300.0,
      "hi": 300.0,
      "avg": 300.0,
@@ -2081,54 +2086,39 @@
     {
      "kind": "hay",
      "organic": false,
-     "commodity": "Alfalfa/Orchard Mix",
-     "grade": "Premium",
-     "basis": "trade",
-     "region": "West",
-     "bale": "Large Square 3x4",
-     "qty": 75.0,
-     "lo": 265.0,
-     "hi": 265.0,
-     "avg": 265.0,
-     "freight": "F.O.B.",
-     "desc": ""
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Sudan",
-     "grade": "",
-     "basis": "trade",
-     "region": "West",
-     "bale": "Large Square 3x4",
-     "qty": 50.0,
-     "lo": 240.0,
-     "hi": 240.0,
-     "avg": 240.0,
-     "freight": "F.O.B.-Farm/Ranch",
-     "desc": ""
-    },
-    {
-     "kind": "hay",
-     "organic": false,
-     "commodity": "Teff",
+     "commodity": "Alfalfa",
      "grade": "Good/Premium",
      "basis": "trade",
      "region": "West",
      "bale": "Large Square 3x4",
-     "qty": 25.0,
+     "qty": 1000.0,
      "lo": 300.0,
      "hi": 300.0,
      "avg": 300.0,
      "freight": "F.O.B.",
      "desc": ""
+    },
+    {
+     "kind": "hay",
+     "organic": false,
+     "commodity": "Alfalfa",
+     "grade": "Good/Premium",
+     "basis": "trade",
+     "region": "West",
+     "bale": "Small Square",
+     "qty": 10.0,
+     "lo": 335.0,
+     "hi": 350.0,
+     "avg": 342.5,
+     "freight": "F.O.B.",
+     "desc": ""
     }
    ],
-   "per_bale_tables": 1,
+   "per_bale_tables": 2,
    "skipped": {
     "ask": 3,
     "contract": 0,
-    "other_unit": 1
+    "other_unit": 2
    },
    "kind": "direct",
    "biweekly": false,
@@ -2136,9 +2126,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3236",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3236.pdf",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -2146,9 +2136,9 @@
    "state": "MT",
    "state_name": "Montana",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    },
    "title": "Montana Direct Hay Report",
    "heading": "Direct Hay Weighted Average Report for week ending 10/30/2026",
@@ -2388,9 +2378,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3056",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3056.pdf",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -2909,9 +2899,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3057",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3057.pdf",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3155,9 +3145,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/3058",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_3058.pdf",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3336,9 +3326,9 @@
    "source_url": "https://mymarketnews.ams.usda.gov/viewReport/2904",
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_2904.pdf",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3346,9 +3336,9 @@
    "state": "UT",
    "state_name": "Utah",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    },
    "title": "Utah Direct Hay Report",
    "heading": "Direct Hay Weighted Average Report for week ending 11/6/2026",
@@ -3492,9 +3482,9 @@
    "state": "NV",
    "state_name": "Nevada",
    "status": {
-    "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "ok": true,
+    "note": "",
+    "checked": "2026-11-12T23:56:16Z"
    },
    "title": "Nevada Direct Hay Report (Bi-Weekly)",
    "heading": "Direct Hay Weighted Average Report for week ending 10/30/2026",
@@ -3564,8 +3554,8 @@
    "state_name": "Arizona",
    "status": {
     "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "note": "no Per Ton hay or straw rows",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3574,8 +3564,8 @@
    "state_name": "New Mexico",
    "status": {
     "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "note": "no Per Ton hay or straw rows",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3584,8 +3574,8 @@
    "state_name": "Tennessee",
    "status": {
     "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "note": "no Per Ton hay or straw rows",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3594,8 +3584,8 @@
    "state_name": "Kentucky",
    "status": {
     "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "note": "no Per Ton hay or straw rows",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3604,8 +3594,8 @@
    "state_name": "Pennsylvania",
    "status": {
     "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "note": "no Per Ton hay or straw rows",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3615,7 +3605,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-12T23:26:21Z"
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3625,7 +3615,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-12T23:26:21Z"
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3635,7 +3625,7 @@
    "status": {
     "ok": false,
     "note": "no report number yet (run the probe for the AMS hay listing)",
-    "checked": "2026-11-12T23:26:21Z"
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3644,8 +3634,8 @@
    "state_name": "Illinois",
    "status": {
     "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "note": "no Per Ton hay or straw rows",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3780,8 +3770,8 @@
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_2246.pdf",
    "status": {
     "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "note": "no Per Ton hay or straw rows",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -3791,7 +3781,7 @@
    "status": {
     "ok": false,
     "note": "held: sells every lot by the bale (Oct 10 2026 report); bale prices are never converted to tons",
-    "checked": "2026-11-12T23:26:21Z"
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -4211,8 +4201,8 @@
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_2243.pdf",
    "status": {
     "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "note": "no Per Ton hay or straw rows",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -4527,8 +4517,8 @@
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_2244.pdf",
    "status": {
     "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "note": "no Per Ton hay or straw rows",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -4678,8 +4668,8 @@
    "pdf_url": "https://www.ams.usda.gov/mnreports/ams_2245.pdf",
    "status": {
     "ok": false,
-    "note": "fetch failed: www.ams.usda.gov: HTTPError: HTTP Error 403: Forbidden; ams-prod.azureedge.us: HTTPError: HTTP Error 403: Forbidden",
-    "checked": "2026-11-12T23:26:21Z"
+    "note": "no Per Ton hay or straw rows",
+    "checked": "2026-11-12T23:56:16Z"
    }
   },
   {
@@ -4689,7 +4679,7 @@
    "status": {
     "ok": false,
     "note": "held: sells every lot by the bale (Oct 5 2026 report); bale prices are never converted to tons",
-    "checked": "2026-11-12T23:26:21Z"
+    "checked": "2026-11-12T23:56:16Z"
    }
   }
  ]
