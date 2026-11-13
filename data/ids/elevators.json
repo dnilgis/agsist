@@ -1,6 +1,6 @@
 {
 "schema": "agsist-elevators/1",
-"generated": "2026-11-12",
+"generated": "2026-11-13",
 "note": "One record per physical facility.",
 "counts": {"facilities": 3763, "with_fips": 3313, "with_point": 3345, "maybe_records": 207, "matched_2plus_sources": 3199, "ambiguous_keys": 234, "with_schedules": 268, "agsist_ids": 454, "bids_repo_ids": 3309, "fips_differs_from_bids_repo": 4, "retired_ids": 146, "stale_ids": 0, "with_ownership_change": 18, "by_source": {"basis": 3161, "bids": 242, "bids_repo": 3309, "directory": 725}, "keys_by_rule": {"kept": 4671}},
 "elevators": [
