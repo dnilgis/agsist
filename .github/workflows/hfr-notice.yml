@@ -7,6 +7,13 @@ on:
         description: "Id for this mailing, e.g. rates-2026-11 (a finished id is never sent again)"
         type: string
         required: true
+      item:
+        description: "What USDA has just published: rates or dates. The page's answer line must no longer list it as not published"
+        type: choice
+        required: true
+        options:
+          - rates
+          - dates
       subject:
         description: "Subject line and headline, 8 to 90 characters, no dashes or links"
         type: string
@@ -72,12 +79,13 @@ jobs:
           HFR_PREVIEW_TO: ${{ secrets.HFR_PREVIEW_TO }}
           HFR_NOTICE_LIVE: ${{ vars.HFR_NOTICE_LIVE }}
           MAILING: ${{ inputs.mailing }}
+          ITEM: ${{ inputs.item }}
           SUBJECT: ${{ inputs.subject }}
           BODY: ${{ inputs.body }}
           DRY: ${{ inputs.dry_run }}
           PREVIEW: ${{ inputs.preview }}
         run: |
-          set -- --mailing "$MAILING" --subject "$SUBJECT"
+          set -- --mailing "$MAILING" --item "$ITEM" --subject "$SUBJECT"
           if [ -n "$BODY" ]; then set -- "$@" --body "$BODY"; fi
           if [ "$PREVIEW" != "false" ]; then set -- "$@" --preview;
           elif [ "$DRY" = "false" ]; then set -- "$@" --send; fi
