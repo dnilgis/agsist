@@ -29,7 +29,7 @@
     function say(t, ok) { m.textContent = t; m.className = 'gk-m' + (ok ? '' : ' err'); m.hidden = false; }
     function thanks() {
       f.hidden = true;
-      say('You are on the waitlist. I will email you when the first batch is ready, with the price, before anyone else.', true);
+      say('You are on the waitlist. I will email you first, with the price.', true);
     }
     if (listed()) { thanks(); return; }
     f.addEventListener('submit', function (ev) {

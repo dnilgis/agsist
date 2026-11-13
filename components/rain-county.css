@@ -134,6 +134,15 @@
 .rc-sell p { margin: 0 0 .4rem; }
 .rc-sell .btn { display: inline-block; margin: .3rem .3rem 0 0; vertical-align: middle; }
 .rc-sell .rc-fine { margin: .5rem 0 0; }
+/* the framed-print photo in the Rain Print block (Nov 13, 2026): the full column on a phone, the left column beside the words from 620 px */
+.rc-sell-img { display: block; margin: 0 0 .8rem; color: var(--text-muted); text-decoration: none; }
+.rc-sell-img img { display: block; width: 100%; height: auto; aspect-ratio: 885 / 636; border-radius: var(--r-8, 8px); }
+.rc-sell-img span { display: block; margin-top: .3rem; font-size: var(--fs-sm); }
+@media (min-width: 620px) {
+  .rc-sell:has(.rc-sell-img) { display: grid; grid-template-columns: 260px 1fr; column-gap: 1.3rem; align-items: start; }
+  .rc-sell:has(.rc-sell-img) > .rc-sell-img { grid-column: 1; grid-row: 1 / span 6; margin: 0; }
+  .rc-sell:has(.rc-sell-img) > :not(.rc-sell-img) { grid-column: 2; }
+}
 /* the second year button (last year by Christmas, this year in January): an outline that reads as a button */
 .rc-sell .btn-secondary { border-color: var(--text-muted); }
 /* The county page's print up top, in the plain chart's place (Oct 28 2026). The plain chart ships inside

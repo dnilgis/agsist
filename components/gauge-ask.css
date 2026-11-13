@@ -1,15 +1,26 @@
-/* the rain gauge ask on the rain pages (scripts/gauge_ask.py). The box holds its height up front so nothing moves
-   when the photo loads or the thank-you replaces the form. */
-.gk{display:grid;align-content:start;gap:.9rem;margin:1.6rem 0;padding:1rem 1.1rem;border:1px solid var(--border);border-radius:var(--r-lg,10px);background:var(--surface);max-width:46em;min-height:29rem}
-.gk img{display:block;width:100%;max-width:340px;height:auto;aspect-ratio:8/5;object-fit:cover;border-radius:var(--r-8,8px)}
-.gk-b{min-height:11.5rem}
-.gk-t{margin:0 0 .7rem;color:var(--text-dim);line-height:1.55}
+/* the rain gauge ask on the rain pages (scripts/gauge_ask.py). Phone: a thumb of the render beside the words, then the
+   form and the hook across. 620 px and wider: the render on the left, the rest on the right. .gk-b holds the form's own
+   height (test/gauge-ask.test.mjs measures it in a browser at 390 and 1280), so the thank-you, or a reader already on the
+   list, swaps inside the same box and nothing below moves. */
+.gk{display:grid;grid-template-columns:104px 1fr;grid-template-areas:"p t" "b b" "s s";gap:.55rem .85rem;margin:1.8rem 0;padding:.9rem 1rem;border:1px solid var(--border);border-radius:var(--r-lg,10px);background:var(--surface);max-width:46em;align-items:start}
+.gk-p{grid-area:p;margin:0}
+.gk-p img{display:block;width:100%;height:auto;aspect-ratio:8/5;object-fit:cover;border-radius:var(--r-8,8px)}
+.gk-p figcaption{margin-top:.25rem;font-size:var(--fs-xs);line-height:1.3;color:var(--text-muted)}
+.gk-t{grid-area:t;margin:0;color:var(--text-dim);line-height:1.5;font-size:var(--fs-sm)}
+.gk-t b{color:var(--text)}
+.gk-b{grid-area:b;min-height:5.755rem}
 .gk-f{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center}
 .gk-l{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
-.gk-e{flex:1 1 14rem;min-width:0;min-height:44px;padding:.45rem .7rem;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--border-2,var(--border));border-radius:var(--r-8,8px)}
+.gk-e{flex:1 1 100%;min-width:0;min-height:44px;padding:.45rem .7rem;font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--border-2,var(--border));border-radius:var(--r-8,8px)}
 .gk-h{position:absolute;left:-9999px;width:1px;height:1px}
 .gk .btn{min-height:44px}
-.gk-m{margin:.6rem 0 0;min-height:1.5em;color:var(--text)}
+.gk-m{margin:0;color:var(--text);font-size:var(--fs-sm);line-height:1.5}
 .gk-m.err{color:var(--orange)}
-.gk-s{margin:.6rem 0 0;font-size:var(--fs-sm);color:var(--text-muted)}
-@media(min-width:620px){.gk{grid-template-columns:240px 1fr;align-items:start;min-height:14rem}.gk img{max-width:240px}}
+.gk-s{grid-area:s;margin:0;font-size:var(--fs-sm);color:var(--text-muted)}
+@media(min-width:620px){
+  .gk{grid-template-columns:240px 1fr;grid-template-areas:"p t" "p b" "p s";gap:.7rem 1.2rem;padding:1rem 1.1rem}
+  .gk-p figcaption{font-size:var(--fs-sm)}
+  .gk-t{font-size:inherit}
+  .gk-b{min-height:44px}
+  .gk-e{flex:1 1 14rem}
+}
