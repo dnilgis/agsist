@@ -167,7 +167,7 @@
     var now = m.now;
     if (now) {
       // named at its right end, clear of the line under the words: above the highest step it spans, else under the band
-      var ex = Math.min(X(now.d), W - R - 4), tries = [['Best in town: ' + word(now.hi)], ['Best in town', word(now.hi)]], done = false;
+      var ex = Math.min(X(now.d), W - R - 4), tries = [['Best in town: ' + word(now.hi)], ['Best in town', word(now.hi)], ['Best now', word(now.hi)]], done = false;
       for (var ti = 0; ti < tries.length && !done; ti++) {
         var ls = tries[ti], bw = Math.max.apply(null, ls.map(function (z) { return BD.widthOf(z, fb, true); })), lh2 = fb * 1.2, hh = (ls.length - 1) * lh2;
         var span = m.days.filter(function (x) { return !x.gap && X(x.d) >= ex - bw - 4 && X(x.d) <= ex + 4; });
