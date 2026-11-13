@@ -145,9 +145,9 @@ body {
 }
 .hero-eyebrow {
   display: inline-flex; align-items: center; gap: .45rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size:0.77rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--green); background: rgba(58,139,60,.06);
+  font-family:var(--font-body);
+  font-size:0.77rem; font-weight: 700; letter-spacing:0; text-transform:none;
+  color:var(--text-dim); background: rgba(58,139,60,.06);
   border: 1px solid rgba(58,139,60,.18); border-radius: 3px;
   padding: .3rem .75rem; margin-bottom: .85rem;
 }
@@ -171,14 +171,14 @@ body {
 }
 .status-lbl {
   display: flex; align-items: center; justify-content: center; gap: .4rem;
-  font-family: 'JetBrains Mono', monospace;
-  font-size:0.77rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  font-family:var(--font-body);
+  font-size:0.77rem; font-weight: 700; letter-spacing:0; text-transform:none;
   color: var(--text-muted); margin-bottom: 1rem;
 }
 .status-icon { font-size: 3.5rem; line-height: 1; margin-bottom: .6rem; }
 .status-main {
   font-family:var(--font-display); font-size: 1.7rem; font-weight: 700;
-  text-transform: uppercase; letter-spacing: .03em; margin-bottom: .4rem;
+  text-transform:none; letter-spacing:0; margin-bottom: .4rem;
 }
 .status-main.good    { color: var(--green); }
 .status-main.marginal{ color: var(--gold); }
@@ -268,13 +268,13 @@ body {
   pointer-events: none;
 }
 .jump-link {
-  font-family: 'JetBrains Mono', monospace;
+  font-family:var(--font-body);
   font-size:0.77rem; font-weight: 700; color: var(--text-muted);
   text-decoration: none; padding: .35rem .75rem;
   border: 2px solid var(--border); border-radius: var(--r-sm, 4px);
   transition: border-color .15s, color .15s;
   white-space: nowrap; flex-shrink: 0;
-  text-transform: uppercase; letter-spacing: .3px;
+  text-transform:none; letter-spacing:0;
   min-height: 44px;
   display: inline-flex;
   align-items: center;
@@ -302,9 +302,9 @@ body {
   margin-bottom: .85rem; flex-wrap: wrap; gap: .5rem;
 }
 .section-label {
-  font-family: 'JetBrains Mono', monospace;
-  font-size:0.77rem; font-weight: 700; letter-spacing: .14em;
-  text-transform: uppercase; color: var(--text-muted);
+  font-family:var(--font-body);
+  font-size:0.77rem; font-weight: 700; letter-spacing:0;
+  text-transform:none; color: var(--text-muted);
 }
 .section-link {
   font-size:0.78rem; color: var(--text-muted); background: none;
@@ -376,8 +376,8 @@ body {
   /* overflow:hidden intentionally OMITTED — kills iOS touch scroll on .hourly-scroll child */
 }
 .window-head {
-  font-family: 'JetBrains Mono', monospace;
-  font-size:0.77rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+  font-family:var(--font-body);
+  font-size:0.77rem; font-weight: 700; letter-spacing:0; text-transform:none;
   color: var(--text-muted); margin-bottom: .75rem;
 }
 .hourly-scroll {
@@ -422,8 +422,8 @@ body {
 }
 .edu-title {
   font-family:var(--font-body,'Inter',system-ui,sans-serif);
-  font-size:1rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--green); margin-bottom: 1.25rem; opacity: .9;
+  font-size:1rem; font-weight: 700; letter-spacing:0; text-transform:none;
+  color:var(--text-dim); margin-bottom: 1.25rem; opacity: .9;
 }
 .edu-grid {
   display: grid;
@@ -456,9 +456,9 @@ body {
   overflow: hidden;
 }
 .inv-title {
-  font-family: 'JetBrains Mono', monospace;
+  font-family:var(--font-body);
   font-size:0.78rem; font-weight: 700; color: var(--red);
-  letter-spacing: .08em; text-transform: uppercase;
+  letter-spacing:0; text-transform:none;
   margin-bottom: 1rem; opacity: .9;
 }
 .inv-grid {
@@ -661,9 +661,9 @@ body {
      border-radius does not require overflow:hidden in modern browsers. */
 }
 .sc-title {
-  font-family: 'JetBrains Mono', monospace;
-  font-size:0.76rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
-  color: var(--green); margin-bottom: .9rem; opacity: .9;
+  font-family:var(--font-body);
+  font-size:0.76rem; font-weight: 700; letter-spacing:0; text-transform:none;
+  color:var(--text-dim); margin-bottom: .9rem; opacity: .9;
 }
 
 /* ── Recommendation Box ──────────────────────────────────────────── */
@@ -697,7 +697,7 @@ body {
   background: var(--surface2); border: var(--card-bw) solid var(--border);
   border-radius: var(--r-sm, 4px); text-align: center;
 }
-.day-name   { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--text-muted); white-space:nowrap; }
+.day-name   { font-family:var(--font-body); font-size:0.755rem; font-weight: 700; text-transform:none; letter-spacing:0; color: var(--text-muted); white-space:nowrap; }
 @media (max-width:420px){ .day-name { letter-spacing:0; } }
 .day-icon   { font-size: 1.2rem; line-height: 1; }
 .day-wind   { font-family: 'JetBrains Mono', monospace; font-size:0.763rem; color: var(--text-muted); }
@@ -911,15 +911,15 @@ body {
 
 
 /* Folds: long background sections, closed by default. Native <details>; every word stays in the HTML. */
-details.fold{border:1px solid var(--border);border-radius:10px;background:var(--surface);margin:1rem 0}
-details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:10px;color:var(--text)}
+details.fold{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);margin:1rem 0}
+details.fold>summary{list-style:none;cursor:pointer;min-height:44px;box-sizing:border-box;display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:.85rem;align-items:center;padding:.7rem 1rem;border-radius:var(--r-lg);color:var(--text)}
 details.fold>summary::-webkit-details-marker{display:none}
 details.fold>summary>*{grid-column:1}
 details.fold>summary::after{content:"";grid-column:2;grid-row:1 / span 2;width:.6rem;height:.6rem;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:translateY(-25%) rotate(45deg);transition:transform .15s}
 details.fold[open]>summary::after{transform:translateY(25%) rotate(-135deg)}
 details.fold>summary:hover{background:var(--surface2)}
 details.fold>summary:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-details.fold[open]>summary{border-bottom:1px solid var(--border);border-radius:10px 10px 0 0}
+details.fold[open]>summary{border-bottom:1px solid var(--border);border-radius:var(--r-lg) var(--r-lg) 0 0}
 details.fold>summary>h2,details.fold>summary>h3{margin:0!important;padding:0!important;border:0!important}
 .fold-title{display:block;font-weight:700;line-height:1.35}
 .fold-hint{display:block;margin-top:.2rem;font-size:.84rem;font-weight:400;line-height:1.45;color:var(--text-muted);letter-spacing:normal;text-transform:none}
@@ -945,13 +945,13 @@ details.fold>summary>.nozzle-card-head{font-size:1rem}
 <style>
 h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head,h3.s-card-title,h3.sc-title{margin:0;font-size:inherit;font-weight:inherit;line-height:inherit;}
 .zip-in,.spray-zip-input{font-size:1rem!important;}
-.dicamba-box{background:rgba(240,96,96,.07);border:1.5px solid rgba(240,96,96,.3);border-radius:12px;padding:1.4rem 1.5rem;margin-bottom:1.5rem}
-.dicamba-box-head{font-size:0.78rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--red);margin-bottom:.8rem;display:flex;align-items:center;gap:.45rem}
+.dicamba-box{background:rgba(240,96,96,.07);border:1.5px solid rgba(240,96,96,.3);border-radius:var(--r-lg);padding:1.4rem 1.5rem;margin-bottom:1.5rem}
+.dicamba-box-head{font-size:0.78rem;font-weight:800;letter-spacing:0;text-transform:none;color:var(--red);margin-bottom:.8rem;display:flex;align-items:center;gap:.45rem}
 .dicamba-rules{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.7rem}
 @media(max-width:600px){.dicamba-rules{grid-template-columns:minmax(0,1fr)}}
-.dicamba-rule{background:rgba(240,96,96,.06);border:1px solid rgba(240,96,96,.15);border-radius:8px;padding:.7rem .85rem;font-size:.8rem;line-height:1.6;color:var(--text-dim)}
+.dicamba-rule{background:rgba(240,96,96,.06);border:1px solid rgba(240,96,96,.15);border-radius:var(--r-md);padding:.7rem .85rem;font-size:.8rem;line-height:1.6;color:var(--text-dim)}
 .dicamba-rule strong{color:var(--text);display:block;margin-bottom:.15rem}
-.rfp-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:10px;border:1px solid var(--border);margin-bottom:1.5rem;max-width:100%}
+.rfp-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r-lg);border:1px solid var(--border);margin-bottom:1.5rem;max-width:100%}
 .rfp-table{width:100%;border-collapse:collapse;font-size:0.797rem}
 .rfp-table thead tr{background:rgba(58,139,60,.12)}
 .rfp-table th{padding:.65rem .85rem;text-align:left;font-size:0.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
@@ -965,19 +965,19 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 @media(max-width:640px){.nozzle-table th:nth-child(2),.nozzle-table td:nth-child(2),.nozzle-table th:nth-child(5),.nozzle-table td:nth-child(5){display:none}.nozzle-table .nt-type{white-space:normal;font-size:0.78rem}.nozzle-table td{padding:.5rem .55rem;font-size:0.78rem}.nozzle-table th{padding:.5rem .55rem;font-size:0.75rem}}
 .season-section{margin-bottom:2rem}
 .season-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:.75rem}
-.season-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.9rem 1rem}
-.season-card.season-now{border-color:var(--gold)}.season-now-tag{margin-left:.35rem;padding:.05rem .4rem;border-radius:10px;background:var(--gold);color:var(--bg);font-size:0.7rem;letter-spacing:.06em}
-.season-card-month{font-size:0.77rem;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.3rem}
+.season-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.9rem 1rem}
+.season-card.season-now{border-color:var(--gold)}.season-now-tag{margin-left:.35rem;padding:.05rem .4rem;border-radius:var(--r-lg);background:var(--gold);color:var(--bg);font-size:0.7rem;letter-spacing:.06em}
+.season-card-month{font-size:0.77rem;font-weight:800;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-bottom:.3rem}
 .season-card-title{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.4rem}
 .season-card-body{font-size:0.795rem;color:var(--text-dim);line-height:1.65}
-.season-card-tag{display:inline-block;margin-top:.5rem;padding:.15rem .55rem;border-radius:20px;font-size:0.76rem;font-weight:700;letter-spacing:.06em}
+.season-card-tag{display:inline-block;margin-top:.5rem;padding:.15rem .55rem;border-radius:var(--r-lg);font-size:0.76rem;font-weight:700;letter-spacing:.06em}
 .tag-pre{background:rgba(91,163,224,.15);color:var(--blue)}
 .tag-post{background:rgba(62,207,110,.15);color:var(--green)}
 .tag-fung{background:rgba(230,176,66,.15);color:var(--gold)}
 .tag-burn{background:rgba(240,96,96,.15);color:var(--red)}
 .faq-section{margin-bottom:2rem}
 .faq-list{display:flex;flex-direction:column;gap:.6rem}
-.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.faq-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
 .faq-q{width:100%;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:.9rem 1.1rem;background:none;border:none;color:var(--text);font-size:1rem;font-weight:700;text-align:left;cursor:pointer;touch-action:manipulation;min-height:44px;}
 .faq-q:hover{background:rgba(255,255,255,.035)}
 .faq-chevron{color:var(--text-muted);font-size:0.787rem;transition:transform .2s;flex-shrink:0}
@@ -988,7 +988,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 @media(max-width:480px){.edu-card{padding-left:12px;padding-right:12px}.inv-box{padding-left:12px;padding-right:12px}.edu-card-tip{padding-left:8px;padding-right:8px}.inv-layer{padding-left:8px;padding-right:8px}}
 </style>
 <noscript><style>.fade-up{opacity:1;transform:none}</style></noscript>
-<style>.ptab-bar{display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:none;max-width:1100px;margin:.6rem auto .2rem;padding:0 1rem;border-bottom:1px solid var(--border)}.ptab-bar::-webkit-scrollbar{display:none}.ptab-bar a{flex:0 0 auto;display:flex;align-items:center;gap:.35rem;min-height:44px;padding:.35rem .85rem;border:1px solid transparent;border-bottom:0;border-radius:8px 8px 0 0;color:var(--text-dim);font-weight:700;font-size:.92rem;text-decoration:none;white-space:nowrap;margin-bottom:-1px}.ptab-bar a:hover{color:var(--text)}.ptab-bar a[role=tab]{scroll-margin-top:5rem}.ptab-bar a[aria-selected="true"]{color:var(--text);background:var(--surface);border-color:var(--border);box-shadow:inset 0 3px 0 var(--gold)}.ptab-bar a:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}.ptab-bar svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2}@media(max-width:480px){.ptab-bar{gap:.15rem;padding:0 .5rem}.ptab-bar a{padding:.3rem .55rem;font-size:.86rem}.ptabs>.ptab>.main{padding-left:0!important;padding-right:0!important}.ptabs>.ptab>.main>:is(.ls-w,.prf,.rc,.rg,.sos,.pg,.le,.hb,.wrap,article),.ptabs>.ptab>:is(.rc,article,.dm-page),.ptabs>.ptab>.fn-wrap>article{padding-left:max(0px,calc(var(--gutter,12px) - (100vw - 100%) / 2))!important;padding-right:max(0px,calc(var(--gutter,12px) - (100vw - 100%) / 2))!important}}.ptab{scroll-margin-top:4rem}main.ptab-main{padding:0;margin:0;max-width:none}.ptab-bar a:target{outline:0}.ptabs[data-on]>.ptab{display:none}.ptabs[data-on="spray"]>#p-spray,.ptabs[data-on="urea"]>#p-urea,.ptabs[data-on="fall-nitrogen"]>#p-fall-nitrogen{display:block}.ptabs[data-on]>.ptab[data-css]:not([data-ready])>*{visibility:hidden}.ptab-note{max-width:780px;margin:1rem auto;padding:0 1rem;color:var(--red)}</style>
+<style>.ptab-bar{display:flex;gap:.35rem;overflow-x:auto;scrollbar-width:none;max-width:1100px;margin:.6rem auto .2rem;padding:0 1rem;border-bottom:1px solid var(--border)}.ptab-bar::-webkit-scrollbar{display:none}.ptab-bar a{flex:0 0 auto;display:flex;align-items:center;gap:.35rem;min-height:44px;padding:.35rem .85rem;border:1px solid transparent;border-bottom:0;border-radius:var(--r-md) var(--r-md) 0 0;color:var(--text-dim);font-weight:700;font-size:.92rem;text-decoration:none;white-space:nowrap;margin-bottom:-1px}.ptab-bar a:hover{color:var(--text)}.ptab-bar a[role=tab]{scroll-margin-top:5rem}.ptab-bar a[aria-selected="true"]{color:var(--text);background:var(--surface);border-color:var(--border);box-shadow:inset 0 3px 0 var(--gold)}.ptab-bar a:focus-visible{outline:2px solid var(--gold);outline-offset:-2px}.ptab-bar svg{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2}@media(max-width:480px){.ptab-bar{gap:.15rem;padding:0 .5rem}.ptab-bar a{padding:.3rem .55rem;font-size:.86rem}.ptabs>.ptab>.main{padding-left:0!important;padding-right:0!important}.ptabs>.ptab>.main>:is(.ls-w,.prf,.rc,.rg,.sos,.pg,.le,.hb,.wrap,article),.ptabs>.ptab>:is(.rc,article,.dm-page),.ptabs>.ptab>.fn-wrap>article{padding-left:max(0px,calc(var(--gutter,12px) - (100vw - 100%) / 2))!important;padding-right:max(0px,calc(var(--gutter,12px) - (100vw - 100%) / 2))!important}}.ptab{scroll-margin-top:4rem}main.ptab-main{padding:0;margin:0;max-width:none}.ptab-bar a:target{outline:0}.ptabs[data-on]>.ptab{display:none}.ptabs[data-on="spray"]>#p-spray,.ptabs[data-on="urea"]>#p-urea,.ptabs[data-on="fall-nitrogen"]>#p-fall-nitrogen{display:block}.ptabs[data-on]>.ptab[data-css]:not([data-ready])>*{visibility:hidden}.ptab-note{max-width:780px;margin:1rem auto;padding:0 1rem;color:var(--red)}</style>
 </head>
 <body>
 <style>.ic-sp{width:1em;height:1em;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;vertical-align:-.12em;display:inline-block}.wl-dot{display:inline-block;width:.7em;height:.7em;border-radius:50%;vertical-align:-.05em;margin-right:.2em}</style><svg xmlns="http://www.w3.org/2000/svg" width="0" height="0" style="position:absolute" aria-hidden="true"><symbol id="sp-alarm-clock" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8" />
@@ -1210,7 +1210,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   <p class="static-brief" style="font-size:.85rem;color:var(--text-dim);line-height:1.7;margin:.9rem auto 0;padding:0 1.5rem;max-width:1200px">Extension guidance is to spray in a 3&ndash;10 mph wind, under about 85&deg;F and above about 40% relative humidity; your product label's limits come first. Winds under 3 mph signal possible thermal inversion: fine droplets can ride stable air off-target for miles. Over 10&ndash;15 mph, mechanical drift takes over. Mid-morning, after overnight inversions break and dew dries, is usually the safest window. Dicamba and 2,4-D ester can also volatilize off the leaf for hours once temperatures pass about 85&deg;F. Always confirm the wind, temperature, and buffer limits on your product label before spraying.</p>
   <div class="pg">
     <div>
-      <div id="factor-section" style="display:none"><div class="s-card" id="product-tune" style="margin-bottom:1rem"><div class="s-card-title">Tune to Your Product (optional)</div><label style="display:flex;flex-direction:column;gap:.3rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Herbicide / product<select id="in-product" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="general" selected>General guidance (no product)</option><option value="enlist">Enlist One / Enlist Duo (2,4-D choline)</option><option value="dicamba">Engenia / Stryax / Tavium (dicamba OTT)</option><option value="glyphosate">Glyphosate (Roundup PowerMAX, etc.)</option><option value="24d_ester">2,4-D / 2,4-D ester (generic Group 4)</option><option value="contact">Contact products (Liberty, Cobra, Gramoxone)</option></select></label><label id="state-wrap" style="display:none;flex-direction:column;gap:.3rem;margin-top:.6rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">State dicamba rules<select id="in-state" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="">Label only (no stricter state rule)</option><option value="MN">Minnesota: over 85&deg;F, no; June 12 / June 30 cutoffs</option><option value="IL">Illinois: over 85&deg;F, no; June 20 cutoff</option></select></label><div id="product-note" style="font-size:1rem;color:var(--text-dim);line-height:1.6;margin-top:.5rem;display:none"></div><div style="font-size:0.76rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem"><strong>The label is the law.</strong> These thresholds reflect federal label guidance and may be outdated or superseded by your state’s rules and your product’s current label. State restrictions are often stricter. Always read and follow the actual label and check Bulletins Live! Two before applying.</div></div>
+      <div id="factor-section" style="display:none"><div class="s-card" id="product-tune" style="margin-bottom:1rem"><div class="s-card-title">Tune to Your Product (optional)</div><label style="display:flex;flex-direction:column;gap:.3rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Herbicide / product<select id="in-product" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="general" selected>General guidance (no product)</option><option value="enlist">Enlist One / Enlist Duo (2,4-D choline)</option><option value="dicamba">Engenia / Stryax / Tavium (dicamba OTT)</option><option value="glyphosate">Glyphosate (Roundup PowerMAX, etc.)</option><option value="24d_ester">2,4-D / 2,4-D ester (generic Group 4)</option><option value="contact">Contact products (Liberty, Cobra, Gramoxone)</option></select></label><label id="state-wrap" style="display:none;flex-direction:column;gap:.3rem;margin-top:.6rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">State dicamba rules<select id="in-state" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="">Label only (no stricter state rule)</option><option value="MN">Minnesota: over 85&deg;F, no; June 12 / June 30 cutoffs</option><option value="IL">Illinois: over 85&deg;F, no; June 20 cutoff</option></select></label><div id="product-note" style="font-size:1rem;color:var(--text-dim);line-height:1.6;margin-top:.5rem;display:none"></div><div style="font-size:0.76rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem"><strong>The label is the law.</strong> These thresholds reflect federal label guidance and may be outdated or superseded by your state’s rules and your product’s current label. State restrictions are often stricter. Always read and follow the actual label and check Bulletins Live! Two before applying.</div></div>
         <div class="section-bar" id="section-conditions">
           <div class="section-label">Factor Breakdown</div>
           <button class="section-link" id="btn-change-loc" style="min-height:44px;">Change location</button>
@@ -1317,39 +1317,39 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   .smc,.scal{--c-green:#6ab04c;--c-gold:#e6b042;--c-up:#4aab4c;--c-warn:#d9534f;
     --c-panel:var(--card,#161b14);--c-panel2:var(--card-2,#1d2419);--c-line:var(--border,#2a3324);
     --c-txt:var(--text,#e7ece8);--c-mut:var(--text-muted,#9bb0a3);}
-  .smc{background:var(--c-panel);border:1px solid var(--c-line);border-radius:16px;padding:1.1rem 1rem 1.2rem;margin:1.25rem 0;}
+  .smc{background:var(--c-panel);border:1px solid var(--c-line);border-radius:var(--r-lg);padding:1.1rem 1rem 1.2rem;margin:1.25rem 0;}
   .smc *,.scal *{box-sizing:border-box;}
   .smc-h,.scal-h{display:flex;align-items:center;gap:.5rem;font-family:var(--font-display);font-weight:700;font-size:1.3rem;margin:0 0 .2rem;color:var(--c-txt);}
   .smc-sub,.scal-sub{color:var(--c-mut);font-size:.92rem;line-height:1.45;margin:0 0 1rem;}
   .smc-seg,.scal-seg{display:flex;gap:.4rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--card-r);padding:.3rem;margin-bottom:1rem;}
-  .smc-seg button,.scal-seg button{flex:1;min-height:46px;border:none;border-radius:9px;background:transparent;color:var(--c-mut);font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;}
+  .smc-seg button,.scal-seg button{flex:1;min-height:46px;border:none;border-radius:var(--r-lg);background:transparent;color:var(--c-mut);font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;}
   .smc-seg button[aria-pressed="true"],.scal-seg button[aria-pressed="true"]{background:var(--c-green);color:#0f140c;}
   .smc-grid,.scal-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem;}
-  .smc-field label,.scal-field label{display:block;font-size:0.795rem;text-transform:uppercase;letter-spacing:.03em;color:var(--c-mut);font-weight:700;margin-bottom:.3rem;}
+  .smc-field label,.scal-field label{display:block;font-size:0.795rem;text-transform:none;letter-spacing:0;color:var(--c-mut);font-weight:700;margin-bottom:.3rem;}
   .smc-field .hint,.scal-field .hint{font-size:0.78rem;color:var(--c-mut);text-transform:none;letter-spacing:0;font-weight:400;}
-  .smc input,.smc select,.scal input,.scal select{width:100%;min-height:50px;font-size:1.05rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:10px;color:var(--c-txt);padding:.55rem .65rem;font-family:inherit;-webkit-appearance:none;appearance:none;}
+  .smc input,.smc select,.scal input,.scal select{width:100%;min-height:50px;font-size:1.05rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--r-lg);color:var(--c-txt);padding:.55rem .65rem;font-family:inherit;-webkit-appearance:none;appearance:none;}
   .smc input[type=number],.scal input[type=number]{font-family:'JetBrains Mono',ui-monospace,monospace;font-weight:700;}
   .smc input::placeholder{color:var(--c-mut);opacity:.7;}
   .smc input:focus,.smc select:focus,.scal input:focus,.scal select:focus{outline:none;border-color:var(--c-green);}
   .smc input:focus-visible,.smc select:focus-visible,.scal input:focus-visible,.scal select:focus-visible,.zip-in:focus-visible{outline:2px solid var(--c-green,var(--green));outline-offset:2px;}
   .smc select,.scal select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%239bb0a3' d='M0 0l6 8 6-8z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right .7rem center;padding-right:1.8rem;}
   .smc-prodhd{display:flex;justify-content:space-between;align-items:baseline;margin:.4rem 0 .35rem;}
-  .smc-prodhd .lbl{font-size:0.795rem;text-transform:uppercase;letter-spacing:.03em;color:var(--c-mut);font-weight:700;}
-  .smc-help{font-size:0.79rem;color:var(--c-mut);line-height:1.4;margin:0 0 .6rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:8px;padding:.5rem .6rem;}
+  .smc-prodhd .lbl{font-size:0.795rem;text-transform:none;letter-spacing:0;color:var(--c-mut);font-weight:700;}
+  .smc-help{font-size:0.79rem;color:var(--c-mut);line-height:1.4;margin:0 0 .6rem;background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--r-md);padding:.5rem .6rem;}
   .smc-help b{color:var(--c-txt);}
   .smc-prod{background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--card-r);padding:.7rem .7rem .6rem;margin-bottom:.6rem;}
   .smc-prod-top{display:flex;gap:.5rem;align-items:center;margin-bottom:.5rem;}
   .smc-prod-top input{flex:1;min-height:44px;}
-  .smc-prod-rm{flex:0 0 auto;min-width:44px;min-height:44px;border:1px solid var(--c-line);background:transparent;color:var(--c-mut);border-radius:9px;font-size:1.2rem;cursor:pointer;line-height:1;}
+  .smc-prod-rm{flex:0 0 auto;min-width:44px;min-height:44px;border:1px solid var(--c-line);background:transparent;color:var(--c-mut);border-radius:var(--r-lg);font-size:1.2rem;cursor:pointer;line-height:1;}
   .smc-prod-rm:hover{border-color:var(--c-warn);color:var(--c-warn);}
   .smc-rate{display:grid;grid-template-columns:1fr 1.4fr;gap:.5rem;}
-  .smc-add{width:100%;min-height:48px;border:1px dashed var(--c-line);background:transparent;color:var(--c-green);font-weight:700;font-size:.95rem;border-radius:11px;cursor:pointer;font-family:inherit;margin-bottom:1rem;}
+  .smc-add{width:100%;min-height:48px;border:1px dashed var(--c-line);background:transparent;color:var(--c-green);font-weight:700;font-size:.95rem;border-radius:var(--r-lg);cursor:pointer;font-family:inherit;margin-bottom:1rem;}
   .smc-add:hover,.scal-add:hover{border-color:var(--c-green);}
-  .smc-out,.scal-out{background:var(--c-panel2);border:1px solid var(--c-line);border-radius:13px;padding:.9rem 1rem;}
+  .smc-out,.scal-out{background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--r-lg);padding:.9rem 1rem;}
   .smc-out-hd,.scal-out-hd{font-family:var(--font-display);font-weight:700;font-size:1.05rem;color:var(--c-txt);margin-bottom:.7rem;display:flex;align-items:center;gap:.4rem;}
   .smc-kpis{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.5rem;}
-  .smc-kpi{background:var(--c-panel);border:1px solid var(--c-line);border-radius:10px;padding:.6rem .7rem;}
-  .smc-kpi .k{font-size:0.78rem;text-transform:uppercase;letter-spacing:.03em;color:var(--c-mut);font-weight:700;}
+  .smc-kpi{background:var(--c-panel);border:1px solid var(--c-line);border-radius:var(--r-lg);padding:.6rem .7rem;}
+  .smc-kpi .k{font-size:0.78rem;text-transform:none;letter-spacing:0;color:var(--c-mut);font-weight:700;}
   .smc-kpi .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.25rem;color:var(--c-gold);margin-top:.1rem;line-height:1.1;}
   .smc-kpi .v small{font-size:0.775rem;color:var(--c-mut);font-weight:400;}
   .smc-kpi .sub{font-size:0.77rem;color:var(--c-mut);margin-top:.15rem;}
@@ -1363,23 +1363,23 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   .smc-tbl .conv{display:block;font-family:'JetBrains Mono',monospace;font-size:0.775rem;color:var(--c-mut);font-weight:400;white-space:nowrap;}
   .smc-water td{border-top:2px solid var(--c-line);}
   .smc-water .pn{color:var(--c-green);}
-  .smc-partial{background:var(--c-panel);border:1px solid var(--c-gold);border-radius:11px;padding:.7rem .8rem;margin-top:.8rem;}
-  .smc-partial-hd{font-size:.8rem;font-weight:700;color:var(--c-gold);text-transform:uppercase;letter-spacing:.03em;margin-bottom:.45rem;}
+  .smc-partial{background:var(--c-panel);border:1px solid var(--c-gold);border-radius:var(--r-lg);padding:.7rem .8rem;margin-top:.8rem;}
+  .smc-partial-hd{font-size:.8rem;font-weight:700;color:var(--c-gold);text-transform:none;letter-spacing:0;margin-bottom:.45rem;}
   .smc-partial-row{display:flex;justify-content:space-between;gap:.6rem;font-size:.88rem;padding:.2rem 0;border-bottom:1px solid var(--c-line);}
   .smc-partial-row:last-child{border-bottom:none;}
   .smc-partial-row .pn{color:var(--c-txt);}
   .smc-partial-row .amt{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--c-txt);}
   .smc-acts{display:flex;gap:.5rem;margin-top:.9rem;}
-  .smc-acts button{flex:1;min-height:46px;border:1px solid var(--c-line);background:var(--c-panel);color:var(--c-txt);border-radius:10px;font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;}
+  .smc-acts button{flex:1;min-height:46px;border:1px solid var(--c-line);background:var(--c-panel);color:var(--c-txt);border-radius:var(--r-lg);font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;}
   .smc-acts button:hover{border-color:var(--c-green);color:var(--c-green);}
-  .smc-warn{display:none;font-size:.82rem;color:var(--c-warn);background:rgba(217,83,79,.1);border:1px solid rgba(217,83,79,.3);border-radius:9px;padding:.5rem .7rem;margin-top:.7rem;}
+  .smc-warn{display:none;font-size:.82rem;color:var(--c-warn);background:rgba(217,83,79,.1);border:1px solid rgba(217,83,79,.3);border-radius:var(--r-lg);padding:.5rem .7rem;margin-top:.7rem;}
   .smc-warn.show{display:block;}
   .smc-note{font-size:1rem;color:var(--c-mut);line-height:1.45;margin-top:.8rem;}
   .smc-note b{color:var(--c-txt);}
   .smc-disc,.scal-disc{font-size:0.785rem;color:var(--c-mut);line-height:1.45;margin-top:.9rem;border-top:1px solid var(--c-line);padding-top:.7rem;}
-  .scal{background:var(--c-panel);border:1px solid var(--c-line);border-radius:16px;padding:1.1rem 1rem 1.2rem;margin:1.25rem 0;}
+  .scal{background:var(--c-panel);border:1px solid var(--c-line);border-radius:var(--r-lg);padding:1.1rem 1rem 1.2rem;margin:1.25rem 0;}
   .scal-add{display:none;}
-  .scal-res{background:var(--c-panel2);border:1px solid var(--c-line);border-radius:13px;padding:1rem;text-align:center;}
+  .scal-res{background:var(--c-panel2);border:1px solid var(--c-line);border-radius:var(--r-lg);padding:1rem;text-align:center;}
   .scal-res .big{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:2.4rem;color:var(--c-gold);line-height:1;}
   .scal-res .big small{font-size:1rem;color:var(--c-mut);font-weight:400;}
   .scal-res .lbl{font-size:.85rem;color:var(--c-txt);margin-top:.4rem;}
@@ -1630,16 +1630,16 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 
       <section class="spr-prep" aria-labelledby="spr-prep-h">
         <style>
-        .spr-prep{--p-gold:#e6b042;--p-panel:var(--card,#161b14);--p-panel2:var(--card-2,#1d2419);--p-line:var(--border,#2a3324);--p-txt:var(--text,#e7ece8);--p-mut:var(--text-muted,#9bb0a3);background:var(--p-panel);border:1px solid var(--p-line);border-radius:14px;padding:1rem 1.05rem;margin:1.25rem 0;}
+        .spr-prep{--p-gold:#e6b042;--p-panel:var(--card,#161b14);--p-panel2:var(--card-2,#1d2419);--p-line:var(--border,#2a3324);--p-txt:var(--text,#e7ece8);--p-mut:var(--text-muted,#9bb0a3);background:var(--p-panel);border:1px solid var(--p-line);border-radius:var(--r-lg);padding:1rem 1.05rem;margin:1.25rem 0;}
         .spr-prep h3{font-family:var(--font-display);font-weight:700;font-size:1.15rem;margin:0 0 .6rem;color:var(--p-txt);display:flex;align-items:center;gap:.4rem;}
-        .spr-prep details{border:1px solid var(--p-line);border-radius:10px;background:var(--p-panel2);margin:0 0 .7rem;padding:0 .9rem;}
+        .spr-prep details{border:1px solid var(--p-line);border-radius:var(--r-lg);background:var(--p-panel2);margin:0 0 .7rem;padding:0 .9rem;}
         .spr-prep summary{cursor:pointer;list-style:none;padding:.8rem 0;font-weight:700;color:var(--p-txt);font-size:1rem;display:flex;justify-content:space-between;align-items:center;gap:1rem;min-height:44px;}
         .spr-prep summary::-webkit-details-marker{display:none;}
         .spr-prep summary::after{content:"+";color:var(--p-gold);font-weight:700;font-size:1.3rem;line-height:1;}
         .spr-prep details[open] summary::after{content:"\2212";}
         .spr-prep ol{margin:0 0 .9rem;padding:0 0 0 1.2rem;color:var(--p-mut);font-size:.88rem;line-height:1.6;}
         .spr-prep ol li{margin-bottom:.4rem;} .spr-prep ol li b{color:var(--p-txt);}
-        .spr-prep .dw{font-size:.88rem;color:var(--p-mut);line-height:1.55;background:var(--p-panel2);border:1px solid var(--p-line);border-left:3px solid var(--p-gold);border-radius:10px;padding:.7rem .85rem;}
+        .spr-prep .dw{font-size:.88rem;color:var(--p-mut);line-height:1.55;background:var(--p-panel2);border:1px solid var(--p-line);border-left:3px solid var(--p-gold);border-radius:var(--r-lg);padding:.7rem .85rem;}
         .spr-prep .dw a{color:var(--p-gold);font-weight:700;text-decoration:none;} .spr-prep .dw a:hover{text-decoration:underline;} .spr-prep .dw b{color:var(--p-txt);}
         
   [data-theme="light"] .spr-prep{--p-gold:#8a6514}
@@ -1796,7 +1796,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
     <div class="sidebar fade-up" id="edu2">
       <div class="sc sc-live"><div class="sc-title">Recommendation</div><div class="rec marginal" id="rec-box"><div class="rec-h marginal" id="rec-head">Awaiting Location</div><div class="rec-t" id="rec-text">Set your location above to get a spray read for your field.</div></div></div>
       <div class="sc sc-live"><div class="sc-title">5-day spray outlook</div><div class="day-strip" id="day-strip"><div class="day-item"><div class="day-name">Today</div><div class="day-rating"></div><div class="day-wind"></div></div><div class="day-item"><div class="day-name">Day 2</div><div class="day-rating"></div><div class="day-wind"></div></div><div class="day-item"><div class="day-name">Day 3</div><div class="day-rating"></div><div class="day-wind"></div></div><div class="day-item"><div class="day-name">Day 4</div><div class="day-rating"></div><div class="day-wind"></div></div><div class="day-item"><div class="day-name">Day 5</div><div class="day-rating"></div><div class="day-wind"></div></div></div><div style="font-size:0.77rem;color:var(--text-muted);margin-top:.6rem;line-height:1.6">Based on forecast wind, temp, and humidity. Always verify conditions on the day of application.</div></div>
-      <div class="sc" id="signup-card"><div class="sc-title">Get the AGSIST Daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:0.795rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, what to watch, and farm weather, every morning. Available at no charge.</p><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="width:100%;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,#1a1a14);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" style="width:100%;padding:.6rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-size:var(--btn-fs);font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free &rarr;</button><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
+      <div class="sc" id="signup-card"><div class="sc-title">Get the AGSIST Daily</div><div id="signup-form" style="display:flex;flex-direction:column;gap:.5rem"><p style="font-size:0.795rem;color:var(--text-dim);line-height:1.6;margin:0">Overnight markets, what to watch, and farm weather, every morning. Available at no charge.</p><input type="email" id="signup-email" placeholder="your@email.com" autocomplete="email" inputmode="email" aria-label="Email address" style="width:100%;box-sizing:border-box;padding:.6rem .7rem;background:var(--surface2,#1a1a14);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:1rem;min-height:44px"><button id="signup-btn" style="width:100%;padding:.6rem;background:var(--btn-primary-bg);color:var(--btn-primary-ink);border:none;border-radius:var(--btn-r);font-size:var(--btn-fs);font-weight:700;cursor:pointer;min-height:44px;touch-action:manipulation">Subscribe Free &rarr;</button><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5">Unsubscribe any time. I never sell your data. <a href="/privacy" style="color:var(--text-muted)">Privacy</a>.</div></div></div>
       <div class="sc"><div class="sc-title">&#10003; Pre-Spray Checklist</div><div style="display:flex;flex-direction:column;gap:.5rem"><label class="checklist-item"><input type="checkbox"><span>Wind 3&ndash;10 mph, consistent direction away from sensitive areas</span></label><label class="checklist-item"><input type="checkbox"><span>Temperature 50&ndash;85&deg;F (check specific product label)</span></label><label class="checklist-item"><input type="checkbox"><span>Humidity above 40% RH (adjust nozzle if dry)</span></label><label class="checklist-item"><input type="checkbox"><span>No inversion indicators (smoke, hanging dust, ground fog)</span></label><label class="checklist-item"><input type="checkbox"><span>Leaves are dry: no dew, no recent rain on canopy</span></label><label class="checklist-item"><input type="checkbox"><span>Re-read product label restrictions before starting</span></label><label class="checklist-item"><input type="checkbox"><span>Notified neighbors / checked buffer zones</span></label><label class="checklist-item"><input type="checkbox"><span>Equipment calibrated: nozzles clean, pressure checked</span></label><label class="checklist-item"><input type="checkbox"><span>Jar test completed for new tank mix combinations</span></label><label class="checklist-item"><input type="checkbox"><span>Spray records sheet ready (wind, temp, products, rates)</span></label></div></div>
       <div class="sc"><div class="sc-title">Quick mix order</div><div class="qmix-list"><div class="qmix-item"><span class="qmix-num" style="color:var(--blue)">1.</span><span class="qmix-text">Water (50&ndash;75%)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--gold)">2.</span><span class="qmix-text">AMS / water conditioner</span></div><div class="qmix-item"><span class="qmix-num" style="color:#9f7aea">3.</span><span class="qmix-text">Agitation ON</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--orange)">4.</span><span class="qmix-text">Dry (WP, WDG, DF)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--green)">5.</span><span class="qmix-text">Liquid flowables (SC)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--red)">6.</span><span class="qmix-text">Emulsifiable (EC)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--blue)">7.</span><span class="qmix-text">Soluble liquids (SL)</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--gold)">8.</span><span class="qmix-text">Adjuvants / surfactants</span></div><div class="qmix-item"><span class="qmix-num" style="color:var(--green)">9.</span><span class="qmix-text">Top off water</span></div></div><div class="qmix-footer">Always jar test new combinations. <a href="#section-mixorder">Full guide &#8593;</a></div></div>
       <a href="/spray#urea" class="cross-link"><div><div class="cross-link-title">Planning to spread urea</div><div class="cross-link-text">Warm, windy days and damp soil surfaces lose urea to the air. Check the risk before you spread.</div></div><span class="cross-link-arrow" aria-hidden="true">&rarr;</span></a>
@@ -1810,7 +1810,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   .spr-rel{--r-line:var(--border,#2a3324);--r-txt:var(--text,#e7ece8);--r-mut:var(--text-muted,#9bb0a3);--r-surface:var(--card,#161b14);--r-green:#6ab04c;max-width:900px;margin:1.25rem auto 0;padding:0 1rem 1.5rem;}
   .spr-rel h2{font-family:var(--font-display);font-weight:700;font-size:1.2rem;margin:0 0 .8rem;color:var(--r-txt);}
   .spr-rel-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem;}
-  .spr-rel a{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--r-surface);border:1px solid var(--r-line);border-radius:10px;padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center;transition:border-color .2s;}
+  .spr-rel a{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--r-surface);border:1px solid var(--r-line);border-radius:var(--r-lg);padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center;transition:border-color .2s;}
   .spr-rel a:hover{border-color:var(--r-green);}
   .spr-rel .i{font-size:1.3rem;margin-bottom:.25rem;} .spr-rel .n{font-size:.85rem;font-weight:700;color:var(--r-txt);} .spr-rel .d{font-size:0.775rem;color:var(--r-mut);margin-top:.1rem;}
   </style>
@@ -1885,7 +1885,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
         <div id="tg-text">Below freezing: urease works very slowly, so loss starts slowly, but Montana State trials still averaged 18% and up to 44% loss from urea broadcast between October and April. Risk score is capped at 8. NBPT still helps; runoff on slopes is a second concern.</div>
       </div>
       <div id="u-factor-section" style="display:none">
-        <div class="s-card" id="field-tune" style="margin-bottom:1rem"><div class="s-card-title">Tune to Your Field (optional)</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:.6rem"><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil pH<select id="in-ph" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / 6.5–7.0</option><option value="0.7">Acidic (under 6.0)</option><option value="0.85">Slightly acidic (6.0–6.5)</option><option value="1.25">Neutral–alkaline (7.0–7.5)</option><option value="1.55">Alkaline (over 7.5)</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Tillage / residue<select id="in-till" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / reduced-till</option><option value="0.7">Conventional (bare, tilled)</option><option value="1.5">No-till / heavy residue</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil temp °F (optional)<input type="number" id="in-soil" inputmode="numeric" placeholder="uses air temp" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil surface now<select id="in-surf" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="" selected>Not picked (the forecast has no soil moisture)</option><option value="dry">Dry: a granule would not dissolve</option><option value="moist">Moist soil or heavy dew</option><option value="wet">Wet, or snow on it</option></select></label></div><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem">These refine the score for your field. Soil pH and residue are the two biggest levers in the volatilization science. A soil-surface probe reading, if you have one, overrides the air-temperature estimate. What you see on the surface overrides the forecast&rsquo;s soil moisture.</div></div>
+        <div class="s-card" id="field-tune" style="margin-bottom:1rem"><div class="s-card-title">Tune to Your Field (optional)</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:.6rem"><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil pH<select id="in-ph" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / 6.5–7.0</option><option value="0.7">Acidic (under 6.0)</option><option value="0.85">Slightly acidic (6.0–6.5)</option><option value="1.25">Neutral–alkaline (7.0–7.5)</option><option value="1.55">Alkaline (over 7.5)</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Tillage / residue<select id="in-till" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / reduced-till</option><option value="0.7">Conventional (bare, tilled)</option><option value="1.5">No-till / heavy residue</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil temp °F (optional)<input type="number" id="in-soil" inputmode="numeric" placeholder="uses air temp" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil surface now<select id="in-surf" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="" selected>Not picked (the forecast has no soil moisture)</option><option value="dry">Dry: a granule would not dissolve</option><option value="moist">Moist soil or heavy dew</option><option value="wet">Wet, or snow on it</option></select></label></div><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem">These refine the score for your field. Soil pH and residue are the two biggest levers in the volatilization science. A soil-surface probe reading, if you have one, overrides the air-temperature estimate. What you see on the surface overrides the forecast&rsquo;s soil moisture.</div></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem">
           <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)">Risk factor breakdown</div>
           <button id="u-btn-change-loc" style="font-size:0.78rem;color:var(--text-muted);background:none;border:none;text-decoration:underline;cursor:pointer;min-height:44px">Change location</button>
@@ -2006,7 +2006,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
               <div style="font-size:.83rem;color:var(--text-dim);line-height:1.75">At $8–12/acre, NBPT pays for itself when the N it saves is worth that much: $8 to $12 divided by what your N costs a pound. At Moderate or higher (or on no-till ground, high-pH soils, or when forecasts show no incorporation rain) the economics strongly favor treatment.</div>
             </div>
           </div>
-          <div style="margin-top:1.1rem;padding:.8rem 1rem;background:rgba(62,207,110,.06);border:1px solid rgba(62,207,110,.15);border-radius:7px;font-size:.82rem;color:var(--text-dim);line-height:1.65">
+          <div style="margin-top:1.1rem;padding:.8rem 1rem;background:rgba(62,207,110,.06);border:1px solid rgba(62,207,110,.15);border-radius:var(--r-md);font-size:.82rem;color:var(--text-dim);line-height:1.65">
             Stabilizer is insurance. You won’t need it on every load; use the score to decide which ones.
           </div>
         </div>
@@ -2058,7 +2058,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
         <div class="stab-badge">ROI Calculation</div>
         <div class="stab-title">Is a stabilizer worth it today?</div>
         <div class="stab-text">Losing 15 lbs N/acre to volatilization costs 15 times what your N costs a pound. NBPT stabilizer runs $8–12/acre, so it pays for itself when the N it saves is worth more than that. When the risk score is Moderate or higher, the math often favors treatment, especially on no-till or high-pH ground.</div>
-        <a href="/breakeven" class="stab-roi-btn" style="display:inline-block;padding:.6rem 1.2rem;background:var(--orange);color:#fff;border-radius:7px;font-size:.82rem;font-weight:700;text-decoration:none;transition:opacity .15s">Open Break-Even Calculator →</a>
+        <a href="/breakeven" class="stab-roi-btn" style="display:inline-block;padding:.6rem 1.2rem;background:var(--orange);color:#fff;border-radius:var(--r-md);font-size:.82rem;font-weight:700;text-decoration:none;transition:opacity .15s">Open Break-Even Calculator →</a>
       </div>
       <a href="/spray#spray" class="cross-link">
         
@@ -2070,10 +2070,10 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   <section class="urea-rel" aria-labelledby="urea-rel-h" style="margin-top:1.5rem">
     <h2 id="urea-rel-h" style="font-family:var(--font-display);font-weight:700;font-size:1.2rem;margin:0 0 .8rem;color:var(--text)">More AGSIST tools</h2>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.6rem">
-      <a href="/fast-facts" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:.85rem;font-weight:700;color:var(--text)">Fast Facts</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">N rates, P&amp;K, GDU</span></a>
-      <a href="/fertilizer" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:.85rem;font-weight:700;color:var(--text)">Fertilizer Prices</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">Co-op posted N-P-K</span></a>
-      <a href="/gdu-calculator" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:.85rem;font-weight:700;color:var(--text)">GDU Calculator</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">Crop stage timing</span></a>
-      <a href="/cash-bids" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:.85rem;font-weight:700;color:var(--text)">Cash Bids</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">Local elevator prices</span></a>
+      <a href="/fast-facts" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:.85rem;font-weight:700;color:var(--text)">Fast Facts</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">N rates, P&amp;K, GDU</span></a>
+      <a href="/fertilizer" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:.85rem;font-weight:700;color:var(--text)">Fertilizer Prices</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">Co-op posted N-P-K</span></a>
+      <a href="/gdu-calculator" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:.85rem;font-weight:700;color:var(--text)">GDU Calculator</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">Crop stage timing</span></a>
+      <a href="/cash-bids" style="display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:.85rem .6rem;text-decoration:none;min-height:44px;justify-content:center"><span style="font-size:.85rem;font-weight:700;color:var(--text)">Cash Bids</span><span style="font-size:0.775rem;color:var(--text-muted);margin-top:.1rem">Local elevator prices</span></a>
     </div>
   </section>
 <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>

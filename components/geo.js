@@ -372,7 +372,7 @@ function loadWxAlerts(lat, lon) {
       var hot = p.severity === 'Extreme' || p.severity === 'Severe';
       var col = hot ? 'var(--red,#e0685f)' : p.severity === 'Moderate' ? 'var(--gold,#d4a23f)' : 'var(--text-muted)';
       var body = [p.description, p.instruction].filter(Boolean).join('\n\n');
-      return '<details class="wx-alert" style="border:1px solid ' + col + ';border-left:6px solid ' + col + ';border-radius:8px;padding:.55rem .7rem;margin:0 0 .6rem;background:var(--surface2,rgba(255,255,255,.03))">'
+      return '<details class="wx-alert" style="border:1px solid ' + col + ';border-left:6px solid ' + col + ';border-radius:var(--r-md);padding:.55rem .7rem;margin:0 0 .6rem;background:var(--surface2,rgba(255,255,255,.03))">'
         + '<summary style="cursor:pointer;list-style:none;font-weight:700;color:var(--text);line-height:1.35">'
         + '<span style="color:' + col + '">&#9888; ' + esc(p.event) + '</span> '
         + '<span style="font-weight:500;color:var(--text-muted)">' + esc(until(p.ends || p.expires)) + '</span></summary>'
@@ -847,9 +847,9 @@ function renderForecast(lat, lon) {
           var day = new Date(days.time[i] + 'T12:00:00');
           var dname = i===1 ? 'Tomorrow' : dayNames[day.getDay()];
           var el = document.createElement('div');
-          el.style.cssText = 'flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:.5rem .4rem;text-align:center';
+          el.style.cssText = 'flex:1;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.5rem .4rem;text-align:center';
           var pop = days.precipitation_probability_max[i];
-          el.innerHTML = '<div style="font-size:.64rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.2rem">'+dname+'</div>'
+          el.innerHTML = '<div style="font-size:.64rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.2rem">'+dname+'</div>'
             + '<div style="font-size:1.3rem;line-height:1;margin-bottom:.2rem">'+(WX_ICONS[days.weather_code[i]]||'')+'</div>'
             + '<div style="font-size:.82rem;font-weight:700;color:var(--text)">'+_deg(days.temperature_2m_max[i])+'\u00B0</div>'
             + '<div style="font-size:.74rem;color:var(--text-muted)">'+_deg(days.temperature_2m_min[i])+'\u00B0</div>'
@@ -1371,8 +1371,8 @@ function buildMarketCard(m, showExtras) {
   var tierHTML = '';
   if (showExtras && m.relevance) {
     var tier = getRelevanceTier(m.relevance);
-    tierHTML = '<span style="font-size:.55rem;font-weight:700;letter-spacing:.05em;'
-      + 'text-transform:uppercase;color:' + tier.color + ';background:' + tier.bg
+    tierHTML = '<span style="font-size:.55rem;font-weight:700;letter-spacing:0;'
+      + 'text-transform:none;color:' + tier.color + ';background:' + tier.bg
       + ';border:1px solid ' + tier.border + ';border-radius:3px;padding:.08rem .3rem;'
       + 'white-space:nowrap">' + tier.label + '</span>';
   }
@@ -1381,17 +1381,17 @@ function buildMarketCard(m, showExtras) {
   if (showExtras && m.why_it_matters) {
     var whyText = m.why_it_matters.length > 150 ? m.why_it_matters.slice(0, 147) + '\u2026' : m.why_it_matters;
     whyHTML = '<div style="font-size:.7rem;line-height:1.55;color:var(--text-dim);'
-      + 'padding:.45rem .55rem;background:var(--surface2);border-radius:6px;'
+      + 'padding:.45rem .55rem;background:var(--surface2);border-radius:var(--r-md);'
       + 'border:1px solid var(--border);margin-top:.1rem">'
       + '<span style="font-weight:700;color:var(--text-muted);font-size:.58rem;'
-      + 'letter-spacing:.06em;text-transform:uppercase;display:block;margin-bottom:.2rem">'
+      + 'letter-spacing:0;text-transform:none;display:block;margin-bottom:.2rem">'
       + 'For farmers</span>' + whyText + '</div>';
   }
 
   var div = document.createElement('div');
   div.className = 'market-card';
   div.style.cssText = 'background:' + bgAlpha + ';border:1px solid ' + borderC
-    + ';border-radius:10px;padding:.8rem;display:flex;flex-direction:column;'
+    + ';border-radius:var(--r-lg);padding:.8rem;display:flex;flex-direction:column;'
     + 'gap:.4rem;cursor:pointer;transition:border-color .15s,transform .1s';
 
   div.onmouseenter = function() { div.style.borderColor = color; div.style.transform = 'translateY(-1px)'; };

@@ -110,7 +110,7 @@
         var hits=[];
         for(var i=0;i<a.length&&hits.length<8;i++){if(a[i][1].toLowerCase().indexOf(t)===0)hits.push(a[i]);}
         for(var j=0;j<a.length&&hits.length<8;j++){var nm=a[j][1].toLowerCase();if(nm.indexOf(t)>0&&hits.indexOf(a[j])<0)hits.push(a[j]);}
-        list.innerHTML=hits.length?hits.map(function(h,k){return '<button type="button" data-k="'+k+'" style="min-height:40px;padding:.3rem .65rem;border:1px solid var(--border);border-radius:6px;background:var(--surface);color:var(--text);font:inherit;font-size:.82rem;cursor:pointer">'+esc(h[1])+'</button>';}).join(''):'<span style="font-size:.82rem;color:var(--text-muted)">No county by that name.</span>';
+        list.innerHTML=hits.length?hits.map(function(h,k){return '<button type="button" data-k="'+k+'" style="min-height:40px;padding:.3rem .65rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);color:var(--text);font:inherit;font-size:.82rem;cursor:pointer">'+esc(h[1])+'</button>';}).join(''):'<span style="font-size:.82rem;color:var(--text-muted)">No county by that name.</span>';
         Array.prototype.forEach.call(list.querySelectorAll('button'),function(b){b.addEventListener('click',function(){pick(hits[+b.getAttribute('data-k')]);});});
       }).catch(function(){list.innerHTML='<span style="font-size:.82rem;color:var(--text-muted)">The county list did not load. Reload the page.</span>';});
     }

@@ -905,7 +905,7 @@ window.hydrateDaily = function(data) {
       if(tz&&dIso)age=Math.round((Date.parse(tz+'T12:00:00Z')-Date.parse(dIso+'T12:00:00Z'))/864e5);
       var tdd='AGSIST Daily, '+(dOk?months[d.getMonth()]+' '+d.getDate():dateStr);
       if(age>2&&dOk)tdd='Latest issue: '+months[d.getMonth()].slice(0,3)+' '+d.getDate()+', '+d.getFullYear();
-      setHTML('daily-teaser-date','<svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> '+tdd);
+      setHTML('daily-teaser-date',tdd);
       var tAct=document.querySelector('#daily-teaser .teaser-action')||document.querySelector('.teaser-action');
       if(tAct&&age>=1)tAct.textContent=(age>2?'Read it':'Read the latest briefing')+' \u2193';
     }catch(e){}

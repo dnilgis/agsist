@@ -242,7 +242,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 <div id="idx1-home-prompt" class="idx1-home-prompt" style="display:none">
   
   <div style="flex-grow:1;font-size:.824rem;color:var(--text)">Add AGSIST to your home screen, one tap from the field, no app store.</div>
-  <button type="button" id="idx1-home-add" style="font-size:.824rem;font-weight:700;color:#0a0c0d;background:var(--gold-fill,var(--gold));border:none;border-radius:6px;padding:.4rem .7rem;flex:none;cursor:pointer">Add</button>
+  <button type="button" id="idx1-home-add" style="font-size:.824rem;font-weight:700;color:#0a0c0d;background:var(--gold-fill,var(--gold));border:none;border-radius:var(--r-md);padding:.4rem .7rem;flex:none;cursor:pointer">Add</button>
   <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
 </div>
 <main id="main" class="main" role="main" tabindex="-1">
@@ -906,8 +906,8 @@ try {
         </div>
         <div id="bids-zip-row" style="display:none;margin-bottom:1.1rem">
           <div style="display:flex;gap:.55rem;flex-wrap:wrap;min-width:0">
-            <input type="text" id="bids-zip" placeholder="Enter your ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for cash bids" style="flex:1;padding:.7rem .9rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
-            <button id="bids-lookup-btn" style="padding:.7rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.824rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s">Find Bids &rarr;</button>
+            <input type="text" id="bids-zip" placeholder="Enter your ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for cash bids" style="flex:1;padding:.7rem .9rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
+            <button id="bids-lookup-btn" style="padding:.7rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:var(--r-md);font-family:'JetBrains Mono',monospace;font-size:.824rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s">Find Bids &rarr;</button>
           </div>
         </div>
         
@@ -957,14 +957,14 @@ try {
         <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
           
           <div style="font-size:.824rem;color:var(--text-dim);text-align:center">Weather and season totals for your spot.</div>
-          <button id="btn-allow-loc" style="padding:.65rem 1.25rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Use my location</button>
+          <button id="btn-allow-loc" style="padding:.65rem 1.25rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:var(--r-md);font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Use my location</button>
           <button id="btn-zip-instead" style="background:none;border:none;color:var(--text-muted);font-size:.824rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP instead</button>
         </div>
         <div id="wx-zip-entry" style="display:none;margin-bottom:.85rem">
           <p class="wx-zip-ask">Set your ZIP at the top of the page for local weather and season totals. <button type="button" class="wx-zip-ask-b" onclick="if(window.agsistOpenZip)window.agsistOpenZip()">Set ZIP</button></p>
           <div class="wx-zip-old" hidden>
-            <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
-            <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Go</button>
+            <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
+            <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:var(--r-md);font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Go</button>
           </div>
         </div>
         <div id="wx-data" style="display:none">
@@ -1259,13 +1259,13 @@ try {
       <div class="ratio-widget" id="nowcast-widget">
         <div class="ratio-widget-head"><h3 class="ratio-widget-title idx1-sub-h">Yield nowcast: this year&rsquo;s crop</h3><span class="ratio-verdict neutral" id="nc-verdict"></span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.15rem 0 .55rem">
-          <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
+          <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r-lg)">
             <div style="font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Corn</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;line-height:1;color:var(--text)" id="nc-corn"></div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-corn-band"></span></div>
             <div style="font-size:.824rem;margin-top:.25rem" id="nc-corn-vs">&nbsp;</div>
           </div>
-          <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
+          <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r-lg)">
             <div style="font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Soybeans</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;line-height:1;color:var(--text)" id="nc-beans"></div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-beans-band"></span></div>
@@ -1288,7 +1288,7 @@ try {
       <p style="font-size:.824rem;color:var(--text-muted);margin:0 0 8px;line-height:1.45">One email when futures hit your target. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-alert">Not a cash bid</button><span id="tip-alert" role="tooltip" class="tip-t" hidden>One email when the futures price reaches your target, then the alert clears. Checked every 30 minutes; quotes delayed 10 to 25 min. This watches the futures price, not your elevator&rsquo;s bid. Check your local basis separately.</span></span></p>
       <div id="pa-form" style="display:flex;flex-direction:column;gap:.45rem">
         <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-          <select id="pa-symbol" aria-label="Contract" style="flex:1;min-width:120px;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.765rem);color:var(--text)">
+          <select id="pa-symbol" aria-label="Contract" style="flex:1;min-width:120px;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);font-size:max(16px,.765rem);color:var(--text)">
             <option value="corn">Corn, front month</option>
             <option value="corn-dec">Corn, December contract</option>
             <option value="beans">Soybeans, front month</option>
@@ -1296,19 +1296,19 @@ try {
             <option value="wheat">Chicago SRW wheat, front month</option>
             <option value="cattle">Live cattle, front month</option>
           </select>
-          <select id="pa-direction" aria-label="Direction" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.765rem);color:var(--text)">
+          <select id="pa-direction" aria-label="Direction" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);font-size:max(16px,.765rem);color:var(--text)">
             <option value="above">goes above</option>
             <option value="below">goes below</option>
           </select>
         </div>
         <div style="display:flex;gap:.4rem;align-items:center">
           <span style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted)">$</span>
-          <input type="number" id="pa-target" step="0.01" min="0.01" max="1000" placeholder="Target" aria-label="Target price in dollars" style="flex:1;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.824rem);font-family:'JetBrains Mono',monospace;color:var(--text)">
+          <input type="number" id="pa-target" step="0.01" min="0.01" max="1000" placeholder="Target" aria-label="Target price in dollars" style="flex:1;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);font-size:max(16px,.824rem);font-family:'JetBrains Mono',monospace;color:var(--text)">
         </div>
         <div id="r7-pa-now" aria-live="polite"></div>
-        <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.765rem);color:var(--text)">
+        <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);font-size:max(16px,.765rem);color:var(--text)">
         <label class="sa-optin" id="pa-optin-l" data-signup-hide><input type="checkbox" id="pa-optin"> Also send me AGSIST Daily, free, every morning</label>
-        <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:5px;font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
+        <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:var(--r-md);font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
         <div id="pa-status" role="status" tabindex="-1" style="font-size:.765rem;color:var(--text-muted);min-height:1.1em"></div>
       </div>
     </div>

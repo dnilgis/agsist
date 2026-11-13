@@ -778,7 +778,7 @@
       '.agt-dot-offline{background:var(--red,#c8322e)}' +
       '.agt-stale{color:var(--gold,#daa520)}' +
       '.agt-offline{color:var(--red,#c8322e)}' +
-      '.agt-tag{font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.92em}' +
+      '.agt-tag{font-weight:700;letter-spacing:0;text-transform:none;font-size:.92em}' +
       '.agt-next{opacity:.55;margin-left:2px}' +
       '@keyframes agt-pulse{0%,100%{opacity:1}50%{opacity:.35}}' +
       '@media(prefers-reduced-motion:reduce){.agt-dot-live{animation:none}}';

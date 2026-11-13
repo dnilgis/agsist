@@ -35,11 +35,11 @@
 .ap-cards2{display:grid;gap:.8rem}
 @media (min-width:620px){.ap-cards2-s{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .ap-crop{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:.9rem 1rem .8rem;min-width:0}
-.ap-crop h3{margin:0!important;font-family:var(--font-mono);font-size:var(--fs-xs)!important;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)!important}
+.ap-crop h3{margin:0!important;font-family:var(--font-body);font-size:var(--fs-xs)!important;letter-spacing:0;text-transform:none;color:var(--text-muted)!important}
 .ap-ans{display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;margin:.25rem 0 .4rem}
 .ap-big{font-family:var(--font-display);font-size:1.9rem;font-weight:800;line-height:1.1;color:var(--text)}
 .ap-cards2-s .ap-big{font-size:1.45rem}
-.ap-tier{display:inline-flex;align-items:center;gap:.35rem;font-size:var(--fs-xs);font-weight:700;padding:.2rem .55rem;border:1px solid var(--border-2);border-radius:999px;color:var(--text-dim);white-space:nowrap}
+.ap-tier{display:inline-flex;align-items:center;gap:.35rem;font-size:var(--fs-xs);font-weight:700;padding:.2rem .55rem;border:1px solid var(--border-2);border-radius:var(--r-lg);color:var(--text-dim);white-space:nowrap}
 .ap-crop p{margin:.25rem 0;color:var(--text-dim)}
 .ap-oth{font-size:var(--fs-sm)}
 .ap-y2{margin-top:.55rem!important;padding-top:.5rem;border-top:1px solid var(--border);font-size:var(--fs-sm);color:var(--text-muted)!important}
@@ -84,7 +84,7 @@
 .ap-sheet-bar a{color:#000;font-weight:600;min-height:44px;display:inline-flex;align-items:center}
 .ap-sheet{box-sizing:border-box;width:8.5in;max-width:100%;min-height:11in;margin:0 auto 24px;background:#fff;color:#000;padding:.55in .6in;font-family:var(--font-body);display:flex;flex-direction:column;border:1px solid var(--border)}
 .sh-top{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;border-bottom:4px solid #000;padding-bottom:.12in}
-.sh-kick{font-family:var(--font-mono);font-size:10pt;font-weight:700;letter-spacing:.15em;text-transform:uppercase;margin:0}
+.sh-kick{font-family:var(--font-body);font-size:10pt;font-weight:700;letter-spacing:0;text-transform:none;margin:0}
 .sh-county{font-size:34pt;font-weight:800;line-height:1;margin:.05in 0 .06in;letter-spacing:-.02em;color:#000}
 .sh-sub{font-size:13pt;font-weight:600;margin:0}
 .sh-brand{font-family:var(--font-mono);font-weight:700;font-size:14pt;letter-spacing:.08em;margin:0}

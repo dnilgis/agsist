@@ -68,7 +68,7 @@
 .ls-dp { position: sticky; left: 0; box-sizing: border-box; width: 100%; max-width: min(46rem, calc(100vw - 32px)); background: var(--surface); border: 1px solid var(--border);
   border-radius: var(--r-md, 8px); padding: .4rem .9rem .7rem; margin: .3rem 0 0; font-size: .9rem; line-height: 1.5; white-space: normal; }
 .ls-ul .ls-dp { margin-top: .5rem; }
-.ls-dh { font-size: .82rem; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--text-muted); margin: .7rem 0 .25rem; }
+.ls-dh { font-size: .82rem; font-weight: 700; text-transform:none; letter-spacing:0; color: var(--text-muted); margin: .7rem 0 .25rem; }
 .ls-dl { display: grid; grid-template-columns: minmax(9rem, 13rem) minmax(0, 1fr); gap: .2rem .9rem; margin: 0; }
 .ls-dl dt { color: var(--text-muted); }
 .ls-dl dd { margin: 0; overflow-wrap: anywhere; }
@@ -93,7 +93,7 @@
 .ls-card:hover { border-color: var(--brand, var(--gold)); }
 .ls-card:focus-visible, .ls-pick button:focus-visible, .ls-pick select:focus-visible { outline: 2px solid var(--brand, var(--gold)); outline-offset: 2px; }
 .ls-card > span, .ls-card > b { display: block; }
-.ls-tag { font-size: .72rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--text-muted); }
+.ls-tag { font-size: .72rem; font-weight: 700; text-transform:none; letter-spacing:0; color: var(--text-muted); }
 .ls-fig { font-variant-numeric: tabular-nums; }
 .ls-vs { font-size: .8rem; }
 @media (min-width: 640px) { .ls-cards { grid-template-columns: 1fr 1fr; } }

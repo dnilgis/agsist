@@ -50,7 +50,7 @@
       '<button type="button" class="rpx-x" aria-label="Hide this for 30 days">×</button>';
   }
   var CSS = '.rpx{display:flex;align-items:flex-start;gap:.4rem;margin:.6rem 0 .9rem;padding:6px 6px 6px 11px;' +
-    'border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:6px;background:var(--surface);' +
+    'border:1px solid var(--border);border-left:3px solid var(--brand);border-radius:var(--r-md);background:var(--surface);' +
     'font-size:.86rem;line-height:1.45;color:var(--text-dim);max-width:100%;box-sizing:border-box}' +
     '@media (max-width:520px){.rpx{font-size:.8rem;line-height:1.4;padding:5px 4px 5px 10px}}' +
     'aside.rpx p.rpx-t{flex:1;min-width:0;margin:0;font-size:inherit;line-height:inherit;color:inherit;max-width:none}' +
