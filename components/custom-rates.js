@@ -16,7 +16,7 @@
 (function () {
   'use strict';
   var KEY = 'agsist-cr-st', QKEY = 'agsist-cr-qty', SKEY = 'agsist-cr-sheet';
-  var S = { b: null, st: '', k: 'combine-corn', q: '', docs: {}, loading: {}, sheet: [], qty: {}, quote: [] };
+  var S = { b: null, st: '', k: 'combine-corn', k0: 'combine-corn', byQ: false, q: '', docs: {}, loading: {}, sheet: [], qty: {}, quote: [] };
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
@@ -111,7 +111,7 @@
     haul: ['haul', 'truck', 'farm to market'], truck: ['truck', 'haul'], trucking: ['truck', 'haul'],
     bale: ['bale', 'baling'], baling: ['bale', 'baling'], round: ['round'],
     till: ['till', 'tillage'], tillage: ['till', 'tillage'], chisel: ['chisel'],
-    /* stem('tiling') is 'til', which would prefix-match tillage: tile drainage has its own words (Nov 13) */
+    /* stem('tiling') is 'til', which would prefix-match tillage: tile drainage has its own words */
     til: ['tiling', 'tile'], tile: ['tile', 'tiling'], tiling: ['tiling', 'tile'],
     disk: ['disk', 'disc'], disc: ['disk', 'disc'], nh3: ['anhydrous'], anhydrou: ['anhydrous'],
     fert: ['fertiliz'], fertiliz: ['fertiliz'], mow: ['mow'], rake: ['rak'], rak: ['rak'],
@@ -158,17 +158,28 @@
     if (op.n === 1) { var st = Object.keys(op.by)[0]; return [money(op.by[st][0], op.u), stName(st) + ' only']; }
     return ['', 'not in a current survey'];
   }
+  /* where a bar's scale ends: the next round figure above the highest state (same rule as the builder) */
+  function scaleTop(m) {
+    var step = m >= 20 ? 5 : m >= 2 ? 1 : m >= 1 ? 0.25 : 0.05;
+    return Math.round((Math.floor(m / step + 1e-9) + 1) * step * 1e4) / 1e4;
+  }
+  function scaleLabel(top, u) { return u !== 'percent of crop' && top >= 1 && top === Math.floor(top) ? '$' + top : money(top, u); }
   function bar(op, cls, me) {
     var sts = Object.keys(op.by).sort();
     if (!sts.length) return '';
-    var vals = sts.map(function (s) { return op.by[s][0]; }), top = Math.max.apply(null, vals) * 1.15;
+    var vals = sts.map(function (s) { return op.by[s][0]; }), top = scaleTop(Math.max.apply(null, vals));
     var pc = function (v) { return Math.round(100 * v / top); };
     var h = '<span class="' + cls + '" aria-hidden="true">';
     if (vals.length >= 2) h += '<s style="left:' + pc(Math.min.apply(null, vals)) + '%;width:' + Math.round(100 * (Math.max.apply(null, vals) - Math.min.apply(null, vals)) / top) + '%"></s>';
     sts.forEach(function (s) { h += '<i style="left:' + pc(op.by[s][0]) + '%"' + (s === me ? ' class="me"' : '') + '></i>'; });
     if (op.md != null) h += '<b style="left:' + pc(op.md) + '%"></b>';
-    /* the scale, said out loud: zero at the left, the bar's top value at the right (same as the builder) */
-    h += '<em class="crb-0">$0</em><em class="crb-t">' + money(top, op.u) + '</em>';
+    /* the scale, said out loud: zero at the left, a round figure at the right end (same as the builder) */
+    h += '<em class="crb-0">$0</em><em class="crb-t">' + scaleLabel(top, op.u) + '</em>';
+    if (/\bcrb-l\b/.test(cls) && vals.length >= 2) {
+      var byVal = sts.slice().sort(function (x, y) { return op.by[x][0] - op.by[y][0] || (x < y ? -1 : 1); });
+      var lo = byVal[0], hi = byVal[byVal.length - 1];
+      h += '<em class="crb-lo">Low: ' + esc(stName(lo)) + ' ' + money(op.by[lo][0], op.u) + '</em><em class="crb-hi">High: ' + esc(stName(hi)) + ' ' + money(op.by[hi][0], op.u) + '</em>';
+    }
     return h + '</span>';
   }
   /* the reader's survey's own number for a job: [values, unit, kind] or null */
@@ -337,7 +348,7 @@
       var rg = r.lo == null ? 'not printed' : money(r.lo, r.u) + ' to ' + money(r.hi, r.u);
       return '<tr><th scope="row">' + esc(r.o) + (r.p === 'cents' ? ' <small>(printed in cents)</small>' : '') + '</th>' +
         '<td class="av">' + money(r.a, r.u) + ' <small>' + esc(unitLabel(r.u)) + '</small>' + (r.md != null ? '<span class="mdn">median ' + money(r.md, r.u) + '</span>' : r.mc != null ? '<span class="mdn">most common ' + money(r.mc, r.u) + '</span>' : '') +
-        '<span class="rgm">' + (r.lo == null ? '' : 'range ' + rg) + '</span></td><td class="rg">' + rg + '</td><td>' + (r.n == null ? '<span class="na">not printed</span>' : r.n) + '</td></tr>';
+        '<span class="rgm">' + (r.lo == null ? '' : rg) + '</span></td><td class="rg">' + rg + '</td><td>' + (r.n == null ? '<span class="na">not printed</span>' : r.n) + '</td></tr>';
     }).join('');
   }
   function stateLines(box, open) {
@@ -381,11 +392,14 @@
       sec.classList.toggle('nohit', !!q && !any);
       if (q) openCat(sec, true);
     });
-    if (q && first) hero(first);
-    var jobs = shown ? shown + ' job' + (shown === 1 ? '' : 's') + ' across states match "' + q + '".' : 'No job across states matches "' + q + '".';
+    /* the answer on top changes only on an exact job name, or on Enter; while the reader types, the count line carries the answer
+       and a search with no job hit gives the answer back the job it showed when typing began */
+    if ((!q || !first) && S.byQ && S.k !== S.k0) hero(S.k0);
+    if (!q || !first) S.byQ = false;
+    var jobs = shown ? shown + ' job' + (shown === 1 ? '' : 's') + ' across states match "' + q + '". ' + answerFor(first) : 'No job across states matches "' + q + '".';
     var tryw = ' Try one word, like combine, plant, spray, haul or bale.';
-    if (!q) { $('cr-count').textContent = ''; return; }
-    if (!stn) { $('cr-count').textContent = jobs + (shown ? '' : tryw); return; }
+    if (!q) { $('cr-count').textContent = ''; return ''; }
+    if (!stn) { $('cr-count').textContent = jobs + (shown ? '' : tryw); return first; }
     $('cr-count').textContent = jobs + ' Looking in ' + stn + '\'s own lines.';
     stateDoc(st, function (d) {
       if (S.q !== q || sv(S.st) !== st) return;
@@ -401,19 +415,33 @@
       $('cr-count').textContent = jobs + (m ? ' ' + m + ' of ' + stn + '\'s own line' + (m === 1 ? '' : 's') + ' match, under ' + where.join(', ') + '.' :
         ' None of ' + stn + '\'s own lines match' + (shown ? '.' : ' either.' + tryw));
     });
+    return first;
   }
-  /* phone: the hero sits above the search box, so a search that changed it is easy to miss. When typing settles, or on Enter,
-     bring the answer into view if it is scrolled off (Nov 13, audit 3) */
-  var settleT = null;
-  function showHero(q) {
-    if (!q || !window.matchMedia || !window.matchMedia('(max-width: 699px)').matches) return;
-    var a = $('answer'); if (!a) return;
-    var r = a.getBoundingClientRect();
-    if (r.top >= 0) return;
-    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    a.scrollIntoView({ block: 'start', behavior: calm ? 'auto' : 'smooth' });
+  /* the one-line answer for a job, for the count line: the reader's state when it prices the job, else the middle */
+  function answerFor(k) {
+    var op = S.b.ops[k], me = stateVal(op), c = cells(op);
+    if (me && me[2] === 'by') return op.label + ': ' + stName(sv(S.st)) + ' ' + money(me[0][0], me[1]) + ' ' + shortUnit(me[1]) + '.';
+    return op.label + ': ' + (c[0] ? c[0] + ' ' + shortUnit(op.u) + ', ' : '') + c[1] + '.';
   }
-  function settle(q) { clearTimeout(settleT); settleT = setTimeout(function () { if (S.q === q) showHero(q); }, 900); }
+  /* phone: the answer sits above the search box. On Enter with a job hit, close the keyboard and bring the answer into view;
+     with no job hit but lines of the reader's state that match, go to the first of those instead. Typing never scrolls. */
+  function phone() { return !!(window.matchMedia && window.matchMedia('(max-width: 699px)').matches); }
+  function goTo(el) {
+    if (!el) return;
+    var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ block: 'start', behavior: calm ? 'auto' : 'smooth' });
+  }
+  function enterSearch(qi) {
+    var v = qi.value.trim(), hit = Object.keys(S.b.ops).filter(function (k) { return S.b.ops[k].label.toLowerCase() === v.toLowerCase(); })[0];
+    S.q = v;
+    var first = search();
+    if (hit) first = hit;
+    if (first) { hero(first); S.byQ = true; }
+    if (!phone() || !v) return;
+    qi.blur();
+    if (first) return goTo($('answer'));
+    setTimeout(function () { goTo(document.querySelector('.crc:not(.nohit) .crc-st .cr-full')); }, 500);
+  }
   function openCat(sec, open) {
     var t = sec.querySelector('.crc-t');
     t.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -770,20 +798,18 @@
             var v = qi.value.trim(), hit = Object.keys(b.ops).filter(function (k) { return b.ops[k].label.toLowerCase() === v.toLowerCase(); })[0];
             S.q = v;
             search();
-            if (hit) hero(hit);
-            settle(v);
+            if (hit) { hero(hit); S.byQ = true; }
           }, 140);
         });
+        qi.addEventListener('focus', function () { if (!S.byQ) S.k0 = S.k; });
         qi.addEventListener('keydown', function (e) {
           if (e.key !== 'Enter') return;
           e.preventDefault();
-          clearTimeout(t); clearTimeout(settleT);
-          var v = qi.value.trim(), hit = Object.keys(b.ops).filter(function (k) { return b.ops[k].label.toLowerCase() === v.toLowerCase(); })[0];
-          S.q = v; search(); if (hit) hero(hit);
-          showHero(v);
+          clearTimeout(t);
+          enterSearch(qi);
         });
         all('[data-crk]').forEach(function (btn) {
-          btn.addEventListener('click', function () { qi.value = ''; S.q = ''; search(); hero(btn.getAttribute('data-crk')); url(); });
+          btn.addEventListener('click', function () { qi.value = ''; S.q = ''; S.byQ = false; search(); hero(btn.getAttribute('data-crk')); S.k0 = S.k; url(); });
         });
         document.addEventListener('input', function (e) {
           var u = e.target.getAttribute && e.target.getAttribute('data-qu');

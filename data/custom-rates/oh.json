@@ -14,7 +14,7 @@
  "spread": "minmax",
  "spread_label": "lowest to highest answer",
  "includes": "These rates, except where noted, include the implement and tractor if required, all variable machinery costs such as fuel, oil, lube, twine, etc., and labor for the operation. Midwest on-road diesel ran $3.36 to $5.81 a gallon during the survey (January to April 2026). OSU assumes most answers used a price in the lower part of that range.",
- "range_note": "The range is the lowest and highest answer (OSU also prints a one standard deviation band, not shown). OSU prints a median for each job, shown under each rate. Rows OSU did not summarize for too few answers are left out, and this page types the jobs the 2024 page carried.",
+ "range_note": "The range is the lowest and highest answer (OSU also prints a one standard deviation band, not shown). OSU prints a median for each job, shown under each rate. Rows OSU did not summarize for too few answers are left out. Not every job in the survey is listed here.",
  "listed": "2026-10-17",
  "typed": "2026-11-13",
  "rows": [
@@ -110,6 +110,18 @@
    "lo": 9.5,
    "hi": 34.0,
    "k": "field-cult",
+   "c": "tillage"
+  },
+  {
+   "s": "Soil preparation",
+   "o": "Vertical tillage",
+   "u": "acre",
+   "a": 21.31,
+   "n": 37,
+   "md": 20.0,
+   "lo": 10.0,
+   "hi": 35.0,
+   "k": "vertical-till",
    "c": "tillage"
   },
   {
@@ -456,6 +468,7 @@
    "md": 20.0,
    "lo": 10.0,
    "hi": 42.0,
+   "k": "drill-cover",
    "c": "planting"
   },
   {

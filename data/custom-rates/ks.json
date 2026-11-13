@@ -60,6 +60,14 @@
   },
   {
    "s": "Grain harvesting",
+   "o": "Grain sorghum, extra charge for high yield (above 42 bushels an acre)",
+   "u": "bushel",
+   "a": 0.297,
+   "n": 91,
+   "c": "harvest"
+  },
+  {
+   "s": "Grain harvesting",
    "o": "Grain sorghum, flat rate",
    "u": "acre",
    "a": 38.62,
@@ -76,6 +84,14 @@
    "n": 80,
    "lo": 21.0,
    "hi": 55.0,
+   "c": "harvest"
+  },
+  {
+   "s": "Grain harvesting",
+   "o": "Corn, extra charge for high yield (above 69 bushels an acre)",
+   "u": "bushel",
+   "a": 0.279,
+   "n": 65,
    "c": "harvest"
   },
   {
@@ -107,6 +123,14 @@
    "n": 63,
    "lo": 25.0,
    "hi": 57.0,
+   "c": "harvest"
+  },
+  {
+   "s": "Grain harvesting",
+   "o": "Soybeans, extra charge for high yield (above 29 bushels an acre)",
+   "u": "bushel",
+   "a": 0.301,
+   "n": 39,
    "c": "harvest"
   },
   {

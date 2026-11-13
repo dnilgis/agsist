@@ -60,11 +60,14 @@
 .crb i{position:absolute;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--text-muted);opacity:.75}
 .crb i.me{width:13px;height:13px;margin:-6.5px 0 0 -6.5px;background:var(--gold);opacity:1;box-shadow:0 0 0 2px var(--surface);z-index:2}
 .crb b{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--text);z-index:1}
-.crb-l{height:16px;border-radius:8px;margin:.7rem 0 1.5rem}
-/* the scale under the bar: $0 at the left end, the value at the right end (Nov 13, E53) */
+.crb-l{height:16px;border-radius:8px;margin:.7rem 0 3.1rem}
+/* the scale under the bar: $0 at the left end, a round figure at the right end */
 .crb em{position:absolute;top:calc(100% + 4px);font-style:normal;font-size:.75rem;line-height:1;color:var(--text-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .crb .crb-0{left:0}
 .crb .crb-t{right:0}
+.crb .crb-lo,.crb .crb-hi{top:calc(100% + 24px);color:var(--text)}
+.crb .crb-lo{left:0}
+.crb .crb-hi{right:0}
 .cro-b .crb{margin-bottom:1.15rem}
 .crb-l s{border-radius:8px}
 .crb-l i{width:11px;height:11px;margin:-5.5px 0 0 -5.5px}
@@ -193,16 +196,18 @@
 .crbp-r p{margin:0 0 .4rem!important;font-size:.9rem}
 .crbp-r small{color:var(--text-muted)}
 .crbp-o{color:var(--text)!important}
-.crbp-r .cr-qty{flex-wrap:nowrap}
+.crbp-r .cr-qty{flex-direction:column;align-items:flex-start;gap:.3rem;font-size:.9rem;margin:0 0 .5rem}
+.crbp-r .cr-qty input{width:7rem}
 @media(max-width:699px){
   .crh{scroll-margin-top:76px}
-  /* the State by state table fits 390: the year under the state name, tighter cells, "not in survey" wraps (Nov 13) */
+  /* the State by state table fits 390: the year under the state name, tighter cells, "not in survey" wraps */
   .cr-sum th[scope="row"] small{display:block}
   .cr-sum th[scope="row"],.cr-sum thead th:first-child{max-width:6.6rem;white-space:normal}
   .cr-sum th,.cr-sum td{padding-left:.22rem;padding-right:.22rem}
   .cr-sum td{font-size:.8rem}
   .cr-sum td .na{display:block;white-space:normal;text-align:right;line-height:1.15}
   #main .cr-sum thead th{font-family:var(--font-body,inherit);text-transform:none;letter-spacing:0;font-size:.75rem}
+  .crb-l i{width:8px;height:8px;margin:-4px 0 0 -4px}
   .cro-b .crb i{width:6px;height:6px;margin:-3px 0 0 -3px}
   .cro-b .crb i.me{width:11px;height:11px;margin:-5.5px 0 0 -5.5px}
   .crbp{padding:.8rem 12px}
@@ -219,7 +224,7 @@
   .crh .cr-status{order:4}
   .crn{display:none}
   .cro-b{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n v" "bar bar" "r r";gap:.35rem .8rem;padding:.65rem 12px}
-  .cro-n{grid-area:n}.cro-v{grid-area:v}.cro-b .crb{grid-area:bar;margin:.15rem 0}.cro-r{grid-area:r}
+  .cro-n{grid-area:n}.cro-v{grid-area:v}.cro-b .crb{grid-area:bar;margin:.15rem 0 1.5rem}.cro-r{grid-area:r}
   .cro-r small{display:inline}
   .crc-t{padding:.6rem 12px;font-size:1.08rem}
   .cro-d,.crc-st{padding-left:12px;padding-right:12px}
@@ -229,7 +234,8 @@
   .cr-t.cr-full thead th.rg,.cr-t.cr-full td.rg,.crd-t thead th.rg,.crd-t td.rg{display:none}
   .cr-t.cr-full td.av .rgm,.crd-t td .rgm{display:block}
   .cr-t.cr-full td.av,.crd-t td{white-space:normal;min-width:5.5rem}
-  .cr-t.cr-full td.av small{display:block}
+  .cr-t.cr-full td.av small{display:inline}
+  .cr-t td.av .mdn,.cr-t td.av .rgm{white-space:nowrap}
   .cr-t thead th{letter-spacing:0;font-size:.66rem}
   .crq{padding:.8rem 12px}
   .crq-r{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n x" "q q" "v v"}
