@@ -34,9 +34,9 @@
   /* the pages: two designs, each with a height that never depends on the data. Sizes are in design units; the
      page scales the drawing to the column (phone 288 to 479 px wide: 0.72 to 1.2; wide 480 to 680: 0.75 to 1.06). */
   var PHONE = { W: 400, PADX: 16, bigMax: 40, bigMin: 28, SM: 20, plotH: 232, gapTop: 22, keyFS: 19, keyMin: 15, rowH: 29, sw: 30, axisFS: 18, yearFS: 38,
-    placeMax: 20, placeMin: 13, gapMin: 18, vars: true, fixed: true, name: 'phone' };
+    placeMax: 20, placeMin: 13, gapMin: 18, clearPad: 10, vars: true, fixed: true, name: 'phone' };
   var WIDE = { W: 640, PADX: 24, bigMax: 54, bigMin: 34, SM: 26, plotH: 300, gapTop: 26, keyFS: 24, keyMin: 17, rowH: 38, sw: 40, axisFS: 20, yearFS: 50,
-    placeMax: 26, placeMin: 15, gapMin: 22, vars: true, fixed: true, name: 'wide' };
+    placeMax: 26, placeMin: 15, gapMin: 22, clearPad: 10, vars: true, fixed: true, name: 'wide' };
 
   var n2 = function (v) { return +(+v).toFixed(2); };
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
@@ -157,10 +157,11 @@
     if (fixed) while (keyW() > W - 2 * PADX && FS > spec.keyMin) FS -= 1;       // a long line on a narrow page: the key shrinks before it spills
     var kw = keyW() - sw - 12, keyWv = keyW(), boxH = Math.round(FS * 1.18);
     var dots = [[ptsY[n][0], ptsY[n][1]]].concat(hasN ? [[ptsN[n][0], ptsN[n][1]]] : []), keyed = null;
+    var cp = spec.clearPad || 6;                  // how far a line or a dot must stay from a label (the email's 6 is unchanged)
     var clear = function (b) {
       if (b.x < 6 || b.x + b.w > W - 6 || b.y < headBottom + 4 || b.y + b.h > PB - 4) return false;
-      for (var s = 0; s < segs.length; s++) if (segHits(segs[s][0][0], segs[s][0][1], segs[s][1][0], segs[s][1][1], { x: b.x - 6, y: b.y - 6, w: b.w + 12, h: b.h + 12 })) return false;
-      return !dots.some(function (d) { return d[0] > b.x - 12 && d[0] < b.x + b.w + 12 && d[1] > b.y - 12 && d[1] < b.y + b.h + 12; });
+      for (var s = 0; s < segs.length; s++) if (segHits(segs[s][0][0], segs[s][0][1], segs[s][1][0], segs[s][1][1], { x: b.x - cp, y: b.y - cp, w: b.w + 2 * cp, h: b.h + 2 * cp })) return false;
+      return !dots.some(function (d) { return d[0] > b.x - 2 * cp && d[0] < b.x + b.w + 2 * cp && d[1] > b.y - 2 * cp && d[1] < b.y + b.h + 2 * cp; });
     };
     var kxs = [X0, Math.round((X0 + X1 - keyWv) / 2), Math.round(X1 - keyWv)];
     for (var xi = 0; xi < kxs.length && !keyed; xi++) {
