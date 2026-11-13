@@ -211,7 +211,7 @@
         /* the list holds room for seven while the week loads; a six-day answer leaves no empty row behind */
         if (ol) ol.style.minHeight = lis.length < 7 ? '0' : '';
       }
-      txt('hp-d7h-p', R.snow ? 'Chance of rain or snow' : 'Chance of rain');
+      txt('hp-d7h-p', R.snow ? 'Rain, snow' : 'Rain');
       /* the next 24 hours from this hour */
       var ht = H.time || [], h0 = -1, now = String(c.time || '').slice(0, 13), cells = [];
       for (var k = 0; k < ht.length; k++) if (String(ht[k]).slice(0, 13) >= now) { h0 = k; break; }
