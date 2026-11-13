@@ -1,6 +1,6 @@
 {
  "rain": {
-  "v": "befff66b",
+  "v": "e955aa54",
   "alt": "Map of the US by county, shaded by rain so far in 2026 as a percent of a normal year, through Nov 12, 2026: 2,748 counties with a weather station.",
   "t": "normal"
  },
@@ -70,7 +70,7 @@
   "t": "normal"
  },
  "rain-il": {
-  "v": "d0ce0491",
+  "v": "d703ad13",
   "alt": "Map of Illinois by county, shaded by rain so far in 2026 as a percent of a normal year, through Nov 12, 2026. 44 of 77 counties are wetter than normal, and the typical county is at 106%.",
   "t": "normal"
  },
@@ -210,7 +210,7 @@
   "t": "normal"
  },
  "rain-tn": {
-  "v": "2c2c442d",
+  "v": "7fb39183",
   "alt": "Map of Tennessee by county, shaded by rain so far in 2026 as a percent of a normal year, through Nov 12, 2026. 3 of 71 counties are wetter than normal, and the typical county is at 85%.",
   "t": "normal"
  },
