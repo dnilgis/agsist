@@ -4547,7 +4547,7 @@ async function handle(req, env) {
         if (req.method !== "POST")
           return htmlPage("Confirm your AGSIST ad: " + what,
             "<form method=post><button style=\"font-size:16px;padding:10px 18px\">Yes, send it to Sig</button></form>" +
-            "<p>Nothing runs until Sig has looked at it. You pay by check or bank wire: the invoice we email has the mailing address and wire instructions. Your ad goes live the day your payment arrives.</p>");
+            "<p>Nothing runs until we have looked at it. You pay by check or bank wire: the invoice we email has the mailing address and wire instructions. Your ad goes live the day your payment arrives.</p>");
         r.status = "confirmed"; r.cts = Date.now();
         await env.SUBS.put("sapp:" + id, JSON.stringify(r));
         return htmlPage("Thanks. Sig has your ad.",
