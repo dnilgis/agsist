@@ -603,7 +603,7 @@
       var f = function () { try { line.innerHTML = window.AgsistSwOpen.html(r[2], BASE); } catch (e) {} };
       if (window.AgsistSwOpen) return f();
       var s = document.createElement('script');
-      s.src = BASE + '/components/sw-open.js?v=1'; s.async = true; s.onload = f;
+      s.src = BASE + '/components/sw-open.js?v=2'; s.async = true; s.onload = f;
       document.head.appendChild(s);
     });
   }
