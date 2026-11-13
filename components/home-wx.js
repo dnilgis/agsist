@@ -329,9 +329,9 @@
   var DIRS = { north: 'N', south: 'S', east: 'E', west: 'W', northeast: 'NE', northwest: 'NW', southeast: 'SE', southwest: 'SW' };
   function stationText(name, st) {
     name = String(name || '').trim(); if (!name) return '';
-    var m = /^([\d.]+) miles? (north|south|east|west|northeast|northwest|southeast|southwest) of (.+)$/i.exec(name), t;
-    if (m) t = m[3] + ', ' + st + ', ' + m[1] + ' mi ' + DIRS[m[2].toLowerCase()];
-    else if ((m = /^(.*), ([\d.]+ mi [NSEW]{1,2})$/.exec(name))) t = m[1] + ', ' + st + ', ' + m[2];
+    var m = /^([\d.]+) miles? ([a-z-]+) of (.+)$/i.exec(name), t, d;
+    if (m && (d = m[2].toLowerCase().split('-').map(function (w) { return DIRS[w]; })).every(Boolean)) t = m[3] + ', ' + st + ', ' + m[1] + ' mi ' + d.join('');
+    else if ((m = /^(.*), ([\d.]+ mi [NSEW]{1,3})$/.exec(name))) t = m[1] + ', ' + st + ', ' + m[2];
     else t = name + ', ' + st;
     return 'Station: ' + t + '. ';
   }
