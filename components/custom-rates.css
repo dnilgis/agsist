@@ -60,7 +60,7 @@
 .crb i{position:absolute;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--text-muted);opacity:.75}
 .crb i.me{width:13px;height:13px;margin:-6.5px 0 0 -6.5px;background:var(--gold);opacity:1;box-shadow:0 0 0 2px var(--surface);z-index:2}
 .crb b{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--text);z-index:1}
-.crb-l{height:16px;border-radius:8px;margin:.7rem 0 3.1rem}
+.crb-l{height:16px;border-radius:8px;margin:.7rem 0 3.35rem}
 /* the scale under the bar: $0 at the left end, a round figure at the right end */
 .crb em{position:absolute;top:calc(100% + 4px);font-style:normal;font-size:.75rem;line-height:1;color:var(--text-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
 .crb .crb-0{left:0}
@@ -68,15 +68,17 @@
 .crb u{text-decoration:none}
 /* the dots, band and tick sit in a box inset by half a dot, so the highest dot never sits on the rounded end */
 .crb-in{position:absolute;left:4px;right:4px;top:0;bottom:0;text-decoration:none}
-.crb-l .crb-in{left:6px;right:6px}
+.crb-l .crb-in{left:9px;right:9px}
 /* the big bar names its lowest and highest state: one right-aligned line, or a label under each dot on a wide screen when they are far apart */
-.crb .crb-lh,.crb .crb-lo,.crb .crb-hi{top:calc(100% + 24px);color:var(--text)}
+.crb .crb-lh,.crb .crb-lo,.crb .crb-hi,.crb .crb-sl,.crb .crb-sh{top:calc(100% + 28px);color:var(--text)}
+/* the big bar's tall middle line reaches 6 px under it: the scale figures and the names start below its foot */
+.crb-l .crb-0,.crb-l .crb-t{top:calc(100% + 8px)}
 .crb .crb-lh,.crb .crb-lo,.crb .crb-hi,.crb .crb-sl,.crb .crb-sh{display:none}
 .crb-l[data-lay=line] .crb-lh{display:block;right:0}
-.crb-l[data-lay=dots] .crb-lo,.crb-l[data-lay=dots] .crb-hi{display:block;top:calc(100% + 20px)}
-.crb-l[data-lay=stack] .crb-sl,.crb-l[data-lay=stack] .crb-sh{display:block;right:0;top:calc(100% + 24px)}
-.crb-l[data-lay=stack] .crb-sh{top:calc(100% + 42px)}
-.crb-l[data-lay=stack]{margin-bottom:4.4rem}
+.crb-l[data-lay=dots] .crb-lo,.crb-l[data-lay=dots] .crb-hi{display:block;top:calc(100% + 24px)}
+.crb-l[data-lay=stack] .crb-sl,.crb-l[data-lay=stack] .crb-sh{display:block;right:0}
+.crb-l[data-lay=stack] .crb-sh{top:calc(100% + 46px)}
+.crb-l[data-lay=stack]{margin-bottom:4.65rem}
 .cro-b .crb{margin-bottom:1.15rem}
 .crb-l s{padding:0 6px;margin-left:-6px;border-radius:8px}
 .crb-l i{width:11px;height:11px;margin:-5.5px 0 0 -5.5px}
@@ -217,7 +219,7 @@
   .cr-sum td .na{display:block;white-space:normal;text-align:right;line-height:1.15}
   #main .cr-sum thead th{font-family:var(--font-body,inherit);text-transform:none;letter-spacing:0;font-size:.75rem}
   .crb-l i{width:8px;height:8px;margin:-4px 0 0 -4px}
-  .crb-l .crb-in{left:4px;right:4px}
+  .crb-l .crb-in{left:9px;right:9px}
   .crb-in{left:3px;right:3px}
   .crb s{padding:0 3px;margin-left:-3px}
   .crb-l s{padding:0 4px;margin-left:-4px}
