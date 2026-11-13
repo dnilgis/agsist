@@ -419,6 +419,7 @@
     return [a.join(' '), b.join(' ')];
   }
   /* every pin inside the fitted window is drawn (the window is wider than the view when the picture's shape differs from the map's) */
+  function dist2(a, b) { return Math.hypot(a[0] - b[0], a[1] - b[1]); }
   function inWindow(items, fw) { return items.filter(function (o) { return Math.abs(o.lng - fw.cx) <= fw.halfX && Math.abs(o.lat - fw.cy) <= fw.halfY; }); }
   function fit(x, s, max, sizes, wt) {
     for (var i = 0; i < sizes.length; i++) {
@@ -633,7 +634,8 @@
         var steps = [-2, -1, 1, 2, 3];
         for (var s = 0; s < sides.length; s++) for (var j = 0; j < steps.length; j++) {
           var x = sides[s][0] + (s > 1 ? steps[j] * w / 3 : 0), y = sides[s][1] + (s > 1 ? 0 : steps[j] * (size + 4)), rc2 = rectAt(x, y);
-          if (okRect(rc2)) { put(c, t, rc2, x, y); return; }
+          var near = s > 1 ? (rc2[0] < b[2] && rc2[2] > b[0]) : (rc2[1] < b[3] && rc2[3] > b[1]);   // a slid name still touches its pins' own span
+          if (near && okRect(rc2)) { put(c, t, rc2, x, y); return; }
         }
         if (!important) { missed.push(c); return; }
         for (var rad = 12; rad <= 60; rad += 8) for (var a = 0; a < 16; a++) {
@@ -684,13 +686,15 @@
         });
         if (hasPins && (!best || best.cov > 0) && ss.box) {
           var bb = ss.box, p0 = px(bb.y1, bb.x0), p1 = px(bb.y0, bb.x1), bw = p1[0] - p0[0], bh = p1[1] - p0[1], my2 = (p0[1] + p1[1]) / 2, mx2 = (p0[0] + p1[0]) / 2, hw = w / 2 + pad, hh = (v[1] + 2 * pad) / 2;
-          var cands = [[p1[0] + 10 + hw, my2, 0, 1], [p0[0] - 10 - hw, my2, 0, 1], [mx2, p1[1] + 10 + hh, 1, 0], [mx2, p0[1] - 10 - hh, 1, 0]], out = null;
-          [0, -2, 2, -1, 1].forEach(function (k) { cands.forEach(function (cd) {
-            if (out) return;
+          var cands = [[p1[0] + 10 + hw, my2, 0, 1], [p0[0] - 10 - hw, my2, 0, 1], [mx2, p1[1] + 10 + hh, 1, 0], [mx2, p0[1] - 10 - hh, 1, 0]], out = null, od = 1e9;
+          [0, -2, 2, -1, 1, -3, 3].forEach(function (k) { cands.forEach(function (cd) {
             var cxp = cd[0] + cd[2] * k * (w / 3), cyp = cd[1] + cd[3] * k * (v[1] + 6), rc = [cxp - hw, cyp - hh, cxp + hw, cyp + hh];
             if (!inside(rc) || hits(rc, placed) || hits(rc, cnames) || hits(rc, allRects())) return;
-            var sp0 = ss.spots[0], an = px(sp0.lat, (sp0.run[0] + sp0.run[1]) / 2), ex = Math.max(rc[0], Math.min(rc[2], an[0])), ey = Math.max(rc[1], Math.min(rc[3], an[1]));
-            out = { cov: 0, name: nm, code: pc, text: v[0], size: v[1], x: cxp - w / 2, y: cyp + v[1] / 2 - 2, w: w, rect: rc, plate: true, lng: sp0.lng, lat: sp0.lat, ring: ss.ring, st: pc, hasPins: hasPins, outside: true, leader: [ex, ey, an[0], an[1]] };
+            var an = null, ad = 1e9;   // the nearest in-state place for the leader to end at
+            ss.spots.forEach(function (sp) { var q = px(sp.lat, (sp.run[0] + sp.run[1]) / 2), d = dist2(q, [cxp, cyp]); if (d < ad) { ad = d; an = q; } });
+            if (ad >= od) return;
+            var ex = Math.max(rc[0], Math.min(rc[2], an[0])), ey = Math.max(rc[1], Math.min(rc[3], an[1])), sp0 = ss.spots[0];
+            od = ad; out = { cov: 0, name: nm, code: pc, text: v[0], size: v[1], x: cxp - w / 2, y: cyp + v[1] / 2 - 2, w: w, rect: rc, plate: true, lng: sp0.lng, lat: sp0.lat, ring: ss.ring, st: pc, hasPins: hasPins, outside: true, leader: [ex, ey, an[0], an[1]] };
           }); });
           if (out) best = out; else if (onlyOne) best = null;
         }
@@ -784,16 +788,16 @@
     x.restore();
     // the key: the same words and order as the page (under the range to over it), outline-only shape rows, white for not compared
     var ky = top + 2, kx0 = right + 36;
-    x.font = '700 17' + F; x.fillStyle = '#e9edeb'; x.fillText('Price per acre against', kx0, ky + 12); x.fillText(aonly ? "the county's auction middle" : "the county's own middle", kx0, ky + 34); ky += 56;
+    x.font = '700 17' + F; x.fillStyle = '#e9edeb'; x.fillText('Price per acre against', kx0, ky + 12); x.fillText(aonly ? "the county's auction middle" : "the county's own middle", kx0, ky + 34); ky += 52;
     var row = function (t) { x.font = '400 16' + F; x.fillStyle = 'rgba(233,237,235,.88)'; x.fillText(t, kx0 + 28, ky); };
     [['-2', 'Under the usual range'], ['-1', 'Lower quarter'], ['0', 'Middle half'], ['1', 'Upper quarter'], ['2', 'Over the usual range']].forEach(function (k) {
-      x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.fillStyle = COL[k[0]]; x.fill(); row(k[1]); ky += 26;
+      x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.fillStyle = COL[k[0]]; x.fill(); row(k[1]); ky += 24;
     });
-    x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.fillStyle = '#ffffff'; x.fill(); x.strokeStyle = NOTC; x.lineWidth = 1.5; x.stroke(); row('Not compared (white)'); ky += 26;
-    x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.strokeStyle = GOLD; x.lineWidth = 2.5; x.stroke(); row('Gold edge: unusual'); ky += 26;
-    x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.strokeStyle = '#e9edeb'; x.lineWidth = 1.5; x.stroke(); row('Round: recorded sale'); ky += 26;
-    x.strokeStyle = '#e9edeb'; x.lineWidth = 1.5; x.strokeRect(kx0 + 2.5, ky - 12, 13, 13); row('Square: auction result'); ky += 26;
-    x.beginPath(); x.arc(kx0 + 5, ky - 5, 3, 0, 6.283); x.fillStyle = 'rgba(233,237,235,.88)'; x.fill(); x.beginPath(); x.arc(kx0 + 14, ky - 5, 6, 0, 6.283); x.fill(); row('Larger mark: more acres'); ky += 30;
+    x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.fillStyle = '#ffffff'; x.fill(); x.strokeStyle = NOTC; x.lineWidth = 1.5; x.stroke(); row('Not compared (white)'); ky += 24;
+    x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.strokeStyle = GOLD; x.lineWidth = 2.5; x.stroke(); row('Gold edge: unusual'); ky += 24;
+    x.beginPath(); x.arc(kx0 + 9, ky - 5, 7, 0, 6.283); x.strokeStyle = '#e9edeb'; x.lineWidth = 1.5; x.stroke(); row('Round: recorded sale'); ky += 24;
+    x.strokeStyle = '#e9edeb'; x.lineWidth = 1.5; x.strokeRect(kx0 + 2.5, ky - 12, 13, 13); row('Square: auction result'); ky += 24;
+    x.beginPath(); x.arc(kx0 + 5, ky - 5, 3, 0, 6.283); x.fillStyle = 'rgba(233,237,235,.88)'; x.fill(); x.beginPath(); x.arc(kx0 + 14, ky - 5, 6, 0, 6.283); x.fill(); row('Larger mark: more acres'); ky += 28;
     x.font = '700 17' + F; x.fillStyle = '#e9edeb'; x.fillText(pins.length === total ? n0(total) + (total === 1 ? ' pin' : ' pins') + ' in this view' : n0(pins.length) + ' of ' + n0(total) + ' pins in this view', kx0, ky); ky += 22;
     x.font = '400 14' + F; x.fillStyle = 'rgba(233,237,235,.72)';
     if (model.countyCount > 40 || (!model.counties.length && model.countyCount > 0)) { x.fillText(n0(model.countyCount) + (model.countyCount === 1 ? ' county' : ' counties'), kx0, ky); ky += 20; }
