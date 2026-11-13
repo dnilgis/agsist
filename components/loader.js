@@ -558,7 +558,7 @@
     if (noSponsor || window.__geoSponsor || GEO_SKIP.test(location.pathname)) return;
     window.__geoSponsor = true;
     var s = document.createElement('script');
-    s.src = BASE + '/components/geo-sponsor.js?v=4';
+    s.src = BASE + '/components/geo-sponsor.js?v=5';
     s.async = true;
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
@@ -576,12 +576,7 @@
         (sp.line || sp.headline ? '. ' + slotEsc(sp.line || sp.headline) : '') + ' <a href="' + slotEsc(href) + '" rel="sponsored noopener" target="_blank"' +
         (preview ? '' : ' data-sponsor-click="sitewide"') + '>Visit</a></span>' };
     }
-    var t = card && (card.tiers || []).filter(function (x) { return x.id === 'sitewide'; })[0];
-    var n = spots && spots.sitewide && spots.sitewide.engaged;
-    return { sold: false, html: '<span class="sw-in">Sponsor spot open. ' +
-      (typeof n === 'number' && n > 0 ? n.toLocaleString('en-US') + ' engaged visits in the last 28 days. ' : '') +
-      (t && t.price_month ? '$' + Number(t.price_month).toLocaleString('en-US') + ' a month, one business. ' : '') +
-      '<a href="' + BASE + '/sponsor#sitewide" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'sitewide_open\'})">See it</a></span>' };
+    return { sold: false, html: '' };
   }
   function sitewide(noSponsor, before, parent) {
     if (noSponsor || GEO_SKIP.test(location.pathname) || !parent || document.getElementById('ag-sw') || document.getElementById('site-header') ||
@@ -604,7 +599,12 @@
         line.className = 'sw-line sw-line--sold';
         if (!preview) line.setAttribute('data-sponsor-slot', 'sitewide');
       }
-      line.innerHTML = o.html;
+      if (o.sold) { line.innerHTML = o.html; return; }
+      var f = function () { try { line.innerHTML = window.AgsistSwOpen.html(r[2], BASE); } catch (e) {} };
+      if (window.AgsistSwOpen) return f();
+      var s = document.createElement('script');
+      s.src = BASE + '/components/sw-open.js?v=1'; s.async = true; s.onload = f;
+      document.head.appendChild(s);
     });
   }
   window.AgsistSitewide = { line: swLine };

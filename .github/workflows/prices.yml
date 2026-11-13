@@ -93,13 +93,14 @@ jobs:
 
           if ! git diff --quiet -- data/prices.json; then
             python scripts/seed_static.py --only markets || echo "::warning::markets re-bake skipped"
-            git add data/prices.json markets.html
+            git add data/prices.json markets.html index.html corn-futures-prices.html soybean-futures-prices.html wheat-futures-prices.html
             git commit -m "💹 Prices — $(date -u +'%Y-%m-%d %H:%M UTC')"
             pushed=0
             for i in 1 2 3 4 5; do
               git pull --rebase --autostash origin main || {
                 git checkout --theirs data/prices.json markets.html 2>/dev/null || true
-                git add data/prices.json markets.html
+                git checkout --ours index.html corn-futures-prices.html soybean-futures-prices.html wheat-futures-prices.html 2>/dev/null || true
+                git add data/prices.json markets.html index.html corn-futures-prices.html soybean-futures-prices.html wheat-futures-prices.html
                 git rebase --continue 2>/dev/null || git rebase --abort 2>/dev/null || true
               }
               if git push origin main; then pushed=1; echo "pushed (attempt $i)"; break; fi

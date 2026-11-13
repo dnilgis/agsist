@@ -144,22 +144,33 @@
     return !!(t && (t.opens_soon || []).indexOf(st) >= 0);
   }
   function num(n) { return Number(n).toLocaleString('en-US'); }
-  /* The open state spot: "<State> sponsor spot open. N engaged visits from <State> and M views
-     of <State> pages in the last 28 days. $X a month, one business. See it". A figure the
-     files do not hold is left out. */
+  var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  function dayTxt(s) { var p = String(s || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) : ''; }
+  /* The open state spot sells itself (decided Nov 13): what the buyer gets (the card on that state's pages and for its
+     readers), that STATE's own engaged visits over GA4's own window (data/sponsor-spots.json proof.states) with its
+     dates, and the sitewide totals labelled as all of AGSIST (Bing named on its figure). A state with no figure of its
+     own shows none; under SMALL visits the sitewide totals come first and the state's own figure follows, named as the
+     state's. One button to /sponsor with the state picked. No price. */
+  var SMALL = 100;
   function openHtml(st, card, spots) {
     var name = NAMES[st];
     if (!name) return '';
-    var e = (spots && spots.states && spots.states[st]) || {};
-    var r = typeof e.engaged === 'number' && e.engaged > 0, v = typeof e.views === 'number' && e.views > 0;
-    var nums = r && v ? num(e.engaged) + ' engaged visits from ' + name + ' and ' + num(e.views) + ' views of ' + name + ' pages in the last 28 days. '
-      : r ? num(e.engaged) + ' engaged visits from ' + name + ' in the last 28 days. '
-      : v ? num(e.views) + ' views of ' + name + ' pages in the last 28 days. ' : '';
-    var p = statePrice(card, st);
-    var soon = held(card, st);
-    return '<div class="ss-box ss-open"><p class="ss-tag">' + esc(name) + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '.</p>' +
-      '<p class="ss-txt">' + nums + (p && !soon ? '$' + num(p) + ' a month, one business.' : 'One business per state.') + '</p>' +
-      '<a class="ss-go" href="/sponsor?state=' + st + '#state">See it</a></div>';
+    var pr = (spots && spots.proof) || {}, ls = (spots && spots.lists) || {}, ps = pr.states || {};
+    var e = ps.engaged && ps.engaged[st];
+    var has = typeof e === 'number' && e > 0 && ps.start && ps.end && ps.days > 0;
+    var soon = held(card, st), nm = esc(name);
+    var gets = 'Your card on every ' + nm + ' page and for ' + nm + ' readers. ';
+    var stTxt = has ? nm + ' readers: <b>' + num(e) + '</b> engaged visits, ' + dayTxt(ps.start) + ' to ' + dayTxt(ps.end) + '. ' : '';
+    var site = [];
+    if (pr.engaged && pr.engaged.total > 0) site.push('<b>' + num(pr.engaged.total) + '</b> engaged visits');
+    if (pr.ai && pr.ai.total > 0) site.push('<b>' + num(pr.ai.total) + '</b> Bing AI citations');
+    var lst = ls.people > 0 ? '<b>' + num(ls.people) + '</b> on our email lists' : ls.daily > 0 ? '<b>' + num(ls.daily) + '</b> on the Daily email' : '';
+    if (lst && ls.asOf) lst += ' (' + dayTxt(ls.asOf) + ')';
+    var siteTxt = site.length ? 'All of AGSIST, 30 days: ' + site.join(', ') + (lst ? '; ' + lst : '') + '. ' : (lst ? 'All of AGSIST: ' + lst + '. ' : '');
+    var body = gets + (has && e >= SMALL ? stTxt + siteTxt : siteTxt + stTxt);
+    return '<div class="ss-box ss-open"><p class="ss-tag">' + nm + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '</p>' +
+      '<p class="ss-txt">' + body.replace(/\s+$/, '') + '</p>' +
+      '<a class="ss-go" href="/sponsor?state=' + st + '#state">Sponsor ' + nm + ' <span class="ss-go-x">on AGSIST</span></a></div>';
   }
   /* A state page's spot that cannot carry its state's card on this page (the page has its own paid sponsor, or the
      sitewide sponsor is on the same screen) keeps its room and says so, with no sponsor name: never an empty box,
@@ -248,7 +259,7 @@
   function spot() { return doc.querySelector('[data-state-spot]'); }
   function firstScreen(el) { try { return el.getBoundingClientRect().top < (root.innerHeight || doc.documentElement.clientHeight); } catch (x) { return false; } }
   function sitewideSold() { var l = doc.getElementById('ag-sw'); return !!(l && /sw-line--sold/.test(l.className) && shown(l)); }
-  var CSS = '/components/geo-sponsor.css?v=2';
+  var CSS = '/components/geo-sponsor.css?v=3';
   function css() { return need('link', 'href', CSS, function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }); }
   function hold(lower) {
     var sp = spot(), st = sp && sp.getAttribute('data-state-spot');
@@ -259,7 +270,7 @@
     var onSpot = surface === 'state-page' || surface === 'preview-state';
     Promise.all([
       need('link', 'href', '/components/sponsor-ad.css?v=3', function () { return !!doc.querySelector('link[href*="/components/sponsor-ad.css"]'); }),
-      need('link', 'href', '/components/geo-sponsor.css?v=2', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
+      need('link', 'href', '/components/geo-sponsor.css?v=3', function () { return !!doc.querySelector('link[href*="/components/geo-sponsor.css"]'); }),
       need('script', 'src', '/components/sponsor-ad.js?v=4', function () { return !!root.AgsistAd; })
     ]).then(function () {
       if (!root.AgsistAd || (!preview && soldOnPage())) { if (onSpot) hold(false); return; }
