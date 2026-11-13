@@ -11,7 +11,7 @@
  * tier page|daily: the Sitewide Sponsor travels as tier "daily", a State Sponsor as tier "page"
  * with the slot state-<xx> (scripts/sponsor_apply.py card_tier reads both back). Nothing
  * is published from here: the applicant confirms by email, every ad is checked by hand, and it
- * goes live within one business day. If the worker cannot take it, the form offers the same
+ * goes live the day the check or wire arrives (live on receipt). If the worker cannot take it, the form offers the same
  * details as an email instead of losing them.
  *
  * ?sponsor-preview=1 shows the sitewide spot as taken (a picture of a sold spot) and sends nothing.
