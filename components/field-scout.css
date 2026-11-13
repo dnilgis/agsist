@@ -682,11 +682,11 @@
 .rce-fs { max-width: 680px; margin: .35rem 0 0; container-type: inline-size; }
 .rce-fs .rce-art svg { width: 100%; height: auto; display: block; }
 @media (scripting: enabled) {
-  .rce-fs:not(.rce-off) .rce-art { aspect-ratio: 400 / 540; }
-  .rce-fs.rce-p:not(.rce-off) .rce-art { aspect-ratio: 400 / 447; }
+  .rce-fs:not(.rce-off) .rce-art { aspect-ratio: 400 / 596; }
+  .rce-fs.rce-p:not(.rce-off) .rce-art { aspect-ratio: 400 / 488; }
 }
 @container (min-width: 480px) {
-  .rce-fs:not(.rce-off) .rce-art { aspect-ratio: 640 / 628; }
-  .rce-fs.rce-p:not(.rce-off) .rce-art { aspect-ratio: 640 / 508; }
+  .rce-fs:not(.rce-off) .rce-art { aspect-ratio: 640 / 658; }
+  .rce-fs.rce-p:not(.rce-off) .rce-art { aspect-ratio: 640 / 538; }
 }
 .rce-fs.rce-off { display: none; }

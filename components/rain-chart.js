@@ -35,10 +35,10 @@
      Sizes are in design units; the page scales the drawing to its column. The key (this year, a normal year, the gap) always
      sits in a band above the plot, so it can never meet a line, and the plot gets the height a foot line would have taken (the
      page's own H1 already says the year and the place). The wide design adds quiet month ticks on the baseline. */
-  var PHONE = { W: 400, PADX: 16, bigMax: 40, bigMin: 28, SM: 20, plotH: 300, gapTop: 10, keyFS: 19, keyMin: 17, rowH: 29, sw: 30, axisFS: 18,
-    band: true, vars: true, fixed: true, name: 'phone' };
-  var WIDE = { W: 640, PADX: 24, bigMax: 54, bigMin: 34, SM: 26, plotH: 340, gapTop: 12, keyFS: 24, keyMin: 19, rowH: 38, sw: 40, axisFS: 20,
-    band: true, ticks: true, vars: true, fixed: true, name: 'wide' };
+  var PHONE = { W: 400, PADX: 2, bigMax: 42, bigMin: 28, SM: 25, plotH: 300, gapTop: 10, keyFS: 23, keyMin: 23, rowH: 34, sw: 30, axisFS: 23,
+    band: true, letters: true, vars: true, fixed: true, name: 'phone' };
+  var WIDE = { W: 640, PADX: 2, bigMax: 54, bigMin: 34, SM: 26, plotH: 340, gapTop: 12, keyFS: 24, keyMin: 20, rowH: 38, sw: 40, axisFS: 22,
+    band: true, letters: true, ticks: true, vars: true, fixed: true, name: 'wide' };
 
   var n2 = function (v) { return +(+v).toFixed(2); };
   var esc = function (s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); };
@@ -135,8 +135,9 @@
     var AF = spec.axisFS, ay = PB + AF + 8;
     texts.push({ t: m.startText, x: X0, y: ay, size: AF, w: 500, fill: 'mute', k: 'start' });
     if (m.endText) texts.push({ t: m.endText, x: X1 + 2, y: ay, size: AF, w: 500, fill: 'mute', anchor: 'end', k: 'end-date' });
-    var H = ay + 14;
-    var o = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" role="img"' + (m.svgAttrs || '') + '>' + (m.svgHead || '') + bands;
+    // the months' first letters, quiet, one row under the two ends of the axis (one text element: one x for each letter)
+    var ly = ay + AF + 6, H = ly + 14;
+    var o = '<svg viewBox="0 0 ' + W + ' ' + H + '" role="img"' + (m.svgAttrs || '') + '>' + (m.svgHead || '') + bands;
     o += '<path d="M' + X0 + ',' + PB + 'H' + (X1 + 2) + '"' + fp('stroke', 'ink') + ' stroke-width="1.5" fill="none"/>';
     if (spec.ticks && m.ticks && m.ticks.length) o += '<path d="' + m.ticks.map(function (v) { return 'M' + n2(xs(v)) + ',' + PB + 'v6'; }).join('') + '"' + fp('stroke', 'mute') + ' stroke-width="1.5" fill="none"/>';
     if (hasN) o += '<path d="' + pl(ptsN) + '" fill="none"' + fp('stroke', 'mute') + ' stroke-width="2.5" stroke-dasharray="8 6" stroke-linejoin="round"/>';
@@ -147,8 +148,9 @@
       var yy = bandTop + FS + 2 - Math.round(FS * 0.36) + ri * rowH, SW = spec.sw;
       if (r.sw === 'rain') o += '<path d="M' + X0 + ',' + n2(yy) + 'H' + (X0 + SW) + '"' + fp('stroke', 'rain') + ' stroke-width="4.5" stroke-linecap="round" fill="none"/>';
       else if (r.sw === 'usual') o += '<path d="M' + X0 + ',' + n2(yy) + 'H' + (X0 + SW) + '"' + fp('stroke', 'mute') + ' stroke-width="2.5" stroke-dasharray="8 6" fill="none"/>';
-      else o += '<rect x="' + X0 + '" y="' + n2(yy - 8) + '" width="' + SW + '" height="16"' + fp('fill', r.sw === 'wet' ? 'wet' : 'dry') + fp('stroke', r.sw === 'wet' ? 'wetEdge' : 'dryEdge') + ' stroke-width="1"/>';
+      else o += '<rect x="' + X0 + '" y="' + n2(yy - 8) + '" width="' + SW + '" height="16" class="rce-f-' + (r.sw === 'wet' ? 'wet rce-s-wetEdge' : 'dry rce-s-dryEdge') + '" stroke-width="1"/>';
     });
+    if (m.letters && m.letters.length) o += '<text x="' + m.letters.map(function (v) { return n2(xs(v) - AF * 0.3); }).join(' ') + '" y="' + ly + '"' + fp('fill', 'mute') + ' font-size="' + AF + '" fill-opacity=".7">' + 'JFMAMJJASOND'.slice(0, m.letters.length) + '</text>';
     texts.forEach(function (t) {
       if (!t.t) return;
       o += '<text x="' + n2(t.x) + '" y="' + n2(t.y) + '"' + fp('fill', t.fill) + ' font-size="' + t.size + '" font-weight="' + t.w + '"' + (t.anchor ? ' text-anchor="end"' : '') + '>' + esc(t.t) + '</text>';
@@ -352,15 +354,21 @@
      one point a week and the last day, the points the page's old chart drew). */
   function fromData(D) {
     var year = +D.year, total = +D.total, hasU = numOk(D.usual), usual = hasU ? +D.usual : null;
-    var pts = String(D.wk || '').split(';').filter(Boolean).map(function (s) { return s.split(',').map(Number); });
-    if (!pts.length || !isFinite(year) || !isFinite(total)) return null;
+    // data-wk: one point a week and the last day. The days are implied (the 7th of January and every 7 days on, the last point on the last day
+    // reported, data-days less one); the totals are hundredths, the first whole and the rest the week's change: "total,normal;change,change;..."
+    var parts = String(D.wk || '').split(';').filter(Boolean), pts = [], ct = 0, cu = 0, dn = +D.days;
+    parts.forEach(function (q, i) {
+      var v = q.split(',').map(Number); ct += v[0]; if (v.length > 1) cu += v[1];
+      pts.push(v.length > 1 ? [i < parts.length - 1 ? 6 + 7 * i : dn - 1, ct, cu] : [i < parts.length - 1 ? 6 + 7 * i : dn - 1, ct]);
+    });
+    if (!pts.length || !isFinite(year) || !isFinite(total) || !isFinite(dn)) return null;
     var days = +D.days, preview = days < (isLeap(year) ? 366 : 365), dp = numOk(D.dec) ? +D.dec : 2;
     var cum = pts.map(function (p) { return p[1] / 100; }), x = pts.map(function (p) { return p[0] + 1; });
     var ncum = hasU && pts.every(function (p) { return p.length > 2 && isFinite(p[2]); }) ? pts.map(function (p) { return p[2] / 100; }) : null;
     var T = commas(total.toFixed(dp)), pctOk = ncum && numOk(D.pct);
     var m = {
       year: year, place: D.place, cum: cum, ncum: ncum, x: x, xn: x[x.length - 1], usual: ncum ? usual : null,
-      yText: T + ' in ' + (preview ? 'so far' : 'this year'),
+      yText: T + ' in this year',
       startText: 'Jan 1', endText: fmtDate(D.asof)
     };
     // the headline says the page's own sentence: "150% of normal" (the page prints the percent that way), then "so far"
@@ -368,14 +376,21 @@
     else { m.headBig = T + ' inches'; m.headSmall = preview ? 'of rain so far' : 'of rain this year'; }
     if (ncum) {
       var gap = usual - total, U = commas(usual.toFixed(dp)), gAbs = Math.abs(gap), gmin = numOk(D.gapmin) ? +D.gapmin : 0.5;   // D.gapmin: the smallest difference the page itself prints (Field Scout: 0.25)
-      m.uText = U + ' in a normal year' + (preview ? ' by then' : +D.miss > 0 ? ', same days' : '');
-      // on the pages the gap row carries the page's own percent too: "15.88 in more, 150% of normal"
-      m.gapText = gAbs >= gmin ? commas(gAbs.toFixed(dp)) + ' in' + (gap > 0 ? ' short' : ' more') + (pctOk ? ', ' + (+D.pct) + '% of normal' : '') : '';
+      m.uText = preview ? U + ' in normal by ' + fmtDate(D.asof) : U + ' in a normal year' + (+D.miss > 0 ? ', same days' : '');
+      // each fact once: the headline says the percent, the rows say this year, the normal and the gap
+      m.gapText = gAbs >= gmin ? commas(gAbs.toFixed(dp)) + ' in' + (gap > 0 ? ' short' : ' more') : '';
     }
     m.total = T; m.pct = numOk(D.pct) ? +D.pct : null;
     // quiet month ticks on the baseline (the wide design): the first of each month after Jan 1 that is not within 12 days of the last day
     m.ticks = [];
     for (var mo = 1; mo < 12; mo++) { var dd = Math.round((Date.UTC(year, mo, 1) - Date.UTC(year, 0, 1)) / 864e5); if (dd < m.xn - 12) m.ticks.push(dd); }
+    // the month letters sit at the middle of each month so far (the last month's middle of the part gone by)
+    m.letters = [];
+    for (var lm = 0; lm < 12; lm++) {
+      var d0 = Math.round((Date.UTC(year, lm, 1) - Date.UTC(year, 0, 1)) / 864e5), d1 = Math.min(Math.round((Date.UTC(year, lm + 1, 1) - Date.UTC(year, 0, 1)) / 864e5), m.xn);
+      if (d0 >= m.xn - 6) break;
+      m.letters.push((d0 + d1) / 2);
+    }
     return m;
   }
 
@@ -406,8 +421,7 @@
   /* Widths are measured on a hidden SVG text in the page itself, so they are the widths of the font the browser really
      draws with. (A canvas measured Inter at 266 px where the page, whose font-display is optional, had drawn the same
      line in its fallback font at 278: the key then ran into the line beside it.) The measure sits in <body>, off screen
-     and invisible, never inside the chart: a county page keeps the chart display:none until its Rain Print has drawn or
-     given up, and text in a hidden box measures 0. It takes the chart's computed font, and every other inherited text
+     and invisible, never inside the chart: text in a hidden box (a chart drawn before its box is shown) measures 0. It takes the chart's computed font, and every other inherited text
      property that changes a width (the page sets tabular numerals), from the chart element itself. */
   var MPROPS = ['fontFamily', 'fontVariantNumeric', 'fontFeatureSettings', 'fontVariationSettings', 'fontStretch', 'fontKerning', 'letterSpacing', 'wordSpacing', 'textRendering', 'fontSynthesis'];
   var msvg = null;
@@ -430,6 +444,12 @@
     } };
   }
 
+  /* The chart's figures: its own data- fields over those of the county page's print figure it sits in (year, place, total, days, and the
+     normal when the print has it), which the page writes once. */
+  function dataOf(el) {
+    var fig = el.closest && el.closest('#rc-print');
+    return Object.assign({}, fig ? fig.dataset : {}, el.dataset);
+  }
   /* Which design: a county page's chart follows the screen (the stylesheet holds its room by the same media query). A chart in a card
      of its own (class rce-fs, the Field Scout season card, a 340 px side panel on a laptop) follows its own width, so a narrow panel
      on a wide screen gets the phone design and its larger labels. */
@@ -438,11 +458,14 @@
       var w = el.clientWidth;      // the same width the stylesheet's container query holds the room by
       if (w > 0) return w >= 480 ? 'wide' : 'phone';
     }
+    // a county page or Fast Facts wider than a phone: the chart is the print's placeholder in the print's box, phone-shaped like the inline
+    // drawing the page ships, so nothing is drawn twice at two shapes
+    if (el.closest && (el.closest('.rce-top') || el.closest('.rc-print-art'))) return 'phone';
     return wideNow() ? 'wide' : 'phone';
   }
   /* draw into el (a figure carrying the data- fields, with an empty .rce-art). Returns the drawing's result or null. */
   function draw(el) {
-    var D = el.dataset, box = el.querySelector('.rce-art');
+    var D = dataOf(el), box = el.querySelector('.rce-art');
     if (!box) return null;
     var m = fromData(D);
     if (!m) { el.classList.add('rce-off'); return null; }

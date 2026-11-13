@@ -737,7 +737,7 @@ window.__fsRead = function (FSX) {
     // browser from this card's own figures: the same total, normal and percent the two numbers above print, to a hundredth as the county page
     // prints them (so the key adds up: this year plus the gap is the normal), the difference worked out by the component.
     var last=cum[cum.length-1], q=function(v){ return esc(String(v)); }, mi=s.mi!=null?Math.round(s.mi)+' mi from this field':'';
-    var wk=cum.map(function(r){ return r[0]+','+Math.round(r[1]*100)+','+Math.round(r[2]*100); }).join(';');
+    var wk=(function(){ var pt=0, pu=0; return cum.map(function(r){ var t=Math.round(r[1]*100), u=Math.round(r[2]*100), o=(t-pt)+','+(u-pu); pt=t; pu=u; return o; }).join(';'); })();   // the days implied (Jan 7 and every 7), the first value whole and the rest the week's change: as the county pages write it
     return '<div class="fs-chart-title">Rain at the county gauge: Jan 1 to date</div>'+
       '<div class="rce rce-fs" data-year="'+(s.pYear||s.year)+'" data-place="'+q(s.station+' gauge')+'" data-where="'+q('at the '+s.station+' gauge'+(mi?', '+mi:''))+'" data-total="'+s.pNow.toFixed(2)+'" data-usual="'+s.pNorm.toFixed(2)+'"'+
         (s.pct!=null?' data-pct="'+Math.round(s.pct)+'"':'')+' data-gapmin="0.25" data-asof="'+q(s.thru)+'" data-days="'+(s.pDays||0)+'" data-miss="'+(s.pMiss||0)+'" data-noun="gauge" data-wk="'+wk+'"><div class="rce-art"></div></div>';

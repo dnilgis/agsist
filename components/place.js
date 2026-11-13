@@ -595,10 +595,18 @@
   /* The enhanced chart's data (Nov 13 2026; components/rain-chart.js draws it): the figure's own numbers as data- fields,
      the same fields, in the same order and with the same points, as the county page's chart (scripts/build_county_rain.py
      chart()). Nothing is worked out here. */
+  /* data-wk, as scripts/build_county_rain.py rce_wk writes it: the days implied, the first value whole and the rest the week's change, hundredths */
+  function wkOf(cum, hasUs) {
+    var pt = 0, pu = 0;
+    return cum.map(function (p) {
+      var t = Math.round(p[1] * 100), u = hasUs ? Math.round(p[2] * 100) : 0, o = hasUs ? (t - pt) + ',' + (u - pu) : String(t - pt);
+      pt = t; pu = u; return o;
+    }).join(';');
+  }
   function rainChartBox(f) {
     if (!f || !f.cum || !f.cum.length || f.total == null || !f.asOf) return '';
     var hasUs = f.usual != null && f.cum.every(function (p) { return p[2] != null; });
-    var wk = f.cum.map(function (p) { return p[0] + ',' + Math.round(p[1] * 100) + (hasUs ? ',' + Math.round(p[2] * 100) : ''); }).join(';');
+    var wk = wkOf(f.cum, hasUs);
     var q = function (v) { return String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); };
     return '<div class="rce' + (hasUs ? '' : ' rce-p') + '" data-year="' + f.year + '" data-place="' + q(f.place) + '" data-total="' + f.total.toFixed(2) + '"' +
       (hasUs ? ' data-usual="' + f.usual.toFixed(2) + '"' : '') + (hasUs && f.pct != null ? ' data-pct="' + f.pct + '"' : '') +
@@ -1216,7 +1224,7 @@
     factBid: factBid, factFutures: factFutures, factBasis: factBasis, factRain: factRain, factDrought: factDrought, factHail: factHail,
     factProgress: factProgress, factCol: factCol, factSales: factSales, factArcPlc: factArcPlc, factUsda: factUsda, factFert: factFert, factFuel: factFuel, usdaFert: usdaFert, USDA_DAYS: USDA_DAYS, factCustom: factCustom,
     factDaily: factDaily, fertSrc: fertSrc, srcName: srcName, centsFrac: centsFrac, deliveryWords: deliveryWords, stateLinks: stateLinks, NO_PAGE: NO_PAGE,
-    rainFigure: rainFigure, rainChart: rainChart, rainChartBox: rainChartBox, rankSoFar: rankSoFar, rankWordsRain: rankWordsRain, windowTotals: windowTotals, RANK_MIN: RANK_MIN,
+    rainFigure: rainFigure, rainChart: rainChart, rainChartBox: rainChartBox, wkOf: wkOf, rankSoFar: rankSoFar, rankWordsRain: rankWordsRain, windowTotals: windowTotals, RANK_MIN: RANK_MIN,
     ownPast: ownPast, unusualHere: unusualHere, ownWords: ownWords, OWN_MIN: OWN_MIN, OWN_MAX: OWN_MAX,
     basisNeighbors: basisNeighbors, basisHistMap: basisHistMap, basisHistory: basisHistory, basisMonth: basisMonth, basisStitch: basisStitch, basisSeries: basisSeries, median: median, EL: { NEAR: EL_NEAR, NB: EL_NB, NB_MIN: EL_NB_MIN, EACH: EL_EACH, HIST_DAYS: HIST_DAYS },
     milesFrom: milesFrom,
