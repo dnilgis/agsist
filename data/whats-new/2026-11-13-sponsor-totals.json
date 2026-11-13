@@ -2,7 +2,7 @@
  "id": "2026-11-13-sponsor-totals",
  "date": "2026-11-13",
  "title": "Sponsor numbers show totals",
- "line": "The sponsor page counts AI answer citations, visits from ChatGPT and other AI answers, and people on our email lists, each with its dates.",
+ "line": "The sponsor line and page show the total AI answer citations and the people on our email lists, each counted once, with their dates.",
  "link": "/sponsor",
  "rank": 3
 }
