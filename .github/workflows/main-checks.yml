@@ -16,7 +16,7 @@ on:
   schedule:
     - cron: '17 */2 * * *'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 04"]
     types: [completed]
   workflow_dispatch:
 
@@ -27,6 +27,7 @@ permissions:
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 04' || (contains(github.event.workflow_run.display_title, ' main-checks.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
