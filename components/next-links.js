@@ -40,18 +40,17 @@
   /* 2026-10-18 v2: a row of 2 or 3 cards,
      stacked on phones, lined up with the page's own content column (align()
      measures the block just above and matches its edges). */
-  var CSS = '.next-links{display:block;max-width:1100px;margin:2.5rem auto 1rem;padding:0;box-sizing:border-box}' +
-    '.next-links h2{font-size:.78rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .75rem;font-family:var(--font-body,inherit);font-weight:700}' +
-    '.next-links ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:.75rem}' +
-    '.next-links li{margin:0;display:flex;min-width:0}' +
-    '.next-links a.nx-c{flex:1;display:flex;flex-direction:column;gap:.25rem;min-height:44px;padding:.875rem 1rem;box-sizing:border-box;border:1px solid var(--border-2,rgba(132,160,168,.24));border-radius:8px;background:var(--surface,transparent);color:var(--text);text-decoration:none;transition:border-color .15s}' +
-    '.next-links a.nx-c:hover{border-color:var(--gold,#d4a23f)}' +
+  var CSS = '.next-links{display:block;max-width:1100px;margin:2.5rem auto 1rem;padding:0;box-sizing:border-box;line-height:1.7}' +
+    '.next-links h2{display:inline;font-size:1rem;color:var(--text);margin:0 .4rem 0 0;font-family:var(--font-body,inherit);font-weight:700}' +
+    '.next-links h2::after{content:":"}' +
+    '.next-links ul{display:inline;list-style:none;margin:0;padding:0}' +
+    '.next-links li{display:inline;margin:0}' +
+    '.next-links li+li::before{content:", ";color:var(--text-dim)}' +
+    '.next-links li:last-child::after{content:"."}' +
+    '.next-links a.nx-c{display:inline;color:var(--link,var(--gold));text-decoration:underline;text-underline-offset:2px}' +
     '.next-links a.nx-c:focus-visible{outline:2px solid var(--gold,#d4a23f);outline-offset:2px}' +
-    '.next-links .nx-t{color:var(--gold,#d4a23f);font-weight:600;line-height:1.35}' +
-    '.next-links .nx-t::after{content:" \\2192";font-weight:400}' +
-    '.next-links .nx-w{color:var(--text-dim);font-size:.85rem;line-height:1.45}' +
-    '.next-links .nx-ask{margin-top:1rem}' +
-    '@media (prefers-reduced-motion:reduce){.next-links a.nx-c{transition:none}}';
+    '.next-links .nx-w{display:none}' +
+    '.next-links .nx-ask{display:block;margin-top:1rem}';
 
   /* Match the edges of the nearest real block above the Next block (not a
      script, a hidden ribbon or a full-bleed band). None found: the CSS
@@ -86,7 +85,7 @@
     nav.className = 'next-links'; nav.setAttribute('aria-labelledby', 'nx-h');
     var h = '<h2 id="nx-h">Next</h2><ul>';
     e.links.forEach(function (l) {
-      h += '<li><a class="nx-c" href="' + esc(l.href) + '"><span class="nx-t">' + esc(l.text) + '</span>' + (l.why ? '<span class="nx-w">' + esc(l.why) + '</span>' : '') + '</a></li>';
+      h += '<li><a class="nx-c" href="' + esc(l.href) + '"' + (l.why ? ' title="' + esc(l.why) + '"' : '') + '><span class="nx-t">' + esc(l.text) + '</span>' + '</a></li>';
     });
     h += '</ul>';
     var ask = e.signup !== false && wantAsk();
