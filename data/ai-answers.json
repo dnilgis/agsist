@@ -12,23 +12,24 @@
    ],
    "question": "Where does the 2026 farm bill stand?",
    "status": "live",
-   "review_by": "2026-11-09",
+   "review_by": "2026-12-11",
    "text": [
     "It has not passed.",
     "The House passed H.R. 7567, the Farm, Food, and National Security Act of 2026, 224 to 200 on April 30, 2026, and the Senate received it May 19.",
-    "The Senate Agriculture Committee reported its own bill, S. 5526, the Agricultural Act of 2026, on September 24, 2026; in the Congress bill record of October 28, its last action is still a place on the Senate calendar, with no floor vote.",
+    "The Senate Agriculture Committee held its business meeting on its own bill, S. 5526, the Agricultural Act of 2026, on September 16; the bill was reported to the Senate, read twice and placed on the legislative calendar, Calendar No. 683, on September 24, 2026.",
+    "Being on the calendar does not schedule a vote. We found no next step on either committee's schedule or in Senate floor information as of November 12.",
     "Whether the two become one law, and when, is not decided."
    ],
    "sources": [
     {
-     "name": "H.R. 7567 bill status, all actions (GPO)",
-     "url": "https://www.govinfo.gov/bulkdata/BILLSTATUS/119/hr/BILLSTATUS-119hr7567.xml",
-     "read": "2026-10-28"
+     "name": "S. 5526 all actions (Congress.gov, checked against GPO records and the Senate Agriculture Committee)",
+     "url": "https://www.congress.gov/bill/119th-congress/senate-bill/5526",
+     "read": "2026-11-12"
     },
     {
-     "name": "S. 5526 bill status, all actions (GPO)",
-     "url": "https://www.govinfo.gov/bulkdata/BILLSTATUS/119/s/BILLSTATUS-119s5526.xml",
-     "read": "2026-10-28"
+     "name": "H.R. 7567 all actions (Congress.gov)",
+     "url": "https://www.congress.gov/bill/119th-congress/house-bill/7567",
+     "read": "2026-11-12"
     }
    ]
   },
