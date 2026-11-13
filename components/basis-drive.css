@@ -1,0 +1,31 @@
+/* components/basis-drive.css: the bids-by-distance box on a cash-bids town page (components/basis-drive.js).
+   Plain words for buttons (the one pressed is bold with a 2 px rule under it), square corners, the site's tokens. */
+.bd{margin:var(--sp-lg) 0;padding-top:var(--sp-md);border-top:1px solid var(--border)}
+.bd-h{margin:0 0 var(--sp-xs);font-size:var(--fs-lg);font-weight:800;line-height:var(--lh-snug);max-width:46em}
+.bd-take{margin:0 0 var(--sp-sm);font-size:var(--fs-sm);line-height:1.5;color:var(--text-dim);max-width:52em}
+.bd-ctls{display:flex;flex-wrap:wrap;gap:var(--sp-xs) var(--sp-lg);margin:0 0 var(--sp-sm)}
+.bd-crop,.bd-view{display:flex;gap:var(--sp-md)}
+.bd-ctls button{font:inherit;font-size:var(--fs-sm);color:var(--text-muted);background:none;border:0;border-bottom:2px solid transparent;border-radius:0;padding:0;min-height:44px;cursor:pointer}
+.bd-ctls button[aria-pressed="true"]{color:var(--text);font-weight:700;border-bottom-color:var(--gold)}
+.bd-ctls button:focus-visible,.bd-tools button:focus-visible,.bd-plot:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.bd:not(.bd-js) .bd-ctls,.bd:not(.bd-js) .bd-tools{visibility:hidden}
+.bd-axis,.bd-key{margin:0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.4}
+.bd-key{display:flex;align-items:center;gap:var(--sp-xs);margin:2px 0 var(--sp-xs)}
+.bd-key[hidden]{display:none}
+.bd-key svg{flex:none}.bd-kl{stroke:var(--text-muted);stroke-width:1.6}.bd-kd{fill:var(--text)}
+.bd-plot{height:400px;overflow:hidden}
+@media(min-width:640px){.bd-plot{height:460px}}
+.bd-plot svg{display:block;height:100%;width:auto;max-width:100%}
+.bd-svg text{fill:var(--text)}.bd-svg .m{fill:var(--text-muted)}.bd-svg .g{fill:var(--gold)}.bd-svg .b{font-weight:700}.bd-svg .B{font-size:1.08em}
+.bd-svg .z{fill:var(--bg2)}
+.bd-svg path{fill:none}.bd-svg .gr{stroke:var(--border)}.bd-svg .ev,.bd-svg .ax{stroke:var(--border-2)}.bd-svg .ev{stroke-width:1.4}
+.bd-svg .md{stroke:var(--text);stroke-width:1.2;stroke-dasharray:5 4}.bd-svg .wk{stroke:var(--text-muted);stroke-width:1.6}
+.bd-svg .dr,.bd-svg .di,.bd-svg .dg{stroke-linecap:round}.bd-svg .dr{stroke:var(--bg)}.bd-svg .di{stroke:var(--text)}.bd-svg .dg{stroke:var(--gold)}
+.bd-sel{fill:none;stroke:var(--text);stroke-width:2}
+.bd-read{margin:var(--sp-xs) 0 0;padding:var(--sp-xs) 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);font-size:var(--fs-sm);line-height:1.45;color:var(--text)}
+.bd-hint{color:var(--text-muted)}
+.bd-note{margin:var(--sp-sm) 0 0;font-size:var(--fs-xs);line-height:1.5;color:var(--text-dim);max-width:60em}
+.bd-tools{display:flex;gap:var(--sp-lg);margin:var(--sp-xs) 0 0}
+.bd-tools button{font:inherit;font-size:var(--fs-sm);font-weight:600;color:var(--gold);background:none;border:0;border-bottom:1px solid currentColor;border-radius:0;padding:0;min-height:44px;cursor:pointer}
+.bd-on-hist .bd-main{display:none}
+.bd-hist .cbt-hist{margin-top:0}

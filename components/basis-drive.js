@@ -28,8 +28,15 @@
   var CROPS = [['corn', 'Corn', 'corn'], ['soybeans', 'Soybeans', 'soybean']];
   var FONT = 'Inter, system-ui, -apple-system, Segoe UI, sans-serif';
   // the page's colours are the site's tokens; the picture's are the kit card's (components/ag-chart.js card)
-  var PAGE = { ink: 'var(--text)', mid: 'var(--text-muted)', grid: 'var(--border)', rule: 'var(--border-2)', zone: 'var(--bg2)', gold: 'var(--gold)', bg: 'var(--bg)' };
-  var CARD = { ink: '#e9edeb', mid: 'rgba(233,237,235,.62)', grid: 'rgba(132,160,168,.22)', rule: 'rgba(132,160,168,.4)', zone: '#14191b', gold: '#d4a23f', bg: '#0a0c0d' };
+  /* The picture is drawn with classes (components/basis-drive.css gives them the site's colour tokens), every
+     line of a kind in one path and every dot a round-capped point, so a town page carries it in a few KB. The saved
+     picture is an image with no page around it: it carries its own colours (the kit card's) in a style block. */
+  var CARD = { ink: '#e9edeb', mid: 'rgba(233,237,235,.66)', grid: 'rgba(132,160,168,.22)', rule: 'rgba(132,160,168,.45)', zone: '#14191b', gold: '#d4a23f', bg: '#0a0c0d' };
+  function cardStyle(c) {
+    return '<style>text{fill:' + c.ink + '}.m{fill:' + c.mid + '}.g{fill:' + c.gold + '}.b{font-weight:700}.B{font-size:1.08em}.z{fill:' + c.zone + '}' +
+      '.gr,.ev,.ax,.md,.wk,.dr,.di,.dg,path{fill:none}.gr{stroke:' + c.grid + '}.ev,.ax{stroke:' + c.rule + '}.ev{stroke-width:1.4}.md{stroke:' + c.ink + ';stroke-width:1.2;stroke-dasharray:5 4}' +
+      '.wk{stroke:' + c.mid + ';stroke-width:1.6}.dr,.di,.dg{stroke-linecap:round}.dr{stroke:' + c.bg + '}.di{stroke:' + c.ink + '}.dg{stroke:' + c.gold + '}</style>';
+  }
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function hy(s) { return String(s).replace(/(\w)-(?=\w)/g, '$1‐'); }
@@ -170,9 +177,9 @@
   /* the words under the chart: only what this view draws, then the source */
   function note(p, cfg) {
     var s = [], yr = String(cfg.date || '').slice(0, 4), st = cfg.stName || cfg.st;
-    if (p.all.length) s.push('Each dot is one posted ' + p.adj + ' bid for ' + (p.ref ? dmFull(p.ref.dm, yr) : '') + ' delivery against ' + (conFull(p.ref.vs) || p.ref.vs) + ' futures. Basis is the cash bid minus the futures price.');
-    if (p.all.some(function (r) { return r.w != null; }) && p.prev) s.push('The line under a dot runs from its basis a week before, on ' + day(p.prev) + '.');
-    if (p.out.length) s.push('Miles are straight-line from ' + (cfg.from || 'the town') + ' to each elevator’s map pin. Dots that would touch are set side by side; tap one for its own miles.');
+    if (p.all.length) s.push('Each dot is one posted ' + p.adj + ' bid: cash minus ' + (conFull(p.ref.vs) || p.ref.vs) + ' futures.');
+    if (p.all.some(function (r) { return r.w != null; }) && p.prev) s.push('Its line runs from its basis on ' + day(p.prev) + '.');
+    if (p.out.length) s.push('Miles are straight-line from ' + (cfg.from || 'the town') + ' to each elevator’s pin; dots that would touch sit side by side.');
     if (p.med) s.push(st + ' median: ' + word(cents(p.med.median)) + ', ' + plural(p.med.n, p.adj + ' bid') + ' against ' + conMon(p.ref.vs) + ' futures.' + (p.med.usda ? ' ' + p.med.usda : ''));
     if (p.other.length) {
       var nm = p.other.map(function (r) { return r.name; }), k = nm.length;
@@ -186,10 +193,10 @@
   /* ---------------------------------------------------------------- the picture */
   function widthOf(s, fs, bold) { return String(s).length * fs * (bold ? 0.6 : 0.55); }
   function hit(a, b) { return a.x0 < b.x1 && b.x0 < a.x1 && a.y0 < b.y1 && b.y0 < a.y1; }
-  /* -> { svg, dots: [{x, y, r, i}], H } at width W. opt: { pal, fs, card, h, sel } */
+  /* -> { svg, dots: [{x, y, r, i}], H, W } at width W. opt: { fs, card, h } */
   function svg(p, cfg, W, opt) {
     opt = opt || {};
-    var pal = opt.pal || PAGE, phone = W < 640, fs = opt.fs || (phone ? 12 : 13), fb = fs + 1, H = opt.h || (phone ? 400 : 460);
+    var phone = W < 640, fs = opt.fs || (phone ? 12 : 13), fb = fs + 1, H = opt.h || (phone ? 400 : 460);
     var T = p.town, O = p.out, st = cfg.stName || cfg.st, o = [], obst = [], labs = [];
     var vals = [];
     p.all.forEach(function (r) { vals.push(r.c); if (r.w != null) vals.push(Math.round((r.c - r.w) * 10) / 10); });
@@ -209,15 +216,16 @@
     var GX = T.length ? (phone ? 12 : 28) : 0;
     var x0 = L + ZA + GX, x1 = W - R - (phone ? 10 : 14), Xm = function (m) { return x0 + Math.max(0, Math.min(NEAR_MI, m)) / NEAR_MI * (x1 - x0); };
     var add = function (b) { obst.push(b); };
-    var t = function (x, y, s, cls, anchor, extra) {
-      var col = /gold/.test(cls) ? pal.gold : /mid/.test(cls) ? pal.mid : pal.ink, b = /(^| )b( |$)/.test(cls);
-      return '<text x="' + f1(x) + '" y="' + f1(y) + '"' + (anchor ? ' text-anchor="' + anchor + '"' : '') + ' style="fill:' + col + ';font-size:' + (/big/.test(cls) ? fb : fs) + 'px' + (b ? ';font-weight:700' : '') + (extra || '') + '">' + esc(hy(s)) + '</text>';
+    var t = function (x, y, s, cls, anchor) {
+      var c = [/gold/.test(cls) ? 'g' : /mid/.test(cls) ? 'm' : '', /(^| )b( |$)/.test(cls) ? 'b' : '', /big/.test(cls) ? 'B' : ''].filter(Boolean).join(' ');
+      return '<text x="' + f1(x) + '" y="' + f1(y) + '"' + (anchor === 'end' ? ' text-anchor="end"' : anchor === 'middle' ? ' text-anchor="middle"' : '') + (c ? ' class="' + c + '"' : '') + '>' + esc(hy(s)) + '</text>';
     };
+    var P = { gr: [], ev: [], ax: [], md: [], wk: [], dr: [], di: [], dg: [] }, H0 = function (y, a, b) { return 'M' + f1(a) + ' ' + f1(y) + 'H' + f1(b); }, V0 = function (x, a, b) { return 'M' + f1(x) + ' ' + f1(a) + 'V' + f1(b); };
     // the in-town zone, the grid, the axis words
-    if (T.length) o.push('<rect x="' + L + '" y="' + y0 + '" width="' + f1(ZA) + '" height="' + f1(y1 - y0) + '" style="fill:' + pal.zone + '"/>');
+    if (T.length) o.push('<rect class="z" x="' + L + '" y="' + y0 + '" width="' + f1(ZA) + '" height="' + f1(y1 - y0) + '"/>');
     ticks.forEach(function (c) {
       var y = Y(c), ev = c === 0;
-      o.push('<line x1="' + L + '" x2="' + f1(phone ? x1 : W - R) + '" y1="' + f1(y) + '" y2="' + f1(y) + '" style="stroke:' + (ev ? pal.rule : pal.grid) + ';stroke-width:' + (ev ? 1.4 : 1) + '"/>');
+      P[ev ? 'ev' : 'gr'].push(H0(y, L, phone ? x1 : W - R));
       o.push(t(L - 8, y + fs * 0.36, word(c), ev ? 'b' : 'mid', 'end'));
     });
     var townHead = 'In ' + cfg.town;
@@ -235,7 +243,7 @@
     }
     // the state's middle bid on the same futures month: one dashed rule
     var ym = p.med ? Y(cents(p.med.median)) : null;
-    if (p.med) o.push('<line x1="' + L + '" x2="' + f1(phone ? x1 : W - R) + '" y1="' + f1(ym) + '" y2="' + f1(ym) + '" style="stroke:' + pal.ink + ';stroke-width:1.2;stroke-dasharray:5 4"/>');
+    if (p.med) P.md.push(H0(ym, L, phone ? x1 : W - R));
     // the dots: in town side by side, best first; outside by miles, nudged apart where they would touch
     var dots = [], best = bestOf(p.all), bestC = best ? best.c : null;
     var stT = T.length > 1 ? Math.min(step, (ZA - 2 * pad - 2 * r0) / (T.length - 1)) : step, rT = Math.min(r0, Math.max(1.6, (stT - 0.8) / 2));
@@ -250,11 +258,11 @@
     if (over > 0) placed.forEach(function (q) { if (q.x > x1 - 60) q.x -= over; });
     dots.forEach(function (q) {
       var prev = q.d.w == null ? null : Math.round((q.d.c - q.d.w) * 10) / 10;
-      if (prev != null && prev !== q.d.c) { o.push('<line x1="' + f1(q.x) + '" x2="' + f1(q.x) + '" y1="' + f1(Y(prev)) + '" y2="' + f1(q.y) + '" style="stroke:' + pal.mid + ';stroke-width:' + (phone ? 1.4 : 1.6) + '"/>'); add({ x0: q.x - 1.5, x1: q.x + 1.5, y0: Math.min(Y(prev), q.y), y1: Math.max(Y(prev), q.y) }); }
+      if (prev != null && prev !== q.d.c) { P.wk.push(V0(q.x, Y(prev), q.y)); add({ x0: q.x - 1.5, x1: q.x + 1.5, y0: Math.min(Y(prev), q.y), y1: Math.max(Y(prev), q.y) }); }
     });
     dots.forEach(function (q, i) {
       q.i = i; q.gold = q.d.c === bestC;
-      o.push('<circle class="bd-d" data-i="' + i + '" cx="' + f1(q.x) + '" cy="' + f1(q.y) + '" r="' + f1(q.r) + '" style="fill:' + (q.gold ? pal.gold : pal.ink) + ';stroke:' + pal.bg + ';stroke-width:1.5"/>');
+      var pt = 'M' + f1(q.x) + ' ' + f1(q.y) + 'h0'; P.dr.push(pt); P[q.gold ? 'dg' : 'di'].push(pt);
       add({ x0: q.x - q.r - 1, x1: q.x + q.r + 1, y0: q.y - q.r - 1, y1: q.y + q.r + 1 });
     });
     // the words on the data: each tries its places in order and is left off (the readout has it) when none is free
@@ -337,10 +345,10 @@
       if (mv) place([mv.d.town + ': ' + word(mv.d.c) + ',', (mv.d.w > 0 ? 'up ' : 'down ') + num(mv.d.w) + ' in a week'], near(mv, 0, 2).slice(2).concat(near(mv, 0, 2).slice(0, 2)), ['', '']);
     }
     // the miles axis, and the count under the town zone
-    o.push('<line x1="' + f1(x0) + '" x2="' + f1(x1) + '" y1="' + f1(y1) + '" y2="' + f1(y1) + '" style="stroke:' + pal.rule + '"/>');
+    P.ax.push(H0(y1, x0, x1));
     [0, 10, 20, 30, 40].forEach(function (m) {
       var x = Xm(m);
-      o.push('<line x1="' + f1(x) + '" x2="' + f1(x) + '" y1="' + f1(y1) + '" y2="' + f1(y1 + 5) + '" style="stroke:' + pal.rule + '"/>');
+      P.ax.push(V0(x, y1, y1 + 5));
       o.push(t(x, y1 + fs + 6, String(m), 'mid', 'middle'));
     });
     var axt = 'Miles from ' + cfg.town + ', straight line';
@@ -348,7 +356,25 @@
     o.push(t(x1 + (phone ? 4 : 6), y1 + fs * 2.6 + 4, axt, 'mid', 'end'));
     if (T.length) o.push(t(L + ZA / 2, y1 + fs + 6, T.length === 1 ? '1 bid' : T.length + ' bids', 'mid', 'middle'));
     var aria = p.Crop + ' basis by distance from ' + cfg.town + ': ' + p.all.length + ' bids within ' + NEAR_MI + ' miles' + (p.med ? ', with the ' + st + ' median' : '') + '.';
-    var s = '<svg class="bd-svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(aria) + '" style="font-family:' + (opt.card ? FONT : 'inherit') + '">' + o.join('') + '</svg>';
+    // the lines first, then the dots (a ring of the page colour round each, so dots side by side stay apart), then the words
+    var rIn = dots.filter(function (q) { return q.d.inTown; }), ro = rIn.length ? rIn[0].r : r0, wd = function (r) { return f1(2 * r); };
+    var dp = function (cls, pts) { return pts.length ? '<path class="' + cls + '" d="' + pts.join('') + '"/>' : ''; };
+    var dpts = function (k, inTown) { return dots.filter(function (q) { return q.d.inTown === inTown && (k === 'dg') === q.gold; }).map(function (q) { return 'M' + f1(q.x) + ' ' + f1(q.y) + 'h0'; }); };
+    var lines = ['gr', 'ev', 'ax', 'md', 'wk'].map(function (k) { return dp(k, P[k]); }).join('');
+    // each set of dots is one path, drawn twice: a ring of the page colour, then the dot (<use> of the same points)
+    var uid = 'bd' + (opt.id || 'p'), defs = [], dd = '';
+    [true, false].forEach(function (inT, a) {
+      var r = inT ? ro : r0;
+      ['di', 'dg'].forEach(function (k, b) {
+        var pts = dpts(k, inT); if (!pts.length) return;
+        var id = uid + a + b; defs.push('<path id="' + id + '" d="' + pts.join('') + '"/>');
+        dd += '<use href="#' + id + '" class="dr" style="stroke-width:' + f1(2 * r + 3) + '"/><use href="#' + id + '" class="' + k + '" style="stroke-width:' + wd(r) + '"/>';
+      });
+    });
+    dd = (defs.length ? '<defs>' + defs.join('') + '</defs>' : '') + dd;
+    var zone = o.length && /^<rect/.test(o[0]) ? o.shift() : '';
+    var s = '<svg class="bd-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(aria) + '" style="font-size:' + fs + 'px' + (opt.card ? ';font-family:' + FONT : '') + '">' +
+      (opt.card ? cardStyle(CARD) : '') + zone + lines + dd + o.join('') + '</svg>';
     return { svg: s, dots: dots.map(function (q) { return { x: q.x, y: q.y, r: q.r, i: q.i }; }), H: H, W: W, order: dots.map(function (q) { return q.d; }) };
   }
 
@@ -360,9 +386,26 @@
     return { head: st.head, take: st.take, kicker: cfg.town + ', ' + (cfg.st || '') + ' · ' + p.adj + ' basis by distance', source: 'Posted elevator bids, read by AGSIST' + (readDays(p) ? ' ' + readDays(p) : '') + (p.med && p.med.usdaShort ? '. ' + p.med.usdaShort : '') + '. No freight cost taken off.' };
   }
 
+  /* The page's box carries only what is its own (st, town, path, ll, from, states, crops, hist). The state's name,
+     its middle bid per crop (the headline contract, n, USDA's line) and the day come from data/basis-states.json and
+     the state table, the files every town page in the state shares. -> cfg with stName, date and med */
+  function prep(cfg, docs, bs) {
+    var out = {}, k; for (k in cfg) out[k] = cfg[k];
+    var srec = ((bs || {}).states || {})[cfg.st] || {}, doc = (docs || {})[cfg.st] || {};
+    out.stName = srec.name || cfg.st; out.date = doc.generated || (bs || {}).generated || '';
+    out.med = {};
+    CROPS.forEach(function (c) {
+      var h = (srec.crops || {})[c[0]];
+      if (!h || h.median == null || !h.label) return;
+      var u = h.usda, m = { label: h.label, median: h.median, n: h.n };
+      if (u && u.line) { m.usda = u.line; if (!u.partial && typeof u.basis === 'number') m.usdaShort = 'USDA average: ' + word(u.basis); }
+      out.med[c[0]] = m;
+    });
+    return out;
+  }
   /* the builder's entry: everything the page prints for one crop, the picture at phone width */
-  function render(docs, cfg, crop, W) {
-    var p = pick(docs, cfg, crop), st = story(p, cfg), pic = svg(p, cfg, W || 358, {}), k = firstDot(p), rd = readout(p, p.all[k]);
+  function render(docs, cfg0, crop, W, bs) {
+    var cfg = prep(cfg0, docs, bs), p = pick(docs, cfg, crop), st = story(p, cfg), pic = svg(p, cfg, W || 358, {}), k = firstDot(p), rd = readout(p, p.all[k]);
     return { crop: crop, n: p.all.length, inTown: p.town.length, out: p.out.length, head: st.head, take: st.take, axis: axisText(p),
              prev: p.prev ? day(p.prev) : '', svg: pic.svg, read: rd, note: note(p, cfg), first: k };
   }
@@ -386,7 +429,7 @@
     x.font = '400 ' + tk.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.86)';
     tk.lines.forEach(function (l, i) { x.fillText(hy(l), 48, y + i * tk.size * 1.25); }); y += (tk.lines.length - 1) * tk.size * 1.25 + 10;
     var src = fit(meas('400'), ct2.source, W - 96, [17, 16, 15], 1), url = String(cfg.url || '').replace(/^https?:\/\//, '');
-    var ph = Math.max(220, Math.round(H - y - 70)), pic = svg(p, cfg, W - 48, { pal: CARD, card: true, fs: 16, h: ph });
+    var ph = Math.max(220, Math.round(H - y - 70)), pic = svg(p, cfg, W - 48, { card: true, fs: 16, h: ph });
     var img = new root.Image();
     img.onload = function () {
       x.drawImage(img, 24, y);
@@ -395,7 +438,7 @@
       c.toBlob(function (b) { done(b); }, 'image/png');
     };
     img.onerror = function () { done(null); };
-    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(pic.svg.replace('<svg ', '<svg xmlns="http://www.w3.org/2000/svg" '));
+    img.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(pic.svg);
   }
 
   function mount(box) {
@@ -403,6 +446,7 @@
     var q = function (s) { return box.querySelector(s); };
     var plot = q('.bd-plot'), read = q('.bd-read'), head = q('.bd-h'), take = q('.bd-take'), axis = q('.bd-axis'), noteEl = q('.bd-note'), keyPrev = q('.bd-kp');
     var urlC = ''; try { urlC = new URLSearchParams(root.location.search).get('crop') || ''; } catch (e) {}
+    if (!cfg.url) { var cn = root.document.querySelector('link[rel="canonical"]'); cfg.url = cn ? cn.href : String(root.location.href).split(/[?#]/)[0]; }
     var docs = null, cur = cfg.crops && cfg.crops.indexOf(urlC) >= 0 ? urlC : (cfg.crops || ['corn'])[0], p = null, pic = null, sel = -1, lastW = 0;
     var say = function (k) {
       var rd = readout(p, p.all[k]);
@@ -476,12 +520,14 @@
       });
     }
     var sts = cfg.states && cfg.states.length ? cfg.states : [cfg.st];
+    var bsDoc = null;
     var load = function () {
-      Promise.all(sts.map(function (s) { return root.fetch('/data/state-basis/' + s + '.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }))
+      root.fetch('/data/basis-states.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (b) { bsDoc = b; return Promise.all(sts.map(function (s) { return root.fetch('/data/state-basis/' + s + '.json').then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }); }))
+        ; })
         .then(function (ds) {
           var o = {}; ds.forEach(function (d, i) { if (d && d.cols) o[sts[i]] = d; });
           if (!o[cfg.st]) return;   // the printed picture stays: it was drawn from the same file when the page was built
-          docs = o; box.classList.add('bd-js'); draw(true);
+          docs = o; cfg = prep(cfg, o, bsDoc); box.classList.add('bd-js'); draw(true);
           if (root.ResizeObserver) new root.ResizeObserver(function () { draw(); }).observe(plot); else root.addEventListener('resize', function () { draw(); });
         });
     };
@@ -490,7 +536,7 @@
   }
   function init() { [].slice.call(root.document.querySelectorAll('[data-drive]')).forEach(mount); }
 
-  var api = { readDays: readDays, pick: pick, story: story, svg: svg, readout: readout, note: note, render: render, cardText: cardText, word: word, miles: miles, cents: cents, firstDot: firstDot, axisText: axisText, NEAR_MI: NEAR_MI };
+  var api = { prep: prep, readDays: readDays, pick: pick, story: story, svg: svg, readout: readout, note: note, render: render, cardText: cardText, word: word, miles: miles, cents: cents, firstDot: firstDot, axisText: axisText, NEAR_MI: NEAR_MI };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else {
     root.BasisDrive = api;
