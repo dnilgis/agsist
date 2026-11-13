@@ -813,7 +813,7 @@ function updateWidgetPreviews(tempF, humid, wind, pop) {
   var u = calcUrea(tempF, humid, wind, pop);
   var uPalette = {frozen:'91,163,224', low:'62,207,110', moderate:'230,176,66', high:'240,145,58', extreme:'240,96,96'};
   var uLbls    = {frozen:'Below freezing now: low risk', low:'Low Risk', moderate:'Moderate Risk', high:'High Risk', extreme:'Extreme Risk'};
-  var uRecs    = {frozen:'Air below 32\u00B0F right now; risk rises as it warms', low:'Favorable for application', moderate:'Consider NBPT stabilizer', high:'Use stabilizer or wait', extreme:'Do not apply without stabilizer'};
+  var uRecs    = {frozen:'Air below 32\u00B0F right now; risk rises as it warms', low:'Favorable for application', moderate:'Wait, or use a urease inhibitor (NBPT)', high:'Wait, work it in, or use NBPT', extreme:'Do not surface-apply today'};
   var uColors  = {frozen:'var(--blue)', low:'var(--green)', moderate:'var(--gold)', high:'var(--orange)', extreme:'var(--red)'};
   var uSc = document.getElementById('wsp-urea-score');
   var uBd = document.getElementById('wsp-urea-badge');

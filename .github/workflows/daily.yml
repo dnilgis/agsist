@@ -39,7 +39,7 @@ on:
 jobs:
   print-of-day:
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.test_to_sig == true && inputs.send_email == true && inputs.format != 'current' }}
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # Playwright 1.56.1 cannot install its browser deps on ubuntu-latest (26.04)
     timeout-minutes: 25
     permissions:
       contents: write
@@ -104,6 +104,7 @@ jobs:
     needs: [print-of-day]
     if: ${{ !cancelled() && github.event_name == 'workflow_dispatch' && inputs.test_to_sig == true }}
     runs-on: ubuntu-latest
+    timeout-minutes: 180
     permissions:
       contents: read
     steps:
@@ -163,6 +164,7 @@ jobs:
   gate:
     if: ${{ inputs.test_to_sig != true }}
     runs-on: ubuntu-latest
+    timeout-minutes: 120
     permissions:
       contents: read
     outputs:
@@ -275,7 +277,8 @@ jobs:
   generate:
     needs: gate
     if: needs.gate.outputs.skip != '1'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04  # the print of the day installs Playwright; ubuntu-latest (26.04) has no deps for 1.56.1
+    timeout-minutes: 120
     permissions:
       contents: write
       actions: read

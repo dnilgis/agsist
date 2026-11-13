@@ -5,7 +5,7 @@ on:
   schedule:
     - cron: "*/5 16-17 9-12 * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Fetch Grain Bids", "Tick 03"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -21,12 +21,14 @@ permissions:
   contents: write
 
 concurrency:
-  group: wasde-watch
+  group: ${{ ((github.event.workflow_run.name == 'Fetch Grain Bids' && vars.CLOCK_LIVE == '1') || (github.event.workflow_run.name == 'Tick 03' && !(contains(github.event.workflow_run.display_title, ' wasde-watch.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))) && format('wasde-watch-{0}', github.run_id) || 'wasde-watch' }}
   cancel-in-progress: false
 
 jobs:
   gate:
+    if: (github.event.workflow_run.name != 'Fetch Grain Bids' || vars.CLOCK_LIVE != '1') && (github.event.workflow_run.name != 'Tick 03' || (contains(github.event.workflow_run.display_title, ' wasde-watch.yml ') && github.event.workflow_run.event == 'workflow_dispatch' && github.event.workflow_run.repository.full_name == github.repository))
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       go: ${{ steps.g.outputs.go }}
     steps:
