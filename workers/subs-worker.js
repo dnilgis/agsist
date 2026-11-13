@@ -5,6 +5,13 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.68 (2026-11-13): SPONSORS PAY BY CHECK OR BANK WIRE. The sponsor confirm pages no longer
+ *   promise a free first month (no free months, Nov 13): they say the ad is paid by check or bank
+ *   wire from the invoice we email at booking, and that the ad goes live the day payment arrives
+ *   (live on receipt). GET /count also answers people: the addresses on each list on the day it is
+ *   asked (the Daily, hail alerts, a watch with a confirmed entry, a notice topic), each once, as one
+ *   number; a watch address still waiting to confirm is not counted, and no address is sent.
+ *   No new binding or secret. Every other route answers as before.
  * v5.67 (2026-11-10): REPORT-DAY RESULT. POST /report-live takes the graded result of a USDA
  *   report from the report-day job (.github/workflows/report-day-live.yml, scripts/report_live.py)
  *   in one fixed shape (rows of USDA's figure against the trade, counts, the WASDE balance lines,
@@ -2723,6 +2730,26 @@ async function noticeCounts(env) {
   return { notice: keys.length, notices: by, lists };
 }
 
+// v5.68: unique addresses across every list, for the one "on our lists" figure. Counts only.
+// The Daily (sub:), hail alerts (alert:) and notice topics (note:) hold only addresses that are on the
+// list; a watch (watch:, ewatch:, pwatch:) also holds addresses still waiting to confirm (pend only), so
+// a watch address counts only when its record has a confirmed entry in w.
+const PEOPLE_ON = ["sub:", "alert:", "note:"];
+const PEOPLE_WATCH = ["watch:", "ewatch:", "pwatch:"];
+async function peopleCount(env) {
+  const seen = new Set();
+  const add = (k, pre) => { const e = k.slice(pre.length).trim().toLowerCase(); if (e.includes("@")) seen.add(e); };
+  for (const pre of PEOPLE_ON) for (const k of await listKeys(env, pre)) add(k, pre);
+  for (const pre of PEOPLE_WATCH) {
+    for (const k of await listKeys(env, pre)) {
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (r && r.w && typeof r.w === "object" && Object.keys(r.w).length) add(k, pre);
+    }
+  }
+  return seen.size;
+}
+
 async function formCounts(env) {
   const out = {};
   for (const kind of Object.keys(FORM_KINDS)) out[kind] = (await listKeys(env, "form:" + kind + ":")).length;
@@ -3972,6 +3999,9 @@ async function handle(req, env) {
         ewatch: (await listKeys(env, "ewatch:")).length,
         pwatch: (await listKeys(env, "pwatch:")).length,
         watch: (await listKeys(env, "watch:")).length,
+        // v5.68: people on any list, each address once (the Daily, hail alerts, elevator watch, price
+        // targets, county watch and every notice topic). A count only; no address leaves the Worker.
+        people: await peopleCount(env),
         by_source: bySource,
         // v5.13: whether UNSUB_SECRET is set on this Worker. A boolean, never the value.
         secret: typeof env.UNSUB_SECRET === "string" && env.UNSUB_SECRET.length > 0,
@@ -4517,12 +4547,12 @@ async function handle(req, env) {
         if (req.method !== "POST")
           return htmlPage("Confirm your AGSIST ad: " + what,
             "<form method=post><button style=\"font-size:16px;padding:10px 18px\">Yes, send it to Sig</button></form>" +
-            "<p>Your first month is free. Nothing runs until Sig has looked at it.</p>");
+            "<p>Nothing runs until we have looked at it. You pay by check or bank wire: the invoice we email has the mailing address and wire instructions. Your ad goes live the day your payment arrives.</p>");
         r.status = "confirmed"; r.cts = Date.now();
         await env.SUBS.put("sapp:" + id, JSON.stringify(r));
         return htmlPage("Thanks. Sig has your ad.",
-          "<p>He reviews every ad himself, usually the same day, and you'll get an email when it's live. " +
-          "Your free month starts the day it runs.</p>");
+          "<p>He reviews every ad himself, usually the same day, and emails you the invoice. Pay it by check or bank wire. " +
+          "Your ad goes live the day your payment arrives, and you'll get an email when it's live.</p>");
       }
       const ok = SAPP_DECISIONS[d].from.includes(r.status);
       if (!ok) return htmlPage("Nothing to do: this application is " + escHtml(r.status) + ".");

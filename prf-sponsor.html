@@ -88,6 +88,7 @@
     fieldset.cl-f{border:0;margin:0;padding:0}
     .ps-states{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0 1rem}
     .ps-states label{display:flex;align-items:center;gap:.5rem;min-height:40px;font-family:var(--font-body);font-size:.95rem;letter-spacing:0;text-transform:none;color:var(--text);font-weight:400;cursor:pointer}
+    .ps-states .ps-n{margin-left:auto;font-size:.78rem;color:var(--text-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
     .ps-states input{width:20px;height:20px;min-height:0;flex:none;margin:0;accent-color:var(--gold)}
     .ps-states[hidden]{display:none}
     .ps-picked{margin:0;font-size:.95rem;color:var(--text)}
@@ -219,6 +220,7 @@
           </div>
           <fieldset class="cl-f full" aria-describedby="ps-states-e">
             <legend>States you want</legend>
+            <p class="ps-where" id="ps-proof" hidden></p>
             <p class="ps-picked" id="ps-picked" hidden></p>
             <button type="button" class="cl-btn2 ps-more" id="ps-more" aria-expanded="false" aria-controls="ps-states-list" hidden>Add more states</button>
             <div class="ps-states" id="ps-states-list">
@@ -347,6 +349,27 @@
   <script src="/components/prf-sponsor.js?v=5"></script>
   <script src="/components/form-post.js?v=9"></script>
   <script src="/components/prf-sponsor-page.js?v=3"></script>
+  <script>
+  /* Each state's own engaged visits (readers in that state) over GA4's own window, updated each day, from
+     data/sponsor-spots.json (Nov 13, 2026). State-level only; a state without its own figure shows none. */
+  (function () {
+    var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    function d(x) { var p = String(x || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) + ', ' + p[0] : ''; }
+    fetch('/data/sponsor-spots.json', { cache: 'no-cache' }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; }).then(function (j) {
+      var ps = j && j.proof && j.proof.states;
+      if (!ps || !ps.engaged || !ps.start || !ps.end) return;
+      var any = false;
+      [].forEach.call(document.querySelectorAll('#ps-states-list input[name=states]'), function (i) {
+        var e = ps.engaged[i.value];
+        if (typeof e !== 'number' || e <= 0 || i.parentNode.querySelector('.ps-n')) return;
+        var s = document.createElement('small'); s.className = 'ps-n'; s.textContent = ' ' + e.toLocaleString('en-US') + ' visits';
+        i.parentNode.appendChild(s); any = true;
+      });
+      var p = document.getElementById('ps-proof');
+      if (any && p) { p.textContent = 'Beside each state: engaged visits from readers in that state, ' + d(ps.start).replace(/, \d{4}$/, '') + ' to ' + d(ps.end) + '. Google Analytics.'; p.hidden = false; }
+    });
+  })();
+  </script>
   <script src="/components/loader.js?v=19" defer></script>
   <script src="/components/next-links.js?v=3" defer></script>
 </body>
