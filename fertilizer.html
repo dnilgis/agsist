@@ -9,8 +9,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=29">
   <script src="/components/util.js?v=17"></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -106,20 +106,20 @@
 
 @media(max-width:600px){.fert-hero .fert-eyebrow{display:none}}
 .fert-hero{padding:1rem 0 .8rem;border-bottom:1px solid var(--border);margin-bottom:1.25rem}
-.fert-eyebrow{font-size:0.763rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem}
+.fert-eyebrow{font-size:0.763rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);display:flex;align-items:center;gap:.4rem;margin-bottom:.3rem}
 .fert-page-title{font-family:var(--font-display);font-size:1.75rem;font-weight:800;color:var(--text);line-height:1.1;margin:0 0 .35rem;text-transform:uppercase;letter-spacing:-.01em}
 .fert-page-sub{font-size:1rem;color:var(--text-dim);line-height:1.55;max-width:640px}
 
 .fert-updated-bar{
   display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:.5rem;
   padding:.65rem .9rem;background:var(--surface);border:1px solid var(--border);
-  border-radius:8px;margin-bottom:.75rem;font-size:0.785rem;color:var(--text-muted);
+  border-radius:var(--r-md);margin-bottom:.75rem;font-size:0.785rem;color:var(--text-muted);
 }
 .fert-updated-bar strong{color:var(--text)}
 
 .fert-disclaimer{
   font-size:0.77rem;color:var(--text-muted);line-height:1.5;
-  padding:.5rem .75rem;background:rgba(255,255,255,.02);border-radius:6px;
+  padding:.5rem .75rem;background:rgba(255,255,255,.02);border-radius:var(--r-md);
   border-left:2px solid rgba(255,255,255,.1);margin-bottom:1.1rem;
 }
 
@@ -174,7 +174,7 @@
 }
 .ngc-icon{font-size:1.75rem;flex-shrink:0}
 .ngc-body{flex:1;min-width:180px}
-.ngc-label{font-size:0.763rem;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.18rem}
+.ngc-label{font-size:0.763rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.18rem}
 .ngc-note{font-size:1rem;color:var(--text-muted);margin-top:.18rem;line-height:1.55}
 .ngc-val{display:flex;align-items:baseline;gap:.4rem}
 .ngc-price{font-family:'JetBrains Mono',monospace;font-size:1.15rem;font-weight:700;color:var(--text)}
@@ -182,11 +182,11 @@
 
 /* Explainer grid */
 .fert-explainer{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.75rem;margin-bottom:1.25rem}
-.fert-explainer-title{font-family:var(--font-display);font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem;grid-column:1/-1}
+.fert-explainer-title{font-family:var(--font-display);font-size:1rem;font-weight:700;text-transform:none;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem;grid-column:1/-1}
 
 /* FIX: fert-related uses minmax(0,1fr) to prevent iOS Safari overflow */
 .fert-related{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.55rem;margin-bottom:1.25rem}
-.fert-related-title{font-family:var(--font-display);font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem}
+.fert-related-title{font-family:var(--font-display);font-size:1rem;font-weight:700;text-transform:none;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem}
 
 @media(max-width:560px){
   .fert-explainer{grid-template-columns:1fr}
@@ -199,7 +199,7 @@
 .fe-card p{font-size:0.79rem;color:var(--text-muted);line-height:1.62;margin:0}
 
 .fr-link{
-  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);
   padding:.7rem .85rem;text-decoration:none;display:flex;align-items:center;gap:.5rem;
   font-size:0.79rem;font-weight:600;color:var(--text);transition:border-color .15s,color .15s;
   min-height:44px;
@@ -212,11 +212,11 @@
 .fert-source a:hover{text-decoration:underline}
 
 /* === Decision layer: verdict + nutrient table + calculator === */
-.fert-verdict{background:linear-gradient(180deg,rgba(74,171,76,.07),rgba(0,0,0,0));border:1px solid var(--border);border-left:3px solid var(--green);border-radius:12px;padding:.9rem 1rem;margin-bottom:1.25rem}
-.fv-title{font-family:var(--font-display);font-size:0.77rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:.6rem}
+.fert-verdict{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--green);border-radius:var(--r-lg);padding:.9rem 1rem;margin-bottom:1.25rem}
+.fv-title{font-family:var(--font-display);font-size:0.77rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-bottom:.6rem}
 .fv-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.5rem;margin-bottom:.55rem}
-.fv-chip{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.5rem .6rem}
-.fv-chip-lab{font-size:0.745rem;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--text-muted)}
+.fv-chip{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.5rem .6rem}
+.fv-chip-lab{font-size:.78rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)}
 .fv-chip-src{font-size:0.795rem;font-weight:700;color:var(--text);margin:.12rem 0;line-height:1.15}
 .fv-chip-val{font-family:'JetBrains Mono',monospace;font-size:.9rem;font-weight:700;color:var(--green)}
 .fv-chip-val span{font-size:0.74rem;color:var(--text-muted);font-weight:400}
@@ -228,7 +228,7 @@
 .fert-nutrient{margin-bottom:1.25rem}
 .fert-nutrient-table{width:100%;border-collapse:collapse;font-size:0.785rem}
 .fert-nutrient-table th,.fert-nutrient-table td{padding:.45rem .5rem;text-align:right;border-bottom:1px solid var(--border)}
-.fert-nutrient-table th{font-size:0.745rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);font-weight:700}
+.fert-nutrient-table th{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted);font-weight:700}
 .fert-nutrient-table th:first-child,.fert-nutrient-table td.prod{text-align:left}
 .fert-nutrient-table td{font-family:'JetBrains Mono',monospace;color:var(--text)}
 .fert-nutrient-table td.prod{font-family:inherit;font-weight:600}
@@ -238,31 +238,31 @@
 #fert-nutrient-note{font-size:1rem;color:var(--text-muted);line-height:1.55;margin-top:.5rem}
 
 .fert-calc{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.15rem;margin-bottom:1.25rem}
-.fert-calc-h{font-family:var(--font-display);font-size:1.05rem;font-weight:700;text-transform:uppercase;color:var(--text);margin:0 0 .25rem}
+.fert-calc-h{font-family:var(--font-display);font-size:1.05rem;font-weight:700;text-transform:none;color:var(--text);margin:0 0 .25rem}
 .fert-calc-sub{font-size:0.785rem;color:var(--text-muted);margin:0 0 .9rem;line-height:1.5}
 .calc-inputs{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin-bottom:1rem}
 .calc-field{display:flex;flex-direction:column;gap:.25rem}.calc-field-wide{grid-column:1/-1}
-.calc-field label{font-size:0.755rem;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--text-muted)}
-.calc-field input,.calc-field select{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:7px;padding:.5rem .6rem;color:var(--text);font-size:max(16px,.85rem);font-family:inherit;min-height:44px}
+.calc-field label{font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)}
+.calc-field input,.calc-field select{background:rgba(0,0,0,.25);border:1px solid var(--border);border-radius:var(--r-md);padding:.5rem .6rem;color:var(--text);font-size:max(16px,.85rem);font-family:inherit;min-height:44px}
 .calc-field input:focus,.calc-field select:focus{outline:2px solid var(--gold);outline-offset:1px;border-color:var(--gold)}
 .calc-needs{font-size:0.79rem;color:var(--text-dim);margin-bottom:.7rem;line-height:1.5}
 .calc-needs b{color:var(--text);font-family:'JetBrains Mono',monospace}
 .calc-needs span{color:var(--text-muted)}
 .calc-prog{width:100%;border-collapse:collapse;font-size:0.785rem;margin-bottom:.8rem}
 .calc-prog th,.calc-prog td{padding:.42rem .5rem;text-align:left;border-bottom:1px solid var(--border)}
-.calc-prog th{font-size:0.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted)}
+.calc-prog th{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted)}
 .calc-prog td.r,.calc-prog th.r{text-align:right;font-family:'JetBrains Mono',monospace}
 .calc-headline{display:grid;grid-template-columns:1fr 1fr;gap:.6rem;margin-bottom:.6rem}
-.calc-headline>div{background:rgba(74,171,76,.08);border:1px solid var(--border);border-radius:9px;padding:.6rem .75rem}
-.calc-headline span{display:block;font-size:0.745rem;text-transform:uppercase;letter-spacing:.05em;color:var(--text-muted);font-weight:700}
+.calc-headline>div{background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-lg);padding:.6rem .75rem}
+.calc-headline span{display:block;font-size:0.745rem;text-transform:none;letter-spacing:0;color:var(--text-muted);font-weight:700}
 .calc-headline strong{font-family:var(--font-display);font-size:1.5rem;font-weight:800;color:var(--text);display:block;line-height:1.1}
 .calc-headline small{font-size:0.75rem;color:var(--text-muted);font-weight:400}
-.calc-total-acres{font-size:.82rem;color:var(--text);background:rgba(var(--gold-rgb),.1);border:1px solid var(--border);border-radius:8px;padding:.55rem .7rem;margin-bottom:.6rem}
+.calc-total-acres{font-size:.82rem;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);padding:.55rem .7rem;margin-bottom:.6rem}
 .calc-note{font-size:1rem;color:var(--text-dim);line-height:1.55;margin-bottom:.4rem}
 .calc-note.muted{color:var(--text-muted)}
 .calc-hint{font-size:0.795rem;color:var(--text-muted);margin:.2rem 0}
 .calc-method{margin-top:.65rem;border-top:1px solid var(--border);padding-top:.55rem}
-.calc-method summary{cursor:pointer;font-size:1rem;font-weight:700;color:var(--gold);text-transform:uppercase;letter-spacing:.04em}
+.calc-method summary{cursor:pointer;font-size:1rem;font-weight:700;color:var(--text-dim);text-transform:none;letter-spacing:0}
     @media(max-width:640px){.calc-method summary{padding:.4rem 0}}
 .calc-method-body{font-size:0.77rem;color:var(--text-muted);line-height:1.62;padding-top:.5rem}
 .calc-method-body code{font-family:'JetBrains Mono',monospace;font-size:0.757rem;color:var(--text-dim)}
@@ -321,7 +321,7 @@
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> → Fertilizer prices</nav>
 
   <div class="fert-hero">
-    <div class="fert-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flask-conical"/></svg> Input costs &middot; Co-op posted prices, read each weekday</div>
+    <div class="fert-eyebrow page-kicker">Input costs &middot; Co-op posted prices, read each weekday</div>
     <h1 class="fert-page-title">Fertilizer Prices</h1>
     <p class="fert-page-sub page-lede">The middle cash price per ton that farm co-ops post for each product. Every price names its co-ops, region and date.<span id="fert-lede-when"><!--BAKE:fert-lede--> Right now: Kansas and Wisconsin co-ops only, posted Oct 1 to Nov 11, 2026.<!--/BAKE--></span></p>
     <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">Data: prices farm co-ops post, read each weekday; each price names its co-op.</p>
@@ -332,7 +332,7 @@
   </div>
 
   <div class="fert-disclaimer" id="fert-disclaimer">
-    <svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> Posted prices, not quotes. Call the co-op or your dealer to confirm before you buy.
+    Posted prices, not quotes. Call the co-op or your dealer to confirm before you buy.
   </div>
 
   <!--BAKE:fert-cards--><section id="fert-coops" aria-labelledby="fert-coops-h"><h2 class="fert-related-title" id="fert-coops-h">What Kansas and Wisconsin co-ops are posting</h2><p class="fert-coops-sub">Each co-op&rsquo;s own posted prices. Cash is each co-op&rsquo;s own (cash, cash discount or cash pickup). Call to confirm.</p><div class="fert-cards"><div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">Anhydrous ammonia</span><span class="fpc-sym">82-0-0</span></div><div class="fpc-price">$832</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">middle of 4 co-ops</div><div class="fpc-loc">$817 to $965</div><div class="fpc-loc">newest posted Nov 11, oldest Oct 1</div></div><div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">Urea</span><span class="fpc-sym">46-0-0</span></div><div class="fpc-price">$610</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">middle of 5 co-ops</div><div class="fpc-loc">$572 to $840</div><div class="fpc-loc">newest posted Nov 11, oldest Oct 1</div></div><div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">UAN 28%</span><span class="fpc-sym">28-0-0</span></div><div class="fpc-price">$417</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">middle of 4 co-ops</div><div class="fpc-loc">$400 to $490</div><div class="fpc-loc">newest posted Nov 11, oldest Oct 1</div></div><div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">UAN 32%</span><span class="fpc-sym">32-0-0</span></div><div class="fpc-price">$456</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">one co-op: Farmers Coop</div><div class="fpc-loc">newest posted Nov 11</div></div><div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">DAP</span><span class="fpc-sym">18-46-0</span></div><div class="fpc-price">$931</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">middle of 3 co-ops</div><div class="fpc-loc">$922 to $970</div><div class="fpc-loc">newest posted Nov 11, oldest Oct 6</div></div><div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">MAP</span><span class="fpc-sym">11-52-0</span></div><div class="fpc-price">$980</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">average of 2 co-ops</div><div class="fpc-loc">all at $980</div><div class="fpc-loc">newest posted Oct 12, oldest Oct 6</div></div><div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">Potash</span><span class="fpc-sym">0-0-60</span></div><div class="fpc-price">$470</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">middle of 4 co-ops</div><div class="fpc-loc">$460 to $500</div><div class="fpc-loc">newest posted Nov 11, oldest Oct 1</div></div><div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">AMS</span><span class="fpc-sym">21-0-0-24S</span></div><div class="fpc-price">$538</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">one co-op: Farmers Coop</div><div class="fpc-loc">newest posted Nov 11</div></div><div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">10-34-0</span></div><div class="fpc-price">$640</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">one co-op: Mulvane Cooperative Union</div><div class="fpc-loc">newest posted Oct 6</div></div><div class="fert-price-card fert-coop-card"><div class="fpc-head"><span class="fpc-name">Thio-Sul</span><span class="fpc-sym">12-0-0-26S</span></div><div class="fpc-price">$390</div><div class="fpc-unit">$/ton cash</div><div class="fpc-loc">one co-op: Mulvane Cooperative Union</div><div class="fpc-loc">newest posted Oct 6</div></div></div><p class="fert-coop-note">Far from the other co-ops: Mulvane Cooperative Union&rsquo;s Urea ($840). Counted, but the middle price is shown so one co-op does not pull the figure.</p><p class="fert-coop-note">Prices from Two Rivers Coop, McCune Farmers Union Coop, Mulvane Cooperative Union, Farmers Coop, Bartlett Co-op Association and Synergy Cooperative. <a href="#fert-coops-more-h">Every co-op and every posted price</a>.</p></section><!--/BAKE-->
@@ -340,7 +340,7 @@
   <aside class="nc-n" data-near-coop="fert" aria-label="Your area"><p><a href="/cash-bids">See this for your area</a></p></aside>
 
   <div class="fert-verdict" id="fert-verdict" hidden>
-    <div class="fv-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Cheapest of the products tracked here</div>
+    <div class="fv-title">Cheapest of the products tracked here</div>
     <p class="fv-note" id="fv-note">Loading prices&hellip;</p>
     <div class="fv-grid" id="fv-cheapest"></div>
     <div class="fv-afford" id="fv-afford" hidden></div>
@@ -382,7 +382,7 @@
   <section id="fert-coops-more" aria-labelledby="fert-coops-more-h" hidden></section>
 
   <div class="natgas-card">
-    <div class="ngc-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-flame"/></svg></div>
+    
     <div class="ngc-body">
       <div class="ngc-label">Natural gas → nitrogen cost signal</div>
       <div class="ngc-val">
@@ -394,7 +394,7 @@
     </div>
   </div>
 
-  <!-- ai-answer:fertilizer-supply --><!-- /ai-answer:fertilizer-supply -->
+  <!-- answer:fertilizer-supply --><!-- /answer:fertilizer-supply -->
   <h2 class="fert-explainer-title" style="font-family:var(--font-display);font-size:1rem;font-weight:700;text-transform:uppercase;color:var(--text);border-bottom:2px solid var(--border);padding-bottom:.5rem;margin:0 0 .75rem">Why prices move</h2>
   <div class="fert-explainer">
     <div class="fe-card">
@@ -417,17 +417,17 @@
 
   <h2 class="fert-related-title">Related Tools</h2>
   <div class="fert-related">
-    <a href="/breakeven" class="fr-link"><span class="fr-link-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-ruler"/></svg></span>Break-Even Calculator</a>
-    <a href="/tariffs" class="fr-link"><span class="fr-link-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-landmark"/></svg></span>Tariff Tracker</a>
-    <a href="/cot"     class="fr-link"><span class="fr-link-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-chart-column"/></svg></span>Fund Positioning</a>
-    <a href="/manure-value" class="fr-link"><span class="fr-link-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-ruler"/></svg></span>Manure Value</a>
-    <a href="/fast-facts" class="fr-link"><span class="fr-link-icon"><svg class="ic-sp" aria-hidden="true"><use href="#sp-ruler"/></svg></span>Fast Facts Tables</a>
+    <a href="/breakeven" class="fr-link">Break-Even Calculator</a>
+    <a href="/tariffs" class="fr-link">Tariff Tracker</a>
+    <a href="/cot"     class="fr-link">Fund Positioning</a>
+    <a href="/manure-value" class="fr-link">Manure Value</a>
+    <a href="/fast-facts" class="fr-link">Fast Facts Tables</a>
   </div>
 
 <!--FAQ:START-->
 <style>
 .agf{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin:1.5rem 0 0}
-.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
+.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text);margin:0 0 .4rem}
 .agf details{border-top:1px solid var(--border)}
 .agf details:first-of-type{border-top:0}
 .agf summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.85rem 0;font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}
@@ -472,12 +472,12 @@
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19" defer></script>
-<script src="/components/geo.js?v=39" defer></script>
+<script src="/components/loader.js?v=20" defer></script>
+<script src="/components/geo.js?v=41" defer></script>
 <script src="/components/fert-sources.js?v=6"></script>
 <script src="/components/fert-coops.js?v=7"></script>
-<script src="/components/fert-trend.js?v=1" defer></script>
-<script>/* near-coop: the Your area box loads only for a reader with a saved location */try{if(localStorage.getItem('agsist-wx-loc')||localStorage.getItem('agsist_zip')){var s=document.createElement('script');s.src='/components/near-coop.js?v=3';document.head.appendChild(s);}}catch(e){}</script>
+<script src="/components/fert-trend.js?v=2" defer></script>
+<script>/* near-coop: the Your area box loads only for a reader with a saved location */try{if(localStorage.getItem('agsist-wx-loc')||localStorage.getItem('agsist_zip')){var s=document.createElement('script');s.src='/components/near-coop.js?v=4';document.head.appendChild(s);}}catch(e){}</script>
 
 <script>
 (function(){
@@ -681,6 +681,6 @@ fetch('/data/prices.json').then(function(r){return r.ok?r.json():null;}).then(fu
 })();
 </script>
 
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

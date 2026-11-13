@@ -24,7 +24,7 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <style>
@@ -37,14 +37,14 @@
     .frp .fs-src{font-size:.76rem;color:var(--text-muted);margin-top:.3rem}
     .frp .fs-loading{font-size:.85rem;color:var(--text-muted)}
     .frp-act{display:flex;flex-wrap:wrap;gap:.5rem;margin:.6rem 0 1rem}
-    .frp-act button,.frp-act a{font:inherit;font-size:.9rem;min-height:42px;padding:0 .9rem;border:1px solid var(--border);border-radius:10px;background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
+    .frp-act button,.frp-act a{font:inherit;font-size:.9rem;min-height:42px;padding:0 .9rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);color:var(--text);cursor:pointer;display:inline-flex;align-items:center;text-decoration:none}
     .frp-act button{background:var(--gold-fill);color:#111;border-color:var(--gold-fill);font-weight:700}
     .frp-sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:.5rem;margin:.4rem 0}
-    .frp-sum div{border:1px solid var(--border);border-radius:8px;padding:.5rem .65rem;background:var(--surface)}
+    .frp-sum div{border:1px solid var(--border);border-radius:var(--r-md);padding:.5rem .65rem;background:var(--surface)}
     .frp-sum b{display:block;font-family:var(--font-mono);font-size:1.15rem;color:var(--text)}
-    .frp-sum span{font-size:.74rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.05em}
-    .frp-rot{display:flex;flex-wrap:wrap;gap:.3rem}.frp-rot span{font-size:.82rem;border:1px solid var(--border);border-radius:6px;padding:.15rem .45rem;color:var(--text)}
-    .frp-err{border:1px dashed var(--border);border-radius:8px;padding:.7rem .8rem;color:var(--text-dim);font-size:.9rem}
+    .frp-sum span{font-size:.74rem;color:var(--text-muted);text-transform:none;letter-spacing:0}
+    .frp-rot{display:flex;flex-wrap:wrap;gap:.3rem}.frp-rot span{font-size:.82rem;border:1px solid var(--border);border-radius:var(--r-md);padding:.15rem .45rem;color:var(--text)}
+    .frp-err{border:1px dashed var(--border);border-radius:var(--r-md);padding:.7rem .8rem;color:var(--text-dim);font-size:.9rem}
 .frp-err a{text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
     @media print{
       body>*:not(main),#site-header,#site-footer,.skip,.frp-act,.fl-tabs,.no-print{display:none!important}
@@ -124,7 +124,7 @@
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/field-scout-land.js?v=20" defer></script>
   <script src="/components/qr.js?v=11" defer></script>
   <script src="/components/report-link.js?v=3" defer></script>

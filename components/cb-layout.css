@@ -26,11 +26,11 @@
 
 /* THE ONE CROP CONTROL. Five equal buttons on one line at 390px. */
 .cb-lookup .cb-filters{display:flex;flex-wrap:nowrap;gap:.3rem;flex:none;min-width:0}
-.cb-lookup .cb-filt{flex:1 1 0;min-width:0;justify-content:center;padding:.3rem .35rem;font-size:.84rem;border-width:1px;border-radius:8px}
+.cb-lookup .cb-filt{flex:1 1 0;min-width:0;justify-content:center;padding:.3rem .35rem;font-size:.84rem;border-width:1px;border-radius:var(--r-md)}
 
 @media(min-width:720px){
-  .cb-lookup{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;padding:.7rem .9rem;border:1px solid var(--border);background:var(--surface);border-radius:10px}
-  .cb-lookup-row{flex:1 1 18rem;max-width:26rem}
+  .cb-lookup{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;padding:.7rem .9rem;border:1px solid var(--border);background:var(--surface);border-radius:var(--r-lg)}
+  .cb-lookup-row{flex:1 1 18rem;min-width:21rem;max-width:26rem}
   .cb-radius-row{flex:0 1 auto}
   .cb-lookup .cb-filters{flex:1 1 22rem}
 }
@@ -53,7 +53,7 @@
 .bbc-tag{font-family:var(--font-body,'Inter',system-ui,sans-serif);font-weight:400;letter-spacing:0;text-transform:none;font-size:.76rem;color:var(--text-muted)}
 .best-bids-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:.4rem;margin:0;overflow:visible;padding:0;flex-wrap:wrap}
 @media(max-width:719px){.best-bids-grid{display:grid}.best-bid-card{min-width:0}}
-.best-bid-card{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"p a" "b b";gap:.1rem .5rem;align-items:start;padding:.4rem .6rem .45rem;border-width:1px;border-radius:10px;border-left-width:4px;min-width:0}
+.best-bid-card{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"p a" "b b";gap:.1rem .5rem;align-items:start;padding:.4rem .6rem .45rem;border-width:1px;border-radius:var(--r-lg);border-left-width:4px;min-width:0}
 .best-bid-card.corn-t,.best-bid-card.beans-t,.best-bid-card.wheat-t{border-top:1px solid var(--border)}
 .best-bid-card.corn-t{border-left-color:var(--gold)}
 .best-bid-card.beans-t{border-left-color:var(--green)}
@@ -82,7 +82,7 @@
   .best-bid-card .bbc-actions{margin-top:.3rem}
 }
 .bbc-dist,.elev-dist{white-space:nowrap}
-.earnings-callout{margin:.45rem 0 0;padding:.4rem .6rem;border-width:1px;border-radius:10px;gap:.45rem;align-items:baseline}
+.earnings-callout{margin:.45rem 0 0;padding:.4rem .6rem;border-width:1px;border-radius:var(--r-lg);gap:.45rem;align-items:baseline}
 .earnings-icon{font-size:1rem;margin:0}
 .earnings-text{font-size:.85rem;line-height:1.4}
 .earnings-callout .earnings-headline{display:inline;font-size:.9rem;margin:0}
@@ -106,13 +106,13 @@
 .cb-fold-s::after{content:'\25BE';margin-left:auto;color:var(--text-muted)}
 details[open] > .cb-fold-s::after{content:'\25B4'}
 .cb-fold-s:focus-visible,.faq-item summary:focus-visible,.wtd-toggle:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-.cb-glance-box{margin:0 0 .5rem;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.cb-glance-box{margin:0 0 .5rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface)}
 .cb-glance-box #cb-glance{margin:0;padding:0 .5rem .5rem}
 .cba-zip{margin:0 0 .6rem}
 
 /* ── the cards: about half the height they were ───────────────────────── */
 .cb-grid{gap:.5rem;margin-bottom:.6rem}
-.elev-card{border-width:1px;border-radius:10px;--c-cash:4.9rem;--c-basis:3.4rem}
+.elev-card{border-width:1px;border-radius:var(--r-lg);--c-cash:4.9rem;--c-basis:3.4rem}
 @media(max-width:360px){.elev-card{--c-cash:3.7rem;--c-basis:2.9rem}}
 .elev-card .bid-chg{font-size:.66rem;line-height:1.2;margin-top:-.15rem}
 .elev-head{padding:.45rem .6rem .25rem;border-bottom:0;gap:.4rem;align-items:flex-start}
@@ -141,7 +141,7 @@ details[open] > .cb-fold-s::after{content:'\25B4'}
 .cb-more-wrap{margin:.6rem 0 .3rem}
 
 /* ── Worth the Drive, folded on every width ───────────────────────────── */
-.wtd-panel{margin:.8rem 0;border-width:1px;border-radius:10px}
+.wtd-panel{margin:.8rem 0;border-width:1px;border-radius:var(--r-lg)}
 .wtd-toggle{display:flex;justify-content:flex-start;text-align:left;gap:.6rem;padding:.5rem .8rem;border-top:0;background:none;color:var(--text);letter-spacing:0;text-transform:none;font-family:inherit;font-size:.9rem;min-height:48px}
 .wtd-toggle-t{display:flex;flex-direction:column;min-width:0}
 .wtd-toggle .wtd-title{font-size:.92rem}
@@ -155,11 +155,11 @@ details[open] > .cb-fold-s::after{content:'\25B4'}
 
 /* ── below the results ────────────────────────────────────────────────── */
 .cb-wrap .ag-sponsor-ribbon{margin:.8rem 0}
-.internal-links{margin:.8rem 0;padding:.6rem .8rem;border-width:1px;border-radius:10px}
+.internal-links{margin:.8rem 0;padding:.6rem .8rem;border-width:1px;border-radius:var(--r-lg)}
 .il-one{margin:0;font-size:.92rem;line-height:1.9}
 .il-one a{color:var(--gold);font-weight:600}
 [data-theme="light"] .il-one a{color:#86600f}
-.faq-section{margin:.8rem 0 1.2rem;padding:0;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+.faq-section{margin:.8rem 0 1.2rem;padding:0;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface)}
 .faq-section > .cb-fold-s h2{display:inline;margin:0;font-size:1rem}
 .faq-section .faq-item{padding:0 .75rem;border-top:1px solid var(--border);border-bottom:0}
 .faq-item summary.faq-q{list-style:none;padding:.4rem 0;font-size:.95rem}

@@ -38,7 +38,7 @@
         var old = document.getElementById('signup-queued'); if (old) old.remove();
         var bar = document.createElement('div');
         bar.id = 'signup-queued'; bar.setAttribute('role', 'status');
-        bar.style.cssText = 'background:#1f5130;color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9990;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+        bar.style.cssText = 'background:#1f5130;color:#fff;font-size:1rem;line-height:1.4;padding:10px 44px 10px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9990;text-align:center';
         bar.textContent = QUEUED + ' No need to look for a confirmation email for now.';
         var x = document.createElement('button');
         x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.textContent = '×';
@@ -78,7 +78,7 @@
     window.agsistSignupFallback = { QUEUED: QUEUED, lists: LISTS };
     try {
       if (!window.AgOutbox && localStorage.getItem('agsist-outbox') && !document.querySelector('script[src^="/components/outbox.js"]')) {
-        var ob = document.createElement('script'); ob.src = '/components/outbox.js?v=3'; ob.defer = true;
+        var ob = document.createElement('script'); ob.src = '/components/outbox.js?v=4'; ob.defer = true;
         (document.head || document.documentElement).appendChild(ob);
       }
     } catch (e) { }
@@ -99,7 +99,7 @@
     var m = document.querySelector('meta[name="agsist-base"]');
     return m ? m.getAttribute('content').replace(/\/$/, '') : '';
   })();
-  var CV = '107';
+  var CV = '108';
   function cv(path) { return path + (path.indexOf('?') < 0 ? '?v=' : '&v=') + CV; }
   function loadComponent(id, path, onDone) {
     var el = document.getElementById(id);
@@ -558,7 +558,7 @@
     if (noSponsor || window.__geoSponsor || GEO_SKIP.test(location.pathname)) return;
     window.__geoSponsor = true;
     var s = document.createElement('script');
-    s.src = BASE + '/components/geo-sponsor.js?v=5';
+    s.src = BASE + '/components/geo-sponsor.js?v=6';
     s.async = true;
     s.onload = function () { try { window.AgsistGeo.run(rib); } catch (e) { } };
     document.head.appendChild(s);
@@ -713,7 +713,7 @@
         var bar = document.createElement('div');
         bar.id = 'site-notice';
         bar.setAttribute('role', 'status');
-        bar.style.cssText = 'background:#7a4b00;color:#fff;font-size:0.92rem;line-height:1.4;padding:8px 44px 8px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9980;text-align:center;box-shadow:0 -2px 8px rgba(0,0,0,.25)';
+        bar.style.cssText = 'background:#7a4b00;color:#fff;font-size:0.92rem;line-height:1.4;padding:8px 44px 8px 16px;position:fixed;left:0;right:0;bottom:0;z-index:9980;text-align:center';
         var msg = document.createElement('span');
         msg.textContent = n.text;
         bar.appendChild(msg);
@@ -748,7 +748,7 @@
       try { if (window.AgsistSignup && window.AgsistSignup.scan) window.AgsistSignup.scan(); } catch (e) {}
     });
     fillPageRibbons(noSponsor);
-    (function () { if (!document.querySelector('link[href*="/components/states.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = BASE + '/components/states.css?v=2'; document.head.appendChild(l); } if (!window.AgStates && !document.querySelector('script[src*="/components/states.js"]')) { var j = document.createElement('script'); j.src = BASE + '/components/states.js?v=1'; j.async = true; document.head.appendChild(j); } })();
+    (function () { if (!document.querySelector('link[href*="/components/states.css"]')) { var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = BASE + '/components/states.css?v=3'; document.head.appendChild(l); } if (!window.AgStates && !document.querySelector('script[src*="/components/states.js"]')) { var j = document.createElement('script'); j.src = BASE + '/components/states.js?v=1'; j.async = true; document.head.appendChild(j); } })();
   });
 })();
 (function () {
@@ -773,12 +773,12 @@
     var css =
       '.agt{display:inline-flex;align-items:center;gap:6px;font-family:"JetBrains Mono",ui-monospace,monospace;font-size:inherit;line-height:1.2;color:inherit;white-space:nowrap}' +
       '.agt-dot{display:inline-block;width:6px;height:6px;border-radius:50%;flex-shrink:0}' +
-      '.agt-dot-live{background:var(--green,#3a8b3c);animation:agt-pulse 2s ease-in-out infinite}' +
+      '.agt-dot-live{background:var(--green,#3a8b3c);}' +
       '.agt-dot-stale{background:var(--gold-fill,var(--gold,#daa520))}' +
       '.agt-dot-offline{background:var(--red,#c8322e)}' +
       '.agt-stale{color:var(--gold,#daa520)}' +
       '.agt-offline{color:var(--red,#c8322e)}' +
-      '.agt-tag{font-weight:700;letter-spacing:.06em;text-transform:uppercase;font-size:.92em}' +
+      '.agt-tag{font-weight:700;letter-spacing:0;text-transform:none;font-size:.92em}' +
       '.agt-next{opacity:.55;margin-left:2px}' +
       '@keyframes agt-pulse{0%,100%{opacity:1}50%{opacity:.35}}' +
       '@media(prefers-reduced-motion:reduce){.agt-dot-live{animation:none}}';
@@ -941,7 +941,7 @@
     EV.forEach(function (t) { window.removeEventListener(t, go, true); });
     if (window.AgsistSignup || document.querySelector('script[src*="/components/signup-ask.js"]')) return;
     var s = document.createElement('script');
-    s.src = '/components/signup-ask.js?v=22';
+    s.src = '/components/signup-ask.js?v=23';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
@@ -967,7 +967,7 @@
     if (window.AgLandAlert || document.querySelector('script[src^="/components/land-alert.js"]')) return;
     if (!document.querySelector('[data-land-alert],section[data-atlas-sales="county"]')) return;
     var s = document.createElement('script');
-    s.src = '/components/land-alert.js?v=4';
+    s.src = '/components/land-alert.js?v=5';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
@@ -980,7 +980,7 @@
         && !/^\/rent\/(illinois|wisconsin|indiana|vermont|new-jersey)(\.html)?\/?$/.test(location.pathname)
         && !/^\/farmland-atlas\/(indiana|vermont|new-jersey|florida)\/[a-z0-9-]+/.test(location.pathname)) return;
     var s = document.createElement('script');
-    s.src = '/components/land-sales.js?v=6';
+    s.src = '/components/land-sales.js?v=7';
     s.async = true;
     (document.head || document.documentElement).appendChild(s);
   }
@@ -1162,7 +1162,7 @@
       bar = document.createElement('p');
       bar.className = 'asof-offline sw-saved-note';
       bar.setAttribute('role', 'status');
-      bar.style.cssText = 'margin:.6rem 0;padding:.5rem .75rem;border:1px solid var(--border);border-left:3px solid var(--text-muted);border-radius:var(--r-sm,6px);background:var(--surface);color:var(--text);font-size:.88rem;line-height:1.4';
+      bar.style.cssText = 'margin:.6rem 0;padding:.5rem .75rem;border:1px solid var(--border);border-left:3px solid var(--text-muted);border-radius:var(--r-sm,2px);background:var(--surface);color:var(--text);font-size:.88rem;line-height:1.4';
       var host = document.querySelector('main') || document.body;
       if (!host) return;
       host.insertBefore(bar, host.firstChild);

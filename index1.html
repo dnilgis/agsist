@@ -9,14 +9,14 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
+  <link rel="stylesheet" href="/components/asof.css?v=2">
   <script src="/components/saved-place.js?v=1"></script>
   <script src="/components/asof.js?v=1"></script>
-  <script src="/components/price-local.js?v=14"></script>
-<link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
-<link rel="stylesheet" href="/components/sponsor-ad.css?v=3">
-<link rel="stylesheet" href="/css/home.css?v=47">
+  <script src="/components/price-local.js?v=15"></script>
+<link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script>
+<link rel="stylesheet" href="/components/sponsor-ad.css?v=4">
+<link rel="stylesheet" href="/css/home.css?v=48">
 <!-- Nov 7: no first paint until the three jobs and the Farmland sales block are parsed whole (Chrome lifts the block
      when the expected element opens, so it names the first one after them, under the Futures heading). A paint between two parser
      chunks drew the block half built, and its chevrons (centred over rows still arriving) jumped 3 to 50px when the rest
@@ -362,7 +362,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <div class="s7-adrow s7-adrow--hb" style="display:none"><a class="teaser-sponsor" id="daily-teaser-sponsor" href="/sponsor" onclick="event.stopPropagation()"></a></div>
   </section>
   <script>try{AgPxStamp.reserve(document.querySelector('#hero-band .pl-line'));}catch(e){}try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;var hb=document.getElementById('hero-band');if(hb)hb.classList.add('hb-nozip');var p=document.getElementById('hb-place');if(p)p.textContent='Set your ZIP to see local cash bids';var c=document.getElementById('hb-change');if(c)c.textContent='Set ZIP';})();}catch(e){}</script>
-  <script src="/components/signup-ask.js?v=22"></script>
+  <script src="/components/signup-ask.js?v=23"></script>
   <!-- Worth a look (Nov 2, 2026): Rain Print (the promo card, components/rain-print-promo.js), the rain gauge, and one new page from What's new (components/home-worth.js) -->
   <section class="wl" id="wl" aria-labelledby="wl-h">
     <h2 class="wl-h" id="wl-h">Worth a look</h2>
@@ -373,7 +373,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </div>
   </section>
   <script src="/components/home-worth.js?v=1" defer></script>
-<!-- price-answer:price-home --><section class="ai-answer price-answer" id="answer-price-home" aria-labelledby="answer-price-home-h" data-price-file="2026-11-13T18:02:29Z" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-price-home-h" style="font-size:1.1rem;margin:0 0 .4rem">What are grain prices today?</h2><p style="margin:0 0 .5rem">December 2026 corn futures last traded at $4.46 a bushel as of Nov 13, 12:02 p.m. CT. January 2027 soybean futures last traded at $12.32½ a bushel as of Nov 13, 12:02 p.m. CT. December 2026 wheat futures last traded at $5.93 a bushel as of Nov 13, 12:02 p.m. CT.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">These are Chicago futures prices from Yahoo Finance, delayed 10 to 25 minutes. They are not the cash price an elevator pays; cash bids near you are on the <a href="/cash-bids" style="text-decoration:underline">cash bids page</a>.</p></section><!-- /price-answer:price-home -->
+<!-- price-answer:price-home --><section class="qa-answer price-answer" id="answer-price-home" aria-labelledby="answer-price-home-h" data-price-file="2026-11-13T18:02:29Z" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-price-home-h" style="font-size:1.1rem;margin:0 0 .4rem">What are grain prices today?</h2><p style="margin:0 0 .5rem">December 2026 corn futures last traded at $4.46 a bushel as of Nov 13, 12:02 p.m. CT. January 2027 soybean futures last traded at $12.32½ a bushel as of Nov 13, 12:02 p.m. CT. December 2026 wheat futures last traded at $5.93 a bushel as of Nov 13, 12:02 p.m. CT.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">These are Chicago futures prices from Yahoo Finance, delayed 10 to 25 minutes. They are not the cash price an elevator pays; cash bids near you are on the <a href="/cash-bids" style="text-decoration:underline">cash bids page</a>.</p></section><!-- /price-answer:price-home -->
 <section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-11-13" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full" aria-expanded="false">
     <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read today’s briefing &#x2193;</span></div>
@@ -919,7 +919,7 @@ try {
           <div class="idx1-extras-sub">Cash price fills from a bid above. Change any number to match your bin.</div>
           <div class="idx1-calc-pickwrap"><label class="idx1-extras-field idx1-calc-pickfield">Price from<select id="idx1-calc-pick" aria-describedby="idx1-calc-why"></select></label>
           <div id="idx1-calc-why" class="idx1-extras-fine"></div></div>
-          <div id="ss-posted" class="ss-posted" hidden></div><script src="/components/storesell.js?v=9" defer></script>
+          <div id="ss-posted" class="ss-posted" hidden></div><script src="/components/storesell.js?v=10" defer></script>
           <div class="idx1-extras-row">
             <label class="idx1-extras-field">Cash price now ($/bu)<input id="idx1-calc-price" type="number" step="0.01" min="0" inputmode="decimal"></label>
             <label class="idx1-extras-field">Storage cost ($/bu/mo)<input id="idx1-calc-cost" type="number" step="0.005" min="0" placeholder="0.035 default" inputmode="decimal"></label>
@@ -1472,7 +1472,7 @@ try {
     </ul>
     </details>
     </nav>
-    <script src="/components/rain-print-promo.js?v=6" defer></script>
+    <script src="/components/rain-print-promo.js?v=7" defer></script>
   </section>
   <script>
   /* Land band. Every number comes from a file in /data or the Atlas build,
@@ -1679,25 +1679,25 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
        the real rule. Do not add a second counter here. */
   })();
   </script>
-<script src="/components/loader.js?v=19" defer></script>
+<script src="/components/loader.js?v=20" defer></script>
 <script src="/components/nws.js?v=1" defer></script>
-<script src="/components/geo.js?v=40" defer></script>
+<script src="/components/geo.js?v=41" defer></script>
 <script src="/components/elev-names.js?v=2" defer></script>
 <script src="/components/bids-fallback.js?v=1" defer></script>
-<script src="/components/bids-homepage.js?v=51" defer></script>
-<link rel="stylesheet" href="/components/cb-myelev.css?v=2">
-<script src="/components/cb-myelev.js?v=9" defer></script>
-<script src="/components/homepage-extras.js?v=19" defer></script>
+<script src="/components/bids-homepage.js?v=52" defer></script>
+<link rel="stylesheet" href="/components/cb-myelev.css?v=3">
+<script src="/components/cb-myelev.js?v=10" defer></script>
+<script src="/components/homepage-extras.js?v=20" defer></script>
 <script src="/components/home-yield.js?v=14" defer></script>
 <script src="/components/report-live.js?v=1" defer></script>
 <script src="/components/cot-glance.js?v=6"></script>
-<script src="/components/home.js?v=29"></script>
+<script src="/components/home.js?v=30"></script>
 <script src="/components/home-land.js?v=4" defer></script>
 <script src="/components/happening.js?v=5" defer></script>
 <script src="/components/home-planting.js?v=8" defer></script>
 <script src="/components/home-season.js?v=13" defer></script>
 <script src="/components/season-wx.js?v=2" defer></script>
-<script src="/components/next-links.js?v=3" defer></script>
+<script src="/components/next-links.js?v=4" defer></script>
 <script src="/components/home-kit.js?v=1" defer></script>
 </body>
 </html>

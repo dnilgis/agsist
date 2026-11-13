@@ -11,7 +11,7 @@
 
    The page says which crop it is before loading this file:
      <script>window.AGSIST_FUTURES='corn'</script>
-     <script src="/components/futures.js?v=1"></script>
+     <script src="/components/futures.js?v=37"></script>
    Prices print through components/util.js (AG.px), which loads in the head. */
 (function(){
 'use strict';
@@ -31,7 +31,7 @@ function zoneOf(pct){return pct<25?'lower quartile':pct<50?'lower half':pct<75?'
 var CROPS={
   corn:{
     key:'corn',label:'Corn',root:'ZC',stats:'corn',ga:'corn',progressKey:'corn',
-    emoji:'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg>',
+    emoji:'',
     carry:'corn',
     tiles:[{nc:['corn','dec'],alt:'corn-dec',p:'p-corndec',c:'c-corndec',g:true,lbl:'lbl-corndec'},{root:'beans',name:'Soybeans',sym:'ZS',p:'p-beans',c:'c-beans',g:true},{root:'wheat',name:'Wheat',sym:'ZW',p:'p-wheat',c:'c-wheat',g:true},{key:'crude',p:'p-crude',c:'c-crude',g:false,u:{pre:'$'}},{key:'dollar',p:'p-dollar',c:'c-dollar',g:false,u:{}}],
     heroTile:['p-corn','c-corn'],
@@ -54,7 +54,7 @@ var CROPS={
         var bz=document.getElementById('bz'+(cornBu<4?0:cornBu<4.75?1:cornBu<5.5?2:3));
         if(bz)bz.classList.add('active');
       }
-      renderRatio(data,function(r){return r<2.4?'<svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg> Corn favored: historically the stronger per-acre plant':r<2.6?'<svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg> Neutral zone: local costs and rotation should decide':'<svg class="ic" aria-hidden="true"><use href="#i-bean"/></svg> Beans favored: soybeans historically pay more per acre';});
+      renderRatio(data,function(r){return r<2.4?'Corn favored: historically the stronger per-acre plant':r<2.6?'Neutral zone: local costs and rotation should decide':'Beans favored: soybeans historically pay more per acre';});
       // S2: new-crop at a glance: the corn-dec benchmark (the next live Dec, which
       // rolls on its own; the label is read from its ticker). Hidden when the key is missing.
       var cornDec=q[newCropKey('corn','dec',q)]||q['corn-dec'];
@@ -164,7 +164,7 @@ var CROPS={
 
   wheat:{
     key:'wheat',label:'Wheat',root:'ZW',stats:'wheat',ga:'wheat',progressKey:null,
-    emoji:'<svg class="ic" aria-hidden="true"><use href="#i-wheat"/></svg>',
+    emoji:'',
     // Forward curve and carry window: components/storesell.js forwardCurve /
     // carryWindow, from the dated contracts on file (Dec '26 to May '27 on
     // 2026-10-11). Jul '27 on is next year's crop: plotted, never in the carry.

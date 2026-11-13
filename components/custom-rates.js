@@ -482,7 +482,7 @@
   }
   function needPrint(cb) {
     if (window.AgPrintSheet && window.AgQR) return cb();
-    var n = 0, srcs = ['/components/qr.js?v=11', '/components/print-sheet.js?v=1'];
+    var n = 0, srcs = ['/components/qr.js?v=11', '/components/print-sheet.js?v=2'];
     srcs.forEach(function (src) {
       var s = document.createElement('script'); s.src = src;
       s.onload = function () { if (++n === srcs.length) cb(); };

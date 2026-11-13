@@ -9,13 +9,13 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=28">
-<link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=29">
+<link rel="stylesheet" href="/components/asof.css?v=2">
 <script src="/components/util.js?v=20"></script>
 <script src="/components/asof.js?v=1"></script>
-<script src="/components/price-local.js?v=14"></script>
-<link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
+<script src="/components/price-local.js?v=15"></script>
+<link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -76,16 +76,16 @@
   .section-inner .pc .pc-range-labels{font-size:.7rem}
   .section-inner .pc .pc-range-labels>span:nth-child(2){display:none}
 }
-.mkt-idx{margin-top:1.4rem;background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.mkt-idx{margin-top:1.4rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
 .mkt-idx-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:0.795rem;font-weight:700;color:var(--gold)}
-.mkt-idx-grp{padding:12px 16px 4px;font-size:0.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
+.mkt-idx-grp{padding:12px 16px 4px;font-size:0.72rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)}
 .mkt-idx-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:2px 18px;padding:0 16px 12px}
 .mkt-idx-list a{display:block;padding:7px 0;text-decoration:none;border-bottom:1px solid var(--border);line-height:1.35}
 .mkt-idx-list a:last-child{border-bottom:none}
 .mkt-idx-list b{display:block;color:var(--text);font-size:0.95rem;font-weight:600}
 .mkt-idx-list span{display:block;color:var(--text-muted);font-size:0.8rem}
 .mkt-idx-list a:hover b{color:var(--gold)}
-.mkt-faq{background:var(--surface);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin-top:1.2rem}
+.mkt-faq{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;margin-top:1.2rem}
 .mkt-faq-hd{padding:10px 16px;border-bottom:1px solid var(--border);font-size:0.795rem;font-weight:700;color:var(--gold)}
 .mkt-faq-item{border-bottom:1px solid var(--border)}.mkt-faq-item:last-child{border-bottom:none}
 .mkt-faq-q{display:flex;justify-content:space-between;align-items:center;padding:13px 16px;cursor:pointer;font-size:1rem;font-weight:600;color:var(--text);gap:8px;user-select:none;line-height:1.4;min-height:44px}
@@ -142,9 +142,9 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
       </div>
       <p class="pl-line" data-state-bid="corn soybeans" hidden></p><script>/* a saved state holds the line's box from the first paint, as the homepage does (CLS sweep Nov 10 2026: 0.07 to 0.12 at 390 with a saved ZIP) */try{AgPxStamp.reserve(document.currentScript.previousElementSibling);}catch(e){}</script>
 
-      <!-- price-answer:price-markets --><section class="ai-answer price-answer" id="answer-price-markets" aria-labelledby="answer-price-markets-h" data-price-file="2026-11-13T18:40:46Z" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-price-markets-h" style="font-size:1.1rem;margin:0 0 .4rem">What are corn, soybean and wheat prices today?</h2><p style="margin:0 0 .5rem">December 2026 corn futures last traded at $4.45½ a bushel as of Nov 13, 12:40 p.m. CT. January 2027 soybean futures last traded at $12.32½ a bushel as of Nov 13, 12:40 p.m. CT. December 2026 wheat futures last traded at $5.91¾ a bushel as of Nov 13, 12:40 p.m. CT.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">These are Chicago futures prices from Yahoo Finance, delayed 10 to 25 minutes. They are not the cash price an elevator pays; cash bids near you are on the <a href="/cash-bids" style="text-decoration:underline">cash bids page</a>.</p></section><!-- /price-answer:price-markets -->
+      <!-- price-answer:price-markets --><section class="qa-answer price-answer" id="answer-price-markets" aria-labelledby="answer-price-markets-h" data-price-file="2026-11-13T18:40:46Z" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-price-markets-h" style="font-size:1.1rem;margin:0 0 .4rem">What are corn, soybean and wheat prices today?</h2><p style="margin:0 0 .5rem">December 2026 corn futures last traded at $4.45½ a bushel as of Nov 13, 12:40 p.m. CT. January 2027 soybean futures last traded at $12.32½ a bushel as of Nov 13, 12:40 p.m. CT. December 2026 wheat futures last traded at $5.91¾ a bushel as of Nov 13, 12:40 p.m. CT.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">These are Chicago futures prices from Yahoo Finance, delayed 10 to 25 minutes. They are not the cash price an elevator pays; cash bids near you are on the <a href="/cash-bids" style="text-decoration:underline">cash bids page</a>.</p></section><!-- /price-answer:price-markets -->
 
-      <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem;margin-top:.25rem">Grain Futures</div>
+      <div style="font-size:0.77rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.6rem;margin-top:.25rem">Grain Futures</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:1.5rem">
         <div class="pc">
           <div class="pc-head"><div class="pc-name">Corn</div><span class="pc-contract" id="pct-corn"><!--
@@ -208,7 +208,7 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
       </div>
   <style></style><aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="markets"></aside>
 
-      <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem">Livestock</div>
+      <div style="font-size:0.77rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.6rem">Livestock</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:1.5rem">
         <div class="pc"><div class="pc-head"><div class="pc-name">Live Cattle</div><span class="pc-contract" id="pct-cattle"><!--
 --><!--SEED:mk:pct-cattle-->Dec '26<!--/SEED--><!--
@@ -241,7 +241,7 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
       </div>
       <p style="margin:-.9rem 0 1.5rem;font-size:.8rem;color:var(--text-muted)">Price insurance for cattle and hogs: <a href="/lrp" style="color:var(--gold)">today&rsquo;s LRP rates and what RMA&rsquo;s record says &rarr;</a></p>
 
-      <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem">Energy &amp; Inputs</div>
+      <div style="font-size:0.77rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.6rem">Energy &amp; Inputs</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:1.5rem">
         <div class="pc"><div class="pc-head"><div class="pc-name">Crude WTI</div><span class="pc-unit">$/barrel</span></div><div id="pcp-crude" class="pc-price"><!--
 --><!--SEED:mk:pcp-crude-->$88.59<!--/SEED--><!--
@@ -269,7 +269,7 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
 --></div></div>
       </div>
 
-      <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.6rem">Metals &amp; Macro</div>
+      <div style="font-size:0.77rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.6rem">Metals &amp; Macro</div>
       <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.65rem;margin-bottom:.5rem">
         <div class="pc"><div class="pc-head"><div class="pc-name">Gold</div><span class="pc-unit">$/troy oz</span></div><div id="pc-gold" class="pc-price"><!--
 --><!--SEED:mk:pc-gold-->$3,886.20<!--/SEED--><!--
@@ -352,7 +352,7 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
           <div class="mkt-faq-a"><div class="mkt-faq-ai">AGSIST's Cash Bids page shows local elevator bids read from elevators' own posted boards, located by your GPS position or ZIP code. It shows the price your nearest elevators are paying for corn and soybeans today, with the local basis: the cash bid minus the futures price (65 under Dec is a basis of −65¢). You need it for storage and marketing calls because basis varies a lot by location, by season and by how hard nearby elevators compete.</div></div>
         </div>
       </div>
-  <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
+  <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=7" defer></script>
 
     </div>
   </section>
@@ -380,7 +380,7 @@ main > .breadcrumb{max-width:1400px;margin:12px auto 0;padding:0 var(--sp-lg)}
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19" defer></script>
+<script src="/components/loader.js?v=20" defer></script>
 <script>
 (function(){
   'use strict';
@@ -549,6 +549,6 @@ document.querySelectorAll('.mkt-faq-q').forEach(function(q){
   q.addEventListener('keydown',function(e){if(e.key==='Enter'||e.key===' '){e.preventDefault();q.click();}});
 });
 </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

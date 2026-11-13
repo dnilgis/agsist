@@ -223,9 +223,9 @@
     hit.addEventListener('mouseleave', off);
   }
 
-  var CSS = '.fx{border:1px solid var(--border);border-radius:14px;background:var(--surface);padding:.85rem 1.1rem;margin:0 0 .6rem}' +
+  var CSS = '.fx{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);padding:.85rem 1.1rem;margin:0 0 .6rem}' +
     '.fx h2,.fx h3{margin:0 0 .15rem;font-size:1.08rem;color:var(--text)}' +
-    '.fx .fx-lbl{font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted,var(--text-dim));font-weight:700;margin:0}' +
+    '.fx .fx-lbl{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted,var(--text-dim));font-weight:700;margin:0}' +
     '.fx .fx-sub{margin:0 0 .5rem;font-size:.86rem;color:var(--text-muted,var(--text-dim))}' +
     '.fx .fx-val{font-family:"JetBrains Mono",monospace;font-weight:700;font-size:1.9rem;line-height:1.1;margin:.15rem 0 0;color:var(--text)}' +
     '.fx .fx-val small{font-size:.8rem;font-weight:400;color:var(--text-muted,var(--text-dim))}' +
@@ -244,7 +244,7 @@
     '.fx .fx-tip{min-height:1.2em;margin:.1rem 0 0;font-family:"JetBrains Mono",monospace;font-size:.82rem;color:var(--text)}' +
     '.fx details{margin:.3rem 0 0;font-size:.86rem}.fx summary{cursor:pointer;font-weight:600;color:var(--text)}' +
     '.fx details ul{padding-left:1.1rem;margin:.4rem 0}.fx details li{margin:.2rem 0;color:var(--text-dim)}' +
-    '.fx .fx-seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:100%;margin:0 .5rem .5rem 0}' +
+    '.fx .fx-seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;max-width:100%;margin:0 .5rem .5rem 0}' +
     '.fx .fx-seg button{min-height:40px;padding:0 .7rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.86rem;font-weight:700;cursor:pointer}' +
     '.fx .fx-seg button+button{border-left:1px solid var(--border)}' +
     '.fx .fx-seg button[aria-pressed="true"]{background:var(--gold-fill,var(--gold));color:#111}' +

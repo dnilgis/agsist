@@ -33,8 +33,8 @@
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
   <link rel="preconnect" href="https://api.weather.gov">
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
   <style>
@@ -42,13 +42,13 @@
     .emc .breadcrumb{font-size:.8rem;margin:0 0 .5rem}
     .emc h1{font-size:clamp(1.35rem,4.3vw,1.95rem);line-height:1.2;margin:0 0 .3rem;color:var(--text)}
     .emc .by{font-size:.8rem;color:var(--text-muted);margin:0 0 .35rem}
-    .emc .emc-stamp{display:inline-block;font-size:.76rem;line-height:1.35;color:var(--text-dim);border:1px dashed var(--gold);border-radius:6px;padding:.2rem .5rem;margin:0 0 .75rem;transform:rotate(-.6deg)}
+    .emc .emc-stamp{display:inline-block;font-size:.76rem;line-height:1.35;color:var(--text-dim);border:1px dashed var(--gold);border-radius:var(--r-md);padding:.2rem .5rem;margin:0 0 .75rem;transform:rotate(-.6deg)}
     .emc h2{font-size:1.2rem;line-height:1.3;margin:2.2rem 0 .7rem;color:var(--text)}
     .emc p,.emc li{font-size:.98rem;line-height:1.6;color:var(--text-dim)}
     .emc p{margin:0 0 1rem}
     .emc a{color:var(--link,var(--brand));text-underline-offset:2px;text-decoration:underline}
     .emc b{color:var(--text)}
-    .emc-seg{display:inline-flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;max-width:100%}
+    .emc-seg{display:inline-flex;border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden;max-width:100%}
     .emc-seg button{min-height:42px;padding:0 .8rem;border:0;background:var(--surface);color:var(--text-dim);font:inherit;font-size:.92rem;font-weight:700;cursor:pointer}
     .emc-seg button+button{border-left:1px solid var(--border)}
     .emc-seg button[aria-pressed="true"]{background:var(--gold-fill);color:#111}
@@ -56,13 +56,13 @@
     .emc-mode button{flex:1 1 0;padding:.35rem .4rem;line-height:1.2}
     .emc-ctl{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem .8rem;margin:0 0 .3rem}
     .emc-num{display:inline-flex;align-items:center;gap:.3rem;font-size:.85rem;color:var(--text-muted)}
-    .emc-num input,.emc-in input[type=number]{width:4.4rem;min-height:42px;padding:0 .45rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
+    .emc-num input,.emc-in input[type=number]{width:4.4rem;min-height:42px;padding:0 .45rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-family:'JetBrains Mono',monospace;font-size:1rem}
     .emc-chk{display:inline-flex;align-items:center;gap:.4rem;font-size:.85rem;color:var(--text-muted);min-height:42px}
     .emc-chk input{width:20px;height:20px}
     .emc-hint{font-size:.76rem!important;line-height:1.4!important;color:var(--text-muted)!important;margin:.1rem 0 .6rem!important}
     .emc-fanhint{font-size:.78rem!important;color:var(--text-muted)!important;margin:-.1rem 0 .7rem!important}
     html:not([data-emc-mode="dry"]) .m-dry,html:not([data-emc-mode="cool"]) .m-cool,html[data-emc-mode="cool"] .m-notcool{display:none!important}
-    .emc-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:0 12px 12px 0;padding:.8rem 1rem .85rem;margin:0 0 .6rem}
+    .emc-answer{background:var(--surface);border:1px solid var(--border);border-left:5px solid var(--border);border-radius:0 var(--r-lg) var(--r-lg) 0;padding:.8rem 1rem .85rem;margin:0 0 .6rem}
     .emc-answer.v-dry{border-left-color:var(--green)} .emc-answer.v-close{border-left-color:var(--gold)} .emc-answer.v-wet{border-left-color:var(--red)}
     .emc h2.emc-v,.emc-v{display:block;font-size:clamp(1.55rem,7vw,2.15rem);font-weight:800;line-height:1.12;color:var(--text);margin:0 0 .35rem;outline:none}
     .v-dry .emc-v{color:var(--green)} .v-close .emc-v{color:var(--gold)} .v-wet .emc-v{color:var(--red)}
@@ -72,8 +72,8 @@
     .emc-zw{background:none;border:0;padding:0;font:inherit;font-weight:800;color:var(--gold);cursor:help;text-decoration:underline dotted;text-underline-offset:3px}
     .emc-zwn{display:block;font-size:.8rem;color:var(--text-muted);margin:.15rem 0 0}
     .emc-loc{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.2rem 0 0}
-    .emc-loc input{width:7rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font-size:1rem}
-    .emc-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:8px;background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
+    .emc-loc input{width:7rem;min-height:44px;padding:0 .6rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--bg);color:var(--text);font-size:1rem}
+    .emc-btn{min-height:44px;padding:0 .95rem;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface2,var(--surface));color:var(--text);font:inherit;font-weight:700;cursor:pointer}
     .emc-btn.go{background:var(--gold-fill);color:#111;border-color:var(--gold-fill)}
     .emc-link{background:none;border:0;padding:0;color:var(--link,var(--brand));text-decoration:underline;font:inherit;font-size:.85rem;cursor:pointer;min-height:32px}
     .emc-status{font-size:.86rem;color:var(--text-muted);margin:.4rem 0 0}
@@ -102,21 +102,21 @@
     .emc #emc-count,.emc #emc-asof{margin:0 0 .3rem}
     .emc-share{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.6rem 0 0}
     .emc-share p{flex:1 1 100%;margin:0;font-size:.84rem;color:var(--text-dim);font-family:'JetBrains Mono',monospace}
-    .emc-share textarea{flex:1 1 100%;min-height:4.5rem;font-size:.85rem;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:8px}
-    .emc details.box{border:1px solid var(--border);border-radius:10px;padding:.15rem .95rem;margin:.6rem 0;background:var(--surface)}
+    .emc-share textarea{flex:1 1 100%;min-height:4.5rem;font-size:.85rem;background:var(--bg);color:var(--text);border:1px solid var(--border);border-radius:var(--r-md)}
+    .emc details.box{border:1px solid var(--border);border-radius:var(--r-lg);padding:.15rem .95rem;margin:.6rem 0;background:var(--surface)}
     .emc details.box>summary{cursor:pointer;min-height:46px;display:flex;align-items:center;font-weight:700;color:var(--text)}
     .emc-in{display:flex;flex-wrap:wrap;gap:.6rem 1rem;margin:.3rem 0 .7rem;align-items:flex-end}
     .emc-in label{display:flex;flex-direction:column;gap:.25rem;font-size:.82rem;color:var(--text-muted)}
     .emc-in label.emc-chk{flex-direction:row}
-    .emc-mout{border-left:4px solid var(--border);padding:.5rem .8rem;margin:0 0 .8rem;font-size:.95rem;color:var(--text);background:var(--bg);border-radius:0 8px 8px 0}
+    .emc-mout{border-left:4px solid var(--border);padding:.5rem .8rem;margin:0 0 .8rem;font-size:.95rem;color:var(--text);background:var(--bg);border-radius:0 var(--r-md) var(--r-md) 0}
     .emc-mout.v-dry{border-left-color:var(--green)} .emc-mout.v-close,.emc-mout.v-part{border-left-color:var(--gold)} .emc-mout.v-wet{border-left-color:var(--red)}
     .emc-t{border-collapse:collapse;width:100%;font-size:.9rem;margin:.2rem 0 .8rem}
     .emc-t th,.emc-t td{padding:.45rem .55rem;border-bottom:1px solid var(--border);text-align:right}
     .emc-t th:first-child{text-align:left;white-space:nowrap}
-    .emc-t thead th{font-size:.74rem;text-transform:uppercase;letter-spacing:.04em;color:var(--text-muted);vertical-align:bottom}
+    .emc-t thead th{font-size:.78rem;text-transform:none;letter-spacing:0;color:var(--text-muted);vertical-align:bottom}
     .emc-t td{font-family:'JetBrains Mono',monospace;color:var(--text)}
     .emc-tw{overflow-x:auto;-webkit-overflow-scrolling:touch}
-    .emc .eq{display:block;padding:.55rem .7rem;margin:.3rem 0 .8rem;background:var(--bg);border:1px solid var(--border);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-word}
+    .emc .eq{display:block;padding:.55rem .7rem;margin:.3rem 0 .8rem;background:var(--bg);border:1px solid var(--border);border-radius:var(--r-md);font-family:'JetBrains Mono',monospace;font-size:.84rem;color:var(--text);white-space:pre-wrap;word-break:break-word}
     .emc .src{font-size:.84rem;color:var(--text-muted)}
     .emc-grid{border-collapse:collapse;width:100%;font-family:'JetBrains Mono',monospace;font-size:.84rem;margin:.3rem 0 .6rem}
     .emc-grid th,.emc-grid td{border:1px solid var(--border);padding:.32rem .2rem;text-align:center}
@@ -136,7 +136,7 @@
     .emc-faq details:last-child{border-bottom:1px solid var(--border)}
     .emc-faq summary{cursor:pointer;font-weight:600;color:var(--text);font-size:1rem}
     .emc-faq details p{margin:.6rem 0 .2rem}
-    .emc .emc-credit{margin:2rem 0 0;padding:.8rem 1rem;border:1px dashed var(--border);border-radius:10px;font-size:.95rem;color:var(--text-dim)}
+    .emc .emc-credit{margin:2rem 0 0;padding:.8rem 1rem;border:1px dashed var(--border);border-radius:var(--r-lg);font-size:.95rem;color:var(--text-dim)}
     .emc .rel{display:flex;flex-wrap:wrap;gap:.4rem 1rem;list-style:none;padding:0;margin:.4rem 0 0}
     .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
     @media(max-width:420px){.emc-seg button{font-size:.84rem;padding:0 .55rem}.emc-mode button{padding:.3rem .3rem}.emc-grid{font-size:.74rem}.emc-grid th,.emc-grid td{padding:.28rem .1rem}}
@@ -416,11 +416,11 @@ es(T) = 6.1094 x exp( 17.625 x T / (T + 243.04) )   hPa, T in &deg;C</code>
   </nav>
 <!-- /static-nav:footer -->
 </div>
-  <script src="/components/loader.js?v=19" defer></script>
+  <script src="/components/loader.js?v=20" defer></script>
   <script src="/components/grain-emc.js?v=5" defer></script>
   <script src="/components/nws.js?v=1" defer></script>
   <script src="/components/grain-emc-ui.js?v=6" defer></script>
   <script>/* Print this chart: only that chart, on one landscape Letter page */document.addEventListener('click',function(e){var b=e.target.closest&&e.target.closest('[data-print-chart]');if(!b)return;var h=document.documentElement,k=b.getAttribute('data-print-chart');h.classList.add('print-chart','print-'+k);var done=function(){h.classList.remove('print-chart','print-corn','print-soybeans','print-wheat');window.removeEventListener('afterprint',done);};window.addEventListener('afterprint',done);window.print();});</script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

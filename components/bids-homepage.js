@@ -1465,7 +1465,7 @@
       + (pending ? 'Elevator bids are still loading. They will show here when they arrive.'
                  : 'The cash bids did not load. Try again, or open the cash bids page.')
       + '<p class="bh-baked" hidden style="margin:.5rem 0 0;color:var(--text)"></p>'
-      + '<button type="button" class="bh-retry" style="margin:.5rem 0 .2rem;min-height:44px;padding:.4rem 1rem;background:none;border:1px solid var(--border);border-radius:6px;color:var(--gold);font-weight:700;font-size:.82rem;cursor:pointer">Try again</button>'
+      + '<button type="button" class="bh-retry" style="margin:.5rem 0 .2rem;min-height:44px;padding:.4rem 1rem;background:none;border:1px solid var(--border);border-radius:var(--r-md);color:var(--gold);font-weight:700;font-size:.82rem;cursor:pointer">Try again</button>'
       + '<br><a href="/cash-bids' + (zip ? '?zip=' + escHtml(zip) : '') + '" style="color:var(--gold)">Search cash bids →</a></div>';
   }
   /* Nov 4, 2026 (site panel): the one failure path (components/bids-fallback.js). A slow or failed
@@ -1482,7 +1482,7 @@
   var CARD_CSS = [
     '#bids-list-area .bh-vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}',
     '#bids-list-area .bh-crops{display:flex;flex-wrap:wrap;gap:.35rem;margin:0 0 .5rem}',
-    '#bids-list-area .bh-crop{min-height:36px;padding:.25rem .75rem;border-radius:999px;font-family:inherit;font-size:.8125rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-dim)}',
+    '#bids-list-area .bh-crop{min-height:36px;padding:.25rem .75rem;border-radius:var(--r-lg);font-family:inherit;font-size:.8125rem;font-weight:700;cursor:pointer;border:1px solid var(--border);background:transparent;color:var(--text-dim)}',
     '#bids-list-area .bh-crop[aria-pressed="true"]{border-color:var(--gold);background:var(--gold-fill,var(--gold));color:#0a0c0d}',
     '#bids-list-area .bh-degraded{font-size:.8125rem;color:var(--text-dim);margin:0 0 .4rem}',
     '#bids-list-area .bh-cols{display:none}',
@@ -1548,7 +1548,7 @@
     '#bids-list-area .bh-normal-h{font-weight:700;color:var(--text-dim)}',
     '#bids-list-area .bh-elev{position:relative}',
     '#bids-list-area .bh-elev:has(>.bh-watch) .bh-id{padding-right:3.6rem}',
-    '#bids-list-area .bh-watch{position:absolute;top:0;right:1.6rem;min-width:44px;min-height:44px;padding:0 .3rem;background:none;border:0;border-radius:6px;font-family:inherit;font-size:.875rem;font-weight:600;color:var(--gold);text-decoration:underline;text-underline-offset:3px;cursor:pointer}',
+    '#bids-list-area .bh-watch{position:absolute;top:0;right:1.6rem;min-width:44px;min-height:44px;padding:0 .3rem;background:none;border:0;border-radius:var(--r-md);font-family:inherit;font-size:.875rem;font-weight:600;color:var(--gold);text-decoration:underline;text-underline-offset:3px;cursor:pointer}',
     '[data-theme="light"] #bids-list-area .bh-watch{color:#86600f}',
     '#bids-list-area .bh-watch:focus-visible{outline:2px solid var(--gold);outline-offset:0}',
     '#bids-list-area .watch-elevator-btn{min-height:44px;padding:0;background:none;border:0;font-family:inherit;font-size:.8125rem;color:var(--text-muted);text-decoration:underline;cursor:pointer}',
@@ -1957,9 +1957,9 @@
       /* home audit Q9: on the rebuilt home page (main.hp) the elevator count line stays where it is, never moved into the hidden list area */
       if(feedNodes === null) feedNodes = document.querySelector('main.hp') ? [] : [document.querySelector('.r7-cov'), document.getElementById('idx1-trust-ledger')].filter(function(x){ return x; });
       area.innerHTML = '<div><span style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap">Loading cash bids</span>'
-        + '<div style="height:36px;background:var(--surface2);border-radius:6px;margin-bottom:.4rem;opacity:.4"></div>'
-        + '<div style="height:36px;background:var(--surface2);border-radius:6px;margin-bottom:.4rem;opacity:.35"></div>'
-        + '<div style="height:36px;background:var(--surface2);border-radius:6px;opacity:.3"></div>'
+        + '<div style="height:36px;background:var(--surface2);border-radius:var(--r-md);margin-bottom:.4rem;opacity:.4"></div>'
+        + '<div style="height:36px;background:var(--surface2);border-radius:var(--r-md);margin-bottom:.4rem;opacity:.35"></div>'
+        + '<div style="height:36px;background:var(--surface2);border-radius:var(--r-md);opacity:.3"></div>'
         + '</div>';
     }
 

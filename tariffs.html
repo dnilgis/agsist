@@ -8,8 +8,8 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=28">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=29">
   <script src="/components/util.js?v=17"></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -96,7 +96,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tariff-status-banner.normal .tsb-icon{color:var(--green)}
 .tariff-status-banner.mixed .tsb-icon{color:var(--gold)}
 .tariff-section-title{margin:0;font-size:inherit;font-weight:inherit;letter-spacing:inherit;text-transform:inherit;color:inherit}
-.tariff-block-title{font-size:0.763rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin:0 0 .6rem}
+.tariff-block-title{font-size:0.763rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin:0 0 .6rem}
 
 /* 1100px, not 900: this page's centrepiece is a DATA TABLE, and at 900 the note
    column — which carries every fact worth reading — got 229px of an 864px table
@@ -117,18 +117,18 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 
 /* Hero */
 .tariff-hero { padding: 1.4rem 0 .9rem; border-bottom: 1px solid var(--border); margin-bottom: 1.25rem; }
-.tariff-eyebrow { font-size:0.763rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--gold); display: flex; align-items: center; gap: .4rem; margin-bottom: .3rem; }
+.tariff-eyebrow { font-size:0.763rem; font-weight: 700; letter-spacing:0; text-transform:none; color:var(--text-dim); display: flex; align-items: center; gap: .4rem; margin-bottom: .3rem; }
 .tariff-page-title { font-family:var(--font-display); font-size: 1.75rem; font-weight: 800; color: var(--text); line-height: 1.1; margin: 0 0 .35rem; text-transform: uppercase; letter-spacing: -.01em; }
 .tariff-page-sub { font-size: .84rem; color: var(--text-muted); line-height: 1.55; max-width: 640px; }
 
 /* Status banner */
 .tariff-status-banner {
   display: flex; align-items: flex-start; gap: .85rem;
-  padding: .85rem 1rem; border-radius: 12px; margin-bottom: 1.25rem; border: 1px solid;
+  padding: .85rem 1rem; border-radius:var(--r-lg); margin-bottom: 1.25rem; border: 1px solid;
 }
-.tariff-status-banner.elevated { background: rgba(239,68,68,.06);  border-color: rgba(239,68,68,.22); }
-.tariff-status-banner.normal   { background: rgba(34,197,94,.06);  border-color: rgba(34,197,94,.20); }
-.tariff-status-banner.mixed    { background: rgba(212,162,63,.06); border-color: rgba(212,162,63,.20); }
+.tariff-status-banner.elevated { background: var(--surface2);  border-color: rgba(239,68,68,.22); }
+.tariff-status-banner.normal   { background: var(--surface2);  border-color: rgba(34,197,94,.20); }
+.tariff-status-banner.mixed    { background: var(--surface2); border-color: rgba(212,162,63,.20); }
 .tsb-icon { font-size: 1.5rem; flex-shrink: 0; line-height: 1; margin-top: .05rem; }
 .tsb-body { flex: 1; }
 .tsb-label { font-family:var(--font-display); font-size: 1.1rem; font-weight: 700; line-height: 1; margin-bottom: .2rem; }
@@ -172,10 +172,10 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 @media (max-width: 374px) { #tariff-tbody.tt-wait { min-height: 3150px; } }
 
 /* Rate table */
-.tariff-section { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; margin-bottom: 1.1rem; overflow: hidden; }
+.tariff-section { background: var(--surface); border: 1px solid var(--border); border-radius:var(--r-md); margin-bottom: 1.1rem; overflow: hidden; }
 .tariff-section-head {
   padding: .65rem 1rem; border-bottom: 1px solid var(--border);
-  font-size:0.763rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--text-muted);
+  font-size:0.763rem; font-weight: 700; letter-spacing:0; text-transform:none; color: var(--text-muted);
   display: flex; align-items: center; justify-content: space-between;
 }
 /* FIXED layout, or the widths below are only minimums. With auto layout the
@@ -185,7 +185,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tariff-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 .tariff-table th {
   padding: .5rem .85rem; text-align: left;
-  font-size:0.763rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted);
+  font-size:0.763rem; font-weight: 700; letter-spacing:0; text-transform:none; color: var(--text-muted);
   border-bottom: 1px solid var(--border);
 }
 /* TOP, not middle. With a long note the row is hundreds of pixels tall, and
@@ -202,7 +202,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tariff-table tr:last-child td { border-bottom: none; }
 .tariff-table tr:hover td { background: rgba(255,255,255,.015); }
 .tt-comm { display: flex; align-items: center; gap: .45rem; font-weight: 700; }
-.tt-icon { font-size: 1rem; line-height: 1; }
 .tt-rate { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: .88rem; }
 .tt-rate.elevated { color:var(--tf-red); }
 .tt-rate.normal   { color: var(--green); }
@@ -210,11 +209,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tt-baseline { font-family: 'JetBrains Mono', monospace; font-size:0.785rem; color: var(--text-muted); }
 .tt-badge {
   display: inline-flex; align-items: center; padding: .15rem .48rem; border-radius: 4px;
-  font-size:0.755rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; border: 1px solid;
+  font-size:0.755rem; font-weight: 700; letter-spacing:0; text-transform:none; border: 1px solid;
 }
-.tt-badge.elevated { color:var(--tf-red); background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.22); }
-.tt-badge.normal   { color: var(--green); background: rgba(34,197,94,.07); border-color: rgba(34,197,94,.2); }
-.tt-badge.mixed    { color: var(--gold); background: rgba(212,162,63,.08); border-color: rgba(212,162,63,.22); }
+.tt-badge.elevated { color:var(--tf-red); background: var(--surface2); border-color: rgba(239,68,68,.22); }
+.tt-badge.normal   { color: var(--green); background: var(--surface2); border-color: rgba(34,197,94,.2); }
+.tt-badge.mixed    { color: var(--gold); background: var(--surface2); border-color: rgba(212,162,63,.22); }
 /* .8rem to match the table. It was 1rem — the annotation set larger than the
    numbers it annotates, which inverted the hierarchy and cost it extra lines. */
 .tt-note { font-size:.8rem; color: var(--text-muted); line-height:1.6; }
@@ -239,7 +238,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
   /* Each value names its own column, since the header row is gone. */
   .tariff-table td[data-label]:not([data-label=""])::before {
     content: attr(data-label) " "; color: var(--text-dim);
-    font-size: .7rem; text-transform: uppercase; letter-spacing: .06em;
+    font-size:.78rem; text-transform:none; letter-spacing:0;
   }
   .tariff-table td.tt-rate { font-size: 1.05rem; }
   .tt-note { display: block; margin-top: .5rem; padding-top: .5rem;
@@ -252,9 +251,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tl-item:last-child { border-bottom: none; }
 .tl-date { font-family: 'JetBrains Mono', monospace; font-size:0.763rem; color: var(--text-muted); white-space: nowrap; padding-top: .1rem; min-width: 72px; }
 .tl-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: .32rem; }
-.tl-dot.high   { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
-.tl-dot.medium { background: var(--gold-fill,var(--gold)); box-shadow: 0 0 0 3px rgba(212,162,63,.15); }
-.tl-dot.low    { background: var(--green); box-shadow: 0 0 0 3px rgba(34,197,94,.15); }
+.tl-dot.high   { background: #ef4444; }
+.tl-dot.medium { background: var(--gold-fill,var(--gold)); }
+.tl-dot.low    { background: var(--green); }
 .tl-event { font-size:0.795rem; color: var(--text); line-height: 1.5; flex: 1; }
 .tl-src { font-size:0.74rem; color: var(--text-muted); white-space: nowrap; }
 /* phones: the date sits on its own line above the event, so the event text
@@ -267,26 +266,26 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 
 /* Explainer cards — fixed: minmax grid, no bare 1fr 1fr */
 .tariff-explainer { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: .75rem; margin-bottom: 1.25rem; }
-.te-card { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: .9rem 1rem; }
+.te-card { background: var(--surface); border: 1px solid var(--border); border-radius:var(--r-md); padding: .9rem 1rem; }
 .te-card h3 { font-size: .8rem; font-weight: 700; color: var(--text); margin: 0 0 .3rem; }
 .te-card p  { font-size:0.79rem; color: var(--text-muted); line-height: 1.62; margin: 0; }
 
 /* Basis-channel callout */
-.tariff-wi-mn { display: flex; gap: .7rem; align-items: flex-start; padding: .85rem 1rem; background: rgba(58,139,60,.05); border: 1px solid rgba(58,139,60,.18); border-radius: 8px; margin-bottom: 1.1rem; font-size: .8rem; color: var(--text-dim); line-height: 1.6; }
+.tariff-wi-mn { display: flex; gap: .7rem; align-items: flex-start; padding: .85rem 1rem; background: var(--surface2); border: 1px solid rgba(58,139,60,.18); border-radius:var(--r-md); margin-bottom: 1.1rem; font-size: .8rem; color: var(--text-dim); line-height: 1.6; }
 .tariff-wi-mn strong { color: var(--green); }
 .tariff-wi-mn a { text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px; }
 
 /* External links */
 .tariff-links { display: flex; gap: .5rem; flex-wrap: wrap; margin-bottom: 1.25rem; }
-.tariff-links a { display: inline-flex; align-items: center; gap: .3rem; padding: .4rem .8rem; border: 1px solid var(--border); border-radius: 8px; font-size:0.787rem; color: var(--text-dim); text-decoration: none; background: var(--surface); transition: all .15s; min-height: 44px; }
+.tariff-links a { display: inline-flex; align-items: center; gap: .3rem; padding: .4rem .8rem; border: 1px solid var(--border); border-radius:var(--r-md); font-size:0.787rem; color: var(--text-dim); text-decoration: none; background: var(--surface); transition: all .15s; min-height: 44px; }
 .tariff-links a:hover { border-color: var(--gold); color: var(--gold); }
 
 /* Source */
 .tariff-source { font-size:0.763rem; color: var(--text-muted); text-align: center; padding-top: .65rem; border-top: 1px solid var(--border); }
 .tariff-source a { color: var(--gold); text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px; }
 .tariff-source a:hover { text-decoration: underline; }
-.tariff-stale.warn{background:rgba(var(--gold-rgb),.1);border:1px solid rgba(var(--gold-rgb),.45);color:var(--gold)}
-.tariff-stale.alert{background:rgba(224,107,66,.12);border:1px solid rgba(224,107,66,.5);color:var(--red,#e06b42)}
+.tariff-stale.warn{background:var(--surface2);border:1px solid rgba(var(--gold-rgb),.45);color:var(--gold)}
+.tariff-stale.alert{background:var(--surface2);border:1px solid rgba(224,107,66,.5);color:var(--red,#e06b42)}
 .tariff-stale a{color:inherit;font-weight:800;text-decoration:underline}
 .tt-meta{display:block;margin-top:.35rem;font-size:0.755rem;color:var(--text-muted);line-height:1.5}
 .tt-meta a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
@@ -302,9 +301,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .cn-gauge{padding:.9rem 1rem 1rem}
 .cn-big{font-family:'JetBrains Mono',monospace;font-size:1.6rem;font-weight:800;color:var(--text);line-height:1.1}
 .cn-big small{font-size:.8rem;font-weight:600;color:var(--text-muted);margin-left:.35rem}
-.cn-bar{position:relative;height:14px;border-radius:7px;background:var(--surface2,rgba(127,127,127,.15));margin:.7rem 0 .35rem;overflow:visible}
+.cn-bar{position:relative;height:14px;border-radius:var(--r-md);background:var(--surface2,rgba(127,127,127,.15));margin:.7rem 0 .35rem;overflow:visible}
 .cn-bar span{position:absolute;top:0;bottom:0;left:0}
-.cn-bar .cn-ship{background:var(--gold-fill,var(--gold));border-radius:7px 0 0 7px}
+.cn-bar .cn-ship{background:var(--gold-fill,var(--gold));border-radius:var(--r-md) 0 0 var(--r-md)}
 .cn-bar .cn-out{background:rgba(var(--gold-rgb),.38)}
 .cn-bar .cn-mark{width:2px;top:-4px;bottom:-4px;background:var(--text)}
 .cn-key{display:flex;flex-wrap:wrap;gap:.25rem 1rem;font-size:.76rem;color:var(--text-muted);margin-bottom:.55rem}
@@ -319,7 +318,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 </style>
 </head>
 <body>
-<noscript><div style="max-width:640px;margin:1rem auto;padding:1rem;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text-dim);font-size:.85rem">This tariff tracker loads current rates with JavaScript. For official rates see <a href="https://ustr.gov" style="color:var(--gold)">ustr.gov</a> and USDA GATS.</div></noscript>
+<noscript><div style="max-width:640px;margin:1rem auto;padding:1rem;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text-dim);font-size:.85rem">This tariff tracker loads current rates with JavaScript. For official rates see <a href="https://ustr.gov" style="color:var(--gold)">ustr.gov</a> and USDA GATS.</div></noscript>
 <a href="#main" class="skip">Skip to content</a>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><defs><symbol id="i-landmark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 18v-7" />
   <path d="M11.119 2.205a2 2 0 0 1 1.762 0l7.84 3.846A.5.5 0 0 1 20.5 7h-17a.5.5 0 0 1-.22-.949z" />
@@ -394,14 +393,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 <main id="main" tabindex="-1" class="tariff-page">
 
   <div class="tariff-hero">
-    <div class="tariff-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-landmark"/></svg> Trade policy · updated when policy changes</div>
+    <div class="tariff-eyebrow page-kicker">Trade policy · updated when policy changes</div>
     <h1 class="tariff-page-title">Ag tariff tracker</h1>
     <p class="tariff-page-sub page-lede">Current tariff rates on US corn, soybean, wheat, and pork exports to key markets. These rates directly affect grain basis, export demand, and cash prices at your elevator.</p>
     <p class="tariff-by">Each rate links its source</p>
   </div>
 
   <div class="tariff-status-banner" id="tariff-status-banner">
-    <div class="tsb-icon" id="tsb-icon"><svg class="ic" aria-hidden="true"><use href="#i-siren"/></svg></div>
+    <div class="tsb-icon" id="tsb-icon"></div>
     <div class="tsb-body">
       <div class="tsb-label" id="tsb-label">Checking current status</div>
       <div class="tsb-note" id="tsb-note">Loading current status…</div>
@@ -410,9 +409,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
     </div>
   </div>
 
-  <div id="tariff-stale" class="tariff-stale" style="visibility:hidden;margin:0 0 1rem;border-radius:10px;padding:.7rem 1rem;font-size:.8rem;line-height:1.55;font-weight:600"></div>
+  <div id="tariff-stale" class="tariff-stale" style="visibility:hidden;margin:0 0 1rem;border-radius:var(--r-lg);padding:.7rem 1rem;font-size:.8rem;line-height:1.55;font-weight:600"></div>
 
-  <!-- ai-answer:tariff-impact --><section class="ai-answer" id="answer-tariff-impact" aria-labelledby="answer-tariff-impact-h" data-checked="2026-11-13" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-tariff-impact-h" style="font-size:1.1rem;margin:0 0 .4rem">How are tariffs hitting farmers&#x27; sales?</h2><p style="margin:0 0 .5rem">USDA&#x27;s November 10 WASDE projects 2026/27 U.S. soybean exports at 1.720 billion bushels, up from 1.515 billion in 2025/26 but still below the 1.892 billion of 2024/25; that is 25 million more than the October forecast. Corn exports are projected at 3.275 billion bushels, 25 million less than in October and below the 3.429 billion of 2025/26. USDA puts the 2026/27 season-average farm price at $12.10 for soybeans and $4.60 for corn. The tariff rates in force and USDA&#x27;s weekly count of soybeans sold to China are in the sections below; I have not seen a USDA figure for what tariffs cost a farm, so this page does not print one.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Nov 13, 2026. Sources: USDA WASDE-677, Nov 10, 2026</p></section><!-- /ai-answer:tariff-impact -->
+  <!-- answer:tariff-impact --><section class="qa-answer" id="answer-tariff-impact" aria-labelledby="answer-tariff-impact-h" data-checked="2026-11-13" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-tariff-impact-h" style="font-size:1.1rem;margin:0 0 .4rem">How are tariffs hitting farmers&#x27; sales?</h2><p style="margin:0 0 .5rem">USDA&#x27;s November 10 WASDE projects 2026/27 U.S. soybean exports at 1.720 billion bushels, up from 1.515 billion in 2025/26 but still below the 1.892 billion of 2024/25; that is 25 million more than the October forecast. Corn exports are projected at 3.275 billion bushels, 25 million less than in October and below the 3.429 billion of 2025/26. USDA puts the 2026/27 season-average farm price at $12.10 for soybeans and $4.60 for corn. The tariff rates in force and USDA&#x27;s weekly count of soybeans sold to China are in the sections below; I have not seen a USDA figure for what tariffs cost a farm, so this page does not print one.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Nov 13, 2026. Sources: USDA WASDE-677, Nov 10, 2026</p></section><!-- /answer:tariff-impact -->
   <div class="tariff-section">
     <div class="tariff-section-head">
       <h2 class="tariff-section-title">Current export tariff rates by commodity and destination</h2>
@@ -453,7 +452,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
     </div>
   </section>
 
-  <aside class="ya" data-your-state="tariffs" data-v="2" hidden></aside><script src="/components/your-state.js?v=1" defer></script>
+  <aside class="ya" data-your-state="tariffs" data-v="2" hidden></aside><script src="/components/your-state.js?v=2" defer></script>
 
   <div class="tariff-section">
     <div class="tariff-section-head"><h2 class="tariff-section-title">Policy Timeline</h2></div>
@@ -464,11 +463,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 
   <!-- Basis channel callout (national scope) -->
   <div class="tariff-wi-mn">
-    <span style="font-size:1.3rem;flex-shrink:0;color:var(--green)" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span>
+    
     <div>
       <strong>Tariffs often show up in your basis first.</strong> When a big buyer like China puts a retaliatory tariff on US grain,
       basis at interior elevators that ship to the Gulf can widen within weeks, so your cash price can fall faster than the board.
-      Soybean country feels it first. Watch the <a href="/cash-bids" style="color:var(--gold)">Cash Bids page</a> for real-time basis at your elevators
+      Soybean country feels it first. Watch the <a href="/cash-bids" style="color:var(--gold)">Cash Bids page</a> for current basis at your elevators
       and the <a href="/markets" style="color:var(--gold)">Markets page</a> for futures context.
     </div>
   </div>
@@ -494,17 +493,17 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
   </div>
 
   <div class="tariff-links">
-    <svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> USDA export sales
-    <a href="https://ustr.gov" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-landmark"/></svg> USTR trade policy</a>
-    <a href="/markets"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Grain Markets</a>
-    <a href="/cash-bids"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg> Cash Bids</a>
-    <a href="/usda-calendar"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> USDA Calendar</a>
+    USDA export sales
+    <a href="https://ustr.gov" target="_blank" rel="noopener">USTR trade policy</a>
+    <a href="/markets">Grain Markets</a>
+    <a href="/cash-bids">Cash Bids</a>
+    <a href="/usda-calendar">USDA Calendar</a>
   </div>
 
 <!--FAQ:START-->
 <style>
 .agf{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.1rem 1.2rem;margin:1.5rem 0 0}
-.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text);margin:0 0 .4rem}
+.agf-t{font-family:var(--font-display);font-size:.95rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text);margin:0 0 .4rem}
 .agf details{border-top:1px solid var(--border)}
 .agf details:first-of-type{border-top:0}
 .agf summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:baseline;gap:.75rem;padding:.85rem 0;font-size:1rem;font-weight:600;line-height:1.4;color:var(--text)}
@@ -553,7 +552,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19" defer></script>
+<script src="/components/loader.js?v=20" defer></script>
 
 <script>
 (function(){
@@ -572,16 +571,6 @@ function fmtDate(iso){
 }
 
 
-function commodityIcon(name){
-  var n=(name||'').toLowerCase(), ic='leaf';
-  if(n.indexOf('soy')>-1||n.indexOf('bean')>-1) ic='bean';
-  else if(n.indexOf('corn')>-1) ic='sprout';
-  else if(n.indexOf('wheat')>-1||n.indexOf('sorghum')>-1||n.indexOf('milo')>-1) ic='wheat';
-  else if(n.indexOf('pork')>-1||n.indexOf('hog')>-1) ic='ham';
-  else if(n.indexOf('beef')>-1||n.indexOf('cattle')>-1) ic='beef';
-  else if(n.indexOf('ethanol')>-1) ic='fuel';
-  return '<svg class="ic" aria-hidden="true"><use href="#i-'+ic+'"/></svg>';
-}
 function watchLinks(commodity){
   var c=(commodity||'').toLowerCase();
   var map={'soybeans':{f:'/soybean-futures-prices',w:'Soybeans are the most China-exposed US grain export. Watch demand and harvest basis.'},'corn':{f:'/corn-futures-prices',w:'Corn export exposure to China is smaller, but policy still moves futures and basis.'},'wheat':{f:'/wheat-futures-prices',w:'Wheat has modest direct China exposure; global trade flows matter more.'}};
@@ -616,7 +605,7 @@ fetch('/data/tariffs.json')
 
     var upd = document.getElementById('tariff-updated');
     if(upd) upd.textContent = 'As of '+fmtDate(data.updated);
-    try{var ageDays=Math.floor((Date.now()-new Date(data.updated+'T12:00:00').getTime())/86400000);var sb=document.getElementById('tariff-stale');if(sb){if(ageDays>45){sb.className='tariff-stale alert';sb.style.visibility='visible';sb.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> <strong>This tariff data is '+ageDays+' days old.</strong> Trade policy can shift in days. These rates may no longer be current. Confirm against <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> and the <a href=\"https://www.federalregister.gov\" target=\"_blank\" rel=\"noopener\">Federal Register</a> before any trading decision.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'alert'});}else if(ageDays>14){sb.className='tariff-stale warn';sb.style.visibility='visible';sb.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> This data is '+ageDays+' days old. Trade policy changes quickly: verify current rates at <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> or USDA GATS before acting.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'warn'});}}}catch(e){}
+    try{var ageDays=Math.floor((Date.now()-new Date(data.updated+'T12:00:00').getTime())/86400000);var sb=document.getElementById('tariff-stale');if(sb){if(ageDays>45){sb.className='tariff-stale alert';sb.style.visibility='visible';sb.innerHTML='<strong>This tariff data is '+ageDays+' days old.</strong> Trade policy can shift in days. These rates may no longer be current. Confirm against <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> and the <a href=\"https://www.federalregister.gov\" target=\"_blank\" rel=\"noopener\">Federal Register</a> before any trading decision.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'alert'});}else if(ageDays>14){sb.className='tariff-stale warn';sb.style.visibility='visible';sb.innerHTML='This data is '+ageDays+' days old. Trade policy changes quickly: verify current rates at <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> or USDA GATS before acting.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'warn'});}}}catch(e){}
 
     var tbody = document.getElementById('tariff-tbody');
     if(tbody && data.rows && data.rows.length){
@@ -631,7 +620,7 @@ fetch('/data/tariffs.json')
            and each value prints its own column name, because a bare "3%" under a
            bare "~13%" with no headings is not a table, it is a riddle. */
         return '<tr>'
-          +'<td data-label=""><div class="tt-comm"><span class="tt-icon">'+commodityIcon(row.commodity)+'</span>'+esc(row.commodity)+'</div></td>'
+          +'<td data-label=""><div class="tt-comm">'+esc(row.commodity)+'</div></td>'
           +'<td data-label="Destination" style="color:var(--text-muted)">'+esc(row.destination)+'</td>'
           +'<td data-label="Baseline" class="tt-baseline">'+esc(row.baseline)+'</td>'
           +'<td data-label="Current rate" class="tt-rate '+sc+'">'+esc(row.rate)+'</td>'
@@ -717,6 +706,6 @@ fetch('/data/export-sales.json')
 })();
 </script>
 
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

@@ -9,13 +9,13 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-<link rel="stylesheet" href="/components/styles.css?v=28">
-<link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+<link rel="stylesheet" href="/components/styles.css?v=29">
+<link rel="stylesheet" href="/components/asof.css?v=2">
 <script src="/components/util.js?v=20"></script>
 <script src="/components/asof.js?v=1"></script>
-<script src="/components/price-local.js?v=14"></script>
-<link rel="stylesheet" href="/components/ag-chart.css?v=2"><link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
+<script src="/components/price-local.js?v=15"></script>
+<link rel="stylesheet" href="/components/ag-chart.css?v=3"><link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script>
 <link rel="icon" href="/img/favicon.ico" sizes="32x32">
 <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
 <link rel="apple-touch-icon" href="/img/apple-touch-icon.png">
@@ -57,15 +57,15 @@
 ]}
 ]}</script>
 <style id="fold-css">/* 2026-10-17 phone fold: long secondary sections sit behind a labeled <details>; open on wide screens (data-wide-open). Content stays in the HTML. */
-details.fold{margin:0 0 10px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
+details.fold{margin:0 0 10px;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface)}
 details.fold>summary.fold-sum{list-style:none;cursor:pointer;display:flex;flex-direction:column;gap:2px;padding:.7rem 2.4rem .7rem .95rem;min-height:48px;justify-content:center;position:relative}
 details.fold>summary.fold-sum::-webkit-details-marker{display:none}
-details.fold>summary.fold-sum::after{content:"";position:absolute;right:1rem;top:50%;width:9px;height:9px;margin-top:-6px;border-right:2px solid var(--gold);border-bottom:2px solid var(--gold);transform:rotate(45deg);transition:transform .15s}
+details.fold>summary.fold-sum::after{content:"";position:absolute;right:1rem;top:50%;width:9px;height:9px;margin-top:-6px;border-right:2px solid var(--text-dim);border-bottom:2px solid var(--text-dim);transform:rotate(45deg);transition:transform .15s}
 details.fold[open]>summary.fold-sum::after{transform:rotate(-135deg);margin-top:-1px}
 .fold-t{font-weight:700;color:var(--text);font-size:.95rem}.fold-d{font-size:.8rem;color:var(--text-dim);line-height:1.4}
 details.fold>.fold-body{padding:0 .6rem .6rem}details.fold>.fold-body>*:last-child{margin-bottom:0}
 details.fold[hidden]{display:none}
-@media(max-width:520px){.seas-chart{gap:2px}.seas-mo{font-size:.66rem;white-space:nowrap}.fold-body .seas-wrap{padding:10px 8px}.rg .ra{display:grid;grid-template-columns:auto 1fr;align-items:center;justify-items:start;text-align:left;column-gap:8px;padding:8px 10px}.rg .ra-i{margin:0;grid-row:span 2}.rg .ra-n{font-size:.85rem}.rg .ra-d{font-size:.74rem}}
+@media(max-width:520px){.seas-chart{gap:2px}.seas-mo{font-size:.66rem;white-space:nowrap}.fold-body .seas-wrap{padding:10px 8px}}
 </style>
 </head>
 <body>
@@ -93,8 +93,8 @@ details.fold[hidden]{display:none}
 
 
 .ps{display:flex;align-items:center;gap:6px;font-size:0.775rem;color:var(--text-dim);margin-bottom:10px}
-.ps-dot{width:6px;height:6px;border-radius:50%;background:var(--green);animation:pulse 2s infinite}
-.sk{color:var(--text-dim);animation:blink 1.4s ease-in-out infinite}
+.ps-dot{width:6px;height:6px;border-radius:50%;background:var(--green);}
+.sk{color:var(--text-dim);}
 .faq-wrap{background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);overflow:hidden;margin-bottom:14px}
 .faq-head{padding:10px 14px;border-bottom:1px solid var(--border);font-size:0.795rem;font-weight:700;color:var(--gold)}
 .faq-item{border-bottom:1px solid var(--border)}
@@ -105,22 +105,22 @@ details.fold[hidden]{display:none}
 .faq-a{max-height:0;overflow:hidden;transition:max-height .3s ease}
 .faq-item.open .faq-a{max-height:900px}
 .faq-a-inner{padding:0 14px 12px;font-size:1rem;color:var(--text-dim);line-height:1.68}
-.rl{font-size:0.77rem;color:var(--text-dim);text-transform:uppercase;letter-spacing:.5px;font-weight:600;margin:14px 0 6px}
-.rg{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:6px}
-.ra{display:flex;flex-direction:column;align-items:center;text-align:center;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;text-decoration:none;transition:border-color .2s;min-height:44px;justify-content:center}
+.rl{font-size:1rem;color:var(--text);font-weight:700;margin:14px 0 6px}
+.rg{display:flex;flex-wrap:wrap;gap:.2rem 1.2rem}
+.ra{display:inline-flex;align-items:baseline;gap:.4rem;text-decoration:underline;text-underline-offset:2px;min-height:44px;align-items:center}
 .ra:hover{border-color:var(--border-g)}
 .ra-i{font-size:1.2rem;margin-bottom:3px}
 .ra-n{font-size:.8rem;font-weight:600;color:var(--text)}
 .ra-d{font-size:0.763rem;color:var(--text-dim);margin-top:1px}
 </style>
 <style id="ct-furniture">
-.brief-strip{display:flex;gap:10px;align-items:center;background:linear-gradient(135deg,rgba(230,176,66,.08) 0%,var(--surface) 100%);border:1px solid var(--border);border-left:3px solid var(--gold);border-radius:10px;padding:10px 12px;margin:0 0 10px}
+.brief-strip{display:flex;gap:10px;align-items:center;background:var(--surface);border:1px solid var(--border);border-left:1px solid var(--border-2);border-radius:var(--r-lg);padding:10px 12px;margin:0 0 10px}
 .brief-icon{font-size:1.3rem;flex-shrink:0}.brief-text{flex:1;min-width:0}
 .brief-hd{font-size:0.795rem;font-weight:700;color:var(--text);line-height:1.3;margin-bottom:2px}
 .brief-teaser{font-size:1rem;color:var(--text-dim);line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.brief-cta{font-size:0.77rem;color:var(--gold);text-decoration:none;white-space:nowrap;padding:6px 10px;border:1px solid var(--border);border-radius:6px;flex-shrink:0;min-height:32px;display:flex;align-items:center}
+.brief-cta{font-size:0.77rem;color:var(--gold);text-decoration:none;white-space:nowrap;padding:6px 10px;border:1px solid var(--border);border-radius:var(--r-md);flex-shrink:0;min-height:32px;display:flex;align-items:center}
 .brief-cta:hover{border-color:var(--gold)}
-.author-block{background:linear-gradient(135deg,var(--surface) 0%,rgba(58,139,60,.03) 100%);border:1px solid var(--border);border-radius:10px;padding:13px 15px;margin:16px 0 0;display:flex;align-items:flex-start;gap:12px}
+.author-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:13px 15px;margin:16px 0 0;display:flex;align-items:flex-start;gap:12px}
 
 
 
@@ -140,7 +140,7 @@ details.fold[hidden]{display:none}
 .seas-note{font-size:1rem;color:var(--text-dim,#9bb0a3)}
 .seas-chart{display:flex;align-items:flex-end;gap:3px;height:70px;margin-bottom:4px;overflow:hidden}
 .seas-col{flex:1;display:flex;flex-direction:column;align-items:center;height:100%;cursor:default}
-.seas-bar{width:100%;border-radius:2px 2px 0 0;background:rgba(58,139,60,.4);transition:opacity .2s}
+.seas-bar{width:100%;border-radius:2px 2px 0 0;background:var(--text-dim);transition:opacity .2s}
 .seas-col.cur .seas-bar{background:var(--gold-fill,var(--gold,#d4a23f))}.seas-col:hover .seas-bar{opacity:.6}
 .seas-mo{font-size:0.73rem;color:var(--text-dim,#9bb0a3);margin-top:3px;text-align:center}
 .seas-col.cur .seas-mo{color:var(--gold,#d4a23f);font-weight:700}
@@ -206,7 +206,7 @@ details.fold[hidden]{display:none}
 <main id="main" class="fut" tabindex="-1">
   <nav class="bc" aria-label="Breadcrumb"><a href="/">Home</a> → Cattle futures prices</nav>
   <div class="brief-strip" id="brief-strip" style="display:none">
-    <div class="brief-icon"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg></div>
+    
     <div class="brief-text">
       <div class="brief-hd" id="brief-hd">-</div>
       <div class="brief-teaser" id="brief-teaser">-</div>
@@ -259,10 +259,9 @@ details.fold[hidden]{display:none}
       <div class="ps"><span id="status"><span class="ps-dot" aria-hidden="true"></span><span class="st-sk st-num" style="width:19ch" aria-hidden="true"></span><span class="sr-only">Loading prices</span></span></div>
 
   <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.2rem 0 .5rem">Data: CME Group futures via Yahoo Finance, delayed 10 to 25 min. Every source is in Sources and terms at the bottom of the page.</p>
-  <!-- ░░ static, AI-readable lead ░░ -->
   <div class="qa">
     <style>
-    .qa{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-left:3px solid var(--green,#5fc28a);border-radius:10px;padding:.85rem 1rem;margin:14px 0;font-size:1rem;line-height:1.6;color:var(--text-dim,#9bb0a3)}
+    .qa{background:var(--surface,#161b14);border:1px solid var(--border,#2a3324);border-left:3px solid var(--green,#5fc28a);border-radius:var(--r-lg);padding:.85rem 1rem;margin:14px 0;font-size:1rem;line-height:1.6;color:var(--text-dim,#9bb0a3)}
     .qa b{color:var(--text,#e7ece8)} .qa a{color:var(--gold,#d4a23f);text-decoration:none} .qa a:hover{text-decoration:underline}
     .qa-more{margin-top:0} .qa-more summary{cursor:pointer;color:var(--gold,#d4a23f);font-size:.9rem;font-weight:600;min-height:44px;display:flex;align-items:center} .qa-more p{margin:.25rem 0 0}
     </style>
@@ -279,23 +278,23 @@ details.fold[hidden]{display:none}
     .ct-status{font-size:0.78rem;color:var(--mut);margin:0 0 10px;font-family:'JetBrains Mono',monospace}
     .ct-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
     @media(max-width:640px){.ct-grid{grid-template-columns:1fr}}
-    .ct-card{background:var(--pnl);border:1px solid var(--ln);border-radius:14px;padding:1rem 1.1rem}
-    .ct-card .lbl{font-size:0.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:700}
+    .ct-card{background:var(--pnl);border:1px solid var(--ln);border-radius:var(--r-lg);padding:1rem 1.1rem}
+    .ct-card .lbl{font-size:0.78rem;text-transform:none;letter-spacing:0;color:var(--mut);font-weight:700}
     .ct-card .tk{font-size:0.765rem;color:var(--mut);font-family:'JetBrains Mono',monospace}
     .ct-seednote{font-family:var(--font-body,'Inter',system-ui,sans-serif);font-size:1rem;color:var(--text-dim,#8a948f);margin:.4rem 0 .1rem;line-height:1.6}.ct-price{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:2.1rem;color:var(--text);line-height:1.05;margin-top:.2rem}
     .ct-price .u{font-size:.8rem;color:var(--mut);font-weight:400}
     .ct-chg{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.9rem;margin-top:.15rem}
     .ct-chg.up{color:var(--up)} .ct-chg.dn{color:var(--dn)}
     .ct-rng{margin-top:.8rem}
-    .ct-rng-lbl{font-size:0.77rem;color:var(--mut);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px}
+    .ct-rng-lbl{font-size:0.77rem;color:var(--mut);text-transform:none;letter-spacing:0;margin-bottom:5px}
     .ct-bar{position:relative;height:6px;background:rgba(255,255,255,.08);border-radius:3px}
     .ct-fill{position:absolute;left:0;top:0;height:100%;border-radius:3px;background:var(--g);transition:width .5s}
     .ct-dot{position:absolute;top:-3px;width:12px;height:12px;border-radius:50%;background:var(--g);border:2px solid var(--pnl);transition:left .5s}
     .ct-rng-vals{display:flex;justify-content:space-between;font-size:0.775rem;margin-top:5px}
     .ct-rng-vals .lo,.ct-rng-vals .hi{color:var(--mut)} .ct-rng-vals .cur{color:var(--g);font-weight:700}
     .ct-read{font-size:0.79rem;color:var(--mut);line-height:1.5;margin-top:.6rem}
-    .ct-ratio{margin-top:12px;background:var(--pnl);border:1px solid var(--ln);border-radius:14px;padding:1rem 1.1rem}
-    .ct-ratio .lbl{font-size:0.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:700}
+    .ct-ratio{margin-top:12px;background:var(--pnl);border:1px solid var(--ln);border-radius:var(--r-lg);padding:1rem 1.1rem}
+    .ct-ratio .lbl{font-size:0.78rem;text-transform:none;letter-spacing:0;color:var(--mut);font-weight:700}
     .ct-ratio .val{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.6rem;color:var(--g);margin-top:.15rem}
     .ct-ratio .interp{font-size:.8rem;color:var(--mut);line-height:1.5;margin-top:.4rem}
     .ct-ratio .interp b{color:var(--tx)}
@@ -323,16 +322,16 @@ details.fold[hidden]{display:none}
       </div>
     </div>
     <div class="ct-ratio">
-      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><span class="lbl"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg> Feeder / live ratio</span><span class="tk" id="ct-ratio-feed">feeder ÷ live</span></div>
+      <div style="display:flex;justify-content:space-between;align-items:baseline;gap:8px;flex-wrap:wrap"><span class="lbl">Feeder / live ratio</span><span class="tk" id="ct-ratio-feed">feeder ÷ live</span></div>
       <div class="val" id="ct-ratio-val">-</div>
       <div class="interp" id="ct-ratio-interp">Loads with the prices.</div>
     </div>
   </section>
 
-  <!-- ai-answer:cattle-markets --><section class="ai-answer" id="answer-cattle-markets" aria-labelledby="answer-cattle-markets-h" data-checked="2026-10-18" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-cattle-markets-h" style="font-size:1.1rem;margin:0 0 .4rem">Where do cattle markets stand?</h2><p style="margin:0 0 .5rem">Today&#x27;s futures prices are at the top of this page; behind them is a small herd. NASS counted 94.2 million cattle and calves on U.S. farms on July 1, 2026, with 28.5 million beef cows, down 1% from a year earlier, and a 2026 calf crop of 32.5 million head, down 2%. USDA&#x27;s November 10 WASDE lowered its cattle price forecast for 2026, on a readily available supply of market-ready cattle this fall, and puts the 2026 average 5-area fed steer price at $236.31 per cwt (October forecast: $237.56), against $224.37 in 2025; that is a forecast.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 18, 2026. Sources: NASS Cattle report release, Jul 24, 2026 &middot; USDA WASDE-677, Nov 10, 2026</p></section><!-- /ai-answer:cattle-markets -->
+  <!-- answer:cattle-markets --><section class="qa-answer" id="answer-cattle-markets" aria-labelledby="answer-cattle-markets-h" data-checked="2026-10-18" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-cattle-markets-h" style="font-size:1.1rem;margin:0 0 .4rem">Where do cattle markets stand?</h2><p style="margin:0 0 .5rem">Today&#x27;s futures prices are at the top of this page; behind them is a small herd. NASS counted 94.2 million cattle and calves on U.S. farms on July 1, 2026, with 28.5 million beef cows, down 1% from a year earlier, and a 2026 calf crop of 32.5 million head, down 2%. USDA&#x27;s November 10 WASDE lowered its cattle price forecast for 2026, on a readily available supply of market-ready cattle this fall, and puts the 2026 average 5-area fed steer price at $236.31 per cwt (October forecast: $237.56), against $224.37 in 2025; that is a forecast.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 18, 2026. Sources: NASS Cattle report release, Jul 24, 2026 &middot; USDA WASDE-677, Nov 10, 2026</p></section><!-- /answer:cattle-markets -->
 
   <section class="fwd-card" id="ct-cash" hidden aria-label="Cash cattle and boxed beef">
-    <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg> Cash side · USDA reports</span><span class="fwd-shape">$/cwt</span></div>
+    <div class="fwd-head"><span class="fwd-title">Cash side · USDA reports</span><span class="fwd-shape">$/cwt</span></div>
     <div class="ct-grid">
       <div class="ct-card">
         <span class="lbl">Fed steers, 5-area weekly</span>
@@ -358,18 +357,18 @@ details.fold[hidden]{display:none}
     .hc-fig figcaption{margin-top:.35rem}
     .hc-figs{display:grid;gap:10px 16px;grid-template-columns:1fr 1fr;align-content:start;padding:.4rem .3rem 0}
     .hc-fg{min-width:0}
-    .hc .lbl{display:block;font-size:0.78rem;text-transform:uppercase;letter-spacing:.06em;color:var(--text-dim);font-weight:700;line-height:1.3}
+    .hc .lbl{display:block;font-size:0.78rem;text-transform:none;letter-spacing:0;color:var(--text-dim);font-weight:700;line-height:1.3}
     .hc-meta{grid-column:1/-1;margin:0}
     .hc-chg{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.85rem;margin-top:.15rem}
     .hc-chg.up{color:var(--up,#5fc28a)} .hc-chg.dn{color:var(--dn,#d9534f)}
     @media(min-width:760px){.hc-figs{grid-template-columns:auto auto minmax(0,1fr);column-gap:2.2rem;align-items:start}.hc-meta{grid-column:auto;font-size:.85rem;max-width:40rem}.hc-head{font-size:1.3rem}}
     @media(max-width:520px){.hc-figs{padding:.2rem .1rem 0;column-gap:10px}.hc .ct-price{font-size:1.6rem}.hc .hc-chg{font-size:.72rem}#ct-cash .ct-grid{grid-template-columns:1fr 1fr;gap:10px}#ct-cash .ct-card{padding:.3rem .1rem}#ct-cash .lbl{display:block;font-size:.7rem;line-height:1.3}#ct-cash .ct-price{font-size:1.45rem}#ct-cash .ct-read{font-size:.74rem}.hc.fwd-card,#ct-cash.fwd-card{padding:10px 11px}.hc-head{font-size:1.02rem}.hc-take{font-size:.86rem}}
     </style>
-    <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Cash hogs · USDA daily</span><span class="agc-tools hc-tools"></span></div>
+    <div class="fwd-head"><span class="fwd-title">Cash hogs · USDA daily</span><span class="agc-tools hc-tools"></span></div>
     <div class="hc-body"></div>
   </section>
   <script src="/components/ag-chart.js?v=5" defer></script><script src="/components/hog-cash.js?v=2" defer></script>
-  <aside class="ya" data-your-state="cattle" data-v="2" hidden></aside><script src="/components/your-state.js?v=1" defer></script>
+  <aside class="ya" data-your-state="cattle" data-v="2" hidden></aside><script src="/components/your-state.js?v=2" defer></script>
   <section class="fx" data-feeder="index" id="feeder-index" hidden aria-label="AGSIST USDA feeder steer index"></section>
   <script>
   (function(){
@@ -419,7 +418,7 @@ details.fold[hidden]{display:none}
     <summary class="fold-sum"><span class="fold-t">Forward curve, live cattle</span><span class="fold-d">Carry or discount from the nearby out</span></summary>
     <div class="fold-body">
     <section class="fwd-card" id="fwd-card" style="display:none" aria-label="Live cattle forward curve">
-      <div class="fwd-head"><span class="fwd-title"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Forward curve · live cattle</span><span class="fwd-shape" id="fwd-shape">-</span></div>
+      <div class="fwd-head"><span class="fwd-title">Forward curve · live cattle</span><span class="fwd-shape" id="fwd-shape">-</span></div>
       <svg class="fwd-svg" id="fwd-svg" viewBox="0 0 700 140" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Futures price by contract month, loading"></svg>
       <div class="fwd-empty" id="fwd-empty" style="display:none">Deferred contracts not available right now.</div>
       <div class="fwd-interp" id="fwd-interp">Carry analysis loads with price data.</div>
@@ -496,18 +495,18 @@ details.fold[hidden]{display:none}
     <section class="ctcot" id="cot-cattle" aria-label="Managed money positioning">
       <style>
       .ctcot{--g:var(--gold,#d4a23f);--up:var(--up,#5fc28a);--dn:var(--dn,#d9534f);--pnl:var(--surface,#161b14);--ln:var(--border,#2a3324);--tx:var(--text,#e7ece8);--mut:var(--text-dim,#9bb0a3);
-        background:var(--pnl);border:1px solid var(--ln);border-radius:14px;padding:1rem 1.1rem;margin:12px 0;display:none}
+        background:var(--pnl);border:1px solid var(--ln);border-radius:var(--r-lg);padding:1rem 1.1rem;margin:12px 0;display:none}
       .ctcot *{box-sizing:border-box}
       .ctcot-head{font-size:0.795rem;font-weight:700;color:var(--g);display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:6px}
       .ctcot-asof{font-size:0.755rem;color:var(--mut);font-weight:400;font-family:'JetBrains Mono',monospace}
       .ctcot-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px}
       @media(max-width:560px){.ctcot-grid{grid-template-columns:1fr}}
-      .ctcot-box{background:rgba(255,255,255,.02);border:1px solid var(--ln);border-radius:10px;padding:.8rem .9rem}
-      .ctcot-name{font-size:0.765rem;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);font-weight:700}
+      .ctcot-box{background:rgba(255,255,255,.02);border:1px solid var(--ln);border-radius:var(--r-lg);padding:.8rem .9rem}
+      .ctcot-name{font-size:0.765rem;text-transform:none;letter-spacing:0;color:var(--mut);font-weight:700}
       .ctcot-net{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.5rem;line-height:1.1;margin-top:.15rem;color:var(--tx)}
       .ctcot-net.long{color:var(--up)} .ctcot-net.short{color:var(--dn)}
       .ctcot-sub{font-size:0.765rem;color:var(--mut);margin-bottom:.6rem}
-      .ctcot-gauge{position:relative;height:7px;background:linear-gradient(to right,rgba(217,83,79,.5),rgba(230,176,66,.5),rgba(74,171,76,.5));border-radius:4px;margin-top:.3rem}
+      .ctcot-gauge{position:relative;height:7px;background:var(--border-2);border-radius:4px;margin-top:.3rem}
       .ctcot-dot{position:absolute;top:-3px;width:13px;height:13px;border-radius:50%;background:var(--pnl);border:2px solid #fff;box-shadow:0 0 0 2px var(--g);transition:left .5s}
       .ctcot-labels{display:flex;justify-content:space-between;font-size:0.745rem;color:var(--mut);margin-top:5px;font-family:'JetBrains Mono',monospace}
       .ctcot-pct{font-size:0.775rem;color:var(--tx);margin-top:.4rem;line-height:1.4}.ctcot-pct strong{color:var(--g)}
@@ -518,7 +517,7 @@ details.fold[hidden]{display:none}
       /* phone width: nested cards add no extra side padding (narrow cards, Nov 9) */
 @media(max-width:480px){.ctcot{padding-left:10px;padding-right:10px}.ctcot-box{padding-left:10px;padding-right:10px}}
 </style>
-      <div class="ctcot-head"><span><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Managed money positioning · cattle</span><span class="ctcot-asof" id="cot-asof"></span></div>
+      <div class="ctcot-head"><span>Managed money positioning · cattle</span><span class="ctcot-asof" id="cot-asof"></span></div>
       <div class="ctcot-grid">
         <div class="ctcot-box">
           <div class="ctcot-name">Live Cattle (LE)</div>
@@ -550,7 +549,7 @@ details.fold[hidden]{display:none}
     <div class="fold-body">
     <section class="seas-wrap" id="seas-wrap" aria-label="Cattle seasonal price tendency" style="display:none">
       <div class="seas-head">
-        <span class="seas-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> Cattle seasonal price tendency</span>
+        <span class="seas-title">Cattle seasonal price tendency</span>
         <span class="seas-note">Live cattle, continuous series &middot; current month highlighted</span>
       </div>
       <div id="seas-chart" class="seas-chart"></div>
@@ -582,18 +581,18 @@ details.fold[hidden]{display:none}
       <style>
       .cog{--g:var(--gold,#d4a23f);--grn:var(--green,#6ab04c);--up:var(--up,#5fc28a);--dn:var(--dn,#d9534f);
         --pnl:var(--surface,#161b14);--pnl2:var(--card-2,#1d2419);--ln:var(--border,#2a3324);--tx:var(--text,#e7ece8);--mut:var(--text-dim,#9bb0a3);
-        background:var(--pnl);border:1px solid var(--ln);border-radius:16px;padding:1.1rem 1.1rem 1.2rem;margin:16px 0}
+        background:var(--pnl);border:1px solid var(--ln);border-radius:var(--r-lg);padding:1.1rem 1.1rem 1.2rem;margin:16px 0}
       .cog *{box-sizing:border-box}
       .cog-h{display:flex;align-items:center;gap:.5rem;font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.25rem;margin:0 0 .2rem;color:var(--tx)}
       .cog-sub{color:var(--mut);font-size:.88rem;line-height:1.5;margin:0 0 1rem}
       .cog-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:1rem}
-      .cog-f label{display:block;font-size:0.785rem;text-transform:uppercase;letter-spacing:.03em;color:var(--mut);font-weight:700;margin-bottom:.3rem}
+      .cog-f label{display:block;font-size:0.785rem;text-transform:none;letter-spacing:0;color:var(--mut);font-weight:700;margin-bottom:.3rem}
       .cog-f .h{font-size:0.77rem;color:var(--mut);text-transform:none;letter-spacing:0;font-weight:400}
-      .cog input{width:100%;min-height:48px;font-size:1.02rem;background:var(--pnl2);border:1px solid var(--ln);border-radius:10px;color:var(--tx);padding:.5rem .65rem;font-family:'JetBrains Mono',monospace;font-weight:700;-webkit-appearance:none;appearance:none}
+      .cog input{width:100%;min-height:48px;font-size:1.02rem;background:var(--pnl2);border:1px solid var(--ln);border-radius:var(--r-lg);color:var(--tx);padding:.5rem .65rem;font-family:'JetBrains Mono',monospace;font-weight:700;-webkit-appearance:none;appearance:none}
       .cog input:focus{outline:none;border-color:var(--grn)}
-      .cog-out{background:var(--pnl2);border:1px solid var(--ln);border-radius:13px;padding:1rem}
+      .cog-out{background:var(--pnl2);border:1px solid var(--ln);border-radius:var(--r-lg);padding:1rem}
       .cog-be{text-align:center;border-bottom:1px solid var(--ln);padding-bottom:.8rem;margin-bottom:.8rem}
-      .cog-be .k{font-size:0.785rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);font-weight:700}
+      .cog-be .k{font-size:0.785rem;text-transform:none;letter-spacing:0;color:var(--mut);font-weight:700}
       .cog-be .v{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:2.4rem;color:var(--g);line-height:1.05;margin-top:.15rem}
       .cog-be .v small{font-size:1rem;color:var(--mut);font-weight:400}
       .cog-rows{display:grid;grid-template-columns:1fr 1fr;gap:.5rem .9rem}
@@ -606,7 +605,7 @@ details.fold[hidden]{display:none}
       .cog-disc{font-size:0.785rem;color:var(--mut);line-height:1.45;margin-top:.9rem;border-top:1px solid var(--ln);padding-top:.7rem}
       @media(max-width:560px){.cog-grid{grid-template-columns:1fr 1fr}.cog-rows{grid-template-columns:1fr}}
       </style>
-      <h2 class="cog-h" id="cog-h"><span aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-calculator"/></svg></span> Cattle feeding cost-of-gain calculator</h2>
+      <h2 class="cog-h" id="cog-h"> Cattle feeding cost-of-gain calculator</h2>
       <p class="cog-sub">What sale price do you need to break even? Enter your feeder cost, finished weight, and cost of gain. Feeder and fed-cattle prices are pre-filled from today's delayed board quotes. The feeder price is the front feeder futures, which settles to the CME Feeder Cattle Index for 700–899 lb steers (default weight 800 lb); lighter calves usually bring more per cwt, so adjust for yours. The sale price comes from the live cattle contract nearest the month your cattle would finish, assuming 3.5 lb/day average gain. Cost of gain typically runs $0.90–$1.30/lb (feed, yardage, interest, death loss).</p>
       <div class="cog-grid">
         <div class="cog-f"><label for="cog-wtin">Feeder weight <span class="h">(lb)</span></label><input type="number" id="cog-wtin" inputmode="decimal" value="800" min="1" step="10"></div>
@@ -632,10 +631,10 @@ details.fold[hidden]{display:none}
   </details>
 
   <!-- ░░ FAQ ░░ -->
-  <!-- ai-answer:beef-supply --><section class="ai-answer" id="answer-beef-supply" aria-labelledby="answer-beef-supply-h" data-checked="2026-11-13" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-beef-supply-h" style="font-size:1.1rem;margin:0 0 .4rem">Is there a beef shortage?</h2><p style="margin:0 0 .5rem">There is less U.S. beef, and imports are filling part of the gap. USDA&#x27;s November 10 WASDE forecasts 2026 U.S. beef production at 24.83 billion pounds, down 4.8% from 26.07 billion in 2025, and cut it from October on a slower pace of fed cattle marketings and lighter dressed weights. Beef imports are forecast at 6.44 billion pounds, up 19.5% from 5.39 billion, and beef use per person at 59.1 pounds, against 59.2 in 2025.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Nov 13, 2026. Sources: USDA WASDE-677, Nov 10, 2026 (U.S. meats supply and use)</p></section><!-- /ai-answer:beef-supply -->
-  <!-- ai-answer:argentina-beef --><section class="ai-answer" id="answer-argentina-beef" aria-labelledby="answer-argentina-beef-h" data-checked="2026-10-28" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:8px"><h2 id="answer-argentina-beef-h" style="font-size:1.1rem;margin:0 0 .4rem">How much Argentine beef can come into the U.S.?</h2><p style="margin:0 0 .5rem">Argentina has its own U.S. beef quota of 20,000 tons a year, at a $44 a ton duty inside it and 26.4% above it, and the U.S. took 42,445 tons of Argentine beef in 2025, the most since 1999 (FAS, March 9, 2026). For 2026 only, Proclamation 11010 added 80,000 metric tons for Argentina, limited to lean beef trimmings and opened in four 20,000-ton quarters; the last one runs October 1 to December 31, 2026. The 300,000 tons of extra lean trimmings added in August by Proclamation 11059 went to other countries, not Argentina, and its last tranche closes when filled or on November 30, 2026, whichever comes first. Whether any of it is extended into 2027 is not decided.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 28, 2026. Sources: FAS GAIN, Argentina Livestock and Products, Mar 9, 2026 &middot; <a href="https://www.govinfo.gov/content/pkg/FR-2026-02-13/html/2026-03050.htm" rel="noopener" style="text-decoration:underline">Proclamation 11010, Federal Register, Feb 13, 2026</a> &middot; Proclamation 11059, Federal Register, Aug 31, 2026</p></section><!-- /ai-answer:argentina-beef -->
+  <!-- answer:beef-supply --><section class="qa-answer" id="answer-beef-supply" aria-labelledby="answer-beef-supply-h" data-checked="2026-11-13" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-beef-supply-h" style="font-size:1.1rem;margin:0 0 .4rem">Is there a beef shortage?</h2><p style="margin:0 0 .5rem">There is less U.S. beef, and imports are filling part of the gap. USDA&#x27;s November 10 WASDE forecasts 2026 U.S. beef production at 24.83 billion pounds, down 4.8% from 26.07 billion in 2025, and cut it from October on a slower pace of fed cattle marketings and lighter dressed weights. Beef imports are forecast at 6.44 billion pounds, up 19.5% from 5.39 billion, and beef use per person at 59.1 pounds, against 59.2 in 2025.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Nov 13, 2026. Sources: USDA WASDE-677, Nov 10, 2026 (U.S. meats supply and use)</p></section><!-- /answer:beef-supply -->
+  <!-- answer:argentina-beef --><section class="qa-answer" id="answer-argentina-beef" aria-labelledby="answer-argentina-beef-h" data-checked="2026-10-28" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-argentina-beef-h" style="font-size:1.1rem;margin:0 0 .4rem">How much Argentine beef can come into the U.S.?</h2><p style="margin:0 0 .5rem">Argentina has its own U.S. beef quota of 20,000 tons a year, at a $44 a ton duty inside it and 26.4% above it, and the U.S. took 42,445 tons of Argentine beef in 2025, the most since 1999 (FAS, March 9, 2026). For 2026 only, Proclamation 11010 added 80,000 metric tons for Argentina, limited to lean beef trimmings and opened in four 20,000-ton quarters; the last one runs October 1 to December 31, 2026. The 300,000 tons of extra lean trimmings added in August by Proclamation 11059 went to other countries, not Argentina, and its last tranche closes when filled or on November 30, 2026, whichever comes first. Whether any of it is extended into 2027 is not decided.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">Last checked Oct 28, 2026. Sources: FAS GAIN, Argentina Livestock and Products, Mar 9, 2026 &middot; <a href="https://www.govinfo.gov/content/pkg/FR-2026-02-13/html/2026-03050.htm" rel="noopener" style="text-decoration:underline">Proclamation 11010, Federal Register, Feb 13, 2026</a> &middot; Proclamation 11059, Federal Register, Aug 31, 2026</p></section><!-- /answer:argentina-beef -->
   <div class="faq-wrap">
-    <div class="faq-head"><svg class="ic" aria-hidden="true"><use href="#i-circle-question-mark"/></svg> Cattle futures: common questions</div>
+    <div class="faq-head">Cattle futures: common questions</div>
     <div class="faq-list" id="faq-list">
       <div class="faq-item"><div class="faq-q" role="button" tabindex="0" aria-expanded="false">What is the live cattle futures price today?</div><div class="faq-a"><div class="faq-a-inner">The price above is the nearest CME live cattle contract (LE), read about every 15 minutes during the trading day and quoted in dollars per hundredweight ($/cwt); quotes are delayed 10 to 25 min.</div></div></div>
       <div class="faq-item"><div class="faq-q" role="button" tabindex="0" aria-expanded="false">What is the difference between live cattle and feeder cattle futures?</div><div class="faq-a"><div class="faq-a-inner">Feeder cattle (GF) are calves headed into feedlots: the contract settles to the CME Feeder Cattle Index, a 7-day average price of 700–899 lb feeder steers; live cattle (LE) are finished, market-ready animals around 1,400 lb. Feeder prices lead, since today's feeder is the feedlot's raw material and live cattle is the finished product. Both are quoted in dollars per hundredweight.</div></div></div>
@@ -651,24 +650,23 @@ details.fold[hidden]{display:none}
   <!--usda-cal-sub--><p class="cal-sub" style="font-size:.8rem;color:var(--text-dim);margin:.6rem 0 .3rem;line-height:1.6">USDA report dates on your phone: <a href="webcal://agsist.com/usda-calendar-livestock.ics" onclick="try{gtag('event','ics_subscribe',{method:'webcal',calendar:'livestock',from:'cattle-futures'})}catch(e){}">Subscribe</a> &middot; <a href="https://calendar.google.com/calendar/render?cid=webcal%3A%2F%2Fagsist.com%2Fusda-calendar-livestock.ics" target="_blank" rel="noopener" aria-label="Add to Google Calendar" onclick="try{gtag('event','ics_subscribe',{method:'google',calendar:'livestock',from:'cattle-futures'})}catch(e){}">Google</a></p>
   <div class="rl">Related Tools</div>
   <div class="rg">
-    <a href="/corn-futures-prices" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></div><div class="ra-n">Corn Futures</div><div class="ra-d">Your feed cost</div></a>
-    <a href="/cash-bids" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg></div><div class="ra-n">Cash bids near me</div><div class="ra-d">Local elevator prices</div></a>
-    <a href="/prf" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-shield-check"/></svg></div><div class="ra-n">PRF Pasture Insurance</div><div class="ra-d">What your grid would have paid</div></a>
-    <a href="/lrp" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-beef"/></svg></div><div class="ra-n">LRP Calculator</div><div class="ra-d">Today&rsquo;s rates and the record</div></a>
-    <a href="/breakeven" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-ruler"/></svg></div><div class="ra-n">Break-Even Calc</div><div class="ra-d">Is this profitable?</div></a>
-    <a href="/daily" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg></div><div class="ra-n">Daily Briefing</div><div class="ra-d">Cattle read every morning</div></a>
-    <a href="/usda-calendar#priced-in" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg></div><div class="ra-n">What's Priced In</div><div class="ra-d">USDA report odds</div></a>
-    <a href="/usda-calendar" class="ra"><div class="ra-i"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg></div><div class="ra-n">USDA Calendar</div><div class="ra-d">Next report date</div></a>
+    <a href="/corn-futures-prices" class="ra"><div class="ra-n">Corn Futures</div><div class="ra-d">Your feed cost</div></a>
+    <a href="/cash-bids" class="ra"><div class="ra-n">Cash bids near me</div><div class="ra-d">Local elevator prices</div></a>
+    <a href="/prf" class="ra"><div class="ra-n">PRF Pasture Insurance</div><div class="ra-d">What your grid would have paid</div></a>
+    <a href="/lrp" class="ra"><div class="ra-n">LRP Calculator</div><div class="ra-d">Today&rsquo;s rates and the record</div></a>
+    <a href="/breakeven" class="ra"><div class="ra-n">Break-Even Calc</div><div class="ra-d">Is this profitable?</div></a>
+    <a href="/daily" class="ra"><div class="ra-n">Daily Briefing</div><div class="ra-d">Cattle read every morning</div></a>
+    <a href="/usda-calendar#priced-in" class="ra"><div class="ra-n">What's Priced In</div><div class="ra-d">USDA report odds</div></a>
+    <a href="/usda-calendar" class="ra"><div class="ra-n">USDA Calendar</div><div class="ra-d">Next report date</div></a>
   </div>
 
   <div class="author-block">
-    <div class="author-avatar" aria-hidden="true">SL</div>
     <div class="author-text">
       <div class="author-name">Built by Sigurd Lindquist</div>
       <div class="author-meta">CCA · cattle, dairy &amp; grain producers nationwide. Questions, corrections, partnership? <a href="mailto:sig@agsist.com">sig@agsist.com</a> · <a href="/about">About AGSIST</a></div>
     </div>
   </div>
-  <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=6" defer></script>
+  <p class="rp-promo" data-rain-print-promo hidden></p><script src="/components/rain-print-promo.js?v=7" defer></script>
 
   <details class="hp-terms" style="max-width:1100px;margin:1.2rem auto;padding:0 12px;font-size:.78rem;line-height:1.6;color:var(--text-muted)"><summary style="cursor:pointer;color:var(--text-dim);min-height:44px;display:flex;align-items:center">Sources and terms</summary>
 <p style="margin:.4rem 0 0"><b>Futures:</b> CME Group live cattle (LE) and feeder cattle (GF) futures via Yahoo Finance, read about every 15 minutes in session, quotes delayed 10 to 25 min: the exchange settle after the close, the latest delayed trade in session, each card named by its contract month. Quoted in $/cwt. 5-year percentiles from Yahoo weekly closes of the continuous front-month series (not roll-adjusted).</p>
@@ -696,9 +694,9 @@ details.fold[hidden]{display:none}
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19" defer></script>
-<script src="/components/geo.js?v=39" defer></script>
-<script src="/components/feeder-index.js?v=7" defer></script>
+<script src="/components/loader.js?v=20" defer></script>
+<script src="/components/geo.js?v=41" defer></script>
+<script src="/components/feeder-index.js?v=8" defer></script>
 
 <script>
 /* ===== cattle dashboard: prices.json + price-stats.json ===== */
@@ -913,6 +911,6 @@ details.fold[hidden]{display:none}
   }).catch(function(){});
 })();
 </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

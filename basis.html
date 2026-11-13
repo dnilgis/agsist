@@ -9,11 +9,11 @@
   <link rel="preload" href="/fonts/inter-var.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="/fonts/jetbrains-mono-var.woff2" as="font" type="font/woff2" crossorigin>
   <!-- /static-nav:fonts -->
-  <link rel="preload" href="/components/styles.css?v=28" as="style">
-  <link rel="stylesheet" href="/components/styles.css?v=28">
-  <link rel="stylesheet" href="/components/asof.css?v=1">
+  <link rel="preload" href="/components/styles.css?v=29" as="style">
+  <link rel="stylesheet" href="/components/styles.css?v=29">
+  <link rel="stylesheet" href="/components/asof.css?v=2">
   <script src="/components/asof.js?v=1"></script>
-<link rel="stylesheet" href="/components/states.css?v=2"><script src="/components/states.js?v=1" defer></script>
+<link rel="stylesheet" href="/components/states.css?v=3"><script src="/components/states.js?v=1" defer></script>
   <script src="/components/util.js?v=20"></script>
   <link rel="icon" href="/img/favicon.ico" sizes="32x32">
   <link rel="icon" type="image/svg+xml" href="/img/icon.svg">
@@ -46,7 +46,7 @@
   <style>
     .bs-wrap{max-width:1140px;margin:0 auto;padding:24px 16px 60px}
     .bs-hero{padding:26px 0 2px}
-    .bs-kicker{font-family:'JetBrains Mono',monospace;font-size:0.77rem;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin:0 0 10px}
+    .bs-kicker{font-family:var(--font-body);font-size:0.77rem;letter-spacing:0;text-transform:none;color:var(--text-dim);margin:0 0 10px}
     .bs-hero h1{font-family:var(--font-display);font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0 0 12px;color:var(--text)}
     .bs-sub{font-size:1.02rem;line-height:1.7;color:var(--text-muted);max-width:820px;margin:0}
     .bs-sub strong{color:var(--text)}
@@ -58,15 +58,15 @@
     [data-theme="light"]{--bs-bg:var(--surface);--bs-line:var(--border);--bs-dim:var(--text-muted);--bs-txt:var(--text-dim);--bs-hi:var(--text);--bs-well:var(--surface2);--bs-tabbd:var(--border-2);--bs-faint:var(--text-muted);--bs-neg:var(--red);--bs-pos:var(--green)}
     .bs-panel{background:var(--bs-bg);color:var(--bs-txt);border:1px solid var(--bs-line);border-radius:var(--card-r);margin-top:26px;overflow:hidden}
     .bs-panel-hd{padding:14px 18px;border-bottom:1px solid var(--bs-line);display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;align-items:baseline}
-    .bs-panel-t{font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+    .bs-panel-t{font-family:var(--font-body);font-size:0.78rem;letter-spacing:0;text-transform:none;color:var(--text-dim)}
     .bs-fresh{font-family:'JetBrains Mono',monospace;font-size:0.765rem;color:var(--bs-dim)}
     .bs-panel-b{padding:18px}
     .bs-seed{font-size:13.4px;line-height:1.7;color:var(--bs-dim);margin:0 0 6px}
     .bs-tabs{display:flex;gap:8px;margin:0 0 14px;overflow-x:auto;scrollbar-width:thin;-webkit-overflow-scrolling:touch}
-    .bs-tab{font-family:'JetBrains Mono',monospace;font-size:0.775rem;letter-spacing:.1em;text-transform:uppercase;padding:6px 14px;border-radius:6px;border:1px solid var(--bs-tabbd);background:transparent;color:var(--bs-dim);cursor:pointer;white-space:nowrap;flex:none;min-height:40px}
-    .bs-tab.on{border-color:#d4a23f;color:var(--gold);background:rgba(212,162,63,.08)}
+    .bs-tab{font-family:var(--font-body);font-size:0.775rem;letter-spacing:0;text-transform:none;padding:6px 14px;border-radius:var(--r-md);border:1px solid var(--bs-tabbd);background:transparent;color:var(--bs-dim);cursor:pointer;white-space:nowrap;flex:none;min-height:40px}
+    .bs-tab.on{border-color:#d4a23f;color:var(--gold);background:var(--surface2)}
     table.bs-tbl{width:100%;border-collapse:collapse;font-size:.9rem}
-    .bs-tbl th{font-family:'JetBrains Mono',monospace;font-size:0.755rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);text-align:left;padding:8px 10px;border-bottom:1px solid var(--bs-line)}
+    .bs-tbl th{font-family:var(--font-body);font-size:0.755rem;letter-spacing:0;text-transform:none;color:var(--gold);text-align:left;padding:8px 10px;border-bottom:1px solid var(--bs-line)}
     .bs-tbl td{padding:8px 10px;border-bottom:1px solid rgba(132,160,168,.08);color:var(--bs-txt)}
     .bs-tbl td.num{font-family:'JetBrains Mono',monospace;text-align:right;white-space:nowrap;color:var(--bs-hi)}
     .neg{color:#e0685f !important}.pos{color:#5fc28a !important}
@@ -82,11 +82,11 @@
     .bs-barval small{display:block;font-size:0.72rem;color:var(--bs-dim);white-space:nowrap}
     .bs-barval.neg small{color:inherit}
     :where(.method-note){font-size:.8rem;line-height:1.55;color:var(--text-muted);margin-top:.75rem} /* fallback until styles.css lands; zero specificity */
-    .bs-note{background:rgba(212,162,63,.06);border:1px solid rgba(212,162,63,.3);border-radius:10px;padding:12px 16px;font-size:1rem;line-height:1.7;color:var(--text-muted);margin:16px 0}
+    .bs-note{background:var(--surface2);border:1px solid rgba(212,162,63,.3);border-radius:var(--r-lg);padding:12px 16px;font-size:1rem;line-height:1.7;color:var(--text-muted);margin:16px 0}
     .bs-note strong{color:var(--gold)}
     .bs-walk{display:flex;flex-wrap:wrap;gap:10px;align-items:stretch}
-    .bs-walkstep{flex:1;min-width:150px;background:var(--bs-well);border:1px solid var(--bs-line);border-radius:10px;padding:12px 14px}
-    .bs-walk-l{font-family:'JetBrains Mono',monospace;font-size:0.75rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold)}
+    .bs-walkstep{flex:1;min-width:150px;background:var(--bs-well);border:1px solid var(--bs-line);border-radius:var(--r-lg);padding:12px 14px}
+    .bs-walk-l{font-family:var(--font-body);font-size:0.75rem;letter-spacing:0;text-transform:none;color:var(--text-dim)}
     .bs-walk-v{font-family:'JetBrains Mono',monospace;font-size:1.3rem;color:var(--bs-hi);margin:4px 0 2px}
     .bs-walk-m{font-size:0.79rem;color:var(--bs-dim);line-height:1.5}
     .bs-faq details{border-bottom:1px solid var(--bs-line);padding:10px 0}
@@ -113,7 +113,7 @@
 .tblscroll table{margin:0;min-width:520px}
 /* your-state answer, the storage section, the all-states table (2026-10-10) */
 .bs-pick-row{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:0 0 10px}
-.bs-pick-row select{font:inherit;font-size:1rem;padding:8px 10px;min-height:44px;border-radius:8px;border:1px solid var(--bs-tabbd);background:var(--bs-well);color:var(--bs-hi)}
+.bs-pick-row select{font:inherit;font-size:1rem;padding:8px 10px;min-height:44px;border-radius:var(--r-md);border:1px solid var(--bs-tabbd);background:var(--bs-well);color:var(--bs-hi)}
 #bs-pick{min-height:7.5rem}
 .bs-pick-l{list-style:none;padding:0;margin:0 0 8px}
 .bs-pick-l li{font-size:1.15rem;line-height:1.6;color:var(--bs-hi)}
@@ -124,7 +124,7 @@
 #bs-rank td:first-child{white-space:nowrap}
 .tblscroll table#bs-rank{min-width:0}
 #bs-rank td,#bs-rank th{padding:8px 6px}
-.bs-why>summary{cursor:pointer;padding:14px 18px;font-family:'JetBrains Mono',monospace;font-size:0.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);min-height:44px}
+.bs-why>summary{cursor:pointer;padding:14px 18px;font-family:var(--font-body);font-size:0.78rem;letter-spacing:0;text-transform:none;color:var(--text-dim);min-height:44px}
 .bs-why[open]>summary{border-bottom:1px solid var(--bs-line)}
 .bs-why p{font-size:.95rem;line-height:1.7;color:var(--bs-txt);margin:0 0 10px}
 .bs-held{font-size:13.4px;line-height:1.6;color:var(--bs-txt);border-left:3px solid var(--gold);padding:6px 10px;margin:0 0 12px;background:var(--bs-well)}
@@ -139,14 +139,14 @@
 }
 /* storage: the answer, the reader's state, past falls (components/storage-detail.js) */
 .bs-why p.st-ans{font-size:1.05rem;line-height:1.55;color:var(--bs-hi)}
-.st-you{border-left:3px solid var(--gold);background:var(--bs-well);padding:10px 12px;margin:0 0 14px;border-radius:0 8px 8px 0}
+.st-you{border-left:3px solid var(--gold);background:var(--bs-well);padding:10px 12px;margin:0 0 14px;border-radius:0 var(--r-md) var(--r-md) 0}
 .bs-why .st-you p{font-size:.92rem;line-height:1.6;margin:0 0 6px}
 .st-you-h b{font-size:1.12rem;color:var(--bs-hi)}
 .st-you-h span{color:var(--bs-dim);font-size:.85rem}
 .bs-why .st-you p.st-h{color:var(--bs-txt)}
 .st-b{font:inherit;color:var(--bs-hi);background:none;border:0;border-bottom:1px dotted var(--bs-tabbd);padding:6px 0;margin:0;cursor:pointer;text-align:left;min-height:32px}
 .st-b[aria-pressed="true"]{color:var(--gold);border-bottom-color:var(--gold)}
-.st-more{font:inherit;font-size:.88rem;color:var(--gold);background:none;border:1px solid var(--bs-tabbd);border-radius:8px;padding:8px 12px;min-height:44px;cursor:pointer;margin-top:4px}
+.st-more{font:inherit;font-size:.88rem;color:var(--gold);background:none;border:1px solid var(--bs-tabbd);border-radius:var(--r-md);padding:8px 12px;min-height:44px;cursor:pointer;margin-top:4px}
 .st-math>summary,.sc-tbl>summary{cursor:pointer;color:var(--gold);padding:10px 0;min-height:44px;font-size:.9rem}
 .st-math p{font-size:.88rem}
 .sc-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:.8rem;color:var(--bs-txt);margin:10px 0 4px}
@@ -315,7 +315,7 @@
   </nav>
 <!-- /static-nav:footer -->
 </div>
-<script src="/components/loader.js?v=19"></script>
+<script src="/components/loader.js?v=20"></script>
 <script>
 (function(){
   'use strict';
@@ -590,6 +590,6 @@
   openMap(); window.addEventListener('hashchange',openMap);
 })();
 </script>
-  <script src="/components/next-links.js?v=3" defer></script>
+  <script src="/components/next-links.js?v=4" defer></script>
 </body>
 </html>

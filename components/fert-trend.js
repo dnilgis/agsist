@@ -174,7 +174,7 @@
       '<div class="ft-grid">' + blocks + '</div>';
   }
 
-  var CSS = '.fert-trend{margin:.25rem 0 1.25rem;border:1px solid var(--border);border-radius:10px;padding:.2rem .9rem}' +
+  var CSS = '.fert-trend{margin:.25rem 0 1.25rem;border:1px solid var(--border);border-radius:var(--r-lg);padding:.2rem .9rem}' +
     '.fert-trend>summary{cursor:pointer;color:var(--gold);font-weight:700;padding:.65rem 0;min-height:44px;box-sizing:border-box}' +
     '.ft-note{font-size:.8rem;color:var(--text-dim);line-height:1.5;margin:.25rem 0 .75rem}' +
     '.ft-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:1rem;margin-bottom:.75rem}' +

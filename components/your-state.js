@@ -109,7 +109,7 @@
     var els = doc.querySelectorAll('aside[data-your-state]');
     if (!els.length) return;
     var c = doc.createElement('style');
-    c.textContent = 'aside.ya{margin:1rem 0;padding:.7rem .9rem;border:1px solid var(--border);border-left:3px solid var(--green);border-radius:8px;background:var(--surface);font-size:.88rem;line-height:1.55;color:var(--text-dim)}aside.ya p{margin:.25rem 0;font-size:inherit;line-height:inherit;color:inherit}aside.ya b{color:var(--text)}aside.ya .ya-k{font-family:"JetBrains Mono",monospace;font-size:.68rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--green)}aside.ya a{color:var(--gold);display:inline-block;padding:.35rem 0}aside.ya .ya-s{font-size:.76rem;color:var(--text-muted)}aside.ya.ya-n{border:0;background:none;padding:0;margin:.5rem 0}';
+    c.textContent = 'aside.ya{margin:1rem 0;padding:.7rem .9rem;border:1px solid var(--border);border-left:3px solid var(--green);border-radius:var(--r-md);background:var(--surface);font-size:.88rem;line-height:1.55;color:var(--text-dim)}aside.ya p{margin:.25rem 0;font-size:inherit;line-height:inherit;color:inherit}aside.ya b{color:var(--text)}aside.ya .ya-k{font-family:var(--font-body);font-size:.68rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim)}aside.ya a{color:var(--gold);display:inline-block;padding:.35rem 0}aside.ya .ya-s{font-size:.76rem;color:var(--text-muted)}aside.ya.ya-n{border:0;background:none;padding:0;margin:.5rem 0}';
     doc.head.appendChild(c);
     Array.prototype.forEach.call(els, function (el) {
       var name = el.getAttribute('data-your-state'), loc = null;

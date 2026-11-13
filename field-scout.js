@@ -25,22 +25,22 @@
   // full state name ↔ postal abbr (nominatim returns full names; data files key by abbr or FIPS)
   var N2A = {'Alabama':'AL','Alaska':'AK','Arizona':'AZ','Arkansas':'AR','California':'CA','Colorado':'CO','Connecticut':'CT','Delaware':'DE','Florida':'FL','Georgia':'GA','Hawaii':'HI','Idaho':'ID','Illinois':'IL','Indiana':'IN','Iowa':'IA','Kansas':'KS','Kentucky':'KY','Louisiana':'LA','Maine':'ME','Maryland':'MD','Massachusetts':'MA','Michigan':'MI','Minnesota':'MN','Mississippi':'MS','Missouri':'MO','Montana':'MT','Nebraska':'NE','Nevada':'NV','New Hampshire':'NH','New Jersey':'NJ','New Mexico':'NM','New York':'NY','North Carolina':'NC','North Dakota':'ND','Ohio':'OH','Oklahoma':'OK','Oregon':'OR','Pennsylvania':'PA','Rhode Island':'RI','South Carolina':'SC','South Dakota':'SD','Tennessee':'TN','Texas':'TX','Utah':'UT','Vermont':'VT','Virginia':'VA','Washington':'WA','West Virginia':'WV','Wisconsin':'WI','Wyoming':'WY'};
 
-  // CDL crop code → {label, emoji, color}
+  // CDL crop code → {label, color}
   var CDL_CROPS = {
-    1:{l:'Corn',e:'🌽',c:'#ffd400'}, 5:{l:'Soybeans',e:'🫘',c:'#267300'},
-    24:{l:'Winter Wheat',e:'🌾',c:'#a87000'}, 23:{l:'Spring Wheat',e:'🌾',c:'#d8b056'},
-    36:{l:'Alfalfa',e:'🌿',c:'#ffa8e3'}, 37:{l:'Other Hay',e:'🌾',c:'#a5f28c'},
-    4:{l:'Sorghum',e:'🌾',c:'#ff9e0f'}, 21:{l:'Barley',e:'🌾',c:'#e2007d'},
-    28:{l:'Oats',e:'🌾',c:'#a05989'}, 61:{l:'Fallow',e:'🟫',c:'#bfbf7a'},
-    176:{l:'Grass/Pasture',e:'🟩',c:'#e8ffbf'}, 121:{l:'Developed',e:'🏘️',c:'#9c9c9c'},
-    111:{l:'Open Water',e:'💧',c:'#4970a3'}, 141:{l:'Deciduous Forest',e:'🌳',c:'#93cc93'},
-    190:{l:'Woody Wetlands',e:'🌲',c:'#7cafaf'}, 195:{l:'Herbaceous Wetlands',e:'🌾',c:'#7cafaf'},
-    2:{l:'Cotton',e:'🪴',c:'#ff2626'}, 3:{l:'Rice',e:'🌾',c:'#00a8e2'},
-    6:{l:'Sunflower',e:'🌻',c:'#ffff00'}, 10:{l:'Peanuts',e:'🥜',c:'#70a500'},
-    12:{l:'Sweet Corn',e:'🌽',c:'#dda50a'}, 42:{l:'Dry Beans',e:'🫘',c:'#a80000'},
-    53:{l:'Peas',e:'🟢',c:'#54ff00'}, 31:{l:'Canola',e:'🌼',c:'#d1ff00'}
+    1:{l:'Corn',c:'#ffd400'}, 5:{l:'Soybeans',c:'#267300'},
+    24:{l:'Winter Wheat',c:'#a87000'}, 23:{l:'Spring Wheat',c:'#d8b056'},
+    36:{l:'Alfalfa',c:'#ffa8e3'}, 37:{l:'Other Hay',c:'#a5f28c'},
+    4:{l:'Sorghum',c:'#ff9e0f'}, 21:{l:'Barley',c:'#e2007d'},
+    28:{l:'Oats',c:'#a05989'}, 61:{l:'Fallow',c:'#bfbf7a'},
+    176:{l:'Grass/Pasture',c:'#e8ffbf'}, 121:{l:'Developed',c:'#9c9c9c'},
+    111:{l:'Open Water',c:'#4970a3'}, 141:{l:'Deciduous Forest',c:'#93cc93'},
+    190:{l:'Woody Wetlands',c:'#7cafaf'}, 195:{l:'Herbaceous Wetlands',c:'#7cafaf'},
+    2:{l:'Cotton',c:'#ff2626'}, 3:{l:'Rice',c:'#00a8e2'},
+    6:{l:'Sunflower',c:'#ffff00'}, 10:{l:'Peanuts',c:'#70a500'},
+    12:{l:'Sweet Corn',c:'#dda50a'}, 42:{l:'Dry Beans',c:'#a80000'},
+    53:{l:'Peas',c:'#54ff00'}, 31:{l:'Canola',c:'#d1ff00'}
   };
-  function crop(code){ return CDL_CROPS[code] || {l:'Code '+code,e:'▦',c:'#666'}; }
+  function crop(code){ return CDL_CROPS[code] || {l:'Code '+code,c:'#666'}; }
 
   // ── State ───────────────────────────────────────────────────────────
   var map, drawnLayer, drawControl, satLayer, mapLayer, gpsMarker;
@@ -1100,7 +1100,7 @@
   // touch or key press, or when a field is picked. The print report, boundary
   // export and note photos are field-scout-extras.js, fetched on their buttons.
   // Both reach this file's variables through FSX (getters, so always the live value).
-  var FS_READ_SRC='/field-scout-read.js?v=25', FS_EXTRAS_SRC='/field-scout-extras.js?v=4';
+  var FS_READ_SRC='/field-scout-read.js?v=26', FS_EXTRAS_SRC='/field-scout-extras.js?v=4';
   var RM=null, XM=null, _rmP=null, _xmP=null;
   var FSX=Object.defineProperties({}, {
     map:{get:function(){ return map; }, set:function(v){ map=v; }},
