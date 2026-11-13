@@ -301,24 +301,31 @@
   }
   /* Widths are measured on a hidden SVG text in the page itself, so they are the widths of the font the browser really
      draws with. (A canvas measured Inter at 266 px where the page, whose font-display is optional, had drawn the same
-     line in its fallback font at 278: the key then ran into the line beside it.) */
+     line in its fallback font at 278: the key then ran into the line beside it.) The measure sits in <body>, off screen
+     and invisible, never inside the chart: a county page keeps the chart display:none until its Rain Print has drawn or
+     given up, and text in a hidden box measures 0. It takes the chart's computed font, and every other inherited text
+     property that changes a width (the page sets tabular numerals), from the chart element itself. */
+  var MPROPS = ['fontFamily', 'fontVariantNumeric', 'fontFeatureSettings', 'fontVariationSettings', 'fontStretch', 'fontKerning', 'letterSpacing', 'wordSpacing', 'textRendering', 'fontSynthesis'];
+  var msvg = null;
   function measurer(el) {
     var doc = root.document, NS = 'http://www.w3.org/2000/svg';
-    var box = el.querySelector('.rce-art') || el;
-    var svg = box.querySelector('svg.rce-m');
-    if (!svg) {
-      svg = doc.createElementNS(NS, 'svg');
-      svg.setAttribute('class', 'rce-m'); svg.setAttribute('aria-hidden', 'true'); svg.setAttribute('width', '0'); svg.setAttribute('height', '0');
-      svg.setAttribute('style', 'position:absolute;visibility:hidden;overflow:hidden;pointer-events:none');
-      svg.appendChild(doc.createElementNS(NS, 'text'));
+    if (!msvg || !msvg.isConnected) {
+      msvg = doc.createElementNS(NS, 'svg');
+      msvg.setAttribute('class', 'rce-m'); msvg.setAttribute('aria-hidden', 'true'); msvg.setAttribute('width', '10'); msvg.setAttribute('height', '10');
+      msvg.setAttribute('style', 'position:fixed;left:-9999px;top:0;visibility:hidden;overflow:hidden;pointer-events:none');
+      msvg.appendChild(doc.createElementNS(NS, 'text'));
+      (doc.body || doc.documentElement).appendChild(msvg);
     }
-    return { svg: svg, measure: function (t, font) {
-      var tx = svg.firstChild, f = /^(\d+) (\d+(?:\.\d+)?)px (.*)$/.exec(font);
-      // not the font shorthand: it resets every other font property, tabular numerals included, which the page's text inherits
+    var cs = root.getComputedStyle(el), tx = msvg.firstChild;
+    MPROPS.forEach(function (k) { if (cs[k]) tx.style[k] = cs[k]; });
+    return { svg: msvg, measure: function (t, font) {
+      var f = /^(\d+) (\d+(?:\.\d+)?)px (.*)$/.exec(font);
+      // not the font shorthand: it resets every other font property, tabular numerals included
       tx.style.fontWeight = f[1]; tx.style.fontSize = f[2] + 'px'; tx.style.fontFamily = f[3]; tx.textContent = t;
       return tx.getComputedTextLength();
     } };
   }
+
   /* draw into el (a figure carrying the data- fields, with an empty .rce-art). Returns the drawing's result or null. */
   function draw(el) {
     var D = el.dataset, box = el.querySelector('.rce-art');
@@ -332,9 +339,8 @@
     m.svgAttrs = ' aria-labelledby="' + id + '-t ' + id + '-d"';
     m.svgHead = '<title id="' + id + '-t">' + esc(title + ', ' + D.place) + '</title><desc id="' + id + '-d">' + esc(describe(D, m)) + '</desc>';
     var ms = measurer(el);
-    box.appendChild(ms.svg);                      // in the page, inside the chart's own box, so it inherits the page's font
     var out = build(m, ms.measure, spec);
-    if (!out) { ms.svg.remove(); el.classList.add('rce-off'); return null; }
+    if (!out) { el.classList.add('rce-off'); return null; }
     box.innerHTML = out.svg;
     el.classList.remove('rce-off');
     el.setAttribute('data-rce', spec.name);
