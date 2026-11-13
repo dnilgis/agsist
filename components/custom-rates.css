@@ -29,6 +29,8 @@
 .crh-pick{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:.6rem .8rem;margin:0 0 .7rem}
 .crh-pick label{display:flex;flex-direction:column;gap:.25rem;font-size:.8rem;font-weight:700;letter-spacing:.02em;color:var(--text-muted);min-width:0}
 .crh-pick input,.crh-pick select{width:100%;min-height:48px;padding:0 .7rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;font-size:1rem;box-sizing:border-box}
+.crh-count{margin:-.3rem 0 .7rem!important;font-size:.88rem!important;color:var(--text-dim,var(--text-muted))!important;min-height:0}
+.crh-count:empty{display:none}
 .crh-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem}
 .cr-chip{min-height:44px;padding:0 .85rem;border:1px solid var(--border);border-radius:22px;background:var(--bg);color:var(--text);font:inherit;font-size:.88rem;cursor:pointer}
 .cr-chip[aria-pressed="true"]{border-color:var(--gold);background:rgba(var(--gold-rgb),.14);font-weight:700}
@@ -55,7 +57,12 @@
 .crb i{position:absolute;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--text-muted);opacity:.75}
 .crb i.me{width:13px;height:13px;margin:-6.5px 0 0 -6.5px;background:var(--gold);opacity:1;box-shadow:0 0 0 2px var(--surface);z-index:2}
 .crb b{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--text);z-index:1}
-.crb-l{height:16px;border-radius:8px;margin:.7rem 0 .9rem}
+.crb-l{height:16px;border-radius:8px;margin:.7rem 0 1.5rem}
+/* the scale under the bar: $0 at the left end, the value at the right end (Nov 13, E53) */
+.crb em{position:absolute;top:calc(100% + 4px);font-style:normal;font-size:.75rem;line-height:1;color:var(--text-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.crb .crb-0{left:0}
+.crb .crb-t{right:0}
+.cro-b .crb{margin-bottom:1.15rem}
 .crb-l s{border-radius:8px}
 .crb-l i{width:11px;height:11px;margin:-5.5px 0 0 -5.5px}
 .crb-l i.me{width:17px;height:17px;margin:-8.5px 0 0 -8.5px}
@@ -167,7 +174,27 @@
 .cr button.gl-term{padding:12px 0!important;background-clip:content-box!important}
 .cr-other a{display:inline-block;min-height:44px;line-height:44px}
 
+/* the cue under the big number on a phone: a button that takes the reader to the state picker */
+.cr-cue{display:inline;padding:0;margin:0;border:0;background:none;color:var(--link,var(--brand));font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;position:relative}
+.cr-cue::after{content:"";position:absolute;left:-.4rem;right:-.4rem;top:-.9rem;bottom:-.9rem}
+/* state page: jump links to a long survey's sections, the one-line cash rent link, the flat rate or base plus bushels box */
+.cr-jump{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem}
+.cr-jump a{display:inline-flex;align-items:center;min-height:44px;padding:.2rem .8rem;border:1px solid var(--border);border-radius:22px;background:var(--surface);color:var(--text)!important;text-decoration:none!important;font-size:.88rem;font-weight:600;line-height:1.2}
+.cr-t tr.sec{scroll-margin-top:140px}
+.cr-rent{margin:.2rem 0 .9rem!important}
+.crbp{margin:0 0 1.4rem;padding:.9rem 1.1rem;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+.crbp h2{margin:0 0 .4rem!important}
+.crbp-l{list-style:none;margin:.6rem 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:.8rem}
+.crbp-r{border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;background:var(--bg)}
+.crbp-r h3{margin:0 0 .35rem!important;font-size:1.05rem}
+.crbp-r p{margin:0 0 .4rem!important;font-size:.9rem}
+.crbp-r small{color:var(--text-muted)}
+.crbp-o{color:var(--text)!important}
 @media(max-width:699px){
+  .crh-count{order:3;margin:.55rem 0 0!important}
+  .cro-b .crb i{width:6px;height:6px;margin:-3px 0 0 -3px}
+  .cro-b .crb i.me{width:11px;height:11px;margin:-5.5px 0 0 -5.5px}
+  .crbp{padding:.8rem 12px}
   .cr{padding:.8rem 12px 5rem}
   .crh{padding:.85rem 12px 1rem;margin-left:0;margin-right:0}
   .crh-pick{grid-template-columns:1fr}

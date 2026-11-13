@@ -111,6 +111,8 @@
     haul: ['haul', 'truck', 'farm to market'], truck: ['truck', 'haul'], trucking: ['truck', 'haul'],
     bale: ['bale', 'baling'], baling: ['bale', 'baling'], round: ['round'],
     till: ['till', 'tillage'], tillage: ['till', 'tillage'], chisel: ['chisel'],
+    /* stem('tiling') is 'til', which would prefix-match tillage: tile drainage has its own words (Nov 13) */
+    til: ['tiling', 'tile'], tile: ['tile', 'tiling'], tiling: ['tiling', 'tile'],
     disk: ['disk', 'disc'], disc: ['disk', 'disc'], nh3: ['anhydrous'], anhydrou: ['anhydrous'],
     fert: ['fertiliz'], fertiliz: ['fertiliz'], mow: ['mow'], rake: ['rak'], rak: ['rak'],
     swath: ['swath'], wheat: ['wheat', 'small grain'], oat: ['small grain', 'oat'], barley: ['small grain', 'barley'],
@@ -165,6 +167,8 @@
     if (vals.length >= 2) h += '<s style="left:' + pc(Math.min.apply(null, vals)) + '%;width:' + Math.round(100 * (Math.max.apply(null, vals) - Math.min.apply(null, vals)) / top) + '%"></s>';
     sts.forEach(function (s) { h += '<i style="left:' + pc(op.by[s][0]) + '%"' + (s === me ? ' class="me"' : '') + '></i>'; });
     if (op.md != null) h += '<b style="left:' + pc(op.md) + '%"></b>';
+    /* the scale, said out loud: zero at the left, the bar's top value at the right (same as the builder) */
+    h += '<em class="crb-0">$0</em><em class="crb-t">' + money(top, op.u) + '</em>';
     return h + '</span>';
   }
   /* the reader's survey's own number for a job: [values, unit, kind] or null */
@@ -185,7 +189,7 @@
   /* the reader's state when it has no number of its own for this job */
   function mine(op) {
     var b = S.b, st = sv(S.st);
-    if (!st) return 'Pick your state above to see its own survey first.';
+    if (!st) return null;
     if (!b.states[st]) {
       var nc = b.not_covered[st], nb = (b.borders[st] || []).filter(function (x) { return op.by[x] || (op.old && op.old[x]); });
       return 'No ' + stName(st) + ' survey here.' + (nc ? ' ' + nc : '') + (nb.length ? ' Next door: ' + nb.map(function (x) {
@@ -237,7 +241,8 @@
       $('cr-av').textContent = c[0];
       $('cr-au').textContent = shortUnit(op.u);
       $('cr-as').textContent = middleLine(op, null);
-      $('cr-me').innerHTML = esc(mine(op)) + links;
+      var cue = mine(op);
+      $('cr-me').innerHTML = (cue == null ? '<button type="button" class="cr-cue" data-pick="1">Pick your state</button> to see its own survey first.' : esc(cue)) + links;
     }
     var old = $('cr-answer').querySelector('.crb-l');
     var nb = document.createElement('div'); nb.innerHTML = bar(op, 'crb crb-l', st);
@@ -331,7 +336,7 @@
       }
       var rg = r.lo == null ? 'not printed' : money(r.lo, r.u) + ' to ' + money(r.hi, r.u);
       return '<tr><th scope="row">' + esc(r.o) + (r.p === 'cents' ? ' <small>(printed in cents)</small>' : '') + '</th>' +
-        '<td class="av">' + money(r.a, r.u) + ' <small>' + esc(unitLabel(r.u)) + '</small>' + (r.md == null ? '' : '<span class="mdn">median ' + money(r.md, r.u) + '</span>') +
+        '<td class="av">' + money(r.a, r.u) + ' <small>' + esc(unitLabel(r.u)) + '</small>' + (r.md != null ? '<span class="mdn">median ' + money(r.md, r.u) + '</span>' : r.mc != null ? '<span class="mdn">most common ' + money(r.mc, r.u) + '</span>' : '') +
         '<span class="rgm">' + (r.lo == null ? '' : 'range ' + rg) + '</span></td><td class="rg">' + rg + '</td><td>' + (r.n == null ? '<span class="na">not printed</span>' : r.n) + '</td></tr>';
     }).join('');
   }
@@ -397,6 +402,18 @@
         ' None of ' + stn + '\'s own lines match' + (shown ? '.' : ' either.' + tryw));
     });
   }
+  /* phone: the hero sits above the search box, so a search that changed it is easy to miss. When typing settles, or on Enter,
+     bring the answer into view if it is scrolled off (Nov 13, audit 3) */
+  var settleT = null;
+  function showHero(q) {
+    if (!q || !window.matchMedia || !window.matchMedia('(max-width: 699px)').matches) return;
+    var a = $('answer'); if (!a) return;
+    var r = a.getBoundingClientRect();
+    if (r.top >= 0) return;
+    var calm = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    a.scrollIntoView({ block: 'start', behavior: calm ? 'auto' : 'smooth' });
+  }
+  function settle(q) { clearTimeout(settleT); settleT = setTimeout(function () { if (S.q === q) showHero(q); }, 900); }
   function openCat(sec, open) {
     var t = sec.querySelector('.crc-t');
     t.setAttribute('aria-expanded', open ? 'true' : 'false');
@@ -677,7 +694,7 @@
     var st = S.st;
     if (!st) { box.hidden = true; box.innerHTML = ''; return; }
     var s = S.b.states[sv(st)], name = stName(st);
-    var what = s ? name + '\'s next custom rate survey' : 'a ' + name + ' custom rate survey';
+    var what = s ? name + '\'s next custom rate survey' : (/^[AEIO]/.test(name) ? 'an ' : 'a ') + name + ' custom rate survey';
     box.hidden = false;
     box.innerHTML = '<p class="crt-h"><b>Email me when ' + esc(what) + ' is out</b></p>' +
       '<p class="fine">One email, when it is on this page' + (s ? ' (now: the ' + esc(svy(sv(st))) + ')' : '') + '. Nothing else.</p>' +
@@ -725,10 +742,11 @@
     controls(false);
     status('Loading the rates...');
     document.addEventListener('click', function (e) {
-      var el = e.target.closest && e.target.closest('.cro-b, [data-sheet], [data-show], [data-open], .crc-sb');
+      var el = e.target.closest && e.target.closest('.cro-b, [data-sheet], [data-show], [data-open], [data-pick], .crc-sb');
       if (!el) return;
       if (el.classList.contains('cro-b')) return toggle(el.parentNode);
       if (!S.b) return;
+      if (el.hasAttribute('data-pick')) { var pk = $('cr-st'); if (pk) { pk.scrollIntoView({ block: 'center' }); pk.focus(); } return; }
       if (el.hasAttribute('data-sheet')) return sheetToggle(el.getAttribute('data-sheet'));
       if (el.hasAttribute('data-show')) { hero(el.getAttribute('data-show')); url(); $('answer').scrollIntoView({ behavior: 'smooth' }); return; }
       if (el.hasAttribute('data-open')) { e.preventDefault(); var li = $(el.getAttribute('data-open')); openCat(li.closest('.crc'), true); toggle(li, true); li.scrollIntoView({ behavior: 'smooth' }); return; }
@@ -738,7 +756,8 @@
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function (b) {
         S.b = b;
-        var sel = $('cr-st'), cov = Object.keys(b.names).filter(function (x) { return b.states[x]; }), rest = Object.keys(b.names).filter(function (x) { return !b.states[x]; });
+        var sel = $('cr-st'), byName = function (x, y) { return b.names[x] < b.names[y] ? -1 : b.names[x] > b.names[y] ? 1 : 0; },
+          cov = Object.keys(b.names).filter(function (x) { return b.states[x]; }).sort(byName), rest = Object.keys(b.names).filter(function (x) { return !b.states[x]; }).sort(byName);
         sel.innerHTML = '<option value="">Pick a state</option><optgroup label="States with a survey">' +
           cov.map(function (s) { var x = b.states[s]; return '<option value="' + s + '">' + esc(b.names[s]) + ' (' + (x.same_as ? 'shares ' + esc(b.states[x.same_as].name) + ', ' : '') + yl(s) + ')</option>'; }).join('') +
           '</optgroup><optgroup label="No survey here yet">' + rest.map(function (s) { return '<option value="' + s + '">' + esc(b.names[s]) + '</option>'; }).join('') + '</optgroup>';
@@ -752,7 +771,16 @@
             S.q = v;
             search();
             if (hit) hero(hit);
+            settle(v);
           }, 140);
+        });
+        qi.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          clearTimeout(t); clearTimeout(settleT);
+          var v = qi.value.trim(), hit = Object.keys(b.ops).filter(function (k) { return b.ops[k].label.toLowerCase() === v.toLowerCase(); })[0];
+          S.q = v; search(); if (hit) hero(hit);
+          showHero(v);
         });
         all('[data-crk]').forEach(function (btn) {
           btn.addEventListener('click', function () { qi.value = ''; S.q = ''; search(); hero(btn.getAttribute('data-crk')); url(); });
@@ -826,6 +854,7 @@
         S.failed = true;
         status('The going rates did not load, so your state and the per-state numbers are not shown. The rates below are as of the last build; each state\'s page still has its whole survey.', true);
         $('cr-me').textContent = 'Not loaded.';
+        var qb = $('cr-quote'); if (qb) qb.innerHTML = '<p class="fine">The quote needs the rates, which did not load. Reload to try again.</p>';
         all('.cro.open .cro-d').forEach(function (d) { d.innerHTML = '<p class="fine">Not loaded. Each state\'s page still has its whole survey.</p>'; });
       });
   }
