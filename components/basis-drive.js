@@ -248,7 +248,7 @@
     opt = opt || {};
     var fx = opt.int ? function (v) { return String(Math.round(v)); } : f1;   // the printed pictures: whole pixels, fewer bytes on 1,400 pages
     var phone = W < 640, card = !!opt.card, fs = opt.fs || (phone ? 12 : 13), fb = fs + 1, H = opt.h || (phone ? 400 : 460);
-    var T = p.town, O = p.out, A = p.alt || [], st = cfg.stName || cfg.st, o = [], obst = [], labs = [], gut = [];
+    var T = p.town, O = p.out, A = p.alt || [], st = cfg.stName || cfg.st, o = [], obst = [], labs = [], gut = [], medDrawn = !phone;
     var minWk = phone && !card ? 10 : 0.05;   // a phone draws the week's line only for a move of 10 cents or more (the key says so)
     var vals = [];
     p.all.forEach(function (r) { vals.push(r.c); if (r.w != null && Math.abs(r.w) >= minWk) vals.push(Math.round((r.c - r.w) * 10) / 10); });
@@ -352,12 +352,12 @@
           bb = box(cands[k]);
           if (inPlot(bb.b) && (minX == null || bb.b.x0 >= minX) && !labs.some(function (z) { return hit(z, bb.b); })) {
             lines.forEach(function (s, j) { o.push(t(bb.x, cands[k].y + j * lh, s, (cls[j] || '') + ' h', '')); });
-            labs.push(bb.b); return true;
+            bb.b.forced = 1; labs.push(bb.b); return true;
           }
         }
         for (k = 0; k < cands.length; k++) {   // the last resort: the first place inside the picture, whatever it covers
           bb = box(cands[k]);
-          if (inPlot(bb.b)) { lines.forEach(function (s, j) { o.push(t(bb.x, cands[k].y + j * lh, s, (cls[j] || '') + ' h', '')); }); labs.push(bb.b); return true; }
+          if (inPlot(bb.b)) { lines.forEach(function (s, j) { o.push(t(bb.x, cands[k].y + j * lh, s, (cls[j] || '') + ' h', '')); }); bb.b.forced = 2; labs.push(bb.b); return true; }
         }
       }
       return false;
@@ -384,11 +384,11 @@
     var bo = oq.filter(function (q) { return q.d === bestOf(O); })[0];
     if (bo) {
       var ow = bo.d.town, gcls = bo.gold ? 'gold b big' : 'b big';
-      if (phone) place([ow + ', ' + word(bo.d.c)], near(bo, 1), [gcls], outX, true, bo);
+      if (phone) place([ow + ', ' + word(bo.d.c)], near(bo, 1), [gcls], outX, card, bo);   // a phone with no free place leaves it to the headline and the readout, which opens on it
       else place([bo.gold ? 'Best bid within ' + NEAR_MI + ' miles' : 'Best bid outside town', ow + ', ' + mi(bo.d.mi) + ': ' + word(bo.d.c)], near(bo, 2), ['', gcls], outX, true, bo);
     }
     var ba = aq.filter(function (q) { return q.d === bestOf(A); })[0];
-    if (ba) place([ba.d.town + ', ' + word(ba.d.c)], near(ba, 1), ['b big'], outX, true);
+    if (ba) place([ba.d.town + ', ' + word(ba.d.c)], near(ba, 1), ['b big'], outX, !phone || card, ba);
     // 3. the state median: in the right margin from 640 px (with the lowest outside town), on one line above its rule on a phone
     var lo = oq.length > 1 ? oq.filter(function (q) { return q.d.c === lowOf(O).c; }) : [];
     if (lo.length && lo[0].d.c === bestC) lo = [];
@@ -417,7 +417,7 @@
       var mt = st + ' median: ' + word(cents(p.med.median)), mw = widthOf(mt, fs, true), mc = [];
       for (var mx = L + 6; mx <= x1 - mw; mx += 12) mc.push({ x: mx, y: ym - 6 });
       for (mx = L + 6; mx <= x1 - mw; mx += 12) mc.push({ x: mx, y: ym + fs + 4 });
-      place([mt], mc, ['b'], null, true);
+      medDrawn = place([mt], mc, ['b'], null, card);   // no free place on a phone: the key above the picture names the dashed line
     }
     // 4. the biggest move in a week outside town, 10 cents or more
     var mv = oq.filter(function (q) { return q.d.w != null && Math.abs(q.d.w) >= 10 && q !== bo && lo.indexOf(q) < 0; }).sort(function (a, b) { return Math.abs(b.d.w) - Math.abs(a.d.w) || a.d.mi - b.d.mi; })[0];
@@ -457,7 +457,7 @@
     dd = (defs.length ? '<defs>' + defs.join('') + '</defs>' : '') + dd;
     var s = '<svg class="bd-svg' + (opt.cls ? ' ' + opt.cls : '') + '"' + (card ? ' xmlns="http://www.w3.org/2000/svg"' : '') + ' viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(aria) + '" style="font-size:' + fs + 'px' + (card ? ';font-family:' + FONT : '') + '">' +
       (card ? cardStyle(CARD) : '') + zone + lines + dd + o.join('') + '</svg>';
-    return { svg: s, dots: dots.map(function (q) { return { x: q.x, y: q.y, r: q.r, i: q.i, base: q.d.inTown ? null : Xm(q.d.mi), over: !!q.over }; }), H: H, W: W, gut: gut, labs: labs, order: dots.map(function (q) { return q.d; }), over: over, minWk: minWk, cap: cap, x0: x0, x1: x1 };
+    return { svg: s, dots: dots.map(function (q) { return { x: q.x, y: q.y, r: q.r, i: q.i, base: q.d.inTown ? null : Xm(q.d.mi), over: !!q.over }; }), H: H, W: W, gut: gut, labs: labs, obst: obst, medDrawn: medDrawn, plotBox: { x0: L - 2, x1: W - 2, y0: y0 - 2, y1: y1 + 2 }, order: dots.map(function (q) { return q.d; }), over: over, minWk: minWk, cap: cap, x0: x0, x1: x1 };
   }
 
   /* the default dot the readout opens on: the best bid outside town, else the best in town */
@@ -465,9 +465,10 @@
   function axisText(p) { return p.adj.charAt(0).toUpperCase() + p.adj.slice(1) + ' basis, cents a bushel over or under ' + (conMon(p.ref && p.ref.vs) || 'the') + ' futures'; }
   /* the key above the picture: what a dot, the gold, an open dot and a line mean, only what this view draws. The words
      in .bd-kph show only where the phone rule (a line for a move of 10 cents or more) applies. -> HTML */
-  function keyHtml(p) {
+  function keyHtml(p, cfg) {
     var yr = String(p.prev || '').slice(0, 4), parts = ['dot: today&rsquo;s bid', '<span class="bd-kg">gold</span>: ' + (p.alt && p.alt.length ? 'the best on the town&rsquo;s terms' : 'the best within ' + NEAR_MI + ' miles')];
     if (p.alt && p.alt.length) parts.push('open dot: ' + esc(dmFull(p.altDm, yr)) + ' delivery');
+    if (p.med) parts.push('dashes: the ' + esc((cfg && (cfg.stName || cfg.st)) || 'state') + ' median, ' + esc(word(cents(p.med.median))));
     if (moved(p)) parts.push('line: its move since ' + esc(day(p.prev)) + '<span class="bd-kph">, when 10 cents or more</span>');
     return parts.join('; ');
   }
@@ -495,13 +496,13 @@
   }
   /* the builder's entry: everything the page prints for one crop, the picture at phone width */
   function render(docs, cfg0, crop, W, bs) {
-    /* two pictures for the page without script: the phone's, and one for a wide column (round 1: a desktop reader got
-       the phone picture alone at the left); the page shows one by its width until the script draws at the box's own */
+    /* the page without script prints the phone's picture (a desktop reader without script gets it centred in a narrow
+       column, basis_drive.CSS_LINK's noscript style); the script draws at the box's own width as soon as it loads */
     var cfg = prep(cfg0, docs, bs), p = pick(docs, cfg, crop), st = story(p, cfg), short = !p.out.length && !p.alt.length;
-    var pw = svg(p, cfg, W || 358, { cls: 'bd-sp', id: 'p', h: short ? 240 : 400, int: true }), ww = svg(p, cfg, 760, { cls: 'bd-sw', id: 'w', h: short ? 300 : 460, int: true });
+    var pw = svg(p, cfg, W || 358, { id: 'p', h: short ? 240 : 400, int: true });
     var k = firstDot(p), rd = readout(p, p.all[k]);
     return { crop: crop, n: drawn(p), inTown: p.town.length, out: p.out.length, alt: p.alt.length, short: short, head: st.head, take: st.take, axis: axisText(p),
-             prev: moved(p) ? day(p.prev) : '', key: keyHtml(p), svg: pw.svg + ww.svg, read: rd, note: note(p, cfg), first: k };
+             prev: moved(p) ? day(p.prev) : '', key: keyHtml(p, cfg), svg: pw.svg, read: rd, note: note(p, cfg), first: k };
   }
 
   /* ---------------------------------------------------------------- the page */
@@ -573,7 +574,7 @@
       box.classList.toggle('bd-narrow', W < 640); plot.classList.toggle('bd-short', !p.out.length && !p.alt.length);
       var st = story(p, cfg);
       head.textContent = hy(st.head); take.textContent = hy(st.take); axis.textContent = axisText(p); noteEl.textContent = hy(note(p, cfg));
-      if (keyT) keyT.innerHTML = keyHtml(p);
+      if (keyT) keyT.innerHTML = keyHtml(p, cfg);
       pic = svg(p, cfg, W, { h: plot.clientHeight || undefined });
       plot.innerHTML = pic.svg;
       // the readout holds the room of its longest line, so nothing under it moves when a dot is read
