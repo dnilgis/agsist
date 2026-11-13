@@ -43,7 +43,7 @@
   --sp-xs: .35rem; --sp-sm: .65rem; --sp-md: 1rem; --sp-lg: 1.5rem;
   --sp-xl: 2rem; --sp-2xl: 3rem;
   --r-sm: 2px; --r-md: 3px; --r-lg: 4px; --r-pill: 3px;
-  --r-8: 8px;
+  --r-8: 4px;
   --page-max: 1100px; --page-max-wide: 1400px;
   --chart-fs: 11px; --chart-text: var(--text-muted); --chart-grid: var(--border); --chart-zero: var(--border-2);
   --chart-1: var(--gold); --chart-2: #8fa6b2;
