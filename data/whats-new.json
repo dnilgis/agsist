@@ -30,6 +30,13 @@
    "link": "/corn-futures-prices"
   },
   {
+   "id": "2026-11-13-sponsor-pay",
+   "date": "2026-11-13",
+   "title": "Sponsors pay by check or wire",
+   "line": "Sponsor spots are paid by check or bank wire from the invoice we email, at the posted price.",
+   "link": "/sponsor"
+  },
+  {
    "id": "2026-11-12-alert-expiry",
    "date": "2026-11-12",
    "title": "Price alerts end with their contract",
