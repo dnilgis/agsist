@@ -345,7 +345,8 @@
       add({ x0: q.x - q.r - 1, x1: q.x + q.r + 1, y0: q.y - q.r - 1, y1: q.y + q.r + 1, dot: 1, q: q });
     });
     // the words on the data: each tries its places in order; the best bid's words are placed first and never left off
-    var inPlot = function (b) { return b.x0 >= L - 2 && b.x1 <= W - 2 && b.y0 >= y0 - 2 && b.y1 <= y1 + 2; };
+    var PR = phone ? W - 2 : W - R + 4;   // the words on the data stay left of the margin column, which has its own
+    var inPlot = function (b) { return b.x0 >= L - 2 && b.x1 <= PR && b.y0 >= y0 - 2 && b.y1 <= y1 + 2; };
     /* words set away from their dot get a leader: a thin dotted slant from the dot to the label's nearest corner (never
        straight up over the dot, where a line means where the bid was a week before). null: no leader needed;
        false: the leader would cross a label or a dot, so the place is refused */
@@ -362,7 +363,7 @@
     };
     var place = function (lines, cands, cls, minX, must, q) {
       var lh = fs * 1.3, w = Math.max.apply(null, lines.map(function (s, k) { var cl = cls[k] || ''; return widthOf(s, /big/.test(cl) ? fb : fs, /(^| )b( |$)/.test(cl)); }));
-      var box = function (c) { var x = c.anchor === 'end' ? c.x - w : c.anchor === 'middle' ? c.x - w / 2 : c.anchor === 'clamp' ? Math.min(Math.max(c.x - w / 2, minX == null ? L + 2 : minX + 2), W - 4 - w) : c.x; return { x: x, b: { x0: x - 2, x1: x + w + 2, y0: c.y - fs - 1, y1: c.y + (lines.length - 1) * lh + 4 } }; };
+      var box = function (c) { var x = c.anchor === 'end' ? c.x - w : c.anchor === 'middle' ? c.x - w / 2 : c.anchor === 'clamp' ? Math.min(Math.max(c.x - w / 2, minX == null ? L + 2 : minX + 2), PR - 2 - w) : c.x; return { x: x, b: { x0: x - 2, x1: x + w + 2, y0: c.y - fs - 1, y1: c.y + (lines.length - 1) * lh + 4 } }; };
       for (var k = 0; k < cands.length; k++) {
         var bb = box(cands[k]);
         if (minX != null && bb.b.x0 < minX) continue;
@@ -398,7 +399,7 @@
               { x: q.x - q.r, y: dn + lh }, { x: q.x + q.r, y: dn + lh, anchor: 'end' },
               { x: q.x, y: up, anchor: 'clamp' }, { x: q.x, y: dn, anchor: 'clamp' }, { x: q.x, y: up - lh, anchor: 'clamp' }, { x: q.x, y: dn + lh, anchor: 'clamp' }, { x: q.x, y: up - 2 * lh, anchor: 'clamp' }, { x: q.x + g, y: q.y - lh * (lines + 0.2) }, { x: q.x + g, y: q.y - lh * (lines + 1.2) }, { x: q.x - g, y: q.y - lh * (lines + 0.2), anchor: 'end' },
               { x: q.x, y: up - 3 * lh, anchor: 'clamp' }, { x: q.x, y: up - 4 * lh, anchor: 'clamp' }, { x: q.x, y: dn + 2 * lh, anchor: 'clamp' },
-              { x: W - 4, y: up, anchor: 'end' }, { x: W - 4, y: up - lh, anchor: 'end' }, { x: W - 4, y: up - 2 * lh, anchor: 'end' }, { x: W - 4, y: dn, anchor: 'end' }];
+              { x: PR - 2, y: up, anchor: 'end' }, { x: PR - 2, y: up - lh, anchor: 'end' }, { x: PR - 2, y: up - 2 * lh, anchor: 'end' }, { x: PR - 2, y: dn, anchor: 'end' }];
     };
     var golds = dots.filter(function (q) { return q.gold; });
     var tq = dots.filter(function (q) { return q.d.inTown; }), oq = dots.filter(function (q) { return !q.d.inTown && !q.d.alt; }), aq = dots.filter(function (q) { return q.d.alt; });
@@ -489,7 +490,7 @@
     if (labs.some(function (b) { return b.forced; }) && (opt.bump || 0) < 2) { var o2 = {}, kk; for (kk in opt) o2[kk] = opt[kk]; o2.bump = (opt.bump || 0) + 1; return svg(p, cfg, W, o2); }
     var s = '<svg class="bd-svg' + (opt.cls ? ' ' + opt.cls : '') + '"' + (card ? ' xmlns="http://www.w3.org/2000/svg"' : '') + ' viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(aria) + '" style="font-size:' + fs + 'px' + (card ? ';font-family:' + FONT : '') + '">' +
       (card ? cardStyle(CARD) : '') + zone + lines + dd + o.join('') + '</svg>';
-    return { svg: s, dots: dots.map(function (q) { return { x: q.x, y: q.y, r: q.r, i: q.i, base: q.d.inTown ? null : Xm(q.d.mi), over: !!q.over }; }), H: H, W: W, gut: gut, labs: labs, obst: obst, medDrawn: medDrawn, plotBox: { x0: L - 2, x1: W - 2, y0: y0 - 2, y1: y1 + 2 }, order: dots.map(function (q) { return q.d; }), over: over, minWk: minWk, cap: cap, x0: x0, x1: x1 };
+    return { svg: s, dots: dots.map(function (q) { return { x: q.x, y: q.y, r: q.r, i: q.i, base: q.d.inTown ? null : Xm(q.d.mi), over: !!q.over }; }), H: H, W: W, gut: gut, labs: labs, obst: obst, medDrawn: medDrawn, plotBox: { x0: L - 2, x1: PR, y0: y0 - 2, y1: y1 + 2 }, order: dots.map(function (q) { return q.d; }), over: over, minWk: minWk, cap: cap, x0: x0, x1: x1 };
   }
 
   /* the default dot the readout opens on: the best bid outside town, else the best in town */
