@@ -59,8 +59,8 @@
  * Global Privacy Control are read again: a switch turned off in another tab
  * while this page waited wins.
  *
- * Tagging. Every hit carries ga_gate (ok, cached, timeout, error, badreply:
- * how the visit got in) and ga_auto (the score, 0 or 1), as an event
+ * Tagging. Every hit carries gate_pass (ok, cached, timeout, error, badreply:
+ * how the visit got in) and gate_auto (the score, 0 or 1), as an event
  * parameter and a user property, so fail-open can be measured in GA. Nothing
  * else about the browser is sent.
  */
@@ -253,7 +253,7 @@
     if (switchedOff()) return;
     var q = w.dataLayer = w.dataLayer || [], i, at = -1;
     for (i = 0; i < q.length; i++) { if (isArgs(q[i]) && q[i][0] === 'config') { at = i; break; } }
-    var tag = { ga_gate: how, ga_auto: String(score) };
+    var tag = { gate_pass: how, gate_auto: String(score) };
     var sets = [args('set', 'user_properties', tag), args('set', tag)];
     if (at < 0) q.push(sets[0], sets[1]); else q.splice(at, 0, sets[0], sets[1]);
     var s = d.createElement('script');
