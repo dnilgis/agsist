@@ -93,7 +93,8 @@
        clear of the next; the last month, a stub, is named only where it is as wide as its name */
     var ticks = cfg.ticks || [], cxs = ticks.map(function (t) { return g.X((t.a + t.b) / 2); }), maxW = 0, step = 1;
     ticks.forEach(function (t) { maxW = Math.max(maxW, widthOf(t.lab, fs, 0.6)); });
-    for (; step < ticks.length; step++) { var okS = true; for (var q = step; q < ticks.length; q += step) if (cxs[q] - cxs[q - step] < maxW + fs * 0.9) okS = false; if (okS) break; }
+    var nT = ticks.length, lastT = ticks[nT - 1], stubLast = nT > 1 && g.X(lastT.b) - g.X(lastT.a) < widthOf(lastT.lab, fs, 0.6) * 0.9, nNamed = stubLast ? nT - 1 : nT;
+    for (; step < nNamed; step++) { var okS = true; for (var q = step; q < nNamed; q += step) if (cxs[q] - cxs[q - step] < maxW + fs * 0.9) okS = false; if (okS) break; }
     ticks.forEach(function (t, ti) {
       var w = widthOf(t.lab, fs, 0.6), stub = ti === ticks.length - 1 && g.X(t.b) - g.X(t.a) < w * 0.9;
       o.push('<line x1="' + f1(g.X(t.a)) + '" x2="' + f1(g.X(t.a)) + '" y1="' + g.yb + '" y2="' + (g.yb + 4) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
@@ -160,10 +161,12 @@
         order.forEach(function (side) { for (var k = 0; k < 14; k++) [0, 12, 24, 36, 48, 60, 80, 100, 120].forEach(function (dx) {
           var up = side[0] === 'U', rt = side[1] === 'R', x = rt ? px + 4 + dx : px - 4 - dx, bot = highY - fs * 0.55 - k * fs * 1.3, yTop = up ? bot - h : lowY + fs * 0.55 + k * fs * 1.3;
           var b = { l: rt ? x : x - w, r: rt ? x + w : x, t: yTop, b: yTop + h };
-          var sy = up ? highY : lowY, ex0 = Math.max(b.l, Math.min(b.r, px)), ey0 = up ? b.b : b.t;
-          var nHit = hits(b, pts, 6) + (fits(b) ? 0 : 400) + boxes.filter(function (q) { return overlap(b, q, 5); }).length * 600 + (frz != null && b.l - 6 < frz && b.r + 6 > frz ? 300 : 0);
-          if (Math.hypot(ex0 - px, ey0 - sy) > 7) nHit += segCross(px, sy, ex0, ey0) * 4;
-          if (nHit + dx * 0.02 + k * 0.5 < bestN) { bestN = nHit + dx * 0.02 + k * 0.5; best = { b: b, lines: lines, x: x, rt: rt, y0: yTop + fs1 * 0.85, up: up, sy: sy, ex0: ex0, ey0: ey0 }; }
+          var sy = py, ex0 = Math.max(b.l, Math.min(b.r, px)), ey0 = up ? b.b : b.t, hl = Math.hypot(ex0 - px, ey0 - sy);
+          /* clean means: on neither line, inside the plot, off the other labels and the freeze rule, and a hairline that is short and crosses nothing */
+          if (!fits(b) || hits(b, pts, 6) > 0 || boxes.some(function (q) { return overlap(b, q, 5); }) || (frz != null && b.l - 6 < frz && b.r + 6 > frz)) return;
+          if (hl > 7 && (hl > (g.yb - g.pt) * 0.3 || segCross(px, sy, ex0, ey0) > 0)) return;
+          var cost = hl + dx * 0.05 + k * 0.5;
+          if (cost < bestN) { bestN = cost; best = { b: b, lines: lines, x: x, rt: rt, y0: yTop + fs1 * 0.85, up: up, sy: sy, ex0: ex0, ey0: ey0 }; }
         }); });
       });
       if (!best) return;
