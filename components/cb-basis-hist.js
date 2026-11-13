@@ -278,8 +278,8 @@
       range: all, height: { phone: 250, wide: 300 },
       story: function (v, forCard) { return story(c, town, v.from, v.to, forCard); },
       readout: function (v, d) {
-        // each "name basis" holds together and a line breaks only after a separator, never inside a name or before a dot
-        var t = c.lines.map(function (l) { var p = heldOn(l, d); return p ? (l.name + ' ' + basisText(p.v)).replace(/ /g, '\u00a0') : ''; }).filter(Boolean);
+        // each "name basis" holds together (no-break spaces and hyphens) and a line breaks only after a separator
+        var t = c.lines.map(function (l) { var p = heldOn(l, d); return p ? (l.name + ' ' + basisText(p.v)).replace(/ /g, '\u00a0').replace(/(\w)-(?=\w)/g, '$1\u2011') : ''; }).filter(Boolean);
         return dayText(d) + ': ' + (t.length ? t.join('\u00a0· ') : 'nothing logged for an open month');
       },
       headEl: els.head, takeEl: els.take, tools: els.tools,
