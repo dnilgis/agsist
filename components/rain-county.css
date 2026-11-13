@@ -136,11 +136,11 @@
 .rc-sell .rc-fine { margin: .5rem 0 0; }
 /* the second year button (last year by Christmas, this year in January): an outline that reads as a button */
 .rc-sell .btn-secondary { border-color: var(--text-muted); }
-/* The county page's print up top, in the plain chart's place (Oct 28 2026). The plain chart ships inside
-   .rc-print-art as the no-JS fallback; the script replaces it with the print. While scripts run, the print's
-   box (3:2, the art's 1800 x 1200), its picker row and the longer of the two captions are held from the first
-   paint, so drawing the print moves nothing below it (the !important beats styles.css's [hidden] rule). Without scripts nothing is held: the chart shows as is; when the print cannot be drawn the script lets the room go
-   (.rc-print-off). */
+/* The county page's print up top (Oct 28 2026). While scripts run, the print's box (3:2, the art's 1800 x 1200), its picker
+   row and the longer of the two captions are held from the first paint, so drawing the print moves nothing below it (the
+   !important beats styles.css's [hidden] rule). Without scripts nothing is held. When the print cannot be drawn the script adds
+   .rc-print-off and the room is let go on a phone; wider it stays held, with the chart in the box (the chart block, from Nov 13,
+   is below). */
 .rc-print-top .rc-print-styles { margin-top: .4rem; }
 .rc-print-top .rc-print-art { box-sizing: content-box; border: 1px solid transparent; border-radius: 4px; }
 .rc-print-top figcaption { display: grid; }
@@ -166,3 +166,67 @@
   .rc-states li { padding: .65rem 0; }   /* the state lists (All states, without a page): about 44 px a row */
 }
 .rc-none li small a { white-space: nowrap; }   /* each nearest-county link stays whole in "without a page" */
+
+/* The enhanced running-total chart (Nov 13 2026; components/rain-chart.js draws it, in the browser, from the page's own data- fields;
+   scripts/build_county_rain.py writes its first drawing inline, so a reader without scripts sees it and everyone sees it until the
+   component's exact drawing replaces it in the same room). Two designs, a phone one 400 wide and a wide one 640 wide, and two heights
+   each (a page with no NOAA normal has no key): the ratios below are those sizes, and test/rain-chart-enhanced.test.mjs keeps them equal
+   to what the component draws. A county page's chart is always the phone design (its inline drawing is that, and wider than a phone it
+   sits in the print's phone-shaped room), so the wide design is only for a chart on a page without a print.
+   ORDER (Sig, Nov 13; phones only, Oct 28's print-first stands above): up to 560 px, this file's own phone layout (the
+   max-width: 560px rules above), the chart comes first inside the print's figure, with its caption, and the print below it.
+   Wider, the print comes first as before: while it loads the chart sits over the print's reserved box (never an empty box), goes
+   when the print has drawn, and stays in the box if the print cannot be drawn (the box and the picker row are held, so nothing moves). */
+.rce { --rce-ink: var(--text, #161a18); --rce-mute: var(--text-muted, #5e6475); --rce-rain: var(--blue, #6f9fc2); --rce-dry: rgba(200,178,140,.30); --rce-wet: rgba(111,159,194,.30); --rce-dry-edge: rgba(200,178,140,.55); --rce-wet-edge: rgba(111,159,194,.6); max-width: 480px; margin: 0; }
+[data-theme="light"] .rce { --rce-rain: #2b5c8a; --rce-mute: #4f5668; --rce-dry: #ece6de; --rce-wet: #e3ebf3; --rce-dry-edge: #cfc6ba; --rce-wet-edge: #b9c7d6; }
+.rce-f-ink { fill: var(--rce-ink); } .rce-f-mute { fill: var(--rce-mute); } .rce-f-rain { fill: var(--rce-rain); } .rce-f-dry { fill: var(--rce-dry); } .rce-f-wet { fill: var(--rce-wet); }
+.rce-s-ink { stroke: var(--rce-ink); } .rce-s-mute { stroke: var(--rce-mute); } .rce-s-rain { stroke: var(--rce-rain); } .rce-s-dryEdge { stroke: var(--rce-dry-edge); } .rce-s-wetEdge { stroke: var(--rce-wet-edge); }
+/* the inline drawing's strokes and text, as classes (page weight): baseline, normal, this year, swatch; headline, its second line, axis ends, the key's three rows, month letters */
+.rce-bl { fill: none; stroke: var(--rce-ink); stroke-width: 1.5; }
+.rce-nl { fill: none; stroke: var(--rce-mute); stroke-width: 2.5; stroke-dasharray: 8 6; stroke-linejoin: round; }
+.rce-yl { fill: none; stroke: var(--rce-rain); stroke-width: 4.5; stroke-linejoin: round; stroke-linecap: round; }
+.rce-sw { stroke-width: 1; }
+.rce-h1 { fill: var(--rce-ink); font-weight: 700; } .rce-h2 { fill: var(--rce-ink); font-weight: 500; font-size: 25px; } .rce-ax { fill: var(--rce-mute); font-weight: 500; font-size: 23px; }
+.rce-k1 { fill: var(--rce-rain); font-weight: 700; } .rce-k2 { fill: var(--rce-mute); font-weight: 500; } .rce-k3 { fill: var(--rce-ink); font-weight: 700; }
+.rce-q { fill: var(--rce-mute); fill-opacity: .7; font-weight: 500; font-size: 23px; }
+.rce .rce-art svg { max-width: none; width: 100%; height: auto; display: block; overflow: visible; }
+.rce svg text { font-family: var(--font-body, system-ui, sans-serif); }
+.rce-top { margin: 0 0 .5rem; }
+.rc-print-top .rc-cap-print { margin-top: .4rem; }
+@media (scripting: enabled) {
+  .rce:not(.rce-off) .rce-art { aspect-ratio: 400 / 596; }
+  .rce-p:not(.rce-off) .rce-art { aspect-ratio: 400 / 488; }
+}
+@media (scripting: enabled) and (min-width: 561px) {
+  .rce:not(.rce-off) .rce-art { aspect-ratio: 640 / 658; }
+  .rce-p:not(.rce-off) .rce-art { aspect-ratio: 640 / 538; }
+}
+.rce-off { display: none; }
+/* a phone: the chart, its caption, then the print's picker, box and caption (the figure's caption is flattened so the chart's sits under the chart) */
+@media (max-width: 560px) {
+  .rc-print-top { display: flex; flex-direction: column; }
+  .rc-print-top > .rce-top { order: 0; }
+  .rc-print-top > figcaption { display: contents; }
+  .rc-print-top .rc-cap-chart { order: 1; display: block !important; margin: 0 0 .4rem; font-size: var(--fs-sm); color: var(--text-muted); }
+  .rc-print-top > .rc-print-styles { order: 2; }
+  .rc-print-top > .rc-print-art { order: 3; }
+  .rc-print-top .rc-cap-print { order: 4; }
+  /* rain-county-print.js hides the chart's caption when the print draws; on a phone the chart stays, so its caption does (over the held-room rule above) */
+  .rc-print-top:not(.rc-print-off) > figcaption > span.rc-cap-chart[hidden] { display: block !important; visibility: visible !important; }
+}
+/* wider, scripts on: the chart sits over the print's reserved box until the print has drawn, and stays in it if the print cannot be drawn */
+@media (min-width: 561px) and (scripting: enabled) {
+  .rc-print-top { display: grid; grid-template-columns: minmax(0, 1fr); }   /* grid before and after the print draws: block margins collapse and grid margins do not, so a switch would move the figure */
+  .rc-print-top > .rc-print-styles { grid-row: 1; }
+  .rc-print-top > .rc-print-art { grid-row: 2; grid-column: 1; }
+  .rc-print-top:not(.rc-print-on) > .rce-top { grid-row: 2; grid-column: 1; contain: size; overflow: hidden; margin: 0; display: flex; justify-content: center; }
+  .rc-print-top:not(.rc-print-on) > .rce-top .rce { max-width: none; height: 100%; display: flex; }
+  .rc-print-top:not(.rc-print-on) > .rce-top .rce .rce-art { height: 100%; aspect-ratio: auto; }
+  .rc-print-top:not(.rc-print-on) > .rce-top .rce-art svg { height: 100%; width: auto; max-width: 100%; }
+  .rc-print-top > figcaption { grid-row: 3; }
+  /* the print gave up: its box, its picker row and its caption stay held, with the chart in the box, so nothing moves */
+  .rc-print-top.rc-print-off .rc-print-art { aspect-ratio: 3 / 2; }
+  .rc-print-top.rc-print-off > .rc-print-styles[hidden] { display: flex !important; visibility: hidden; }
+  .rc-print-top.rc-print-off figcaption > span[hidden] { display: block !important; visibility: hidden; }
+}
+@media (min-width: 561px) { .rc-print-top.rc-print-on > .rce-top { display: none; } }

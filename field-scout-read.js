@@ -636,7 +636,7 @@ window.__fsRead = function (FSX) {
       if(!rec || rec.total==null || rec.usual==null || !rec.station) return null;
       var ll=rec.station.ll, mi=(ll&&isFinite(ll[0]))?_hvsMi(FSX.FIELD.lat, FSX.FIELD.lng, ll[1], ll[0]):null;
       var dd=D&&D.counties&&D.counties[via||f], wk=dd?weekRain(dd.p, +(D.year||R.year)):null;
-      return { total:+rec.total, usual:+rec.usual, pct:rec.pct, thru:rec.as_of||R.edate, year:+R.year, cum:rec.cum||null,
+      return { total:+rec.total, usual:+rec.usual, pct:rec.pct, thru:rec.as_of||R.edate, year:+R.year, days:rec.days, miss:rec.missing||0, cum:rec.cum||null,
         station:rec.station.name, mi:mi, borrowed:via?(rec.name||'a neighboring county'):null, normals:R.normals||'1991-2020', wk:wk };
     });
   }
@@ -795,7 +795,7 @@ window.__fsRead = function (FSX) {
       var r=x[0], g=x[1] ? gduFromRows(x[1], new Date().getFullYear(), c.lat, r?r.thru:null) : null;
       if(!r && !g){ FSX.FIELD.season=null; recomputeInsight(); renderRisk(); setErr('fs-season','The county rain gauge record and the heat-unit grid did not answer just now.'); return; }
       var se={ year:new Date().getFullYear(), n:g?g.n:null, gauge:!!r, pLbl: r ? r.normals+' normal' : null };
-      if(r){ se.pNow=r.total; se.pNorm=r.usual; se.pDep=r.total-r.usual; se.pct=r.pct; se.thru=r.thru; se.station=r.station; se.mi=r.mi; se.borrowed=r.borrowed; se.cum=r.cum; }
+      if(r){ se.pNow=r.total; se.pNorm=r.usual; se.pDep=r.total-r.usual; se.pct=r.pct; se.thru=r.thru; se.station=r.station; se.mi=r.mi; se.borrowed=r.borrowed; se.cum=r.cum; se.pYear=r.year; se.pDays=r.days; se.pMiss=r.miss; }
       else { se.pNow=null; se.pNorm=null; se.pDep=null; }
       if(g){ se.gNow=g.gNow; se.gNorm=g.gNorm; se.gDep=g.gDep; se.gPlant=g.gPlant; se.plantMD=g.plantMD; se.gCumMap=g.gCumMap; se.gThru=g.gThru; se.frost=g.frost; if(!se.thru) se.thru=g.gThru; }
       else { se.gNow=null; se.gNorm=null; se.gDep=null; se.gPlant=null; se.gCumMap=null; se.frost=null; }
@@ -803,6 +803,7 @@ window.__fsRead = function (FSX) {
       recomputeInsight(); renderRisk();
       setBody('fs-season', seasonHtml(se));
       if(FSX.FIELD.indices) renderIndices(FSX.FIELD.indices);   // the vigor words depend on whether the season is over
+      var rb=document.getElementById('fs-season'); if(rb) mountRce(rb);
     });
   }
 
@@ -838,15 +839,20 @@ window.__fsRead = function (FSX) {
     var line=function(k){ return cum.map(function(r,i){ return (i?'L':'M')+X(r[0]).toFixed(1)+' '+Y(r[k]).toFixed(1); }).join(' '); };
     var grid=''; for(var tv=0; tv<=maxV+1e-9; tv+=step){ var gy=Y(tv);
       grid+='<line x1="'+pl+'" y1="'+gy.toFixed(1)+'" x2="'+(W-pr)+'" y2="'+gy.toFixed(1)+'" stroke="rgba(132,160,168,'+(tv===0?'.28':'.12')+'" stroke-width="1"/><text x="'+(pl-5)+'" y="'+(gy+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="#8a948f" font-family="JetBrains Mono,monospace">'+(tv===0?'0':tv+'″')+'</text>'; }
-    var last=cum[cum.length-1], dev=last[1]-last[2];
-    var col = dev<=-2 ? '#d98a1f' : dev>=2 ? '#3f9a45' : 'var(--fs-rain,#4f8fc0)';
+    // 2026-11-13 (Sig: any generic rain total chart is replaced by the enhanced one): the chart is components/rain-chart.js, drawn in the
+    // browser from this card's own figures: the same total, normal and percent the two numbers above print, to a hundredth as the county page
+    // prints them (so the key adds up: this year plus the gap is the normal), the difference worked out by the component.
+    var last=cum[cum.length-1], q=function(v){ return esc(String(v)); }, mi=s.mi!=null?Math.round(s.mi)+' mi from this field':'';
+    var wk=(function(){ var pt=0, pu=0; return cum.map(function(r){ var t=Math.round(r[1]*100), u=Math.round(r[2]*100), o=(t-pt)+','+(u-pu); pt=t; pu=u; return o; }).join(';'); })();   // the days implied (Jan 7 and every 7), the first value whole and the rest the week's change: as the county pages write it
     return '<div class="fs-chart-title">Rain at the county gauge: Jan 1 to date</div>'+
-      '<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Rain this year at the county gauge against its normal" style="display:block;width:100%;height:auto;margin-top:.35rem">'+grid+
-      '<path d="'+line(2)+'" fill="none" stroke="#8a948f" stroke-width="1.2" stroke-dasharray="4 3"></path>'+
-      '<path d="'+line(1)+'" fill="none" stroke="'+col+'" stroke-width="2.4" stroke-linejoin="round"></path>'+
-      '<circle cx="'+X(last[0]).toFixed(1)+'" cy="'+Y(last[1]).toFixed(1)+'" r="3.2" fill="'+col+'"/>'+
-      '<text x="'+(X(last[0])+6).toFixed(1)+'" y="'+(Math.max(pt+7,Y(last[1]))+3).toFixed(1)+'" font-size="10" font-weight="700" fill="'+col+'" font-family="JetBrains Mono,monospace">'+(+last[1]).toFixed(1)+'″</text></svg>'+
-      '<div class="fs-src" style="margin-top:.15rem;display:flex;gap:1rem;flex-wrap:wrap"><span style="color:'+col+'">&#9644; This year</span><span style="color:#8a948f">- - '+esc(s.pLbl||'normal')+'</span></div>';
+      '<div class="rce rce-fs" data-year="'+(s.pYear||s.year)+'" data-place="'+q(s.station+' gauge')+'" data-where="'+q('at the '+s.station+' gauge'+(mi?', '+mi:''))+'" data-total="'+s.pNow.toFixed(2)+'" data-usual="'+s.pNorm.toFixed(2)+'"'+
+        (s.pct!=null?' data-pct="'+Math.round(s.pct)+'"':'')+' data-gapmin="0.25" data-asof="'+q(s.thru)+'" data-days="'+(s.pDays||0)+'" data-miss="'+(s.pMiss||0)+'" data-noun="gauge" data-wk="'+wk+'"><div class="rce-art"></div></div>';
+  }
+  // draw the enhanced chart(s) inside a card once the component is there (loaded on first use)
+  function mountRce(root){
+    var go=function(){ Array.prototype.forEach.call(root.querySelectorAll('.rce'), function(el){ window.AgRainChart.mount(el); }); };
+    if(window.AgRainChart) return go();
+    var sc=document.createElement('script'); sc.src='/components/rain-chart.js?v=1'; sc.async=true; sc.onload=go; document.head.appendChild(sc);
   }
 
   function droughtColor(cat){

@@ -235,3 +235,14 @@ html:not([data-fx]) #h-form,html:not([data-fx]) .h-alt,html:not([data-fx]) .h-as
 .pt-fold{border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface);margin:0 0 1rem;padding:0 1rem}
 .pt-fold>summary{cursor:pointer;padding:.8rem 0;min-height:44px;box-sizing:border-box;font-weight:700;color:var(--text)}
 .pt-fold[open]{padding-bottom:.8rem}
+
+/* The enhanced rain chart on Fast Facts (Nov 13 2026, components/rain-chart.js; its colours, sizes and held room come from rain-county.css, which
+   here.js loads for the print). Up to 560 px (the phone layout above) it is a block above the Rain Print with its own caption; wider it is the
+   print's placeholder in the print's own box (3:2, held), phone-shaped, and stays there (the box is held) if the print cannot be drawn. */
+.h-rce { margin: 0 0 .6rem; }
+.h-rp:not(.rc-print-on) .rc-print-art { aspect-ratio: 3 / 2; display: flex; justify-content: center; overflow: hidden; }
+@media (min-width: 561px) {
+  .h-rp:not(.rc-print-on) .rc-print-art .rce { max-width: none; height: 100%; display: flex; }
+  .h-rp:not(.rc-print-on) .rc-print-art .rce .rce-art { height: 100%; aspect-ratio: auto; }
+  .h-rp:not(.rc-print-on) .rc-print-art .rce .rce-art svg { height: 100%; width: auto; max-width: 100%; }
+}

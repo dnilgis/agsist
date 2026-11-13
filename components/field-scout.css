@@ -675,3 +675,18 @@
 
 /* phone width: the saved-spots box and its tray add no extra side padding (Nov 9) */
 @media(max-width:480px){.fs-undertray{padding-left:12px;padding-right:12px}.fs-saved{padding-left:12px;padding-right:12px}}
+
+/* The season card's rain chart is the enhanced running-total chart (Nov 13 2026; components/rain-chart.js draws it from the card's own
+   figures). The card's own width picks the design and holds the room (a container query, not the screen's width: on a laptop the
+   card is a 340 px side panel): phone design below 480 px, wide from 480; the ratios are rain-county.css's. */
+.rce-fs { max-width: 680px; margin: .35rem 0 0; container-type: inline-size; }
+.rce-fs .rce-art svg { width: 100%; height: auto; display: block; }
+@media (scripting: enabled) {
+  .rce-fs:not(.rce-off) .rce-art { aspect-ratio: 400 / 596; }
+  .rce-fs.rce-p:not(.rce-off) .rce-art { aspect-ratio: 400 / 488; }
+}
+@container (min-width: 480px) {
+  .rce-fs:not(.rce-off) .rce-art { aspect-ratio: 640 / 658; }
+  .rce-fs.rce-p:not(.rce-off) .rce-art { aspect-ratio: 640 / 538; }
+}
+.rce-fs.rce-off { display: none; }
