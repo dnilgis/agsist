@@ -146,10 +146,10 @@ body {
 .hero-eyebrow {
   display: inline-flex; align-items: center; gap: .45rem;
   font-family:var(--font-body);
-  font-size:0.77rem; font-weight: 700; letter-spacing:0; text-transform:none;
-  color:var(--text-dim); background: var(--surface2);
-  border: 1px solid rgba(58,139,60,.18); border-radius: 3px;
-  padding: .3rem .75rem; margin-bottom: .85rem;
+  font-size:0.77rem; font-weight: 400; letter-spacing:0; text-transform:none;
+  color:var(--text-dim); background: none;
+  border: 0; border-radius: 0;
+  padding: 0; margin-bottom: .4rem;
 }
 .hero-title {
   font-family:var(--font-display);
@@ -193,10 +193,10 @@ body {
 .hr-sk { flex: 0 0 58px; height: 118px; border-radius: var(--r-sm, 4px); }
 .spray-has-loc #loc-setup { display: none; } .spray-has-loc #factor-section { display: block !important; }
 
-.status-panel.good     { border-color: rgba(58,139,60,.30); }
-.status-panel.marginal { border-color: rgba(var(--gold-rgb),.30); }
-.status-panel.poor     { border-color: rgba(184,76,42,.30); }
-.status-panel.frozen   { border-color: rgba(74,143,186,.30); }
+.status-panel.good     { border-color: var(--border-2); }
+.status-panel.marginal { border-color: var(--border-2); }
+.status-panel.poor     { border-color: var(--border-2); }
+.status-panel.frozen   { border-color: var(--border-2); }
 
 /* ── Location Setup Card ──────────────────────────────────────────── */
 .loc-setup {
@@ -394,10 +394,10 @@ body {
   border: 2px solid var(--border); min-width: 58px; text-align: center;
   transition: border-color .15s;
 }
-.hr-item.good     { background: var(--surface2);  border-color: rgba(58,139,60,.22); }
-.hr-item.marginal { background: var(--surface2); border-color: rgba(var(--gold-rgb),.22); }
-.hr-item.poor     { background: var(--surface2);  border-color: rgba(184,76,42,.22); }
-.hr-item.frozen   { background: var(--surface2); border-color: rgba(74,143,186,.22); }
+.hr-item.good     { background: var(--surface2);  border-color: var(--border-2); }
+.hr-item.marginal { background: var(--surface2); border-color: var(--border-2); }
+.hr-item.poor     { background: var(--surface2);  border-color: var(--border-2); }
+.hr-item.frozen   { background: var(--surface2); border-color: var(--border-2); }
 .hr-time  { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; color: var(--text-muted); font-weight: 600; }
 .hr-icon  { font-size: 1rem; line-height: 1; }
 .hr-wind  { font-family: 'JetBrains Mono', monospace; font-size:0.775rem; color: var(--text-dim); font-weight: 600; }
@@ -451,7 +451,7 @@ body {
 .fcard-net a { color:var(--gold); font-weight:600; }
 /* ── Inversion Diagram Box ───────────────────────────────────────── */
 .inv-box {
-  background: var(--surface2); border: 2px solid rgba(184,76,42,.18);
+  background: var(--surface2); border: 2px solid var(--border-2);
   border-radius: var(--r-md,3px); padding: 1.25rem; margin-top: 1rem;
   overflow: hidden;
 }
@@ -476,9 +476,9 @@ body {
   flex-wrap: wrap; gap: .25rem;
   min-width: 0;
 }
-.inv-layer-warm  { background: var(--surface2); border: 1px solid rgba(200,122,40,.2); margin-bottom: .3rem; }
-.inv-layer-cool  { background: var(--surface2); border: 1px solid rgba(74,143,186,.2); border-top: none; border-bottom: none; padding: 1rem .75rem; margin-bottom: .3rem; }
-.inv-layer-ground{ background: var(--surface2); border: 1px solid rgba(58,139,60,.2); }
+.inv-layer-warm  { background: var(--surface2); border: 1px solid var(--border-2); margin-bottom: .3rem; }
+.inv-layer-cool  { background: var(--surface2); border: 1px solid var(--border-2); border-top: none; border-bottom: none; padding: 1rem .75rem; margin-bottom: .3rem; }
+.inv-layer-ground{ background: var(--surface2); border: 1px solid var(--border-2); }
 .inv-layer-label { font-size:0.78rem; font-weight: 700; }
 .inv-layer-label-warm  { color: var(--orange); }
 .inv-layer-label-cool  { color: var(--blue); }
@@ -500,7 +500,7 @@ body {
 .inv-detect-text strong { color: var(--text); }
 .inv-warning {
   margin-top: .85rem; padding: .65rem .85rem;
-  background: var(--surface2); border: 1px solid rgba(184,76,42,.18);
+  background: var(--surface2); border: 1px solid var(--border-2);
   border-radius: var(--r-sm, 4px); font-size:0.795rem; color: var(--text-dim); line-height: 1.6;
 }
 .inv-warning-label { color: var(--red); }
@@ -562,12 +562,12 @@ body {
 }
 .mix-tip-title { font-weight: 700; margin-bottom: .25rem; }
 .mix-tip-do {
-  background: var(--surface2); border: 1px solid rgba(58,139,60,.18);
+  background: var(--surface2); border: 1px solid var(--border-2);
   color: var(--text-dim);
 }
 .mix-tip-do .mix-tip-title { color: var(--green); }
 .mix-tip-dont {
-  background: var(--surface2); border: 1px solid rgba(184,76,42,.18);
+  background: var(--surface2); border: 1px solid var(--border-2);
   color: var(--text-dim);
 }
 .mix-tip-dont .mix-tip-title { color: var(--red); }
@@ -671,10 +671,10 @@ body {
   border-radius: var(--r-sm, 4px); padding: 1rem; margin-bottom: .7rem;
   border: 2px solid var(--border);
 }
-.rec.good    { background: var(--surface2);  border-color: rgba(58,139,60,.22); }
-.rec.marginal{ background: var(--surface2); border-color: rgba(var(--gold-rgb),.22); }
-.rec.poor    { background: var(--surface2);  border-color: rgba(184,76,42,.22); }
-.rec.frozen  { background: var(--surface2); border-color: rgba(74,143,186,.22); }
+.rec.good    { background: var(--surface2);  border-color: var(--border-2); }
+.rec.marginal{ background: var(--surface2); border-color: var(--border-2); }
+.rec.poor    { background: var(--surface2);  border-color: var(--border-2); }
+.rec.frozen  { background: var(--surface2); border-color: var(--border-2); }
 .rec-h { font-size: .9rem; font-weight: 700; margin-bottom: .45rem; }
 .rec-h.good    { color: var(--green); }
 .rec-h.marginal{ color: var(--gold); }
@@ -945,11 +945,11 @@ details.fold>summary>.nozzle-card-head{font-size:1rem}
 <style>
 h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head,h3.s-card-title,h3.sc-title{margin:0;font-size:inherit;font-weight:inherit;line-height:inherit;}
 .zip-in,.spray-zip-input{font-size:1rem!important;}
-.dicamba-box{background:var(--surface2);border:1.5px solid rgba(240,96,96,.3);border-radius:var(--r-lg);padding:1.4rem 1.5rem;margin-bottom:1.5rem}
+.dicamba-box{background:var(--surface2);border:1.5px solid var(--border-2);border-radius:var(--r-lg);padding:1.4rem 1.5rem;margin-bottom:1.5rem}
 .dicamba-box-head{font-size:0.78rem;font-weight:800;letter-spacing:0;text-transform:none;color:var(--red);margin-bottom:.8rem;display:flex;align-items:center;gap:.45rem}
 .dicamba-rules{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.7rem}
 @media(max-width:600px){.dicamba-rules{grid-template-columns:minmax(0,1fr)}}
-.dicamba-rule{background:var(--surface2);border:1px solid rgba(240,96,96,.15);border-radius:var(--r-md);padding:.7rem .85rem;font-size:.8rem;line-height:1.6;color:var(--text-dim)}
+.dicamba-rule{background:var(--surface2);border:1px solid var(--border-2);border-radius:var(--r-md);padding:.7rem .85rem;font-size:.8rem;line-height:1.6;color:var(--text-dim)}
 .dicamba-rule strong{color:var(--text);display:block;margin-bottom:.15rem}
 .rfp-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r-lg);border:1px solid var(--border);margin-bottom:1.5rem;max-width:100%}
 .rfp-table{width:100%;border-collapse:collapse;font-size:0.797rem}
@@ -1167,7 +1167,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 <section class="hero page-head">
   <div class="hero-inner">
     <div>
-      <div class="hero-eyebrow page-kicker"><span class="live-dot" aria-hidden="true"></span>Spray advisory</div>
+      <div class="hero-eyebrow page-kicker">Spray advisory</div>
       <h1 class="hero-title">Can I <span>spray</span><br>right now?</h1>
       <p class="hero-sub page-lede">Wind, temperature, humidity and inversion risk, estimated for your location from the forecast, plus the next 24 hours of spray windows.</p>
       <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">Weather: the National Weather Service forecast grid for your spot (2.5 km cells), this hour and ahead. A forecast, not a station reading.</p>
@@ -1372,7 +1372,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   .smc-acts{display:flex;gap:.5rem;margin-top:.9rem;}
   .smc-acts button{flex:1;min-height:46px;border:1px solid var(--c-line);background:var(--c-panel);color:var(--c-txt);border-radius:var(--r-lg);font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;}
   .smc-acts button:hover{border-color:var(--c-green);color:var(--c-green);}
-  .smc-warn{display:none;font-size:.82rem;color:var(--c-warn);background:var(--surface2);border:1px solid rgba(217,83,79,.3);border-radius:var(--r-lg);padding:.5rem .7rem;margin-top:.7rem;}
+  .smc-warn{display:none;font-size:.82rem;color:var(--c-warn);background:var(--surface2);border:1px solid var(--border-2);border-radius:var(--r-lg);padding:.5rem .7rem;margin-top:.7rem;}
   .smc-warn.show{display:block;}
   .smc-note{font-size:1rem;color:var(--c-mut);line-height:1.45;margin-top:.8rem;}
   .smc-note b{color:var(--c-txt);}
@@ -1834,7 +1834,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 <section class="hero page-head">
   <div class="hero-inner">
     <div>
-      <div class="hero-eyebrow page-kicker"><span class="live-dot"></span>Risk check</div>
+      <div class="hero-eyebrow page-kicker">Risk check</div>
       <h2 class="hero-title">Urea <span>volatilization</span><br>risk monitor</h2>
       <p class="hero-sub page-lede">Nitrogen lost to the air is money left in the field. Montana State trials lost 10 to 20% of the N from urea spread on a dry surface with only light rain after, and 30 to 44% from urea spread on wet or snowy ground that dried slowly. Most of the loss runs over the two to three weeks after spreading, faster when it is warm. Get your N-loss risk score before you spread.</p>
       <p class="hero-sub up-wait" id="urea-price-line" hidden style="margin-top:.4rem"></p>
@@ -2006,7 +2006,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
               <div style="font-size:.83rem;color:var(--text-dim);line-height:1.75">Montana State's guide names no-till residue, soil above pH 7.0 and no incorporation rain as the conditions where NBPT matters most (C. Jones, EB0209, updated June 2020). Get a quote for the product and rate you would use. Divide it by what your N costs a pound. The answer is how many pounds of N it has to save an acre.</div>
             </div>
           </div>
-          <div style="margin-top:1.1rem;padding:.8rem 1rem;background:var(--surface2);border:1px solid rgba(62,207,110,.15);border-radius:var(--r-md);font-size:.82rem;color:var(--text-dim);line-height:1.65">
+          <div style="margin-top:1.1rem;padding:.8rem 1rem;background:var(--surface2);border:1px solid var(--border-2);border-radius:var(--r-md);font-size:.82rem;color:var(--text-dim);line-height:1.65">
             You will not need it on every load; use the score to decide which ones.
           </div>
         </div>
