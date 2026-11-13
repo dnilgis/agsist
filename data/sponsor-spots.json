@@ -92,12 +92,18 @@
     "WY": 30
    },
    "source": "Google Analytics"
+  },
+  "aiVisits": {
+   "start": "2026-10-13",
+   "end": "2026-11-11",
+   "total": 301,
+   "perDay": 10,
+   "source": "Google Analytics (US), visits from links in AI answers"
   }
  },
  "lists": {
   "asOf": "2026-11-13",
-  "people": 282,
-  "daily": 243
+  "daily": 246
  },
  "states": {
   "AK": {
