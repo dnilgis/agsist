@@ -30,7 +30,7 @@
 
 @media(min-width:720px){
   .cb-lookup{display:flex;flex-wrap:wrap;align-items:center;gap:.5rem 1rem;padding:.7rem .9rem;border:1px solid var(--border);background:var(--surface);border-radius:10px}
-  .cb-lookup-row{flex:1 1 18rem;max-width:26rem}
+  .cb-lookup-row{flex:1 1 18rem;min-width:21rem;max-width:26rem}
   .cb-radius-row{flex:0 1 auto}
   .cb-lookup .cb-filters{flex:1 1 22rem}
 }
