@@ -124,7 +124,7 @@
 .field-input.wide{width:100%;max-width:200px;}
 .field-note{font-size:.88rem;line-height:1.4;color:var(--text-muted);margin-top:.1rem;}
 
-.result-bar{background:linear-gradient(135deg,rgba(58,139,60,.08),rgba(230,176,66,.04));border:2px solid rgba(58,139,60,.3);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-wrap:wrap;gap:1.2rem;align-items:center;margin-top:.65rem;}
+.result-bar{background:var(--surface);border:2px solid rgba(58,139,60,.3);border-radius:12px;padding:.9rem 1.1rem;display:flex;flex-wrap:wrap;gap:1.2rem;align-items:center;margin-top:.65rem;}
 .result-item{display:flex;flex-direction:column;gap:.15rem;}
 .result-label{font-size:0.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);}
 .result-value{font-family:'JetBrains Mono',monospace;font-size:1.5rem;font-weight:900;color:var(--gold);}
@@ -203,7 +203,7 @@
   <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> → Yield estimator</nav>
 
   <div class="ye-hero">
-    <div class="ye-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Pre-harvest field estimate</div>
+    <div class="ye-eyebrow page-kicker">Pre-harvest field estimate</div>
     <h1>Soybean and corn<br>yield calculator</h1>
     <p class="page-lede">Free soybean yield calculator: type plants per acre, pods per plant and seeds per pod for bushels per acre before harvest. Corn works from ear counts.</p>
     <p class="madeby" style="font-size:.8rem;color:var(--text-muted);margin:.3rem 0 .6rem">Data: your own field counts, run through the yield component method university extension publishes.</p>
@@ -215,8 +215,8 @@
   </div>
 
   <nav class="ye-tabs" role="tablist" aria-label="Crop estimator tabs">
-    <button class="ye-tab active" id="ye-tab-bean"      data-tab="bean"      role="tab" aria-selected="true"  aria-controls="ye-bean"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybeans</button>
-    <button class="ye-tab"        id="ye-tab-corn"      data-tab="corn"      role="tab" aria-selected="false" aria-controls="ye-corn"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</button>
+    <button class="ye-tab active" id="ye-tab-bean"      data-tab="bean"      role="tab" aria-selected="true"  aria-controls="ye-bean">Soybeans</button>
+    <button class="ye-tab"        id="ye-tab-corn"      data-tab="corn"      role="tab" aria-selected="false" aria-controls="ye-corn">Corn</button>
   </nav>
 
   <!-- CORN TAB -->
@@ -255,7 +255,7 @@
         <p class="ye-start">The boxes start with example counts. Type your own. Test weight does not enter this method.</p>
         <div class="ye-sites" id="c-sites" role="group" aria-label="Sample sites in this field"></div>
         <div class="ye-stab" id="c-site-table"></div>
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1: count ears</div>
+        <div class="ye-method-title">Step 1: count ears</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="c-row-width">Row Width (inches)</label>
@@ -275,7 +275,7 @@
           </div>
         </div>
 
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 2: count kernels (10 representative ears)</div>
+        <div class="ye-method-title">Step 2: count kernels (10 representative ears)</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="c-kernel-rows">Kernel Rows</label>
@@ -300,11 +300,11 @@
           </div>
         </div>
 
-        <div class="ye-method-title" style="margin-top:1rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Or try a typical scenario</div>
+        <div class="ye-method-title" style="margin-top:1rem">Or try a typical scenario</div>
         <div class="quickfill-row">
-          <button class="qf-btn" id="qf-corn-high" title="~220 bu/ac at 85,000 kernels per bushel"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> High Yield ~220 bu</button>
-          <button class="qf-btn" id="qf-corn-avg"  title="~180 bu/ac at 85,000 kernels per bushel"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Average ~180 bu</button>
-          <button class="qf-btn" id="qf-corn-low"  title="~130 bu/ac at 85,000 kernels per bushel"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Low ~130 bu</button>
+          <button class="qf-btn" id="qf-corn-high" title="~220 bu/ac at 85,000 kernels per bushel">High Yield ~220 bu</button>
+          <button class="qf-btn" id="qf-corn-avg"  title="~180 bu/ac at 85,000 kernels per bushel">Average ~180 bu</button>
+          <button class="qf-btn" id="qf-corn-low"  title="~130 bu/ac at 85,000 kernels per bushel">Low ~130 bu</button>
         </div>
 
         <details class="ye-math"><summary>Show the math</summary>
@@ -317,7 +317,7 @@
       </div>
 
       <div class="ye-method">
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-search"/></svg> Field sampling</div>
+        <div class="ye-method-title">Field sampling</div>
         <div style="display:grid;grid-template-columns:minmax(0,1fr);gap:.5rem;">
           <div style="font-size:0.795rem;color:var(--text-dim);line-height:1.6">
             &#8226; Sample at least <strong>5 locations</strong> per field, at least 200 feet apart and away from field edges.<br>
@@ -368,7 +368,7 @@
         <p class="ye-start">The boxes start with example counts, not an average. Type your own.</p>
         <div class="ye-sites" id="b-sites" role="group" aria-label="Sample sites in this field"></div>
         <div class="ye-stab" id="b-site-table"></div>
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 1: count plants</div>
+        <div class="ye-method-title">Step 1: count plants</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="b-row-width">Row Width (inches)</label>
@@ -386,7 +386,7 @@
           </div>
         </div>
 
-        <div class="ye-method-title"><svg class="ic-sp" aria-hidden="true"><use href="#sp-pin"/></svg> Step 2: count pods and seeds (10 plants)</div>
+        <div class="ye-method-title">Step 2: count pods and seeds (10 plants)</div>
         <div class="field-row">
           <div class="field-group">
             <label class="field-label" for="b-pods-plant">Pods per Plant</label>
@@ -405,11 +405,11 @@
           </div>
         </div>
 
-        <div class="ye-method-title" style="margin-top:1rem"><svg class="ic-sp" aria-hidden="true"><use href="#sp-zap"/></svg> Or try an example stand</div>
+        <div class="ye-method-title" style="margin-top:1rem">Or try an example stand</div>
         <div class="quickfill-row">
-          <button class="qf-btn" id="qf-bean-high" title="Example: 130k plants, 36 pods, 2.5 seeds, 3,000 seeds/lb"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Strong stand ~65 bu</button>
-          <button class="qf-btn" id="qf-bean-avg"  title="Example: 132k plants, 30 pods, 2.5 seeds, 3,000 seeds/lb"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Good stand ~55 bu</button>
-          <button class="qf-btn" id="qf-bean-low"  title="Example: 120k plants, 25 pods, 2.4 seeds, 3,000 seeds/lb"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Stressed ~40 bu</button>
+          <button class="qf-btn" id="qf-bean-high" title="Example: 130k plants, 36 pods, 2.5 seeds, 3,000 seeds/lb">Strong stand ~65 bu</button>
+          <button class="qf-btn" id="qf-bean-avg"  title="Example: 132k plants, 30 pods, 2.5 seeds, 3,000 seeds/lb">Good stand ~55 bu</button>
+          <button class="qf-btn" id="qf-bean-low"  title="Example: 120k plants, 25 pods, 2.4 seeds, 3,000 seeds/lb">Stressed ~40 bu</button>
         </div>
 
         <details class="ye-math"><summary>Show the math</summary>

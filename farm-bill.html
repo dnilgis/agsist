@@ -179,8 +179,8 @@ h1 .sub,h1+.sub{display:block;color:var(--dim);font-weight:600;font-size:clamp(1
 .updlog .d{font-family:var(--mono);color:var(--accent);font-size:12.9px;white-space:nowrap}
 @media (max-width:640px){.updlog .u{grid-template-columns:1fr;gap:4px}}
 .subnav{position:sticky;top:var(--nav-h);z-index:50;background:color-mix(in srgb,var(--page) 92%,transparent);
-  backdrop-filter:blur(8px);border-bottom:1px solid var(--hair);margin-top:8px}
-.subnav::after{content:"";position:absolute;right:0;top:0;bottom:1px;width:34px;background:linear-gradient(to left,var(--page),transparent);pointer-events:none}
+  border-bottom:1px solid var(--hair);margin-top:8px}
+.subnav::after{content:"";position:absolute;right:0;top:0;bottom:1px;width:34px;background:var(--page);pointer-events:none}
 @media (min-width:920px){.subnav::after{display:none}}
 .subnav-inner{max-width:1080px;margin:0 auto;display:flex;gap:4px;overflow-x:auto;padding:0 24px;height:var(--subnav-h);align-items:center;scrollbar-width:none}
 .subnav-inner::-webkit-scrollbar{display:none}

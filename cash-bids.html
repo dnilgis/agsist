@@ -100,7 +100,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .cb-kit{display:flex;flex-wrap:wrap;gap:8px 12px;margin:10px 0 4px}.cb-kit-btn{display:inline-flex;align-items:center;min-height:44px;box-sizing:border-box;padding:.4rem .9rem;border:1px solid var(--gold);border-radius:8px;color:var(--gold);background:transparent;font:inherit;font-size:.9rem;font-weight:700;cursor:pointer}.cb-kit-btn:hover,.cb-kit-btn:focus-visible{background:var(--surface)}.cb-kit-btn[disabled]{opacity:.55;cursor:not-allowed}.skb-st{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .share-btn{display:inline-flex;align-items:center;justify-content:center;background:none;border:1px solid var(--border);border-radius:50%;color:var(--text-muted);font-size:.92rem;cursor:pointer;transition:all .15s;min-height:44px;min-width:44px;padding:0}
 .share-btn:hover{border-color:var(--gold);color:var(--gold)}
-.earnings-callout{background:linear-gradient(135deg,rgba(58,139,60,.14) 0%,rgba(58,139,60,.05) 100%);border:2px solid rgba(58,139,60,.38);border-radius:12px;padding:.9rem 1.1rem;margin-bottom:1.1rem;display:flex;align-items:flex-start;gap:.75rem}
+.earnings-callout{background:var(--surface);border:2px solid rgba(58,139,60,.38);border-radius:12px;padding:.9rem 1.1rem;margin-bottom:1.1rem;display:flex;align-items:flex-start;gap:.75rem}
 .earnings-callout.muted{display:none}
 .earnings-callout.flat{background:var(--surface);border:1px solid var(--border);padding:.55rem .9rem}.earnings-callout.flat .earnings-icon{display:none}.earnings-callout.flat .earnings-headline{color:var(--text-dim,var(--text-muted));font-size:.9rem;font-weight:600}
 .earnings-icon{font-size:1.4rem;flex-shrink:0;margin-top:.05rem}
@@ -189,7 +189,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
    wrap like one; the figures inside it should not break at all. */
 .wtd-winner-banner{display:block;flex-wrap:wrap;line-height:1.45}
 .wtd-table-wrap{position:relative;overflow-x:auto;border-radius:8px;border:1px solid var(--border)}
-.wtd-table-wrap::after{content:'';position:absolute;right:0;top:0;bottom:0;width:28px;background:linear-gradient(to right,transparent,var(--surface2));pointer-events:none;border-radius:0 8px 8px 0;z-index:1}
+.wtd-table-wrap::after{content:'';position:absolute;right:0;top:0;bottom:0;width:28px;background:var(--surface);pointer-events:none;border-radius:0 8px 8px 0;z-index:1}
 .wtd-table{width:100%;border-collapse:collapse;font-size:.82rem;min-width:480px}
 .wtd-table th{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:.5rem .65rem;text-align:left;border-bottom:2px solid var(--border);background:var(--surface2);white-space:nowrap}
 .wtd-table th.r{text-align:right}
@@ -480,7 +480,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .wtd-toggle.open .wtd-toggle-chev{transform:rotate(180deg)}
 @media(max-width:719px){.wtd-toggle{display:flex}.wtd-body{display:none}.wtd-body.wtd-open{display:block}}
 @media(min-width:720px){.wtd-body{display:block!important}}
-.btt-btn{position:fixed;bottom:calc(1.5rem + env(safe-area-inset-bottom));right:max(1rem,calc(1rem + env(safe-area-inset-right)));z-index:850;background:var(--surface);border:2px solid var(--border);border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--text-muted);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .22s,border-color .15s,color .15s;box-shadow:0 2px 12px rgba(0,0,0,.5)}.btt-btn.visible{opacity:1;pointer-events:auto}.btt-btn:hover{border-color:var(--gold);color:var(--gold)}
+.btt-btn{position:fixed;bottom:calc(1.5rem + env(safe-area-inset-bottom));right:max(1rem,calc(1rem + env(safe-area-inset-right)));z-index:850;background:var(--surface);border:2px solid var(--border);border-radius:50%;width:44px;height:44px;display:flex;align-items:center;justify-content:center;font-size:1.1rem;color:var(--text-muted);cursor:pointer;opacity:0;pointer-events:none;transition:opacity .22s,border-color .15s,color .15s;box-shadow:none}.btt-btn.visible{opacity:1;pointer-events:auto}.btt-btn:hover{border-color:var(--gold);color:var(--gold)}
 .cb-comm-row{margin-top:.65rem;display:flex;align-items:center;gap:.55rem;flex-wrap:wrap}
 .cb-comm-row-label{font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
 .cb-comm-pills{display:flex;gap:.32rem;flex-wrap:wrap}
@@ -601,7 +601,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
         </select>
         <div class="cb-geo-row" id="cb-geo-row">
           <span class="cb-geo-dot" id="cb-geo-dot" aria-hidden="true" style="display:none"></span>
-          <button type="button" class="cb-geo-link-btn" id="cb-use-location-btn"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> <span id="cb-use-location-lbl">Use my location</span></button><span id="cb-geo-txt"></span>
+          <button type="button" class="cb-geo-link-btn" id="cb-use-location-btn"><span id="cb-use-location-lbl">Use my location</span></button><span id="cb-geo-txt"></span>
           <button id="cb-use-detect" style="display:none">Use detected ZIP</button>
         </div>
       </div>
@@ -625,7 +625,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
       <div class="bids-section-label"><span>Best price</span> <span class="bbc-tag" id="bbc-tag" title="Each elevator is ranked on the soonest delivery it will take. Those months are not the same at every elevator; set Delivery to one month to compare like with like.">soonest delivery, months differ</span><button class="share-btn" id="share-btn" aria-label="Share these results" title="Share results"><svg class="ic" aria-hidden="true"><use href="#i-share-2"/></svg></button></div>
       <div class="best-bids-grid" id="best-bids-grid" role="list"></div>
       <div class="earnings-callout muted" id="earnings-callout">
-        <span class="earnings-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-coins"/></svg></span>
+        
         <div class="earnings-text"><span class="earnings-headline" id="earnings-headline">Working out the best bid&#8230;</span> <a href="#wtd-panel" class="earnings-more" id="earnings-more">See the math in Worth the Drive</a></div>
       </div>
       <p id="cb-vs-state" class="cb-vs" hidden></p>
@@ -665,7 +665,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
     <script>(function(){var box=document.querySelector('[data-bid-alerts][data-source="page:cash-bids"]'),best=document.getElementById('best-bids-section');if(!box||!best||!window.MutationObserver)return;var slot=document.createComment('bid-alerts slot');box.parentNode.insertBefore(slot,box);var btn=document.createElement('button');btn.type='button';btn.className='cb-pre-open';btn.textContent='Get the bids near you by email';var opened=false;btn.addEventListener('click',function(){opened=true;box.classList.remove('cb-pre');btn.hidden=true;var e=box.querySelector('.cbs-em');if(e)e.focus();});function nz(){var z=document.getElementById('cb-zip');if(z&&z.value.trim())return false;if(/[?&]zip=\d{5}/.test(location.search))return false;try{var v=localStorage.getItem('agsist_zip');if(!(v&&/^\d{5}$/.test(v)))v=String((JSON.parse(localStorage.getItem('agsist-wx-loc')||'null')||{}).zip||'');if(/^\d{5}$/.test(v))return false;}catch(e){}return true;}function place(){var res=document.getElementById('cb-results');if(!res)return;var emp=res.querySelector('.cb-empty'),smp=document.getElementById('cb-sample');if(best.style.display!=='none'){res.classList.remove('cb-nz');box.classList.remove('cb-pre');btn.hidden=true;if(slot.nextSibling!==box)slot.parentNode.insertBefore(box,slot.nextSibling);}else if(emp&&nz()){res.classList.toggle('cb-nz',!!(smp&&smp.parentNode===emp));box.classList.remove('cb-pre');btn.hidden=true;if(smp&&smp.parentNode===emp){if(smp.nextSibling!==box)emp.insertBefore(box,smp.nextSibling);}else if(box.parentNode!==emp)emp.appendChild(box);}else{res.classList.remove('cb-nz');if(res.nextSibling!==btn)res.parentNode.insertBefore(btn,res.nextSibling);if(btn.nextSibling!==box)res.parentNode.insertBefore(box,btn.nextSibling);if(!opened){box.classList.add('cb-pre');btn.hidden=false;}}}function go(){place();var mo=new MutationObserver(place);mo.observe(best,{attributes:true,attributeFilter:['style']});mo.observe(document.getElementById('cb-results'),{childList:true,subtree:true});}go();})();</script>
     <div class="wtd-panel" id="wtd-panel" hidden>
       <button class="wtd-toggle" id="wtd-toggle-btn" aria-expanded="false" aria-controls="wtd-body">
-        <span class="wtd-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-truck"/></svg></span>
+        
         <span class="wtd-toggle-t"><span class="wtd-title">Worth the Drive?</span> <span class="wtd-sub">Which elevator nets you the most after fuel</span></span>
         <span class="wtd-toggle-chev" aria-hidden="true">&#9660;</span>
       </button>
@@ -784,7 +784,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 <div class="compare-overlay" id="compare-overlay" role="dialog" aria-modal="true" aria-label="Elevator comparison">
   <div class="compare-modal">
     <div class="compare-modal-head">
-      <div class="compare-modal-title"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> Side-by-Side Comparison</div>
+      <div class="compare-modal-title">Side-by-Side Comparison</div>
       <button class="compare-modal-close" id="compare-modal-close" aria-label="Close"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg></button>
     </div>
     <div class="compare-table-wrap">

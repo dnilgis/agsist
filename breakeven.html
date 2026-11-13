@@ -84,13 +84,13 @@
        (a 20px button with a ::before did not count as one), and the 20px dot is drawn inside it.
        margin -10px top and bottom keeps the label row as tall as before; the space under each label
        (.input-wrap label margin-bottom) keeps the target off the input below. */
-    .hint-icon{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;margin:-10px -8px -10px -4px;padding:0;border:0;border-radius:50%;--dot:var(--border);background:radial-gradient(circle at center,var(--dot) 0 10px,transparent 10.5px);color:var(--text-dim);font-size:0.763rem;font-weight:700;cursor:pointer;transition:color 0.2s;flex-shrink:0;user-select:none;-webkit-tap-highlight-color:transparent;position:relative;}
+    .hint-icon{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;margin:-10px -8px -10px -4px;padding:0;border:0;border-radius:50%;--dot:var(--border);background:var(--dot);color:var(--text-dim);font-size:0.763rem;font-weight:700;cursor:pointer;transition:color 0.2s;flex-shrink:0;user-select:none;-webkit-tap-highlight-color:transparent;position:relative;}
     .hint-icon:hover,.hint-icon.active{--dot:var(--green);color:#06110b;}
     .hint-icon:focus-visible{outline:2px solid var(--gold);outline-offset:-6px;}
     .input-wrap label{margin-bottom:10px;}
     /* light mode: dark text on the light-theme --green (#2e7d4f) read 3.8:1; white reads 5.1:1 */
     [data-theme="light"] .hint-icon:hover,[data-theme="light"] .hint-icon.active{color:#fff;}
-    .hint-popup{display:none;margin-top:8px;background:var(--surface);border:2px solid var(--green);border-radius:6px;padding:12px 14px;box-shadow:0 4px 12px rgba(0,0,0,0.3);animation:hintIn 0.15s ease-out;}
+    .hint-popup{display:none;margin-top:8px;background:var(--surface);border:2px solid var(--green);border-radius:6px;padding:12px 14px;box-shadow:none;animation:hintIn 0.15s ease-out;}
     .hint-popup.hint-open{display:block;}
     @keyframes hintIn{from{opacity:0;transform:translateY(-4px);}to{opacity:1;transform:none;}}
     .hint-title{font-family:'JetBrains Mono',monospace;font-size:0.763rem;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px;}
@@ -252,7 +252,7 @@
     </section>
     <div class="grid-2">
       <div class="panel">
-        <div class="panel-head"><h2><svg class="ic-sp" aria-hidden="true"><use href="#sp-banknote"/></svg> YOUR CROP AND COSTS</h2></div>
+        <div class="panel-head"><h2>YOUR CROP AND COSTS</h2></div>
         <div class="panel-body">
           <div class="live-price-bar live-wait" id="live-bar" style="display:none">
             <span id="live-name-wrap"><span id="live-crop-name">Corn</span>:</span>
@@ -360,7 +360,7 @@
             <div class="sens-wrap"><table class="sens-table" id="sens-table" aria-label="Sensitivity table showing profit or loss across yield and price scenarios"><caption style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Profit or loss per acre by yield row and futures price column</caption></table></div><div id="sens-note" style="font-size:.75rem;color:var(--text-muted);margin-top:6px"></div>
           </div>
           <div class="action-bar">
-            <button type="button" class="btn btn-primary" id="be-print"><svg class="ic-sp" aria-hidden="true"><use href="#sp-printer"/></svg> Print Report</button>
+            <button type="button" class="btn btn-primary" id="be-print">Print Report</button>
             <button type="button" class="btn btn-secondary" id="be-reset">&#8634; Reset</button>
           </div>
         </div>
@@ -385,7 +385,7 @@
     </nav>
   </div>
   <div class="be-faq">
-    <h2 class="be-faq-hd" style="margin:0"><svg class="ic-sp" aria-hidden="true"><use href="#sp-circle-help"/></svg> Break-even calculator: common questions</h2>
+    <h2 class="be-faq-hd" style="margin:0">Break-even calculator: common questions</h2>
     <div class="be-faq-item">
       <div class="be-faq-q" role="button" tabindex="0" aria-expanded="false">How do I calculate break-even price per bushel?</div>
       <div class="be-faq-a"><div class="be-faq-ai">Divide your total cost per acre by your expected yield in bushels. For example: $850 per acre total cost &divide; 200 bu/ac expected yield = $4.25/bu break-even price for corn. This is the minimum <b>cash</b> price at which you cover all expenses. Because cash = futures + basis and basis is usually negative, the futures price you need is this number <i>minus</i> your basis (e.g. $4.25 cash at a -$0.30 basis means $4.55 futures). The calculator above does this as you type. To stay profitable, your market price (futures + basis) needs to exceed this number.</div></div>

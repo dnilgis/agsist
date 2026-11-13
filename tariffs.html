@@ -254,9 +254,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tl-item:last-child { border-bottom: none; }
 .tl-date { font-family: 'JetBrains Mono', monospace; font-size:0.763rem; color: var(--text-muted); white-space: nowrap; padding-top: .1rem; min-width: 72px; }
 .tl-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: .32rem; }
-.tl-dot.high   { background: #ef4444; box-shadow: 0 0 0 3px rgba(239,68,68,.15); }
-.tl-dot.medium { background: var(--gold-fill,var(--gold)); box-shadow: 0 0 0 3px rgba(212,162,63,.15); }
-.tl-dot.low    { background: var(--green); box-shadow: 0 0 0 3px rgba(34,197,94,.15); }
+.tl-dot.high   { background: #ef4444; box-shadow:0 0 0 3px rgba(239,68,68,.15); }
+.tl-dot.medium { background: var(--gold-fill,var(--gold)); box-shadow:0 0 0 3px rgba(212,162,63,.15); }
+.tl-dot.low    { background: var(--green); box-shadow:0 0 0 3px rgba(34,197,94,.15); }
 .tl-event { font-size:0.795rem; color: var(--text); line-height: 1.5; flex: 1; }
 .tl-src { font-size:0.74rem; color: var(--text-muted); white-space: nowrap; }
 /* phones: the date sits on its own line above the event, so the event text
@@ -396,14 +396,14 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 <main id="main" tabindex="-1" class="tariff-page">
 
   <div class="tariff-hero">
-    <div class="tariff-eyebrow page-kicker"><svg class="ic" aria-hidden="true"><use href="#i-landmark"/></svg> Trade policy · updated when policy changes</div>
+    <div class="tariff-eyebrow page-kicker">Trade policy · updated when policy changes</div>
     <h1 class="tariff-page-title">Ag tariff tracker</h1>
     <p class="tariff-page-sub page-lede">Current tariff rates on US corn, soybean, wheat, and pork exports to key markets. These rates directly affect grain basis, export demand, and cash prices at your elevator.</p>
     <p class="tariff-by">Each rate links its source</p>
   </div>
 
   <div class="tariff-status-banner" id="tariff-status-banner">
-    <div class="tsb-icon" id="tsb-icon"><svg class="ic" aria-hidden="true"><use href="#i-siren"/></svg></div>
+    <div class="tsb-icon" id="tsb-icon"></div>
     <div class="tsb-body">
       <div class="tsb-label" id="tsb-label">Checking current status</div>
       <div class="tsb-note" id="tsb-note">Loading current status…</div>
@@ -466,7 +466,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 
   <!-- Basis channel callout (national scope) -->
   <div class="tariff-wi-mn">
-    <span style="font-size:1.3rem;flex-shrink:0;color:var(--green)" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-sprout"/></svg></span>
+    
     <div>
       <strong>Tariffs often show up in your basis first.</strong> When a big buyer like China puts a retaliatory tariff on US grain,
       basis at interior elevators that ship to the Gulf can widen within weeks, so your cash price can fall faster than the board.
@@ -496,11 +496,11 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
   </div>
 
   <div class="tariff-links">
-    <svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> USDA export sales
-    <a href="https://ustr.gov" target="_blank" rel="noopener"><svg class="ic" aria-hidden="true"><use href="#i-landmark"/></svg> USTR trade policy</a>
-    <a href="/markets"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Grain Markets</a>
-    <a href="/cash-bids"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg> Cash Bids</a>
-    <a href="/usda-calendar"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> USDA Calendar</a>
+    USDA export sales
+    <a href="https://ustr.gov" target="_blank" rel="noopener">USTR trade policy</a>
+    <a href="/markets">Grain Markets</a>
+    <a href="/cash-bids">Cash Bids</a>
+    <a href="/usda-calendar">USDA Calendar</a>
   </div>
 
 <!--FAQ:START-->
@@ -618,7 +618,7 @@ fetch('/data/tariffs.json')
 
     var upd = document.getElementById('tariff-updated');
     if(upd) upd.textContent = 'As of '+fmtDate(data.updated);
-    try{var ageDays=Math.floor((Date.now()-new Date(data.updated+'T12:00:00').getTime())/86400000);var sb=document.getElementById('tariff-stale');if(sb){if(ageDays>45){sb.className='tariff-stale alert';sb.style.visibility='visible';sb.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> <strong>This tariff data is '+ageDays+' days old.</strong> Trade policy can shift in days. These rates may no longer be current. Confirm against <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> and the <a href=\"https://www.federalregister.gov\" target=\"_blank\" rel=\"noopener\">Federal Register</a> before any trading decision.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'alert'});}else if(ageDays>14){sb.className='tariff-stale warn';sb.style.visibility='visible';sb.innerHTML='<svg class="ic" aria-hidden="true"><use href="#i-triangle-alert"/></svg> This data is '+ageDays+' days old. Trade policy changes quickly: verify current rates at <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> or USDA GATS before acting.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'warn'});}}}catch(e){}
+    try{var ageDays=Math.floor((Date.now()-new Date(data.updated+'T12:00:00').getTime())/86400000);var sb=document.getElementById('tariff-stale');if(sb){if(ageDays>45){sb.className='tariff-stale alert';sb.style.visibility='visible';sb.innerHTML='<strong>This tariff data is '+ageDays+' days old.</strong> Trade policy can shift in days. These rates may no longer be current. Confirm against <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> and the <a href=\"https://www.federalregister.gov\" target=\"_blank\" rel=\"noopener\">Federal Register</a> before any trading decision.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'alert'});}else if(ageDays>14){sb.className='tariff-stale warn';sb.style.visibility='visible';sb.innerHTML='This data is '+ageDays+' days old. Trade policy changes quickly: verify current rates at <a href=\"https://ustr.gov\" target=\"_blank\" rel=\"noopener\">USTR</a> or USDA GATS before acting.';if(typeof gaEvent==='function')gaEvent('tariff_stale_shown',{days:ageDays,tier:'warn'});}}}catch(e){}
 
     var tbody = document.getElementById('tariff-tbody');
     if(tbody && data.rows && data.rows.length){

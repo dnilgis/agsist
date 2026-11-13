@@ -90,7 +90,7 @@ html[data-theme="light"]{--pd-red:#b3432c}
 .rma-c{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:.55rem .7rem;text-align:center}
 .rma-l{font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted)}
 .rma-v{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:800;color:var(--gold)}
-.st-display{background:linear-gradient(135deg,rgba(58,139,60,.07),rgba(230,176,66,.04));border:2px solid rgba(58,139,60,.25);border-radius:10px;padding:.8rem .9rem}
+.st-display{background:var(--surface);border:2px solid rgba(58,139,60,.25);border-radius:10px;padding:.8rem .9rem}
 .st-head{display:flex;align-items:center;justify-content:space-between;gap:.4rem}
 .st-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.5rem}
 .st-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:.55rem .6rem;text-align:center}
@@ -240,7 +240,7 @@ html[data-theme="light"]{--pd-red:#b3432c}
 <nav class="breadcrumb" aria-label="Breadcrumb"><a href="/">Home</a> → Planting date calculator</nav>
 
 <header class="pd-hero">
-  <div class="pd-eyebrow page-kicker"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn and soybeans · Wisconsin and Minnesota</div>
+  <div class="pd-eyebrow page-kicker">Corn and soybeans · Wisconsin and Minnesota</div>
   <h1>Planting date calculator</h1>
   <p class="by">Checked <time datetime="2026-10-16">Oct 16, 2026</time></p>
 </header>
@@ -256,8 +256,8 @@ html[data-theme="light"]{--pd-red:#b3432c}
 
   <div class="pd-form">
     <div class="crop-pills" role="group" aria-label="Crop">
-      <button type="button" class="crop-pill active" id="pill-corn" aria-pressed="true"><svg class="ic-sp" aria-hidden="true"><use href="#sp-wheat"/></svg> Corn</button>
-      <button type="button" class="crop-pill" id="pill-bean" aria-pressed="false"><svg class="ic-sp" aria-hidden="true"><use href="#sp-leaf"/></svg> Soybeans</button>
+      <button type="button" class="crop-pill active" id="pill-corn" aria-pressed="true">Corn</button>
+      <button type="button" class="crop-pill" id="pill-bean" aria-pressed="false">Soybeans</button>
     </div>
     <label class="f-label" for="pd-zip">Your ZIP or town</label>
     <div class="pd-loc-row">
@@ -313,7 +313,7 @@ html[data-theme="light"]{--pd-red:#b3432c}
   <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style><aside class="ag-sponsor-ribbon" id="ag-sponsor" data-slot="planting-date"></aside>
 
 <section class="pd-card" id="pd-zone-card" aria-labelledby="pd-zone-h">
-  <h2 class="pd-card-title" id="pd-zone-h"><svg class="ic-sp" aria-hidden="true"><use href="#sp-snowflake"/></svg> No ZIP? Rough zone averages</h2>
+  <h2 class="pd-card-title" id="pd-zone-h">No ZIP? Rough zone averages</h2>
   <p class="f-hint" id="pd-zone-why"></p>
   <div class="f-group">
     <label class="f-label" for="pd-zone">Zone</label>
@@ -334,7 +334,7 @@ html[data-theme="light"]{--pd-red:#b3432c}
 </section>
 
 <details class="pd-card pd-det">
-  <summary><svg class="ic-sp" aria-hidden="true"><use href="#sp-thermometer"/></svg> Soil temperature guide</summary>
+  <summary>Soil temperature guide</summary>
   <div class="pen-wrap">
   <table class="pen-table soil-table">
   <thead><tr><th>Soil (2")</th><th>Corn</th><th>Soybeans</th><th>Action</th></tr></thead>
@@ -351,12 +351,12 @@ html[data-theme="light"]{--pd-red:#b3432c}
 </details>
 
 <details class="pd-card pd-det">
-  <summary><svg class="ic-sp" aria-hidden="true"><use href="#sp-triangle-alert"/></svg> Early planting disease risks</summary>
+  <summary>Early planting disease risks</summary>
   <div id="disease-grid" class="disease-grid"></div>
 </details>
 
 <details class="pd-card pd-det" id="pd-method">
-  <summary><svg class="ic-sp" aria-hidden="true"><use href="#sp-clipboard-copy"/></svg> How the numbers are made, and sources</summary>
+  <summary>How the numbers are made, and sources</summary>
   <ul class="pd-src">
     <li><b>Soil temperature:</b> measured at 4 in at the nearest station within 50 miles: NOAA&rsquo;s Climate Reference Network, USDA NRCS SCAN, the Iowa State Soil Moisture Network and UW&rsquo;s Wisconet (CC BY). The reading is the mean of the station&rsquo;s last 3 daily means; there is no soil forecast, because no free forecast gives one. The station is not your field. Air now: the National Weather Service forecast grid.</li>
     <li><b>Station frost dates and heat units:</b> NOAA NCEI U.S. Climate Normals, 1991-2020: freeze probability dates (32&deg;F and 28&deg;F at the 10, 50 and 90% levels) and daily growing degree days (base 50&deg;F, cap 86&deg;F), nearest station within 75 miles.</li>

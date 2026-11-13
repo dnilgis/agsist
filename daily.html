@@ -113,7 +113,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-subscribe-btn:hover{filter:brightness(.94)}
 
 .dv3-today{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:1.4rem;margin-bottom:1.5rem;position:relative;overflow:hidden;}
-.dv3-today::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--green),var(--gold));}
+.dv3-today::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--border-2);}
 
 .dv3-today-label{font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
 .dv3-mood-pill{display:inline-flex;align-items:center;gap:.25rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.12rem .5rem;border-radius:3px;background:rgba(var(--gold-rgb),.08);color:var(--gold);border:1px solid rgba(var(--gold-rgb),.25);}
@@ -135,7 +135,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-ticker-change.flat{color:var(--text-muted);}
 
 /* Surprise banner */
-.dv3-surprise-banner{display:flex;align-items:center;gap:.6rem;padding:.65rem 1rem;background:linear-gradient(135deg,rgba(var(--gold-rgb),.08) 0%,rgba(240,145,58,.04) 100%);border:1px solid rgba(var(--gold-rgb),.25);border-radius:8px;margin:.5rem 0 1rem;}
+.dv3-surprise-banner{display:flex;align-items:center;gap:.6rem;padding:.65rem 1rem;background:var(--surface);border:1px solid rgba(var(--gold-rgb),.25);border-radius:8px;margin:.5rem 0 1rem;}
 .dv3-surprise-banner .surprise-icon{font-size:1.1rem;flex-shrink:0;}
 .dv3-surprise-banner .surprise-text{font-size:.85rem;color:var(--text-dim);line-height:1.45;}
 .dv3-surprise-banner .surprise-text strong{color:var(--gold);font-weight:700;}
@@ -202,7 +202,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 .dv3-sec--surprise::before{content:'\26A1 OVERNIGHT SURPRISE';position:absolute;top:-.55rem;right:.75rem;font-family:'JetBrains Mono',monospace;font-size:0.73rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#fff;background:var(--gold-fill,var(--gold));padding:.12rem .55rem;border-radius:2px;}
 
 /* TMYK */
-.dv3-tmyk{background:linear-gradient(135deg,var(--surface) 0%,rgba(74,143,186,.04) 100%);border:2px solid rgba(74,143,186,.22);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0 1.25rem;}
+.dv3-tmyk{background:var(--surface);border:2px solid rgba(74,143,186,.22);border-radius:8px;padding:1rem 1.15rem;margin:1rem 0 1.25rem;}
 .dv3-tmyk-label{font-family:'JetBrains Mono',monospace;font-size:0.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--blue);margin-bottom:.5rem;}
 .dv3-tmyk-title{font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:.35rem;}
 .dv3-tmyk-body{font-size:.86rem;line-height:1.7;color:var(--text-dim);}
@@ -229,7 +229,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 .dv3-thread-day{display:inline-flex;align-items:center;gap:.4em;}
 
 /* v4.3: takeaway card */
-.dv3-takeaway{margin:1rem 0 1.25rem;padding:1rem 1.15rem;background:linear-gradient(135deg,rgba(var(--gold-rgb),.08) 0%,rgba(var(--gold-rgb),.02) 60%,var(--surface2) 100%);border:1px solid rgba(var(--gold-rgb),.3);border-left:4px solid var(--gold);border-radius:8px;}
+.dv3-takeaway{margin:1rem 0 1.25rem;padding:1rem 1.15rem;background:var(--surface);border:1px solid rgba(var(--gold-rgb),.3);border-left:4px solid var(--gold);border-radius:8px;}
 .dv3-takeaway-label{display:inline-block;font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem;}
 .dv3-takeaway-text{font-family:var(--font-display);font-size:1.05rem;line-height:1.45;color:var(--text);margin:0;font-weight:600;letter-spacing:-.005em;}
 .dv3-action-src{margin:.5rem 0 0;font-size:.8rem;line-height:1.5;color:var(--text-muted);}
@@ -295,8 +295,8 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 
 
 /* SPONSOR — sits between topbar and sparks. House-ad fallback uses dashed border. */
-.dv3-sponsor{background:linear-gradient(135deg,var(--surface) 0%,rgba(var(--ad-orange-rgb),.04) 100%);border:2px solid rgba(var(--ad-orange-rgb),.30);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:1.25rem;position:relative;overflow:hidden;}
-.dv3-sponsor::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--ad-orange) 0%,rgba(var(--ad-orange-rgb),.3) 60%,transparent 100%);}
+.dv3-sponsor{background:var(--surface);border:2px solid rgba(var(--ad-orange-rgb),.30);border-radius:8px;padding:1.2rem 1.4rem;margin-bottom:1.25rem;position:relative;overflow:hidden;}
+.dv3-sponsor::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--ad-orange);}
 .dv3-sponsor--house{border-style:dashed;border-color:rgba(var(--ad-orange-rgb),.34);}
 .dv3-sponsor-label-row{display:flex;align-items:center;justify-content:space-between;gap:.6rem;margin-bottom:.55rem;flex-wrap:wrap;}
 .dv3-sponsor-label{font-family:'JetBrains Mono',monospace;font-size:0.75rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--ad-orange);padding:.18rem .55rem;border:1px solid rgba(var(--ad-orange-rgb),.42);border-radius:3px;background:rgba(var(--ad-orange-rgb),.06);}
@@ -618,7 +618,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
       <p class="dv3-sub page-lede">Grain and livestock markets in a few minutes, before the open, and <a href="#moved">what just moved</a> since. Free, no account needed.</p>
       <div class="dv3-hero-meta" id="dv3-hero-meta" aria-live="polite"></div>
     </div>
-    <button class="dv3-subscribe-btn" id="dv3-sub-btn"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get it in your inbox</button>
+    <button class="dv3-subscribe-btn" id="dv3-sub-btn">Get it in your inbox</button>
   </div>
 
   <div class="dv3-today" id="dv3-today">
@@ -1018,7 +1018,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 <div class="dv3-modal-overlay" id="dv3-modal" role="dialog" aria-modal="true" aria-labelledby="dv3-modal-title">
   <div class="dv3-modal">
     <button class="dv3-modal-close" id="dv3-modal-close" aria-label="Close subscribe dialog"><svg class="dv3-ic" aria-hidden="true"><use href="#i-x"/></svg></button>
-    <h2 id="dv3-modal-title"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Get the Daily briefing</h2>
+    <h2 id="dv3-modal-title">Get the Daily briefing</h2>
     <p>Join the email list at no charge and the AGSIST Daily lands in your inbox every morning: grain, livestock, dairy, weather, and what to watch. Unsubscribe anytime.</p>
     <form id="dv3-sub-form" action="https://agsist-api.dnilgis.workers.dev/subscribe" method="POST">
       <input type="email" name="email" placeholder="your@email.com" required autocomplete="email" aria-label="Email address">
@@ -1186,7 +1186,7 @@ function renderToday(data,why){
   // Header block
   var mood=(data.meta && data.meta.market_mood) || '';
   var header=
-    '<div class="dv3-today-label"><span><svg class="dv3-ic" aria-hidden="true"><use href="#i-newspaper"/></svg></span>'+todayLabel+
+    '<div class="dv3-today-label">'+todayLabel+
       (mood?'<span class="dv3-mood-pill">'+escHtml(mood)+'</span>':'')+
     '</div>'+
     '<div class="dv3-today-date">'+escHtml(fmtDate(data.date))+'</div>'+
@@ -1242,7 +1242,7 @@ function renderToday(data,why){
       return escHtml(x.commodity||'')+' '+arrow+' '+pct+'%';
     });
     surprise='<div class="dv3-surprise-banner">'+
-      '<span class="surprise-icon"><svg class="dv3-ic dv3-ic--lg" aria-hidden="true"><use href="#i-zap"/></svg></span>'+
+      ''+
       '<span class="surprise-text"><strong>Overnight surprise'+(sArr.length>1?'s':'')+':</strong> '+sNames.join(' / ')+'</span>'+
     '</div>';
   }
@@ -1270,12 +1270,12 @@ function renderToday(data,why){
   var taTxt=(data.the_takeaway||'').trim();
   if(actTxt){
     takeaway='<div class="dv3-takeaway dv3-action" role="note" aria-label="Today\u2019s action">'+
-      '<span class="dv3-takeaway-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-target"/></svg>THE ACTION</span>'+
+      '<span class="dv3-takeaway-label">THE ACTION</span>'+
       '<p class="dv3-takeaway-text">'+mdInline(actTxt)+'</p>'+
     '</div>';
   } else if(taTxt){
     takeaway='<div class="dv3-takeaway" role="note" aria-label="Today\u2019s key takeaway">'+
-      '<span class="dv3-takeaway-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-target"/></svg>THE TAKEAWAY</span>'+
+      '<span class="dv3-takeaway-label">THE TAKEAWAY</span>'+
       '<p class="dv3-takeaway-text">'+escHtml(taTxt)+'</p>'+
     '</div>';
   }
@@ -1292,7 +1292,7 @@ function renderToday(data,why){
     topbar='<div class="dv3-topbar">';
     if(onum){
       topbar+='<div class="dv3-one-number">'+
-        '<div class="dv3-one-number-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-chart-column"/></svg>The number</div>'+
+        '<div class="dv3-one-number-label">The number</div>'+
         '<div class="dv3-one-number-val">'+escHtml(onumV)+'</div>'+
         '<div class="dv3-one-number-unit">'+escHtml(onum.unit||onum.label||'')+'</div>'+
         '<div class="dv3-one-number-ctx">'+escHtml(onum.context||onum.ctx||'')+'</div>'+
@@ -1300,7 +1300,7 @@ function renderToday(data,why){
     }
     if(q){
       topbar+='<div class="dv3-quote-card">'+
-        '<div class="dv3-quote-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-message-circle"/></svg>Daily quote</div>'+
+        '<div class="dv3-quote-label">Daily quote</div>'+
         '<p class="dv3-quote-text">\u201C'+escHtml(q.text||q.quote||'')+'\u201D</p>'+
         '<cite class="dv3-quote-attr">'+escHtml(q.attr||q.attribution||q.author||'')+'</cite>'+
       '</div>';
@@ -1432,7 +1432,7 @@ function renderToday(data,why){
       // v4.4: catalyst chip (per-section, optional, weekday only) — names the news/data driving this move
       var catTxt=(sec.catalyst||'').trim();
       var catHtml=(catTxt && !marketClosed)
-        ? '<div class="dv3-sec-catalyst"><span class="dv3-sec-catalyst-icon"><svg class="dv3-ic" aria-hidden="true"><use href="#i-satellite-dish"/></svg></span><span class="dv3-sec-catalyst-label">DRIVER</span><span class="dv3-sec-catalyst-text">'+escHtml(catTxt)+'</span></div>'
+        ? '<div class="dv3-sec-catalyst"><span class="dv3-sec-catalyst-label">DRIVER</span><span class="dv3-sec-catalyst-text">'+escHtml(catTxt)+'</span></div>'
         : '';
       sections+='<div class="'+classes.join(' ')+'">'+
         '<div class="dv3-sec-header">'+
@@ -1443,7 +1443,7 @@ function renderToday(data,why){
         vsHtml+
         (sec.body?'<div class="dv3-sec-body">'+mdBody(sec.body)+'</div>':'')+
         (soWhat?'<div class="dv3-sec-bottomline">'+mdInline(soWhat)+'</div>':'')+
-        (sec.farmer_action?'<div class="dv3-sec-action"><svg class="dv3-ic" aria-hidden="true"><use href="#i-target"/></svg><span>'+escHtml(sec.farmer_action)+'</span></div>':'')+
+        (sec.farmer_action?'<div class="dv3-sec-action"><span>'+escHtml(sec.farmer_action)+'</span></div>':'')+
       '</div>';
     });
     sections+='</div>';
@@ -1454,7 +1454,7 @@ function renderToday(data,why){
   var t=data.the_more_you_know||data.tmyk;
   if(t&&(t.body||t.text)){
     tmyk='<div class="dv3-tmyk">'+
-      '<div class="dv3-tmyk-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-brain"/></svg>The more you know</div>'+
+      '<div class="dv3-tmyk-label">The more you know</div>'+
       (t.title?'<div class="dv3-tmyk-title">'+escHtml(t.title)+'</div>':'')+
       '<div class="dv3-tmyk-body">'+mdInline(t.body||t.text||'')+'</div>'+
     '</div>';
@@ -1466,7 +1466,7 @@ function renderToday(data,why){
     // v4.3: weekend editions show forward-week list
     var watchLabel=marketClosed?"This week\u2019s watch list":"Today\u2019s watch list";
     watch='<div class="dv3-watch">'+
-      '<div class="dv3-watch-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-calendar"/></svg>'+watchLabel+'</div>'+
+      '<div class="dv3-watch-label">'+watchLabel+'</div>'+
       '<ul class="dv3-watch-list">';
     data.watch_list.forEach(function(w){
       watch+='<li class="dv3-watch-item">'+
@@ -1481,7 +1481,7 @@ function renderToday(data,why){
   var cashbids='';
   if(!marketClosed){
     cashbids='<a class="dv3-cashbids-cta" href="/cash-bids" aria-label="View your local cash bids">'+
-      '<span class="dv3-cashbids-icon"><svg class="dv3-ic dv3-ic--lg" aria-hidden="true"><use href="#i-banknote"/></svg></span>'+
+      ''+
       '<span class="dv3-cashbids-text"><strong>Your local elevator bids</strong> '+
       '<span class="dv3-cashbids-arrow">\u2192</span></span>'+
     '</a>';
@@ -1517,7 +1517,7 @@ function renderToday(data,why){
       var otpSub=data.otp_week_ahead?'Coming up next week.':'Not moving prices today, but worth knowing.';
       outsidePit='<div class="dv3-otp" aria-label="'+otpLabel+'">'+
         '<div class="dv3-otp-header">'+
-          '<span class="dv3-otp-label"><svg class="dv3-ic" aria-hidden="true"><use href="#i-newspaper"/></svg>'+otpLabel+'</span>'+
+          '<span class="dv3-otp-label">'+otpLabel+'</span>'+
           '<span class="dv3-otp-sub">'+otpSub+'</span>'+
         '</div>'+
         '<div class="dv3-otp-grid">'+otpRendered.join('')+'</div>'+
@@ -1532,8 +1532,8 @@ function renderToday(data,why){
       '<svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>'+
       ' Post'+
     '</button>'+
-    '<button class="dv3-share-btn" data-share="copy" type="button" aria-label="Copy link to this briefing"><svg class="dv3-ic" aria-hidden="true"><use href="#i-link"/></svg> Copy link</button>'+
-    '<button class="dv3-share-btn" data-share="email" type="button" aria-label="Email this briefing"><svg class="dv3-ic" aria-hidden="true"><use href="#i-mail"/></svg> Email</button>'+
+    '<button class="dv3-share-btn" data-share="copy" type="button" aria-label="Copy link to this briefing">Copy link</button>'+
+    '<button class="dv3-share-btn" data-share="email" type="button" aria-label="Email this briefing">Email</button>'+
   '</div>';
 
   // Weekly thread chapter marker (above lead)
@@ -1544,7 +1544,7 @@ function renderToday(data,why){
     var dayText=dayLabels[wt.day]||'THIS WEEK';
     var anchorCls=(wt.day===1||wt.day===5)?' dv3-thread--anchor':'';
     thread='<div class="dv3-thread'+anchorCls+'">'+
-      '<span class="dv3-thread-day"><svg class="dv3-ic" aria-hidden="true"><use href="#i-message-circle"/></svg>'+escHtml(dayText)+'</span>'+
+      '<span class="dv3-thread-day">'+escHtml(dayText)+'</span>'+
       '<span class="dv3-thread-q">'+escHtml(wt.question)+'</span>'+
     '</div>';
   }
@@ -1586,7 +1586,7 @@ function renderToday(data,why){
 
   // Forward block
   var forward='<div class="dv3-forward">'+
-    '<span class="dv3-forward-icon"><svg class="dv3-ic dv3-ic--lg" aria-hidden="true"><use href="#i-mail"/></svg></span>'+
+    ''+
     '<div class="dv3-forward-content">'+
       '<div class="dv3-forward-headline">Know a farmer who\u2019d want this?</div>'+
       '<div class="dv3-forward-sub">Forward this briefing. Or new here? Subscribe in one tap.</div>'+
@@ -1647,7 +1647,7 @@ function renderToday(data,why){
         };
         doCopy().then(function(){
           var orig=btn.innerHTML;
-          btn.innerHTML='<svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> Copied';
+          btn.innerHTML='Copied';
           setTimeout(function(){btn.innerHTML=orig;},1500);
         }).catch(function(){
           prompt('Copy this link:',permalink);
@@ -1679,7 +1679,7 @@ function renderArchive(){
       // Hero meta: briefings published count
       if(heroMeta){
         var count=manifest.briefings.length;
-        heroMeta.innerHTML='<svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> <b>'+count+'</b> briefing'+(count===1?'':'s')+' published';
+        heroMeta.innerHTML='<b>'+count+'</b> briefing'+(count===1?'':'s')+' published';
       }
       dv3Perm.index=manifest.briefings;
       dv3Perm.check();
@@ -1761,7 +1761,7 @@ if(form){
   var zipIn=document.getElementById('dv3-zip'),subMsg=document.getElementById('dv3-sub-msg');
   if(zipIn)zipIn.addEventListener('input',function(){zipIn.removeAttribute('aria-invalid');zipIn.value=zipIn.value.replace(/\D/g,'').slice(0,5);});
   function done(){
-    form.innerHTML='<p style="color:var(--green);text-align:center;padding:.5rem 0"><svg class="dv3-ic" aria-hidden="true" style="color:var(--green)"><use href="#i-check"/></svg> On the list. Your first briefing arrives tomorrow morning.</p>';
+    form.innerHTML='<p style="color:var(--green);text-align:center;padding:.5rem 0">On the list. Your first briefing arrives tomorrow morning.</p>';
   }
   function fail(msg,el){subMsg.textContent=msg;if(el){el.setAttribute('aria-invalid','true');el.focus();}}
   form.addEventListener('submit',function(e){
