@@ -1,5 +1,5 @@
 /* components/rent-chart.js: "every county, and what corn was doing" on each state rent page (/rent/<state>;
-   Sig approved Nov 13, 2026, concept R1). One dash per county per year, the median county as the ink line, the
+   concept R1). One dash per county per year, the median county as the ink line, the
    reader's county as the one gold line, the years the state's corn paid over $5 shaded top to bottom, and under
    the plot the corn price received each crop year on the same years.
 
