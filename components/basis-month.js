@@ -167,12 +167,18 @@
     var now = m.now;
     if (now) {
       // named at its right end, clear of the line under the words: above the highest step it spans, else under the band
-      var bt = 'Best in town: ' + word(now.hi), bw = BD.widthOf(bt, fb, true), ex = Math.min(X(now.d), W - R - 4), span = m.days.filter(function (x) { return !x.gap && X(x.d) >= ex - bw - 4 && X(x.d) <= ex + 4; });
-      var hiS = Math.max.apply(null, span.map(function (x) { return x.hi; }).concat(now.hi)), loS = Math.min.apply(null, span.map(function (x) { return x.lo; }).concat(now.lo));
-      var cands = [Y(hiS) - 8, Y(loS) + fb + 6, Y(loS) + 2 * fb + 10].filter(function (y) { return y - fb >= y0 - 4 && y <= y1 - 2; }), ey = cands[0];
-      for (var ci = 0; ci < cands.length; ci++) { var bb = { x0: ex - bw, x1: ex, y0: cands[ci] - fb, y1: cands[ci] + 4 }; if (!lab.some(function (z) { return BD.hit(z, bb); })) { ey = cands[ci]; break; } }
-      o.push(t(ex, ey, bt, 'g b B', 'end'));
-      lab.push({ x0: ex - bw, x1: ex, y0: ey - fb, y1: ey + 4 });
+      var ex = Math.min(X(now.d), W - R - 4), tries = [['Best in town: ' + word(now.hi)], ['Best in town', word(now.hi)]], done = false;
+      for (var ti = 0; ti < tries.length && !done; ti++) {
+        var ls = tries[ti], bw = Math.max.apply(null, ls.map(function (z) { return BD.widthOf(z, fb, true); })), lh2 = fb * 1.2, hh = (ls.length - 1) * lh2;
+        var span = m.days.filter(function (x) { return !x.gap && X(x.d) >= ex - bw - 4 && X(x.d) <= ex + 4; });
+        var hiS = Math.max.apply(null, span.map(function (x) { return x.hi; }).concat(now.hi)), loS = Math.min.apply(null, span.map(function (x) { return x.lo; }).concat(now.lo));
+        var cands = [Y(hiS) - 8 - hh, Y(loS) + fb + 6, Y(loS) + 2 * fb + 10].filter(function (y) { return y - fb >= y0 - 4 && y + hh <= y1 - 2; });
+        for (var ci = 0; ci < cands.length; ci++) {
+          var bb = { x0: ex - bw, x1: ex, y0: cands[ci] - fb, y1: cands[ci] + hh + 4 };
+          if (!lab.some(function (z) { return BD.hit(z, bb); })) { ls.forEach(function (z, j) { o.push(t(ex, cands[ci] + j * lh2, z, 'g b B', 'end')); }); lab.push(bb); done = true; break; }
+        }
+      }
+      if (!done) { var ey0 = Y(now.hi) - 8; o.push(t(ex, ey0, 'Best in town: ' + word(now.hi), 'g b B h', 'end')); lab.push({ x0: ex - 160, x1: ex, y0: ey0 - fb, y1: ey0 + 4 }); }
       var mn = m.days.filter(function (x) { return !x.gap; }).reduce(function (a, x) { return !a || x.hi < a.hi ? x : a; }, null);
       if (mn && mn.hi < now.hi - 2) {
         var txt = dd(mn.d) + ': ' + word(mn.hi), w = BD.widthOf(txt, fs, false), mx = Math.max(L + w / 2 + 2, Math.min(W - R - w / 2 - 4, X(mn.d))), my = Y(mn.hi) + fs + 8;
