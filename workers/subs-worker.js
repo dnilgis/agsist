@@ -5,6 +5,15 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
+ * v5.70 (2026-11-13): GA BURST DAMPING. GET /ga-ok also answers {"ok":false} for an hour to a
+ *   network and city (request.cf.asn plus request.cf.city, never an address) that sends more than
+ *   GA_BURST_MAX fresh calls in one minute: the same few cities sent hundreds of scripted visits in
+ *   minutes on burst days (Oct 25, Oct 29, Nov 12), on home and proxy networks no ASN list holds.
+ *   The count lives in this isolate's memory only, so it is approximate: Cloudflare runs many
+ *   isolates and they share nothing, so a spread burst counts lower than it is, and a restart
+ *   forgets it. Logs one fixed line with the minute's count when a bucket trips, nothing else. Pairs
+ *   with components/ga-gate.js (2026-11-13). No new binding or secret. Every other route answers as
+ *   before.
  * v5.68 (2026-11-13): SPONSORS PAY BY CHECK OR BANK WIRE. The sponsor confirm pages no longer
  *   promise a free first month (no free months, Nov 13): they say the ad is paid by check or bank
  *   wire from the invoice we email at booking, and that the ad goes live the day payment arrives
@@ -1015,6 +1024,47 @@ function json(obj, status, extra) {
     status: status || 200,
     headers: Object.assign({ "Content-Type": "application/json" }, extra || {}),
   });
+}
+
+// v5.70 GA burst damping (Nov 13). A network and city (cf.asn plus cf.city; no address is read)
+// that sends more than GA_BURST_MAX fresh /ga-ok calls in one minute is answered false for an hour.
+// Per isolate, in memory: approximate by design (isolates share nothing, a restart forgets), and a
+// fixed one-minute window can let up to twice the limit through across its edge. A real reader
+// shares a bucket only with others on the same network in the same city in the same minute; the
+// site's whole audience does not come near 20 a minute from one. Calls already refused as a cloud
+// network are not counted. At most GA_BURST_KEYS buckets are kept; the oldest go first.
+const GA_BURST_MAX = 20;
+const GA_BURST_WINDOW_MS = 60 * 1000;
+const GA_BURST_HOLD_MS = 60 * 60 * 1000;
+const GA_BURST_KEYS = 5000;
+const gaBursts = new Map();
+function gaBurstKey(cf) {
+  return String(Number(cf && cf.asn) || 0) + "|" + String((cf && cf.city) || "").slice(0, 80).toLowerCase();
+}
+function gaBurstPrune(now) {
+  for (const [k, b] of gaBursts) {
+    if (b.hold <= now && now - b.start >= GA_BURST_WINDOW_MS) gaBursts.delete(k);
+  }
+  while (gaBursts.size >= GA_BURST_KEYS) gaBursts.delete(gaBursts.keys().next().value);
+}
+function gaBurstOk(cf, now) {
+  const key = gaBurstKey(cf);
+  let b = gaBursts.get(key);
+  if (b && b.hold > now) return false;
+  if (!b || now - b.start >= GA_BURST_WINDOW_MS) {
+    if (!b && gaBursts.size >= GA_BURST_KEYS) gaBurstPrune(now);
+    gaBursts.delete(key);
+    b = { start: now, n: 0, hold: 0 };
+    gaBursts.set(key, b);
+  }
+  b.n++;
+  if (b.n > GA_BURST_MAX) {
+    b.hold = now + GA_BURST_HOLD_MS;
+    // fixed words and one count; no network, city or address (once per trip: held calls return above)
+    console.log("subs worker: ga-ok burst held for an hour; calls in the minute:", b.n);
+    return false;
+  }
+  return true;
 }
 
 // v5.33 GA gate. Cloud, hosting and data center networks by ASN, checked
@@ -3547,8 +3597,9 @@ async function handle(req, env) {
     }
 
     // v5.33: may this visit load Google Analytics? Network type only; nothing kept.
+    // v5.70: and not a burst from one network and city (gaBurstOk: counts in memory, no address).
     if (path === "/ga-ok" && req.method === "GET") {
-      return json({ ok: gaOk(req.cf) }, 200, Object.assign({ "Cache-Control": "private, max-age=3600" }, cors(req)));
+      return json({ ok: gaOk(req.cf) && gaBurstOk(req.cf, Date.now()) }, 200, Object.assign({ "Cache-Control": "private, max-age=3600" }, cors(req)));
     }
 
     // v5.65: one sponsor's private report (sponsor-report.html). 404 with no detail for
