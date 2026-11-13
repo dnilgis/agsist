@@ -173,11 +173,11 @@
    each (a page with no NOAA normal has no key): the ratios below are those sizes, and test/rain-chart-enhanced.test.mjs keeps them equal
    to what the component draws. A county page's chart is always the phone design (its inline drawing is that, and wider than a phone it
    sits in the print's phone-shaped room), so the wide design is only for a chart on a page without a print.
-   ORDER (Sig, Nov 13; phones only, Oct 28's print-first stands above): up to 560 px, this file's own phone layout (the
+   ORDER (the owner, Nov 13; phones only, Oct 28's print-first stands above): up to 560 px, this file's own phone layout (the
    max-width: 560px rules above), the chart comes first inside the print's figure, with its caption, and the print below it.
    Wider, the print comes first as before: while it loads the chart sits over the print's reserved box (never an empty box), goes
    when the print has drawn, and stays in the box if the print cannot be drawn (the box and the picker row are held, so nothing moves). */
-.rce { --rce-ink: var(--text, #161a18); --rce-mute: var(--text-muted, #5e6475); --rce-rain: var(--blue, #6f9fc2); --rce-dry: rgba(200,178,140,.30); --rce-wet: rgba(111,159,194,.30); --rce-dry-edge: rgba(200,178,140,.55); --rce-wet-edge: rgba(111,159,194,.6); max-width: 480px; margin: 0; }
+.rce { --rce-ink: var(--text, #161a18); --rce-mute: var(--text-muted, #5e6475); --rce-rain: var(--blue, #6f9fc2); --rce-dry: rgba(200,178,140,.30); --rce-wet: rgba(111,159,194,.30); --rce-dry-edge: rgba(200,178,140,.55); --rce-wet-edge: rgba(111,159,194,.6); max-width: 480px; margin: 0; } /* plain-look-ok: the dry and wet bands painted inside the rain chart, a data layer */
 [data-theme="light"] .rce { --rce-rain: #2b5c8a; --rce-mute: #4f5668; --rce-dry: #ece6de; --rce-wet: #e3ebf3; --rce-dry-edge: #cfc6ba; --rce-wet-edge: #b9c7d6; }
 .rce-f-ink { fill: var(--rce-ink); } .rce-f-mute { fill: var(--rce-mute); } .rce-f-rain { fill: var(--rce-rain); } .rce-f-dry { fill: var(--rce-dry); } .rce-f-wet { fill: var(--rce-wet); }
 .rce-s-ink { stroke: var(--rce-ink); } .rce-s-mute { stroke: var(--rce-mute); } .rce-s-rain { stroke: var(--rce-rain); } .rce-s-dryEdge { stroke: var(--rce-dry-edge); } .rce-s-wetEdge { stroke: var(--rce-wet-edge); }

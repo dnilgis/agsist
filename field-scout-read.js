@@ -839,7 +839,7 @@ window.__fsRead = function (FSX) {
     var line=function(k){ return cum.map(function(r,i){ return (i?'L':'M')+X(r[0]).toFixed(1)+' '+Y(r[k]).toFixed(1); }).join(' '); };
     var grid=''; for(var tv=0; tv<=maxV+1e-9; tv+=step){ var gy=Y(tv);
       grid+='<line x1="'+pl+'" y1="'+gy.toFixed(1)+'" x2="'+(W-pr)+'" y2="'+gy.toFixed(1)+'" stroke="rgba(132,160,168,'+(tv===0?'.28':'.12')+'" stroke-width="1"/><text x="'+(pl-5)+'" y="'+(gy+3).toFixed(1)+'" text-anchor="end" font-size="9" fill="#8a948f" font-family="JetBrains Mono,monospace">'+(tv===0?'0':tv+'″')+'</text>'; }
-    // 2026-11-13 (Sig: any generic rain total chart is replaced by the enhanced one): the chart is components/rain-chart.js, drawn in the
+    // 2026-11-13 (the owner: any generic rain total chart is replaced by the enhanced one): the chart is components/rain-chart.js, drawn in the
     // browser from this card's own figures: the same total, normal and percent the two numbers above print, to a hundredth as the county page
     // prints them (so the key adds up: this year plus the gap is the normal), the difference worked out by the component.
     var last=cum[cum.length-1], q=function(v){ return esc(String(v)); }, mi=s.mi!=null?Math.round(s.mi)+' mi from this field':'';

@@ -196,13 +196,13 @@
 .cr-cue::after{content:"";position:absolute;left:-.4rem;right:-.4rem;top:-.9rem;bottom:-.9rem}
 /* state page: jump links to a long survey's sections, the one-line cash rent link, the flat rate or base plus bushels box */
 .cr-jump{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem}
-.cr-jump a{display:inline-flex;align-items:center;min-height:44px;padding:.2rem .8rem;border:1px solid var(--border);border-radius:22px;background:var(--surface);color:var(--text)!important;text-decoration:none!important;font-size:.88rem;font-weight:600;line-height:1.2}
+.cr-jump a{display:inline-flex;align-items:center;min-height:44px;padding:.2rem .8rem;border:1px solid var(--border);border-radius:var(--r-pill);background:var(--surface);color:var(--text)!important;text-decoration:none!important;font-size:.88rem;font-weight:600;line-height:1.2}
 .cr-t tr.sec{scroll-margin-top:140px}
 .cr-rent{margin:.2rem 0 .9rem!important}
-.crbp{margin:0 0 1.4rem;padding:.9rem 1.1rem;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+.crbp{margin:0 0 1.4rem;padding:.9rem 1.1rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface)}
 .crbp h2{margin:0 0 .4rem!important}
 .crbp-l{list-style:none;margin:.6rem 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:.8rem}
-.crbp-r{border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;background:var(--bg)}
+.crbp-r{border:1px solid var(--border);border-radius:var(--r-lg);padding:.7rem .9rem;background:var(--bg)}
 .crbp-r h3{margin:0 0 .35rem!important;font-size:1.05rem}
 .crbp-r p{margin:0 0 .4rem!important;font-size:.9rem}
 .crbp-r small{color:var(--text-muted)}

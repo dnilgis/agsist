@@ -752,10 +752,10 @@
     var cap = 'Inches of rain added up day by day from Jan 1' + (fig.usual != null ? ', solid line, against the normal year at this ' + fig.noun + ' (dashed), counted on the same days' : '') + '. Days with no report add nothing.';
     var pcap = 'Every day of ' + fig.year + (fig.done ? '' : ' so far') + ' at this ' + fig.noun + ', drawn by Rain Print. A gap is a day with no report.' + (fig.done ? '' : ' The empty months are still to come.') +
       (fig.mn ? ' The dashed line is the normal year: NOAA&rsquo;s ' + (fig.norm === '1991-2020' ? '1991 to 2020' : '30-year') + ' normals for this ' + fig.noun + ', added up over the days it reported.' : '');
-    // Nov 13 2026 (Sig: on a phone the enhanced chart first, the Rain Print right below; wider, the print first). Up to 560 px (here.css's
+    // Nov 13 2026 (the owner: on a phone the enhanced chart first, the Rain Print right below; wider, the print first). Up to 560 px (here.css's
     // phone layout) the chart is a block above the print with its own caption; wider it is the print's placeholder, drawn in the print's
     // box at once (never an empty box) and replaced when the print has drawn, as the plain chart was. On a phone the print opens in Roots, not
-    // Staircase, so the running-total picture is not shown twice (Sig, Nov 13).
+    // Staircase, so the running-total picture is not shown twice (the owner, Nov 13).
     var phone = !!(window.matchMedia && window.matchMedia('(max-width: 560px)').matches), chartBox = P.rainChartBox(fig);
     $('h-rp-box').innerHTML = (phone ? '<figure class="rc-chart h-rce" id="h-rce">' + chartBox + '<figcaption>' + esc(cap) + '</figcaption></figure>' : '') +
       '<figure class="rc-chart rc-print h-rp" id="h-rp" data-st="' + esc(fig.st) + '" data-fips="' + esc(fig.fips) + '" data-year="' + fig.year + '" data-days="' + fig.days + '" data-total="' + fig.total.toFixed(2) + '" data-place="' + esc(fig.place) + '" data-gauge="' + esc(fig.gauge) + '"' +
