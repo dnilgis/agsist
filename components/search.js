@@ -11,17 +11,17 @@
  *
  * Entry shape: [type, title, sub, url, keywords]
  *   type 0 page, 1 state page, 2 town, 3 county, 4 futures, 5 elevator,
- *   6 town with no page of its own
+ *   6 town with no page of its own, 7 county rain page (Nov 12, 2026)
  */
 (function () {
   'use strict';
   if (window.AgsistSearch) return;
 
-  var GROUPS = ['Pages and tools', 'State pages', 'Cash bid towns', 'Farmland atlas counties', 'Futures contracts', 'Elevators', 'Nearby bid towns'];
-  var BASE_W = [6, 3, 2, 1, 1, 0, 0];
+  var GROUPS = ['Pages and tools', 'State pages', 'Cash bid towns', 'Farmland atlas counties', 'Futures contracts', 'Elevators', 'Nearby bid towns', 'Rain by county'];
+  var BASE_W = [6, 3, 2, 1, 1, 0, 0, 1];
   // words a type answers to, weaker than its own title and keywords
-  var TYPE_WORDS = ['', 'state', 'town cash bids bid elevator', 'county atlas farmland land value rent', 'futures contract', 'elevator elevators coop', 'town cash bids bid'];
-  var SHOW = [6, 5, 5, 5, 4, 5, 4];
+  var TYPE_WORDS = ['', 'state', 'town cash bids bid elevator', 'county atlas farmland land value rent', 'futures contract', 'elevator elevators coop', 'town cash bids bid', 'county rain rainfall'];
+  var SHOW = [6, 5, 5, 5, 4, 5, 4, 4];
   var MAX_ED = function (n) { return n >= 8 ? 2 : n >= 4 ? 1 : 0; };
   var STATE_ABBR = { 'alabama': 'AL', 'alaska': 'AK', 'arizona': 'AZ', 'arkansas': 'AR', 'california': 'CA', 'colorado': 'CO', 'connecticut': 'CT', 'delaware': 'DE', 'florida': 'FL', 'georgia': 'GA', 'hawaii': 'HI', 'idaho': 'ID', 'illinois': 'IL', 'indiana': 'IN', 'iowa': 'IA', 'kansas': 'KS', 'kentucky': 'KY', 'louisiana': 'LA', 'maine': 'ME', 'maryland': 'MD', 'massachusetts': 'MA', 'michigan': 'MI', 'minnesota': 'MN', 'mississippi': 'MS', 'missouri': 'MO', 'montana': 'MT', 'nebraska': 'NE', 'nevada': 'NV', 'new-hampshire': 'NH', 'new-jersey': 'NJ', 'new-mexico': 'NM', 'new-york': 'NY', 'north-carolina': 'NC', 'north-dakota': 'ND', 'ohio': 'OH', 'oklahoma': 'OK', 'oregon': 'OR', 'pennsylvania': 'PA', 'rhode-island': 'RI', 'south-carolina': 'SC', 'south-dakota': 'SD', 'tennessee': 'TN', 'texas': 'TX', 'utah': 'UT', 'vermont': 'VT', 'virginia': 'VA', 'washington': 'WA', 'west-virginia': 'WV', 'wisconsin': 'WI', 'wyoming': 'WY' };
 
@@ -58,7 +58,7 @@
   /* ── index ────────────────────────────────────────────────────── */
   function stateOf(e) {
     var m = /\b([A-Z]{2})$/.exec(e.type === 5 ? e.sub : e.title);
-    if ((e.type === 2 || e.type === 3 || e.type === 5 || e.type === 6) && m) return m[1];
+    if ((e.type === 2 || e.type === 3 || e.type === 5 || e.type === 6 || e.type === 7) && m) return m[1];
     if (e.type === 1) { var p = /^\/[a-z-]+\/([a-z-]+)/.exec(e.url); return p ? STATE_ABBR[p[1]] || '' : ''; }
     return '';
   }
@@ -212,8 +212,9 @@
     if (filler && hits.length && GRAIN[hits[0].e.url]) raise(hits, items, '/cash-bids', 1);
     // a town or county on top: the one-place page for it rides second (/fast-facts, was /here)
     /* a county's own land sales page (Oct 29) names the place after "Land sales in " */
-    var place0 = hits.length ? String(hits[0].e.title).replace(/^Land sales in /, '') : '';
-    if (hits.length && (hits[0].e.type === 2 || hits[0].e.type === 3 || hits[0].e.type === 6)) hits.splice(1, 0, placeHit(place0, '/fast-facts?q=' + encodeURIComponent(place0)));
+    /* and a county rain page names it after "Rain in " (Nov 12, 2026) */
+    var place0 = hits.length ? String(hits[0].e.title).replace(/^(Land sales|Rain) in /, '') : '';
+    if (hits.length && (hits[0].e.type === 2 || hits[0].e.type === 3 || hits[0].e.type === 6 || hits[0].e.type === 7)) hits.splice(1, 0, placeHit(place0, '/fast-facts?q=' + encodeURIComponent(place0)));
     /* and, in Illinois, Wisconsin and Indiana, its farm sales third, unless that page is already a result */
     var lh = hits.length > 1 ? landHit(hits[0].e) : null;
     if (lh) {

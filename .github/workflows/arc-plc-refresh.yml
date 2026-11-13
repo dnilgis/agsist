@@ -21,7 +21,9 @@ permissions:
 
 jobs:
   upstream:
+    if: github.event.workflow_run.conclusion != 'skipped'
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     permissions:
       actions: read
       contents: read
@@ -41,6 +43,7 @@ jobs:
     needs: upstream
     if: needs.upstream.outputs.go == '1' && (github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success')
     runs-on: ubuntu-latest
+    timeout-minutes: 30
     outputs:
       go: ${{ steps.g.outputs.go }}
       snap: ${{ steps.g.outputs.snap }}
