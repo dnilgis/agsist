@@ -161,7 +161,7 @@
     T += bandT; lab += bandB;
     var t0 = utc(view.from), dt = Math.max(utc(view.to) - t0, 864e5), pl = cfg.legend ? Math.round(fs * 0.9) : 0;
     var yIn = function (v) { return T + (hi - v) / (hi - lo) * (H - T - B - lab); };
-    if (cl && (H - T - B - lab) / (tks.length - 1) < fs * 1.3) return geom(view, W, H, fs, hide, gutter, Object.assign({}, cfg, { clip: 0 }), keyRow);   // a break that leaves the bands too thin to read: the whole scale instead
+    if (cl && (H - T - B - lab) / (tks.length - 1) < fs * 1.3) return geom(view, W, H, fs, hide, gutter, Object.assign({}, cfg, { clip: 0 }), keyRow);   // bands too thin: no break
     return { L: L, R: R, T: T, B: B, W: W, H: H, fs: fs, lo: lo, hi: hi, nt: nt, tk: tks, st: st, base: H - B - fs * 0.6, right: W - R,
       ppu: (H - T - B - lab) / (hi - lo),
       clip: cl ? { lo: cl.lo, hi: cl.hi, below: below, above: above, ranges: cl.ranges, yLo: yIn(lo), yHi: yIn(hi), bandB: bandB, bandT: bandT } : null,
@@ -259,6 +259,7 @@
       key = row2 ? { text: kt, x: x0, ly: fs * 2.15, ty: fs * 2.5, w: kw } : { text: kt, x: g.right - kw, ly: fs * 0.85, ty: fs * 1.2, w: kw };
       boxes.push({ x0: key.x - 2, x1: key.x + kw + 2, y0: key.ty - fs * 0.8, y1: key.ty + (krows - 1) * fs * 1.2 + fs * 0.15 });
     }
+    if (cfg.markLabel && view.series.some(function (q) { return !hide[q.key] && q.points.some(function (p) { return p.m; }); })) { var my = fs * 2.5 + (cfg.legend ? 8 : 0); boxes.push({ x0: g.L, x1: W, y0: my - fs * 0.95, y1: my + fs * 0.3 }); }
     var ext = 0;   // a first-point label may dip just under the lowest gridline when the line leaves no room above
     var bound = function (b, outside) {
       return b.y0 >= fs * (row2 ? 1.85 + krows * 1.2 : 1.6) && b.y1 <= g.base - 1 + ext && (outside ? b.x0 >= g.right + 2 && b.x1 <= W : b.x0 >= g.L + 2 && b.x1 <= g.right);
@@ -379,7 +380,7 @@
     gq.forEach(function (q) { labels.push({ kind: 'gap', s: q.s, text: q.text, x: q.x, y: q.y, anchor: 'middle', optional: true, win: [q.y - fs * 4.4, q.y + fs * 2.2] }); });
     labels.forEach(place);
     var gl = out.filter(function (L) { return L.kind === 'gap'; }), gy = Math.max.apply(null, gl.map(function (L) { return L.y; }));
-    gl.forEach(function (L) {   // gap labels a few px apart share one baseline where the move keeps them clear
+    gl.forEach(function (L) {   // one baseline where it fits
       var d = gy - L.y, b = { x0: L.box.x0, x1: L.box.x1, y0: L.box.y0 + d, y1: L.box.y1 + d };
       boxes.splice(boxes.indexOf(L.box), 1); strict = true;
       if (d && d < fs * 2.5 && free(b)) { L.y = gy; L.box = b; }
