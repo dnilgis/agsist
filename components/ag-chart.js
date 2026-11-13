@@ -341,7 +341,7 @@
       var tk = fitLines(meas('400'), st.take, W - 96, [25, 22, 20], 1);
       x.font = '400 ' + tk.size + 'px ' + FONT; x.fillStyle = 'rgba(233,237,235,.86)'; x.fillText(tk.lines[0], 48, y + 2); y += tk.size + 10;
     }
-    var src = fitLines(meas('400'), sh.source || '', W - 96, [18, 16, 15], 1), url = fitLines(meas('700'), String(sh.url || '').replace(/^https?:\/\//, '').replace(/\?.*$/, ''), W - 96, [20, 18], 1);
+    var src = fitLines(meas('400'), sh.source || '', W - 96, [18, 16, 15], 1), url = fitLines(meas('700'), String(sh.url || '').replace(/^https?:\/\//, '').replace(/\?.*$/, '').replace(/\/$/, ''), W - 96, [20, 18], 1);
     var img = new root.Image();
     img.onload = function () {
       x.drawImage(img, 24, y + 4);

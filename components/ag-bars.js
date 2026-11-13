@@ -9,6 +9,8 @@
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
   function f1(v) { return v.toFixed(1); }
   function widthOf(s, fs) { return String(s).length * fs * 0.64; }
+  /* the key's words are measured at what this face sets them at: about half the font size a character */
+  function keyW(s, fs) { return String(s).length * fs * 0.52; }
   function txt(x, y, s, st, anchor) { return '<text x="' + f1(x) + '" y="' + f1(y) + '"' + (anchor ? ' text-anchor="' + anchor + '"' : '') + ' style="' + st + '">' + esc(s) + '</text>'; }
   var NORM = { page: 'var(--agc-norm,#5b6870)', card: '#7d8b93' }, barN = 0;
   function nice(lo, hi, steps) {
@@ -56,15 +58,15 @@
     /* the last month's figure is written in the saved picture only; on the page the readout under the chart says it once */
     if (opt.card && isN(last.a) && !last.gap) {
       /* the figure at the top right; when it would run into the key's swatches the normal's part is left to the page's readout */
-      var na0 = cfg.names || {}, keyEnd = g.pl + fs * 1.1 + widthOf(na0.a || '', fs) + fs * 1.4 + (g.hasN ? fs * 1.1 + widthOf(na0.n || 'Normal', fs) + fs * 1.4 : 0) + (last.part ? fs * 1.1 + widthOf(last.lab + ' so far', fs) : 0);
+      var na0 = cfg.names || {}, keyEnd = g.pl + fs * 1.1 + keyW(na0.a || '', fs) + fs * 1.4 + (g.hasN ? fs * 1.1 + keyW(na0.n || 'Normal', fs) + fs * 1.4 : 0) + (last.part ? fs * 1.1 + keyW(last.lab + ' so far', fs) : 0);
       var full = last.lab + ': ' + cfg.vfmt(last.a) + (g.hasN && isN(last.n) ? ' (normal ' + cfg.vfmt(last.n) + ')' : ''), short = last.lab + ': ' + cfg.vfmt(last.a);
-      o.push(txt(W - g.pr, g.pt - fs * 0.6, keyEnd + fs * 2 + widthOf(full, fs) * 0.9 > W - g.pr ? short : full, f + 'font-weight:700;fill:' + P.ink, 'end'));
+      o.push(txt(W - g.pr, g.pt - fs * 0.6, keyEnd + fs * 2 + keyW(full, fs) * 0.9 > W - g.pr ? short : full, f + 'font-weight:700;fill:' + P.ink, 'end'));
     }
     if (opt.card) {   /* the key goes in the picture: it has no legend of its own */
       var kx = g.pl, ky = g.pt - fs * 0.6, na = (cfg.names || {});
       o.push('<rect x="' + kx + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + gold + '"/>' + txt(kx + fs * 1.1, ky, na.a || '', f + 'fill:' + P.ink));
-      if (g.hasN) { var kx2 = kx + fs * 1.1 + widthOf(na.a || '', fs) + fs * 1.4; o.push('<rect x="' + f1(kx2) + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + slate + '"/>' + txt(kx2 + fs * 1.1, ky, na.n || 'Normal', f + 'fill:' + P.ink)); }
-      if (last.part && isN(last.a) && !last.gap) { var kx3 = (g.hasN ? kx + fs * 1.1 + widthOf(na.a || '', fs) + fs * 1.4 + fs * 1.1 + widthOf(na.n || 'Normal', fs) + fs * 1.4 : kx + fs * 1.1 + widthOf(na.a || '', fs) + fs * 1.4); o.push('<rect x="' + f1(kx3) + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + gold + ';opacity:.6"/>' + txt(kx3 + fs * 1.1, ky, last.lab + ' so far', f + 'fill:' + P.ink)); }
+      if (g.hasN) { var kx2 = kx + fs * 1.1 + keyW(na.a || '', fs) + fs * 1.4; o.push('<rect x="' + f1(kx2) + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + slate + '"/>' + txt(kx2 + fs * 1.1, ky, na.n || 'Normal', f + 'fill:' + P.ink)); }
+      if (last.part && isN(last.a) && !last.gap) { var kx3 = (g.hasN ? kx + fs * 1.1 + keyW(na.a || '', fs) + fs * 1.4 + fs * 1.1 + keyW(na.n || 'Normal', fs) + fs * 1.4 : kx + fs * 1.1 + keyW(na.a || '', fs) + fs * 1.4); o.push('<rect x="' + f1(kx3) + '" y="' + f1(ky - fs * 0.8) + '" width="' + f1(fs * 0.8) + '" height="' + f1(fs * 0.8) + '" style="fill:' + gold + ';opacity:.6"/>' + txt(kx3 + fs * 1.1, ky, last.lab + ' so far', f + 'fill:' + P.ink)); }
     }
     o.push('<rect class="agc-hl" x="0" y="' + g.pt + '" width="' + f1(g.cw) + '" height="' + f1(g.yb - g.pt) + '" visibility="hidden" style="fill:' + P.ink + ';opacity:.08;pointer-events:none"/>');
     o.push('</svg>');
