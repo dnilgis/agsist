@@ -146,27 +146,31 @@
   function num(n) { return Number(n).toLocaleString('en-US'); }
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   function dayTxt(s) { var p = String(s || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) : ''; }
-  /* The open state spot sells itself (Sig, Nov 13): that STATE's own engaged visits (readers in the state) over the
-     week's window in data/sponsor-spots.json proof.states, its dates, and one button to /sponsor with the state
-     picked. State-level only: a state without its own figure prints none, never a national one. No price here. */
-  var SMALL = 100;   /* under this many visits from the state, the sitewide numbers lead (Sig, Nov 13: a tiny number works against the sale) */
+  /* The open state spot sells itself (Sig, Nov 13): what the buyer gets (the card on that state's pages and for its
+     readers), that STATE's own engaged visits over the week's window (data/sponsor-spots.json proof.states) with its
+     dates, and the sitewide totals labelled as all of AGSIST (Bing named on its figure). A state with no figure of its
+     own shows none; under SMALL visits the sitewide totals come first and the state's own figure follows, named as the
+     state's. One button to /sponsor with the state picked. No price. */
+  var SMALL = 100;
   function openHtml(st, card, spots) {
     var name = NAMES[st];
     if (!name) return '';
     var pr = (spots && spots.proof) || {}, ls = (spots && spots.lists) || {}, ps = pr.states || {};
     var e = ps.engaged && ps.engaged[st];
     var has = typeof e === 'number' && e > 0 && ps.start && ps.end && ps.days > 0;
-    var soon = held(card, st);
-    var stTxt = has ? '<b>' + num(e) + '</b> engaged visits from ' + esc(name) + ' readers, ' + dayTxt(ps.start) + ' to ' + dayTxt(ps.end) + '.' : '';
+    var soon = held(card, st), nm = esc(name);
+    var gets = 'Your card on every ' + nm + ' page and for ' + nm + ' readers. ';
+    var stTxt = has ? nm + ' readers: <b>' + num(e) + '</b> engaged visits, ' + dayTxt(ps.start) + ' to ' + dayTxt(ps.end) + '. ' : '';
     var site = [];
     if (pr.engaged && pr.engaged.total > 0) site.push('<b>' + num(pr.engaged.total) + '</b> engaged visits');
-    if (pr.ai && pr.ai.total > 0) site.push('<b>' + num(pr.ai.total) + '</b> AI answer citations');
+    if (pr.ai && pr.ai.total > 0) site.push('<b>' + num(pr.ai.total) + '</b> Bing AI citations');
     var lst = ls.people > 0 ? '<b>' + num(ls.people) + '</b> on our email lists' : ls.daily > 0 ? '<b>' + num(ls.daily) + '</b> on the Daily email' : '';
-    var siteTxt = site.length ? 'All of AGSIST, last 30 days: ' + site.join(', ') + (lst ? '; ' + lst + ' today' : '') + '.' : (lst ? 'All of AGSIST: ' + lst + '.' : '');
-    var body = has && e >= SMALL ? stTxt + (siteTxt ? ' ' + siteTxt : '') : siteTxt + (stTxt ? ' ' + esc(name) + ' alone: ' + stTxt.replace(' from ' + esc(name) + ' readers', '') : '');
-    return '<div class="ss-box ss-open"><p class="ss-tag">' + esc(name) + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '</p>' +
-      '<p class="ss-txt">' + (body || 'One business per state.') + '</p>' +
-      '<a class="ss-go" href="/sponsor?state=' + st + '#state">Sponsor ' + esc(name) + ' on AGSIST</a></div>';
+    if (lst && ls.asOf) lst += ' (' + dayTxt(ls.asOf) + ')';
+    var siteTxt = site.length ? 'All of AGSIST, 30 days: ' + site.join(', ') + (lst ? '; ' + lst : '') + '. ' : (lst ? 'All of AGSIST: ' + lst + '. ' : '');
+    var body = gets + (has && e >= SMALL ? stTxt + siteTxt : siteTxt + stTxt);
+    return '<div class="ss-box ss-open"><p class="ss-tag">' + nm + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '</p>' +
+      '<p class="ss-txt">' + body.replace(/\s+$/, '') + '</p>' +
+      '<a class="ss-go" href="/sponsor?state=' + st + '#state">Sponsor ' + nm + '<span class="ss-go-x"> on AGSIST</span></a></div>';
   }
   /* A state page's spot that cannot carry its state's card on this page (the page has its own paid sponsor, or the
      sitewide sponsor is on the same screen) keeps its room and says so, with no sponsor name: never an empty box,

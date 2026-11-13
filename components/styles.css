@@ -626,8 +626,8 @@ summary:focus-visible, .pc:focus-visible {
 .nav-grp-lbl{font-family:var(--font-mono);font-size:0.76rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);padding:.55rem 1.1rem .2rem}
 .nav-panel > .nav-grp-lbl:first-child{padding-top:.15rem}
 .draw-grp-lbl{font-family:var(--font-mono);font-size:0.755rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);padding:.5rem 1.1rem .1rem}
-:root{--sw-h:36px;--ss-h:204px}
-@media (max-width:700px){:root{--sw-h:54px}}
+:root{--sw-h:36px;--ss-h:224px}
+@media (max-width:960px){:root{--sw-h:54px}}
 body.no-sw{--sw-h:0px}
 @media (scripting:none){:root{--sw-h:0px}}
 #site-header{min-height:calc(74px + var(--sw-h))}
@@ -642,7 +642,7 @@ body.no-sw{--sw-h:0px}
 .sw-line--sold .sw-in b{color:var(--text)}
 .sw-line--sold .sw-in a{color:#e8743a}
 html[data-theme="light"] .sw-line--sold .sw-in a{color:#a8380a}
-@media (max-width:560px){:root{--ss-h:224px}}
+@media (max-width:560px){:root{--ss-h:284px}}
 .state-spot{display:block;box-sizing:border-box;min-height:var(--ss-h);max-width:760px;margin:1.25rem 0}
 .state-spot[hidden]{display:none}
 .state-spot .geo-spon{margin:0;max-width:none}
