@@ -157,6 +157,7 @@
   var PAL = ['#d4a23f', '#5fc28a', '#6f9fc2', '#d9774f', '#a7b6bd'];
   var DASH = ['', '14 6', '7 4', '14 4 3 4', '4 3 12 3'];
   var FULL_MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+  function hy(s) { return String(s || '').replace(/(\w)-(?=\w)/g, '$1\u2010'); }   /* the kit's true hyphen, printed before it draws so nothing changes when it does */
   function dayBefore(d) { return new Date(Date.parse(d) - 864e5).toISOString().slice(0, 10); }
   /* One name per board, every word spelled out: the company and the site it posts for ("Mid-Iowa Cooperative, Cargill
      Iowa Falls"), by elevNames.boardLabel (components/elev-names.js). No two boards share one: a repeat is told apart
@@ -295,7 +296,7 @@
   }
   function blockOf(c, town, i) {
     var lo = c.lines.reduce(function (a, l) { return l.line.points[0].d < a ? l.line.points[0].d : a; }, c.end), st = story(c, town, lo, c.end);
-    return '<div class="cbh-crop" data-crop="' + i + '"><h3 class="cbh-h">' + esc(st.head) + '</h3><p class="cbh-l">' + esc(st.take) + '</p>' +
+    return '<div class="cbh-crop" data-crop="' + i + '"><h3 class="cbh-h">' + esc(hy(st.head)) + '</h3><p class="cbh-l">' + esc(hy(st.take)) + '</p>' +
       '<div class="cbh-kit"></div><div class="agc-tools cbh-tools"></div>' +
       '<details class="cbh-more"><summary>Every change, elevator by elevator</summary>' + c.all.map(table).join('') + '</details></div>';
   }
@@ -336,6 +337,10 @@
     var html = intro + cs.map(function (c, i) { return blockOf(c, town, i); }).join('');
     if (none.length) html += '<p class="cbt-sub">No basis change logged' + (since ? ' since ' + since : '') + ' for ' + esc(none.join(', ')) + '.</p>';
     body.innerHTML = html;
+    cs.forEach(function (c, i) {   // a phone's box holds the key's rows from the first paint, so nothing moves when the kit draws
+      var kit = body.querySelector && body.querySelector('.cbh-crop[data-crop="' + i + '"] .cbh-kit');
+      if (kit && kit.clientWidth && kit.clientWidth < 720) kit.style.minHeight = (40 + 250 + 60 + 49 * c.lines.length + 70) + 'px';
+    });
     var sum = box.querySelector('summary');
     if (sum && since) sum.textContent = 'Basis since ' + since;
     if (box.ownerDocument) needKit().then(function (K) {
@@ -343,7 +348,7 @@
       var canon = box.ownerDocument.querySelector('link[rel="canonical"]'), url = canon ? canon.href : String(location.href).split('#')[0];
       cs.forEach(function (c, i) {
         var bl = body.querySelector('.cbh-crop[data-crop="' + i + '"]');
-        var kit = bl.querySelector('.cbh-kit'); if (kit.clientWidth && kit.clientWidth < 720) kit.style.minHeight = (40 + 250 + 60 + 49 * c.lines.length + 70) + 'px';
+        var kit = bl.querySelector('.cbh-kit');
         K.mount(kit, config(c, town, { head: bl.querySelector('.cbh-h'), take: bl.querySelector('.cbh-l'), tools: bl.querySelector('.cbh-tools') }, url, from || first));
       });
     });
