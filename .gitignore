@@ -118,3 +118,7 @@ build/shots/
 /data/land-hosted
 # River key inputs (river-pull.yml, one time): saved to the raw branch, never main
 /river/
+
+# Worklists of elevator coordinates and board URLs are private engine data (scripts/worklists, Nov 13); a job that
+# commits all of data/ must not publish them.
+/data/gaps/
