@@ -141,7 +141,7 @@
     var logged = days.filter(function (x) { return !x.gap; });
     if (logged.length < 3 || win.length < 3) {
       var onTerms = logged.length >= 3, last = onTerms ? win[win.length - 1] : logged[logged.length - 1];
-      return { lines: lines, days: days, marks: [], short: true, head: onTerms && conWord(refCon) && win.length === 1 && win[0].d === end ? 'Today: ' + word(last.hiR) + ' on ' + conWord(refCon) + ' futures. Too few days logged on ' + conWord(refCon) + ' futures to chart yet.' :
+      return { lines: lines, days: days, marks: [], short: true, head: onTerms && conWord(refCon) && win.length === 1 && win[0].d === end ? 'Today: ' + word(last.hiR) + ' on ' + conWord(refCon) + ' futures. Too few days logged on that month to chart yet.' :
         (onTerms && conWord(refCon) ? 'Logged on ' + conWord(refCon) + ' futures since ' + dd(win[0].d) : 'Logged since ' + dd(logged[0].d)) + ': ' + word(onTerms ? last.hiR : last.hi) + '. Too short to chart yet.', take: '', cardTake: '', first: first, end: end, strays: sl, start: start, n: last.n, off: [] };
     }
     var now = win[win.length - 1], mn = win[0], mx = win[0], st0 = win[0], told;
@@ -162,8 +162,11 @@
       'Lowest to highest bid in town each day, ' + nIn + ' elevators posting since ' + dd(start) + '; top edge: the best.') +
       (marks.length ? ' Dotted lines: a new delivery or futures month.' : '') + (start === first && refCon && conWord(refCon) ? ' All on ' + conWord(refCon) + ' futures.' : '');
     var cardTake = take;
+    // a break in the gold line: days inside the log with no bid logged (round 7: Portland IN corn, Oct 31 to Nov 3)
+    var breaks = [], gb = null;
+    days.forEach(function (x, i) { if (x.gap) { if (!gb && i && !days[i - 1].gap) gb = { from: x.d }; if (gb) gb.to = x.d; } else if (gb) { breaks.push(gb); gb = null; } });
     var unk = Object.keys(unknown).map(function (k) { return unknown[k]; });
-    return { lines: lines, days: days, marks: marks, off: offList, unknown: unk, nBand: nBand, head: head, told: told, take: take, cardTake: cardTake, first: first, end: end, now: now, strays: sl, start: start, n: nIn, refCon: refCon };
+    return { lines: lines, days: days, marks: marks, off: offList, unknown: unk, nBand: nBand, head: head, told: told, breaks: breaks, take: take, cardTake: cardTake, first: first, end: end, now: now, strays: sl, start: start, n: nIn, refCon: refCon };
   }
 
   /* -> { svg, x(d), day(px) } at W x H. opt: { card, fs, show: {key: 1}, state: {median, lo, hi, n, label, name}, hover } */
@@ -231,6 +234,13 @@
         }
       }
     });
+    // a break in the line, named in it where the words fit ("no bid logged"); the note names every break
+    for (var ri = 1; ri < runs.length; ri++) {
+      var ra = runs[ri - 1][runs[ri - 1].length - 1], rb = runs[ri][0], xa2 = X(ra.d), xb2 = X(rb.d), gw = BD.widthOf('no bid logged', fs, false);
+      if (xb2 - xa2 < gw + 6) continue;
+      var gx2 = (xa2 + xb2) / 2, ys = [(Y(ra.hi) + Y(rb.hi)) / 2 + fs * 0.35, Math.max(Y(ra.lo), Y(rb.lo)) + fs + 8, Math.min(Y(ra.hi), Y(rb.hi)) - 8];
+      for (var yi = 0; yi < ys.length; yi++) { var gbx = { x0: gx2 - gw / 2 - 2, x1: gx2 + gw / 2 + 2, y0: ys[yi] - fs, y1: ys[yi] + 3 }; if (free(gbx)) { o.push(t(gx2, ys[yi], 'no bid logged', 'm', 'middle')); labs.push(gbx); break; } }
+    }
     // the date axis: Mondays, every other one where they would crowd
     var mons = [], d0 = m.first;
     for (var d = d0; d <= m.end; d = addDay(d, 1)) if (new Date(d + 'T00:00:00Z').getUTCDay() === 1) mons.push(d);
@@ -286,15 +296,16 @@
         (offK.length ? 'Not in the band from ' + dd(m.start) + ', on another futures month: ' + offK.map(function (z) { return z.name + ' (' + conWord(z.con) + ')'; }).join('; ') + '. ' : '') +
         (offU.length ? 'Not in the band from ' + dd(m.start) + ', futures month not logged: ' + offU.map(function (z) { return z.name; }).join('; ') + '. ' : '') +
         ((m.unknown || []).length ? 'Terms not logged, so not in the band: ' + m.unknown.map(function (z) { return z.name + ', ' + dd(z.from) + (z.to !== z.from ? ' to ' + dd(z.to) : '') + ' (on ' + conWord(z.con) + ' futures on ' + dd(m.end) + ')'; }).join('; ') + '. ' : '') +
+        ((m.breaks || []).length ? 'Breaks in the line: no bid logged, ' + m.breaks.map(function (g) { return g.from === g.to ? dd(g.from) : dd(g.from) + ' to ' + dd(g.to); }).join('; ') + '. ' : '') +
         (m.strays.length ? 'Kept out of the band, far from the others: ' + m.strays.join('; ') + '. ' : '') +
         (stt ? 'Bracket: ' + stt.name + ' today, ' + stt.n + ' bids against ' + stt.label + ' futures, middle ' + word(stt.median) + '. ' : '') +
         'Source: posted elevator bids, logged by AGSIST since ' + dd(m.first) + ', ' + m.first.slice(0, 4) + '.');
   }
   function readout(m, d, held, show) {
     var x = m.days.filter(function (z) { return z.d === d; })[0];
-    if (!x || x.gap) return [dd(d) + ':', 'nothing logged for an open month.'];
+    if (!x || x.gap) return [dd(d) + ':', 'no bid logged.'];
     var who = x.top, extra = m.lines.filter(function (l) { return show[l.key]; }).map(function (l) { var p = held(l, d); return l.name + ' ' + (p ? word(p.v) : 'none'); });
-    return [dd(d) + ':', 'best ' + word(x.hi) + ' (' + (who.length > 2 ? who.length + ' elevators' : who.join(' and ')) + '), lowest ' + word(x.lo) + ', ' + x.n + (x.n === 1 ? ' elevator' : ' elevators') + ' posting.' + (extra.length ? ' ' + extra.join('; ') + '.' : '')];
+    return [dd(d) + ':', 'best ' + word(x.hi) + ' (' + (who.length > 2 ? who.length + ' elevators' : who.join(' and ')) + '), lowest ' + word(x.lo) + ', ' + (m.n > x.n && d >= m.start ? x.n + ' of ' + m.n + ' elevators posting' + (d === m.end ? ' today' : '') : x.n + (x.n === 1 ? ' elevator' : ' elevators') + ' posting') + '.' + (extra.length ? ' ' + extra.join('; ') + '.' : '')];
   }
 
   function mount(el, o) {
@@ -324,11 +335,12 @@
     var build = function () {
       var all = H.crops(data, boards, town, 99, st);
       c = all.filter(function (x) { return x.crop === cur; })[0];
-      if (!c) { plot.innerHTML = ''; read.textContent = 'No ' + ADJ[cur] + ' basis logged in ' + town + ' yet.'; o.head.textContent = 'No ' + ADJ[cur] + ' basis logged in ' + town + ' yet'; o.take.textContent = ''; return; }
+      if (!c) { if (o.picture) o.picture(false); plot.innerHTML = ''; read.textContent = 'No ' + ADJ[cur] + ' basis logged in ' + town + ' yet.'; o.head.textContent = 'No ' + ADJ[cur] + ' basis logged in ' + town + ' yet'; o.take.textContent = ''; return; }
       var td = o.today ? o.today(cur, ctDay(data.generated)) : null;
       if (td && td.rows) td.terms = termsOf(c.all, boards, td.rows, town);
       m = model(c, H.heldOn, town, data.publicFrom, td);
       o.head.textContent = BD.hy(m.head); o.take.textContent = BD.hy(m.take);
+      if (o.picture) o.picture(!m.short);   // no picture to save under the one sentence (round 7)
       // a log of fewer than three days: the one sentence, no chart
       [plot, list.parentNode, q('.bm-axis'), read].forEach(function (e) { e.hidden = !!m.short; });
       if (m.short) { plot.innerHTML = ''; pic = null; read.textContent = ''; noteEl.textContent = 'Source: posted elevator bids, logged by AGSIST.'; return; }

@@ -662,17 +662,19 @@
         if (hist) hist.hidden = v !== 'hist';
         if (v === 'hist' && MONTH_V2) month();
         else if (v === 'hist') { var dt = hist && hist.querySelector('details'); if (dt && !dt.open) dt.open = true; }   // the history box, as it has been
-        else draw(true);   // back on the distance view: drawn again for the crop pressed now (a redraw is skipped while hidden)
+        else { savable(true); draw(true); }   // back on the distance view: drawn again for the crop pressed now (a redraw is skipped while hidden)
         ga('basis_drive_view');
       });
     });
     /* the second view, the month in one band (components/basis-month.js, loaded the first time it is asked for) */
     var monthApi = null, monthLoading = null;
+    // Save the picture only where there is a picture (the month view's one sentence has none)
+    var savable = function (on) { var sv2 = box.querySelector('.bd-save'); if (sv2) sv2.hidden = !on; };
     var month = function () {
       if (!hist) return;
       // the last day of the month view is the town's bids this view draws, so the two views agree on it
       var today = function (crop, d) { var pp = pick(docs, cfg, crop); return todayOf(pp, d); };
-      var go = function () { if (root.BasisMonth) { monthApi = monthApi || root.BasisMonth.mount(hist, { cfg: cfg, crop: cur, head: head, take: take, bs: bsDoc, today: today }); monthApi.crop(cur); } };
+      var go = function () { if (root.BasisMonth) { monthApi = monthApi || root.BasisMonth.mount(hist, { cfg: cfg, crop: cur, head: head, take: take, bs: bsDoc, today: today, picture: savable }); monthApi.crop(cur); } };
       if (root.BasisMonth) return go();
       if (!monthLoading) monthLoading = new Promise(function (ok) { var sc = root.document.createElement('script'); sc.src = '/components/basis-month.js?v=1'; sc.onload = ok; sc.onerror = ok; root.document.head.appendChild(sc); });
       monthLoading.then(go);

@@ -12,7 +12,7 @@
 .bd:not(.bd-js) .bd-ctls,.bd:not(.bd-js) .bd-tools{visibility:hidden}
 .bd-axis,.bd-key{margin:0;font-size:var(--fs-xs);color:var(--text-muted);line-height:1.4}
 .bd-key{display:flex;align-items:center;gap:var(--sp-xs);margin:2px 0 var(--sp-xs)}
-.bd-key[hidden]{display:none}
+.bd-key[hidden],.bd-tools [hidden]{display:none}
 .bd-kg{color:var(--gold);font-weight:700}.bd-kph{display:none}.bd.bd-narrow .bd-kph{display:inline}
 .bd:not(.bd-js) .bd-kph{display:inline}
 .bd-key svg{flex:none}.bd-kl{stroke:var(--text-muted);stroke-width:1.6}.bd-kd{fill:var(--text)}
