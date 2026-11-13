@@ -90,6 +90,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
 </script>
 
 
+<!-- index1:own wxhead -->
+<!-- index1:diverged -->
+<link rel="stylesheet" href="/components/ag-chart.css?v=4"><link rel="stylesheet" href="/css/home-wx.css?v=1">
+<!-- /index1:own wxhead -->
 </head>
 <body>
 <a href="#main" class="skip">Skip to content</a>
@@ -240,9 +244,9 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   </div>
 </div>
 <div id="idx1-home-prompt" class="idx1-home-prompt" style="display:none">
-  <svg class="ic" aria-hidden="true" style="flex:none"><use href="#i-banknote"/></svg>
+  
   <div style="flex-grow:1;font-size:.824rem;color:var(--text)">Add AGSIST to your home screen, one tap from the field, no app store.</div>
-  <button type="button" id="idx1-home-add" style="font-size:.824rem;font-weight:700;color:#0a0c0d;background:var(--gold-fill,var(--gold));border:none;border-radius:6px;padding:.4rem .7rem;flex:none;cursor:pointer">Add</button>
+  <button type="button" id="idx1-home-add" style="font-size:.824rem;font-weight:700;color:#0a0c0d;background:var(--gold-fill,var(--gold));border:none;border-radius:var(--r-md);padding:.4rem .7rem;flex:none;cursor:pointer">Add</button>
   <button type="button" id="idx1-home-dismiss" aria-label="Dismiss" style="font-size:1rem;color:var(--text-muted);background:none;border:none;padding:.2rem .3rem;flex:none;cursor:pointer">&times;</button>
 </div>
 <main id="main" class="main" role="main" tabindex="-1">
@@ -250,7 +254,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
   <section class="hero-band" id="hero-band" aria-labelledby="hb-h">
     <script>try{(function(){var l=null;try{l=JSON.parse(localStorage.getItem('agsist-wx-loc')||'null');}catch(e){}var hb=document.getElementById('hero-band');try{var p={};new Intl.DateTimeFormat('en-US',{timeZone:'America/Chicago',weekday:'short',hour:'numeric',minute:'numeric',hourCycle:'h23'}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value;});var m=(+p.hour%24)*60+(+p.minute);if(/Sat|Sun/.test(p.weekday)||m<525||m>795)hb.classList.add('hb-ovnh');}catch(e){}if(l&&/^\d{5}$/.test(String(l.zip||'')))return;hb.classList.add('hb-nozip');})();}catch(e){}</script>
     <h1 class="hb-h1">Cash bids near you, grain prices, the morning briefing and USDA report days. Free.</h1>
-    <h2 class="visually-hidden" id="hb-h">Today at a glance</h2>
+    <h2 class="visually-hidden" id="hb-h">Today</h2>
     <!-- 2026-11-02 (go): the first screen is three jobs, near me, sell grain, my field.
          The futures and every other destination stay on the page, lower down. -->
     <div class="jobs" id="hb-jobs">
@@ -373,15 +377,15 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
     </div>
   </section>
   <script src="/components/home-worth.js?v=1" defer></script>
-<!-- price-answer:price-home --><section class="qa-answer price-answer" id="answer-price-home" aria-labelledby="answer-price-home-h" data-price-file="2026-11-13T18:02:29Z" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-price-home-h" style="font-size:1.1rem;margin:0 0 .4rem">What are grain prices today?</h2><p style="margin:0 0 .5rem">December 2026 corn futures last traded at $4.46 a bushel as of Nov 13, 12:02 p.m. CT. January 2027 soybean futures last traded at $12.32½ a bushel as of Nov 13, 12:02 p.m. CT. December 2026 wheat futures last traded at $5.93 a bushel as of Nov 13, 12:02 p.m. CT.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">These are Chicago futures prices from Yahoo Finance, delayed 10 to 25 minutes. They are not the cash price an elevator pays; cash bids near you are on the <a href="/cash-bids" style="text-decoration:underline">cash bids page</a>.</p></section><!-- /price-answer:price-home -->
+<!-- price-answer:price-home --><section class="qa-answer price-answer" id="answer-price-home" aria-labelledby="answer-price-home-h" data-price-file="2026-11-13T19:03:43Z" style="margin:1rem 0;padding:.8rem 1rem;border:1px solid var(--border);border-radius:var(--r-md)"><h2 id="answer-price-home-h" style="font-size:1.1rem;margin:0 0 .4rem">What are grain prices today?</h2><p style="margin:0 0 .5rem">December 2026 corn futures last traded at $4.45½ a bushel as of Nov 13, 1:03 p.m. CT. January 2027 soybean futures last traded at $12.32 a bushel as of Nov 13, 1:03 p.m. CT. December 2026 wheat futures last traded at $5.91 a bushel as of Nov 13, 1:03 p.m. CT.</p><p style="margin:0;font-size:.8rem;color:var(--text-muted)">These are Chicago futures prices from Yahoo Finance, delayed 10 to 25 minutes. They are not the cash price an elevator pays; cash bids near you are on the <a href="/cash-bids" style="text-decoration:underline">cash bids page</a>.</p></section><!-- /price-answer:price-home -->
 <section class="daily-hero is-brief" id="daily-hero" data-briefing-date="2026-11-13" aria-label="AGSIST Daily Briefing" aria-expanded="false">
   <div class="daily-teaser" id="daily-teaser" role="button" tabindex="0" aria-label="Expand AGSIST Daily briefing" aria-controls="daily-full" aria-expanded="false">
-    <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span></div><span class="teaser-action">Read today’s briefing &#x2193;</span></div>
+    <div class="teaser-line1"><div class="teaser-left"><span class="teaser-badge" id="daily-teaser-date">AGSIST Daily</span></div><span class="teaser-action">Read today’s briefing &#x2193;</span></div>
     <span class="teaser-preview" id="daily-teaser-text">Today’s ag market briefing. Click to read</span>
   </div>
   <div class="daily-full" id="daily-full">
     <div class="daily-hero-inner">
-      <div id="daily-surprise-banner" class="daily-surprise-banner" style="display:none" role="alert"><span class="surprise-icon"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg></span><span class="surprise-text"><strong>Loading&hellip;</strong></span></div>
+      <div id="daily-surprise-banner" class="daily-surprise-banner" style="display:none" role="alert"><span class="surprise-text"><strong>Loading&hellip;</strong></span></div>
       <div class="daily-grid">
         <div class="daily-left">
           <div style="display:flex;align-items:center;flex-wrap:wrap;gap:.5rem;margin-bottom:.9rem"><div class="daily-eyebrow"><span class="daily-eyebrow-dot"></span> AGSIST DAILY</div><span id="daily-mood" class="daily-mood" style="display:none"></span></div>
@@ -393,7 +397,7 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
           <p id="daily-subheadline" style="font-size:.824rem;color:var(--gold);font-weight:600;margin-bottom:.5rem;letter-spacing:.02em"></p>
           <p id="daily-lead" class="daily-lead">Dec corn is at $4.48¼ overnight, up 5¾ cents after two straight lower closes. Jan beans are at $12.37¼ and Dec wheat at $5.95. Thursday's selling got partly undone before the weekend, but corn still sits near its recent low.</p>
           <div id="daily-takeaway" class="daily-takeaway" role="note" aria-label="Today’s action" style="display:none">
-            <span class="daily-takeaway-label"><svg class="ic" aria-hidden="true"><use href="#i-target"/></svg> THE ACTION</span>
+            <span class="daily-takeaway-label">THE ACTION</span>
             <p id="daily-takeaway-text" class="daily-takeaway-text"></p>
           </div>
           <div class="daily-more">
@@ -401,10 +405,10 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             <a class="daily-more-alt" href="/daily">Every Briefing</a>
           </div>
           <div class="daily-sections">
-            <div id="daily-sec-1" class="daily-sec" style="position:relative"><span id="daily-section-1-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-1-title" class="daily-sec-label">Grains bounce overnight</div><span id="daily-section-1-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-1-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon"><svg class="ic" aria-hidden="true"><use href="#i-rotate-ccw"/></svg></span><span class="daily-sec-vs-text" id="daily-section-1-vs-text"></span></div><div id="daily-section-1-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon"><svg class="ic" aria-hidden="true"><use href="#i-satellite-dish"/></svg></span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-1-catalyst-text"></span></div><div id="daily-section-1-body" class="daily-sec-text"><ul style="list-style:none;margin:0;padding:0"><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>Dec corn is at <strong>$4.48¼</strong> overnight, up 1.3%, after Thursday's second lower close.</li><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>Farmdoc says market watchers distrust this year's corn yield estimates after a USDA data error.</li></ul></div><div id="daily-section-1-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-1-action" class="daily-sec-action"></div></div></div>
-            <div id="daily-sec-2" class="daily-sec" style="position:relative"><span id="daily-section-2-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-2-title" class="daily-sec-label">Hogs and cattle</div><span id="daily-section-2-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-2-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon"><svg class="ic" aria-hidden="true"><use href="#i-rotate-ccw"/></svg></span><span class="daily-sec-vs-text" id="daily-section-2-vs-text"></span></div><div id="daily-section-2-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon"><svg class="ic" aria-hidden="true"><use href="#i-satellite-dish"/></svg></span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-2-catalyst-text"></span></div><div id="daily-section-2-body" class="daily-sec-text"><ul style="list-style:none;margin:0;padding:0"><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>December hogs settled Thursday at <strong>$55.15</strong>, down 1.6%, while USDA AMS puts national cash at $43.72 carcass base.</li><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>Packers killed an estimated 487,000 hogs Thursday against 494,000 a week ago, USDA AMS says.</li></ul></div><div id="daily-section-2-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-2-action" class="daily-sec-action"></div></div></div>
-            <div id="daily-sec-3" class="daily-sec" style="position:relative"><span id="daily-section-3-icon" class="daily-sec-icon"><svg class="ic" aria-hidden="true"><use href="#i-fuel"/></svg></span><div><div class="daily-sec-label-row"><div id="daily-section-3-title" class="daily-sec-label"></div><span id="daily-section-3-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-3-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon"><svg class="ic" aria-hidden="true"><use href="#i-rotate-ccw"/></svg></span><span class="daily-sec-vs-text" id="daily-section-3-vs-text"></span></div><div id="daily-section-3-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon"><svg class="ic" aria-hidden="true"><use href="#i-satellite-dish"/></svg></span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-3-catalyst-text"></span></div><div id="daily-section-3-body" class="daily-sec-text"></div><div id="daily-section-3-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-3-action" class="daily-sec-action"></div></div></div>
-            <div id="daily-sec-4" class="daily-sec" style="position:relative"><span id="daily-section-4-icon" class="daily-sec-icon"><svg class="ic" aria-hidden="true"><use href="#i-landmark"/></svg></span><div><div class="daily-sec-label-row"><div id="daily-section-4-title" class="daily-sec-label"></div><span id="daily-section-4-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-4-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-icon"><svg class="ic" aria-hidden="true"><use href="#i-rotate-ccw"/></svg></span><span class="daily-sec-vs-text" id="daily-section-4-vs-text"></span></div><div id="daily-section-4-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-icon"><svg class="ic" aria-hidden="true"><use href="#i-satellite-dish"/></svg></span><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-4-catalyst-text"></span></div><div id="daily-section-4-body" class="daily-sec-text"></div><div id="daily-section-4-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-4-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-1" class="daily-sec" style="position:relative"><span id="daily-section-1-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-1-title" class="daily-sec-label">Grains bounce overnight</div><span id="daily-section-1-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-1-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-text" id="daily-section-1-vs-text"></span></div><div id="daily-section-1-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-1-catalyst-text"></span></div><div id="daily-section-1-body" class="daily-sec-text"><ul style="list-style:none;margin:0;padding:0"><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>Dec corn is at <strong>$4.48¼</strong> overnight, up 1.3%, after Thursday's second lower close.</li><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>Farmdoc says market watchers distrust this year's corn yield estimates after a USDA data error.</li></ul></div><div id="daily-section-1-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-1-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-2" class="daily-sec" style="position:relative"><span id="daily-section-2-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-2-title" class="daily-sec-label">Hogs and cattle</div><span id="daily-section-2-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-2-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-text" id="daily-section-2-vs-text"></span></div><div id="daily-section-2-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-2-catalyst-text"></span></div><div id="daily-section-2-body" class="daily-sec-text"><ul style="list-style:none;margin:0;padding:0"><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>December hogs settled Thursday at <strong>$55.15</strong>, down 1.6%, while USDA AMS puts national cash at $43.72 carcass base.</li><li style="position:relative;padding-left:1rem;margin:0 0 .35rem"><span style="position:absolute;left:0;top:.55em;width:.36rem;height:.36rem;border-radius:2px;background:rgba(218,165,32,.55)"></span>Packers killed an estimated 487,000 hogs Thursday against 494,000 a week ago, USDA AMS says.</li></ul></div><div id="daily-section-2-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-2-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-3" class="daily-sec" style="position:relative"><span id="daily-section-3-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-3-title" class="daily-sec-label"></div><span id="daily-section-3-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-3-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-text" id="daily-section-3-vs-text"></span></div><div id="daily-section-3-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-3-catalyst-text"></span></div><div id="daily-section-3-body" class="daily-sec-text"></div><div id="daily-section-3-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-3-action" class="daily-sec-action"></div></div></div>
+            <div id="daily-sec-4" class="daily-sec" style="position:relative"><span id="daily-section-4-icon" class="daily-sec-icon"></span><div><div class="daily-sec-label-row"><div id="daily-section-4-title" class="daily-sec-label"></div><span id="daily-section-4-conviction" class="daily-sec-conviction"></span></div><div id="daily-section-4-vs" class="daily-sec-vs" style="display:none"><span class="daily-sec-vs-text" id="daily-section-4-vs-text"></span></div><div id="daily-section-4-catalyst" class="daily-sec-catalyst" style="display:none"><span class="daily-sec-catalyst-label">DRIVER</span><span class="daily-sec-catalyst-text" id="daily-section-4-catalyst-text"></span></div><div id="daily-section-4-body" class="daily-sec-text"></div><div id="daily-section-4-bottomline" class="daily-sec-bottomline"></div><div id="daily-section-4-action" class="daily-sec-action"></div></div></div>
           </div>
           <div id="daily-spread" class="daily-spread">
             <div class="daily-spread-head"><span class="daily-spread-label">SPREAD TO WATCH</span><span class="daily-spread-level" id="daily-spread-level"></span></div>
@@ -412,51 +416,51 @@ try{var _t=localStorage.getItem('agsist-theme');if(_t!=='light'&&_t!=='dark')_t=
             <div class="daily-spread-body" id="daily-spread-commentary"></div>
           </div>
           <div id="daily-basis" class="daily-basis">
-            <div class="daily-basis-label"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> BASIS PULSE</div>
+            <div class="daily-basis-label">BASIS PULSE</div>
             <div class="daily-basis-headline" id="daily-basis-headline"></div>
             <div class="daily-basis-body" id="daily-basis-body"></div>
           </div>
-          <div class="daily-sec" id="daily-tmyk-wrap" style="border-color:rgba(74,143,186,.20);background:linear-gradient(135deg,var(--surface) 0%,rgba(74,143,186,.03) 100%);overflow:visible;min-height:0"><div style="flex:1;min-width:0"><div class="daily-sec-label" style="color:var(--blue)">THE MORE YOU KNOW</div><div class="daily-sec-text"><strong id="daily-tmyk-title"></strong><span id="daily-tmyk-body" style="display:block;margin-top:.25rem"></span></div></div></div>
+          <div class="daily-sec" id="daily-tmyk-wrap" style="border-color:rgba(74,143,186,.20);background:var(--surface);overflow:visible;min-height:0"><div style="flex:1;min-width:0"><div class="daily-sec-label" style="color:var(--blue)">THE MORE YOU KNOW</div><div class="daily-sec-text"><strong id="daily-tmyk-title"></strong><span id="daily-tmyk-body" style="display:block;margin-top:.25rem"></span></div></div></div>
           <div class="daily-sponsor" id="daily-sponsor" role="region" aria-label="Sponsor slot" style="display:none">
             <div class="dsp-filled" id="dsp-filled" style="display:none" data-sponsor-slot="daily-briefing"></div>
           </div>
           <div class="daily-byline" id="daily-byline"><a href="mailto:sig@agsist.com">sig@agsist.com</a></div>
         </div>
         <div class="hero-sidebar">
-          <div class="s-card s-card--gold" style="display:none"><div class="s-card-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><span class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> THE NUMBER</span><button id="daily-number-copy" class="dn-copy-btn" type="button" aria-label="Copy The Number to clipboard" title="Copy"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg></button></div><div id="daily-number-value" class="one-num"></div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
-          <div class="s-card" style="display:none"><div class="s-card-label"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> <span id="daily-watch-label-text">TODAY’S WATCH LIST</span></div><ul id="daily-watch-list" class="watch-list" role="list"></ul></div>
+          <div class="s-card s-card--gold" style="display:none"><div class="s-card-label-row" style="display:flex;align-items:center;justify-content:space-between;gap:.5rem"><span class="s-card-label">THE NUMBER</span><button id="daily-number-copy" class="dn-copy-btn" type="button" aria-label="Copy The Number to clipboard" title="Copy"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg></button></div><div id="daily-number-value" class="one-num"></div><div id="daily-number-unit" class="one-num-unit"></div><div id="daily-number-context" class="one-num-ctx"></div></div>
+          <div class="s-card" style="display:none"><div class="s-card-label"><span id="daily-watch-label-text">TODAY’S WATCH LIST</span></div><ul id="daily-watch-list" class="watch-list" role="list"></ul></div>
           <div style="font-size:.765rem;color:var(--text-muted);text-align:center;padding:.2rem 0"><span id="daily-source">USDA &middot; CME Group &middot; National Weather Service</span></div>
         </div>
       </div>
       <div id="daily-otp" class="daily-otp" aria-label="Outside the pit">
         <div class="daily-otp-header">
-          <span class="daily-otp-label"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> <span id="daily-otp-label-text">OUTSIDE THE PIT</span></span>
+          <span class="daily-otp-label"><span id="daily-otp-label-text">OUTSIDE THE PIT</span></span>
           <span class="daily-otp-sub" id="daily-otp-sub-text">Not moving prices today, but worth knowing.</span>
         </div>
         <div class="daily-otp-grid" id="daily-otp-grid"></div>
       </div>
       <a id="daily-cashbids-cta" class="daily-cashbids-cta" href="/cash-bids" aria-label="View your local cash bids" style="display:none">
         <span class="daily-cashbids-text"><strong>Your local elevator bids</strong></span>
-        <span class="daily-cashbids-icon"><svg class="ic" aria-hidden="true"><use href="#i-banknote"/></svg></span>
+        
         <span class="daily-cashbids-arrow">&rarr;</span>
       </a>
       <div class="daily-share" id="daily-share" role="region" aria-label="Share today’s briefing">
-        <div class="daily-share-lbl"><svg class="ic" aria-hidden="true"><use href="#i-megaphone"/></svg> Share this briefing</div>
+        <div class="daily-share-lbl">Share this briefing</div>
         <div class="daily-share-grid">
-          <button class="daily-share-btn" id="dsb-native" data-net="native" style="display:none" aria-label="Share via system share sheet"><span class="dsb-ic"><svg class="ic" aria-hidden="true"><use href="#i-share-2"/></svg></span><span class="dsb-lbl">Share</span></button>
+          <button class="daily-share-btn" id="dsb-native" data-net="native" style="display:none" aria-label="Share via system share sheet"><span class="dsb-lbl">Share</span></button>
           <a class="daily-share-btn" id="dsb-x" data-net="x" href="#" target="_blank" rel="noopener" aria-label="Share on X"><span class="dsb-ic"><svg class="dsb-icon dsb-svg" viewBox="0 0 1200 1227" fill="currentColor" aria-hidden="true"><path d="M714.163 519.284 1160.89 0h-105.86L667.137 450.887 357.328 0H0l468.492 681.821L0 1226.37h105.866l409.625-476.152 327.181 476.152H1200L714.137 519.284h.026ZM569.165 687.828l-47.468-67.894-377.686-540.24h162.604l304.797 435.991 47.468 67.894 396.2 566.721H892.476L569.165 687.854v-.026Z"/></svg></span><span class="dsb-lbl">X</span></a>
           <a class="daily-share-btn" id="dsb-fb" data-net="fb" href="#" target="_blank" rel="noopener" aria-label="Share on Facebook"><span class="dsb-ic"><svg class="dsb-icon dsb-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/></svg></span><span class="dsb-lbl">Facebook</span></a>
           <a class="daily-share-btn" id="dsb-li" data-net="li" href="#" target="_blank" rel="noopener" aria-label="Share on LinkedIn"><span class="dsb-ic"><svg class="dsb-icon dsb-svg" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5c0 1.381-1.11 2.5-2.48 2.5s-2.48-1.119-2.48-2.5c0-1.38 1.11-2.5 2.48-2.5s2.48 1.12 2.48 2.5zm.02 4.5h-5v16h5v-16zm7.982 0h-4.968v16h4.969v-8.399c0-4.67 6.029-5.052 6.029 0v8.399h4.988v-10.131c0-7.88-8.922-7.593-11.018-3.714v-2.155z"/></svg></span><span class="dsb-lbl">LinkedIn</span></a>
-          <a class="daily-share-btn" id="dsb-em" data-net="em" href="#" aria-label="Share via email"><span class="dsb-ic"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg></span><span class="dsb-lbl">Email</span></a>
-          <button class="daily-share-btn" id="dsb-copy" data-net="copy" aria-label="Copy link to clipboard"><span class="dsb-ic"><svg class="ic" aria-hidden="true"><use href="#i-link"/></svg></span><span class="dsb-lbl">Copy</span></button>
+          <a class="daily-share-btn" id="dsb-em" data-net="em" href="#" aria-label="Share via email"><span class="dsb-lbl">Email</span></a>
+          <button class="daily-share-btn" id="dsb-copy" data-net="copy" aria-label="Copy link to clipboard"><span class="dsb-lbl">Copy</span></button>
         </div>
       </div>
       <div class="daily-dismiss-row" id="daily-dismiss-row">
         <span class="daily-dismiss-note">Published every morning before the market open, weekends included.</span>
         <div class="daily-dismiss-actions">
-          <a href="/daily?subscribe=1" class="btn-dismiss btn-dismiss--primary"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Get Daily Alerts</a>
-          <a href="/daily" class="btn-dismiss"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> Today’s Briefing</a>
-          <button class="btn-dismiss" id="btn-dismiss-daily"><svg class="ic" aria-hidden="true"><use href="#i-chevron-up"/></svg> Hide until tomorrow</button>
+          <a href="/daily?subscribe=1" class="btn-dismiss btn-dismiss--primary">Get Daily Alerts</a>
+          <a href="/daily" class="btn-dismiss">Today’s Briefing</a>
+          <button class="btn-dismiss" id="btn-dismiss-daily">Hide until tomorrow</button>
         </div>
       </div>
     </div>
@@ -897,25 +901,25 @@ try {
   <div class="dash-grid" id="dash-grid">
     <div class="fade-up" id="f1" style="grid-column:1/-1">
 
-      <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><rect width="20" height="12" x="2" y="6" rx="2" /> <circle cx="12" cy="12" r="2" /> <path d="M6 12h.01M18 12h.01" /></svg>Cash Bids &amp; Basis</h2></div>
+      <div class="sec-head"><h2 class="sec-title">Cash bids and basis</h2></div>
       <div class="card"><div class="card-body">
         <div id="my-elevators" data-myelev="home" hidden></div>
         <div id="bids-geo-bar" style="display:flex;align-items:center;gap:.55rem;margin-bottom:.6rem;font-size:.824rem;color:var(--text-dim)">
-          <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold-fill,var(--gold));animation:blink 1.5s infinite" aria-hidden="true"></span>
+          <span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--gold-fill,var(--gold));" aria-hidden="true"></span>
           <span id="bids-geo-txt">Detecting your location&hellip;</span>
           <button id="bids-enter-zip-btn" aria-label="Enter ZIP code to find nearby cash bids" style="margin-left:auto;background:none;border:none;color:var(--text-muted);font-size:.824rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP</button>
         </div>
         <div id="bids-zip-row" style="display:none;margin-bottom:1.1rem">
           <div style="display:flex;gap:.55rem;flex-wrap:wrap;min-width:0">
-            <input type="text" id="bids-zip" placeholder="Enter your ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for cash bids" style="flex:1;padding:.7rem .9rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
-            <button id="bids-lookup-btn" style="padding:.7rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:.824rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s">Find Bids &rarr;</button>
+            <input type="text" id="bids-zip" placeholder="Enter your ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for cash bids" style="flex:1;padding:.7rem .9rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
+            <button id="bids-lookup-btn" style="padding:.7rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:var(--r-md);font-family:'JetBrains Mono',monospace;font-size:.824rem;font-weight:700;cursor:pointer;white-space:nowrap;transition:background .15s">Find Bids &rarr;</button>
           </div>
         </div>
         
         <div id="bids-list-area"><div class="bids-skeleton" role="status"><span class="visually-hidden">Loading cash bids</span><div class="bids-skel-row"></div><div class="bids-skel-row"></div><div class="bids-skel-row"></div></div></div>
         <details class="m-fold m-fold--calc"><summary class="m-fold-sum"><span>Sell now or store?</span></summary>
         <div id="idx1-store-sell" class="idx1-extras-card" style="display:none">
-          <h3 class="idx1-extras-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-clipboard-list"/></svg> Sell now or store?</h3>
+          <h3 class="idx1-extras-title idx1-sub-h">Sell now or store?</h3>
           <div class="idx1-extras-sub">Cash price fills from a bid above. Change any number to match your bin.</div>
           <div class="idx1-calc-pickwrap"><label class="idx1-extras-field idx1-calc-pickfield">Price from<select id="idx1-calc-pick" aria-describedby="idx1-calc-why"></select></label>
           <div id="idx1-calc-why" class="idx1-extras-fine"></div></div>
@@ -938,7 +942,7 @@ try {
         <div id="idx1-search-compare" class="idx1-extras-line" style="display:none"></div>
         <div id="idx1-distance-compare" class="idx1-extras-line" style="display:none"></div>
         <div id="idx1-basis-chart" class="idx1-extras-card" style="display:none">
-          <h3 class="idx1-extras-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-trending-up"/></svg> Basis history at this elevator</h3>
+          <h3 class="idx1-extras-title idx1-sub-h">Basis history at this elevator</h3>
           <svg id="idx1-basis-svg" role="img" aria-label="Basis history at this elevator, loading" viewBox="0 0 300 70" preserveAspectRatio="none" style="width:100%;height:70px;display:block;margin:.3rem 0"></svg>
           <div id="idx1-basis-ends" class="idx1-basis-ends"></div>
           <div id="idx1-basis-chart-fine" class="idx1-extras-fine"></div>
@@ -952,72 +956,61 @@ try {
         <span class="bidnet-go" aria-hidden="true">&rarr;</span>
       </a>
     </div>
-    <div class="fade-up" id="f2" style="transition-delay:.08s;grid-column:1/-1">
-      <div class="sec-head"><h2 class="sec-title">Local Conditions</h2></div>
-      <div class="card wx-card wx-tight"><div class="card-body">
-        <div id="wx-loading" style="display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem 0;gap:.65rem">
-          <div style="font-size:1.882rem" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg></div>
-          <div style="font-size:.824rem;color:var(--text-dim);text-align:center">Weather and season totals for your spot.</div>
-          <button id="btn-allow-loc" style="padding:.65rem 1.25rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Use my location</button>
-          <button id="btn-zip-instead" style="background:none;border:none;color:var(--text-muted);font-size:.824rem;cursor:pointer;text-decoration:underline;padding:.4rem 0;min-height:44px;display:inline-flex;align-items:center;">Enter ZIP instead</button>
-        </div>
-        <div id="wx-zip-entry" style="display:none;margin-bottom:.85rem">
-          <p class="wx-zip-ask">Set your ZIP at the top of the page for local weather and season totals. <button type="button" class="wx-zip-ask-b" onclick="if(window.agsistOpenZip)window.agsistOpenZip()">Set ZIP</button></p>
-          <div class="wx-zip-old" hidden>
-            <input type="text" id="wx-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" pattern="[0-9]{5}" autocomplete="postal-code" aria-label="ZIP code for weather" style="flex:1;padding:.65rem .85rem;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-family:'JetBrains Mono',monospace;font-size:1rem;color:var(--text);outline:none;transition:border-color .15s">
-            <button id="btn-wx-go" style="padding:.65rem 1rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:6px;font-size:.824rem;font-weight:700;cursor:pointer;min-height:44px;">Go</button>
-          </div>
-        </div>
-        <div id="wx-data" style="display:none">
-          <div class="wx-hero">
-            <div class="wx-icon" id="wx-icon" aria-hidden="true"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div>
-            <div>
-              <div class="wx-temp"><span id="wx-temp">--</span></div>
-              <div class="wx-desc" id="wx-desc">Current conditions</div>
-              <div class="wx-loc" id="wx-loc"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> Locating...</div>
-              <div class="asof-line" id="wx-asof" hidden></div>
-            </div>
-          </div>
-          <div class="wx-grid">
-            <div class="wstat"><div class="wstat-lbl">Wind</div><div class="wstat-val" id="wx-wind">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Humidity</div><div class="wstat-val" id="wx-humid">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Precip Chance</div><div class="wstat-val" id="wx-precip">--</div></div>
-            <div class="wstat"><div class="wstat-lbl">Dew Point</div><div class="wstat-val" id="wx-dew">--</div></div><div class="wstat" id="s7-wx-low-w"><div class="wstat-lbl">Overnight low</div><div class="wstat-val" id="s7-wx-low"><span class="s7-nl">Not loaded yet</span></div></div>
-          </div>
-          <div id="wx-forecast" style="display:none"></div>
-          <section class="wx-season" aria-labelledby="wxs-h"><h3 class="wxs-h" id="wxs-h">Season so far, against normal</h3>
-            <div id="wx-season"><div class="wxs-grid wxs-skel" aria-hidden="true"><div class="wxs-t"></div><div class="wxs-t"></div><div class="wxs-t"></div><div class="wxs-t"></div></div></div>
-          </section>
-          <div class="wx-summary-card">
-            <div class="wx-summary-title"><svg class="ic" aria-hidden="true"><use href="#i-calendar"/></svg> 5-Day Forecast</div>
-            <div id="wx-forecast-7day" class="wx-7day-strip">
-              <div class="wx-7day-cell"><div class="wx-7day-name">Today</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">-</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">-</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">-</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-              <div class="wx-7day-cell"><div class="wx-7day-name">-</div><div class="wx-7day-icon"><svg class="ic" aria-hidden="true"><use href="#i-cloud-sun"/></svg></div><div class="wx-7day-temps"><span class="hi">--&deg;</span><span class="lo">--&deg;</span></div><div class="wx-7day-meta">--</div></div>
-            </div>
-            <div class="wx-foot"><button class="wx-hourly-toggle" id="wx-hourly-toggle" aria-expanded="false" aria-controls="wx-hourly-panel">&#x25BC; Hourly</button><span class="wx-locrow"><svg class="ic" aria-hidden="true"><use href="#i-map-pin"/></svg> <span id="wx-loc-label">Set location above</span> <button type="button" id="btn-change-loc" class="wx-locb">Change location</button></span></div>
-            <div class="wx-hourly-panel" id="wx-hourly-panel" role="region" aria-label="24-hour hourly forecast">
-              <div class="wx-hourly-strip" id="wx-hourly-strip"></div>
-            </div>
-          </div>
-        </div>
-      </div></div>
-    </div>
-    <details class="m-fold m-fold--radar" id="radar-fold" open><summary class="m-fold-sum"><span>Radar</span></summary>
-    <div class="radar-section fade-up" id="f-radar">
-      <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v2" /> <path d="m4.93 4.93 1.41 1.41" /> <path d="M20 12h2" /> <path d="m19.07 4.93-1.41 1.41" /> <path d="M15.947 12.65a4 4 0 0 0-5.925-4.128" /> <path d="M3 20a5 5 0 1 1 8.9-4H13a3 3 0 0 1 2 5.24" /> <path d="M11 20v2" /> <path d="M7 19v2" /></svg>Radar</h2><span class="sec-all radar-by">Live, from Windy</span></div>
-      <div class="radar-card">
-        <div class="s7-radar-empty" aria-hidden="true">Not loaded yet</div>
-        <iframe id="windy-frame" src="" data-src="https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=in&metricTemp=%C2%B0F&metricWind=mph&zoom=5&overlay=radar&product=radar&level=surface&lat=42.0&lon=-93.5&detailLat=42.0&detailLon=-93.5&detail=false&pressure=false&menu=false&message=false&marker=false&calendar=now&thunder=false" width="100%" style="border:none;display:block;min-height:320px;height:100%;aspect-ratio:unset" loading="lazy" title="Live Radar: Windy" allow="geolocation; fullscreen" allowfullscreen></iframe>
+<!-- index1:own wx -->
+    <section class="hp-card hp-wxa" id="f2" aria-labelledby="hp-wx-h" style="grid-column:1/-1">
+      <div class="sec-head hp-sech"><h2 class="sec-title" id="hp-wx-h">Weather</h2><a class="hp-sech-a" href="/rain">Rain and drought</a></div>
+      <p class="hp-wxmsg" id="hp-wxmsg" role="status"></p>
+      <div class="hp-wxnone">
+        <p>Type your ZIP at the top of the page for the live radar, your forecast, and this year&rsquo;s rain and corn GDUs against normal, month by month.</p>
+        <button type="button" class="hp-btn p" data-hp-zip>Set ZIP</button><button type="button" class="hp-btn" data-hp-loc><span aria-hidden="true">&#8982;</span> Use my location</button>
       </div>
-    </div>
-    </details>
+      <div class="hp-wxg">
+        <div class="hp-sub hp-a-fc">
+          <h3 id="hp-fc-h">Forecast<span id="hp-wx-where"></span></h3>
+          <div class="hp-fc">
+            <div class="hp-now" id="hp-now"><svg class="ic hp-nowi" id="hp-now-i" aria-hidden="true"><use href="#i-cloud-sun"/></svg><div class="t" id="hp-now-t">--<span class="dg">&deg;</span></div><div class="d" id="hp-now-d"><b>Forecast</b><br>Loading</div></div>
+            <dl class="hp-nowg" id="hp-nowg"><div><dt>Feels like</dt><dd id="hp-nw-f">-</dd></div><div><dt>Wind</dt><dd id="hp-nw-w">-</dd></div><div><dt>Humidity</dt><dd id="hp-nw-h">-</dd></div><div><dt>Dew point</dt><dd id="hp-nw-d">-</dd></div><div><dt id="hp-nw-pk">Chance of rain</dt><dd id="hp-nw-p">-</dd></div></dl>
+          </div>
+          <div class="hp-d7h" id="hp-d7h" aria-hidden="true"><span>Day</span><span></span><span>High</span><span>Low</span><span class="p" id="hp-d7h-p">Rain</span><span class="w">Wind</span></div>
+          <ol class="hp-d7" id="hp-d7"><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li><li><b>&nbsp;</b><span class="ic"></span><span class="hi">--</span><span class="lo"></span><span class="pp">&nbsp;</span></li></ol>
+          <p class="hp-src" id="hp-fc-src">High, then the low of the night after it. Percent: chance of rain, in the forecast&rsquo;s daytime period. National Weather Service.</p>
+          <details class="hp-hourly" id="hp-hourly"><summary>Hourly, the next 24 hours</summary><p class="hp-hcap">Percent: chance of rain or snow that hour.</p><div class="hp-hr" id="hp-hr" role="group" tabindex="0" aria-label="Hourly forecast, scroll sideways"></div></details>
+          <div class="hp-msg" role="status" id="hp-fc-msg"></div>
+        </div>
+        <div class="hp-sub hp-a-live">
+          <div class="hp-h3row"><h3 id="hp-live-h">Live radar around your place</h3><a class="hp-radlink" href="/rain#radar">Open on the rain page &rarr;</a></div>
+          <div class="hp-live" id="hp-live" tabindex="-1" role="group" aria-label="Live radar"><div class="hp-msg" role="status" id="hp-live-msg">The live radar loads when you get here.</div><iframe id="hp-live-f" title="Live radar around your ZIP (Windy)" allow="fullscreen" allowfullscreen referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-popups" loading="lazy" hidden></iframe><button type="button" class="hp-livego" id="hp-livego"><span class="t">Tap to move the map</span><span class="c">Click to move the map</span></button><button type="button" class="hp-livedone" id="hp-livedone">Done</button></div>
+          <p class="hp-src">Live radar: Windy.com, from national weather radar.</p>
+        </div>
+      </div>
+    </section>
+    <section class="hp-card hp-wxb" id="hp-wxb" aria-labelledby="hp-wxb-h" style="grid-column:1/-1">
+      <h2 class="hp-run-h" id="hp-wxb-h">This year against normal</h2>
+      <div class="hp-wxnone"><p>Set your ZIP for this year&rsquo;s rain and corn GDUs against normal, for your county.</p></div>
+      <div class="hp-wxb-body">
+        <div class="hp-sub hp-a-rain">
+          <h3 id="hp-rain-h">Rain this year</h3>
+          <p class="hp-lead" id="hp-rain-lead">&nbsp;</p>
+          <div class="hp-cum" id="hp-rain-ch"><div class="hp-msg" role="status"></div><div class="hp-bx"></div></div>
+          <div class="hp-tools" id="hp-rain-tools"></div>
+          <p class="hp-src" id="hp-rain-src">NOAA daily records via RCC-ACIS.</p>
+          <a class="hp-wall" href="/rain-print" data-track="rp-band">Put this year on the wall: a Rain Print of your farm &rarr;</a>
+        </div>
+        <div class="hp-sub hp-a-gdu">
+          <h3 id="hp-gdu-h">Corn GDUs since May 1</h3>
+          <p class="hp-lead" id="hp-gdu-lead">&nbsp;</p>
+          <div class="hp-cum" id="hp-gdu-ch"><div class="hp-msg" role="status"></div><div class="hp-bx"></div></div>
+          <div class="hp-tools" id="hp-gdu-tools"></div>
+          <p class="hp-src" id="hp-gdu-src">86/50 method, by month. NOAA daily records via RCC-ACIS.</p>
+          <a class="hp-wall q" href="/gdu-calculator" data-track="gdu">GDUs from your own planting date: GDU calculator &rarr;</a>
+        </div>
+      </div>
+    </section>
+<!-- /index1:own wx -->
 
   <div class="price-cards-section fade-up" id="f-prices">
 
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M9 5v4" /> <rect width="4" height="6" x="7" y="9" rx="1" /> <path d="M9 15v2" /> <path d="M17 3v2" /> <rect width="4" height="8" x="15" y="5" rx="1" /> <path d="M17 13v3" /> <path d="M3 3v16a2 2 0 0 0 2 2h16" /></svg>Market Prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)">Updated every 15 min</span><button type="button" class="sec-all hk-pic" id="hk-pic" style="background:none;border:0;padding:0;font:inherit;font-size:.824rem;color:var(--gold);cursor:pointer">Save picture</button><a href="/markets" class="sec-all">All markets</a></div></div>
+    <div class="sec-head"><h2 class="sec-title">Market prices</h2><div style="display:flex;align-items:center;gap:.75rem"><span id="prices-age" style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)">Updated every 15 min</span><button type="button" class="sec-all hk-pic" id="hk-pic" style="background:none;border:0;padding:0;font:inherit;font-size:.824rem;color:var(--gold);cursor:pointer">Save picture</button><a href="/markets" class="sec-all">All markets</a></div></div>
     <h3 class="pc-section-lbl idx1-sub-h">Key grain contracts</h3>
     <div class="price-cards-grid">
       <div class="pc pc--highlight" data-spark="corn"><div class="pc-head"><span class="pc-name">Corn</span><span class="pc-contract"></span></div><div class="r7-pl"><div class="pc-price" id="pcp-corn-near"><!--
@@ -1037,7 +1030,7 @@ try {
     <details class="m-fold m-fold--usda" open><summary class="m-fold-sum"><span>Export sales <small>USDA FAS, weekly</small></span></summary>
     <div class="crop-export-grid crop-export-grid--one" id="crop-export-grid-inner">
       <div class="export-widget" id="export-widget">
-        <div class="export-widget-head"><h3 class="export-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-package"/></svg> Export sales and commitments</h3><span class="export-mkt-yr" id="export-mkt-yr">USDA FAS &middot; Thu 8:30am</span></div>
+        <div class="export-widget-head"><h3 class="export-widget-title idx1-sub-h">Export sales and commitments</h3><span class="export-mkt-yr" id="export-mkt-yr">USDA FAS &middot; Thu 8:30am</span></div>
         <div class="export-rows" id="export-rows">
           <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Corn</span></div><span class="export-weekly"><span id="exp-corn-wk"></span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar" style="display:none"><div class="export-pace-fill on-track" id="exp-corn-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-corn-pct"></span></div><div class="export-cumul" id="exp-corn-cumul"></div><div class="export-withheld" id="exp-corn-why" hidden></div></div>
           <div><div class="export-row-head"><div class="export-comm-label"><span class="export-comm-name">Soybeans</span></div><span class="export-weekly"><span id="exp-bean-wk"></span> <span class="export-wk-lbl">net sales this week</span></span></div><div class="export-pace-row"><div class="export-pace-bar" style="display:none"><div class="export-pace-fill on-track" id="exp-bean-bar" style="width:0%"></div></div><span class="export-pace-pct on-track" id="exp-bean-pct"></span></div><div class="export-cumul" id="exp-bean-cumul"></div><div class="export-withheld" id="exp-bean-why" hidden></div></div>
@@ -1066,7 +1059,7 @@ try {
       </div>
     </details>
     <details class="m-fold m-fold--outside" open><summary class="m-fold-sum"><span>Energy, metals and outside markets</span></summary>
-    <h3 class="pc-section-lbl idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Energy and outside markets</h3>
+    <h3 class="pc-section-lbl idx1-sub-h">Energy and outside markets</h3>
       <div class="r7-led" role="table" aria-label="Energy and outside markets">
       <div class="r7-lh" role="row"><span role="columnheader">Contract</span><span role="columnheader">Last</span><span role="columnheader">Change</span><span role="columnheader">Percent</span><span role="columnheader">52-week range</span></div>
       <div class="pc r7-row" role="row" data-spark="crude" data-r7k="crude"><span class="r7-c r7-nm" role="rowheader"><span class="r7-n">Crude oil, WTI</span><span class="r7-cm"></span></span><span class="r7-c r7-last" role="cell"><span class="pc-price" id="pcp-crude"></span><span class="r7-unit">per barrel</span></span><span class="r7-c r7-ch" role="cell"><span class="r7-chg nc"></span></span><span class="r7-c r7-pc" role="cell"><span class="r7-pct nc"></span></span><span class="r7-c r7-rg" role="cell"><span class="r7-lo"></span><span class="r7-bar" aria-hidden="true"><i class="r7-dot"></i></span><span class="r7-hi"></span></span><span class="pc-chg-val nc" id="pcc-crude" hidden></span><span class="pc-prev" id="pcprev-crude" hidden></span></div>
@@ -1074,7 +1067,7 @@ try {
       <div class="pc r7-row" role="row" data-spark="dollar" data-r7k="dollar"><span class="r7-c r7-nm" role="rowheader"><span class="r7-n">Dollar index</span><span class="r7-cm"></span></span><span class="r7-c r7-last" role="cell"><span class="pc-price" id="pcp-dollar"></span><span class="r7-unit">index</span></span><span class="r7-c r7-ch" role="cell"><span class="r7-chg nc"></span></span><span class="r7-c r7-pc" role="cell"><span class="r7-pct nc"></span></span><span class="r7-c r7-rg" role="cell"><span class="r7-lo"></span><span class="r7-bar" aria-hidden="true"><i class="r7-dot"></i></span><span class="r7-hi"></span></span><span class="pc-chg-val nc" id="pcc-dollar" hidden></span><span class="pc-prev" id="pcprev-dollar" hidden></span></div>
       <div class="pc r7-row" role="row" data-spark="treasury10" data-r7k="treasury10"><span class="r7-c r7-nm" role="rowheader"><span class="r7-n">10-year Treasury</span><span class="r7-cm"></span></span><span class="r7-c r7-last" role="cell"><span class="pc-price" id="pcp-treasury"></span><span class="r7-unit">yield</span></span><span class="r7-c r7-ch" role="cell"><span class="r7-chg nc"></span></span><span class="r7-c r7-pc" role="cell"><span class="r7-pct nc"></span></span><span class="r7-c r7-rg" role="cell"><span class="r7-lo"></span><span class="r7-bar" aria-hidden="true"><i class="r7-dot"></i></span><span class="r7-hi"></span></span><span class="pc-chg-val nc" id="pcc-treasury" hidden></span><span class="pc-prev" id="pcprev-treasury" hidden></span></div>
       </div>
-    <h3 class="pc-section-lbl idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-medal"/></svg> Metals</h3>
+    <h3 class="pc-section-lbl idx1-sub-h">Metals</h3>
       <div class="r7-led" role="table" aria-label="Metals futures">
       <div class="r7-lh" role="row"><span role="columnheader">Contract</span><span role="columnheader">Last</span><span role="columnheader">Change</span><span role="columnheader">Percent</span><span role="columnheader">52-week range</span></div>
       <div class="pc r7-row" role="row" data-spark="gold" data-r7k="gold"><span class="r7-c r7-nm" role="rowheader"><span class="r7-n">Gold</span><span class="r7-cm"></span></span><span class="r7-c r7-last" role="cell"><span class="pc-price" id="pcp-gold"></span><span class="r7-unit">per troy oz</span></span><span class="r7-c r7-ch" role="cell"><span class="r7-chg nc"></span></span><span class="r7-c r7-pc" role="cell"><span class="r7-pct nc"></span></span><span class="r7-c r7-rg" role="cell"><span class="r7-lo"></span><span class="r7-bar" aria-hidden="true"><i class="r7-dot"></i></span><span class="r7-hi"></span></span><span class="pc-chg-val nc" id="pcc-gold" hidden></span><span class="pc-prev" id="pcprev-gold" hidden></span></div>
@@ -1092,11 +1085,11 @@ try {
   </section>
   
   <div class="signup--compact fade-up" id="signup-compact" data-signup-hide style="display:none">
-    <span class="scu-eyebrow"><svg class="ic" aria-hidden="true"><use href="#i-newspaper"/></svg> AGSIST Daily</span>
+    <span class="scu-eyebrow">AGSIST Daily</span>
     <span class="scu-text"><strong>Free daily briefing</strong>: markets, weather, one number to know before the market open, for farmers across the US.</span>
     <div class="scu-form"><input type="email" class="scu-input" id="compact-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for daily briefing"><button class="scu-btn" id="btn-compact-signup">Subscribe Free &rarr;</button></div>
     <div class="scu-disc" style="font-size:.765rem;color:var(--text-muted);margin-top:.3rem">Unsubscribe any time. <a href="/privacy">Privacy Policy</a>.</div>
-    <button class="scu-dismiss" id="btn-compact-dismiss" aria-label="Dismiss signup"><svg class="ic" aria-hidden="true"><use href="#i-x"/></svg> No thanks</button>
+    <button class="scu-dismiss" id="btn-compact-dismiss" aria-label="Dismiss signup">No thanks</button>
   </div>
 
 
@@ -1188,9 +1181,9 @@ try {
     });
   })();
   </script>
-  <details class="m-fold m-fold--kalshi" open><summary class="m-fold-sum"><span>What&rsquo;s Moving Agriculture</span></summary>
+  <details class="m-fold m-fold--kalshi" open><summary class="m-fold-sum"><span>What&rsquo;s moving agriculture</span></summary>
   <div class="fade-up" id="f-kalshi">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2" /></svg>What’s Moving Agriculture</h2></div>
+    <div class="sec-head"><h2 class="sec-title">What’s moving agriculture</h2></div>
     <div id="kalshi-grid" data-markets-handled="true" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(min(268px,100%),1fr));gap:.65rem;margin-bottom:.5rem"><div id="kalshi-loading" role="status" style="grid-column:1/-1;display:grid;grid-template-columns:repeat(auto-fill,minmax(min(268px,100%),1fr));gap:.65rem"><span class="sr-only">Loading markets</span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:132px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:132px"></span><span class="st-sk st-card" aria-hidden="true" style="--st-card-h:132px"></span></div></div>
   </div>
   </details>
@@ -1223,7 +1216,7 @@ try {
 </div>
 <aside class="intel-rail" aria-label="USDA reports and positioning" id="market-intel" tabindex="-1" style="outline:none">
 <div class="fade-up" id="f5">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M8 2v4" /> <path d="M16 2v4" /> <rect width="18" height="18" x="3" y="4" rx="2" /> <path d="M3 10h18" /></svg>USDA reports and programs</h2><a href="/usda-calendar" class="sec-all">Full calendar</a></div>
+    <div class="sec-head"><h2 class="sec-title">USDA reports and programs</h2><a href="/usda-calendar" class="sec-all">Full calendar</a></div>
     <!-- Nov 10: the report dates are in "Today and this week" at the top; one calendar, not two -->
     <div class="usda-cal-card gs-card" id="arcplc-card">
       <div class="gs-head"><span class="gs-t">ARC or PLC signup</span></div>
@@ -1236,10 +1229,10 @@ try {
   </div>
 <details class="m-fold m-fold--cot" open><summary class="m-fold-sum"><span>Positioning and yield <small>COT positioning &middot; yield nowcast</small></span></summary>
 <div class="fade-up" id="f-cot-intel">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M3 3v16a2 2 0 0 0 2 2h16" /> <path d="m19 9-5 5-4-4-3 3" /></svg>Positioning and yield</h2><a href="/cot" class="sec-all">Full COT chart</a></div>
+    <div class="sec-head"><h2 class="sec-title">Positioning and yield</h2><a href="/cot" class="sec-all">Full COT chart</a></div>
     <div class="ratio-cot-grid">
       <div class="cot-widget" id="cot-widget">
-        <div class="cot-widget-head"><h3 class="cot-widget-title idx1-sub-h"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> CFTC COT: Managed Money</h3><span class="cot-badges"><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span></span></div>
+        <div class="cot-widget-head"><h3 class="cot-widget-title idx1-sub-h">CFTC COT: Managed Money</h3><span class="cot-badges"><span class="cot-verdict mixed" id="cot-verdict">Loading&hellip;</span></span></div>
         <p class="cot-gl-asof" id="cot-gl-asof">CFTC managed money, weekly.</p>
         <ul class="cot-glance" id="cot-glance" aria-busy="true"><li class="cot-gl-line"></li><li class="cot-gl-line"></li><li class="cot-gl-line"></li></ul>
         <details class="cot-ask" id="cot-ask"><summary>Get this every Friday by email</summary><div data-signup-ask="Funds this week by email" data-topic="cot" data-source="cot-weekly:home" data-btn="Email me" data-stack data-ok="Done. Funds this week comes after the next COT report, usually Friday afternoon." data-note="Every market in one short email after each weekly CFTC report. Free, its own list."></div></details>
@@ -1260,14 +1253,14 @@ try {
       <div class="ratio-widget" id="nowcast-widget">
         <div class="ratio-widget-head"><h3 class="ratio-widget-title idx1-sub-h">Yield nowcast: this year&rsquo;s crop</h3><span class="ratio-verdict neutral" id="nc-verdict"></span></div>
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin:.15rem 0 .55rem">
-          <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
-            <div style="font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Corn</div>
+          <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r-lg)">
+            <div style="font-size:.765rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.25rem">Corn</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;line-height:1;color:var(--text)" id="nc-corn"></div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-corn-band"></span></div>
             <div style="font-size:.824rem;margin-top:.25rem" id="nc-corn-vs">&nbsp;</div>
           </div>
-          <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:9px">
-            <div style="font-size:.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.25rem">Soybeans</div>
+          <div style="text-align:center;padding:.55rem .4rem;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:var(--r-lg)">
+            <div style="font-size:.765rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.25rem">Soybeans</div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:1.294rem;font-weight:800;line-height:1;color:var(--text)" id="nc-beans"></div>
             <div style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted);margin-top:.3rem">bu/ac &middot; 80% band &plusmn;<span id="nc-beans-band"></span></div>
             <div style="font-size:.824rem;margin-top:.25rem" id="nc-beans-vs">&nbsp;</div>
@@ -1276,7 +1269,7 @@ try {
         <div style="font-size:.765rem;color:var(--text-muted);line-height:1.55;margin-bottom:.35rem">Weekly, from USDA crop ratings.</div>
         <div style="display:flex;align-items:center;justify-content:space-between;gap:.5rem;flex-wrap:wrap">
           <span style="font-family:'JetBrains Mono',monospace;font-size:.765rem;color:var(--text-muted)" id="nc-week"></span>
-          <a href="/conditions#crop-size" class="ratio-link"><svg class="ic" aria-hidden="true"><use href="#i-chart-column"/></svg> How it&rsquo;s computed</a>
+          <a href="/conditions#crop-size" class="ratio-link">How it&rsquo;s computed</a>
         </div>
       </div>
     </div>
@@ -1284,12 +1277,12 @@ try {
 </details>
 <details class="m-fold m-fold--alert" open><summary class="m-fold-sum"><span>Price alert <small>email at your target</small></span></summary>
 <div class="fade-up" id="f-price-alert">
-    <div class="sec-head"><h2 class="sec-title"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>Price Alert</h2></div>
+    <div class="sec-head"><h2 class="sec-title">Price alert</h2></div>
     <div class="usda-cal-card" style="padding:.85rem 1rem">
       <p style="font-size:.824rem;color:var(--text-muted);margin:0 0 8px;line-height:1.45">One email when futures hit your target. <span class="tip"><button type="button" class="tip-b" aria-expanded="false" aria-describedby="tip-alert">Not a cash bid</button><span id="tip-alert" role="tooltip" class="tip-t" hidden>One email when the futures price reaches your target, then the alert clears. Checked every 30 minutes; quotes delayed 10 to 25 min. This watches the futures price, not your elevator&rsquo;s bid. Check your local basis separately.</span></span></p>
       <div id="pa-form" style="display:flex;flex-direction:column;gap:.45rem">
         <div style="display:flex;gap:.4rem;flex-wrap:wrap">
-          <select id="pa-symbol" aria-label="Contract" style="flex:1;min-width:120px;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.765rem);color:var(--text)">
+          <select id="pa-symbol" aria-label="Contract" style="flex:1;min-width:120px;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);font-size:max(16px,.765rem);color:var(--text)">
             <option value="corn">Corn, front month</option>
             <option value="corn-dec">Corn, December contract</option>
             <option value="beans">Soybeans, front month</option>
@@ -1297,19 +1290,19 @@ try {
             <option value="wheat">Chicago SRW wheat, front month</option>
             <option value="cattle">Live cattle, front month</option>
           </select>
-          <select id="pa-direction" aria-label="Direction" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.765rem);color:var(--text)">
+          <select id="pa-direction" aria-label="Direction" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);font-size:max(16px,.765rem);color:var(--text)">
             <option value="above">goes above</option>
             <option value="below">goes below</option>
           </select>
         </div>
         <div style="display:flex;gap:.4rem;align-items:center">
           <span style="font-family:'JetBrains Mono',monospace;font-size:.824rem;color:var(--text-muted)">$</span>
-          <input type="number" id="pa-target" step="0.01" min="0.01" max="1000" placeholder="Target" aria-label="Target price in dollars" style="flex:1;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.824rem);font-family:'JetBrains Mono',monospace;color:var(--text)">
+          <input type="number" id="pa-target" step="0.01" min="0.01" max="1000" placeholder="Target" aria-label="Target price in dollars" style="flex:1;padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);font-size:max(16px,.824rem);font-family:'JetBrains Mono',monospace;color:var(--text)">
         </div>
         <div id="r7-pa-now" aria-live="polite"></div>
-        <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:5px;font-size:max(16px,.765rem);color:var(--text)">
+        <input type="email" id="pa-email" placeholder="your@email.com" autocomplete="email" aria-label="Email for the alert" style="padding:.4rem .5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);font-size:max(16px,.765rem);color:var(--text)">
         <label class="sa-optin" id="pa-optin-l" data-signup-hide><input type="checkbox" id="pa-optin"> Also send me AGSIST Daily, free, every morning</label>
-        <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:5px;font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
+        <button type="button" id="pa-go" style="padding:.5rem .7rem;background:var(--gold-fill,var(--gold));color:#0a0c0d;border:none;border-radius:var(--r-md);font-size:.824rem;font-weight:700;cursor:pointer">Set alert</button>
         <div id="pa-status" role="status" tabindex="-1" style="font-size:.765rem;color:var(--text-muted);min-height:1.1em"></div>
       </div>
     </div>
@@ -1520,9 +1513,9 @@ try {
     else run();
   })();
   </script>
-  <details class="m-fold m-fold--faq" id="faq-fold"><summary class="m-fold-sum"><span>Frequently Asked Questions</span></summary>
+  <details class="m-fold m-fold--faq" id="faq-fold"><summary class="m-fold-sum"><span>Frequently asked questions</span></summary>
   <section class="fade-up" id="f-faq" aria-labelledby="faq-heading">
-        <div class="sec-head"><h2 class="sec-title" id="faq-heading"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:1.05em;height:1.05em;vertical-align:-.13em;margin-right:.34em;flex:none"><circle cx="12" cy="12" r="10" /> <path d="M12 16v-4" /> <path d="M12 8h.01" /></svg>Frequently Asked Questions</h2><a href="/cash-bids" class="sec-all">Cash bids near you</a></div>
+        <div class="sec-head"><h2 class="sec-title" id="faq-heading">Frequently asked questions</h2><a href="/cash-bids" class="sec-all">Cash bids near you</a></div>
     <div class="faq-list">
       <details class="faq-item"><summary>What are corn futures prices today?</summary><div class="faq-a">AGSIST shows CBOT corn futures from Yahoo Finance, delayed 10 to 25 min (read about every 15 minutes), so a price is about 10 to 25 minutes old while markets trade. You get the front month and the next December, each labeled with its contract month (for example Dec &rsquo;26), with net change, percent change, and 52-week range. Prices are in dollars per bushel. <a href="/corn-futures-prices">Corn futures</a></div></details>
       <details class="faq-item"><summary>How do I find cash grain bids near me?</summary><div class="faq-a">Enter any US ZIP code on AGSIST’s Cash Bids page at agsist.com/cash-bids to see posted corn, soybean, and wheat elevator prices from grain elevators within 50 miles of that ZIP by default. You can widen the search up to 250 miles. Basis is shown alongside cash price for each location. <a href="/cash-bids">Cash bids near you</a></div></details>
@@ -1541,7 +1534,7 @@ try {
       <span class="signup-eyebrow">AGSIST Daily</span>
       <h2 class="signup-headline">Market news before the open.</h2>
       <p class="signup-sub">Overnight markets, what to watch, and farm weather, every morning.</p>
-      <div class="signup-tabs"><button class="signup-tab active" id="tab-email" aria-controls="form-email"><svg class="ic" aria-hidden="true"><use href="#i-mail"/></svg> Email</button></div>
+      <div class="signup-tabs"><button class="signup-tab active" id="tab-email" aria-controls="form-email">Email</button></div>
       <div class="signup-form" id="form-email" role="tabpanel"><div class="signup-row"><input type="email" class="signup-input" placeholder="your@email.com" autocomplete="email" aria-label="Email address" required><button class="signup-submit" id="btn-email-signup">Subscribe &rarr;</button></div><div class="signup-disc">Free, and you can unsubscribe from any email. We don't sell your address. <a href="/privacy">Privacy Policy</a>.</div></div>
       
     </div>
@@ -1699,5 +1692,10 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')close(true);
 <script src="/components/season-wx.js?v=2" defer></script>
 <script src="/components/next-links.js?v=4" defer></script>
 <script src="/components/home-kit.js?v=1" defer></script>
+<!-- index1:own wxjs -->
+<script src="/components/ag-chart.js?v=5" defer></script>
+<script src="/components/ag-bars.js?v=1" defer></script>
+<script src="/components/home-wx.js?v=1" defer></script>
+<!-- /index1:own wxjs -->
 </body>
 </html>

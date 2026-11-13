@@ -30,7 +30,7 @@
  * ─────────────────────────────────────────────────────────────────
  * BUMP THIS ON EVERY DEPLOY:
  */
-var CACHE_VERSION = 481;  // v481 2026-11-13: plain look, no icons, gradients, glow or glass on any page
+var CACHE_VERSION = 498;  // v498 2026-11-13: plain look, no icons, gradients, glow or glass on any page
 /* ───────────────────────────────────────────────────────────────── */
 
 var CACHE_NAME = 'agsist-v' + CACHE_VERSION;
