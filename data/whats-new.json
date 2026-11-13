@@ -2,6 +2,13 @@
  "note": "What's new on AGSIST, newest first. Only things that are live on the site.",
  "items": [
   {
+   "id": "2026-11-13-honest-counts",
+   "date": "2026-11-13",
+   "title": "Honest visit counts",
+   "line": "Visit counts now leave out most automated browsers and visits with no real reading, so the numbers we quote are closer to real readers.",
+   "link": "/privacy"
+  },
+  {
    "id": "2026-11-13-atlas-data-page",
    "date": "2026-11-13",
    "title": "Farmland Atlas data page",
@@ -49,6 +56,13 @@
    "title": "Every county's rent, and what corn was doing",
    "line": "Each state rent page shows every county's rent since 2008 as a dash, the median county, your own county in gold, and the years corn paid over $5.",
    "link": "/rent/illinois#rent-history"
+  },
+  {
+   "id": "2026-11-13-share-cards",
+   "date": "2026-11-13",
+   "title": "Share card for county ARC or PLC pages",
+   "line": "Sharing a county ARC or PLC page now sends its answer, the dollars it is based on and the Dec 11 deadline to elect at your county FSA office.",
+   "link": "/arc-plc"
   },
   {
    "id": "2026-11-13-sponsor-pay",

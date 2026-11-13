@@ -177,7 +177,7 @@
 
       <h2>What is collected</h2>
       <ul>
-        <li><strong>Visits, through Google Analytics 4.</strong> Only when analytics is on. It loads only after you scroll, tap or type on a page, and not for visits from cloud servers, so scripted visits stay out of the counts. Google records the pages you open, the site that sent you, your device, browser and screen size, a rough location it works out from your IP address, and events such as a click on a module, a calculator used, or a sponsor seen. Cookies with a random ID let repeat visits count as one reader. Google signals and ad personalization are switched off in the site&rsquo;s code. On the cash bids page and the basis box on the corn, soybean and wheat futures pages, the ZIP code you search is sent along with the search event.</li>
+        <li><strong>Visits, through Google Analytics 4.</strong> Only when analytics is on. It loads only after you have read a page for a few seconds, scrolling, moving around it or using the keyboard. It does not load for visits from cloud servers or from browsers a program runs, so most scripted visits stay out of the counts. To check the network, the page asks AGSIST&rsquo;s worker. The worker looks at the network and city Cloudflare works out from your IP address, and keeps nothing. To spot bursts, it counts checks from each network and city for one minute, in memory only; a place that trips is remembered, also in memory only, for an hour. Google records the pages you open, the site that sent you, your device, browser and screen size, a rough location it works out from your IP address, and events such as a click on a module, a calculator used, or a sponsor seen. Each visit also carries two short labels from that check: how it passed, and whether the browser looked fully ordinary (0 or 1). Nothing else about your browser is sent for it. Cookies with a random ID let repeat visits count as one reader. Google signals and ad personalization are switched off in the site&rsquo;s code. On the cash bids page and the basis box on the corn, soybean and wheat futures pages, the ZIP code you search is sent along with the search event.</li>
         <li><strong>Settings in your browser.</strong> Your last location and ZIP, calculator inputs, saved Field Scout fields, theme and similar choices are kept in your browser&rsquo;s local storage so the tools remember your work. They stay on your device. The full list is under Cookies and local storage below.</li>
         <li><strong>A location you give.</strong> Your browser&rsquo;s location, if you allow it, or a ZIP code you type. It is sent to the service that answers the question (weather, a place name, nearby cash bids), as listed below.</li>
         <li><strong>Your email, if you sign up.</strong> For the AGSIST Daily, a price alert, an elevator watch, a county watch or a hail alert, together with what you asked to watch. Details are under Alerts and watches below.</li>
@@ -261,7 +261,7 @@
         <li>Prompts: <code>agsist_subscribed</code>, <code>agsist_subscribed_at</code>, <code>agsist_notices</code>, <code>agsist_signup_bar_dismissed</code>, <code>agsist_bar_seen</code> (session storage), <code>agsist_bar_snooze</code>, <code>agsist_pwa_dismissed</code>, <code>agsist_home_prompt_dismissed_v1</code>, <code>agsist_signup_slim_dismissed</code>, <code>agsist_signup_compact_dismissed</code></li>
         <li>Sponsor proofs: <code>agsist_approved_&lt;code&gt;</code></li>
         <li>Rain Print: <code>agsist-rps:&lt;design&gt;</code> (the short links this browser made), and <code>agsist-rp-gift</code> (a gift card code, for that visit only, in session storage)</li>
-        <li>Privacy: <code>agsist-ga-off</code> (the switch above)</li>
+        <li>Privacy: <code>agsist-ga-off</code> (the switch above), and <code>agsist-ga-ok</code> (the answer of the analytics check, for that visit only, in session storage)</li>
       </ul>
       <p>Clearing your browser data removes all of it. Clearing local storage also resets the theme to dark.</p>
 
@@ -350,9 +350,9 @@
       st.textContent = 'Off. Your browser sends ' + s + ', so Google Analytics does not load on any AGSIST page.';
     }
     else if (o) st.textContent = 'Off in this browser. Google Analytics does not load on AGSIST pages.';
-    else if (cloud()) st.textContent = 'Off. This visit comes from a cloud server network, so Google Analytics does not load here.';
+    else if (cloud()) st.textContent = 'Off. This visit looks like a cloud server network or automated traffic, so Google Analytics does not load here.';
     else if (offAtLoad) st.textContent = 'On. Google Analytics loads from the next AGSIST page you open.';
-    else st.textContent = 'On. Google Analytics loads on AGSIST pages in this browser once you scroll, tap or type.';
+    else st.textContent = 'On. Google Analytics loads on AGSIST pages in this browser once you have read a page for a few seconds.';
   }
   btn.addEventListener('click', function () {
     var o = stored();
