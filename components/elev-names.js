@@ -111,14 +111,21 @@
     SD: 'South Dakota', TN: 'Tennessee', TX: 'Texas', UT: 'Utah', VT: 'Vermont', VA: 'Virginia', WA: 'Washington', WV: 'West Virginia',
     WI: 'Wisconsin', WY: 'Wyoming' };
   var CAPS = { ADM: 1, CHS: 1, POET: 1 };
+  /* The one table of the parts of a delivery code the network writes in short ("Ds-crg-cr"). DS is the network's prefix for a
+     direct-ship destination (its other codes are DS-SHELLROCK, DS-PINE LAKE, DS-STARCH); CRG is Cargill. '' is a part with no
+     certain reading: that code is shown as printed and called a delivery code. Town initials and ADM are read by the rules above. */
+  var CODE = { DS: 'direct ship to', CRG: 'Cargill', PEN: '' };
   function placeKey(s) { return String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
   function siteOf(site, town, st) {
     var t = String(site || '').replace(/\s+-\s+/g, ' ').replace(/\s+/g, ' ').trim();
-    if (/^[a-z]{1,4}(?:-[a-z]{1,4})+$/i.test(t)) return 'delivery code ' + t;
+    var ini = String(town || '').split(/\s+/).filter(Boolean).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
+    if (/^[a-z]{1,4}(?:-[a-z]{1,4})+$/i.test(t)) {
+      var parts = t.split('-').map(function (p) { var u = p.toUpperCase(); return CODE[u] || (CAPS[u] ? u : ini.length > 1 && u === ini ? town : ''); });
+      return parts.indexOf('') < 0 ? parts.join(' ') : 'delivery code ' + t;
+    }
     var qual = /^(.*?)\s*\(([^)]*)\)\s*$/.exec(t);   // "Cargill (Beans)": the place stays in the name, the word in brackets after it
     if (qual && town && qual[1]) t = qual[1] + ' ' + town + ' (' + (/^beans$/i.test(qual[2].trim()) ? 'soybeans' : qual[2].trim().toLowerCase()) + ')';
     t = niceCase(t);
-    var ini = String(town || '').split(/\s+/).filter(Boolean).map(function (w) { return w.charAt(0).toUpperCase(); }).join('');
     var words = t.split(' ');
     words = words.map(function (w, i) {
       var u = w.toUpperCase();
@@ -141,7 +148,7 @@
     return out ? c + ', ' + out : (town ? c + ', ' + town : c);   // always the company, then the place it posts for
   }
   var api = { setNames: setNames, archiveClean: archiveClean, displayName: displayName, cleanPlace: cleanPlace,
-    basisName: basisName, facKey: facKey, mergeKey: mergeKey, nameKey: nameKey, tradeKey: tradeKey, niceCase: niceCase, boardLabel: boardLabel, states: STATES };
+    basisName: basisName, facKey: facKey, mergeKey: mergeKey, nameKey: nameKey, tradeKey: tradeKey, niceCase: niceCase, boardLabel: boardLabel, states: STATES, codes: CODE };
   root.elevNames = api;
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
 })(typeof window !== 'undefined' ? window : this);

@@ -276,13 +276,13 @@
       for (var k = 0; k < dots.length; k++) { var d = dots[k]; if (hitBox(b, { x0: d.x - d.r - 1, x1: d.x + d.r + 1, y0: d.y - d.r - 1, y1: d.y + d.r + 1 })) return false; }
       return true;
     };
-    var failed = [], left = [];
+    var failed = [], left = [], top0 = row2 ? fs * (2.65 + (krows - 1) * 1.2) + 1 : fs * 1.7;
     // A first or last point's label (E53 round 6): the nearest slot to its own point that keeps 6 px from every gridline,
     // the line, every dot and every label, sits within one band of its point (or just under the bottom / over the top
     // gridline), moves at most two steps sideways, and has no other point nearer to it than its own.
     var placePt = function (L) {
       var P = L.pt, px = P.x, py = P.y, r = P.r, w = widthOf(L.text, fs, L.bold), end = L.kind === 'end', gys = g.tk.map(function (t) { return g.y(t); });
-      var yb = Math.max.apply(null, gys), yt = Math.min.apply(null, gys), top = row2 ? fs * (2.65 + (krows - 1) * 1.2) + 1 : fs * 1.7, bot = H - fs * 1.25 - 3, M = 6, best = null;
+      var yb = Math.max.apply(null, gys), yt = Math.min.apply(null, gys), top = top0, bot = H - fs * 1.25 - 3, M = 6, best = null;
       var dist = function (t, x, y) { return Math.hypot(Math.max(t.x0 - x, 0, x - t.x1), Math.max(t.y0 - y, 0, y - t.y1)); };
       var at = function (x0, y, band) {   // x0: the text's left edge, y: its baseline
         var t = { x0: x0 - 2, x1: x0 + w + 2, y0: y - fs * 0.76, y1: y + fs * 0.14 }, own = dist(t, px, py), i;
@@ -296,13 +296,14 @@
         best = { t: t, x: end ? x0 + w : x0, y: y, own: own };
       };
       var dir = end ? -1 : 1, k, sh, y;
-      for (k = 0; k <= bandPx + fs; k++) for (y = -1; y <= 1; y += 2) for (sh = -2; sh < 3; sh++) {
+      for (k = 0; k <= bandPx + fs; k += 0.5) for (y = -1; y <= 1; y += 2) for (sh = -2; sh < 3; sh++) {
         var o = dir * sh * fs * 0.8, yy = py + fs * 0.31 + y * k;
         at((end ? px + r - w : px - r) + o, yy, true);                              // over or under the point
         at((end ? px - r - M - 2 - w : px + r + M + 2) + o, yy, true);              // beside it
         if (Math.abs(py - yb) <= bandPx) at((end ? px + r - w : px + r + M + 2) + o, yb + M + fs * 0.76 + k, false);   // under the bottom gridline
         if (Math.abs(py - yt) <= bandPx) at((end ? px + r - w : px + r + M + 2) + o, yt - M - fs * 0.14 - k, false);   // over the top gridline
       }
+      gys.forEach(function (gy) { for (sh = -2; sh < 3; sh++) [end ? px + r - w : px - r, end ? px - r - M - 2 - w : px + r + M + 2].forEach(function (x) { x += dir * sh * fs * 0.8; at(x, gy + M + fs * 0.76, true); at(x, gy - M - fs * 0.14, true); }); });   // flush to a gridline's margin
       if (!best) return false;
       var b = boxOf(best.x, best.y, w, fs, end ? 'end' : 'start');
       boxes.push(b); out.push(Object.assign({}, L, { x: best.x, y: best.y, box: b, tight: best.t })); return true;
@@ -378,7 +379,7 @@
       var wide = Math.max.apply(null, failed.map(function (L) { return widthOf(L.text, fs, L.bold); })), want = Math.min(Math.round(wide + fs * 1.4), Math.round(W * 0.4));
       if (want > gutter) return layout(view, W, H, Object.assign({}, opt, { gutter: want }));
     }
-    return { g: g, segs: segs, dots: dots, runs: runs, labels: out, boxes: boxes, rules: rules, off: off, key: key, x0: x0, left: left, top: row2 ? fs * (2.65 + (krows - 1) * 1.2) + 1 : fs * 1.7 };
+    return { g: g, segs: segs, dots: dots, runs: runs, labels: out, boxes: boxes, rules: rules, off: off, key: key, x0: x0, left: left, top: top0 };
   }
   function lay_gaps(segs, cfg, fs) {
     var out = [];

@@ -153,7 +153,7 @@
      month and one contract. At most LINES_MAX lines (LINES_NARROW on a narrow phone; the best basis now); every elevator keeps its table. */
   /* The site's own inks (the kit's page colours are CSS variables, the picture's are these): gold, green, blue, rust, slate,
      each with its own dash so the lines survive colour blindness and print. A dotted stretch is a gap. */
-  var LINES_MAX = 5, ADJ = { corn: 'corn', soybeans: 'soybean', wheat: 'wheat' };
+  var LINES_MAX = 5, ADJ = { corn: 'corn', soybeans: 'soybean', wheat: 'wheat' }, CW = { corn: 'corn', soybeans: 'soybeans|beans', wheat: 'wheat' };
   var PAL = ['#d4a23f', '#5fc28a', '#6f9fc2', '#d9774f', '#a7b6bd'];
   var DASH = ['', '14 6', '7 4', '14 4 3 4', '4 3 12 3'];
   var FULL_MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -202,8 +202,8 @@
         var pts = nearestSeries(keysFor(data, b[0], b[1] || [], c[0]), end), ln = pts.length && lineOf(pts, end);
         if (ln) lines.push({ key: 'e' + i, name: lab[i], long: lab[i], full: lab[i], rows: pts, line: ln });
       });
-      lines.forEach(function (l) {   // a chart of one crop needs no crop word: "Cargill Cedar Rapids (soybeans)" on a soybean chart is "Cargill Cedar Rapids"
-        var n = l.name.replace(new RegExp(' \\(' + c[0] + '\\)$', 'i'), '');
+      lines.forEach(function (l) {   // a chart of one crop needs no crop word: "Cargill Cedar Rapids (soybeans)" or "Cargill Cedar Rapids-Soybeans" on a soybean chart is "Cargill Cedar Rapids"
+        var n = l.name.replace(new RegExp('(?: \\((?:' + CW[c[0]] + ')\\)|-(?:' + CW[c[0]] + '))(?= and |$)', 'gi'), '');
         if (n !== l.name && !lines.some(function (o) { return o !== l && o.name === n; })) l.name = l.long = l.full = n;
       });
       if (!lines.length) return;
@@ -313,12 +313,17 @@
     return kitReady;
   }
 
+  /* a page built before it carried data-town: the town is the one place every board lists */
+  function townOf(boards) {
+    var c = ((boards[0] || [])[1] || []).filter(function (p) { return boards.every(function (b) { return (b[1] || []).some(function (q) { return normKey(q) === normKey(p); }); }); });
+    return c.length === 1 ? c[0] : '';
+  }
   function render(box, data) {
     var body = box.querySelector('.cbt-hist-body');
     var boards = [];
     try { boards = JSON.parse(box.getAttribute('data-boards') || '[]'); } catch (e) { boards = []; }
     if (!data || !data.series) { body.innerHTML = '<p class="cbt-sub">The basis log could not be loaded. Try again later.</p>'; return []; }
-    var end = String(data.generated || '').slice(0, 10), town = box.getAttribute('data-town') || '';
+    var end = String(data.generated || '').slice(0, 10), town = box.getAttribute('data-town') || townOf(boards);
     var from = /^\d{4}-\d{2}-\d{2}$/.test(String(data.publicFrom || '')) ? data.publicFrom : '';
     if (/^\d{4}/.test(end)) REF_YEAR = end.slice(0, 4);
     var st = String(box.getAttribute('data-basis-hist') || '').toUpperCase();
@@ -375,7 +380,7 @@
   }
 
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, lineOf: lineOf, crops: crops, story: story, config: config, heldOn: heldOn, labels: labels, render: render };
+    module.exports = { normFac: normFac, normKey: normKey, parseDm: parseDm, contractOf: contractOf, nearestSeries: nearestSeries, keysFor: keysFor, basisText: basisText, lineOf: lineOf, crops: crops, story: story, config: config, heldOn: heldOn, labels: labels, townOf: townOf, render: render };
   } else if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', init);
   } else { init(); }
