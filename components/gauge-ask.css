@@ -1,6 +1,6 @@
 /* the rain gauge ask on the rain pages (scripts/gauge_ask.py). The box holds its height up front so nothing moves
    when the photo loads or the thank-you replaces the form. */
-.gk{display:grid;gap:.9rem;margin:1.6rem 0;padding:1rem 1.1rem;border:1px solid var(--border);border-radius:var(--r-lg,10px);background:var(--surface);max-width:46em;min-height:25rem}
+.gk{display:grid;align-content:start;gap:.9rem;margin:1.6rem 0;padding:1rem 1.1rem;border:1px solid var(--border);border-radius:var(--r-lg,10px);background:var(--surface);max-width:46em;min-height:29rem}
 .gk img{display:block;width:100%;max-width:340px;height:auto;aspect-ratio:8/5;object-fit:cover;border-radius:var(--r-8,8px)}
 .gk-b{min-height:11.5rem}
 .gk-t{margin:0 0 .7rem;color:var(--text-dim);line-height:1.55}
@@ -12,4 +12,4 @@
 .gk-m{margin:.6rem 0 0;min-height:1.5em;color:var(--text)}
 .gk-m.err{color:var(--orange)}
 .gk-s{margin:.6rem 0 0;font-size:var(--fs-sm);color:var(--text-muted)}
-@media(min-width:620px){.gk{grid-template-columns:240px 1fr;align-items:start;min-height:13.5rem}.gk img{max-width:240px}}
+@media(min-width:620px){.gk{grid-template-columns:240px 1fr;align-items:start;min-height:14rem}.gk img{max-width:240px}}
