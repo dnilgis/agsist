@@ -51,7 +51,7 @@
 
 /* range bar: zero at the left; band = lowest to highest state average; dots = states; tick = middle */
 .crb{position:relative;display:block;height:10px;border-radius:var(--r-md);background:var(--surface2);box-shadow:inset 0 0 0 1px var(--border)}
-.crb s{position:absolute;top:0;bottom:0;border-radius:var(--r-md);background:rgba(var(--gold-rgb),.32);text-decoration:none}
+.crb s{position:absolute;top:0;bottom:0;border-radius:var(--r-md);background:var(--surface2);text-decoration:none}
 .crb i{position:absolute;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--text-muted);opacity:.75}
 .crb i.me{width:13px;height:13px;margin:-6.5px 0 0 -6.5px;background:var(--gold);opacity:1;box-shadow:0 0 0 2px var(--surface);z-index:2}
 .crb b{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--text);z-index:1}

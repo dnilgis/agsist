@@ -126,6 +126,7 @@ html.h-has .h-land{display:none}
 .h-math-b table{max-width:26rem}
 .h-math-b .h-tw{max-height:18rem;overflow-y:auto}
 .h-me th,.h-me td{font-weight:800;background:var(--surface2)}
+.h-me th:first-child{border-left:3px solid var(--gold)}
 .h-odd{margin:.9rem 0 0;padding:.7rem .85rem .3rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface)}
 .h-odd h2{font-size:1.02rem;margin:0 0 .2rem}
 .h-odd-l{margin:.3rem 0 0;padding:0;list-style:none}
@@ -171,7 +172,7 @@ html[data-fx="place"] #place,html[data-fx="tables"] #tables{display:block}
 .fx-wait{color:var(--text-muted)!important}
 .fx-s{display:block;font-size:.78rem;color:var(--text-muted);margin-top:.1rem}
 .fx-s a{color:var(--text-muted);text-decoration:underline;text-underline-offset:2px;display:inline-block;padding:.85rem 0;margin:-.85rem 0}
-.fx-row:target{background:var(--surface2);border-radius:var(--r-md)}
+.fx-row:target{background:var(--surface2);border-radius:var(--r-md);border-left:3px solid var(--gold)}
 .fx-more{margin:1rem 0 .4rem;border:1px solid var(--border);border-radius:var(--r-lg);padding:0 .85rem}
 .fx-more>summary{cursor:pointer;min-height:48px;display:flex;align-items:center;font-weight:700;color:var(--text)}
 .fx-more[open]{padding-bottom:.8rem}
