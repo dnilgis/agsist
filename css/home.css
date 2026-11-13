@@ -2397,6 +2397,7 @@ a.wl-c:focus-visible,.wl a.rp-card-main:focus-visible,.wl a.rp-card-alt:focus-vi
   .wl-c{min-height:8.4rem;padding:10px 14px;border:1px solid var(--border-2);border-radius:8px;background:var(--surface)}
   a.wl-c:hover,.wl-rp:has(.rp-card:hover){border-color:var(--gold)}
   .wl .rp-card-i{width:128px}
+  .wl-c.wl-rp{min-height:10.8rem}
 }
 /* ===== 2026-11-04 ("there is dead space on the
    home page"): the Farmland sales block (components/home-land.js). Phone and tablet: right under Today near me,
