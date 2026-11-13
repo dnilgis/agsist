@@ -113,9 +113,12 @@
     // words on the data: the best line named at its right end; the low point named
     var now = m.now, lab = [];
     if (now) {
-      var ex = X(now.d), ey = Y(now.hi);
-      o.push(t(Math.min(ex, W - R - 4), ey - 8, 'Best in town: ' + word(now.hi), 'g b B', 'end'));
-      lab.push({ x0: ex - BD.widthOf('Best in town: ' + word(now.hi), fb, true), x1: ex, y0: ey - 8 - fb, y1: ey - 4 });
+      // named at its right end, clear of the line under the words: above the highest step it spans, else under the band
+      var bt = 'Best in town: ' + word(now.hi), bw = BD.widthOf(bt, fb, true), ex = Math.min(X(now.d), W - R - 4), span = m.days.filter(function (x) { return !x.gap && X(x.d) >= ex - bw - 4 && X(x.d) <= ex + 4; });
+      var hiS = Math.max.apply(null, span.map(function (x) { return x.hi; }).concat(now.hi)), loS = Math.min.apply(null, span.map(function (x) { return x.lo; }).concat(now.lo));
+      var ey = Y(hiS) - 8 - fb >= y0 - 4 ? Y(hiS) - 8 : Y(loS) + fb + 6;
+      o.push(t(ex, ey, bt, 'g b B', 'end'));
+      lab.push({ x0: ex - bw, x1: ex, y0: ey - fb, y1: ey + 4 });
       var mn = m.days.filter(function (x) { return !x.gap; }).reduce(function (a, x) { return !a || x.hi < a.hi ? x : a; }, null);
       if (mn && mn.hi < now.hi - 2) {
         var txt = dd(mn.d) + ': ' + word(mn.hi), w = BD.widthOf(txt, fs, false), mx = Math.max(L + w / 2 + 2, Math.min(W - R - w / 2 - 4, X(mn.d))), my = Y(mn.hi) + fs + 8;
