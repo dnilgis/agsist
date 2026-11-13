@@ -1,6 +1,6 @@
 {
  "schema": "agsist-place-points/1",
- "note": "Hand-kept map points for boards no source gives one (scripts/build_ids.py load_place_points). Used only when every source has no point, never over one. Each row is the ZIP's own internal point from the Census Bureau's 2023 ZIP Code Tabulation Area gazetteer, not the street address: it places the record in a county and gives the town page its place. Add a row only with the page it was read from and the date.",
+ "note": "Hand-kept map points for boards no source gives one. Used only when every source has no point, never over one. Each row is the ZIP's own internal point from the Census Bureau's 2023 ZIP Code Tabulation Area gazetteer, not the street address: it places the record in a county and gives the town page its place. Add a row only with the page it was read from and the date.",
  "rows": [
   {
    "bids_repo": "newcoop-mortonmills",
