@@ -41,7 +41,7 @@
    ],
    "question": "What did the latest USDA crop report say, and when is the next one?",
    "status": "live",
-   "review_by": "2026-11-10",
+   "review_by": "2026-12-10",
    "sources": [
     {
      "name": "NASS 2026 release calendar",
@@ -60,20 +60,21 @@
    ],
    "question": "How are tariffs hitting farmers' sales?",
    "status": "live",
-   "review_by": "2026-11-10",
+   "review_by": "2026-12-10",
    "text": [
-    "USDA's October 9 WASDE projects 2026/27 U.S. soybean exports at 1.695 billion bushels, up from 1.515 billion in 2025/26 but still below the 1.892 billion of 2024/25.",
-    "Corn exports are projected at 3.300 billion bushels, after 3.429 billion in 2025/26.",
-    "USDA puts the 2026/27 season-average farm price at $12.00 for soybeans and $4.70 for corn.",
+    "USDA's November 10 WASDE projects 2026/27 U.S. soybean exports at 1.720 billion bushels, up from 1.515 billion in 2025/26 but still below the 1.892 billion of 2024/25; that is 25 million more than the October forecast.",
+    "Corn exports are projected at 3.275 billion bushels, 25 million less than in October and below the 3.429 billion of 2025/26.",
+    "USDA puts the 2026/27 season-average farm price at $12.10 for soybeans and $4.60 for corn.",
     "The tariff rates in force and USDA's weekly count of soybeans sold to China are in the sections below; I have not seen a USDA figure for what tariffs cost a farm, so this page does not print one."
    ],
    "sources": [
     {
-     "name": "USDA WASDE-676, Oct 9, 2026",
-     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf",
-     "read": "2026-10-28"
+     "name": "USDA WASDE-677, Nov 10, 2026",
+     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1126.pdf",
+     "read": "2026-11-13"
     }
-   ]
+   ],
+   "dated": "Figures as USDA printed them Nov 10, 2026, read Nov 13, 2026; the next WASDE is Dec 10."
   },
   {
    "id": "usda-payments",
@@ -123,11 +124,11 @@
    ],
    "question": "Where do cattle markets stand?",
    "status": "live",
-   "review_by": "2026-11-10",
+   "review_by": "2026-12-10",
    "text": [
     "Today's futures prices are at the top of this page; behind them is a small herd.",
     "NASS counted 94.2 million cattle and calves on U.S. farms on July 1, 2026, with 28.5 million beef cows, down 1% from a year earlier, and a 2026 calf crop of 32.5 million head, down 2%.",
-    "USDA's October 9 WASDE left its cattle price forecasts unchanged and puts the 2026 average 5-area fed steer price at $237.56 per cwt, against $224.37 in 2025; that is a forecast."
+    "USDA's November 10 WASDE lowered its cattle price forecast for 2026, on a readily available supply of market-ready cattle this fall, and puts the 2026 average 5-area fed steer price at $236.31 per cwt (October forecast: $237.56), against $224.37 in 2025; that is a forecast."
    ],
    "sources": [
     {
@@ -136,11 +137,12 @@
      "read": "2026-10-18"
     },
     {
-     "name": "USDA WASDE-676, Oct 9, 2026",
-     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf",
-     "read": "2026-10-28"
+     "name": "USDA WASDE-677, Nov 10, 2026",
+     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1126.pdf",
+     "read": "2026-11-13"
     }
-   ]
+   ],
+   "dated": "Herd count from the NASS Cattle report of Jul 24, 2026 (read Oct 18); price forecast as USDA printed it Nov 10, 2026 (read Nov 13). The next WASDE is Dec 10."
   },
   {
    "id": "beef-supply",
@@ -150,19 +152,20 @@
    ],
    "question": "Is there a beef shortage?",
    "status": "live",
-   "review_by": "2026-11-10",
+   "review_by": "2026-12-10",
    "text": [
     "There is less U.S. beef, and imports are filling part of the gap.",
-    "USDA's October 9 WASDE forecasts 2026 U.S. beef production at 24.87 billion pounds, down 4.6% from 26.07 billion in 2025, and cut it from September on fewer steers and heifers going to slaughter and lighter carcasses.",
-    "Beef imports are forecast at 6.35 billion pounds, up 17.8% from 5.39 billion, and beef use per person at 58.9 pounds, against 59.2 in 2025."
+    "USDA's November 10 WASDE forecasts 2026 U.S. beef production at 24.83 billion pounds, down 4.8% from 26.07 billion in 2025, and cut it from October on a slower pace of fed cattle marketings and lighter dressed weights.",
+    "Beef imports are forecast at 6.44 billion pounds, up 19.5% from 5.39 billion, and beef use per person at 59.1 pounds, against 59.2 in 2025."
    ],
    "sources": [
     {
-     "name": "USDA WASDE-676, Oct 9, 2026 (U.S. meats supply and use)",
-     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1026.pdf",
-     "read": "2026-10-28"
+     "name": "USDA WASDE-677, Nov 10, 2026 (U.S. meats supply and use)",
+     "url": "https://www.usda.gov/oce/commodity/wasde/wasde1126.pdf",
+     "read": "2026-11-13"
     }
-   ]
+   ],
+   "dated": "Figures as USDA printed them Nov 10, 2026, read Nov 13, 2026; the next WASDE is Dec 10."
   },
   {
    "id": "argentina-beef",
