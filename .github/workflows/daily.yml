@@ -416,13 +416,10 @@ jobs:
           if [ ! -f "$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" ]; then
             npm install --silent --prefix "$RUNNER_TEMP/pw" playwright@1.56.1 >/dev/null
           fi
-          # the browser too, every time: the print step's install can have failed and left the package without Chromium
           "$RUNNER_TEMP/pw/node_modules/.bin/playwright" install --with-deps chromium >/dev/null
           PLAYWRIGHT_PATH="$RUNNER_TEMP/pw/node_modules/playwright/index.mjs" node scripts/render_daily_chart.mjs data/daily.json "$f"
           python3 scripts/print_of_day.py --compress "$f"
           cp "$f" "$RUNNER_TEMP/chart.png"
-          # pushed now so the site serves it well before the send's live check, from a second worktree on origin/main:
-          # the job's own tree (Generate's output, GATE 1's repaired prices) is never pulled or rebased here
           w="$RUNNER_TEMP/chart-push"
           pushed=0
           for n in 1 2 3 4 5; do

@@ -256,7 +256,8 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .session-badge.overnight .dot{background:var(--gold-fill,var(--gold))}
 .session-badge.closed{background:none;color:var(--text-muted);border:1px solid var(--border-2)}
 .session-badge.closed .dot{background:var(--text-muted)}
-/* the badge keeps one box before and after futures.js writes it (the longest state fits in 24rem), so it no longer slides 8 to 16 px when the label lands */@media(min-width:561px){.session-badge{box-sizing:border-box;width:24rem;max-width:100%;justify-content:center}}
+/* the badge keeps one box before and after futures.js writes it (the longest state fits in 24rem), so it no longer slides 8 to 16 px when the label lands */@media(min-width:561px){.session-badge{box-sizing:border-box;width:24rem;max-width:100%;justify-content:center;min-height:calc(1lh + 10px)}}
+#hero-ovn:not([hidden]){min-height:2.4em}
 .session-sub{font-size:0.77rem;color:var(--text-dim);font-weight:500;text-transform:none;letter-spacing:0;margin-left:4px}@media(max-width:560px){.session-badge{flex-wrap:wrap;row-gap:2px;white-space:normal}.session-badge>.session-sub{flex-basis:100%;margin-left:0}}
 
 /* NEW v13: Sectioned Market Read */

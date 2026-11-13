@@ -1023,7 +1023,7 @@ function renderToday(data,why){
     chart='<figure class="dv3-chart" tabindex="0" style="--dc-ar:600/'+(parseInt(cd.h,10)||360)+'" data-img="/'+cd.image+'" data-take="'+escHtml(cd.takeaway)+'" aria-label="Chart of the day. '+escHtml(cd.takeaway)+' Arrow keys read each point.">'+
       '<figcaption class="dv3-chart-head"><span class="dv3-chart-lab">Chart of the day</span><strong>'+escHtml(cd.takeaway)+'</strong></figcaption>'+
       '<div class="dv3-chart-art">'+cd.svg+'</div><p class="dv3-chart-read" aria-live="polite"></p><p class="dv3-chart-src">Source: '+escHtml(cd.source)+'.</p>'+
-      '<p class="dv3-chart-act"><button type="button" class="dv3-chart-share">Share</button><a class="dv3-chart-save" href="/'+cd.image+'" download hidden>Save the picture</a></p></figure>';
+      '<p class="dv3-chart-act"><button type="button" class="dv3-chart-share">Share</button><a class="dv3-chart-save" href="/daily/img/chart-'+String(cd.image).slice(16,-4)+'.png" download hidden>Save the picture</a></p></figure>';
   }
   var lead='';
   if(data.lead){lead='<p class="dv3-today-lead">'+mdInline(data.lead)+'</p>';}
