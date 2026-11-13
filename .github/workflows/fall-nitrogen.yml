@@ -13,7 +13,7 @@ on:
     - cron: '47 22 * 3-6,9-12 *'
   # cron above, by either trigger, do the work within 360 minutes
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 10"]
     types: [completed]
 
 permissions:
@@ -21,6 +21,7 @@ permissions:
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 10' || contains(github.event.workflow_run.display_title, ' fall-nitrogen.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read

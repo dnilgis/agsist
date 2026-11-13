@@ -7,16 +7,17 @@ on:
     - cron: '33 21 * * 1,2'
     - cron: '33 12 * * 2,3'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 13"]
     types: [completed]
   workflow_dispatch:
 
 concurrency:
-  group: crop-progress
+  group: ${{ github.event.workflow_run.name == 'Tick 13' && !contains(github.event.workflow_run.display_title, ' crop_progress.yml ') && format('crop-progress-{0}', github.run_id) || 'crop-progress' }}
   cancel-in-progress: false
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 13' || contains(github.event.workflow_run.display_title, ' crop_progress.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read

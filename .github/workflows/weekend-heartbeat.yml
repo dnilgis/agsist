@@ -5,7 +5,7 @@ on:
     - cron: '11 14 * * 0,6'
     - cron: '2 15 * * 0,6'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 04"]
     types: [completed]
   workflow_dispatch:
 
@@ -14,11 +14,12 @@ permissions:
   contents: read
 
 concurrency:
-  group: weekend-heartbeat
+  group: ${{ github.event.workflow_run.name == 'Tick 04' && !contains(github.event.workflow_run.display_title, ' weekend-heartbeat.yml ') && format('weekend-heartbeat-{0}', github.run_id) || 'weekend-heartbeat' }}
   cancel-in-progress: false
 
 jobs:
   knock:
+    if: github.event.workflow_run.name != 'Tick 04' || contains(github.event.workflow_run.display_title, ' weekend-heartbeat.yml ')
     runs-on: ubuntu-latest
     steps:
       - name: Is a knock due?

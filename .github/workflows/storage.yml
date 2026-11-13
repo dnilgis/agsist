@@ -6,7 +6,7 @@ on:
     - cron: "35 7 1,14 10 *"
     - cron: "35 7 14 11 *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 05"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -20,6 +20,7 @@ permissions:
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 05' || contains(github.event.workflow_run.display_title, ' storage.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read

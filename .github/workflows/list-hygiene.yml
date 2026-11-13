@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "23 13 * * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 10"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -24,6 +24,7 @@ permissions:
   contents: read
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 10' || contains(github.event.workflow_run.display_title, ' list-hygiene.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read

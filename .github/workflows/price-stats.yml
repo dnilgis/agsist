@@ -4,18 +4,19 @@ on:
   schedule:
     - cron: '40 21 * * 1-5'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 14"]
     types: [completed]
   workflow_dispatch:
 permissions:
   contents: write
 
 concurrency:
-  group: price-stats
+  group: ${{ github.event.workflow_run.name == 'Tick 14' && !contains(github.event.workflow_run.display_title, ' price-stats.yml ') && format('price-stats-{0}', github.run_id) || 'price-stats' }}
   cancel-in-progress: false
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 14' || contains(github.event.workflow_run.display_title, ' price-stats.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read

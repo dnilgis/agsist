@@ -5,7 +5,7 @@ on:
     - cron: '41 19-23 * * 1-5'
     - cron: '11 15 * * 2-6'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 03"]
     types: [completed]
   workflow_dispatch:
     inputs:
@@ -29,6 +29,7 @@ permissions:
 jobs:
   gate:
     if: >-
+      (github.event.workflow_run.name != 'Tick 03' || contains(github.event.workflow_run.display_title, ' lrp.yml ')) && (
       github.event_name == 'schedule' || (github.event_name == 'workflow_run' && (
         contains(github.event.workflow_run.created_at, 'T15:0') ||
         contains(github.event.workflow_run.created_at, 'T15:1') ||
@@ -36,7 +37,7 @@ jobs:
         contains(github.event.workflow_run.created_at, 'T20:') ||
         contains(github.event.workflow_run.created_at, 'T21:') ||
         contains(github.event.workflow_run.created_at, 'T22:') ||
-        contains(github.event.workflow_run.created_at, 'T23:')))
+        contains(github.event.workflow_run.created_at, 'T23:'))))
     runs-on: ubuntu-latest
     permissions:
       contents: read

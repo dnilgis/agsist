@@ -6,7 +6,7 @@ on:
     - cron: "18 3 * * 3"
     - cron: "18 15 * * 3,4"
   workflow_run:
-    workflows: ["conditions", "Fetch Grain Bids"]
+    workflows: ["conditions", "Tick 04"]
     types: [completed]
   workflow_dispatch:
 
@@ -15,6 +15,7 @@ permissions:
 
 jobs:
   upstream:
+    if: github.event.workflow_run.conclusion != 'skipped' && (github.event.workflow_run.name != 'Tick 04' || contains(github.event.workflow_run.display_title, ' cond-yield.yml '))
     runs-on: ubuntu-latest
     permissions:
       actions: read

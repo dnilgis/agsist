@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "45 12 16 * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 09"]
     types: [completed]
   workflow_dispatch:
 
@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 09' || contains(github.event.workflow_run.display_title, ' nass-series.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read

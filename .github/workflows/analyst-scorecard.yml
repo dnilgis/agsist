@@ -8,7 +8,7 @@ on:
   schedule:
     - cron: "25 11 * * *"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 08"]
     types: [completed]
   workflow_dispatch:
 
@@ -17,6 +17,7 @@ permissions:
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 08' || contains(github.event.workflow_run.display_title, ' analyst-scorecard.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read

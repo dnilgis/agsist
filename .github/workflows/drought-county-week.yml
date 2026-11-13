@@ -11,7 +11,7 @@ on:
     - cron: '52 13 * * 4'
     - cron: '37 14 * * 5'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 11"]
     types: [completed]
 
 permissions:
@@ -19,6 +19,7 @@ permissions:
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 11' || contains(github.event.workflow_run.display_title, ' drought-county-week.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read

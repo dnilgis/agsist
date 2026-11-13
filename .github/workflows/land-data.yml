@@ -18,7 +18,7 @@ on:
   schedule:
     - cron: '23 9 3 * *'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 07"]
     types: [completed]
 
 permissions:
@@ -26,6 +26,7 @@ permissions:
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 07' || contains(github.event.workflow_run.display_title, ' land-data.yml ')
     runs-on: ubuntu-24.04
     permissions:
       actions: read

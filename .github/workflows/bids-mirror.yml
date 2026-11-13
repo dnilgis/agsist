@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '47 7 * * 0'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 06"]
     types: [completed]
   workflow_dispatch:
 
@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 06' || contains(github.event.workflow_run.display_title, ' bids-mirror.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read

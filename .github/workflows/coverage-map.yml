@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: '38 12 * * *'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 09"]
     types: [completed]
   workflow_dispatch:
   push:
@@ -17,6 +17,7 @@ env:
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 09' || contains(github.event.workflow_run.display_title, ' coverage-map.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read

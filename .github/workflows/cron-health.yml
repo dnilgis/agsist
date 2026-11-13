@@ -2,7 +2,7 @@ name: Cron health
 
 on:
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 02"]
     types: [completed]
   schedule:
     - cron: '26 */2 * * *'
@@ -13,11 +13,12 @@ permissions:
   actions: read
 
 concurrency:
-  group: cron-health
+  group: ${{ github.event.workflow_run.name == 'Tick 02' && !contains(github.event.workflow_run.display_title, ' cron-health.yml ') && format('cron-health-{0}', github.run_id) || 'cron-health' }}
   cancel-in-progress: false
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 02' || contains(github.event.workflow_run.display_title, ' cron-health.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read

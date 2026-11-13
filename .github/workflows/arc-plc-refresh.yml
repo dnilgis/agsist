@@ -21,6 +21,7 @@ permissions:
 
 jobs:
   upstream:
+    if: github.event.workflow_run.conclusion != 'skipped'
     runs-on: ubuntu-latest
     permissions:
       actions: read

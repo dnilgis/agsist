@@ -15,7 +15,7 @@ on:
     - cron: '17 23 * * 1-5'
     - cron: '41 14 * * 6'
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 14"]
     types: [completed]
 
 permissions:
@@ -23,6 +23,7 @@ permissions:
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 14' || contains(github.event.workflow_run.display_title, ' hay-ams.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read

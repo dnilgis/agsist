@@ -4,7 +4,7 @@ on:
   schedule:
     - cron: "55 15 * * 3"
   workflow_run:
-    workflows: ["Fetch Grain Bids"]
+    workflows: ["Tick 13"]
     types: [completed]
   workflow_dispatch:
 
@@ -13,6 +13,7 @@ permissions:
 
 jobs:
   gate:
+    if: github.event.workflow_run.name != 'Tick 13' || contains(github.event.workflow_run.display_title, ' state-rent-pages.yml ')
     runs-on: ubuntu-latest
     permissions:
       actions: read
