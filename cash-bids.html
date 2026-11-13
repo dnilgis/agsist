@@ -420,8 +420,7 @@ main > .breadcrumb{max-width:1060px;margin:12px auto 0;padding:0 max(1rem,env(sa
 .cb-empty p{font-size:.82rem;color:var(--text-muted);max-width:28rem;margin:0 auto}
 .cb-skeleton{display:grid;grid-template-columns:1fr;gap:.85rem}
 @media(min-width:720px){.cb-skeleton{grid-template-columns:repeat(2,1fr)}}
-.cb-skel{background:var(--surface);border:2px solid var(--border);border-radius:12px;min-height:140px;height:auto;animation:shimmer 1.6s infinite;will-change:opacity}
-@keyframes shimmer{0%,100%{opacity:.45}50%{opacity:.8}}
+.cb-skel{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);min-height:140px;height:auto;opacity:.6}
 /* ON A PHONE IT STOPS BEING A TABLE.
    It used to hide Distance, Round-Trip Fuel and vs-Closest below 580px and
    leave the rest to scroll sideways. So the tool whose entire job is weighing
