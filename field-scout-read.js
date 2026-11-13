@@ -2142,10 +2142,11 @@ window.__fsRead = function (FSX) {
     // $/ac range using THIS field's nearest cash corn bid, then point at the presell
     // tool. Honest: the bu/ac range is from university continuous-corn trial work, not
     // this field's measured yield — so it's framed as an estimate.
-    function dragAction(){
-      if(!b || !b.corn) return null;
+    function dragAction(yrs){
+      /* the Illinois study ran third- to seventh-year continuous corn: no dollar figure for a field in its second year of corn */
+      if(!b || !b.corn || !(yrs>=3)) return null;
       var p=b.corn.cash, d=25, v=Math.round(d*p);
-      return 'At <strong>$'+p.toFixed(2)+'</strong> nearby cash corn, the '+d+' bu/ac average drag in a University of Illinois six-year study is roughly <strong>$'+v+'/ac</strong>. It ranged from 9 to 42 bu/ac by year there, and your field may differ. '
+      return 'At <strong>$'+p.toFixed(2)+'</strong> nearby cash corn, the '+d+' bu/ac average drag in a University of Illinois six-year study of third- to seventh-year continuous corn is roughly <strong>$'+v+'/ac</strong>. It ranged from 9 to 42 bu/ac by year there, and your field may differ. '
         + '<a href="/harvest-price-tracker#presell" target="_blank" rel="noopener" class="fs-act-link">Run the presell math &rarr;</a>'
         + '<span class="fs-src">University of Illinois six-year study (Gentry and others), as reported by Farm Progress, Mar 2013, &times; your local bid</span>';
     }
@@ -2178,7 +2179,7 @@ window.__fsRead = function (FSX) {
       var pp2=pacePhrase(); if(pp2) lines.push('Heat-unit accumulation is '+pp2+' this season.');
     }
 
-    var nFix='. Soybeans in the rotation would also credit roughly 30–40 lb N/ac to next year\u2019s corn';
+    var nFix='';
 
     // ── corn-on-corn × soil (the highest-value cross-reference) ──
     if(s && s.worst && r && r.cornOnCorn){
@@ -2186,21 +2187,21 @@ window.__fsRead = function (FSX) {
         push({ sev:5, act:true, topic:'rotation', tag:'continuous corn on your class-'+s.worst.nicc+' ground',
           title:'break the rotation on your class-'+s.worst.nicc+' acres: it\u2019s the change most likely to pay on this field',
           detail:'Your weaker ground (class '+s.worst.nicc+') is '+(cornSure?'in':'likely in')+' <strong>corn on corn this year</strong>'+(r.corOnCornYears>=3?' ('+r.corOnCornYears+' years running)':'')+', two strikes against yield in the same spot. A rotation break there is the change most likely to pay on this field'+nFix+'.',
-          action: dragAction(),
+          action: dragAction(r.corOnCornYears),
           watch: pollenWindow()!=null ? 'Rootworm feeding shows at silking (~'+pollenWindow()+' days out); pull and check roots before then.' : 'Scout roots for rootworm before pollination, and plan beans on these acres next year.' });
       } else {
         var productive = s.nccpi!=null && s.nccpi>=0.55;
         push({ sev:productive?4:3, act:true, topic:'rotation', tag:'corn-on-corn pressure',
           title: r.pattern==='ccs' ? 'second-year corn this season: scout rootworm and budget the drag' : 'plan a rotation break to stop the corn-on-corn yield drag'+(productive?' on this productive ground':''),
           detail:(cornSure?'Corn':'On its rotation, likely corn')+' this year on corn last year. '+'Second-year corn carries rootworm and nitrogen pressure'+(r.pattern==='ccs'?'; it is part of a planned corn\u2013corn\u2013soybean rotation, so weigh the drag against the rotation\u2019s other gains':', worth a rotation break before it compounds'+nFix)+'.',
-          action: dragAction(),
+          action: dragAction(r.corOnCornYears),
           watch: pollenWindow()!=null ? 'Rootworm pressure peaks near silking (~'+pollenWindow()+' days out); scout this season; plan beans next.' : 'Scout for rootworm this season; plan beans on these acres next year.' });
       }
     } else if(r && r.cornOnCorn){
       push({ sev:3, act:true, topic:'rotation', tag:'a multi-year corn streak',
         title:'plan a rotation break and scout for rootworm',
         detail:(cornSure?'Corn':'Likely corn')+' this year on corn last year'+(r.corOnCornYears>=3?' (<strong>'+r.corOnCornYears+' years running</strong>)':'')+', watch for rootworm and the corn-on-corn yield drag'+nFix+'.',
-        action: dragAction(),
+        action: dragAction(r.corOnCornYears),
         watch: pollenWindow()!=null ? 'Rootworm pressure peaks near silking (~'+pollenWindow()+' days out).' : null });
     }
 
