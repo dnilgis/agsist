@@ -170,7 +170,7 @@
     var body = gets + (has && e >= SMALL ? stTxt + siteTxt : siteTxt + stTxt);
     return '<div class="ss-box ss-open"><p class="ss-tag">' + nm + ' sponsor spot ' + (soon ? 'opens soon' : 'open') + '</p>' +
       '<p class="ss-txt">' + body.replace(/\s+$/, '') + '</p>' +
-      '<a class="ss-go" href="/sponsor?state=' + st + '#state">Sponsor ' + nm + '<span class="ss-go-x">on AGSIST</span></a></div>';
+      '<a class="ss-go" href="/sponsor?state=' + st + '#state">Sponsor ' + nm + ' <span class="ss-go-x">on AGSIST</span></a></div>';
   }
   /* A state page's spot that cannot carry its state's card on this page (the page has its own paid sponsor, or the
      sitewide sponsor is on the same screen) keeps its room and says so, with no sponsor name: never an empty box,

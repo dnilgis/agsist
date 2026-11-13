@@ -74,4 +74,4 @@ html[data-theme="light"] .ss-box.ss-open a.ss-go:hover,html[data-theme="light"] 
 @media (max-width:560px){.ss-box.ss-open{row-gap:.35rem;padding:.8rem 1rem}.ss-open .ss-txt{font-size:.88rem;line-height:1.38}.ss-open .ss-go{white-space:normal;min-height:40px;max-width:100%;padding:.35rem .9rem}.ss-open .ss-go::after{content:none}}
 .ss-box.ss-open{max-height:var(--ss-h);overflow:hidden}
 @media (max-width:400px){.ss-open .ss-go-x{display:none}.ss-open .ss-txt{font-size:.84rem;line-height:1.36}}
-.ss-open .ss-go-x{margin-left:.3em}
+.ss-box.ss-open a.ss-go{display:inline-block;line-height:1.2;padding:.6rem 1.1rem;min-height:0}
