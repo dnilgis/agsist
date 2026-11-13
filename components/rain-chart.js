@@ -134,7 +134,7 @@
     // rows of the key, then the two ends of the axis
     rows.forEach(function (r, ri) { texts.push({ t: r.t, x: X0 + sw + 12, y: bandTop + FS + 2 + ri * rowH, size: FS, w: r.w, fill: r.fill, k: r.k }); });
     var AF = spec.axisFS, ay = PB + AF + 8;
-    texts.push({ t: m.startText, x: X0, y: ay, size: AF, w: 500, fill: 'mute', k: 'start' });
+    texts.push({ t: m.startText, x: X0 + 3, y: ay, size: AF, w: 500, fill: 'mute', k: 'start' });
     if (m.endText) texts.push({ t: m.endText, x: X1 + 2, y: ay, size: AF, w: 500, fill: 'mute', anchor: 'end', k: 'end-date' });
     // the months' first letters, quiet, one row under the two ends of the axis (one text element: one x for each letter)
     var ly = ay + AF + 6, H = ly + 14;
@@ -281,7 +281,8 @@
 
     // the start of the year, under the left end of the baseline; the last day under the right end
     var AF = spec.axisFS, ay = PB + AF + 8;
-    texts.push({ t: m.startText, x: X0, y: ay, size: AF, w: 500, fam: SANSF, fill: 'mute', k: 'start' });
+    // 'Jan 1' sits 3 units in from the edge: a fallback face's J reaches left of its origin (the web font loads optional)
+    texts.push({ t: m.startText, x: X0 + 3, y: ay, size: AF, w: 500, fam: SANSF, fill: 'mute', k: 'start' });
     if (m.endText) texts.push({ t: m.endText, x: X1 + 2, y: ay, size: AF, w: 500, fam: SANSF, fill: 'mute', anchor: 'end', k: 'end-date' });
 
     // ---- the foot: the year big, the place under it
