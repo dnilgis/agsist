@@ -3,6 +3,21 @@
 // go with it as source and fips. The address goes nowhere else: not a URL, not a log, not a counter.
 (function () {
   'use strict';
+
+  /* Nov 13, 2026 (Rain Print sales audit): a click on the Rain Print photo or either button in the county's Rain Print block
+     sends one GA4 event, rain_print_click, with from=rain-county and which one. components/gauge-ask.js carries the same
+     lines for pages where this file is not loaded; the flag keeps it to one listener. */
+  if (!window.__rcSellTrack) {
+    window.__rcSellTrack = 1;
+    document.addEventListener('click', function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('.rc-sell [data-from]') : null;
+      if (!a) return;
+      try {
+        if (typeof window.gtag === 'function') window.gtag('event', 'rain_print_click', { from: a.getAttribute('data-from'),
+          button: a.classList.contains('rc-sell-img') ? 'photo' : (a.textContent || '').trim().slice(0, 30), page: window.location.pathname });
+      } catch (x) {}
+    });
+  }
   var EP = 'https://agsist-api.dnilgis.workers.dev/notice';
   var KEY = 'agsist_notices';
   var RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
