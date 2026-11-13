@@ -7,8 +7,8 @@
  */
 (function (root) {
   'use strict';
-  /* Radii use the site tokens (--r-sm), so the plain-look radii carry through. Widths: above 960 px one line in the 36 px the
-     header holds; at 960 px and under two lines in 54 px; at 540 px and under the Bing figure and the second half of the
+  /* Radii use the site tokens (--r-sm), so the plain-look radii carry through. Widths: above 1000 px one line in the 36 px the
+     header holds; at 1000 px and under two lines in 54 px (measured clean from 320 to 1280 px, 961, 980 and 1001 included); at 540 px and under the Bing figure and the second half of the
      hook go. Nothing is cut with an ellipsis: what does not fit is left out whole. */
   var CSS = '.sw-in.sw-open{display:flex;align-items:center;gap:10px;padding:3px 4px 3px 10px;border:1px solid rgba(var(--ad-orange-rgb),.55);border-radius:var(--r-sm,4px);background:rgba(var(--ad-orange-rgb),.08);color:var(--text-dim);font-size:.8rem;line-height:1.3}' +
     '.sw-pitch{flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap}' +
@@ -19,8 +19,9 @@
     'html[data-theme="light"] .sw-in.sw-open a.sw-cta:hover,html[data-theme="light"] .sw-in.sw-open a.sw-cta:focus-visible{background:#8a2e08;color:#fff}' +
     '.sw-s,.sw-br{display:none}' +
     '@media (max-width:1180px){.sw-what-l{display:none}}' +
-    '@media (max-width:960px){.sw-in.sw-open{font-size:.78rem;gap:8px}.sw-pitch{white-space:normal}.sw-br{display:block}.sw-l{display:none}.sw-s{display:inline}' +
-    '.sw-in.sw-open a.sw-cta{min-height:0;padding:2px 8px;white-space:normal;width:8.8em;align-self:center;text-align:center;line-height:1.15;font-size:.76rem}}' +
+    '@media (max-width:1000px){.sw-in.sw-open{font-size:.78rem;gap:8px}.sw-pitch{white-space:normal}.sw-br{display:block}.sw-l{display:none}.sw-s{display:inline}}' +
+    '@media (min-width:541px) and (max-width:1000px){.sw-eng .sw-l{display:inline}.sw-eng .sw-s{display:none}}' +
+    '@media (max-width:1000px){.sw-in.sw-open a.sw-cta{min-height:0;padding:2px 8px;white-space:normal;width:8.8em;align-self:center;text-align:center;line-height:1.15;font-size:.76rem}}' +
     '@media (max-width:540px){.sw-ai,.sw-what{display:none}}';
 
   function esc(x) {

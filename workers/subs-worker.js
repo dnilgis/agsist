@@ -8,9 +8,9 @@
  * v5.68 (2026-11-13): SPONSORS PAY BY CHECK OR BANK WIRE. The sponsor confirm pages no longer
  *   promise a free first month (no free months, Nov 13): they say the ad is paid by check or bank
  *   wire from the invoice we email at booking, and that the ad goes live the day payment arrives
- *   (live on receipt). GET /count also answers people: the CONFIRMED addresses on any list (the
- *   Daily, hail alerts, a watch with a confirmed entry, a notice topic), each once, as one number;
- *   an address that typed in and never confirmed is not counted, and no address is sent.
+ *   (live on receipt). GET /count also answers people: the addresses on each list on the day it is
+ *   asked (the Daily, hail alerts, a watch with a confirmed entry, a notice topic), each once, as one
+ *   number; a watch address still waiting to confirm is not counted, and no address is sent.
  *   No new binding or secret. Every other route answers as before.
  * v5.67 (2026-11-10): REPORT-DAY RESULT. POST /report-live takes the graded result of a USDA
  *   report from the report-day job (.github/workflows/report-day-live.yml, scripts/report_live.py)

@@ -627,7 +627,7 @@ summary:focus-visible, .pc:focus-visible {
 .nav-panel > .nav-grp-lbl:first-child{padding-top:.15rem}
 .draw-grp-lbl{font-family:var(--font-mono);font-size:0.755rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-dim);padding:.5rem 1.1rem .1rem}
 :root{--sw-h:36px;--ss-h:224px}
-@media (max-width:960px){:root{--sw-h:54px}}
+@media (max-width:1000px){:root{--sw-h:54px}}
 body.no-sw{--sw-h:0px}
 @media (scripting:none){:root{--sw-h:0px}}
 #site-header{min-height:calc(74px + var(--sw-h))}
