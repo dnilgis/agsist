@@ -68,7 +68,7 @@
     var stp = (top - bot) / 10 > (phone ? 6 : 9) ? 20 : 10; if (stp === 20) { top = Math.ceil(top / 20) * 20; bot = Math.floor(bot / 20) * 20; }
     var ticks = []; for (var v = top; v >= bot; v -= stp) ticks.push(v);
     var L = Math.ceil(Math.max.apply(null, ticks.map(function (t) { return BD.widthOf(word(t), fs, t === 0); }))) + 10;
-    var R = stt ? (phone ? 64 : Math.round(fs * 14)) : 12, y0 = Math.round(fb * 1.6), y1 = H - Math.round(fs * 2.6);
+    var R = stt ? (phone ? Math.ceil(Math.max(BD.widthOf(word(stt.median), fs, true), BD.widthOf(stt.short, fs, true)) + 30) : Math.round(fs * 14)) : 12, y0 = Math.round(fb * 1.6), y1 = H - Math.round(fs * 2.6);
     var t0 = Date.parse(m.first), t1 = Date.parse(m.end), X = function (d) { return L + (Date.parse(d) - t0) / Math.max(864e5, t1 - t0) * (W - L - R - 8); };
     var Y = function (c) { return y0 + (top - c) / (top - bot) * (y1 - y0); };
     var o = [], P = { gr: [], ev: [] };
@@ -110,9 +110,9 @@
       lab.push({ x0: ex - BD.widthOf('Best in town: ' + word(now.hi), fb, true), x1: ex, y0: ey - 8 - fb, y1: ey - 4 });
       var mn = m.days.filter(function (x) { return !x.gap; }).reduce(function (a, x) { return !a || x.hi < a.hi ? x : a; }, null);
       if (mn && mn.hi < now.hi - 2) {
-        var mx = X(mn.d), my = Y(mn.hi) - 8, txt = dd(mn.d) + ': ' + word(mn.hi), w = BD.widthOf(txt, fs, false);
+        var txt = dd(mn.d) + ': ' + word(mn.hi), w = BD.widthOf(txt, fs, false), mx = Math.max(L + w / 2 + 2, Math.min(W - R - w / 2 - 4, X(mn.d))), my = Y(mn.hi) + fs + 8;
         var bx = { x0: mx - w / 2, x1: mx + w / 2, y0: my - fs, y1: my + 2 };
-        if (bx.x0 > L && !lab.some(function (z) { return BD.hit(z, bx); })) o.push(t(mx, my, txt, '', 'middle'));
+        if (!lab.some(function (z) { return BD.hit(z, bx); })) o.push(t(mx, my, txt, 'h', 'middle'));   // under the low point, on a halo over the band
       }
     }
     // the state today, as a bracket at the right edge: its range and its middle bid
@@ -128,7 +128,7 @@
     var dp = function (cls, a) { return a.length ? '<path class="' + cls + '" d="' + a.join('') + '"/>' : ''; };
     var aria = m.head;
     var s = '<svg class="bd-svg bm-svg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(aria) + '" style="font-size:' + fs + 'px' + (card ? ';font-family:Inter, system-ui, sans-serif' : '') + '">' +
-      (card ? BD.cardStyle(BD.CARD) + '<style>.bm-band{fill:rgba(233,237,235,.16)}.bm-top{fill:none;stroke:' + BD.CARD.gold + ';stroke-width:2.5}.bm-own{fill:none;stroke:' + BD.CARD.ink + ';stroke-width:1.4}.bm-br{fill:none;stroke:' + BD.CARD.ink + ';stroke-width:1.4}</style>' : '') +
+      (card ? BD.cardStyle(BD.CARD) + '<style>.bm-band{fill:rgba(233,237,235,.16)}.bm-top{fill:none;stroke:' + BD.CARD.gold + ';stroke-width:2.5}.bm-own{fill:none;stroke:' + BD.CARD.ink + ';stroke-width:1.4}.h{paint-order:stroke;stroke:' + BD.CARD.bg + ';stroke-width:3px}.bm-br{fill:none;stroke:' + BD.CARD.ink + ';stroke-width:1.4}</style>' : '') +
       dp('gr', P.gr) + dp('ev', P.ev) + '<path class="bm-band" d="' + band + '"/>' + own + '<path class="bm-top" d="' + topLine + '"/>' +
       '<line class="bm-hair" x1="0" x2="0" y1="' + y0 + '" y2="' + y1 + '" visibility="hidden"/>' + o.join('') + '</svg>';
     return { svg: s, X: X, L: L, R: R, W: W, y0: y0, y1: y1, day: function (px) { var f = (px - L) / Math.max(1, W - L - R - 8); var d = new Date(t0 + Math.round(f * (t1 - t0) / 864e5) * 864e5).toISOString().slice(0, 10); return d < m.first ? m.first : d > m.end ? m.end : d; } };
@@ -149,7 +149,7 @@
     det.hidden = true;
     var wrap = root.document.createElement('div'); wrap.className = 'bm';
     wrap.innerHTML = '<p class="bd-axis bm-axis"></p><div class="bd-plot bm-plot" tabindex="0" role="group" aria-label="Arrow keys step through the days"></div>' +
-      '<p class="bd-read bm-read" aria-live="polite"></p><div class="bm-boards" role="group" aria-label="Draw one elevator&rsquo;s line"></div><p class="bd-note bm-note"></p>';
+      '<p class="bd-read bm-read" aria-live="polite"></p><details class="bm-more"><summary></summary><div class="bm-boards" role="group" aria-label="Draw one elevator&rsquo;s line"></div></details><p class="bd-note bm-note"></p>';
     el.appendChild(wrap);
     var q = function (s) { return wrap.querySelector(s); }, plot = q('.bm-plot'), read = q('.bm-read'), list = q('.bm-boards'), noteEl = q('.bm-note');
     var data = null, cur = o.crop, m = null, pic = null, show = {}, sel = '', lastW = 0, c = null;
@@ -171,7 +171,8 @@
       m = model(c, H.heldOn, town, data.publicFrom);
       o.head.textContent = BD.hy(m.head); o.take.textContent = BD.hy(m.take);
       q('.bm-axis').textContent = (cur === 'soybeans' ? 'Soybean' : ADJ[cur].replace(/^./, function (x) { return x.toUpperCase(); })) + ' basis in ' + town + ', cents a bushel over or under futures, since ' + dd(m.first);
-      list.innerHTML = '<span class="bm-lab">Draw one elevator:</span>' + m.lines.map(function (l) { return '<button type="button" data-k="' + esc(l.key) + '" aria-pressed="' + (!!show[l.key]) + '">' + esc(BD.hy(l.name)) + '</button>'; }).join('');
+      q('.bm-more summary').textContent = 'Draw one elevator’s own line (' + m.lines.length + ')';
+      list.innerHTML = m.lines.map(function (l) { return '<button type="button" data-k="' + esc(l.key) + '" aria-pressed="' + (!!show[l.key]) + '">' + esc(BD.hy(l.name)) + '</button>'; }).join('');
       [].slice.call(list.querySelectorAll('button')).forEach(function (b) { b.addEventListener('click', function () { var k = b.getAttribute('data-k'); show[k] = !show[k]; b.setAttribute('aria-pressed', String(!!show[k])); draw(true); }); });
       var stt = stateOf();
       noteEl.textContent = BD.hy('Each elevator’s basis for its nearest open delivery month, logged on the days it changed; it holds flat between changes. When a month closes the next one takes over, so a step there is partly a new month. ' +

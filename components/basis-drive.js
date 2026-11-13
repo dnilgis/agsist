@@ -35,7 +35,7 @@
   function cardStyle(c) {
     return '<style>.e{text-anchor:end}.c{text-anchor:middle}text{fill:' + c.ink + '}.m{fill:' + c.mid + '}.g{fill:' + c.gold + '}.b{font-weight:700}.B{font-size:1.08em}.h{paint-order:stroke;stroke:' + c.bg + ';stroke-width:3px;stroke-linejoin:round}.z{fill:' + c.zone + '}' +
       '.gr,.ev,.ax,.md,.wk,.dr,.di,.dg,path{fill:none}.gr{stroke:' + c.grid + '}.ev,.ax{stroke:' + c.rule + '}.ev{stroke-width:1.4}.md{stroke:' + c.ink + ';stroke-width:1.2;stroke-dasharray:5 4}' +
-      '.wk{stroke:' + c.mid + ';stroke-width:1.6}.dr,.di,.dg{stroke-linecap:round}.dr{stroke:' + c.bg + '}.di{stroke:' + c.ink + '}.dg{stroke:' + c.gold + '}</style>';
+      '.wk{stroke:' + c.mid + ';stroke-width:1.6}.ld{stroke:' + c.mid + ';stroke-width:1}.dr,.di,.dg{stroke-linecap:round}.dr{stroke:' + c.bg + '}.di{stroke:' + c.ink + '}.dg{stroke:' + c.gold + '}</style>';
   }
 
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -275,7 +275,7 @@
       var c = [/gold/.test(cls) ? 'g' : /mid/.test(cls) ? 'm' : '', /(^| )b( |$)/.test(cls) ? 'b' : '', /big/.test(cls) ? 'B' : '', /(^| )h( |$)/.test(cls) ? 'h' : '', anchor === 'end' ? 'e' : anchor === 'middle' ? 'c' : ''].filter(Boolean).join(' ');
       return '<text x="' + fx(x) + '" y="' + fx(y) + '"' + (c ? ' class="' + c + '"' : '') + '>' + esc(hy(s)) + '</text>';
     };
-    var P = { gr: [], ev: [], ax: [], md: [], wk: [] }, H0 = function (y, a, b) { return 'M' + fx(a) + ' ' + fx(y) + 'H' + fx(b); }, V0 = function (x, a, b) { return 'M' + fx(x) + ' ' + fx(a) + 'V' + fx(b); };
+    var P = { gr: [], ev: [], ax: [], md: [], wk: [], ld: [] }, H0 = function (y, a, b) { return 'M' + fx(a) + ' ' + fx(y) + 'H' + fx(b); }, V0 = function (x, a, b) { return 'M' + fx(x) + ' ' + fx(a) + 'V' + fx(b); };
     // the in-town zone, the grid, the axis words
     var zone = T.length ? '<rect class="z" x="' + L + '" y="' + y0 + '" width="' + fx(ZA) + '" height="' + fx(y1 - y0) + '"/>' : '';
     ticks.forEach(function (c) {
@@ -329,7 +329,14 @@
     });
     // the words on the data: each tries its places in order; the best bid's words are placed first and never left off
     var inPlot = function (b) { return b.x0 >= L - 2 && b.x1 <= W - 2 && b.y0 >= y0 - 2 && b.y1 <= y1 + 2; };
-    var place = function (lines, cands, cls, minX, must) {
+    var leader = function (q, b) {   // words set away from their dot get a thin line to it
+      if (!q) return;
+      var cx = Math.max(b.x0, Math.min(b.x1, q.x)), cy = q.y < b.y0 ? b.y0 : q.y > b.y1 ? b.y1 : q.y, dist = Math.hypot(cx - q.x, cy - q.y);
+      if (dist < q.r + fs) return;
+      var ux = (cx - q.x) / dist, uy = (cy - q.y) / dist;
+      P.ld.push('M' + fx(q.x + ux * (q.r + 2)) + ' ' + fx(q.y + uy * (q.r + 2)) + 'L' + fx(cx - ux * 2) + ' ' + fx(cy - uy * 2));
+    };
+    var place = function (lines, cands, cls, minX, must, q) {
       var lh = fs * 1.3, w = Math.max.apply(null, lines.map(function (s, k) { var cl = cls[k] || ''; return widthOf(s, /big/.test(cl) ? fb : fs, /(^| )b( |$)/.test(cl)); }));
       var box = function (c) { var x = c.anchor === 'end' ? c.x - w : c.anchor === 'middle' ? c.x - w / 2 : c.anchor === 'clamp' ? Math.min(Math.max(c.x - w / 2, minX == null ? L + 2 : minX + 2), W - 4 - w) : c.x; return { x: x, b: { x0: x - 2, x1: x + w + 2, y0: c.y - fs - 1, y1: c.y + (lines.length - 1) * lh + 4 } }; };
       for (var k = 0; k < cands.length; k++) {
@@ -337,7 +344,7 @@
         if (minX != null && bb.b.x0 < minX) continue;
         if (inPlot(bb.b) && !obst.concat(labs).some(function (z) { return hit(z, bb.b); })) {
           lines.forEach(function (s, j) { o.push(t(bb.x, cands[k].y + j * lh, s, cls[j] || '', '')); });
-          labs.push(bb.b); return true;
+          labs.push(bb.b); leader(q, bb.b); return true;
         }
       }
       if (must) {   // no free place: the first one that stays in the picture, on a halo
@@ -377,8 +384,8 @@
     var bo = oq.filter(function (q) { return q.d === bestOf(O); })[0];
     if (bo) {
       var ow = bo.d.town, gcls = bo.gold ? 'gold b big' : 'b big';
-      if (phone) place([ow + ', ' + word(bo.d.c)], near(bo, 1), [gcls], outX, true);
-      else place([bo.gold ? 'Best bid within ' + NEAR_MI + ' miles' : 'Best bid outside town', ow + ', ' + mi(bo.d.mi) + ': ' + word(bo.d.c)], near(bo, 2), ['', gcls], outX, true);
+      if (phone) place([ow + ', ' + word(bo.d.c)], near(bo, 1), [gcls], outX, true, bo);
+      else place([bo.gold ? 'Best bid within ' + NEAR_MI + ' miles' : 'Best bid outside town', ow + ', ' + mi(bo.d.mi) + ': ' + word(bo.d.c)], near(bo, 2), ['', gcls], outX, true, bo);
     }
     var ba = aq.filter(function (q) { return q.d === bestOf(A); })[0];
     if (ba) place([ba.d.town + ', ' + word(ba.d.c)], near(ba, 1), ['b big'], outX, true);
@@ -414,11 +421,7 @@
     }
     // 4. the biggest move in a week outside town, 10 cents or more
     var mv = oq.filter(function (q) { return q.d.w != null && Math.abs(q.d.w) >= 10 && q !== bo && lo.indexOf(q) < 0; }).sort(function (a, b) { return Math.abs(b.d.w) - Math.abs(a.d.w) || a.d.mi - b.d.mi; })[0];
-    if (mv) {
-      var mvt = (mv.d.w > 0 ? 'up ' : 'down ') + num(Math.abs(mv.d.w)) + ' in a week';
-      if (phone) place([mv.d.town + ', ' + mvt], near(mv, 1), [''], outX);
-      else place([mv.d.town + ': ' + word(mv.d.c) + ',', mvt], near(mv, 2), ['', ''], outX);
-    }
+    if (mv && !phone) place([mv.d.town + ': ' + word(mv.d.c) + ',', (mv.d.w > 0 ? 'up ' : 'down ') + num(Math.abs(mv.d.w)) + ' in a week'], near(mv, 2), ['', ''], outX, false, mv);   // wide only: a phone's corner is too tight
     // 5. the lowest in town, beside its dot
     if (tq.length > 1) {
       var lt = tq[tq.length - 1];
@@ -440,7 +443,7 @@
     // the lines first, then the dots (a ring of the page colour round each; an open dot is a ring of ink), then the words
     var rIn = dots.filter(function (q) { return q.d.inTown; }), ro = rIn.length ? rIn[0].r : r0, wd = function (r) { return fx(2 * r); };
     var dp = function (cls, pts) { return pts.length ? '<path class="' + cls + '" d="' + pts.join('') + '"/>' : ''; };
-    var lines = ['gr', 'ev', 'ax', 'md', 'wk'].map(function (k) { return dp(k, P[k]); }).join('');
+    var lines = ['gr', 'ev', 'ax', 'md', 'wk', 'ld'].map(function (k) { return dp(k, P[k]); }).join('');
     var uid = 'bd' + (opt.id || 'p'), defs = [], dd = '', sets = [[tq, ro], [oq, r0], [aq, r0]];
     sets.forEach(function (sx, a) {
       var r = sx[1];
@@ -463,7 +466,7 @@
   /* the key above the picture: what a dot, the gold, an open dot and a line mean, only what this view draws. The words
      in .bd-kph show only where the phone rule (a line for a move of 10 cents or more) applies. -> HTML */
   function keyHtml(p) {
-    var yr = String(p.prev || '').slice(0, 4), parts = ['dot: today&rsquo;s bid', '<span class="bd-kg">gold</span>: the best within ' + NEAR_MI + ' miles'];
+    var yr = String(p.prev || '').slice(0, 4), parts = ['dot: today&rsquo;s bid', '<span class="bd-kg">gold</span>: ' + (p.alt && p.alt.length ? 'the best on the town&rsquo;s terms' : 'the best within ' + NEAR_MI + ' miles')];
     if (p.alt && p.alt.length) parts.push('open dot: ' + esc(dmFull(p.altDm, yr)) + ' delivery');
     if (moved(p)) parts.push('line: its move since ' + esc(day(p.prev)) + '<span class="bd-kph">, when 10 cents or more</span>');
     return parts.join('; ');
