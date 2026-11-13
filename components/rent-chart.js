@@ -37,7 +37,8 @@
   function ord(n) { var t = n % 100, u = n % 10; return n + (t > 10 && t < 14 ? 'th' : u === 1 ? 'st' : u === 2 ? 'nd' : u === 3 ? 'rd' : 'th'); }
   function many(m, n) { var c = m.cnoun.toLowerCase(); return n === 1 ? c : c === 'parish' ? 'parishes' : c === 'county' ? 'counties' : c + 's'; }
   function medAt(m, y) { return m.med[y - m.y0] || null; }
-  function hasMed(m, y) { var q = medAt(m, y); return !!q && q[1] >= THIN; }
+  function thinOf(m) { return m.thin || THIN; }
+  function hasMed(m, y) { var q = medAt(m, y); return !!q && q[1] >= thinOf(m); }
   function priceAt(m, y) { return m.price.length ? m.price[y - m.y0] : null; }
   function plast(m) { var l = null; m.price.forEach(function (p, i) { if (p != null) l = m.y0 + i; }); return l; }
 
@@ -48,7 +49,8 @@
     m.med.forEach(function (q) { if (q) { lo = Math.min(lo, q[2]); hi = Math.max(hi, q[3]); } });
     var span = Math.max(hi - lo, 1), steps = [1, 2, 2.5, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000], st = steps[steps.length - 1];
     for (var i = 0; i < steps.length; i++) if (span / steps[i] <= 5) { st = steps[i]; break; }
-    var a = Math.floor(lo / st) * st, b = Math.ceil(hi / st) * st;
+    if (m.cap && m.cap < hi) { hi = m.cap; span = Math.max(hi - lo, 1); for (var j = 0; j < steps.length; j++) if (span / steps[j] <= 5) { st = steps[j]; break; } }
+    var a = Math.floor(lo / st) * st, b = m.cap && m.cap <= hi ? m.cap : Math.ceil(hi / st) * st;
     if (b === a) b += st;
     var tk = []; for (var v = a; v < b + 1e-9; v += st) tk.push(Math.round(v * 100) / 100);
     return { lo: a, hi: b, step: st, ticks: tk };
@@ -61,7 +63,7 @@
     var sc = scale(m);
     return '<g id="rc-cols">' + vals.map(function (vs, i) {
       if (!vs || !vs.length) return '';
-      var D = vs.length < SPARSE ? DASH_SPARSE : DASH;
+      var sparse = (m.typ != null ? m.typ : vs.length) < SPARSE, D = sparse ? DASH_SPARSE : DASH;
       var u = vs.map(function (v) { return unit(sc, v); }).sort(function (a, b) { return b - a; }).filter(function (x, k, a) { return !k || x !== a[k - 1]; });
       var start = u[0] + D / 2, pat = [];
       for (var k = 0; k < u.length; k++) {
@@ -69,7 +71,7 @@
         if (k + 1 < u.length && gap < D) pat.push(gap, 0); else pat.push(D, k + 1 < u.length ? gap - D : UNITS * 2);
       }
       var end = start - pat.reduce(function (a, b) { return a + b; }, 0) + UNITS * 2;
-      return '<path d="M' + (i + 0.5) + ' ' + f1(start) + 'V' + f1(end) + '" stroke-dasharray="' + pat.join(' ') + '"' + (vs.length < SPARSE ? ' stroke-opacity=".75"' : '') + '/>';
+      return '<path d="M' + (i + 0.5) + ' ' + f1(start) + 'V' + f1(end) + '" stroke-dasharray="' + pat.join(' ') + '"' + (sparse ? ' stroke-opacity=".75"' : '') + '/>';
     }).join('') + '</g>';
   }
 
@@ -81,7 +83,7 @@
     var ws = m.hot.map(function (r) { var a = Math.max(r[0], g0.from), b = Math.min(r[1], g0.to); return a > b ? null : [(b - a + 1) * g0.slot, a, b]; }).filter(Boolean);
     if (!ws.length) return plan;
     if (ws.every(function (w) { return wid('Corn over $5', bf, true) <= w[0] - 6; })) plan.lines = 1;
-    else if (ws.every(function (w) { return wid('over $5', bf, true) <= w[0] - 4; })) plan.lines = 2;
+    else if (ws.some(function (w) { return wid('over $5', bf, true) <= w[0] - 4; })) plan.lines = 2;   // every band that holds the two-line form; a band too narrow goes without
     if (m.short) ws.forEach(function (w) { var t = m.short[0] + ': ' + m.short[1] + ' bu corn'; if (m.short[0] >= w[1] && m.short[0] <= w[2] && wid(t, bf * 0.92) <= w[0] - 4) plan.short = t; });
     return plan;
   }
@@ -151,7 +153,7 @@
       out.push('<rect class="z" x="' + f1(x0) + '" y="0" width="' + f1(w) + '" height="' + f1(bottom) + '"/>');
       var line1 = P.size * 1.05;
       if (P.lines === 1) { box(cx, line1, 'Corn over $5', P.size, 'middle', true, 'band'); out.push('<text x="' + f1(cx) + '" y="' + f1(line1) + '" class="k-i b c"' + sz(bs) + '>Corn over $5</text>'); }
-      if (P.lines === 2) ['Corn', 'over $5'].forEach(function (t, i) { box(cx, line1 + i * lh, t, P.size, 'middle', true, 'band'); out.push('<text x="' + f1(cx) + '" y="' + f1(line1 + i * lh) + '" class="k-i b c"' + sz(bs) + '>' + esc(t) + '</text>'); });
+      if (P.lines === 2 && wid('over $5', P.size, true) <= w - 4) ['Corn', 'over $5'].forEach(function (t, i) { box(cx, line1 + i * lh, t, P.size, 'middle', true, 'band'); out.push('<text x="' + f1(cx) + '" y="' + f1(line1 + i * lh) + '" class="k-i b c"' + sz(bs) + '>' + esc(t) + '</text>'); });
       if (P.short && m.short[0] >= a && m.short[0] <= b) {
         var ys = line1 + P.lines * lh;
         box(cx, ys, P.short, P.size * 0.92, 'middle', false, 'band');
@@ -172,7 +174,7 @@
     });
     // the dashes: the sprite, through a viewBox on the years shown, clipped to the plot's width
     var sw = Math.min(0.56, g.tw / g.slot);
-    out.push('<clipPath id="rc-clip-' + id + '"><rect x="' + g.L + '" y="0" width="' + f1(g.slot * g.n) + '" height="' + g.H + '"/></clipPath>' +
+    out.push('<clipPath id="rc-clip-' + id + '"><rect x="' + g.L + '" y="' + f1(g.T - 3) + '" width="' + f1(g.slot * g.n) + '" height="' + f1(g.HM + 6) + '"/></clipPath>' +
       '<g clip-path="url(#rc-clip-' + id + ')"><svg x="' + g.L + '" y="' + g.T + '" width="' + f1(g.slot * g.n) + '" height="' + g.HM + '" viewBox="' + (g.from - m.y0) + ' 0 ' + g.n + ' ' + UNITS + '" preserveAspectRatio="none" overflow="visible">' +
       (o.cols ? '<g class="ds" stroke-width="' + sw.toFixed(3) + '">' + o.cols.replace(/^<g id="rc-cols">|<\/g>$/g, '') + '</g>'
         : '<use href="#rc-cols" class="ds" stroke-width="' + sw.toFixed(3) + '"/>') + '</svg></g>');
@@ -195,7 +197,7 @@
     yrs.forEach(function (y) {
       if (medAt(m, y)) return;
       var why = m.why[String(y)] === 'no survey' ? ['no', 'survey'] : ['none', 'published'], x = g.x(y), size = fs * 0.92;
-      if (wid(why[1], size) <= g.slot - 2) { put(x, g.T + g.HM - size * 1.55, why[0], size, 'k-m s h', 'middle'); put(x, g.T + g.HM - size * 0.35, why[1], size, 'k-m s h', 'middle'); }
+      if (wid(why[1], size) <= g.slot - 2 || (!g.phone && wid(why[1], size) <= g.slot * 1.7 && (y === g.from || medAt(m, y - 1)) && (y === g.to || medAt(m, y + 1)) && free(x, g.T + g.HM - size * 0.35, why[1], size, 'middle'))) { put(x, g.T + g.HM - size * 1.55, why[0], size, 'k-m s h', 'middle'); put(x, g.T + g.HM - size * 0.35, why[1], size, 'k-m s h', 'middle'); }
       else up(x, g.T + g.HM - 4, why.join(' '), size, 'k-m s h');
     });
     if (o.tap && o.tap.y >= g.from && o.tap.y <= g.to) {
@@ -204,8 +206,9 @@
     }
     // names and values: the first median point; the last points named at their ends
     if (mpts.length) {
-      var f = mpts[0], fx = g.x(f[0]) - g.tw / 2, fsz = fs * 1.02, fv = money(f[1]);
-      var fys = [g.y(f[1]) + fs * 1.65, g.y(f[1]) - fs * 0.8].filter(function (y) { return y > g.T + fs && y < g.T + g.HM && free(fx, y, fv, fsz, 'start', true); });
+      var f = mpts[0], fx = g.x(f[0]) - g.tw / 2, fsz = fs * 1.02, fv = money(f[1]), nx = mpts[1];
+      // under when the line leaves upward, over when it leaves downward
+      var under = [g.y(f[1]) + fs * 1.65, g.y(f[1]) - fs * 0.8], fys = (nx && nx[1] < f[1] ? under.reverse() : under).filter(function (y) { return y > g.T + fs && y < g.T + g.HM && free(fx, y, fv, fsz, 'start', true); });
       if (fys.length) put(fx, fys[0], fv, fsz, 'k-i v h', 'start', true, 'value');
     }
     var lastOf = function (pts) { return pts.length ? pts[pts.length - 1] : null; };
@@ -234,9 +237,15 @@
         var ys2 = [yv + (first ? fs * 1.6 : -fs * 0.75), yv + (first ? -fs * 0.75 : fs * 1.6)].filter(function (y) { return y > g.T + fs * 0.6 && y < g.T + g.HM + fs * 0.5 && free(x, y, s, fs * 1.02, 'end', true); });
         if (ys2.length) put(x, ys2[0], s, fs * 1.02, cls, 'end', true, 'value');
       };
-      if (ml) endLab(rx, g.y(ml[1]), below, money(ml[1]), 'k-i v h');
+      var pv = mpts.length > 1 ? mpts[mpts.length - 2] : null;
+      if (ml) endLab(rx, g.y(ml[1]), cl ? below : !(pv && pv[1] < ml[1]), money(ml[1]), 'k-i v h');   // alone: over it when the line comes up from the left, under when it comes down
       if (cl) endLab(cl[0] === g.to ? rx : g.x(cl[0]) + g.tw / 2, g.y(cl[1]), !below, money(cl[1]), 'k-a v h');
     }
+    if (m.over) yrs.forEach(function (y) {   // counties above the axis's end: counted, not drawn
+      var n = m.over[String(y)]; if (!n) return;
+      var yy = g.T + fs * 0.85, size = fs * 0.92, t = [n + ' higher', '+' + n].filter(function (s) { return wid(s, size) <= g.slot - 4 && free(g.x(y), yy, s, size, 'middle'); })[0];
+      if (t) put(g.x(y), yy, t, size, 'k-m s h', 'middle', false, 'label');
+    });
     // the corn strip: the price received each crop year, dark when over $5
     if (g.strip) {
       var s0 = g.T + g.HM + g.GAP, pv = yrs.map(function (y) { return priceAt(m, y); }).filter(function (p) { return p != null; });
@@ -288,7 +297,7 @@
     o = o || {};
     var q = medAt(m, y), p = priceAt(m, y), pl = plast(m), cn = m.cnoun.toLowerCase(), s;
     if (!q) s = y + ': ' + (m.why[String(y)] === 'no survey' ? 'no USDA survey.' : 'no ' + cn + ' published.');
-    else if (q[1] < THIN) s = y + ': ' + q[1] + ' ' + many(m, q[1]) + ' published (' + (q[1] === 1 ? money(q[2]) : money(q[2]) + ' and ' + money(q[3])) + '), too few for a median.';
+    else if (q[1] < thinOf(m)) s = y + ': ' + q[1] + ' ' + many(m, q[1]) + ' published (' + (q[1] === 1 ? money(q[2]) : q[1] === 2 ? money(q[2]) + ' and ' + money(q[3]) : money(q[2]) + ' to ' + money(q[3])) + '), too few for a median.';
     else s = y + ': median ' + cn + ' ' + money(q[0]) + ' an acre (' + q[1] + ' ' + many(m, q[1]) + ', ' + money(q[2]) + ' to ' + money(q[3]) + ').';
     if (m.price.length) {
       if (p != null) s += ' Corn ' + cents(p) + ' a bushel' + (m.prelim.indexOf(y) >= 0 ? ' (preliminary)' : '') + '.';
@@ -353,7 +362,7 @@
     x.font = '800 30px ' + F; x.fillStyle = ink; x.fillText('agsist', 48, 50);
     var aw = x.measureText('agsist').width; x.font = '700 18px ' + F; x.fillStyle = acc; x.fillText('.com', 50 + aw, 50);
     x.font = '600 18px ' + F; x.fillStyle = dim; x.textAlign = 'right'; x.fillText(m.name + ' cash rent, ' + m.y0 + ' to ' + m.y1, W - 48, 49); x.textAlign = 'left';
-    var head = st.head || m.head || '', hd = fit('800', head, W - 96, [30, 28, 26], 2) || fit('800', m.head, W - 96, [24, 22], 3) || { size: 22, lines: [head] }, yy = 58 + hd.size;
+    var head = st.head || m.head || '', hd = fit('800', head, W - 96, [30, 28, 26], 2) || fit('800', m.head, W - 96, [24, 22], 3) || { size: 22, lines: [head] }, yy = 74 + hd.size;
     x.font = '800 ' + hd.size + 'px ' + F; x.fillStyle = ink;
     hd.lines.forEach(function (l) { x.fillText(l, 48, yy); yy += hd.size * 1.16; });
     var who = st.county ? st.county.name + ' ' + m.cnoun : '';

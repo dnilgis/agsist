@@ -1,7 +1,8 @@
 /* components/rent-chart.css (v2): the state rent chart (components/rent-chart.js). Ink, greys and the one gold; plain
    word controls, the picked one bold with a 2 px rule; square corners; sizes from the site tokens. Every box keeps
    its room before the script runs, so nothing moves when it does. */
-.rc{container-type:inline-size;margin:var(--sp-lg) 0 var(--sp-md)}
+.rc{container-type:inline-size;margin:var(--sp-lg) 0 var(--sp-md);display:flex;flex-direction:column}
+.rc>*{min-width:0}
 .rc-head{font-size:var(--fs-xl);line-height:var(--lh-snug);margin:0 0 var(--sp-xs);text-wrap:balance}
 .rc-take{font-size:var(--fs-sm);line-height:1.5;margin:0 0 var(--sp-sm);color:var(--text-dim);max-width:52em}
 .rc-ctl,.rc-tools{visibility:hidden}
@@ -12,7 +13,7 @@
 .rc-rg[aria-pressed="true"]{color:var(--text);font-weight:700;border-bottom-color:var(--gold)}
 .rc-pick{display:flex;align-items:center;gap:var(--sp-xs);color:var(--text-dim);min-height:44px}
 .rc-pick select{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--border-2);border-radius:0;padding:.3rem .4rem;min-height:36px;width:12.5em}
-.rc-rec{font-size:var(--fs-sm);font-weight:600;color:var(--gold);text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center;visibility:hidden}
+.rc-rec{white-space:nowrap;font-size:var(--fs-sm);font-weight:600;color:var(--gold);text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center;visibility:hidden}
 .rc-axis{font-size:var(--fs-xs);line-height:1.4;margin:0 0 var(--sp-xs);color:var(--text-dim)}
 .rc-key{display:none;font-size:var(--fs-xs);line-height:1.5;margin:0 0 var(--sp-xs);color:var(--text)}
 .rc-key>span{display:inline-flex;align-items:center;gap:6px;margin-right:var(--sp-md);white-space:nowrap}
@@ -39,12 +40,16 @@
 .rc-svg .tp{stroke:var(--text);stroke-width:3px;stroke-linecap:round}
 .rc-read{font-size:var(--fs-xs);line-height:1.45;margin:var(--sp-xs) 0 0;padding:var(--sp-xs) 0;border-top:1px solid var(--border-2);border-bottom:1px solid var(--border-2);min-height:calc(3 * 1.45em + 2 * var(--sp-xs));font-variant-numeric:tabular-nums;box-sizing:border-box}
 .rc-note{font-size:var(--fs-xs);line-height:1.5;margin:var(--sp-sm) 0 0;color:var(--text-dim);max-width:62em}
-.rc-tools{display:flex;gap:var(--sp-md);margin:var(--sp-xs) 0 0}
-.rc-btn{font:inherit;font-size:var(--fs-sm);font-weight:600;color:var(--gold);background:none;border:0;padding:.35rem 0;min-height:44px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.rc-tools{display:flex;flex-wrap:wrap;gap:0 var(--sp-md);margin:var(--sp-xs) 0 0}
+.rc-btn{white-space:nowrap;font:inherit;font-size:var(--fs-sm);font-weight:600;color:var(--gold);background:none;border:0;padding:.35rem 0;min-height:44px;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .rc-btn:focus-visible,.rc-rg:focus-visible,.rc-rec:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
 .rc-fold{margin:var(--sp-sm) 0 var(--sp-md)}
 .rc-fold summary{cursor:pointer;min-height:44px;display:flex;align-items:center;color:var(--gold);font-weight:600;font-size:var(--fs-sm)}
-@container (max-width:599.98px){.rc-key{display:block}}
+@container (max-width:599.98px){
+  .rc-key{display:block}
+  /* the phone: the headline and the picture share the first screen; the figures behind the headline follow the readout */
+  .rc-take{order:1;margin:var(--sp-sm) 0 0}.rc-note{order:2}.rc-tools{order:3}.rc-fold{order:4}
+}
 @container (min-width:600px){
   .rc-plot{height:var(--rc-hw)}
   .rc-plot .rc-w{display:block}.rc-plot .rc-p:not(:only-child){display:none}
