@@ -143,6 +143,14 @@ function load(){ return fetch('/data/daily-archive/index.json', {cache:'no-store
   .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
   .then(function(manifest){
     var briefings = (manifest && manifest.briefings) || [];
+    // Only the last 30 days are listed (Sig, Nov 13, 2026). Counted from the newest issue's own date,
+    // not the clock. Older issue pages stay up, indexed and in the sitemap; they are just not listed here.
+    var WINDOW_DAYS = 30, newest = 0;
+    briefings.forEach(function(b){ var t = parseDateOnly(b.date); if(t && t.getTime() > newest) newest = t.getTime(); });
+    if(newest){
+      var floor = newest - (WINDOW_DAYS - 1) * 86400000 - 43200000;
+      briefings = briefings.filter(function(b){ var t = parseDateOnly(b.date); return t && t.getTime() >= floor; });
+    }
 
     allEntries = briefings.map(function(item){
       var d = parseDateOnly(item.date);
