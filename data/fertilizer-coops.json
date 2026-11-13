@@ -1,6 +1,6 @@
 {
  "source": "Posted retail fertilizer prices on co-op websites",
- "generated": "2026-11-12T13:54:37Z",
+ "generated": "2026-11-13T13:54:37Z",
  "stale_days": 60,
  "min_median": 2,
  "conventions": "Dollars per ton. Cash is each co-op's own cash price (cash, cash discount or cash pickup, as labeled). Rows dated over 60 days ago, rows whose per-unit or cwt figure does not match, and products the reader cannot name are shown but not summarized. One price per co-op per product: the first listed. Middle price from 2 co-ops up (from 2 it is their average); one co-op is named.",
@@ -19,8 +19,8 @@
    "median": 832.1,
    "low": 817.0,
    "high": 965.0,
-   "oldest": "2026-09-24",
-   "newest": "2026-10-06",
+   "oldest": "2026-10-01",
+   "newest": "2026-11-11",
    "undated": 0,
    "coops": [
     "tworivers-ks",
@@ -35,11 +35,11 @@
    "name": "Urea",
    "symbol": "46-0-0",
    "n": 5,
-   "median": 615.95,
-   "low": 608.0,
+   "median": 610.0,
+   "low": 572.3,
    "high": 840.0,
-   "oldest": "2026-09-24",
-   "newest": "2026-10-06",
+   "oldest": "2026-10-01",
+   "newest": "2026-11-11",
    "undated": 0,
    "coops": [
     "tworivers-ks",
@@ -57,11 +57,11 @@
    "name": "UAN 28%",
    "symbol": "28-0-0",
    "n": 4,
-   "median": 415.33,
+   "median": 417.45,
    "low": 400.0,
    "high": 490.0,
-   "oldest": "2026-09-24",
-   "newest": "2026-10-06",
+   "oldest": "2026-10-01",
+   "newest": "2026-11-11",
    "undated": 0,
    "coops": [
     "tworivers-ks",
@@ -77,10 +77,10 @@
    "symbol": "32-0-0",
    "n": 1,
    "median": null,
-   "low": 451.05,
-   "high": 451.05,
-   "oldest": "2026-09-24",
-   "newest": "2026-09-24",
+   "low": 455.9,
+   "high": 455.9,
+   "oldest": "2026-11-11",
+   "newest": "2026-11-11",
    "undated": 0,
    "coops": [
     "farmerscoop-columbus-ks"
@@ -92,11 +92,11 @@
    "name": "DAP",
    "symbol": "18-46-0",
    "n": 3,
-   "median": 936.05,
+   "median": 931.2,
    "low": 921.5,
    "high": 970.0,
-   "oldest": "2026-09-24",
-   "newest": "2026-10-06",
+   "oldest": "2026-10-06",
+   "newest": "2026-11-11",
    "undated": 0,
    "coops": [
     "mccune-ks",
@@ -130,8 +130,8 @@
    "median": 470.4,
    "low": 460.0,
    "high": 500.0,
-   "oldest": "2026-09-24",
-   "newest": "2026-10-06",
+   "oldest": "2026-10-01",
+   "newest": "2026-11-11",
    "undated": 0,
    "coops": [
     "tworivers-ks",
@@ -147,10 +147,10 @@
    "symbol": "21-0-0-24S",
    "n": 1,
    "median": null,
-   "low": 509.25,
-   "high": 509.25,
-   "oldest": "2026-09-24",
-   "newest": "2026-09-24",
+   "low": 538.35,
+   "high": 538.35,
+   "oldest": "2026-11-11",
+   "newest": "2026-11-11",
    "undated": 0,
    "coops": [
     "farmerscoop-columbus-ks"
@@ -218,7 +218,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 42,
+     "age_days": 43,
      "stale": false
     },
     {
@@ -237,7 +237,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 42,
+     "age_days": 43,
      "stale": false
     },
     {
@@ -256,7 +256,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 63,
+     "age_days": 64,
      "stale": true
     },
     {
@@ -275,7 +275,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 42,
+     "age_days": 43,
      "stale": false
     },
     {
@@ -295,7 +295,7 @@
      "notes": [],
      "flags": [],
      "first_seen": "2026-10-15",
-     "age_days": 28,
+     "age_days": 29,
      "stale": false
     },
     {
@@ -314,7 +314,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 31,
+     "age_days": 32,
      "stale": false
     },
     {
@@ -333,7 +333,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 38,
+     "age_days": 39,
      "stale": false
     },
     {
@@ -352,7 +352,7 @@
       "cash: priced per gallon or pound, not per ton (5.75/gal)"
      ],
      "flags": [],
-     "age_days": 1625,
+     "age_days": 1626,
      "stale": true
     },
     {
@@ -371,7 +371,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 42,
+     "age_days": 43,
      "stale": false
     },
     {
@@ -390,7 +390,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 1147,
+     "age_days": 1148,
      "stale": true
     },
     {
@@ -409,7 +409,7 @@
       "cash: priced per gallon or pound, not per ton (.60lb)"
      ],
      "flags": [],
-     "age_days": 1633,
+     "age_days": 1634,
      "stale": true
     },
     {
@@ -428,7 +428,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 100,
+     "age_days": 101,
      "stale": true
     },
     {
@@ -447,13 +447,13 @@
       "cash: priced per gallon or pound, not per ton (4.00/gal)"
      ],
      "flags": [],
-     "age_days": 477,
+     "age_days": 478,
      "stale": true
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-11-12T13:54:37Z",
+   "fetched": "2026-11-13T13:54:37Z",
    "ok": true,
    "note": null
   },
@@ -484,7 +484,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     },
     {
@@ -503,7 +503,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     },
     {
@@ -522,7 +522,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     },
     {
@@ -541,7 +541,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     },
     {
@@ -560,13 +560,13 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-11-12T13:54:37Z",
+   "fetched": "2026-11-13T13:54:37Z",
    "ok": true,
    "note": null
   },
@@ -597,7 +597,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     },
     {
@@ -616,7 +616,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     },
     {
@@ -635,7 +635,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     },
     {
@@ -654,7 +654,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     },
     {
@@ -673,7 +673,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false,
      "far_from_others": true
     },
@@ -693,7 +693,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     },
     {
@@ -712,7 +712,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     },
     {
@@ -731,7 +731,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     },
     {
@@ -750,13 +750,13 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 37,
+     "age_days": 38,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-11-12T13:54:37Z",
+   "fetched": "2026-11-13T13:54:37Z",
    "ok": true,
    "note": null
   },
@@ -766,47 +766,47 @@
    "town": "Columbus",
    "state": "KS",
    "url": "https://www.farmerscoop.coop/agronomy",
-   "source_url": "https://s3.amazonaws.com/media.agricharts.com/sites/1041/2026-9-24.pdf",
+   "source_url": "https://s3.amazonaws.com/media.agricharts.com/sites/1041/2026-11-11.pdf",
    "layout": "pdf-sheet",
    "cash_label": "3% cash pickup",
-   "posted": "2026-09-24",
+   "posted": "2026-11-11",
    "rows": [
     {
      "product": "dap",
      "raw": "DAP",
      "prices": {
-      "list": 965.0,
-      "cash_pickup": 936.05
+      "list": 960.0,
+      "cash_pickup": 931.2
      },
-     "cash": 936.05,
+     "cash": 931.2,
      "cash_basis": "cash_pickup",
      "per_unit": null,
-     "cwt": 48.25,
-     "date": "2026-09-24",
+     "cwt": 48.0,
+     "date": "2026-11-11",
      "date_from": "page",
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 49,
+     "age_days": 2,
      "stale": false
     },
     {
      "product": "urea",
      "raw": "UREA",
      "prices": {
-      "list": 635.0,
-      "cash_pickup": 615.95
+      "list": 590.0,
+      "cash_pickup": 572.3
      },
-     "cash": 615.95,
+     "cash": 572.3,
      "cash_basis": "cash_pickup",
-     "per_unit": 0.69,
-     "cwt": 31.75,
-     "date": "2026-09-24",
+     "per_unit": 0.64,
+     "cwt": 29.5,
+     "date": "2026-11-11",
      "date_from": "page",
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 49,
+     "age_days": 2,
      "stale": false
     },
     {
@@ -820,31 +820,31 @@
      "cash_basis": "cash_pickup",
      "per_unit": null,
      "cwt": 24.5,
-     "date": "2026-09-24",
+     "date": "2026-11-11",
      "date_from": "page",
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 49,
+     "age_days": 2,
      "stale": false
     },
     {
      "product": "other",
      "raw": "9-23-30",
      "prices": {
-      "list": 727.5,
-      "cash_pickup": 705.68
+      "list": 725.0,
+      "cash_pickup": 703.25
      },
-     "cash": 705.68,
+     "cash": 703.25,
      "cash_basis": "cash_pickup",
      "per_unit": null,
-     "cwt": 36.38,
-     "date": "2026-09-24",
+     "cwt": 36.25,
+     "date": "2026-11-11",
      "date_from": "page",
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 49,
+     "age_days": 2,
      "stale": false
     },
     {
@@ -858,50 +858,50 @@
      "cash_basis": "cash_pickup",
      "per_unit": null,
      "cwt": 28.75,
-     "date": "2026-09-24",
+     "date": "2026-11-11",
      "date_from": "page",
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 49,
+     "age_days": 2,
      "stale": false
     },
     {
      "product": "other",
      "raw": "POLY 4",
      "prices": {
-      "list": 450.0,
-      "cash_pickup": 436.5
+      "list": 480.0,
+      "cash_pickup": 465.6
      },
-     "cash": 436.5,
+     "cash": 465.6,
      "cash_basis": "cash_pickup",
      "per_unit": null,
-     "cwt": 22.5,
-     "date": "2026-09-24",
+     "cwt": 24.0,
+     "date": "2026-11-11",
      "date_from": "page",
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 49,
+     "age_days": 2,
      "stale": false
     },
     {
      "product": "ams",
      "raw": "AMS 21-0-0-24",
      "prices": {
-      "list": 525.0,
-      "cash_pickup": 509.25
+      "list": 555.0,
+      "cash_pickup": 538.35
      },
-     "cash": 509.25,
+     "cash": 538.35,
      "cash_basis": "cash_pickup",
      "per_unit": null,
-     "cwt": 26.25,
-     "date": "2026-09-24",
+     "cwt": 27.75,
+     "date": "2026-11-11",
      "date_from": "page",
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 49,
+     "age_days": 2,
      "stale": false
     },
     {
@@ -915,96 +915,96 @@
      "cash_basis": "cash_pickup",
      "per_unit": 0.52,
      "cwt": 43.0,
-     "date": "2026-09-24",
+     "date": "2026-11-11",
      "date_from": "page",
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 49,
+     "age_days": 2,
      "stale": false
     },
     {
      "product": "uan28",
      "raw": "28%",
      "prices": {
-      "list": 415.63,
-      "cash_pickup": 403.16
+      "list": 420.0,
+      "cash_pickup": 407.4
      },
-     "cash": 403.16,
+     "cash": 407.4,
      "cash_basis": "cash_pickup",
-     "per_unit": 0.74,
-     "cwt": 20.78,
-     "date": "2026-09-24",
+     "per_unit": 0.75,
+     "cwt": 21.0,
+     "date": "2026-11-11",
      "date_from": "page",
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 49,
+     "age_days": 2,
      "stale": false
     },
     {
      "product": "uan32",
      "raw": "32%",
      "prices": {
-      "list": 465.0,
-      "cash_pickup": 451.05
+      "list": 470.0,
+      "cash_pickup": 455.9
      },
-     "cash": 451.05,
+     "cash": 455.9,
      "cash_basis": "cash_pickup",
      "per_unit": 0.73,
-     "cwt": 23.25,
-     "date": "2026-09-24",
+     "cwt": 23.5,
+     "date": "2026-11-11",
      "date_from": "page",
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 49,
+     "age_days": 2,
      "stale": false
     },
     {
      "product": "other",
      "raw": "28-0-0-5",
      "prices": {
-      "list": 470.0,
-      "cash_pickup": 455.9
+      "list": 475.0,
+      "cash_pickup": 460.75
      },
-     "cash": 455.9,
+     "cash": 460.75,
      "cash_basis": "cash_pickup",
-     "per_unit": 0.84,
-     "cwt": 23.5,
-     "date": "2026-09-24",
+     "per_unit": 0.85,
+     "cwt": 23.75,
+     "date": "2026-11-11",
      "date_from": "page",
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 49,
+     "age_days": 2,
      "stale": false
     },
     {
      "product": "other",
      "raw": "SUPERU",
      "prices": {
-      "list": 800.0,
-      "cash_pickup": 776.0
+      "list": 755.0,
+      "cash_pickup": 732.35
      },
-     "cash": 776.0,
+     "cash": 732.35,
      "cash_basis": "cash_pickup",
-     "per_unit": 0.87,
-     "cwt": 40.0,
-     "date": "2026-09-24",
+     "per_unit": 0.82,
+     "cwt": 37.75,
+     "date": "2026-11-11",
      "date_from": "page",
      "date_text": null,
      "notes": [],
      "flags": [
-      "per-unit figure 0.870 does not match any ton price"
+      "per-unit figure 0.820 does not match any ton price"
      ],
-     "age_days": 49,
+     "age_days": 2,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-11-12T13:54:37Z",
+   "fetched": "2026-11-13T13:54:37Z",
    "ok": true,
    "note": null
   },
@@ -1034,7 +1034,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -1052,7 +1052,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -1070,7 +1070,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -1088,7 +1088,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -1106,7 +1106,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -1124,7 +1124,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -1142,7 +1142,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -1160,7 +1160,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     },
     {
@@ -1178,13 +1178,13 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 34,
+     "age_days": 35,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-11-12T13:54:37Z",
+   "fetched": "2026-11-13T13:54:37Z",
    "ok": true,
    "note": null
   },
@@ -1215,7 +1215,7 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 42,
+     "age_days": 43,
      "stale": false
     },
     {
@@ -1234,13 +1234,13 @@
      "date_text": null,
      "notes": [],
      "flags": [],
-     "age_days": 42,
+     "age_days": 43,
      "stale": false
     }
    ],
    "dropped": [],
    "problems": [],
-   "fetched": "2026-11-12T13:54:37Z",
+   "fetched": "2026-11-13T13:54:37Z",
    "ok": true,
    "note": null
   }
