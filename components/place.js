@@ -592,6 +592,19 @@
     return out.join('') + '</svg>';
   }
 
+  /* The enhanced chart's data (Nov 13 2026; components/rain-chart.js draws it): the figure's own numbers as data- fields,
+     the same fields, in the same order and with the same points, as the county page's chart (scripts/build_county_rain.py
+     chart()). Nothing is worked out here. */
+  function rainChartBox(f) {
+    if (!f || !f.cum || !f.cum.length || f.total == null || !f.asOf) return '';
+    var hasUs = f.usual != null && f.cum.every(function (p) { return p[2] != null; });
+    var wk = f.cum.map(function (p) { return p[0] + ',' + Math.round(p[1] * 100) + (hasUs ? ',' + Math.round(p[2] * 100) : ''); }).join(';');
+    var q = function (v) { return String(v).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); };
+    return '<div class="rce" data-year="' + f.year + '" data-place="' + q(f.place) + '" data-total="' + f.total.toFixed(2) + '"' +
+      (hasUs ? ' data-usual="' + f.usual.toFixed(2) + '"' : '') + (hasUs && f.pct != null ? ' data-pct="' + f.pct + '"' : '') +
+      ' data-asof="' + q(f.asOf) + '" data-days="' + f.days + '" data-miss="' + (f.missing || 0) + '" data-noun="' + f.noun + '" data-wk="' + wk + '"><div class="rce-art"></div></div>';
+  }
+
   /* THE RANKED LINE: this year's rain from Jan 1 to the last reported day, against the same
      calendar days of every earlier year the station recorded in full.
        rows    the station's period of record from RCC-ACIS (StnData sdate=por, elems pcpn),
@@ -1203,7 +1216,7 @@
     factBid: factBid, factFutures: factFutures, factBasis: factBasis, factRain: factRain, factDrought: factDrought, factHail: factHail,
     factProgress: factProgress, factCol: factCol, factSales: factSales, factArcPlc: factArcPlc, factUsda: factUsda, factFert: factFert, factFuel: factFuel, usdaFert: usdaFert, USDA_DAYS: USDA_DAYS, factCustom: factCustom,
     factDaily: factDaily, fertSrc: fertSrc, srcName: srcName, centsFrac: centsFrac, deliveryWords: deliveryWords, stateLinks: stateLinks, NO_PAGE: NO_PAGE,
-    rainFigure: rainFigure, rainChart: rainChart, rankSoFar: rankSoFar, rankWordsRain: rankWordsRain, windowTotals: windowTotals, RANK_MIN: RANK_MIN,
+    rainFigure: rainFigure, rainChart: rainChart, rainChartBox: rainChartBox, rankSoFar: rankSoFar, rankWordsRain: rankWordsRain, windowTotals: windowTotals, RANK_MIN: RANK_MIN,
     ownPast: ownPast, unusualHere: unusualHere, ownWords: ownWords, OWN_MIN: OWN_MIN, OWN_MAX: OWN_MAX,
     basisNeighbors: basisNeighbors, basisHistMap: basisHistMap, basisHistory: basisHistory, basisMonth: basisMonth, basisStitch: basisStitch, basisSeries: basisSeries, median: median, EL: { NEAR: EL_NEAR, NB: EL_NB, NB_MIN: EL_NB_MIN, EACH: EL_EACH, HIST_DAYS: HIST_DAYS },
     milesFrom: milesFrom,

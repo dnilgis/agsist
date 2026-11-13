@@ -166,3 +166,21 @@
   .rc-states li { padding: .65rem 0; }   /* the state lists (All states, without a page): about 44 px a row */
 }
 .rc-none li small a { white-space: nowrap; }   /* each nearest-county link stays whole in "without a page" */
+
+/* The enhanced running-total chart (Nov 13 2026; components/rain-chart.js draws it, in the browser, from the page's own
+   data- fields). Two fixed designs, so the height never depends on the data and the room is held from the first
+   paint: a phone design 400 x 480 and a wide one 640 x 588 (the two aspect ratios below are those sizes; test/
+   rain-chart-enhanced.test.mjs keeps them equal to what the component draws). Without scripts nothing is held and
+   nothing is drawn. On a county page the chart is the Rain Print's fallback: it waits, unseen and taking no room,
+   until the print has drawn or given up (then the print's room is let go and the chart shows); a safety timer in
+   the component shows it if the print's script never answers. */
+.rce { max-width: 680px; margin: 0; }
+.rce .rce-art svg { max-width: none; width: 100%; height: auto; display: block; }
+@media (scripting: enabled) {
+  .rce:not(.rce-off) .rce-art { aspect-ratio: 400 / 480; }
+  .rc-print-top:not(.rc-print-on):not(.rc-print-off):not(.rce-late) .rce { display: none; }
+}
+@media (scripting: enabled) and (min-width: 480px) {
+  .rce:not(.rce-off) .rce-art { aspect-ratio: 640 / 588; }
+}
+.rce-off { display: none; }
