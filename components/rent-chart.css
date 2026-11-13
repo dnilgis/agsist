@@ -1,4 +1,4 @@
-/* components/rent-chart.css: the state rent chart (components/rent-chart.js). Ink, greys and the one gold; plain
+/* components/rent-chart.css (v2): the state rent chart (components/rent-chart.js). Ink, greys and the one gold; plain
    word controls, the picked one bold with a 2 px rule; square corners; sizes from the site tokens. Every box keeps
    its room before the script runs, so nothing moves when it does. */
 .rc{container-type:inline-size;margin:var(--sp-lg) 0 var(--sp-md)}
@@ -12,7 +12,7 @@
 .rc-rg[aria-pressed="true"]{color:var(--text);font-weight:700;border-bottom-color:var(--gold)}
 .rc-pick{display:flex;align-items:center;gap:var(--sp-xs);color:var(--text-dim);min-height:44px}
 .rc-pick select{font:inherit;color:var(--text);background:var(--bg);border:1px solid var(--border-2);border-radius:0;padding:.3rem .4rem;min-height:36px;width:12.5em}
-.rc-rec{font-weight:600;color:var(--gold);text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center;visibility:hidden}
+.rc-rec{font-size:var(--fs-sm);font-weight:600;color:var(--gold);text-decoration:underline;text-underline-offset:3px;min-height:44px;display:inline-flex;align-items:center;visibility:hidden}
 .rc-axis{font-size:var(--fs-xs);line-height:1.4;margin:0 0 var(--sp-xs);color:var(--text-dim)}
 .rc-key{display:none;font-size:var(--fs-xs);line-height:1.5;margin:0 0 var(--sp-xs);color:var(--text)}
 .rc-key>span{display:inline-flex;align-items:center;gap:6px;margin-right:var(--sp-md);white-space:nowrap}
@@ -25,6 +25,18 @@
 .rc-plot>svg:focus{outline:none}.rc-plot>svg:focus-visible{outline:2px solid var(--gold);outline-offset:4px}
 .rc-plot .rc-w{display:none}
 .rc-sprite{position:absolute;width:0;height:0;overflow:hidden}
+/* the drawing's own parts (components/rent-chart.js render): text dim unless k-i ink, k-m muted or k-a gold */
+.rc-svg.rc-w{font-size:var(--fs-xs)}.rc-svg.rc-p{font-size:var(--fs-2xs)}
+.rc-svg text{font-family:inherit;fill:var(--text-dim)}.rc-svg .k-i{fill:var(--text)}.rc-svg .k-m{fill:var(--text-muted)}.rc-svg .k-a{fill:var(--gold)}
+.rc-svg .b{font-weight:700}.rc-svg .c{text-anchor:middle}.rc-svg .r{text-anchor:end}.rc-svg .s{font-size:.92em}.rc-svg .e{font-size:1.06em}.rc-svg .v{font-size:1.02em}
+.rc-svg .h{paint-order:stroke;stroke:var(--bg);stroke-width:4px;stroke-linejoin:round}
+.rc-svg .g{stroke:var(--border);fill:none}.rc-svg .z{fill:var(--text);fill-opacity:.06}.rc-svg .hv{fill:var(--text);fill-opacity:.1}
+.rc-svg .ds{stroke:var(--text);stroke-opacity:.32;fill:none}
+.rc-svg .ml,.rc-svg .cl{fill:none;stroke-linecap:round;stroke-linejoin:round}.rc-svg .ml{stroke:var(--text);stroke-width:2.4px}.rc-svg .cl{stroke:var(--gold);stroke-width:2.2px}
+.rc-svg .md,.rc-svg .cd{stroke:var(--bg);stroke-width:1.5px}.rc-svg .md{fill:var(--text)}.rc-svg .cd{fill:var(--gold)}
+.rc-svg .dt{stroke-dasharray:3 5}.rc-svg.rc-p .dt{stroke-dasharray:2 4}
+.rc-svg .p{fill:var(--text);fill-opacity:.36}.rc-svg .p.o{fill-opacity:1}.rc-svg .bl{stroke:var(--text-muted);stroke-opacity:.6;fill:none}
+.rc-svg .tp{stroke:var(--text);stroke-width:3px;stroke-linecap:round}
 .rc-read{font-size:var(--fs-xs);line-height:1.45;margin:var(--sp-xs) 0 0;padding:var(--sp-xs) 0;border-top:1px solid var(--border-2);border-bottom:1px solid var(--border-2);min-height:calc(3 * 1.45em + 2 * var(--sp-xs));font-variant-numeric:tabular-nums;box-sizing:border-box}
 .rc-note{font-size:var(--fs-xs);line-height:1.5;margin:var(--sp-sm) 0 0;color:var(--text-dim);max-width:62em}
 .rc-tools{display:flex;gap:var(--sp-md);margin:var(--sp-xs) 0 0}
@@ -35,6 +47,6 @@
 @container (max-width:599.98px){.rc-key{display:block}}
 @container (min-width:600px){
   .rc-plot{height:var(--rc-hw)}
-  .rc-plot .rc-w{display:block}.rc-plot .rc-p{display:none}
+  .rc-plot .rc-w{display:block}.rc-plot .rc-p:not(:only-child){display:none}
   .rc-read{font-size:var(--fs-sm);min-height:calc(2 * 1.45em + 2 * var(--sp-xs))}
 }
