@@ -138,6 +138,47 @@
       })
       .catch(function () {});
   }
+  /* Rain Print from the footer (2026-11-13): the footer's Rain Print line is counted, and its link carries from=footer so
+     /rain-print can say where its visitor came from (the page sends the bare path to Analytics, so rain-print.js reports
+     from= on its own event). Every footer on the site has the line, the live one and the static ones, so one listener on
+     the page reads the click (and a new-tab click) and adds the mark at that moment. */
+  function initRainPrintFooter() {
+    var go = function (e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[href]') : null;
+      if (!a || !a.closest('#site-footer, footer')) return;
+      var href = a.getAttribute('href') || '';
+      if (!/^\/rain-print(?:[?#]|$)/.test(href)) return;
+      if (!/[?&]from=/.test(href)) {
+        var at = href.indexOf('#'), hash = at < 0 ? '' : href.slice(at), base = at < 0 ? href : href.slice(0, at);
+        a.setAttribute('href', base + (base.indexOf('?') < 0 ? '?' : '&') + 'from=footer' + hash);
+      }
+      try { if (typeof window.gtag === 'function') window.gtag('event', 'rain_print_promo_click', { placement: 'footer', from: 'footer', page: location.pathname, transport_type: 'beacon' }); } catch (x) {}
+    };
+    document.addEventListener('click', go, true);
+    document.addEventListener('auxclick', go, true);
+  }
+  /* "This is Sig" (2026-11-13): visiting any page with ?sigdev=<the private word> on a device marks that browser
+     (localStorage agsist-sig-device = 1); ?sigdev=off clears it. Only the word's SHA-256 is here, so the page does not
+     give the word away. components/ga-gate.js reads the mark and sends traffic_type=internal and sig_device=yes with every
+     Analytics event from that browser, so GA4's internal-traffic filter and a report can leave Sig's own visits out. The
+     word is in the private notes (howto/sig-device.md). The address is cleaned of it at once. */
+  var SIG_HASH = '39149f747fcd1e8dac916864a8621bb58847430743ef6eca4fff1d9538757b0a';
+  function initSigDevice() {
+    try {
+      var q = new URLSearchParams(location.search);
+      if (!q.has('sigdev')) return;
+      var w = q.get('sigdev'), clean = function () {
+        try { q.delete('sigdev'); var qs = q.toString(); history.replaceState(null, '', location.pathname + (qs ? '?' + qs : '') + location.hash); } catch (x) {}
+      };
+      if (w === 'off') { try { localStorage.removeItem('agsist-sig-device'); } catch (x) {} clean(); return; }
+      if (!window.crypto || !crypto.subtle || typeof TextEncoder === 'undefined') { clean(); return; }
+      crypto.subtle.digest('SHA-256', new TextEncoder().encode(w)).then(function (buf) {
+        var hex = Array.prototype.map.call(new Uint8Array(buf), function (b) { return ('0' + b.toString(16)).slice(-2); }).join('');
+        if (hex === SIG_HASH) { try { localStorage.setItem('agsist-sig-device', '1'); } catch (x) {} }
+        clean();
+      }, clean);
+    } catch (e) {}
+  }
   function initMenuClicks() {
     var txt = function (el) { return el ? String(el.textContent || '').replace(/[\u2192]/g, '').replace(/\s+/g, ' ').trim().slice(0, 100) : ''; };
     function send(a, menu, group) {
@@ -737,6 +778,8 @@
       .catch(function () {});
   }
   document.addEventListener('DOMContentLoaded', function () {
+    initSigDevice();
+    initRainPrintFooter();
     injectAnalytics();
     siteNotice();
     loadSponsorMetrics();

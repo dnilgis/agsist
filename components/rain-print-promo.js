@@ -28,8 +28,9 @@
    The card: Christmas wording from promote_from through the framed order-by
    date; then, through Dec 24 and only while the gift flow is in the data
    (gift_card_title), "give this year's print"; otherwise year-round wording.
-   The Christmas card links /gifts-for-farmers (Rain Print first, then other
-   gift ideas); the other two link /rain-print. While the Christmas wording
+   The Christmas card links /rain-print (2026-11-13: it went to /gifts-for-farmers, one page too many), says
+   "$89 framed, order by Dec 9" from the data, and keeps "Gift ideas" as a smaller second link to
+   /gifts-for-farmers; the other two link /rain-print. While the Christmas wording
    runs (through the framed order-by date), the card moves up to the page's
    empty [data-rp-card-early] marker, right under the homepage prices (Oct 23); after that date it stays where the page put it.
    xmasLine is the order-by sentence on /gifts-for-farmers, from the two
@@ -39,7 +40,9 @@
    site knows the ZIP (agsist-wx-loc), so the print opens already drawn.
    Off, out of the window, or on any failure, the element stays hidden and
    takes no space. No countdown, no badge, no pop-up. Clicks send one
-   analytics event (rain_print_promo_click / rain_gauge_promo_click).
+   analytics event (rain_print_promo_click / rain_gauge_promo_click) with placement, from and page. Every
+   Rain Print link here carries from= (home, or promo-<placement>), so /rain-print can report where its visitor came from
+   (components/rain-print.js sends rain_print_landing {from}; the page's own Analytics address is the bare path).
    scripts/brief_email.py rain_print_line applies the briefing rule to the email. */
 (function (root) {
   'use strict';
@@ -91,8 +94,10 @@
     var cut = ISO.test(cfg.framed_christmas_cutoff || '') ? cfg.framed_christmas_cutoff : '';
     var from = ISO.test(cfg.promote_from || '') ? cfg.promote_from : '';
     if (cut && from && today >= from && today <= cut) {
-      return { angle: 'christmas', title: 'A Christmas gift for the farm', href: '/gifts-for-farmers', cta: 'Gift ideas',
-        text: 'A year of rain at their place, printed for the wall. Order framed by ' + shortDate(cut) + ' for Christmas delivery.', price: price };
+      var fr = typeof cfg.framed12x18 === 'number' && cfg.framed12x18 > 0 ? '$' + cfg.framed12x18 + ' framed' : 'Framed';
+      return { angle: 'christmas', title: 'Their farm\u2019s year of rain, framed', href: '/rain-print', cta: 'Make yours',
+        alt: { href: '/gifts-for-farmers', text: 'Gift ideas' },
+        text: fr + ', order by ' + shortDate(cut) + ' for Christmas. Shipping included.', price: '' };
     }
     var dec24 = cut.slice(0, 4) + '-12-24';   // the cutoff's own December, so a stale cutoff never runs a gift line all next year
     if (cut && today > cut && today <= dec24 && typeof cfg.gift_card_title === 'string' && cfg.gift_card_title) {
@@ -120,7 +125,7 @@
     if (/^\d{5}$/.test(String(zip || '')) && y > 1900) return '/rain-print?place=' + zip + '&year=' + (y - 1);
     return '/rain-print';
   }
-  var api = { isOn: isOn, lineFor: lineFor, cardFor: cardFor, xmasLine: xmasLine, seeHref: seeHref, chicagoToday: chicagoToday, gaugeHook: gaugeHook, autoMode: autoMode };
+  var api = { withFrom: function (h, f) { return withFrom(h, f); }, isOn: isOn, lineFor: lineFor, cardFor: cardFor, xmasLine: xmasLine, seeHref: seeHref, chicagoToday: chicagoToday, gaugeHook: gaugeHook, autoMode: autoMode };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   root.AgsistRainPromo = api;
 
@@ -138,22 +143,32 @@
     var st = doc.createElement('style'); st.id = 'rp-promo-css';
     st.textContent = '.rp-promo{margin:1.2rem 0 .8rem;font-size:.9rem;line-height:1.5;color:var(--text-dim)}' +
       '.rp-promo a{color:var(--brand);text-decoration:underline;text-underline-offset:2px}' +
-      '.rp-card{display:flex;align-items:center;gap:14px;margin:18px 0 0;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);text-decoration:none;color:var(--text)}' +
-      'a.rp-card:hover,a.rp-card:focus-visible{border-color:var(--brand)}' +
-      'a.rp-card:focus-visible{outline:2px solid var(--brand);outline-offset:2px}' +
-      '.rp-card-i{position:relative;flex:0 0 auto;width:132px}' +
-      '.rp-card img{width:100%;height:auto;aspect-ratio:360/247;border-radius:3px;display:block}' +
+      '.rp-card{margin:18px 0 0;padding:12px 14px;border:1px solid var(--border);border-radius:8px;background:var(--surface);color:var(--text)}' +
+      '.rp-card:hover,.rp-card:focus-within{border-color:var(--brand)}' +
+      'a.rp-card-main{display:flex;align-items:center;gap:16px;text-decoration:none;color:var(--text)}' +
+      'a.rp-card-main:focus-visible,a.rp-card-alt:focus-visible{outline:2px solid var(--brand);outline-offset:2px}' +
+      'a.rp-card-alt{display:inline-block;margin-top:8px;font-size:.82rem;color:var(--text-muted);text-decoration:underline;text-underline-offset:2px}' +
+      'a.rp-card-alt:hover{color:var(--text)}' +
+      '.rp-card-i{position:relative;flex:0 0 auto;width:220px}' +
+      '.rp-card img{width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:3px;display:block}' +
       '.rp-card-b{min-width:0}' +
       '.rp-card-t{display:block;font-weight:700;font-size:.98rem;line-height:1.3;color:var(--text)}' +
       '.rp-card-x{display:block;margin-top:3px;font-size:.86rem;line-height:1.45;color:var(--text-dim)}' +
       '.rp-card-p{display:block;margin-top:5px;font-size:.84rem;color:var(--text-muted)}' +
       '.rp-card-p b{color:var(--brand);font-weight:600}' +
-      '@media (max-width:520px){.rp-card{align-items:flex-start}.rp-card-i{width:96px}}';
+      '@media (max-width:520px){a.rp-card-main{flex-direction:column;align-items:stretch;gap:10px}.rp-card-i{width:100%}}';
     doc.head.appendChild(st);
   }
+  // a link's own address plus from=<where>, ahead of any #
+  function withFrom(href, from) {
+    if (/[?&]from=/.test(href)) return href;
+    var at = href.indexOf('#'), hash = at < 0 ? '' : href.slice(at), base = at < 0 ? href : href.slice(0, at);
+    return base + (base.indexOf('?') < 0 ? '?' : '&') + 'from=' + from + hash;
+  }
+  function fromOf(el) { return (el.getAttribute('data-from') || '').replace(/[^a-z0-9-]/g, '').slice(0, 32); }
   function track(el, name) {
     el.addEventListener('click', function () {
-      try { if (typeof root.gtag === 'function') root.gtag('event', name, { placement: el.getAttribute('data-placement') || '', page: root.location.pathname }); } catch (e) {}
+      try { if (typeof root.gtag === 'function') root.gtag('event', name, { placement: el.getAttribute('data-placement') || '', from: fromOf(el), page: root.location.pathname, transport_type: 'beacon' }); } catch (e) {}
     });
   }
   function fill(cfg) {
@@ -165,16 +180,17 @@
         var c = cardFor(cfg, today);
         if (!c) continue;
         css();
-        el.innerHTML = '<a class="rp-card" href="' + esc(c.href) + '" data-placement="home-card-' + c.angle + '">' +
-          '<span class="rp-card-i"><img src="/img/rain-print-thumb.jpg" width="360" height="240" alt="An example Rain Print from Ames, Iowa, a dry year: rain stepping up across the months, well under a usual year" loading="lazy" decoding="async"></span>' +
+        el.innerHTML = '<div class="rp-card"><a class="rp-card-main" href="' + esc(withFrom(c.href, 'home')) + '" data-from="home" data-placement="home-card-' + c.angle + '">' +
+          '<span class="rp-card-i"><img src="/img/photos/rp-slot-card.jpg" width="720" height="480" alt="A framed Rain Print of Chetek, Wisconsin, 2025, hanging on a wall: the year\u2019s rain below the line, snow above" loading="lazy" decoding="async"></span>' +
           '<span class="rp-card-b"><span class="rp-card-t">' + esc(c.title) + '</span><span class="rp-card-x">' + esc(c.text) + '</span>' +
-          '<span class="rp-card-p">' + (c.price ? esc(c.price) + ' ' : '') + '<b>' + esc(c.cta) + ' &rarr;</b></span></span></a>';
+          '<span class="rp-card-p">' + (c.price ? esc(c.price) + ' ' : '') + '<b>' + esc(c.cta) + ' &rarr;</b></span></span></a>' +
+          (c.alt ? '<a class="rp-card-alt" href="' + esc(c.alt.href) + '" data-from="home" data-placement="home-card-gifts">' + esc(c.alt.text) + '</a>' : '') + '</div>';
         if (c.angle === 'christmas') {
           var early = doc.querySelector('[data-rp-card-early]');
           if (early && early.parentNode) early.parentNode.insertBefore(el, early);
         }
         el.hidden = false;
-        track(el.firstChild, 'rain_print_promo_click');
+        Array.prototype.forEach.call(el.querySelectorAll('a'), function (a) { track(a, 'rain_print_promo_click'); });
         continue;
       }
       var t = lineFor(cfg, mode, today);
@@ -190,7 +206,7 @@
         continue;
       }
       var href = mode === 'see' ? seeHref(savedZip(), today) : '/rain-print';
-      el.innerHTML = '<a href="' + esc(href) + '" data-placement="' + esc(place) + '">' + esc(t) + '</a>';
+      el.innerHTML = '<a href="' + esc(withFrom(href, 'promo-' + place.replace(/[^a-z0-9-]/g, ''))) + '" data-from="promo-' + esc(place.replace(/[^a-z0-9-]/g, '')) + '" data-placement="' + esc(place) + '">' + esc(t) + '</a>';
       el.hidden = false;
       track(el.firstChild, 'rain_print_promo_click');
     }
