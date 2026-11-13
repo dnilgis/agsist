@@ -576,12 +576,21 @@
         (sp.line || sp.headline ? '. ' + slotEsc(sp.line || sp.headline) : '') + ' <a href="' + slotEsc(href) + '" rel="sponsored noopener" target="_blank"' +
         (preview ? '' : ' data-sponsor-click="sitewide"') + '>Visit</a></span>' };
     }
-    var t = card && (card.tiers || []).filter(function (x) { return x.id === 'sitewide'; })[0];
-    var n = spots && spots.sitewide && spots.sitewide.engaged;
-    return { sold: false, html: '<span class="sw-in">Sponsor spot open. ' +
-      (typeof n === 'number' && n > 0 ? n.toLocaleString('en-US') + ' engaged visits in the last 28 days. ' : '') +
-      (t && t.price_month ? '$' + Number(t.price_month).toLocaleString('en-US') + ' a month, one business. ' : '') +
-      '<a href="' + BASE + '/sponsor#sitewide" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'sitewide_open\'})">See it</a></span>' };
+    /* The open spot sells itself (Sig, Nov 13): the week's proof numbers from data/sponsor-spots.json (30 days, each
+       source's own dates in the title) and one button. No price here; the price is on /sponsor. */
+    var pr = (spots && spots.proof) || {}, ls = (spots && spots.lists) || {}, bits = [], tip = [];
+    function num(x) { return typeof x === 'number' && x > 0 ? x.toLocaleString('en-US') : ''; }
+    function win(o) { return o && o.start && o.end ? o.start + ' to ' + o.end : ''; }
+    function lab(l, sh) { return '<span class="sw-l">' + l + '</span><span class="sw-s">' + sh + '</span>'; }
+    if (num(pr.engaged && pr.engaged.total)) { bits.push('<b>' + num(pr.engaged.total) + '</b> ' + lab('engaged visits', 'visits')); tip.push('Engaged visits ' + win(pr.engaged) + ', Google Analytics'); }
+    var lists = num(ls.people) ? [num(ls.people), lab('on our email lists', 'on our lists')] : num(ls.daily) ? [num(ls.daily), lab('on the Daily email', 'on the Daily')] : null;
+    if (num(pr.ai && pr.ai.total)) { bits.push('<b>' + num(pr.ai.total) + '</b> ' + lab('AI answer citations', 'AI citations')); tip.push('Bing AI answer citations ' + win(pr.ai) + ', Bing Webmaster'); }
+    var nums = bits.length ? bits.join('<i aria-hidden="true"> &middot; </i>') + ' <span class="sw-when">' + lab('in 30 days', '(30 days)') + '</span>' : '';
+    if (lists) { nums += (nums ? '<i aria-hidden="true"> &middot; </i>' : '') + '<b>' + lists[0] + '</b> ' + lists[1]; tip.push('Email list count of ' + ls.asOf); }
+    var tag = '<span class="sw-pitch"><span class="sw-hook">Your business here.</span> ' +
+      (nums ? '<span class="sw-nums">' + nums + '</span>' : 'One line on every page.') + '</span>';
+    return { sold: false, html: '<span class="sw-in sw-open"' + (tip.length ? ' title="' + slotEsc(tip.join('. ') + '.') + '"' : '') + '>' + tag +
+      '<a class="sw-cta" href="' + BASE + '/sponsor#sitewide" onclick="if(typeof gtag===\'function\')gtag(\'event\',\'sponsor_cta_click\',{cta_source:\'sitewide_open\'})">Put your business here</a></span>' };
   }
   function sitewide(noSponsor, before, parent) {
     if (noSponsor || GEO_SKIP.test(location.pathname) || !parent || document.getElementById('ag-sw') || document.getElementById('site-header') ||
