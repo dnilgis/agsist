@@ -83,17 +83,13 @@ jobs:
         with:
           python-version: "3.12"
       - name: Install
-        run: pip install openpyxl==3.1.5 pypdf==6.17.0
+        run: pip install openpyxl==3.1.5 pypdf==6.17.0 pillow==12.3.0
       - name: FSA files from raw
         env:
           PRIVATE_REPO_TOKEN: ${{ secrets.PRIVATE_REPO_TOKEN }}
         run: bash scripts/pull_raw.sh data/fsa
       - name: Selftest
         run: python scripts/build_arc_plc.py --selftest
-
-      - name: Pillow, for the share image and the county cards
-        continue-on-error: true
-        run: pip install --quiet pillow==12.3.0
 
       - name: Check out the county cards (agsist-data)
         id: cards
