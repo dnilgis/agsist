@@ -295,6 +295,7 @@
     ticks.forEach(function (c) {
       var y = Y(c), ev = c === 0;
       P[ev ? 'ev' : 'gr'].push(H0(y, L, phone ? x1 : W - R));
+      if (ev) add({ x0: L, x1: phone ? x1 : W - R, y0: y - 3, y1: y + 3, rule: 'ev' });   // no words on the even rule (3 px clear)
       o.push(t(L - 8, y + fs * 0.36, word(c), ev ? 'b' : 'mid', 'end'));
     });
     var head = function (cands, cx, lo, hi) {   // the first wording that fits between lo and hi, centred on cx where it can be
@@ -316,7 +317,7 @@
     }
     // the state's middle bid on the same futures month: one dashed rule
     var ym = p.med ? Y(cents(p.med.median)) : null;
-    if (p.med) P.md.push(H0(ym, L, phone ? x1 : W - R));
+    if (p.med) { P.md.push(H0(ym, L, phone ? x1 : W - R)); add({ x0: L, x1: phone ? x1 : W - R, y0: ym - 3, y1: ym + 3, rule: 'md' }); }   // nor on the median's dashes, but its own name
     // the dots: in town side by side, best first; outside at their miles
     var dots = [], best = bestOf(T.concat(O)), bestC = best ? best.c : null;
     var stT = T.length > 1 ? Math.min(step, (ZA - 2 * pad - 2 * r0) / (T.length - 1)) : step, rT = Math.min(r0, Math.max(1.6, (stT - 0.8) / 2));
@@ -361,21 +362,29 @@
       if (pts.some(function (z) { return labs.some(function (l) { return hit(l, z); }) || obst.some(function (o) { return o.dot && o.q !== q && hit(o, z); }); })) return false;
       return { d: 'M' + fx(a[0]) + ' ' + fx(a[1]) + 'L' + fx(e[0]) + ' ' + fx(e[1]), pts: pts };
     };
-    var place = function (lines, cands, cls, minX, must, q) {
-      var lh = fs * 1.3, w = Math.max.apply(null, lines.map(function (s, k) { var cl = cls[k] || ''; return widthOf(s, /big/.test(cl) ? fb : fs, /(^| )b( |$)/.test(cl)); }));
+    var place = function (lines, cands, cls, minX, must, q, own) {
+      var clear = function (z) { return !(own && z.rule === own); }, lh = fs * 1.3;
+      var w = Math.max.apply(null, lines.map(function (s, k) { var cl = cls[k] || ''; return widthOf(s, /big/.test(cl) ? fb : fs, /(^| )b( |$)/.test(cl)); }));
       var box = function (c) { var x = c.anchor === 'end' ? c.x - w : c.anchor === 'middle' ? c.x - w / 2 : c.anchor === 'clamp' ? Math.min(Math.max(c.x - w / 2, minX == null ? L + 2 : minX + 2), PR - 2 - w) : c.x; return { x: x, b: { x0: x - 2, x1: x + w + 2, y0: c.y - fs - 1, y1: c.y + (lines.length - 1) * lh + 4 } }; };
       for (var k = 0; k < cands.length; k++) {
         var bb = box(cands[k]);
         if (minX != null && bb.b.x0 < minX) continue;
-        if (inPlot(bb.b) && !obst.concat(labs).some(function (z) { return hit(z, bb.b); })) {
+        if (inPlot(bb.b) && !obst.concat(labs).some(function (z) { return clear(z) && hit(z, bb.b); })) {
           var ld = leaderOf(q, bb.b);
           if (ld === false) continue;
           lines.forEach(function (s, j) { o.push(t(bb.x, cands[k].y + j * lh, s, cls[j] || '', '')); });
+          if (own) bb.b.own = own;
           labs.push(bb.b); if (ld) { P.ld.push(ld.d); ld.pts.forEach(function (z) { z.leader = 1; z.of = bb.b; obst.push(z); }); }
           return true;
         }
       }
-      if (must && lines.length > 1 && place(lines.slice(-1), cands, cls.slice(-1), minX, false, q)) return true;   // its last line alone, where both do not fit
+      if (must && lines.length > 1 && place(lines.slice(-1), cands, cls.slice(-1), minX, false, q, own)) return true;
+      if (must && q && !cands.grid) {   // anywhere free in the plot, joined to its dot by a leader
+        var grid = [], gx0 = minX == null ? L + 2 : minX + 2;
+        for (var gy = y0 + fs + 4; gy < y1 - 4; gy += lh) for (var gx = gx0; gx < PR - 20; gx += 16) grid.push({ x: gx, y: gy });
+        grid.sort(function (a, c) { return Math.hypot(a.x - q.x, a.y - q.y) - Math.hypot(c.x - q.x, c.y - q.y); }); grid.grid = 1;
+        if (place(lines.slice(-1), grid, cls.slice(-1), minX, false, q, own)) return true;
+      }   // its last line alone, where both do not fit
       if (must) {   // no free place: the first one that stays in the picture, on a halo
         for (k = 0; k < cands.length; k++) {
           bb = box(cands[k]);
@@ -449,7 +458,7 @@
       var mt = st + ' median: ' + word(cents(p.med.median)), mw = widthOf(mt, fs, true), mc = [];
       for (var mx = L + 6; mx <= x1 - mw; mx += 12) mc.push({ x: mx, y: ym - 6 });
       for (mx = L + 6; mx <= x1 - mw; mx += 12) mc.push({ x: mx, y: ym + fs + 4 });
-      medDrawn = place([mt], mc, ['b'], null, card);   // no free place on a phone: the key above the picture names the dashed line
+      medDrawn = place([mt], mc, ['b'], null, card, null, 'md');   // no free place on a phone: the key above the picture names the dashed line
     }
     // 4. the biggest move in a week outside town, 10 cents or more
     var mv = oq.filter(function (q) { return q.d.w != null && Math.abs(q.d.w) >= 10 && q !== bo && lo.indexOf(q) < 0; }).sort(function (a, b) { return Math.abs(b.d.w) - Math.abs(a.d.w) || a.d.mi - b.d.mi; })[0];
