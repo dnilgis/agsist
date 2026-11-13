@@ -214,9 +214,22 @@
     "cash-bid-pages"
    ],
    "touched_by": [
+    "ARC/PLC refresh",
     "cash-bid-pages",
+    "Fetch COT Data",
+    "county rain",
+    "Fetch Crop Progress",
     "Daily site check",
-    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod"
+    "Dairy prices",
+    "Bake farm-bill page",
+    "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
+    "Harvest price tracker",
+    "lrp",
+    "Build Price Stats (5-year percentile)",
+    "Monthly county rain email",
+    "Share images",
+    "Build State Stats (USDA NASS)",
+    "yield-panel"
    ],
    "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
@@ -978,25 +991,14 @@
     "cash-bid-pages"
    ],
    "touched_by": [
-    "ARC/PLC refresh",
     "cash-bid-pages",
     "conditions",
-    "Fetch COT Data",
-    "county rain",
     "Fetch Crop Progress",
     "Daily site check",
     "Dairy prices",
-    "Bake farm-bill page",
     "Freshness \u2014 seed static prices, dateModified, sitemap lastmod",
-    "Harvest price tracker",
-    "lrp",
-    "Build Price Stats (5-year percentile)",
     "Fetch Prices",
-    "Monthly county rain email",
-    "Share images",
-    "Sitemap lastmod",
-    "Build State Stats (USDA NASS)",
-    "yield-panel"
+    "Sitemap lastmod"
    ],
    "cadence": "1 launch every day at about 7pm Central",
    "curated": false,
