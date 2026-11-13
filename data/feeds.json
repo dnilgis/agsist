@@ -812,7 +812,22 @@
    ],
    "written_by": [],
    "touched_by": [
-    "Rebuild Feed Manifest"
+    "ARC/PLC refresh",
+    "Cash Bid Index",
+    "cash-bid-pages",
+    "county rain",
+    "farmland-atlas-pages",
+    "Hail state pages \u2014 generate from monthly data",
+    "Infographic pages",
+    "Land data (parcel services + transfers)",
+    "main-checks",
+    "MESH radar hail swaths \u2014 daily",
+    "pr-checks",
+    "prf",
+    "Monthly county rain email",
+    "Rebuild Feed Manifest",
+    "state-rent-pages",
+    "State yield pages"
    ],
    "cadence": "maintained by hand, not on a schedule",
    "curated": true,
