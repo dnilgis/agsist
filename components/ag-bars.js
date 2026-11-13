@@ -94,7 +94,7 @@
     var ticks = cfg.ticks || [], cxs = ticks.map(function (t) { return g.X((t.a + t.b) / 2); }), maxW = 0, step = 1;
     ticks.forEach(function (t) { maxW = Math.max(maxW, widthOf(t.lab, fs, 0.6)); });
     var nT = ticks.length, lastT = ticks[nT - 1], stubLast = nT > 1 && g.X(lastT.b) - g.X(lastT.a) < widthOf(lastT.lab, fs, 0.6) * 0.9, nNamed = stubLast ? nT - 1 : nT;
-    for (; step < nNamed; step++) { var okS = true; for (var q = step; q < nNamed; q += step) if (cxs[q] - cxs[q - step] < maxW + fs * 0.9) okS = false; if (okS) break; }
+    for (; step < nNamed; step++) { var okS = true; for (var q = step; q < nNamed; q += step) if (cxs[q] - cxs[q - step] < maxW + fs * 0.6) okS = false; if (okS) break; }
     ticks.forEach(function (t, ti) {
       var w = widthOf(t.lab, fs, 0.6), stub = ti === ticks.length - 1 && g.X(t.b) - g.X(t.a) < w * 0.9;
       o.push('<line x1="' + f1(g.X(t.a)) + '" x2="' + f1(g.X(t.a)) + '" y1="' + g.yb + '" y2="' + (g.yb + 4) + '" style="stroke:' + P.mut + ';stroke-width:1"/>');
@@ -139,7 +139,7 @@
     }
     /* the marks' words: each one off both lines (6 px clear, bold measured at 0.62 of the size), off the other labels, and joined to its stretch by a
        hairline that crosses nothing: it runs from the line nearest the label, and a place whose hairline would cross another label, hairline or line is not chosen */
-    var mid = (g.x0 + g.x1) / 2, words = [], leaders = [], segs = [];
+    var mid = (g.x0 + g.x1) / 2, words = [], leaders = [], segs = [], dropped = [];
     function segCross(x0, y0, x1, y1) {
       var n = 0, len = Math.hypot(x1 - x0, y1 - y0), steps = Math.max(2, Math.ceil(len / 2));
       for (var i = 0; i <= steps; i++) {
@@ -164,12 +164,12 @@
           var sy = py, ex0 = Math.max(b.l, Math.min(b.r, px)), ey0 = up ? b.b : b.t, hl = Math.hypot(ex0 - px, ey0 - sy);
           /* clean means: on neither line, inside the plot, off the other labels and the freeze rule, and a hairline that is short and crosses nothing */
           if (!fits(b) || hits(b, pts, 6) > 0 || boxes.some(function (q) { return overlap(b, q, 5); }) || (frz != null && b.l - 6 < frz && b.r + 6 > frz)) return;
-          if (hl > 7 && (hl > (g.yb - g.pt) * 0.3 || segCross(px, sy, ex0, ey0) > 0)) return;
+          if (hl > 7 && (hl > (g.yb - g.pt) * (lines.length === 2 ? 0.36 : 0.3) || segCross(px, sy, ex0, ey0) > 0)) return;
           var cost = hl + dx * 0.05 + k * 0.5;
           if (cost < bestN) { bestN = cost; best = { b: b, lines: lines, x: x, rt: rt, y0: yTop + fs1 * 0.85, up: up, sy: sy, ex0: ex0, ey0: ey0 }; }
         }); });
       });
-      if (!best) return;
+      if (!best) { dropped.push(m.fig || m.text); return; }
       boxes.push(best.b);
       best.lines.forEach(function (l, j) { words.push(txt(best.x, best.y0 + j * fs * 1.2, l, f + 'font-size:' + fs1 + 'px;font-weight:700;fill:' + P.ink + ';' + halo, best.rt ? 'start' : 'end')); });
       if (Math.hypot(best.ex0 - px, best.ey0 - best.sy) > 7) { leaders.push('<line x1="' + f1(px) + '" x2="' + f1(best.ex0) + '" y1="' + f1(best.sy) + '" y2="' + f1(best.ey0) + '" style="stroke:' + P.mut + ';stroke-width:1"/>'); segs.push([px, best.sy, best.ex0, best.ey0]); }
@@ -193,7 +193,7 @@
         gl.forEach(function (l, j) { o.push(txt(ex, gy + j * fs * 1.2, l, fb + 'fill:' + P.ink)); });
       }
     }
-    lastInfo = { boxes: boxes.slice(), pts: pts, freeze: frz, plot: inPlot, marks: boxes.slice(frz == null ? 0 : 1) };
+    lastInfo = { dropped: dropped, boxes: boxes.slice(), pts: pts, freeze: frz, plot: inPlot, marks: boxes.slice(frz == null ? 0 : 1) };
     o.push('<g class="agc-hv" visibility="hidden" style="pointer-events:none"><line class="hv-l" y1="' + g.pt + '" y2="' + g.yb + '" style="stroke:' + P.ink + ';stroke-width:1;opacity:.55"/><circle class="hv-a" r="4" style="fill:' + P.ink + '"/>' + (N ? '<circle class="hv-n" r="4" style="fill:' + grey + '"/>' : '') + '</g>');
     o.push('</svg>');
     return o.join('');
@@ -223,6 +223,7 @@
       var H = W < 520 ? hh.phone || 230 : hh.wide || 260, fs = W < 520 ? 12.5 : 13;
       g = runGeom(cfg, W, H, fs);
       plot.innerHTML = runSvg(cfg, W, H, { fs: fs });
+      if (cfg.onDraw) cfg.onDraw(lastInfo ? lastInfo.dropped : []);
       plot.setAttribute('aria-label', (cfg.label || '') + ' Use the arrow keys to read along the year.');
       say(cur);
     }
