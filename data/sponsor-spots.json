@@ -1,47 +1,138 @@
 {
  "_": "The numbers the open sponsor spots print, rebuilt from the site's visit counts; do not edit by hand. engaged: engaged visits in the window (a state: visits from that state). views: page views (a state: views of pages about that state).",
  "window": {
-  "start": "2026-10-14",
-  "end": "2026-11-10"
+  "start": "2026-10-15",
+  "end": "2026-11-11"
  },
  "sitewide": {
-  "engaged": 9672,
-  "views": 25836
+  "engaged": 9743,
+  "views": 25940
+ },
+ "proof": {
+  "refreshed": "2026-11-12",
+  "days": 30,
+  "maxAgeDays": 14,
+  "engaged": {
+   "start": "2026-10-12",
+   "end": "2026-11-10",
+   "total": 10363,
+   "perDay": 345,
+   "source": "Google Analytics"
+  },
+  "search": {
+   "start": "2026-10-12",
+   "end": "2026-11-10",
+   "total": 11609,
+   "perDay": 387,
+   "google": 7908,
+   "bing": 3701,
+   "source": "Google Search Console (US) and Bing Webmaster"
+  },
+  "ai": {
+   "start": "2026-10-10",
+   "end": "2026-11-08",
+   "total": 73428,
+   "perDay": 2448,
+   "source": "Bing Webmaster AI Performance"
+  },
+  "states": {
+   "start": "2026-10-13",
+   "end": "2026-11-11",
+   "days": 30,
+   "engaged": {
+    "AK": 4,
+    "AL": 176,
+    "AR": 114,
+    "AZ": 185,
+    "CA": 404,
+    "CO": 333,
+    "CT": 19,
+    "DC": 19,
+    "DE": 14,
+    "FL": 267,
+    "GA": 167,
+    "HI": 12,
+    "IA": 382,
+    "ID": 69,
+    "IL": 1355,
+    "IN": 482,
+    "KS": 346,
+    "KY": 92,
+    "LA": 63,
+    "MA": 48,
+    "MD": 73,
+    "ME": 10,
+    "MI": 165,
+    "MN": 1282,
+    "MO": 387,
+    "MS": 76,
+    "MT": 81,
+    "NC": 120,
+    "ND": 183,
+    "NE": 366,
+    "NH": 7,
+    "NJ": 47,
+    "NM": 57,
+    "NV": 18,
+    "NY": 176,
+    "OH": 340,
+    "OK": 88,
+    "OR": 80,
+    "PA": 205,
+    "RI": 4,
+    "SC": 46,
+    "SD": 237,
+    "TN": 105,
+    "TX": 819,
+    "UT": 61,
+    "VA": 284,
+    "VT": 22,
+    "WA": 163,
+    "WV": 23,
+    "WY": 30
+   },
+   "source": "Google Analytics"
+  }
+ },
+ "lists": {
+  "asOf": "2026-11-13",
+  "people": 282,
+  "daily": 243
  },
  "states": {
   "AK": {
    "slug": "alaska",
-   "engaged": 3,
-   "views": 20
+   "engaged": 4,
+   "views": 21
   },
   "AL": {
    "slug": "alabama",
-   "engaged": 154,
-   "views": 63
+   "engaged": 164,
+   "views": 68
   },
   "AR": {
    "slug": "arkansas",
    "engaged": 104,
-   "views": 184
+   "views": 192
   },
   "AZ": {
    "slug": "arizona",
-   "engaged": 176,
-   "views": 113
+   "engaged": 181,
+   "views": 115
   },
   "CA": {
    "slug": "california",
-   "engaged": 381,
-   "views": 296
+   "engaged": 393,
+   "views": 298
   },
   "CO": {
    "slug": "colorado",
-   "engaged": 317,
-   "views": 280
+   "engaged": 311,
+   "views": 277
   },
   "CT": {
    "slug": "connecticut",
-   "engaged": 18,
+   "engaged": 17,
    "views": 11
   },
   "DE": {
@@ -51,108 +142,108 @@
   },
   "FL": {
    "slug": "florida",
-   "engaged": 254,
+   "engaged": 259,
    "views": 290
   },
   "GA": {
    "slug": "georgia",
-   "engaged": 158,
-   "views": 142
+   "engaged": 160,
+   "views": 144
   },
   "HI": {
    "slug": "hawaii",
-   "engaged": 9,
+   "engaged": 10,
    "views": 11
   },
   "IA": {
    "slug": "iowa",
-   "engaged": 352,
-   "views": 748
+   "engaged": 361,
+   "views": 754
   },
   "ID": {
    "slug": "idaho",
-   "engaged": 67,
+   "engaged": 68,
    "views": 168
   },
   "IL": {
    "slug": "illinois",
-   "engaged": 1224,
-   "views": 795
+   "engaged": 1246,
+   "views": 780
   },
   "IN": {
    "slug": "indiana",
-   "engaged": 446,
-   "views": 464
+   "engaged": 453,
+   "views": 486
   },
   "KS": {
    "slug": "kansas",
-   "engaged": 319,
-   "views": 673
+   "engaged": 323,
+   "views": 682
   },
   "KY": {
    "slug": "kentucky",
-   "engaged": 89,
-   "views": 131
+   "engaged": 87,
+   "views": 134
   },
   "LA": {
    "slug": "louisiana",
-   "engaged": 63,
-   "views": 158
+   "engaged": 62,
+   "views": 145
   },
   "MA": {
    "slug": "massachusetts",
-   "engaged": 45,
-   "views": 20
+   "engaged": 48,
+   "views": 21
   },
   "MD": {
    "slug": "maryland",
-   "engaged": 69,
-   "views": 86
+   "engaged": 68,
+   "views": 83
   },
   "ME": {
    "slug": "maine",
-   "engaged": 9,
+   "engaged": 10,
    "views": 15
   },
   "MI": {
    "slug": "michigan",
-   "engaged": 154,
-   "views": 232
+   "engaged": 156,
+   "views": 239
   },
   "MN": {
    "slug": "minnesota",
-   "engaged": 1181,
-   "views": 978
+   "engaged": 1184,
+   "views": 974
   },
   "MO": {
    "slug": "missouri",
    "engaged": 360,
-   "views": 429
+   "views": 425
   },
   "MS": {
    "slug": "mississippi",
-   "engaged": 72,
+   "engaged": 70,
    "views": 159
   },
   "MT": {
    "slug": "montana",
-   "engaged": 77,
-   "views": 206
+   "engaged": 76,
+   "views": 202
   },
   "NC": {
    "slug": "north-carolina",
    "engaged": 114,
-   "views": 131
+   "views": 139
   },
   "ND": {
    "slug": "north-dakota",
-   "engaged": 170,
-   "views": 516
+   "engaged": 172,
+   "views": 520
   },
   "NE": {
    "slug": "nebraska",
-   "engaged": 337,
-   "views": 581
+   "engaged": 340,
+   "views": 576
   },
   "NH": {
    "slug": "new-hampshire",
@@ -161,88 +252,88 @@
   },
   "NJ": {
    "slug": "new-jersey",
-   "engaged": 45,
+   "engaged": 46,
    "views": 21
   },
   "NM": {
    "slug": "new-mexico",
    "engaged": 53,
-   "views": 93
+   "views": 96
   },
   "NV": {
    "slug": "nevada",
-   "engaged": 16,
+   "engaged": 18,
    "views": 6
   },
   "NY": {
    "slug": "new-york",
-   "engaged": 164,
+   "engaged": 167,
    "views": 113
   },
   "OH": {
    "slug": "ohio",
-   "engaged": 319,
-   "views": 355
+   "engaged": 318,
+   "views": 356
   },
   "OK": {
    "slug": "oklahoma",
-   "engaged": 82,
-   "views": 163
+   "engaged": 78,
+   "views": 158
   },
   "OR": {
    "slug": "oregon",
-   "engaged": 78,
-   "views": 86
+   "engaged": 80,
+   "views": 84
   },
   "PA": {
    "slug": "pennsylvania",
    "engaged": 189,
-   "views": 217
+   "views": 213
   },
   "RI": {
    "slug": "rhode-island",
-   "engaged": 4,
+   "engaged": 3,
    "views": 5
   },
   "SC": {
    "slug": "south-carolina",
-   "engaged": 42,
+   "engaged": 45,
    "views": 85
   },
   "SD": {
    "slug": "south-dakota",
-   "engaged": 218,
-   "views": 624
+   "engaged": 214,
+   "views": 627
   },
   "TN": {
    "slug": "tennessee",
-   "engaged": 98,
-   "views": 131
+   "engaged": 100,
+   "views": 133
   },
   "TX": {
    "slug": "texas",
-   "engaged": 755,
-   "views": 557
+   "engaged": 761,
+   "views": 561
   },
   "UT": {
    "slug": "utah",
-   "engaged": 60,
-   "views": 63
+   "engaged": 61,
+   "views": 64
   },
   "VA": {
    "slug": "virginia",
-   "engaged": 261,
-   "views": 151
+   "engaged": 262,
+   "views": 146
   },
   "VT": {
    "slug": "vermont",
-   "engaged": 19,
-   "views": 4
+   "engaged": 22,
+   "views": 7
   },
   "WA": {
    "slug": "washington",
-   "engaged": 148,
-   "views": 152
+   "engaged": 149,
+   "views": 155
   },
   "WI": {
    "slug": "wisconsin",
@@ -251,12 +342,12 @@
   "WV": {
    "slug": "west-virginia",
    "engaged": 23,
-   "views": 53
+   "views": 54
   },
   "WY": {
    "slug": "wyoming",
-   "engaged": 29,
-   "views": 42
+   "engaged": 30,
+   "views": 43
   }
  }
 }

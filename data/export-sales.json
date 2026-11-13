@@ -1,5 +1,5 @@
 {
-  "updated": "2026-11-12",
+  "updated": "2026-11-13",
   "marketing_year": "2026/27",
   "note": "USDA FAS Export Sales Reporting.",
   "corn": {
@@ -82,7 +82,7 @@
     "released_at": "2026-11-05T13:30:00Z"
   },
   "report_date": "2026-10-29",
-  "fetched": "2026-11-12T14:39:52Z",
+  "fetched": "2026-11-13T13:24:25Z",
   "released_at": "2026-11-05T13:30:00Z",
   "released_basis": "schedule",
   "released_rule": "week ending Thursday, released the next Thursday 8:30 am ET (Friday after a Thursday holiday)"
