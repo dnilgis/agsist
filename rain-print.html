@@ -101,6 +101,50 @@
   .rp-xmas-top{margin:0;font-size:var(--fs-sm);font-weight:600;color:var(--brand);line-height:1.45}
   .rp-xmas-alt{margin:.15rem 0 0;font-size:var(--fs-sm)}
   .rp-xmas-alt[hidden]{display:none}
+  /* Nov 13 2026 (the print sells itself): every photo is one file, a slot (img/photos/rp-slot-*.jpg): swap the file, any size,
+     and the box keeps its shape. On a phone the first screen is the photo, one line, the prices, the Christmas date and the
+     button; the long paragraph and the four-line Christmas sentence follow below. */
+  .rp-slot{display:block;width:100%;height:auto;object-fit:cover;border-radius:var(--r-sm,4px)}
+  .rp-slot-hero{aspect-ratio:4/3}
+  .rp-slot-real{aspect-ratio:4/3;object-position:50% 78%}
+  .rp-xmas-short{display:none;margin:0;font-size:var(--fs-sm);font-weight:600;color:var(--brand);line-height:1.45}
+  @media(max-width:899px){
+    html:not(.rp-tool-first):not(.rp-from-link) .rp-top{display:flex;flex-direction:column}
+    html:not(.rp-tool-first):not(.rp-from-link) .rp-paid,html:not(.rp-tool-first):not(.rp-from-link) #rp-gift-banner{order:-7}
+    html:not(.rp-tool-first):not(.rp-from-link) .rp-photo{order:-6;margin:0 0 .65rem}
+    html:not(.rp-tool-first):not(.rp-from-link) .rp-photo figcaption{margin-top:.25rem}
+    html:not(.rp-tool-first):not(.rp-from-link) #main .rp .rp-top>h1{order:-5;font-size:clamp(1.3rem,5.4vw,1.55rem);margin:0 0 .45rem}
+    html:not(.rp-tool-first):not(.rp-from-link) .rp-prices{order:-4}
+    html:not(.rp-tool-first):not(.rp-from-link) .rp-xmas-short{order:-3;display:block;margin:.1rem 0 0;min-height:1.45em}
+    html:not(.rp-tool-first):not(.rp-from-link) .rp-start{order:-2;margin:.6rem 0 0}
+    html:not(.rp-tool-first):not(.rp-from-link) .rp-kick{margin-top:1.3rem}
+    html:not(.rp-tool-first):not(.rp-from-link) .rp-xmas-top{margin:.1rem 0 .7rem}
+  }
+  /* the occasion choices at the top of the designer, and the three finished examples under the headline */
+  .rp-occ{padding:12px 14px 14px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface)}
+  .rp-occ-h{margin:0 0 .55rem;font-size:var(--fs-md);line-height:1.3}
+  .rp-occ-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .rp-occ-b{min-height:48px;margin:0;padding:.35rem .7rem;border:1px solid var(--border-2);border-radius:6px;background:var(--bg);font:inherit;font-size:var(--fs-sm);font-weight:600;line-height:1.3;color:var(--text);text-align:left;cursor:pointer}
+  .rp-occ-b:hover{border-color:var(--brand)}
+  .rp-occ-b:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  .rp-occ-b[aria-pressed="true"]{background:var(--brand-fill);border-color:var(--brand-fill);color:#0a0c0d}
+  .rp-occ-say{margin:.55rem 0 0;min-height:1.45em}
+  .rp-occ-say:empty{display:none}
+  .rp-eg{margin:1.6rem 0 1.4rem}
+  .rp-eg-h{margin:0 0 .2rem;font-size:var(--fs-xl);line-height:1.3}
+  .rp-eg-n{margin:0 0 .8rem;max-width:62ch;font-size:var(--fs-sm);line-height:1.5;color:var(--text-dim)}
+  .rp-eg-list{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:.75rem}
+  .rp-eg-card{display:grid;grid-template-columns:128px minmax(0,1fr);column-gap:12px;align-content:start;padding:10px;border:1px solid var(--border);border-radius:var(--r-md);background:var(--surface);color:var(--text);text-decoration:none}
+  .rp-eg-card:hover,.rp-eg-card:focus-visible{border-color:var(--brand)}
+  .rp-eg-card:focus-visible{outline:2px solid var(--brand);outline-offset:2px}
+  .rp-eg-card picture{grid-row:1/span 3}
+  .rp-eg-card img{display:block;width:100%;height:auto;aspect-ratio:3/2;object-fit:cover;border-radius:3px}
+  .rp-eg-t,.rp-eg-s,.rp-eg-go{display:block;min-width:0}
+  .rp-eg-t{font-weight:700;line-height:1.3}
+  .rp-eg-s{margin-top:2px;font-size:var(--fs-sm);line-height:1.45;color:var(--text-dim)}
+  .rp-eg-go{margin-top:5px;font-size:var(--fs-sm);font-weight:600;color:var(--link);text-decoration:underline;text-underline-offset:2px}
+  @media(min-width:760px){.rp-eg-list{grid-template-columns:repeat(3,minmax(0,1fr))}.rp-eg-card{grid-template-columns:minmax(0,1fr)}.rp-eg-card picture{grid-row:auto;margin-bottom:8px}}
+  html.rp-tool-first .rp-eg,html.rp-from-link .rp-eg,html.rp-tool-first .rp-occ,html.rp-from-link .rp-occ{display:none}
   /* "Paid, thank you": the page Stripe sends a buyer back to */
   .rp-paid{margin:0 0 1rem;padding:14px 16px;border:1px solid var(--green);border-left-width:4px;border-radius:var(--r-md);background:var(--surface);line-height:1.55}
   .rp-paid:focus{outline:none}
@@ -834,6 +878,7 @@
       <h1>A year of rain and snow on the farm, or back home, printed for the wall</h1>
       <p class="rp-lede">A framed print of the farm&rsquo;s year of rain, from the gauge nearest it. Type a town and a year, and I draw every rain and snow the nearest weather station caught. A gift for a farmer, or for the year you married or a child was born. Drawing it is free.</p>
       <p class="rp-prices" id="rp-prices"><span><b data-price="framed12x18">$89</b> framed</span><span><b data-price="print12x18">$45</b> print</span><span><b data-price="digital">$19</b> digital file</span><span>Shipping included</span></p>
+      <p class="rp-xmas-short" id="rp-xmas-short"></p>
       <p class="rp-xmas-top" id="rp-xmas-top" hidden></p>
       <p class="rp-xmas-alt" id="rp-xmas-alt" hidden><button type="button" class="rp-linkbtn" id="rp-xmas-last">Make it last year, by Christmas</button></p>
       <p class="rp-start"><a class="btn btn-primary" id="rp-start" href="#rp-place">Make yours, free</a></p>
@@ -852,8 +897,18 @@
         </form>
         <div id="rp-fm-out" aria-live="polite"></div>
       </div>
-      <figure class="rp-photo" id="rp-photo"><picture><source type="image/webp" srcset="/img/photos/rain-print-photo-chetek-2025-800.webp 800w, /img/photos/rain-print-photo-chetek-2025-1600.webp 1348w" sizes="(min-width: 900px) 360px, 100vw"><img src="/img/photos/rain-print-photo-chetek-2025-800.jpg" srcset="/img/photos/rain-print-photo-chetek-2025-800.jpg 800w, /img/photos/rain-print-photo-chetek-2025-1600.jpg 1348w" sizes="(min-width: 900px) 360px, 100vw" width="1348" height="1011" loading="eager" decoding="async" alt="Framed Rain Print of Chetek, Wisconsin, 2025, photographed on a wall: daily rain below the line, snow above, 32.27 in."></picture><figcaption>A Rain Print of Chetek, Wisconsin, 2025, framed in Chetek. This test print is shown without its white mat.</figcaption></figure>
+      <figure class="rp-photo" id="rp-photo"><img class="rp-slot rp-slot-hero" src="/img/photos/rp-slot-hero.jpg" width="1348" height="1011" loading="eager" fetchpriority="high" decoding="async" alt="Framed Rain Print of Chetek, Wisconsin, 2025, photographed on a wall: daily rain below the line, snow above, 32.27 in."><figcaption>A Rain Print of Chetek, Wisconsin, 2025, framed in Chetek. This test print is shown without its white mat.</figcaption></figure>
     </div>
+
+<section class="rp-eg" id="rp-eg" aria-labelledby="rp-eg-h">
+      <h2 class="rp-eg-h" id="rp-eg-h">Three years, drawn</h2>
+      <p class="rp-eg-n">Each one is drawn from NOAA&rsquo;s daily records. Tap one to open it and put your own words on it.</p>
+      <ul class="rp-eg-list">
+        <li><a class="rp-eg-card" href="/rain-print?place=Ames%2C+IA&amp;year=2012&amp;cmp=normal&amp;from=example-2012" data-eg="2012-ames"><picture><source type="image/webp" srcset="/img/rain-print-example-2012-ames-ia.webp"><img src="/img/rain-print-example-2012-ames-ia.jpg" width="1200" height="800" loading="lazy" decoding="async" alt="Example Rain Print of 2012 at Ames, Iowa, the drought year: 25.52 in of rain and melted snow."></picture><span class="rp-eg-t">2012, the drought</span><span class="rp-eg-s">Ames, Iowa. 25.52 in of rain and melted snow, 32% under a usual year.</span><span class="rp-eg-go">Open it</span></a></li>
+        <li><a class="rp-eg-card" href="/rain-print?place=Des+Moines%2C+IA&amp;year=1993&amp;cmp=normal&amp;from=example-1993" data-eg="1993-des-moines"><picture><source type="image/webp" srcset="/img/rain-print-example-1993-des-moines-ia.webp"><img src="/img/rain-print-example-1993-des-moines-ia.jpg" width="1200" height="800" loading="lazy" decoding="async" alt="Example Rain Print of 1993 at Des Moines, Iowa, the flood year: 55.88 in of rain and melted snow."></picture><span class="rp-eg-t">1993, the flood</span><span class="rp-eg-s">Des Moines, Iowa. 55.88 in of rain and melted snow, 53% over a usual year.</span><span class="rp-eg-go">Open it</span></a></li>
+        <li><a class="rp-eg-card" href="/rain-print?place=Des+Moines%2C+IA&amp;year=1993&amp;cmp=normal&amp;dedication=The+year+we+married&amp;m1=1993-06-19+Wedding&amp;from=example-wedding" data-eg="wedding-1993"><picture><source type="image/webp" srcset="/img/rain-print-example-wedding-1993-des-moines-ia.webp"><img src="/img/rain-print-example-wedding-1993-des-moines-ia.jpg" width="1200" height="800" loading="lazy" decoding="async" alt="Example Rain Print of 1993 at Des Moines, Iowa, with the line The year we married and a Wedding mark on Jun 19."></picture><span class="rp-eg-t">A wedding year</span><span class="rp-eg-s">Des Moines, Iowa, 1993, with a Wedding mark on Jun 19 and the line &ldquo;The year we married.&rdquo; An example.</span><span class="rp-eg-go">Open it</span></a></li>
+      </ul>
+    </section>
 
     <div class="rp-flow">
       <div class="rp-pv" id="rp-pv">
@@ -886,6 +941,16 @@
       </div>
 
       <div class="rp-stepcol" id="rp-stepcol">
+        <section class="rp-occ" id="rp-occ" aria-labelledby="rp-occ-h">
+          <h2 class="rp-occ-h" id="rp-occ-h">What is it for?</h2>
+          <div class="rp-occ-row" role="group" aria-labelledby="rp-occ-h">
+            <button type="button" class="rp-occ-b" data-occ="christmas" aria-pressed="false">Christmas for a farmer</button>
+            <button type="button" class="rp-occ-b" data-occ="born" aria-pressed="false">The year they were born</button>
+            <button type="button" class="rp-occ-b" data-occ="married" aria-pressed="false">The year we married</button>
+            <button type="button" class="rp-occ-b" data-occ="farm" aria-pressed="false">Farm anniversary or last crop</button>
+          </div>
+          <p class="rp-count rp-occ-say" id="rp-occ-say" aria-live="polite"></p>
+        </section>
         <section class="rp-step" id="rp-where" aria-labelledby="rp-draw-h">
           <h2 class="sec-h rp-step-h" id="rp-draw-h"><span class="rp-n" aria-hidden="true">1</span>Where and when</h2>
           <form class="rp-form" id="rp-form" autocomplete="off" aria-labelledby="rp-draw-h">
@@ -1037,7 +1102,7 @@
             <p class="rp-note" id="rp-buy-note" aria-live="polite"></p>
           </div>
           <div class="rp-yearask" id="rp-yearask" hidden></div>
-          <figure class="rp-onwall" id="rp-onwall"><div class="rp-onwall-i"><picture><source type="image/webp" srcset="/img/rain-print-wall-shop.webp"><img src="/img/rain-print-wall-shop.jpg" width="800" height="505" loading="eager" fetchpriority="low" decoding="async" alt="Mockup: a framed Rain Print in a black frame on the painted steel wall of a farm shop."></picture><span class="rp-ex-tag" aria-hidden="true">Mockup</span></div><figcaption>Mockup of a framed print. Photos with the white mat coming soon.</figcaption></figure>
+          
           <p class="rp-note rp-gift-line" id="rp-gift-line" hidden>It&rsquo;s a gift? Say so on the order form, with their name and your note.</p>
           <p class="rp-note" id="rp-arrive-est" hidden></p>
           <p class="rp-note" id="rp-ships">Prints and framed prints ship within 3 business days after you approve the proof, anywhere in the 50 states.</p>
@@ -1096,8 +1161,8 @@
       <h2 class="sec-h" id="rp-real-h">Real prints, in the two styles</h2>
       <p>Two of my test prints, both of Chetek, Wisconsin, framed in black. They are shown without the white mat that comes with a framed print.</p>
       <div class="rp-real-grid">
-        <figure class="rp-real-fig"><picture><source type="image/webp" srcset="/img/photos/rain-print-photo-chetek-2025-800.webp 800w, /img/photos/rain-print-photo-chetek-2025-1600.webp 1348w" sizes="(min-width: 760px) 50vw, 100vw"><img src="/img/photos/rain-print-photo-chetek-2025-800.jpg" srcset="/img/photos/rain-print-photo-chetek-2025-800.jpg 800w, /img/photos/rain-print-photo-chetek-2025-1600.jpg 1348w" sizes="(min-width: 760px) 50vw, 100vw" width="1348" height="1011" loading="lazy" decoding="async" alt="Framed Rain Print of Chetek, Wisconsin, 2025, photographed on a wall: daily rain below the line, snow above, 32.27 in."></picture><figcaption><b>Roots</b>, Chetek, Wisconsin, 2025. Each day is its own line: rain hangs below the ground line, snow stands above it in light blue. 32.27 in of rain and melted snow, 9% less than a usual year.</figcaption></figure>
-        <figure class="rp-real-fig"><picture><source type="image/webp" srcset="/img/photos/rain-print-photo-chetek-1984-800.webp 800w, /img/photos/rain-print-photo-chetek-1984-1600.webp 1600w" sizes="(min-width: 760px) 50vw, 100vw"><img src="/img/photos/rain-print-photo-chetek-1984-800.jpg" srcset="/img/photos/rain-print-photo-chetek-1984-800.jpg 800w, /img/photos/rain-print-photo-chetek-1984-1600.jpg 1600w" sizes="(min-width: 760px) 50vw, 100vw" width="1600" height="1187" loading="lazy" decoding="async" alt="Framed Rain Print of Chetek, Wisconsin, 1984, photographed on a wall: Staircase style, 32.60 in, Birthday Jun 21 marked."></picture><figcaption><b>Staircase</b>, Chetek, Wisconsin, 1984. The year climbs as one line, with every other full year the station kept drawn in gray behind it and a birthday marked on Jun 21. The serial under the QR code reads No. 0000, my number for test prints, initialed in pencil.</figcaption></figure>
+        <figure class="rp-real-fig"><img class="rp-slot rp-slot-real" src="/img/photos/rp-slot-wall.jpg" width="1250" height="1440" loading="lazy" decoding="async" alt="Framed Rain Print of Chetek, Wisconsin, 2025, hanging on a textured wall below an old framed picture of cattle: daily rain below the line, snow above, 32.27 in."><figcaption><b>Roots</b>, Chetek, Wisconsin, 2025. Each day is its own line: rain hangs below the ground line, snow stands above it in light blue. 32.27 in of rain and melted snow, 9% less than a usual year.</figcaption></figure>
+        <figure class="rp-real-fig"><img class="rp-slot rp-slot-real" src="/img/photos/rp-slot-second.jpg" width="1600" height="1187" loading="lazy" decoding="async" alt="Framed Rain Print of Chetek, Wisconsin, 1984, photographed on a wall: Staircase style, 32.60 in, Birthday Jun 21 marked."><figcaption><b>Staircase</b>, Chetek, Wisconsin, 1984. The year climbs as one line, with every other full year the station kept drawn in gray behind it and a birthday marked on Jun 21. The serial under the QR code reads No. 0000, my number for test prints, initialed in pencil.</figcaption></figure>
       </div>
     </section>
     <section class="rp-sec" aria-labelledby="rp-how-h">

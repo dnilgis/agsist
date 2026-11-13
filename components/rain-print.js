@@ -3134,6 +3134,7 @@
     var J = OJ().j || {}, pc = J.print_christmas_cutoff, fc = J.framed_christmas_cutoff;
     // no dates (a Canadian design: no Christmas promise unless data/rain-print.json canada sets one): no Christmas lines
     $('rp-xmas-alt').hidden = true;
+    var sh = $('rp-xmas-short'); if (sh) sh.textContent = '';   // the one short date on the phone's first screen (2026-11-13), set below; its room is held in the CSS so it never pushes the button
     if (!/^\d{4}-\d{2}-\d{2}$/.test(pc || '') || !/^\d{4}-\d{2}-\d{2}$/.test(fc || '')) { $('rp-xmas-top').hidden = true; $('rp-xmas-why').hidden = true; return; }
     var top = $('rp-xmas-top'), why = $('rp-xmas-why'), late = TODAY > pc && TODAY > fc;
     if (TODAY > pc.slice(0, 4) + '-12-25' || TODAY < pc.slice(0, 4) + '-10-01') { top.hidden = true; return; }
@@ -3153,6 +3154,7 @@
       : gift ? 'For Christmas: ' + thisYr.charAt(0).toLowerCase() + thisYr.slice(1) + ' Last year (' + ly + ') comes by Christmas if you order it ' + by + '.'
       : 'For Christmas: last year (' + ly + '), or any past year, comes by Christmas if you order it ' + by + '. ' + thisYr;
     top.hidden = false;
+    if (sh && !late) { sh.textContent = TODAY <= fc ? 'For Christmas, order framed by ' + shortDate(fc) + '.' : 'For Christmas, order a print by ' + shortDate(pc) + '.'; }
     if (!late && gift && canOrder() && ST.place && !(GIFT && GIFT.lock)) {
       $('rp-xmas-last').textContent = 'Make it ' + ly + ', by Christmas';
       $('rp-xmas-alt').hidden = false;
@@ -5763,17 +5765,70 @@
   syncCounts();
   /* 2026-11-01 (audit): a screen reader on a shut Pay button hears the reason under it. */
   try { $('rp-pay').setAttribute('aria-describedby', 'rp-buy-why'); $('rp-buy-why').setAttribute('role', 'status'); } catch (e) {}
-  /* 2026-11-01: the birth-year and wedding-year gift pages link here with ?from=birthyear or
-     ?from=weddingyear. With no design in the link, start day 1 as Born or Wedding (the same as
-     tapping that word) and put the cursor in the town box, the first thing to type. */
+  /* THE OCCASION (2026-11-13, "start from the occasion"): four choices at the top of the designer. A tap presets what the
+     page already has: the marked-day chip (Born, Wedding, Anniversary), a ready line under the name, and the example words
+     in the empty boxes. It never overwrites words the reader typed: the line is replaced only while it is still the last
+     ready line, and a day only while it is still the unpicked chip. The gift pages link here with ?from=birthyear,
+     weddingyear, anniversary, retirement or christmas, which is the same tap made for the reader (2026-11-01 did Born and
+     Wedding alone). It sends rain_print_occasion {occasion} (never a word the reader typed). */
+  var OCCASIONS = {
+    christmas: { line: 'Every inch of the year you farmed.', day: '', name: 'The Johnson Farm', ded: 'For Dad, his 40th crop. Love, Kate',
+      say: 'Christmas for a farmer. The line under the name is ready; change it any way you like. Now type the town nearest the farm.' },
+    born: { line: 'The year you were born', day: 'Born', name: 'Emma Grace Olson', ded: 'Born at 6:12 in the morning, in the snow',
+      say: 'The year they were born. Day 1 is marked Born. Type their birth town, pick the year, then pick the day.' },
+    married: { line: 'The year we married', day: 'Wedding', name: 'Tom and Anna Olson', ded: 'The year we married',
+      say: 'The year we married. Day 1 is marked Wedding. Type the town you married in, pick the year, then pick the day.' },
+    farm: { line: 'A year on the home farm', day: 'Anniversary', name: 'The Olson Farm', ded: 'Since 1952, with love from the family',
+      say: 'Farm anniversary or last crop. Day 1 is marked Anniversary; change it to Retired if that fits better. Type the town nearest the farm, then the year.' }
+  };
+  var FROM_OCC = { christmas: 'christmas', birthyear: 'born', weddingyear: 'married', anniversary: 'farm', retirement: 'farm' };
+  var OCC_NOW = '', OCC_LINE = '', OCC_DAY = '';
+  function occDay(word) {
+    var i, row;
+    // the unpicked chip of the last choice: reuse its row (or clear it)
+    for (i = 1; i <= LIMITS.markers; i++) {
+      if (OCC_DAY && $('rp-m' + i + 'l').value === OCC_DAY && !$('rp-m' + i + 'mo').value && !$('rp-m' + i + 'dy').value) {
+        if (!word) { $('rp-m' + i + 'rm').click(); OCC_DAY = ''; return; }
+        $('rp-m' + i + 'l').value = word; TOUCHED[i] = false; cleanField('rp-m' + i + 'l'); OCC_DAY = word; return;
+      }
+    }
+    if (!word) { OCC_DAY = ''; return; }
+    for (i = 1; i <= LIMITS.markers; i++) if ($('rp-m' + i + 'l').value === word) { OCC_DAY = word; return; }
+    for (i = 1; i <= LIMITS.markers; i++) if (!$('rp-m' + i + 'l').value) {
+      row = $('rp-m' + i + 'row'); row.hidden = false; $('rp-m' + i + 'l').value = word; TOUCHED[i] = false;
+      cleanField('rp-m' + i + 'l'); OCC_DAY = word; return;
+    }
+  }
+  function applyOccasion(key, quiet) {
+    var o = OCCASIONS[key];
+    if (!o) return;
+    endExample();
+    OCC_NOW = key;
+    doc.querySelectorAll('#rp-occ .rp-occ-b').forEach(function (b) { b.setAttribute('aria-pressed', String(b.getAttribute('data-occ') === key)); });
+    var ded = $('rp-ded'), nm = $('rp-name');
+    nm.placeholder = o.name; ded.placeholder = o.ded;
+    if (!ded.value.trim() || ded.value === OCC_LINE) { ded.value = o.line; OCC_LINE = o.line; cleanField('rp-ded'); }
+    occDay(o.day);
+    syncRows(); syncDates(); restyle();
+    $('rp-occ-say').textContent = o.say;
+    if (o.day) { var mo = '', dyv = ''; for (var i = 1; i <= LIMITS.markers; i++) if ($('rp-m' + i + 'l').value === o.day) { mo = $('rp-m' + i + 'mo').value; dyv = $('rp-m' + i + 'dy').value; } if (!mo && !dyv) dateSay(o.day + ' is day 1. Now pick its month and day.'); }
+    if (!quiet) ga('rain_print_occasion', { occasion: key });
+  }
+  doc.querySelectorAll('#rp-occ .rp-occ-b').forEach(function (b) {
+    b.addEventListener('click', function () { applyOccasion(b.getAttribute('data-occ')); });
+  });
   (function () {
-    var f = new URLSearchParams(root.location.search).get('from');
-    var w = f === 'birthyear' ? 'Born' : f === 'weddingyear' ? 'Wedding' : '';
-    if (!w || ST.place) return;
-    var b = doc.querySelector('#rp-presets button[data-en="' + w + '"]');
-    if (b && !$('rp-m1l').value) b.click();
-    try { $('rp-place').focus(); } catch (e) {}
+    var f = new URLSearchParams(root.location.search).get('from') || '';
+    // where the reader came from: the page sends the bare path to Analytics, so the mark rides on its own event
+    if (/^[a-z0-9-]{1,32}$/.test(f)) ga('rain_print_landing', { from: f });
+    if (!FROM_OCC[f] || ST.place) return;
+    applyOccasion(FROM_OCC[f], true);
+    try { $('rp-place').focus({ preventScroll: true }); } catch (e) {}
   })();
+  // the three finished examples under the headline: a tap is counted, then the link opens the designer
+  doc.querySelectorAll('#rp-eg .rp-eg-card').forEach(function (a) {
+    a.addEventListener('click', function () { ga('rain_print_example', { example: a.getAttribute('data-eg') || '' }); });
+  });
   radios('rp-style').forEach(function (r) { r.addEventListener('change', function () { restyle(); }); });
   // Canada: mm or inches, English or French (the choice rides in the design)
   radios('rp-units').forEach(function (r) { r.addEventListener('change', function () { ST.units = r.value; restyle(); syncCa(); ga('rain_print_units', { units: r.value }); }); });
