@@ -11,6 +11,7 @@
  "proof": {
   "refreshed": "2026-11-12",
   "days": 30,
+  "maxAgeDays": 14,
   "engaged": {
    "start": "2026-10-12",
    "end": "2026-11-10",

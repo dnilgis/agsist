@@ -7,8 +7,10 @@
  *   every push to main that touches this file. No more pasting into the dashboard.
  * v5.68 (2026-11-13): SPONSORS PAY BY CHECK OR BANK WIRE. The sponsor confirm pages no longer
  *   promise a free first month (no free months, Nov 13): they say the ad is paid by check or bank
- *   wire from the invoice we email. GET /count also answers people: the addresses on any list
- *   (sub:, alert:, ewatch:, pwatch:, watch:, note:), each once, as one number; no address is sent.
+ *   wire from the invoice we email at booking, and that the ad goes live the day payment arrives
+ *   (live on receipt). GET /count also answers people: the CONFIRMED addresses on any list (the
+ *   Daily, hail alerts, a watch with a confirmed entry, a notice topic), each once, as one number;
+ *   an address that typed in and never confirmed is not counted, and no address is sent.
  *   No new binding or secret. Every other route answers as before.
  * v5.67 (2026-11-10): REPORT-DAY RESULT. POST /report-live takes the graded result of a USDA
  *   report from the report-day job (.github/workflows/report-day-live.yml, scripts/report_live.py)
@@ -2729,13 +2731,20 @@ async function noticeCounts(env) {
 }
 
 // v5.68: unique addresses across every list, for the one "on our lists" figure. Counts only.
-const PEOPLE_PREFIXES = ["sub:", "alert:", "ewatch:", "pwatch:", "watch:", "note:"];
+// The Daily (sub:), hail alerts (alert:) and notice topics (note:) hold only addresses that are on the
+// list; a watch (watch:, ewatch:, pwatch:) also holds addresses still waiting to confirm (pend only), so
+// a watch address counts only when its record has a confirmed entry in w.
+const PEOPLE_ON = ["sub:", "alert:", "note:"];
+const PEOPLE_WATCH = ["watch:", "ewatch:", "pwatch:"];
 async function peopleCount(env) {
   const seen = new Set();
-  for (const pre of PEOPLE_PREFIXES) {
+  const add = (k, pre) => { const e = k.slice(pre.length).trim().toLowerCase(); if (e.includes("@")) seen.add(e); };
+  for (const pre of PEOPLE_ON) for (const k of await listKeys(env, pre)) add(k, pre);
+  for (const pre of PEOPLE_WATCH) {
     for (const k of await listKeys(env, pre)) {
-      const e = k.slice(pre.length).trim().toLowerCase();
-      if (e.includes("@")) seen.add(e);
+      let r = null;
+      try { r = JSON.parse(await env.SUBS.get(k)); } catch (e) { r = null; }
+      if (r && r.w && typeof r.w === "object" && Object.keys(r.w).length) add(k, pre);
     }
   }
   return seen.size;
@@ -4538,12 +4547,12 @@ async function handle(req, env) {
         if (req.method !== "POST")
           return htmlPage("Confirm your AGSIST ad: " + what,
             "<form method=post><button style=\"font-size:16px;padding:10px 18px\">Yes, send it to Sig</button></form>" +
-            "<p>Nothing runs until Sig has looked at it. You pay by check or bank wire: the invoice we email has the mailing address and wire instructions.</p>");
+            "<p>Nothing runs until Sig has looked at it. You pay by check or bank wire: the invoice we email has the mailing address and wire instructions. Your ad goes live the day your payment arrives.</p>");
         r.status = "confirmed"; r.cts = Date.now();
         await env.SUBS.put("sapp:" + id, JSON.stringify(r));
         return htmlPage("Thanks. Sig has your ad.",
-          "<p>He reviews every ad himself, usually the same day, and you'll get an email when it's live, " +
-          "with the invoice. Pay it by check or bank wire.</p>");
+          "<p>He reviews every ad himself, usually the same day, and emails you the invoice. Pay it by check or bank wire. " +
+          "Your ad goes live the day your payment arrives, and you'll get an email when it's live.</p>");
       }
       const ok = SAPP_DECISIONS[d].from.includes(r.status);
       if (!ok) return htmlPage("Nothing to do: this application is " + escHtml(r.status) + ".");

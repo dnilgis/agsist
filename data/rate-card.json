@@ -1,14 +1,15 @@
 {
-  "_": "THE ONE DEFINITION OF WHAT A SPONSOR SPOT COSTS. Read by sponsor.html (the booking page), components/sponsor-apply.js (the booking form), components/loader.js (the sitewide line), components/geo-sponsor.js (the state card), each sponsor's own portal and scripts/sponsor_apply.py. scripts/test_rate_card.py fails if a price or term here is not on sponsor.html. Two spots only. Prices are MONTHLY (price_month); a year costs price_month times year_months. A State Sponsor costs price_month in most states and price_by_state where listed; a state in opens_soon is shown but not taken yet (California, Nevada and Texas, held while the state test there runs; scripts/test_rate_card.py holds this list to every active entry in data/geo-sponsors.json). Sponsors pay by check or bank wire only (Nov 13, 2026): no card payment, no payment links, no free month and no discount; the invoice we email carries the mailing address and wire instructions, and the site never shows bank details. Change a price HERE first, then run scripts/stamp_rates.py.",
+  "_": "THE ONE DEFINITION OF WHAT A SPONSOR SPOT COSTS. Read by sponsor.html (the booking page), components/sponsor-apply.js (the booking form), components/loader.js (the sitewide line), components/geo-sponsor.js (the state card), each sponsor's own portal and scripts/sponsor_apply.py. scripts/test_rate_card.py fails if a price or term here is not on sponsor.html. Two spots only. Prices are MONTHLY (price_month); a year costs price_month times year_months. A State Sponsor costs price_month in most states and price_by_state where listed; a state in opens_soon is shown but not taken yet (California, Nevada and Texas, held while the state test there runs; scripts/test_rate_card.py holds this list to every active entry in data/geo-sponsors.json). Sponsors pay by check or bank wire only (Nov 13, 2026): no card payment, no payment links, no free month and no discount; the invoice is emailed at booking and carries the mailing address and wire instructions, the ad goes live the day the check or wire arrives (live on receipt), and the site never shows bank details. Change a price HERE first, then run scripts/stamp_rates.py.",
   "_updated": "2026-11-11",
   "currency": "USD",
   "year_months": 10,
-  "pay": "Pay by check or bank wire. We email an invoice with the mailing address and wire instructions.",
+  "pay": "Pay by check or bank wire. We email the invoice when you book, with the mailing address and wire instructions.",
+  "live": "Live on receipt: your ad goes live the day your check or wire arrives.",
   "refund": "Money back if you ask inside 30 days.",
   "terms": "Month to month or by the year. Cancel any time.",
   "prepay": "A year costs the same as 10 months.",
   "paperwork": "W-9 on request.",
-  "review": "We check each ad by hand. It goes live within one business day.",
+  "review": "We check each ad by hand before it runs.",
   "tiers": [
     {
       "id": "sitewide",
