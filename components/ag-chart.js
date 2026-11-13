@@ -279,7 +279,7 @@
     var failed = [], left = [], top0 = row2 ? fs * (2.65 + (krows - 1) * 1.2) + 1 : fs * 1.7;
     // First/last point label (E53 r7): nearest slot 6 px off gridlines, dots, line and labels, within a band (or past the
     // edge gridline), two steps sideways, no other point nearer by over 6 px. Else a first label is left out; a last one
-    // tries 3 px to line and labels, then two bands, then without the other-point test (it prints its year).
+    // tries 3 px to line and labels, two bands, no other-point test. One legend line: own band first, gridlines 6 then 3.
     var placePt = function (L) {
       var P = L.pt, px = P.x, py = P.y, r = P.r, w = widthOf(L.text, fs, L.bold), end = L.kind === 'end', gys = g.tk.map(function (t) { return g.y(t); });
       var yb = Math.max.apply(null, gys), yt = Math.min.apply(null, gys), bot = H - fs * 1.25 - 3, M = 6, best = null, C, G, BP;
@@ -288,7 +288,7 @@
         var t = { x0: x0 - 2, x1: x0 + w + 2, y0: y - fs * 0.76, y1: y + fs * 0.14 }, own = dist(t, px, py), i;
         if ((best && own >= best.own) || t.x0 < g.L + 2 || t.x1 > W - 2 || t.y0 < top0 || t.y1 > bot) return;
         if (band && (py < t.y0 ? t.y0 - py : py > t.y1 ? py - t.y1 : 0) > BP) return;
-        for (i = 0; i < gys.length; i++) if (gys[i] > t.y0 - G && gys[i] < t.y1 + G) return;
+        for (i = 0; i < gys.length; i++) if (gys[i] > t.y0 - G && gys[i] < t.y1 + G || lv < 0 && (gys[i] - py) * (gys[i] - t.y0) < 0) return;
         var tb = { x0: t.x0 - C, x1: t.x1 + C, y0: t.y0 - C, y1: t.y1 + C };
         for (i = 0; i < boxes.length; i++) if (hitBox(tb, boxes[i])) return;
         for (i = 0; i < segs.length; i++) if (hitSeg(tb, segs[i])) return;
@@ -296,8 +296,8 @@
         best = { t: t, x: end ? x0 + w : x0, y: y, own: own, lv: lv };
       };
       var dir = end ? -1 : 1, k, sh, y, lv, xa = end ? px + r - w : px - r, xb = end ? px - r - M - 2 - w : px + r + M + 2, xg = end ? xa : xb;
-      for (lv = 0; lv < (end ? 4 : 1) && !best; lv++) {
-        C = lv ? 3 : M; G = lv && cfg.legend ? 3 : M; BP = (lv > 1 ? 2 : 1) * bandPx;
+      for (lv = end && cfg.legend ? -2 : 0; lv < (end ? 4 : 1) && !best; lv++) {
+        C = lv > 0 ? 3 : M; G = lv == -1 || lv > 0 && cfg.legend ? 3 : M; BP = (lv > 1 ? 2 : 1) * bandPx;
         for (k = 0; k <= BP + fs; k += 0.5) for (y = -1; y <= 1; y += 2) for (sh = -2; sh < 3; sh++) {
           var o = dir * sh * fs * 0.8, yy = py + fs * 0.31 + y * k;
           at(xa + o, yy, true);
