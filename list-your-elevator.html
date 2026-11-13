@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#111a0a">
   <title>Post Your Elevator's Cash Bids on AGSIST, Free</title>
   <meta name="description" content="Run a grain elevator? Post your own cash bids on AGSIST for free, fix your name, town or phone, and see on the map which elevators we read.">
-  <meta name="author"      content="Sigurd Lindquist, Farmers First Agri Service">
+  <meta name="author"      content="AGSIST">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical"    href="https://agsist.com/list-your-elevator">
 
@@ -194,11 +194,7 @@
     "@type": "WebSite",
     "url": "https://agsist.com/"
    },
-   "author": {
-    "@type": "Person",
-    "name": "Sigurd Lindquist",
-    "url": "https://agsist.com/about"
-   }
+   "author": {"@id":"https://agsist.com/#organization"}
   },
   {
    "@type": "FAQPage",
@@ -438,7 +434,7 @@
           </div>
           <div class="cl-go">
             <button type="submit" class="cl-btn" id="le-send">Send the request</button>
-            <p class="cl-note">It comes to me, Sig. I use your phone and email only to set this up. Nothing goes on the site until I have talked with the elevator.</p>
+            <p class="cl-note">It comes to AGSIST. I use your phone and email only to set this up. Nothing goes on the site until I have talked with the elevator.</p>
           </div>
         </form>
         <div class="cl-out" id="le-out" aria-live="polite"></div>
@@ -616,7 +612,7 @@
       <label class="cl-chk"><input type="checkbox" name="hosted_board" value="yes"> Tell me about a hosted bid board for our website</label>
       <div class="cl-go">
         <button type="submit" class="cl-btn" id="cl-send">Claim our board</button>
-        <p class="cl-note">Goes to Sig at <a href="mailto:sig@agsist.com">sig@agsist.com</a>. Nothing changes on the site until he confirms it with you.</p>
+        <p class="cl-note">Goes to AGSIST at <a href="mailto:sig@agsist.com">sig@agsist.com</a>. Nothing changes on the site until AGSIST confirms it with you.</p>
       </div>
     </form>
     <div class="cl-out" id="cl-out" role="status" aria-live="polite"></div>
@@ -639,7 +635,7 @@
       <div class="el-disc">
     Cash bids are read from each elevator's own posted board and can trail a change the elevator has not posted yet. Confirm the price with the elevator before you deliver. AGSIST is not a licensed commodity broker and this is not trading advice. Contact: <a href="mailto:sig@agsist.com" style="color:var(--gold)">sig@agsist.com</a> &middot; <a href="tel:+17157972428" style="color:var(--gold)">715-797-2428</a>
   </div>
-      <p class="le-sig">Sigurd Lindquist, AGSIST. <a href="mailto:sig@agsist.com">sig@agsist.com</a> &middot; <a href="tel:+17157972428">715-797-2428</a></p>
+      <p class="le-sig">AGSIST. <a href="mailto:sig@agsist.com">sig@agsist.com</a> &middot; <a href="tel:+17157972428">715-797-2428</a></p>
     </div>
   </main>
   <div id="site-footer">
@@ -660,8 +656,8 @@
 </div>
   <script src="/components/form-post.js?v=9"></script>
   <script src="/components/elev-names.js?v=2"></script>
-  <script src="/components/list-elevator.js?v=3"></script>
-  <script src="/components/elevator-claim.js?v=1"></script>
+  <script src="/components/list-elevator.js?v=4"></script>
+  <script src="/components/elevator-claim.js?v=2"></script>
   <script>
   /* The coverage map loads Leaflet and its data only when a reader nears it, or opens the page on it. */
   (function(){

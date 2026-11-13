@@ -10,7 +10,7 @@
 
   <title>Live Hail Map &amp; Tracker: NWS Warnings, Today&#x27;s Swaths | AGSIST</title>
   <meta name="description" content="Live hail map and tracker, free: NWS hail warnings now, today&#x27;s radar hail swaths, and dated reports since 2022 for any US address. Hail alerts, no login.">
-  <meta name="author" content="Sigurd Lindquist, Farmers First Agri Service">
+  <meta name="author" content="AGSIST">
   <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
   <link rel="canonical" href="https://agsist.com/hail-map">
 
@@ -414,7 +414,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     "name":"AGSIST National Hail Map",
     "description":"Interactive heatmap of five years of US National Weather Service hail Local Storm Reports, showing the geographic frequency of hail across the country.",
     "url":"https://agsist.com/hail-map",
-    "creator":{"@type":"Person","name":"Sigurd Lindquist","url":"https://agsist.com/about"},
+    "creator":{"@id":"https://agsist.com/#organization"},
     "license":"https://agsist.com/terms",
     "creditText":"AGSIST (agsist.com). Built from National Weather Service Local Storm Reports (public domain) via the Iowa Environmental Mesonet.",
     "isBasedOn":{"@type":"Dataset","name":"NWS Local Storm Reports (hail)","publisher":{"@type":"Organization","name":"National Weather Service"}},
@@ -692,13 +692,12 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
       <p class="rp-promo" style="margin:1.2rem 0 0;font-size:.92rem;color:var(--text-muted)">Your farm&rsquo;s rainfall year, as wall art: <a href="/rain-print">Rain Print, rainfall art of any town and year</a>, draws every day of rain and snow at the nearest weather station. Free to make. For rain so far this year, see <a href="/rain">rain by county</a>.</p>
       <p style="margin:.6rem 0 0;font-size:.92rem;color:var(--text-muted)">Storms bring rain too: <a href="/rain#radar">rain on your field in the last 24 hours to 7 days, from NOAA radar and gauges</a>.</p>
       <details class="hm-terms" id="terms"><summary>Sources and terms</summary>
-        <p><strong>Who:</strong> Sigurd Lindquist, CCA, Wisconsin, the same person behind the rest of <a href="/about">AGSIST</a>. Questions, corrections, press: <a href="mailto:sig@agsist.com">sig@agsist.com</a>.</p>
+        <p><strong>Who:</strong> <a href="/about">AGSIST</a>. Questions, corrections, press: <a href="mailto:sig@agsist.com">sig@agsist.com</a>.</p>
         <p><strong>Sources:</strong> Hail reports are National Weather Service Local Storm Reports via the Iowa Environmental Mesonet, with the date they run through shown above the map. Radar swaths are NOAA radar estimates of hail size. Live warnings are from the National Weather Service. The long-term point record is the NOAA NCEI Storm Events Database, 1955 to 2020, never mixed with the current record.</p>
         <p><strong>Known limits:</strong> Radar estimates tend to run large against measured stones, so every swath here is labeled an estimate. Storm reports are town-level precision and depend on someone reporting, so a quiet spot on the map can just mean nobody called it in.</p>
         <p><strong>Reuse and citation:</strong> Screenshots and embeds are welcome with credit: <em>&ldquo;NWS/NOAA data via agsist.com/hail-map.&rdquo;</em> The underlying records are public.</p>
       </details>
     </div>
-  <p class="by-end" style="font-size:.78rem;color:var(--text-muted);margin:1.2rem 0 .4rem">Made by <a href="/about">Sigurd Lindquist, CCA</a>, Chetek, Wisconsin.</p>
 </main>
 
   <div id="site-footer">
@@ -1680,7 +1679,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
           ((L.swaths&&L.swaths.hits&&L.swaths.hits.length)?('<h2 style="font-size:1.05rem;margin-top:1.2rem">Radar-estimated swaths at this point (NOAA MRMS MESH)</h2><ul>'+L.swaths.hits.map(function(h){ return '<li>'+esc(h.d)+', inside the &ge;'+h.band+'&Prime; estimated band</li>'; }).join('')+'</ul><p style="font-size:.85rem;color:#555">Radar estimates, not measurements; checked against '+L.swaths.checked+' archived storm days.</p>'):'')+
           '<table><thead><tr><th>Date</th><th>Size</th><th>Distance</th><th>Near</th></tr></thead><tbody>'+rows+'</tbody></table>'+
           '<p style="font-size:.9rem;background:#f5f2e8;border:1px solid #d8cfa8;padding:.6rem .8rem;border-radius:var(--r-md)"><strong>Using this for a claim:</strong> this printout confirms the date and the neighborhood. Your own photos confirm the property. Bring both; the adjuster does the rest.</p>'+
-          '<p class="foot">Prepared by <strong>Sigurd Lindquist</strong> &middot; AGSIST &middot; sig@agsist.com &middot; agsist.com/hail-map<br>Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet. Reports are town-level precision and depend on someone reporting; absence of reports is not proof of absence of hail. It summarizes public reports and does not replace an engineering or insurance inspection.</p>'+
+          '<p class="foot">Prepared by <strong>AGSIST</strong> &middot; sig@agsist.com &middot; agsist.com/hail-map<br>Source: National Weather Service Local Storm Reports via the Iowa Environmental Mesonet. Reports are town-level precision and depend on someone reporting; absence of reports is not proof of absence of hail. It summarizes public reports and does not replace an engineering or insurance inspection.</p>'+
           '</body></html>');
         w.document.close(); setTimeout(function(){ w.print(); },300);
       });

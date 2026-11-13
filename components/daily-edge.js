@@ -46,10 +46,10 @@
   }
   function note(n) {
     if (!n || typeof n !== 'object' || !String(n.text || '').trim()) return '';
-    return '<aside class="dv3-cca" aria-label="A note from Sig">' +
-      '<p class="dv3-cca-label">From Sig</p>' +
+    return '<aside class="dv3-cca" aria-label="A note from AGSIST">' +
+      '<p class="dv3-cca-label">From AGSIST</p>' +
       '<p class="dv3-cca-text">' + esc(String(n.text).trim()) + '</p>' +
-      '<p class="dv3-cca-by">Sigurd Lindquist, CCA</p></aside>';
+      '</aside>';
   }
   var api = { html: html, note: note, shown: shown, CSS: CSS };
   if (typeof module === 'object' && module.exports) { module.exports = api; return; }
