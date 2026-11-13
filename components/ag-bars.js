@@ -55,7 +55,10 @@
     var L = M.length - 1, last = M[L];
     /* the last month's figure is written in the saved picture only; on the page the readout under the chart says it once */
     if (opt.card && isN(last.a) && !last.gap) {
-      o.push(txt(W - g.pr, g.pt - fs * 0.6, last.lab + (last.part ? ' so far' : '') + ': ' + cfg.vfmt(last.a) + (g.hasN && isN(last.n) ? ' (normal ' + cfg.vfmt(last.n) + ')' : ''), f + 'font-weight:700;fill:' + P.ink, 'end'));
+      /* the figure at the top right; when it would run into the key's swatches the normal's part is left to the page's readout */
+      var na0 = cfg.names || {}, keyEnd = g.pl + fs * 1.1 + widthOf(na0.a || '', fs) + fs * 1.4 + (g.hasN ? fs * 1.1 + widthOf(na0.n || 'Normal', fs) + fs * 1.4 : 0) + (last.part ? fs * 1.1 + widthOf(last.lab + ' so far', fs) : 0);
+      var full = last.lab + ': ' + cfg.vfmt(last.a) + (g.hasN && isN(last.n) ? ' (normal ' + cfg.vfmt(last.n) + ')' : ''), short = last.lab + ': ' + cfg.vfmt(last.a);
+      o.push(txt(W - g.pr, g.pt - fs * 0.6, keyEnd + fs * 2 + widthOf(full, fs) * 0.9 > W - g.pr ? short : full, f + 'font-weight:700;fill:' + P.ink, 'end'));
     }
     if (opt.card) {   /* the key goes in the picture: it has no legend of its own */
       var kx = g.pl, ky = g.pt - fs * 0.6, na = (cfg.names || {});
