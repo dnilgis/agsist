@@ -16,7 +16,11 @@ on:
         type: string
         default: ""
       dry_run:
-        description: "Report counts and a preview; send, mark and record nothing"
+        description: "Report counts and a preview; send, flag and record nothing"
+        type: boolean
+        default: true
+      preview:
+        description: "Send one rendered copy to the owner (secret HFR_PREVIEW_TO) and stop; never touches the list or flags"
         type: boolean
         default: true
 
@@ -30,17 +34,19 @@ concurrency:
 jobs:
   send:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 45
     steps:
       - uses: actions/checkout@v4
         with:
           ref: main
           sparse-checkout: |
-            scripts
-            data/hfr-sent.json
-            harvest-fuel-relief.html
-            workers
-            .github
+            /scripts/
+            /data/hfr-sent.json
+            /harvest-fuel-relief.html
+            /workers/
+            /.github/actions/engine/
+            /.github/engine-paths
+          sparse-checkout-cone-mode: false
       - name: Engine checkout
         uses: ./.github/actions/engine
         with:
@@ -63,18 +69,21 @@ jobs:
           SMTP_PASS: ${{ secrets.SMTP_PASS || secrets.GMAIL_APP_PASS }}
           FROM_ADDR: ${{ secrets.FROM_ADDR }}
           REPLY_TO: ${{ secrets.REPLY_TO }}
+          HFR_PREVIEW_TO: ${{ secrets.HFR_PREVIEW_TO }}
           HFR_NOTICE_LIVE: ${{ vars.HFR_NOTICE_LIVE }}
           MAILING: ${{ inputs.mailing }}
           SUBJECT: ${{ inputs.subject }}
           BODY: ${{ inputs.body }}
           DRY: ${{ inputs.dry_run }}
+          PREVIEW: ${{ inputs.preview }}
         run: |
           set -- --mailing "$MAILING" --subject "$SUBJECT"
           if [ -n "$BODY" ]; then set -- "$@" --body "$BODY"; fi
-          if [ "$DRY" = "false" ]; then set -- "$@" --send; fi
+          if [ "$PREVIEW" != "false" ]; then set -- "$@" --preview;
+          elif [ "$DRY" = "false" ]; then set -- "$@" --send; fi
           python3 scripts/send_hfr_notice.py "$@"
       - name: Record the mailing
-        if: ${{ !cancelled() && inputs.dry_run == false }}
+        if: ${{ !cancelled() && inputs.dry_run == false && inputs.preview == false }}
         run: |
           if [ -n "$(git status --porcelain data/hfr-sent.json)" ]; then
             git config user.name  "agsist-bot"
