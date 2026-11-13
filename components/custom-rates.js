@@ -16,7 +16,7 @@
 (function () {
   'use strict';
   var KEY = 'agsist-cr-st', QKEY = 'agsist-cr-qty', SKEY = 'agsist-cr-sheet';
-  var S = { b: null, st: '', k: 'combine-corn', q: '', docs: {}, loading: {}, sheet: [], qty: {}, quote: [] };
+  var S = { b: null, st: '', k: 'combine-corn', k0: 'combine-corn', byQ: false, q: '', docs: {}, loading: {}, sheet: [], qty: {}, quote: [] };
 
   function $(id) { return document.getElementById(id); }
   function esc(s) { return String(s == null ? '' : s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
@@ -111,6 +111,8 @@
     haul: ['haul', 'truck', 'farm to market'], truck: ['truck', 'haul'], trucking: ['truck', 'haul'],
     bale: ['bale', 'baling'], baling: ['bale', 'baling'], round: ['round'],
     till: ['till', 'tillage'], tillage: ['till', 'tillage'], chisel: ['chisel'],
+    /* stem('tiling') is 'til', which would prefix-match tillage: tile drainage has its own words */
+    til: ['tiling', 'tile'], tile: ['tile', 'tiling'], tiling: ['tiling', 'tile'],
     disk: ['disk', 'disc'], disc: ['disk', 'disc'], nh3: ['anhydrous'], anhydrou: ['anhydrous'],
     fert: ['fertiliz'], fertiliz: ['fertiliz'], mow: ['mow'], rake: ['rak'], rak: ['rak'],
     swath: ['swath'], wheat: ['wheat', 'small grain'], oat: ['small grain', 'oat'], barley: ['small grain', 'barley'],
@@ -156,16 +158,51 @@
     if (op.n === 1) { var st = Object.keys(op.by)[0]; return [money(op.by[st][0], op.u), stName(st) + ' only']; }
     return ['', 'not in a current survey'];
   }
+  var KEY_TEXT = 'Each dot is a state survey\'s average and the tall line is the middle. The bar starts at zero.', GOLD_TEXT = ' Your state is the gold dot.';
+  /* where a bar's scale ends: the next round figure above the highest state (same rule as the builder) */
+  function scaleTop(m) {
+    var step = m >= 20 ? 5 : m >= 2 ? 1 : m >= 1 ? 0.25 : 0.05;
+    return Math.round((Math.floor(m / step + 1e-9) + 1) * step * 1e4) / 1e4;
+  }
+  function scaleLabel(top, u) { return u !== 'percent of crop' && top >= 1 && top === Math.floor(top) ? '$' + top : money(top, u); }
   function bar(op, cls, me) {
     var sts = Object.keys(op.by).sort();
     if (!sts.length) return '';
-    var vals = sts.map(function (s) { return op.by[s][0]; }), top = Math.max.apply(null, vals) * 1.15;
+    var vals = sts.map(function (s) { return op.by[s][0]; }), top = scaleTop(Math.max.apply(null, vals));
     var pc = function (v) { return Math.round(100 * v / top); };
-    var h = '<span class="' + cls + '" aria-hidden="true">';
-    if (vals.length >= 2) h += '<s style="left:' + pc(Math.min.apply(null, vals)) + '%;width:' + Math.round(100 * (Math.max.apply(null, vals) - Math.min.apply(null, vals)) / top) + '%"></s>';
+    var big = /\bcrb-l\b/.test(cls) && vals.length >= 2, lo, hi, loPc, hiPc;
+    if (big) {
+      var byVal = sts.slice().sort(function (x, y) { return op.by[x][0] - op.by[y][0] || (x < y ? -1 : 1); });
+      lo = byVal[0]; hi = byVal[byVal.length - 1]; loPc = pc(op.by[lo][0]); hiPc = pc(op.by[hi][0]);
+    }
+    /* the layout of the two names is set by layBars() from measured widths; stacked is safe until it runs */
+    var h = '<span class="' + cls + '"' + (big ? ' data-lay="stack"' : '') + ' aria-hidden="true"><u class="crb-in">';
+    if (vals.length >= 2) h += '<s style="left:' + pc(Math.min.apply(null, vals)) + '%;width:' + (pc(Math.max.apply(null, vals)) - pc(Math.min.apply(null, vals))) + '%"></s>';
     sts.forEach(function (s) { h += '<i style="left:' + pc(op.by[s][0]) + '%"' + (s === me ? ' class="me"' : '') + '></i>'; });
     if (op.md != null) h += '<b style="left:' + pc(op.md) + '%"></b>';
+    var tl = function (st, w) { return esc(stName(st)) + ' ' + money(op.by[st][0], op.u) + ' ' + w; };
+    if (big) h += '<em class="crb-lo" style="left:' + loPc + '%">' + tl(lo, 'lowest') + '</em><em class="crb-hi" style="right:' + (100 - hiPc) + '%">' + tl(hi, 'highest') + '</em>';
+    h += '</u>';
+    /* the scale, said out loud: zero at the left, a round figure at the right end (same as the builder) */
+    h += '<em class="crb-0">$0</em><em class="crb-t">' + scaleLabel(top, op.u) + '</em>';
+    if (big) h += '<em class="crb-lh">' + tl(lo, 'lowest') + ', ' + tl(hi, 'highest') + '</em><em class="crb-sl">' + tl(lo, 'lowest') + '</em><em class="crb-sh">' + tl(hi, 'highest') + '</em>';
     return h + '</span>';
+  }
+  /* The big bar names its lowest and highest state. Which layout fits depends on the names and the width, so measure:
+     a label under each dot when the two clear each other by 12 px, else one right-aligned line when it fits the bar,
+     else two stacked right-aligned lines. Runs after the bar is drawn and when the window changes size. */
+  function layBars() {
+    all('.crb-l').forEach(function (bar) {
+      if (!bar.offsetParent || !bar.querySelector('.crb-lh')) return;
+      var r = bar.getBoundingClientRect();
+      var inside = function (e) { var q = e.getBoundingClientRect(); return q.left >= r.left - 1 && q.right <= r.right + 1; };
+      bar.setAttribute('data-lay', 'dots');
+      var lo = bar.querySelector('.crb-lo'), hi = bar.querySelector('.crb-hi');
+      if (lo.getBoundingClientRect().right + 12 <= hi.getBoundingClientRect().left && inside(lo) && inside(hi)) return;
+      bar.setAttribute('data-lay', 'line');
+      if (inside(bar.querySelector('.crb-lh'))) return;
+      bar.setAttribute('data-lay', 'stack');
+    });
   }
   /* the reader's survey's own number for a job: [values, unit, kind] or null */
   function stateVal(op) {
@@ -185,7 +222,7 @@
   /* the reader's state when it has no number of its own for this job */
   function mine(op) {
     var b = S.b, st = sv(S.st);
-    if (!st) return 'Pick your state above to see its own survey first.';
+    if (!st) return null;
     if (!b.states[st]) {
       var nc = b.not_covered[st], nb = (b.borders[st] || []).filter(function (x) { return op.by[x] || (op.old && op.old[x]); });
       return 'No ' + stName(st) + ' survey here.' + (nc ? ' ' + nc : '') + (nb.length ? ' Next door: ' + nb.map(function (x) {
@@ -237,11 +274,15 @@
       $('cr-av').textContent = c[0];
       $('cr-au').textContent = shortUnit(op.u);
       $('cr-as').textContent = middleLine(op, null);
-      $('cr-me').innerHTML = esc(mine(op)) + links;
+      var cue = mine(op);
+      $('cr-me').innerHTML = (cue == null ? '<button type="button" class="cr-cue" data-pick="1">Pick your state</button> to see its own survey first.' : esc(cue)) + links;
     }
+    var key = document.querySelector('.crh-key');
+    if (key) key.textContent = KEY_TEXT + (me && me[2] === 'by' ? GOLD_TEXT : '');
     var old = $('cr-answer').querySelector('.crb-l');
     var nb = document.createElement('div'); nb.innerHTML = bar(op, 'crb crb-l', st);
     if (old && nb.firstChild) old.parentNode.replaceChild(nb.firstChild, old);
+    layBars();
     var dl = diy(k, op), dx = $('cr-diy');
     if (dx) { dx.textContent = dl.join(' '); dx.hidden = !dl.length; }
     $('cr-cost').innerHTML = costLine(op, k);
@@ -331,8 +372,8 @@
       }
       var rg = r.lo == null ? 'not printed' : money(r.lo, r.u) + ' to ' + money(r.hi, r.u);
       return '<tr><th scope="row">' + esc(r.o) + (r.p === 'cents' ? ' <small>(printed in cents)</small>' : '') + '</th>' +
-        '<td class="av">' + money(r.a, r.u) + ' <small>' + esc(unitLabel(r.u)) + '</small>' + (r.md == null ? '' : '<span class="mdn">median ' + money(r.md, r.u) + '</span>') +
-        '<span class="rgm">' + (r.lo == null ? '' : 'range ' + rg) + '</span></td><td class="rg">' + rg + '</td><td>' + (r.n == null ? '<span class="na">not printed</span>' : r.n) + '</td></tr>';
+        '<td class="av">' + money(r.a, r.u) + ' <small>' + esc(unitLabel(r.u)) + '</small>' + (r.md != null ? '<span class="mdn">median ' + money(r.md, r.u) + '</span>' : r.mc != null ? '<span class="mdn">most common ' + money(r.mc, r.u) + '</span>' : '') +
+        '<span class="rgm">' + (r.lo == null ? '' : rg) + '</span></td><td class="rg">' + rg + '</td><td>' + (r.n == null ? '<span class="na">not printed</span>' : r.n) + '</td></tr>';
     }).join('');
   }
   function stateLines(box, open) {
@@ -350,7 +391,7 @@
       var rows = d.rows.filter(function (r) { return r.c === c; });
       var shown = S.q ? rows.filter(function (r) { return matches(S.q, r.s + ' ' + r.o + ' ' + r.u); }) : rows;
       box.innerHTML = head(rows.length) + (shown.length ?
-        '<div class="cr-tw"><table class="cr-t cr-full"><caption>' + esc(d.name) + ', ' + (d.rate_year ? d.rate_year + ' rates' : d.survey_year) + ', as the survey printed it: average' + (d.rows.some(function (r) { return r.md != null; }) ? ', median' : '') + ' and ' + esc(d.spread_label) + '.' + (d.counts === false ? ' This survey does not print how many answered each job.' : ' Answers = how many reported that job.') + '</caption>' +
+        '<div class="cr-tw"><table class="cr-t cr-full"><caption>' + esc(d.name) + ', ' + (d.rate_year ? d.rate_year + ' rates' : d.survey_year) + ', as the survey printed it: average' + (d.rows.some(function (r) { return r.md != null; }) ? ', median' : '') + ' and ' + esc(d.spread_label) + '.' + (d.counts === false ? ' This survey does not print how many answered each job.' : ' Answers is how many reported that job.') + '</caption>' +
         '<thead><tr><th scope="col">Job</th><th scope="col">Average</th><th scope="col" class="rg">Range</th><th scope="col">Answers</th></tr></thead><tbody>' + lineRows(d, shown) + '</tbody></table></div>' +
         (d.page === false ? '<p class="fine">' + esc(d.range_note) + '</p>' : '<p class="fine"><a href="/custom-rates/' + esc(d.slug) + '">' + esc(d.name) + '\'s whole survey on one page</a></p>')
         : '<p class="fine">No ' + esc(d.name) + ' job matches "' + esc(S.q) + '" in this category.</p>');
@@ -376,11 +417,14 @@
       sec.classList.toggle('nohit', !!q && !any);
       if (q) openCat(sec, true);
     });
-    if (q && first) hero(first);
-    var jobs = shown ? shown + ' job' + (shown === 1 ? '' : 's') + ' across states match "' + q + '".' : 'No job across states matches "' + q + '".';
+    /* the answer on top changes only on an exact job name, or on Enter; while the reader types, the count line carries the answer
+       and a search with no job hit gives the answer back the job it showed when typing began */
+    if ((!q || !first) && S.byQ && S.k !== S.k0) hero(S.k0);
+    if (!q || !first) S.byQ = false;
+    var jobs = shown ? shown + ' job' + (shown === 1 ? '' : 's') + ' across states match "' + q + '". ' + answerFor(first) : 'No job across states matches "' + q + '".';
     var tryw = ' Try one word, like combine, plant, spray, haul or bale.';
-    if (!q) { $('cr-count').textContent = ''; return; }
-    if (!stn) { $('cr-count').textContent = jobs + (shown ? '' : tryw); return; }
+    if (!q) { $('cr-count').textContent = ''; return ''; }
+    if (!stn) { $('cr-count').textContent = jobs + (shown ? '' : tryw); return first; }
     $('cr-count').textContent = jobs + ' Looking in ' + stn + '\'s own lines.';
     stateDoc(st, function (d) {
       if (S.q !== q || sv(S.st) !== st) return;
@@ -396,6 +440,32 @@
       $('cr-count').textContent = jobs + (m ? ' ' + m + ' of ' + stn + '\'s own line' + (m === 1 ? '' : 's') + ' match, under ' + where.join(', ') + '.' :
         ' None of ' + stn + '\'s own lines match' + (shown ? '.' : ' either.' + tryw));
     });
+    return first;
+  }
+  /* the one-line answer for a job, for the count line: the reader's state when it prices the job, else the middle */
+  function answerFor(k) {
+    var op = S.b.ops[k], me = stateVal(op), c = cells(op);
+    if (me && me[2] === 'by') return op.label + ': ' + stName(sv(S.st)) + ' ' + money(me[0][0], me[1]) + ' ' + shortUnit(me[1]) + '.';
+    return op.label + ': ' + (c[0] ? c[0] + ' ' + shortUnit(op.u) + ', ' : '') + c[1] + '.';
+  }
+  /* phone: the answer sits above the search box. On Enter with a job hit, close the keyboard and bring the answer into view;
+     with no job hit but lines of the reader's state that match, go to the first of those instead. Typing never scrolls. */
+  function phone() { return !!(window.matchMedia && window.matchMedia('(max-width: 699px)').matches); }
+  function goTo(el) {
+    if (!el) return;
+    var calm = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    el.scrollIntoView({ block: 'start', behavior: calm ? 'auto' : 'smooth' });
+  }
+  function enterSearch(qi) {
+    var v = qi.value.trim(), hit = Object.keys(S.b.ops).filter(function (k) { return S.b.ops[k].label.toLowerCase() === v.toLowerCase(); })[0];
+    S.q = v;
+    var first = search();
+    if (hit) first = hit;
+    if (first) { hero(first); S.byQ = true; }
+    if (!phone() || !v) return;
+    qi.blur();
+    if (first) return goTo($('answer'));
+    setTimeout(function () { goTo(document.querySelector('.crc:not(.nohit) .crc-st .cr-full')); }, 500);
   }
   function openCat(sec, open) {
     var t = sec.querySelector('.crc-t');
@@ -677,7 +747,7 @@
     var st = S.st;
     if (!st) { box.hidden = true; box.innerHTML = ''; return; }
     var s = S.b.states[sv(st)], name = stName(st);
-    var what = s ? name + '\'s next custom rate survey' : 'a ' + name + ' custom rate survey';
+    var what = s ? name + '\'s next custom rate survey' : (/^[AEIO]/.test(name) ? 'an ' : 'a ') + name + ' custom rate survey';
     box.hidden = false;
     box.innerHTML = '<p class="crt-h"><b>Email me when ' + esc(what) + ' is out</b></p>' +
       '<p class="fine">One email, when it is on this page' + (s ? ' (now: the ' + esc(svy(sv(st))) + ')' : '') + '. Nothing else.</p>' +
@@ -725,10 +795,11 @@
     controls(false);
     status('Loading the rates...');
     document.addEventListener('click', function (e) {
-      var el = e.target.closest && e.target.closest('.cro-b, [data-sheet], [data-show], [data-open], .crc-sb');
+      var el = e.target.closest && e.target.closest('.cro-b, [data-sheet], [data-show], [data-open], [data-pick], .crc-sb');
       if (!el) return;
       if (el.classList.contains('cro-b')) return toggle(el.parentNode);
       if (!S.b) return;
+      if (el.hasAttribute('data-pick')) { var pk = $('cr-st'); if (pk) { pk.scrollIntoView({ block: 'center' }); pk.focus(); } return; }
       if (el.hasAttribute('data-sheet')) return sheetToggle(el.getAttribute('data-sheet'));
       if (el.hasAttribute('data-show')) { hero(el.getAttribute('data-show')); url(); $('answer').scrollIntoView({ behavior: 'smooth' }); return; }
       if (el.hasAttribute('data-open')) { e.preventDefault(); var li = $(el.getAttribute('data-open')); openCat(li.closest('.crc'), true); toggle(li, true); li.scrollIntoView({ behavior: 'smooth' }); return; }
@@ -738,7 +809,8 @@
       .then(function (r) { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
       .then(function (b) {
         S.b = b;
-        var sel = $('cr-st'), cov = Object.keys(b.names).filter(function (x) { return b.states[x]; }), rest = Object.keys(b.names).filter(function (x) { return !b.states[x]; });
+        var sel = $('cr-st'), byName = function (x, y) { return b.names[x] < b.names[y] ? -1 : b.names[x] > b.names[y] ? 1 : 0; },
+          cov = Object.keys(b.names).filter(function (x) { return b.states[x]; }).sort(byName), rest = Object.keys(b.names).filter(function (x) { return !b.states[x]; }).sort(byName);
         sel.innerHTML = '<option value="">Pick a state</option><optgroup label="States with a survey">' +
           cov.map(function (s) { var x = b.states[s]; return '<option value="' + s + '">' + esc(b.names[s]) + ' (' + (x.same_as ? 'shares ' + esc(b.states[x.same_as].name) + ', ' : '') + yl(s) + ')</option>'; }).join('') +
           '</optgroup><optgroup label="No survey here yet">' + rest.map(function (s) { return '<option value="' + s + '">' + esc(b.names[s]) + '</option>'; }).join('') + '</optgroup>';
@@ -751,11 +823,18 @@
             var v = qi.value.trim(), hit = Object.keys(b.ops).filter(function (k) { return b.ops[k].label.toLowerCase() === v.toLowerCase(); })[0];
             S.q = v;
             search();
-            if (hit) hero(hit);
+            if (hit) { hero(hit); S.byQ = true; }
           }, 140);
         });
+        qi.addEventListener('focus', function () { if (!S.byQ) S.k0 = S.k; });
+        qi.addEventListener('keydown', function (e) {
+          if (e.key !== 'Enter') return;
+          e.preventDefault();
+          clearTimeout(t);
+          enterSearch(qi);
+        });
         all('[data-crk]').forEach(function (btn) {
-          btn.addEventListener('click', function () { qi.value = ''; S.q = ''; search(); hero(btn.getAttribute('data-crk')); url(); });
+          btn.addEventListener('click', function () { qi.value = ''; S.q = ''; S.byQ = false; search(); hero(btn.getAttribute('data-crk')); S.k0 = S.k; url(); });
         });
         document.addEventListener('input', function (e) {
           var u = e.target.getAttribute && e.target.getAttribute('data-qu');
@@ -826,11 +905,15 @@
         S.failed = true;
         status('The going rates did not load, so your state and the per-state numbers are not shown. The rates below are as of the last build; each state\'s page still has its whole survey.', true);
         $('cr-me').textContent = 'Not loaded.';
+        var qb = $('cr-quote'); if (qb) qb.innerHTML = '<p class="fine">The quote needs the rates, which did not load. Reload to try again.</p>';
         all('.cro.open .cro-d').forEach(function (d) { d.innerHTML = '<p class="fine">Not loaded. Each state\'s page still has its whole survey.</p>'; });
       });
   }
   if (typeof window !== 'undefined') {
-    window.AgCustomRates = { matches: matches, money: money, stem: stem, cells: cells, usdaDiesel: usdaDiesel, quoteTotals: quoteTotals, sheet: function () { return S.b ? stateSheetSpec() : null; }, quote: function () { return S.b ? quoteSpec() : null; }, quoteList: function () { return S.quote.slice(); } };
+    window.AgCustomRates = { hero: hero, layBars: layBars, matches: matches, money: money, stem: stem, cells: cells, usdaDiesel: usdaDiesel, quoteTotals: quoteTotals, sheet: function () { return S.b ? stateSheetSpec() : null; }, quote: function () { return S.b ? quoteSpec() : null; }, quoteList: function () { return S.quote.slice(); } };
+    var rzT = null;
+    if (window.addEventListener) window.addEventListener('resize', function () { clearTimeout(rzT); rzT = setTimeout(layBars, 120); });
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(layBars);
     if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', boot); else boot();
   }
 })();

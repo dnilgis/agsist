@@ -27,8 +27,13 @@
 /* the first-screen answer */
 .crh{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:1rem 1.1rem 1.1rem;margin:1rem 0 1.4rem}
 .crh-pick{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:.6rem .8rem;margin:0 0 .7rem}
+.crh-pick>label:first-child{grid-area:q}.crh-pick>label:last-child{grid-area:s}.crh-pick>.crh-count{grid-area:c}
+.crh-pick{grid-template-areas:"q s" "c c"}
+.crh-pick:has(.crh-count:empty){grid-template-areas:"q s"}
 .crh-pick label{display:flex;flex-direction:column;gap:.25rem;font-size:.8rem;font-weight:700;letter-spacing:.02em;color:var(--text-muted);min-width:0}
 .crh-pick input,.crh-pick select{width:100%;min-height:48px;padding:0 .7rem;border:1px solid var(--border);border-radius:10px;background:var(--bg);color:var(--text);font:inherit;font-size:1rem;box-sizing:border-box}
+.crh-count{margin:0!important;font-size:.88rem!important;color:var(--text-dim,var(--text-muted))!important}
+.crh-count:empty{display:none}
 .crh-chips{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem}
 .cr-chip{min-height:44px;padding:0 .85rem;border:1px solid var(--border);border-radius:22px;background:var(--bg);color:var(--text);font:inherit;font-size:.88rem;cursor:pointer}
 .cr-chip[aria-pressed="true"]{border-color:var(--gold);background:rgba(var(--gold-rgb),.14);font-weight:700}
@@ -51,12 +56,31 @@
 
 /* range bar: zero at the left; band = lowest to highest state average; dots = states; tick = middle */
 .crb{position:relative;display:block;height:10px;border-radius:5px;background:rgba(var(--gold-rgb),.08);box-shadow:inset 0 0 0 1px var(--border)}
-.crb s{position:absolute;top:0;bottom:0;border-radius:5px;background:rgba(var(--gold-rgb),.32);text-decoration:none}
+.crb s{position:absolute;top:0;bottom:0;box-sizing:content-box;padding:0 4px;margin-left:-4px;border-radius:5px;background:rgba(var(--gold-rgb),.32);text-decoration:none}
 .crb i{position:absolute;top:50%;width:8px;height:8px;margin:-4px 0 0 -4px;border-radius:50%;background:var(--text-muted);opacity:.75}
 .crb i.me{width:13px;height:13px;margin:-6.5px 0 0 -6.5px;background:var(--gold);opacity:1;box-shadow:0 0 0 2px var(--surface);z-index:2}
 .crb b{position:absolute;top:-4px;bottom:-4px;width:3px;margin-left:-1.5px;border-radius:2px;background:var(--text);z-index:1}
-.crb-l{height:16px;border-radius:8px;margin:.7rem 0 .9rem}
-.crb-l s{border-radius:8px}
+.crb-l{height:16px;border-radius:8px;margin:.7rem 0 3.35rem}
+/* the scale under the bar: $0 at the left end, a round figure at the right end */
+.crb em{position:absolute;top:calc(100% + 4px);font-style:normal;font-size:.75rem;line-height:1;color:var(--text-muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.crb .crb-0{left:0}
+.crb .crb-t{right:0}
+.crb u{text-decoration:none}
+/* the dots, band and tick sit in a box inset by half a dot, so the highest dot never sits on the rounded end */
+.crb-in{position:absolute;left:4px;right:4px;top:0;bottom:0;text-decoration:none}
+.crb-l .crb-in{left:9px;right:9px}
+/* the big bar names its lowest and highest state: one right-aligned line, or a label under each dot on a wide screen when they are far apart */
+.crb .crb-lh,.crb .crb-lo,.crb .crb-hi,.crb .crb-sl,.crb .crb-sh{top:calc(100% + 28px);color:var(--text)}
+/* the big bar's tall middle line reaches 6 px under it: the scale figures and the names start below its foot */
+.crb-l .crb-0,.crb-l .crb-t{top:calc(100% + 8px)}
+.crb .crb-lh,.crb .crb-lo,.crb .crb-hi,.crb .crb-sl,.crb .crb-sh{display:none}
+.crb-l[data-lay=line] .crb-lh{display:block;right:0}
+.crb-l[data-lay=dots] .crb-lo,.crb-l[data-lay=dots] .crb-hi{display:block;top:calc(100% + 24px)}
+.crb-l[data-lay=stack] .crb-sl,.crb-l[data-lay=stack] .crb-sh{display:block;right:0}
+.crb-l[data-lay=stack] .crb-sh{top:calc(100% + 46px)}
+.crb-l[data-lay=stack]{margin-bottom:4.65rem}
+.cro-b .crb{margin-bottom:1.15rem}
+.crb-l s{padding:0 6px;margin-left:-6px;border-radius:8px}
 .crb-l i{width:11px;height:11px;margin:-5.5px 0 0 -5.5px}
 .crb-l i.me{width:17px;height:17px;margin:-8.5px 0 0 -8.5px}
 .crb-l b{top:-6px;bottom:-6px;width:4px;margin-left:-2px}
@@ -103,7 +127,7 @@
 .cro{border-bottom:1px solid var(--border);scroll-margin-top:72px}
 .cro:last-child{border-bottom:0}
 .cro[hidden]{display:none}
-.cro-b{display:grid;grid-template-columns:minmax(0,1.4fr) 9rem minmax(0,1fr) 12.5rem;align-items:center;gap:.4rem 1rem;width:100%;min-height:56px;padding:.55rem 1rem;border:0;background:none;color:var(--text);font:inherit;text-align:left;cursor:pointer}
+.cro-b{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(9rem,max-content) minmax(0,1fr) 12.5rem;align-items:center;gap:.4rem 1rem;width:100%;min-height:56px;padding:.55rem 1rem;border:0;background:none;color:var(--text);font:inherit;text-align:left;cursor:pointer}
 .cro-b:hover,.cro.open .cro-b{background:rgba(var(--gold-rgb),.06)}
 .cro-n{font-weight:600;font-size:.98rem;line-height:1.3}
 .cro-n small{display:block;font-weight:400;font-size:.78rem;color:var(--text-muted)}
@@ -167,10 +191,45 @@
 .cr button.gl-term{padding:12px 0!important;background-clip:content-box!important}
 .cr-other a{display:inline-block;min-height:44px;line-height:44px}
 
+/* the cue under the big number on a phone: a button that takes the reader to the state picker */
+.cr-cue{display:inline;padding:0;margin:0;border:0;background:none;color:var(--link,var(--brand));font:inherit;font-weight:700;text-decoration:underline;text-underline-offset:2px;cursor:pointer;position:relative}
+.cr-cue::after{content:"";position:absolute;left:-.4rem;right:-.4rem;top:-.9rem;bottom:-.9rem}
+/* state page: jump links to a long survey's sections, the one-line cash rent link, the flat rate or base plus bushels box */
+.cr-jump{display:flex;flex-wrap:wrap;gap:.4rem;margin:0 0 1rem}
+.cr-jump a{display:inline-flex;align-items:center;min-height:44px;padding:.2rem .8rem;border:1px solid var(--border);border-radius:22px;background:var(--surface);color:var(--text)!important;text-decoration:none!important;font-size:.88rem;font-weight:600;line-height:1.2}
+.cr-t tr.sec{scroll-margin-top:140px}
+.cr-rent{margin:.2rem 0 .9rem!important}
+.crbp{margin:0 0 1.4rem;padding:.9rem 1.1rem;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+.crbp h2{margin:0 0 .4rem!important}
+.crbp-l{list-style:none;margin:.6rem 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,17rem),1fr));gap:.8rem}
+.crbp-r{border:1px solid var(--border);border-radius:12px;padding:.7rem .9rem;background:var(--bg)}
+.crbp-r h3{margin:0 0 .35rem!important;font-size:1.05rem}
+.crbp-r p{margin:0 0 .4rem!important;font-size:.9rem}
+.crbp-r small{color:var(--text-muted)}
+.crbp-o{color:var(--text)!important}
+.crbp-r .cr-qty{flex-direction:column;align-items:flex-start;gap:.3rem;font-size:.9rem;margin:0 0 .5rem}
+.crbp-r .cr-qty input{width:7rem}
 @media(max-width:699px){
+  .crh{scroll-margin-top:76px}
+  /* the State by state table fits 390: the year under the state name, tighter cells, "not in survey" wraps */
+  .cr-sum th[scope="row"] small{display:block}
+  .cr-sum th[scope="row"],.cr-sum thead th:first-child{max-width:6.6rem;white-space:normal}
+  .cr-sum th,.cr-sum td{padding-left:.22rem;padding-right:.22rem}
+  .cr-sum td{font-size:.8rem}
+  .cr-sum td .na{display:block;white-space:normal;text-align:right;line-height:1.15}
+  #main .cr-sum thead th{font-family:var(--font-body,inherit);text-transform:none;letter-spacing:0;font-size:.75rem}
+  .crb-l i{width:8px;height:8px;margin:-4px 0 0 -4px}
+  .crb-l .crb-in{left:9px;right:9px}
+  .crb-in{left:3px;right:3px}
+  .crb s{padding:0 3px;margin-left:-3px}
+  .crb-l s{padding:0 4px;margin-left:-4px}
+  .cro-b .crb i{width:6px;height:6px;margin:-3px 0 0 -3px}
+  .cro-b .crb i.me{width:11px;height:11px;margin:-5.5px 0 0 -5.5px}
+  .crbp{padding:.8rem 12px}
   .cr{padding:.8rem 12px 5rem}
   .crh{padding:.85rem 12px 1rem;margin-left:0;margin-right:0}
-  .crh-pick{grid-template-columns:1fr}
+  .crh-pick{grid-template-columns:1fr;grid-template-areas:"q" "c" "s"}
+  .crh-pick:has(.crh-count:empty){grid-template-areas:"q" "s"}
   /* phone: the answer first, the pickers under it */
   .crh{display:flex;flex-direction:column}
   .crh-a{order:1;border-top:0;padding-top:0}
@@ -180,7 +239,7 @@
   .crh .cr-status{order:4}
   .crn{display:none}
   .cro-b{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n v" "bar bar" "r r";gap:.35rem .8rem;padding:.65rem 12px}
-  .cro-n{grid-area:n}.cro-v{grid-area:v}.cro-b .crb{grid-area:bar;margin:.15rem 0}.cro-r{grid-area:r}
+  .cro-n{grid-area:n}.cro-v{grid-area:v}.cro-b .crb{grid-area:bar;margin:.15rem 0 1.5rem}.cro-r{grid-area:r}
   .cro-r small{display:inline}
   .crc-t{padding:.6rem 12px;font-size:1.08rem}
   .cro-d,.crc-st{padding-left:12px;padding-right:12px}
@@ -190,7 +249,10 @@
   .cr-t.cr-full thead th.rg,.cr-t.cr-full td.rg,.crd-t thead th.rg,.crd-t td.rg{display:none}
   .cr-t.cr-full td.av .rgm,.crd-t td .rgm{display:block}
   .cr-t.cr-full td.av,.crd-t td{white-space:normal;min-width:5.5rem}
-  .cr-t.cr-full td.av small{display:block}
+  .cr-t.cr-full td.av small{display:inline}
+  .cr-t td.av .mdn,.cr-t td.av .rgm{white-space:nowrap}
+  /* a long median ("median $0.72 per horsepower-hour, few answers", Missouri) wraps between words inside a floor that keeps a short one ("most common $150.00") whole */
+  .cr-t td.av .mdn{white-space:normal;min-width:11.5em}
   .cr-t thead th{letter-spacing:0;font-size:.66rem}
   .crq{padding:.8rem 12px}
   .crq-r{grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"n x" "q q" "v v"}
@@ -199,4 +261,6 @@
   .crs-bar .cr-btn{flex:1 1 auto;padding:0 .6rem}
   .crs-bar p{flex:1 0 100%}
 }
+/* the narrowest phones (under 360 px): the range and median lines may wrap between words, so the four columns fit */
+@media (max-width:359px){.cr-t td.av .rgm,.cr-t td.av .mdn{white-space:normal;min-width:0}}
 @media print{.crq,.crt,#cr-sheet-state,.crh-pick,.crh-chips,.crn,.crn-tools,.crs-bar,.cr-faq,.cr-actions,.crd-act,.crc-sb{display:none!important}html,body,main{background:#fff!important;color:#000!important}.crc.shut .cro-l{display:block!important}.cr p,.cr li,.cr b,.cr-t td,.cr-t th{color:#000!important}}
