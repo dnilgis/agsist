@@ -139,6 +139,8 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-surprise-banner .surprise-text strong{color:var(--gold);font-weight:700;}
 
 .dv3-today-lead{font-size:1rem;color:var(--text-dim);line-height:1.75;margin:.5rem 0 1rem;}
+/* 2026-11-13: the chart of the day, the same SVG the email's picture is drawn from (scripts/daily_chart.py) */
+.dv3-chart{margin:1.1rem 0 1.2rem;max-width:640px}.dv3-chart:focus-visible{outline:2px solid var(--gold,#d4a23f);outline-offset:4px}.dv3-chart-head{font-size:.95rem;line-height:1.45;color:var(--text);margin:0 0 .5rem}.dv3-chart-head strong{font-weight:700}.dv3-chart-lab{display:block;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted)}.dv3-chart-art{aspect-ratio:var(--dc-ar,600/360)}.dv3-chart-art svg{display:block;width:100%;height:auto;border:1px solid var(--border);border-radius:6px}.dv3-chart-read{font-size:.82rem;color:var(--text);margin:.35rem 0 0;min-height:1.3em;line-height:1.3}.dv3-chart-src{font-size:.8rem;color:var(--text-muted);margin:.3rem 0 0}.dv3-chart-act{display:flex;gap:.6rem;align-items:center;margin:.35rem 0 0}.dv3-chart-save{color:var(--gold,#d4a23f);text-decoration:underline;font-size:.8rem}.dv3-chart-share{font:inherit;font-size:.8rem;font-weight:600;background:none;border:1px solid var(--border);color:var(--gold,#d4a23f);border-radius:8px;padding:.15rem .6rem;min-height:30px;cursor:pointer;margin-left:0}
 
 /* Top bar: number + quote */
 .dv3-topbar{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.9rem;margin:1rem 0 1.25rem;}
@@ -540,6 +542,8 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
   .dv3-one-number-val{font-size:1.9rem;}
   .dv3-sec--surprise::before,.dv3-sec--heat::after{font-size:0.72rem;padding:.1rem .4rem;}
 }
+/* Sig, Nov 13 2026: section labels in plain sentence case (scripts/generate_daily.py PLAIN_LABEL_CSS) */
+body .dv3-chart-lab,body .dv3-edge-label,body .dv3-cca-label,body .dv3-sec-title,body .dv3-watch-label,body .dv3-tmyk-label,body .dv3-today-label,body .dv3-quote-label,body .dv3-one-number-label,body .dv3-takeaway-label,body .dv3-hclock-label,body .dv3-otp-label,body .dv3-otp-tag,body .dv3-yc-label,body .dv3-share-label,body .dv3-thread-day,body .dv3-date,body .dv3-eyebrow,body .dv3-sec-catalyst-label,body .dv3-ticker-label,body .dv3-quote-name,body .dv3-mood{font-family:var(--font-body,inherit);text-transform:none;letter-spacing:0}
 </style>
 </head>
 <body>
@@ -1011,6 +1015,16 @@ function renderToday(data,why){
   }
 
   // Lead paragraph
+  // the chart of the day under the lead: our own SVG from data/daily.json (built by code, text escaped there), a
+  // readout on hover and arrow keys, Share, and "Save the picture" once the PNG answers (dvChartInit below)
+  var chart='';
+  var cd=data.chart_of_day;
+  if(cd&&typeof cd.svg==='string'&&cd.svg.indexOf('<svg xmlns="http://www.w3.org/2000/svg"')===0&&!/<script|\son\w+=/i.test(cd.svg)&&/^daily\/img\/chart-\d{4}-\d{2}-\d{2}\.png$/.test(String(cd.image||''))){
+    chart='<figure class="dv3-chart" tabindex="0" style="--dc-ar:600/'+(parseInt(cd.h,10)||360)+'" data-img="/'+cd.image+'" data-take="'+escHtml(cd.takeaway)+'" aria-label="Chart of the day. '+escHtml(cd.takeaway)+' Arrow keys read each point.">'+
+      '<figcaption class="dv3-chart-head"><span class="dv3-chart-lab">Chart of the day</span><strong>'+escHtml(cd.takeaway)+'</strong></figcaption>'+
+      '<div class="dv3-chart-art">'+cd.svg+'</div><p class="dv3-chart-read" aria-live="polite"></p><p class="dv3-chart-src">Source: '+escHtml(cd.source)+'.</p>'+
+      '<p class="dv3-chart-act"><button type="button" class="dv3-chart-share">Share</button><a class="dv3-chart-save" href="/'+cd.image+'" download hidden>Save the picture</a></p></figure>';
+  }
   var lead='';
   if(data.lead){lead='<p class="dv3-today-lead">'+mdInline(data.lead)+'</p>';}
   else if(data.body){
@@ -1372,7 +1386,8 @@ function renderToday(data,why){
   var perm=iso?'<div class="dv3-perm"><a href="/daily/'+escHtml(iso)+'">Permalink to this briefing \u2192</a></div>':'';
 
   /* 2026-10-03: the sponsor follows the sections, away from The Action. */
-  el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+edgeH+hclock+sparks+topbar+yc+sections+sponsor+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
+  el.innerHTML=header+attribution+thread+ticker+surprise+takeaway+lead+chart+edgeH+hclock+sparks+topbar+yc+sections+sponsor+tmyk+watch+outsidePit+byline+cashbids+forward+share+src+perm;
+  if(window.dvChartInit)window.dvChartInit(el.querySelector('.dv3-chart'));
 
   // Point the permalink (and the share links) at the file that exists, once
   // the archive index says which candidate date that is.
@@ -1632,5 +1647,6 @@ renderArchive();
 })();
 </script>
   <script src="/components/next-links.js?v=3" defer></script>
+<script>(function(){function init(f){if(!f||f.getAttribute('data-dc-on'))return;f.setAttribute('data-dc-on','1');var r=f.querySelector('.dv3-chart-read'),hs=[].slice.call(f.querySelectorAll('.dc-hit')),i=hs.length-1;function show(k){if(!hs.length||!r)return;i=Math.max(0,Math.min(hs.length-1,k));r.textContent=hs[i].getAttribute('data-r');}hs.forEach(function(h,k){h.addEventListener('pointerenter',function(){show(k);});h.addEventListener('click',function(){show(k);});});f.addEventListener('keydown',function(e){if(e.key==='ArrowLeft'){show(i-1);e.preventDefault();}else if(e.key==='ArrowRight'){show(i+1);e.preventDefault();}});show(hs.length-1);var img=f.getAttribute('data-img'),sv=f.querySelector('.dv3-chart-save'),sh=f.querySelector('.dv3-chart-share');if(img&&sv&&window.fetch){fetch(img,{method:'HEAD'}).then(function(x){if(x.ok)sv.hidden=false;}).catch(function(){});}if(sh)sh.addEventListener('click',function(){var u=location.href.split('#')[0],t=f.getAttribute('data-take')||document.title;if(navigator.share){var p=(img&&navigator.canShare&&window.File)?fetch(img).then(function(x){return x.ok?x.blob():null;}).catch(function(){return null;}):Promise.resolve(null);p.then(function(b){var d={title:t,text:t,url:u};if(b){var fl=new File([b],'agsist-chart.png',{type:'image/png'});if(navigator.canShare({files:[fl]}))d.files=[fl];}navigator.share(d).catch(function(){});});}else if(navigator.clipboard){navigator.clipboard.writeText(u).then(function(){sh.textContent='Link copied';}).catch(function(){});}});}[].forEach.call(document.querySelectorAll('.dv3-chart'),init);window.dvChartInit=init;})();</script>
 </body>
 </html>
