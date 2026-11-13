@@ -377,6 +377,7 @@
     "conditions.html"
    ],
    "written_by": [
+    "Clock",
     "cond-yield",
     "conditions"
    ],
@@ -392,6 +393,7 @@
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -589,6 +591,7 @@
     "index.html"
    ],
    "written_by": [
+    "Clock",
     "COT Release Watch",
     "Fetch COT Data"
    ],
@@ -606,6 +609,7 @@
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -704,6 +708,7 @@
     "index.html"
    ],
    "written_by": [
+    "Clock",
     "conditions",
     "Fetch Crop Progress"
    ],
@@ -721,6 +726,7 @@
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -2157,6 +2163,7 @@
     "usda-calendar.html"
    ],
    "written_by": [
+    "Clock",
     "Prediction bot \u2014 call and grade"
    ],
    "touched_by": [
@@ -2171,6 +2178,7 @@
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
@@ -3008,6 +3016,7 @@
     "index.html"
    ],
    "written_by": [
+    "Clock",
     "cond-yield"
    ],
    "touched_by": [
@@ -3022,6 +3031,7 @@
     "Cattle cash prices",
     "CCC loan rates",
     "climate indices",
+    "Clock",
     "cond-yield",
     "conditions",
     "COT Deep History Rebuild",
