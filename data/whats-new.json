@@ -121,6 +121,13 @@
    "link": "/farm-bill"
   },
   {
+   "id": "2026-11-12-rain-find",
+   "date": "2026-11-12",
+   "title": "Rain by county: find any county",
+   "line": "Type a county or a ZIP on any rain page to open that county's rain. More neighbors under Next door, and the site search now finds every county rain page.",
+   "link": "/rain"
+  },
+  {
    "id": "2026-11-12-state-sales-pages",
    "date": "2026-11-12",
    "title": "A farm sales page for each state",
