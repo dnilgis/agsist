@@ -162,6 +162,7 @@
 .rc-faq + .rc-byline { border-top: 0; }   /* the fold above already ends in the rule */
 @media (max-width: 560px) {
   .rc-links .rc-dot { display: none; }   /* one link a line: a dot would separate nothing */
-  .rc-links a { display: block; }
+  .rc-links a { display: flex; align-items: center; min-height: 44px; }   /* a stacked list: each link is a 44 px tap line */
+  .rc-states li { padding: .65rem 0; }   /* the state lists (All states, without a page): about 44 px a row */
 }
 .rc-none li small a { white-space: nowrap; }   /* each nearest-county link stays whole in "without a page" */
