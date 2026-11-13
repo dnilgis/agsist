@@ -234,3 +234,16 @@ html:not([data-fx]) #h-form,html:not([data-fx]) .h-alt,html:not([data-fx]) .h-as
 .pt-fold{border:1px solid var(--border);border-radius:12px;background:var(--surface);margin:0 0 1rem;padding:0 1rem}
 .pt-fold>summary{cursor:pointer;padding:.8rem 0;min-height:44px;box-sizing:border-box;font-weight:700;color:var(--text)}
 .pt-fold[open]{padding-bottom:.8rem}
+
+/* The enhanced rain chart on Fast Facts (Nov 13 2026, components/rain-chart.js): up to 560 px (the phone layout above) it is the figure right
+   before the Rain Print and shows at once, its room held by the two ratios (the same as rain-county.css: a phone design 400 x 480 and a wide
+   one 640 x 588); wider, the print comes first and the chart shows only if the print cannot be drawn. */
+.h-rce .rce { max-width: 680px; }
+.h-rce .rce-art svg { width: 100%; height: auto; display: block; }
+@media (scripting: enabled) {
+  .h-rce .rce:not(.rce-off) .rce-art { aspect-ratio: 400 / 480; }
+}
+@media (scripting: enabled) and (min-width: 480px) {
+  .h-rce .rce:not(.rce-off) .rce-art { aspect-ratio: 640 / 588; }
+}
+@media (min-width: 561px) { .h-rce:not(.h-show) { display: none; } }

@@ -752,23 +752,25 @@
     var cap = 'Inches of rain added up day by day from Jan 1' + (fig.usual != null ? ', solid line, against the normal year at this ' + fig.noun + ' (dashed), counted on the same days' : '') + '. Days with no report add nothing.';
     var pcap = 'Every day of ' + fig.year + (fig.done ? '' : ' so far') + ' at this ' + fig.noun + ', drawn by Rain Print. A gap is a day with no report.' + (fig.done ? '' : ' The empty months are still to come.') +
       (fig.mn ? ' The dashed line is the usual year: NOAA&rsquo;s ' + (fig.norm === '1991-2020' ? '1991 to 2020' : '30-year') + ' normals for this ' + fig.noun + ', added up over the days it reported.' : '');
-    $('h-rp-box').innerHTML = '<figure class="rc-chart rc-print h-rp" id="h-rp" data-st="' + esc(fig.st) + '" data-fips="' + esc(fig.fips) + '" data-year="' + fig.year + '" data-days="' + fig.days + '" data-total="' + fig.total.toFixed(2) + '" data-place="' + esc(fig.place) + '" data-gauge="' + esc(fig.gauge) + '"' +
+    // Nov 13 2026 (Sig: on a phone the enhanced chart first, the Rain Print right below; wider, the print first): the chart is a figure of
+    // its own before the print's, shown at once up to 560 px (here.css) and, wider, only if the print cannot be drawn
+    $('h-rp-box').innerHTML = '<figure class="rc-chart rce-top h-rce" id="h-rce">' + P.rainChartBox(fig) + '<figcaption>' + esc(cap) + '</figcaption></figure>' +
+      '<figure class="rc-chart rc-print h-rp" id="h-rp" data-st="' + esc(fig.st) + '" data-fips="' + esc(fig.fips) + '" data-year="' + fig.year + '" data-days="' + fig.days + '" data-total="' + fig.total.toFixed(2) + '" data-place="' + esc(fig.place) + '" data-gauge="' + esc(fig.gauge) + '"' +
       (fig.mn ? ' data-mn="' + esc(fig.mn) + '" data-usual="' + fig.usual.toFixed(2) + '" data-norm="' + esc(fig.norm) + '"' : '') + '>' +
       '<div class="rc-print-styles" role="group" aria-label="Print style" hidden><button type="button" data-style="r1" aria-pressed="true">Staircase</button><button type="button" data-style="r2" aria-pressed="false">Roots</button><button type="button" class="rc-zoom" aria-pressed="false">Up close</button></div>' +
-      '<div class="rc-print-art">' + P.rainChartBox(fig).replace('class="rce"', 'class="rce" hidden') + '</div><figcaption><span class="rc-cap-chart">' + esc(cap) + '</span><span class="rc-cap-print" hidden>' + pcap + '</span></figcaption></figure>' +
+      '<div class="rc-print-art"></div><figcaption><span class="rc-cap-print" hidden>' + pcap + '</span></figcaption></figure>' +
       '<p class="h-rp-buy"><a href="' + esc(rpHref(fig)) + '" data-placement="fast-facts">Make this one with your name &rarr;</a></p>';
     var el = $('h-rp'), buy = document.querySelector('.h-rp-buy a');
     if (buy) buy.addEventListener('click', function () { track('rain_print_promo_click', { placement: 'fast-facts', page: location.pathname }); });
-    /* The enhanced running-total chart (Nov 13 2026, components/rain-chart.js) is the print's fallback: it ships hidden in the art
-       box, and shows only when the print cannot be drawn (as the plain chart did before). */
-    function showChart() {
-      var r = el.isConnected && el.querySelector('.rce');
+    function drawChart() {
+      var r = el.isConnected && document.querySelector('#h-rce .rce');
       if (!r) return;
-      r.hidden = false;
       loadScript('/components/rain-chart.js?v=1', function () { return !!(window.AgRainChart && window.AgRainChart.mount); }).then(function (ok) {
         if (ok && r.isConnected) window.AgRainChart.mount(r);
       });
     }
+    function showChart() { var c = $('h-rce'); if (c) c.classList.add('h-show'); }   // wider than a phone: the print could not be drawn
+    drawChart();
     loadScript(RCP, function () { return !!(window.AgRainCountyPrint && window.AgRainCountyPrint.mount); }).then(function (ok) {
       if (!ok || !el.isConnected) { showChart(); return; }
       return window.AgRainCountyPrint.mount(el).then(function (drawn) { if (!drawn) showChart(); });

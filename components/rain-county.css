@@ -171,16 +171,21 @@
    data- fields). Two fixed designs, so the height never depends on the data and the room is held from the first
    paint: a phone design 400 x 480 and a wide one 640 x 588 (the two aspect ratios below are those sizes; test/
    rain-chart-enhanced.test.mjs keeps them equal to what the component draws). Without scripts nothing is held and
-   nothing is drawn. On a county page the chart is the Rain Print's fallback: it waits, unseen and taking no room,
-   until the print has drawn or given up (then the print's room is let go and the chart shows); a safety timer in
-   the component shows it if the print's script never answers. */
+   nothing is drawn.
+   ORDER (Sig, Nov 13, supersedes Oct 28 for phones only): up to 560 px, this file's own phone layout (the max-width: 560px
+   rules above), the chart is the figure right before the Rain Print's and shows at once; wider, the print comes first as
+   before and the chart (display none, no room) shows only when the print has given up or never answered. */
 .rce { max-width: 680px; margin: 0; }
 .rce .rce-art svg { max-width: none; width: 100%; height: auto; display: block; }
 @media (scripting: enabled) {
   .rce:not(.rce-off) .rce-art { aspect-ratio: 400 / 480; }
-  .rc-print-top:not(.rc-print-on):not(.rc-print-off):not(.rce-late) .rce { display: none; }
 }
 @media (scripting: enabled) and (min-width: 480px) {
   .rce:not(.rce-off) .rce-art { aspect-ratio: 640 / 588; }
+}
+@media (scripting: none) { .rce-top { display: none; } }
+@media (scripting: enabled) and (min-width: 561px) {
+  .rce-top { display: none; }
+  .rce-top:has(+ .rc-print-top.rc-print-off), .rce-top:has(+ .rc-print-top.rce-late) { display: block; }
 }
 .rce-off { display: none; }

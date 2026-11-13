@@ -262,13 +262,14 @@
     var days = +D.days, preview = days < (isLeap(year) ? 366 : 365), dp = numOk(D.dec) ? +D.dec : 2;
     var cum = pts.map(function (p) { return p[1] / 100; }), x = pts.map(function (p) { return p[0] + 1; });
     var ncum = hasU && pts.every(function (p) { return p.length > 2 && isFinite(p[2]); }) ? pts.map(function (p) { return p[2] / 100; }) : null;
-    var T = commas(total.toFixed(dp)), verdict = ncum ? verdictOf(D.pct, preview) : null;
+    var T = commas(total.toFixed(dp)), pctOk = ncum && numOk(D.pct);
     var m = {
       year: year, place: D.place, cum: cum, ncum: ncum, x: x, xn: x[x.length - 1], usual: ncum ? usual : null,
       yText: T + ' in ' + (preview ? 'so far' : 'this year'),
       startText: 'Jan 1', endText: fmtDate(D.asof)
     };
-    if (verdict) m.verdict = verdict;
+    // the headline says the page's own sentence: "150% of normal" (the page prints the percent that way), then "so far"
+    if (pctOk) { m.headBig = (+D.pct) + '% of normal'; m.headSmall = preview ? 'so far' : 'this year'; }
     else { m.headBig = T + ' inches'; m.headSmall = preview ? 'of rain so far' : 'of rain this year'; }
     if (ncum) {
       var gap = usual - total, U = commas(usual.toFixed(dp)), gAbs = numOk(D.gap) ? +D.gap : Math.abs(gap);   // D.gap: the page's own difference, when it prints one
@@ -286,7 +287,7 @@
     var gap = m.ncum ? (+D.usual) - (+D.total) : 0, gAbs = numOk(D.gap) ? +D.gap : Math.abs(gap);
     return 'Running total of rain ' + (D.where || 'at the ' + noun + ' in ' + D.place) + ', ' + D.year + ': ' + m.total + ' inches through ' + fmtDate(D.asof) + up +
       (m.ncum && gAbs >= 0.005 ? ', ' + commas(gAbs.toFixed(dp)) + ' inches ' + (gap > 0 ? 'less' : 'more') + ' than a normal year' : '') +
-      (m.verdict ? '. ' + m.verdict + '.' : '.');
+      (m.pct != null ? '. ' + m.pct + '% of normal' + (+D.days < (isLeap(+D.year) ? 366 : 365) ? ' so far' : '') + '.' : '.');
   }
 
   var CSS = '.rce-art svg{display:block;width:100%;height:auto}' +
@@ -362,10 +363,10 @@
     return out;
   }
   var DRAWN = [];
-  /* On a county page the chart is the Rain Print's fallback and stays unseen until the print has drawn or given up
-     (rain-county.css). If the print's script never answers, show the chart anyway once the print's box is near the screen. */
+  /* On a county page wider than a phone the chart waits unseen until the print has drawn or given up (rain-county.css). If the
+     print's script never answers, show the chart anyway once the print's box is near the screen. */
   function watchPrint(el) {
-    var fig = el.closest && el.closest('.rc-print-top');
+    var fig = el.closest && el.closest('.rce-top') && root.document.getElementById('rc-print');   // the print's figure, right after the chart's
     if (!fig) return;
     var tries = 0;
     (function look() {
