@@ -350,8 +350,8 @@
   <script src="/components/form-post.js?v=9"></script>
   <script src="/components/prf-sponsor-page.js?v=3"></script>
   <script>
-  /* Each state's own engaged visits (readers in that state), the week's numbers in data/sponsor-spots.json (Nov 13,
-     2026). State-level only; a state without its own figure shows none. */
+  /* Each state's own engaged visits (readers in that state) over GA4's own window, updated each day, from
+     data/sponsor-spots.json (Nov 13, 2026). State-level only; a state without its own figure shows none. */
   (function () {
     var MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     function d(x) { var p = String(x || '').split('-'); return p.length === 3 ? MON[+p[1] - 1] + ' ' + (+p[2]) + ', ' + p[0] : ''; }

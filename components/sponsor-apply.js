@@ -3,7 +3,7 @@
  * Everything a buyer sees here is read, not typed:
  *   prices, terms               data/rate-card.json (sponsors pay by check or bank wire only, Nov 13, 2026:
  *                               nothing on this page takes a card or links to a payment)
- *   numbers                     data/sponsor-spots.json (proof.states: each state's own engaged visits, the week's window)
+ *   numbers                     data/sponsor-spots.json (proof.states: each state's own engaged visits, GA4's own window, updated each day)
  *   sitewide taken              data/sponsor.json (the sitewide sponsor, active)
  *   states taken                data/geo-sponsors.json (a live entry for that state)
  *
@@ -73,7 +73,7 @@
   function stateLine(c) {
     var s = byCode(c), el = $('sp-state-live');
     if (!s) { el.textContent = 'Pick a state to see its numbers and price.'; return; }
-    /* the state's own engaged visits over the week's window (data/sponsor-spots.json proof.states); state-level only */
+    /* the state's own engaged visits over GA4's own window, updated each day (data/sponsor-spots.json proof.states); state-level only */
     var ps = (S.spots && S.spots.proof && S.spots.proof.states) || {};
     var e = ps.engaged && ps.engaged[c];
     var nums = typeof e === 'number' && e > 0 && ps.start && ps.end
