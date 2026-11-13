@@ -34,7 +34,7 @@
   /* the pages: two designs, each with a height that never depends on the data. Sizes are in design units; the
      page scales the drawing to the column (phone 288 to 479 px wide: 0.72 to 1.2; wide 480 to 680: 0.75 to 1.06). */
   var PHONE = { W: 400, PADX: 16, bigMax: 40, bigMin: 28, SM: 20, plotH: 232, gapTop: 22, keyFS: 19, keyMin: 15, rowH: 29, sw: 30, axisFS: 18, yearFS: 38,
-    placeMax: 20, placeMin: 13, gapMin: 18, clearPad: 10, vars: true, fixed: true, name: 'phone' };
+    placeMax: 20, placeMin: 16, gapMin: 18, clearPad: 10, vars: true, fixed: true, name: 'phone' };
   var WIDE = { W: 640, PADX: 24, bigMax: 54, bigMin: 34, SM: 26, plotH: 300, gapTop: 26, keyFS: 24, keyMin: 17, rowH: 38, sw: 40, axisFS: 20, yearFS: 50,
     placeMax: 26, placeMin: 15, gapMin: 22, clearPad: 10, vars: true, fixed: true, name: 'wide' };
 
@@ -148,7 +148,7 @@
     // chart (the email's picture grows by it; a page's chart gets shorter by it, the page's height never moves).
     var segs = [];
     for (var q = 1; q <= n; q++) { segs.push([ptsY[q - 1], ptsY[q]]); if (hasN) segs.push([ptsN[q - 1], ptsN[q]]); }
-    var gapPx = hasN ? Math.abs(ptsY[n][1] - ptsN[n][1]) : 0, gapText = hasN && gapPx >= spec.gapMin ? m.gapText : '';
+    var gapPx = hasN ? Math.abs(ptsY[n][1] - ptsN[n][1]) : 0, gapText = hasN && (gapPx >= spec.gapMin || m.gapAlways) ? m.gapText : '';
     var rowH = spec.rowH, sw = spec.sw + (fixed ? 10 : 10), FS = spec.keyFS;
     var rows = [{ t: m.yText, w: 600, fill: 'rain', sw: 'rain', k: 'end' }];
     if (hasN) rows.push({ t: m.uText, w: 500, fill: 'mute', sw: 'usual', k: 'end' });
@@ -199,7 +199,11 @@
         while (psize > 16 && pl2.some(function (ln) { return meas(ln, psize, 500, SERIFF) > maxW; })) psize -= 1;
       }
     }
-    if (fixed && pw > maxW) { build.why = 'place too long'; return null; }
+    if (fixed && pw > maxW) {            // a long place on a page: cut at the last word that fits, with an ellipsis
+      var words = m.place.split(' ');
+      while (words.length > 1 && meas(words.join(' ') + '\u2026', psize, 500, SERIFF) > maxW) words.pop();
+      pl2 = [words.join(' ') + '\u2026'];
+    }
     var py = fy + 14 + Math.round(psize * 0.95);
     pl2.forEach(function (line, li) { texts.push({ t: line, x: PADX, y: py + li * Math.round(psize * 1.25), size: psize, w: 500, fam: SERIFF, fill: 'ink', k: 'place' }); });
     var H = Math.round(py + (pl2.length - 1) * Math.round(psize * 1.25) + (fixed ? 18 : 26));
@@ -255,10 +259,10 @@
     var year = +D.year, total = +D.total, hasU = numOk(D.usual), usual = hasU ? +D.usual : null;
     var pts = String(D.wk || '').split(';').filter(Boolean).map(function (s) { return s.split(',').map(Number); });
     if (!pts.length || !isFinite(year) || !isFinite(total)) return null;
-    var days = +D.days, preview = days < (isLeap(year) ? 366 : 365);
+    var days = +D.days, preview = days < (isLeap(year) ? 366 : 365), dp = numOk(D.dec) ? +D.dec : 2;
     var cum = pts.map(function (p) { return p[1] / 100; }), x = pts.map(function (p) { return p[0] + 1; });
     var ncum = hasU && pts.every(function (p) { return p.length > 2 && isFinite(p[2]); }) ? pts.map(function (p) { return p[2] / 100; }) : null;
-    var T = commas(total.toFixed(2)), verdict = ncum ? verdictOf(D.pct, preview) : null;
+    var T = commas(total.toFixed(dp)), verdict = ncum ? verdictOf(D.pct, preview) : null;
     var m = {
       year: year, place: D.place, cum: cum, ncum: ncum, x: x, xn: x[x.length - 1], usual: ncum ? usual : null,
       yText: T + ' in ' + (preview ? 'so far' : 'this year'),
@@ -267,9 +271,10 @@
     if (verdict) m.verdict = verdict;
     else { m.headBig = T + ' inches'; m.headSmall = preview ? 'of rain so far' : 'of rain this year'; }
     if (ncum) {
-      var gap = usual - total, U = commas(usual.toFixed(2));
+      var gap = usual - total, U = commas(usual.toFixed(dp)), gAbs = numOk(D.gap) ? +D.gap : Math.abs(gap);   // D.gap: the page's own difference, when it prints one
       m.uText = U + ' in a normal year' + (preview ? ' by then' : +D.miss > 0 ? ', same days' : '');
-      m.gapText = Math.abs(gap) >= 0.5 ? commas(Math.abs(gap).toFixed(2)) + ' in' + (gap > 0 ? ' short' : ' more') : '';
+      m.gapAlways = numOk(D.gap);   // the page prints this difference itself: the key says it too, as far as the page does (0.25 in, as its own words)
+      m.gapText = gAbs >= (m.gapAlways ? 0.25 : 0.5) ? commas(gAbs.toFixed(dp)) + ' in' + (gap > 0 ? ' short' : ' more') : '';
     }
     m.total = T; m.pct = numOk(D.pct) ? +D.pct : null;
     return m;
@@ -277,10 +282,10 @@
 
   /* The text alternative: the page's own figures in one sentence. */
   function describe(D, m) {
-    var noun = D.noun || 'station', up = m.ncum ? ', against ' + commas((+D.usual).toFixed(2)) + ' inches in a normal year by then' : '';
-    var gap = m.ncum ? (+D.usual) - (+D.total) : 0;
+    var noun = D.noun || 'station', dp = numOk(D.dec) ? +D.dec : 2, up = m.ncum ? ', against ' + commas((+D.usual).toFixed(dp)) + ' inches in a normal year by then' : '';
+    var gap = m.ncum ? (+D.usual) - (+D.total) : 0, gAbs = numOk(D.gap) ? +D.gap : Math.abs(gap);
     return 'Running total of rain ' + (D.where || 'at the ' + noun + ' in ' + D.place) + ', ' + D.year + ': ' + m.total + ' inches through ' + fmtDate(D.asof) + up +
-      (m.ncum && Math.abs(gap) >= 0.005 ? ', ' + commas(Math.abs(gap).toFixed(2)) + ' inches ' + (gap > 0 ? 'less' : 'more') + ' than a normal year' : '') +
+      (m.ncum && gAbs >= 0.005 ? ', ' + commas(gAbs.toFixed(dp)) + ' inches ' + (gap > 0 ? 'less' : 'more') + ' than a normal year' : '') +
       (m.verdict ? '. ' + m.verdict + '.' : '.');
   }
 
@@ -326,6 +331,16 @@
     } };
   }
 
+  /* Which design: a county page's chart follows the screen (the stylesheet holds its room by the same media query). A chart in a card
+     of its own (class rce-fs, the Field Scout season card, a 340 px side panel on a laptop) follows its own width, so a narrow panel
+     on a wide screen gets the phone design and its larger labels. */
+  function designFor(el, box) {
+    if (el.classList && el.classList.contains('rce-fs')) {
+      var w = box.getBoundingClientRect().width;
+      if (w > 0) return w >= 480 ? 'wide' : 'phone';
+    }
+    return wideNow() ? 'wide' : 'phone';
+  }
   /* draw into el (a figure carrying the data- fields, with an empty .rce-art). Returns the drawing's result or null. */
   function draw(el) {
     var D = el.dataset, box = el.querySelector('.rce-art');
@@ -334,7 +349,7 @@
     if (!m) { el.classList.add('rce-off'); return null; }
     injectCss();
     var cs = root.getComputedStyle(el), fam = cs.fontFamily || 'system-ui, sans-serif';
-    var spec = Object.assign({}, wideNow() ? WIDE : PHONE, { allowPlain: true, measureFamily: { serif: fam, sans: fam } });
+    var spec = Object.assign({}, designFor(el, box) === 'wide' ? WIDE : PHONE, { allowPlain: true, measureFamily: { serif: fam, sans: fam } });
     var title = 'Running total of rain, ' + D.year, id = 'rce-' + (D.fips || D.year);
     m.svgAttrs = ' aria-labelledby="' + id + '-t ' + id + '-d"';
     m.svgHead = '<title id="' + id + '-t">' + esc(title + ', ' + D.place) + '</title><desc id="' + id + '-d">' + esc(describe(D, m)) + '</desc>';
@@ -363,8 +378,17 @@
   function mount(el) {
     if (!el || !el.dataset) return null;
     var out = draw(el);
-    if (DRAWN.indexOf(el) < 0) { DRAWN.push(el); watchPrint(el); }
+    if (DRAWN.indexOf(el) < 0) { DRAWN.push(el); watchPrint(el); if (root.addEventListener && !mount.rz) { mount.rz = 1; root.addEventListener('resize', onResize); } }
     return out;
+  }
+  var rzT = null;
+  function onResize() {
+    root.clearTimeout(rzT);
+    rzT = root.setTimeout(function () {
+      DRAWN.forEach(function (el) {
+        if (el.isConnected !== false && el.classList.contains('rce-fs') && el.getAttribute('data-rce') !== designFor(el, el.querySelector('.rce-art') || el)) draw(el);
+      });
+    }, 200);
   }
   function redrawAll() { DRAWN.forEach(function (el) { if (el.isConnected !== false) draw(el); }); }
   function auto() {
