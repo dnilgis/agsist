@@ -5,10 +5,10 @@
  *   Without it, confirm links answer 503; unsubscribe links still work, unchecked.
  * Deploys from GitHub: Cloudflare Workers Builds runs wrangler.subs.toml on
  *   every push to main that touches this file. No more pasting into the dashboard.
- * v5.68 (2026-11-13): RAIN GAUGE WAITLIST KEEPS WHERE AND HOW MANY. /notice with topic rain-gauge also takes
+ * v5.69 (2026-11-13): RAIN GAUGE WAITLIST KEEPS WHERE AND HOW MANY. /notice with topic rain-gauge also takes
  *   fips (a state FIPS of 2 digits or a county FIPS of 5, state code real, else dropped), n ("1", "2-5" or "6+")
  *   and biz (true: "for my customers"), kept on note:<email>.t["rain-gauge"] next to zip and note; src (the
- *   page kind: rain-county, rain-state, rain-hub, rain-print, rain-gauge) is the existing source field, 60 chars.
+ *   page kind: rain-county, rain-state, rain-hub, rain-print, field-scout, hail-map, else rain-gauge; kept only from that list) is the existing source field, 60 chars.
  *   Asked again, n, biz and fips are taken when given. /notice-list returns fips, n, biz on those rows. /count
  *   gains gauge {total, gauges_min, customers, with_zip, n:<1|2-5|6+|unsaid>, st:<state FIPS>, src:<source>},
  *   flat counts only (no address, no ZIP, no county), read by scripts/stats_ingest.py and scripts/gauge_count.py.
@@ -1526,11 +1526,12 @@ const MILK_MONTH = "milk-month";
 const MILK_MONTH_ASK = "Stop the milk price day email for this address?";
 const MILK_MONTH_DONE = "Stopped. No more milk price day emails.";
 const CR_STATES = new Set("al ak az ar ca co ct de fl ga hi id il in ia ks ky la me md ma mi mn ms mo mt ne nv nh nj nm ny nc nd oh ok or pa ri sc sd tn tx ut vt va wa wv wi wy".split(" "));
-// v5.68: the rain gauge waitlist's structured fields. fips is a state (2 digits) or a county (5) with a real state code.
+// v5.69: the rain gauge waitlist's structured fields. fips is a state (2 digits) or a county (5) with a real state code.
 function gaugeFips(v) {
   const x = String(v == null ? "" : v).trim();
   return /^\d{2}(\d{3})?$/.test(x) && RAIN_ST_FIPS.has(+x.slice(0, 2)) ? x : "";
 }
+const GAUGE_SRC = new Set(["rain-gauge", "rain-county", "rain-state", "rain-hub", "rain-print", "field-scout", "hail-map"]);
 function gaugeCount(v) { const x = String(v == null ? "" : v).trim(); return x === "1" || x === "2-5" || x === "6+" ? x : ""; }
 function noticeTopic(v, anyDate) {
   const t = String(v == null ? "" : v).trim().toLowerCase();
@@ -2713,7 +2714,7 @@ async function noticeCounts(env) {
   const keys = await listKeys(env, "note:"), by = {};
   // v5.44: the standing lists, with where each reader signed up
   const lists = {};
-  // v5.68: the rain gauge waitlist, counts only (flat so the counts file keeps it)
+  // v5.69: the rain gauge waitlist, counts only (flat so the counts file keeps it)
   const gauge = { total: 0, gauges_min: 0, customers: 0, with_zip: 0 };
   for (const l of LIST_TOPICS) lists[l] = { n: 0, by_source: {}, unsubs: { h24: 0, d7: 0, cleanup_h24: 0, cleanup_d7: 0 } };
   for (const k of keys) {
@@ -3623,7 +3624,8 @@ async function handle(req, env) {
         return json({ ok: false, error: "invalid email" }, 400, cors(req));
       const topic = noticeTopic(b.topic);
       if (!topic) return json({ ok: false, error: "invalid topic" }, 400, cors(req));
-      const src = String(b.source || "").slice(0, 60);
+      let src = String(b.source || "").slice(0, 60);
+      if (topic === "rain-gauge" && !GAUGE_SRC.has(src)) src = "rain-gauge";   // v5.69: the page kinds that ask, else the gauge page itself
       let r = null;
       try { const v = await env.SUBS.get("note:" + email); r = v ? JSON.parse(v) : null; } catch (e) { r = null; }
       if (!r || typeof r !== "object" || !r.t || typeof r.t !== "object") r = { ts: Date.now(), t: {} };
@@ -3641,7 +3643,7 @@ async function handle(req, env) {
         const z = subZip(b.zip), nt = oneLine(b.note, NOTE_TEXT_MAX);
         if (z) r.t[topic].zip = z;
         if (nt) r.t[topic].note = nt;
-        // v5.68: where the ask was (state or county FIPS), how many gauges, and "for my customers"
+        // v5.69: where the ask was (state or county FIPS), how many gauges, and "for my customers"
         const fp = gaugeFips(b.fips), gn = gaugeCount(b.n);
         if (fp) r.t[topic].fips = fp;
         if (gn) r.t[topic].n = gn;
@@ -4037,7 +4039,7 @@ async function handle(req, env) {
           const row = { email: k.slice(5), topic, ts: v && v.ts || null, src: v && v.src || "", sent: v && v.sent || null };
           if (v && v.zip) row.zip = v.zip;     // v5.18: rain-gauge only
           if (v && v.note) row.note = v.note;
-          if (v && v.fips) row.fips = v.fips;      // v5.68: rain-gauge only
+          if (v && v.fips) row.fips = v.fips;      // v5.69: rain-gauge only
           if (v && v.n) row.n = v.n;
           if (v && v.biz) row.biz = true;
           if (v && v.after) row.after = v.after;   // v5.29: prf only
