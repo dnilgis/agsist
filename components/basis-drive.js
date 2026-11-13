@@ -25,7 +25,7 @@
   var MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   var FULL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   var NEAR_MI = 40;                       // the page's own nearby radius (build_cash_bid_pages.NEARBY_MI)
-  var CROPS = [['corn', 'Corn', 'corn'], ['soybeans', 'Soybeans', 'soybean']];
+  var CROPS = [['corn', 'Corn', 'corn', 'is'], ['soybeans', 'Soybeans', 'soybean', 'are']];
   var FONT = 'Inter, system-ui, -apple-system, Segoe UI, sans-serif';
   // the page's colours are the site's tokens; the picture's are the kit card's (components/ag-chart.js card)
   /* The picture is drawn with classes (components/basis-drive.css gives them the site's colour tokens), every
@@ -115,7 +115,7 @@
     var town = on.filter(function (r) { return r.inTown; }).sort(function (a, b) { return b.c - a.c || (b.w || 0) - (a.w || 0) || (a.name < b.name ? -1 : 1); });
     var out = on.filter(function (r) { return !r.inTown; }).sort(function (a, b) { return a.mi - b.mi || b.c - a.c || (a.name < b.name ? -1 : 1); });
     var c = CROPS.filter(function (x) { return x[0] === crop; })[0] || [crop, crop, crop];
-    return { crop: crop, Crop: c[1], adj: c[2], town: town, out: out, all: town.concat(out), ref: ref, other: other, left: left, leftIn: bad.some(function (r) { return r.inTown; }),
+    return { crop: crop, Crop: c[1], adj: c[2], verb: c[3] || 'is', town: town, out: out, all: town.concat(out), ref: ref, other: other, left: left, leftIn: bad.some(function (r) { return r.inTown; }),
              med: med && ref && med.label === ref.vs ? med : null, prev: prev };
   }
   function bestOf(rs) { return rs.reduce(function (b, r) { return !b || r.c > b.c || (r.c === b.c && (r.mi || 0) < (b.mi || 0)) ? r : b; }, null); }
@@ -127,9 +127,9 @@
   function week(rs) {
     var ws = rs.filter(function (r) { return r.w != null; }).map(function (r) { return r.w; });
     if (!ws.length) return '';
-    var lo = Math.min.apply(null, ws), hi = Math.max.apply(null, ws), who = rs.length === 1 ? 'The bid in town' : ws.length === rs.length ? 'Bids in town' : plural(ws.length, 'bid') + ' in town that posted a week before';
+    var lo = Math.min.apply(null, ws), hi = Math.max.apply(null, ws), who = rs.length === 1 ? 'The bid in town' : ws.length === rs.length ? 'Bids in town' : ws.length + ' of ' + rs.length + ' bids in town';
     var span = function (a, b) { return a === b ? num(a) + (Math.abs(a) === 1 ? ' cent' : ' cents') : num(a) + ' to ' + num(b) + ' cents'; };
-    if (hi === 0 && lo === 0) return who + ' held where ' + (rs.length === 1 ? 'it was' : 'they were') + ' a week before.';
+    if (hi === 0 && lo === 0) return who + ' held where ' + (ws.length === 1 ? 'it was' : 'they were') + ' a week before.';
     if (lo >= 0) return who + ' rose ' + span(lo === 0 && ws.length > 1 ? 0 : lo, hi) + ' in a week.';
     if (hi <= 0) return who + ' fell ' + span(-hi, -lo) + ' in a week.';
     return who + ' moved from ' + num(-lo) + ' down to ' + num(hi) + ' up in a week.';
@@ -141,14 +141,14 @@
     var head;
     if (!bt && !bo) return { head: 'No ' + p.adj + ' bids in or near ' + place + ' to compare today', take: '' };
     if (bt && bo) {
-      head = C + ' is ' + word(bt.c) + ' in ' + place + '. ';
+      head = C + ' ' + p.verb + ' ' + word(bt.c) + ' in ' + place + '. ';
       var dc = Math.round((bo.c - bt.c) * 10) / 10;
       if (dc < 0) head += 'The best bid outside town is ' + word(bo.c) + ', ' + mi(bo.mi) + ' out.';
       else if (dc === 0) head += 'The best bid outside town is the same, ' + word(bo.c) + ', ' + mi(bo.mi) + ' out.';
       else head += 'The best bid within ' + NEAR_MI + ' miles is ' + word(bo.c) + ', ' + mi(bo.mi) + ' away, ' + num(dc) + (dc === 1 ? ' cent' : ' cents') + ' over the bid in town.';
     } else if (bt) {
       var elsewhere = p.other.some(function (r) { return !r.inTown; });
-      head = C + ' is ' + word(bt.c) + ' in ' + place + '. No other elevator within ' + NEAR_MI + ' miles posted a ' + p.adj + ' bid' +
+      head = C + ' ' + p.verb + ' ' + word(bt.c) + ' in ' + place + '. No other elevator within ' + NEAR_MI + ' miles posted a ' + p.adj + ' bid' +
         (elsewhere ? ' for ' + dmFull(p.ref.dm, yr) + ' delivery against ' + conMon(p.ref.vs) + ' futures.' : '.');
     } else {
       var here = p.other.some(function (r) { return r.inTown; }) || p.leftIn;
@@ -343,7 +343,19 @@
         var mt = st + ' median ' + word(cents(p.med.median)), mw = widthOf(mt, fs, true);
         var mc = [];   // along the rule, above then below, left to right: the rule is always named
         for (var mx = L + 6; mx <= x1 - mw; mx += 12) mc.push({ x: mx, y: ym - 6 }, { x: mx, y: ym + fs + 4 });
-        if (!place([mt], mc, ['b'])) { o.push(t(L + 6, ym - 6, mt, 'b h', '')); labs.push({ x0: L + 4, x1: L + 8 + mw, y0: ym - 6 - fs, y1: ym - 2 }); }   // no free place: over the dots, on a halo
+        var m1 = st + ' median', m2 = word(cents(p.med.median)), mc2 = [];   // or in two lines, the words above the rule and the number under it
+        for (mx = L + 6; mx <= x1 - widthOf(m1, fs, true); mx += 12) mc2.push({ x: mx, y: ym - 6 });
+        var two = function () {
+          for (var k = 0; k < mc2.length; k++) {
+            var c = mc2[k], w1 = widthOf(m1, fs, true), w2 = widthOf(m2, fs, true);
+            var b1 = { x0: c.x - 2, x1: c.x + w1 + 2, y0: c.y - fs - 1, y1: c.y + 3 }, b2 = { x0: c.x - 2, x1: c.x + w2 + 2, y0: ym + 3, y1: ym + fs + 7 };
+            if (inPlot(b1) && inPlot(b2) && !obst.concat(labs).some(function (z) { return hit(z, b1) || hit(z, b2); })) {
+              o.push(t(c.x, c.y, m1, 'b', '')); o.push(t(c.x, ym + fs + 4, m2, 'b', '')); labs.push(b1, b2); return true;
+            }
+          }
+          return false;
+        };
+        if (!place([mt], mc, ['b']) && !two()) { o.push(t(L + 6, ym - 6, mt, 'b h', '')); labs.push({ x0: L + 4, x1: L + 8 + mw, y0: ym - 6 - fs, y1: ym - 2 }); }   // no free place: over the dots, on a halo
       }
       if (lo.length) {
         var lw = 'Lowest: ' + (loWho ? loWho + ', ' : '') + word(lo[0].d.c), lww = widthOf(lw, fs);
@@ -392,7 +404,7 @@
 
   /* the default dot the readout opens on: the best bid outside town, else the best in town */
   function firstDot(p) { var b = bestOf(p.out) || bestOf(p.town); return b ? p.all.indexOf(b) : -1; }
-  function axisText(p) { return p.Crop + ' basis, cents a bushel over or under ' + (conMon(p.ref && p.ref.vs) || 'the') + ' futures'; }
+  function axisText(p) { return p.adj.charAt(0).toUpperCase() + p.adj.slice(1) + ' basis, cents a bushel over or under ' + (conMon(p.ref && p.ref.vs) || 'the') + ' futures'; }
   function cardText(p, cfg) {
     var st = story(p, cfg);
     return { head: st.head, take: st.take, kicker: cfg.town + ', ' + (cfg.st || '') + ' · ' + p.adj + ' basis by distance', source: (p.prev && p.all.some(function (r) { return r.w != null; }) ? 'Each line runs from where that bid was on ' + day(p.prev) + '. ' : '') + 'Posted elevator bids, read by AGSIST' + (readDays(p) ? ' ' + readDays(p) : '') + (p.med && p.med.usdaShort ? '. ' + p.med.usdaShort : '') + '. No freight cost taken off.' };
