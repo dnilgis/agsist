@@ -30,11 +30,39 @@
    "link": "/cash-bids"
   },
   {
+   "id": "2026-11-13-custom-rates",
+   "date": "2026-11-13",
+   "title": "Custom rates: Ohio 2026, medians, base plus bushels",
+   "line": "Ohio's 2026 survey is in, Iowa, Ohio and Nebraska show the median or most common rate, Kansas shows base plus bushels with a yield box, and phone search is easier.",
+   "link": "/custom-rates"
+  },
+  {
    "id": "2026-11-13-daily-archive",
    "date": "2026-11-13",
    "title": "Daily archive: last 30 days",
    "line": "The past briefings list on the Daily page now shows the last 30 days. Older issues keep their pages, so search still finds them. The standards page says how it is made.",
    "link": "/daily#past"
+  },
+  {
+   "id": "2026-11-13-daily-chart",
+   "date": "2026-11-13",
+   "title": "A chart of the day in the Daily",
+   "line": "Each AGSIST Daily now has one subject and, on days the data allows, one chart on it: USDA against the trade, a contract's settles, or cash hogs against futures.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-13-daily-story",
+   "date": "2026-11-13",
+   "title": "The Daily email leads with the story",
+   "line": "The AGSIST Daily email now opens with a headline and a short lead. The morning after a USDA report, USDA's number, the trade guess and last month's come first.",
+   "link": "/daily"
+  },
+  {
+   "id": "2026-11-13-field-scout-season",
+   "date": "2026-11-13",
+   "title": "Field Scout knows the season",
+   "line": "Field Scout describes the season that was after the freeze and the ground going in before planting, and holds back satellite readings that are snow, not crop.",
+   "link": "/field-scout"
   },
   {
    "id": "2026-11-13-nitrogen-credits-insects",
@@ -72,6 +100,13 @@
    "link": "/sponsor"
   },
   {
+   "id": "2026-11-13-sponsor-totals",
+   "date": "2026-11-13",
+   "title": "Sponsor numbers show totals",
+   "line": "The sponsor line and page show the total AI answer citations and the people on our email lists, each counted once, with their dates.",
+   "link": "/sponsor"
+  },
+  {
    "id": "2026-11-13-agronomy-hub",
    "date": "2026-11-13",
    "title": "Agronomy, by the question you are asking",
@@ -84,6 +119,13 @@
    "title": "Harvest Fuel Relief: what USDA has said",
    "line": "Harvest Fuel Relief: what USDA has confirmed, what is coming and what is still open, each fact labeled by source and date. No rates yet.",
    "link": "/harvest-fuel-relief"
+  },
+  {
+   "id": "2026-11-13-plain-look",
+   "date": "2026-11-13",
+   "title": "A plainer look",
+   "line": "Menus, cards and charts lose the icons, glows and rounded tiles. Same numbers and sources, flat boxes, square corners and plain text links.",
+   "link": "/"
   },
   {
    "id": "2026-11-12-seo-four",
@@ -133,6 +175,13 @@
    "title": "Crop conditions: every state's harvest pace",
    "line": "The state harvest table on the conditions page now lists every state USDA reports, corn and soybeans, against its five-year average. The title names the harvest week.",
    "link": "/conditions"
+  },
+  {
+   "id": "2026-11-12-email-format",
+   "date": "2026-11-12",
+   "title": "Emails in one clean format",
+   "line": "Every AGSIST email now reads the same way: what happened in one line, your own numbers, one button for the next step, and a plain stop link at the bottom.",
+   "link": "/#f-price-alert"
   },
   {
    "id": "2026-11-12-farm-bill-dates",
@@ -788,7 +837,7 @@
   {
    "id": "2026-11-04-funds",
    "date": "2026-11-04",
-   "title": "Fund positions at a glance",
+   "title": "Fund positions in one line each",
    "line": "The COT page and the home card now open with one plain line per market: long or short, how heavy, and the week's buying or selling. Get it every Friday by email.",
    "link": "/cot"
   },
@@ -819,13 +868,6 @@
    "title": "Feeder steer index: more barns",
    "line": "The feeder steer index now counts 80 to 94 barns a week through USDA's My Market News (55 to 92 before); the last three weeks came in $0.55 to $2.93 lower.",
    "link": "/cattle-auction-prices#feeder-index"
-  },
-  {
-   "id": "2026-11-03-rainbox",
-   "date": "2026-11-03",
-   "title": "Put your county's rain on your site or in your newsletter",
-   "line": "Each county rain page has a closed fold with a one-line rain box for websites, the same line in words to copy, and the monthly newsletter block.",
-   "link": "/developer#rain"
   },
   {
    "id": "2026-11-03-auditleft",
@@ -940,13 +982,6 @@
    "link": "/"
   },
   {
-   "id": "2026-11-02-newsblock",
-   "date": "2026-11-02",
-   "title": "Rain and bids for your newsletter",
-   "line": "A monthly block for co-op, Farm Credit and local paper newsletters: a county's rain last month and the state basis, ready to paste as text, HTML or an image.",
-   "link": "/newsletter-block"
-  },
-  {
    "id": "2026-11-02-seofix",
    "date": "2026-11-02",
    "title": "ARC or PLC county pages open with the answer",
@@ -992,7 +1027,7 @@
    "id": "2026-10-30-rpxmas",
    "date": "2026-10-30",
    "title": "A Rain Print, made for you",
-   "line": "Rather not make the print yourself? Call or text Sig, or leave your number. He makes two or three versions to pick from; you pay only if you order.",
+   "line": "Rather not make the print yourself? Call or text us, or leave your number. We make two or three versions to pick from; you pay only if you order.",
    "link": "/rain-print"
   },
   {
