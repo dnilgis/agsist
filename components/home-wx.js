@@ -294,7 +294,17 @@
     return '<svg class="ic' + (cls ? ' ' + cls : '') + '" aria-hidden="true"><use href="#' + k + '"/></svg>';
   }
   /* the sky in words: the function the "Today near me" block above prints with (index1.html sets root.AgSkyWords), so one hour has one wording */
-  function skyWords(code, night) { return root.AgSkyWords ? root.AgSkyWords(code, !!night) : ''; }
+  /* the same table as the block's wxWords in index.html: index1_mirror.py rebuilds the page's inline script from index.html,
+     which does not set root.AgSkyWords, so the band carries its own copy and the two never disagree (Nov 13) */
+  var SKY_D = { 0: 'Sunny', 1: 'Mostly sunny', 2: 'Partly sunny', 3: 'Cloudy' }, SKY_N = { 0: 'Clear', 1: 'Mostly clear', 2: 'Partly cloudy', 3: 'Cloudy' };
+  function skyTable(c, night) {
+    if (c == null) return ''; if (c <= 3) return (night ? SKY_N : SKY_D)[c];
+    if (c === 45) return 'Fog'; if (c === 48) return 'Freezing fog'; if (c === 56 || c === 57) return 'Freezing drizzle'; if (c >= 51 && c <= 55) return 'Drizzle';
+    if (c === 66 || c === 67) return 'Freezing rain'; if (c === 61) return 'Light rain'; if (c === 63) return 'Rain'; if (c === 65) return 'Heavy rain';
+    if (c === 71) return 'Light snow'; if (c === 73) return 'Snow'; if (c === 75) return 'Heavy snow'; if (c === 77) return 'Sleet';
+    if (c >= 80 && c <= 82) return 'Showers'; if (c === 85 || c === 86) return 'Snow showers'; if (c >= 95) return 'Thunderstorms'; return '';
+  }
+  function skyWords(code, night) { return root.AgSkyWords ? root.AgSkyWords(code, !!night) : skyTable(code, !!night); }
   /* the old home's fuller forecast: now (icon, temperature, feels like, wind, humidity, dew point,
      chance of rain), the days with icons, highs, lows, chance of rain, rain amount and wind, and the next 24 hours behind a fold */
   function windText(w) {
