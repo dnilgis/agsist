@@ -41,7 +41,7 @@
 /* the first header may wrap ("Borough or census area" would push the percent column off a 390 px screen) */
 .rc-t thead th:first-child { white-space: normal; }
 .rc-t td:first-child .rc-n, .rc-t th:first-child .rc-n { white-space: nowrap; }
-.rc-t thead th { color: var(--text-muted); font-weight: 600; font-size: var(--fs-xs); }
+.rc-t thead th { color: var(--text-muted); font-weight: 600; font-size: var(--fs-xs); vertical-align: bottom; }   /* a two-line first head sits every head on the rule (Nov 13) */
 .rc-t .rc-n { display: block; color: var(--text-muted); font-size: var(--fs-xs); }
 .rc-t abbr { text-decoration: none; }
 .rc-t-wide { max-width: none; }
@@ -114,6 +114,8 @@
   /* "Through" on phones: the county cell says "to Oct 9" when it differs */
   .rc-t-wide td:nth-child(6), .rc-t-wide th:nth-child(6) { display: none; }
 }
+/* the wide table says "to Nov 8" under a name only when its THROUGH column is off screen (phones, above): where the column shows, the note is said twice (Nov 13) */
+@media (min-width: 561px) { .rc-t-wide th:first-child .rc-n { display: none; } }
 /* the county's year as a Rain Print (components/rain-county-print.js draws it
    over the plain chart once the figure scrolls near). The sheet is white in
    both themes, like the print. */
