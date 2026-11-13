@@ -466,7 +466,7 @@
       story: function () {
         /* the picture's sub line also carries the figures of any month whose words have no clean place at the picture's size */
         var d = []; try { root.AgChart.runSvg(rc, 1136, 340, { fs: 22, card: true }); d = root.AgChart.runInfo().dropped || []; } catch (e) {}
-        return { head: o.cardHead, take: o.sub + (d.length ? '. ' + d.join(' ') : ''), summary: o.label };
+        return { head: o.cardHead, take: d.length ? String(o.sub).replace(/;? ?gold marks.*$/, '') + '. ' + d.join(' ') : o.sub,   /* with figures to carry, the colour note makes way so the line is not cut */ summary: o.label };
       },
       share: { url: 'https://agsist.com/?utm_source=share&utm_medium=picture&utm_campaign=home-' + o.file, title: o.cardHead, file: 'agsist-' + o.file + '-' + iso + '.png', kicker: o.kicker, source: o.source, date: iso } };
     root.AgChart.mountRun(x, rc);
