@@ -126,9 +126,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
   display: flex; align-items: flex-start; gap: .85rem;
   padding: .85rem 1rem; border-radius:var(--r-lg); margin-bottom: 1.25rem; border: 1px solid;
 }
-.tariff-status-banner.elevated { background: rgba(239,68,68,.06);  border-color: rgba(239,68,68,.22); }
-.tariff-status-banner.normal   { background: rgba(34,197,94,.06);  border-color: rgba(34,197,94,.20); }
-.tariff-status-banner.mixed    { background: rgba(212,162,63,.06); border-color: rgba(212,162,63,.20); }
+.tariff-status-banner.elevated { background: var(--surface2);  border-color: rgba(239,68,68,.22); }
+.tariff-status-banner.normal   { background: var(--surface2);  border-color: rgba(34,197,94,.20); }
+.tariff-status-banner.mixed    { background: var(--surface2); border-color: rgba(212,162,63,.20); }
 .tsb-icon { font-size: 1.5rem; flex-shrink: 0; line-height: 1; margin-top: .05rem; }
 .tsb-body { flex: 1; }
 .tsb-label { font-family:var(--font-display); font-size: 1.1rem; font-weight: 700; line-height: 1; margin-bottom: .2rem; }
@@ -185,7 +185,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tariff-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
 .tariff-table th {
   padding: .5rem .85rem; text-align: left;
-  font-size:0.763rem; font-weight: 700; letter-spacing: .07em; text-transform: uppercase; color: var(--text-muted);
+  font-size:0.763rem; font-weight: 700; letter-spacing:0; text-transform:none; color: var(--text-muted);
   border-bottom: 1px solid var(--border);
 }
 /* TOP, not middle. With a long note the row is hundreds of pixels tall, and
@@ -202,7 +202,6 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tariff-table tr:last-child td { border-bottom: none; }
 .tariff-table tr:hover td { background: rgba(255,255,255,.015); }
 .tt-comm { display: flex; align-items: center; gap: .45rem; font-weight: 700; }
-.tt-icon { font-size: 1rem; line-height: 1; }
 .tt-rate { font-family: 'JetBrains Mono', monospace; font-weight: 700; font-size: .88rem; }
 .tt-rate.elevated { color:var(--tf-red); }
 .tt-rate.normal   { color: var(--green); }
@@ -212,9 +211,9 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
   display: inline-flex; align-items: center; padding: .15rem .48rem; border-radius: 4px;
   font-size:0.755rem; font-weight: 700; letter-spacing:0; text-transform:none; border: 1px solid;
 }
-.tt-badge.elevated { color:var(--tf-red); background: rgba(239,68,68,.08); border-color: rgba(239,68,68,.22); }
-.tt-badge.normal   { color: var(--green); background: rgba(34,197,94,.07); border-color: rgba(34,197,94,.2); }
-.tt-badge.mixed    { color: var(--gold); background: rgba(212,162,63,.08); border-color: rgba(212,162,63,.22); }
+.tt-badge.elevated { color:var(--tf-red); background: var(--surface2); border-color: rgba(239,68,68,.22); }
+.tt-badge.normal   { color: var(--green); background: var(--surface2); border-color: rgba(34,197,94,.2); }
+.tt-badge.mixed    { color: var(--gold); background: var(--surface2); border-color: rgba(212,162,63,.22); }
 /* .8rem to match the table. It was 1rem — the annotation set larger than the
    numbers it annotates, which inverted the hierarchy and cost it extra lines. */
 .tt-note { font-size:.8rem; color: var(--text-muted); line-height:1.6; }
@@ -239,7 +238,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
   /* Each value names its own column, since the header row is gone. */
   .tariff-table td[data-label]:not([data-label=""])::before {
     content: attr(data-label) " "; color: var(--text-dim);
-    font-size: .7rem; text-transform: uppercase; letter-spacing: .06em;
+    font-size:.78rem; text-transform:none; letter-spacing:0;
   }
   .tariff-table td.tt-rate { font-size: 1.05rem; }
   .tt-note { display: block; margin-top: .5rem; padding-top: .5rem;
@@ -272,7 +271,7 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .te-card p  { font-size:0.79rem; color: var(--text-muted); line-height: 1.62; margin: 0; }
 
 /* Basis-channel callout */
-.tariff-wi-mn { display: flex; gap: .7rem; align-items: flex-start; padding: .85rem 1rem; background: rgba(58,139,60,.05); border: 1px solid rgba(58,139,60,.18); border-radius:var(--r-md); margin-bottom: 1.1rem; font-size: .8rem; color: var(--text-dim); line-height: 1.6; }
+.tariff-wi-mn { display: flex; gap: .7rem; align-items: flex-start; padding: .85rem 1rem; background: var(--surface2); border: 1px solid rgba(58,139,60,.18); border-radius:var(--r-md); margin-bottom: 1.1rem; font-size: .8rem; color: var(--text-dim); line-height: 1.6; }
 .tariff-wi-mn strong { color: var(--green); }
 .tariff-wi-mn a { text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px; }
 
@@ -285,8 +284,8 @@ a:focus-visible,button:focus-visible,input:focus-visible,[role="button"]:focus-v
 .tariff-source { font-size:0.763rem; color: var(--text-muted); text-align: center; padding-top: .65rem; border-top: 1px solid var(--border); }
 .tariff-source a { color: var(--gold); text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px; }
 .tariff-source a:hover { text-decoration: underline; }
-.tariff-stale.warn{background:rgba(var(--gold-rgb),.1);border:1px solid rgba(var(--gold-rgb),.45);color:var(--gold)}
-.tariff-stale.alert{background:rgba(224,107,66,.12);border:1px solid rgba(224,107,66,.5);color:var(--red,#e06b42)}
+.tariff-stale.warn{background:var(--surface2);border:1px solid rgba(var(--gold-rgb),.45);color:var(--gold)}
+.tariff-stale.alert{background:var(--surface2);border:1px solid rgba(224,107,66,.5);color:var(--red,#e06b42)}
 .tariff-stale a{color:inherit;font-weight:800;text-decoration:underline}
 .tt-meta{display:block;margin-top:.35rem;font-size:0.755rem;color:var(--text-muted);line-height:1.5}
 .tt-meta a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
@@ -572,16 +571,6 @@ function fmtDate(iso){
 }
 
 
-function commodityIcon(name){
-  var n=(name||'').toLowerCase(), ic='leaf';
-  if(n.indexOf('soy')>-1||n.indexOf('bean')>-1) ic='bean';
-  else if(n.indexOf('corn')>-1) ic='sprout';
-  else if(n.indexOf('wheat')>-1||n.indexOf('sorghum')>-1||n.indexOf('milo')>-1) ic='wheat';
-  else if(n.indexOf('pork')>-1||n.indexOf('hog')>-1) ic='ham';
-  else if(n.indexOf('beef')>-1||n.indexOf('cattle')>-1) ic='beef';
-  else if(n.indexOf('ethanol')>-1) ic='fuel';
-  return '<svg class="ic" aria-hidden="true"><use href="#i-'+ic+'"/></svg>';
-}
 function watchLinks(commodity){
   var c=(commodity||'').toLowerCase();
   var map={'soybeans':{f:'/soybean-futures-prices',w:'Soybeans are the most China-exposed US grain export. Watch demand and harvest basis.'},'corn':{f:'/corn-futures-prices',w:'Corn export exposure to China is smaller, but policy still moves futures and basis.'},'wheat':{f:'/wheat-futures-prices',w:'Wheat has modest direct China exposure; global trade flows matter more.'}};
@@ -631,7 +620,7 @@ fetch('/data/tariffs.json')
            and each value prints its own column name, because a bare "3%" under a
            bare "~13%" with no headings is not a table, it is a riddle. */
         return '<tr>'
-          +'<td data-label=""><div class="tt-comm"><span class="tt-icon">'+commodityIcon(row.commodity)+'</span>'+esc(row.commodity)+'</div></td>'
+          +'<td data-label=""><div class="tt-comm">'+esc(row.commodity)+'</div></td>'
           +'<td data-label="Destination" style="color:var(--text-muted)">'+esc(row.destination)+'</td>'
           +'<td data-label="Baseline" class="tt-baseline">'+esc(row.baseline)+'</td>'
           +'<td data-label="Current rate" class="tt-rate '+sc+'">'+esc(row.rate)+'</td>'

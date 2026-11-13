@@ -169,14 +169,14 @@ html[data-theme="light"] .live-badge{--green:#276c43;color:#276c43}
 .sv-detail-desc{font-size:1rem;color:var(--text);line-height:1.55;}
 .sv-detail-mgmt{font-size:0.78rem;color:var(--green);margin-top:.3rem;font-weight:600;}
 .moa-badge{display:inline-block;padding:.15rem .45rem;border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;}
-.moa-1{background:rgba(58,139,60,.2);color:var(--green);}
-.moa-2{background:rgba(230,176,66,.2);color:var(--gold);}
-.moa-3{background:rgba(100,160,230,.2);color:#80b4e8;}
-.moa-4{background:rgba(200,100,200,.2);color:#d080d0;}
-.moa-5{background:rgba(200,200,80,.2);color:#c8c850;}
-.moa-9{background:rgba(224,92,92,.2);color:#e05c5c;}
-.moa-14{background:rgba(255,140,0,.2);color:#ffa040;}
-.moa-other{background:rgba(150,150,150,.15);color:var(--text-muted);}
+.moa-1{background:rgba(58,139,60,.2);color:var(--green);} /* plain-look-ok: herbicide mode-of-action group, the colour is the label of the group */
+.moa-2{background:rgba(230,176,66,.2);color:var(--gold);} /* plain-look-ok: herbicide mode-of-action group, the colour is the label of the group */
+.moa-3{background:rgba(100,160,230,.2);color:#80b4e8;} /* plain-look-ok: herbicide mode-of-action group, the colour is the label of the group */
+.moa-4{background:rgba(200,100,200,.2);color:#d080d0;} /* plain-look-ok: herbicide mode-of-action group, the colour is the label of the group */
+.moa-5{background:rgba(200,200,80,.2);color:#c8c850;} /* plain-look-ok: herbicide mode-of-action group, the colour is the label of the group */
+.moa-9{background:rgba(224,92,92,.2);color:#e05c5c;} /* plain-look-ok: herbicide mode-of-action group, the colour is the label of the group */
+.moa-14{background:rgba(255,140,0,.2);color:#ffa040;} /* plain-look-ok: herbicide mode-of-action group, the colour is the label of the group */
+.moa-other{background:rgba(150,150,150,.15);color:var(--text-muted);} /* plain-look-ok: herbicide mode-of-action group, the colour is the label of the group */
 .ff-pest .pn{display:block;font-size:0.74rem;color:var(--text-muted);margin-top:.15rem;line-height:1.4;}
 .ff-pest td{vertical-align:top;}
 .sev-med{color:var(--gold);}.sev-high{color:#e05c5c;}
@@ -318,7 +318,7 @@ html[data-theme="light"] .live-badge{--green:#276c43;color:#276c43}
   #main #pk-cats th:nth-child(2),#pk-cats td:nth-child(2){padding-right:.25rem;}
   #tab-manure .ff-t{min-width:600px;}
   #tab-manure .ff-t th{overflow-wrap:normal;white-space:normal;}
-  .ff-tw:not(.ff-tw-n){-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);}
+  .ff-tw.ff-more{-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 28px),transparent);}
   #nc-table th,#nc-table td{padding:.34rem .22rem;}
   #nc-table td.tl{font-size:0.74rem;}
   #nc-table th{letter-spacing:0;}
@@ -1234,5 +1234,11 @@ html[data-theme="light"] .live-badge{--green:#276c43;color:#276c43}
 <script src="/components/price-local.js?v=15" defer></script>
 <script src="/components/fast-facts.js?v=22" defer></script>
   <script src="/components/next-links.js?v=4" defer></script>
+<script>/* the phone scroll cue: a table that runs past its box fades at the right edge until it is scrolled to the end; one that fits has no fade */
+(function(){function more(){var w=document.querySelectorAll('.ff-tw');for(var i=0;i<w.length;i++){var e=w[i];e.classList.toggle('ff-more',e.scrollWidth-e.clientWidth-e.scrollLeft>4);}}
+function later(){setTimeout(more,60);}
+document.addEventListener('scroll',function(ev){if(ev.target&&ev.target.classList&&ev.target.classList.contains('ff-tw'))more();},true);
+window.addEventListener('resize',more);window.addEventListener('load',more);document.addEventListener('click',function(ev){if(ev.target.closest&&ev.target.closest('.ff-tab'))later();});
+if(document.readyState!=='loading')more();else document.addEventListener('DOMContentLoaded',more);})();</script>
 </body>
 </html>

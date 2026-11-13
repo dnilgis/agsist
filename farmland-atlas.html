@@ -280,7 +280,7 @@ button,a,[role="button"]{touch-action:manipulation}
    crumb it put the text at 2.3:1 (light) and 3.4:1 (dark). */
 .breadcrumb span[aria-hidden]{margin:0 .35rem;opacity:.45}
 .fa-hero{padding:.9rem 0 .8rem;margin-bottom:.4rem}
-.fa-hero h1{font-family:var(--font-display);font-size:1.75rem;font-weight:800;text-transform:uppercase;color:var(--text);margin:0 0 .4rem;letter-spacing:.01em}
+.fa-hero h1{font-family:var(--font-display);font-size:1.75rem;font-weight:800;text-transform:none;color:var(--text);margin:0 0 .4rem;letter-spacing:0}
 .fa-hero p{color:var(--text-dim);font-size:.92rem;line-height:1.55;max-width:780px;margin:0}
 .fa-eyebrow{font-size:.755rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-bottom:.3rem}
 .fa-meta{display:flex;flex-wrap:wrap;gap:.5rem 1.2rem;margin-top:.7rem;font-family:var(--font-mono);font-size:.74rem;color:var(--text-muted)}
@@ -381,7 +381,7 @@ details.fa-vd summary:hover{color:var(--gold)}
 .fa-rk-l .sw,.fa-nb-l .sw{width:12px;height:12px;border-radius:2px;border:1px solid rgba(0,0,0,.35)}
 .fa-rk-l .nm,.fa-nb-l .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .fa-rk-l .v,.fa-nb-l .v{font-family:var(--font-mono);color:var(--text);white-space:nowrap}
-.fa-rk-l button.me,.fa-nb-l button.me{background:rgba(212,162,63,.12);color:var(--text);font-weight:700}
+.fa-rk-l button.me,.fa-nb-l button.me{background:var(--surface2);color:var(--text);font-weight:700}
 .fa-rk-n{font-size:.72rem;color:var(--text-muted);margin:.2rem 0 0}
 .fa-rk-more{background:none;border:0;color:var(--gold);font:inherit;font-size:.75rem;font-weight:700;cursor:pointer;padding:.3rem;min-height:30px}
 .fa-cc{border-color:rgba(212,162,63,.45)}
@@ -425,7 +425,7 @@ details.fa-vd summary:hover{color:var(--gold)}
 .fa-map.fa-hl path.c.on{opacity:1}
 /* next door table */
 .fa-nbt td.n b{color:var(--gold)}
-.fa-nbt tr.me td{background:rgba(212,162,63,.08);color:var(--text);font-weight:700}
+.fa-nbt tr.me td{background:var(--surface2);color:var(--text);font-weight:700}
 .fa-nbt tr.med td{border-top:1px solid var(--border-2);color:var(--text-muted);font-style:italic}
 .fa-nbt td:first-child,.fa-nbt th:first-child{position:sticky;left:0;background:var(--surface);z-index:1}
 .fa-nbt tr.me td:first-child{background:#1c1a14}
@@ -491,12 +491,12 @@ details.fa-arith code{font-family:var(--font-mono);font-size:.74rem;color:var(--
 .tblscroll{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.6rem 0 .8rem}
 .fa-table{width:100%;border-collapse:collapse;font-size:.8rem;min-width:460px}
 .fa-table td:first-child{white-space:nowrap}
-.fa-table th{text-align:left;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-muted);padding:.45rem .6rem;border-bottom:1px solid var(--border-2);white-space:nowrap}
+.fa-table th{text-align:left;font-family:var(--font-body);font-size:.78rem;letter-spacing:0;text-transform:none;color:var(--text-muted);padding:.45rem .6rem;border-bottom:1px solid var(--border-2);white-space:nowrap}
 .fa-table td{padding:.42rem .6rem;border-bottom:1px solid var(--border);color:var(--text-dim);vertical-align:top}
 .fa-table td.n{font-family:var(--font-mono);color:var(--text);text-align:right;white-space:nowrap}
 .fa-table th.n{text-align:right}
 .fa-table tr.click{cursor:pointer}
-.fa-table tr.click:hover td{color:var(--text);background:rgba(212,162,63,.05)}
+.fa-table tr.click:hover td{color:var(--text);background:var(--surface2)}
 .fa-two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,480px),1fr));gap:1rem}
 .fa-scatter{display:block;width:100%;height:auto;background:var(--bg2);border:1px solid var(--border);border-radius:var(--r-md)}
 .fa-scatter circle{fill:var(--gold);fill-opacity:.7;stroke:none;cursor:pointer}
@@ -647,7 +647,7 @@ details.fa-arith .body a{color:var(--gold)}
 .fl-2col{display:grid;grid-template-columns:1fr;gap:1rem}
 @media(min-width:720px){.fl-2col{grid-template-columns:1fr 1fr}}
 .fl-tbl{width:100%;border-collapse:collapse;font-size:.85rem}
-.fl-tbl th{text-align:left;font-family:var(--font-mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border);padding:.35rem .3rem}
+.fl-tbl th{text-align:left;font-family:var(--font-body);font-size:.78rem;letter-spacing:0;text-transform:none;color:var(--text-muted);border-bottom:1px solid var(--border);padding:.35rem .3rem}
 .fl-tbl td{border-bottom:1px solid var(--border);padding:.4rem .3rem;color:var(--text-dim)}
 .fl-tbl td.num{text-align:right;font-family:var(--font-mono);white-space:nowrap}
 .fl-split{display:flex;height:14px;border-radius:4px;overflow:hidden;margin:.3rem 0}

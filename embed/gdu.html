@@ -19,14 +19,14 @@
   .w-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:12px;}
   .w-brand{font-family:Georgia,serif;font-weight:bold;letter-spacing:2px;color:var(--green);font-size:15px;}
   .w-brand small{display:block;font-family:'Courier New',monospace;font-size:8px;letter-spacing:2px;color:var(--muted);font-weight:normal;margin-top:2px;}
-  .w-tag{font-family:'Courier New',monospace;font-size:9px;letter-spacing:1px;color:var(--gold);text-transform:uppercase;font-weight:bold;}
+  .w-tag{font-family:'Courier New',monospace;font-size:9px;letter-spacing:0;color:var(--gold);text-transform:none;font-weight:bold;}
   .pills{display:flex;gap:6px;margin-bottom:11px;}
   .pill{flex:1;min-height:40px;border:2px solid var(--border);background:var(--bg);color:var(--dim);
         border-radius:var(--r-md);font-weight:700;font-size:12px;cursor:pointer;}
-  .pill[aria-pressed="true"]{border-color:var(--gold);background:rgba(230,176,66,.12);color:var(--text);}
+  .pill[aria-pressed="true"]{border-color:var(--gold);background:var(--surface2);color:var(--text);}
   .row{display:flex;gap:8px;}
   .fg{margin-bottom:9px;flex:1;}
-  label{display:block;font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--dim);margin-bottom:3px;}
+  label{display:block;font-size:10px;font-weight:700;letter-spacing:0;text-transform:none;color:var(--dim);margin-bottom:3px;}
   input{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--r-md);color:var(--text);
         font-family:'Courier New',monospace;font-size:15px;padding:7px 8px;outline:none;}
   input:focus{border-color:var(--gold);}
@@ -38,7 +38,7 @@
   .res{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);padding:13px;text-align:center;margin-bottom:10px;}
   .big{font-family:Georgia,serif;font-size:38px;font-weight:800;line-height:1;color:var(--text);}
   .big small{font-size:12px;color:var(--dim);font-weight:normal;}
-  .stage{display:inline-block;margin-top:7px;padding:3px 12px;border-radius:var(--r-lg);background:rgba(230,176,66,.12);
+  .stage{display:inline-block;margin-top:7px;padding:3px 12px;border-radius:var(--r-lg);background:var(--surface2);
          border:1px solid rgba(230,176,66,.35);font-family:'Courier New',monospace;font-size:12px;font-weight:700;color:var(--gold);}
   .rr{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:12.5px;}
   .rr:last-child{border-bottom:0;} .rr .l{color:var(--dim);} .rr .v{font-family:'Courier New',monospace;font-weight:700;}

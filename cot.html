@@ -114,7 +114,7 @@
 .cot-insight { font-size:0.765rem; line-height:1.5; color:var(--text-dim); margin-top:.5rem; padding-top:.5rem; border-top:1px solid var(--border); }
 .cot-insight b { color:var(--text); font-weight:700; }
 .cot-insight .up { color:var(--green); } .cot-insight .dn { color:#ef4444; }
-.cot-read { border:1px solid rgba(var(--gold-rgb),.3); background:rgba(var(--gold-rgb),.05); border-radius:var(--r-lg); padding:.9rem 1.1rem; margin-bottom:1.25rem; }
+.cot-read { border:1px solid rgba(var(--gold-rgb),.3); background:var(--surface2); border-radius:var(--r-lg); padding:.9rem 1.1rem; margin-bottom:1.25rem; }
 .cot-read-tag { font-family:var(--font-body); font-size:0.755rem; font-weight:800; letter-spacing:0; text-transform:none; color:var(--text-dim); margin-bottom:.35rem; }
 .cot-read-body { font-size:.86rem; line-height:1.6; color:var(--text); }
 .cot-read-body b { color:var(--gold); }
@@ -160,8 +160,8 @@
   padding: .9rem 1.1rem; border-radius:var(--r-lg); margin-bottom: 1.25rem;
   border: 1px solid;
 }
-.cot-verdict-banner.long  { background: rgba(74,171,76,.06);  border-color: rgba(74,171,76,.2);  }
-.cot-verdict-banner.short { background: rgba(239,68,68,.06);  border-color: rgba(239,68,68,.2);  }
+.cot-verdict-banner.long  { background: var(--surface2);  border-color: rgba(74,171,76,.2);  }
+.cot-verdict-banner.short { background: var(--surface2);  border-color: rgba(239,68,68,.2);  }
 .cot-verdict-banner.mixed { background: var(--surface);       border-color: var(--border);       }
 .cvb-badge {
   font-family:var(--font-display); font-size: 1.2rem; font-weight: 800;
@@ -203,8 +203,8 @@
   font-size:0.755rem; font-weight: 700; letter-spacing:0; text-transform:none;
   padding: .12rem .45rem; border-radius:var(--r-lg); border: 1px solid;
 }
-.cot-card-verdict.long  { color: var(--green); background: rgba(74,171,76,.08);  border-color: rgba(74,171,76,.25); }
-.cot-card-verdict.short { color: #ef4444;      background: rgba(239,68,68,.08);  border-color: rgba(239,68,68,.25); }
+.cot-card-verdict.long  { color: var(--green); background: var(--surface2);  border-color: rgba(74,171,76,.25); }
+.cot-card-verdict.short { color: #ef4444;      background: var(--surface2);  border-color: rgba(239,68,68,.25); }
 .cot-card-verdict.flat  { color: var(--text-muted); background: var(--surface2); border-color: var(--border); }
 
 .cot-card-net {
@@ -319,7 +319,7 @@
 .cx-pick button { font-family:'JetBrains Mono',monospace; font-size:.72rem; font-weight:700; letter-spacing:.03em;
   padding:.45rem .6rem; min-height:40px; border-radius:var(--r-md); cursor:pointer;
   background:var(--surface2); color:var(--text-dim); border:1px solid var(--border); }
-.cx-pick button[aria-pressed="true"] { background:rgba(var(--gold-rgb),.14); color:var(--gold); border-color:rgba(var(--gold-rgb),.45); }
+.cx-pick button[aria-pressed="true"] { background:var(--surface2); color:var(--gold); border-color:rgba(var(--gold-rgb),.45); }
 .cx-pick button:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
 
 /* ── stat rows ── */
@@ -350,13 +350,13 @@
 .cx-hz { display:flex; flex-wrap:wrap; gap:.35rem; margin:.1rem 0 .8rem; }
 .cx-hz button { font-family:'JetBrains Mono',monospace; font-size:.72rem; padding:.35rem .6rem; min-height:34px;
   border-radius:var(--r-md); background:var(--surface2); border:1px solid var(--border); color:var(--text-dim); cursor:pointer; }
-.cx-hz button[aria-pressed="true"] { background:rgba(var(--green-rgb),.14); color:var(--green); border-color:rgba(var(--green-rgb),.4); }
+.cx-hz button[aria-pressed="true"] { background:var(--surface2); color:var(--green); border-color:rgba(var(--green-rgb),.4); }
 .cx-hz button:focus-visible { outline:2px solid var(--green); outline-offset:2px; }
 
 /* ── verdict chips ── */
-.cx-chip { display:inline-block; font-family:'JetBrains Mono',monospace; font-size:.68rem; font-weight:700;
-  letter-spacing:.05em; text-transform:uppercase; padding:.2rem .45rem; border-radius:4px; border:1px solid; }
-.cx-chip.pass { color:var(--green); border-color:rgba(var(--green-rgb),.45); background:rgba(var(--green-rgb),.10); }
+.cx-chip { display:inline-block; font-family:var(--font-body); font-size:.78rem; font-weight:700;
+  letter-spacing:0; text-transform:none; padding:.2rem .45rem; border-radius:4px; border:1px solid; }
+.cx-chip.pass { color:var(--green); border-color:rgba(var(--green-rgb),.45); background:var(--surface2); }
 .cx-chip.weak { color:var(--text-muted); border-color:var(--border); background:rgba(128,128,128,.08); }
 .cx-chip.none { color:var(--text-muted); border-color:var(--border); background:transparent; }
 
@@ -370,7 +370,7 @@
 .cx-tw { overflow-x:auto; -webkit-overflow-scrolling:touch; }
 .cx-table { width:100%; border-collapse:collapse; font-family:'JetBrains Mono',monospace; font-size:.875rem; }
 .cx-table th, .cx-table td { padding:.42rem .5rem; text-align:right; border-bottom:1px solid var(--border); white-space:nowrap; }
-.cx-table th { color:var(--text-muted); font-weight:700; text-transform:uppercase; letter-spacing:.04em; font-size:.875rem; }
+.cx-table th { color:var(--text-muted); font-weight:700; text-transform:none; letter-spacing:0; font-size:.875rem; }
 .cx-table th:first-child, .cx-table td:first-child { text-align:left; }
 .cx-table tbody tr:last-child td { border-bottom:none; }
 /* A withheld-row note is prose: let it wrap inside the table instead of
@@ -414,8 +414,8 @@
   padding:.7rem .85rem; border-radius:var(--r-md); border:1px solid var(--border);
   background:rgba(128,128,128,.06); border-left:3px solid var(--text-muted); }
 .cx-verdict b { color:var(--text); }
-.cx-verdict.pass { border-left-color:var(--green); background:rgba(var(--green-rgb),.07); }
-.cx-verdict.warn { border-left-color:var(--gold); background:rgba(var(--gold-rgb),.06); }
+.cx-verdict.pass { border-left-color:var(--green); background:var(--surface2); }
+.cx-verdict.warn { border-left-color:var(--gold); background:var(--surface2); }
 
 .cx-result { font-size:.84rem; line-height:1.7; color:var(--text-dim); margin:.2rem 0 .5rem; max-width:74ch; }
 .cx-result b { color:var(--text); }
@@ -495,8 +495,8 @@ details.fold .fold-body>.cx-panel{border:0;background:none;padding:0}
 @media(max-width:640px){.cx-hz button,.cx-link{min-height:40px}}
 /* At a glance (2026-11-04): one line per market, then the details behind a tap */
 .cot-section-title {
-  font-size:0.78rem; font-weight: 700; letter-spacing: .08em;
-  text-transform: uppercase; color: var(--text-muted); margin: 0 0 .7rem;
+  font-size:0.78rem; font-weight: 700; letter-spacing:0;
+  text-transform:none; color: var(--text-muted); margin: 0 0 .7rem;
 }
 .cg{margin:0 0 1rem}
 .cc{margin:0 0 1rem;padding:.75rem .85rem .7rem;border:1px solid var(--border);border-radius:var(--r-lg);background:var(--surface)}

@@ -96,7 +96,7 @@
     .hint-title{font-family:var(--font-body);font-size:0.763rem;font-weight:700;color:var(--text-dim);text-transform:none;letter-spacing:0;margin-bottom:6px;}
     .hint-list{list-style:none;padding:0;margin:0;}.hint-list li{font-size:0.787rem;color:var(--text);padding:2px 0;line-height:1.5;}.hint-list li::before{content:'\25A1 ';color:var(--text-dim);}
     .hint-note{font-size:1rem;color:var(--text-dim);margin-top:6px;border-top:1px solid var(--border);padding-top:6px;}
-    .live-price-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin-bottom:16px;background:rgba(58,139,60,0.05);border:2px solid rgba(58,139,60,0.20);border-radius:var(--r-md);font-size:0.8rem;}
+    .live-price-bar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:10px 14px;margin-bottom:16px;background:var(--surface2);border:2px solid rgba(58,139,60,0.20);border-radius:var(--r-md);font-size:0.8rem;}
     
     .live-price-bar .price-tag{font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--gold);}
     .live-price-bar .chg-tag{font-family:'JetBrains Mono',monospace;font-size:0.787rem;font-weight:600;}
@@ -121,7 +121,7 @@
     .sens-table .corner{background:var(--bg);color:var(--text-dim);font-size:0.755rem;}
     .sens-table .row-head{background:var(--surface);color:var(--text-dim);font-weight:600;text-align:right;padding-right:10px;}
     .sens-positive{color:var(--green);}.sens-negative{color:var(--red);}.sens-zero{color:var(--text-dim);}
-    .sens-current{background:rgba(58,139,60,0.10)!important;outline:2px solid var(--green);}
+    .sens-current{background:var(--surface2)!important;outline:2px solid var(--green);}
     .profit-gauge{margin-top:16px;padding:14px;background:var(--bg);border-radius:var(--r-md);border:2px solid var(--border);}
     .profit-gauge-label{font-family:var(--font-body);font-size:0.763rem;color:var(--text-dim);text-transform:none;letter-spacing:0;margin-bottom:6px;font-weight:700;}
     .profit-gauge-bar{height:8px;background:var(--border);border-radius:4px;position:relative;}
@@ -141,7 +141,7 @@
     .farm-total-label{font-family:var(--font-body);font-size:0.755rem;color:var(--text-dim);text-transform:none;letter-spacing:0;font-weight:700;}
     .farm-total-value{font-family:'JetBrains Mono',monospace;font-size:1.2rem;font-weight:700;}
     .action-bar{display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;}
-    .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:var(--r-md);font-family:'JetBrains Mono',monospace;font-size:0.795rem;font-weight:700;cursor:pointer;text-transform:uppercase;letter-spacing:.3px;transition:all 0.15s;border:2px solid var(--border);min-height:44px;}
+    .btn{display:inline-flex;align-items:center;gap:6px;padding:10px 18px;border-radius:var(--r-md);font-family:var(--font-body);font-size:0.795rem;font-weight:700;cursor:pointer;text-transform:none;letter-spacing:0;transition:all 0.15s;border:2px solid var(--border);min-height:44px;}
     .btn-primary{background:var(--btn-primary-bg);color:var(--btn-primary-ink);border-color:transparent;font-family:var(--font-body);font-size:var(--btn-fs);font-weight:700;text-transform:none;letter-spacing:0;border-radius:var(--btn-r)}
     .btn-primary:hover{filter:brightness(.94)}
     /* the shared secondary button (styles.css): body face, sentence case, 44px, gold on hover */
@@ -167,7 +167,7 @@
       .print-footer{display:block!important;text-align:center;margin-top:10px;padding-top:6px;border-top:1pt solid #999;font-size:6.5pt;color:#888!important;}
       .print-summary{display:grid!important;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;page-break-inside:avoid;}
       .print-stat{text-align:center;padding:6px 4px;border:1pt solid #ccc;border-radius:4px;}
-      .print-stat-label{font-size:6pt;text-transform:uppercase;letter-spacing:0.5px;color:#666;margin-bottom:2px;}
+      .print-stat-label{font-size:6pt;text-transform:none;letter-spacing:0;color:#666;margin-bottom:2px;}
       .print-stat-value{font-size:12pt;font-weight:700;}.print-stat-value.pos{color:#1a7a1a!important;}.print-stat-value.neg{color:#c41a1a!important;}
       main{max-width:100%!important;padding:0!important;}
       .grid-2{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;}
@@ -302,7 +302,7 @@
               <div class="input-wrap"><label style="font-size:0.787rem" for="land">Land Rent/Cost <button type="button" class="hint-icon" aria-expanded="false" aria-label="Show tips">?</button></label><input type="number" id="land" min="0" value="293" inputmode="numeric"><span class="ln-src" id="src-land" hidden></span>
               <button type="button" id="split-toggle" aria-expanded="false" style="margin-top:6px;background:none;border:none;color:var(--gold,#d4a23f);font-size:0.78rem;cursor:pointer;padding:4px 0;min-height:44px;text-decoration:underline;text-align:left">Split owned vs rented ground &rarr;</button>
               <div id="split-panel" hidden style="grid-column:1 / -1;background:var(--surface2,#1a1f18);border:1px solid var(--border);border-radius:var(--r-md);padding:.7rem .8rem;margin-top:4px">
-                <div style="font-size:0.76rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin-bottom:.5rem">Owned vs rented split <span style="text-transform:none;font-weight:400;letter-spacing:0">: blends your land cost by acres and shows a break-even for each</span></div>
+                <div style="font-size:0.76rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700;margin-bottom:.5rem">Owned vs rented split <span style="text-transform:none;font-weight:400;letter-spacing:0">: blends your land cost by acres and shows a break-even for each</span></div>
                 <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px">
                   <div class="input-wrap"><label style="font-size:0.76rem" for="rentAcres">Rented acres</label><input type="number" id="rentAcres" min="0" value="" placeholder="0" inputmode="numeric"></div>
                   <div class="input-wrap"><label style="font-size:0.76rem" for="rentRate">Cash rent ($/ac)</label><input type="number" id="rentRate" min="0" value="" placeholder="250" inputmode="numeric"></div>

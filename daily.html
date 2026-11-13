@@ -114,7 +114,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-today::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:var(--border-2);}
 
 .dv3-today-label{font-family:var(--font-body);font-size:0.76rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-dim);margin-bottom:.5rem;display:flex;align-items:center;gap:.5rem;flex-wrap:wrap;}
-.dv3-mood-pill{display:inline-flex;align-items:center;gap:.25rem;font-family:'JetBrains Mono',monospace;font-size:0.755rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.12rem .5rem;border-radius:3px;background:var(--surface);color:var(--gold);border:1px solid var(--border-2);}
+.dv3-mood-pill{display:inline-flex;align-items:center;gap:.25rem;font-family:var(--font-body);font-size:0.755rem;font-weight:700;letter-spacing:0;text-transform:none;padding:.12rem .5rem;border-radius:3px;background:var(--surface);color:var(--gold);border:1px solid var(--border-2);}
 .dv3-today-date{font-size:.82rem;color:var(--text-dim);margin-bottom:.75rem;}
 .dv3-today-headline{font-family:var(--font-display);font-size:1.55rem;font-weight:700;color:var(--text);line-height:1.2;margin:0 0 .5rem;letter-spacing:-.005em;}
 .dv3-today-sub{font-size:.9rem;font-weight:600;color:var(--gold);margin:0 0 .65rem;letter-spacing:.01em;}
@@ -125,7 +125,7 @@ body{overflow-x:hidden;overflow-x:clip;width:100%;}
 .dv3-ticker::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;}
 .dv3-ticker-cell{flex:0 0 auto;padding:.55rem .9rem;border-right:1px solid var(--border);font-family:'JetBrains Mono',monospace;min-width:108px;}
 .dv3-ticker-cell:last-child{border-right:none;}
-.dv3-ticker-label{font-size:0.755rem;color:var(--text-muted);letter-spacing:.1em;text-transform:uppercase;margin-bottom:.15rem;font-weight:700;}
+.dv3-ticker-label{font-size:0.755rem;color:var(--text-muted);letter-spacing:0;text-transform:none;margin-bottom:.15rem;font-weight:700;}
 .dv3-ticker-value{font-size:.92rem;font-weight:700;color:var(--text);line-height:1.1;margin-bottom:.12rem;}
 .dv3-ticker-change{font-size:0.775rem;font-weight:700;}
 .dv3-ticker-change.up{color:var(--green);}
@@ -258,7 +258,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 .dv3-otp-src{font-size:.74rem;color:var(--text-muted);}
 /* v4.3: cash-bids inline conversion footer (weekday only) */
 .dv3-cashbids-cta{display:flex;align-items:center;gap:.65rem;padding:.85rem 1.15rem;background:var(--surface);border:1px solid var(--border-2);border-radius:var(--r-md);margin:.85rem 0 .55rem;text-decoration:none;color:var(--text);transition:border-color .15s,background .15s;min-height:44px;}
-.dv3-cashbids-cta:hover{border-color:var(--green);background:rgba(74,171,76,.10);}
+.dv3-cashbids-cta:hover{border-color:var(--green);background:var(--surface2);}
 .dv3-cashbids-icon{font-size:1.1rem;flex-shrink:0;}
 .dv3-cashbids-text{font-size:.88rem;line-height:1.4;}
 .dv3-cashbids-text strong{color:var(--text);font-weight:700;}
@@ -273,7 +273,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 
 /* SPONSOR ATTRIBUTION — inline pill above headline */
 .dv3-spattr{display:inline-flex;align-items:center;gap:.35rem;font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:600;letter-spacing:.04em;color:var(--ad-orange);text-decoration:none;padding:.28rem .6rem;border:1px solid var(--border-2);border-radius:4px;background:var(--surface);margin:.4rem 0 .9rem;transition:border-color .15s,background .15s,color .15s;max-width:fit-content;}
-.dv3-spattr:hover{border-color:var(--ad-orange);background:rgba(var(--ad-orange-rgb),.10);color:var(--ad-orange);}
+.dv3-spattr:hover{border-color:var(--ad-orange);background:var(--surface2);color:var(--ad-orange);}
 .dv3-spattr--house{color:var(--text-muted);border-color:var(--border);}
 .dv3-spattr--house:hover{color:var(--ad-orange);border-color:rgba(var(--ad-orange-rgb),.4);}
 .dv3-spattr strong{color:var(--text);font-weight:700;}
@@ -364,7 +364,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 .dv3-arc-card-hl{font-size:.82rem;font-weight:600;color:var(--text);line-height:1.4;}
 .dv3-arc-viewall{font-size:0.77rem;color:var(--gold);font-weight:600;text-decoration:none;white-space:nowrap;display:inline-flex;align-items:center;min-height:40px;padding:0 .25rem;margin:-.6rem -.25rem;}
 .dv3-arc-more{margin:-1.25rem 0 2rem;}
-.dv3-arc-more a{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border:1px solid var(--border);border-radius:var(--r-md);font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gold);text-decoration:none;}
+.dv3-arc-more a{display:inline-flex;align-items:center;min-height:44px;padding:0 1rem;border:1px solid var(--border);border-radius:var(--r-md);font-family:var(--font-body);font-size:0.77rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--gold);text-decoration:none;}
 .dv3-arc-more a:hover{border-color:var(--gold);}
 
 /* Modal */
@@ -435,7 +435,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 .arc-search-clear.vis{display:block;}
 .arc-filter-wrap{display:flex;gap:.4rem;flex-wrap:wrap;}
 .arc-filter-btn{padding:.4rem .75rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);font-family:'JetBrains Mono',monospace;font-size:0.77rem;font-weight:700;color:var(--text-muted);cursor:pointer;transition:all .15s;white-space:nowrap;}
-.arc-filter-btn:hover,.arc-filter-btn.active{background:rgba(74,171,76,.05);border-color:var(--green);color:var(--green);}
+.arc-filter-btn:hover,.arc-filter-btn.active{background:var(--surface2);border-color:var(--green);color:var(--green);}
 /* light: green text on a green tint fell under 4.5:1; the green border marks the active month */
 [data-theme="light"] .arc-filter-btn:hover,[data-theme="light"] .arc-filter-btn.active{background:var(--surface);}
 
@@ -452,7 +452,7 @@ a.dv3-quote{color:inherit;text-decoration:none;}a.dv3-quote:hover .dv3-quote-nam
 
 /* Cards */
 .arc-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-md);padding:.85rem 1rem;text-decoration:none;display:block;transition:border-color .15s,background .15s;}
-.arc-card:hover{border-color:var(--gold);background:rgba(var(--gold-rgb),.02);}
+.arc-card:hover{border-color:var(--gold);background:var(--surface2);}
 /* Weekend cards read at full contrast; the muted Weekend badge is the only marker. */
 /* Head order is fixed: date, call dot, then the badge pushed to the right. */
 .arc-card-head{display:flex;align-items:center;margin-bottom:.4rem;gap:.5rem;}

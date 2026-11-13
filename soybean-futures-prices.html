@@ -98,10 +98,10 @@ html[data-theme="light"] .rat-gauge-labels em{opacity:.85}
 .rat-note{font-size:1rem;color:var(--text-dim);margin-top:8px;border-top:1px solid var(--border);padding-top:7px}.rat-note a{color:var(--gold);text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1px}
 .crush-zones{display:flex;flex-direction:column;gap:3px;margin:8px 0}
 .crush-zone{font-size:0.77rem;color:var(--text-dim);padding:4px 8px;border-radius:4px;border:1px solid transparent;transition:all .3s}.crush-zone.active{font-weight:700}
-.crush-zone.cz0.active{background:rgba(200,50,50,.15);border-color:var(--red);color:var(--red)}
-.crush-zone.cz1.active{background:rgba(200,150,0,.15);border-color:var(--gold);color:var(--gold)}
-.crush-zone.cz2.active{background:rgba(58,139,60,.15);border-color:var(--green);color:var(--green)}
-.crush-zone.cz3.active{background:rgba(58,139,60,.2);border-color:var(--green);color:var(--green)}
+.crush-zone.cz0.active{background:var(--surface2);border-color:var(--red);color:var(--red)}
+.crush-zone.cz1.active{background:var(--surface2);border-color:var(--gold);color:var(--gold)}
+.crush-zone.cz2.active{background:var(--surface2);border-color:var(--green);color:var(--green)}
+.crush-zone.cz3.active{background:var(--surface2);border-color:var(--green);color:var(--green)}
 .crush-sub{font-size:0.77rem;color:var(--text-dim);margin-top:4px}
 /* method-note fallback until the shared rule lands; :where() has zero specificity, so styles.css wins */
 :where(.method-note){font-size:.78rem;line-height:1.55;color:var(--text-dim);margin-top:.6rem}
@@ -417,7 +417,7 @@ details.fold[hidden]{display:none}
   <path d="M11.47 17.47 13 19l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L5 19l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
   <path d="M15.47 13.47 17 15l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L9 15l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" />
   <path d="M19.47 9.47 21 11l-1.53 1.53a3.5 3.5 0 0 1-4.94 0L13 11l1.53-1.53a3.5 3.5 0 0 1 4.94 0Z" /></symbol><symbol id="i-zap" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol></defs></svg>
-<style>.sc-rp{margin-top:8px;padding:9px 11px;border:1px solid var(--border,#2a3324);border-left:3px solid var(--brand,#d4a23f);border-radius:var(--r-md);background:rgba(212,162,63,.06);font-size:.82rem;line-height:1.5;color:var(--text-dim,#9bb0a3)}.sc-rp b,.sc-rp strong{color:var(--text,#e7ece8)}.sc-rp .rp-gap{font-weight:700}</style>
+<style>.sc-rp{margin-top:8px;padding:9px 11px;border:1px solid var(--border,#2a3324);border-left:3px solid var(--brand,#d4a23f);border-radius:var(--r-md);background:var(--surface2);font-size:.82rem;line-height:1.5;color:var(--text-dim,#9bb0a3)}.sc-rp b,.sc-rp strong{color:var(--text,#e7ece8)}.sc-rp .rp-gap{font-weight:700}</style>
 <main id="main" class="fut" tabindex="-1">
 <style>@media print{.ag-sponsor-ribbon{display:none!important}}</style>
   <nav class="bc" aria-label="Breadcrumb"><a href="/">Home</a> → Soybean prices</nav>

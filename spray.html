@@ -147,7 +147,7 @@ body {
   display: inline-flex; align-items: center; gap: .45rem;
   font-family:var(--font-body);
   font-size:0.77rem; font-weight: 700; letter-spacing:0; text-transform:none;
-  color:var(--text-dim); background: rgba(58,139,60,.06);
+  color:var(--text-dim); background: var(--surface2);
   border: 1px solid rgba(58,139,60,.18); border-radius: 3px;
   padding: .3rem .75rem; margin-bottom: .85rem;
 }
@@ -155,7 +155,7 @@ body {
   font-family:var(--font-display);
   font-size: clamp(1.8rem, 4vw, 3.2rem);
   font-weight: 700; line-height: 1.15; color: var(--text);
-  margin-bottom: .85rem; text-transform: uppercase; letter-spacing: .01em;
+  margin-bottom: .85rem; text-transform:none; letter-spacing:0;
 }
 .hero-title span { color: var(--green); }
 .hero-sub {
@@ -341,15 +341,15 @@ body {
 }
 .fcard-icon { font-size: 1rem; flex-shrink: 0; }
 .fchip {
-  font-family: 'JetBrains Mono', monospace;
-  font-size:0.755rem; font-weight: 700; letter-spacing: .06em; text-transform: uppercase;
+  font-family:var(--font-body);
+  font-size:0.755rem; font-weight: 700; letter-spacing:0; text-transform:none;
   padding: .18rem .5rem; border-radius: 3px;
   white-space: nowrap; flex-shrink: 0;
 }
-.fchip.good    { background: rgba(58,139,60,.10);  color: var(--green); }
-.fchip.marginal{ background: rgba(var(--gold-rgb),.10);  color: var(--gold); }
-.fchip.poor    { background: rgba(184,76,42,.10);   color: var(--red); }
-.fchip.frozen  { background: rgba(74,143,186,.10);  color: var(--blue); }
+.fchip.good    { background: var(--surface2);  color: var(--green); }
+.fchip.marginal{ background: var(--surface2);  color: var(--gold); }
+.fchip.poor    { background: var(--surface2);   color: var(--red); }
+.fchip.frozen  { background: var(--surface2);  color: var(--blue); }
 .fchip.na      { background: var(--surface2); color: var(--text-muted); }
 .fcard-val {
   font-family:var(--font-display); font-size: 1.9rem; font-weight: 700;
@@ -394,10 +394,10 @@ body {
   border: 2px solid var(--border); min-width: 58px; text-align: center;
   transition: border-color .15s;
 }
-.hr-item.good     { background: rgba(58,139,60,.05);  border-color: rgba(58,139,60,.22); }
-.hr-item.marginal { background: rgba(var(--gold-rgb),.05); border-color: rgba(var(--gold-rgb),.22); }
-.hr-item.poor     { background: rgba(184,76,42,.05);  border-color: rgba(184,76,42,.22); }
-.hr-item.frozen   { background: rgba(74,143,186,.05); border-color: rgba(74,143,186,.22); }
+.hr-item.good     { background: var(--surface2);  border-color: rgba(58,139,60,.22); }
+.hr-item.marginal { background: var(--surface2); border-color: rgba(var(--gold-rgb),.22); }
+.hr-item.poor     { background: var(--surface2);  border-color: rgba(184,76,42,.22); }
+.hr-item.frozen   { background: var(--surface2); border-color: rgba(74,143,186,.22); }
 .hr-time  { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; color: var(--text-muted); font-weight: 600; }
 .hr-icon  { font-size: 1rem; line-height: 1; }
 .hr-wind  { font-family: 'JetBrains Mono', monospace; font-size:0.775rem; color: var(--text-dim); font-weight: 600; }
@@ -406,10 +406,10 @@ body {
   font-size:0.755rem; font-weight: 700; letter-spacing: .04em;
   padding: .1rem .3rem; border-radius: 3px;
 }
-.hr-badge.good     { background: rgba(58,139,60,.12); color: var(--green); }
-.hr-badge.marginal { background: rgba(var(--gold-rgb),.12); color: var(--gold); }
-.hr-badge.poor     { background: rgba(184,76,42,.12);  color: var(--red); }
-.hr-badge.frozen   { background: rgba(74,143,186,.12); color: var(--blue); }
+.hr-badge.good     { background: var(--surface2); color: var(--green); }
+.hr-badge.marginal { background: var(--surface2); color: var(--gold); }
+.hr-badge.poor     { background: var(--surface2);  color: var(--red); }
+.hr-badge.frozen   { background: var(--surface2); color: var(--blue); }
 .window-legend {
   font-size:0.77rem; color: var(--text-muted); margin-top: .6rem; line-height: 1.5;
 }
@@ -442,10 +442,10 @@ body {
 }
 .edu-card-text  { font-size:1rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .7rem; overflow-wrap: break-word; }
 .edu-card-tip   { font-size:1rem; font-weight: 700; padding: .25rem .55rem; border-radius: 3px; display: inline-block; }
-.edu-card-tip-green  { background: rgba(62,207,110,.12); color: var(--green); }
-.edu-card-tip-gold   { background: rgba(230,176,66,.12); color: var(--gold); }
-.edu-card-tip-red    { background: rgba(240,96,96,.12); color: var(--red); }
-.edu-card-tip-blue   { background: rgba(91,163,224,.12); color: var(--blue); }
+.edu-card-tip-green  { background: var(--surface2); color: var(--green); }
+.edu-card-tip-gold   { background: var(--surface2); color: var(--gold); }
+.edu-card-tip-red    { background: var(--surface2); color: var(--red); }
+.edu-card-tip-blue   { background: var(--surface2); color: var(--blue); }
 
 .fcard-net { font-size:.78rem; line-height:1.45; color:var(--text-dim); margin:.45rem 0 0; }
 .fcard-net a { color:var(--gold); font-weight:600; }
@@ -476,9 +476,9 @@ body {
   flex-wrap: wrap; gap: .25rem;
   min-width: 0;
 }
-.inv-layer-warm  { background: rgba(200,122,40,.08); border: 1px solid rgba(200,122,40,.2); margin-bottom: .3rem; }
-.inv-layer-cool  { background: rgba(74,143,186,.08); border: 1px solid rgba(74,143,186,.2); border-top: none; border-bottom: none; padding: 1rem .75rem; margin-bottom: .3rem; }
-.inv-layer-ground{ background: rgba(58,139,60,.08); border: 1px solid rgba(58,139,60,.2); }
+.inv-layer-warm  { background: var(--surface2); border: 1px solid rgba(200,122,40,.2); margin-bottom: .3rem; }
+.inv-layer-cool  { background: var(--surface2); border: 1px solid rgba(74,143,186,.2); border-top: none; border-bottom: none; padding: 1rem .75rem; margin-bottom: .3rem; }
+.inv-layer-ground{ background: var(--surface2); border: 1px solid rgba(58,139,60,.2); }
 .inv-layer-label { font-size:0.78rem; font-weight: 700; }
 .inv-layer-label-warm  { color: var(--orange); }
 .inv-layer-label-cool  { color: var(--blue); }
@@ -500,7 +500,7 @@ body {
 .inv-detect-text strong { color: var(--text); }
 .inv-warning {
   margin-top: .85rem; padding: .65rem .85rem;
-  background: rgba(184,76,42,.06); border: 1px solid rgba(184,76,42,.18);
+  background: var(--surface2); border: 1px solid rgba(184,76,42,.18);
   border-radius: var(--r-sm, 4px); font-size:0.795rem; color: var(--text-dim); line-height: 1.6;
 }
 .inv-warning-label { color: var(--red); }
@@ -538,15 +538,15 @@ body {
   font-family: 'JetBrains Mono', monospace;
   font-size: 1rem; font-weight: 800; flex-shrink: 0;
 }
-.mix-num-1 { background: rgba(74,143,186,.10); color: var(--blue); }
-.mix-num-2 { background: rgba(var(--gold-rgb),.10); color: var(--gold); }
-.mix-num-3 { background: rgba(159,122,234,.10); color: #9f7aea; }
-.mix-num-4 { background: rgba(200,122,40,.10); color: var(--orange); }
-.mix-num-5 { background: rgba(58,139,60,.10); color: var(--green); }
-.mix-num-6 { background: rgba(184,76,42,.10); color: var(--red); }
-.mix-num-7 { background: rgba(74,143,186,.10); color: var(--blue); }
-.mix-num-8 { background: rgba(var(--gold-rgb),.10); color: var(--gold); }
-.mix-num-9 { background: rgba(58,139,60,.10); color: var(--green); }
+.mix-num-1 { background: var(--surface2); color: var(--blue); }
+.mix-num-2 { background: var(--surface2); color: var(--gold); }
+.mix-num-3 { background: var(--surface2); color: #9f7aea; }
+.mix-num-4 { background: var(--surface2); color: var(--orange); }
+.mix-num-5 { background: var(--surface2); color: var(--green); }
+.mix-num-6 { background: var(--surface2); color: var(--red); }
+.mix-num-7 { background: var(--surface2); color: var(--blue); }
+.mix-num-8 { background: var(--surface2); color: var(--gold); }
+.mix-num-9 { background: var(--surface2); color: var(--green); }
 .mix-step-name { font-size: .85rem; font-weight: 700; color: var(--text); margin-bottom: .25rem; }
 .mix-step-what { font-size:0.795rem; color: var(--text-dim); line-height: 1.65; margin-bottom: .35rem; overflow-wrap: break-word; }
 .mix-step-why  { font-size:0.78rem; color: var(--text-muted); line-height: 1.55;  }
@@ -562,12 +562,12 @@ body {
 }
 .mix-tip-title { font-weight: 700; margin-bottom: .25rem; }
 .mix-tip-do {
-  background: rgba(58,139,60,.05); border: 1px solid rgba(58,139,60,.18);
+  background: var(--surface2); border: 1px solid rgba(58,139,60,.18);
   color: var(--text-dim);
 }
 .mix-tip-do .mix-tip-title { color: var(--green); }
 .mix-tip-dont {
-  background: rgba(184,76,42,.05); border: 1px solid rgba(184,76,42,.18);
+  background: var(--surface2); border: 1px solid rgba(184,76,42,.18);
   color: var(--text-dim);
 }
 .mix-tip-dont .mix-tip-title { color: var(--red); }
@@ -617,9 +617,9 @@ body {
 }
 .nozzle-table th {
   text-align: left;
-  font-family: 'JetBrains Mono', monospace;
+  font-family:var(--font-body);
   font-size:0.755rem; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
+  letter-spacing:0; text-transform:none;
   color: var(--text-muted); padding: .55rem .65rem;
   border-bottom: 2px solid var(--border); white-space: nowrap;
 }
@@ -635,9 +635,9 @@ body {
   font-size:0.755rem; font-weight: 700;
   padding: .15rem .4rem; border-radius: 3px; white-space: nowrap;
 }
-.nt-badge.low  { background: rgba(58,139,60,.10); color: var(--green); }
-.nt-badge.med  { background: rgba(var(--gold-rgb),.10); color: var(--gold); }
-.nt-badge.high { background: rgba(184,76,42,.10);  color: var(--red); }
+.nt-badge.low  { background: var(--surface2); color: var(--green); }
+.nt-badge.med  { background: var(--surface2); color: var(--gold); }
+.nt-badge.high { background: var(--surface2);  color: var(--red); }
 .nozzle-table-note {
   font-size:1rem; color: var(--text-muted); margin-top: .65rem; line-height: 1.6;
 }
@@ -671,10 +671,10 @@ body {
   border-radius: var(--r-sm, 4px); padding: 1rem; margin-bottom: .7rem;
   border: 2px solid var(--border);
 }
-.rec.good    { background: rgba(58,139,60,.05);  border-color: rgba(58,139,60,.22); }
-.rec.marginal{ background: rgba(var(--gold-rgb),.05); border-color: rgba(var(--gold-rgb),.22); }
-.rec.poor    { background: rgba(184,76,42,.05);  border-color: rgba(184,76,42,.22); }
-.rec.frozen  { background: rgba(74,143,186,.05); border-color: rgba(74,143,186,.22); }
+.rec.good    { background: var(--surface2);  border-color: rgba(58,139,60,.22); }
+.rec.marginal{ background: var(--surface2); border-color: rgba(var(--gold-rgb),.22); }
+.rec.poor    { background: var(--surface2);  border-color: rgba(184,76,42,.22); }
+.rec.frozen  { background: var(--surface2); border-color: rgba(74,143,186,.22); }
 .rec-h { font-size: .9rem; font-weight: 700; margin-bottom: .45rem; }
 .rec-h.good    { color: var(--green); }
 .rec-h.marginal{ color: var(--gold); }
@@ -706,10 +706,10 @@ body {
   font-size:0.755rem; font-weight: 700; padding: .12rem .3rem;
   border-radius: 3px; letter-spacing: .03em;
 }
-.day-rating.good    { background: rgba(58,139,60,.10); color: var(--green); }
-.day-rating.marginal{ background: rgba(var(--gold-rgb),.10); color: var(--gold); }
-.day-rating.poor    { background: rgba(184,76,42,.10);  color: var(--red); }
-.day-rating.frozen  { background: rgba(74,143,186,.10); color: var(--blue); }
+.day-rating.good    { background: var(--surface2); color: var(--green); }
+.day-rating.marginal{ background: var(--surface2); color: var(--gold); }
+.day-rating.poor    { background: var(--surface2);  color: var(--red); }
+.day-rating.frozen  { background: var(--surface2); color: var(--blue); }
 
 /* ── Pre-Spray Checklist ─────────────────────────────────────────── */
 .checklist-item {
@@ -945,16 +945,16 @@ details.fold>summary>.nozzle-card-head{font-size:1rem}
 <style>
 h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head,h3.s-card-title,h3.sc-title{margin:0;font-size:inherit;font-weight:inherit;line-height:inherit;}
 .zip-in,.spray-zip-input{font-size:1rem!important;}
-.dicamba-box{background:rgba(240,96,96,.07);border:1.5px solid rgba(240,96,96,.3);border-radius:var(--r-lg);padding:1.4rem 1.5rem;margin-bottom:1.5rem}
+.dicamba-box{background:var(--surface2);border:1.5px solid rgba(240,96,96,.3);border-radius:var(--r-lg);padding:1.4rem 1.5rem;margin-bottom:1.5rem}
 .dicamba-box-head{font-size:0.78rem;font-weight:800;letter-spacing:0;text-transform:none;color:var(--red);margin-bottom:.8rem;display:flex;align-items:center;gap:.45rem}
 .dicamba-rules{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:.7rem}
 @media(max-width:600px){.dicamba-rules{grid-template-columns:minmax(0,1fr)}}
-.dicamba-rule{background:rgba(240,96,96,.06);border:1px solid rgba(240,96,96,.15);border-radius:var(--r-md);padding:.7rem .85rem;font-size:.8rem;line-height:1.6;color:var(--text-dim)}
+.dicamba-rule{background:var(--surface2);border:1px solid rgba(240,96,96,.15);border-radius:var(--r-md);padding:.7rem .85rem;font-size:.8rem;line-height:1.6;color:var(--text-dim)}
 .dicamba-rule strong{color:var(--text);display:block;margin-bottom:.15rem}
 .rfp-table-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;border-radius:var(--r-lg);border:1px solid var(--border);margin-bottom:1.5rem;max-width:100%}
 .rfp-table{width:100%;border-collapse:collapse;font-size:0.797rem}
-.rfp-table thead tr{background:rgba(58,139,60,.12)}
-.rfp-table th{padding:.65rem .85rem;text-align:left;font-size:0.765rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);white-space:nowrap}
+.rfp-table thead tr{background:var(--surface2)}
+.rfp-table th{padding:.65rem .85rem;text-align:left;font-size:0.765rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);white-space:nowrap}
 .rfp-table td{padding:.6rem .85rem;border-top:1px solid var(--border);color:var(--text-dim);vertical-align:top}
 .rfp-table td:first-child{color:var(--text);font-weight:600}
 .rfp-table td:nth-child(2),.rfp-table td:nth-child(3){white-space:nowrap;width:1%}
@@ -971,10 +971,10 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
 .season-card-title{font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:.4rem}
 .season-card-body{font-size:0.795rem;color:var(--text-dim);line-height:1.65}
 .season-card-tag{display:inline-block;margin-top:.5rem;padding:.15rem .55rem;border-radius:var(--r-lg);font-size:0.76rem;font-weight:700;letter-spacing:.06em}
-.tag-pre{background:rgba(91,163,224,.15);color:var(--blue)}
-.tag-post{background:rgba(62,207,110,.15);color:var(--green)}
-.tag-fung{background:rgba(230,176,66,.15);color:var(--gold)}
-.tag-burn{background:rgba(240,96,96,.15);color:var(--red)}
+.tag-pre{background:var(--surface2);color:var(--blue)}
+.tag-post{background:var(--surface2);color:var(--green)}
+.tag-fung{background:var(--surface2);color:var(--gold)}
+.tag-burn{background:var(--surface2);color:var(--red)}
 .faq-section{margin-bottom:2rem}
 .faq-list{display:flex;flex-direction:column;gap:.6rem}
 .faq-item{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-lg);overflow:hidden}
@@ -1210,7 +1210,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   <p class="static-brief" style="font-size:.85rem;color:var(--text-dim);line-height:1.7;margin:.9rem auto 0;padding:0 1.5rem;max-width:1200px">Extension guidance is to spray in a 3&ndash;10 mph wind, under about 85&deg;F and above about 40% relative humidity; your product label's limits come first. Winds under 3 mph signal possible thermal inversion: fine droplets can ride stable air off-target for miles. Over 10&ndash;15 mph, mechanical drift takes over. Mid-morning, after overnight inversions break and dew dries, is usually the safest window. Dicamba and 2,4-D ester can also volatilize off the leaf for hours once temperatures pass about 85&deg;F. Always confirm the wind, temperature, and buffer limits on your product label before spraying.</p>
   <div class="pg">
     <div>
-      <div id="factor-section" style="display:none"><div class="s-card" id="product-tune" style="margin-bottom:1rem"><div class="s-card-title">Tune to Your Product (optional)</div><label style="display:flex;flex-direction:column;gap:.3rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Herbicide / product<select id="in-product" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="general" selected>General guidance (no product)</option><option value="enlist">Enlist One / Enlist Duo (2,4-D choline)</option><option value="dicamba">Engenia / Stryax / Tavium (dicamba OTT)</option><option value="glyphosate">Glyphosate (Roundup PowerMAX, etc.)</option><option value="24d_ester">2,4-D / 2,4-D ester (generic Group 4)</option><option value="contact">Contact products (Liberty, Cobra, Gramoxone)</option></select></label><label id="state-wrap" style="display:none;flex-direction:column;gap:.3rem;margin-top:.6rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">State dicamba rules<select id="in-state" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="">Label only (no stricter state rule)</option><option value="MN">Minnesota: over 85&deg;F, no; June 12 / June 30 cutoffs</option><option value="IL">Illinois: over 85&deg;F, no; June 20 cutoff</option></select></label><div id="product-note" style="font-size:1rem;color:var(--text-dim);line-height:1.6;margin-top:.5rem;display:none"></div><div style="font-size:0.76rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem"><strong>The label is the law.</strong> These thresholds reflect federal label guidance and may be outdated or superseded by your state’s rules and your product’s current label. State restrictions are often stricter. Always read and follow the actual label and check Bulletins Live! Two before applying.</div></div>
+      <div id="factor-section" style="display:none"><div class="s-card" id="product-tune" style="margin-bottom:1rem"><div class="s-card-title">Tune to Your Product (optional)</div><label style="display:flex;flex-direction:column;gap:.3rem;font-size:0.765rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700">Herbicide / product<select id="in-product" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="general" selected>General guidance (no product)</option><option value="enlist">Enlist One / Enlist Duo (2,4-D choline)</option><option value="dicamba">Engenia / Stryax / Tavium (dicamba OTT)</option><option value="glyphosate">Glyphosate (Roundup PowerMAX, etc.)</option><option value="24d_ester">2,4-D / 2,4-D ester (generic Group 4)</option><option value="contact">Contact products (Liberty, Cobra, Gramoxone)</option></select></label><label id="state-wrap" style="display:none;flex-direction:column;gap:.3rem;margin-top:.6rem;font-size:0.765rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700">State dicamba rules<select id="in-state" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:.9rem;min-height:44px;width:100%;box-sizing:border-box"><option value="">Label only (no stricter state rule)</option><option value="MN">Minnesota: over 85&deg;F, no; June 12 / June 30 cutoffs</option><option value="IL">Illinois: over 85&deg;F, no; June 20 cutoff</option></select></label><div id="product-note" style="font-size:1rem;color:var(--text-dim);line-height:1.6;margin-top:.5rem;display:none"></div><div style="font-size:0.76rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem"><strong>The label is the law.</strong> These thresholds reflect federal label guidance and may be outdated or superseded by your state’s rules and your product’s current label. State restrictions are often stricter. Always read and follow the actual label and check Bulletins Live! Two before applying.</div></div>
         <div class="section-bar" id="section-conditions">
           <div class="section-label">Factor Breakdown</div>
           <button class="section-link" id="btn-change-loc" style="min-height:44px;">Change location</button>
@@ -1354,7 +1354,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   .smc-kpi .v small{font-size:0.775rem;color:var(--c-mut);font-weight:400;}
   .smc-kpi .sub{font-size:0.77rem;color:var(--c-mut);margin-top:.15rem;}
   .smc-tbl{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:.5rem;}
-  .smc-tbl th{text-align:left;font-size:0.77rem;text-transform:uppercase;letter-spacing:.03em;color:var(--c-mut);font-weight:700;padding:.3rem .3rem;border-bottom:1px solid var(--c-line);}
+  .smc-tbl th{text-align:left;font-size:0.77rem;text-transform:none;letter-spacing:0;color:var(--c-mut);font-weight:700;padding:.3rem .3rem;border-bottom:1px solid var(--c-line);}
   .smc-tbl th.r,.smc-tbl td.r{text-align:right;}
   .smc-tbl td{padding:.5rem .3rem;border-bottom:1px solid var(--c-line);vertical-align:top;}
   .smc-tbl tr:last-child td{border-bottom:none;}
@@ -1372,7 +1372,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
   .smc-acts{display:flex;gap:.5rem;margin-top:.9rem;}
   .smc-acts button{flex:1;min-height:46px;border:1px solid var(--c-line);background:var(--c-panel);color:var(--c-txt);border-radius:var(--r-lg);font-weight:700;font-size:.9rem;cursor:pointer;font-family:inherit;}
   .smc-acts button:hover{border-color:var(--c-green);color:var(--c-green);}
-  .smc-warn{display:none;font-size:.82rem;color:var(--c-warn);background:rgba(217,83,79,.1);border:1px solid rgba(217,83,79,.3);border-radius:var(--r-lg);padding:.5rem .7rem;margin-top:.7rem;}
+  .smc-warn{display:none;font-size:.82rem;color:var(--c-warn);background:var(--surface2);border:1px solid rgba(217,83,79,.3);border-radius:var(--r-lg);padding:.5rem .7rem;margin-top:.7rem;}
   .smc-warn.show{display:block;}
   .smc-note{font-size:1rem;color:var(--c-mut);line-height:1.45;margin-top:.8rem;}
   .smc-note b{color:var(--c-txt);}
@@ -1885,9 +1885,9 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
         <div id="tg-text">Below freezing: urease works very slowly, so loss starts slowly, but Montana State trials still averaged 18% and up to 44% loss from urea broadcast between October and April. Risk score is capped at 8. NBPT still helps; runoff on slopes is a second concern.</div>
       </div>
       <div id="u-factor-section" style="display:none">
-        <div class="s-card" id="field-tune" style="margin-bottom:1rem"><div class="s-card-title">Tune to Your Field (optional)</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:.6rem"><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil pH<select id="in-ph" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / 6.5–7.0</option><option value="0.7">Acidic (under 6.0)</option><option value="0.85">Slightly acidic (6.0–6.5)</option><option value="1.25">Neutral–alkaline (7.0–7.5)</option><option value="1.55">Alkaline (over 7.5)</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Tillage / residue<select id="in-till" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / reduced-till</option><option value="0.7">Conventional (bare, tilled)</option><option value="1.5">No-till / heavy residue</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil temp °F (optional)<input type="number" id="in-soil" inputmode="numeric" placeholder="uses air temp" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.06em;font-weight:700">Soil surface now<select id="in-surf" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="" selected>Not picked (the forecast has no soil moisture)</option><option value="dry">Dry: a granule would not dissolve</option><option value="moist">Moist soil or heavy dew</option><option value="wet">Wet, or snow on it</option></select></label></div><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem">These refine the score for your field. Soil pH and residue are the two biggest levers in the volatilization science. A soil-surface probe reading, if you have one, overrides the air-temperature estimate. What you see on the surface overrides the forecast&rsquo;s soil moisture.</div></div>
+        <div class="s-card" id="field-tune" style="margin-bottom:1rem"><div class="s-card-title">Tune to Your Field (optional)</div><div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,210px),1fr));gap:.6rem"><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700">Soil pH<select id="in-ph" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / 6.5–7.0</option><option value="0.7">Acidic (under 6.0)</option><option value="0.85">Slightly acidic (6.0–6.5)</option><option value="1.25">Neutral–alkaline (7.0–7.5)</option><option value="1.55">Alkaline (over 7.5)</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700">Tillage / residue<select id="in-till" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="1.0" selected>Not sure / reduced-till</option><option value="0.7">Conventional (bare, tilled)</option><option value="1.5">No-till / heavy residue</option></select></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700">Soil temp °F (optional)<input type="number" id="in-soil" inputmode="numeric" placeholder="uses air temp" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"></label><label style="display:flex;flex-direction:column;gap:.25rem;font-size:0.765rem;color:var(--text-muted);text-transform:none;letter-spacing:0;font-weight:700">Soil surface now<select id="in-surf" style="padding:.5rem;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-md);color:var(--text);font-size:max(16px,.9rem);min-height:44px;width:100%;box-sizing:border-box"><option value="" selected>Not picked (the forecast has no soil moisture)</option><option value="dry">Dry: a granule would not dissolve</option><option value="moist">Moist soil or heavy dew</option><option value="wet">Wet, or snow on it</option></select></label></div><div style="font-size:0.765rem;color:var(--text-muted);line-height:1.5;margin-top:.5rem">These refine the score for your field. Soil pH and residue are the two biggest levers in the volatilization science. A soil-surface probe reading, if you have one, overrides the air-temperature estimate. What you see on the surface overrides the forecast&rsquo;s soil moisture.</div></div>
         <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.9rem">
-          <div style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--text-muted)">Risk factor breakdown</div>
+          <div style="font-size:0.77rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted)">Risk factor breakdown</div>
           <button id="u-btn-change-loc" style="font-size:0.78rem;color:var(--text-muted);background:none;border:none;text-decoration:underline;cursor:pointer;min-height:44px">Change location</button>
         </div>
         <div class="factors-grid">
@@ -1968,7 +1968,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
       <div class="edu-section fade-up" id="edu1">
         <h2 class="edu-head">Why urea volatilizes</h2>
         <div class="chem-box">
-          <div style="font-size:0.775rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text-muted);margin-bottom:.85rem">The volatilization reaction</div>
+          <div style="font-size:0.775rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--text-muted);margin-bottom:.85rem">The volatilization reaction</div>
           <div class="chem-eq">
             <span class="molecule">CO(NH₂)₂</span>
             <span class="arrow">+ H₂O</span>
@@ -1987,15 +1987,15 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
           <div class="chem-note">Urease enzyme, present in soil and especially in crop residue, converts urea to ammonia. At the soil surface, that ammonia gas escapes into the air rather than converting to plant-available ammonium (NH₄⁺).</div>
         </div>
         <div class="edu-grid">
-          <div class="edu-card"><div class="edu-card-title">Temperature</div><div class="edu-card-text">Urease works faster as soil warms. Montana State lists soil above 50°F as a high-risk condition (Soil Scoop) and above 70°F in its volatilization guide (EB0209, updated 2020). The warmer it is, the less time you have to get rain or tillage on it. Cold weather helps, but below freezing urease only slows down. It does not stop. Urea broadcast between October and April averaged 18% and up to 44% loss in Montana State trials.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">Higher as soil warms</div></div>
-          <div class="edu-card"><div class="edu-card-title">Moisture</div><div class="edu-card-text">The worst case in Montana State's trials: urea spread on a wet or snowy surface that then dries slowly with little or no rain (30 to 44% of the N lost). Light rain under about 1/4 inch is also risky: enough to dissolve the granule and start the enzyme, not enough to move N below the surface.</div><div class="edu-card-risk" style="background:rgba(230,176,66,.12);color:var(--risk-mod)">¼” rain without ½” = worst case</div></div>
-          <div class="edu-card"><div class="edu-card-title">Wind</div><div class="edu-card-text">Ammonia gas builds up in a thin layer above the soil surface. Wind continuously removes that layer, maintaining the concentration gradient that pulls more N from the soil into the air. Even light winds of 3–5 mph keep volatilization moving at full speed.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">Amplifies all other risk factors</div></div>
-          <div class="edu-card"><div class="edu-card-title">Soil pH</div><div class="edu-card-text">Alkaline soils (pH 7+) favor ammonia gas over the stable, plant-available ammonium ion. At pH 7.5, extension trials commonly report losses of 30–50% of surface-applied urea in warm, moist conditions.</div><div class="edu-card-risk" style="background:rgba(240,96,96,.12);color:var(--risk-extreme)">pH 7.5+ = extreme background risk</div></div>
-          <div class="edu-card"><div class="edu-card-title">Crop Residue</div><div class="edu-card-text">Urea granules sitting on stalk fragments or leaf litter are in direct contact with residue urease and never reach soil. Montana State puts the water needed to move urea off residue at about 1.5 in within two days, against 0.5 in on bare or tilled soil.</div><div class="edu-card-risk" style="background:rgba(240,145,58,.12);color:var(--risk-high)">No-till: assume higher risk</div></div>
-          <div class="edu-card"><div class="edu-card-title">The two to three week window</div><div class="edu-card-text">Most volatilization from urea runs over the two to three weeks after application (Montana State EB0209), faster when it is warm and the surface is moist. Manitoba Agriculture reports losses measured over 5 and 7 days. A dry spell after spreading is not a safe spell: the first rain or heavy dew that wets the granules without moving them in starts the loss.</div><div class="edu-card-risk" style="background:rgba(230,176,66,.12);color:var(--risk-mod)">Two to three weeks of exposure</div></div>
+          <div class="edu-card"><div class="edu-card-title">Temperature</div><div class="edu-card-text">Urease works faster as soil warms. Montana State lists soil above 50°F as a high-risk condition (Soil Scoop) and above 70°F in its volatilization guide (EB0209, updated 2020). The warmer it is, the less time you have to get rain or tillage on it. Cold weather helps, but below freezing urease only slows down. It does not stop. Urea broadcast between October and April averaged 18% and up to 44% loss in Montana State trials.</div><div class="edu-card-risk" style="background:var(--surface2);color:var(--risk-high)">Higher as soil warms</div></div>
+          <div class="edu-card"><div class="edu-card-title">Moisture</div><div class="edu-card-text">The worst case in Montana State's trials: urea spread on a wet or snowy surface that then dries slowly with little or no rain (30 to 44% of the N lost). Light rain under about 1/4 inch is also risky: enough to dissolve the granule and start the enzyme, not enough to move N below the surface.</div><div class="edu-card-risk" style="background:var(--surface2);color:var(--risk-mod)">¼” rain without ½” = worst case</div></div>
+          <div class="edu-card"><div class="edu-card-title">Wind</div><div class="edu-card-text">Ammonia gas builds up in a thin layer above the soil surface. Wind continuously removes that layer, maintaining the concentration gradient that pulls more N from the soil into the air. Even light winds of 3–5 mph keep volatilization moving at full speed.</div><div class="edu-card-risk" style="background:var(--surface2);color:var(--risk-high)">Amplifies all other risk factors</div></div>
+          <div class="edu-card"><div class="edu-card-title">Soil pH</div><div class="edu-card-text">Alkaline soils (pH 7+) favor ammonia gas over the stable, plant-available ammonium ion. At pH 7.5, extension trials commonly report losses of 30–50% of surface-applied urea in warm, moist conditions.</div><div class="edu-card-risk" style="background:var(--surface2);color:var(--risk-extreme)">pH 7.5+ = extreme background risk</div></div>
+          <div class="edu-card"><div class="edu-card-title">Crop Residue</div><div class="edu-card-text">Urea granules sitting on stalk fragments or leaf litter are in direct contact with residue urease and never reach soil. Montana State puts the water needed to move urea off residue at about 1.5 in within two days, against 0.5 in on bare or tilled soil.</div><div class="edu-card-risk" style="background:var(--surface2);color:var(--risk-high)">No-till: assume higher risk</div></div>
+          <div class="edu-card"><div class="edu-card-title">The two to three week window</div><div class="edu-card-text">Most volatilization from urea runs over the two to three weeks after application (Montana State EB0209), faster when it is warm and the surface is moist. Manitoba Agriculture reports losses measured over 5 and 7 days. A dry spell after spreading is not a safe spell: the first rain or heavy dew that wets the granules without moving them in starts the loss.</div><div class="edu-card-risk" style="background:var(--surface2);color:var(--risk-mod)">Two to three weeks of exposure</div></div>
         </div>
         <div style="background:var(--surface);border:1px solid var(--border);border-radius:var(--card-r);padding:1.5rem;margin-bottom:1.5rem">
-          <h3 style="font-size:0.77rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--orange);margin-bottom:.85rem">NBPT urease inhibitor: what it does</h3>
+          <h3 style="font-size:0.77rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--orange);margin-bottom:.85rem">NBPT urease inhibitor: what it does</h3>
           <div class="stab-grid">
             <div>
               <div style="font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:.5rem">What NBPT Does</div>
@@ -2006,7 +2006,7 @@ h2.edu-title,h2.dicamba-box-head,h2.window-head,h3.inv-title,h3.nozzle-card-head
               <div style="font-size:.83rem;color:var(--text-dim);line-height:1.75">Montana State's guide names no-till residue, soil above pH 7.0 and no incorporation rain as the conditions where NBPT matters most (C. Jones, EB0209, updated June 2020). Get a quote for the product and rate you would use. Divide it by what your N costs a pound. The answer is how many pounds of N it has to save an acre.</div>
             </div>
           </div>
-          <div style="margin-top:1.1rem;padding:.8rem 1rem;background:rgba(62,207,110,.06);border:1px solid rgba(62,207,110,.15);border-radius:var(--r-md);font-size:.82rem;color:var(--text-dim);line-height:1.65">
+          <div style="margin-top:1.1rem;padding:.8rem 1rem;background:var(--surface2);border:1px solid rgba(62,207,110,.15);border-radius:var(--r-md);font-size:.82rem;color:var(--text-dim);line-height:1.65">
             You will not need it on every load; use the score to decide which ones.
           </div>
         </div>

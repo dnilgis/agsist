@@ -100,9 +100,9 @@
     .read-note { margin-top: 16px; padding: 12px; background: var(--bg); border-radius:var(--r-md); border-left: 3px solid var(--green); font-size:1rem; color: var(--text-dim); }
     .read-note strong { color: var(--text); }
     .ref-table { width: 100%; border-collapse: collapse; font-family: 'JetBrains Mono', monospace; font-size:0.78rem; }
-    .ref-table th { background: var(--bg); padding: 7px 8px; text-align: center; color: var(--text-dim); font-size:0.755rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; border: 1px solid var(--border); }
+    .ref-table th { background: var(--bg); padding: 7px 8px; text-align: center; color: var(--text-dim); font-size:0.755rem; font-weight: 700; text-transform:none; letter-spacing:0; border: 1px solid var(--border); }
     .ref-table td { padding: 7px 8px; text-align: center; border: 1px solid var(--border); }
-    .ref-table tr:hover td { background: rgba(58,139,60,0.04); }
+    .ref-table tr:hover td { background: var(--surface2); }
     .ref-table .hl { color: var(--gold); font-weight: 700; }
     /* v2: volume details collapse toggle */
     .vol-toggle { font-family: 'JetBrains Mono', monospace; font-size:0.755rem; color: var(--text-dim); cursor: pointer; background: none; border: none; padding: 2px 0; margin-bottom: 4px; text-decoration: underline dotted; }
@@ -620,7 +620,7 @@
     #print-record-wrap .pr-sub{font-size:9pt;color:#444;margin:0 0 14pt}
     #print-record-wrap table{width:100%;border-collapse:collapse;margin:0 0 12pt}
     #print-record-wrap th,#print-record-wrap td{text-align:left;padding:4pt 6pt;border-bottom:1px solid #bbb;font-size:10.5pt}
-    #print-record-wrap th{font-family:'Courier New',monospace;font-size:8.5pt;letter-spacing:.1em;text-transform:uppercase;color:#555}
+    #print-record-wrap th{font-family:'Courier New',monospace;font-size:8.5pt;letter-spacing:0;text-transform:none;color:#555}
     #print-record-wrap .pr-big{font-size:14pt;font-weight:700}
     #print-record-wrap .pr-note{font-size:8.5pt;color:#555;margin-top:10pt;border-top:1px solid #bbb;padding-top:6pt}
   }

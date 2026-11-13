@@ -72,7 +72,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     .hm-hist .he-tw{max-height:28rem;overflow-y:auto;padding:0 .6rem .4rem}
     .hm-hist table{width:100%;border-collapse:collapse;font-size:.9rem}
     .hm-hist th,.hm-hist td{border-bottom:1px solid var(--border,rgba(132,160,168,.12));padding:0 .5rem;text-align:left}
-    .hm-hist th{font-family:'JetBrains Mono',monospace;font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim,#8a948f);height:36px;position:sticky;top:0;background:var(--surface,#101415)}
+    .hm-hist th{font-family:var(--font-body);font-size:.78rem;letter-spacing:0;text-transform:none;color:var(--text-dim,#8a948f);height:36px;position:sticky;top:0;background:var(--surface,#101415)}
     .hm-hist td{height:44px}
     .hm-hist td.num,.hm-hist th.num{text-align:right;font-family:'JetBrains Mono',monospace}
     .hm-hist td a{color:var(--brand,#d4a23f);text-decoration:none;display:inline-block;min-height:40px;line-height:40px;white-space:nowrap}
@@ -92,7 +92,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     .hm-warnbtn{min-height:44px;background:none;border:1px solid var(--border,rgba(132,160,168,.25));border-radius:var(--r-md);color:var(--text-dim,#8a948f);font-family:'JetBrains Mono',monospace;font-size:0.785rem;font-weight:700;cursor:pointer;padding:.35rem .7rem}
     .hm-warnbtn.hot{border-color:#e31a1c;color:#ff6b61;position:relative}
     .hm-warnbtn.hot::before{content:"";display:inline-block;width:7px;height:7px;border-radius:50%;background:#e31a1c;margin-right:.45rem;}
-    .hm-warnbtn[aria-pressed="true"]{background:rgba(227,26,28,.12)}
+    .hm-warnbtn[aria-pressed="true"]{background:var(--surface2)}
     .hm-livebar-note{flex:1 1 auto;font-size:1rem;color:var(--text-dim,#8a948f);font-family:var(--font-body,'Inter',system-ui,sans-serif);line-height:1.5}
     .hm-zoomstorms{background:none;border:none;color:var(--brand,#d4a23f);text-decoration:underline;cursor:pointer;font:inherit;padding:0}
     .hm-mesh-date{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:.86rem;min-width:9ch;text-align:center}
@@ -141,7 +141,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     .hm-verdict{margin:0 0 .7rem;padding:.6rem .75rem;border-radius:var(--r-md);font-size:.9rem;line-height:1.5;border:1px solid var(--border,rgba(132,160,168,.2))}
     .hm-yearline{margin:0 0 .5rem;font-size:1rem;line-height:1.5;color:var(--text,#e6ebe9)}
     .hm-vlab{display:block;font-family:var(--font-body);font-size:.72rem;letter-spacing:0;text-transform:none;color:var(--text-dim,#8a948f);margin-bottom:.15rem}
-    .hm-verdict.hit{border-color:rgba(227,26,28,.45);background:rgba(227,26,28,.07)}
+    .hm-verdict.hit{border-color:rgba(227,26,28,.45);background:var(--surface2)}
     .hm-verdict.quiet{color:var(--text-dim,#8a948f)}
     .hm-verdict a{color:var(--brand,#d4a23f)}
     .hm-point-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:.5rem;margin-bottom:.7rem}
@@ -171,7 +171,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     .hm-sponsor[hidden]{display:none!important}
     .hm-sponsor--ribbon .hm-sponsor-tag{font-family:var(--font-body);font-size:0.75rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--ad-orange,#e8743a);margin-right:.5rem}
     .hm-sponsor--ribbon p{display:inline;margin:0}
-    .hm-alerts{margin:.8rem 0 0;padding:.8rem .9rem;background:rgba(212,162,63,.05);border:1px solid rgba(212,162,63,.25);border-radius:var(--r-lg)}
+    .hm-alerts{margin:.8rem 0 0;padding:.8rem .9rem;background:var(--surface2);border:1px solid rgba(212,162,63,.25);border-radius:var(--r-lg)}
     .hm-alerts-h{font-weight:700;font-size:.95rem}
     .hm-alerts-soon{font-family:var(--font-body);font-size:0.75rem;font-weight:700;letter-spacing:0;text-transform:none;color:var(--brand,#d4a23f);border:1px solid rgba(212,162,63,.5);border-radius:var(--r-lg);padding:.15rem .5rem;margin-left:.4rem;vertical-align:middle}
     .hm-alerts-p{font-size:.82rem;color:var(--text-dim,#8a948f);line-height:1.6;margin:.35rem 0 .55rem}
@@ -185,7 +185,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     .hm-alerts-row button:disabled{opacity:.5;cursor:default}
     .hm-alerts-status{font-family:'JetBrains Mono',monospace;font-size:0.785rem;margin-top:.45rem;color:var(--text-dim,#8a948f)}
     .hm-swathcheck{margin:.8rem 0 0;padding-top:.7rem;border-top:1px solid var(--border,rgba(132,160,168,.12))}
-    .hm-swathcheck button{display:inline-flex;align-items:center;gap:.4rem;min-height:42px;background:rgba(212,162,63,.08);border:1px solid rgba(212,162,63,.4);border-radius:var(--r-md);color:var(--brand,#d4a23f);font-family:'JetBrains Mono',monospace;font-size:0.785rem;font-weight:700;padding:.5rem .8rem;cursor:pointer}
+    .hm-swathcheck button{display:inline-flex;align-items:center;gap:.4rem;min-height:42px;background:var(--surface2);border:1px solid rgba(212,162,63,.4);border-radius:var(--r-md);color:var(--brand,#d4a23f);font-family:'JetBrains Mono',monospace;font-size:0.785rem;font-weight:700;padding:.5rem .8rem;cursor:pointer}
     .hm-swathcheck button:disabled{opacity:.5;cursor:default}
     .hm-replay{margin:.8rem 0 0;padding-top:.7rem;border-top:1px solid var(--border,rgba(132,160,168,.12))}
     .hm-replay-btn{display:inline-flex;align-items:center;gap:.4rem;min-height:44px;background:var(--gold-fill,#d4a23f);border:1px solid var(--gold-fill,#d4a23f);border-radius:var(--r-md);color:#141410;font:inherit;font-weight:700;font-size:.9rem;padding:.5rem .9rem;cursor:pointer}
@@ -342,7 +342,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     .hm-cmp-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch}
     .hm-cmp{width:100%;border-collapse:collapse;font-size:.85rem;margin:.7rem 0 .3rem}
     .hm-cmp th,.hm-cmp td{padding:.45rem .55rem;border-bottom:1px solid var(--border,rgba(132,160,168,.15));text-align:left;vertical-align:top}
-    .hm-cmp th{font-family:'JetBrains Mono',monospace;font-size:0.765rem;letter-spacing:.08em;text-transform:uppercase;color:var(--text-dim,#8a948f)}
+    .hm-cmp th{font-family:var(--font-body);font-size:0.765rem;letter-spacing:0;text-transform:none;color:var(--text-dim,#8a948f)}
     .hm-cmp td:first-child{font-family:'JetBrains Mono',monospace;font-size:0.78rem;color:var(--text-dim,#8a948f);white-space:nowrap}
     .hm-cmp-src{font-family:'JetBrains Mono',monospace;font-size:0.755rem;color:var(--text-dim,#8a948f);line-height:1.7}
     .hm-faq{margin-top:2rem;border-top:1px solid var(--border);padding-top:1.4rem}
@@ -365,7 +365,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
     .hm-cty-tablewrap{overflow-x:auto;border:1px solid var(--border);border-radius:var(--r-lg)}
     .hm-cty-table{width:100%;border-collapse:collapse;font-size:.9rem;min-width:520px}
     .hm-cty-table th,.hm-cty-table td{text-align:left;padding:.55rem .75rem;border-bottom:1px solid var(--border)}
-    .hm-cty-table thead th{background:var(--surface);color:var(--text-muted);font-size:0.79rem;text-transform:uppercase;letter-spacing:.04em;position:sticky;top:0}
+    .hm-cty-table thead th{background:var(--surface);color:var(--text-muted);font-size:0.79rem;text-transform:none;letter-spacing:0;position:sticky;top:0}
     .hm-cty-table tbody tr:last-child td{border-bottom:none}
     .hm-cty-table tbody tr:nth-child(odd){background:rgba(255,255,255,.015)}
     .hm-cty-table td.num,.hm-cty-table th.num{text-align:right;font-variant-numeric:tabular-nums}
@@ -1671,7 +1671,7 @@ try{(function(d){var q=new URLSearchParams(location.search),h=true,v=String(q.ge
         try{ if(window.AgPrintQR) qr=window.AgPrintQR.html(qrUrl,'agsist.com/hail-map',{screen:true}); }catch(e){ qr=''; }
         var w=window.open('','_blank');
         if(!w){ banner('Allow pop-ups to print the report.'); return; }
-        w.document.write('<!DOCTYPE html><html><head><title>Hail History Report</title><style>body{font-family:Georgia,serif;color:#1a1a1a;max-width:720px;margin:2rem auto;padding:0 1rem}h1{font-size:1.4rem;border-bottom:2px solid #6b5a13;padding-bottom:.4rem}table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:1rem}th,td{border-bottom:1px solid #ccc;text-align:left;padding:.35rem .5rem}th{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em}.meta{color:#555;font-size:.85rem}.foot{margin-top:1.5rem;font-size:.75rem;color:#666;border-top:1px solid #ccc;padding-top:.6rem;line-height:1.5}.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:.25in}.hd>div:first-child{flex:1;min-width:0}'+(window.AgPrintQR?window.AgPrintQR.CSS:'')+'</style></head><body>'+
+        w.document.write('<!DOCTYPE html><html><head><title>Hail History Report</title><style>body{font-family:Georgia,serif;color:#1a1a1a;max-width:720px;margin:2rem auto;padding:0 1rem}h1{font-size:1.4rem;border-bottom:2px solid #6b5a13;padding-bottom:.4rem}table{width:100%;border-collapse:collapse;font-size:.9rem;margin-top:1rem}th,td{border-bottom:1px solid #ccc;text-align:left;padding:.35rem .5rem}th{font-size:.75rem;text-transform:none;letter-spacing:0}.meta{color:#555;font-size:.85rem}.foot{margin-top:1.5rem;font-size:.75rem;color:#666;border-top:1px solid #ccc;padding-top:.6rem;line-height:1.5}.hd{display:flex;justify-content:space-between;align-items:flex-start;gap:.25in}.hd>div:first-child{flex:1;min-width:0}'+(window.AgPrintQR?window.AgPrintQR.CSS:'')+'</style></head><body>'+
           /* the print window's own heading; \x31 keeps a second "h1" out of this page's source (Nov 2 SEO audit) */
           '<div class="hd"><div><h\x31>Hail History Report</h\x31>'+
           '<p class="meta">Location: '+esc(L.label?L.label+' ':'')+'('+L.lat.toFixed(4)+', '+L.lon.toFixed(4)+')'+
